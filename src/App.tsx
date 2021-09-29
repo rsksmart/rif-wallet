@@ -1,10 +1,16 @@
 import React from 'react'
-import { Text } from 'react-native'
+import { View } from 'react-native'
+import { Header1, Paragraph } from './components/typrography'
 
 interface Interface {}
 
-const App: React.FC<Interface> = () => {
-  return <Text>Hello sWallet</Text>
+const WalletApp: React.FC<Interface> = () => {
+  return (
+    <View>
+      <Header1>sWallet</Header1>
+      <Paragraph>Hello sWallet</Paragraph>
+    </View>
+  )
 }
 
-export default App
+export default WalletApp
