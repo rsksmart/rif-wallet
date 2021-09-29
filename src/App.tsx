@@ -26,7 +26,9 @@ const WalletApp: React.FC<Interface> = () => {
   }
 
   const getAddress = () => {
-    if (!mnemonic) return
+    if (!mnemonic) {
+      return
+    }
 
     mnemonicToSeed(mnemonic).then((seed: Buffer) => {
       const hdKey = seedToRSKHDKey(seed)

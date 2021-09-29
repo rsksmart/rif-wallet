@@ -4,4 +4,5 @@ module.exports = {
   rules: {
     semi: 'off',
   },
+  ignorePatterns: ['shim.js'],
 }
