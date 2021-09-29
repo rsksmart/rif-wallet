@@ -11,11 +11,14 @@
     "postinstall": "rn-nodeify --install buffer,events,stream --hack"
   },
   "dependencies": {
+    "@rsksmart/rif-id-ethr-did": "^0.1.0",
     "@rsksmart/rif-id-mnemonic": "^0.1.0",
     "buffer": "^4.9.2",
     "events": "^1.1.1",
+    "process": "^0.11.10",
     "react": "17.0.2",
     "react-native": "0.65.1",
+    "react-native-get-random-values": "^1.7.0",
     "readable-stream": "^1.0.33",
     "stream-browserify": "^1.0.0"
   },
