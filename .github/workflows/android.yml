@@ -1,8 +1,9 @@
 name: Android Build SDK
 
 on:
-  push:
-    branches: [ main ]
+  pull_request:
+    branches:
+      - main
 
 jobs:
   install-and-test:
