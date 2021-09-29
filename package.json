@@ -10,6 +10,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@rsksmart/rif-id-mnemonic": "^0.1.0",
     "react": "17.0.2",
     "react-native": "0.65.1"
   },
