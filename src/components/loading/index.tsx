@@ -1,5 +1,5 @@
 import React from 'react'
-import { Paragraph } from '../typrography'
+import { Paragraph } from '../typography'
 
 interface Interface {
   reason?: string

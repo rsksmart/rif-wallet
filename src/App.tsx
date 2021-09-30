@@ -4,7 +4,7 @@ import { generateMnemonic, mnemonicToSeed } from '@rsksmart/rif-id-mnemonic'
 import { fromSeed, BIP32Interface } from 'bip32'
 
 import Button from './components/button'
-import { Header1, Paragraph } from './components/typrography'
+import { Header1, Paragraph } from './components/typography'
 import { rskTestnetAddressFromPrivateKey } from '@rsksmart/rif-id-ethr-did'
 import Loading from './components/loading'
 import { BigNumber, ethers } from 'ethers'
