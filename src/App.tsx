@@ -47,7 +47,7 @@ const WalletApp: React.FC<Interface> = () => {
   }
 
   const getBalance = () => {
-    setState({ ...state, loading: 'Getting balance' })
+    setState({ ...state, balance: undefined, loading: 'Getting balance' })
     console.log('getting balance for: ', state.address)
 
     const provider = new ethers.providers.JsonRpcProvider(
