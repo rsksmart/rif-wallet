@@ -20,7 +20,9 @@ const Button: React.FC<Interface> = ({ title, onPress, disabled }) => {
       onPress={onPress}
       disabled={disabled}>
       <View>
-        <Text>{title}</Text>
+        <Text style={disabled ? styles.textDisabled : styles.text}>
+          {title}
+        </Text>
       </View>
     </TouchableOpacity>
   )
@@ -32,6 +34,10 @@ const styles = StyleSheet.create({
     padding: 10,
     borderWidth: 1,
     borderColor: '#000000',
+  },
+  text: {},
+  textDisabled: {
+    color: '#cccccc',
   },
 })
 

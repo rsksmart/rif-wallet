@@ -82,6 +82,7 @@ const WalletApp: React.FC<Interface> = () => {
             // @ts-ignore
             onPress={() => getAddress(state.mnemonic)}
             title="Get Address"
+            disabled={!!state.address}
           />
           {state.address && <Paragraph>Address: {state.address}</Paragraph>}
         </View>
