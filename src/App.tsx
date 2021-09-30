@@ -7,6 +7,7 @@ import Button from './components/button'
 import { Header1, Paragraph } from './components/typrography'
 import { rskTestnetAddressFromPrivateKey } from '@rsksmart/rif-id-ethr-did'
 import Loading from './components/loading'
+import { BigNumber, ethers } from 'ethers'
 
 interface Interface {}
 
@@ -16,14 +17,16 @@ export const seedToRSKHDKey: (seed: Buffer) => BIP32Interface = seed =>
 const WalletApp: React.FC<Interface> = () => {
   // App's State for now:
   interface stateInterface {
-    mnemonic: string | null
-    address: string | null
-    loading: string | null
+    mnemonic?: string
+    address?: string
+    loading?: string
+    balance?: number
   }
   const initialState = {
-    mnemonic: null,
-    address: null,
-    loading: null,
+    mnemonic: undefined,
+    address: undefined,
+    loading: undefined,
+    balance: undefined,
   }
   const [state, setState] = useState<stateInterface>(initialState)
 
@@ -31,20 +34,36 @@ const WalletApp: React.FC<Interface> = () => {
     setState({ ...state, mnemonic: generateMnemonic(12) })
 
   const getAddress = (mnemonic: string) => {
-    setState({ ...state, address: null, loading: 'Getting Address' })
+    setState({ ...state, address: undefined, loading: 'Getting Address' })
     mnemonicToSeed(mnemonic).then((seed: Buffer) => {
       const hdKey = seedToRSKHDKey(seed)
       if (hdKey.derive(0).privateKey) {
         const privateKey = hdKey.derive(0).privateKey?.toString('hex') || ''
         const address = rskTestnetAddressFromPrivateKey(privateKey)
 
-        setState({ ...state, address, loading: null })
+        setState({ ...state, address, loading: undefined })
       }
     })
   }
 
   const getBalance = () => {
-    console.log('getting balance...')
+    setState({ ...state, loading: 'Getting balance' })
+    console.log('getting balance for: ', state.address)
+
+    const provider = new ethers.providers.JsonRpcProvider(
+      'https://public-node.testnet.rsk.co',
+    )
+
+    state.address &&
+      provider
+        .getBalance(state.address.toLowerCase())
+        .then((response: BigNumber) =>
+          setState({
+            ...state,
+            balance: parseInt(response.toString(), 10) / Math.pow(10, 18),
+            loading: undefined,
+          }),
+        )
   }
 
   return (
@@ -72,6 +91,10 @@ const WalletApp: React.FC<Interface> = () => {
         <View style={styles.section}>
           <Button onPress={getBalance} title="Get Balance" />
         </View>
+      )}
+
+      {state.balance !== undefined && (
+        <Paragraph>Balance: {state.balance}</Paragraph>
       )}
 
       {state.loading && <Loading reason={state.loading} />}
