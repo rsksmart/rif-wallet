@@ -17,4 +17,17 @@
   </a>
 </p>
 
+## Install and setup
+
+- [Setup your enviornment using the official instructions](https://reactnative.dev/docs/environment-setup)
+- Install the dependecies using yarn. This will also run the postinstall script that shims the missing packages: `yarn`
+- Run the app:
+  - `yarn ios`
+  - `yarn android`
+
+## Folder Structure
+
+This is an ongoing process that will be documented when more are added. Below is a list of the current directories and what is expected inside.
+
+- **src/components** - resuable components used throughout the app. These will include buttons, typography, text inputs. These are independent of the screens.
 
