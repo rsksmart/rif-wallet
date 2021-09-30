@@ -17,6 +17,10 @@ import {
   View,
 } from 'react-native'
 
+// nodify
+import 'react-native-get-random-values'
+import './shim'
+
 import WalletApp from './src/App'
 
 const App = () => {

@@ -7,11 +7,20 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "postinstall": "rn-nodeify --install buffer,events,stream --hack"
   },
   "dependencies": {
+    "@rsksmart/rif-id-ethr-did": "^0.1.0",
+    "@rsksmart/rif-id-mnemonic": "^0.1.0",
+    "buffer": "^4.9.2",
+    "events": "^1.1.1",
+    "process": "^0.11.10",
     "react": "17.0.2",
-    "react-native": "0.65.1"
+    "react-native": "0.65.1",
+    "react-native-get-random-values": "^1.7.0",
+    "readable-stream": "^1.0.33",
+    "stream-browserify": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
@@ -26,6 +35,7 @@
     "metro-react-native-babel-preset": "^0.66.0",
     "react-native-codegen": "^0.0.7",
     "react-test-renderer": "17.0.2",
+    "rn-nodeify": "^10.3.0",
     "typescript": "^3.8.3"
   },
   "resolutions": {
@@ -41,5 +51,21 @@
       "json",
       "node"
     ]
+  },
+  "react-native": {
+    "_stream_transform": "readable-stream/transform",
+    "_stream_readable": "readable-stream/readable",
+    "_stream_writable": "readable-stream/writable",
+    "_stream_duplex": "readable-stream/duplex",
+    "_stream_passthrough": "readable-stream/passthrough",
+    "stream": "stream-browserify"
+  },
+  "browser": {
+    "_stream_transform": "readable-stream/transform",
+    "_stream_readable": "readable-stream/readable",
+    "_stream_writable": "readable-stream/writable",
+    "_stream_duplex": "readable-stream/duplex",
+    "_stream_passthrough": "readable-stream/passthrough",
+    "stream": "stream-browserify"
   }
 }
