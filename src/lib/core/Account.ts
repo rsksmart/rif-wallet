@@ -23,11 +23,12 @@ class Account {
   }
 
   getBalance() {
-    jsonRpcProvider.getBalance(this.address).then((balance: BigNumber) => {
-      // BigNumber does not handle decimals, this is a poor workaround
-      this.balance = parseInt(balance.toString(), 10) / Math.pow(10, 18)
-      console.log('balance: ', this.balance)
-    })
+    jsonRpcProvider
+      .getBalance(this.address.toLowerCase())
+      .then((balance: BigNumber) => {
+        // BigNumber does not handle decimals, this is a poor workaround
+        this.balance = parseInt(balance.toString(), 10) / Math.pow(10, 18)
+      })
   }
 }
 

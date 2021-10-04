@@ -6,10 +6,6 @@ import {
 import { Account } from '.'
 import { fromSeed } from 'bip32'
 
-// testnet:
-const seedToRSKTestnetHDKey: (seed: Buffer) => BIP32Interface = seed =>
-  fromSeed(seed).derivePath("m/44'/37310'/0'/0")
-
 class Wallet {
   private mnemonic: string
   private hdKey?: BIP32Interface
@@ -39,11 +35,13 @@ class Wallet {
 
     this.mnemonic = mnemonic || generateMnemonic(12)
 
-    // convert the seed to the HD Key
+    // convert the seed to the HD Key for testnet
     mnemonicToSeed(this.mnemonic).then(
-      (seed: Buffer) => (this.hdKey = seedToRSKTestnetHDKey(seed)),
+      (seed: Buffer) =>
+        (this.hdKey = fromSeed(seed).derivePath("m/44'/37310'/0'/0")),
     )
 
+    console.log(this.mnemonic)
     this.isSetup = true
   }
 
