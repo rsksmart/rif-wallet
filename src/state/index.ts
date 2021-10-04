@@ -1,11 +1,11 @@
 // The app's state uses useState. In the near future, this may
 // be expanded to use redux.
 
-import { RIFWallet } from '../lib/core'
+import { Wallet } from '../lib/core'
 
 export interface stateInterface {
   // will move to context:
-  wallet: RIFWallet
+  wallet: Wallet
 
   // will move to redux:
   mnemonic: string
@@ -13,7 +13,7 @@ export interface stateInterface {
 }
 
 export const initialState = {
-  wallet: new RIFWallet(),
+  wallet: new Wallet(),
   mnemonic: '',
   addresses: [],
 }

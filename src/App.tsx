@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native'
 
 import Button from './components/button'
 import { Header1, Header2, Paragraph } from './components/typography'
-import { RIFWallet } from './lib/core'
+import { Wallet } from './lib/core'
 
 import { stateInterface, initialState } from './state'
 
@@ -37,7 +37,7 @@ const WalletApp: React.FC<Interface> = () => {
   const resetState = () => {
     setState({
       ...initialState,
-      wallet: new RIFWallet(),
+      wallet: new Wallet(),
     })
   }
 
