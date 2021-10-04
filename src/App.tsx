@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native'
 
 import Button from './components/button'
 import { Header1, Header2, Paragraph } from './components/typography'
+import { RIFWallet } from './lib/core'
 
 import { stateInterface, initialState } from './state'
 
@@ -22,20 +23,33 @@ const WalletApp: React.FC<Interface> = () => {
   }
 
   const addAccount = () => {
-    const account = state.wallet.addAccount()
+    const account = state.wallet.getAccount(
+      'RSK_TESTNET',
+      state.addresses.length,
+    )
+
     setState({
       ...state,
       addresses: state.addresses.concat(account.address),
     })
   }
 
-  const resetState = () => setState(initialState)
+  const resetState = () => {
+    setState({
+      ...initialState,
+      wallet: new RIFWallet(),
+    })
+  }
 
   return (
     <View>
       <Header1>sWallet</Header1>
       <View style={styles.section}>
-        <Button onPress={createWallet} title="Create RIF Smart Wallet" />
+        <Button
+          onPress={createWallet}
+          title="Create RIF Smart Wallet"
+          disabled={state.wallet.isSetup}
+        />
         <Paragraph>{state.mnemonic}</Paragraph>
       </View>
 

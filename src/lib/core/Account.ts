@@ -1,16 +1,24 @@
 import { rskTestnetAddressFromPrivateKey } from '@rsksmart/rif-id-ethr-did'
+import { BIP32Interface } from '@rsksmart/rif-id-mnemonic'
 import { BigNumber } from 'ethers'
 import { jsonRpcProvider } from '../jsonRpcProvider'
 
 class Account {
+  chainId: number
+
   path: string
   address: string
   balance: number
 
   // takes a dev path and a network (testnet/mainnet)
-  constructor(path: string, privateKey: string) {
+  constructor(network: 'RSK_TESTNET', path: string, bip32: BIP32Interface) {
+    this.chainId = network === 'RSK_TESTNET' ? 31 : 0
     this.path = path
-    this.address = rskTestnetAddressFromPrivateKey(privateKey)
+
+    this.address = rskTestnetAddressFromPrivateKey(
+      // @ts-ignore
+      bip32.privateKey.toString('hex'),
+    )
     this.balance = 0
   }
 

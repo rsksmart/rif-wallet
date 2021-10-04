@@ -29,7 +29,8 @@ class RIFWallet {
   }
 
   /**
-   * Creates a new wallet using an existing mnemonic, or restores
+   * Creates a new wallet using an existing mnemonic, or restores a wallet,
+   * creates an HD key based on the TESTNET dev path
    */
   createWallet(mnemonic?: string) {
     if (this.mnemonic !== '') {
@@ -46,14 +47,15 @@ class RIFWallet {
     this.isSetup = true
   }
 
-  addAccount(): Account {
-    const path = Object.keys(this.accounts).length
+  getAccount(network: 'RSK_TESTNET', path: number) {
+    if (!this.hdKey) {
+      throw 'HDKey has not been setup.'
+    }
     const newAccount = new Account(
+      network,
       `m/44'/37310'/0'/${path}`,
-      // @ts-ignore - private key is setup in createWallet() and restoreWallet()
-      this.hdKey.derive(path).privateKey,
+      this.hdKey.derive(path),
     )
-
     this.accounts[path] = newAccount
     return newAccount
   }
