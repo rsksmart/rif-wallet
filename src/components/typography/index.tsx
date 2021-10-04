@@ -9,6 +9,10 @@ export const Header1: React.FC<Interface> = ({ children }) => (
   <Text style={styles.header1}>{children}</Text>
 )
 
+export const Header2: React.FC<Interface> = ({ children }) => (
+  <Text style={styles.header2}>{children}</Text>
+)
+
 export const Paragraph: React.FC<Interface> = ({ children }) => (
   <Text style={styles.paragraph}>{children}</Text>
 )
@@ -16,6 +20,10 @@ export const Paragraph: React.FC<Interface> = ({ children }) => (
 const styles = StyleSheet.create({
   header1: {
     fontSize: 42,
+    marginBottom: 15,
+  },
+  header2: {
+    fontSize: 36,
     marginBottom: 15,
   },
   paragraph: {

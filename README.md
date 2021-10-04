@@ -30,4 +30,5 @@
 This is an ongoing process that will be documented when more are added. Below is a list of the current directories and what is expected inside.
 
 - **src/components** - resuable components used throughout the app. These will include buttons, typography, text inputs. These are independent of the screens.
-
+- **src/lib** - interaction with libraries used, or new libraries being created. 
+- **src/state** - all things state. Right now, we are using useState, but this may be expanded to use Redux in the near future.
