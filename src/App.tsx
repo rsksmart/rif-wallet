@@ -1,107 +1,72 @@
 import React, { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import { generateMnemonic, mnemonicToSeed } from '@rsksmart/rif-id-mnemonic'
-import { fromSeed, BIP32Interface } from 'bip32'
 
 import Button from './components/button'
-import { Header1, Paragraph } from './components/typography'
-import { rskTestnetAddressFromPrivateKey } from '@rsksmart/rif-id-ethr-did'
-import Loading from './components/loading'
-import { BigNumber, ethers } from 'ethers'
+import { Header1, Header2, Paragraph } from './components/typography'
+import { Wallet } from './lib/core'
+
+import { stateInterface, initialState } from './state'
 
 interface Interface {}
 
-export const seedToRSKHDKey: (seed: Buffer) => BIP32Interface = seed =>
-  fromSeed(seed).derivePath("m/44'/37310'/0'/0")
-
 const WalletApp: React.FC<Interface> = () => {
-  // App's State for now:
-  interface stateInterface {
-    mnemonic?: string
-    address?: string
-    loading?: string
-    balance?: number
-  }
-  const initialState = {
-    mnemonic: undefined,
-    address: undefined,
-    loading: undefined,
-    balance: undefined,
-  }
+  // App's state:
   const [state, setState] = useState<stateInterface>(initialState)
 
-  const getMnemonic = () =>
-    setState({ ...state, mnemonic: generateMnemonic(12) })
-
-  const getAddress = (mnemonic: string) => {
-    setState({ ...state, address: undefined, loading: 'Getting Address' })
-    mnemonicToSeed(mnemonic).then((seed: Buffer) => {
-      const hdKey = seedToRSKHDKey(seed)
-      if (hdKey.derive(0).privateKey) {
-        const privateKey = hdKey.derive(0).privateKey?.toString('hex') || ''
-        const address = rskTestnetAddressFromPrivateKey(privateKey)
-
-        setState({ ...state, address, loading: undefined })
-      }
+  // component's functions
+  const createWallet = () => {
+    state.wallet.createWallet()
+    setState({
+      ...state,
+      mnemonic: state.wallet.getMnemonic(),
     })
   }
 
-  const getBalance = () => {
-    setState({ ...state, balance: undefined, loading: 'Getting balance' })
-    console.log('getting balance for: ', state.address)
-
-    const provider = new ethers.providers.JsonRpcProvider(
-      'https://public-node.testnet.rsk.co',
+  const addAccount = () => {
+    const account = state.wallet.getAccount(
+      'RSK_TESTNET',
+      state.addresses.length,
     )
 
-    state.address &&
-      provider
-        .getBalance(state.address.toLowerCase())
-        .then((response: BigNumber) =>
-          setState({
-            ...state,
-            balance: parseInt(response.toString(), 10) / Math.pow(10, 18),
-            loading: undefined,
-          }),
-        )
+    setState({
+      ...state,
+      addresses: state.addresses.concat(account.address),
+    })
+  }
+
+  const resetState = () => {
+    setState({
+      ...initialState,
+      wallet: new Wallet(),
+    })
   }
 
   return (
     <View>
       <Header1>sWallet</Header1>
-      <Paragraph>Hello sWallet</Paragraph>
-      <Button
-        onPress={getMnemonic}
-        title="Get Mnemmonic"
-        disabled={!!state.mnemonic}
-      />
-      {state.mnemonic && (
-        <View style={styles.section}>
-          <Paragraph>{state.mnemonic}</Paragraph>
-          <Button
-            // @ts-ignore
-            onPress={() => getAddress(state.mnemonic)}
-            title="Get Address"
-            disabled={!!state.address}
-          />
-          {state.address && <Paragraph>Address: {state.address}</Paragraph>}
-        </View>
-      )}
-
-      {state.address && (
-        <View style={styles.section}>
-          <Button onPress={getBalance} title="Get Balance" />
-        </View>
-      )}
-
-      {state.balance !== undefined && (
-        <Paragraph>Balance: {state.balance}</Paragraph>
-      )}
-
-      {state.loading && <Loading reason={state.loading} />}
+      <View style={styles.section}>
+        <Button
+          onPress={createWallet}
+          title="Create RIF Smart Wallet"
+          disabled={state.wallet.isSetup}
+        />
+        <Paragraph>{state.mnemonic}</Paragraph>
+      </View>
 
       <View style={styles.section}>
-        <Button onPress={() => setState(initialState)} title="reset" />
+        <Header2>Accounts:</Header2>
+        {state.addresses.map((address: string) => {
+          return <Paragraph key={address}>{address}</Paragraph>
+        })}
+        <Button
+          onPress={addAccount}
+          title="Add account"
+          disabled={!state.wallet.isSetup}
+        />
+      </View>
+
+      <View style={styles.section}>
+        <Button onPress={resetState} title="reset" />
       </View>
     </View>
   )
