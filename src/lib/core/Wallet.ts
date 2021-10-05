@@ -22,6 +22,10 @@ class Wallet {
     const privateKey = hdKey.derive(index).privateKey!.toString('hex')
     return new Account({ privateKey })
   }
+
+  get getMnemonic() {
+    return this.mnemonic
+  }
 }
 
 export default Wallet
