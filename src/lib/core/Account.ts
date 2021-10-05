@@ -23,7 +23,7 @@ class Account extends Signer {
 
   constructor({ privateKey }: { privateKey: string }) {
     super()
-    this.wallet = new Wallet(`0x${privateKey}`)
+    this.wallet = new Wallet(privateKey)
     this.idCount = 0
     this.queuedTransactions = []
   }
