@@ -9,38 +9,16 @@
  */
 
 import React from 'react'
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  View,
-} from 'react-native'
+import 'react-native-gesture-handler'
 
 // nodify
 import 'react-native-get-random-values'
 import './shim'
 
-import WalletApp from './src/App'
+import RootNavigation from './src/RootNavigation'
 
 const App = () => {
-  return (
-    <SafeAreaView>
-      <StatusBar />
-      <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <View style={styles.sectionContainer}>
-          <WalletApp />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  )
+  return <RootNavigation />
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-})
 
 export default App
