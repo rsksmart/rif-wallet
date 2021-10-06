@@ -1,64 +1,29 @@
-import {
-  BIP32Interface,
-  generateMnemonic,
-  mnemonicToSeed,
-} from '@rsksmart/rif-id-mnemonic'
+import { generateMnemonic, mnemonicToSeedSync } from '@rsksmart/rif-id-mnemonic'
 import { Account } from '.'
 import { fromSeed } from 'bip32'
 
 class Wallet {
   private mnemonic: string
-  private hdKey?: BIP32Interface
-  isSetup: boolean
-
-  accounts: {
-    [key: string]: Account
-  }
 
   // creates the mnemonic
-  constructor() {
-    this.mnemonic = ''
-    this.accounts = {}
-    this.isSetup = false
-
-    this.hdKey
+  constructor({ mnemonic }: { mnemonic: string }) {
+    this.mnemonic = mnemonic
   }
 
-  /**
-   * Creates a new wallet using an existing mnemonic, or restores a wallet,
-   * creates an HD key based on the TESTNET dev path
-   */
-  createWallet(mnemonic?: string) {
-    if (this.mnemonic !== '') {
-      throw 'Wallet has already been setup with a Mnemonic.'
-    }
-
-    this.mnemonic = mnemonic || generateMnemonic(12)
-
-    // convert the seed to the HD Key for testnet
-    mnemonicToSeed(this.mnemonic).then(
-      (seed: Buffer) =>
-        (this.hdKey = fromSeed(seed).derivePath("m/44'/37310'/0'/0")),
-    )
-
-    console.log(this.mnemonic)
-    this.isSetup = true
+  static create(): Wallet {
+    const mnemonic = generateMnemonic(24)
+    const wallet = new Wallet({ mnemonic })
+    return wallet
   }
 
-  getAccount(network: 'RSK_TESTNET', path: number) {
-    if (!this.hdKey) {
-      throw 'HDKey has not been setup.'
-    }
-    const newAccount = new Account(
-      network,
-      `m/44'/37310'/0'/${path}`,
-      this.hdKey.derive(path),
-    )
-    this.accounts[path] = newAccount
-    return newAccount
+  getAccount(index: number) {
+    const seed = mnemonicToSeedSync(this.mnemonic)
+    const hdKey = fromSeed(seed).derivePath("m/44'/37310'/0'/0")
+    const privateKey = hdKey.derive(index).privateKey!.toString('hex')
+    return new Account({ privateKey })
   }
 
-  getMnemonic(): string {
+  get getMnemonic() {
     return this.mnemonic
   }
 }
