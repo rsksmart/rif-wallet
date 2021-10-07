@@ -7,6 +7,8 @@ import { Header1, Header2, Paragraph } from './components/typography'
 import { Wallet } from './lib/core'
 
 import { stateInterface, initialState } from './state'
+import { TransactionPartial } from './modal/ReviewTransactionComponent'
+import { TextInput } from 'react-native-gesture-handler'
 
 interface Interface {
   navigation: NavigationProp<ParamListBase>
@@ -44,6 +46,29 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
     })
   }
 
+  /**
+   * Temp transaction showing how to pop the review screen:
+   */
+  const reviewTransaction = () => {
+    const transaction: TransactionPartial = {
+      to: '0x123456',
+      from: '0x987654',
+      value: 1000,
+    }
+    navigation.navigate('ReviewTransaction', {
+      transaction,
+      onConfirm: transactionConfirmed,
+    })
+  }
+
+  const transactionConfirmed = (transaction: TransactionPartial) =>
+    setState({
+      ...state,
+      confirmResponse: transaction
+        ? 'transaction:' + JSON.stringify(transaction)
+        : 'Transaction Cancelled!',
+    })
+
   return (
     <SafeAreaView style={styles.safeView}>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
@@ -71,13 +96,15 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
           </View>
 
           <View style={styles.section}>
-            <Button onPress={resetState} title="reset" />
+            <Button onPress={reviewTransaction} title="Review Transaction" />
+            {state.confirmResponse && (
+              <Paragraph>{state.confirmResponse}</Paragraph>
+            )}
           </View>
 
-          <Button
-            onPress={() => navigation.navigate('ReviewTransaction')}
-            title="Review Transaction"
-          />
+          <View style={styles.section}>
+            <Button onPress={resetState} title="reset" />
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
