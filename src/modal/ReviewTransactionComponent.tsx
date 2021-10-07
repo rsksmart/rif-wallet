@@ -38,28 +38,33 @@ const ReviewTransactionComponent: React.FC<Interface> = ({
       gasPrice: '0.068',
     })
 
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', () => {
+      // do something
+      console.log('beforeRemove...')
+    })
+
+    return unsubscribe
+  }, [navigation])
+
   // gasLimit can be a number or empty (temporarly)
   const changeGasLimit = (gasLimit: string) => {
-    if (parseInt(gasLimit, 10).toString() !== gasLimit && gasLimit !== '') {
-      return
+    if (parseInt(gasLimit, 10).toString() === gasLimit || gasLimit === '') {
+      setUpdateTransaction({
+        ...updateTransaction,
+        gasLimit: gasLimit,
+      })
     }
-
-    setUpdateTransaction({
-      ...updateTransaction,
-      gasLimit: gasLimit,
-    })
   }
 
   // gasPrice is an integer that temporarly can end with 0 or a dot
   const changeGasPrice = (gasPrice: string) => {
-    if (!isFinite(parseFloat(gasPrice))) {
-      return
+    if (gasPrice.match(/^(\d*)([,.]\d{0,})?$/)) {
+      setUpdateTransaction({
+        ...updateTransaction,
+        gasPrice: gasPrice,
+      })
     }
-
-    setUpdateTransaction({
-      ...updateTransaction,
-      gasPrice: gasPrice,
-    })
   }
 
   const handleConfirm = (newTransaction: TransactionPartial | null) => {

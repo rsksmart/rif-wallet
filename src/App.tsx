@@ -8,13 +8,13 @@ import { Wallet } from './lib/core'
 
 import { stateInterface, initialState } from './state'
 import { TransactionPartial } from './modal/ReviewTransactionComponent'
-import { TextInput } from 'react-native-gesture-handler'
 
 interface Interface {
   navigation: NavigationProp<ParamListBase>
+  route: any
 }
 
-const WalletApp: React.FC<Interface> = ({ navigation }) => {
+const WalletApp: React.FC<Interface> = ({ navigation, route }) => {
   // App's state:
   const [state, setState] = useState<stateInterface>(initialState)
 
@@ -46,15 +46,19 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
     })
   }
 
-  /**
-   * Temp transaction showing how to pop the review screen:
-   */
   const reviewTransaction = () => {
     const transaction: TransactionPartial = {
       to: '0x123456',
       from: '0x987654',
       value: 1000,
     }
+    route.params.reviewTransaction(transaction)
+  }
+  /**
+   * Temp transaction showing how to pop the review screen:
+
+  const handleReviewTransaction = () => {
+    
     navigation.navigate('ReviewTransaction', {
       transaction,
       onConfirm: transactionConfirmed,
@@ -68,6 +72,7 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
         ? 'transaction:' + JSON.stringify(transaction)
         : 'Transaction Cancelled!',
     })
+  */
 
   return (
     <SafeAreaView style={styles.safeView}>
