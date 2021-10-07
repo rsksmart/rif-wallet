@@ -14,7 +14,7 @@ interface Interface {
   route: any
 }
 
-const WalletApp: React.FC<Interface> = ({ navigation, route }) => {
+const WalletApp: React.FC<Interface> = ({ route }) => {
   // App's state:
   const [state, setState] = useState<stateInterface>(initialState)
 
@@ -52,27 +52,19 @@ const WalletApp: React.FC<Interface> = ({ navigation, route }) => {
       from: '0x987654',
       value: 1000,
     }
-    route.params.reviewTransaction(transaction)
-  }
-  /**
-   * Temp transaction showing how to pop the review screen:
-
-  const handleReviewTransaction = () => {
-    
-    navigation.navigate('ReviewTransaction', {
+    route.params.reviewTransaction({
       transaction,
-      onConfirm: transactionConfirmed,
+      handleConfirm: transactionConfirmed,
     })
   }
 
-  const transactionConfirmed = (transaction: TransactionPartial) =>
+  const transactionConfirmed = (transaction: TransactionPartial | null) =>
     setState({
       ...state,
       confirmResponse: transaction
         ? 'transaction:' + JSON.stringify(transaction)
         : 'Transaction Cancelled!',
     })
-  */
 
   return (
     <SafeAreaView style={styles.safeView}>

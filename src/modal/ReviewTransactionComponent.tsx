@@ -4,6 +4,7 @@ import { NavigationProp, ParamListBase } from '@react-navigation/native'
 
 import { Header2, Paragraph } from '../components/typography'
 import Button from '../components/button'
+import { ReviewTransactionDataI } from './ModalComponent'
 
 export interface TransactionPartial {
   to: string
@@ -21,7 +22,7 @@ interface Interface {
     key: string
     params: {
       transaction: TransactionPartial
-      onConfirm: (transaction: TransactionPartial | null) => void
+      onConfirm: (data: ReviewTransactionDataI) => void
     }
   }
 }
@@ -67,10 +68,10 @@ const ReviewTransactionComponent: React.FC<Interface> = ({
     }
   }
 
-  const handleConfirm = (newTransaction: TransactionPartial | null) => {
+  const handleConfirm = (newTransaction: TransactionPartial) => {
     // @jesse - todo confirm integer/float values
     navigation.goBack()
-    onConfirm(newTransaction)
+    
   }
 
   return (
