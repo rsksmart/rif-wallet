@@ -3,22 +3,22 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import WalletApp from './App'
 import { StyleSheet, View } from 'react-native'
-import ModalComponent, { ReviewTransactionDataI } from './modal/ModalComponent'
-import { TransactionPartial } from './modal/ReviewTransactionComponent'
+
+import ReviewTransactionModal, {
+  ReviewTransactionDataI,
+} from './modal/ReviewTransactionModal'
+import { TransactionPartial } from './types/transaction'
 
 interface Interface {}
 
 const RootNavigation: React.FC<Interface> = () => {
-  const [showModal, setShowModal] = useState<null | ReviewTransactionDataI>(
-    null,
-  )
+  const [reviewTransaction, setReviewTransaction] =
+    useState<null | ReviewTransactionDataI>(null)
   const closeReviewTransactionModal = (
     transaction: TransactionPartial | null,
   ) => {
-    console.log(showModal)
-    console.log('closeReview...', transaction)
-    showModal?.handleConfirm(transaction)
-    setShowModal(null)
+    reviewTransaction?.handleConfirm(transaction)
+    setReviewTransaction(null)
   }
 
   const RootStack = createStackNavigator()
@@ -35,7 +35,7 @@ const RootNavigation: React.FC<Interface> = () => {
               options={sharedOptions}
               initialParams={{
                 reviewTransaction: (transaction: ReviewTransactionDataI) =>
-                  setShowModal(transaction),
+                  setReviewTransaction(transaction),
               }}
             />
           </RootStack.Group>
@@ -43,11 +43,10 @@ const RootNavigation: React.FC<Interface> = () => {
       </NavigationContainer>
 
       {/* Modals: */}
-      {showModal && (
-        <ModalComponent
+      {reviewTransaction && (
+        <ReviewTransactionModal
           closeModal={closeReviewTransactionModal}
-          modalVisible={!!showModal}
-          transactionData={showModal}
+          transaction={reviewTransaction.transaction}
         />
       )}
     </View>

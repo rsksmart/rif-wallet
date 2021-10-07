@@ -7,7 +7,7 @@ import { Header1, Header2, Paragraph } from './components/typography'
 import { Wallet } from './lib/core'
 
 import { stateInterface, initialState } from './state'
-import { TransactionPartial } from './modal/ReviewTransactionComponent'
+import { TransactionPartial } from './types/transaction'
 
 interface Interface {
   navigation: NavigationProp<ParamListBase>
