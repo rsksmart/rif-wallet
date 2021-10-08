@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { NavigationProp, ParamListBase } from '@react-navigation/native'
 
 import Button from './components/button'
 import { Header1, Header2, Paragraph } from './components/typography'
-import { Wallet } from './lib/core'
+import { Account, Wallet } from './lib/core'
 
 import { stateInterface, initialState } from './state'
 import { TransactionPartial } from './types/transaction'
@@ -20,30 +20,23 @@ const WalletApp: React.FC<Interface> = ({ route }) => {
 
   // component's functions
   const createWallet = () => {
-    state.wallet.createWallet()
+    const wallet = Wallet.create()
     setState({
       ...state,
-      mnemonic: state.wallet.getMnemonic(),
+      mnemonic: wallet.getMnemonic,
     })
   }
 
   const addAccount = () => {
-    const account = state.wallet.getAccount(
-      'RSK_TESTNET',
-      state.addresses.length,
-    )
-
+    const account = state.wallet.getAccount(state.accounts.length)
     setState({
       ...state,
-      addresses: state.addresses.concat(account.address),
+      accounts: state.accounts.concat(account),
     })
   }
 
   const resetState = () => {
-    setState({
-      ...initialState,
-      wallet: new Wallet(),
-    })
+    setState(initialState)
   }
 
   const reviewTransaction = () => {
@@ -67,44 +60,32 @@ const WalletApp: React.FC<Interface> = ({ route }) => {
     })
 
   return (
-    <SafeAreaView style={styles.safeView}>
-      <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <View style={styles.screen}>
-          <Header1>sWallet</Header1>
-          <View style={styles.section}>
-            <Button
-              onPress={createWallet}
-              title="Create RIF Smart Wallet"
-              disabled={state.wallet.isSetup}
-            />
-            <Paragraph>{state.mnemonic}</Paragraph>
-          </View>
+    <View>
+      <Header1>sWallet</Header1>
+      <View style={styles.section}>
+        <Button onPress={createWallet} title="Create RIF Smart Wallet" />
+        <Paragraph>{state.mnemonic}</Paragraph>
+      </View>
 
-          <View style={styles.section}>
-            <Header2>Accounts:</Header2>
-            {state.addresses.map((address: string) => {
-              return <Paragraph key={address}>{address}</Paragraph>
-            })}
-            <Button
-              onPress={addAccount}
-              title="Add account"
-              disabled={!state.wallet.isSetup}
-            />
-          </View>
+      <View style={styles.section}>
+        <Header2>Accounts:</Header2>
+        {state.accounts.map((account: Account, index: number) => {
+          return <Paragraph key={index}>{account.address}</Paragraph>
+        })}
+        <Button onPress={addAccount} title="Add account" />
+      </View>
 
-          <View style={styles.section}>
-            <Button onPress={reviewTransaction} title="Review Transaction" />
-            {state.confirmResponse && (
-              <Paragraph>{state.confirmResponse}</Paragraph>
-            )}
-          </View>
+      <View style={styles.section}>
+        <Button onPress={reviewTransaction} title="Review Transaction" />
+        {state.confirmResponse && (
+          <Paragraph>{state.confirmResponse}</Paragraph>
+        )}
+      </View>
 
-          <View style={styles.section}>
-            <Button onPress={resetState} title="reset" />
-          </View>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      <View style={styles.section}>
+        <Button onPress={resetState} title="reset" />
+      </View>
+    </View>
   )
 }
 
