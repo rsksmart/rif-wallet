@@ -7,6 +7,7 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
+    "test:watch": "jest --watch",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "postinstall": "rn-nodeify --install buffer,events,stream --hack"
   },
@@ -31,6 +32,9 @@
     "@babel/core": "^7.12.9",
     "@babel/runtime": "^7.12.5",
     "@react-native-community/eslint-config": "^2.0.0",
+    "@testing-library/jest-native": "^4.0.2",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/react-native": "^7.2.0",
     "@types/jest": "^26.0.23",
     "@types/react-native": "^0.65.0",
     "@types/react-test-renderer": "^17.0.1",
@@ -55,6 +59,9 @@
       "jsx",
       "json",
       "node"
+    ],
+    "setupFilesAfterEnv": [
+      "@testing-library/jest-native/extend-expect"
     ]
   },
   "react-native": {
