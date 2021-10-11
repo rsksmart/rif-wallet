@@ -11,9 +11,6 @@ export interface stateInterface {
   // will move to redux:
   mnemonic: string
   addresses: string[]
-
-  // temp variables:
-  confirmResponse?: string
 }
 
 export const initialState = {

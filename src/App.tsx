@@ -18,6 +18,11 @@ const WalletApp: React.FC<Interface> = ({ route }) => {
   // App's state:
   const [state, setState] = useState<stateInterface>(initialState)
 
+  // Temporary component state:
+  const [componentState, setComponentState] = useState({
+    confirmResponse: undefined,
+  })
+
   // component's functions
   const createWallet = () => {
     const wallet = Wallet.create()
@@ -56,8 +61,8 @@ const WalletApp: React.FC<Interface> = ({ route }) => {
   }
 
   const transactionConfirmed = (transaction: Transaction | null) =>
-    setState({
-      ...state,
+    setComponentState({
+      ...componentState,
       confirmResponse: transaction
         ? 'transaction:' + JSON.stringify(transaction)
         : 'Transaction Cancelled!',
@@ -81,8 +86,8 @@ const WalletApp: React.FC<Interface> = ({ route }) => {
 
       <View style={styles.section}>
         <Button onPress={reviewTransaction} title="Review Transaction" />
-        {state.confirmResponse && (
-          <Paragraph>{state.confirmResponse}</Paragraph>
+        {componentState.confirmResponse && (
+          <Paragraph>{componentState.confirmResponse}</Paragraph>
         )}
       </View>
 
