@@ -10,6 +10,7 @@ export interface stateInterface {
 
   // will move to redux:
   mnemonic: string
+  addresses: string[]
 }
 
 export const initialState = {
@@ -17,4 +18,5 @@ export const initialState = {
   accounts: [],
   mnemonic: '',
   addresses: [],
+  confirmResponse: undefined,
 }

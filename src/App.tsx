@@ -1,17 +1,27 @@
 import React, { useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, ScrollView } from 'react-native'
+import { NavigationProp, ParamListBase } from '@react-navigation/native'
 
 import Button from './components/button'
 import { Header1, Header2, Paragraph } from './components/typography'
 import { Account, Wallet } from './lib/core'
 
 import { stateInterface, initialState } from './state'
+import { Transaction } from '@rsksmart/rlogin-eip1193-types'
 
-interface Interface {}
+interface Interface {
+  navigation: NavigationProp<ParamListBase>
+  route: any
+}
 
-const WalletApp: React.FC<Interface> = () => {
+const WalletApp: React.FC<Interface> = ({ route }) => {
   // App's state:
   const [state, setState] = useState<stateInterface>(initialState)
+
+  // Temporary component state:
+  const [componentState, setComponentState] = useState({
+    confirmResponse: undefined,
+  })
 
   // component's functions
   const createWallet = () => {
@@ -34,8 +44,32 @@ const WalletApp: React.FC<Interface> = () => {
     setState(initialState)
   }
 
+  const reviewTransaction = () => {
+    // to/from/value/data should be provided by the user and gases should be estimated
+    const transaction: Transaction = {
+      to: '0x123456',
+      from: '0x987654',
+      value: 1000,
+      gasLimit: 10000,
+      gasPrice: 0.067,
+    }
+
+    route.params.reviewTransaction({
+      transaction,
+      handleConfirm: transactionConfirmed,
+    })
+  }
+
+  const transactionConfirmed = (transaction: Transaction | null) =>
+    setComponentState({
+      ...componentState,
+      confirmResponse: transaction
+        ? 'transaction:' + JSON.stringify(transaction)
+        : 'Transaction Cancelled!',
+    })
+
   return (
-    <View>
+    <ScrollView>
       <Header1>sWallet</Header1>
       <View style={styles.section}>
         <Button onPress={createWallet} title="Create RIF Smart Wallet" />
@@ -51,13 +85,27 @@ const WalletApp: React.FC<Interface> = () => {
       </View>
 
       <View style={styles.section}>
+        <Button onPress={reviewTransaction} title="Review Transaction" />
+        {componentState.confirmResponse && (
+          <Paragraph>{componentState.confirmResponse}</Paragraph>
+        )}
+      </View>
+
+      <View style={styles.section}>
         <Button onPress={resetState} title="reset" />
       </View>
-    </View>
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
+  safeView: {
+    height: '100%',
+  },
+  screen: {
+    paddingRight: 15,
+    paddingLeft: 15,
+  },
   section: {
     paddingTop: 15,
     paddingBottom: 15,

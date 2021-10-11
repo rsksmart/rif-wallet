@@ -7,10 +7,13 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
+    "test:watch": "jest --watch",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "postinstall": "rn-nodeify --install buffer,events,stream --hack"
   },
   "dependencies": {
+    "@react-navigation/native": "^6.0.4",
+    "@react-navigation/stack": "^6.0.9",
     "@rsksmart/rif-id-ethr-did": "^0.1.0",
     "@rsksmart/rif-id-mnemonic": "^0.1.0",
     "buffer": "^4.9.2",
@@ -19,7 +22,9 @@
     "process": "^0.11.10",
     "react": "17.0.2",
     "react-native": "0.65.1",
+    "react-native-gesture-handler": "^1.10.3",
     "react-native-get-random-values": "^1.7.0",
+    "react-native-safe-area-context": "^3.3.2",
     "readable-stream": "^1.0.33",
     "stream-browserify": "^1.0.0"
   },
@@ -27,6 +32,10 @@
     "@babel/core": "^7.12.9",
     "@babel/runtime": "^7.12.5",
     "@react-native-community/eslint-config": "^2.0.0",
+    "@rsksmart/rlogin-eip1193-types": "^1.0.0-beta.7",
+    "@testing-library/jest-native": "^4.0.2",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/react-native": "^7.2.0",
     "@types/jest": "^26.0.23",
     "@types/react-native": "^0.65.0",
     "@types/react-test-renderer": "^17.0.1",
@@ -51,6 +60,9 @@
       "jsx",
       "json",
       "node"
+    ],
+    "setupFilesAfterEnv": [
+      "@testing-library/jest-native/extend-expect"
     ]
   },
   "react-native": {
