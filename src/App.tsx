@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, ScrollView } from 'react-native'
 import { NavigationProp, ParamListBase } from '@react-navigation/native'
 
 import Button from './components/button'
@@ -60,7 +60,7 @@ const WalletApp: React.FC<Interface> = ({ route }) => {
     })
 
   return (
-    <View>
+    <ScrollView>
       <Header1>sWallet</Header1>
       <View style={styles.section}>
         <Button onPress={createWallet} title="Create RIF Smart Wallet" />
@@ -85,7 +85,7 @@ const WalletApp: React.FC<Interface> = ({ route }) => {
       <View style={styles.section}>
         <Button onPress={resetState} title="reset" />
       </View>
-    </View>
+    </ScrollView>
   )
 }
 

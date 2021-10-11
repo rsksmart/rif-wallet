@@ -9,6 +9,7 @@
  */
 
 import React from 'react'
+import { SafeAreaView, StatusBar, ScrollView } from 'react-native'
 import 'react-native-gesture-handler'
 
 // nodify
@@ -18,7 +19,12 @@ import './shim'
 import RootNavigation from './src/RootNavigation'
 
 const App = () => {
-  return <RootNavigation />
+  return (
+    <SafeAreaView>
+      <StatusBar />
+      <RootNavigation />
+    </SafeAreaView>
+  )
 }
 
 export default App
