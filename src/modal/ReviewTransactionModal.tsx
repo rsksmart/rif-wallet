@@ -1,29 +1,47 @@
 import React, { useState } from 'react'
 import { Modal, StyleSheet, TextInput, View } from 'react-native'
+import { Transaction } from '@rsksmart/rlogin-eip1193-types'
+
 import Button from '../components/button'
 import { Header2, Paragraph } from '../components/typography'
-import { TransactionPartial } from '../types/transaction'
 
 export interface ReviewTransactionDataI {
-  transaction: TransactionPartial
-  handleConfirm: (transaction: TransactionPartial | null) => void
+  transaction: Transaction
+  handleConfirm: (transaction: Transaction | null) => void
+}
+
+/**
+ * Used for UI only to make editing transactions easier. Allows for
+ * gasPrice to be '0.', '0.0', or blank, as the user types it in.
+ */
+interface StringTransaction {
+  to: string
+  from?: string
+  value?: string | number
+  data?: string
+  gasLimit: string // string for easier editing below
+  gasPrice: string
 }
 
 interface Interface {
-  transaction: TransactionPartial
-  closeModal: (transaction: TransactionPartial | null) => void
+  transaction: Transaction
+  closeModal: (transaction: Transaction | null) => void
 }
 
 const ReviewTransactionModal: React.FC<Interface> = ({
   transaction,
   closeModal,
 }) => {
-  const [updateTransaction, setUpdateTransaction] =
-    useState<TransactionPartial>({
-      ...transaction,
-      gasLimit: '10000',
-      gasPrice: '0.068',
-    })
+  const [updateTransaction, setUpdateTransaction] = useState<StringTransaction>(
+    {
+      to: transaction.to,
+      from: transaction.from,
+      value: transaction.value,
+      data: transaction.data,
+      gasLimit: transaction.gasLimit ? transaction.gasLimit.toString() : '',
+      gasPrice: transaction.gasPrice ? transaction.gasPrice.toString() : '',
+    },
+  )
 
   // gasLimit can be a number or empty (temporarly)
   const changeGasLimit = (gasLimit: string) => {
@@ -43,6 +61,15 @@ const ReviewTransactionModal: React.FC<Interface> = ({
         gasPrice: gasPrice,
       })
     }
+  }
+
+  // convert from string to Transaction and pass out of component
+  const confirmTransaction = () => {
+    closeModal({
+      ...updateTransaction,
+      gasLimit: parseInt(updateTransaction.gasLimit, 10),
+      gasPrice: parseFloat(updateTransaction.gasPrice),
+    })
   }
 
   return (
@@ -94,7 +121,7 @@ const ReviewTransactionModal: React.FC<Interface> = ({
               <View style={styles.column}>
                 <Button
                   title="Confirm"
-                  onPress={() => closeModal(updateTransaction)}
+                  onPress={confirmTransaction}
                   testID="Confirm.Button"
                 />
               </View>

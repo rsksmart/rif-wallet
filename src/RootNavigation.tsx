@@ -7,16 +7,14 @@ import { StyleSheet, View } from 'react-native'
 import ReviewTransactionModal, {
   ReviewTransactionDataI,
 } from './modal/ReviewTransactionModal'
-import { TransactionPartial } from './types/transaction'
+import { Transaction } from '@rsksmart/rlogin-eip1193-types'
 
 interface Interface {}
 
 const RootNavigation: React.FC<Interface> = () => {
   const [reviewTransaction, setReviewTransaction] =
     useState<null | ReviewTransactionDataI>(null)
-  const closeReviewTransactionModal = (
-    transaction: TransactionPartial | null,
-  ) => {
+  const closeReviewTransactionModal = (transaction: Transaction | null) => {
     reviewTransaction?.handleConfirm(transaction)
     setReviewTransaction(null)
   }

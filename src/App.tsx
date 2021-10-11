@@ -7,7 +7,7 @@ import { Header1, Header2, Paragraph } from './components/typography'
 import { Account, Wallet } from './lib/core'
 
 import { stateInterface, initialState } from './state'
-import { TransactionPartial } from './types/transaction'
+import { Transaction } from '@rsksmart/rlogin-eip1193-types'
 
 interface Interface {
   navigation: NavigationProp<ParamListBase>
@@ -40,18 +40,22 @@ const WalletApp: React.FC<Interface> = ({ route }) => {
   }
 
   const reviewTransaction = () => {
-    const transaction: TransactionPartial = {
+    // to/from/value/data should be provided by the user and gases should be estimated
+    const transaction: Transaction = {
       to: '0x123456',
       from: '0x987654',
       value: 1000,
+      gasLimit: 10000,
+      gasPrice: 0.067,
     }
+
     route.params.reviewTransaction({
       transaction,
       handleConfirm: transactionConfirmed,
     })
   }
 
-  const transactionConfirmed = (transaction: TransactionPartial | null) =>
+  const transactionConfirmed = (transaction: Transaction | null) =>
     setState({
       ...state,
       confirmResponse: transaction

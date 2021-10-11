@@ -1625,6 +1625,14 @@
     lodash "^4.17.15"
     randombytes "^2.1.0"
 
+"@rsksmart/rlogin-eip1193-types@^1.0.0-beta.7":
+  version "1.0.0-beta.7"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rlogin-eip1193-types/-/rlogin-eip1193-types-1.0.0-beta.7.tgz#70f8075bde04dcb2f425fe0f46f73a9cca6cbd5d"
+  integrity sha512-MAjnK/nPpJBpTdc64j+D+gUr/jGdaLNPtvRVKRyg3gtz10/SLR31tEyt2/zmPlLEIagu5r0lvPaQx3P19JL3jA==
+  dependencies:
+    ethjs-provider-http "^0.1.6"
+    ethjs-query "^0.3.8"
+
 "@sideway/address@^4.1.0":
   version "4.1.2"
   resolved "https://registry.npmjs.org/@sideway/address/-/address-4.1.2.tgz"

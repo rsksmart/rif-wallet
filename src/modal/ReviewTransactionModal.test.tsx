@@ -2,12 +2,16 @@ import React from 'react'
 import { render, fireEvent } from '@testing-library/react-native'
 
 import ReviewTransactionModal from './ReviewTransactionModal'
+import { Transaction } from '@rsksmart/rlogin-eip1193-types'
 
 describe('ReviewTransactionModal', () => {
-  const transaction = {
+  const transaction: Transaction = {
     to: '0x123',
     from: '0x456',
+    data: '',
     value: 1000,
+    gasLimit: 10000,
+    gasPrice: 0.068,
   }
 
   it('renders', () => {
@@ -33,11 +37,7 @@ describe('ReviewTransactionModal', () => {
       />,
     )
     fireEvent.press(getByTestId('Confirm.Button'))
-    expect(closeModal).toBeCalledWith({
-      ...transaction,
-      gasLimit: '10000',
-      gasPrice: '0.068',
-    })
+    expect(closeModal).toBeCalledWith(transaction)
   })
 
   it('renturns nothing if cancelled', () => {
@@ -68,8 +68,8 @@ describe('ReviewTransactionModal', () => {
     fireEvent.press(getByTestId('Confirm.Button'))
     expect(closeModal).toBeCalledWith({
       ...transaction,
-      gasLimit: '20',
-      gasPrice: '0.123',
+      gasLimit: 20,
+      gasPrice: 0.123,
     })
   })
 })
