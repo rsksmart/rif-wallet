@@ -69,6 +69,8 @@ const ReviewTransactionModal: React.FC<Interface> = ({
                   style={styles.textInput}
                   onChangeText={changeGasLimit}
                   keyboardType="number-pad"
+                  placeholder="gas limit"
+                  testID="gasLimit.TextInput"
                 />
               </View>
             </View>
@@ -82,6 +84,8 @@ const ReviewTransactionModal: React.FC<Interface> = ({
                   style={styles.textInput || ''}
                   onChangeText={changeGasPrice}
                   keyboardType="number-pad"
+                  placeholder="gas price"
+                  testID="gasPrice.TextInput"
                 />
               </View>
             </View>
@@ -91,10 +95,15 @@ const ReviewTransactionModal: React.FC<Interface> = ({
                 <Button
                   title="Confirm"
                   onPress={() => closeModal(updateTransaction)}
+                  testID="Confirm.Button"
                 />
               </View>
               <View style={styles.column}>
-                <Button title="Cancel" onPress={() => closeModal(null)} />
+                <Button
+                  title="Cancel"
+                  onPress={() => closeModal(null)}
+                  testID="Cancel.Button"
+                />
               </View>
             </View>
           </View>

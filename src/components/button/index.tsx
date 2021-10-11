@@ -11,14 +11,16 @@ interface Interface {
   title: string
   onPress?: (event: GestureResponderEvent) => void | null
   disabled?: boolean
+  testID?: string
 }
 
-const Button: React.FC<Interface> = ({ title, onPress, disabled }) => {
+const Button: React.FC<Interface> = ({ title, onPress, disabled, testID }) => {
   return (
     <TouchableOpacity
       style={styles.button}
       onPress={onPress}
-      disabled={disabled}>
+      disabled={disabled}
+      testID={testID}>
       <View>
         <Text style={disabled ? styles.textDisabled : styles.text}>
           {title}
