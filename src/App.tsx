@@ -14,7 +14,7 @@ interface Interface {
   route: any
 }
 
-const WalletApp: React.FC<Interface> = ({ route }) => {
+const WalletApp: React.FC<Interface> = ({ route, navigation }) => {
   // App's state:
   const [state, setState] = useState<stateInterface>(initialState)
 
@@ -92,6 +92,13 @@ const WalletApp: React.FC<Interface> = ({ route }) => {
       </View>
 
       <View style={styles.section}>
+        <Button
+          onPress={() => navigation.navigate('ChooseSourceAddressScreen')}
+          title="Open Send Transaction"
+        />
+      </View>
+
+      <View style={styles.section}>
         <Button onPress={resetState} title="reset" />
       </View>
     </ScrollView>
@@ -112,6 +119,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC',
   },
+
 })
 
 export default WalletApp
