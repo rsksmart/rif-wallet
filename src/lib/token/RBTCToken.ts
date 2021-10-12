@@ -22,14 +22,6 @@ class RBTCToken extends BaseToken implements IToken {
     return 'rbtc'
   }
 
-  public async approve(): Promise<ContractTransaction> {
-    throw new Error("This token doesn't requires approval")
-  }
-
-  public async needsApproval(): Promise<boolean> {
-    return false
-  }
-
   public async decimals(): Promise<number> {
     return 18
   }
@@ -44,10 +36,6 @@ class RBTCToken extends BaseToken implements IToken {
     const balance = await this.signer!.getBalance()
 
     return balance.div(tenPow(decimals))
-  }
-
-  public async allowance(): Promise<BigNumber> {
-    throw new Error("This token doesn't allowance")
   }
 
   public async transfer(

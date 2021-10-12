@@ -65,27 +65,6 @@ describe('ERC20 token', () => {
     expect(type).toBe('erc20')
   })
 
-  test('approve amount', async () => {
-    const to = await getSigner(1)
-    const toAddress = await to.getAddress()
-    const amountToApprove = BigNumber.from(100)
-
-    const needsApproval = await erc20Token!.needsApproval(
-      toAddress,
-      amountToApprove,
-    )
-
-    const tx = await erc20Token!.approve(toAddress, amountToApprove)
-
-    await tx.wait()
-
-    const allowance = await erc20Token!.allowance(toAddress)
-
-    expect(allowance.eq(amountToApprove)).toBe(true)
-    expect(needsApproval).toBe(true)
-    expect(tx.hash).toBeDefined()
-  })
-
   test('get balance', async () => {
     const result = await erc20Token!.balance()
 
@@ -93,22 +72,18 @@ describe('ERC20 token', () => {
   })
 
   test('transfer', async () => {
-    const account = await getSigner()
-    const accountAddress = await account.getAddress()
-
+    const from = await getSigner()
+    const fromAddress = await from.getAddress()
     const to = await getSigner(1)
     const toAddress = await to.getAddress()
 
     const amountToTransfer = BigNumber.from(100)
 
-    const approveTx = await erc20Token!.approve(
-      accountAddress,
-      amountToTransfer,
-    )
+    const sender = ERC20__factory.connect(tokenAddress, from)
 
-    await approveTx.wait()
+    const balanceSender = await sender.balanceOf(fromAddress)
 
-    const allowance = await erc20Token!.allowance(accountAddress)
+    expect(balanceSender.gte(amountToTransfer)).toBe(true)
 
     const transferTx = await erc20Token!.transfer(toAddress, amountToTransfer)
 
@@ -118,7 +93,6 @@ describe('ERC20 token', () => {
 
     const balanceRecipient = await recipient.balanceOf(toAddress)
 
-    expect(allowance.eq(amountToTransfer)).toBe(true)
     expect(balanceRecipient.eq(amountToTransfer)).toBe(true)
   })
 })

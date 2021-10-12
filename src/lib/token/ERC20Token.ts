@@ -30,25 +30,6 @@ class ERC20Token extends BaseToken implements IToken {
     return 'erc20'
   }
 
-  public async approve(
-    address: string,
-    amount: BigNumberish,
-  ): Promise<ContractTransaction> {
-    return this.tokenContract.approve(address, amount)
-  }
-
-  public async needsApproval(
-    address: string,
-    amount: BigNumberish,
-  ): Promise<boolean> {
-    const signerAddress = await this.signer!.getAddress()
-    const allowance = await this.tokenContract.allowance(signerAddress, address)
-
-    const hasEnoughAllowance = allowance.gte(amount)
-
-    return !hasEnoughAllowance
-  }
-
   public async decimals(): Promise<number> {
     return this.tokenContract.decimals()
   }
@@ -67,20 +48,12 @@ class ERC20Token extends BaseToken implements IToken {
     return balance.div(tenPow(decimals))
   }
 
-  public async allowance(expenderAddress: string): Promise<BigNumber> {
-    const account = await this.account()
-
-    return this.tokenContract.allowance(account, expenderAddress)
-  }
-
   public async transfer(
     recipientAddress: string,
     amount: BigNumberish,
     options?: ITransferOptions,
   ): Promise<ContractTransaction> {
-    const account = await this.account()
-
-    return this.tokenContract.transferFrom(account, recipientAddress, amount, {
+    return this.tokenContract.transfer(recipientAddress, amount, {
       ...options,
     })
   }

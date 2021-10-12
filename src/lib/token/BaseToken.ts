@@ -37,15 +37,9 @@ export interface ITransferOptions {
 
 export interface IToken {
   getType: () => TokenType
-  approve: (
-    address: string,
-    amount: BigNumberish,
-  ) => Promise<ContractTransaction>
-  needsApproval: (address: string, amount: BigNumberish) => Promise<boolean>
   decimals: () => Promise<number>
   symbol: () => Promise<string>
   balance: () => Promise<BigNumber>
-  allowance: (expenderAddress: string) => Promise<BigNumber>
   transfer: (
     recipientAddress: string,
     amount: BigNumberish,
