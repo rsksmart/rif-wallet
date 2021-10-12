@@ -1633,6 +1633,16 @@
     ethjs-provider-http "^0.1.6"
     ethjs-query "^0.3.8"
 
+"@rsksmart/rsk-contract-metadata@^1.0.15":
+  version "1.0.15"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rsk-contract-metadata/-/rsk-contract-metadata-1.0.15.tgz#e30fde19ca05ba1fd2439c42963a666f09456524"
+  integrity sha512-Sp7lfpli7JM0h1i0VqWyZyQA8qa68dB92tnT/9FgV1IdZWIxW1MtSX4i9tzjILwdiy88aR8iOMJqarDmbJVq5g==
+
+"@rsksmart/rsk-testnet-contract-metadata@^1.0.11":
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rsk-testnet-contract-metadata/-/rsk-testnet-contract-metadata-1.0.11.tgz#625923c57c4701177a9040e6f896856e8757d373"
+  integrity sha512-maQCHIpKOvzGad53VQk5agbIEv2xkhiKayHocjuWXjhjYyFG6zyyXkjglFNbHGVjJm7NAVgBd4lqA9cHFHoL0w==
+
 "@sideway/address@^4.1.0":
   version "4.1.2"
   resolved "https://registry.npmjs.org/@sideway/address/-/address-4.1.2.tgz"

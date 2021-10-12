@@ -3,6 +3,17 @@ import { StyleSheet, View, ScrollView, TextInput, Picker } from 'react-native'
 import { NavigationProp, ParamListBase } from '@react-navigation/native'
 
 import { Header1, Paragraph } from '../components/typography'
+import {
+  tokensMetadataTestnet,
+  tokensMetadataMainnet,
+} from '../lib/tokenMetadata'
+const isMainnet = false
+const metadataTokens = Object.entries(
+  isMainnet ? tokensMetadataMainnet : tokensMetadataTestnet,
+).map(keyValue => {
+  // @ts-ignore
+  return { address: keyValue[0], ...keyValue[1] }
+})
 import Button from '../components/button'
 
 interface Interface {
@@ -17,7 +28,7 @@ const ChooseSourceAddressScreen: React.FC<Interface> = ({
   const [to, setTo] = useState('')
   const [token, setToken] = useState('')
   const [amount, setAmount] = useState('')
-
+  console.log({ tokensMetadataTestnet })
   return (
     <ScrollView>
       <Header1>Transfer Money</Header1>
@@ -45,14 +56,21 @@ const ChooseSourceAddressScreen: React.FC<Interface> = ({
           selectedValue={token}
           style={{ height: 50, width: 150 }}
           onValueChange={(itemValue, itemIndex) => setToken(itemValue)}>
-          <Picker.Item label="RBTC" value="RBTC" />
-          <Picker.Item label="RIF" value="RIF" />
+          {metadataTokens.map(token => (
+            <Picker.Item label={token.symbol} value={token.symbol} />
+          ))}
         </Picker>
       </View>
 
       <View style={styles.section}>
         <Button
-          onPress={() => navigation.navigate('ChooseTargetAddressScreen',  { amount, to, token})}
+          onPress={() =>
+            navigation.navigate('ChooseTargetAddressScreen', {
+              amount,
+              to,
+              token,
+            })
+          }
           title="Next"
         />
       </View>
