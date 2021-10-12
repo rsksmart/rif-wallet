@@ -21,10 +21,7 @@ interface Interface {
   route: any
 }
 
-const ChooseSourceAddressScreen: React.FC<Interface> = ({
-  route,
-  navigation,
-}) => {
+const ChooseSourceAddressScreen: React.FC<Interface> = ({ navigation }) => {
   const [to, setTo] = useState('')
   const [token, setToken] = useState('')
   const [amount, setAmount] = useState('')
@@ -55,7 +52,7 @@ const ChooseSourceAddressScreen: React.FC<Interface> = ({
         <Picker
           selectedValue={token}
           style={{ height: 50, width: 150 }}
-          onValueChange={(itemValue, itemIndex) => setToken(itemValue)}>
+          onValueChange={itemValue => setToken(itemValue)}>
           {metadataTokens.map(token => (
             <Picker.Item label={token.symbol} value={token.symbol} />
           ))}

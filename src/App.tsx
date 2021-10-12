@@ -119,7 +119,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC',
   },
-
 })
 
 export default WalletApp

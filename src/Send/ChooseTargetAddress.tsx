@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { StyleSheet, View, ScrollView, TextInput } from 'react-native'
+import React from 'react'
+import { StyleSheet, View, ScrollView } from 'react-native'
 import { NavigationProp, ParamListBase } from '@react-navigation/native'
 
 import { Header1, Paragraph } from '../components/typography'
@@ -11,9 +11,6 @@ interface Interface {
 }
 
 const ChooseTargetAddressScreen: React.FC<Interface> = ({ route }) => {
-  const [to, setTo] = useState('')
-  const [amount, setAmount] = useState('')
-
   return (
     <ScrollView>
       <Header1>Transfer Money</Header1>
