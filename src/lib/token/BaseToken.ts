@@ -51,6 +51,7 @@ export interface IToken {
     amount: BigNumberish,
     options?: ITransferOptions,
   ) => Promise<ContractTransaction>
+  logo: string
 }
 
 export const ten = BigNumber.from(10)

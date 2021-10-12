@@ -18,7 +18,7 @@ class ERC20Token extends BaseToken implements IToken {
   private tokenContract: ERC20Type
 
   constructor(
-    address: string,
+    public address: string,
     providerOrSigner: providers.Provider | Signer,
     logo: string,
   ) {
@@ -80,12 +80,9 @@ class ERC20Token extends BaseToken implements IToken {
   ): Promise<ContractTransaction> {
     const account = await this.account()
 
-    return this.tokenContract.transferFrom(
-      account,
-      recipientAddress,
-      amount,
-      options,
-    )
+    return this.tokenContract.transferFrom(account, recipientAddress, amount, {
+      ...options,
+    })
   }
 }
 
