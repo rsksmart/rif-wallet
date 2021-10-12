@@ -41,7 +41,8 @@ const WalletApp: React.FC<Interface> = ({ route, navigation }) => {
   }
 
   const seeSmartWallet = (account: Account) => {
-    navigation.navigate('SmartWallet')
+    console.log(account);
+    (navigation as any).push('SmartWallet', { account })
   }
 
   const resetState = () => {
@@ -83,7 +84,10 @@ const WalletApp: React.FC<Interface> = ({ route, navigation }) => {
       <View style={styles.section}>
         <Header2>Accounts:</Header2>
         {state.accounts.map((account: Account, index: number) => {
-          return <><Paragraph key={index}>{account.address}</Paragraph><Button title="See smart wallet" onPress={() => seeSmartWallet(account)} /></>
+          return <View key={index}>
+            <Paragraph>{account.address}</Paragraph>
+            <Button title="See smart wallet" onPress={() => seeSmartWallet(account)} />
+          </View>
         })}
         <Button onPress={addAccount} title="Add account" />
       </View>
