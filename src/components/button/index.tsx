@@ -9,7 +9,7 @@ import {
 
 interface Interface {
   title: string
-  onPress?: (event: GestureResponderEvent) => void | null
+  onPress?: (event: GestureResponderEvent) => any
   disabled?: boolean
   testID?: string
 }
