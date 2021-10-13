@@ -11,7 +11,7 @@ class Wallet {
   }
 
   static create(): Wallet {
-    const mnemonic = 'example fire release usual noble episode crew kitten way zone emotion bus since old depend' // generateMnemonic(24)
+    const mnemonic = generateMnemonic(24)
     const wallet = new Wallet({ mnemonic })
     return wallet
   }

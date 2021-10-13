@@ -26,7 +26,7 @@ class Account extends Wallet {
   }
 
   getAddress(): Promise<string> {
-    return Promise.resolve(this.address)
+    return Promise.resolve(this.address.toLowerCase())
   }
 
   async sendTransaction(transactionRequest: TransactionRequest): Promise<TransactionResponse> {
