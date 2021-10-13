@@ -14,7 +14,7 @@ interface Interface {
   route: any
 }
 
-const WalletApp: React.FC<Interface> = ({ route }) => {
+const WalletApp: React.FC<Interface> = ({ route, navigation }) => {
   // App's state:
   const [state, setState] = useState<stateInterface>(initialState)
 
@@ -89,6 +89,24 @@ const WalletApp: React.FC<Interface> = ({ route }) => {
         {componentState.confirmResponse && (
           <Paragraph>{componentState.confirmResponse}</Paragraph>
         )}
+      </View>
+
+      <View style={styles.section}>
+        <Button
+          onPress={() => {
+            navigation.navigate('SendTransaction')
+          }}
+          title="Send Transaction"
+        />
+      </View>
+
+      <View style={styles.section}>
+        <Button
+          onPress={() => {
+            navigation.navigate('TransactionReceived')
+          }}
+          title=" Transaction Received"
+        />
       </View>
 
       <View style={styles.section}>
