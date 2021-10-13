@@ -18,6 +18,13 @@ class Account extends Wallet {
     this.queuedTransactions = []
   }
 
+  nextTransaction(): QueuedTransaction {
+    if (this.queuedTransactions.length === 0) {
+      throw new Error()
+    }
+    return this.queuedTransactions[0]
+  }
+
   getAddress(): Promise<string> {
     return Promise.resolve(this.address)
   }
