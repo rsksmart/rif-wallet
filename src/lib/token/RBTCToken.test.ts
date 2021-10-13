@@ -6,6 +6,7 @@ const Config = {
 }
 
 const TEST_TOKEN_DECIMALS = 18
+const CHAIN_ID = 31
 
 const getJsonRpcProvider = async (): Promise<providers.JsonRpcProvider> => {
   return new providers.JsonRpcProvider(Config.BLOCKCHAIN_HTTP_URL)
@@ -22,13 +23,13 @@ describe('RBTC token', () => {
   beforeEach(async () => {
     const account = await getSigner()
 
-    rbtcToken = new RBTCToken(account, 'logo.jpg')
+    rbtcToken = new RBTCToken(account, 'logo.jpg', CHAIN_ID)
   })
 
   test('get symbol', async () => {
     const symbol = await rbtcToken!.symbol()
 
-    expect(symbol).toBe('RBTC')
+    expect(symbol).toBe('TRBTC')
   })
 
   test('get logo', async () => {

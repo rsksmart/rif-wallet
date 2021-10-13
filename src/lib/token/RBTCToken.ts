@@ -6,10 +6,15 @@ import {
   tenPow,
   TokenType,
 } from './BaseToken'
+import { MAINNET_CHAINID } from './tokenMetadata'
 
 class RBTCToken extends BaseToken implements IToken {
-  constructor(signer: Signer, logo: string) {
+  public chainId: number
+
+  constructor(signer: Signer, logo: string, chainId: number) {
     super(signer, logo)
+
+    this.chainId = chainId
   }
 
   public getType(): TokenType {
@@ -21,7 +26,7 @@ class RBTCToken extends BaseToken implements IToken {
   }
 
   public async symbol(): Promise<string> {
-    return 'RBTC'
+    return this.chainId === MAINNET_CHAINID ? 'RBTC' : 'TRBTC'
   }
 
   public async balance(): Promise<BigNumber> {

@@ -26,7 +26,7 @@ export interface ITokenMetadata {
   }
 }
 
-const MAINNET_CHAINID = 30
+export const MAINNET_CHAINID = 30
 
 export const imagesUrlMainnet =
   'https://raw.githubusercontent.com/rsksmart/rsk-testnet-contract-metadata/master/images'
@@ -60,7 +60,7 @@ export const getAllTokens = async (signer: Signer): Promise<IToken[]> => {
   )
 
   const rbtcLogo = chainId === MAINNET_CHAINID ? rbtcMainnet : rbtcTestnet
-  const rbtc = new RBTCToken(signer, rbtcLogo)
+  const rbtc = new RBTCToken(signer, rbtcLogo, chainId)
 
   const tokens: IToken[] = []
 
