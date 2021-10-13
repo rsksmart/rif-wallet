@@ -24,7 +24,7 @@ export class BaseToken {
     public logo: string,
   ) {}
 
-  protected async account() {
+  protected async getAddress() {
     return await this.signer!.getAddress()
   }
 }
