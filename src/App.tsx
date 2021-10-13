@@ -9,6 +9,7 @@ import { Account, Wallet } from './lib/core'
 import { Transaction } from '@rsksmart/rlogin-eip1193-types'
 import { WalletProviderContext } from './state/AppContext'
 import { removeStorage, StorageKeys } from './storage'
+import CopyComponent from './components/copy'
 
 interface Interface {
   navigation: NavigationProp<ParamListBase>
@@ -69,7 +70,7 @@ const WalletApp: React.FC<Interface> = ({ route, navigation }) => {
       <Header1>sWallet</Header1>
       <View style={styles.section}>
         <Header2>Wallet:</Header2>
-        <Paragraph>{wallet?.getMnemonic}</Paragraph>
+        {wallet && <CopyComponent value={wallet.getMnemonic} />}
       </View>
 
       <View style={styles.section}>
@@ -77,7 +78,7 @@ const WalletApp: React.FC<Interface> = ({ route, navigation }) => {
         {accounts.map((account: Account, index: number) => {
           return (
             <View key={index}>
-              <Paragraph>{account.address}</Paragraph>
+              <CopyComponent value={account.address} />
               <Button
                 title="See smart wallet"
                 onPress={() => seeSmartWallet(account)}
