@@ -6,7 +6,6 @@ import Button from './components/button'
 import { Header1, Header2, Paragraph } from './components/typography'
 import { Account, Wallet } from './lib/core'
 
-import { stateInterface, initialState } from './state'
 import { Transaction } from '@rsksmart/rlogin-eip1193-types'
 import { WalletProviderContext } from './state/AppContext'
 
@@ -16,9 +15,6 @@ interface Interface {
 }
 
 const WalletApp: React.FC<Interface> = ({ route, navigation }) => {
-  // App's state:
-  const [state, setState] = useState<stateInterface>(initialState)
-
   // Temporary component state:
   interface componentStateI {
     confirmResponse?: string
@@ -27,30 +23,21 @@ const WalletApp: React.FC<Interface> = ({ route, navigation }) => {
   const [componentState, setComponentState] = useState<componentStateI>({
     confirmResponse: undefined,
   })
+
   const [wallet, setWallet] = useState<Wallet | undefined>(undefined)
+  const [accounts, setAccounts] = useState<Account[]>([])
 
   const context = useContext(WalletProviderContext)
   useEffect(() => {
-    console.log('setting wallet...')
     setWallet(context.wallet)
   }, [context.wallet, wallet])
 
   const addAccount = () => {
-    const account = state.wallet.getAccount(state.accounts.length)
-    setState({
-      ...state,
-      accounts: state.accounts.concat(account),
-    })
+    wallet && setAccounts(accounts.concat(wallet?.getAccount(accounts.length)))
   }
 
-  const seeSmartWallet = (account: Account) => {
-    // eslint-disable-next-line no-extra-semi
-    ;(navigation as any).push('SmartWallet', { account })
-  }
-
-  const resetState = () => {
-    setState(initialState)
-  }
+  const seeSmartWallet = (account: Account) =>
+    navigation.navigate('SmartWallet', { account })
 
   const reviewTransaction = () => {
     // to/from/value/data should be provided by the user and gases should be estimated
@@ -86,7 +73,7 @@ const WalletApp: React.FC<Interface> = ({ route, navigation }) => {
 
       <View style={styles.section}>
         <Header2>Accounts:</Header2>
-        {state.accounts.map((account: Account, index: number) => {
+        {accounts.map((account: Account, index: number) => {
           return (
             <View key={index}>
               <Paragraph>{account.address}</Paragraph>
@@ -105,10 +92,6 @@ const WalletApp: React.FC<Interface> = ({ route, navigation }) => {
         {componentState.confirmResponse && (
           <Paragraph>{componentState.confirmResponse}</Paragraph>
         )}
-      </View>
-
-      <View style={styles.section}>
-        <Button onPress={resetState} title="reset" />
       </View>
     </ScrollView>
   )
