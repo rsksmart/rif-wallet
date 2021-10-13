@@ -35,7 +35,9 @@ const WalletApp: React.FC<Interface> = ({ route, navigation }) => {
   }, [context.wallet, wallet])
 
   const addAccount = () => {
-    wallet && setAccounts(accounts.concat(wallet?.getAccount(accounts.length)))
+    if (!!wallet) {
+      wallet?.getAccount(accounts.length).then(account => setAccounts(accounts.concat(account)))
+    }
   }
 
   const seeSmartWallet = (account: Account) =>

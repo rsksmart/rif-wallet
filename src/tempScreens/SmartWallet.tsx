@@ -25,6 +25,7 @@ export const rifContract = new Contract(
 )
 
 const SmartWalletComponent = ({ route }: { route: any }) => {
+  const [eoaBalance, setEoaBalance] = useState<null | BigNumber>(null)
   const [smartWalletAddress, setSmartWalletAddress] = useState('')
   const [smartWalletCode, setSmartWalletCode] = useState('')
 
@@ -41,31 +42,27 @@ const SmartWalletComponent = ({ route }: { route: any }) => {
   const rif = rifContract.connect(account)
 
   const getInfo = async () => {
-    const address = await smartWalletFactory.getSmartAddress()
+    const address = await account.getSmartAddress()
     console.log('smart address', address)
     setSmartWalletAddress(address)
 
     Promise.all([
+      account.getBalance().then(setEoaBalance),
       smartWalletFactory.getCodeInSmartWallet().then(setSmartWalletCode),
       rif.balanceOf(address).then(setRifBalance),
     ])
   }
 
   const deploy = async () => {
-    const txPromise = smartWalletFactory.createSmartWallet()
-    const nextTx = account.nextTransaction()
-    console.log('nextTx', nextTx)
-    nextTx.confirm()
+    const txPromise = await account.deploy()
     setSmartWalletDeployTx(await txPromise)
   }
 
   const sendRif = async () => {
-    const data = rif.interface.encodeFunctionData('transfer', [
+    const txPromise = rif.transfer(
       '0x248b320687ebf655f9ee7f62f0388c79fbb7b2f4',
       BigNumber.from('10000000000000000000'),
-    ])
-    const smartWallet = new SmartWallet(smartWalletAddress, account)
-    const txPromise = smartWallet.directExecute(rif.address, data)
+    )
     console.log(txPromise)
     const nextTx = account.nextTransaction()
     console.log('nextTx', nextTx)
@@ -84,6 +81,7 @@ const SmartWalletComponent = ({ route }: { route: any }) => {
       <Header2>Smart Wallet</Header2>
       <Paragraph>EOA: {account.address}</Paragraph>
       <Button title="Get info" onPress={getInfo} />
+      <Paragraph>RBTC Balance (EOA): {eoaBalance && eoaBalance.toString()}</Paragraph>
       <Paragraph>Smart wallet address: {smartWalletAddress}</Paragraph>
       <Paragraph>Smart wallet code: {smartWalletCode}</Paragraph>
       <Paragraph>

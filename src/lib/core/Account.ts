@@ -1,9 +1,11 @@
-import { Wallet } from 'ethers'
+import { Wallet, Signer } from 'ethers'
 import {
   TransactionRequest,
   TransactionResponse,
 } from '@ethersproject/abstract-provider'
 import { jsonRpcProvider } from '../jsonRpcProvider'
+import { SmartWalletFactory } from './smartWallet/smart-wallet-factory'
+import { SmartWallet } from './smartWallet/smart-wallet'
 
 type QueuedTransaction = {
   id: number
@@ -12,13 +14,25 @@ type QueuedTransaction = {
 }
 
 class Account extends Wallet {
-  idCount: number
+  idCount: number = 0
   queuedTransactions: QueuedTransaction[]
+  eoaWallet: Signer
+  smartWallet: SmartWallet
+  smartWalletFactory: SmartWalletFactory
 
-  constructor({ privateKey }: { privateKey: string }) {
+  constructor({ privateKey, wallet, smartAddress, smartWalletFactory }: { privateKey: string, wallet: Signer, smartAddress: string, smartWalletFactory: SmartWalletFactory }) {
     super(privateKey, jsonRpcProvider)
-    this.idCount = 0
+    this.eoaWallet = wallet
     this.queuedTransactions = []
+    this.smartWallet = new SmartWallet(smartAddress, wallet)
+    this.smartWalletFactory = smartWalletFactory
+  }
+
+  static async create ({ privateKey }: { privateKey: string }) {
+    const wallet = new Wallet(privateKey, jsonRpcProvider)
+    const smartWalletFactory = new SmartWalletFactory(wallet)
+    const smartAddress = await smartWalletFactory.getSmartAddress()
+    return new Account({ privateKey, wallet, smartAddress, smartWalletFactory })
   }
 
   nextTransaction(): QueuedTransaction {
@@ -28,9 +42,11 @@ class Account extends Wallet {
     return this.queuedTransactions[0]
   }
 
-  getAddress(): Promise<string> {
-    return Promise.resolve(this.address.toLowerCase())
+  getSmartAddress(): Promise<string> {
+    return Promise.resolve(this.smartWallet.smartWalletContract.address)
   }
+
+  deploy = () => this.smartWalletFactory.createSmartWallet()
 
   async sendTransaction(
     transactionRequest: TransactionRequest,
@@ -51,7 +67,14 @@ class Account extends Wallet {
     // because the confirm() is only found using nextTransaction()
     this.queuedTransactions.shift()
 
-    const signedTransaction = super.sendTransaction(transactionRequest)
+    const filteredTx = Object.keys(transactionRequest)
+      .filter(key => !['to', 'data'].includes(key))
+      .reduce((obj: any, key: any) => {
+        obj[key] = (transactionRequest as any)[key];
+        return obj;
+      }, {});
+
+    const signedTransaction = this.smartWallet.directExecute(transactionRequest.to, transactionRequest.data, filteredTx)
 
     return signedTransaction
   }
