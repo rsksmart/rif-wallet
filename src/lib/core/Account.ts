@@ -1,5 +1,8 @@
-import { Wallet, Signer } from 'ethers'
-import { Provider, TransactionRequest, TransactionResponse } from '@ethersproject/abstract-provider'
+import { Wallet } from 'ethers'
+import {
+  TransactionRequest,
+  TransactionResponse,
+} from '@ethersproject/abstract-provider'
 import { jsonRpcProvider } from '../jsonRpcProvider'
 
 type QueuedTransaction = {
@@ -29,7 +32,9 @@ class Account extends Wallet {
     return Promise.resolve(this.address.toLowerCase())
   }
 
-  async sendTransaction(transactionRequest: TransactionRequest): Promise<TransactionResponse> {
+  async sendTransaction(
+    transactionRequest: TransactionRequest,
+  ): Promise<TransactionResponse> {
     // here we queue the transaction
     const id = this.idCount++
     await new Promise((resolve: (reason?: any) => void) => {

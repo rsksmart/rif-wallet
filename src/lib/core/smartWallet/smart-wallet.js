@@ -1,7 +1,8 @@
 import { Contract } from 'ethers'
 import SmartWalletFactoryABI from './SmartWalletABI'
 
-const createSmartWalletContract = (address) => new Contract(address, SmartWalletFactoryABI)
+const createSmartWalletContract = address =>
+  new Contract(address, SmartWalletFactoryABI)
 
 export class SmartWallet {
   constructor(address, signer) {

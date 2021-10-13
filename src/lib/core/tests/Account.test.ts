@@ -1,4 +1,4 @@
-import { TransactionRequest } from '@ethersproject/abstract-provider'
+// import { TransactionRequest } from '@ethersproject/abstract-provider'
 import Account from '../Account'
 import {
   private_key_testnet_0,
@@ -48,7 +48,7 @@ describe('Wallet', () => {
     test('cannot get next of emtpy queue', () => {
       expect(() => this.account.nextTransaction()).toThrow()
     })
-/*
+    /*
     test('can queue a transaction', async () => {
       const transactionRequest: TransactionRequest = { to: address_testnet_1 }
       const transactionPromise =

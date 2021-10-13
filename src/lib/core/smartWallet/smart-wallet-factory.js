@@ -1,25 +1,39 @@
 import { Contract, constants } from 'ethers'
 import SmartWalletFactoryABI from './SmartWalletFactoryABI'
 
-const smartWalletFactoryTestnetAddress = '0x3f71ce7bd7912bf3b362fd76dd34fa2f017b6388'
-const smartWalletFactoryContract = new Contract(smartWalletFactoryTestnetAddress, SmartWalletFactoryABI)
+const smartWalletFactoryTestnetAddress =
+  '0x3f71ce7bd7912bf3b362fd76dd34fa2f017b6388'
+const smartWalletFactoryContract = new Contract(
+  smartWalletFactoryTestnetAddress,
+  SmartWalletFactoryABI,
+)
 
 export class SmartWalletFactory {
   constructor(signer) {
     this.smartWalletFactory = smartWalletFactoryContract.connect(signer)
   }
 
-  async getSmartWalletParams () {
+  async getSmartWalletParams() {
     return [
       await this.smartWalletFactory.signer.getAddress(),
       constants.AddressZero,
-      constants.Zero
+      constants.Zero,
     ]
   }
 
-  getSmartAddress = async () => this.smartWalletFactory.getSmartWalletAddress(...await this.getSmartWalletParams())
-  getCodeInSmartWallet = async () => this.smartWalletFactory.signer.provider.getCode(await this.getSmartAddress())
-  createSmartWallet = () => this.smartWalletFactory.selfCreateUserSmartWallet(constants.AddressZero, constants.Zero)
+  getSmartAddress = async () =>
+    this.smartWalletFactory.getSmartWalletAddress(
+      ...(await this.getSmartWalletParams()),
+    )
+  getCodeInSmartWallet = async () =>
+    this.smartWalletFactory.signer.provider.getCode(
+      await this.getSmartAddress(),
+    )
+  createSmartWallet = () =>
+    this.smartWalletFactory.selfCreateUserSmartWallet(
+      constants.AddressZero,
+      constants.Zero,
+    )
 }
 
 /**
