@@ -41,7 +41,6 @@ const WalletApp: React.FC<Interface> = ({ route, navigation }) => {
   }
 
   const seeSmartWallet = (account: Account) => {
-    console.log(account);
     (navigation as any).push('SmartWallet', { account })
   }
 
