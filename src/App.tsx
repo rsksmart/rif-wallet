@@ -8,6 +8,7 @@ import { Account, Wallet } from './lib/core'
 
 import { Transaction } from '@rsksmart/rlogin-eip1193-types'
 import { WalletProviderContext } from './state/AppContext'
+import { removeStorage, StorageKeys } from './storage'
 
 interface Interface {
   navigation: NavigationProp<ParamListBase>
@@ -92,6 +93,17 @@ const WalletApp: React.FC<Interface> = ({ route, navigation }) => {
         {componentState.confirmResponse && (
           <Paragraph>{componentState.confirmResponse}</Paragraph>
         )}
+      </View>
+
+      <View style={styles.section}>
+        <Header2>Settings</Header2>
+        <Button
+          onPress={() => removeStorage(StorageKeys.MNEMONIC)}
+          title="Clear RN Storage"
+        />
+        <Paragraph>
+          You will need to refresh the app for this to fully work.
+        </Paragraph>
       </View>
     </ScrollView>
   )
