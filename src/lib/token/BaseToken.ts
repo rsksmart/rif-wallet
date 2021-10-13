@@ -1,31 +1,18 @@
-import {
-  BigNumber,
-  BigNumberish,
-  providers,
-  Signer,
-  ContractTransaction,
-} from 'ethers'
+import { BigNumber, BigNumberish, Signer, ContractTransaction } from 'ethers'
 
 export type TokenType = 'erc20' | 'rbtc'
 
 export class BaseToken {
-  get signer(): Signer | null {
-    return Signer.isSigner(this.providerOrSigner) ? this.providerOrSigner : null
-  }
+  public signer: Signer
+  public logo: string
 
-  get provider(): providers.Provider {
-    return Signer.isSigner(this.providerOrSigner)
-      ? this.providerOrSigner.provider!
-      : this.providerOrSigner
+  constructor(signer: Signer, logo: string) {
+    this.signer = signer
+    this.logo = logo
   }
-
-  constructor(
-    public providerOrSigner: providers.Provider | Signer,
-    public logo: string,
-  ) {}
 
   protected async getAddress() {
-    return await this.signer!.getAddress()
+    return await this.signer.getAddress()
   }
 }
 
