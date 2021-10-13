@@ -20,10 +20,10 @@ jobs:
     steps: 
       - uses: actions/checkout@v2
       - name: Install dependencies
-        run: |
-          yarn
-          yarn test
-          yarn lint
+        run: yarn
+        run: yarn ganache &
+        run: yarn test
+        run: yarn lint
 
       - name: Build Android Release
         run: |
