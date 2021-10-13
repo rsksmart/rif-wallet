@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import WalletApp from './App'
@@ -10,6 +10,9 @@ import ReviewTransactionModal, {
 import { Transaction } from '@rsksmart/rlogin-eip1193-types'
 
 import SmartWallet from './tempScreens/SmartWallet'
+import { getStorage, StorageKeys } from './storage'
+import Wallet from './lib/core/Wallet'
+import { WalletProviderContext } from './state/AppContext'
 
 interface Interface {}
 
@@ -22,6 +25,16 @@ const RootNavigation: React.FC<Interface> = () => {
     reviewTransaction?.handleConfirm(transaction)
     setReviewTransaction(null)
   }
+
+  const context = useContext(WalletProviderContext)
+
+  useEffect(() => {
+    getStorage(StorageKeys.MNEMONIC).then((mnemonic: string) => {
+      if (mnemonic) {
+        context.setWallet(new Wallet({ mnemonic }))
+      }
+    })
+  }, [context])
 
   const sharedOptions = { headerShown: false }
 
