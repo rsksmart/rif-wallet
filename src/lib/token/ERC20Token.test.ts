@@ -28,10 +28,11 @@ describe('ERC20 token', () => {
     const accountAddress = await account.getAddress()
 
     // using ERC677__factory that supports ERC20 to set totalSupply (just for testing purpose)
+    const initialSupply = BigNumber.from(10).mul(tenPow(TEST_TOKEN_DECIMALS))
     const erc677Factory = new ERC677__factory(account)
     const erc20 = (await erc677Factory.deploy(
       accountAddress,
-      BigNumber.from(10).mul(tenPow(TEST_TOKEN_DECIMALS)),
+      initialSupply,
       'TEST_ERC20',
       'TEST_ERC20',
     )) as any
@@ -68,7 +69,7 @@ describe('ERC20 token', () => {
   test('get balance', async () => {
     const result = await erc20Token!.balance()
 
-    expect(result.eq(10)).toBe(true)
+    expect(result.toString()).toBe('10000000000000000000')
   })
 
   test('transfer', async () => {

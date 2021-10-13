@@ -1,11 +1,5 @@
 import { BigNumber, BigNumberish, ContractTransaction, Signer } from 'ethers'
-import {
-  BaseToken,
-  IToken,
-  ITransferOptions,
-  tenPow,
-  TokenType,
-} from './BaseToken'
+import { BaseToken, IToken, ITransferOptions, TokenType } from './BaseToken'
 import { ERC20 as ERC20Type, ERC20__factory } from './types'
 
 class ERC20Token extends BaseToken implements IToken {
@@ -31,11 +25,7 @@ class ERC20Token extends BaseToken implements IToken {
   public async balance(): Promise<BigNumber> {
     const account = await this.getAddress()
 
-    const decimals = await this.decimals()
-
-    const balance = await this.tokenContract.balanceOf(account)
-
-    return balance.div(tenPow(decimals))
+    return this.tokenContract.balanceOf(account)
   }
 
   public async transfer(

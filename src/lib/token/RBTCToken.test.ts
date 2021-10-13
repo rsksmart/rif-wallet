@@ -21,7 +21,7 @@ describe('RBTC token', () => {
   let rbtcToken: RBTCToken | null = null
 
   beforeEach(async () => {
-    const account = await getSigner()
+    const account = await getSigner(9)
 
     rbtcToken = new RBTCToken(account, 'logo.jpg', CHAIN_ID)
   })

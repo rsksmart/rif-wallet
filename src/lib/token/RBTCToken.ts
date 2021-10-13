@@ -1,11 +1,5 @@
 import { BigNumber, BigNumberish, ContractTransaction, Signer } from 'ethers'
-import {
-  BaseToken,
-  IToken,
-  ITransferOptions,
-  tenPow,
-  TokenType,
-} from './BaseToken'
+import { BaseToken, IToken, ITransferOptions, TokenType } from './BaseToken'
 import { MAINNET_CHAINID } from './tokenMetadata'
 
 class RBTCToken extends BaseToken implements IToken {
@@ -30,11 +24,7 @@ class RBTCToken extends BaseToken implements IToken {
   }
 
   public async balance(): Promise<BigNumber> {
-    const decimals = await this.decimals()
-
-    const balance = await this.signer.getBalance()
-
-    return balance.div(tenPow(decimals))
+    return this.signer.getBalance()
   }
 
   public async transfer(
