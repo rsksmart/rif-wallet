@@ -105,6 +105,24 @@ const WalletApp: React.FC<Interface> = ({ route, navigation }) => {
       </View>
 
       <View style={styles.section}>
+        <Button
+          onPress={() => {
+            navigation.navigate('SendTransaction')
+          }}
+          title="Send Transaction"
+        />
+      </View>
+
+      <View style={styles.section}>
+        <Button
+          onPress={() => {
+            navigation.navigate('TransactionReceived')
+          }}
+          title=" Transaction Received"
+        />
+      </View>
+
+      <View style={styles.section}>
         <Button onPress={resetState} title="reset" />
       </View>
     </ScrollView>
