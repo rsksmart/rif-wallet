@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 import { NavigationProp, ParamListBase } from '@react-navigation/native'
 
@@ -8,6 +8,7 @@ import { Account, Wallet } from './lib/core'
 
 import { stateInterface, initialState } from './state'
 import { Transaction } from '@rsksmart/rlogin-eip1193-types'
+import { WalletProviderContext } from './state/AppContext'
 
 interface Interface {
   navigation: NavigationProp<ParamListBase>
@@ -19,18 +20,20 @@ const WalletApp: React.FC<Interface> = ({ route, navigation }) => {
   const [state, setState] = useState<stateInterface>(initialState)
 
   // Temporary component state:
-  const [componentState, setComponentState] = useState({
+  interface componentStateI {
+    confirmResponse?: string
+    wallet?: Wallet
+  }
+  const [componentState, setComponentState] = useState<componentStateI>({
     confirmResponse: undefined,
   })
+  const [wallet, setWallet] = useState<Wallet | undefined>(undefined)
 
-  // component's functions
-  const createWallet = () => {
-    const wallet = Wallet.create()
-    setState({
-      ...state,
-      mnemonic: wallet.getMnemonic,
-    })
-  }
+  const context = useContext(WalletProviderContext)
+  useEffect(() => {
+    console.log('setting wallet...')
+    setWallet(context.wallet)
+  }, [context.wallet, wallet])
 
   const addAccount = () => {
     const account = state.wallet.getAccount(state.accounts.length)
@@ -77,8 +80,8 @@ const WalletApp: React.FC<Interface> = ({ route, navigation }) => {
     <ScrollView>
       <Header1>sWallet</Header1>
       <View style={styles.section}>
-        <Button onPress={createWallet} title="Create RIF Smart Wallet" />
-        <Paragraph>{state.mnemonic}</Paragraph>
+        <Header2>Wallet:</Header2>
+        <Paragraph>{wallet?.getMnemonic}</Paragraph>
       </View>
 
       <View style={styles.section}>
