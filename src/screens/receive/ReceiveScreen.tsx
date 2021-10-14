@@ -2,12 +2,14 @@ import React, { useState } from 'react'
 import { StyleSheet, View, ScrollView, Dimensions } from 'react-native'
 import { NavigationProp, ParamListBase } from '@react-navigation/native'
 import Clipboard from '@react-native-clipboard/clipboard'
+import { Wallet } from 'ethers'
 
 import Button from '../../components/button'
 import { Paragraph } from '../../components/typography'
 
 import QRCode from 'react-native-qrcode-svg'
 import { shortAddress } from '../../lib/utils'
+import { jsonRpcProvider } from '../../lib/jsonRpcProvider'
 
 interface Interface {
   navigation: NavigationProp<ParamListBase>
@@ -34,6 +36,21 @@ const useCopy = (textToCopy: string) => {
   return {
     isCopying,
     handleCopy,
+  }
+}
+
+const removeAfterWorks = async () => {
+  try {
+    let wallet = new Wallet(
+      '01ccf471b564abe3f9c77f8b1745d57885212a2e5d2d3478e50665e913abd8d5',
+    )
+    const connectedWallet = wallet.connect(jsonRpcProvider)
+
+    const chainId = await connectedWallet.getChainId()
+
+    console.log('chainId', chainId)
+  } catch (error) {
+    console.error('error', error)
   }
 }
 
@@ -71,7 +88,12 @@ const ReceiveScreen: React.FC<Interface> = () => {
       </View>
 
       <View style={styles.section}>
-        <Button title="share" />
+        <Button
+          onPress={() => {
+            removeAfterWorks()
+          }}
+          title="share"
+        />
       </View>
     </ScrollView>
   )
