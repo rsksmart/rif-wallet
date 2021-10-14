@@ -10,9 +10,11 @@
     "ganache": "npx ganache-cli",
     "test:watch": "jest --watch",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "postinstall": "rn-nodeify --install buffer,events,stream --hack"
   },
   "dependencies": {
+    "@ethersproject/shims": "^5.4.0",
     "@react-navigation/native": "^6.0.4",
     "@react-navigation/stack": "^6.0.9",
     "@rsksmart/rif-id-ethr-did": "^0.1.0",

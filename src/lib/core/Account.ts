@@ -1,5 +1,9 @@
-import { Wallet, Signer, Bytes } from 'ethers'
-import { Provider, TransactionRequest } from '@ethersproject/abstract-provider'
+import { Wallet } from 'ethers'
+import {
+  TransactionRequest,
+  TransactionResponse,
+} from '@ethersproject/abstract-provider'
+import { jsonRpcProvider } from '../jsonRpcProvider'
 
 type QueuedTransaction = {
   id: number
@@ -7,40 +11,14 @@ type QueuedTransaction = {
   confirm: () => void
 }
 
-class Account extends Signer {
-  wallet: Wallet
-
+class Account extends Wallet {
   idCount: number
   queuedTransactions: QueuedTransaction[]
 
-  get privateKey() {
-    return this.wallet.privateKey
-  }
-
-  get address() {
-    return this.wallet.address.toLowerCase()
-  }
-
   constructor({ privateKey }: { privateKey: string }) {
-    super()
-    this.wallet = new Wallet(privateKey)
+    super(privateKey, jsonRpcProvider)
     this.idCount = 0
     this.queuedTransactions = []
-  }
-
-  getAddress(): Promise<string> {
-    return Promise.resolve(this.address)
-  }
-
-  // Returns the signed prefixed-message. This MUST treat:
-  // - Bytes as a binary message
-  // - string as a UTF8-message
-  // i.e. "0x1234" is a SIX (6) byte string, NOT 2 bytes of data
-  signMessage(message: Bytes | string): Promise<string> {
-    // this method is used only for direct signing messages
-    // ethers.js is not using this method in contracts or transactions
-    // we can proxy to the wallet and build the ux on top of it
-    return this.wallet.signMessage(message)
   }
 
   nextTransaction(): QueuedTransaction {
@@ -50,13 +28,13 @@ class Account extends Signer {
     return this.queuedTransactions[0]
   }
 
-  // Signs a transaxction and returns the fully serialized, signed transaction.
-  // The EXACT transaction MUST be signed, and NO additional properties to be added.
-  // - This MAY throw if signing transactions is not supports, but if
-  //   it does, sentTransaction MUST be overridden.
-  async signTransaction(
+  getAddress(): Promise<string> {
+    return Promise.resolve(this.address.toLowerCase())
+  }
+
+  async sendTransaction(
     transactionRequest: TransactionRequest,
-  ): Promise<string> {
+  ): Promise<TransactionResponse> {
     // here we queue the transaction
     const id = this.idCount++
     await new Promise((resolve: (reason?: any) => void) => {
@@ -73,15 +51,9 @@ class Account extends Signer {
     // because the confirm() is only found using nextTransaction()
     this.queuedTransactions.shift()
 
-    const signedTransaction = this.wallet.signTransaction(transactionRequest)
+    const signedTransaction = super.sendTransaction(transactionRequest)
 
     return signedTransaction
-  }
-
-  // Returns a new instance of the Signer, connected to provider.
-  // This MAY throw if changing providers is not supported.
-  connect(_provider: Provider): Signer {
-    throw new Error()
   }
 }
 

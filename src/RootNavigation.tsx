@@ -9,7 +9,11 @@ import ReviewTransactionModal, {
 } from './modal/ReviewTransactionModal'
 import { Transaction } from '@rsksmart/rlogin-eip1193-types'
 
+import SmartWallet from './tempScreens/SmartWallet'
+
 interface Interface {}
+
+const RootStack = createStackNavigator()
 
 const RootNavigation: React.FC<Interface> = () => {
   const [reviewTransaction, setReviewTransaction] =
@@ -19,7 +23,6 @@ const RootNavigation: React.FC<Interface> = () => {
     setReviewTransaction(null)
   }
 
-  const RootStack = createStackNavigator()
   const sharedOptions = { headerShown: false }
 
   return (
@@ -35,6 +38,11 @@ const RootNavigation: React.FC<Interface> = () => {
                 reviewTransaction: (transaction: ReviewTransactionDataI) =>
                   setReviewTransaction(transaction),
               }}
+            />
+            <RootStack.Screen
+              name="SmartWallet"
+              component={SmartWallet}
+              options={sharedOptions}
             />
           </RootStack.Group>
         </RootStack.Navigator>

@@ -14,7 +14,7 @@ interface Interface {
   route: any
 }
 
-const WalletApp: React.FC<Interface> = ({ route }) => {
+const WalletApp: React.FC<Interface> = ({ route, navigation }) => {
   // App's state:
   const [state, setState] = useState<stateInterface>(initialState)
 
@@ -38,6 +38,11 @@ const WalletApp: React.FC<Interface> = ({ route }) => {
       ...state,
       accounts: state.accounts.concat(account),
     })
+  }
+
+  const seeSmartWallet = (account: Account) => {
+    // eslint-disable-next-line no-extra-semi
+    ;(navigation as any).push('SmartWallet', { account })
   }
 
   const resetState = () => {
@@ -79,7 +84,15 @@ const WalletApp: React.FC<Interface> = ({ route }) => {
       <View style={styles.section}>
         <Header2>Accounts:</Header2>
         {state.accounts.map((account: Account, index: number) => {
-          return <Paragraph key={index}>{account.address}</Paragraph>
+          return (
+            <View key={index}>
+              <Paragraph>{account.address}</Paragraph>
+              <Button
+                title="See smart wallet"
+                onPress={() => seeSmartWallet(account)}
+              />
+            </View>
+          )
         })}
         <Button onPress={addAccount} title="Add account" />
       </View>
