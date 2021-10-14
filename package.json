@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@ethersproject/shims": "^5.4.0",
+    "@react-native-clipboard/clipboard": "^1.9.0",
     "@react-navigation/native": "^6.0.4",
     "@react-navigation/stack": "^6.0.9",
     "@rsksmart/rif-id-ethr-did": "^0.1.0",
@@ -29,7 +30,9 @@
     "react-native": "0.65.1",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-get-random-values": "^1.7.0",
+    "react-native-qrcode-svg": "^6.1.1",
     "react-native-safe-area-context": "^3.3.2",
+    "react-native-svg": "^12.1.1",
     "readable-stream": "^1.0.33",
     "stream-browserify": "^1.0.0"
   },

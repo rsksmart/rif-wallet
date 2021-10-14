@@ -8,6 +8,7 @@ import ReviewTransactionModal, {
   ReviewTransactionDataI,
 } from './modal/ReviewTransactionModal'
 import { Transaction } from '@rsksmart/rlogin-eip1193-types'
+import ReceiveScreen from './screens/receive/ReceiveScreen'
 
 import SmartWallet from './tempScreens/SmartWallet'
 
@@ -23,7 +24,7 @@ const RootNavigation: React.FC<Interface> = () => {
     setReviewTransaction(null)
   }
 
-  const sharedOptions = { headerShown: false }
+  const sharedOptions = { headerShown: true }
 
   return (
     <View style={styles.parent}>
@@ -33,7 +34,7 @@ const RootNavigation: React.FC<Interface> = () => {
             <RootStack.Screen
               name="Home"
               component={WalletApp}
-              options={sharedOptions}
+              options={{ headerShown: false }}
               initialParams={{
                 reviewTransaction: (transaction: ReviewTransactionDataI) =>
                   setReviewTransaction(transaction),
@@ -42,6 +43,11 @@ const RootNavigation: React.FC<Interface> = () => {
             <RootStack.Screen
               name="SmartWallet"
               component={SmartWallet}
+              options={sharedOptions}
+            />
+            <RootStack.Screen
+              name="Receive"
+              component={ReceiveScreen}
               options={sharedOptions}
             />
           </RootStack.Group>
