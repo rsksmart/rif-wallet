@@ -25,34 +25,42 @@ interface Interface {
   route: any
 }
 
-const SendTransaction: React.FC<Interface> = ({ navigation }) => {
+const SendTransaction: React.FC<Interface> = ({ route, navigation }) => {
   const [to, setTo] = useState('')
   const [token, setToken] = useState(metadataTokens[0].address)
   const [amount, setAmount] = useState(0)
 
-  const getSigner = async (index: number = 0) => {
+  /*  const getSigner = async (index: number = 0) => {
     const url = 'http://localhost:8545'
     const provider = await new ethers.providers.JsonRpcProvider(url)
     const signer = await provider.getSigner(index)
     return signer
+  }*/
+
+  const getProvider = async () => {
+    const url = 'http://localhost:8545'
+    const provider = await new ethers.providers.JsonRpcProvider(url)
+    return provider
   }
 
   const next = async () => {
-    /* console.log({ amount, to, token })
+    const account = route.params.account
+    account.connect(await getProvider())
+    console.log({ amount, to, token })
     let erc20Token: ERC20Token | null = null
-    const account = await getSigner(0)
-    erc20Token = new ERC20Token(token, account, 'logo.jpg')
+
+    erc20Token = new ERC20Token(token.toLowerCase(), account, 'logo.jpg')
 
     const transferTx = await erc20Token!.transfer(to, amount)
 
-    await transferTx.wait()*/
+    await transferTx.wait()
 
-    navigation.navigate('TransactionReceived', {
+    /* navigation.navigate('TransactionReceived', {
       amount,
       to,
       token,
       txHash: '0xb3f0725999b7a16516235a709d8b1c871370eb42',
-    })
+    })*/
   }
 
   return (
