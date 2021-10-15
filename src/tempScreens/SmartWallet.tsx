@@ -87,6 +87,7 @@ const SmartWalletComponent = ({ route }: { route: any }) => {
       <Paragraph>
         RBTC Balance (EOA): {eoaBalance && eoaBalance.toString()}
       </Paragraph>
+      <Paragraph>Smart Wallet Address:</Paragraph>
       <CopyComponent value={smartWalletAddress} />
       <Paragraph>Smart wallet code:</Paragraph>
       <CopyComponent value={smartWalletCode} />
@@ -108,10 +109,10 @@ const SmartWalletComponent = ({ route }: { route: any }) => {
           <Button title="Send RIF back to faucet" onPress={sendRif} />
           {sendRifResponse && <Paragraph>{sendRifResponse}</Paragraph>}
           {sendRifTx && (
-            <Paragraph>
-              Send RIF hash:
+            <>
+              <Paragraph>Send RIF hash:</Paragraph>
               <CopyComponent value={sendRifTx.hash || ''} />
-            </Paragraph>
+            </>
           )}
         </>
       )}

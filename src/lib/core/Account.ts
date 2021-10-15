@@ -81,6 +81,14 @@ class Account extends Wallet {
     // here we queue the transaction
     const id = this.idCount++
 
+    console.log('sendTransaction: transactionRequest', transactionRequest)
+    // get transaction details
+
+    const gasLimit =
+      transactionRequest.gasLimit ||
+      (await this.estimateGas(transactionRequest))
+    const gasPrice = transactionRequest.gasPrice || (await this.getGasPrice())
+
     return await new Promise(
       (
         resolve: (t: TransactionRequest) => void,
@@ -88,11 +96,16 @@ class Account extends Wallet {
       ) => {
         const queuedTransaction = {
           id,
-          transactionRequest,
+          transactionRequest: {
+            ...transactionRequest,
+            gasLimit,
+            gasPrice,
+          },
           confirm: (userConfirmedTransaction: TransactionRequest) =>
             resolve(userConfirmedTransaction),
           cancel: () => reject(Error('User rejected the transaction')),
         }
+
         this.queuedTransactions.push(queuedTransaction)
 
         // Pass transaction to the UI for the user's confirm or cancel:
