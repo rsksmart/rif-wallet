@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
-import { StyleSheet, View, ScrollView } from 'react-native'
+import React from 'react'
+import { StyleSheet, View, ScrollView, Button, Linking } from 'react-native'
 import { NavigationProp, ParamListBase } from '@react-navigation/native'
 
-import { Header1, Paragraph } from './components/typography'
+import { Paragraph } from './components/typography'
 
 interface Interface {
   navigation: NavigationProp<ParamListBase>
@@ -10,10 +10,26 @@ interface Interface {
 }
 
 const TransactionReceived: React.FC<Interface> = ({ route }) => {
+  console.log(route.params)
+  const { txHash, amount, to, token } = route.params
   return (
     <ScrollView>
       <View style={styles.section}>
-        <Paragraph>Transaction Hash: {route.params.txHash}</Paragraph>
+        <Paragraph>Token: {token}</Paragraph>
+        <Paragraph>amount: {amount}</Paragraph>
+
+        <Paragraph>To: {to}</Paragraph>
+
+        <Paragraph>Transaction Hash: {txHash}</Paragraph>
+      </View>
+
+      <View>
+        <Button
+          title="View in explorer"
+          onPress={() => {
+            Linking.openURL(`https://explorer.testnet.rsk.co/tx/${txHash}`)
+          }}
+        />
       </View>
     </ScrollView>
   )

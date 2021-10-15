@@ -51,15 +51,15 @@ const RootNavigation: React.FC<Interface> = () => {
             <RootStack.Screen
               name="SendTransaction"
               component={SendTransaction}
-              options={{}}
-              initialParams={{}}
+              initialParams={{
+                reviewTransaction: (transaction: ReviewTransactionDataI) =>
+                  setReviewTransaction(transaction),
+              }}
             />
 
             <RootStack.Screen
               name="TransactionReceived"
               component={TransactionReceived}
-              options={{}}
-              initialParams={{}}
             />
           </RootStack.Group>
         </RootStack.Navigator>
