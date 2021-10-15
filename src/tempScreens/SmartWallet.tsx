@@ -59,19 +59,29 @@ const SmartWalletComponent = ({ route }: { route: any }) => {
   }
 
   const sendRif = async () => {
-    const txPromise = rif.transfer(
-      '0x248b320687ebf655f9ee7f62f0388c79fbb7b2f4',
-      BigNumber.from('10000000000000000000'),
-    )
-    console.log(txPromise)
+    rif
+      .transfer(
+        '0x248b320687ebf655f9ee7f62f0388c79fbb7b2f4',
+        BigNumber.from('10000000000000000000'),
+      )
+      .then((tx: Transaction) => {
+        console.log('SmartWallet tx:', tx)
+        setSendRifTx(tx)
+      })
+      .catch((err: Error) => {
+        console.log('SmartWallet.tsx catach ?', err)
+      })
+    /*
     const nextTx = account.nextTransaction()
     console.log('nextTx', nextTx)
+
     nextTx.confirm()
     console.log('confirmed')
     const tx = await txPromise
     setSendRifTx(tx)
     await tx.wait()
     await rif.balanceOf(smartWalletAddress).then(setRifBalance)
+    */
   }
 
   const isSmartWalletDeployed = !smartWalletCode || smartWalletCode !== '0x'

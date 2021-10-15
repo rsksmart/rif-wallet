@@ -1,27 +1,21 @@
-import React, { useState } from 'react'
+import React, { useContext } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import WalletApp from './App'
 import { StyleSheet, View } from 'react-native'
 
-import ReviewTransactionModal, {
-  ReviewTransactionDataI,
-} from './modal/ReviewTransactionModal'
-import { Transaction } from '@rsksmart/rlogin-eip1193-types'
+import ReviewTransactionModal from './modal/ReviewTransactionModal'
 
 import SmartWallet from './tempScreens/SmartWallet'
+import { WalletProviderContext } from './state/AppContext'
 
 interface Interface {}
 
 const RootStack = createStackNavigator()
 
 const RootNavigation: React.FC<Interface> = () => {
-  const [reviewTransaction, setReviewTransaction] =
-    useState<null | ReviewTransactionDataI>(null)
-  const closeReviewTransactionModal = (transaction: Transaction | null) => {
-    reviewTransaction?.handleConfirm(transaction)
-    setReviewTransaction(null)
-  }
+  const context = useContext(WalletProviderContext)
+  const closeReviewTransactionModal = () => context.resolveUxInteraction()
 
   const sharedOptions = { headerShown: false }
   return (
@@ -48,10 +42,10 @@ const RootNavigation: React.FC<Interface> = () => {
       </NavigationContainer>
 
       {/* Modals: */}
-      {reviewTransaction && (
+      {context.userInteractionQue.length !== 0 && (
         <ReviewTransactionModal
           closeModal={closeReviewTransactionModal}
-          transaction={reviewTransaction.transaction}
+          queuedTransactionRequest={context.userInteractionQue[0]}
         />
       )}
     </View>

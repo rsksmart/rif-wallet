@@ -7,10 +7,11 @@ import { jsonRpcProvider } from '../jsonRpcProvider'
 import { SmartWalletFactory } from './smartWallet/smart-wallet-factory'
 import { SmartWallet } from './smartWallet/smart-wallet'
 
-type QueuedTransaction = {
+export type QueuedTransaction = {
   id: number
   transactionRequest: TransactionRequest
-  confirm: () => void
+  confirm: (userApprovedTransaction: TransactionRequest) => void
+  cancel: () => void
 }
 
 class Account extends Wallet {
@@ -19,23 +20,50 @@ class Account extends Wallet {
   eoaWallet: Signer
   smartWallet: SmartWallet
   smartWalletFactory: SmartWalletFactory
+  handleUxInteraction: (qt: QueuedTransaction) => Promise<TransactionRequest>
 
-  constructor({ privateKey, wallet, smartAddress, smartWalletFactory }: { privateKey: string, wallet: Signer, smartAddress: string, smartWalletFactory: SmartWalletFactory }) {
+  constructor({
+    privateKey,
+    wallet,
+    smartAddress,
+    smartWalletFactory,
+    handleUxInteraction,
+  }: {
+    privateKey: string
+    wallet: Signer
+    smartAddress: string
+    smartWalletFactory: SmartWalletFactory
+    handleUxInteraction: (qt: QueuedTransaction) => Promise<TransactionRequest>
+  }) {
     super(privateKey, jsonRpcProvider)
     this.eoaWallet = wallet
     this.queuedTransactions = []
     this.smartWallet = new SmartWallet(smartAddress, wallet)
     this.smartWalletFactory = smartWalletFactory
+    this.handleUxInteraction = handleUxInteraction
   }
 
-  static async create ({ privateKey }: { privateKey: string }) {
+  static async create({
+    privateKey,
+    handleUxInteraction,
+  }: {
+    privateKey: string
+    handleUxInteraction: (qt: QueuedTransaction) => Promise<TransactionRequest>
+  }) {
     const wallet = new Wallet(privateKey, jsonRpcProvider)
     const smartWalletFactory = new SmartWalletFactory(wallet)
     const smartAddress = await smartWalletFactory.getSmartAddress()
-    return new Account({ privateKey, wallet, smartAddress, smartWalletFactory })
+    return new Account({
+      privateKey,
+      wallet,
+      smartAddress,
+      smartWalletFactory,
+      handleUxInteraction,
+    })
   }
 
   nextTransaction(): QueuedTransaction {
+    console.log('the next transaction!!! ;-)', this.queuedTransactions[0])
     if (this.queuedTransactions.length === 0) {
       throw new Error()
     }
@@ -53,30 +81,55 @@ class Account extends Wallet {
   ): Promise<TransactionResponse> {
     // here we queue the transaction
     const id = this.idCount++
-    await new Promise((resolve: (reason?: any) => void) => {
-      const queuedTransaction = {
-        id,
-        transactionRequest,
-        confirm: () => resolve(),
-      }
-      this.queuedTransactions.push(queuedTransaction)
-      // ux happens here
-    })
 
-    // assumes the transactions are confirmed in order
-    // because the confirm() is only found using nextTransaction()
-    this.queuedTransactions.shift()
+    return await new Promise(
+      (
+        resolve: (t: TransactionRequest) => void,
+        reject: (reason: string) => void,
+      ) => {
+        const queuedTransaction = {
+          id,
+          transactionRequest,
+          confirm: (userConfirmedTransaction: TransactionRequest) =>
+            resolve(userConfirmedTransaction),
+          cancel: () => reject('User rejected the transaction'),
+        }
+        this.queuedTransactions.push(queuedTransaction)
 
-    const filteredTx = Object.keys(transactionRequest)
-      .filter(key => !['to', 'data'].includes(key))
-      .reduce((obj: any, key: any) => {
-        obj[key] = (transactionRequest as any)[key];
-        return obj;
-      }, {});
+        // Pass transaction to the UI for the user's confirm or cancel:
+        this.handleUxInteraction(queuedTransaction)
+      },
+    )
+      // transaction with user modified gasPrice/gasLimit:
+      .then((userConfirmedTransaction: TransactionRequest) => {
+        console.log('Transaction confirmed...', userConfirmedTransaction)
+        // assumes the transactions are confirmed in order
+        // because the confirm() is only found using nextTransaction()
+        this.queuedTransactions.shift()
 
-    const signedTransaction = this.smartWallet.directExecute(transactionRequest.to, transactionRequest.data, filteredTx)
+        const filteredTx = Object.keys(userConfirmedTransaction)
+          .filter(key => !['to', 'data'].includes(key))
+          .reduce((obj: any, key: any) => {
+            obj[key] = (userConfirmedTransaction as any)[key]
+            return obj
+          }, {})
 
-    return signedTransaction
+        const signedTransaction = this.smartWallet.directExecute(
+          userConfirmedTransaction.to,
+          userConfirmedTransaction.data,
+          filteredTx,
+        )
+
+        console.log('signedTransaction', userConfirmedTransaction)
+
+        return signedTransaction
+      })
+      // user has rejected the transaction:
+      .catch((err: Error) => {
+        this.queuedTransactions.shift()
+        // Return error to the _thing_ that is calling this
+        throw err
+      })
   }
 }
 
