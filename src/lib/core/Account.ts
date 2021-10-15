@@ -85,14 +85,14 @@ class Account extends Wallet {
     return await new Promise(
       (
         resolve: (t: TransactionRequest) => void,
-        reject: (reason: string) => void,
+        reject: (error: Error) => void,
       ) => {
         const queuedTransaction = {
           id,
           transactionRequest,
           confirm: (userConfirmedTransaction: TransactionRequest) =>
             resolve(userConfirmedTransaction),
-          cancel: () => reject('User rejected the transaction'),
+          cancel: () => reject(Error('User rejected the transaction')),
         }
         this.queuedTransactions.push(queuedTransaction)
 
