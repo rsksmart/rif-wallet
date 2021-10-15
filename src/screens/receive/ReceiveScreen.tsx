@@ -1,23 +1,16 @@
 import React, { useState } from 'react'
-import { StyleSheet, View, ScrollView, Dimensions } from 'react-native'
-import { NavigationProp, ParamListBase } from '@react-navigation/native'
+import { StyleSheet, View, ScrollView, Dimensions, Share } from 'react-native'
 import Clipboard from '@react-native-clipboard/clipboard'
-import { Wallet } from 'ethers'
 
 import Button from '../../components/button'
 import { Paragraph } from '../../components/typography'
 
 import QRCode from 'react-native-qrcode-svg'
 import { shortAddress } from '../../lib/utils'
-import { jsonRpcProvider } from '../../lib/jsonRpcProvider'
+import { Account } from '../../lib/core'
 
-interface Interface {
-  navigation: NavigationProp<ParamListBase>
-  route: any
-}
-
+// TODO: accountLink is hardcoded until we had the rns sdk
 const accountLink = 'ilan.rsk'
-const account = '0xe8789B348C978b19dfb915a10b761069915c237B'
 const window = Dimensions.get('window')
 
 const useCopy = (textToCopy: string) => {
@@ -39,33 +32,52 @@ const useCopy = (textToCopy: string) => {
   }
 }
 
-const removeAfterWorks = async () => {
-  try {
-    let wallet = new Wallet(
-      '01ccf471b564abe3f9c77f8b1745d57885212a2e5d2d3478e50665e913abd8d5',
-    )
-    const connectedWallet = wallet.connect(jsonRpcProvider)
+const useShare = (title: string, textToShare: string) => {
+  const [isSharing, setIsSharing] = useState(false)
 
-    const chainId = await connectedWallet.getChainId()
+  const handleShare = async () => {
+    setIsSharing(true)
 
-    console.log('chainId', chainId)
-  } catch (error) {
-    console.error('error', error)
+    try {
+      await Share.share({
+        title: title,
+        message: textToShare,
+      })
+    } catch (error) {
+      console.error('useShare', error)
+    }
+
+    setTimeout(() => {
+      setIsSharing(false)
+    }, 2000)
+  }
+
+  return {
+    isSharing,
+    handleShare,
   }
 }
 
-const ReceiveScreen: React.FC<Interface> = () => {
+interface IReceiveScreenProps {
+  route: any
+}
+
+const ReceiveScreen: React.FC<IReceiveScreenProps> = ({ route }) => {
+  const account = route.params.account as Account
+
   const { isCopying: isCopyingAccount, handleCopy: handleCopyAccount } =
-    useCopy(account)
+    useCopy(account.address)
   const { isCopying: isCopyingAccountLink, handleCopy: handleCopyAccountLink } =
     useCopy(accountLink)
+
+  const { isSharing, handleShare } = useShare('Account', account.address)
 
   return (
     <ScrollView>
       <View style={styles.section}>
         <QRCode
           backgroundColor="transparent"
-          value={account}
+          value={account.address}
           size={window.width * 0.6}
         />
       </View>
@@ -79,7 +91,7 @@ const ReceiveScreen: React.FC<Interface> = () => {
         />
       </View>
       <View style={styles.section2}>
-        <Paragraph>{shortAddress(account)} </Paragraph>
+        <Paragraph>{shortAddress(account.address)} </Paragraph>
         <Button
           disabled={isCopyingAccount}
           onPress={handleCopyAccount}
@@ -90,9 +102,9 @@ const ReceiveScreen: React.FC<Interface> = () => {
       <View style={styles.section}>
         <Button
           onPress={() => {
-            removeAfterWorks()
+            handleShare()
           }}
-          title="share"
+          title={isSharing ? 'shared!' : 'share'}
         />
       </View>
     </ScrollView>

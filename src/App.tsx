@@ -91,6 +91,10 @@ const WalletApp: React.FC<Interface> = ({ route, navigation }) => {
                 title="See smart wallet"
                 onPress={() => seeSmartWallet(account)}
               />
+              <Button
+                onPress={() => navigation.navigate('Receive', { account })}
+                title="receive"
+              />
             </View>
           )
         })}
@@ -106,13 +110,6 @@ const WalletApp: React.FC<Interface> = ({ route, navigation }) => {
 
       <View style={styles.section}>
         <Button onPress={resetState} title="reset" />
-      </View>
-
-      <View style={styles.section}>
-        <Button
-          onPress={() => navigation.navigate('Receive')}
-          title="receive"
-        />
       </View>
     </ScrollView>
   )
