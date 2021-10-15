@@ -27,10 +27,6 @@ const RootNavigation: React.FC<Interface> = () => {
               name="Home"
               component={WalletApp}
               options={sharedOptions}
-              initialParams={{
-                reviewTransaction: (transaction: ReviewTransactionDataI) =>
-                  setReviewTransaction(transaction),
-              }}
             />
             <RootStack.Screen
               name="SmartWallet"

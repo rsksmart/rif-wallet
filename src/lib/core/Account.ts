@@ -63,7 +63,6 @@ class Account extends Wallet {
   }
 
   nextTransaction(): QueuedTransaction {
-    console.log('the next transaction!!! ;-)', this.queuedTransactions[0])
     if (this.queuedTransactions.length === 0) {
       throw new Error()
     }
@@ -102,7 +101,7 @@ class Account extends Wallet {
     )
       // transaction with user modified gasPrice/gasLimit:
       .then((userConfirmedTransaction: TransactionRequest) => {
-        console.log('Transaction confirmed...', userConfirmedTransaction)
+        console.log('userConfirmedTransaction', userConfirmedTransaction)
         // assumes the transactions are confirmed in order
         // because the confirm() is only found using nextTransaction()
         this.queuedTransactions.shift()
@@ -120,7 +119,7 @@ class Account extends Wallet {
           filteredTx,
         )
 
-        console.log('signedTransaction', userConfirmedTransaction)
+        console.log('directExecute tx:', userConfirmedTransaction)
 
         return signedTransaction
       })

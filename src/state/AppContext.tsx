@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-// import { TransactionRequest } from '@ethersproject/abstract-provider'
 
 import { Wallet } from '../lib/core'
 import { QueuedTransaction } from '../lib/core/Account'
@@ -36,18 +35,11 @@ export const WalletProviderElement: React.FC<Web3ProviderElementInterface> = ({
     QueuedTransaction[]
   >([])
 
-  const handleUxInteraction = (transactionRequest: QueuedTransaction) => {
-    console.log('AppContext... handling user interaction', transactionRequest)
-    // add the item to the context que:
+  const handleUxInteraction = (transactionRequest: QueuedTransaction) =>
     setUserInteractionQue(userInteractionQue.concat(transactionRequest))
-    return Promise.resolve('I approve!')
-  }
 
-  const resolveUxInteraction = () => {
-    const shifted = userInteractionQue.shift()
-    console.log('AppContext.tsx resolveUxInteraction', shifted)
-    setUserInteractionQue([]) // @jesse, THIS IS INCORRECT!
-  }
+  const resolveUxInteraction = () =>
+    setUserInteractionQue(userInteractionQue.slice(1))
 
   const initialContext: WalletProviderContextInterface = {
     wallet,
