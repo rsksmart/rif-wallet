@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { StyleSheet, View, ScrollView, Dimensions, Share } from 'react-native'
-import Clipboard from '@react-native-clipboard/clipboard'
+import Clipboard from '@react-native-community/clipboard'
 
 import Button from '../../components/button'
 import { Paragraph } from '../../components/typography'
