@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Wallet, BigNumber, utils } from 'ethers'
 
 import { StyleSheet, View, ScrollView, TextInput } from 'react-native'
@@ -12,10 +12,12 @@ import {
   tokensMetadataMainnet,
 } from './lib/token/tokenMetadata'
 import { ERC20Token } from './lib/token/ERC20Token'
-import { jsonRpcProvider } from './lib/jsonRpcProvider'
 
 import { RBTCToken } from './lib/token/RBTCToken'
 import { Paragraph } from './components/typography'
+
+import Account from './lib/core/Account'
+import { TransactionResponse } from '@ethersproject/abstract-provider'
 
 const isMainnet = false
 const metadataERC20Tokens = Object.entries(
@@ -35,98 +37,70 @@ interface Interface {
 }
 
 const SendTransaction: React.FC<Interface> = ({ navigation, route }) => {
+  const [smartAddress, setSmartAddress] = useState('')
   const [to, setTo] = useState('0x1D4F6A5FE927f0E0e4497B91CebfBcF64dA1c934')
   const [token, setToken] = useState(metadataTokens[0].address)
   const [amount, setAmount] = useState('')
   const [loading, setLoading] = useState(false)
+  const [tx, setTx] = useState<TransactionResponse | null>(null)
+  const [txConfirmed, setTxConfirmed] = useState(false)
 
-  //TODO: remove when account is avaiable
-  const getSigner = async () => {
-    let wallet = new Wallet(
-      'c8e13a0e09736fe5d6e2a39113ba5c395b3747db1ea7abc0390a98a6dc8a00fc',
-    )
-    return wallet.connect(jsonRpcProvider)
-  }
+  const account = route.params.account as Account
+
+  useEffect(() => {
+    account.getSmartAddress().then(setSmartAddress)
+  })
 
   const reviewTransaction = () => {
-    // to/from/value/data should be provided by the user and gases should be estimated
-    const transaction: Transaction = {
-      to: to,
-      from: '0x987...654', //TODO: Remove the hardcoded private key used to enable a temporal provider
-      value: amount,
+    if (token) {
+      transferERC20(token)
+    } else {
+      transferRBTC()
     }
-
-    route.params.reviewTransaction({
-      transaction,
-      handleConfirm: transactionConfirmed,
-    })
   }
 
-  const transactionConfirmed = async (transaction: Transaction | null) => {
-    if (transaction) {
-      await next(token)
-      console.log('Transaction Confirmed')
-    } else {
-      console.log('Transaction Cancelled')
-    }
-  }
-  const next = async (tokenAddress: string) => {
-    setLoading(true)
-    if (tokenAddress) {
-      await transferERC20(tokenAddress)
-    } else {
-      await transferRBTC()
-    }
-    setLoading(false)
-  }
   const transferERC20 = async (tokenAddress: string) => {
-    try {
-      const connectedWallet = await getSigner()
-      let erc20Token: ERC20Token | null = null
-      erc20Token = new ERC20Token(
-        tokenAddress.toLowerCase(),
-        connectedWallet,
-        'logo.jpg',
-      )
-      const decimals = await erc20Token.decimals()
-      const numberOfTokens = utils.parseUnits(amount, decimals)
-      const transferResponse = await erc20Token.transfer(
-        to,
-        BigNumber.from(numberOfTokens),
-      )
+    let erc20Token: ERC20Token | null = null
+    erc20Token = new ERC20Token(
+      tokenAddress.toLowerCase(),
+      account,
+      'logo.jpg',
+    )
+    const decimals = await erc20Token.decimals()
+    const numberOfTokens = utils.parseUnits(amount, decimals)
+    const transferResponse = await erc20Token.transfer(
+      to,
+      BigNumber.from(numberOfTokens),
+    )
 
-      const receipt = await transferResponse.wait()
-      navigation.navigate('TransactionReceived', {
-        amount,
-        to,
-        token: await erc20Token.symbol(),
-        txHash: receipt.transactionHash,
-      })
-    } catch (error) {
-      console.error('error', error)
-    }
+    setTx(transferResponse)
+    setTxConfirmed(false)
+    await transferResponse.wait()
+    setTxConfirmed(true)
   }
+
   const transferRBTC = async () => {
-    const connectedWallet = await getSigner()
     let rbtcToken: RBTCToken | null = null
-    rbtcToken = new RBTCToken(connectedWallet, 'logo.jpg', 31)
+    rbtcToken = new RBTCToken(account, 'logo.jpg', 31)
 
     const transferResponse = await rbtcToken.transfer(
       to,
       utils.parseEther(amount),
     )
 
-    const receipt = await transferResponse.wait()
-    navigation.navigate('TransactionReceived', {
-      amount,
-      to,
-      token: 'RBTC',
-      txHash: receipt.transactionHash,
-    })
+    setTx(transferResponse)
+    setTxConfirmed(false)
+    await transferResponse.wait()
+    setTxConfirmed(true)
+
   }
 
   return (
     <ScrollView>
+      <View style={{
+        flex: 1,
+        flexDirection: "column"
+      }}><Paragraph>From: {smartAddress}</Paragraph></View>
       <View style={styles.section}>
         <TextInput
           onChangeText={text => setTo(text)}
@@ -147,8 +121,7 @@ const SendTransaction: React.FC<Interface> = ({ navigation, route }) => {
       <View style={styles.section}>
         <Picker
           selectedValue={token}
-          onValueChange={itemValue => setToken(itemValue)}
-          style={{ height: 50, width: 150 }}>
+          onValueChange={itemValue => setToken(itemValue)}>
           {metadataTokens.map(token => (
             <Picker.Item
               key={token.symbol}
@@ -169,6 +142,7 @@ const SendTransaction: React.FC<Interface> = ({ navigation, route }) => {
           <Button onPress={reviewTransaction} title="Next" />
         </View>
       )}
+      {tx && <Paragraph>{tx.hash}{txConfirmed && ' confirmed'}</Paragraph>}
     </ScrollView>
   )
 }
@@ -186,6 +160,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC',
+    flex: 1
   },
 })
 

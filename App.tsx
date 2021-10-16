@@ -18,12 +18,15 @@ import './shim'
 import '@ethersproject/shims' // ref: https://docs.ethers.io/v5/cookbook/react-native/#cookbook-reactnative
 
 import RootNavigation from './src/RootNavigation'
+import { WalletProviderElement } from './src/state/AppContext'
 
 const App = () => {
   return (
     <SafeAreaView>
-      <StatusBar />
-      <RootNavigation />
+      <WalletProviderElement>
+        <StatusBar />
+        <RootNavigation />
+      </WalletProviderElement>
     </SafeAreaView>
   )
 }
