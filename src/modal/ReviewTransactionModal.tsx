@@ -1,14 +1,9 @@
 import React, { useState } from 'react'
 import { Modal, StyleSheet, TextInput, View } from 'react-native'
-import { Transaction } from '@rsksmart/rlogin-eip1193-types'
 
 import Button from '../components/button'
 import { Header2, Paragraph } from '../components/typography'
-
-export interface ReviewTransactionDataI {
-  transaction: Transaction
-  handleConfirm: (transaction: Transaction | null) => void
-}
+import { QueuedTransaction, TransactionRequest } from '../lib/core/Account'
 
 /**
  * Used for UI only to make editing transactions easier. Allows for
@@ -16,31 +11,41 @@ export interface ReviewTransactionDataI {
  */
 interface StringTransaction {
   to: string
-  from?: string
-  value?: string | number
-  data?: string
-  gasLimit: string // string for easier editing below
+  from: string
+  value: string
+  data: string
+  gasLimit: string
   gasPrice: string
 }
 
 interface Interface {
-  transaction: Transaction
-  closeModal: (transaction: Transaction | null) => void
+  queuedTransactionRequest: QueuedTransaction
+  closeModal: () => void
 }
 
 const ReviewTransactionModal: React.FC<Interface> = ({
-  transaction,
+  queuedTransactionRequest,
   closeModal,
 }) => {
+  const { transactionRequest } = queuedTransactionRequest
+
+  // string object helpers
+  const convertValueToString = (value?: any) => (value ? value.toString() : '')
+  const convertNumberToString = (value?: any) =>
+    value ? value.toString() : '0'
+
+  const convertTransactionToStrings = (tx: TransactionRequest) => ({
+    to: convertValueToString(tx.to),
+    from: convertValueToString(tx.from),
+    value: convertNumberToString(tx.value),
+    // nonce: convertNumberToString(tx.nonce),
+    data: convertValueToString(tx.data),
+    gasLimit: convertNumberToString(tx.gasLimit),
+    gasPrice: convertNumberToString(tx.gasPrice),
+  })
+
   const [updateTransaction, setUpdateTransaction] = useState<StringTransaction>(
-    {
-      to: transaction.to,
-      from: transaction.from,
-      value: transaction.value,
-      data: transaction.data,
-      gasLimit: transaction.gasLimit ? transaction.gasLimit.toString() : '',
-      gasPrice: transaction.gasPrice ? transaction.gasPrice.toString() : '',
-    },
+    convertTransactionToStrings(transactionRequest),
   )
 
   // gasLimit can be a number or empty (temporarly)
@@ -65,11 +70,18 @@ const ReviewTransactionModal: React.FC<Interface> = ({
 
   // convert from string to Transaction and pass out of component
   const confirmTransaction = () => {
-    closeModal({
+    queuedTransactionRequest.confirm({
       ...updateTransaction,
+      value: parseInt(updateTransaction.value, 10),
       gasLimit: parseInt(updateTransaction.gasLimit, 10),
       gasPrice: parseFloat(updateTransaction.gasPrice),
     })
+    closeModal()
+  }
+
+  const cancelTransaction = () => {
+    queuedTransactionRequest.cancel()
+    closeModal()
   }
 
   return (
@@ -78,13 +90,14 @@ const ReviewTransactionModal: React.FC<Interface> = ({
         animationType="slide"
         transparent={false}
         visible={true}
-        onRequestClose={() => closeModal(null)}>
+        onRequestClose={cancelTransaction}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Header2>Review Transaction</Header2>
-            <Paragraph>to: {transaction?.to}</Paragraph>
-            <Paragraph>from: {transaction?.from}</Paragraph>
-            <Paragraph>value: {transaction?.value}</Paragraph>
+            <Paragraph>to: {transactionRequest.to}</Paragraph>
+            <Paragraph>from: {transactionRequest.from}</Paragraph>
+            <Paragraph>value: {transactionRequest.value}</Paragraph>
+            <Paragraph>data: {transactionRequest.data}</Paragraph>
 
             <View style={styles.row}>
               <View style={styles.column}>
@@ -92,7 +105,7 @@ const ReviewTransactionModal: React.FC<Interface> = ({
               </View>
               <View style={styles.column}>
                 <TextInput
-                  value={updateTransaction.gasLimit?.toString()}
+                  value={updateTransaction.gasLimit}
                   style={styles.textInput}
                   onChangeText={changeGasLimit}
                   keyboardType="number-pad"
@@ -107,7 +120,7 @@ const ReviewTransactionModal: React.FC<Interface> = ({
               </View>
               <View style={styles.column}>
                 <TextInput
-                  value={updateTransaction.gasPrice?.toString()}
+                  value={updateTransaction.gasPrice}
                   style={styles.textInput || ''}
                   onChangeText={changeGasPrice}
                   keyboardType="number-pad"
@@ -128,7 +141,7 @@ const ReviewTransactionModal: React.FC<Interface> = ({
               <View style={styles.column}>
                 <Button
                   title="Cancel"
-                  onPress={() => closeModal(null)}
+                  onPress={cancelTransaction}
                   testID="Cancel.Button"
                 />
               </View>

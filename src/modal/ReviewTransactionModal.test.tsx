@@ -2,22 +2,36 @@ import React from 'react'
 import { render, fireEvent } from '@testing-library/react-native'
 
 import ReviewTransactionModal from './ReviewTransactionModal'
-import { Transaction } from '@rsksmart/rlogin-eip1193-types'
+import { QueuedTransaction } from '../lib/core/Account'
 
-describe('ReviewTransactionModal', () => {
-  const transaction: Transaction = {
-    to: '0x123',
-    from: '0x456',
-    data: '',
-    value: 1000,
-    gasLimit: 10000,
-    gasPrice: 0.068,
-  }
+describe('ReviewTransactionModal', function (this: {
+  confirm: ReturnType<typeof jest.fn>
+  cancel: ReturnType<typeof jest.fn>
+  queuedTransaction: QueuedTransaction
+}) {
+  beforeEach(() => {
+    this.confirm = jest.fn()
+    this.cancel = jest.fn()
+
+    this.queuedTransaction = {
+      id: 0,
+      transactionRequest: {
+        to: '0x123',
+        from: '0x456',
+        data: '',
+        value: 1000,
+        gasLimit: 10000,
+        gasPrice: 0.068,
+      },
+      confirm: this.confirm,
+      cancel: this.cancel,
+    }
+  })
 
   it('renders', () => {
     const { getAllByText, getByPlaceholderText } = render(
       <ReviewTransactionModal
-        transaction={transaction}
+        queuedTransactionRequest={this.queuedTransaction}
         closeModal={jest.fn()}
       />,
     )
@@ -32,44 +46,50 @@ describe('ReviewTransactionModal', () => {
     const closeModal = jest.fn()
     const { getByTestId } = render(
       <ReviewTransactionModal
-        transaction={transaction}
+        queuedTransactionRequest={this.queuedTransaction}
         closeModal={closeModal}
       />,
     )
     fireEvent.press(getByTestId('Confirm.Button'))
-    expect(closeModal).toBeCalledWith(transaction)
+    expect(this.confirm).toBeCalledWith(
+      this.queuedTransaction.transactionRequest,
+    )
+    expect(closeModal).toBeCalled()
   })
 
   it('renturns nothing if cancelled', () => {
     const closeModal = jest.fn()
     const { getByTestId } = render(
       <ReviewTransactionModal
-        transaction={transaction}
+        queuedTransactionRequest={this.queuedTransaction}
         closeModal={closeModal}
       />,
     )
 
     fireEvent.press(getByTestId('Cancel.Button'))
-    expect(closeModal).toBeCalledWith(null)
+    expect(this.cancel).toBeCalled()
+    expect(closeModal).toBeCalled()
   })
 
   it('allows the user to change the text inputs', () => {
     const closeModal = jest.fn()
     const { getByTestId } = render(
       <ReviewTransactionModal
-        transaction={transaction}
+        queuedTransactionRequest={this.queuedTransaction}
         closeModal={closeModal}
       />,
     )
 
     fireEvent.changeText(getByTestId('gasLimit.TextInput'), '20')
-    fireEvent.changeText(getByTestId('gasPrice.TextInput'), '0.123')
+    fireEvent.changeText(getByTestId('gasPrice.TextInput'), '1000')
 
     fireEvent.press(getByTestId('Confirm.Button'))
-    expect(closeModal).toBeCalledWith({
-      ...transaction,
+    expect(closeModal).toBeCalled()
+
+    expect(this.confirm).toBeCalledWith({
+      ...this.queuedTransaction.transactionRequest,
       gasLimit: 20,
-      gasPrice: 0.123,
+      gasPrice: 1000,
     })
   })
 })

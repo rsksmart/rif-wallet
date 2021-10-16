@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 import { NavigationProp, ParamListBase } from '@react-navigation/native'
 
@@ -6,87 +6,55 @@ import Button from './components/button'
 import { Header1, Header2, Paragraph } from './components/typography'
 import { Account, Wallet } from './lib/core'
 
-import { stateInterface, initialState } from './state'
-import { Transaction } from '@rsksmart/rlogin-eip1193-types'
+import { WalletProviderContext } from './state/AppContext'
+import { removeStorage, StorageKeys } from './storage'
+import CopyComponent from './components/copy'
 
 interface Interface {
   navigation: NavigationProp<ParamListBase>
   route: any
 }
 
-const WalletApp: React.FC<Interface> = ({ route, navigation }) => {
-  // App's state:
-  const [state, setState] = useState<stateInterface>(initialState)
-
+const WalletApp: React.FC<Interface> = ({ navigation }) => {
   // Temporary component state:
-  const [componentState, setComponentState] = useState({
-    confirmResponse: undefined,
-  })
-
-  // component's functions
-  const createWallet = () => {
-    const wallet = Wallet.create()
-    setState({
-      ...state,
-      mnemonic: wallet.getMnemonic,
-    })
+  interface componentStateI {
+    confirmResponse?: string
+    wallet?: Wallet
   }
+
+  const [wallet, setWallet] = useState<Wallet | undefined>(undefined)
+  const [accounts, setAccounts] = useState<Account[]>([])
+
+  const context = useContext(WalletProviderContext)
+  useEffect(() => {
+    setWallet(context.wallet)
+  }, [context.wallet, wallet])
 
   const addAccount = () => {
-    const account = state.wallet.getAccount(state.accounts.length)
-    setState({
-      ...state,
-      accounts: state.accounts.concat(account),
-    })
-  }
-
-  const seeSmartWallet = (account: Account) => {
-    // eslint-disable-next-line no-extra-semi
-    ;(navigation as any).push('SmartWallet', { account })
-  }
-
-  const resetState = () => {
-    setState(initialState)
-  }
-
-  const reviewTransaction = () => {
-    // to/from/value/data should be provided by the user and gases should be estimated
-    const transaction: Transaction = {
-      to: '0x123456',
-      from: '0x987654',
-      value: 1000,
-      gasLimit: 10000,
-      gasPrice: 0.067,
+    if (wallet) {
+      wallet
+        ?.getAccount(accounts.length)
+        .then(account => setAccounts(accounts.concat(account)))
     }
-
-    route.params.reviewTransaction({
-      transaction,
-      handleConfirm: transactionConfirmed,
-    })
   }
 
-  const transactionConfirmed = (transaction: Transaction | null) =>
-    setComponentState({
-      ...componentState,
-      confirmResponse: transaction
-        ? 'transaction:' + JSON.stringify(transaction)
-        : 'Transaction Cancelled!',
-    })
+  const seeSmartWallet = (account: Account) =>
+    navigation.navigate('SmartWallet', { account })
 
   return (
     <ScrollView>
       <Header1>sWallet</Header1>
       <View style={styles.section}>
-        <Button onPress={createWallet} title="Create RIF Smart Wallet" />
-        <Paragraph>{state.mnemonic}</Paragraph>
+        <Header2>Wallet:</Header2>
+        {wallet && <CopyComponent value={wallet.getMnemonic} />}
       </View>
 
       <View style={styles.section}>
         <Header2>Accounts:</Header2>
-        {state.accounts.map((account: Account, index: number) => {
+        {accounts.map((account: Account, index: number) => {
           return (
             <View key={index}>
-              <Paragraph>{account.address}</Paragraph>
+              <CopyComponent value={account.address} />
               <Button
                 title="See smart wallet"
                 onPress={() => seeSmartWallet(account)}
@@ -98,14 +66,14 @@ const WalletApp: React.FC<Interface> = ({ route, navigation }) => {
       </View>
 
       <View style={styles.section}>
-        <Button onPress={reviewTransaction} title="Review Transaction" />
-        {componentState.confirmResponse && (
-          <Paragraph>{componentState.confirmResponse}</Paragraph>
-        )}
-      </View>
-
-      <View style={styles.section}>
-        <Button onPress={resetState} title="reset" />
+        <Header2>Settings</Header2>
+        <Button
+          onPress={() => removeStorage(StorageKeys.MNEMONIC)}
+          title="Clear RN Storage"
+        />
+        <Paragraph>
+          You will need to refresh the app for this to fully work.
+        </Paragraph>
       </View>
     </ScrollView>
   )
