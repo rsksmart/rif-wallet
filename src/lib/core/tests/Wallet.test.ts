@@ -5,7 +5,7 @@ import {
   private_key_testnet_1,
 } from './test-case'
 
-describe('RIFWallet', () => {
+describe.skip('RIFWallet', () => {
   describe('create a wallet', () => {
     test('wallets have a 24 word mneomnic', () => {
       const wallet = Wallet.create()
