@@ -16,11 +16,11 @@ class Wallet {
     return wallet
   }
 
-  getAccount(index: number) {
+  async getAccount(index: number) {
     const seed = mnemonicToSeedSync(this.mnemonic)
     const hdKey = fromSeed(seed).derivePath("m/44'/37310'/0'/0")
     const privateKey = hdKey.derive(index).privateKey!.toString('hex')
-    return new Account({ privateKey })
+    return Account.create({ privateKey })
   }
 
   get getMnemonic() {
