@@ -25,6 +25,7 @@ const CopyComponent: React.FC<Interface> = ({ value }) => {
 
 const styles = StyleSheet.create({
   row: {
+    width: '100%',
     display: 'flex',
     flexDirection: 'row',
   },

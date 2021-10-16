@@ -5,9 +5,9 @@ import Button from '../components/button'
 import { Header2, Paragraph } from '../components/typography'
 import { Account } from '../lib/core'
 import { SmartWalletFactory } from '../lib/core/smartWallet/smart-wallet-factory'
-import { SmartWallet } from '../lib/core/smartWallet/smart-wallet'
 
 import { Contract, BigNumber } from 'ethers'
+import CopyComponent from '../components/copy'
 
 const abi = [
   'function balanceOf(address owner) view returns (uint256)',
@@ -34,6 +34,7 @@ const SmartWalletComponent = ({ route }: { route: any }) => {
 
   const [rifBalance, setRifBalance] = useState<null | BigNumber>(null)
   const [sendRifTx, setSendRifTx] = useState<null | Transaction>(null)
+  const [sendRifResponse, setSendRifResponse] = useState<null | string>(null)
 
   const account = route.params.account as Account
   console.log('eoa', account.address)
@@ -59,19 +60,20 @@ const SmartWalletComponent = ({ route }: { route: any }) => {
   }
 
   const sendRif = async () => {
-    const txPromise = rif.transfer(
-      '0x248b320687ebf655f9ee7f62f0388c79fbb7b2f4',
-      BigNumber.from('10000000000000000000'),
-    )
-    console.log(txPromise)
-    const nextTx = account.nextTransaction()
-    console.log('nextTx', nextTx)
-    nextTx.confirm()
-    console.log('confirmed')
-    const tx = await txPromise
-    setSendRifTx(tx)
-    await tx.wait()
-    await rif.balanceOf(smartWalletAddress).then(setRifBalance)
+    setSendRifResponse(null)
+    rif
+      .transfer(
+        '0x248b320687ebf655f9ee7f62f0388c79fbb7b2f4',
+        BigNumber.from('10000000000000000000'),
+      )
+      .then((tx: Transaction) => {
+        setSendRifTx(tx)
+        setSendRifResponse('Transaction sent.')
+      })
+      .catch((err: Error) => {
+        console.log('SmartWallet.tsx catach ?', err)
+        setSendRifResponse(`Transaction Err: ${err.message}`)
+      })
   }
 
   const isSmartWalletDeployed = !smartWalletCode || smartWalletCode !== '0x'
@@ -79,11 +81,16 @@ const SmartWalletComponent = ({ route }: { route: any }) => {
   return (
     <ScrollView>
       <Header2>Smart Wallet</Header2>
-      <Paragraph>EOA: {account.address}</Paragraph>
+      <Paragraph>EOA:</Paragraph>
+      <CopyComponent value={account.address} />
       <Button title="Get info" onPress={getInfo} />
-      <Paragraph>RBTC Balance (EOA): {eoaBalance && eoaBalance.toString()}</Paragraph>
-      <Paragraph>Smart wallet address: {smartWalletAddress}</Paragraph>
-      <Paragraph>Smart wallet code: {smartWalletCode}</Paragraph>
+      <Paragraph>
+        RBTC Balance (EOA): {eoaBalance && eoaBalance.toString()}
+      </Paragraph>
+      <Paragraph>Smart Wallet Address:</Paragraph>
+      <CopyComponent value={smartWalletAddress} />
+      <Paragraph>Smart wallet code:</Paragraph>
+      <CopyComponent value={smartWalletCode} />
       <Paragraph>
         RIF Token balance: {rifBalance && rifBalance.toString()}
       </Paragraph>
@@ -100,7 +107,13 @@ const SmartWalletComponent = ({ route }: { route: any }) => {
       {isSmartWalletDeployed && (
         <>
           <Button title="Send RIF back to faucet" onPress={sendRif} />
-          <Paragraph>Send RIF tx: {sendRifTx && sendRifTx.hash}</Paragraph>
+          {sendRifResponse && <Paragraph>{sendRifResponse}</Paragraph>}
+          {sendRifTx && (
+            <>
+              <Paragraph>Send RIF hash:</Paragraph>
+              <CopyComponent value={sendRifTx.hash || ''} />
+            </>
+          )}
         </>
       )}
     </ScrollView>

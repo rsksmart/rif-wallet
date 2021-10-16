@@ -27,15 +27,15 @@ describe('RIFWallet', () => {
   })
 
   describe('derives accounts', () => {
-    test('creates a private key for an account', () => {
+    test('creates a private key for an account', async () => {
       const wallet = new Wallet({ mnemonic })
-      const account = wallet.getAccount(0)
+      const account = await wallet.getAccount(0)
       expect(account.privateKey).toEqual(private_key_testnet_0)
     })
 
-    test('creates the tree of private keys', () => {
+    test('creates the tree of private keys', async () => {
       const wallet = new Wallet({ mnemonic })
-      const account = wallet.getAccount(1)
+      const account = await wallet.getAccount(1)
       expect(account.privateKey).toEqual(private_key_testnet_1)
     })
   })

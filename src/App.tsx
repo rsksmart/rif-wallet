@@ -6,7 +6,6 @@ import Button from './components/button'
 import { Header1, Header2, Paragraph } from './components/typography'
 import { Account, Wallet } from './lib/core'
 
-import { Transaction } from '@rsksmart/rlogin-eip1193-types'
 import { WalletProviderContext } from './state/AppContext'
 import { removeStorage, StorageKeys } from './storage'
 import CopyComponent from './components/copy'
@@ -16,15 +15,12 @@ interface Interface {
   route: any
 }
 
-const WalletApp: React.FC<Interface> = ({ route, navigation }) => {
+const WalletApp: React.FC<Interface> = ({ navigation }) => {
   // Temporary component state:
   interface componentStateI {
     confirmResponse?: string
     wallet?: Wallet
   }
-  const [componentState, setComponentState] = useState<componentStateI>({
-    confirmResponse: undefined,
-  })
 
   const [wallet, setWallet] = useState<Wallet | undefined>(undefined)
   const [accounts, setAccounts] = useState<Account[]>([])
@@ -35,37 +31,15 @@ const WalletApp: React.FC<Interface> = ({ route, navigation }) => {
   }, [context.wallet, wallet])
 
   const addAccount = () => {
-    if (!!wallet) {
-      wallet?.getAccount(accounts.length).then(account => setAccounts(accounts.concat(account)))
+    if (wallet) {
+      wallet
+        ?.getAccount(accounts.length)
+        .then(account => setAccounts(accounts.concat(account)))
     }
   }
 
   const seeSmartWallet = (account: Account) =>
     navigation.navigate('SmartWallet', { account })
-
-  const reviewTransaction = () => {
-    // to/from/value/data should be provided by the user and gases should be estimated
-    const transaction: Transaction = {
-      to: '0x123456',
-      from: '0x987654',
-      value: 1000,
-      gasLimit: 10000,
-      gasPrice: 0.067,
-    }
-
-    route.params.reviewTransaction({
-      transaction,
-      handleConfirm: transactionConfirmed,
-    })
-  }
-
-  const transactionConfirmed = (transaction: Transaction | null) =>
-    setComponentState({
-      ...componentState,
-      confirmResponse: transaction
-        ? 'transaction:' + JSON.stringify(transaction)
-        : 'Transaction Cancelled!',
-    })
 
   return (
     <ScrollView>
@@ -89,13 +63,6 @@ const WalletApp: React.FC<Interface> = ({ route, navigation }) => {
           )
         })}
         <Button onPress={addAccount} title="Add account" />
-      </View>
-
-      <View style={styles.section}>
-        <Button onPress={reviewTransaction} title="Review Transaction" />
-        {componentState.confirmResponse && (
-          <Paragraph>{componentState.confirmResponse}</Paragraph>
-        )}
       </View>
 
       <View style={styles.section}>
