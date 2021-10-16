@@ -3,7 +3,6 @@ import { render, fireEvent } from '@testing-library/react-native'
 
 import ReviewTransactionModal from './ReviewTransactionModal'
 import { QueuedTransaction } from '../lib/core/Account'
-import { execPath } from 'process'
 
 describe('ReviewTransactionModal', function (this: {
   confirm: ReturnType<typeof jest.fn>
@@ -25,7 +24,7 @@ describe('ReviewTransactionModal', function (this: {
         gasPrice: 0.068,
       },
       confirm: this.confirm,
-      cancel: this.cancel
+      cancel: this.cancel,
     }
   })
 
@@ -52,7 +51,9 @@ describe('ReviewTransactionModal', function (this: {
       />,
     )
     fireEvent.press(getByTestId('Confirm.Button'))
-    expect(this.confirm).toBeCalledWith(this.queuedTransaction.transactionRequest)
+    expect(this.confirm).toBeCalledWith(
+      this.queuedTransaction.transactionRequest,
+    )
     expect(closeModal).toBeCalled()
   })
 

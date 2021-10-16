@@ -22,7 +22,8 @@ class Wallet {
     this.handleUxInteraction = handleUxInteraction
   }
 
-  static create(handleUxInteraction?: any): Wallet { // TODO: disengage
+  static create(handleUxInteraction?: any): Wallet {
+    // TODO: disengage
     const mnemonic = generateMnemonic(24)
     const wallet = new Wallet({ mnemonic, handleUxInteraction })
     return wallet

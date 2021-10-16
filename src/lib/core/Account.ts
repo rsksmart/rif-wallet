@@ -111,7 +111,9 @@ class Account extends Wallet {
         this.queuedTransactions.push(queuedTransaction)
 
         // Pass transaction to the UI for the user's confirm or cancel:
-        if(!!this.handleUxInteraction) this.handleUxInteraction(queuedTransaction)
+        if (this.handleUxInteraction) {
+          this.handleUxInteraction(queuedTransaction)
+        }
       },
     )
       // transaction with user modified gasPrice/gasLimit:

@@ -12,12 +12,16 @@ import {
 describe('Wallet', () => {
   describe('info', () => {
     test('has an address', async () => {
-      const account = await Account.create({ privateKey: private_key_testnet_0 })
+      const account = await Account.create({
+        privateKey: private_key_testnet_0,
+      })
       expect(account.address.toLowerCase()).toEqual(address_testnet_0)
     })
 
     test('creates the correct address', async () => {
-      const account = await Account.create({ privateKey: private_key_testnet_1 })
+      const account = await Account.create({
+        privateKey: private_key_testnet_1,
+      })
       expect(account.address.toLowerCase()).toEqual(address_testnet_1)
     })
   })
@@ -28,7 +32,9 @@ describe('Wallet', () => {
     })
 
     test('returns account', async () => {
-      expect((await this.account.getAddress()).toLowerCase()).toEqual(address_testnet_0)
+      expect((await this.account.getAddress()).toLowerCase()).toEqual(
+        address_testnet_0,
+      )
     })
 
     test('signs messages', async () => {
