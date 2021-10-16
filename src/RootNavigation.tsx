@@ -11,7 +11,6 @@ import ReviewTransactionModal from './modal/ReviewTransactionModal'
 
 import SmartWallet from './tempScreens/SmartWallet'
 import { WalletProviderContext } from './state/AppContext'
-import { QueuedTransaction } from './lib/core/Account'
 
 interface Interface {}
 

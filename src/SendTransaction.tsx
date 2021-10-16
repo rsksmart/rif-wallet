@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Wallet, BigNumber, utils } from 'ethers'
+import { BigNumber, utils } from 'ethers'
 
 import { StyleSheet, View, ScrollView, TextInput } from 'react-native'
 import { Picker } from '@react-native-picker/picker'
 import { NavigationProp, ParamListBase } from '@react-navigation/native'
-import { Transaction } from '@rsksmart/rlogin-eip1193-types'
 
 import Button from './components/button'
 import {
@@ -36,12 +35,11 @@ interface Interface {
   route: any
 }
 
-const SendTransaction: React.FC<Interface> = ({ navigation, route }) => {
+const SendTransaction: React.FC<Interface> = ({ route }) => {
   const [smartAddress, setSmartAddress] = useState('')
   const [to, setTo] = useState('0x1D4F6A5FE927f0E0e4497B91CebfBcF64dA1c934')
   const [token, setToken] = useState(metadataTokens[0].address)
   const [amount, setAmount] = useState('')
-  const [loading, setLoading] = useState(false)
   const [tx, setTx] = useState<TransactionResponse | null>(null)
   const [txConfirmed, setTxConfirmed] = useState(false)
 
@@ -61,11 +59,7 @@ const SendTransaction: React.FC<Interface> = ({ navigation, route }) => {
 
   const transferERC20 = async (tokenAddress: string) => {
     let erc20Token: ERC20Token | null = null
-    erc20Token = new ERC20Token(
-      tokenAddress.toLowerCase(),
-      account,
-      'logo.jpg',
-    )
+    erc20Token = new ERC20Token(tokenAddress.toLowerCase(), account, 'logo.jpg')
     const decimals = await erc20Token.decimals()
     const numberOfTokens = utils.parseUnits(amount, decimals)
     const transferResponse = await erc20Token.transfer(
@@ -92,15 +86,13 @@ const SendTransaction: React.FC<Interface> = ({ navigation, route }) => {
     setTxConfirmed(false)
     await transferResponse.wait()
     setTxConfirmed(true)
-
   }
 
   return (
     <ScrollView>
-      <View style={{
-        flex: 1,
-        flexDirection: "column"
-      }}><Paragraph>From: {smartAddress}</Paragraph></View>
+      <View style={styles.sections}>
+        <Paragraph>From: {smartAddress}</Paragraph>
+      </View>
       <View style={styles.section}>
         <TextInput
           onChangeText={text => setTo(text)}
@@ -122,27 +114,27 @@ const SendTransaction: React.FC<Interface> = ({ navigation, route }) => {
         <Picker
           selectedValue={token}
           onValueChange={itemValue => setToken(itemValue)}>
-          {metadataTokens.map(token => (
+          {metadataTokens.map(metadataToken => (
             <Picker.Item
-              key={token.symbol}
-              label={token.symbol}
-              value={token.address}
+              key={metadataToken.symbol}
+              label={metadataToken.symbol}
+              value={metadataToken.address}
             />
           ))}
         </Picker>
       </View>
-      {loading && (
-        <View>
-          <Paragraph>Please wait...</Paragraph>
-        </View>
-      )}
-      {!loading && (
-        <View>
-          {/*<Button onPress={() => next(token)} title="Next" />*/}
-          <Button onPress={reviewTransaction} title="Next" />
-        </View>
-      )}
-      {tx && <Paragraph>{tx.hash}{txConfirmed && ' confirmed'}</Paragraph>}
+
+      <View style={styles.section}>
+        {/*<Button onPress={() => next(token)} title="Next" />*/}
+        <Button onPress={reviewTransaction} title="Next" />
+      </View>
+
+      <View style={styles.section}>
+        <Paragraph>
+          {tx && tx.hash}
+          {txConfirmed && ' confirmed'}
+        </Paragraph>
+      </View>
     </ScrollView>
   )
 }
@@ -155,12 +147,16 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     paddingLeft: 15,
   },
+  sections: {
+    flex: 1,
+    flexDirection: 'column',
+  },
   section: {
     marginTop: 5,
     marginBottom: 5,
     borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC',
-    flex: 1
+    flex: 1,
   },
 })
 

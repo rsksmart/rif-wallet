@@ -9,6 +9,7 @@ import {
   sig_testnet_0,
 } from './test-case'
 
+// eslint-disable-next-line jest/no-disabled-tests
 describe.skip('Wallet', () => {
   describe('info', () => {
     test('has an address', async () => {
