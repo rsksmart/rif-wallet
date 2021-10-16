@@ -339,6 +339,8 @@ PODS:
     - React-perflogger (= 0.65.1)
   - RNCClipboard (1.5.1):
     - React-Core
+  - RNCPicker (2.1.0):
+    - React-Core
   - RNGestureHandler (1.10.3):
     - React-Core
   - RNSecureStorage (1.0.82):
@@ -401,6 +403,7 @@ DEPENDENCIES:
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCClipboard (from `../node_modules/@react-native-community/clipboard`)"
+  - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNSecureStorage (from `../node_modules/rn-secure-storage/ios`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -484,6 +487,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCClipboard:
     :path: "../node_modules/@react-native-community/clipboard"
+  RNCPicker:
+    :path: "../node_modules/@react-native-picker/picker"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNSecureStorage:
@@ -536,6 +541,7 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: 85187f19dd9c47a7c102f9994f9d14e4dc2110de
   ReactCommon: eafed38eec7b591c31751bfa7494801618460459
   RNCClipboard: 41d8d918092ae8e676f18adada19104fa3e68495
+  RNCPicker: f7a40b21b915b7a187624d52f52b7bc2f73ea413
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNSecureStorage: 8b2b07278d80c48b3a881c56e604ab147372f243
   Yoga: aa0cb45287ebe1004c02a13f279c55a95f1572f4

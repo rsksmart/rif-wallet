@@ -2,6 +2,9 @@ import React, { useContext } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import WalletApp from './App'
+import SendTransaction from './SendTransaction'
+import TransactionReceived from './TransactionReceived'
+
 import { StyleSheet, View } from 'react-native'
 
 import ReviewTransactionModal from './modal/ReviewTransactionModal'
@@ -28,10 +31,21 @@ const RootNavigation: React.FC<Interface> = () => {
               component={WalletApp}
               options={sharedOptions}
             />
+
             <RootStack.Screen
               name="SmartWallet"
               component={SmartWallet}
               options={sharedOptions}
+            />
+            <RootStack.Screen
+              name="SendTransaction"
+              component={SendTransaction}
+              options={sharedOptions}
+            />
+
+            <RootStack.Screen
+              name="TransactionReceived"
+              component={TransactionReceived}
             />
           </RootStack.Group>
         </RootStack.Navigator>
