@@ -6,8 +6,10 @@ const createSmartWalletContract = address =>
 
 export class SmartWallet {
   constructor(address, signer) {
-    this.smartWalletContract = createSmartWalletContract(address).connect(signer)
+    this.smartWalletContract =
+      createSmartWalletContract(address).connect(signer)
   }
 
-  directExecute = (to, data, ...params) => this.smartWalletContract.directExecute(to, data, ...params)
+  directExecute = (to, data, ...params) =>
+    this.smartWalletContract.directExecute(to, data, ...params)
 }

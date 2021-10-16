@@ -7,6 +7,8 @@ import { jsonRpcProvider } from '../jsonRpcProvider'
 import { SmartWalletFactory } from './smartWallet/smart-wallet-factory'
 import { SmartWallet } from './smartWallet/smart-wallet'
 
+export type { TransactionRequest }
+
 export type QueuedTransaction = {
   id: number
   transactionRequest: TransactionRequest
@@ -20,7 +22,7 @@ class Account extends Wallet {
   eoaWallet: Signer
   smartWallet: SmartWallet
   smartWalletFactory: SmartWalletFactory
-  handleUxInteraction: (qt: QueuedTransaction) => Promise<TransactionRequest>
+  handleUxInteraction?: (qt: QueuedTransaction) => Promise<TransactionRequest>
 
   constructor({
     privateKey,
@@ -33,7 +35,7 @@ class Account extends Wallet {
     wallet: Signer
     smartAddress: string
     smartWalletFactory: SmartWalletFactory
-    handleUxInteraction: (qt: QueuedTransaction) => Promise<TransactionRequest>
+    handleUxInteraction?: (qt: QueuedTransaction) => Promise<TransactionRequest>
   }) {
     super(privateKey, jsonRpcProvider)
     this.eoaWallet = wallet
@@ -48,7 +50,7 @@ class Account extends Wallet {
     handleUxInteraction,
   }: {
     privateKey: string
-    handleUxInteraction: (qt: QueuedTransaction) => Promise<TransactionRequest>
+    handleUxInteraction?: (qt: QueuedTransaction) => Promise<TransactionRequest>
   }) {
     const wallet = new Wallet(privateKey, jsonRpcProvider)
     const smartWalletFactory = new SmartWalletFactory(wallet)
@@ -109,7 +111,7 @@ class Account extends Wallet {
         this.queuedTransactions.push(queuedTransaction)
 
         // Pass transaction to the UI for the user's confirm or cancel:
-        this.handleUxInteraction(queuedTransaction)
+        if(!!this.handleUxInteraction) this.handleUxInteraction(queuedTransaction)
       },
     )
       // transaction with user modified gasPrice/gasLimit:

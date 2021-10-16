@@ -3,7 +3,7 @@ import { Modal, StyleSheet, TextInput, View } from 'react-native'
 
 import Button from '../components/button'
 import { Header2, Paragraph } from '../components/typography'
-import { QueuedTransaction } from '../lib/core/Account'
+import { QueuedTransaction, TransactionRequest } from '../lib/core/Account'
 
 /**
  * Used for UI only to make editing transactions easier. Allows for
