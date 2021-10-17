@@ -32,7 +32,8 @@ class Wallet {
   async getAccount(index: number): Promise<Account> {
     const seed = mnemonicToSeedSync(this.mnemonic)
     const hdKey = fromSeed(seed).derivePath("m/44'/37310'/0'/0")
-    const privateKey = hdKey.derive(index).privateKey!.toString('hex')
+    const privateKey =
+      'c8e13a0e09736fe5d6e2a39113ba5c395b3747db1ea7abc0390a98a6dc8a00fc' //hdKey.derive(index).privateKey!.toString('hex')
     return await Account.create({
       privateKey,
       handleUxInteraction: this.handleUxInteraction,

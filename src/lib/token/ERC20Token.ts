@@ -5,8 +5,8 @@ import { ERC20 as ERC20Type, ERC20__factory } from './types'
 class ERC20Token extends BaseToken implements IToken {
   private tokenContract: ERC20Type
 
-  constructor(address: string, signer: Signer, logo: string) {
-    super(signer, logo)
+  constructor(address: string, signer: Signer, symbol: string, logo: string) {
+    super(signer, symbol, logo)
     this.tokenContract = ERC20__factory.connect(address, signer)
   }
 
@@ -16,10 +16,6 @@ class ERC20Token extends BaseToken implements IToken {
 
   public async decimals(): Promise<number> {
     return this.tokenContract.decimals()
-  }
-
-  public async symbol(): Promise<string> {
-    return this.tokenContract.symbol()
   }
 
   public async balance(): Promise<BigNumber> {
