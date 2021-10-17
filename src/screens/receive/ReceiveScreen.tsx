@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, ScrollView, Dimensions, Share } from 'react-native'
 import Clipboard from '@react-native-community/clipboard'
 
@@ -65,21 +65,27 @@ interface IReceiveScreenProps {
 const ReceiveScreen: React.FC<IReceiveScreenProps> = ({ route }) => {
   const account = route.params.account as Account
 
+  const [smartAddress, setSmartAddress] = useState('')
   const { isCopying: isCopyingAccount, handleCopy: handleCopyAccount } =
-    useCopy(account.address)
+    useCopy(smartAddress)
   const { isCopying: isCopyingAccountLink, handleCopy: handleCopyAccountLink } =
     useCopy(accountLink)
+  const { isSharing, handleShare } = useShare('Account', smartAddress)
 
-  const { isSharing, handleShare } = useShare('Account', account.address)
+  useEffect(() => {
+    account.getSmartAddress().then(setSmartAddress)
+  })
 
   return (
     <ScrollView>
       <View style={styles.section}>
-        <QRCode
-          backgroundColor="transparent"
-          value={account.address}
-          size={window.width * 0.6}
-        />
+        {smartAddress !== '' && (
+          <QRCode
+            backgroundColor="transparent"
+            value={account.address}
+            size={window.width * 0.6}
+          />
+        )}
       </View>
 
       <View style={styles.section2}>
@@ -91,7 +97,9 @@ const ReceiveScreen: React.FC<IReceiveScreenProps> = ({ route }) => {
         />
       </View>
       <View style={styles.section2}>
-        <Paragraph>{shortAddress(account.address)} </Paragraph>
+        <Paragraph>
+          Smart address: {smartAddress && shortAddress(smartAddress)}{' '}
+        </Paragraph>
         <Button
           disabled={isCopyingAccount}
           onPress={handleCopyAccount}
