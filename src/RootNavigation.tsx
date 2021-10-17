@@ -8,6 +8,7 @@ import TransactionReceived from './TransactionReceived'
 import { StyleSheet, View } from 'react-native'
 
 import ReviewTransactionModal from './modal/ReviewTransactionModal'
+import ReceiveScreen from './screens/receive/ReceiveScreen'
 
 import SmartWallet from './tempScreens/SmartWallet'
 import { WalletProviderContext } from './state/AppContext'
@@ -35,6 +36,11 @@ const RootNavigation: React.FC<Interface> = () => {
             <RootStack.Screen
               name="SmartWallet"
               component={SmartWallet}
+              options={sharedOptions}
+            />
+            <RootStack.Screen
+              name="Receive"
+              component={ReceiveScreen}
               options={sharedOptions}
             />
             <RootStack.Screen

@@ -60,6 +60,10 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
                 onPress={() => seeSmartWallet(account)}
               />
               <Button
+                onPress={() => navigation.navigate('Receive', { account })}
+                title="Receive"
+              />
+              <Button
                 onPress={() => {
                   navigation.navigate('SendTransaction', { account })
                 }}
