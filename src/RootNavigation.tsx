@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import WalletApp from './App'
-import SendTransaction from './SendTransaction'
+import SendTransaction from './screens/send/SendTransaction'
 import TransactionReceived from './TransactionReceived'
 
 import { StyleSheet, View } from 'react-native'
