@@ -1,0 +1,58 @@
+import React from 'react'
+
+import mockClipboard from './clipboard-mock'
+
+import { render, fireEvent, act, waitFor } from '@testing-library/react-native'
+
+import ReceiveScreen from './ReceiveScreen'
+
+jest.mock('@react-native-community/clipboard', () => mockClipboard)
+
+describe('ReceiveScreen', () => {
+  const route = {
+    params: {
+      account: {
+        getSmartAddress: jest.fn(() =>
+          Promise.resolve('0xbd4c8e11cf2c560382e0dbd6aeef538debf1d449'),
+        ),
+      },
+    },
+  }
+
+  it('remove', () => {
+    expect(true).toBe(true)
+  })
+
+  it('renders', async () => {
+    const { getAllByText, rerender } = render(<ReceiveScreen route={route} />)
+
+    await waitFor(() =>
+      expect(route.params.account.getSmartAddress).toHaveBeenCalledTimes(1),
+    )
+
+    act(() => {
+      rerender(<ReceiveScreen route={route} />)
+    })
+
+    // make sure elements are showing up
+    expect(getAllByText('copy').length).toBe(2)
+    expect(getAllByText('share').length).toBe(1)
+    expect(getAllByText(/0xbd4c\.\.\.d449/).length).toBe(1)
+  })
+
+  it('can copy address', () => {
+    jest.useFakeTimers()
+
+    const { getByTestId, rerender } = render(<ReceiveScreen route={route} />)
+
+    act(() => {
+      rerender(<ReceiveScreen route={route} />)
+    })
+
+    act(() => {
+      fireEvent.press(getByTestId('Copy.Account.Button'))
+    })
+
+    expect(mockClipboard.setString).toBeCalledTimes(1)
+  })
+})
