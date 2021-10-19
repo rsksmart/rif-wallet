@@ -11,6 +11,7 @@ import { getStorage, setStorage, StorageKeys } from '../storage'
 
 export interface WalletProviderContextInterface {
   wallet?: RIFWallet
+  getMnemonic: () => string
   // setWallet: (wallet: RIFWallet) => void
   // kms?: KeyManagementSystem
   walletRequest?: Request
@@ -21,8 +22,8 @@ export interface WalletProviderContextInterface {
 
 export const WalletProviderContext =
   React.createContext<WalletProviderContextInterface>({
-    // kms: undefined,
     wallet: undefined,
+    getMnemonic: () => '',
     walletRequest: undefined,
     handleUxInteraction: (_qt: Request) => Promise.resolve({}),
     resolveUxInteraction: () => null,
@@ -54,6 +55,8 @@ export const WalletProviderElement: React.FC<Web3ProviderElementInterface> = ({
 
   const initialContext: WalletProviderContextInterface = {
     wallet,
+    getMnemonic: () =>
+      keyManagementSystem ? keyManagementSystem?.mnemonic : '',
     walletRequest: walletRequestQue,
     handleUxInteraction,
     resolveUxInteraction,

@@ -23,12 +23,17 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
   }
 
   const [wallet, setWallet] = useState<RIFWallet[]>([])
+  const [mnemonic, setMnemonic] = useState<string>('')
   // const [accounts, setAccounts] = useState<Account[]>([])
 
   const context = useContext(WalletProviderContext)
   useEffect(() => {
     context.wallet && setWallet([context.wallet])
   }, [context.wallet, wallet])
+
+  useEffect(() => {
+    setMnemonic(context.getMnemonic())
+  }, [])
 
   /*
   const addAccount = () => {
@@ -47,12 +52,12 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
     <ScrollView>
       <Header1>sWallet</Header1>
       <View style={styles.section}>
-        <Header2>Wallet:</Header2>
-        {/*wallet && <CopyComponent value={wallet.getMnemonic} />*/}
+        <Header2>KMS:</Header2>
+        <CopyComponent value={mnemonic} />
       </View>
 
       <View style={styles.section}>
-        <Header2>Accounts:</Header2>
+        <Header2>RIF Wallets:</Header2>
         {wallet.map((account: RIFWallet, index: number) => {
           return (
             <View key={index}>
