@@ -7,7 +7,10 @@ describe('SmartWalletFactory', function (this: {
   beforeEach(async () => {
     const smartWalletFactoryContract = await deploySmartWalletFactory()
     const wallet = await createNewTestWallet()
-    this.smartWalletFactory = await SmartWalletFactory.create(wallet, smartWalletFactoryContract.address)
+    this.smartWalletFactory = await SmartWalletFactory.create(
+      wallet,
+      smartWalletFactoryContract.address,
+    )
   })
 
   test('has a smart address', async () => {

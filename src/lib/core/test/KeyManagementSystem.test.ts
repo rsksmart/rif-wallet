@@ -23,9 +23,7 @@ describe('KeyManagementSystem', () => {
     expect(kms.mnemonic).toEqual(testCase.mnemonic)
   })
 
-  describe('account derivation', function (this: {
-    kms: KeyManagementSystem
-  }) {
+  describe('account derivation', function (this: { kms: KeyManagementSystem }) {
     beforeEach(() => {
       this.kms = KeyManagementSystem.import(testCase.mnemonic)
     })
@@ -41,7 +39,9 @@ describe('KeyManagementSystem', () => {
         this.kms.nextWallet(31)
         const wallet2 = this.kms.nextWallet(31).wallet
 
-        expect(wallet2.address.toLowerCase()).toEqual(testCase.address_testnet_0)
+        expect(wallet2.address.toLowerCase()).toEqual(
+          testCase.address_testnet_0,
+        )
       })
 
       test('derives the next account', () => {
@@ -66,16 +66,26 @@ describe('KeyManagementSystem', () => {
         const savebleMainnet1 = this.kms.nextWallet(30)
         savebleMainnet1.save()
 
-        expect(savebleTestnet0.wallet.address.toLowerCase()).toEqual(testCase.address_testnet_0)
-        expect(savebleTestnet1.wallet.address.toLowerCase()).toEqual(testCase.address_testnet_1)
-        expect(savebleMainnet0.wallet.address.toLowerCase()).toEqual(testCase.address_mainnet_0)
-        expect(savebleMainnet1.wallet.address.toLowerCase()).toEqual(testCase.address_mainnet_1)
+        expect(savebleTestnet0.wallet.address.toLowerCase()).toEqual(
+          testCase.address_testnet_0,
+        )
+        expect(savebleTestnet1.wallet.address.toLowerCase()).toEqual(
+          testCase.address_testnet_1,
+        )
+        expect(savebleMainnet0.wallet.address.toLowerCase()).toEqual(
+          testCase.address_mainnet_0,
+        )
+        expect(savebleMainnet1.wallet.address.toLowerCase()).toEqual(
+          testCase.address_mainnet_1,
+        )
       })
     })
 
     describe('removing derived paths', () => {
       test('cannot remove an inexistent wallet', () => {
-        expect(() => this.kms.removeWallet(testCase.custom_account_dpath)).toThrow()
+        expect(() =>
+          this.kms.removeWallet(testCase.custom_account_dpath),
+        ).toThrow()
       })
 
       test('continues with next wallet when removed', () => {
@@ -94,7 +104,9 @@ describe('KeyManagementSystem', () => {
       test('can derive any path', () => {
         const { wallet } = this.kms.addWallet(testCase.custom_account_dpath)
 
-        expect(wallet.address.toLowerCase()).toEqual(testCase.custom_account_address)
+        expect(wallet.address.toLowerCase()).toEqual(
+          testCase.custom_account_address,
+        )
       })
 
       test('avoids chain derivation if it was added as custom', () => {
@@ -104,7 +116,9 @@ describe('KeyManagementSystem', () => {
 
         const { wallet } = this.kms.nextWallet(31)
 
-        expect(wallet.address.toLocaleLowerCase()).toEqual(testCase.address_testnet_1)
+        expect(wallet.address.toLocaleLowerCase()).toEqual(
+          testCase.address_testnet_1,
+        )
       })
 
       test('avoids chain derivation for many manually added accounts', () => {
@@ -115,20 +129,22 @@ describe('KeyManagementSystem', () => {
 
         const { wallet } = this.kms.nextWallet(31)
 
-        expect(wallet.address.toLocaleLowerCase()).toEqual(testCase.address_testnet_2)
+        expect(wallet.address.toLocaleLowerCase()).toEqual(
+          testCase.address_testnet_2,
+        )
       })
 
       test('cannot an existent wallet', () => {
         this.kms.addWallet(testCase.custom_account_dpath).save()
 
-        expect(() => this.kms.addWallet(testCase.custom_account_dpath)).toThrow()
+        expect(() =>
+          this.kms.addWallet(testCase.custom_account_dpath),
+        ).toThrow()
       })
     })
   })
 
-  describe('serialization', function (this: {
-    kms: KeyManagementSystem
-  }) {
+  describe('serialization', function (this: { kms: KeyManagementSystem }) {
     beforeEach(() => {
       this.kms = KeyManagementSystem.create()
     })

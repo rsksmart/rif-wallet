@@ -1,4 +1,9 @@
-import { deploySmartWalletFactory, sendAndWait, createNewTestWallet, testJsonRpcProvider } from './utils'
+import {
+  deploySmartWalletFactory,
+  sendAndWait,
+  createNewTestWallet,
+  testJsonRpcProvider,
+} from './utils'
 import { SmartWalletFactory } from '../src/SmartWalletFactory'
 import { RIFWallet } from '../src/RIFWallet'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -6,7 +11,7 @@ import { TransactionRequest } from '@ethersproject/abstract-provider'
 
 const txRequest = {
   to: '0x0000000000111111111122222222223333333333',
-  data: '0xabcd'
+  data: '0xabcd',
 }
 
 describe('RIFWallet', function (this: {
@@ -18,18 +23,29 @@ describe('RIFWallet', function (this: {
 
     const smartWalletFactoryContract = await deploySmartWalletFactory()
 
-    const smartWalletFactory = await SmartWalletFactory.create(wallet, smartWalletFactoryContract.address)
+    const smartWalletFactory = await SmartWalletFactory.create(
+      wallet,
+      smartWalletFactoryContract.address,
+    )
     await sendAndWait(smartWalletFactory.deploy())
 
     const smartWalletAddress = await smartWalletFactory.getSmartWalletAddress()
 
     this.onRequest = jest.fn()
-    this.rifWallet = await RIFWallet.create(wallet, smartWalletAddress, this.onRequest)
+    this.rifWallet = await RIFWallet.create(
+      wallet,
+      smartWalletAddress,
+      this.onRequest,
+    )
   })
 
   test('uses smart address', async () => {
-    expect(this.rifWallet.address).toEqual(this.rifWallet.smartWallet.smartWalletAddress)
-    expect(await this.rifWallet.getAddress()).toEqual(this.rifWallet.smartWallet.smartWalletAddress)
+    expect(this.rifWallet.address).toEqual(
+      this.rifWallet.smartWallet.smartWalletAddress,
+    )
+    expect(await this.rifWallet.getAddress()).toEqual(
+      this.rifWallet.smartWallet.smartWalletAddress,
+    )
   })
 
   describe('send transaction', () => {
@@ -51,7 +67,7 @@ describe('RIFWallet', function (this: {
       const overriddenTxRequest: TransactionRequest = {
         ...txRequest,
         gasPrice,
-        gasLimit
+        gasLimit,
       }
 
       const txPromise = this.rifWallet.sendTransaction(overriddenTxRequest)
@@ -98,7 +114,11 @@ describe('RIFWallet', function (this: {
       await tx.wait()
 
       // first is the deploy, second this tx
-      expect(await testJsonRpcProvider.getTransactionCount(this.rifWallet.smartWallet.wallet.address)).toEqual(2)
+      expect(
+        await testJsonRpcProvider.getTransactionCount(
+          this.rifWallet.smartWallet.wallet.address,
+        ),
+      ).toEqual(2)
     })
 
     test('can do more than one tx', async () => {
@@ -117,7 +137,11 @@ describe('RIFWallet', function (this: {
       await tx2.wait()
 
       // first is the deploy, second this tx
-      expect(await testJsonRpcProvider.getTransactionCount(this.rifWallet.smartWallet.wallet.address)).toEqual(3)
+      expect(
+        await testJsonRpcProvider.getTransactionCount(
+          this.rifWallet.smartWallet.wallet.address,
+        ),
+      ).toEqual(3)
     })
 
     test('can modify tx params', async () => {
@@ -142,10 +166,18 @@ describe('RIFWallet', function (this: {
       const txPromise = this.rifWallet.sendTransaction(txRequest)
 
       const nextRequest = this.rifWallet.nextRequest()
-      expect(() => { nextRequest.confirm = (v) => {} }).toThrow()
-      expect(() => { nextRequest.reject = (v) => {} }).toThrow()
-      expect(() => { nextRequest.type = 'sendTransaction' }).toThrow()
-      expect(() => { nextRequest.payload = {} as any }).toThrow()
+      expect(() => {
+        nextRequest.confirm = _v => {}
+      }).toThrow()
+      expect(() => {
+        nextRequest.reject = _v => {}
+      }).toThrow()
+      expect(() => {
+        nextRequest.type = 'sendTransaction'
+      }).toThrow()
+      expect(() => {
+        nextRequest.payload = {} as any
+      }).toThrow()
 
       this.rifWallet.nextRequest().reject() // close handle
       await expect(txPromise).rejects.toThrow()

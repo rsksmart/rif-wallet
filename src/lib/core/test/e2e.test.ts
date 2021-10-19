@@ -1,4 +1,9 @@
-import { deploySmartWalletFactory, sendAndWait, fundAccount, testJsonRpcProvider } from './utils'
+import {
+  deploySmartWalletFactory,
+  sendAndWait,
+  fundAccount,
+  testJsonRpcProvider,
+} from './utils'
 import { KeyManagementSystem } from '../src/KeyManagementSystem'
 import { SmartWalletFactory } from '../src/SmartWalletFactory'
 import { Request, RIFWallet } from '../src/RIFWallet'
@@ -21,7 +26,10 @@ describe('e2e', () => {
     await sendAndWait(fundAccount(wallet.address))
 
     // smart wallet contract creation
-    const smartWalletFactory = await SmartWalletFactory.create(wallet, smartWalletFactoryContract.address)
+    const smartWalletFactory = await SmartWalletFactory.create(
+      wallet,
+      smartWalletFactoryContract.address,
+    )
     await sendAndWait(smartWalletFactory.deploy())
 
     // rif wallet sdk
@@ -38,7 +46,7 @@ describe('e2e', () => {
     // send transaction
     const txRequest = {
       to: '0x0000000000111111111122222222223333333333',
-      data: '0xabcd'
+      data: '0xabcd',
     }
 
     const txPromise = rifWallet.sendTransaction(txRequest)

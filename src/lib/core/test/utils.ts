@@ -1,4 +1,12 @@
-import { Wallet, Contract, ContractFactory, ContractTransaction, ContractReceipt, providers, BigNumber } from 'ethers'
+import {
+  Wallet,
+  Contract,
+  ContractFactory,
+  ContractTransaction,
+  ContractReceipt,
+  providers,
+  BigNumber,
+} from 'ethers'
 
 import smartWalletBytecode from './SmartWalletBytecode.json'
 import smartWalletABI from '../src/SmartWalletABI.json'
@@ -12,14 +20,17 @@ export const testJsonRpcProvider = new providers.JsonRpcProvider(nodeUrl)
 
 const rpcAccount = testJsonRpcProvider.getSigner(0)
 
-export const sendAndWait = async (tx: Promise<ContractTransaction>): Promise<ContractReceipt> => {
+export const sendAndWait = async (
+  tx: Promise<ContractTransaction>,
+): Promise<ContractReceipt> => {
   return await (await tx).wait()
 }
 
-export const fundAccount = (to: string) => rpcAccount.sendTransaction({
-  to,
-  value: BigNumber.from('1000000000000000000')
-})
+export const fundAccount = (to: string) =>
+  rpcAccount.sendTransaction({
+    to,
+    value: BigNumber.from('1000000000000000000'),
+  })
 
 export const createNewTestWallet = async () => {
   const wallet = Wallet.createRandom().connect(testJsonRpcProvider)
@@ -28,12 +39,21 @@ export const createNewTestWallet = async () => {
 }
 
 export const deploySmartWalletFactory = async (): Promise<Contract> => {
-  const smartWalletContractFactory = new ContractFactory(smartWalletABI, smartWalletBytecode, rpcAccount)
+  const smartWalletContractFactory = new ContractFactory(
+    smartWalletABI,
+    smartWalletBytecode,
+    rpcAccount,
+  )
   const smartWalletContract = await smartWalletContractFactory.deploy()
   await smartWalletContract.deployTransaction.wait()
 
-  const smartWalletFactoryContractFactory = new ContractFactory(smartWalletFactoryABI, smartWalletFactoryBytecode, rpcAccount)
-  const smartWalletFactoryContract = await smartWalletFactoryContractFactory.deploy(smartWalletContract.address)
+  const smartWalletFactoryContractFactory = new ContractFactory(
+    smartWalletFactoryABI,
+    smartWalletFactoryBytecode,
+    rpcAccount,
+  )
+  const smartWalletFactoryContract =
+    await smartWalletFactoryContractFactory.deploy(smartWalletContract.address)
   await smartWalletFactoryContract.deployTransaction.wait()
 
   return smartWalletFactoryContract
