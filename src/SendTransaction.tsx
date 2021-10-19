@@ -1,95 +1,116 @@
 import React, { useEffect, useState } from 'react'
 import { BigNumber, utils } from 'ethers'
 
-import { StyleSheet, View, ScrollView, TextInput } from 'react-native'
+import { StyleSheet, View, ScrollView, TextInput, Linking } from 'react-native'
 import { Picker } from '@react-native-picker/picker'
 import { NavigationProp, ParamListBase } from '@react-navigation/native'
 
 import Button from './components/button'
-import {
-  tokensMetadataTestnet,
-  tokensMetadataMainnet,
-} from './lib/token/tokenMetadata'
-import { ERC20Token } from './lib/token/ERC20Token'
 
-import { RBTCToken } from './lib/token/RBTCToken'
 import { Paragraph } from './components/typography'
+import { getAllTokens } from './lib/token/tokenMetadata'
 
 import Account from './lib/core/Account'
-import { TransactionResponse } from '@ethersproject/abstract-provider'
-
-const isMainnet = false
-const metadataERC20Tokens = Object.entries(
-  isMainnet ? tokensMetadataMainnet : tokensMetadataTestnet,
-).map(keyValue => {
-  // @ts-ignore
-  return { address: keyValue[0], ...keyValue[1] }
-})
-const metadataTokens = [
-  { name: 'rBTC', symbol: 'rBTC', address: null },
-  ...metadataERC20Tokens,
-]
+import { TransactionReceipt } from '@ethersproject/abstract-provider'
+import { IToken } from './lib/token/BaseToken'
 
 interface Interface {
   navigation: NavigationProp<ParamListBase>
   route: any
 }
 
-const SendTransaction: React.FC<Interface> = ({ route }) => {
+const SendTransaction: React.FC<Interface> = ({ route, navigation }) => {
   const [smartAddress, setSmartAddress] = useState('')
   const [to, setTo] = useState('0x1D4F6A5FE927f0E0e4497B91CebfBcF64dA1c934')
-  const [token, setToken] = useState(metadataTokens[0].address)
+  const [selectedSymbol, setSelectedSymbol] = useState('tRBTC')
+  const [availableTokens, setAvailableTokens] = useState<IToken[]>()
   const [amount, setAmount] = useState('')
-  const [tx, setTx] = useState<TransactionResponse | null>(null)
+  const [tx, setTx] = useState<TransactionReceipt | null>(null)
   const [txConfirmed, setTxConfirmed] = useState(false)
+  const [txSent, setTxSent] = useState(false)
+  const [info, setInfo] = useState('')
 
   const account = route.params.account as Account
 
   useEffect(() => {
     account.getSmartAddress().then(setSmartAddress)
+    getAllTokens(account).then(tokens => setAvailableTokens(tokens))
   })
 
   const reviewTransaction = () => {
-    if (token) {
-      transferERC20(token)
-    } else {
+    if (selectedSymbol === 'TRBTC') {
       transferRBTC()
+    } else {
+      transferERC20(selectedSymbol)
     }
   }
 
-  const transferERC20 = async (tokenAddress: string) => {
-    let erc20Token: ERC20Token | null = null
-    erc20Token = new ERC20Token(tokenAddress.toLowerCase(), account, 'logo.jpg')
-    const decimals = await erc20Token.decimals()
-    const numberOfTokens = utils.parseUnits(amount, decimals)
-    const transferResponse = await erc20Token.transfer(
-      to,
-      BigNumber.from(numberOfTokens),
-    )
+  const transferERC20 = async (tokenSymbol: string) => {
+    if (availableTokens) {
+      const selectedToken = availableTokens.find(
+        token => token.symbol === tokenSymbol,
+      )
+      console.log({ selectedToken })
 
-    setTx(transferResponse)
-    setTxConfirmed(false)
-    await transferResponse.wait()
-    setTxConfirmed(true)
+      if (selectedToken) {
+        try {
+          const decimals = await selectedToken.decimals()
+          const numberOfTokens = utils.parseUnits(amount, decimals)
+          const balance = await selectedToken.balance()
+          console.log({ balance })
+
+          const transferResponse = await selectedToken.transfer(
+            to,
+            BigNumber.from(numberOfTokens),
+          )
+
+          setInfo('Transaction Sent. Please wait...')
+          setTxSent(true)
+          setTxConfirmed(false)
+          const txReceipt = await transferResponse.wait()
+          setTx(txReceipt)
+          setInfo('Transaction Confirmed.')
+          console.log({ txReceipt })
+          setTxConfirmed(true)
+        } catch (e) {
+          setInfo('Transaction Failed: ' + e.message)
+        }
+      }
+    }
   }
 
   const transferRBTC = async () => {
-    let rbtcToken: RBTCToken | null = null
-    rbtcToken = new RBTCToken(account, 'logo.jpg', 31)
+    setInfo('TRBTC transfer not supported')
+    /* try {
+      let rbtcToken: RBTCToken | null = null
+      rbtcToken = new RBTCToken(account, '', 'logo.jpg', 31)
 
-    const transferResponse = await rbtcToken.transfer(
-      to,
-      utils.parseEther(amount),
-    )
+      const transferResponse = await rbtcToken.transfer(
+        to,
+        utils.parseEther(amount),
+      )
 
-    setTx(transferResponse)
-    setTxConfirmed(false)
-    await transferResponse.wait()
-    setTxConfirmed(true)
+      setInfo('Transaction Sent. Please wait...')
+      setTxSent(true)
+      setTxConfirmed(false)
+      const txReceipt = await transferResponse.wait()
+      setTx(txReceipt)
+      setInfo('Transaction Confirmed.')
+      console.log({ txReceipt })
+      setTxConfirmed(true)
+    } catch (e) {
+      setInfo('Transaction Failed: ' + e.message)
+    }*/
   }
 
   return (
     <ScrollView>
+      <Button
+        title="Return Home"
+        onPress={() => {
+          navigation.navigate('Home')
+        }}
+      />
       <View style={styles.sections}>
         <Paragraph>From: {smartAddress}</Paragraph>
       </View>
@@ -112,29 +133,40 @@ const SendTransaction: React.FC<Interface> = ({ route }) => {
 
       <View style={styles.section}>
         <Picker
-          selectedValue={token}
-          onValueChange={itemValue => setToken(itemValue)}>
-          {metadataTokens.map(metadataToken => (
-            <Picker.Item
-              key={metadataToken.symbol}
-              label={metadataToken.symbol}
-              value={metadataToken.address}
-            />
-          ))}
+          selectedValue={selectedSymbol}
+          onValueChange={itemValue => setSelectedSymbol(itemValue)}>
+          {availableTokens &&
+            availableTokens.map(token => (
+              <Picker.Item
+                key={token.symbol}
+                label={token.symbol}
+                value={token.symbol}
+              />
+            ))}
         </Picker>
       </View>
 
+      {!txSent && (
+        <View style={styles.section}>
+          <Button onPress={reviewTransaction} title="Next" />
+        </View>
+      )}
       <View style={styles.section}>
-        {/*<Button onPress={() => next(token)} title="Next" />*/}
-        <Button onPress={reviewTransaction} title="Next" />
+        <Paragraph>{info}</Paragraph>
       </View>
-
-      <View style={styles.section}>
-        <Paragraph>
-          {tx && tx.hash}
-          {txConfirmed && ' confirmed'}
-        </Paragraph>
-      </View>
+      {txConfirmed && tx && (
+        <View style={styles.section}>
+          <Paragraph>Tx Hash: {tx && tx.transactionHash}</Paragraph>
+          <Button
+            title="View in explorer"
+            onPress={() => {
+              Linking.openURL(
+                `https://explorer.testnet.rsk.co/tx/${tx.transactionHash}`,
+              )
+            }}
+          />
+        </View>
+      )}
     </ScrollView>
   )
 }
