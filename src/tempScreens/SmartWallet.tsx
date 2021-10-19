@@ -4,7 +4,7 @@ import { Transaction } from 'ethers'
 import Button from '../components/button'
 import { Header2, Paragraph } from '../components/typography'
 import { Account } from '../lib/core'
-import { SmartWalletFactory } from '../lib/core/smartWallet/smart-wallet-factory'
+import { SmartWalletFactory } from '../lib/core/src/SmartWalletFactory'
 
 import { Contract, BigNumber } from 'ethers'
 import CopyComponent from '../components/copy'
