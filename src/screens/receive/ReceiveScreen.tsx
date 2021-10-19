@@ -5,7 +5,8 @@ import Clipboard from '@react-native-community/clipboard'
 import Button from '../../components/button'
 import { Paragraph } from '../../components/typography'
 
-import QRCode from 'react-native-qrcode-svg'
+import QRCode from 'react-qr-code'
+
 import { shortAddress } from '../../lib/utils'
 import { Account } from '../../lib/core'
 
@@ -74,15 +75,15 @@ const ReceiveScreen: React.FC<IReceiveScreenProps> = ({ route }) => {
 
   useEffect(() => {
     account.getSmartAddress().then(setSmartAddress)
-  })
+  }, [account])
 
   return (
     <ScrollView>
       <View style={styles.section}>
         {smartAddress !== '' && (
           <QRCode
-            backgroundColor="transparent"
-            value={account.address}
+            bgColor="transparent"
+            value={smartAddress}
             size={window.width * 0.6}
           />
         )}
@@ -100,10 +101,12 @@ const ReceiveScreen: React.FC<IReceiveScreenProps> = ({ route }) => {
         <Paragraph>
           Smart address: {smartAddress && shortAddress(smartAddress)}{' '}
         </Paragraph>
+
         <Button
           disabled={isCopyingAccount}
           onPress={handleCopyAccount}
           title={isCopyingAccount ? 'copied!' : 'copy'}
+          testID="Copy.Account.Button"
         />
       </View>
 
