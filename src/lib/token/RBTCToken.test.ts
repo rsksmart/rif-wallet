@@ -23,11 +23,11 @@ describe('RBTC token', () => {
   beforeEach(async () => {
     const account = await getSigner(9)
 
-    rbtcToken = new RBTCToken(account, 'logo.jpg', CHAIN_ID)
+    rbtcToken = new RBTCToken(account, 'TRBTC', 'logo.jpg', CHAIN_ID)
   })
 
   test('get symbol', async () => {
-    const symbol = await rbtcToken!.symbol()
+    const symbol = await rbtcToken!.symbol
 
     expect(symbol).toBe('TRBTC')
   })

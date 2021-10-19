@@ -55,22 +55,24 @@ export const getTokenLogo = (address: string, chainId: number) => {
 export const getAllTokens = async (signer: Signer): Promise<IToken[]> => {
   const chainId = await signer.getChainId()
 
-  const metadataTokens = Object.keys(
-    chainId === MAINNET_CHAINID ? tokensMetadataMainnet : tokensMetadataTestnet,
-  )
+  const metadataTokens =
+    chainId === MAINNET_CHAINID ? tokensMetadataMainnet : tokensMetadataTestnet
+
+  const metadataKeys = Object.keys(metadataTokens)
 
   const rbtcLogo = chainId === MAINNET_CHAINID ? rbtcMainnet : rbtcTestnet
-  const rbtc = new RBTCToken(signer, rbtcLogo, chainId)
+  const rbtcSymbol = chainId === MAINNET_CHAINID ? 'RBTC' : 'TRBTC'
+  const rbtc = new RBTCToken(signer, rbtcSymbol, rbtcLogo, chainId)
 
   const tokens: IToken[] = []
 
   tokens.push(rbtc)
 
-  for (const address of metadataTokens) {
+  for (const address of metadataKeys) {
     const addressWithoutChecksum = address.toLowerCase()
-
+    const symbol = metadataTokens[address].symbol
     const logo = getTokenLogo(addressWithoutChecksum, chainId)
-    const token = new ERC20Token(addressWithoutChecksum, signer, logo)
+    const token = new ERC20Token(addressWithoutChecksum, signer, symbol, logo)
 
     tokens.push(token)
   }

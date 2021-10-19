@@ -65,6 +65,7 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
               />
               <Button
                 onPress={() => {
+                  // @ts-ignore
                   navigation.navigate('SendTransaction', { account })
                 }}
                 title="Send Transaction"

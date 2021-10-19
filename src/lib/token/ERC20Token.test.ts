@@ -39,11 +39,11 @@ describe('ERC20 token', () => {
 
     tokenAddress = erc20.address
 
-    erc20Token = new ERC20Token(tokenAddress, account, 'logo.jpg')
+    erc20Token = new ERC20Token(tokenAddress, account, 'TEST_ERC20', 'logo.jpg')
   })
 
   test('get symbol', async () => {
-    const symbol = await erc20Token!.symbol()
+    const symbol = await erc20Token!.symbol
 
     expect(symbol).toBe('TEST_ERC20')
   })
