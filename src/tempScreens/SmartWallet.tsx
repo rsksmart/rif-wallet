@@ -7,6 +7,7 @@ import { RIFWallet } from '../lib/core/src/RIFWallet'
 
 import { Contract, BigNumber } from 'ethers'
 import CopyComponent from '../components/copy'
+import { jsonRpcProvider } from '../lib/jsonRpcProvider'
 
 const abi = [
   'function balanceOf(address owner) view returns (uint256)',
@@ -39,7 +40,8 @@ const SmartWalletComponent = ({ route }: { route: any }) => {
   const account = route.params.account as RIFWallet
 
   // const smartWalletFactory = new SmartWalletFactory(account)
-  const rif = rifContract.connect(account.wallet)
+  const rifJson = rifContract.connect(jsonRpcProvider)
+  const rifSigner = rifContract.connect(account)
 
   const getInfo = async () => {
     // const smartAddress = await account.getAddress()
@@ -48,9 +50,9 @@ const SmartWalletComponent = ({ route }: { route: any }) => {
     Promise.all([
       account.smartWallet.wallet.getBalance().then(setEoaBalance),
       account.smartWalletFactory.isDeployed().then(setIsSmartWalletDeployed),
-      rif.balanceOf(account.address.toLowerCase()).then(setRifBalance),
+      rifJson.balanceOf(account.smartWalletAddress).then(setRifBalance),
     ]).catch((err: Error) => {
-      console.log('getInfo Error:', err)
+      console.log(err)
     })
   }
 

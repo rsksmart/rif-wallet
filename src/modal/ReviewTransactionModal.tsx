@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { Modal, StyleSheet, TextInput, View } from 'react-native'
 
+import { TransactionRequest } from '@ethersproject/abstract-provider'
+import { Request } from '../lib/core/src/RIFWallet'
+
 import Button from '../components/button'
 import { Header2, Paragraph } from '../components/typography'
-import { QueuedTransaction, TransactionRequest } from '../lib/core/Account'
 
 /**
  * Used for UI only to make editing transactions easier. Allows for
@@ -19,7 +21,7 @@ interface StringTransaction {
 }
 
 interface Interface {
-  queuedTransactionRequest: QueuedTransaction
+  queuedTransactionRequest: Request
   closeModal: () => void
 }
 
@@ -27,7 +29,7 @@ const ReviewTransactionModal: React.FC<Interface> = ({
   queuedTransactionRequest,
   closeModal,
 }) => {
-  const { transactionRequest } = queuedTransactionRequest
+  const { transactionRequest } = queuedTransactionRequest.payload
 
   // string object helpers
   const convertValueToString = (value?: any) => (value ? value.toString() : '')
@@ -80,7 +82,7 @@ const ReviewTransactionModal: React.FC<Interface> = ({
   }
 
   const cancelTransaction = () => {
-    queuedTransactionRequest.cancel()
+    queuedTransactionRequest.reject('User rejects the transaction')
     closeModal()
   }
 

@@ -58,7 +58,7 @@ const RootNavigation: React.FC<Interface> = () => {
       </NavigationContainer>
 
       {/* Modals: */}
-      {context.walletRequests && (
+      {context.walletRequests[0] && (
         <ReviewTransactionModal
           closeModal={closeReviewTransactionModal}
           queuedTransactionRequest={context.walletRequests[0]}

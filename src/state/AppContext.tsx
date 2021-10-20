@@ -12,22 +12,20 @@ import { getStorage, setStorage, StorageKeys } from '../storage'
 export interface WalletProviderContextInterface {
   wallets: RIFWallet[]
   getMnemonic: () => string
-  // setWallet: (wallet: RIFWallet) => void
-  // kms?: KeyManagementSystem
-  walletRequest?: Request
+  walletRequests: Request[]
+
   handleUxInteraction: any // (qt: QueuedTransaction) => Promise<TransactionRequest>
   resolveUxInteraction: () => void
-  reset: () => void
 }
 
 export const WalletProviderContext =
   React.createContext<WalletProviderContextInterface>({
     wallets: [],
     getMnemonic: () => '',
-    walletRequest: undefined,
+    walletRequests: [],
+
     handleUxInteraction: (_qt: Request) => Promise.resolve({}),
     resolveUxInteraction: () => null,
-    reset: () => {},
   })
 
 interface Web3ProviderElementInterface {
@@ -44,23 +42,21 @@ export const WalletProviderElement: React.FC<Web3ProviderElementInterface> = ({
 
   // exposed state via context:
   const [wallets, setWallets] = useState<RIFWallet[]>([])
-  const [walletRequestQue, setWalletRequestQue] = useState<Request | undefined>(
-    undefined,
-  )
+  const [walletRequestQue, setWalletRequestQue] = useState<Request[]>([])
 
-  const handleUxInteraction = (walletRequest: Request) =>
-    setWalletRequestQue(walletRequest)
-
-  const resolveUxInteraction = () => setWalletRequestQue(undefined)
+  const handleUxInteraction = (walletRequest: Request) => {
+    console.log('AppContext handleUxInteraction', walletRequest)
+    setWalletRequestQue([walletRequest])
+  }
+  const resolveUxInteraction = () => setWalletRequestQue([])
 
   const initialContext: WalletProviderContextInterface = {
     wallets,
     getMnemonic: () =>
       keyManagementSystem ? keyManagementSystem?.mnemonic : '',
-    walletRequest: walletRequestQue,
+    walletRequests: walletRequestQue,
     handleUxInteraction,
     resolveUxInteraction,
-    reset: () => setKeyManagementSystem(undefined),
   }
 
   const init = async (initProps: {
