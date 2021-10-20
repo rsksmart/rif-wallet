@@ -41,7 +41,7 @@ const SmartWalletComponent = ({ route }: { route: any }) => {
 
   // const smartWalletFactory = new SmartWalletFactory(account)
   const rifJson = rifContract.connect(jsonRpcProvider)
-  const rifSigner = rifContract.connect(account)
+  const rif = rifContract.connect(account)
 
   const getInfo = async () => {
     Promise.all([
