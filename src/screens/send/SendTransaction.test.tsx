@@ -135,11 +135,6 @@ describe('Load Tokens', () => {
     fireEvent(picker, 'onValueChange', 'FIRST_TEST_ERC20')
 
     const receivingAccount = await getSigner(1)
-    const receivingBalanceBeforeSent = await receivingAccount.getBalance()
-    console.log(
-      'receivingBalanceBeforeSent ',
-      receivingBalanceBeforeSent.toString(),
-    )
 
     fireEvent.changeText(
       getByTestId('To.Input'),

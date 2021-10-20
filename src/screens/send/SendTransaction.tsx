@@ -48,13 +48,10 @@ const SendTransaction: React.FC<Interface> = ({ route }) => {
       const selectedToken = availableTokens.find(
         token => token.symbol === tokenSymbol,
       )
-      console.log({ selectedToken })
-
       if (selectedToken) {
         try {
           const decimals = await selectedToken.decimals()
           const numberOfTokens = utils.parseUnits(amount, decimals)
-          console.log({ numberOfTokens })
           /*const balance = await selectedToken.balance()
           console.log({ balance })*/
 
@@ -69,10 +66,8 @@ const SendTransaction: React.FC<Interface> = ({ route }) => {
           const txReceipt = await transferResponse.wait()
           setTx(txReceipt)
           setInfo('Transaction Confirmed.')
-          console.log({ txReceipt })
           setTxConfirmed(true)
         } catch (e) {
-          console.log({ e })
           setInfo('Transaction Failed: ' + e.message)
         }
       }
