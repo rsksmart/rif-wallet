@@ -2,29 +2,31 @@ import React from 'react'
 import { render, fireEvent } from '@testing-library/react-native'
 
 import ReviewTransactionModal from './ReviewTransactionModal'
-import { QueuedTransaction } from '../lib/core/Account'
+import { Request } from '../lib/core/src/RIFWallet'
 
 describe('ReviewTransactionModal', function (this: {
   confirm: ReturnType<typeof jest.fn>
   cancel: ReturnType<typeof jest.fn>
-  queuedTransaction: QueuedTransaction
+  queuedTransaction: Request
 }) {
   beforeEach(() => {
     this.confirm = jest.fn()
     this.cancel = jest.fn()
 
     this.queuedTransaction = {
-      id: 0,
-      transactionRequest: {
-        to: '0x123',
-        from: '0x456',
-        data: '',
-        value: 1000,
-        gasLimit: 10000,
-        gasPrice: 0.068,
+      type: 'sendTransaction',
+      payload: {
+        transactionRequest: {
+          to: '0x123',
+          from: '0x456',
+          data: '',
+          value: 1000,
+          gasLimit: 10000,
+          gasPrice: 0.068,
+        },
       },
       confirm: this.confirm,
-      cancel: this.cancel,
+      reject: this.cancel,
     }
   })
 
@@ -52,7 +54,7 @@ describe('ReviewTransactionModal', function (this: {
     )
     fireEvent.press(getByTestId('Confirm.Button'))
     expect(this.confirm).toBeCalledWith(
-      this.queuedTransaction.transactionRequest,
+      this.queuedTransaction.payload.transactionRequest,
     )
     expect(closeModal).toBeCalled()
   })
@@ -87,7 +89,7 @@ describe('ReviewTransactionModal', function (this: {
     expect(closeModal).toBeCalled()
 
     expect(this.confirm).toBeCalledWith({
-      ...this.queuedTransaction.transactionRequest,
+      ...this.queuedTransaction.payload.transactionRequest,
       gasLimit: 20,
       gasPrice: 1000,
     })

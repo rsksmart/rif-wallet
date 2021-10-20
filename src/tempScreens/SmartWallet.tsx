@@ -44,9 +44,6 @@ const SmartWalletComponent = ({ route }: { route: any }) => {
   const rifSigner = rifContract.connect(account)
 
   const getInfo = async () => {
-    // const smartAddress = await account.getAddress()
-    // setSmartWalletAddress(smartAddress)
-
     Promise.all([
       account.smartWallet.wallet.getBalance().then(setEoaBalance),
       account.smartWalletFactory.isDeployed().then(setIsSmartWalletDeployed),
