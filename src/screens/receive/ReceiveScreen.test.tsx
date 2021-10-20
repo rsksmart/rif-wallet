@@ -12,9 +12,7 @@ describe('ReceiveScreen', () => {
   const route = {
     params: {
       account: {
-        getSmartAddress: jest.fn(() =>
-          Promise.resolve('0xbd4c8e11cf2c560382e0dbd6aeef538debf1d449'),
-        ),
+        smartWalletAddress: '0xbd4c8e11cf2c560382e0dbd6aeef538debf1d449',
       },
     },
   }
@@ -25,10 +23,6 @@ describe('ReceiveScreen', () => {
 
   it('renders', async () => {
     const { getAllByText, rerender } = render(<ReceiveScreen route={route} />)
-
-    await waitFor(() =>
-      expect(route.params.account.getSmartAddress).toHaveBeenCalledTimes(1),
-    )
 
     act(() => {
       rerender(<ReceiveScreen route={route} />)
