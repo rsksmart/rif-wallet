@@ -24,16 +24,16 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
 
   const [wallet, setWallet] = useState<RIFWallet[]>([])
   const [mnemonic, setMnemonic] = useState<string>('')
-  // const [accounts, setAccounts] = useState<Account[]>([])
 
   const context = useContext(WalletProviderContext)
   useEffect(() => {
-    context.wallet && setWallet([context.wallet])
-  }, [context.wallet, wallet])
+    context.wallets && setWallet(context.wallets)
+  }, [context.wallets])
 
   useEffect(() => {
+    console.log('setting Mnemonic', context.getMnemonic())
     setMnemonic(context.getMnemonic())
-  }, [])
+  }, [context.wallets])
 
   /*
   const addAccount = () => {
@@ -61,7 +61,8 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
         {wallet.map((account: RIFWallet, index: number) => {
           return (
             <View key={index}>
-              <CopyComponent value={account.address} />
+              <Paragraph>EOA Address</Paragraph>
+              <CopyComponent value={account.smartWallet.wallet.address} />
               <Button
                 title="See smart wallet"
                 onPress={() => seeSmartWallet(account)}
@@ -72,7 +73,6 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
               />
               <Button
                 onPress={() => {
-                  // @ts-ignore
                   navigation.navigate('SendTransaction', { account })
                 }}
                 title="Send Transaction"
@@ -86,7 +86,7 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
       <View style={styles.section}>
         <Header2>Settings</Header2>
         <Button
-          onPress={() => removeStorage(StorageKeys.MNEMONIC)}
+          onPress={() => removeStorage(StorageKeys.KMS)}
           title="Clear RN Storage"
         />
         <Paragraph>

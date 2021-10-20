@@ -1,7 +1,6 @@
 import RNSecureStorage, { ACCESSIBLE } from 'rn-secure-storage'
 
 export enum StorageKeys {
-  MNEMONIC = 'mnemonic', // deprecated
   KMS = 'KEY_MANAGEMENT',
 }
 

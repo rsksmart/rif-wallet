@@ -1,3 +1,4 @@
+import { Wallet } from '@ethersproject/wallet'
 import React, { useEffect, useState } from 'react'
 
 // import { Wallet } from '../lib/core'
@@ -10,7 +11,7 @@ import { jsonRpcProvider } from '../lib/jsonRpcProvider'
 import { getStorage, setStorage, StorageKeys } from '../storage'
 
 export interface WalletProviderContextInterface {
-  wallet?: RIFWallet
+  wallets: RIFWallet[]
   getMnemonic: () => string
   // setWallet: (wallet: RIFWallet) => void
   // kms?: KeyManagementSystem
@@ -22,7 +23,7 @@ export interface WalletProviderContextInterface {
 
 export const WalletProviderContext =
   React.createContext<WalletProviderContextInterface>({
-    wallet: undefined,
+    wallets: [],
     getMnemonic: () => '',
     walletRequest: undefined,
     handleUxInteraction: (_qt: Request) => Promise.resolve({}),
@@ -43,7 +44,7 @@ export const WalletProviderElement: React.FC<Web3ProviderElementInterface> = ({
   >(undefined)
 
   // exposed state via context:
-  const [wallet, setWallet] = useState<RIFWallet | undefined>(undefined)
+  const [wallets, setWallets] = useState<RIFWallet[]>([])
   const [walletRequestQue, setWalletRequestQue] = useState<Request | undefined>(
     undefined,
   )
@@ -54,7 +55,7 @@ export const WalletProviderElement: React.FC<Web3ProviderElementInterface> = ({
   const resolveUxInteraction = () => setWalletRequestQue(undefined)
 
   const initialContext: WalletProviderContextInterface = {
-    wallet,
+    wallets,
     getMnemonic: () =>
       keyManagementSystem ? keyManagementSystem?.mnemonic : '',
     walletRequest: walletRequestQue,
@@ -63,43 +64,44 @@ export const WalletProviderElement: React.FC<Web3ProviderElementInterface> = ({
     reset: () => setKeyManagementSystem(undefined),
   }
 
-  const init = async (kms: KeyManagementSystem) => {
-    console.log('key management system setup and ready to go!')
-    console.log(kms)
-    setKeyManagementSystem(kms)
-    const walletRequest = kms.nextWallet(31)
-    const ethersWallet = walletRequest.wallet.connect(jsonRpcProvider)
+  const init = async (initProps: {
+    kms: KeyManagementSystem
+    wallets: Wallet[]
+  }) => {
+    console.log('the init! ;-)', initProps)
 
-    const smartWalletFactory = await SmartWalletFactory.create(
+    // save the KMS:
+    setKeyManagementSystem(initProps.kms)
+
+    // convert the Wallets[] into RIFWallets[]:
+    const tempWallet = initProps.wallets[0] // @todo: change to this to loop
+    const ethersWallet = tempWallet.connect(jsonRpcProvider)
+
+    RIFWallet.create(
       ethersWallet,
       '0x3f71ce7bd7912bf3b362fd76dd34fa2f017b6388',
-    )
-
-    const smartWalletAddress = await smartWalletFactory.getSmartWalletAddress()
-    const rifWallet = RIFWallet.create(
-      ethersWallet,
-      smartWalletAddress,
       handleUxInteraction,
-    )
-
-    setWallet(rifWallet)
+    ).then((wallet: RIFWallet) => setWallets([wallet]))
   }
 
-  // Get the mnemonic from storage, or create a new wallet
+  // Get the mnemonic from storage, or create a new KMS with default wallet
   useEffect(() => {
     getStorage(StorageKeys.KMS)
       .then((serialized: string | null) => {
         if (serialized) {
+          console.log('getting wallet from storage')
           init(KeyManagementSystem.fromSerialized(serialized))
-        } // @catch this
+        }
       })
       .catch(() => {
         // Error: key does not present
-        const newKms = KeyManagementSystem.create()
-        const firstWallet = newKms.nextWallet(31)
+        console.log('setting up new wallet')
+        const kms = KeyManagementSystem.create()
+        const firstWallet = kms.nextWallet(31)
         firstWallet.save()
-        setStorage(StorageKeys.KMS, newKms.serialize())
-        init(newKms)
+        setStorage(StorageKeys.KMS, kms.serialize())
+
+        init({ kms, wallets: [firstWallet.wallet] })
       })
   }, [])
 
