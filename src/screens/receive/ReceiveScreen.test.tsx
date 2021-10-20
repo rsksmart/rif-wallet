@@ -2,7 +2,7 @@ import React from 'react'
 
 import mockClipboard from './clipboard-mock'
 
-import { render, fireEvent, act, waitFor } from '@testing-library/react-native'
+import { render, fireEvent, act } from '@testing-library/react-native'
 
 import ReceiveScreen from './ReceiveScreen'
 

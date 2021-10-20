@@ -5,7 +5,6 @@ import React, { useEffect, useState } from 'react'
 // import { QueuedTransaction } from '../lib/core/Account'
 import { KeyManagementSystem } from '../lib/core/src/KeyManagementSystem'
 import { Request, RIFWallet } from '../lib/core/src/RIFWallet'
-import { SmartWalletFactory } from '../lib/core/src/SmartWalletFactory'
 import { jsonRpcProvider } from '../lib/jsonRpcProvider'
 
 import { getStorage, setStorage, StorageKeys } from '../storage'
