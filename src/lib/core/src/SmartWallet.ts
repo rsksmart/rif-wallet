@@ -1,4 +1,10 @@
-import { Wallet, Contract, BytesLike, ContractTransaction } from 'ethers'
+import {
+  Wallet,
+  Contract,
+  BytesLike,
+  ContractTransaction,
+  BigNumber,
+} from 'ethers'
 import SmartWalletABI from './SmartWalletABI.json'
 
 const createSmartWalletContract = (address: string) => {
@@ -36,4 +42,16 @@ export class SmartWallet {
     ...args: any
   ): Promise<ContractTransaction> =>
     this.smartWalletContract.directExecute(to, data, ...args)
+  estimateDirectExecute = (
+    to: string,
+    data: BytesLike,
+    ...args: any
+  ): Promise<BigNumber> =>
+    this.smartWalletContract.estimateGas.directExecute(to, data, ...args)
+  callStaticDirectExecute = (
+    to: string,
+    data: BytesLike,
+    ...args: any
+  ): Promise<any> =>
+    this.smartWalletContract.callStatic.directExecute(to, data, ...args)
 }

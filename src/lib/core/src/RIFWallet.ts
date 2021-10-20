@@ -5,6 +5,7 @@ import {
   BlockTag,
 } from '@ethersproject/abstract-provider'
 import { Bytes, Signer, Wallet, BigNumber } from 'ethers'
+import { SmartWalletFactory } from './SmartWalletFactory'
 import { SmartWallet } from './SmartWallet'
 
 const filterTxOptions = (transactionRequest: TransactionRequest) =>
@@ -28,11 +29,17 @@ type OnRequest = (request: Request) => void
 
 export class RIFWallet extends Signer {
   smartWallet: SmartWallet
+  smartWalletFactory: SmartWalletFactory
   pendingRequest?: Request
   onRequest: OnRequest
 
-  private constructor(smartWallet: SmartWallet, onRequest: OnRequest) {
+  private constructor(
+    smartWalletFactory: SmartWalletFactory,
+    smartWallet: SmartWallet,
+    onRequest: OnRequest,
+  ) {
     super()
+    this.smartWalletFactory = smartWalletFactory
     this.smartWallet = smartWallet
     this.onRequest = onRequest
   }
@@ -45,13 +52,22 @@ export class RIFWallet extends Signer {
     return this.smartWallet.smartWalletAddress
   }
 
-  static create(
+  get wallet(): Wallet {
+    return this.smartWallet.wallet
+  }
+
+  static async create(
     wallet: Wallet,
-    smartWalletAddress: string,
+    smartWalletFactoryAddress: string,
     onRequest: OnRequest,
   ) {
+    const smartWalletFactory = await SmartWalletFactory.create(
+      wallet,
+      smartWalletFactoryAddress,
+    )
+    const smartWalletAddress = await smartWalletFactory.getSmartWalletAddress()
     const smartWallet = SmartWallet.create(wallet, smartWalletAddress)
-    return new RIFWallet(smartWallet, onRequest)
+    return new RIFWallet(smartWalletFactory, smartWallet, onRequest)
   }
 
   getAddress = (): Promise<string> =>
