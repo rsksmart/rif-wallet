@@ -3,8 +3,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { Transaction } from 'ethers'
 import Button from '../components/button'
 import { Header2, Paragraph } from '../components/typography'
-import { Account } from '../lib/core'
-import { SmartWalletFactory } from '../lib/core/src/SmartWalletFactory'
+import { RIFWallet } from '../lib/core/src/RIFWallet'
 
 import { Contract, BigNumber } from 'ethers'
 import CopyComponent from '../components/copy'
@@ -26,8 +25,9 @@ export const rifContract = new Contract(
 
 const SmartWalletComponent = ({ route }: { route: any }) => {
   const [eoaBalance, setEoaBalance] = useState<null | BigNumber>(null)
-  const [smartWalletAddress, setSmartWalletAddress] = useState('')
-  const [smartWalletCode, setSmartWalletCode] = useState('')
+  // const [smartWalletAddress, setSmartWalletAddress] = useState('')
+  const [isSmartWalletDeployed, setIsSmartWalletDeployed] =
+    useState<boolean>(false)
 
   const [smartWalletDeployTx, setSmartWalletDeployTx] =
     useState<null | Transaction>(null)
@@ -36,27 +36,28 @@ const SmartWalletComponent = ({ route }: { route: any }) => {
   const [sendRifTx, setSendRifTx] = useState<null | Transaction>(null)
   const [sendRifResponse, setSendRifResponse] = useState<null | string>(null)
 
-  const account = route.params.account as Account
-  console.log('eoa', account.address)
+  const account = route.params.account as RIFWallet
 
-  const smartWalletFactory = new SmartWalletFactory(account)
-  const rif = rifContract.connect(account)
+  // const smartWalletFactory = new SmartWalletFactory(account)
+  const rif = rifContract.connect(account.wallet)
 
   const getInfo = async () => {
-    const address = await account.getSmartAddress()
-    console.log('smart address', address)
-    setSmartWalletAddress(address)
+    // const smartAddress = await account.getAddress()
+    // setSmartWalletAddress(smartAddress)
 
     Promise.all([
-      account.getBalance().then(setEoaBalance),
-      smartWalletFactory.getCodeInSmartWallet().then(setSmartWalletCode),
-      rif.balanceOf(address).then(setRifBalance),
-    ])
+      account.smartWallet.wallet.getBalance().then(setEoaBalance),
+      account.smartWalletFactory.isDeployed().then(setIsSmartWalletDeployed),
+      rif.balanceOf(account.address.toLowerCase()).then(setRifBalance),
+    ]).catch((err: Error) => {
+      console.log('getInfo Error:', err)
+    })
   }
 
   const deploy = async () => {
-    const txPromise = await account.deploy()
+    const txPromise = await account.smartWalletFactory.deploy()
     setSmartWalletDeployTx(await txPromise)
+    setIsSmartWalletDeployed(true)
   }
 
   const sendRif = async () => {
@@ -76,29 +77,30 @@ const SmartWalletComponent = ({ route }: { route: any }) => {
       })
   }
 
-  const isSmartWalletDeployed = !smartWalletCode || smartWalletCode !== '0x'
-
   return (
     <ScrollView>
       <Header2>Smart Wallet</Header2>
       <Paragraph>EOA:</Paragraph>
+      <CopyComponent value={account.smartWallet.wallet.address} />
+      <Paragraph>Smart Wallet Address:</Paragraph>
       <CopyComponent value={account.address} />
+
       <Button title="Get info" onPress={getInfo} />
       <Paragraph>
         RBTC Balance (EOA): {eoaBalance && eoaBalance.toString()}
       </Paragraph>
-      <Paragraph>Smart Wallet Address:</Paragraph>
-      <CopyComponent value={smartWalletAddress} />
-      <Paragraph>Smart wallet code:</Paragraph>
-      <CopyComponent value={smartWalletCode} />
+
+      <Paragraph>Is Deployed?: {isSmartWalletDeployed.toString()}</Paragraph>
+      {!isSmartWalletDeployed && (
+        <Button
+          title="Deploy"
+          onPress={deploy}
+          disabled={isSmartWalletDeployed}
+        />
+      )}
       <Paragraph>
         RIF Token balance: {rifBalance && rifBalance.toString()}
       </Paragraph>
-      <Button
-        title="Deploy"
-        onPress={deploy}
-        disabled={isSmartWalletDeployed}
-      />
       {smartWalletDeployTx && (
         <>
           <Paragraph>Deploy tx: {smartWalletDeployTx.hash}</Paragraph>
