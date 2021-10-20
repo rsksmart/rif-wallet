@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, View, ScrollView, Dimensions, Share } from 'react-native'
 import Clipboard from '@react-native-community/clipboard'
 
@@ -8,7 +8,7 @@ import { Paragraph } from '../../components/typography'
 import QRCode from 'react-qr-code'
 
 import { shortAddress } from '../../lib/utils'
-import { Account } from '../../lib/core'
+import { RIFWallet } from '../../lib/core/src/RIFWallet'
 
 // TODO: accountLink is hardcoded until we had the rns sdk
 const accountLink = 'ilan.rsk'
@@ -64,18 +64,14 @@ interface IReceiveScreenProps {
 }
 
 const ReceiveScreen: React.FC<IReceiveScreenProps> = ({ route }) => {
-  const account = route.params.account as Account
+  const account = route.params.account as RIFWallet
 
-  const [smartAddress, setSmartAddress] = useState('')
+  const smartAddress = account.smartWalletAddress
   const { isCopying: isCopyingAccount, handleCopy: handleCopyAccount } =
     useCopy(smartAddress)
   const { isCopying: isCopyingAccountLink, handleCopy: handleCopyAccountLink } =
     useCopy(accountLink)
   const { isSharing, handleShare } = useShare('Account', smartAddress)
-
-  useEffect(() => {
-    account.getSmartAddress().then(setSmartAddress)
-  }, [account])
 
   return (
     <ScrollView>
