@@ -1,9 +1,9 @@
 import React from 'react'
-import { View, Modal, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 import Button from '../components/button'
 import { Header2, Paragraph } from '../components/typography'
 import { Request } from '../lib/core/RIFWallet'
-import { styles } from './ReviewTransactionModal'
+import { styles as sharedStyles } from './ModalComponent'
 
 interface Interface {
   request: Request
@@ -22,32 +22,26 @@ const SignMessageMotal: React.FC<Interface> = ({ request, closeModal }) => {
   }
 
   return (
-    <View style={styles.centeredView}>
-      <Modal animationType="slide" transparent={false} visible={true}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Header2>Sign Message</Header2>
+    <View>
+      <Header2>Sign Message</Header2>
 
-            <Paragraph>Do you want to sign this message?</Paragraph>
+      <Paragraph>Do you want to sign this message?</Paragraph>
 
-            <Text style={localStyles.message}>{request.payload.message}</Text>
+      <Text style={styles.message}>{request.payload.message}</Text>
 
-            <View style={styles.row}>
-              <View style={styles.column}>
-                <Button onPress={signMessage} title="Sign Message" />
-              </View>
-              <View style={styles.column}>
-                <Button onPress={reject} title="Reject" />
-              </View>
-            </View>
-          </View>
+      <View style={sharedStyles.row}>
+        <View style={sharedStyles.column}>
+          <Button onPress={signMessage} title="Sign Message" />
         </View>
-      </Modal>
+        <View style={sharedStyles.column}>
+          <Button onPress={reject} title="Reject" />
+        </View>
+      </View>
     </View>
   )
 }
 
-const localStyles = StyleSheet.create({
+const styles = StyleSheet.create({
   message: {
     backgroundColor: '#f1f1f1',
     borderWidth: 1,

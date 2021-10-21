@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Modal, StyleSheet, TextInput, View } from 'react-native'
+import { TextInput, View } from 'react-native'
 
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { Request } from '../lib/core/RIFWallet'
@@ -7,6 +7,7 @@ import { Request } from '../lib/core/RIFWallet'
 import Button from '../components/button'
 import { Header2, Paragraph } from '../components/typography'
 import { BigNumber } from '@ethersproject/bignumber'
+import { styles as sharedStyles } from './ModalComponent'
 
 /**
  * Used for UI only to make editing transactions easier. Allows for
@@ -22,7 +23,7 @@ interface StringTransaction {
 }
 
 interface Interface {
-  request: Request
+  queuedTransactionRequest: Request
   closeModal: () => void
 }
 
@@ -60,11 +61,11 @@ const convertTransactionToStrings = (tx: TransactionRequest) => ({
 */
 
 const ReviewTransactionModal: React.FC<Interface> = ({
-  request,
+  queuedTransactionRequest,
   closeModal,
 }) => {
   const transactionRequest = convertTransactionToStrings(
-    request.payload.transactionRequest,
+    queuedTransactionRequest.payload.transactionRequest,
   )
 
   const [gasPrice, setGasPrice] = useState(transactionRequest.gasPrice)
@@ -72,7 +73,7 @@ const ReviewTransactionModal: React.FC<Interface> = ({
 
   // convert from string to Transaction and pass out of component
   const confirmTransaction = () => {
-    request.confirm({
+    queuedTransactionRequest.confirm({
       gasPrice: BigNumber.from(gasPrice),
       gasLimit: BigNumber.from(gasLimit),
     })
@@ -80,121 +81,67 @@ const ReviewTransactionModal: React.FC<Interface> = ({
   }
 
   const cancelTransaction = () => {
-    request.reject('User rejects the transaction')
+    queuedTransactionRequest.reject('User rejects the transaction')
     closeModal()
   }
 
   return (
-    <View style={styles.centeredView}>
-      <Modal
-        animationType="slide"
-        transparent={false}
-        visible={true}
-        onRequestClose={cancelTransaction}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Header2>Review Transaction</Header2>
-            <Paragraph>to: {transactionRequest.to}</Paragraph>
-            <Paragraph>from: {transactionRequest.from}</Paragraph>
-            <Paragraph>value: {transactionRequest.value}</Paragraph>
-            <Paragraph>data: {transactionRequest.data}</Paragraph>
+    <View >
+      <Header2>Review Transaction</Header2>
+      <Paragraph>to: {transactionRequest.to}</Paragraph>
+      <Paragraph>from: {transactionRequest.from}</Paragraph>
+      <Paragraph>value: {transactionRequest.value}</Paragraph>
+      <Paragraph>data: {transactionRequest.data}</Paragraph>
 
-            <View style={styles.row}>
-              <View style={styles.column}>
-                <Paragraph>gas limit:</Paragraph>
-              </View>
-              <View style={styles.column}>
-                <TextInput
-                  value={gasLimit}
-                  style={styles.textInput}
-                  onChangeText={setGasLimit}
-                  keyboardType="number-pad"
-                  placeholder="gas limit"
-                  testID="gasLimit.TextInput"
-                />
-              </View>
-            </View>
-            <View style={styles.row}>
-              <View style={styles.column}>
-                <Paragraph>gas price:</Paragraph>
-              </View>
-              <View style={styles.column}>
-                <TextInput
-                  value={gasPrice}
-                  style={styles.textInput || ''}
-                  onChangeText={setGasPrice}
-                  keyboardType="number-pad"
-                  placeholder="gas price"
-                  testID="gasPrice.TextInput"
-                />
-              </View>
-            </View>
-
-            <View style={styles.row}>
-              <View style={styles.column}>
-                <Button
-                  title="Confirm"
-                  onPress={confirmTransaction}
-                  testID="Confirm.Button"
-                />
-              </View>
-              <View style={styles.column}>
-                <Button
-                  title="Cancel"
-                  onPress={cancelTransaction}
-                  testID="Cancel.Button"
-                />
-              </View>
-            </View>
-          </View>
+      <View style={sharedStyles.row}>
+        <View style={sharedStyles.column}>
+          <Paragraph>gas limit:</Paragraph>
         </View>
-      </Modal>
+        <View style={sharedStyles.column}>
+          <TextInput
+            value={gasLimit}
+            style={sharedStyles.textInput}
+            onChangeText={setGasLimit}
+            keyboardType="number-pad"
+            placeholder="gas limit"
+            testID="gasLimit.TextInput"
+          />
+        </View>
+      </View>
+      <View style={sharedStyles.row}>
+        <View style={sharedStyles.column}>
+          <Paragraph>gas price:</Paragraph>
+        </View>
+        <View style={sharedStyles.column}>
+          <TextInput
+            value={gasPrice}
+            style={sharedStyles.textInput || ''}
+            onChangeText={setGasPrice}
+            keyboardType="number-pad"
+            placeholder="gas price"
+            testID="gasPrice.TextInput"
+          />
+        </View>
+      </View>
+
+      <View style={sharedStyles.row}>
+        <View style={sharedStyles.column}>
+          <Button
+            title="Confirm"
+            onPress={confirmTransaction}
+            testID="Confirm.Button"
+          />
+        </View>
+        <View style={sharedStyles.column}>
+          <Button
+            title="Cancel"
+            onPress={cancelTransaction}
+            testID="Cancel.Button"
+          />
+        </View>
+      </View>
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 10,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  row: {
-    display: 'flex',
-    flexDirection: 'row',
-  },
-  column: {
-    display: 'flex',
-    paddingRight: 5,
-    width: '50%',
-  },
-  textInput: {
-    fontSize: 18,
-    borderBottomWidth: 1,
-    borderColor: '#919191',
-    paddingLeft: 10,
-    paddingRight: 10,
-    marginBottom: 10,
-  },
-})
 
 export default ReviewTransactionModal
