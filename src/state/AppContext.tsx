@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react'
 
 // import { Wallet } from '../lib/core'
 // import { QueuedTransaction } from '../lib/core/Account'
-import { KeyManagementSystem } from '../lib/core/src/KeyManagementSystem'
-import { Request, RIFWallet } from '../lib/core/src/RIFWallet'
+import { KeyManagementSystem } from '../lib/core/KeyManagementSystem'
+import { Request, RIFWallet } from '../lib/core/RIFWallet'
 import { jsonRpcProvider } from '../lib/jsonRpcProvider'
 
 import { getStorage, setStorage, StorageKeys } from '../storage'
