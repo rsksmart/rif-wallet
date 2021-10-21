@@ -100,18 +100,19 @@ describe('Load Tokens', () => {
   test('selects tokens', async () => {
     const { rerender, getByTestId } = render(<SendTransaction route={route} />)
 
-    act(() => {
-      rerender(<SendTransaction route={route} />)
+    act(async () => {
+      await rerender(<SendTransaction route={route} />)
     })
 
     const picker = getByTestId('Tokens.Picker')
 
-    fireEvent(picker, 'onValueChange', 'FIRST_TEST_ERC20')
+    act(async () => {
+      await fireEvent(picker, 'onValueChange', 'FIRST_TEST_ERC20')
+      expect(picker.props.selectedIndex).toStrictEqual(0)
 
-    expect(picker.props.selectedIndex).toStrictEqual(0)
-    fireEvent(picker, 'onValueChange', 'SECOND_TEST_ERC20')
-
-    expect(picker.props.selectedIndex).toStrictEqual(1)
+      await fireEvent(picker, 'onValueChange', 'SECOND_TEST_ERC20')
+      expect(picker.props.selectedIndex).toBe(1)
+    })
   })
 
   test('send transaction', async () => {
