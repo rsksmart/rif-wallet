@@ -89,10 +89,6 @@ describe('Load Tokens', () => {
       <SendTransaction route={route} />,
     )
 
-    await waitFor(() =>
-      expect(route.params.account.getSmartAddress).toHaveBeenCalledTimes(1),
-    )
-
     act(() => {
       rerender(<SendTransaction route={route} />)
     })
@@ -104,9 +100,6 @@ describe('Load Tokens', () => {
   test('selects tokens', async () => {
     const { rerender, getByTestId } = render(<SendTransaction route={route} />)
 
-    await waitFor(() =>
-      expect(route.params.account.getSmartAddress).toHaveBeenCalledTimes(1),
-    )
     act(() => {
       rerender(<SendTransaction route={route} />)
     })
@@ -124,9 +117,6 @@ describe('Load Tokens', () => {
   test('send transaction', async () => {
     const { rerender, getByTestId } = render(<SendTransaction route={route} />)
 
-    await waitFor(() =>
-      expect(route.params.account.getSmartAddress).toHaveBeenCalledTimes(1),
-    )
     act(() => {
       rerender(<SendTransaction route={route} />)
     })

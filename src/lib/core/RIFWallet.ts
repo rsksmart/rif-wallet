@@ -73,7 +73,7 @@ export class RIFWallet extends Signer {
   getAddress = (): Promise<string> =>
     Promise.resolve(this.smartWallet.smartWalletAddress)
 
-  getChainId = (): Promise<number> => Promise.resolve(31)
+  getChainId = (): Promise<number> => this.wallet.getChainId()
 
   signMessage = (message: string | Bytes): Promise<string> =>
     this.smartWallet.wallet.signMessage(message)
