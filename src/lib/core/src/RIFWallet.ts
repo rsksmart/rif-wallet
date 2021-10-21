@@ -4,13 +4,13 @@ import {
   TransactionResponse,
   BlockTag,
 } from '@ethersproject/abstract-provider'
-import { Bytes, Signer, Wallet, BigNumber } from 'ethers'
+import { Bytes, Signer, Wallet } from 'ethers'
 import { SmartWalletFactory } from './SmartWalletFactory'
 import { SmartWallet } from './SmartWallet'
 
 const filterTxOptions = (transactionRequest: TransactionRequest) =>
   Object.keys(transactionRequest)
-    .filter(key => !['to', 'data'].includes(key))
+    .filter(key => !['from', 'to', 'data'].includes(key))
     .reduce((obj: any, key: any) => {
       obj[key] = (transactionRequest as any)[key]
       return obj
@@ -25,7 +25,7 @@ export type Request = {
   reject: (reason?: any) => void
 }
 
-type OnRequest = (request: Request) => void
+export type OnRequest = (request: Request) => void
 
 export class RIFWallet extends Signer {
   smartWallet: SmartWallet
@@ -78,14 +78,16 @@ export class RIFWallet extends Signer {
   signTransaction = (transaction: TransactionRequest): Promise<string> =>
     this.smartWallet.wallet.signTransaction(transaction)
 
-  // should override estimating via directExecute
-  estimateGas(transaction: TransactionRequest): Promise<BigNumber> {
-    return this.smartWallet.wallet.estimateGas(transaction)
-  }
-
   // should override calling via directExecute
-  call(transaction: TransactionRequest, _blockTag?: BlockTag): Promise<string> {
-    return this.smartWallet.wallet.call(transaction)
+  call(
+    transactionRequest: TransactionRequest,
+    blockTag?: BlockTag,
+  ): Promise<any> {
+    return this.smartWallet.callStaticDirectExecute(
+      transactionRequest.to!,
+      transactionRequest.data!,
+      { ...filterTxOptions(transactionRequest), blockTag },
+    )
   }
 
   async sendTransaction(
