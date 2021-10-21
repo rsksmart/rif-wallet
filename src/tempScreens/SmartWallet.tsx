@@ -5,28 +5,12 @@ import Button from '../components/button'
 import { Header2, Paragraph } from '../components/typography'
 import { RIFWallet } from '../lib/core/src/RIFWallet'
 
-import { Contract, BigNumber } from 'ethers'
+import { BigNumber } from 'ethers'
 import CopyComponent from '../components/copy'
-import { jsonRpcProvider } from '../lib/jsonRpcProvider'
-
-const abi = [
-  'function balanceOf(address owner) view returns (uint256)',
-  'function decimals() view returns (uint8)',
-  'function symbol() view returns (string)',
-
-  'function transfer(address to, uint amount) returns (bool)',
-
-  'event Transfer(address indexed from, address indexed to, uint amount)',
-]
-
-export const rifContract = new Contract(
-  '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
-  abi,
-)
+import { ERC20Token } from '../lib/token/ERC20Token'
 
 const SmartWalletComponent = ({ route }: { route: any }) => {
   const [eoaBalance, setEoaBalance] = useState<null | BigNumber>(null)
-  // const [smartWalletAddress, setSmartWalletAddress] = useState('')
   const [isSmartWalletDeployed, setIsSmartWalletDeployed] =
     useState<boolean>(false)
 
@@ -39,15 +23,18 @@ const SmartWalletComponent = ({ route }: { route: any }) => {
 
   const account = route.params.account as RIFWallet
 
-  // const smartWalletFactory = new SmartWalletFactory(account)
-  const rifJson = rifContract.connect(jsonRpcProvider)
-  const rif = rifContract.connect(account)
+  const rif = new ERC20Token(
+    '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
+    account,
+    'RIF',
+    'null.jpg',
+  )
 
   const getInfo = async () => {
     Promise.all([
       account.smartWallet.wallet.getBalance().then(setEoaBalance),
       account.smartWalletFactory.isDeployed().then(setIsSmartWalletDeployed),
-      rifJson.balanceOf(account.smartWalletAddress).then(setRifBalance),
+      rif.balance().then(setRifBalance),
     ]).catch((err: Error) => {
       console.log(err)
     })
@@ -70,10 +57,9 @@ const SmartWalletComponent = ({ route }: { route: any }) => {
         setSendRifTx(tx)
         setSendRifResponse('Transaction sent.')
       })
-      .catch((err: Error) => {
-        console.log('SmartWallet.tsx catach ?', err)
-        setSendRifResponse(`Transaction Err: ${err.message}`)
-      })
+      .catch((err: Error) =>
+        setSendRifResponse(`Transaction Err: ${err.message}`),
+      )
   }
 
   return (
