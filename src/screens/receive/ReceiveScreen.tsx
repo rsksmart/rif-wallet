@@ -8,7 +8,7 @@ import { Paragraph } from '../../components/typography'
 import QRCode from 'react-qr-code'
 
 import { shortAddress } from '../../lib/utils'
-import { RIFWallet } from '../../lib/core/src/RIFWallet'
+import { RIFWallet } from '../../lib/core/RIFWallet'
 
 // TODO: accountLink is hardcoded until we had the rns sdk
 const accountLink = 'ilan.rsk'

@@ -4,7 +4,7 @@ import { NavigationProp, ParamListBase } from '@react-navigation/native'
 
 import Button from './components/button'
 import { Header1, Header2, Paragraph } from './components/typography'
-import { RIFWallet } from './lib/core/src/RIFWallet'
+import { RIFWallet } from './lib/core/RIFWallet'
 
 import { WalletProviderContext } from './state/AppContext'
 import { removeStorage, StorageKeys } from './storage'

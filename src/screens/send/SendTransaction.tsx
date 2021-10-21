@@ -11,7 +11,7 @@ import { getAllTokens } from '../../lib/token/tokenMetadata'
 
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { IToken } from '../../lib/token/BaseToken'
-import { RIFWallet } from '../../lib/core/src/RIFWallet'
+import { RIFWallet } from '../../lib/core/RIFWallet'
 
 interface Interface {
   route: any

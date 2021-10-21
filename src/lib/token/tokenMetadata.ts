@@ -14,7 +14,7 @@ import tokenTestnet from './assets/token-testnet.svg'
 import { IToken } from './BaseToken'
 import { ERC20Token } from './ERC20Token'
 import { RBTCToken } from './RBTCToken'
-import { RIFWallet } from '../core/src/RIFWallet'
+import { RIFWallet } from '../core/RIFWallet'
 
 export interface ITokenMetadata {
   [address: string]: {

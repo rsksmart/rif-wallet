@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Modal, StyleSheet, TextInput, View } from 'react-native'
 
 import { TransactionRequest } from '@ethersproject/abstract-provider'
-import { Request } from '../lib/core/src/RIFWallet'
+import { Request } from '../lib/core/RIFWallet'
 
 import Button from '../components/button'
 import { Header2, Paragraph } from '../components/typography'

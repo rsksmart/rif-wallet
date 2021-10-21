@@ -3,7 +3,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { Transaction } from 'ethers'
 import Button from '../components/button'
 import { Header2, Paragraph } from '../components/typography'
-import { RIFWallet } from '../lib/core/src/RIFWallet'
+import { RIFWallet } from '../lib/core/RIFWallet'
 
 import { BigNumber } from 'ethers'
 import CopyComponent from '../components/copy'
