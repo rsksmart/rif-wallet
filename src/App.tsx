@@ -48,6 +48,14 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
   const seeSmartWallet = (account: RIFWallet) =>
     navigation.navigate('SmartWallet', { account })
 
+  const signMessage = (account: RIFWallet) => {
+    console.log('signing message', account)
+    account.signMessage('hello world')
+      .then((any: any) => {
+        console.log('response', any)
+      })
+  }
+
   return (
     <ScrollView>
       <Header1>sWallet</Header1>
@@ -76,6 +84,10 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
                   navigation.navigate('SendTransaction', { account })
                 }}
                 title="Send Transaction"
+              />
+              <Button
+                onPress={() => signMessage(account)}
+                title="Sign Message"
               />
             </View>
           )
