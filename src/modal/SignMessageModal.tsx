@@ -1,7 +1,7 @@
 import React from 'react'
-import { View, Modal, Text } from 'react-native'
+import { View, Modal, Text, StyleSheet } from 'react-native'
 import Button from '../components/button'
-import { Header2 } from '../components/typography'
+import { Header2, Paragraph } from '../components/typography'
 import { Request } from '../lib/core/RIFWallet'
 import { styles } from './ReviewTransactionModal'
 
@@ -28,15 +28,34 @@ const SignMessageMotal: React.FC<Interface> = ({ request, closeModal }) => {
           <View style={styles.modalView}>
             <Header2>Sign Message</Header2>
 
-            <Text>{request.payload.message}</Text>
+            <Paragraph>Do you want to sign this message?</Paragraph>
 
-            <Button onPress={signMessage} title="Sign Message" />
-            <Button onPress={reject} title="Reject" />
+            <Text style={localStyles.message}>{request.payload.message}</Text>
+
+            <View style={styles.row}>
+              <View style={styles.column}>
+                <Button onPress={signMessage} title="Sign Message" />
+              </View>
+              <View style={styles.column}>
+                <Button onPress={reject} title="Reject" />
+              </View>
+            </View>
           </View>
         </View>
       </Modal>
     </View>
   )
 }
+
+const localStyles = StyleSheet.create({
+  message: {
+    backgroundColor: '#f1f1f1',
+    borderWidth: 1,
+    borderColor: '#d1d1d1',
+    padding: 20,
+    marginTop: 10,
+    marginBottom: 20,
+  },
+})
 
 export default SignMessageMotal
