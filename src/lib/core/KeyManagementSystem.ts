@@ -1,7 +1,6 @@
 import { Wallet } from 'ethers'
-import { generateMnemonic, mnemonicToSeedSync } from '@rsksmart/rif-id-mnemonic'
+import { generateMnemonic, mnemonicToSeedSync, fromSeed } from '@rsksmart/rif-id-mnemonic'
 import { getDPathByChainId } from '@rsksmart/rlogin-dpath'
-import { fromSeed } from 'bip32' // TOD): add method to @rsksmart/rif-id-mnemonic
 
 type Mnemonic = string
 
@@ -18,7 +17,7 @@ type KeyManagementSystemState = {
 
 const createInitialState = (): KeyManagementSystemState => ({
   lastDerivedAccountIndex: {},
-  derivedPaths: {},
+  derivedPaths: {}
 })
 
 type KeyManagementSystemSerialization = {
@@ -33,9 +32,9 @@ export type SaveableWallet = {
 }
 
 interface IKeyManagementSystem {
-  nextWallet(chainId: number): SaveableWallet
-  addWallet(derivationPath: string): SaveableWallet
-  removeWallet(derivationPath: string): void
+  nextWallet (chainId: number): SaveableWallet
+  addWallet (derivationPath: string): SaveableWallet
+  removeWallet (derivationPath: string): void
 }
 
 /**
@@ -56,10 +55,7 @@ export class KeyManagementSystem implements IKeyManagementSystem {
   state: KeyManagementSystemState
   mnemonic: Mnemonic
 
-  private constructor(
-    mnemonic: Mnemonic,
-    initialState: KeyManagementSystemState,
-  ) {
+  private constructor (mnemonic: Mnemonic, initialState: KeyManagementSystemState) {
     this.mnemonic = mnemonic
     this.state = initialState
   }
@@ -69,7 +65,7 @@ export class KeyManagementSystem implements IKeyManagementSystem {
    * Key Management System
    * @returns a new Key Management System with a new mnemonic
    */
-  static create(): KeyManagementSystem {
+  static create (): KeyManagementSystem {
     const mnemonic = generateMnemonic(24)
     return new KeyManagementSystem(mnemonic, createInitialState())
   }
@@ -81,7 +77,7 @@ export class KeyManagementSystem implements IKeyManagementSystem {
    * @param state the state of the Key Management System
    * @returns A Key Management System with the given mnemonic and state
    */
-  static import(mnemonic: Mnemonic) {
+  static import (mnemonic: Mnemonic) {
     return new KeyManagementSystem(mnemonic, createInitialState())
   }
 
@@ -90,12 +86,8 @@ export class KeyManagementSystem implements IKeyManagementSystem {
    * @param serialized the serialized string
    * @returns the KeyManagementSystem that was serialized
    */
-  static fromSerialized(serialized: string): {
-    kms: KeyManagementSystem
-    wallets: Wallet[]
-  } {
-    const { mnemonic, state }: KeyManagementSystemSerialization =
-      JSON.parse(serialized)
+  static fromSerialized (serialized: string): { kms: KeyManagementSystem, wallets: Wallet[] } {
+    const { mnemonic, state }: KeyManagementSystemSerialization = JSON.parse(serialized)
 
     const kms = new KeyManagementSystem(mnemonic, state)
     const wallets = Object.keys(state.derivedPaths)
@@ -104,7 +96,7 @@ export class KeyManagementSystem implements IKeyManagementSystem {
 
     return {
       kms,
-      wallets,
+      wallets
     }
   }
 
@@ -112,16 +104,16 @@ export class KeyManagementSystem implements IKeyManagementSystem {
    * Use this method to get a string to be stored and recovered
    * @returns a serialized wallet
    */
-  serialize(): string {
+  serialize (): string {
     const serialization: KeyManagementSystemSerialization = {
       mnemonic: this.mnemonic,
-      state: this.state,
+      state: this.state
     }
 
     return JSON.stringify(serialization)
   }
 
-  private deriveWallet(derivationPath: string) {
+  private deriveWallet (derivationPath: string) {
     // Create the seed - ref: BIP-39
     const seed = mnemonicToSeedSync(this.mnemonic)
     const hdKey = fromSeed(seed).derivePath(derivationPath)
@@ -134,23 +126,17 @@ export class KeyManagementSystem implements IKeyManagementSystem {
    * @param chainId EIP-155 chain Id
    * @returns a savable account
    */
-  nextWallet(chainId: number): SaveableWallet {
+  nextWallet (chainId: number): SaveableWallet {
     // Get the next derivation path for the address - ref: BIP-44
     if (!this.state.lastDerivedAccountIndex[chainId]) {
       this.state.lastDerivedAccountIndex[chainId] = 0
     }
 
-    let derivationPath = getDPathByChainId(
-      chainId,
-      this.state.lastDerivedAccountIndex[chainId],
-    )
+    let derivationPath = getDPathByChainId(chainId, this.state.lastDerivedAccountIndex[chainId])
 
     while (this.state.derivedPaths[derivationPath]) {
       this.state.lastDerivedAccountIndex[chainId]++
-      derivationPath = getDPathByChainId(
-        chainId,
-        this.state.lastDerivedAccountIndex[chainId],
-      )
+      derivationPath = getDPathByChainId(chainId, this.state.lastDerivedAccountIndex[chainId])
     }
 
     const wallet = this.deriveWallet(derivationPath)
@@ -160,9 +146,8 @@ export class KeyManagementSystem implements IKeyManagementSystem {
       wallet,
       save: () => {
         this.state.derivedPaths[derivationPath] = true
-        this.state.lastDerivedAccountIndex[chainId] =
-          this.state.lastDerivedAccountIndex[chainId] + 1
-      },
+        this.state.lastDerivedAccountIndex[chainId] = this.state.lastDerivedAccountIndex[chainId] + 1
+      }
     }
   }
 
@@ -171,10 +156,8 @@ export class KeyManagementSystem implements IKeyManagementSystem {
    * @param derivationPath an arbitrary derivation path
    * @returns a savable wallet
    */
-  addWallet(derivationPath: string): SaveableWallet {
-    if (this.state.derivedPaths[derivationPath]) {
-      throw new Error('Existent wallet')
-    }
+  addWallet (derivationPath: string): SaveableWallet {
+    if (this.state.derivedPaths[derivationPath]) throw new Error('Existent wallet')
 
     const wallet = this.deriveWallet(derivationPath)
 
@@ -183,7 +166,7 @@ export class KeyManagementSystem implements IKeyManagementSystem {
       wallet,
       save: () => {
         this.state.derivedPaths[derivationPath] = true
-      },
+      }
     }
   }
 
@@ -191,10 +174,8 @@ export class KeyManagementSystem implements IKeyManagementSystem {
    * Remove a wallet from the Key Management System
    * @param derivationPath the derivation path of the wallet to be removed
    */
-  removeWallet(derivationPath: string): void {
-    if (!this.state.derivedPaths[derivationPath]) {
-      throw new Error('Inexistent wallet')
-    }
+  removeWallet (derivationPath: string): void {
+    if (!this.state.derivedPaths[derivationPath]) throw new Error('Inexistent wallet')
 
     delete this.state.derivedPaths[derivationPath]
   }
