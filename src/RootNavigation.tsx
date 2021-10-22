@@ -12,6 +12,8 @@ import ReceiveScreen from './screens/receive/ReceiveScreen'
 
 import SmartWallet from './tempScreens/SmartWallet'
 import { WalletProviderContext } from './state/AppContext'
+import CreateWalletNavigationScreen from './screens/createWallet'
+import RevealMasterKeyScreen from './screens/createWallet/RevealMasterKeyScreen'
 
 interface Interface {}
 
@@ -52,6 +54,17 @@ const RootNavigation: React.FC<Interface> = () => {
             <RootStack.Screen
               name="TransactionReceived"
               component={TransactionReceived}
+            />
+
+            <RootStack.Screen
+              name="CreateWalletStack"
+              component={CreateWalletNavigationScreen}
+              options={sharedOptions}
+            />
+            <RootStack.Screen
+              name="RevealMasterKey"
+              component={RevealMasterKeyScreen}
+              options={{ ...sharedOptions, headerShown: true }}
             />
           </RootStack.Group>
         </RootStack.Navigator>

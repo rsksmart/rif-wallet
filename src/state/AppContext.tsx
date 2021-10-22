@@ -12,6 +12,7 @@ import { getStorage, setStorage, StorageKeys } from '../storage'
 export interface WalletProviderContextInterface {
   wallets: RIFWallet[]
   getMnemonic: () => string
+  saveMnemonic: (mnemonic: string) => Promise<void>
   walletRequests: Request[]
 
   handleUxInteraction: any // (qt: QueuedTransaction) => Promise<TransactionRequest>
@@ -23,6 +24,7 @@ export const WalletProviderContext =
     wallets: [],
     getMnemonic: () => '',
     walletRequests: [],
+    saveMnemonic: async () => {},
 
     handleUxInteraction: (_qt: Request) => Promise.resolve({}),
     resolveUxInteraction: () => null,
@@ -50,8 +52,19 @@ export const WalletProviderElement: React.FC<Web3ProviderElementInterface> = ({
   }
   const resolveUxInteraction = () => setWalletRequestQue([])
 
+  const saveMnemonic = async (mnemonic: string) => {
+    console.log('setting up new wallet')
+    const kms = KeyManagementSystem.import(mnemonic)
+    const firstWallet = kms.nextWallet(31)
+    firstWallet.save()
+    setStorage(StorageKeys.KMS, kms.serialize())
+
+    init({ kms, wallets: [firstWallet.wallet] })
+  }
+
   const initialContext: WalletProviderContextInterface = {
     wallets,
+    saveMnemonic,
     getMnemonic: () =>
       keyManagementSystem ? keyManagementSystem?.mnemonic : '',
     walletRequests: walletRequestQue,
@@ -90,13 +103,6 @@ export const WalletProviderElement: React.FC<Web3ProviderElementInterface> = ({
       })
       .catch(() => {
         // Error: key does not present
-        console.log('setting up new wallet')
-        const kms = KeyManagementSystem.create()
-        const firstWallet = kms.nextWallet(31)
-        firstWallet.save()
-        setStorage(StorageKeys.KMS, kms.serialize())
-
-        init({ kms, wallets: [firstWallet.wallet] })
       })
   }, [])
 
