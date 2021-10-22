@@ -10,14 +10,24 @@ export type OverriddableTransactionOptions = {
   gasPrice: BigNumberish,
 }
 
-export type Request = {
-  type: 'sendTransaction'
-  payload: {
-    // needs refactor: payload can be transactionRequest, not an object of transactionRequest
-    transactionRequest: TransactionRequest
-  }
-  confirm: (value?: Partial<OverriddableTransactionOptions>) => void
+export interface Request {
+  type: string
+  payload: any
+  confirm: (params?: any) => void
   reject: (reason?: any) => void
+}
+
+export interface SendTransactionRequest extends Request {
+  type: 'sendTransaction',
+  payload: {
+    transactionRequest: TransactionRequest
+  },
+  confirm: (value?: Partial<OverriddableTransactionOptions>) => void
+}
+
+export interface SignMessageRequest extends Request {
+  type: 'signMessage',
+  payload: string
 }
 
 export type OnRequest = (request: Request) => void
@@ -57,7 +67,26 @@ export class RIFWallet extends Signer {
 
   getAddress = (): Promise<string> => Promise.resolve(this.smartWallet.smartWalletAddress)
 
-  signMessage = (message: string | Bytes): Promise<string> => this.smartWallet.wallet.signMessage(message)
+  // signMessage = (message: string | Bytes): Promise<string> => this.smartWallet.wallet.signMessage(message)
+
+  signMessage = async (message: string | Bytes): Promise<string>=> {
+    return await new Promise((resolve, reject) => {
+      const nextRequest = Object.freeze<Request>({
+        type: 'signMessage',
+        payload: message,
+        confirm: async () => {
+          const hash = await this.smartWallet.wallet.signMessage(message)
+          resolve(hash)
+        },
+        reject: (reason?: any) => reject(new Error(reason))
+      })
+
+      // emits onRequest with reference to the transactionRequest
+      this.onRequest(nextRequest)
+    })
+  }
+
+
   signTransaction = (transaction: TransactionRequest): Promise<string> => this.smartWallet.wallet.signTransaction(transaction)
 
   // calls via smart wallet
@@ -68,7 +97,7 @@ export class RIFWallet extends Signer {
   async sendTransaction (transactionRequest: TransactionRequest): Promise<TransactionResponse> {
     // waits for confirm()
     return await new Promise((resolve, reject) => {
-      const nextRequest = Object.freeze<Request>({
+      const nextRequest = Object.freeze<SendTransactionRequest>({
         type: 'sendTransaction',
         payload: {
           transactionRequest

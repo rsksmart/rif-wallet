@@ -23,7 +23,7 @@ interface StringTransaction {
 }
 
 interface Interface {
-  queuedTransactionRequest: Request
+  request: Request
   closeModal: () => void
 }
 
@@ -61,11 +61,11 @@ const convertTransactionToStrings = (tx: TransactionRequest) => ({
 */
 
 const ReviewTransactionModal: React.FC<Interface> = ({
-  queuedTransactionRequest,
+  request,
   closeModal,
 }) => {
   const transactionRequest = convertTransactionToStrings(
-    queuedTransactionRequest.payload.transactionRequest,
+    request.payload.transactionRequest,
   )
 
   const [gasPrice, setGasPrice] = useState(transactionRequest.gasPrice)
@@ -73,7 +73,7 @@ const ReviewTransactionModal: React.FC<Interface> = ({
 
   // convert from string to Transaction and pass out of component
   const confirmTransaction = () => {
-    queuedTransactionRequest.confirm({
+    request.confirm({
       gasPrice: BigNumber.from(gasPrice),
       gasLimit: BigNumber.from(gasLimit),
     })
@@ -81,7 +81,7 @@ const ReviewTransactionModal: React.FC<Interface> = ({
   }
 
   const cancelTransaction = () => {
-    queuedTransactionRequest.reject('User rejects the transaction')
+    request.reject('User rejects the transaction')
     closeModal()
   }
 

@@ -2,11 +2,11 @@ import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import Button from '../components/button'
 import { Header2, Paragraph } from '../components/typography'
-import { Request } from '../lib/core/RIFWallet'
+import { SignMessageRequest } from '../lib/core/RIFWallet'
 import { styles as sharedStyles } from './ModalComponent'
 
 interface Interface {
-  request: Request
+  request: SignMessageRequest
   closeModal: () => void
 }
 
@@ -27,7 +27,7 @@ const SignMessageMotal: React.FC<Interface> = ({ request, closeModal }) => {
 
       <Paragraph>Do you want to sign this message?</Paragraph>
 
-      <Text style={styles.message}>{request.payload.message}</Text>
+      <Text style={styles.message}>{request.payload}</Text>
 
       <View style={sharedStyles.row}>
         <View style={sharedStyles.column}>
