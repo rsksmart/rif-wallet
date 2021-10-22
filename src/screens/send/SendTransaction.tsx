@@ -11,7 +11,7 @@ import { getAllTokens } from '../../lib/token/tokenMetadata'
 
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { IToken } from '../../lib/token/BaseToken'
-import { RIFWallet } from '../../lib/core/RIFWallet'
+import { RIFWallet } from '../../lib/core'
 
 interface Interface {
   route: any
@@ -66,7 +66,7 @@ const SendTransaction: React.FC<Interface> = ({ route }) => {
           setTx(txReceipt)
           setInfo('Transaction Confirmed.')
           setTxConfirmed(true)
-        } catch (e: any) {
+        } catch (e) {
           setInfo('Transaction Failed: ' + e.message)
         }
       }

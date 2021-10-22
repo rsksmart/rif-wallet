@@ -5,7 +5,6 @@ import { render, fireEvent, waitFor, act } from '@testing-library/react-native'
 import BalancesScreen from './BalancesScreen'
 
 import mockedTokens from './tokens-mock.json'
-
 //TODO: integration tests pending
 jest.mock('../../lib/rifWalletServices/RifWalletServicesFetcher', () => {
   return {
@@ -18,7 +17,6 @@ jest.mock('../../lib/rifWalletServices/RifWalletServicesFetcher', () => {
     }),
   }
 })
-
 describe('Load balances', () => {
   const navigation = {
     navigate: jest.fn(),
@@ -29,9 +27,7 @@ describe('Load balances', () => {
   const route = {
     params: {
       account: {
-        getSmartAddress: jest.fn(() =>
-          Promise.resolve('0xbd4c8e11cf2c560382e0dbd6aeef538debf1d449'),
-        ),
+        smartWalletAddress: '0xbd4c8e11cf2c560382e0dbd6aeef538debf1d449',
       },
     },
   }

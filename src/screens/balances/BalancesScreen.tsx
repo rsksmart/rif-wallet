@@ -35,7 +35,7 @@ const BalancesScreen: React.FC<IReceiveScreenProps> = ({
     try {
       setTokens([])
       setInfo('Loading balances. Please wait...')
-      const address = await account.getAddress()
+      const address = account.smartWalletAddress
       setSmartAddress(address)
       const fetchedtokens = await fetcher.fetchTokensByAddress(address)
       console.log({ fetchedtokens })
