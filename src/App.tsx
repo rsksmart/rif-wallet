@@ -4,7 +4,7 @@ import { NavigationProp, ParamListBase } from '@react-navigation/native'
 
 import Button from './components/button'
 import { Header1, Header2, Paragraph } from './components/typography'
-import { Account, Wallet } from './lib/core'
+import { RIFWallet } from './lib/core/RIFWallet'
 
 import { WalletProviderContext } from './state/AppContext'
 import { removeStorage, StorageKeys } from './storage'
@@ -19,17 +19,23 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
   // Temporary component state:
   interface componentStateI {
     confirmResponse?: string
-    wallet?: Wallet
+    wallet?: RIFWallet
   }
 
-  const [wallet, setWallet] = useState<Wallet | undefined>(undefined)
-  const [accounts, setAccounts] = useState<Account[]>([])
+  const [wallet, setWallet] = useState<RIFWallet[]>([])
+  const [mnemonic, setMnemonic] = useState<string>('')
 
   const context = useContext(WalletProviderContext)
   useEffect(() => {
-    setWallet(context.wallet)
-  }, [context.wallet, wallet])
+    context.wallets && setWallet(context.wallets)
+  }, [context.wallets])
 
+  useEffect(() => {
+    console.log('setting Mnemonic', context.getMnemonic())
+    setMnemonic(context.getMnemonic())
+  }, [context.wallets])
+
+  /*
   const addAccount = () => {
     if (wallet) {
       wallet
@@ -37,24 +43,26 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
         .then(account => setAccounts(accounts.concat(account)))
     }
   }
+  */
 
-  const seeSmartWallet = (account: Account) =>
+  const seeSmartWallet = (account: RIFWallet) =>
     navigation.navigate('SmartWallet', { account })
 
   return (
     <ScrollView>
       <Header1>sWallet</Header1>
       <View style={styles.section}>
-        <Header2>Wallet:</Header2>
-        {wallet && <CopyComponent value={wallet.getMnemonic} />}
+        <Header2>KMS:</Header2>
+        <CopyComponent value={mnemonic} />
       </View>
 
       <View style={styles.section}>
-        <Header2>Accounts:</Header2>
-        {accounts.map((account: Account, index: number) => {
+        <Header2>RIF Wallets:</Header2>
+        {wallet.map((account: RIFWallet, index: number) => {
           return (
             <View key={index}>
-              <CopyComponent value={account.address} />
+              <Paragraph>EOA Address</Paragraph>
+              <CopyComponent value={account.smartWallet.wallet.address} />
               <Button
                 title="See smart wallet"
                 onPress={() => seeSmartWallet(account)}
@@ -65,7 +73,6 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
               />
               <Button
                 onPress={() => {
-                  // @ts-ignore
                   navigation.navigate('SendTransaction', { account })
                 }}
                 title="Send Transaction"
@@ -73,13 +80,13 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
             </View>
           )
         })}
-        <Button onPress={addAccount} title="Add account" />
+        {/*<Button onPress={addAccount} title="Add account" />*/}
       </View>
 
       <View style={styles.section}>
         <Header2>Settings</Header2>
         <Button
-          onPress={() => removeStorage(StorageKeys.MNEMONIC)}
+          onPress={() => removeStorage(StorageKeys.KMS)}
           title="Clear RN Storage"
         />
         <Paragraph>

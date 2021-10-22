@@ -1,7 +1,7 @@
 import RNSecureStorage, { ACCESSIBLE } from 'rn-secure-storage'
 
 export enum StorageKeys {
-  MNEMONIC = 'mnemonic',
+  KMS = 'KEY_MANAGEMENT',
 }
 
 export const getStorage = (key: StorageKeys): Promise<string | null> =>

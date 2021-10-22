@@ -2,29 +2,32 @@ import React from 'react'
 import { render, fireEvent } from '@testing-library/react-native'
 
 import ReviewTransactionModal from './ReviewTransactionModal'
-import { QueuedTransaction } from '../lib/core/Account'
+import { Request } from '../lib/core/RIFWallet'
+import { BigNumber } from '@ethersproject/bignumber'
 
 describe('ReviewTransactionModal', function (this: {
   confirm: ReturnType<typeof jest.fn>
   cancel: ReturnType<typeof jest.fn>
-  queuedTransaction: QueuedTransaction
+  queuedTransaction: Request
 }) {
   beforeEach(() => {
     this.confirm = jest.fn()
     this.cancel = jest.fn()
 
     this.queuedTransaction = {
-      id: 0,
-      transactionRequest: {
-        to: '0x123',
-        from: '0x456',
-        data: '',
-        value: 1000,
-        gasLimit: 10000,
-        gasPrice: 0.068,
+      type: 'sendTransaction',
+      payload: {
+        transactionRequest: {
+          to: '0x123',
+          from: '0x456',
+          data: '',
+          value: BigNumber.from(1000),
+          gasLimit: BigNumber.from(10000),
+          gasPrice: BigNumber.from(600000000),
+        },
       },
       confirm: this.confirm,
-      cancel: this.cancel,
+      reject: this.cancel,
     }
   })
 
@@ -51,9 +54,11 @@ describe('ReviewTransactionModal', function (this: {
       />,
     )
     fireEvent.press(getByTestId('Confirm.Button'))
-    expect(this.confirm).toBeCalledWith(
-      this.queuedTransaction.transactionRequest,
-    )
+
+    expect(this.confirm).toBeCalledWith({
+      gasPrice: this.queuedTransaction.payload.transactionRequest.gasPrice,
+      gasLimit: this.queuedTransaction.payload.transactionRequest.gasLimit,
+    })
     expect(closeModal).toBeCalled()
   })
 
@@ -80,16 +85,18 @@ describe('ReviewTransactionModal', function (this: {
       />,
     )
 
-    fireEvent.changeText(getByTestId('gasLimit.TextInput'), '20')
-    fireEvent.changeText(getByTestId('gasPrice.TextInput'), '1000')
+    const gasPrice = '20'
+    const gasLimit = '1000'
+
+    fireEvent.changeText(getByTestId('gasLimit.TextInput'), gasLimit)
+    fireEvent.changeText(getByTestId('gasPrice.TextInput'), gasPrice)
 
     fireEvent.press(getByTestId('Confirm.Button'))
-    expect(closeModal).toBeCalled()
 
     expect(this.confirm).toBeCalledWith({
-      ...this.queuedTransaction.transactionRequest,
-      gasLimit: 20,
-      gasPrice: 1000,
+      gasPrice: BigNumber.from(gasPrice),
+      gasLimit: BigNumber.from(gasLimit),
     })
+    expect(closeModal).toHaveBeenCalled()
   })
 })

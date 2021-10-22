@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
 import { Modal, StyleSheet, TextInput, View } from 'react-native'
 
+import { TransactionRequest } from '@ethersproject/abstract-provider'
+import { Request } from '../lib/core/RIFWallet'
+
 import Button from '../components/button'
 import { Header2, Paragraph } from '../components/typography'
-import { QueuedTransaction, TransactionRequest } from '../lib/core/Account'
+import { BigNumber } from '@ethersproject/bignumber'
 
 /**
  * Used for UI only to make editing transactions easier. Allows for
@@ -19,68 +22,65 @@ interface StringTransaction {
 }
 
 interface Interface {
-  queuedTransactionRequest: QueuedTransaction
+  queuedTransactionRequest: Request
   closeModal: () => void
 }
+
+// string object helpers
+const convertValueToString = (value?: any) => (value ? value.toString() : '')
+const convertNumberToString = (value?: any) => (value ? value.toString() : '0')
+
+const convertTransactionToStrings = (tx: TransactionRequest) => ({
+  to: convertValueToString(tx.to),
+  from: convertValueToString(tx.from),
+  value: convertNumberToString(tx.value),
+  // nonce: convertNumberToString(tx.nonce),
+  data: convertValueToString(tx.data),
+  gasLimit: convertNumberToString(tx.gasLimit),
+  gasPrice: convertNumberToString(tx.gasPrice),
+})
+
+/*
+  removed validations for now. we can use BigNumber.from to validate
+  confirmTransaction will enforce that now
+
+  if (gasPrice.match(/^(\d*)([,.]\d{0,})?$/)) {
+    setUpdateTransaction({
+      ...updateTransaction,
+      gasPrice: gasPrice,
+    })
+  }
+  if (parseInt(gasLimit, 10).toString() === gasLimit || gasLimit === '') {
+    setUpdateTransaction({
+      ...updateTransaction,
+      gasLimit: gasLimit,
+    })
+  }
+
+*/
 
 const ReviewTransactionModal: React.FC<Interface> = ({
   queuedTransactionRequest,
   closeModal,
 }) => {
-  const { transactionRequest } = queuedTransactionRequest
-
-  // string object helpers
-  const convertValueToString = (value?: any) => (value ? value.toString() : '')
-  const convertNumberToString = (value?: any) =>
-    value ? value.toString() : '0'
-
-  const convertTransactionToStrings = (tx: TransactionRequest) => ({
-    to: convertValueToString(tx.to),
-    from: convertValueToString(tx.from),
-    value: convertNumberToString(tx.value),
-    // nonce: convertNumberToString(tx.nonce),
-    data: convertValueToString(tx.data),
-    gasLimit: convertNumberToString(tx.gasLimit),
-    gasPrice: convertNumberToString(tx.gasPrice),
-  })
-
-  const [updateTransaction, setUpdateTransaction] = useState<StringTransaction>(
-    convertTransactionToStrings(transactionRequest),
+  const transactionRequest = convertTransactionToStrings(
+    queuedTransactionRequest.payload.transactionRequest,
   )
 
-  // gasLimit can be a number or empty (temporarly)
-  const changeGasLimit = (gasLimit: string) => {
-    if (parseInt(gasLimit, 10).toString() === gasLimit || gasLimit === '') {
-      setUpdateTransaction({
-        ...updateTransaction,
-        gasLimit: gasLimit,
-      })
-    }
-  }
-
-  // gasPrice is an integer that temporarly can end with 0 or a dot
-  const changeGasPrice = (gasPrice: string) => {
-    if (gasPrice.match(/^(\d*)([,.]\d{0,})?$/)) {
-      setUpdateTransaction({
-        ...updateTransaction,
-        gasPrice: gasPrice,
-      })
-    }
-  }
+  const [gasPrice, setGasPrice] = useState(transactionRequest.gasPrice)
+  const [gasLimit, setGasLimit] = useState(transactionRequest.gasLimit)
 
   // convert from string to Transaction and pass out of component
   const confirmTransaction = () => {
     queuedTransactionRequest.confirm({
-      ...updateTransaction,
-      value: parseInt(updateTransaction.value, 10),
-      gasLimit: parseInt(updateTransaction.gasLimit, 10),
-      gasPrice: parseFloat(updateTransaction.gasPrice),
+      gasPrice: BigNumber.from(gasPrice),
+      gasLimit: BigNumber.from(gasLimit),
     })
     closeModal()
   }
 
   const cancelTransaction = () => {
-    queuedTransactionRequest.cancel()
+    queuedTransactionRequest.reject('User rejects the transaction')
     closeModal()
   }
 
@@ -105,9 +105,9 @@ const ReviewTransactionModal: React.FC<Interface> = ({
               </View>
               <View style={styles.column}>
                 <TextInput
-                  value={updateTransaction.gasLimit}
+                  value={gasLimit}
                   style={styles.textInput}
-                  onChangeText={changeGasLimit}
+                  onChangeText={setGasLimit}
                   keyboardType="number-pad"
                   placeholder="gas limit"
                   testID="gasLimit.TextInput"
@@ -120,9 +120,9 @@ const ReviewTransactionModal: React.FC<Interface> = ({
               </View>
               <View style={styles.column}>
                 <TextInput
-                  value={updateTransaction.gasPrice}
+                  value={gasPrice}
                   style={styles.textInput || ''}
-                  onChangeText={changeGasPrice}
+                  onChangeText={setGasPrice}
                   keyboardType="number-pad"
                   placeholder="gas price"
                   testID="gasPrice.TextInput"
