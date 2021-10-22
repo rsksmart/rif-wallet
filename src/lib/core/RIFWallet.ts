@@ -10,11 +10,15 @@ export type OverriddableTransactionOptions = {
   gasPrice: BigNumberish,
 }
 
+type RequestPayload = {
+  transactionRequest: TransactionRequest
+} | string | Bytes
+
 export interface Request {
   type: string
-  payload: any
-  confirm: (params?: any) => void
-  reject: (reason?: any) => void
+  payload: RequestPayload
+  confirm: (params?: {}) => void
+  reject: (reason?: {}) => void
 }
 
 export interface SendTransactionRequest extends Request {
@@ -27,7 +31,7 @@ export interface SendTransactionRequest extends Request {
 
 export interface SignMessageRequest extends Request {
   type: 'signMessage',
-  payload: string
+  payload: string | Bytes
 }
 
 export type OnRequest = (request: Request) => void
@@ -67,11 +71,9 @@ export class RIFWallet extends Signer {
 
   getAddress = (): Promise<string> => Promise.resolve(this.smartWallet.smartWalletAddress)
 
-  // signMessage = (message: string | Bytes): Promise<string> => this.smartWallet.wallet.signMessage(message)
-
-  signMessage = async (message: string | Bytes): Promise<string>=> {
-    return await new Promise((resolve, reject) => {
-      const nextRequest = Object.freeze<Request>({
+  signMessage = async (message: string | Bytes): Promise<string> =>
+    await new Promise((resolve, reject) => {
+      const nextRequest = Object.freeze<SignMessageRequest>({
         type: 'signMessage',
         payload: message,
         confirm: async () => {
@@ -84,8 +86,6 @@ export class RIFWallet extends Signer {
       // emits onRequest with reference to the transactionRequest
       this.onRequest(nextRequest)
     })
-  }
-
 
   signTransaction = (transaction: TransactionRequest): Promise<string> => this.smartWallet.wallet.signTransaction(transaction)
 

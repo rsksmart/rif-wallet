@@ -10,7 +10,7 @@ interface Interface {
   closeModal: () => void
 }
 
-const SignMessageMotal: React.FC<Interface> = ({ request, closeModal }) => {
+const SignMessageModal: React.FC<Interface> = ({ request, closeModal }) => {
   const reject = () => {
     request.reject()
     closeModal()
@@ -27,14 +27,20 @@ const SignMessageMotal: React.FC<Interface> = ({ request, closeModal }) => {
 
       <Paragraph>Do you want to sign this message?</Paragraph>
 
-      <Text style={styles.message}>{request.payload}</Text>
+      <Text style={styles.message} testID="Text.Message">
+        {request.payload}
+      </Text>
 
       <View style={sharedStyles.row}>
         <View style={sharedStyles.column}>
-          <Button onPress={signMessage} title="Sign Message" />
+          <Button
+            onPress={signMessage}
+            title="Sign Message"
+            testID="Button.Confirm"
+          />
         </View>
         <View style={sharedStyles.column}>
-          <Button onPress={reject} title="Reject" />
+          <Button onPress={reject} title="Reject" testID="Button.Reject" />
         </View>
       </View>
     </View>
@@ -52,4 +58,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default SignMessageMotal
+export default SignMessageModal

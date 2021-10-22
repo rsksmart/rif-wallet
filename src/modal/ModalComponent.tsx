@@ -1,6 +1,10 @@
 import React from 'react'
 import { Modal, StyleSheet, View } from 'react-native'
-import { Request } from '../lib/core/RIFWallet'
+import {
+  Request,
+  SignMessageRequest,
+  SendTransactionRequest,
+} from '../lib/core/RIFWallet'
 import ReviewTransactionModal from './ReviewTransactionModal'
 import SignMessageModal from './SignMessageModal'
 
@@ -16,10 +20,13 @@ const ModalComponent: React.FC<Interface> = ({ request, closeModal }) => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             {request.type === 'signMessage' ? (
-              <SignMessageModal request={request} closeModal={closeModal} />
+              <SignMessageModal
+                request={request as SignMessageRequest}
+                closeModal={closeModal}
+              />
             ) : (
               <ReviewTransactionModal
-                request={request}
+                request={request as SendTransactionRequest}
                 closeModal={closeModal}
               />
             )}

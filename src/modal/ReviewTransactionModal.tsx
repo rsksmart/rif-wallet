@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { TextInput, View } from 'react-native'
 
 import { TransactionRequest } from '@ethersproject/abstract-provider'
-import { Request } from '../lib/core/RIFWallet'
+import { SendTransactionRequest } from '../lib/core/RIFWallet'
 
 import Button from '../components/button'
 import { Header2, Paragraph } from '../components/typography'
@@ -23,7 +23,7 @@ interface StringTransaction {
 }
 
 interface Interface {
-  request: Request
+  request: SendTransactionRequest
   closeModal: () => void
 }
 
@@ -86,7 +86,7 @@ const ReviewTransactionModal: React.FC<Interface> = ({
   }
 
   return (
-    <View >
+    <View>
       <Header2>Review Transaction</Header2>
       <Paragraph>to: {transactionRequest.to}</Paragraph>
       <Paragraph>from: {transactionRequest.from}</Paragraph>
