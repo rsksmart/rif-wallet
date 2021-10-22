@@ -38,6 +38,7 @@ const BalancesScreen: React.FC<IReceiveScreenProps> = ({
       const address = await account.getAddress()
       setSmartAddress(address)
       const fetchedtokens = await fetcher.fetchTokensByAddress(address)
+      console.log({ fetchedtokens })
       const rbtcBalance = await jsonRpcProvider.getBalance(address)
 
       const rbtcToken: ITokenWithBalance = {
@@ -68,7 +69,10 @@ const BalancesScreen: React.FC<IReceiveScreenProps> = ({
         </View>
       ) : null}
       {tokens.map(token => (
-        <View key={token.symbol} style={styles.tokenRow}>
+        <View
+          key={token.symbol}
+          style={styles.tokenRow}
+          testID={`${token.symbol}.View`}>
           <View style={styles.tokenBalance}>
             <Text>
               {token.symbol}{' '}
@@ -85,6 +89,7 @@ const BalancesScreen: React.FC<IReceiveScreenProps> = ({
                 })
               }}
               title={'Send'}
+              testID={`${token.symbol}.Button`}
             />
           </View>
         </View>
