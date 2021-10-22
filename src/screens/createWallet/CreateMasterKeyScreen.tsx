@@ -6,7 +6,7 @@ import { Header2, Paragraph } from '../../components/typography'
 import CopyComponent from '../../components/copy'
 
 import Button from '../../components/button'
-import { Wallet } from '../../lib/core'
+import { KeyManagementSystem } from '../../lib/core/KeyManagementSystem'
 
 interface Interface {
   navigation: NavigationProp<ParamListBase>
@@ -14,7 +14,7 @@ interface Interface {
 }
 
 const CreateMasterKeyScreen: React.FC<Interface> = ({ navigation }) => {
-  const mnemonic = useMemo(() => Wallet.create().getMnemonic, [])
+  const mnemonic = useMemo(() => KeyManagementSystem.create().mnemonic, [])
 
   return (
     <ScrollView>

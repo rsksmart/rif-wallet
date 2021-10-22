@@ -14,20 +14,18 @@ interface Interface {
 const WalletCreatedScreen: React.FC<Interface> = ({ route, navigation }) => {
   const mnemonic = route.params.mnemonic as string
 
-  const { wallet, saveWallet } = useContext(WalletProviderContext)
+  const { wallets, saveMnemonic } = useContext(WalletProviderContext)
 
   useEffect(() => {
-    saveWallet(mnemonic)
-  }, [mnemonic, saveWallet])
+    saveMnemonic(mnemonic)
+  }, [mnemonic])
 
   const navigateToReceive = async () => {
-    if (!wallet) {
+    if (wallets.length === 0) {
       return
     }
 
-    const account = await wallet.getAccount(0)
-
-    navigation.navigate('Receive', { account })
+    navigation.navigate('Receive', { account: wallets[0] })
   }
 
   return (

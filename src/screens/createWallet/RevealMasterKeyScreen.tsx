@@ -1,5 +1,5 @@
 import { NavigationProp, ParamListBase } from '@react-navigation/core'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 
 import { Header2, Paragraph } from '../../components/typography'
@@ -12,7 +12,12 @@ interface Interface {
 }
 
 const RevealMasterKeyScreen: React.FC<Interface> = () => {
-  const { wallet } = useContext(WalletProviderContext)
+  const { wallets, getMnemonic } = useContext(WalletProviderContext)
+  const [mnemonic, setMnemonic] = useState<string>('')
+
+  useEffect(() => {
+    setMnemonic(getMnemonic())
+  }, [wallets])
 
   return (
     <ScrollView>
@@ -27,7 +32,7 @@ const RevealMasterKeyScreen: React.FC<Interface> = () => {
       </View>
       <View style={styles.section}>
         <Header2>Master key</Header2>
-        <CopyComponent value={wallet?.getMnemonic ?? ''} />
+        <CopyComponent value={mnemonic} />
       </View>
     </ScrollView>
   )
