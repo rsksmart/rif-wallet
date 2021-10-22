@@ -6,13 +6,7 @@ import BalancesScreen from './BalancesScreen'
 
 import mockedTokens from './tokens-mock.json'
 
-jest.mock('../../storage', () => ({
-  setStorage: jest.fn(),
-  StorageKeys: {
-    MNEMONIC: 'mnemonic',
-  },
-}))
-
+//TODO: integration tests pending
 jest.mock('../../lib/rifWalletServices/RifWalletServicesFetcher', () => {
   return {
     RifWalletServicesFetcher: jest.fn().mockImplementation(() => {
