@@ -1,69 +1,98 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, ScrollView, Text } from 'react-native'
 import { utils } from 'ethers'
-
+import { jsonRpcProvider } from '../../lib/jsonRpcProvider'
 import Button from '../../components/button'
 import { Paragraph } from '../../components/typography'
-import { ITokenWithBalance } from './RIFWalletServicesTypes'
-import Account from '../../lib/core/Account'
+import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+
+import { RIFWallet } from '../../lib/core'
+import { RifWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
+import { NavigationProp, ParamListBase } from '@react-navigation/native'
+import { roundBalance } from '../../lib/utils'
 
 interface IReceiveScreenProps {
+  navigation: NavigationProp<ParamListBase>
   route: any
 }
 
-const BalancesScreen: React.FC<IReceiveScreenProps> = ({ route }) => {
+const BalancesScreen: React.FC<IReceiveScreenProps> = ({
+  route,
+  navigation,
+}) => {
   const [smartAddress, setSmartAddress] = useState('')
+  const [info, setInfo] = useState('')
+
   const [tokens, setTokens] = useState<ITokenWithBalance[]>([])
-  const account = route.params.account as Account
+  const account = route.params.account as RIFWallet
+  const fetcher: RifWalletServicesFetcher = new RifWalletServicesFetcher()
 
   useEffect(() => {
-    const loadData = async () => {
-      const address = await account.getSmartAddress()
-      setSmartAddress(address)
-      fetchTokensByAddress()
-    }
-
     loadData()
   }, [])
 
-  const fetchTokensByAddress = () => {
-    console.log({ smartAddress })
-    return fetch(
-      'http://10.0.2.2:3000/address/0x4a727d7943b563462c96d40689836600d20b983b/tokens',
-    )
-      .then(response => response.json())
-      .then((tokens: ITokenWithBalance[]) => {
-        setTokens(tokens)
-        console.log({ tokens })
-      })
-      .catch(error => {
-        console.error(error)
-      })
+  const loadData = async () => {
+    try {
+      setTokens([])
+      setInfo('Loading balances. Please wait...')
+      const address = await account.getAddress()
+      setSmartAddress(address)
+      const fetchedtokens = await fetcher.fetchTokensByAddress(address)
+      const rbtcBalance = await jsonRpcProvider.getBalance(address)
+
+      const rbtcToken: ITokenWithBalance = {
+        name: 'TRBTC',
+        logo: 'TRBTC',
+        symbol: 'TRBTC',
+        contractAddress: 'n/a',
+        decimals: 18,
+        balance: rbtcBalance.toString(),
+      }
+      setTokens([rbtcToken, ...fetchedtokens])
+      setInfo('')
+    } catch (e) {
+      setInfo('Error reaching API: ' + e.message)
+      console.log(e)
+    }
   }
-  const roundUp = (num: string) => {
-    const number = parseFloat(num)
-    return Math.round(number * 100) / 100
-  }
+
   return (
     <ScrollView>
       <View>
         <Paragraph>{smartAddress} </Paragraph>
       </View>
 
-      {tokens.length === 0 && <Paragraph>Loading Balances... </Paragraph>}
+      {info ? (
+        <View>
+          <Text>{info} </Text>
+        </View>
+      ) : null}
       {tokens.map(token => (
         <View key={token.symbol} style={styles.tokenRow}>
-          <View style={{ position: 'absolute', left: 0 }}>
+          <View style={styles.tokenBalance}>
             <Text>
               {token.symbol}{' '}
-              {roundUp(utils.formatUnits(token.balance, token.decimals))}
+              {roundBalance(utils.formatUnits(token.balance, token.decimals))}
             </Text>
           </View>
-          <View style={{ position: 'absolute', right: 0 }}>
-            <Button onPress={() => {}} title={'Send'} />
+          <View style={styles.button}>
+            <Button
+              onPress={() => {
+                // @ts-ignore
+                navigation.navigate('SendTransaction', {
+                  account,
+                  token: token.symbol,
+                })
+              }}
+              title={'Send'}
+            />
           </View>
         </View>
       ))}
+
+      <View style={styles.refreshButtonView}>
+        <Button onPress={loadData} title={'Refresh'} />
+      </View>
     </ScrollView>
   )
 }
@@ -74,8 +103,20 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC',
   },
+  tokenBalance: {
+    position: 'absolute',
+    left: 0,
+  },
   button: {
+    position: 'absolute',
     right: 0,
+  },
+  refreshButtonView: {
+    paddingTop: 15,
+    paddingBottom: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#CCCCCC',
+    alignItems: 'center',
   },
 })
 
