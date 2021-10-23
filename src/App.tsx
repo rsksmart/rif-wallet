@@ -59,7 +59,6 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
       <View style={styles.section}>
         <Header2>RIF Wallets:</Header2>
         {wallet.map((account: RIFWallet, index: number) => {
-
           return (
             <View key={index}>
               <Paragraph>EOA Address</Paragraph>
