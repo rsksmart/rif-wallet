@@ -11,7 +11,7 @@ import { getAllTokens } from '../../lib/token/tokenMetadata'
 
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { IToken } from '../../lib/token/BaseToken'
-import { RIFWallet } from '../../lib/core/RIFWallet'
+import { RIFWallet } from '../../lib/core'
 
 interface Interface {
   route: any
@@ -22,7 +22,7 @@ const SendTransaction: React.FC<Interface> = ({ route }) => {
   const smartAddress = account.smartWalletAddress
 
   const [to, setTo] = useState('0x1D4F6A5FE927f0E0e4497B91CebfBcF64dA1c934')
-  const [selectedSymbol, setSelectedSymbol] = useState('tRBTC')
+  const [selectedSymbol, setSelectedSymbol] = useState(route.params.token)
   const [availableTokens, setAvailableTokens] = useState<IToken[]>()
   const [amount, setAmount] = useState('')
   const [tx, setTx] = useState<TransactionReceipt | null>(null)
@@ -66,7 +66,7 @@ const SendTransaction: React.FC<Interface> = ({ route }) => {
           setTx(txReceipt)
           setInfo('Transaction Confirmed.')
           setTxConfirmed(true)
-        } catch (e: any) {
+        } catch (e) {
           setInfo('Transaction Failed: ' + e.message)
         }
       }
