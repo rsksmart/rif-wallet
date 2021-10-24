@@ -11,21 +11,56 @@ import { RifWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletS
 import { NavigationProp, ParamListBase } from '@react-navigation/native'
 import { roundBalance } from '../../lib/utils'
 
+const fetcher: RifWalletServicesFetcher = new RifWalletServicesFetcher()
+
 interface IReceiveScreenProps {
   navigation: NavigationProp<ParamListBase>
   route: any
 }
 
+const BalancesRow = ({
+  account,
+  token,
+  navigation,
+}: {
+  account: RIFWallet
+  token: ITokenWithBalance
+  navigation: NavigationProp<ParamListBase>
+}) => (
+  <View
+    key={token.symbol}
+    style={styles.tokenRow}
+    testID={`${token.symbol}.View`}>
+    <View style={styles.tokenBalance}>
+      <Text>
+        {token.symbol}{' '}
+        {roundBalance(utils.formatUnits(token.balance, token.decimals))}
+      </Text>
+    </View>
+    <View style={styles.button}>
+      <Button
+        onPress={() => {
+          // @ts-ignore
+          navigation.navigate('SendTransaction', {
+            account,
+            token: token.symbol,
+          })
+        }}
+        title={'Send'}
+        testID={`${token.symbol}.Button`}
+      />
+    </View>
+  </View>
+)
+
 const BalancesScreen: React.FC<IReceiveScreenProps> = ({
   route,
   navigation,
 }) => {
-  const [smartAddress, setSmartAddress] = useState('')
   const [info, setInfo] = useState('')
-
   const [tokens, setTokens] = useState<ITokenWithBalance[]>([])
+
   const account = route.params.account as RIFWallet
-  const fetcher: RifWalletServicesFetcher = new RifWalletServicesFetcher()
 
   useEffect(() => {
     loadData()
@@ -35,65 +70,48 @@ const BalancesScreen: React.FC<IReceiveScreenProps> = ({
     try {
       setTokens([])
       setInfo('Loading balances. Please wait...')
-      const address = account.smartWalletAddress
-      setSmartAddress(address)
-      const fetchedtokens = await fetcher.fetchTokensByAddress(address)
-      console.log({ fetchedtokens })
-      const rbtcBalance = await jsonRpcProvider.getBalance(address)
+
+      const fetchedTokens = await fetcher.fetchTokensByAddress(
+        account.smartWalletAddress,
+      )
+      const rbtcBalance = await jsonRpcProvider.getBalance(
+        account.smartWallet.wallet.address,
+      )
 
       const rbtcToken: ITokenWithBalance = {
         name: 'TRBTC',
         logo: 'TRBTC',
-        symbol: 'TRBTC',
+        symbol: 'TRBTC (eoa wallet)',
         contractAddress: 'n/a',
         decimals: 18,
         balance: rbtcBalance.toString(),
       }
-      setTokens([rbtcToken, ...fetchedtokens])
+
+      setTokens([rbtcToken, ...fetchedTokens])
       setInfo('')
     } catch (e) {
       setInfo('Error reaching API: ' + e.message)
-      console.log(e)
     }
   }
 
   return (
     <ScrollView>
       <View>
-        <Paragraph>{smartAddress} </Paragraph>
+        <Paragraph>{account.smartWalletAddress}</Paragraph>
       </View>
 
-      {info ? (
-        <View>
-          <Text>{info} </Text>
-        </View>
-      ) : null}
-      {tokens.map(token => (
-        <View
-          key={token.symbol}
-          style={styles.tokenRow}
-          testID={`${token.symbol}.View`}>
-          <View style={styles.tokenBalance}>
-            <Text>
-              {token.symbol}{' '}
-              {roundBalance(utils.formatUnits(token.balance, token.decimals))}
-            </Text>
-          </View>
-          <View style={styles.button}>
-            <Button
-              onPress={() => {
-                // @ts-ignore
-                navigation.navigate('SendTransaction', {
-                  account,
-                  token: token.symbol,
-                })
-              }}
-              title={'Send'}
-              testID={`${token.symbol}.Button`}
-            />
-          </View>
-        </View>
-      ))}
+      <View>
+        <Text>{info}</Text>
+      </View>
+
+      {tokens &&
+        tokens.map(token => (
+          <BalancesRow
+            account={account}
+            token={token}
+            navigation={navigation}
+          />
+        ))}
 
       <View style={styles.refreshButtonView}>
         <Button onPress={loadData} title={'Refresh'} />
