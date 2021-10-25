@@ -17,10 +17,6 @@ describe('ReceiveScreen', () => {
     },
   }
 
-  it('remove', () => {
-    expect(true).toBe(true)
-  })
-
   it('renders', async () => {
     const { getAllByText, rerender } = render(<ReceiveScreen route={route} />)
 
