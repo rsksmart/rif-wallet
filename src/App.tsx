@@ -31,10 +31,12 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
             onPress={() => navigation.navigate('RevealMasterKey')}
             title="Reveal master key"
           />
-        ) : <Button
-          onPress={() => navigation.navigate('CreateWalletStack')}
-          title="Create master key"
-        />}
+        ) : (
+          <Button
+            onPress={() => navigation.navigate('CreateWalletStack')}
+            title="Create master key"
+          />
+        )}
       </View>
 
       <View style={styles.section}>

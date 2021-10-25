@@ -62,10 +62,7 @@ const ConfirmMasterKeyScreen: React.FC<Interface> = ({ route, navigation }) => {
         {error && <Paragraph>{error}</Paragraph>}
       </View>
       <View style={styles.section}>
-        <Button
-          onPress={saveAndNavigate}
-          title={'Skip'}
-        />
+        <Button onPress={saveAndNavigate} title={'Skip'} />
       </View>
       <View style={styles.section}>
         <Button
