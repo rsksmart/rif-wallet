@@ -28,7 +28,6 @@ const BalancesRow = ({
   navigation: NavigationProp<ParamListBase>
 }) => (
   <View
-    key={token.symbol}
     style={styles.tokenRow}
     testID={`${token.symbol}.View`}>
     <View style={styles.tokenBalance}>
@@ -107,6 +106,7 @@ const BalancesScreen: React.FC<IReceiveScreenProps> = ({
       {tokens &&
         tokens.map(token => (
           <BalancesRow
+            key={token.contractAddress}
             account={account}
             token={token}
             navigation={navigation}
