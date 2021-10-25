@@ -10,14 +10,25 @@ export type OverriddableTransactionOptions = {
   gasPrice: BigNumberish,
 }
 
-export type Request = {
-  type: 'sendTransaction'
+export interface Request {
+  type: string
+  payload: { transactionRequest: TransactionRequest } | string | Bytes
+  confirm: (params?: {}) => void
+  reject: (reason?: {}) => void
+}
+
+export interface SendTransactionRequest extends Request {
+  type: 'sendTransaction',
   payload: {
     // needs refactor: payload can be transactionRequest, not an object of transactionRequest
     transactionRequest: TransactionRequest
-  }
+  },
   confirm: (value?: Partial<OverriddableTransactionOptions>) => void
-  reject: (reason?: any) => void
+}
+
+export interface SignMessageRequest extends Request {
+  type: 'signMessage',
+  payload: string | Bytes
 }
 
 export type OnRequest = (request: Request) => void
@@ -57,7 +68,20 @@ export class RIFWallet extends Signer {
 
   getAddress = (): Promise<string> => Promise.resolve(this.smartWallet.smartWalletAddress)
 
-  signMessage = (message: string | Bytes): Promise<string> => this.smartWallet.wallet.signMessage(message)
+  async signMessage (message: string | Bytes): Promise<string> {
+    return await new Promise((resolve, reject) => {
+      const nextRequest = Object.freeze<SignMessageRequest>({
+        type: 'signMessage',
+        payload: message,
+        confirm: async () => resolve(await this.smartWallet.wallet.signMessage(message)),
+        reject: (reason?: any) => reject(new Error(reason))
+      })
+
+      // emits onRequest
+      this.onRequest(nextRequest)
+    })
+  }
+
   signTransaction = (transaction: TransactionRequest): Promise<string> => this.smartWallet.wallet.signTransaction(transaction)
 
   // calls via smart wallet
@@ -68,7 +92,7 @@ export class RIFWallet extends Signer {
   async sendTransaction (transactionRequest: TransactionRequest): Promise<TransactionResponse> {
     // waits for confirm()
     return await new Promise((resolve, reject) => {
-      const nextRequest = Object.freeze<Request>({
+      const nextRequest = Object.freeze<SendTransactionRequest>({
         type: 'sendTransaction',
         payload: {
           transactionRequest

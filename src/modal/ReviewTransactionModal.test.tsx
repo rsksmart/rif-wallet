@@ -34,7 +34,7 @@ describe('ReviewTransactionModal', function (this: {
   it('renders', () => {
     const { getAllByText, getByPlaceholderText } = render(
       <ReviewTransactionModal
-        queuedTransactionRequest={this.queuedTransaction}
+        request={this.queuedTransaction}
         closeModal={jest.fn()}
       />,
     )
@@ -49,7 +49,7 @@ describe('ReviewTransactionModal', function (this: {
     const closeModal = jest.fn()
     const { getByTestId } = render(
       <ReviewTransactionModal
-        queuedTransactionRequest={this.queuedTransaction}
+        request={this.queuedTransaction}
         closeModal={closeModal}
       />,
     )
@@ -66,7 +66,7 @@ describe('ReviewTransactionModal', function (this: {
     const closeModal = jest.fn()
     const { getByTestId } = render(
       <ReviewTransactionModal
-        queuedTransactionRequest={this.queuedTransaction}
+        request={this.queuedTransaction}
         closeModal={closeModal}
       />,
     )
@@ -80,7 +80,7 @@ describe('ReviewTransactionModal', function (this: {
     const closeModal = jest.fn()
     const { getByTestId } = render(
       <ReviewTransactionModal
-        queuedTransactionRequest={this.queuedTransaction}
+        request={this.queuedTransaction}
         closeModal={closeModal}
       />,
     )

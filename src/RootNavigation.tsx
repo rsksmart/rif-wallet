@@ -7,11 +7,12 @@ import TransactionReceived from './TransactionReceived'
 
 import { StyleSheet, View } from 'react-native'
 
-import ReviewTransactionModal from './modal/ReviewTransactionModal'
 import ReceiveScreen from './screens/receive/ReceiveScreen'
 
 import SmartWallet from './tempScreens/SmartWallet'
 import { WalletProviderContext } from './state/AppContext'
+import ModalComponent from './modal/ModalComponent'
+import SignMessageScreen from './tempScreens/SignMessageScreen'
 import BalancesScreen from './screens/balances/BalancesScreen'
 
 interface Interface {}
@@ -20,7 +21,7 @@ const RootStack = createStackNavigator()
 
 const RootNavigation: React.FC<Interface> = () => {
   const context = useContext(WalletProviderContext)
-  const closeReviewTransactionModal = () => context.resolveUxInteraction()
+  const closeRequest = () => context.resolveUxInteraction()
 
   const sharedOptions = { headerShown: false }
   return (
@@ -52,16 +53,21 @@ const RootNavigation: React.FC<Interface> = () => {
               name="TransactionReceived"
               component={TransactionReceived}
             />
+            <RootStack.Screen
+              name="SignMessage"
+              component={SignMessageScreen}
+              options={sharedOptions}
+            />
             <RootStack.Screen name="Balances" component={BalancesScreen} />
           </RootStack.Group>
         </RootStack.Navigator>
       </NavigationContainer>
 
       {/* Modals: */}
-      {context.walletRequests[0] && (
-        <ReviewTransactionModal
-          closeModal={closeReviewTransactionModal}
-          queuedTransactionRequest={context.walletRequests[0]}
+      {context.walletRequests.length !== 0 && (
+        <ModalComponent
+          closeModal={closeRequest}
+          request={context.walletRequests[0]}
         />
       )}
     </View>
