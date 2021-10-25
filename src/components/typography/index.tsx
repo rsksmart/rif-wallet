@@ -3,18 +3,25 @@ import { StyleSheet, Text } from 'react-native'
 
 interface Interface {
   children: React.ReactNode
+  testID?: string
 }
 
-export const Header1: React.FC<Interface> = ({ children }) => (
-  <Text style={styles.header1}>{children}</Text>
+export const Header1: React.FC<Interface> = ({ children, testID }) => (
+  <Text style={styles.header1} testID={testID}>
+    {children}
+  </Text>
 )
 
-export const Header2: React.FC<Interface> = ({ children }) => (
-  <Text style={styles.header2}>{children}</Text>
+export const Header2: React.FC<Interface> = ({ children, testID }) => (
+  <Text style={styles.header2} testID={testID}>
+    {children}
+  </Text>
 )
 
-export const Paragraph: React.FC<Interface> = ({ children }) => (
-  <Text style={styles.paragraph}>{children}</Text>
+export const Paragraph: React.FC<Interface> = ({ children, testID }) => (
+  <Text style={styles.paragraph} testID={testID}>
+    {children}
+  </Text>
 )
 
 const styles = StyleSheet.create({
