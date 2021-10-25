@@ -1,8 +1,9 @@
 import { NavigationProp, ParamListBase } from '@react-navigation/core'
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { StyleSheet, View, ScrollView, TextInput } from 'react-native'
 
 import { Header2, Paragraph } from '../../components/typography'
+import { WalletProviderContext } from '../../state/AppContext'
 
 import Button from '../../components/button'
 
@@ -12,6 +13,7 @@ interface Interface {
 }
 
 const ImportMasterKeyScreen: React.FC<Interface> = ({ navigation }) => {
+  const { saveMnemonic } = useContext(WalletProviderContext)
   const [importMnemonic, setImportMnemonic] = useState<string | undefined>()
 
   const [error, setError] = useState<string | null>(null)
@@ -26,6 +28,7 @@ const ImportMasterKeyScreen: React.FC<Interface> = ({ navigation }) => {
     }
 
     try {
+      await saveMnemonic(importMnemonic)
       navigation.navigate('WalletCreated', { mnemonic: importMnemonic })
     } catch (err) {
       console.error(err)

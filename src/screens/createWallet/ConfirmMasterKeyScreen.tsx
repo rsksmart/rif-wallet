@@ -1,10 +1,11 @@
 import { NavigationProp, ParamListBase } from '@react-navigation/core'
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { StyleSheet, View, ScrollView, TextInput } from 'react-native'
 
 import { Header2, Paragraph } from '../../components/typography'
 
 import Button from '../../components/button'
+import { WalletProviderContext } from '../../state/AppContext'
 
 interface Interface {
   navigation: NavigationProp<ParamListBase>
@@ -12,6 +13,7 @@ interface Interface {
 }
 
 const ConfirmMasterKeyScreen: React.FC<Interface> = ({ route, navigation }) => {
+  const { saveMnemonic } = useContext(WalletProviderContext)
   const mnemonic = route.params.mnemonic as string
 
   const [mnemonicToConfirm, setMnemonicToConfirm] = useState<
@@ -20,7 +22,12 @@ const ConfirmMasterKeyScreen: React.FC<Interface> = ({ route, navigation }) => {
 
   const [error, setError] = useState<string | null>(null)
 
-  const handleConfirmMnemonic = () => {
+  const saveAndNavigate = async () => {
+    await saveMnemonic(mnemonic)
+    navigation.navigate('WalletCreated', { mnemonic })
+  }
+
+  const handleConfirmMnemonic = async () => {
     const isValid = mnemonic === mnemonicToConfirm
 
     if (!isValid) {
@@ -28,7 +35,7 @@ const ConfirmMasterKeyScreen: React.FC<Interface> = ({ route, navigation }) => {
       return
     }
 
-    navigation.navigate('WalletCreated', { mnemonic })
+    await saveAndNavigate()
   }
 
   return (
@@ -56,7 +63,7 @@ const ConfirmMasterKeyScreen: React.FC<Interface> = ({ route, navigation }) => {
       </View>
       <View style={styles.section}>
         <Button
-          onPress={() => navigation.navigate('WalletCreated', { mnemonic })}
+          onPress={saveAndNavigate}
           title={'Skip'}
         />
       </View>

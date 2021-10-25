@@ -26,16 +26,15 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
       <Header1>sWallet</Header1>
       <View style={styles.section}>
         <Header2>Welcome</Header2>
-        <Button
-          onPress={() => navigation.navigate('CreateWalletStack')}
-          title="Create master key"
-        />
-        {wallets.length > 0 && (
+        {wallets.length > 0 ? (
           <Button
             onPress={() => navigation.navigate('RevealMasterKey')}
             title="Reveal master key"
           />
-        )}
+        ) : <Button
+          onPress={() => navigation.navigate('CreateWalletStack')}
+          title="Create master key"
+        />}
       </View>
 
       <View style={styles.section}>
