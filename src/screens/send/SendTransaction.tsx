@@ -22,7 +22,7 @@ const SendTransaction: React.FC<Interface> = ({ route }) => {
   const smartAddress = account.smartWalletAddress
 
   const [to, setTo] = useState('0x1D4F6A5FE927f0E0e4497B91CebfBcF64dA1c934')
-  const [selectedSymbol, setSelectedSymbol] = useState(route.params.token)
+  const [selectedSymbol, setSelectedSymbol] = useState<string | undefined>()
   const [availableTokens, setAvailableTokens] = useState<IToken[]>()
   const [amount, setAmount] = useState('')
   const [tx, setTx] = useState<TransactionReceipt | null>(null)
@@ -31,18 +31,21 @@ const SendTransaction: React.FC<Interface> = ({ route }) => {
   const [info, setInfo] = useState('')
 
   useEffect(() => {
-    getAllTokens(account).then(tokens => setAvailableTokens(tokens))
+    getAllTokens(account).then(tokens => {
+      setAvailableTokens(tokens)
+      setSelectedSymbol(tokens[0].symbol)
+    })
   }, [account])
 
-  const reviewTransaction = () => {
-    if (selectedSymbol === 'TRBTC') {
-      transferRBTC()
-    } else {
-      transferERC20(selectedSymbol)
+  const handleNext = () => {
+    if (!selectedSymbol) {
+      return
     }
+
+    transfer(selectedSymbol)
   }
 
-  const transferERC20 = async (tokenSymbol: string) => {
+  const transfer = async (tokenSymbol: string) => {
     if (availableTokens) {
       const selectedToken = availableTokens.find(
         token => token.symbol === tokenSymbol,
@@ -51,8 +54,6 @@ const SendTransaction: React.FC<Interface> = ({ route }) => {
         try {
           const decimals = await selectedToken.decimals()
           const numberOfTokens = utils.parseUnits(amount, decimals)
-          /*const balance = await selectedToken.balance()
-          console.log({ balance })*/
 
           const transferResponse = await selectedToken.transfer(
             to,
@@ -66,35 +67,11 @@ const SendTransaction: React.FC<Interface> = ({ route }) => {
           setTx(txReceipt)
           setInfo('Transaction Confirmed.')
           setTxConfirmed(true)
-        } catch (e) {
+        } catch (e: any) {
           setInfo('Transaction Failed: ' + e.message)
         }
       }
     }
-  }
-
-  const transferRBTC = async () => {
-    setInfo('TRBTC transfer not supported')
-    /* try {
-      let rbtcToken: RBTCToken | null = null
-      rbtcToken = new RBTCToken(account, '', 'logo.jpg', 31)
-
-      const transferResponse = await rbtcToken.transfer(
-        to,
-        utils.parseEther(amount),
-      )
-
-      setInfo('Transaction Sent. Please wait...')
-      setTxSent(true)
-      setTxConfirmed(false)
-      const txReceipt = await transferResponse.wait()
-      setTx(txReceipt)
-      setInfo('Transaction Confirmed.')
-      console.log({ txReceipt })
-      setTxConfirmed(true)
-    } catch (e) {
-      setInfo('Transaction Failed: ' + e.message)
-    }*/
   }
 
   return (
@@ -140,11 +117,7 @@ const SendTransaction: React.FC<Interface> = ({ route }) => {
 
       {!txSent && (
         <View style={styles.section}>
-          <Button
-            onPress={reviewTransaction}
-            title="Next"
-            testID="Next.Button"
-          />
+          <Button onPress={handleNext} title="Next" testID="Next.Button" />
         </View>
       )}
       <View style={styles.section}>

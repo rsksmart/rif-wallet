@@ -1,4 +1,4 @@
-import { Bytes, Signer, Wallet, BigNumberish } from 'ethers'
+import { Bytes, Signer, Wallet, BigNumberish, BigNumber } from 'ethers'
 import { TransactionRequest, Provider, TransactionResponse, BlockTag } from '@ethersproject/abstract-provider'
 import { defineReadOnly } from '@ethersproject/properties'
 import { SmartWalletFactory } from './SmartWalletFactory'
@@ -13,7 +13,7 @@ export type OverriddableTransactionOptions = {
 export interface Request {
   type: string
   payload: { transactionRequest: TransactionRequest } | string | Bytes
-  confirm: (params?: {}) => void
+  confirm: (params?: {}) => Promise<void>
   reject: (reason?: {}) => void
 }
 
@@ -23,7 +23,7 @@ export interface SendTransactionRequest extends Request {
     // needs refactor: payload can be transactionRequest, not an object of transactionRequest
     transactionRequest: TransactionRequest
   },
-  confirm: (value?: Partial<OverriddableTransactionOptions>) => void
+  confirm: (value?: Partial<OverriddableTransactionOptions>) => Promise<void>
 }
 
 export interface SignMessageRequest extends Request {
@@ -97,12 +97,13 @@ export class RIFWallet extends Signer {
         payload: {
           transactionRequest
         },
-        confirm: async (overriddenOptions?: Partial<OverriddableTransactionOptions>) => {
+        confirm: async (overriddenOptions?: Partial<OverriddableTransactionOptions>) => {          
           const txOptions = {
             ...filterTxOptions(transactionRequest),
-            ...overriddenOptions || {}
+            ...overriddenOptions || {},
+            value: BigNumber.from(transactionRequest.value)
           }
-
+          
           resolve(await this.smartWallet.directExecute(transactionRequest.to!, transactionRequest.data!, txOptions))
         },
         reject: (reason?: any) => {

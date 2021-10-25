@@ -72,8 +72,8 @@ const ReviewTransactionModal: React.FC<Interface> = ({
   const [gasLimit, setGasLimit] = useState(transactionRequest.gasLimit)
 
   // convert from string to Transaction and pass out of component
-  const confirmTransaction = () => {
-    request.confirm({
+  const confirmTransaction = async () => {
+    await request.confirm({
       gasPrice: BigNumber.from(gasPrice),
       gasLimit: BigNumber.from(gasLimit),
     })
@@ -128,7 +128,9 @@ const ReviewTransactionModal: React.FC<Interface> = ({
         <View style={sharedStyles.column}>
           <Button
             title="Confirm"
-            onPress={confirmTransaction}
+            onPress={() => {
+              confirmTransaction()
+            }}
             testID="Confirm.Button"
           />
         </View>
