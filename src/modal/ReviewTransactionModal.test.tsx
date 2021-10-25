@@ -1,9 +1,9 @@
 import React from 'react'
-import { render, fireEvent } from '@testing-library/react-native'
+import { render, fireEvent, waitFor } from '@testing-library/react-native'
 
 import ReviewTransactionModal from './ReviewTransactionModal'
 import { Request } from '../lib/core/RIFWallet'
-import { BigNumber } from '@ethersproject/bignumber'
+import { BigNumber } from 'ethers'
 
 describe('ReviewTransactionModal', function (this: {
   confirm: ReturnType<typeof jest.fn>
@@ -23,7 +23,7 @@ describe('ReviewTransactionModal', function (this: {
           data: '',
           value: BigNumber.from(1000),
           gasLimit: BigNumber.from(10000),
-          gasPrice: BigNumber.from(600000000),
+          gasPrice: BigNumber.from(700000000),
         },
       },
       confirm: this.confirm,
@@ -59,7 +59,7 @@ describe('ReviewTransactionModal', function (this: {
       gasPrice: this.queuedTransaction.payload.transactionRequest.gasPrice,
       gasLimit: this.queuedTransaction.payload.transactionRequest.gasLimit,
     })
-    expect(closeModal).toBeCalled()
+    waitFor(() => expect(closeModal).toBeCalled())
   })
 
   it('renturns nothing if cancelled', () => {
@@ -73,7 +73,7 @@ describe('ReviewTransactionModal', function (this: {
 
     fireEvent.press(getByTestId('Cancel.Button'))
     expect(this.cancel).toBeCalled()
-    expect(closeModal).toBeCalled()
+    waitFor(() => expect(closeModal).toBeCalled())
   })
 
   it('allows the user to change the text inputs', () => {
@@ -97,6 +97,6 @@ describe('ReviewTransactionModal', function (this: {
       gasPrice: BigNumber.from(gasPrice),
       gasLimit: BigNumber.from(gasLimit),
     })
-    expect(closeModal).toHaveBeenCalled()
+    waitFor(() => expect(closeModal).toBeCalled())
   })
 })

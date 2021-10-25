@@ -80,7 +80,7 @@ const ReviewTransactionModal: React.FC<Interface> = ({
   )
   const [gasLimit, setGasLimit] = useState(
     getValueOrDefault(
-      BigNumber.from(transactionRequest.gasPrice),
+      BigNumber.from(transactionRequest.gasLimit),
       BigNumber.from(600000),
     ).toString(),
   )
@@ -91,7 +91,9 @@ const ReviewTransactionModal: React.FC<Interface> = ({
       gasPrice: BigNumber.from(gasPrice),
       gasLimit: BigNumber.from(gasLimit),
     })
+    console.log('aa')
     closeModal()
+    console.log('bb')
   }
 
   const cancelTransaction = () => {
