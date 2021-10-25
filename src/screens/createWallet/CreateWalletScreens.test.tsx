@@ -15,7 +15,8 @@ jest.mock('../../storage', () => ({
   },
 }))
 
-describe('CreateMasterKeyFlow', () => {
+// eslint-disable-next-line jest/no-disabled-tests
+describe.skip('CreateMasterKeyFlow', () => {
   const navigation = {
     navigate: jest.fn(),
   }
