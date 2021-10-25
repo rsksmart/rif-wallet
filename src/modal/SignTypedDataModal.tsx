@@ -23,8 +23,8 @@ const formatter = (data: any) =>
         {key}
       </Text>
       {typeof data[key] !== 'object' ? (
-        <Text style={styles.value} testID="Value">
-          {data[key]}
+        <Text style={styles.value} testID="Text.Value">
+          {data[key].toString()}
         </Text>
       ) : (
         formatter(data[key])
@@ -51,7 +51,7 @@ const SignTypedDataModal: React.FC<Interface> = ({ request, closeModal }) => {
         <Paragraph>Name: {request.payload.domain.name}</Paragraph>
       </View>
 
-      <ScrollView style={styles.message}>
+      <ScrollView style={styles.message} testID="Data.View">
         {formatter(request.payload.message)}
       </ScrollView>
 
