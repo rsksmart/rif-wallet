@@ -13,6 +13,7 @@ import SmartWallet from './tempScreens/SmartWallet'
 import { WalletProviderContext } from './state/AppContext'
 import ModalComponent from './modal/ModalComponent'
 import SignMessageScreen from './tempScreens/SignMessageScreen'
+import BalancesScreen from './screens/balances/BalancesScreen'
 
 interface Interface {}
 
@@ -47,19 +48,17 @@ const RootNavigation: React.FC<Interface> = () => {
             <RootStack.Screen
               name="SendTransaction"
               component={SendTransaction}
-              options={sharedOptions}
             />
-
             <RootStack.Screen
               name="TransactionReceived"
               component={TransactionReceived}
             />
-
             <RootStack.Screen
               name="SignMessage"
               component={SignMessageScreen}
               options={sharedOptions}
             />
+            <RootStack.Screen name="Balances" component={BalancesScreen} />
           </RootStack.Group>
         </RootStack.Navigator>
       </NavigationContainer>

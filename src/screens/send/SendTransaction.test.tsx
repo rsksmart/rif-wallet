@@ -32,9 +32,7 @@ describe('Load Tokens', () => {
   const route = {
     params: {
       account: {
-        getSmartAddress: jest.fn(() =>
-          Promise.resolve('0xbd4c8e11cf2c560382e0dbd6aeef538debf1d449'),
-        ),
+        smartWalletAddress: '0xbd4c8e11cf2c560382e0dbd6aeef538debf1d449',
       },
     },
   }
@@ -42,8 +40,6 @@ describe('Load Tokens', () => {
   let tokenAddress2 = ''
 
   beforeEach(async () => {
-    route.params.account.getSmartAddress.mockClear()
-
     const account = await getSigner()
     const accountAddress = await account.getAddress()
 

@@ -8,3 +8,8 @@ export function shortAddress(address?: string): string {
     address.length,
   )}`
 }
+
+export const roundBalance = (num: string) => {
+  const number = parseFloat(num)
+  return Math.round(number * 10000) / 10000
+}
