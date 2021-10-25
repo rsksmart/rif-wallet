@@ -60,6 +60,10 @@ const convertTransactionToStrings = (tx: TransactionRequest) => ({
 
 */
 
+const getValueOrDefault = (value: BigNumber, defaultValue: BigNumber) => {
+  return value.gt(0) ? value : defaultValue
+}
+
 const ReviewTransactionModal: React.FC<Interface> = ({
   request,
   closeModal,
@@ -68,8 +72,18 @@ const ReviewTransactionModal: React.FC<Interface> = ({
     request.payload.transactionRequest,
   )
 
-  const [gasPrice, setGasPrice] = useState(transactionRequest.gasPrice)
-  const [gasLimit, setGasLimit] = useState(transactionRequest.gasLimit)
+  const [gasPrice, setGasPrice] = useState(
+    getValueOrDefault(
+      BigNumber.from(transactionRequest.gasPrice),
+      BigNumber.from(60000000),
+    ).toString(),
+  )
+  const [gasLimit, setGasLimit] = useState(
+    getValueOrDefault(
+      BigNumber.from(transactionRequest.gasPrice),
+      BigNumber.from(600000),
+    ).toString(),
+  )
 
   // convert from string to Transaction and pass out of component
   const confirmTransaction = async () => {
