@@ -54,7 +54,7 @@ describe('CreateMasterKeyFlow', () => {
     expect(navigation.navigate).toBeCalledWith('WalletCreated', { mnemonic })
   })
 
-  it.skip('master key created', async () => {
+  it('master key created', async () => {
     const mnemonic =
       'list slender digital void traffic elevator mandate general throw prepare disagree party disorder tragic popular render beauty present genius dirt wing circle snake dash'
 

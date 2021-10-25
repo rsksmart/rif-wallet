@@ -89,12 +89,11 @@ export const WalletProviderElement: React.FC<Web3ProviderElementInterface> = ({
 
   // Get the mnemonic from storage, or create a new KMS with default wallet
   useEffect(() => {
-    getStorage(StorageKeys.KMS)
-      .then((serialized: string | null) => {
-        if (serialized) {
-          init(KeyManagementSystem.fromSerialized(serialized))
-        }
-      })
+    getStorage(StorageKeys.KMS).then((serialized: string | null) => {
+      if (serialized) {
+        init(KeyManagementSystem.fromSerialized(serialized))
+      }
+    })
   }, [])
 
   return (

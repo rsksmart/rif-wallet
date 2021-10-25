@@ -38,7 +38,7 @@ describe('Load balances', () => {
   })
 
   it('selects token in balance to send', async () => {
-    const { findByTestId, getByTestId } = render(
+    const { getByTestId } = render(
       <BalancesScreen route={route} navigation={navigation as any} />,
     )
 

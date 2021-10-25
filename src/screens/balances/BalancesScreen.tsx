@@ -27,9 +27,7 @@ const BalancesRow = ({
   token: ITokenWithBalance
   navigation: NavigationProp<ParamListBase>
 }) => (
-  <View
-    style={styles.tokenRow}
-    testID={`${token.symbol}.View`}>
+  <View style={styles.tokenRow} testID={`${token.symbol}.View`}>
     <View style={styles.tokenBalance}>
       <Text>
         {token.symbol}{' '}
