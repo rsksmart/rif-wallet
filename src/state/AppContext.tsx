@@ -1,8 +1,6 @@
 import { Wallet } from '@ethersproject/wallet'
 import React, { useEffect, useState } from 'react'
 
-// import { Wallet } from '../lib/core'
-// import { QueuedTransaction } from '../lib/core/Account'
 import { KeyManagementSystem } from '../lib/core/KeyManagementSystem'
 import { Request, RIFWallet } from '../lib/core/RIFWallet'
 import { jsonRpcProvider } from '../lib/jsonRpcProvider'
@@ -14,8 +12,7 @@ export interface WalletProviderContextInterface {
   getMnemonic: () => string
   saveMnemonic: (mnemonic: string) => Promise<void>
   walletRequests: Request[]
-
-  handleUxInteraction: any // (qt: QueuedTransaction) => Promise<TransactionRequest>
+  addUxInteraction: (qt: Request) => void
   resolveUxInteraction: () => void
 }
 
@@ -27,6 +24,7 @@ export const WalletProviderContext =
     saveMnemonic: async () => {},
 
     handleUxInteraction: (_qt: Request) => Promise.resolve({}),
+    addUxInteraction: (_qt: Request) => Promise.resolve({}),
     resolveUxInteraction: () => null,
   })
 
@@ -44,13 +42,12 @@ export const WalletProviderElement: React.FC<Web3ProviderElementInterface> = ({
 
   // exposed state via context:
   const [wallets, setWallets] = useState<RIFWallet[]>([])
-  const [walletRequestQue, setWalletRequestQue] = useState<Request[]>([])
+  const [walletRequests, setWalletRequests] = useState<Request[]>([])
 
-  const handleUxInteraction = (walletRequest: Request) => {
-    console.log('AppContext handleUxInteraction', walletRequest)
-    setWalletRequestQue([walletRequest])
-  }
-  const resolveUxInteraction = () => setWalletRequestQue([])
+  // add and remove items from the UI Que without mutating the state:
+  const addUxInteraction = (newRequest: Request) =>
+    setWalletRequests(walletRequests.concat(newRequest))
+  const resolveUxInteraction = () => setWalletRequests(walletRequests.slice(1))
 
   const saveMnemonic = async (mnemonic: string) => {
     console.log('setting up new wallet')
@@ -67,8 +64,8 @@ export const WalletProviderElement: React.FC<Web3ProviderElementInterface> = ({
     saveMnemonic,
     getMnemonic: () =>
       keyManagementSystem ? keyManagementSystem?.mnemonic : '',
-    walletRequests: walletRequestQue,
-    handleUxInteraction,
+    walletRequests,
+    addUxInteraction,
     resolveUxInteraction,
   }
 
@@ -76,8 +73,6 @@ export const WalletProviderElement: React.FC<Web3ProviderElementInterface> = ({
     kms: KeyManagementSystem
     wallets: Wallet[]
   }) => {
-    console.log('the init! ;-)', initProps)
-
     // save the KMS:
     setKeyManagementSystem(initProps.kms)
 
@@ -88,7 +83,7 @@ export const WalletProviderElement: React.FC<Web3ProviderElementInterface> = ({
     RIFWallet.create(
       ethersWallet,
       '0x3f71ce7bd7912bf3b362fd76dd34fa2f017b6388',
-      handleUxInteraction,
+      addUxInteraction,
     ).then((wallet: RIFWallet) => setWallets([wallet]))
   }
 
@@ -97,12 +92,8 @@ export const WalletProviderElement: React.FC<Web3ProviderElementInterface> = ({
     getStorage(StorageKeys.KMS)
       .then((serialized: string | null) => {
         if (serialized) {
-          console.log('getting wallet from storage')
           init(KeyManagementSystem.fromSerialized(serialized))
         }
-      })
-      .catch(() => {
-        // Error: key does not present
       })
   }, [])
 
