@@ -7,10 +7,32 @@ import {
 } from '../lib/core/RIFWallet'
 import ReviewTransactionModal from './ReviewTransactionModal'
 import SignMessageModal from './SignMessageModal'
+import SignTypedDataModal from './SignTypedDataModal'
 
 interface Interface {
   request: Request
   closeModal: () => void
+}
+
+const RequestTypeSwitch = (request: Request, closeModal: () => void) => {
+  switch (request.type) {
+    case 'signMessage':
+      return (
+        <SignMessageModal
+          request={request as SignMessageRequest}
+          closeModal={closeModal}
+        />
+      )
+    case 'sendTransaction':
+      return (
+        <ReviewTransactionModal
+          request={request as SendTransactionRequest}
+          closeModal={closeModal}
+        />
+      )
+    case 'signTypedData':
+      return <SignTypedDataModal request={request} closeModal={closeModal} />
+  }
 }
 
 const ModalComponent: React.FC<Interface> = ({ request, closeModal }) => {
@@ -19,17 +41,7 @@ const ModalComponent: React.FC<Interface> = ({ request, closeModal }) => {
       <Modal animationType="slide" transparent={false} visible={true}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            {request.type === 'signMessage' ? (
-              <SignMessageModal
-                request={request as SignMessageRequest}
-                closeModal={closeModal}
-              />
-            ) : (
-              <ReviewTransactionModal
-                request={request as SendTransactionRequest}
-                closeModal={closeModal}
-              />
-            )}
+            {RequestTypeSwitch(request, closeModal)}
           </View>
         </View>
       </Modal>

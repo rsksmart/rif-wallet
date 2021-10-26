@@ -6,9 +6,10 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
-    "test": "jest --verbose",
     "ganache": "npx ganache-cli",
+    "test": "jest --verbose",
     "test:watch": "jest --watch",
+    "test:ci": "jest --coverage --verbose",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "postinstall": "rn-nodeify --install buffer,events,stream --hack"
