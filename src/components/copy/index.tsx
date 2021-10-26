@@ -6,14 +6,15 @@ import { Paragraph } from '../typography'
 
 interface Interface {
   value: string
+  testID?: string
 }
 
-const CopyComponent: React.FC<Interface> = ({ value }) => {
+const CopyComponent: React.FC<Interface> = ({ value, testID }) => {
   return (
     <TouchableOpacity onPress={() => Clipboard.setString(value)}>
       <View style={styles.row}>
         <View style={styles.textColumn}>
-          <Paragraph>{value}</Paragraph>
+          <Paragraph testID={testID}>{value}</Paragraph>
         </View>
         <View style={styles.iconColumn}>
           <Text>copy</Text>

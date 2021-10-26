@@ -2,13 +2,14 @@ import React from 'react'
 import { render, fireEvent, waitFor } from '@testing-library/react-native'
 import BalancesScreen from './BalancesScreen'
 import mockedTokens from './tokens-mock.json'
+import { act } from 'react-test-renderer'
 
 //TODO: integration tests pending
 jest.mock('../../lib/rifWalletServices/RifWalletServicesFetcher', () => {
   return {
     RifWalletServicesFetcher: jest.fn().mockImplementation(() => {
       return {
-        fetchTokensByAddress: () => {
+        fetchTokensByAddress: async () => {
           return mockedTokens
         },
       }
@@ -41,12 +42,14 @@ describe('Load balances', () => {
       <BalancesScreen route={route} navigation={navigation as any} />,
     )
 
-    await waitFor(() => expect(getByTestId('cUSDT.View')).toBeDefined())
-    await waitFor(() => expect(getByTestId('rUSDT.View')).toBeDefined())
-    await waitFor(() => expect(getByTestId('DOC.View')).toBeDefined())
-    await waitFor(() => expect(getByTestId('cRBTC.View')).toBeDefined())
-    await waitFor(() => expect(getByTestId('cRIF.View')).toBeDefined())
-    await waitFor(() => expect(getByTestId('tRIF.View')).toBeDefined())
+    await waitFor(() => getByTestId('cUSDT.View'))
+
+    expect(getByTestId('cUSDT.View')).toBeDefined()
+    expect(getByTestId('rUSDT.View')).toBeDefined()
+    expect(getByTestId('DOC.View')).toBeDefined()
+    expect(getByTestId('cRBTC.View')).toBeDefined()
+    expect(getByTestId('cRIF.View')).toBeDefined()
+    expect(getByTestId('tRIF.View')).toBeDefined()
   })
 
   it('select token to send', async () => {
@@ -56,8 +59,10 @@ describe('Load balances', () => {
 
     await waitFor(() => expect(getByTestId('tRIF.Button')).toBeDefined())
 
-    fireEvent.press(getByTestId('tRIF.Button'))
+    act(() => {
+      fireEvent.press(getByTestId('tRIF.Button'))
 
-    expect(navigation.navigate).toBeCalled()
+      expect(navigation.navigate).toBeCalled()
+    })
   })
 })

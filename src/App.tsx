@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 import { NavigationProp, ParamListBase } from '@react-navigation/native'
 
@@ -15,25 +15,7 @@ interface Interface {
 }
 
 const WalletApp: React.FC<Interface> = ({ navigation }) => {
-  // Temporary component state:
-  interface componentStateI {
-    confirmResponse?: string
-    wallet?: RIFWallet
-  }
-
-  const [wallet, setWallet] = useState<RIFWallet[]>([])
-  const [mnemonic, setMnemonic] = useState<string>('')
-
-  const context = useContext(WalletProviderContext)
-  useEffect(() => {
-    context.wallets && setWallet(context.wallets)
-  }, [context.wallets])
-
-  useEffect(() => {
-    console.log('setting Mnemonic', context.getMnemonic())
-    setMnemonic(context.getMnemonic())
-  }, [context.wallets])
-
+  const { wallets, addUxInteraction } = useContext(WalletProviderContext)
   // TEMP - Add a request to the que WITHOUT going through the wallet!
   const signedTypedData = () => {
     const typedDataRequest = {
@@ -81,7 +63,7 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
     }
 
     // @ts-ignore
-    context.addUxInteraction(request)
+    addUxInteraction(request)
   }
 
   const seeSmartWallet = (account: RIFWallet) =>
@@ -92,13 +74,23 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
     <ScrollView>
       <Header1>sWallet</Header1>
       <View style={styles.section}>
-        <Header2>KMS:</Header2>
-        <CopyComponent value={mnemonic} />
+        <Header2>Welcome</Header2>
+        {wallets.length > 0 ? (
+          <Button
+            onPress={() => navigation.navigate('RevealMasterKey')}
+            title="Reveal master key"
+          />
+        ) : (
+          <Button
+            onPress={() => navigation.navigate('CreateWalletStack')}
+            title="Create master key"
+          />
+        )}
       </View>
 
       <View style={styles.section}>
         <Header2>RIF Wallets:</Header2>
-        {wallet.map((account: RIFWallet, index: number) => {
+        {wallets.map((account: RIFWallet, index: number) => {
           return (
             <View key={index}>
               <Paragraph>EOA Address</Paragraph>
@@ -137,13 +129,14 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
             </View>
           )
         })}
-        {/*<Button onPress={addAccount} title="Add account" />*/}
       </View>
 
       <View style={styles.section}>
         <Header2>Settings</Header2>
         <Button
-          onPress={() => removeStorage(StorageKeys.KMS)}
+          onPress={() => {
+            removeStorage(StorageKeys.KMS)
+          }}
           title="Clear RN Storage"
         />
         <Paragraph>

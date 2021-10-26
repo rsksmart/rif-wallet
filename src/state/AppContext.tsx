@@ -10,6 +10,7 @@ import { getStorage, setStorage, StorageKeys } from '../storage'
 export interface WalletProviderContextInterface {
   wallets: RIFWallet[]
   getMnemonic: () => string
+  saveMnemonic: (mnemonic: string) => Promise<void>
   walletRequests: Request[]
   addUxInteraction: (qt: Request) => void
   resolveUxInteraction: () => void
@@ -20,6 +21,9 @@ export const WalletProviderContext =
     wallets: [],
     getMnemonic: () => '',
     walletRequests: [],
+    saveMnemonic: async () => {},
+
+    handleUxInteraction: (_qt: Request) => Promise.resolve({}),
     addUxInteraction: (_qt: Request) => Promise.resolve({}),
     resolveUxInteraction: () => null,
   })
@@ -45,8 +49,19 @@ export const WalletProviderElement: React.FC<Web3ProviderElementInterface> = ({
     setWalletRequests(walletRequests.concat(newRequest))
   const resolveUxInteraction = () => setWalletRequests(walletRequests.slice(1))
 
+  const saveMnemonic = async (mnemonic: string) => {
+    console.log('setting up new wallet')
+    const kms = KeyManagementSystem.import(mnemonic)
+    const firstWallet = kms.nextWallet(31)
+    firstWallet.save()
+    setStorage(StorageKeys.KMS, kms.serialize())
+
+    init({ kms, wallets: [firstWallet.wallet] })
+  }
+
   const initialContext: WalletProviderContextInterface = {
     wallets,
+    saveMnemonic,
     getMnemonic: () =>
       keyManagementSystem ? keyManagementSystem?.mnemonic : '',
     walletRequests,
@@ -74,21 +89,11 @@ export const WalletProviderElement: React.FC<Web3ProviderElementInterface> = ({
 
   // Get the mnemonic from storage, or create a new KMS with default wallet
   useEffect(() => {
-    getStorage(StorageKeys.KMS)
-      .then((serialized: string | null) => {
-        if (serialized) {
-          init(KeyManagementSystem.fromSerialized(serialized))
-        }
-      })
-      .catch(() => {
-        // Error: key does not present
-        const kms = KeyManagementSystem.create()
-        const firstWallet = kms.nextWallet(31)
-        firstWallet.save()
-        setStorage(StorageKeys.KMS, kms.serialize())
-
-        init({ kms, wallets: [firstWallet.wallet] })
-      })
+    getStorage(StorageKeys.KMS).then((serialized: string | null) => {
+      if (serialized) {
+        init(KeyManagementSystem.fromSerialized(serialized))
+      }
+    })
   }, [])
 
   return (

@@ -11,6 +11,8 @@ import ReceiveScreen from './screens/receive/ReceiveScreen'
 
 import SmartWallet from './tempScreens/SmartWallet'
 import { WalletProviderContext } from './state/AppContext'
+import CreateWalletNavigationScreen from './screens/createWallet'
+import RevealMasterKeyScreen from './screens/createWallet/RevealMasterKeyScreen'
 import ModalComponent from './modal/ModalComponent'
 import SignMessageScreen from './tempScreens/SignMessageScreen'
 import BalancesScreen from './screens/balances/BalancesScreen'
@@ -59,6 +61,16 @@ const RootNavigation: React.FC<Interface> = () => {
               options={sharedOptions}
             />
             <RootStack.Screen name="Balances" component={BalancesScreen} />
+            <RootStack.Screen
+              name="CreateWalletStack"
+              component={CreateWalletNavigationScreen}
+              options={sharedOptions}
+            />
+            <RootStack.Screen
+              name="RevealMasterKey"
+              component={RevealMasterKeyScreen}
+              options={{ ...sharedOptions, headerShown: true }}
+            />
           </RootStack.Group>
         </RootStack.Navigator>
       </NavigationContainer>

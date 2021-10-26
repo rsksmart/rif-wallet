@@ -22,11 +22,7 @@ describe('ReceiveScreen', () => {
   })
 
   it('renders', async () => {
-    const { getAllByText, rerender } = render(<ReceiveScreen route={route} />)
-
-    act(() => {
-      rerender(<ReceiveScreen route={route} />)
-    })
+    const { getAllByText } = render(<ReceiveScreen route={route} />)
 
     // make sure elements are showing up
     expect(getAllByText('copy').length).toBe(2)
@@ -37,16 +33,12 @@ describe('ReceiveScreen', () => {
   it('can copy address', () => {
     jest.useFakeTimers()
 
-    const { getByTestId, rerender } = render(<ReceiveScreen route={route} />)
-
-    act(() => {
-      rerender(<ReceiveScreen route={route} />)
-    })
+    const { getByTestId } = render(<ReceiveScreen route={route} />)
 
     act(() => {
       fireEvent.press(getByTestId('Copy.Account.Button'))
-    })
 
-    expect(mockClipboard.setString).toBeCalledTimes(1)
+      expect(mockClipboard.setString).toBeCalledTimes(1)
+    })
   })
 })
