@@ -1,27 +1,25 @@
 import React, { useContext } from 'react'
+import { StyleSheet, View } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
-import WalletApp from './App'
+
+import { WalletProviderContext } from './state/AppContext'
+import ModalComponent from './modal/ModalComponent'
+
+import Landing from './screens/Landing'
+import CreateWalletNavigationScreen from './screens/createWallet'
 import SendTransaction from './screens/send/SendTransaction'
-import TransactionReceived from './TransactionReceived'
-
-import { StyleSheet, View } from 'react-native'
-
 import ReceiveScreen from './screens/receive/ReceiveScreen'
+import BalancesScreen from './screens/balances/BalancesScreen'
+import SignMessageScreen from './tempScreens/SignMessageScreen'
+import RevealMasterKeyScreen from './screens/createWallet/RevealMasterKeyScreen'
+import TransactionReceived from './screens/TransactionReceived'
 
 import SmartWallet from './tempScreens/SmartWallet'
-import { WalletProviderContext } from './state/AppContext'
-import CreateWalletNavigationScreen from './screens/createWallet'
-import RevealMasterKeyScreen from './screens/createWallet/RevealMasterKeyScreen'
-import ModalComponent from './modal/ModalComponent'
-import SignMessageScreen from './tempScreens/SignMessageScreen'
-import BalancesScreen from './screens/balances/BalancesScreen'
-
-interface Interface {}
 
 const RootStack = createStackNavigator()
 
-const RootNavigation: React.FC<Interface> = () => {
+const RootNavigation: React.FC = () => {
   const context = useContext(WalletProviderContext)
   const closeRequest = () => context.resolveUxInteraction()
 
@@ -33,7 +31,7 @@ const RootNavigation: React.FC<Interface> = () => {
           <RootStack.Group>
             <RootStack.Screen
               name="Home"
-              component={WalletApp}
+              component={Landing}
               options={sharedOptions}
             />
 

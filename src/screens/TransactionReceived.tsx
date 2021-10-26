@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, View, ScrollView, Button, Linking } from 'react-native'
 import { NavigationProp, ParamListBase } from '@react-navigation/native'
 
-import { Paragraph } from './components/typography'
+import { Paragraph } from '../components/typography'
 
 interface Interface {
   navigation: NavigationProp<ParamListBase>
