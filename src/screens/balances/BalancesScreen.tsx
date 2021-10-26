@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { StyleSheet, View, ScrollView, Text } from 'react-native'
 import { utils } from 'ethers'
 import { jsonRpcProvider } from '../../lib/jsonRpcProvider'
@@ -10,6 +10,7 @@ import { RIFWallet } from '../../lib/core'
 import { RifWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
 import { NavigationProp, ParamListBase } from '@react-navigation/native'
 import { roundBalance } from '../../lib/utils'
+import { useSelectedWallet } from '../../Context'
 
 const fetcher: RifWalletServicesFetcher = new RifWalletServicesFetcher()
 
@@ -54,10 +55,10 @@ const BalancesScreen: React.FC<IReceiveScreenProps> = ({
   route,
   navigation,
 }) => {
+  const account = useSelectedWallet()
   const [info, setInfo] = useState('')
   const [tokens, setTokens] = useState<ITokenWithBalance[]>([])
 
-  const account = route.params.account as RIFWallet
 
   useEffect(() => {
     loadData()

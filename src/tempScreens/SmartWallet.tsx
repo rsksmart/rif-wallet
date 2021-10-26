@@ -1,15 +1,16 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Transaction } from 'ethers'
 import Button from '../components/button'
 import { Header2, Paragraph } from '../components/typography'
-import { RIFWallet } from '../lib/core/RIFWallet'
 
 import { BigNumber } from 'ethers'
 import CopyComponent from '../components/copy'
 import { ERC20Token } from '../lib/token/ERC20Token'
+import { useSelectedWallet } from '../Context'
 
-const SmartWalletComponent = ({ route }: { route: any }) => {
+const SmartWalletComponent = () => {
+  const account = useSelectedWallet()
   const [eoaBalance, setEoaBalance] = useState<null | BigNumber>(null)
   const [isSmartWalletDeployed, setIsSmartWalletDeployed] =
     useState<boolean>(false)
@@ -20,8 +21,6 @@ const SmartWalletComponent = ({ route }: { route: any }) => {
   const [rifBalance, setRifBalance] = useState<null | BigNumber>(null)
   const [sendRifTx, setSendRifTx] = useState<null | Transaction>(null)
   const [sendRifResponse, setSendRifResponse] = useState<null | string>(null)
-
-  const account = route.params.account as RIFWallet
 
   const rif = new ERC20Token(
     '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',

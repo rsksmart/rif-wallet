@@ -4,6 +4,7 @@ import Button from '../components/button'
 import CopyComponent from '../components/copy'
 import { Header1, Paragraph } from '../components/typography'
 import { RIFWallet } from '../lib/core/RIFWallet'
+import { useSelectedWallet } from '../Context'
 
 interface Interface {
   route: { params: { account: RIFWallet } }
@@ -11,7 +12,7 @@ interface Interface {
 }
 
 const SignMessageScreen: React.FC<Interface> = ({ route, navigation }) => {
-  const rifWallet = route.params.account
+  const rifWallet = useSelectedWallet()
 
   const [message, setMessage] = useState<string>('Hello World!')
   const [response, setResponse] = useState<string | null>(null)

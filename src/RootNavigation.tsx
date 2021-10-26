@@ -16,12 +16,15 @@ import RevealMasterKeyScreen from './screens/createWallet/RevealMasterKeyScreen'
 import TransactionReceived from './screens/TransactionReceived'
 
 import SmartWallet from './tempScreens/SmartWallet'
+import { Requests, SWalletContext, useSelectedWallet } from './Context'
+import { RIFWallet } from './lib/core'
 
 const RootStack = createStackNavigator()
 
 const RootNavigation: React.FC = () => {
-  const context = useContext(WalletProviderContext)
-  const closeRequest = () => context.resolveUxInteraction()
+  const { requests, setRequests } = useContext(SWalletContext)
+  const closeRequest = () => setRequests([] as Requests)
+  const wallet = useSelectedWallet()
 
   const sharedOptions = { headerShown: false }
   return (
@@ -74,10 +77,10 @@ const RootNavigation: React.FC = () => {
       </NavigationContainer>
 
       {/* Modals: */}
-      {context.walletRequests.length !== 0 && (
+      {requests.length !== 0 && (
         <ModalComponent
           closeModal={closeRequest}
-          request={context.walletRequests[0]}
+          request={requests[0]}
         />
       )}
     </View>

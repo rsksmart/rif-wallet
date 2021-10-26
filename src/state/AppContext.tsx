@@ -5,7 +5,7 @@ import { KeyManagementSystem } from '../lib/core/KeyManagementSystem'
 import { Request, RIFWallet } from '../lib/core/RIFWallet'
 import { jsonRpcProvider } from '../lib/jsonRpcProvider'
 
-import { getStorage, setStorage, StorageKeys } from '../storage'
+import { getKeys, saveKeys } from '../storage/KeyStore'
 
 export interface WalletProviderContextInterface {
   wallets: RIFWallet[]
@@ -53,8 +53,7 @@ export const WalletProviderElement: React.FC<Web3ProviderElementInterface> = ({
     console.log('setting up new wallet')
     const kms = KeyManagementSystem.import(mnemonic)
     const firstWallet = kms.nextWallet(31)
-    firstWallet.save()
-    setStorage(StorageKeys.KMS, kms.serialize())
+    saveKeys(kms.serialize())
 
     init({ kms, wallets: [firstWallet.wallet] })
   }
@@ -89,7 +88,7 @@ export const WalletProviderElement: React.FC<Web3ProviderElementInterface> = ({
 
   // Get the mnemonic from storage, or create a new KMS with default wallet
   useEffect(() => {
-    getStorage(StorageKeys.KMS).then((serialized: string | null) => {
+    getKeys().then((serialized: string | null) => {
       if (serialized) {
         init(KeyManagementSystem.fromSerialized(serialized))
       }

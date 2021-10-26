@@ -6,8 +6,9 @@ import Button from '../components/button'
 import { Header1, Header2, Paragraph } from '../components/typography'
 import { RIFWallet } from '../lib/core'
 import { WalletProviderContext } from '../state/AppContext'
-import { removeStorage, StorageKeys } from '../storage'
+import { deleteKeys } from '../storage/KeyStore'
 import CopyComponent from '../components/copy'
+import { SWalletContext } from '../Context'
 
 interface Interface {
   navigation: NavigationProp<ParamListBase>
@@ -15,7 +16,8 @@ interface Interface {
 }
 
 const WalletApp: React.FC<Interface> = ({ navigation }) => {
-  const { wallets, addUxInteraction } = useContext(WalletProviderContext)
+  const { wallets, setRequests } = useContext(SWalletContext)
+  console.log(wallets)
   // TEMP - Add a request to the que WITHOUT going through the wallet!
   const signedTypedData = () => {
     const typedDataRequest = {
@@ -63,7 +65,7 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
     }
 
     // @ts-ignore
-    addUxInteraction(request)
+    setRequests(request)
   }
 
   const seeSmartWallet = (account: RIFWallet) =>
@@ -75,7 +77,7 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
       <Header1>sWallet</Header1>
       <View style={styles.section}>
         <Header2>Welcome</Header2>
-        {wallets.length > 0 ? (
+        {Object.keys(wallets).length > 0 ? (
           <Button
             onPress={() => navigation.navigate('RevealMasterKey')}
             title="Reveal master key"
@@ -90,9 +92,10 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
 
       <View style={styles.section}>
         <Header2>RIF Wallets:</Header2>
-        {wallets.map((account: RIFWallet, index: number) => {
+        {Object.keys(wallets).map((address: string) => {
+          const account = wallets[address]
           return (
-            <View key={index}>
+            <View key={address}>
               <Paragraph>EOA Address</Paragraph>
               <CopyComponent value={account.smartWallet.wallet.address} />
               <Button
@@ -134,9 +137,7 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
       <View style={styles.section}>
         <Header2>Settings</Header2>
         <Button
-          onPress={() => {
-            removeStorage(StorageKeys.KMS)
-          }}
+          onPress={deleteKeys}
           title="Clear RN Storage"
         />
         <Paragraph>
