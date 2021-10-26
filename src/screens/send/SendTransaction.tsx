@@ -31,10 +31,17 @@ const SendTransaction: React.FC<Interface> = ({ route }) => {
   const [info, setInfo] = useState('')
 
   useEffect(() => {
-    getAllTokens(account).then(tokens => {
+    const action = async () => {
+      const tokens = await getAllTokens(account)
+
       setAvailableTokens(tokens)
-      setSelectedSymbol(tokens[0].symbol)
-    })
+
+      if (tokens.length > 0) {
+        setSelectedSymbol(tokens[0].symbol)
+      }
+    }
+
+    action()
   }, [account])
 
   const handleNext = () => {

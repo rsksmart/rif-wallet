@@ -91,9 +91,7 @@ const ReviewTransactionModal: React.FC<Interface> = ({
       gasPrice: BigNumber.from(gasPrice),
       gasLimit: BigNumber.from(gasLimit),
     })
-    console.log('aa')
     closeModal()
-    console.log('bb')
   }
 
   const cancelTransaction = () => {

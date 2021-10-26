@@ -1,7 +1,13 @@
+import React from 'react'
 import { providers, BigNumber } from 'ethers'
 import { tenPow } from '../../lib/token/BaseToken'
 import { ERC20Token } from '../../lib/token/ERC20Token'
 import { ERC677__factory } from '../../lib/token/types'
+
+import { render, fireEvent, act, waitFor } from '@testing-library/react-native'
+
+import SendTransaction from './SendTransaction'
+import { getAllTokens } from '../../lib/token/tokenMetadata'
 
 const Config = {
   BLOCKCHAIN_HTTP_URL: 'HTTP://127.0.0.1:8545',
@@ -17,12 +23,6 @@ const getSigner = async (index: number = 0) => {
   const provider = await getJsonRpcProvider()
   return provider.getSigner(index)
 }
-import React from 'react'
-
-import { render, fireEvent, act, waitFor } from '@testing-library/react-native'
-
-import SendTransaction from './SendTransaction'
-import { getAllTokens } from '../../lib/token/tokenMetadata'
 
 jest.mock('../../lib/token/tokenMetadata', () => ({
   getAllTokens: jest.fn(),
@@ -80,29 +80,23 @@ describe('Load Tokens', () => {
     // @ts-ignore
     getAllTokens.mockImplementation(getAllTokensMock)
   })
+
   it('renders', async () => {
-    const { getByPlaceholderText, rerender } = render(
-      <SendTransaction route={route} />,
+    const { getByPlaceholderText } = await waitFor(() =>
+      render(<SendTransaction route={route} />),
     )
-
-    act(() => {
-      rerender(<SendTransaction route={route} />)
-    })
-
     getByPlaceholderText('Amount')
     getByPlaceholderText('To')
   })
 
   test('selects tokens', async () => {
-    const { rerender, getByTestId } = render(<SendTransaction route={route} />)
-
-    act(async () => {
-      await rerender(<SendTransaction route={route} />)
-    })
+    const { getByTestId } = await waitFor(() =>
+      render(<SendTransaction route={route} />),
+    )
 
     const picker = getByTestId('Tokens.Picker')
 
-    act(async () => {
+    await act(async () => {
       await fireEvent(picker, 'onValueChange', 'FIRST_TEST_ERC20')
       expect(picker.props.selectedIndex).toStrictEqual(0)
 
@@ -112,24 +106,28 @@ describe('Load Tokens', () => {
   })
 
   test('send transaction', async () => {
-    const { rerender, getByTestId } = render(<SendTransaction route={route} />)
-
-    act(() => {
-      rerender(<SendTransaction route={route} />)
-    })
-
-    const picker = getByTestId('Tokens.Picker')
-    fireEvent(picker, 'onValueChange', 'FIRST_TEST_ERC20')
+    const { getByTestId } = await waitFor(() =>
+      render(<SendTransaction route={route} />),
+    )
 
     const receivingAccount = await getSigner(1)
-
-    fireEvent.changeText(
-      getByTestId('To.Input'),
-      await receivingAccount.getAddress(),
-    )
+    const receivingAddress = await receivingAccount.getAddress()
     const sendingAmount = '10'
-    fireEvent.changeText(getByTestId('Amount.Input'), sendingAmount)
-    fireEvent.press(getByTestId('Next.Button'))
-    await waitFor(() => expect(getByTestId('TxReceipt.View')).toBeDefined())
+
+    act(() => {
+      const picker = getByTestId('Tokens.Picker')
+      fireEvent(picker, 'onValueChange', 'FIRST_TEST_ERC20')
+    })
+
+    act(() => {
+      fireEvent.changeText(getByTestId('To.Input'), receivingAddress)
+    })
+    act(() => {
+      fireEvent.changeText(getByTestId('Amount.Input'), sendingAmount)
+    })
+    await act(async () => {
+      fireEvent.press(getByTestId('Next.Button'))
+      await waitFor(() => expect(getByTestId('TxReceipt.View')).toBeDefined())
+    })
   })
 })
