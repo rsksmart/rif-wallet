@@ -127,7 +127,8 @@ describe('Load Tokens', () => {
     })
     await act(async () => {
       fireEvent.press(getByTestId('Next.Button'))
-      await waitFor(() => expect(getByTestId('TxReceipt.View')).toBeDefined())
     })
+
+    await waitFor(() => expect(getByTestId('TxReceipt.View')).toBeDefined())
   })
 })

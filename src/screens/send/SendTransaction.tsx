@@ -128,7 +128,7 @@ const SendTransaction: React.FC<Interface> = ({ route }) => {
         </View>
       )}
       <View style={styles.section}>
-        <Paragraph>{info}</Paragraph>
+        <Paragraph testID="TX.INFO">{info}</Paragraph>
       </View>
       {txConfirmed && tx && (
         <View testID={'TxReceipt.View'} style={styles.section}>

@@ -76,7 +76,7 @@ describe('ReviewTransactionModal', function (this: {
     waitFor(() => expect(closeModal).toBeCalled())
   })
 
-  it('allows the user to change the text inputs', () => {
+  it('allows the user to change the text inputs', async () => {
     const closeModal = jest.fn()
     const { getByTestId } = render(
       <ReviewTransactionModal
@@ -97,6 +97,6 @@ describe('ReviewTransactionModal', function (this: {
       gasPrice: BigNumber.from(gasPrice),
       gasLimit: BigNumber.from(gasLimit),
     })
-    waitFor(() => expect(closeModal).toBeCalled())
+    await waitFor(async () => expect(closeModal).toBeCalled())
   })
 })
