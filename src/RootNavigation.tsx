@@ -3,8 +3,6 @@ import { StyleSheet, View } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 
-import ModalComponent from './modal/ModalComponent'
-
 import Landing from './screens/Home'
 import CreateWalletNavigationScreen from './screens/keys'
 import SendTransaction from './screens/send/SendTransaction'
@@ -15,15 +13,12 @@ import RevealMasterKeyScreen from './screens/keys/RevealMasterKeyScreen'
 import TransactionReceived from './screens/TransactionReceived'
 
 import SmartWallet from './tempScreens/SmartWallet'
-import { Requests, SWalletContext } from './Context'
 
 const RootStack = createStackNavigator()
 
-const RootNavigation: React.FC = () => {
-  const { requests, setRequests } = useContext(SWalletContext)
-  const closeRequest = () => setRequests([] as Requests)
+const sharedOptions = { headerShown: true }
 
-  const sharedOptions = { headerShown: true }
+const RootNavigation: React.FC = () => {
   return (
     <View style={styles.parent}>
       <NavigationContainer>
@@ -73,14 +68,6 @@ const RootNavigation: React.FC = () => {
           </RootStack.Group>
         </RootStack.Navigator>
       </NavigationContainer>
-
-      {/* Modals: */}
-      {requests.length !== 0 && (
-        <ModalComponent
-          closeModal={closeRequest}
-          request={requests[0]}
-        />
-      )}
     </View>
   )
 }

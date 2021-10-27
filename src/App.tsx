@@ -6,14 +6,16 @@ import 'react-native-get-random-values'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView, StatusBar, View } from 'react-native'
 
-import RootNavigation from './RootNavigation'
-
-import { KeyManagementSystem, OnRequest, RIFWallet } from "./lib/core"
 import { SWalletContext, Wallets, Requests } from './Context'
+import RootNavigation from './RootNavigation'
+import ModalComponent from './modal/ModalComponent'
+
+import { Wallet } from '@ethersproject/wallet'
+import { KeyManagementSystem, OnRequest, RIFWallet } from "./lib/core"
 import { getKeys, hasKeys, saveKeys } from "./storage/KeyStore"
 import { jsonRpcProvider } from './lib/jsonRpcProvider'
+
 import { Paragraph } from './components/typography'
-import { Wallet } from '@ethersproject/wallet'
 
 const createRIFWalletFactory = (onRequest: OnRequest) => (wallet: Wallet) => RIFWallet.create(
   wallet.connect(jsonRpcProvider), '0x3f71ce7bd7912bf3b362fd76dd34fa2f017b6388', onRequest
@@ -70,11 +72,19 @@ const App = () => {
     setKeys(kms, { [rifWallet.address]: rifWallet })
   }
 
+  const closeRequest = () => setRequests([] as Requests)
+
   return (
     <SWalletContext.Provider value={{ hasKeys: !!kms, mnemonic: kms?.mnemonic, createFirstWallet, wallets, selectedWallet, requests, setRequests }}>
       <SafeAreaView>
         <StatusBar />
         <RootNavigation />
+        {requests.length !== 0 && (
+          <ModalComponent
+            closeModal={closeRequest}
+            request={requests[0]}
+          />
+        )}
       </SafeAreaView>
     </SWalletContext.Provider>
   )

@@ -8,7 +8,7 @@ import ImportMasterKeyScreen from './import/ImportMasterKeyScreen'
 
 const Stack = createStackNavigator()
 
-const screensOptions = { headerShown: true }
+const screensOptions = { headerShown: false }
 
 const CreateWalletNavigationScreen: React.FC = () => {
   return (

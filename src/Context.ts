@@ -5,23 +5,29 @@ import { RIFWallet, Request } from "./lib/core"
 export type Wallets = { [id: string]: RIFWallet }
 export type Requests = Request[]
 
-export type SWalletContextType = {
+export type KeyManagementContextType = {
   hasKeys: boolean
   mnemonic?: string
   createFirstWallet: (mnemonic: string) => Promise<void>
+}
+
+export type WalletsContextType = {
   wallets: Wallets
-  selectedWallet: string,
+  selectedWallet: string
+}
+
+export type AppContextType = KeyManagementContextType & WalletsContextType & {
   requests: Requests
   setRequests: (requests: Requests) => void
 }
 
-export const SWalletContext = createContext<SWalletContextType>({
+export const SWalletContext = createContext<AppContextType>({
   hasKeys: false,
   createFirstWallet: () => Promise.resolve(),
   wallets: {},
   selectedWallet: '',
   requests: [],
-  setRequests: (requests: Requests) => {} // temp - for setting the signTypedData
+  setRequests: () => {} // temp - for setting the signTypedData
 })
 
 export const useSelectedWallet = () => {
