@@ -68,8 +68,6 @@ const ReviewTransactionModal: React.FC<Interface> = ({
   request,
   closeModal,
 }) => {
-  console.log('ReviewTransactionModal', JSON.stringify(request))
-
   const transactionRequest = convertTransactionToStrings(
     request.payload.transactionRequest,
   )
