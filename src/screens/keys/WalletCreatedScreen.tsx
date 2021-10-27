@@ -4,7 +4,7 @@ import { StyleSheet, View, ScrollView } from 'react-native'
 
 import Button from '../../components/button'
 import { Paragraph } from '../../components/typography'
-import { WalletProviderContext } from '../../state/AppContext'
+import { useSelectedWallet } from '../../Context'
 
 interface Interface {
   navigation: NavigationProp<ParamListBase>
@@ -12,26 +12,17 @@ interface Interface {
 }
 
 const WalletCreatedScreen: React.FC<Interface> = ({ route, navigation }) => {
-  const mnemonic = route.params.mnemonic as string
-
-  const { wallets, saveMnemonic } = useContext(WalletProviderContext)
-
-  useEffect(() => {
-    saveMnemonic(mnemonic)
-  }, [mnemonic])
+  const wallet = useSelectedWallet()
 
   const navigateToReceive = async () => {
-    if (wallets.length === 0) {
-      return
-    }
-
-    navigation.navigate('Receive', { account: wallets[0] })
+    navigation.navigate('Receive')
   }
 
   return (
     <ScrollView>
       <View style={styles.sectionCentered}>
         <Paragraph testID="Text.Subtitle">Your new wallet is ready!</Paragraph>
+        <Paragraph testID="Text.Address">{wallet.address}</Paragraph>
       </View>
       <View style={styles.section}>
         <Button onPress={() => navigation.navigate('Home')} title={'<- Home'} />

@@ -3,30 +3,27 @@ import { StyleSheet, View } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 
-import { WalletProviderContext } from './state/AppContext'
 import ModalComponent from './modal/ModalComponent'
 
-import Landing from './screens/Landing'
-import CreateWalletNavigationScreen from './screens/createWallet'
+import Landing from './screens/Home'
+import CreateWalletNavigationScreen from './screens/keys'
 import SendTransaction from './screens/send/SendTransaction'
 import ReceiveScreen from './screens/receive/ReceiveScreen'
 import BalancesScreen from './screens/balances/BalancesScreen'
 import SignMessageScreen from './tempScreens/SignMessageScreen'
-import RevealMasterKeyScreen from './screens/createWallet/RevealMasterKeyScreen'
+import RevealMasterKeyScreen from './screens/keys/RevealMasterKeyScreen'
 import TransactionReceived from './screens/TransactionReceived'
 
 import SmartWallet from './tempScreens/SmartWallet'
-import { Requests, SWalletContext, useSelectedWallet } from './Context'
-import { RIFWallet } from './lib/core'
+import { Requests, SWalletContext } from './Context'
 
 const RootStack = createStackNavigator()
 
 const RootNavigation: React.FC = () => {
   const { requests, setRequests } = useContext(SWalletContext)
   const closeRequest = () => setRequests([] as Requests)
-  const wallet = useSelectedWallet()
 
-  const sharedOptions = { headerShown: false }
+  const sharedOptions = { headerShown: true }
   return (
     <View style={styles.parent}>
       <NavigationContainer>
@@ -35,7 +32,6 @@ const RootNavigation: React.FC = () => {
             <RootStack.Screen
               name="Home"
               component={Landing}
-              options={sharedOptions}
             />
 
             <RootStack.Screen
@@ -51,10 +47,12 @@ const RootNavigation: React.FC = () => {
             <RootStack.Screen
               name="SendTransaction"
               component={SendTransaction}
+              options={sharedOptions}
             />
             <RootStack.Screen
               name="TransactionReceived"
               component={TransactionReceived}
+              options={sharedOptions}
             />
             <RootStack.Screen
               name="SignMessage"
@@ -70,7 +68,7 @@ const RootNavigation: React.FC = () => {
             <RootStack.Screen
               name="RevealMasterKey"
               component={RevealMasterKeyScreen}
-              options={{ ...sharedOptions, headerShown: true }}
+              options={sharedOptions}
             />
           </RootStack.Group>
         </RootStack.Navigator>

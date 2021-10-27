@@ -3,18 +3,21 @@ import '@ethersproject/shims' // ref: https://docs.ethers.io/v5/cookbook/react-n
 import 'react-native-gesture-handler'
 import 'react-native-get-random-values'
 
-import React, { createContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView, StatusBar, View } from 'react-native'
 
-import { WalletProviderElement } from './state/AppContext'
 import RootNavigation from './RootNavigation'
 
-import { KeyManagementSystem, OnRequest, RIFWallet, Request } from "./lib/core"
-import { SWalletContext, Wallets, Requests, useSelectedWallet } from './Context'
-import { getKeys } from "./storage/KeyStore"
+import { KeyManagementSystem, OnRequest, RIFWallet } from "./lib/core"
+import { SWalletContext, Wallets, Requests } from './Context'
+import { getKeys, hasKeys, saveKeys } from "./storage/KeyStore"
 import { jsonRpcProvider } from './lib/jsonRpcProvider'
 import { Paragraph } from './components/typography'
+import { Wallet } from '@ethersproject/wallet'
 
+const createRIFWalletFactory = (onRequest: OnRequest) => (wallet: Wallet) => RIFWallet.create(
+  wallet.connect(jsonRpcProvider), '0x3f71ce7bd7912bf3b362fd76dd34fa2f017b6388', onRequest
+) // temp - using only testnet
 
 const App = () => {
   const [kms, setKMS] = useState<null | KeyManagementSystem>(null)
@@ -24,23 +27,27 @@ const App = () => {
   const [ready, setReady] = useState(false)
 
   const onRequest: OnRequest = request => setRequests([request])
+  const createRIFWallet = createRIFWalletFactory(onRequest)
+
+  const setKeys = (kms: KeyManagementSystem, wallets: Wallets) => {
+    setWallets(wallets)
+    setSelectedWallet(wallets[Object.keys(wallets)[0]].address) // temp - using only one wallet
+    setKMS(kms)
+  }
 
   const init = async () => {
-    const serializedKeys = await getKeys()
-    if (serializedKeys) {
-      const { kms, wallets } = KeyManagementSystem.fromSerialized(serializedKeys)
-      setKMS(kms)
+    if (await hasKeys()) {
+      const serializedKeys = await getKeys()
+      const { kms, wallets } = KeyManagementSystem.fromSerialized(serializedKeys!)
 
-      const rifWallets = await Promise.all(wallets.map(
-        wallet => RIFWallet.create(wallet.connect(jsonRpcProvider), '0x3f71ce7bd7912bf3b362fd76dd34fa2f017b6388', onRequest) // temp - using only testnet
-      ))
+      const rifWallets = await Promise.all(wallets.map(createRIFWallet))
 
       const rifWalletsDictionary = rifWallets.reduce((p: Wallets, c: RIFWallet) => Object.assign(p, { [c.address]: c }), {})
 
-      setWallets(rifWalletsDictionary)
-      setSelectedWallet(rifWallets[0].address) // temp - using only one wallet
-      setReady(true)
+      setKeys(kms, rifWalletsDictionary)
     }
+
+    setReady(true)
   }
 
   useEffect(() => {
@@ -49,13 +56,25 @@ const App = () => {
 
   if (!ready) return <View style={{paddingVertical:200}}><Paragraph>Getting set...</Paragraph></View>
 
+  const createFirstWallet = async (mnemonic: string) => {
+    console.log('setting up new wallet')
+    const kms = KeyManagementSystem.import(mnemonic)
+    const { save, wallet } = kms.nextWallet(31)
+
+    const rifWallet = await createRIFWallet(wallet)
+
+    save()
+    const serialized = kms.serialize()
+    await saveKeys(serialized)
+
+    setKeys(kms, { [rifWallet.address]: rifWallet })
+  }
+
   return (
-    <SWalletContext.Provider value={{ wallets, selectedWallet, requests, setRequests }}>
+    <SWalletContext.Provider value={{ hasKeys: !!kms, mnemonic: kms?.mnemonic, createFirstWallet, wallets, selectedWallet, requests, setRequests }}>
       <SafeAreaView>
-        <WalletProviderElement>
-          <StatusBar />
-          <RootNavigation />
-        </WalletProviderElement>
+        <StatusBar />
+        <RootNavigation />
       </SafeAreaView>
     </SWalletContext.Provider>
   )

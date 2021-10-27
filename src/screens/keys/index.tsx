@@ -1,10 +1,10 @@
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import CreateWalletScreen from './CreateWalletScreen'
-import CreateMasterKeyScreen from './CreateMasterKeyScreen'
-import ConfirmMasterKeyScreen from './ConfirmMasterKeyScreen'
+import CreateMasterKeyScreen from './create/CreateMasterKeyScreen'
+import ConfirmMasterKeyScreen from './create/ConfirmMasterKeyScreen'
 import WalletCreatedScreen from './WalletCreatedScreen'
-import ImportMasterKeyScreen from './ImportMasterKeyScreen'
+import ImportMasterKeyScreen from './import/ImportMasterKeyScreen'
 
 const Stack = createStackNavigator()
 

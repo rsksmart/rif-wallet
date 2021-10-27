@@ -6,6 +6,9 @@ export type Wallets = { [id: string]: RIFWallet }
 export type Requests = Request[]
 
 export type SWalletContextType = {
+  hasKeys: boolean
+  mnemonic?: string
+  createFirstWallet: (mnemonic: string) => Promise<void>
   wallets: Wallets
   selectedWallet: string,
   requests: Requests
@@ -13,6 +16,8 @@ export type SWalletContextType = {
 }
 
 export const SWalletContext = createContext<SWalletContextType>({
+  hasKeys: false,
+  createFirstWallet: () => Promise.resolve(),
   wallets: {},
   selectedWallet: '',
   requests: [],

@@ -90,8 +90,8 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
           const account = wallets[address]
           return (
             <View key={address}>
-              <Paragraph>EOA Address</Paragraph>
-              <CopyComponent value={account.smartWallet.wallet.address} />
+              <Paragraph>Smart Wallet Address</Paragraph>
+              <CopyComponent value={account.address} />
               <Button
                 title="See smart wallet"
                 onPress={() => navigation.navigate('SmartWallet')}

@@ -2,71 +2,64 @@ import { NavigationProp, ParamListBase } from '@react-navigation/core'
 import React, { useState, useContext } from 'react'
 import { StyleSheet, View, ScrollView, TextInput } from 'react-native'
 
-import { Header2, Paragraph } from '../../components/typography'
+import { Header2, Paragraph } from '../../../components/typography'
 
-import Button from '../../components/button'
-import { WalletProviderContext } from '../../state/AppContext'
+import Button from '../../../components/button'
+import { SWalletContext } from '../../../Context'
 
 interface Interface {
   navigation: NavigationProp<ParamListBase>
   route: any
 }
 
-const ConfirmMasterKeyScreen: React.FC<Interface> = ({ route, navigation }) => {
-  const { saveMnemonic } = useContext(WalletProviderContext)
-  const mnemonic = route.params.mnemonic as string
-
-  const [mnemonicToConfirm, setMnemonicToConfirm] = useState<
-    string | undefined
-  >()
+const ImportMasterKeyScreen: React.FC<Interface> = ({ navigation }) => {
+  const { createFirstWallet } = useContext(SWalletContext)
+  const [importMnemonic, setImportMnemonic] = useState<string | undefined>()
 
   const [error, setError] = useState<string | null>(null)
 
-  const saveAndNavigate = async () => {
-    await saveMnemonic(mnemonic)
-    navigation.navigate('WalletCreated', { mnemonic })
-  }
-
-  const handleConfirmMnemonic = async () => {
-    const isValid = mnemonic === mnemonicToConfirm
+  const handleImportMnemonic = async () => {
+    // TODO: how many words should have the mnemonic?
+    const isValid = importMnemonic && importMnemonic.split(' ').length > 12
 
     if (!isValid) {
-      setError('entered words does not match you your master key')
+      setError('you need to enter your twelve words master key')
       return
     }
 
-    await saveAndNavigate()
+    try {
+      await createFirstWallet(importMnemonic)
+      navigation.navigate('WalletCreated', { mnemonic: importMnemonic })
+    } catch (err) {
+      console.error(err)
+      setError(
+        'error trying to import your master key, please check it and try it again',
+      )
+    }
   }
 
   return (
     <ScrollView>
       <View style={styles.sectionCentered}>
-        <Paragraph>
-          With your master key (seed phrase) you are able to create as many
-          wallets as you need.
-        </Paragraph>
-      </View>
-      <View style={styles.sectionCentered}>
-        <Paragraph>validate your master key</Paragraph>
+        <Paragraph>enter your private key</Paragraph>
       </View>
       <View style={styles.section}>
         <Header2>Master key</Header2>
         <TextInput
-          onChangeText={text => setMnemonicToConfirm(text)}
-          value={mnemonicToConfirm}
+          onChangeText={text => setImportMnemonic(text)}
+          value={importMnemonic}
           placeholder="Enter your 12 words master key"
           multiline
           style={styles.input}
-          testID="Input.Confirm"
+          testID="Input.MasterKey"
         />
         {error && <Paragraph>{error}</Paragraph>}
       </View>
       <View style={styles.section}>
-        <Button onPress={saveAndNavigate} title={'Skip'} />
-      </View>
-      <View style={styles.section}>
         <Button
-          onPress={handleConfirmMnemonic}
+          onPress={() => {
+            handleImportMnemonic()
+          }}
           title={'Confirm'}
           testID="Button.Confirm"
         />
@@ -99,4 +92,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default ConfirmMasterKeyScreen
+export default ImportMasterKeyScreen

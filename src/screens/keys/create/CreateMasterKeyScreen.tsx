@@ -1,23 +1,20 @@
 import { NavigationProp, ParamListBase } from '@react-navigation/core'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useMemo } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 
-import { Header2, Paragraph } from '../../components/typography'
-import CopyComponent from '../../components/copy'
-import { WalletProviderContext } from '../../state/AppContext'
+import { Header2, Paragraph } from '../../../components/typography'
+import CopyComponent from '../../../components/copy'
+
+import Button from '../../../components/button'
+import { KeyManagementSystem } from '../../../lib/core/KeyManagementSystem'
 
 interface Interface {
   navigation: NavigationProp<ParamListBase>
   route: any
 }
 
-const RevealMasterKeyScreen: React.FC<Interface> = () => {
-  const { wallets, getMnemonic } = useContext(WalletProviderContext)
-  const [mnemonic, setMnemonic] = useState<string>('')
-
-  useEffect(() => {
-    setMnemonic(getMnemonic())
-  }, [wallets])
+const CreateMasterKeyScreen: React.FC<Interface> = ({ navigation }) => {
+  const mnemonic = useMemo(() => KeyManagementSystem.create().mnemonic, [])
 
   return (
     <ScrollView>
@@ -32,7 +29,13 @@ const RevealMasterKeyScreen: React.FC<Interface> = () => {
       </View>
       <View style={styles.section}>
         <Header2>Master key</Header2>
-        <CopyComponent value={mnemonic} />
+        <CopyComponent value={mnemonic} testID={'Copy.Mnemonic'} />
+      </View>
+      <View style={styles.section}>
+        <Button
+          onPress={() => navigation.navigate('ConfirmMasterKey', { mnemonic })}
+          title={'Next'}
+        />
       </View>
     </ScrollView>
   )
@@ -54,4 +57,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default RevealMasterKeyScreen
+export default CreateMasterKeyScreen
