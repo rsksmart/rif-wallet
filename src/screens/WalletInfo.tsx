@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Transaction } from 'ethers'
 import Button from '../components/button'
@@ -9,7 +9,7 @@ import CopyComponent from '../components/copy'
 import { ERC20Token } from '../lib/token/ERC20Token'
 import { useSelectedWallet } from '../Context'
 
-const SmartWalletComponent = () => {
+const WalletInfoScreen = () => {
   const account = useSelectedWallet()
   const [eoaBalance, setEoaBalance] = useState<null | BigNumber>(null)
   const [isSmartWalletDeployed, setIsSmartWalletDeployed] =
@@ -106,4 +106,4 @@ const SmartWalletComponent = () => {
   )
 }
 
-export default SmartWalletComponent
+export default WalletInfoScreen

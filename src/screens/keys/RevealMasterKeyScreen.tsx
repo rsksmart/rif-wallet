@@ -1,10 +1,12 @@
 import { NavigationProp, ParamListBase } from '@react-navigation/core'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 
+import Button from '../../components/button'
 import { Header2, Paragraph } from '../../components/typography'
 import CopyComponent from '../../components/copy'
-import { SWalletContext } from '../../Context'
+import { KeyManagementContext } from '../../Context'
+import { deleteKeys } from '../../storage/KeyStore'
 
 interface Interface {
   navigation: NavigationProp<ParamListBase>
@@ -12,7 +14,7 @@ interface Interface {
 }
 
 const RevealMasterKeyScreen: React.FC<Interface> = () => {
-  const { mnemonic } = useContext(SWalletContext)
+  const { mnemonic } = useContext(KeyManagementContext)
 
   return (
     <ScrollView>
@@ -22,12 +24,18 @@ const RevealMasterKeyScreen: React.FC<Interface> = () => {
           wallets as you need.
         </Paragraph>
       </View>
-      <View style={styles.sectionCentered}>
-        <Paragraph>copy the key in a safe place ⎘</Paragraph>
-      </View>
       <View style={styles.section}>
         <Header2>Master key</Header2>
         <CopyComponent value={mnemonic || ''} />
+      </View>
+      <View style={styles.section}>
+        <Button
+          onPress={deleteKeys}
+          title="Delete keys"
+        />
+        <Paragraph>
+          You will need to refresh the app for this to fully work.
+        </Paragraph>
       </View>
     </ScrollView>
   )

@@ -5,7 +5,7 @@ import { StyleSheet, View, ScrollView, TextInput } from 'react-native'
 import { Header2, Paragraph } from '../../../components/typography'
 
 import Button from '../../../components/button'
-import { SWalletContext } from '../../../Context'
+import { KeyManagementContext } from '../../../Context'
 
 interface Interface {
   navigation: NavigationProp<ParamListBase>
@@ -13,7 +13,7 @@ interface Interface {
 }
 
 const ConfirmMasterKeyScreen: React.FC<Interface> = ({ route, navigation }) => {
-  const { createFirstWallet } = useContext(SWalletContext)
+  const { createFirstWallet } = useContext(KeyManagementContext)
   const mnemonic = route.params.mnemonic as string
 
   const [mnemonicToConfirm, setMnemonicToConfirm] = useState<

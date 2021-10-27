@@ -6,7 +6,7 @@ import 'react-native-get-random-values'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView, StatusBar, View } from 'react-native'
 
-import { SWalletContext, Wallets, Requests } from './Context'
+import { Wallets, Requests, AppContextProvider } from './Context'
 import RootNavigation from './RootNavigation'
 import ModalComponent from './modal/ModalComponent'
 
@@ -74,11 +74,14 @@ const App = () => {
 
   const closeRequest = () => setRequests([] as Requests)
 
+  console.log(kms?.mnemonic)
+
   return (
-    <SWalletContext.Provider value={{ hasKeys: !!kms, mnemonic: kms?.mnemonic, createFirstWallet, wallets, selectedWallet, requests, setRequests }}>
       <SafeAreaView>
         <StatusBar />
-        <RootNavigation />
+        <AppContextProvider value={{ hasKeys: !!kms, mnemonic: kms?.mnemonic, createFirstWallet, wallets, selectedWallet, setRequests }}>
+          <RootNavigation />
+        </AppContextProvider>
         {requests.length !== 0 && (
           <ModalComponent
             closeModal={closeRequest}
@@ -86,7 +89,6 @@ const App = () => {
           />
         )}
       </SafeAreaView>
-    </SWalletContext.Provider>
   )
 }
 

@@ -5,6 +5,7 @@ import CreateMasterKeyScreen from './create/CreateMasterKeyScreen'
 import ConfirmMasterKeyScreen from './create/ConfirmMasterKeyScreen'
 import WalletCreatedScreen from './WalletCreatedScreen'
 import ImportMasterKeyScreen from './import/ImportMasterKeyScreen'
+import RevealMasterKeyScreen from './RevealMasterKeyScreen'
 
 const Stack = createStackNavigator()
 
@@ -38,6 +39,7 @@ const CreateWalletNavigationScreen: React.FC = () => {
         component={ImportMasterKeyScreen}
         options={screensOptions}
       />
+      <Stack.Screen name="RevealMasterKey" component={RevealMasterKeyScreen} options={screensOptions} />
     </Stack.Navigator>
   )
 }

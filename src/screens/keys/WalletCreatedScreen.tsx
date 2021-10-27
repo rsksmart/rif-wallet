@@ -1,5 +1,5 @@
 import { NavigationProp, ParamListBase } from '@react-navigation/core'
-import React, { useContext, useEffect } from 'react'
+import React from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 
 import Button from '../../components/button'

@@ -20,7 +20,6 @@ interface IReceiveScreenProps {
 }
 
 const BalancesRow = ({
-  account,
   token,
   navigation,
 }: {

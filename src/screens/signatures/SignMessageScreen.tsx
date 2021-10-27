@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { View, TextInput, StyleSheet } from 'react-native'
-import Button from '../components/button'
-import CopyComponent from '../components/copy'
-import { Header1, Paragraph } from '../components/typography'
-import { RIFWallet } from '../lib/core/RIFWallet'
-import { useSelectedWallet } from '../Context'
+import Button from '../../components/button'
+import CopyComponent from '../../components/copy'
+import { Header1, Paragraph } from '../../components/typography'
+import { RIFWallet } from '../../lib/core/RIFWallet'
+import { useSelectedWallet } from '../../Context'
 
 interface Interface {
   route: { params: { account: RIFWallet } }
