@@ -68,6 +68,8 @@ const ReviewTransactionModal: React.FC<Interface> = ({
   request,
   closeModal,
 }) => {
+  console.log('ReviewTransactionModal', JSON.stringify(request))
+
   const transactionRequest = convertTransactionToStrings(
     request.payload.transactionRequest,
   )
@@ -91,6 +93,7 @@ const ReviewTransactionModal: React.FC<Interface> = ({
       gasPrice: BigNumber.from(gasPrice),
       gasLimit: BigNumber.from(gasLimit),
     })
+
     closeModal()
   }
 

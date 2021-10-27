@@ -100,8 +100,7 @@ export class RIFWallet extends Signer {
         confirm: async (overriddenOptions?: Partial<OverriddableTransactionOptions>) => {          
           const txOptions = {
             ...filterTxOptions(transactionRequest),
-            ...overriddenOptions || {},
-            value: BigNumber.from(transactionRequest.value)
+            ...overriddenOptions || {}
           }
           
           resolve(await this.smartWallet.directExecute(transactionRequest.to!, transactionRequest.data!, txOptions))
