@@ -9,6 +9,7 @@ import QRCode from 'react-qr-code'
 
 import { shortAddress } from '../../lib/utils'
 import { RIFWallet } from '../../lib/core/RIFWallet'
+import { useSelectedWallet } from '../../Context'
 
 // TODO: accountLink is hardcoded until we had the rns sdk
 const accountLink = 'ilan.rsk'
@@ -64,7 +65,7 @@ interface IReceiveScreenProps {
 }
 
 const ReceiveScreen: React.FC<IReceiveScreenProps> = ({ route }) => {
-  const account = route.params.account as RIFWallet
+  const account = useSelectedWallet()
 
   const smartAddress = account.smartWalletAddress
   const { isCopying: isCopyingAccount, handleCopy: handleCopyAccount } =

@@ -4,8 +4,7 @@ import { NavigationProp, ParamListBase } from '@react-navigation/native'
 
 import Button from '../components/button'
 import { Header1, Header2, Paragraph } from '../components/typography'
-import { RIFWallet } from '../lib/core'
-import { WalletProviderContext } from '../state/AppContext'
+import { Request, RIFWallet } from '../lib/core'
 import { deleteKeys } from '../storage/KeyStore'
 import CopyComponent from '../components/copy'
 import { SWalletContext } from '../Context'
@@ -15,48 +14,48 @@ interface Interface {
   route: any
 }
 
+// TEMP - Add a request to the que WITHOUT going through the wallet!
+const typedDataRequest = {
+  domain: {
+    chainId: 31,
+    name: 'rLogin sample app',
+    verifyingContract: '0x285b30492a3f444d7bf75261a35cb292fc8f41a6',
+    version: '1',
+  },
+  message: {
+    contents: 'Welcome to rLogin!',
+    num: 1500,
+    person: {
+      firstName: 'jesse',
+      lastName: 'clark',
+    },
+  },
+  // Refers to the keys of the *types* object below.
+  primaryType: 'Sample',
+  types: {
+    EIP712Domain: [
+      { name: 'name', type: 'string' },
+      { name: 'version', type: 'string' },
+      { name: 'chainId', type: 'uint256' },
+      { name: 'verifyingContract', type: 'address' },
+    ],
+    // Not an EIP712Domain definition
+    Sample: [
+      { name: 'contents', type: 'string' },
+      { name: 'num', type: 'uint256' },
+      { name: 'person', type: 'Person' },
+    ],
+    Person: [
+      { name: 'firstName', type: 'string' },
+      { name: 'lastName', type: 'string' },
+    ],
+  },
+}
+
 const WalletApp: React.FC<Interface> = ({ navigation }) => {
   const { wallets, setRequests } = useContext(SWalletContext)
-  console.log(wallets)
-  // TEMP - Add a request to the que WITHOUT going through the wallet!
-  const signedTypedData = () => {
-    const typedDataRequest = {
-      domain: {
-        chainId: 31,
-        name: 'rLogin sample app',
-        verifyingContract: '0x285b30492a3f444d7bf75261a35cb292fc8f41a6',
-        version: '1',
-      },
-      message: {
-        contents: 'Welcome to rLogin!',
-        num: 1500,
-        person: {
-          firstName: 'jesse',
-          lastName: 'clark',
-        },
-      },
-      // Refers to the keys of the *types* object below.
-      primaryType: 'Sample',
-      types: {
-        EIP712Domain: [
-          { name: 'name', type: 'string' },
-          { name: 'version', type: 'string' },
-          { name: 'chainId', type: 'uint256' },
-          { name: 'verifyingContract', type: 'address' },
-        ],
-        // Not an EIP712Domain definition
-        Sample: [
-          { name: 'contents', type: 'string' },
-          { name: 'num', type: 'uint256' },
-          { name: 'person', type: 'Person' },
-        ],
-        Person: [
-          { name: 'firstName', type: 'string' },
-          { name: 'lastName', type: 'string' },
-        ],
-      },
-    }
 
+  const signedTypedData = () => {
     const request = {
       type: 'signTypedData',
       payload: typedDataRequest,
@@ -64,13 +63,8 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
       reject: () => console.log('REJECTED!'),
     }
 
-    // @ts-ignore
-    setRequests(request)
+    setRequests([request as any as Request])
   }
-
-  const seeSmartWallet = (account: RIFWallet) =>
-    // @ts-ignore
-    navigation.navigate('SmartWallet', { account })
 
   return (
     <ScrollView>
@@ -100,31 +94,28 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
               <CopyComponent value={account.smartWallet.wallet.address} />
               <Button
                 title="See smart wallet"
-                onPress={() => seeSmartWallet(account)}
+                onPress={() => navigation.navigate('SmartWallet')}
               />
               <Button
                 // @ts-ignore
-                onPress={() => navigation.navigate('Receive', { account })}
+                onPress={() => navigation.navigate('Receive')}
                 title="Receive"
               />
               <Button
                 onPress={() => {
                   // @ts-ignore
-                  navigation.navigate('SendTransaction', {
-                    account,
-                    token: 'tRIF',
-                  })
+                  navigation.navigate('SendTransaction', { token: 'tRIF' })
                 }}
                 title="Send Transaction"
               />
               <Button
-                onPress={() => navigation.navigate('SignMessage', { account })}
+                onPress={() => navigation.navigate('SignMessage')}
                 title="Sign Message"
               />
               <Button
                 onPress={() =>
                   // @ts-ignore
-                  navigation.navigate('Balances', { account })
+                  navigation.navigate('Balances')
                 }
                 title="Balances"
               />

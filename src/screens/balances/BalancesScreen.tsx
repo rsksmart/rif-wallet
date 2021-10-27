@@ -40,7 +40,6 @@ const BalancesRow = ({
         onPress={() => {
           // @ts-ignore
           navigation.navigate('SendTransaction', {
-            account,
             token: token.symbol,
           })
         }}

@@ -12,13 +12,14 @@ import { getAllTokens } from '../../lib/token/tokenMetadata'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { IToken } from '../../lib/token/BaseToken'
 import { RIFWallet } from '../../lib/core'
+import { useSelectedWallet } from '../../Context'
 
 interface Interface {
   route: any
 }
 
 const SendTransaction: React.FC<Interface> = ({ route }) => {
-  const account = route.params.account as RIFWallet
+  const account = useSelectedWallet()
   const smartAddress = account.smartWalletAddress
 
   const [to, setTo] = useState('0x1D4F6A5FE927f0E0e4497B91CebfBcF64dA1c934')

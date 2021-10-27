@@ -16,11 +16,12 @@ export const SWalletContext = createContext<SWalletContextType>({
   wallets: {},
   selectedWallet: '',
   requests: [],
-  setRequests: (requests: Requests) => {}
+  setRequests: (requests: Requests) => {} // temp - for setting the signTypedData
 })
 
 export const useSelectedWallet = () => {
   const { wallets, selectedWallet } = useContext(SWalletContext)
   const wallet = wallets[selectedWallet]
+  console.log('selectedWallet', wallet.address)
   return wallet
 }

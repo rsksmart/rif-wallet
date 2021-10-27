@@ -10,7 +10,6 @@ interface Interface {
 }
 
 const TransactionReceived: React.FC<Interface> = ({ route }) => {
-  console.log(route.params)
   const { txHash, amount, to, token } = route.params
   return (
     <ScrollView>
