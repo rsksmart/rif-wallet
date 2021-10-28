@@ -62,9 +62,7 @@ export const getAllTokens = async (signer: Signer): Promise<IToken[]> => {
 
   const tokens: IToken[] = []
 
-  const rbtcLogo = chainId === MAINNET_CHAINID ? rbtcMainnet : rbtcTestnet
-  const rbtcSymbol = chainId === MAINNET_CHAINID ? 'RBTC' : 'TRBTC'
-  const rbtc = new RBTCToken(signer, rbtcSymbol, rbtcLogo, chainId)
+  const rbtc = makeRBTCToken(signer, chainId)
 
   tokens.push(rbtc)
 
