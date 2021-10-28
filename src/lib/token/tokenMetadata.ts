@@ -14,7 +14,7 @@ import tokenTestnet from './assets/token-testnet.svg'
 import { IToken } from './BaseToken'
 import { ERC20Token } from './ERC20Token'
 import { RBTCToken } from './RBTCToken'
-import { RIFWallet } from '../core/RIFWallet'
+import { Signer } from '@ethersproject/abstract-signer'
 
 export interface ITokenMetadata {
   [address: string]: {
@@ -52,7 +52,7 @@ export const getTokenLogo = (address: string, chainId: number) => {
   return chainId === MAINNET_CHAINID ? tokenMainnet : tokenTestnet
 }
 
-export const getAllTokens = async (signer: RIFWallet): Promise<IToken[]> => {
+export const getAllTokens = async (signer: Signer): Promise<IToken[]> => {
   const chainId = await signer.getChainId()
 
   const metadataTokens =

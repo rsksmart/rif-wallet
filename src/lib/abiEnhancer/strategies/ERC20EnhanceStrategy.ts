@@ -1,0 +1,41 @@
+import { ERC20__factory } from '../../token/types'
+import { TransactionRequest } from '@ethersproject/abstract-provider'
+import { getAllTokens } from '../../token/tokenMetadata'
+import { Signer } from '@ethersproject/abstract-signer'
+import { formatBigNumber } from '../formatBigNumber'
+import { IEnhancedResult, IEnhanceStrategy } from '../AbiEnhancer'
+
+export class ERC20EnhanceStrategy implements IEnhanceStrategy {
+  public async parse(
+    signer: Signer,
+    transactionRequest: TransactionRequest,
+  ): Promise<IEnhancedResult | null> {
+    if (!transactionRequest.data) {
+      return null
+    }
+
+    const tokens = await getAllTokens(signer)
+    const tokenFounded = tokens.find(x => x.address === transactionRequest.to)
+
+    if (!tokenFounded) {
+      return null
+    }
+
+    const abiErc20Interface = ERC20__factory.createInterface()
+
+    const [decodedTo, decodedValue] = abiErc20Interface.decodeFunctionData(
+      'transfer',
+      transactionRequest.data,
+    )
+
+    const currentBalance = await tokenFounded.balance()
+    const tokenDecimals = await tokenFounded.decimals()
+
+    return {
+      from: transactionRequest.from!,
+      to: decodedTo,
+      balance: formatBigNumber(currentBalance, tokenDecimals),
+      value: formatBigNumber(decodedValue, tokenDecimals),
+    }
+  }
+}
