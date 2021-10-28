@@ -16,6 +16,7 @@ import RevealMasterKeyScreen from './screens/createWallet/RevealMasterKeyScreen'
 import ModalComponent from './modal/ModalComponent'
 import SignMessageScreen from './tempScreens/SignMessageScreen'
 import BalancesScreen from './screens/balances/BalancesScreen'
+import ActivityScreen from './screens/activity/ActivityScreen'
 
 interface Interface {}
 
@@ -61,6 +62,7 @@ const RootNavigation: React.FC<Interface> = () => {
               options={sharedOptions}
             />
             <RootStack.Screen name="Balances" component={BalancesScreen} />
+            <RootStack.Screen name="Activity" component={ActivityScreen} />
             <RootStack.Screen
               name="CreateWalletStack"
               component={CreateWalletNavigationScreen}
