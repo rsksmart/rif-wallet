@@ -60,11 +60,9 @@ export const getAllTokens = async (signer: Signer): Promise<IToken[]> => {
 
   const metadataKeys = Object.keys(metadataTokens)
 
-  const rbtcLogo = chainId === MAINNET_CHAINID ? rbtcMainnet : rbtcTestnet
-  const rbtcSymbol = chainId === MAINNET_CHAINID ? 'RBTC' : 'TRBTC'
-  const rbtc = new RBTCToken(signer, rbtcSymbol, rbtcLogo, chainId)
-
   const tokens: IToken[] = []
+
+  const rbtc = makeRBTCToken(signer, chainId)
 
   tokens.push(rbtc)
 
@@ -78,4 +76,12 @@ export const getAllTokens = async (signer: Signer): Promise<IToken[]> => {
   }
 
   return tokens
+}
+
+export const makeRBTCToken = (signer: Signer, chainId: number): RBTCToken => {
+  const rbtcLogo = chainId === MAINNET_CHAINID ? rbtcMainnet : rbtcTestnet
+  const rbtcSymbol = chainId === MAINNET_CHAINID ? 'RBTC' : 'TRBTC'
+  const rbtc = new RBTCToken(signer, rbtcSymbol, rbtcLogo, chainId)
+
+  return rbtc
 }

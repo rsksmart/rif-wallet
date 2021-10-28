@@ -2,10 +2,11 @@ import { providers, BigNumber } from 'ethers'
 import { tenPow } from '../../lib/token/BaseToken'
 import { ERC20Token } from '../../lib/token/ERC20Token'
 import { ERC677__factory } from '../../lib/token/types'
-import { getAllTokens } from '../../lib/token/tokenMetadata'
+import { getAllTokens, makeRBTCToken } from '../../lib/token/tokenMetadata'
 import { Signer } from '@ethersproject/abstract-signer'
 
 import AbiEnhancer from './AbiEnhancer'
+import { RBTCToken } from '../token/RBTCToken'
 
 const Config = {
   BLOCKCHAIN_HTTP_URL: 'HTTP://127.0.0.1:8545',
@@ -24,6 +25,8 @@ const getSigner = async (index: number = 0) => {
 
 jest.mock('../../lib/token/tokenMetadata', () => ({
   getAllTokens: jest.fn(),
+  makeRBTCToken: jest.fn(),
+  MAINNET_CHAINID: 30,
 }))
 
 describe('Abi Enhancer', () => {
@@ -40,6 +43,7 @@ describe('Abi Enhancer', () => {
 
   beforeEach(async () => {
     accountSigner = await getSigner()
+    const rbtcSigner = await getSigner(7)
     const accountAddress = await accountSigner.getAddress()
 
     // using ERC677__factory that supports ERC20 to set totalSupply (just for testing purpose)
@@ -76,13 +80,18 @@ describe('Abi Enhancer', () => {
       'logo.jpg',
     )
     const getAllTokensMock = async () => [firstErc20Token, secondErc20Token]
+    const makeRBTCTokenMock = () => {
+      return new RBTCToken(rbtcSigner, 'TRBTC', 'logo.jpg', 31)
+    }
     // @ts-ignore
     getAllTokens.mockImplementation(getAllTokensMock)
+    // @ts-ignore
+    makeRBTCToken.mockImplementation(makeRBTCTokenMock)
 
     transactionRequest = { ...transactionRequest, to: tokenAddress1 }
   })
 
-  it('should return transaction info enhanced', async () => {
+  it('should return erc20 token info enhanced', async () => {
     const enhancer = new AbiEnhancer()
 
     const result = await enhancer.enhance(accountSigner!, transactionRequest)
@@ -94,7 +103,7 @@ describe('Abi Enhancer', () => {
     expect(result!.value).toBe('0.001')
   })
 
-  it('should return null if data is empty', async () => {
+  it('should return RBTC info enhanced if data is undefined', async () => {
     const enhancer = new AbiEnhancer()
 
     const result = await enhancer.enhance(accountSigner!, {
@@ -102,10 +111,14 @@ describe('Abi Enhancer', () => {
       data: undefined,
     })
 
-    expect(result).toBeNull()
+    expect(result).not.toBeNull()
+    expect(result!.from).toBe(transactionRequest.from)
+    expect(result!.to).toBe(transactionRequest.to)
+    expect(result!.balance).toBe('100')
+    expect(result!.value).toBe('0.001')
   })
 
-  it('should return null if the token is not in the tokens metadata', async () => {
+  it('should return RBTC info enhanced if the token is not in the tokens metadata', async () => {
     const enhancer = new AbiEnhancer()
 
     const result = await enhancer.enhance(accountSigner!, {
@@ -113,6 +126,10 @@ describe('Abi Enhancer', () => {
       to: '0xNotExist',
     })
 
-    expect(result).toBeNull()
+    expect(result).not.toBeNull()
+    expect(result!.from).toBe(transactionRequest.from)
+    expect(result!.to).toBe('0xNotExist')
+    expect(result!.balance).toBe('100')
+    expect(result!.value).toBe('0.001')
   })
 })

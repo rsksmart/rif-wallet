@@ -1,8 +1,8 @@
 import { providers, BigNumber } from 'ethers'
-import { tenPow } from '../../../lib/token/BaseToken'
-import { ERC20Token } from '../../../lib/token/ERC20Token'
-import { ERC677__factory } from '../../../lib/token/types'
-import { getAllTokens } from '../../../lib/token/tokenMetadata'
+import { tenPow } from '../../token/BaseToken'
+import { ERC20Token } from '../../token/ERC20Token'
+import { ERC677__factory } from '../../token/types'
+import { getAllTokens } from '../../token/tokenMetadata'
 import { Signer } from '@ethersproject/abstract-signer'
 
 import { ERC20EnhanceStrategy } from './ERC20EnhanceStrategy'
@@ -31,7 +31,6 @@ describe('ERC20 Enhance Strategy', () => {
   let transactionRequest = {
     from: '0x2750de12a98AD6BA53bE8d0DbE4a595d63Fdf985',
     to: '0x1D4F6A5FE927f0E0e4497B91CebfBcF64dA1c934',
-    value: BigNumber.from(1000000000000000), // 0.001 in decimals
     data: '0xa9059cbb0000000000000000000000001d4f6a5fe927f0e0e4497b91cebfbcf64da1c93400000000000000000000000000000000000000000000000000038d7ea4c68000',
   }
   let tokenAddress1 = ''
