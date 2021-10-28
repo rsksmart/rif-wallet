@@ -5,7 +5,7 @@ import { ERC677__factory } from '../../lib/token/types'
 import { getAllTokens, makeRBTCToken } from '../../lib/token/tokenMetadata'
 import { Signer } from '@ethersproject/abstract-signer'
 
-import { AbiEnhancer } from './AbiEnhancer'
+import AbiEnhancer from './AbiEnhancer'
 import { RBTCToken } from '../token/RBTCToken'
 
 const Config = {

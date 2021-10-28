@@ -18,7 +18,7 @@ export class ERC20EnhanceStrategy implements IEnhanceStrategy {
     const tokens = await getAllTokens(signer)
     // TODO: mixed up logic, needs refactor
     const tokenFounded: ERC20Token = tokens.find(
-      x => (x as ERC20Token).address === transactionRequest.to,
+      x => x.address === transactionRequest.to,
     ) as ERC20Token
 
     if (!tokenFounded) {

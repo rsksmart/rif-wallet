@@ -18,7 +18,7 @@ export interface IEnhanceStrategy {
   ) => Promise<IEnhancedResult | null>
 }
 
-export class AbiEnhancer {
+class AbiEnhancer {
   public strategies: IEnhanceStrategy[]
 
   constructor() {
@@ -40,3 +40,5 @@ export class AbiEnhancer {
     return null
   }
 }
+
+export default AbiEnhancer
