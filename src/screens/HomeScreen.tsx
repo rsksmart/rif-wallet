@@ -9,7 +9,7 @@ import { ScreenProps } from '../RootNavigation'
 const KeysActionItem = ({ navigation }: { navigation: NavigationProp }) =>
   !useContext(AppContext).mnemonic ? (
     <Button
-      onPress={() => navigation.navigate('CreateKeys')}
+      onPress={() => navigation.navigate('CreateKeysUX')}
       title="Create master key"
     />
   ) : (
@@ -69,7 +69,7 @@ export const HomeScreen: React.FC<ScreenProps<'Home'>> = ({ navigation }) => {
       <Header1>Welcome to sWallet!</Header1>
       <KeysActionItem navigation={navigation} />
       {Object.keys(wallets).map((address: string) => (
-        <WalletRow address={address} navigation={navigation} />
+        <WalletRow key={address} address={address} navigation={navigation} />
       ))}
     </ScrollView>
   )

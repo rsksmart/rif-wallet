@@ -1,2 +1,2 @@
-export { CreateKeys } from './CreateKeys'
+export { CreateKeysNavigation } from './CreateKeysNavigation'
 export { CreateKeysProps } from './types'

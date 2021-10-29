@@ -6,7 +6,7 @@ import { NavigationProp as _NavigationProp } from '@react-navigation/native'
 
 import * as Screens from './screens'
 
-import { CreateKeys } from './ux/createKeys'
+import { CreateKeysNavigation } from './ux/createKeys'
 import { CreateKeysProps } from './ux/createKeys/types'
 
 type RootStackParamList = {
@@ -18,7 +18,7 @@ type RootStackParamList = {
   SignTypedData: undefined
   TransactionReceived: undefined
   WalletInfo: undefined
-  CreateKeys: undefined
+  CreateKeysUX: undefined
   KeysInfo: undefined
 }
 
@@ -76,8 +76,8 @@ export const RootNavigation: React.FC<{
             options={sharedOptions}
           />
 
-          <RootStack.Screen name="CreateKeys" options={sharedOptions}>
-            {props => <CreateKeys {...props} {...keyManagementProps} />}
+          <RootStack.Screen name="CreateKeysUX" options={sharedOptions}>
+            {props => <CreateKeysNavigation {...props} {...keyManagementProps} />}
           </RootStack.Screen>
           <RootStack.Screen
             name="KeysInfo"

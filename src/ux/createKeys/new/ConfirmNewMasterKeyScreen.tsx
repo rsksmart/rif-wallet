@@ -12,8 +12,6 @@ export const ConfirmNewMasterKeyScreen: React.FC<
 > = ({ route, navigation, createFirstWallet }) => {
   const mnemonic = route.params.mnemonic
 
-  console.log(mnemonic)
-
   const [mnemonicToConfirm, setMnemonicToConfirm] = useState<
     string | undefined
   >()

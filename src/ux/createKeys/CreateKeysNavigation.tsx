@@ -12,7 +12,7 @@ const Stack = createStackNavigator<StackParamList>()
 
 const screensOptions = { headerShown: false }
 
-export const CreateKeys: React.FC<CreateKeysProps> = ({
+export const CreateKeysNavigation: React.FC<CreateKeysProps> = ({
   generateMnemonic,
   createFirstWallet,
 }) => {
