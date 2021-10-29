@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import Button from '../../components/button'
-import { WalletsContext, TempContext } from '../../Context'
+import { AppContext } from '../../Context'
 import { Request } from '../../lib/core'
 
 // TEMP - Add a request to the que WITHOUT going through the wallet!
@@ -42,8 +42,7 @@ const typedDataRequest = {
 }
 
 const SignTypedDataScreen = () => {
-  const { wallets } = useContext(WalletsContext)
-  const { setRequests } = useContext(TempContext)
+  const { setRequests } = useContext(AppContext)
 
   const signedTypedData = () => {
     const request = {

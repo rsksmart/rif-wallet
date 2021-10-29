@@ -4,13 +4,9 @@ import { StyleSheet, View, ScrollView } from 'react-native'
 
 import Button from '../../components/button'
 import { Paragraph } from '../../components/typography'
+import { ScreenProps } from '../types'
 
-interface Interface {
-  navigation: NavigationProp<ParamListBase>
-  route: any
-}
-
-const CreateWalletScreen: React.FC<Interface> = ({ navigation }) => {
+const CreateWalletScreen: React.FC<ScreenProps<'CreateKeys'>> = ({ navigation }) => {
   return (
     <ScrollView>
       <View style={styles.section}>
@@ -22,13 +18,13 @@ const CreateWalletScreen: React.FC<Interface> = ({ navigation }) => {
 
       <View style={styles.section}>
         <Button
-          onPress={() => navigation.navigate('CreateMasterKey')}
+          onPress={() => navigation.navigate('NewMasterKey')}
           title={'+ Create master key'}
         />
       </View>
       <View style={styles.section}>
         <Button
-          onPress={() => navigation.navigate('ImportWallet')}
+          onPress={() => navigation.navigate('ImportMasterKey')}
           title={'Import master key'}
         />
       </View>

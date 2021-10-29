@@ -5,16 +5,18 @@ import { StyleSheet, View, ScrollView, TextInput } from 'react-native'
 import { Header2, Paragraph } from '../../../components/typography'
 
 import Button from '../../../components/button'
-import { KeyManagementContext } from '../../../Context'
+import { KeyManagementContext } from '../../Context'
+import { KeyManagementProps, ScreenProps } from '../../types'
+import KeysCreatedScreen from '../KeysCreatedScreen'
 
-interface Interface {
-  navigation: NavigationProp<ParamListBase>
-  route: any
+interface ConfirmMasterKeyScreenProps {
+  createFirstWallet: KeyManagementProps['createFirstWallet']
 }
 
-const ConfirmMasterKeyScreen: React.FC<Interface> = ({ route, navigation }) => {
-  const { createFirstWallet } = useContext(KeyManagementContext)
-  const mnemonic = route.params.mnemonic as string
+const ConfirmMasterKeyScreen: React.FC<ScreenProps<'ConfirmNewMasterKey'> & ConfirmMasterKeyScreenProps> = ({ route, navigation, createFirstWallet }) => {
+  const mnemonic = route.params.mnemonic
+
+  console.log(mnemonic)
 
   const [mnemonicToConfirm, setMnemonicToConfirm] = useState<
     string | undefined
@@ -23,8 +25,8 @@ const ConfirmMasterKeyScreen: React.FC<Interface> = ({ route, navigation }) => {
   const [error, setError] = useState<string | null>(null)
 
   const saveAndNavigate = async () => {
-    await createFirstWallet(mnemonic)
-    navigation.navigate('WalletCreated', { mnemonic })
+    const rifWallet = await createFirstWallet(mnemonic)
+    navigation.navigate('KeysCreated', { address: rifWallet.address })
   }
 
   const handleConfirmMnemonic = async () => {

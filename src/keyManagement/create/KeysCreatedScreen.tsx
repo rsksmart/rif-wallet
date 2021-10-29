@@ -5,27 +5,28 @@ import { StyleSheet, View, ScrollView } from 'react-native'
 import Button from '../../components/button'
 import { Paragraph } from '../../components/typography'
 import { useSelectedWallet } from '../../Context'
+import { ScreenProps } from '../types'
 
 interface Interface {
   navigation: NavigationProp<ParamListBase>
   route: any
 }
 
-const WalletCreatedScreen: React.FC<Interface> = ({ route, navigation }) => {
-  const wallet = useSelectedWallet()
+const KeysCreatedScreen: React.FC<ScreenProps<'KeysCreated'>> = ({ route, navigation }) => {
+  const address = route.params.address
 
   const navigateToReceive = async () => {
-    navigation.navigate('Receive')
+    navigation.navigate('Receive' as any)
   }
 
   return (
     <ScrollView>
       <View style={styles.sectionCentered}>
         <Paragraph testID="Text.Subtitle">Your new wallet is ready!</Paragraph>
-        <Paragraph testID="Text.Address">{wallet.address}</Paragraph>
+        <Paragraph testID="Text.Address">{address}</Paragraph>
       </View>
       <View style={styles.section}>
-        <Button onPress={() => navigation.navigate('Home')} title={'<- Home'} />
+        <Button onPress={() => navigation.navigate('Home' as any)} title={'<- Home'} />
       </View>
       <View style={styles.section}>
         <Button
@@ -55,4 +56,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default WalletCreatedScreen
+export default KeysCreatedScreen

@@ -1,19 +1,16 @@
-import { NavigationProp, ParamListBase } from '@react-navigation/core'
 import React, { useState, useContext } from 'react'
 import { StyleSheet, View, ScrollView, TextInput } from 'react-native'
 
 import { Header2, Paragraph } from '../../../components/typography'
 
 import Button from '../../../components/button'
-import { KeyManagementContext } from '../../../Context'
+import { ScreenProps, KeyManagementProps } from '../../types'
 
-interface Interface {
-  navigation: NavigationProp<ParamListBase>
-  route: any
+type ImportMasterKeyScreenProps = {
+  createFirstWallet: KeyManagementProps['createFirstWallet']
 }
 
-const ImportMasterKeyScreen: React.FC<Interface> = ({ navigation }) => {
-  const { createFirstWallet } = useContext(KeyManagementContext)
+const ImportMasterKeyScreen: React.FC<ScreenProps<'ImportMasterKey'> & ImportMasterKeyScreenProps> = ({ navigation, createFirstWallet }) => {
   const [importMnemonic, setImportMnemonic] = useState<string | undefined>()
 
   const [error, setError] = useState<string | null>(null)
@@ -28,8 +25,8 @@ const ImportMasterKeyScreen: React.FC<Interface> = ({ navigation }) => {
     }
 
     try {
-      await createFirstWallet(importMnemonic)
-      navigation.navigate('WalletCreated', { mnemonic: importMnemonic })
+      const rifWallet = await createFirstWallet(importMnemonic)
+      navigation.navigate('KeysCreated', { address: rifWallet.address })
     } catch (err) {
       console.error(err)
       setError(

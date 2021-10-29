@@ -6,9 +6,9 @@ import 'react-native-get-random-values'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView, StatusBar, View } from 'react-native'
 
-import { Wallets, Requests, AppContextProvider } from './Context'
+import { Wallets, Requests } from './Context'
 import RootNavigation from './RootNavigation'
-import ModalComponent from './modal/ModalComponent'
+import ModalComponent from './ux/ModalComponent'
 
 import { Wallet } from '@ethersproject/wallet'
 import { KeyManagementSystem, OnRequest, RIFWallet } from "./lib/core"
@@ -16,6 +16,8 @@ import { getKeys, hasKeys, saveKeys } from "./storage/KeyStore"
 import { jsonRpcProvider } from './lib/jsonRpcProvider'
 
 import { Paragraph } from './components/typography'
+import { AppContext } from './Context'
+import { KeyManagementProps } from './keyManagement/types'
 
 const createRIFWalletFactory = (onRequest: OnRequest) => (wallet: Wallet) => RIFWallet.create(
   wallet.connect(jsonRpcProvider), '0x3f71ce7bd7912bf3b362fd76dd34fa2f017b6388', onRequest
@@ -70,18 +72,26 @@ const App = () => {
     await saveKeys(serialized)
 
     setKeys(kms, { [rifWallet.address]: rifWallet })
+
+    return rifWallet
   }
 
   const closeRequest = () => setRequests([] as Requests)
 
   console.log(kms?.mnemonic)
 
+  const keyManagementProps: KeyManagementProps = {
+    mnemonic: kms?.mnemonic,
+    generateMnemonic: () => KeyManagementSystem.create().mnemonic,
+    createFirstWallet
+  }
+
   return (
       <SafeAreaView>
         <StatusBar />
-        <AppContextProvider value={{ hasKeys: !!kms, mnemonic: kms?.mnemonic, createFirstWallet, wallets, selectedWallet, setRequests }}>
-          <RootNavigation />
-        </AppContextProvider>
+        <AppContext.Provider value={{ wallets, selectedWallet, setRequests }}>
+          <RootNavigation keyManagementProps={keyManagementProps} />
+        </AppContext.Provider>
         {requests.length !== 0 && (
           <ModalComponent
             closeModal={closeRequest}

@@ -7,14 +7,14 @@ import CopyComponent from '../../../components/copy'
 
 import Button from '../../../components/button'
 import { KeyManagementSystem } from '../../../lib/core/KeyManagementSystem'
+import { KeyManagementProps, ScreenProps } from '../../types'
 
-interface Interface {
-  navigation: NavigationProp<ParamListBase>
-  route: any
+type CreateMasterKeyScreenProps = {
+  generateMnemonic: KeyManagementProps['generateMnemonic']
 }
 
-const CreateMasterKeyScreen: React.FC<Interface> = ({ navigation }) => {
-  const mnemonic = useMemo(() => KeyManagementSystem.create().mnemonic, [])
+const CreateMasterKeyScreen: React.FC<ScreenProps<'NewMasterKey'> & CreateMasterKeyScreenProps> = ({ navigation, generateMnemonic }) => {
+  const mnemonic = useMemo(generateMnemonic, [])
 
   return (
     <ScrollView>
@@ -33,7 +33,7 @@ const CreateMasterKeyScreen: React.FC<Interface> = ({ navigation }) => {
       </View>
       <View style={styles.section}>
         <Button
-          onPress={() => navigation.navigate('ConfirmMasterKey', { mnemonic })}
+          onPress={() => navigation.navigate('ConfirmNewMasterKey', { mnemonic })}
           title={'Next'}
         />
       </View>

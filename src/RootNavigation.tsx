@@ -4,12 +4,12 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 
 import Landing from './screens/Home'
-import CreateWalletNavigationScreen from './screens/keys'
+import KeyManagement from './keyManagement'
+import { KeyManagementProps } from './keyManagement/types'
 import SendTransaction from './screens/send/SendTransaction'
 import ReceiveScreen from './screens/receive/ReceiveScreen'
 import BalancesScreen from './screens/balances/BalancesScreen'
 import SignMessageScreen from './screens/signatures/SignMessageScreen'
-import RevealMasterKeyScreen from './screens/keys/RevealMasterKeyScreen'
 import TransactionReceived from './screens/TransactionReceived'
 
 import SmartWallet from './screens/WalletInfo'
@@ -19,14 +19,15 @@ const RootStack = createStackNavigator()
 
 const sharedOptions = { headerShown: true }
 
-const RootNavigation: React.FC = () => {
+const RootNavigation: React.FC<{ keyManagementProps: KeyManagementProps }> = ({ keyManagementProps }) => {
   return (
     <View style={styles.parent}>
       <NavigationContainer>
         <RootStack.Navigator>
-          <RootStack.Group>
             <RootStack.Screen name="Home" component={Landing} />
-            <RootStack.Screen name="CreateWalletStack" component={CreateWalletNavigationScreen} options={sharedOptions} />
+            <RootStack.Screen name="KeyManagement" options={sharedOptions}>
+              {props => <KeyManagement {...props} {...keyManagementProps} />}
+            </RootStack.Screen>
             <RootStack.Screen name="SmartWallet" component={SmartWallet} options={sharedOptions} />
             <RootStack.Screen name="Receive" component={ReceiveScreen} options={sharedOptions} />
             <RootStack.Screen name="SendTransaction" component={SendTransaction} options={sharedOptions} />
@@ -34,7 +35,6 @@ const RootNavigation: React.FC = () => {
             <RootStack.Screen name="SignMessage" component={SignMessageScreen} options={sharedOptions} />
             <RootStack.Screen name="SignTypedData" component={SignTypedDataScreen} options={sharedOptions} />
             <RootStack.Screen name="TransactionReceived" component={TransactionReceived} options={sharedOptions} />
-          </RootStack.Group>
         </RootStack.Navigator>
       </NavigationContainer>
     </View>
