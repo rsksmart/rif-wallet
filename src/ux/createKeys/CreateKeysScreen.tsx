@@ -1,12 +1,11 @@
-import { NavigationProp, ParamListBase } from '@react-navigation/core'
 import React from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
-
-import Button from '../../components/button'
-import { Paragraph } from '../../components/typography'
+import { Button, Paragraph } from '../../components'
 import { ScreenProps } from './types'
 
-const CreateWalletScreen: React.FC<ScreenProps<'CreateKeys'>> = ({ navigation }) => {
+export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
+  navigation,
+}) => {
   return (
     <ScrollView>
       <View style={styles.section}>
@@ -41,5 +40,3 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 })
-
-export default CreateWalletScreen

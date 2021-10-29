@@ -1,56 +1,50 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, ScrollView, Text } from 'react-native'
 import { utils } from 'ethers'
-import { jsonRpcProvider } from '../../lib/jsonRpcProvider'
-import Button from '../../components/button'
-import { Paragraph } from '../../components/typography'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
-import { RIFWallet } from '../../lib/core'
 import { RifWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
-import { ParamListBase } from '@react-navigation/native'
+import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import { jsonRpcProvider } from '../../lib/jsonRpcProvider'
 import { roundBalance } from '../../lib/utils'
+
 import { useSelectedWallet } from '../../Context'
 import { ScreenProps, NavigationProp } from '../../RootNavigation'
+import { Button, Paragraph } from '../../components'
 
 const fetcher: RifWalletServicesFetcher = new RifWalletServicesFetcher()
 
-const BalancesRow = ({
-  token,
+export const BalancesRow = ({
+  token: { symbol, balance, decimals },
   navigation,
 }: {
-  account: RIFWallet
   token: ITokenWithBalance
   navigation: NavigationProp
 }) => (
-  <View style={styles.tokenRow} testID={`${token.symbol}.View`}>
+  <View style={styles.tokenRow} testID={`${symbol}.View`}>
     <View style={styles.tokenBalance}>
       <Text>
-        {token.symbol}{' '}
-        {roundBalance(utils.formatUnits(token.balance, token.decimals))}
+        {symbol}{' '}
+        {roundBalance(utils.formatUnits(balance, decimals))}
       </Text>
     </View>
     <View style={styles.button}>
       <Button
         onPress={() => {
           navigation.navigate('Send', {
-            token: token.symbol,
+            token: symbol,
           })
         }}
         title={'Send'}
-        testID={`${token.symbol}.Button`}
+        testID={`${symbol}.Button`}
       />
     </View>
   </View>
 )
 
-const BalancesScreen: React.FC<ScreenProps<'Balances'>> = ({
-  navigation,
-}) => {
+export const BalancesScreen: React.FC<ScreenProps<'Balances'>> = ({ navigation }) => {
   const account = useSelectedWallet()
   const [info, setInfo] = useState('')
   const [tokens, setTokens] = useState<ITokenWithBalance[]>([])
-
 
   useEffect(() => {
     loadData()
@@ -98,7 +92,6 @@ const BalancesScreen: React.FC<ScreenProps<'Balances'>> = ({
         tokens.map(token => (
           <BalancesRow
             key={token.contractAddress}
-            account={account}
             token={token}
             navigation={navigation}
           />
@@ -133,5 +126,3 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 })
-
-export default BalancesScreen

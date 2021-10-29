@@ -1,16 +1,16 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, View, ScrollView, TextInput } from 'react-native'
 
-import { Header2, Paragraph } from '../../../components/typography'
-
-import Button from '../../../components/button'
-import { ScreenProps, KeyManagementProps } from '../types'
+import { Button, Header2, Paragraph } from '../../../components'
+import { ScreenProps, CreateKeysProps } from '../types'
 
 type ImportMasterKeyScreenProps = {
-  createFirstWallet: KeyManagementProps['createFirstWallet']
+  createFirstWallet: CreateKeysProps['createFirstWallet']
 }
 
-const ImportMasterKeyScreen: React.FC<ScreenProps<'ImportMasterKey'> & ImportMasterKeyScreenProps> = ({ navigation, createFirstWallet }) => {
+export const ImportMasterKeyScreen: React.FC<
+  ScreenProps<'ImportMasterKey'> & ImportMasterKeyScreenProps
+> = ({ navigation, createFirstWallet }) => {
   const [importMnemonic, setImportMnemonic] = useState<string>('')
 
   const [error, setError] = useState<string | null>(null)
@@ -88,5 +88,3 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
 })
-
-export default ImportMasterKeyScreen

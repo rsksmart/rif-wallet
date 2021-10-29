@@ -1,11 +1,9 @@
 import React, { useState } from 'react'
 import { StyleSheet, View, ScrollView, Dimensions, Share } from 'react-native'
-import Clipboard from '@react-native-community/clipboard'
-
-import Button from '../../components/button'
-import { Paragraph } from '../../components/typography'
-
 import QRCode from 'react-qr-code'
+
+import { Button, CopyComponent } from '../../components'
+
 
 import { shortAddress } from '../../lib/utils'
 import { RIFWallet } from '../../lib/core/RIFWallet'
@@ -16,25 +14,6 @@ import { ScreenProps } from '../../RootNavigation'
 // TODO: accountLink is hardcoded until we had the rns sdk
 const accountLink = 'ilan.rsk'
 const window = Dimensions.get('window')
-
-const useCopy = (textToCopy: string) => {
-  const [isCopying, setIsCopying] = useState(false)
-
-  const handleCopy = () => {
-    setIsCopying(true)
-
-    Clipboard.setString(textToCopy)
-
-    setTimeout(() => {
-      setIsCopying(false)
-    }, 2000)
-  }
-
-  return {
-    isCopying,
-    handleCopy,
-  }
-}
 
 const useShare = (title: string, textToShare: string) => {
   const [isSharing, setIsSharing] = useState(false)
@@ -62,14 +41,14 @@ const useShare = (title: string, textToShare: string) => {
   }
 }
 
-const ReceiveScreen= () => {
+/**
+ * TODO: refactor QR and share components
+ */
+
+export const ReceiveScreen = () => {
   const account = useSelectedWallet()
 
   const smartAddress = account.smartWalletAddress
-  const { isCopying: isCopyingAccount, handleCopy: handleCopyAccount } =
-    useCopy(smartAddress)
-  const { isCopying: isCopyingAccountLink, handleCopy: handleCopyAccountLink } =
-    useCopy(accountLink)
   const { isSharing, handleShare } = useShare('Account', smartAddress)
 
   return (
@@ -84,26 +63,8 @@ const ReceiveScreen= () => {
         )}
       </View>
 
-      <View style={styles.section2}>
-        <Paragraph>{accountLink} </Paragraph>
-        <Button
-          disabled={isCopyingAccountLink}
-          onPress={handleCopyAccountLink}
-          title={isCopyingAccountLink ? 'copied!' : 'copy'}
-        />
-      </View>
-      <View style={styles.section2}>
-        <Paragraph>
-          Smart address: {smartAddress && shortAddress(smartAddress)}{' '}
-        </Paragraph>
-
-        <Button
-          disabled={isCopyingAccount}
-          onPress={handleCopyAccount}
-          title={isCopyingAccount ? 'copied!' : 'copy'}
-          testID="Copy.Account.Button"
-        />
-      </View>
+      <CopyComponent value={accountLink} testID={'Copy.Mnemonic'} />
+      <CopyComponent prefix='Smart address: ' value={smartAddress} testID={'Copy.Mnemonic'} />
 
       <View style={styles.section}>
         <Button
@@ -135,5 +96,3 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
 })
-
-export default ReceiveScreen

@@ -1,29 +1,26 @@
 import React, { useEffect, useState } from 'react'
-import { BigNumber, utils } from 'ethers'
-
 import { StyleSheet, View, ScrollView, TextInput, Linking } from 'react-native'
 import { Picker } from '@react-native-picker/picker'
+import { ContractReceipt, BigNumber, utils } from 'ethers'
 
-import Button from '../../components/button'
-
-import { Paragraph } from '../../components/typography'
 import { getAllTokens } from '../../lib/token/tokenMetadata'
-
-import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { IToken } from '../../lib/token/BaseToken'
-import { RIFWallet } from '../../lib/core'
+
 import { useSelectedWallet } from '../../Context'
 import { ScreenProps } from '../../RootNavigation'
+import { Button, Paragraph } from '../../components'
 
-const SendTransaction: React.FC<ScreenProps<'Send'>> = ({ route }) => {
+export const SendScreen: React.FC<ScreenProps<'Send'>> = ({ route }) => {
   const account = useSelectedWallet()
   const smartAddress = account.smartWalletAddress
 
   const [to, setTo] = useState('0x1D4F6A5FE927f0E0e4497B91CebfBcF64dA1c934')
-  const [selectedSymbol, setSelectedSymbol] = useState(route.params?.token || 'tRIF')
+  const [selectedSymbol, setSelectedSymbol] = useState(
+    route.params?.token || 'tRIF',
+  )
   const [availableTokens, setAvailableTokens] = useState<IToken[]>()
   const [amount, setAmount] = useState('')
-  const [tx, setTx] = useState<TransactionReceipt | null>(null)
+  const [tx, setTx] = useState<ContractReceipt | null>(null)
   const [txConfirmed, setTxConfirmed] = useState(false)
   const [txSent, setTxSent] = useState(false)
   const [info, setInfo] = useState('')
@@ -185,5 +182,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 })
-
-export default SendTransaction

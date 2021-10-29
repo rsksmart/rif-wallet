@@ -1,15 +1,13 @@
 import React, { useState } from 'react'
 import { ScrollView } from 'react-native-gesture-handler'
-import { Transaction } from 'ethers'
-import Button from '../../components/button'
-import { Header2, Paragraph } from '../../components/typography'
+import { Transaction, BigNumber } from 'ethers'
 
-import { BigNumber } from 'ethers'
-import CopyComponent from '../../components/copy'
 import { ERC20Token } from '../../lib/token/ERC20Token'
-import { useSelectedWallet } from '../../Context'
 
-const WalletInfoScreen = () => {
+import { useSelectedWallet } from '../../Context'
+import { Button, CopyComponent, Header2, Paragraph } from '../../components'
+
+export const WalletInfoScreen = () => {
   const account = useSelectedWallet()
   const [eoaBalance, setEoaBalance] = useState<null | BigNumber>(null)
   const [isSmartWalletDeployed, setIsSmartWalletDeployed] =
@@ -105,5 +103,3 @@ const WalletInfoScreen = () => {
     </ScrollView>
   )
 }
-
-export default WalletInfoScreen

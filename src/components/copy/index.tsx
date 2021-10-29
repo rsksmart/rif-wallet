@@ -5,16 +5,17 @@ import Clipboard from '@react-native-community/clipboard'
 import { Paragraph } from '../typography'
 
 interface Interface {
+  prefix?: string
   value: string
   testID?: string
 }
 
-const CopyComponent: React.FC<Interface> = ({ value, testID }) => {
+export const CopyComponent: React.FC<Interface> = ({ prefix, value, testID }) => {
   return (
     <TouchableOpacity onPress={() => Clipboard.setString(value)}>
       <View style={styles.row}>
         <View style={styles.textColumn}>
-          <Paragraph testID={testID}>{value}</Paragraph>
+          <Paragraph testID={testID}>{prefix}{value}</Paragraph>
         </View>
         <View style={styles.iconColumn}>
           <Text>copy</Text>
@@ -38,5 +39,3 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
 })
-
-export default CopyComponent

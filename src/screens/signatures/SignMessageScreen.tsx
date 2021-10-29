@@ -1,17 +1,10 @@
 import React, { useState } from 'react'
 import { View, TextInput, StyleSheet } from 'react-native'
-import Button from '../../components/button'
-import CopyComponent from '../../components/copy'
-import { Header1, Paragraph } from '../../components/typography'
-import { RIFWallet } from '../../lib/core/RIFWallet'
+
 import { useSelectedWallet } from '../../Context'
+import { Button, CopyComponent, Header1, Paragraph } from '../../components'
 
-interface Interface {
-  route: { params: { account: RIFWallet } }
-  navigation: any
-}
-
-const SignMessageScreen: React.FC<Interface> = () => {
+export const SignMessageScreen = () => {
   const rifWallet = useSelectedWallet()
 
   const [message, setMessage] = useState<string>('Hello World!')
@@ -57,5 +50,3 @@ const styles = StyleSheet.create({
     fontSize: 26,
   },
 })
-
-export default SignMessageScreen

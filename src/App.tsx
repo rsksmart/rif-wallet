@@ -11,17 +11,20 @@ import { RootNavigation } from './RootNavigation'
 import ModalComponent from './ux/requestsModal/ModalComponent'
 
 import { Wallet } from '@ethersproject/wallet'
-import { KeyManagementSystem, OnRequest, RIFWallet } from "./lib/core"
-import { getKeys, hasKeys, saveKeys } from "./storage/KeyStore"
+import { KeyManagementSystem, OnRequest, RIFWallet } from './lib/core'
+import { getKeys, hasKeys, saveKeys } from './storage/KeyStore'
 import { jsonRpcProvider } from './lib/jsonRpcProvider'
 
 import { Paragraph } from './components/typography'
 import { AppContext } from './Context'
-import { KeyManagementProps } from './ux/createKeys/types'
+import { CreateKeysProps } from './ux/createKeys'
 
-const createRIFWalletFactory = (onRequest: OnRequest) => (wallet: Wallet) => RIFWallet.create(
-  wallet.connect(jsonRpcProvider), '0x3f71ce7bd7912bf3b362fd76dd34fa2f017b6388', onRequest
-) // temp - using only testnet
+const createRIFWalletFactory = (onRequest: OnRequest) => (wallet: Wallet) =>
+  RIFWallet.create(
+    wallet.connect(jsonRpcProvider),
+    '0x3f71ce7bd7912bf3b362fd76dd34fa2f017b6388',
+    onRequest,
+  ) // temp - using only testnet
 
 const App = () => {
   const [ready, setReady] = useState(false)
@@ -43,11 +46,16 @@ const App = () => {
   const init = async () => {
     if (await hasKeys()) {
       const serializedKeys = await getKeys()
-      const { kms, wallets } = KeyManagementSystem.fromSerialized(serializedKeys!)
+      const { kms, wallets } = KeyManagementSystem.fromSerialized(
+        serializedKeys!,
+      )
 
       const rifWallets = await Promise.all(wallets.map(createRIFWallet))
 
-      const rifWalletsDictionary = rifWallets.reduce((p: Wallets, c: RIFWallet) => Object.assign(p, { [c.address]: c }), {})
+      const rifWalletsDictionary = rifWallets.reduce(
+        (p: Wallets, c: RIFWallet) => Object.assign(p, { [c.address]: c }),
+        {},
+      )
 
       setKeys(kms, rifWalletsDictionary)
     }
@@ -59,7 +67,13 @@ const App = () => {
     init()
   }, [])
 
-  if (!ready) return <View style={{paddingVertical:200}}><Paragraph>Getting set...</Paragraph></View>
+  if (!ready) {
+    return (
+      <View style={{ paddingVertical: 200 }}>
+        <Paragraph>Getting set...</Paragraph>
+      </View>
+    )
+  }
 
   const createFirstWallet = async (mnemonic: string) => {
     const kms = KeyManagementSystem.import(mnemonic)
@@ -78,24 +92,27 @@ const App = () => {
 
   const closeRequest = () => setRequests([] as Requests)
 
-  const keyManagementProps: KeyManagementProps = {
+  const keyManagementProps: CreateKeysProps = {
     generateMnemonic: () => KeyManagementSystem.create().mnemonic,
-    createFirstWallet
+    createFirstWallet,
   }
 
   return (
-      <SafeAreaView>
-        <StatusBar />
-        <AppContext.Provider value={{ wallets, selectedWallet, setRequests, mnemonic: kms?.mnemonic }}>
-          <RootNavigation keyManagementProps={keyManagementProps} />
-        </AppContext.Provider>
-        {requests.length !== 0 && (
-          <ModalComponent
-            closeModal={closeRequest}
-            request={requests[0]}
-          />
-        )}
-      </SafeAreaView>
+    <SafeAreaView>
+      <StatusBar />
+      <AppContext.Provider
+        value={{
+          wallets,
+          selectedWallet,
+          setRequests,
+          mnemonic: kms?.mnemonic,
+        }}>
+        <RootNavigation keyManagementProps={keyManagementProps} />
+      </AppContext.Provider>
+      {requests.length !== 0 && (
+        <ModalComponent closeModal={closeRequest} request={requests[0]} />
+      )}
+    </SafeAreaView>
   )
 }
 

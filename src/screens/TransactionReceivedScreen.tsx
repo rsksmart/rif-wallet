@@ -1,15 +1,9 @@
 import React from 'react'
 import { StyleSheet, View, ScrollView, Button, Linking } from 'react-native'
-import { NavigationProp, ParamListBase } from '@react-navigation/native'
 
 import { Paragraph } from '../components/typography'
 
-interface Interface {
-  navigation: NavigationProp<ParamListBase>
-  route: any
-}
-
-const TransactionReceived: React.FC<Interface> = ({ route }) => {
+export const TransactionReceivedScreen: React.FC<{ route: any }> = ({ route }) => {
   const { txHash, amount, to, token } = route.params
   return (
     <ScrollView>
@@ -49,5 +43,3 @@ const styles = StyleSheet.create({
     borderBottomColor: '#CCCCCC',
   },
 })
-
-export default TransactionReceived

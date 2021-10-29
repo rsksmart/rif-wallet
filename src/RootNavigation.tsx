@@ -4,18 +4,10 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
 import { NavigationProp as _NavigationProp } from '@react-navigation/native'
 
-import Landing from './screens/Home'
-import CreateKeysUX from './ux/createKeys'
-import { KeyManagementProps } from './ux/createKeys/types'
-import SendTransaction from './screens/send/SendTransaction'
-import ReceiveScreen from './screens/receive/ReceiveScreen'
-import BalancesScreen from './screens/balances/BalancesScreen'
-import SignMessageScreen from './screens/signatures/SignMessageScreen'
-import TransactionReceived from './screens/TransactionReceived'
-import KeysInfoScreen from './screens/info/KeysInfo'
-import WalletInfoScreen from './screens/info/WalletInfo'
+import * as Screens from './screens'
 
-import SignTypedDataScreen from './screens/signatures/SignTypedDataScreen'
+import { CreateKeys } from './ux/createKeys'
+import { CreateKeysProps } from './ux/createKeys/types'
 
 type RootStackParamList = {
   Home: undefined
@@ -35,26 +27,63 @@ export type NavigationProp = _NavigationProp<RootStackParamList>
 
 const sharedOptions = { headerShown: true }
 
-export type ScreenProps<T extends keyof RootStackParamList> = StackScreenProps<RootStackParamList, T>;
+export type ScreenProps<T extends keyof RootStackParamList> = StackScreenProps<
+  RootStackParamList,
+  T
+>
 
-export const RootNavigation: React.FC<{ keyManagementProps: KeyManagementProps }> = ({ keyManagementProps }) => {
+export const RootNavigation: React.FC<{
+  keyManagementProps: CreateKeysProps
+}> = ({ keyManagementProps }) => {
   return (
     <View style={styles.parent}>
       <NavigationContainer>
         <RootStack.Navigator>
-            <RootStack.Screen name="Home" component={Landing} options={{ ...sharedOptions, headerShown: false }} />
-            <RootStack.Screen name="Receive" component={ReceiveScreen} options={sharedOptions} />
-            <RootStack.Screen name="Send" component={SendTransaction} options={sharedOptions} />
-            <RootStack.Screen name="Balances" component={BalancesScreen} />
-            <RootStack.Screen name="SignMessage" component={SignMessageScreen} options={sharedOptions} />
-            <RootStack.Screen name="SignTypedData" component={SignTypedDataScreen} options={sharedOptions} />
-            <RootStack.Screen name="TransactionReceived" component={TransactionReceived} options={sharedOptions} />
-            <RootStack.Screen name="WalletInfo" component={WalletInfoScreen} options={sharedOptions} />
+          <RootStack.Screen
+            name="Home"
+            component={Screens.HomeScreen}
+            options={{ ...sharedOptions, headerShown: false }}
+          />
+          <RootStack.Screen
+            name="Receive"
+            component={Screens.ReceiveScreen}
+            options={sharedOptions}
+          />
+          <RootStack.Screen
+            name="Send"
+            component={Screens.SendScreen}
+            options={sharedOptions}
+          />
+          <RootStack.Screen name="Balances" component={Screens.BalancesScreen} />
+          <RootStack.Screen
+            name="SignMessage"
+            component={Screens.SignMessageScreen}
+            options={sharedOptions}
+          />
+          <RootStack.Screen
+            name="SignTypedData"
+            component={Screens.SignTypedDataScreen}
+            options={sharedOptions}
+          />
+          <RootStack.Screen
+            name="TransactionReceived"
+            component={Screens.TransactionReceivedScreen}
+            options={sharedOptions}
+          />
+          <RootStack.Screen
+            name="WalletInfo"
+            component={Screens.WalletInfoScreen}
+            options={sharedOptions}
+          />
 
-            <RootStack.Screen name="CreateKeys" options={sharedOptions}>
-              {props => <CreateKeysUX {...props} {...keyManagementProps} />}
-            </RootStack.Screen>
-            <RootStack.Screen name="KeysInfo" component={KeysInfoScreen} options={sharedOptions} />
+          <RootStack.Screen name="CreateKeys" options={sharedOptions}>
+            {props => <CreateKeys {...props} {...keyManagementProps} />}
+          </RootStack.Screen>
+          <RootStack.Screen
+            name="KeysInfo"
+            component={Screens.KeysInfoScreen}
+            options={sharedOptions}
+          />
         </RootStack.Navigator>
       </NavigationContainer>
     </View>
@@ -66,4 +95,3 @@ const styles = StyleSheet.create({
     height: '100%',
   },
 })
-

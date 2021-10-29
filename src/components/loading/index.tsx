@@ -5,8 +5,6 @@ interface Interface {
   reason?: string
 }
 
-const Loading: React.FC<Interface> = ({ reason }) => (
+export const Loading: React.FC<Interface> = ({ reason }) => (
   <Paragraph>Loading{reason && `: ${reason}`}</Paragraph>
 )
-
-export default Loading

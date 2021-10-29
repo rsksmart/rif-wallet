@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
-import Button from '../../components/button'
-import { AppContext } from '../../Context'
 import { Request } from '../../lib/core'
+import { AppContext } from '../../Context'
+import { Button } from '../../components'
 
 // TEMP - Add a request to the que WITHOUT going through the wallet!
 const typedDataRequest = {
@@ -41,7 +41,7 @@ const typedDataRequest = {
   },
 }
 
-const SignTypedDataScreen = () => {
+export const SignTypedDataScreen = () => {
   const { setRequests } = useContext(AppContext)
 
   const signedTypedData = () => {
@@ -57,5 +57,3 @@ const SignTypedDataScreen = () => {
 
   return <Button onPress={signedTypedData} title="Sign Typed Data" />
 }
-
-export default SignTypedDataScreen

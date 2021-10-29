@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
 import { TextInput, View } from 'react-native'
-
+import { BigNumber } from 'ethers'
 import { TransactionRequest } from '@ethersproject/abstract-provider'
+
 import { SendTransactionRequest } from '../../lib/core/RIFWallet'
 
-import Button from '../../components/button'
-import { Header2, Paragraph } from '../../components/typography'
-import { BigNumber } from '@ethersproject/bignumber'
-import { styles as sharedStyles } from './ModalComponent'
+import { sharedStyles } from './sharedStyles'
+import { Button, Header2, Paragraph } from '../../components'
 
 /**
  * Used for UI only to make editing transactions easier. Allows for

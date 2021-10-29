@@ -21,7 +21,7 @@ import React from 'react'
 
 import { render, fireEvent, act, waitFor } from '@testing-library/react-native'
 
-import SendTransaction from './SendTransaction'
+import SendTransaction from './SendScreen'
 import { getAllTokens } from '../../lib/token/tokenMetadata'
 
 jest.mock('../../lib/token/tokenMetadata', () => ({

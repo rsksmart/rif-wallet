@@ -1,18 +1,15 @@
-import { NavigationProp, ParamListBase } from '@react-navigation/core'
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, View, ScrollView, TextInput } from 'react-native'
-
-import { Header2, Paragraph } from '../../../components/typography'
-
-import Button from '../../../components/button'
-import { KeyManagementProps, ScreenProps } from '../types'
-import KeysCreatedScreen from '../KeysCreatedScreen'
+import { Button, Header2, Paragraph } from '../../../components'
+import { CreateKeysProps, ScreenProps } from '../types'
 
 interface ConfirmMasterKeyScreenProps {
-  createFirstWallet: KeyManagementProps['createFirstWallet']
+  createFirstWallet: CreateKeysProps['createFirstWallet']
 }
 
-const ConfirmMasterKeyScreen: React.FC<ScreenProps<'ConfirmNewMasterKey'> & ConfirmMasterKeyScreenProps> = ({ route, navigation, createFirstWallet }) => {
+export const ConfirmNewMasterKeyScreen: React.FC<
+  ScreenProps<'ConfirmNewMasterKey'> & ConfirmMasterKeyScreenProps
+> = ({ route, navigation, createFirstWallet }) => {
   const mnemonic = route.params.mnemonic
 
   console.log(mnemonic)
@@ -99,5 +96,3 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
 })
-
-export default ConfirmMasterKeyScreen

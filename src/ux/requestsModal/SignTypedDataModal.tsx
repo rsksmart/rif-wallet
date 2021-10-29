@@ -1,9 +1,10 @@
 import React from 'react'
 import { StyleSheet, Text, View, ScrollView } from 'react-native'
-import Button from '../../components/button'
-import { Header2, Paragraph } from '../../components/typography'
+
 import { Request } from '../../lib/core'
-import { styles as sharedStyles } from './ModalComponent'
+
+import { Button, Header2, Paragraph } from '../../components'
+import { sharedStyles } from './sharedStyles'
 
 // Temp: type to be refactored with the changes in the core
 export interface SignTypedDataRequest extends Request {

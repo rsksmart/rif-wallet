@@ -1,19 +1,15 @@
-import { NavigationProp, ParamListBase } from '@react-navigation/core'
 import React, { useMemo } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
-
-import { Header2, Paragraph } from '../../../components/typography'
-import CopyComponent from '../../../components/copy'
-
-import Button from '../../../components/button'
-import { KeyManagementSystem } from '../../../lib/core/KeyManagementSystem'
-import { KeyManagementProps, ScreenProps } from '../types'
+import { Button, CopyComponent, Header2, Paragraph } from '../../../components'
+import { CreateKeysProps, ScreenProps } from '../types'
 
 type CreateMasterKeyScreenProps = {
-  generateMnemonic: KeyManagementProps['generateMnemonic']
+  generateMnemonic: CreateKeysProps['generateMnemonic']
 }
 
-const CreateMasterKeyScreen: React.FC<ScreenProps<'NewMasterKey'> & CreateMasterKeyScreenProps> = ({ navigation, generateMnemonic }) => {
+export const NewMasterKeyScreen: React.FC<
+  ScreenProps<'NewMasterKey'> & CreateMasterKeyScreenProps
+> = ({ navigation, generateMnemonic }) => {
   const mnemonic = useMemo(generateMnemonic, [])
 
   return (
@@ -33,7 +29,9 @@ const CreateMasterKeyScreen: React.FC<ScreenProps<'NewMasterKey'> & CreateMaster
       </View>
       <View style={styles.section}>
         <Button
-          onPress={() => navigation.navigate('ConfirmNewMasterKey', { mnemonic })}
+          onPress={() =>
+            navigation.navigate('ConfirmNewMasterKey', { mnemonic })
+          }
           title={'Next'}
         />
       </View>
@@ -56,5 +54,3 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 })
-
-export default CreateMasterKeyScreen

@@ -1,20 +1,12 @@
 import React, { useContext } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 
-import Button from '../../components/button'
-import { Header2, Paragraph } from '../../components/typography'
-import CopyComponent from '../../components/copy'
-import { AppContext } from '../../Context'
 import { deleteKeys } from '../../storage/KeyStore'
-import { ScreenProps } from '../../RootNavigation'
 
-type RevealMasterKeyScreenProps = {
-  mnemonic?: string
-}
+import { AppContext } from '../../Context'
+import { Button, CopyComponent, Header2, Paragraph } from '../../components'
 
-const KeysInfoScreen: React.FC<ScreenProps<'KeysInfo'> & RevealMasterKeyScreenProps> = ({
-  mnemonic
-}) => <ScrollView>
+export const KeysInfoScreen = () => <ScrollView>
   <View style={styles.sectionCentered}>
     <Paragraph>
       With your master key (seed phrase) you are able to create as many
@@ -26,10 +18,7 @@ const KeysInfoScreen: React.FC<ScreenProps<'KeysInfo'> & RevealMasterKeyScreenPr
     <CopyComponent value={useContext(AppContext).mnemonic || ''} />
   </View>
   <View style={styles.section}>
-    <Button
-      onPress={deleteKeys}
-      title="Delete keys"
-    />
+    <Button onPress={deleteKeys} title="Delete keys" />
     <Paragraph>
       You will need to refresh the app for this to fully work.
     </Paragraph>
@@ -51,5 +40,3 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 })
-
-export default KeysInfoScreen
