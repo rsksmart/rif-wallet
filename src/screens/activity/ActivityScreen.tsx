@@ -3,13 +3,14 @@ import { StyleSheet, View, ScrollView, Text, Linking } from 'react-native'
 
 import Button from '../../components/button'
 import { Paragraph } from '../../components/typography'
-import { IApiTransactions } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import { IApiTransaction } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { RIFWallet } from '../../lib/core'
 import { RifWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
 import { NavigationProp, ParamListBase } from '@react-navigation/native'
 import { shortAddress } from '../../lib/utils'
-
+import AbiEnhancer, { IEnhancedResult } from '../../lib/abiEnhancer/AbiEnhancer'
+const enhancer = new AbiEnhancer()
 const fetcher: RifWalletServicesFetcher = new RifWalletServicesFetcher()
 
 interface IReceiveScreenProps {
@@ -20,27 +21,32 @@ interface IReceiveScreenProps {
 const ActivityDetails = ({
   transaction,
 }: {
-  transaction: IApiTransactions
+  transaction: IActivityTransaction
 }) => (
   <View>
     <View>
       <Text style={styles.transactionDetailsTitle}>TransactionDetails</Text>
     </View>
     <View>
-      <Text>From: {shortAddress(transaction.from)}</Text>
-      <Text>To: {shortAddress(transaction.to)}</Text>
-      <Text>TX Hash: {shortAddress(transaction.hash)}</Text>
-      <Text>Gas: {transaction.gas}</Text>
-      <Text>Gas Price: {transaction.gasPrice}</Text>
+      <Text>Token: {transaction.enhancedTransaction.symbol}</Text>
+      <Text>Amount: {transaction.enhancedTransaction.value}</Text>
+      <Text>From: {shortAddress(transaction.enhancedTransaction.from)}</Text>
+      <Text>To: {shortAddress(transaction.enhancedTransaction.to)}</Text>
+      <Text>TX Hash: {shortAddress(transaction.originTransaction.hash)}</Text>
+      <Text>Gas: {transaction.originTransaction.gas}</Text>
+      <Text>Gas Price: {transaction.originTransaction.gasPrice}</Text>
       <Text>
-        Status: {transaction.receipt ? transaction.receipt.status : 'PENDING'}
+        Status:{' '}
+        {transaction.originTransaction.receipt
+          ? transaction.originTransaction.receipt.status
+          : 'PENDING'}
       </Text>
-      <Text>Time: {transaction.timestamp}</Text>
+      <Text>Time: {transaction.originTransaction.timestamp}</Text>
       <Button
         title="View in explorer"
         onPress={() => {
           Linking.openURL(
-            `https://explorer.testnet.rsk.co/tx/${transaction.hash}`,
+            `https://explorer.testnet.rsk.co/tx/${transaction.originTransaction.hash}`,
           )
         }}
       />
@@ -49,48 +55,63 @@ const ActivityDetails = ({
 )
 
 const ActivityRow = ({
-  transaction,
+  key,
+  activityTransaction,
   onSelected,
 }: {
-  transaction: IApiTransactions
-  onSelected: (transaction: IApiTransactions) => void
+  key: string
+  activityTransaction: IActivityTransaction
+  onSelected: (transaction: IActivityTransaction) => void
 }) => (
-  <View style={styles.activityRow} testID={`${transaction.hash}.View`}>
+  <View
+    key={key}
+    style={styles.activityRow}
+    testID={`${activityTransaction.originTransaction.hash}.View`}>
     <View style={styles.activitySummary}>
       <Text>
-        {transaction.value} sent To {shortAddress(transaction.hash)}{' '}
+        {activityTransaction.enhancedTransaction.value}{' '}
+        {activityTransaction.enhancedTransaction.symbol} sent To{' '}
+        {shortAddress(activityTransaction.originTransaction.hash)}{' '}
       </Text>
     </View>
     <View style={styles.button}>
       <Button
         onPress={() => {
-          onSelected(transaction)
+          onSelected(activityTransaction)
         }}
         title={'>'}
-        testID={`${transaction.hash}.Button`}
+        testID={`${activityTransaction.originTransaction.hash}.Button`}
       />
     </View>
   </View>
 )
-
+export interface IActivityTransaction {
+  originTransaction: IApiTransaction
+  enhancedTransaction: IEnhancedResult
+}
 const ActivityScreen: React.FC<IReceiveScreenProps> = ({ route }) => {
   const account = route.params.account as RIFWallet
 
   const [info, setInfo] = useState('')
-  const [transactions, setTransactions] = useState<IApiTransactions[]>([])
+  const [transactions, setTransactions] = useState<IActivityTransaction[]>([])
   const [selectedTransaction, setSelectedTransaction] = useState<
-    undefined | IApiTransactions
+    undefined | IActivityTransaction
   >()
 
-  const enhanceTransactionInput = (transaction: IApiTransactions) => {
+  const enhanceTransactionInput = async (
+    transaction: IApiTransaction,
+  ): Promise<IEnhancedResult | null> => {
     const smartTx =
       account.smartWallet.smartWalletContract.interface.decodeFunctionData(
         'directExecute',
         transaction.input,
       )
-    console.log({ smartTx })
-    //TODO: call abi enhancer function
-    return transaction
+    const enhancedTx: IEnhancedResult | null = await enhancer.enhance(account, {
+      from: account.smartWalletAddress,
+      to: smartTx.to.toLowerCase(),
+      data: smartTx.data,
+    })
+    return enhancedTx
   }
 
   useEffect(() => {
@@ -105,11 +126,19 @@ const ActivityScreen: React.FC<IReceiveScreenProps> = ({ route }) => {
       const fetchedTransactions = await fetcher.fetchTransactionsByAddress(
         account.smartWalletAddress.toLowerCase(),
       )
-      console.log({ fetchedTransactions })
-      const enhancedTransactions = fetchedTransactions.map(
-        (tx: IApiTransactions) => enhanceTransactionInput(tx),
+
+      const activityTransactions: IActivityTransaction[] = await Promise.all(
+        fetchedTransactions.map(async (tx: IApiTransaction) => {
+          const enhancedTransaction: IEnhancedResult | null =
+            await enhanceTransactionInput(tx)
+          return {
+            originTransaction: tx,
+            enhancedTransaction,
+          }
+        }),
       )
-      setTransactions(enhancedTransactions)
+
+      setTransactions(activityTransactions)
       setInfo('')
     } catch (e) {
       setInfo('Error reaching API: ' + e.message)
@@ -129,10 +158,11 @@ const ActivityScreen: React.FC<IReceiveScreenProps> = ({ route }) => {
           </View>
 
           {transactions &&
-            transactions.map(transaction => (
+            transactions.length > 0 &&
+            transactions.map((activityTransaction: IActivityTransaction) => (
               <ActivityRow
-                key={transaction.hash}
-                transaction={transaction}
+                key={activityTransaction.originTransaction.hash}
+                activityTransaction={activityTransaction}
                 onSelected={setSelectedTransaction}
               />
             ))}
