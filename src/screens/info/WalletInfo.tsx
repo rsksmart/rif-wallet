@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Transaction } from 'ethers'
-import Button from '../components/button'
-import { Header2, Paragraph } from '../components/typography'
+import Button from '../../components/button'
+import { Header2, Paragraph } from '../../components/typography'
 
 import { BigNumber } from 'ethers'
-import CopyComponent from '../components/copy'
-import { ERC20Token } from '../lib/token/ERC20Token'
-import { useSelectedWallet } from '../Context'
+import CopyComponent from '../../components/copy'
+import { ERC20Token } from '../../lib/token/ERC20Token'
+import { useSelectedWallet } from '../../Context'
 
 const WalletInfoScreen = () => {
   const account = useSelectedWallet()

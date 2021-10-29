@@ -1,82 +1,69 @@
 import React, { useContext } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
-import { NavigationProp, ParamListBase } from '@react-navigation/native'
 
 import Button from '../components/button'
 import { Header1, Header2, Paragraph } from '../components/typography'
 import CopyComponent from '../components/copy'
 import { AppContext } from '../Context'
+import { NavigationProp } from '../RootNavigation'
+import { ScreenProps } from '../RootNavigation'
+import { RIFWallet } from '../lib/core'
+import { Wallet } from '@ethersproject/wallet'
+import { Signer } from '@ethersproject/abstract-signer'
 
-interface Interface {
-  navigation: NavigationProp<ParamListBase>
-  route: any
-}
-
-const KeysActionItem = ({ navigation, hasKeys }: { navigation: any, hasKeys: boolean }) => !hasKeys ? <Button
-  onPress={() => navigation.navigate('KeyManagement', { screen: 'CreateKeys' })}
+const KeysActionItem = ({ navigation }: { navigation: NavigationProp }) => !useContext(AppContext).mnemonic ? <Button
+  onPress={() => navigation.navigate('CreateKeys')}
   title="Create master key"
 /> : <Button
-  onPress={() => navigation.navigate('KeyManagement', { screen: 'RevealMasterKey' })}
+  onPress={() => navigation.navigate('KeysInfo')}
   title="Reveal master key"
 />
 
-const WalletApp: React.FC<Interface> = ({ navigation }) => {
+const WalletRow = ({ address, navigation }: { address: string, navigation: NavigationProp }) => <View>
+<Paragraph>Smart Wallet Address</Paragraph>
+  <CopyComponent value={address} />
+  <View style={styles.subsection}>
+    <Button
+      onPress={() => navigation.navigate('Receive')}
+      title="Receive"
+    />
+    <Button
+      onPress={() => {
+        navigation.navigate('Send', { token: 'tRIF' })
+      }}
+      title="Send Transaction"
+    />
+    <Button
+      onPress={() =>
+        navigation.navigate('Balances')
+      }
+      title="Balances"
+    />
+  </View>
+  <View style={styles.subsection}>
+      <Button
+        onPress={() => navigation.navigate('SignMessage')}
+        title="Sign Message"
+      />
+  <Button onPress={() =>
+      navigation.navigate('SignTypedData')} title="Sign Typed Data" />
+  </View>
+  <View style={styles.subsection}>
+    <Button
+      title="Wallet info"
+      onPress={() => navigation.navigate('WalletInfo')}
+    />
+  </View>
+</View>
+
+const WalletApp: React.FC<ScreenProps<'Home'>> = ({ navigation }) => {
   const { wallets } = useContext(AppContext)
 
   return (
-    <ScrollView>
+    <ScrollView style={styles.section}>
       <Header1>Welcome to sWallet!</Header1>
-      <View style={styles.section}>
-        <KeysActionItem navigation={navigation} hasKeys={Object.keys(wallets).length > 0} />
-        <View style={styles.section}>
-            <Header2>Smart Wallets</Header2>
-            {Object.keys(wallets).map((address: string) => {
-              const account = wallets[address]
-              return (
-                <View key={address}>
-                  <Paragraph>Smart Wallet Address</Paragraph>
-                  <CopyComponent value={account.address} />
-                  <View style={styles.subsection}>
-                    <Button
-                      // @ts-ignore
-                      onPress={() => navigation.navigate('Receive')}
-                      title="Receive"
-                    />
-                    <Button
-                      onPress={() => {
-                        // @ts-ignore
-                        navigation.navigate('SendTransaction', { token: 'tRIF' })
-                      }}
-                      title="Send Transaction"
-                    />
-                    <Button
-                      onPress={() =>
-                        // @ts-ignore
-                        navigation.navigate('Balances')
-                      }
-                      title="Balances"
-                    />
-                  </View>
-                  <View style={styles.subsection}>
-                      <Button
-                        onPress={() => navigation.navigate('SignMessage')}
-                        title="Sign Message"
-                      />
-                  <Button onPress={() =>
-                      // @ts-ignore
-                      navigation.navigate('SignTypedData')} title="Sign Typed Data" />
-                  </View>
-                  <View style={styles.subsection}>
-                    <Button
-                      title="Wallet info"
-                      onPress={() => navigation.navigate('SmartWallet')}
-                    />
-                  </View>
-                </View>
-              )
-            })}
-        </View>
-      </View>
+      <KeysActionItem navigation={navigation} />
+      {Object.keys(wallets).map((address: string) => <WalletRow address={address} navigation={navigation} />)}
     </ScrollView>
   )
 }

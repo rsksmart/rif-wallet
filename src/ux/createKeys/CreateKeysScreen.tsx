@@ -4,7 +4,7 @@ import { StyleSheet, View, ScrollView } from 'react-native'
 
 import Button from '../../components/button'
 import { Paragraph } from '../../components/typography'
-import { ScreenProps } from '../types'
+import { ScreenProps } from './types'
 
 const CreateWalletScreen: React.FC<ScreenProps<'CreateKeys'>> = ({ navigation }) => {
   return (

@@ -11,6 +11,8 @@ import { shortAddress } from '../../lib/utils'
 import { RIFWallet } from '../../lib/core/RIFWallet'
 import { useSelectedWallet } from '../../Context'
 
+import { ScreenProps } from '../../RootNavigation'
+
 // TODO: accountLink is hardcoded until we had the rns sdk
 const accountLink = 'ilan.rsk'
 const window = Dimensions.get('window')
@@ -60,11 +62,7 @@ const useShare = (title: string, textToShare: string) => {
   }
 }
 
-interface IReceiveScreenProps {
-  route: any
-}
-
-const ReceiveScreen: React.FC<IReceiveScreenProps> = ({ route }) => {
+const ReceiveScreen= () => {
   const account = useSelectedWallet()
 
   const smartAddress = account.smartWalletAddress

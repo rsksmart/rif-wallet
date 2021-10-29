@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import { TextInput, View } from 'react-native'
 
 import { TransactionRequest } from '@ethersproject/abstract-provider'
-import { SendTransactionRequest } from '../lib/core/RIFWallet'
+import { SendTransactionRequest } from '../../lib/core/RIFWallet'
 
-import Button from '../components/button'
-import { Header2, Paragraph } from '../components/typography'
+import Button from '../../components/button'
+import { Header2, Paragraph } from '../../components/typography'
 import { BigNumber } from '@ethersproject/bignumber'
 import { styles as sharedStyles } from './ModalComponent'
 

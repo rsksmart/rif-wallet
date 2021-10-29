@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, fireEvent } from '@testing-library/react-native'
-import { SignMessageRequest } from '../lib/core'
+import { SignMessageRequest } from '../../lib/core'
 import SignMessageModal from './SignMessageModal'
 
 describe('SignMessageRequest', function (this: {

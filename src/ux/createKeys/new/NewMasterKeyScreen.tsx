@@ -7,7 +7,7 @@ import CopyComponent from '../../../components/copy'
 
 import Button from '../../../components/button'
 import { KeyManagementSystem } from '../../../lib/core/KeyManagementSystem'
-import { KeyManagementProps, ScreenProps } from '../../types'
+import { KeyManagementProps, ScreenProps } from '../types'
 
 type CreateMasterKeyScreenProps = {
   generateMnemonic: KeyManagementProps['generateMnemonic']

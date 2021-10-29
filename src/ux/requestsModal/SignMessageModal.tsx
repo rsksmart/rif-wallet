@@ -1,8 +1,8 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
-import Button from '../components/button'
-import { Header2, Paragraph } from '../components/typography'
-import { SignMessageRequest } from '../lib/core/RIFWallet'
+import Button from '../../components/button'
+import { Header2, Paragraph } from '../../components/typography'
+import { SignMessageRequest } from '../../lib/core/RIFWallet'
 import { styles as sharedStyles } from './ModalComponent'
 
 interface Interface {

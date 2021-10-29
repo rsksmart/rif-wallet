@@ -4,14 +4,14 @@ import { StyleSheet, View, ScrollView, TextInput } from 'react-native'
 import { Header2, Paragraph } from '../../../components/typography'
 
 import Button from '../../../components/button'
-import { ScreenProps, KeyManagementProps } from '../../types'
+import { ScreenProps, KeyManagementProps } from '../types'
 
 type ImportMasterKeyScreenProps = {
   createFirstWallet: KeyManagementProps['createFirstWallet']
 }
 
 const ImportMasterKeyScreen: React.FC<ScreenProps<'ImportMasterKey'> & ImportMasterKeyScreenProps> = ({ navigation, createFirstWallet }) => {
-  const [importMnemonic, setImportMnemonic] = useState<string | undefined>()
+  const [importMnemonic, setImportMnemonic] = useState<string>('')
 
   const [error, setError] = useState<string | null>(null)
 

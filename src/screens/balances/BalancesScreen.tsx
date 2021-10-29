@@ -8,16 +8,12 @@ import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServices
 
 import { RIFWallet } from '../../lib/core'
 import { RifWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
-import { NavigationProp, ParamListBase } from '@react-navigation/native'
+import { ParamListBase } from '@react-navigation/native'
 import { roundBalance } from '../../lib/utils'
 import { useSelectedWallet } from '../../Context'
+import { ScreenProps, NavigationProp } from '../../RootNavigation'
 
 const fetcher: RifWalletServicesFetcher = new RifWalletServicesFetcher()
-
-interface IReceiveScreenProps {
-  navigation: NavigationProp<ParamListBase>
-  route: any
-}
 
 const BalancesRow = ({
   token,
@@ -25,7 +21,7 @@ const BalancesRow = ({
 }: {
   account: RIFWallet
   token: ITokenWithBalance
-  navigation: NavigationProp<ParamListBase>
+  navigation: NavigationProp
 }) => (
   <View style={styles.tokenRow} testID={`${token.symbol}.View`}>
     <View style={styles.tokenBalance}>
@@ -37,8 +33,7 @@ const BalancesRow = ({
     <View style={styles.button}>
       <Button
         onPress={() => {
-          // @ts-ignore
-          navigation.navigate('SendTransaction', {
+          navigation.navigate('Send', {
             token: token.symbol,
           })
         }}
@@ -49,8 +44,7 @@ const BalancesRow = ({
   </View>
 )
 
-const BalancesScreen: React.FC<IReceiveScreenProps> = ({
-  route,
+const BalancesScreen: React.FC<ScreenProps<'Balances'>> = ({
   navigation,
 }) => {
   const account = useSelectedWallet()

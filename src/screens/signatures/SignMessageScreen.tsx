@@ -11,7 +11,7 @@ interface Interface {
   navigation: any
 }
 
-const SignMessageScreen: React.FC<Interface> = ({ route, navigation }) => {
+const SignMessageScreen: React.FC<Interface> = () => {
   const rifWallet = useSelectedWallet()
 
   const [message, setMessage] = useState<string>('Hello World!')
@@ -45,8 +45,6 @@ const SignMessageScreen: React.FC<Interface> = ({ route, navigation }) => {
           <CopyComponent value={response} />
         </>
       )}
-
-      <Button onPress={navigation.goBack} title="Go Back" />
     </View>
   )
 }

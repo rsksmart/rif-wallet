@@ -2,7 +2,7 @@ import React from 'react'
 import { render, fireEvent } from '@testing-library/react-native'
 
 import ReviewTransactionModal from './ReviewTransactionModal'
-import { Request } from '../lib/core/RIFWallet'
+import { Request } from '../../lib/core/RIFWallet'
 import { BigNumber } from '@ethersproject/bignumber'
 
 describe('ReviewTransactionModal', function (this: {

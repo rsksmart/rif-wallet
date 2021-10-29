@@ -7,8 +7,8 @@ import React, { useEffect, useState } from 'react'
 import { SafeAreaView, StatusBar, View } from 'react-native'
 
 import { Wallets, Requests } from './Context'
-import RootNavigation from './RootNavigation'
-import ModalComponent from './ux/ModalComponent'
+import { RootNavigation } from './RootNavigation'
+import ModalComponent from './ux/requestsModal/ModalComponent'
 
 import { Wallet } from '@ethersproject/wallet'
 import { KeyManagementSystem, OnRequest, RIFWallet } from "./lib/core"
@@ -17,18 +17,19 @@ import { jsonRpcProvider } from './lib/jsonRpcProvider'
 
 import { Paragraph } from './components/typography'
 import { AppContext } from './Context'
-import { KeyManagementProps } from './keyManagement/types'
+import { KeyManagementProps } from './ux/createKeys/types'
 
 const createRIFWalletFactory = (onRequest: OnRequest) => (wallet: Wallet) => RIFWallet.create(
   wallet.connect(jsonRpcProvider), '0x3f71ce7bd7912bf3b362fd76dd34fa2f017b6388', onRequest
 ) // temp - using only testnet
 
 const App = () => {
+  const [ready, setReady] = useState(false)
+
   const [kms, setKMS] = useState<null | KeyManagementSystem>(null)
   const [wallets, setWallets] = useState<Wallets>({})
   const [requests, setRequests] = useState<Requests>([])
   const [selectedWallet, setSelectedWallet] = useState('')
-  const [ready, setReady] = useState(false)
 
   const onRequest: OnRequest = request => setRequests([request])
   const createRIFWallet = createRIFWalletFactory(onRequest)
@@ -61,7 +62,6 @@ const App = () => {
   if (!ready) return <View style={{paddingVertical:200}}><Paragraph>Getting set...</Paragraph></View>
 
   const createFirstWallet = async (mnemonic: string) => {
-    console.log('setting up new wallet')
     const kms = KeyManagementSystem.import(mnemonic)
     const { save, wallet } = kms.nextWallet(31)
 
@@ -78,10 +78,7 @@ const App = () => {
 
   const closeRequest = () => setRequests([] as Requests)
 
-  console.log(kms?.mnemonic)
-
   const keyManagementProps: KeyManagementProps = {
-    mnemonic: kms?.mnemonic,
     generateMnemonic: () => KeyManagementSystem.create().mnemonic,
     createFirstWallet
   }
@@ -89,7 +86,7 @@ const App = () => {
   return (
       <SafeAreaView>
         <StatusBar />
-        <AppContext.Provider value={{ wallets, selectedWallet, setRequests }}>
+        <AppContext.Provider value={{ wallets, selectedWallet, setRequests, mnemonic: kms?.mnemonic }}>
           <RootNavigation keyManagementProps={keyManagementProps} />
         </AppContext.Provider>
         {requests.length !== 0 && (

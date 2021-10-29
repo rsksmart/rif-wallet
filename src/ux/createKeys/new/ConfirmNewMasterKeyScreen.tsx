@@ -5,8 +5,7 @@ import { StyleSheet, View, ScrollView, TextInput } from 'react-native'
 import { Header2, Paragraph } from '../../../components/typography'
 
 import Button from '../../../components/button'
-import { KeyManagementContext } from '../../Context'
-import { KeyManagementProps, ScreenProps } from '../../types'
+import { KeyManagementProps, ScreenProps } from '../types'
 import KeysCreatedScreen from '../KeysCreatedScreen'
 
 interface ConfirmMasterKeyScreenProps {

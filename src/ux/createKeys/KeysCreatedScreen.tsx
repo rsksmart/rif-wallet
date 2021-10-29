@@ -4,8 +4,7 @@ import { StyleSheet, View, ScrollView } from 'react-native'
 
 import Button from '../../components/button'
 import { Paragraph } from '../../components/typography'
-import { useSelectedWallet } from '../../Context'
-import { ScreenProps } from '../types'
+import { ScreenProps } from './types'
 
 interface Interface {
   navigation: NavigationProp<ParamListBase>

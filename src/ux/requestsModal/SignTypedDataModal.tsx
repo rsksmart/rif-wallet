@@ -1,8 +1,8 @@
 import React from 'react'
 import { StyleSheet, Text, View, ScrollView } from 'react-native'
-import Button from '../components/button'
-import { Header2, Paragraph } from '../components/typography'
-import { Request } from '../lib/core'
+import Button from '../../components/button'
+import { Header2, Paragraph } from '../../components/typography'
+import { Request } from '../../lib/core'
 import { styles as sharedStyles } from './ModalComponent'
 
 // Temp: type to be refactored with the changes in the core

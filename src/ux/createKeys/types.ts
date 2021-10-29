@@ -1,8 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack'
-import { RIFWallet } from '../lib/core';
+import { RIFWallet } from '../../lib/core';
 
 export type KeyManagementProps = {
-  mnemonic?: string
   generateMnemonic: () => string
   createFirstWallet: (mnemonic: string) => Promise<RIFWallet>
 }

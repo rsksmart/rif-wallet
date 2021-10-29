@@ -1,19 +1,18 @@
-import { NavigationProp, ParamListBase } from '@react-navigation/core'
 import React, { useContext } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 
 import Button from '../../components/button'
 import { Header2, Paragraph } from '../../components/typography'
 import CopyComponent from '../../components/copy'
-import { KeyManagementContext } from '../Context'
+import { AppContext } from '../../Context'
 import { deleteKeys } from '../../storage/KeyStore'
-import { ScreenProps } from '../types'
+import { ScreenProps } from '../../RootNavigation'
 
 type RevealMasterKeyScreenProps = {
   mnemonic?: string
 }
 
-const RevealMasterKeyScreen: React.FC<ScreenProps<'RevealMasterKey'> & RevealMasterKeyScreenProps> = ({
+const KeysInfoScreen: React.FC<ScreenProps<'KeysInfo'> & RevealMasterKeyScreenProps> = ({
   mnemonic
 }) => <ScrollView>
   <View style={styles.sectionCentered}>
@@ -24,7 +23,7 @@ const RevealMasterKeyScreen: React.FC<ScreenProps<'RevealMasterKey'> & RevealMas
   </View>
   <View style={styles.section}>
     <Header2>Master key</Header2>
-    <CopyComponent value={mnemonic || ''} />
+    <CopyComponent value={useContext(AppContext).mnemonic || ''} />
   </View>
   <View style={styles.section}>
     <Button
@@ -53,4 +52,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default RevealMasterKeyScreen
+export default KeysInfoScreen
