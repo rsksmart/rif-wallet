@@ -39,7 +39,7 @@ const App = () => {
 
   const setKeys = (newKms: KeyManagementSystem, newWallets: Wallets) => {
     setWallets(newWallets)
-    setSelectedWallet(wallets[Object.keys(newWallets)[0]].address) // temp - using only one wallet
+    setSelectedWallet(newWallets[Object.keys(newWallets)[0]].address) // temp - using only one wallet
     setKMS(newKms)
   }
 

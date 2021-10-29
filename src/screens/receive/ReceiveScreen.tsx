@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { StyleSheet, View, ScrollView, Dimensions, Share } from 'react-native'
 import QRCode from 'react-qr-code'
 
-import { useSelectedWallet } from '../../Context'
 import { Button, CopyComponent } from '../../components'
+import { ScreenWithWallet } from '../types'
 
 // TODO: accountLink is hardcoded until we had the rns sdk
 const accountLink = 'ilan.rsk'
@@ -39,10 +39,8 @@ const useShare = (title: string, textToShare: string) => {
  * TODO: refactor QR and share components
  */
 
-export const ReceiveScreen = () => {
-  const account = useSelectedWallet()
-
-  const smartAddress = account.smartWalletAddress
+export const ReceiveScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
+  const smartAddress = wallet.smartWalletAddress
   const { isSharing, handleShare } = useShare('Account', smartAddress)
 
   return (

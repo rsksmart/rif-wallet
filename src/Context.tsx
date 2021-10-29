@@ -1,5 +1,6 @@
-import { createContext, useContext } from 'react'
+import React, { createContext, useContext, FC } from 'react'
 import { RIFWallet, Request } from './lib/core'
+import { ScreenWithWallet } from './screens/types'
 export type Wallets = { [id: string]: RIFWallet }
 export type Requests = Request[]
 
@@ -17,6 +18,17 @@ export const AppContext = createContext<AppContextType>({
 
 export const useSelectedWallet = () => {
   const { wallets, selectedWallet } = useContext(AppContext)
-  const wallet = wallets[selectedWallet!]
-  return wallet
+  return wallets[selectedWallet!]
+}
+
+export function InjectSelectedWallet<T>(
+  Component: FC<ScreenWithWallet & T>,
+): FC<T> {
+  return function InjectedComponent({ ...props }) {
+    const wallet = useSelectedWallet()
+    if (!wallet) {
+      throw new Error('No selected wallet')
+    }
+    return <Component wallet={wallet} {...props} />
+  }
 }

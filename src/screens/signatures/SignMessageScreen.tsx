@@ -1,18 +1,16 @@
 import React, { useState } from 'react'
 import { View, TextInput, StyleSheet } from 'react-native'
 
-import { useSelectedWallet } from '../../Context'
 import { Button, CopyComponent, Header1, Paragraph } from '../../components'
+import { ScreenWithWallet } from '../types'
 
-export const SignMessageScreen = () => {
-  const rifWallet = useSelectedWallet()
-
+export const SignMessageScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
   const [message, setMessage] = useState<string>('Hello World!')
   const [response, setResponse] = useState<string | null>(null)
 
   const signMessage = () => {
     setResponse(null)
-    rifWallet
+    wallet
       .signMessage(message)
       .then((hash: string) => setResponse(hash))
       .catch((err: any) => setResponse(err.toString()))
@@ -22,7 +20,7 @@ export const SignMessageScreen = () => {
       <Header1>Sign Message</Header1>
 
       <Paragraph>Signing with EOA Account:</Paragraph>
-      <CopyComponent value={rifWallet.smartWallet.wallet.address} />
+      <CopyComponent value={wallet.smartWallet.wallet.address} />
 
       <Paragraph>Message:</Paragraph>
       <TextInput

@@ -4,11 +4,10 @@ import { Transaction, BigNumber } from 'ethers'
 
 import { ERC20Token } from '../../lib/token/ERC20Token'
 
-import { useSelectedWallet } from '../../Context'
 import { Button, CopyComponent, Header2, Paragraph } from '../../components'
+import { ScreenWithWallet } from '../types'
 
-export const WalletInfoScreen = () => {
-  const account = useSelectedWallet()
+export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
   const [eoaBalance, setEoaBalance] = useState<null | BigNumber>(null)
   const [isSmartWalletDeployed, setIsSmartWalletDeployed] =
     useState<boolean>(false)
@@ -22,15 +21,15 @@ export const WalletInfoScreen = () => {
 
   const rif = new ERC20Token(
     '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
-    account,
+    wallet,
     'RIF',
     'null.jpg',
   )
 
   const getInfo = async () => {
     Promise.all([
-      account.smartWallet.wallet.getBalance().then(setEoaBalance),
-      account.smartWalletFactory.isDeployed().then(setIsSmartWalletDeployed),
+      wallet.smartWallet.wallet.getBalance().then(setEoaBalance),
+      wallet.smartWalletFactory.isDeployed().then(setIsSmartWalletDeployed),
       rif.balance().then(setRifBalance),
     ]).catch((err: Error) => {
       console.log(err)
@@ -38,7 +37,7 @@ export const WalletInfoScreen = () => {
   }
 
   const deploy = async () => {
-    const txPromise = await account.smartWalletFactory.deploy()
+    const txPromise = await wallet.smartWalletFactory.deploy()
     setSmartWalletDeployTx(await txPromise)
     setIsSmartWalletDeployed(true)
   }
@@ -63,9 +62,9 @@ export const WalletInfoScreen = () => {
     <ScrollView>
       <Header2>Smart Wallet</Header2>
       <Paragraph>EOA:</Paragraph>
-      <CopyComponent value={account.smartWallet.wallet.address} />
+      <CopyComponent value={wallet.smartWallet.wallet.address} />
       <Paragraph>Smart Wallet Address:</Paragraph>
-      <CopyComponent value={account.address} />
+      <CopyComponent value={wallet.address} />
 
       <Button title="Get info" onPress={getInfo} />
       <Paragraph>

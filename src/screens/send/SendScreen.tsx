@@ -6,13 +6,15 @@ import { ContractReceipt, BigNumber, utils } from 'ethers'
 import { getAllTokens } from '../../lib/token/tokenMetadata'
 import { IToken } from '../../lib/token/BaseToken'
 
-import { useSelectedWallet } from '../../Context'
 import { ScreenProps } from '../../RootNavigation'
 import { Button, Paragraph } from '../../components'
+import { ScreenWithWallet } from '../types'
 
-export const SendScreen: React.FC<ScreenProps<'Send'>> = ({ route }) => {
-  const account = useSelectedWallet()
-  const smartAddress = account.smartWalletAddress
+export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
+  route,
+  wallet,
+}) => {
+  const smartAddress = wallet.smartWalletAddress
 
   const [to, setTo] = useState('0x1D4F6A5FE927f0E0e4497B91CebfBcF64dA1c934')
   const [selectedSymbol, setSelectedSymbol] = useState(
@@ -26,8 +28,8 @@ export const SendScreen: React.FC<ScreenProps<'Send'>> = ({ route }) => {
   const [info, setInfo] = useState('')
 
   useEffect(() => {
-    getAllTokens(account).then(tokens => setAvailableTokens(tokens))
-  }, [account])
+    getAllTokens(wallet).then(tokens => setAvailableTokens(tokens))
+  }, [wallet])
 
   const reviewTransaction = () => {
     if (selectedSymbol === 'TRBTC') {

@@ -7,9 +7,9 @@ import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServices
 import { jsonRpcProvider } from '../../lib/jsonRpcProvider'
 import { roundBalance } from '../../lib/utils'
 
-import { useSelectedWallet } from '../../Context'
 import { ScreenProps, NavigationProp } from '../../RootNavigation'
 import { Button, Paragraph } from '../../components'
+import { ScreenWithWallet } from '../types'
 
 const fetcher: RifWalletServicesFetcher = new RifWalletServicesFetcher()
 
@@ -40,10 +40,9 @@ export const BalancesRow = ({
   </View>
 )
 
-export const BalancesScreen: React.FC<ScreenProps<'Balances'>> = ({
-  navigation,
-}) => {
-  const account = useSelectedWallet()
+export const BalancesScreen: React.FC<
+  ScreenProps<'Balances'> & ScreenWithWallet
+> = ({ navigation, wallet }) => {
   const [info, setInfo] = useState('')
   const [tokens, setTokens] = useState<ITokenWithBalance[]>([])
 
@@ -57,10 +56,10 @@ export const BalancesScreen: React.FC<ScreenProps<'Balances'>> = ({
       setInfo('Loading balances. Please wait...')
 
       const fetchedTokens = await fetcher.fetchTokensByAddress(
-        account.smartWalletAddress,
+        wallet.smartWalletAddress,
       )
       const rbtcBalance = await jsonRpcProvider.getBalance(
-        account.smartWallet.wallet.address,
+        wallet.smartWallet.wallet.address,
       )
 
       const rbtcToken: ITokenWithBalance = {
@@ -82,7 +81,7 @@ export const BalancesScreen: React.FC<ScreenProps<'Balances'>> = ({
   return (
     <ScrollView>
       <View>
-        <Paragraph>{account.smartWalletAddress}</Paragraph>
+        <Paragraph>{wallet.smartWalletAddress}</Paragraph>
       </View>
 
       <View>

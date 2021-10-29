@@ -4,10 +4,17 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
 import { NavigationProp as _NavigationProp } from '@react-navigation/native'
 
-import * as Screens from './screens'
-
 import { CreateKeysNavigation } from './ux/createKeys'
 import { CreateKeysProps } from './ux/createKeys/types'
+
+import * as Screens from './screens'
+import { InjectSelectedWallet } from './Context'
+
+const InjectedScreens = Object.keys(Screens).reduce(
+  (p, c) =>
+    Object.assign(p, { [c]: InjectSelectedWallet((Screens as any)[c]) }),
+  {},
+) as typeof Screens
 
 type RootStackParamList = {
   Home: undefined
@@ -46,21 +53,21 @@ export const RootNavigation: React.FC<{
           />
           <RootStack.Screen
             name="Receive"
-            component={Screens.ReceiveScreen}
+            component={InjectedScreens.ReceiveScreen}
             options={sharedOptions}
           />
           <RootStack.Screen
             name="Send"
-            component={Screens.SendScreen}
+            component={InjectedScreens.SendScreen}
             options={sharedOptions}
           />
           <RootStack.Screen
             name="Balances"
-            component={Screens.BalancesScreen}
+            component={InjectedScreens.BalancesScreen}
           />
           <RootStack.Screen
             name="SignMessage"
-            component={Screens.SignMessageScreen}
+            component={InjectedScreens.SignMessageScreen}
             options={sharedOptions}
           />
           <RootStack.Screen
@@ -75,7 +82,7 @@ export const RootNavigation: React.FC<{
           />
           <RootStack.Screen
             name="WalletInfo"
-            component={Screens.WalletInfoScreen}
+            component={InjectedScreens.WalletInfoScreen}
             options={sharedOptions}
           />
 
