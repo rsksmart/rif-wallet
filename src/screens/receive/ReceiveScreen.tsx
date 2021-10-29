@@ -2,14 +2,8 @@ import React, { useState } from 'react'
 import { StyleSheet, View, ScrollView, Dimensions, Share } from 'react-native'
 import QRCode from 'react-qr-code'
 
-import { Button, CopyComponent } from '../../components'
-
-
-import { shortAddress } from '../../lib/utils'
-import { RIFWallet } from '../../lib/core/RIFWallet'
 import { useSelectedWallet } from '../../Context'
-
-import { ScreenProps } from '../../RootNavigation'
+import { Button, CopyComponent } from '../../components'
 
 // TODO: accountLink is hardcoded until we had the rns sdk
 const accountLink = 'ilan.rsk'
@@ -64,7 +58,11 @@ export const ReceiveScreen = () => {
       </View>
 
       <CopyComponent value={accountLink} testID={'Copy.Mnemonic'} />
-      <CopyComponent prefix='Smart address: ' value={smartAddress} testID={'Copy.Mnemonic'} />
+      <CopyComponent
+        prefix="Smart address: "
+        value={smartAddress}
+        testID={'Copy.Mnemonic'}
+      />
 
       <View style={styles.section}>
         <Button

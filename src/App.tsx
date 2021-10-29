@@ -37,15 +37,16 @@ const App = () => {
   const onRequest: OnRequest = request => setRequests([request])
   const createRIFWallet = createRIFWalletFactory(onRequest)
 
-  const setKeys = (kms: KeyManagementSystem, wallets: Wallets) => {
-    setWallets(wallets)
-    setSelectedWallet(wallets[Object.keys(wallets)[0]].address) // temp - using only one wallet
-    setKMS(kms)
+  const setKeys = (newKms: KeyManagementSystem, newWallets: Wallets) => {
+    setWallets(newWallets)
+    setSelectedWallet(wallets[Object.keys(newWallets)[0]].address) // temp - using only one wallet
+    setKMS(newKms)
   }
 
   const init = async () => {
     if (await hasKeys()) {
       const serializedKeys = await getKeys()
+      // eslint-disable-next-line no-shadow
       const { kms, wallets } = KeyManagementSystem.fromSerialized(
         serializedKeys!,
       )
@@ -69,13 +70,17 @@ const App = () => {
 
   if (!ready) {
     return (
-      <View style={{ paddingVertical: 200 }}>
-        <Paragraph>Getting set...</Paragraph>
-      </View>
+      <>
+        {/* eslint-disable-next-line react-native/no-inline-styles */}
+        <View style={{ paddingVertical: 200 }}>
+          <Paragraph>Getting set...</Paragraph>
+        </View>
+      </>
     )
   }
 
   const createFirstWallet = async (mnemonic: string) => {
+    // eslint-disable-next-line no-shadow
     const kms = KeyManagementSystem.import(mnemonic)
     const { save, wallet } = kms.nextWallet(31)
 

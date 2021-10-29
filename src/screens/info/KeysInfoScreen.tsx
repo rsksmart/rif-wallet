@@ -6,24 +6,26 @@ import { deleteKeys } from '../../storage/KeyStore'
 import { AppContext } from '../../Context'
 import { Button, CopyComponent, Header2, Paragraph } from '../../components'
 
-export const KeysInfoScreen = () => <ScrollView>
-  <View style={styles.sectionCentered}>
-    <Paragraph>
-      With your master key (seed phrase) you are able to create as many
-      wallets as you need.
-    </Paragraph>
-  </View>
-  <View style={styles.section}>
-    <Header2>Master key</Header2>
-    <CopyComponent value={useContext(AppContext).mnemonic || ''} />
-  </View>
-  <View style={styles.section}>
-    <Button onPress={deleteKeys} title="Delete keys" />
-    <Paragraph>
-      You will need to refresh the app for this to fully work.
-    </Paragraph>
-  </View>
-</ScrollView>
+export const KeysInfoScreen = () => (
+  <ScrollView>
+    <View style={styles.sectionCentered}>
+      <Paragraph>
+        With your master key (seed phrase) you are able to create as many
+        wallets as you need.
+      </Paragraph>
+    </View>
+    <View style={styles.section}>
+      <Header2>Master key</Header2>
+      <CopyComponent value={useContext(AppContext).mnemonic || ''} />
+    </View>
+    <View style={styles.section}>
+      <Button onPress={deleteKeys} title="Delete keys" />
+      <Paragraph>
+        You will need to refresh the app for this to fully work.
+      </Paragraph>
+    </View>
+  </ScrollView>
+)
 
 const styles = StyleSheet.create({
   section: {

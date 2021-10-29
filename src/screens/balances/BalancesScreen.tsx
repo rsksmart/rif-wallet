@@ -23,8 +23,7 @@ export const BalancesRow = ({
   <View style={styles.tokenRow} testID={`${symbol}.View`}>
     <View style={styles.tokenBalance}>
       <Text>
-        {symbol}{' '}
-        {roundBalance(utils.formatUnits(balance, decimals))}
+        {symbol} {roundBalance(utils.formatUnits(balance, decimals))}
       </Text>
     </View>
     <View style={styles.button}>
@@ -41,7 +40,9 @@ export const BalancesRow = ({
   </View>
 )
 
-export const BalancesScreen: React.FC<ScreenProps<'Balances'>> = ({ navigation }) => {
+export const BalancesScreen: React.FC<ScreenProps<'Balances'>> = ({
+  navigation,
+}) => {
   const account = useSelectedWallet()
   const [info, setInfo] = useState('')
   const [tokens, setTokens] = useState<ITokenWithBalance[]>([])

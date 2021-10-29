@@ -3,7 +3,9 @@ import { StyleSheet, View, ScrollView, Button, Linking } from 'react-native'
 
 import { Paragraph } from '../components/typography'
 
-export const TransactionReceivedScreen: React.FC<{ route: any }> = ({ route }) => {
+export const TransactionReceivedScreen: React.FC<{ route: any }> = ({
+  route,
+}) => {
   const { txHash, amount, to, token } = route.params
   return (
     <ScrollView>

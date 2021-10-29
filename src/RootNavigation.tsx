@@ -54,7 +54,10 @@ export const RootNavigation: React.FC<{
             component={Screens.SendScreen}
             options={sharedOptions}
           />
-          <RootStack.Screen name="Balances" component={Screens.BalancesScreen} />
+          <RootStack.Screen
+            name="Balances"
+            component={Screens.BalancesScreen}
+          />
           <RootStack.Screen
             name="SignMessage"
             component={Screens.SignMessageScreen}
@@ -77,7 +80,9 @@ export const RootNavigation: React.FC<{
           />
 
           <RootStack.Screen name="CreateKeysUX" options={sharedOptions}>
-            {props => <CreateKeysNavigation {...props} {...keyManagementProps} />}
+            {props => (
+              <CreateKeysNavigation {...props} {...keyManagementProps} />
+            )}
           </RootStack.Screen>
           <RootStack.Screen
             name="KeysInfo"

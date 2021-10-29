@@ -14,7 +14,12 @@ interface Interface {
   testID?: string
 }
 
-export const Button: React.FC<Interface> = ({ title, onPress, disabled, testID }) => {
+export const Button: React.FC<Interface> = ({
+  title,
+  onPress,
+  disabled,
+  testID,
+}) => {
   return (
     <TouchableOpacity
       style={styles.button}

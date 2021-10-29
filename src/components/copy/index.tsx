@@ -10,12 +10,19 @@ interface Interface {
   testID?: string
 }
 
-export const CopyComponent: React.FC<Interface> = ({ prefix, value, testID }) => {
+export const CopyComponent: React.FC<Interface> = ({
+  prefix,
+  value,
+  testID,
+}) => {
   return (
     <TouchableOpacity onPress={() => Clipboard.setString(value)}>
       <View style={styles.row}>
         <View style={styles.textColumn}>
-          <Paragraph testID={testID}>{prefix}{value}</Paragraph>
+          <Paragraph testID={testID}>
+            {prefix}
+            {value}
+          </Paragraph>
         </View>
         <View style={styles.iconColumn}>
           <Text>copy</Text>
