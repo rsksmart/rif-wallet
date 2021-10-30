@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { utils } from 'ethers'
 import { StyleSheet, View, ScrollView, Text, Linking } from 'react-native'
 
 import Button from '../../components/button'
@@ -8,7 +9,7 @@ import { IApiTransaction } from '../../lib/rifWalletServices/RIFWalletServicesTy
 import { RIFWallet } from '../../lib/core'
 import { RifWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
 import { NavigationProp, ParamListBase } from '@react-navigation/native'
-import { shortAddress } from '../../lib/utils'
+import { formatTimestamp, shortAddress } from '../../lib/utils'
 import AbiEnhancer, { IEnhancedResult } from '../../lib/abiEnhancer/AbiEnhancer'
 const enhancer = new AbiEnhancer()
 const fetcher: RifWalletServicesFetcher = new RifWalletServicesFetcher()
@@ -20,8 +21,10 @@ interface IReceiveScreenProps {
 
 const ActivityDetails = ({
   transaction,
+  onSelected,
 }: {
   transaction: IActivityTransaction
+  onSelected: (transaction: IActivityTransaction | null) => void
 }) => (
   <View>
     <View>
@@ -34,20 +37,32 @@ const ActivityDetails = ({
       <Text>To: {shortAddress(transaction.enhancedTransaction.to)}</Text>
       <Text>TX Hash: {shortAddress(transaction.originTransaction.hash)}</Text>
       <Text>Gas: {transaction.originTransaction.gas}</Text>
-      <Text>Gas Price: {transaction.originTransaction.gasPrice}</Text>
+      <Text>
+        Gas Price:{' '}
+        {utils.formatUnits(transaction.originTransaction.gasPrice, 'gwei')}
+      </Text>
       <Text>
         Status:{' '}
         {transaction.originTransaction.receipt
           ? transaction.originTransaction.receipt.status
           : 'PENDING'}
       </Text>
-      <Text>Time: {transaction.originTransaction.timestamp}</Text>
+      <Text>
+        Time: {formatTimestamp(transaction.originTransaction.timestamp)}
+      </Text>
+
       <Button
         title="View in explorer"
         onPress={() => {
           Linking.openURL(
             `https://explorer.testnet.rsk.co/tx/${transaction.originTransaction.hash}`,
           )
+        }}
+      />
+      <Button
+        title="Return to Activity Screen"
+        onPress={() => {
+          onSelected(null)
         }}
       />
     </View>
@@ -71,7 +86,7 @@ const ActivityRow = ({
       <Text>
         {activityTransaction.enhancedTransaction.value}{' '}
         {activityTransaction.enhancedTransaction.symbol} sent To{' '}
-        {shortAddress(activityTransaction.originTransaction.hash)}{' '}
+        {shortAddress(activityTransaction.enhancedTransaction.to)}{' '}
       </Text>
     </View>
     <View style={styles.button}>
@@ -95,7 +110,7 @@ const ActivityScreen: React.FC<IReceiveScreenProps> = ({ route }) => {
   const [info, setInfo] = useState('')
   const [transactions, setTransactions] = useState<IActivityTransaction[]>([])
   const [selectedTransaction, setSelectedTransaction] = useState<
-    undefined | IActivityTransaction
+    null | IActivityTransaction
   >()
 
   const enhanceTransactionInput = async (
@@ -137,7 +152,7 @@ const ActivityScreen: React.FC<IReceiveScreenProps> = ({ route }) => {
           }
         }),
       )
-
+      console.log({ activityTransactions })
       setTransactions(activityTransactions)
       setInfo('')
     } catch (e) {
@@ -174,7 +189,10 @@ const ActivityScreen: React.FC<IReceiveScreenProps> = ({ route }) => {
       )}
       {selectedTransaction && (
         <View>
-          <ActivityDetails transaction={selectedTransaction} />
+          <ActivityDetails
+            transaction={selectedTransaction}
+            onSelected={setSelectedTransaction}
+          />
         </View>
       )}
     </ScrollView>
