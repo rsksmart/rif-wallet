@@ -1,9 +1,8 @@
 import React from 'react'
-import { render, fireEvent, waitFor } from '@testing-library/react-native'
+import { render, waitFor } from '@testing-library/react-native'
 import ActivityScreen from './ActivityScreen'
 import mockedTransactions from './transactions-mock.json'
 import mockedEnhancedTransactions from './enhanced-transactions-mock.json'
-import { act } from 'react-test-renderer'
 
 //TODO: integration tests pending
 jest.mock('../../lib/rifWalletServices/RifWalletServicesFetcher', () => {
@@ -67,10 +66,5 @@ describe('Load activities', () => {
     expect(getByTestId('tx-two-hash.View')).toBeDefined()
     expect(getByTestId('tx-three-hash.View')).toBeDefined()
     expect(getByTestId('tx-four-hash.View')).toBeDefined()
-    /*expect(getByTestId('rUSDT.View')).toBeDefined()
-    expect(getByTestId('DOC.View')).toBeDefined()
-    expect(getByTestId('cRBTC.View')).toBeDefined()
-    expect(getByTestId('cRIF.View')).toBeDefined()
-    expect(getByTestId('tRIF.View')).toBeDefined()*/
   })
 })
