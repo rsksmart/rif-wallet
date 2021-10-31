@@ -8,14 +8,13 @@ import { IApiTransaction } from '../../lib/rifWalletServices/RIFWalletServicesTy
 
 import { RIFWallet } from '../../lib/core'
 import { RifWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
-import { NavigationProp, ParamListBase } from '@react-navigation/native'
+
 import { formatTimestamp, shortAddress } from '../../lib/utils'
-import AbiEnhancer, { IEnhancedResult } from '../../lib/abiEnhancer/AbiEnhancer'
+import { AbiEnhancer, IEnhancedResult } from '../../lib/abiEnhancer/AbiEnhancer'
+const fetcher = new RifWalletServicesFetcher()
 const enhancer = new AbiEnhancer()
-const fetcher: RifWalletServicesFetcher = new RifWalletServicesFetcher()
 
 interface IReceiveScreenProps {
-  navigation: NavigationProp<ParamListBase>
   route: any
 }
 
@@ -109,18 +108,19 @@ const ActivityScreen: React.FC<IReceiveScreenProps> = ({ route }) => {
 
   const [info, setInfo] = useState('')
   const [transactions, setTransactions] = useState<IActivityTransaction[]>([])
-  const [selectedTransaction, setSelectedTransaction] = useState<
-    null | IActivityTransaction
-  >()
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<null | IActivityTransaction>()
 
   const enhanceTransactionInput = async (
     transaction: IApiTransaction,
   ): Promise<IEnhancedResult | null> => {
+
     const smartTx =
       account.smartWallet.smartWalletContract.interface.decodeFunctionData(
         'directExecute',
         transaction.input,
       )
+
     const enhancedTx: IEnhancedResult | null = await enhancer.enhance(account, {
       from: account.smartWalletAddress,
       to: smartTx.to.toLowerCase(),
@@ -141,11 +141,14 @@ const ActivityScreen: React.FC<IReceiveScreenProps> = ({ route }) => {
       const fetchedTransactions = await fetcher.fetchTransactionsByAddress(
         account.smartWalletAddress.toLowerCase(),
       )
+      console.log({ fetchedTransactions })
 
       const activityTransactions: IActivityTransaction[] = await Promise.all(
         fetchedTransactions.map(async (tx: IApiTransaction) => {
+
           const enhancedTransaction: IEnhancedResult | null =
             await enhanceTransactionInput(tx)
+          console.log({ enhancedTransaction })
           return {
             originTransaction: tx,
             enhancedTransaction,
