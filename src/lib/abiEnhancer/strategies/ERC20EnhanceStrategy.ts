@@ -4,6 +4,7 @@ import { getAllTokens } from '../../token/tokenMetadata'
 import { Signer } from '@ethersproject/abstract-signer'
 import { formatBigNumber } from '../formatBigNumber'
 import { IEnhancedResult, IEnhanceStrategy } from '../AbiEnhancer'
+import { ERC20Token } from '../../token/ERC20Token'
 
 export class ERC20EnhanceStrategy implements IEnhanceStrategy {
   public async parse(
@@ -15,7 +16,10 @@ export class ERC20EnhanceStrategy implements IEnhanceStrategy {
     }
 
     const tokens = await getAllTokens(signer)
-    const tokenFounded = tokens.find(x => x.address === transactionRequest.to)
+    // TODO: mixed up logic, needs refactor
+    const tokenFounded: ERC20Token = tokens.find(
+      x => (x as ERC20Token).address === transactionRequest.to,
+    ) as ERC20Token
 
     if (!tokenFounded) {
       return null
@@ -30,10 +34,12 @@ export class ERC20EnhanceStrategy implements IEnhanceStrategy {
 
     const currentBalance = await tokenFounded.balance()
     const tokenDecimals = await tokenFounded.decimals()
+    const tokenSymbol = tokenFounded.symbol
 
     return {
       from: transactionRequest.from!,
       to: decodedTo,
+      symbol: tokenSymbol,
       balance: formatBigNumber(currentBalance, tokenDecimals),
       value: formatBigNumber(decodedValue, tokenDecimals),
     }
