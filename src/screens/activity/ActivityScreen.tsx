@@ -30,7 +30,7 @@ const ActivityDetails = ({
       <Text style={styles.transactionDetailsTitle}>TransactionDetails</Text>
     </View>
     <View>
-      {transaction.enhancedTransaction ? (
+      {transaction.enhancedTransaction && transaction.enhancedTransaction.symbol !== 'tRBTC' ? (
         <>
           <Text>Token: {transaction.enhancedTransaction.symbol}</Text>
           <Text>Amount: {transaction.enhancedTransaction.value}</Text>
@@ -41,9 +41,9 @@ const ActivityDetails = ({
         </>
       ) : (
         <>
-          <Text>From: {shortAddress(transaction.originTransaction.from)}</Text>
-          <Text>To: {shortAddress(transaction.originTransaction.to)}</Text>
-          <Text>Amount: {transaction.originTransaction.value}</Text>
+          <Text>From: {shortAddress(transaction.enhancedTransaction.from)}</Text>
+          <Text>To: {shortAddress(transaction.enhancedTransaction.to)}</Text>
+          <Text>Amount: {transaction.enhancedTransaction.value}</Text>
           <Text>Data: {transaction.originTransaction.data}</Text>
         </>
       )}
@@ -96,25 +96,9 @@ const ActivityRow = ({
     testID={`${activityTransaction.originTransaction.hash}.View`}>
     <View style={styles.activitySummary}>
       <Text>
-        {activityTransaction.enhancedTransaction ? (
-          <>
-            {activityTransaction.enhancedTransaction.value}{' '}
-            {activityTransaction.enhancedTransaction.symbol} sent To{' '}
-            {shortAddress(activityTransaction.enhancedTransaction.to)}{' '}
-          </>
-        ) : (
-          <>
-            to: {activityTransaction.originTransaction.to} - value:{' '}
-            {BigNumber.from(
-              activityTransaction.originTransaction.value,
-            ).toString()}{' '}
-            - data:{' '}
-            {activityTransaction.originTransaction.data
-              ? activityTransaction.originTransaction.data.slice(10)
-              : '0x'}
-            ...
-          </>
-        )}
+        {activityTransaction.enhancedTransaction.value}{' '}
+        {activityTransaction.enhancedTransaction.symbol} sent To{' '}
+        {shortAddress(activityTransaction.enhancedTransaction.to)}{' '}
       </Text>
     </View>
     <View style={styles.button}>
@@ -160,6 +144,7 @@ const ActivityScreen: React.FC<IReceiveScreenProps> = ({ route }) => {
       from: account.smartWalletAddress,
       to: tx.to.toLowerCase(),
       data: tx.data,
+      value: transaction.value
     })
     return enhancedTx
   }

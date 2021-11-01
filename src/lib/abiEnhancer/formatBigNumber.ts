@@ -1,15 +1,14 @@
 import { BigNumber } from 'ethers'
 
 export const formatBigNumber = (amount: BigNumber, decimals: number) => {
-  console.log(amount, decimals)
+  if (amount.isZero()) return '0'
+
   const divisor = BigNumber.from(10).pow(BigNumber.from(decimals))
 
   const quotient = amount.div(divisor)
   const rest = amount.mod(divisor)
 
-  console.log(quotient.toString())
-
   return (
-    quotient.toString() + (rest.isZero() ? '' : rest.toString().slice(0, 4))
+    quotient.toString() + (rest.isZero() ? '' : "." + rest.toString().padStart(decimals, '0').slice(0, 8))
   )
 }
