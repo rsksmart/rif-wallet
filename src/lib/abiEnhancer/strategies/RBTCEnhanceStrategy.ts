@@ -14,17 +14,15 @@ export class RBTCEnhanceStrategy implements IEnhanceStrategy {
     const rbtc = makeRBTCToken(signer, chainId)
 
     const currentBalance = await rbtc.balance()
-    const decimals = await rbtc.decimals()
-
-    console.log('currentBalance', currentBalance)
+    const tokenDecimals = await rbtc.decimals()
 
     return {
       from: transactionRequest.from!,
       to: transactionRequest.to!,
-      balance: formatBigNumber(currentBalance, decimals),
+      balance: formatBigNumber(currentBalance, tokenDecimals),
       value: formatBigNumber(
         BigNumber.from(transactionRequest.value),
-        decimals,
+        tokenDecimals,
       ),
       symbol: 'tRBTC'
     }
