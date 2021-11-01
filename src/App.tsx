@@ -115,10 +115,14 @@ const App = () => {
           setRequests,
           mnemonic: kms?.mnemonic,
         }}>
-        <RootNavigation keyManagementProps={keyManagementProps} balancesScreenProps={{ fetcher }} keysInfoScreenProps={{
-          mnemonic: kms?.mnemonic || '',
-          deleteKeys
-        }} />
+        <RootNavigation
+          keyManagementProps={keyManagementProps}
+          balancesScreenProps={{ fetcher }}
+          keysInfoScreenProps={{
+            mnemonic: kms?.mnemonic || '',
+            deleteKeys,
+          }}
+        />
       </AppContext.Provider>
       {requests.length !== 0 && (
         <ModalComponent closeModal={closeRequest} request={requests[0]} />

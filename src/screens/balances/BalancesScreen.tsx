@@ -13,7 +13,7 @@ import { RIFWallet } from '../../lib/core'
 export const balanceToString = (balance: string, decimals: BigNumberish) => {
   const parts = {
     div: BigNumber.from(balance).div(BigNumber.from('10').pow(decimals)),
-    mod: BigNumber.from(balance).mod(BigNumber.from('10').pow(decimals))
+    mod: BigNumber.from(balance).mod(BigNumber.from('10').pow(decimals)),
   }
 
   return `${parts.div.toString()}.${parts.mod.toString().slice(0, 4)}`
@@ -46,19 +46,28 @@ export const BalancesRow = ({
   </View>
 )
 
-async function getTokensAndRBTCBalance (fetcher: IRIFWalletServicesFetcher, wallet: RIFWallet): Promise<ITokenWithBalance[]> {
-  const balances = await fetcher.fetchTokensByAddress(wallet.smartWalletAddress)
-  const rbtcBalanceEntry = await wallet.signer.provider!.getBalance(wallet.smartWallet.address)
-    .then(rbtcBalance => ({
-      name: 'TRBTC',
-      logo: 'TRBTC',
-      symbol: 'TRBTC (eoa wallet)',
-      contractAddress: 'RBTC',
-      decimals: 18,
-      balance: rbtcBalance.toString(),
-    } as ITokenWithBalance))
+async function getTokensAndRBTCBalance(
+  fetcher: IRIFWalletServicesFetcher,
+  wallet: RIFWallet,
+): Promise<ITokenWithBalance[]> {
+  const tokenBalances = await fetcher.fetchTokensByAddress(
+    wallet.smartWalletAddress,
+  )
+  const rbtcBalanceEntry = await wallet.signer
+    .provider!.getBalance(wallet.smartWallet.address)
+    .then(
+      rbtcBalance =>
+        ({
+          name: 'TRBTC',
+          logo: 'TRBTC',
+          symbol: 'TRBTC (eoa wallet)',
+          contractAddress: 'RBTC',
+          decimals: 18,
+          balance: rbtcBalance.toString(),
+        } as ITokenWithBalance),
+    )
 
-  return [rbtcBalanceEntry, ...balances]
+  return [rbtcBalanceEntry, ...tokenBalances]
 }
 
 export type BalancesScreenProps = { fetcher: IRIFWalletServicesFetcher }
@@ -74,13 +83,13 @@ export const BalancesScreen: React.FC<
     setBalances([])
 
     await getTokensAndRBTCBalance(fetcher, wallet)
-    .then(balances => {
-      setBalances(balances)
-      setInfo('')
-    })
-    .catch(e => {
-      setInfo('Error reaching API: ' + e.message)
-    })
+      .then(newBalances => {
+        setBalances(newBalances)
+        setInfo('')
+      })
+      .catch(e => {
+        setInfo('Error reaching API: ' + e.message)
+      })
   }
 
   useEffect(() => {
@@ -94,7 +103,7 @@ export const BalancesScreen: React.FC<
       </View>
 
       <View>
-        <Text testID='Info.Text'>{info}</Text>
+        <Text testID="Info.Text">{info}</Text>
       </View>
 
       <View>
@@ -108,7 +117,11 @@ export const BalancesScreen: React.FC<
       </View>
 
       <View style={styles.refreshButtonView}>
-        <Button onPress={loadData} title={'Refresh'} testID={'Refresh.Button'} />
+        <Button
+          onPress={loadData}
+          title={'Refresh'}
+          testID={'Refresh.Button'}
+        />
       </View>
     </ScrollView>
   )

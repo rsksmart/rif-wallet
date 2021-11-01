@@ -8,7 +8,7 @@
     "start": "react-native start",
     "ganache": "npx ganache-cli",
     "test": "jest --verbose",
-    "test:watch": "jest --watch",
+    "test:watch": "jest --verbose --watch --coverage",
     "test:ci": "jest --coverage --verbose",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",

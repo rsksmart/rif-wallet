@@ -18,7 +18,7 @@ const InjectedScreens = {
   BalancesScreen: InjectSelectedWallet(Screens.BalancesScreen),
   SignMessageScreen: InjectSelectedWallet(Screens.SignMessageScreen),
   WalletInfoScreen: InjectSelectedWallet(Screens.WalletInfoScreen),
-  KeysInfoScreen: InjectSelectedWallet(Screens.KeysInfoScreen)
+  KeysInfoScreen: InjectSelectedWallet(Screens.KeysInfoScreen),
 }
 
 type RootStackParamList = {
@@ -69,7 +69,12 @@ export const RootNavigation: React.FC<{
             options={sharedOptions}
           />
           <RootStack.Screen name="Balances">
-            {props => <InjectedScreens.BalancesScreen {...props} {...balancesScreenProps} />}
+            {props => (
+              <InjectedScreens.BalancesScreen
+                {...props}
+                {...balancesScreenProps}
+              />
+            )}
           </RootStack.Screen>
           <RootStack.Screen
             name="SignMessage"
@@ -98,7 +103,9 @@ export const RootNavigation: React.FC<{
             )}
           </RootStack.Screen>
           <RootStack.Screen name="KeysInfo" options={sharedOptions}>
-            {(props) => <Screens.KeysInfoScreen {...props} {...keysInfoScreenProps} />}
+            {props => (
+              <Screens.KeysInfoScreen {...props} {...keysInfoScreenProps} />
+            )}
           </RootStack.Screen>
         </RootStack.Navigator>
       </NavigationContainer>

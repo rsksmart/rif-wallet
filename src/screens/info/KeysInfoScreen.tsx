@@ -4,7 +4,7 @@ import { Button, CopyComponent, Header2, Paragraph } from '../../components'
 
 export enum TestID {
   Mnemonic = 'Mnemonic.Text',
-  Delete = 'Delete.Button'
+  Delete = 'Delete.Button',
 }
 
 export type KeysInfoScreenProps = {
@@ -12,7 +12,10 @@ export type KeysInfoScreenProps = {
   deleteKeys: () => Promise<any>
 }
 
-export const KeysInfoScreen: React.FC<KeysInfoScreenProps> = ({ mnemonic, deleteKeys }) => (
+export const KeysInfoScreen: React.FC<KeysInfoScreenProps> = ({
+  mnemonic,
+  deleteKeys,
+}) => (
   <ScrollView>
     <View style={styles.sectionCentered}>
       <Paragraph>
@@ -25,7 +28,7 @@ export const KeysInfoScreen: React.FC<KeysInfoScreenProps> = ({ mnemonic, delete
       <CopyComponent testID={TestID.Mnemonic} value={mnemonic} />
     </View>
     <View style={styles.section}>
-      <Button  testID={TestID.Delete} onPress={deleteKeys} title="Delete keys" />
+      <Button testID={TestID.Delete} onPress={deleteKeys} title="Delete keys" />
       <Paragraph>
         You will need to refresh the app for this to fully work.
       </Paragraph>

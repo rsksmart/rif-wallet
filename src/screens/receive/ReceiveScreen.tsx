@@ -6,22 +6,23 @@ import { Button, CopyComponent } from '../../components'
 import { ScreenWithWallet } from '../types'
 
 export enum TestID {
-  QRCode = 'Address.QRCode',
+  QRCodeDisplay = 'Address.QRCode',
   AddressText = 'Address.AddressText',
-  Share = 'Address.ShareButton'
+  ShareButton = 'Address.ShareButton',
 }
 
 export const ReceiveScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
   const smartAddress = wallet.address
 
-  const handleShare = () => Share.share({
-    title: smartAddress,
-    message: smartAddress,
-  })
+  const handleShare = () =>
+    Share.share({
+      title: smartAddress,
+      message: smartAddress,
+    })
 
   return (
     <ScrollView>
-      <View style={styles.section} testID={TestID.QRCode}>
+      <View style={styles.section} testID={TestID.QRCodeDisplay}>
         <QRCode
           bgColor="transparent"
           value={smartAddress}
@@ -40,8 +41,8 @@ export const ReceiveScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
           onPress={() => {
             handleShare()
           }}
-          title='Share'
-          testID={TestID.Share}
+          title="Share"
+          testID={TestID.ShareButton}
         />
       </View>
     </ScrollView>
