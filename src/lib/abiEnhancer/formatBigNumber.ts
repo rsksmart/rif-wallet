@@ -1,20 +1,14 @@
-import { BigNumber as EthBigNumber } from '@ethersproject/bignumber'
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'ethers'
 
-export const formatBigNumber = (price: EthBigNumber, decimals: number) => {
-  const MAX_DECIMALS = 5
+export const formatBigNumber = (amount: BigNumber, decimals: number) => {
+  if (amount.isZero()) return '0'
 
-  const bigNumber = new BigNumber(price.toString()).div(10 ** decimals)
+  const divisor = BigNumber.from(10).pow(BigNumber.from(decimals))
 
-  const decimalPlaces = bigNumber.decimalPlaces()
+  const quotient = amount.div(divisor)
+  const rest = amount.mod(divisor)
 
-  if (decimalPlaces > 0 && decimalPlaces < MAX_DECIMALS) {
-    return bigNumber.toFormat(decimalPlaces)
-  }
-
-  if (decimalPlaces >= MAX_DECIMALS) {
-    return bigNumber.toFormat(MAX_DECIMALS)
-  }
-
-  return bigNumber.toFormat()
+  return (
+    quotient.toString() + (rest.isZero() ? '' : "." + rest.toString().padStart(decimals, '0').slice(0, 8))
+  )
 }

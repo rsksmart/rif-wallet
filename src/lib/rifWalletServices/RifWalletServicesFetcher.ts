@@ -1,7 +1,7 @@
 import { ITokenWithBalance } from './RIFWalletServicesTypes'
 
 export class RifWalletServicesFetcher {
-  uri = 'http://localhost:3000'
+  uri = 'https://rif-wallet-services-dev.rifcomputing.net'
 
   protected async fetchAvailableTokens() {
     return fetch(`${this.uri}/tokens`).then(response => response.json())

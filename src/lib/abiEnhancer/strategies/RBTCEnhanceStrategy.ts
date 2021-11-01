@@ -1,8 +1,7 @@
+import { BigNumber, constants, Signer } from 'ethers'
 import { TransactionRequest } from '@ethersproject/abstract-provider'
-import { Signer } from '@ethersproject/abstract-signer'
 import { formatBigNumber } from '../formatBigNumber'
 import { IEnhancedResult, IEnhanceStrategy } from '../AbiEnhancer'
-import { BigNumber } from '@ethersproject/bignumber'
 import { makeRBTCToken } from '../../../lib/token/tokenMetadata'
 
 export class RBTCEnhanceStrategy implements IEnhanceStrategy {
@@ -15,16 +14,19 @@ export class RBTCEnhanceStrategy implements IEnhanceStrategy {
     const rbtc = makeRBTCToken(signer, chainId)
 
     const currentBalance = await rbtc.balance()
-    const tokenDecimals = await rbtc.decimals()
+    const decimals = await rbtc.decimals()
+
+    console.log('currentBalance', currentBalance)
 
     return {
       from: transactionRequest.from!,
       to: transactionRequest.to!,
-      balance: formatBigNumber(currentBalance, tokenDecimals),
+      balance: formatBigNumber(currentBalance, decimals),
       value: formatBigNumber(
         BigNumber.from(transactionRequest.value),
-        tokenDecimals,
+        decimals,
       ),
+      symbol: 'tRBTC'
     }
   }
 }
