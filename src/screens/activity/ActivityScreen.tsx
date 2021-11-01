@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { utils } from 'ethers'
+import { utils, BigNumber } from 'ethers'
 import { StyleSheet, View, ScrollView, Text, Linking } from 'react-native'
 
 import Button from '../../components/button'
@@ -30,10 +30,17 @@ const ActivityDetails = ({
       <Text style={styles.transactionDetailsTitle}>TransactionDetails</Text>
     </View>
     <View>
-      <Text>Token: {transaction.enhancedTransaction.symbol}</Text>
-      <Text>Amount: {transaction.enhancedTransaction.value}</Text>
-      <Text>From: {shortAddress(transaction.enhancedTransaction.from)}</Text>
-      <Text>To: {shortAddress(transaction.enhancedTransaction.to)}</Text>
+        {transaction.enhancedTransaction ? <>
+        <Text>Token: {transaction.enhancedTransaction.symbol}</Text>
+        <Text>Amount: {transaction.enhancedTransaction.value}</Text>
+        <Text>From: {shortAddress(transaction.enhancedTransaction.from)}</Text>
+        <Text>To: {shortAddress(transaction.enhancedTransaction.to)}</Text>
+      </> : <>
+        <Text>From: {shortAddress(transaction.originTransaction.from)}</Text>
+        <Text>To: {shortAddress(transaction.originTransaction.to)}</Text>
+        <Text>Amount: {transaction.originTransaction.value}</Text>
+        <Text>Data: {transaction.originTransaction.data}</Text>
+      </>}
       <Text>TX Hash: {shortAddress(transaction.originTransaction.hash)}</Text>
       <Text>Gas: {transaction.originTransaction.gas}</Text>
       <Text>
@@ -83,9 +90,13 @@ const ActivityRow = ({
     testID={`${activityTransaction.originTransaction.hash}.View`}>
     <View style={styles.activitySummary}>
       <Text>
-        {activityTransaction.enhancedTransaction.value}{' '}
-        {activityTransaction.enhancedTransaction.symbol} sent To{' '}
-        {shortAddress(activityTransaction.enhancedTransaction.to)}{' '}
+        {activityTransaction.enhancedTransaction ? <>
+          {activityTransaction.enhancedTransaction.value}{' '}
+          {activityTransaction.enhancedTransaction.symbol} sent To{' '}
+          {shortAddress(activityTransaction.enhancedTransaction.to)}{' '}
+        </> : <>
+          to: {activityTransaction.originTransaction.to}{' '} - value: {BigNumber.from(activityTransaction.originTransaction.value).toString()} - data: {activityTransaction.originTransaction.data ? activityTransaction.originTransaction.data.slice(10) : '0x'}... 
+        </>}
       </Text>
     </View>
     <View style={styles.button}>
@@ -115,16 +126,24 @@ const ActivityScreen: React.FC<IReceiveScreenProps> = ({ route }) => {
     transaction: IApiTransaction,
   ): Promise<IEnhancedResult | null> => {
 
-    const smartTx =
-      account.smartWallet.smartWalletContract.interface.decodeFunctionData(
-        'directExecute',
-        transaction.input,
-      )
+    let tx
+    try {
+        tx =
+        account.smartWallet.smartWalletContract.interface.decodeFunctionData(
+          'directExecute',
+          transaction.input,
+        )
+      } catch {
+        tx = {
+          to: transaction.to,
+          data: transaction.data
+        }
+      }
 
     const enhancedTx: IEnhancedResult | null = await enhancer.enhance(account, {
       from: account.smartWalletAddress,
-      to: smartTx.to.toLowerCase(),
-      data: smartTx.data,
+      to: tx.to.toLowerCase(),
+      data: tx.data,
     })
     return enhancedTx
   }
@@ -141,21 +160,18 @@ const ActivityScreen: React.FC<IReceiveScreenProps> = ({ route }) => {
       const fetchedTransactions = await fetcher.fetchTransactionsByAddress(
         account.smartWalletAddress.toLowerCase(),
       )
-      console.log({ fetchedTransactions })
 
       const activityTransactions: IActivityTransaction[] = await Promise.all(
         fetchedTransactions.map(async (tx: IApiTransaction) => {
 
           const enhancedTransaction: IEnhancedResult | null =
             await enhanceTransactionInput(tx)
-          console.log({ enhancedTransaction })
           return {
             originTransaction: tx,
             enhancedTransaction,
           }
         }),
       )
-      console.log({ activityTransactions })
       setTransactions(activityTransactions)
       setInfo('')
     } catch (e) {
