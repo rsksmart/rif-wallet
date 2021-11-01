@@ -9,5 +9,7 @@ export const formatBigNumber = (amount: BigNumber, decimals: number) => {
 
   console.log(quotient.toString())
 
-  return quotient.toString() + (rest.isZero() ? '' :rest.toString().slice(0, 4))
+  return (
+    quotient.toString() + (rest.isZero() ? '' : rest.toString().slice(0, 4))
+  )
 }

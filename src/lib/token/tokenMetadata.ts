@@ -11,7 +11,7 @@ import tokenMainnet from './assets/token-mainnet.svg'
 // @ts-ignore
 import tokenTestnet from './assets/token-testnet.svg'
 
-import { BaseToken, IToken } from './BaseToken'
+import { BaseToken } from './BaseToken'
 import { ERC20Token } from './ERC20Token'
 import { RBTCToken } from './RBTCToken'
 import { Signer } from '@ethersproject/abstract-signer'
