@@ -2,13 +2,13 @@ import { RIFWallet, OnRequest, Request } from "../src/lib/core"
 import { deploySmartWalletFactory } from "./contracts"
 import { createNewTestWallet } from './utils'
 
-export const setupTest = async (): Promise<{
+export const setupTest = async (privateKey?: string): Promise<{
   navigation: any // { navigate: ReturnType<typeof jest.fn> }
   route: any
   rifWallet: RIFWallet
 }> => {
   const smartWalletFactory = await deploySmartWalletFactory()
-  const wallet = await createNewTestWallet()
+  const wallet = await createNewTestWallet(privateKey)
   const onRequest: OnRequest = (nextRequest: Request) => nextRequest.confirm()
   const rifWallet = await RIFWallet.create(wallet, smartWalletFactory.address, onRequest)
 

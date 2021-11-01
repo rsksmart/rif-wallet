@@ -1,65 +1,38 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { StyleSheet, View, ScrollView, Dimensions, Share } from 'react-native'
 import QRCode from 'react-qr-code'
 
 import { Button, CopyComponent } from '../../components'
 import { ScreenWithWallet } from '../types'
 
-// TODO: accountLink is hardcoded until we had the rns sdk
-const accountLink = 'ilan.rsk'
-const window = Dimensions.get('window')
-
-const useShare = (title: string, textToShare: string) => {
-  const [isSharing, setIsSharing] = useState(false)
-
-  const handleShare = async () => {
-    setIsSharing(true)
-
-    try {
-      await Share.share({
-        title: title,
-        message: textToShare,
-      })
-    } catch (error) {
-      console.error('useShare', error)
-    }
-
-    setTimeout(() => {
-      setIsSharing(false)
-    }, 2000)
-  }
-
-  return {
-    isSharing,
-    handleShare,
-  }
+export enum TestID {
+  QRCode = 'Address.QRCode',
+  AddressText = 'Address.AddressText',
+  Share = 'Address.ShareButton'
 }
 
-/**
- * TODO: refactor QR and share components
- */
-
 export const ReceiveScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
-  const smartAddress = wallet.smartWalletAddress
-  const { isSharing, handleShare } = useShare('Account', smartAddress)
+  const smartAddress = wallet.address
+
+  const handleShare = () => Share.share({
+    title: smartAddress,
+    message: smartAddress,
+  })
 
   return (
     <ScrollView>
-      <View style={styles.section}>
-        {smartAddress !== '' && (
-          <QRCode
-            bgColor="transparent"
-            value={smartAddress}
-            size={window.width * 0.6}
-          />
-        )}
+      <View style={styles.section} testID={TestID.QRCode}>
+        <QRCode
+          bgColor="transparent"
+          value={smartAddress}
+          size={Dimensions.get('window').width * 0.6}
+        />
       </View>
 
-      <CopyComponent value={accountLink} testID={'Copy.Mnemonic'} />
       <CopyComponent
         prefix="Smart address: "
         value={smartAddress}
-        testID={'Copy.Mnemonic'}
+        testID={TestID.AddressText}
       />
 
       <View style={styles.section}>
@@ -67,7 +40,8 @@ export const ReceiveScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
           onPress={() => {
             handleShare()
           }}
-          title={isSharing ? 'shared!' : 'share'}
+          title='Share'
+          testID={TestID.Share}
         />
       </View>
     </ScrollView>

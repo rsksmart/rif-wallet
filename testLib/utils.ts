@@ -16,10 +16,12 @@ export const fundAccount = (to: string) => rpcAccount.sendTransaction({
   value: BigNumber.from('1000000000000000000')
 })
 
-export const createNewTestWallet = async () => {
-  const wallet = Wallet.createRandom().connect(testJsonRpcProvider)
+export const createNewTestWallet = async (privateKey?: string) => {
+  const wallet = (!privateKey ? Wallet.createRandom() : new Wallet(privateKey)).connect(testJsonRpcProvider)
   await sendAndWait(fundAccount(wallet.address))
   return wallet
 }
 
 export const getTextFromTextNode = (textNode: ReactTestInstance) => textNode.children[0]
+// https://stackoverflow.com/questions/48011353/how-to-unwrap-type-of-a-promise
+export type Awaited<T> = T extends PromiseLike<infer U> ? U : T

@@ -20,7 +20,7 @@ export const SignMessageScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
       <Header1>Sign Message</Header1>
 
       <Paragraph>Signing with EOA Account:</Paragraph>
-      <CopyComponent value={wallet.smartWallet.wallet.address} />
+      <CopyComponent value={wallet.eoaAddress} />
 
       <Paragraph>Message:</Paragraph>
       <TextInput

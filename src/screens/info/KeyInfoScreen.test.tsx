@@ -1,10 +1,9 @@
 import React from 'react'
 import { render, fireEvent } from "@testing-library/react-native"
-import { KeysInfoScreen } from ".."
+import { KeysInfoScreen } from "./KeysInfoScreen"
 import { setupTest } from "../../../testLib/setup"
-import { createNewTestWallet, getTextFromTextNode } from "../../../testLib/utils"
+import { Awaited, getTextFromTextNode } from "../../../testLib/utils"
 import { AppContext } from "../../Context"
-import { deleteKeys } from '../../storage/KeyStore'
 
 const createTestInstance = async () => {
   const { rifWallet } = await setupTest()
@@ -23,18 +22,23 @@ const createTestInstance = async () => {
   return { container, rifWallet, testMnemonic, deleteKeys }
 }
 
-describe('keys info', () => {
+describe('Keys Info Screen', function(this: {
+  testInstance: Awaited<ReturnType<typeof createTestInstance>>
+}) {
+  beforeEach(async () => {
+    this.testInstance = await createTestInstance()
+  })
   describe('initial screen', () => {
     test('shows mnemonic', async () => {
-      const { container: { getByTestId }, testMnemonic } = await createTestInstance()
+      const { container: { getByTestId }, testMnemonic } = this.testInstance
 
       expect(getTextFromTextNode(getByTestId('Mnemonic.Text'))).toEqual(testMnemonic)
     })
   })
 
   describe('actions', () => {
-    test('delete keys', async () => {
-      const { container: { getByTestId }, deleteKeys } = await createTestInstance()
+    test('delete keys', () => {
+      const { container: { getByTestId }, deleteKeys } = this.testInstance
 
       fireEvent.press(getByTestId('Delete.Button'))
 

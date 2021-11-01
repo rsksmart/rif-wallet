@@ -3,7 +3,7 @@ import { fireEvent, render, waitFor } from "@testing-library/react-native"
 import { BalancesScreen, balanceToString } from "./BalancesScreen"
 
 import { setupTest } from '../../../testLib/setup'
-import { sendAndWait, getTextFromTextNode } from '../../../testLib/utils'
+import { sendAndWait, getTextFromTextNode, Awaited } from '../../../testLib/utils'
 import { createMockFetcher, testCase, lastToken, lastTokenTextTestId } from '../../../testLib/mocks/rifServicesMock'
 
 const createTestInstace = async (
@@ -36,10 +36,7 @@ const createTestInstace = async (
 
 }
 
-// https://stackoverflow.com/questions/48011353/how-to-unwrap-type-of-a-promise
-type Awaited<T> = T extends PromiseLike<infer U> ? U : T
-
-describe('Balances screen', function(this: {
+describe('Balances Screen', function(this: {
   testInstance: Awaited<ReturnType<typeof createTestInstace>>
 }) {
   beforeEach(async () => {

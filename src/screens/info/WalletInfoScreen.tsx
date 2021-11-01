@@ -28,7 +28,7 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
 
   const getInfo = async () => {
     Promise.all([
-      wallet.smartWallet.wallet.getBalance().then(setEoaBalance),
+      wallet.smartWallet.signer.getBalance().then(setEoaBalance),
       wallet.smartWalletFactory.isDeployed().then(setIsSmartWalletDeployed),
       rif.balance().then(setRifBalance),
     ]).catch((err: Error) => {
@@ -62,7 +62,7 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
     <ScrollView>
       <Header2>Smart Wallet</Header2>
       <Paragraph>EOA:</Paragraph>
-      <CopyComponent value={wallet.smartWallet.wallet.address} />
+      <CopyComponent value={wallet.eoaAddress} />
       <Paragraph>Smart Wallet Address:</Paragraph>
       <CopyComponent value={wallet.address} />
 

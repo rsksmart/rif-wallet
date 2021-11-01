@@ -47,6 +47,10 @@ export class RIFWallet extends Signer {
     defineReadOnly(this, 'provider', this.smartWallet.signer.provider) // ref: https://github.com/ethers-io/ethers.js/blob/b1458989761c11bf626591706aa4ce98dae2d6a9/packages/abstract-signer/src.ts/index.ts#L130
   }
 
+  get eoaAddress (): string {
+    return this.smartWallet.address
+  }
+
   get address (): string {
     return this.smartWallet.smartWalletAddress
   }
