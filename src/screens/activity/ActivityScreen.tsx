@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { utils, BigNumber } from 'ethers'
+import { utils } from 'ethers'
 import { StyleSheet, View, ScrollView, Text, Linking } from 'react-native'
 
 import Button from '../../components/button'
@@ -30,7 +30,8 @@ const ActivityDetails = ({
       <Text style={styles.transactionDetailsTitle}>TransactionDetails</Text>
     </View>
     <View>
-      {transaction.enhancedTransaction && transaction.enhancedTransaction.symbol !== 'tRBTC' ? (
+      {transaction.enhancedTransaction &&
+      transaction.enhancedTransaction.symbol !== 'tRBTC' ? (
         <>
           <Text>Token: {transaction.enhancedTransaction.symbol}</Text>
           <Text>Amount: {transaction.enhancedTransaction.value}</Text>
@@ -41,7 +42,9 @@ const ActivityDetails = ({
         </>
       ) : (
         <>
-          <Text>From: {shortAddress(transaction.enhancedTransaction.from)}</Text>
+          <Text>
+            From: {shortAddress(transaction.enhancedTransaction.from)}
+          </Text>
           <Text>To: {shortAddress(transaction.enhancedTransaction.to)}</Text>
           <Text>Amount: {transaction.enhancedTransaction.value}</Text>
           <Text>Data: {transaction.originTransaction.data}</Text>
@@ -144,7 +147,7 @@ const ActivityScreen: React.FC<IReceiveScreenProps> = ({ route }) => {
       from: account.smartWalletAddress,
       to: tx.to.toLowerCase(),
       data: tx.data,
-      value: transaction.value
+      value: transaction.value,
     })
     return enhancedTx
   }

@@ -1,4 +1,4 @@
-import { BigNumber, constants, Signer } from 'ethers'
+import { BigNumber, Signer } from 'ethers'
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { formatBigNumber } from '../formatBigNumber'
 import { IEnhancedResult, IEnhanceStrategy } from '../AbiEnhancer'
@@ -24,7 +24,7 @@ export class RBTCEnhanceStrategy implements IEnhanceStrategy {
         BigNumber.from(transactionRequest.value),
         tokenDecimals,
       ),
-      symbol: 'tRBTC'
+      symbol: 'tRBTC',
     }
   }
 }
