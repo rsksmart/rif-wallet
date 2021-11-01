@@ -1,4 +1,4 @@
-import { Wallet, Contract, BytesLike, ContractTransaction, BigNumber } from 'ethers'
+import { Wallet, Contract, BytesLike, ContractTransaction, BigNumber, constants } from 'ethers'
 import SmartWalletABI from './SmartWalletABI.json'
 
 const createSmartWalletContract = (address: string) => {
@@ -29,7 +29,7 @@ export class SmartWallet {
     return new SmartWallet(smartWalletContract)
   }
 
-  directExecute = (to: string, data: BytesLike, ...args: any): Promise<ContractTransaction> => this.smartWalletContract.directExecute(to, data, ...args)
+  directExecute = (to: string, data: BytesLike = constants.HashZero, ...args: any): Promise<ContractTransaction> => this.smartWalletContract.directExecute(to, data, ...args)
   estimateDirectExecute = (to: string, data: BytesLike, ...args: any): Promise<BigNumber> => this.smartWalletContract.estimateGas.directExecute(to, data, ...args)
   callStaticDirectExecute = async (to: string, data: BytesLike, ...args: any): Promise<any> => {
     const { success, ret }: { success: boolean, ret: string } = await this.smartWalletContract.callStatic.directExecute(to, data, ...args)
