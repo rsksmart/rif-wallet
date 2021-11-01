@@ -1,14 +1,13 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { Signer } from '@ethersproject/abstract-signer'
 import { ERC20EnhanceStrategy } from './strategies/ERC20EnhanceStrategy'
+import { OtherEnhanceStrategy } from './strategies/OtherEnhanceStrategy'
 import { RBTCEnhanceStrategy } from './strategies/RBTCEnhanceStrategy'
 
 export interface IEnhancedResult {
   from: string
   to: string
-  symbol: string
-  balance: string
-  value: string
+  [key: string]: any
 }
 
 export interface IEnhanceStrategy {
@@ -22,7 +21,11 @@ class AbiEnhancer {
   public strategies: IEnhanceStrategy[]
 
   constructor() {
-    this.strategies = [new ERC20EnhanceStrategy(), new RBTCEnhanceStrategy()]
+    this.strategies = [
+      new ERC20EnhanceStrategy(),
+      new OtherEnhanceStrategy(),
+      new RBTCEnhanceStrategy(),
+    ]
   }
 
   public async enhance(

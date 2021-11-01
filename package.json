@@ -25,6 +25,7 @@
     "@rsksmart/rlogin-dpath": "^1.0.1",
     "@rsksmart/rsk-contract-metadata": "^1.0.15",
     "@rsksmart/rsk-testnet-contract-metadata": "^1.0.11",
+    "axios": "^0.24.0",
     "bignumber.js": "^9.0.1",
     "buffer": "^4.9.2",
     "ethers": "^5.4.7",
