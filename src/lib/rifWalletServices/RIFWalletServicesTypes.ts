@@ -57,7 +57,7 @@ export interface EventsServerResponse {
   data: IApiEvents[]
 }
 
-export interface IApiTransactions {
+export interface IApiTransaction {
   hash: string
   nonce: number
   blockHash: string
@@ -73,8 +73,9 @@ export interface IApiTransactions {
   receipt: any
   txType: string
   txId: string
+  data: string
 }
 
 export interface TransactionsServerResponse {
-  data: IApiTransactions[]
+  data: IApiTransaction[]
 }

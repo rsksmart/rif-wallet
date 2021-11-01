@@ -1,0 +1,32 @@
+[
+  {
+    "from": "0x27300eD4A9c66CC6374f1CEC836A1B273C233B75",
+    "to": "0x1D4F6A5FE927f0E0e4497B91CebfBcF64dA1c934",
+    "balance": "30",
+    "symbol": "DOC",
+    "value": "5"
+  },
+  {
+    "enhancedTransaction": {
+      "from": "0x27300eD4A9c66CC6374f1CEC836A1B273C233B75",
+      "to": "0x1D4F6A5FE927f0E0e4497B91CebfBcF64dA1c934",
+      "balance": "28",
+      "symbol": "tRIF",
+      "value": "2"
+    }
+  },
+  {
+    "from": "0x27300eD4A9c66CC6374f1CEC836A1B273C233B75",
+    "to": "0x1D4F6A5FE927f0E0e4497B91CebfBcF64dA1c934",
+    "balance": "30",
+    "symbol": "DOC",
+    "value": "15"
+  },
+  {
+    "from": "0x27300eD4A9c66CC6374f1CEC836A1B273C233B75",
+    "to": "0x1D4F6A5FE927f0E0e4497B91CebfBcF64dA1c934",
+    "balance": "1",
+    "symbol": "RDOC",
+    "value": "1"
+  }
+]

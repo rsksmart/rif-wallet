@@ -11,11 +11,13 @@ import { InjectSelectedWallet } from './Context'
 
 import { BalancesScreenProps } from './screens/balances/BalancesScreen'
 import { KeysInfoScreenProps } from './screens/info/KeysInfoScreen'
+import { ActivityScreenProps } from './screens/activity/ActivityScreen'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
   ReceiveScreen: InjectSelectedWallet(Screens.ReceiveScreen),
   BalancesScreen: InjectSelectedWallet(Screens.BalancesScreen),
+  ActivityScreen: InjectSelectedWallet(Screens.ActivityScreen),
   SignMessageScreen: InjectSelectedWallet(Screens.SignMessageScreen),
   WalletInfoScreen: InjectSelectedWallet(Screens.WalletInfoScreen),
   KeysInfoScreen: InjectSelectedWallet(Screens.KeysInfoScreen),
@@ -26,6 +28,7 @@ type RootStackParamList = {
   Send: undefined | { token: string }
   Receive: undefined
   Balances: undefined
+  Activity: undefined
   SignMessage: undefined
   SignTypedData: undefined
   TransactionReceived: undefined
@@ -45,10 +48,16 @@ export type ScreenProps<T extends keyof RootStackParamList> = StackScreenProps<
 >
 
 export const RootNavigation: React.FC<{
-  balancesScreenProps: BalancesScreenProps
   keyManagementProps: CreateKeysProps
+  balancesScreenProps: BalancesScreenProps
+  activityScreenProps: ActivityScreenProps
   keysInfoScreenProps: KeysInfoScreenProps
-}> = ({ balancesScreenProps, keyManagementProps, keysInfoScreenProps }) => {
+}> = ({
+  keyManagementProps,
+  balancesScreenProps,
+  activityScreenProps,
+  keysInfoScreenProps,
+}) => {
   return (
     <View style={styles.parent}>
       <NavigationContainer>
@@ -58,6 +67,12 @@ export const RootNavigation: React.FC<{
             component={Screens.HomeScreen}
             options={{ ...sharedOptions, headerShown: false }}
           />
+
+          <RootStack.Screen name="CreateKeysUX" options={sharedOptions}>
+            {props => (
+              <CreateKeysNavigation {...props} {...keyManagementProps} />
+            )}
+          </RootStack.Screen>
           <RootStack.Screen
             name="Receive"
             component={InjectedScreens.ReceiveScreen}
@@ -68,6 +83,7 @@ export const RootNavigation: React.FC<{
             component={InjectedScreens.SendScreen}
             options={sharedOptions}
           />
+
           <RootStack.Screen name="Balances">
             {props => (
               <InjectedScreens.BalancesScreen
@@ -76,6 +92,15 @@ export const RootNavigation: React.FC<{
               />
             )}
           </RootStack.Screen>
+          <RootStack.Screen name="Activity">
+            {props => (
+              <InjectedScreens.ActivityScreen
+                {...props}
+                {...activityScreenProps}
+              />
+            )}
+          </RootStack.Screen>
+
           <RootStack.Screen
             name="SignMessage"
             component={InjectedScreens.SignMessageScreen}
@@ -86,22 +111,18 @@ export const RootNavigation: React.FC<{
             component={Screens.SignTypedDataScreen}
             options={sharedOptions}
           />
+
           <RootStack.Screen
             name="TransactionReceived"
             component={Screens.TransactionReceivedScreen}
             options={sharedOptions}
           />
+
           <RootStack.Screen
             name="WalletInfo"
             component={InjectedScreens.WalletInfoScreen}
             options={sharedOptions}
           />
-
-          <RootStack.Screen name="CreateKeysUX" options={sharedOptions}>
-            {props => (
-              <CreateKeysNavigation {...props} {...keyManagementProps} />
-            )}
-          </RootStack.Screen>
           <RootStack.Screen name="KeysInfo" options={sharedOptions}>
             {props => (
               <Screens.KeysInfoScreen {...props} {...keysInfoScreenProps} />

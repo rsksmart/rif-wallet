@@ -1,13 +1,21 @@
-import { BigNumber, BigNumberish, ContractTransaction, Signer } from 'ethers'
+import {
+  BigNumber,
+  BigNumberish,
+  constants,
+  ContractTransaction,
+  Signer,
+} from 'ethers'
 import { BaseToken, IToken, ITransferOptions, TokenType } from './BaseToken'
 
 class RBTCToken extends BaseToken implements IToken {
   public chainId: number
+  public address: string
 
   constructor(signer: Signer, symbol: string, logo: string, chainId: number) {
     super(signer, symbol, logo)
 
     this.chainId = chainId
+    this.address = constants.AddressZero
   }
 
   public getType(): TokenType {
@@ -27,7 +35,7 @@ class RBTCToken extends BaseToken implements IToken {
     amount: BigNumberish,
     options?: ITransferOptions,
   ): Promise<ContractTransaction> {
-    const account = await this.getAddress()
+    const account = await this.getAccountAddress()
 
     return this.signer.sendTransaction({
       from: account,

@@ -17,8 +17,8 @@ import { jsonRpcProvider } from './lib/jsonRpcProvider'
 
 import { Paragraph } from './components/typography'
 import { AppContext } from './Context'
-import { CreateKeysProps } from './ux/createKeys'
 import { RifWalletServicesFetcher } from './lib/rifWalletServices/RifWalletServicesFetcher'
+import { AbiEnhancer } from './lib/abiEnhancer/AbiEnhancer'
 
 const createRIFWalletFactory = (onRequest: OnRequest) => (wallet: Wallet) =>
   RIFWallet.create(
@@ -28,6 +28,7 @@ const createRIFWalletFactory = (onRequest: OnRequest) => (wallet: Wallet) =>
   ) // temp - using only testnet
 
 const fetcher = new RifWalletServicesFetcher()
+const abiEnhancer = new AbiEnhancer()
 
 const App = () => {
   const [ready, setReady] = useState(false)
@@ -100,11 +101,6 @@ const App = () => {
 
   const closeRequest = () => setRequests([] as Requests)
 
-  const keyManagementProps: CreateKeysProps = {
-    generateMnemonic: () => KeyManagementSystem.create().mnemonic,
-    createFirstWallet,
-  }
-
   return (
     <SafeAreaView>
       <StatusBar />
@@ -116,8 +112,12 @@ const App = () => {
           mnemonic: kms?.mnemonic,
         }}>
         <RootNavigation
-          keyManagementProps={keyManagementProps}
+          keyManagementProps={{
+            generateMnemonic: () => KeyManagementSystem.create().mnemonic,
+            createFirstWallet,
+          }}
           balancesScreenProps={{ fetcher }}
+          activityScreenProps={{ fetcher, abiEnhancer }}
           keysInfoScreenProps={{
             mnemonic: kms?.mnemonic || '',
             deleteKeys,
