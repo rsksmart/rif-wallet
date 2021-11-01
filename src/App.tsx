@@ -12,12 +12,13 @@ import ModalComponent from './ux/requestsModal/ModalComponent'
 
 import { Wallet } from '@ethersproject/wallet'
 import { KeyManagementSystem, OnRequest, RIFWallet } from './lib/core'
-import { getKeys, hasKeys, saveKeys } from './storage/KeyStore'
+import { getKeys, hasKeys, saveKeys, deleteKeys } from './storage/KeyStore'
 import { jsonRpcProvider } from './lib/jsonRpcProvider'
 
 import { Paragraph } from './components/typography'
 import { AppContext } from './Context'
 import { CreateKeysProps } from './ux/createKeys'
+import { RifWalletServicesFetcher } from './lib/rifWalletServices/RifWalletServicesFetcher'
 
 const createRIFWalletFactory = (onRequest: OnRequest) => (wallet: Wallet) =>
   RIFWallet.create(
@@ -25,6 +26,8 @@ const createRIFWalletFactory = (onRequest: OnRequest) => (wallet: Wallet) =>
     '0x3f71ce7bd7912bf3b362fd76dd34fa2f017b6388',
     onRequest,
   ) // temp - using only testnet
+
+const fetcher = new RifWalletServicesFetcher()
 
 const App = () => {
   const [ready, setReady] = useState(false)
@@ -112,7 +115,10 @@ const App = () => {
           setRequests,
           mnemonic: kms?.mnemonic,
         }}>
-        <RootNavigation keyManagementProps={keyManagementProps} />
+        <RootNavigation keyManagementProps={keyManagementProps} balancesScreenProps={{ fetcher }} keysInfoScreenProps={{
+          mnemonic: kms?.mnemonic || '',
+          deleteKeys
+        }} />
       </AppContext.Provider>
       {requests.length !== 0 && (
         <ModalComponent closeModal={closeRequest} request={requests[0]} />

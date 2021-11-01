@@ -4,17 +4,22 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
 import { NavigationProp as _NavigationProp } from '@react-navigation/native'
 
-import { CreateKeysNavigation } from './ux/createKeys'
-import { CreateKeysProps } from './ux/createKeys/types'
+import { CreateKeysNavigation, CreateKeysProps } from './ux/createKeys'
 
 import * as Screens from './screens'
 import { InjectSelectedWallet } from './Context'
 
-const InjectedScreens = Object.keys(Screens).reduce(
-  (p, c) =>
-    Object.assign(p, { [c]: InjectSelectedWallet((Screens as any)[c]) }),
-  {},
-) as typeof Screens
+import { BalancesScreenProps } from './screens/balances/BalancesScreen'
+import { KeysInfoScreenProps } from './screens/info/KeysInfoScreen'
+
+const InjectedScreens = {
+  SendScreen: InjectSelectedWallet(Screens.SendScreen),
+  ReceiveScreen: InjectSelectedWallet(Screens.ReceiveScreen),
+  BalancesScreen: InjectSelectedWallet(Screens.BalancesScreen),
+  SignMessageScreen: InjectSelectedWallet(Screens.SignMessageScreen),
+  WalletInfoScreen: InjectSelectedWallet(Screens.WalletInfoScreen),
+  KeysInfoScreen: InjectSelectedWallet(Screens.KeysInfoScreen)
+}
 
 type RootStackParamList = {
   Home: undefined
@@ -40,8 +45,10 @@ export type ScreenProps<T extends keyof RootStackParamList> = StackScreenProps<
 >
 
 export const RootNavigation: React.FC<{
+  balancesScreenProps: BalancesScreenProps
   keyManagementProps: CreateKeysProps
-}> = ({ keyManagementProps }) => {
+  keysInfoScreenProps: KeysInfoScreenProps
+}> = ({ balancesScreenProps, keyManagementProps, keysInfoScreenProps }) => {
   return (
     <View style={styles.parent}>
       <NavigationContainer>
@@ -61,10 +68,9 @@ export const RootNavigation: React.FC<{
             component={InjectedScreens.SendScreen}
             options={sharedOptions}
           />
-          <RootStack.Screen
-            name="Balances"
-            component={InjectedScreens.BalancesScreen}
-          />
+          <RootStack.Screen name="Balances">
+            {props => <InjectedScreens.BalancesScreen {...props} {...balancesScreenProps} />}
+          </RootStack.Screen>
           <RootStack.Screen
             name="SignMessage"
             component={InjectedScreens.SignMessageScreen}
@@ -91,11 +97,9 @@ export const RootNavigation: React.FC<{
               <CreateKeysNavigation {...props} {...keyManagementProps} />
             )}
           </RootStack.Screen>
-          <RootStack.Screen
-            name="KeysInfo"
-            component={Screens.KeysInfoScreen}
-            options={sharedOptions}
-          />
+          <RootStack.Screen name="KeysInfo" options={sharedOptions}>
+            {(props) => <Screens.KeysInfoScreen {...props} {...keysInfoScreenProps} />}
+          </RootStack.Screen>
         </RootStack.Navigator>
       </NavigationContainer>
     </View>

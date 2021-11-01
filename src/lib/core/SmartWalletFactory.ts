@@ -1,4 +1,4 @@
-import { Wallet, Contract, constants, ContractTransaction } from 'ethers'
+import { Contract, constants, ContractTransaction, Signer } from 'ethers'
 import SmartWalletFactoryABI from './SmartWalletFactoryABI.json'
 
 interface ISmartWalletFactory {
@@ -32,9 +32,10 @@ export class SmartWalletFactory implements ISmartWalletFactory {
     ]
   }
 
-  static async create (wallet: Wallet, smartWalletFactoryContractAddress: string) {
-    const smartWalletFactoryContract = createSmartWalletFactoryContract(smartWalletFactoryContractAddress).connect(wallet)
-    const smartAddress = await smartWalletFactoryContract.getSmartWalletAddress(...SmartWalletFactory.getSmartWalletParams(wallet.address))
+  static async create (signer: Signer, smartWalletFactoryContractAddress: string) {
+    const smartWalletFactoryContract = createSmartWalletFactoryContract(smartWalletFactoryContractAddress).connect(signer)
+    const address = await signer.getAddress()
+    const smartAddress = await smartWalletFactoryContract.getSmartWalletAddress(...SmartWalletFactory.getSmartWalletParams(address))
     return new SmartWalletFactory(smartAddress, smartWalletFactoryContract)
   }
 

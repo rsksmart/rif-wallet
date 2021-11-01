@@ -44,7 +44,7 @@ export class RIFWallet extends Signer {
     this.smartWallet = smartWallet
     this.onRequest = onRequest
 
-    defineReadOnly(this, 'provider', this.smartWallet.wallet.provider) // ref: https://github.com/ethers-io/ethers.js/blob/b1458989761c11bf626591706aa4ce98dae2d6a9/packages/abstract-signer/src.ts/index.ts#L130
+    defineReadOnly(this, 'provider', this.smartWallet.signer.provider) // ref: https://github.com/ethers-io/ethers.js/blob/b1458989761c11bf626591706aa4ce98dae2d6a9/packages/abstract-signer/src.ts/index.ts#L130
   }
 
   get address (): string {
@@ -55,14 +55,14 @@ export class RIFWallet extends Signer {
     return this.smartWallet.smartWalletAddress
   }
 
-  get wallet (): Wallet {
-    return this.smartWallet.wallet
+  get signer (): Signer {
+    return this.smartWallet.signer
   }
 
-  static async create (wallet: Wallet, smartWalletFactoryAddress: string, onRequest: OnRequest) {
-    const smartWalletFactory = await SmartWalletFactory.create(wallet, smartWalletFactoryAddress)
+  static async create (signer: Signer, smartWalletFactoryAddress: string, onRequest: OnRequest) {
+    const smartWalletFactory = await SmartWalletFactory.create(signer, smartWalletFactoryAddress)
     const smartWalletAddress = await smartWalletFactory.getSmartWalletAddress()
-    const smartWallet = SmartWallet.create(wallet, smartWalletAddress)
+    const smartWallet = await SmartWallet.create(signer, smartWalletAddress)
     return new RIFWallet(smartWalletFactory, smartWallet, onRequest)
   }
 
@@ -73,7 +73,7 @@ export class RIFWallet extends Signer {
       const nextRequest = Object.freeze<SignMessageRequest>({
         type: 'signMessage',
         payload: message,
-        confirm: async () => resolve(await this.smartWallet.wallet.signMessage(message)),
+        confirm: async () => resolve(await this.smartWallet.signer.signMessage(message)),
         reject: (reason?: any) => reject(new Error(reason))
       })
 
@@ -82,7 +82,7 @@ export class RIFWallet extends Signer {
     })
   }
 
-  signTransaction = (transaction: TransactionRequest): Promise<string> => this.smartWallet.wallet.signTransaction(transaction)
+  signTransaction = (transaction: TransactionRequest): Promise<string> => this.smartWallet.signer.signTransaction(transaction)
 
   // calls via smart wallet
   call (transactionRequest: TransactionRequest, blockTag?: BlockTag): Promise<any> {

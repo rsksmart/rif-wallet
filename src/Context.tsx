@@ -24,7 +24,7 @@ export const useSelectedWallet = () => {
 export function InjectSelectedWallet<T>(
   Component: FC<ScreenWithWallet & T>,
 ): FC<T> {
-  return function InjectedComponent({ ...props }) {
+  return function InjectedComponent(props) {
     const wallet = useSelectedWallet()
     if (!wallet) {
       throw new Error('No selected wallet')

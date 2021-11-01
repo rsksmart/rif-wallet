@@ -59,7 +59,8 @@
     "react-native-codegen": "^0.0.7",
     "react-test-renderer": "17.0.2",
     "rn-nodeify": "^10.3.0",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "wait-for-expect": "^3.0.2"
   },
   "resolutions": {
     "@types/react": "^17"
@@ -75,7 +76,8 @@
       "node"
     ],
     "setupFilesAfterEnv": [
-      "@testing-library/jest-native/extend-expect"
+      "@testing-library/jest-native/extend-expect",
+      "./node_modules/react-native-gesture-handler/jestSetup.js"
     ]
   },
   "react-native": {

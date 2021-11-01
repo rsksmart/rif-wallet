@@ -1,12 +1,13 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
-
-import { deleteKeys } from '../../storage/KeyStore'
-
-import { AppContext } from '../../Context'
 import { Button, CopyComponent, Header2, Paragraph } from '../../components'
 
-export const KeysInfoScreen = () => (
+export type KeysInfoScreenProps = {
+  mnemonic: string
+  deleteKeys: () => Promise<any>
+}
+
+export const KeysInfoScreen: React.FC<KeysInfoScreenProps> = ({ mnemonic, deleteKeys }) => (
   <ScrollView>
     <View style={styles.sectionCentered}>
       <Paragraph>
@@ -16,10 +17,10 @@ export const KeysInfoScreen = () => (
     </View>
     <View style={styles.section}>
       <Header2>Master key</Header2>
-      <CopyComponent value={useContext(AppContext).mnemonic || ''} />
+      <CopyComponent testID={'Mnemonic.Text'} value={mnemonic} />
     </View>
     <View style={styles.section}>
-      <Button onPress={deleteKeys} title="Delete keys" />
+      <Button  testID={'Delete.Button'} onPress={deleteKeys} title="Delete keys" />
       <Paragraph>
         You will need to refresh the app for this to fully work.
       </Paragraph>
