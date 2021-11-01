@@ -11,10 +11,10 @@ import tokenMainnet from './assets/token-mainnet.svg'
 // @ts-ignore
 import tokenTestnet from './assets/token-testnet.svg'
 
-import { IToken } from './BaseToken'
+import { BaseToken } from './BaseToken'
 import { ERC20Token } from './ERC20Token'
 import { RBTCToken } from './RBTCToken'
-import { RIFWallet } from '../core/RIFWallet'
+import { Signer } from '@ethersproject/abstract-signer'
 
 export interface ITokenMetadata {
   [address: string]: {
@@ -52,7 +52,7 @@ export const getTokenLogo = (address: string, chainId: number) => {
   return chainId === MAINNET_CHAINID ? tokenMainnet : tokenTestnet
 }
 
-export const getAllTokens = async (signer: RIFWallet): Promise<IToken[]> => {
+export const getAllTokens = async (signer: Signer): Promise<BaseToken[]> => {
   const chainId = await signer.getChainId()
 
   const metadataTokens =
@@ -60,11 +60,11 @@ export const getAllTokens = async (signer: RIFWallet): Promise<IToken[]> => {
 
   const metadataKeys = Object.keys(metadataTokens)
 
+  const tokens: BaseToken[] = []
+
   const rbtcLogo = chainId === MAINNET_CHAINID ? rbtcMainnet : rbtcTestnet
   const rbtcSymbol = chainId === MAINNET_CHAINID ? 'RBTC' : 'TRBTC'
   const rbtc = new RBTCToken(signer, rbtcSymbol, rbtcLogo, chainId)
-
-  const tokens: IToken[] = []
 
   tokens.push(rbtc)
 
@@ -78,4 +78,12 @@ export const getAllTokens = async (signer: RIFWallet): Promise<IToken[]> => {
   }
 
   return tokens
+}
+
+export const makeRBTCToken = (signer: Signer, chainId: number): RBTCToken => {
+  const rbtcLogo = chainId === MAINNET_CHAINID ? rbtcMainnet : rbtcTestnet
+  const rbtcSymbol = chainId === MAINNET_CHAINID ? 'RBTC' : 'TRBTC'
+  const rbtc = new RBTCToken(signer, rbtcSymbol, rbtcLogo, chainId)
+
+  return rbtc
 }

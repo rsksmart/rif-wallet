@@ -126,6 +126,14 @@ const WalletApp: React.FC<Interface> = ({ navigation }) => {
                 title="Balances"
               />
               <Button onPress={signedTypedData} title="Sign Typed Data" />
+
+              <Button
+                onPress={() =>
+                  // @ts-ignore
+                  navigation.navigate('Activity', { account })
+                }
+                title="Activity"
+              />
             </View>
           )
         })}

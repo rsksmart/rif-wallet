@@ -5,9 +5,12 @@ import { ERC20 as ERC20Type, ERC20__factory } from './types'
 class ERC20Token extends BaseToken implements IToken {
   private tokenContract: ERC20Type
 
+  public address: string
+
   constructor(address: string, signer: Signer, symbol: string, logo: string) {
     super(signer, symbol, logo)
     this.tokenContract = ERC20__factory.connect(address, signer)
+    this.address = address
   }
 
   public getType(): TokenType {
@@ -19,7 +22,7 @@ class ERC20Token extends BaseToken implements IToken {
   }
 
   public async balance(): Promise<BigNumber> {
-    const account = await this.getAddress()
+    const account = await this.getAccountAddress()
 
     return this.tokenContract.balanceOf(account)
   }

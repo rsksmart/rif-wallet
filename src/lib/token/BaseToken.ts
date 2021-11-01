@@ -13,7 +13,7 @@ export class BaseToken {
     this.logo = logo
   }
 
-  protected async getAddress() {
+  protected async getAccountAddress() {
     return await this.signer.getAddress()
   }
 }
@@ -35,6 +35,7 @@ export interface IToken {
   ) => Promise<ContractTransaction>
   logo: string
   symbol: string
+  address: string
 }
 
 export const ten = BigNumber.from(10)
