@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, fireEvent } from "@testing-library/react-native"
-import { KeysInfoScreen } from "./KeysInfoScreen"
+import { KeysInfoScreen, TestID } from "./KeysInfoScreen"
 import { setupTest } from "../../../testLib/setup"
 import { Awaited, getTextFromTextNode } from "../../../testLib/utils"
 import { AppContext } from "../../Context"
@@ -32,7 +32,7 @@ describe('Keys Info Screen', function(this: {
     test('shows mnemonic', async () => {
       const { container: { getByTestId }, testMnemonic } = this.testInstance
 
-      expect(getTextFromTextNode(getByTestId('Mnemonic.Text'))).toEqual(testMnemonic)
+      expect(getTextFromTextNode(getByTestId(TestID.Mnemonic))).toEqual(testMnemonic)
     })
   })
 
@@ -40,7 +40,7 @@ describe('Keys Info Screen', function(this: {
     test('delete keys', () => {
       const { container: { getByTestId }, deleteKeys } = this.testInstance
 
-      fireEvent.press(getByTestId('Delete.Button'))
+      fireEvent.press(getByTestId(TestID.Delete))
 
       expect(deleteKeys).toHaveBeenCalledTimes(1)
     })

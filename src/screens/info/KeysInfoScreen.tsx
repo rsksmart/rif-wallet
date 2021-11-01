@@ -2,6 +2,11 @@ import React from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 import { Button, CopyComponent, Header2, Paragraph } from '../../components'
 
+export enum TestID {
+  Mnemonic = 'Mnemonic.Text',
+  Delete = 'Delete.Button'
+}
+
 export type KeysInfoScreenProps = {
   mnemonic: string
   deleteKeys: () => Promise<any>
@@ -17,10 +22,10 @@ export const KeysInfoScreen: React.FC<KeysInfoScreenProps> = ({ mnemonic, delete
     </View>
     <View style={styles.section}>
       <Header2>Master key</Header2>
-      <CopyComponent testID={'Mnemonic.Text'} value={mnemonic} />
+      <CopyComponent testID={TestID.Mnemonic} value={mnemonic} />
     </View>
     <View style={styles.section}>
-      <Button  testID={'Delete.Button'} onPress={deleteKeys} title="Delete keys" />
+      <Button  testID={TestID.Delete} onPress={deleteKeys} title="Delete keys" />
       <Paragraph>
         You will need to refresh the app for this to fully work.
       </Paragraph>
