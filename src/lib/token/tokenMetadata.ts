@@ -11,7 +11,7 @@ import tokenMainnet from './assets/token-mainnet.svg'
 // @ts-ignore
 import tokenTestnet from './assets/token-testnet.svg'
 
-import { BaseToken } from './BaseToken'
+import { IToken } from './BaseToken'
 import { ERC20Token } from './ERC20Token'
 import { RBTCToken } from './RBTCToken'
 import { Signer } from '@ethersproject/abstract-signer'
@@ -52,7 +52,7 @@ export const getTokenLogo = (address: string, chainId: number) => {
   return chainId === MAINNET_CHAINID ? tokenMainnet : tokenTestnet
 }
 
-export const getAllTokens = async (signer: Signer): Promise<BaseToken[]> => {
+export const getAllTokens = async (signer: Signer): Promise<IToken[]> => {
   const chainId = await signer.getChainId()
 
   const metadataTokens =
@@ -60,11 +60,9 @@ export const getAllTokens = async (signer: Signer): Promise<BaseToken[]> => {
 
   const metadataKeys = Object.keys(metadataTokens)
 
-  const tokens: BaseToken[] = []
+  const tokens: IToken[] = []
 
-  const rbtcLogo = chainId === MAINNET_CHAINID ? rbtcMainnet : rbtcTestnet
-  const rbtcSymbol = chainId === MAINNET_CHAINID ? 'RBTC' : 'TRBTC'
-  const rbtc = new RBTCToken(signer, rbtcSymbol, rbtcLogo, chainId)
+  const rbtc = makeRBTCToken(signer, chainId)
 
   tokens.push(rbtc)
 
