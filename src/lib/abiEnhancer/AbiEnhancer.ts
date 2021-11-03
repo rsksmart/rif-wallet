@@ -17,7 +17,14 @@ export interface IEnhanceStrategy {
   ) => Promise<IEnhancedResult | null>
 }
 
-export class AbiEnhancer {
+export interface IAbiEnhancer {
+  enhance(
+    signer: Signer,
+    transactionRequest: TransactionRequest,
+  ): Promise<IEnhancedResult | null>
+}
+
+export class AbiEnhancer implements IAbiEnhancer {
   public strategies: IEnhanceStrategy[]
 
   constructor() {
