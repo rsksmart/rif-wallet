@@ -7,7 +7,7 @@ import { getAllTokens } from '../../lib/token/tokenMetadata'
 import { IToken } from '../../lib/token/BaseToken'
 
 import { ScreenProps } from '../../RootNavigation'
-import { Button, Paragraph } from '../../components'
+import { Button, CopyComponent, Paragraph } from '../../components'
 import { ScreenWithWallet } from '../types'
 
 export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
@@ -40,6 +40,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   }
 
   const transferERC20 = async (tokenSymbol: string) => {
+    setInfo('')
     if (availableTokens) {
       const selectedToken = availableTokens.find(
         token => token.symbol === tokenSymbol,
@@ -149,7 +150,9 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
       </View>
       {txConfirmed && tx && (
         <View testID={'TxReceipt.View'} style={styles.section}>
-          <Paragraph>Tx Hash: {tx && tx.transactionHash}</Paragraph>
+          {tx && (
+            <CopyComponent value={tx.transactionHash} prefix={`Tx Hash: `} />
+          )}
           <Button
             title="View in explorer"
             onPress={() => {

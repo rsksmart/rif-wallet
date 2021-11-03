@@ -123,10 +123,10 @@ const App = () => {
             deleteKeys,
           }}
         />
+        {requests.length !== 0 && (
+          <ModalComponent closeModal={closeRequest} request={requests[0]} />
+        )}
       </AppContext.Provider>
-      {requests.length !== 0 && (
-        <ModalComponent closeModal={closeRequest} request={requests[0]} />
-      )}
     </SafeAreaView>
   )
 }

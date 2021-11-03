@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { TextInput, View } from 'react-native'
 import { BigNumber } from 'ethers'
 import { TransactionRequest } from '@ethersproject/abstract-provider'
@@ -7,6 +7,7 @@ import { SendTransactionRequest } from '../../lib/core/RIFWallet'
 
 import { sharedStyles } from './sharedStyles'
 import { Button, Header2, Paragraph } from '../../components'
+import { ScreenWithWallet } from '../../screens/types'
 
 /**
  * Used for UI only to make editing transactions easier. Allows for
@@ -59,14 +60,33 @@ const convertTransactionToStrings = (tx: TransactionRequest) => ({
 
 */
 
-const ReviewTransactionModal: React.FC<Interface> = ({
+const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
   request,
   closeModal,
+  wallet,
 }) => {
   const transactionRequest = convertTransactionToStrings(request.payload[0])
 
   const [gasPrice, setGasPrice] = useState(transactionRequest.gasPrice)
   const [gasLimit, setGasLimit] = useState(transactionRequest.gasLimit)
+
+  useEffect(() => {
+    const txRequest = request.payload[0]
+    if (!txRequest.gasLimit) {
+      wallet.smartWallet
+        .estimateDirectExecute(txRequest.to || '0x', txRequest.data || '0x')
+        .then((gl: BigNumber) => setGasLimit(gl.toString()))
+        .catch(() => setGasLimit('0'))
+    }
+
+    if (!txRequest.gasPrice) {
+      wallet.provider
+        ?.getGasPrice()
+        .then((gp: BigNumber) =>
+          setGasPrice(gp.mul('101').div('100').toString()),
+        )
+    }
+  }, [request])
 
   // convert from string to Transaction and pass out of component
   const confirmTransaction = () => {
