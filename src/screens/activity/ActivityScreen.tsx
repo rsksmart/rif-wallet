@@ -9,7 +9,10 @@ import { IApiTransaction } from '../../lib/rifWalletServices/RIFWalletServicesTy
 import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
 
 import { formatTimestamp, shortAddress } from '../../lib/utils'
-import { AbiEnhancer, IEnhancedResult } from '../../lib/abiEnhancer/AbiEnhancer'
+import {
+  IAbiEnhancer,
+  IEnhancedResult,
+} from '../../lib/abiEnhancer/AbiEnhancer'
 import { ScreenWithWallet } from '../types'
 import { formatBigNumber } from '../../lib/abiEnhancer/formatBigNumber'
 
@@ -81,26 +84,26 @@ const ActivityDetails = ({
 )
 
 const ActivityRow = ({
-  key,
   activityTransaction,
   onSelected,
 }: {
-  key: string
   activityTransaction: IActivityTransaction
   onSelected: (transaction: IActivityTransaction) => void
 }) => (
   <View
-    key={key}
+    key={activityTransaction.originTransaction.hash}
     style={styles.activityRow}
     testID={`${activityTransaction.originTransaction.hash}.View`}>
     <View style={styles.activitySummary}>
       <Text>
         {activityTransaction.enhancedTransaction ? (
-          <>
-            {activityTransaction.enhancedTransaction.value}{' '}
-            {activityTransaction.enhancedTransaction.symbol} sent To{' '}
-            {shortAddress(activityTransaction.enhancedTransaction.to)}{' '}
-          </>
+          <Text testID={`${activityTransaction.originTransaction.hash}.Text`}>
+            {`${activityTransaction.enhancedTransaction.value} ${
+              activityTransaction.enhancedTransaction.symbol
+            } sent To ${shortAddress(
+              activityTransaction.enhancedTransaction.to,
+            )}`}
+          </Text>
         ) : (
           <>
             {formatBigNumber(
@@ -131,7 +134,7 @@ export interface IActivityTransaction {
 
 export type ActivityScreenProps = {
   fetcher: IRIFWalletServicesFetcher
-  abiEnhancer: AbiEnhancer
+  abiEnhancer: IAbiEnhancer
 }
 
 export const ActivityScreen: React.FC<ScreenWithWallet & ActivityScreenProps> =
@@ -174,7 +177,6 @@ export const ActivityScreen: React.FC<ScreenWithWallet & ActivityScreenProps> =
         const fetchedTransactions = await fetcher.fetchTransactionsByAddress(
           wallet.smartWalletAddress.toLowerCase(),
         )
-
         const activityTransactions: IActivityTransaction[] = await Promise.all(
           fetchedTransactions.map(async (tx: IApiTransaction) => {
             const enhancedTransaction = await enhanceTransactionInput(tx)
@@ -195,12 +197,12 @@ export const ActivityScreen: React.FC<ScreenWithWallet & ActivityScreenProps> =
       <ScrollView>
         {!selectedTransaction && (
           <View>
-            <View>
-              <Paragraph>{wallet.smartWalletAddress}</Paragraph>
-            </View>
+            <Paragraph testID={'Address.Paragraph'}>
+              {wallet.smartWalletAddress}
+            </Paragraph>
 
             <View>
-              <Text>{info}</Text>
+              <Text testID="Info.Text">{info}</Text>
             </View>
 
             {transactions &&
@@ -214,7 +216,11 @@ export const ActivityScreen: React.FC<ScreenWithWallet & ActivityScreenProps> =
               ))}
 
             <View style={styles.refreshButtonView}>
-              <Button onPress={loadData} title={'Refresh'} />
+              <Button
+                onPress={loadData}
+                title={'Refresh'}
+                testID={'Refresh.Button'}
+              />
             </View>
           </View>
         )}
