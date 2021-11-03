@@ -7,7 +7,7 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "ganache": "npx ganache-cli",
-    "test": "jest --verbose",
+    "test": "jest --verbose --runInBand",
     "test:watch": "jest --verbose --watch --coverage",
     "test:ci": "jest --coverage --verbose",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
