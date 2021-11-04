@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, fireEvent } from '@testing-library/react-native'
-import Button from './index'
+import { Button } from './index'
 
 describe('button', () => {
   it('renders correctly with defaults', () => {

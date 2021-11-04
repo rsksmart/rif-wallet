@@ -1,118 +1,127 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, ScrollView, Text } from 'react-native'
-import { utils } from 'ethers'
-import { jsonRpcProvider } from '../../lib/jsonRpcProvider'
-import Button from '../../components/button'
-import { Paragraph } from '../../components/typography'
+import { BigNumber, BigNumberish } from 'ethers'
+
+import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
+import { ScreenProps, NavigationProp } from '../../RootNavigation'
+import { Button, Paragraph } from '../../components'
+import { ScreenWithWallet } from '../types'
 import { RIFWallet } from '../../lib/core'
-import { RifWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
-import { NavigationProp, ParamListBase } from '@react-navigation/native'
-import { roundBalance } from '../../lib/utils'
 
-const fetcher: RifWalletServicesFetcher = new RifWalletServicesFetcher()
+export const balanceToString = (balance: string, decimals: BigNumberish) => {
+  const parts = {
+    div: BigNumber.from(balance).div(BigNumber.from('10').pow(decimals)),
+    mod: BigNumber.from(balance).mod(BigNumber.from('10').pow(decimals)),
+  }
 
-interface IReceiveScreenProps {
-  navigation: NavigationProp<ParamListBase>
-  route: any
+  return `${parts.div.toString()}.${parts.mod.toString().slice(0, 4)}`
 }
 
-const BalancesRow = ({
-  account,
-  token,
+export const BalancesRow = ({
+  token: { symbol, balance, decimals, contractAddress },
   navigation,
 }: {
-  account: RIFWallet
   token: ITokenWithBalance
-  navigation: NavigationProp<ParamListBase>
+  navigation: NavigationProp
 }) => (
-  <View style={styles.tokenRow} testID={`${token.symbol}.View`}>
+  <View style={styles.tokenRow} testID={`${contractAddress}.View`}>
     <View style={styles.tokenBalance}>
-      <Text>
-        {token.symbol}{' '}
-        {roundBalance(utils.formatUnits(token.balance, token.decimals))}
+      <Text testID={`${contractAddress}.Text`}>
+        {`${balanceToString(balance, decimals)} ${symbol}`}
       </Text>
     </View>
     <View style={styles.button}>
       <Button
         onPress={() => {
-          // @ts-ignore
-          navigation.navigate('SendTransaction', {
-            account,
-            token: token.symbol,
+          navigation.navigate('Send', {
+            token: symbol,
           })
         }}
         title={'Send'}
-        testID={`${token.symbol}.Button`}
+        testID={`${contractAddress}.SendButton`}
       />
     </View>
   </View>
 )
 
-const BalancesScreen: React.FC<IReceiveScreenProps> = ({
-  route,
-  navigation,
-}) => {
-  const [info, setInfo] = useState('')
-  const [tokens, setTokens] = useState<ITokenWithBalance[]>([])
+async function getTokensAndRBTCBalance(
+  fetcher: IRIFWalletServicesFetcher,
+  wallet: RIFWallet,
+): Promise<ITokenWithBalance[]> {
+  const tokenBalances = await fetcher.fetchTokensByAddress(
+    wallet.smartWalletAddress,
+  )
+  const rbtcBalanceEntry = await wallet.signer
+    .provider!.getBalance(wallet.smartWallet.address)
+    .then(
+      rbtcBalance =>
+        ({
+          name: 'TRBTC',
+          logo: 'TRBTC',
+          symbol: 'TRBTC (eoa wallet)',
+          contractAddress: 'RBTC',
+          decimals: 18,
+          balance: rbtcBalance.toString(),
+        } as ITokenWithBalance),
+    )
 
-  const account = route.params.account as RIFWallet
+  return [rbtcBalanceEntry, ...tokenBalances]
+}
+
+export type BalancesScreenProps = { fetcher: IRIFWalletServicesFetcher }
+
+export const BalancesScreen: React.FC<
+  ScreenProps<'Balances'> & ScreenWithWallet & BalancesScreenProps
+> = ({ navigation, wallet, fetcher }) => {
+  const [info, setInfo] = useState('')
+  const [balances, setBalances] = useState<ITokenWithBalance[]>([])
+
+  const loadData = async () => {
+    setInfo('Loading balances. Please wait...')
+    setBalances([])
+
+    await getTokensAndRBTCBalance(fetcher, wallet)
+      .then(newBalances => {
+        setBalances(newBalances)
+        setInfo('')
+      })
+      .catch(e => {
+        setInfo('Error reaching API: ' + e.message)
+      })
+  }
 
   useEffect(() => {
     loadData()
   }, [])
 
-  const loadData = async () => {
-    try {
-      setTokens([])
-      setInfo('Loading balances. Please wait...')
-
-      const fetchedTokens = await fetcher.fetchTokensByAddress(
-        account.smartWalletAddress,
-      )
-      const rbtcBalance = await jsonRpcProvider.getBalance(
-        account.smartWallet.wallet.address,
-      )
-
-      const rbtcToken: ITokenWithBalance = {
-        name: 'TRBTC',
-        logo: 'TRBTC',
-        symbol: 'TRBTC (eoa wallet)',
-        contractAddress: 'n/a',
-        decimals: 18,
-        balance: rbtcBalance.toString(),
-      }
-
-      setTokens([rbtcToken, ...fetchedTokens])
-      setInfo('')
-    } catch (e) {
-      setInfo('Error reaching API: ' + e.message)
-    }
-  }
-
   return (
     <ScrollView>
       <View>
-        <Paragraph>{account.smartWalletAddress}</Paragraph>
+        <Paragraph>{wallet.smartWalletAddress}</Paragraph>
       </View>
 
       <View>
-        <Text>{info}</Text>
+        <Text testID="Info.Text">{info}</Text>
       </View>
 
-      {tokens &&
-        tokens.map(token => (
+      <View>
+        {balances.map(token => (
           <BalancesRow
             key={token.contractAddress}
-            account={account}
             token={token}
             navigation={navigation}
           />
         ))}
+      </View>
 
       <View style={styles.refreshButtonView}>
-        <Button onPress={loadData} title={'Refresh'} />
+        <Button
+          onPress={loadData}
+          title={'Refresh'}
+          testID={'Refresh.Button'}
+        />
       </View>
     </ScrollView>
   )
@@ -140,5 +149,3 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 })
-
-export default BalancesScreen

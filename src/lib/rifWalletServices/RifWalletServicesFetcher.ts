@@ -1,6 +1,11 @@
-import { ITokenWithBalance } from './RIFWalletServicesTypes'
+import { ITokenWithBalance, IApiTransaction } from './RIFWalletServicesTypes'
 
-export class RifWalletServicesFetcher {
+export interface IRIFWalletServicesFetcher {
+  fetchTokensByAddress(address: string): Promise<ITokenWithBalance[]>
+  fetchTransactionsByAddress(address: string): Promise<IApiTransaction[]>
+}
+
+export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
   uri = 'https://rif-wallet-services-dev.rifcomputing.net'
 
   protected async fetchAvailableTokens() {

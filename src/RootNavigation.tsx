@@ -1,89 +1,135 @@
-import React, { useContext } from 'react'
-import { NavigationContainer } from '@react-navigation/native'
-import { createStackNavigator } from '@react-navigation/stack'
-import WalletApp from './App'
-import SendTransaction from './screens/send/SendTransaction'
-import TransactionReceived from './TransactionReceived'
-
+import React from 'react'
 import { StyleSheet, View } from 'react-native'
+import { NavigationContainer } from '@react-navigation/native'
+import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
+import { NavigationProp as _NavigationProp } from '@react-navigation/native'
 
-import ReceiveScreen from './screens/receive/ReceiveScreen'
+import { CreateKeysNavigation, CreateKeysProps } from './ux/createKeys'
 
-import SmartWallet from './tempScreens/SmartWallet'
-import { WalletProviderContext } from './state/AppContext'
-import CreateWalletNavigationScreen from './screens/createWallet'
-import RevealMasterKeyScreen from './screens/createWallet/RevealMasterKeyScreen'
-import ModalComponent from './modal/ModalComponent'
-import SignMessageScreen from './tempScreens/SignMessageScreen'
-import BalancesScreen from './screens/balances/BalancesScreen'
-import ActivityScreen from './screens/activity/ActivityScreen'
+import * as Screens from './screens'
+import { InjectSelectedWallet } from './Context'
 
-interface Interface {}
+import { BalancesScreenProps } from './screens/balances/BalancesScreen'
+import { KeysInfoScreenProps } from './screens/info/KeysInfoScreen'
+import { ActivityScreenProps } from './screens/activity/ActivityScreen'
 
-const RootStack = createStackNavigator()
+const InjectedScreens = {
+  SendScreen: InjectSelectedWallet(Screens.SendScreen),
+  ReceiveScreen: InjectSelectedWallet(Screens.ReceiveScreen),
+  BalancesScreen: InjectSelectedWallet(Screens.BalancesScreen),
+  ActivityScreen: InjectSelectedWallet(Screens.ActivityScreen),
+  SignMessageScreen: InjectSelectedWallet(Screens.SignMessageScreen),
+  WalletInfoScreen: InjectSelectedWallet(Screens.WalletInfoScreen),
+  KeysInfoScreen: InjectSelectedWallet(Screens.KeysInfoScreen),
+}
 
-const RootNavigation: React.FC<Interface> = () => {
-  const context = useContext(WalletProviderContext)
-  const closeRequest = () => context.resolveUxInteraction()
+type RootStackParamList = {
+  Home: undefined
+  Send: undefined | { token: string }
+  Receive: undefined
+  Balances: undefined
+  Activity: undefined
+  SignMessage: undefined
+  SignTypedData: undefined
+  TransactionReceived: undefined
+  WalletInfo: undefined
+  CreateKeysUX: undefined
+  KeysInfo: undefined
+}
 
-  const sharedOptions = { headerShown: false }
+const RootStack = createStackNavigator<RootStackParamList>()
+export type NavigationProp = _NavigationProp<RootStackParamList>
+
+const sharedOptions = { headerShown: true }
+
+export type ScreenProps<T extends keyof RootStackParamList> = StackScreenProps<
+  RootStackParamList,
+  T
+>
+
+export const RootNavigation: React.FC<{
+  keyManagementProps: CreateKeysProps
+  balancesScreenProps: BalancesScreenProps
+  activityScreenProps: ActivityScreenProps
+  keysInfoScreenProps: KeysInfoScreenProps
+}> = ({
+  keyManagementProps,
+  balancesScreenProps,
+  activityScreenProps,
+  keysInfoScreenProps,
+}) => {
   return (
     <View style={styles.parent}>
       <NavigationContainer>
         <RootStack.Navigator>
-          <RootStack.Group>
-            <RootStack.Screen
-              name="Home"
-              component={WalletApp}
-              options={sharedOptions}
-            />
+          <RootStack.Screen
+            name="Home"
+            component={Screens.HomeScreen}
+            options={{ ...sharedOptions, headerShown: false }}
+          />
 
-            <RootStack.Screen
-              name="SmartWallet"
-              component={SmartWallet}
-              options={sharedOptions}
-            />
-            <RootStack.Screen
-              name="Receive"
-              component={ReceiveScreen}
-              options={sharedOptions}
-            />
-            <RootStack.Screen
-              name="SendTransaction"
-              component={SendTransaction}
-            />
-            <RootStack.Screen
-              name="TransactionReceived"
-              component={TransactionReceived}
-            />
-            <RootStack.Screen
-              name="SignMessage"
-              component={SignMessageScreen}
-              options={sharedOptions}
-            />
-            <RootStack.Screen name="Balances" component={BalancesScreen} />
-            <RootStack.Screen name="Activity" component={ActivityScreen} />
-            <RootStack.Screen
-              name="CreateWalletStack"
-              component={CreateWalletNavigationScreen}
-              options={sharedOptions}
-            />
-            <RootStack.Screen
-              name="RevealMasterKey"
-              component={RevealMasterKeyScreen}
-              options={{ ...sharedOptions, headerShown: true }}
-            />
-          </RootStack.Group>
+          <RootStack.Screen name="CreateKeysUX" options={sharedOptions}>
+            {props => (
+              <CreateKeysNavigation {...props} {...keyManagementProps} />
+            )}
+          </RootStack.Screen>
+          <RootStack.Screen
+            name="Receive"
+            component={InjectedScreens.ReceiveScreen}
+            options={sharedOptions}
+          />
+          <RootStack.Screen
+            name="Send"
+            component={InjectedScreens.SendScreen}
+            options={sharedOptions}
+          />
+
+          <RootStack.Screen name="Balances">
+            {props => (
+              <InjectedScreens.BalancesScreen
+                {...props}
+                {...balancesScreenProps}
+              />
+            )}
+          </RootStack.Screen>
+          <RootStack.Screen name="Activity">
+            {props => (
+              <InjectedScreens.ActivityScreen
+                {...props}
+                {...activityScreenProps}
+              />
+            )}
+          </RootStack.Screen>
+
+          <RootStack.Screen
+            name="SignMessage"
+            component={InjectedScreens.SignMessageScreen}
+            options={sharedOptions}
+          />
+          <RootStack.Screen
+            name="SignTypedData"
+            component={Screens.SignTypedDataScreen}
+            options={sharedOptions}
+          />
+
+          <RootStack.Screen
+            name="TransactionReceived"
+            component={Screens.TransactionReceivedScreen}
+            options={sharedOptions}
+          />
+
+          <RootStack.Screen
+            name="WalletInfo"
+            component={InjectedScreens.WalletInfoScreen}
+            options={sharedOptions}
+          />
+          <RootStack.Screen name="KeysInfo" options={sharedOptions}>
+            {props => (
+              <Screens.KeysInfoScreen {...props} {...keysInfoScreenProps} />
+            )}
+          </RootStack.Screen>
         </RootStack.Navigator>
       </NavigationContainer>
-
-      {/* Modals: */}
-      {context.walletRequests.length !== 0 && (
-        <ModalComponent
-          closeModal={closeRequest}
-          request={context.walletRequests[0]}
-        />
-      )}
     </View>
   )
 }
@@ -93,5 +139,3 @@ const styles = StyleSheet.create({
     height: '100%',
   },
 })
-
-export default RootNavigation

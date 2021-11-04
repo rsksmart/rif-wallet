@@ -14,7 +14,12 @@ interface Interface {
   testID?: string
 }
 
-const Button: React.FC<Interface> = ({ title, onPress, disabled, testID }) => {
+export const Button: React.FC<Interface> = ({
+  title,
+  onPress,
+  disabled,
+  testID,
+}) => {
   return (
     <TouchableOpacity
       style={styles.button}
@@ -42,5 +47,3 @@ const styles = StyleSheet.create({
     color: '#cccccc',
   },
 })
-
-export default Button

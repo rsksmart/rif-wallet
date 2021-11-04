@@ -1,174 +1,134 @@
-import React, { useContext } from 'react'
-import { StyleSheet, View, ScrollView } from 'react-native'
-import { NavigationProp, ParamListBase } from '@react-navigation/native'
+import './shim'
+import '@ethersproject/shims' // ref: https://docs.ethers.io/v5/cookbook/react-native/#cookbook-reactnative
+import 'react-native-gesture-handler'
+import 'react-native-get-random-values'
 
-import Button from './components/button'
-import { Header1, Header2, Paragraph } from './components/typography'
-import { RIFWallet } from './lib/core'
-import { WalletProviderContext } from './state/AppContext'
-import { removeStorage, StorageKeys } from './storage'
-import CopyComponent from './components/copy'
+import React, { useEffect, useState } from 'react'
+import { SafeAreaView, StatusBar, View } from 'react-native'
 
-interface Interface {
-  navigation: NavigationProp<ParamListBase>
-  route: any
-}
+import { Wallets, Requests } from './Context'
+import { RootNavigation } from './RootNavigation'
+import ModalComponent from './ux/requestsModal/ModalComponent'
 
-const WalletApp: React.FC<Interface> = ({ navigation }) => {
-  const { wallets, addUxInteraction } = useContext(WalletProviderContext)
-  // TEMP - Add a request to the que WITHOUT going through the wallet!
-  const signedTypedData = () => {
-    const typedDataRequest = {
-      domain: {
-        chainId: 31,
-        name: 'rLogin sample app',
-        verifyingContract: '0x285b30492a3f444d7bf75261a35cb292fc8f41a6',
-        version: '1',
-      },
-      message: {
-        contents: 'Welcome to rLogin!',
-        num: 1500,
-        person: {
-          firstName: 'jesse',
-          lastName: 'clark',
-        },
-      },
-      // Refers to the keys of the *types* object below.
-      primaryType: 'Sample',
-      types: {
-        EIP712Domain: [
-          { name: 'name', type: 'string' },
-          { name: 'version', type: 'string' },
-          { name: 'chainId', type: 'uint256' },
-          { name: 'verifyingContract', type: 'address' },
-        ],
-        // Not an EIP712Domain definition
-        Sample: [
-          { name: 'contents', type: 'string' },
-          { name: 'num', type: 'uint256' },
-          { name: 'person', type: 'Person' },
-        ],
-        Person: [
-          { name: 'firstName', type: 'string' },
-          { name: 'lastName', type: 'string' },
-        ],
-      },
-    }
+import { Wallet } from '@ethersproject/wallet'
+import { KeyManagementSystem, OnRequest, RIFWallet } from './lib/core'
+import { getKeys, hasKeys, saveKeys, deleteKeys } from './storage/KeyStore'
+import { jsonRpcProvider } from './lib/jsonRpcProvider'
 
-    const request = {
-      type: 'signTypedData',
-      payload: typedDataRequest,
-      confirm: () => console.log('CONFIRMED!'),
-      reject: () => console.log('REJECTED!'),
-    }
+import { Paragraph } from './components/typography'
+import { AppContext } from './Context'
+import { RifWalletServicesFetcher } from './lib/rifWalletServices/RifWalletServicesFetcher'
+import { AbiEnhancer } from './lib/abiEnhancer/AbiEnhancer'
 
-    // @ts-ignore
-    addUxInteraction(request)
+const createRIFWalletFactory = (onRequest: OnRequest) => (wallet: Wallet) =>
+  RIFWallet.create(
+    wallet.connect(jsonRpcProvider),
+    '0x3f71ce7bd7912bf3b362fd76dd34fa2f017b6388',
+    onRequest,
+  ) // temp - using only testnet
+
+const fetcher = new RifWalletServicesFetcher()
+const abiEnhancer = new AbiEnhancer()
+
+const App = () => {
+  const [ready, setReady] = useState(false)
+
+  const [kms, setKMS] = useState<null | KeyManagementSystem>(null)
+  const [wallets, setWallets] = useState<Wallets>({})
+  const [requests, setRequests] = useState<Requests>([])
+  const [selectedWallet, setSelectedWallet] = useState('')
+
+  const onRequest: OnRequest = request => setRequests([request])
+  const createRIFWallet = createRIFWalletFactory(onRequest)
+
+  const setKeys = (newKms: KeyManagementSystem, newWallets: Wallets) => {
+    setWallets(newWallets)
+    setSelectedWallet(newWallets[Object.keys(newWallets)[0]].address) // temp - using only one wallet
+    setKMS(newKms)
   }
 
-  const seeSmartWallet = (account: RIFWallet) =>
-    // @ts-ignore
-    navigation.navigate('SmartWallet', { account })
+  const init = async () => {
+    if (await hasKeys()) {
+      const serializedKeys = await getKeys()
+      // eslint-disable-next-line no-shadow
+      const { kms, wallets } = KeyManagementSystem.fromSerialized(
+        serializedKeys!,
+      )
+
+      const rifWallets = await Promise.all(wallets.map(createRIFWallet))
+
+      const rifWalletsDictionary = rifWallets.reduce(
+        (p: Wallets, c: RIFWallet) => Object.assign(p, { [c.address]: c }),
+        {},
+      )
+
+      setKeys(kms, rifWalletsDictionary)
+    }
+
+    setReady(true)
+  }
+
+  useEffect(() => {
+    init()
+  }, [])
+
+  if (!ready) {
+    return (
+      <>
+        {/* eslint-disable-next-line react-native/no-inline-styles */}
+        <View style={{ paddingVertical: 200 }}>
+          <Paragraph>Getting set...</Paragraph>
+        </View>
+      </>
+    )
+  }
+
+  const createFirstWallet = async (mnemonic: string) => {
+    // eslint-disable-next-line no-shadow
+    const kms = KeyManagementSystem.import(mnemonic)
+    const { save, wallet } = kms.nextWallet(31)
+
+    const rifWallet = await createRIFWallet(wallet)
+
+    save()
+    const serialized = kms.serialize()
+    await saveKeys(serialized)
+
+    setKeys(kms, { [rifWallet.address]: rifWallet })
+
+    return rifWallet
+  }
+
+  const closeRequest = () => setRequests([] as Requests)
 
   return (
-    <ScrollView>
-      <Header1>sWallet</Header1>
-      <View style={styles.section}>
-        <Header2>Welcome</Header2>
-        {wallets.length > 0 ? (
-          <Button
-            onPress={() => navigation.navigate('RevealMasterKey')}
-            title="Reveal master key"
-          />
-        ) : (
-          <Button
-            onPress={() => navigation.navigate('CreateWalletStack')}
-            title="Create master key"
-          />
-        )}
-      </View>
-
-      <View style={styles.section}>
-        <Header2>RIF Wallets:</Header2>
-        {wallets.map((account: RIFWallet, index: number) => {
-          return (
-            <View key={index}>
-              <Paragraph>EOA Address</Paragraph>
-              <CopyComponent value={account.smartWallet.wallet.address} />
-              <Button
-                title="See smart wallet"
-                onPress={() => seeSmartWallet(account)}
-              />
-              <Button
-                // @ts-ignore
-                onPress={() => navigation.navigate('Receive', { account })}
-                title="Receive"
-              />
-              <Button
-                onPress={() => {
-                  // @ts-ignore
-                  navigation.navigate('SendTransaction', {
-                    account,
-                    token: 'tRIF',
-                  })
-                }}
-                title="Send Transaction"
-              />
-              <Button
-                onPress={() => navigation.navigate('SignMessage', { account })}
-                title="Sign Message"
-              />
-              <Button
-                onPress={() =>
-                  // @ts-ignore
-                  navigation.navigate('Balances', { account })
-                }
-                title="Balances"
-              />
-              <Button onPress={signedTypedData} title="Sign Typed Data" />
-
-              <Button
-                onPress={() =>
-                  // @ts-ignore
-                  navigation.navigate('Activity', { account })
-                }
-                title="Activity"
-              />
-            </View>
-          )
-        })}
-      </View>
-
-      <View style={styles.section}>
-        <Header2>Settings</Header2>
-        <Button
-          onPress={() => {
-            removeStorage(StorageKeys.KMS)
+    <SafeAreaView>
+      <StatusBar />
+      <AppContext.Provider
+        value={{
+          wallets,
+          selectedWallet,
+          setRequests,
+          mnemonic: kms?.mnemonic,
+        }}>
+        <RootNavigation
+          keyManagementProps={{
+            generateMnemonic: () => KeyManagementSystem.create().mnemonic,
+            createFirstWallet,
           }}
-          title="Clear RN Storage"
+          balancesScreenProps={{ fetcher }}
+          activityScreenProps={{ fetcher, abiEnhancer }}
+          keysInfoScreenProps={{
+            mnemonic: kms?.mnemonic || '',
+            deleteKeys,
+          }}
         />
-        <Paragraph>
-          You will need to refresh the app for this to fully work.
-        </Paragraph>
-      </View>
-    </ScrollView>
+      </AppContext.Provider>
+      {requests.length !== 0 && (
+        <ModalComponent closeModal={closeRequest} request={requests[0]} />
+      )}
+    </SafeAreaView>
   )
 }
 
-const styles = StyleSheet.create({
-  safeView: {
-    height: '100%',
-  },
-  screen: {
-    paddingRight: 15,
-    paddingLeft: 15,
-  },
-  section: {
-    paddingTop: 15,
-    paddingBottom: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
-  },
-})
-
-export default WalletApp
+export default App

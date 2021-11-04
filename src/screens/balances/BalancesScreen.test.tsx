@@ -1,68 +1,168 @@
 import React from 'react'
-import { render, fireEvent, waitFor } from '@testing-library/react-native'
-import BalancesScreen from './BalancesScreen'
-import mockedTokens from './tokens-mock.json'
-import { act } from 'react-test-renderer'
+import { fireEvent, render, waitFor } from '@testing-library/react-native'
+import { BalancesScreen, balanceToString } from './BalancesScreen'
 
-//TODO: integration tests pending
-jest.mock('../../lib/rifWalletServices/RifWalletServicesFetcher', () => {
-  return {
-    RifWalletServicesFetcher: jest.fn().mockImplementation(() => {
-      return {
-        fetchTokensByAddress: async () => {
-          return mockedTokens
-        },
-      }
-    }),
+import { setupTest } from '../../../testLib/setup'
+import {
+  sendAndWait,
+  getTextFromTextNode,
+  Awaited,
+} from '../../../testLib/utils'
+import {
+  createMockFetcher,
+  testCase,
+  lastToken,
+  lastTokenTextTestId,
+} from '../../../testLib/mocks/rifServicesMock'
+
+const createTestInstace = async (fetcher = createMockFetcher()) => {
+  const mock = await setupTest()
+
+  const container = render(
+    <BalancesScreen
+      wallet={mock.rifWallet}
+      navigation={mock.navigation}
+      route={{} as any}
+      fetcher={fetcher}
+    />,
+  )
+
+  const loadingText = container.getByTestId('Info.Text')
+  expect(getTextFromTextNode(loadingText)).toContain('Loading')
+
+  const waitForEffect = () => container.findByTestId(lastTokenTextTestId) // called act without await
+  // waits for things to be rendered in the happy path
+
+  const testRBTCBalance = async () => {
+    const actual = getTextFromTextNode(container.getByTestId('RBTC.Text'))
+    const expected = await mock.rifWallet.smartWallet.signer
+      .getBalance()
+      .then(balance => `${balanceToString(balance.toString(), 18)} TRBTC`)
+
+    expect(actual).toContain(expected)
   }
-})
 
-const navigation = {
-  navigate: jest.fn(),
+  return { container, mock, waitForEffect, testRBTCBalance, fetcher }
 }
 
-const route = {
-  params: {
-    account: {
-      smartWalletAddress: '0xbd4c8e11cf2c560382e0dbd6aeef538debf1d449',
-      smartWallet: {
-        wallet: { address: '0xbd4c8e11cf2c560382e0dbd6aeef538debf1d449' },
-      },
-    },
-  },
-}
-
-describe('Load balances', () => {
-  beforeEach(() => {
-    navigation.navigate.mockClear()
+describe('Balances Screen', function (this: {
+  testInstance: Awaited<ReturnType<typeof createTestInstace>>
+}) {
+  beforeEach(async () => {
+    this.testInstance = await createTestInstace()
   })
 
-  it('selects token in balance to send', async () => {
-    const { getByTestId } = render(
-      <BalancesScreen route={route} navigation={navigation as any} />,
-    )
+  describe('initial screen', () => {
+    test('starts loading', async () => {
+      const {
+        container: { getByTestId },
+        waitForEffect,
+      } = this.testInstance
 
-    await waitFor(() => getByTestId('cUSDT.View'))
+      expect(getTextFromTextNode(getByTestId('Info.Text'))).toContain('Loading')
+      await waitForEffect()
+    })
 
-    expect(getByTestId('cUSDT.View')).toBeDefined()
-    expect(getByTestId('rUSDT.View')).toBeDefined()
-    expect(getByTestId('DOC.View')).toBeDefined()
-    expect(getByTestId('cRBTC.View')).toBeDefined()
-    expect(getByTestId('cRIF.View')).toBeDefined()
-    expect(getByTestId('tRIF.View')).toBeDefined()
+    test('account balance', async () => {
+      const { waitForEffect, testRBTCBalance } = this.testInstance
+      await waitForEffect()
+
+      await testRBTCBalance()
+    })
+
+    test('token balances', async () => {
+      const {
+        waitForEffect,
+        fetcher,
+        container: { findByTestId, getByTestId },
+        mock: { rifWallet },
+      } = this.testInstance
+      await waitForEffect()
+
+      await findByTestId(lastTokenTextTestId)
+
+      for (let v of testCase) {
+        const balanceText = getByTestId(`${v.contractAddress}.Text`)
+        expect(getTextFromTextNode(balanceText)).toEqual(
+          `${balanceToString(v.balance, v.decimals)} ${v.symbol}`,
+        )
+      }
+
+      expect(fetcher.fetchTokensByAddress).toHaveBeenCalledTimes(1)
+      expect(fetcher.fetchTokensByAddress).toHaveBeenCalledWith(
+        rifWallet.address,
+      )
+    })
+
+    test('handle error', async () => {
+      const fetcher = {
+        fetchTokensByAddress: jest.fn(() => Promise.reject(new Error())),
+      }
+
+      const {
+        container: { getByTestId },
+      } = await createTestInstace(fetcher)
+
+      const loadingText = getByTestId('Info.Text')
+      expect(getTextFromTextNode(loadingText)).toContain('Loading')
+
+      await waitFor(() =>
+        expect(getTextFromTextNode(loadingText)).toContain('Error'),
+      )
+
+      expect(fetcher.fetchTokensByAddress).toHaveBeenCalled()
+    })
   })
 
-  it('select token to send', async () => {
-    const { getByTestId } = render(
-      <BalancesScreen route={route} navigation={navigation as any} />,
-    )
+  describe('actions', () => {
+    test('refresh', async () => {
+      const {
+        waitForEffect,
+        fetcher,
+        testRBTCBalance,
+        container: { getByTestId },
+        mock: { rifWallet },
+      } = this.testInstance
+      await waitForEffect()
 
-    await waitFor(() => expect(getByTestId('tRIF.Button')).toBeDefined())
+      await sendAndWait(
+        rifWallet.signer.sendTransaction({
+          to: '0x0000000000111111111122222222223333333333',
+          value: '0x200',
+          data: '0xabcd',
+        }),
+      )
 
-    act(() => {
-      fireEvent.press(getByTestId('tRIF.Button'))
+      const button = getByTestId('Refresh.Button')
+      fireEvent.press(button)
 
-      expect(navigation.navigate).toBeCalled()
+      const loadingText = getByTestId('Info.Text')
+      expect(getTextFromTextNode(loadingText)).toContain('Loading')
+
+      await waitForEffect()
+
+      await testRBTCBalance()
+      expect(fetcher.fetchTokensByAddress).toHaveBeenCalledTimes(2)
+      expect(fetcher.fetchTokensByAddress).toHaveBeenCalledWith(
+        rifWallet.address,
+      )
+    })
+
+    test('navigation', async () => {
+      const {
+        waitForEffect,
+        container: { getByTestId },
+        mock: { navigation },
+      } = this.testInstance
+      await waitForEffect()
+
+      const button = getByTestId(`${lastToken.contractAddress}.SendButton`)
+      fireEvent.press(button)
+
+      // TODO: send whole token info and block the ui for choosing another token
+      expect(navigation.navigate).toHaveBeenCalledWith('Send', {
+        token: lastToken.symbol,
+      })
     })
   })
 })
