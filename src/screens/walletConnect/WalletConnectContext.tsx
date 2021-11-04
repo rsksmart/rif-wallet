@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import WalletConnect from '@walletconnect/client'
-import { NavigationProp, ParamListBase } from '@react-navigation/core'
+import { ParamListBase } from '@react-navigation/core'
 import { RIFWallet } from '../../lib/core'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { WalletConnectAdapter } from '../../lib/walletAdapters/WalletConnectAdapter'
 
 export interface WalletConnectContextInterface {
   connector: WalletConnect | undefined
@@ -15,7 +17,7 @@ export const WalletConnectContext =
   })
 
 interface WalletConnectProviderElementInterface {
-  navigation: NavigationProp<ParamListBase>
+  navigation: StackNavigationProp<ParamListBase>
   account: RIFWallet
 }
 
@@ -24,6 +26,8 @@ export const WalletConnectProviderElement: React.FC<WalletConnectProviderElement
     const [connector, setConnector] = useState<WalletConnect | undefined>(
       undefined,
     )
+
+    const adapter = useMemo(() => new WalletConnectAdapter(account), [account])
 
     const subscribeToEvents = async (wc: WalletConnect) => {
       wc.on('session_request', async (error, payload) => {
@@ -51,11 +55,24 @@ export const WalletConnectProviderElement: React.FC<WalletConnectProviderElement
       })
 
       wc.on('call_request', async (error, payload) => {
-        console.log('EVENT', 'call_request', 'payload', payload)
-
         if (error) {
           throw error
         }
+
+        const { id, method, params } = payload
+
+        try {
+          const result = await adapter.handleCall(method, params)
+
+          console.log('result', result)
+
+          connector?.approveRequest({ id, result })
+        } catch (err) {
+          console.error(err)
+          connector?.rejectRequest({ id })
+        }
+
+        console.log('EVENT', 'call_request', 'payload', id, method, params)
       })
 
       wc.on('connect', error => {
