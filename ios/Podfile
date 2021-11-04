@@ -12,6 +12,8 @@ target 'sWallet' do
     :hermes_enabled => false
   )
 
+  pod 'react-native-randombytes', :path => '../node_modules/react-native-randombytes'
+
   target 'sWalletTests' do
     inherit! :complete
     # Pods for testing
