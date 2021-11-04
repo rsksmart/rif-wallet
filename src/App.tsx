@@ -3,7 +3,7 @@ import '@ethersproject/shims' // ref: https://docs.ethers.io/v5/cookbook/react-n
 import 'react-native-gesture-handler'
 import 'react-native-get-random-values'
 
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView, StatusBar, View, AppState, Text } from 'react-native'
 
 import { Wallets, Requests } from './Context'
