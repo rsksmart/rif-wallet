@@ -31,12 +31,10 @@ const fetcher = new RifWalletServicesFetcher()
 const abiEnhancer = new AbiEnhancer()
 
 const App = () => {
-  const appState = useRef(AppState.currentState)
-  const [appStateVisible, setAppStateVisible] = useState(appState.current)
+  const [appStateVisible, setAppStateVisible] = useState('active')
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
-      appState.current = nextAppState
       setAppStateVisible(nextAppState)
     })
 
