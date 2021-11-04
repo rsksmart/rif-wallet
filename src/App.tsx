@@ -3,8 +3,8 @@ import '@ethersproject/shims' // ref: https://docs.ethers.io/v5/cookbook/react-n
 import 'react-native-gesture-handler'
 import 'react-native-get-random-values'
 
-import React, { useEffect, useState } from 'react'
-import { SafeAreaView, StatusBar, View } from 'react-native'
+import React, { useEffect, useState, useRef } from 'react'
+import { SafeAreaView, StatusBar, View, AppState, Text } from 'react-native'
 
 import { Wallets, Requests } from './Context'
 import { RootNavigation } from './RootNavigation'
@@ -31,6 +31,20 @@ const fetcher = new RifWalletServicesFetcher()
 const abiEnhancer = new AbiEnhancer()
 
 const App = () => {
+  const appState = useRef(AppState.currentState)
+  const [appStateVisible, setAppStateVisible] = useState(appState.current)
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      appState.current = nextAppState
+      setAppStateVisible(nextAppState)
+    })
+
+    return () => {
+      subscription.remove()
+    }
+  }, [])
+
   const [ready, setReady] = useState(false)
 
   const [kms, setKMS] = useState<null | KeyManagementSystem>(null)
@@ -104,6 +118,7 @@ const App = () => {
   return (
     <SafeAreaView>
       <StatusBar />
+
       <AppContext.Provider
         value={{
           wallets,
@@ -111,19 +126,27 @@ const App = () => {
           setRequests,
           mnemonic: kms?.mnemonic,
         }}>
-        <RootNavigation
-          keyManagementProps={{
-            generateMnemonic: () => KeyManagementSystem.create().mnemonic,
-            createFirstWallet,
-          }}
-          balancesScreenProps={{ fetcher }}
-          activityScreenProps={{ fetcher, abiEnhancer }}
-          keysInfoScreenProps={{
-            mnemonic: kms?.mnemonic || '',
-            deleteKeys,
-          }}
-        />
+        {appStateVisible === 'active' ? (
+          <RootNavigation
+            keyManagementProps={{
+              generateMnemonic: () => KeyManagementSystem.create().mnemonic,
+              createFirstWallet,
+            }}
+            balancesScreenProps={{ fetcher }}
+            activityScreenProps={{ fetcher, abiEnhancer }}
+            keysInfoScreenProps={{
+              mnemonic: kms?.mnemonic || '',
+              deleteKeys,
+            }}
+          />
+        ) : (
+          <Text>
+            Current state is: {appStateVisible}
+            {'Content Hidden'}
+          </Text>
+        )}
       </AppContext.Provider>
+
       {requests.length !== 0 && (
         <ModalComponent closeModal={closeRequest} request={requests[0]} />
       )}
