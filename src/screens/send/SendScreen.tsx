@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View, ScrollView, TextInput, Linking } from 'react-native'
-import { Picker } from '@react-native-picker/picker'
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  TextInput,
+  Linking,
+  Text,
+} from 'react-native'
+//import { Picker } from '@react-native-picker/picker'
 import { ContractReceipt, BigNumber, utils } from 'ethers'
 
 import { getAllTokens } from '../../lib/token/tokenMetadata'
@@ -17,9 +24,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   const smartAddress = wallet.smartWalletAddress
 
   const [to, setTo] = useState('0x1D4F6A5FE927f0E0e4497B91CebfBcF64dA1c934')
-  const [selectedSymbol, setSelectedSymbol] = useState(
-    route.params?.token || 'tRIF',
-  )
+  const [selectedSymbol] = useState(route.params?.token || 'tRIF')
   const [availableTokens, setAvailableTokens] = useState<IToken[]>()
   const [amount, setAmount] = useState('')
   const [tx, setTx] = useState<ContractReceipt | null>(null)
@@ -119,7 +124,8 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
       </View>
 
       <View style={styles.section}>
-        <Picker
+        <Text>{selectedSymbol}</Text>
+        {/*<Picker
           selectedValue={selectedSymbol}
           onValueChange={itemValue => setSelectedSymbol(itemValue)}
           testID={'Tokens.Picker'}>
@@ -132,7 +138,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
                 testID={token.symbol}
               />
             ))}
-        </Picker>
+        </Picker>*/}
       </View>
 
       {!txSent && (
