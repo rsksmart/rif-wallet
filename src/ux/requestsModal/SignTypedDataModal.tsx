@@ -1,16 +1,10 @@
 import React from 'react'
 import { StyleSheet, Text, View, ScrollView } from 'react-native'
 
-import { Request } from '../../lib/core'
+import { SignTypedDataRequest } from '../../lib/core'
 
-import { Button, Header2, Paragraph } from '../../components'
+import { Button, CompactParagraph, Header2 } from '../../components'
 import { sharedStyles } from './sharedStyles'
-
-// Temp: type to be refactored with the changes in the core
-export interface SignTypedDataRequest extends Request {
-  type: 'signTypedData'
-  payload: any
-}
 
 interface Interface {
   request: SignTypedDataRequest
@@ -40,7 +34,7 @@ const SignTypedDataModal: React.FC<Interface> = ({ request, closeModal }) => {
   }
 
   const reject = () => {
-    request.confirm()
+    request.reject('User rejected.')
     closeModal()
   }
 
@@ -48,12 +42,26 @@ const SignTypedDataModal: React.FC<Interface> = ({ request, closeModal }) => {
     <View>
       <Header2>Sign Typed Data</Header2>
 
-      <View style={sharedStyles.row}>
-        <Paragraph>Name: {request.payload.domain.name}</Paragraph>
+      <View style={sharedStyles.rowInColumn}>
+        <CompactParagraph testID="Domain.Name">
+          Name: {request.payload[0].name}
+        </CompactParagraph>
+        <CompactParagraph testID="Domain.Version">
+          Version: {request.payload[0].version}
+        </CompactParagraph>
+        <CompactParagraph testID="Domain.ChainId">
+          Chain Id: {request.payload[0].chainId}
+        </CompactParagraph>
+        <CompactParagraph testID="Domain.VerifyingContract">
+          Verifying Contract: {request.payload[0].verifyingContract}
+        </CompactParagraph>
+        <CompactParagraph testID="Domain.Salt">
+          Salt: {request.payload[0].salt}
+        </CompactParagraph>
       </View>
 
       <ScrollView style={styles.message} testID="Data.View">
-        {formatter(request.payload.message)}
+        {formatter(request.payload[2])}
       </ScrollView>
 
       <View style={sharedStyles.row}>

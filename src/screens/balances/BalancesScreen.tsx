@@ -53,7 +53,7 @@ async function getTokensAndRBTCBalance(
   const tokenBalances = await fetcher.fetchTokensByAddress(
     wallet.smartWalletAddress,
   )
-  const rbtcBalanceEntry = await wallet.signer
+  const rbtcBalanceEntry = await wallet
     .provider!.getBalance(wallet.smartWallet.address)
     .then(
       rbtcBalance =>

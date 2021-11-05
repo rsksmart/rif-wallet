@@ -1,23 +1,28 @@
 import React from 'react'
-import { render, fireEvent } from '@testing-library/react-native'
+import { render, fireEvent, waitFor } from '@testing-library/react-native'
 
 import ReviewTransactionModal from './ReviewTransactionModal'
-import { Request } from '../../lib/core/RIFWallet'
+import { RIFWallet, SendTransactionRequest } from '../../lib/core/RIFWallet'
 import { BigNumber } from '@ethersproject/bignumber'
+import { setupTest } from '../../../testLib/setup'
 
 describe('ReviewTransactionModal', function (this: {
   confirm: ReturnType<typeof jest.fn>
   cancel: ReturnType<typeof jest.fn>
-  queuedTransaction: Request
+  queuedTransaction: SendTransactionRequest
+  rifWallet: RIFWallet
 }) {
-  beforeEach(() => {
+  beforeEach(async () => {
     this.confirm = jest.fn()
     this.cancel = jest.fn()
 
+    const mock = await setupTest()
+    this.rifWallet = mock.rifWallet
+
     this.queuedTransaction = {
       type: 'sendTransaction',
-      payload: {
-        transactionRequest: {
+      payload: [
+        {
           to: '0x123',
           from: '0x456',
           data: '',
@@ -25,7 +30,8 @@ describe('ReviewTransactionModal', function (this: {
           gasLimit: BigNumber.from(10000),
           gasPrice: BigNumber.from(600000000),
         },
-      },
+      ],
+      //@ts-ignore
       confirm: this.confirm,
       reject: this.cancel,
     }
@@ -34,6 +40,7 @@ describe('ReviewTransactionModal', function (this: {
   it('renders', () => {
     const { getAllByText, getByPlaceholderText } = render(
       <ReviewTransactionModal
+        wallet={this.rifWallet}
         request={this.queuedTransaction}
         closeModal={jest.fn()}
       />,
@@ -49,6 +56,7 @@ describe('ReviewTransactionModal', function (this: {
     const closeModal = jest.fn()
     const { getByTestId } = render(
       <ReviewTransactionModal
+        wallet={this.rifWallet}
         request={this.queuedTransaction}
         closeModal={closeModal}
       />,
@@ -56,8 +64,8 @@ describe('ReviewTransactionModal', function (this: {
     fireEvent.press(getByTestId('Confirm.Button'))
 
     expect(this.confirm).toBeCalledWith({
-      gasPrice: this.queuedTransaction.payload.transactionRequest.gasPrice,
-      gasLimit: this.queuedTransaction.payload.transactionRequest.gasLimit,
+      gasPrice: this.queuedTransaction.payload[0].gasPrice,
+      gasLimit: this.queuedTransaction.payload[0].gasLimit,
     })
     expect(closeModal).toBeCalled()
   })
@@ -66,6 +74,7 @@ describe('ReviewTransactionModal', function (this: {
     const closeModal = jest.fn()
     const { getByTestId } = render(
       <ReviewTransactionModal
+        wallet={this.rifWallet}
         request={this.queuedTransaction}
         closeModal={closeModal}
       />,
@@ -80,6 +89,7 @@ describe('ReviewTransactionModal', function (this: {
     const closeModal = jest.fn()
     const { getByTestId } = render(
       <ReviewTransactionModal
+        wallet={this.rifWallet}
         request={this.queuedTransaction}
         closeModal={closeModal}
       />,
@@ -98,5 +108,37 @@ describe('ReviewTransactionModal', function (this: {
       gasLimit: BigNumber.from(gasLimit),
     })
     expect(closeModal).toHaveBeenCalled()
+  })
+
+  it('estimates gasLimit', async () => {
+    const transaction = {
+      ...this.queuedTransaction,
+      payload: [
+        {
+          to: '0x123',
+          from: '0x45',
+          data: '0x1234567890',
+          gasPrice: '200',
+        },
+      ],
+    }
+
+    jest
+      .spyOn(this.rifWallet.smartWallet, 'estimateDirectExecute')
+      .mockResolvedValue(BigNumber.from(600))
+
+    const { getByTestId } = render(
+      <ReviewTransactionModal
+        wallet={this.rifWallet}
+        request={transaction}
+        closeModal={jest.fn()}
+      />,
+    )
+
+    const gasLimit = await waitFor(
+      async () => await getByTestId('gasLimit.TextInput'),
+    )
+    expect(gasLimit.props.value).toBe('600') // spied value
+    expect(getByTestId('gasPrice.TextInput').props.value).toBe('200') // original value
   })
 })

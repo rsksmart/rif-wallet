@@ -62,9 +62,9 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
     <ScrollView>
       <Header2>Smart Wallet</Header2>
       <Paragraph>EOA:</Paragraph>
-      <CopyComponent value={wallet.eoaAddress} />
-      <Paragraph>Smart Wallet Address:</Paragraph>
       <CopyComponent value={wallet.address} />
+      <Paragraph>Smart Wallet Address:</Paragraph>
+      <CopyComponent value={wallet.smartWalletAddress} />
 
       <Button title="Get info" onPress={getInfo} />
       <Paragraph>

@@ -9,13 +9,16 @@ import {
 
 import ReviewTransactionModal from './ReviewTransactionModal'
 import SignMessageModal from './SignMessageModal'
-import SignTypedDataModal from './SignTypedDataModal'
+import SignTypedDataModal, { SignTypedDataRequest } from './SignTypedDataModal'
 import { sharedStyles } from './sharedStyles'
+import { InjectSelectedWallet } from '../../Context'
 
 interface Interface {
   request: Request
   closeModal: () => void
 }
+
+const ReviewTransactionInjected = InjectSelectedWallet(ReviewTransactionModal)
 
 const RequestTypeSwitch = (request: Request, closeModal: () => void) => {
   switch (request.type) {
@@ -28,13 +31,18 @@ const RequestTypeSwitch = (request: Request, closeModal: () => void) => {
       )
     case 'sendTransaction':
       return (
-        <ReviewTransactionModal
+        <ReviewTransactionInjected
           request={request as SendTransactionRequest}
           closeModal={closeModal}
         />
       )
     case 'signTypedData':
-      return <SignTypedDataModal request={request} closeModal={closeModal} />
+      return (
+        <SignTypedDataModal
+          request={request as SignTypedDataRequest}
+          closeModal={closeModal}
+        />
+      )
   }
 }
 
