@@ -90,7 +90,7 @@ describe('Balances Screen', function (this: {
 
       expect(fetcher.fetchTokensByAddress).toHaveBeenCalledTimes(1)
       expect(fetcher.fetchTokensByAddress).toHaveBeenCalledWith(
-        rifWallet.address,
+        rifWallet.smartWalletAddress,
       )
     })
 
@@ -126,7 +126,7 @@ describe('Balances Screen', function (this: {
       await waitForEffect()
 
       await sendAndWait(
-        rifWallet.signer.sendTransaction({
+        rifWallet.sendTransaction({
           to: '0x0000000000111111111122222222223333333333',
           value: '0x200',
           data: '0xabcd',
@@ -144,7 +144,7 @@ describe('Balances Screen', function (this: {
       await testRBTCBalance()
       expect(fetcher.fetchTokensByAddress).toHaveBeenCalledTimes(2)
       expect(fetcher.fetchTokensByAddress).toHaveBeenCalledWith(
-        rifWallet.address,
+        rifWallet.smartWalletAddress,
       )
     })
 
