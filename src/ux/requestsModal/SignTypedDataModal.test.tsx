@@ -1,6 +1,7 @@
 import React from 'react'
 import { render } from '@testing-library/react-native'
-import SignTypedDataModal, { SignTypedDataRequest } from './SignTypedDataModal'
+import SignTypedDataModal from './SignTypedDataModal'
+import { SignTypedDataRequest } from '../../lib/core'
 
 describe('SignTypedData', function (this: {
   confirm: ReturnType<typeof jest.fn>
@@ -14,18 +15,30 @@ describe('SignTypedData', function (this: {
     // simple request, does not include types
     this.request = {
       type: 'signTypedData',
-      payload: {
-        domain: {
-          name: 'Testing',
+      returnType: '',
+      payload: [
+        {
+          name: 'Ether Mail',
+          version: '1',
+          chainId: 1,
+          verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+          salt: '0xabcd',
         },
-        message: {
+        {},
+        {
           hello: 'world!',
           taco: 'tuesday',
         },
+      ],
+      confirm: () => {
+        this.confirm
+        return Promise.resolve()
       },
-      confirm: this.confirm,
-      reject: this.cancel,
-    }
+      reject: () => {
+        this.cancel
+        return Promise.reject()
+      },
+    } as SignTypedDataRequest
   })
 
   it('renders', () => {
@@ -33,6 +46,27 @@ describe('SignTypedData', function (this: {
       <SignTypedDataModal request={this.request} closeModal={jest.fn()} />,
     )
     expect(getAllByText('Sign Typed Data').length).toBe(1)
+  })
+
+  it('displays domain', () => {
+    const { getByTestId } = render(
+      <SignTypedDataModal request={this.request} closeModal={jest.fn()} />,
+    )
+    expect(getByTestId('Domain.Name').children).toContain(
+      this.request.payload[0].name,
+    )
+    expect(getByTestId('Domain.Version').children).toContain(
+      this.request.payload[0].version,
+    )
+    expect(getByTestId('Domain.ChainId').children).toContain(
+      this.request.payload[0].chainId?.toString(),
+    )
+    expect(getByTestId('Domain.VerifyingContract').children).toContain(
+      this.request.payload[0].verifyingContract,
+    )
+    expect(getByTestId('Domain.Salt').children).toContain(
+      this.request.payload[0].salt,
+    )
   })
 
   it('displays a simple message', () => {
@@ -47,7 +81,7 @@ describe('SignTypedData', function (this: {
   })
 
   it('displays nested items', () => {
-    this.request.payload.message = {
+    this.request.payload[2] = {
       person: {
         name: 'tom',
         age: 21,

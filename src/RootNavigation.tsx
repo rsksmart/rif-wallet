@@ -21,6 +21,7 @@ const InjectedScreens = {
   SignMessageScreen: InjectSelectedWallet(Screens.SignMessageScreen),
   WalletInfoScreen: InjectSelectedWallet(Screens.WalletInfoScreen),
   KeysInfoScreen: InjectSelectedWallet(Screens.KeysInfoScreen),
+  SignTypedDataScreen: InjectSelectedWallet(Screens.SignTypedDataScreen),
 }
 
 type RootStackParamList = {
@@ -108,7 +109,7 @@ export const RootNavigation: React.FC<{
           />
           <RootStack.Screen
             name="SignTypedData"
-            component={Screens.SignTypedDataScreen}
+            component={InjectedScreens.SignTypedDataScreen}
             options={sharedOptions}
           />
 

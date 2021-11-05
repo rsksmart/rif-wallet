@@ -26,6 +26,10 @@ export const sharedStyles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
   },
+  rowInColumn: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
   column: {
     display: 'flex',
     paddingRight: 5,

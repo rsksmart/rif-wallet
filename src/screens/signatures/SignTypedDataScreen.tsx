@@ -1,59 +1,60 @@
-import React, { useContext } from 'react'
-import { Request } from '../../lib/core'
-import { AppContext } from '../../Context'
-import { Button } from '../../components'
+import React, { useState } from 'react'
+import { Text, View } from 'react-native'
+import { Button, CopyComponent } from '../../components'
+import { ScreenWithWallet } from '../types'
 
-// TEMP - Add a request to the que WITHOUT going through the wallet!
-const typedDataRequest = {
-  domain: {
-    chainId: 31,
-    name: 'rLogin sample app',
-    verifyingContract: '0x285b30492a3f444d7bf75261a35cb292fc8f41a6',
-    version: '1',
-  },
-  message: {
-    contents: 'Welcome to rLogin!',
-    num: 1500,
-    person: {
-      firstName: 'jesse',
-      lastName: 'clark',
-    },
-  },
-  // Refers to the keys of the *types* object below.
-  primaryType: 'Sample',
-  types: {
-    EIP712Domain: [
-      { name: 'name', type: 'string' },
-      { name: 'version', type: 'string' },
-      { name: 'chainId', type: 'uint256' },
-      { name: 'verifyingContract', type: 'address' },
-    ],
-    // Not an EIP712Domain definition
-    Sample: [
-      { name: 'contents', type: 'string' },
-      { name: 'num', type: 'uint256' },
-      { name: 'person', type: 'Person' },
-    ],
-    Person: [
-      { name: 'firstName', type: 'string' },
-      { name: 'lastName', type: 'string' },
-    ],
-  },
+const domain = {
+  name: 'Ether Mail',
+  version: '1',
+  chainId: 1,
+  verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
 }
 
-export const SignTypedDataScreen = () => {
-  const { setRequests } = useContext(AppContext)
+// The named list of all type definitions
+const types = {
+  Person: [
+    { name: 'name', type: 'string' },
+    { name: 'wallet', type: 'address' },
+  ],
+  Mail: [
+    { name: 'from', type: 'Person' },
+    { name: 'to', type: 'Person' },
+    { name: 'contents', type: 'string' },
+  ],
+}
+
+// The data to sign
+const value = {
+  from: {
+    name: 'Cow',
+    wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+  },
+  to: {
+    name: 'Bob',
+    wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+  },
+  contents: 'Hello, Bob!',
+}
+
+export const SignTypedDataScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
+  const [hash, setHash] = useState<null | string>(null)
+  const [message, setMessage] = useState<null | string>(null)
 
   const signedTypedData = () => {
-    const request = {
-      type: 'signTypedData',
-      payload: typedDataRequest,
-      confirm: () => console.log('CONFIRMED!'),
-      reject: () => console.log('REJECTED!'),
-    }
+    setHash(null)
+    setMessage(null)
 
-    setRequests([request as any as Request])
+    wallet
+      ._signTypedData(domain, types, value)
+      .then((result: string) => setHash(result))
+      .catch((err: Error) => setMessage(err.toString()))
   }
 
-  return <Button onPress={signedTypedData} title="Sign Typed Data" />
+  return (
+    <View>
+      <Button onPress={signedTypedData} title="Sign Typed Data" />
+      {hash && <CopyComponent value={hash} />}
+      {message && <Text>{message}</Text>}
+    </View>
+  )
 }
