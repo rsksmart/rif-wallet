@@ -151,7 +151,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
       {txConfirmed && tx && (
         <View testID={'TxReceipt.View'} style={styles.section}>
           {tx && (
-            <CopyComponent value={tx.transactionHash} prefix={`Tx Hash: `} />
+            <CopyComponent value={tx.transactionHash} prefix={'Tx Hash: '} />
           )}
           <Button
             title="View in explorer"

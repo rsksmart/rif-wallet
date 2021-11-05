@@ -24,6 +24,12 @@ export const Paragraph: React.FC<Interface> = ({ children, testID }) => (
   </Text>
 )
 
+export const CompactParagraph: React.FC<Interface> = ({ children, testID }) => (
+  <Text style={styles.compactParagraph} testID={testID}>
+    {children}
+  </Text>
+)
+
 const styles = StyleSheet.create({
   header1: {
     fontSize: 42,
@@ -37,5 +43,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginTop: 10,
     marginBottom: 10,
+  },
+  compactParagraph: {
+    fontSize: 18,
+    marginTop: 0,
+    marginBottom: 2,
   },
 })

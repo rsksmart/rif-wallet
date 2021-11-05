@@ -18,7 +18,11 @@ describe('SignTypedData', function (this: {
       returnType: '',
       payload: [
         {
-          name: 'Testing',
+          name: 'Ether Mail',
+          version: '1',
+          chainId: 1,
+          verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+          salt: '0xabcd',
         },
         {},
         {
@@ -42,6 +46,27 @@ describe('SignTypedData', function (this: {
       <SignTypedDataModal request={this.request} closeModal={jest.fn()} />,
     )
     expect(getAllByText('Sign Typed Data').length).toBe(1)
+  })
+
+  it('displays domain', () => {
+    const { getByTestId } = render(
+      <SignTypedDataModal request={this.request} closeModal={jest.fn()} />,
+    )
+    expect(getByTestId('Domain.Name').children).toContain(
+      this.request.payload[0].name,
+    )
+    expect(getByTestId('Domain.Version').children).toContain(
+      this.request.payload[0].version,
+    )
+    expect(getByTestId('Domain.ChainId').children).toContain(
+      this.request.payload[0].chainId?.toString(),
+    )
+    expect(getByTestId('Domain.VerifyingContract').children).toContain(
+      this.request.payload[0].verifyingContract,
+    )
+    expect(getByTestId('Domain.Salt').children).toContain(
+      this.request.payload[0].salt,
+    )
   })
 
   it('displays a simple message', () => {
