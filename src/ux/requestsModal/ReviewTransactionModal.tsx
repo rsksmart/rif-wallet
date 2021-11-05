@@ -63,9 +63,7 @@ const ReviewTransactionModal: React.FC<Interface> = ({
   request,
   closeModal,
 }) => {
-  const transactionRequest = convertTransactionToStrings(
-    request.payload.transactionRequest,
-  )
+  const transactionRequest = convertTransactionToStrings(request.payload[0])
 
   const [gasPrice, setGasPrice] = useState(transactionRequest.gasPrice)
   const [gasLimit, setGasLimit] = useState(transactionRequest.gasLimit)
