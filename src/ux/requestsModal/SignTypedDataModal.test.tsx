@@ -1,6 +1,7 @@
 import React from 'react'
 import { render } from '@testing-library/react-native'
-import SignTypedDataModal, { SignTypedDataRequest } from './SignTypedDataModal'
+import SignTypedDataModal from './SignTypedDataModal'
+import { SignTypedDataRequest } from '../../lib/core'
 
 describe('SignTypedData', function (this: {
   confirm: ReturnType<typeof jest.fn>
@@ -14,18 +15,26 @@ describe('SignTypedData', function (this: {
     // simple request, does not include types
     this.request = {
       type: 'signTypedData',
-      payload: {
-        domain: {
+      returnType: '',
+      payload: [
+        {
           name: 'Testing',
         },
-        message: {
+        {},
+        {
           hello: 'world!',
           taco: 'tuesday',
         },
+      ],
+      confirm: () => {
+        this.confirm
+        return Promise.resolve()
       },
-      confirm: this.confirm,
-      reject: this.cancel,
-    }
+      reject: () => {
+        this.cancel
+        return Promise.reject()
+      },
+    } as SignTypedDataRequest
   })
 
   it('renders', () => {
@@ -47,7 +56,7 @@ describe('SignTypedData', function (this: {
   })
 
   it('displays nested items', () => {
-    this.request.payload.message = {
+    this.request.payload[2] = {
       person: {
         name: 'tom',
         age: 21,
