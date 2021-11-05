@@ -1,4 +1,4 @@
-import { Signer, BigNumber, constants } from 'ethers'
+import { Signer, constants } from 'ethers'
 
 type TMethods = {
   [key: string]: any
@@ -22,6 +22,7 @@ export class WalletConnectAdapter {
       const payload = params.reduce((prev, curr) => ({ ...prev, ...curr }), {})
 
       if (payload.data === '') {
+        // TODO: assign undefined once the RIFWallet changes are applied
         payload.data = constants.HashZero
       }
 
