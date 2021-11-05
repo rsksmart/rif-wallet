@@ -37,16 +37,12 @@ class RBTCToken extends BaseToken implements IToken {
   ): Promise<ContractTransaction> {
     const account = await this.getAccountAddress()
 
-    const request = {
+    return this.signer.sendTransaction({
       from: account,
       to: recipientAddress,
       value: amount,
       ...options,
-    }
-
-    console.log('transfer request', request)
-
-    return this.signer.sendTransaction(request)
+    })
   }
 }
 
