@@ -26,6 +26,7 @@ import { Paragraph } from './components/typography'
 import { AppContext } from './Context'
 import { RifWalletServicesFetcher } from './lib/rifWalletServices/RifWalletServicesFetcher'
 import { AbiEnhancer } from './lib/abiEnhancer/AbiEnhancer'
+import { Cover } from './components/cover'
 
 const createRIFWalletFactory = (onRequest: OnRequest) => (wallet: Wallet) =>
   RIFWallet.create(
@@ -38,7 +39,7 @@ const fetcher = new RifWalletServicesFetcher()
 const abiEnhancer = new AbiEnhancer()
 
 const App = () => {
-  const [appStateVisible, setAppStateVisible] = useState('active')
+  /*const [appStateVisible, setAppStateVisible] = useState('active')
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
       console.log(nextAppState)
@@ -48,7 +49,7 @@ const App = () => {
     return () => {
       subscription.remove()
     }
-  }, [])
+  }, [])*/
   const [ready, setReady] = useState(false)
 
   const [kms, setKMS] = useState<null | KeyManagementSystem>(null)
@@ -129,11 +130,7 @@ const App = () => {
           setRequests,
           mnemonic: kms?.mnemonic,
         }}>
-        {appStateVisible !== 'active' ? (
-          <View style={styles.cover}>
-            <Text>{appStateVisible}</Text>
-          </View>
-        ) : null}
+        <Cover />
         <RootNavigation
           keyManagementProps={{
             generateMnemonic: () => KeyManagementSystem.create().mnemonic,
@@ -155,10 +152,3 @@ const App = () => {
 }
 
 export default App
-
-const styles = StyleSheet.create({
-  cover: {
-    height: '100%',
-    backgroundColor: '#F5FCFF',
-  },
-})
