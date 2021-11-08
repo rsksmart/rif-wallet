@@ -59,6 +59,8 @@ export const WalletConnectProviderElement: React.FC<WalletConnectProviderElement
           throw error
         }
 
+        console.log('peerId 2', wc.peerId, wc.clientId)
+
         const { id, method, params } = payload
 
         try {
@@ -66,10 +68,14 @@ export const WalletConnectProviderElement: React.FC<WalletConnectProviderElement
 
           console.log('result', result)
 
-          connector?.approveRequest({ id, result })
+          const requestToApprove = { id, result }
+
+          console.log('requestToApprove', requestToApprove)
+
+          await connector?.approveRequest(requestToApprove)
         } catch (err) {
           console.error(err)
-          connector?.rejectRequest({ id })
+          await connector?.rejectRequest({ id })
         }
 
         console.log('EVENT', 'call_request', 'payload', id, method, params)
@@ -95,24 +101,17 @@ export const WalletConnectProviderElement: React.FC<WalletConnectProviderElement
     const createSession = async (uri: string) => {
       const newConnector = new WalletConnect({
         // Required
-        uri,
-        // Required
-        clientMeta: {
-          description: 'sWallet App',
-          url: 'https://walletconnect-bridge.rifos.org/',
-          icons: [
-            'https://raw.githubusercontent.com/rsksmart/rif-scheduler-ui/develop/src/assets/logoColor.svg',
-          ],
-          name: 'sWalletApp',
-        },
+        uri: 'wc:0830fc6a-066d-4281-b0ae-38e616964b72@1?bridge=https%3A%2F%2Fwalletconnect-bridge.rifos.org%2F&key=ce885503b89248fe8a5694f02d51afb8651380b25f5c5030c0a155c815728150',
       })
 
       if (!newConnector.connected) {
         console.log('createSession')
 
-        subscribeToEvents(newConnector)
+        // await newConnector.createSession()
 
-        await newConnector.createSession()
+        console.log('peerId 1', newConnector.peerId, newConnector.clientId)
+
+        subscribeToEvents(newConnector)
 
         setConnector(newConnector)
       }

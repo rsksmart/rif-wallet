@@ -1,33 +1,63 @@
 import { Signer, constants } from 'ethers'
+export class WalletConnectAdapter {
+  private resolvers: IResolver[]
 
-type TMethods = {
-  [key: string]: any
+  constructor(signer: Signer) {
+    this.resolvers = [
+      new SendTransactionResolver(signer),
+      new PersonalSignResolver(signer),
+    ]
+  }
+
+  async handleCall(method: string, params: any[]) {
+    const resolver = this.resolvers.find(x => x.methodName === method)
+
+    if (resolver) {
+      return resolver.resolve(params)
+    }
+  }
 }
 
-export class WalletConnectAdapter {
+interface IResolver {
+  methodName: string
+  resolve: (params: any[]) => Promise<any>
+}
+
+class SendTransactionResolver implements IResolver {
   private signer: Signer
+  public methodName = 'eth_sendTransaction'
 
   constructor(signer: Signer) {
     this.signer = signer
   }
 
-  async handleCall(method: string, params: any[]) {
-    const methodsMapper: TMethods = {
-      eth_sendTransaction: this.signer.sendTransaction.bind(this.signer),
+  async resolve(params: any[]) {
+    const payload = params.reduce((prev, curr) => ({ ...prev, ...curr }), {})
+
+    if (payload.data === '') {
+      // TODO: assign undefined once the RIFWallet changes are applied
+      payload.data = constants.HashZero
     }
 
-    const methodToExecute = methodsMapper[method as any]
+    const tx = await this.signer.sendTransaction(payload)
 
-    if (methodToExecute) {
-      const payload = params.reduce((prev, curr) => ({ ...prev, ...curr }), {})
+    return tx.hash
+  }
+}
 
-      if (payload.data === '') {
-        // TODO: assign undefined once the RIFWallet changes are applied
-        payload.data = constants.HashZero
-      }
+class PersonalSignResolver implements IResolver {
+  private signer: Signer
+  public methodName = 'personal_sign'
 
-      console.log('executing', payload)
-      return methodToExecute(payload)
-    }
+  constructor(signer: Signer) {
+    this.signer = signer
+  }
+
+  async resolve(params: any[]) {
+    const message = params[0]
+
+    console.log('PersonalSignResolver', message)
+
+    return this.signer.signMessage(message)
   }
 }

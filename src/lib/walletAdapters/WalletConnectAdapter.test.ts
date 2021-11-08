@@ -39,4 +39,17 @@ describe('Wallet Connect Adapter', () => {
     expect(result?.hash).toBeDefined()
     expect(result?.hash).toContain('0x')
   })
+
+  test('personal sign', async () => {
+    const method = 'personal_sign'
+    const params = [
+      '0x68656c6c6f20776f726c6421',
+      '0x2750de12a98AD6BA53bE8d0DbE4a595d63Fdf985',
+    ]
+
+    const result = await adapter?.handleCall(method, params)
+
+    expect(result?.hash).toBeDefined()
+    expect(result?.hash).toContain('0x')
+  })
 })
