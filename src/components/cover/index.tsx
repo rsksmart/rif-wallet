@@ -1,21 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { View, AppState, StyleSheet } from 'react-native'
-interface Interface {
-  reason?: string
-}
 
-export const Cover: React.FC<Interface> = ({}) => {
-  const [appStateVisible, setAppStateVisible] = useState('active')
+export const Cover = () => {
+  const [appStateVisible, setAppStateVisible] = useState(AppState.currentState)
+
   useEffect(() => {
-    const subscription = AppState.addEventListener('change', nextAppState => {
-      console.log(nextAppState)
-      setAppStateVisible(nextAppState)
-    })
+    const subscription = AppState.addEventListener('change', setAppStateVisible)
 
     return () => {
       subscription.remove()
     }
   }, [])
+
   return (
     <View
       style={appStateVisible !== 'active' ? styles.visible : styles.invisible}
