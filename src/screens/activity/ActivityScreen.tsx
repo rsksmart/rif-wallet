@@ -3,7 +3,7 @@ import { utils, BigNumber } from 'ethers'
 import { StyleSheet, View, ScrollView, Text, Linking } from 'react-native'
 
 import { Button } from '../../components'
-import { Paragraph } from '../../components/typography'
+import { Paragraph } from '../../components'
 import { IApiTransaction } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
@@ -29,7 +29,9 @@ const ActivityDetails = ({
 }) => (
   <View>
     <View>
-      <Text style={styles.transactionDetailsTitle}>TransactionDetails</Text>
+      <Text testID="txDetailsTitle" style={styles.transactionDetailsTitle}>
+        Transaction Details
+      </Text>
     </View>
     <View>
       {transaction.enhancedTransaction ? (

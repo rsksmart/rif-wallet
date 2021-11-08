@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, act } from '@testing-library/react-native'
+import { render, act, waitFor, fireEvent } from '@testing-library/react-native'
 import { shortAddress } from '../../lib/utils'
 
 import { setupTest } from '../../../testLib/setup'
@@ -85,8 +85,55 @@ describe('Activity Screen', function (this: {
 
       expect(fetcher.fetchTransactionsByAddress).toHaveBeenCalledTimes(1)
       expect(fetcher.fetchTransactionsByAddress).toHaveBeenCalledWith(
-        rifWallet.address.toLowerCase(),
+        rifWallet.smartWalletAddress.toLowerCase(),
       )
+    })
+  })
+
+  describe('actions', () => {
+    test('refresh', async () => {
+      const {
+        waitForEffect,
+        container: { getByTestId },
+      } = this.testInstance
+
+      getTextFromTextNode(getByTestId('Refresh.Button'))
+      const button = getByTestId('Refresh.Button')
+      fireEvent.press(button)
+
+      const loadingText = getByTestId('Info.Text')
+      expect(getTextFromTextNode(loadingText)).toContain('Loading transactions')
+
+      await waitForEffect()
+    })
+  })
+})
+
+describe('Activity Screen with Error in Fetcher', function (this: {
+  testInstance: Awaited<ReturnType<typeof createTestInstance>>
+  fetcher: any
+}) {
+  beforeEach(async () => {
+    this.fetcher = {
+      fetchTransactionsByAddress: jest.fn(() => Promise.reject(new Error())),
+    }
+    await act(async () => {
+      // @ts-ignore
+      this.testInstance = await createTestInstance(this.fetcher)
+    })
+  })
+
+  describe('initial screen', () => {
+    test('handle error', async () => {
+      const {
+        container: { getByTestId },
+      } = this.testInstance
+
+      const loadingText = getByTestId('Info.Text')
+      await waitFor(() =>
+        expect(getTextFromTextNode(loadingText)).toContain('Error'),
+      )
+      expect(this.fetcher.fetchTransactionsByAddress).toHaveBeenCalled()
     })
   })
 })
