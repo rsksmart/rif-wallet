@@ -1,71 +1,139 @@
 import React from 'react'
-import { render, waitFor } from '@testing-library/react-native'
+import { render, act, waitFor, fireEvent } from '@testing-library/react-native'
+import { shortAddress } from '../../lib/utils'
+
+import { setupTest } from '../../../testLib/setup'
+import { getTextFromTextNode, Awaited } from '../../../testLib/utils'
+
+import {
+  createMockFetcher,
+  lastTxTextTestId,
+  txTestCase,
+} from '../../../testLib/mocks/rifServicesMock'
+import {
+  createMockAbiEnhancer,
+  enhancedTxTestCase,
+} from '../../../testLib/mocks/rifTransactionsMock'
 import { ActivityScreen } from './ActivityScreen'
-import mockedTransactions from './transactions-mock.json'
-import mockedEnhancedTransactions from './enhanced-transactions-mock.json'
 
-//TODO: integration tests pending
-jest.mock('../../lib/rifWalletServices/RifWalletServicesFetcher', () => {
-  return {
-    RifWalletServicesFetcher: jest.fn().mockImplementation(() => {
-      return {
-        fetchTransactionsByAddress: async () => {
-          return mockedTransactions
-        },
-      }
-    }),
-  }
-})
+const createTestInstance = async (
+  fetcher = createMockFetcher(),
+  abiEnhancer = createMockAbiEnhancer(),
+) => {
+  const mock = await setupTest()
 
-jest.mock('../../lib/abiEnhancer/AbiEnhancer', () => {
-  return {
-    AbiEnhancer: jest.fn().mockImplementation(() => {
-      return {
-        enhance: async () => {
-          return mockedEnhancedTransactions[0]
-        },
-      }
-    }),
-  }
-})
+  const container = render(
+    <ActivityScreen
+      wallet={mock.rifWallet}
+      fetcher={fetcher}
+      abiEnhancer={abiEnhancer}
+    />,
+  )
 
-const navigation = {
-  navigate: jest.fn(),
-}
-const route = {
-  params: {
-    account: {
-      smartWalletAddress: '0xbd4c8e11cf2c560382e0dbd6aeef538debf1d449',
-      smartWallet: {
-        wallet: { address: '0xbd4c8e11cf2c560382e0dbd6aeef538debf1d449' },
-        smartWalletContract: {
-          interface: {
-            decodeFunctionData: function () {
-              return {
-                data: '0xa9059cbb0000000000000000000000001d4f6a5fe927f0e0e4497b91cebfbcf64da1c9340000000000000000000000000000000000000000000000004563918244f40000',
-                to: '0xCB46c0ddc60D18eFEB0E586C17Af6ea36452Dae0',
-              }
-            },
-          },
-        },
-      },
-    },
-  },
+  const loadingText = container.getByTestId('Address.Paragraph')
+  expect(getTextFromTextNode(loadingText)).toContain(
+    mock.rifWallet.smartWalletAddress,
+  )
+  const waitForEffect = () => container.findByTestId(lastTxTextTestId) // called act without await
+
+  return { container, mock, waitForEffect, fetcher, abiEnhancer }
 }
 
-// eslint-disable-next-line jest/no-disabled-tests
-describe.skip('Load activities', () => {
-  beforeEach(() => {
-    navigation.navigate.mockClear()
+describe('Activity Screen', function (this: {
+  testInstance: Awaited<ReturnType<typeof createTestInstance>>
+}) {
+  beforeEach(async () => {
+    await act(async () => {
+      this.testInstance = await createTestInstance()
+    })
   })
 
-  it('Load transactions', async () => {
-    const { getByTestId } = render(<ActivityScreen route={route} />)
+  describe('initial screen', () => {
+    test('load initial UI elements', async () => {
+      const {
+        container: { getByTestId },
+        waitForEffect,
+        mock,
+      } = this.testInstance
 
-    await waitFor(() => getByTestId('tx-one-hash.View'))
+      getTextFromTextNode(getByTestId('Refresh.Button'))
+      expect(getTextFromTextNode(getByTestId('Address.Paragraph'))).toContain(
+        mock.rifWallet.smartWalletAddress,
+      )
+      await waitForEffect()
+    })
 
-    expect(getByTestId('tx-two-hash.View')).toBeDefined()
-    expect(getByTestId('tx-three-hash.View')).toBeDefined()
-    expect(getByTestId('tx-four-hash.View')).toBeDefined()
+    test('transactions amounts', async () => {
+      const {
+        waitForEffect,
+        fetcher,
+        container: { getByTestId },
+        mock: { rifWallet },
+      } = this.testInstance
+
+      await waitForEffect()
+      for (let v of txTestCase) {
+        // @ts-ignore
+        const enhancedTx = enhancedTxTestCase
+        const activityText = getByTestId(`${v.hash}.Text`)
+        expect(getTextFromTextNode(activityText)).toEqual(
+          `${enhancedTx?.value} ${enhancedTx?.symbol} sent To ${shortAddress(
+            enhancedTx?.to,
+          )}`,
+        )
+      }
+
+      expect(fetcher.fetchTransactionsByAddress).toHaveBeenCalledTimes(1)
+      expect(fetcher.fetchTransactionsByAddress).toHaveBeenCalledWith(
+        rifWallet.smartWalletAddress.toLowerCase(),
+      )
+    })
+  })
+
+  describe('actions', () => {
+    test('refresh', async () => {
+      const {
+        waitForEffect,
+        container: { getByTestId },
+      } = this.testInstance
+
+      getTextFromTextNode(getByTestId('Refresh.Button'))
+      const button = getByTestId('Refresh.Button')
+      fireEvent.press(button)
+
+      const loadingText = getByTestId('Info.Text')
+      expect(getTextFromTextNode(loadingText)).toContain('Loading transactions')
+
+      await waitForEffect()
+    })
+  })
+})
+
+describe('Activity Screen with Error in Fetcher', function (this: {
+  testInstance: Awaited<ReturnType<typeof createTestInstance>>
+  fetcher: any
+}) {
+  beforeEach(async () => {
+    this.fetcher = {
+      fetchTransactionsByAddress: jest.fn(() => Promise.reject(new Error())),
+    }
+    await act(async () => {
+      // @ts-ignore
+      this.testInstance = await createTestInstance(this.fetcher)
+    })
+  })
+
+  describe('initial screen', () => {
+    test('handle error', async () => {
+      const {
+        container: { getByTestId },
+      } = this.testInstance
+
+      const loadingText = getByTestId('Info.Text')
+      await waitFor(() =>
+        expect(getTextFromTextNode(loadingText)).toContain('Error'),
+      )
+      expect(this.fetcher.fetchTransactionsByAddress).toHaveBeenCalled()
+    })
   })
 })
