@@ -5,5 +5,7 @@ const key = 'KEY_MANAGEMENT'
 export const hasKeys = () => RNSecureStorage.exists(key)
 export const getKeys = () => RNSecureStorage.get(key)
 export const saveKeys = (value: string) =>
-  RNSecureStorage.set(key, value, { accessible: ACCESSIBLE.WHEN_UNLOCKED })
+  RNSecureStorage.set(key, value, {
+    accessible: ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
+  })
 export const deleteKeys = () => RNSecureStorage.remove(key)

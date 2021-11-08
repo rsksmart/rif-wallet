@@ -19,6 +19,7 @@ import { Paragraph } from './components/typography'
 import { AppContext } from './Context'
 import { RifWalletServicesFetcher } from './lib/rifWalletServices/RifWalletServicesFetcher'
 import { AbiEnhancer } from './lib/abiEnhancer/AbiEnhancer'
+import { Cover } from './components/cover'
 
 const createRIFWalletFactory = (onRequest: OnRequest) => (wallet: Wallet) =>
   RIFWallet.create(
@@ -111,6 +112,7 @@ const App = () => {
           setRequests,
           mnemonic: kms?.mnemonic,
         }}>
+        <Cover />
         <RootNavigation
           keyManagementProps={{
             generateMnemonic: () => KeyManagementSystem.create().mnemonic,
