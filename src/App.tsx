@@ -4,14 +4,7 @@ import 'react-native-gesture-handler'
 import 'react-native-get-random-values'
 
 import React, { useEffect, useState } from 'react'
-import {
-  SafeAreaView,
-  StatusBar,
-  View,
-  AppState,
-  Text,
-  StyleSheet,
-} from 'react-native'
+import { SafeAreaView, StatusBar, View } from 'react-native'
 
 import { Wallets, Requests } from './Context'
 import { RootNavigation } from './RootNavigation'
@@ -39,17 +32,6 @@ const fetcher = new RifWalletServicesFetcher()
 const abiEnhancer = new AbiEnhancer()
 
 const App = () => {
-  /*const [appStateVisible, setAppStateVisible] = useState('active')
-  useEffect(() => {
-    const subscription = AppState.addEventListener('change', nextAppState => {
-      console.log(nextAppState)
-      setAppStateVisible(nextAppState)
-    })
-
-    return () => {
-      subscription.remove()
-    }
-  }, [])*/
   const [ready, setReady] = useState(false)
 
   const [kms, setKMS] = useState<null | KeyManagementSystem>(null)

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, AppState, Text, StyleSheet } from 'react-native'
+import { View, AppState, StyleSheet } from 'react-native'
 interface Interface {
   reason?: string
 }
