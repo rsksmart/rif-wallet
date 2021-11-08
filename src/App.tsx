@@ -4,7 +4,14 @@ import 'react-native-gesture-handler'
 import 'react-native-get-random-values'
 
 import React, { useEffect, useState } from 'react'
-import { SafeAreaView, StatusBar, View, AppState, Text } from 'react-native'
+import {
+  SafeAreaView,
+  StatusBar,
+  View,
+  AppState,
+  Text,
+  StyleSheet,
+} from 'react-native'
 
 import { Wallets, Requests } from './Context'
 import { RootNavigation } from './RootNavigation'
@@ -123,7 +130,7 @@ const App = () => {
           mnemonic: kms?.mnemonic,
         }}>
         {appStateVisible !== 'active' ? (
-          <View style={{ height: '100%', backgroundColor: '#F5FCFF' }}>
+          <View style={styles.cover}>
             <Text>{appStateVisible}</Text>
           </View>
         ) : null}
@@ -148,3 +155,10 @@ const App = () => {
 }
 
 export default App
+
+const styles = StyleSheet.create({
+  cover: {
+    height: '100%',
+    backgroundColor: '#F5FCFF',
+  },
+})
