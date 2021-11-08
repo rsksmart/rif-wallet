@@ -123,7 +123,7 @@ const App = () => {
           mnemonic: kms?.mnemonic,
         }}>
         {appStateVisible !== 'active' ? (
-          <View>
+          <View style={{ height: '100%', backgroundColor: '#F5FCFF' }}>
             <Text>{appStateVisible}</Text>
           </View>
         ) : null}
