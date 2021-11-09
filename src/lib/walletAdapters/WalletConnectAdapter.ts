@@ -56,8 +56,6 @@ class PersonalSignResolver implements IResolver {
   async resolve(params: any[]) {
     const message = params[0]
 
-    console.log('PersonalSignResolver', message)
-
     return this.signer.signMessage(message)
   }
 }

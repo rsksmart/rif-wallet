@@ -36,8 +36,6 @@ const ScanQRScreen: React.FC<IScanQRScreenProps> = () => {
 
             const data = decodeURIComponent(event.data)
 
-            console.log('data', data)
-
             setIsConnecting(true)
 
             createSession(data)
