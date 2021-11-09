@@ -6,7 +6,7 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import { WalletConnectAdapter } from '../../lib/walletAdapters/WalletConnectAdapter'
 
 export interface WalletConnectContextInterface {
-  connector: WalletConnect | undefined
+  connector: WalletConnect | null
   peerMeta: any
   createSession: (uri: string) => Promise<void>
   handleApprove: () => Promise<void>
@@ -15,8 +15,8 @@ export interface WalletConnectContextInterface {
 
 export const WalletConnectContext =
   React.createContext<WalletConnectContextInterface>({
-    connector: undefined,
-    peerMeta: undefined,
+    connector: null,
+    peerMeta: null,
     createSession: async () => {},
     handleApprove: async () => {},
     handleReject: async () => {},
@@ -29,11 +29,9 @@ interface WalletConnectProviderElementInterface {
 
 export const WalletConnectProviderElement: React.FC<WalletConnectProviderElementInterface> =
   ({ children, navigation, account }) => {
-    const [connector, setConnector] = useState<WalletConnect | undefined>(
-      undefined,
-    )
+    const [connector, setConnector] = useState<WalletConnect | null>(null)
 
-    const [peerMeta, setPeerMeta] = useState<any>(undefined)
+    const [peerMeta, setPeerMeta] = useState<any>(null)
 
     const adapter = useMemo(() => new WalletConnectAdapter(account), [account])
 
@@ -49,7 +47,7 @@ export const WalletConnectProviderElement: React.FC<WalletConnectProviderElement
       eventsNames.forEach(x => wc.off(x))
 
       wc.on('session_request', async (error, payload) => {
-        console.log('EVENT', 'session_request')
+        console.log('EVENT', 'session_request', error, payload)
 
         if (error) {
           throw error
@@ -60,14 +58,6 @@ export const WalletConnectProviderElement: React.FC<WalletConnectProviderElement
         setPeerMeta(sessionPeerMeta)
 
         navigation.navigate('SessionRequest')
-      })
-
-      wc.on('session_update', error => {
-        console.log('EVENT', 'session_update')
-
-        if (error) {
-          throw error
-        }
       })
 
       wc.on('call_request', async (error, payload) => {
@@ -87,19 +77,15 @@ export const WalletConnectProviderElement: React.FC<WalletConnectProviderElement
         }
       })
 
-      wc.on('connect', error => {
-        console.log('EVENT', 'connect')
+      wc.on('disconnect', async error => {
+        console.log('EVENT', 'disconnect', error)
 
-        if (error) {
-          throw error
-        }
-      })
-
-      wc.on('disconnect', error => {
-        console.log('EVENT', 'disconnect')
-
-        if (error) {
-          throw error
+        setConnector(null)
+        setPeerMeta(null)
+        try {
+          await connector?.killSession()
+        } catch (err) {
+          console.error('could not kill the wc session', err)
         }
       })
     }
@@ -142,6 +128,8 @@ export const WalletConnectProviderElement: React.FC<WalletConnectProviderElement
         },
       })
 
+      // needs to subscribe to events before createSession
+      // this is because we need the 'session_request' event
       subscribeToEvents(newConnector)
 
       setConnector(newConnector)
