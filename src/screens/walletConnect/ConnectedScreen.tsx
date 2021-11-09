@@ -6,8 +6,7 @@ import { Paragraph } from '../../components/typography'
 import { RIFWallet } from '../../lib/core'
 import { NavigationProp, ParamListBase } from '@react-navigation/core'
 import { WalletConnectContext } from './WalletConnectContext'
-import Button from '../../components/button'
-
+import { Button } from '../../components'
 interface IConnectedScreenProps {
   navigation: NavigationProp<ParamListBase>
   route: any

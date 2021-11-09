@@ -22,6 +22,9 @@ const InjectedScreens = {
   WalletInfoScreen: InjectSelectedWallet(Screens.WalletInfoScreen),
   KeysInfoScreen: InjectSelectedWallet(Screens.KeysInfoScreen),
   SignTypedDataScreen: InjectSelectedWallet(Screens.SignTypedDataScreen),
+  WalletConnectNavigationScreen: InjectSelectedWallet(
+    Screens.WalletConnectNavigationScreen,
+  ),
 }
 
 type RootStackParamList = {
@@ -36,6 +39,7 @@ type RootStackParamList = {
   WalletInfo: undefined
   CreateKeysUX: undefined
   KeysInfo: undefined
+  WalletConnect: undefined
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -68,12 +72,16 @@ export const RootNavigation: React.FC<{
             component={Screens.HomeScreen}
             options={{ ...sharedOptions, headerShown: false }}
           />
-
           <RootStack.Screen name="CreateKeysUX" options={sharedOptions}>
             {props => (
               <CreateKeysNavigation {...props} {...keyManagementProps} />
             )}
           </RootStack.Screen>
+          <RootStack.Screen
+            name="WalletConnect"
+            component={InjectedScreens.WalletConnectNavigationScreen}
+            options={{ ...sharedOptions, headerShown: false }}
+          />
           <RootStack.Screen
             name="Receive"
             component={InjectedScreens.ReceiveScreen}
@@ -84,7 +92,6 @@ export const RootNavigation: React.FC<{
             component={InjectedScreens.SendScreen}
             options={sharedOptions}
           />
-
           <RootStack.Screen name="Balances">
             {props => (
               <InjectedScreens.BalancesScreen
@@ -101,7 +108,6 @@ export const RootNavigation: React.FC<{
               />
             )}
           </RootStack.Screen>
-
           <RootStack.Screen
             name="SignMessage"
             component={InjectedScreens.SignMessageScreen}
@@ -112,13 +118,11 @@ export const RootNavigation: React.FC<{
             component={InjectedScreens.SignTypedDataScreen}
             options={sharedOptions}
           />
-
           <RootStack.Screen
             name="TransactionReceived"
             component={Screens.TransactionReceivedScreen}
             options={sharedOptions}
           />
-
           <RootStack.Screen
             name="WalletInfo"
             component={InjectedScreens.WalletInfoScreen}

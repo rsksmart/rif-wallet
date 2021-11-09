@@ -30,6 +30,10 @@ const WalletRow = ({
     <Paragraph>Smart Wallet Address</Paragraph>
     <CopyComponent value={address} />
     <View style={styles.subsection}>
+      <Button
+        onPress={() => navigation.navigate('WalletConnect')}
+        title="WalletConnect"
+      />
       <Button onPress={() => navigation.navigate('Receive')} title="Receive" />
       <Button
         onPress={() => {
