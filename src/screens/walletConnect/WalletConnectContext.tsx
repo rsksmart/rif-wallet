@@ -142,16 +142,9 @@ export const WalletConnectProviderElement: React.FC<WalletConnectProviderElement
         },
       })
 
-      if (!newConnector.connected) {
-        // needs to subscribe to events before createSession
-        // this is because we need the 'session_request' event
-        subscribeToEvents(newConnector)
+      subscribeToEvents(newConnector)
 
-        // TODO: is this necessary?
-        // await newConnector.createSession()
-
-        setConnector(newConnector)
-      }
+      setConnector(newConnector)
     }
 
     const initialContext: WalletConnectContextInterface = {
