@@ -35,7 +35,7 @@ export const WalletConnectProviderElement: React.FC<WalletConnectProviderElement
 
     const adapter = useMemo(() => new WalletConnectAdapter(account), [account])
 
-    const subscribeToEvents = async (wc: WalletConnect) => {
+    const unsubscribeToEvents = async (wc: WalletConnect) => {
       const eventsNames = [
         'session_request',
         'session_update',
@@ -45,6 +45,10 @@ export const WalletConnectProviderElement: React.FC<WalletConnectProviderElement
       ]
 
       eventsNames.forEach(x => wc.off(x))
+    }
+
+    const subscribeToEvents = async (wc: WalletConnect) => {
+      unsubscribeToEvents(wc)
 
       wc.on('session_request', async (error, payload) => {
         console.log('EVENT', 'session_request', error, payload)
@@ -82,11 +86,16 @@ export const WalletConnectProviderElement: React.FC<WalletConnectProviderElement
 
         setConnector(null)
         setPeerMeta(null)
+
+        unsubscribeToEvents(wc)
+
         try {
           await connector?.killSession()
         } catch (err) {
           console.error('could not kill the wc session', err)
         }
+
+        navigation.navigate('Home')
       })
     }
 
