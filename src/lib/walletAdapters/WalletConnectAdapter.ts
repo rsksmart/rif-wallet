@@ -1,4 +1,4 @@
-import { Signer, constants } from 'ethers'
+import { Signer, constants, utils } from 'ethers'
 export class WalletConnectAdapter {
   private resolvers: IResolver[]
 
@@ -54,7 +54,7 @@ class PersonalSignResolver implements IResolver {
   }
 
   async resolve(params: any[]) {
-    const message = params[0]
+    const message = utils.toUtf8String(params[0])
 
     return this.signer.signMessage(message)
   }
