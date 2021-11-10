@@ -51,14 +51,18 @@ const ScanQRScreen: React.FC<IScanQRScreenProps> = () => {
 
       <Paragraph>Or use the URI</Paragraph>
       <View>
-        <TextInput style={{
-          fontSize: 18,
-          borderBottomWidth: 1,
-          borderColor: '#919191',
-          paddingLeft: 10,
-          paddingRight: 10,
-          margin: 10
-        }} value={input} onChangeText={setInput} />
+        <TextInput
+          style={{
+            fontSize: 18,
+            borderBottomWidth: 1,
+            borderColor: '#919191',
+            paddingLeft: 10,
+            paddingRight: 10,
+            margin: 10,
+          }}
+          value={input}
+          onChangeText={setInput}
+        />
         <Button title="Confirm URI" onPress={() => createSession(input)} />
       </View>
     </ScrollView>
