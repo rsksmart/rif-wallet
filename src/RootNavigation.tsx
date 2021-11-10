@@ -22,6 +22,9 @@ const InjectedScreens = {
   WalletInfoScreen: InjectSelectedWallet(Screens.WalletInfoScreen),
   KeysInfoScreen: InjectSelectedWallet(Screens.KeysInfoScreen),
   SignTypedDataScreen: InjectSelectedWallet(Screens.SignTypedDataScreen),
+  WalletConnectNavigationScreen: InjectSelectedWallet(
+    Screens.WalletConnectNavigationScreen,
+  ),
 }
 
 type RootStackParamList = {
@@ -36,6 +39,7 @@ type RootStackParamList = {
   WalletInfo: undefined
   CreateKeysUX: undefined
   KeysInfo: undefined
+  WalletConnect: undefined
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -129,6 +133,12 @@ export const RootNavigation: React.FC<{
               <Screens.KeysInfoScreen {...props} {...keysInfoScreenProps} />
             )}
           </RootStack.Screen>
+
+          <RootStack.Screen
+            name="WalletConnect"
+            component={InjectedScreens.WalletConnectNavigationScreen}
+            options={{ ...sharedOptions, headerShown: false }}
+          />
         </RootStack.Navigator>
       </NavigationContainer>
     </View>

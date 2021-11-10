@@ -62,6 +62,12 @@ const WalletRow = ({
         onPress={() => navigation.navigate('WalletInfo')}
       />
     </View>
+    <View style={styles.subsection}>
+      <Button
+        onPress={() => navigation.navigate('WalletConnect')}
+        title="WalletConnect"
+      />
+    </View>
   </View>
 )
 
