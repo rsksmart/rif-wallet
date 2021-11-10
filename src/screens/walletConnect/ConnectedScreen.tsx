@@ -3,7 +3,6 @@ import { StyleSheet, View, ScrollView } from 'react-native'
 
 import { Paragraph } from '../../components/typography'
 
-import { RIFWallet } from '../../lib/core'
 import { NavigationProp, ParamListBase } from '@react-navigation/core'
 import { WalletConnectContext } from './WalletConnectContext'
 import { Button } from '../../components'
@@ -12,16 +11,8 @@ interface IConnectedScreenProps {
   route: any
 }
 
-const ConnectedScreen: React.FC<IConnectedScreenProps> = ({
-  route,
-  navigation,
-}) => {
-  const account = route.params.account as RIFWallet
-  const peerMeta = route.params.peerMeta
-
-  const { connector } = useContext(WalletConnectContext)
-
-  console.log('peerData', account.address, route.params.peerMeta)
+const ConnectedScreen: React.FC<IConnectedScreenProps> = ({ navigation }) => {
+  const { connector, peerMeta } = useContext(WalletConnectContext)
 
   const handleDisconnect = async () => {
     if (!connector) {

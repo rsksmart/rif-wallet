@@ -89,11 +89,15 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
   }, [request])
 
   // convert from string to Transaction and pass out of component
-  const confirmTransaction = () => {
-    request.confirm({
-      gasPrice: BigNumber.from(gasPrice),
-      gasLimit: BigNumber.from(gasLimit),
-    })
+  const confirmTransaction = async () => {
+    try {
+      await request.confirm({
+        gasPrice: BigNumber.from(gasPrice),
+        gasLimit: BigNumber.from(gasLimit),
+      })
+    } catch (error) {
+      console.error(error)
+    }
     closeModal()
   }
 

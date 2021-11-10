@@ -1,78 +1,125 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import WalletConnect from '@walletconnect/client'
-import { NavigationProp, ParamListBase } from '@react-navigation/core'
+import { ParamListBase } from '@react-navigation/core'
 import { RIFWallet } from '../../lib/core'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { WalletConnectAdapter } from '../../lib/walletAdapters/WalletConnectAdapter'
 
 export interface WalletConnectContextInterface {
-  connector: WalletConnect | undefined
+  connector: WalletConnect | null
+  peerMeta: any
   createSession: (uri: string) => Promise<void>
+  handleApprove: () => Promise<void>
+  handleReject: () => Promise<void>
 }
 
 export const WalletConnectContext =
   React.createContext<WalletConnectContextInterface>({
-    connector: undefined,
+    connector: null,
+    peerMeta: null,
     createSession: async () => {},
+    handleApprove: async () => {},
+    handleReject: async () => {},
   })
 
 interface WalletConnectProviderElementInterface {
-  navigation: NavigationProp<ParamListBase>
+  navigation: StackNavigationProp<ParamListBase>
   account: RIFWallet
 }
 
 export const WalletConnectProviderElement: React.FC<WalletConnectProviderElementInterface> =
   ({ children, navigation, account }) => {
-    const [connector, setConnector] = useState<WalletConnect | undefined>(
-      undefined,
-    )
+    const [connector, setConnector] = useState<WalletConnect | null>(null)
+
+    const [peerMeta, setPeerMeta] = useState<any>(null)
+
+    const adapter = useMemo(() => new WalletConnectAdapter(account), [account])
+
+    const unsubscribeToEvents = async (wc: WalletConnect) => {
+      const eventsNames = [
+        'session_request',
+        'session_update',
+        'call_request',
+        'connect',
+        'disconnect',
+      ]
+
+      eventsNames.forEach(x => wc.off(x))
+    }
 
     const subscribeToEvents = async (wc: WalletConnect) => {
+      unsubscribeToEvents(wc)
+
       wc.on('session_request', async (error, payload) => {
-        console.log('EVENT', 'session_request')
+        console.log('EVENT', 'session_request', error, payload)
 
         if (error) {
           throw error
         }
 
-        const { peerMeta } = payload.params[0]
+        const { peerMeta: sessionPeerMeta } = payload.params[0]
 
-        console.log('peerMeta', peerMeta, payload)
+        setPeerMeta(sessionPeerMeta)
 
-        navigation.navigate('SessionRequest', { peerMeta, account })
-
-        console.log('peerMeta', peerMeta, payload)
-      })
-
-      wc.on('session_update', error => {
-        console.log('EVENT', 'session_update')
-
-        if (error) {
-          throw error
-        }
+        navigation.navigate('SessionRequest')
       })
 
       wc.on('call_request', async (error, payload) => {
-        console.log('EVENT', 'call_request', 'payload', payload)
-
         if (error) {
           throw error
         }
-      })
 
-      wc.on('connect', error => {
-        console.log('EVENT', 'connect')
+        const { id, method, params } = payload
 
-        if (error) {
-          throw error
+        try {
+          const result = await adapter.handleCall(method, params)
+
+          connector?.approveRequest({ id, result })
+        } catch (err) {
+          console.error(err)
+          connector?.rejectRequest({ id })
         }
       })
 
-      wc.on('disconnect', error => {
-        console.log('EVENT', 'disconnect')
+      wc.on('disconnect', async error => {
+        console.log('EVENT', 'disconnect', error)
 
-        if (error) {
-          throw error
+        setConnector(null)
+        setPeerMeta(null)
+
+        unsubscribeToEvents(wc)
+
+        try {
+          await connector?.killSession()
+        } catch (err) {
+          console.error('could not kill the wc session', err)
         }
+
+        navigation.navigate('Home')
       })
+    }
+
+    const handleApprove = async () => {
+      if (!connector) {
+        return
+      }
+
+      connector.approveSession({
+        accounts: [account.address],
+        chainId: await account.getChainId(),
+      })
+
+      subscribeToEvents(connector)
+
+      navigation.navigate('Connected')
+    }
+
+    const handleReject = async () => {
+      if (!connector) {
+        return
+      }
+
+      connector.rejectSession({ message: 'user rejected the session' })
     }
 
     const createSession = async (uri: string) => {
@@ -82,7 +129,7 @@ export const WalletConnectProviderElement: React.FC<WalletConnectProviderElement
         // Required
         clientMeta: {
           description: 'sWallet App',
-          url: 'https://walletconnect-bridge.rifos.org/',
+          url: 'https://www.rifos.org/',
           icons: [
             'https://raw.githubusercontent.com/rsksmart/rif-scheduler-ui/develop/src/assets/logoColor.svg',
           ],
@@ -90,20 +137,19 @@ export const WalletConnectProviderElement: React.FC<WalletConnectProviderElement
         },
       })
 
-      if (!newConnector.connected) {
-        console.log('createSession')
+      // needs to subscribe to events before createSession
+      // this is because we need the 'session_request' event
+      subscribeToEvents(newConnector)
 
-        subscribeToEvents(newConnector)
-
-        await newConnector.createSession()
-
-        setConnector(newConnector)
-      }
+      setConnector(newConnector)
     }
 
     const initialContext: WalletConnectContextInterface = {
       connector,
+      peerMeta,
       createSession,
+      handleApprove,
+      handleReject,
     }
 
     return (
