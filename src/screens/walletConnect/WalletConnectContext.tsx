@@ -71,6 +71,8 @@ export const WalletConnectProviderElement: React.FC<WalletConnectProviderElement
 
         const { id, method, params } = payload
 
+        console.log('EVENT', 'call_request', payload)
+
         try {
           const result = await adapter.handleCall(method, params)
 
