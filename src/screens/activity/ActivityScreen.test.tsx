@@ -39,6 +39,10 @@ const createTestInstance = async (
   return { container, mock, waitForEffect, fetcher, abiEnhancer }
 }
 
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({ t: (key: any) => key }),
+}))
+
 describe('Activity Screen', function (this: {
   testInstance: Awaited<ReturnType<typeof createTestInstance>>
 }) {

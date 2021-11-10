@@ -5,6 +5,7 @@ import { CopyComponent, Button, Header1, Paragraph } from '../components'
 import { AppContext } from '../Context'
 import { NavigationProp } from '../RootNavigation'
 import { ScreenProps } from '../RootNavigation'
+import { Trans, useTranslation } from 'react-i18next'
 
 const KeysActionItem = ({ navigation }: { navigation: NavigationProp }) =>
   !useContext(AppContext).mnemonic ? (
@@ -73,10 +74,12 @@ const WalletRow = ({
 
 export const HomeScreen: React.FC<ScreenProps<'Home'>> = ({ navigation }) => {
   const { wallets } = useContext(AppContext)
-
+  const { t } = useTranslation()
   return (
     <ScrollView style={styles.section}>
-      <Header1>Welcome to sWallet!</Header1>
+      <Header1>
+        <Trans>Welcome to sWallet!</Trans>
+      </Header1>
       <KeysActionItem navigation={navigation} />
       {Object.keys(wallets).map((address: string) => (
         <WalletRow key={address} address={address} navigation={navigation} />

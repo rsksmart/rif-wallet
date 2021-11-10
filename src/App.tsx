@@ -14,12 +14,15 @@ import { Wallet } from '@ethersproject/wallet'
 import { KeyManagementSystem, OnRequest, RIFWallet } from './lib/core'
 import { getKeys, hasKeys, saveKeys, deleteKeys } from './storage/KeyStore'
 import { jsonRpcProvider } from './lib/jsonRpcProvider'
-
-import { Paragraph } from './components/typography'
+import i18n from './lib/i18n'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const initI18n = i18n //this line is required for the translations to work
+import { Paragraph } from './components'
 import { AppContext } from './Context'
 import { RifWalletServicesFetcher } from './lib/rifWalletServices/RifWalletServicesFetcher'
 import { AbiEnhancer } from './lib/abiEnhancer/AbiEnhancer'
 import { Cover } from './components/cover'
+import { Languages } from './components/languages'
 
 const createRIFWalletFactory = (onRequest: OnRequest) => (wallet: Wallet) =>
   RIFWallet.create(
@@ -112,6 +115,7 @@ const App = () => {
           setRequests,
           mnemonic: kms?.mnemonic,
         }}>
+        <Languages />
         <Cover />
         <RootNavigation
           keyManagementProps={{
@@ -125,6 +129,7 @@ const App = () => {
             deleteKeys,
           }}
         />
+
         {requests.length !== 0 && (
           <ModalComponent closeModal={closeRequest} request={requests[0]} />
         )}
