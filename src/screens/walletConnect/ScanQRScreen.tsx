@@ -13,7 +13,7 @@ const ScanQRScreen: React.FC<IScanQRScreenProps> = () => {
   const { createSession } = useContext(WalletConnectContext)
   const [isConnecting, setIsConnecting] = useState(false)
 
-  const [input, setInput] = useState('wc:3d3ce04d-6345-4c21-8c36-0516f0c14271@1?bridge=https%3A%2F%2Fwalletconnect-bridge.rifos.org%2F&key=5addb0a3f322aaac9a5b37dd66d403fb39670615e5613158de0ba19479e96ed1')
+  const [input, setInput] = useState('')
 
   const cameraRef = useRef<RNCamera>(null)
 
