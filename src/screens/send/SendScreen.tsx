@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  TextInput,
-  Linking,
-  Text,
-} from 'react-native'
+import { StyleSheet, View, ScrollView, TextInput, Linking } from 'react-native'
 import { ContractReceipt, BigNumber, utils } from 'ethers'
 
 import { getAllTokens } from '../../lib/token/tokenMetadata'
