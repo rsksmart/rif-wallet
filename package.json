@@ -24,6 +24,7 @@
     "@rsksmart/rlogin-dpath": "^1.0.1",
     "@rsksmart/rsk-contract-metadata": "^1.0.15",
     "@rsksmart/rsk-testnet-contract-metadata": "^1.0.11",
+    "@rsksmart/rsk-utils": "^1.1.0",
     "@walletconnect/client": "^1.6.6",
     "axios": "^0.24.0",
     "bignumber.js": "^9.0.1",

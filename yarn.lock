@@ -1662,6 +1662,14 @@
   resolved "https://registry.npmjs.org/@rsksmart/rsk-testnet-contract-metadata/-/rsk-testnet-contract-metadata-1.0.11.tgz"
   integrity sha512-maQCHIpKOvzGad53VQk5agbIEv2xkhiKayHocjuWXjhjYyFG6zyyXkjglFNbHGVjJm7NAVgBd4lqA9cHFHoL0w==
 
+"@rsksmart/rsk-utils@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rsk-utils/-/rsk-utils-1.1.0.tgz#fee88eefbe9381fedfcf162060cd327a12306206"
+  integrity sha512-ZveRUj9AHGyxSPIwWIIKhjQ5XEWtaZa5HYt8zqEhv5HDSRW2KiaTffG/fGv07XwMtmLVo/DA5/a2Ak9igVaNSA==
+  dependencies:
+    keccak "^2.0.0"
+    rlp "^2.2.4"
+
 "@sideway/address@^4.1.0":
   version "4.1.2"
   resolved "https://registry.npmjs.org/@sideway/address/-/address-4.1.2.tgz"
@@ -2685,7 +2693,7 @@ bignumber.js@^9.0.1:
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.0.1.tgz#8d7ba124c882bfd8e43260c67475518d0689e4e5"
   integrity sha512-IdZR9mh6ahOBv/hYGiXyVuyCetmGJhtYkqLBpTStdhEGjegpPlUawydyaF3pbIOFynJTpllEs+NP+CS9jKFLjA==
 
-bindings@^1.2.1, bindings@^1.3.0:
+bindings@^1.2.1, bindings@^1.3.0, bindings@^1.5.0:
   version "1.5.0"
   resolved "https://registry.npmjs.org/bindings/-/bindings-1.5.0.tgz"
   integrity sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==
@@ -5794,6 +5802,16 @@ keccak@^1.0.2:
     nan "^2.2.1"
     safe-buffer "^5.1.0"
 
+keccak@^2.0.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/keccak/-/keccak-2.1.0.tgz#734ea53f2edcfd0f42cdb8d5f4c358fef052752b"
+  integrity sha512-m1wbJRTo+gWbctZWay9i26v5fFnYkOn7D5PCxJ3fZUGUEb49dE1Pm4BREUYCt/aoO6di7jeoGmhvqN9Nzylm3Q==
+  dependencies:
+    bindings "^1.5.0"
+    inherits "^2.0.4"
+    nan "^2.14.0"
+    safe-buffer "^5.2.0"
+
 keccak@^3.0.0:
   version "3.0.2"
   resolved "https://registry.npmjs.org/keccak/-/keccak-3.0.2.tgz"
@@ -6411,7 +6429,7 @@ ms@2.1.2:
   resolved "https://registry.npmjs.org/ms/-/ms-2.1.2.tgz"
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
 
-nan@^2.13.2, nan@^2.2.1:
+nan@^2.13.2, nan@^2.14.0, nan@^2.2.1:
   version "2.15.0"
   resolved "https://registry.npmjs.org/nan/-/nan-2.15.0.tgz"
   integrity sha512-8ZtvEnA2c5aYCZYd1cvgdnU6cqwixRoYg70xPLWUws5ORTa/lnw+u4amixRS/Ac5U5mQVgp9pnlSUnbNWFaWZQ==
@@ -7600,7 +7618,7 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^3.0.0"
     inherits "^2.0.1"
 
-rlp@^2.2.3:
+rlp@^2.2.3, rlp@^2.2.4:
   version "2.2.7"
   resolved "https://registry.yarnpkg.com/rlp/-/rlp-2.2.7.tgz#33f31c4afac81124ac4b283e2bd4d9720b30beaf"
   integrity sha512-d5gdPmgQ0Z+AklL2NVXr/IoSjNZFfTVvQWzL/AM2AOcSzYP2xjlb0AC8YyCLc41MSNf6P6QVtjgPdmVtzb+4lQ==

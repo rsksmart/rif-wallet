@@ -22,7 +22,6 @@ import { AppContext } from './Context'
 import { RifWalletServicesFetcher } from './lib/rifWalletServices/RifWalletServicesFetcher'
 import { AbiEnhancer } from './lib/abiEnhancer/AbiEnhancer'
 import { Cover } from './components/cover'
-import { Languages } from './components/languages'
 
 const createRIFWalletFactory = (onRequest: OnRequest) => (wallet: Wallet) =>
   RIFWallet.create(
@@ -115,7 +114,6 @@ const App = () => {
           setRequests,
           mnemonic: kms?.mnemonic,
         }}>
-        <Languages />
         <Cover />
         <RootNavigation
           keyManagementProps={{

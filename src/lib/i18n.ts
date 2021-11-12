@@ -8,6 +8,7 @@ import { initReactI18next } from 'react-i18next'
 const resources = {
   en: {
     translation: {
+      'Please select your language': 'Please select your language',
       'Welcome to sWallet!': 'Welcome to sWallet!',
       'Transaction Details': 'Transaction Details',
       Token: 'Token',
@@ -28,6 +29,7 @@ const resources = {
   },
   es: {
     translation: {
+      'Please select your language': 'Por favor seleccionar su idioma',
       'Welcome to sWallet!': 'Bienvenido a sWallet!',
       Refresh: 'Refrescar',
     },

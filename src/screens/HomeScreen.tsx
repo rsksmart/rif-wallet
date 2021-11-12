@@ -5,7 +5,7 @@ import { CopyComponent, Button, Header1, Paragraph } from '../components'
 import { AppContext } from '../Context'
 import { NavigationProp } from '../RootNavigation'
 import { ScreenProps } from '../RootNavigation'
-import { Trans, useTranslation } from 'react-i18next'
+import { Trans } from 'react-i18next'
 
 const KeysActionItem = ({ navigation }: { navigation: NavigationProp }) =>
   !useContext(AppContext).mnemonic ? (
@@ -49,6 +49,12 @@ const WalletRow = ({
     </View>
     <View style={styles.subsection}>
       <Button
+        onPress={() => navigation.navigate('ChangeLanguage')}
+        title="Change Language"
+      />
+    </View>
+    <View style={styles.subsection}>
+      <Button
         onPress={() => navigation.navigate('SignMessage')}
         title="Sign Message"
       />
@@ -57,6 +63,7 @@ const WalletRow = ({
         title="Sign Typed Data"
       />
     </View>
+
     <View style={styles.subsection}>
       <Button
         title="Wallet info"
@@ -74,7 +81,6 @@ const WalletRow = ({
 
 export const HomeScreen: React.FC<ScreenProps<'Home'>> = ({ navigation }) => {
   const { wallets } = useContext(AppContext)
-  const { t } = useTranslation()
   return (
     <ScrollView style={styles.section}>
       <Header1>
