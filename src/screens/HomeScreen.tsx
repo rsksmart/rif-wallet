@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 
-import { CopyComponent, Button, Header1, Paragraph } from '../components'
+import { Address, Button, Header1, Paragraph } from '../components'
 import { AppContext } from '../Context'
 import { NavigationProp } from '../RootNavigation'
 import { ScreenProps } from '../RootNavigation'
@@ -27,9 +27,11 @@ const WalletRow = ({
   address: string
   navigation: NavigationProp
 }) => (
-  <View>
+  <>
     <Paragraph>Smart Wallet Address</Paragraph>
-    <CopyComponent value={address} />
+
+    <Address>{address}</Address>
+
     <View style={styles.subsection}>
       <Button onPress={() => navigation.navigate('Receive')} title="Receive" />
       <Button
@@ -76,7 +78,7 @@ const WalletRow = ({
         title="WalletConnect"
       />
     </View>
-  </View>
+  </>
 )
 
 export const HomeScreen: React.FC<ScreenProps<'Home'>> = ({ navigation }) => {

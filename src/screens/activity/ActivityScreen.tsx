@@ -16,6 +16,7 @@ import {
 } from '../../lib/abiEnhancer/AbiEnhancer'
 import { ScreenWithWallet } from '../types'
 import { formatBigNumber } from '../../lib/abiEnhancer/formatBigNumber'
+import { Address } from '../../components/address'
 
 interface IReceiveScreenProps {
   route: any
@@ -125,13 +126,12 @@ const ActivityRow = ({
     <View style={styles.activitySummary}>
       <Text>
         {activityTransaction.enhancedTransaction ? (
-          <Text testID={`${activityTransaction.originTransaction.hash}.Text`}>
-            {`${activityTransaction.enhancedTransaction.value} ${
-              activityTransaction.enhancedTransaction.symbol
-            } sent To ${shortAddress(
-              activityTransaction.enhancedTransaction.to,
-            )}`}
-          </Text>
+          <>
+            <Text testID={`${activityTransaction.originTransaction.hash}.Text`}>
+              {`${activityTransaction.enhancedTransaction.value} ${activityTransaction.enhancedTransaction.symbol} sent To `}
+            </Text>
+            <Address>{activityTransaction.enhancedTransaction.to}</Address>
+          </>
         ) : (
           <>
             {formatBigNumber(

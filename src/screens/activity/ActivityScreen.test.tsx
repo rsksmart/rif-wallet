@@ -1,6 +1,5 @@
 import React from 'react'
 import { render, act, waitFor, fireEvent } from '@testing-library/react-native'
-import { shortAddress } from '../../lib/utils'
 
 import { setupTest } from '../../../testLib/setup'
 import { getTextFromTextNode, Awaited } from '../../../testLib/utils'
@@ -81,9 +80,7 @@ describe('Activity Screen', function (this: {
         const enhancedTx = enhancedTxTestCase
         const activityText = getByTestId(`${v.hash}.Text`)
         expect(getTextFromTextNode(activityText)).toEqual(
-          `${enhancedTx?.value} ${enhancedTx?.symbol} sent To ${shortAddress(
-            enhancedTx?.to,
-          )}`,
+          `${enhancedTx?.value} ${enhancedTx?.symbol} sent To `,
         )
       }
 
