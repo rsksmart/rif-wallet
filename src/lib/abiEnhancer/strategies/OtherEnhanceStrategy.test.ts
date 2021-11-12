@@ -89,8 +89,8 @@ describe('Other Enhance Strategy', () => {
     expect(result).not.toBeNull()
     expect(result!.functionName).toBe('transfer')
     expect(result!.from).toBe(transactionRequest.from)
-    expect(result!.to).toBe('0x1D4F6A5FE927f0E0e4497B91CebfBcF64dA1c934')
-    expect(result!.value.toString()).toBe('1000000000000000')
+    expect(result!.to).toBe(tokenAddress1)
+    expect(result!.functionParameters.length).toBeGreaterThan(0)
   })
 
   it('should return null if data is empty', async () => {

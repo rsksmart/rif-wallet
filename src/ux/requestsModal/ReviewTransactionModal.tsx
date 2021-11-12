@@ -1,26 +1,18 @@
-import React, { useEffect, useState } from 'react'
-import { TextInput, View } from 'react-native'
+import React, { useEffect, useMemo, useState } from 'react'
+import { StyleSheet, TextInput, View } from 'react-native'
 import { BigNumber } from 'ethers'
-import { TransactionRequest } from '@ethersproject/abstract-provider'
 
 import { SendTransactionRequest } from '../../lib/core/RIFWallet'
 
 import { sharedStyles } from './sharedStyles'
 import { Button, Header2, Paragraph } from '../../components'
 import { ScreenWithWallet } from '../../screens/types'
+import { AbiEnhancer, IEnhancedResult } from '../../lib/abiEnhancer/AbiEnhancer'
 
 /**
  * Used for UI only to make editing transactions easier. Allows for
  * gasPrice to be '0.', '0.0', or blank, as the user types it in.
  */
-interface StringTransaction {
-  to: string
-  from: string
-  value: string
-  data: string
-  gasLimit: string
-  gasPrice: string
-}
 
 interface Interface {
   request: SendTransactionRequest
@@ -31,47 +23,37 @@ interface Interface {
 const convertValueToString = (value?: any) => (value ? value.toString() : '')
 const convertNumberToString = (value?: any) => (value ? value.toString() : '0')
 
-const convertTransactionToStrings = (tx: TransactionRequest) => ({
+const convertTransactionToStrings = (tx: IEnhancedResult) => ({
+  ...tx,
   to: convertValueToString(tx.to),
   from: convertValueToString(tx.from),
-  value: convertNumberToString(tx.value),
-  // nonce: convertNumberToString(tx.nonce),
   data: convertValueToString(tx.data),
   gasLimit: convertNumberToString(tx.gasLimit),
   gasPrice: convertNumberToString(tx.gasPrice),
 })
 
-/*
-  removed validations for now. we can use BigNumber.from to validate
-  confirmTransaction will enforce that now
-
-  if (gasPrice.match(/^(\d*)([,.]\d{0,})?$/)) {
-    setUpdateTransaction({
-      ...updateTransaction,
-      gasPrice: gasPrice,
-    })
-  }
-  if (parseInt(gasLimit, 10).toString() === gasLimit || gasLimit === '') {
-    setUpdateTransaction({
-      ...updateTransaction,
-      gasLimit: gasLimit,
-    })
-  }
-
-*/
+const abiEnhancer = new AbiEnhancer()
 
 const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
   request,
   closeModal,
   wallet,
 }) => {
-  const transactionRequest = convertTransactionToStrings(request.payload[0])
+  const [enhancedTransactionRequest, setEnhancedTransactionRequest] = useState<
+    any | null
+  >(null)
 
-  const [gasPrice, setGasPrice] = useState(transactionRequest.gasPrice)
-  const [gasLimit, setGasLimit] = useState(transactionRequest.gasLimit)
+  const txRequest = useMemo(() => request.payload[0], [request])
+
+  const [gasPrice, setGasPrice] = useState(
+    convertNumberToString(txRequest.gasPrice),
+  )
+  const [gasLimit, setGasLimit] = useState(
+    convertNumberToString(txRequest.gasLimit),
+  )
+  const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
-    const txRequest = request.payload[0]
     if (!txRequest.gasLimit) {
       wallet.smartWallet
         .estimateDirectExecute(txRequest.to || '0x', txRequest.data || '0x')
@@ -86,15 +68,33 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
           setGasPrice(gp.mul('101').div('100').toString()),
         )
     }
-  }, [request])
+  }, [txRequest])
+
+  useEffect(() => {
+    const action = async () => {
+      const enhanced = await abiEnhancer.enhance(wallet, txRequest)
+
+      const enhancedToStrings = convertTransactionToStrings(
+        enhanced ?? txRequest,
+      )
+
+      setEnhancedTransactionRequest(enhancedToStrings)
+    }
+
+    action()
+  }, [wallet, txRequest])
 
   // convert from string to Transaction and pass out of component
-  const confirmTransaction = () => {
-    request.confirm({
-      gasPrice: BigNumber.from(gasPrice),
-      gasLimit: BigNumber.from(gasLimit),
-    })
-    closeModal()
+  const confirmTransaction = async () => {
+    try {
+      await request.confirm({
+        gasPrice: BigNumber.from(gasPrice),
+        gasLimit: BigNumber.from(gasLimit),
+      })
+      closeModal()
+    } catch (err: any) {
+      setError(err)
+    }
   }
 
   const cancelTransaction = () => {
@@ -105,10 +105,48 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
   return (
     <View>
       <Header2>Review Transaction</Header2>
-      <Paragraph>to: {transactionRequest.to}</Paragraph>
-      <Paragraph>from: {transactionRequest.from}</Paragraph>
-      <Paragraph>value: {transactionRequest.value}</Paragraph>
-      <Paragraph>data: {transactionRequest.data}</Paragraph>
+      {enhancedTransactionRequest && (
+        <View testID="TX_VIEW">
+          <Paragraph>to: {enhancedTransactionRequest.to}</Paragraph>
+          <Paragraph>from: {enhancedTransactionRequest.from}</Paragraph>
+          {enhancedTransactionRequest.value && (
+            <Paragraph>value: {enhancedTransactionRequest.value}</Paragraph>
+          )}
+          {enhancedTransactionRequest.symbol && (
+            <Paragraph>token: {enhancedTransactionRequest.symbol}</Paragraph>
+          )}
+          {enhancedTransactionRequest.balance && (
+            <Paragraph>
+              current balance: {enhancedTransactionRequest.balance}
+            </Paragraph>
+          )}
+          <View
+            style={
+              enhancedTransactionRequest.functionName
+                ? styles.boxStyle
+                : undefined
+            }>
+            {enhancedTransactionRequest.functionName && (
+              <>
+                <Paragraph>contract interaction</Paragraph>
+                <Paragraph>
+                  function: {enhancedTransactionRequest.functionName}
+                </Paragraph>
+              </>
+            )}
+            {enhancedTransactionRequest.functionParameters &&
+              enhancedTransactionRequest.functionParameters.map(
+                ({ name, value }: any) => (
+                  <Paragraph>
+                    {name}: {value.toString()}
+                  </Paragraph>
+                ),
+              )}
+          </View>
+        </View>
+      )}
+
+      {!enhancedTransactionRequest && <Paragraph>loading...</Paragraph>}
 
       <View style={sharedStyles.row}>
         <View style={sharedStyles.column}>
@@ -141,12 +179,24 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
         </View>
       </View>
 
+      {error && (
+        <View style={sharedStyles.row}>
+          <View style={sharedStyles.column}>
+            <Paragraph>Error:</Paragraph>
+          </View>
+          <View style={sharedStyles.column}>
+            <Paragraph>{error.message}</Paragraph>
+          </View>
+        </View>
+      )}
+
       <View style={sharedStyles.row}>
         <View style={sharedStyles.column}>
           <Button
             title="Confirm"
             onPress={confirmTransaction}
             testID="Confirm.Button"
+            disabled={enhancedTransactionRequest === null}
           />
         </View>
         <View style={sharedStyles.column}>
@@ -154,11 +204,34 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
             title="Cancel"
             onPress={cancelTransaction}
             testID="Cancel.Button"
+            disabled={enhancedTransactionRequest === null}
           />
         </View>
       </View>
+
+      {!!enhancedTransactionRequest?.data && (
+        <>
+          <View style={styles.lineStyle} />
+          <View style={sharedStyles.row}>
+            <Paragraph>data: {enhancedTransactionRequest.data}</Paragraph>
+          </View>
+        </>
+      )}
     </View>
   )
 }
 
 export default ReviewTransactionModal
+
+const styles = StyleSheet.create({
+  lineStyle: {
+    borderWidth: 0.5,
+    borderColor: 'black',
+    marginTop: 40,
+  },
+  boxStyle: {
+    borderWidth: 0.5,
+    borderColor: 'black',
+    padding: 5,
+  },
+})
