@@ -6,17 +6,28 @@ import { shortAddress } from '../../lib/utils'
 import { Paragraph } from '../typography'
 const testnetExplorer = 'https://explorer.testnet.rsk.co/address/'
 const mainnetExplorer = 'https://explorer.rsk.co/address/address/'
-export const Address: React.FC<{ chainId?: number }> = ({
+
+export const processAddress = (inputAddress: string, chainId = 31) => {
+  const checksumAddress = rskUtils.toChecksumAddress(inputAddress, chainId)
+  const displayAddress = shortAddress(checksumAddress)
+  return { checksumAddress, displayAddress }
+}
+export const Address: React.FC<{ chainId?: number; testID?: string }> = ({
   children,
   chainId = 31, //RSK Testnet: 31
+  testID,
 }) => {
   const inputAddress = children as string
-  const checksumAddress = rskUtils.toChecksumAddress(inputAddress, chainId)
-  console.log({ checksumAddress })
+
+  const { displayAddress, checksumAddress } = processAddress(
+    inputAddress,
+    chainId,
+  )
+
   const explorerUrl = chainId === 31 ? testnetExplorer : mainnetExplorer
   return (
     <Paragraph>
-      <Text>{shortAddress(checksumAddress)} </Text>
+      <Text testID={testID}>{displayAddress} </Text>
       <TouchableHighlight>
         <Text
           style={styles.link}

@@ -4,7 +4,6 @@ import { StyleSheet, View, ScrollView, Text, Linking } from 'react-native'
 
 import { Trans, useTranslation } from 'react-i18next'
 import { Button } from '../../components'
-import { Paragraph } from '../../components'
 import { IApiTransaction } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
@@ -16,7 +15,7 @@ import {
 } from '../../lib/abiEnhancer/AbiEnhancer'
 import { ScreenWithWallet } from '../types'
 import { formatBigNumber } from '../../lib/abiEnhancer/formatBigNumber'
-import { Address } from '../../components/address'
+import { Address } from '../../components'
 
 interface IReceiveScreenProps {
   route: any
@@ -227,9 +226,9 @@ export const ActivityScreen: React.FC<ScreenWithWallet & ActivityScreenProps> =
       <ScrollView>
         {!selectedTransaction && (
           <View>
-            <Paragraph testID={'Address.Paragraph'}>
+            <Address testID={'Address.Paragraph'}>
               {wallet.smartWalletAddress}
-            </Paragraph>
+            </Address>
 
             <View>
               <Text testID="Info.Text">{info}</Text>
