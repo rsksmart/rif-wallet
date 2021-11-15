@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 import { Button, CopyComponent, Header2, Paragraph } from '../../../components'
 import { CreateKeysProps, ScreenProps } from '../types'
-import { useTranslation, Trans } from 'react-i18next'
+import { Trans } from 'react-i18next'
 
 type CreateMasterKeyScreenProps = {
   generateMnemonic: CreateKeysProps['generateMnemonic']
