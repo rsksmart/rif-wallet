@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
-
 import { SignMessageRequest } from '../../lib/core/RIFWallet'
+import { useTranslation, Trans } from 'react-i18next'
 
 import { Button, Header2, Paragraph } from '../../components'
 import { sharedStyles } from './sharedStyles'
@@ -12,6 +12,8 @@ interface Interface {
 }
 
 const SignMessageModal: React.FC<Interface> = ({ request, closeModal }) => {
+  const { t } = useTranslation()
+
   const reject = () => {
     request.reject()
     closeModal()
@@ -26,7 +28,9 @@ const SignMessageModal: React.FC<Interface> = ({ request, closeModal }) => {
     <View>
       <Header2>Sign Message</Header2>
 
-      <Paragraph>Do you want to sign this message?</Paragraph>
+      <Paragraph>
+        <Trans>Do you want to sign this message?</Trans>
+      </Paragraph>
 
       <Text style={styles.message} testID="Text.Message">
         {request.payload}
@@ -36,12 +40,12 @@ const SignMessageModal: React.FC<Interface> = ({ request, closeModal }) => {
         <View style={sharedStyles.column}>
           <Button
             onPress={signMessage}
-            title="Sign Message"
+            title={t('Sign Message')}
             testID="Button.Confirm"
           />
         </View>
         <View style={sharedStyles.column}>
-          <Button onPress={reject} title="Reject" testID="Button.Reject" />
+          <Button onPress={reject} title={t('Reject')} testID="Button.Reject" />
         </View>
       </View>
     </View>

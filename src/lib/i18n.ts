@@ -29,6 +29,7 @@ const resources = {
       To: 'To',
       'Loading transactions. Please wait...':
         'Loading transactions. Please wait...',
+      'Loading balances. Please wait...': 'Loading balances. Please wait...',
       'TX Hash': 'Tx Hash',
       Gas: 'Gas',
       'Gas Price': 'Gas Price',
@@ -45,6 +46,20 @@ const resources = {
       'Enter your 12 words master key': 'Enter your 12 words master key',
       'You will need to refresh the app for this to fully work.':
         'You will need to refresh the app for this to fully work.',
+      'Transaction Sent. Please wait...': 'Transaction Sent. Please wait...',
+      'Transaction Confirmed.': 'Transaction Confirmed.',
+      'Transaction Failed.': 'Transaction Failed',
+      'Signing with EOA Account': 'Signing with EOA AccounT',
+      Message: 'Message',
+      Reject: 'RejecT',
+      'Send RIF hash': 'Send RIF hash',
+      'Send RIF back to faucet': 'Send RIF back to fauceT',
+      'RIF Token balance': 'RIF Token balance',
+      'Is Deployed?': 'Is Deployed?',
+      Deploy: 'Deploy',
+      'Get info': 'Get Info',
+      'RBTC Balance (EOA)': 'RBTC Balance (EOA)',
+      'Do you want to sign this message?': 'Do you want to sign this message?',
     },
   },
   es: {

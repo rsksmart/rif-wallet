@@ -6,8 +6,8 @@ import { shortAddress } from '../../lib/utils'
 import { Paragraph } from '../typography'
 
 const explorerAddressUrlByChainId: { [chainId: number]: string } = {
-  30: 'https://explorer.testnet.rsk.co/address/',
-  31: 'https://explorer.rsk.co/address/address/',
+  30: 'https://explorer.rsk.co/address/',
+  31: 'https://explorer.testnet.rsk.co/address/',
 }
 
 export const getAddressDisplayText = (inputAddress: string, chainId = 31) => {

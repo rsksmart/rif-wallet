@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, ScrollView, TextInput, Linking } from 'react-native'
 import { ContractReceipt, BigNumber, utils } from 'ethers'
+import { useTranslation } from 'react-i18next'
 
 import { getAllTokens } from '../../lib/token/tokenMetadata'
 import { IToken } from '../../lib/token/BaseToken'
@@ -8,13 +9,14 @@ import { IToken } from '../../lib/token/BaseToken'
 import { ScreenProps } from '../../RootNavigation'
 import { Button, CopyComponent, Paragraph } from '../../components'
 import { ScreenWithWallet } from '../types'
-import { Address } from '../../components/address'
+import { Address } from '../../components'
 
 export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   route,
   wallet,
 }) => {
   const smartAddress = wallet.smartWalletAddress
+  const { t } = useTranslation()
 
   const [to, setTo] = useState('0x1D4F6A5FE927f0E0e4497B91CebfBcF64dA1c934')
   const [selectedSymbol, setSelectedToken] = useState(
@@ -47,15 +49,15 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
             BigNumber.from(numberOfTokens),
           )
 
-          setInfo('Transaction Sent. Please wait...')
+          setInfo(t('Transaction Sent. Please wait...'))
           setTxSent(true)
           setTxConfirmed(false)
           const txReceipt = await transferResponse.wait()
           setTx(txReceipt)
-          setInfo('Transaction Confirmed.')
+          setInfo(t('Transaction Confirmed.'))
           setTxConfirmed(true)
-        } catch (error: any) {
-          setInfo('Transaction Failed: ' + error.message)
+        } catch (e) {
+          setInfo(t('Transaction Failed: ') + e.message)
         }
       }
     }
@@ -72,7 +74,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
         <TextInput
           onChangeText={text => setTo(text)}
           value={to}
-          placeholder="To"
+          placeholder={t('To')}
           testID={'To.Input'}
         />
       </View>
@@ -81,7 +83,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
         <TextInput
           onChangeText={text => setAmount(text)}
           value={amount}
-          placeholder="Amount"
+          placeholder={t('Amount')}
           keyboardType="numeric"
           testID={'Amount.Input'}
         />
