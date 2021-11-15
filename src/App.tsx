@@ -14,9 +14,7 @@ import { Wallet } from '@ethersproject/wallet'
 import { KeyManagementSystem, OnRequest, RIFWallet } from './lib/core'
 import { getKeys, hasKeys, saveKeys, deleteKeys } from './storage/KeyStore'
 import { jsonRpcProvider } from './lib/jsonRpcProvider'
-import i18n from './lib/i18n'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const initI18n = i18n //this line is required for the translations to work
+import { i18nInit } from './lib/i18n'
 import { Paragraph } from './components'
 import { AppContext } from './Context'
 import { RifWalletServicesFetcher } from './lib/rifWalletServices/RifWalletServicesFetcher'
@@ -67,6 +65,8 @@ const App = () => {
 
       setKeys(kms, rifWalletsDictionary)
     }
+
+    await i18nInit()
 
     setReady(true)
   }

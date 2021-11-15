@@ -24,8 +24,7 @@ const InjectedScreens = {
   SignTypedDataScreen: InjectSelectedWallet(Screens.SignTypedDataScreen),
   WalletConnectNavigationScreen: InjectSelectedWallet(
     Screens.WalletConnectNavigationScreen,
-  ),
-  ChangeLanguageScreen: InjectSelectedWallet(Screens.ChangeLanguageScreen),
+  )
 }
 
 type RootStackParamList = {
@@ -143,8 +142,8 @@ export const RootNavigation: React.FC<{
           />
           <RootStack.Screen
             name="ChangeLanguage"
-            component={InjectedScreens.ChangeLanguageScreen}
-            options={{ ...sharedOptions, headerShown: true }}
+            component={Screens.ChangeLanguageScreen}
+            options={{ ...sharedOptions }}
           />
         </RootStack.Navigator>
       </NavigationContainer>

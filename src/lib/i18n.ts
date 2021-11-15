@@ -56,7 +56,7 @@ const resources = {
   },
 }
 
-i18n
+export const i18nInit = () => i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
     lng: 'en',
@@ -67,5 +67,3 @@ i18n
       escapeValue: false, // react already safes from xss
     },
   })
-
-export default i18n

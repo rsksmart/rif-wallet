@@ -4,14 +4,18 @@ import { Text, TouchableHighlight, Linking, StyleSheet } from 'react-native'
 import Clipboard from '@react-native-community/clipboard'
 import { shortAddress } from '../../lib/utils'
 import { Paragraph } from '../typography'
-const testnetExplorer = 'https://explorer.testnet.rsk.co/address/'
-const mainnetExplorer = 'https://explorer.rsk.co/address/address/'
 
-export const processAddress = (inputAddress: string, chainId = 31) => {
+const explorerAddressUrlByChainId: { [chainId: number]: string } = {
+  30: 'https://explorer.testnet.rsk.co/address/',
+  31: 'https://explorer.rsk.co/address/address/'
+}
+
+export const getAddressDisplayText = (inputAddress: string, chainId = 31) => {
   const checksumAddress = rskUtils.toChecksumAddress(inputAddress, chainId)
   const displayAddress = shortAddress(checksumAddress)
   return { checksumAddress, displayAddress }
 }
+
 export const Address: React.FC<{ chainId?: number; testID?: string }> = ({
   children,
   chainId = 31, //RSK Testnet: 31
@@ -19,12 +23,13 @@ export const Address: React.FC<{ chainId?: number; testID?: string }> = ({
 }) => {
   const inputAddress = children as string
 
-  const { displayAddress, checksumAddress } = processAddress(
+  const { displayAddress, checksumAddress } = getAddressDisplayText(
     inputAddress,
     chainId,
   )
 
-  const explorerUrl = chainId === 31 ? testnetExplorer : mainnetExplorer
+  const explorerUrl = explorerAddressUrlByChainId[chainId]!
+
   return (
     <Paragraph>
       <Text testID={testID}>{displayAddress} </Text>
