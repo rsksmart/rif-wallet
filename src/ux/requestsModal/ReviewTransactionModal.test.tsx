@@ -8,6 +8,8 @@ import { setupTest } from '../../../testLib/setup'
 import * as tokenMetadata from '../../lib/token/tokenMetadata'
 import { deployTestTokens, getSigner } from '../../../testLib/utils'
 
+// allows to wait the resolution of a promise,
+// useful when you have a promise in a useEffect and it's triggered when the component loads for the first time.
 const flushPromises = () => new Promise(setImmediate)
 
 describe('ReviewTransactionModal', function (this: {
