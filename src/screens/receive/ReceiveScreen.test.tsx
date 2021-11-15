@@ -27,7 +27,9 @@ describe('Receive Screen', function (this: {
 
   describe('initial screen', () => {
     test('shows smart wallet wallet', async () => {
-      const { displayAddress } = getAddressDisplayText(this.instance.rifWallet.address)
+      const { displayAddress } = getAddressDisplayText(
+        this.instance.rifWallet.address,
+      )
       expect(
         this.instance.container
           .getByTestId(TestID.AddressText)

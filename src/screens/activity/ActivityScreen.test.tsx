@@ -31,7 +31,9 @@ const createTestInstance = async (
   )
 
   const loadingText = container.getByTestId('Address.Paragraph')
-  const { displayAddress } = getAddressDisplayText(mock.rifWallet.smartWalletAddress)
+  const { displayAddress } = getAddressDisplayText(
+    mock.rifWallet.smartWalletAddress,
+  )
   expect(getTextFromTextNode(loadingText)).toContain(displayAddress)
   const waitForEffect = () => container.findByTestId(lastTxTextTestId) // called act without await
 
