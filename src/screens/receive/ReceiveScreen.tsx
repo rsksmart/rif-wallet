@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, View, ScrollView, Dimensions, Share } from 'react-native'
 import QRCode from 'react-qr-code'
 
-import { Button, CopyComponent } from '../../components'
+import { Address, Button, Paragraph } from '../../components'
 import { ScreenWithWallet } from '../types'
 
 export enum TestID {
@@ -30,11 +30,10 @@ export const ReceiveScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
         />
       </View>
 
-      <CopyComponent
-        prefix="Smart address: "
-        value={smartAddress}
-        testID={TestID.AddressText}
-      />
+      <Paragraph>
+        Smart address:{' '}
+        <Address testID={TestID.AddressText}>{smartAddress}</Address>
+      </Paragraph>
 
       <View style={styles.section}>
         <Button

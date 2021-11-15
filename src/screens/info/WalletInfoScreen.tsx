@@ -4,7 +4,13 @@ import { Transaction, BigNumber } from 'ethers'
 
 import { ERC20Token } from '../../lib/token/ERC20Token'
 
-import { Button, CopyComponent, Header2, Paragraph } from '../../components'
+import {
+  Address,
+  Button,
+  CopyComponent,
+  Header2,
+  Paragraph,
+} from '../../components'
 import { ScreenWithWallet } from '../types'
 
 export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
@@ -62,9 +68,9 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
     <ScrollView>
       <Header2>Smart Wallet</Header2>
       <Paragraph>EOA:</Paragraph>
-      <CopyComponent value={wallet.address} />
+      <Address>{wallet.address}</Address>
       <Paragraph>Smart Wallet Address:</Paragraph>
-      <CopyComponent value={wallet.smartWalletAddress} />
+      <Address>{wallet.smartWalletAddress}</Address>
 
       <Button title="Get info" onPress={getInfo} />
       <Paragraph>

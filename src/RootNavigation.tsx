@@ -40,6 +40,7 @@ type RootStackParamList = {
   CreateKeysUX: undefined
   KeysInfo: undefined
   WalletConnect: undefined
+  ChangeLanguage: undefined
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -138,6 +139,11 @@ export const RootNavigation: React.FC<{
             name="WalletConnect"
             component={InjectedScreens.WalletConnectNavigationScreen}
             options={{ ...sharedOptions, headerShown: false }}
+          />
+          <RootStack.Screen
+            name="ChangeLanguage"
+            component={Screens.ChangeLanguageScreen}
+            options={{ ...sharedOptions }}
           />
         </RootStack.Navigator>
       </NavigationContainer>

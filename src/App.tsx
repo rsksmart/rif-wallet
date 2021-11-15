@@ -14,8 +14,8 @@ import { Wallet } from '@ethersproject/wallet'
 import { KeyManagementSystem, OnRequest, RIFWallet } from './lib/core'
 import { getKeys, hasKeys, saveKeys, deleteKeys } from './storage/KeyStore'
 import { jsonRpcProvider } from './lib/jsonRpcProvider'
-
-import { Paragraph } from './components/typography'
+import { i18nInit } from './lib/i18n'
+import { Paragraph } from './components'
 import { AppContext } from './Context'
 import { RifWalletServicesFetcher } from './lib/rifWalletServices/RifWalletServicesFetcher'
 import { AbiEnhancer } from './lib/abiEnhancer/AbiEnhancer'
@@ -65,6 +65,8 @@ const App = () => {
 
       setKeys(kms, rifWalletsDictionary)
     }
+
+    await i18nInit()
 
     setReady(true)
   }
@@ -125,6 +127,7 @@ const App = () => {
             deleteKeys,
           }}
         />
+
         {requests.length !== 0 && (
           <ModalComponent closeModal={closeRequest} request={requests[0]} />
         )}

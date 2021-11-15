@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 import { Button, CopyComponent, Header2, Paragraph } from '../../../components'
 import { CreateKeysProps, ScreenProps } from '../types'
+import { Trans } from 'react-i18next'
 
 type CreateMasterKeyScreenProps = {
   generateMnemonic: CreateKeysProps['generateMnemonic']
@@ -16,15 +17,21 @@ export const NewMasterKeyScreen: React.FC<
     <ScrollView>
       <View style={styles.sectionCentered}>
         <Paragraph>
-          With your master key (seed phrase) you are able to create as many
-          wallets as you need.
+          <Trans>
+            With your master key (seed phrase) you are able to create as many
+            wallets as you need.
+          </Trans>
         </Paragraph>
       </View>
       <View style={styles.sectionCentered}>
-        <Paragraph>copy the key in a safe place ⎘</Paragraph>
+        <Paragraph>
+          <Trans>copy the key in a safe place ⎘</Trans>
+        </Paragraph>
       </View>
       <View style={styles.section}>
-        <Header2>Master key</Header2>
+        <Header2>
+          <Trans>Master key</Trans>
+        </Header2>
         <CopyComponent value={mnemonic} testID={'Copy.Mnemonic'} />
       </View>
       <View style={styles.section}>
