@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { StyleSheet, View, ScrollView, TextInput } from 'react-native'
 import { Button, Header2, Paragraph } from '../../../components'
 import { CreateKeysProps, ScreenProps } from '../types'
+import { useTranslation, Trans } from 'react-i18next'
 
 interface ConfirmMasterKeyScreenProps {
   createFirstWallet: CreateKeysProps['createFirstWallet']
@@ -15,6 +16,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
   const [mnemonicToConfirm, setMnemonicToConfirm] = useState<
     string | undefined
   >()
+  const { t } = useTranslation()
 
   const [error, setError] = useState<string | null>(null)
 
@@ -27,7 +29,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
     const isValid = mnemonic === mnemonicToConfirm
 
     if (!isValid) {
-      setError('entered words does not match you your master key')
+      setError(t('entered words does not match you your master key'))
       return
     }
 
@@ -38,8 +40,10 @@ export const ConfirmNewMasterKeyScreen: React.FC<
     <ScrollView>
       <View style={styles.sectionCentered}>
         <Paragraph>
-          With your master key (seed phrase) you are able to create as many
-          wallets as you need.
+          <Trans>
+            With your master key (seed phrase) you are able to create as many
+            wallets as you need.
+          </Trans>
         </Paragraph>
       </View>
       <View style={styles.sectionCentered}>
@@ -50,7 +54,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
         <TextInput
           onChangeText={text => setMnemonicToConfirm(text)}
           value={mnemonicToConfirm}
-          placeholder="Enter your 12 words master key"
+          placeholder={t('Enter your 12 words master key')}
           multiline
           style={styles.input}
           testID="Input.Confirm"
