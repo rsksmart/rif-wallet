@@ -22,7 +22,7 @@ import React from 'react'
 import { render, fireEvent, act, waitFor } from '@testing-library/react-native'
 
 import { getAllTokens } from '../../lib/token/tokenMetadata'
-import { SendScreen } from '..'
+import { SendScreen } from './SendScreen'
 
 jest.mock('../../lib/token/tokenMetadata', () => ({
   getAllTokens: jest.fn(),

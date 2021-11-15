@@ -6,7 +6,7 @@ import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWallet
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { ScreenProps, NavigationProp } from '../../RootNavigation'
-import { Button, Paragraph } from '../../components'
+import { Address, Button } from '../../components'
 import { ScreenWithWallet } from '../types'
 import { RIFWallet } from '../../lib/core'
 
@@ -99,7 +99,7 @@ export const BalancesScreen: React.FC<
   return (
     <ScrollView>
       <View>
-        <Paragraph>{wallet.smartWalletAddress}</Paragraph>
+        <Address>{wallet.smartWalletAddress}</Address>
       </View>
 
       <View>

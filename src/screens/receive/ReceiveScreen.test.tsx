@@ -6,6 +6,7 @@ import { render, fireEvent, RenderAPI } from '@testing-library/react-native'
 import { ReceiveScreen, TestID } from './ReceiveScreen'
 import { setupTest } from '../../../testLib/setup'
 import { RIFWallet } from '../../lib/core'
+import { getAddressDisplayText } from '../../components'
 
 describe('Receive Screen', function (this: {
   instance: {
@@ -26,11 +27,14 @@ describe('Receive Screen', function (this: {
 
   describe('initial screen', () => {
     test('shows smart wallet wallet', async () => {
+      const { displayAddress } = getAddressDisplayText(
+        this.instance.rifWallet.address,
+      )
       expect(
         this.instance.container
           .getByTestId(TestID.AddressText)
           .children.join(''),
-      ).toContain(this.instance.rifWallet.address)
+      ).toContain(displayAddress)
     })
 
     test('shows qr code', async () => {

@@ -1,79 +1,114 @@
 import React, { useContext } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
+import { useTranslation, Trans } from 'react-i18next'
 
-import { CopyComponent, Button, Header1, Paragraph } from '../components'
+import { Address, Button, Header1, Paragraph } from '../components'
 import { AppContext } from '../Context'
 import { NavigationProp } from '../RootNavigation'
 import { ScreenProps } from '../RootNavigation'
 
-const KeysActionItem = ({ navigation }: { navigation: NavigationProp }) =>
+const KeysActionItem = ({
+  navigation,
+  t,
+}: {
+  navigation: NavigationProp
+  t: any
+}) =>
   !useContext(AppContext).mnemonic ? (
     <Button
       onPress={() => navigation.navigate('CreateKeysUX')}
-      title="Create master key"
+      title={t('Create master key')}
     />
   ) : (
     <Button
       onPress={() => navigation.navigate('KeysInfo')}
-      title="Reveal master key"
+      title={t('Reveal master key')}
     />
   )
 
 const WalletRow = ({
   address,
   navigation,
+  t,
 }: {
   address: string
   navigation: NavigationProp
+  t: any
 }) => (
-  <View>
+  <>
     <Paragraph>Smart Wallet Address</Paragraph>
-    <CopyComponent value={address} />
+
+    <Address>{address}</Address>
+
     <View style={styles.subsection}>
-      <Button onPress={() => navigation.navigate('Receive')} title="Receive" />
+      <Button
+        onPress={() => navigation.navigate('Receive')}
+        title={t('Receive')}
+      />
       <Button
         onPress={() => {
           navigation.navigate('Send', { token: 'tRIF' })
         }}
-        title="Send Transaction"
+        title={t('Send Transaction')}
       />
       <Button
         onPress={() => navigation.navigate('Balances')}
-        title="Balances"
+        title={t('Balances')}
       />
       <Button
         onPress={() => navigation.navigate('Activity')}
-        title="Activity"
+        title={t('Activity')}
+      />
+    </View>
+    <View style={styles.subsection}>
+      <Button
+        onPress={() => navigation.navigate('ChangeLanguage')}
+        title={t('Change Language')}
       />
     </View>
     <View style={styles.subsection}>
       <Button
         onPress={() => navigation.navigate('SignMessage')}
-        title="Sign Message"
+        title={t('Sign Message')}
       />
       <Button
         onPress={() => navigation.navigate('SignTypedData')}
-        title="Sign Typed Data"
+        title={t('Sign Typed Data')}
+      />
+    </View>
+
+    <View style={styles.subsection}>
+      <Button
+        title={t('Wallet info')}
+        onPress={() => navigation.navigate('WalletInfo')}
       />
     </View>
     <View style={styles.subsection}>
       <Button
-        title="Wallet info"
-        onPress={() => navigation.navigate('WalletInfo')}
+        onPress={() => navigation.navigate('WalletConnect')}
+        title={t('WalletConnect')}
       />
     </View>
-  </View>
+  </>
 )
 
 export const HomeScreen: React.FC<ScreenProps<'Home'>> = ({ navigation }) => {
   const { wallets } = useContext(AppContext)
+  const { t } = useTranslation()
 
   return (
     <ScrollView style={styles.section}>
-      <Header1>Welcome to sWallet!</Header1>
-      <KeysActionItem navigation={navigation} />
+      <Header1>
+        <Trans>Welcome to sWallet!</Trans>
+      </Header1>
+      <KeysActionItem navigation={navigation} t={t} />
       {Object.keys(wallets).map((address: string) => (
-        <WalletRow key={address} address={address} navigation={navigation} />
+        <WalletRow
+          key={address}
+          address={address}
+          navigation={navigation}
+          t={t}
+        />
       ))}
     </ScrollView>
   )

@@ -8,6 +8,7 @@ import { IToken } from '../../lib/token/BaseToken'
 import { ScreenProps } from '../../RootNavigation'
 import { Button, CopyComponent, Paragraph } from '../../components'
 import { ScreenWithWallet } from '../types'
+import { Address } from '../../components/address'
 
 export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   route,
@@ -63,7 +64,9 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   return (
     <ScrollView>
       <View style={styles.sections}>
-        <Paragraph>From: {smartAddress}</Paragraph>
+        <Paragraph>
+          From: <Address>{smartAddress}</Address>
+        </Paragraph>
       </View>
       <View style={styles.section}>
         <TextInput

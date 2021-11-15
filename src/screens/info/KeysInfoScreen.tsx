@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 import { Button, CopyComponent, Header2, Paragraph } from '../../components'
-
+import { Trans } from 'react-i18next'
 export enum TestID {
   Mnemonic = 'Mnemonic.Text',
   Delete = 'Delete.Button',
@@ -19,18 +19,22 @@ export const KeysInfoScreen: React.FC<KeysInfoScreenProps> = ({
   <ScrollView>
     <View style={styles.sectionCentered}>
       <Paragraph>
-        With your master key (seed phrase) you are able to create as many
-        wallets as you need.
+        <Trans>
+          With your master key (seed phrase) you are able to create as many
+          wallets as you need.
+        </Trans>
       </Paragraph>
     </View>
     <View style={styles.section}>
-      <Header2>Master key</Header2>
+      <Header2>
+        <Trans>Master key</Trans>
+      </Header2>
       <CopyComponent testID={TestID.Mnemonic} value={mnemonic} />
     </View>
     <View style={styles.section}>
       <Button testID={TestID.Delete} onPress={deleteKeys} title="Delete keys" />
       <Paragraph>
-        You will need to refresh the app for this to fully work.
+        <Trans>You will need to refresh the app for this to fully work.</Trans>
       </Paragraph>
     </View>
   </ScrollView>

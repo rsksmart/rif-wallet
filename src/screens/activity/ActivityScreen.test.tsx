@@ -1,6 +1,5 @@
 import React from 'react'
 import { render, act, waitFor, fireEvent } from '@testing-library/react-native'
-import { shortAddress } from '../../lib/utils'
 
 import { setupTest } from '../../../testLib/setup'
 import { getTextFromTextNode, Awaited } from '../../../testLib/utils'
@@ -15,6 +14,7 @@ import {
   enhancedTxTestCase,
 } from '../../../testLib/mocks/rifTransactionsMock'
 import { ActivityScreen } from './ActivityScreen'
+import { getAddressDisplayText } from '../../components'
 
 const createTestInstance = async (
   fetcher = createMockFetcher(),
@@ -31,13 +31,18 @@ const createTestInstance = async (
   )
 
   const loadingText = container.getByTestId('Address.Paragraph')
-  expect(getTextFromTextNode(loadingText)).toContain(
+  const { displayAddress } = getAddressDisplayText(
     mock.rifWallet.smartWalletAddress,
   )
+  expect(getTextFromTextNode(loadingText)).toContain(displayAddress)
   const waitForEffect = () => container.findByTestId(lastTxTextTestId) // called act without await
 
   return { container, mock, waitForEffect, fetcher, abiEnhancer }
 }
+
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({ t: (key: any) => key }),
+}))
 
 describe('Activity Screen', function (this: {
   testInstance: Awaited<ReturnType<typeof createTestInstance>>
@@ -57,8 +62,11 @@ describe('Activity Screen', function (this: {
       } = this.testInstance
 
       getTextFromTextNode(getByTestId('Refresh.Button'))
-      expect(getTextFromTextNode(getByTestId('Address.Paragraph'))).toContain(
+      const { displayAddress } = getAddressDisplayText(
         mock.rifWallet.smartWalletAddress,
+      )
+      expect(getTextFromTextNode(getByTestId('Address.Paragraph'))).toContain(
+        displayAddress,
       )
       await waitForEffect()
     })
@@ -77,9 +85,7 @@ describe('Activity Screen', function (this: {
         const enhancedTx = enhancedTxTestCase
         const activityText = getByTestId(`${v.hash}.Text`)
         expect(getTextFromTextNode(activityText)).toEqual(
-          `${enhancedTx?.value} ${enhancedTx?.symbol} sent To ${shortAddress(
-            enhancedTx?.to,
-          )}`,
+          `${enhancedTx?.value} ${enhancedTx?.symbol} sent To `,
         )
       }
 

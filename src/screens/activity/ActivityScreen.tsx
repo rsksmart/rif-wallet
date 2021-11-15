@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { utils, BigNumber } from 'ethers'
 import { StyleSheet, View, ScrollView, Text, Linking } from 'react-native'
 
+import { Trans, useTranslation } from 'react-i18next'
 import { Button } from '../../components'
-import { Paragraph } from '../../components'
 import { IApiTransaction } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
@@ -15,6 +15,7 @@ import {
 } from '../../lib/abiEnhancer/AbiEnhancer'
 import { ScreenWithWallet } from '../types'
 import { formatBigNumber } from '../../lib/abiEnhancer/formatBigNumber'
+import { Address } from '../../components'
 
 interface IReceiveScreenProps {
   route: any
@@ -23,52 +24,77 @@ interface IReceiveScreenProps {
 const ActivityDetails = ({
   transaction,
   onSelected,
+  t,
 }: {
   transaction: IActivityTransaction
   onSelected: (transaction: IActivityTransaction | null) => void
+  t: any
 }) => (
   <View>
     <View>
       <Text testID="txDetailsTitle" style={styles.transactionDetailsTitle}>
-        Transaction Details
+        <Trans>Transaction Details</Trans>
       </Text>
     </View>
     <View>
       {transaction.enhancedTransaction ? (
         <>
-          <Text>Token: {transaction.enhancedTransaction.symbol}</Text>
-          <Text>Amount: {transaction.enhancedTransaction.value}</Text>
           <Text>
-            From: {shortAddress(transaction.enhancedTransaction.from)}
+            <Trans>Token</Trans>: {transaction.enhancedTransaction.symbol}
           </Text>
-          <Text>To: {shortAddress(transaction.enhancedTransaction.to)}</Text>
+          <Text>
+            <Trans>Amount</Trans>: {transaction.enhancedTransaction.value}
+          </Text>
+          <Text>
+            <Trans>From</Trans>:
+            {shortAddress(transaction.enhancedTransaction.from)}
+          </Text>
+          <Text>
+            <Trans>To</Trans>:{' '}
+            {shortAddress(transaction.enhancedTransaction.to)}
+          </Text>
         </>
       ) : (
         <>
-          <Text>From: {shortAddress(transaction.originTransaction.from)}</Text>
-          <Text>To: {shortAddress(transaction.originTransaction.to)}</Text>
-          <Text>Amount: {transaction.originTransaction.value}</Text>
-          <Text>Data: {transaction.originTransaction.data}</Text>
+          <Text>
+            <Trans>From</Trans>:{' '}
+            {shortAddress(transaction.originTransaction.from)}
+          </Text>
+          <Text>
+            <Trans>To</Trans>: {shortAddress(transaction.originTransaction.to)}
+          </Text>
+          <Text>
+            <Trans>Amount</Trans>: {transaction.originTransaction.value}
+          </Text>
+          <Text>
+            <Trans>Data</Trans>: {transaction.originTransaction.data}
+          </Text>
         </>
       )}
-      <Text>TX Hash: {shortAddress(transaction.originTransaction.hash)}</Text>
-      <Text>Gas: {transaction.originTransaction.gas}</Text>
       <Text>
-        Gas Price:{' '}
+        <Trans>TX Hash</Trans>:{' '}
+        {shortAddress(transaction.originTransaction.hash)}
+      </Text>
+      <Text>
+        <Trans>Gas</Trans>: {transaction.originTransaction.gas}
+      </Text>
+      <Text>
+        <Trans>Gas Price</Trans>:{' '}
         {utils.formatUnits(transaction.originTransaction.gasPrice, 'gwei')}
       </Text>
       <Text>
-        Status:{' '}
+        <Trans>Status</Trans>:{' '}
         {transaction.originTransaction.receipt
           ? transaction.originTransaction.receipt.status
           : 'PENDING'}
       </Text>
       <Text>
-        Time: {formatTimestamp(transaction.originTransaction.timestamp)}
+        <Trans>Time</Trans>:{' '}
+        {formatTimestamp(transaction.originTransaction.timestamp)}
       </Text>
 
       <Button
-        title="View in explorer"
+        title={t('View in explorer')}
         onPress={() => {
           Linking.openURL(
             `https://explorer.testnet.rsk.co/tx/${transaction.originTransaction.hash}`,
@@ -76,7 +102,7 @@ const ActivityDetails = ({
         }}
       />
       <Button
-        title="Return to Activity Screen"
+        title={t('Return to Activity Screen')}
         onPress={() => {
           onSelected(null)
         }}
@@ -99,13 +125,12 @@ const ActivityRow = ({
     <View style={styles.activitySummary}>
       <Text>
         {activityTransaction.enhancedTransaction ? (
-          <Text testID={`${activityTransaction.originTransaction.hash}.Text`}>
-            {`${activityTransaction.enhancedTransaction.value} ${
-              activityTransaction.enhancedTransaction.symbol
-            } sent To ${shortAddress(
-              activityTransaction.enhancedTransaction.to,
-            )}`}
-          </Text>
+          <>
+            <Text testID={`${activityTransaction.originTransaction.hash}.Text`}>
+              {`${activityTransaction.enhancedTransaction.value} ${activityTransaction.enhancedTransaction.symbol} sent To `}
+            </Text>
+            <Address>{activityTransaction.enhancedTransaction.to}</Address>
+          </>
         ) : (
           <>
             {formatBigNumber(
@@ -145,6 +170,7 @@ export const ActivityScreen: React.FC<ScreenWithWallet & ActivityScreenProps> =
     const [transactions, setTransactions] = useState<IActivityTransaction[]>([])
     const [selectedTransaction, setSelectedTransaction] =
       useState<null | IActivityTransaction>()
+    const { t } = useTranslation()
 
     const enhanceTransactionInput = async (
       transaction: IApiTransaction,
@@ -172,9 +198,10 @@ export const ActivityScreen: React.FC<ScreenWithWallet & ActivityScreenProps> =
     }, [])
 
     const loadData = async () => {
+      /*i18n.changeLanguage('es')*/
       try {
         setTransactions([])
-        setInfo('Loading transactions. Please wait...')
+        setInfo(t('Loading transactions. Please wait...'))
 
         const fetchedTransactions = await fetcher.fetchTransactionsByAddress(
           wallet.smartWalletAddress.toLowerCase(),
@@ -191,7 +218,7 @@ export const ActivityScreen: React.FC<ScreenWithWallet & ActivityScreenProps> =
         setTransactions(activityTransactions)
         setInfo('')
       } catch (e) {
-        setInfo('Error reaching API: ' + e.message)
+        setInfo(t('Error reaching API: ') + e.message)
       }
     }
 
@@ -199,9 +226,9 @@ export const ActivityScreen: React.FC<ScreenWithWallet & ActivityScreenProps> =
       <ScrollView>
         {!selectedTransaction && (
           <View>
-            <Paragraph testID={'Address.Paragraph'}>
+            <Address testID={'Address.Paragraph'}>
               {wallet.smartWalletAddress}
-            </Paragraph>
+            </Address>
 
             <View>
               <Text testID="Info.Text">{info}</Text>
@@ -220,7 +247,7 @@ export const ActivityScreen: React.FC<ScreenWithWallet & ActivityScreenProps> =
             <View style={styles.refreshButtonView}>
               <Button
                 onPress={loadData}
-                title={'Refresh'}
+                title={t('Refresh')}
                 testID={'Refresh.Button'}
               />
             </View>
@@ -231,6 +258,7 @@ export const ActivityScreen: React.FC<ScreenWithWallet & ActivityScreenProps> =
             <ActivityDetails
               transaction={selectedTransaction}
               onSelected={setSelectedTransaction}
+              t={t}
             />
           </View>
         )}
