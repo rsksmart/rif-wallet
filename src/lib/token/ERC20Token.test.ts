@@ -1,30 +1,16 @@
-import { providers, BigNumber } from 'ethers'
+import { BigNumber } from 'ethers'
+import { getSigner, TEST_TOKEN_DECIMALS } from '../../../testLib/utils'
 import { tenPow } from './BaseToken'
 import { ERC20Token } from './ERC20Token'
 import { ERC20__factory } from './types'
 import { ERC677__factory } from './types/factories/ERC677__factory'
-
-const Config = {
-  BLOCKCHAIN_HTTP_URL: 'HTTP://127.0.0.1:8545',
-}
-
-const TEST_TOKEN_DECIMALS = 18
-
-const getJsonRpcProvider = async (): Promise<providers.JsonRpcProvider> => {
-  return new providers.JsonRpcProvider(Config.BLOCKCHAIN_HTTP_URL)
-}
-
-const getSigner = async (index: number = 0) => {
-  const provider = await getJsonRpcProvider()
-  return provider.getSigner(index)
-}
 
 describe('ERC20 token', () => {
   let erc20Token: ERC20Token | null = null
   let tokenAddress = ''
 
   beforeEach(async () => {
-    const account = await getSigner()
+    const account = getSigner()
     const accountAddress = await account.getAddress()
 
     // using ERC677__factory that supports ERC20 to set totalSupply (just for testing purpose)
@@ -73,9 +59,9 @@ describe('ERC20 token', () => {
   })
 
   test('transfer', async () => {
-    const from = await getSigner()
+    const from = getSigner()
     const fromAddress = await from.getAddress()
-    const to = await getSigner(1)
+    const to = getSigner(1)
     const toAddress = await to.getAddress()
 
     const amountToTransfer = BigNumber.from(100)
