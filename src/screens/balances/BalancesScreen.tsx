@@ -4,6 +4,7 @@ import { BigNumber, BigNumberish } from 'ethers'
 
 import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import { useTranslation } from 'react-i18next'
 
 import { ScreenProps, NavigationProp } from '../../RootNavigation'
 import { Address, Button } from '../../components'
@@ -77,9 +78,10 @@ export const BalancesScreen: React.FC<
 > = ({ navigation, wallet, fetcher }) => {
   const [info, setInfo] = useState('')
   const [balances, setBalances] = useState<ITokenWithBalance[]>([])
+  const { t } = useTranslation()
 
   const loadData = async () => {
-    setInfo('Loading balances. Please wait...')
+    setInfo(t('Loading balances. Please wait...'))
     setBalances([])
 
     await getTokensAndRBTCBalance(fetcher, wallet)
@@ -119,7 +121,7 @@ export const BalancesScreen: React.FC<
       <View style={styles.refreshButtonView}>
         <Button
           onPress={loadData}
-          title={'Refresh'}
+          title={t('Refresh')}
           testID={'Refresh.Button'}
         />
       </View>

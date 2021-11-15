@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Transaction, BigNumber } from 'ethers'
+import { Trans, useTranslation } from 'react-i18next'
 
 import { ERC20Token } from '../../lib/token/ERC20Token'
 
@@ -24,6 +25,7 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
   const [rifBalance, setRifBalance] = useState<null | BigNumber>(null)
   const [sendRifTx, setSendRifTx] = useState<null | Transaction>(null)
   const [sendRifResponse, setSendRifResponse] = useState<null | string>(null)
+  const { t } = useTranslation()
 
   const rif = new ERC20Token(
     '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
@@ -72,21 +74,23 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
       <Paragraph>Smart Wallet Address:</Paragraph>
       <Address>{wallet.smartWalletAddress}</Address>
 
-      <Button title="Get info" onPress={getInfo} />
+      <Button title={t('Get info')} onPress={getInfo} />
       <Paragraph>
-        RBTC Balance (EOA): {eoaBalance && eoaBalance.toString()}
+        <Trans>RBTC Balance (EOA)</Trans>: {eoaBalance && eoaBalance.toString()}
       </Paragraph>
 
-      <Paragraph>Is Deployed?: {isSmartWalletDeployed.toString()}</Paragraph>
+      <Paragraph>
+        <Trans>Is Deployed?</Trans>: {isSmartWalletDeployed.toString()}
+      </Paragraph>
       {!isSmartWalletDeployed && (
         <Button
-          title="Deploy"
+          title={t('Deploy')}
           onPress={deploy}
           disabled={isSmartWalletDeployed}
         />
       )}
       <Paragraph>
-        RIF Token balance: {rifBalance && rifBalance.toString()}
+        <Trans>RIF Token balance</Trans>: {rifBalance && rifBalance.toString()}
       </Paragraph>
       {smartWalletDeployTx && (
         <>
@@ -95,11 +99,13 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
       )}
       {isSmartWalletDeployed && (
         <>
-          <Button title="Send RIF back to faucet" onPress={sendRif} />
+          <Button title={t('Send RIF back to faucet')} onPress={sendRif} />
           {sendRifResponse && <Paragraph>{sendRifResponse}</Paragraph>}
           {sendRifTx && (
             <>
-              <Paragraph>Send RIF hash:</Paragraph>
+              <Paragraph>
+                <Trans>Send RIF hash</Trans>:
+              </Paragraph>
               <CopyComponent value={sendRifTx.hash || ''} />
             </>
           )}

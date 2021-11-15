@@ -4,7 +4,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 
 import { Button, CopyComponent, Header1, Paragraph } from '../../components'
 import { ScreenWithWallet } from '../types'
-
+import { useTranslation, Trans } from 'react-i18next'
 export enum TestID {
   Input = 'Message.Input',
   Result = 'Sig.Text',
@@ -13,6 +13,7 @@ export enum TestID {
 export const SignMessageScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
   const [message, setMessage] = useState<string>('Hello World!')
   const [response, setResponse] = useState<string>('')
+  const { t } = useTranslation()
 
   const signMessage = () => {
     setResponse('')
@@ -24,12 +25,18 @@ export const SignMessageScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
 
   return (
     <ScrollView>
-      <Header1>Sign Message</Header1>
+      <Header1>
+        <Trans>Sign Message</Trans>
+      </Header1>
 
-      <Paragraph>Signing with EOA Account:</Paragraph>
+      <Paragraph>
+        <Trans>Signing with EOA Account</Trans>:
+      </Paragraph>
       <CopyComponent value={wallet.eoaAddress} />
 
-      <Paragraph>Message:</Paragraph>
+      <Paragraph>
+        <Trans>Message</Trans>:
+      </Paragraph>
       <TextInput
         value={message}
         onChangeText={setMessage}
@@ -37,7 +44,7 @@ export const SignMessageScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
         testID={TestID.Input}
       />
 
-      <Button onPress={signMessage} title="Sign Message" />
+      <Button onPress={signMessage} title={t('Sign Message')} />
       <Paragraph>Response:</Paragraph>
       <CopyComponent value={response} testID={TestID.Result} />
     </ScrollView>

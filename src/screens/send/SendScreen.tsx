@@ -9,6 +9,7 @@ import {
 } from 'react-native'
 //import { Picker } from '@react-native-picker/picker'
 import { ContractReceipt, BigNumber, utils } from 'ethers'
+import { useTranslation } from 'react-i18next'
 
 import { getAllTokens } from '../../lib/token/tokenMetadata'
 import { IToken } from '../../lib/token/BaseToken'
@@ -16,13 +17,14 @@ import { IToken } from '../../lib/token/BaseToken'
 import { ScreenProps } from '../../RootNavigation'
 import { Button, CopyComponent, Paragraph } from '../../components'
 import { ScreenWithWallet } from '../types'
-import { Address } from '../../components/address'
+import { Address } from '../../components'
 
 export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   route,
   wallet,
 }) => {
   const smartAddress = wallet.smartWalletAddress
+  const { t } = useTranslation()
 
   const [to, setTo] = useState('')
   const [selectedSymbol] = useState(route.params?.token || 'tRIF')
@@ -63,15 +65,15 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
             BigNumber.from(numberOfTokens),
           )
 
-          setInfo('Transaction Sent. Please wait...')
+          setInfo(t('Transaction Sent. Please wait...'))
           setTxSent(true)
           setTxConfirmed(false)
           const txReceipt = await transferResponse.wait()
           setTx(txReceipt)
-          setInfo('Transaction Confirmed.')
+          setInfo(t('Transaction Confirmed.'))
           setTxConfirmed(true)
         } catch (e) {
-          setInfo('Transaction Failed: ' + e.message)
+          setInfo(t('Transaction Failed: ') + e.message)
         }
       }
     }
@@ -112,7 +114,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
         <TextInput
           onChangeText={text => setTo(text)}
           value={to}
-          placeholder="To"
+          placeholder={t('To')}
           testID={'To.Input'}
         />
       </View>
@@ -121,7 +123,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
         <TextInput
           onChangeText={text => setAmount(text)}
           value={amount}
-          placeholder="Amount"
+          placeholder={t('Amount')}
           keyboardType="numeric"
           testID={'Amount.Input'}
         />
