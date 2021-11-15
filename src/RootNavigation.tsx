@@ -24,7 +24,7 @@ const InjectedScreens = {
   SignTypedDataScreen: InjectSelectedWallet(Screens.SignTypedDataScreen),
   WalletConnectNavigationScreen: InjectSelectedWallet(
     Screens.WalletConnectNavigationScreen,
-  )
+  ),
 }
 
 type RootStackParamList = {
