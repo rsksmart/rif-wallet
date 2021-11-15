@@ -6,7 +6,7 @@ import { render, fireEvent, RenderAPI } from '@testing-library/react-native'
 import { ReceiveScreen, TestID } from './ReceiveScreen'
 import { setupTest } from '../../../testLib/setup'
 import { RIFWallet } from '../../lib/core'
-import { processAddress } from '../../components'
+import { getAddressDisplayText } from '../../components'
 
 describe('Receive Screen', function (this: {
   instance: {
@@ -27,7 +27,7 @@ describe('Receive Screen', function (this: {
 
   describe('initial screen', () => {
     test('shows smart wallet wallet', async () => {
-      const { displayAddress } = processAddress(this.instance.rifWallet.address)
+      const { displayAddress } = getAddressDisplayText(this.instance.rifWallet.address)
       expect(
         this.instance.container
           .getByTestId(TestID.AddressText)

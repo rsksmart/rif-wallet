@@ -14,7 +14,7 @@ import {
   enhancedTxTestCase,
 } from '../../../testLib/mocks/rifTransactionsMock'
 import { ActivityScreen } from './ActivityScreen'
-import { processAddress } from '../../components'
+import { getAddressDisplayText } from '../../components'
 
 const createTestInstance = async (
   fetcher = createMockFetcher(),
@@ -31,7 +31,7 @@ const createTestInstance = async (
   )
 
   const loadingText = container.getByTestId('Address.Paragraph')
-  const { displayAddress } = processAddress(mock.rifWallet.smartWalletAddress)
+  const { displayAddress } = getAddressDisplayText(mock.rifWallet.smartWalletAddress)
   expect(getTextFromTextNode(loadingText)).toContain(displayAddress)
   const waitForEffect = () => container.findByTestId(lastTxTextTestId) // called act without await
 
@@ -60,7 +60,7 @@ describe('Activity Screen', function (this: {
       } = this.testInstance
 
       getTextFromTextNode(getByTestId('Refresh.Button'))
-      const { displayAddress } = processAddress(
+      const { displayAddress } = getAddressDisplayText(
         mock.rifWallet.smartWalletAddress,
       )
       expect(getTextFromTextNode(getByTestId('Address.Paragraph'))).toContain(
