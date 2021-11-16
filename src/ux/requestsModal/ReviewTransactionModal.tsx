@@ -71,17 +71,13 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
   }, [txRequest])
 
   useEffect(() => {
-    const action = async () => {
-      const enhanced = await abiEnhancer.enhance(wallet, txRequest)
-
+    abiEnhancer.enhance(wallet, txRequest).then(enhanced => {
       const enhancedToStrings = convertTransactionToStrings(
         enhanced ?? txRequest,
       )
 
       setEnhancedTransactionRequest(enhancedToStrings)
-    }
-
-    action()
+    })
   }, [wallet, txRequest])
 
   // convert from string to Transaction and pass out of component
