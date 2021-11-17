@@ -115,29 +115,35 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
 
   return (
     <ScrollView>
-      <Paragraph>
-        From: <Address>{smartAddress}</Address>
-      </Paragraph>
+      <View>
+        <Paragraph>
+          From: <Address>{smartAddress}</Address>
+        </Paragraph>
+      </View>
 
-      <TextInput
-        onChangeText={handleTargetAddressChange}
-        value={to}
-        placeholder={t('To')}
-        testID={'To.Input'}
-      />
-      <Paragraph>
-        <Text style={styles.error}>{toValidation}</Text>
-        {toValidation === 'Invalid checksum' && (
-          <Text
-            style={styles.link}
-            onPress={() =>
-              handleTargetAddressChange(rskUtils.toChecksumAddress(to, 31))
-            }>
-            {' '}
-            [To Checksum]
-          </Text>
-        )}
-      </Paragraph>
+      <View>
+        <TextInput
+          onChangeText={handleTargetAddressChange}
+          value={to}
+          placeholder={t('To')}
+          testID={'To.Input'}
+        />
+      </View>
+      <View>
+        <Paragraph>
+          <Text style={styles.error}>{toValidation}</Text>
+          {toValidation === 'Invalid checksum' && (
+            <Text
+              style={styles.link}
+              onPress={() =>
+                handleTargetAddressChange(rskUtils.toChecksumAddress(to, 31))
+              }>
+              {' '}
+              [To Checksum]
+            </Text>
+          )}
+        </Paragraph>
+      </View>
 
       <View>
         <TextInput
@@ -148,8 +154,12 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
           testID={'Amount.Input'}
         />
       </View>
-      <Paragraph>
-        <Text>{selectedSymbol}</Text>
+      <View>
+        <Paragraph>
+          <Text>Token: </Text>
+          <Text>{selectedSymbol}</Text>
+        </Paragraph>
+
         {/*<Picker
           selectedValue={selectedSymbol}
           onValueChange={itemValue => setSelectedSymbol(itemValue)}
@@ -164,7 +174,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
               />
             ))}
         </Picker>*/}
-      </Paragraph>
+      </View>
 
       {!txSent && (
         <View style={styles.section}>

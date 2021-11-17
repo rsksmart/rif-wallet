@@ -18,7 +18,7 @@ const resources = {
       'Sign Message': 'Sign Message',
       'Sign Typed Data': 'Sign Typed Data',
       'Wallet info': 'Wallet info',
-      WalletConnect: 'WalletConnecT',
+      WalletConnect: 'WalletConnect',
 
       'Please select your language': 'Please select your language',
       'Welcome to sWallet!': 'Welcome to sWallet!',
