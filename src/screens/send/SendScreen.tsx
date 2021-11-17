@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from 'react'
+import { validateAddress } from './validations'
+const rskUtils = require('@rsksmart/rsk-utils')
+
 import {
   StyleSheet,
   View,
@@ -27,6 +30,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   const { t } = useTranslation()
 
   const [to, setTo] = useState('')
+  const [toValidation, setToValidation] = useState<string | null>(null)
   const [selectedSymbol] = useState(route.params?.token || 'tRIF')
   const [availableTokens, setAvailableTokens] = useState<IToken[]>()
   const [amount, setAmount] = useState('')
@@ -45,6 +49,14 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
     } else {
       transferERC20(selectedSymbol)
     }
+  }
+
+  const handleTargetAddressChange = (address: string) => {
+    const validation = validateAddress(address)
+    setToValidation(validation)
+    console.log({ validation })
+    setTo(address)
+    console.log(address)
   }
 
   const transferERC20 = async (tokenSymbol: string) => {
@@ -105,21 +117,31 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
 
   return (
     <ScrollView>
-      <View style={styles.sections}>
-        <Paragraph>
-          From: <Address>{smartAddress}</Address>
-        </Paragraph>
-      </View>
-      <View style={styles.section}>
-        <TextInput
-          onChangeText={text => setTo(text)}
-          value={to}
-          placeholder={t('To')}
-          testID={'To.Input'}
-        />
-      </View>
+      <Paragraph>
+        From: <Address>{smartAddress}</Address>
+      </Paragraph>
 
-      <View style={styles.section}>
+      <TextInput
+        onChangeText={handleTargetAddressChange}
+        value={to}
+        placeholder={t('To')}
+        testID={'To.Input'}
+      />
+      <Paragraph>
+        <Text style={styles.error}>{toValidation}</Text>
+        {toValidation === 'Invalid checksum' && (
+          <Text
+            style={styles.link}
+            onPress={() =>
+              handleTargetAddressChange(rskUtils.toChecksumAddress(to, 31))
+            }>
+            {' '}
+            [To Checksum]
+          </Text>
+        )}
+      </Paragraph>
+
+      <View>
         <TextInput
           onChangeText={text => setAmount(text)}
           value={amount}
@@ -128,8 +150,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
           testID={'Amount.Input'}
         />
       </View>
-
-      <View style={styles.section}>
+      <Paragraph>
         <Text>{selectedSymbol}</Text>
         {/*<Picker
           selectedValue={selectedSymbol}
@@ -145,7 +166,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
               />
             ))}
         </Picker>*/}
-      </View>
+      </Paragraph>
 
       {!txSent && (
         <View style={styles.section}>
@@ -196,5 +217,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC',
     flex: 1,
+  },
+  link: {
+    color: 'blue',
+  },
+  error: {
+    color: 'red',
   },
 })

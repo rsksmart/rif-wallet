@@ -24,7 +24,7 @@ const resources = {
       'Welcome to sWallet!': 'Welcome to sWallet!',
       'Transaction Details': 'Transaction Details',
       Token: 'Token',
-      Amount: 'AmounT',
+      Amount: 'Amount',
       From: 'From',
       To: 'To',
       'Loading transactions. Please wait...':
