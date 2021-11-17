@@ -54,9 +54,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   const handleTargetAddressChange = (address: string) => {
     const validation = validateAddress(address)
     setToValidation(validation)
-    console.log({ validation })
     setTo(address)
-    console.log(address)
   }
 
   const transferERC20 = async (tokenSymbol: string) => {
