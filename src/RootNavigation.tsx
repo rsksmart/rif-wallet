@@ -41,6 +41,7 @@ type RootStackParamList = {
   KeysInfo: undefined
   WalletConnect: undefined
   ChangeLanguage: undefined
+  ManagePin: undefined
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -143,6 +144,11 @@ export const RootNavigation: React.FC<{
           <RootStack.Screen
             name="ChangeLanguage"
             component={Screens.ChangeLanguageScreen}
+            options={{ ...sharedOptions }}
+          />
+          <RootStack.Screen
+            name="ManagePin"
+            component={Screens.ManagePinScreen}
             options={{ ...sharedOptions }}
           />
         </RootStack.Navigator>
