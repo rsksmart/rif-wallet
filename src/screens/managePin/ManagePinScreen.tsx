@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { View, TextInput, ScrollView, Text } from 'react-native'
-import { Address, Button } from '../../components'
-import { useTranslation, Trans } from 'react-i18next'
+import { View, TextInput, ScrollView } from 'react-native'
+import { Button } from '../../components'
+import { Trans } from 'react-i18next'
 import { Paragraph } from '../../components'
 import { hasPin, savePin, removePin } from '../../storage/PinStore'
-import { getAllTokens } from '../../lib/token/tokenMetadata'
 
 export const ManagePinScreen = () => {
   const [pin, setPin] = useState('')

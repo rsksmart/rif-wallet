@@ -9,4 +9,3 @@ export const savePin = (value: string) =>
   RNSecureStorage.set(key, value, {
     accessible: ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
   })
-
