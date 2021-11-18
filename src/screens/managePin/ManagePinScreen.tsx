@@ -1,0 +1,65 @@
+import React, { useState, useEffect } from 'react'
+import { View, TextInput, ScrollView, Text } from 'react-native'
+import { Address, Button } from '../../components'
+import { useTranslation, Trans } from 'react-i18next'
+import { Paragraph } from '../../components'
+import { hasPin, savePin, removePin } from '../../storage/PinStore'
+import { getAllTokens } from '../../lib/token/tokenMetadata'
+
+export const ManagePinScreen = () => {
+  const [pin, setPin] = useState('')
+  const [pinSaved, setPinSaved] = useState(false)
+  useEffect(() => {
+    const callStorage = async () => {
+      const pinSet = await hasPin()
+      setPinSaved(pinSet || false)
+      return pinSet
+    }
+
+    callStorage().then(pinSet => console.log(pinSet))
+  }, [])
+
+  const saveMyPin = (pin: string) => {
+    setPinSaved(true)
+    savePin(pin)
+  }
+  const removeMyPin = () => {
+    setPinSaved(false)
+    removePin()
+  }
+  return (
+    <ScrollView>
+      {pinSaved && (
+        <View>
+          <Paragraph>
+            <Trans> Your pin is set</Trans>
+          </Paragraph>
+          <Button onPress={() => removeMyPin()} title="Delete your Pin" />
+        </View>
+      )}
+
+      {!pinSaved && (
+        <>
+          <Paragraph>Set your pin</Paragraph>
+          <View>
+            <TextInput
+              onChangeText={pin => setPin(pin)}
+              value={pin}
+              placeholder={'Pin'}
+              testID={'To.Input'}
+              keyboardType="numeric"
+            />
+          </View>
+
+          <View>
+            <Button
+              onPress={() => saveMyPin(pin)}
+              title="Save"
+              testID="Next.Button"
+            />
+          </View>
+        </>
+      )}
+    </ScrollView>
+  )
+}

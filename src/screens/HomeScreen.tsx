@@ -60,12 +60,7 @@ const WalletRow = ({
         title={t('Activity')}
       />
     </View>
-    <View style={styles.subsection}>
-      <Button
-        onPress={() => navigation.navigate('ChangeLanguage')}
-        title={t('Change Language')}
-      />
-    </View>
+
     <View style={styles.subsection}>
       <Button
         onPress={() => navigation.navigate('SignMessage')}
@@ -87,6 +82,16 @@ const WalletRow = ({
       <Button
         onPress={() => navigation.navigate('WalletConnect')}
         title={t('WalletConnect')}
+      />
+    </View>
+    <View style={styles.subsection}>
+      <Button
+        onPress={() => navigation.navigate('ChangeLanguage')}
+        title={t('Change Language')}
+      />
+      <Button
+        onPress={() => navigation.navigate('ManagePin')}
+        title={t('Manage Pin')}
       />
     </View>
   </>
