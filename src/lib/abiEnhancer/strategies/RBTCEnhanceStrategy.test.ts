@@ -1,20 +1,8 @@
-import { providers, BigNumber } from 'ethers'
+import { BigNumber } from 'ethers'
 import { Signer } from '@ethersproject/abstract-signer'
 
 import { RBTCEnhanceStrategy } from './RBTCEnhanceStrategy'
-
-const Config = {
-  BLOCKCHAIN_HTTP_URL: 'HTTP://127.0.0.1:8545',
-}
-
-const getJsonRpcProvider = async (): Promise<providers.JsonRpcProvider> => {
-  return new providers.JsonRpcProvider(Config.BLOCKCHAIN_HTTP_URL)
-}
-
-const getSigner = async (index: number = 0) => {
-  const provider = await getJsonRpcProvider()
-  return provider.getSigner(index)
-}
+import { getSigner } from '../../../../testLib/utils'
 
 describe('RBTC Enhance Strategy', () => {
   const initialBalance = BigNumber.from(100)
@@ -26,7 +14,7 @@ describe('RBTC Enhance Strategy', () => {
   let accountSigner: Signer | null = null
 
   beforeEach(async () => {
-    accountSigner = await getSigner(7)
+    accountSigner = getSigner(7)
   })
 
   it('should return transaction info enhanced', async () => {

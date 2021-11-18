@@ -18,8 +18,7 @@ export class RBTCEnhanceStrategy implements IEnhanceStrategy {
     const symbol = rbtc.symbol
 
     return {
-      from: transactionRequest.from!,
-      to: transactionRequest.to!,
+      ...transactionRequest,
       symbol,
       balance: formatBigNumber(currentBalance, tokenDecimals),
       value: formatBigNumber(

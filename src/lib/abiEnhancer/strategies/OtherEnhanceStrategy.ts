@@ -113,14 +113,16 @@ export class OtherEnhanceStrategy implements IEnhanceStrategy {
     }
 
     let result: IEnhancedResult = {
+      ...transactionRequest,
       functionName,
+      functionParameters: [],
       from: transactionRequest.from!,
       to: transactionRequest.to!,
     }
     for (let index = 0; index < parametersNames.length; index++) {
-      const parameterName = parametersNames[index]
-      const parameterValue = parametersValues[index]
-      result[parameterName] = parameterValue
+      const name = parametersNames[index]
+      const value = parametersValues[index]
+      result.functionParameters.push({ name, value })
     }
 
     return result

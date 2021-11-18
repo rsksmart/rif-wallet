@@ -5,8 +5,8 @@ import { OtherEnhanceStrategy } from './strategies/OtherEnhanceStrategy'
 import { RBTCEnhanceStrategy } from './strategies/RBTCEnhanceStrategy'
 
 export interface IEnhancedResult {
-  from: string
-  to: string
+  from?: string
+  to?: string
   [key: string]: any
 }
 

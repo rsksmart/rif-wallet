@@ -1,33 +1,22 @@
-import { providers, BigNumber } from 'ethers'
+import { BigNumber } from 'ethers'
+import {
+  getSigner,
+  TEST_CHAIN_ID,
+  TEST_TOKEN_DECIMALS,
+} from '../../../testLib/utils'
 import { RBTCToken } from './RBTCToken'
-
-const Config = {
-  BLOCKCHAIN_HTTP_URL: 'HTTP://127.0.0.1:8545',
-}
-
-const TEST_TOKEN_DECIMALS = 18
-const CHAIN_ID = 31
-
-const getJsonRpcProvider = async (): Promise<providers.JsonRpcProvider> => {
-  return new providers.JsonRpcProvider(Config.BLOCKCHAIN_HTTP_URL)
-}
-
-const getSigner = async (index: number = 0) => {
-  const provider = await getJsonRpcProvider()
-  return provider.getSigner(index)
-}
 
 describe('RBTC token', () => {
   let rbtcToken: RBTCToken | null = null
 
   beforeEach(async () => {
-    const account = await getSigner(9)
+    const account = getSigner(9)
 
-    rbtcToken = new RBTCToken(account, 'TRBTC', 'logo.jpg', CHAIN_ID)
+    rbtcToken = new RBTCToken(account, 'TRBTC', 'logo.jpg', TEST_CHAIN_ID)
   })
 
   test('get symbol', async () => {
-    const symbol = await rbtcToken!.symbol
+    const symbol = rbtcToken!.symbol
 
     expect(symbol).toBe('TRBTC')
   })
@@ -57,7 +46,7 @@ describe('RBTC token', () => {
   })
 
   test('transfer', async () => {
-    const to = await getSigner(1)
+    const to = getSigner(1)
     const toAddress = await to.getAddress()
 
     const balanceRecipientInitial = await to.getBalance()
