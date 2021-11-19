@@ -71,16 +71,12 @@ export const WalletConnectProviderElement: React.FC<WalletConnectProviderElement
 
         const { id, method, params } = payload
 
-        console.log('EVENT', 'call_request', payload)
-
-        try {
-          const result = await adapter.handleCall(method, params)
-
-          connector?.approveRequest({ id, result })
-        } catch (err) {
-          console.error(err)
-          connector?.rejectRequest({ id })
-        }
+        adapter
+          .handleCall(method, params)
+          .then((result: any) => connector?.approveRequest({ id, result }))
+          .catch((errorReason: string) =>
+            connector?.rejectRequest({ id, error: { message: errorReason } }),
+          )
       })
 
       wc.on('disconnect', async error => {

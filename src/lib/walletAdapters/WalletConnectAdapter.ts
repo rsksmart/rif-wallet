@@ -1,3 +1,4 @@
+import { TransactionResponse } from '@ethersproject/providers'
 import { Signer, constants, utils } from 'ethers'
 import { RIFWallet } from '../core'
 export class WalletConnectAdapter {
@@ -45,9 +46,9 @@ class SendTransactionResolver implements IResolver {
       payload.data = constants.HashZero
     }
 
-    const tx = await this.signer.sendTransaction(payload)
-
-    return tx.hash
+    return this.signer
+      .sendTransaction(payload)
+      .then((tx: TransactionResponse) => tx.hash)
   }
 }
 
