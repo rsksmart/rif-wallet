@@ -42,7 +42,7 @@ export const ManagePinScreen = () => {
           <Paragraph>Set your pin</Paragraph>
           <View>
             <TextInput
-              onChangeText={pin => setPin(pin)}
+              onChangeText={setPin}
               value={pin}
               placeholder={'Pin'}
               testID={'To.Input'}

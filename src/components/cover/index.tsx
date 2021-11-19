@@ -4,7 +4,7 @@ import { hasPin, getPin } from '../../storage/PinStore'
 
 import { Paragraph } from '../typography'
 import { Button } from '../button'
-
+const secondsToLock = 10
 export const Cover = () => {
   const [appStateVisible, setAppStateVisible] = useState(AppState.currentState)
   const [backgroundTime, setBackgroundTime] = useState(0)
@@ -16,6 +16,7 @@ export const Cover = () => {
     const subscription = AppState.addEventListener('change', nextAppState => {
       const secondsSinceEpoch = parseInt(
         (new Date().valueOf() / 1000).toString(),
+        10,
       )
       if (nextAppState === 'background') {
         setBackgroundTime(secondsSinceEpoch)
@@ -39,7 +40,7 @@ export const Cover = () => {
     })
   }
   useEffect(() => {
-    if (activeTime - backgroundTime > 5) {
+    if (activeTime - backgroundTime > secondsToLock) {
       hasPin().then(withPin => {
         if (withPin) {
           setLocked(true)
