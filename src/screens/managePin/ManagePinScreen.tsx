@@ -18,9 +18,9 @@ export const ManagePinScreen = () => {
     callStorage().then(pinSet => console.log(pinSet))
   }, [])
 
-  const saveMyPin = (pin: string) => {
+  const saveMyPin = (newPin: string) => {
     setPinSaved(true)
-    savePin(pin)
+    savePin(newPin)
   }
   const removeMyPin = () => {
     setPinSaved(false)
