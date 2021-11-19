@@ -22,7 +22,6 @@ import { AbiEnhancer } from './lib/abiEnhancer/AbiEnhancer'
 import Resolver from '@rsksmart/rns-resolver.js'
 
 import { Cover } from './components/cover'
-//import { PinRequest } from './components/pinRequest'
 
 const createRIFWalletFactory = (onRequest: OnRequest) => (wallet: Wallet) =>
   RIFWallet.create(
@@ -120,7 +119,6 @@ const App = () => {
           mnemonic: kms?.mnemonic,
         }}>
         <Cover />
-        {/*<PinRequest />*/}
         <RootNavigation
           keyManagementProps={{
             generateMnemonic: () => KeyManagementSystem.create().mnemonic,
