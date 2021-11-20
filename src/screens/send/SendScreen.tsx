@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { validateAddress } from './validations'
-const rskUtils = require('@rsksmart/rsk-utils')
 
 import {
   StyleSheet,
@@ -21,6 +19,7 @@ import { ScreenProps } from '../../RootNavigation'
 import { Button, CopyComponent, Paragraph } from '../../components'
 import { ScreenWithWallet } from '../types'
 import { Address } from '../../components'
+import { AddressInput } from '../../components/address'
 
 export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   route,
@@ -30,7 +29,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   const { t } = useTranslation()
 
   const [to, setTo] = useState('')
-  const [toValidation, setToValidation] = useState<string | null>(null)
+  const [isValidTo, setIsValidTo] = useState(false)
   const [selectedSymbol] = useState(route.params?.token || 'tRIF')
   const [availableTokens, setAvailableTokens] = useState<IToken[]>()
   const [amount, setAmount] = useState('')
@@ -51,9 +50,8 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
     }
   }
 
-  const handleTargetAddressChange = (address: string) => {
-    const validation = validateAddress(address)
-    setToValidation(validation)
+  const handleTargetAddressChange = (isValid: boolean, address: string) => {
+    setIsValidTo(isValid)
     setTo(address)
   }
 
@@ -71,7 +69,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
           console.log({ balance })*/
 
           const transferResponse = await selectedToken.transfer(
-            to,
+            to.toLowerCase(),
             BigNumber.from(numberOfTokens),
           )
 
@@ -82,7 +80,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
           setTx(txReceipt)
           setInfo(t('Transaction Confirmed.'))
           setTxConfirmed(true)
-        } catch (e) {
+        } catch (e: any) {
           setInfo(t('Transaction Failed: ') + e.message)
         }
       }
@@ -122,27 +120,12 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
       </View>
 
       <View>
-        <TextInput
+        <AddressInput
           onChangeText={handleTargetAddressChange}
           value={to}
           placeholder={t('To')}
           testID={'To.Input'}
         />
-      </View>
-      <View>
-        <Paragraph>
-          <Text style={styles.error}>{toValidation}</Text>
-          {toValidation === 'Invalid checksum' && (
-            <Text
-              style={styles.link}
-              onPress={() =>
-                handleTargetAddressChange(rskUtils.toChecksumAddress(to, 31))
-              }>
-              {' '}
-              [To Checksum]
-            </Text>
-          )}
-        </Paragraph>
       </View>
 
       <View>
@@ -179,6 +162,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
       {!txSent && (
         <View style={styles.section}>
           <Button
+            disabled={!isValidTo}
             onPress={reviewTransaction}
             title="Next"
             testID="Next.Button"
