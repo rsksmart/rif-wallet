@@ -3,14 +3,14 @@ import { View, TextInput, ScrollView } from 'react-native'
 import { Button } from '../../components'
 import { Trans } from 'react-i18next'
 import { Paragraph } from '../../components'
-import { hasPin, savePin, removePin } from '../../storage/PinStore'
+import { exists, set, remove, STORAGE_KEYS } from '../../storage/SecureStorage'
 
 export const ManagePinScreen = () => {
   const [pin, setPin] = useState('')
   const [pinSaved, setPinSaved] = useState(false)
   useEffect(() => {
     const callStorage = async () => {
-      const pinSet = await hasPin()
+      const pinSet = await exists(STORAGE_KEYS.pin)
       setPinSaved(pinSet || false)
       return pinSet
     }
@@ -20,18 +20,18 @@ export const ManagePinScreen = () => {
 
   const saveMyPin = (newPin: string) => {
     setPinSaved(true)
-    savePin(newPin)
+    set(STORAGE_KEYS.pin, newPin)
   }
   const removeMyPin = () => {
     setPinSaved(false)
-    removePin()
+    remove(STORAGE_KEYS.pin)
   }
   return (
     <ScrollView>
       {pinSaved && (
         <View>
           <Paragraph>
-            <Trans> Your pin is set</Trans>
+            <Trans>Your pin is set</Trans>
           </Paragraph>
           <Button onPress={() => removeMyPin()} title="Delete your Pin" />
         </View>

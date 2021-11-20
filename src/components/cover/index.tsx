@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { View, AppState, StyleSheet, TextInput } from 'react-native'
-import { hasPin, getPin } from '../../storage/PinStore'
+import { exists, get, STORAGE_KEYS } from '../../storage/SecureStorage'
 
 import { Paragraph } from '../typography'
 import { Button } from '../button'
@@ -32,7 +32,7 @@ export const Cover = () => {
     }
   }, [])
   const unlock = (enteredPin: string) => {
-    getPin().then(storedPin => {
+    get(STORAGE_KEYS.pin).then(storedPin => {
       if (storedPin === enteredPin) {
         setLocked(false)
         setInputtedPin('')
@@ -41,7 +41,7 @@ export const Cover = () => {
   }
   useEffect(() => {
     if (activeTime - backgroundTime > secondsToLock) {
-      hasPin().then(withPin => {
+      exists(STORAGE_KEYS.pin).then(withPin => {
         if (withPin) {
           setLocked(true)
         }

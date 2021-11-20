@@ -12,7 +12,7 @@ import ModalComponent from './ux/requestsModal/ModalComponent'
 
 import { Wallet } from '@ethersproject/wallet'
 import { KeyManagementSystem, OnRequest, RIFWallet } from './lib/core'
-import { getKeys, hasKeys, saveKeys, deleteKeys } from './storage/KeyStore'
+import { get, exists, set, remove, STORAGE_KEYS } from './storage/SecureStorage'
 import { jsonRpcProvider } from './lib/jsonRpcProvider'
 import { i18nInit } from './lib/i18n'
 import { Paragraph } from './components'
@@ -53,8 +53,8 @@ const App = () => {
   }
 
   const init = async () => {
-    if (await hasKeys()) {
-      const serializedKeys = await getKeys()
+    if (await exists(STORAGE_KEYS.key_management)) {
+      const serializedKeys = await get(STORAGE_KEYS.key_management)
       // eslint-disable-next-line no-shadow
       const { kms, wallets } = KeyManagementSystem.fromSerialized(
         serializedKeys!,
@@ -99,7 +99,7 @@ const App = () => {
 
     save()
     const serialized = kms.serialize()
-    await saveKeys(serialized)
+    await set(STORAGE_KEYS.key_management, serialized)
 
     setKeys(kms, { [rifWallet.address]: rifWallet })
 
@@ -107,6 +107,7 @@ const App = () => {
   }
 
   const closeRequest = () => setRequests([] as Requests)
+  const deleteKeys = () => remove(STORAGE_KEYS.key_management)
 
   return (
     <SafeAreaView>
