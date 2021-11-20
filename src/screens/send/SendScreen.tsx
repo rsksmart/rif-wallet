@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react'
 
-import { StyleSheet, View, ScrollView, TextInput, Linking } from 'react-native'
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  TextInput,
+  Linking,
+  Text,
+} from 'react-native'
 
 import { ContractReceipt, BigNumber, utils } from 'ethers'
 import { useTranslation } from 'react-i18next'
@@ -12,7 +19,7 @@ import { ScreenProps } from '../../RootNavigation'
 import { Button, CopyComponent, Paragraph } from '../../components'
 import { ScreenWithWallet } from '../types'
 import { Address } from '../../components'
-import { AddressInput } from '../../components/address'
+import { AddressInput } from '../../components'
 
 export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   route,
@@ -21,8 +28,8 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   const smartAddress = wallet.smartWalletAddress
   const { t } = useTranslation()
 
-
   const [to, setTo] = useState('')
+  const [isValidTo, setIsValidTo] = useState(false)
   const [selectedSymbol, setSelectedToken] = useState(
     route.params?.token || 'tRIF',
   )
@@ -37,7 +44,6 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   useEffect(() => {
     getAllTokens(wallet).then(tokens => setAvailableTokens(tokens))
   }, [wallet])
-
 
   const transfer = async (tokenSymbol: string) => {
     setInfo('')
@@ -68,7 +74,10 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
       }
     }
   }
-
+  const handleTargetAddressChange = (isValid: boolean, address: string) => {
+    setIsValidTo(isValid)
+    setTo(address)
+  }
   return (
     <ScrollView>
       <View>
@@ -100,7 +109,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
           <Text>Token: </Text>
           <Text>{selectedSymbol}</Text>
         </Paragraph>
-
+      </View>
       <View style={styles.section}>
         <Button
           onPress={() => setSelectedToken('TRBTC')}
