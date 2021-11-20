@@ -7647,7 +7647,7 @@ rn-secure-storage@^2.0.7:
 
 rskjs-util@^1.0.3:
   version "1.0.3"
-  resolved "https://registry.npmjs.org/rskjs-util/-/rskjs-util-1.0.3.tgz"
+  resolved "https://registry.yarnpkg.com/rskjs-util/-/rskjs-util-1.0.3.tgz#c0242d9308d7dc1eb653ffbf0dd1af1309bf55ca"
   integrity sha512-Q6zfYFQndaBln1iY2gnBfYgDLymbZHAxKXOcZVLAKJkHilcieoUN3ZXVxLA3K30KlgAfmRVG72iTzi+yPNZB1w==
   dependencies:
     keccak "^1.0.2"

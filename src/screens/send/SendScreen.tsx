@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View, ScrollView, TextInput, Linking } from 'react-native'
+
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  TextInput,
+  Linking,
+  Text,
+} from 'react-native'
+
 import { ContractReceipt, BigNumber, utils } from 'ethers'
 import { useTranslation } from 'react-i18next'
 
@@ -10,6 +19,7 @@ import { ScreenProps } from '../../RootNavigation'
 import { Button, CopyComponent, Paragraph } from '../../components'
 import { ScreenWithWallet } from '../types'
 import { Address } from '../../components'
+import { AddressInput } from '../../components'
 
 export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   route,
@@ -18,10 +28,12 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   const smartAddress = wallet.smartWalletAddress
   const { t } = useTranslation()
 
-  const [to, setTo] = useState('0x1D4F6A5FE927f0E0e4497B91CebfBcF64dA1c934')
+  const [to, setTo] = useState('')
+  const [isValidTo, setIsValidTo] = useState(false)
   const [selectedSymbol, setSelectedToken] = useState(
     route.params?.token || 'tRIF',
   )
+
   const [availableTokens, setAvailableTokens] = useState<IToken[]>()
   const [amount, setAmount] = useState('')
   const [tx, setTx] = useState<ContractReceipt | null>(null)
@@ -45,7 +57,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
           const numberOfTokens = utils.parseUnits(amount, decimals)
 
           const transferResponse = await selectedToken.transfer(
-            to,
+            to.toLowerCase(),
             BigNumber.from(numberOfTokens),
           )
 
@@ -56,30 +68,34 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
           setTx(txReceipt)
           setInfo(t('Transaction Confirmed.'))
           setTxConfirmed(true)
-        } catch (e) {
+        } catch (e: any) {
           setInfo(t('Transaction Failed: ') + e.message)
         }
       }
     }
   }
-
+  const handleTargetAddressChange = (isValid: boolean, address: string) => {
+    setIsValidTo(isValid)
+    setTo(address)
+  }
   return (
     <ScrollView>
-      <View style={styles.sections}>
+      <View>
         <Paragraph>
           From: <Address>{smartAddress}</Address>
         </Paragraph>
       </View>
-      <View style={styles.section}>
-        <TextInput
-          onChangeText={text => setTo(text)}
+
+      <View>
+        <AddressInput
+          onChangeText={handleTargetAddressChange}
           value={to}
           placeholder={t('To')}
           testID={'To.Input'}
         />
       </View>
 
-      <View style={styles.section}>
+      <View>
         <TextInput
           onChangeText={text => setAmount(text)}
           value={amount}
@@ -88,7 +104,12 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
           testID={'Amount.Input'}
         />
       </View>
-
+      <View>
+        <Paragraph>
+          <Text>Token: </Text>
+          <Text>{selectedSymbol}</Text>
+        </Paragraph>
+      </View>
       <View style={styles.section}>
         <Button
           onPress={() => setSelectedToken('TRBTC')}
@@ -119,6 +140,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
       {!txSent && (
         <View style={styles.section}>
           <Button
+            disabled={!isValidTo}
             onPress={() => {
               transfer(selectedSymbol)
             }}
@@ -167,5 +189,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC',
     flex: 1,
+  },
+  link: {
+    color: 'blue',
+  },
+  error: {
+    color: 'red',
   },
 })
