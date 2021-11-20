@@ -1,32 +1,20 @@
-import { providers, Signer } from 'ethers'
+import { Signer } from 'ethers'
+import { getSigner } from '../../../testLib/utils'
 import { WalletConnectAdapter } from './WalletConnectAdapter'
-
-const Config = {
-  BLOCKCHAIN_HTTP_URL: 'HTTP://127.0.0.1:8545',
-}
-
-const getJsonRpcProvider = async (): Promise<providers.JsonRpcProvider> => {
-  return new providers.JsonRpcProvider(Config.BLOCKCHAIN_HTTP_URL)
-}
-
-const getSigner = async (index: number = 0) => {
-  const provider = await getJsonRpcProvider()
-  return provider.getSigner(index)
-}
 
 describe('Wallet Connect Adapter', () => {
   let adapter: WalletConnectAdapter | null = null
   let signer: Signer | null = null
 
   beforeEach(async () => {
-    signer = await getSigner(9)
+    signer = getSigner(9)
 
     adapter = new WalletConnectAdapter(signer)
   })
 
   test('send tx', async () => {
     const from = await signer?.getAddress()
-    const to = await (await getSigner(0)).getAddress()
+    const to = await getSigner(0).getAddress()
 
     const method = 'eth_sendTransaction'
     const params = [

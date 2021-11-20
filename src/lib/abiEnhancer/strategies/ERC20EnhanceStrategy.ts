@@ -18,7 +18,7 @@ export class ERC20EnhanceStrategy implements IEnhanceStrategy {
     const tokens = await getAllTokens(signer)
     // TODO: mixed up logic, needs refactor
     const tokenFounded = tokens.find(
-      x => x.address === transactionRequest.to,
+      x => x.address.toLowerCase() === transactionRequest.to?.toLowerCase(),
     ) as ERC20Token
 
     if (!tokenFounded) {
@@ -37,7 +37,7 @@ export class ERC20EnhanceStrategy implements IEnhanceStrategy {
     const tokenSymbol = tokenFounded.symbol
 
     return {
-      from: transactionRequest.from!,
+      ...transactionRequest,
       to: decodedTo,
       symbol: tokenSymbol,
       balance: formatBigNumber(currentBalance, tokenDecimals),

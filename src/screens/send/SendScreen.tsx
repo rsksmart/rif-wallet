@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  TextInput,
-  Linking,
-  Text,
-} from 'react-native'
-//import { Picker } from '@react-native-picker/picker'
+import { StyleSheet, View, ScrollView, TextInput, Linking } from 'react-native'
+
 import { ContractReceipt, BigNumber, utils } from 'ethers'
 import { useTranslation } from 'react-i18next'
 
@@ -28,9 +21,12 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   const smartAddress = wallet.smartWalletAddress
   const { t } = useTranslation()
 
+
   const [to, setTo] = useState('')
-  const [isValidTo, setIsValidTo] = useState(false)
-  const [selectedSymbol] = useState(route.params?.token || 'tRIF')
+  const [selectedSymbol, setSelectedToken] = useState(
+    route.params?.token || 'tRIF',
+  )
+
   const [availableTokens, setAvailableTokens] = useState<IToken[]>()
   const [amount, setAmount] = useState('')
   const [tx, setTx] = useState<ContractReceipt | null>(null)
@@ -42,20 +38,8 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
     getAllTokens(wallet).then(tokens => setAvailableTokens(tokens))
   }, [wallet])
 
-  const reviewTransaction = () => {
-    if (selectedSymbol === 'TRBTC') {
-      transferRBTC()
-    } else {
-      transferERC20(selectedSymbol)
-    }
-  }
 
-  const handleTargetAddressChange = (isValid: boolean, address: string) => {
-    setIsValidTo(isValid)
-    setTo(address)
-  }
-
-  const transferERC20 = async (tokenSymbol: string) => {
+  const transfer = async (tokenSymbol: string) => {
     setInfo('')
     if (availableTokens) {
       const selectedToken = availableTokens.find(
@@ -65,8 +49,6 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
         try {
           const decimals = await selectedToken.decimals()
           const numberOfTokens = utils.parseUnits(amount, decimals)
-          /*const balance = await selectedToken.balance()
-          console.log({ balance })*/
 
           const transferResponse = await selectedToken.transfer(
             to.toLowerCase(),
@@ -85,30 +67,6 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
         }
       }
     }
-  }
-
-  const transferRBTC = async () => {
-    setInfo('TRBTC transfer not supported')
-    /* try {
-      let rbtcToken: RBTCToken | null = null
-      rbtcToken = new RBTCToken(account, '', 'logo.jpg', 31)
-
-      const transferResponse = await rbtcToken.transfer(
-        to,
-        utils.parseEther(amount),
-      )
-
-      setInfo('Transaction Sent. Please wait...')
-      setTxSent(true)
-      setTxConfirmed(false)
-      const txReceipt = await transferResponse.wait()
-      setTx(txReceipt)
-      setInfo('Transaction Confirmed.')
-      console.log({ txReceipt })
-      setTxConfirmed(true)
-    } catch (e) {
-      setInfo('Transaction Failed: ' + e.message)
-    }*/
   }
 
   return (
@@ -143,6 +101,17 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
           <Text>{selectedSymbol}</Text>
         </Paragraph>
 
+      <View style={styles.section}>
+        <Button
+          onPress={() => setSelectedToken('TRBTC')}
+          disabled={selectedSymbol === 'TRBTC'}
+          title="TRBTC"
+        />
+        <Button
+          onPress={() => setSelectedToken('tRIF')}
+          disabled={selectedSymbol === 'tRIF'}
+          title="tRIF"
+        />
         {/*<Picker
           selectedValue={selectedSymbol}
           onValueChange={itemValue => setSelectedSymbol(itemValue)}
@@ -163,7 +132,9 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
         <View style={styles.section}>
           <Button
             disabled={!isValidTo}
-            onPress={reviewTransaction}
+            onPress={() => {
+              transfer(selectedSymbol)
+            }}
             title="Next"
             testID="Next.Button"
           />

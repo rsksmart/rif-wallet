@@ -1,32 +1,10 @@
-import { providers, BigNumber } from 'ethers'
-import { tenPow } from '../../lib/token/BaseToken'
-import { ERC20Token } from '../../lib/token/ERC20Token'
-import { ERC677__factory } from '../../lib/token/types'
-
-const Config = {
-  BLOCKCHAIN_HTTP_URL: 'HTTP://127.0.0.1:8545',
-}
-
-const TEST_TOKEN_DECIMALS = 18
-
-const getJsonRpcProvider = async (): Promise<providers.JsonRpcProvider> => {
-  return new providers.JsonRpcProvider(Config.BLOCKCHAIN_HTTP_URL)
-}
-
-const getSigner = async (index: number = 0) => {
-  const provider = await getJsonRpcProvider()
-  return provider.getSigner(index)
-}
 import React from 'react'
 
 import { render, fireEvent, act, waitFor } from '@testing-library/react-native'
 
-import { getAllTokens } from '../../lib/token/tokenMetadata'
 import { SendScreen } from './SendScreen'
-
-jest.mock('../../lib/token/tokenMetadata', () => ({
-  getAllTokens: jest.fn(),
-}))
+import * as tokenMetadata from '../../lib/token/tokenMetadata'
+import { deployTestTokens, getSigner } from '../../../testLib/utils'
 
 // eslint-disable-next-line jest/no-disabled-tests
 describe.skip('Load Tokens', () => {
@@ -37,49 +15,16 @@ describe.skip('Load Tokens', () => {
       },
     },
   }
-  let tokenAddress1 = ''
-  let tokenAddress2 = ''
 
   beforeEach(async () => {
-    const account = await getSigner()
-    const accountAddress = await account.getAddress()
+    const accountSigner = getSigner()
+    const { firstErc20Token, secondErc20Token, rbtcToken } =
+      await deployTestTokens(accountSigner)
 
-    // using ERC677__factory that supports ERC20 to set totalSupply (just for testing purpose)
-    const initialSupply = BigNumber.from(200).mul(tenPow(TEST_TOKEN_DECIMALS))
-    const erc677Factory = new ERC677__factory(account)
-    const firstErc20 = (await erc677Factory.deploy(
-      accountAddress,
-      initialSupply,
-      'FIRST_TEST_ERC20',
-      'FIRST_TEST_ERC20',
-    )) as any
-
-    const secondErc20 = (await erc677Factory.deploy(
-      accountAddress,
-      initialSupply,
-      'SECOND_TEST_ERC20',
-      'SECOND_TEST_ERC20',
-    )) as any
-
-    tokenAddress1 = firstErc20.address
-    tokenAddress2 = secondErc20.address
-
-    const firstErc20Token = new ERC20Token(
-      tokenAddress1,
-      account,
-      'FIRST_TEST_ERC20',
-      'logo.jpg',
+    ;(tokenMetadata.getAllTokens as any) = jest.fn(() =>
+      Promise.resolve([firstErc20Token, secondErc20Token]),
     )
-
-    const secondErc20Token = new ERC20Token(
-      tokenAddress2,
-      account,
-      'SECOND_TEST_ERC20',
-      'logo.jpg',
-    )
-    const getAllTokensMock = async () => [firstErc20Token, secondErc20Token]
-    // @ts-ignore
-    getAllTokens.mockImplementation(getAllTokensMock)
+    ;(tokenMetadata.makeRBTCToken as any) = jest.fn(() => rbtcToken)
   })
   it('renders', async () => {
     const { getByPlaceholderText, rerender } = render(
@@ -122,7 +67,7 @@ describe.skip('Load Tokens', () => {
     const picker = getByTestId('Tokens.Picker')
     fireEvent(picker, 'onValueChange', 'FIRST_TEST_ERC20')
 
-    const receivingAccount = await getSigner(1)
+    const receivingAccount = getSigner(1)
 
     fireEvent.changeText(
       getByTestId('To.Input'),
