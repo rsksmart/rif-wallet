@@ -1,5 +1,10 @@
 import React, { useState } from 'react'
 import { Text, TextInput, StyleSheet } from 'react-native'
+import Resolver from '@rsksmart/rns-resolver.js'
+
+// @ts-ignore
+const resolver = new Resolver.forRskTestnet()
+
 import {
   validateAddress,
   AddressValidationMessage,
@@ -23,10 +28,32 @@ export const AddressInput: React.FC<AddressInputProps> = ({
     validateAddress(value),
   )
 
-  const handleChangeText = (text: string) => {
-    const newValidationMessage = validateAddress(text)
-    setValidationMessage(newValidationMessage)
-    onChangeText(!!text && !newValidationMessage, text)
+  const [inputInfo, setInputInfo] = useState('')
+
+  const handleChangeText = (inputText: string) => {
+    setInputInfo('')
+    const newValidationMessage = validateAddress(inputText)
+
+    if (newValidationMessage === AddressValidationMessage.DOMAIN) {
+      setInputInfo('Loading...')
+      setValidationMessage(AddressValidationMessage.VALID)
+      resolver
+        .addr(inputText)
+        .then((address: string) => {
+          setValidationMessage(AddressValidationMessage.VALID)
+          setInputInfo(`Address fetched from ${inputText}`)
+          onChangeText(true, address)
+        })
+        .catch((e: any) => {
+          setValidationMessage(AddressValidationMessage.NO_ADDRESS_DOMAIN)
+          onChangeText(false, inputText)
+          console.log(e.message)
+          setInputInfo('')
+        }) // gets rs
+    } else {
+      setValidationMessage(newValidationMessage)
+      onChangeText(!!inputText && !newValidationMessage, inputText)
+    }
   }
 
   return (
@@ -36,9 +63,16 @@ export const AddressInput: React.FC<AddressInputProps> = ({
         value={value}
         placeholder={placeholder}
         testID={testID}
+        editable={inputInfo !== 'Loading...'}
       />
-      <Text style={styles.error} testID={testID + '.ValidationMessage'}>
-        {validationMessage}
+      {validationMessage !== '' && (
+        <Text style={styles.error} testID={testID + '.ValidationMessage'}>
+          {validationMessage}
+        </Text>
+      )}
+
+      <Text style={styles.info} testID={testID + '.InputInfo'}>
+        {inputInfo}
       </Text>
       {validationMessage === AddressValidationMessage.INVALID_CHECKSUM && (
         <Text
@@ -56,6 +90,9 @@ export const AddressInput: React.FC<AddressInputProps> = ({
 const styles = StyleSheet.create({
   error: {
     color: 'red',
+  },
+  info: {
+    color: 'blue',
   },
   link: {
     color: 'blue',
