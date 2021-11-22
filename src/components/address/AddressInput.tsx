@@ -2,9 +2,6 @@ import React, { useState } from 'react'
 import { Text, TextInput, StyleSheet } from 'react-native'
 import Resolver from '@rsksmart/rns-resolver.js'
 
-// @ts-ignore
-const resolver = new Resolver.forRskTestnet()
-
 import {
   validateAddress,
   AddressValidationMessage,
@@ -16,6 +13,7 @@ type AddressInputProps = {
   value: string
   onChangeText: (isValid: boolean, address: string) => void
   testID: string
+  rnsResolver: Resolver
 }
 
 export const AddressInput: React.FC<AddressInputProps> = ({
@@ -23,6 +21,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   value,
   onChangeText,
   testID,
+  rnsResolver,
 }) => {
   const [validationMessage, setValidationMessage] = useState(
     validateAddress(value),
@@ -37,7 +36,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
     if (newValidationMessage === AddressValidationMessage.DOMAIN) {
       setInputInfo('Loading...')
       setValidationMessage(AddressValidationMessage.VALID)
-      resolver
+      rnsResolver
         .addr(inputText)
         .then((address: string) => {
           setValidationMessage(AddressValidationMessage.VALID)

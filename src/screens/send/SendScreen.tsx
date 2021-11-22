@@ -20,11 +20,14 @@ import { Button, CopyComponent, Paragraph } from '../../components'
 import { ScreenWithWallet } from '../types'
 import { Address } from '../../components'
 import { AddressInput } from '../../components'
+import Resolver from '@rsksmart/rns-resolver.js'
 
-export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
-  route,
-  wallet,
-}) => {
+export type SendScreenProps = {
+  rnsResolver: Resolver
+}
+export const SendScreen: React.FC<
+  SendScreenProps & ScreenProps<'Send'> & ScreenWithWallet
+> = ({ rnsResolver, route, wallet }) => {
   const smartAddress = wallet.smartWalletAddress
   const { t } = useTranslation()
 
@@ -68,6 +71,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
           setTx(txReceipt)
           setInfo(t('Transaction Confirmed.'))
           setTxConfirmed(true)
+          // @ts-ignore
         } catch (e: any) {
           setInfo(t('Transaction Failed: ') + e.message)
         }
@@ -92,6 +96,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
           value={to}
           placeholder={t('To')}
           testID={'To.Input'}
+          rnsResolver={rnsResolver}
         />
       </View>
 

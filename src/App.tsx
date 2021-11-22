@@ -19,6 +19,8 @@ import { Paragraph } from './components'
 import { AppContext } from './Context'
 import { RifWalletServicesFetcher } from './lib/rifWalletServices/RifWalletServicesFetcher'
 import { AbiEnhancer } from './lib/abiEnhancer/AbiEnhancer'
+import Resolver from '@rsksmart/rns-resolver.js'
+
 import { Cover } from './components/cover'
 
 const createRIFWalletFactory = (onRequest: OnRequest) => (wallet: Wallet) =>
@@ -30,6 +32,8 @@ const createRIFWalletFactory = (onRequest: OnRequest) => (wallet: Wallet) =>
 
 const fetcher = new RifWalletServicesFetcher()
 const abiEnhancer = new AbiEnhancer()
+// @ts-ignore
+const rnsResolver = new Resolver.forRskTestnet()
 
 const App = () => {
   const [ready, setReady] = useState(false)
@@ -121,6 +125,7 @@ const App = () => {
             createFirstWallet,
           }}
           balancesScreenProps={{ fetcher }}
+          sendScreenProps={{ rnsResolver }}
           activityScreenProps={{ fetcher, abiEnhancer }}
           keysInfoScreenProps={{
             mnemonic: kms?.mnemonic || '',

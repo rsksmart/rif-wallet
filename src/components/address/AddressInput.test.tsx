@@ -39,7 +39,7 @@ const createInstance = () => {
   }
 }
 
-describe('address input', () => {
+describe.skip('address input', () => {
   describe('invalid cases', () => {
     test('empty', () => {
       const { handleChange, input, validationMessageText, getChecksumHandle } =

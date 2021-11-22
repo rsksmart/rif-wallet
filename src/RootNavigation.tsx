@@ -11,6 +11,7 @@ import { InjectSelectedWallet } from './Context'
 
 import { BalancesScreenProps } from './screens/balances/BalancesScreen'
 import { KeysInfoScreenProps } from './screens/info/KeysInfoScreen'
+import { SendScreenProps } from './screens/send/SendScreen'
 import { ActivityScreenProps } from './screens/activity/ActivityScreen'
 
 const InjectedScreens = {
@@ -58,11 +59,13 @@ export const RootNavigation: React.FC<{
   balancesScreenProps: BalancesScreenProps
   activityScreenProps: ActivityScreenProps
   keysInfoScreenProps: KeysInfoScreenProps
+  sendScreenProps: SendScreenProps
 }> = ({
   keyManagementProps,
   balancesScreenProps,
   activityScreenProps,
   keysInfoScreenProps,
+  sendScreenProps,
 }) => {
   return (
     <View style={styles.parent}>
@@ -84,12 +87,11 @@ export const RootNavigation: React.FC<{
             component={InjectedScreens.ReceiveScreen}
             options={sharedOptions}
           />
-          <RootStack.Screen
-            name="Send"
-            component={InjectedScreens.SendScreen}
-            options={sharedOptions}
-          />
-
+          <RootStack.Screen name="Send">
+            {props => (
+              <InjectedScreens.SendScreen {...props} {...sendScreenProps} />
+            )}
+          </RootStack.Screen>
           <RootStack.Screen name="Balances">
             {props => (
               <InjectedScreens.BalancesScreen
