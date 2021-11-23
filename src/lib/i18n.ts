@@ -60,9 +60,6 @@ const resources = {
       'Get info': 'Get Info',
       'RBTC Balance (EOA)': 'RBTC Balance (EOA)',
       'Do you want to sign this message?': 'Do you want to sign this message?',
-      'Manage Pin': 'Manage Pin',
-      'Set your pin': 'Set your pin',
-      'Your pin is set': 'Your pin is set',
     },
   },
   es: {
