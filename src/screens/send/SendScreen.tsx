@@ -32,6 +32,7 @@ export const SendScreen: React.FC<
   const { t } = useTranslation()
 
   const [to, setTo] = useState('')
+  const [displayTo, setDisplayTo] = useState('')
   const [isValidTo, setIsValidTo] = useState(false)
   const [selectedSymbol, setSelectedToken] = useState(
     route.params?.token || 'tRIF',
@@ -78,9 +79,14 @@ export const SendScreen: React.FC<
       }
     }
   }
-  const handleTargetAddressChange = (isValid: boolean, address: string) => {
+  const handleTargetAddressChange = (
+    isValid: boolean,
+    address: string,
+    displayAddress: string,
+  ) => {
     setIsValidTo(isValid)
     setTo(address)
+    setDisplayTo(displayAddress)
   }
   return (
     <ScrollView>
@@ -93,7 +99,7 @@ export const SendScreen: React.FC<
       <View>
         <AddressInput
           onChangeText={handleTargetAddressChange}
-          value={to}
+          value={displayTo}
           placeholder={t('To')}
           testID={'To.Input'}
           rnsResolver={rnsResolver}

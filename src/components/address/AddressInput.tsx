@@ -11,7 +11,11 @@ import {
 type AddressInputProps = {
   placeholder: string
   value: string
-  onChangeText: (isValid: boolean, address: string) => void
+  onChangeText: (
+    isValid: boolean,
+    address: string,
+    displayAddress: string,
+  ) => void
   testID: string
   rnsResolver: Resolver
 }
@@ -40,18 +44,18 @@ export const AddressInput: React.FC<AddressInputProps> = ({
         .addr(inputText)
         .then((address: string) => {
           setValidationMessage(AddressValidationMessage.VALID)
-          setInputInfo(`Address fetched from ${inputText}`)
-          onChangeText(true, address)
+          setInputInfo(address)
+          onChangeText(true, address, inputText)
         })
         .catch((e: any) => {
           setValidationMessage(AddressValidationMessage.NO_ADDRESS_DOMAIN)
-          onChangeText(false, inputText)
+          onChangeText(false, inputText, inputText)
           console.log(e.message)
           setInputInfo('')
         }) // gets rs
     } else {
       setValidationMessage(newValidationMessage)
-      onChangeText(!!inputText && !newValidationMessage, inputText)
+      onChangeText(!!inputText && !newValidationMessage, inputText, inputText)
     }
   }
 
@@ -65,12 +69,13 @@ export const AddressInput: React.FC<AddressInputProps> = ({
         editable={inputInfo !== 'Loading...'}
       />
 
+      {inputInfo !== '' && (
+        <Text style={styles.info} testID={testID + '.InputInfo'}>
+          {inputInfo}
+        </Text>
+      )}
       <Text style={styles.error} testID={testID + '.ValidationMessage'}>
         {validationMessage}
-      </Text>
-
-      <Text style={styles.info} testID={testID + '.InputInfo'}>
-        {inputInfo}
       </Text>
       {validationMessage === AddressValidationMessage.INVALID_CHECKSUM && (
         <Text

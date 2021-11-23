@@ -81,9 +81,7 @@ describe('address input', () => {
       fireEvent.changeText(input, testnetCase.domainWithAddress)
       await waitFor(() => {
         const inputInfo = getByTestId('Input.Address.InputInfo')
-        expect(inputInfo.children[0]).toEqual(
-          `Address fetched from ${testnetCase.domainWithAddress}`,
-        )
+        expect(inputInfo.children[0]).toEqual('0x000_MOCK_DOMAIN_ADDRESS')
       })
     })
   })
