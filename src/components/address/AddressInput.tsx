@@ -64,11 +64,10 @@ export const AddressInput: React.FC<AddressInputProps> = ({
         testID={testID}
         editable={inputInfo !== 'Loading...'}
       />
-      {validationMessage !== '' && (
-        <Text style={styles.error} testID={testID + '.ValidationMessage'}>
-          {validationMessage}
-        </Text>
-      )}
+
+      <Text style={styles.error} testID={testID + '.ValidationMessage'}>
+        {validationMessage}
+      </Text>
 
       <Text style={styles.info} testID={testID + '.InputInfo'}>
         {inputInfo}

@@ -8,7 +8,6 @@ export enum AddressValidationMessage {
   INVALID_ADDRESS = 'Invalid address',
   INVALID_CHECKSUM = 'Invalid checksum',
   DOMAIN = 'Domain Found',
-  FETCHED_FROM_DOMAIN = 'Address fetched from domain',
   NO_ADDRESS_DOMAIN = 'Domain without address',
   VALID = '',
 }
