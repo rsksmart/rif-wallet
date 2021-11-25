@@ -26,6 +26,7 @@ const InjectedScreens = {
   WalletConnectNavigationScreen: InjectSelectedWallet(
     Screens.WalletConnectNavigationScreen,
   ),
+  InjectedBrowser: InjectSelectedWallet(Screens.InjectedBrowser),
 }
 
 type RootStackParamList = {
@@ -43,6 +44,7 @@ type RootStackParamList = {
   WalletConnect: undefined
   ChangeLanguage: undefined
   ManagePin: undefined
+  InjectedBrowser: undefined
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -151,6 +153,11 @@ export const RootNavigation: React.FC<{
           <RootStack.Screen
             name="ManagePin"
             component={Screens.ManagePinScreen}
+            options={{ ...sharedOptions }}
+          />
+          <RootStack.Screen
+            name="InjectedBrowser"
+            component={InjectedScreens.InjectedBrowser}
             options={{ ...sharedOptions }}
           />
         </RootStack.Navigator>
