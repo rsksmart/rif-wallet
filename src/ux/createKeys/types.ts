@@ -13,6 +13,7 @@ export type StackParamList = {
   ImportMasterKey: undefined
   KeysCreated: { address: string }
   RevealMasterKey: undefined
+  InjectedBrowser: undefined
 }
 
 export type ScreenProps<T extends keyof StackParamList> = StackScreenProps<
