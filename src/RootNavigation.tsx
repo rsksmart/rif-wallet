@@ -26,7 +26,9 @@ const InjectedScreens = {
   WalletConnectNavigationScreen: InjectSelectedWallet(
     Screens.WalletConnectNavigationScreen,
   ),
-  InjectedBrowser: InjectSelectedWallet(Screens.InjectedBrowser),
+  InjectedBrowserNavigation: InjectSelectedWallet(
+    Screens.InjectedBrowserNavigation,
+  ),
 }
 
 type RootStackParamList = {
@@ -44,7 +46,7 @@ type RootStackParamList = {
   WalletConnect: undefined
   ChangeLanguage: undefined
   ManagePin: undefined
-  InjectedBrowser: undefined
+  InjectedBrowserUX: undefined
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -156,9 +158,9 @@ export const RootNavigation: React.FC<{
             options={{ ...sharedOptions }}
           />
           <RootStack.Screen
-            name="InjectedBrowser"
-            component={InjectedScreens.InjectedBrowser}
-            options={{ ...sharedOptions }}
+            name="InjectedBrowserUX"
+            component={InjectedScreens.InjectedBrowserNavigation}
+            options={{ ...sharedOptions, headerShown: false }}
           />
         </RootStack.Navigator>
       </NavigationContainer>

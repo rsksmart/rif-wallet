@@ -105,7 +105,7 @@ const WalletRow = ({
       </View>
 
       <Button
-        onPress={() => navigation.navigate('InjectedBrowser')}
+        onPress={() => navigation.navigate('InjectedBrowserUX')}
         title={t('InjectedBrowser')}
         disabled={!isWalletDeployed}
       />

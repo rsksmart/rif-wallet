@@ -10,6 +10,7 @@ export class WalletConnectAdapter {
       new SendTransactionResolver(signer),
       new PersonalSignResolver(signer),
       new SignTypedDataResolver(signer as RIFWallet),
+      new SignTypedDataV4Resolver(signer as RIFWallet),
     ]
   }
 
@@ -68,7 +69,13 @@ class PersonalSignResolver implements IResolver {
   }
 
   async resolve(params: any[]) {
-    const message = utils.toUtf8String(params[0])
+    let message = params[0]
+
+    try {
+      message = utils.toUtf8String(params[0])
+    } catch {
+      // use original message
+    }
 
     return this.signer.signMessage(message)
   }
@@ -77,6 +84,26 @@ class PersonalSignResolver implements IResolver {
 class SignTypedDataResolver implements IResolver {
   private signer: RIFWallet
   public methodName = 'eth_signTypedData'
+
+  constructor(signer: RIFWallet) {
+    this.signer = signer
+  }
+
+  async resolve(params: any[]) {
+    const { domain, message, types } = JSON.parse(params[1])
+
+    // delete domain type
+    if (types.EIP712Domain) {
+      delete types.EIP712Domain
+    }
+
+    return this.signer._signTypedData(domain, types, message)
+  }
+}
+
+class SignTypedDataV4Resolver implements IResolver {
+  private signer: RIFWallet
+  public methodName = 'eth_signTypedData_v4'
 
   constructor(signer: RIFWallet) {
     this.signer = signer
