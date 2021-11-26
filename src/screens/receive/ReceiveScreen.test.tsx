@@ -28,7 +28,7 @@ describe('Receive Screen', function (this: {
   describe('initial screen', () => {
     test('shows smart wallet wallet', async () => {
       const { displayAddress } = getAddressDisplayText(
-        this.instance.rifWallet.address,
+        this.instance.rifWallet.smartWalletAddress,
       )
       expect(
         this.instance.container
@@ -50,8 +50,8 @@ describe('Receive Screen', function (this: {
       fireEvent.press(this.instance.container.getByTestId(TestID.ShareButton))
 
       expect(spy).toHaveBeenCalledWith({
-        message: this.instance.rifWallet.address,
-        title: this.instance.rifWallet.address,
+        message: this.instance.rifWallet.smartWalletAddress,
+        title: this.instance.rifWallet.smartWalletAddress,
       })
     })
   })
