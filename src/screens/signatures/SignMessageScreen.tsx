@@ -32,7 +32,7 @@ export const SignMessageScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
       <Paragraph>
         <Trans>Signing with EOA Account</Trans>:
       </Paragraph>
-      <CopyComponent value={wallet.eoaAddress} />
+      <CopyComponent value={wallet.address} />
 
       <Paragraph>
         <Trans>Message</Trans>:

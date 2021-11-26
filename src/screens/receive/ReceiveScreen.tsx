@@ -12,7 +12,7 @@ export enum TestID {
 }
 
 export const ReceiveScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
-  const smartAddress = wallet.address
+  const smartAddress = wallet.smartWalletAddress
 
   const handleShare = () =>
     Share.share({

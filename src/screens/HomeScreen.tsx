@@ -105,7 +105,7 @@ export const HomeScreen: React.FC<ScreenProps<'Home'>> = ({ navigation }) => {
       {Object.keys(wallets).map((address: string) => (
         <WalletRow
           key={address}
-          address={address}
+          address={wallets[address].smartWalletAddress}
           navigation={navigation}
           t={t}
         />
