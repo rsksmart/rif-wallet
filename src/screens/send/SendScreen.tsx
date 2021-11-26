@@ -20,15 +20,19 @@ import { Button, CopyComponent, Paragraph } from '../../components'
 import { ScreenWithWallet } from '../types'
 import { Address } from '../../components'
 import { AddressInput } from '../../components'
+import Resolver from '@rsksmart/rns-resolver.js'
 
-export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
-  route,
-  wallet,
-}) => {
+export type SendScreenProps = {
+  rnsResolver: Resolver
+}
+export const SendScreen: React.FC<
+  SendScreenProps & ScreenProps<'Send'> & ScreenWithWallet
+> = ({ rnsResolver, route, wallet }) => {
   const smartAddress = wallet.smartWalletAddress
   const { t } = useTranslation()
 
   const [to, setTo] = useState('')
+  const [displayTo, setDisplayTo] = useState('')
   const [isValidTo, setIsValidTo] = useState(false)
   const [selectedSymbol, setSelectedToken] = useState(
     route.params?.token || 'tRIF',
@@ -68,15 +72,21 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
           setTx(txReceipt)
           setInfo(t('Transaction Confirmed.'))
           setTxConfirmed(true)
+          // @ts-ignore
         } catch (e: any) {
           setInfo(t('Transaction Failed: ') + e.message)
         }
       }
     }
   }
-  const handleTargetAddressChange = (isValid: boolean, address: string) => {
+  const handleTargetAddressChange = (
+    isValid: boolean,
+    address: string,
+    displayAddress: string,
+  ) => {
     setIsValidTo(isValid)
     setTo(address)
+    setDisplayTo(displayAddress)
   }
   return (
     <ScrollView>
@@ -89,9 +99,10 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
       <View>
         <AddressInput
           onChangeText={handleTargetAddressChange}
-          value={to}
+          value={displayTo}
           placeholder={t('To')}
           testID={'To.Input'}
+          rnsResolver={rnsResolver}
         />
       </View>
 

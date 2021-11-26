@@ -5,4 +5,5 @@ export const testnetCase = {
   lower: checksummed.toLowerCase(),
   wrongChecksum: checksummed.replace('a', 'A'),
   invalid: checksummed.slice(0, 10),
+  domainWithAddress: 'moonwalker.rsk',
 }

@@ -7,6 +7,8 @@ import {
 export enum AddressValidationMessage {
   INVALID_ADDRESS = 'Invalid address',
   INVALID_CHECKSUM = 'Invalid checksum',
+  DOMAIN = 'Domain Found',
+  NO_ADDRESS_DOMAIN = 'Domain without address',
   VALID = '',
 }
 
@@ -18,6 +20,12 @@ export enum AddressValidationMessage {
  * @returns {string} null if it's valid and an error message if it is not
  */
 export const validateAddress = (address: string, chainId = 31) => {
+  const re = /\.rsk$/ // match *.rsk domains
+  const isDomain = re.test(String(address).toLowerCase())
+  if (isDomain) {
+    return AddressValidationMessage.DOMAIN
+  }
+
   if (!address) {
     return AddressValidationMessage.VALID
   }
@@ -31,6 +39,7 @@ export const validateAddress = (address: string, chainId = 31) => {
   ) {
     return AddressValidationMessage.INVALID_CHECKSUM
   }
+
   return AddressValidationMessage.VALID
 }
 

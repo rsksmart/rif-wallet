@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
-import { render, fireEvent } from '@testing-library/react-native'
+import { render, fireEvent, waitFor } from '@testing-library/react-native'
 import { AddressInput } from '.'
 import { testnetCase } from './testCase'
 import { AddressValidationMessage } from './lib'
+import { createMockRnsResolver } from '../../../testLib/mocks/rnsResolverMock'
 
 const testId = 'Input.Address'
 
 const WrappedAddressInput = ({ handleChange }: any) => {
   const [address, setAddress] = useState('')
+  const resolverMock = createMockRnsResolver()
   return (
     <AddressInput
       placeholder="To"
@@ -17,13 +19,14 @@ const WrappedAddressInput = ({ handleChange }: any) => {
         handleChange(isValid, newAddress)
         setAddress(newAddress)
       }}
+      rnsResolver={resolverMock}
     />
   )
 }
 
 const createInstance = () => {
   const handleChange = jest.fn()
-  const { getByTestId } = render(
+  const { getByTestId, findByTestId } = render(
     <WrappedAddressInput handleChange={handleChange} />,
   )
   const input = getByTestId(testId)
@@ -36,6 +39,8 @@ const createInstance = () => {
     input,
     validationMessageText,
     getChecksumHandle,
+    findByTestId,
+    getByTestId,
   }
 }
 
@@ -68,6 +73,16 @@ describe('address input', () => {
         AddressValidationMessage.INVALID_CHECKSUM,
       )
       expect(getChecksumHandle()).toBeDefined()
+    })
+
+    test('domain address', async () => {
+      const { input, getByTestId } = createInstance()
+
+      fireEvent.changeText(input, testnetCase.domainWithAddress)
+      await waitFor(() => {
+        const inputInfo = getByTestId('Input.Address.InputInfo')
+        expect(inputInfo.children[0]).toEqual('0x000_MOCK_DOMAIN_ADDRESS')
+      })
     })
   })
 
