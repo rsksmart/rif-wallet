@@ -30,7 +30,7 @@ export const RequestPIN = () => {
       hasPin().then(withPin => {
         if (withPin) {
           if (nextAppState === 'active') {
-            if (!!timerRef.current) {
+            if (timerRef.current) {
               clearTimeout(timerRef.current)
             }
           }
@@ -39,7 +39,6 @@ export const RequestPIN = () => {
             const newTimer = setTimeout(() => {
               setInputtedPin('')
               setLocked(true)
-
             }, millisecondsToLock)
 
             timerRef.current = newTimer
@@ -54,27 +53,30 @@ export const RequestPIN = () => {
     }
   }, [])
 
-  return <>
-    {locked && <View style={shareStyles.coverAllScreen}>
-      <Paragraph>Enter your pin to unlock the app</Paragraph>
-      <View>
-        <TextInput
-          onChangeText={pin => setInputtedPin(pin)}
-          value={inputtedPin}
-          placeholder={'Pin'}
-          testID={'To.Input'}
-          keyboardType="numeric"
-        />
-      </View>
+  return (
+    <>
+      {locked && (
+        <View style={shareStyles.coverAllScreen}>
+          <Paragraph>Enter your pin to unlock the app</Paragraph>
+          <View>
+            <TextInput
+              onChangeText={pin => setInputtedPin(pin)}
+              value={inputtedPin}
+              placeholder={'Pin'}
+              testID={'To.Input'}
+              keyboardType="numeric"
+            />
+          </View>
 
-      <View>
-        <Button
-          onPress={() => unlock(inputtedPin)}
-          title="Unlock"
-          testID="Next.Button"
-        />
-      </View>
-    </View>
-    }
-  </>
+          <View>
+            <Button
+              onPress={() => unlock(inputtedPin)}
+              title="Unlock"
+              testID="Next.Button"
+            />
+          </View>
+        </View>
+      )}
+    </>
+  )
 }

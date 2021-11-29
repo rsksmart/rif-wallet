@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { View, AppState, StyleSheet } from 'react-native'
-import { RequestPIN } from '../requestPin'
 import { shareStyles } from '../sharedStyles'
 
 export const Cover = () => {
@@ -14,9 +13,15 @@ export const Cover = () => {
     }
   }, [])
 
-  return <View
-    style={appStateVisible !== 'active' ? shareStyles.coverAllScreen : styles.invisible}
-  />
+  return (
+    <View
+      style={
+        appStateVisible !== 'active'
+          ? shareStyles.coverAllScreen
+          : styles.invisible
+      }
+    />
+  )
 }
 
 const styles = StyleSheet.create({

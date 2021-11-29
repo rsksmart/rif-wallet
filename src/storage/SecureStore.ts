@@ -5,7 +5,7 @@ export const createStore = (key: string) => ({
   get: () => RNSecureStorage.get(key),
   remove: () => RNSecureStorage.remove(key),
   save: (value: string) =>
-  RNSecureStorage.set(key, value, {
-    accessible: ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
-  })
+    RNSecureStorage.set(key, value, {
+      accessible: ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
+    }),
 })
