@@ -37,7 +37,6 @@ export const RequestPIN = () => {
 
           if (nextAppState !== 'active') {
             const newTimer = setTimeout(() => {
-              console.log('timeout fired')
               setInputtedPin('')
               setLocked(true)
 

@@ -14,12 +14,9 @@ export const Cover = () => {
     }
   }, [])
 
-  return <>
-    <View
-      style={appStateVisible !== 'active' ? shareStyles.coverAllScreen : styles.invisible}
-    />
-    <RequestPIN />
-  </>
+  return <View
+    style={appStateVisible !== 'active' ? shareStyles.coverAllScreen : styles.invisible}
+  />
 }
 
 const styles = StyleSheet.create({
