@@ -34,6 +34,16 @@ export const BookmarksScreen: React.FC<ScreenProps<'Bookmarks'>> = ({
           title={'Scheduler App'}
         />
       </View>
+      <View style={styles.section}>
+        <Button
+          onPress={() =>
+            navigation.navigate('InjectedBrowser', {
+              uri: 'https://testnet.manager.rns.rifos.org',
+            })
+          }
+          title={'RNS App'}
+        />
+      </View>
       <View style={styles.sectionWithBottomLine}>
         <Header2>
           <Trans>Explore</Trans>

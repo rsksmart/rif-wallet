@@ -1,27 +1,21 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import { Platform, StyleSheet, View } from 'react-native'
 import { WebView } from 'react-native-webview'
 import { Paragraph } from '../../components'
 import { ScreenWithWallet } from '../../screens/types'
-import EntryScriptWeb3 from './EntryScriptWeb3'
 
-import { rpcUrl } from '../../lib/jsonRpcProvider'
-import { WalletConnectAdapter } from '../../lib/walletAdapters/WalletConnectAdapter'
 import { ScreenProps } from './types'
+import { InjectedBrowserAdapter } from '../../lib/walletAdapters/InjectedBrowserAdapter'
 
 export const InjectedBrowser: React.FC<
   ScreenWithWallet & ScreenProps<'InjectedBrowser'>
 > = ({ wallet, route }) => {
   const { uri } = route.params
 
-  const adapter = useMemo(() => new WalletConnectAdapter(wallet), [wallet])
+  const adapter = useMemo(() => new InjectedBrowserAdapter(wallet), [wallet])
 
   const webviewRef = useRef<WebView | null>(null)
   const [progress, setProgress] = useState(0)
-
-  const [injectedJavaScript, setInjectedJavaScript] = useState<string | null>(
-    null,
-  )
 
   const postMessageToWebView = (result: { id: string; result: any }) => {
     if (webviewRef && webviewRef.current) {
@@ -68,43 +62,26 @@ export const InjectedBrowser: React.FC<
     setProgress(nativeEvent.progress)
   }
 
-  useEffect(() => {
-    const getEntryScriptWeb3 = async () => {
-      console.log('wallet.smartWalletAddress', wallet.smartWalletAddress)
-
-      const entryScriptWeb3 = await EntryScriptWeb3.get()
-      setInjectedJavaScript(
-        entryScriptWeb3 + JsCode({ address: wallet.smartWalletAddress }),
-      )
-    }
-
-    getEntryScriptWeb3()
-  }, [])
-
-  console.log('injectedJavaScript', injectedJavaScript?.length)
-
   return (
     <View style={styles.webview}>
       <View style={styles.webview}>
-        {injectedJavaScript && (
-          <WebView
-            decelerationRate={'normal'}
-            ref={webviewRef as any}
-            source={{
-              uri,
-            }}
-            onMessage={onPostMessage}
-            onError={onError}
-            onLoadProgress={onLoadProgress}
-            onload
-            injectedJavaScriptBeforeContentLoaded={injectedJavaScript}
-            userAgent={USER_AGENT}
-            sendCookies={true}
-            javascriptEnabled
-            allowsInlineMediaPlayback
-            useWebkit
-          />
-        )}
+        <WebView
+          decelerationRate={'normal'}
+          ref={webviewRef as any}
+          source={{
+            uri,
+          }}
+          onMessage={onPostMessage}
+          onError={onError}
+          onLoadProgress={onLoadProgress}
+          onload
+          injectedJavaScriptBeforeContentLoaded={JS_BROWSER_INJECTED}
+          userAgent={USER_AGENT}
+          sendCookies
+          javascriptEnabled
+          allowsInlineMediaPlayback
+          useWebkit
+        />
       </View>
       <ProgressBar progress={progress} />
     </View>
@@ -143,21 +120,14 @@ const USER_AGENT =
     ? 'Mozilla/5.0 (Linux; Android 10; Android SDK built for x86 Build/OSM1.180201.023) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Mobile Safari/537.36'
     : 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/76.0.3809.123 Mobile/15E148 Safari/605.1'
 
-const NETWORK_VERSION = 31 // RSK testnet
-
-const JsCode = ({ address }: any) => /* javascript */ `
+const JS_BROWSER_INJECTED = /* javascript */ `
   (function () {
     let resolver = {};
     let rejecter = {};
     let callNumber = 0;
 
-    const rpcUrl = '${rpcUrl}';
-
-    // const provider = new Web3.providers.HttpProvider(rpcUrl);
-
     window.ethereum = {};
-    window.ethereum.isRWallet = true;
-    window.address = '${address}'; // TODO: why we need this?
+    window.ethereum.isSWallet = true;
 
     window.ethereum.on = (method, callback) => { if (method) {console.log(method)} }
     
@@ -187,6 +157,14 @@ const JsCode = ({ address }: any) => /* javascript */ `
       })
     }
 
+    // Override enable function can return the current address to web site
+    window.ethereum.enable = () => 
+      new Promise((resolve, reject) =>
+        sendAsync({ method: "eth_requestAccounts" }).then(response =>
+          response.result
+            ? resolve(response.result)
+            : reject(new Error(response.message || 'provider error'))));
+
     // Override the sendAsync function so we can listen the web site's call and do our things
     const sendAsync = async (payload, callback) => {
       callNumber = callNumber + 1
@@ -196,20 +174,13 @@ const JsCode = ({ address }: any) => /* javascript */ `
       const newId = id ? id : callNumber
       console.log('payload: ', newId, payload);
       try {
-        if (method === 'net_version') {
-          result = '${NETWORK_VERSION}';
-        } else if (method === 'eth_chainId') {
-          result = Web3.utils.toHex(${NETWORK_VERSION});
-        } else if (method === 'eth_requestAccounts' || method === 'eth_accounts' || payload === 'eth_accounts') {
-          result = ['${address}'];
-        } else {
-          result = await communicateWithRN({
-            method: method, 
-            params: params, 
-            jsonrpc: newId, 
-            id: newId
-          });
-        }
+        result = await communicateWithRN({
+          method: method, 
+          params: params, 
+          jsonrpc: jsonrpc, 
+          id: newId
+        });
+
         res = {id, jsonrpc, method, result};
       } catch(err) {
         err = err;

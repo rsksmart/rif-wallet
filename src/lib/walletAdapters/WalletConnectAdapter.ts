@@ -1,122 +1,16 @@
-import { TransactionResponse } from '@ethersproject/providers'
-import { TransactionRequest } from '@ethersproject/abstract-provider'
-import { Signer, utils, BigNumber } from 'ethers'
+import { Signer } from 'ethers'
 import { RIFWallet } from '../core'
-export class WalletConnectAdapter {
-  private resolvers: IResolver[]
+import { PersonalSignResolver } from './resolvers/PersonalSignResolver'
+import { SendTransactionResolver } from './resolvers/SendTransactionResolver'
+import { SignTypedDataResolver } from './resolvers/SignTypedDataResolver'
+import { RPCAdapter } from './RPCAdapter'
 
+export class WalletConnectAdapter extends RPCAdapter {
   constructor(signer: Signer) {
-    this.resolvers = [
+    super([
       new SendTransactionResolver(signer),
       new PersonalSignResolver(signer),
       new SignTypedDataResolver(signer as RIFWallet),
-      new SignTypedDataV4Resolver(signer as RIFWallet),
-    ]
-  }
-
-  async handleCall(method: string, params: any[]) {
-    const resolver = this.resolvers.find(x => x.methodName === method)
-
-    if (!resolver) {
-      throw new Error(
-        `'${method}' method not supported by WalletConnectAdapter.`,
-      )
-    }
-
-    return resolver.resolve(params)
-  }
-}
-
-interface IResolver {
-  methodName: string
-  resolve: (params: any[]) => Promise<any>
-}
-
-class SendTransactionResolver implements IResolver {
-  private signer: Signer
-  public methodName = 'eth_sendTransaction'
-
-  constructor(signer: Signer) {
-    this.signer = signer
-  }
-
-  async resolve(params: any[]) {
-    const payload = params.reduce((prev, curr) => ({ ...prev, ...curr }), {})
-
-    const formattedPayload: TransactionRequest = {
-      to: payload.to,
-      from: payload.from,
-      nonce: payload.nonce,
-      data: payload.data || '0x',
-      value: BigNumber.from(payload.value || 0),
-      chainId: payload.chainId,
-      gasLimit: payload.gas ? BigNumber.from(payload.gas) : undefined, // WC's gas to gasLimit
-      gasPrice: payload.gasPrice ? BigNumber.from(payload.gasPrice) : undefined,
-    }
-
-    return this.signer
-      .sendTransaction(formattedPayload)
-      .then((tx: TransactionResponse) => tx.hash)
-  }
-}
-
-class PersonalSignResolver implements IResolver {
-  private signer: Signer
-  public methodName = 'personal_sign'
-
-  constructor(signer: Signer) {
-    this.signer = signer
-  }
-
-  async resolve(params: any[]) {
-    let message = params[0]
-
-    try {
-      message = utils.toUtf8String(params[0])
-    } catch {
-      // use original message
-    }
-
-    return this.signer.signMessage(message)
-  }
-}
-
-class SignTypedDataResolver implements IResolver {
-  private signer: RIFWallet
-  public methodName = 'eth_signTypedData'
-
-  constructor(signer: RIFWallet) {
-    this.signer = signer
-  }
-
-  async resolve(params: any[]) {
-    const { domain, message, types } = JSON.parse(params[1])
-
-    // delete domain type
-    if (types.EIP712Domain) {
-      delete types.EIP712Domain
-    }
-
-    return this.signer._signTypedData(domain, types, message)
-  }
-}
-
-class SignTypedDataV4Resolver implements IResolver {
-  private signer: RIFWallet
-  public methodName = 'eth_signTypedData_v4'
-
-  constructor(signer: RIFWallet) {
-    this.signer = signer
-  }
-
-  async resolve(params: any[]) {
-    const { domain, message, types } = JSON.parse(params[1])
-
-    // delete domain type
-    if (types.EIP712Domain) {
-      delete types.EIP712Domain
-    }
-
-    return this.signer._signTypedData(domain, types, message)
+    ])
   }
 }
