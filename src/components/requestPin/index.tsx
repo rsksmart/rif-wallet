@@ -6,7 +6,7 @@ import { Paragraph } from '../typography'
 import { Button } from '../button'
 import { shareStyles } from '../sharedStyles'
 
-const millisecondsToLock = 10000
+const millisecondsToLock = 3000
 
 let timer: NodeJS.Timeout
 
@@ -26,6 +26,12 @@ export const RequestPIN = () => {
   }
 
   useEffect(() => {
+    hasPin().then(hasPin => {
+      if (!hasPin) {
+        setLocked(false)
+      }
+    })
+
     const subscription = AppState.addEventListener('change', nextAppState => {
       hasPin().then(withPin => {
         if (withPin) {
