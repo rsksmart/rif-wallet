@@ -34,11 +34,7 @@ export const InjectedBrowser: React.FC<
     const { id, method, params } = data
 
     try {
-      console.log('init', id, method, params)
-
       const result = await adapter.handleCall(method, params)
-
-      console.log('result', result)
 
       postMessageToWebView({ id, result })
     } catch (err: any) {
