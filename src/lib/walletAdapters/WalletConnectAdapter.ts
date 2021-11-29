@@ -46,7 +46,7 @@ class SendTransactionResolver implements IResolver {
     }
 
     const toNumber = (value?: any) =>
-      value ? BigNumber.from(payload.gasLimit).toNumber() : undefined
+      value ? BigNumber.from(value).toNumber() : undefined
 
     const formattedPayload = {
       ...payload,
