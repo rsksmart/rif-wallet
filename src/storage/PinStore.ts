@@ -1,11 +1,9 @@
-import RNSecureStorage, { ACCESSIBLE } from 'rn-secure-storage'
+import { createStore } from './SecureStore'
 
 const key = 'PIN'
+const PINStore = createStore(key)
 
-export const hasPin = () => RNSecureStorage.exists(key)
-export const getPin = () => RNSecureStorage.get(key)
-export const removePin = () => RNSecureStorage.remove(key)
-export const savePin = (value: string) =>
-  RNSecureStorage.set(key, value, {
-    accessible: ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
-  })
+export const hasPin = PINStore.has
+export const getPin = PINStore.get
+export const removePin = PINStore.remove
+export const savePin = PINStore.save
