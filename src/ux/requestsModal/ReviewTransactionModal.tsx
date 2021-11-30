@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { StyleSheet, TextInput, View } from 'react-native'
 import { BigNumber } from 'ethers'
 
@@ -7,7 +7,7 @@ import { SendTransactionRequest } from '../../lib/core/RIFWallet'
 import { sharedStyles } from './sharedStyles'
 import { Button, Header2, Paragraph } from '../../components'
 import { ScreenWithWallet } from '../../screens/types'
-import { AbiEnhancer, IEnhancedResult } from '../../lib/abiEnhancer/AbiEnhancer'
+import useEnhancedWithGas from './useEnhancedWithGas'
 
 /**
  * Used for UI only to make editing transactions easier. Allows for
@@ -19,80 +19,23 @@ interface Interface {
   closeModal: () => void
 }
 
-// string object helpers
-const convertValueToString = (value?: any) => (value ? value.toString() : '')
-const convertNumberToString = (value?: any) => (value ? value.toString() : '0')
-
-const convertTransactionToStrings = (tx: IEnhancedResult) => ({
-  ...tx,
-  to: convertValueToString(tx.to),
-  from: convertValueToString(tx.from),
-  data: convertValueToString(tx.data),
-  gasLimit: convertNumberToString(tx.gasLimit),
-  gasPrice: convertNumberToString(tx.gasPrice),
-})
-
-const abiEnhancer = new AbiEnhancer()
-
 const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
   request,
   closeModal,
   wallet,
 }) => {
-  const [enhancedTransactionRequest, setEnhancedTransactionRequest] = useState<
-    any | null
-  >(null)
-
   const txRequest = useMemo(() => request.payload[0], [request])
+  const { enhancedTransactionRequest, isLoaded, setGasLimit, setGasPrice } =
+    useEnhancedWithGas(wallet, txRequest)
 
-  const [gasPrice, setGasPrice] = useState(
-    convertNumberToString(txRequest.gasPrice),
-  )
-  const [gasLimit, setGasLimit] = useState(
-    convertNumberToString(txRequest.gasLimit),
-  )
   const [error, setError] = useState<Error | null>(null)
-
-  useEffect(() => {
-    wallet.smartWallet
-      .estimateDirectExecute(txRequest.to || '0x', txRequest.data || '0x')
-      .then((estimate: BigNumber) => {
-        if (txRequest.gasLimit && estimate.toNumber() < txRequest.gasLimit) {
-          setGasLimit(txRequest.gasLimit)
-        } else {
-          setGasLimit(estimate.toString())
-        }
-      })
-      .catch(() => setGasLimit('0'))
-
-    wallet.provider
-      ?.getGasPrice()
-      .then((gp: BigNumber) => gp.mul('101').div('100').toNumber())
-      .then((estGasPrice: number) => {
-        if (txRequest.gasPrice && txRequest.gasPrice < estGasPrice) {
-          setGasPrice(txRequest.gasLimit)
-        } else {
-          setGasPrice(estGasPrice.toString())
-        }
-      })
-  }, [txRequest])
-
-  useEffect(() => {
-    abiEnhancer.enhance(wallet, txRequest).then(enhanced => {
-      const enhancedToStrings = convertTransactionToStrings(
-        enhanced ?? txRequest,
-      )
-
-      setEnhancedTransactionRequest(enhancedToStrings)
-    })
-  }, [wallet, txRequest])
 
   // convert from string to Transaction and pass out of component
   const confirmTransaction = async () => {
     try {
       await request.confirm({
-        gasPrice: BigNumber.from(gasPrice),
-        gasLimit: BigNumber.from(gasLimit),
+        gasPrice: BigNumber.from(enhancedTransactionRequest.gasPrice),
+        gasLimit: BigNumber.from(enhancedTransactionRequest.gasLimit),
       })
       closeModal()
     } catch (err: any) {
@@ -157,7 +100,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
         </View>
         <View style={sharedStyles.column}>
           <TextInput
-            value={gasLimit}
+            value={enhancedTransactionRequest.gasLimit}
             style={sharedStyles.textInput}
             onChangeText={setGasLimit}
             keyboardType="number-pad"
@@ -172,7 +115,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
         </View>
         <View style={sharedStyles.column}>
           <TextInput
-            value={gasPrice}
+            value={enhancedTransactionRequest.gasPrice}
             style={sharedStyles.textInput || ''}
             onChangeText={setGasPrice}
             keyboardType="number-pad"
@@ -199,7 +142,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
             title="Confirm"
             onPress={confirmTransaction}
             testID="Confirm.Button"
-            disabled={enhancedTransactionRequest === null}
+            disabled={!isLoaded}
           />
         </View>
         <View style={sharedStyles.column}>
@@ -207,7 +150,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
             title="Cancel"
             onPress={cancelTransaction}
             testID="Cancel.Button"
-            disabled={enhancedTransactionRequest === null}
+            disabled={!isLoaded}
           />
         </View>
       </View>
