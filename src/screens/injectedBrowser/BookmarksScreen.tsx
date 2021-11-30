@@ -1,4 +1,5 @@
 import React from 'react'
+import { Trans } from 'react-i18next'
 import { StyleSheet, View, ScrollView } from 'react-native'
 import { Button, Header3 } from '../../components'
 
@@ -10,7 +11,9 @@ export const BookmarksScreen: React.FC<ScreenProps<'Bookmarks'>> = ({
   return (
     <ScrollView>
       <View style={styles.section}>
-        <Header3>Sample apps</Header3>
+        <Header3>
+          <Trans>Sample apps</Trans>
+        </Header3>
         <Button
           onPress={() =>
             navigation.navigate('InjectedBrowser', {
@@ -29,7 +32,9 @@ export const BookmarksScreen: React.FC<ScreenProps<'Bookmarks'>> = ({
         />
       </View>
       <View style={styles.section}>
-        <Header3>Dapps</Header3>
+        <Header3>
+          <Trans>Dapps</Trans>
+        </Header3>
         <Button
           onPress={() =>
             navigation.navigate('InjectedBrowser', {
@@ -88,7 +93,9 @@ export const BookmarksScreen: React.FC<ScreenProps<'Bookmarks'>> = ({
         />
       </View>
       <View style={[styles.section, styles.bottomPadding]}>
-        <Header3>Faucets</Header3>
+        <Header3>
+          <Trans>Faucets</Trans>
+        </Header3>
         <Button
           onPress={() =>
             navigation.navigate('InjectedBrowser', {
