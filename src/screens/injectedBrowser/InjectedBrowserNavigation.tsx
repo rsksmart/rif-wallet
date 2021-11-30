@@ -2,7 +2,7 @@ import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 
 import { ScreenWithWallet } from '../../screens/types'
-import { InjectedBrowser } from './InjectedBrowser'
+import { InjectedBrowser } from '../../ux/injectedBrowser/InjectedBrowser'
 import { BookmarksScreen } from './BookmarksScreen'
 import { StackParamList } from './types'
 

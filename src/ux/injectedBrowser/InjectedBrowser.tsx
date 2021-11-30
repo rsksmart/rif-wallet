@@ -4,7 +4,7 @@ import { WebView } from 'react-native-webview'
 import { Paragraph } from '../../components'
 import { ScreenWithWallet } from '../../screens/types'
 
-import { ScreenProps } from './types'
+import { ScreenProps } from '../../screens/injectedBrowser/types'
 import { InjectedBrowserAdapter } from '../../lib/walletAdapters/InjectedBrowserAdapter'
 
 export const InjectedBrowser: React.FC<
@@ -24,7 +24,13 @@ export const InjectedBrowser: React.FC<
   }
 
   const onPostMessage = async ({ nativeEvent }: any) => {
+    const url = nativeEvent.url
     let data = nativeEvent.data
+
+    if (new URL(url).origin !== new URL(uri).origin) {
+      console.log('origin not allowed')
+      return
+    }
 
     data = typeof data === 'string' ? JSON.parse(data) : data
     if (!data) {
@@ -126,6 +132,8 @@ const JS_BROWSER_INJECTED = /* javascript */ `
     window.ethereum.isSWallet = true;
 
     window.ethereum.on = (method, callback) => { if (method) {console.log(method)} }
+    window.ethereum.removeListener = (method, callback) => { if (method) {console.log(method)} }
+    window.ethereum.removeAllListeners = () => { console.log("removeAllListeners") }
     
     ${
       Platform.OS === 'ios' ? 'window' : 'document'
