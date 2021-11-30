@@ -18,6 +18,13 @@ export class SendTransactionResolver implements IResolver {
       payload.data = constants.HashZero
     }
 
+    // TODO: delete this after is fixed on RIFWallet
+    if (payload.gas && !payload.gasLimit) {
+      payload.gasLimit = payload.gas
+
+      delete payload.gas
+    }
+
     return this.signer
       .sendTransaction(payload)
       .then((tx: TransactionResponse) => tx.hash)
