@@ -54,20 +54,27 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
   const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
-    if (!txRequest.gasLimit) {
-      wallet.smartWallet
-        .estimateDirectExecute(txRequest.to || '0x', txRequest.data || '0x')
-        .then((gl: BigNumber) => setGasLimit(gl.toString()))
-        .catch(() => setGasLimit('0'))
-    }
+    wallet.smartWallet
+      .estimateDirectExecute(txRequest.to || '0x', txRequest.data || '0x')
+      .then((estimate: BigNumber) => {
+        if (txRequest.gasLimit && estimate.toNumber() < txRequest.gasLimit) {
+          setGasLimit(txRequest.gasLimit)
+        } else {
+          setGasLimit(estimate.toString())
+        }
+      })
+      .catch(() => setGasLimit('0'))
 
-    if (!txRequest.gasPrice) {
-      wallet.provider
-        ?.getGasPrice()
-        .then((gp: BigNumber) =>
-          setGasPrice(gp.mul('101').div('100').toString()),
-        )
-    }
+    wallet.provider
+      ?.getGasPrice()
+      .then((gp: BigNumber) => gp.mul('101').div('100').toNumber())
+      .then((estGasPrice: number) => {
+        if (txRequest.gasPrice && txRequest.gasPrice < estGasPrice) {
+          setGasPrice(txRequest.gasLimit)
+        } else {
+          setGasPrice(estGasPrice.toString())
+        }
+      })
   }, [txRequest])
 
   useEffect(() => {

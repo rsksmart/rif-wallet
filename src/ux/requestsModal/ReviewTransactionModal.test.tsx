@@ -42,8 +42,8 @@ describe('ReviewTransactionModal', function (this: {
           from: '0x456',
           data: '',
           value: BigNumber.from(1000),
-          gasLimit: BigNumber.from(10000),
-          gasPrice: BigNumber.from(600000000),
+          gasLimit: BigNumber.from(26000),
+          gasPrice: BigNumber.from(20200000000),
         },
       ],
       //@ts-ignore
@@ -143,35 +143,83 @@ describe('ReviewTransactionModal', function (this: {
     expect(closeModal).toHaveBeenCalled()
   })
 
-  it('estimates gasLimit', async () => {
-    const transaction: SendTransactionRequest = {
+  describe('gasLimit and gasPrice', () => {
+    const tx: SendTransactionRequest = {
       ...this.queuedTransaction,
       payload: [
         {
           to: '0x123',
           from: '0x45',
           data: '0x1234567890',
-          gasPrice: '200',
         },
       ],
     }
 
-    jest
-      .spyOn(this.rifWallet.smartWallet, 'estimateDirectExecute')
-      .mockResolvedValue(BigNumber.from(600))
+    const txWithGas: SendTransactionRequest = {
+      ...tx,
+      payload: [
+        {
+          ...tx.payload[0],
+          gasLimit: '200',
+        },
+      ],
+    }
 
-    const { getByTestId } = render(
-      <ReviewTransactionModal
-        wallet={this.rifWallet}
-        request={transaction}
-        closeModal={jest.fn()}
-      />,
-    )
+    it('estimates gasLimit when it is not defined', async () => {
+      jest
+        .spyOn(this.rifWallet.smartWallet, 'estimateDirectExecute')
+        .mockResolvedValue(BigNumber.from(600))
 
-    const gasLimit = await waitFor(
-      async () => await getByTestId('gasLimit.TextInput'),
-    )
-    expect(gasLimit.props.value).toBe('600') // spied value
-    expect(getByTestId('gasPrice.TextInput').props.value).toBe('200') // original value
+      const { getByTestId } = render(
+        <ReviewTransactionModal
+          wallet={this.rifWallet}
+          request={tx}
+          closeModal={jest.fn()}
+        />,
+      )
+
+      const gasLimit = await waitFor(
+        async () => await getByTestId('gasLimit.TextInput'),
+      )
+      expect(gasLimit.props.value).toBe('600') // spied value
+    })
+
+    it('sets gasLimit when estimate is too low', async () => {
+      jest
+        .spyOn(this.rifWallet.smartWallet, 'estimateDirectExecute')
+        .mockResolvedValue(BigNumber.from(600))
+
+      const { getByTestId } = render(
+        <ReviewTransactionModal
+          wallet={this.rifWallet}
+          request={txWithGas}
+          closeModal={jest.fn()}
+        />,
+      )
+
+      const gasLimit = await waitFor(
+        async () => await getByTestId('gasLimit.TextInput'),
+      )
+      expect(gasLimit.props.value).toBe('600') // spied value
+    })
+
+    it('keeps higher gasLimit when it is sent', async () => {
+      jest
+        .spyOn(this.rifWallet.smartWallet, 'estimateDirectExecute')
+        .mockResolvedValue(BigNumber.from(100))
+
+      const { getByTestId } = render(
+        <ReviewTransactionModal
+          wallet={this.rifWallet}
+          request={txWithGas}
+          closeModal={jest.fn()}
+        />,
+      )
+
+      const gasLimit = await waitFor(
+        async () => await getByTestId('gasLimit.TextInput'),
+      )
+      expect(gasLimit.props.value).toBe('200') // original value
+    })
   })
 })
