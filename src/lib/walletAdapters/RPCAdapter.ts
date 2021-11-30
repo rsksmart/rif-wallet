@@ -9,9 +9,7 @@ export class RPCAdapter {
     const resolver = this.resolvers.find(x => x.methodName === method)
 
     if (!resolver) {
-      throw new Error(
-        `'${method}' method not supported by WalletConnectAdapter.`,
-      )
+      throw new Error(`'${method}' method not supported by Adapter.`)
     }
 
     return resolver.resolve(params)

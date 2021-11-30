@@ -3,6 +3,9 @@ import { RIFWallet } from '../core'
 import { AccountsResolver } from './resolvers/AccountsResolver'
 import { CallsResolver } from './resolvers/CallsResolver'
 import { ChainIdResolver } from './resolvers/ChainIdResolver'
+import { EstimateGasResolver } from './resolvers/EstimateGasResolver'
+import { GetBalanceResolver } from './resolvers/GetBalanceResolver'
+import { GetBlockNumberResolver } from './resolvers/GetBlockNumberResolver'
 import { NetVersionResolver } from './resolvers/NetVersionResolver'
 import { PersonalSignResolver } from './resolvers/PersonalSignResolver'
 import { RequestAccountsResolver } from './resolvers/RequestAccountsResolver'
@@ -23,6 +26,9 @@ export class InjectedBrowserAdapter extends RPCAdapter {
       new ChainIdResolver(signer),
       new NetVersionResolver(signer),
       new CallsResolver(signer),
+      new EstimateGasResolver(signer),
+      new GetBalanceResolver(signer),
+      new GetBlockNumberResolver(signer),
     ])
   }
 }

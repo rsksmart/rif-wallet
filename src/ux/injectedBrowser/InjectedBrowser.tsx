@@ -28,7 +28,7 @@ export const InjectedBrowser: React.FC<
     let data = nativeEvent.data
 
     if (new URL(url).origin !== new URL(uri).origin) {
-      console.log('origin not allowed')
+      console.error('origin not allowed')
       return
     }
 
@@ -44,13 +44,15 @@ export const InjectedBrowser: React.FC<
 
       postMessageToWebView({ id, result })
     } catch (err: any) {
-      console.error(err)
+      const message = err ? err.toString() : 'Failed to approve'
+
+      console.error('onPostMessage', message)
 
       postMessageToWebView({
         id,
         result: {
           error: true,
-          message: err.message,
+          message,
         },
       })
     }
@@ -173,10 +175,15 @@ const JS_BROWSER_INJECTED = /* javascript */ `
     const sendAsync = async (payload, callback) => {
       callNumber = callNumber + 1
 
-      let err, res = '', result = '';
+      let errRes = null;
+      let res = null;
+      let result = null;
+
       const {method, params, jsonrpc, id} = payload;
       const newId = id ? id : callNumber
+      
       console.log('payload: ', newId, payload);
+      
       try {
         result = await communicateWithRN({
           method: method, 
@@ -187,15 +194,15 @@ const JS_BROWSER_INJECTED = /* javascript */ `
 
         res = {id, jsonrpc, method, result};
       } catch(err) {
-        err = err;
-        console.log('sendAsync err: ', err);
+        errRes = err;
+        console.log('sendAsync err: ', errRes);
       }
       
-      console.log('res: ', res);
+      console.log('res: ', callback, res, errRes);
       if (callback) {
-        callback(err, res);
+        callback(errRes, res);
       } else {
-        return res || err;
+        return res || errRes;
       }
     }
 
