@@ -1,15 +1,15 @@
 import { Signer } from 'ethers'
 import { IResolver } from '../RPCAdapter'
 
-export class GetBlockNumberResolver implements IResolver {
+export class GasPriceResolver implements IResolver {
   private signer: Signer
-  public methodName = 'eth_getBlockByNumber'
+  public methodName = 'eth_gasPrice'
 
   constructor(signer: Signer) {
     this.signer = signer
   }
 
   async resolve() {
-    return this.signer.provider?.getBlockNumber()
+    return (await this.signer.getGasPrice()).toString()
   }
 }

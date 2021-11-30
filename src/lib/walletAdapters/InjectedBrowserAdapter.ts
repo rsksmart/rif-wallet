@@ -5,13 +5,15 @@ import { CallsResolver } from './resolvers/CallsResolver'
 import { ChainIdResolver } from './resolvers/ChainIdResolver'
 import { EstimateGasResolver } from './resolvers/EstimateGasResolver'
 import { GetBalanceResolver } from './resolvers/GetBalanceResolver'
-import { GetBlockNumberResolver } from './resolvers/GetBlockNumberResolver'
+import { GetBlockByNumberResolver } from './resolvers/GetBlockByNumberResolver'
+import { BlockNumberResolver } from './resolvers/BlockNumberResolver'
 import { NetVersionResolver } from './resolvers/NetVersionResolver'
 import { PersonalSignResolver } from './resolvers/PersonalSignResolver'
 import { RequestAccountsResolver } from './resolvers/RequestAccountsResolver'
 import { SendTransactionResolver } from './resolvers/SendTransactionResolver'
 import { SignTypedDataResolver } from './resolvers/SignTypedDataResolver'
 import { SignTypedDataV4Resolver } from './resolvers/SignTypedDataV4Resolver'
+import { GasPriceResolver } from './resolvers/GasPriceResolver'
 import { RPCAdapter } from './RPCAdapter'
 
 export class InjectedBrowserAdapter extends RPCAdapter {
@@ -28,7 +30,9 @@ export class InjectedBrowserAdapter extends RPCAdapter {
       new CallsResolver(signer),
       new EstimateGasResolver(signer),
       new GetBalanceResolver(signer),
-      new GetBlockNumberResolver(signer),
+      new BlockNumberResolver(signer),
+      new GetBlockByNumberResolver(signer),
+      new GasPriceResolver(signer)
     ])
   }
 }

@@ -283,6 +283,8 @@ PODS:
     - React-Core
   - react-native-safe-area-context (3.3.2):
     - React-Core
+  - react-native-webview (11.14.3):
+    - React-Core
   - React-perflogger (0.65.1)
   - React-RCTActionSheet (0.65.1):
     - React-Core/RCTActionSheetHeaders (= 0.65.1)
@@ -402,6 +404,7 @@ DEPENDENCIES:
   - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - react-native-randombytes (from `../node_modules/react-native-randombytes`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - react-native-webview (from `../node_modules/react-native-webview`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -477,6 +480,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-randombytes"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-webview:
+    :path: "../node_modules/react-native-webview"
   React-perflogger:
     :path: "../node_modules/react-native/ReactCommon/reactperflogger"
   React-RCTActionSheet:
@@ -546,6 +551,7 @@ SPEC CHECKSUMS:
   react-native-get-random-values: 237bffb1c7e05fb142092681531810a29ba53015
   react-native-randombytes: 421f1c7d48c0af8dbcd471b0324393ebf8fe7846
   react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
+  react-native-webview: b83cf1aa6b4453fe53ffcc5896c36cdf37f0383f
   React-perflogger: fd28ee1f2b5b150b00043f0301d96bd417fdc339
   React-RCTActionSheet: 7f3fa0855c346aa5d7c60f9ced16e067db6d29fa
   React-RCTAnimation: 2119a18ee26159004b001bc56404ca5dbaae6077
