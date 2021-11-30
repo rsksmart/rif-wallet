@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { View, AppState, StyleSheet } from 'react-native'
+import { shareStyles } from '../sharedStyles'
 
 export const Cover = () => {
   const [appStateVisible, setAppStateVisible] = useState(AppState.currentState)
@@ -14,15 +15,15 @@ export const Cover = () => {
 
   return (
     <View
-      style={appStateVisible !== 'active' ? styles.visible : styles.invisible}
+      style={
+        appStateVisible !== 'active'
+          ? shareStyles.coverAllScreen
+          : styles.invisible
+      }
     />
   )
 }
 
 const styles = StyleSheet.create({
-  visible: {
-    height: '100%',
-    backgroundColor: '#F5FCFF',
-  },
   invisible: {},
 })
