@@ -15,6 +15,8 @@ import { SignTypedDataResolver } from './resolvers/SignTypedDataResolver'
 import { SignTypedDataV4Resolver } from './resolvers/SignTypedDataV4Resolver'
 import { GasPriceResolver } from './resolvers/GasPriceResolver'
 import { RPCAdapter } from './RPCAdapter'
+import { GetTransactionByHashResolver } from './resolvers/GetTransactionByHashResolver'
+import { GetTransactionReceiptResolver } from './resolvers/GetTransactionReceiptResolver'
 
 export class InjectedBrowserAdapter extends RPCAdapter {
   constructor(signer: Signer) {
@@ -32,7 +34,9 @@ export class InjectedBrowserAdapter extends RPCAdapter {
       new GetBalanceResolver(signer),
       new BlockNumberResolver(signer),
       new GetBlockByNumberResolver(signer),
-      new GasPriceResolver(signer)
+      new GasPriceResolver(signer),
+      new GetTransactionByHashResolver(signer),
+      new GetTransactionReceiptResolver(signer),
     ])
   }
 }
