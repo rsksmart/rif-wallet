@@ -1,4 +1,5 @@
 import { TransactionResponse } from '@ethersproject/providers'
+import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { Signer, constants, utils, BigNumber } from 'ethers'
 import { RIFWallet } from '../core'
 export class WalletConnectAdapter {
@@ -41,19 +42,15 @@ class SendTransactionResolver implements IResolver {
   async resolve(params: any[]) {
     const payload = params.reduce((prev, curr) => ({ ...prev, ...curr }), {})
 
-    if (payload.gas) {
-      delete payload.gas
-    }
-
-    const toNumber = (value?: any) =>
-      value ? BigNumber.from(value).toNumber() : undefined
-
-    const formattedPayload = {
-      ...payload,
+    const formattedPayload: TransactionRequest = {
+      to: payload.to,
+      from: payload.from,
+      nonce: payload.nonce,
       data: payload.data || constants.HashZero,
-      gasLimit: toNumber(payload.gasLimit),
-      gasPrice: toNumber(payload.gasPrice),
-      value: toNumber(payload.value),
+      value: BigNumber.from(payload.value || 0),
+      chainId: payload.chainId,
+      gasLimit: BigNumber.from(payload.gas || 0), // WC's gas to gasLimit
+      gasPrice: BigNumber.from(payload.gasPrice || 0),
     }
 
     return this.signer
