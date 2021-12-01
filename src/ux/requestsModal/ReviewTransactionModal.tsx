@@ -9,11 +9,6 @@ import { Button, Header2, Paragraph } from '../../components'
 import { ScreenWithWallet } from '../../screens/types'
 import useEnhancedWithGas from './useEnhancedWithGas'
 
-/**
- * Used for UI only to make editing transactions easier. Allows for
- * gasPrice to be '0.', '0.0', or blank, as the user types it in.
- */
-
 interface Interface {
   request: SendTransactionRequest
   closeModal: () => void
@@ -48,7 +43,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
     closeModal()
   }
 
-  return (
+  return isLoaded ? (
     <View>
       <Header2>Review Transaction</Header2>
       {enhancedTransactionRequest && (
@@ -91,8 +86,6 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
           </View>
         </View>
       )}
-
-      {!enhancedTransactionRequest && <Paragraph>loading...</Paragraph>}
 
       <View style={sharedStyles.row}>
         <View style={sharedStyles.column}>
@@ -164,6 +157,8 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
         </>
       )}
     </View>
+  ) : (
+    <Paragraph>loading...</Paragraph>
   )
 }
 

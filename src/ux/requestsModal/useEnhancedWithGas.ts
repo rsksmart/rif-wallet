@@ -39,9 +39,9 @@ const useEnhancedWithGas = (wallet: RIFWallet, tx: TransactionRequest) => {
 
     const gasPriceEstimate = wallet.provider
       ?.getGasPrice()
-      .then((gp: BigNumber) => gp.mul('101').div('100').toNumber())
-      .then((estimate: number) => {
-        if (tx.gasPrice && tx.gasPrice < estimate) {
+      .then((gp: BigNumber) => gp.mul('101').div('100'))
+      .then((estimate: BigNumber) => {
+        if (tx.gasPrice && estimate.toNumber() < tx.gasPrice) {
           return tx.gasPrice
         } else {
           return estimate
