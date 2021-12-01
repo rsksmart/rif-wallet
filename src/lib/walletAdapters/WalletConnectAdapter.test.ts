@@ -23,6 +23,8 @@ describe('Wallet Connect Adapter', () => {
         from,
         to,
         value: '0x3e8',
+        gas: '25000',
+        gasPrice: '60000000',
       },
     ]
 
