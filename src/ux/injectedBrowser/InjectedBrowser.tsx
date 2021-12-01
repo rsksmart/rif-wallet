@@ -7,6 +7,8 @@ import { ScreenWithWallet } from '../../screens/types'
 import { ScreenProps } from '../../screens/injectedBrowser/types'
 import { InjectedBrowserAdapter } from '../../lib/walletAdapters/InjectedBrowserAdapter'
 
+import Url from 'url-parse'
+
 export const InjectedBrowser: React.FC<
   ScreenWithWallet & ScreenProps<'InjectedBrowser'>
 > = ({ wallet, route }) => {
@@ -27,7 +29,7 @@ export const InjectedBrowser: React.FC<
     const url = nativeEvent.url
     let data = nativeEvent.data
 
-    if (new URL(url).origin !== new URL(uri).origin) {
+    if (new Url(url).origin !== new Url(uri).origin) {
       console.error('origin not allowed')
       return
     }
