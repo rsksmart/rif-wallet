@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, fireEvent, waitFor } from '@testing-library/react-native'
+import { render, fireEvent, waitFor, act } from '@testing-library/react-native'
 
 import ReviewTransactionModal from './ReviewTransactionModal'
 import { RIFWallet, SendTransactionRequest } from '../../lib/core/RIFWallet'
@@ -7,10 +7,15 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { setupTest } from '../../../testLib/setup'
 import * as tokenMetadata from '../../lib/token/tokenMetadata'
 import { deployTestTokens, getSigner } from '../../../testLib/utils'
+// import * as hooks from './useEnhancedWithGas'
 
 // allows to wait the resolution of a promise,
 // useful when you have a promise in a useEffect and it's triggered when the component loads for the first time.
 const flushPromises = () => new Promise(setImmediate)
+
+const sleep = (ms: number) => {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
 
 describe('ReviewTransactionModal', function (this: {
   confirm: ReturnType<typeof jest.fn>
@@ -52,14 +57,18 @@ describe('ReviewTransactionModal', function (this: {
     }
   })
 
-  it('renders', () => {
-    const { getAllByText, getByPlaceholderText } = render(
-      <ReviewTransactionModal
-        wallet={this.rifWallet}
-        request={this.queuedTransaction}
-        closeModal={jest.fn()}
-      />,
+  it('renders', async () => {
+    const { getAllByText, getByPlaceholderText } = await waitFor(() =>
+      render(
+        <ReviewTransactionModal
+          wallet={this.rifWallet}
+          request={this.queuedTransaction}
+          closeModal={jest.fn()}
+        />,
+      ),
     )
+
+    await act(() => sleep(500))
 
     // make sure elements are showing up
     expect(getAllByText('Review Transaction').length).toBe(1)
@@ -83,7 +92,7 @@ describe('ReviewTransactionModal', function (this: {
 
     fireEvent.press(getByTestId('Confirm.Button'))
 
-    await flushPromises()
+    await act(() => sleep(500))
 
     expect(this.confirm).toBeCalledWith({
       gasPrice: this.queuedTransaction.payload[0].gasPrice,
@@ -105,6 +114,7 @@ describe('ReviewTransactionModal', function (this: {
       ),
     )
 
+    await act(() => sleep(500))
     await findAllByTestId('TX_VIEW', { timeout: 500 })
 
     fireEvent.press(getByTestId('Cancel.Button'))
@@ -124,6 +134,7 @@ describe('ReviewTransactionModal', function (this: {
       ),
     )
 
+    await act(() => sleep(500))
     await findAllByTestId('TX_VIEW', { timeout: 500 })
 
     const gasPrice = '20'
@@ -141,85 +152,5 @@ describe('ReviewTransactionModal', function (this: {
       gasLimit: BigNumber.from(gasLimit),
     })
     expect(closeModal).toHaveBeenCalled()
-  })
-
-  describe('gasLimit and gasPrice', () => {
-    const tx: SendTransactionRequest = {
-      ...this.queuedTransaction,
-      payload: [
-        {
-          to: '0x123',
-          from: '0x45',
-          data: '0x1234567890',
-        },
-      ],
-    }
-
-    const txWithGas: SendTransactionRequest = {
-      ...tx,
-      payload: [
-        {
-          ...tx.payload[0],
-          gasLimit: '200',
-        },
-      ],
-    }
-
-    it('estimates gasLimit when it is not defined', async () => {
-      jest
-        .spyOn(this.rifWallet.smartWallet, 'estimateDirectExecute')
-        .mockResolvedValue(BigNumber.from(600))
-
-      const { getByTestId } = render(
-        <ReviewTransactionModal
-          wallet={this.rifWallet}
-          request={tx}
-          closeModal={jest.fn()}
-        />,
-      )
-
-      const gasLimit = await waitFor(
-        async () => await getByTestId('gasLimit.TextInput'),
-      )
-      expect(gasLimit.props.value).toBe('600') // spied value
-    })
-
-    it('sets gasLimit when estimate is too low', async () => {
-      jest
-        .spyOn(this.rifWallet.smartWallet, 'estimateDirectExecute')
-        .mockResolvedValue(BigNumber.from(600))
-
-      const { getByTestId } = render(
-        <ReviewTransactionModal
-          wallet={this.rifWallet}
-          request={txWithGas}
-          closeModal={jest.fn()}
-        />,
-      )
-
-      const gasLimit = await waitFor(
-        async () => await getByTestId('gasLimit.TextInput'),
-      )
-      expect(gasLimit.props.value).toBe('600') // spied value
-    })
-
-    it('keeps higher gasLimit when it is sent', async () => {
-      jest
-        .spyOn(this.rifWallet.smartWallet, 'estimateDirectExecute')
-        .mockResolvedValue(BigNumber.from(100))
-
-      const { getByTestId } = render(
-        <ReviewTransactionModal
-          wallet={this.rifWallet}
-          request={txWithGas}
-          closeModal={jest.fn()}
-        />,
-      )
-
-      const gasLimit = await waitFor(
-        async () => await getByTestId('gasLimit.TextInput'),
-      )
-      expect(gasLimit.props.value).toBe('200') // original value
-    })
   })
 })
