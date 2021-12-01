@@ -1,6 +1,6 @@
 import { TransactionResponse } from '@ethersproject/providers'
 import { TransactionRequest } from '@ethersproject/abstract-provider'
-import { Signer, constants, utils, BigNumber } from 'ethers'
+import { Signer, utils, BigNumber } from 'ethers'
 import { RIFWallet } from '../core'
 export class WalletConnectAdapter {
   private resolvers: IResolver[]
@@ -46,11 +46,11 @@ class SendTransactionResolver implements IResolver {
       to: payload.to,
       from: payload.from,
       nonce: payload.nonce,
-      data: payload.data || constants.HashZero,
+      data: payload.data || '0x',
       value: BigNumber.from(payload.value || 0),
       chainId: payload.chainId,
-      gasLimit: BigNumber.from(payload.gas || 0), // WC's gas to gasLimit
-      gasPrice: BigNumber.from(payload.gasPrice || 0),
+      gasLimit: payload.gas ? BigNumber.from(payload.gas) : undefined, // WC's gas to gasLimit
+      gasPrice: payload.gasPrice ? BigNumber.from(payload.gasPrice) : undefined,
     }
 
     return this.signer
