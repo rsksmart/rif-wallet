@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { StyleSheet, View, ScrollView, TextInput } from 'react-native'
 
 import { Button, Header2, Paragraph } from '../../../components'
+import { isWordlistValid } from '../../../lib/bitcoinjs'
 import { ScreenProps, CreateKeysProps } from '../types'
 
 type ImportMasterKeyScreenProps = {
@@ -16,11 +17,16 @@ export const ImportMasterKeyScreen: React.FC<
   const [error, setError] = useState<string | null>(null)
 
   const handleImportMnemonic = async () => {
-    // TODO: how many words should have the mnemonic?
-    const isValid = importMnemonic && importMnemonic.split(' ').length > 12
+    const mnemonic = importMnemonic ? importMnemonic.split(' ') : []
 
+    if (!isWordlistValid(mnemonic)) {
+      setError('worldlist is not valid')
+      return
+    }
+    // TODO: how many words should have the mnemonic?
+    const isValid = mnemonic.length > 12
     if (!isValid) {
-      setError('you need to enter your twelve words master key')
+      setError('you need to enter at least twelve words')
       return
     }
 
