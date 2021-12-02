@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { StyleSheet, View, ScrollView, TextInput } from 'react-native'
 
 import { Button, Header2, Paragraph } from '../../../components'
-import { isWordlistValid } from '../../../lib/bitcoinjs'
+import { isWordlistValid } from '../../../lib/bip39'
 import { ScreenProps, CreateKeysProps } from '../types'
 
 type ImportMasterKeyScreenProps = {
