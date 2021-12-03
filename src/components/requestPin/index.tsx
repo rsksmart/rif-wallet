@@ -17,28 +17,25 @@ export const RequestPIN: React.FC<Interface> = ({ unlock }) => {
     getPin().then(storedPin => storedPin === enteredPin && unlock())
 
   return (
-    <SafeAreaView>
-      <StatusBar />
-      <View style={shareStyles.coverAllScreen}>
-        <Paragraph>Enter your pin to unlock the app</Paragraph>
-        <View>
-          <TextInput
-            onChangeText={pin => setInputtedPin(pin)}
-            value={inputtedPin}
-            placeholder={'Pin'}
-            testID={'To.Input'}
-            keyboardType="numeric"
-          />
-        </View>
-
-        <View>
-          <Button
-            onPress={() => checkPin(inputtedPin)}
-            title="Unlock"
-            testID="Next.Button"
-          />
-        </View>
+    <View style={shareStyles.coverAllScreen}>
+      <Paragraph>Enter your pin to unlock the app</Paragraph>
+      <View>
+        <TextInput
+          onChangeText={pin => setInputtedPin(pin)}
+          value={inputtedPin}
+          placeholder={'Pin'}
+          testID={'To.Input'}
+          keyboardType="numeric"
+        />
       </View>
-    </SafeAreaView>
+
+      <View>
+        <Button
+          onPress={() => checkPin(inputtedPin)}
+          title="Unlock"
+          testID="Next.Button"
+        />
+      </View>
+    </View>
   )
 }

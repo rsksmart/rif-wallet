@@ -94,17 +94,14 @@ const App = () => {
 
   useEffect(() => {
     console.log('starting init ;-)')
-    i18nInit().then(init)
+    i18nInit().finally(init)
   }, [])
 
   if (appState === 'LOADING') {
     return (
-      <>
-        {/* eslint-disable-next-line react-native/no-inline-styles */}
-        <View style={{ paddingVertical: 200 }}>
-          <Paragraph>Getting set...</Paragraph>
-        </View>
-      </>
+      <SafeAreaView>
+        <Loading reason="Getting set..." />
+      </SafeAreaView>
     )
   }
 
@@ -113,7 +110,11 @@ const App = () => {
   }
 
   if (appState === 'LOCKED') {
-    return <RequestPIN unlock={() => setAppState('READY')} />
+    return (
+      <SafeAreaView>
+        <RequestPIN unlock={() => setAppState('READY')} />
+      </SafeAreaView>
+    )
   }
 
   const createFirstWallet = async (mnemonic: string) => {
