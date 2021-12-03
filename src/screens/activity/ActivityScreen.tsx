@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { utils, BigNumber } from 'ethers'
-import { StyleSheet, View, ScrollView, Text, Linking } from 'react-native'
+import { BigNumber } from 'ethers'
+import { StyleSheet, View, ScrollView, Text } from 'react-native'
 
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { Button } from '../../components'
 import { IApiTransaction } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
 
-import { formatTimestamp, shortAddress } from '../../lib/utils'
+import { shortAddress } from '../../lib/utils'
 import {
   IAbiEnhancer,
   IEnhancedResult,
@@ -16,107 +16,16 @@ import {
 import { ScreenWithWallet } from '../types'
 import { formatBigNumber } from '../../lib/abiEnhancer/formatBigNumber'
 import { Address } from '../../components'
-
-interface IReceiveScreenProps {
-  route: any
-}
-
-const ActivityDetails = ({
-  transaction,
-  onSelected,
-  t,
-}: {
-  transaction: IActivityTransaction
-  onSelected: (transaction: IActivityTransaction | null) => void
-  t: any
-}) => (
-  <View>
-    <View>
-      <Text testID="txDetailsTitle" style={styles.transactionDetailsTitle}>
-        <Trans>Transaction Details</Trans>
-      </Text>
-    </View>
-    <View>
-      {transaction.enhancedTransaction ? (
-        <>
-          <Text>
-            <Trans>Token</Trans>: {transaction.enhancedTransaction.symbol}
-          </Text>
-          <Text>
-            <Trans>Amount</Trans>: {transaction.enhancedTransaction.value}
-          </Text>
-          <Text>
-            <Trans>From</Trans>:
-            {shortAddress(transaction.enhancedTransaction.from)}
-          </Text>
-          <Text>
-            <Trans>To</Trans>:{' '}
-            {shortAddress(transaction.enhancedTransaction.to)}
-          </Text>
-        </>
-      ) : (
-        <>
-          <Text>
-            <Trans>From</Trans>:{' '}
-            {shortAddress(transaction.originTransaction.from)}
-          </Text>
-          <Text>
-            <Trans>To</Trans>: {shortAddress(transaction.originTransaction.to)}
-          </Text>
-          <Text>
-            <Trans>Amount</Trans>: {transaction.originTransaction.value}
-          </Text>
-          <Text>
-            <Trans>Data</Trans>: {transaction.originTransaction.data}
-          </Text>
-        </>
-      )}
-      <Text>
-        <Trans>TX Hash</Trans>:{' '}
-        {shortAddress(transaction.originTransaction.hash)}
-      </Text>
-      <Text>
-        <Trans>Gas</Trans>: {transaction.originTransaction.gas}
-      </Text>
-      <Text>
-        <Trans>Gas Price</Trans>:{' '}
-        {utils.formatUnits(transaction.originTransaction.gasPrice, 'gwei')}
-      </Text>
-      <Text>
-        <Trans>Status</Trans>:{' '}
-        {transaction.originTransaction.receipt
-          ? transaction.originTransaction.receipt.status
-          : 'PENDING'}
-      </Text>
-      <Text>
-        <Trans>Time</Trans>:{' '}
-        {formatTimestamp(transaction.originTransaction.timestamp)}
-      </Text>
-
-      <Button
-        title={t('View in explorer')}
-        onPress={() => {
-          Linking.openURL(
-            `https://explorer.testnet.rsk.co/tx/${transaction.originTransaction.hash}`,
-          )
-        }}
-      />
-      <Button
-        title={t('Return to Activity Screen')}
-        onPress={() => {
-          onSelected(null)
-        }}
-      />
-    </View>
-  </View>
-)
+import { NavigationProp } from '../../RootNavigation'
 
 const ActivityRow = ({
   activityTransaction,
-  onSelected,
+
+  navigation,
 }: {
   activityTransaction: IActivityTransaction
-  onSelected: (transaction: IActivityTransaction) => void
+
+  navigation: NavigationProp
 }) => (
   <View
     key={activityTransaction.originTransaction.hash}
@@ -146,7 +55,7 @@ const ActivityRow = ({
     <View style={styles.button}>
       <Button
         onPress={() => {
-          onSelected(activityTransaction)
+          navigation.navigate('ActivityDetails', activityTransaction)
         }}
         title={'>'}
         testID={`${activityTransaction.originTransaction.hash}.Button`}
@@ -162,14 +71,13 @@ export interface IActivityTransaction {
 export type ActivityScreenProps = {
   fetcher: IRIFWalletServicesFetcher
   abiEnhancer: IAbiEnhancer
+  navigation: NavigationProp
 }
 
 export const ActivityScreen: React.FC<ScreenWithWallet & ActivityScreenProps> =
-  ({ wallet, fetcher, abiEnhancer }) => {
+  ({ wallet, fetcher, abiEnhancer, navigation }) => {
     const [info, setInfo] = useState('')
     const [transactions, setTransactions] = useState<IActivityTransaction[]>([])
-    const [selectedTransaction, setSelectedTransaction] =
-      useState<null | IActivityTransaction>()
     const { t } = useTranslation()
 
     const enhanceTransactionInput = async (
@@ -224,44 +132,33 @@ export const ActivityScreen: React.FC<ScreenWithWallet & ActivityScreenProps> =
 
     return (
       <ScrollView>
-        {!selectedTransaction && (
+        <View>
+          <Address testID={'Address.Paragraph'}>
+            {wallet.smartWalletAddress}
+          </Address>
+
           <View>
-            <Address testID={'Address.Paragraph'}>
-              {wallet.smartWalletAddress}
-            </Address>
-
-            <View>
-              <Text testID="Info.Text">{info}</Text>
-            </View>
-
-            {transactions &&
-              transactions.length > 0 &&
-              transactions.map((activityTransaction: IActivityTransaction) => (
-                <ActivityRow
-                  key={activityTransaction.originTransaction.hash}
-                  activityTransaction={activityTransaction}
-                  onSelected={setSelectedTransaction}
-                />
-              ))}
-
-            <View style={styles.refreshButtonView}>
-              <Button
-                onPress={loadData}
-                title={t('Refresh')}
-                testID={'Refresh.Button'}
-              />
-            </View>
+            <Text testID="Info.Text">{info}</Text>
           </View>
-        )}
-        {selectedTransaction && (
-          <View>
-            <ActivityDetails
-              transaction={selectedTransaction}
-              onSelected={setSelectedTransaction}
-              t={t}
+
+          {transactions &&
+            transactions.length > 0 &&
+            transactions.map((activityTransaction: IActivityTransaction) => (
+              <ActivityRow
+                key={activityTransaction.originTransaction.hash}
+                activityTransaction={activityTransaction}
+                navigation={navigation}
+              />
+            ))}
+
+          <View style={styles.refreshButtonView}>
+            <Button
+              onPress={loadData}
+              title={t('Refresh')}
+              testID={'Refresh.Button'}
             />
           </View>
-        )}
+        </View>
       </ScrollView>
     )
   }
@@ -272,11 +169,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC',
   },
-  transactionDetailsTitle: {
-    fontSize: 20,
-    marginBottom: 10,
-  },
-
   activitySummary: {
     position: 'absolute',
     left: 0,
