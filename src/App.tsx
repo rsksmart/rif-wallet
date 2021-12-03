@@ -129,7 +129,6 @@ const App = () => {
           balancesScreenProps={{ fetcher }}
           sendScreenProps={{ rnsResolver }}
           activityScreenProps={{ fetcher, abiEnhancer }}
-          activityDetailsScreenProps={{ fetcher, abiEnhancer }}
           keysInfoScreenProps={{
             mnemonic: kms?.mnemonic || '',
             deleteKeys,

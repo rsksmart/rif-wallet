@@ -24,7 +24,6 @@ import Resolver from '@rsksmart/rns-resolver.js'
 
 export type SendScreenProps = {
   rnsResolver: Resolver
-  route: any
 }
 export const SendScreen: React.FC<
   SendScreenProps & ScreenProps<'Send'> & ScreenWithWallet

@@ -1,29 +1,23 @@
 import React from 'react'
 import { StyleSheet, Text, View, Linking } from 'react-native'
 import { Trans, useTranslation } from 'react-i18next'
-import { IApiTransaction } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+
 import { utils } from 'ethers'
-import { IEnhancedResult } from '../../lib/abiEnhancer/AbiEnhancer'
-import { ScreenWithWallet } from '../types'
+
 import { formatTimestamp, shortAddress } from '../../lib/utils'
 import { Button } from '../../components'
 import { Address } from '../../components'
-export interface IActivityTransaction {
-  originTransaction: IApiTransaction
-  enhancedTransaction?: IEnhancedResult
-}
+import { IActivityTransaction } from './ActivityScreen'
 
 export type ActivityDetailsScreenProps = {
-  transaction: IActivityTransaction
-  activityTransaction: IActivityTransaction
-  route: any
+  route: { params: IActivityTransaction }
 }
 
-export const ActivityDetailsScreen: React.FC<
-  ScreenWithWallet & ActivityDetailsScreenProps
-> = props => {
+export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
+  route,
+}) => {
   const { t } = useTranslation()
-  const { route } = props
+
   const transaction = route.params
   return (
     <View>

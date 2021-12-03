@@ -16,15 +16,13 @@ import {
 import { ScreenWithWallet } from '../types'
 import { formatBigNumber } from '../../lib/abiEnhancer/formatBigNumber'
 import { Address } from '../../components'
-import { NavigationProp } from '../../RootNavigation'
+import { NavigationProp, ScreenProps } from '../../RootNavigation'
 
 const ActivityRow = ({
   activityTransaction,
-
   navigation,
 }: {
   activityTransaction: IActivityTransaction
-
   navigation: NavigationProp
 }) => (
   <View
@@ -71,97 +69,96 @@ export interface IActivityTransaction {
 export type ActivityScreenProps = {
   fetcher: IRIFWalletServicesFetcher
   abiEnhancer: IAbiEnhancer
-  navigation: NavigationProp
 }
 
-export const ActivityScreen: React.FC<ScreenWithWallet & ActivityScreenProps> =
-  ({ wallet, fetcher, abiEnhancer, navigation }) => {
-    const [info, setInfo] = useState('')
-    const [transactions, setTransactions] = useState<IActivityTransaction[]>([])
-    const { t } = useTranslation()
+export const ActivityScreen: React.FC<
+  ScreenProps<'Activity'> & ScreenWithWallet & ActivityScreenProps
+> = ({ wallet, fetcher, abiEnhancer, navigation }) => {
+  const [info, setInfo] = useState('')
+  const [transactions, setTransactions] = useState<IActivityTransaction[]>([])
+  const { t } = useTranslation()
 
-    const enhanceTransactionInput = async (
-      transaction: IApiTransaction,
-    ): Promise<IEnhancedResult | undefined> => {
-      let tx
-      try {
-        tx =
-          wallet.smartWallet.smartWalletContract.interface.decodeFunctionData(
-            'directExecute',
-            transaction.input,
-          )
-        return (await abiEnhancer.enhance(wallet, {
-          from: wallet.smartWalletAddress,
-          to: tx.to.toLowerCase(),
-          data: tx.data,
-          value: transaction.value,
-        }))!
-      } catch {
-        return undefined
-      }
+  const enhanceTransactionInput = async (
+    transaction: IApiTransaction,
+  ): Promise<IEnhancedResult | undefined> => {
+    let tx
+    try {
+      tx = wallet.smartWallet.smartWalletContract.interface.decodeFunctionData(
+        'directExecute',
+        transaction.input,
+      )
+      return (await abiEnhancer.enhance(wallet, {
+        from: wallet.smartWalletAddress,
+        to: tx.to.toLowerCase(),
+        data: tx.data,
+        value: transaction.value,
+      }))!
+    } catch {
+      return undefined
     }
-
-    useEffect(() => {
-      loadData()
-    }, [])
-
-    const loadData = async () => {
-      /*i18n.changeLanguage('es')*/
-      try {
-        setTransactions([])
-        setInfo(t('Loading transactions. Please wait...'))
-
-        const fetchedTransactions = await fetcher.fetchTransactionsByAddress(
-          wallet.smartWalletAddress.toLowerCase(),
-        )
-        const activityTransactions: IActivityTransaction[] = await Promise.all(
-          fetchedTransactions.map(async (tx: IApiTransaction) => {
-            const enhancedTransaction = await enhanceTransactionInput(tx)
-            return {
-              originTransaction: tx,
-              enhancedTransaction,
-            }
-          }),
-        )
-        setTransactions(activityTransactions)
-        setInfo('')
-      } catch (e) {
-        setInfo(t('Error reaching API: ') + e.message)
-      }
-    }
-
-    return (
-      <ScrollView>
-        <View>
-          <Address testID={'Address.Paragraph'}>
-            {wallet.smartWalletAddress}
-          </Address>
-
-          <View>
-            <Text testID="Info.Text">{info}</Text>
-          </View>
-
-          {transactions &&
-            transactions.length > 0 &&
-            transactions.map((activityTransaction: IActivityTransaction) => (
-              <ActivityRow
-                key={activityTransaction.originTransaction.hash}
-                activityTransaction={activityTransaction}
-                navigation={navigation}
-              />
-            ))}
-
-          <View style={styles.refreshButtonView}>
-            <Button
-              onPress={loadData}
-              title={t('Refresh')}
-              testID={'Refresh.Button'}
-            />
-          </View>
-        </View>
-      </ScrollView>
-    )
   }
+
+  useEffect(() => {
+    loadData()
+  }, [])
+
+  const loadData = async () => {
+    /*i18n.changeLanguage('es')*/
+    try {
+      setTransactions([])
+      setInfo(t('Loading transactions. Please wait...'))
+
+      const fetchedTransactions = await fetcher.fetchTransactionsByAddress(
+        wallet.smartWalletAddress.toLowerCase(),
+      )
+      const activityTransactions: IActivityTransaction[] = await Promise.all(
+        fetchedTransactions.map(async (tx: IApiTransaction) => {
+          const enhancedTransaction = await enhanceTransactionInput(tx)
+          return {
+            originTransaction: tx,
+            enhancedTransaction,
+          }
+        }),
+      )
+      setTransactions(activityTransactions)
+      setInfo('')
+    } catch (e) {
+      setInfo(t('Error reaching API: ') + e.message)
+    }
+  }
+
+  return (
+    <ScrollView>
+      <View>
+        <Address testID={'Address.Paragraph'}>
+          {wallet.smartWalletAddress}
+        </Address>
+
+        <View>
+          <Text testID="Info.Text">{info}</Text>
+        </View>
+
+        {transactions &&
+          transactions.length > 0 &&
+          transactions.map((activityTransaction: IActivityTransaction) => (
+            <ActivityRow
+              key={activityTransaction.originTransaction.hash}
+              activityTransaction={activityTransaction}
+              navigation={navigation}
+            />
+          ))}
+
+        <View style={styles.refreshButtonView}>
+          <Button
+            onPress={loadData}
+            title={t('Refresh')}
+            testID={'Refresh.Button'}
+          />
+        </View>
+      </View>
+    </ScrollView>
+  )
+}
 
 const styles = StyleSheet.create({
   activityRow: {

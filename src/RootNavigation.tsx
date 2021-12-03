@@ -13,7 +13,6 @@ import { BalancesScreenProps } from './screens/balances/BalancesScreen'
 import { KeysInfoScreenProps } from './screens/info/KeysInfoScreen'
 import { SendScreenProps } from './screens/send/SendScreen'
 import { ActivityScreenProps } from './screens/activity/ActivityScreen'
-import { ActivityDetailsScreenProps } from './screens/activity/ActivityDetailsScreen'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -62,7 +61,6 @@ export const RootNavigation: React.FC<{
   keyManagementProps: CreateKeysProps
   balancesScreenProps: BalancesScreenProps
   activityScreenProps: ActivityScreenProps
-  activityDetailsScreenProps: ActivityDetailsScreenProps
   keysInfoScreenProps: KeysInfoScreenProps
   sendScreenProps: SendScreenProps
 }> = ({
