@@ -4,7 +4,7 @@ import 'react-native-gesture-handler'
 import 'react-native-get-random-values'
 
 import React, { useEffect, useState } from 'react'
-import { SafeAreaView, StatusBar, View } from 'react-native'
+import { AppState, SafeAreaView, StatusBar, View } from 'react-native'
 
 import { Wallets, Requests } from './Context'
 import { RootNavigation } from './RootNavigation'
@@ -23,6 +23,7 @@ import Resolver from '@rsksmart/rns-resolver.js'
 
 import { Cover } from './components/cover'
 import { RequestPIN } from './components/requestPin'
+import { hasPin } from './storage/PinStore'
 
 const createRIFWalletFactory = (onRequest: OnRequest) => (wallet: Wallet) =>
   RIFWallet.create(
@@ -37,7 +38,9 @@ const abiEnhancer = new AbiEnhancer()
 const rnsResolver = new Resolver.forRskTestnet()
 
 const App = () => {
-  const [ready, setReady] = useState(false)
+  const [appState, setAppState] = useState<
+    'LOADING' | 'BACKGROUND' | 'LOCKED' | 'READY'
+  >('LOADING')
 
   const [kms, setKMS] = useState<null | KeyManagementSystem>(null)
   const [wallets, setWallets] = useState<Wallets>({})
@@ -52,6 +55,19 @@ const App = () => {
     setSelectedWallet(newWallets[Object.keys(newWallets)[0]].address) // temp - using only one wallet
     setKMS(newKms)
   }
+
+  AppState.addEventListener('change', (newState: string) => {
+    if (newState !== 'active') {
+      return setAppState('BACKGROUND')
+    }
+
+    setAppState('LOADING')
+
+    // active, but for how log ;-)
+    hasPin().then((answer: boolean | null) =>
+      setAppState(answer ? 'LOCKED' : 'READY'),
+    )
+  })
 
   const init = async () => {
     if (await hasKeys()) {
@@ -71,16 +87,17 @@ const App = () => {
       setKeys(kms, rifWalletsDictionary)
     }
 
-    await i18nInit()
-
-    setReady(true)
+    hasPin().then((answer: boolean | null) =>
+      setAppState(answer ? 'LOCKED' : 'READY'),
+    )
   }
 
   useEffect(() => {
-    init()
+    console.log('starting init ;-)')
+    i18nInit().then(init)
   }, [])
 
-  if (!ready) {
+  if (appState === 'LOADING') {
     return (
       <>
         {/* eslint-disable-next-line react-native/no-inline-styles */}
@@ -89,6 +106,14 @@ const App = () => {
         </View>
       </>
     )
+  }
+
+  if (appState === 'BACKGROUND') {
+    return <Cover />
+  }
+
+  if (appState === 'LOCKED') {
+    return <RequestPIN unlock={() => setAppState('READY')} />
   }
 
   const createFirstWallet = async (mnemonic: string) => {
@@ -119,8 +144,6 @@ const App = () => {
           setRequests,
           mnemonic: kms?.mnemonic,
         }}>
-        <Cover />
-        <RequestPIN />
         <RootNavigation
           keyManagementProps={{
             generateMnemonic: () => KeyManagementSystem.create().mnemonic,
