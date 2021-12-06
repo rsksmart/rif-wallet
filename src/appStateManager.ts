@@ -23,18 +23,18 @@ class AppStateManager {
     this.changeStateFn = changeStateFn
     this.loadWalletsFn = loadWalletsFn
 
-    const handleAppStateChange = (newState: string) => {
-      if (newState !== 'active') {
-        resetAppFn()
-        return this.changeStateFn(AvailableStates.BACKGROUND)
-      }
-      this.appIsActive()
-    }
-
     this.subscription = AppState.addEventListener(
       'change',
-      handleAppStateChange,
+      (newState: string) => this.handleAppStateChange(newState, resetAppFn),
     )
+  }
+
+  handleAppStateChange = (newState: string, resetAppFn: () => void) => {
+    if (newState !== 'active') {
+      resetAppFn()
+      return this.changeStateFn(AvailableStates.BACKGROUND)
+    }
+    this.appIsActive()
   }
 
   public appIsActive() {
