@@ -1,5 +1,6 @@
 import React from 'react'
-import { render, fireEvent, waitFor } from '@testing-library/react-native'
+import { render, waitFor, fireEvent, act } from '@testing-library/react-native'
+import { cleanup } from '@testing-library/react-native'
 
 import ReviewTransactionModal from './ReviewTransactionModal'
 import { RIFWallet, SendTransactionRequest } from '../../lib/core/RIFWallet'
@@ -10,7 +11,8 @@ import { deployTestTokens, getSigner } from '../../../testLib/utils'
 
 // allows to wait the resolution of a promise,
 // useful when you have a promise in a useEffect and it's triggered when the component loads for the first time.
-const flushPromises = () => new Promise(setImmediate)
+const flushPromises = async () =>
+  await act(async () => new Promise(resolve => setTimeout(resolve, 500)))
 
 describe('ReviewTransactionModal', function (this: {
   confirm: ReturnType<typeof jest.fn>
@@ -42,8 +44,8 @@ describe('ReviewTransactionModal', function (this: {
           from: '0x456',
           data: '',
           value: BigNumber.from(1000),
-          gasLimit: BigNumber.from(10000),
-          gasPrice: BigNumber.from(600000000),
+          gasLimit: BigNumber.from(26000),
+          gasPrice: BigNumber.from(20200000000),
         },
       ],
       //@ts-ignore
@@ -52,14 +54,20 @@ describe('ReviewTransactionModal', function (this: {
     }
   })
 
-  it('renders', () => {
-    const { getAllByText, getByPlaceholderText } = render(
-      <ReviewTransactionModal
-        wallet={this.rifWallet}
-        request={this.queuedTransaction}
-        closeModal={jest.fn()}
-      />,
+  afterEach(cleanup)
+
+  it('renders', async () => {
+    const { getAllByText, getByPlaceholderText } = await waitFor(() =>
+      render(
+        <ReviewTransactionModal
+          wallet={this.rifWallet}
+          request={this.queuedTransaction}
+          closeModal={jest.fn()}
+        />,
+      ),
     )
+
+    await flushPromises()
 
     // make sure elements are showing up
     expect(getAllByText('Review Transaction').length).toBe(1)
@@ -69,7 +77,7 @@ describe('ReviewTransactionModal', function (this: {
 
   it('returns the initial transaction', async () => {
     const closeModal = jest.fn()
-    const { getByTestId, findAllByTestId } = await waitFor(() =>
+    const { getByTestId } = await waitFor(() =>
       render(
         <ReviewTransactionModal
           wallet={this.rifWallet}
@@ -79,23 +87,26 @@ describe('ReviewTransactionModal', function (this: {
       ),
     )
 
-    await findAllByTestId('TX_VIEW', { timeout: 500 })
-
-    fireEvent.press(getByTestId('Confirm.Button'))
-
     await flushPromises()
+
+    act(() => {
+      fireEvent.press(getByTestId('Confirm.Button'))
+    })
 
     expect(this.confirm).toBeCalledWith({
       gasPrice: this.queuedTransaction.payload[0].gasPrice,
       gasLimit: this.queuedTransaction.payload[0].gasLimit,
     })
+
+    await flushPromises()
+
     expect(closeModal).toBeCalled()
   })
 
   it('returns nothing if cancelled', async () => {
     const closeModal = jest.fn()
 
-    const { getByTestId, findAllByTestId } = await waitFor(() =>
+    const { getByTestId } = await waitFor(() =>
       render(
         <ReviewTransactionModal
           wallet={this.rifWallet}
@@ -105,16 +116,19 @@ describe('ReviewTransactionModal', function (this: {
       ),
     )
 
-    await findAllByTestId('TX_VIEW', { timeout: 500 })
+    await flushPromises()
 
-    fireEvent.press(getByTestId('Cancel.Button'))
+    act(() => {
+      fireEvent.press(getByTestId('Cancel.Button'))
+    })
+
     expect(this.cancel).toBeCalled()
     expect(closeModal).toBeCalled()
   })
 
   it('allows the user to change the text inputs', async () => {
     const closeModal = jest.fn()
-    const { getByTestId, findAllByTestId } = await waitFor(() =>
+    const { getByTestId } = await waitFor(() =>
       render(
         <ReviewTransactionModal
           wallet={this.rifWallet}
@@ -124,54 +138,30 @@ describe('ReviewTransactionModal', function (this: {
       ),
     )
 
-    await findAllByTestId('TX_VIEW', { timeout: 500 })
-
-    const gasPrice = '20'
-    const gasLimit = '1000'
-
-    fireEvent.changeText(getByTestId('gasLimit.TextInput'), gasLimit)
-    fireEvent.changeText(getByTestId('gasPrice.TextInput'), gasPrice)
-
-    fireEvent.press(getByTestId('Confirm.Button'))
-
     await flushPromises()
 
-    expect(this.confirm).toBeCalledWith({
-      gasPrice: BigNumber.from(gasPrice),
-      gasLimit: BigNumber.from(gasLimit),
+    act(() => {
+      fireEvent.changeText(getByTestId('gasLimit.TextInput'), '1000')
     })
+
+    act(() => {
+      fireEvent.changeText(getByTestId('gasPrice.TextInput'), '20')
+    })
+
+    await flushPromises()
+    expect(getByTestId('gasLimit.TextInput').props.value).toBe('1000')
+    expect(getByTestId('gasPrice.TextInput').props.value).toBe('20')
+
+    act(() => {
+      fireEvent.press(getByTestId('Confirm.Button'))
+    })
+
+    expect(this.confirm).toBeCalledWith({
+      gasPrice: BigNumber.from(20),
+      gasLimit: BigNumber.from(1000),
+    })
+
+    await flushPromises()
     expect(closeModal).toHaveBeenCalled()
-  })
-
-  it('estimates gasLimit', async () => {
-    const transaction: SendTransactionRequest = {
-      ...this.queuedTransaction,
-      payload: [
-        {
-          to: '0x123',
-          from: '0x45',
-          data: '0x1234567890',
-          gasPrice: '200',
-        },
-      ],
-    }
-
-    jest
-      .spyOn(this.rifWallet.smartWallet, 'estimateDirectExecute')
-      .mockResolvedValue(BigNumber.from(600))
-
-    const { getByTestId } = render(
-      <ReviewTransactionModal
-        wallet={this.rifWallet}
-        request={transaction}
-        closeModal={jest.fn()}
-      />,
-    )
-
-    const gasLimit = await waitFor(
-      async () => await getByTestId('gasLimit.TextInput'),
-    )
-    expect(gasLimit.props.value).toBe('600') // spied value
-    expect(getByTestId('gasPrice.TextInput').props.value).toBe('200') // original value
   })
 })
