@@ -3,7 +3,7 @@ import { StyleSheet, View, ScrollView } from 'react-native'
 import { useTranslation, Trans } from 'react-i18next'
 
 import { Address, Button, Header1, Paragraph } from '../components'
-import { AppContext, useIsWalletDeployed } from '../Context'
+import { AppContext } from '../Context'
 import { NavigationProp } from '../RootNavigation'
 import { ScreenProps } from '../RootNavigation'
 import { RIFWallet } from '../lib/core'
@@ -29,21 +29,21 @@ const KeysActionItem = ({
 
 const WalletRow = ({
   wallet,
+  isWalletDeployed,
   navigation,
   t,
 }: {
   wallet: RIFWallet
+  isWalletDeployed: boolean
   navigation: NavigationProp
   t: any
 }) => {
-  const isDeployed = useIsWalletDeployed(wallet)
-
   return (
     <>
       <Paragraph>Smart Wallet Address</Paragraph>
 
       <Address>{wallet.smartWalletAddress}</Address>
-      <Paragraph>Is deployed: {isDeployed ? 'Yes' : 'No'}</Paragraph>
+      <Paragraph>Is deployed: {isWalletDeployed ? 'Yes' : 'No'}</Paragraph>
 
       <View style={styles.subsection}>
         <Button
@@ -55,7 +55,7 @@ const WalletRow = ({
             navigation.navigate('Send', { token: 'tRIF' })
           }}
           title={t('Send Transaction')}
-          disabled={!isDeployed}
+          disabled={!isWalletDeployed}
         />
         <Button
           onPress={() => navigation.navigate('Balances')}
@@ -71,12 +71,12 @@ const WalletRow = ({
         <Button
           onPress={() => navigation.navigate('SignMessage')}
           title={t('Sign Message')}
-          disabled={!isDeployed}
+          disabled={!isWalletDeployed}
         />
         <Button
           onPress={() => navigation.navigate('SignTypedData')}
           title={t('Sign Typed Data')}
-          disabled={!isDeployed}
+          disabled={!isWalletDeployed}
         />
       </View>
 
@@ -90,7 +90,7 @@ const WalletRow = ({
         <Button
           onPress={() => navigation.navigate('WalletConnect')}
           title={t('WalletConnect')}
-          disabled={!isDeployed}
+          disabled={!isWalletDeployed}
         />
       </View>
       <View style={styles.subsection}>
@@ -108,7 +108,7 @@ const WalletRow = ({
 }
 
 export const HomeScreen: React.FC<ScreenProps<'Home'>> = ({ navigation }) => {
-  const { wallets } = useContext(AppContext)
+  const { wallets, walletsIsDeployed } = useContext(AppContext)
   const { t } = useTranslation()
 
   return (
@@ -121,6 +121,7 @@ export const HomeScreen: React.FC<ScreenProps<'Home'>> = ({ navigation }) => {
         <WalletRow
           key={address}
           wallet={wallets[address]}
+          isWalletDeployed={walletsIsDeployed[address]}
           navigation={navigation}
           t={t}
         />
