@@ -4,7 +4,7 @@ import 'react-native-gesture-handler'
 import 'react-native-get-random-values'
 
 import React, { useEffect, useState } from 'react'
-import { AppState, SafeAreaView, StatusBar, View } from 'react-native'
+import { SafeAreaView, StatusBar } from 'react-native'
 
 import { Wallets, Requests } from './Context'
 import { RootNavigation } from './RootNavigation'
@@ -12,7 +12,7 @@ import ModalComponent from './ux/requestsModal/ModalComponent'
 
 import { Wallet } from '@ethersproject/wallet'
 import { KeyManagementSystem, OnRequest, RIFWallet } from './lib/core'
-import { getKeys, hasKeys, saveKeys, deleteKeys } from './storage/KeyStore'
+import { getKeys, saveKeys, deleteKeys } from './storage/KeyStore'
 import { jsonRpcProvider } from './lib/jsonRpcProvider'
 import { i18nInit } from './lib/i18n'
 import { Loading } from './components'
@@ -23,7 +23,7 @@ import Resolver from '@rsksmart/rns-resolver.js'
 
 import { Cover } from './components/cover'
 import { RequestPIN } from './components/requestPin'
-import { hasPin } from './storage/PinStore'
+import AppStateManager, { AvailableStates } from './appStateManager'
 
 const createRIFWalletFactory = (onRequest: OnRequest) => (wallet: Wallet) =>
   RIFWallet.create(
@@ -38,9 +38,9 @@ const abiEnhancer = new AbiEnhancer()
 const rnsResolver = new Resolver.forRskTestnet()
 
 const App = () => {
-  const [appState, setAppState] = useState<
-    'LOADING' | 'BACKGROUND' | 'LOCKED' | 'READY'
-  >('LOADING')
+  const [appState, setAppState] = useState<AvailableStates>(
+    AvailableStates.LOADING,
+  )
 
   const [kms, setKMS] = useState<null | KeyManagementSystem>(null)
   const [wallets, setWallets] = useState<Wallets>({})
@@ -56,55 +56,23 @@ const App = () => {
     setKMS(newKms)
   }
 
-  // TEMP TEMP
-  const logUpdateState = (newState: any) => {
-    console.log('state change:', newState)
-    // @ts-ignore
-    setAppState(newState)
-  }
-
-  const handleAppStateChange = (newState: string) => {
-    if (newState !== 'active') {
-      resetAppState()
-      return logUpdateState('BACKGROUND')
-    }
-
-    appIsActive()
-  }
-
-  /**
-   * App is active and ready to check if it has keys and has pin
-   */
-  const appIsActive = () => {
-    logUpdateState('LOADING')
-
-    hasKeys().then((walletHasKeys: boolean | null) => {
-      if (!walletHasKeys) {
-        // no keys, user should setup their wallet
-        return logUpdateState('READY')
-      }
-
-      hasPin().then((walletHasPin: boolean | null) =>
-        walletHasPin ? logUpdateState('LOCKED') : loadExistingWallets(),
-      )
-    })
-  }
-
   useEffect(() => {
-    i18nInit().finally(appIsActive)
+    i18nInit()
 
-    const subscription = AppState.addEventListener(
-      'change',
-      handleAppStateChange,
+    const manager = new AppStateManager(
+      setAppState,
+      loadExistingWallets,
+      resetAppState,
     )
 
+    manager.appIsActive()
+
     return () => {
-      subscription.remove()
+      manager.removeSubscription()
     }
   }, [])
 
   const loadExistingWallets = async () => {
-    logUpdateState('LOADING')
     const serializedKeys = await getKeys()
     // eslint-disable-next-line no-shadow
     const { kms, wallets } = KeyManagementSystem.fromSerialized(serializedKeys!)
@@ -117,7 +85,7 @@ const App = () => {
     )
 
     setKeys(kms, rifWalletsDictionary)
-    setAppState('READY')
+    setAppState(AvailableStates.READY)
   }
 
   const createFirstWallet = async (mnemonic: string) => {
@@ -132,6 +100,7 @@ const App = () => {
     await saveKeys(serialized)
 
     setKeys(kms, { [rifWallet.address]: rifWallet })
+    setAppState(AvailableStates.READY)
 
     return rifWallet
   }
