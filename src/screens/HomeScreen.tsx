@@ -56,7 +56,6 @@ const WalletRow = ({
         <Button
           onPress={() => navigation.navigate('Receive')}
           title={t('Receive')}
-          disabled={!isDeployed}
         />
         <Button
           onPress={() => {
@@ -72,7 +71,6 @@ const WalletRow = ({
         <Button
           onPress={() => navigation.navigate('Activity')}
           title={t('Activity')}
-          disabled={!isDeployed}
         />
       </View>
 
