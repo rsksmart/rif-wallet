@@ -30,7 +30,7 @@ const useEnhancedWithGas = (wallet: RIFWallet, tx: TransactionRequest) => {
     const gasLimitEstimate = wallet.smartWallet
       .estimateDirectExecute(tx.to || '0x', tx.data || '0x')
       .then((estimate: BigNumber) => {
-        if (tx.gasLimit && estimate.toNumber() < tx.gasLimit) {
+        if (tx.gasLimit && estimate.lt(tx.gasLimit)) {
           return tx.gasLimit
         } else {
           return estimate
@@ -41,7 +41,7 @@ const useEnhancedWithGas = (wallet: RIFWallet, tx: TransactionRequest) => {
       ?.getGasPrice()
       .then((gp: BigNumber) => gp.mul('101').div('100'))
       .then((estimate: BigNumber) => {
-        if (tx.gasPrice && estimate.toNumber() < tx.gasPrice) {
+        if (tx.gasPrice && estimate.lt(tx.gasPrice)) {
           return tx.gasPrice
         } else {
           return estimate
