@@ -56,6 +56,7 @@ const resources = {
       'Send RIF back to faucet': 'Send RIF back to fauceT',
       'RIF Token balance': 'RIF Token balance',
       'Is Deployed?': 'Is Deployed?',
+      Deploying: 'Deploying...',
       Deploy: 'Deploy',
       'Get info': 'Get Info',
       'RBTC Balance (EOA)': 'RBTC Balance (EOA)',

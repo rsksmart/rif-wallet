@@ -13,11 +13,13 @@ import {
   Paragraph,
 } from '../../components'
 import { ScreenWithWallet } from '../types'
+import { useIsWalletDeployed } from '../../Context'
+import { DevSettings } from 'react-native'
 
 export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
   const [eoaBalance, setEoaBalance] = useState<null | BigNumber>(null)
-  const [isSmartWalletDeployed, setIsSmartWalletDeployed] =
-    useState<boolean>(false)
+  const isSmartWalletDeployed = useIsWalletDeployed(wallet)
+  const [isDeploying, setIsDeploying] = useState(false)
 
   const [smartWalletDeployTx, setSmartWalletDeployTx] =
     useState<null | Transaction>(null)
@@ -37,7 +39,6 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
   const getInfo = async () => {
     Promise.all([
       wallet.smartWallet.signer.getBalance().then(setEoaBalance),
-      wallet.smartWalletFactory.isDeployed().then(setIsSmartWalletDeployed),
       rif.balance().then(setRifBalance),
     ]).catch((err: Error) => {
       console.log(err)
@@ -45,9 +46,17 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
   }
 
   const deploy = async () => {
-    const txPromise = await wallet.smartWalletFactory.deploy()
-    setSmartWalletDeployTx(await txPromise)
-    setIsSmartWalletDeployed(true)
+    try {
+      setIsDeploying(true)
+      const txPromise = await wallet.smartWalletFactory.deploy()
+      setSmartWalletDeployTx(txPromise)
+
+      await txPromise.wait()
+
+      DevSettings.reload('Smart wallet deployed')
+    } catch (error) {
+      setIsDeploying(false)
+    }
   }
 
   const sendRif = async () => {
@@ -82,11 +91,16 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
       <Paragraph>
         <Trans>Is Deployed?</Trans>: {isSmartWalletDeployed.toString()}
       </Paragraph>
+      {isDeploying && (
+        <Paragraph>
+          <Trans>Deploying</Trans>
+        </Paragraph>
+      )}
       {!isSmartWalletDeployed && (
         <Button
           title={t('Deploy')}
           onPress={deploy}
-          disabled={isSmartWalletDeployed}
+          disabled={isSmartWalletDeployed || isDeploying}
         />
       )}
       <Paragraph>

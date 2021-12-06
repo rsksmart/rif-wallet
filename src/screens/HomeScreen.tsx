@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 import { useTranslation, Trans } from 'react-i18next'
 
 import { Address, Button, Header1, Paragraph } from '../components'
-import { AppContext } from '../Context'
+import { AppContext, useIsWalletDeployed } from '../Context'
 import { NavigationProp } from '../RootNavigation'
 import { ScreenProps } from '../RootNavigation'
 import { RIFWallet } from '../lib/core'
@@ -36,14 +36,7 @@ const WalletRow = ({
   navigation: NavigationProp
   t: any
 }) => {
-  const [isDeployed, setIsDeployed] = useState(false)
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      wallet.smartWalletFactory.isDeployed().then(setIsDeployed)
-    })
-    return unsubscribe
-  }, [])
+  const isDeployed = useIsWalletDeployed(wallet)
 
   return (
     <>

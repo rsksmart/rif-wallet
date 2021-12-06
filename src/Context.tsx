@@ -1,4 +1,10 @@
-import React, { createContext, useContext, FC } from 'react'
+import React, {
+  createContext,
+  useContext,
+  FC,
+  useState,
+  useEffect,
+} from 'react'
 import { RIFWallet, Request } from './lib/core'
 import { ScreenWithWallet } from './screens/types'
 export type Wallets = { [id: string]: RIFWallet }
@@ -21,11 +27,26 @@ export const useSelectedWallet = () => {
   return wallets[selectedWallet!]
 }
 
+export const useIsWalletDeployed = (wallet: RIFWallet) => {
+  const [isDeployed, setIsDeployed] = useState(false)
+
+  useEffect(() => {
+    if (!wallet) {
+      return
+    }
+
+    wallet.smartWalletFactory.isDeployed().then(setIsDeployed)
+  }, [wallet])
+
+  return isDeployed
+}
+
 export function InjectSelectedWallet<T>(
   Component: FC<ScreenWithWallet & T>,
 ): FC<T> {
   return function InjectedComponent(props) {
     const wallet = useSelectedWallet()
+
     if (!wallet) {
       throw new Error('No selected wallet')
     }
