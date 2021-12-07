@@ -113,7 +113,7 @@ const App = () => {
 
   const closeRequest = () => setRequests([] as Requests)
 
-  if (appState === 'LOADING') {
+  if (appState === AvailableStates.LOADING) {
     return (
       <SafeAreaView>
         <Loading reason="Getting set..." />
@@ -121,11 +121,14 @@ const App = () => {
     )
   }
 
-  if (appState === 'BACKGROUND') {
+  if (
+    appState === AvailableStates.BACKGROUND ||
+    appState === AvailableStates.BACKGROUND_LOCKED
+  ) {
     return <Cover />
   }
 
-  if (appState === 'LOCKED') {
+  if (appState === AvailableStates.LOCKED) {
     return (
       <SafeAreaView>
         <RequestPIN unlock={loadExistingWallets} />
