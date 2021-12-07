@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { StyleSheet, View, ScrollView, TextInput } from 'react-native'
 
 import { Button, Header2, Paragraph } from '../../../components'
+import { validateMnemonic } from '../../../lib/bip39'
 import { ScreenProps, CreateKeysProps } from '../types'
 
 type ImportMasterKeyScreenProps = {
@@ -14,25 +15,28 @@ export const ImportMasterKeyScreen: React.FC<
   const [importMnemonic, setImportMnemonic] = useState<string>('')
 
   const [error, setError] = useState<string | null>(null)
+  const [info, setInfo] = useState<string | null>(null)
 
   const handleImportMnemonic = async () => {
-    // TODO: how many words should have the mnemonic?
-    const isValid = importMnemonic && importMnemonic.split(' ').length > 12
-
-    if (!isValid) {
-      setError('you need to enter your twelve words master key')
-      return
+    const mnemonicError = validateMnemonic(importMnemonic)
+    if (!mnemonicError) {
+      try {
+        setInfo('Creating...')
+        const rifWallet = await createFirstWallet(importMnemonic)
+        setInfo(null)
+        navigation.navigate('KeysCreated', { address: rifWallet.address })
+      } catch (err) {
+        console.error(err)
+        setError(
+          'error trying to import your master key, please check it and try it again',
+        )
+      }
     }
-
-    try {
-      const rifWallet = await createFirstWallet(importMnemonic)
-      navigation.navigate('KeysCreated', { address: rifWallet.address })
-    } catch (err) {
-      console.error(err)
-      setError(
-        'error trying to import your master key, please check it and try it again',
-      )
-    }
+    setError(mnemonicError)
+  }
+  const setText = (text: string) => {
+    setError(null)
+    setImportMnemonic(text)
   }
 
   return (
@@ -43,13 +47,14 @@ export const ImportMasterKeyScreen: React.FC<
       <View style={styles.section}>
         <Header2>Master key</Header2>
         <TextInput
-          onChangeText={text => setImportMnemonic(text)}
+          onChangeText={text => setText(text)}
           value={importMnemonic}
           placeholder="Enter your 12 words master key"
           multiline
           style={styles.input}
           testID="Input.MasterKey"
         />
+        {info && <Paragraph>{info}</Paragraph>}
         {error && <Paragraph>{error}</Paragraph>}
       </View>
       <View style={styles.section}>
@@ -59,6 +64,7 @@ export const ImportMasterKeyScreen: React.FC<
           }}
           title={'Confirm'}
           testID="Button.Confirm"
+          disabled={!!error}
         />
       </View>
     </ScrollView>
