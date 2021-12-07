@@ -18,7 +18,7 @@ class AppStateManager {
   currentState: AvailableStates
 
   subscription: NativeEventSubscription
-  timeOutId: any
+  timeOutId: NodeJS.Timeout | undefined
 
   constructor(
     changeStateFn: (newState: AvailableStates) => void,
@@ -36,17 +36,14 @@ class AppStateManager {
     )
   }
 
-  updateState = (nextState: AvailableStates) => {
+  private updateState = (nextState: AvailableStates) => {
     this.currentState = nextState
     this.changeStateFn(nextState)
   }
 
   handleAppStateChange = (newState: AppStateStatus) => {
-    console.log('handleAppStateChange', this.currentState)
-
     if (newState !== 'active') {
       this.timeOutId = setTimeout(() => {
-        console.log('timeout ;-)')
         this.resetAppFn()
         this.updateState(AvailableStates.BACKGROUND_LOCKED)
       }, 3000)
@@ -54,9 +51,8 @@ class AppStateManager {
       return this.updateState(AvailableStates.BACKGROUND)
     }
 
-    // Grace period
+    // Still in the grace period
     if (this.currentState === AvailableStates.BACKGROUND) {
-      console.log('GRAce Period')
       this.timeOutId && clearInterval(this.timeOutId)
       return this.updateState(AvailableStates.READY)
     }
@@ -65,18 +61,16 @@ class AppStateManager {
   }
 
   public appIsActive() {
-    console.log('appIsActive, check previous state...', this.currentState)
-
     this.updateState(AvailableStates.LOADING)
 
-    hasKeys().then((walletHasKeys: boolean | null) => {
+    return hasKeys().then((walletHasKeys: boolean | null) => {
       if (!walletHasKeys) {
         // no keys, user should setup their wallet
         return this.updateState(AvailableStates.READY)
       }
 
       hasPin().then((walletHasPin: boolean | null) => {
-        console.log({ walletHasPin, walletHasKeys })
+        // user has pin setup
         if (walletHasPin) {
           return this.updateState(AvailableStates.LOCKED)
         }
