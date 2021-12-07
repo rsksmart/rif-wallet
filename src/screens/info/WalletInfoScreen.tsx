@@ -13,11 +13,14 @@ import {
   Paragraph,
 } from '../../components'
 import { ScreenWithWallet } from '../types'
+import { DevSettings } from 'react-native'
 
-export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
+export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
+  wallet,
+  isWalletDeployed,
+}) => {
   const [eoaBalance, setEoaBalance] = useState<null | BigNumber>(null)
-  const [isSmartWalletDeployed, setIsSmartWalletDeployed] =
-    useState<boolean>(false)
+  const [isDeploying, setIsDeploying] = useState(false)
 
   const [smartWalletDeployTx, setSmartWalletDeployTx] =
     useState<null | Transaction>(null)
@@ -37,7 +40,6 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
   const getInfo = async () => {
     Promise.all([
       wallet.smartWallet.signer.getBalance().then(setEoaBalance),
-      wallet.smartWalletFactory.isDeployed().then(setIsSmartWalletDeployed),
       rif.balance().then(setRifBalance),
     ]).catch((err: Error) => {
       console.log(err)
@@ -45,9 +47,17 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
   }
 
   const deploy = async () => {
-    const txPromise = await wallet.smartWalletFactory.deploy()
-    setSmartWalletDeployTx(await txPromise)
-    setIsSmartWalletDeployed(true)
+    try {
+      setIsDeploying(true)
+      const txPromise = await wallet.smartWalletFactory.deploy()
+      setSmartWalletDeployTx(txPromise)
+
+      await txPromise.wait()
+
+      DevSettings.reload('Smart wallet deployed')
+    } catch (error) {
+      setIsDeploying(false)
+    }
   }
 
   const sendRif = async () => {
@@ -80,13 +90,18 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
       </Paragraph>
 
       <Paragraph>
-        <Trans>Is Deployed?</Trans>: {isSmartWalletDeployed.toString()}
+        <Trans>Is Deployed?</Trans>: {isWalletDeployed.toString()}
       </Paragraph>
-      {!isSmartWalletDeployed && (
+      {isDeploying && (
+        <Paragraph>
+          <Trans>Deploying</Trans>
+        </Paragraph>
+      )}
+      {!isWalletDeployed && (
         <Button
           title={t('Deploy')}
           onPress={deploy}
-          disabled={isSmartWalletDeployed}
+          disabled={isWalletDeployed || isDeploying}
         />
       )}
       <Paragraph>
@@ -97,7 +112,7 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({ wallet }) => {
           <Paragraph>Deploy tx: {smartWalletDeployTx.hash}</Paragraph>
         </>
       )}
-      {isSmartWalletDeployed && (
+      {isWalletDeployed && (
         <>
           <Button title={t('Send RIF back to faucet')} onPress={sendRif} />
           {sendRifResponse && <Paragraph>{sendRifResponse}</Paragraph>}

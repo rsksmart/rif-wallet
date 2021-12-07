@@ -6,7 +6,7 @@ import 'react-native-get-random-values'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView, StatusBar, View } from 'react-native'
 
-import { Wallets, Requests } from './Context'
+import { Wallets, Requests, WalletsIsDeployed } from './Context'
 import { RootNavigation } from './RootNavigation'
 import ModalComponent from './ux/requestsModal/ModalComponent'
 
@@ -41,14 +41,22 @@ const App = () => {
 
   const [kms, setKMS] = useState<null | KeyManagementSystem>(null)
   const [wallets, setWallets] = useState<Wallets>({})
+  const [walletsIsDeployed, setWalletsIsDeployed] = useState<WalletsIsDeployed>(
+    {},
+  )
   const [requests, setRequests] = useState<Requests>([])
   const [selectedWallet, setSelectedWallet] = useState('')
 
   const onRequest: OnRequest = request => setRequests([request])
   const createRIFWallet = createRIFWalletFactory(onRequest)
 
-  const setKeys = (newKms: KeyManagementSystem, newWallets: Wallets) => {
+  const setKeys = (
+    newKms: KeyManagementSystem,
+    newWallets: Wallets,
+    newWalletsIsDeployed: WalletsIsDeployed,
+  ) => {
     setWallets(newWallets)
+    setWalletsIsDeployed(newWalletsIsDeployed)
     setSelectedWallet(newWallets[Object.keys(newWallets)[0]].address) // temp - using only one wallet
     setKMS(newKms)
   }
@@ -62,13 +70,22 @@ const App = () => {
       )
 
       const rifWallets = await Promise.all(wallets.map(createRIFWallet))
+      const isDeployedWallets = await Promise.all(
+        rifWallets.map(w => w.smartWalletFactory.isDeployed()),
+      )
 
       const rifWalletsDictionary = rifWallets.reduce(
         (p: Wallets, c: RIFWallet) => Object.assign(p, { [c.address]: c }),
         {},
       )
 
-      setKeys(kms, rifWalletsDictionary)
+      const rifWalletsIsDeployedDictionary = rifWallets.reduce(
+        (p: Wallets, c: RIFWallet, ci: number) =>
+          Object.assign(p, { [c.address]: isDeployedWallets[ci] }),
+        {},
+      )
+
+      setKeys(kms, rifWalletsDictionary, rifWalletsIsDeployedDictionary)
     }
 
     await i18nInit()
@@ -97,12 +114,17 @@ const App = () => {
     const { save, wallet } = kms.nextWallet(31)
 
     const rifWallet = await createRIFWallet(wallet)
+    const rifWalletIsDeployed = await rifWallet.smartWalletFactory.isDeployed()
 
     save()
     const serialized = kms.serialize()
     await saveKeys(serialized)
 
-    setKeys(kms, { [rifWallet.address]: rifWallet })
+    setKeys(
+      kms,
+      { [rifWallet.address]: rifWallet },
+      { [rifWallet.address]: rifWalletIsDeployed },
+    )
 
     return rifWallet
   }
@@ -115,6 +137,7 @@ const App = () => {
       <AppContext.Provider
         value={{
           wallets,
+          walletsIsDeployed,
           selectedWallet,
           setRequests,
           mnemonic: kms?.mnemonic,
