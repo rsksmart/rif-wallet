@@ -15,13 +15,15 @@ export const ImportMasterKeyScreen: React.FC<
   const [importMnemonic, setImportMnemonic] = useState<string>('')
 
   const [error, setError] = useState<string | null>(null)
+  const [info, setInfo] = useState<string | null>(null)
 
   const handleImportMnemonic = async () => {
     const mnemonicError = validateMnemonic(importMnemonic)
     if (!mnemonicError) {
       try {
-        setError('Creating...')
+        setInfo('Creating...')
         const rifWallet = await createFirstWallet(importMnemonic)
+        setInfo(null)
         navigation.navigate('KeysCreated', { address: rifWallet.address })
       } catch (err) {
         console.error(err)
@@ -52,6 +54,7 @@ export const ImportMasterKeyScreen: React.FC<
           style={styles.input}
           testID="Input.MasterKey"
         />
+        {info && <Paragraph>{info}</Paragraph>}
         {error && <Paragraph>{error}</Paragraph>}
       </View>
       <View style={styles.section}>
