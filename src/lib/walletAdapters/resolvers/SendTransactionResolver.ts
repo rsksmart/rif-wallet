@@ -1,5 +1,6 @@
 import { TransactionResponse } from '@ethersproject/providers'
-import { constants, Signer } from 'ethers'
+import { Signer, BigNumber } from 'ethers'
+import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { IResolver } from '../RPCAdapter'
 
 export class SendTransactionResolver implements IResolver {
@@ -13,20 +14,19 @@ export class SendTransactionResolver implements IResolver {
   async resolve(params: any[]) {
     const payload = params.reduce((prev, curr) => ({ ...prev, ...curr }), {})
 
-    if (payload.data === '') {
-      // TODO: assign undefined once the RIFWallet changes are applied
-      payload.data = constants.HashZero
-    }
-
-    // TODO: delete this after is fixed on RIFWallet
-    if (payload.gas && !payload.gasLimit) {
-      payload.gasLimit = payload.gas
-
-      delete payload.gas
+    const formattedPayload: TransactionRequest = {
+      to: payload.to,
+      from: payload.from,
+      nonce: payload.nonce,
+      data: payload.data || '0x',
+      value: BigNumber.from(payload.value || 0),
+      chainId: payload.chainId,
+      gasLimit: payload.gas ? BigNumber.from(payload.gas) : undefined, // WC's gas to gasLimit
+      gasPrice: payload.gasPrice ? BigNumber.from(payload.gasPrice) : undefined,
     }
 
     return this.signer
-      .sendTransaction(payload)
+      .sendTransaction(formattedPayload)
       .then((tx: TransactionResponse) => tx.hash)
   }
 }
