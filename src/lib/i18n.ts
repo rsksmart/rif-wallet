@@ -36,6 +36,8 @@ const resources = {
       Status: 'Status',
       Time: 'Time',
       Refresh: 'Refresh',
+      '< Prev': '< Prev',
+      'Next >': 'Next >',
       'View in explorer': 'View in explorer',
       'Return to Activity Screen': 'Return to Activity Screen',
 
