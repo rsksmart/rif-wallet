@@ -23,7 +23,9 @@ import Resolver from '@rsksmart/rns-resolver.js'
 
 import { Cover } from './components/cover'
 import { RequestPIN } from './components/requestPin'
-import AppStateManager, { AvailableStates } from './appStateManager'
+import BackgroundStateManager, {
+  AvailableStates,
+} from './backgroundStateManager'
 
 const createRIFWalletFactory = (onRequest: OnRequest) => (wallet: Wallet) =>
   RIFWallet.create(
@@ -67,16 +69,16 @@ const App = () => {
   useEffect(() => {
     i18nInit()
 
-    const manager = new AppStateManager(
+    const backgroundState = new BackgroundStateManager(
       setAppState,
       loadExistingWallets,
       resetAppState,
     )
 
-    manager.appIsActive()
+    backgroundState.appIsActive()
 
     return () => {
-      manager.removeSubscription()
+      backgroundState.removeSubscription()
     }
   }, [])
 
@@ -102,6 +104,7 @@ const App = () => {
     )
 
     setKeys(kms, rifWalletsDictionary, rifWalletsIsDeployedDictionary)
+    setAppState(AvailableStates.READY)
   }
 
   const createFirstWallet = async (mnemonic: string) => {
@@ -122,6 +125,7 @@ const App = () => {
       { [rifWallet.address]: rifWalletIsDeployed },
     )
 
+    setAppState(AvailableStates.READY)
     return rifWallet
   }
 

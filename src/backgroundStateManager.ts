@@ -11,7 +11,7 @@ export enum AvailableStates {
   READY = 'READY',
 }
 
-class AppStateManager {
+class BackgroundStateManager {
   changeStateFn: (newState: AvailableStates) => void
   loadWalletsFn: () => Promise<void>
   resetAppFn: () => void
@@ -87,4 +87,4 @@ class AppStateManager {
   }
 }
 
-export default AppStateManager
+export default BackgroundStateManager

@@ -1,9 +1,11 @@
-import AppStateManager, { AvailableStates } from './appStateManager'
+import BackgroundStateManager, {
+  AvailableStates,
+} from './backgroundStateManager'
 
 const keyStore = require('./storage/KeyStore')
 const PINStore = require('./storage/PinStore')
 
-describe('appStateManager', () => {
+describe('BackgroundStateManager', () => {
   beforeAll(() => {
     jest.spyOn(keyStore, 'hasKeys').mockResolvedValue(true)
     jest.spyOn(PINStore, 'hasPin').mockResolvedValue(true)
@@ -11,7 +13,7 @@ describe('appStateManager', () => {
 
   it('shows locked when there is a Pin', async () => {
     const changeStateFn = jest.fn()
-    const apm = new AppStateManager(changeStateFn, jest.fn(), jest.fn())
+    const apm = new BackgroundStateManager(changeStateFn, jest.fn(), jest.fn())
     expect(apm.currentState).toBe(AvailableStates.LOADING)
 
     await apm.appIsActive()
@@ -22,7 +24,7 @@ describe('appStateManager', () => {
     jest.spyOn(keyStore, 'hasKeys').mockResolvedValue(false)
 
     const changeStateFn = jest.fn()
-    const apm = new AppStateManager(changeStateFn, jest.fn(), jest.fn())
+    const apm = new BackgroundStateManager(changeStateFn, jest.fn(), jest.fn())
 
     await apm.appIsActive()
     expect(changeStateFn).toBeCalledWith(AvailableStates.READY)
@@ -30,7 +32,7 @@ describe('appStateManager', () => {
 
   it('moves to background', async () => {
     const changeStateFn = jest.fn()
-    const apm = new AppStateManager(changeStateFn, jest.fn(), jest.fn())
+    const apm = new BackgroundStateManager(changeStateFn, jest.fn(), jest.fn())
 
     await apm.handleAppStateChange('inactive')
     expect(changeStateFn).toBeCalledWith(AvailableStates.BACKGROUND)
@@ -38,7 +40,7 @@ describe('appStateManager', () => {
 
   it('moves to the foregroud in grace period', async () => {
     const changeStateFn = jest.fn()
-    const apm = new AppStateManager(changeStateFn, jest.fn(), jest.fn())
+    const apm = new BackgroundStateManager(changeStateFn, jest.fn(), jest.fn())
 
     await apm.handleAppStateChange('inactive')
     await apm.handleAppStateChange('active')
@@ -50,7 +52,11 @@ describe('appStateManager', () => {
 
     const changeStateFn = jest.fn()
     const resetStateFn = jest.fn()
-    const apm = new AppStateManager(changeStateFn, jest.fn(), resetStateFn)
+    const apm = new BackgroundStateManager(
+      changeStateFn,
+      jest.fn(),
+      resetStateFn,
+    )
 
     await apm.handleAppStateChange('inactive')
     await jest.runOnlyPendingTimers()
