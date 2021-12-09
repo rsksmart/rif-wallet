@@ -1,4 +1,4 @@
-export { HomeScreen } from './HomeScreen'
+export { DevMenuScreen } from './devMenu/DevMenuScreen'
 export { SendScreen } from './send/SendScreen'
 export { ReceiveScreen } from './receive/ReceiveScreen'
 export { BalancesScreen } from './balances/BalancesScreen'

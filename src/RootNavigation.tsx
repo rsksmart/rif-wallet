@@ -36,7 +36,7 @@ const InjectedScreens = {
 }
 
 type RootStackParamList = {
-  Home: undefined
+  DevMenu: undefined
   Send: undefined | { token: string }
   Receive: undefined
   Balances: undefined
@@ -85,8 +85,8 @@ export const RootNavigation: React.FC<{
         <AppHeader />
         <RootStack.Navigator>
           <RootStack.Screen
-            name="Home"
-            component={Screens.HomeScreen}
+            name="DevMenu"
+            component={Screens.DevMenuScreen}
             options={{ ...sharedOptions, headerShown: false }}
           />
 
