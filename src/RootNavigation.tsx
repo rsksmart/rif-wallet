@@ -81,7 +81,7 @@ export const RootNavigation: React.FC<{
   return (
     <View style={styles.parent}>
       <NavigationContainer>
-        <AppHeader address="0x1234567890" />
+        <AppHeader />
         <RootStack.Navigator>
           <RootStack.Screen
             name="Home"

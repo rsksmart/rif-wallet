@@ -1,22 +1,17 @@
 import React from 'react'
-import { useNavigation } from '@react-navigation/native'
 import { View, Text, StyleSheet } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { AddressCopyComponent } from '../../components/copy/AddressCopyComponent'
+import { useSelectedWallet } from '../../Context'
 
-interface Interface {
-  navigation?: any
-  address: string
-}
-
-export const AppHeader: React.FC<Interface> = ({ address }) => {
-  const navigation = useNavigation()
-  const openMenu = () => navigation.navigate('Receive')
+export const AppHeader: React.FC<{}> = () => {
+  const { wallet } = useSelectedWallet()
+  const openMenu = () => console.log('@todo') // navigation.navigate('Receive')
 
   return (
     <View style={styles.row}>
       <View style={styles.column}>
-        <AddressCopyComponent address={address} />
+        {wallet && <AddressCopyComponent address={wallet.smartWalletAddress} />}
       </View>
       <View style={styles.column}>
         <TouchableOpacity onPress={openMenu}>
