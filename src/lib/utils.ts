@@ -3,8 +3,8 @@ export function shortAddress(address?: string): string {
     return ''
   }
 
-  return `${address.substr(0, 6)}...${address.substr(
-    address.length - 4,
+  return `${address.substr(0, 4)}...${address.substr(
+    address.length - 2,
     address.length,
   )}`
 }

@@ -14,6 +14,7 @@ import { KeysInfoScreenProps } from './screens/info/KeysInfoScreen'
 import { SendScreenProps } from './screens/send/SendScreen'
 import { ActivityScreenProps } from './screens/activity/ActivityScreen'
 import { InjectedBrowserUXScreenProps } from './screens/injectedBrowser/InjectedBrowserNavigation'
+import { AppHeader } from './ux/appHeader'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -80,6 +81,7 @@ export const RootNavigation: React.FC<{
   return (
     <View style={styles.parent}>
       <NavigationContainer>
+        <AppHeader address="0x1234567890" />
         <RootStack.Navigator>
           <RootStack.Screen
             name="Home"
