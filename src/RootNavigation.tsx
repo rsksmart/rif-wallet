@@ -15,6 +15,7 @@ import { SendScreenProps } from './screens/send/SendScreen'
 import { ActivityScreenProps } from './screens/activity/ActivityScreen'
 import { InjectedBrowserUXScreenProps } from './screens/injectedBrowser/InjectedBrowserNavigation'
 import { AppHeader } from './ux/appHeader'
+import { AppFooterMenu } from './ux/appFooter'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -179,6 +180,7 @@ export const RootNavigation: React.FC<{
             )}
           </RootStack.Screen>
         </RootStack.Navigator>
+        <AppFooterMenu />
       </NavigationContainer>
     </View>
   )

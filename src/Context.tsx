@@ -21,6 +21,7 @@ export const AppContext = createContext<AppContextType>({
 
 export const useSelectedWallet = () => {
   const { wallets, walletsIsDeployed, selectedWallet } = useContext(AppContext)
+  console.log('useSelected...')
   return {
     wallet: wallets[selectedWallet!],
     isDeployed: walletsIsDeployed[selectedWallet!],
