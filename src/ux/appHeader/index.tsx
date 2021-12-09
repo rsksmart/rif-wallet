@@ -1,12 +1,16 @@
+import { useNavigation } from '@react-navigation/core'
 import React from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { AddressCopyComponent } from '../../components/copy/AddressCopyComponent'
 import { useSelectedWallet } from '../../Context'
+import MenuIcon from './MenuIcon'
 
 export const AppHeader: React.FC<{}> = () => {
   const { wallet } = useSelectedWallet()
-  const openMenu = () => console.log('@todo') // navigation.navigate('Receive')
+
+  const navigation = useNavigation()
+  const openMenu = () => navigation.navigate('DevMenu')
 
   return (
     <View style={styles.row}>
@@ -14,8 +18,8 @@ export const AppHeader: React.FC<{}> = () => {
         {wallet && <AddressCopyComponent address={wallet.smartWalletAddress} />}
       </View>
       <View style={styles.column}>
-        <TouchableOpacity onPress={openMenu}>
-        <Text style={styles.text}>Menu</Text>
+        <TouchableOpacity onPress={openMenu} style={styles.menu}>
+          <MenuIcon />
         </TouchableOpacity>
       </View>
     </View>
@@ -33,7 +37,7 @@ const styles = StyleSheet.create({
     paddingRight: 5,
     width: '50%',
   },
-  text: {
-    textAlign: 'right',
+  menu: {
+    alignItems: 'flex-end',
   },
 })

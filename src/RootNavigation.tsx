@@ -33,10 +33,12 @@ const InjectedScreens = {
   InjectedBrowserNavigation: InjectSelectedWallet(
     Screens.InjectedBrowserNavigation,
   ),
+  HomeScreen: InjectSelectedWallet(Screens.HomeScreen),
 }
 
 type RootStackParamList = {
   DevMenu: undefined
+  Home: undefined
   Send: undefined | { token: string }
   Receive: undefined
   Balances: undefined
@@ -84,6 +86,12 @@ export const RootNavigation: React.FC<{
       <NavigationContainer>
         <AppHeader />
         <RootStack.Navigator>
+          <RootStack.Screen
+            name="Home"
+            component={Screens.HomeScreen}
+            options={{ ...sharedOptions, headerShown: false }}
+          />
+
           <RootStack.Screen
             name="DevMenu"
             component={Screens.DevMenuScreen}
