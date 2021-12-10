@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { utils, BigNumber } from 'ethers'
-import { StyleSheet, View, ScrollView, Text, Linking } from 'react-native'
+import { BigNumber } from 'ethers'
+import { StyleSheet, View, ScrollView, Text } from 'react-native'
 
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { Button } from '../../components'
 import {
   IApiTransaction,
@@ -11,7 +11,7 @@ import {
 
 import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
 
-import { formatTimestamp, shortAddress } from '../../lib/utils'
+import { shortAddress } from '../../lib/utils'
 import {
   IAbiEnhancer,
   IEnhancedResult,
@@ -19,106 +19,17 @@ import {
 import { ScreenWithWallet } from '../types'
 import { formatBigNumber } from '../../lib/abiEnhancer/formatBigNumber'
 import { Address } from '../../components'
+import { NavigationProp, ScreenProps } from '../../RootNavigation'
 import { RIFWallet } from '../../lib/core'
 
 const RBTC_DECIMALS = 18
 
-const ActivityDetails = ({
-  transaction,
-  onSelected,
-  t,
-}: {
-  transaction: IActivityTransaction
-  onSelected: (transaction: IActivityTransaction | null) => void
-  t: any
-}) => (
-  <View>
-    <View>
-      <Text testID="txDetailsTitle" style={styles.transactionDetailsTitle}>
-        <Trans>Transaction Details</Trans>
-      </Text>
-    </View>
-    <View>
-      {transaction.enhancedTransaction ? (
-        <>
-          <Text>
-            <Trans>Token</Trans>: {transaction.enhancedTransaction.symbol}
-          </Text>
-          <Text>
-            <Trans>Amount</Trans>: {transaction.enhancedTransaction.value}
-          </Text>
-          <Text>
-            <Trans>From</Trans>:
-            {shortAddress(transaction.enhancedTransaction.from)}
-          </Text>
-          <Text>
-            <Trans>To</Trans>:{' '}
-            {shortAddress(transaction.enhancedTransaction.to)}
-          </Text>
-        </>
-      ) : (
-        <>
-          <Text>
-            <Trans>From</Trans>:{' '}
-            {shortAddress(transaction.originTransaction.from)}
-          </Text>
-          <Text>
-            <Trans>To</Trans>: {shortAddress(transaction.originTransaction.to)}
-          </Text>
-          <Text>
-            <Trans>Amount</Trans>: {transaction.originTransaction.value}
-          </Text>
-          <Text>
-            <Trans>Data</Trans>: {transaction.originTransaction.data}
-          </Text>
-        </>
-      )}
-      <Text>
-        <Trans>TX Hash</Trans>:{' '}
-        {shortAddress(transaction.originTransaction.hash)}
-      </Text>
-      <Text>
-        <Trans>Gas</Trans>: {transaction.originTransaction.gas}
-      </Text>
-      <Text>
-        <Trans>Gas Price</Trans>:{' '}
-        {utils.formatUnits(transaction.originTransaction.gasPrice, 'gwei')}
-      </Text>
-      <Text>
-        <Trans>Status</Trans>:{' '}
-        {transaction.originTransaction.receipt
-          ? transaction.originTransaction.receipt.status
-          : 'PENDING'}
-      </Text>
-      <Text>
-        <Trans>Time</Trans>:{' '}
-        {formatTimestamp(transaction.originTransaction.timestamp)}
-      </Text>
-
-      <Button
-        title={t('View in explorer')}
-        onPress={() => {
-          Linking.openURL(
-            `https://explorer.testnet.rsk.co/tx/${transaction.originTransaction.hash}`,
-          )
-        }}
-      />
-      <Button
-        title={t('Return to Activity Screen')}
-        onPress={() => {
-          onSelected(null)
-        }}
-      />
-    </View>
-  </View>
-)
-
 const ActivityRow = ({
   activityTransaction,
-  onSelected,
+  navigation,
 }: {
   activityTransaction: IActivityTransaction
-  onSelected: (transaction: IActivityTransaction) => void
+  navigation: NavigationProp
 }) => (
   <View
     key={activityTransaction.originTransaction.hash}
@@ -148,7 +59,7 @@ const ActivityRow = ({
     <View style={styles.button}>
       <Button
         onPress={() => {
-          onSelected(activityTransaction)
+          navigation.navigate('ActivityDetails', activityTransaction)
         }}
         title={'>'}
         testID={`${activityTransaction.originTransaction.hash}.Button`}
@@ -171,117 +82,104 @@ interface TransactionsServerResponseWithActivityTransactions
   activityTransactions?: IActivityTransaction[]
 }
 
-export const ActivityScreen: React.FC<ScreenWithWallet & ActivityScreenProps> =
-  ({ wallet, fetcher, abiEnhancer }) => {
-    const [info, setInfo] = useState('')
-    const [transactions, setTransactions] =
-      useState<TransactionsServerResponseWithActivityTransactions | null>(null)
-    const [selectedActivityTransaction, setSelectedActivityTransaction] =
-      useState<null | IActivityTransaction>()
-    const { t } = useTranslation()
+export const ActivityScreen: React.FC<
+  ScreenProps<'Activity'> & ScreenWithWallet & ActivityScreenProps
+> = ({ wallet, fetcher, abiEnhancer, navigation }) => {
+  const [info, setInfo] = useState('')
+  const [transactions, setTransactions] =
+    useState<TransactionsServerResponseWithActivityTransactions | null>(null)
+  const { t } = useTranslation()
 
-    useEffect(() => {
-      fetchTransactionsPage()
-    }, [])
+  useEffect(() => {
+    fetchTransactionsPage()
+  }, [])
 
-    const fetchTransactionsPage = async ({
-      prev,
-      next,
-    }: {
-      prev?: string | null
-      next?: string | null
-    } = {}) => {
-      /*i18n.changeLanguage('es')*/
-      try {
-        setInfo(t('Loading transactions. Please wait...'))
+  const fetchTransactionsPage = async ({
+    prev,
+    next,
+  }: {
+    prev?: string | null
+    next?: string | null
+  } = {}) => {
+    /*i18n.changeLanguage('es')*/
+    try {
+      setInfo(t('Loading transactions. Please wait...'))
 
-        const fetchedTransactions: TransactionsServerResponseWithActivityTransactions =
-          await fetcher.fetchTransactionsByAddress(
-            wallet.smartWalletAddress.toLowerCase(),
-            prev,
-            next,
-          )
-
-        fetchedTransactions.activityTransactions = await Promise.all(
-          fetchedTransactions.data.map(async (tx: IApiTransaction) => {
-            const enhancedTransaction = await enhanceTransactionInput(
-              tx,
-              wallet,
-              abiEnhancer,
-            )
-            return {
-              originTransaction: tx,
-              enhancedTransaction,
-            }
-          }),
+      const fetchedTransactions: TransactionsServerResponseWithActivityTransactions =
+        await fetcher.fetchTransactionsByAddress(
+          wallet.smartWalletAddress.toLowerCase(),
+          prev,
+          next,
         )
 
-        setTransactions(fetchedTransactions)
-        setInfo('')
-      } catch (e: any) {
-        setInfo(t('Error reaching API: ') + e.message)
-      }
+      fetchedTransactions.activityTransactions = await Promise.all(
+        fetchedTransactions.data.map(async (tx: IApiTransaction) => {
+          const enhancedTransaction = await enhanceTransactionInput(
+            tx,
+            wallet,
+            abiEnhancer,
+          )
+          return {
+            originTransaction: tx,
+            enhancedTransaction,
+          }
+        }),
+      )
+
+      setTransactions(fetchedTransactions)
+      setInfo('')
+    } catch (e: any) {
+      setInfo(t('Error reaching API: ') + e.message)
     }
-
-    return (
-      <ScrollView>
-        {!selectedActivityTransaction && (
-          <View>
-            <Address testID={'Address.Paragraph'}>
-              {wallet.smartWalletAddress}
-            </Address>
-
-            <View>
-              <Text testID="Info.Text">{info}</Text>
-            </View>
-            <View style={styles.refreshButtonView}>
-              <Button
-                onPress={() =>
-                  fetchTransactionsPage({ prev: transactions?.prev })
-                }
-                disabled={!transactions?.prev}
-                title={t('< Prev')}
-              />
-              <Button
-                onPress={() => fetchTransactionsPage()}
-                title={t('Refresh')}
-                testID={'Refresh.Button'}
-              />
-              <Button
-                onPress={() =>
-                  fetchTransactionsPage({ next: transactions?.next })
-                }
-                disabled={!transactions?.next}
-                title={t('Next >')}
-              />
-            </View>
-
-            {transactions &&
-              transactions.activityTransactions &&
-              transactions.activityTransactions.length > 0 &&
-              transactions.activityTransactions.map(
-                (activityTransaction: IActivityTransaction) => (
-                  <ActivityRow
-                    key={activityTransaction.originTransaction.hash}
-                    activityTransaction={activityTransaction}
-                    onSelected={setSelectedActivityTransaction}
-                  />
-                ),
-              )}
-          </View>
-        )}
-        {selectedActivityTransaction && (
-          <View>
-            <ActivityDetails
-              transaction={selectedActivityTransaction}
-              onSelected={setSelectedActivityTransaction}
-              t={t}
-            />
-          </View>
-        )}
-      </ScrollView>
-    )
   }
+
+  return (
+    <ScrollView>
+      <View>
+        <Address testID={'Address.Paragraph'}>
+          {wallet.smartWalletAddress}
+        </Address>
+
+        <View>
+          <Text testID="Info.Text">{info}</Text>
+        </View>
+        <View style={styles.refreshButtonView}>
+          <Button
+            onPress={() =>
+              fetchTransactionsPage({ prev: transactions?.prev })
+            }
+            disabled={!transactions?.prev}
+            title={t('< Prev')}
+          />
+          <Button
+            onPress={() => fetchTransactionsPage()}
+            title={t('Refresh')}
+            testID={'Refresh.Button'}
+          />
+          <Button
+            onPress={() =>
+              fetchTransactionsPage({ next: transactions?.next })
+            }
+            disabled={!transactions?.next}
+            title={t('Next >')}
+          />
+        </View>
+
+        {transactions &&
+          transactions.activityTransactions!.length > 0 &&
+          transactions.activityTransactions!.map(
+            (activityTransaction: IActivityTransaction) => (
+              <ActivityRow
+                key={activityTransaction.originTransaction.hash}
+                activityTransaction={activityTransaction}
+                navigation={navigation}
+              />
+            ),
+          )}
+      </View>
+    </ScrollView>
+  )
+}
 
 const styles = StyleSheet.create({
   activityRow: {
@@ -289,11 +187,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC',
   },
-  transactionDetailsTitle: {
-    fontSize: 20,
-    marginBottom: 10,
-  },
-
   activitySummary: {
     position: 'absolute',
     left: 0,

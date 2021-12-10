@@ -421,7 +421,7 @@ export const txTestCase: TransactionsServerResponse = {
     },
   ],
   prev: null,
-  next: null
+  next: null,
 }
 
 // @ts-ignore

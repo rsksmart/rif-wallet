@@ -27,6 +27,8 @@ const createTestInstance = async (
       wallet={mock.rifWallet}
       fetcher={fetcher}
       abiEnhancer={abiEnhancer}
+      navigation={mock.navigation}
+      route={{} as any}
       isWalletDeployed
     />,
   )
@@ -92,7 +94,9 @@ describe('Activity Screen', function (this: {
 
       expect(fetcher.fetchTransactionsByAddress).toHaveBeenCalledTimes(1)
       expect(fetcher.fetchTransactionsByAddress).toHaveBeenCalledWith(
-        rifWallet.smartWalletAddress.toLowerCase(), undefined, undefined
+        rifWallet.smartWalletAddress.toLowerCase(),
+        undefined,
+        undefined,
       )
     })
   })

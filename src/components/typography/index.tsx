@@ -18,6 +18,12 @@ export const Header2: React.FC<Interface> = ({ children, testID }) => (
   </Text>
 )
 
+export const Header3: React.FC<Interface> = ({ children, testID }) => (
+  <Text style={styles.header3} testID={testID}>
+    {children}
+  </Text>
+)
+
 export const Paragraph: React.FC<Interface> = ({ children, testID }) => (
   <Text style={styles.paragraph} testID={testID}>
     {children}
@@ -37,6 +43,10 @@ const styles = StyleSheet.create({
   },
   header2: {
     fontSize: 36,
+    marginBottom: 15,
+  },
+  header3: {
+    fontSize: 26,
     marginBottom: 15,
   },
   paragraph: {

@@ -5,6 +5,7 @@ import { Signer } from '@ethersproject/abstract-signer'
 import { formatBigNumber } from '../formatBigNumber'
 import { IEnhancedResult, IEnhanceStrategy } from '../AbiEnhancer'
 import { ERC20Token } from '../../token/ERC20Token'
+import { BigNumber } from '@ethersproject/bignumber'
 
 export class ERC20EnhanceStrategy implements IEnhanceStrategy {
   public async parse(
@@ -27,10 +28,17 @@ export class ERC20EnhanceStrategy implements IEnhanceStrategy {
 
     const abiErc20Interface = ERC20__factory.createInterface()
 
-    const [decodedTo, decodedValue] = abiErc20Interface.decodeFunctionData(
-      'transfer',
-      transactionRequest.data,
-    )
+    let resultTo = transactionRequest.to
+    let resultValue = transactionRequest.value
+
+    try {
+      const [decodedTo, decodedValue] = abiErc20Interface.decodeFunctionData(
+        'transfer',
+        transactionRequest.data,
+      )
+      resultTo = decodedTo
+      resultValue = decodedValue
+    } catch (error) {}
 
     const currentBalance = await tokenFounded.balance()
     const tokenDecimals = await tokenFounded.decimals()
@@ -38,10 +46,10 @@ export class ERC20EnhanceStrategy implements IEnhanceStrategy {
 
     return {
       ...transactionRequest,
-      to: decodedTo,
+      to: resultTo,
       symbol: tokenSymbol,
       balance: formatBigNumber(currentBalance, tokenDecimals),
-      value: formatBigNumber(decodedValue, tokenDecimals),
+      value: formatBigNumber(BigNumber.from(resultValue ?? 0), tokenDecimals),
     }
   }
 }

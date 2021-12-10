@@ -103,6 +103,12 @@ const WalletRow = ({
           title={t('Manage Pin')}
         />
       </View>
+
+      <Button
+        onPress={() => navigation.navigate('InjectedBrowserUX')}
+        title={t('InjectedBrowser')}
+        disabled={!isWalletDeployed}
+      />
     </>
   )
 }
