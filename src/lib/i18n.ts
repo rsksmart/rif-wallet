@@ -61,6 +61,11 @@ const resources = {
       'Get info': 'Get Info',
       'RBTC Balance (EOA)': 'RBTC Balance (EOA)',
       'Do you want to sign this message?': 'Do you want to sign this message?',
+
+      InjectedBrowser: 'InjectedBrowser',
+      'Sample apps': 'Sample apps',
+      Dapps: 'Dapps',
+      Faucets: 'Faucets',
     },
   },
   es: {
