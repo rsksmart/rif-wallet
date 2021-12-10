@@ -145,9 +145,7 @@ export const ActivityScreen: React.FC<
         </View>
         <View style={styles.refreshButtonView}>
           <Button
-            onPress={() =>
-              fetchTransactionsPage({ prev: transactions?.prev })
-            }
+            onPress={() => fetchTransactionsPage({ prev: transactions?.prev })}
             disabled={!transactions?.prev}
             title={t('< Prev')}
           />
@@ -157,9 +155,7 @@ export const ActivityScreen: React.FC<
             testID={'Refresh.Button'}
           />
           <Button
-            onPress={() =>
-              fetchTransactionsPage({ next: transactions?.next })
-            }
+            onPress={() => fetchTransactionsPage({ next: transactions?.next })}
             disabled={!transactions?.next}
             title={t('Next >')}
           />
