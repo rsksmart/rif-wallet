@@ -15,7 +15,11 @@ export interface IRIFWalletServicesFetcher {
 const RESULTS_LIMIT = 10
 
 export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
-  uri = 'http://10.0.2.2:3000' // 'https://rif-wallet-services-dev.rifcomputing.net'
+  uri: string
+
+  constructor(uri: string) {
+    this.uri = uri
+  }
 
   protected async fetchAvailableTokens() {
     return fetch(`${this.uri}/tokens`).then(response => response.json())
