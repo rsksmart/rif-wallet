@@ -27,6 +27,7 @@ const createTestInstance = async (
       wallet={mock.rifWallet}
       fetcher={fetcher}
       abiEnhancer={abiEnhancer}
+      isWalletDeployed
     />,
   )
 
@@ -80,7 +81,7 @@ describe('Activity Screen', function (this: {
       } = this.testInstance
 
       await waitForEffect()
-      for (let v of txTestCase) {
+      for (let v of txTestCase.data) {
         // @ts-ignore
         const enhancedTx = enhancedTxTestCase
         const activityText = getByTestId(`${v.hash}.Text`)
@@ -91,7 +92,7 @@ describe('Activity Screen', function (this: {
 
       expect(fetcher.fetchTransactionsByAddress).toHaveBeenCalledTimes(1)
       expect(fetcher.fetchTransactionsByAddress).toHaveBeenCalledWith(
-        rifWallet.smartWalletAddress.toLowerCase(),
+        rifWallet.smartWalletAddress.toLowerCase(), undefined, undefined
       )
     })
   })
