@@ -31,7 +31,9 @@ const createRIFWalletFactory = (onRequest: OnRequest) => (wallet: Wallet) =>
     onRequest,
   ) // temp - using only testnet
 
-const fetcher = new RifWalletServicesFetcher()
+const rifWalletServicesUrl = 'http://localhost:3000' // 'https://rif-wallet-services-dev.rifcomputing.net'
+
+const fetcher = new RifWalletServicesFetcher(rifWalletServicesUrl)
 const abiEnhancer = new AbiEnhancer()
 // @ts-ignore
 const rnsResolver = new Resolver.forRskTestnet()

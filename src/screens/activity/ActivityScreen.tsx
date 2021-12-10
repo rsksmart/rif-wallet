@@ -4,7 +4,10 @@ import { StyleSheet, View, ScrollView, Text } from 'react-native'
 
 import { useTranslation } from 'react-i18next'
 import { Button } from '../../components'
-import { IApiTransaction } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import {
+  IApiTransaction,
+  TransactionsServerResponse,
+} from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
 
@@ -17,6 +20,9 @@ import { ScreenWithWallet } from '../types'
 import { formatBigNumber } from '../../lib/abiEnhancer/formatBigNumber'
 import { Address } from '../../components'
 import { NavigationProp, ScreenProps } from '../../RootNavigation'
+import { RIFWallet } from '../../lib/core'
+
+const RBTC_DECIMALS = 18
 
 const ActivityRow = ({
   activityTransaction,
@@ -42,7 +48,7 @@ const ActivityRow = ({
           <>
             {formatBigNumber(
               BigNumber.from(activityTransaction.originTransaction.value),
-              18,
+              RBTC_DECIMALS,
             )}
             {' RBTC'}
             {shortAddress(activityTransaction.originTransaction.to)}{' '}
@@ -71,58 +77,58 @@ export type ActivityScreenProps = {
   abiEnhancer: IAbiEnhancer
 }
 
+interface TransactionsServerResponseWithActivityTransactions
+  extends TransactionsServerResponse {
+  activityTransactions?: IActivityTransaction[]
+}
+
 export const ActivityScreen: React.FC<
   ScreenProps<'Activity'> & ScreenWithWallet & ActivityScreenProps
 > = ({ wallet, fetcher, abiEnhancer, navigation }) => {
   const [info, setInfo] = useState('')
-  const [transactions, setTransactions] = useState<IActivityTransaction[]>([])
+  const [transactions, setTransactions] =
+    useState<TransactionsServerResponseWithActivityTransactions | null>(null)
   const { t } = useTranslation()
 
-  const enhanceTransactionInput = async (
-    transaction: IApiTransaction,
-  ): Promise<IEnhancedResult | undefined> => {
-    let tx
-    try {
-      tx = wallet.smartWallet.smartWalletContract.interface.decodeFunctionData(
-        'directExecute',
-        transaction.input,
-      )
-      return (await abiEnhancer.enhance(wallet, {
-        from: wallet.smartWalletAddress,
-        to: tx.to.toLowerCase(),
-        data: tx.data,
-        value: transaction.value,
-      }))!
-    } catch {
-      return undefined
-    }
-  }
-
   useEffect(() => {
-    loadData()
+    fetchTransactionsPage()
   }, [])
 
-  const loadData = async () => {
+  const fetchTransactionsPage = async ({
+    prev,
+    next,
+  }: {
+    prev?: string | null
+    next?: string | null
+  } = {}) => {
     /*i18n.changeLanguage('es')*/
     try {
-      setTransactions([])
       setInfo(t('Loading transactions. Please wait...'))
 
-      const fetchedTransactions = await fetcher.fetchTransactionsByAddress(
-        wallet.smartWalletAddress.toLowerCase(),
-      )
-      const activityTransactions: IActivityTransaction[] = await Promise.all(
-        fetchedTransactions.map(async (tx: IApiTransaction) => {
-          const enhancedTransaction = await enhanceTransactionInput(tx)
+      const fetchedTransactions: TransactionsServerResponseWithActivityTransactions =
+        await fetcher.fetchTransactionsByAddress(
+          wallet.smartWalletAddress.toLowerCase(),
+          prev,
+          next,
+        )
+
+      fetchedTransactions.activityTransactions = await Promise.all(
+        fetchedTransactions.data.map(async (tx: IApiTransaction) => {
+          const enhancedTransaction = await enhanceTransactionInput(
+            tx,
+            wallet,
+            abiEnhancer,
+          )
           return {
             originTransaction: tx,
             enhancedTransaction,
           }
         }),
       )
-      setTransactions(activityTransactions)
+
+      setTransactions(fetchedTransactions)
       setInfo('')
-    } catch (e) {
+    } catch (e: any) {
       setInfo(t('Error reaching API: ') + e.message)
     }
   }
@@ -137,24 +143,35 @@ export const ActivityScreen: React.FC<
         <View>
           <Text testID="Info.Text">{info}</Text>
         </View>
-
-        {transactions &&
-          transactions.length > 0 &&
-          transactions.map((activityTransaction: IActivityTransaction) => (
-            <ActivityRow
-              key={activityTransaction.originTransaction.hash}
-              activityTransaction={activityTransaction}
-              navigation={navigation}
-            />
-          ))}
-
         <View style={styles.refreshButtonView}>
           <Button
-            onPress={loadData}
+            onPress={() => fetchTransactionsPage({ prev: transactions?.prev })}
+            disabled={!transactions?.prev}
+            title={t('< Prev')}
+          />
+          <Button
+            onPress={() => fetchTransactionsPage()}
             title={t('Refresh')}
             testID={'Refresh.Button'}
           />
+          <Button
+            onPress={() => fetchTransactionsPage({ next: transactions?.next })}
+            disabled={!transactions?.next}
+            title={t('Next >')}
+          />
         </View>
+
+        {transactions &&
+          transactions.activityTransactions!.length > 0 &&
+          transactions.activityTransactions!.map(
+            (activityTransaction: IActivityTransaction) => (
+              <ActivityRow
+                key={activityTransaction.originTransaction.hash}
+                activityTransaction={activityTransaction}
+                navigation={navigation}
+              />
+            ),
+          )}
       </View>
     </ScrollView>
   )
@@ -180,5 +197,29 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC',
     alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
   },
 })
+
+const enhanceTransactionInput = async (
+  transaction: IApiTransaction,
+  wallet: RIFWallet,
+  abiEnhancer: IAbiEnhancer,
+): Promise<IEnhancedResult | undefined> => {
+  let tx
+  try {
+    tx = wallet.smartWallet.smartWalletContract.interface.decodeFunctionData(
+      'directExecute',
+      transaction.input,
+    )
+    return (await abiEnhancer.enhance(wallet, {
+      from: wallet.smartWalletAddress,
+      to: tx.to.toLowerCase(),
+      data: tx.data,
+      value: transaction.value,
+    }))!
+  } catch {
+    return undefined
+  }
+}

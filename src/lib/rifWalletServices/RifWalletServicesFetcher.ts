@@ -1,21 +1,45 @@
-import { ITokenWithBalance, IApiTransaction } from './RIFWalletServicesTypes'
+import {
+  ITokenWithBalance,
+  TransactionsServerResponse,
+} from './RIFWalletServicesTypes'
 
 export interface IRIFWalletServicesFetcher {
   fetchTokensByAddress(address: string): Promise<ITokenWithBalance[]>
-  fetchTransactionsByAddress(address: string): Promise<IApiTransaction[]>
+  fetchTransactionsByAddress(
+    address: string,
+    prev?: string | null,
+    next?: string | null,
+  ): Promise<TransactionsServerResponse>
 }
 
+const RESULTS_LIMIT = 10
+
 export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
-  uri = 'https://rif-wallet-services-dev.rifcomputing.net'
+  uri: string
+
+  constructor(uri: string) {
+    this.uri = uri
+  }
 
   protected async fetchAvailableTokens() {
     return fetch(`${this.uri}/tokens`).then(response => response.json())
   }
 
-  fetchTransactionsByAddress = (smartAddress: string) =>
-    fetch(`${this.uri}/address/${smartAddress}/transactions`).then(response =>
-      response.json(),
-    )
+  fetchTransactionsByAddress = (
+    smartAddress: string,
+    prev?: string | null,
+    next?: string | null,
+  ) => {
+    let transactionsUrl = `${this.uri}/address/${smartAddress}/transactions?limit=${RESULTS_LIMIT}`
+
+    if (prev) {
+      transactionsUrl = `${transactionsUrl}&prev=${prev}`
+    } else if (next) {
+      transactionsUrl = `${transactionsUrl}&next=${next}`
+    }
+
+    return fetch(transactionsUrl).then(response => response.json())
+  }
 
   fetchEventsByAddress = (smartAddress: string) =>
     fetch(`${this.uri}/address/${smartAddress}/events`).then(response =>

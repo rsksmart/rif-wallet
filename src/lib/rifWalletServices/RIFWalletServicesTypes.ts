@@ -78,4 +78,6 @@ export interface IApiTransaction {
 
 export interface TransactionsServerResponse {
   data: IApiTransaction[]
+  next: string | null | undefined
+  prev: string | null | undefined
 }
