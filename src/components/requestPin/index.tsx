@@ -26,8 +26,8 @@ export const RequestPIN = () => {
   }
 
   useEffect(() => {
-    hasPin().then(hasPin => {
-      if (!hasPin) {
+    hasPin().then(_hasPin => {
+      if (!_hasPin) {
         setLocked(false)
       }
     })
