@@ -83,9 +83,7 @@ export const InjectedBrowser: React.FC<
           onload
           injectedJavaScriptBeforeContentLoaded={JS_BROWSER_INJECTED}
           userAgent={USER_AGENT}
-          sendCookies
           javascriptEnabled
-          allowsInlineMediaPlayback
           useWebkit
         />
       </View>
@@ -138,7 +136,7 @@ const JS_BROWSER_INJECTED = /* javascript */ `
     window.ethereum.on = (method, callback) => { if (method) {console.log(method)} }
     window.ethereum.removeListener = (method, callback) => { if (method) {console.log(method)} }
     window.ethereum.removeAllListeners = () => { console.log("removeAllListeners") }
-    
+
     ${
       Platform.OS === 'ios' ? 'window' : 'document'
     }.addEventListener("message", function(message) {
@@ -166,7 +164,7 @@ const JS_BROWSER_INJECTED = /* javascript */ `
     }
 
     // Override enable function can return the current address to web site
-    window.ethereum.enable = () => 
+    window.ethereum.enable = () =>
       new Promise((resolve, reject) =>
         sendAsync({ method: "eth_requestAccounts" }).then(response =>
           response.result
@@ -183,24 +181,20 @@ const JS_BROWSER_INJECTED = /* javascript */ `
 
       const {method, params, jsonrpc, id} = payload;
       const newId = id ? id : callNumber
-      
-      console.log('payload: ', newId, payload);
-      
+
       try {
         result = await communicateWithRN({
-          method: method, 
-          params: params, 
-          jsonrpc: jsonrpc, 
+          method: method,
+          params: params,
+          jsonrpc: jsonrpc,
           id: newId
         });
 
-        res = {id, jsonrpc, method, result};
+        res = { id, jsonrpc, method, result };
       } catch(err) {
         errRes = err;
-        console.log('sendAsync err: ', errRes);
       }
-      
-      console.log('res: ', callback, res, errRes);
+
       if (callback) {
         callback(errRes, res);
       } else {
