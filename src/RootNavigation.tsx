@@ -19,12 +19,16 @@ const InjectedScreens = {
   ReceiveScreen: InjectSelectedWallet(Screens.ReceiveScreen),
   BalancesScreen: InjectSelectedWallet(Screens.BalancesScreen),
   ActivityScreen: InjectSelectedWallet(Screens.ActivityScreen),
+  ActivityDetailsScreen: InjectSelectedWallet(Screens.ActivityDetailsScreen),
   SignMessageScreen: InjectSelectedWallet(Screens.SignMessageScreen),
   WalletInfoScreen: InjectSelectedWallet(Screens.WalletInfoScreen),
   KeysInfoScreen: InjectSelectedWallet(Screens.KeysInfoScreen),
   SignTypedDataScreen: InjectSelectedWallet(Screens.SignTypedDataScreen),
   WalletConnectNavigationScreen: InjectSelectedWallet(
     Screens.WalletConnectNavigationScreen,
+  ),
+  InjectedBrowserNavigation: InjectSelectedWallet(
+    Screens.InjectedBrowserNavigation,
   ),
 }
 
@@ -34,6 +38,7 @@ type RootStackParamList = {
   Receive: undefined
   Balances: undefined
   Activity: undefined
+  ActivityDetails: undefined
   SignMessage: undefined
   SignTypedData: undefined
   TransactionReceived: undefined
@@ -43,6 +48,7 @@ type RootStackParamList = {
   WalletConnect: undefined
   ChangeLanguage: undefined
   ManagePin: undefined
+  InjectedBrowserUX: undefined
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -109,7 +115,11 @@ export const RootNavigation: React.FC<{
               />
             )}
           </RootStack.Screen>
-
+          <RootStack.Screen
+            name="ActivityDetails"
+            component={InjectedScreens.ActivityDetailsScreen}
+            options={sharedOptions}
+          />
           <RootStack.Screen
             name="SignMessage"
             component={InjectedScreens.SignMessageScreen}
@@ -152,6 +162,11 @@ export const RootNavigation: React.FC<{
             name="ManagePin"
             component={Screens.ManagePinScreen}
             options={{ ...sharedOptions }}
+          />
+          <RootStack.Screen
+            name="InjectedBrowserUX"
+            component={InjectedScreens.InjectedBrowserNavigation}
+            options={{ ...sharedOptions, headerShown: false }}
           />
         </RootStack.Navigator>
       </NavigationContainer>
