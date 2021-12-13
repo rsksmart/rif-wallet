@@ -10,6 +10,7 @@ export interface IRIFWalletServicesFetcher {
     prev?: string | null,
     next?: string | null,
   ): Promise<TransactionsServerResponse>
+  fetchDapps(): Promise<IRegisteredDappsGroup[]>
 }
 
 export interface IRegisteredDapp {
