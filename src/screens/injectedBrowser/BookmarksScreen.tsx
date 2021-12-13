@@ -1,119 +1,65 @@
-import React from 'react'
-import { Trans } from 'react-i18next'
+import { StackNavigationProp } from '@react-navigation/stack'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
-import { Button, Header3 } from '../../components'
+import { Button, Header3, Paragraph } from '../../components'
+import {
+  IRegisteredDappsGroup,
+  RifWalletServicesFetcher,
+} from '../../lib/rifWalletServices/RifWalletServicesFetcher'
 
-import { ScreenProps } from './types'
+import { ScreenProps, StackParamList } from './types'
+
+const fetcher = new RifWalletServicesFetcher()
 
 export const BookmarksScreen: React.FC<ScreenProps<'Bookmarks'>> = ({
   navigation,
 }) => {
+  const [dappsGroups, setDappsGroups] = useState<
+    IRegisteredDappsGroup[] | null
+  >(null)
+
+  useEffect(() => {
+    fetcher.fetchDapps().then(setDappsGroups)
+  }, [])
+
   return (
     <ScrollView>
-      <View style={styles.section}>
-        <Header3>
-          <Trans>Sample apps</Trans>
-        </Header3>
-        <Button
-          onPress={() =>
-            navigation.navigate('InjectedBrowser', {
-              uri: 'https://basic-sample.rlogin.identity.rifos.org/',
-            })
-          }
-          title={'rLogin Sample App'}
-        />
-        <Button
-          onPress={() =>
-            navigation.navigate('InjectedBrowser', {
-              uri: 'https://rsksmart.github.io/rLogin-web3-clients-compatibility-tests/',
-            })
-          }
-          title={'QA Sample App'}
-        />
-      </View>
-      <View style={styles.section}>
-        <Header3>
-          <Trans>Dapps</Trans>
-        </Header3>
-        <Button
-          onPress={() =>
-            navigation.navigate('InjectedBrowser', {
-              uri: 'https://scheduler.rifos.org/',
-            })
-          }
-          title={'rScheduler App'}
-        />
-        <Button
-          onPress={() =>
-            navigation.navigate('InjectedBrowser', {
-              uri: 'https://testnet.manager.rns.rifos.org',
-            })
-          }
-          title={'RNS App'}
-        />
-        <Button
-          onPress={() =>
-            navigation.navigate('InjectedBrowser', {
-              uri: 'https://sample-app-multisig.rifos.org/',
-            })
-          }
-          title={'Multi-Sig App'}
-        />
-        <Button
-          onPress={() =>
-            navigation.navigate('InjectedBrowser', {
-              uri: 'https://identity.rifos.org/',
-            })
-          }
-          title={'Identity App'}
-        />
-        <Button
-          onPress={() =>
-            navigation.navigate('InjectedBrowser', {
-              uri: 'https://email-verifier.identity.rifos.org/',
-            })
-          }
-          title={'Email Verifier App'}
-        />
-        <Button
-          onPress={() =>
-            navigation.navigate('InjectedBrowser', {
-              uri: 'https://rsksmart.github.io/rBench',
-            })
-          }
-          title={'rBench App'}
-        />
-        <Button
-          onPress={() =>
-            navigation.navigate('InjectedBrowser', {
-              uri: 'https://marketplace.testnet.rifos.org/',
-            })
-          }
-          title={'rMarketplace App'}
-        />
-      </View>
-      <View style={[styles.section, styles.bottomPadding]}>
-        <Header3>
-          <Trans>Faucets</Trans>
-        </Header3>
-        <Button
-          onPress={() =>
-            navigation.navigate('InjectedBrowser', {
-              uri: 'https://faucet.rifos.org/',
-            })
-          }
-          title={'RIF Faucet App'}
-        />
-        <Button
-          onPress={() =>
-            navigation.navigate('InjectedBrowser', {
-              uri: 'https://rsksmart.github.io/rsk-token-faucet/',
-            })
-          }
-          title={'Tokens Faucet App'}
-        />
-      </View>
+      {!dappsGroups && <Paragraph>Loading...</Paragraph>}
+      {dappsGroups &&
+        dappsGroups.map((group, index) => (
+          <DappsGroup
+            key={`dapps-group-${index}`}
+            group={group}
+            navigation={navigation}
+          />
+        ))}
     </ScrollView>
+  )
+}
+
+const DappsGroup: React.FC<{
+  group: IRegisteredDappsGroup
+  navigation: StackNavigationProp<StackParamList, 'Bookmarks'>
+}> = ({ group, navigation }) => {
+  if (group.dapps.length === 0) {
+    return null
+  }
+
+  return (
+    <View style={styles.section}>
+      <Header3>{group.groupName}</Header3>
+      {group.dapps.map((dapp, index) => (
+        <Button
+          key={`dapps-button-${index}`}
+          onPress={() =>
+            navigation.navigate('InjectedBrowser', {
+              uri: dapp.url,
+            })
+          }
+          title={dapp.title}
+        />
+      ))}
+    </View>
   )
 }
 

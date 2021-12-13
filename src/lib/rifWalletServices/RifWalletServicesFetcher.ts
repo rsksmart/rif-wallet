@@ -12,6 +12,17 @@ export interface IRIFWalletServicesFetcher {
   ): Promise<TransactionsServerResponse>
 }
 
+export interface IRegisteredDapp {
+  title: string
+  url: string
+  allowedNetworks: number[]
+}
+
+export interface IRegisteredDappsGroup {
+  groupName: string
+  dapps: IRegisteredDapp[]
+}
+
 const RESULTS_LIMIT = 10
 
 export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
@@ -50,4 +61,7 @@ export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
     fetch(`${this.uri}/address/${address.toLowerCase()}/tokens`).then(
       response => response.json(),
     )
+
+  fetchDapps = (): Promise<IRegisteredDappsGroup[]> =>
+    fetch(`${this.uri}/dapps`).then(response => response.json())
 }

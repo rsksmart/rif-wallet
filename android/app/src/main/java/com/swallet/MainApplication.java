@@ -48,9 +48,9 @@ public class MainApplication extends Application implements ReactApplication {
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
 
     // WebView.setWebContentsDebuggingEnabled(true);
-    WebView.setGeolocationEnabled(false);
-    WebView.setAllowContentAccess(false);
-    WebView.setAllowFileAccess(false);
+//    WebView.setGeolocationEnabled(false);
+//    WebView.setAllowContentAccess(false);
+//    WebView.setAllowFileAccess(false);
   }
 
   /**
