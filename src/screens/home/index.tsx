@@ -1,47 +1,46 @@
-import { useNavigation } from '@react-navigation/native'
-import React from 'react'
-import { StyleSheet, View, Text } from 'react-native'
-import { Svg, Path } from 'react-native-svg'
-import { SendButton } from '../../components/button/SendButton'
-import { ReceiveButton } from '../../components/button/ReceiveButton'
-import { grid } from '../../styles/grid'
+import React, { useState } from 'react'
+import { StyleSheet, View } from 'react-native'
 
-export const HomeScreen: React.FC<{}> = () => {
-  const navigation = useNavigation()
+import { NavigationProp } from '../../RootNavigation'
+import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import SelectedTokenComponent from './SelectedTokenComponent'
+import balances from './tempBalances.json'
+import { BalanceRowComponent } from './BalanceRowComponent'
+import { Paragraph } from '../../components'
+
+export const HomeScreen: React.FC<{
+  navigation: NavigationProp
+}> = ({ navigation }) => {
+  const [selected, setSelected] = useState<ITokenWithBalance>(
+    balances[0] as ITokenWithBalance,
+  )
 
   return (
     <View>
-      <View style={{ ...grid.row, ...styles.amountRow }}>
-        <View style={grid.column6}>
-          <Text style={styles.amount}>1000</Text>
-        </View>
-        <View style={grid.column3}>
-          <SendButton
-            onPress={() => navigation.navigate('Send')}
-            title="send"
-          />
-        </View>
-        <View style={grid.column3}>
-          <ReceiveButton
-            onPress={() => navigation.navigate('Receive')}
-            title="receive"
-          />
+      <SelectedTokenComponent navigation={navigation} token={selected} />
+
+      <View style={styles.container}>
+        <View style={styles.portfolio}>
+          <Paragraph>portfolio</Paragraph>
+          {balances.map((token: any) => (
+            <BalanceRowComponent
+              selected={selected.contractAddress === token.contractAddress}
+              token={token}
+              onPress={() => setSelected(token)}
+            />
+          ))}
         </View>
       </View>
-
-      <Text>accordion section</Text>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  amountRow: {
+  container: {
     padding: 25,
+    marginHorizontal: 25,
+    borderRadius: 25,
+    backgroundColor: '#ffffff',
   },
-  amount: {
-    color: '#5C5D5D',
-    fontSize: 36,
-    fontWeight: '500',
-    marginTop: 25,
-  },
+  portfolio: {},
 })

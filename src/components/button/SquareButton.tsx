@@ -13,7 +13,7 @@ export interface IconButtonInterface extends Interface {
 
 interface Interface {
   title: string
-  icon: any
+  icon?: any
   onPress?: (event: GestureResponderEvent) => any
   disabled?: boolean
   testID?: string
@@ -40,12 +40,12 @@ export const SquareButton: React.FC<Interface> = ({
 
 const styles = StyleSheet.create({
   button: {
-    width: 85,
+    width: 70,
     padding: 10,
   },
   image: {
-    width: 65,
-    height: 65,
+    width: 50,
+    height: 50,
     backgroundColor: '#fff',
     borderRadius: 15,
     alignItems: 'center',
