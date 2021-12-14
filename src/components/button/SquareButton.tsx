@@ -6,7 +6,10 @@ import {
   Text,
   StyleSheet,
 } from 'react-native'
-import Svg, { G, Path } from 'react-native-svg'
+
+export interface IconButtonInterface extends Interface {
+  color?: string
+}
 
 interface Interface {
   title: string
@@ -29,9 +32,7 @@ export const SquareButton: React.FC<Interface> = ({
       onPress={onPress}
       disabled={disabled}
       testID={testID}>
-      <View style={styles.image}>
-        {icon}
-      </View>
+      <View style={styles.image}>{icon}</View>
       <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>
   )
