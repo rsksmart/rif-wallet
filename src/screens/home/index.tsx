@@ -7,6 +7,8 @@ import SelectedTokenComponent from './SelectedTokenComponent'
 import balances from './tempBalances.json'
 import { BalanceRowComponent } from './BalanceRowComponent'
 import { Paragraph } from '../../components'
+import LinearGradient from 'react-native-linear-gradient'
+import { getTokenColor, setOpacity } from './tokenColor'
 
 export const HomeScreen: React.FC<{
   navigation: NavigationProp
@@ -14,12 +16,20 @@ export const HomeScreen: React.FC<{
   const [selected, setSelected] = useState<ITokenWithBalance>(
     balances[0] as ITokenWithBalance,
   )
+  const selectedTokenColor = getTokenColor(selected.name)
+
+  const containerStyles = {
+    ...styles.container,
+    shadowColor: setOpacity(selectedTokenColor, 0.5),
+  }
 
   return (
-    <View>
+    <LinearGradient
+      colors={['#FFFFFF', setOpacity(selectedTokenColor, 0.1)]}
+      style={styles.parent}>
       <SelectedTokenComponent navigation={navigation} token={selected} />
 
-      <View style={styles.container}>
+      <View style={containerStyles}>
         <View style={styles.portfolio}>
           <Paragraph>portfolio</Paragraph>
           {balances.map((token: any) => (
@@ -31,16 +41,23 @@ export const HomeScreen: React.FC<{
           ))}
         </View>
       </View>
-    </View>
+    </LinearGradient>
   )
 }
 
 const styles = StyleSheet.create({
+  parent: {
+    height: '100%',
+  },
   container: {
     padding: 25,
     marginHorizontal: 25,
     borderRadius: 25,
     backgroundColor: '#ffffff',
+
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 2,
   },
   portfolio: {},
 })

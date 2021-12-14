@@ -7,6 +7,7 @@ import { grid } from '../../styles/grid'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { balanceToString } from '../balances/BalancesScreen'
 import { TokenImage } from './TokenImage'
+import { getTokenColor } from './tokenColor'
 
 interface Interface {
   navigation: any
@@ -14,6 +15,8 @@ interface Interface {
 }
 
 const SelectedTokenComponent: React.FC<Interface> = ({ navigation, token }) => {
+  const tokenColor = getTokenColor(token.name)
+
   return (
     <View style={{ ...grid.row, ...styles.amountRow }}>
       <View style={{ ...grid.column2, ...styles.icon }}>
@@ -26,6 +29,7 @@ const SelectedTokenComponent: React.FC<Interface> = ({ navigation, token }) => {
       </View>
       <View style={grid.column}>
         <SendButton
+          color={tokenColor}
           onPress={() => {
             navigation.navigate('Send', {
               token: token.symbol,
@@ -36,6 +40,7 @@ const SelectedTokenComponent: React.FC<Interface> = ({ navigation, token }) => {
       </View>
       <View style={grid.column}>
         <ReceiveButton
+          color={tokenColor}
           onPress={() => navigation.navigate('Receive')}
           title="receive"
         />

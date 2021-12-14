@@ -5,7 +5,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { grid } from '../../styles/grid'
 import { balanceToString } from '../balances/BalancesScreen'
-import { getTokenColor } from './tokenColor'
+import { getTokenColorWithOpacity } from './tokenColor'
 import { TokenImage } from './TokenImage'
 
 export const BalanceRowComponent: React.FC<{
@@ -15,7 +15,9 @@ export const BalanceRowComponent: React.FC<{
 }> = ({ selected, token, onPress }) => {
   const containerStyles = {
     ...styles.container,
-    backgroundColor: selected ? getTokenColor(token.name) : '#efefef',
+    backgroundColor: selected
+      ? getTokenColorWithOpacity(token.name, 0.2)
+      : '#efefef',
   }
 
   return (
@@ -32,7 +34,7 @@ export const BalanceRowComponent: React.FC<{
             <Text style={styles.balance}>{`${balanceToString(
               token.balance,
               token.decimals,
-            )} ${token.symbol}`}</Text>
+            )} ${token.symbol || ''}`}</Text>
           </View>
         </View>
       </View>

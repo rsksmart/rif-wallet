@@ -17,6 +17,7 @@ interface Interface {
   onPress?: (event: GestureResponderEvent) => any
   disabled?: boolean
   testID?: string
+  color?: string
 }
 
 export const SquareButton: React.FC<Interface> = ({
@@ -25,14 +26,19 @@ export const SquareButton: React.FC<Interface> = ({
   onPress,
   disabled,
   testID,
+  color,
 }) => {
+  const imageStyle = {
+    ...styles.image,
+    shadowColor: color,
+  }
   return (
     <TouchableOpacity
       style={styles.button}
       onPress={onPress}
       disabled={disabled}
       testID={testID}>
-      <View style={styles.image}>{icon}</View>
+      <View style={imageStyle}>{icon}</View>
       <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>
   )
@@ -49,7 +55,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 15,
     alignItems: 'center',
-    borderWidth: 1,
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 2,
   },
   text: {
     paddingTop: 10,

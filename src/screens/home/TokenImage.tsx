@@ -12,6 +12,13 @@ export const TokenImage: React.FC<{
     width: width || 20,
   }
   switch (logo) {
+    case 'TRBTC':
+      return (
+        <Image
+          source={require('../../images/RBTC-logo.png')}
+          style={iconStyle}
+        />
+      )
     case 'rif.png':
       return (
         <Image
