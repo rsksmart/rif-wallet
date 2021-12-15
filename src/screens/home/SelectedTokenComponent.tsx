@@ -1,13 +1,13 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 
-import { SendButton } from '../../components/button/SendButton'
-import { ReceiveButton } from '../../components/button/ReceiveButton'
 import { grid } from '../../styles/grid'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { balanceToString } from '../balances/BalancesScreen'
 import { TokenImage } from './TokenImage'
 import { getTokenColor } from './tokenColor'
+import { SquareButton } from '../../components/button/SquareButton'
+import { ArrowDown, ArrowUp } from '../../components/icons'
 
 interface Interface {
   navigation: any
@@ -15,7 +15,7 @@ interface Interface {
 }
 
 const SelectedTokenComponent: React.FC<Interface> = ({ navigation, token }) => {
-  const tokenColor = getTokenColor(token.name)
+  const tokenColor = getTokenColor(token.symbol)
 
   return (
     <View style={{ ...grid.row, ...styles.amountRow }}>
@@ -28,7 +28,7 @@ const SelectedTokenComponent: React.FC<Interface> = ({ navigation, token }) => {
         </Text>
       </View>
       <View style={grid.column}>
-        <SendButton
+        <SquareButton
           color={tokenColor}
           onPress={() => {
             navigation.navigate('Send', {
@@ -36,10 +36,11 @@ const SelectedTokenComponent: React.FC<Interface> = ({ navigation, token }) => {
             })
           }}
           title="send"
+          icon={<ArrowUp color={tokenColor} />}
         />
       </View>
       <View style={grid.column}>
-        <ReceiveButton
+        <SquareButton
           color={tokenColor}
           onPress={() => {
             navigation.navigate('Receive', {
@@ -47,6 +48,7 @@ const SelectedTokenComponent: React.FC<Interface> = ({ navigation, token }) => {
             })
           }}
           title="receive"
+          icon={<ArrowDown color={tokenColor} />}
         />
       </View>
     </View>
