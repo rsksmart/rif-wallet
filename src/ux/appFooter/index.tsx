@@ -2,12 +2,13 @@ import { useNavigation } from '@react-navigation/core'
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import CompassIcon from './CompassIcon'
-import ContactsIcon from './ContactsIcon'
-import WalletIcon from './WalletIcon'
+import { ContactsIcon, WalletIcon, CompassIcon } from '../../components/icons'
 
 export const AppFooterMenu: React.FC<{}> = () => {
   const navigation = useNavigation()
+
+  // @ts-ignore
+  const currentRoute = navigation.getCurrentRoute()
 
   return (
     <View style={styles.row}>

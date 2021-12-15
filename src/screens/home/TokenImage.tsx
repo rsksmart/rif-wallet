@@ -1,6 +1,6 @@
 import React from 'react'
 import { Image } from 'react-native'
-import { FrownFaceIcon } from '../../styles/svgIcons'
+import { FrownFaceIcon } from '../../components/icons'
 
 export const TokenImage: React.FC<{
   logo: string
@@ -11,6 +11,7 @@ export const TokenImage: React.FC<{
     height: height || 20,
     width: width || 20,
   }
+
   switch (logo) {
     case 'TRBTC':
       return (
