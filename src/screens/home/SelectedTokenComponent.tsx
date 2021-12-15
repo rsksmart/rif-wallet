@@ -32,7 +32,7 @@ const SelectedTokenComponent: React.FC<Interface> = ({ navigation, token }) => {
           color={tokenColor}
           onPress={() => {
             navigation.navigate('Send', {
-              token: token.symbol,
+              token: token.name,
             })
           }}
           title="send"
@@ -41,7 +41,11 @@ const SelectedTokenComponent: React.FC<Interface> = ({ navigation, token }) => {
       <View style={grid.column}>
         <ReceiveButton
           color={tokenColor}
-          onPress={() => navigation.navigate('Receive')}
+          onPress={() => {
+            navigation.navigate('Receive', {
+              token: token.symbol,
+            })
+          }}
           title="receive"
         />
       </View>

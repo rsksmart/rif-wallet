@@ -1,10 +1,10 @@
-export const getTokenColor = (tokenName: string) => {
-  switch (tokenName) {
+export const getTokenColor = (tokenSymbol: string) => {
+  switch (tokenSymbol) {
     case 'TRBTC':
       return '#3d8af7'
-    case 'tRIF Token':
+    case 'tRIF':
       return '#019cd8'
-    case 'Dollar on Chain':
+    case 'DOC':
       return '#00a845'
     default:
       return '#CCCCCC'
@@ -17,5 +17,5 @@ export const setOpacity = (hex: string, alpha: number) =>
     .toString(16)
     .padStart(2, '0')}`
 
-export const getTokenColorWithOpacity = (tokenName: string, opacity: number) =>
-  setOpacity(getTokenColor(tokenName), opacity)
+export const getTokenColorWithOpacity = (symbol: string, opacity: number) =>
+  setOpacity(getTokenColor(symbol), opacity)

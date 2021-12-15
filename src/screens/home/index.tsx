@@ -16,7 +16,8 @@ export const HomeScreen: React.FC<{
   const [selected, setSelected] = useState<ITokenWithBalance>(
     balances[0] as ITokenWithBalance,
   )
-  const selectedTokenColor = getTokenColor(selected.name)
+
+  const selectedTokenColor = getTokenColor(selected.symbol)
 
   const containerStyles = {
     ...styles.container,
