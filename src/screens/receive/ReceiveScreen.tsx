@@ -1,13 +1,17 @@
 import React from 'react'
-import { StyleSheet, View, ScrollView, Dimensions, Share, Text } from 'react-native'
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  Dimensions,
+  Share,
+  Text,
+} from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import QRCode from 'react-qr-code'
 import Clipboard from '@react-native-community/clipboard'
 
-import { Address, Button, Paragraph } from '../../components'
 import { SquareButton } from '../../components/button/SquareButton'
-import CircleCopy from '../../components/copy/circleCopy'
-import { SmileFaceIcon } from '../../components/icons'
 import { CopyIcon } from '../../components/icons/CopyIcon'
 import { grid } from '../../styles/grid'
 import { getTokenColor, getTokenColorWithOpacity } from '../home/tokenColor'

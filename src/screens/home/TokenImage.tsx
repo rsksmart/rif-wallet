@@ -3,16 +3,16 @@ import { Image } from 'react-native'
 import { FrownFaceIcon } from '../../components/icons'
 
 export const TokenImage: React.FC<{
-  logo: string
+  symbol: string
   height?: number
   width?: number
-}> = ({ logo, height, width }) => {
+}> = ({ symbol, height, width }) => {
   const iconStyle = {
     height: height || 20,
     width: width || 20,
   }
 
-  switch (logo) {
+  switch (symbol) {
     case 'TRBTC':
       return (
         <Image
@@ -20,14 +20,15 @@ export const TokenImage: React.FC<{
           style={iconStyle}
         />
       )
-    case 'rif.png':
+    case 'RIF':
+    case 'tRIF':
       return (
         <Image
           source={require('@rsksmart/rsk-contract-metadata/images/rif.png')}
           style={iconStyle}
         />
       )
-    case 'doc.png':
+    case 'DOC':
       return (
         <Image
           source={require('@rsksmart/rsk-contract-metadata/images/doc.png')}

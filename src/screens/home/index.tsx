@@ -52,7 +52,6 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   container: {
-    padding: 25,
     marginHorizontal: 25,
     borderRadius: 25,
     backgroundColor: '#ffffff',
@@ -61,5 +60,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 2,
   },
-  portfolio: {},
+  portfolio: {
+    paddingHorizontal: 25,
+  },
 })

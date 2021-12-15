@@ -25,7 +25,7 @@ export const BalanceRowComponent: React.FC<{
       <View style={containerStyles}>
         <View style={grid.row}>
           <View style={{ ...grid.column1, ...styles.icon }}>
-            <TokenImage logo={token.logo} />
+            <TokenImage symbol={token.symbol} />
           </View>
           <View style={{ ...grid.column5, ...styles.tokenName }}>
             <Text>{token.name}</Text>

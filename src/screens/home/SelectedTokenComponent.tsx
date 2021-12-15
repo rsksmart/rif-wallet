@@ -20,7 +20,7 @@ const SelectedTokenComponent: React.FC<Interface> = ({ navigation, token }) => {
   return (
     <View style={{ ...grid.row, ...styles.amountRow }}>
       <View style={{ ...grid.column2, ...styles.icon }}>
-        <TokenImage logo={token.logo} height={45} width={45} />
+        <TokenImage symbol={token.symbol} height={45} width={45} />
       </View>
       <View style={grid.column5}>
         <Text style={styles.amount}>
