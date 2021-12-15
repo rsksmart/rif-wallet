@@ -5,10 +5,10 @@ import { NavigationProp } from '../../RootNavigation'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import SelectedTokenComponent from './SelectedTokenComponent'
 import balances from './tempBalances.json'
-import { BalanceRowComponent } from './BalanceRowComponent'
-import { Paragraph } from '../../components'
 import LinearGradient from 'react-native-linear-gradient'
 import { getTokenColor, setOpacity } from './tokenColor'
+import PortfolioComponent from './PortfolioComponent'
+import TranscationsComponent from './TransactionsComponent'
 
 export const HomeScreen: React.FC<{
   navigation: NavigationProp
@@ -16,11 +16,11 @@ export const HomeScreen: React.FC<{
   const [selected, setSelected] = useState<ITokenWithBalance>(
     balances[0] as ITokenWithBalance,
   )
+  const [selectedPanel, setSelectedPanel] = useState<string>('portfolio')
 
   const selectedTokenColor = getTokenColor(selected.symbol)
 
   const containerStyles = {
-    ...styles.container,
     shadowColor: setOpacity(selectedTokenColor, 0.5),
   }
 
@@ -30,19 +30,20 @@ export const HomeScreen: React.FC<{
       style={styles.parent}>
       <SelectedTokenComponent navigation={navigation} token={selected} />
 
-      <View style={containerStyles}>
-        <View style={styles.portfolio}>
-          <Paragraph>portfolio</Paragraph>
-          {balances.map((token: any) => (
-            <BalanceRowComponent
-              key={token.contractAddress}
-              selected={selected.contractAddress === token.contractAddress}
-              token={token}
-              onPress={() => setSelected(token)}
-            />
-          ))}
-        </View>
-      </View>
+      <LinearGradient
+        colors={['#FFFFFF', '#E1E1E1']}
+        style={{ ...styles.topContainer, ...containerStyles }}>
+        <PortfolioComponent
+          setPanelActive={() => setSelectedPanel('portfolio')}
+          balances={balances}
+          selected={selected}
+          setSelected={setSelected}
+          visible={selectedPanel === 'portfolio'}
+        />
+        <TranscationsComponent
+          setPanelActive={() => setSelectedPanel('transactions')}
+          visible={selectedPanel === 'transactions'} />
+      </LinearGradient>
     </LinearGradient>
   )
 }
@@ -51,16 +52,14 @@ const styles = StyleSheet.create({
   parent: {
     height: '100%',
   },
-  container: {
+  topContainer: {
     marginHorizontal: 25,
     borderRadius: 25,
     backgroundColor: '#ffffff',
-
     shadowOpacity: 0.1,
-    shadowRadius: 10,
+    // shadowRadius: 10,
     elevation: 2,
   },
   portfolio: {
-    paddingHorizontal: 25,
   },
 })

@@ -16,7 +16,7 @@ export const BalanceRowComponent: React.FC<{
   const containerStyles = {
     ...styles.container,
     backgroundColor: selected
-      ? getTokenColorWithOpacity(token.name, 0.2)
+      ? getTokenColorWithOpacity(token.symbol, 0.2)
       : '#efefef',
   }
 
@@ -57,8 +57,10 @@ const styles = StyleSheet.create({
   },
   tokenName: {
     marginLeft: 15,
+    marginTop: 3,
   },
   balance: {
     textAlign: 'right',
+    marginTop: 3,
   },
 })
