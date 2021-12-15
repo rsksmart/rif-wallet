@@ -4,24 +4,25 @@ import { View, StyleSheet } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { ContactsIcon, WalletIcon, CompassIcon } from '../../components/icons'
 
-export const AppFooterMenu: React.FC<{}> = () => {
+export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
+  currentScreen,
+}) => {
   const navigation = useNavigation()
-
-  // @ts-ignore
-  const currentRoute = navigation.getCurrentRoute()
 
   return (
     <View style={styles.row}>
       <View style={styles.column}>
-        <ContactsIcon />
+        <ContactsIcon color="#D1D1D1" />
       </View>
       <View style={styles.column}>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <WalletIcon />
+        <TouchableOpacity onPress={() => navigation.navigate('Home' as never)}>
+          <WalletIcon
+            color={currentScreen === 'Home' ? '#5D5E5E' : '#D1D1D1'}
+          />
         </TouchableOpacity>
       </View>
       <View style={styles.column}>
-        <CompassIcon />
+        <CompassIcon color="#D1D1D1" />
       </View>
     </View>
   )

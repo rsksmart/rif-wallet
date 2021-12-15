@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import { NavigationContainer } from '@react-navigation/native'
+import { NavigationContainer, NavigationState } from '@react-navigation/native'
 import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
 import { NavigationProp as _NavigationProp } from '@react-navigation/native'
 
@@ -81,9 +81,15 @@ export const RootNavigation: React.FC<{
   sendScreenProps,
   injectedBrowserUXScreenProps,
 }) => {
+  const [currentScreen, setCurrentScreen] = useState<string>('Home')
+  const handleScreenChange = (newState: NavigationState | undefined) =>
+    setCurrentScreen(
+      newState ? newState.routes[newState.routes.length - 1].name : 'Home',
+    )
+
   return (
     <View style={styles.parent}>
-      <NavigationContainer>
+      <NavigationContainer onStateChange={handleScreenChange}>
         <AppHeader />
         <RootStack.Navigator>
           <RootStack.Screen
@@ -188,7 +194,7 @@ export const RootNavigation: React.FC<{
             )}
           </RootStack.Screen>
         </RootStack.Navigator>
-        <AppFooterMenu />
+        <AppFooterMenu currentScreen={currentScreen} />
       </NavigationContainer>
     </View>
   )

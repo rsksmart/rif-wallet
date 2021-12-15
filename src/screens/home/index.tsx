@@ -34,6 +34,7 @@ export const HomeScreen: React.FC<{
           <Paragraph>portfolio</Paragraph>
           {balances.map((token: any) => (
             <BalanceRowComponent
+              key={token.contractAddress}
               selected={selected.contractAddress === token.contractAddress}
               token={token}
               onPress={() => setSelected(token)}
