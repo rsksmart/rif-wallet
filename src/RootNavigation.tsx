@@ -127,7 +127,7 @@ export const RootNavigation: React.FC<{
               />
             )}
           </RootStack.Screen>
-          <RootStack.Screen name="Activity">
+          <RootStack.Screen name="Activity" options={{ headerShown: false }}>
             {props => (
               <InjectedScreens.ActivityScreen
                 {...props}
@@ -138,7 +138,7 @@ export const RootNavigation: React.FC<{
           <RootStack.Screen
             name="ActivityDetails"
             component={InjectedScreens.ActivityDetailsScreen}
-            options={sharedOptions}
+            options={{ headerShown: false }}
           />
           <RootStack.Screen
             name="SignMessage"

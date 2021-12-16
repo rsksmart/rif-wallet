@@ -20,7 +20,7 @@ import { RIFWallet } from '../../lib/core'
 import ActivityRow from './ActivityRow'
 import { grid } from '../../styles/grid'
 import { SquareButton } from '../../components/button/SquareButton'
-import { Arrow } from '../../components/icons'
+import { Arrow, RefreshIcon } from '../../components/icons'
 
 export interface IActivityTransaction {
   originTransaction: IApiTransaction
@@ -59,6 +59,7 @@ export const ActivityScreen: React.FC<
     /*i18n.changeLanguage('es')*/
     try {
       setInfo(t('Loading transactions. Please wait...'))
+      setTransactions(null)
 
       const fetchedTransactions: TransactionsServerResponseWithActivityTransactions =
         await fetcher.fetchTransactionsByAddress(
@@ -90,6 +91,7 @@ export const ActivityScreen: React.FC<
 
   return (
     <ScrollView style={styles.parent}>
+      <Text style={styles.header}>Activity</Text>
       <View style={{ ...grid.row, ...styles.refreshButtonView }}>
         <View style={{ ...grid.column4, ...styles.column }}>
           <SquareButton
@@ -99,7 +101,7 @@ export const ActivityScreen: React.FC<
             icon={
               <Arrow
                 rotate={270}
-                color={transactions?.prev ? '#000000' : '#e1e1e1'}
+                color={transactions?.prev ? '#66777E' : '#f1f1f1'}
               />
             }
           />
@@ -108,6 +110,7 @@ export const ActivityScreen: React.FC<
           <SquareButton
             onPress={() => fetchTransactionsPage()}
             title="refresh"
+            icon={<RefreshIcon width={50} height={50} color="#66777E" />}
           />
         </View>
         <View style={{ ...grid.column4, ...styles.column }}>
@@ -118,7 +121,7 @@ export const ActivityScreen: React.FC<
             icon={
               <Arrow
                 rotate={90}
-                color={transactions?.next ? '#000000' : '#e1e1e1'}
+                color={transactions?.next ? '#66777E' : '#f1f1f1'}
               />
             }
           />
@@ -154,7 +157,11 @@ const styles = StyleSheet.create({
   },
   column: {
     alignItems: 'center',
-  }
+  },
+  header: {
+    fontSize: 26,
+    textAlign: 'center',
+  },
 })
 
 const enhanceTransactionInput = async (
