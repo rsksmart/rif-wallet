@@ -46,7 +46,6 @@ export const SquareButton: React.FC<Interface> = ({
 
 const styles = StyleSheet.create({
   button: {
-    width: 70,
     padding: 10,
   },
   image: {
