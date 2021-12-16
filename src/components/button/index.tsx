@@ -12,6 +12,7 @@ interface Interface {
   onPress?: (event: GestureResponderEvent) => any
   disabled?: boolean
   testID?: string
+  style?: any
 }
 
 export const Button: React.FC<Interface> = ({
@@ -19,10 +20,11 @@ export const Button: React.FC<Interface> = ({
   onPress,
   disabled,
   testID,
+  style,
 }) => {
   return (
     <TouchableOpacity
-      style={styles.button}
+      style={style ? { ...styles.button, ...style } : styles.button}
       onPress={onPress}
       disabled={disabled}
       testID={testID}>

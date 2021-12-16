@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet } from 'react-native'
 
 import { NavigationProp } from '../../RootNavigation'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
@@ -8,7 +8,7 @@ import balances from './tempBalances.json'
 import LinearGradient from 'react-native-linear-gradient'
 import { getTokenColor, setOpacity } from './tokenColor'
 import PortfolioComponent from './PortfolioComponent'
-import TranscationsComponent from './TransactionsComponent'
+import ActivityComponent from './ActivityComponent'
 
 export const HomeScreen: React.FC<{
   navigation: NavigationProp
@@ -40,7 +40,7 @@ export const HomeScreen: React.FC<{
           setSelected={setSelected}
           visible={selectedPanel === 'portfolio'}
         />
-        <TranscationsComponent
+        <ActivityComponent
           navigation={navigation}
           setPanelActive={() => setSelectedPanel('transactions')}
           visible={selectedPanel === 'transactions'}

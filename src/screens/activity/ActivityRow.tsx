@@ -1,12 +1,10 @@
 import React from 'react'
-import { NavigationProp } from '@react-navigation/native'
 import { BigNumber } from 'ethers'
 
 import { formatBigNumber } from '../../lib/abiEnhancer/formatBigNumber'
 import { shortAddress } from '../../lib/utils'
 import { IActivityTransaction } from './ActivityScreen'
-import { Button, StyleSheet, Text, View } from 'react-native'
-import { Address } from '../../components'
+import { StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { grid } from '../../styles/grid'
 import { TokenImage } from '../home/TokenImage'
@@ -15,7 +13,7 @@ const RBTC_DECIMALS = 18
 
 interface Interface {
   activityTransaction: IActivityTransaction
-  navigation: any //@todo
+  navigation: any
 }
 
 const ActivityRow: React.FC<Interface> = ({
@@ -26,9 +24,7 @@ const ActivityRow: React.FC<Interface> = ({
     navigation.navigate('ActivityDetails', activityTransaction)
 
   return (
-    <View
-      key={activityTransaction.originTransaction.hash}
-      testID={`${activityTransaction.originTransaction.hash}.View`}>
+    <View testID={`${activityTransaction.originTransaction.hash}.View`}>
       <TouchableOpacity
         onPress={handleClick}
         testID={`${activityTransaction.originTransaction.hash}.Button`}

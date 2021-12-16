@@ -15,11 +15,9 @@ import {
   IEnhancedResult,
 } from '../../lib/abiEnhancer/AbiEnhancer'
 import { ScreenWithWallet } from '../types'
-import { Address } from '../../components'
 import { ScreenProps } from '../../RootNavigation'
 import { RIFWallet } from '../../lib/core'
 import ActivityRow from './ActivityRow'
-import { grid } from '../../styles/grid'
 
 export interface IActivityTransaction {
   originTransaction: IApiTransaction
@@ -87,42 +85,41 @@ export const ActivityScreen: React.FC<
     }
   }
 
+  transactions && console.log(transactions.activityTransactions)
+
   return (
     <ScrollView style={styles.parent}>
-      <View>
-        <View>
-          <Text testID="Info.Text">{info}</Text>
-        </View>
-        <View style={styles.refreshButtonView}>
-          <Button
-            onPress={() => fetchTransactionsPage({ prev: transactions?.prev })}
-            disabled={!transactions?.prev}
-            title={t('< Prev')}
-          />
-          <Button
-            onPress={() => fetchTransactionsPage()}
-            title={t('Refresh')}
-            testID={'Refresh.Button'}
-          />
-          <Button
-            onPress={() => fetchTransactionsPage({ next: transactions?.next })}
-            disabled={!transactions?.next}
-            title={t('Next >')}
-          />
-        </View>
-
-        {transactions &&
-          transactions.activityTransactions!.length > 0 &&
-          transactions.activityTransactions!.map(
-            (activityTransaction: IActivityTransaction) => (
-              <ActivityRow
-                key={activityTransaction.originTransaction.hash}
-                activityTransaction={activityTransaction}
-                navigation={navigation}
-              />
-            ),
-          )}
+      <View style={styles.refreshButtonView}>
+        <Button
+          onPress={() => fetchTransactionsPage({ prev: transactions?.prev })}
+          disabled={!transactions?.prev}
+          title={t('< Prev')}
+        />
+        <Button
+          onPress={() => fetchTransactionsPage()}
+          title={t('Refresh')}
+          testID={'Refresh.Button'}
+        />
+        <Button
+          onPress={() => fetchTransactionsPage({ next: transactions?.next })}
+          disabled={!transactions?.next}
+          title={t('Next >')}
+        />
       </View>
+
+      {!!info && <Text testID="Info.Text">{info}</Text>}
+
+      {transactions &&
+        transactions.activityTransactions!.length > 0 &&
+        transactions.activityTransactions!.map(
+          (activityTransaction: IActivityTransaction) => (
+            <ActivityRow
+              key={activityTransaction.originTransaction.hash}
+              activityTransaction={activityTransaction}
+              navigation={navigation}
+            />
+          ),
+        )}
     </ScrollView>
   )
 }
