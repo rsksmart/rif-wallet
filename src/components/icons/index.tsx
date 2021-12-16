@@ -4,8 +4,7 @@ export interface SVGIconInterface {
   color?: string
 }
 
-export { ArrowDown } from './ArrowDown'
-export { ArrowUp } from './ArrowUp'
+export { Arrow } from './Arrow'
 export { CompassIcon } from './CompassIcon'
 export { ContactsIcon } from './ContactsIcon'
 export { CopyIcon } from './CopyIcon'

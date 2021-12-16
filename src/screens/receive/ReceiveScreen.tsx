@@ -16,7 +16,7 @@ import { CopyIcon } from '../../components/icons/CopyIcon'
 import { grid } from '../../styles/grid'
 import { getTokenColor, getTokenColorWithOpacity } from '../home/tokenColor'
 import { ScreenWithWallet } from '../types'
-import { ArrowDown } from '../../components/icons/ArrowDown'
+import { Arrow } from '../../components/icons/Arrow'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
@@ -82,7 +82,7 @@ export const ReceiveScreen: React.FC<ScreenWithWallet & ReceiveScreenProps> = ({
               onPress={handleShare}
               title="share"
               testID="Address.ShareButton"
-              icon={<ArrowDown color={getTokenColor(selectedToken)} />}
+              icon={<Arrow color={getTokenColor(selectedToken)} rotate={225} />}
             />
           </View>
           <View style={{ ...grid.column6, ...styles.bottomColumn }}>

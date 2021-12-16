@@ -7,7 +7,7 @@ import { balanceToString } from '../balances/BalancesScreen'
 import { TokenImage } from './TokenImage'
 import { getTokenColor } from './tokenColor'
 import { SquareButton } from '../../components/button/SquareButton'
-import { ArrowDown, ArrowUp } from '../../components/icons'
+import { Arrow } from '../../components/icons'
 
 interface Interface {
   navigation: any
@@ -36,7 +36,7 @@ const SelectedTokenComponent: React.FC<Interface> = ({ navigation, token }) => {
             })
           }}
           title="send"
-          icon={<ArrowUp color={tokenColor} />}
+          icon={<Arrow color={tokenColor} rotate={45} />}
         />
       </View>
       <View style={grid.column}>
@@ -48,7 +48,7 @@ const SelectedTokenComponent: React.FC<Interface> = ({ navigation, token }) => {
             })
           }}
           title="receive"
-          icon={<ArrowDown color={tokenColor} />}
+          icon={<Arrow color={tokenColor} rotate={225} />}
         />
       </View>
     </View>

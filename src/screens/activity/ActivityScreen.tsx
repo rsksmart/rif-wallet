@@ -18,6 +18,9 @@ import { ScreenWithWallet } from '../types'
 import { ScreenProps } from '../../RootNavigation'
 import { RIFWallet } from '../../lib/core'
 import ActivityRow from './ActivityRow'
+import { grid } from '../../styles/grid'
+import { SquareButton } from '../../components/button/SquareButton'
+import { Arrow } from '../../components/icons'
 
 export interface IActivityTransaction {
   originTransaction: IApiTransaction
@@ -85,26 +88,41 @@ export const ActivityScreen: React.FC<
     }
   }
 
-  transactions && console.log(transactions.activityTransactions)
-
   return (
     <ScrollView style={styles.parent}>
-      <View style={styles.refreshButtonView}>
-        <Button
-          onPress={() => fetchTransactionsPage({ prev: transactions?.prev })}
-          disabled={!transactions?.prev}
-          title={t('< Prev')}
-        />
-        <Button
-          onPress={() => fetchTransactionsPage()}
-          title={t('Refresh')}
-          testID={'Refresh.Button'}
-        />
-        <Button
-          onPress={() => fetchTransactionsPage({ next: transactions?.next })}
-          disabled={!transactions?.next}
-          title={t('Next >')}
-        />
+      <View style={{ ...grid.row, ...styles.refreshButtonView }}>
+        <View style={{ ...grid.column4, ...styles.column }}>
+          <SquareButton
+            onPress={() => fetchTransactionsPage({ prev: transactions?.prev })}
+            disabled={!transactions?.prev}
+            title="prev"
+            icon={
+              <Arrow
+                rotate={270}
+                color={transactions?.prev ? '#000000' : '#e1e1e1'}
+              />
+            }
+          />
+        </View>
+        <View style={{ ...grid.column4, ...styles.column }}>
+          <SquareButton
+            onPress={() => fetchTransactionsPage()}
+            title="refresh"
+          />
+        </View>
+        <View style={{ ...grid.column4, ...styles.column }}>
+          <SquareButton
+            onPress={() => fetchTransactionsPage({ next: transactions?.next })}
+            disabled={!transactions?.next}
+            title="next"
+            icon={
+              <Arrow
+                rotate={90}
+                color={transactions?.next ? '#000000' : '#e1e1e1'}
+              />
+            }
+          />
+        </View>
       </View>
 
       {!!info && <Text testID="Info.Text">{info}</Text>}
@@ -130,14 +148,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   refreshButtonView: {
-    paddingTop: 15,
-    paddingBottom: 15,
-    borderBottomWidth: 1,
+    paddingVertical: 15,
+    alignContent: 'center',
     borderBottomColor: '#CCCCCC',
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
   },
+  column: {
+    alignItems: 'center',
+  }
 })
 
 const enhanceTransactionInput = async (
