@@ -19,6 +19,7 @@ import { Address } from '../../components'
 import { ScreenProps } from '../../RootNavigation'
 import { RIFWallet } from '../../lib/core'
 import ActivityRow from './ActivityRow'
+import { grid } from '../../styles/grid'
 
 export interface IActivityTransaction {
   originTransaction: IApiTransaction
@@ -87,12 +88,8 @@ export const ActivityScreen: React.FC<
   }
 
   return (
-    <ScrollView>
+    <ScrollView style={styles.parent}>
       <View>
-        <Address testID={'Address.Paragraph'}>
-          {wallet.smartWalletAddress}
-        </Address>
-
         <View>
           <Text testID="Info.Text">{info}</Text>
         </View>
@@ -131,18 +128,9 @@ export const ActivityScreen: React.FC<
 }
 
 const styles = StyleSheet.create({
-  activityRow: {
-    height: 50,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
-  },
-  activitySummary: {
-    position: 'absolute',
-    left: 0,
-  },
-  button: {
-    position: 'absolute',
-    right: 0,
+  parent: {
+    paddingHorizontal: 20,
+    backgroundColor: '#ffffff',
   },
   refreshButtonView: {
     paddingTop: 15,

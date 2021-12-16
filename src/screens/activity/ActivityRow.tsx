@@ -7,6 +7,9 @@ import { shortAddress } from '../../lib/utils'
 import { IActivityTransaction } from './ActivityScreen'
 import { Button, StyleSheet, Text, View } from 'react-native'
 import { Address } from '../../components'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import { grid } from '../../styles/grid'
+import { TokenImage } from '../home/TokenImage'
 
 const RBTC_DECIMALS = 18
 
@@ -19,68 +22,77 @@ const ActivityRow: React.FC<Interface> = ({
   activityTransaction,
   navigation,
 }) => {
+  const handleClick = () =>
+    navigation.navigate('ActivityDetails', activityTransaction)
+
   return (
     <View
       key={activityTransaction.originTransaction.hash}
-      style={styles.activityRow}
       testID={`${activityTransaction.originTransaction.hash}.View`}>
-      <View style={styles.activitySummary}>
-        <Text>
+      <TouchableOpacity
+        onPress={handleClick}
+        testID={`${activityTransaction.originTransaction.hash}.Button`}
+        style={{ ...grid.row, ...styles.activityRow }}>
+        <View style={grid.column2}>
+          <View style={styles.icon}>
+            <TokenImage
+              symbol={activityTransaction.enhancedTransaction?.symbol}
+              width={30}
+              height={30}
+            />
+          </View>
+        </View>
+        <View style={grid.column6}>
+          <Text style={styles.text}>
+            To: {shortAddress(activityTransaction.originTransaction.to)}
+          </Text>
+        </View>
+        <View style={grid.column4}>
           {activityTransaction.enhancedTransaction ? (
-            <>
-              <Text
-                testID={`${activityTransaction.originTransaction.hash}.Text`}>
-                {`${activityTransaction.enhancedTransaction.value} ${activityTransaction.enhancedTransaction.symbol} sent To `}
-              </Text>
-              <Address>{activityTransaction.enhancedTransaction.to}</Address>
-            </>
+            <Text
+              style={
+                styles.value
+              }>{`${activityTransaction.enhancedTransaction.value} ${activityTransaction.enhancedTransaction?.symbol}`}</Text>
           ) : (
-            <>
-              {formatBigNumber(
+            <Text style={styles.value}>
+              {`${formatBigNumber(
                 BigNumber.from(activityTransaction.originTransaction.value),
                 RBTC_DECIMALS,
-              )}
-              {' RBTC'}
-              {shortAddress(activityTransaction.originTransaction.to)}{' '}
-            </>
+              )} rBTC`}
+            </Text>
           )}
-        </Text>
-      </View>
-      <View style={styles.button}>
-        <Button
-          onPress={() => {
-            navigation.navigate('ActivityDetails', activityTransaction)
-          }}
-          title={'>'}
-          testID={`${activityTransaction.originTransaction.hash}.Button`}
-        />
-      </View>
+        </View>
+      </TouchableOpacity>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   activityRow: {
-    height: 50,
+    width: '100%',
     borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC',
+    paddingVertical: 15,
   },
-  activitySummary: {
-    position: 'absolute',
-    left: 0,
+  text: {
+    paddingTop: 10,
+    color: '#66777E',
   },
-  button: {
-    position: 'absolute',
-    right: 0,
-  },
-  refreshButtonView: {
-    paddingTop: 15,
-    paddingBottom: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
+  icon: {
+    width: 40,
+    height: 40,
+    backgroundColor: '#ffffff',
+    borderRadius: 20,
     alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    paddingTop: 5,
+    shadowColor: '#000000',
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+  },
+  value: {
+    paddingTop: 10,
+    textAlign: 'right',
+    color: '#66777E',
   },
 })
 
