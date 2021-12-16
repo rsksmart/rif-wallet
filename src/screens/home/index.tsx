@@ -41,8 +41,10 @@ export const HomeScreen: React.FC<{
           visible={selectedPanel === 'portfolio'}
         />
         <TranscationsComponent
+          navigation={navigation}
           setPanelActive={() => setSelectedPanel('transactions')}
-          visible={selectedPanel === 'transactions'} />
+          visible={selectedPanel === 'transactions'}
+        />
       </LinearGradient>
     </LinearGradient>
   )

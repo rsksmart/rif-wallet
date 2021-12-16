@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { BigNumber } from 'ethers'
 import { StyleSheet, View, ScrollView, Text } from 'react-native'
 
 import { useTranslation } from 'react-i18next'
@@ -11,62 +10,16 @@ import {
 
 import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
 
-import { shortAddress } from '../../lib/utils'
 import {
   IAbiEnhancer,
   IEnhancedResult,
 } from '../../lib/abiEnhancer/AbiEnhancer'
 import { ScreenWithWallet } from '../types'
-import { formatBigNumber } from '../../lib/abiEnhancer/formatBigNumber'
 import { Address } from '../../components'
-import { NavigationProp, ScreenProps } from '../../RootNavigation'
+import { ScreenProps } from '../../RootNavigation'
 import { RIFWallet } from '../../lib/core'
+import ActivityRow from './ActivityRow'
 
-const RBTC_DECIMALS = 18
-
-const ActivityRow = ({
-  activityTransaction,
-  navigation,
-}: {
-  activityTransaction: IActivityTransaction
-  navigation: NavigationProp
-}) => (
-  <View
-    key={activityTransaction.originTransaction.hash}
-    style={styles.activityRow}
-    testID={`${activityTransaction.originTransaction.hash}.View`}>
-    <View style={styles.activitySummary}>
-      <Text>
-        {activityTransaction.enhancedTransaction ? (
-          <>
-            <Text testID={`${activityTransaction.originTransaction.hash}.Text`}>
-              {`${activityTransaction.enhancedTransaction.value} ${activityTransaction.enhancedTransaction.symbol} sent To `}
-            </Text>
-            <Address>{activityTransaction.enhancedTransaction.to}</Address>
-          </>
-        ) : (
-          <>
-            {formatBigNumber(
-              BigNumber.from(activityTransaction.originTransaction.value),
-              RBTC_DECIMALS,
-            )}
-            {' RBTC'}
-            {shortAddress(activityTransaction.originTransaction.to)}{' '}
-          </>
-        )}
-      </Text>
-    </View>
-    <View style={styles.button}>
-      <Button
-        onPress={() => {
-          navigation.navigate('ActivityDetails', activityTransaction)
-        }}
-        title={'>'}
-        testID={`${activityTransaction.originTransaction.hash}.Button`}
-      />
-    </View>
-  </View>
-)
 export interface IActivityTransaction {
   originTransaction: IApiTransaction
   enhancedTransaction?: IEnhancedResult
