@@ -31,7 +31,7 @@ const createRIFWalletFactory = (onRequest: OnRequest) => (wallet: Wallet) =>
     onRequest,
   ) // temp - using only testnet
 
-const rifWalletServicesUrl = 'http://localhost:3000' // 'https://rif-wallet-services-dev.rifcomputing.net'
+const rifWalletServicesUrl = 'http://10.0.2.2:3000' // 'https://rif-wallet-services-dev.rifcomputing.net'
 
 const fetcher = new RifWalletServicesFetcher(rifWalletServicesUrl)
 const abiEnhancer = new AbiEnhancer()
@@ -152,6 +152,7 @@ const App = () => {
             createFirstWallet,
           }}
           balancesScreenProps={{ fetcher }}
+          injectedBrowserUXScreenProps={{ fetcher }}
           sendScreenProps={{ rnsResolver }}
           activityScreenProps={{ fetcher, abiEnhancer }}
           keysInfoScreenProps={{

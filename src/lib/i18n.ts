@@ -65,9 +65,6 @@ const resources = {
       'Do you want to sign this message?': 'Do you want to sign this message?',
 
       InjectedBrowser: 'InjectedBrowser',
-      'Sample apps': 'Sample apps',
-      Dapps: 'Dapps',
-      Faucets: 'Faucets',
     },
   },
   es: {
