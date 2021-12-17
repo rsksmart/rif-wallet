@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View, Linking } from 'react-native'
-import { Trans, useTranslation } from 'react-i18next'
+import { Trans } from 'react-i18next'
 
 import { utils } from 'ethers'
 
