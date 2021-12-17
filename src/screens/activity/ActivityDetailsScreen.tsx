@@ -35,7 +35,6 @@ const ActivityRow: React.FC<{ title: any; content: any }> = ({
 export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
   route,
 }) => {
-  const { t } = useTranslation()
   const transaction = route.params
   const tokenColor = getTokenColor(transaction.enhancedTransaction?.symbol)
 

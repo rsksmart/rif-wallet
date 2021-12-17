@@ -62,6 +62,4 @@ const styles = StyleSheet.create({
     // shadowRadius: 10,
     elevation: 2,
   },
-  portfolio: {
-  },
 })

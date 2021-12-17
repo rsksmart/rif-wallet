@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, ScrollView, Text } from 'react-native'
 
 import { useTranslation } from 'react-i18next'
-import { Button } from '../../components'
 import {
   IApiTransaction,
   TransactionsServerResponse,
