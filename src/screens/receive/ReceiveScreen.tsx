@@ -17,6 +17,7 @@ import { grid } from '../../styles/grid'
 import { getTokenColor, getTokenColorWithOpacity } from '../home/tokenColor'
 import { ScreenWithWallet } from '../types'
 import { Arrow } from '../../components/icons/Arrow'
+import { getAddressDisplayText } from '../../components'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
@@ -70,8 +71,7 @@ export const ReceiveScreen: React.FC<ScreenWithWallet & ReceiveScreenProps> = ({
 
         <View style={{ ...styles.addressContainer, ...qrContainerStyle }}>
           <Text testID={TestID.AddressText} style={styles.smartAddress}>
-            {smartAddress.substr(0, 16)}...
-            {smartAddress.substr(smartAddress.length - 4, smartAddress.length)}
+            {getAddressDisplayText(smartAddress).displayAddress}
           </Text>
         </View>
         <Text style={styles.smartAddressLabel}>smart address</Text>

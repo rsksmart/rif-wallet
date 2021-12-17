@@ -21,7 +21,17 @@ describe('Receive Screen', function (this: {
     )
     this.instance = {
       rifWallet,
-      container: render(<ReceiveScreen wallet={rifWallet} />),
+      container: render(
+        <ReceiveScreen
+          wallet={rifWallet}
+          isWalletDeployed={true}
+          route={{
+            params: {
+              token: 'RIF',
+            },
+          }}
+        />,
+      ),
     }
   })
 

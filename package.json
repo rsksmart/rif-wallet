@@ -93,7 +93,8 @@
     "setupFilesAfterEnv": [
       "@testing-library/jest-native/extend-expect",
       "./node_modules/react-native-gesture-handler/jestSetup.js"
-    ]
+    ],
+    "transformIgnorePatterns": ["node_modules/(?!react-native-linear-gradient)/"]
   },
   "react-native": {
     "_stream_transform": "readable-stream/transform",
