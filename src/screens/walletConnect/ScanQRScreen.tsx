@@ -10,7 +10,7 @@ interface IScanQRScreenProps {
 }
 
 const ScanQRScreen: React.FC<IScanQRScreenProps> = () => {
-  const { createSession } = useContext(WalletConnectContext)
+  const { createSession, reconnectSession } = useContext(WalletConnectContext)
   const [isConnecting, setIsConnecting] = useState(false)
 
   const [input, setInput] = useState('')
@@ -62,6 +62,7 @@ const ScanQRScreen: React.FC<IScanQRScreenProps> = () => {
           onChangeText={setInput}
         />
         <Button title="Confirm URI" onPress={() => createSession(input)} />
+        <Button title="Reconnect" onPress={() => reconnectSession()} />
       </View>
     </ScrollView>
   )

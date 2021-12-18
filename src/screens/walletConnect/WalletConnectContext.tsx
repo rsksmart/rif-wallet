@@ -4,13 +4,20 @@ import { ParamListBase } from '@react-navigation/core'
 import { RIFWallet } from '../../lib/core'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { WalletConnectAdapter } from '../../lib/walletAdapters/WalletConnectAdapter'
+import {
+  saveWCSession,
+  deleteWCSession,
+  getWCSession,
+  hasWCSession,
+} from '../../storage/WalletConnectSessionStore'
 
 export interface WalletConnectContextInterface {
   connector: WalletConnect | null
   peerMeta: any
-  createSession: (uri: string) => Promise<void>
+  createSession: (uri: string, session?: any) => Promise<void>
   handleApprove: () => Promise<void>
   handleReject: () => Promise<void>
+  reconnectSession: () => Promise<void>
 }
 
 export const WalletConnectContext =
@@ -20,6 +27,7 @@ export const WalletConnectContext =
     createSession: async () => {},
     handleApprove: async () => {},
     handleReject: async () => {},
+    reconnectSession: async () => {},
   })
 
 interface WalletConnectProviderElementInterface {
@@ -87,6 +95,8 @@ export const WalletConnectProviderElement: React.FC<WalletConnectProviderElement
 
         unsubscribeToEvents(wc)
 
+        await deleteWCSession()
+
         try {
           await connector?.killSession()
         } catch (err) {
@@ -107,6 +117,8 @@ export const WalletConnectProviderElement: React.FC<WalletConnectProviderElement
         chainId: await account.getChainId(),
       })
 
+      await saveWCSession({ uri: connector.uri, session: connector.session })
+
       subscribeToEvents(connector)
 
       navigation.navigate('Connected')
@@ -120,11 +132,10 @@ export const WalletConnectProviderElement: React.FC<WalletConnectProviderElement
       connector.rejectSession({ message: 'user rejected the session' })
     }
 
-    const createSession = async (uri: string) => {
+    const createSession = async (uri: string, session?: any) => {
       const newConnector = new WalletConnect({
-        // Required
         uri,
-        // Required
+        session,
         clientMeta: {
           description: 'sWallet App',
           url: 'https://www.rifos.org/',
@@ -135,11 +146,27 @@ export const WalletConnectProviderElement: React.FC<WalletConnectProviderElement
         },
       })
 
+      setPeerMeta(newConnector.peerMeta)
+
       // needs to subscribe to events before createSession
       // this is because we need the 'session_request' event
       subscribeToEvents(newConnector)
 
       setConnector(newConnector)
+    }
+
+    const reconnectSession = async () => {
+      const hasPrevSession = await hasWCSession()
+
+      if (!hasPrevSession) {
+        return
+      }
+
+      const { uri, session } = await getWCSession()
+
+      await createSession(uri, session)
+
+      navigation.navigate('Connected')
     }
 
     const initialContext: WalletConnectContextInterface = {
@@ -148,6 +175,7 @@ export const WalletConnectProviderElement: React.FC<WalletConnectProviderElement
       createSession,
       handleApprove,
       handleReject,
+      reconnectSession,
     }
 
     return (

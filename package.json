@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@ethersproject/shims": "^5.4.0",
+    "@react-native-async-storage/async-storage": "^1.15.14",
     "@react-native-community/clipboard": "^1.5.1",
     "@react-navigation/native": "^6.0.4",
     "@react-navigation/stack": "^6.0.9",
