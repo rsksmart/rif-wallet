@@ -172,6 +172,7 @@ export const Core = () => {
             mnemonic: state.kms?.mnemonic || '',
             deleteKeys,
           }}
+          injectedBrowserUXScreenProps={{ fetcher: rifWalletServicesFetcher }}
         />
 
         {requests.length !== 0 && (
