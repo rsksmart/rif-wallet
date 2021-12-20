@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { View, TextInput } from 'react-native'
 import { getPin } from '../../storage/PinStore'
 
-import { Paragraph } from '../typography'
-import { Button } from '../button'
-import { shareStyles } from '../sharedStyles'
+import { Paragraph } from '../../components/typography'
+import { Button } from '../../components/button'
+import { shareStyles } from '../../components/sharedStyles'
 
 interface Interface {
   unlock: () => void
