@@ -77,7 +77,7 @@ export const Core = () => {
       wallets,
       walletsIsDeployed,
       selectedWallet: wallets[Object.keys(wallets)[0]].address,
-      loading: false
+      loading: false,
     })
     setUnlocked(true)
   }
