@@ -91,7 +91,8 @@
     ],
     "setupFilesAfterEnv": [
       "@testing-library/jest-native/extend-expect",
-      "./node_modules/react-native-gesture-handler/jestSetup.js"
+      "./node_modules/react-native-gesture-handler/jestSetup.js",
+      "./testLib/setupTests.ts"
     ]
   },
   "react-native": {
