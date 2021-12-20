@@ -6,4 +6,3 @@ import 'react-native-get-random-values'
 import { Core } from './core'
 
 export default Core
-

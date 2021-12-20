@@ -5,8 +5,19 @@ import { AppContext, Wallets, WalletsIsDeployed, Requests } from '../Context'
 import { KeyManagementSystem, OnRequest } from '../lib/core'
 import { i18nInit } from '../lib/i18n'
 
-import { hasKeys, loadExistingWallets, creteKMS, deleteKeys } from './operations'
-import { rifWalletServicesFetcher, rnsResolver, abiEnhancer, createRIFWalletFactory, networkId } from './setup'
+import {
+  hasKeys,
+  loadExistingWallets,
+  creteKMS,
+  deleteKeys,
+} from './operations'
+import {
+  rifWalletServicesFetcher,
+  rnsResolver,
+  abiEnhancer,
+  createRIFWalletFactory,
+  networkId,
+} from './setup'
 
 import { RootNavigation } from '../RootNavigation'
 import ModalComponent from '../ux/requestsModal/ModalComponent'
@@ -32,13 +43,13 @@ const noKeysState = {
   kms: null,
   wallets: {},
   walletsIsDeployed: {},
-  selectedWallet: ''
+  selectedWallet: '',
 }
 
 const initialState: State = {
   hasKeys: false,
   ...noKeysState,
-  loading: true
+  loading: true,
 }
 
 export const Core = () => {
@@ -61,12 +72,12 @@ export const Core = () => {
     walletsIsDeployed: WalletsIsDeployed,
   ) => {
     setState({
-      ...state,
       hasKeys: true,
       kms,
       wallets,
       walletsIsDeployed,
       selectedWallet: wallets[Object.keys(wallets)[0]].address,
+      loading: false
     })
     setUnlocked(true)
   }
@@ -81,36 +92,46 @@ export const Core = () => {
 
   const unlockApp = async () => {
     setState({ ...state, loading: true })
-    const { kms, rifWalletsDictionary, rifWalletsIsDeployedDictionary } = await handleLoadExistingWallets()
+    const { kms, rifWalletsDictionary, rifWalletsIsDeployedDictionary } =
+      await handleLoadExistingWallets()
     setKeys(kms, rifWalletsDictionary, rifWalletsIsDeployedDictionary)
   }
 
   const createFirstWallet = async (mnemonic: string) => {
     setState({ ...state, loading: true })
-    const { kms, rifWallet, rifWalletsDictionary, rifWalletsIsDeployedDictionary  } = await handleCreateKMS(mnemonic)
+    const {
+      kms,
+      rifWallet,
+      rifWalletsDictionary,
+      rifWalletsIsDeployedDictionary,
+    } = await handleCreateKMS(mnemonic)
     setKeys(kms, rifWalletsDictionary, rifWalletsIsDeployedDictionary)
     return rifWallet
   }
 
   useEffect(() => {
-    const stateSubscription = AppState.addEventListener('change', (appStateStatus) => {
-      const isNowActive = appStateStatus === 'active'
-      setActive(isNowActive)
+    const stateSubscription = AppState.addEventListener(
+      'change',
+      appStateStatus => {
+        const isNowActive = appStateStatus === 'active'
+        setActive(isNowActive)
 
-      if (unlocked)
-        if (!isNowActive) {
-          const newTimer = setTimeout(() => {
-            setUnlocked(false)
-            removeKeys()
-          }, gracePeriod)
+        if (unlocked) {
+          if (!isNowActive) {
+            const newTimer = setTimeout(() => {
+              setUnlocked(false)
+              removeKeys()
+            }, gracePeriod)
 
-          timerRef.current = newTimer
-        } else {
-          if (timerRef.current) {
-            clearTimeout(timerRef.current)
+            timerRef.current = newTimer
+          } else {
+            if (timerRef.current) {
+              clearTimeout(timerRef.current)
+            }
           }
         }
-    })
+      },
+    )
 
     return () => {
       stateSubscription.remove()
@@ -118,13 +139,11 @@ export const Core = () => {
   }, [unlocked])
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       await i18nInit
-      setState({ ...state, hasKeys: !!await hasKeys(), loading: false })
+      setState({ ...state, hasKeys: !!(await hasKeys()), loading: false })
     })()
   }, [])
-
-  console.log('here')
 
   return (
     <SafeAreaView>
@@ -145,7 +164,10 @@ export const Core = () => {
           }}
           balancesScreenProps={{ fetcher: rifWalletServicesFetcher }}
           sendScreenProps={{ rnsResolver }}
-          activityScreenProps={{ fetcher: rifWalletServicesFetcher, abiEnhancer }}
+          activityScreenProps={{
+            fetcher: rifWalletServicesFetcher,
+            abiEnhancer,
+          }}
           keysInfoScreenProps={{
             mnemonic: state.kms?.mnemonic || '',
             deleteKeys,

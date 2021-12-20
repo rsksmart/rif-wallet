@@ -12,7 +12,9 @@ type ImportMasterKeyScreenProps = {
 export const ImportMasterKeyScreen: React.FC<
   ScreenProps<'ImportMasterKey'> & ImportMasterKeyScreenProps
 > = ({ navigation, createFirstWallet }) => {
-  const [importMnemonic, setImportMnemonic] = useState<string>('toe among network melt ensure jaguar sleep toddler desert minute degree search that prosper detect recall story quantum scale wall power try replace knock')
+  const [importMnemonic, setImportMnemonic] = useState<string>(
+    'toe among network melt ensure jaguar sleep toddler desert minute degree search that prosper detect recall story quantum scale wall power try replace knock',
+  )
 
   const [error, setError] = useState<string | null>(null)
   const [info, setInfo] = useState<string | null>(null)
