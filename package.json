@@ -41,6 +41,7 @@
     "react-native-crypto": "^2.1.0",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-get-random-values": "^1.7.0",
+    "react-native-linear-gradient": "^2.5.6",
     "react-native-randombytes": "^3.0.0",
     "react-native-safe-area-context": "^3.3.2",
     "react-native-svg": "^12.1.1",
@@ -93,7 +94,8 @@
       "@testing-library/jest-native/extend-expect",
       "./node_modules/react-native-gesture-handler/jestSetup.js",
       "./testLib/setupTests.ts"
-    ]
+    ],
+    "transformIgnorePatterns": ["node_modules/(?!react-native-linear-gradient)/"]
   },
   "react-native": {
     "_stream_transform": "readable-stream/transform",

@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import { NavigationContainer } from '@react-navigation/native'
+import { NavigationContainer, NavigationState } from '@react-navigation/native'
 import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
 import { NavigationProp as _NavigationProp } from '@react-navigation/native'
 
@@ -14,6 +14,8 @@ import { KeysInfoScreenProps } from './screens/info/KeysInfoScreen'
 import { SendScreenProps } from './screens/send/SendScreen'
 import { ActivityScreenProps } from './screens/activity/ActivityScreen'
 import { InjectedBrowserUXScreenProps } from './screens/injectedBrowser/InjectedBrowserNavigation'
+import { AppHeader } from './ux/appHeader'
+import { AppFooterMenu } from './ux/appFooter'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -31,9 +33,11 @@ const InjectedScreens = {
   InjectedBrowserNavigation: InjectSelectedWallet(
     Screens.InjectedBrowserNavigation,
   ),
+  HomeScreen: InjectSelectedWallet(Screens.HomeScreen),
 }
 
 type RootStackParamList = {
+  DevMenu: undefined
   Home: undefined
   Send: undefined | { token: string }
   Receive: undefined
@@ -77,13 +81,26 @@ export const RootNavigation: React.FC<{
   sendScreenProps,
   injectedBrowserUXScreenProps,
 }) => {
+  const [currentScreen, setCurrentScreen] = useState<string>('Home')
+  const handleScreenChange = (newState: NavigationState | undefined) =>
+    setCurrentScreen(
+      newState ? newState.routes[newState.routes.length - 1].name : 'Home',
+    )
+
   return (
     <View style={styles.parent}>
-      <NavigationContainer>
+      <NavigationContainer onStateChange={handleScreenChange}>
+        <AppHeader />
         <RootStack.Navigator>
           <RootStack.Screen
             name="Home"
             component={Screens.HomeScreen}
+            options={{ ...sharedOptions, headerShown: false }}
+          />
+
+          <RootStack.Screen
+            name="DevMenu"
+            component={Screens.DevMenuScreen}
             options={{ ...sharedOptions, headerShown: false }}
           />
 
@@ -95,7 +112,7 @@ export const RootNavigation: React.FC<{
           <RootStack.Screen
             name="Receive"
             component={InjectedScreens.ReceiveScreen}
-            options={sharedOptions}
+            options={{ headerShown: false }}
           />
           <RootStack.Screen name="Send">
             {props => (
@@ -110,7 +127,7 @@ export const RootNavigation: React.FC<{
               />
             )}
           </RootStack.Screen>
-          <RootStack.Screen name="Activity">
+          <RootStack.Screen name="Activity" options={{ headerShown: false }}>
             {props => (
               <InjectedScreens.ActivityScreen
                 {...props}
@@ -121,7 +138,7 @@ export const RootNavigation: React.FC<{
           <RootStack.Screen
             name="ActivityDetails"
             component={InjectedScreens.ActivityDetailsScreen}
-            options={sharedOptions}
+            options={{ headerShown: false }}
           />
           <RootStack.Screen
             name="SignMessage"
@@ -177,6 +194,7 @@ export const RootNavigation: React.FC<{
             )}
           </RootStack.Screen>
         </RootStack.Navigator>
+        <AppFooterMenu currentScreen={currentScreen} />
       </NavigationContainer>
     </View>
   )
