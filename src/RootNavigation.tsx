@@ -13,6 +13,7 @@ import { BalancesScreenProps } from './screens/balances/BalancesScreen'
 import { KeysInfoScreenProps } from './screens/info/KeysInfoScreen'
 import { SendScreenProps } from './screens/send/SendScreen'
 import { ActivityScreenProps } from './screens/activity/ActivityScreen'
+import { InjectedBrowserUXScreenProps } from './screens/injectedBrowser/InjectedBrowserNavigation'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -67,12 +68,14 @@ export const RootNavigation: React.FC<{
   activityScreenProps: ActivityScreenProps
   keysInfoScreenProps: KeysInfoScreenProps
   sendScreenProps: SendScreenProps
+  injectedBrowserUXScreenProps: InjectedBrowserUXScreenProps
 }> = ({
   keyManagementProps,
   balancesScreenProps,
   activityScreenProps,
   keysInfoScreenProps,
   sendScreenProps,
+  injectedBrowserUXScreenProps,
 }) => {
   return (
     <View style={styles.parent}>
@@ -165,9 +168,14 @@ export const RootNavigation: React.FC<{
           />
           <RootStack.Screen
             name="InjectedBrowserUX"
-            component={InjectedScreens.InjectedBrowserNavigation}
-            options={{ ...sharedOptions, headerShown: false }}
-          />
+            options={{ ...sharedOptions, headerShown: false }}>
+            {props => (
+              <InjectedScreens.InjectedBrowserNavigation
+                {...props}
+                {...injectedBrowserUXScreenProps}
+              />
+            )}
+          </RootStack.Screen>
         </RootStack.Navigator>
       </NavigationContainer>
     </View>

@@ -85,6 +85,8 @@ export const InjectedBrowser: React.FC<
           userAgent={USER_AGENT}
           javascriptEnabled
           useWebkit
+          geolocationEnabled={false}
+          allowFileAccess={false}
         />
       </View>
       <ProgressBar progress={progress} />
