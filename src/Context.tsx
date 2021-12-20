@@ -1,4 +1,5 @@
 import React, { createContext, useContext, FC } from 'react'
+import { Paragraph } from './components'
 import { RIFWallet, Request } from './lib/core'
 import { ScreenWithWallet } from './screens/types'
 export type Wallets = { [id: string]: RIFWallet }
@@ -34,8 +35,9 @@ export function InjectSelectedWallet<T>(
     const { wallet, isDeployed } = useSelectedWallet()
 
     if (!wallet) {
-      throw new Error('No selected wallet')
+      return <Paragraph>No selected wallet</Paragraph>
     }
+
     return (
       <Component wallet={wallet} isWalletDeployed={isDeployed} {...props} />
     )
