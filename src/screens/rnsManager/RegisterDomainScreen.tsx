@@ -3,6 +3,7 @@ import { BigNumber } from 'ethers'
 import { StyleSheet, View, TextInput } from 'react-native'
 
 import { ScrollView, Text } from 'react-native'
+import addresses from './addresses.json'
 
 import { ScreenWithWallet } from '../types'
 import { Button } from '../../components'
@@ -19,15 +20,12 @@ export const RegisterDomainScreen: React.FC<
   const [duration, setDuration] = useState('1')
   const [resolvingAddress, setResolvingAddress] = useState('1')
   const rskRegistrar = new RSKRegistrar(
-    '0xca0a477e19bac7e0e172ccfd2e3c28a7200bdb71',
-    '0x90734bd6bf96250a7b262e2bc34284b0d47c1e8d',
-    '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
+    addresses.rskOwnerAddress,
+    addresses.fifsAddrRegistrarAddress,
+    addresses.rifTokenAddress,
     wallet,
   )
-  const addrResolver = new AddrResolver(
-    '0x7d284aaac6e925aad802a53c0c69efe3764597b8',
-    wallet,
-  )
+  const addrResolver = new AddrResolver(addresses.rnsRegistryAddress, wallet)
   const selectedDomain = route.params ?? ''
   const commitToRegister = async (domain: string) => {
     if (domain) {
@@ -111,6 +109,7 @@ export const RegisterDomainScreen: React.FC<
           <Text>Address: {resolvingAddress}</Text>
           <Button
             onPress={() => {
+              // @ts-ignore
               navigation.navigate('Home')
             }}
             title={'Home'}

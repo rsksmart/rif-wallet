@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { StyleSheet } from 'react-native'
+import addresses from './addresses.json'
 
 import { BigNumber, utils } from 'ethers'
 import { View, TextInput, ScrollView, Text } from 'react-native'
@@ -21,9 +22,9 @@ export const RNSManagerScreen: React.FC<
   const [registeredDomains, setRegisteredDomains] = useState([])
 
   const rskRegistrar = new RSKRegistrar(
-    '0xca0a477e19bac7e0e172ccfd2e3c28a7200bdb71',
-    '0x90734bd6bf96250a7b262e2bc34284b0d47c1e8d',
-    '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
+    addresses.rskOwnerAddress,
+    addresses.fifsAddrRegistrarAddress,
+    addresses.rifTokenAddress,
     wallet,
   )
 
@@ -31,7 +32,8 @@ export const RNSManagerScreen: React.FC<
     setSelectedDomain('')
     const available = await rskRegistrar.available(domain)
     const price = await rskRegistrar.price(domainToLookUp, BigNumber.from(1))
-    setSelectedDomainAvailable(available)
+
+    setSelectedDomainAvailable(JSON.parse(available))
     setSelectedDomain(domain)
     setSelectedDomainPrice(utils.formatUnits(price, 18))
   }
@@ -64,6 +66,7 @@ export const RNSManagerScreen: React.FC<
               <Text>{`${selectedDomainPrice} RIF per year`}</Text>
               <Button
                 onPress={() => {
+                  // @ts-ignore
                   navigation.navigate('RegisterDomain', selectedDomain)
                 }}
                 title={'Register'}
