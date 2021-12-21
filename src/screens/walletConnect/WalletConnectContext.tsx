@@ -58,8 +58,6 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
     wc: WalletConnect,
     adapter: WalletConnectAdapter,
   ) => {
-    console.log('subscribeToEvents')
-
     unsubscribeToEvents(wc)
 
     wc.on('session_request', async (error, payload) => {
@@ -150,8 +148,6 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
     uri: string,
     session?: any,
   ) => {
-    console.log(uri, session)
-
     const newConnector = new WalletConnect({
       uri,
       session,
@@ -172,8 +168,6 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
     // needs to subscribe to events before createSession
     // this is because we need the 'session_request' event
     subscribeToEvents(newConnector, adapter)
-
-    console.log('connect result', newConnector.connected)
 
     setConnector(newConnector)
   }
@@ -213,8 +207,6 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
     handleApprove,
     handleReject,
   }
-
-  console.log('isConnected', initialContext.isConnected)
 
   return (
     <WalletConnectContext.Provider value={initialContext}>
