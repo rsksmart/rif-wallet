@@ -3,6 +3,7 @@ import { StyleSheet, View, ScrollView, TextInput } from 'react-native'
 
 import { RNCamera } from 'react-native-camera'
 import { Button, Paragraph } from '../../components'
+import { useSelectedWallet } from '../../Context'
 import { WalletConnectContext } from './WalletConnectContext'
 
 interface IScanQRScreenProps {
@@ -10,7 +11,9 @@ interface IScanQRScreenProps {
 }
 
 const ScanQRScreen: React.FC<IScanQRScreenProps> = () => {
-  const { createSession, reconnectSession } = useContext(WalletConnectContext)
+  const { wallet } = useSelectedWallet()
+
+  const { createSession } = useContext(WalletConnectContext)
   const [isConnecting, setIsConnecting] = useState(false)
 
   const [input, setInput] = useState('')
@@ -42,7 +45,7 @@ const ScanQRScreen: React.FC<IScanQRScreenProps> = () => {
 
             setIsConnecting(true)
 
-            createSession(data)
+            createSession(wallet, data)
           }}
         />
       </View>
@@ -61,8 +64,10 @@ const ScanQRScreen: React.FC<IScanQRScreenProps> = () => {
           value={input}
           onChangeText={setInput}
         />
-        <Button title="Confirm URI" onPress={() => createSession(input)} />
-        <Button title="Reconnect" onPress={() => reconnectSession()} />
+        <Button
+          title="Confirm URI"
+          onPress={() => createSession(wallet, input)}
+        />
       </View>
     </ScrollView>
   )
