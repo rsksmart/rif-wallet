@@ -31,6 +31,8 @@ const InjectedScreens = {
   InjectedBrowserNavigation: InjectSelectedWallet(
     Screens.InjectedBrowserNavigation,
   ),
+  RNSManagerScreen: InjectSelectedWallet(Screens.RNSManagerScreen),
+  RegisterDomainScreen: InjectSelectedWallet(Screens.RegisterDomainScreen),
 }
 
 type RootStackParamList = {
@@ -50,6 +52,8 @@ type RootStackParamList = {
   ChangeLanguage: undefined
   ManagePin: undefined
   InjectedBrowserUX: undefined
+  RNSManager: undefined
+  RegisterDomain: undefined
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -166,6 +170,17 @@ export const RootNavigation: React.FC<{
             component={Screens.ManagePinScreen}
             options={{ ...sharedOptions }}
           />
+          <RootStack.Screen
+            name="RNSManager"
+            component={InjectedScreens.RNSManagerScreen}
+            options={{ ...sharedOptions }}
+          />
+          <RootStack.Screen
+            name="RegisterDomain"
+            component={InjectedScreens.RegisterDomainScreen}
+            options={{ ...sharedOptions }}
+          />
+
           <RootStack.Screen
             name="InjectedBrowserUX"
             options={{ ...sharedOptions, headerShown: false }}>

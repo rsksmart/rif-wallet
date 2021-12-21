@@ -51,6 +51,10 @@ const WalletRow = ({
           title={t('Receive')}
         />
         <Button
+          onPress={() => navigation.navigate('RNSManager')}
+          title={t('RNS Manager')}
+        />
+        <Button
           onPress={() => {
             navigation.navigate('Send', { token: 'tRIF' })
           }}
