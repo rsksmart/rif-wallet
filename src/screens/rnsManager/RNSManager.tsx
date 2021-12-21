@@ -6,7 +6,7 @@ import { BigNumber, utils } from 'ethers'
 import { View, TextInput, ScrollView, Text } from 'react-native'
 import { Button } from '../../components'
 
-import { RSKRegistrar } from '../../lib/rns-rsk'
+import { RSKRegistrar } from '@rsksmart/rns-sdk'
 
 import { ScreenWithWallet } from '../types'
 import { ScreenProps } from '../../RootNavigation'

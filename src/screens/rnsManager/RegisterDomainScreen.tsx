@@ -8,7 +8,7 @@ import addresses from './addresses.json'
 import { ScreenWithWallet } from '../types'
 import { Button } from '../../components'
 import { ScreenProps } from '../../RootNavigation'
-import { RSKRegistrar, AddrResolver } from '../../lib/rns-rsk'
+import { RSKRegistrar, AddrResolver } from '@rsksmart/rns-sdk'
 import { getDomains, saveDomains } from '../../storage/DomainsStore'
 
 export const RegisterDomainScreen: React.FC<
