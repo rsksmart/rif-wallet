@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 10,
     elevation: 2,
+    justifyContent: 'center',
   },
   text: {
     paddingTop: 10,
