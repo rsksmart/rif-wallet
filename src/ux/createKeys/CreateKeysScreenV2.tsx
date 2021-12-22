@@ -1,57 +1,29 @@
 import React from 'react'
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  Dimensions,
-  Share,
-  Text,
-} from 'react-native'
+import { StyleSheet, View, ScrollView, Dimensions, Text } from 'react-native'
+import { Button, Paragraph } from '../../components'
+import { ScreenProps } from './types'
 import LinearGradient from 'react-native-linear-gradient'
-import QRCode from 'react-qr-code'
-import Clipboard from '@react-native-community/clipboard'
 
-import { SquareButton } from '../../components/button/SquareButton'
-import { CopyIcon } from '../../components/icons/CopyIcon'
+import {
+  getTokenColor,
+  getTokenColorWithOpacity,
+} from '../../screens/home/tokenColor'
 import { grid } from '../../styles/grid'
-import { getTokenColor, getTokenColorWithOpacity } from '../home/tokenColor'
-import { ScreenWithWallet } from '../types'
-import { Arrow } from '../../components/icons/Arrow'
-import { getAddressDisplayText } from '../../components'
-import { ScreenProps } from '../../RootNavigation'
+import { SquareButton } from '../../components/button/SquareButton'
+import { Arrow, CopyIcon } from '../../components/icons'
+import { TestID } from '../../screens/receive/ReceiveScreen'
 
-export enum TestID {
-  QRCodeDisplay = 'Address.QRCode',
-  AddressText = 'Address.AddressText',
-  ShareButton = 'Address.ShareButton',
-}
-
-type ReceiveScreenProps = {
-  route: { params: { token: string | undefined } }
-}
-
-export const ReceiveScreen: React.FC<
-  ScreenProps<'Activity'> & ScreenWithWallet & ReceiveScreenProps
-> = ({ wallet, route, navigation }) => {
-  const smartAddress = wallet.smartWalletAddress
+export const CreateKeysScreenV2: React.FC<ScreenProps<'CreateKeys'>> = ({
+  navigation,
+  route,
+}) => {
   const selectedToken = route.params?.token || 'TRBTC'
-
   const windowWidth = Dimensions.get('window').width
   const qrCodeSize = windowWidth * 0.6
-
-  const handleShare = () =>
-    Share.share({
-      title: smartAddress,
-      message: smartAddress,
-    })
-
-  const handleCopy = () => Clipboard.setString(smartAddress)
-
   const qrContainerStyle = {
     marginHorizontal: (windowWidth - (qrCodeSize + 20)) / 2,
     width: qrCodeSize + 40,
   }
-
   return (
     <LinearGradient
       colors={['#FFFFFF', getTokenColorWithOpacity(selectedToken, 0.1)]}
