@@ -18,6 +18,7 @@ import { getTokenColor, getTokenColorWithOpacity } from '../home/tokenColor'
 import { ScreenWithWallet } from '../types'
 import { Arrow } from '../../components/icons/Arrow'
 import { getAddressDisplayText } from '../../components'
+import { ScreenProps } from '../../RootNavigation'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
@@ -29,10 +30,9 @@ type ReceiveScreenProps = {
   route: { params: { token: string | undefined } }
 }
 
-export const ReceiveScreen: React.FC<ScreenWithWallet & ReceiveScreenProps> = ({
-  wallet,
-  route,
-}) => {
+export const ReceiveScreen: React.FC<
+  ScreenProps<'Activity'> & ScreenWithWallet & ReceiveScreenProps
+> = ({ wallet, route, navigation }) => {
   const smartAddress = wallet.smartWalletAddress
   const selectedToken = route.params?.token || 'TRBTC'
 
@@ -57,38 +57,31 @@ export const ReceiveScreen: React.FC<ScreenWithWallet & ReceiveScreenProps> = ({
       colors={['#FFFFFF', getTokenColorWithOpacity(selectedToken, 0.1)]}
       style={styles.parent}>
       <ScrollView>
-        <Text style={styles.header}>Receive</Text>
+        <Text style={styles.header}>Setup your Wallet</Text>
         <View
           style={{ ...styles.qrContainer, ...qrContainerStyle }}
           testID={TestID.QRCodeDisplay}>
-          <QRCode
+          {/*<QRCode
             bgColor="#ffffff"
             color="#707070"
             value={smartAddress}
             size={qrCodeSize}
-          />
+          />*/}
         </View>
-
-        <View style={{ ...styles.addressContainer, ...qrContainerStyle }}>
-          <Text testID={TestID.AddressText} style={styles.smartAddress}>
-            {getAddressDisplayText(smartAddress).displayAddress}
-          </Text>
-        </View>
-        <Text style={styles.smartAddressLabel}>smart address</Text>
 
         <View style={grid.row}>
           <View style={{ ...grid.column6, ...styles.bottomColumn }}>
             <SquareButton
-              onPress={handleShare}
-              title="share"
+              onPress={() => navigation.navigate('ImportMasterKey')}
+              title="Import"
               testID="Address.ShareButton"
               icon={<Arrow color={getTokenColor(selectedToken)} rotate={225} />}
             />
           </View>
           <View style={{ ...grid.column6, ...styles.bottomColumn }}>
             <SquareButton
-              onPress={handleCopy}
-              title="copy"
+              onPress={() => navigation.navigate('NewMasterKey')}
+              title="New Wallet"
               testID="Address.CopyButton"
               icon={
                 <CopyIcon
