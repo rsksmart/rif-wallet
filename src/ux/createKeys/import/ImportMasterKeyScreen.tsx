@@ -1,9 +1,17 @@
-import React, { useState } from 'react'
-import { StyleSheet, View, ScrollView, TextInput } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { StyleSheet, View, ScrollView, TextInput, Text } from 'react-native'
+import LinearGradient from 'react-native-linear-gradient'
 
-import { Button, Header2, Paragraph } from '../../../components'
+import { Paragraph } from '../../../components'
 import { validateMnemonic } from '../../../lib/bip39'
 import { ScreenProps, CreateKeysProps } from '../types'
+import {
+  getTokenColor,
+  getTokenColorWithOpacity,
+  setOpacity,
+} from '../../../screens/home/tokenColor'
+import { SquareButton } from '../../../components/button/SquareButton'
+import { Arrow } from '../../../components/icons'
 
 type ImportMasterKeyScreenProps = {
   createFirstWallet: CreateKeysProps['createFirstWallet']
@@ -11,10 +19,16 @@ type ImportMasterKeyScreenProps = {
 
 export const ImportMasterKeyScreen: React.FC<
   ScreenProps<'ImportMasterKey'> & ImportMasterKeyScreenProps
-> = ({ navigation, createFirstWallet }) => {
-  const [importMnemonic, setImportMnemonic] = useState<string>(
-    'toe among network melt ensure jaguar sleep toddler desert minute degree search that prosper detect recall story quantum scale wall power try replace knock',
-  )
+> = ({ navigation, createFirstWallet, route }) => {
+  const [importMnemonic, setImportMnemonic] = useState<string>('')
+
+  useEffect(() => {
+    // @ts-ignore
+    if (route.params.mnemonic) {
+      // @ts-ignore
+      setImportMnemonic(route.params.mnemonic)
+    }
+  }, [])
 
   const [error, setError] = useState<string | null>(null)
   const [info, setInfo] = useState<string | null>(null)
@@ -26,6 +40,7 @@ export const ImportMasterKeyScreen: React.FC<
         setInfo('Creating...')
         const rifWallet = await createFirstWallet(importMnemonic)
         setInfo(null)
+        // @ts-ignore
         navigation.navigate('KeysCreated', { address: rifWallet.address })
       } catch (err) {
         console.error(err)
@@ -40,40 +55,56 @@ export const ImportMasterKeyScreen: React.FC<
     setError(null)
     setImportMnemonic(text)
   }
+  const selectedToken = 'TRBTC'
 
+  const selectedTokenColor = getTokenColor(selectedToken)
+
+  const containerStyles = {
+    shadowColor: setOpacity(selectedTokenColor, 0.5),
+  }
   return (
-    <ScrollView>
-      <View style={styles.sectionCentered}>
-        <Paragraph>enter your private key</Paragraph>
-      </View>
-      <View style={styles.section}>
-        <Header2>Master key</Header2>
-        <TextInput
-          onChangeText={text => setText(text)}
-          value={importMnemonic}
-          placeholder="Enter your 12 words master key"
-          multiline
-          style={styles.input}
-          testID="Input.MasterKey"
+    <LinearGradient
+      colors={['#FFFFFF', getTokenColorWithOpacity('TRBTC', 0.1)]}
+      style={styles.parent}>
+      <Text style={styles.header}>Master Key</Text>
+      <LinearGradient
+        colors={['#FFFFFF', '#E1E1E1']}
+        style={{ ...styles.topContainer, ...containerStyles }}>
+        <ScrollView style={styles.portfolio}>
+          <TextInput
+            onChangeText={text => setText(text)}
+            value={importMnemonic}
+            placeholder="Enter your 12 words master key"
+            multiline
+          />
+        </ScrollView>
+      </LinearGradient>
+      {info && <Paragraph>{info}</Paragraph>}
+      {error && <Paragraph>{error}</Paragraph>}
+      <View style={styles.centerRow}>
+        <SquareButton
+          onPress={() => handleImportMnemonic()}
+          title="Confirm"
+          testID="Address.CopyButton"
+          icon={<Arrow color={getTokenColor(selectedToken)} rotate={90} />}
         />
-        {info && <Paragraph>{info}</Paragraph>}
-        {error && <Paragraph>{error}</Paragraph>}
       </View>
-      <View style={styles.section}>
-        <Button
-          onPress={() => {
-            handleImportMnemonic()
-          }}
-          title={'Confirm'}
-          testID="Button.Confirm"
-          disabled={!!error}
-        />
-      </View>
-    </ScrollView>
+    </LinearGradient>
   )
 }
 
 const styles = StyleSheet.create({
+  centerRow: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  parent: {
+    height: '100%',
+  },
+  header: {
+    fontSize: 26,
+    textAlign: 'center',
+  },
   section: {
     paddingTop: 15,
     paddingBottom: 15,
@@ -94,5 +125,25 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     padding: 10,
     textAlignVertical: 'top',
+  },
+  secHeader: {
+    fontSize: 18,
+    textAlign: 'center',
+  },
+
+  portfolio: {
+    backgroundColor: '#ffffff',
+    paddingHorizontal: 25,
+    borderRadius: 25,
+    padding: 30,
+  },
+  topContainer: {
+    marginTop: 60,
+    marginHorizontal: 25,
+    borderRadius: 25,
+    backgroundColor: '#ffffff',
+    shadowOpacity: 0.1,
+    // shadowRadius: 10,
+    elevation: 2,
   },
 })
