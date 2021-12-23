@@ -2030,10 +2030,10 @@
     crypto-addr-codec "^0.1.7"
     eth-ens-namehash "^2.0.8"
 
-"@rsksmart/rns-sdk@^1.0.0-beta.2":
-  version "1.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/@rsksmart/rns-sdk/-/rns-sdk-1.0.0-beta.2.tgz#6735596592fc2c1e3e615d0d79bcc62f318729cd"
-  integrity sha512-RfeBMtuSy8hEat6uGTudTx1H4otCf5BIyCQgF7tG0rgWaXP37fnmpsSLjUXGZu228heJWlPK8Lk4Gy8Wr7zMqw==
+"@rsksmart/rns-sdk@^1.0.0-beta.3":
+  version "1.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rns-sdk/-/rns-sdk-1.0.0-beta.3.tgz#a02ffdb07b9b4fe0be3aa4b655704cdffaac781b"
+  integrity sha512-FkWUZR1pPM9bzwdBzceDTaSOjGDPo5A3zCSGi+GkHMnHSzOeRxYbeyk/IccOgEOHbrDU6NFRmPEfUYMgfV6W8A==
   dependencies:
     "@ensdomains/eth-ens-namehash" "^2.0.15"
     ethers "^5.5.1"
