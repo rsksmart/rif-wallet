@@ -12,6 +12,8 @@ interface Interface {
   onPress?: (event: GestureResponderEvent) => any
   disabled?: boolean
   testID?: string
+  style?: any
+  textStyle?: any
 }
 
 export const Button: React.FC<Interface> = ({
@@ -19,15 +21,20 @@ export const Button: React.FC<Interface> = ({
   onPress,
   disabled,
   testID,
+  style,
+  textStyle,
 }) => {
   return (
     <TouchableOpacity
-      style={styles.button}
+      style={style ? { ...styles.button, ...style } : styles.button}
       onPress={onPress}
       disabled={disabled}
       testID={testID}>
       <View>
-        <Text style={disabled ? styles.textDisabled : styles.text}>
+        <Text
+          style={
+            disabled ? styles.textDisabled : { ...styles.text, ...textStyle }
+          }>
           {title}
         </Text>
       </View>
@@ -39,10 +46,15 @@ const styles = StyleSheet.create({
   button: {
     fontSize: 18,
     padding: 10,
-    borderWidth: 1,
-    borderColor: '#000000',
+    borderRadius: 10,
+    alignItems: 'center',
+    borderColor: '#575757',
+    borderWidth: 4,
+    minWidth: 100,
   },
-  text: {},
+  text: {
+    color: '#575757',
+  },
   textDisabled: {
     color: '#cccccc',
   },

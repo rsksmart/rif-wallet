@@ -2,11 +2,11 @@ import React, { useContext } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 import { useTranslation, Trans } from 'react-i18next'
 
-import { Address, Button, Header1, Paragraph } from '../components'
-import { AppContext } from '../Context'
-import { NavigationProp } from '../RootNavigation'
-import { ScreenProps } from '../RootNavigation'
-import { RIFWallet } from '../lib/core'
+import { Address, Button, Header1, Paragraph } from '../../components'
+import { AppContext } from '../../Context'
+import { NavigationProp } from '../../RootNavigation'
+import { ScreenProps } from '../../RootNavigation'
+import { RIFWallet } from '../../lib/core'
 
 const KeysActionItem = ({
   navigation,
@@ -117,14 +117,16 @@ const WalletRow = ({
   )
 }
 
-export const HomeScreen: React.FC<ScreenProps<'Home'>> = ({ navigation }) => {
+export const DevMenuScreen: React.FC<ScreenProps<'Home'>> = ({
+  navigation,
+}) => {
   const { wallets, walletsIsDeployed } = useContext(AppContext)
   const { t } = useTranslation()
 
   return (
     <ScrollView style={styles.section}>
       <Header1>
-        <Trans>Welcome to sWallet!</Trans>
+        <Trans>Dev Menu</Trans>
       </Header1>
       <KeysActionItem navigation={navigation} t={t} />
       {Object.keys(wallets).map((address: string) => (
