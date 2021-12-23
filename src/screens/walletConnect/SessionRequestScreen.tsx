@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { StyleSheet, View, ScrollView } from 'react-native'
+import { StyleSheet, View, ScrollView, Text } from 'react-native'
 
 import { Paragraph } from '../../components/typography'
 
@@ -21,56 +21,71 @@ const SessionRequestScreen: React.FC<ISessionRequestScreenProps> = () => {
 
   return (
     <ScrollView>
-      <View style={styles.section2}>
-        <Paragraph>Name: </Paragraph>
-        <Paragraph>{peerMeta?.name}</Paragraph>
-      </View>
-      <View style={styles.section2}>
-        <Paragraph>Description: </Paragraph>
-        <Paragraph>{peerMeta?.description}</Paragraph>
-      </View>
-      <View style={styles.section2}>
-        <Paragraph>Url: </Paragraph>
-        <Paragraph>{peerMeta?.url}</Paragraph>
-      </View>
-      <View style={styles.section2}>
-        <Button
-          title="Approve"
-          onPress={() => {
-            handleApprove(wallet)
-          }}
-        />
-        <Button
-          title="Reject"
-          onPress={() => {
-            handleReject()
-          }}
-        />
+      <View style={styles.roundedContainer}>
+        <Text style={styles.heading}>Connect to:</Text>
+        <View style={styles.section}>
+          <Text style={styles.header}>{peerMeta?.name}</Text>
+          <Paragraph>{peerMeta?.description}</Paragraph>
+        </View>
+        <View style={styles.section2}>
+          <Paragraph>{peerMeta?.url}</Paragraph>
+        </View>
+        <View style={styles.buttonsSection}>
+          <Button
+            title="Reject"
+            onPress={() => {
+              handleReject()
+            }}
+          />
+          <Button
+            title="Approve"
+            onPress={() => {
+              handleApprove(wallet)
+            }}
+          />
+        </View>
       </View>
     </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
+  heading: {
+    fontSize: 16,
+    color: '#66777E',
+    paddingBottom: 15,
+  },
   preview: {
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
-
+  buttonsSection: {
+    width: '100%',
+    paddingTop: 15,
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    flexDirection: 'row',
+  },
   container: {
     flex: 1,
     height: 200,
   },
+  header: {
+    fontSize: 26,
+    textAlign: 'center',
+  },
   section: {
-    marginTop: 160,
+    width: '100%',
     paddingTop: 15,
     paddingBottom: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
+    borderTopWidth: 1,
+    borderTopColor: '#CCCCCC',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   section2: {
+    width: '100%',
     paddingTop: 15,
     paddingBottom: 15,
     borderBottomWidth: 1,
@@ -78,6 +93,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
+  },
+  roundedContainer: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, .8)',
+    marginVertical: 40,
+    padding: 20,
+    borderRadius: 20,
+    margin: 20,
   },
 })
 

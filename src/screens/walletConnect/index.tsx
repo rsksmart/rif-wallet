@@ -9,7 +9,7 @@ import { ScreenWithWallet } from '../types'
 
 const Stack = createStackNavigator()
 
-const screensOptions = { headerShown: true }
+const screensOptions = { headerShown: false }
 
 export const WalletConnectNavigationScreen: React.FC<
   ScreenProps<'WalletConnect'> & ScreenWithWallet

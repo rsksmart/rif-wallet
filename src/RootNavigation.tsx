@@ -55,6 +55,7 @@ type RootStackParamList = {
   ChangeLanguage: undefined
   ManagePin: undefined
   InjectedBrowserUX: undefined
+  Dapps: undefined
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -97,6 +98,11 @@ export const RootNavigation: React.FC<{
             <RootStack.Screen
               name="Home"
               component={Screens.HomeScreen}
+              options={{ ...sharedOptions, headerShown: false }}
+            />
+            <RootStack.Screen
+              name="Dapps"
+              component={Screens.DappsScreen}
               options={{ ...sharedOptions, headerShown: false }}
             />
 
