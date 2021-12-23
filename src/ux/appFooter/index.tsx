@@ -1,7 +1,6 @@
 import { useNavigation } from '@react-navigation/core'
 import React from 'react'
-import { View, StyleSheet } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { ContactsIcon, WalletIcon, CompassIcon } from '../../components/icons'
 
 export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({

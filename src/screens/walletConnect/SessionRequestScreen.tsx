@@ -6,6 +6,7 @@ import { Paragraph } from '../../components/typography'
 import { NavigationProp, ParamListBase } from '@react-navigation/core'
 import { WalletConnectContext } from './WalletConnectContext'
 import { Button } from '../../components'
+import { useSelectedWallet } from '../../Context'
 
 interface ISessionRequestScreenProps {
   navigation: NavigationProp<ParamListBase>
@@ -15,6 +16,8 @@ interface ISessionRequestScreenProps {
 const SessionRequestScreen: React.FC<ISessionRequestScreenProps> = () => {
   const { peerMeta, handleApprove, handleReject } =
     useContext(WalletConnectContext)
+
+  const { wallet } = useSelectedWallet()
 
   return (
     <ScrollView>
@@ -34,7 +37,7 @@ const SessionRequestScreen: React.FC<ISessionRequestScreenProps> = () => {
         <Button
           title="Approve"
           onPress={() => {
-            handleApprove()
+            handleApprove(wallet)
           }}
         />
         <Button
