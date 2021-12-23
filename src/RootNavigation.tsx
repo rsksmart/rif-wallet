@@ -34,6 +34,8 @@ const InjectedScreens = {
   InjectedBrowserNavigation: InjectSelectedWallet(
     Screens.InjectedBrowserNavigation,
   ),
+  RNSManagerScreen: InjectSelectedWallet(Screens.RNSManagerScreen),
+  RegisterDomainScreen: InjectSelectedWallet(Screens.RegisterDomainScreen),
   HomeScreen: InjectSelectedWallet(Screens.HomeScreen),
 }
 
@@ -56,6 +58,8 @@ type RootStackParamList = {
   ManagePin: undefined
   InjectedBrowserUX: undefined
   Dapps: undefined
+  RNSManager: undefined
+  RegisterDomain: undefined
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -180,6 +184,16 @@ export const RootNavigation: React.FC<{
               name="WalletConnect"
               component={InjectedScreens.WalletConnectNavigationScreen}
               options={{ ...sharedOptions, headerShown: false }}
+            />
+            <RootStack.Screen
+              name="RNSManager"
+              component={InjectedScreens.RNSManagerScreen}
+              options={{ ...sharedOptions }}
+            />
+            <RootStack.Screen
+              name="RegisterDomain"
+              component={InjectedScreens.RegisterDomainScreen}
+              options={{ ...sharedOptions }}
             />
             <RootStack.Screen
               name="ChangeLanguage"
