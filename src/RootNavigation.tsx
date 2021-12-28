@@ -203,7 +203,7 @@ export const RootNavigation: React.FC<{
             <RootStack.Screen
               name="ManagePin"
               component={Screens.ManagePinScreen}
-              options={{ ...sharedOptions }}
+              options={{ ...sharedOptions, headerShown: false }}
             />
             <RootStack.Screen
               name="InjectedBrowserUX"

@@ -70,6 +70,10 @@ const resources = {
       'to unlock the app': 'to unlock the app',
       Pin: 'Pin',
       Unlock: 'Unlock',
+      'Your pin is set': 'Your pin is set',
+      'Delete your Pin': 'Delete your Pin',
+      'Set your pin': 'Set your pin',
+      Save: 'Save',
     },
   },
   es: {
