@@ -1,16 +1,9 @@
 import React, { useRef, useContext, useState } from 'react'
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  TextInput,
-  Dimensions,
-  Text,
-} from 'react-native'
+import { StyleSheet, View, ScrollView, Dimensions, Text } from 'react-native'
 
 import { RNCamera } from 'react-native-camera'
 import LinearGradient from 'react-native-linear-gradient'
-import { Button } from '../../components'
+import { CustomInput } from '../../components'
 import { useSelectedWallet } from '../../Context'
 import { setOpacity } from '../home/tokenColor'
 import { WalletConnectContext } from './WalletConnectContext'
@@ -69,55 +62,10 @@ const ScanQRScreen: React.FC<IScanQRScreenProps> = () => {
         </View>
         <Text style={styles.header}>Or use the URI</Text>
         <View>
-          <InputWithButton onSubmit={input => createSession(wallet, input)} />
+          <CustomInput onSubmit={input => createSession(wallet, input)} />
         </View>
       </ScrollView>
     </LinearGradient>
-  )
-}
-
-const InputWithButton: React.FC<{ onSubmit?: (text: string) => void }> = ({
-  onSubmit,
-}) => {
-  const [text, setText] = useState('')
-
-  const handleSubmit = () => {
-    if (!onSubmit) {
-      return
-    }
-    onSubmit(text)
-  }
-
-  return (
-    <View
-      style={{
-        flexDirection: 'row',
-        marginTop: 10,
-        padding: 4,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderWidth: 4,
-        borderColor: '#e6e6e6',
-        borderRadius: 10,
-        backgroundColor: '#fff',
-      }}>
-      <View style={{ flex: 4 }}>
-        <TextInput
-          onChangeText={textEntry => {
-            setText(textEntry)
-          }}
-          style={{ backgroundColor: 'transparent' }}
-          onSubmitEditing={handleSubmit}
-        />
-      </View>
-      <View style={{ flex: 1 }}>
-        <Button
-          title="&#10132;"
-          style={{ minWidth: 0 }}
-          onPress={handleSubmit}
-        />
-      </View>
-    </View>
   )
 }
 
