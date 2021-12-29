@@ -1,18 +1,18 @@
 import React from 'react'
 import { act, renderHook } from '@testing-library/react-hooks'
-import { SubscriptionsProvider, useSubscription } from './RIFServicesContext'
+import { RIFSocketsProvider, useSocketsState } from './RIFSocketsContext'
 
 describe('Live Subscriptions Context', () => {
-  const wrapper = ({ children }: { children: React.ReactNode }) => <SubscriptionsProvider>{children}</SubscriptionsProvider>
+  const wrapper = ({ children }: { children: React.ReactNode }) => <RIFSocketsProvider>{children}</RIFSocketsProvider>
 
   describe('useSusbscription hook', () => {
     test('expect useSubscription to throw and error when used without SubscriptionsProvider', () => {
-      const { result } = renderHook(() => useSubscription())
+      const { result } = renderHook(() => useSocketsState())
       expect(result.error?.message).toBe('useSubscription must be used within a SubscriptionsProvider')
     })
 
     test('expect useSubscription to dispatch new price and update state', () => {
-      const { result } = renderHook(() => useSubscription(), { wrapper })
+      const { result } = renderHook(() => useSocketsState(), { wrapper })
       expect(Object.keys(result.current.state.prices).length).toEqual(0)
       act(() => {
         result.current.dispatch({ type: 'newPrice', payload: { '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe': { price: 0.2239, lastUpdated: '2021-12-20-T21:56:08.000Z' } } })
@@ -22,7 +22,7 @@ describe('Live Subscriptions Context', () => {
     })
 
     test('expect useSubscription to dispatch new balance and update state', () => {
-      const { result } = renderHook(() => useSubscription(), { wrapper })
+      const { result } = renderHook(() => useSocketsState(), { wrapper })
       expect(result.current.state.balances.length).toEqual(0)
       act(() => {
         result.current.dispatch({ type: 'newBalance', payload: { name: 'tRIF Token', symbol: 'tRIF', contractAddress: '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe', decimals: 18, balance: '' } })
@@ -32,7 +32,7 @@ describe('Live Subscriptions Context', () => {
     })
 
     test('expect useSubscription to dispatch new transaction and update state', () => {
-      const { result } = renderHook(() => useSubscription(), { wrapper })
+      const { result } = renderHook(() => useSocketsState(), { wrapper })
       expect(result.current.state.transactions.length).toEqual(0)
       act(() => {
         result.current.dispatch({

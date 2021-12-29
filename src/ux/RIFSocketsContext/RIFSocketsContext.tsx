@@ -1,4 +1,6 @@
 import React from 'react'
+import { useSelectedWallet } from '../../Context'
+import { io } from 'socket.io-client'
 
 export interface ITransaction {
   _id: string,
@@ -35,6 +37,8 @@ export interface ITransaction {
   txId: string,
 }
 
+export interface IPrice { price: number, lastUpdated: string }
+
 export interface IToken {
   name: string,
   symbol: string,
@@ -60,7 +64,7 @@ export interface NewTransactionAction {
 
 export interface State {
   balances: Array<IToken>
-  prices: Record<string, { price: number, lastUpdated: string }>
+  prices: Record<string, IPrice>
   transactions: Array<ITransaction>
 }
 
@@ -105,20 +109,51 @@ const initialState = {
   transactions: []
 }
 
-const RIFServicesContext = React.createContext<{ state: State, dispatch: Dispatch } | undefined>(undefined)
+const RIFSocketsContext = React.createContext<{ state: State, dispatch: Dispatch } | undefined>(undefined)
 
-export function SubscriptionsProvider({ children }: SubscriptionsProviderProps) {
+const rifWalletServicesUrl = 'http://127.0.0.1:3000'
+
+export function RIFSocketsProvider({ children }: SubscriptionsProviderProps) {
   const [state, dispatch] = React.useReducer(liveSubscribtionReducer, initialState)
+
+  const { wallet, isDeployed } = useSelectedWallet()
+
+  React.useEffect(() => {
+    const socket = io(rifWalletServicesUrl, {
+      path: '/ws',
+      forceNew: true,
+      reconnectionAttempts: 3,
+      timeout: 2000,
+      autoConnect: true,
+      transports: ['websocket'], // you need to explicitly tell it to use websocket
+    })
+
+    if(isDeployed) {
+      console.log()
+      socket.connect().emit('subscribe', { address: wallet.address })
+      socket.on('change', (event: Action) => {
+        dispatch(event)
+      })
+  
+      return function cleanup() {
+        socket.disconnect()
+      }
+  
+    }
+
+    
+  }, [isDeployed])
+
   const value = { state, dispatch }
   return (
-    <RIFServicesContext.Provider value={value}>
+    <RIFSocketsContext.Provider value={value}>
       {children}
-    </RIFServicesContext.Provider>
+    </RIFSocketsContext.Provider>
   )
 }
 
-export function useSubscription() {
-  const context = React.useContext(RIFServicesContext)
+export function useSocketsState() {
+  const context = React.useContext(RIFSocketsContext)
   if (context === undefined) {
     throw new Error('useSubscription must be used within a SubscriptionsProvider')
   }
