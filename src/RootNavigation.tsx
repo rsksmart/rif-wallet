@@ -17,6 +17,7 @@ import { InjectedBrowserUXScreenProps } from './screens/injectedBrowser/Injected
 import { AppHeader } from './ux/appHeader'
 import { AppFooterMenu } from './ux/appFooter'
 import { WalletConnectProviderElement } from './screens/walletConnect/WalletConnectContext'
+import { RIFSocketsProvider } from './ux/RIFSocketsContext/RIFSocketsContext'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -92,6 +93,7 @@ export const RootNavigation: React.FC<{
     <View style={styles.parent}>
       <NavigationContainer onStateChange={handleScreenChange}>
         <WalletConnectProviderElement>
+          <RIFSocketsProvider>
           <AppHeader />
           <RootStack.Navigator>
             <RootStack.Screen
@@ -197,6 +199,7 @@ export const RootNavigation: React.FC<{
             </RootStack.Screen>
           </RootStack.Navigator>
           <AppFooterMenu currentScreen={currentScreen} />
+          </RIFSocketsProvider>
         </WalletConnectProviderElement>
       </NavigationContainer>
     </View>
