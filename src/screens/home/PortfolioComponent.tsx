@@ -1,4 +1,5 @@
 import React from 'react'
+import { useSocketsState } from '../../ux/RIFSocketsContext/RIFSocketsContext'
 import { StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
@@ -19,18 +20,22 @@ const PortfolioComponent: React.FC<Interface> = ({
   visible,
   setPanelActive,
 }) => {
+  const { state } = useSocketsState()
+
   return (
     <View style={styles.portfolio}>
       <TouchableOpacity onPress={setPanelActive} disabled={visible}>
         <Text style={styles.heading}>portfolio</Text>
       </TouchableOpacity>
       {visible &&
+        state.prices &&
         balances.map((token: any) => (
           <BalanceRowComponent
             key={token.contractAddress}
             selected={selected.contractAddress === token.contractAddress}
             token={token}
             onPress={() => setSelected(token)}
+            quota={state?.prices[token.contractAddress]}
           />
         ))}
     </View>
