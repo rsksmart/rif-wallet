@@ -12,13 +12,16 @@ export const BalanceRowComponent: React.FC<{
   token: ITokenWithBalance
   selected: boolean
   onPress: () => void
-}> = ({ selected, token, onPress }) => {
+  quota: { price: number, lastUpdated: string } | undefined
+}> = ({ selected, token, onPress, quota }) => {
   const containerStyles = {
     ...styles.container,
     backgroundColor: selected
       ? getTokenColorWithOpacity(token.symbol, 0.2)
       : '#efefef',
   }
+
+  const priceDecimals = 2
 
   return (
     <TouchableOpacity onPress={onPress}>
@@ -35,6 +38,7 @@ export const BalanceRowComponent: React.FC<{
               token.balance,
               token.decimals,
             )} ${token.symbol || ''}`}</Text>
+            <Text style={styles.price}>{quota ? quota.price.toFixed(priceDecimals) : 0.0} USD</Text>
           </View>
         </View>
       </View>
@@ -63,4 +67,10 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     marginTop: 3,
   },
+  price: {
+    color: '#66777e',
+    fontSize: 10,
+    letterSpacing: 0.06,
+    textAlign: 'right',
+  }
 })
