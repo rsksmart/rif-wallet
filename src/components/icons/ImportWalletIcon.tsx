@@ -2,7 +2,9 @@ import React from 'react'
 import Svg, { Rect, Polyline, Path, SvgProps } from 'react-native-svg'
 import { SVGIconInterface } from '.'
 
-export const ImportWalletIcon: React.FC<SVGIconInterface> = (props: SvgProps) => {
+export const ImportWalletIcon: React.FC<SVGIconInterface> = (
+  props: SvgProps,
+) => {
   const { width, height, color } = props
   return (
     <Svg

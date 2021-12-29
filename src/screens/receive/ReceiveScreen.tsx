@@ -30,9 +30,9 @@ type ReceiveScreenProps = {
 }
 
 export const ReceiveScreen: React.FC<ScreenWithWallet & ReceiveScreenProps> = ({
-                                                                                 wallet,
-                                                                                 route,
-                                                                               }) => {
+  wallet,
+  route,
+}) => {
   const smartAddress = wallet.smartWalletAddress
   const selectedToken = route.params?.token || 'TRBTC'
 
@@ -40,10 +40,10 @@ export const ReceiveScreen: React.FC<ScreenWithWallet & ReceiveScreenProps> = ({
   const qrCodeSize = windowWidth * 0.6
 
   const handleShare = () =>
-      Share.share({
-        title: smartAddress,
-        message: smartAddress,
-      })
+    Share.share({
+      title: smartAddress,
+      message: smartAddress,
+    })
 
   const handleCopy = () => Clipboard.setString(smartAddress)
 
@@ -53,55 +53,55 @@ export const ReceiveScreen: React.FC<ScreenWithWallet & ReceiveScreenProps> = ({
   }
 
   return (
-      <LinearGradient
-          colors={['#FFFFFF', getTokenColorWithOpacity(selectedToken, 0.1)]}
-          style={styles.parent}>
-        <ScrollView>
-          <Text style={styles.header}>Receive</Text>
-          <View
-              style={{ ...styles.qrContainer, ...qrContainerStyle }}
-              testID={TestID.QRCodeDisplay}>
-            <QRCode
-                bgColor="#ffffff"
-                color="#707070"
-                value={smartAddress}
-                size={qrCodeSize}
+    <LinearGradient
+      colors={['#FFFFFF', getTokenColorWithOpacity(selectedToken, 0.1)]}
+      style={styles.parent}>
+      <ScrollView>
+        <Text style={styles.header}>Receive</Text>
+        <View
+          style={{ ...styles.qrContainer, ...qrContainerStyle }}
+          testID={TestID.QRCodeDisplay}>
+          <QRCode
+            bgColor="#ffffff"
+            color="#707070"
+            value={smartAddress}
+            size={qrCodeSize}
+          />
+        </View>
+
+        <View style={{ ...styles.addressContainer, ...qrContainerStyle }}>
+          <Text testID={TestID.AddressText} style={styles.smartAddress}>
+            {getAddressDisplayText(smartAddress).displayAddress}
+          </Text>
+        </View>
+        <Text style={styles.smartAddressLabel}>smart address</Text>
+
+        <View style={grid.row}>
+          <View style={{ ...grid.column6, ...styles.bottomColumn }}>
+            <SquareButton
+              onPress={handleShare}
+              title="share"
+              testID="Address.ShareButton"
+              icon={<Arrow color={getTokenColor(selectedToken)} rotate={225} />}
             />
           </View>
-
-          <View style={{ ...styles.addressContainer, ...qrContainerStyle }}>
-            <Text testID={TestID.AddressText} style={styles.smartAddress}>
-              {getAddressDisplayText(smartAddress).displayAddress}
-            </Text>
+          <View style={{ ...grid.column6, ...styles.bottomColumn }}>
+            <SquareButton
+              onPress={handleCopy}
+              title="copy"
+              testID="Address.CopyButton"
+              icon={
+                <CopyIcon
+                  width={55}
+                  height={55}
+                  color={getTokenColor(selectedToken)}
+                />
+              }
+            />
           </View>
-          <Text style={styles.smartAddressLabel}>smart address</Text>
-
-          <View style={grid.row}>
-            <View style={{ ...grid.column6, ...styles.bottomColumn }}>
-              <SquareButton
-                  onPress={handleShare}
-                  title="share"
-                  testID="Address.ShareButton"
-                  icon={<Arrow color={getTokenColor(selectedToken)} rotate={225} />}
-              />
-            </View>
-            <View style={{ ...grid.column6, ...styles.bottomColumn }}>
-              <SquareButton
-                  onPress={handleCopy}
-                  title="copy"
-                  testID="Address.CopyButton"
-                  icon={
-                    <CopyIcon
-                        width={55}
-                        height={55}
-                        color={getTokenColor(selectedToken)}
-                    />
-                  }
-              />
-            </View>
-          </View>
-        </ScrollView>
-      </LinearGradient>
+        </View>
+      </ScrollView>
+    </LinearGradient>
   )
 }
 

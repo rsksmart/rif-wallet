@@ -1,13 +1,6 @@
 import React from 'react'
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  Dimensions,
-  Text,
-  Image,
-} from 'react-native'
-import { Button, Paragraph } from '../../components'
+import { StyleSheet, View, ScrollView, Text, Image } from 'react-native'
+
 import { ScreenProps } from './types'
 import LinearGradient from 'react-native-linear-gradient'
 
