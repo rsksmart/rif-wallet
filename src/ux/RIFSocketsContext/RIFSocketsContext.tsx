@@ -136,8 +136,7 @@ export function RIFSocketsProvider({ children }: SubscriptionsProviderProps) {
     })
 
     if (isDeployed) {
-      console.log()
-      socket.connect().emit('subscribe', { address: wallet.address })
+      socket.connect().emit('subscribe', { address: wallet.smartWalletAddress })
       socket.on('change', (event: Action) => {
         dispatch(event)
       })
