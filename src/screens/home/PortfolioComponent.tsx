@@ -28,7 +28,6 @@ const PortfolioComponent: React.FC<Interface> = ({
         <Text style={styles.heading}>portfolio</Text>
       </TouchableOpacity>
       {visible &&
-        state.prices &&
         balances.map((token: any) => (
           <BalanceRowComponent
             key={token.contractAddress}
