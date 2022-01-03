@@ -54,7 +54,7 @@ const ContactRow: React.FC<{
       <Text style={styles.label}>{contact.name}</Text>
     </View>
     <View style={grid.column9}>
-      <Text>{contact.addressOrUrl}</Text>
+      <Text>{contact.displayAddress}</Text>
     </View>
     <View style={grid.column3} />
     <View
@@ -80,7 +80,8 @@ const ContactRow: React.FC<{
         color={'#000'}
         onPress={() => {
           navigation.navigate('Send', {
-            addressOrUri: contact.addressOrUrl,
+            to: contact.address,
+            displayTo: contact.displayAddress,
           })
         }}
         title="send"

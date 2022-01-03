@@ -6,13 +6,14 @@ import uuid from 'react-native-uuid'
 export interface IContact {
   id: string | number[]
   name: string
-  addressOrUrl: string
+  address: string
+  displayAddress: string
 }
 
 export interface ContactsContextInterface {
   contacts: IContact[]
   isLoading: boolean
-  addContact: (name: string, addressOrUrl: string) => void
+  addContact: (name: string, address: string, displayAddress: string) => void
   editContact: (contact: IContact) => void
   deleteContact: (id: string | number[]) => void
 }
@@ -44,10 +45,14 @@ export const ContactsProviderElement: React.FC = ({ children }) => {
     saveContacts(contacts)
   }, [contacts, isLoading])
 
-  const addContact = (name: string, addressOrUrl: string) => {
+  const addContact = (
+    name: string,
+    address: string,
+    displayAddress: string,
+  ) => {
     const id = uuid.v4()
 
-    setContacts(prev => [...prev, { id, name, addressOrUrl }])
+    setContacts(prev => [...prev, { id, name, address, displayAddress }])
   }
 
   const editContact = (contact: IContact) => {

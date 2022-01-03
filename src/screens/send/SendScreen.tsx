@@ -31,8 +31,8 @@ export const SendScreen: React.FC<
   const smartAddress = wallet.smartWalletAddress
   const { t } = useTranslation()
 
-  const [to, setTo] = useState('')
-  const [displayTo, setDisplayTo] = useState('')
+  const [to, setTo] = useState(route.params?.to || '')
+  const [displayTo, setDisplayTo] = useState(route.params?.displayTo || '')
   const [isValidTo, setIsValidTo] = useState(false)
   const [selectedSymbol, setSelectedToken] = useState(
     route.params?.token || 'tRIF',

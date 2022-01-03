@@ -18,17 +18,19 @@ export const EditContactScreen: React.FC<
 > = ({ navigation, rnsResolver }) => {
   const [name, setName] = useState('')
   const [isValidAddressOrUrl, setIsValidAddressOrUrl] = useState(false)
-  const [addressOrUrl, setAddressOrUrl] = useState('')
+  const [displayAddress, setDisplayAddress] = useState('')
+  const [address, setAddress] = useState('')
 
   const { addContact } = useContext(ContactsContext)
 
   const handleTargetAddressChange = (
     isValid: boolean,
-    address: string,
-    displayAddress: string,
+    addressParam: string,
+    displayAddressParam: string,
   ) => {
     setIsValidAddressOrUrl(isValid)
-    setAddressOrUrl(displayAddress)
+    setAddress(addressParam)
+    setDisplayAddress(displayAddressParam)
   }
 
   const isValid = isValidAddressOrUrl && name ? true : false
@@ -48,21 +50,15 @@ export const EditContactScreen: React.FC<
         />
         <AddressInput
           onChangeText={handleTargetAddressChange}
-          value={addressOrUrl}
+          value={displayAddress}
           placeholder={'Contact address / RNS url'}
           testID={'AddressOrUrl.Input'}
           rnsResolver={rnsResolver}
           style={styles.input}
         />
-        {/* <TextInput
-          onChangeText={text => setAddressOrUrl(text)}
-          value={addressOrUrl}
-          placeholder={'Contact address / RNS url'}
-          style={styles.input}
-        /> */}
         <Button
           onPress={() => {
-            addContact(name, addressOrUrl)
+            addContact(name, address, displayAddress)
             navigation.goBack()
           }}
           title="Save"

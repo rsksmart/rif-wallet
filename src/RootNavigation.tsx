@@ -43,7 +43,7 @@ const InjectedScreens = {
 type RootStackParamList = {
   DevMenu: undefined
   Home: undefined
-  Send: undefined | { token: string }
+  Send: undefined | { token?: string; to?: string; displayTo?: string }
   Receive: undefined
   Balances: undefined
   Activity: undefined
