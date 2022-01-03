@@ -60,6 +60,7 @@ type RootStackParamList = {
   Dapps: undefined
   RNSManager: undefined
   RegisterDomain: undefined
+  Contacts: undefined
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -204,6 +205,11 @@ export const RootNavigation: React.FC<{
               name="ManagePin"
               component={Screens.ManagePinScreen}
               options={{ ...sharedOptions }}
+            />
+            <RootStack.Screen
+              name="Contacts"
+              component={Screens.ContactsNavigationScreen}
+              options={{ ...sharedOptions, headerShown: false }}
             />
             <RootStack.Screen
               name="InjectedBrowserUX"
