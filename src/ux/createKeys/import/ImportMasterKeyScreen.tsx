@@ -24,7 +24,7 @@ export const ImportMasterKeyScreen: React.FC<
 
   useEffect(() => {
     // @ts-ignore
-    if (route.params.mnemonic) {
+    if (route.params?.mnemonic) {
       // @ts-ignore
       setImportMnemonic(route.params.mnemonic)
     }
