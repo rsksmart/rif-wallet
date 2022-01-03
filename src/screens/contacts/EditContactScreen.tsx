@@ -18,7 +18,7 @@ export const EditContactScreen: React.FC<{
     <LinearGradient
       colors={['#FFFFFF', setOpacity('#CCCCCC', 0.1)]}
       style={styles.parent}>
-      <Text style={styles.header}>Add/Edit Contact</Text>
+      <Text style={styles.header}>Add Contact</Text>
 
       <ScrollView style={styles.contacts}>
         <TextInput
