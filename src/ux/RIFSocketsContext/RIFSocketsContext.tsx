@@ -66,7 +66,7 @@ export interface NewTransactionAction {
 }
 
 export interface State {
-  balances: Array<IToken>
+  balances: Record<string, IToken>
   prices: Record<string, IPrice>
   transactions: Array<ITransaction>
 }
@@ -82,7 +82,10 @@ function liveSubscribtionReducer(state: State, action: Action) {
     case 'newBalance':
       return {
         ...state,
-        balances: [action.payload, ...state.balances],
+        balances: {
+          ...state.balances,
+          [action.payload.contractAddress]: action.payload,
+        },
       }
 
     case 'newPrice':
@@ -107,7 +110,7 @@ function liveSubscribtionReducer(state: State, action: Action) {
 
 const initialState = {
   prices: {},
-  balances: [],
+  balances: {},
   transactions: [],
 }
 
@@ -136,7 +139,9 @@ export function RIFSocketsProvider({ children }: SubscriptionsProviderProps) {
     })
 
     if (isDeployed) {
-      socket.connect().emit('subscribe', { address: wallet.smartWalletAddress })
+      socket
+        .connect()
+        .emit('subscribe', { address: wallet.smartWallet.address })
       socket.on('change', (event: Action) => {
         dispatch(event)
       })
