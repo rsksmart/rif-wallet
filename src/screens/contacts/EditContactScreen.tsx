@@ -3,16 +3,35 @@ import { ScrollView, StyleSheet, Text, TextInput } from 'react-native'
 import { NavigationProp } from '../../RootNavigation'
 import LinearGradient from 'react-native-linear-gradient'
 import { setOpacity } from '../home/tokenColor'
-import { Button } from '../../components'
+import { AddressInput, Button } from '../../components'
 import { ContactsContext } from './ContactsContext'
+import Resolver from '@rsksmart/rns-resolver.js'
 
-export const EditContactScreen: React.FC<{
-  navigation: NavigationProp
-}> = ({ navigation }) => {
+export type EditContactScreenProps = {
+  rnsResolver: Resolver
+}
+
+export const EditContactScreen: React.FC<
+  {
+    navigation: NavigationProp
+  } & EditContactScreenProps
+> = ({ navigation, rnsResolver }) => {
   const [name, setName] = useState('')
+  const [isValidAddressOrUrl, setIsValidAddressOrUrl] = useState(false)
   const [addressOrUrl, setAddressOrUrl] = useState('')
 
   const { addContact } = useContext(ContactsContext)
+
+  const handleTargetAddressChange = (
+    isValid: boolean,
+    address: string,
+    displayAddress: string,
+  ) => {
+    setIsValidAddressOrUrl(isValid)
+    setAddressOrUrl(displayAddress)
+  }
+
+  const isValid = isValidAddressOrUrl && name ? true : false
 
   return (
     <LinearGradient
@@ -27,12 +46,20 @@ export const EditContactScreen: React.FC<{
           placeholder={'Contact name'}
           style={styles.input}
         />
-        <TextInput
+        <AddressInput
+          onChangeText={handleTargetAddressChange}
+          value={addressOrUrl}
+          placeholder={'Contact address / RNS url'}
+          testID={'AddressOrUrl.Input'}
+          rnsResolver={rnsResolver}
+          style={styles.input}
+        />
+        {/* <TextInput
           onChangeText={text => setAddressOrUrl(text)}
           value={addressOrUrl}
           placeholder={'Contact address / RNS url'}
           style={styles.input}
-        />
+        /> */}
         <Button
           onPress={() => {
             addContact(name, addressOrUrl)
@@ -40,7 +67,7 @@ export const EditContactScreen: React.FC<{
           }}
           title="Save"
           style={{ margin: 12 }}
-          disabled={name && addressOrUrl ? false : true}
+          disabled={!isValid}
         />
       </ScrollView>
     </LinearGradient>

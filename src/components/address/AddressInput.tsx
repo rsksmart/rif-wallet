@@ -18,6 +18,7 @@ type AddressInputProps = {
   ) => void
   testID: string
   rnsResolver: Resolver
+  style?: any
 }
 
 export const AddressInput: React.FC<AddressInputProps> = ({
@@ -26,6 +27,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   onChangeText,
   testID,
   rnsResolver,
+  style,
 }) => {
   const [validationMessage, setValidationMessage] = useState(
     validateAddress(value),
@@ -67,6 +69,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
         placeholder={placeholder}
         testID={testID}
         editable={inputInfo !== 'Loading...'}
+        style={style}
       />
 
       {inputInfo !== '' && (

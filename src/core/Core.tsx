@@ -139,7 +139,7 @@ export const Core = () => {
   }, [unlocked])
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       await i18nInit
       setState({ ...state, hasKeys: !!(await hasKeys()), loading: false })
     })()
@@ -173,6 +173,7 @@ export const Core = () => {
             deleteKeys,
           }}
           injectedBrowserUXScreenProps={{ fetcher: rifWalletServicesFetcher }}
+          contactsNavigationScreenProps={{ rnsResolver }}
         />
 
         {requests.length !== 0 && (
