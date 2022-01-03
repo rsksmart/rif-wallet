@@ -5,6 +5,7 @@ import { BigNumber, BigNumberish, constants } from 'ethers'
 import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { useTranslation } from 'react-i18next'
+import { useSocketsState } from '../../ux/RIFSocketsContext/RIFSocketsContext'
 
 import { ScreenProps, NavigationProp } from '../../RootNavigation'
 import { Address, Button } from '../../components'
@@ -58,74 +59,12 @@ interface IBalancesByToken {
   [address: string]: ITokenWithBalance
 }
 
-const rifWalletServicesUrl = 'http://10.0.2.2:3000' // 'https://rif-wallet-services-dev.rifcomputing.net'
-
 export const BalancesScreen: React.FC<
   ScreenProps<'Balances'> & ScreenWithWallet & BalancesScreenProps
 > = ({ navigation, wallet }) => {
   const { t } = useTranslation()
 
-  const [info, setInfo] = useState<string>(
-    t('Loading balances. Please wait...'),
-  )
-  const [balances, setBalances] = useState<IBalancesByToken>({})
-
-  useEffect(() => {
-    const socket = io(rifWalletServicesUrl, {
-      path: '/ws',
-      forceNew: true,
-      reconnectionAttempts: 3,
-      timeout: 2000,
-      autoConnect: true,
-      transports: ['websocket'], // you need to explicitly tell it to use websocket
-    })
-
-    socket.on('connect', () => {
-      setInfo('')
-
-      socket.on('change', (event: IRifWalletServicesSocketEvent) => {
-        if (event.type !== 'newBalance') {
-          return
-        }
-
-        setBalances(prev => ({
-          ...prev,
-          [event.payload.contractAddress]: event.payload,
-        }))
-      })
-
-      socket.emit('subscribe', { address: wallet.smartWalletAddress })
-    })
-
-    return function cleanup() {
-      socket.disconnect()
-    }
-  }, [])
-
-  const loadRBTCBalance = async () => {
-    const rbtcBalanceEntry = await wallet
-      .provider!.getBalance(wallet.smartWallet.address)
-      .then(
-        rbtcBalance =>
-          ({
-            name: 'TRBTC',
-            logo: 'TRBTC',
-            symbol: 'TRBTC (eoa wallet)',
-            contractAddress: constants.AddressZero,
-            decimals: 18,
-            balance: rbtcBalance.toString(),
-          } as ITokenWithBalance),
-      )
-
-    setBalances(prev => ({
-      ...prev,
-      [rbtcBalanceEntry.contractAddress]: rbtcBalanceEntry,
-    }))
-  }
-
-  useEffect(() => {
-    loadRBTCBalance()
-  }, [])
+  const { state, loadRBTCBalance } = useSocketsState()
 
   return (
     <ScrollView>
@@ -134,11 +73,7 @@ export const BalancesScreen: React.FC<
       </View>
 
       <View>
-        <Text testID="Info.Text">{info}</Text>
-      </View>
-
-      <View>
-        {Object.values(balances).map(token => (
+        {Object.values(state.balances).map(token => (
           <BalancesRow
             key={token.contractAddress}
             token={token}
