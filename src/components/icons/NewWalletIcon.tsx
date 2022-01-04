@@ -6,7 +6,7 @@ export const NewWalletIcon: React.FC<SVGIconInterface> = (props: SvgProps) => {
   const { width, height, color } = props
   return (
     <Svg
-      viewBox="0 -6 22 45"
+      viewBox="0 -10 22 45"
       width={width || 50}
       height={height || 50}
       fill={color || '#5D5E5E'}>

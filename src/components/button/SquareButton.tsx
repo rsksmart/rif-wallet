@@ -47,6 +47,8 @@ export const SquareButton: React.FC<Interface> = ({
 const styles = StyleSheet.create({
   button: {
     padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   image: {
     width: 50,

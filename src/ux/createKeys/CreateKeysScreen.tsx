@@ -42,7 +42,11 @@ export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
               icon={<ImportWalletIcon color={getTokenColor(selectedToken)} />}
             />
           </View>
-          <View style={{ ...grid.column6, ...styles.bottomColumn }}>
+          <View
+            style={{
+              ...grid.column6,
+              ...styles.bottomColumn,
+            }}>
             <SquareButton
               // @ts-ignore
               onPress={() => navigation.navigate('NewMasterKey')}
@@ -50,8 +54,8 @@ export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
               testID="Address.CopyButton"
               icon={
                 <NewWalletIcon
-                  width={55}
-                  height={55}
+                  width={53}
+                  height={60}
                   color={getTokenColor(selectedToken)}
                 />
               }
