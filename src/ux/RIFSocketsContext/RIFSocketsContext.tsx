@@ -2,6 +2,7 @@ import React from 'react'
 import { useSelectedWallet } from '../../Context'
 import { constants } from 'ethers'
 import { io } from 'socket.io-client'
+import { rifWalletServicesUrl } from '../../core/setup'
 
 export interface ITransaction {
   _id: string
@@ -120,8 +121,6 @@ const initialState = {
 const RIFSocketsContext = React.createContext<
   { state: State; dispatch: Dispatch, loadRBTCBalance: LoadRBTCBalance } | undefined
 >(undefined)
-
-const rifWalletServicesUrl = 'http://127.0.0.1:3000' // 'https://rif-wallet-services-dev.rifcomputing.net'
 
 export function RIFSocketsProvider({ children }: SubscriptionsProviderProps) {
   const [state, dispatch] = React.useReducer(
