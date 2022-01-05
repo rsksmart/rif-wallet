@@ -3,83 +3,29 @@ import { useSelectedWallet } from '../../Context'
 import { io } from 'socket.io-client'
 import { rifWalletServicesUrl } from '../../core/setup'
 
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-
-export interface ITransaction {
-  _id: string
-  hash: string
-  nonce: number
-  blockHash: string
-  blockNumber: number
-  transactionIndex: string
-  from: string
-  to: string
-  gas: number
-  gasPrice: string // Should we do it a BigNumber?
-  value: string // Same here
-  input: string
-  v: string
-  r: string
-  s: string
-  timestamp: number
-  receipt: {
-    transactionHash: string
-    transactionIndex: number
-    blockHash: string
-    blockNumber: number
-    cumulativeGasUsed: string
-    gasUsed: number
-    contractAddress: any
-    logs: Array<any>
-    from: string
-    to: string
-    status: string
-    logsBloom: string
-  }
-  txType: string
-  txId: string
-}
-
-export interface IPrice {
-  price: number
-  lastUpdated: string
-}
-
-export interface NewBlanceAction {
-  type: 'newBalance'
-  payload: ITokenWithBalance
-}
-
-export interface NewPriceAction {
-  type: 'newPrice'
-  payload: Record<string, { price: number; lastUpdated: string }>
-}
-
-export interface NewTransactionAction {
-  type: 'newTransaction'
-  payload: ITransaction
-}
-
-export interface State {
-  balances: Record<string, ITokenWithBalance>
-  prices: Record<string, IPrice>
-  transactions: Array<ITransaction>
-}
-
-type Action = NewBlanceAction | NewPriceAction | NewTransactionAction
-type Dispatch = (action: Action) => void
-type SubscriptionsProviderProps = { children: React.ReactNode }
+import {
+  Action,
+  Dispatch,
+  State,
+  SubscriptionsProviderProps,
+} from './types'
 
 function liveSubscribtionReducer(state: State, action: Action) {
   const { type } = action
 
   switch (action.type) {
+    case 'newActivity':
+      return {
+        ...state,
+        activities: action.payload,
+      }
+
     case 'newBalance':
       return {
         ...state,
         balances: {
           ...state.balances,
-          [action.payload.contractAddress]: {...action.payload, logo: ''} // Need to define where are this logos coming from
+          [action.payload.contractAddress]: { ...action.payload, logo: '' }, // Need to define where are this logos coming from
         },
       }
 
@@ -104,6 +50,12 @@ function liveSubscribtionReducer(state: State, action: Action) {
 }
 
 const initialState = {
+  activities: {
+    activityTransactions: [],
+    data: [],
+    next: null,
+    prev: null,
+  },
   prices: {},
   balances: {},
   transactions: [],
