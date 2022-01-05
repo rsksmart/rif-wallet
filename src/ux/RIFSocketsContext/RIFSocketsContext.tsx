@@ -4,91 +4,30 @@ import { constants } from 'ethers'
 import { io } from 'socket.io-client'
 import { rifWalletServicesUrl } from '../../core/setup'
 
-export interface ITransaction {
-  _id: string
-  hash: string
-  nonce: number
-  blockHash: string
-  blockNumber: number
-  transactionIndex: string
-  from: string
-  to: string
-  gas: number
-  gasPrice: string // Should we do it a BigNumber?
-  value: string // Same here
-  input: string
-  v: string
-  r: string
-  s: string
-  timestamp: number
-  receipt: {
-    transactionHash: string
-    transactionIndex: number
-    blockHash: string
-    blockNumber: number
-    cumulativeGasUsed: string
-    gasUsed: number
-    contractAddress: any
-    logs: Array<any>
-    from: string
-    to: string
-    status: string
-    logsBloom: string
-  }
-  txType: string
-  txId: string
-}
-
-export interface IPrice {
-  price: number
-  lastUpdated: string
-}
-
-export interface IToken {
-  name: string
-  symbol: string
-  logo: string
-  contractAddress: string
-  decimals: number
-  balance: string
-}
-
-export interface NewBlanceAction {
-  type: 'newBalance'
-  payload: IToken
-}
-
-export interface NewPriceAction {
-  type: 'newPrice'
-  payload: Record<string, { price: number; lastUpdated: string }>
-}
-
-export interface NewTransactionAction {
-  type: 'newTransaction'
-  payload: ITransaction
-}
-
-export interface State {
-  balances: Record<string, IToken>
-  prices: Record<string, IPrice>
-  transactions: Array<ITransaction>
-}
-
-type Action = NewBlanceAction | NewPriceAction | NewTransactionAction
-type Dispatch = (action: Action) => void
-type LoadRBTCBalance =  () =>void
-type SubscriptionsProviderProps = { children: React.ReactNode }
+import {
+  Action,
+  Dispatch,
+  LoadRBTCBalance,
+  State,
+  SubscriptionsProviderProps,
+} from './types'
 
 function liveSubscribtionReducer(state: State, action: Action) {
   const { type } = action
 
   switch (action.type) {
+    case 'newActivity':
+      return {
+        ...state,
+        activities: action.payload,
+      }
+
     case 'newBalance':
       return {
         ...state,
         balances: {
           ...state.balances,
-          [action.payload.contractAddress]: {...action.payload, logo: ''} // Need to define where are this logos coming from
+          [action.payload.contractAddress]: { ...action.payload, logo: '' }, // Need to define where are this logos coming from
         },
       }
 
@@ -113,13 +52,20 @@ function liveSubscribtionReducer(state: State, action: Action) {
 }
 
 const initialState = {
+  activities: {
+    activityTransactions: [],
+    data: [],
+    next: null,
+    prev: null,
+  },
   prices: {},
   balances: {},
   transactions: [],
 }
 
 const RIFSocketsContext = React.createContext<
-  { state: State; dispatch: Dispatch, loadRBTCBalance: LoadRBTCBalance } | undefined
+  | { state: State; dispatch: Dispatch; loadRBTCBalance: LoadRBTCBalance }
+  | undefined
 >(undefined)
 
 export function RIFSocketsProvider({ children }: SubscriptionsProviderProps) {
@@ -130,22 +76,19 @@ export function RIFSocketsProvider({ children }: SubscriptionsProviderProps) {
 
   const { wallet, isDeployed } = useSelectedWallet()
 
-  const loadRBTCBalance =  async () =>{
+  const loadRBTCBalance = async () => {
     const rbtcBalanceEntry = await wallet
       .provider!.getBalance(wallet.smartWallet.address)
-      .then(
-        rbtcBalance =>
-        ({
-          name: 'TRBTC',
-          logo: 'TRBTC',
-          symbol: 'TRBTC (eoa wallet)',
-          contractAddress: constants.AddressZero,
-          decimals: 18,
-          balance: rbtcBalance.toString(),
-        }),
-      )
-    dispatch({type: 'newBalance', payload: {...rbtcBalanceEntry}})
-    }
+      .then(rbtcBalance => ({
+        name: 'TRBTC',
+        logo: 'TRBTC',
+        symbol: 'TRBTC (eoa wallet)',
+        contractAddress: constants.AddressZero,
+        decimals: 18,
+        balance: rbtcBalance.toString(),
+      }))
+    dispatch({ type: 'newBalance', payload: { ...rbtcBalanceEntry } })
+  }
 
   React.useEffect(() => {
     const socket = io(rifWalletServicesUrl, {
