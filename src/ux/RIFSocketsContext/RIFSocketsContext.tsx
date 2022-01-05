@@ -1,8 +1,9 @@
 import React from 'react'
 import { useSelectedWallet } from '../../Context'
-import { constants } from 'ethers'
 import { io } from 'socket.io-client'
 import { rifWalletServicesUrl } from '../../core/setup'
+
+import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
 export interface ITransaction {
   _id: string
@@ -44,18 +45,9 @@ export interface IPrice {
   lastUpdated: string
 }
 
-export interface IToken {
-  name: string
-  symbol: string
-  logo: string
-  contractAddress: string
-  decimals: number
-  balance: string
-}
-
 export interface NewBlanceAction {
   type: 'newBalance'
-  payload: IToken
+  payload: ITokenWithBalance
 }
 
 export interface NewPriceAction {
@@ -69,14 +61,13 @@ export interface NewTransactionAction {
 }
 
 export interface State {
-  balances: Record<string, IToken>
+  balances: Record<string, ITokenWithBalance>
   prices: Record<string, IPrice>
   transactions: Array<ITransaction>
 }
 
 type Action = NewBlanceAction | NewPriceAction | NewTransactionAction
 type Dispatch = (action: Action) => void
-type LoadRBTCBalance =  () =>void
 type SubscriptionsProviderProps = { children: React.ReactNode }
 
 function liveSubscribtionReducer(state: State, action: Action) {
@@ -119,7 +110,7 @@ const initialState = {
 }
 
 const RIFSocketsContext = React.createContext<
-  { state: State; dispatch: Dispatch, loadRBTCBalance: LoadRBTCBalance } | undefined
+  { state: State; dispatch: Dispatch } | undefined
 >(undefined)
 
 export function RIFSocketsProvider({ children }: SubscriptionsProviderProps) {
@@ -129,23 +120,6 @@ export function RIFSocketsProvider({ children }: SubscriptionsProviderProps) {
   )
 
   const { wallet, isDeployed } = useSelectedWallet()
-
-  const loadRBTCBalance =  async () =>{
-    const rbtcBalanceEntry = await wallet
-      .provider!.getBalance(wallet.smartWallet.address)
-      .then(
-        rbtcBalance =>
-        ({
-          name: 'TRBTC',
-          logo: 'TRBTC',
-          symbol: 'TRBTC (eoa wallet)',
-          contractAddress: constants.AddressZero,
-          decimals: 18,
-          balance: rbtcBalance.toString(),
-        }),
-      )
-    dispatch({type: 'newBalance', payload: {...rbtcBalanceEntry}})
-    }
 
   React.useEffect(() => {
     const socket = io(rifWalletServicesUrl, {
@@ -171,11 +145,7 @@ export function RIFSocketsProvider({ children }: SubscriptionsProviderProps) {
     }
   }, [isDeployed])
 
-  React.useEffect(() => {
-    loadRBTCBalance()
-  }, [])
-
-  const value = { state, dispatch, loadRBTCBalance }
+  const value = { state, dispatch }
   return (
     <RIFSocketsContext.Provider value={value}>
       {children}

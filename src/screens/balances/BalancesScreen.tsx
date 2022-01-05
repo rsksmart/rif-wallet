@@ -49,17 +49,6 @@ export const BalancesRow = ({
 
 export type BalancesScreenProps = { fetcher: IRIFWalletServicesFetcher }
 
-interface IRifWalletServicesSocketEvent {
-  payload: ITokenWithBalance
-  type: 'newBalance'
-}
-
-interface IBalancesByToken {
-  [address: string]: ITokenWithBalance
-}
-
-const rifWalletServicesUrl = 'http://10.0.2.2:3000' // 'https://rif-wallet-services-dev.rifcomputing.net'
-
 export const BalancesScreen: React.FC<
   ScreenProps<'Balances'> & ScreenWithWallet & BalancesScreenProps
 > = ({ navigation, wallet }) => {
@@ -69,7 +58,6 @@ export const BalancesScreen: React.FC<
   const [info, setInfo] = useState<string>(
     t('Loading balances. Please wait...'),
   )
-  const [balances, setBalances] = useState<IBalancesByToken>({})
 
   const loadRBTCBalance = async () => {
     setInfo('Loading balances. Please wait...')
@@ -87,11 +75,7 @@ export const BalancesScreen: React.FC<
           } as ITokenWithBalance),
       )
       setInfo('')
-      //dispatch({type: 'newBalance', payload: {}})
-    setBalances(prev => ({
-      ...prev,
-      [rbtcBalanceEntry.contractAddress]: rbtcBalanceEntry,
-    }))
+      dispatch({type: 'newBalance', payload: rbtcBalanceEntry})
   }
 
   useEffect(() => {
@@ -109,7 +93,7 @@ export const BalancesScreen: React.FC<
       </View>
 
       <View>
-        {Object.values(balances).map(token => (
+        {Object.values(state.balances).map(token => (
           <BalancesRow
             key={token.contractAddress}
             token={token}
