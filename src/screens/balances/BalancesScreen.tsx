@@ -10,7 +10,6 @@ import { useSocketsState } from '../../ux/RIFSocketsContext/RIFSocketsContext'
 import { ScreenProps, NavigationProp } from '../../RootNavigation'
 import { Address, Button } from '../../components'
 import { ScreenWithWallet } from '../types'
-import { io } from 'socket.io-client'
 
 export const balanceToString = (balance: string, decimals: BigNumberish) => {
   const parts = {
@@ -59,12 +58,45 @@ interface IBalancesByToken {
   [address: string]: ITokenWithBalance
 }
 
+const rifWalletServicesUrl = 'http://10.0.2.2:3000' // 'https://rif-wallet-services-dev.rifcomputing.net'
+
 export const BalancesScreen: React.FC<
   ScreenProps<'Balances'> & ScreenWithWallet & BalancesScreenProps
 > = ({ navigation, wallet }) => {
   const { t } = useTranslation()
+  const {state, dispatch} = useSocketsState()
 
-  const { state, loadRBTCBalance } = useSocketsState()
+  const [info, setInfo] = useState<string>(
+    t('Loading balances. Please wait...'),
+  )
+  const [balances, setBalances] = useState<IBalancesByToken>({})
+
+  const loadRBTCBalance = async () => {
+    setInfo('Loading balances. Please wait...')
+    const rbtcBalanceEntry = await wallet
+      .provider!.getBalance(wallet.smartWallet.address)
+      .then(
+        rbtcBalance =>
+          ({
+            name: 'TRBTC',
+            logo: 'TRBTC',
+            symbol: 'TRBTC (eoa wallet)',
+            contractAddress: constants.AddressZero,
+            decimals: 18,
+            balance: rbtcBalance.toString(),
+          } as ITokenWithBalance),
+      )
+      setInfo('')
+      //dispatch({type: 'newBalance', payload: {}})
+    setBalances(prev => ({
+      ...prev,
+      [rbtcBalanceEntry.contractAddress]: rbtcBalanceEntry,
+    }))
+  }
+
+  useEffect(() => {
+    loadRBTCBalance()
+  }, [])
 
   return (
     <ScrollView>
@@ -73,7 +105,11 @@ export const BalancesScreen: React.FC<
       </View>
 
       <View>
-        {Object.values(state.balances).map(token => (
+        <Text testID="Info.Text">{info}</Text>
+      </View>
+
+      <View>
+        {Object.values(balances).map(token => (
           <BalancesRow
             key={token.contractAddress}
             token={token}
