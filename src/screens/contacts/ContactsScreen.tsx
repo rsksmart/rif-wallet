@@ -18,7 +18,7 @@ export const ContactsScreen: React.FC<{
 
   return (
     <LinearGradient
-      colors={['#FFFFFF', setOpacity('#CCCCCC', 0.1)]}
+      colors={['#f4f4f4', setOpacity('#373f48', 0.3)]}
       style={styles.parent}>
       <View style={styles.titleLine}>
         <Text style={styles.header}>My Contacts</Text>
@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 26,
     textAlign: 'center',
+    color: '#5c5d5d',
   },
   parent: {
     height: '100%',
