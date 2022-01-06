@@ -9,7 +9,7 @@ export const AppHeader: React.FC<{}> = () => {
   const { wallet } = useSelectedWallet()
 
   const navigation = useNavigation()
-  const openMenu = () => navigation.navigate('DevMenu' as any)
+  const openMenu = () => navigation.navigate('Settings' as any)
 
   return (
     <View style={styles.row}>

@@ -62,6 +62,7 @@ type RootStackParamList = {
   RNSManager: undefined
   RegisterDomain: undefined
   Contacts: undefined
+  Settings: undefined
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -121,8 +122,12 @@ export const RootNavigation: React.FC<{
             />
 
             <RootStack.Screen
-              name="CreateKeysUX"
-              options={{ ...sharedOptions, headerShown: false }}>
+              name="Settings"
+              component={Screens.SettingsScreen}
+              options={{ ...sharedOptions, headerShown: false }}
+            />
+
+            <RootStack.Screen name="CreateKeysUX" options={sharedOptions}>
               {props => (
                 <CreateKeysNavigation {...props} {...keyManagementProps} />
               )}
