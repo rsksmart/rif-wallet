@@ -3,12 +3,7 @@ import { useSelectedWallet } from '../../Context'
 import { io } from 'socket.io-client'
 import { rifWalletServicesUrl } from '../../core/setup'
 
-import {
-  Action,
-  Dispatch,
-  State,
-  SubscriptionsProviderProps,
-} from './types'
+import { Action, Dispatch, State, SubscriptionsProviderProps } from './types'
 
 function liveSubscribtionReducer(state: State, action: Action) {
   const { type } = action

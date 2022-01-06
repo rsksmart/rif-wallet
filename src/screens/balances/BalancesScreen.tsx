@@ -53,7 +53,7 @@ export const BalancesScreen: React.FC<
   ScreenProps<'Balances'> & ScreenWithWallet & BalancesScreenProps
 > = ({ navigation, wallet }) => {
   const { t } = useTranslation()
-  const {state, dispatch} = useSocketsState()
+  const { state, dispatch } = useSocketsState()
 
   const [info, setInfo] = useState<string>(
     t('Loading balances. Please wait...'),
@@ -74,8 +74,8 @@ export const BalancesScreen: React.FC<
             balance: rbtcBalance.toString(),
           } as ITokenWithBalance),
       )
-      setInfo('')
-      dispatch({type: 'newBalance', payload: rbtcBalanceEntry})
+    setInfo('')
+    dispatch({ type: 'newBalance', payload: rbtcBalanceEntry })
   }
 
   useEffect(() => {

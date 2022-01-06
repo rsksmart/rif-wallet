@@ -10,7 +10,6 @@ import {
 } from '../../lib/abiEnhancer/AbiEnhancer'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
-
 export interface IActivity
   extends TransactionsServerResponseWithActivityTransactions {}
 export interface ITransaction {
@@ -52,7 +51,6 @@ export interface IPrice {
   price: number
   lastUpdated: string
 }
-
 
 export interface NewActivityAction {
   type: 'newActivity'
