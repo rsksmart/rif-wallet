@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
+import LinearGradient from 'react-native-linear-gradient'
 
 import {
   StyleSheet,
   View,
-  ScrollView,
   TextInput,
   Linking,
-  Text,
+  TouchableOpacity,
 } from 'react-native'
 
 import { ContractReceipt, BigNumber, utils } from 'ethers'
@@ -18,9 +18,13 @@ import { IToken } from '../../lib/token/BaseToken'
 import { ScreenProps } from '../../RootNavigation'
 import { Button, CopyComponent, Paragraph } from '../../components'
 import { ScreenWithWallet } from '../types'
-import { Address } from '../../components'
 import { AddressInput } from '../../components'
 import Resolver from '@rsksmart/rns-resolver.js'
+import { getTokenColor, getTokenColorWithOpacity } from '../home/tokenColor'
+import { grid } from '../../styles/grid'
+import { SquareButton } from '../../components/button/SquareButton'
+import { Arrow } from '../../components/icons'
+import { TokenImage } from '../home/TokenImage'
 
 export type SendScreenProps = {
   rnsResolver: Resolver
@@ -28,13 +32,12 @@ export type SendScreenProps = {
 export const SendScreen: React.FC<
   SendScreenProps & ScreenProps<'Send'> & ScreenWithWallet
 > = ({ rnsResolver, route, wallet }) => {
-  const smartAddress = wallet.smartWalletAddress
   const { t } = useTranslation()
 
   const [to, setTo] = useState(route.params?.to || '')
   const [displayTo, setDisplayTo] = useState(route.params?.displayTo || '')
   const [isValidTo, setIsValidTo] = useState(false)
-  const [selectedSymbol, setSelectedToken] = useState(
+  const [selectedSymbol, setSelectedSymbol] = useState(
     route.params?.token || 'tRIF',
   )
 
@@ -44,6 +47,7 @@ export const SendScreen: React.FC<
   const [txConfirmed, setTxConfirmed] = useState(false)
   const [txSent, setTxSent] = useState(false)
   const [info, setInfo] = useState('')
+  //const selectedSymbol = 'TRBTC'
 
   useEffect(() => {
     getAllTokens(wallet).then(tokens => setAvailableTokens(tokens))
@@ -52,15 +56,15 @@ export const SendScreen: React.FC<
   const transfer = async (tokenSymbol: string) => {
     setInfo('')
     if (availableTokens) {
-      const selectedToken = availableTokens.find(
+      const selectedSymbol = availableTokens.find(
         token => token.symbol === tokenSymbol,
       )
-      if (selectedToken) {
+      if (selectedSymbol) {
         try {
-          const decimals = await selectedToken.decimals()
+          const decimals = await selectedSymbol.decimals()
           const numberOfTokens = utils.parseUnits(amount, decimals)
 
-          const transferResponse = await selectedToken.transfer(
+          const transferResponse = await selectedSymbol.transfer(
             to.toLowerCase(),
             BigNumber.from(numberOfTokens),
           )
@@ -79,6 +83,13 @@ export const SendScreen: React.FC<
       }
     }
   }
+  const handleChangeToken = (selection: string) => {
+    if (selection === 'tRIF') {
+      setSelectedSymbol('TRBTC')
+    } else {
+      setSelectedSymbol('tRIF')
+    }
+  }
   const handleTargetAddressChange = (
     isValid: boolean,
     address: string,
@@ -88,13 +99,52 @@ export const SendScreen: React.FC<
     setTo(address)
     setDisplayTo(displayAddress)
   }
+  const imageStyle = {
+    ...styles.image,
+    shadowColor: '#000000',
+  }
   return (
-    <ScrollView>
-      <View>
+    <LinearGradient
+      colors={['#FFFFFF', getTokenColorWithOpacity('TRBTC', 0.1)]}
+      style={styles.parent}>
+      <View style={grid.row}>
+        <View style={{ ...grid.column2, ...styles.icon }}>
+          {/*<View style={{ ...grid.column2, ...styles.icon }}>
+              <TokenImage symbol={token.symbol} height={45} width={45} />
+            </View>*/}
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handleChangeToken(selectedSymbol)}
+            /*onPress={onPress}
+              disabled={disabled}
+              testID={testID}*/
+          >
+            <View style={imageStyle}>
+              <TokenImage symbol={selectedSymbol} height={30} width={30} />
+            </View>
+
+            {/*<View style={imageStyle}>{icon}</View>*/}
+            {/*<Text style={styles.text}>{title}</Text>*/}
+          </TouchableOpacity>
+        </View>
+        <View style={{ ...grid.column10 }}>
+          <TextInput
+            style={styles.input}
+            onChangeText={text => setAmount(text)}
+            value={amount}
+            placeholder={t('Amount')}
+            keyboardType="numeric"
+            testID={'Amount.Input'}
+          />
+        </View>
+      </View>
+
+      {/* <View>
         <Paragraph>
           From: <Address>{smartAddress}</Address>
         </Paragraph>
-      </View>
+      </View>*/}
 
       <View>
         <AddressInput
@@ -106,33 +156,25 @@ export const SendScreen: React.FC<
         />
       </View>
 
-      <View>
-        <TextInput
-          onChangeText={text => setAmount(text)}
-          value={amount}
-          placeholder={t('Amount')}
-          keyboardType="numeric"
-          testID={'Amount.Input'}
-        />
-      </View>
-      <View>
+      <View />
+      {/*<View>
         <Paragraph>
           <Text>Token: </Text>
           <Text>{selectedSymbol}</Text>
         </Paragraph>
-      </View>
-      <View style={styles.section}>
-        <Button
-          onPress={() => setSelectedToken('TRBTC')}
+      </View>*/}
+      {/*<View style={styles.section}>*/}
+      {/* <Button
+          onPress={() => setSelectedSymbol('TRBTC')}
           disabled={selectedSymbol === 'TRBTC'}
           title="TRBTC"
         />
         <Button
-          onPress={() => setSelectedToken('tRIF')}
+          onPress={() => setSelectedSymbol('tRIF')}
           disabled={selectedSymbol === 'tRIF'}
           title="tRIF"
-        />
-        {/*<Picker
+        />*/}
+      {/*<Picker
           selectedValue={selectedSymbol}
           onValueChange={itemValue => setSelectedSymbol(itemValue)}
           testID={'Tokens.Picker'}>
@@ -146,10 +188,10 @@ export const SendScreen: React.FC<
               />
             ))}
         </Picker>*/}
-      </View>
+      {/* </View>*/}
 
       {!txSent && (
-        <View style={styles.section}>
+        /*  <View style={styles.section}>
           <Button
             disabled={!isValidTo}
             onPress={() => {
@@ -157,6 +199,18 @@ export const SendScreen: React.FC<
             }}
             title="Next"
             testID="Next.Button"
+          />
+        </View>*/
+        <View style={styles.centerRow}>
+          <SquareButton
+            disabled={!isValidTo}
+            // @ts-ignore
+            onPress={async () => {
+              await transfer(selectedSymbol)
+            }}
+            title="Next"
+            testID="Address.CopyButton"
+            icon={<Arrow color={getTokenColor(selectedSymbol)} rotate={90} />}
           />
         </View>
       )}
@@ -178,11 +232,46 @@ export const SendScreen: React.FC<
           />
         </View>
       )}
-    </ScrollView>
+    </LinearGradient>
   )
 }
 
 const styles = StyleSheet.create({
+  image: {
+    width: 50,
+    height: 50,
+    backgroundColor: '#fff',
+    borderRadius: 15,
+    alignItems: 'center',
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 2,
+    justifyContent: 'center',
+  },
+  button: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  centerRow: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  icon: {
+    marginTop: 14,
+    paddingLeft: 5,
+  },
+  parent: {
+    height: '100%',
+    paddingTop: 20,
+  },
+  input: {
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    display: 'flex',
+    height: 50,
+    marginTop: 10,
+    margin: 10,
+  },
   safeView: {
     height: '100%',
   },
