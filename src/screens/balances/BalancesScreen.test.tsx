@@ -15,12 +15,13 @@ import {
   lastTokenTextTestId,
 } from '../../../testLib/mocks/rifServicesMock'
 
-const createTestInstace = async (fetcher = createMockFetcher()) => {
+const createTestInstance = async (fetcher = createMockFetcher()) => {
   const mock = await setupTest()
 
   const container = render(
     <BalancesScreen
       wallet={mock.rifWallet}
+      isWalletDeployed={true}
       navigation={mock.navigation}
       route={{} as any}
       fetcher={fetcher}
@@ -46,10 +47,10 @@ const createTestInstace = async (fetcher = createMockFetcher()) => {
 }
 
 describe('Balances Screen', function (this: {
-  testInstance: Awaited<ReturnType<typeof createTestInstace>>
+  testInstance: Awaited<ReturnType<typeof createTestInstance>>
 }) {
   beforeEach(async () => {
-    this.testInstance = await createTestInstace()
+    this.testInstance = await createTestInstance()
   })
 
   describe('initial screen', () => {
@@ -101,7 +102,7 @@ describe('Balances Screen', function (this: {
 
       const {
         container: { getByTestId },
-      } = await createTestInstace(fetcher)
+      } = await createTestInstance(fetcher as any)
 
       const loadingText = getByTestId('Info.Text')
       expect(getTextFromTextNode(loadingText)).toContain('Loading')
