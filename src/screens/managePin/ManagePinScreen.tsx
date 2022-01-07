@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { View, TextInput, ScrollView } from 'react-native'
-import { Button } from '../../components'
-import { Trans } from 'react-i18next'
-import { Paragraph } from '../../components'
+import { View, ScrollView, StyleSheet, Text } from 'react-native'
+import { Button, CustomInput } from '../../components'
+import { Trans, useTranslation } from 'react-i18next'
 import { hasPin, savePin, removePin } from '../../storage/PinStore'
 
 export const ManagePinScreen = () => {
@@ -18,6 +17,8 @@ export const ManagePinScreen = () => {
     callStorage().then(pinSet => console.log(pinSet))
   }, [])
 
+  const { t } = useTranslation()
+
   const saveMyPin = (newPin: string) => {
     setPinSaved(true)
     savePin(newPin)
@@ -29,22 +30,23 @@ export const ManagePinScreen = () => {
   return (
     <ScrollView>
       {pinSaved && (
-        <View>
-          <Paragraph>
-            <Trans> Your pin is set</Trans>
-          </Paragraph>
-          <Button onPress={() => removeMyPin()} title="Delete your Pin" />
+        <View style={styles.container}>
+          <Text style={{ ...styles.header, ...styles.marginBottom }}>
+            <Trans>Your pin is set</Trans>
+          </Text>
+          <Button onPress={() => removeMyPin()} title={t('Delete your Pin')} />
         </View>
       )}
 
       {!pinSaved && (
-        <>
-          <Paragraph>Set your pin</Paragraph>
-          <View>
-            <TextInput
-              onChangeText={setPin}
-              value={pin}
-              placeholder={'Pin'}
+        <View style={styles.container}>
+          <Text style={{ ...styles.header, ...styles.marginBottom }}>
+            <Trans>Set your pin</Trans>
+          </Text>
+          <View style={styles.marginBottom}>
+            <CustomInput
+              onChange={setPin}
+              placeholder={t('Pin')}
               testID={'To.Input'}
               keyboardType="numeric"
             />
@@ -53,12 +55,24 @@ export const ManagePinScreen = () => {
           <View>
             <Button
               onPress={() => saveMyPin(pin)}
-              title="Save"
+              title={t('Save')}
               testID="Next.Button"
             />
           </View>
-        </>
+        </View>
       )}
     </ScrollView>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    marginHorizontal: 25,
+    marginTop: 30,
+  },
+  marginBottom: { marginBottom: 10 },
+  header: {
+    fontSize: 26,
+    textAlign: 'center',
+  },
+})

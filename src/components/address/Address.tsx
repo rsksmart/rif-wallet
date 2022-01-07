@@ -1,9 +1,11 @@
 import React from 'react'
-import { Text, TouchableHighlight, Linking, StyleSheet } from 'react-native'
+import { Text, Linking } from 'react-native'
 import Clipboard from '@react-native-community/clipboard'
 import { shortAddress } from '../../lib/utils'
 import { Paragraph } from '../typography'
 import { toChecksumAddress } from './lib'
+import { CompassIcon, CopyIcon } from '../icons'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const explorerAddressUrlByChainId: { [chainId: number]: string } = {
   30: 'https://explorer.rsk.co/address/',
@@ -33,31 +35,15 @@ export const Address: React.FC<{ chainId?: number; testID?: string }> = ({
   return (
     <Paragraph>
       <Text testID={testID}>{displayAddress} </Text>
-      <TouchableHighlight>
-        <Text
-          style={styles.link}
-          onPress={() => {
-            Clipboard.setString(checksumAddress)
-          }}>
-          [Copy]
-        </Text>
-      </TouchableHighlight>
-      <TouchableHighlight>
-        <Text
-          style={styles.link}
-          onPress={() => {
-            Linking.openURL(`${explorerUrl}/${checksumAddress}`)
-          }}>
-          {' '}
-          [View]
-        </Text>
-      </TouchableHighlight>
+      <TouchableOpacity onPress={() => Clipboard.setString(checksumAddress)}>
+        <CopyIcon width={30} height={30} />
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          Linking.openURL(`${explorerUrl}/${checksumAddress}`)
+        }}>
+        <CompassIcon width={20} height={20} />
+      </TouchableOpacity>
     </Paragraph>
   )
 }
-
-const styles = StyleSheet.create({
-  link: {
-    color: 'blue',
-  },
-})

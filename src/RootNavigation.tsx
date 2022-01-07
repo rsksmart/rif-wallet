@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import { NavigationContainer } from '@react-navigation/native'
+import { NavigationContainer, NavigationState } from '@react-navigation/native'
 import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
 import { NavigationProp as _NavigationProp } from '@react-navigation/native'
 
@@ -14,6 +14,10 @@ import { KeysInfoScreenProps } from './screens/info/KeysInfoScreen'
 import { SendScreenProps } from './screens/send/SendScreen'
 import { ActivityScreenProps } from './screens/activity/ActivityScreen'
 import { InjectedBrowserUXScreenProps } from './screens/injectedBrowser/InjectedBrowserNavigation'
+import { AppHeader } from './ux/appHeader'
+import { AppFooterMenu } from './ux/appFooter'
+import { WalletConnectProviderElement } from './screens/walletConnect/WalletConnectContext'
+import { RIFSocketsProvider } from './ux/rifSockets/RIFSockets'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -31,9 +35,13 @@ const InjectedScreens = {
   InjectedBrowserNavigation: InjectSelectedWallet(
     Screens.InjectedBrowserNavigation,
   ),
+  RNSManagerScreen: InjectSelectedWallet(Screens.RNSManagerScreen),
+  RegisterDomainScreen: InjectSelectedWallet(Screens.RegisterDomainScreen),
+  HomeScreen: InjectSelectedWallet(Screens.HomeScreen),
 }
 
 type RootStackParamList = {
+  DevMenu: undefined
   Home: undefined
   Send: undefined | { token: string }
   Receive: undefined
@@ -50,6 +58,9 @@ type RootStackParamList = {
   ChangeLanguage: undefined
   ManagePin: undefined
   InjectedBrowserUX: undefined
+  Dapps: undefined
+  RNSManager: undefined
+  RegisterDomain: undefined
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -77,110 +88,145 @@ export const RootNavigation: React.FC<{
   sendScreenProps,
   injectedBrowserUXScreenProps,
 }) => {
-  return (
-    <View style={styles.parent}>
-      <NavigationContainer>
-        <RootStack.Navigator>
-          <RootStack.Screen
-            name="Home"
-            component={Screens.HomeScreen}
-            options={{ ...sharedOptions, headerShown: false }}
-          />
+    const [currentScreen, setCurrentScreen] = useState<string>('Home')
+    const handleScreenChange = (newState: NavigationState | undefined) =>
+      setCurrentScreen(
+        newState ? newState.routes[newState.routes.length - 1].name : 'Home',
+      )
 
-          <RootStack.Screen name="CreateKeysUX" options={sharedOptions}>
-            {props => (
-              <CreateKeysNavigation {...props} {...keyManagementProps} />
-            )}
-          </RootStack.Screen>
-          <RootStack.Screen
-            name="Receive"
-            component={InjectedScreens.ReceiveScreen}
-            options={sharedOptions}
-          />
-          <RootStack.Screen name="Send">
-            {props => (
-              <InjectedScreens.SendScreen {...props} {...sendScreenProps} />
-            )}
-          </RootStack.Screen>
-          <RootStack.Screen name="Balances">
-            {props => (
-              <InjectedScreens.BalancesScreen
-                {...props}
-                {...balancesScreenProps}
-              />
-            )}
-          </RootStack.Screen>
-          <RootStack.Screen name="Activity">
-            {props => (
-              <InjectedScreens.ActivityScreen
-                {...props}
-                {...activityScreenProps}
-              />
-            )}
-          </RootStack.Screen>
-          <RootStack.Screen
-            name="ActivityDetails"
-            component={InjectedScreens.ActivityDetailsScreen}
-            options={sharedOptions}
-          />
-          <RootStack.Screen
-            name="SignMessage"
-            component={InjectedScreens.SignMessageScreen}
-            options={sharedOptions}
-          />
-          <RootStack.Screen
-            name="SignTypedData"
-            component={InjectedScreens.SignTypedDataScreen}
-            options={sharedOptions}
-          />
+    return (
+      <View style={styles.parent}>
+        <NavigationContainer onStateChange={handleScreenChange}>
+          <WalletConnectProviderElement>
+            <RIFSocketsProvider>
+              <AppHeader />
+              <RootStack.Navigator>
+                <RootStack.Screen
+                  name="Home"
+                  component={Screens.HomeScreen}
+                  options={{ ...sharedOptions, headerShown: false }}
+                />
+                <RootStack.Screen
+                  name="Dapps"
+                  component={Screens.DappsScreen}
+                  options={{ ...sharedOptions, headerShown: false }}
+                />
 
-          <RootStack.Screen
-            name="TransactionReceived"
-            component={Screens.TransactionReceivedScreen}
-            options={sharedOptions}
-          />
+                <RootStack.Screen
+                  name="DevMenu"
+                  component={Screens.DevMenuScreen}
+                  options={{ ...sharedOptions, headerShown: false }}
+                />
 
-          <RootStack.Screen
-            name="WalletInfo"
-            component={InjectedScreens.WalletInfoScreen}
-            options={sharedOptions}
-          />
-          <RootStack.Screen name="KeysInfo" options={sharedOptions}>
-            {props => (
-              <Screens.KeysInfoScreen {...props} {...keysInfoScreenProps} />
-            )}
-          </RootStack.Screen>
+                <RootStack.Screen
+                  name="CreateKeysUX"
+                  options={{ ...sharedOptions, headerShown: false }}>
+                  {props => (
+                    <CreateKeysNavigation {...props} {...keyManagementProps} />
+                  )}
+                </RootStack.Screen>
+                <RootStack.Screen
+                  name="Receive"
+                  component={InjectedScreens.ReceiveScreen}
+                  options={{ headerShown: false }}
+                />
+                <RootStack.Screen name="Send">
+                  {props => (
+                    <InjectedScreens.SendScreen {...props} {...sendScreenProps} />
+                  )}
+                </RootStack.Screen>
+                <RootStack.Screen name="Balances">
+                  {props => (
+                    <InjectedScreens.BalancesScreen
+                      {...props}
+                      {...balancesScreenProps}
+                    />
+                  )}
+                </RootStack.Screen>
+                <RootStack.Screen name="Activity" options={{ headerShown: false }}>
+                  {props => (
+                    <InjectedScreens.ActivityScreen
+                      {...props}
+                      {...activityScreenProps}
+                    />
+                  )}
+                </RootStack.Screen>
+                <RootStack.Screen
+                  name="ActivityDetails"
+                  component={InjectedScreens.ActivityDetailsScreen}
+                  options={{ headerShown: false }}
+                />
+                <RootStack.Screen
+                  name="SignMessage"
+                  component={InjectedScreens.SignMessageScreen}
+                  options={sharedOptions}
+                />
+                <RootStack.Screen
+                  name="SignTypedData"
+                  component={InjectedScreens.SignTypedDataScreen}
+                  options={sharedOptions}
+                />
 
-          <RootStack.Screen
-            name="WalletConnect"
-            component={InjectedScreens.WalletConnectNavigationScreen}
-            options={{ ...sharedOptions, headerShown: false }}
-          />
-          <RootStack.Screen
-            name="ChangeLanguage"
-            component={Screens.ChangeLanguageScreen}
-            options={{ ...sharedOptions }}
-          />
-          <RootStack.Screen
-            name="ManagePin"
-            component={Screens.ManagePinScreen}
-            options={{ ...sharedOptions }}
-          />
-          <RootStack.Screen
-            name="InjectedBrowserUX"
-            options={{ ...sharedOptions, headerShown: false }}>
-            {props => (
-              <InjectedScreens.InjectedBrowserNavigation
-                {...props}
-                {...injectedBrowserUXScreenProps}
-              />
-            )}
-          </RootStack.Screen>
-        </RootStack.Navigator>
-      </NavigationContainer>
-    </View>
-  )
-}
+                <RootStack.Screen
+                  name="TransactionReceived"
+                  component={Screens.TransactionReceivedScreen}
+                  options={sharedOptions}
+                />
+
+                <RootStack.Screen
+                  name="WalletInfo"
+                  component={InjectedScreens.WalletInfoScreen}
+                  options={sharedOptions}
+                />
+                <RootStack.Screen name="KeysInfo" options={sharedOptions}>
+                  {props => (
+                    <Screens.KeysInfoScreen {...props} {...keysInfoScreenProps} />
+                  )}
+                </RootStack.Screen>
+
+                <RootStack.Screen
+                  name="WalletConnect"
+                  component={InjectedScreens.WalletConnectNavigationScreen}
+                  options={{ ...sharedOptions, headerShown: false }}
+                />
+                <RootStack.Screen
+                  name="RNSManager"
+                  component={InjectedScreens.RNSManagerScreen}
+                  options={{ ...sharedOptions }}
+                />
+                <RootStack.Screen
+                  name="RegisterDomain"
+                  component={InjectedScreens.RegisterDomainScreen}
+                  options={{ ...sharedOptions }}
+                />
+                <RootStack.Screen
+                  name="ChangeLanguage"
+                  component={Screens.ChangeLanguageScreen}
+                  options={{ ...sharedOptions }}
+                />
+                <RootStack.Screen
+                  name="ManagePin"
+                  component={Screens.ManagePinScreen}
+                  options={{ ...sharedOptions, headerShown: false }}
+                />
+                <RootStack.Screen
+                  name="InjectedBrowserUX"
+                  options={{ ...sharedOptions, headerShown: false }}>
+                  {props => (
+                    <InjectedScreens.InjectedBrowserNavigation
+                      {...props}
+                      {...injectedBrowserUXScreenProps}
+                    />
+                  )}
+                </RootStack.Screen>
+              </RootStack.Navigator>
+              <AppFooterMenu currentScreen={currentScreen} />
+            </RIFSocketsProvider>
+          </WalletConnectProviderElement>
+        </NavigationContainer>
+      </View>
+    )
+  }
 
 const styles = StyleSheet.create({
   parent: {

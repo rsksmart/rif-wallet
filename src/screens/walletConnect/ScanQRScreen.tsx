@@ -1,82 +1,97 @@
 import React, { useRef, useContext, useState } from 'react'
-import { StyleSheet, View, ScrollView, TextInput } from 'react-native'
+import { StyleSheet, View, ScrollView, Dimensions, Text } from 'react-native'
 
 import { RNCamera } from 'react-native-camera'
-import { Button, Paragraph } from '../../components'
+import LinearGradient from 'react-native-linear-gradient'
+import { CustomInput } from '../../components'
+import { useSelectedWallet } from '../../Context'
+import { setOpacity } from '../home/tokenColor'
 import { WalletConnectContext } from './WalletConnectContext'
 
 interface IScanQRScreenProps {
   route: any
 }
 
+const windowWidth = Dimensions.get('window').width
+const qrCodeSize = windowWidth * 0.6
+
 const ScanQRScreen: React.FC<IScanQRScreenProps> = () => {
+  const { wallet } = useSelectedWallet()
+
   const { createSession } = useContext(WalletConnectContext)
   const [isConnecting, setIsConnecting] = useState(false)
-
-  const [input, setInput] = useState('')
 
   const cameraRef = useRef<RNCamera>(null)
 
   return (
-    <ScrollView>
-      <Paragraph>Scan QR</Paragraph>
-      <View style={styles.container}>
-        <RNCamera
-          ref={cameraRef}
-          style={styles.preview}
-          type={RNCamera.Constants.Type.back}
-          flashMode={RNCamera.Constants.FlashMode.off}
-          androidCameraPermissionOptions={{
-            title: 'Permission to use camera',
-            message: 'We need your permission to use your camera',
-            buttonPositive: 'Ok',
-            buttonNegative: 'Cancel',
-          }}
-          captureAudio={false}
-          onBarCodeRead={async event => {
-            if (isConnecting) {
-              return
-            }
+    <LinearGradient
+      colors={['#FFFFFF', setOpacity('#CCCCCC', 0.1)]}
+      style={styles.parent}>
+      <ScrollView>
+        <Text style={styles.header}>Scan QR</Text>
+        <View style={styles.cameraContainer}>
+          <RNCamera
+            ref={cameraRef}
+            style={{
+              ...styles.preview,
+              width: qrCodeSize,
+              height: qrCodeSize,
+            }}
+            ratio="1:1"
+            type={RNCamera.Constants.Type.back}
+            flashMode={RNCamera.Constants.FlashMode.off}
+            androidCameraPermissionOptions={{
+              title: 'Permission to use camera',
+              message: 'We need your permission to use your camera',
+              buttonPositive: 'Ok',
+              buttonNegative: 'Cancel',
+            }}
+            captureAudio={false}
+            onBarCodeRead={async event => {
+              if (isConnecting) {
+                return
+              }
 
-            const data = decodeURIComponent(event.data)
+              const data = decodeURIComponent(event.data)
 
-            setIsConnecting(true)
+              setIsConnecting(true)
 
-            createSession(data)
-          }}
-        />
-      </View>
-
-      <Paragraph>Or use the URI</Paragraph>
-      <View>
-        <TextInput
-          style={{
-            fontSize: 18,
-            borderBottomWidth: 1,
-            borderColor: '#919191',
-            paddingLeft: 10,
-            paddingRight: 10,
-            margin: 10,
-          }}
-          value={input}
-          onChangeText={setInput}
-        />
-        <Button title="Confirm URI" onPress={() => createSession(input)} />
-      </View>
-    </ScrollView>
+              createSession(wallet, data)
+            }}
+          />
+        </View>
+        <Text style={styles.header}>Or use the URI</Text>
+        <View>
+          <CustomInput onSubmit={input => createSession(wallet, input)} />
+        </View>
+      </ScrollView>
+    </LinearGradient>
   )
 }
 
 const styles = StyleSheet.create({
+  parent: {
+    height: '100%',
+    width: '100%',
+    flex: 1,
+    alignItems: 'center',
+  },
   preview: {
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
-
-  container: {
+  header: {
+    fontSize: 26,
+    textAlign: 'center',
+  },
+  cameraContainer: {
     flex: 1,
-    height: 400,
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, .1)',
+    marginVertical: 40,
+    padding: 20,
+    borderRadius: 20,
   },
   section: {
     marginTop: 160,

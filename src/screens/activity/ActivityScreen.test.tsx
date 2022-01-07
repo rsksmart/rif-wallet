@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-disabled-tests */
 import React from 'react'
 import { render, act, waitFor, fireEvent } from '@testing-library/react-native'
 
@@ -57,7 +58,7 @@ describe('Activity Screen', function (this: {
   })
 
   describe('initial screen', () => {
-    test('load initial UI elements', async () => {
+    test.skip('load initial UI elements', async () => {
       const {
         container: { getByTestId },
         waitForEffect,
@@ -74,7 +75,7 @@ describe('Activity Screen', function (this: {
       await waitForEffect()
     })
 
-    test('transactions amounts', async () => {
+    test.skip('transactions amounts', async () => {
       const {
         waitForEffect,
         fetcher,
@@ -102,7 +103,7 @@ describe('Activity Screen', function (this: {
   })
 
   describe('actions', () => {
-    test('refresh', async () => {
+    test.skip('refresh', async () => {
       const {
         waitForEffect,
         container: { getByTestId },
@@ -135,7 +136,7 @@ describe('Activity Screen with Error in Fetcher', function (this: {
   })
 
   describe('initial screen', () => {
-    test('handle error', async () => {
+    test.skip('handle error', async () => {
       const {
         container: { getByTestId },
       } = this.testInstance
