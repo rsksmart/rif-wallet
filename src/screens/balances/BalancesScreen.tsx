@@ -5,11 +5,11 @@ import { BigNumber, BigNumberish, constants } from 'ethers'
 import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { useTranslation } from 'react-i18next'
+import { useSocketsState } from '../../ux/rifSockets/RIFSockets'
 
 import { ScreenProps, NavigationProp } from '../../RootNavigation'
 import { Address, Button } from '../../components'
 import { ScreenWithWallet } from '../types'
-import { io } from 'socket.io-client'
 
 export const balanceToString = (balance: string, decimals: BigNumberish) => {
   const parts = {
@@ -49,17 +49,6 @@ export const BalancesRow = ({
 
 export type BalancesScreenProps = { fetcher: IRIFWalletServicesFetcher }
 
-interface IRifWalletServicesSocketEvent {
-  payload: ITokenWithBalance
-  type: 'newBalance'
-}
-
-interface IBalancesByToken {
-  [address: string]: ITokenWithBalance
-}
-
-const rifWalletServicesUrl = 'http://10.0.2.2:3000' // 'https://rif-wallet-services-dev.rifcomputing.net'
-
 export const BalancesScreen: React.FC<
   ScreenProps<'Balances'> & ScreenWithWallet & BalancesScreenProps
 > = ({ navigation, wallet }) => {
@@ -68,39 +57,7 @@ export const BalancesScreen: React.FC<
   const [info, setInfo] = useState<string>(
     t('Loading balances. Please wait...'),
   )
-  const [balances, setBalances] = useState<IBalancesByToken>({})
-
-  useEffect(() => {
-    const socket = io(rifWalletServicesUrl, {
-      path: '/ws',
-      forceNew: true,
-      reconnectionAttempts: 3,
-      timeout: 2000,
-      autoConnect: true,
-      transports: ['websocket'], // you need to explicitly tell it to use websocket
-    })
-
-    socket.on('connect', () => {
-      setInfo('')
-
-      socket.on('change', (event: IRifWalletServicesSocketEvent) => {
-        if (event.type !== 'newBalance') {
-          return
-        }
-
-        setBalances(prev => ({
-          ...prev,
-          [event.payload.contractAddress]: event.payload,
-        }))
-      })
-
-      socket.emit('subscribe', { address: wallet.smartWalletAddress })
-    })
-
-    return function cleanup() {
-      socket.disconnect()
-    }
-  }, [])
+  const {state, dispatch} = useSocketsState()
 
   const loadRBTCBalance = async () => {
     const rbtcBalanceEntry = await wallet
@@ -116,11 +73,8 @@ export const BalancesScreen: React.FC<
             balance: rbtcBalance.toString(),
           } as ITokenWithBalance),
       )
-
-    setBalances(prev => ({
-      ...prev,
-      [rbtcBalanceEntry.contractAddress]: rbtcBalanceEntry,
-    }))
+    setInfo('')
+    dispatch({type: "newBalance", payload: rbtcBalanceEntry})
   }
 
   useEffect(() => {
@@ -138,7 +92,7 @@ export const BalancesScreen: React.FC<
       </View>
 
       <View>
-        {Object.values(balances).map(token => (
+        {Object.values(state.balances).map(token => (
           <BalancesRow
             key={token.contractAddress}
             token={token}
