@@ -116,7 +116,9 @@ export const RootNavigation: React.FC<{
               options={{ ...sharedOptions, headerShown: false }}
             />
 
-            <RootStack.Screen name="CreateKeysUX" options={sharedOptions}>
+            <RootStack.Screen
+              name="CreateKeysUX"
+              options={{ ...sharedOptions, headerShown: false }}>
               {props => (
                 <CreateKeysNavigation {...props} {...keyManagementProps} />
               )}
