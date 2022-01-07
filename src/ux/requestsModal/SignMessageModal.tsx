@@ -3,9 +3,12 @@ import { View, Text, StyleSheet } from 'react-native'
 import { SignMessageRequest } from '../../lib/core/RIFWallet'
 import { useTranslation, Trans } from 'react-i18next'
 
-import { Button, Header2, Paragraph } from '../../components'
+import { ModalHeader, ParagraphSoft } from '../../components'
 import { sharedStyles } from './sharedStyles'
 import { setOpacity } from '../../screens/home/tokenColor'
+import { SquareButton } from '../../components/button/SquareButton'
+import { SignIcon } from '../../components/icons/SignIcon'
+import { CancelIcon } from '../../components/icons/CancelIcon'
 
 interface Interface {
   request: SignMessageRequest
@@ -27,33 +30,37 @@ const SignMessageModal: React.FC<Interface> = ({ request, closeModal }) => {
 
   return (
     <>
-      <View
-        style={{
-          ...sharedStyles.modalView,
-          padding: 35,
-          margin: 0,
-          backgroundColor: '#fff',
-        }}>
-        <Header2>Sign Message</Header2>
+      <View style={[sharedStyles.modalView, sharedStyles.modalViewMainSection]}>
+        <ModalHeader>sign message</ModalHeader>
 
-        <Paragraph>
+        <ParagraphSoft>
           <Trans>Do you want to sign this message?</Trans>
-        </Paragraph>
+        </ParagraphSoft>
 
         <Text style={styles.message} testID="Text.Message">
           {request.payload}
         </Text>
       </View>
-      <View style={{ ...sharedStyles.row, padding: 35 }}>
+      <View style={{ ...sharedStyles.row, padding: 20 }}>
         <View style={sharedStyles.column}>
-          <Button
-            onPress={signMessage}
-            title={t('Sign Message')}
-            testID="Button.Confirm"
+          <SquareButton
+            onPress={reject}
+            title={t('reject')}
+            testID="Button.Reject"
+            icon={<CancelIcon color={'#ffb4b4'} />}
+            shadowColor="#313c3c"
+            backgroundColor={'#313c3c'}
           />
         </View>
         <View style={sharedStyles.column}>
-          <Button onPress={reject} title={t('Reject')} testID="Button.Reject" />
+          <SquareButton
+            onPress={signMessage}
+            title={t('sign')}
+            testID="Button.Confirm"
+            icon={<SignIcon color={'#91ffd9'} />}
+            shadowColor="#313c3c"
+            backgroundColor={'#313c3c'}
+          />
         </View>
       </View>
     </>

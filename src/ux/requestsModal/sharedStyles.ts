@@ -21,6 +21,12 @@ export const sharedStyles = StyleSheet.create({
     elevation: 5,
   },
 
+  modalViewMainSection: {
+    padding: 35,
+    margin: 0,
+    backgroundColor: '#fff',
+  },
+
   row: {
     display: 'flex',
     flexDirection: 'row',

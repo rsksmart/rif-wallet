@@ -8,7 +8,7 @@ import {
 } from 'react-native'
 
 export interface IconButtonInterface extends Interface {
-  color?: string
+  shadowColor?: string
 }
 
 interface Interface {
@@ -17,7 +17,8 @@ interface Interface {
   onPress?: (event: GestureResponderEvent) => any
   disabled?: boolean
   testID?: string
-  color?: string
+  shadowColor?: string
+  backgroundColor?: string
 }
 
 export const SquareButton: React.FC<Interface> = ({
@@ -26,12 +27,17 @@ export const SquareButton: React.FC<Interface> = ({
   onPress,
   disabled,
   testID,
-  color,
+  shadowColor,
+  backgroundColor = '#fff',
 }) => {
   const imageStyle = {
     ...styles.image,
-    shadowColor: color,
+    shadowColor,
+    backgroundColor,
   }
+
+  console.log('backgroundColor', shadowColor, backgroundColor, imageStyle)
+
   return (
     <TouchableOpacity
       style={styles.button}
@@ -53,7 +59,6 @@ const styles = StyleSheet.create({
   image: {
     width: 50,
     height: 50,
-    backgroundColor: '#fff',
     borderRadius: 15,
     alignItems: 'center',
     shadowOpacity: 0.1,
