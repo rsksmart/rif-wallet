@@ -5,6 +5,7 @@ import { useTranslation, Trans } from 'react-i18next'
 
 import { Button, Header2, Paragraph } from '../../components'
 import { sharedStyles } from './sharedStyles'
+import { setOpacity } from '../../screens/home/tokenColor'
 
 interface Interface {
   request: SignMessageRequest
@@ -25,18 +26,25 @@ const SignMessageModal: React.FC<Interface> = ({ request, closeModal }) => {
   }
 
   return (
-    <View>
-      <Header2>Sign Message</Header2>
+    <>
+      <View
+        style={{
+          ...sharedStyles.modalView,
+          padding: 35,
+          margin: 0,
+          backgroundColor: '#fff',
+        }}>
+        <Header2>Sign Message</Header2>
 
-      <Paragraph>
-        <Trans>Do you want to sign this message?</Trans>
-      </Paragraph>
+        <Paragraph>
+          <Trans>Do you want to sign this message?</Trans>
+        </Paragraph>
 
-      <Text style={styles.message} testID="Text.Message">
-        {request.payload}
-      </Text>
-
-      <View style={sharedStyles.row}>
+        <Text style={styles.message} testID="Text.Message">
+          {request.payload}
+        </Text>
+      </View>
+      <View style={{ ...sharedStyles.row, padding: 35 }}>
         <View style={sharedStyles.column}>
           <Button
             onPress={signMessage}
@@ -48,18 +56,31 @@ const SignMessageModal: React.FC<Interface> = ({ request, closeModal }) => {
           <Button onPress={reject} title={t('Reject')} testID="Button.Reject" />
         </View>
       </View>
-    </View>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
   message: {
-    backgroundColor: '#f1f1f1',
-    borderWidth: 1,
-    borderColor: '#d1d1d1',
     padding: 20,
     marginTop: 10,
-    marginBottom: 20,
+    marginBottom: 10,
+
+    borderRadius: 14,
+    backgroundColor: setOpacity('#313c3c', 0.1),
+    shadowColor: 'rgba(0, 0, 0, 0)',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowRadius: 6,
+    shadowOpacity: 1,
+
+    fontSize: 16,
+    fontWeight: '500',
+    fontStyle: 'normal',
+    letterSpacing: 0.24,
+    color: '#373f48',
   },
 })
 

@@ -8,9 +8,8 @@ export const sharedStyles = StyleSheet.create({
   },
   modalView: {
     margin: 10,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
+    backgroundColor: '#E5E8E8',
+    borderRadius: 40,
 
     shadowColor: '#000',
     shadowOffset: {

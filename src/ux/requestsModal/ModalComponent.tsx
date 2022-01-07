@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal, View } from 'react-native'
+import { Modal, StyleSheet, View } from 'react-native'
 
 import {
   Request,
@@ -9,9 +9,11 @@ import {
 
 import ReviewTransactionModal from './ReviewTransactionModal'
 import SignMessageModal from './SignMessageModal'
-import SignTypedDataModal, { SignTypedDataRequest } from './SignTypedDataModal'
+import SignTypedDataModal from './SignTypedDataModal'
 import { sharedStyles } from './sharedStyles'
 import { InjectSelectedWallet } from '../../Context'
+import { SignTypedDataRequest } from '../../lib/core'
+import { setOpacity } from '../../screens/home/tokenColor'
 
 interface Interface {
   request: Request
@@ -49,8 +51,8 @@ const RequestTypeSwitch = (request: Request, closeModal: () => void) => {
 const ModalComponent: React.FC<Interface> = ({ request, closeModal }) => {
   return (
     <View style={sharedStyles.centeredView}>
-      <Modal animationType="slide" transparent={false} visible={true}>
-        <View style={sharedStyles.centeredView}>
+      <Modal animationType="slide" transparent={true} visible={true}>
+        <View style={[sharedStyles.centeredView, styles.blurBackground]}>
           <View style={sharedStyles.modalView}>
             {RequestTypeSwitch(request, closeModal)}
           </View>
@@ -61,3 +63,10 @@ const ModalComponent: React.FC<Interface> = ({ request, closeModal }) => {
 }
 
 export default ModalComponent
+
+const styles = StyleSheet.create({
+  blurBackground: {
+    marginTop: 0,
+    backgroundColor: setOpacity('#373f48', 0.88),
+  },
+})
