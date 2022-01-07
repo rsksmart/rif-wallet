@@ -33,7 +33,6 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   onChangeText,
   testID,
   rnsResolver,
-  style,
 }) => {
   const [validationMessage, setValidationMessage] = useState(
     validateAddress(value),
