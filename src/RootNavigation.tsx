@@ -17,6 +17,7 @@ import { InjectedBrowserUXScreenProps } from './screens/injectedBrowser/Injected
 import { AppHeader } from './ux/appHeader'
 import { AppFooterMenu } from './ux/appFooter'
 import { WalletConnectProviderElement } from './screens/walletConnect/WalletConnectContext'
+import { EditContactScreenProps } from './screens/contacts/EditContactScreen'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -42,7 +43,7 @@ const InjectedScreens = {
 type RootStackParamList = {
   DevMenu: undefined
   Home: undefined
-  Send: undefined | { token: string }
+  Send: undefined | { token?: string; to?: string; displayTo?: string }
   Receive: undefined
   Balances: undefined
   Activity: undefined
@@ -60,6 +61,7 @@ type RootStackParamList = {
   Dapps: undefined
   RNSManager: undefined
   RegisterDomain: undefined
+  Contacts: undefined
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -79,6 +81,7 @@ export const RootNavigation: React.FC<{
   keysInfoScreenProps: KeysInfoScreenProps
   sendScreenProps: SendScreenProps
   injectedBrowserUXScreenProps: InjectedBrowserUXScreenProps
+  contactsNavigationScreenProps: EditContactScreenProps
 }> = ({
   keyManagementProps,
   balancesScreenProps,
@@ -86,6 +89,7 @@ export const RootNavigation: React.FC<{
   keysInfoScreenProps,
   sendScreenProps,
   injectedBrowserUXScreenProps,
+  contactsNavigationScreenProps,
 }) => {
   const [currentScreen, setCurrentScreen] = useState<string>('Home')
   const handleScreenChange = (newState: NavigationState | undefined) =>
@@ -207,6 +211,17 @@ export const RootNavigation: React.FC<{
               component={Screens.ManagePinScreen}
               options={{ ...sharedOptions, headerShown: false }}
             />
+
+            <RootStack.Screen
+              name="Contacts"
+              options={{ ...sharedOptions, headerShown: false }}>
+              {props => (
+                <Screens.ContactsNavigationScreen
+                  {...props}
+                  {...contactsNavigationScreenProps}
+                />
+              )}
+            </RootStack.Screen>
             <RootStack.Screen
               name="InjectedBrowserUX"
               options={{ ...sharedOptions, headerShown: false }}>

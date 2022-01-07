@@ -139,10 +139,9 @@ export const Core = () => {
   }, [unlocked])
 
   useEffect(() => {
-    ;(async () => {
-      await i18nInit
-      setState({ ...state, hasKeys: !!(await hasKeys()), loading: false })
-    })()
+    Promise.all([i18nInit(), hasKeys()]).then(([_, hasKeysResult]) => {
+      setState({ ...state, hasKeys: !!hasKeysResult, loading: false })
+    })
   }, [])
 
   return (
@@ -173,6 +172,7 @@ export const Core = () => {
             deleteKeys,
           }}
           injectedBrowserUXScreenProps={{ fetcher: rifWalletServicesFetcher }}
+          contactsNavigationScreenProps={{ rnsResolver }}
         />
 
         {requests.length !== 0 && (
