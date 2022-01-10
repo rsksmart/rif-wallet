@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { BigNumber } from 'ethers'
 import { StyleSheet, View, TextInput } from 'react-native'
+import LinearGradient from 'react-native-linear-gradient'
 
-import { ScrollView, Text } from 'react-native'
+import { Text } from 'react-native'
 import addresses from './addresses.json'
 
 import { ScreenWithWallet } from '../types'
@@ -10,6 +11,7 @@ import { Button } from '../../components'
 import { ScreenProps } from '../../RootNavigation'
 import { RSKRegistrar, AddrResolver } from '@rsksmart/rns-sdk'
 import { getDomains, saveDomains } from '../../storage/DomainsStore'
+import { getTokenColorWithOpacity } from '../home/tokenColor'
 
 export const RegisterDomainScreen: React.FC<
   ScreenProps<'Activity'> & ScreenWithWallet
@@ -64,43 +66,47 @@ export const RegisterDomainScreen: React.FC<
     domains.push(`${selectedDomain}.rsk`)
     await saveDomains(JSON.stringify(domains))
     const address = await addrResolver.addr(selectedDomain)
+    console.log({ address })
     setResolvingAddress(address)
   }
 
   return (
-    <ScrollView>
+    <LinearGradient
+      colors={['#FFFFFF', getTokenColorWithOpacity('TRBTC', 0.1)]}
+      style={styles.parent}>
       <View style={styles.sectionCentered}>
-        <Text style={styles.title}>{selectedDomain}.rsk</Text>
+        <Text style={styles.domainTitle}>{selectedDomain}.rsk</Text>
       </View>
 
       <View style={styles.sectionCentered}>
-        <Text>1. Enter years</Text>
+        <Text>Year(s)</Text>
         <TextInput
-          value={duration}
+          editable={commitToRegisterInfo === ''}
+          style={styles.input}
           onChangeText={setDuration}
-          placeholder={'Years'}
+          value={duration}
+          placeholder={''}
         />
       </View>
 
       <View style={styles.sectionCentered}>
-        <Text>2. Request Domain</Text>
+        <Button
+          disabled={commitToRegisterInfo !== ''}
+          onPress={() => commitToRegister(selectedDomain)}
+          title={'Request to register'}
+        />
 
-        {commitToRegisterInfo === '' ? (
-          <Button
-            onPress={() => commitToRegister(selectedDomain)}
-            title={'Request to register'}
-          />
-        ) : null}
         <Text>{commitToRegisterInfo}</Text>
       </View>
       <View style={styles.sectionCentered}>
-        <Text>3. Register Domain</Text>
-        {commitToRegisterInfo === 'Done' && registerDomainInfo === '' ? (
-          <Button
-            onPress={() => registerDomain(selectedDomain)}
-            title={'Register domain'}
-          />
-        ) : null}
+        <Button
+          disabled={
+            !(commitToRegisterInfo == 'Done' && registerDomainInfo === '')
+          }
+          onPress={() => registerDomain(selectedDomain)}
+          title={'Register domain'}
+        />
+
         <Text>{registerDomainInfo}</Text>
       </View>
       {registerDomainInfo === 'Registered' ? (
@@ -116,11 +122,25 @@ export const RegisterDomainScreen: React.FC<
           />
         </View>
       ) : null}
-    </ScrollView>
+    </LinearGradient>
   )
 }
 
 const styles = StyleSheet.create({
+  parent: {
+    height: '100%',
+    paddingTop: 20,
+  },
+  input: {
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    display: 'flex',
+    height: 50,
+    width: 40,
+    marginTop: 10,
+    margin: 10,
+    textAlign: 'center',
+  },
   sectionCentered: {
     paddingTop: 15,
     paddingBottom: 15,
@@ -128,7 +148,8 @@ const styles = StyleSheet.create({
     borderBottomColor: '#CCCCCC',
     alignItems: 'center',
   },
-  title: {
+  domainTitle: {
     fontWeight: 'bold',
+    fontSize: 20,
   },
 })

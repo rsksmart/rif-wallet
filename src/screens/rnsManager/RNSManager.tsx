@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from 'react'
 import { StyleSheet } from 'react-native'
 import addresses from './addresses.json'
+import LinearGradient from 'react-native-linear-gradient'
 
 import { BigNumber, utils } from 'ethers'
-import { View, TextInput, ScrollView, Text } from 'react-native'
-import { Button } from '../../components'
+import { View, TextInput, Text } from 'react-native'
 
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
 
 import { ScreenWithWallet } from '../types'
 import { ScreenProps } from '../../RootNavigation'
 import { getDomains } from '../../storage/DomainsStore'
+import { grid } from '../../styles/grid'
+import { SquareButton } from '../../components/button/SquareButton'
+import { getTokenColor, getTokenColorWithOpacity } from '../home/tokenColor'
+import { SearchIcon } from '../../components/icons/SearchIcon'
+import { RegisterIcon } from '../../components/icons/RegisterIcon'
 
 export const RNSManagerScreen: React.FC<
   ScreenProps<'Activity'> & ScreenWithWallet
@@ -45,31 +50,52 @@ export const RNSManagerScreen: React.FC<
     }
     callStorage().then(domainsRegistered => console.log(domainsRegistered))
   }, [])
-
   return (
-    <ScrollView>
-      <TextInput
-        value={domainToLookUp}
-        onChangeText={setDomainToLookUp}
-        placeholder={'Enter domain name...'}
-      />
-      <Button
-        onPress={() => searchDomain(domainToLookUp)}
-        title={'Search RSK Domain'}
-      />
+    <LinearGradient
+      colors={['#FFFFFF', getTokenColorWithOpacity('TRBTC', 0.1)]}
+      style={styles.parent}>
+      <View style={styles.container} />
+      <View style={grid.row}>
+        <View style={{ ...grid.column8 }}>
+          <TextInput
+            style={styles.input}
+            onChangeText={setDomainToLookUp}
+            value={domainToLookUp}
+            placeholder={'Enter domain name...'}
+          />
+        </View>
+        <View style={{ ...grid.column2 }}>
+          <Text style={styles.domain}>.rsk</Text>
+        </View>
+        <View style={{ ...grid.column2 }}>
+          <View style={styles.centerRow}>
+            <SquareButton
+              // @ts-ignore
+              onPress={() => searchDomain(domainToLookUp)}
+              title=""
+              testID="Address.CopyButton"
+              icon={<SearchIcon color={getTokenColor('TRBTC')} />}
+            />
+          </View>
+        </View>
+      </View>
+
       {selectedDomain ? (
         <View style={styles.sectionCentered}>
-          <Text style={styles.title}>{selectedDomain}.rsk</Text>
+          <Text style={styles.domainTitle}>{selectedDomain}.rsk</Text>
           {selectedDomainAvailable ? (
             <>
               <Text style={styles.green}>Available</Text>
               <Text>{`${selectedDomainPrice} RIF per year`}</Text>
-              <Button
+
+              <SquareButton
+                // @ts-ignore
                 onPress={() => {
                   // @ts-ignore
                   navigation.navigate('RegisterDomain', selectedDomain)
                 }}
-                title={'Register'}
+                title="Register"
+                icon={<RegisterIcon color={getTokenColor('TRBTC')} />}
               />
             </>
           ) : (
@@ -83,11 +109,41 @@ export const RNSManagerScreen: React.FC<
           <Text key={registeredDomain}>{registeredDomain}</Text>
         ))}
       </View>
-    </ScrollView>
+    </LinearGradient>
   )
 }
 
 const styles = StyleSheet.create({
+  parent: {
+    height: '100%',
+    paddingTop: 20,
+  },
+  domain: {
+    fontSize: 30,
+    top: 15,
+  },
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  tinyLogo: {
+    padding: 20,
+    width: 200,
+    height: 200,
+  },
+  centerRow: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  input: {
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    display: 'flex',
+    height: 50,
+    marginTop: 10,
+    margin: 10,
+  },
+
   sectionCentered: {
     paddingTop: 15,
     paddingBottom: 15,
@@ -95,8 +151,9 @@ const styles = StyleSheet.create({
     borderBottomColor: '#CCCCCC',
     alignItems: 'center',
   },
-  title: {
+  domainTitle: {
     fontWeight: 'bold',
+    fontSize: 20,
   },
   green: {
     color: 'green',
