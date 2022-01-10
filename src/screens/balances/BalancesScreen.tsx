@@ -57,7 +57,7 @@ export const BalancesScreen: React.FC<
   const [info, setInfo] = useState<string>(
     t('Loading balances. Please wait...'),
   )
-  const {state, dispatch} = useSocketsState()
+  const { state, dispatch } = useSocketsState()
 
   const loadRBTCBalance = async () => {
     const rbtcBalanceEntry = await wallet
@@ -74,7 +74,7 @@ export const BalancesScreen: React.FC<
           } as ITokenWithBalance),
       )
     setInfo('')
-    dispatch({type: "newBalance", payload: rbtcBalanceEntry})
+    dispatch({ type: 'newBalance', payload: rbtcBalanceEntry })
   }
 
   useEffect(() => {

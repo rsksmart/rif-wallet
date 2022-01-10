@@ -41,8 +41,8 @@ export const ActivityScreen: React.FC<
   ScreenProps<'Activity'> & ScreenWithWallet & ActivityScreenProps
 > = ({ wallet, fetcher, abiEnhancer, navigation }) => {
   const [info, setInfo] = useState('')
-  const {state, dispatch} = useSocketsState()
-    useState<TransactionsServerResponseWithActivityTransactions | null>(null)
+  const { state, dispatch } = useSocketsState()
+  useState<TransactionsServerResponseWithActivityTransactions | null>(null)
   const { t } = useTranslation()
 
   useEffect(() => {
@@ -59,7 +59,7 @@ export const ActivityScreen: React.FC<
     /*i18n.changeLanguage('es')*/
     try {
       setInfo(t('Loading transactions. Please wait...'))
-      dispatch({type: 'newActivity', payload: null})
+      dispatch({ type: 'newActivity', payload: null })
 
       const fetchedTransactions: TransactionsServerResponseWithActivityTransactions =
         await fetcher.fetchTransactionsByAddress(
@@ -82,7 +82,7 @@ export const ActivityScreen: React.FC<
         }),
       )
 
-      dispatch({type: 'newActivity', payload: fetchedTransactions})
+      dispatch({ type: 'newActivity', payload: fetchedTransactions })
       setInfo('')
     } catch (e: any) {
       setInfo(t('Error reaching API: ') + e.message)
@@ -95,7 +95,9 @@ export const ActivityScreen: React.FC<
       <View style={{ ...grid.row, ...styles.refreshButtonView }}>
         <View style={{ ...grid.column4, ...styles.column }}>
           <SquareButton
-            onPress={() => fetchTransactionsPage({ prev: state.activities?.prev })}
+            onPress={() =>
+              fetchTransactionsPage({ prev: state.activities?.prev })
+            }
             disabled={!state.activities?.prev}
             title="prev"
             icon={
@@ -115,7 +117,9 @@ export const ActivityScreen: React.FC<
         </View>
         <View style={{ ...grid.column4, ...styles.column }}>
           <SquareButton
-            onPress={() => fetchTransactionsPage({ next: state.activities?.next })}
+            onPress={() =>
+              fetchTransactionsPage({ next: state.activities?.next })
+            }
             disabled={!state.activities?.next}
             title="next"
             icon={
