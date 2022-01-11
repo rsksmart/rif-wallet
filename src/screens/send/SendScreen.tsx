@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import {
+  Dimensions,
   StyleSheet,
   View,
   ScrollView,
@@ -20,6 +21,7 @@ import { Button, CopyComponent, Paragraph } from '../../components'
 import { ScreenWithWallet } from '../types'
 import { Address } from '../../components'
 import { AddressInput } from '../../components'
+import { RNCamera } from 'react-native-camera'
 import Resolver from '@rsksmart/rns-resolver.js'
 
 export type SendScreenProps = {
@@ -44,6 +46,10 @@ export const SendScreen: React.FC<
   const [txConfirmed, setTxConfirmed] = useState(false)
   const [txSent, setTxSent] = useState(false)
   const [info, setInfo] = useState('')
+  const cameraRef = useRef<RNCamera>(null)
+
+  const windowWidth = Dimensions.get('window').width
+  const qrCodeSize = windowWidth * 0.6
 
   useEffect(() => {
     getAllTokens(wallet).then(tokens => setAvailableTokens(tokens))
@@ -94,6 +100,36 @@ export const SendScreen: React.FC<
         <Paragraph>
           From: <Address>{smartAddress}</Address>
         </Paragraph>
+      </View>
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+        }}>
+        <View style={styles.cameraContainer}>
+          <RNCamera
+            ref={cameraRef}
+            style={{
+              ...styles.preview,
+              width: qrCodeSize,
+              height: qrCodeSize,
+            }}
+            ratio="1:1"
+            type={RNCamera.Constants.Type.back}
+            flashMode={RNCamera.Constants.FlashMode.off}
+            androidCameraPermissionOptions={{
+              title: 'Permission to use camera',
+              message: 'We need your permission to use your camera',
+              buttonPositive: 'Ok',
+              buttonNegative: 'Cancel',
+            }}
+            captureAudio={false}
+            onBarCodeRead={async event => {
+              const data = decodeURIComponent(event.data)
+              setTo(data)
+            }}
+          />
+        </View>
       </View>
 
       <View>
@@ -206,5 +242,18 @@ const styles = StyleSheet.create({
   },
   error: {
     color: 'red',
+  },
+  cameraContainer: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, .1)',
+    marginVertical: 40,
+    padding: 20,
+    borderRadius: 20,
+  },
+  preview: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
   },
 })
