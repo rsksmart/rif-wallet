@@ -126,6 +126,7 @@ export const SendScreen: React.FC<
             captureAudio={false}
             onBarCodeRead={async event => {
               const data = decodeURIComponent(event.data)
+              setDisplayTo(data)
               setTo(data)
             }}
           />
