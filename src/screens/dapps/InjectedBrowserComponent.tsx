@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import { CompactParagraph, Loading } from '../../components'
 import { Arrow } from '../../components/icons'
 import {
   IRegisteredDappsGroup,
@@ -23,6 +24,8 @@ const InjectedBrowserComponent: React.FC<Interface & ScreenWithWallet> = ({
   wallet,
   fetcher,
 }) => {
+  const [isLoading, setIsLoading] = useState(true)
+
   const [dappsGroups, setDappsGroups] = useState<
     IRegisteredDappsGroup[] | null
   >(null)
@@ -31,20 +34,20 @@ const InjectedBrowserComponent: React.FC<Interface & ScreenWithWallet> = ({
 
   useEffect(() => {
     const action = async () => {
-      const groupsResult = await fetcher.fetchDapps()
-      const chainIdResult = await wallet.provider?.getNetwork()
+      try {
+        const groupsResult = await fetcher.fetchDapps()
+        const chainIdResult = await wallet.provider?.getNetwork()
 
-      setDappsGroups(groupsResult)
-      setChainId(chainIdResult?.chainId ?? 0)
+        setDappsGroups(groupsResult)
+        setChainId(chainIdResult?.chainId ?? 0)
+        setIsLoading(false)
+      } catch (error) {
+        setIsLoading(false)
+      }
     }
 
     action()
   }, [fetcher])
-
-  console.log(
-    'dappsGroups',
-    dappsGroups?.flatMap(x => x.dapps),
-  )
 
   const dapps = dappsGroups
     ?.flatMap(x => x.dapps)
@@ -54,18 +57,30 @@ const InjectedBrowserComponent: React.FC<Interface & ScreenWithWallet> = ({
     )
 
   return (
-    <ScrollView style={visible ? styles.portfolioOpened : styles.portfolio}>
-      <TouchableOpacity onPress={setPanelActive} disabled={visible}>
+    <>
+      <TouchableOpacity
+        style={visible ? styles.portfolioOpened : styles.portfolio}
+        onPress={setPanelActive}
+        disabled={visible}>
         <Text style={styles.heading}>Explore Dapps</Text>
       </TouchableOpacity>
-      {visible && (
-        <>
-          {dapps?.map(x => (
-            <DappButton navigation={navigation} title={x.title} url={x.url} />
-          ))}
-        </>
-      )}
-    </ScrollView>
+      <ScrollView>
+        {visible && (
+          <ScrollView style={styles.exploreButtons}>
+            {isLoading && <Loading />}
+            {!isLoading && !dapps && (
+              <CompactParagraph>
+                We can't reach the server, please check your internet
+                connection.
+              </CompactParagraph>
+            )}
+            {dapps?.map(x => (
+              <DappButton navigation={navigation} title={x.title} url={x.url} />
+            ))}
+          </ScrollView>
+        )}
+      </ScrollView>
+    </>
   )
 }
 
@@ -116,7 +131,6 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     borderColor: '#e1e1e1',
     borderTopWidth: 1,
-    paddingBottom: 20,
   },
   moreButton: {
     borderWidth: 0,
@@ -142,6 +156,11 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#66777E',
+  },
+  exploreButtons: {
+    padding: 20,
+    paddingTop: 0,
+    paddingBottom: 150,
   },
 })
 

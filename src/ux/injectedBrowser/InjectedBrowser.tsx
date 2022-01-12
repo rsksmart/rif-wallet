@@ -8,6 +8,9 @@ import { ScreenProps } from '../../screens/injectedBrowser/types'
 import { InjectedBrowserAdapter } from '../../lib/walletAdapters/InjectedBrowserAdapter'
 
 import Url from 'url-parse'
+import { SquareButton } from '../../components/button/SquareButton'
+import { sharedStyles } from '../requestsModal/sharedStyles'
+import { Arrow, RefreshIcon } from '../../components/icons'
 
 export const InjectedBrowser: React.FC<
   ScreenWithWallet & ScreenProps<'InjectedBrowser'>
@@ -90,6 +93,22 @@ export const InjectedBrowser: React.FC<
         />
       </View>
       <ProgressBar progress={progress} />
+      <View style={styles.buttonsSection}>
+        <SquareButton
+          disabled={progress !== 1}
+          onPress={() => {
+            webviewRef.current?.goBack()
+          }}
+          icon={<Arrow rotate={-90} color={'#000'} />}
+        />
+        <SquareButton
+          disabled={progress !== 1}
+          onPress={() => {
+            webviewRef.current?.reload()
+          }}
+          icon={<RefreshIcon color={'#000'} />}
+        />
+      </View>
     </View>
   )
 }
@@ -120,6 +139,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 999999,
+  },
+  buttonsSection: {
+    ...sharedStyles.row,
+    padding: 0,
+    alignItems: 'center',
+    justifyContent: 'space-around',
   },
 })
 

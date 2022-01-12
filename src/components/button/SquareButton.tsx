@@ -12,7 +12,7 @@ export interface IconButtonInterface extends Interface {
 }
 
 interface Interface {
-  title: string
+  title?: string
   icon?: any
   onPress?: (event: GestureResponderEvent) => any
   disabled?: boolean
@@ -39,7 +39,7 @@ export const SquareButton: React.FC<Interface> = ({
       disabled={disabled}
       testID={testID}>
       <View style={imageStyle}>{icon}</View>
-      <Text style={styles.text}>{title}</Text>
+      {title && <Text style={styles.text}>{title}</Text>}
     </TouchableOpacity>
   )
 }
