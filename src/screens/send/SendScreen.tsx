@@ -118,7 +118,6 @@ export const SendScreen: React.FC<
       style={styles.parent}>
       <View style={grid.row}>
         <View style={{ ...grid.column2, ...styles.icon }}>
-
           <TouchableOpacity
             style={styles.button}
             onPress={() => handleChangeToken(selectedSymbol)}>
