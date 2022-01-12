@@ -87,7 +87,6 @@ export const AddressInput: React.FC<AddressInputProps> = ({
         <View style={{ ...grid.column2 }}>
           <View style={styles.centerRow}>
             <SquareButton
-              // @ts-ignore
               onPress={async () =>
                 handleChangeText(await Clipboard.getString())
               }
@@ -99,8 +98,8 @@ export const AddressInput: React.FC<AddressInputProps> = ({
         </View>
         <View style={{ ...grid.column2 }}>
           <View style={styles.centerRow}>
+            //TODO: implement QR code
             <SquareButton
-              // @ts-ignore
               onPress={() => {}}
               title=""
               testID="Address.CopyButton"

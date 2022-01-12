@@ -118,23 +118,13 @@ export const SendScreen: React.FC<
       style={styles.parent}>
       <View style={grid.row}>
         <View style={{ ...grid.column2, ...styles.icon }}>
-          {/*<View style={{ ...grid.column2, ...styles.icon }}>
-              <TokenImage symbol={token.symbol} height={45} width={45} />
-            </View>*/}
 
           <TouchableOpacity
             style={styles.button}
-            onPress={() => handleChangeToken(selectedSymbol)}
-            /*onPress={onPress}
-              disabled={disabled}
-              testID={testID}*/
-          >
+            onPress={() => handleChangeToken(selectedSymbol)}>
             <View style={imageStyle}>
               <TokenImage symbol={selectedSymbol} height={30} width={30} />
             </View>
-
-            {/*<View style={imageStyle}>{icon}</View>*/}
-            {/*<Text style={styles.text}>{title}</Text>*/}
           </TouchableOpacity>
         </View>
         <View style={{ ...grid.column10 }}>
