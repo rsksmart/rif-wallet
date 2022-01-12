@@ -25,6 +25,8 @@ type AddressInputProps = {
   testID: string
   rnsResolver: Resolver
   style?: any
+  navigation: any
+  showContacts: boolean
 }
 
 export const AddressInput: React.FC<AddressInputProps> = ({
@@ -33,6 +35,8 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   onChangeText,
   testID,
   rnsResolver,
+  navigation,
+  showContacts,
 }) => {
   const [validationMessage, setValidationMessage] = useState(
     validateAddress(value),
@@ -104,33 +108,19 @@ export const AddressInput: React.FC<AddressInputProps> = ({
             />
           </View>
         </View>
-        <View style={{ ...grid.column2 }}>
-          <View style={styles.centerRow}>
-            <SquareButton
-              // @ts-ignore
-              onPress={() => {}}
-              title=""
-              testID="Address.CopyButton"
-              icon={<ContactsIcon color={getTokenColor(selectedToken)} />}
-            />
-            {/*   <SquareButton
+        {showContacts && (
+          <View style={{ ...grid.column2 }}>
+            <View style={styles.centerRow}>
+              <SquareButton
                 // @ts-ignore
-                onPress={() => navigation.navigate('ImportMasterKey', { mnemonic })}
-                title="Continue"
-                testID="Address.CopyButton"
-                icon={<Arrow color={getTokenColor(selectedToken)} rotate={90} />}
-            />*/}
+                onPress={() => navigation.navigate('Contacts')}
+                title=""
+                icon={<ContactsIcon color={getTokenColor(selectedToken)} />}
+              />
+            </View>
           </View>
-        </View>
+        )}
       </View>
-
-      {/* <TextInput
-        onChangeText={handleChangeText}
-        value={value}
-        placeholder={placeholder}
-        testID={testID}
-        editable={inputInfo !== 'Loading...'}
-      />*/}
 
       {inputInfo !== '' && (
         <Text style={styles.info} testID={testID + '.InputInfo'}>

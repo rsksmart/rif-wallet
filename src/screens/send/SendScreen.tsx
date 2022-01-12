@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
+import { useIsFocused } from '@react-navigation/native'
 
 import {
   StyleSheet,
@@ -31,7 +32,9 @@ export type SendScreenProps = {
 }
 export const SendScreen: React.FC<
   SendScreenProps & ScreenProps<'Send'> & ScreenWithWallet
-> = ({ rnsResolver, route, wallet }) => {
+> = ({ rnsResolver, route, wallet, navigation }) => {
+  const isFocused = useIsFocused()
+
   const { t } = useTranslation()
 
   const [to, setTo] = useState(route.params?.to || '')
@@ -47,11 +50,17 @@ export const SendScreen: React.FC<
   const [txConfirmed, setTxConfirmed] = useState(false)
   const [txSent, setTxSent] = useState(false)
   const [info, setInfo] = useState('')
-  //const selectedSymbol = 'TRBTC'
 
   useEffect(() => {
+    setTo(route.params?.to || '')
+    setDisplayTo(route.params?.displayTo || '')
+    handleTargetAddressChange(
+      true,
+      route.params?.to as string,
+      route.params?.displayTo as string,
+    )
     getAllTokens(wallet).then(tokens => setAvailableTokens(tokens))
-  }, [wallet])
+  }, [wallet, isFocused])
 
   const transfer = async (tokenSymbol: string) => {
     setInfo('')
@@ -140,12 +149,6 @@ export const SendScreen: React.FC<
         </View>
       </View>
 
-      {/* <View>
-        <Paragraph>
-          From: <Address>{smartAddress}</Address>
-        </Paragraph>
-      </View>*/}
-
       <View>
         <AddressInput
           onChangeText={handleTargetAddressChange}
@@ -153,58 +156,17 @@ export const SendScreen: React.FC<
           placeholder={t('To')}
           testID={'To.Input'}
           rnsResolver={rnsResolver}
+          navigation={navigation}
+          showContacts={true}
         />
       </View>
 
       <View />
-      {/*<View>
-        <Paragraph>
-          <Text>Token: </Text>
-          <Text>{selectedSymbol}</Text>
-        </Paragraph>
-      </View>*/}
-      {/*<View style={styles.section}>*/}
-      {/* <Button
-          onPress={() => setSelectedSymbol('TRBTC')}
-          disabled={selectedSymbol === 'TRBTC'}
-          title="TRBTC"
-        />
-        <Button
-          onPress={() => setSelectedSymbol('tRIF')}
-          disabled={selectedSymbol === 'tRIF'}
-          title="tRIF"
-        />*/}
-      {/*<Picker
-          selectedValue={selectedSymbol}
-          onValueChange={itemValue => setSelectedSymbol(itemValue)}
-          testID={'Tokens.Picker'}>
-          {availableTokens &&
-            availableTokens.map(token => (
-              <Picker.Item
-                key={token.symbol}
-                label={token.symbol}
-                value={token.symbol}
-                testID={token.symbol}
-              />
-            ))}
-        </Picker>*/}
-      {/* </View>*/}
 
       {!txSent && (
-        /*  <View style={styles.section}>
-          <Button
-            disabled={!isValidTo}
-            onPress={() => {
-              transfer(selectedSymbol)
-            }}
-            title="Next"
-            testID="Next.Button"
-          />
-        </View>*/
         <View style={styles.centerRow}>
           <SquareButton
             disabled={!isValidTo}
-            // @ts-ignore
             onPress={async () => {
               await transfer(selectedSymbol)
             }}
@@ -272,28 +234,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
     margin: 10,
   },
-  safeView: {
-    height: '100%',
-  },
-  screen: {
-    paddingRight: 15,
-    paddingLeft: 15,
-  },
-  sections: {
-    flex: 1,
-    flexDirection: 'column',
-  },
+
   section: {
     marginTop: 5,
     marginBottom: 5,
     borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC',
     flex: 1,
-  },
-  link: {
-    color: 'blue',
-  },
-  error: {
-    color: 'red',
   },
 })
