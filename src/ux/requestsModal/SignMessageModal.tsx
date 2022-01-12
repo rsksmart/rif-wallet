@@ -9,6 +9,7 @@ import { setOpacity } from '../../screens/home/tokenColor'
 import { SquareButton } from '../../components/button/SquareButton'
 import { SignIcon } from '../../components/icons/SignIcon'
 import { CancelIcon } from '../../components/icons/CancelIcon'
+import { ScrollView } from 'react-native-gesture-handler'
 
 interface Interface {
   request: SignMessageRequest
@@ -29,7 +30,7 @@ const SignMessageModal: React.FC<Interface> = ({ request, closeModal }) => {
   }
 
   return (
-    <>
+    <ScrollView>
       <View style={[sharedStyles.modalView, sharedStyles.modalViewMainSection]}>
         <ModalHeader>sign message</ModalHeader>
 
@@ -41,7 +42,7 @@ const SignMessageModal: React.FC<Interface> = ({ request, closeModal }) => {
           {request.payload}
         </Text>
       </View>
-      <View style={{ ...sharedStyles.row, padding: 20 }}>
+      <View style={styles.buttonsSection}>
         <View style={sharedStyles.column}>
           <SquareButton
             onPress={reject}
@@ -63,7 +64,7 @@ const SignMessageModal: React.FC<Interface> = ({ request, closeModal }) => {
           />
         </View>
       </View>
-    </>
+    </ScrollView>
   )
 }
 
@@ -88,6 +89,10 @@ const styles = StyleSheet.create({
     fontStyle: 'normal',
     letterSpacing: 0.24,
     color: '#373f48',
+  },
+  buttonsSection: {
+    ...sharedStyles.row,
+    padding: 20,
   },
 })
 

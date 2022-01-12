@@ -3,8 +3,13 @@ import { StyleSheet, Text, View, ScrollView } from 'react-native'
 
 import { SignTypedDataRequest } from '../../lib/core'
 
-import { Button, CompactParagraph, Header2 } from '../../components'
+import { ModalHeader } from '../../components'
 import { sharedStyles } from './sharedStyles'
+import { useTranslation } from 'react-i18next'
+import { SquareButton } from '../../components/button/SquareButton'
+import { CancelIcon } from '../../components/icons/CancelIcon'
+import { SignIcon } from '../../components/icons/SignIcon'
+import { setOpacity } from '../../screens/home/tokenColor'
 
 interface Interface {
   request: SignTypedDataRequest
@@ -28,6 +33,8 @@ const formatter = (data: any) =>
   ))
 
 const SignTypedDataModal: React.FC<Interface> = ({ request, closeModal }) => {
+  const { t } = useTranslation()
+
   const approve = () => {
     request.confirm()
     closeModal()
@@ -39,57 +46,97 @@ const SignTypedDataModal: React.FC<Interface> = ({ request, closeModal }) => {
   }
 
   return (
-    <View>
-      <Header2>Sign Typed Data</Header2>
+    <ScrollView>
+      <View style={[sharedStyles.modalView, sharedStyles.modalViewMainSection]}>
+        <ModalHeader>sign typed data</ModalHeader>
 
-      <View style={sharedStyles.rowInColumn}>
-        <CompactParagraph testID="Domain.Name">
-          Name: {request.payload[0].name}
-        </CompactParagraph>
-        <CompactParagraph testID="Domain.Version">
-          Version: {request.payload[0].version}
-        </CompactParagraph>
-        <CompactParagraph testID="Domain.ChainId">
-          Chain Id: {request.payload[0].chainId}
-        </CompactParagraph>
-        <CompactParagraph testID="Domain.VerifyingContract">
-          Verifying Contract: {request.payload[0].verifyingContract}
-        </CompactParagraph>
-        <CompactParagraph testID="Domain.Salt">
-          Salt: {request.payload[0].salt}
-        </CompactParagraph>
+        <View style={[sharedStyles.rowInColumn, styles.topBox]}>
+          <View style={styles.dataRow}>
+            <Text style={styles.paragraphLabel}>name:</Text>
+            <Text style={styles.paragraphValue} testID="Domain.Name">
+              {request.payload[0].name}
+            </Text>
+          </View>
+          <View style={styles.dataRow}>
+            <Text style={styles.paragraphLabel}>version:</Text>
+            <Text style={styles.paragraphValue} testID="Domain.Version">
+              {request.payload[0].version}
+            </Text>
+          </View>
+          <View style={styles.dataRow}>
+            <Text style={styles.paragraphLabel}>chain id:</Text>
+            <Text style={styles.paragraphValue} testID="Domain.ChainId">
+              {request.payload[0].chainId}
+            </Text>
+          </View>
+          <View style={styles.dataRow}>
+            <Text style={styles.paragraphLabel}>verifying contract:</Text>
+            <Text
+              style={styles.paragraphValue}
+              testID="Domain.VerifyingContract">
+              {request.payload[0].verifyingContract}
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.dataRow}>
+          <Text style={styles.paragraphLabel}>salt:</Text>
+          <Text style={styles.paragraphValue} testID="Domain.Salt">
+            {request.payload[0].salt}
+          </Text>
+        </View>
+
+        <ScrollView style={styles.message} testID="Data.View">
+          {formatter(request.payload[2])}
+        </ScrollView>
       </View>
-
-      <ScrollView style={styles.message} testID="Data.View">
-        {formatter(request.payload[2])}
-      </ScrollView>
-
-      <View style={sharedStyles.row}>
+      <View style={styles.buttonsSection}>
         <View style={sharedStyles.column}>
-          <Button
-            onPress={approve}
-            title="Sign Message"
-            testID="Button.Confirm"
+          <SquareButton
+            onPress={reject}
+            title={t('reject')}
+            testID="Button.Reject"
+            icon={<CancelIcon color={'#ffb4b4'} />}
+            shadowColor="#313c3c"
+            backgroundColor={'#313c3c'}
           />
         </View>
         <View style={sharedStyles.column}>
-          <Button onPress={reject} title="Reject" testID="Button.Reject" />
+          <SquareButton
+            onPress={approve}
+            title={t('sign')}
+            testID="Button.Confirm"
+            icon={<SignIcon color={'#91ffd9'} />}
+            shadowColor="#313c3c"
+            backgroundColor={'#313c3c'}
+          />
         </View>
       </View>
-    </View>
+    </ScrollView>
   )
 }
 
 export const styles = StyleSheet.create({
   message: {
-    backgroundColor: '#f1f1f1',
-    borderWidth: 1,
-    borderColor: '#d1d1d1',
-    paddingTop: 20,
-    paddingBottom: 20,
+    padding: 10,
     marginTop: 10,
-    marginBottom: 20,
-    maxHeight: '75%',
+    marginBottom: 10,
+
+    borderRadius: 14,
+    backgroundColor: setOpacity('#313c3c', 0.1),
+    shadowColor: 'rgba(0, 0, 0, 0)',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowRadius: 6,
+    shadowOpacity: 1,
+
+    fontSize: 16,
+    fontWeight: '500',
+    fontStyle: 'normal',
+    letterSpacing: 0.24,
+    color: '#373f48',
   },
   nested: {
     marginLeft: 20,
@@ -103,6 +150,27 @@ export const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingTop: 5,
     paddingBottom: 5,
+  },
+  buttonsSection: {
+    ...sharedStyles.row,
+    padding: 20,
+  },
+  paragraphLabel: {
+    fontSize: 14,
+    color: setOpacity('#373f48', 0.6),
+    fontWeight: 'bold',
+    marginRight: 5,
+  },
+  paragraphValue: {
+    fontSize: 14,
+    color: setOpacity('#373f48', 0.6),
+  },
+  topBox: {
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
+  dataRow: {
+    flexDirection: 'row',
   },
 })
 

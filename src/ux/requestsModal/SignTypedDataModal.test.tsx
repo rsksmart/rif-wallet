@@ -45,7 +45,7 @@ describe('SignTypedData', function (this: {
     const { getAllByText } = render(
       <SignTypedDataModal request={this.request} closeModal={jest.fn()} />,
     )
-    expect(getAllByText('Sign Typed Data').length).toBe(1)
+    expect(getAllByText('sign typed data').length).toBe(1)
   })
 
   it('displays domain', () => {

@@ -60,6 +60,7 @@ describe('ReviewTransactionModal', function (this: {
     const { getAllByText, getByPlaceholderText } = await waitFor(() =>
       render(
         <ReviewTransactionModal
+          isWalletDeployed={true}
           wallet={this.rifWallet}
           request={this.queuedTransaction}
           closeModal={jest.fn()}
@@ -70,7 +71,7 @@ describe('ReviewTransactionModal', function (this: {
     await flushPromises()
 
     // make sure elements are showing up
-    expect(getAllByText('Review Transaction').length).toBe(1)
+    expect(getAllByText('review transaction').length).toBe(1)
     getByPlaceholderText('gas limit')
     getByPlaceholderText('gas price')
   })
@@ -80,6 +81,7 @@ describe('ReviewTransactionModal', function (this: {
     const { getByTestId } = await waitFor(() =>
       render(
         <ReviewTransactionModal
+          isWalletDeployed={true}
           wallet={this.rifWallet}
           request={this.queuedTransaction}
           closeModal={closeModal}
@@ -109,6 +111,7 @@ describe('ReviewTransactionModal', function (this: {
     const { getByTestId } = await waitFor(() =>
       render(
         <ReviewTransactionModal
+          isWalletDeployed={true}
           wallet={this.rifWallet}
           request={this.queuedTransaction}
           closeModal={closeModal}
@@ -131,6 +134,7 @@ describe('ReviewTransactionModal', function (this: {
     const { getByTestId } = await waitFor(() =>
       render(
         <ReviewTransactionModal
+          isWalletDeployed={true}
           wallet={this.rifWallet}
           request={this.queuedTransaction}
           closeModal={closeModal}
