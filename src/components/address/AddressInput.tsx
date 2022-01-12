@@ -98,7 +98,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
         </View>
         <View style={{ ...grid.column2 }}>
           <View style={styles.centerRow}>
-            //TODO: implement QR code
+            {/*TODO: implement QR code*/}
             <SquareButton
               onPress={() => {}}
               title=""
