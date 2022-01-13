@@ -27,10 +27,10 @@ export const CustomInput: React.FC<{
 
   return (
     <View style={styles.container}>
-      <View style={{ flex: 4 }}>
+      <View style={styles.textInputWrapper}>
         <TextInput
           onChangeText={handleChange}
-          style={{ backgroundColor: 'transparent' }}
+          style={styles.textInput}
           onSubmitEditing={handleSubmit}
           placeholder={placeholder}
           testID={testID}
@@ -38,10 +38,10 @@ export const CustomInput: React.FC<{
         />
       </View>
       {onSubmit && (
-        <View style={{ flex: 1 }}>
+        <View style={styles.buttonWrapper}>
           <Button
             title="&#10132;"
-            style={{ minWidth: 0 }}
+            style={styles.button}
             onPress={handleSubmit}
           />
         </View>
@@ -67,5 +67,17 @@ const styles = StyleSheet.create({
   },
   textDisabled: {
     color: '#cccccc',
+  },
+  textInputWrapper: {
+    flex: 4,
+  },
+  textInput: {
+    backgroundColor: 'transparent',
+  },
+  buttonWrapper: {
+    flex: 1,
+  },
+  button: {
+    minWidth: 0,
   },
 })
