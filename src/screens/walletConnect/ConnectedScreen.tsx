@@ -11,8 +11,13 @@ interface IConnectedScreenProps {
   route: any
 }
 
-const ConnectedScreen: React.FC<IConnectedScreenProps> = ({ navigation }) => {
-  const { connector, peerMeta } = useContext(WalletConnectContext)
+const ConnectedScreen: React.FC<IConnectedScreenProps> = ({
+  navigation,
+  route,
+}) => {
+  const { connections } = useContext(WalletConnectContext)
+
+  const { connector } = connections[route.params?.wcKey]
 
   const handleDisconnect = async () => {
     if (!connector) {
@@ -30,11 +35,11 @@ const ConnectedScreen: React.FC<IConnectedScreenProps> = ({ navigation }) => {
         <Text style={styles.heading}>Connected to:</Text>
 
         <View style={styles.section}>
-          <Text style={styles.header}>{peerMeta?.name}</Text>
-          <Paragraph>{peerMeta?.description}</Paragraph>
+          <Text style={styles.header}>{connector.peerMeta?.name}</Text>
+          <Paragraph>{connector.peerMeta?.description}</Paragraph>
         </View>
         <View style={styles.section2}>
-          <Paragraph>{peerMeta?.url}</Paragraph>
+          <Paragraph>{connector.peerMeta?.url}</Paragraph>
         </View>
         <View style={styles.buttonsSection}>
           <Button
