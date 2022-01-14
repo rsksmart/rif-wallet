@@ -26,6 +26,7 @@ import { grid } from '../../styles/grid'
 import { SquareButton } from '../../components/button/SquareButton'
 import { Arrow } from '../../components/icons'
 import { TokenImage } from '../home/TokenImage'
+import MiniModal from '../../components/TokenSelector/MiniModal'
 
 export type SendScreenProps = {
   rnsResolver: Resolver
@@ -50,6 +51,12 @@ export const SendScreen: React.FC<
   const [txConfirmed, setTxConfirmed] = useState(false)
   const [txSent, setTxSent] = useState(false)
   const [info, setInfo] = useState('')
+
+  const [showSelector, setShowSelector] = useState(false)
+  const handleTokenSelection = (selectedToken: string) => {
+    setShowSelector(false)
+    setSelectedSymbol(selectedToken)
+  }
 
   useEffect(() => {
     setTo(route.params?.to || '')
@@ -92,13 +99,11 @@ export const SendScreen: React.FC<
       }
     }
   }
-  const handleChangeToken = (selection: string) => {
-    if (selection === 'tRIF') {
-      setSelectedSymbol('TRBTC')
-    } else {
-      setSelectedSymbol('tRIF')
-    }
+  const openTokenSelector = () => {
+    console.log('aaa')
+    setShowSelector(true)
   }
+
   const handleTargetAddressChange = (
     isValid: boolean,
     address: string,
@@ -120,7 +125,8 @@ export const SendScreen: React.FC<
         <View style={{ ...grid.column2, ...styles.icon }}>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => handleChangeToken(selectedSymbol)}>
+            //onPress={() => handleChangeToken(selectedSymbol)}>
+            onPress={() => openTokenSelector()}>
             <View style={imageStyle}>
               <TokenImage symbol={selectedSymbol} height={30} width={30} />
             </View>
@@ -182,6 +188,12 @@ export const SendScreen: React.FC<
             }}
           />
         </View>
+      )}
+      {showSelector && (
+        <MiniModal
+          onTokenSelection={handleTokenSelection}
+          availableTokens={availableTokens as IToken[]}
+        />
       )}
     </LinearGradient>
   )

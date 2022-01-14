@@ -1,5 +1,6 @@
 import React from 'react'
-import { StyleSheet, Text } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
+import { ModalIcon } from '../icons/ModalIcon'
 
 interface Interface {
   children: React.ReactNode
@@ -36,6 +37,15 @@ export const CompactParagraph: React.FC<Interface> = ({ children, testID }) => (
   </Text>
 )
 
+export const ModalHeader: React.FC<Interface> = ({ children, testID }) => (
+  <View style={styles.modalHeaderWrapper}>
+    <ModalIcon color={'#313c3c'} />
+    <Text style={styles.modalHeader} testID={testID}>
+      {children}
+    </Text>
+  </View>
+)
+
 const styles = StyleSheet.create({
   header1: {
     fontSize: 42,
@@ -47,6 +57,18 @@ const styles = StyleSheet.create({
   },
   header3: {
     fontSize: 26,
+    marginBottom: 15,
+  },
+  modalHeader: {
+    marginLeft: 5,
+    marginBottom: 3,
+    fontSize: 18,
+    color: '#313c3c',
+  },
+  modalHeaderWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 15,
   },
   paragraph: {
