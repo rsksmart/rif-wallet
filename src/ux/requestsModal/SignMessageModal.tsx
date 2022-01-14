@@ -5,7 +5,6 @@ import { useTranslation, Trans } from 'react-i18next'
 
 import { ModalHeader, ParagraphSoft } from '../../components'
 import { sharedStyles } from './sharedStyles'
-import { setOpacity } from '../../screens/home/tokenColor'
 import { SquareButton } from '../../components/button/SquareButton'
 import { SignIcon } from '../../components/icons/SignIcon'
 import { CancelIcon } from '../../components/icons/CancelIcon'
@@ -75,7 +74,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
 
     borderRadius: 14,
-    backgroundColor: setOpacity('#313c3c', 0.1),
+    backgroundColor: 'rgba(49, 60, 60, 0.1)',
     shadowColor: 'rgba(0, 0, 0, 0)',
     shadowOffset: {
       width: 0,

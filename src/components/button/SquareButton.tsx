@@ -36,8 +36,6 @@ export const SquareButton: React.FC<Interface> = ({
     backgroundColor,
   }
 
-  console.log('backgroundColor', shadowColor, backgroundColor, imageStyle)
-
   return (
     <TouchableOpacity
       style={styles.button}

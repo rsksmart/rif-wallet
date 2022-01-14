@@ -13,7 +13,6 @@ import SignTypedDataModal from './SignTypedDataModal'
 import { sharedStyles } from './sharedStyles'
 import { InjectSelectedWallet } from '../../Context'
 import { SignTypedDataRequest } from '../../lib/core'
-import { setOpacity } from '../../screens/home/tokenColor'
 
 interface Interface {
   request: Request
@@ -67,6 +66,6 @@ export default ModalComponent
 const styles = StyleSheet.create({
   blurBackground: {
     marginTop: 0,
-    backgroundColor: setOpacity('#373f48', 0.88),
+    backgroundColor: 'rgba(55, 63, 72, 0.88)',
   },
 })

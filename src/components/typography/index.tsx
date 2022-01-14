@@ -1,6 +1,5 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { setOpacity } from '../../screens/home/tokenColor'
 import { ModalIcon } from '../icons/ModalIcon'
 
 interface Interface {
@@ -88,7 +87,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     textAlign: 'center',
-    color: setOpacity('#373f48', 0.34),
+    color: 'rgba(55, 63, 72, 0.34)',
   },
   compactParagraph: {
     fontSize: 18,

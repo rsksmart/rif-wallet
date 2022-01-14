@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { SquareButton } from '../../components/button/SquareButton'
 import { CancelIcon } from '../../components/icons/CancelIcon'
 import { SignIcon } from '../../components/icons/SignIcon'
-import { setOpacity } from '../../screens/home/tokenColor'
+import { shortAddress } from '../../lib/utils'
 
 interface Interface {
   request: SignTypedDataRequest
@@ -69,14 +69,16 @@ const SignTypedDataModal: React.FC<Interface> = ({ request, closeModal }) => {
               {request.payload[0].chainId}
             </Text>
           </View>
-          <View style={styles.dataRow}>
-            <Text style={styles.paragraphLabel}>verifying contract:</Text>
-            <Text
-              style={styles.paragraphValue}
-              testID="Domain.VerifyingContract">
-              {request.payload[0].verifyingContract}
-            </Text>
-          </View>
+          {request.payload[0].verifyingContract && (
+            <View style={styles.dataRow}>
+              <Text style={styles.paragraphLabel}>verifying contract:</Text>
+              <Text
+                style={styles.paragraphValue}
+                testID="Domain.VerifyingContract">
+                {shortAddress(request.payload[0].verifyingContract)}
+              </Text>
+            </View>
+          )}
         </View>
 
         <View style={styles.dataRow}>
@@ -123,7 +125,7 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
 
     borderRadius: 14,
-    backgroundColor: setOpacity('#313c3c', 0.1),
+    backgroundColor: 'rgba(49, 60, 60, 0.1)',
     shadowColor: 'rgba(0, 0, 0, 0)',
     shadowOffset: {
       width: 0,
@@ -157,13 +159,13 @@ export const styles = StyleSheet.create({
   },
   paragraphLabel: {
     fontSize: 14,
-    color: setOpacity('#373f48', 0.6),
+    color: 'rgba(55, 63, 72, 0.6)',
     fontWeight: 'bold',
     marginRight: 5,
   },
   paragraphValue: {
     fontSize: 14,
-    color: setOpacity('#373f48', 0.6),
+    color: 'rgba(55, 63, 72, 0.6)',
   },
   topBox: {
     paddingTop: 10,
@@ -171,6 +173,7 @@ export const styles = StyleSheet.create({
   },
   dataRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
   },
 })
 

@@ -27,8 +27,6 @@ export const CustomInput: React.FC<{
   }
 
   useEffect(() => {
-    console.log('value', value)
-
     if (value !== undefined) {
       setText(value)
     }

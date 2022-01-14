@@ -8,7 +8,6 @@ import { sharedStyles } from './sharedStyles'
 import { CustomInput, Loading, ModalHeader, Paragraph } from '../../components'
 import { ScreenWithWallet } from '../../screens/types'
 import useEnhancedWithGas from './useEnhancedWithGas'
-import { setOpacity } from '../../screens/home/tokenColor'
 import { SquareButton } from '../../components/button/SquareButton'
 import { CancelIcon } from '../../components/icons/CancelIcon'
 import { SignIcon } from '../../components/icons/SignIcon'
@@ -220,13 +219,13 @@ const styles = StyleSheet.create({
   },
   paragraphLabel: {
     fontSize: 14,
-    color: setOpacity('#373f48', 0.6),
+    color: 'rgba(55, 63, 72, 0.6)',
     fontWeight: 'bold',
     marginRight: 5,
   },
   paragraphValue: {
     fontSize: 14,
-    color: setOpacity('#373f48', 0.6),
+    color: 'rgba(55, 63, 72, 0.6)',
   },
   topBox: {
     paddingTop: 10,
@@ -250,7 +249,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
 
     borderRadius: 14,
-    backgroundColor: setOpacity('#313c3c', 0.1),
+    backgroundColor: 'rgba(49, 60, 60, 0.1)',
     shadowColor: 'rgba(0, 0, 0, 0)',
     shadowOffset: {
       width: 0,
