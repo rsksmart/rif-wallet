@@ -4,7 +4,7 @@ import { Dimensions, StyleSheet } from 'react-native'
 import { BarCodeReadEvent, RNCamera } from 'react-native-camera'
 
 type Props = {
-  onBarCodeRead: (event: BarCodeReadEvent) => void
+  onBarCodeRead: (event: BarCodeReadEvent) => Promise<void> | void
 }
 
 const QRScanner = ({ onBarCodeRead }: Props) => {

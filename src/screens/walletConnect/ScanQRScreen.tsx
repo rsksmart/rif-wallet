@@ -19,7 +19,7 @@ const ScanQRScreen: React.FC<IScanQRScreenProps> = () => {
   const { createSession } = useContext(WalletConnectContext)
   const [isConnecting, setIsConnecting] = useState(false)
 
-  const onBardCodeRead = (event: BarCodeReadEvent) => {
+  const onBardCodeRead = async (event: BarCodeReadEvent) => {
     if (isConnecting) {
       return
     }
