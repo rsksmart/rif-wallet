@@ -18,6 +18,7 @@ import { AppHeader } from './ux/appHeader'
 import { AppFooterMenu } from './ux/appFooter'
 import { WalletConnectProviderElement } from './screens/walletConnect/WalletConnectContext'
 import { EditContactScreenProps } from './screens/contacts/EditContactScreen'
+import { DappsScreenScreenProps } from './screens/dapps'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -38,6 +39,7 @@ const InjectedScreens = {
   RNSManagerScreen: InjectSelectedWallet(Screens.RNSManagerScreen),
   RegisterDomainScreen: InjectSelectedWallet(Screens.RegisterDomainScreen),
   HomeScreen: InjectSelectedWallet(Screens.HomeScreen),
+  DappsScreen: InjectSelectedWallet(Screens.DappsScreen),
 }
 
 type RootStackParamList = {
@@ -82,6 +84,7 @@ export const RootNavigation: React.FC<{
   sendScreenProps: SendScreenProps
   injectedBrowserUXScreenProps: InjectedBrowserUXScreenProps
   contactsNavigationScreenProps: EditContactScreenProps
+  dappsScreenProps: DappsScreenScreenProps
 }> = ({
   keyManagementProps,
   balancesScreenProps,
@@ -90,6 +93,7 @@ export const RootNavigation: React.FC<{
   sendScreenProps,
   injectedBrowserUXScreenProps,
   contactsNavigationScreenProps,
+  dappsScreenProps,
 }) => {
   const [currentScreen, setCurrentScreen] = useState<string>('Home')
   const handleScreenChange = (newState: NavigationState | undefined) =>
@@ -110,9 +114,11 @@ export const RootNavigation: React.FC<{
             />
             <RootStack.Screen
               name="Dapps"
-              component={Screens.DappsScreen}
-              options={{ ...sharedOptions, headerShown: false }}
-            />
+              options={{ ...sharedOptions, headerShown: false }}>
+              {props => (
+                <InjectedScreens.DappsScreen {...props} {...dappsScreenProps} />
+              )}
+            </RootStack.Screen>
 
             <RootStack.Screen
               name="DevMenu"

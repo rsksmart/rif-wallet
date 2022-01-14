@@ -5,12 +5,21 @@ import { setOpacity } from '../home/tokenColor'
 import LinearGradient from 'react-native-linear-gradient'
 import WalletConnectComponent from './WalletConnectComponent'
 import InjectedBrowserComponent from './InjectedBrowserComponent'
+import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
+import { ScreenWithWallet } from '../types'
 
 type TPanelOptions = 'WalletConnect' | 'InjectedBrowser'
 
-export const DappsScreen: React.FC<{
-  navigation: NavigationProp
-}> = ({ navigation }) => {
+export type DappsScreenScreenProps = {
+  fetcher: IRIFWalletServicesFetcher
+}
+
+export const DappsScreen: React.FC<
+  {
+    navigation: NavigationProp
+  } & DappsScreenScreenProps &
+    ScreenWithWallet
+> = ({ navigation, wallet, isWalletDeployed, fetcher }) => {
   const [selectedPanel, setSelectedPanel] =
     useState<TPanelOptions>('WalletConnect')
 
@@ -19,7 +28,10 @@ export const DappsScreen: React.FC<{
       colors={['#FFFFFF', setOpacity('#CCCCCC', 0.1)]}
       style={styles.parent}>
       <LinearGradient
-        colors={['#FFFFFF', '#E1E1E1']}
+        colors={[
+          '#FFFFFF',
+          selectedPanel === 'InjectedBrowser' ? '#fff' : '#E1E1E1',
+        ]}
         style={styles.topContainer}>
         <WalletConnectComponent
           navigation={navigation}
@@ -27,6 +39,10 @@ export const DappsScreen: React.FC<{
           setPanelActive={() => setSelectedPanel('WalletConnect')}
         />
         <InjectedBrowserComponent
+          navigation={navigation}
+          isWalletDeployed={isWalletDeployed}
+          wallet={wallet}
+          fetcher={fetcher}
           visible={selectedPanel === 'InjectedBrowser'}
           setPanelActive={() => setSelectedPanel('InjectedBrowser')}
         />
