@@ -27,6 +27,7 @@ type AddressInputProps = {
   style?: any
   navigation: any
   showContacts: boolean
+  onToggleQR: () => void
 }
 
 export const AddressInput: React.FC<AddressInputProps> = ({
@@ -37,6 +38,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   rnsResolver,
   navigation,
   showContacts,
+  onToggleQR
 }) => {
   const [validationMessage, setValidationMessage] = useState(
     validateAddress(value),
@@ -100,7 +102,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
           <View style={styles.centerRow}>
             {/*TODO: implement QR code*/}
             <SquareButton
-              onPress={() => {}}
+              onPress={onToggleQR}
               title=""
               testID="Address.CopyButton"
               icon={<QRCodeIcon color={getTokenColor(selectedToken)} />}
