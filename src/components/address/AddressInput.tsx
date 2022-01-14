@@ -38,7 +38,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   rnsResolver,
   navigation,
   showContacts,
-  onToggleQR
+  onToggleQR,
 }) => {
   const [validationMessage, setValidationMessage] = useState(
     validateAddress(value),

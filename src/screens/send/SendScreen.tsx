@@ -8,7 +8,7 @@ import {
   TextInput,
   Linking,
   TouchableOpacity,
-  ScrollView
+  ScrollView,
 } from 'react-native'
 
 import { ContractReceipt, BigNumber, utils } from 'ethers'
@@ -122,7 +122,7 @@ export const SendScreen: React.FC<
     shadowColor: '#000000',
   }
 
-  const handleToggleQR = () => setShowQR((prev) => !prev)
+  const handleToggleQR = () => setShowQR(prev => !prev)
 
   const handleCopy = () => Clipboard.setString(transferHash!)
   const handleOpen = () =>
@@ -133,17 +133,19 @@ export const SendScreen: React.FC<
       colors={['#FFFFFF', getTokenColorWithOpacity('TRBTC', 0.1)]}
       style={styles.parent}>
       <ScrollView>
-        {showQR && <View
-          style={styles.cameraContainer}>
-          <View style={styles.cameraFrame}>
-            <QRScanner
-              onBarCodeRead={(event) => {
-                const data = decodeURIComponent(event.data)
-                setDisplayTo(data)
-                setTo(data)
-              }} />
+        {showQR && (
+          <View style={styles.cameraContainer}>
+            <View style={styles.cameraFrame}>
+              <QRScanner
+                onBarCodeRead={event => {
+                  const data = decodeURIComponent(event.data)
+                  setDisplayTo(data)
+                  setTo(data)
+                }}
+              />
+            </View>
           </View>
-        </View>}
+        )}
         <View style={grid.row}>
           <View style={{ ...grid.column2, ...styles.icon }}>
             <TouchableOpacity
@@ -209,16 +211,18 @@ export const SendScreen: React.FC<
               handleOpen={handleOpen}
             />
           )}
-          {!!error && <View style={styles.centerRow}>
-            <SquareButton
-              onPress={async () => {
-                await transfer(selectedSymbol)
-              }}
-              title="Retry"
-              testID="Transfer.RetryButton"
-              icon={<RefreshIcon color={getTokenColor(selectedSymbol)} />}
-            />
-          </View>}
+          {!!error && (
+            <View style={styles.centerRow}>
+              <SquareButton
+                onPress={async () => {
+                  await transfer(selectedSymbol)
+                }}
+                title="Retry"
+                testID="Transfer.RetryButton"
+                icon={<RefreshIcon color={getTokenColor(selectedSymbol)} />}
+              />
+            </View>
+          )}
         </View>
       </ScrollView>
     </LinearGradient>
@@ -279,5 +283,5 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC',
     flex: 1,
-  }
+  },
 })
