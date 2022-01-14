@@ -25,7 +25,7 @@ export const DappsScreen: React.FC<
 
   return (
     <LinearGradient
-      colors={['#FFFFFF', setOpacity('#CCCCCC', 0.1)]}
+      colors={['#f4f4f4', setOpacity('#373f48', 0.3)]}
       style={styles.parent}>
       <LinearGradient
         colors={[
