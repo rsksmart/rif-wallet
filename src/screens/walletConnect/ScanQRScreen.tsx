@@ -1,5 +1,5 @@
-import React, { useRef, useContext, useState } from 'react'
-import { StyleSheet, View, ScrollView, Dimensions, Text } from 'react-native'
+import React, { useContext, useState } from 'react'
+import { StyleSheet, View, ScrollView, Text } from 'react-native'
 
 import { BarCodeReadEvent } from 'react-native-camera'
 import QRScanner from '../../components/qrScanner'
@@ -12,9 +12,6 @@ import { WalletConnectContext } from './WalletConnectContext'
 interface IScanQRScreenProps {
   route: any
 }
-
-const windowWidth = Dimensions.get('window').width
-const qrCodeSize = windowWidth * 0.6
 
 const ScanQRScreen: React.FC<IScanQRScreenProps> = () => {
   const { wallet } = useSelectedWallet()
