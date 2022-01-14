@@ -3,10 +3,12 @@ import LinearGradient from 'react-native-linear-gradient'
 import { useIsFocused } from '@react-navigation/native'
 
 import {
+  Dimensions,
   StyleSheet,
   View,
   TextInput,
   Linking,
+  Text,
   TouchableOpacity,
 } from 'react-native'
 
@@ -24,8 +26,10 @@ import Resolver from '@rsksmart/rns-resolver.js'
 import { getTokenColor, getTokenColorWithOpacity } from '../home/tokenColor'
 import { grid } from '../../styles/grid'
 import { SquareButton } from '../../components/button/SquareButton'
-import { Arrow } from '../../components/icons'
+import { Arrow, CompassIcon, CopyIcon } from '../../components/icons'
 import { TokenImage } from '../home/TokenImage'
+import { getAddressDisplayText } from '../../components'
+import Clipboard from '@react-native-community/clipboard'
 
 export type SendScreenProps = {
   rnsResolver: Resolver
@@ -50,6 +54,7 @@ export const SendScreen: React.FC<
   const [txConfirmed, setTxConfirmed] = useState(false)
   const [txSent, setTxSent] = useState(false)
   const [info, setInfo] = useState('')
+  const [transferHash, setTransferHash] = useState<string | null>(null)
 
   useEffect(() => {
     setTo(route.params?.to || '')
@@ -78,10 +83,13 @@ export const SendScreen: React.FC<
             BigNumber.from(numberOfTokens),
           )
 
+          setTransferHash(transferResponse.hash)
           setInfo(t('Transaction Sent. Please wait...'))
+
           setTxSent(true)
           setTxConfirmed(false)
           const txReceipt = await transferResponse.wait()
+          setTransferHash(null)
           setTx(txReceipt)
           setInfo(t('Transaction Confirmed.'))
           setTxConfirmed(true)
@@ -112,6 +120,18 @@ export const SendScreen: React.FC<
     ...styles.image,
     shadowColor: '#000000',
   }
+
+  const handleCopy = () => Clipboard.setString(transferHash!)
+  const handleOpen = () =>
+    Linking.openURL(`https://explorer.testnet.rsk.co/tx/${transferHash}`)
+
+  const windowWidth = Dimensions.get('window').width
+  const qrCodeSize = windowWidth * 0.6
+  const qrContainerStyle = {
+    marginHorizontal: (windowWidth - (qrCodeSize + 20)) / 2,
+    width: qrCodeSize + 40,
+  }
+
   return (
     <LinearGradient
       colors={['#FFFFFF', getTokenColorWithOpacity('TRBTC', 0.1)]}
@@ -167,6 +187,47 @@ export const SendScreen: React.FC<
       )}
       <View style={styles.section}>
         <Paragraph>{info}</Paragraph>
+        {transferHash && (
+          <React.Fragment>
+            <View style={{ ...styles.hashContainer, ...qrContainerStyle }}>
+              <Text style={styles.hash}>
+                {getAddressDisplayText(transferHash).displayAddress}
+              </Text>
+            </View>
+            <Text style={styles.hashLabel}>hash address</Text>
+
+            <View style={grid.row}>
+              <View style={{ ...grid.column6, ...styles.bottomColumn }}>
+                <SquareButton
+                  onPress={handleCopy}
+                  title="copy"
+                  testID="Hash.CopyButton"
+                  icon={
+                    <CopyIcon
+                      width={55}
+                      height={55}
+                      color={getTokenColor(selectedSymbol)}
+                    />
+                  }
+                />
+              </View>
+              <View style={{ ...grid.column6, ...styles.bottomColumn }}>
+                <SquareButton
+                  onPress={handleOpen}
+                  title="open"
+                  testID="Hash.OpenURLButton"
+                  icon={
+                    <CompassIcon
+                      width={30}
+                      height={30}
+                      color={getTokenColor(selectedSymbol)}
+                    />
+                  }
+                />
+              </View>
+            </View>
+          </React.Fragment>
+        )}
       </View>
       {txConfirmed && tx && (
         <View testID={'TxReceipt.View'} style={styles.section}>
@@ -230,5 +291,25 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC',
     flex: 1,
+  },
+  hash: {
+    color: '#5C5D5D',
+    fontSize: 16,
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+  hashContainer: {
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255, 255, 255, .7)',
+  },
+  hashLabel: {
+    color: '#5C5D5D',
+    textAlign: 'center',
+    marginTop: 5,
+    marginBottom: 20,
+  },
+  bottomColumn: {
+    alignItems: 'center',
   },
 })
