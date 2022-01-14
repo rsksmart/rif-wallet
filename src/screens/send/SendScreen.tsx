@@ -100,7 +100,6 @@ export const SendScreen: React.FC<
     }
   }
   const openTokenSelector = () => {
-    console.log('aaa')
     setShowSelector(true)
   }
 
