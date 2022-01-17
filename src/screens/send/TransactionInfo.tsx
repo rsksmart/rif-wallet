@@ -35,7 +35,7 @@ const TransactionInfo = ({
           {getAddressDisplayText(hash).displayAddress}
         </Text>
       </View>
-      <Text style={styles.hashLabel}>hash address</Text>
+      <Text style={styles.hashLabel}>transaction hash</Text>
 
       <View style={grid.row}>
         <View style={{ ...grid.column6, ...styles.bottomColumn }}>
