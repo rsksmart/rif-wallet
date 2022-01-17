@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { NavigationProp } from '../../RootNavigation'
-import { setOpacity } from '../home/tokenColor'
 import LinearGradient from 'react-native-linear-gradient'
 import WalletConnectComponent from './WalletConnectComponent'
 import InjectedBrowserComponent from './InjectedBrowserComponent'
@@ -25,7 +24,7 @@ export const DappsScreen: React.FC<
 
   return (
     <LinearGradient
-      colors={['#f4f4f4', setOpacity('#373f48', 0.3)]}
+      colors={['#FFFFFF', 'rgba(55, 63, 72, 0.3)']}
       style={styles.parent}>
       <LinearGradient
         colors={[
@@ -63,6 +62,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     // shadowRadius: 10,
     elevation: 2,
-    shadowColor: setOpacity('#CCCCCC', 0.5),
+    shadowColor: 'rgba(204, 204, 204, 0.5)',
   },
 })

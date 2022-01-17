@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { KeyboardTypeOptions, StyleSheet, TextInput, View } from 'react-native'
 import { Button } from '../button'
 
@@ -8,8 +8,9 @@ export const CustomInput: React.FC<{
   placeholder?: string
   testID?: string
   keyboardType?: KeyboardTypeOptions
-}> = ({ onChange, onSubmit, placeholder, testID, keyboardType }) => {
-  const [text, setText] = useState('')
+  value?: string
+}> = ({ onChange, onSubmit, placeholder, testID, keyboardType, value }) => {
+  const [text, setText] = useState(value ?? '')
 
   const handleSubmit = () => {
     if (!onSubmit) {
@@ -25,10 +26,17 @@ export const CustomInput: React.FC<{
     }
   }
 
+  useEffect(() => {
+    if (value !== undefined) {
+      setText(value)
+    }
+  }, [value])
+
   return (
     <View style={styles.container}>
       <View style={styles.textInputWrapper}>
         <TextInput
+          value={text}
           onChangeText={handleChange}
           style={styles.textInput}
           onSubmitEditing={handleSubmit}

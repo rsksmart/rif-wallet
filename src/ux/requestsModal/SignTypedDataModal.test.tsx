@@ -2,6 +2,7 @@ import React from 'react'
 import { render } from '@testing-library/react-native'
 import SignTypedDataModal from './SignTypedDataModal'
 import { SignTypedDataRequest } from '../../lib/core'
+import { shortAddress } from '../../lib/utils'
 
 describe('SignTypedData', function (this: {
   confirm: ReturnType<typeof jest.fn>
@@ -45,7 +46,7 @@ describe('SignTypedData', function (this: {
     const { getAllByText } = render(
       <SignTypedDataModal request={this.request} closeModal={jest.fn()} />,
     )
-    expect(getAllByText('Sign Typed Data').length).toBe(1)
+    expect(getAllByText('sign typed data').length).toBe(1)
   })
 
   it('displays domain', () => {
@@ -62,7 +63,7 @@ describe('SignTypedData', function (this: {
       this.request.payload[0].chainId?.toString(),
     )
     expect(getByTestId('Domain.VerifyingContract').children).toContain(
-      this.request.payload[0].verifyingContract,
+      shortAddress(this.request.payload[0].verifyingContract),
     )
     expect(getByTestId('Domain.Salt').children).toContain(
       this.request.payload[0].salt,
