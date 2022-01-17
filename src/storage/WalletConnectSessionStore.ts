@@ -2,12 +2,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const key = 'WALLET_CONNECT_SESSION'
 
+export interface IWCSession {
+  uri: string
+  session: any
+  walletAddress: string
+}
+
 export interface ISessionsStorage {
-  [uri: string]: {
-    uri: string
-    session: any
-    walletAddress: string
-  }
+  [uri: string]: IWCSession
 }
 
 export const createStore = () => ({
@@ -33,8 +35,17 @@ export const createStore = () => ({
 
     return AsyncStorage.setItem(key, JSON.stringify(result))
   },
-  save: (value: ISessionsStorage) => {
-    const jsonValue = JSON.stringify(value)
+  save: async (session: IWCSession) => {
+    const storedSessionsJson = await AsyncStorage.getItem(key)
+    const storedSessions =
+      storedSessionsJson !== null
+        ? (JSON.parse(storedSessionsJson) as ISessionsStorage)
+        : {}
+
+    const jsonValue = JSON.stringify({
+      ...storedSessions,
+      [session.uri]: session,
+    })
 
     return AsyncStorage.setItem(key, jsonValue)
   },

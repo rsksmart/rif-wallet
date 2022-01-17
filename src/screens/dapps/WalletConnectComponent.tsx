@@ -5,7 +5,10 @@ import { SquareButton } from '../../components/button/SquareButton'
 import { Arrow, QRCodeIcon } from '../../components/icons'
 import { Separator } from '../../components/separator'
 import { NavigationProp } from '../../RootNavigation'
-import { WalletConnectContext } from '../walletConnect/WalletConnectContext'
+import {
+  IWalletConnectConnections,
+  WalletConnectContext,
+} from '../walletConnect/WalletConnectContext'
 
 interface Interface {
   navigation: NavigationProp
@@ -20,36 +23,45 @@ const WalletConnectComponent: React.FC<Interface> = ({
 }) => {
   const { connections } = useContext(WalletConnectContext)
 
-  const openedConnections = Object.values(connections).filter(
-    x => x.connector.connected,
-  )
-
   return (
     <View style={visible ? styles.roundedBox : styles.roundedBoxNotVisible}>
       <TouchableOpacity onPress={setPanelActive} disabled={visible}>
         <Text style={styles.heading}>Connect Dapps</Text>
       </TouchableOpacity>
       {visible && (
-        <>
-          <DappConnection
-            isConnected={false}
-            peerMeta={null}
-            navigation={navigation}
-          />
-          {openedConnections.map(({ connector }) => (
-            <React.Fragment key={connector.key}>
-              <Separator />
-              <DappConnection
-                isConnected={connector.connected}
-                peerMeta={connector.peerMeta}
-                navigation={navigation}
-                wcKey={connector.key}
-              />
-            </React.Fragment>
-          ))}
-        </>
+        <ConnectedDapps navigation={navigation} connections={connections} />
       )}
     </View>
+  )
+}
+
+const ConnectedDapps: React.FC<{
+  navigation: NavigationProp
+  connections: IWalletConnectConnections
+}> = ({ navigation, connections }) => {
+  const openedConnections = Object.values(connections).filter(
+    x => x.connector.connected,
+  )
+
+  return (
+    <>
+      <DappConnection
+        isConnected={false}
+        peerMeta={null}
+        navigation={navigation}
+      />
+      {openedConnections.map(({ connector }) => (
+        <React.Fragment key={connector.key}>
+          <Separator />
+          <DappConnection
+            isConnected={connector.connected}
+            peerMeta={connector.peerMeta}
+            navigation={navigation}
+            wcKey={connector.key}
+          />
+        </React.Fragment>
+      ))}
+    </>
   )
 }
 

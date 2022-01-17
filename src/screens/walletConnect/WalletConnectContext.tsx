@@ -29,7 +29,7 @@ export const WalletConnectContext =
     handleReject: async () => {},
   })
 
-interface IWalletConnectConnections {
+export interface IWalletConnectConnections {
   [key: string]: {
     connector: WalletConnect
     address: string
@@ -129,15 +129,10 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
       chainId: await wallet.getChainId(),
     })
 
-    const storedSessions = await getWCSession()
-
     await saveWCSession({
-      ...storedSessions,
-      [wc.uri]: {
-        uri: wc.uri,
-        session: wc.session,
-        walletAddress: wallet.address,
-      },
+      uri: wc.uri,
+      session: wc.session,
+      walletAddress: wallet.address,
     })
 
     const adapter = new WalletConnectAdapter(wallet)
