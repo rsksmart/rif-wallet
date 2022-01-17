@@ -6,7 +6,6 @@ import {
   saveWCSession,
   deleteWCSession,
   getWCSession,
-  hasWCSession,
 } from '../../storage/WalletConnectSessionStore'
 import { AppContext } from '../../Context'
 import { useNavigation } from '@react-navigation/core'
@@ -108,7 +107,7 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
 
       unsubscribeToEvents(wc)
 
-      await deleteWCSession()
+      await deleteWCSession(wc.uri)
 
       try {
         await wc?.killSession()
@@ -130,10 +129,15 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
       chainId: await wallet.getChainId(),
     })
 
+    const storedSessions = await getWCSession()
+
     await saveWCSession({
-      uri: wc.uri,
-      session: wc.session,
-      walletAddress: wallet.address,
+      ...storedSessions,
+      [wc.uri]: {
+        uri: wc.uri,
+        session: wc.session,
+        walletAddress: wallet.address,
+      },
     })
 
     const adapter = new WalletConnectAdapter(wallet)
@@ -185,29 +189,28 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
   }
 
   useEffect(() => {
-    // TODO: FIX THIS!!!!!!!!
-    return
-
     const reconnectWCSession = async () => {
-      try {
-        const hasPrevSession = await hasWCSession()
+      const storedSessions = await getWCSession()
 
-        if (!hasPrevSession) {
-          return
+      if (!storedSessions) {
+        return
+      }
+
+      const sessions = Object.values(storedSessions)
+
+      for (const { walletAddress, uri, session } of sessions) {
+        try {
+          const wallet = wallets[walletAddress]
+
+          if (!wallet) {
+            return
+          }
+
+          await createSession(wallet, uri, session)
+        } catch (error) {
+          console.error('reconnect wc error: ', error)
+          deleteWCSession(uri)
         }
-
-        const { uri, session, walletAddress } = await getWCSession()
-
-        const wallet = wallets[walletAddress]
-
-        if (!wallet) {
-          return
-        }
-
-        await createSession(wallet, uri, session)
-      } catch (error) {
-        console.error('reconnect wc error: ', error)
-        deleteWCSession()
       }
     }
 
