@@ -24,7 +24,7 @@ describe('SignMessageRequest', function (this: {
     const { getAllByText, getByTestId } = render(
       <SignMessageModal request={this.request} closeModal={jest.fn()} />,
     )
-    expect(getAllByText('Sign Message').length).toBe(2)
+    expect(getAllByText('sign message').length).toBe(1)
     expect(getByTestId('Text.Message').props.children).toBe('Hello World!')
   })
 

@@ -11,7 +11,14 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
   return (
     <View style={styles.row}>
       <View style={styles.column}>
-        <ContactsIcon color="#D1D1D1" width={24} />
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Contacts' as never)}
+          style={styles.button}>
+          <ContactsIcon
+            color={currentScreen === 'Contacts' ? '#5D5E5E' : '#D1D1D1'}
+            width={24}
+          />
+        </TouchableOpacity>
       </View>
       <View style={styles.column}>
         <TouchableOpacity

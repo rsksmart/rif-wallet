@@ -30,7 +30,7 @@ export const BalancesRow = ({
   <View style={styles.tokenRow} testID={`${contractAddress}.View`}>
     <View style={styles.tokenBalance}>
       <Text testID={`${contractAddress}.Text`}>
-        {`${balanceToString(balance, decimals)} ${symbol}`}
+        {`${balanceToString(balance, decimals || 0)} ${symbol}`}
       </Text>
     </View>
     <View style={styles.button}>

@@ -36,7 +36,7 @@ const WalletConnectComponent: React.FC<Interface> = ({
             <Text>via Wallet Connect</Text>
           </View>
           <SquareButton
-            color={'#000'}
+            shadowColor={'#000'}
             onPress={() => {
               navigation.navigate('WalletConnect')
             }}
