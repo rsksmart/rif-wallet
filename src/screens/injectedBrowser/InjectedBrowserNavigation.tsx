@@ -9,7 +9,7 @@ import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWallet
 
 const Stack = createStackNavigator<StackParamList>()
 
-const screensOptions = { headerShown: true }
+const screensOptions = { headerShown: false }
 
 export type InjectedBrowserUXScreenProps = {
   fetcher: IRIFWalletServicesFetcher
