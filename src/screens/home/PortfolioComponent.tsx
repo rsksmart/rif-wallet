@@ -21,7 +21,7 @@ const PortfolioComponent: React.FC<Interface> = ({
   setPanelActive,
 }) => {
   const { state } = useSocketsState()
-  
+
   return (
     <View style={styles.portfolio}>
       <TouchableOpacity onPress={setPanelActive} disabled={visible}>

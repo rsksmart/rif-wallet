@@ -10,6 +10,7 @@ import {
 } from '../../storage/WalletConnectSessionStore'
 import { AppContext } from '../../Context'
 import { useNavigation } from '@react-navigation/core'
+import { Alert } from 'react-native'
 export interface WalletConnectContextInterface {
   isConnected: boolean
   connector: WalletConnect | null
@@ -108,7 +109,7 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
         console.error('could not kill the wc session', err)
       }
 
-      navigation.navigate('Home' as any)
+      Alert.alert('You have disconnected from the dapp')
     })
   }
 

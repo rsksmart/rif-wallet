@@ -29,7 +29,7 @@ const SelectedTokenComponent: React.FC<Interface> = ({ navigation, token }) => {
       </View>
       <View style={grid.column}>
         <SquareButton
-          color={tokenColor}
+          shadowColor={tokenColor}
           onPress={() => {
             navigation.navigate('Send', {
               token: token.name,
@@ -41,7 +41,7 @@ const SelectedTokenComponent: React.FC<Interface> = ({ navigation, token }) => {
       </View>
       <View style={grid.column}>
         <SquareButton
-          color={tokenColor}
+          shadowColor={tokenColor}
           onPress={() => {
             navigation.navigate('Receive', {
               token: token.symbol,
