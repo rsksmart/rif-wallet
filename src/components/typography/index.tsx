@@ -1,5 +1,6 @@
 import React from 'react'
-import { StyleSheet, Text } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
+import { ModalIcon } from '../icons/ModalIcon'
 
 interface Interface {
   children: React.ReactNode
@@ -18,6 +19,15 @@ export const Header2: React.FC<Interface> = ({ children, testID }) => (
   </Text>
 )
 
+export const ModalHeader: React.FC<Interface> = ({ children, testID }) => (
+  <View style={styles.modalHeaderWrapper}>
+    <ModalIcon color={'#313c3c'} />
+    <Text style={styles.modalHeader} testID={testID}>
+      {children}
+    </Text>
+  </View>
+)
+
 export const Header3: React.FC<Interface> = ({ children, testID }) => (
   <Text style={styles.header3} testID={testID}>
     {children}
@@ -26,6 +36,12 @@ export const Header3: React.FC<Interface> = ({ children, testID }) => (
 
 export const Paragraph: React.FC<Interface> = ({ children, testID }) => (
   <Text style={styles.paragraph} testID={testID}>
+    {children}
+  </Text>
+)
+
+export const ParagraphSoft: React.FC<Interface> = ({ children, testID }) => (
+  <Text style={styles.paragraphSoft} testID={testID}>
     {children}
   </Text>
 )
@@ -49,10 +65,29 @@ const styles = StyleSheet.create({
     fontSize: 26,
     marginBottom: 15,
   },
+  modalHeader: {
+    marginLeft: 5,
+    marginBottom: 3,
+    fontSize: 18,
+    color: '#313c3c',
+  },
+  modalHeaderWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 15,
+  },
   paragraph: {
     fontSize: 18,
     marginTop: 10,
     marginBottom: 10,
+  },
+  paragraphSoft: {
+    fontSize: 14,
+    marginTop: 10,
+    marginBottom: 10,
+    textAlign: 'center',
+    color: 'rgba(55, 63, 72, 0.34)',
   },
   compactParagraph: {
     fontSize: 18,

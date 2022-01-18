@@ -6,7 +6,6 @@ import QRScanner from '../../components/qrScanner'
 import LinearGradient from 'react-native-linear-gradient'
 import { CustomInput } from '../../components'
 import { useSelectedWallet } from '../../Context'
-import { setOpacity } from '../home/tokenColor'
 import { WalletConnectContext } from './WalletConnectContext'
 
 interface IScanQRScreenProps {
@@ -30,7 +29,7 @@ const ScanQRScreen: React.FC<IScanQRScreenProps> = () => {
 
   return (
     <LinearGradient
-      colors={['#FFFFFF', setOpacity('#CCCCCC', 0.1)]}
+      colors={['#FFFFFF', 'rgba(204, 204, 204, 0.1)']}
       style={styles.parent}>
       <ScrollView>
         <Text style={styles.header}>Scan QR</Text>

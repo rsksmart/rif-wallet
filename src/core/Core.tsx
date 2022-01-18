@@ -173,6 +173,7 @@ export const Core = () => {
           }}
           injectedBrowserUXScreenProps={{ fetcher: rifWalletServicesFetcher }}
           contactsNavigationScreenProps={{ rnsResolver }}
+          dappsScreenProps={{ fetcher: rifWalletServicesFetcher }}
         />
 
         {requests.length !== 0 && (
