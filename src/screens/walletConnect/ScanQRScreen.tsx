@@ -1,7 +1,8 @@
-import React, { useRef, useContext, useState } from 'react'
-import { StyleSheet, View, ScrollView, Dimensions, Text } from 'react-native'
+import React, { useContext, useState } from 'react'
+import { StyleSheet, View, ScrollView, Text } from 'react-native'
 
-import { RNCamera } from 'react-native-camera'
+import { BarCodeReadEvent } from 'react-native-camera'
+import QRScanner from '../../components/qrScanner'
 import LinearGradient from 'react-native-linear-gradient'
 import { CustomInput } from '../../components'
 import { useSelectedWallet } from '../../Context'
@@ -11,16 +12,20 @@ interface IScanQRScreenProps {
   route: any
 }
 
-const windowWidth = Dimensions.get('window').width
-const qrCodeSize = windowWidth * 0.6
-
 const ScanQRScreen: React.FC<IScanQRScreenProps> = () => {
   const { wallet } = useSelectedWallet()
 
   const { createSession } = useContext(WalletConnectContext)
   const [isConnecting, setIsConnecting] = useState(false)
 
-  const cameraRef = useRef<RNCamera>(null)
+  const onBardCodeRead = async (event: BarCodeReadEvent) => {
+    if (isConnecting) {
+      return
+    }
+    const data = decodeURIComponent(event.data)
+    setIsConnecting(true)
+    createSession(wallet, data)
+  }
 
   return (
     <LinearGradient
@@ -29,35 +34,7 @@ const ScanQRScreen: React.FC<IScanQRScreenProps> = () => {
       <ScrollView>
         <Text style={styles.header}>Scan QR</Text>
         <View style={styles.cameraContainer}>
-          <RNCamera
-            ref={cameraRef}
-            style={{
-              ...styles.preview,
-              width: qrCodeSize,
-              height: qrCodeSize,
-            }}
-            ratio="1:1"
-            type={RNCamera.Constants.Type.back}
-            flashMode={RNCamera.Constants.FlashMode.off}
-            androidCameraPermissionOptions={{
-              title: 'Permission to use camera',
-              message: 'We need your permission to use your camera',
-              buttonPositive: 'Ok',
-              buttonNegative: 'Cancel',
-            }}
-            captureAudio={false}
-            onBarCodeRead={async event => {
-              if (isConnecting) {
-                return
-              }
-
-              const data = decodeURIComponent(event.data)
-
-              setIsConnecting(true)
-
-              createSession(wallet, data)
-            }}
-          />
+          <QRScanner onBarCodeRead={onBardCodeRead} />
         </View>
         <Text style={styles.header}>Or use the URI</Text>
         <View>
