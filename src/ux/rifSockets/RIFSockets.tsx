@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelectedWallet } from '../../Context'
 import { io } from 'socket.io-client'
-import { rifWalletServicesUrl } from '../../core/setup'
+import { rifWalletServicesUrl } from '../../core/config'
 
 import { Action, Dispatch, State, SubscriptionsProviderProps } from './types'
 
