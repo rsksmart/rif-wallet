@@ -9,6 +9,7 @@ import {
   Linking,
   TouchableOpacity,
   ScrollView,
+  Text
 } from 'react-native'
 
 import { ContractReceipt, BigNumber, utils } from 'ethers'
@@ -52,7 +53,6 @@ export const SendScreen: React.FC<
   const [amount, setAmount] = useState('')
   const [tx, setTx] = useState<ContractReceipt | null>(null)
   const [txSent, setTxSent] = useState(false)
-  const [info, setInfo] = useState('')
   const [transferHash, setTransferHash] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [showQR, setShowQR] = useState(false)
@@ -69,7 +69,6 @@ export const SendScreen: React.FC<
   }, [wallet, isFocused])
 
   const transfer = async (tokenSymbol: string) => {
-    setInfo('')
     setError(null)
     if (availableTokens) {
       const selectedSymbol = availableTokens.find(
@@ -86,17 +85,14 @@ export const SendScreen: React.FC<
           )
 
           setTransferHash(transferResponse.hash)
-          setInfo(t('Transaction Sent. Please wait...'))
 
           setTxSent(true)
           const txReceipt = await transferResponse.wait()
           setTransferHash(null)
           setTx(txReceipt)
-          setInfo(t('Transaction Confirmed.'))
           // @ts-ignore
         } catch (e: any) {
           setError(e.message)
-          setInfo(t('Transaction Failed: ') + e.message)
         }
       }
     }
@@ -194,10 +190,10 @@ export const SendScreen: React.FC<
           </View>
         )}
         <View style={styles.section}>
-          <Paragraph>{info}</Paragraph>
           {transferHash && (
             <TransactionInfo
               hash={transferHash}
+              info={t('Transaction Sent. Please wait...')}
               selectedToken={selectedSymbol}
               handleCopy={handleCopy}
               handleOpen={handleOpen}
@@ -206,6 +202,7 @@ export const SendScreen: React.FC<
           {!!tx && (
             <TransactionInfo
               hash={tx.transactionHash}
+              info={t('Transaction Confirmed.')}
               selectedToken={selectedSymbol}
               handleCopy={handleCopy}
               handleOpen={handleOpen}
@@ -213,6 +210,7 @@ export const SendScreen: React.FC<
           )}
           {!!error && (
             <View style={styles.centerRow}>
+              <Text>{t('An error ocurred')}</Text>
               <SquareButton
                 onPress={async () => {
                   await transfer(selectedSymbol)
