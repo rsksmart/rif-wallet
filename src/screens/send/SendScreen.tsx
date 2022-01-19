@@ -52,7 +52,7 @@ export const SendScreen: React.FC<
   const [txSent, setTxSent] = useState(false)
   const [info, setInfo] = useState('')
   const [transferHash, setTransferHash] = useState<string | null>(null)
-  const [error, setError] = useState<string | null >(null)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     setTo(route.params?.to || '')
@@ -187,23 +187,25 @@ export const SendScreen: React.FC<
           />
         )}
         {!!tx && (
-        <TransactionInfo
-          hash={tx.transactionHash}
-          selectedToken={selectedSymbol}
-          handleCopy={handleCopy}
-          handleOpen={handleOpen}
-        />
-      )}
-      {!!error && <View style={styles.centerRow}>
-      <SquareButton
-            onPress={async () => {
-              await transfer(selectedSymbol)
-            }}
-            title="Retry"
-            testID="Transfer.RetryButton"
-            icon={<RefreshIcon color={getTokenColor(selectedSymbol)}  />}
+          <TransactionInfo
+            hash={tx.transactionHash}
+            selectedToken={selectedSymbol}
+            handleCopy={handleCopy}
+            handleOpen={handleOpen}
           />
-      </View>}
+        )}
+        {!!error && (
+          <View style={styles.centerRow}>
+            <SquareButton
+              onPress={async () => {
+                await transfer(selectedSymbol)
+              }}
+              title="Retry"
+              testID="Transfer.RetryButton"
+              icon={<RefreshIcon color={getTokenColor(selectedSymbol)} />}
+            />
+          </View>
+        )}
       </View>
     </LinearGradient>
   )
@@ -252,5 +254,5 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC',
     flex: 1,
-  }
+  },
 })
