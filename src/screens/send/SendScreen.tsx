@@ -9,7 +9,7 @@ import {
   Linking,
   TouchableOpacity,
   ScrollView,
-  Text
+  Text,
 } from 'react-native'
 
 import { ContractReceipt, BigNumber, utils } from 'ethers'
@@ -19,7 +19,6 @@ import { getAllTokens } from '../../lib/token/tokenMetadata'
 import { IToken } from '../../lib/token/BaseToken'
 
 import { ScreenProps } from '../../RootNavigation'
-import { Paragraph } from '../../components'
 import { ScreenWithWallet } from '../types'
 import { AddressInput } from '../../components'
 import Resolver from '@rsksmart/rns-resolver.js'
