@@ -11,12 +11,14 @@ import { getTokenColor } from '../home/tokenColor'
 
 type Props = {
   hash: string
+  info?: string
   selectedToken: string
   handleCopy: () => void
   handleOpen: () => void
 }
 const TransactionInfo = ({
   hash,
+  info,
   selectedToken,
   handleCopy,
   handleOpen,
@@ -30,6 +32,7 @@ const TransactionInfo = ({
 
   return (
     <React.Fragment>
+      {info && <Text>{info}</Text>}
       <View style={{ ...styles.hashContainer, ...qrContainerStyle }}>
         <Text style={styles.hash}>
           {getAddressDisplayText(hash).displayAddress}
