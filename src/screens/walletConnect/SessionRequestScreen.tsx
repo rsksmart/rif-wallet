@@ -13,34 +13,38 @@ interface ISessionRequestScreenProps {
   route: any
 }
 
-const SessionRequestScreen: React.FC<ISessionRequestScreenProps> = () => {
-  const { peerMeta, handleApprove, handleReject } =
+const SessionRequestScreen: React.FC<ISessionRequestScreenProps> = ({
+  route,
+}) => {
+  const { connections, handleApprove, handleReject } =
     useContext(WalletConnectContext)
 
   const { wallet } = useSelectedWallet()
+
+  const { connector } = connections[route.params?.wcKey]
 
   return (
     <ScrollView>
       <View style={styles.roundedContainer}>
         <Text style={styles.heading}>Connect to:</Text>
         <View style={styles.section}>
-          <Text style={styles.header}>{peerMeta?.name}</Text>
-          <Paragraph>{peerMeta?.description}</Paragraph>
+          <Text style={styles.header}>{connector.peerMeta?.name}</Text>
+          <Paragraph>{connector.peerMeta?.description}</Paragraph>
         </View>
         <View style={styles.section2}>
-          <Paragraph>{peerMeta?.url}</Paragraph>
+          <Paragraph>{connector.peerMeta?.url}</Paragraph>
         </View>
         <View style={styles.buttonsSection}>
           <Button
             title="Reject"
             onPress={() => {
-              handleReject()
+              handleReject(connector)
             }}
           />
           <Button
             title="Approve"
             onPress={() => {
-              handleApprove(wallet)
+              handleApprove(connector, wallet)
             }}
           />
         </View>
