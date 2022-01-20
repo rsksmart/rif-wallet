@@ -12,7 +12,7 @@ import {
   Text,
 } from 'react-native'
 
-import { ContractReceipt, BigNumber, utils } from 'ethers'
+import { ContractReceipt, BigNumber, utils, ContractTransaction } from 'ethers'
 import { useTranslation } from 'react-i18next'
 
 import { getAllTokens } from '../../lib/token/tokenMetadata'
@@ -52,15 +52,19 @@ export const SendScreen: React.FC<
   const [displayTo, setDisplayTo] = useState(route.params?.displayTo || '')
   const [isValidTo, setIsValidTo] = useState(false)
 
-  const [tx, setTx] = useState<ContractReceipt | null>(null)
-  const [txSent, setTxSent] = useState(false)
-  const [transferHash, setTransferHash] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
   const [showQR, setShowQR] = useState(false)
+
+  const [tx, setTx] = useState<ContractTransaction>()
+  const [receipt, setReceipt] = useState<ContractReceipt>()
+  const [error, setError] = useState<string>()
 
   useEffect(() => {
     setTo(route.params?.to || '')
     setDisplayTo(route.params?.displayTo || '')
+    if (tx && receipt) {
+      setTx(undefined)
+      setReceipt(undefined)
+    }
     handleTargetAddressChange(
       true,
       route.params?.to as string,
@@ -69,29 +73,30 @@ export const SendScreen: React.FC<
     getAllTokens(wallet).then(tokens => setAvailableTokens(tokens))
   }, [wallet, isFocused])
 
-  const transfer = async (tokenSymbol: string) => {
-    setError(null)
-    if (availableTokens) {
-      const selectedSymbol = availableTokens.find(
-        token => token.symbol === tokenSymbol,
-      )
-      if (selectedSymbol) {
-        try {
-          const decimals = await selectedSymbol.decimals()
-          const numberOfTokens = utils.parseUnits(amount, decimals)
+  const transfer = async () => {
+    setTx(undefined)
+    setReceipt(undefined)
+    setError(undefined)
 
-          const transferResponse = await selectedSymbol.transfer(
+    if (availableTokens) {
+      const token = availableTokens.find(
+        token => token.symbol === selectedSymbol,
+      )
+      if (token) {
+        try {
+          const decimals = await token.decimals()
+          const tokenAmount = BigNumber.from(utils.parseUnits(amount, decimals))
+
+          const transferTx = await token.transfer(
             to.toLowerCase(),
-            BigNumber.from(numberOfTokens),
+            tokenAmount,
           )
 
-          setTransferHash(transferResponse.hash)
+          setTx(transferTx)
 
-          setTxSent(true)
-          const txReceipt = await transferResponse.wait()
-          setTransferHash(null)
-          setTx(txReceipt)
-          // @ts-ignore
+          const transferReceipt = await transferTx.wait()
+
+          setReceipt(transferReceipt)
         } catch (e: any) {
           setError(e.message)
         }
@@ -121,9 +126,9 @@ export const SendScreen: React.FC<
 
   const handleToggleQR = () => setShowQR(prev => !prev)
 
-  const handleCopy = () => Clipboard.setString(transferHash!)
+  const handleCopy = () => Clipboard.setString(tx!.hash!)
   const handleOpen = () =>
-    Linking.openURL(`https://explorer.testnet.rsk.co/tx/${transferHash}`)
+    Linking.openURL(`https://explorer.testnet.rsk.co/tx/${tx!.hash}`)
 
   return (
     <LinearGradient
@@ -146,8 +151,8 @@ export const SendScreen: React.FC<
         <View style={grid.row}>
           <View style={{ ...grid.column2, ...styles.icon }}>
             <TouchableOpacity
-              style={styles.button}
-              onPress={() => handleChangeToken(selectedSymbol)}>
+                style={styles.button}
+                onPress={() => handleChangeToken(selectedSymbol)}>
               <View style={imageStyle}>
                 <TokenImage symbol={selectedSymbol} height={30} width={30} />
               </View>
@@ -177,33 +182,20 @@ export const SendScreen: React.FC<
           />
         </View>
         <View />
-        {!txSent && (
-          <View style={styles.centerRow}>
-            <SquareButton
-              disabled={!isValidTo}
-              onPress={async () => {
-                await transfer(selectedSymbol)
-              }}
-              title="Next"
-              testID="Address.CopyButton"
-              icon={<Arrow color={getTokenColor(selectedSymbol)} rotate={90} />}
-            />
-          </View>
-        )}
+        <View style={styles.centerRow}>
+          <SquareButton
+            disabled={!isValidTo || (!!tx && !receipt)}
+            onPress={transfer}
+            title="Next"
+            testID="Address.CopyButton"
+            icon={<Arrow color={getTokenColor(selectedSymbol)} rotate={90} />}
+          />
+        </View>
         <View style={styles.section}>
-          {transferHash && (
-            <TransactionInfo
-              hash={transferHash}
-              info={t('Transaction Sent. Please wait...')}
-              selectedToken={selectedSymbol}
-              handleCopy={handleCopy}
-              handleOpen={handleOpen}
-            />
-          )}
           {!!tx && (
             <TransactionInfo
-              hash={tx.transactionHash}
-              info={t('Transaction Confirmed.')}
+              hash={tx.hash}
+              info={!receipt ? t('Transaction Sent. Please wait...') : t('Transaction Confirmed.')}
               selectedToken={selectedSymbol}
               handleCopy={handleCopy}
               handleOpen={handleOpen}
@@ -213,9 +205,7 @@ export const SendScreen: React.FC<
             <View style={styles.centerRow}>
               <Text>{t('An error ocurred')}</Text>
               <SquareButton
-                onPress={async () => {
-                  await transfer(selectedSymbol)
-                }}
+                onPress={transfer}
                 title="Retry"
                 testID="Transfer.RetryButton"
                 icon={<RefreshIcon color={getTokenColor(selectedSymbol)} />}
