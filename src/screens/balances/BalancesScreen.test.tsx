@@ -14,18 +14,21 @@ import {
   lastToken,
   lastTokenTextTestId,
 } from '../../../testLib/mocks/rifServicesMock'
+import { RIFSocketsProvider } from '../../ux/rifSockets/RIFSockets'
 
 const createTestInstance = async (fetcher = createMockFetcher()) => {
   const mock = await setupTest()
 
   const container = render(
-    <BalancesScreen
-      wallet={mock.rifWallet}
-      isWalletDeployed={true}
-      navigation={mock.navigation}
-      route={{} as any}
-      fetcher={fetcher}
-    />,
+    <RIFSocketsProvider>
+      <BalancesScreen
+        wallet={mock.rifWallet}
+        isWalletDeployed={true}
+        navigation={mock.navigation}
+        route={{} as any}
+        fetcher={fetcher}
+      />
+    </RIFSocketsProvider>,
   )
 
   const loadingText = container.getByTestId('Info.Text')
