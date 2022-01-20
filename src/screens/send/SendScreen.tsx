@@ -87,10 +87,7 @@ export const SendScreen: React.FC<
           const decimals = await token.decimals()
           const tokenAmount = BigNumber.from(utils.parseUnits(amount, decimals))
 
-          const transferTx = await token.transfer(
-            to.toLowerCase(),
-            tokenAmount,
-          )
+          const transferTx = await token.transfer(to.toLowerCase(), tokenAmount)
 
           setTx(transferTx)
 
@@ -151,8 +148,8 @@ export const SendScreen: React.FC<
         <View style={grid.row}>
           <View style={{ ...grid.column2, ...styles.icon }}>
             <TouchableOpacity
-                style={styles.button}
-                onPress={() => handleChangeToken(selectedSymbol)}>
+              style={styles.button}
+              onPress={() => handleChangeToken(selectedSymbol)}>
               <View style={imageStyle}>
                 <TokenImage symbol={selectedSymbol} height={30} width={30} />
               </View>
@@ -195,7 +192,11 @@ export const SendScreen: React.FC<
           {!!tx && (
             <TransactionInfo
               hash={tx.hash}
-              info={!receipt ? t('Transaction Sent. Please wait...') : t('Transaction Confirmed.')}
+              info={
+                !receipt
+                  ? t('Transaction Sent. Please wait...')
+                  : t('Transaction Confirmed.')
+              }
               selectedToken={selectedSymbol}
               handleCopy={handleCopy}
               handleOpen={handleOpen}
