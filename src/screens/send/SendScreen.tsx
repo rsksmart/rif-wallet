@@ -41,15 +41,17 @@ export const SendScreen: React.FC<
 
   const { t } = useTranslation()
 
-  const [to, setTo] = useState(route.params?.to || '')
-  const [displayTo, setDisplayTo] = useState(route.params?.displayTo || '')
-  const [isValidTo, setIsValidTo] = useState(false)
+  const [availableTokens, setAvailableTokens] = useState<IToken[]>()
   const [selectedSymbol, setSelectedSymbol] = useState(
     route.params?.token || 'tRIF',
   )
 
-  const [availableTokens, setAvailableTokens] = useState<IToken[]>()
   const [amount, setAmount] = useState('')
+
+  const [to, setTo] = useState(route.params?.to || '')
+  const [displayTo, setDisplayTo] = useState(route.params?.displayTo || '')
+  const [isValidTo, setIsValidTo] = useState(false)
+
   const [tx, setTx] = useState<ContractReceipt | null>(null)
   const [txSent, setTxSent] = useState(false)
   const [transferHash, setTransferHash] = useState<string | null>(null)
