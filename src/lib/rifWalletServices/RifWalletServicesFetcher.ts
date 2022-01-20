@@ -1,3 +1,4 @@
+import fetch from 'isomorphic-fetch'
 import {
   ITokenWithBalance,
   TransactionsServerResponse,
