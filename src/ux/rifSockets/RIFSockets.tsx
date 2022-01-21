@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelectedWallet } from '../../Context'
-import { io } from 'socket.io-client'
+import { io, Socket } from 'socket.io-client'
 import {
   abiEnhancer,
   rifWalletServicesFetcher,
@@ -19,15 +19,6 @@ import {
   ITokenWithBalance,
 } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { enhanceTransactionInput } from '../../screens/activity/ActivityScreen'
-
-const socket = io(rifWalletServicesUrl, {
-  path: '/ws',
-  forceNew: true,
-  reconnectionAttempts: 3,
-  timeout: 2000,
-  autoConnect: true,
-  transports: ['websocket'], // you need to explicitly tell it to use websocket
-})
 
 function liveSubscriptionsReducer(state: State, action: Action) {
   const { type } = action
@@ -106,6 +97,7 @@ export function RIFSocketsProvider({ children }: SubscriptionsProviderProps) {
     liveSubscriptionsReducer,
     initialState,
   )
+  const [connectedSocket, setConnectedSocket] = useState<Socket>()
 
   const { wallet, isDeployed } = useSelectedWallet()
 
@@ -144,6 +136,15 @@ export function RIFSocketsProvider({ children }: SubscriptionsProviderProps) {
           },
         })
 
+        const socket = io(rifWalletServicesUrl, {
+          path: '/ws',
+          forceNew: true,
+          reconnectionAttempts: 3,
+          timeout: 2000,
+          autoConnect: true,
+          transports: ['websocket'], // you need to explicitly tell it to use websocket
+        })
+
         socket.on('connect', () => {
           socket.on('change', (event: Action) => {
             dispatch(event)
@@ -151,12 +152,14 @@ export function RIFSocketsProvider({ children }: SubscriptionsProviderProps) {
 
           socket.emit('subscribe', { address: wallet.smartWalletAddress })
         })
+
+        setConnectedSocket(socket)
       }
 
       connect()
 
       return function cleanup() {
-        socket.disconnect()
+        connectedSocket?.disconnect()
       }
     }
   }, [isDeployed])
