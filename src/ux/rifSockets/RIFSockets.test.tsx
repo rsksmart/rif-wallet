@@ -37,7 +37,7 @@ describe('Live Subscriptions Context', () => {
 
     test('expect useSubscription to dispatch new balance and update state', () => {
       const { result } = renderHook(() => useSocketsState(), { wrapper })
-      expect(result.current.state.balances.length).toEqual(0)
+      expect(Object.keys(result.current.state.balances).length).toEqual(0)
       act(() => {
         result.current.dispatch({
           type: 'newBalance',
@@ -50,8 +50,10 @@ describe('Live Subscriptions Context', () => {
           },
         })
       })
-      expect(result.current.state.balances.length).toEqual(1)
-      expect(result.current.state.balances[0].name).toBe('tRIF Token')
+      expect(Object.keys(result.current.state.balances).length).toEqual(1)
+      expect(Object.keys(result.current.state.balances)[0]).toBe(
+        '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
+      )
     })
 
     test('expect useSubscription to dispatch new transaction and update state', () => {

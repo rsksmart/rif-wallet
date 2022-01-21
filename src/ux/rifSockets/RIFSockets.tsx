@@ -4,8 +4,8 @@ import { io } from 'socket.io-client'
 import {
   abiEnhancer,
   rifWalletServicesFetcher,
-  rifWalletServicesUrl,
 } from '../../core/setup'
+import { rifWalletServicesUrl } from '../../core/config'
 
 import {
   Action,
