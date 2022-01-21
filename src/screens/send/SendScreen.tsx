@@ -8,24 +8,28 @@ import {
   TextInput,
   Linking,
   TouchableOpacity,
+  ScrollView,
+  Text,
 } from 'react-native'
 
-import { ContractReceipt, BigNumber, utils } from 'ethers'
+import { ContractReceipt, BigNumber, utils, ContractTransaction } from 'ethers'
 import { useTranslation } from 'react-i18next'
 
 import { getAllTokens } from '../../lib/token/tokenMetadata'
 import { IToken } from '../../lib/token/BaseToken'
 
 import { ScreenProps } from '../../RootNavigation'
-import { Button, CopyComponent, Paragraph } from '../../components'
 import { ScreenWithWallet } from '../types'
 import { AddressInput } from '../../components'
 import Resolver from '@rsksmart/rns-resolver.js'
 import { getTokenColor, getTokenColorWithOpacity } from '../home/tokenColor'
 import { grid } from '../../styles/grid'
 import { SquareButton } from '../../components/button/SquareButton'
-import { Arrow } from '../../components/icons'
+import { Arrow, RefreshIcon } from '../../components/icons'
 import { TokenImage } from '../home/TokenImage'
+import Clipboard from '@react-native-community/clipboard'
+import TransactionInfo from './TransactionInfo'
+import QRScanner from '../../components/qrScanner'
 
 export type SendScreenProps = {
   rnsResolver: Resolver
@@ -37,23 +41,30 @@ export const SendScreen: React.FC<
 
   const { t } = useTranslation()
 
-  const [to, setTo] = useState(route.params?.to || '')
-  const [displayTo, setDisplayTo] = useState(route.params?.displayTo || '')
-  const [isValidTo, setIsValidTo] = useState(false)
+  const [availableTokens, setAvailableTokens] = useState<IToken[]>()
   const [selectedSymbol, setSelectedSymbol] = useState(
     route.params?.token || 'tRIF',
   )
 
-  const [availableTokens, setAvailableTokens] = useState<IToken[]>()
   const [amount, setAmount] = useState('')
-  const [tx, setTx] = useState<ContractReceipt | null>(null)
-  const [txConfirmed, setTxConfirmed] = useState(false)
-  const [txSent, setTxSent] = useState(false)
-  const [info, setInfo] = useState('')
+
+  const [to, setTo] = useState(route.params?.to || '')
+  const [displayTo, setDisplayTo] = useState(route.params?.displayTo || '')
+  const [isValidTo, setIsValidTo] = useState(false)
+
+  const [showQR, setShowQR] = useState(false)
+
+  const [tx, setTx] = useState<ContractTransaction>()
+  const [receipt, setReceipt] = useState<ContractReceipt>()
+  const [error, setError] = useState<string>()
 
   useEffect(() => {
     setTo(route.params?.to || '')
     setDisplayTo(route.params?.displayTo || '')
+    if (tx && receipt) {
+      setTx(undefined)
+      setReceipt(undefined)
+    }
     handleTargetAddressChange(
       true,
       route.params?.to as string,
@@ -62,32 +73,29 @@ export const SendScreen: React.FC<
     getAllTokens(wallet).then(tokens => setAvailableTokens(tokens))
   }, [wallet, isFocused])
 
-  const transfer = async (tokenSymbol: string) => {
-    setInfo('')
+  const transfer = async () => {
+    setTx(undefined)
+    setReceipt(undefined)
+    setError(undefined)
+
     if (availableTokens) {
-      const selectedSymbol = availableTokens.find(
-        token => token.symbol === tokenSymbol,
+      const token = availableTokens.find(
+        token => token.symbol === selectedSymbol,
       )
-      if (selectedSymbol) {
+      if (token) {
         try {
-          const decimals = await selectedSymbol.decimals()
-          const numberOfTokens = utils.parseUnits(amount, decimals)
+          const decimals = await token.decimals()
+          const tokenAmount = BigNumber.from(utils.parseUnits(amount, decimals))
 
-          const transferResponse = await selectedSymbol.transfer(
-            to.toLowerCase(),
-            BigNumber.from(numberOfTokens),
-          )
+          const transferTx = await token.transfer(to.toLowerCase(), tokenAmount)
 
-          setInfo(t('Transaction Sent. Please wait...'))
-          setTxSent(true)
-          setTxConfirmed(false)
-          const txReceipt = await transferResponse.wait()
-          setTx(txReceipt)
-          setInfo(t('Transaction Confirmed.'))
-          setTxConfirmed(true)
-          // @ts-ignore
+          setTx(transferTx)
+
+          const transferReceipt = await transferTx.wait()
+
+          setReceipt(transferReceipt)
         } catch (e: any) {
-          setInfo(t('Transaction Failed: ') + e.message)
+          setError(e.message)
         }
       }
     }
@@ -112,82 +120,110 @@ export const SendScreen: React.FC<
     ...styles.image,
     shadowColor: '#000000',
   }
+
+  const handleToggleQR = () => setShowQR(prev => !prev)
+
+  const handleCopy = () => Clipboard.setString(tx!.hash!)
+  const handleOpen = () =>
+    Linking.openURL(`https://explorer.testnet.rsk.co/tx/${tx!.hash}`)
+
   return (
     <LinearGradient
       colors={['#FFFFFF', getTokenColorWithOpacity('TRBTC', 0.1)]}
       style={styles.parent}>
-      <View style={grid.row}>
-        <View style={{ ...grid.column2, ...styles.icon }}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => handleChangeToken(selectedSymbol)}>
-            <View style={imageStyle}>
-              <TokenImage symbol={selectedSymbol} height={30} width={30} />
+      <ScrollView>
+        {showQR && (
+          <View style={styles.cameraContainer}>
+            <View style={styles.cameraFrame}>
+              <QRScanner
+                onBarCodeRead={event => {
+                  const data = decodeURIComponent(event.data)
+                  setDisplayTo(data)
+                  setTo(data)
+                }}
+              />
             </View>
-          </TouchableOpacity>
+          </View>
+        )}
+        <View style={grid.row}>
+          <View style={{ ...grid.column2, ...styles.icon }}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => handleChangeToken(selectedSymbol)}>
+              <View style={imageStyle}>
+                <TokenImage symbol={selectedSymbol} height={30} width={30} />
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={{ ...grid.column10 }}>
+            <TextInput
+              style={styles.input}
+              onChangeText={text => setAmount(text)}
+              value={amount}
+              placeholder={t('Amount')}
+              keyboardType="numeric"
+              testID={'Amount.Input'}
+            />
+          </View>
         </View>
-        <View style={{ ...grid.column10 }}>
-          <TextInput
-            style={styles.input}
-            onChangeText={text => setAmount(text)}
-            value={amount}
-            placeholder={t('Amount')}
-            keyboardType="numeric"
-            testID={'Amount.Input'}
+        <View>
+          <AddressInput
+            onChangeText={handleTargetAddressChange}
+            onToggleQR={handleToggleQR}
+            value={displayTo}
+            placeholder={t('To')}
+            testID={'To.Input'}
+            rnsResolver={rnsResolver}
+            navigation={navigation}
+            showContacts={true}
           />
         </View>
-      </View>
-
-      <View>
-        <AddressInput
-          onChangeText={handleTargetAddressChange}
-          value={displayTo}
-          placeholder={t('To')}
-          testID={'To.Input'}
-          rnsResolver={rnsResolver}
-          navigation={navigation}
-          showContacts={true}
-        />
-      </View>
-
-      <View />
-
-      {!txSent && (
+        <View />
         <View style={styles.centerRow}>
           <SquareButton
-            disabled={!isValidTo}
-            onPress={async () => {
-              await transfer(selectedSymbol)
-            }}
+            disabled={!isValidTo || (!!tx && !receipt)}
+            onPress={transfer}
             title="Next"
             testID="Address.CopyButton"
             icon={<Arrow color={getTokenColor(selectedSymbol)} rotate={90} />}
           />
         </View>
-      )}
-      <View style={styles.section}>
-        <Paragraph>{info}</Paragraph>
-      </View>
-      {txConfirmed && tx && (
-        <View testID={'TxReceipt.View'} style={styles.section}>
-          {tx && (
-            <CopyComponent value={tx.transactionHash} prefix={'Tx Hash: '} />
+        <View style={styles.section}>
+          {!!tx && (
+            <TransactionInfo
+              hash={tx.hash}
+              info={
+                !receipt
+                  ? t('Transaction Sent. Please wait...')
+                  : t('Transaction Confirmed.')
+              }
+              selectedToken={selectedSymbol}
+              handleCopy={handleCopy}
+              handleOpen={handleOpen}
+            />
           )}
-          <Button
-            title="View in explorer"
-            onPress={() => {
-              Linking.openURL(
-                `https://explorer.testnet.rsk.co/tx/${tx.transactionHash}`,
-              )
-            }}
-          />
+          {!!error && (
+            <View style={styles.centerRow}>
+              <Text>{t('An error ocurred')}</Text>
+              <SquareButton
+                onPress={transfer}
+                title="Retry"
+                testID="Transfer.RetryButton"
+                icon={<RefreshIcon color={getTokenColor(selectedSymbol)} />}
+              />
+            </View>
+          )}
         </View>
-      )}
+      </ScrollView>
     </LinearGradient>
   )
 }
 
 const styles = StyleSheet.create({
+  parent: {
+    height: '100%',
+    width: '100%',
+  },
   image: {
     width: 50,
     height: 50,
@@ -211,10 +247,6 @@ const styles = StyleSheet.create({
     marginTop: 14,
     paddingLeft: 5,
   },
-  parent: {
-    height: '100%',
-    paddingTop: 20,
-  },
   input: {
     backgroundColor: '#ffffff',
     borderRadius: 10,
@@ -223,7 +255,18 @@ const styles = StyleSheet.create({
     marginTop: 10,
     margin: 10,
   },
-
+  cameraFrame: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, .1)',
+    marginVertical: 40,
+    padding: 20,
+    borderRadius: 20,
+  },
+  cameraContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
   section: {
     marginTop: 5,
     marginBottom: 5,
