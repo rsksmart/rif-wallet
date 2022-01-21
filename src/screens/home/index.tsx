@@ -1,22 +1,36 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet } from 'react-native'
 
 import { NavigationProp } from '../../RootNavigation'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import SelectedTokenComponent from './SelectedTokenComponent'
-import balances from './tempBalances.json'
 import LinearGradient from 'react-native-linear-gradient'
 import { getTokenColor, setOpacity } from './tokenColor'
 import PortfolioComponent from './PortfolioComponent'
 import ActivityComponent from './ActivityComponent'
+import { useSocketsState } from '../../ux/rifSockets/RIFSockets'
+import { Loading } from '../../components'
 
 export const HomeScreen: React.FC<{
   navigation: NavigationProp
 }> = ({ navigation }) => {
-  const [selected, setSelected] = useState<ITokenWithBalance>(
-    balances[0] as ITokenWithBalance,
-  )
+  const { state } = useSocketsState()
+
+  const balances = Object.values(state.balances)
+
+  const [selected, setSelected] = useState<ITokenWithBalance | null>(null)
+
   const [selectedPanel, setSelectedPanel] = useState<string>('portfolio')
+
+  useEffect(() => {
+    if (!selected) {
+      setSelected(balances[0])
+    }
+  }, [balances])
+
+  if (!selected) {
+    return <Loading reason="..." />
+  }
 
   const selectedTokenColor = getTokenColor(selected.symbol)
 
@@ -35,7 +49,6 @@ export const HomeScreen: React.FC<{
         style={{ ...styles.topContainer, ...containerStyles }}>
         <PortfolioComponent
           setPanelActive={() => setSelectedPanel('portfolio')}
-          balances={balances}
           selected={selected}
           setSelected={setSelected}
           visible={selectedPanel === 'portfolio'}

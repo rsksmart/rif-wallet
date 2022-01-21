@@ -12,40 +12,6 @@ import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServices
 
 export interface IActivity
   extends TransactionsServerResponseWithActivityTransactions {}
-export interface ITransaction {
-  _id: string
-  hash: string
-  nonce: number
-  blockHash: string
-  blockNumber: number
-  transactionIndex: string
-  from: string
-  to: string
-  gas: number
-  gasPrice: string
-  value: string
-  input: string
-  v: string
-  r: string
-  s: string
-  timestamp: number
-  receipt: {
-    transactionHash: string
-    transactionIndex: number
-    blockHash: string
-    blockNumber: number
-    cumulativeGasUsed: string
-    gasUsed: number
-    contractAddress: any
-    logs: Array<any>
-    from: string
-    to: string
-    status: string
-    logsBloom: string
-  }
-  txType: string
-  txId: string
-}
 
 export interface IPrice {
   price: number
@@ -57,7 +23,7 @@ export interface NewActivityAction {
   payload: IActivity | null
 }
 
-export interface NewBlanceAction {
+export interface NewBalanceAction {
   type: 'newBalance'
   payload: ITokenWithBalance
 }
@@ -69,21 +35,29 @@ export interface NewPriceAction {
 
 export interface NewTransactionAction {
   type: 'newTransaction'
-  payload: ITransaction
+  payload: IActivityTransaction
+}
+export interface InitAction {
+  type: 'init'
+  payload: {
+    transactions: IActivityTransaction[]
+    balances: ITokenWithBalance[]
+  }
 }
 
 export interface State {
   activities: TransactionsServerResponseWithActivityTransactions | null
   balances: Record<string, ITokenWithBalance>
   prices: Record<string, IPrice>
-  transactions: Array<ITransaction>
+  transactions: Array<IActivityTransaction>
 }
 
 export type Action =
   | NewActivityAction
-  | NewBlanceAction
+  | NewBalanceAction
   | NewPriceAction
   | NewTransactionAction
+  | InitAction
 export type Dispatch = (action: Action) => void
 export type LoadRBTCBalance = () => void
 export type SubscriptionsProviderProps = { children: React.ReactNode }

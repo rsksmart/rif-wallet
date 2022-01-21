@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   },
 })
 
-const enhanceTransactionInput = async (
+export const enhanceTransactionInput = async (
   transaction: IApiTransaction,
   wallet: RIFWallet,
   abiEnhancer: IAbiEnhancer,

@@ -8,13 +8,11 @@ import { BalanceRowComponent } from './BalanceRowComponent'
 interface Interface {
   selected: ITokenWithBalance
   setSelected: (token: ITokenWithBalance) => void
-  balances: ITokenWithBalance[]
   visible: boolean
   setPanelActive: () => void
 }
 
 const PortfolioComponent: React.FC<Interface> = ({
-  balances,
   selected,
   setSelected,
   visible,
@@ -22,11 +20,16 @@ const PortfolioComponent: React.FC<Interface> = ({
 }) => {
   const { state } = useSocketsState()
 
+  const balances = Object.values(state.balances)
+
   return (
     <View style={styles.portfolio}>
       <TouchableOpacity onPress={setPanelActive} disabled={visible}>
         <Text style={styles.heading}>portfolio</Text>
       </TouchableOpacity>
+      {visible && balances.length === 0 && (
+        <Text style={styles.emptyState}>no balances yet</Text>
+      )}
       {visible &&
         balances.map((token: any) => (
           <BalanceRowComponent
@@ -50,6 +53,9 @@ const styles = StyleSheet.create({
   portfolio: {
     paddingHorizontal: 25,
     borderRadius: 25,
+  },
+  emptyState: {
+    paddingBottom: 20,
   },
 })
 
