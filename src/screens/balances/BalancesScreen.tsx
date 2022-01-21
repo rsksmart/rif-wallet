@@ -81,6 +81,8 @@ export const BalancesScreen: React.FC<
     loadRBTCBalance()
   }, [])
 
+  console.log('state.balances', state.balances)
+
   return (
     <ScrollView>
       <View>
