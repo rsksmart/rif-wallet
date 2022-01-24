@@ -28,7 +28,6 @@ import { Arrow, RefreshIcon } from '../../components/icons'
 import { TokenImage } from '../home/TokenImage'
 import Clipboard from '@react-native-community/clipboard'
 import TransactionInfo from './TransactionInfo'
-import typography from '../../styles/typography'
 
 export type SendScreenProps = {}
 
@@ -45,7 +44,6 @@ export const SendScreen: React.FC<
   )
 
   const [amount, setAmount] = useState('')
-
   const [to, setTo] = useState(route.params?.to || '')
 
   const [tx, setTx] = useState<ContractTransaction>()
@@ -70,9 +68,8 @@ export const SendScreen: React.FC<
 
     if (availableTokens) {
       const token = availableTokens.find(
-        singleToken => singleToken.symbol === selectedSymbol,
+        token => token.symbol === selectedSymbol,
       )
-
       if (token) {
         try {
           const decimals = await token.decimals()
@@ -100,8 +97,13 @@ export const SendScreen: React.FC<
   }
 
   const handleTargetAddressChange = (address: string) => {
-    setTo(address)
     setError(undefined)
+    setTo(address)
+  }
+
+  const imageStyle = {
+    ...styles.image,
+    shadowColor: '#000000',
   }
 
   const handleCopy = () => Clipboard.setString(tx!.hash!)
@@ -112,16 +114,16 @@ export const SendScreen: React.FC<
     <LinearGradient
       colors={['#FFFFFF', getTokenColorWithOpacity('TRBTC', 0.1)]}
       style={styles.parent}>
-      <Text style={typography.header}>Send {selectedSymbol}</Text>
       <ScrollView>
         <View style={grid.row}>
-          <View style={grid.column2}>
-            <SquareButton
-              onPress={() => handleChangeToken(selectedSymbol)}
-              icon={
+          <View style={{ ...grid.column2, ...styles.icon }}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => handleChangeToken(selectedSymbol)}>
+              <View style={imageStyle}>
                 <TokenImage symbol={selectedSymbol} height={30} width={30} />
-              }
-            />
+              </View>
+            </TouchableOpacity>
           </View>
           <View style={{ ...grid.column10 }}>
             <TextInput
@@ -134,17 +136,15 @@ export const SendScreen: React.FC<
             />
           </View>
         </View>
-        <View style={grid.row}>
-          <View style={grid.column12}>
-            <AddressInput
-              onChangeText={handleTargetAddressChange}
-              chainId={31}
-              initialValue={route.params?.to || ''}
-              testID={'To.Input'}
-              navigation={navigation}
-              showContactsIcon={true}
-            />
-          </View>
+        <View>
+          <AddressInput
+            initialValue={route.params?.to || ''}
+            onChangeText={handleTargetAddressChange}
+            testID={'To.Input'}
+            navigation={navigation}
+            showContactsIcon={true}
+            chainId={31}
+          />
         </View>
 
         <View style={styles.centerRow}>
@@ -191,7 +191,6 @@ const styles = StyleSheet.create({
   parent: {
     height: '100%',
     width: '100%',
-    padding: 10,
   },
   image: {
     width: 50,
@@ -212,6 +211,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  icon: {
+    marginTop: 14,
+    paddingLeft: 5,
+  },
   input: {
     backgroundColor: '#ffffff',
     borderRadius: 10,
@@ -219,7 +222,18 @@ const styles = StyleSheet.create({
     height: 50,
     marginTop: 10,
     margin: 10,
-    padding: 10,
+  },
+  cameraFrame: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, .1)',
+    marginVertical: 40,
+    padding: 20,
+    borderRadius: 20,
+  },
+  cameraContainer: {
+    flex: 1,
+    alignItems: 'center',
   },
   section: {
     marginTop: 5,
