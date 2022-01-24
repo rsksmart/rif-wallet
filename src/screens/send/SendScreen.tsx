@@ -144,6 +144,7 @@ export const SendScreen: React.FC<
             navigation={navigation}
             showContactsIcon={true}
             chainId={31}
+            color={getTokenColor(selectedSymbol)}
           />
         </View>
 

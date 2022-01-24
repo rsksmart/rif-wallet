@@ -26,7 +26,7 @@ import { Button } from '../button'
 type AddressInputProps = {
   initialValue: string
   onChangeText: (newValue: string) => void
-  testID: string
+  testID?: string
   navigation?: any
   showContactsIcon?: boolean
   chainId: number

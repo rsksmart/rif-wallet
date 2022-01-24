@@ -6,25 +6,6 @@ import { act } from 'react-test-renderer'
 
 const testId = 'Input.Address'
 
-/*
-// WORKS!
-jest.mock('../../core/setup', () => ({
-  __esModule: true, // this property makes it work
-  setup: 'setup',
-  namedExport: jest.fn(),
-  rnsResolver: () => ({
-    addr: jest.fn(() => Promise.resolve('0x000_MOCK_DOMAIN_ADDRESS')),
-  }),
-}))
-
-jest.mock('../../core/setup', () => ({
-  rnsResolver: () => ({
-    addr: jest.fn(() => Promise.resolve('0x000_MOCK_DOMAIN_ADDRESS')),
-  }),
-}))
-
-*/
-
 jest.mock('@rsksmart/rns-resolver.js', () => ({
   forRskTestnet: () => ({
     addr: jest.fn(() => Promise.resolve('0x000_MOCK_DOMAIN_ADDRESS')),
