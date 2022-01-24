@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { Text, TextInput, StyleSheet, View, Modal } from 'react-native'
+import {
+  Text,
+  TextInput,
+  StyleSheet,
+  View,
+  Modal,
+  Dimensions,
+} from 'react-native'
 import Clipboard from '@react-native-community/clipboard'
 
 import { ContactsIcon, ContentPasteIcon, QRCodeIcon } from '../icons'
@@ -39,6 +46,8 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   const [recipient, setRecipient] = useState<string>(initialValue)
   // hide or show the QR reader
   const [showQRReader, setShowQRReader] = useState<boolean>(false)
+
+  const windowWidth = Dimensions.get('window').width
 
   useEffect(() => {
     setRecipient(initialValue)
@@ -92,30 +101,38 @@ export const AddressInput: React.FC<AddressInputProps> = ({
     }
   }
 
+  const handlePasteClick = () =>
+    Clipboard.getString().then((value: string) => {
+      setStatus({ type: 'READY' })
+      setRecipient(value)
+      validateCurrentInput(value)
+    })
+
   // onUnFocus check the address is valid
-  const validateCurrentInput = () => {
-    if (
-      validateAddress(recipient) === AddressValidationMessage.INVALID_ADDRESS
-    ) {
+  const validateCurrentInput = (input: string) => {
+    if (validateAddress(input) === AddressValidationMessage.INVALID_ADDRESS) {
       setStatus({
         type: 'ERROR',
         value: 'The address is invalid',
       })
-    } else {
-      onChangeText(initialValue)
     }
   }
 
   return showQRReader ? (
-    <Modal style={styles.cameraContainer}>
-      <View style={styles.cameraFrame}>
+    <Modal presentationStyle="overFullScreen" style={styles.cameraModal}>
+      <View
+        style={{
+          ...styles.cameraWrapper,
+          width: windowWidth,
+          height: windowWidth,
+        }}>
         <QRScanner
           onBarCodeRead={(event: BarCodeReadEvent) =>
             handleChangeText(decodeURIComponent(event.data))
           }
         />
+        <Button onPress={() => setShowQRReader(false)} title="close" />
       </View>
-      <Button onPress={() => setShowQRReader(false)} title="close" />
     </Modal>
   ) : (
     <View style={styles.parent}>
@@ -124,7 +141,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
           <TextInput
             style={styles.input}
             onChangeText={text => handleChangeText(text)}
-            onBlur={validateCurrentInput}
+            onBlur={() => validateCurrentInput(recipient)}
             autoCapitalize="none"
             autoCorrect={false}
             value={recipient}
@@ -154,15 +171,15 @@ export const AddressInput: React.FC<AddressInputProps> = ({
       <View style={grid.row}>
         <View style={{ ...grid.column2, ...styles.iconColumn }}>
           <SquareButton
-            onPress={async () => handleChangeText(await Clipboard.getString())}
-            testID="Address.CopyButton"
+            onPress={handlePasteClick}
+            testID="Address.PasteButton"
             icon={<ContentPasteIcon color={iconColor} />}
           />
         </View>
         <View style={{ ...grid.column2, ...styles.iconColumn }}>
           <SquareButton
             onPress={() => setShowQRReader(true)}
-            testID="Address.CopyButton"
+            testID="Address.QRCodeButton"
             icon={<QRCodeIcon color={iconColor} />}
           />
         </View>
@@ -170,6 +187,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
           <View style={{ ...grid.column2, ...styles.iconColumn }}>
             <SquareButton
               onPress={() => navigation.navigate('Contacts')}
+              testID="Address.ContactsButton"
               icon={<ContactsIcon color={iconColor} />}
             />
           </View>
@@ -204,18 +222,13 @@ const styles = StyleSheet.create({
     height: 50,
     padding: 10,
   },
-  cameraFrame: {
+  cameraModal: {
     flex: 1,
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, .1)',
-    marginVertical: 40,
-    padding: 20,
-    borderRadius: 20,
-  },
-  cameraContainer: {
-    flex: 1,
+    width: '100%',
+    height: '100%',
     alignItems: 'center',
   },
+  cameraWrapper: {},
   info: {
     color: '#999',
   },
