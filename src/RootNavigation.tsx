@@ -20,6 +20,7 @@ import { WalletConnectProviderElement } from './screens/walletConnect/WalletConn
 import { EditContactScreenProps } from './screens/contacts/EditContactScreen'
 import { DappsScreenScreenProps } from './screens/dapps'
 import { RIFSocketsProvider } from './ux/rifSockets/RIFSockets'
+import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -79,6 +80,7 @@ export type ScreenProps<T extends keyof RootStackParamList> = StackScreenProps<
 >
 
 export const RootNavigation: React.FC<{
+  rifWalletServicesSocket: IRifWalletServicesSocket
   keyManagementProps: CreateKeysProps
   balancesScreenProps: BalancesScreenProps
   activityScreenProps: ActivityScreenProps
@@ -88,6 +90,7 @@ export const RootNavigation: React.FC<{
   contactsNavigationScreenProps: EditContactScreenProps
   dappsScreenProps: DappsScreenScreenProps
 }> = ({
+  rifWalletServicesSocket,
   keyManagementProps,
   balancesScreenProps,
   activityScreenProps,
@@ -107,7 +110,7 @@ export const RootNavigation: React.FC<{
     <View style={styles.parent}>
       <NavigationContainer onStateChange={handleScreenChange}>
         <WalletConnectProviderElement>
-          <RIFSocketsProvider>
+          <RIFSocketsProvider rifServiceSocket={rifWalletServicesSocket}>
             <AppHeader />
             <RootStack.Navigator>
               <RootStack.Screen

@@ -53,13 +53,13 @@ export const BalancesScreen: React.FC<
   ScreenProps<'Balances'> & ScreenWithWallet & BalancesScreenProps
 > = ({ navigation, wallet }) => {
   const { t } = useTranslation()
+  const [isLoading, setIsLoading] = useState(true)
 
-  const [info, setInfo] = useState<string>(
-    t('Loading balances. Please wait...'),
-  )
   const { state, dispatch } = useSocketsState()
 
   const loadRBTCBalance = async () => {
+    setIsLoading(true)
+
     const rbtcBalanceEntry = await wallet
       .provider!.getBalance(wallet.smartWallet.address)
       .then(
@@ -73,15 +73,13 @@ export const BalancesScreen: React.FC<
             balance: rbtcBalance.toString(),
           } as ITokenWithBalance),
       )
-    setInfo('')
     dispatch({ type: 'newBalance', payload: rbtcBalanceEntry })
+    setIsLoading(false)
   }
 
   useEffect(() => {
     loadRBTCBalance()
   }, [])
-
-  console.log('state.balances', state.balances)
 
   return (
     <ScrollView>
@@ -90,17 +88,20 @@ export const BalancesScreen: React.FC<
       </View>
 
       <View>
-        <Text testID="Info.Text">{info}</Text>
+        <Text testID="Info.Text">
+          {isLoading ? t('Loading balances. Please wait...') : ''}
+        </Text>
       </View>
 
       <View>
-        {Object.values(state.balances).map(token => (
-          <BalancesRow
-            key={token.contractAddress}
-            token={token}
-            navigation={navigation}
-          />
-        ))}
+        {!isLoading &&
+          Object.values(state.balances).map(token => (
+            <BalancesRow
+              key={token.contractAddress}
+              token={token}
+              navigation={navigation}
+            />
+          ))}
       </View>
 
       <View style={styles.refreshButtonView}>

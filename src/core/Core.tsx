@@ -17,6 +17,7 @@ import {
   abiEnhancer,
   createRIFWalletFactory,
   networkId,
+  rifWalletServicesSocket,
 } from './setup'
 
 import { RootNavigation } from '../RootNavigation'
@@ -157,6 +158,7 @@ export const Core = () => {
           mnemonic: state.kms?.mnemonic,
         }}>
         <RootNavigation
+          rifWalletServicesSocket={rifWalletServicesSocket}
           keyManagementProps={{
             generateMnemonic: () => KeyManagementSystem.create().mnemonic,
             createFirstWallet,
