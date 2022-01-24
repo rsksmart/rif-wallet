@@ -21,7 +21,6 @@ import { IToken } from '../../lib/token/BaseToken'
 import { ScreenProps } from '../../RootNavigation'
 import { ScreenWithWallet } from '../types'
 import { AddressInput } from '../../components'
-import Resolver from '@rsksmart/rns-resolver.js'
 import { getTokenColor, getTokenColorWithOpacity } from '../home/tokenColor'
 import { grid } from '../../styles/grid'
 import { SquareButton } from '../../components/button/SquareButton'
@@ -29,14 +28,13 @@ import { Arrow, RefreshIcon } from '../../components/icons'
 import { TokenImage } from '../home/TokenImage'
 import Clipboard from '@react-native-community/clipboard'
 import TransactionInfo from './TransactionInfo'
-import QRScanner from '../../components/qrScanner'
+import typography from '../../styles/typography'
 
-export type SendScreenProps = {
-  rnsResolver: Resolver
-}
+export type SendScreenProps = {}
+
 export const SendScreen: React.FC<
   SendScreenProps & ScreenProps<'Send'> & ScreenWithWallet
-> = ({ rnsResolver, route, wallet, navigation }) => {
+> = ({ route, wallet, navigation }) => {
   const isFocused = useIsFocused()
 
   const { t } = useTranslation()
@@ -49,10 +47,6 @@ export const SendScreen: React.FC<
   const [amount, setAmount] = useState('')
 
   const [to, setTo] = useState(route.params?.to || '')
-  const [displayTo, setDisplayTo] = useState(route.params?.displayTo || '')
-  const [isValidTo, setIsValidTo] = useState(false)
-
-  const [showQR, setShowQR] = useState(false)
 
   const [tx, setTx] = useState<ContractTransaction>()
   const [receipt, setReceipt] = useState<ContractReceipt>()
@@ -60,16 +54,12 @@ export const SendScreen: React.FC<
 
   useEffect(() => {
     setTo(route.params?.to || '')
-    setDisplayTo(route.params?.displayTo || '')
+
     if (tx && receipt) {
       setTx(undefined)
       setReceipt(undefined)
     }
-    handleTargetAddressChange(
-      true,
-      route.params?.to as string,
-      route.params?.displayTo as string,
-    )
+
     getAllTokens(wallet).then(tokens => setAvailableTokens(tokens))
   }, [wallet, isFocused])
 
@@ -80,8 +70,9 @@ export const SendScreen: React.FC<
 
     if (availableTokens) {
       const token = availableTokens.find(
-        token => token.symbol === selectedSymbol,
+        singleToken => singleToken.symbol === selectedSymbol,
       )
+
       if (token) {
         try {
           const decimals = await token.decimals()
@@ -107,21 +98,11 @@ export const SendScreen: React.FC<
       setSelectedSymbol('tRIF')
     }
   }
-  const handleTargetAddressChange = (
-    isValid: boolean,
-    address: string,
-    displayAddress: string,
-  ) => {
-    setIsValidTo(isValid)
-    setTo(address)
-    setDisplayTo(displayAddress)
-  }
-  const imageStyle = {
-    ...styles.image,
-    shadowColor: '#000000',
-  }
 
-  const handleToggleQR = () => setShowQR(prev => !prev)
+  const handleTargetAddressChange = (address: string) => {
+    setTo(address)
+    setError(undefined)
+  }
 
   const handleCopy = () => Clipboard.setString(tx!.hash!)
   const handleOpen = () =>
@@ -131,29 +112,16 @@ export const SendScreen: React.FC<
     <LinearGradient
       colors={['#FFFFFF', getTokenColorWithOpacity('TRBTC', 0.1)]}
       style={styles.parent}>
+      <Text style={typography.header}>Send {selectedSymbol}</Text>
       <ScrollView>
-        {showQR && (
-          <View style={styles.cameraContainer}>
-            <View style={styles.cameraFrame}>
-              <QRScanner
-                onBarCodeRead={event => {
-                  const data = decodeURIComponent(event.data)
-                  setDisplayTo(data)
-                  setTo(data)
-                }}
-              />
-            </View>
-          </View>
-        )}
         <View style={grid.row}>
-          <View style={{ ...grid.column2, ...styles.icon }}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => handleChangeToken(selectedSymbol)}>
-              <View style={imageStyle}>
+          <View style={grid.column2}>
+            <SquareButton
+              onPress={() => handleChangeToken(selectedSymbol)}
+              icon={
                 <TokenImage symbol={selectedSymbol} height={30} width={30} />
-              </View>
-            </TouchableOpacity>
+              }
+            />
           </View>
           <View style={{ ...grid.column10 }}>
             <TextInput
@@ -166,22 +134,22 @@ export const SendScreen: React.FC<
             />
           </View>
         </View>
-        <View>
-          <AddressInput
-            onChangeText={handleTargetAddressChange}
-            onToggleQR={handleToggleQR}
-            value={displayTo}
-            placeholder={t('To')}
-            testID={'To.Input'}
-            rnsResolver={rnsResolver}
-            navigation={navigation}
-            showContacts={true}
-          />
+        <View style={grid.row}>
+          <View style={grid.column12}>
+            <AddressInput
+              onChangeText={handleTargetAddressChange}
+              chainId={31}
+              initialValue={route.params?.to || ''}
+              testID={'To.Input'}
+              navigation={navigation}
+              showContactsIcon={true}
+            />
+          </View>
         </View>
-        <View />
+
         <View style={styles.centerRow}>
           <SquareButton
-            disabled={!isValidTo || (!!tx && !receipt)}
+            disabled={!!tx && !receipt}
             onPress={transfer}
             title="Next"
             testID="Address.CopyButton"
@@ -223,6 +191,7 @@ const styles = StyleSheet.create({
   parent: {
     height: '100%',
     width: '100%',
+    padding: 10,
   },
   image: {
     width: 50,
@@ -243,10 +212,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  icon: {
-    marginTop: 14,
-    paddingLeft: 5,
-  },
   input: {
     backgroundColor: '#ffffff',
     borderRadius: 10,
@@ -254,18 +219,7 @@ const styles = StyleSheet.create({
     height: 50,
     marginTop: 10,
     margin: 10,
-  },
-  cameraFrame: {
-    flex: 1,
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, .1)',
-    marginVertical: 40,
-    padding: 20,
-    borderRadius: 20,
-  },
-  cameraContainer: {
-    flex: 1,
-    alignItems: 'center',
+    padding: 10,
   },
   section: {
     marginTop: 5,
