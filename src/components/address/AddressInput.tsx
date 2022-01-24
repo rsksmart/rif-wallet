@@ -158,6 +158,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
               </Text>
               {status.type === 'CHECKSUM' && (
                 <Button
+                  testID={`${testID}.Button.Checksum`}
                   title="Convert to correct checksum"
                   onPress={() =>
                     handleChangeText(toChecksumAddress(recipient, chainId))
