@@ -60,7 +60,7 @@ export const TokenImage: React.FC<{
     case 'tRNS':
       return (
         <Image
-          source={require('@rsksmart/rsk-contract-metadata/images/bpro.png')}
+          source={require('@rsksmart/rsk-contract-metadata/images/rif.png')}
           style={iconStyle}
         />
       )
