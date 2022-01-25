@@ -129,7 +129,7 @@ export const SendScreen: React.FC<
 
   return (
     <LinearGradient
-      colors={['#FFFFFF', getTokenColorWithOpacity('TRBTC', 0.1)]}
+      colors={['#FFFFFF', getTokenColorWithOpacity(selectedSymbol, 0.1)]}
       style={styles.parent}>
       <ScrollView>
         {showQR && (
