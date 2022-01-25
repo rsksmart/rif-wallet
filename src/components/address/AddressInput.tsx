@@ -27,6 +27,7 @@ type AddressInputProps = {
   style?: any
   navigation: any
   showContacts: boolean
+  selectedSymbol: string
   onToggleQR: () => void
 }
 
@@ -38,6 +39,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   rnsResolver,
   navigation,
   showContacts,
+  selectedSymbol,
   onToggleQR,
 }) => {
   const [validationMessage, setValidationMessage] = useState(
@@ -71,7 +73,6 @@ export const AddressInput: React.FC<AddressInputProps> = ({
       onChangeText(!!inputText && !newValidationMessage, inputText, inputText)
     }
   }
-  const selectedToken = 'TRBTC'
 
   return (
     <>
@@ -94,7 +95,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
               }
               title=""
               testID="Address.CopyButton"
-              icon={<ContentPasteIcon color={getTokenColor(selectedToken)} />}
+              icon={<ContentPasteIcon color={getTokenColor(selectedSymbol)} />}
             />
           </View>
         </View>
@@ -105,7 +106,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
               onPress={onToggleQR}
               title=""
               testID="Address.CopyButton"
-              icon={<QRCodeIcon color={getTokenColor(selectedToken)} />}
+              icon={<QRCodeIcon color={getTokenColor(selectedSymbol)} />}
             />
           </View>
         </View>
@@ -116,7 +117,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
                 // @ts-ignore
                 onPress={() => navigation.navigate('Contacts')}
                 title=""
-                icon={<ContactsIcon color={getTokenColor(selectedToken)} />}
+                icon={<ContactsIcon color={getTokenColor(selectedSymbol)} />}
               />
             </View>
           </View>

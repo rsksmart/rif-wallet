@@ -176,6 +176,7 @@ export const SendScreen: React.FC<
             rnsResolver={rnsResolver}
             navigation={navigation}
             showContacts={true}
+            selectedSymbol={selectedSymbol}
           />
         </View>
         <View />
