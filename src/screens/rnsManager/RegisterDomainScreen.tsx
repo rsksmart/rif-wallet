@@ -51,7 +51,7 @@ export const RegisterDomainScreen: React.FC<
     const price = await rskRegistrar.price(domain, durationToRegister)
     const tx = await rskRegistrar.register(
       domain,
-      wallet.smartWallet.address,
+      wallet.smartWalletAddress,
       domainSecret,
       durationToRegister,
       price,

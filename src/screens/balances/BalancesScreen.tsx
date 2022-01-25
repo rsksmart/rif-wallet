@@ -55,7 +55,7 @@ async function getTokensAndRBTCBalance(
     wallet.smartWalletAddress,
   )
   const rbtcBalanceEntry = await wallet
-    .provider!.getBalance(wallet.smartWallet.address)
+    .provider!.getBalance(wallet.smartWalletAddress)
     .then(
       rbtcBalance =>
         ({
