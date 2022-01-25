@@ -367,7 +367,6 @@ export const TokenImage: React.FC<{
         />
       )
 
-
     default:
       return <FrownFaceIcon height={iconStyle.height} width={iconStyle.width} />
   }
