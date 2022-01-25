@@ -27,8 +27,8 @@ const useEnhancedWithGas = (wallet: RIFWallet, tx: TransactionRequest) => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
 
   useEffect(() => {
-    const gasLimitEstimate = wallet.smartWallet
-      .estimateDirectExecute(tx.to || '0x', tx.data || '0x')
+    const gasLimitEstimate = wallet
+      .estimateGas(tx)
       .then((estimate: BigNumber) => {
         if (tx.gasLimit && estimate.lt(tx.gasLimit)) {
           return tx.gasLimit

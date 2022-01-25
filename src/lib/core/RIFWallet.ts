@@ -79,7 +79,9 @@ export class RIFWallet extends Signer implements TypedDataSigner {
   }
 
   get smartWalletAddress (): string {
-    return this.smartWallet.smartWalletAddress
+    return this.address
+    // Remove SmartWallet
+    // return this.smartWallet.smartWalletAddress
   }
 
   static async create (signer: Signer, smartWalletFactoryAddress: string, onRequest: OnRequest) {
@@ -89,14 +91,16 @@ export class RIFWallet extends Signer implements TypedDataSigner {
     return new RIFWallet(smartWalletFactory, smartWallet, onRequest)
   }
 
-  getAddress = (): Promise<string> => Promise.resolve(this.smartWallet.smartWalletAddress)
+  getAddress = (): Promise<string> => Promise.resolve(this.address)
 
   signTransaction = (transaction: TransactionRequest): Promise<string> => this.smartWallet.signer.signTransaction(transaction)
 
   // calls via smart wallet
+  /* Remove SmartWallet - don't overwrite this method
   call (transactionRequest: TransactionRequest, blockTag?: BlockTag): Promise<any> {
     return this.smartWallet.callStaticDirectExecute(transactionRequest.to!, transactionRequest.data!, { ...filterTxOptions(transactionRequest), blockTag })
   }
+  */
 
   createDoRequest: CreateDoRequest = (type, onConfirm) => {
     return (...payload) => new Promise((resolve, reject) => {
@@ -115,12 +119,15 @@ export class RIFWallet extends Signer implements TypedDataSigner {
   sendTransaction = this.createDoRequest(
     'sendTransaction',
     (([transactionRequest]: [TransactionRequest], overriddenOptions?: Partial<OverriddableTransactionOptions>) => {
+      return this.smartWallet.signer.sendTransaction({ ...transactionRequest, ...overriddenOptions })
+      /* Remove SmartWallet
       const txOptions = {
         ...filterTxOptions(transactionRequest),
         ...overriddenOptions || {}
       }
 
       return this.smartWallet.directExecute(transactionRequest.to!, transactionRequest.data ?? constants.HashZero, txOptions)
+      */
     }) as CreateDoRequestOnConfirm
   ) as (transactionRequest: TransactionRequest) => Promise<TransactionResponse>
 
@@ -134,6 +141,7 @@ export class RIFWallet extends Signer implements TypedDataSigner {
     ((args: SignTypedDataArgs) => (this.smartWallet.signer as any as TypedDataSigner)._signTypedData(...args)) as CreateDoRequestOnConfirm
   ) as (...args: SignTypedDataArgs) => Promise<string>
 
+  /* Remove SmartWallet - do not overwrite this function
   estimateGas (transaction: TransactionRequest): Promise<BigNumber> {
     return resolveProperties(this.checkTransaction(transaction))
       .then((tx: TransactionRequest) => this.smartWallet.estimateDirectExecute(
@@ -142,6 +150,7 @@ export class RIFWallet extends Signer implements TypedDataSigner {
         filterTxOptions(tx)
       ))
   }
+  */
 
   connect = (provider: Provider): Signer => {
     throw new Error('Method not implemented')
