@@ -32,7 +32,7 @@ const SelectedTokenComponent: React.FC<Interface> = ({ navigation, token }) => {
           shadowColor={tokenColor}
           onPress={() => {
             navigation.navigate('Send', {
-              token: token.name,
+              token: token.symbol,
             })
           }}
           title="send"
