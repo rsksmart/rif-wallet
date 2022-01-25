@@ -91,7 +91,7 @@ export class RIFWallet extends Signer implements TypedDataSigner {
     return new RIFWallet(smartWalletFactory, smartWallet, onRequest)
   }
 
-  getAddress = (): Promise<string> => Promise.resolve(this.address)
+  getAddress = (): Promise<string> => Promise.resolve(this.smartWalletAddress)
 
   signTransaction = (transaction: TransactionRequest): Promise<string> => this.smartWallet.signer.signTransaction(transaction)
 
