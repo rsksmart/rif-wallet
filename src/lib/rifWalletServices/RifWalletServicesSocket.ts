@@ -1,7 +1,7 @@
 import EventEmitter from 'events'
 import { io } from 'socket.io-client'
 import { enhanceTransactionInput } from '../../screens/activity/ActivityScreen'
-import { IActivityTransaction } from '../../ux/rifSockets/types'
+import { IActivityTransaction } from '../../subscriptions/types'
 import { IAbiEnhancer } from '../abiEnhancer/AbiEnhancer'
 import { RIFWallet } from '../core'
 import { IRIFWalletServicesFetcher } from './RifWalletServicesFetcher'

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, ScrollView, Text } from 'react-native'
 
-import { useSocketsState } from '../../ux/rifSockets/RIFSockets'
+import { useSocketsState } from '../../subscriptions/RIFSockets'
 import { useTranslation } from 'react-i18next'
 import {
   IApiTransaction,

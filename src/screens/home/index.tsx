@@ -8,7 +8,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import { getTokenColor, setOpacity } from './tokenColor'
 import PortfolioComponent from './PortfolioComponent'
 import ActivityComponent from './ActivityComponent'
-import { useSocketsState } from '../../ux/rifSockets/RIFSockets'
+import { useSocketsState } from '../../subscriptions/RIFSockets'
 import { Loading } from '../../components'
 
 export const HomeScreen: React.FC<{

@@ -32,7 +32,7 @@ const ActivityRow: React.FC<Interface> = ({
         <View style={grid.column2}>
           <View style={styles.icon}>
             <TokenImage
-              symbol={activityTransaction.enhancedTransaction?.symbol}
+              symbol={activityTransaction.enhancedTransaction?.symbol || ''}
               width={30}
               height={30}
             />

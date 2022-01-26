@@ -14,12 +14,13 @@ import {
   lastToken,
   lastTokenTextTestId,
 } from '../../../testLib/mocks/rifServicesMock'
-import { RIFSocketsProvider } from '../../ux/rifSockets/RIFSockets'
+import { RIFSocketsProvider } from '../../subscriptions/RIFSockets'
 import { IRifWalletServicesSocket } from '../../lib/rifWalletServices/RifWalletServicesSocket'
 import EventEmitter from 'events'
 
 import tempRecent from '../home/tempRecent.json'
 import { constants } from 'ethers'
+import { createMockAbiEnhancer } from '../../../testLib/mocks/rifTransactionsMock'
 
 class RifWalletServicesSocketMock
   extends EventEmitter
@@ -36,13 +37,15 @@ class RifWalletServicesSocketMock
   }
 }
 
+const abiEnhancer = createMockAbiEnhancer()
+
 const createTestInstance = async (fetcher = createMockFetcher()) => {
   const mock = await setupTest()
 
   const socketMock = new RifWalletServicesSocketMock()
 
   const container = render(
-    <RIFSocketsProvider rifServiceSocket={socketMock} isWalletDeployed={true}>
+    <RIFSocketsProvider rifServiceSocket={socketMock} isWalletDeployed={true} abiEnhancer={abiEnhancer}>
       <BalancesScreen
         wallet={mock.rifWallet}
         isWalletDeployed={true}

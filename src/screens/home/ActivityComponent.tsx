@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, Text } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { Button } from '../../components'
-import { useSocketsState } from '../../ux/rifSockets/RIFSockets'
+import { useSocketsState } from '../../subscriptions/RIFSockets'
 import ActivityRow from '../activity/ActivityRow'
 
 interface Interface {

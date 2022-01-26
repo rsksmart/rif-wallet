@@ -1,5 +1,6 @@
 import React from 'react'
-import { useSelectedWallet } from '../../Context'
+import { useSelectedWallet } from '../Context'
+import { enhanceTransactionInput } from '../screens/activity/ActivityScreen'
 
 import { Action, Dispatch, State, SubscriptionsProviderProps } from './types'
 
@@ -34,7 +35,7 @@ function liveSubscriptionsReducer(state: State, action: Action) {
     case 'newTransaction':
       return {
         ...state,
-        transactions: [action.payload, ...state.transactions],
+        transactions: [action.payload, ...state.transactions]
       }
 
     case 'init':
@@ -79,6 +80,7 @@ export function RIFSocketsProvider({
   children,
   rifServiceSocket,
   isWalletDeployed,
+  abiEnhancer
 }: SubscriptionsProviderProps) {
   const [state, dispatch] = React.useReducer(
     liveSubscriptionsReducer,
@@ -98,7 +100,32 @@ export function RIFSocketsProvider({
         })
 
         rifServiceSocket?.on('change', result => {
-          dispatch(result as any)
+          if (result.type === 'newTransaction') {
+            enhanceTransactionInput(
+              result.payload,
+              wallet,
+              abiEnhancer,
+            ).then(enhancedTransaction => {
+              console.log(enhancedTransaction)
+                dispatch({
+                  type: 'newTransaction',
+                  payload: {
+                    originTransaction: result.payload,
+                    enhancedTransaction,
+                  }
+              })
+            }).catch(() => {
+              dispatch({
+                type: 'newTransaction',
+                payload: {
+                  originTransaction: result.payload,
+                  enhancedTransaction: undefined,
+                }
+              })
+            })
+          } else {
+            dispatch(result as any)
+          }
         })
 
         rifServiceSocket?.connect(wallet)
