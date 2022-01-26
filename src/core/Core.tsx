@@ -26,6 +26,7 @@ import ModalComponent from '../ux/requestsModal/ModalComponent'
 import { Cover } from './components/Cover'
 import { LoadingScreen } from './components/LoadingScreen'
 import { RequestPIN } from './components/RequestPIN'
+import { quickStart } from '../storage/db/model'
 
 const gracePeriod = 3000
 
@@ -111,6 +112,12 @@ export const Core = () => {
   }
 
   useEffect(() => {
+    if (unlocked) {
+      quickStart().catch(error => {
+        console.log(`An error occurred: ${error}`)
+      })
+    }
+
     const stateSubscription = AppState.addEventListener(
       'change',
       appStateStatus => {
