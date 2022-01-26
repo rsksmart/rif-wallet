@@ -1,6 +1,12 @@
-import React, { useState } from 'react'
-import { Text, TextInput, StyleSheet, View } from 'react-native'
-import Resolver from '@rsksmart/rns-resolver.js'
+import React, { useState, useEffect } from 'react'
+import {
+  Text,
+  TextInput,
+  StyleSheet,
+  View,
+  Modal,
+  Dimensions,
+} from 'react-native'
 import Clipboard from '@react-native-community/clipboard'
 
 import { ContactsIcon, ContentPasteIcon, QRCodeIcon } from '../icons'
@@ -12,159 +18,224 @@ import {
 } from './lib'
 import { grid } from '../../styles/grid'
 import { SquareButton } from '../button/SquareButton'
-import { getTokenColor } from '../../screens/home/tokenColor'
+import { rnsResolver } from '../../core/setup'
+import QRScanner from '../qrScanner'
+import { BarCodeReadEvent } from 'react-native-camera'
+import { Button } from '../button'
 
 type AddressInputProps = {
-  placeholder: string
-  value: string
-  onChangeText: (
-    isValid: boolean,
-    address: string,
-    displayAddress: string,
-  ) => void
-  testID: string
-  rnsResolver: Resolver
-  style?: any
-  navigation: any
-  showContacts: boolean
-  selectedSymbol: string
-  onToggleQR: () => void
+  initialValue: string
+  onChangeText: (newValue: string) => void
+  testID?: string
+  navigation?: any
+  showContactsIcon?: boolean
+  chainId: number
+  color?: string
 }
 
 export const AddressInput: React.FC<AddressInputProps> = ({
-  placeholder,
-  value,
+  initialValue,
   onChangeText,
   testID,
-  rnsResolver,
   navigation,
-  showContacts,
-  selectedSymbol,
-  onToggleQR,
+  showContactsIcon,
+  color,
+  chainId,
 }) => {
-  const [validationMessage, setValidationMessage] = useState(
-    validateAddress(value),
-  )
+  // the address of the recipient
+  const [recipient, setRecipient] = useState<string>(initialValue)
+  // hide or show the QR reader
+  const [showQRReader, setShowQRReader] = useState<boolean>(false)
 
-  const [inputInfo, setInputInfo] = useState('')
+  const windowWidth = Dimensions.get('window').width
+
+  useEffect(() => {
+    setRecipient(initialValue)
+    onChangeText(initialValue)
+  }, [initialValue])
+
+  // status
+  const [status, setStatus] = useState<{
+    type: 'READY' | 'INFO' | 'ERROR' | 'CHECKSUM'
+    value?: string
+  }>({ type: 'READY' })
+
+  const iconColor = color || '#999'
 
   const handleChangeText = (inputText: string) => {
-    setInputInfo('')
+    setStatus({ type: 'READY' })
+    setRecipient(inputText)
+    onChangeText(inputText)
+
     const newValidationMessage = validateAddress(inputText)
 
     if (newValidationMessage === AddressValidationMessage.DOMAIN) {
-      setInputInfo('Loading...')
-      setValidationMessage(AddressValidationMessage.VALID)
+      setStatus({
+        type: 'INFO',
+        value: 'Getting address for domain...',
+      })
+
       rnsResolver
         .addr(inputText)
         .then((address: string) => {
-          setValidationMessage(AddressValidationMessage.VALID)
-          setInputInfo(address)
-          onChangeText(true, address, inputText)
+          setStatus({
+            type: 'INFO',
+            value: `Resolved to ${address}`,
+          })
+
+          // call parent with the resolved address
+          onChangeText(address)
         })
-        .catch((e: any) => {
-          setValidationMessage(AddressValidationMessage.NO_ADDRESS_DOMAIN)
-          onChangeText(false, inputText, inputText)
-          console.log(e.message)
-          setInputInfo('')
-        }) // gets rs
+        .catch((_e: any) =>
+          setStatus({
+            type: 'ERROR',
+            value: `Could not get address for ${inputText.toLowerCase()}`,
+          }),
+        )
     } else {
-      setValidationMessage(newValidationMessage)
-      onChangeText(!!inputText && !newValidationMessage, inputText, inputText)
+      if (newValidationMessage === AddressValidationMessage.INVALID_CHECKSUM) {
+        setStatus({
+          type: 'CHECKSUM',
+          value: 'The checksum is invalid.',
+        })
+      }
+      // user may still be typing...
     }
   }
 
-  return (
-    <>
+  const handlePasteClick = () =>
+    Clipboard.getString().then((value: string) => {
+      setStatus({ type: 'READY' })
+      setRecipient(value)
+      validateCurrentInput(value)
+    })
+
+  // onUnFocus check the address is valid
+  const validateCurrentInput = (input: string) => {
+    if (validateAddress(input) === AddressValidationMessage.INVALID_ADDRESS) {
+      setStatus({
+        type: 'ERROR',
+        value: 'The address is invalid',
+      })
+    }
+  }
+
+  return showQRReader ? (
+    <Modal presentationStyle="overFullScreen" style={styles.cameraModal}>
+      <View
+        style={{
+          ...styles.cameraWrapper,
+          width: windowWidth,
+          height: windowWidth,
+        }}>
+        <QRScanner
+          onBarCodeRead={(event: BarCodeReadEvent) =>
+            handleChangeText(decodeURIComponent(event.data))
+          }
+        />
+        <Button onPress={() => setShowQRReader(false)} title="close" />
+      </View>
+    </Modal>
+  ) : (
+    <View style={styles.parent}>
       <View style={grid.row}>
-        <View style={{ ...grid.column6 }}>
+        <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
-            onChangeText={handleChangeText}
-            value={value}
-            placeholder={placeholder}
+            onChangeText={text => handleChangeText(text)}
+            onBlur={() => validateCurrentInput(recipient)}
+            autoCapitalize="none"
+            autoCorrect={false}
+            value={recipient}
+            placeholder="Address or RSK domain"
             testID={testID}
-            editable={inputInfo !== 'Loading...'}
+            editable={true}
+          />
+          {status.value && (
+            <>
+              <Text
+                style={status.type === 'INFO' ? styles.info : styles.error}
+                testID={testID + '.InputInfo'}>
+                {status.value}
+              </Text>
+              {status.type === 'CHECKSUM' && (
+                <Button
+                  testID={`${testID}.Button.Checksum`}
+                  title="Convert to correct checksum"
+                  onPress={() =>
+                    handleChangeText(toChecksumAddress(recipient, chainId))
+                  }
+                />
+              )}
+            </>
+          )}
+        </View>
+      </View>
+      <View style={grid.row}>
+        <View style={{ ...grid.column2, ...styles.iconColumn }}>
+          <SquareButton
+            onPress={handlePasteClick}
+            testID="Address.PasteButton"
+            icon={<ContentPasteIcon color={iconColor} />}
           />
         </View>
-        <View style={{ ...grid.column2 }}>
-          <View style={styles.centerRow}>
-            <SquareButton
-              onPress={async () =>
-                handleChangeText(await Clipboard.getString())
-              }
-              title=""
-              testID="Address.CopyButton"
-              icon={<ContentPasteIcon color={getTokenColor(selectedSymbol)} />}
-            />
-          </View>
+        <View style={{ ...grid.column2, ...styles.iconColumn }}>
+          <SquareButton
+            onPress={() => setShowQRReader(true)}
+            testID="Address.QRCodeButton"
+            icon={<QRCodeIcon color={iconColor} />}
+          />
         </View>
-        <View style={{ ...grid.column2 }}>
-          <View style={styles.centerRow}>
-            {/*TODO: implement QR code*/}
+        {showContactsIcon && (
+          <View style={{ ...grid.column2, ...styles.iconColumn }}>
             <SquareButton
-              onPress={onToggleQR}
-              title=""
-              testID="Address.CopyButton"
-              icon={<QRCodeIcon color={getTokenColor(selectedSymbol)} />}
+              onPress={() => navigation.navigate('Contacts')}
+              testID="Address.ContactsButton"
+              icon={<ContactsIcon color={iconColor} />}
             />
-          </View>
-        </View>
-        {showContacts && (
-          <View style={{ ...grid.column2 }}>
-            <View style={styles.centerRow}>
-              <SquareButton
-                // @ts-ignore
-                onPress={() => navigation.navigate('Contacts')}
-                title=""
-                icon={<ContactsIcon color={getTokenColor(selectedSymbol)} />}
-              />
-            </View>
           </View>
         )}
       </View>
-
-      {inputInfo !== '' && (
-        <Text style={styles.info} testID={testID + '.InputInfo'}>
-          {inputInfo}
-        </Text>
-      )}
-      <Text style={styles.error} testID={testID + '.ValidationMessage'}>
-        {validationMessage}
-      </Text>
-      {validationMessage === AddressValidationMessage.INVALID_CHECKSUM && (
-        <Text
-          testID={testID + '.ToChecksumHandle'}
-          style={styles.link}
-          onPress={() => handleChangeText(toChecksumAddress(value, 31))}>
-          {' '}
-          [To Checksum]
-        </Text>
-      )}
-    </>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  centerRow: {
-    justifyContent: 'center',
-    alignItems: 'center',
+  parent: {
+    marginHorizontal: 10,
   },
-  input: {
+  iconColumn: {
+    alignItems: 'flex-end',
+  },
+  inputContainer: {
     backgroundColor: '#ffffff',
     borderRadius: 10,
     display: 'flex',
+    width: '100%',
+    paddingHorizontal: 10,
+  },
+  rnsText: {
+    paddingHorizontal: 10,
+    fontSize: 14,
+    color: '#999',
+    paddingBottom: 10,
+  },
+  input: {
+    display: 'flex',
     height: 50,
-    marginTop: 10,
-    margin: 10,
+    padding: 10,
+  },
+  cameraModal: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+  },
+  cameraWrapper: {},
+  info: {
+    color: '#999',
   },
   error: {
     color: 'red',
-  },
-  info: {
-    color: 'blue',
-  },
-  link: {
-    color: 'blue',
   },
 })

@@ -21,7 +21,6 @@ import { IToken } from '../../lib/token/BaseToken'
 import { ScreenProps } from '../../RootNavigation'
 import { ScreenWithWallet } from '../types'
 import { AddressInput } from '../../components'
-import Resolver from '@rsksmart/rns-resolver.js'
 import { getTokenColor, getTokenColorWithOpacity } from '../home/tokenColor'
 import { grid } from '../../styles/grid'
 import { SquareButton } from '../../components/button/SquareButton'
@@ -29,14 +28,12 @@ import { Arrow, RefreshIcon } from '../../components/icons'
 import { TokenImage } from '../home/TokenImage'
 import Clipboard from '@react-native-community/clipboard'
 import TransactionInfo from './TransactionInfo'
-import QRScanner from '../../components/qrScanner'
 
-export type SendScreenProps = {
-  rnsResolver: Resolver
-}
+export type SendScreenProps = {}
+
 export const SendScreen: React.FC<
   SendScreenProps & ScreenProps<'Send'> & ScreenWithWallet
-> = ({ rnsResolver, route, wallet, navigation }) => {
+> = ({ route, wallet, navigation }) => {
   const isFocused = useIsFocused()
 
   const { t } = useTranslation()
@@ -47,12 +44,7 @@ export const SendScreen: React.FC<
   )
 
   const [amount, setAmount] = useState('')
-
   const [to, setTo] = useState(route.params?.to || '')
-  const [displayTo, setDisplayTo] = useState(route.params?.displayTo || '')
-  const [isValidTo, setIsValidTo] = useState(false)
-
-  const [showQR, setShowQR] = useState(false)
 
   const [tx, setTx] = useState<ContractTransaction>()
   const [receipt, setReceipt] = useState<ContractReceipt>()
@@ -60,16 +52,12 @@ export const SendScreen: React.FC<
 
   useEffect(() => {
     setTo(route.params?.to || '')
-    setDisplayTo(route.params?.displayTo || '')
+
     if (tx && receipt) {
       setTx(undefined)
       setReceipt(undefined)
     }
-    handleTargetAddressChange(
-      true,
-      route.params?.to as string,
-      route.params?.displayTo as string,
-    )
+
     getAllTokens(wallet).then(tokens => setAvailableTokens(tokens))
   }, [wallet, isFocused])
 
@@ -107,21 +95,16 @@ export const SendScreen: React.FC<
       setSelectedSymbol('tRIF')
     }
   }
-  const handleTargetAddressChange = (
-    isValid: boolean,
-    address: string,
-    displayAddress: string,
-  ) => {
-    setIsValidTo(isValid)
+
+  const handleTargetAddressChange = (address: string) => {
+    setError(undefined)
     setTo(address)
-    setDisplayTo(displayAddress)
   }
+
   const imageStyle = {
     ...styles.image,
     shadowColor: '#000000',
   }
-
-  const handleToggleQR = () => setShowQR(prev => !prev)
 
   const handleCopy = () => Clipboard.setString(tx!.hash!)
   const handleOpen = () =>
@@ -132,19 +115,6 @@ export const SendScreen: React.FC<
       colors={['#FFFFFF', getTokenColorWithOpacity(selectedSymbol, 0.1)]}
       style={styles.parent}>
       <ScrollView>
-        {showQR && (
-          <View style={styles.cameraContainer}>
-            <View style={styles.cameraFrame}>
-              <QRScanner
-                onBarCodeRead={event => {
-                  const data = decodeURIComponent(event.data)
-                  setDisplayTo(data)
-                  setTo(data)
-                }}
-              />
-            </View>
-          </View>
-        )}
         <View style={grid.row}>
           <View style={{ ...grid.column2, ...styles.icon }}>
             <TouchableOpacity
@@ -168,21 +138,19 @@ export const SendScreen: React.FC<
         </View>
         <View>
           <AddressInput
+            initialValue={route.params?.to || ''}
             onChangeText={handleTargetAddressChange}
-            onToggleQR={handleToggleQR}
-            value={displayTo}
-            placeholder={t('To')}
             testID={'To.Input'}
-            rnsResolver={rnsResolver}
             navigation={navigation}
-            showContacts={true}
-            selectedSymbol={selectedSymbol}
+            showContactsIcon={true}
+            chainId={31}
+            color={getTokenColor(selectedSymbol)}
           />
         </View>
-        <View />
+
         <View style={styles.centerRow}>
           <SquareButton
-            disabled={!isValidTo || (!!tx && !receipt)}
+            disabled={!!tx && !receipt}
             onPress={transfer}
             title="Next"
             testID="Address.CopyButton"

@@ -6,6 +6,10 @@ export const grid = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
   },
+  column12: {
+    display: 'flex',
+    width: '100%',
+  },
   column10: {
     display: 'flex',
     width: '83.333%',
