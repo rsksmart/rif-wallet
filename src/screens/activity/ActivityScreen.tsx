@@ -168,16 +168,18 @@ const enhanceTransactionInput = async (
   wallet: RIFWallet,
   abiEnhancer: IAbiEnhancer,
 ): Promise<IEnhancedResult | undefined> => {
-  let tx
   try {
-    tx = wallet.smartWallet.smartWalletContract.interface.decodeFunctionData(
+    /* Remove SmartWallet
+    const tx = wallet.smartWallet.smartWalletContract.interface.decodeFunctionData(
       'directExecute',
       transaction.input,
     )
+    */
+    const tx = transaction
     return (await abiEnhancer.enhance(wallet, {
       from: wallet.smartWalletAddress,
       to: tx.to.toLowerCase(),
-      data: tx.data,
+      data: tx.data || tx.input,
       value: transaction.value,
     }))!
   } catch {

@@ -40,7 +40,7 @@ const ActivityRow: React.FC<Interface> = ({
         </View>
         <View style={grid.column6}>
           <Text style={styles.text}>
-            To: {shortAddress(activityTransaction.originTransaction.to)}
+            To: {shortAddress(activityTransaction.enhancedTransaction?.to)}
           </Text>
         </View>
         <View style={grid.column4}>
