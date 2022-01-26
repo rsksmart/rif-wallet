@@ -46,10 +46,6 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   const [recipient, setRecipient] = useState<string>(initialValue)
   // hide or show the QR reader
   const [showQRReader, setShowQRReader] = useState<boolean>(false)
-  // resolved RNS
-  const [resolvedRNSAddress, setResolvedRNSAddress] = useState<
-    string | undefined
-  >(undefined)
 
   const windowWidth = Dimensions.get('window').width
 
@@ -69,7 +65,6 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   const handleChangeText = (inputText: string) => {
     setStatus({ type: 'READY' })
     setRecipient(inputText)
-    setResolvedRNSAddress(undefined)
     onChangeText(inputText)
 
     const newValidationMessage = validateAddress(inputText)
@@ -83,7 +78,6 @@ export const AddressInput: React.FC<AddressInputProps> = ({
       rnsResolver
         .addr(inputText)
         .then((address: string) => {
-          setResolvedRNSAddress(address)
           setStatus({
             type: 'INFO',
             value: `Resolved to ${address}`,
