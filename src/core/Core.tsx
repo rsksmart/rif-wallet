@@ -72,7 +72,6 @@ export const Core = () => {
       newState ? newState.routes[newState.routes.length - 1].name : 'Home',
     )
 
-
   const removeKeys = () => {
     setState({ ...state, ...noKeysState })
   }
@@ -169,7 +168,9 @@ export const Core = () => {
         }}>
         <NavigationContainer onStateChange={handleScreenChange}>
           <WalletConnectProviderElement>
-            <RIFSocketsProvider rifServiceSocket={rifWalletServicesSocket} abiEnhancer={abiEnhancer}>
+            <RIFSocketsProvider
+              rifServiceSocket={rifWalletServicesSocket}
+              abiEnhancer={abiEnhancer}>
               <RootNavigation
                 currentScreen={currentScreen}
                 rifWalletServicesSocket={rifWalletServicesSocket}
@@ -187,13 +188,18 @@ export const Core = () => {
                   mnemonic: state.kms?.mnemonic || '',
                   deleteKeys,
                 }}
-                injectedBrowserUXScreenProps={{ fetcher: rifWalletServicesFetcher }}
+                injectedBrowserUXScreenProps={{
+                  fetcher: rifWalletServicesFetcher,
+                }}
                 contactsNavigationScreenProps={{ rnsResolver }}
                 dappsScreenProps={{ fetcher: rifWalletServicesFetcher }}
               />
 
               {requests.length !== 0 && (
-                <ModalComponent closeModal={closeRequest} request={requests[0]} />
+                <ModalComponent
+                  closeModal={closeRequest}
+                  request={requests[0]}
+                />
               )}
             </RIFSocketsProvider>
           </WalletConnectProviderElement>

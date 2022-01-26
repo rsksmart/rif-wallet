@@ -35,7 +35,7 @@ function liveSubscriptionsReducer(state: State, action: Action) {
     case 'newTransaction':
       return {
         ...state,
-        transactions: [action.payload, ...state.transactions]
+        transactions: [action.payload, ...state.transactions],
       }
 
     case 'init':
@@ -80,7 +80,7 @@ export function RIFSocketsProvider({
   children,
   rifServiceSocket,
   isWalletDeployed,
-  abiEnhancer
+  abiEnhancer,
 }: SubscriptionsProviderProps) {
   const [state, dispatch] = React.useReducer(
     liveSubscriptionsReducer,
@@ -101,28 +101,26 @@ export function RIFSocketsProvider({
 
         rifServiceSocket?.on('change', result => {
           if (result.type === 'newTransaction') {
-            enhanceTransactionInput(
-              result.payload,
-              wallet,
-              abiEnhancer,
-            ).then(enhancedTransaction => {
-              console.log(enhancedTransaction)
+            enhanceTransactionInput(result.payload, wallet, abiEnhancer)
+              .then(enhancedTransaction => {
+                console.log(enhancedTransaction)
                 dispatch({
                   type: 'newTransaction',
                   payload: {
                     originTransaction: result.payload,
                     enhancedTransaction,
-                  }
+                  },
+                })
               })
-            }).catch(() => {
-              dispatch({
-                type: 'newTransaction',
-                payload: {
-                  originTransaction: result.payload,
-                  enhancedTransaction: undefined,
-                }
+              .catch(() => {
+                dispatch({
+                  type: 'newTransaction',
+                  payload: {
+                    originTransaction: result.payload,
+                    enhancedTransaction: undefined,
+                  },
+                })
               })
-            })
           } else {
             dispatch(result as any)
           }

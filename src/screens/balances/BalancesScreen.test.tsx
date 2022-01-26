@@ -45,7 +45,10 @@ const createTestInstance = async (fetcher = createMockFetcher()) => {
   const socketMock = new RifWalletServicesSocketMock()
 
   const container = render(
-    <RIFSocketsProvider rifServiceSocket={socketMock} isWalletDeployed={true} abiEnhancer={abiEnhancer}>
+    <RIFSocketsProvider
+      rifServiceSocket={socketMock}
+      isWalletDeployed={true}
+      abiEnhancer={abiEnhancer}>
       <BalancesScreen
         wallet={mock.rifWallet}
         isWalletDeployed={true}

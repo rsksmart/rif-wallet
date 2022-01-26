@@ -4,10 +4,7 @@ import {
   TransactionsServerResponse,
 } from '../lib/rifWalletServices/RIFWalletServicesTypes'
 import { IRIFWalletServicesFetcher } from '../lib/rifWalletServices/RifWalletServicesFetcher'
-import {
-  IAbiEnhancer,
-  IEnhancedResult,
-} from '../lib/abiEnhancer/AbiEnhancer'
+import { IAbiEnhancer, IEnhancedResult } from '../lib/abiEnhancer/AbiEnhancer'
 import { ITokenWithBalance } from '../lib/rifWalletServices/RIFWalletServicesTypes'
 import { IRifWalletServicesSocket } from '../lib/rifWalletServices/RifWalletServicesSocket'
 
