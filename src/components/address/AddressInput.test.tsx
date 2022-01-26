@@ -85,15 +85,17 @@ describe('address input', () => {
     })
 
     test('rns', async () => {
-      const { getByTestId, input } = createInstance()
+      const { getByTestId, input, handleChange } = createInstance()
 
       await act(async () => {
         await fireEvent.changeText(input, 'testing.rsk')
       })
 
       expect(getByTestId('Input.Address.InputInfo').children[0]).toBe(
-        'Resolved: testing.rsk',
+        'Resolved to 0x000_MOCK_DOMAIN_ADDRESS',
       )
+
+      expect(handleChange).toBeCalledWith('0x000_MOCK_DOMAIN_ADDRESS')
     })
   })
 })
