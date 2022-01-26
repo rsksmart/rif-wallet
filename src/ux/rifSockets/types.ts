@@ -9,6 +9,7 @@ import {
   IEnhancedResult,
 } from '../../lib/abiEnhancer/AbiEnhancer'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import { IRifWalletServicesSocket } from '../../lib/rifWalletServices/RifWalletServicesSocket'
 
 export interface IActivity
   extends TransactionsServerResponseWithActivityTransactions {}
@@ -60,7 +61,11 @@ export type Action =
   | InitAction
 export type Dispatch = (action: Action) => void
 export type LoadRBTCBalance = () => void
-export type SubscriptionsProviderProps = { children: React.ReactNode }
+export type SubscriptionsProviderProps = {
+  children: React.ReactNode
+  rifServiceSocket?: IRifWalletServicesSocket
+  isWalletDeployed?: boolean
+}
 
 export interface IActivityTransaction {
   originTransaction: IApiTransaction

@@ -1,33 +1,7 @@
 import React from 'react'
 import { useSelectedWallet } from '../../Context'
-import { io } from 'socket.io-client'
-import {
-  abiEnhancer,
-  rifWalletServicesFetcher,
-} from '../../core/setup'
-import { rifWalletServicesUrl } from '../../core/config'
 
-import {
-  Action,
-  Dispatch,
-  IActivityTransaction,
-  State,
-  SubscriptionsProviderProps,
-} from './types'
-import {
-  IApiTransaction,
-  ITokenWithBalance,
-} from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { enhanceTransactionInput } from '../../screens/activity/ActivityScreen'
-
-const socket = io(rifWalletServicesUrl, {
-  path: '/ws',
-  forceNew: true,
-  reconnectionAttempts: 3,
-  timeout: 2000,
-  autoConnect: true,
-  transports: ['websocket'], // you need to explicitly tell it to use websocket
-})
+import { Action, Dispatch, State, SubscriptionsProviderProps } from './types'
 
 function liveSubscriptionsReducer(state: State, action: Action) {
   const { type } = action
@@ -101,7 +75,11 @@ const RIFSocketsContext = React.createContext<
   { state: State; dispatch: Dispatch } | undefined
 >(undefined)
 
-export function RIFSocketsProvider({ children }: SubscriptionsProviderProps) {
+export function RIFSocketsProvider({
+  children,
+  rifServiceSocket,
+  isWalletDeployed,
+}: SubscriptionsProviderProps) {
   const [state, dispatch] = React.useReducer(
     liveSubscriptionsReducer,
     initialState,
@@ -110,53 +88,26 @@ export function RIFSocketsProvider({ children }: SubscriptionsProviderProps) {
   const { wallet, isDeployed } = useSelectedWallet()
 
   React.useEffect(() => {
-    if (isDeployed) {
+    if (isWalletDeployed || isDeployed) {
       const connect = async () => {
-        const fetchedTransactions =
-          await rifWalletServicesFetcher.fetchTransactionsByAddress(
-            wallet.smartWalletAddress,
-          )
-
-        const activityTransactions = await Promise.all<IActivityTransaction[]>(
-          fetchedTransactions.data.map(async (tx: IApiTransaction) => {
-            const enhancedTransaction = await enhanceTransactionInput(
-              tx,
-              wallet,
-              abiEnhancer,
-            )
-            return {
-              originTransaction: tx,
-              enhancedTransaction,
-            }
-          }),
-        )
-
-        const fetchedTokens =
-          (await rifWalletServicesFetcher.fetchTokensByAddress(
-            wallet.smartWalletAddress,
-          )) as ITokenWithBalance[]
-
-        dispatch({
-          type: 'init',
-          payload: {
-            transactions: activityTransactions,
-            balances: fetchedTokens,
-          },
-        })
-
-        socket.on('connect', () => {
-          socket.on('change', (event: Action) => {
-            dispatch(event)
+        rifServiceSocket?.on('init', result => {
+          dispatch({
+            type: 'init',
+            payload: result,
           })
-
-          socket.emit('subscribe', { address: wallet.smartWalletAddress })
         })
+
+        rifServiceSocket?.on('change', result => {
+          dispatch(result as any)
+        })
+
+        rifServiceSocket?.connect(wallet)
       }
 
       connect()
 
       return function cleanup() {
-        socket.disconnect()
+        rifServiceSocket?.disconnect()
       }
     }
   }, [isDeployed])
