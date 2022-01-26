@@ -11,7 +11,7 @@ const QRScanner = ({ onBarCodeRead }: Props) => {
   const cameraRef = React.useRef<RNCamera>(null)
 
   const windowWidth = Dimensions.get('window').width
-  const qrCodeSize = windowWidth * 0.6
+  const qrCodeSize = windowWidth * 0.9
 
   return (
     <RNCamera
@@ -20,6 +20,7 @@ const QRScanner = ({ onBarCodeRead }: Props) => {
         ...styles.preview,
         width: qrCodeSize,
         height: qrCodeSize,
+        marginHorizontal: (windowWidth - qrCodeSize) / 2,
       }}
       ratio="1:1"
       type={RNCamera.Constants.Type.back}
