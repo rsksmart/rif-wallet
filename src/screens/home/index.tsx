@@ -44,13 +44,13 @@ export const HomeScreen: React.FC<{
     <LinearGradient
       colors={['#FFFFFF', setOpacity(selectedTokenColor, 0.1)]}
       style={styles.parent}>
-        <ScrollView>
-          <FaucetComponent
-            navigation={navigation}
-            rbtcBalance={0}
-            rifBalance={0}
-          />
-          <SelectedTokenComponent navigation={navigation} token={selected} />
+      <ScrollView>
+        <FaucetComponent
+          navigation={navigation}
+          rbtcBalance={0}
+          rifBalance={0}
+        />
+        <SelectedTokenComponent navigation={navigation} token={selected} />
 
         <LinearGradient
           colors={['#FFFFFF', '#E1E1E1']}
