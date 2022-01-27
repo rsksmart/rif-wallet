@@ -1,25 +1,29 @@
 import React, { useState } from 'react'
-import { render, fireEvent, waitFor } from '@testing-library/react-native'
+import { render, fireEvent } from '@testing-library/react-native'
 import { AddressInput } from '.'
 import { testnetCase } from './testCase'
-import { AddressValidationMessage } from './lib'
-import { createMockRnsResolver } from '../../../testLib/mocks/rnsResolverMock'
+import { act } from 'react-test-renderer'
 
 const testId = 'Input.Address'
 
+jest.mock('@rsksmart/rns-resolver.js', () => ({
+  forRskTestnet: () => ({
+    addr: jest.fn(() => Promise.resolve('0x000_MOCK_DOMAIN_ADDRESS')),
+  }),
+}))
+
 const WrappedAddressInput = ({ handleChange }: any) => {
   const [address, setAddress] = useState('')
-  const resolverMock = createMockRnsResolver()
+
   return (
     <AddressInput
-      placeholder="To"
       testID={testId}
-      value={address}
-      onChangeText={(isValid, newAddress) => {
-        handleChange(isValid, newAddress)
+      initialValue={address}
+      onChangeText={newAddress => {
+        handleChange(newAddress)
         setAddress(newAddress)
       }}
-      rnsResolver={resolverMock}
+      chainId={31}
     />
   )
 }
@@ -30,15 +34,10 @@ const createInstance = () => {
     <WrappedAddressInput handleChange={handleChange} />,
   )
   const input = getByTestId(testId)
-  const validationMessageText = getByTestId(testId + '.ValidationMessage')
-
-  const getChecksumHandle = () => getByTestId(testId + '.ToChecksumHandle')
 
   return {
     handleChange,
     input,
-    validationMessageText,
-    getChecksumHandle,
     findByTestId,
     getByTestId,
   }
@@ -47,87 +46,56 @@ const createInstance = () => {
 describe('address input', () => {
   describe('invalid cases', () => {
     test('empty', () => {
-      const { handleChange, input, validationMessageText, getChecksumHandle } =
-        createInstance()
+      const { handleChange, input } = createInstance()
 
       fireEvent.changeText(input, testnetCase.invalid)
-
-      expect(handleChange).toHaveBeenCalledWith(false, testnetCase.invalid)
-      expect(validationMessageText.children[0]).toEqual(
-        AddressValidationMessage.INVALID_ADDRESS,
-      )
-      expect(() => getChecksumHandle()).toThrow()
+      expect(handleChange).toHaveBeenCalledWith(testnetCase.invalid)
     })
 
     test('wrong checksum', () => {
-      const { handleChange, input, validationMessageText, getChecksumHandle } =
-        createInstance()
+      const { handleChange, input, getByTestId } = createInstance()
 
       fireEvent.changeText(input, testnetCase.wrongChecksum)
 
-      expect(handleChange).toHaveBeenCalledWith(
-        false,
-        testnetCase.wrongChecksum,
+      expect(handleChange).toHaveBeenCalledWith(testnetCase.wrongChecksum)
+      expect(getByTestId('Input.Address.InputInfo').children[0]).toBe(
+        'The checksum is invalid.',
       )
-      expect(validationMessageText.children[0]).toEqual(
-        AddressValidationMessage.INVALID_CHECKSUM,
-      )
-      expect(getChecksumHandle()).toBeDefined()
-    })
 
-    test('domain address', async () => {
-      const { input, getByTestId } = createInstance()
-
-      fireEvent.changeText(input, testnetCase.domainWithAddress)
-      await waitFor(() => {
-        const inputInfo = getByTestId('Input.Address.InputInfo')
-        expect(inputInfo.children[0]).toEqual('0x000_MOCK_DOMAIN_ADDRESS')
-      })
+      fireEvent.press(getByTestId('Input.Address.Button.Checksum'))
+      expect(handleChange).toHaveBeenCalledWith(testnetCase.checksummed)
     })
   })
 
   describe('valid cases', () => {
     test('valid', () => {
-      const { handleChange, input, validationMessageText, getChecksumHandle } =
-        createInstance()
+      const { handleChange, input } = createInstance()
 
       fireEvent.changeText(input, testnetCase.checksummed)
 
-      expect(handleChange).toHaveBeenCalledWith(true, testnetCase.checksummed)
-      expect(validationMessageText.children[0]).toEqual(
-        AddressValidationMessage.VALID,
-      )
-      expect(() => getChecksumHandle()).toThrow()
+      expect(handleChange).toHaveBeenCalledWith(testnetCase.checksummed)
     })
 
     test('lower', () => {
-      const { handleChange, input, validationMessageText, getChecksumHandle } =
-        createInstance()
+      const { handleChange, input } = createInstance()
 
       fireEvent.changeText(input, testnetCase.lower)
 
-      expect(handleChange).toHaveBeenCalledWith(true, testnetCase.lower)
-      expect(validationMessageText.children[0]).toEqual(
-        AddressValidationMessage.VALID,
-      )
-      expect(() => getChecksumHandle()).toThrow()
+      expect(handleChange).toHaveBeenCalledWith(testnetCase.lower)
     })
 
-    test('after converting', () => {
-      const { handleChange, input, validationMessageText, getChecksumHandle } =
-        createInstance()
+    test('rns', async () => {
+      const { getByTestId, input, handleChange } = createInstance()
 
-      fireEvent.changeText(input, testnetCase.wrongChecksum)
-      fireEvent.press(getChecksumHandle())
+      await act(async () => {
+        await fireEvent.changeText(input, 'testing.rsk')
+      })
 
-      expect(handleChange.mock.calls[1]).toEqual([
-        true,
-        testnetCase.checksummed,
-      ])
-      expect(validationMessageText.children[0]).toEqual(
-        AddressValidationMessage.VALID,
+      expect(getByTestId('Input.Address.InputInfo').children[0]).toBe(
+        'Resolved to 0x000_MOCK_DOMAIN_ADDRESS',
       )
-      expect(() => getChecksumHandle()).toThrow()
+
+      expect(handleChange).toBeCalledWith('0x000_MOCK_DOMAIN_ADDRESS')
     })
   })
 })
