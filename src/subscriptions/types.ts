@@ -2,14 +2,11 @@ import React from 'react'
 import {
   IApiTransaction,
   TransactionsServerResponse,
-} from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
-import {
-  IAbiEnhancer,
-  IEnhancedResult,
-} from '../../lib/abiEnhancer/AbiEnhancer'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { IRifWalletServicesSocket } from '../../lib/rifWalletServices/RifWalletServicesSocket'
+} from '../lib/rifWalletServices/RIFWalletServicesTypes'
+import { IRIFWalletServicesFetcher } from '../lib/rifWalletServices/RifWalletServicesFetcher'
+import { IAbiEnhancer, IEnhancedResult } from '../lib/abiEnhancer/AbiEnhancer'
+import { ITokenWithBalance } from '../lib/rifWalletServices/RIFWalletServicesTypes'
+import { IRifWalletServicesSocket } from '../lib/rifWalletServices/RifWalletServicesSocket'
 
 export interface IActivity
   extends TransactionsServerResponseWithActivityTransactions {}
@@ -65,6 +62,7 @@ export type SubscriptionsProviderProps = {
   children: React.ReactNode
   rifServiceSocket?: IRifWalletServicesSocket
   isWalletDeployed?: boolean
+  abiEnhancer: IAbiEnhancer
 }
 
 export interface IActivityTransaction {

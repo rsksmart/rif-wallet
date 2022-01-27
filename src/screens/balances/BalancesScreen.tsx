@@ -5,7 +5,7 @@ import { BigNumber, BigNumberish, constants } from 'ethers'
 import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { useTranslation } from 'react-i18next'
-import { useSocketsState } from '../../ux/rifSockets/RIFSockets'
+import { useSocketsState } from '../../subscriptions/RIFSockets'
 
 import { ScreenProps, NavigationProp } from '../../RootNavigation'
 import { Address, Button } from '../../components'
