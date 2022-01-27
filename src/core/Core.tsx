@@ -17,6 +17,7 @@ import {
   abiEnhancer,
   createRIFWalletFactory,
   networkId,
+  rifWalletServicesSocket,
 } from './setup'
 
 import { RootNavigation } from '../RootNavigation'
@@ -25,6 +26,9 @@ import ModalComponent from '../ux/requestsModal/ModalComponent'
 import { Cover } from './components/Cover'
 import { LoadingScreen } from './components/LoadingScreen'
 import { RequestPIN } from './components/RequestPIN'
+import { WalletConnectProviderElement } from '../screens/walletConnect/WalletConnectContext'
+import { RIFSocketsProvider } from '../subscriptions/RIFSockets'
+import { NavigationContainer, NavigationState } from '@react-navigation/native'
 
 const gracePeriod = 3000
 
@@ -61,6 +65,12 @@ export const Core = () => {
   const timerRef = useRef<NodeJS.Timeout>(timer)
 
   const [requests, setRequests] = useState<Requests>([])
+
+  const [currentScreen, setCurrentScreen] = useState<string>('Home')
+  const handleScreenChange = (newState: NavigationState | undefined) =>
+    setCurrentScreen(
+      newState ? newState.routes[newState.routes.length - 1].name : 'Home',
+    )
 
   const removeKeys = () => {
     setState({ ...state, ...noKeysState })
@@ -156,29 +166,44 @@ export const Core = () => {
           setRequests,
           mnemonic: state.kms?.mnemonic,
         }}>
-        <RootNavigation
-          keyManagementProps={{
-            generateMnemonic: () => KeyManagementSystem.create().mnemonic,
-            createFirstWallet,
-          }}
-          balancesScreenProps={{ fetcher: rifWalletServicesFetcher }}
-          sendScreenProps={{ rnsResolver }}
-          activityScreenProps={{
-            fetcher: rifWalletServicesFetcher,
-            abiEnhancer,
-          }}
-          keysInfoScreenProps={{
-            mnemonic: state.kms?.mnemonic || '',
-            deleteKeys,
-          }}
-          injectedBrowserUXScreenProps={{ fetcher: rifWalletServicesFetcher }}
-          contactsNavigationScreenProps={{ rnsResolver }}
-          dappsScreenProps={{ fetcher: rifWalletServicesFetcher }}
-        />
+        <NavigationContainer onStateChange={handleScreenChange}>
+          <WalletConnectProviderElement>
+            <RIFSocketsProvider
+              rifServiceSocket={rifWalletServicesSocket}
+              abiEnhancer={abiEnhancer}>
+              <RootNavigation
+                currentScreen={currentScreen}
+                rifWalletServicesSocket={rifWalletServicesSocket}
+                keyManagementProps={{
+                  generateMnemonic: () => KeyManagementSystem.create().mnemonic,
+                  createFirstWallet,
+                }}
+                balancesScreenProps={{ fetcher: rifWalletServicesFetcher }}
+                sendScreenProps={{ rnsResolver }}
+                activityScreenProps={{
+                  fetcher: rifWalletServicesFetcher,
+                  abiEnhancer,
+                }}
+                keysInfoScreenProps={{
+                  mnemonic: state.kms?.mnemonic || '',
+                  deleteKeys,
+                }}
+                injectedBrowserUXScreenProps={{
+                  fetcher: rifWalletServicesFetcher,
+                }}
+                contactsNavigationScreenProps={{ rnsResolver }}
+                dappsScreenProps={{ fetcher: rifWalletServicesFetcher }}
+              />
 
-        {requests.length !== 0 && (
-          <ModalComponent closeModal={closeRequest} request={requests[0]} />
-        )}
+              {requests.length !== 0 && (
+                <ModalComponent
+                  closeModal={closeRequest}
+                  request={requests[0]}
+                />
+              )}
+            </RIFSocketsProvider>
+          </WalletConnectProviderElement>
+        </NavigationContainer>
       </AppContext.Provider>
     </SafeAreaView>
   )

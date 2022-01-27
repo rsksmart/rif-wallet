@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, ScrollView, Text } from 'react-native'
-import { BigNumber, BigNumberish } from 'ethers'
+import { BigNumber, BigNumberish, constants } from 'ethers'
 
 import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { useTranslation } from 'react-i18next'
+import { useSocketsState } from '../../subscriptions/RIFSockets'
 
 import { ScreenProps, NavigationProp } from '../../RootNavigation'
 import { Address, Button } from '../../components'
 import { ScreenWithWallet } from '../types'
-import { RIFWallet } from '../../lib/core'
 
 export const balanceToString = (balance: string, decimals: BigNumberish) => {
   const parts = {
@@ -47,55 +47,38 @@ export const BalancesRow = ({
   </View>
 )
 
-async function getTokensAndRBTCBalance(
-  fetcher: IRIFWalletServicesFetcher,
-  wallet: RIFWallet,
-): Promise<ITokenWithBalance[]> {
-  const tokenBalances = await fetcher.fetchTokensByAddress(
-    wallet.smartWalletAddress,
-  )
-  const rbtcBalanceEntry = await wallet
-    .provider!.getBalance(wallet.smartWallet.address)
-    .then(
-      rbtcBalance =>
-        ({
-          name: 'TRBTC',
-          logo: 'TRBTC',
-          symbol: 'TRBTC (eoa wallet)',
-          contractAddress: 'RBTC',
-          decimals: 18,
-          balance: rbtcBalance.toString(),
-        } as ITokenWithBalance),
-    )
-
-  return [rbtcBalanceEntry, ...tokenBalances]
-}
-
 export type BalancesScreenProps = { fetcher: IRIFWalletServicesFetcher }
 
 export const BalancesScreen: React.FC<
   ScreenProps<'Balances'> & ScreenWithWallet & BalancesScreenProps
-> = ({ navigation, wallet, fetcher }) => {
-  const [info, setInfo] = useState('')
-  const [balances, setBalances] = useState<ITokenWithBalance[]>([])
+> = ({ navigation, wallet }) => {
   const { t } = useTranslation()
+  const [isLoading, setIsLoading] = useState(true)
 
-  const loadData = async () => {
-    setInfo(t('Loading balances. Please wait...'))
-    setBalances([])
+  const { state, dispatch } = useSocketsState()
 
-    await getTokensAndRBTCBalance(fetcher, wallet)
-      .then(newBalances => {
-        setBalances(newBalances)
-        setInfo('')
-      })
-      .catch(e => {
-        setInfo('Error reaching API: ' + e.message)
-      })
+  const loadRBTCBalance = async () => {
+    setIsLoading(true)
+
+    const rbtcBalanceEntry = await wallet
+      .provider!.getBalance(wallet.smartWallet.address)
+      .then(
+        rbtcBalance =>
+          ({
+            name: 'TRBTC',
+            logo: 'TRBTC',
+            symbol: 'TRBTC (eoa wallet)',
+            contractAddress: constants.AddressZero,
+            decimals: 18,
+            balance: rbtcBalance.toString(),
+          } as ITokenWithBalance),
+      )
+    dispatch({ type: 'newBalance', payload: rbtcBalanceEntry })
+    setIsLoading(false)
   }
 
   useEffect(() => {
-    loadData()
+    loadRBTCBalance()
   }, [])
 
   return (
@@ -105,22 +88,25 @@ export const BalancesScreen: React.FC<
       </View>
 
       <View>
-        <Text testID="Info.Text">{info}</Text>
+        <Text testID="Info.Text">
+          {isLoading ? t('Loading balances. Please wait...') : ''}
+        </Text>
       </View>
 
       <View>
-        {balances.map(token => (
-          <BalancesRow
-            key={token.contractAddress}
-            token={token}
-            navigation={navigation}
-          />
-        ))}
+        {!isLoading &&
+          Object.values(state.balances).map(token => (
+            <BalancesRow
+              key={token.contractAddress}
+              token={token}
+              navigation={navigation}
+            />
+          ))}
       </View>
 
       <View style={styles.refreshButtonView}>
         <Button
-          onPress={loadData}
+          onPress={loadRBTCBalance}
           title={t('Refresh')}
           testID={'Refresh.Button'}
         />

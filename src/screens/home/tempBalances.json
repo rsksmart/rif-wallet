@@ -3,7 +3,7 @@
      "name":"TRBTC",
      "logo":"TRBTC",
      "symbol":"TRBTC",
-     "contractAddress":"RBTC",
+     "contractAddress":"0x0000000000000000000000000000000000000000",
      "decimals":18,
      "balance":"50083190948009098"
   },

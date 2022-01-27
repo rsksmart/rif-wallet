@@ -14,17 +14,49 @@ import {
   lastToken,
   lastTokenTextTestId,
 } from '../../../testLib/mocks/rifServicesMock'
+import { RIFSocketsProvider } from '../../subscriptions/RIFSockets'
+import { IRifWalletServicesSocket } from '../../lib/rifWalletServices/RifWalletServicesSocket'
+import EventEmitter from 'events'
 
-const createTestInstace = async (fetcher = createMockFetcher()) => {
+import tempRecent from '../home/tempRecent.json'
+import { constants } from 'ethers'
+import { createMockAbiEnhancer } from '../../../testLib/mocks/rifTransactionsMock'
+
+class RifWalletServicesSocketMock
+  extends EventEmitter
+  implements IRifWalletServicesSocket
+{
+  async connect() {
+    this.emit('init', {
+      transactions: tempRecent,
+      balances: testCase,
+    })
+  }
+  disconnect() {
+    // nothing
+  }
+}
+
+const abiEnhancer = createMockAbiEnhancer()
+
+const createTestInstance = async (fetcher = createMockFetcher()) => {
   const mock = await setupTest()
 
+  const socketMock = new RifWalletServicesSocketMock()
+
   const container = render(
-    <BalancesScreen
-      wallet={mock.rifWallet}
-      navigation={mock.navigation}
-      route={{} as any}
-      fetcher={fetcher}
-    />,
+    <RIFSocketsProvider
+      rifServiceSocket={socketMock}
+      isWalletDeployed={true}
+      abiEnhancer={abiEnhancer}>
+      <BalancesScreen
+        wallet={mock.rifWallet}
+        isWalletDeployed={true}
+        navigation={mock.navigation}
+        route={{} as any}
+        fetcher={fetcher}
+      />
+    </RIFSocketsProvider>,
   )
 
   const loadingText = container.getByTestId('Info.Text')
@@ -34,7 +66,9 @@ const createTestInstace = async (fetcher = createMockFetcher()) => {
   // waits for things to be rendered in the happy path
 
   const testRBTCBalance = async () => {
-    const actual = getTextFromTextNode(container.getByTestId('RBTC.Text'))
+    const actual = getTextFromTextNode(
+      container.getByTestId(`${constants.AddressZero}.Text`),
+    )
     const expected = await mock.rifWallet.smartWallet.signer
       .getBalance()
       .then(balance => `${balanceToString(balance.toString(), 18)} TRBTC`)
@@ -46,21 +80,21 @@ const createTestInstace = async (fetcher = createMockFetcher()) => {
 }
 
 describe('Balances Screen', function (this: {
-  testInstance: Awaited<ReturnType<typeof createTestInstace>>
+  testInstance: Awaited<ReturnType<typeof createTestInstance>>
 }) {
   beforeEach(async () => {
-    this.testInstance = await createTestInstace()
+    this.testInstance = await createTestInstance()
   })
 
   describe('initial screen', () => {
     test('starts loading', async () => {
       const {
         container: { getByTestId },
-        waitForEffect,
       } = this.testInstance
 
-      expect(getTextFromTextNode(getByTestId('Info.Text'))).toContain('Loading')
-      await waitForEffect()
+      const testLoading = getTextFromTextNode(getByTestId('Info.Text'))
+
+      expect(testLoading).toContain('Loading balances. Please wait...')
     })
 
     test('account balance', async () => {
@@ -73,9 +107,7 @@ describe('Balances Screen', function (this: {
     test('token balances', async () => {
       const {
         waitForEffect,
-        fetcher,
         container: { findByTestId, getByTestId },
-        mock: { rifWallet },
       } = this.testInstance
       await waitForEffect()
 
@@ -87,21 +119,17 @@ describe('Balances Screen', function (this: {
           `${balanceToString(v.balance, v.decimals)} ${v.symbol}`,
         )
       }
-
-      expect(fetcher.fetchTokensByAddress).toHaveBeenCalledTimes(1)
-      expect(fetcher.fetchTokensByAddress).toHaveBeenCalledWith(
-        rifWallet.smartWalletAddress,
-      )
     })
 
-    test('handle error', async () => {
+    // we don't have any error handling yet
+    test.skip('handle error', async () => {
       const fetcher = {
         fetchTokensByAddress: jest.fn(() => Promise.reject(new Error())),
       }
 
       const {
         container: { getByTestId },
-      } = await createTestInstace(fetcher)
+      } = await createTestInstance(fetcher as any)
 
       const loadingText = getByTestId('Info.Text')
       expect(getTextFromTextNode(loadingText)).toContain('Loading')
@@ -118,7 +146,6 @@ describe('Balances Screen', function (this: {
     test('refresh', async () => {
       const {
         waitForEffect,
-        fetcher,
         testRBTCBalance,
         container: { getByTestId },
         mock: { rifWallet },
@@ -137,15 +164,13 @@ describe('Balances Screen', function (this: {
       fireEvent.press(button)
 
       const loadingText = getByTestId('Info.Text')
-      expect(getTextFromTextNode(loadingText)).toContain('Loading')
+      expect(getTextFromTextNode(loadingText)).toContain(
+        'Loading balances. Please wait...',
+      )
 
       await waitForEffect()
 
       await testRBTCBalance()
-      expect(fetcher.fetchTokensByAddress).toHaveBeenCalledTimes(2)
-      expect(fetcher.fetchTokensByAddress).toHaveBeenCalledWith(
-        rifWallet.smartWalletAddress,
-      )
     })
 
     test('navigation', async () => {

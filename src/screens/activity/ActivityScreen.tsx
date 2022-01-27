@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, ScrollView, Text } from 'react-native'
 
+import { useSocketsState } from '../../subscriptions/RIFSockets'
 import { useTranslation } from 'react-i18next'
 import {
   IApiTransaction,
@@ -40,8 +41,8 @@ export const ActivityScreen: React.FC<
   ScreenProps<'Activity'> & ScreenWithWallet & ActivityScreenProps
 > = ({ wallet, fetcher, abiEnhancer, navigation }) => {
   const [info, setInfo] = useState('')
-  const [transactions, setTransactions] =
-    useState<TransactionsServerResponseWithActivityTransactions | null>(null)
+  const { state, dispatch } = useSocketsState()
+  useState<TransactionsServerResponseWithActivityTransactions | null>(null)
   const { t } = useTranslation()
 
   useEffect(() => {
@@ -58,7 +59,7 @@ export const ActivityScreen: React.FC<
     /*i18n.changeLanguage('es')*/
     try {
       setInfo(t('Loading transactions. Please wait...'))
-      setTransactions(null)
+      dispatch({ type: 'newActivity', payload: null })
 
       const fetchedTransactions: TransactionsServerResponseWithActivityTransactions =
         await fetcher.fetchTransactionsByAddress(
@@ -81,7 +82,7 @@ export const ActivityScreen: React.FC<
         }),
       )
 
-      setTransactions(fetchedTransactions)
+      dispatch({ type: 'newActivity', payload: fetchedTransactions })
       setInfo('')
     } catch (e: any) {
       setInfo(t('Error reaching API: ') + e.message)
@@ -94,13 +95,15 @@ export const ActivityScreen: React.FC<
       <View style={{ ...grid.row, ...styles.refreshButtonView }}>
         <View style={{ ...grid.column4, ...styles.column }}>
           <SquareButton
-            onPress={() => fetchTransactionsPage({ prev: transactions?.prev })}
-            disabled={!transactions?.prev}
+            onPress={() =>
+              fetchTransactionsPage({ prev: state.activities?.prev })
+            }
+            disabled={!state.activities?.prev}
             title="prev"
             icon={
               <Arrow
                 rotate={270}
-                color={transactions?.prev ? '#66777E' : '#f1f1f1'}
+                color={state.activities?.prev ? '#66777E' : '#f1f1f1'}
               />
             }
           />
@@ -114,13 +117,15 @@ export const ActivityScreen: React.FC<
         </View>
         <View style={{ ...grid.column4, ...styles.column }}>
           <SquareButton
-            onPress={() => fetchTransactionsPage({ next: transactions?.next })}
-            disabled={!transactions?.next}
+            onPress={() =>
+              fetchTransactionsPage({ next: state.activities?.next })
+            }
+            disabled={!state.activities?.next}
             title="next"
             icon={
               <Arrow
                 rotate={90}
-                color={transactions?.next ? '#66777E' : '#f1f1f1'}
+                color={state.activities?.next ? '#66777E' : '#f1f1f1'}
               />
             }
           />
@@ -129,9 +134,9 @@ export const ActivityScreen: React.FC<
 
       {!!info && <Text testID="Info.Text">{info}</Text>}
 
-      {transactions &&
-        transactions.activityTransactions!.length > 0 &&
-        transactions.activityTransactions!.map(
+      {state.activities &&
+        state.activities.activityTransactions!.length > 0 &&
+        state.activities.activityTransactions!.map(
           (activityTransaction: IActivityTransaction) => (
             <ActivityRow
               key={activityTransaction.originTransaction.hash}
@@ -163,7 +168,7 @@ const styles = StyleSheet.create({
   },
 })
 
-const enhanceTransactionInput = async (
+export const enhanceTransactionInput = async (
   transaction: IApiTransaction,
   wallet: RIFWallet,
   abiEnhancer: IAbiEnhancer,
