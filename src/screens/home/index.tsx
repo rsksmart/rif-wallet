@@ -9,6 +9,8 @@ import LinearGradient from 'react-native-linear-gradient'
 import { getTokenColor, setOpacity } from './tokenColor'
 import PortfolioComponent from './PortfolioComponent'
 import ActivityComponent from './ActivityComponent'
+import FaucetComponent from './FaucetComponent'
+import { ScrollView } from 'react-native-gesture-handler'
 
 export const HomeScreen: React.FC<{
   navigation: NavigationProp
@@ -28,24 +30,32 @@ export const HomeScreen: React.FC<{
     <LinearGradient
       colors={['#FFFFFF', setOpacity(selectedTokenColor, 0.1)]}
       style={styles.parent}>
-      <SelectedTokenComponent navigation={navigation} token={selected} />
-
-      <LinearGradient
-        colors={['#FFFFFF', '#E1E1E1']}
-        style={{ ...styles.topContainer, ...containerStyles }}>
-        <PortfolioComponent
-          setPanelActive={() => setSelectedPanel('portfolio')}
-          balances={balances}
-          selected={selected}
-          setSelected={setSelected}
-          visible={selectedPanel === 'portfolio'}
-        />
-        <ActivityComponent
+      <ScrollView>
+        <FaucetComponent
           navigation={navigation}
-          setPanelActive={() => setSelectedPanel('transactions')}
-          visible={selectedPanel === 'transactions'}
+          rbtcBalance={0}
+          rifBalance={0}
         />
-      </LinearGradient>
+
+        <SelectedTokenComponent navigation={navigation} token={selected} />
+
+        <LinearGradient
+          colors={['#FFFFFF', '#E1E1E1']}
+          style={{ ...styles.topContainer, ...containerStyles }}>
+          <PortfolioComponent
+            setPanelActive={() => setSelectedPanel('portfolio')}
+            balances={balances}
+            selected={selected}
+            setSelected={setSelected}
+            visible={selectedPanel === 'portfolio'}
+          />
+          <ActivityComponent
+            navigation={navigation}
+            setPanelActive={() => setSelectedPanel('transactions')}
+            visible={selectedPanel === 'transactions'}
+          />
+        </LinearGradient>
+      </ScrollView>
     </LinearGradient>
   )
 }
