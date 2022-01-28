@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { StyleSheet, View, ScrollView, Text } from 'react-native'
+import React, { useState } from 'react'
+import { FlatList, StyleSheet, View, Text } from 'react-native'
 
 import { useSocketsState } from '../../subscriptions/RIFSockets'
 import { useTranslation } from 'react-i18next'
@@ -18,9 +18,6 @@ import { ScreenWithWallet } from '../types'
 import { ScreenProps } from '../../RootNavigation'
 import { RIFWallet } from '../../lib/core'
 import ActivityRow from './ActivityRow'
-import { grid } from '../../styles/grid'
-import { SquareButton } from '../../components/button/SquareButton'
-import { Arrow, RefreshIcon } from '../../components/icons'
 import { IActivity } from '../../subscriptions/types'
 
 export interface IActivityTransaction {
@@ -49,10 +46,6 @@ export const ActivityScreen: React.FC<
   useState<TransactionsServerResponseWithActivityTransactions | null>(null)
   const { t } = useTranslation()
 
-  useEffect(() => {
-    fetchTransactionsPage()
-  }, [])
-
   const fetchTransactionsPage = async ({
     prev,
     next,
@@ -63,7 +56,6 @@ export const ActivityScreen: React.FC<
     /*i18n.changeLanguage('es')*/
     try {
       setInfo(t('Loading transactions. Please wait...'))
-      //dispatch({ type: 'newActivity', payload: null })
 
       const fetchedTransactions: TransactionsServerResponseWithActivityTransactions =
         await fetcher.fetchTransactionsByAddress(
@@ -98,58 +90,24 @@ export const ActivityScreen: React.FC<
   }
 
   return (
-    <ScrollView style={styles.parent}>
+    <View>
       <Text style={styles.header}>Activity</Text>
-      <View style={{ ...grid.row, ...styles.refreshButtonView }}>
-        <View style={{ ...grid.column4, ...styles.column }}>
-          <SquareButton
-            onPress={() => fetchTransactionsPage({ prev: transactions?.prev })}
-            disabled={!transactions?.prev}
-            title="prev"
-            icon={
-              <Arrow
-                rotate={270}
-                color={transactions?.prev ? '#66777E' : '#f1f1f1'}
-              />
-            }
-          />
-        </View>
-        <View style={{ ...grid.column4, ...styles.column }}>
-          <SquareButton
-            onPress={() => fetchTransactionsPage()}
-            title="refresh"
-            icon={<RefreshIcon width={50} height={50} color="#66777E" />}
-          />
-        </View>
-        <View style={{ ...grid.column4, ...styles.column }}>
-          <SquareButton
-            onPress={() => fetchTransactionsPage({ next: transactions?.next })}
-            disabled={!transactions?.next}
-            title="next"
-            icon={
-              <Arrow
-                rotate={90}
-                color={transactions?.next ? '#66777E' : '#f1f1f1'}
-              />
-            }
-          />
-        </View>
-      </View>
-
-      {!!info && <Text testID="Info.Text">{info}</Text>}
 
       {transactions &&
         transactions.activityTransactions!.length > 0 &&
-        transactions.activityTransactions!.map(
-          (activityTransaction: IActivityTransaction) => (
-            <ActivityRow
-              key={activityTransaction.originTransaction.hash}
-              activityTransaction={activityTransaction}
-              navigation={navigation}
-            />
-          ),
-        )}
-    </ScrollView>
+        <FlatList
+          data={transactions.activityTransactions}
+          keyExtractor={item => item.originTransaction.hash}
+          renderItem={({ item }) => <ActivityRow activityTransaction={item} navigation={navigation} />}
+          onEndReached={() => fetchTransactionsPage({ next: transactions?.next })}
+          onEndReachedThreshold={1}
+          initialNumToRender={10}
+          refreshing={!!info}
+          onRefresh={fetchTransactionsPage}
+        />
+
+      }
+    </View>
   )
 }
 
