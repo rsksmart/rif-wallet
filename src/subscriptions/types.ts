@@ -16,9 +16,9 @@ export interface IPrice {
   lastUpdated: string
 }
 
-export interface NewActivityAction {
-  type: 'newActivity'
-  payload: IActivity | null
+export interface NewTransactionsAction {
+  type: 'newTransactions'
+  payload: IActivity
 }
 
 export interface NewBalanceAction {
@@ -44,20 +44,19 @@ export interface InitAction {
 }
 
 export interface State {
-  activities: TransactionsServerResponseWithActivityTransactions | null
+  transactions: TransactionsServerResponseWithActivityTransactions
   balances: Record<string, ITokenWithBalance>
   prices: Record<string, IPrice>
-  transactions: Array<IActivityTransaction>
 }
 
 export type Action =
-  | NewActivityAction
+  | NewTransactionsAction
   | NewBalanceAction
   | NewPriceAction
   | NewTransactionAction
   | InitAction
+
 export type Dispatch = (action: Action) => void
-export type LoadRBTCBalance = () => void
 export type SubscriptionsProviderProps = {
   children: React.ReactNode
   rifServiceSocket?: IRifWalletServicesSocket
@@ -84,5 +83,5 @@ export interface FetchTransactionsOptions {
 
 export interface TransactionsServerResponseWithActivityTransactions
   extends TransactionsServerResponse {
-  activityTransactions?: IActivityTransaction[]
+  activityTransactions: IActivityTransaction[]
 }

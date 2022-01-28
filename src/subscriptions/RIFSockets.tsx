@@ -1,17 +1,35 @@
 import React from 'react'
 import { useSelectedWallet } from '../Context'
 import { enhanceTransactionInput } from '../screens/activity/ActivityScreen'
+import { filterEnhancedTransactions, sortEnhancedTransactions } from './utils'
 
-import { Action, Dispatch, State, SubscriptionsProviderProps } from './types'
+import {
+  Action,
+  Dispatch,
+  IActivityTransaction,
+  State,
+  SubscriptionsProviderProps,
+} from './types'
 
 function liveSubscriptionsReducer(state: State, action: Action) {
   const { type } = action
 
   switch (action.type) {
-    case 'newActivity':
+    case 'newTransactions':
+      const sortedTxs: Array<IActivityTransaction> = [
+        ...action.payload!.activityTransactions,
+        ...state.transactions!.activityTransactions,
+      ]
+        .sort(sortEnhancedTransactions)
+        .filter(filterEnhancedTransactions)
+
       return {
         ...state,
-        activities: action.payload,
+        transactions: {
+          ...action.payload,
+          data: [...state.transactions.data, ...action.payload!.data],
+          activityTransactions: sortedTxs,
+        },
       }
 
     case 'newBalance':
@@ -33,9 +51,20 @@ function liveSubscriptionsReducer(state: State, action: Action) {
       }
 
     case 'newTransaction':
+      const sortedTx: Array<IActivityTransaction> = [
+        action.payload,
+        ...state.transactions!.activityTransactions,
+      ]
+        .sort(sortEnhancedTransactions)
+        .filter(filterEnhancedTransactions)
+
       return {
         ...state,
-        transactions: [action.payload, ...state.transactions],
+        transactions: {
+          ...state.transactions,
+          data: [action.payload.originTransaction, ...state.transactions.data],
+          activityTransactions: sortedTx,
+        },
       }
 
     case 'init':
@@ -51,8 +80,11 @@ function liveSubscriptionsReducer(state: State, action: Action) {
 
       return {
         ...state,
-        transactions: [...action.payload.transactions],
         balances: balancesInitial,
+        transactions: {
+          ...state.transactions,
+          activityTransactions: action.payload.transactions,
+        },
       }
 
     default:
@@ -61,7 +93,7 @@ function liveSubscriptionsReducer(state: State, action: Action) {
 }
 
 const initialState = {
-  activities: {
+  transactions: {
     activityTransactions: [],
     data: [],
     next: null,
@@ -69,7 +101,6 @@ const initialState = {
   },
   prices: {},
   balances: {},
-  transactions: [],
 }
 
 const RIFSocketsContext = React.createContext<
