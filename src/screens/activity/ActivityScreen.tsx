@@ -46,6 +46,9 @@ export const ActivityScreen: React.FC<
   useState<TransactionsServerResponseWithActivityTransactions | null>(null)
   const { t } = useTranslation()
 
+  const hasTransactions =
+    transactions && transactions.activityTransactions!.length > 0
+
   const fetchTransactionsPage = async ({
     prev,
     next,
@@ -93,20 +96,23 @@ export const ActivityScreen: React.FC<
     <View>
       <Text style={styles.header}>Activity</Text>
 
-      {transactions &&
-        transactions.activityTransactions!.length > 0 &&
+      {hasTransactions && (
         <FlatList
           data={transactions.activityTransactions}
           initialNumToRender={10}
           keyExtractor={item => item.originTransaction.hash}
-          onEndReached={() => fetchTransactionsPage({ next: transactions?.next })}
+          onEndReached={() =>
+            fetchTransactionsPage({ next: transactions?.next })
+          }
           onEndReachedThreshold={0.2}
           onRefresh={fetchTransactionsPage}
           refreshing={!!info}
-          renderItem={({ item }) => <ActivityRow activityTransaction={item} navigation={navigation} />}
+          renderItem={({ item }) => (
+            <ActivityRow activityTransaction={item} navigation={navigation} />
+          )}
           style={styles.parent}
         />
-      }
+      )}
     </View>
   )
 }
