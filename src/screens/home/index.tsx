@@ -9,7 +9,6 @@ import { getTokenColor, setOpacity } from './tokenColor'
 import PortfolioComponent from './PortfolioComponent'
 import ActivityComponent from './ActivityComponent'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
-import { Loading } from '../../components'
 import FaucetComponent from './FaucetComponent'
 import { ScrollView } from 'react-native-gesture-handler'
 
@@ -30,11 +29,7 @@ export const HomeScreen: React.FC<{
     }
   }, [balances])
 
-  if (!selected) {
-    return <Loading reason="..." />
-  }
-
-  const selectedTokenColor = getTokenColor(selected.symbol)
+  const selectedTokenColor = getTokenColor(selected?.symbol)
 
   const containerStyles = {
     shadowColor: setOpacity(selectedTokenColor, 0.5),
@@ -50,7 +45,9 @@ export const HomeScreen: React.FC<{
           rbtcBalance={0}
           rifBalance={0}
         />
-        <SelectedTokenComponent navigation={navigation} token={selected} />
+        {selected && (
+          <SelectedTokenComponent navigation={navigation} token={selected} />
+        )}
 
         <LinearGradient
           colors={['#FFFFFF', '#E1E1E1']}
