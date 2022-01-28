@@ -97,15 +97,15 @@ export const ActivityScreen: React.FC<
         transactions.activityTransactions!.length > 0 &&
         <FlatList
           data={transactions.activityTransactions}
-          keyExtractor={item => item.originTransaction.hash}
-          renderItem={({ item }) => <ActivityRow activityTransaction={item} navigation={navigation} />}
-          onEndReached={() => fetchTransactionsPage({ next: transactions?.next })}
-          onEndReachedThreshold={1}
           initialNumToRender={10}
-          refreshing={!!info}
+          keyExtractor={item => item.originTransaction.hash}
+          onEndReached={() => fetchTransactionsPage({ next: transactions?.next })}
+          onEndReachedThreshold={0.2}
           onRefresh={fetchTransactionsPage}
+          refreshing={!!info}
+          renderItem={({ item }) => <ActivityRow activityTransaction={item} navigation={navigation} />}
+          style={styles.parent}
         />
-
       }
     </View>
   )
@@ -114,6 +114,7 @@ export const ActivityScreen: React.FC<
 const styles = StyleSheet.create({
   parent: {
     paddingHorizontal: 20,
+    marginBottom: 30,
     backgroundColor: '#ffffff',
   },
   refreshButtonView: {
