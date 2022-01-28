@@ -3,8 +3,8 @@ import React from 'react'
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native'
 import { AddressCopyComponent } from '../../components/copy/AddressCopyComponent'
 import { useSelectedWallet } from '../../Context'
-import MenuIcon from './MenuIcon'
 import { Network } from '@ethersproject/networks'
+import { MenuIcon } from '../../components/icons/MenuIcon'
 
 export const networks: Record<number, Network> = {
   30: {
