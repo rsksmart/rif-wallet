@@ -9,7 +9,8 @@ import { getTokenColor, setOpacity } from './tokenColor'
 import PortfolioComponent from './PortfolioComponent'
 import ActivityComponent from './ActivityComponent'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
-import { Loading } from '../../components'
+import FaucetComponent from './FaucetComponent'
+import { ScrollView } from 'react-native-gesture-handler'
 
 export const HomeScreen: React.FC<{
   navigation: NavigationProp
@@ -28,11 +29,7 @@ export const HomeScreen: React.FC<{
     }
   }, [balances])
 
-  if (!selected) {
-    return <Loading reason="..." />
-  }
-
-  const selectedTokenColor = getTokenColor(selected.symbol)
+  const selectedTokenColor = getTokenColor(selected?.symbol)
 
   const containerStyles = {
     shadowColor: setOpacity(selectedTokenColor, 0.5),
@@ -42,23 +39,32 @@ export const HomeScreen: React.FC<{
     <LinearGradient
       colors={['#FFFFFF', setOpacity(selectedTokenColor, 0.1)]}
       style={styles.parent}>
-      <SelectedTokenComponent navigation={navigation} token={selected} />
-
-      <LinearGradient
-        colors={['#FFFFFF', '#E1E1E1']}
-        style={{ ...styles.topContainer, ...containerStyles }}>
-        <PortfolioComponent
-          setPanelActive={() => setSelectedPanel('portfolio')}
-          selected={selected}
-          setSelected={setSelected}
-          visible={selectedPanel === 'portfolio'}
-        />
-        <ActivityComponent
+      <ScrollView>
+        <FaucetComponent
           navigation={navigation}
-          setPanelActive={() => setSelectedPanel('transactions')}
-          visible={selectedPanel === 'transactions'}
+          rbtcBalance={0}
+          rifBalance={0}
         />
-      </LinearGradient>
+        {selected && (
+          <SelectedTokenComponent navigation={navigation} token={selected} />
+        )}
+
+        <LinearGradient
+          colors={['#FFFFFF', '#E1E1E1']}
+          style={{ ...styles.topContainer, ...containerStyles }}>
+          <PortfolioComponent
+            setPanelActive={() => setSelectedPanel('portfolio')}
+            selected={selected}
+            setSelected={setSelected}
+            visible={selectedPanel === 'portfolio'}
+          />
+          <ActivityComponent
+            navigation={navigation}
+            setPanelActive={() => setSelectedPanel('transactions')}
+            visible={selectedPanel === 'transactions'}
+          />
+        </LinearGradient>
+      </ScrollView>
     </LinearGradient>
   )
 }

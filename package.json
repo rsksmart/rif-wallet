@@ -7,9 +7,9 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "ganache": "npx ganache-cli",
-    "test": "jest --verbose",
-    "test:watch": "jest --verbose --watch --coverage",
-    "test:ci": "jest --coverage --verbose",
+    "test": "jest --verbose --testTimeout=60000",
+    "test:watch": "jest --verbose --watch --coverage --testTimeout=60000",
+    "test:ci": "jest --coverage --verbose --testTimeout=60000",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "postinstall": "rn-nodeify --install buffer,events,stream,crypto --hack --yarn"

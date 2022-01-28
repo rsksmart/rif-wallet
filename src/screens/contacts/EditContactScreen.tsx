@@ -1,71 +1,56 @@
 import React, { useContext, useState } from 'react'
-import { ScrollView, StyleSheet, Text, TextInput } from 'react-native'
+import { StyleSheet, Text, TextInput } from 'react-native'
 import { NavigationProp } from '../../RootNavigation'
 import LinearGradient from 'react-native-linear-gradient'
 import { setOpacity } from '../home/tokenColor'
 import { AddressInput, Button } from '../../components'
 import { ContactsContext } from './ContactsContext'
-import Resolver from '@rsksmart/rns-resolver.js'
 
-export type EditContactScreenProps = {
-  rnsResolver: Resolver
-}
+export type EditContactScreenProps = {}
 
 export const EditContactScreen: React.FC<
   {
     navigation: NavigationProp
   } & EditContactScreenProps
-> = ({ navigation, rnsResolver }) => {
+> = ({ navigation }) => {
   const [name, setName] = useState('')
-  const [isValidAddressOrUrl, setIsValidAddressOrUrl] = useState(false)
-  const [displayAddress, setDisplayAddress] = useState('')
   const [address, setAddress] = useState('')
 
   const { addContact } = useContext(ContactsContext)
 
-  const handleTargetAddressChange = (
-    isValid: boolean,
-    addressParam: string,
-    displayAddressParam: string,
-  ) => {
-    setIsValidAddressOrUrl(isValid)
+  const handleTargetAddressChange = (addressParam: string) => {
     setAddress(addressParam)
-    setDisplayAddress(displayAddressParam)
   }
 
-  const isValid = isValidAddressOrUrl && name ? true : false
+  const isValid = address && name
 
   return (
     <LinearGradient
       colors={['#FFFFFF', setOpacity('#CCCCCC', 0.1)]}
       style={styles.parent}>
       <Text style={styles.header}>Add Contact</Text>
-
-      <ScrollView style={styles.contacts}>
-        <TextInput
-          onChangeText={text => setName(text)}
-          value={name}
-          placeholder={'Contact name'}
-          style={styles.input}
-        />
-        <AddressInput
-          onChangeText={handleTargetAddressChange}
-          value={displayAddress}
-          placeholder={'Contact address / RNS url'}
-          testID={'AddressOrUrl.Input'}
-          rnsResolver={rnsResolver}
-          style={styles.input}
-        />
-        <Button
-          onPress={() => {
-            addContact(name, address, displayAddress)
-            navigation.goBack()
-          }}
-          title="Save"
-          style={{ margin: 12 }}
-          disabled={!isValid}
-        />
-      </ScrollView>
+      <TextInput
+        onChangeText={text => setName(text)}
+        value={name}
+        placeholder={'Contact name'}
+        style={styles.input}
+      />
+      <AddressInput
+        initialValue={address}
+        onChangeText={handleTargetAddressChange}
+        showContactsIcon={false}
+        testID="Input.Address"
+        chainId={31}
+      />
+      <Button
+        onPress={() => {
+          addContact(name, address, address)
+          navigation.goBack()
+        }}
+        title="Save"
+        style={styles.saveButton}
+        disabled={!isValid}
+      />
     </LinearGradient>
   )
 }
@@ -77,14 +62,6 @@ const styles = StyleSheet.create({
   },
   parent: {
     height: '100%',
-  },
-  contacts: {
-    margin: 20,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    padding: 20,
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
   },
   row: {
     paddingVertical: 10,
@@ -101,5 +78,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: '#fff',
     padding: 10,
+  },
+  saveButton: {
+    margin: 12,
   },
 })

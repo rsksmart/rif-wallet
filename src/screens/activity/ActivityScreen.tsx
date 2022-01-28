@@ -82,7 +82,7 @@ export const ActivityScreen: React.FC<
         type: 'newTransactions',
         payload: fetchedTransactions as IActivity,
       })
-      console.log(fetchedTransactions)
+
       setInfo('')
     } catch (e: any) {
       setInfo(t('Error reaching API: ') + e.message)
