@@ -129,7 +129,7 @@ export const SendScreen: React.FC<
       <ScrollView>
         <View>
           <Text>Balance: {`${selectedTokenBalance}`}</Text>
-          <Text>USD: {tokenQuota.price}</Text>
+          <Text>USD: {tokenQuota.price.toFixed(2)}</Text>
         </View>
         <View style={grid.row}>
           <View style={{ ...grid.column2, ...styles.icon }}>
