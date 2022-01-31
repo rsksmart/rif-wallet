@@ -33,6 +33,7 @@ const SelectedTokenComponent: React.FC<Interface> = ({ navigation, token }) => {
           onPress={() => {
             navigation.navigate('Send', {
               token: token.symbol,
+              contractAddress: token.contractAddress
             })
           }}
           title="send"
