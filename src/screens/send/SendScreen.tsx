@@ -14,6 +14,7 @@ import {
 
 import { ContractReceipt, BigNumber, utils, ContractTransaction } from 'ethers'
 import { useTranslation } from 'react-i18next'
+import { useSocketsState } from '../../subscriptions/RIFSockets'
 
 import { getAllTokens } from '../../lib/token/tokenMetadata'
 import { IToken } from '../../lib/token/BaseToken'
@@ -29,18 +30,29 @@ import { TokenImage } from '../home/TokenImage'
 import Clipboard from '@react-native-community/clipboard'
 import TransactionInfo from './TransactionInfo'
 
+import { balanceToString } from '../balances/BalancesScreen'
+
 export type SendScreenProps = {}
 
 export const SendScreen: React.FC<
   SendScreenProps & ScreenProps<'Send'> & ScreenWithWallet
 > = ({ route, wallet, navigation }) => {
   const isFocused = useIsFocused()
+  const { state } = useSocketsState()
+
+  const contractAddress = route.params?.contractAddress as string
+  const selectedTokenInfo = state.balances[contractAddress]
+  const selectedTokenBalance = balanceToString(
+    selectedTokenInfo.balance,
+    selectedTokenInfo.decimals || 0,
+  )
+  const tokenQuota = state.prices[contractAddress]
 
   const { t } = useTranslation()
 
   const [availableTokens, setAvailableTokens] = useState<IToken[]>()
   const [selectedSymbol, setSelectedSymbol] = useState(
-    route.params?.token || 'tRIF',
+    selectedTokenInfo.symbol || 'tRIF',
   )
 
   const [amount, setAmount] = useState('')
@@ -115,6 +127,10 @@ export const SendScreen: React.FC<
       colors={['#FFFFFF', getTokenColorWithOpacity(selectedSymbol, 0.1)]}
       style={styles.parent}>
       <ScrollView>
+        <View>
+          <Text>Balance: {`${selectedTokenBalance}`}</Text>
+          <Text>USD: {tokenQuota.price}</Text>
+        </View>
         <View style={grid.row}>
           <View style={{ ...grid.column2, ...styles.icon }}>
             <TouchableOpacity
