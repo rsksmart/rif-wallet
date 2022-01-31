@@ -72,7 +72,7 @@ export const RNSManagerScreen: React.FC<
             <SquareButton
               // @ts-ignore
               onPress={() => searchDomain(domainToLookUp)}
-              title=""
+              title=" "
               testID="Address.CopyButton"
               icon={<SearchIcon color={getTokenColor('TRBTC')} />}
             />
