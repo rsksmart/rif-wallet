@@ -61,6 +61,7 @@ export const SendScreen: React.FC<
   const [tx, setTx] = useState<ContractTransaction>()
   const [receipt, setReceipt] = useState<ContractReceipt>()
   const [error, setError] = useState<string>()
+  const [validationError, setValidationError] = useState(false)
 
   useEffect(() => {
     setTo(route.params?.to || '')
@@ -113,6 +114,16 @@ export const SendScreen: React.FC<
     setTo(address)
   }
 
+  const handleAmountChange = (amount: string) => {
+    if (Number(amount) > Number(selectedTokenBalance)) {
+      setValidationError(true)
+      setAmount(amount)
+      return
+    }
+    setValidationError(false)
+    setAmount(amount)
+  }
+
   const imageStyle = {
     ...styles.image,
     shadowColor: '#000000',
@@ -121,6 +132,8 @@ export const SendScreen: React.FC<
   const handleCopy = () => Clipboard.setString(tx!.hash!)
   const handleOpen = () =>
     Linking.openURL(`https://explorer.testnet.rsk.co/tx/${tx!.hash}`)
+
+  const isNextDisabled = (!!tx && !receipt) || validationError
 
   return (
     <LinearGradient
@@ -144,7 +157,7 @@ export const SendScreen: React.FC<
           <View style={{ ...grid.column10 }}>
             <TextInput
               style={styles.input}
-              onChangeText={text => setAmount(text)}
+              onChangeText={text => handleAmountChange(text)}
               value={amount}
               placeholder={t('Amount')}
               keyboardType="numeric"
@@ -153,6 +166,7 @@ export const SendScreen: React.FC<
             {!!amount && (
               <Text>{(Number(amount) * tokenQuota.price).toFixed(2)} USD</Text>
             )}
+            {validationError && <Text>Insuficient funds</Text>}
           </View>
         </View>
         <View>
@@ -169,7 +183,7 @@ export const SendScreen: React.FC<
 
         <View style={styles.centerRow}>
           <SquareButton
-            disabled={!!tx && !receipt}
+            disabled={isNextDisabled}
             onPress={transfer}
             title="Next"
             testID="Address.CopyButton"
