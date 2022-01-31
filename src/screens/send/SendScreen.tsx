@@ -150,7 +150,9 @@ export const SendScreen: React.FC<
               keyboardType="numeric"
               testID={'Amount.Input'}
             />
-            {!!amount && <Text>{(Number(amount) * tokenQuota.price).toFixed(2)} USD</Text>}
+            {!!amount && (
+              <Text>{(Number(amount) * tokenQuota.price).toFixed(2)} USD</Text>
+            )}
           </View>
         </View>
         <View>
