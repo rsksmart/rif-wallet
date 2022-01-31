@@ -7,16 +7,7 @@ on:
       - develop
 
 jobs:
-  install-and-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install dependencies
-        run: |
-          yarn
-
-  build-android:
-    needs: install-and-test
+  build-ios:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
@@ -25,9 +16,11 @@ jobs:
       with:
         node-version: 14.x
     - run: xcode-select -p
-    - run: pod install
+    - name: Install dependencies
+      run: yarn
+    - name: Install pod dependencies
+      run: pod install
       working-directory: ios
-      name: Install pod dependencies
     - name: Build iOS (debug)
       run: "xcodebuild \
         -workspace ios/sWallet.xcworkspace \
