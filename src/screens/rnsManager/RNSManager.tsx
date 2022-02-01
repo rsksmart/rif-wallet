@@ -122,12 +122,12 @@ export const RNSManagerScreen: React.FC<
           )}
         </View>
       ) : null}
-      <View style={styles.sectionCentered}>
-        <Text style={styles.title}>Registered Domain</Text>
+      {registeredDomains.length > 0 && <View style={styles.sectionCentered}>
+        <Text style={styles.title}>Registered Domains</Text>
         {registeredDomains.map((registeredDomain: string) => (
           <Text key={registeredDomain}>{registeredDomain}</Text>
         ))}
-      </View>
+      </View>}
     </LinearGradient>
   )
 }
@@ -139,6 +139,10 @@ const styles = StyleSheet.create({
   },
   domain: {
     fontSize: 30,
+    top: 15,
+  },
+  title: {
+    fontSize: 20,
     top: 15,
   },
   container: {
