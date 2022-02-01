@@ -27,7 +27,7 @@ export const RNSManagerScreen: React.FC<
   const [selectedDomain, setSelectedDomain] = useState('')
   const [selectedDomainAvailable, setSelectedDomainAvailable] = useState(false)
   const [selectedDomainPrice, setSelectedDomainPrice] = useState('')
-  const [registeredDomains, setRegisteredDomains] = useState([])
+  const [registeredDomains, setRegisteredDomains] = useState<string[]>([])
 
   const rskRegistrar = new RSKRegistrar(
     addresses.rskOwnerAddress,
@@ -37,13 +37,8 @@ export const RNSManagerScreen: React.FC<
   )
 
   useEffect(() => {
-    const callStorage = async () => {
-      const domains = JSON.parse((await getDomains()) || '[]')
-      setRegisteredDomains(domains)
-      return domains
-    }
-    callStorage().then(domainsRegistered => console.log(domainsRegistered))
-  }, [])
+    getDomains(wallet.smartWalletAddress).then(setRegisteredDomains)
+  }, [wallet])
 
   const searchDomain = async (domain: string) => {
     setSelectedDomain('')
@@ -73,35 +68,35 @@ export const RNSManagerScreen: React.FC<
       colors={['#FFFFFF', getTokenColorWithOpacity('TRBTC', 0.1)]}
       style={styles.parent}>
       <View style={styles.container} />
-      <View style={grid.row}>
-        <View style={{ ...grid.column8 }}>
-          <TextInput
-            style={styles.input}
-            onChangeText={setDomainToLookUp}
-            value={domainToLookUp}
-            placeholder={'Enter domain name...'}
-            autoCapitalize='none'
-          />
-        </View>
-        <View style={{ ...grid.column2 }}>
-          <Text style={styles.domain}>.rsk</Text>
-        </View>
-        <View style={{ ...grid.column2 }}>
-          <View style={styles.centerRow}>
-            <SquareButton
-              // @ts-ignore
-              onPress={() => searchDomain(domainToLookUp)}
-              title=""
-              testID="Address.CopyButton"
-              icon={<SearchIcon color={getTokenColor('TRBTC')} />}
+        <View style={grid.row}>
+          <View style={{ ...grid.column8 }}>
+            <TextInput
+              style={styles.input}
+              onChangeText={setDomainToLookUp}
+              value={domainToLookUp}
+              placeholder={'Enter domain name...'}
+              autoCapitalize='none'
             />
           </View>
+          <View style={{ ...grid.column2 }}>
+            <Text style={styles.domain}>.rsk</Text>
+          </View>
+          <View style={{ ...grid.column2 }}>
+            <View style={styles.centerRow}>
+              <SquareButton
+                // @ts-ignore
+                onPress={() => searchDomain(domainToLookUp)}
+                title=""
+                testID="Address.CopyButton"
+                icon={<SearchIcon color={getTokenColor('TRBTC')} />}
+              />
+            </View>
+          </View>
         </View>
-      </View>
 
-      {!!error && <Text style={styles.red}>{error}</Text>}
+        {!!error && <Text style={styles.red}>{error}</Text>}
 
-      {selectedDomain ? (
+      {!!selectedDomain && (
         <View style={styles.sectionCentered}>
           <Text style={styles.domainTitle}>{selectedDomain}.rsk</Text>
           {selectedDomainAvailable ? (
@@ -123,11 +118,11 @@ export const RNSManagerScreen: React.FC<
             <Text style={styles.red}>Not Available</Text>
           )}
         </View>
-      ) : null}
+      )}
       {registeredDomains.length > 0 && <View style={styles.sectionCentered}>
         <Text style={styles.title}>Registered Domains</Text>
         {registeredDomains.map((registeredDomain: string) => (
-          <Text key={registeredDomain}>{registeredDomain}</Text>
+          <View style={styles.sectionCentered}><Text key={registeredDomain}>{registeredDomain}</Text></View>
         ))}
       </View>}
     </LinearGradient>
