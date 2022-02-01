@@ -61,7 +61,7 @@ type RootStackParamList = {
   InjectedBrowserUX: undefined
   Dapps: undefined
   RNSManager: undefined
-  RegisterDomain: undefined
+  RegisterDomain: { selectedDomain: string, years: number }
   Contacts: undefined
   Settings: undefined
 }

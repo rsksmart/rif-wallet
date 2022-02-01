@@ -17,6 +17,8 @@ import { getTokenColor, getTokenColorWithOpacity } from '../home/tokenColor'
 import { SearchIcon } from '../../components/icons/SearchIcon'
 import { RegisterIcon } from '../../components/icons/RegisterIcon'
 
+const years = 3
+
 export const RNSManagerScreen: React.FC<
   ScreenProps<'Activity'> & ScreenWithWallet
 > = ({ wallet, navigation }) => {
@@ -59,7 +61,7 @@ export const RNSManagerScreen: React.FC<
     setError('')
 
     const available = (await rskRegistrar.available(domain)) as any as boolean
-    const price = await rskRegistrar.price(domainToLookUp, BigNumber.from(1))
+    const price = await rskRegistrar.price(domainToLookUp, BigNumber.from(years))
 
     setSelectedDomainAvailable(available)
     setSelectedDomain(domain)
@@ -105,13 +107,13 @@ export const RNSManagerScreen: React.FC<
           {selectedDomainAvailable ? (
             <>
               <Text style={styles.green}>Available</Text>
-              <Text>{`${selectedDomainPrice} RIF per year`}</Text>
+              <Text>{`${selectedDomainPrice} RIF for ${years} years`}</Text>
 
               <SquareButton
                 // @ts-ignore
                 onPress={() => {
                   // @ts-ignore
-                  navigation.navigate('RegisterDomain', selectedDomain)
+                  navigation.navigate('RegisterDomain', { selectedDomain, years })
                 }}
                 title="Register"
                 icon={<RegisterIcon color={getTokenColor('TRBTC')} />}

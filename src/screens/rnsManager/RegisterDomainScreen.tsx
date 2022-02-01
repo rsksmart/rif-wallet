@@ -14,12 +14,14 @@ import { getDomains, saveDomains } from '../../storage/DomainsStore'
 import { getTokenColorWithOpacity } from '../home/tokenColor'
 
 export const RegisterDomainScreen: React.FC<
-  ScreenProps<'Activity'> & ScreenWithWallet
+  ScreenProps<'RegisterDomain'> & ScreenWithWallet
 > = ({ wallet, route, navigation }) => {
+  const { selectedDomain, years } = route.params
+
   const [commitToRegisterInfo, setCommitToRegisterInfo] = useState('')
   const [registerDomainInfo, setRegisterDomainInfo] = useState('')
   const [domainSecret, setDomainSecret] = useState('')
-  const [duration, setDuration] = useState('1')
+  const [duration, setDuration] = useState(years.toString())
   const [resolvingAddress, setResolvingAddress] = useState('1')
   const rskRegistrar = new RSKRegistrar(
     addresses.rskOwnerAddress,
@@ -28,7 +30,6 @@ export const RegisterDomainScreen: React.FC<
     wallet,
   )
   const addrResolver = new AddrResolver(addresses.rnsRegistryAddress, wallet)
-  const selectedDomain = route.params ?? ''
   const commitToRegister = async (domain: string) => {
     if (domain) {
       const { makeCommitmentTransaction, secret, canReveal } =
