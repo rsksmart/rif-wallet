@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { BigNumber } from 'ethers'
 import { StyleSheet, View, TextInput } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
@@ -12,16 +12,20 @@ import { ScreenProps } from '../../RootNavigation'
 import { RSKRegistrar, AddrResolver } from '@rsksmart/rns-sdk'
 import { getDomains, saveDomains } from '../../storage/DomainsStore'
 import { getTokenColorWithOpacity } from '../home/tokenColor'
+import { formatUnits } from 'ethers/lib/utils'
 
 export const RegisterDomainScreen: React.FC<
   ScreenProps<'RegisterDomain'> & ScreenWithWallet
 > = ({ wallet, route, navigation }) => {
   const { selectedDomain, years } = route.params
 
-  const [commitToRegisterInfo, setCommitToRegisterInfo] = useState('')
-  const [registerDomainInfo, setRegisterDomainInfo] = useState('')
-  const [domainSecret, setDomainSecret] = useState('')
   const [duration, setDuration] = useState(years.toString())
+  const [domainPrice, setDomainPrice] = useState('')
+
+  const [commitToRegisterInfo, setCommitToRegisterInfo] = useState('')
+  const [domainSecret, setDomainSecret] = useState('')
+  const [registerDomainInfo, setRegisterDomainInfo] = useState('')
+
   const [resolvingAddress, setResolvingAddress] = useState('1')
   const rskRegistrar = new RSKRegistrar(
     addresses.rskOwnerAddress,
@@ -30,6 +34,14 @@ export const RegisterDomainScreen: React.FC<
     wallet,
   )
   const addrResolver = new AddrResolver(addresses.rnsRegistryAddress, wallet)
+
+  useEffect(() => {
+    setDomainPrice('...')
+    if (!!duration) {
+      rskRegistrar.price(selectedDomain, BigNumber.from(duration)).then(price => setDomainPrice(formatUnits(price)))
+    }
+  }, [duration])
+
   const commitToRegister = async (domain: string) => {
     if (domain) {
       const { makeCommitmentTransaction, secret, canReveal } =
@@ -88,11 +100,12 @@ export const RegisterDomainScreen: React.FC<
           value={duration}
           placeholder={''}
         />
+        <Text>Price: {domainPrice}</Text>
       </View>
 
       <View style={styles.sectionCentered}>
         <Button
-          disabled={commitToRegisterInfo !== ''}
+          disabled={!duration ||commitToRegisterInfo !== ''}
           onPress={() => commitToRegister(selectedDomain)}
           title={'Request to register'}
         />
