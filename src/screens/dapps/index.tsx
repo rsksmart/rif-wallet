@@ -6,6 +6,7 @@ import WalletConnectComponent from './WalletConnectComponent'
 import InjectedBrowserComponent from './InjectedBrowserComponent'
 import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
 import { ScreenWithWallet } from '../types'
+import { Button } from '../../components'
 
 type TPanelOptions = 'WalletConnect' | 'InjectedBrowser'
 
@@ -45,6 +46,7 @@ export const DappsScreen: React.FC<
           visible={selectedPanel === 'InjectedBrowser'}
           setPanelActive={() => setSelectedPanel('InjectedBrowser')}
         />
+        <Button title="RNS Manager native" onPress={() => navigation.navigate('RNSManager')} />
       </LinearGradient>
     </LinearGradient>
   )
