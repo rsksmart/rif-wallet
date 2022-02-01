@@ -62,6 +62,7 @@ export const RNSManagerScreen: React.FC<
             onChangeText={setDomainToLookUp}
             value={domainToLookUp}
             placeholder={'Enter domain name...'}
+            autoCapitalize='none'
           />
         </View>
         <View style={{ ...grid.column2 }}>
