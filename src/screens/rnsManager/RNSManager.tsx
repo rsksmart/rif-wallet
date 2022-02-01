@@ -21,6 +21,7 @@ export const RNSManagerScreen: React.FC<
   ScreenProps<'Activity'> & ScreenWithWallet
 > = ({ wallet, navigation }) => {
   const [domainToLookUp, setDomainToLookUp] = useState('')
+  const [error, setError] = useState('')
   const [selectedDomain, setSelectedDomain] = useState('')
   const [selectedDomainAvailable, setSelectedDomainAvailable] = useState(false)
   const [selectedDomainPrice, setSelectedDomainPrice] = useState('')
@@ -33,15 +34,6 @@ export const RNSManagerScreen: React.FC<
     wallet,
   )
 
-  const searchDomain = async (domain: string) => {
-    setSelectedDomain('')
-    const available = await rskRegistrar.available(domain)
-    const price = await rskRegistrar.price(domainToLookUp, BigNumber.from(1))
-
-    setSelectedDomainAvailable(JSON.parse(available))
-    setSelectedDomain(domain)
-    setSelectedDomainPrice(utils.formatUnits(price, 18))
-  }
   useEffect(() => {
     const callStorage = async () => {
       const domains = JSON.parse((await getDomains()) || '[]')
@@ -50,6 +42,30 @@ export const RNSManagerScreen: React.FC<
     }
     callStorage().then(domainsRegistered => console.log(domainsRegistered))
   }, [])
+
+  const searchDomain = async (domain: string) => {
+    setSelectedDomain('')
+
+    if(!/^[a-z0-9]*$/.test(domain)) {
+      setError('Only lower cases and numbers are allowed')
+      return
+    }
+
+    if (domain.length < 5) {
+      setError('Only domains with 5 or more characters are allowed')
+      return
+    }
+
+    setError('')
+
+    const available = (await rskRegistrar.available(domain)) as any as boolean
+    const price = await rskRegistrar.price(domainToLookUp, BigNumber.from(1))
+
+    setSelectedDomainAvailable(available)
+    setSelectedDomain(domain)
+    setSelectedDomainPrice(utils.formatUnits(price, 18))
+  }
+
   return (
     <LinearGradient
       colors={['#FFFFFF', getTokenColorWithOpacity('TRBTC', 0.1)]}
@@ -80,6 +96,8 @@ export const RNSManagerScreen: React.FC<
           </View>
         </View>
       </View>
+
+      {!!error && <Text style={styles.red}>{error}</Text>}
 
       {selectedDomain ? (
         <View style={styles.sectionCentered}>
