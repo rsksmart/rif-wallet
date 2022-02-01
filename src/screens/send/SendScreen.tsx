@@ -128,8 +128,13 @@ export const SendScreen: React.FC<
       style={styles.parent}>
       <ScrollView>
         <View>
-          <Text>Balance: {`${selectedTokenBalance}`}</Text>
-          <Text>USD: { (Number(selectedTokenBalance) * tokenQuota).toFixed(2) || 'N/A'}</Text>
+          <Text>
+            Balance: {`${selectedTokenBalance} ${selectedTokenInfo.symbol}`}
+          </Text>
+          <Text>
+            USD:{' '}
+            {(Number(selectedTokenBalance) * tokenQuota).toFixed(2) || 'N/A'}
+          </Text>
         </View>
         <View style={grid.row}>
           <View style={{ ...grid.column2, ...styles.icon }}>
@@ -151,7 +156,9 @@ export const SendScreen: React.FC<
               testID={'Amount.Input'}
             />
             {!!amount && (
-              <Text>{(Number(amount) * tokenQuota).toFixed(2) || 'N/A'} USD</Text>
+              <Text>
+                {(Number(amount) * tokenQuota).toFixed(2) || 'N/A'} USD
+              </Text>
             )}
           </View>
         </View>
