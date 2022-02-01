@@ -43,7 +43,7 @@ export const RNSManagerScreen: React.FC<
   const searchDomain = async (domain: string) => {
     setSelectedDomain('')
 
-    if(!/^[a-z0-9]*$/.test(domain)) {
+    if (!/^[a-z0-9]*$/.test(domain)) {
       setError('Only lower cases and numbers are allowed')
       return
     }
@@ -56,7 +56,10 @@ export const RNSManagerScreen: React.FC<
     setError('')
 
     const available = (await rskRegistrar.available(domain)) as any as boolean
-    const price = await rskRegistrar.price(domainToLookUp, BigNumber.from(years))
+    const price = await rskRegistrar.price(
+      domainToLookUp,
+      BigNumber.from(years),
+    )
 
     setSelectedDomainAvailable(available)
     setSelectedDomain(domain)
@@ -68,33 +71,33 @@ export const RNSManagerScreen: React.FC<
       colors={['#FFFFFF', getTokenColorWithOpacity('TRBTC', 0.1)]}
       style={styles.parent}>
       <View style={styles.container} />
-        <View style={grid.row}>
-          <View style={{ ...grid.column8 }}>
-            <TextInput
-              style={styles.input}
-              onChangeText={setDomainToLookUp}
-              value={domainToLookUp}
-              placeholder={'Enter domain name...'}
-              autoCapitalize='none'
+      <View style={grid.row}>
+        <View style={{ ...grid.column8 }}>
+          <TextInput
+            style={styles.input}
+            onChangeText={setDomainToLookUp}
+            value={domainToLookUp}
+            placeholder={'Enter domain name...'}
+            autoCapitalize="none"
+          />
+        </View>
+        <View style={{ ...grid.column2 }}>
+          <Text style={styles.domain}>.rsk</Text>
+        </View>
+        <View style={{ ...grid.column2 }}>
+          <View style={styles.centerRow}>
+            <SquareButton
+              // @ts-ignore
+              onPress={() => searchDomain(domainToLookUp)}
+              title=""
+              testID="Address.CopyButton"
+              icon={<SearchIcon color={getTokenColor('TRBTC')} />}
             />
           </View>
-          <View style={{ ...grid.column2 }}>
-            <Text style={styles.domain}>.rsk</Text>
-          </View>
-          <View style={{ ...grid.column2 }}>
-            <View style={styles.centerRow}>
-              <SquareButton
-                // @ts-ignore
-                onPress={() => searchDomain(domainToLookUp)}
-                title=""
-                testID="Address.CopyButton"
-                icon={<SearchIcon color={getTokenColor('TRBTC')} />}
-              />
-            </View>
-          </View>
         </View>
+      </View>
 
-        {!!error && <Text style={styles.red}>{error}</Text>}
+      {!!error && <Text style={styles.red}>{error}</Text>}
 
       {!!selectedDomain && (
         <View style={styles.sectionCentered}>
@@ -108,7 +111,10 @@ export const RNSManagerScreen: React.FC<
                 // @ts-ignore
                 onPress={() => {
                   // @ts-ignore
-                  navigation.navigate('RegisterDomain', { selectedDomain, years })
+                  navigation.navigate('RegisterDomain', {
+                    selectedDomain,
+                    years,
+                  })
                 }}
                 title="Register"
                 icon={<RegisterIcon color={getTokenColor('TRBTC')} />}
@@ -119,12 +125,16 @@ export const RNSManagerScreen: React.FC<
           )}
         </View>
       )}
-      {registeredDomains.length > 0 && <View style={styles.sectionCentered}>
-        <Text style={styles.title}>Registered Domains</Text>
-        {registeredDomains.map((registeredDomain: string) => (
-          <View style={styles.sectionCentered}><Text key={registeredDomain}>{registeredDomain}</Text></View>
-        ))}
-      </View>}
+      {registeredDomains.length > 0 && (
+        <View style={styles.sectionCentered}>
+          <Text style={styles.title}>Registered Domains</Text>
+          {registeredDomains.map((registeredDomain: string) => (
+            <View style={styles.sectionCentered}>
+              <Text key={registeredDomain}>{registeredDomain}</Text>
+            </View>
+          ))}
+        </View>
+      )}
     </LinearGradient>
   )
 }

@@ -46,7 +46,10 @@ export const DappsScreen: React.FC<
           visible={selectedPanel === 'InjectedBrowser'}
           setPanelActive={() => setSelectedPanel('InjectedBrowser')}
         />
-        <Button title="RNS Manager native" onPress={() => navigation.navigate('RNSManager')} />
+        <Button
+          title="RNS Manager native"
+          onPress={() => navigation.navigate('RNSManager')}
+        />
       </LinearGradient>
     </LinearGradient>
   )

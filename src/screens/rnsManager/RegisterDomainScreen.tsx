@@ -44,27 +44,36 @@ export const RegisterDomainScreen: React.FC<
 
   useEffect(() => {
     setDomainPrice(undefined)
-    if (!!duration) {
-      rskRegistrar.price(selectedDomain, BigNumber.from(duration)).then(price => setDomainPrice(price))
+    if (duration) {
+      rskRegistrar
+        .price(selectedDomain, BigNumber.from(duration))
+        .then(price => setDomainPrice(price))
     }
   }, [duration])
 
   const commitToRegister = async () => {
     try {
       const { makeCommitmentTransaction, secret, canReveal } =
-        await rskRegistrar.commitToRegister(selectedDomain, wallet.smartWallet.address)
+        await rskRegistrar.commitToRegister(
+          selectedDomain,
+          wallet.smartWallet.address,
+        )
 
       setDomainSecret(secret)
       setCommitToRegisterInfo('Transaction sent. Please wait...')
 
       await makeCommitmentTransaction.wait()
 
-      setCommitToRegisterInfo('Transaction confirmed. Please wait approximately 2 mins to secure your domain')
+      setCommitToRegisterInfo(
+        'Transaction confirmed. Please wait approximately 2 mins to secure your domain',
+      )
 
       const intervalId = setInterval(async () => {
         const ready = await canReveal()
         if (ready) {
-          setCommitToRegisterInfo('Waiting period ended. You can now register your domain')
+          setCommitToRegisterInfo(
+            'Waiting period ended. You can now register your domain',
+          )
           setCommitReady(true)
           clearInterval(intervalId)
         }
@@ -107,15 +116,21 @@ export const RegisterDomainScreen: React.FC<
     <LinearGradient
       colors={['#FFFFFF', getTokenColorWithOpacity('TRBTC', 0.1)]}
       style={styles.parent}>
-        <ScrollView>
+      <ScrollView>
         <View style={styles.sectionCentered}>
           <Text style={styles.domainTitle}>{selectedDomain}.rsk</Text>
         </View>
         <View style={styles.sectionLeft}>
           <Text>Registration process will require 3 steps:</Text>
           <Text>1. First transaction: request to register the domain</Text>
-          <Text>2. Secure domain: wait for aprox. 2 minutes to secure your registration</Text>
-          <Text>3. Second transaction: registration! after this tx is confirmed you will own your RNS domain</Text>
+          <Text>
+            2. Secure domain: wait for aprox. 2 minutes to secure your
+            registration
+          </Text>
+          <Text>
+            3. Second transaction: registration! after this tx is confirmed you
+            will own your RNS domain
+          </Text>
         </View>
 
         {!!error && <Text style={styles.red}>{error}</Text>}
@@ -134,7 +149,7 @@ export const RegisterDomainScreen: React.FC<
 
         <View style={styles.sectionCentered}>
           <Button
-            disabled={!duration ||commitToRegisterInfo !== ''}
+            disabled={!duration || commitToRegisterInfo !== ''}
             onPress={commitToRegister}
             title={'Request to register'}
           />
@@ -163,7 +178,7 @@ export const RegisterDomainScreen: React.FC<
             />
           </View>
         )}
-        </ScrollView>
+      </ScrollView>
     </LinearGradient>
   )
 }
