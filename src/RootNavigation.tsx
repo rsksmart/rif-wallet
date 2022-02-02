@@ -106,7 +106,6 @@ export const RootNavigation: React.FC<{
       <RootStack.Navigator initialRouteName={hasKeys ? 'Home' : 'CreateKeysUX'}>
         <RootStack.Screen
           name="Home"
-          //component={Screens.HomeScreen}
           options={{ ...sharedOptions, headerShown: false }}>
           {props => (
             <InjectedScreens.HomeScreen {...props} {...sendScreenProps} />
