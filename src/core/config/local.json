@@ -1,0 +1,15 @@
+{
+  "INFO": [
+    "To use a custom Wallet Service endpoint change the popoperty below. To use",
+    "your localhost, use one of the following URLS:",
+    "For Android: http://10.0.2.2:3000",
+    "For IOS: http://localhost:3000"
+  ],
+  "rifWalletServicesUrl": "http://localhost:3000",
+  "networks": {
+    "31": {
+      "rpcUrl": "https://public-node.testnet.rsk.co",
+      "smartWalletFactoryAddress": "0x3f71ce7bd7912bf3b362fd76dd34fa2f017b6388"
+    }
+  }
+}
