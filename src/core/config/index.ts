@@ -1,24 +1,22 @@
 import local from './local.json'
-import production from './production.json'
+import development from './development.json'
 
 export enum SETTINGS {
-  RIF_WALLET_SERVICE_URL = 'rifWalletServicesUrl',
-  RPC_URL = 'rpcUrl',
+  RIF_WALLET_SERVICE_URL = 'RIF_WALLET_SERVICE_URL',
+  RPC_URL = 'RPC_URL',
   SMART_WALLET_FACTORY_ADDRESS = 'SMART_WALLET_FACTORY_ADDRESS',
 }
 
 export enum ENVIRONMENTS {
-  LOCAL = 'local',
-  PRODUCTION = 'production',
+  LOCAL = 'LOCAL',
+  DEVELOPMENT = 'DEVELOPMENT',
 }
 
 export const getWalletSetting = (
   setting: SETTINGS,
   chainId: 31 = 31,
 ): string => {
-  const env = ENVIRONMENTS.PRODUCTION
-  // @ts-expect-error
-  const configurationFile = env === ENVIRONMENTS.LOCAL ? local : production
+  const configurationFile = env === ENVIRONMENTS.LOCAL ? local : development
 
   switch (setting) {
     case SETTINGS.RIF_WALLET_SERVICE_URL:
