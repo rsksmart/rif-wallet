@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet } from 'react-native'
+import { constants } from 'ethers'
 
-import { NavigationProp } from '../../RootNavigation'
+import { ScreenProps } from '../../RootNavigation'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import SelectedTokenComponent from './SelectedTokenComponent'
 import LinearGradient from 'react-native-linear-gradient'
@@ -11,56 +12,57 @@ import ActivityComponent from './ActivityComponent'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
 import FaucetComponent from './FaucetComponent'
 import { ScrollView } from 'react-native-gesture-handler'
+import { ScreenWithWallet } from '../types'
 
-export const HomeScreen: React.FC<{
-  navigation: NavigationProp
-}> = ({ navigation }) => {
-  const { state } = useSocketsState()
-
-  const balances = Object.values(state.balances)
+export const HomeScreen: React.FC<ScreenProps<'Home'> & ScreenWithWallet> = ({
+  navigation,
+  wallet,
+}) => {
+  const { state, dispatch } = useSocketsState()
 
   const [selected, setSelected] = useState<ITokenWithBalance | null>(null)
 
   const [selectedPanel, setSelectedPanel] = useState<string>('portfolio')
 
-  const [rifToken, setRifToken] = useState<ITokenWithBalance | undefined>(
-    undefined,
-  )
-  const [rbtcToken, setRbtcToken] = useState<ITokenWithBalance | undefined>(
-    undefined,
-  )
+  const loadRBTCBalance = async () => {
+    const rbtcBalanceEntry = await wallet.provider!.getBalance(
+      wallet.smartWallet.address,
+    )
+
+    const newEntry = {
+      name: 'TRBTC',
+      logo: 'TRBTC',
+      symbol: 'TRBTC',
+      contractAddress: constants.AddressZero,
+      decimals: 18,
+      balance: rbtcBalanceEntry.toString(),
+    } as ITokenWithBalance
+    dispatch({ type: 'newBalance', payload: newEntry })
+  }
+
   useEffect(() => {
+    const balances = Object.values(state.balances)
+
     if (!selected) {
-      setRifToken(
-        balances.find(token => {
-          return token.symbol === 'tRIF'
-        }),
-      )
-      setRbtcToken(
-        balances.find(token => {
-          return token.symbol === 'TRBTC'
-        }),
-      )
       setSelected(balances[0])
     }
-  }, [balances])
+
+    loadRBTCBalance().then(() => console.log('RTBC loaded'))
+  }, [state.balances])
 
   const selectedTokenColor = getTokenColor(selected?.symbol)
 
   const containerStyles = {
     shadowColor: setOpacity(selectedTokenColor, 0.5),
   }
+  //
 
   return (
     <LinearGradient
       colors={['#FFFFFF', setOpacity(selectedTokenColor, 0.1)]}
       style={styles.parent}>
       <ScrollView>
-        <FaucetComponent
-          navigation={navigation}
-          rbtcBalance={!!rbtcToken?.balance}
-          rifBalance={!!rifToken?.balance}
-        />
+        <FaucetComponent navigation={navigation} />
         {selected && (
           <SelectedTokenComponent navigation={navigation} token={selected} />
         )}

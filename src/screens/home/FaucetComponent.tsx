@@ -1,21 +1,33 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { TokenImage } from './TokenImage'
+import { useSocketsState } from '../../subscriptions/RIFSockets'
+import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
 interface Interface {
   navigation: any
-  rbtcBalance: boolean
-  rifBalance: boolean
 }
 
-const FaucetComponent: React.FC<Interface> = ({
-  rbtcBalance,
-  rifBalance,
-  navigation,
-}) => {
-  if (!rbtcBalance || !rifBalance) {
-    const missingToken = !rbtcBalance ? 'TRBTC' : 'tRIF'
+const FaucetComponent: React.FC<Interface> = ({ navigation }) => {
+  const { state } = useSocketsState()
+
+  const [rifToken, setRifToken] = useState<ITokenWithBalance | undefined>(
+    undefined,
+  )
+  const [rbtcToken, setRbtcToken] = useState<ITokenWithBalance | undefined>(
+    undefined,
+  )
+
+  useEffect(() => {
+    const balances = Object.values(state.balances)
+
+    setRifToken(balances.find(token => token.symbol === 'tRIF'))
+    setRbtcToken(balances.find(token => token.symbol === 'TRBTC'))
+  }, [state.balances])
+
+  if (!rbtcToken || !rifToken) {
+    const missingToken = !rbtcToken ? 'TRBTC' : 'tRIF'
 
     const handleClick = () =>
       navigation.navigate('InjectedBrowserUX', {
