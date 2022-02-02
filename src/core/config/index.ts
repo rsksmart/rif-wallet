@@ -1,5 +1,5 @@
-import local from './config/local.json'
-import production from './config/production.json'
+import local from './local.json'
+import production from './production.json'
 
 export enum SETTINGS {
   RIF_WALLET_SERVICE_URL = 'rifWalletServicesUrl',
