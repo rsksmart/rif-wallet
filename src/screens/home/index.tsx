@@ -23,8 +23,24 @@ export const HomeScreen: React.FC<{
 
   const [selectedPanel, setSelectedPanel] = useState<string>('portfolio')
 
+  const [rifToken, setRifToken] = useState<ITokenWithBalance | undefined>(
+    undefined,
+  )
+  const [rbtcToken, setRbtcToken] = useState<ITokenWithBalance | undefined>(
+    undefined,
+  )
   useEffect(() => {
     if (!selected) {
+      setRifToken(
+        balances.find(token => {
+          return token.symbol === 'tRIF'
+        }),
+      )
+      setRbtcToken(
+        balances.find(token => {
+          return token.symbol === 'TRBTC'
+        }),
+      )
       setSelected(balances[0])
     }
   }, [balances])
@@ -42,8 +58,8 @@ export const HomeScreen: React.FC<{
       <ScrollView>
         <FaucetComponent
           navigation={navigation}
-          rbtcBalance={0}
-          rifBalance={0}
+          rbtcBalance={!!rbtcToken?.balance}
+          rifBalance={!!rifToken?.balance}
         />
         {selected && (
           <SelectedTokenComponent navigation={navigation} token={selected} />

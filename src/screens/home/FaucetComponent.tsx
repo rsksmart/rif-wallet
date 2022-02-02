@@ -5,8 +5,8 @@ import { TokenImage } from './TokenImage'
 
 interface Interface {
   navigation: any
-  rbtcBalance: number
-  rifBalance: number
+  rbtcBalance: boolean
+  rifBalance: boolean
 }
 
 const FaucetComponent: React.FC<Interface> = ({
@@ -14,15 +14,15 @@ const FaucetComponent: React.FC<Interface> = ({
   rifBalance,
   navigation,
 }) => {
-  if (rbtcBalance === 0 || rifBalance === 0) {
-    const token = rbtcBalance === 0 ? 'TRBTC' : 'tRIF'
+  if (!rbtcBalance || !rifBalance) {
+    const missingToken = !rbtcBalance ? 'TRBTC' : 'tRIF'
 
     const handleClick = () =>
       navigation.navigate('InjectedBrowserUX', {
         screen: 'InjectedBrowser',
         params: {
           uri:
-            token === 'TRBTC'
+            missingToken === 'TRBTC'
               ? 'https://faucet.rsk.co/'
               : 'https://faucet.rifos.org/',
         },
@@ -31,11 +31,11 @@ const FaucetComponent: React.FC<Interface> = ({
     return (
       <TouchableOpacity style={styles.background} onPress={handleClick}>
         <View style={styles.iconContainer}>
-          <TokenImage symbol={token} width={45} height={45} />
+          <TokenImage symbol={missingToken} width={45} height={45} />
         </View>
         <View style={styles.textContainer}>
           <Text testID="Faucet.Text">
-            {`Your wallet doesn't have any ${token}. Click here to get some from the faucet!`}
+            {`Your wallet doesn't have any ${missingToken}. Click here to get some from the faucet!`}
           </Text>
         </View>
       </TouchableOpacity>
