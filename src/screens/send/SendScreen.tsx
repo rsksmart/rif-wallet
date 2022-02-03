@@ -46,7 +46,7 @@ export const SendScreen: React.FC<
     selectedTokenInfo.balance,
     selectedTokenInfo.decimals || 0,
   )
-  const tokenQuota = state.prices[contractAddress]
+  const tokenQuota = state.prices[contractAddress].price
 
   const { t } = useTranslation()
 
@@ -61,6 +61,7 @@ export const SendScreen: React.FC<
   const [tx, setTx] = useState<ContractTransaction>()
   const [receipt, setReceipt] = useState<ContractReceipt>()
   const [error, setError] = useState<string>()
+  const [validationError, setValidationError] = useState(false)
 
   useEffect(() => {
     setTo(route.params?.to || '')
@@ -113,6 +114,16 @@ export const SendScreen: React.FC<
     setTo(address)
   }
 
+  const handleAmountChange = (amount: string) => {
+    if (Number(amount) > Number(selectedTokenBalance)) {
+      setValidationError(true)
+      setAmount(amount)
+      return
+    }
+    setValidationError(false)
+    setAmount(amount)
+  }
+
   const imageStyle = {
     ...styles.image,
     shadowColor: '#000000',
@@ -122,14 +133,21 @@ export const SendScreen: React.FC<
   const handleOpen = () =>
     Linking.openURL(`https://explorer.testnet.rsk.co/tx/${tx!.hash}`)
 
+  const isNextDisabled = (!!tx && !receipt) || validationError
+
   return (
     <LinearGradient
       colors={['#FFFFFF', getTokenColorWithOpacity(selectedSymbol, 0.1)]}
       style={styles.parent}>
       <ScrollView>
         <View>
-          <Text>Balance: {`${selectedTokenBalance}`}</Text>
-          <Text>USD: {tokenQuota.price}</Text>
+          <Text>
+            Balance: {`${selectedTokenBalance} ${selectedTokenInfo.symbol}`}
+          </Text>
+          <Text>
+            USD:{' '}
+            {(Number(selectedTokenBalance) * tokenQuota).toFixed(2) || 'N/A'}
+          </Text>
         </View>
         <View style={grid.row}>
           <View style={{ ...grid.column2, ...styles.icon }}>
@@ -144,12 +162,18 @@ export const SendScreen: React.FC<
           <View style={{ ...grid.column10 }}>
             <TextInput
               style={styles.input}
-              onChangeText={text => setAmount(text)}
+              onChangeText={text => handleAmountChange(text)}
               value={amount}
               placeholder={t('Amount')}
               keyboardType="numeric"
               testID={'Amount.Input'}
             />
+            {!!amount && (
+              <Text>
+                {(Number(amount) * tokenQuota).toFixed(2) || 'N/A'} USD
+              </Text>
+            )}
+            {validationError && <Text>Insuficient funds</Text>}
           </View>
         </View>
         <View>
@@ -166,7 +190,7 @@ export const SendScreen: React.FC<
 
         <View style={styles.centerRow}>
           <SquareButton
-            disabled={!!tx && !receipt}
+            disabled={isNextDisabled}
             onPress={transfer}
             title="Next"
             testID="Address.CopyButton"
