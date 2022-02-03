@@ -6,11 +6,6 @@ export enum SETTINGS {
   SMART_WALLET_FACTORY_ADDRESS = 'SMART_WALLET_FACTORY_ADDRESS',
 }
 
-export enum ENVIRONMENTS {
-  LOCAL = 'LOCAL',
-  DEVELOPMENT = 'DEVELOPMENT',
-}
-
 export const getWalletSetting = (
   setting: SETTINGS,
   chainId: 31 = 31,
