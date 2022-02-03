@@ -9,6 +9,8 @@ import {
 
 interface Interface {
   title: string
+  balance?: string
+  icon?: React.ReactNode
   onPress?: (event: GestureResponderEvent) => any
   disabled?: boolean
   testID?: string
@@ -18,29 +20,31 @@ interface Interface {
 
 export const Button: React.FC<Interface> = ({
   title,
+  balance,
   onPress,
   disabled,
   testID,
   style,
   textStyle,
-}) => {
-  return (
-    <TouchableOpacity
-      style={style ? { ...styles.button, ...style } : styles.button}
-      onPress={onPress}
-      disabled={disabled}
-      testID={testID}>
-      <View>
-        <Text
-          style={
-            disabled ? styles.textDisabled : { ...styles.text, ...textStyle }
-          }>
-          {title}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  )
-}
+  icon,
+}) => (
+  <TouchableOpacity
+    style={style ? { ...styles.button, ...style } : styles.button}
+    onPress={onPress}
+    disabled={disabled}
+    testID={testID}>
+    <View>
+      <Text
+        style={
+          disabled ? styles.textDisabled : { ...styles.text, ...textStyle }
+        }>
+        {title}
+      </Text>
+      {!!balance && <Text>{balance}</Text>}
+      {!!icon && icon}
+    </View>
+  </TouchableOpacity>
+)
 
 const styles = StyleSheet.create({
   button: {
