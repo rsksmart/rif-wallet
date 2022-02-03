@@ -29,6 +29,7 @@ import { Arrow, RefreshIcon } from '../../components/icons'
 import { TokenImage } from '../home/TokenImage'
 import Clipboard from '@react-native-community/clipboard'
 import TransactionInfo from './TransactionInfo'
+import MiniModal from '../../components/tokenSelector/MiniModal'
 
 import { balanceToString } from '../balances/BalancesScreen'
 
@@ -62,6 +63,16 @@ export const SendScreen: React.FC<
   const [receipt, setReceipt] = useState<ContractReceipt>()
   const [error, setError] = useState<string>()
   const [validationError, setValidationError] = useState(false)
+  const [showSelector, setShowSelector] = useState(false)
+
+  const handleTokenSelection = (selectedToken: string) => {
+    setShowSelector(false)
+    setSelectedSymbol(selectedToken)
+  }
+
+  const openTokenSelector = () => {
+    setShowSelector(true)
+  }
 
   useEffect(() => {
     setTo(route.params?.to || '')
@@ -71,7 +82,9 @@ export const SendScreen: React.FC<
       setReceipt(undefined)
     }
 
-    getAllTokens(wallet).then(tokens => setAvailableTokens(tokens))
+    getAllTokens(wallet)
+      .then(tokens => tokens.filter(token => state.balances[token.address]))
+      .then(tokens => setAvailableTokens(tokens))
   }, [wallet, isFocused])
 
   const transfer = async () => {
@@ -99,13 +112,6 @@ export const SendScreen: React.FC<
           setError(e.message)
         }
       }
-    }
-  }
-  const handleChangeToken = (selection: string) => {
-    if (selection === 'tRIF') {
-      setSelectedSymbol('TRBTC')
-    } else {
-      setSelectedSymbol('tRIF')
     }
   }
 
@@ -153,7 +159,7 @@ export const SendScreen: React.FC<
           <View style={{ ...grid.column2, ...styles.icon }}>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => handleChangeToken(selectedSymbol)}>
+              onPress={() => openTokenSelector()}>
               <View style={imageStyle}>
                 <TokenImage symbol={selectedSymbol} height={30} width={30} />
               </View>
@@ -224,6 +230,12 @@ export const SendScreen: React.FC<
           )}
         </View>
       </ScrollView>
+      {showSelector && (
+        <MiniModal
+          onTokenSelection={handleTokenSelection}
+          availableTokens={availableTokens as IToken[]}
+        />
+      )}
     </LinearGradient>
   )
 }
