@@ -1,5 +1,6 @@
-import local from './local.json'
-import development from './development.json'
+import Config from 'react-native-config'
+// import local from './local.json'
+// import development from './development.json'
 
 export enum SETTINGS {
   RIF_WALLET_SERVICE_URL = 'RIF_WALLET_SERVICE_URL',
@@ -16,14 +17,20 @@ export const getWalletSetting = (
   setting: SETTINGS,
   chainId: 31 = 31,
 ): string => {
-  const configurationFile = env === ENVIRONMENTS.LOCAL ? local : development
+  /*
+  const configurationFile =
+    Config.APP_ENV === ENVIRONMENTS.LOCAL ? local : development
+  console.log('@jesse 3', Config.APP_ENV)
+  console.log('@jesse TACOS', Config.TACOS)
+  */
+  console.log(Config)
 
   switch (setting) {
     case SETTINGS.RIF_WALLET_SERVICE_URL:
-      return configurationFile.rifWalletServicesUrl
+      return Config.RIF_WALLET_SERVICE_URL
     case SETTINGS.RPC_URL:
-      return configurationFile.networks[chainId].rpcUrl
+      return Config[`NETWORK${chainId.toString()}_RPC_URL`]
     case SETTINGS.SMART_WALLET_FACTORY_ADDRESS:
-      return configurationFile.networks[chainId].smartWalletFactoryAddress
+      return Config[`NETWORK${chainId.toString()}_SW_ADDRESS`]
   }
 }
