@@ -62,7 +62,10 @@ export const HomeScreen: React.FC<ScreenProps<'Home'> & ScreenWithWallet> = ({
       colors={['#FFFFFF', setOpacity(selectedTokenColor, 0.1)]}
       style={styles.parent}>
       <ScrollView>
-        <FaucetComponent navigation={navigation} />
+        <FaucetComponent
+          navigation={navigation}
+          balances={Object.values(state.balances)}
+        />
         {selected && (
           <SelectedTokenComponent navigation={navigation} token={selected} />
         )}

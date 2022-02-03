@@ -2,16 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { TokenImage } from './TokenImage'
-import { useSocketsState } from '../../subscriptions/RIFSockets'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
 interface Interface {
   navigation: any
+  balances: ITokenWithBalance[]
 }
 
-const FaucetComponent: React.FC<Interface> = ({ navigation }) => {
-  const { state } = useSocketsState()
-
+const FaucetComponent: React.FC<Interface> = ({ navigation, balances }) => {
   const [rifToken, setRifToken] = useState<ITokenWithBalance | undefined>(
     undefined,
   )
@@ -20,11 +18,10 @@ const FaucetComponent: React.FC<Interface> = ({ navigation }) => {
   )
 
   useEffect(() => {
-    const balances = Object.values(state.balances)
-
+    console.log({ balances })
     setRifToken(balances.find(token => token.symbol === 'tRIF'))
     setRbtcToken(balances.find(token => token.symbol === 'TRBTC'))
-  }, [state.balances])
+  }, [balances])
 
   if (!rbtcToken || !rifToken) {
     const missingToken = !rbtcToken ? 'TRBTC' : 'tRIF'
