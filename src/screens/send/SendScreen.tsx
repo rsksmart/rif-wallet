@@ -46,7 +46,7 @@ export const SendScreen: React.FC<
     selectedTokenInfo.balance,
     selectedTokenInfo.decimals || 0,
   )
-  const tokenQuota = state.prices[contractAddress].price
+  const tokenQuota = state.prices[contractAddress]?.price
 
   const { t } = useTranslation()
 
