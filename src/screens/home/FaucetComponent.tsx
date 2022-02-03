@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { TokenImage } from './TokenImage'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import { BigNumber } from 'ethers'
 
 interface Interface {
   navigation: any
@@ -22,8 +23,10 @@ const FaucetComponent: React.FC<Interface> = ({ navigation, balances }) => {
     setRbtcToken(balances.find(token => token.symbol === 'TRBTC'))
   }, [balances])
 
-  if (!rbtcToken || !rifToken) {
-    const missingToken = !rbtcToken ? 'TRBTC' : 'tRIF'
+  const missingRbtc = !rbtcToken || BigNumber.from(rbtcToken.balance).isZero()
+  const missingRif = !rifToken || BigNumber.from(rifToken.balance).isZero()
+  if (missingRbtc || missingRif) {
+    const missingToken = missingRbtc ? 'TRBTC' : 'tRIF'
 
     const handleClick = () =>
       navigation.navigate('InjectedBrowserUX', {

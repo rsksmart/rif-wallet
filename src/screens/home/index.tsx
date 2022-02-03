@@ -25,12 +25,10 @@ export const HomeScreen: React.FC<ScreenProps<'Home'> & ScreenWithWallet> = ({
   const [selectedPanel, setSelectedPanel] = useState<string>('portfolio')
 
   const loadRBTCBalance = async () => {
-    const rbtcBalanceEntry = await wallet.provider!.getBalance(
-      wallet.smartWallet.address,
-    )
+    const rbtcBalanceEntry = await wallet.provider!.getBalance(wallet.address)
 
     const newEntry = {
-      name: 'TRBTC',
+      name: 'TRBTC (EOA)',
       logo: 'TRBTC',
       symbol: 'TRBTC',
       contractAddress: constants.AddressZero,
@@ -47,7 +45,7 @@ export const HomeScreen: React.FC<ScreenProps<'Home'> & ScreenWithWallet> = ({
       setSelected(balances[0])
     }
 
-    loadRBTCBalance().then(() => console.log('RTBC loaded'))
+    loadRBTCBalance().then()
   }, [state.balances])
 
   const selectedTokenColor = getTokenColor(selected?.symbol)
@@ -55,7 +53,6 @@ export const HomeScreen: React.FC<ScreenProps<'Home'> & ScreenWithWallet> = ({
   const containerStyles = {
     shadowColor: setOpacity(selectedTokenColor, 0.5),
   }
-  //
 
   return (
     <LinearGradient
