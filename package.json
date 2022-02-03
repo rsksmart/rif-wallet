@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "android": "ENVFILE=.env react-native run-android",
-    "android:local": "ENVFILE=.env.local react-native run-android",
+    "android:local": "ENVFILE=.env.local.android react-native run-android",
     "ios": "ENVFILE=.env react-native run-ios",
     "ios:local": "ENVFILE=.env.local react-native run-ios",
     "start": "ENVFILE=.env react-native start",
