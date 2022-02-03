@@ -18,7 +18,6 @@ const FaucetComponent: React.FC<Interface> = ({ navigation, balances }) => {
   )
 
   useEffect(() => {
-    console.log({ balances })
     setRifToken(balances.find(token => token.symbol === 'tRIF'))
     setRbtcToken(balances.find(token => token.symbol === 'TRBTC'))
   }, [balances])
