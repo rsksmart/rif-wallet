@@ -18,6 +18,7 @@ import { useSocketsState } from '../../subscriptions/RIFSockets'
 
 import { getAllTokens } from '../../lib/token/tokenMetadata'
 import { IToken } from '../../lib/token/BaseToken'
+import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { ScreenProps } from '../../RootNavigation'
 import { ScreenWithWallet } from '../types'
@@ -41,20 +42,21 @@ export const SendScreen: React.FC<
   const isFocused = useIsFocused()
   const { state } = useSocketsState()
 
-  const contractAddress = route.params?.contractAddress as string
-  const selectedTokenInfo = state.balances[contractAddress]
+  const contractAddress =
+    route.params?.contractAddress || Object.keys(state.balances)[0]
+  const [selectedToken, setSelectedToken] = React.useState(
+    state.balances[contractAddress],
+  )
+
+  const [availableTokens, setAvailableTokens] = useState<IToken[]>()
+
   const selectedTokenBalance = balanceToString(
-    selectedTokenInfo.balance,
-    selectedTokenInfo.decimals || 0,
+    selectedToken.balance,
+    selectedToken.decimals || 0,
   )
   const tokenQuota = state.prices[contractAddress]?.price
 
   const { t } = useTranslation()
-
-  const [availableTokens, setAvailableTokens] = useState<IToken[]>()
-  const [selectedSymbol, setSelectedSymbol] = useState(
-    selectedTokenInfo.symbol || 'tRIF',
-  )
 
   const [amount, setAmount] = useState('')
   const [to, setTo] = useState(route.params?.to || '')
@@ -65,9 +67,9 @@ export const SendScreen: React.FC<
   const [validationError, setValidationError] = useState(false)
   const [showSelector, setShowSelector] = useState(false)
 
-  const handleTokenSelection = (selectedToken: string) => {
+  const handleTokenSelection = (token: ITokenWithBalance) => {
     setShowSelector(false)
-    setSelectedSymbol(selectedToken)
+    setSelectedToken(token)
   }
 
   const openTokenSelector = () => {
@@ -93,9 +95,7 @@ export const SendScreen: React.FC<
     setError(undefined)
 
     if (availableTokens) {
-      const token = availableTokens.find(
-        token => token.symbol === selectedSymbol,
-      )
+      const token = availableTokens.find(token => token.symbol === token.symbol)
       if (token) {
         try {
           const decimals = await token.decimals()
@@ -143,12 +143,12 @@ export const SendScreen: React.FC<
 
   return (
     <LinearGradient
-      colors={['#FFFFFF', getTokenColorWithOpacity(selectedSymbol, 0.1)]}
+      colors={['#FFFFFF', getTokenColorWithOpacity(selectedToken.symbol, 0.1)]}
       style={styles.parent}>
       <ScrollView>
         <View>
           <Text>
-            Balance: {`${selectedTokenBalance} ${selectedTokenInfo.symbol}`}
+            Balance: {`${selectedTokenBalance} ${selectedToken.symbol}`}
           </Text>
           <Text>
             USD:{' '}
@@ -161,7 +161,11 @@ export const SendScreen: React.FC<
               style={styles.button}
               onPress={() => openTokenSelector()}>
               <View style={imageStyle}>
-                <TokenImage symbol={selectedSymbol} height={30} width={30} />
+                <TokenImage
+                  symbol={selectedToken.symbol}
+                  height={30}
+                  width={30}
+                />
               </View>
             </TouchableOpacity>
           </View>
@@ -190,7 +194,7 @@ export const SendScreen: React.FC<
             navigation={navigation}
             showContactsIcon={true}
             chainId={31}
-            color={getTokenColor(selectedSymbol)}
+            color={getTokenColor(selectedToken.symbol)}
           />
         </View>
 
@@ -200,7 +204,9 @@ export const SendScreen: React.FC<
             onPress={transfer}
             title="Next"
             testID="Address.CopyButton"
-            icon={<Arrow color={getTokenColor(selectedSymbol)} rotate={90} />}
+            icon={
+              <Arrow color={getTokenColor(selectedToken.symbol)} rotate={90} />
+            }
           />
         </View>
         <View style={styles.section}>
@@ -212,7 +218,7 @@ export const SendScreen: React.FC<
                   ? t('Transaction Sent. Please wait...')
                   : t('Transaction Confirmed.')
               }
-              selectedToken={selectedSymbol}
+              selectedToken={selectedToken.symbol}
               handleCopy={handleCopy}
               handleOpen={handleOpen}
             />
@@ -224,7 +230,9 @@ export const SendScreen: React.FC<
                 onPress={transfer}
                 title="Retry"
                 testID="Transfer.RetryButton"
-                icon={<RefreshIcon color={getTokenColor(selectedSymbol)} />}
+                icon={
+                  <RefreshIcon color={getTokenColor(selectedToken.symbol)} />
+                }
               />
             </View>
           )}
@@ -233,7 +241,7 @@ export const SendScreen: React.FC<
       {showSelector && (
         <MiniModal
           onTokenSelection={handleTokenSelection}
-          availableTokens={availableTokens as IToken[]}
+          availableTokens={Object.values(state.balances)}
         />
       )}
     </LinearGradient>

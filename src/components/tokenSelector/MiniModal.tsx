@@ -1,21 +1,18 @@
 import React from 'react'
 import { Modal, StyleSheet, View } from 'react-native'
 
-import { IToken } from '../../lib/token/BaseToken'
+import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
 import TokenSelector from './index'
 import { sharedStyles } from '../../ux/requestsModal/sharedStyles'
 import { setOpacity } from '../../screens/home/tokenColor'
 
-interface Interface {
-  availableTokens: IToken[]
-  onTokenSelection: (selectedToken: string) => void
+interface Props {
+  availableTokens: ITokenWithBalance[]
+  onTokenSelection: (selectedToken: ITokenWithBalance) => void
 }
 
-const MiniModal: React.FC<Interface> = ({
-  availableTokens,
-  onTokenSelection,
-}) => {
+const MiniModal: React.FC<Props> = ({ availableTokens, onTokenSelection }) => {
   return (
     <View style={sharedStyles.centeredView}>
       <Modal animationType="slide" transparent={true} visible={true}>
