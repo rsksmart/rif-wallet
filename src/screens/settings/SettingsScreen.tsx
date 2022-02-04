@@ -34,6 +34,11 @@ export const SettingsScreen: React.FC<ScreenProps<'Home'>> = ({
           title={'DevMenu'}
           style={styles.marginBottom}
         />
+        <ButtonAlt
+          onPress={() => navigation.navigate('ManageWallets')}
+          title={'Manage wallets'}
+          style={styles.marginBottom}
+        />
       </ScrollView>
     </LinearGradient>
   )

@@ -71,6 +71,7 @@ type RootStackParamList = {
   RegisterDomain: { selectedDomain: string; years: number }
   Contacts: undefined
   Settings: undefined
+  ManageWallets: undefined
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -134,6 +135,11 @@ export const RootNavigation: React.FC<{
           name="Settings"
           component={Screens.SettingsScreen}
           options={{ ...sharedOptions, headerShown: false }}
+        />
+
+        <RootStack.Screen
+          name="ManageWallets"
+          component={Screens.ManageWalletsScreen}
         />
 
         <RootStack.Screen
