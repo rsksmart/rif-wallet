@@ -154,10 +154,13 @@ export const Core = () => {
     })
   }, [])
 
+  if (state.loading) {
+    return <LoadingScreen reason="Getting things setup" />
+  }
+
   return (
     <SafeAreaView>
       <StatusBar />
-      {state.loading && <LoadingScreen reason="Please wait..." />}
       {!active && <Cover />}
       {state.hasKeys && !unlocked && <RequestPIN unlock={unlockApp} />}
       <AppContext.Provider
@@ -173,6 +176,7 @@ export const Core = () => {
               abiEnhancer={abiEnhancer}>
               <RootNavigation
                 currentScreen={currentScreen}
+                hasKeys={state.hasKeys}
                 rifWalletServicesSocket={rifWalletServicesSocket}
                 keyManagementProps={{
                   generateMnemonic: () => KeyManagementSystem.create().mnemonic,
