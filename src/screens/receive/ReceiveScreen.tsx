@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   StyleSheet,
   View,
@@ -10,13 +10,14 @@ import {
 import LinearGradient from 'react-native-linear-gradient'
 import QRCode from 'react-qr-code'
 import Clipboard from '@react-native-community/clipboard'
+import { getDomains } from '../../storage/DomainsStore'
 
 import { SquareButton } from '../../components/button/SquareButton'
-import { CopyIcon } from '../../components/icons/CopyIcon'
+import { CopyIcon } from '../../components/icons'
 import { grid } from '../../styles/grid'
 import { getTokenColor, getTokenColorWithOpacity } from '../home/tokenColor'
 import { ScreenWithWallet } from '../types'
-import { Arrow } from '../../components/icons/Arrow'
+import { Arrow } from '../../components/icons'
 import { getAddressDisplayText } from '../../components'
 
 export enum TestID {
@@ -33,6 +34,8 @@ export const ReceiveScreen: React.FC<ScreenWithWallet & ReceiveScreenProps> = ({
   wallet,
   route,
 }) => {
+  const [registeredDomains, setRegisteredDomains] = useState<string[]>([])
+
   const smartAddress = wallet.smartWalletAddress
   const selectedToken = route.params?.token || 'TRBTC'
 
@@ -44,7 +47,9 @@ export const ReceiveScreen: React.FC<ScreenWithWallet & ReceiveScreenProps> = ({
       title: smartAddress,
       message: smartAddress,
     })
-
+  useEffect(() => {
+    getDomains(wallet.smartWalletAddress).then(setRegisteredDomains)
+  }, [wallet])
   const handleCopy = () => Clipboard.setString(smartAddress)
 
   const qrContainerStyle = {
@@ -72,6 +77,12 @@ export const ReceiveScreen: React.FC<ScreenWithWallet & ReceiveScreenProps> = ({
         <View style={{ ...styles.addressContainer, ...qrContainerStyle }}>
           <Text testID={TestID.AddressText} style={styles.smartAddress}>
             {getAddressDisplayText(smartAddress).displayAddress}
+          </Text>
+          <Text testID={TestID.AddressText} style={styles.smartAddress}>
+            {registeredDomains.length > 0 &&
+              registeredDomains.map((registeredDomain: string) => (
+                <Text key={registeredDomain}>{registeredDomain}</Text>
+              ))}
           </Text>
         </View>
         <Text style={styles.smartAddressLabel}>smart address</Text>
