@@ -19,7 +19,7 @@ export const SettingsScreen: React.FC<ScreenProps<'Home'>> = ({
       style={styles.parent}>
       <ScrollView>
         <Text style={[styles.header, styles.marginBottom]}>Settings</Text>
-        <Section title="General">
+        <Section title={t('General')}>
           <ButtonAlt
             onPress={() => navigation.navigate('ChangeLanguage')}
             title={t('Change Language')}
@@ -31,14 +31,14 @@ export const SettingsScreen: React.FC<ScreenProps<'Home'>> = ({
             style={styles.marginBottom}
           />
         </Section>
-        <Section title="Accounts">
+        <Section title={t('Accounts')}>
           <ButtonAlt
             onPress={() => navigation.navigate('WalletInfo')}
             title={t('Account Info')}
             style={styles.marginBottom}
           />
         </Section>
-        <Section title="Security">
+        <Section title={t('Security')}>
           <ButtonAlt
             onPress={() => navigation.navigate('ManagePin')}
             title={t('Manage Pin')}
@@ -50,7 +50,7 @@ export const SettingsScreen: React.FC<ScreenProps<'Home'>> = ({
             style={styles.marginBottom}
           />
         </Section>
-        <Section title="Info" />
+        <Section title={t('Information')} />
       </ScrollView>
     </LinearGradient>
   )
