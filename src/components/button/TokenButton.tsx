@@ -7,8 +7,10 @@ import {
   StyleSheet,
 } from 'react-native'
 
-interface Interface {
+interface Props {
   title: string
+  balance: string
+  icon: React.ReactNode
   onPress?: (event: GestureResponderEvent) => any
   disabled?: boolean
   testID?: string
@@ -16,26 +18,34 @@ interface Interface {
   textStyle?: any
 }
 
-export const Button: React.FC<Interface> = ({
+export const TokenButton: React.FC<Props> = ({
   title,
+  balance,
   onPress,
   disabled,
   testID,
   style,
   textStyle,
+  icon,
 }) => (
   <TouchableOpacity
     style={style ? { ...styles.button, ...style } : styles.button}
     onPress={onPress}
     disabled={disabled}
     testID={testID}>
-    <View>
-      <Text
-        style={
-          disabled ? styles.textDisabled : { ...styles.text, ...textStyle }
-        }>
-        {title}
-      </Text>
+    <View style={{ alignItems: 'center',flexDirection: 'row'}}>
+      <View>
+        {!!icon && icon}
+      </View>
+      <View>
+        <Text
+          style={
+            disabled ? styles.textDisabled : { ...styles.text, ...textStyle }
+          }>
+          {title}
+        </Text>
+        {!!balance && <Text>{balance}</Text>}
+      </View>
     </View>
   </TouchableOpacity>
 )

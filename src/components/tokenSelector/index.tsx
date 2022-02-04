@@ -1,6 +1,6 @@
 import React from 'react'
 import { ScrollView, View } from 'react-native'
-import { Button } from '../button'
+import { TokenButton } from '../button/TokenButton'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { sharedStyles } from '../../ux/requestsModal/sharedStyles'
@@ -26,7 +26,7 @@ const TokenSelector: React.FC<Interface> = ({
           const balance = balanceToString(token.balance, token.decimals)
           return (
             <View key={token.symbol}>
-              <Button
+              <TokenButton
                 onPress={() => onTokenSelection(token)}
                 title={token.symbol}
                 balance={balance}
