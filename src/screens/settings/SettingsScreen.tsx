@@ -8,8 +8,13 @@ import { useTranslation } from 'react-i18next'
 import { ButtonAlt } from '../../components/button/ButtonAlt'
 import { Section } from '../../components/section'
 
-export const SettingsScreen: React.FC<ScreenProps<'Home'>> = ({
+export type SettingsScreenProps = {
+  deleteKeys?: () => Promise<any>
+}
+
+export const SettingsScreen: React.FC<SettingsScreenProps & ScreenProps<'Home'>> = ({
   navigation,
+  deleteKeys
 }) => {
   const { t } = useTranslation()
 
@@ -49,8 +54,17 @@ export const SettingsScreen: React.FC<ScreenProps<'Home'>> = ({
             title={t('Reveal master key')}
             style={styles.marginBottom}
           />
+          <ButtonAlt
+            onPress={() => navigation.navigate('KeysInfo')}
+            title={t('Delete master key')}
+            style={styles.marginBottom}
+          />
         </Section>
-        <Section title={t('Information')} />
+        <Section title={t('Information')}>
+          <Text>Version: </Text>
+          <Text>Connectiviy: </Text>
+          <Text>Smart Contracts: </Text>
+        </Section>
       </ScrollView>
     </LinearGradient>
   )
