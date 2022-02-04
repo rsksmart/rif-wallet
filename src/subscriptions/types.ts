@@ -1,7 +1,6 @@
 import React from 'react'
 import {
   IApiTransaction,
-  TransactionsServerResponse,
 } from '../lib/rifWalletServices/RIFWalletServicesTypes'
 import { IRIFWalletServicesFetcher } from '../lib/rifWalletServices/RifWalletServicesFetcher'
 import { IAbiEnhancer, IEnhancedResult } from '../lib/abiEnhancer/AbiEnhancer'
@@ -79,6 +78,11 @@ export interface FetchTransactionsOptions {
   prev: string | null
   fetcher: IRIFWalletServicesFetcher
   abiEnhancer: IAbiEnhancer
+}
+
+export interface TransactionsServerResponse {
+  next: string | null | undefined
+  prev: string | null | undefined
 }
 
 export interface TransactionsServerResponseWithActivityTransactions

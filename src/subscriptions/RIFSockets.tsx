@@ -26,8 +26,8 @@ function liveSubscriptionsReducer(state: State, action: Action) {
       return {
         ...state,
         transactions: {
-          ...action.payload,
-          data: [...state.transactions.data, ...action.payload!.data],
+          prev: action.payload.prev,
+          next: action.payload.next,
           activityTransactions: sortedTxs,
         },
       }
@@ -62,7 +62,6 @@ function liveSubscriptionsReducer(state: State, action: Action) {
         ...state,
         transactions: {
           ...state.transactions,
-          data: [action.payload.originTransaction, ...state.transactions.data],
           activityTransactions: sortedTx,
         },
       }
@@ -95,7 +94,6 @@ function liveSubscriptionsReducer(state: State, action: Action) {
 const initialState = {
   transactions: {
     activityTransactions: [],
-    data: [],
     next: null,
     prev: null,
   },

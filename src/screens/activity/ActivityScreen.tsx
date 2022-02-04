@@ -39,11 +39,12 @@ export const ActivityScreen: React.FC<
   ScreenProps<'Activity'> & ScreenWithWallet & ActivityScreenProps
 > = ({ wallet, fetcher, abiEnhancer, navigation }) => {
   const [info, setInfo] = useState('')
+
   const {
     state: { transactions },
     dispatch,
   } = useSocketsState()
-  useState<TransactionsServerResponseWithActivityTransactions | null>(null)
+
   const { t } = useTranslation()
 
   const hasTransactions =
@@ -59,7 +60,7 @@ export const ActivityScreen: React.FC<
     /*i18n.changeLanguage('es')*/
     try {
       setInfo(t('Loading transactions. Please wait...'))
-
+      
       const fetchedTransactions: TransactionsServerResponseWithActivityTransactions =
         await fetcher.fetchTransactionsByAddress(
           wallet.smartWalletAddress.toLowerCase(),
