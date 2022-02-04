@@ -12,7 +12,6 @@ interface Props {
   balance: string
   icon: React.ReactNode
   onPress?: (event: GestureResponderEvent) => any
-  disabled?: boolean
   testID?: string
   style?: any
   textStyle?: any
@@ -22,7 +21,6 @@ export const TokenButton: React.FC<Props> = ({
   title,
   balance,
   onPress,
-  disabled,
   testID,
   style,
   textStyle,
@@ -31,19 +29,11 @@ export const TokenButton: React.FC<Props> = ({
   <TouchableOpacity
     style={style ? { ...styles.button, ...style } : styles.button}
     onPress={onPress}
-    disabled={disabled}
     testID={testID}>
-    <View style={{ alignItems: 'center',flexDirection: 'row'}}>
+    <View style={styles.contentWrapper}>
+      <View>{!!icon && icon}</View>
       <View>
-        {!!icon && icon}
-      </View>
-      <View>
-        <Text
-          style={
-            disabled ? styles.textDisabled : { ...styles.text, ...textStyle }
-          }>
-          {title}
-        </Text>
+        <Text style={{ ...styles.text, ...textStyle }}>{title}</Text>
         {!!balance && <Text>{balance}</Text>}
       </View>
     </View>
@@ -63,7 +53,8 @@ const styles = StyleSheet.create({
   text: {
     color: '#575757',
   },
-  textDisabled: {
-    color: '#cccccc',
+  contentWrapper: {
+    alignItems: 'center',
+    flexDirection: 'row',
   },
 })
