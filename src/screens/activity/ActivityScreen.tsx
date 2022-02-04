@@ -60,7 +60,7 @@ export const ActivityScreen: React.FC<
     /*i18n.changeLanguage('es')*/
     try {
       setInfo(t('Loading transactions. Please wait...'))
-      
+
       const fetchedTransactions: TransactionsServerResponseWithActivityTransactions =
         await fetcher.fetchTransactionsByAddress(
           wallet.smartWalletAddress.toLowerCase(),
