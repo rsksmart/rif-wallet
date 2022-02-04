@@ -6,6 +6,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import { setOpacity } from '../home/tokenColor'
 import { useTranslation } from 'react-i18next'
 import { ButtonAlt } from '../../components/button/ButtonAlt'
+import { Section } from '../../components/section'
 
 export const SettingsScreen: React.FC<ScreenProps<'Home'>> = ({
   navigation,
@@ -18,22 +19,38 @@ export const SettingsScreen: React.FC<ScreenProps<'Home'>> = ({
       style={styles.parent}>
       <ScrollView>
         <Text style={[styles.header, styles.marginBottom]}>Settings</Text>
-        <KeysActionItem navigation={navigation} t={t} />
-        <ButtonAlt
-          onPress={() => navigation.navigate('ChangeLanguage')}
-          title={t('Change Language')}
-          style={styles.marginBottom}
-        />
-        <ButtonAlt
-          onPress={() => navigation.navigate('ManagePin')}
-          title={t('Manage Pin')}
-          style={styles.marginBottom}
-        />
-        <ButtonAlt
-          onPress={() => navigation.navigate('DevMenu')}
-          title={'DevMenu'}
-          style={styles.marginBottom}
-        />
+        <Section title="General">
+          <ButtonAlt
+            onPress={() => navigation.navigate('ChangeLanguage')}
+            title={t('Change Language')}
+            style={styles.marginBottom}
+          />
+          <ButtonAlt
+            onPress={() => navigation.navigate('DevMenu')}
+            title={'DevMenu'}
+            style={styles.marginBottom}
+          />
+        </Section>
+        <Section title="Accounts">
+          <ButtonAlt
+            onPress={() => navigation.navigate('WalletInfo')}
+            title={t('Account Info')}
+            style={styles.marginBottom}
+          />
+        </Section>
+        <Section title="Security">
+          <ButtonAlt
+            onPress={() => navigation.navigate('ManagePin')}
+            title={t('Manage Pin')}
+            style={styles.marginBottom}
+          />
+          <ButtonAlt
+            onPress={() => navigation.navigate('KeysInfo')}
+            title={t('Reveal master key')}
+            style={styles.marginBottom}
+          />
+        </Section>
+        <Section title="Info" />
       </ScrollView>
     </LinearGradient>
   )
