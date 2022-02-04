@@ -29,6 +29,7 @@ import { RequestPIN } from './components/RequestPIN'
 import { WalletConnectProviderElement } from '../screens/walletConnect/WalletConnectContext'
 import { RIFSocketsProvider } from '../subscriptions/RIFSockets'
 import { NavigationContainer, NavigationState } from '@react-navigation/native'
+import { saveKeys } from '../storage/KeyStore'
 
 const gracePeriod = 3000
 
@@ -119,6 +120,33 @@ export const Core = () => {
     return rifWallet
   }
 
+  const addNewWallet = () => {
+    console.log('adding a new wallet yo!')
+    const chainId = 31 // @temp
+    if (state.kms) {
+      const { derivationPath, wallet } = state.kms?.nextWallet(chainId)
+
+      console.log({ wallet, derivationPath })
+      // walletObject.save()
+      // const serialized = state.kms?.serialize()
+      // serialized && saveKeys(serialized)
+      /*
+      setState({
+        ...state,
+        wallets: {
+          ...state.wallets,
+          wallet,
+        },
+      })
+      */
+    }
+  }
+  /*
+  const switchActiveWallet = () => {
+    console.log('SWITCH ACTIVE WALLET...')
+  }
+  */
+
   useEffect(() => {
     const stateSubscription = AppState.addEventListener(
       'change',
@@ -197,6 +225,7 @@ export const Core = () => {
                 }}
                 contactsNavigationScreenProps={{ rnsResolver }}
                 dappsScreenProps={{ fetcher: rifWalletServicesFetcher }}
+                manageWalletScreenProps={{ addNewWallet }}
               />
 
               {requests.length !== 0 && (

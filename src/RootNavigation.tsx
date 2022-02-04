@@ -39,6 +39,7 @@ const InjectedScreens = {
   RegisterDomainScreen: InjectSelectedWallet(Screens.RegisterDomainScreen),
   HomeScreen: InjectSelectedWallet(Screens.HomeScreen),
   DappsScreen: InjectSelectedWallet(Screens.DappsScreen),
+  ManageWalletsScreen: InjectSelectedWallet(Screens.ManageWalletsScreen),
 }
 
 type RootStackParamList = {
@@ -96,6 +97,7 @@ export const RootNavigation: React.FC<{
   injectedBrowserUXScreenProps: InjectedBrowserUXScreenProps
   contactsNavigationScreenProps: EditContactScreenProps
   dappsScreenProps: DappsScreenScreenProps
+  manageWalletScreenProps: any // @jesse, fix this!
 }> = ({
   currentScreen,
   hasKeys,
@@ -107,6 +109,7 @@ export const RootNavigation: React.FC<{
   injectedBrowserUXScreenProps,
   contactsNavigationScreenProps,
   dappsScreenProps,
+  manageWalletScreenProps,
 }) => {
   return (
     <View style={styles.parent}>
@@ -137,10 +140,14 @@ export const RootNavigation: React.FC<{
           options={{ ...sharedOptions, headerShown: false }}
         />
 
-        <RootStack.Screen
-          name="ManageWallets"
-          component={Screens.ManageWalletsScreen}
-        />
+        <RootStack.Screen name="ManageWallets" options={{ headerShown: true }}>
+          {props => (
+            <InjectedScreens.ManageWalletsScreen
+              {...props}
+              {...manageWalletScreenProps}
+            />
+          )}
+        </RootStack.Screen>
 
         <RootStack.Screen
           name="CreateKeysUX"
