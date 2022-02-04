@@ -120,32 +120,30 @@ export const Core = () => {
     return rifWallet
   }
 
+  console.log({ state })
   const addNewWallet = () => {
-    console.log('adding a new wallet yo!')
     const chainId = 31 // @temp
-    if (state.kms) {
-      const { derivationPath, wallet } = state.kms?.nextWallet(chainId)
-
-      console.log({ wallet, derivationPath })
-      // walletObject.save()
-      // const serialized = state.kms?.serialize()
-      // serialized && saveKeys(serialized)
-      /*
-      setState({
-        ...state,
-        wallets: {
-          ...state.wallets,
-          wallet,
-        },
-      })
-      */
+    if (!state.kms) {
+      throw Error('No KMS created')
     }
+
+    const { derivationPath, wallet, save } = state.kms?.nextWallet(chainId)
+
+    console.log({ wallet, derivationPath })
+    save()
+    const serialized = state.kms.serialize()
+    // @TODO:
+    // Object.assign(rifWalletsDictionary)
+    // Object.assign(rifWalletsIsDeployedDictionary)
+    return saveKeys(serialized)
   }
-  /*
-  const switchActiveWallet = () => {
-    console.log('SWITCH ACTIVE WALLET...')
+
+  const switchActiveWallet = (address: string) => {
+    setState({
+      ...state,
+      selectedWallet: address,
+    })
   }
-  */
 
   useEffect(() => {
     const stateSubscription = AppState.addEventListener(
@@ -225,7 +223,10 @@ export const Core = () => {
                 }}
                 contactsNavigationScreenProps={{ rnsResolver }}
                 dappsScreenProps={{ fetcher: rifWalletServicesFetcher }}
-                manageWalletScreenProps={{ addNewWallet }}
+                manageWalletScreenProps={{
+                  addNewWallet,
+                  switchActiveWallet,
+                }}
               />
 
               {requests.length !== 0 && (
