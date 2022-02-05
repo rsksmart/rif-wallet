@@ -12,7 +12,7 @@ const SmartWalletDeployComponent: React.FC<Interface> = ({
   navigation,
   isWalletDeployed,
 }) => {
-  if (isWalletDeployed) {
+  if (!isWalletDeployed) {
     const handleClick = () => navigation.navigate('WalletInfo')
 
     return (
