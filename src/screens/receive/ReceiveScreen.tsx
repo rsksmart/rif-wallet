@@ -78,7 +78,7 @@ export const ReceiveScreen: React.FC<ScreenWithWallet & ReceiveScreenProps> = ({
           <Text testID={TestID.AddressText} style={styles.smartAddress}>
             {getAddressDisplayText(smartAddress).displayAddress}
           </Text>
-          <Text testID={TestID.AddressText} style={styles.smartAddress}>
+          <Text style={styles.smartAddress}>
             {registeredDomains.length > 0 &&
               registeredDomains.map((registeredDomain: string) => (
                 <Text key={registeredDomain}>{registeredDomain}</Text>
