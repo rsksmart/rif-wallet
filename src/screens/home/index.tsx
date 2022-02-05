@@ -13,10 +13,12 @@ import { useSocketsState } from '../../subscriptions/RIFSockets'
 import FaucetComponent from './FaucetComponent'
 import { ScrollView } from 'react-native-gesture-handler'
 import { ScreenWithWallet } from '../types'
+import SmartWalletDeployComponent from './SmartWalletDeployComponent'
 
 export const HomeScreen: React.FC<ScreenProps<'Home'> & ScreenWithWallet> = ({
   navigation,
   wallet,
+  isWalletDeployed,
 }) => {
   const { state, dispatch } = useSocketsState()
 
@@ -62,6 +64,10 @@ export const HomeScreen: React.FC<ScreenProps<'Home'> & ScreenWithWallet> = ({
         <FaucetComponent
           navigation={navigation}
           balances={Object.values(state.balances)}
+        />
+        <SmartWalletDeployComponent
+          navigation={navigation}
+          isWalletDeployed={isWalletDeployed}
         />
         {selected && (
           <SelectedTokenComponent navigation={navigation} token={selected} />
