@@ -18,6 +18,7 @@ import { AppFooterMenu } from './ux/appFooter'
 import { EditContactScreenProps } from './screens/contacts/EditContactScreen'
 import { DappsScreenScreenProps } from './screens/dapps'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
+import { SettingsScreenProps } from './screens/settings/SettingsScreen'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -95,6 +96,7 @@ export const RootNavigation: React.FC<{
   injectedBrowserUXScreenProps: InjectedBrowserUXScreenProps
   contactsNavigationScreenProps: EditContactScreenProps
   dappsScreenProps: DappsScreenScreenProps
+  settingsScreen: SettingsScreenProps
 }> = ({
   currentScreen,
   hasKeys,
@@ -106,6 +108,7 @@ export const RootNavigation: React.FC<{
   injectedBrowserUXScreenProps,
   contactsNavigationScreenProps,
   dappsScreenProps,
+  settingsScreen,
 }) => {
   return (
     <View style={styles.parent}>
@@ -132,9 +135,9 @@ export const RootNavigation: React.FC<{
 
         <RootStack.Screen
           name="Settings"
-          component={Screens.SettingsScreen}
-          options={{ ...sharedOptions, headerShown: false }}
-        />
+          options={{ ...sharedOptions, headerShown: false }}>
+          {props => <Screens.SettingsScreen {...props} {...settingsScreen} />}
+        </RootStack.Screen>
 
         <RootStack.Screen
           name="CreateKeysUX"

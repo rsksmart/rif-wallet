@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { NavigationProp, ScreenProps } from '../../RootNavigation'
 import { AppContext } from '../../Context'
-import { StyleSheet, ScrollView, Text } from 'react-native'
+import { Alert, StyleSheet, ScrollView, Text } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import { setOpacity } from '../home/tokenColor'
 import { useTranslation } from 'react-i18next'
@@ -9,14 +9,23 @@ import { ButtonAlt } from '../../components/button/ButtonAlt'
 import { Section } from '../../components/section'
 
 export type SettingsScreenProps = {
-  deleteKeys?: () => Promise<any>
+  deleteKeys: () => Promise<any>
 }
 
-export const SettingsScreen: React.FC<SettingsScreenProps & ScreenProps<'Home'>> = ({
-  navigation,
-  deleteKeys
-}) => {
+export const SettingsScreen: React.FC<
+  SettingsScreenProps & ScreenProps<'Settings'>
+> = ({ navigation, deleteKeys }) => {
   const { t } = useTranslation()
+
+  const handleDeleteKeys = () => {
+    Alert.alert('Delete keys', 'Confirm you want to delete your keys', [
+      {
+        text: t('Cancel'),
+        onPress: () => undefined,
+      },
+      { text: 'Delete', onPress: deleteKeys },
+    ])
+  }
 
   return (
     <LinearGradient
@@ -55,7 +64,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps & ScreenProps<'Home'>>
             style={styles.marginBottom}
           />
           <ButtonAlt
-            onPress={() => navigation.navigate('KeysInfo')}
+            onPress={handleDeleteKeys}
             title={t('Delete master key')}
             style={styles.marginBottom}
           />

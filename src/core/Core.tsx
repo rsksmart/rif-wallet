@@ -197,6 +197,7 @@ export const Core = () => {
                 }}
                 contactsNavigationScreenProps={{ rnsResolver }}
                 dappsScreenProps={{ fetcher: rifWalletServicesFetcher }}
+                settingsScreen={{ deleteKeys }}
               />
 
               {requests.length !== 0 && (
