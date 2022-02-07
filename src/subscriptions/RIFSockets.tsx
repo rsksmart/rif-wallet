@@ -5,6 +5,7 @@ import { constants } from 'ethers'
 
 import { Action, Dispatch, State, SubscriptionsProviderProps } from './types'
 import { ITokenWithBalance } from '../lib/rifWalletServices/RIFWalletServicesTypes'
+import { RIFWallet } from '../lib/core'
 
 function liveSubscriptionsReducer(state: State, action: Action) {
   const { type } = action
@@ -73,7 +74,7 @@ const initialState = {
   balances: {},
   transactions: [],
 }
-const loadRBTCBalance = async (wallet: any, dispatch: any) => {
+const loadRBTCBalance = async (wallet: RIFWallet, dispatch: Dispatch) => {
   const rbtcBalanceEntry = await wallet.provider!.getBalance(wallet.address)
 
   const newEntry = {
