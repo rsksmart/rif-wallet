@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useSelectedWallet } from '../Context'
 import { enhanceTransactionInput } from '../screens/activity/ActivityScreen'
 
@@ -79,7 +79,6 @@ const RIFSocketsContext = React.createContext<
 export function RIFSocketsProvider({
   children,
   rifServiceSocket,
-  isWalletDeployed,
   abiEnhancer,
 }: SubscriptionsProviderProps) {
   const [state, dispatch] = React.useReducer(
@@ -87,14 +86,10 @@ export function RIFSocketsProvider({
     initialState,
   )
 
-  const { wallet, isDeployed } = useSelectedWallet()
+  const { wallet } = useSelectedWallet()
 
-  // @JESSE REFACTOR THIS CODE AND THE LINES BELOW TO DISCONNECT FROM
-  // AN ADDRESS AND CONNECT TO ANOTHER
   const connect = () => {
-    console.log('rifServiceSocket connect()', wallet.smartWalletAddress)
     rifServiceSocket?.on('init', result => {
-      console.log('rifServiceSocket init', result)
       dispatch({
         type: 'init',
         payload: result,
@@ -105,7 +100,6 @@ export function RIFSocketsProvider({
       if (result.type === 'newTransaction') {
         enhanceTransactionInput(result.payload, wallet, abiEnhancer)
           .then(enhancedTransaction => {
-            console.log(enhancedTransaction)
             dispatch({
               type: 'newTransaction',
               payload: {
@@ -132,33 +126,20 @@ export function RIFSocketsProvider({
   }
 
   React.useEffect(() => {
-    console.log('RIFSockets wallet init or changed ;-)', rifServiceSocket)
-
-    if (wallet) {
-      connect()
-
-      // disconnect if running on different wallet:
-      if (rifServiceSocket) {
-        console.log('it was a switch!')
+    if (wallet && rifServiceSocket) {
+      // socket is connected to a different wallet
+      if (rifServiceSocket.isConnected()) {
         rifServiceSocket.disconnect()
-
         dispatch({ type: 'init', payload: { transactions: [], balances: [] } })
       }
+
+      connect()
 
       return function cleanup() {
         rifServiceSocket?.disconnect()
       }
     }
-    // }
-  }, [isDeployed, wallet])
-
-  /*
-  useEffect(() => {
-    console.log('RIFSockets.tsx, the selected wallet has changed!', wallet)
-    console.log(rifServiceSocket)
-    connect()
   }, [wallet])
-  */
 
   const value = { state, dispatch }
   return (
