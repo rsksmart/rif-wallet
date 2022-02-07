@@ -132,21 +132,33 @@ export function RIFSocketsProvider({
   }
 
   React.useEffect(() => {
-    if (isWalletDeployed || isDeployed) {
+    console.log('RIFSockets wallet init or changed ;-)', rifServiceSocket)
+
+    if (wallet) {
       connect()
+
+      // disconnect if running on different wallet:
+      if (rifServiceSocket) {
+        console.log('it was a switch!')
+        rifServiceSocket.disconnect()
+
+        dispatch({ type: 'init', payload: { transactions: [], balances: [] } })
+      }
 
       return function cleanup() {
         rifServiceSocket?.disconnect()
       }
     }
-  }, [isDeployed])
+    // }
+  }, [isDeployed, wallet])
 
+  /*
   useEffect(() => {
     console.log('RIFSockets.tsx, the selected wallet has changed!', wallet)
     console.log(rifServiceSocket)
-    rifServiceSocket && rifServiceSocket.disconnect()
     connect()
   }, [wallet])
+  */
 
   const value = { state, dispatch }
   return (
