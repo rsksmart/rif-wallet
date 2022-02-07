@@ -73,8 +73,8 @@ export const ReceiveScreen: React.FC<ScreenWithWallet & ReceiveScreenProps> = ({
             size={qrCodeSize}
           />
         </View>
-
-        npm <View style={{ ...styles.addressContainer, ...qrContainerStyle }}>
+        npm{' '}
+        <View style={{ ...styles.addressContainer, ...qrContainerStyle }}>
           <Text testID={TestID.AddressText} style={styles.smartAddress}>
             {getAddressDisplayText(smartAddress).displayAddress}
           </Text>
@@ -86,7 +86,6 @@ export const ReceiveScreen: React.FC<ScreenWithWallet & ReceiveScreenProps> = ({
           </Text>
         </View>
         <Text style={styles.smartAddressLabel}>smart address</Text>
-
         <View style={grid.row}>
           <View style={{ ...grid.column6, ...styles.bottomColumn }}>
             <SquareButton

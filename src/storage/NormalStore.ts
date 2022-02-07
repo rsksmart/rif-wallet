@@ -1,4 +1,3 @@
-
 import { AsyncStorage } from 'react-native'
 export const createStore = (key: string) => ({
   has: async () => {
