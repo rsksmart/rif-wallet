@@ -10,7 +10,6 @@ type CreateRIFWallet = (wallet: Wallet) => Promise<RIFWallet>
 export const loadExistingWallets =
   (createRIFWallet: CreateRIFWallet) => async () => {
     const serializedKeys = await getKeys()
-    // eslint-disable-next-line no-shadow
     const { kms, wallets } = KeyManagementSystem.fromSerialized(serializedKeys!)
 
     const rifWallets = await Promise.all(wallets.map(createRIFWallet))
@@ -57,3 +56,22 @@ export const creteKMS =
       rifWalletsIsDeployedDictionary,
     }
   }
+
+export const addNextWallet = (
+  kms: KeyManagementSystem,
+  createRIFWallet: CreateRIFWallet,
+) => {
+  const { wallet, save } = kms.nextWallet(31)
+
+  // save wallet in KSM
+  save()
+  // save serialized wallet in storage
+  return saveKeys(kms.serialize()).then(() =>
+    createRIFWallet(wallet).then(rifWallet =>
+      rifWallet.smartWalletFactory.isDeployed().then(isDeloyed => ({
+        rifWallet,
+        isDeloyed,
+      })),
+    ),
+  )
+}

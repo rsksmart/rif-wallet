@@ -10,6 +10,7 @@ import {
   loadExistingWallets,
   creteKMS,
   deleteKeys,
+  addNextWallet,
 } from './operations'
 import {
   rifWalletServicesFetcher,
@@ -29,7 +30,6 @@ import { RequestPIN } from './components/RequestPIN'
 import { WalletConnectProviderElement } from '../screens/walletConnect/WalletConnectContext'
 import { RIFSocketsProvider } from '../subscriptions/RIFSockets'
 import { NavigationContainer, NavigationState } from '@react-navigation/native'
-import { saveKeys } from '../storage/KeyStore'
 
 const gracePeriod = 3000
 
@@ -125,35 +125,21 @@ export const Core = () => {
       throw Error('Can not add new wallet because no KMS created.')
     }
 
-    const { wallet, save } = state.kms?.nextWallet(31)
-    const walletKey = wallet.address
-
-    save()
-    const serialized = state.kms.serialize()
-    return createRIFWallet(wallet).then(rifWallet => {
-      return rifWallet.smartWalletFactory.isDeployed().then(isDeloyed => {
-        // update the state with the new wallet
-        setState({
-          ...state,
-          wallets: Object.assign(state.wallets, {
-            [walletKey]: rifWallet,
-          }),
-          walletsIsDeployed: Object.assign(state.walletsIsDeployed, {
-            [walletKey]: isDeloyed,
-          }),
-        })
-
-        return saveKeys(serialized)
-      })
-    })
+    return addNextWallet(state.kms, createRIFWallet).then(response =>
+      setState({
+        ...state,
+        wallets: Object.assign(state.wallets, {
+          [response.rifWallet.address]: response.rifWallet,
+        }),
+        walletsIsDeployed: Object.assign(state.walletsIsDeployed, {
+          [response.rifWallet.address]: response.isDeloyed,
+        }),
+      }),
+    )
   }
 
-  const switchActiveWallet = (address: string) => {
-    setState({
-      ...state,
-      selectedWallet: address,
-    })
-  }
+  const switchActiveWallet = (address: string) =>
+    setState({ ...state, selectedWallet: address })
 
   useEffect(() => {
     const stateSubscription = AppState.addEventListener(
