@@ -54,7 +54,7 @@ export const SendScreen: React.FC<
     selectedToken.balance,
     selectedToken.decimals || 0,
   )
-  const tokenQuota = state.prices[contractAddress]?.price
+  const tokenQuota = state.prices[selectedToken.contractAddress]?.price
 
   const { t } = useTranslation()
 
@@ -95,7 +95,9 @@ export const SendScreen: React.FC<
     setError(undefined)
 
     if (availableTokens) {
-      const token = availableTokens.find(token => token.symbol === token.symbol)
+      const token = availableTokens.find(
+        token => token.symbol === selectedToken.symbol,
+      )
       if (token) {
         try {
           const decimals = await token.decimals()
@@ -109,6 +111,7 @@ export const SendScreen: React.FC<
 
           setReceipt(transferReceipt)
         } catch (e: any) {
+          console.log(error)
           setError(e.message)
         }
       }
