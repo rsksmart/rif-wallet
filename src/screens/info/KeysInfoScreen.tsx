@@ -14,7 +14,6 @@ export type KeysInfoScreenProps = {
 
 export const KeysInfoScreen: React.FC<KeysInfoScreenProps> = ({
   mnemonic,
-  deleteKeys,
 }) => (
   <ScrollView>
     <View style={styles.sectionCentered}>
@@ -30,12 +29,6 @@ export const KeysInfoScreen: React.FC<KeysInfoScreenProps> = ({
         <Trans>Master key</Trans>
       </Header2>
       <CopyComponent testID={TestID.Mnemonic} value={mnemonic} />
-    </View>
-    <View style={styles.section}>
-      <Button testID={TestID.Delete} onPress={deleteKeys} title="Delete keys" />
-      <Paragraph>
-        <Trans>You will need to refresh the app for this to fully work.</Trans>
-      </Paragraph>
     </View>
   </ScrollView>
 )
