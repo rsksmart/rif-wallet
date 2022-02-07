@@ -1,8 +1,10 @@
 import React from 'react'
 import { useSelectedWallet } from '../Context'
 import { enhanceTransactionInput } from '../screens/activity/ActivityScreen'
+import { constants } from 'ethers'
 
 import { Action, Dispatch, State, SubscriptionsProviderProps } from './types'
+import { ITokenWithBalance } from '../lib/rifWalletServices/RIFWalletServicesTypes'
 
 function liveSubscriptionsReducer(state: State, action: Action) {
   const { type } = action
@@ -71,6 +73,19 @@ const initialState = {
   balances: {},
   transactions: [],
 }
+const loadRBTCBalance = async (wallet: any, dispatch: any) => {
+  const rbtcBalanceEntry = await wallet.provider!.getBalance(wallet.address)
+
+  const newEntry = {
+    name: 'TRBTC (EOA)',
+    logo: 'TRBTC',
+    symbol: 'TRBTC',
+    contractAddress: constants.AddressZero,
+    decimals: 18,
+    balance: rbtcBalanceEntry.toString(),
+  } as ITokenWithBalance
+  dispatch({ type: 'newBalance', payload: newEntry })
+}
 
 const RIFSocketsContext = React.createContext<
   { state: State; dispatch: Dispatch } | undefined
@@ -88,6 +103,9 @@ export function RIFSocketsProvider({
   )
 
   const { wallet, isDeployed } = useSelectedWallet()
+  setInterval(async () => {
+    loadRBTCBalance(wallet, dispatch).then()
+  }, 5000)
 
   React.useEffect(() => {
     if (isWalletDeployed || isDeployed) {
