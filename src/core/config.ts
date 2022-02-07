@@ -1,6 +1,5 @@
 import Config from 'react-native-config'
 
-
 export enum SETTINGS {
   RIF_WALLET_SERVICE_URL = 'RIF_WALLET_SERVICE_URL',
   RPC_URL = 'RPC_URL',
@@ -20,4 +19,3 @@ export const getWalletSetting = (
       return Config[`NETWORK${chainId.toString()}_SW_ADDRESS`]
   }
 }
-
