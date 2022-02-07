@@ -39,13 +39,17 @@ export const HomeScreen: React.FC<ScreenProps<'Home'> & ScreenWithWallet> = ({
   }
 
   useEffect(() => {
+    setInterval(async () => {
+      console.log('Loading RBTC')
+      loadRBTCBalance().then()
+    }, 5000)
+  }, [])
+  useEffect(() => {
     const balances = Object.values(state.balances)
 
     if (!selected) {
       setSelected(balances[0])
     }
-
-    loadRBTCBalance().then()
   }, [state.balances])
 
   const selectedTokenColor = getTokenColor(selected?.symbol)
