@@ -1,9 +1,10 @@
 import React, { useContext } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
-import { Button, CopyComponent, Header2, Header3 } from '../../components'
+import { Button, Header2, Header3, Paragraph } from '../../components'
 import { ScreenWithWallet } from '../types'
 import { AppContext } from '../../Context'
+import { AddressCopyComponent } from '../../components/copy/AddressCopyComponent'
 
 interface Interface {
   addNewWallet: any
@@ -21,11 +22,24 @@ export const ManageWalletsScreen: React.FC<Interface & ScreenWithWallet> = ({
       <Header2>Manage Wallets</Header2>
       {Object.keys(wallets).map((address: string, int: number) => {
         const isSelected = selectedWallet === address
+        const thisWallet = wallets[address]
+
         return (
-          <View key={address} style={styles.addressRow}>
-            <Text>Account {int.toString()}:</Text>
-            <CopyComponent value={address} />
-            {isSelected && <Text>SELECTED</Text>}
+          <View
+            key={address}
+            style={
+              isSelected
+                ? { ...styles.addressRow, ...styles.addressRowSelected }
+                : styles.addressRow
+            }>
+            <Paragraph>Account {int.toString()}:</Paragraph>
+            <Text>
+              EOA Address: <AddressCopyComponent address={address} />
+            </Text>
+            <Text>
+              SW Address:{' '}
+              <AddressCopyComponent address={thisWallet.smartWalletAddress} />
+            </Text>
             {!isSelected && (
               <Button
                 onPress={() => switchActiveWallet(address)}
@@ -47,6 +61,9 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 10,
     borderWidth: 1,
+  },
+  addressRowSelected: {
+    borderColor: 'green',
   },
 })
 
