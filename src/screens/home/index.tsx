@@ -24,26 +24,6 @@ export const HomeScreen: React.FC<ScreenProps<'Home'> & ScreenWithWallet> = ({
 
   const [selectedPanel, setSelectedPanel] = useState<string>('portfolio')
 
-  const loadRBTCBalance = async () => {
-    const rbtcBalanceEntry = await wallet.provider!.getBalance(wallet.address)
-
-    const newEntry = {
-      name: 'TRBTC (EOA)',
-      logo: 'TRBTC',
-      symbol: 'TRBTC',
-      contractAddress: constants.AddressZero,
-      decimals: 18,
-      balance: rbtcBalanceEntry.toString(),
-    } as ITokenWithBalance
-    dispatch({ type: 'newBalance', payload: newEntry })
-  }
-
-  useEffect(() => {
-    setInterval(async () => {
-      console.log('Loading RBTC')
-      loadRBTCBalance().then()
-    }, 5000)
-  }, [])
   useEffect(() => {
     const balances = Object.values(state.balances)
 
