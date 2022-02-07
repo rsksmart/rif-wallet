@@ -24,8 +24,6 @@ export const HomeScreen: React.FC<{
   const [selectedPanel, setSelectedPanel] = useState<string>('portfolio')
 
   useEffect(() => {
-    const balances = Object.values(state.balances)
-
     if (!selected) {
       setSelected(balances[0])
     }
