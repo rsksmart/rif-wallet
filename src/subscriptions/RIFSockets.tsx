@@ -74,6 +74,7 @@ const initialState = {
   balances: {},
   transactions: [],
 }
+//TODO: Move this to the backend
 const loadRBTCBalance = async (wallet: RIFWallet, dispatch: Dispatch) => {
   const rbtcBalanceEntry = await wallet.provider!.getBalance(wallet.address)
 
