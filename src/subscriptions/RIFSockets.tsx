@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useSelectedWallet } from '../Context'
 import { enhanceTransactionInput } from '../screens/activity/ActivityScreen'
 
@@ -89,46 +89,50 @@ export function RIFSocketsProvider({
 
   const { wallet, isDeployed } = useSelectedWallet()
 
+  // @JESSE REFACTOR THIS CODE AND THE LINES BELOW TO DISCONNECT FROM
+  // AN ADDRESS AND CONNECT TO ANOTHER
+  const connect = () => {
+    console.log('rifServiceSocket connect()', wallet.smartWalletAddress)
+    rifServiceSocket?.on('init', result => {
+      console.log('rifServiceSocket init', result)
+      dispatch({
+        type: 'init',
+        payload: result,
+      })
+    })
+
+    rifServiceSocket?.on('change', result => {
+      if (result.type === 'newTransaction') {
+        enhanceTransactionInput(result.payload, wallet, abiEnhancer)
+          .then(enhancedTransaction => {
+            console.log(enhancedTransaction)
+            dispatch({
+              type: 'newTransaction',
+              payload: {
+                originTransaction: result.payload,
+                enhancedTransaction,
+              },
+            })
+          })
+          .catch(() => {
+            dispatch({
+              type: 'newTransaction',
+              payload: {
+                originTransaction: result.payload,
+                enhancedTransaction: undefined,
+              },
+            })
+          })
+      } else {
+        dispatch(result as any)
+      }
+    })
+
+    rifServiceSocket?.connect(wallet)
+  }
+
   React.useEffect(() => {
     if (isWalletDeployed || isDeployed) {
-      const connect = async () => {
-        rifServiceSocket?.on('init', result => {
-          dispatch({
-            type: 'init',
-            payload: result,
-          })
-        })
-
-        rifServiceSocket?.on('change', result => {
-          if (result.type === 'newTransaction') {
-            enhanceTransactionInput(result.payload, wallet, abiEnhancer)
-              .then(enhancedTransaction => {
-                console.log(enhancedTransaction)
-                dispatch({
-                  type: 'newTransaction',
-                  payload: {
-                    originTransaction: result.payload,
-                    enhancedTransaction,
-                  },
-                })
-              })
-              .catch(() => {
-                dispatch({
-                  type: 'newTransaction',
-                  payload: {
-                    originTransaction: result.payload,
-                    enhancedTransaction: undefined,
-                  },
-                })
-              })
-          } else {
-            dispatch(result as any)
-          }
-        })
-
-        rifServiceSocket?.connect(wallet)
-      }
-
       connect()
 
       return function cleanup() {
@@ -136,6 +140,13 @@ export function RIFSocketsProvider({
       }
     }
   }, [isDeployed])
+
+  useEffect(() => {
+    console.log('RIFSockets.tsx, the selected wallet has changed!', wallet)
+    console.log(rifServiceSocket)
+    rifServiceSocket && rifServiceSocket.disconnect()
+    connect()
+  }, [wallet])
 
   const value = { state, dispatch }
   return (
