@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
-import { Button, CopyComponent, Header2, Paragraph } from '../../components'
+import { CopyComponent, Header2, Paragraph } from '../../components'
 import { Trans } from 'react-i18next'
 export enum TestID {
   Mnemonic = 'Mnemonic.Text',
@@ -12,9 +12,7 @@ export type KeysInfoScreenProps = {
   deleteKeys: () => Promise<any>
 }
 
-export const KeysInfoScreen: React.FC<KeysInfoScreenProps> = ({
-  mnemonic,
-}) => (
+export const KeysInfoScreen: React.FC<KeysInfoScreenProps> = ({ mnemonic }) => (
   <ScrollView>
     <View style={styles.sectionCentered}>
       <Paragraph>
