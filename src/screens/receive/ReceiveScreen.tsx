@@ -73,17 +73,17 @@ export const ReceiveScreen: React.FC<ScreenWithWallet & ReceiveScreenProps> = ({
             size={qrCodeSize}
           />
         </View>
-        npm{' '}
         <View style={{ ...styles.addressContainer, ...qrContainerStyle }}>
           <Text testID={TestID.AddressText} style={styles.smartAddress}>
             {getAddressDisplayText(smartAddress).displayAddress}
           </Text>
-          <Text style={styles.smartAddress}>
-            {registeredDomains.length > 0 &&
-              registeredDomains.map((registeredDomain: string) => (
+          {registeredDomains.length > 0 && (
+            <Text style={styles.smartAddress}>
+              {registeredDomains.map((registeredDomain: string) => (
                 <Text key={registeredDomain}>{registeredDomain}</Text>
               ))}
-          </Text>
+            </Text>
+          )}
         </View>
         <Text style={styles.smartAddressLabel}>smart address</Text>
         <View style={grid.row}>
