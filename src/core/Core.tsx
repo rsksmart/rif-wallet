@@ -125,7 +125,7 @@ export const Core = () => {
       throw Error('Can not add new wallet because no KMS created.')
     }
 
-    return addNextWallet(state.kms, createRIFWallet).then(response =>
+    return addNextWallet(state.kms, createRIFWallet, networkId).then(response =>
       setState({
         ...state,
         wallets: Object.assign(state.wallets, {

@@ -60,8 +60,9 @@ export const creteKMS =
 export const addNextWallet = (
   kms: KeyManagementSystem,
   createRIFWallet: CreateRIFWallet,
+  networkId: number,
 ) => {
-  const { wallet, save } = kms.nextWallet(31)
+  const { wallet, save } = kms.nextWallet(networkId)
 
   // save wallet in KSM
   save()
