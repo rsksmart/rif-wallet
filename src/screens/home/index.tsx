@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet } from 'react-native'
-import { constants } from 'ethers'
 
-import { ScreenProps } from '../../RootNavigation'
+import { NavigationProp } from '../../RootNavigation'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import SelectedTokenComponent from './SelectedTokenComponent'
 import LinearGradient from 'react-native-linear-gradient'
@@ -12,13 +11,13 @@ import ActivityComponent from './ActivityComponent'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
 import FaucetComponent from './FaucetComponent'
 import { ScrollView } from 'react-native-gesture-handler'
-import { ScreenWithWallet } from '../types'
 
-export const HomeScreen: React.FC<ScreenProps<'Home'> & ScreenWithWallet> = ({
-  navigation,
-  wallet,
-}) => {
-  const { state, dispatch } = useSocketsState()
+export const HomeScreen: React.FC<{
+  navigation: NavigationProp
+}> = ({ navigation }) => {
+  const { state } = useSocketsState()
+
+  const balances = Object.values(state.balances)
 
   const [selected, setSelected] = useState<ITokenWithBalance | null>(null)
 
@@ -30,8 +29,7 @@ export const HomeScreen: React.FC<ScreenProps<'Home'> & ScreenWithWallet> = ({
     if (!selected) {
       setSelected(balances[0])
     }
-  }, [state.balances])
-
+  }, [balances])
   const selectedTokenColor = getTokenColor(selected?.symbol)
 
   const containerStyles = {
