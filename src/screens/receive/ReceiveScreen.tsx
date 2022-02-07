@@ -74,7 +74,7 @@ export const ReceiveScreen: React.FC<ScreenWithWallet & ReceiveScreenProps> = ({
           />
         </View>
 
-        <View style={{ ...styles.addressContainer, ...qrContainerStyle }}>
+        npm <View style={{ ...styles.addressContainer, ...qrContainerStyle }}>
           <Text testID={TestID.AddressText} style={styles.smartAddress}>
             {getAddressDisplayText(smartAddress).displayAddress}
           </Text>

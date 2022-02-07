@@ -1,5 +1,5 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
 
+import { AsyncStorage } from 'react-native'
 export const createStore = (key: string) => ({
   has: async () => {
     const value = await AsyncStorage.getItem(key)
