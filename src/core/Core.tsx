@@ -120,22 +120,37 @@ export const Core = () => {
     return rifWallet
   }
 
-  console.log({ state })
   const addNewWallet = () => {
     const chainId = 31 // @temp
     if (!state.kms) {
-      throw Error('No KMS created')
+      throw Error('Can not add new wallet because no KMS created.')
     }
 
     const { derivationPath, wallet, save } = state.kms?.nextWallet(chainId)
+    const walletKey = wallet.address
 
-    console.log({ wallet, derivationPath })
+    console.log({ wallet, derivationPath, walletKey })
     save()
     const serialized = state.kms.serialize()
-    // @TODO:
-    // Object.assign(rifWalletsDictionary)
-    // Object.assign(rifWalletsIsDeployedDictionary)
-    return saveKeys(serialized)
+    return createRIFWallet(wallet).then(rifWallet => {
+      console.log('new rifWallet ;-)', rifWallet)
+      const walletsDictionary = Object.assign(state.wallets, {
+        [rifWallet.address]: rifWallet,
+      })
+      return rifWallet.smartWalletFactory.isDeployed().then(isDeloyed => {
+        const deployedDictionary = Object.assign(state.walletsIsDeployed, {
+          [rifWallet.address]: isDeloyed,
+        })
+
+        setState({
+          ...state,
+          wallets: walletsDictionary,
+          walletsIsDeployed: deployedDictionary,
+        })
+
+        return saveKeys(serialized)
+      })
+    })
   }
 
   const switchActiveWallet = (address: string) => {
