@@ -107,14 +107,9 @@ export function RIFSocketsProvider({
   const { wallet, isDeployed } = useSelectedWallet()
 
   React.useEffect(() => {
-    let interval: any
     if (isWalletDeployed || isDeployed) {
       const connect = async () => {
         rifServiceSocket?.on('init', result => {
-          interval = setInterval(async () => {
-            loadRBTCBalance(wallet, dispatch).then()
-          }, 5000)
-
           dispatch({
             type: 'init',
             payload: result,
@@ -154,12 +149,18 @@ export function RIFSocketsProvider({
       connect()
 
       return function cleanup() {
-        clearInterval(interval)
-
         rifServiceSocket?.disconnect()
       }
     }
   }, [isDeployed])
+
+  React.useEffect(() => {
+    const interval = setInterval(async () => {
+      loadRBTCBalance(wallet, dispatch).then()
+    }, 5000)
+
+    return () => clearInterval(interval)
+  }, [wallet])
 
   const value = { state, dispatch }
   return (
