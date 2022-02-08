@@ -12,7 +12,7 @@ export const BalanceRowComponent: React.FC<{
   token: ITokenWithBalance
   selected: boolean
   onPress: () => void
-  quota: { price: number; lastUpdated: string } | undefined
+  quota?: { price: number; lastUpdated: string }
 }> = ({ selected, token, onPress, quota }) => {
   const containerStyles = {
     ...styles.container,
