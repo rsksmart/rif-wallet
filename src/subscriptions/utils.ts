@@ -4,7 +4,7 @@ export const sortEnhancedTransactions = (
   first: IActivityTransaction,
   second: IActivityTransaction,
 ) => {
-  return second.originTransaction.nonce - first.originTransaction.nonce
+  return second.originTransaction.timestamp - first.originTransaction.timestamp
 }
 
 export const filterEnhancedTransactions = (
@@ -15,9 +15,7 @@ export const filterEnhancedTransactions = (
   return (
     index ===
     self.findIndex(
-      tx =>
-        tx.originTransaction.timestamp ===
-        transaction.originTransaction.timestamp,
+      tx => tx.originTransaction.nonce === transaction.originTransaction.nonce,
     )
   )
 }
