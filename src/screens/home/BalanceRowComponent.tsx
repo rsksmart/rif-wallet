@@ -39,7 +39,7 @@ export const BalanceRowComponent: React.FC<{
               token.decimals,
             )} ${token.symbol || ''}`}</Text>
             <Text style={styles.price}>
-              {quota ? quota.price.toFixed(priceDecimals) : 0.0} USD
+              {quota ? `${quota.price.toFixed(priceDecimals)} USD` : 'Not available'}
             </Text>
           </View>
         </View>
