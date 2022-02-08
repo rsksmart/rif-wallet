@@ -18,6 +18,7 @@ import { AppFooterMenu } from './ux/appFooter'
 import { EditContactScreenProps } from './screens/contacts/EditContactScreen'
 import { DappsScreenScreenProps } from './screens/dapps'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
+import { ManagerWalletScreenProps } from './screens/settings/ManageWalletsScreen'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -97,7 +98,7 @@ export const RootNavigation: React.FC<{
   injectedBrowserUXScreenProps: InjectedBrowserUXScreenProps
   contactsNavigationScreenProps: EditContactScreenProps
   dappsScreenProps: DappsScreenScreenProps
-  manageWalletScreenProps: any // @jesse, fix this!
+  manageWalletScreenProps: ManagerWalletScreenProps
 }> = ({
   currentScreen,
   hasKeys,

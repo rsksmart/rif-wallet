@@ -6,15 +6,14 @@ import { ScreenWithWallet } from '../types'
 import { AppContext } from '../../Context'
 import { AddressCopyComponent } from '../../components/copy/AddressCopyComponent'
 
-interface Interface {
+export interface ManagerWalletScreenProps {
   addNewWallet: any
   switchActiveWallet?: any
 }
 
-export const ManageWalletsScreen: React.FC<Interface & ScreenWithWallet> = ({
-  addNewWallet,
-  switchActiveWallet,
-}) => {
+export const ManageWalletsScreen: React.FC<
+  ManagerWalletScreenProps & ScreenWithWallet
+> = ({ addNewWallet, switchActiveWallet }) => {
   const { wallets, selectedWallet } = useContext(AppContext)
 
   return (
