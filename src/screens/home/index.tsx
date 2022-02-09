@@ -21,24 +21,22 @@ export const HomeScreen: React.FC<{
     undefined,
   )
   // token or undefined
-  const selectedToken = Object.values(state.balances).filter(
+  const selected = Object.values(state.balances).filter(
     (t: ITokenWithBalance) => t.contractAddress === selectedAddress,
   )[0]
 
   const [selectedPanel, setSelectedPanel] = useState<string>('portfolio')
 
   useEffect(() => {
-    // no token is selected, or the selectedToken is undefined choose the first:
-    if (!selectedToken) {
+    if (!selected) {
       Object.values(state.balances).length !== 0
         ? setSelectedAddress(Object.values(state.balances)[0].contractAddress)
         : undefined
     }
   }, [state.balances])
 
-  console.log({ selectedToken })
-  const selectedTokenColor = selectedToken
-    ? getTokenColor(selectedToken.symbol)
+  const selectedTokenColor = selected
+    ? getTokenColor(selected.symbol)
     : '#CCCCCC'
 
   const containerStyles = {
@@ -54,11 +52,8 @@ export const HomeScreen: React.FC<{
           navigation={navigation}
           balances={Object.values(state.balances)}
         />
-        {selectedToken && (
-          <SelectedTokenComponent
-            navigation={navigation}
-            token={selectedToken}
-          />
+        {selected && (
+          <SelectedTokenComponent navigation={navigation} token={selected} />
         )}
 
         <LinearGradient
