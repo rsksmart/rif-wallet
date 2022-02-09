@@ -21,6 +21,7 @@ export interface IRifWalletServicesSocket extends EventEmitter {
   connect: (wallet: RIFWallet) => Promise<void>
 
   disconnect(): void
+  isConnected(): boolean
 
   on(event: 'init', listener: (result: IServiceInitEvent) => void): this
   on(event: 'change', listener: (result: IServiceChangeEvent) => void): this
@@ -107,5 +108,9 @@ export class RifWalletServicesSocket
     if (this.socket) {
       this.socket.disconnect()
     }
+  }
+
+  isConnected() {
+    return !!this.socket
   }
 }

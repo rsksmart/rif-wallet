@@ -57,7 +57,6 @@ export type Dispatch = (action: Action) => void
 export type SubscriptionsProviderProps = {
   children: React.ReactNode
   rifServiceSocket?: IRifWalletServicesSocket
-  isWalletDeployed?: boolean
   abiEnhancer: IAbiEnhancer
 }
 

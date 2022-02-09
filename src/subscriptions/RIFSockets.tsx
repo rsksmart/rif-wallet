@@ -10,6 +10,10 @@ import {
   State,
   SubscriptionsProviderProps,
 } from './types'
+import { constants } from 'ethers'
+
+import { ITokenWithBalance } from '../lib/rifWalletServices/RIFWalletServicesTypes'
+import { RIFWallet } from '../lib/core'
 
 function liveSubscriptionsReducer(state: State, action: Action) {
   const { type } = action
@@ -100,6 +104,20 @@ const initialState = {
   prices: {},
   balances: {},
 }
+//TODO: Move this to the backend
+const loadRBTCBalance = async (wallet: RIFWallet, dispatch: Dispatch) => {
+  const rbtcBalanceEntry = await wallet.provider!.getBalance(wallet.address)
+
+  const newEntry = {
+    name: 'TRBTC (EOA)',
+    logo: 'TRBTC',
+    symbol: 'TRBTC',
+    contractAddress: constants.AddressZero,
+    decimals: 18,
+    balance: rbtcBalanceEntry.toString(),
+  } as ITokenWithBalance
+  dispatch({ type: 'newBalance', payload: newEntry })
+}
 
 const RIFSocketsContext = React.createContext<
   { state: State; dispatch: Dispatch } | undefined
@@ -108,7 +126,6 @@ const RIFSocketsContext = React.createContext<
 export function RIFSocketsProvider({
   children,
   rifServiceSocket,
-  isWalletDeployed,
   abiEnhancer,
 }: SubscriptionsProviderProps) {
   const [state, dispatch] = React.useReducer(
@@ -116,46 +133,51 @@ export function RIFSocketsProvider({
     initialState,
   )
 
-  const { wallet, isDeployed } = useSelectedWallet()
+  const { wallet } = useSelectedWallet()
+
+  const connect = () => {
+    rifServiceSocket?.on('init', result => {
+      dispatch({
+        type: 'init',
+        payload: result,
+      })
+    })
+
+    rifServiceSocket?.on('change', result => {
+      if (result.type === 'newTransaction') {
+        enhanceTransactionInput(result.payload, wallet, abiEnhancer)
+          .then(enhancedTransaction => {
+            dispatch({
+              type: 'newTransaction',
+              payload: {
+                originTransaction: result.payload,
+                enhancedTransaction,
+              },
+            })
+          })
+          .catch(() => {
+            dispatch({
+              type: 'newTransaction',
+              payload: {
+                originTransaction: result.payload,
+                enhancedTransaction: undefined,
+              },
+            })
+          })
+      } else {
+        dispatch(result as any)
+      }
+    })
+
+    rifServiceSocket?.connect(wallet)
+  }
 
   React.useEffect(() => {
-    if (isWalletDeployed || isDeployed) {
-      const connect = async () => {
-        rifServiceSocket?.on('init', result => {
-          dispatch({
-            type: 'init',
-            payload: result,
-          })
-        })
-
-        rifServiceSocket?.on('change', result => {
-          if (result.type === 'newTransaction') {
-            enhanceTransactionInput(result.payload, wallet, abiEnhancer)
-              .then(enhancedTransaction => {
-                console.log(enhancedTransaction)
-                dispatch({
-                  type: 'newTransaction',
-                  payload: {
-                    originTransaction: result.payload,
-                    enhancedTransaction,
-                  },
-                })
-              })
-              .catch(() => {
-                dispatch({
-                  type: 'newTransaction',
-                  payload: {
-                    originTransaction: result.payload,
-                    enhancedTransaction: undefined,
-                  },
-                })
-              })
-          } else {
-            dispatch(result as any)
-          }
-        })
-
-        rifServiceSocket?.connect(wallet)
+    if (wallet && rifServiceSocket) {
+      // socket is connected to a different wallet
+      if (rifServiceSocket.isConnected()) {
+        rifServiceSocket.disconnect()
+        dispatch({ type: 'init', payload: { transactions: [], balances: [] } })
       }
 
       connect()
@@ -164,7 +186,15 @@ export function RIFSocketsProvider({
         rifServiceSocket?.disconnect()
       }
     }
-  }, [isDeployed])
+  }, [wallet])
+
+  React.useEffect(() => {
+    const interval = setInterval(async () => {
+      loadRBTCBalance(wallet, dispatch).then()
+    }, 5000)
+
+    return () => clearInterval(interval)
+  }, [wallet])
 
   const value = { state, dispatch }
   return (

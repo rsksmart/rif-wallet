@@ -10,6 +10,7 @@ import {
   loadExistingWallets,
   creteKMS,
   deleteKeys,
+  addNextWallet,
 } from './operations'
 import {
   rifWalletServicesFetcher,
@@ -119,6 +120,27 @@ export const Core = () => {
     return rifWallet
   }
 
+  const addNewWallet = () => {
+    if (!state.kms) {
+      throw Error('Can not add new wallet because no KMS created.')
+    }
+
+    return addNextWallet(state.kms, createRIFWallet, networkId).then(response =>
+      setState({
+        ...state,
+        wallets: Object.assign(state.wallets, {
+          [response.rifWallet.address]: response.rifWallet,
+        }),
+        walletsIsDeployed: Object.assign(state.walletsIsDeployed, {
+          [response.rifWallet.address]: response.isDeloyed,
+        }),
+      }),
+    )
+  }
+
+  const switchActiveWallet = (address: string) =>
+    setState({ ...state, selectedWallet: address })
+
   useEffect(() => {
     const stateSubscription = AppState.addEventListener(
       'change',
@@ -197,6 +219,10 @@ export const Core = () => {
                 }}
                 contactsNavigationScreenProps={{ rnsResolver }}
                 dappsScreenProps={{ fetcher: rifWalletServicesFetcher }}
+                manageWalletScreenProps={{
+                  addNewWallet,
+                  switchActiveWallet,
+                }}
               />
 
               {requests.length !== 0 && (

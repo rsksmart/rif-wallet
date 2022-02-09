@@ -28,7 +28,6 @@ export const HomeScreen: React.FC<{
       setSelected(balances[0])
     }
   }, [balances])
-
   const selectedTokenColor = getTokenColor(selected?.symbol)
 
   const containerStyles = {
@@ -42,8 +41,7 @@ export const HomeScreen: React.FC<{
       <ScrollView>
         <FaucetComponent
           navigation={navigation}
-          rbtcBalance={0}
-          rifBalance={0}
+          balances={Object.values(state.balances)}
         />
         {selected && (
           <SelectedTokenComponent navigation={navigation} token={selected} />

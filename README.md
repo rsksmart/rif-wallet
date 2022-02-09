@@ -25,6 +25,21 @@
   - `yarn ios`
   - `yarn android`
 
+### Run with local services
+
+See [`@rsksmart/rif-wallet-services`](https://github.com/rsksmart/rif-wallet-services) to run RIF Wallet Services. You can then use
+
+```
+yarn ios:local
+yarn android:local
+```
+
+You can build your own configuration and run
+
+```
+ENVFILE=.env.custom react-native run-ios
+```
+
 ## Folder Structure
 
 This is an ongoing process that will be documented when more are added. Below is a list of the current directories and what is expected inside.
