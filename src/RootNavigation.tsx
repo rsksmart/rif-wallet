@@ -18,6 +18,7 @@ import { AppFooterMenu } from './ux/appFooter'
 import { EditContactScreenProps } from './screens/contacts/EditContactScreen'
 import { DappsScreenScreenProps } from './screens/dapps'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
+import { ManagerWalletScreenProps } from './screens/settings/ManageWalletsScreen'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -39,6 +40,7 @@ const InjectedScreens = {
   RegisterDomainScreen: InjectSelectedWallet(Screens.RegisterDomainScreen),
   HomeScreen: InjectSelectedWallet(Screens.HomeScreen),
   DappsScreen: InjectSelectedWallet(Screens.DappsScreen),
+  ManageWalletsScreen: InjectSelectedWallet(Screens.ManageWalletsScreen),
 }
 
 type RootStackParamList = {
@@ -71,6 +73,7 @@ type RootStackParamList = {
   RegisterDomain: { selectedDomain: string; years: number }
   Contacts: undefined
   Settings: undefined
+  ManageWallets: undefined
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -95,6 +98,7 @@ export const RootNavigation: React.FC<{
   injectedBrowserUXScreenProps: InjectedBrowserUXScreenProps
   contactsNavigationScreenProps: EditContactScreenProps
   dappsScreenProps: DappsScreenScreenProps
+  manageWalletScreenProps: ManagerWalletScreenProps
 }> = ({
   currentScreen,
   hasKeys,
@@ -106,6 +110,7 @@ export const RootNavigation: React.FC<{
   injectedBrowserUXScreenProps,
   contactsNavigationScreenProps,
   dappsScreenProps,
+  manageWalletScreenProps,
 }) => {
   return (
     <View style={styles.parent}>
@@ -135,6 +140,15 @@ export const RootNavigation: React.FC<{
           component={Screens.SettingsScreen}
           options={{ ...sharedOptions, headerShown: false }}
         />
+
+        <RootStack.Screen name="ManageWallets" options={{ headerShown: true }}>
+          {props => (
+            <InjectedScreens.ManageWalletsScreen
+              {...props}
+              {...manageWalletScreenProps}
+            />
+          )}
+        </RootStack.Screen>
 
         <RootStack.Screen
           name="CreateKeysUX"

@@ -61,7 +61,6 @@ export type LoadRBTCBalance = () => void
 export type SubscriptionsProviderProps = {
   children: React.ReactNode
   rifServiceSocket?: IRifWalletServicesSocket
-  isWalletDeployed?: boolean
   abiEnhancer: IAbiEnhancer
 }
 
