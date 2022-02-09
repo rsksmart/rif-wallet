@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { StyleSheet } from 'react-native'
 
 import { NavigationProp } from '../../RootNavigation'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import SelectedTokenComponent from './SelectedTokenComponent'
 import LinearGradient from 'react-native-linear-gradient'
 import { getTokenColor, setOpacity } from './tokenColor'
@@ -20,10 +19,9 @@ export const HomeScreen: React.FC<{
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
     undefined,
   )
+
   // token or undefined
-  const selected = Object.values(state.balances).filter(
-    (t: ITokenWithBalance) => t.contractAddress === selectedAddress,
-  )[0]
+  const selected = selectedAddress ? state.balances[selectedAddress] : undefined
 
   const [selectedPanel, setSelectedPanel] = useState<string>('portfolio')
 
