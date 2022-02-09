@@ -7,7 +7,7 @@ type Props = {
 
 export const Section: React.FC<Props> = ({ children, title }) => {
   return (
-    <View style={styles.root}>
+    <View testID={title} style={styles.root}>
       <Text style={styles.title}>{title}</Text>
       {children}
     </View>
