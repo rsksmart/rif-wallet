@@ -84,7 +84,9 @@ export const SendScreen: React.FC<
       setReceipt(undefined)
     }
 
-    getAllTokens(wallet)
+    const tokensWithBalance = Object.values(state.balances)
+
+    getAllTokens(wallet, tokensWithBalance)
       .then(tokens => tokens.filter(token => state.balances[token.address]))
       .then(tokens => setAvailableTokens(tokens))
   }, [wallet, isFocused])
@@ -111,7 +113,6 @@ export const SendScreen: React.FC<
 
           setReceipt(transferReceipt)
         } catch (e: any) {
-          console.log(error)
           setError(e.message)
         }
       }
