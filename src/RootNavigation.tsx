@@ -7,7 +7,6 @@ import { CreateKeysNavigation, CreateKeysProps } from './ux/createKeys'
 
 import * as Screens from './screens'
 import { InjectSelectedWallet } from './Context'
-//import { ReceiveScreenWithDomains } from './screens/receive/ReceiveScreenWithDomains'
 
 import { BalancesScreenProps } from './screens/balances/BalancesScreen'
 import { KeysInfoScreenProps } from './screens/info/KeysInfoScreen'
