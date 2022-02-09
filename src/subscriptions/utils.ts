@@ -15,7 +15,7 @@ export const filterEnhancedTransactions = (
   return (
     index ===
     self.findIndex(
-      tx => tx.originTransaction.nonce === transaction.originTransaction.nonce,
+      tx => tx.originTransaction.hash === transaction.originTransaction.hash,
     )
   )
 }
