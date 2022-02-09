@@ -15,6 +15,7 @@ import { IToken } from './BaseToken'
 import { ERC20Token } from './ERC20Token'
 import { RBTCToken } from './RBTCToken'
 import { Signer } from '@ethersproject/abstract-signer'
+import { ITokenWithBalance } from '../rifWalletServices/RIFWalletServicesTypes'
 
 export interface ITokenMetadata {
   [address: string]: {
@@ -52,7 +53,10 @@ export const getTokenLogo = (address: string, chainId: number) => {
   return chainId === MAINNET_CHAINID ? tokenMainnet : tokenTestnet
 }
 
-export const getAllTokens = async (signer: Signer): Promise<IToken[]> => {
+export const getAllTokens = async (
+  signer: Signer,
+  tokensWithBalance?: Array<ITokenWithBalance>,
+): Promise<IToken[]> => {
   const chainId = await signer.getChainId()
 
   const metadataTokens =
@@ -60,11 +64,24 @@ export const getAllTokens = async (signer: Signer): Promise<IToken[]> => {
 
   const metadataKeys = Object.keys(metadataTokens)
 
-  const tokens: IToken[] = []
+  const tokens: Record<string, IToken> = {}
 
   const rbtc = makeRBTCToken(signer, chainId)
 
-  tokens.push(rbtc)
+  tokens[rbtc.address] = rbtc
+
+  if (tokensWithBalance) {
+    for (const token of tokensWithBalance) {
+      const addressWithoutChecksum = token.contractAddress.toLowerCase()
+      const logo = getTokenLogo(addressWithoutChecksum, chainId)
+      tokens[addressWithoutChecksum] = new ERC20Token(
+        addressWithoutChecksum,
+        signer,
+        token.symbol,
+        logo,
+      )
+    }
+  }
 
   for (const address of metadataKeys) {
     const addressWithoutChecksum = address.toLowerCase()
@@ -72,10 +89,12 @@ export const getAllTokens = async (signer: Signer): Promise<IToken[]> => {
     const logo = getTokenLogo(addressWithoutChecksum, chainId)
     const token = new ERC20Token(addressWithoutChecksum, signer, symbol, logo)
 
-    tokens.push(token)
+    tokens[addressWithoutChecksum] = token
   }
 
-  return tokens
+  const arrayOfTokens = Object.values(tokens)
+
+  return arrayOfTokens
 }
 
 export const makeRBTCToken = (signer: Signer, chainId: number): RBTCToken => {
