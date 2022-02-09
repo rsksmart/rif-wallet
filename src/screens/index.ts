@@ -1,6 +1,7 @@
 export { DevMenuScreen } from './devMenu/DevMenuScreen'
 export { SendScreen } from './send/SendScreen'
 export { ReceiveScreen } from './receive/ReceiveScreen'
+export { ReceiveScreenWithDomains } from './receive/ReceiveScreenWithDomains'
 export { BalancesScreen } from './balances/BalancesScreen'
 export { ActivityScreen } from './activity/ActivityScreen'
 export { ActivityDetailsScreen } from './activity/ActivityDetailsScreen'

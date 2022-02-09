@@ -12,11 +12,11 @@ import QRCode from 'react-qr-code'
 import Clipboard from '@react-native-community/clipboard'
 
 import { SquareButton } from '../../components/button/SquareButton'
-import { CopyIcon } from '../../components/icons/CopyIcon'
+import { CopyIcon } from '../../components/icons'
 import { grid } from '../../styles/grid'
 import { getTokenColor, getTokenColorWithOpacity } from '../home/tokenColor'
 import { ScreenWithWallet } from '../types'
-import { Arrow } from '../../components/icons/Arrow'
+import { Arrow } from '../../components/icons'
 import { getAddressDisplayText } from '../../components'
 
 export enum TestID {
@@ -25,13 +25,15 @@ export enum TestID {
   ShareButton = 'Address.ShareButton',
 }
 
-type ReceiveScreenProps = {
+export type ReceiveScreenProps = {
   route: { params: { token: string | undefined } }
+  registeredDomains: string[]
 }
 
 export const ReceiveScreen: React.FC<ScreenWithWallet & ReceiveScreenProps> = ({
   wallet,
   route,
+  registeredDomains,
 }) => {
   const smartAddress = wallet.smartWalletAddress
   const selectedToken = route.params?.token || 'TRBTC'
@@ -44,7 +46,6 @@ export const ReceiveScreen: React.FC<ScreenWithWallet & ReceiveScreenProps> = ({
       title: smartAddress,
       message: smartAddress,
     })
-
   const handleCopy = () => Clipboard.setString(smartAddress)
 
   const qrContainerStyle = {
@@ -68,14 +69,18 @@ export const ReceiveScreen: React.FC<ScreenWithWallet & ReceiveScreenProps> = ({
             size={qrCodeSize}
           />
         </View>
-
         <View style={{ ...styles.addressContainer, ...qrContainerStyle }}>
           <Text testID={TestID.AddressText} style={styles.smartAddress}>
             {getAddressDisplayText(smartAddress).displayAddress}
           </Text>
+          {registeredDomains.length > 0 &&
+            registeredDomains.map((registeredDomain: string) => (
+              <Text style={styles.smartAddress}>
+                <Text key={registeredDomain}>{registeredDomain}</Text>
+              </Text>
+            ))}
         </View>
         <Text style={styles.smartAddressLabel}>smart address</Text>
-
         <View style={grid.row}>
           <View style={{ ...grid.column6, ...styles.bottomColumn }}>
             <SquareButton

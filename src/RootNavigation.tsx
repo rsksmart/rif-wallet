@@ -7,6 +7,7 @@ import { CreateKeysNavigation, CreateKeysProps } from './ux/createKeys'
 
 import * as Screens from './screens'
 import { InjectSelectedWallet } from './Context'
+//import { ReceiveScreenWithDomains } from './screens/receive/ReceiveScreenWithDomains'
 
 import { BalancesScreenProps } from './screens/balances/BalancesScreen'
 import { KeysInfoScreenProps } from './screens/info/KeysInfoScreen'
@@ -22,7 +23,7 @@ import { ManagerWalletScreenProps } from './screens/settings/ManageWalletsScreen
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
-  ReceiveScreen: InjectSelectedWallet(Screens.ReceiveScreen),
+  ReceiveScreen: InjectSelectedWallet(Screens.ReceiveScreenWithDomains),
   BalancesScreen: InjectSelectedWallet(Screens.BalancesScreen),
   ActivityScreen: InjectSelectedWallet(Screens.ActivityScreen),
   ActivityDetailsScreen: InjectSelectedWallet(Screens.ActivityDetailsScreen),
