@@ -133,19 +133,33 @@ const useKeyManagementSystem = (onRequest: OnRequest) => {
   const switchActiveWallet = (address: string) =>
     setState({ ...state, selectedWallet: address })
 
-  return { state, setState, createFirstWallet, addNewWallet, unlockApp, removeKeys, switchActiveWallet }
+  return {
+    state,
+    setState,
+    createFirstWallet,
+    addNewWallet,
+    unlockApp,
+    removeKeys,
+    switchActiveWallet,
+  }
 }
 
 export const Core = () => {
-
   const [active, setActive] = useState(true)
   const [unlocked, setUnlocked] = useState(false)
 
   const timerRef = useRef<NodeJS.Timeout>(timer)
 
   const { requests, onRequest, closeRequest } = useRequests()
-  const { state, setState, createFirstWallet, addNewWallet, unlockApp, removeKeys, switchActiveWallet } = useKeyManagementSystem(onRequest)
-
+  const {
+    state,
+    setState,
+    createFirstWallet,
+    addNewWallet,
+    unlockApp,
+    removeKeys,
+    switchActiveWallet,
+  } = useKeyManagementSystem(onRequest)
 
   const [currentScreen, setCurrentScreen] = useState<string>('Home')
   const handleScreenChange = (newState: NavigationState | undefined) =>
@@ -196,7 +210,9 @@ export const Core = () => {
     <SafeAreaView>
       <StatusBar />
       {!active && <Cover />}
-      {state.hasKeys && !unlocked && <RequestPIN unlock={() => unlockApp().then(() => setUnlocked(true))} />}
+      {state.hasKeys && !unlocked && (
+        <RequestPIN unlock={() => unlockApp().then(() => setUnlocked(true))} />
+      )}
       <AppContext.Provider
         value={{
           ...state,
@@ -213,10 +229,11 @@ export const Core = () => {
                 rifWalletServicesSocket={rifWalletServicesSocket}
                 keyManagementProps={{
                   generateMnemonic: () => KeyManagementSystem.create().mnemonic,
-                  createFirstWallet: (mnemonic: string) => createFirstWallet(mnemonic).then(wallet => {
-                    setUnlocked(true)
-                    return wallet
-                  }),
+                  createFirstWallet: (mnemonic: string) =>
+                    createFirstWallet(mnemonic).then(wallet => {
+                      setUnlocked(true)
+                      return wallet
+                    }),
                 }}
                 balancesScreenProps={{ fetcher: rifWalletServicesFetcher }}
                 sendScreenProps={{ rnsResolver }}
