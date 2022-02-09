@@ -7,6 +7,8 @@ import { setOpacity } from '../home/tokenColor'
 import { useTranslation } from 'react-i18next'
 import { ButtonAlt } from '../../components/button/ButtonAlt'
 import { Section } from '../../components/section'
+import { version } from '../../../package.json'
+import { getWalletSetting, SETTINGS } from '../../core/config'
 
 export type SettingsScreenProps = {
   deleteKeys: () => Promise<any>
@@ -82,9 +84,15 @@ export const SettingsScreen: React.FC<
           </React.Fragment>
         )}
         <Section title={t('Information')}>
-          <Text>Version: </Text>
-          <Text>Connectiviy: </Text>
-          <Text>Smart Contracts: </Text>
+          <Text>Version: {version}</Text>
+          <Text>
+            Smart Wallet Factory:{' '}
+            {getWalletSetting(SETTINGS.SMART_WALLET_FACTORY_ADDRESS)}
+          </Text>
+          <Text>RPC URL: {getWalletSetting(SETTINGS.RPC_URL)}</Text>
+          <Text>
+            Backend URL: {getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL)}
+          </Text>
         </Section>
       </ScrollView>
     </LinearGradient>
