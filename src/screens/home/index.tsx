@@ -17,18 +17,43 @@ export const HomeScreen: React.FC<{
 }> = ({ navigation }) => {
   const { state } = useSocketsState()
 
-  const balances = Object.values(state.balances)
-
-  const [selected, setSelected] = useState<ITokenWithBalance | null>(null)
+  // const [selected, setSelected] = useState<ITokenWithBalance | null>(null)
+  const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
+    undefined,
+  )
+  // token or undefined
+  const selectedToken = Object.values(state.balances).filter(
+    (t: ITokenWithBalance) => t.contractAddress === selectedAddress,
+  )[0]
 
   const [selectedPanel, setSelectedPanel] = useState<string>('portfolio')
 
   useEffect(() => {
+    // no token is selected, or the selectedToken is undefined choose the first:
+    if (!selectedToken) {
+      console.log('@JESSE: no token was selected', state.balances[0])
+      return setSelectedAddress(state.balances[0].contractAddress || undefined)
+    }
+
+    /*
+    // check if the selected token is no longer in the wallet:
+    if (!selectedToken.contractAddress) {
+      console.log('@JESSE: selected token was not in the list')
+      return setSelectedAddress(state.balances[0].contractAddress || undefined)
+    }
+
+    // check if the selected tokens balance was updated:
+
+    // console.log('index: balances changed...', balances)
+    // setSelected(balances[0])
+
     if (!selected) {
       setSelected(balances[0])
     }
-  }, [balances])
-  const selectedTokenColor = getTokenColor(selected?.symbol)
+    */
+  }, [state.balances])
+
+  const selectedTokenColor = getTokenColor(selectedToken.symbol)
 
   const containerStyles = {
     shadowColor: setOpacity(selectedTokenColor, 0.5),
@@ -43,8 +68,11 @@ export const HomeScreen: React.FC<{
           navigation={navigation}
           balances={Object.values(state.balances)}
         />
-        {selected && (
-          <SelectedTokenComponent navigation={navigation} token={selected} />
+        {selectedAddress && (
+          <SelectedTokenComponent
+            navigation={navigation}
+            token={selectedToken}
+          />
         )}
 
         <LinearGradient
@@ -52,8 +80,8 @@ export const HomeScreen: React.FC<{
           style={{ ...styles.topContainer, ...containerStyles }}>
           <PortfolioComponent
             setPanelActive={() => setSelectedPanel('portfolio')}
-            selected={selected}
-            setSelected={setSelected}
+            selectedAddress={selectedAddress}
+            setSelected={setSelectedAddress}
             visible={selectedPanel === 'portfolio'}
           />
           <ActivityComponent

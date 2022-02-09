@@ -6,14 +6,14 @@ import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServices
 import { BalanceRowComponent } from './BalanceRowComponent'
 
 interface Interface {
-  selected?: ITokenWithBalance
-  setSelected: (token: ITokenWithBalance) => void
+  selectedAddress?: string
+  setSelected: (token: string) => void
   visible: boolean
   setPanelActive: () => void
 }
 
 const PortfolioComponent: React.FC<Interface> = ({
-  selected,
+  selectedAddress,
   setSelected,
   visible,
   setPanelActive,
@@ -34,9 +34,9 @@ const PortfolioComponent: React.FC<Interface> = ({
         balances.map((token: any) => (
           <BalanceRowComponent
             key={token.contractAddress}
-            selected={selected?.contractAddress === token.contractAddress}
+            selected={selectedAddress === token.contractAddress}
             token={token}
-            onPress={() => setSelected(token)}
+            onPress={() => setSelected(token.contractAddress)}
             quota={state?.prices[token.contractAddress]}
           />
         ))}

@@ -16,6 +16,7 @@ interface Interface {
 
 const SelectedTokenComponent: React.FC<Interface> = ({ navigation, token }) => {
   const tokenColor = getTokenColor(token.symbol)
+  console.log('token', token)
 
   return (
     <View style={{ ...grid.row, ...styles.amountRow }}>
