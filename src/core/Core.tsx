@@ -57,6 +57,15 @@ const initialState: State = {
   loading: true,
 }
 
+const useRequests = () => {
+  const [requests, setRequests] = useState<Requests>([])
+
+  const onRequest: OnRequest = request => setRequests([request])
+  const closeRequest = () => setRequests([] as Requests)
+
+  return { requests, onRequest, closeRequest }
+}
+
 export const Core = () => {
   const [state, setState] = useState(initialState)
 
@@ -65,7 +74,8 @@ export const Core = () => {
 
   const timerRef = useRef<NodeJS.Timeout>(timer)
 
-  const [requests, setRequests] = useState<Requests>([])
+  const { requests, onRequest, closeRequest } = useRequests()
+
 
   const [currentScreen, setCurrentScreen] = useState<string>('Home')
   const handleScreenChange = (newState: NavigationState | undefined) =>
@@ -92,9 +102,6 @@ export const Core = () => {
     })
     setUnlocked(true)
   }
-
-  const onRequest: OnRequest = request => setRequests([request])
-  const closeRequest = () => setRequests([] as Requests)
 
   const createRIFWallet = createRIFWalletFactory(onRequest)
 
@@ -188,7 +195,6 @@ export const Core = () => {
       <AppContext.Provider
         value={{
           ...state,
-          setRequests,
           mnemonic: state.kms?.mnemonic,
         }}>
         <NavigationContainer onStateChange={handleScreenChange}>

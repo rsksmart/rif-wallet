@@ -11,13 +11,11 @@ export type AppContextType = {
   wallets: Wallets
   walletsIsDeployed: WalletsIsDeployed
   selectedWallet?: string
-  setRequests: (requests: Requests) => void // temp - for setting the signTypedData
 }
 
 export const AppContext = createContext<AppContextType>({
   wallets: {},
   walletsIsDeployed: {},
-  setRequests: () => {},
 })
 
 export const useSelectedWallet = () => {
