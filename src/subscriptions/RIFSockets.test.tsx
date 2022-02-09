@@ -58,48 +58,54 @@ describe('Live Subscriptions Context', () => {
 
     test('expect useSubscription to dispatch new transaction and update state', () => {
       const { result } = renderHook(() => useSocketsState(), { wrapper })
-      expect(result.current.state.transactions.length).toEqual(0)
+      expect(
+        result.current.state.transactions.activityTransactions.length,
+      ).toEqual(0)
       act(() => {
         result.current.dispatch({
           type: 'newTransaction',
           payload: {
-            _id: '',
-            hash: '0x09073e82ebe101dce197731e2270bbad56b4da279edeeb5ed2671eccf723eec0',
-            nonce: 2452059,
-            blockHash: '',
-            blockNumber: 2452060,
-            transactionIndex: 1,
-            from: '0x0000000000000000000000000000000000000000',
-            to: '0x0000000000000000000000000000000001000008',
-            gas: 0,
-            gasPrice: '0x3938700',
-            value: '0xb1a2bc2ec50000',
-            input: '0x',
-            v: '',
-            r: '',
-            s: '',
-            timestamp: 1640036267,
-            receipt: {
-              transactionHash: '',
-              transactionIndex: 1,
+            originTransaction: {
+              _id: '',
+              hash: '0x09073e82ebe101dce197731e2270bbad56b4da279edeeb5ed2671eccf723eec0',
+              nonce: 2452059,
               blockHash: '',
-              blockNumber: 2434238,
-              cumulativeGasUsed: 112668,
-              gasUsed: 21000,
-              contractAddress: null,
-              logs: [],
-              from: '',
-              to: '',
-              status: '0x1',
-              logsBloom: '',
+              blockNumber: 2452060,
+              transactionIndex: 1,
+              from: '0x0000000000000000000000000000000000000000',
+              to: '0x0000000000000000000000000000000001000008',
+              gas: 0,
+              gasPrice: '0x3938700',
+              value: '0xb1a2bc2ec50000',
+              input: '0x',
+              v: '',
+              r: '',
+              s: '',
+              timestamp: 1640036267,
+              receipt: {
+                transactionHash: '',
+                transactionIndex: 1,
+                blockHash: '',
+                blockNumber: 2434238,
+                cumulativeGasUsed: 112668,
+                gasUsed: 21000,
+                contractAddress: null,
+                logs: [],
+                from: '',
+                to: '',
+                status: '0x1',
+                logsBloom: '',
+              },
+              txType: 'normal',
+              txId: '',
             },
-            txType: 'normal',
-            txId: '',
+            enhancedTransaction: undefined,
           },
         })
       })
-
-      expect(result.current.state.transactions.length).toEqual(1)
+      expect(
+        result.current.state.transactions.activityTransactions.length,
+      ).toEqual(1)
     })
   })
 })

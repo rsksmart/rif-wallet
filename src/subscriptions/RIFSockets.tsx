@@ -1,9 +1,17 @@
 import React from 'react'
 import { useSelectedWallet } from '../Context'
 import { enhanceTransactionInput } from '../screens/activity/ActivityScreen'
+import { filterEnhancedTransactions, sortEnhancedTransactions } from './utils'
+
+import {
+  Action,
+  Dispatch,
+  IActivityTransaction,
+  State,
+  SubscriptionsProviderProps,
+} from './types'
 import { constants } from 'ethers'
 
-import { Action, Dispatch, State, SubscriptionsProviderProps } from './types'
 import { ITokenWithBalance } from '../lib/rifWalletServices/RIFWalletServicesTypes'
 import { RIFWallet } from '../lib/core'
 
@@ -11,10 +19,21 @@ function liveSubscriptionsReducer(state: State, action: Action) {
   const { type } = action
 
   switch (action.type) {
-    case 'newActivity':
+    case 'newTransactions':
+      const sortedTxs: Array<IActivityTransaction> = [
+        ...action.payload!.activityTransactions,
+        ...state.transactions!.activityTransactions,
+      ]
+        .sort(sortEnhancedTransactions)
+        .filter(filterEnhancedTransactions)
+
       return {
         ...state,
-        activities: action.payload,
+        transactions: {
+          prev: action.payload.prev,
+          next: action.payload.next,
+          activityTransactions: sortedTxs,
+        },
       }
 
     case 'newBalance':
@@ -36,9 +55,19 @@ function liveSubscriptionsReducer(state: State, action: Action) {
       }
 
     case 'newTransaction':
+      const sortedTx: Array<IActivityTransaction> = [
+        action.payload,
+        ...state.transactions!.activityTransactions,
+      ]
+        .sort(sortEnhancedTransactions)
+        .filter(filterEnhancedTransactions)
+
       return {
         ...state,
-        transactions: [action.payload, ...state.transactions],
+        transactions: {
+          ...state.transactions,
+          activityTransactions: sortedTx,
+        },
       }
 
     case 'init':
@@ -54,8 +83,11 @@ function liveSubscriptionsReducer(state: State, action: Action) {
 
       return {
         ...state,
-        transactions: [...action.payload.transactions],
         balances: balancesInitial,
+        transactions: {
+          ...state.transactions,
+          activityTransactions: action.payload.transactions,
+        },
       }
 
     default:
@@ -64,15 +96,13 @@ function liveSubscriptionsReducer(state: State, action: Action) {
 }
 
 const initialState = {
-  activities: {
+  transactions: {
     activityTransactions: [],
-    data: [],
     next: null,
     prev: null,
   },
   prices: {},
   balances: {},
-  transactions: [],
 }
 //TODO: Move this to the backend
 const loadRBTCBalance = async (wallet: RIFWallet, dispatch: Dispatch) => {

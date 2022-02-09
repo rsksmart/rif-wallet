@@ -18,7 +18,7 @@ const ActivityComponent: React.FC<Interface> = ({
 }) => {
   const { state } = useSocketsState()
 
-  const recent = state.transactions.slice(0, 5)
+  const recent = state.transactions.activityTransactions.slice(0, 5)
 
   return (
     <ScrollView style={styles.portfolio}>
