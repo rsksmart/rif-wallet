@@ -17,7 +17,6 @@ export const HomeScreen: React.FC<{
 }> = ({ navigation }) => {
   const { state } = useSocketsState()
 
-  // const [selected, setSelected] = useState<ITokenWithBalance | null>(null)
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
     undefined,
   )
@@ -31,29 +30,16 @@ export const HomeScreen: React.FC<{
   useEffect(() => {
     // no token is selected, or the selectedToken is undefined choose the first:
     if (!selectedToken) {
-      console.log('@JESSE: no token was selected', state.balances[0])
-      return setSelectedAddress(state.balances[0].contractAddress || undefined)
+      Object.values(state.balances).length !== 0
+        ? setSelectedAddress(Object.values(state.balances)[0].contractAddress)
+        : undefined
     }
-
-    /*
-    // check if the selected token is no longer in the wallet:
-    if (!selectedToken.contractAddress) {
-      console.log('@JESSE: selected token was not in the list')
-      return setSelectedAddress(state.balances[0].contractAddress || undefined)
-    }
-
-    // check if the selected tokens balance was updated:
-
-    // console.log('index: balances changed...', balances)
-    // setSelected(balances[0])
-
-    if (!selected) {
-      setSelected(balances[0])
-    }
-    */
   }, [state.balances])
 
-  const selectedTokenColor = getTokenColor(selectedToken.symbol)
+  console.log({ selectedToken })
+  const selectedTokenColor = selectedToken
+    ? getTokenColor(selectedToken.symbol)
+    : '#CCCCCC'
 
   const containerStyles = {
     shadowColor: setOpacity(selectedTokenColor, 0.5),
@@ -68,7 +54,7 @@ export const HomeScreen: React.FC<{
           navigation={navigation}
           balances={Object.values(state.balances)}
         />
-        {selectedAddress && (
+        {selectedToken && (
           <SelectedTokenComponent
             navigation={navigation}
             token={selectedToken}

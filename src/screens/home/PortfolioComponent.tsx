@@ -2,7 +2,6 @@ import React from 'react'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
 import { StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { BalanceRowComponent } from './BalanceRowComponent'
 
 interface Interface {
