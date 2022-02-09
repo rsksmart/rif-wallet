@@ -219,14 +219,11 @@ export const Core = () => {
                 }}
                 contactsNavigationScreenProps={{ rnsResolver }}
                 dappsScreenProps={{ fetcher: rifWalletServicesFetcher }}
-<<<<<<< HEAD
                 manageWalletScreenProps={{
                   addNewWallet,
                   switchActiveWallet,
                 }}
-=======
                 settingsScreen={{ deleteKeys }}
->>>>>>> cb964ec (Passing deleteKeys function down to the settings screen)
               />
 
               {requests.length !== 0 && (
