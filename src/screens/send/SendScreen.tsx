@@ -81,7 +81,7 @@ export const SendScreen: React.FC<
 
     if (availableTokens) {
       const token = availableTokens.find(
-        token => token.symbol === selectedSymbol,
+        _token => _token.symbol === selectedSymbol,
       )
       if (token) {
         try {
@@ -114,14 +114,14 @@ export const SendScreen: React.FC<
     setTo(address)
   }
 
-  const handleAmountChange = (amount: string) => {
-    if (Number(amount) > Number(selectedTokenBalance)) {
+  const handleAmountChange = (currentAmount: string) => {
+    if (Number(currentAmount) > Number(selectedTokenBalance)) {
       setValidationError(true)
-      setAmount(amount)
+      setAmount(currentAmount)
       return
     }
     setValidationError(false)
-    setAmount(amount)
+    setAmount(currentAmount)
   }
 
   const imageStyle = {
