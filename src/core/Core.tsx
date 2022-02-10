@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { AppState, SafeAreaView, StatusBar } from 'react-native'
 import { AppContext, Wallets, WalletsIsDeployed, Requests } from '../Context'
 
-import { KeyManagementSystem, OnRequest } from '../lib/core'
+import { KeyManagementSystem, OnRequest, RIFWallet } from '../lib/core'
 import { i18nInit } from '../lib/i18n'
 
 import {
@@ -42,6 +42,7 @@ type State = {
   walletsIsDeployed: WalletsIsDeployed
   selectedWallet: string
   loading: boolean
+  chainId?: number
 }
 
 const noKeysState = {
@@ -55,6 +56,7 @@ const initialState: State = {
   hasKeys: false,
   ...noKeysState,
   loading: true,
+  chainId: undefined,
 }
 
 export const Core = () => {
@@ -141,6 +143,9 @@ export const Core = () => {
   const switchActiveWallet = (address: string) =>
     setState({ ...state, selectedWallet: address })
 
+  const retrieveChainId = (wallet: RIFWallet) =>
+    wallet.getChainId().then(chainId => setState({ ...state, chainId }))
+
   useEffect(() => {
     const stateSubscription = AppState.addEventListener(
       'change',
@@ -175,6 +180,13 @@ export const Core = () => {
       setState({ ...state, hasKeys: !!hasKeysResult, loading: false })
     })
   }, [])
+
+  useEffect(() => {
+    if (state.selectedWallet) {
+      const currentWallet = state.wallets[state.selectedWallet]
+      retrieveChainId(currentWallet)
+    }
+  }, [state.selectedWallet])
 
   if (state.loading) {
     return <LoadingScreen reason="Getting things setup" />
