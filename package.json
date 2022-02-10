@@ -12,7 +12,7 @@
     "test": "ENVFILE=.env.test jest --verbose --testTimeout=60000",
     "test:watch": "ENVFILE=.env.test jest --verbose --watch --coverage --testTimeout=60000",
     "test:ci": "jest --coverage --verbose --testTimeout=60000",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx --max-warnings=0",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "postinstall": "rn-nodeify --install buffer,events,stream,crypto --hack --yarn"
   },
