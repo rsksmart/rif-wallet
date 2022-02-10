@@ -63,6 +63,11 @@ export const SettingsScreen: React.FC<
                 title={t('Account Info')}
                 style={styles.marginBottom}
               />
+              <ButtonAlt
+                onPress={() => navigation.navigate('ManageWallets')}
+                title={t('Manage Wallets')}
+                style={styles.marginBottom}
+              />
             </Section>
             <Section title={t('Security')}>
               <ButtonAlt
