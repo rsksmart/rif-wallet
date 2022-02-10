@@ -22,9 +22,23 @@ export const AppContext = createContext<AppContextType>({
 
 export const useSelectedWallet = () => {
   const { wallets, walletsIsDeployed, selectedWallet } = useContext(AppContext)
+  const [chainId, setChainId] = React.useState<number>()
+
+  const retrieveChainId = () => {
+    if (selectedWallet) {
+      console.log('hit')
+      wallets[selectedWallet!].getChainId().then(chainId => setChainId(chainId))
+    }
+  }
+
+  React.useEffect(() => {
+    retrieveChainId()
+  }, [selectedWallet])
+
   return {
     wallet: wallets[selectedWallet!],
     isDeployed: walletsIsDeployed[selectedWallet!],
+    chainId,
   }
 }
 
