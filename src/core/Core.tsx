@@ -223,6 +223,7 @@ export const Core = () => {
                   addNewWallet,
                   switchActiveWallet,
                 }}
+                settingsScreen={{ deleteKeys }}
               />
 
               {requests.length !== 0 && (
