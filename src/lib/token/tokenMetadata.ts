@@ -27,6 +27,11 @@ export interface ITokenMetadata {
   }
 }
 
+export interface IConvertToERC20Options {
+  chainId: number
+  signer: Signer
+}
+
 export const MAINNET_CHAINID = 30
 
 export const imagesUrlMainnet =
@@ -53,10 +58,7 @@ export const getTokenLogo = (address: string, chainId: number) => {
   return chainId === MAINNET_CHAINID ? tokenMainnet : tokenTestnet
 }
 
-export const getAllTokens = async (
-  signer: Signer,
-  tokensWithBalance?: Array<ITokenWithBalance>,
-): Promise<IToken[]> => {
+export const getAllTokens = async (signer: Signer): Promise<IToken[]> => {
   const chainId = await signer.getChainId()
 
   const metadataTokens =
@@ -64,24 +66,11 @@ export const getAllTokens = async (
 
   const metadataKeys = Object.keys(metadataTokens)
 
-  const tokens: Record<string, IToken> = {}
+  const tokens: IToken[] = []
 
   const rbtc = makeRBTCToken(signer, chainId)
 
-  tokens[rbtc.address] = rbtc
-
-  if (tokensWithBalance) {
-    for (const token of tokensWithBalance) {
-      const addressWithoutChecksum = token.contractAddress.toLowerCase()
-      const logo = getTokenLogo(addressWithoutChecksum, chainId)
-      tokens[addressWithoutChecksum] = new ERC20Token(
-        addressWithoutChecksum,
-        signer,
-        token.symbol,
-        logo,
-      )
-    }
-  }
+  tokens.push(rbtc)
 
   for (const address of metadataKeys) {
     const addressWithoutChecksum = address.toLowerCase()
@@ -89,12 +78,19 @@ export const getAllTokens = async (
     const logo = getTokenLogo(addressWithoutChecksum, chainId)
     const token = new ERC20Token(addressWithoutChecksum, signer, symbol, logo)
 
-    tokens[addressWithoutChecksum] = token
+    tokens.push(token)
   }
 
-  const arrayOfTokens = Object.values(tokens)
+  return tokens
+}
 
-  return arrayOfTokens
+export const convertToERC20Token = (
+  token: ITokenWithBalance,
+  { chainId, signer }: IConvertToERC20Options,
+) => {
+  const addressWithoutChecksum = token.contractAddress.toLowerCase()
+  const logo = getTokenLogo(addressWithoutChecksum, chainId)
+  return new ERC20Token(addressWithoutChecksum, signer, token.symbol, logo)
 }
 
 export const makeRBTCToken = (signer: Signer, chainId: number): RBTCToken => {

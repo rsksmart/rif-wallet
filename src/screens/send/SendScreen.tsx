@@ -16,7 +16,7 @@ import { ContractReceipt, BigNumber, utils, ContractTransaction } from 'ethers'
 import { useTranslation } from 'react-i18next'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
 
-import { getAllTokens } from '../../lib/token/tokenMetadata'
+import { convertToERC20Token } from '../../lib/token/tokenMetadata'
 import { IToken } from '../../lib/token/BaseToken'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
@@ -86,9 +86,13 @@ export const SendScreen: React.FC<
 
     const tokensWithBalance = Object.values(state.balances)
 
-    getAllTokens(wallet, tokensWithBalance)
-      .then(tokens => tokens.filter(token => state.balances[token.address]))
-      .then(tokens => setAvailableTokens(tokens))
+    const chainId = 31 // Once https://github.com/rsksmart/swallet/pull/151 gets approved we´ll need to use it from the state
+
+    const tokens: Array<IToken> = tokensWithBalance.map(token =>
+      convertToERC20Token(token, { signer: wallet, chainId }),
+    )
+
+    setAvailableTokens(tokens)
   }, [wallet, isFocused])
 
   const transfer = async () => {
