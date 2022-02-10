@@ -8,7 +8,7 @@ import { ReceiveScreen, ReceiveScreenProps } from './ReceiveScreen'
 export const ReceiveScreenWithDomains: React.FC<
   ScreenWithWallet & ReceiveScreenProps
 > = ({ wallet, route, isWalletDeployed }) => {
-  const [registeredDomains, setRegisteredDomains] = useState<string[]>([''])
+  const [registeredDomains, setRegisteredDomains] = useState<string[]>([])
 
   useEffect(() => {
     getDomains(wallet.smartWalletAddress).then(domains =>
