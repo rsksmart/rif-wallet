@@ -25,8 +25,7 @@ export const useSelectedWallet = () => {
   const [chainId, setChainId] = React.useState<number>()
 
   const retrieveChainId = () => {
-    if (selectedWallet) {
-      console.log('hit')
+    if(selectedWallet) {
       wallets[selectedWallet!].getChainId().then(chainId => setChainId(chainId))
     }
   }
