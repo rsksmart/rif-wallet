@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import LinearGradient from 'react-native-linear-gradient'
+import { LinearGradient } from '../../components/linearGradient/LinearGradient'
 import { useIsFocused } from '@react-navigation/native'
 
 import {

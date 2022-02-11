@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { NavigationProp } from '../../RootNavigation'
-import LinearGradient from 'react-native-linear-gradient'
+import { LinearGradient } from '../../components/linearGradient/LinearGradient'
 import WalletConnectComponent from './WalletConnectComponent'
 import InjectedBrowserComponent from './InjectedBrowserComponent'
 import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'

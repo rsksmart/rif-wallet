@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { NavigationProp } from '../../RootNavigation'
-import LinearGradient from 'react-native-linear-gradient'
+import { LinearGradient } from '../../components/linearGradient/LinearGradient'
 import { setOpacity } from '../home/tokenColor'
 import { grid } from '../../styles/grid'
 import { SquareButton } from '../../components/button/SquareButton'

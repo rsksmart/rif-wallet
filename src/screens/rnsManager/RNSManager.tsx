@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { StyleSheet } from 'react-native'
 import addresses from './addresses.json'
-import LinearGradient from 'react-native-linear-gradient'
+import { LinearGradient } from '../../components/linearGradient/LinearGradient'
 
 import { BigNumber, utils } from 'ethers'
 import { View, TextInput, Text } from 'react-native'

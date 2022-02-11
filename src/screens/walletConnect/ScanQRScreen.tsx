@@ -3,7 +3,7 @@ import { StyleSheet, View, ScrollView, Text } from 'react-native'
 
 import { BarCodeReadEvent } from 'react-native-camera'
 import QRScanner from '../../components/qrScanner'
-import LinearGradient from 'react-native-linear-gradient'
+import { LinearGradient } from '../../components/linearGradient/LinearGradient'
 import { CustomInput } from '../../components'
 import { useSelectedWallet } from '../../Context'
 import { WalletConnectContext } from './WalletConnectContext'

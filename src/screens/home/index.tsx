@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native'
 
 import { NavigationProp } from '../../RootNavigation'
 import SelectedTokenComponent from './SelectedTokenComponent'
-import LinearGradient from 'react-native-linear-gradient'
+import { LinearGradient } from '../../components/linearGradient/LinearGradient'
 import { getTokenColor, setOpacity } from './tokenColor'
 import PortfolioComponent from './PortfolioComponent'
 import ActivityComponent from './ActivityComponent'

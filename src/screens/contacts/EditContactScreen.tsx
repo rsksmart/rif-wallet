@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react'
 import { StyleSheet, Text, TextInput } from 'react-native'
 import { NavigationProp } from '../../RootNavigation'
-import LinearGradient from 'react-native-linear-gradient'
+import { LinearGradient } from '../../components/linearGradient/LinearGradient'
 import { setOpacity } from '../home/tokenColor'
 import { AddressInput, Button } from '../../components'
 import { ContactsContext } from './ContactsContext'

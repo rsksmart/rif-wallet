@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { StyleSheet, View, ScrollView, TextInput, Text } from 'react-native'
-import LinearGradient from 'react-native-linear-gradient'
+import { LinearGradient } from '../../../components/linearGradient/LinearGradient'
 
 import { Paragraph } from '../../../components'
 import { validateMnemonic } from '../../../lib/bip39'

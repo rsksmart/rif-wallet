@@ -3,7 +3,7 @@ import { StyleSheet, View, ScrollView, Text } from 'react-native'
 import { CopyComponent } from '../../../components'
 import { CreateKeysProps, ScreenProps } from '../types'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import LinearGradient from 'react-native-linear-gradient'
+import { LinearGradient } from '../../../components/linearGradient/LinearGradient'
 
 import {
   getTokenColor,
