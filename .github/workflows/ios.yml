@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - develop
+      - ilanolkies-patch-4
 
 jobs:
   build-ios:
