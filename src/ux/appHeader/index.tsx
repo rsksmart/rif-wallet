@@ -25,8 +25,8 @@ export const AppHeader: React.FC<{}> = () => {
   const [network, setNetwork] = React.useState<null | Network>(null)
 
   const handleNetworkInfo = async () => {
-    const network = await wallet.provider?.getNetwork()
-    setNetwork(networks[(network as Network).chainId])
+    const currentNetwork = await wallet.provider?.getNetwork()
+    setNetwork(networks[(currentNetwork as Network).chainId])
   }
 
   React.useEffect(() => {

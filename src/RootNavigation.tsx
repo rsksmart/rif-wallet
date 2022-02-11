@@ -19,6 +19,7 @@ import { EditContactScreenProps } from './screens/contacts/EditContactScreen'
 import { DappsScreenScreenProps } from './screens/dapps'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
 import { ManagerWalletScreenProps } from './screens/settings/ManageWalletsScreen'
+import { SettingsScreenProps } from './screens/settings/SettingsScreen'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -99,6 +100,7 @@ export const RootNavigation: React.FC<{
   contactsNavigationScreenProps: EditContactScreenProps
   dappsScreenProps: DappsScreenScreenProps
   manageWalletScreenProps: ManagerWalletScreenProps
+  settingsScreen: SettingsScreenProps
 }> = ({
   currentScreen,
   hasKeys,
@@ -111,6 +113,7 @@ export const RootNavigation: React.FC<{
   contactsNavigationScreenProps,
   dappsScreenProps,
   manageWalletScreenProps,
+  settingsScreen,
 }) => {
   return (
     <View style={styles.parent}>
@@ -137,9 +140,9 @@ export const RootNavigation: React.FC<{
 
         <RootStack.Screen
           name="Settings"
-          component={Screens.SettingsScreen}
-          options={{ ...sharedOptions, headerShown: false }}
-        />
+          options={{ ...sharedOptions, headerShown: false }}>
+          {props => <Screens.SettingsScreen {...props} {...settingsScreen} />}
+        </RootStack.Screen>
 
         <RootStack.Screen name="ManageWallets" options={{ headerShown: true }}>
           {props => (

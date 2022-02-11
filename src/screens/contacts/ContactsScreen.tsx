@@ -60,7 +60,7 @@ const ContactRow: React.FC<{
     <View
       style={{
         ...grid.column3,
-        alignItems: 'center',
+        ...styles.center,
       }}>
       <SquareButton
         color={'#c73d3d'}
@@ -74,7 +74,7 @@ const ContactRow: React.FC<{
     <View
       style={{
         ...grid.column3,
-        alignItems: 'center',
+        ...styles.center,
       }}>
       <SquareButton
         color={'#000'}
@@ -121,5 +121,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
+  },
+  center: {
+    alignItems: 'center',
   },
 })
