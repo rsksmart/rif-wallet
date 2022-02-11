@@ -59,21 +59,17 @@ const initialState: State = {
   chainId: undefined,
 }
 
-export const Core = () => {
-  const [state, setState] = useState(initialState)
-
-  const [active, setActive] = useState(true)
-  const [unlocked, setUnlocked] = useState(false)
-
-  const timerRef = useRef<NodeJS.Timeout>(timer)
-
+const useRequests = () => {
   const [requests, setRequests] = useState<Requests>([])
 
-  const [currentScreen, setCurrentScreen] = useState<string>('Home')
-  const handleScreenChange = (newState: NavigationState | undefined) =>
-    setCurrentScreen(
-      newState ? newState.routes[newState.routes.length - 1].name : 'Home',
-    )
+  const onRequest: OnRequest = request => setRequests([request])
+  const closeRequest = () => setRequests([] as Requests)
+
+  return { requests, onRequest, closeRequest }
+}
+
+const useKeyManagementSystem = (onRequest: OnRequest) => {
+  const [state, setState] = useState(initialState)
 
   const removeKeys = () => {
     setState({ ...state, ...noKeysState })
@@ -92,11 +88,7 @@ export const Core = () => {
       selectedWallet: wallets[Object.keys(wallets)[0]].address,
       loading: false,
     })
-    setUnlocked(true)
   }
-
-  const onRequest: OnRequest = request => setRequests([request])
-  const closeRequest = () => setRequests([] as Requests)
 
   const createRIFWallet = createRIFWalletFactory(onRequest)
 
@@ -142,6 +134,40 @@ export const Core = () => {
 
   const switchActiveWallet = (address: string) =>
     setState({ ...state, selectedWallet: address })
+
+  return {
+    state,
+    setState,
+    createFirstWallet,
+    addNewWallet,
+    unlockApp,
+    removeKeys,
+    switchActiveWallet,
+  }
+}
+
+export const Core = () => {
+  const [active, setActive] = useState(true)
+  const [unlocked, setUnlocked] = useState(false)
+
+  const timerRef = useRef<NodeJS.Timeout>(timer)
+
+  const { requests, onRequest, closeRequest } = useRequests()
+  const {
+    state,
+    setState,
+    createFirstWallet,
+    addNewWallet,
+    unlockApp,
+    removeKeys,
+    switchActiveWallet,
+  } = useKeyManagementSystem(onRequest)
+
+  const [currentScreen, setCurrentScreen] = useState<string>('Home')
+  const handleScreenChange = (newState: NavigationState | undefined) =>
+    setCurrentScreen(
+      newState ? newState.routes[newState.routes.length - 1].name : 'Home',
+    )
 
   const retrieveChainId = (wallet: RIFWallet) =>
     wallet.getChainId().then(chainId => setState({ ...state, chainId }))
@@ -196,11 +222,12 @@ export const Core = () => {
     <SafeAreaView>
       <StatusBar />
       {!active && <Cover />}
-      {state.hasKeys && !unlocked && <RequestPIN unlock={unlockApp} />}
+      {state.hasKeys && !unlocked && (
+        <RequestPIN unlock={() => unlockApp().then(() => setUnlocked(true))} />
+      )}
       <AppContext.Provider
         value={{
           ...state,
-          setRequests,
           mnemonic: state.kms?.mnemonic,
         }}>
         <NavigationContainer onStateChange={handleScreenChange}>
@@ -214,7 +241,11 @@ export const Core = () => {
                 rifWalletServicesSocket={rifWalletServicesSocket}
                 keyManagementProps={{
                   generateMnemonic: () => KeyManagementSystem.create().mnemonic,
-                  createFirstWallet,
+                  createFirstWallet: (mnemonic: string) =>
+                    createFirstWallet(mnemonic).then(wallet => {
+                      setUnlocked(true)
+                      return wallet
+                    }),
                 }}
                 balancesScreenProps={{ fetcher: rifWalletServicesFetcher }}
                 sendScreenProps={{ rnsResolver }}
