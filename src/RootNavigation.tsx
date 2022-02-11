@@ -23,7 +23,7 @@ import { SettingsScreenProps } from './screens/settings/SettingsScreen'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
-  ReceiveScreen: InjectSelectedWallet(Screens.ReceiveScreen),
+  ReceiveScreen: InjectSelectedWallet(Screens.ReceiveScreenWithDomains),
   BalancesScreen: InjectSelectedWallet(Screens.BalancesScreen),
   ActivityScreen: InjectSelectedWallet(Screens.ActivityScreen),
   ActivityDetailsScreen: InjectSelectedWallet(Screens.ActivityDetailsScreen),
