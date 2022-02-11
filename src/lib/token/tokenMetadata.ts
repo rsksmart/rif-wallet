@@ -15,6 +15,7 @@ import { IToken } from './BaseToken'
 import { ERC20Token } from './ERC20Token'
 import { RBTCToken } from './RBTCToken'
 import { Signer } from '@ethersproject/abstract-signer'
+import { ITokenWithBalance } from '../rifWalletServices/RIFWalletServicesTypes'
 
 export interface ITokenMetadata {
   [address: string]: {
@@ -24,6 +25,11 @@ export interface ITokenMetadata {
     symbol: string
     decimals: number
   }
+}
+
+export interface IConvertToERC20Options {
+  chainId: number
+  signer: Signer
 }
 
 export const MAINNET_CHAINID = 30
@@ -76,6 +82,15 @@ export const getAllTokens = async (signer: Signer): Promise<IToken[]> => {
   }
 
   return tokens
+}
+
+export const convertToERC20Token = (
+  token: ITokenWithBalance,
+  { chainId, signer }: IConvertToERC20Options,
+) => {
+  const addressWithoutChecksum = token.contractAddress.toLowerCase()
+  const logo = getTokenLogo(addressWithoutChecksum, chainId)
+  return new ERC20Token(addressWithoutChecksum, signer, token.symbol, logo)
 }
 
 export const makeRBTCToken = (signer: Signer, chainId: number): RBTCToken => {

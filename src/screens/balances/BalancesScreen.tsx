@@ -11,13 +11,21 @@ import { ScreenProps, NavigationProp } from '../../RootNavigation'
 import { Address, Button } from '../../components'
 import { ScreenWithWallet } from '../types'
 
-export const balanceToString = (balance: string, decimals: BigNumberish) => {
+export const balanceToString = (
+  balance: string,
+  numberOfDecimals: BigNumberish,
+) => {
+  const pot = BigNumber.from('10').pow(numberOfDecimals)
   const parts = {
-    div: BigNumber.from(balance).div(BigNumber.from('10').pow(decimals)),
-    mod: BigNumber.from(balance).mod(BigNumber.from('10').pow(decimals)),
+    integerPart: BigNumber.from(balance).div(pot).toString(),
+    decimalPart: BigNumber.from(balance)
+      .mod(pot)
+      .toString()
+      .padStart(Number(numberOfDecimals.toString()), '0')
+      .slice(0, 4),
   }
 
-  return `${parts.div.toString()}.${parts.mod.toString().slice(0, 4)}`
+  return `${parts.integerPart}.${parts.decimalPart}`
 }
 
 export const BalancesRow = ({

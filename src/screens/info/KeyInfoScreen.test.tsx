@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, fireEvent } from '@testing-library/react-native'
+import { render } from '@testing-library/react-native'
 import { KeysInfoScreen, TestID } from './KeysInfoScreen'
 import { setupTest } from '../../../testLib/setup'
 import { Awaited, getTextFromTextNode } from '../../../testLib/utils'
@@ -41,19 +41,6 @@ describe('Keys Info Screen', function (this: {
       expect(getTextFromTextNode(getByTestId(TestID.Mnemonic))).toEqual(
         testMnemonic,
       )
-    })
-  })
-
-  describe('actions', () => {
-    test('delete keys', () => {
-      const {
-        container: { getByTestId },
-        deleteKeys,
-      } = this.testInstance
-
-      fireEvent.press(getByTestId(TestID.Delete))
-
-      expect(deleteKeys).toHaveBeenCalledTimes(1)
     })
   })
 })

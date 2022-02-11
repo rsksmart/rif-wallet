@@ -25,6 +25,7 @@ describe('Receive Screen', function (this: {
         <ReceiveScreen
           wallet={rifWallet}
           isWalletDeployed={true}
+          registeredDomains={['helloworld.rsk']}
           route={{
             params: {
               token: 'RIF',

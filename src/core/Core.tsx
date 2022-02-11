@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { AppState, SafeAreaView, StatusBar } from 'react-native'
 import { AppContext, Wallets, WalletsIsDeployed, Requests } from '../Context'
 
-import { KeyManagementSystem, OnRequest } from '../lib/core'
+import { KeyManagementSystem, OnRequest, RIFWallet } from '../lib/core'
 import { i18nInit } from '../lib/i18n'
 
 import {
@@ -10,6 +10,7 @@ import {
   loadExistingWallets,
   creteKMS,
   deleteKeys,
+  addNextWallet,
 } from './operations'
 import {
   rifWalletServicesFetcher,
@@ -41,6 +42,7 @@ type State = {
   walletsIsDeployed: WalletsIsDeployed
   selectedWallet: string
   loading: boolean
+  chainId?: number
 }
 
 const noKeysState = {
@@ -54,23 +56,20 @@ const initialState: State = {
   hasKeys: false,
   ...noKeysState,
   loading: true,
+  chainId: undefined,
 }
 
-export const Core = () => {
-  const [state, setState] = useState(initialState)
-
-  const [active, setActive] = useState(true)
-  const [unlocked, setUnlocked] = useState(false)
-
-  const timerRef = useRef<NodeJS.Timeout>(timer)
-
+const useRequests = () => {
   const [requests, setRequests] = useState<Requests>([])
 
-  const [currentScreen, setCurrentScreen] = useState<string>('Home')
-  const handleScreenChange = (newState: NavigationState | undefined) =>
-    setCurrentScreen(
-      newState ? newState.routes[newState.routes.length - 1].name : 'Home',
-    )
+  const onRequest: OnRequest = request => setRequests([request])
+  const closeRequest = () => setRequests([] as Requests)
+
+  return { requests, onRequest, closeRequest }
+}
+
+const useKeyManagementSystem = (onRequest: OnRequest) => {
+  const [state, setState] = useState(initialState)
 
   const removeKeys = () => {
     setState({ ...state, ...noKeysState })
@@ -89,11 +88,7 @@ export const Core = () => {
       selectedWallet: wallets[Object.keys(wallets)[0]].address,
       loading: false,
     })
-    setUnlocked(true)
   }
-
-  const onRequest: OnRequest = request => setRequests([request])
-  const closeRequest = () => setRequests([] as Requests)
 
   const createRIFWallet = createRIFWalletFactory(onRequest)
 
@@ -118,6 +113,64 @@ export const Core = () => {
     setKeys(kms, rifWalletsDictionary, rifWalletsIsDeployedDictionary)
     return rifWallet
   }
+
+  const addNewWallet = () => {
+    if (!state.kms) {
+      throw Error('Can not add new wallet because no KMS created.')
+    }
+
+    return addNextWallet(state.kms, createRIFWallet, networkId).then(response =>
+      setState({
+        ...state,
+        wallets: Object.assign(state.wallets, {
+          [response.rifWallet.address]: response.rifWallet,
+        }),
+        walletsIsDeployed: Object.assign(state.walletsIsDeployed, {
+          [response.rifWallet.address]: response.isDeloyed,
+        }),
+      }),
+    )
+  }
+
+  const switchActiveWallet = (address: string) =>
+    setState({ ...state, selectedWallet: address })
+
+  return {
+    state,
+    setState,
+    createFirstWallet,
+    addNewWallet,
+    unlockApp,
+    removeKeys,
+    switchActiveWallet,
+  }
+}
+
+export const Core = () => {
+  const [active, setActive] = useState(true)
+  const [unlocked, setUnlocked] = useState(false)
+
+  const timerRef = useRef<NodeJS.Timeout>(timer)
+
+  const { requests, onRequest, closeRequest } = useRequests()
+  const {
+    state,
+    setState,
+    createFirstWallet,
+    addNewWallet,
+    unlockApp,
+    removeKeys,
+    switchActiveWallet,
+  } = useKeyManagementSystem(onRequest)
+
+  const [currentScreen, setCurrentScreen] = useState<string>('Home')
+  const handleScreenChange = (newState: NavigationState | undefined) =>
+    setCurrentScreen(
+      newState ? newState.routes[newState.routes.length - 1].name : 'Home',
+    )
+
+  const retrieveChainId = (wallet: RIFWallet) =>
+    wallet.getChainId().then(chainId => setState({ ...state, chainId }))
 
   useEffect(() => {
     const stateSubscription = AppState.addEventListener(
@@ -154,16 +207,27 @@ export const Core = () => {
     })
   }, [])
 
+  useEffect(() => {
+    if (state.selectedWallet) {
+      const currentWallet = state.wallets[state.selectedWallet]
+      retrieveChainId(currentWallet)
+    }
+  }, [state.selectedWallet])
+
+  if (state.loading) {
+    return <LoadingScreen reason="Getting things setup" />
+  }
+
   return (
     <SafeAreaView>
       <StatusBar />
-      {state.loading && <LoadingScreen reason="Please wait..." />}
       {!active && <Cover />}
-      {state.hasKeys && !unlocked && <RequestPIN unlock={unlockApp} />}
+      {state.hasKeys && !unlocked && (
+        <RequestPIN unlock={() => unlockApp().then(() => setUnlocked(true))} />
+      )}
       <AppContext.Provider
         value={{
           ...state,
-          setRequests,
           mnemonic: state.kms?.mnemonic,
         }}>
         <NavigationContainer onStateChange={handleScreenChange}>
@@ -173,10 +237,15 @@ export const Core = () => {
               abiEnhancer={abiEnhancer}>
               <RootNavigation
                 currentScreen={currentScreen}
+                hasKeys={state.hasKeys}
                 rifWalletServicesSocket={rifWalletServicesSocket}
                 keyManagementProps={{
                   generateMnemonic: () => KeyManagementSystem.create().mnemonic,
-                  createFirstWallet,
+                  createFirstWallet: (mnemonic: string) =>
+                    createFirstWallet(mnemonic).then(wallet => {
+                      setUnlocked(true)
+                      return wallet
+                    }),
                 }}
                 balancesScreenProps={{ fetcher: rifWalletServicesFetcher }}
                 sendScreenProps={{ rnsResolver }}
@@ -193,6 +262,11 @@ export const Core = () => {
                 }}
                 contactsNavigationScreenProps={{ rnsResolver }}
                 dappsScreenProps={{ fetcher: rifWalletServicesFetcher }}
+                manageWalletScreenProps={{
+                  addNewWallet,
+                  switchActiveWallet,
+                }}
+                settingsScreen={{ deleteKeys }}
               />
 
               {requests.length !== 0 && (

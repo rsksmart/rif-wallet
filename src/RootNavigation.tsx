@@ -18,10 +18,12 @@ import { AppFooterMenu } from './ux/appFooter'
 import { EditContactScreenProps } from './screens/contacts/EditContactScreen'
 import { DappsScreenScreenProps } from './screens/dapps'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
+import { ManagerWalletScreenProps } from './screens/settings/ManageWalletsScreen'
+import { SettingsScreenProps } from './screens/settings/SettingsScreen'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
-  ReceiveScreen: InjectSelectedWallet(Screens.ReceiveScreen),
+  ReceiveScreen: InjectSelectedWallet(Screens.ReceiveScreenWithDomains),
   BalancesScreen: InjectSelectedWallet(Screens.BalancesScreen),
   ActivityScreen: InjectSelectedWallet(Screens.ActivityScreen),
   ActivityDetailsScreen: InjectSelectedWallet(Screens.ActivityDetailsScreen),
@@ -39,12 +41,20 @@ const InjectedScreens = {
   RegisterDomainScreen: InjectSelectedWallet(Screens.RegisterDomainScreen),
   HomeScreen: InjectSelectedWallet(Screens.HomeScreen),
   DappsScreen: InjectSelectedWallet(Screens.DappsScreen),
+  ManageWalletsScreen: InjectSelectedWallet(Screens.ManageWalletsScreen),
 }
 
 type RootStackParamList = {
   DevMenu: undefined
   Home: undefined
-  Send: undefined | { token?: string; to?: string; displayTo?: string }
+  Send:
+    | undefined
+    | {
+        token?: string
+        to?: string
+        displayTo?: string
+        contractAddress?: string
+      }
   Receive: undefined
   Balances: undefined
   Activity: undefined
@@ -61,9 +71,10 @@ type RootStackParamList = {
   InjectedBrowserUX: undefined
   Dapps: undefined
   RNSManager: undefined
-  RegisterDomain: undefined
+  RegisterDomain: { selectedDomain: string; years: number }
   Contacts: undefined
   Settings: undefined
+  ManageWallets: undefined
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -78,6 +89,7 @@ export type ScreenProps<T extends keyof RootStackParamList> = StackScreenProps<
 
 export const RootNavigation: React.FC<{
   currentScreen: string
+  hasKeys: boolean
   rifWalletServicesSocket: IRifWalletServicesSocket
   keyManagementProps: CreateKeysProps
   balancesScreenProps: BalancesScreenProps
@@ -87,8 +99,11 @@ export const RootNavigation: React.FC<{
   injectedBrowserUXScreenProps: InjectedBrowserUXScreenProps
   contactsNavigationScreenProps: EditContactScreenProps
   dappsScreenProps: DappsScreenScreenProps
+  manageWalletScreenProps: ManagerWalletScreenProps
+  settingsScreen: SettingsScreenProps
 }> = ({
   currentScreen,
+  hasKeys,
   keyManagementProps,
   balancesScreenProps,
   activityScreenProps,
@@ -97,11 +112,13 @@ export const RootNavigation: React.FC<{
   injectedBrowserUXScreenProps,
   contactsNavigationScreenProps,
   dappsScreenProps,
+  manageWalletScreenProps,
+  settingsScreen,
 }) => {
   return (
     <View style={styles.parent}>
-      <AppHeader />
-      <RootStack.Navigator>
+      {hasKeys && <AppHeader />}
+      <RootStack.Navigator initialRouteName={hasKeys ? 'Home' : 'CreateKeysUX'}>
         <RootStack.Screen
           name="Home"
           component={Screens.HomeScreen}
@@ -123,11 +140,22 @@ export const RootNavigation: React.FC<{
 
         <RootStack.Screen
           name="Settings"
-          component={Screens.SettingsScreen}
-          options={{ ...sharedOptions, headerShown: false }}
-        />
+          options={{ ...sharedOptions, headerShown: false }}>
+          {props => <Screens.SettingsScreen {...props} {...settingsScreen} />}
+        </RootStack.Screen>
 
-        <RootStack.Screen name="CreateKeysUX" options={sharedOptions}>
+        <RootStack.Screen name="ManageWallets" options={{ headerShown: true }}>
+          {props => (
+            <InjectedScreens.ManageWalletsScreen
+              {...props}
+              {...manageWalletScreenProps}
+            />
+          )}
+        </RootStack.Screen>
+
+        <RootStack.Screen
+          name="CreateKeysUX"
+          options={{ ...sharedOptions, headerShown: false }}>
           {props => <CreateKeysNavigation {...props} {...keyManagementProps} />}
         </RootStack.Screen>
         <RootStack.Screen
@@ -236,7 +264,7 @@ export const RootNavigation: React.FC<{
           )}
         </RootStack.Screen>
       </RootStack.Navigator>
-      <AppFooterMenu currentScreen={currentScreen} />
+      {hasKeys && <AppFooterMenu currentScreen={currentScreen} />}
     </View>
   )
 }

@@ -3,8 +3,8 @@ import React from 'react'
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native'
 import { AddressCopyComponent } from '../../components/copy/AddressCopyComponent'
 import { useSelectedWallet } from '../../Context'
-import MenuIcon from './MenuIcon'
 import { Network } from '@ethersproject/networks'
+import { MenuIcon } from '../../components/icons/MenuIcon'
 
 export const networks: Record<number, Network> = {
   30: {
@@ -25,8 +25,8 @@ export const AppHeader: React.FC<{}> = () => {
   const [network, setNetwork] = React.useState<null | Network>(null)
 
   const handleNetworkInfo = async () => {
-    const network = await wallet.provider?.getNetwork()
-    setNetwork(networks[(network as Network).chainId])
+    const currentNetwork = await wallet.provider?.getNetwork()
+    setNetwork(networks[(currentNetwork as Network).chainId])
   }
 
   React.useEffect(() => {

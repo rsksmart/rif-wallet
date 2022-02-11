@@ -14,9 +14,11 @@ import {
 
 import { ContractReceipt, BigNumber, utils, ContractTransaction } from 'ethers'
 import { useTranslation } from 'react-i18next'
+import { useSocketsState } from '../../subscriptions/RIFSockets'
 
-import { getAllTokens } from '../../lib/token/tokenMetadata'
+import { convertToERC20Token } from '../../lib/token/tokenMetadata'
 import { IToken } from '../../lib/token/BaseToken'
+import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { ScreenProps } from '../../RootNavigation'
 import { ScreenWithWallet } from '../types'
@@ -28,6 +30,9 @@ import { Arrow, RefreshIcon } from '../../components/icons'
 import { TokenImage } from '../home/TokenImage'
 import Clipboard from '@react-native-community/clipboard'
 import TransactionInfo from './TransactionInfo'
+import MiniModal from '../../components/tokenSelector/MiniModal'
+
+import { balanceToString } from '../balances/BalancesScreen'
 
 export type SendScreenProps = {}
 
@@ -35,13 +40,23 @@ export const SendScreen: React.FC<
   SendScreenProps & ScreenProps<'Send'> & ScreenWithWallet
 > = ({ route, wallet, navigation }) => {
   const isFocused = useIsFocused()
+  const { state } = useSocketsState()
 
-  const { t } = useTranslation()
+  const contractAddress =
+    route.params?.contractAddress || Object.keys(state.balances)[0]
+  const [selectedToken, setSelectedToken] = React.useState(
+    state.balances[contractAddress],
+  )
 
   const [availableTokens, setAvailableTokens] = useState<IToken[]>()
-  const [selectedSymbol, setSelectedSymbol] = useState(
-    route.params?.token || 'tRIF',
+
+  const selectedTokenBalance = balanceToString(
+    selectedToken.balance,
+    selectedToken.decimals || 0,
   )
+  const tokenQuota = state.prices[selectedToken.contractAddress]?.price
+
+  const { t } = useTranslation()
 
   const [amount, setAmount] = useState('')
   const [to, setTo] = useState(route.params?.to || '')
@@ -49,6 +64,17 @@ export const SendScreen: React.FC<
   const [tx, setTx] = useState<ContractTransaction>()
   const [receipt, setReceipt] = useState<ContractReceipt>()
   const [error, setError] = useState<string>()
+  const [validationError, setValidationError] = useState(false)
+  const [showSelector, setShowSelector] = useState(false)
+
+  const handleTokenSelection = (token: ITokenWithBalance) => {
+    setShowSelector(false)
+    setSelectedToken(token)
+  }
+
+  const openTokenSelector = () => {
+    setShowSelector(true)
+  }
 
   useEffect(() => {
     setTo(route.params?.to || '')
@@ -58,7 +84,15 @@ export const SendScreen: React.FC<
       setReceipt(undefined)
     }
 
-    getAllTokens(wallet).then(tokens => setAvailableTokens(tokens))
+    const tokensWithBalance = Object.values(state.balances)
+
+    const chainId = 31 // Once https://github.com/rsksmart/swallet/pull/151 gets approved we´ll need to use it from the state
+
+    const tokens: Array<IToken> = tokensWithBalance.map(token =>
+      convertToERC20Token(token, { signer: wallet, chainId }),
+    )
+
+    setAvailableTokens(tokens)
   }, [wallet, isFocused])
 
   const transfer = async () => {
@@ -68,7 +102,7 @@ export const SendScreen: React.FC<
 
     if (availableTokens) {
       const token = availableTokens.find(
-        token => token.symbol === selectedSymbol,
+        _token => _token.symbol === selectedToken.symbol,
       )
       if (token) {
         try {
@@ -88,17 +122,20 @@ export const SendScreen: React.FC<
       }
     }
   }
-  const handleChangeToken = (selection: string) => {
-    if (selection === 'tRIF') {
-      setSelectedSymbol('TRBTC')
-    } else {
-      setSelectedSymbol('tRIF')
-    }
-  }
 
   const handleTargetAddressChange = (address: string) => {
     setError(undefined)
     setTo(address)
+  }
+
+  const handleAmountChange = (currentAmount: string) => {
+    if (Number(currentAmount) > Number(selectedTokenBalance)) {
+      setValidationError(true)
+      setAmount(currentAmount)
+      return
+    }
+    setValidationError(false)
+    setAmount(currentAmount)
   }
 
   const imageStyle = {
@@ -110,30 +147,51 @@ export const SendScreen: React.FC<
   const handleOpen = () =>
     Linking.openURL(`https://explorer.testnet.rsk.co/tx/${tx!.hash}`)
 
+  const isNextDisabled = (!!tx && !receipt) || validationError
+
   return (
     <LinearGradient
-      colors={['#FFFFFF', getTokenColorWithOpacity(selectedSymbol, 0.1)]}
+      colors={['#FFFFFF', getTokenColorWithOpacity(selectedToken.symbol, 0.1)]}
       style={styles.parent}>
       <ScrollView>
+        <View>
+          <Text>
+            Balance: {`${selectedTokenBalance} ${selectedToken.symbol}`}
+          </Text>
+          <Text>
+            USD:{' '}
+            {(Number(selectedTokenBalance) * tokenQuota).toFixed(2) || 'N/A'}
+          </Text>
+        </View>
         <View style={grid.row}>
           <View style={{ ...grid.column2, ...styles.icon }}>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => handleChangeToken(selectedSymbol)}>
+              onPress={() => openTokenSelector()}>
               <View style={imageStyle}>
-                <TokenImage symbol={selectedSymbol} height={30} width={30} />
+                <TokenImage
+                  symbol={selectedToken.symbol}
+                  height={30}
+                  width={30}
+                />
               </View>
             </TouchableOpacity>
           </View>
           <View style={{ ...grid.column10 }}>
             <TextInput
               style={styles.input}
-              onChangeText={text => setAmount(text)}
+              onChangeText={text => handleAmountChange(text)}
               value={amount}
               placeholder={t('Amount')}
               keyboardType="numeric"
               testID={'Amount.Input'}
             />
+            {!!amount && (
+              <Text>
+                {(Number(amount) * tokenQuota).toFixed(2) || 'N/A'} USD
+              </Text>
+            )}
+            {validationError && <Text>Insuficient funds</Text>}
           </View>
         </View>
         <View>
@@ -144,17 +202,19 @@ export const SendScreen: React.FC<
             navigation={navigation}
             showContactsIcon={true}
             chainId={31}
-            color={getTokenColor(selectedSymbol)}
+            color={getTokenColor(selectedToken.symbol)}
           />
         </View>
 
         <View style={styles.centerRow}>
           <SquareButton
-            disabled={!!tx && !receipt}
+            disabled={isNextDisabled}
             onPress={transfer}
             title="Next"
             testID="Address.CopyButton"
-            icon={<Arrow color={getTokenColor(selectedSymbol)} rotate={90} />}
+            icon={
+              <Arrow color={getTokenColor(selectedToken.symbol)} rotate={90} />
+            }
           />
         </View>
         <View style={styles.section}>
@@ -166,7 +226,7 @@ export const SendScreen: React.FC<
                   ? t('Transaction Sent. Please wait...')
                   : t('Transaction Confirmed.')
               }
-              selectedToken={selectedSymbol}
+              selectedToken={selectedToken.symbol}
               handleCopy={handleCopy}
               handleOpen={handleOpen}
             />
@@ -178,12 +238,20 @@ export const SendScreen: React.FC<
                 onPress={transfer}
                 title="Retry"
                 testID="Transfer.RetryButton"
-                icon={<RefreshIcon color={getTokenColor(selectedSymbol)} />}
+                icon={
+                  <RefreshIcon color={getTokenColor(selectedToken.symbol)} />
+                }
               />
             </View>
           )}
         </View>
       </ScrollView>
+      {showSelector && (
+        <MiniModal
+          onTokenSelection={handleTokenSelection}
+          availableTokens={Object.values(state.balances)}
+        />
+      )}
     </LinearGradient>
   )
 }

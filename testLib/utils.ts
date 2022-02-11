@@ -7,12 +7,13 @@ import {
   Signer,
 } from 'ethers'
 import { ReactTestInstance } from 'react-test-renderer'
+import { getWalletSetting, SETTINGS } from '../src/core/config'
 import { tenPow } from '../src/lib/token/BaseToken'
 import { ERC20Token } from '../src/lib/token/ERC20Token'
 import { RBTCToken } from '../src/lib/token/RBTCToken'
 import { ERC677__factory } from '../src/lib/token/types'
 
-const nodeUrl = 'http://localhost:8545'
+const nodeUrl = getWalletSetting(SETTINGS.RPC_URL, 31)
 
 export const testJsonRpcProvider = new providers.JsonRpcProvider(nodeUrl)
 
