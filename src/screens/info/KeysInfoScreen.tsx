@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
-import { Button, CopyComponent, Header2, Paragraph } from '../../components'
+import { CopyComponent, Header2, Paragraph } from '../../components'
 import { Trans } from 'react-i18next'
 export enum TestID {
   Mnemonic = 'Mnemonic.Text',
@@ -12,10 +12,7 @@ export type KeysInfoScreenProps = {
   deleteKeys: () => Promise<any>
 }
 
-export const KeysInfoScreen: React.FC<KeysInfoScreenProps> = ({
-  mnemonic,
-  deleteKeys,
-}) => (
+export const KeysInfoScreen: React.FC<KeysInfoScreenProps> = ({ mnemonic }) => (
   <ScrollView>
     <View style={styles.sectionCentered}>
       <Paragraph>
@@ -30,12 +27,6 @@ export const KeysInfoScreen: React.FC<KeysInfoScreenProps> = ({
         <Trans>Master key</Trans>
       </Header2>
       <CopyComponent testID={TestID.Mnemonic} value={mnemonic} />
-    </View>
-    <View style={styles.section}>
-      <Button testID={TestID.Delete} onPress={deleteKeys} title="Delete keys" />
-      <Paragraph>
-        <Trans>You will need to refresh the app for this to fully work.</Trans>
-      </Paragraph>
     </View>
   </ScrollView>
 )

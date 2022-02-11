@@ -1,28 +1,39 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { TokenImage } from './TokenImage'
+import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import { BigNumber } from 'ethers'
 
 interface Interface {
   navigation: any
-  rbtcBalance: number
-  rifBalance: number
+  balances: ITokenWithBalance[]
 }
 
-const FaucetComponent: React.FC<Interface> = ({
-  rbtcBalance,
-  rifBalance,
-  navigation,
-}) => {
-  if (rbtcBalance === 0 || rifBalance === 0) {
-    const token = rbtcBalance === 0 ? 'TRBTC' : 'tRIF'
+const FaucetComponent: React.FC<Interface> = ({ navigation, balances }) => {
+  const [rifToken, setRifToken] = useState<ITokenWithBalance | undefined>(
+    undefined,
+  )
+  const [rbtcToken, setRbtcToken] = useState<ITokenWithBalance | undefined>(
+    undefined,
+  )
+
+  useEffect(() => {
+    setRifToken(balances.find(token => token.symbol === 'tRIF'))
+    setRbtcToken(balances.find(token => token.symbol === 'TRBTC'))
+  }, [balances])
+
+  const missingRbtc = !rbtcToken || BigNumber.from(rbtcToken.balance).isZero()
+  const missingRif = !rifToken || BigNumber.from(rifToken.balance).isZero()
+  if (missingRbtc || missingRif) {
+    const missingToken = missingRbtc ? 'TRBTC' : 'tRIF'
 
     const handleClick = () =>
       navigation.navigate('InjectedBrowserUX', {
         screen: 'InjectedBrowser',
         params: {
           uri:
-            token === 'TRBTC'
+            missingToken === 'TRBTC'
               ? 'https://faucet.rsk.co/'
               : 'https://faucet.rifos.org/',
         },
@@ -31,11 +42,11 @@ const FaucetComponent: React.FC<Interface> = ({
     return (
       <TouchableOpacity style={styles.background} onPress={handleClick}>
         <View style={styles.iconContainer}>
-          <TokenImage symbol={token} width={45} height={45} />
+          <TokenImage symbol={missingToken} width={45} height={45} />
         </View>
         <View style={styles.textContainer}>
           <Text testID="Faucet.Text">
-            {`Your wallet doesn't have any ${token}. Click here to get some from the faucet!`}
+            {`Your wallet doesn't have any ${missingToken}. Click here to get some from the faucet!`}
           </Text>
         </View>
       </TouchableOpacity>

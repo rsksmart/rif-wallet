@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { AppState, SafeAreaView, StatusBar } from 'react-native'
 import { AppContext, Wallets, WalletsIsDeployed, Requests } from '../Context'
 
-import { KeyManagementSystem, OnRequest } from '../lib/core'
+import { KeyManagementSystem, OnRequest, RIFWallet } from '../lib/core'
 import { i18nInit } from '../lib/i18n'
 
 import {
@@ -10,6 +10,7 @@ import {
   loadExistingWallets,
   creteKMS,
   deleteKeys,
+  addNextWallet,
 } from './operations'
 import {
   rifWalletServicesFetcher,
@@ -41,6 +42,7 @@ type State = {
   walletsIsDeployed: WalletsIsDeployed
   selectedWallet: string
   loading: boolean
+  chainId?: number
 }
 
 const noKeysState = {
@@ -54,6 +56,7 @@ const initialState: State = {
   hasKeys: false,
   ...noKeysState,
   loading: true,
+  chainId: undefined,
 }
 
 export const Core = () => {
@@ -119,6 +122,30 @@ export const Core = () => {
     return rifWallet
   }
 
+  const addNewWallet = () => {
+    if (!state.kms) {
+      throw Error('Can not add new wallet because no KMS created.')
+    }
+
+    return addNextWallet(state.kms, createRIFWallet, networkId).then(response =>
+      setState({
+        ...state,
+        wallets: Object.assign(state.wallets, {
+          [response.rifWallet.address]: response.rifWallet,
+        }),
+        walletsIsDeployed: Object.assign(state.walletsIsDeployed, {
+          [response.rifWallet.address]: response.isDeloyed,
+        }),
+      }),
+    )
+  }
+
+  const switchActiveWallet = (address: string) =>
+    setState({ ...state, selectedWallet: address })
+
+  const retrieveChainId = (wallet: RIFWallet) =>
+    wallet.getChainId().then(chainId => setState({ ...state, chainId }))
+
   useEffect(() => {
     const stateSubscription = AppState.addEventListener(
       'change',
@@ -153,6 +180,13 @@ export const Core = () => {
       setState({ ...state, hasKeys: !!hasKeysResult, loading: false })
     })
   }, [])
+
+  useEffect(() => {
+    if (state.selectedWallet) {
+      const currentWallet = state.wallets[state.selectedWallet]
+      retrieveChainId(currentWallet)
+    }
+  }, [state.selectedWallet])
 
   if (state.loading) {
     return <LoadingScreen reason="Getting things setup" />
@@ -197,6 +231,11 @@ export const Core = () => {
                 }}
                 contactsNavigationScreenProps={{ rnsResolver }}
                 dappsScreenProps={{ fetcher: rifWalletServicesFetcher }}
+                manageWalletScreenProps={{
+                  addNewWallet,
+                  switchActiveWallet,
+                }}
+                settingsScreen={{ deleteKeys }}
               />
 
               {requests.length !== 0 && (

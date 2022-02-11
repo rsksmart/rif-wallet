@@ -2,6 +2,24 @@ import React from 'react'
 import { render, fireEvent } from '@testing-library/react-native'
 import FaucetComponent from './FaucetComponent'
 
+const rifTokenMock = {
+  name: 'tRIF Token',
+  symbol: 'tRIF',
+  contractAddress: '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
+  decimals: 18,
+  balance: '0x3479b2d750f220000',
+  logo: '',
+}
+
+const rbtcMock = {
+  name: 'TRBTC',
+  logo: '',
+  symbol: 'TRBTC',
+  contractAddress: '0x0000000000000000000000000000000000000000',
+  decimals: 18,
+  balance: '9669199754592360',
+}
+
 describe('FaucetComponent', () => {
   const navigation = {
     navigate: jest.fn(),
@@ -9,11 +27,7 @@ describe('FaucetComponent', () => {
 
   it('shows rbtc', () => {
     const { getByTestId } = render(
-      <FaucetComponent
-        rbtcBalance={0}
-        rifBalance={0}
-        navigation={navigation}
-      />,
+      <FaucetComponent balances={[]} navigation={navigation} />,
     )
 
     expect(getByTestId('Faucet.Text').children[0]).toBe(
@@ -30,11 +44,7 @@ describe('FaucetComponent', () => {
 
   it('shows tRIF', () => {
     const { getByTestId } = render(
-      <FaucetComponent
-        rbtcBalance={1}
-        rifBalance={0}
-        navigation={navigation}
-      />,
+      <FaucetComponent balances={[rbtcMock]} navigation={navigation} />,
     )
 
     expect(getByTestId('Faucet.Text').children[0]).toBe(
@@ -52,8 +62,7 @@ describe('FaucetComponent', () => {
   it('shows nothing', () => {
     const { queryAllByTestId } = render(
       <FaucetComponent
-        rbtcBalance={1}
-        rifBalance={1}
+        balances={[rifTokenMock, rbtcMock]}
         navigation={navigation}
       />,
     )

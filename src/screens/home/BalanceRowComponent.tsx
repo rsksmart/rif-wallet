@@ -12,7 +12,7 @@ export const BalanceRowComponent: React.FC<{
   token: ITokenWithBalance
   selected: boolean
   onPress: () => void
-  quota: { price: number; lastUpdated: string } | undefined
+  quota?: { price: number; lastUpdated: string }
 }> = ({ selected, token, onPress, quota }) => {
   const containerStyles = {
     ...styles.container,
@@ -39,7 +39,9 @@ export const BalanceRowComponent: React.FC<{
               token.decimals,
             )} ${token.symbol || ''}`}</Text>
             <Text style={styles.price}>
-              {quota ? quota.price.toFixed(priceDecimals) : 0.0} USD
+              {quota
+                ? `${quota.price.toFixed(priceDecimals)} USD`
+                : 'USD not available'}
             </Text>
           </View>
         </View>

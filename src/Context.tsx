@@ -11,6 +11,7 @@ export type AppContextType = {
   wallets: Wallets
   walletsIsDeployed: WalletsIsDeployed
   selectedWallet?: string
+  chainId?: number
   setRequests: (requests: Requests) => void // temp - for setting the signTypedData
 }
 
@@ -18,13 +19,17 @@ export const AppContext = createContext<AppContextType>({
   wallets: {},
   walletsIsDeployed: {},
   setRequests: () => {},
+  chainId: undefined,
 })
 
 export const useSelectedWallet = () => {
-  const { wallets, walletsIsDeployed, selectedWallet } = useContext(AppContext)
+  const { wallets, walletsIsDeployed, selectedWallet, chainId } =
+    useContext(AppContext)
+
   return {
     wallet: wallets[selectedWallet!],
     isDeployed: walletsIsDeployed[selectedWallet!],
+    chainId,
   }
 }
 
