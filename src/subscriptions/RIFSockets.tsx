@@ -54,6 +54,22 @@ function liveSubscriptionsReducer(state: State, action: Action) {
         },
       }
 
+    case 'newTransaction':
+      const sortedTx: Array<IActivityTransaction> = [
+        action.payload,
+        ...state.transactions!.activityTransactions,
+      ]
+        .sort(sortEnhancedTransactions)
+        .filter(filterEnhancedTransactions)
+
+      return {
+        ...state,
+        transactions: {
+          ...state.transactions,
+          activityTransactions: sortedTx,
+        },
+      }
+
     case 'init':
       const balancesInitial = action.payload.balances.reduce(
         (accum, current) => {
@@ -71,22 +87,6 @@ function liveSubscriptionsReducer(state: State, action: Action) {
         transactions: {
           ...state.transactions,
           activityTransactions: action.payload.transactions,
-        },
-      }
-
-    case 'newTransaction':
-      const sortedTx: Array<IActivityTransaction> = [
-        action.payload,
-        ...state.transactions!.activityTransactions,
-      ]
-        .sort(sortEnhancedTransactions)
-        .filter(filterEnhancedTransactions)
-
-      return {
-        ...state,
-        transactions: {
-          ...state.transactions,
-          activityTransactions: sortedTx,
         },
       }
 
