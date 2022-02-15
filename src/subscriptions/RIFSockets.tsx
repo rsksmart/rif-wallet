@@ -54,22 +54,6 @@ function liveSubscriptionsReducer(state: State, action: Action) {
         },
       }
 
-    case 'newTransaction':
-      const sortedTx: Array<IActivityTransaction> = [
-        action.payload,
-        ...state.transactions!.activityTransactions,
-      ]
-        .sort(sortEnhancedTransactions)
-        .filter(filterEnhancedTransactions)
-
-      return {
-        ...state,
-        transactions: {
-          ...state.transactions,
-          activityTransactions: sortedTx,
-        },
-      }
-
     case 'init':
       const balancesInitial = action.payload.balances.reduce(
         (accum, current) => {
@@ -90,6 +74,29 @@ function liveSubscriptionsReducer(state: State, action: Action) {
         },
       }
 
+    case 'newPendingTransaction':
+      console.log('newPendingTransaction')
+      return {
+        ...state,
+        pendingTransactions: [...state.pendingTransactions, action.payload],
+      }
+
+    case 'newTransaction':
+      const sortedTx: Array<IActivityTransaction> = [
+        action.payload,
+        ...state.transactions!.activityTransactions,
+      ]
+        .sort(sortEnhancedTransactions)
+        .filter(filterEnhancedTransactions)
+
+      return {
+        ...state,
+        transactions: {
+          ...state.transactions,
+          activityTransactions: sortedTx,
+        },
+      }
+
     default:
       throw new Error(`Unhandled action type: ${type}`)
   }
@@ -101,6 +108,7 @@ const initialState = {
     next: null,
     prev: null,
   },
+  pendingTransactions: [],
   prices: {},
   balances: {},
 }

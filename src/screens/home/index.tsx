@@ -10,6 +10,7 @@ import ActivityComponent from './ActivityComponent'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
 import FaucetComponent from './FaucetComponent'
 import { ScrollView } from 'react-native-gesture-handler'
+import PendingActivityComponent from './PendingActivityComponent'
 
 export const HomeScreen: React.FC<{
   navigation: NavigationProp
@@ -67,6 +68,11 @@ export const HomeScreen: React.FC<{
             navigation={navigation}
             setPanelActive={() => setSelectedPanel('transactions')}
             visible={selectedPanel === 'transactions'}
+          />
+          <PendingActivityComponent
+            navigation={navigation}
+            setPanelActive={() => setSelectedPanel('pendingTransactions')}
+            visible={selectedPanel === 'pendingTransactions'}
           />
         </LinearGradient>
       </ScrollView>

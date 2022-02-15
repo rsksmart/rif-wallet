@@ -18,6 +18,11 @@ export interface NewTransactionsAction {
   payload: IActivity
 }
 
+export interface NewPendingTransactionAction {
+  type: 'newPendingTransaction'
+  payload: any
+}
+
 export interface NewBalanceAction {
   type: 'newBalance'
   payload: ITokenWithBalance
@@ -44,10 +49,12 @@ export interface State {
   transactions: TransactionsServerResponseWithActivityTransactions
   balances: Record<string, ITokenWithBalance>
   prices: Record<string, IPrice>
+  pendingTransactions: IActivityTransaction[]
 }
 
 export type Action =
   | NewTransactionsAction
+  | NewPendingTransactionAction
   | NewBalanceAction
   | NewPriceAction
   | NewTransactionAction

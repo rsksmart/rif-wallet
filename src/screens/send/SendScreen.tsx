@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react'
+import { AbiEnhancer } from '../../lib/abiEnhancer/AbiEnhancer'
+
 import LinearGradient from 'react-native-linear-gradient'
 import { useIsFocused } from '@react-navigation/native'
 
@@ -35,12 +37,13 @@ import MiniModal from '../../components/tokenSelector/MiniModal'
 import { balanceToString } from '../balances/BalancesScreen'
 
 export type SendScreenProps = {}
+export const abiEnhancer = new AbiEnhancer()
 
 export const SendScreen: React.FC<
   SendScreenProps & ScreenProps<'Send'> & ScreenWithWallet
 > = ({ route, wallet, navigation }) => {
   const isFocused = useIsFocused()
-  const { state } = useSocketsState()
+  const { state, dispatch } = useSocketsState()
 
   const contractAddress =
     route.params?.contractAddress || Object.keys(state.balances)[0]
@@ -114,6 +117,38 @@ export const SendScreen: React.FC<
           setTx(transferTx)
 
           const transferReceipt = await transferTx.wait()
+
+          dispatch({
+            type: 'newPendingTransaction',
+            payload: {
+              originTransaction: {
+                hash: transferTx.hash,
+                nonce: transferTx.nonce,
+                blockHash: transferReceipt.blockHash,
+                blockNumber: transferReceipt.blockNumber,
+                transactionIndex: transferReceipt.transactionIndex,
+                from: transferTx.from,
+                to: transferTx.to,
+                gas: 'number',
+                gasPrice: 'string',
+                value: 'string',
+                input: 'string',
+                timestamp: 'number',
+                receipt: transferReceipt,
+                txType: 'string',
+                txId: 'string',
+                data: transferTx.data,
+              },
+              enhancedTransaction: {
+                balance: '0',
+                data: transferTx.data,
+                from: transferTx.from,
+                symbol: selectedToken.symbol,
+                to: transferTx.to,
+                value: amount,
+              },
+            },
+          })
 
           setReceipt(transferReceipt)
         } catch (e: any) {
