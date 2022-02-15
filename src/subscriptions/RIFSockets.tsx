@@ -74,13 +74,6 @@ function liveSubscriptionsReducer(state: State, action: Action) {
         },
       }
 
-    case 'newPendingTransaction':
-      console.log('newPendingTransaction')
-      return {
-        ...state,
-        pendingTransactions: [...state.pendingTransactions, action.payload],
-      }
-
     case 'newTransaction':
       const sortedTx: Array<IActivityTransaction> = [
         action.payload,
@@ -95,6 +88,13 @@ function liveSubscriptionsReducer(state: State, action: Action) {
           ...state.transactions,
           activityTransactions: sortedTx,
         },
+      }
+
+    case 'newPendingTransaction':
+      console.log('newPendingTransaction')
+      return {
+        ...state,
+        pendingTransactions: [...state.pendingTransactions, action.payload],
       }
 
     default:
