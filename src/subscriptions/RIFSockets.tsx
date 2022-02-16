@@ -199,7 +199,7 @@ export function RIFSocketsProvider({
     })
 
     rifServiceSocket?.on('change', result => {
-      if (result.type === '§') {
+      if (result.type === 'newTransaction') {
         enhanceTransactionInput(result.payload, wallet, abiEnhancer)
           .then((enhancedTransaction?: IEnhancedResult) => {
             dispatch({
