@@ -86,13 +86,17 @@ function liveSubscriptionsReducer(state: State, action: Action) {
       ]
         .sort(sortEnhancedTransactions)
         .filter(filterEnhancedTransactions)
-
+      const newPendingTransactions = calculatePendingTransactions(
+        state.pendingTransactions,
+        sortedTx,
+      )
       return {
         ...state,
         transactions: {
           ...state.transactions,
           activityTransactions: sortedTx,
         },
+        newPendingTransactions,
       }
 
     case 'init':
@@ -168,16 +172,6 @@ const loadRBTCBalance = async (wallet: RIFWallet, dispatch: Dispatch) => {
   dispatch({ type: 'newBalance', payload: newEntry })
 }
 
-const dispatchRemovePendingTransactions = (
-  dispatch: Dispatch,
-  confirmedTransactions: IActivityTransaction[],
-) => {
-  dispatch({
-    type: 'removePendingTransactions',
-    payload: confirmedTransactions,
-  })
-}
-
 const RIFSocketsContext = React.createContext<
   { state: State; dispatch: Dispatch } | undefined
 >(undefined)
@@ -196,7 +190,6 @@ export function RIFSocketsProvider({
 
   const connect = () => {
     rifServiceSocket?.on('init', async result => {
-      //console.log({ result })
       const pendingTransactions2 = await getPendingTransactions()
       console.log({ pendingTransactions2 })
       await removePendingTransactionsInList(result.transactions)
@@ -209,9 +202,6 @@ export function RIFSocketsProvider({
 
     rifServiceSocket?.on('change', result => {
       if (result.type === '§') {
-        console.log('result.payload')
-        console.log(result.payload)
-
         enhanceTransactionInput(result.payload, wallet, abiEnhancer)
           .then((enhancedTransaction?: IEnhancedResult) => {
             dispatch({
@@ -221,12 +211,6 @@ export function RIFSocketsProvider({
                 enhancedTransaction,
               },
             })
-            dispatchRemovePendingTransactions(dispatch, [
-              {
-                originTransaction: result.payload,
-                enhancedTransaction,
-              },
-            ])
           })
           .catch(() => {
             dispatch({

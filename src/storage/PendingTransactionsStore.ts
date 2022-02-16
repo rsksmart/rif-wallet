@@ -56,7 +56,6 @@ export const removePendingTransactionsInList = async (
   confirmedTransactions: IActivityTransaction[],
 ) => {
   for (let i = 0; i < confirmedTransactions.length; i++) {
-    console.log(confirmedTransactions[i].originTransaction.hash)
     await removePendingTransactionByHash(
       confirmedTransactions[i].originTransaction.hash,
     )
