@@ -22,6 +22,10 @@ export interface NewPendingTransactionAction {
   type: 'newPendingTransaction'
   payload: any
 }
+export interface RemovePendingTransactions {
+  type: 'removePendingTransactions'
+  payload: any
+}
 
 export interface NewBalanceAction {
   type: 'newBalance'
@@ -40,6 +44,7 @@ export interface NewTransactionAction {
 export interface InitAction {
   type: 'init'
   payload: {
+    pendingTransactions: IActivityTransaction[]
     transactions: IActivityTransaction[]
     balances: ITokenWithBalance[]
   }
@@ -59,6 +64,7 @@ export type Action =
   | NewPriceAction
   | NewTransactionAction
   | InitAction
+  | RemovePendingTransactions
 
 export type Dispatch = (action: Action) => void
 export type SubscriptionsProviderProps = {

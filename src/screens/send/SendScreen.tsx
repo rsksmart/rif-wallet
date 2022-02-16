@@ -36,6 +36,8 @@ import MiniModal from '../../components/tokenSelector/MiniModal'
 
 import { balanceToString } from '../balances/BalancesScreen'
 
+import { IActivityTransaction } from '../../subscriptions/types'
+
 export type SendScreenProps = {}
 export const abiEnhancer = new AbiEnhancer()
 
@@ -117,37 +119,40 @@ export const SendScreen: React.FC<
           setTx(transferTx)
 
           const transferReceipt = await transferTx.wait()
+          const pendingTransaction = {
+            originTransaction: {
+              hash: transferTx.hash,
+              nonce: transferTx.nonce,
+              blockHash: transferReceipt.blockHash,
+              blockNumber: transferReceipt.blockNumber,
+              transactionIndex: transferReceipt.transactionIndex,
+              from: transferTx.from,
+              to: transferTx.to,
+              gas: '0',
+              gasPrice: '0',
+              value: '0',
+              input: '0',
+              timestamp: '0',
+              receipt: transferReceipt,
+              txType: '0',
+              txId: '0',
+              data: transferTx.data,
+            },
+            enhancedTransaction: {
+              balance: '0',
+              data: transferTx.data,
+              from: transferTx.from,
+              symbol: selectedToken.symbol,
+              to: transferTx.to,
+              value: amount,
+            },
+          } as unknown as IActivityTransaction
+
+          //await addPendingTransaction(pendingTransaction)
 
           dispatch({
             type: 'newPendingTransaction',
-            payload: {
-              originTransaction: {
-                hash: transferTx.hash,
-                nonce: transferTx.nonce,
-                blockHash: transferReceipt.blockHash,
-                blockNumber: transferReceipt.blockNumber,
-                transactionIndex: transferReceipt.transactionIndex,
-                from: transferTx.from,
-                to: transferTx.to,
-                gas: 'number',
-                gasPrice: 'string',
-                value: 'string',
-                input: 'string',
-                timestamp: 'number',
-                receipt: transferReceipt,
-                txType: 'string',
-                txId: 'string',
-                data: transferTx.data,
-              },
-              enhancedTransaction: {
-                balance: '0',
-                data: transferTx.data,
-                from: transferTx.from,
-                symbol: selectedToken.symbol,
-                to: transferTx.to,
-                value: amount,
-              },
-            },
+            payload: pendingTransaction,
           })
 
           setReceipt(transferReceipt)

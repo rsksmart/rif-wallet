@@ -2,6 +2,11 @@ import React from 'react'
 import { useSelectedWallet } from '../Context'
 import { enhanceTransactionInput } from '../screens/activity/ActivityScreen'
 import { filterEnhancedTransactions, sortEnhancedTransactions } from './utils'
+import {
+  addPendingTransaction,
+  getPendingTransactions,
+  removePendingTransactionsInList,
+} from '../storage/PendingTransactionsStore'
 
 import {
   Action,
@@ -14,6 +19,22 @@ import { constants } from 'ethers'
 
 import { ITokenWithBalance } from '../lib/rifWalletServices/RIFWalletServicesTypes'
 import { RIFWallet } from '../lib/core'
+import { IEnhancedResult } from '../lib/abiEnhancer/AbiEnhancer'
+
+const calculatePendingTransactions = (
+  currentPendingTransactions: IActivityTransaction[],
+  transactionsToRemove: IActivityTransaction[],
+): IActivityTransaction[] => {
+  removePendingTransactionsInList(transactionsToRemove).then(() => {})
+  return currentPendingTransactions.filter(
+    (pendingTx: IActivityTransaction) =>
+      !transactionsToRemove.find(
+        txToRemove =>
+          pendingTx.originTransaction.hash ===
+          txToRemove.originTransaction.hash,
+      ),
+  )
+}
 
 function liveSubscriptionsReducer(state: State, action: Action) {
   const { type } = action
@@ -26,7 +47,10 @@ function liveSubscriptionsReducer(state: State, action: Action) {
       ]
         .sort(sortEnhancedTransactions)
         .filter(filterEnhancedTransactions)
-
+      const pendingTransactions = calculatePendingTransactions(
+        state.pendingTransactions,
+        sortedTxs,
+      )
       return {
         ...state,
         transactions: {
@@ -34,6 +58,7 @@ function liveSubscriptionsReducer(state: State, action: Action) {
           next: action.payload.next,
           activityTransactions: sortedTxs,
         },
+        pendingTransactions,
       }
 
     case 'newBalance':
@@ -80,7 +105,6 @@ function liveSubscriptionsReducer(state: State, action: Action) {
         },
         {},
       )
-
       return {
         ...state,
         balances: balancesInitial,
@@ -88,13 +112,30 @@ function liveSubscriptionsReducer(state: State, action: Action) {
           ...state.transactions,
           activityTransactions: action.payload.transactions,
         },
+        pendingTransactions: action.payload.pendingTransactions,
       }
 
     case 'newPendingTransaction':
-      console.log('newPendingTransaction')
+      const newPendingTransaction = action.payload
+      addPendingTransaction(newPendingTransaction).then(() => {})
       return {
         ...state,
-        pendingTransactions: [...state.pendingTransactions, action.payload],
+        pendingTransactions: [
+          ...state.pendingTransactions,
+          newPendingTransaction,
+        ],
+      }
+
+    case 'removePendingTransactions':
+      const transactionsToRemove: IActivityTransaction[] = action.payload
+
+      const updatedPendingTransactions = calculatePendingTransactions(
+        state.pendingTransactions,
+        transactionsToRemove,
+      )
+      return {
+        ...state,
+        pendingTransactions: updatedPendingTransactions,
       }
 
     default:
@@ -127,6 +168,16 @@ const loadRBTCBalance = async (wallet: RIFWallet, dispatch: Dispatch) => {
   dispatch({ type: 'newBalance', payload: newEntry })
 }
 
+const dispatchRemovePendingTransactions = (
+  dispatch: Dispatch,
+  confirmedTransactions: IActivityTransaction[],
+) => {
+  dispatch({
+    type: 'removePendingTransactions',
+    payload: confirmedTransactions,
+  })
+}
+
 const RIFSocketsContext = React.createContext<
   { state: State; dispatch: Dispatch } | undefined
 >(undefined)
@@ -144,17 +195,25 @@ export function RIFSocketsProvider({
   const { wallet } = useSelectedWallet()
 
   const connect = () => {
-    rifServiceSocket?.on('init', result => {
+    rifServiceSocket?.on('init', async result => {
+      //console.log({ result })
+      const pendingTransactions2 = await getPendingTransactions()
+      console.log({ pendingTransactions2 })
+      await removePendingTransactionsInList(result.transactions)
+      const pendingTransactions = await getPendingTransactions()
       dispatch({
         type: 'init',
-        payload: result,
+        payload: { ...result, pendingTransactions },
       })
     })
 
     rifServiceSocket?.on('change', result => {
-      if (result.type === 'newTransaction') {
+      if (result.type === '§') {
+        console.log('result.payload')
+        console.log(result.payload)
+
         enhanceTransactionInput(result.payload, wallet, abiEnhancer)
-          .then(enhancedTransaction => {
+          .then((enhancedTransaction?: IEnhancedResult) => {
             dispatch({
               type: 'newTransaction',
               payload: {
@@ -162,6 +221,12 @@ export function RIFSocketsProvider({
                 enhancedTransaction,
               },
             })
+            dispatchRemovePendingTransactions(dispatch, [
+              {
+                originTransaction: result.payload,
+                enhancedTransaction,
+              },
+            ])
           })
           .catch(() => {
             dispatch({
@@ -185,7 +250,10 @@ export function RIFSocketsProvider({
       // socket is connected to a different wallet
       if (rifServiceSocket.isConnected()) {
         rifServiceSocket.disconnect()
-        dispatch({ type: 'init', payload: { transactions: [], balances: [] } })
+        dispatch({
+          type: 'init',
+          payload: { transactions: [], balances: [], pendingTransactions: [] },
+        })
       }
 
       connect()
