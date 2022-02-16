@@ -3,3 +3,4 @@
 
 jest.mock('rn-secure-storage', () => {})
 jest.mock('@rsksmart/rns-resolver.js')
+jest.mock('@react-native-async-storage/async-storage', () => {})
