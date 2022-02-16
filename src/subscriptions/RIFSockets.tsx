@@ -190,8 +190,6 @@ export function RIFSocketsProvider({
 
   const connect = () => {
     rifServiceSocket?.on('init', async result => {
-      const pendingTransactions2 = await getPendingTransactions()
-      console.log({ pendingTransactions2 })
       await removePendingTransactionsInList(result.transactions)
       const pendingTransactions = await getPendingTransactions()
       dispatch({
