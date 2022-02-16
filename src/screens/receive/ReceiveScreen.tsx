@@ -74,7 +74,6 @@ export const ReceiveScreen: React.FC<ScreenWithWallet & ReceiveScreenProps> = ({
 
   return (
     <ScrollView style={styles.parent}>
-      <Text style={styles.header}>Receive</Text>
       <View
         style={{ ...styles.qrContainer, ...qrContainerStyle }}
         testID={TestID.QRCodeDisplay}>
@@ -134,10 +133,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#050134',
     height: '100%',
     opacity: 0.9,
-  },
-  header: {
-    fontSize: 26,
-    textAlign: 'center',
+    paddingTop: 40,
   },
   qrContainer: {
     backgroundColor: '#dbe3ff',
