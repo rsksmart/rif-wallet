@@ -148,8 +148,6 @@ export const SendScreen: React.FC<
             },
           } as unknown as IActivityTransaction
 
-          //await addPendingTransaction(pendingTransaction)
-
           dispatch({
             type: 'newPendingTransaction',
             payload: pendingTransaction,
