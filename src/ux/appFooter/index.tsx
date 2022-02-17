@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/core'
 import React from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { ContactsIcon, WalletIcon, CompassIcon } from '../../components/icons'
+import { colors } from '../../styles/colors'
 
 export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
   currentScreen,
