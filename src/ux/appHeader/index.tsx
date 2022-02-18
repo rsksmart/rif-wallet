@@ -5,6 +5,7 @@ import { AddressCopyComponent } from '../../components/copy/AddressCopyComponent
 import { useSelectedWallet } from '../../Context'
 import { Network } from '@ethersproject/networks'
 import { MenuIcon } from '../../components/icons/MenuIcon'
+import { colors } from '../../styles/colors'
 
 export const networks: Record<number, Network> = {
   30: {
@@ -41,11 +42,11 @@ export const AppHeader: React.FC<{}> = () => {
           ...styles.walletInfo,
         }}>
         {wallet && <AddressCopyComponent address={wallet.smartWalletAddress} />}
-        {network && <Text>{network.name}</Text>}
+        {network && <Text style={styles.network}>{network.name}</Text>}
       </View>
       <View style={styles.column}>
         <TouchableOpacity onPress={openMenu} style={styles.menu}>
-          <MenuIcon />
+          <MenuIcon color={colors.white} />
         </TouchableOpacity>
       </View>
     </View>
@@ -58,11 +59,15 @@ const styles = StyleSheet.create({
     padding: 10,
     display: 'flex',
     flexDirection: 'row',
+    backgroundColor: colors.blue,
   },
   column: {
     display: 'flex',
     paddingRight: 5,
     width: '50%',
+  },
+  network: {
+    color: colors.white,
   },
   walletInfo: {
     alignItems: 'center',

@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
 import { NavigationProp } from '../../RootNavigation'
 import SelectedTokenComponent from './SelectedTokenComponent'
-import LinearGradient from 'react-native-linear-gradient'
 import { getTokenColor, setOpacity } from './tokenColor'
 import PortfolioComponent from './PortfolioComponent'
 import ActivityComponent from './ActivityComponent'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
 import FaucetComponent from './FaucetComponent'
 import { ScrollView } from 'react-native-gesture-handler'
+import { colors } from '../../styles/colors'
 
 export const HomeScreen: React.FC<{
   navigation: NavigationProp
@@ -42,9 +42,7 @@ export const HomeScreen: React.FC<{
   }
 
   return (
-    <LinearGradient
-      colors={['#FFFFFF', setOpacity(selectedTokenColor, 0.1)]}
-      style={styles.parent}>
+    <View style={styles.parent}>
       <ScrollView>
         <FaucetComponent
           navigation={navigation}
@@ -54,9 +52,7 @@ export const HomeScreen: React.FC<{
           <SelectedTokenComponent navigation={navigation} token={selected} />
         )}
 
-        <LinearGradient
-          colors={['#FFFFFF', '#E1E1E1']}
-          style={{ ...styles.topContainer, ...containerStyles }}>
+        <View style={{ ...styles.topContainer, ...containerStyles }}>
           <PortfolioComponent
             setPanelActive={() => setSelectedPanel('portfolio')}
             selectedAddress={selectedAddress}
@@ -68,15 +64,18 @@ export const HomeScreen: React.FC<{
             setPanelActive={() => setSelectedPanel('transactions')}
             visible={selectedPanel === 'transactions'}
           />
-        </LinearGradient>
+        </View>
       </ScrollView>
-    </LinearGradient>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   parent: {
     height: '100%',
+    backgroundColor: colors.darkBlue,
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
   },
   topContainer: {
     marginHorizontal: 25,

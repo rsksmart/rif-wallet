@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react'
-import { AppState, SafeAreaView, StatusBar } from 'react-native'
+import React, { useState, useRef, useEffect, Fragment } from 'react'
+import { AppState, SafeAreaView, StatusBar, StyleSheet } from 'react-native'
 import { AppContext, Wallets, WalletsIsDeployed, Requests } from '../Context'
 
 import { KeyManagementSystem, OnRequest, RIFWallet } from '../lib/core'
@@ -30,6 +30,7 @@ import { RequestPIN } from './components/RequestPIN'
 import { WalletConnectProviderElement } from '../screens/walletConnect/WalletConnectContext'
 import { RIFSocketsProvider } from '../subscriptions/RIFSockets'
 import { NavigationContainer, NavigationState } from '@react-navigation/native'
+import { colors } from '../styles/colors'
 
 const gracePeriod = 3000
 
@@ -219,66 +220,83 @@ export const Core = () => {
   }
 
   return (
-    <SafeAreaView>
-      <StatusBar />
-      {!active && <Cover />}
-      {state.hasKeys && !unlocked && (
-        <RequestPIN unlock={() => unlockApp().then(() => setUnlocked(true))} />
-      )}
-      <AppContext.Provider
-        value={{
-          ...state,
-          mnemonic: state.kms?.mnemonic,
-        }}>
-        <NavigationContainer onStateChange={handleScreenChange}>
-          <WalletConnectProviderElement>
-            <RIFSocketsProvider
-              rifServiceSocket={rifWalletServicesSocket}
-              abiEnhancer={abiEnhancer}>
-              <RootNavigation
-                currentScreen={currentScreen}
-                hasKeys={state.hasKeys}
-                rifWalletServicesSocket={rifWalletServicesSocket}
-                keyManagementProps={{
-                  generateMnemonic: () => KeyManagementSystem.create().mnemonic,
-                  createFirstWallet: (mnemonic: string) =>
-                    createFirstWallet(mnemonic).then(wallet => {
-                      setUnlocked(true)
-                      return wallet
-                    }),
-                }}
-                balancesScreenProps={{ fetcher: rifWalletServicesFetcher }}
-                sendScreenProps={{ rnsResolver }}
-                activityScreenProps={{
-                  fetcher: rifWalletServicesFetcher,
-                  abiEnhancer,
-                }}
-                keysInfoScreenProps={{
-                  mnemonic: state.kms?.mnemonic || '',
-                  deleteKeys,
-                }}
-                injectedBrowserUXScreenProps={{
-                  fetcher: rifWalletServicesFetcher,
-                }}
-                contactsNavigationScreenProps={{ rnsResolver }}
-                dappsScreenProps={{ fetcher: rifWalletServicesFetcher }}
-                manageWalletScreenProps={{
-                  addNewWallet,
-                  switchActiveWallet,
-                }}
-                settingsScreen={{ deleteKeys }}
-              />
-
-              {requests.length !== 0 && (
-                <ModalComponent
-                  closeModal={closeRequest}
-                  request={requests[0]}
+    <Fragment>
+      <SafeAreaView style={styles.top}>
+        <StatusBar barStyle="light-content" />
+      </SafeAreaView>
+      <SafeAreaView style={styles.parent}>
+        {!active && <Cover />}
+        {state.hasKeys && !unlocked && (
+          <RequestPIN
+            unlock={() => unlockApp().then(() => setUnlocked(true))}
+          />
+        )}
+        <AppContext.Provider
+          value={{
+            ...state,
+            mnemonic: state.kms?.mnemonic,
+          }}>
+          <NavigationContainer onStateChange={handleScreenChange}>
+            <WalletConnectProviderElement>
+              <RIFSocketsProvider
+                rifServiceSocket={rifWalletServicesSocket}
+                abiEnhancer={abiEnhancer}>
+                <RootNavigation
+                  currentScreen={currentScreen}
+                  hasKeys={state.hasKeys}
+                  rifWalletServicesSocket={rifWalletServicesSocket}
+                  keyManagementProps={{
+                    generateMnemonic: () =>
+                      KeyManagementSystem.create().mnemonic,
+                    createFirstWallet: (mnemonic: string) =>
+                      createFirstWallet(mnemonic).then(wallet => {
+                        setUnlocked(true)
+                        return wallet
+                      }),
+                  }}
+                  balancesScreenProps={{ fetcher: rifWalletServicesFetcher }}
+                  sendScreenProps={{ rnsResolver }}
+                  activityScreenProps={{
+                    fetcher: rifWalletServicesFetcher,
+                    abiEnhancer,
+                  }}
+                  keysInfoScreenProps={{
+                    mnemonic: state.kms?.mnemonic || '',
+                    deleteKeys,
+                  }}
+                  injectedBrowserUXScreenProps={{
+                    fetcher: rifWalletServicesFetcher,
+                  }}
+                  contactsNavigationScreenProps={{ rnsResolver }}
+                  dappsScreenProps={{ fetcher: rifWalletServicesFetcher }}
+                  manageWalletScreenProps={{
+                    addNewWallet,
+                    switchActiveWallet,
+                  }}
+                  settingsScreen={{ deleteKeys }}
                 />
-              )}
-            </RIFSocketsProvider>
-          </WalletConnectProviderElement>
-        </NavigationContainer>
-      </AppContext.Provider>
-    </SafeAreaView>
+
+                {requests.length !== 0 && (
+                  <ModalComponent
+                    closeModal={closeRequest}
+                    request={requests[0]}
+                  />
+                )}
+              </RIFSocketsProvider>
+            </WalletConnectProviderElement>
+          </NavigationContainer>
+        </AppContext.Provider>
+      </SafeAreaView>
+    </Fragment>
   )
 }
+
+const styles = StyleSheet.create({
+  top: {
+    flex: 0,
+    backgroundColor: colors.blue,
+  },
+  parent: {
+    backgroundColor: colors.darkPurple,
+  },
+})
