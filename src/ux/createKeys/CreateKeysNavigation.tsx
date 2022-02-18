@@ -7,6 +7,7 @@ import { ConfirmNewMasterKeyScreen } from './new/ConfirmNewMasterKeyScreen'
 import { ImportMasterKeyScreen } from './import/ImportMasterKeyScreen'
 import { KeysCreatedScreen } from './KeysCreatedScreen'
 import { StackParamList, CreateKeysProps } from './types'
+import { ReEnterKeyScreen } from './ReEnterKeysScreen'
 
 const Stack = createStackNavigator<StackParamList>()
 
@@ -28,6 +29,14 @@ export const CreateKeysNavigation: React.FC<CreateKeysProps> = ({
           <Stack.Screen name="NewMasterKey" options={screensOptions}>
             {props => (
               <NewMasterKeyScreen
+                {...props}
+                generateMnemonic={generateMnemonic}
+              />
+            )}
+          </Stack.Screen>
+          <Stack.Screen name="ReEnterKey" options={screensOptions}>
+            {props => (
+              <ReEnterKeyScreen
                 {...props}
                 generateMnemonic={generateMnemonic}
               />

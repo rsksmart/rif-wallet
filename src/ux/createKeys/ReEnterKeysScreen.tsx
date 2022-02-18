@@ -1,33 +1,11 @@
 import React, { useMemo, useState } from 'react'
 import { StyleSheet, View, ScrollView, Text, TextInput } from 'react-native'
-import { CopyComponent } from '../../../components'
-import { CreateKeysProps, ScreenProps } from '../types'
-import { TouchableOpacity } from 'react-native-gesture-handler'
-import LinearGradient from 'react-native-linear-gradient'
-
-import {
-  getTokenColor,
-  getTokenColorWithOpacity,
-  setOpacity,
-} from '../../../screens/home/tokenColor'
-import { SquareButton } from '../../../components/button/SquareButton'
-import { Arrow } from '../../../components/icons'
-import balances from '../../../screens/home/tempBalances.json'
-import { ITokenWithBalance } from '../../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { grid } from '../../../styles/grid'
+import { CreateKeysProps, ScreenProps } from '../../ux/createKeys/types'
+import { grid } from '../../styles/grid'
 type CreateMasterKeyScreenProps = {
   generateMnemonic: CreateKeysProps['generateMnemonic']
 }
-const Word = ({ index, text }: { index: number; text: string }) => (
-  <View
-    style={{
-      ...grid.column4,
-      ...styles.wordContainer,
-    }}>
-    <Text style={styles.wordIndex}>{index}. </Text>
-    <Text style={styles.wordContent}>{text}</Text>
-  </View>
-)
+
 const WordInput = ({ index, text }: { index: number; text: string }) => (
   <View
     style={{
@@ -38,20 +16,17 @@ const WordInput = ({ index, text }: { index: number; text: string }) => (
     <TextInput
       style={styles.wordInput}
       onChangeText={() => {}}
-      value={'a'}
+      value={text}
       placeholder="Enter your 12 words master key"
       multiline
     />
   </View>
 )
 
-export const NewMasterKeyScreen: React.FC<
+export const ReEnterKeyScreen: React.FC<
   ScreenProps<'NewMasterKey'> & CreateMasterKeyScreenProps
 > = ({ navigation, generateMnemonic }) => {
-  const mnemonic = useMemo(generateMnemonic, [])
-  const [selected] = useState<ITokenWithBalance>(
-    balances[0] as ITokenWithBalance,
-  )
+  const mnemonic: string = useMemo(generateMnemonic, [])
 
   const words = mnemonic.split(' ')
   const rows = [1, 2, 3, 4, 5, 6, 7, 8]
@@ -61,15 +36,22 @@ export const NewMasterKeyScreen: React.FC<
 
       {rows.map((row, i) => (
         <View style={grid.row}>
-          <Word index={row} text={words[i]} />
-          <Word index={row + rows.length} text={words[i + rows.length]} />
-          <Word
+          <WordInput index={row} text={words[i]} />
+          <WordInput index={row + rows.length} text={words[i + rows.length]} />
+          <WordInput
             index={row + rows.length * 2}
             text={words[i + 16] + rows.length * 2}
           />
         </View>
       ))}
-      <Text>{mnemonic}</Text>
+      <Text style={styles.badgesContainer}>
+        {words.map(word => (
+          <>
+            <Text style={styles.badge}>{word}</Text>
+            <Text> </Text>
+          </>
+        ))}
+      </Text>
     </ScrollView>
   )
 }
@@ -84,14 +66,6 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     textAlign: 'center',
   },
-  wordContent: {
-    backgroundColor: 'rgba(219, 227, 255, 0.3)',
-    color: '#ffffff',
-    borderRadius: 30,
-    justifyContent: 'flex-start',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-  },
   wordIndex: {
     color: '#ffffff',
     display: 'flex',
@@ -100,16 +74,23 @@ const styles = StyleSheet.create({
   wordInput: {
     borderColor: '#ffffff',
     borderWidth: 1,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    marginHorizontal: 10,
     borderRadius: 10,
     flex: 1,
+    height: 30,
   },
   wordContainer: {
     alignItems: 'flex-start',
     color: '#ffffff',
     flexDirection: 'row',
-    justifyContent: 'center',
     marginVertical: 5,
   },
+  badge: {
+    borderRadius: 10,
+    color: '#ffffff',
+
+    backgroundColor: '#403953',
+    padding: 10,
+  },
+  badgesContainer: {},
 })

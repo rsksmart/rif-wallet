@@ -1,5 +1,12 @@
 import React from 'react'
-import { StyleSheet, View, ScrollView, Text, Image } from 'react-native'
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  Text,
+  Image,
+  TouchableOpacity,
+} from 'react-native'
 import { ScreenProps } from './types'
 import LinearGradient from 'react-native-linear-gradient'
 
@@ -18,73 +25,80 @@ export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
   // @ts-ignore
   const selectedToken = route.params?.token || 'TRBTC'
   return (
-    <LinearGradient
-      colors={['#FFFFFF', getTokenColorWithOpacity(selectedToken, 0.1)]}
-      style={styles.parent}>
-      <ScrollView>
-        <Text style={styles.header}>Set up your Wallet</Text>
-        <View style={styles.container}>
-          <Image
-            style={styles.tinyLogo}
-            source={{
-              uri: 'https://cdn2.iconfinder.com/data/icons/30px-bank/30/17_wallet-money-cashback-transfer-account-balance-1024.png',
-            }}
-          />
-        </View>
+    <ScrollView style={styles.parent}>
+      <Text style={styles.header}>Set up your Wallet</Text>
+      <View style={styles.container}>
+        <Image source={require('../../images/onbording-logo.png')} />
+      </View>
 
-        <View style={grid.row}>
-          <View style={{ ...grid.column6, ...styles.bottomColumn }}>
-            <SquareButton
-              // @ts-ignore
-              onPress={() => navigation.navigate('ImportMasterKey')}
-              title="Import"
-              testID="Address.ShareButton"
-              icon={<ImportWalletIcon color={getTokenColor(selectedToken)} />}
-            />
-          </View>
-          <View
-            style={{
-              ...grid.column6,
-              ...styles.bottomColumn,
-            }}>
-            <SquareButton
-              // @ts-ignore
-              onPress={() => navigation.navigate('NewMasterKey')}
-              title="New Wallet"
-              testID="Address.CopyButton"
-              icon={
-                <NewWalletIcon
-                  width={53}
-                  height={60}
-                  color={getTokenColor(selectedToken)}
-                />
-              }
-            />
-          </View>
+      <View style={grid.row}>
+        <View
+          style={{
+            ...grid.column12,
+            ...styles.bottomColumn,
+          }}>
+          <Text>Welcome to swallet</Text>
         </View>
-      </ScrollView>
-    </LinearGradient>
+      </View>
+
+      <View style={grid.row}>
+        <View
+          style={{
+            ...grid.column12,
+            ...styles.bottomColumn,
+          }}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('NewMasterKey')}
+            activeOpacity={0.75}
+            style={styles.defaultButton}>
+            <Text>Create New Wallet</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('ImportMasterKey')}
+            activeOpacity={0.75}
+            style={styles.defaultButton}>
+            <Text>Import Existing Wallet</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate('ReEnterKey')}
+            activeOpacity={0.75}
+            style={styles.defaultButton}>
+            <Text>Import Existing Wallet</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
   parent: {
+    backgroundColor: '#050134',
     height: '100%',
+    opacity: 0.9,
+    paddingTop: 40,
+  },
+  defaultButton: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(219, 227, 255, 0.3)',
+    borderRadius: 30,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
   },
   header: {
     fontSize: 26,
     textAlign: 'center',
   },
   qrContainer: {
-    backgroundColor: 'rgba(255, 255, 255, .7)',
+    backgroundColor: '#dbe3ff',
     marginVertical: 20,
     padding: 20,
     borderRadius: 20,
-  },
-  addressContainer: {
-    padding: 10,
-    borderRadius: 10,
-    backgroundColor: 'rgba(255, 255, 255, .7)',
   },
   smartAddress: {
     color: '#5C5D5D',

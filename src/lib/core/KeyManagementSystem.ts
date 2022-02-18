@@ -113,7 +113,7 @@ export class KeyManagementSystem implements IKeyManagementSystem {
     return JSON.stringify(serialization)
   }
 
-  private deriveWallet (derivationPath: string) {
+  private deriveWderiveWalletallet (derivationPath: string) {
     // Create the seed - ref: BIP-39
     const seed = mnemonicToSeedSync(this.mnemonic)
     const hdKey = fromSeed(seed).derivePath(derivationPath)

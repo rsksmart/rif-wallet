@@ -20,6 +20,7 @@ import { DappsScreenScreenProps } from './screens/dapps'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
 import { ManagerWalletScreenProps } from './screens/settings/ManageWalletsScreen'
 import { SettingsScreenProps } from './screens/settings/SettingsScreen'
+import { ReEnterKeyScreen } from './ux/createKeys/ReEnterKeysScreen'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -75,6 +76,7 @@ type RootStackParamList = {
   Contacts: undefined
   Settings: undefined
   ManageWallets: undefined
+  ReEnterKey: undefined
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
