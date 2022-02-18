@@ -2,6 +2,7 @@ export interface SVGIconInterface {
   width?: number
   height?: number
   color?: string
+  style?: any
 }
 
 export { Arrow } from './Arrow'

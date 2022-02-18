@@ -1,7 +1,9 @@
 import { useNavigation } from '@react-navigation/core'
 import React from 'react'
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
-import { ContactsIcon, WalletIcon, CompassIcon } from '../../components/icons'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { AssetsIcon } from '../../components/icons/AssetsIcon'
+import { DefiIcon } from '../../components/icons/DefiIcon'
+import { WalletIconFooter } from '../../components/icons/WalletIconFooter'
 import { colors } from '../../styles/colors'
 
 export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
@@ -11,36 +13,32 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
 
   return (
     <View style={styles.row}>
-      <View style={styles.column}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Contacts' as never)}
-          style={styles.button}>
-          <ContactsIcon
-            color={currentScreen === 'Contacts' ? '#5D5E5E' : '#D1D1D1'}
-            width={24}
-          />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.column}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Home' as never)}
-          style={styles.button}>
-          <WalletIcon
-            color={currentScreen === 'Home' ? '#5D5E5E' : '#D1D1D1'}
-            width={24}
-          />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.column}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Dapps' as never)}
-          style={styles.button}>
-          <CompassIcon
-            color={currentScreen === 'Dapps' ? '#5D5E5E' : '#D1D1D1'}
-            width={24}
-          />
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('Contacts' as never)}
+        style={styles.button}>
+        <Text style={styles.text}>
+          <DefiIcon style={styles.icon} />
+          Apps
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => navigation.navigate('Home' as never)}
+        style={styles.button}>
+        <Text style={styles.text}>
+          <WalletIconFooter style={styles.icon} />
+          Wallet
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => navigation.navigate('Home' as never)}
+        style={styles.button}>
+        <Text style={styles.text}>
+          <AssetsIcon style={styles.icon} />
+          Assets
+        </Text>
+      </TouchableOpacity>
     </View>
   )
 }
@@ -50,20 +48,40 @@ const styles = StyleSheet.create({
     padding: 10,
     display: 'flex',
     flexDirection: 'row',
+    // alignContent: 'center',
+    // alignItems: 'center',
+    // marginHorizontal: 'auto',
+
+    backgroundColor: colors.darkBlue,
   },
   button: {
-    padding: 10,
-    width: 44,
-    height: 44,
+    paddingVertical: 10,
+    marginHorizontal: 10,
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
+
+    // justifyContent: 'center',
+    flexGrow: 1,
+    // width: '25%',
+    borderBottomWidth: 4,
+    borderColor: colors.lightPurple,
   },
-  column: {
-    display: 'flex',
-    paddingRight: 5,
-    width: '33%',
-    alignSelf: 'center',
-    alignItems: 'center',
+  icon: {
+    // alignSelf: 'baseline',
+    // display: 'flex',
+    // flex: 1,
+    // height: 50,
+    // width: 20,
+    // borderColor: colors.green,
+    marginRight: 10,
+  },
+  text: {
+    color: colors.white,
+    // display: 'flex',
+    // flex: 5,
+    // fontSize: 100,
+    // borderWidth: 3,
+    // borderColor: colors.green,
+    textAlign: 'center',
   },
 })
