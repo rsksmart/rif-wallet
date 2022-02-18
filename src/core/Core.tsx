@@ -1,11 +1,5 @@
 import React, { useState, useRef, useEffect, Fragment } from 'react'
-import {
-  AppState,
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  View,
-} from 'react-native'
+import { AppState, SafeAreaView, StatusBar, StyleSheet } from 'react-native'
 import { AppContext, Wallets, WalletsIsDeployed, Requests } from '../Context'
 
 import { KeyManagementSystem, OnRequest, RIFWallet } from '../lib/core'

@@ -15,7 +15,7 @@ export const AddressCopyComponent: React.FC<Interface> = ({ address }) => {
       onPress={() => Clipboard.setString(address)}
       style={styles.row}>
       <View style={styles.iconColumn}>
-        <CopyIcon color={colors.white}/>
+        <CopyIcon color={colors.white} />
       </View>
       <View style={styles.textColumn}>
         <Text style={styles.address}>{shortAddress(address)}</Text>
