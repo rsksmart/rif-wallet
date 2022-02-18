@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { AppState, SafeAreaView, StatusBar } from 'react-native'
+import { AppState, SafeAreaView, StatusBar, StyleSheet } from 'react-native'
 import { AppContext, Wallets, WalletsIsDeployed, Requests } from '../Context'
 
 import { KeyManagementSystem, OnRequest, RIFWallet } from '../lib/core'
@@ -30,6 +30,7 @@ import { RequestPIN } from './components/RequestPIN'
 import { WalletConnectProviderElement } from '../screens/walletConnect/WalletConnectContext'
 import { RIFSocketsProvider } from '../subscriptions/RIFSockets'
 import { NavigationContainer, NavigationState } from '@react-navigation/native'
+import { colors } from '../styles/colors'
 
 const gracePeriod = 3000
 
@@ -219,8 +220,8 @@ export const Core = () => {
   }
 
   return (
-    <SafeAreaView>
-      <StatusBar />
+    <SafeAreaView style={styles.parent}>
+      <StatusBar barStyle="light-content" />
       {!active && <Cover />}
       {state.hasKeys && !unlocked && (
         <RequestPIN unlock={() => unlockApp().then(() => setUnlocked(true))} />
@@ -282,3 +283,9 @@ export const Core = () => {
     </SafeAreaView>
   )
 }
+
+const styles = StyleSheet.create({
+  parent: {
+    backgroundColor: colors.blue,
+  },
+})

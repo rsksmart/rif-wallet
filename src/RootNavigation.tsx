@@ -20,6 +20,7 @@ import { DappsScreenScreenProps } from './screens/dapps'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
 import { ManagerWalletScreenProps } from './screens/settings/ManageWalletsScreen'
 import { SettingsScreenProps } from './screens/settings/SettingsScreen'
+import { colors } from './styles/colors'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -80,7 +81,12 @@ type RootStackParamList = {
 const RootStack = createStackNavigator<RootStackParamList>()
 export type NavigationProp = _NavigationProp<RootStackParamList>
 
-const sharedOptions = { headerShown: true }
+const sharedOptions = {
+  headerShown: false,
+  cardStyle: {
+    backgroundColor: colors.blue,
+  },
+}
 
 export type ScreenProps<T extends keyof RootStackParamList> = StackScreenProps<
   RootStackParamList,
@@ -122,11 +128,9 @@ export const RootNavigation: React.FC<{
         <RootStack.Screen
           name="Home"
           component={Screens.HomeScreen}
-          options={{ ...sharedOptions, headerShown: false }}
+          options={sharedOptions}
         />
-        <RootStack.Screen
-          name="Dapps"
-          options={{ ...sharedOptions, headerShown: false }}>
+        <RootStack.Screen name="Dapps" options={sharedOptions}>
           {props => (
             <InjectedScreens.DappsScreen {...props} {...dappsScreenProps} />
           )}
@@ -135,16 +139,14 @@ export const RootNavigation: React.FC<{
         <RootStack.Screen
           name="DevMenu"
           component={Screens.DevMenuScreen}
-          options={{ ...sharedOptions, headerShown: false }}
+          options={sharedOptions}
         />
 
-        <RootStack.Screen
-          name="Settings"
-          options={{ ...sharedOptions, headerShown: false }}>
+        <RootStack.Screen name="Settings" options={sharedOptions}>
           {props => <Screens.SettingsScreen {...props} {...settingsScreen} />}
         </RootStack.Screen>
 
-        <RootStack.Screen name="ManageWallets" options={{ headerShown: true }}>
+        <RootStack.Screen name="ManageWallets" options={sharedOptions}>
           {props => (
             <InjectedScreens.ManageWalletsScreen
               {...props}
@@ -153,15 +155,13 @@ export const RootNavigation: React.FC<{
           )}
         </RootStack.Screen>
 
-        <RootStack.Screen
-          name="CreateKeysUX"
-          options={{ ...sharedOptions, headerShown: false }}>
+        <RootStack.Screen name="CreateKeysUX" options={sharedOptions}>
           {props => <CreateKeysNavigation {...props} {...keyManagementProps} />}
         </RootStack.Screen>
         <RootStack.Screen
           name="Receive"
           component={InjectedScreens.ReceiveScreen}
-          options={{ headerShown: false }}
+          options={sharedOptions}
         />
         <RootStack.Screen name="Send">
           {props => (
@@ -176,7 +176,7 @@ export const RootNavigation: React.FC<{
             />
           )}
         </RootStack.Screen>
-        <RootStack.Screen name="Activity" options={{ headerShown: false }}>
+        <RootStack.Screen name="Activity" options={sharedOptions}>
           {props => (
             <InjectedScreens.ActivityScreen
               {...props}
@@ -187,7 +187,7 @@ export const RootNavigation: React.FC<{
         <RootStack.Screen
           name="ActivityDetails"
           component={InjectedScreens.ActivityDetailsScreen}
-          options={{ headerShown: false }}
+          options={sharedOptions}
         />
         <RootStack.Screen
           name="SignMessage"
@@ -220,32 +220,30 @@ export const RootNavigation: React.FC<{
         <RootStack.Screen
           name="WalletConnect"
           component={InjectedScreens.WalletConnectNavigationScreen}
-          options={{ ...sharedOptions, headerShown: false }}
+          options={sharedOptions}
         />
         <RootStack.Screen
           name="RNSManager"
           component={InjectedScreens.RNSManagerScreen}
-          options={{ ...sharedOptions }}
+          options={sharedOptions}
         />
         <RootStack.Screen
           name="RegisterDomain"
           component={InjectedScreens.RegisterDomainScreen}
-          options={{ ...sharedOptions }}
+          options={sharedOptions}
         />
         <RootStack.Screen
           name="ChangeLanguage"
           component={Screens.ChangeLanguageScreen}
-          options={{ ...sharedOptions }}
+          options={sharedOptions}
         />
         <RootStack.Screen
           name="ManagePin"
           component={Screens.ManagePinScreen}
-          options={{ ...sharedOptions, headerShown: false }}
+          options={sharedOptions}
         />
 
-        <RootStack.Screen
-          name="Contacts"
-          options={{ ...sharedOptions, headerShown: false }}>
+        <RootStack.Screen name="Contacts" options={sharedOptions}>
           {props => (
             <Screens.ContactsNavigationScreen
               {...props}
@@ -253,9 +251,7 @@ export const RootNavigation: React.FC<{
             />
           )}
         </RootStack.Screen>
-        <RootStack.Screen
-          name="InjectedBrowserUX"
-          options={{ ...sharedOptions, headerShown: false }}>
+        <RootStack.Screen name="InjectedBrowserUX" options={sharedOptions}>
           {props => (
             <InjectedScreens.InjectedBrowserNavigation
               {...props}
