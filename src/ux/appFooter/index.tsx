@@ -3,7 +3,7 @@ import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { AssetsIcon } from '../../components/icons/AssetsIcon'
 import { DefiIcon } from '../../components/icons/DefiIcon'
-import { WalletIconFooter } from '../../components/icons/WalletIconFooter'
+import { WalletIcon } from '../../components/icons/WalletIcon'
 import { colors } from '../../styles/colors'
 
 export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
@@ -37,7 +37,7 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
             : styles.button
         }>
         <Text style={styles.text}>
-          <WalletIconFooter style={styles.icon} />
+          <WalletIcon style={styles.icon} />
           Wallet
         </Text>
       </TouchableOpacity>
