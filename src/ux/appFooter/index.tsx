@@ -10,12 +10,19 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
   currentScreen,
 }) => {
   const navigation = useNavigation()
+  const selected = {
+    borderBottomColor: colors.blue,
+  }
 
   return (
     <View style={styles.row}>
       <TouchableOpacity
-        onPress={() => navigation.navigate('Contacts' as never)}
-        style={styles.button}>
+        onPress={() => navigation.navigate('Dapps' as never)}
+        style={
+          currentScreen === 'Dapps'
+            ? { ...styles.button, ...selected }
+            : styles.button
+        }>
         <Text style={styles.text}>
           <DefiIcon style={styles.icon} />
           Apps
@@ -24,7 +31,11 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
 
       <TouchableOpacity
         onPress={() => navigation.navigate('Home' as never)}
-        style={styles.button}>
+        style={
+          currentScreen === 'Home'
+            ? { ...styles.button, ...selected }
+            : styles.button
+        }>
         <Text style={styles.text}>
           <WalletIconFooter style={styles.icon} />
           Wallet
@@ -48,40 +59,23 @@ const styles = StyleSheet.create({
     padding: 10,
     display: 'flex',
     flexDirection: 'row',
-    // alignContent: 'center',
-    // alignItems: 'center',
-    // marginHorizontal: 'auto',
-
     backgroundColor: colors.darkBlue,
+    justifyContent: 'center',
   },
   button: {
     paddingVertical: 10,
-    marginHorizontal: 10,
+    paddingHorizontal: 10,
     display: 'flex',
     alignItems: 'center',
-
-    // justifyContent: 'center',
-    flexGrow: 1,
-    // width: '25%',
     borderBottomWidth: 4,
     borderColor: colors.lightPurple,
   },
   icon: {
-    // alignSelf: 'baseline',
-    // display: 'flex',
-    // flex: 1,
-    // height: 50,
-    // width: 20,
-    // borderColor: colors.green,
     marginRight: 10,
   },
   text: {
     color: colors.white,
-    // display: 'flex',
-    // flex: 5,
-    // fontSize: 100,
-    // borderWidth: 3,
-    // borderColor: colors.green,
     textAlign: 'center',
+    paddingHorizontal: 5,
   },
 })
