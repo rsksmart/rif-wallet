@@ -57,6 +57,7 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
 const styles = StyleSheet.create({
   row: {
     padding: 10,
+    paddingBottom: 40,
     display: 'flex',
     flexDirection: 'row',
     backgroundColor: colors.darkBlue,
