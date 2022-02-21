@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 import QRCode from 'react-qr-code'
 import Clipboard from '@react-native-community/clipboard'
-import { CopyIcon } from '../../components/icons'
+import { CopyIcon, ShareIcon } from '../../components/icons'
 import { grid } from '../../styles/grid'
 import { getAddressDisplayText } from '../../components'
 
@@ -96,16 +96,20 @@ export const ReceiveScreen: React.FC<ReceiveScreenProps> = ({
             </Text>
           ))}
       </View>
-      <View style={grid.row}>
-        <View style={{ ...grid.column6, ...styles.bottomColumn }}>
+      <View style={{ ...grid.row, ...qrContainerStyle, ...styles.customRow }}>
+        <View
+          style={{
+            ...grid.column5,
+            ...styles.bottomColumn,
+          }}>
           <DefaultButton onPress={handleShare} testID={TestID.ShareButton}>
-            <CopyIcon width={40} height={40} />
+            <ShareIcon width={30} height={30} />
             <Text style={styles.defaultButtonText}>share</Text>
           </DefaultButton>
         </View>
-        <View style={{ ...grid.column6, ...styles.bottomColumn }}>
+        <View style={{ ...grid.column5, ...styles.bottomColumn }}>
           <DefaultButton onPress={handleCopy} testID={TestID.CopyButton}>
-            <CopyIcon width={40} height={40} />
+            <CopyIcon width={30} height={30} />
             <Text style={styles.defaultButtonText}>copy</Text>
           </DefaultButton>
         </View>
@@ -148,8 +152,9 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   bottomColumn: {
-    alignItems: 'center',
+    marginVertical: 20,
   },
+  customRow: { justifyContent: 'space-between' },
   defaultButton: {
     alignItems: 'center',
     backgroundColor: 'rgba(219, 227, 255, 0.3)',
@@ -157,9 +162,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    marginVertical: 20,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingHorizontal: 30,
+    paddingVertical: 12,
   },
   defaultButtonText: {
     color: '#FFFFFF',

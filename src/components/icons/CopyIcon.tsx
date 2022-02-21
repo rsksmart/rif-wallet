@@ -1,5 +1,5 @@
 import React from 'react'
-import Svg, { Rect, Polyline } from 'react-native-svg'
+import Svg, { Path } from 'react-native-svg'
 import { SVGIconInterface } from '.'
 
 export const CopyIcon: React.FC<SVGIconInterface> = ({
@@ -7,14 +7,24 @@ export const CopyIcon: React.FC<SVGIconInterface> = ({
   height,
   color,
 }) => (
-  <Svg width={width || '25'} height={height || '25'} viewBox="0 0 25 25">
-    <Rect
-      x="11"
-      y="10.3"
-      width="5.2"
-      height="6.4"
-      stroke={color || '#252525'}
+  <Svg width={width || '25'} height={height || '25'}>
+    <Path
+      d="M7.8 3.1H7C5.4 3 4 4.3 4 5.9v6.9c0 1.6 1.4 2.9 3 2.8h7.5c1.6.1 3-1.2 3.1-2.8V5.9c-.1-1.6-1.4-2.9-3.1-2.8H7.8"
+      transform="translate(-244.719 -550.704) translate(244.719 550.704)"
+      fill="none"
+      stroke={color || '#dbe1f3'}
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeMiterlimit={10}
     />
-    <Polyline points="14.4,8.5 9.3,8.5 9.3,14.5" stroke={color || '#252525'} />
+    <Path
+      d="M7.8 3.1H7C5.4 3 4 4.3 4 5.9v6.9c0 1.6 1.4 2.9 3 2.8h7.5c1.6.1 3-1.2 3.1-2.8V5.9c-.1-1.6-1.4-2.9-3.1-2.8H7.8"
+      transform="translate(-244.719 -550.704) translate(248.719 554.525)"
+      fill="none"
+      stroke={color || '#dbe1f3'}
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeMiterlimit={10}
+    />
   </Svg>
 )
