@@ -31,6 +31,7 @@ import { WalletConnectProviderElement } from '../screens/walletConnect/WalletCon
 import { RIFSocketsProvider } from '../subscriptions/RIFSockets'
 import { NavigationContainer, NavigationState } from '@react-navigation/native'
 import { colors } from '../styles/colors'
+import { getDomains } from '../storage/DomainsStore'
 
 const gracePeriod = 3000
 
@@ -150,6 +151,10 @@ const useKeyManagementSystem = (onRequest: OnRequest) => {
 export const Core = () => {
   const [active, setActive] = useState(true)
   const [unlocked, setUnlocked] = useState(false)
+  const [registeredDomainsByWallet, setRegisteredDomainsByWallet] = useState<
+    Array<string>
+  >([])
+  const [smartWalletAddress, setSmartWalletAddress] = useState('')
 
   const timerRef = useRef<NodeJS.Timeout>(timer)
 
@@ -172,6 +177,9 @@ export const Core = () => {
 
   const retrieveChainId = (wallet: RIFWallet) =>
     wallet.getChainId().then(chainId => setState({ ...state, chainId }))
+
+  const retrieveDomainsByWallet = (address: string) =>
+    getDomains(address).then(domains => setRegisteredDomainsByWallet(domains))
 
   useEffect(() => {
     const stateSubscription = AppState.addEventListener(
@@ -212,6 +220,8 @@ export const Core = () => {
     if (state.selectedWallet) {
       const currentWallet = state.wallets[state.selectedWallet]
       retrieveChainId(currentWallet)
+      retrieveDomainsByWallet(currentWallet.smartWalletAddress)
+      setSmartWalletAddress(currentWallet.smartWalletAddress)
     }
   }, [state.selectedWallet])
 
@@ -274,6 +284,10 @@ export const Core = () => {
                     switchActiveWallet,
                   }}
                   settingsScreen={{ deleteKeys }}
+                  receiveScreenProps={{
+                    registeredDomains: registeredDomainsByWallet,
+                    smartWalletAddress,
+                  }}
                 />
 
                 {requests.length !== 0 && (

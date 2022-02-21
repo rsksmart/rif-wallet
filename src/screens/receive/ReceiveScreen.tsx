@@ -12,8 +12,6 @@ import QRCode from 'react-qr-code'
 import Clipboard from '@react-native-community/clipboard'
 import { CopyIcon } from '../../components/icons'
 import { grid } from '../../styles/grid'
-import { getTokenColor } from '../home/tokenColor'
-import { ScreenWithWallet } from '../types'
 import { getAddressDisplayText } from '../../components'
 
 export enum TestID {
@@ -24,8 +22,8 @@ export enum TestID {
 }
 
 export type ReceiveScreenProps = {
-  route: { params: { token: string | undefined } }
   registeredDomains: string[]
+  smartWalletAddress: string
 }
 
 export type DefaultButtonProps = {
@@ -49,28 +47,26 @@ export const DefaultButton: React.FC<DefaultButtonProps> = ({
   )
 }
 
-export const ReceiveScreen: React.FC<ScreenWithWallet & ReceiveScreenProps> = ({
-  wallet,
-  route,
+export const ReceiveScreen: React.FC<ReceiveScreenProps> = ({
+  smartWalletAddress,
   registeredDomains,
 }) => {
-  const smartAddress = wallet.smartWalletAddress
-  const selectedToken = route.params?.token || 'TRBTC'
-
   const windowWidth = Dimensions.get('window').width
   const qrCodeSize = windowWidth * 0.5
 
   const handleShare = () =>
     Share.share({
-      title: smartAddress,
-      message: smartAddress,
+      title: smartWalletAddress,
+      message: smartWalletAddress,
     })
-  const handleCopy = () => Clipboard.setString(smartAddress)
+  const handleCopy = () => Clipboard.setString(smartWalletAddress)
 
   const qrContainerStyle = {
     marginHorizontal: (windowWidth - (qrCodeSize + 60)) / 2,
     width: qrCodeSize + 60,
   }
+
+  const hasRegisteredDomains = registeredDomains.length > 0
 
   return (
     <ScrollView style={styles.parent}>
@@ -80,7 +76,7 @@ export const ReceiveScreen: React.FC<ScreenWithWallet & ReceiveScreenProps> = ({
         <QRCode
           bgColor="#dbe3ff"
           color="#707070"
-          value={smartAddress}
+          value={smartWalletAddress}
           size={qrCodeSize}
         />
       </View>
@@ -91,9 +87,9 @@ export const ReceiveScreen: React.FC<ScreenWithWallet & ReceiveScreenProps> = ({
       </View>
       <View style={{ ...styles.addressContainer, ...qrContainerStyle }}>
         <Text testID={TestID.AddressText} style={styles.smartAddress}>
-          {getAddressDisplayText(smartAddress).displayAddress}
+          {getAddressDisplayText(smartWalletAddress).displayAddress}
         </Text>
-        {registeredDomains.length > 0 &&
+        {hasRegisteredDomains &&
           registeredDomains.map((registeredDomain: string) => (
             <Text style={styles.smartAddress} key={registeredDomain}>
               <Text key={registeredDomain}>{registeredDomain}</Text>
@@ -103,21 +99,13 @@ export const ReceiveScreen: React.FC<ScreenWithWallet & ReceiveScreenProps> = ({
       <View style={grid.row}>
         <View style={{ ...grid.column6, ...styles.bottomColumn }}>
           <DefaultButton onPress={handleShare} testID={TestID.ShareButton}>
-            <CopyIcon
-              width={40}
-              height={40}
-              color={getTokenColor(selectedToken)}
-            />
+            <CopyIcon width={40} height={40} />
             <Text style={styles.defaultButtonText}>share</Text>
           </DefaultButton>
         </View>
         <View style={{ ...grid.column6, ...styles.bottomColumn }}>
           <DefaultButton onPress={handleCopy} testID={TestID.CopyButton}>
-            <CopyIcon
-              width={40}
-              height={40}
-              color={getTokenColor(selectedToken)}
-            />
+            <CopyIcon width={40} height={40} />
             <Text style={styles.defaultButtonText}>copy</Text>
           </DefaultButton>
         </View>
