@@ -25,23 +25,7 @@ const Word = ({ index, text }: { index: number; text: string }) => (
       ...styles.wordContainer,
     }}>
     <Text style={styles.wordIndex}>{index}. </Text>
-    <Text style={styles.wordContent}>{text}</Text>
-  </View>
-)
-const WordInput = ({ index, text }: { index: number; text: string }) => (
-  <View
-    style={{
-      ...grid.column4,
-      ...styles.wordContainer,
-    }}>
-    <Text style={styles.wordIndex}>{index}. </Text>
-    <TextInput
-      style={styles.wordInput}
-      onChangeText={() => {}}
-      value={'a'}
-      placeholder="Enter your 12 words master key"
-      multiline
-    />
+    <Text style={styles.wordText}>{text}</Text>
   </View>
 )
 
@@ -84,7 +68,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     textAlign: 'center',
   },
-  wordContent: {
+  wordText: {
     backgroundColor: 'rgba(219, 227, 255, 0.3)',
     color: '#ffffff',
     borderRadius: 30,
@@ -96,14 +80,6 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     display: 'flex',
     paddingVertical: 5,
-  },
-  wordInput: {
-    borderColor: '#ffffff',
-    borderWidth: 1,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 10,
-    flex: 1,
   },
   wordContainer: {
     alignItems: 'flex-start',

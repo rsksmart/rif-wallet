@@ -1,27 +1,57 @@
 import React, { useMemo, useState } from 'react'
-import { StyleSheet, View, ScrollView, Text, TextInput } from 'react-native'
-import { CreateKeysProps, ScreenProps } from '../../ux/createKeys/types'
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Keyboard,
+} from 'react-native'
+
+import { CreateKeysProps, ScreenProps } from './types'
 import { grid } from '../../styles/grid'
 type CreateMasterKeyScreenProps = {
   generateMnemonic: CreateKeysProps['generateMnemonic']
 }
 
-const WordInput = ({ index, text }: { index: number; text: string }) => (
-  <View
-    style={{
-      ...grid.column4,
-      ...styles.wordContainer,
-    }}>
-    <Text style={styles.wordIndex}>{index}. </Text>
-    <TextInput
-      style={styles.wordInput}
-      onChangeText={() => {}}
-      value={text}
-      placeholder="Enter your 12 words master key"
-      multiline
-    />
-  </View>
-)
+const WordInput: React.FC<{
+  index: number
+  initValue: string
+}> = ({ index, initValue }) => {
+  const [wordText, setWordText] = useState(initValue)
+  const [wordLocked, setWordLocked] = useState(false)
+
+  const handleKeyDown = () => {
+    if (wordText.trim() !== '') {
+      setWordLocked(true)
+    }
+  }
+
+  return (
+    <View
+      style={{
+        ...grid.column4,
+        ...styles.wordContainer,
+      }}>
+      <Text style={styles.wordIndex}>{index}. </Text>
+      {initValue ? (
+        <Text style={styles.wordText}>{initValue}</Text>
+      ) : (
+        <TextInput
+          key={index}
+          style={styles.wordInput}
+          onChangeText={setWordText}
+          onSubmitEditing={handleKeyDown}
+          /*onKeyPress={handleKeyDown}*/
+          value={initValue}
+          placeholder=""
+          onFocus={() => Keyboard.dismiss()}
+        />
+      )}
+    </View>
+  )
+}
 
 export const ReEnterKeyScreen: React.FC<
   ScreenProps<'NewMasterKey'> & CreateMasterKeyScreenProps
@@ -29,27 +59,43 @@ export const ReEnterKeyScreen: React.FC<
   const mnemonic: string = useMemo(generateMnemonic, [])
 
   const words = mnemonic.split(' ')
+  const [selectedWords, setSelectedWords] = useState<string[]>([])
   const rows = [1, 2, 3, 4, 5, 6, 7, 8]
+  const selectWord = (selectedWord: string) => {
+    console.log({ selectedWord })
+
+    setSelectedWords([...selectedWords, selectedWord])
+  }
   return (
     <ScrollView style={styles.parent}>
       <Text style={styles.header}>Write down your master key</Text>
 
-      {rows.map((row, i) => (
+      {rows.map(row => (
         <View style={grid.row}>
-          <WordInput index={row} text={words[i]} />
-          <WordInput index={row + rows.length} text={words[i + rows.length]} />
+          <WordInput index={row} initValue={selectedWords[row - 1]} />
+          <WordInput
+            index={row + rows.length}
+            initValue={selectedWords[row + rows.length]}
+          />
           <WordInput
             index={row + rows.length * 2}
-            text={words[i + 16] + rows.length * 2}
+            initValue={selectedWords[row + rows.length * 2]}
           />
         </View>
       ))}
-      <Text style={styles.badgesContainer}>
+      <Text>
         {words.map(word => (
-          <>
-            <Text style={styles.badge}>{word}</Text>
-            <Text> </Text>
-          </>
+          <View
+            key={word}
+            style={{
+              ...styles.badgeContainer,
+            }}>
+            <TouchableOpacity
+              style={styles.badgeText}
+              onPress={() => selectWord(word)}>
+              <Text>{word}</Text>
+            </TouchableOpacity>
+          </View>
         ))}
       </Text>
     </ScrollView>
@@ -60,16 +106,40 @@ const styles = StyleSheet.create({
   parent: {
     backgroundColor: '#050134',
   },
+  wordContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    marginVertical: 3,
+    color: '#ffffff',
+  },
+  wordText: {
+    backgroundColor: 'rgba(219, 227, 255, 0.3)',
+    color: '#ffffff',
+    borderRadius: 30,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+
+  badgeContainer: {
+    flex: 1,
+    padding: 1,
+    flexDirection: 'row',
+    marginVertical: 5,
+  },
+  badgeText: {
+    backgroundColor: 'rgba(219, 227, 255, 0.3)',
+    color: '#ffffff',
+    borderRadius: 30,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+
   header: {
     color: '#ffffff',
     fontSize: 22,
     paddingVertical: 20,
     textAlign: 'center',
-  },
-  wordIndex: {
-    color: '#ffffff',
-    display: 'flex',
-    paddingVertical: 5,
   },
   wordInput: {
     borderColor: '#ffffff',
@@ -77,20 +147,16 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     borderRadius: 10,
     flex: 1,
-    height: 30,
-  },
-  wordContainer: {
-    alignItems: 'flex-start',
+    textAlignVertical: 'top',
+    paddingTop: 0,
+    paddingBottom: 0,
+    height: 25,
     color: '#ffffff',
-    flexDirection: 'row',
-    marginVertical: 5,
+    fontSize: 15,
   },
-  badge: {
-    borderRadius: 10,
+  wordIndex: {
     color: '#ffffff',
-
-    backgroundColor: '#403953',
-    padding: 10,
+    display: 'flex',
+    paddingVertical: 5,
   },
-  badgesContainer: {},
 })

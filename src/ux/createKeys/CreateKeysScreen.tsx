@@ -64,7 +64,7 @@ export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
             onPress={() => navigation.navigate('ReEnterKey')}
             activeOpacity={0.75}
             style={styles.defaultButton}>
-            <Text>Import Existing Wallet</Text>
+            <Text>Re Enter Wallet</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -79,6 +79,7 @@ const styles = StyleSheet.create({
     opacity: 0.9,
     paddingTop: 40,
   },
+
   defaultButton: {
     alignItems: 'center',
     backgroundColor: 'rgba(219, 227, 255, 0.3)',

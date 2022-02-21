@@ -1,17 +1,62 @@
-import React, { useState, useEffect } from 'react'
-import { StyleSheet, View, ScrollView, TextInput, Text } from 'react-native'
-import LinearGradient from 'react-native-linear-gradient'
-
-import { Paragraph } from '../../../components'
-import { validateMnemonic } from '../../../lib/bip39'
-import { ScreenProps, CreateKeysProps } from '../types'
+import React, { useMemo, useState } from 'react'
 import {
-  getTokenColor,
-  getTokenColorWithOpacity,
-  setOpacity,
-} from '../../../screens/home/tokenColor'
+  StyleSheet,
+  View,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Keyboard,
+} from 'react-native'
+
+import { CreateKeysProps, ScreenProps } from '../types'
+import { grid } from '../../../styles/grid'
+import { validateMnemonic } from '../../../lib/bip39'
+import { Paragraph } from '../../../components'
 import { SquareButton } from '../../../components/button/SquareButton'
 import { Arrow } from '../../../components/icons'
+import { getTokenColor } from '../../../screens/home/tokenColor'
+type CreateMasterKeyScreenProps = {
+  generateMnemonic: CreateKeysProps['generateMnemonic']
+}
+
+const WordInput: React.FC<{
+  index: number
+  handleSelection: any
+}> = ({ index, handleSelection }) => {
+  const [wordText, setWordText] = useState('')
+  const [wordLocked, setWordLocked] = useState(false)
+
+  const handleKeyDown = () => {
+    if (wordText && wordText.trim() !== '') {
+      handleSelection(wordText)
+      setWordLocked(true)
+    }
+  }
+
+  return (
+    <View
+      style={{
+        ...grid.column4,
+        ...styles.wordContainer,
+      }}>
+      <Text style={styles.wordIndex}>{index}. </Text>
+      {wordLocked ? (
+        <Text style={styles.wordText}>{wordText}</Text>
+      ) : (
+        <TextInput
+          key={index}
+          style={styles.wordInput}
+          onChangeText={setWordText}
+          onSubmitEditing={handleKeyDown}
+          /*onKeyPress={handleKeyDown}*/
+          value={wordText}
+          placeholder=""
+        />
+      )}
+    </View>
+  )
+}
 
 type ImportMasterKeyScreenProps = {
   createFirstWallet: CreateKeysProps['createFirstWallet']
@@ -20,26 +65,30 @@ type ImportMasterKeyScreenProps = {
 export const ImportMasterKeyScreen: React.FC<
   ScreenProps<'ImportMasterKey'> & ImportMasterKeyScreenProps
 > = ({ navigation, createFirstWallet, route }) => {
-  const [importMnemonic, setImportMnemonic] = useState<string>('')
+  const [selectedWords, setSelectedWords] = useState<string[]>([])
+  const [importMnemonic, setImportMnemonic] = useState<string>(
+    'huge gap dial bike human family often shove country maple sweet fresh project broken tube increase hat cement mammal inform powder shadow future axis',
+  )
 
-  useEffect(() => {
-    // @ts-ignore
-    if (route.params?.mnemonic) {
-      // @ts-ignore
-      setImportMnemonic(route.params.mnemonic)
-    }
-  }, [])
-
+  const rows = [1, 2, 3, 4, 5, 6, 7, 8]
+  const onWordSelected = (selectedWord: string) => {
+    setSelectedWords([...selectedWords, selectedWord])
+    setImportMnemonic(selectedWords.join(' '))
+  }
   const [error, setError] = useState<string | null>(null)
   const [info, setInfo] = useState<string | null>(null)
-
   const handleImportMnemonic = async () => {
+    console.log(1)
+    console.log(importMnemonic)
+    console.log(2)
     const mnemonicError = validateMnemonic(importMnemonic)
+    console.log({ mnemonicError })
     if (!mnemonicError) {
       try {
         setInfo('Creating...')
         const rifWallet = await createFirstWallet(importMnemonic)
         setInfo(null)
+        console.log(rifWallet.address)
         // @ts-ignore
         navigation.navigate('KeysCreated', { address: rifWallet.address })
       } catch (err) {
@@ -51,99 +100,83 @@ export const ImportMasterKeyScreen: React.FC<
     }
     setError(mnemonicError)
   }
-  const setText = (text: string) => {
-    setError(null)
-    setImportMnemonic(text)
-  }
-  const selectedToken = 'TRBTC'
-
-  const selectedTokenColor = getTokenColor(selectedToken)
-
-  const containerStyles = {
-    shadowColor: setOpacity(selectedTokenColor, 0.5),
-  }
   return (
-    <LinearGradient
-      colors={['#FFFFFF', getTokenColorWithOpacity('TRBTC', 0.1)]}
-      style={styles.parent}>
-      <Text style={styles.header}>Master Key</Text>
-      <LinearGradient
-        colors={['#FFFFFF', '#E1E1E1']}
-        style={{ ...styles.topContainer, ...containerStyles }}>
-        <ScrollView style={styles.portfolio}>
-          <TextInput
-            onChangeText={text => setText(text)}
-            value={importMnemonic}
-            placeholder="Enter your 12 words master key"
-            multiline
+    <ScrollView style={styles.parent}>
+      <Text style={styles.header}>Enter your master key</Text>
+
+      {rows.map(row => (
+        <View style={grid.row} key={row}>
+          <WordInput index={row} handleSelection={onWordSelected} />
+          <WordInput
+            index={row + rows.length}
+            handleSelection={onWordSelected}
           />
-        </ScrollView>
-      </LinearGradient>
-      {info && <Paragraph>{info}</Paragraph>}
-      {error && <Paragraph>{error}</Paragraph>}
-      <View style={styles.centerRow}>
+          <WordInput
+            index={row + rows.length * 2}
+            handleSelection={onWordSelected}
+          />
+        </View>
+      ))}
+      <Text style={{ color: '#FFFFFF' }}>{selectedWords}</Text>
+
+      <View>
+        {info && <Text style={styles.defaultText}>{info}</Text>}
+        {error && <Text style={styles.defaultText}> {error}</Text>}
         <SquareButton
           onPress={() => handleImportMnemonic()}
           title="Confirm"
           testID="Address.CopyButton"
-          icon={<Arrow color={getTokenColor(selectedToken)} rotate={90} />}
+          icon={<Arrow color={getTokenColor('tRBTC')} rotate={90} />}
         />
       </View>
-    </LinearGradient>
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
-  centerRow: {
-    justifyContent: 'center',
-    alignItems: 'center',
+  defaultText: {
+    color: '#ffffff',
   },
   parent: {
-    height: '100%',
+    backgroundColor: '#050134',
   },
-  header: {
-    fontSize: 26,
-    textAlign: 'center',
+  wordContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    marginVertical: 3,
+    color: '#ffffff',
   },
-  section: {
-    paddingTop: 15,
-    paddingBottom: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
-  },
-  sectionCentered: {
-    paddingTop: 15,
-    paddingBottom: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
-    alignItems: 'center',
-  },
-  input: {
-    height: 80,
-    margin: 12,
-    borderWidth: 1,
-    borderColor: '#000',
-    padding: 10,
-    textAlignVertical: 'top',
-  },
-  secHeader: {
-    fontSize: 18,
-    textAlign: 'center',
+  wordText: {
+    backgroundColor: 'rgba(219, 227, 255, 0.3)',
+    color: '#ffffff',
+    borderRadius: 30,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
 
-  portfolio: {
-    backgroundColor: '#ffffff',
-    paddingHorizontal: 25,
-    borderRadius: 25,
-    padding: 30,
+  header: {
+    color: '#ffffff',
+    fontSize: 22,
+    paddingVertical: 20,
+    textAlign: 'center',
   },
-  topContainer: {
-    marginTop: 60,
-    marginHorizontal: 25,
-    borderRadius: 25,
-    backgroundColor: '#ffffff',
-    shadowOpacity: 0.1,
-    // shadowRadius: 10,
-    elevation: 2,
+  wordInput: {
+    borderColor: '#ffffff',
+    borderWidth: 1,
+    marginHorizontal: 10,
+    borderRadius: 10,
+    flex: 1,
+    textAlignVertical: 'top',
+    paddingTop: 0,
+    paddingBottom: 0,
+    height: 25,
+    color: '#ffffff',
+    fontSize: 15,
+  },
+  wordIndex: {
+    color: '#ffffff',
+    display: 'flex',
+    paddingVertical: 5,
   },
 })
