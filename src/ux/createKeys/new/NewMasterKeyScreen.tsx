@@ -36,10 +36,7 @@ export const NewMasterKeyScreen: React.FC<
         <View style={grid.row}>
           <Word index={row} text={words[i]} />
           <Word index={row + rows.length} text={words[i + rows.length]} />
-          <Word
-            index={row + rows.length * 2}
-            text={words[i + 16] + rows.length * 2}
-          />
+          <Word index={row + rows.length * 2} text={words[i + 16]} />
         </View>
       ))}
       {/*TODO:This button will be remove when the navigation is implemented*/}
