@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import LinearGradient from 'react-native-linear-gradient'
 import { useIsFocused } from '@react-navigation/native'
 
 import {
@@ -7,7 +6,6 @@ import {
   View,
   TextInput,
   Linking,
-  TouchableOpacity,
   ScrollView,
   Text,
 } from 'react-native'
@@ -23,19 +21,18 @@ import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServices
 import { ScreenProps } from '../../RootNavigation'
 import { ScreenWithWallet } from '../types'
 import { AddressInput } from '../../components'
-import { getTokenColor, getTokenColorWithOpacity } from '../home/tokenColor'
+import { getTokenColor } from '../home/tokenColor'
 import { grid } from '../../styles/grid'
 import { SquareButton } from '../../components/button/SquareButton'
 import { Arrow, RefreshIcon } from '../../components/icons'
-import { TokenImage } from '../home/TokenImage'
 import Clipboard from '@react-native-community/clipboard'
 import TransactionInfo from './TransactionInfo'
-import MiniModal from '../../components/tokenSelector/MiniModal'
 
 import { balanceToString } from '../balances/BalancesScreen'
 import { colors } from '../../styles/colors'
 import AssetChooser from './AssetChooser'
 import { LoadingScreen } from '../../core/components/LoadingScreen'
+import SetAmountComponent from './SetAmountComponent'
 
 export type SendScreenProps = {}
 
@@ -52,20 +49,23 @@ export const SendScreen: React.FC<
   const [selectedToken, setSelectedToken] = React.useState(
     state.balances[contractAddress],
   )
-  const tokensWithBalance = Object.values(state.balances)
+  const tokensWithBalance = Object.values(state.balances) // ITokenWithBalance[]
+  const tokenQuote = state.prices[selectedToken.contractAddress]?.price
 
   // @jesse UNKNOWN variables:
   const [availableTokens, setAvailableTokens] = useState<IToken[]>()
 
+  /*
   const selectedTokenBalance = balanceToString(
     selectedToken.balance,
     selectedToken.decimals || 0,
   )
-  const tokenQuota = state.prices[selectedToken.contractAddress]?.price
+  
+  */
 
   const { t } = useTranslation()
 
-  const [amount, setAmount] = useState('')
+  const [amount, setAmount] = useState<string>('')
   const [to, setTo] = useState(route.params?.to || '')
 
   const [tx, setTx] = useState<ContractTransaction>()
@@ -73,14 +73,7 @@ export const SendScreen: React.FC<
   const [error, setError] = useState<string>()
   const [validationError, setValidationError] = useState(false)
 
-  const [showSelector, setShowSelector] = useState(false)
-
-  const handleTokenSelection = (token: ITokenWithBalance) => {
-    setShowSelector(false)
-    setSelectedToken(token)
-  }
-
-  // const openTokenSelector = () => setShowSelector(true)
+  const handleTokenSelection = (token: ITokenWithBalance) => setSelectedToken(token)
 
   useEffect(() => {
     setTo(route.params?.to || '')
@@ -135,16 +128,6 @@ export const SendScreen: React.FC<
     setTo(address)
   }
 
-  const handleAmountChange = (currentAmount: string) => {
-    if (Number(currentAmount) > Number(selectedTokenBalance)) {
-      setValidationError(true)
-      setAmount(currentAmount)
-      return
-    }
-    setValidationError(false)
-    setAmount(currentAmount)
-  }
-
   const handleCopy = () => Clipboard.setString(tx!.hash!)
   const handleOpen = () =>
     Linking.openURL(`https://explorer.testnet.rsk.co/tx/${tx!.hash}`)
@@ -159,7 +142,7 @@ export const SendScreen: React.FC<
     <View style={styles.parent}>
       <ScrollView>
         <View style={grid.row}>
-          <View style={grid.column4}>
+          <View style={grid.column5}>
             <Text style={styles.label}>choose asset</Text>
             <AssetChooser
               selectedToken={selectedToken}
@@ -167,24 +150,17 @@ export const SendScreen: React.FC<
               handleTokenSelection={handleTokenSelection}
             />
           </View>
-          <View style={{ ...grid.column8 }}>
-            <TextInput
-              style={styles.input}
-              onChangeText={text => handleAmountChange(text)}
-              value={amount}
-              placeholder={t('Amount')}
-              keyboardType="numeric"
-              testID={'Amount.Input'}
+          <View style={{ ...grid.column7, ...grid.offset1 }}>
+            <Text style={styles.label}>set amount</Text>
+            <SetAmountComponent
+              setAmount={setAmount}
+              token={selectedToken}
+              usdAmount={tokenQuote}
             />
-            {!!amount && (
-              <Text>
-                {(Number(amount) * tokenQuota).toFixed(2) || 'N/A'} USD
-              </Text>
-            )}
-            {validationError && <Text>Insuficient funds</Text>}
           </View>
         </View>
         <View>
+          <Text style={styles.label}>choose recipient</Text>
           <AddressInput
             initialValue={route.params?.to || ''}
             onChangeText={handleTargetAddressChange}

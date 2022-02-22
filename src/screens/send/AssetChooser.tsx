@@ -31,13 +31,13 @@ const AssetChooser: React.FC<Interface> = ({
     <TouchableOpacity
       onPress={() => setShowSelector(true)}
       style={{ ...styles.container, ...grid.row }}>
-      <View style={{ ...grid.column9, ...styles.tokenSymbol }}>
+      <View style={{ ...grid.column10, ...styles.tokenSymbol }}>
         <Text style={styles.symbolText}>{selectedToken.symbol}</Text>
         <View style={styles.imageContainer}>
           <TokenImage symbol={selectedToken.symbol} height={25} width={25} />
         </View>
       </View>
-      <View style={{ ...grid.column3, ...styles.dropdown }}>
+      <View style={{ ...grid.column2, ...styles.dropdown }}>
         <CarotDownIcon />
       </View>
 
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
   imageContainer: {
     display: 'flex',
     position: 'absolute',
-    right: 5,
+    right: 10,
     top: 10,
   },
   dropdown: {
