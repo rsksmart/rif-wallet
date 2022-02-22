@@ -162,7 +162,7 @@ export const RootNavigation: React.FC<{
           name="Receive"
           options={sharedOptions}
         />
-        <RootStack.Screen name="Send">
+        <RootStack.Screen name="Send" options={sharedOptions}>
           {props => (
             <InjectedScreens.SendScreen {...props} {...sendScreenProps} />
           )}

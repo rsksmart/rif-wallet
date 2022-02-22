@@ -33,6 +33,9 @@ import TransactionInfo from './TransactionInfo'
 import MiniModal from '../../components/tokenSelector/MiniModal'
 
 import { balanceToString } from '../balances/BalancesScreen'
+import { colors } from '../../styles/colors'
+import AssetChooser from './AssetChooser'
+import { LoadingScreen } from '../../core/components/LoadingScreen'
 
 export type SendScreenProps = {}
 
@@ -44,10 +47,14 @@ export const SendScreen: React.FC<
 
   const contractAddress =
     route.params?.contractAddress || Object.keys(state.balances)[0]
+
+  // @jesse GOOD variables:
   const [selectedToken, setSelectedToken] = React.useState(
     state.balances[contractAddress],
   )
+  const tokensWithBalance = Object.values(state.balances)
 
+  // @jesse UNKNOWN variables:
   const [availableTokens, setAvailableTokens] = useState<IToken[]>()
 
   const selectedTokenBalance = balanceToString(
@@ -65,6 +72,7 @@ export const SendScreen: React.FC<
   const [receipt, setReceipt] = useState<ContractReceipt>()
   const [error, setError] = useState<string>()
   const [validationError, setValidationError] = useState(false)
+
   const [showSelector, setShowSelector] = useState(false)
 
   const handleTokenSelection = (token: ITokenWithBalance) => {
@@ -72,9 +80,7 @@ export const SendScreen: React.FC<
     setSelectedToken(token)
   }
 
-  const openTokenSelector = () => {
-    setShowSelector(true)
-  }
+  // const openTokenSelector = () => setShowSelector(true)
 
   useEffect(() => {
     setTo(route.params?.to || '')
@@ -84,10 +90,11 @@ export const SendScreen: React.FC<
       setReceipt(undefined)
     }
 
-    const tokensWithBalance = Object.values(state.balances)
+    // const tokensWithBalance = Object.values(state.balances)
 
     const chainId = 31 // Once https://github.com/rsksmart/swallet/pull/151 gets approved we´ll need to use it from the state
 
+    // @jesse - this is not needed at this point, do not convert here!
     const tokens: Array<IToken> = tokensWithBalance.map(token =>
       convertToERC20Token(token, { signer: wallet, chainId }),
     )
@@ -138,46 +145,29 @@ export const SendScreen: React.FC<
     setAmount(currentAmount)
   }
 
-  const imageStyle = {
-    ...styles.image,
-    shadowColor: '#000000',
-  }
-
   const handleCopy = () => Clipboard.setString(tx!.hash!)
   const handleOpen = () =>
     Linking.openURL(`https://explorer.testnet.rsk.co/tx/${tx!.hash}`)
 
   const isNextDisabled = (!!tx && !receipt) || validationError
 
+  if (!selectedToken || !availableTokens) {
+    return <LoadingScreen reason="Gettin' tokens..." />
+  }
+
   return (
-    <LinearGradient
-      colors={['#FFFFFF', getTokenColorWithOpacity(selectedToken.symbol, 0.1)]}
-      style={styles.parent}>
+    <View style={styles.parent}>
       <ScrollView>
-        <View>
-          <Text>
-            Balance: {`${selectedTokenBalance} ${selectedToken.symbol}`}
-          </Text>
-          <Text>
-            USD:{' '}
-            {(Number(selectedTokenBalance) * tokenQuota).toFixed(2) || 'N/A'}
-          </Text>
-        </View>
         <View style={grid.row}>
-          <View style={{ ...grid.column2, ...styles.icon }}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => openTokenSelector()}>
-              <View style={imageStyle}>
-                <TokenImage
-                  symbol={selectedToken.symbol}
-                  height={30}
-                  width={30}
-                />
-              </View>
-            </TouchableOpacity>
+          <View style={grid.column4}>
+            <Text style={styles.label}>choose asset</Text>
+            <AssetChooser
+              selectedToken={selectedToken}
+              tokenList={Object.values(state.balances)}
+              handleTokenSelection={handleTokenSelection}
+            />
           </View>
-          <View style={{ ...grid.column10 }}>
+          <View style={{ ...grid.column8 }}>
             <TextInput
               style={styles.input}
               onChangeText={text => handleAmountChange(text)}
@@ -246,24 +236,27 @@ export const SendScreen: React.FC<
           )}
         </View>
       </ScrollView>
-      {showSelector && (
-        <MiniModal
-          onTokenSelection={handleTokenSelection}
-          availableTokens={Object.values(state.balances)}
-        />
-      )}
-    </LinearGradient>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   parent: {
     height: '100%',
-    width: '100%',
+    backgroundColor: colors.darkBlue,
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    paddingTop: 40,
+    paddingHorizontal: 20,
   },
-  image: {
-    width: 50,
-    height: 50,
+  label: {
+    color: colors.white,
+    marginBottom: 5,
+  },
+
+  chooseAsset: {
+    width: '100%',
+    // height: 50,
     backgroundColor: '#fff',
     borderRadius: 15,
     alignItems: 'center',
