@@ -1,13 +1,13 @@
 import React from 'react'
 import {
+  Dimensions,
   StyleSheet,
   View,
   ScrollView,
-  Dimensions,
   Share,
   Text,
-  TouchableOpacity,
 } from 'react-native'
+import { BasetButton } from '../../components/button/BaseButton'
 import QRCode from 'react-qr-code'
 import Clipboard from '@react-native-community/clipboard'
 import { CopyIcon, ShareIcon } from '../../components/icons'
@@ -24,27 +24,6 @@ export enum TestID {
 export type ReceiveScreenProps = {
   registeredDomains: string[]
   smartWalletAddress: string
-}
-
-export type DefaultButtonProps = {
-  onPress: () => void
-  testID: string
-}
-
-export const DefaultButton: React.FC<DefaultButtonProps> = ({
-  children,
-  onPress,
-  testID,
-}) => {
-  return (
-    <TouchableOpacity
-      onPress={onPress}
-      activeOpacity={0.75}
-      testID={testID}
-      style={styles.defaultButton}>
-      {children}
-    </TouchableOpacity>
-  )
 }
 
 export const ReceiveScreen: React.FC<ReceiveScreenProps> = ({
@@ -102,16 +81,16 @@ export const ReceiveScreen: React.FC<ReceiveScreenProps> = ({
             ...grid.column5,
             ...styles.bottomColumn,
           }}>
-          <DefaultButton onPress={handleShare} testID={TestID.ShareButton}>
+          <BasetButton onPress={handleShare} testID={TestID.ShareButton}>
             <ShareIcon width={30} height={30} />
-            <Text style={styles.defaultButtonText}>share</Text>
-          </DefaultButton>
+            <Text style={styles.buttonText}>share</Text>
+          </BasetButton>
         </View>
         <View style={{ ...grid.column5, ...styles.bottomColumn }}>
-          <DefaultButton onPress={handleCopy} testID={TestID.CopyButton}>
+          <BasetButton onPress={handleCopy} testID={TestID.CopyButton}>
             <CopyIcon width={30} height={30} />
-            <Text style={styles.defaultButtonText}>copy</Text>
-          </DefaultButton>
+            <Text style={styles.buttonText}>copy</Text>
+          </BasetButton>
         </View>
       </View>
     </ScrollView>

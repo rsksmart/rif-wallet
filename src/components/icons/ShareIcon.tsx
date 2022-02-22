@@ -17,7 +17,7 @@ export const ShareIcon: React.FC<SVGIconInterface> = (props: SvgProps) => {
       <Path
         opacity={0.211}
         d="M7.3 8.491H6.1c-1.6-.1-3 1.2-3 2.8v6.9c.1 1.6 1.4 2.9 3.1 2.8h7.5c1.6.1 3-1.2 3.1-2.8v-6.9c-.1-1.6-1.4-2.9-3.1-2.8h-1.4"
-        fill="nofill"
+        fill="none"
       />
       <Path
         d="M6.754 5.652l3.2-2.9 3.1 2.9"
