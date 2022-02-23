@@ -17,7 +17,9 @@ const Word = ({ index, text }: { index: number; text: string }) => (
       ...styles.wordContainer,
     }}>
     <Text style={styles.wordIndex}>{index}. </Text>
-    <Text style={styles.wordContent}>{text}</Text>
+    <View style={styles.wordContent}>
+      <Text style={styles.wordText}>{text}</Text>
+    </View>
   </View>
 )
 
@@ -62,23 +64,29 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   wordContent: {
-    backgroundColor: 'rgba(219, 227, 255, 0.3)',
-    color: '#ffffff',
     borderRadius: 30,
+    backgroundColor: 'rgba(219, 227, 255, 0.3)',
+    alignItems: 'flex-start',
     justifyContent: 'flex-start',
     paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingVertical: 7,
+  },
+  wordText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
   },
   wordIndex: {
     color: '#ffffff',
     display: 'flex',
+    alignItems: 'flex-start',
+    alignContent: 'flex-start',
     paddingVertical: 5,
   },
   wordContainer: {
     alignItems: 'flex-start',
-    color: '#ffffff',
+    alignContent: 'flex-start',
     flexDirection: 'row',
-    justifyContent: 'center',
     marginVertical: 5,
+    marginLeft: 5,
   },
 })
