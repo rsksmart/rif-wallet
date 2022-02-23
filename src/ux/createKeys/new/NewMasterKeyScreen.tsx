@@ -60,8 +60,10 @@ const styles = StyleSheet.create({
   header: {
     color: '#ffffff',
     fontSize: 22,
-    paddingVertical: 20,
+    paddingVertical: 25,
+    marginBottom: 5,
     textAlign: 'center',
+    fontWeight: 'bold',
   },
   wordContent: {
     borderRadius: 30,
@@ -73,7 +75,7 @@ const styles = StyleSheet.create({
   },
   wordText: {
     color: '#ffffff',
-    fontWeight: 'bold',
+    fontSize: 14,
   },
   wordIndex: {
     color: '#ffffff',
