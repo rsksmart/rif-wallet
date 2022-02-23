@@ -42,7 +42,7 @@ export const NewMasterKeyScreen: React.FC<
       {/*TODO:This button will be remove when the navigation is implemented*/}
       <SquareButton
         // @ts-ignore
-        onPress={() => navigation.navigate('ImportMasterKey', { mnemonic })}
+        onPress={() => navigation.navigate('ConfirmNewMasterKey', { mnemonic })}
         title="Continue"
         testID="Address.CopyButton"
         icon={<Arrow color={getTokenColor('RBTC')} rotate={90} />}
