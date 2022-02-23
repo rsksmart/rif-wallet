@@ -1,32 +1,72 @@
 import React, { useState } from 'react'
-import { StyleSheet, View, ScrollView, TextInput } from 'react-native'
-import { Button, Header2, Paragraph } from '../../../components'
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  TextInput,
+  Text,
+  TouchableOpacity,
+} from 'react-native'
+import { Button } from '../../../components'
 import { CreateKeysProps, ScreenProps } from '../types'
-import { useTranslation, Trans } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
+import { grid } from '../../../styles/grid'
 
 interface ConfirmMasterKeyScreenProps {
   createFirstWallet: CreateKeysProps['createFirstWallet']
+}
+
+const WordInput: React.FC<{
+  index: number
+  initValue: string
+}> = ({ index, initValue }) => {
+  return (
+    <View
+      style={{
+        ...grid.column4,
+        ...styles.wordContainer,
+      }}>
+      <Text style={styles.wordIndex}>{index}. </Text>
+      {initValue ? (
+        <Text style={styles.wordText}>{initValue}</Text>
+      ) : (
+        <TextInput
+          key={index}
+          style={styles.wordInput}
+          value={initValue}
+          placeholder=""
+          editable={false}
+        />
+      )}
+    </View>
+  )
 }
 
 export const ConfirmNewMasterKeyScreen: React.FC<
   ScreenProps<'ConfirmNewMasterKey'> & ConfirmMasterKeyScreenProps
 > = ({ route, navigation, createFirstWallet }) => {
   const mnemonic = route.params.mnemonic
+  const [selectedWords, setSelectedWords] = useState<string[]>([])
+  const [words, setWords] = useState<string[]>(mnemonic.split(' '))
+  const rows = [1, 2, 3, 4, 5, 6, 7, 8]
 
-  const [mnemonicToConfirm, setMnemonicToConfirm] = useState<
-    string | undefined
-  >()
   const { t } = useTranslation()
 
   const [error, setError] = useState<string | null>(null)
-
+  const selectWord = (selectedWord: string) => {
+    console.log({ selectedWord })
+    const a = [...selectedWords, selectedWord]
+    setSelectedWords(a)
+    setWords(words.filter(word => !a.find(w => w === word)))
+  }
   const saveAndNavigate = async () => {
     const rifWallet = await createFirstWallet(mnemonic)
+    // @ts-ignore
     navigation.navigate('KeysCreated', { address: rifWallet.address })
   }
 
   const handleConfirmMnemonic = async () => {
-    const isValid = mnemonic === mnemonicToConfirm
+    const isValid = mnemonic === selectedWords.join(' ')
 
     if (!isValid) {
       setError(t('entered words does not match you your master key'))
@@ -37,34 +77,41 @@ export const ConfirmNewMasterKeyScreen: React.FC<
   }
 
   return (
-    <ScrollView>
-      <View style={styles.sectionCentered}>
-        <Paragraph>
-          <Trans>
-            With your master key (seed phrase) you are able to create as many
-            wallets as you need.
-          </Trans>
-        </Paragraph>
-      </View>
-      <View style={styles.sectionCentered}>
-        <Paragraph>validate your master key</Paragraph>
-      </View>
-      <View style={styles.section}>
-        <Header2>Master key</Header2>
-        <TextInput
-          onChangeText={text => setMnemonicToConfirm(text)}
-          value={mnemonicToConfirm}
-          placeholder={t('Enter your 12 words master key')}
-          multiline
-          style={styles.input}
-          testID="Input.Confirm"
-        />
-        {error && <Paragraph>{error}</Paragraph>}
-      </View>
-      <View style={styles.section}>
-        <Button onPress={saveAndNavigate} title={'Skip'} />
-      </View>
-      <View style={styles.section}>
+    <ScrollView style={styles.parent}>
+      <Text style={styles.header}>Write down your master key</Text>
+
+      {rows.map(row => (
+        <View style={grid.row}>
+          <WordInput index={row} initValue={selectedWords[row - 1]} />
+          <WordInput
+            index={row + rows.length}
+            initValue={selectedWords[row + rows.length - 1]}
+          />
+          <WordInput
+            index={row + rows.length * 2}
+            initValue={selectedWords[row + rows.length * 2 - 1]}
+          />
+          <Text>{row + rows.length}</Text>
+        </View>
+      ))}
+      <Text>
+        {words.map(word => (
+          <View
+            key={word}
+            style={{
+              ...styles.badgeContainer,
+            }}>
+            <TouchableOpacity
+              style={styles.badgeText}
+              onPress={() => selectWord(word)}>
+              <Text>{word}</Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+      </Text>
+      {error && <Text style={styles.defaultText}>{error}</Text>}
+
+      <View>
         <Button
           onPress={handleConfirmMnemonic}
           title={'Confirm'}
@@ -76,25 +123,63 @@ export const ConfirmNewMasterKeyScreen: React.FC<
 }
 
 const styles = StyleSheet.create({
-  section: {
-    paddingTop: 15,
-    paddingBottom: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
+  defaultText: {
+    color: '#ffffff',
   },
-  sectionCentered: {
-    paddingTop: 15,
-    paddingBottom: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
-    alignItems: 'center',
+  parent: {
+    backgroundColor: '#050134',
   },
-  input: {
-    height: 80,
-    margin: 12,
+  wordContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    marginVertical: 3,
+    color: '#ffffff',
+  },
+  wordText: {
+    backgroundColor: 'rgba(219, 227, 255, 0.3)',
+    color: '#ffffff',
+    borderRadius: 30,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+
+  badgeContainer: {
+    flex: 1,
+    padding: 1,
+    flexDirection: 'row',
+    marginVertical: 5,
+  },
+  badgeText: {
+    backgroundColor: 'rgba(219, 227, 255, 0.3)',
+    color: '#ffffff',
+    borderRadius: 30,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+
+  header: {
+    color: '#ffffff',
+    fontSize: 22,
+    paddingVertical: 20,
+    textAlign: 'center',
+  },
+  wordInput: {
+    borderColor: '#ffffff',
     borderWidth: 1,
-    borderColor: '#000',
-    padding: 10,
+    marginHorizontal: 10,
+    borderRadius: 10,
+    flex: 1,
     textAlignVertical: 'top',
+    paddingTop: 0,
+    paddingBottom: 0,
+    height: 25,
+    color: '#ffffff',
+    fontSize: 15,
+  },
+  wordIndex: {
+    color: '#ffffff',
+    display: 'flex',
+    paddingVertical: 5,
   },
 })
