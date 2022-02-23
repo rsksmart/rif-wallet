@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useIsFocused } from '@react-navigation/native'
 
-import {
-  StyleSheet,
-  View,
-  TextInput,
-  Linking,
-  ScrollView,
-  Text,
-} from 'react-native'
+import { StyleSheet, View, Linking, ScrollView, Text } from 'react-native'
 
 import { ContractReceipt, BigNumber, utils, ContractTransaction } from 'ethers'
 import { useTranslation } from 'react-i18next'
@@ -16,29 +9,24 @@ import { useSocketsState } from '../../subscriptions/RIFSockets'
 
 import { convertToERC20Token } from '../../lib/token/tokenMetadata'
 import { IToken } from '../../lib/token/BaseToken'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { ScreenProps } from '../../RootNavigation'
 import { ScreenWithWallet } from '../types'
-import { AddressInput } from '../../components'
 import { getTokenColor } from '../home/tokenColor'
-import { grid } from '../../styles/grid'
 import { SquareButton } from '../../components/button/SquareButton'
-import { Arrow, RefreshIcon } from '../../components/icons'
+import { RefreshIcon } from '../../components/icons'
 import Clipboard from '@react-native-community/clipboard'
 import TransactionInfo from './TransactionInfo'
 
-import { balanceToString } from '../balances/BalancesScreen'
 import { colors } from '../../styles/colors'
-import AssetChooser from './AssetChooser'
 import { LoadingScreen } from '../../core/components/LoadingScreen'
-import SetAmountComponent from './SetAmountComponent'
+import TransactionForm from './TransactionForm'
 
 export type SendScreenProps = {}
 
 export const SendScreen: React.FC<
   SendScreenProps & ScreenProps<'Send'> & ScreenWithWallet
-> = ({ route, wallet, navigation }) => {
+> = ({ route, wallet }) => {
   const isFocused = useIsFocused()
   const { state } = useSocketsState()
 
@@ -52,16 +40,7 @@ export const SendScreen: React.FC<
   const tokensWithBalance = Object.values(state.balances) // ITokenWithBalance[]
   const tokenQuote = state.prices[selectedToken.contractAddress]?.price
 
-  // @jesse UNKNOWN variables:
   const [availableTokens, setAvailableTokens] = useState<IToken[]>()
-
-  /*
-  const selectedTokenBalance = balanceToString(
-    selectedToken.balance,
-    selectedToken.decimals || 0,
-  )
-  
-  */
 
   const { t } = useTranslation()
 
@@ -71,9 +50,6 @@ export const SendScreen: React.FC<
   const [tx, setTx] = useState<ContractTransaction>()
   const [receipt, setReceipt] = useState<ContractReceipt>()
   const [error, setError] = useState<string>()
-  const [validationError, setValidationError] = useState(false)
-
-  const handleTokenSelection = (token: ITokenWithBalance) => setSelectedToken(token)
 
   useEffect(() => {
     setTo(route.params?.to || '')
@@ -123,16 +99,9 @@ export const SendScreen: React.FC<
     }
   }
 
-  const handleTargetAddressChange = (address: string) => {
-    setError(undefined)
-    setTo(address)
-  }
-
   const handleCopy = () => Clipboard.setString(tx!.hash!)
   const handleOpen = () =>
     Linking.openURL(`https://explorer.testnet.rsk.co/tx/${tx!.hash}`)
-
-  const isNextDisabled = (!!tx && !receipt) || validationError
 
   if (!selectedToken || !availableTokens) {
     return <LoadingScreen reason="Gettin' tokens..." />
@@ -141,48 +110,18 @@ export const SendScreen: React.FC<
   return (
     <View style={styles.parent}>
       <ScrollView>
-        <View style={grid.row}>
-          <View style={grid.column5}>
-            <Text style={styles.label}>choose asset</Text>
-            <AssetChooser
-              selectedToken={selectedToken}
-              tokenList={Object.values(state.balances)}
-              handleTokenSelection={handleTokenSelection}
-            />
-          </View>
-          <View style={{ ...grid.column7, ...grid.offset1 }}>
-            <Text style={styles.label}>set amount</Text>
-            <SetAmountComponent
-              setAmount={setAmount}
-              token={selectedToken}
-              usdAmount={tokenQuote}
-            />
-          </View>
-        </View>
-        <View>
-          <Text style={styles.label}>choose recipient</Text>
-          <AddressInput
-            initialValue={route.params?.to || ''}
-            onChangeText={handleTargetAddressChange}
-            testID={'To.Input'}
-            navigation={navigation}
-            showContactsIcon={true}
-            chainId={31}
-            color={getTokenColor(selectedToken.symbol)}
-          />
-        </View>
+        <TransactionForm
+          onConfirm={transfer}
+          tokenList={Object.values(state.balances)}
+          tokenPrices={state.prices}
+          chainId={31}
+          initialValues={{
+            recipient: route.params?.to,
+            amount: 0,
+            assetAddress: route.params?.contractAddress,
+          }}
+        />
 
-        <View style={styles.centerRow}>
-          <SquareButton
-            disabled={isNextDisabled}
-            onPress={transfer}
-            title="Next"
-            testID="Address.CopyButton"
-            icon={
-              <Arrow color={getTokenColor(selectedToken.symbol)} rotate={90} />
-            }
-          />
-        </View>
         <View style={styles.section}>
           {!!tx && (
             <TransactionInfo
@@ -232,7 +171,6 @@ const styles = StyleSheet.create({
 
   chooseAsset: {
     width: '100%',
-    // height: 50,
     backgroundColor: '#fff',
     borderRadius: 15,
     alignItems: 'center',
@@ -261,18 +199,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     margin: 10,
   },
-  cameraFrame: {
-    flex: 1,
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, .1)',
-    marginVertical: 40,
-    padding: 20,
-    borderRadius: 20,
-  },
-  cameraContainer: {
-    flex: 1,
-    alignItems: 'center',
-  },
+
   section: {
     marginTop: 5,
     marginBottom: 5,
