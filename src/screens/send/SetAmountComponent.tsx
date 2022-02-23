@@ -3,12 +3,17 @@ import { useTranslation } from 'react-i18next'
 import { View, StyleSheet, TextInput, Text } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import {
+  convertTokenToUSD,
+  convertUSDtoToken,
+  roundBalance,
+} from '../../lib/utils'
 import { colors } from '../../styles/colors'
 import { grid } from '../../styles/grid'
 import { balanceToString } from '../balances/BalancesScreen'
 
 interface Interface {
-  setAmount: (amount: string) => void
+  setAmount: (amount: number) => void
   token: ITokenWithBalance
   usdAmount: number | undefined
   // maxBalance: number
@@ -24,14 +29,22 @@ const SetAmountComponent: React.FC<Interface> = ({
   const [showUSD, setShowUSD] = useState<boolean>(false)
   const [input, setInput] = useState<string>('')
 
-  const convertedAmount = showUSD ? input : input
+  const convertedAmount = showUSD
+    ? convertTokenToUSD(Number(input) || 0, usdAmount || 0, true)
+    : convertUSDtoToken(Number(input) || 0, usdAmount || 0, true)
 
   const handleTextChange = (text: string) => {
     // locally set the amount set:
     setInput(text)
 
+    const tokenBalance = showUSD
+      ? convertUSDtoToken(Number(text), usdAmount || 0, false)
+      : Number(text)
+
+    // console.log({ tokenBalance, maxBalance })
+
     // call the parent with the converted value
-    setAmount(text)
+    setAmount(tokenBalance)
 
     // clear errors before checking
     setError(null)
@@ -40,7 +53,7 @@ const SetAmountComponent: React.FC<Interface> = ({
       balanceToString(token.balance, token.decimals || 0),
     )
 
-    if (Number(text) > maxBalance) {
+    if (tokenBalance > maxBalance) {
       setError('Insuficient funds')
     }
   }
@@ -48,8 +61,9 @@ const SetAmountComponent: React.FC<Interface> = ({
   // clear the input if the token changes
   useEffect(() => {
     setError(null)
-    setInput('0')
-    setAmount('0')
+    setInput('')
+    setShowUSD(false)
+    setAmount(0)
   }, [token])
 
   return (
@@ -72,16 +86,27 @@ const SetAmountComponent: React.FC<Interface> = ({
               style={styles.toggleButton}
               onPress={() => setShowUSD(!showUSD)}>
               <Text style={styles.toggleText}>
-                {showUSD ? token.symbol : 'USD'}
+                {showUSD ? 'USD' : token.symbol}
               </Text>
             </TouchableOpacity>
           </View>
         )}
       </View>
       {error && <Text style={styles.error}>{error}</Text>}
-      <Text style={styles.maxBalance}>
-        {`${convertedAmount} ${showUSD ? 'USD' : token.symbol}`}
-      </Text>
+      <View style={grid.row}>
+        <View style={grid.column6}>
+          <Text style={styles.text}>
+            Max: {balanceToString(token.balance, token.decimals || 0)}
+          </Text>
+        </View>
+        <View style={grid.column6}>
+          {usdAmount && (
+            <Text style={{ ...styles.text, ...styles.usdAmount }}>
+              {`${convertedAmount} ${showUSD ? token.symbol : 'USD'}`}
+            </Text>
+          )}
+        </View>
+      </View>
     </View>
   )
 }
@@ -116,12 +141,15 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginRight: 10,
   },
-  maxBalance: {
+  text: {
     color: colors.white,
     fontWeight: '400',
     paddingVertical: 3,
-    textAlign: 'right',
+    textAlign: 'left',
     marginRight: 5,
+  },
+  usdAmount: {
+    textAlign: 'right',
   },
   error: {
     color: colors.orange,

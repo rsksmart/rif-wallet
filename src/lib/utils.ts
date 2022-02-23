@@ -40,3 +40,15 @@ export const formatTimestamp = (timestamp: any) => {
     date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec
   return time
 }
+
+export const convertTokenToUSD = (
+  balance: number,
+  quote: number,
+  round?: boolean,
+) => (round ? Math.round(balance * quote * 10000) / 10000 : balance * quote)
+
+export const convertUSDtoToken = (
+  balance: number,
+  quote: number,
+  round?: boolean,
+) => (round ? Math.round((balance / quote) * 10000) / 10000 : balance / quote)

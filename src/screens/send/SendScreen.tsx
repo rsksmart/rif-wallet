@@ -65,7 +65,7 @@ export const SendScreen: React.FC<
 
   const { t } = useTranslation()
 
-  const [amount, setAmount] = useState<string>('')
+  const [amount, setAmount] = useState<number>(0)
   const [to, setTo] = useState(route.params?.to || '')
 
   const [tx, setTx] = useState<ContractTransaction>()

@@ -20,7 +20,6 @@ const AssetChooser: React.FC<Interface> = ({
   handleTokenSelection,
 }) => {
   const [showSelector, setShowSelector] = useState<boolean>(false)
-  console.log({ tokenList, handleTokenSelection })
 
   const handleToken = (token: any) => {
     setShowSelector(false)
