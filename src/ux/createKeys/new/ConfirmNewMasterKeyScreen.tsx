@@ -15,6 +15,25 @@ import { grid } from '../../../styles/grid'
 interface ConfirmMasterKeyScreenProps {
   createFirstWallet: CreateKeysProps['createFirstWallet']
 }
+const shuffle = (array: string[]) => {
+  let currentIndex = array.length,
+    randomIndex
+
+  // While there remain elements to shuffle...
+  while (currentIndex != 0) {
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex)
+    currentIndex--
+
+    // And swap it with the current element.
+    ;[array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex],
+    ]
+  }
+
+  return array
+}
 
 const WordInput: React.FC<{
   index: number
@@ -47,14 +66,13 @@ export const ConfirmNewMasterKeyScreen: React.FC<
 > = ({ route, navigation, createFirstWallet }) => {
   const mnemonic = route.params.mnemonic
   const [selectedWords, setSelectedWords] = useState<string[]>([])
-  const [words, setWords] = useState<string[]>(mnemonic.split(' '))
+  const [words, setWords] = useState<string[]>(shuffle(mnemonic.split(' ')))
   const rows = [1, 2, 3, 4, 5, 6, 7, 8]
 
   const { t } = useTranslation()
 
   const [error, setError] = useState<string | null>(null)
   const selectWord = (selectedWord: string) => {
-    console.log({ selectedWord })
     const a = [...selectedWords, selectedWord]
     setSelectedWords(a)
     setWords(words.filter(word => !a.find(w => w === word)))
@@ -78,7 +96,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
 
   return (
     <ScrollView style={styles.parent}>
-      <Text style={styles.header}>Write down your master key</Text>
+      <Text style={styles.header}>Confirm your master key</Text>
 
       {rows.map(row => (
         <View style={grid.row}>
