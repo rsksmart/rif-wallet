@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 import Clipboard from '@react-native-community/clipboard'
 
-import { ContactsIcon, ContentPasteIcon, QRCodeIcon } from '../icons'
+import { ContentPasteIcon, QRCodeIcon } from '../icons'
 
 import {
   validateAddress,
@@ -17,29 +17,24 @@ import {
   toChecksumAddress,
 } from './lib'
 import { grid } from '../../styles/grid'
-import { SquareButton } from '../button/SquareButton'
 import { rnsResolver } from '../../core/setup'
 import QRScanner from '../qrScanner'
 import { BarCodeReadEvent } from 'react-native-camera'
 import { Button } from '../button'
+import { colors } from '../../styles/colors'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 type AddressInputProps = {
   initialValue: string
   onChangeText: (newValue: string) => void
   testID?: string
-  navigation?: any
-  showContactsIcon?: boolean
   chainId: number
-  color?: string
 }
 
 export const AddressInput: React.FC<AddressInputProps> = ({
   initialValue,
   onChangeText,
   testID,
-  navigation,
-  showContactsIcon,
-  color,
   chainId,
 }) => {
   // the address of the recipient
@@ -59,8 +54,6 @@ export const AddressInput: React.FC<AddressInputProps> = ({
     type: 'READY' | 'INFO' | 'ERROR' | 'CHECKSUM'
     value?: string
   }>({ type: 'READY' })
-
-  const iconColor = color || '#999'
 
   const handleChangeText = (inputText: string) => {
     setStatus({ type: 'READY' })
@@ -150,80 +143,78 @@ export const AddressInput: React.FC<AddressInputProps> = ({
             placeholder="Address or RSK domain"
             testID={testID}
             editable={true}
+            placeholderTextColor={colors.gray}
           />
-          {status.value && (
-            <>
-              <Text
-                style={status.type === 'INFO' ? styles.info : styles.error}
-                testID={testID + '.InputInfo'}>
-                {status.value}
-              </Text>
-              {status.type === 'CHECKSUM' && (
-                <Button
-                  testID={`${testID}.Button.Checksum`}
-                  title="Convert to correct checksum"
-                  onPress={() =>
-                    handleChangeText(toChecksumAddress(recipient, chainId))
-                  }
-                />
-              )}
-            </>
-          )}
+
+          <TouchableOpacity
+            style={{ ...styles.button, ...styles.buttonPaste }}
+            onPress={handlePasteClick}
+            testID="Address.PasteButton">
+            <ContentPasteIcon color={colors.white} height={20} width={20} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => setShowQRReader(true)}
+            testID="Address.QRCodeButton">
+            <QRCodeIcon color={colors.white} />
+          </TouchableOpacity>
         </View>
       </View>
-      <View style={grid.row}>
-        <View style={{ ...grid.column2, ...styles.iconColumn }}>
-          <SquareButton
-            onPress={handlePasteClick}
-            testID="Address.PasteButton"
-            icon={<ContentPasteIcon color={iconColor} />}
-          />
-        </View>
-        <View style={{ ...grid.column2, ...styles.iconColumn }}>
-          <SquareButton
-            onPress={() => setShowQRReader(true)}
-            testID="Address.QRCodeButton"
-            icon={<QRCodeIcon color={iconColor} />}
-          />
-        </View>
-        {showContactsIcon && (
-          <View style={{ ...grid.column2, ...styles.iconColumn }}>
-            <SquareButton
-              onPress={() => navigation.navigate('Contacts')}
-              testID="Address.ContactsButton"
-              icon={<ContactsIcon color={iconColor} />}
+      {status.value && (
+        <>
+          <Text
+            style={status.type === 'INFO' ? styles.info : styles.error}
+            testID={testID + '.InputInfo'}>
+            {status.value}
+          </Text>
+          {status.type === 'CHECKSUM' && (
+            <Button
+              testID={`${testID}.Button.Checksum`}
+              title="Convert to correct checksum"
+              onPress={() =>
+                handleChangeText(toChecksumAddress(recipient, chainId))
+              }
             />
-          </View>
-        )}
+          )}
+        </>
+      )}
+      <View style={grid.row}>
+        <View style={{ ...grid.column2, ...styles.iconColumn }} />
       </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  parent: {
-    marginHorizontal: 10,
-  },
+  parent: {},
   iconColumn: {
     alignItems: 'flex-end',
   },
   inputContainer: {
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.darkPurple2,
     borderRadius: 10,
     display: 'flex',
+    flexDirection: 'row',
     width: '100%',
-    paddingHorizontal: 10,
-  },
-  rnsText: {
-    paddingHorizontal: 10,
-    fontSize: 14,
-    color: '#999',
-    paddingBottom: 10,
   },
   input: {
-    display: 'flex',
+    flex: 5,
     height: 50,
     padding: 10,
+    fontSize: 16,
+    fontWeight: '400',
+    color: colors.white,
+  },
+  button: {
+    paddingTop: 15,
+    paddingHorizontal: 10,
+    flex: 1,
+  },
+  buttonPaste: {
+    paddingRight: 20,
+    borderRightWidth: 1,
+    borderRightColor: colors.white,
   },
   cameraModal: {
     flex: 1,
@@ -233,9 +224,13 @@ const styles = StyleSheet.create({
   },
   cameraWrapper: {},
   info: {
+    marginTop: 5,
+    paddingHorizontal: 10,
     color: '#999',
   },
   error: {
-    color: 'red',
+    marginTop: 5,
+    paddingHorizontal: 10,
+    color: colors.orange,
   },
 })
