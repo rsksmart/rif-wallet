@@ -13,7 +13,7 @@ import { grid } from '../../styles/grid'
 import { balanceToString } from '../balances/BalancesScreen'
 
 interface Interface {
-  setAmount: (amount: number) => void
+  setAmount: (amount: string) => void
   token: ITokenWithBalance
   usdAmount: number | undefined
   // maxBalance: number
@@ -44,7 +44,7 @@ const SetAmountComponent: React.FC<Interface> = ({
     // console.log({ tokenBalance, maxBalance })
 
     // call the parent with the converted value
-    setAmount(tokenBalance)
+    setAmount(tokenBalance.toString())
 
     // clear errors before checking
     setError(null)

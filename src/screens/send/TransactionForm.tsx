@@ -1,4 +1,3 @@
-import { Transaction } from 'ethers'
 import React, { useState } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { AddressInput } from '../../components'
@@ -11,13 +10,13 @@ import AssetChooser from './AssetChooser'
 import SetAmountComponent from './SetAmountComponent'
 
 interface Interface {
-  onConfirm: (tx: Transaction) => Promise<any>
+  onConfirm: (bundle: any) => Promise<any>
   tokenList: ITokenWithBalance[]
   tokenPrices: Record<string, IPrice>
   chainId: number
   initialValues: {
     assetAddress?: string
-    amount?: number
+    amount?: string
     recipient?: string
   }
 }
@@ -27,11 +26,12 @@ const TransactionForm: React.FC<Interface> = ({
   tokenList,
   chainId,
   tokenPrices,
+  onConfirm,
 }) => {
   const [selectedToken, setSelectedToken] = useState<ITokenWithBalance>(
     tokenList[0],
   )
-  const [amount, setAmount] = useState<number>(initialValues.amount || 0)
+  const [amount, setAmount] = useState<string>(initialValues.amount || '0')
   const [to, setTo] = useState<string>(initialValues.recipient || '')
   const [error, setError] = useState<string | null>(null)
 
@@ -44,7 +44,7 @@ const TransactionForm: React.FC<Interface> = ({
 
   const handleConfirmClick = () => {
     console.log('transfer it!')
-    console.log({ amount, to })
+    onConfirm({ tokenAddress: selectedToken.contractAddress, amount, to })
   }
 
   return (

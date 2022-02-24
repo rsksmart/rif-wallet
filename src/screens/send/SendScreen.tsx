@@ -21,6 +21,7 @@ import TransactionInfo from './TransactionInfo'
 import { colors } from '../../styles/colors'
 import { LoadingScreen } from '../../core/components/LoadingScreen'
 import TransactionForm from './TransactionForm'
+import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
 export type SendScreenProps = {}
 
@@ -34,44 +35,82 @@ export const SendScreen: React.FC<
     route.params?.contractAddress || Object.keys(state.balances)[0]
 
   // @jesse GOOD variables:
-  const [selectedToken, setSelectedToken] = React.useState(
+  const [selectedToken, setSelectedToken] = React.useState<ITokenWithBalance>(
     state.balances[contractAddress],
   )
   const tokensWithBalance = Object.values(state.balances) // ITokenWithBalance[]
-  const tokenQuote = state.prices[selectedToken.contractAddress]?.price
 
-  const [availableTokens, setAvailableTokens] = useState<IToken[]>()
+  // const [availableTokens, setAvailableTokens] = useState<IToken[]>()
 
   const { t } = useTranslation()
 
-  const [amount, setAmount] = useState<number>(0)
-  const [to, setTo] = useState(route.params?.to || '')
+  // const [amount, setAmount] = useState<number>(0)
+  // const [to, setTo] = useState(route.params?.to || '')
 
   const [tx, setTx] = useState<ContractTransaction>()
   const [receipt, setReceipt] = useState<ContractReceipt>()
   const [error, setError] = useState<string>()
+  const chainId = 31
 
   useEffect(() => {
-    setTo(route.params?.to || '')
-
+    if (route.params?.contractAddress) {
+      // @todo HANDLE THIS!
+      // setSelectedToken(tokensWithBalance[route.params.contractAddress])
+    }
+    // setTo(route.params?.to || '')
+    /*
     if (tx && receipt) {
       setTx(undefined)
       setReceipt(undefined)
     }
+    */
+
+    // setSelectedToken()
 
     // const tokensWithBalance = Object.values(state.balances)
 
-    const chainId = 31 // Once https://github.com/rsksmart/swallet/pull/151 gets approved we´ll need to use it from the state
-
     // @jesse - this is not needed at this point, do not convert here!
+    /*
     const tokens: Array<IToken> = tokensWithBalance.map(token =>
       convertToERC20Token(token, { signer: wallet, chainId }),
     )
-
-    setAvailableTokens(tokens)
+    // setAvailableTokens(tokens)
+    */
   }, [wallet, isFocused])
 
-  const transfer = async () => {
+  const transfer = async (bundle: {
+    to: string
+    amount: string
+    tokenAddress: string
+  }) => {
+    const token = state.balances[bundle.tokenAddress]
+    const erc20Token = convertToERC20Token(token, { signer: wallet, chainId })
+
+    erc20Token.decimals().then((decimals: number) => {
+      const tokenAmount = BigNumber.from(
+        utils.parseUnits(bundle.amount, decimals),
+      )
+      erc20Token
+        .transfer(bundle.to.toLowerCase(), tokenAmount)
+        .then((txPending: ContractTransaction) => {
+          console.log('1', txPending)
+          txPending.wait().then((txFinal: ContractReceipt) => {
+            console.log('2', txFinal)
+          })
+        })
+        .catch((err: any) => {
+          console.log('error!', err)
+        })
+    })
+
+    // console.log(erc20Token)
+    /*
+    const decimals = await
+
+
+    const transferTx = await
+
+
     setTx(undefined)
     setReceipt(undefined)
     setError(undefined)
@@ -97,13 +136,14 @@ export const SendScreen: React.FC<
         }
       }
     }
+    */
   }
 
   const handleCopy = () => Clipboard.setString(tx!.hash!)
   const handleOpen = () =>
     Linking.openURL(`https://explorer.testnet.rsk.co/tx/${tx!.hash}`)
 
-  if (!selectedToken || !availableTokens) {
+  if (!selectedToken) {
     return <LoadingScreen reason="Gettin' tokens..." />
   }
 
@@ -114,11 +154,11 @@ export const SendScreen: React.FC<
           onConfirm={transfer}
           tokenList={Object.values(state.balances)}
           tokenPrices={state.prices}
-          chainId={31}
+          chainId={chainId}
           initialValues={{
             recipient: route.params?.to,
-            amount: 0,
-            assetAddress: route.params?.contractAddress,
+            amount: '0',
+            assetAddress: selectedToken.contractAddress,
           }}
         />
 
@@ -139,14 +179,6 @@ export const SendScreen: React.FC<
           {!!error && (
             <View style={styles.centerRow}>
               <Text>{t('An error ocurred')}</Text>
-              <SquareButton
-                onPress={transfer}
-                title="Retry"
-                testID="Transfer.RetryButton"
-                icon={
-                  <RefreshIcon color={getTokenColor(selectedToken.symbol)} />
-                }
-              />
             </View>
           )}
         </View>
