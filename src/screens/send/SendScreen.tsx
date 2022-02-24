@@ -1,25 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { useIsFocused } from '@react-navigation/native'
 
-import { StyleSheet, View, Linking, ScrollView, Text } from 'react-native'
+import { StyleSheet, View, ScrollView, Text } from 'react-native'
 
-import { ContractReceipt, BigNumber, utils, ContractTransaction } from 'ethers'
+import { BigNumber, utils, ContractTransaction } from 'ethers'
 import { useTranslation } from 'react-i18next'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
 
-import { convertToERC20Token } from '../../lib/token/tokenMetadata'
-import { IToken } from '../../lib/token/BaseToken'
+import {
+  convertToERC20Token,
+  makeRBTCToken,
+} from '../../lib/token/tokenMetadata'
 
 import { ScreenProps } from '../../RootNavigation'
 import { ScreenWithWallet } from '../types'
-import { getTokenColor } from '../home/tokenColor'
-import { SquareButton } from '../../components/button/SquareButton'
-import { RefreshIcon } from '../../components/icons'
-import Clipboard from '@react-native-community/clipboard'
 import TransactionInfo from './TransactionInfo'
 
 import { colors } from '../../styles/colors'
-import { LoadingScreen } from '../../core/components/LoadingScreen'
 import TransactionForm from './TransactionForm'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
@@ -30,16 +27,13 @@ export const SendScreen: React.FC<
 > = ({ route, wallet }) => {
   const isFocused = useIsFocused()
   const { state } = useSocketsState()
+  const { t } = useTranslation()
 
   const contractAddress =
     route.params?.contractAddress || Object.keys(state.balances)[0]
 
-  const [isLoading, setIsLoading] = useState<boolean>(true)
-
-  // @jesse GOOD variables:
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [selectedToken, setSelectedToken] = React.useState<ITokenWithBalance>()
-
-  const { t } = useTranslation()
 
   // response:
   const [tx, setTx] = useState<ContractTransaction>()
@@ -48,12 +42,10 @@ export const SendScreen: React.FC<
 
   useEffect(() => {
     if (route.params?.contractAddress) {
-      console.log('setting it!!!', state.balances[route.params.contractAddress])
       setSelectedToken(state.balances[route.params.contractAddress])
     } else {
       setSelectedToken(state.balances[contractAddress])
     }
-    setIsLoading(false)
   }, [wallet, isFocused])
 
   const transfer = async (bundle: {
