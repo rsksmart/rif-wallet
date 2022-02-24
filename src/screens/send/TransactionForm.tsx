@@ -15,7 +15,7 @@ interface Interface {
   tokenPrices: Record<string, IPrice>
   chainId: number
   initialValues: {
-    assetAddress?: string
+    asset?: ITokenWithBalance
     amount?: string
     recipient?: string
   }
@@ -29,7 +29,7 @@ const TransactionForm: React.FC<Interface> = ({
   onConfirm,
 }) => {
   const [selectedToken, setSelectedToken] = useState<ITokenWithBalance>(
-    tokenList[0],
+    initialValues.asset || tokenList[0],
   )
   const [amount, setAmount] = useState<string>(initialValues.amount || '0')
   const [to, setTo] = useState<string>(initialValues.recipient || '')
@@ -42,10 +42,8 @@ const TransactionForm: React.FC<Interface> = ({
     setTo(address)
   }
 
-  const handleConfirmClick = () => {
-    console.log('transfer it!')
+  const handleConfirmClick = () =>
     onConfirm({ tokenAddress: selectedToken.contractAddress, amount, to })
-  }
 
   return (
     <View>

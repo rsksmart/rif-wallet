@@ -3,11 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { View, StyleSheet, TextInput, Text } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import {
-  convertTokenToUSD,
-  convertUSDtoToken,
-  roundBalance,
-} from '../../lib/utils'
+import { convertTokenToUSD, convertUSDtoToken } from '../../lib/utils'
 import { colors } from '../../styles/colors'
 import { grid } from '../../styles/grid'
 import { balanceToString } from '../balances/BalancesScreen'
