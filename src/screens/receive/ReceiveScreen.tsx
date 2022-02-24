@@ -134,17 +134,7 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   customRow: { justifyContent: 'space-between' },
-  defaultButton: {
-    alignItems: 'center',
-    backgroundColor: 'rgba(219, 227, 255, 0.3)',
-    borderRadius: 30,
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    paddingHorizontal: 30,
-    paddingVertical: 12,
-  },
-  defaultButtonText: {
+  buttonText: {
     color: '#FFFFFF',
   },
 })
