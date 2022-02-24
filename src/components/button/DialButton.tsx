@@ -5,12 +5,14 @@ import { colors } from '../../styles/colors'
 type Props = {
   label: string
   variant: 'default' | 'error' | 'success'
-  onPress: ()=> void
+  onPress: () => void
 }
 
 export const DialButton: React.FC<Props> = ({ label, variant, onPress }) => {
   return (
-    <TouchableOpacity onPress={onPress} style={{ ...styles.root, ...styles[variant] }}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={{ ...styles.root, ...styles[variant] }}>
       <Text style={styles.label}>{label}</Text>
     </TouchableOpacity>
   )

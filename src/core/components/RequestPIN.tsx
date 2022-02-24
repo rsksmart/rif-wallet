@@ -66,7 +66,7 @@ export const RequestPIN: React.FC<Interface> = ({ unlock }) => {
 
   const onPress = (value: string) => () => {
     if (!isLoading) {
-      setInputtedPin((prev) => {
+      setInputtedPin(prev => {
         if (value === 'DEL') {
           return prev.slice(0, -1)
         }
@@ -81,20 +81,34 @@ export const RequestPIN: React.FC<Interface> = ({ unlock }) => {
         ...shareStyles.coverAllScreen,
         ...styles.container,
       }}>
-
       <Text style={styles.header}>
         <Trans>Confirm your PIN</Trans>
       </Text>
       <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-        {pin.map(digit => <View key={digit.value} style={styles.dot} />)}
+        {pin.map(digit => (
+          <View key={digit.value} style={styles.dot} />
+        ))}
       </View>
       {error && <Text style={styles.error}>{error}</Text>}
       <View style={{ ...grid.row, flexWrap: 'wrap' }}>
-        {buttons.map((button) =>
-          <View key={button.label} style={{ ...grid.column4, alignContent: 'center', justifyContent: 'center', flexDirection: 'row', paddingVertical: 6.5, paddingHorizontal: 15 }}>
-            <DialButton label={button.label} variant={button.variant} onPress={onPress(button.label)} />
+        {buttons.map(button => (
+          <View
+            key={button.label}
+            style={{
+              ...grid.column4,
+              alignContent: 'center',
+              justifyContent: 'center',
+              flexDirection: 'row',
+              paddingVertical: 6.5,
+              paddingHorizontal: 15,
+            }}>
+            <DialButton
+              label={button.label}
+              variant={button.variant}
+              onPress={onPress(button.label)}
+            />
           </View>
-        )}
+        ))}
       </View>
       <View>
         <Button
@@ -125,10 +139,10 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     height: 30,
     marginRight: 10,
-    width: 30
+    width: 30,
   },
   error: {
     color: '#FFFFFF',
     textAlign: 'center',
-  }
+  },
 })
