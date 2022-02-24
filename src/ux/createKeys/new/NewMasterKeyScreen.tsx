@@ -9,36 +9,27 @@ type CreateMasterKeyScreenProps = {
   generateMnemonic: CreateKeysProps['generateMnemonic']
 }
 import { grid } from '../../../styles/grid'
-
-const Word = ({ index, text }: { index: number; text: string }) => (
-  <View
-    style={{
-      ...grid.column4,
-      ...styles.wordContainer,
-    }}>
-    <Text style={styles.wordIndex}>{index}. </Text>
-    <View style={styles.wordContent}>
-      <Text style={styles.wordText}>{text}</Text>
-    </View>
-  </View>
-)
+import { Word } from './Word'
 
 export const NewMasterKeyScreen: React.FC<
   ScreenProps<'NewMasterKey'> & CreateMasterKeyScreenProps
 > = ({ navigation, generateMnemonic }) => {
   const mnemonic = useMemo(generateMnemonic, [])
   const words = mnemonic.split(' ')
-  const rows = [1, 2, 3, 4, 5, 6, 7, 8]
+  const rows = [0, 1, 2, 3, 4, 5, 6, 7]
 
   return (
     <ScrollView style={styles.parent}>
       <Text style={styles.header}>Write down your master key</Text>
 
-      {rows.map((row, i) => (
-        <View style={grid.row}>
-          <Word index={row} text={words[i]} />
-          <Word index={row + rows.length} text={words[i + rows.length]} />
-          <Word index={row + rows.length * 2} text={words[i + 16]} />
+      {rows.map(row => (
+        <View style={grid.row} key={row}>
+          <Word index={row + 1} text={words[row]} />
+          <Word index={row + 1 + rows.length} text={words[row + rows.length]} />
+          <Word
+            index={row + 1 + rows.length * 2}
+            text={words[row + rows.length * 2]}
+          />
         </View>
       ))}
       {/*TODO:This button will be remove when the navigation is implemented*/}
@@ -72,23 +63,5 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     paddingHorizontal: 10,
     paddingVertical: 7,
-  },
-  wordText: {
-    color: '#ffffff',
-    fontSize: 14,
-  },
-  wordIndex: {
-    color: '#ffffff',
-    display: 'flex',
-    alignItems: 'flex-start',
-    alignContent: 'flex-start',
-    paddingVertical: 5,
-  },
-  wordContainer: {
-    alignItems: 'flex-start',
-    alignContent: 'flex-start',
-    flexDirection: 'row',
-    marginVertical: 5,
-    marginLeft: 5,
   },
 })
