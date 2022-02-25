@@ -4,23 +4,23 @@ import { grid } from '../../../styles/grid'
 import { StyleSheet, View, Text, TextInput } from 'react-native'
 
 export const WordInput: React.FC<{
-  index: number
+  wordNumber: number
   initValue: string
-}> = ({ index, initValue }) => {
+}> = ({ wordNumber, initValue }) => {
   return (
     <View
       style={{
         ...grid.column4,
         ...styles.wordContainer,
       }}>
-      <Text style={styles.wordIndex}>{index}. </Text>
+      <Text style={styles.wordNumber}>{wordNumber}. </Text>
       {initValue ? (
         <View style={styles.wordContent}>
           <Text style={styles.wordText}>{initValue}</Text>
         </View>
       ) : (
         <TextInput
-          key={index}
+          key={wordNumber}
           style={styles.wordInput}
           value={initValue}
           placeholder=""
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 14,
   },
-  wordIndex: {
+  wordNumber: {
     color: '#ffffff',
     display: 'flex',
     paddingVertical: 4,

@@ -13,6 +13,7 @@ import { SquareButton } from '../../../components/button/SquareButton'
 import { Arrow } from '../../../components/icons'
 import { getTokenColor } from '../../../screens/home/tokenColor'
 import { WordInput } from './WordInput'
+import { colors } from '../../../styles/colors'
 
 interface ConfirmMasterKeyScreenProps {
   createFirstWallet: CreateKeysProps['createFirstWallet']
@@ -43,6 +44,8 @@ export const ConfirmNewMasterKeyScreen: React.FC<
   const mnemonic = route.params.mnemonic
   const [selectedWords, setSelectedWords] = useState<string[]>([])
   const [words, setWords] = useState<string[]>(shuffle(mnemonic.split(' ')))
+
+  //TODO: create "three column grid" component
   const rows = [1, 2, 3, 4, 5, 6, 7, 8]
 
   const { t } = useTranslation()
@@ -50,9 +53,9 @@ export const ConfirmNewMasterKeyScreen: React.FC<
   const [error, setError] = useState<string | null>(null)
   const selectWord = (selectedWord: string) => {
     setError(null)
-    const a = [...selectedWords, selectedWord]
-    setSelectedWords(a)
-    setWords(words.filter(word => !a.find(w => w === word)))
+    const updatedWords = [...selectedWords, selectedWord]
+    setSelectedWords(updatedWords)
+    setWords(words.filter(word => !updatedWords.find(w => w === word)))
   }
   const saveAndNavigate = async () => {
     const rifWallet = await createFirstWallet(mnemonic)
@@ -77,13 +80,13 @@ export const ConfirmNewMasterKeyScreen: React.FC<
 
       {rows.map(row => (
         <View style={grid.row}>
-          <WordInput index={row} initValue={selectedWords[row - 1]} />
+          <WordInput wordNumber={row} initValue={selectedWords[row - 1]} />
           <WordInput
-            index={row + rows.length}
+            wordNumber={row + rows.length}
             initValue={selectedWords[row + rows.length - 1]}
           />
           <WordInput
-            index={row + rows.length * 2}
+            wordNumber={row + rows.length * 2}
             initValue={selectedWords[row + rows.length * 2 - 1]}
           />
           <Text>{row + rows.length}</Text>
@@ -115,10 +118,10 @@ export const ConfirmNewMasterKeyScreen: React.FC<
 
 const styles = StyleSheet.create({
   defaultText: {
-    color: '#ffffff',
+    color: colors.white,
   },
   parent: {
-    backgroundColor: '#050134',
+    backgroundColor: colors.darkBlue,
   },
 
   badgeArea: {
@@ -132,15 +135,15 @@ const styles = StyleSheet.create({
     marginVertical: 1,
   },
   badgeText: {
-    backgroundColor: 'rgba(219, 227, 255, 0.3)',
-    color: '#ffffff',
+    backgroundColor: colors.purple,
+    color: colors.white,
     borderRadius: 30,
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
 
   header: {
-    color: '#ffffff',
+    color: colors.white,
     fontSize: 22,
     paddingVertical: 20,
     textAlign: 'center',
