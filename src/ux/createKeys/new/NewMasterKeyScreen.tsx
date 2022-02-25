@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react'
-import { StyleSheet, View, ScrollView, Text } from 'react-native'
+import { StyleSheet, View, Text } from 'react-native'
 import { CreateKeysProps, ScreenProps } from '../types'
+import { Trans } from 'react-i18next'
 
 import { getTokenColor } from '../../../screens/home/tokenColor'
 import { SquareButton } from '../../../components/button/SquareButton'
@@ -19,8 +20,10 @@ export const NewMasterKeyScreen: React.FC<
   const rows = [0, 1, 2, 3, 4, 5, 6, 7]
 
   return (
-    <ScrollView style={styles.parent}>
-      <Text style={styles.header}>Write down your master key</Text>
+    <View style={styles.parent}>
+      <Text style={styles.header}>
+        <Trans>Write down your master key</Trans>
+      </Text>
 
       {rows.map(row => (
         <View style={grid.row} key={row}>
@@ -40,7 +43,7 @@ export const NewMasterKeyScreen: React.FC<
         testID="Address.CopyButton"
         icon={<Arrow color={getTokenColor('RBTC')} rotate={90} />}
       />
-    </ScrollView>
+    </View>
   )
 }
 

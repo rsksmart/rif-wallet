@@ -3,13 +3,19 @@ import React from 'react'
 import { grid } from '../../../styles/grid'
 import { StyleSheet, View, Text } from 'react-native'
 
-export const Word = ({ index, text }: { index: number; text: string }) => (
+export const Word = ({
+  wordNumber,
+  text,
+}: {
+  wordNumber: number
+  text: string
+}) => (
   <View
     style={{
       ...grid.column4,
       ...styles.wordContainer,
     }}>
-    <Text style={styles.wordIndex}>{index}. </Text>
+    <Text style={styles.wordIndex}>{wordNumber}. </Text>
     <View style={styles.wordContent}>
       <Text style={styles.wordText}>{text}</Text>
     </View>
