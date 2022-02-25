@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { AddressInput } from '../../components'
 import { BaseButton } from '../../components/button/BaseButton'

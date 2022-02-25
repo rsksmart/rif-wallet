@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { useIsFocused } from '@react-navigation/native'
-
-import { StyleSheet, View, ScrollView, Text } from 'react-native'
-
+import { StyleSheet, View, ScrollView, Text, Image } from 'react-native'
 import { BigNumber, utils, ContractTransaction } from 'ethers'
-import { useTranslation } from 'react-i18next'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
 
 import {
@@ -14,52 +10,46 @@ import {
 
 import { ScreenProps } from '../../RootNavigation'
 import { ScreenWithWallet } from '../types'
-import TransactionInfo from './TransactionInfo'
+import TransactionInfo, { transactionInfo } from './TransactionInfo'
 
 import { colors } from '../../styles/colors'
 import TransactionForm from './TransactionForm'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
 export type SendScreenProps = {}
 
 export const SendScreen: React.FC<
   SendScreenProps & ScreenProps<'Send'> & ScreenWithWallet
 > = ({ route, wallet }) => {
-  const isFocused = useIsFocused()
   const { state } = useSocketsState()
-  const { t } = useTranslation()
 
   const contractAddress =
     route.params?.contractAddress || Object.keys(state.balances)[0]
 
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [selectedToken, setSelectedToken] = React.useState<ITokenWithBalance>()
+  const selectedToken = route.params?.contractAddress
+    ? state.balances[route.params.contractAddress]
+    : state.balances[contractAddress]
 
-  // response:
-  const [currentTransaction, setCurrentTransaction] = useState<any>({
-    to: '0xFCcA8a451857bdE6b26994534A0AC6aB4fB47A4e',
-    value: '1',
-    symbol: 'DOC',
-    status: 'PENDING',
-    hash: '0x437596a5f97d5c2a48a0cef5db8a09f09d867cd16b3e2e9ee8277c3a085a0bc6'
-  })
+  const [transactionStatus, setTransactionStatus] = useState<
+    'NONE' | 'PENDING' | 'SUCCESS' | 'FAILED'
+  >('NONE')
+  const [currentTransaction, setCurrentTransaction] =
+    useState<transactionInfo | null>(null)
   const [error, setError] = useState<string>()
-  const chainId = 31 // @todo
+
+  const [chainId, setChainId] = useState<number>()
+  // const chainId = wallet.getChainId()
 
   useEffect(() => {
-    if (route.params?.contractAddress) {
-      setSelectedToken(state.balances[route.params.contractAddress])
-    } else {
-      setSelectedToken(state.balances[contractAddress])
-    }
-  }, [wallet, isFocused])
+    wallet.getChainId().then(setChainId)
+  }, [wallet])
 
   const transfer = async (bundle: {
     to: string
     amount: string
     tokenAddress: string
   }) => {
-    setIsLoading(true)
+    setError(undefined)
+    setTransactionStatus('PENDING')
 
     // handle both ERC20 tokens and gas
     const transferMethod =
@@ -78,27 +68,37 @@ export const SendScreen: React.FC<
       transferMethod
         .transfer(bundle.to.toLowerCase(), tokenAmount)
         .then((txPending: ContractTransaction) => {
-          // setTx(txPending)
-          // save transaction type to be used on transactionInfo screen
+          // save transaction for the info screen
           setCurrentTransaction({
             to: bundle.to,
-            amount: bundle.amount, //save amount before decimals
-            logo: transferMethod.logo,
+            value: bundle.amount,
+            symbol: transferMethod.symbol,
             hash: txPending.hash,
           })
-          setIsLoading(false)
+
+          txPending
+            .wait()
+            .then(() => setTransactionStatus('SUCCESS'))
+            .catch(() => setTransactionStatus('FAILED'))
         })
         .catch((err: any) => {
-          setIsLoading(false)
           setError(err)
+          setTransactionStatus('NONE')
+          setCurrentTransaction(null)
         })
     })
   }
 
-  if (isLoading || !selectedToken) {
+  if (transactionStatus === 'PENDING') {
     return (
       <View style={styles.parent}>
-        <Text>Loading...</Text>
+        <Image
+          source={require('../../images/transferWait.png')}
+          style={styles.loading}
+        />
+        <Text style={styles.loadingReason}>
+          {transactionStatus === 'PENDING' ? 'transfering ...' : 'loading...'}
+        </Text>
       </View>
     )
   }
@@ -118,14 +118,13 @@ export const SendScreen: React.FC<
           }}
         />
       ) : (
-        <TransactionInfo transaction={currentTransaction} />
+        <TransactionInfo
+          transaction={currentTransaction}
+          status={transactionStatus}
+        />
       )}
 
-      {!!error && (
-        <View style={styles.centerRow}>
-          <Text>{t('An error ocurred')}</Text>
-        </View>
-      )}
+      {!!error && <Text style={styles.error}>{error}</Text>}
     </ScrollView>
   )
 }
@@ -142,6 +141,15 @@ const styles = StyleSheet.create({
   label: {
     color: colors.white,
     marginBottom: 5,
+  },
+  loading: {
+    alignSelf: 'center',
+    marginTop: '25%',
+    marginBottom: 10,
+  },
+  loadingReason: {
+    textAlign: 'center',
+    color: colors.white,
   },
 
   chooseAsset: {
@@ -181,5 +189,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC',
     flex: 1,
+  },
+  error: {
+    marginTop: 10,
+    color: colors.orange,
+    textAlign: 'center',
   },
 })

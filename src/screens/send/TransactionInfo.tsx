@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Linking, StyleSheet, Text, View } from 'react-native'
-import { ContentPasteIcon } from '../../components/icons'
+import { ContentPasteIcon, SmileFaceIcon } from '../../components/icons'
 
 import { grid } from '../../styles/grid'
 
@@ -12,11 +12,19 @@ import { BaseButton } from '../../components/button/BaseButton'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { shortAddress } from '../../lib/utils'
 
-type Props = {
-  transaction: any
+export interface transactionInfo {
+  to: string
+  value: string
+  symbol: string
+  hash: string
 }
 
-const TransactionInfo = ({ transaction }: Props) => {
+type Props = {
+  transaction: transactionInfo
+  status: string
+}
+
+const TransactionInfo = ({ transaction, status }: Props) => {
   return (
     <View style={styles.parent}>
       <Text style={styles.label}>You have just sent</Text>
@@ -35,7 +43,7 @@ const TransactionInfo = ({ transaction }: Props) => {
       <Text style={styles.label}>To the recipient</Text>
       <View style={{ ...grid.row, ...styles.row }}>
         <View style={grid.column2}>
-          <TokenImage symbol="NONE" height={50} width={50} />
+          <SmileFaceIcon height={50} width={50} color={colors.white} />
         </View>
         <View style={grid.column9}>
           <Text style={{ ...styles.value, ...styles.recipient }}>
@@ -46,7 +54,7 @@ const TransactionInfo = ({ transaction }: Props) => {
 
       <View style={styles.row}>
         <Text style={styles.label}>Status</Text>
-        <Text style={styles.value}>{transaction.status}</Text>
+        <Text style={styles.value}>{status}</Text>
       </View>
 
       <View style={styles.row}>
