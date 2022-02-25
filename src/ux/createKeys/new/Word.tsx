@@ -15,7 +15,7 @@ export const Word = ({
       ...grid.column4,
       ...styles.wordContainer,
     }}>
-    <Text style={styles.wordIndex}>{wordNumber}. </Text>
+    <Text style={styles.wordNumber}>{wordNumber}. </Text>
     <View style={styles.wordContent}>
       <Text style={styles.wordText}>{text}</Text>
     </View>
@@ -23,7 +23,7 @@ export const Word = ({
 )
 
 const styles = StyleSheet.create({
-  wordIndex: {
+  wordNumber: {
     color: '#ffffff',
     display: 'flex',
     alignItems: 'flex-start',
