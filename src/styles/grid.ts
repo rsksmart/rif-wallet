@@ -55,6 +55,9 @@ export const grid = StyleSheet.create({
   },
 
   offset1: {
-    paddingLeft: '8.3%',
+    marginLeft: '8.3%',
+  },
+  offset3: {
+    marginLeft: '25%',
   },
 })

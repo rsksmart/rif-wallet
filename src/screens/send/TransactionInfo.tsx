@@ -1,62 +1,78 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 import { Linking, StyleSheet, Text, View } from 'react-native'
-import { CompassIcon, CopyIcon } from '../../components/icons'
-import { SquareButton } from '../../components/button/SquareButton'
+import { ContentPasteIcon } from '../../components/icons'
 
 import { grid } from '../../styles/grid'
 
-import { ContractTransaction, ContractReceipt } from 'ethers'
 import Clipboard from '@react-native-community/clipboard'
 import { colors } from '../../styles/colors'
+import { TokenImage } from '../home/TokenImage'
+import { BaseButton } from '../../components/button/BaseButton'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import { shortAddress } from '../../lib/utils'
 
 type Props = {
-  transaction: ContractTransaction
+  transaction: any
 }
 
 const TransactionInfo = ({ transaction }: Props) => {
-  const [status, setStatus] = useState<'PENDING' | 'SUCCESS' | 'FAILED'>(
-    'PENDING',
-  )
-
-  useEffect(() => {
-    console.log('tx', transaction)
-    // get the status
-    transaction
-      .wait()
-      .then((reciept: ContractReceipt) =>
-        setStatus(reciept.status === 1 ? 'SUCCESS' : 'FAILED'),
-      )
-  }, [transaction])
-
   return (
     <View style={styles.parent}>
       <Text style={styles.label}>You have just sent</Text>
-      <Text style={styles.hash}>{transaction.to}</Text>
 
-      <Text style={styles.label}>Status:</Text>
-      <Text style={styles.label}>{status}</Text>
-
-      <Text style={styles.hashLabel}>transaction hash</Text>
-
-      <View style={grid.row}>
-        <View style={{ ...grid.column6, ...styles.bottomColumn }}>
-          <SquareButton
-            onPress={() => Clipboard.setString(transaction.hash)}
-            title="copy"
-            testID="Hash.CopyButton"
-            icon={<CopyIcon width={55} height={55} />}
-          />
+      <View style={{ ...grid.row, ...styles.row }}>
+        <View style={grid.column2}>
+          <TokenImage symbol={transaction.symbol} height={50} width={50} />
         </View>
-        <View style={{ ...grid.column6, ...styles.bottomColumn }}>
-          <SquareButton
+        <View style={grid.column9}>
+          <Text style={{ ...styles.value, ...styles.amount }}>
+            {transaction.value} {transaction.symbol}
+          </Text>
+        </View>
+      </View>
+
+      <Text style={styles.label}>To the recipient</Text>
+      <View style={{ ...grid.row, ...styles.row }}>
+        <View style={grid.column2}>
+          <TokenImage symbol="NONE" height={50} width={50} />
+        </View>
+        <View style={grid.column9}>
+          <Text style={{ ...styles.value, ...styles.recipient }}>
+            {transaction.to}
+          </Text>
+        </View>
+      </View>
+
+      <View style={styles.row}>
+        <Text style={styles.label}>Status</Text>
+        <Text style={styles.value}>{transaction.status}</Text>
+      </View>
+
+      <View style={styles.row}>
+        <TouchableOpacity onPress={() => Clipboard.setString(transaction.hash)}>
+          <Text style={styles.label}>TX hash</Text>
+          <Text style={styles.value}>
+            {shortAddress(transaction.hash, 10)}
+            <View style={styles.copy}>
+              <ContentPasteIcon />
+            </View>
+            copy
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={{ ...grid.row, ...styles.buttons }}>
+        <View style={{ ...grid.column6, ...grid.offset3 }}>
+          <BaseButton
             onPress={() =>
-              Linking.openURL(`https://explorer.testnet.rsk.co/tx/${tx.hash}`)
+              Linking.openURL(
+                `https://explorer.testnet.rsk.co/tx/${transaction.hash}`,
+              )
             }
-            title="open"
-            testID="Hash.OpenURLButton"
-            icon={<CompassIcon width={30} height={30} />}
-          />
+            testID="Hash.OpenURLButton">
+            <Text style={styles.explorerText}>view in explorer</Text>
+          </BaseButton>
         </View>
       </View>
     </View>
@@ -67,27 +83,33 @@ const styles = StyleSheet.create({
   parent: {
     marginTop: 20,
   },
+  buttons: {
+    marginTop: 100,
+  },
+  row: {
+    marginBottom: 35,
+  },
   label: {
     color: colors.white,
+    fontWeight: '600',
+    marginBottom: 5,
   },
-  hash: {
-    color: '#5C5D5D',
+  value: {
+    color: colors.white,
     fontSize: 16,
-    fontWeight: '500',
-    textAlign: 'center',
-    padding: 10,
-    borderRadius: 10,
-    backgroundColor: 'rgba(255, 255, 255, .7)',
   },
-
-  hashLabel: {
-    color: '#5C5D5D',
-    textAlign: 'center',
-    marginTop: 5,
-    marginBottom: 20,
+  amount: {
+    marginTop: 15,
   },
-  bottomColumn: {
-    alignItems: 'center',
+  recipient: {
+    marginTop: 7,
+  },
+  copy: {
+    paddingLeft: 15,
+    paddingRight: 5,
+  },
+  explorerText: {
+    color: 'white',
   },
 })
 

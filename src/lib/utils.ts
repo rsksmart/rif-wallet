@@ -1,10 +1,11 @@
-export function shortAddress(address?: string): string {
+export function shortAddress(address?: string, trimAmount?: number): string {
   if (!address) {
     return ''
   }
+  const amount = trimAmount || 4
 
-  return `${address.substr(0, 6)}...${address.substr(
-    address.length - 4,
+  return `${address.substr(0, amount + 2)}...${address.substr(
+    address.length - amount,
     address.length,
   )}`
 }

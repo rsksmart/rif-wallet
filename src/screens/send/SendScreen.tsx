@@ -36,7 +36,13 @@ export const SendScreen: React.FC<
   const [selectedToken, setSelectedToken] = React.useState<ITokenWithBalance>()
 
   // response:
-  const [tx, setTx] = useState<ContractTransaction>()
+  const [currentTransaction, setCurrentTransaction] = useState<any>({
+    to: '0xFCcA8a451857bdE6b26994534A0AC6aB4fB47A4e',
+    value: '1',
+    symbol: 'DOC',
+    status: 'PENDING',
+    hash: '0x437596a5f97d5c2a48a0cef5db8a09f09d867cd16b3e2e9ee8277c3a085a0bc6'
+  })
   const [error, setError] = useState<string>()
   const chainId = 31 // @todo
 
@@ -72,7 +78,14 @@ export const SendScreen: React.FC<
       transferMethod
         .transfer(bundle.to.toLowerCase(), tokenAmount)
         .then((txPending: ContractTransaction) => {
-          setTx(txPending)
+          // setTx(txPending)
+          // save transaction type to be used on transactionInfo screen
+          setCurrentTransaction({
+            to: bundle.to,
+            amount: bundle.amount, //save amount before decimals
+            logo: transferMethod.logo,
+            hash: txPending.hash,
+          })
           setIsLoading(false)
         })
         .catch((err: any) => {
@@ -91,31 +104,29 @@ export const SendScreen: React.FC<
   }
 
   return (
-    <View style={styles.parent}>
-      <ScrollView>
-        {!tx ? (
-          <TransactionForm
-            onConfirm={transfer}
-            tokenList={Object.values(state.balances)}
-            tokenPrices={state.prices}
-            chainId={chainId}
-            initialValues={{
-              recipient: route.params?.to,
-              amount: '0',
-              asset: selectedToken,
-            }}
-          />
-        ) : (
-          <TransactionInfo transaction={tx} />
-        )}
+    <ScrollView style={styles.parent}>
+      {!currentTransaction ? (
+        <TransactionForm
+          onConfirm={transfer}
+          tokenList={Object.values(state.balances)}
+          tokenPrices={state.prices}
+          chainId={chainId}
+          initialValues={{
+            recipient: route.params?.to,
+            amount: '0',
+            asset: selectedToken,
+          }}
+        />
+      ) : (
+        <TransactionInfo transaction={currentTransaction} />
+      )}
 
-        {!!error && (
-          <View style={styles.centerRow}>
-            <Text>{t('An error ocurred')}</Text>
-          </View>
-        )}
-      </ScrollView>
-    </View>
+      {!!error && (
+        <View style={styles.centerRow}>
+          <Text>{t('An error ocurred')}</Text>
+        </View>
+      )}
+    </ScrollView>
   )
 }
 
