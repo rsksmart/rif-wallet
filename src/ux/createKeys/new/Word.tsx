@@ -2,6 +2,7 @@ import React from 'react'
 
 import { grid } from '../../../styles/grid'
 import { StyleSheet, View, Text } from 'react-native'
+import { colors } from '../../../styles/colors'
 
 export const Word = ({
   wordNumber,
@@ -24,7 +25,7 @@ export const Word = ({
 
 const styles = StyleSheet.create({
   wordNumber: {
-    color: '#ffffff',
+    color: colors.white,
     display: 'flex',
     alignItems: 'flex-start',
     alignContent: 'flex-start',
@@ -32,14 +33,14 @@ const styles = StyleSheet.create({
   },
   wordContent: {
     borderRadius: 30,
-    backgroundColor: 'rgba(219, 227, 255, 0.3)',
+    backgroundColor: colors.darkPurple2,
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
     paddingHorizontal: 10,
     paddingVertical: 7,
   },
   wordText: {
-    color: '#ffffff',
+    color: colors.white,
     fontSize: 14,
   },
 

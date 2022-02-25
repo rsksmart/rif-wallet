@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import { StyleSheet, View, ScrollView, Text } from 'react-native'
 import { CreateKeysProps, ScreenProps } from '../types'
 import { Trans } from 'react-i18next'
+import { colors } from '../../../styles/colors'
 
 import { getTokenColor } from '../../../screens/home/tokenColor'
 import { SquareButton } from '../../../components/button/SquareButton'
@@ -42,7 +43,7 @@ export const NewMasterKeyScreen: React.FC<
       <SquareButton
         // @ts-ignore
         onPress={() => navigation.navigate('ConfirmNewMasterKey', { mnemonic })}
-        title="Continue"
+        title=""
         testID="Address.CopyButton"
         icon={<Arrow color={getTokenColor('RBTC')} rotate={90} />}
       />
@@ -52,10 +53,10 @@ export const NewMasterKeyScreen: React.FC<
 
 const styles = StyleSheet.create({
   parent: {
-    backgroundColor: '#050134',
+    backgroundColor: colors.darkBlue,
   },
   header: {
-    color: '#ffffff',
+    color: colors.white,
     fontSize: 22,
     paddingVertical: 25,
     marginBottom: 5,
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
   },
   wordContent: {
     borderRadius: 30,
-    backgroundColor: 'rgba(219, 227, 255, 0.3)',
+    backgroundColor: colors.darkPurple2,
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
     paddingHorizontal: 10,
