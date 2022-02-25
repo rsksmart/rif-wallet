@@ -3,14 +3,16 @@ import {
   StyleSheet,
   View,
   ScrollView,
-  TextInput,
   Text,
   TouchableOpacity,
 } from 'react-native'
-import { Button } from '../../../components'
 import { CreateKeysProps, ScreenProps } from '../types'
 import { useTranslation } from 'react-i18next'
 import { grid } from '../../../styles/grid'
+import { SquareButton } from '../../../components/button/SquareButton'
+import { Arrow } from '../../../components/icons'
+import { getTokenColor } from '../../../screens/home/tokenColor'
+import { WordInput } from './WordInput'
 
 interface ConfirmMasterKeyScreenProps {
   createFirstWallet: CreateKeysProps['createFirstWallet']
@@ -35,32 +37,6 @@ const shuffle = (array: string[]) => {
   return array
 }
 
-const WordInput: React.FC<{
-  index: number
-  initValue: string
-}> = ({ index, initValue }) => {
-  return (
-    <View
-      style={{
-        ...grid.column4,
-        ...styles.wordContainer,
-      }}>
-      <Text style={styles.wordIndex}>{index}. </Text>
-      {initValue ? (
-        <Text style={styles.wordText}>{initValue}</Text>
-      ) : (
-        <TextInput
-          key={index}
-          style={styles.wordInput}
-          value={initValue}
-          placeholder=""
-          editable={false}
-        />
-      )}
-    </View>
-  )
-}
-
 export const ConfirmNewMasterKeyScreen: React.FC<
   ScreenProps<'ConfirmNewMasterKey'> & ConfirmMasterKeyScreenProps
 > = ({ route, navigation, createFirstWallet }) => {
@@ -73,6 +49,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
 
   const [error, setError] = useState<string | null>(null)
   const selectWord = (selectedWord: string) => {
+    setError(null)
     const a = [...selectedWords, selectedWord]
     setSelectedWords(a)
     setWords(words.filter(word => !a.find(w => w === word)))
@@ -87,7 +64,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
     const isValid = mnemonic === selectedWords.join(' ')
 
     if (!isValid) {
-      setError(t('entered words does not match you your master key'))
+      setError(t('Entered words does not match you your master key'))
       return
     }
 
@@ -112,13 +89,9 @@ export const ConfirmNewMasterKeyScreen: React.FC<
           <Text>{row + rows.length}</Text>
         </View>
       ))}
-      <Text>
+      <View style={styles.badgeArea}>
         {words.map(word => (
-          <View
-            key={word}
-            style={{
-              ...styles.badgeContainer,
-            }}>
+          <View key={word} style={styles.badgeContainer}>
             <TouchableOpacity
               style={styles.badgeText}
               onPress={() => selectWord(word)}>
@@ -126,16 +99,16 @@ export const ConfirmNewMasterKeyScreen: React.FC<
             </TouchableOpacity>
           </View>
         ))}
-      </Text>
+      </View>
       {error && <Text style={styles.defaultText}>{error}</Text>}
 
-      <View>
-        <Button
-          onPress={handleConfirmMnemonic}
-          title={'Confirm'}
-          testID="Button.Confirm"
-        />
-      </View>
+      <SquareButton
+        // @ts-ignore
+        onPress={handleConfirmMnemonic}
+        title=""
+        testID="Address.CopyButton"
+        icon={<Arrow color={getTokenColor('RBTC')} rotate={90} />}
+      />
     </ScrollView>
   )
 }
@@ -147,26 +120,16 @@ const styles = StyleSheet.create({
   parent: {
     backgroundColor: '#050134',
   },
-  wordContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-    marginVertical: 3,
-    color: '#ffffff',
-  },
-  wordText: {
-    backgroundColor: 'rgba(219, 227, 255, 0.3)',
-    color: '#ffffff',
-    borderRadius: 30,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-  },
 
-  badgeContainer: {
-    flex: 1,
-    padding: 1,
+  badgeArea: {
     flexDirection: 'row',
-    marginVertical: 5,
+    flex: 1,
+    flexWrap: 'wrap',
+  },
+  badgeContainer: {
+    padding: 1,
+
+    marginVertical: 1,
   },
   badgeText: {
     backgroundColor: 'rgba(219, 227, 255, 0.3)',
@@ -181,23 +144,5 @@ const styles = StyleSheet.create({
     fontSize: 22,
     paddingVertical: 20,
     textAlign: 'center',
-  },
-  wordInput: {
-    borderColor: '#ffffff',
-    borderWidth: 1,
-    marginHorizontal: 10,
-    borderRadius: 10,
-    flex: 1,
-    textAlignVertical: 'top',
-    paddingTop: 0,
-    paddingBottom: 0,
-    height: 25,
-    color: '#ffffff',
-    fontSize: 15,
-  },
-  wordIndex: {
-    color: '#ffffff',
-    display: 'flex',
-    paddingVertical: 5,
   },
 })
