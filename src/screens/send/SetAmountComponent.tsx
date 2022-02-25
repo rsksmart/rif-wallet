@@ -37,8 +37,6 @@ const SetAmountComponent: React.FC<Interface> = ({
       ? convertUSDtoToken(Number(text), usdAmount || 0, false)
       : Number(text)
 
-    // console.log({ tokenBalance, maxBalance })
-
     // call the parent with the converted value
     setAmount(tokenBalance.toString())
 
@@ -59,7 +57,7 @@ const SetAmountComponent: React.FC<Interface> = ({
     setError(null)
     setInput('')
     setShowUSD(false)
-    setAmount(0)
+    setAmount('0')
   }, [token])
 
   return (

@@ -37,9 +37,9 @@ export const SendScreen: React.FC<
     setError(undefined)
     setCurrentTransaction({ status: 'USER_CONFIRM' })
 
-    // handle both ERC20 tokens and gas
+    // handle both ERC20 tokens and the native token (gas)
     const transferMethod =
-      token.contractAddress === '0x0000000000000000000000000000000000000000'
+      token.symbol === 'TRBTC'
         ? makeRBTCToken(wallet, chainId)
         : convertToERC20Token(token, {
             signer: wallet,
@@ -52,7 +52,6 @@ export const SendScreen: React.FC<
       transferMethod
         .transfer(to.toLowerCase(), tokenAmount)
         .then((txPending: ContractTransaction) => {
-          // create variable because it won't be saved in the compiler otherwise
           const current: transactionInfo = {
             to,
             value: amount,
@@ -111,48 +110,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 40,
     paddingTop: 40,
     paddingHorizontal: 20,
-  },
-  label: {
-    color: colors.white,
-    marginBottom: 5,
-  },
-
-  chooseAsset: {
-    width: '100%',
-    backgroundColor: '#fff',
-    borderRadius: 15,
-    alignItems: 'center',
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 2,
-    justifyContent: 'center',
-  },
-  button: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  centerRow: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  icon: {
-    marginTop: 14,
-    paddingLeft: 5,
-  },
-  input: {
-    backgroundColor: '#ffffff',
-    borderRadius: 10,
-    display: 'flex',
-    height: 50,
-    marginTop: 10,
-    margin: 10,
-  },
-  section: {
-    marginTop: 5,
-    marginBottom: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
-    flex: 1,
   },
   error: {
     marginTop: 10,

@@ -11,7 +11,7 @@ import { TokenImage } from '../home/TokenImage'
 interface Interface {
   selectedToken: ITokenWithBalance
   tokenList: ITokenWithBalance[]
-  handleTokenSelection: any
+  handleTokenSelection: (token: ITokenWithBalance) => void
 }
 
 const AssetChooser: React.FC<Interface> = ({
@@ -21,7 +21,7 @@ const AssetChooser: React.FC<Interface> = ({
 }) => {
   const [showSelector, setShowSelector] = useState<boolean>(false)
 
-  const handleToken = (token: any) => {
+  const handleToken = (token: ITokenWithBalance) => {
     setShowSelector(false)
     handleTokenSelection(token)
   }
