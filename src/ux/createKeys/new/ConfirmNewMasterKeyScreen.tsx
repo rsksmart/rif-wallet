@@ -18,6 +18,7 @@ import { colors } from '../../../styles/colors'
 interface ConfirmMasterKeyScreenProps {
   createFirstWallet: CreateKeysProps['createFirstWallet']
 }
+// source: https://stackoverflow.com/questions/63813211/qualtrics-and-javascript-randomly-insert-words-into-sentences
 const shuffle = (array: string[]) => {
   let currentIndex = array.length,
     randomIndex
