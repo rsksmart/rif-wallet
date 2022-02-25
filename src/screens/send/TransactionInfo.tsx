@@ -1,37 +1,55 @@
 import React from 'react'
-
-import { Linking, StyleSheet, Text, View } from 'react-native'
-import { ContentPasteIcon, SmileFaceIcon } from '../../components/icons'
-
-import { grid } from '../../styles/grid'
-
+import {
+  Image,
+  Linking,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+} from 'react-native'
 import Clipboard from '@react-native-community/clipboard'
+
+import { ContentPasteIcon, SmileFaceIcon } from '../../components/icons'
+import { grid } from '../../styles/grid'
 import { colors } from '../../styles/colors'
 import { TokenImage } from '../home/TokenImage'
 import { BaseButton } from '../../components/button/BaseButton'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import { shortAddress } from '../../lib/utils'
 
 export interface transactionInfo {
-  to: string
-  value: string
-  symbol: string
-  hash: string
+  to?: string
+  value?: string
+  symbol?: string
+  hash?: string
+  status: 'USER_CONFIRM' | 'PENDING' | 'SUCCESS' | 'FAILED'
 }
 
 type Props = {
   transaction: transactionInfo
-  status: string
 }
 
-const TransactionInfo = ({ transaction, status }: Props) => {
+const TransactionInfo = ({ transaction }: Props) => {
+  if (transaction.status === 'USER_CONFIRM' || !transaction.hash) {
+    return (
+      <View style={styles.parent}>
+        <Image
+          source={require('../../images/transferWait.png')}
+          style={styles.loading}
+        />
+        <Text style={styles.loadingReason}>transfering ...</Text>
+      </View>
+    )
+  }
+
   return (
     <View style={styles.parent}>
       <Text style={styles.label}>You have just sent</Text>
 
       <View style={{ ...grid.row, ...styles.row }}>
         <View style={grid.column2}>
-          <TokenImage symbol={transaction.symbol} height={50} width={50} />
+          {transaction.symbol && (
+            <TokenImage symbol={transaction.symbol} height={50} width={50} />
+          )}
         </View>
         <View style={grid.column9}>
           <Text style={{ ...styles.value, ...styles.amount }}>
@@ -54,11 +72,12 @@ const TransactionInfo = ({ transaction, status }: Props) => {
 
       <View style={styles.row}>
         <Text style={styles.label}>Status</Text>
-        <Text style={styles.value}>{status}</Text>
+        <Text style={styles.value}>{transaction.status}</Text>
       </View>
 
       <View style={styles.row}>
-        <TouchableOpacity onPress={() => Clipboard.setString(transaction.hash)}>
+        <TouchableOpacity
+          onPress={() => Clipboard.setString(transaction.hash || '')}>
           <Text style={styles.label}>TX hash</Text>
           <Text style={styles.value}>
             {shortAddress(transaction.hash, 10)}
@@ -118,6 +137,15 @@ const styles = StyleSheet.create({
   },
   explorerText: {
     color: 'white',
+  },
+  loading: {
+    alignSelf: 'center',
+    marginTop: '25%',
+    marginBottom: 10,
+  },
+  loadingReason: {
+    textAlign: 'center',
+    color: colors.white,
   },
 })
 

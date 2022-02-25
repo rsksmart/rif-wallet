@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { AddressInput } from '../../components'
 import { BaseButton } from '../../components/button/BaseButton'
@@ -10,7 +10,11 @@ import AssetChooser from './AssetChooser'
 import SetAmountComponent from './SetAmountComponent'
 
 interface Interface {
-  onConfirm: (bundle: any) => Promise<any>
+  onConfirm: (
+    selectedToken: ITokenWithBalance,
+    amount: string,
+    to: string,
+  ) => void
   tokenList: ITokenWithBalance[]
   tokenPrices: Record<string, IPrice>
   chainId: number
@@ -42,8 +46,7 @@ const TransactionForm: React.FC<Interface> = ({
     setTo(address)
   }
 
-  const handleConfirmClick = () =>
-    onConfirm({ tokenAddress: selectedToken.contractAddress, amount, to })
+  const handleConfirmClick = () => onConfirm(selectedToken, amount, to)
 
   return (
     <View>
