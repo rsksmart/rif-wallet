@@ -1,35 +1,74 @@
 import React, { useState } from 'react'
-import { StyleSheet, View, ScrollView, TextInput } from 'react-native'
-import { Button, Header2, Paragraph } from '../../../components'
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+} from 'react-native'
 import { CreateKeysProps, ScreenProps } from '../types'
-import { useTranslation, Trans } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
+import { grid } from '../../../styles/grid'
+import { SquareButton } from '../../../components/button/SquareButton'
+import { Arrow } from '../../../components/icons'
+import { getTokenColor } from '../../../screens/home/tokenColor'
+import { WordInput } from './WordInput'
+import { colors } from '../../../styles/colors'
 
 interface ConfirmMasterKeyScreenProps {
   createFirstWallet: CreateKeysProps['createFirstWallet']
+}
+// source: https://stackoverflow.com/questions/63813211/qualtrics-and-javascript-randomly-insert-words-into-sentences
+const shuffle = (array: string[]) => {
+  let currentIndex = array.length,
+    randomIndex
+
+  // While there remain elements to shuffle...
+  while (currentIndex !== 0) {
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex)
+    currentIndex--
+
+    // And swap it with the current element.
+    ;[array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex],
+    ]
+  }
+
+  return array
 }
 
 export const ConfirmNewMasterKeyScreen: React.FC<
   ScreenProps<'ConfirmNewMasterKey'> & ConfirmMasterKeyScreenProps
 > = ({ route, navigation, createFirstWallet }) => {
   const mnemonic = route.params.mnemonic
+  const [selectedWords, setSelectedWords] = useState<string[]>([])
+  const [words, setWords] = useState<string[]>(shuffle(mnemonic.split(' ')))
 
-  const [mnemonicToConfirm, setMnemonicToConfirm] = useState<
-    string | undefined
-  >()
+  //TODO: create "three column grid" component
+  const rows = [1, 2, 3, 4, 5, 6, 7, 8]
+
   const { t } = useTranslation()
 
   const [error, setError] = useState<string | null>(null)
-
+  const selectWord = (selectedWord: string) => {
+    setError(null)
+    const updatedWords = [...selectedWords, selectedWord]
+    setSelectedWords(updatedWords)
+    setWords(words.filter(word => !updatedWords.find(w => w === word)))
+  }
   const saveAndNavigate = async () => {
     const rifWallet = await createFirstWallet(mnemonic)
+    // @ts-ignore
     navigation.navigate('KeysCreated', { address: rifWallet.address })
   }
 
   const handleConfirmMnemonic = async () => {
-    const isValid = mnemonic === mnemonicToConfirm
+    const isValid = mnemonic === selectedWords.join(' ')
 
     if (!isValid) {
-      setError(t('entered words does not match you your master key'))
+      setError(t('Entered words does not match you your master key'))
       return
     }
 
@@ -37,64 +76,77 @@ export const ConfirmNewMasterKeyScreen: React.FC<
   }
 
   return (
-    <ScrollView>
-      <View style={styles.sectionCentered}>
-        <Paragraph>
-          <Trans>
-            With your master key (seed phrase) you are able to create as many
-            wallets as you need.
-          </Trans>
-        </Paragraph>
+    <ScrollView style={styles.parent}>
+      <Text style={styles.header}>Confirm your master key</Text>
+
+      {rows.map(row => (
+        <View style={grid.row}>
+          <WordInput wordNumber={row} initValue={selectedWords[row - 1]} />
+          <WordInput
+            wordNumber={row + rows.length}
+            initValue={selectedWords[row + rows.length - 1]}
+          />
+          <WordInput
+            wordNumber={row + rows.length * 2}
+            initValue={selectedWords[row + rows.length * 2 - 1]}
+          />
+          <Text>{row + rows.length}</Text>
+        </View>
+      ))}
+      <View style={styles.badgeArea}>
+        {words.map(word => (
+          <View key={word} style={styles.badgeContainer}>
+            <TouchableOpacity
+              style={styles.badgeText}
+              onPress={() => selectWord(word)}>
+              <Text>{word}</Text>
+            </TouchableOpacity>
+          </View>
+        ))}
       </View>
-      <View style={styles.sectionCentered}>
-        <Paragraph>validate your master key</Paragraph>
-      </View>
-      <View style={styles.section}>
-        <Header2>Master key</Header2>
-        <TextInput
-          onChangeText={text => setMnemonicToConfirm(text)}
-          value={mnemonicToConfirm}
-          placeholder={t('Enter your 12 words master key')}
-          multiline
-          style={styles.input}
-          testID="Input.Confirm"
-        />
-        {error && <Paragraph>{error}</Paragraph>}
-      </View>
-      <View style={styles.section}>
-        <Button onPress={saveAndNavigate} title={'Skip'} />
-      </View>
-      <View style={styles.section}>
-        <Button
-          onPress={handleConfirmMnemonic}
-          title={'Confirm'}
-          testID="Button.Confirm"
-        />
-      </View>
+      {error && <Text style={styles.defaultText}>{error}</Text>}
+
+      <SquareButton
+        // @ts-ignore
+        onPress={handleConfirmMnemonic}
+        title=""
+        testID="Address.CopyButton"
+        icon={<Arrow color={getTokenColor('RBTC')} rotate={90} />}
+      />
     </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
-  section: {
-    paddingTop: 15,
-    paddingBottom: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
+  defaultText: {
+    color: colors.white,
   },
-  sectionCentered: {
-    paddingTop: 15,
-    paddingBottom: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
-    alignItems: 'center',
+  parent: {
+    backgroundColor: colors.darkBlue,
   },
-  input: {
-    height: 80,
-    margin: 12,
-    borderWidth: 1,
-    borderColor: '#000',
-    padding: 10,
-    textAlignVertical: 'top',
+
+  badgeArea: {
+    flexDirection: 'row',
+    flex: 1,
+    flexWrap: 'wrap',
+  },
+  badgeContainer: {
+    padding: 1,
+
+    marginVertical: 1,
+  },
+  badgeText: {
+    backgroundColor: colors.purple,
+    color: colors.white,
+    borderRadius: 30,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+
+  header: {
+    color: colors.white,
+    fontSize: 22,
+    paddingVertical: 20,
+    textAlign: 'center',
   },
 })
