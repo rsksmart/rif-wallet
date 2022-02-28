@@ -7,7 +7,7 @@ import {
   Share,
   Text,
 } from 'react-native'
-import { BasetButton } from '../../components/button/BaseButton'
+import { BaseButton } from '../../components/button/BaseButton'
 import QRCode from 'react-qr-code'
 import Clipboard from '@react-native-community/clipboard'
 import { CopyIcon, ShareIcon } from '../../components/icons'
@@ -81,16 +81,16 @@ export const ReceiveScreen: React.FC<ReceiveScreenProps> = ({
             ...grid.column5,
             ...styles.bottomColumn,
           }}>
-          <BasetButton onPress={handleShare} testID={TestID.ShareButton}>
+          <BaseButton onPress={handleShare} testID={TestID.ShareButton}>
             <ShareIcon width={30} height={30} />
             <Text style={styles.buttonText}>share</Text>
-          </BasetButton>
+          </BaseButton>
         </View>
         <View style={{ ...grid.column5, ...styles.bottomColumn }}>
-          <BasetButton onPress={handleCopy} testID={TestID.CopyButton}>
+          <BaseButton onPress={handleCopy} testID={TestID.CopyButton}>
             <CopyIcon width={30} height={30} />
             <Text style={styles.buttonText}>copy</Text>
-          </BasetButton>
+          </BaseButton>
         </View>
       </View>
     </ScrollView>

@@ -20,7 +20,6 @@ import { DappsScreenScreenProps } from './screens/dapps'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
 import { ManagerWalletScreenProps } from './screens/settings/ManageWalletsScreen'
 import { SettingsScreenProps } from './screens/settings/SettingsScreen'
-import { ReceiveScreenProps } from './screens/receive/ReceiveScreen'
 import { colors } from './styles/colors'
 
 const InjectedScreens = {
@@ -107,7 +106,6 @@ export const RootNavigation: React.FC<{
   dappsScreenProps: DappsScreenScreenProps
   manageWalletScreenProps: ManagerWalletScreenProps
   settingsScreen: SettingsScreenProps
-  receiveScreenProps: ReceiveScreenProps
 }> = ({
   currentScreen,
   hasKeys,
@@ -121,7 +119,6 @@ export const RootNavigation: React.FC<{
   dappsScreenProps,
   manageWalletScreenProps,
   settingsScreen,
-  receiveScreenProps,
 }) => {
   return (
     <View style={styles.parent}>
@@ -160,11 +157,11 @@ export const RootNavigation: React.FC<{
         <RootStack.Screen name="CreateKeysUX" options={sharedOptions}>
           {props => <CreateKeysNavigation {...props} {...keyManagementProps} />}
         </RootStack.Screen>
-        <RootStack.Screen name="Receive" options={sharedOptions}>
-          {props => (
-            <Screens.ReceiveScreen {...props} {...receiveScreenProps} />
-          )}
-        </RootStack.Screen>
+        <RootStack.Screen
+          component={Screens.ReceiveScreenHOC}
+          name="Receive"
+          options={sharedOptions}
+        />
         <RootStack.Screen name="Send">
           {props => (
             <InjectedScreens.SendScreen {...props} {...sendScreenProps} />
