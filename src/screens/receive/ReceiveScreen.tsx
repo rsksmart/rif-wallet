@@ -46,6 +46,7 @@ export const ReceiveScreen: React.FC<ReceiveScreenProps> = ({
   }
 
   const hasRegisteredDomains = registeredDomains.length > 0
+  const hasManyDomains = registeredDomains.length > 0
 
   return (
     <ScrollView style={styles.parent}>
@@ -68,13 +69,31 @@ export const ReceiveScreen: React.FC<ReceiveScreenProps> = ({
         <Text testID={TestID.AddressText} style={styles.smartAddress}>
           {getAddressDisplayText(smartWalletAddress).displayAddress}
         </Text>
-        {hasRegisteredDomains &&
-          registeredDomains.map((registeredDomain: string) => (
-            <Text style={styles.smartAddress} key={registeredDomain}>
-              <Text key={registeredDomain}>{registeredDomain}</Text>
-            </Text>
-          ))}
       </View>
+      {hasRegisteredDomains && (
+        <React.Fragment>
+          <View>
+            <Text style={{ ...qrContainerStyle, ...styles.smartAddressLabel }}>
+              domain{hasManyDomains && 's'}
+            </Text>
+          </View>
+          <ScrollView style={styles.domainsWrapper}>
+            {registeredDomains.map((registeredDomain: string) => (
+              <View
+                key={registeredDomain}
+                style={{
+                  ...styles.addressContainer,
+                  ...qrContainerStyle,
+                  ...styles.domainContainer,
+                }}>
+                <Text style={styles.smartAddress}>
+                  <Text key={registeredDomain}>{registeredDomain}</Text>
+                </Text>
+              </View>
+            ))}
+          </ScrollView>
+        </React.Fragment>
+      )}
       <View style={{ ...grid.row, ...qrContainerStyle, ...styles.customRow }}>
         <View
           style={{
@@ -116,6 +135,13 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     backgroundColor: '#dbe3ff',
+  },
+  domainsWrapper: {
+    maxHeight: 100,
+    overflow: 'scroll',
+  },
+  domainContainer: {
+    marginBottom: 10,
   },
   smartAddress: {
     color: '#08043c',
