@@ -13,7 +13,7 @@ export const ReceiveScreenHOC: React.FC<ReceiveScreenProps> = () => {
     getDomains(wallet.smartWalletAddress).then(domains =>
       setRegisteredDomains(domains),
     )
-  }, [])
+  }, [wallet])
   return (
     <ReceiveScreen
       smartWalletAddress={wallet.smartWalletAddress}
