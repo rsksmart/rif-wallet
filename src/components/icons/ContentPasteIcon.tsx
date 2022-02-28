@@ -1,5 +1,5 @@
 import React from 'react'
-import Svg, { ClipPath, Defs, G, Path, Rect, SvgProps } from 'react-native-svg'
+import Svg, { ClipPath, Defs, G, Path, Rect } from 'react-native-svg'
 import { SVGIconInterface } from '.'
 
 export const ContentPasteIcon: React.FC<SVGIconInterface> = ({
