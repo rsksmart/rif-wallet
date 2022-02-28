@@ -9,10 +9,9 @@ import { grid } from '../../styles/grid'
 import { balanceToString } from '../balances/BalancesScreen'
 
 interface Interface {
-  setAmount: (amount: string) => void
+  setAmount: (amount: string, isValid: boolean) => void
   token: ITokenWithBalance
   usdAmount: number | undefined
-  // maxBalance: number
 }
 
 const SetAmountComponent: React.FC<Interface> = ({
@@ -30,24 +29,25 @@ const SetAmountComponent: React.FC<Interface> = ({
     : convertUSDtoToken(Number(input) || 0, usdAmount || 0, true)
 
   const handleTextChange = (text: string) => {
-    // locally set the amount set:
+    // locally set the amount set and clear error
     setInput(text)
+    setError(null)
 
-    const tokenBalance = showUSD
+    const amountToTransfer = showUSD
       ? convertUSDtoToken(Number(text), usdAmount || 0, false)
       : Number(text)
 
-    // call the parent with the converted value
-    setAmount(tokenBalance.toString())
-
-    // clear errors before checking
-    setError(null)
-
-    const maxBalance = Number(
+    const availableBalance = Number(
       balanceToString(token.balance, token.decimals || 0),
     )
 
-    if (tokenBalance > maxBalance) {
+    // call the parent with the converted value and isValid
+    setAmount(
+      amountToTransfer.toString(),
+      amountToTransfer > availableBalance || amountToTransfer !== 0,
+    )
+
+    if (amountToTransfer > availableBalance) {
       setError('Insuficient funds')
     }
   }
@@ -57,11 +57,11 @@ const SetAmountComponent: React.FC<Interface> = ({
     setError(null)
     setInput('')
     setShowUSD(false)
-    setAmount('0')
+    setAmount('0', false)
   }, [token])
 
   return (
-    <View style={styles.container}>
+    <View>
       <View style={{ ...grid.row, ...styles.inputContainer }}>
         <View style={grid.column8}>
           <TextInput
@@ -106,7 +106,6 @@ const SetAmountComponent: React.FC<Interface> = ({
 }
 
 const styles = StyleSheet.create({
-  container: {},
   inputContainer: {
     backgroundColor: colors.darkPurple2,
     height: 50,

@@ -35,18 +35,40 @@ const TransactionForm: React.FC<Interface> = ({
   const [selectedToken, setSelectedToken] = useState<ITokenWithBalance>(
     initialValues.asset || tokenList[0],
   )
-  const [amount, setAmount] = useState<string>(initialValues.amount || '0')
-  const [to, setTo] = useState<string>(initialValues.recipient || '')
+
+  interface txDetail {
+    value: string
+    isValid: boolean
+  }
+
+  const [amount, setAmount] = useState<txDetail>({
+    value: initialValues.amount || '0',
+    isValid: false,
+  })
+
+  const [to, setTo] = useState<txDetail>({
+    value: initialValues.recipient || '',
+    isValid: false,
+  })
+
   const [error, setError] = useState<string | null>(null)
+
+  const isValidTransaction = amount.isValid && to.isValid
 
   const tokenQuote = tokenPrices[selectedToken.contractAddress]?.price
 
-  const handleTargetAddressChange = (address: string) => {
+  const handleAmountChange = (newAmount: string, isValid: boolean) => {
     setError(null)
-    setTo(address)
+    setAmount({ value: newAmount, isValid })
   }
 
-  const handleConfirmClick = () => onConfirm(selectedToken, amount, to)
+  const handleTargetAddressChange = (address: string, isValid: boolean) => {
+    setError(null)
+    setTo({ value: address, isValid })
+  }
+
+  const handleConfirmClick = () =>
+    onConfirm(selectedToken, amount.value, to.value)
 
   return (
     <View>
@@ -64,7 +86,7 @@ const TransactionForm: React.FC<Interface> = ({
         <View style={{ ...grid.column7, ...grid.offset1 }}>
           <Text style={styles.label}>set amount</Text>
           <SetAmountComponent
-            setAmount={setAmount}
+            setAmount={handleAmountChange}
             token={selectedToken}
             usdAmount={tokenQuote}
           />
@@ -73,7 +95,7 @@ const TransactionForm: React.FC<Interface> = ({
       <View>
         <Text style={styles.label}>choose recipient</Text>
         <AddressInput
-          initialValue={to}
+          initialValue={to.value}
           onChangeText={handleTargetAddressChange}
           testID={'To.Input'}
           chainId={chainId}
@@ -85,7 +107,7 @@ const TransactionForm: React.FC<Interface> = ({
       </View>
 
       <View style={styles.centerRow}>
-        <BaseButton onPress={handleConfirmClick}>
+        <BaseButton disabled={!isValidTransaction} onPress={handleConfirmClick}>
           <Text style={styles.confirmButton}>Confirm</Text>
         </BaseButton>
       </View>

@@ -23,10 +23,11 @@ import { BarCodeReadEvent } from 'react-native-camera'
 import { Button } from '../button'
 import { colors } from '../../styles/colors'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import { isValidChecksumAddress } from '@rsksmart/rsk-utils'
 
 type AddressInputProps = {
   initialValue: string
-  onChangeText: (newValue: string) => void
+  onChangeText: (newValue: string, isValid: boolean) => void
   testID?: string
   chainId: number
 }
@@ -46,7 +47,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
 
   useEffect(() => {
     setRecipient(initialValue)
-    onChangeText(initialValue)
+    onChangeText(initialValue, isValidChecksumAddress(initialValue, chainId))
   }, [initialValue])
 
   // status
@@ -58,7 +59,6 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   const handleChangeText = (inputText: string) => {
     setStatus({ type: 'READY' })
     setRecipient(inputText)
-    onChangeText(inputText)
 
     const newValidationMessage = validateAddress(inputText)
 
@@ -77,7 +77,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
           })
 
           // call parent with the resolved address
-          onChangeText(address)
+          onChangeText(address, isValidChecksumAddress(address, chainId))
         })
         .catch((_e: any) =>
           setStatus({
@@ -92,15 +92,16 @@ export const AddressInput: React.FC<AddressInputProps> = ({
           value: 'The checksum is invalid.',
         })
       }
-      // user may still be typing...
+
+      // user may still be typing or finished a valid address
+      onChangeText(inputText, isValidChecksumAddress(inputText))
     }
   }
 
   const handlePasteClick = () =>
     Clipboard.getString().then((value: string) => {
       setStatus({ type: 'READY' })
-      setRecipient(value)
-      validateCurrentInput(value)
+      handleChangeText(value)
     })
 
   // onUnFocus check the address is valid
