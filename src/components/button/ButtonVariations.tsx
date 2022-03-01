@@ -52,7 +52,7 @@ const buttonSharedStyles = StyleSheet.create({
   },
 
   iconContainer: {
-    marginTop: -12,
+    marginTop: -10,
   },
 
   text: {
@@ -105,10 +105,23 @@ const whiteStyles = StyleSheet.create({
 
 // Outline Variation
 const outlineStyles = StyleSheet.create({
-  button: {},
-  buttonDisables: {},
-  text: {},
-  textDisabled: {},
+  button: {
+    borderWidth: 2,
+    borderColor: colors.lightPurple,
+  },
+  buttonDisabled: {
+    borderWidth: 2,
+    borderColor: colors.gray,
+  },
+  buttonActive: {
+    backgroundColor: '#3a3966',
+  },
+  text: {
+    color: colors.lightPurple,
+  },
+  textDisabled: {
+    color: colors.lightPurple,
+  },
 })
 
 export const OutlineButton: React.FC<ButtonInterface> = props => (
