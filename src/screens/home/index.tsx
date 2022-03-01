@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
 import { NavigationProp } from '../../RootNavigation'
 import SelectedTokenComponent from './SelectedTokenComponent'
@@ -10,7 +10,6 @@ import { useSocketsState } from '../../subscriptions/RIFSockets'
 import FaucetComponent from './FaucetComponent'
 import { ScrollView } from 'react-native-gesture-handler'
 import { colors } from '../../styles/colors'
-import BaseButton from '../../components/button/BaseButton'
 
 export const HomeScreen: React.FC<{
   navigation: NavigationProp
