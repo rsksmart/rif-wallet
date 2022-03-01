@@ -25,14 +25,14 @@ const Button: React.FC<ButtonInterface & { buttonStyles: any }> = ({
           ? buttonStyles.buttonDisabled.backgroundColor
           : buttonStyles.buttonActive.backgroundColor
       }>
-      <View style={buttonSharedStyles.contentWrapper}>
+      <View style={sharedStyles.contentWrapper}>
         <Text
           style={
             disabled
-              ? { ...buttonSharedStyles.text, ...buttonStyles.textDisabled }
-              : { ...buttonSharedStyles.text, ...buttonStyles.text }
+              ? { ...sharedStyles.text, ...buttonStyles.textDisabled }
+              : { ...sharedStyles.text, ...buttonStyles.text }
           }>
-          {icon && <View style={buttonSharedStyles.iconContainer}>{icon}</View>}
+          {icon && <View style={sharedStyles.iconContainer}>{icon}</View>}
           {title}
         </Text>
       </View>
@@ -40,12 +40,7 @@ const Button: React.FC<ButtonInterface & { buttonStyles: any }> = ({
   )
 }
 
-// Blue Variation
-export const BlueButton: React.FC<ButtonInterface> = props => (
-  <Button {...props} buttonStyles={blueStyles} />
-)
-
-const buttonSharedStyles = StyleSheet.create({
+const sharedStyles = StyleSheet.create({
   contentWrapper: {
     display: 'flex',
     alignItems: 'center',
@@ -61,6 +56,11 @@ const buttonSharedStyles = StyleSheet.create({
     fontSize: 16,
   },
 })
+
+// Blue Variation
+export const BlueButton: React.FC<ButtonInterface> = props => (
+  <Button {...props} buttonStyles={blueStyles} />
+)
 
 const blueStyles = StyleSheet.create({
   button: {
@@ -104,6 +104,10 @@ const whiteStyles = StyleSheet.create({
 })
 
 // Outline Variation
+export const OutlineButton: React.FC<ButtonInterface> = props => (
+  <Button {...props} buttonStyles={outlineStyles} />
+)
+
 const outlineStyles = StyleSheet.create({
   button: {
     borderWidth: 2,
@@ -123,9 +127,3 @@ const outlineStyles = StyleSheet.create({
     color: colors.lightPurple,
   },
 })
-
-export const OutlineButton: React.FC<ButtonInterface> = props => (
-  <Button {...props} buttonStyles={outlineStyles} />
-)
-
-export default BlueButton
