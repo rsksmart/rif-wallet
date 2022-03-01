@@ -1,32 +1,30 @@
 import React, { ReactNode } from 'react'
-import { TouchableHighlight, StyleSheet } from 'react-native'
+import { TouchableHighlight, View, StyleSheet } from 'react-native'
 
-export interface ButtonInterface {
+export interface BaseButtonInterface {
   onPress?: () => any
-  title?: string
   disabled?: boolean
-}
-
-interface BaseButton {
-  variantStyle?: any
+  testID?: string
+  style?: any
   underlayColor?: string
-  children: ReactNode
 }
 
-const BaseButton: React.FC<ButtonInterface & BaseButton> = ({
+const BaseButton: React.FC<BaseButtonInterface & { children: ReactNode }> = ({
   children,
-  variantStyle,
+  style,
   underlayColor,
   disabled,
+  testID,
   onPress,
 }) => {
   return (
     <TouchableHighlight
-      style={{ ...styles.container, ...variantStyle }}
+      style={{ ...styles.container, ...style }}
       onPress={onPress}
       underlayColor={underlayColor}
-      disabled={disabled}>
-      {children}
+      disabled={disabled}
+      testID={testID}>
+      <View style={styles.wrapper}>{children}</View>
     </TouchableHighlight>
   )
 }
@@ -36,15 +34,10 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     paddingVertical: 15,
     paddingHorizontal: 20,
-    maxWidth: 180,
   },
-})
-
-export const textSharedStyles = StyleSheet.create({
-  text: {
-    textAlign: 'center',
-    fontWeight: '600',
-    fontSize: 16,
+  wrapper: {
+    display: 'flex',
+    alignContent: 'flex-end',
   },
 })
 
