@@ -3,16 +3,26 @@ import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { colors } from '../../styles/colors'
 
 type Props = {
+  disabled?: boolean
   label: string
-  variant: 'default' | 'error' | 'success'
+  testID: string
+  variant?: 'default' | 'error' | 'success'
   onPress: () => void
 }
 
-export const DialButton: React.FC<Props> = ({ label, variant, onPress }) => {
+export const DialButton: React.FC<Props> = ({
+  disabled,
+  label,
+  testID,
+  variant = 'default',
+  onPress,
+}) => {
   return (
     <TouchableOpacity
+      disabled={disabled}
       onPress={onPress}
-      style={{ ...styles.root, ...styles[variant] }}>
+      style={{ ...styles.root, ...styles[variant] }}
+      testID={testID}>
       <Text style={styles.label}>{label}</Text>
     </TouchableOpacity>
   )
