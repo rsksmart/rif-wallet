@@ -64,7 +64,6 @@ export const ImportMasterKeyScreen: React.FC<
           />
         </View>
       ))}
-      <Text style={{ color: '#FFFFFF' }}>{selectedWords.join(' ')}</Text>
 
       <View>
         {info && <Text style={styles.defaultText}>{info}</Text>}
