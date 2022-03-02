@@ -2,41 +2,24 @@ import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { getPin } from '../../storage/PinStore'
 
-import { Button } from '../../components/button'
 import { shareStyles } from '../../components/sharedStyles'
 import { Trans, useTranslation } from 'react-i18next'
-import { DialButton } from '../../components/button/DialButton'
+import { KeyPad } from '../../components/keyPad'
 import { colors } from '../../styles/colors'
-import { grid } from '../../styles/grid'
 
 interface Interface {
   unlock: () => void
 }
 
-interface IButton {
-  label: string
-  variant: 'default' | 'error' | 'success'
-}
-
-interface IDigit {
-  value: string
-  isFilled: boolean
-}
-
 export const RequestPIN: React.FC<Interface> = ({ unlock }) => {
-  const [inputtedPin, setInputtedPin] = useState('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
-  const [pin, setPin] = React.useState<Array<IDigit>>([
-    { value: '', isFilled: false },
-    { value: '', isFilled: false },
-    { value: '', isFilled: false },
-    { value: '', isFilled: false },
-  ])
+  const [pin, setPin] = React.useState<Array<string>>(['', '', '', ''])
+  const [position, setPosition] = React.useState(0)
 
   const { t } = useTranslation()
 
-  const checkPin = (enteredPin: string) => {
+  const checkPin = (enteredPin: string) => () => {
     setError(null)
     setIsLoading(true)
 
@@ -46,33 +29,32 @@ export const RequestPIN: React.FC<Interface> = ({ unlock }) => {
       }
       setIsLoading(false)
       setError('incorrect pin')
+      setPin(['', '', '', ''])
+      setPosition(0)
     })
   }
 
-  const buttons: Array<IButton> = [
-    { label: '1', variant: 'default' },
-    { label: '2', variant: 'default' },
-    { label: '3', variant: 'default' },
-    { label: '4', variant: 'default' },
-    { label: '5', variant: 'default' },
-    { label: '6', variant: 'default' },
-    { label: '7', variant: 'default' },
-    { label: '8', variant: 'default' },
-    { label: '9', variant: 'default' },
-    { label: 'DEL', variant: 'error' },
-    { label: '0', variant: 'default' },
-    { label: 'OK', variant: 'success' },
-  ]
-
-  const onPress = (value: string) => () => {
+  const onPressKey = (index: number) => (value: string) => {
     if (!isLoading) {
-      setInputtedPin(prev => {
-        if (value === 'DEL') {
-          return prev.slice(0, -1)
+      setPin(prev => {
+        if (index < 4) {
+          const tempPin = [...pin]
+          tempPin.splice(index, 1, value)
+          setPosition(index + 1)
+          return tempPin
         }
-        return `${prev}${value}`
+        return prev
       })
     }
+  }
+
+  const onDelete = (index: number) => () => {
+    setPin(() => {
+      const tempPin = [...pin]
+      tempPin.splice(index - 1, 1, '')
+      setPosition(index - 1)
+      return tempPin
+    })
   }
 
   return (
@@ -82,42 +64,22 @@ export const RequestPIN: React.FC<Interface> = ({ unlock }) => {
         ...styles.container,
       }}>
       <Text style={styles.header}>
-        <Trans>Confirm your PIN</Trans>
+        <Trans>{t('Confirm your PIN')}</Trans>
       </Text>
-      <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-        {pin.map(digit => (
-          <View key={digit.value} style={styles.dot} />
+      <View style={styles.dotsWrapper}>
+        {pin.map((digit, index) => (
+          <View
+            key={`${digit}${index}`}
+            style={{ ...styles.dot, ...(!!digit && styles.filledDot) }}
+          />
         ))}
       </View>
       {error && <Text style={styles.error}>{error}</Text>}
-      <View style={{ ...grid.row, flexWrap: 'wrap' }}>
-        {buttons.map(button => (
-          <View
-            key={button.label}
-            style={{
-              ...grid.column4,
-              alignContent: 'center',
-              justifyContent: 'center',
-              flexDirection: 'row',
-              paddingVertical: 6.5,
-              paddingHorizontal: 15,
-            }}>
-            <DialButton
-              label={button.label}
-              variant={button.variant}
-              onPress={onPress(button.label)}
-            />
-          </View>
-        ))}
-      </View>
-      <View>
-        <Button
-          onPress={() => checkPin(inputtedPin)}
-          title={t('Unlock')}
-          testID="Next.Button"
-          disabled={isLoading}
-        />
-      </View>
+      <KeyPad
+        onDelete={onDelete(position)}
+        onKeyPress={onPressKey(position)}
+        onUnlock={checkPin(pin.join(''))}
+      />
     </View>
   )
 }
@@ -128,10 +90,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     color: '#FFFFFF',
+    marginBottom: 20,
+    marginTop: 35,
   },
   container: {
-    marginHorizontal: 25,
-    marginTop: 30,
+    paddingHorizontal: 60,
+    paddingTop: 60,
     backgroundColor: colors.darkPurple3,
   },
   dot: {
@@ -140,6 +104,14 @@ const styles = StyleSheet.create({
     height: 30,
     marginRight: 10,
     width: 30,
+  },
+  filledDot: {
+    backgroundColor: colors.lightPurple,
+  },
+  dotsWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 40,
   },
   error: {
     color: '#FFFFFF',
