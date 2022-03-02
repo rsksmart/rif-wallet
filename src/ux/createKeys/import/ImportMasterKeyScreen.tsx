@@ -6,7 +6,6 @@ import { grid } from '../../../styles/grid'
 import { validateMnemonic } from '../../../lib/bip39'
 import { SquareButton } from '../../../components/button/SquareButton'
 import { Arrow } from '../../../components/icons'
-import { getTokenColor } from '../../../screens/home/tokenColor'
 import { colors } from '../../../styles/colors'
 import { WordInput } from './WordInput'
 
@@ -32,11 +31,9 @@ export const ImportMasterKeyScreen: React.FC<
     if (!mnemonicError) {
       try {
         setInfo('Creating...')
-        console.log(selectedWords.join(' '))
         const rifWallet = await createFirstWallet(selectedWords.join(' '))
         setInfo(null)
         console.log(rifWallet.address)
-        // @ts-ignore
         navigation.navigate('KeysCreated', { address: rifWallet.address })
       } catch (err) {
         console.error(err)
@@ -64,15 +61,16 @@ export const ImportMasterKeyScreen: React.FC<
           />
         </View>
       ))}
-
+      <Text style={styles.defaultText}> {selectedWords.join(' ')}</Text>
       <View>
         {info && <Text style={styles.defaultText}>{info}</Text>}
         {error && <Text style={styles.defaultText}> {error}</Text>}
+
         <SquareButton
-          onPress={() => handleImportMnemonic()}
+          onPress={handleImportMnemonic}
           title=""
           testID="Address.CopyButton"
-          icon={<Arrow color={getTokenColor('tRBTC')} rotate={90} />}
+          icon={<Arrow color={colors.gray} rotate={90} />}
         />
       </View>
     </ScrollView>
@@ -81,7 +79,7 @@ export const ImportMasterKeyScreen: React.FC<
 
 const styles = StyleSheet.create({
   defaultText: {
-    borderColor: colors.white,
+    color: colors.white,
   },
   parent: {
     backgroundColor: colors.darkBlue,
