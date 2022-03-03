@@ -24,7 +24,7 @@ export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
         <Text style={styles.header}>Welcome</Text>
       </View>
       <View style={{ ...grid.row, ...styles.center }}>
-        <Text style={styles.subHeader}>to Wallet</Text>
+        <Text style={styles.subHeader}>to SWallet</Text>
       </View>
       <View style={{ ...grid.row, ...styles.center, ...styles.row }}>
         <WhiteButton
