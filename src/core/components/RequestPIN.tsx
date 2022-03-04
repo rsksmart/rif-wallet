@@ -12,7 +12,6 @@ interface Interface {
 }
 
 export const RequestPIN: React.FC<Interface> = ({ unlock }) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
   const [pin, setPin] = React.useState<Array<string>>(['', '', '', ''])
   const [position, setPosition] = React.useState(0)
@@ -21,13 +20,11 @@ export const RequestPIN: React.FC<Interface> = ({ unlock }) => {
 
   const checkPin = (enteredPin: string) => () => {
     setError(null)
-    setIsLoading(true)
 
     getPin().then(storedPin => {
       if (storedPin === enteredPin) {
         return unlock()
       }
-      setIsLoading(false)
       setError('incorrect pin')
       setPin(['', '', '', ''])
       setPosition(0)
@@ -35,17 +32,15 @@ export const RequestPIN: React.FC<Interface> = ({ unlock }) => {
   }
 
   const onPressKey = (index: number) => (value: string) => {
-    if (!isLoading) {
-      setPin(prev => {
-        if (index < 4) {
-          const tempPin = [...pin]
-          tempPin.splice(index, 1, value)
-          setPosition(index + 1)
-          return tempPin
-        }
-        return prev
-      })
-    }
+    setPin(prev => {
+      if (index < 4) {
+        const tempPin = [...pin]
+        tempPin.splice(index, 1, value)
+        setPosition(index + 1)
+        return tempPin
+      }
+      return prev
+    })
   }
 
   const onDelete = (index: number) => () => {
