@@ -20,7 +20,6 @@ export const RequestPIN: React.FC<Interface> = ({ unlock }) => {
 
   const checkPin = (enteredPin: string) => () => {
     setError(null)
-
     getPin().then(storedPin => {
       if (storedPin === enteredPin) {
         return unlock()
@@ -31,23 +30,24 @@ export const RequestPIN: React.FC<Interface> = ({ unlock }) => {
     })
   }
 
-  const onPressKey = (index: number) => (value: string) => {
+  const onPressKey = (value: string) => {
     setPin(prev => {
-      if (index < 4) {
+      if (position < 4) {
         const tempPin = [...pin]
-        tempPin.splice(index, 1, value)
-        setPosition(index + 1)
+        tempPin.splice(position, 1, value)
+        setPosition(position + 1)
         return tempPin
       }
       return prev
     })
   }
 
-  const onDelete = (index: number) => () => {
+  const onDelete = () => {
+    setError(null)
     setPin(() => {
       const tempPin = [...pin]
-      tempPin.splice(index - 1, 1, '')
-      setPosition(index - 1)
+      tempPin.splice(position - 1, 1, '')
+      setPosition(position - 1)
       return tempPin
     })
   }
@@ -71,8 +71,8 @@ export const RequestPIN: React.FC<Interface> = ({ unlock }) => {
       </View>
       {error && <Text style={styles.error}>{error}</Text>}
       <KeyPad
-        onDelete={onDelete(position)}
-        onKeyPress={onPressKey(position)}
+        onDelete={onDelete}
+        onKeyPress={onPressKey}
         onUnlock={checkPin(pin.join(''))}
       />
     </View>

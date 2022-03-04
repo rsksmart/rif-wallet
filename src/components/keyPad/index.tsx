@@ -10,38 +10,20 @@ type Props = {
   onUnlock: () => void
 }
 
-interface IButton {
-  label: string
-  variant: 'default' | 'error' | 'success'
-}
-
-const buttons: Array<IButton> = [
-  { label: '1', variant: 'default' },
-  { label: '2', variant: 'default' },
-  { label: '3', variant: 'default' },
-  { label: '4', variant: 'default' },
-  { label: '5', variant: 'default' },
-  { label: '6', variant: 'default' },
-  { label: '7', variant: 'default' },
-  { label: '8', variant: 'default' },
-  { label: '9', variant: 'default' },
-]
-
 export const KeyPad: React.FC<Props> = ({ onDelete, onKeyPress, onUnlock }) => {
   return (
     <View style={{ ...grid.row, ...styles.root }}>
-      {buttons.map(button => (
+      {Array.from({ length: 9 }).map((_, index) => (
         <View
-          key={button.label}
+          key={index}
           style={{
             ...grid.column4,
             ...styles.keyWrapper,
           }}>
           <DialButton
-            label={button.label}
-            testID={button.label}
-            variant={button.variant}
-            onPress={() => onKeyPress(button.label)}
+            label={`${index + 1}`}
+            testID={`${index + 1}`}
+            onPress={() => onKeyPress(`${index + 1}`)}
           />
         </View>
       ))}
@@ -54,7 +36,7 @@ export const KeyPad: React.FC<Props> = ({ onDelete, onKeyPress, onUnlock }) => {
           label="DEL"
           testID="DEL"
           variant="error"
-          onPress={() => onDelete()}
+          onPress={onDelete}
         />
       </View>
       <View
@@ -78,7 +60,7 @@ export const KeyPad: React.FC<Props> = ({ onDelete, onKeyPress, onUnlock }) => {
           label="OK"
           testID="OK"
           variant="success"
-          onPress={() => onUnlock()}
+          onPress={onUnlock}
         />
       </View>
     </View>
