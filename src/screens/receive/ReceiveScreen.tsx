@@ -7,7 +7,7 @@ import {
   Share,
   Text,
 } from 'react-native'
-import { BaseButton } from '../../components/button/BaseButton'
+import BaseButton from '../../components/button/BaseButton'
 import QRCode from 'react-qr-code'
 import Clipboard from '@react-native-community/clipboard'
 import { CopyIcon, ShareIcon } from '../../components/icons'
@@ -100,15 +100,25 @@ export const ReceiveScreen: React.FC<ReceiveScreenProps> = ({
             ...grid.column5,
             ...styles.bottomColumn,
           }}>
-          <BaseButton onPress={handleShare} testID={TestID.ShareButton}>
-            <ShareIcon width={30} height={30} />
-            <Text style={styles.buttonText}>share</Text>
+          <BaseButton
+            onPress={handleShare}
+            style={styles.button}
+            testID={TestID.ShareButton}>
+            <View style={styles.buttonContent}>
+              <ShareIcon width={30} height={30} />
+              <Text style={styles.buttonText}>share</Text>
+            </View>
           </BaseButton>
         </View>
         <View style={{ ...grid.column5, ...styles.bottomColumn }}>
-          <BaseButton onPress={handleCopy} testID={TestID.CopyButton}>
-            <CopyIcon width={30} height={30} />
-            <Text style={styles.buttonText}>copy</Text>
+          <BaseButton
+            onPress={handleCopy}
+            style={styles.button}
+            testID={TestID.CopyButton}>
+            <View style={styles.buttonContent}>
+              <CopyIcon width={30} height={30} />
+              <Text style={styles.buttonText}>copy</Text>
+            </View>
           </BaseButton>
         </View>
       </View>
@@ -162,5 +172,15 @@ const styles = StyleSheet.create({
   customRow: { justifyContent: 'space-between' },
   buttonText: {
     color: '#FFFFFF',
+  },
+  button: {
+    backgroundColor: 'rgba(219, 227, 255, 0.3)',
+    borderRadius: 30,
+  },
+  buttonContent: {
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
 })
