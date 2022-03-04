@@ -44,11 +44,14 @@ export const RequestPIN: React.FC<Interface> = ({ unlock }) => {
 
   const onDelete = () => {
     setError(null)
-    setPin(() => {
-      const tempPin = [...pin]
-      tempPin.splice(position - 1, 1, '')
-      setPosition(position - 1)
-      return tempPin
+    setPin(prev => {
+      if (position > 0) {
+        const tempPin = [...pin]
+        tempPin.splice(position - 1, 1, '')
+        setPosition(position - 1)
+        return tempPin
+      }
+      return prev
     })
   }
 
