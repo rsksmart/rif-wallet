@@ -20,7 +20,7 @@ const BaseButton: React.FC<BaseButtonInterface & { children: ReactNode }> = ({
   return (
     <TouchableHighlight
       style={{ ...styles.container, ...style }}
-      onPress={onPress}
+      onPress={disabled ? undefined : onPress}
       underlayColor={underlayColor}
       disabled={disabled}
       testID={testID}>
