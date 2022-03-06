@@ -24,7 +24,6 @@ import { colors } from './styles/colors'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
-  ReceiveScreen: InjectSelectedWallet(Screens.ReceiveScreenWithDomains),
   BalancesScreen: InjectSelectedWallet(Screens.BalancesScreen),
   ActivityScreen: InjectSelectedWallet(Screens.ActivityScreen),
   ActivityDetailsScreen: InjectSelectedWallet(Screens.ActivityDetailsScreen),
@@ -159,8 +158,8 @@ export const RootNavigation: React.FC<{
           {props => <CreateKeysNavigation {...props} {...keyManagementProps} />}
         </RootStack.Screen>
         <RootStack.Screen
+          component={Screens.ReceiveScreenHOC}
           name="Receive"
-          component={InjectedScreens.ReceiveScreen}
           options={sharedOptions}
         />
         <RootStack.Screen name="Send">
