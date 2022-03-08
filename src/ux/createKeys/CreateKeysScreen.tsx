@@ -30,7 +30,7 @@ export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
         <WhiteButton
           onPress={() => navigation.navigate('ImportMasterKey')}
           testID="Address.ShareButton"
-          title={'import existing wallet'}
+          title={'Import existing wallet'}
         />
       </View>
       <View style={{ ...grid.row, ...styles.center, ...styles.row }}>

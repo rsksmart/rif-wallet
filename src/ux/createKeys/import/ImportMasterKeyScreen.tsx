@@ -4,10 +4,9 @@ import { StyleSheet, View, ScrollView, Text } from 'react-native'
 import { CreateKeysProps, ScreenProps } from '../types'
 import { grid } from '../../../styles/grid'
 import { validateMnemonic } from '../../../lib/bip39'
-import { SquareButton } from '../../../components/button/SquareButton'
-import { Arrow } from '../../../components/icons'
 import { colors } from '../../../styles/colors'
 import { WordInput } from './WordInput'
+import { NavigationFooter } from '../../../components/button/NavigationFooter'
 
 type ImportMasterKeyScreenProps = {
   createFirstWallet: CreateKeysProps['createFirstWallet']
@@ -34,6 +33,7 @@ export const ImportMasterKeyScreen: React.FC<
         const rifWallet = await createFirstWallet(selectedWords.join(' '))
         setInfo(null)
         console.log(rifWallet.address)
+        // @ts-ignore
         navigation.navigate('KeysCreated', { address: rifWallet.address })
       } catch (err) {
         console.error(err)
@@ -45,35 +45,35 @@ export const ImportMasterKeyScreen: React.FC<
     setError(mnemonicError)
   }
   return (
-    <ScrollView style={styles.parent}>
-      <Text style={styles.header}>Enter your master key</Text>
+    <>
+      <ScrollView style={styles.parent}>
+        <Text style={styles.header}>Enter your master key</Text>
 
-      {rows.map(row => (
-        <View style={grid.row} key={row}>
-          <WordInput wordNumber={row} handleSelection={onWordSelected} />
-          <WordInput
-            wordNumber={row + rows.length}
-            handleSelection={onWordSelected}
-          />
-          <WordInput
-            wordNumber={row + rows.length * 2}
-            handleSelection={onWordSelected}
-          />
+        {rows.map(row => (
+          <View style={grid.row} key={row}>
+            <WordInput wordNumber={row} handleSelection={onWordSelected} />
+            <WordInput
+              wordNumber={row + rows.length}
+              handleSelection={onWordSelected}
+            />
+            <WordInput
+              wordNumber={row + rows.length * 2}
+              handleSelection={onWordSelected}
+            />
+          </View>
+        ))}
+        <Text style={styles.defaultText}> {selectedWords.join(' ')}</Text>
+        <View>
+          {info && <Text style={styles.defaultText}>{info}</Text>}
+          {error && <Text style={styles.defaultText}> {error}</Text>}
         </View>
-      ))}
-      <Text style={styles.defaultText}> {selectedWords.join(' ')}</Text>
-      <View>
-        {info && <Text style={styles.defaultText}>{info}</Text>}
-        {error && <Text style={styles.defaultText}> {error}</Text>}
-
-        <SquareButton
-          onPress={handleImportMnemonic}
-          title=""
-          testID="Address.CopyButton"
-          icon={<Arrow color={colors.gray} rotate={90} />}
-        />
-      </View>
-    </ScrollView>
+      </ScrollView>
+      <NavigationFooter
+        onBackwards={() => navigation.navigate('CreateKeys')}
+        onPress={handleImportMnemonic}
+        title="confirm"
+      />
+    </>
   )
 }
 

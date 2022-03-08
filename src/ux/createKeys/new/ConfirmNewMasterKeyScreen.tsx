@@ -9,11 +9,10 @@ import {
 import { CreateKeysProps, ScreenProps } from '../types'
 import { useTranslation } from 'react-i18next'
 import { grid } from '../../../styles/grid'
-import { SquareButton } from '../../../components/button/SquareButton'
-import { Arrow } from '../../../components/icons'
-import { getTokenColor } from '../../../screens/home/tokenColor'
+import { RefreshIcon } from '../../../components/icons'
 import { WordInput } from './WordInput'
 import { colors } from '../../../styles/colors'
+import { NavigationFooter } from '../../../components/button/NavigationFooter'
 
 interface ConfirmMasterKeyScreenProps {
   createFirstWallet: CreateKeysProps['createFirstWallet']
@@ -74,46 +73,54 @@ export const ConfirmNewMasterKeyScreen: React.FC<
 
     await saveAndNavigate()
   }
+  const reset = async () => {
+    setSelectedWords([])
+    setWords(shuffle(mnemonic.split(' ')))
+  }
 
   return (
-    <ScrollView style={styles.parent}>
-      <Text style={styles.header}>Confirm your master key</Text>
+    <>
+      <ScrollView style={styles.parent}>
+        <Text style={styles.header}>Confirm your master key</Text>
 
-      {rows.map(row => (
-        <View style={grid.row}>
-          <WordInput wordNumber={row} initValue={selectedWords[row - 1]} />
-          <WordInput
-            wordNumber={row + rows.length}
-            initValue={selectedWords[row + rows.length - 1]}
-          />
-          <WordInput
-            wordNumber={row + rows.length * 2}
-            initValue={selectedWords[row + rows.length * 2 - 1]}
-          />
-          <Text>{row + rows.length}</Text>
-        </View>
-      ))}
-      <View style={styles.badgeArea}>
-        {words.map(word => (
-          <View key={word} style={styles.badgeContainer}>
-            <TouchableOpacity
-              style={styles.badgeText}
-              onPress={() => selectWord(word)}>
-              <Text>{word}</Text>
-            </TouchableOpacity>
+        {rows.map(row => (
+          <View style={grid.row}>
+            <WordInput wordNumber={row} initValue={selectedWords[row - 1]} />
+            <WordInput
+              wordNumber={row + rows.length}
+              initValue={selectedWords[row + rows.length - 1]}
+            />
+            <WordInput
+              wordNumber={row + rows.length * 2}
+              initValue={selectedWords[row + rows.length * 2 - 1]}
+            />
+            <Text>{row + rows.length}</Text>
           </View>
         ))}
-      </View>
-      {error && <Text style={styles.defaultText}>{error}</Text>}
 
-      <SquareButton
-        // @ts-ignore
+        {error && <Text style={styles.defaultText}>{error}</Text>}
+        <View style={styles.badgeArea}>
+          {words.map(word => (
+            <View key={word} style={styles.badgeContainer}>
+              <TouchableOpacity
+                style={styles.badgeText}
+                onPress={() => selectWord(word)}>
+                <Text>{word}</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+        <TouchableOpacity style={styles.reset} onPress={reset}>
+          <RefreshIcon color={colors.gray} />
+        </TouchableOpacity>
+      </ScrollView>
+
+      <NavigationFooter
+        onBackwards={() => navigation.navigate('CreateKeys')}
         onPress={handleConfirmMnemonic}
-        title=""
-        testID="Address.CopyButton"
-        icon={<Arrow color={getTokenColor('RBTC')} rotate={90} />}
+        title="confirm"
       />
-    </ScrollView>
+    </>
   )
 }
 
@@ -142,7 +149,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
-
+  reset: {
+    alignSelf: 'center',
+  },
   header: {
     color: colors.white,
     fontSize: 22,
