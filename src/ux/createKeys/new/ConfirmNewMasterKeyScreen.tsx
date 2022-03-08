@@ -59,7 +59,6 @@ export const ConfirmNewMasterKeyScreen: React.FC<
   }
   const saveAndNavigate = async () => {
     const rifWallet = await createFirstWallet(mnemonic)
-    // @ts-ignore
     navigation.navigate('KeysCreated', { address: rifWallet.address })
   }
 
