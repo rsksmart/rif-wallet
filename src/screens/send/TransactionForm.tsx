@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { AddressInput } from '../../components'
 import { BaseButton } from '../../components/button/BaseButton'
+import { BlueButton } from '../../components/button/ButtonVariations'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { colors } from '../../styles/colors'
 import { grid } from '../../styles/grid'
@@ -107,9 +108,11 @@ const TransactionForm: React.FC<Interface> = ({
       </View>
 
       <View style={styles.centerRow}>
-        <BaseButton disabled={!isValidTransaction} onPress={handleConfirmClick}>
-          <Text style={styles.confirmButton}>Confirm</Text>
-        </BaseButton>
+        <BlueButton
+          onPress={handleConfirmClick}
+          disabled={!isValidTransaction}
+          title="Confirm"
+        />
       </View>
     </View>
   )
@@ -150,9 +153,6 @@ const styles = StyleSheet.create({
     height: 50,
     marginTop: 10,
     margin: 10,
-  },
-  confirmButton: {
-    color: colors.white,
   },
 })
 
