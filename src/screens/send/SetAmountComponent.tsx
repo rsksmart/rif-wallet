@@ -44,7 +44,7 @@ const SetAmountComponent: React.FC<Interface> = ({
     // call the parent with the converted value and isValid
     setAmount(
       amountToTransfer.toString(),
-      amountToTransfer > availableBalance || amountToTransfer !== 0,
+      amountToTransfer !== 0 && amountToTransfer <= availableBalance,
     )
 
     if (amountToTransfer > availableBalance) {
