@@ -24,6 +24,7 @@ import { Button } from '../button'
 import { colors } from '../../styles/colors'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { isValidChecksumAddress } from '@rsksmart/rsk-utils'
+import { OutlineButton } from '../button/ButtonVariations'
 
 type AddressInputProps = {
   initialValue: string
@@ -48,7 +49,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   useEffect(() => {
     setRecipient(initialValue)
     onChangeText(initialValue, isValidChecksumAddress(initialValue, chainId))
-  }, [initialValue])
+  }, [])
 
   // status
   const [status, setStatus] = useState<{
@@ -170,7 +171,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
             {status.value}
           </Text>
           {status.type === 'CHECKSUM' && (
-            <Button
+            <OutlineButton
               testID={`${testID}.Button.Checksum`}
               title="Convert to correct checksum"
               onPress={() =>

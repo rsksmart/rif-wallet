@@ -13,8 +13,8 @@ import { ContentPasteIcon, SmileFaceIcon } from '../../components/icons'
 import { grid } from '../../styles/grid'
 import { colors } from '../../styles/colors'
 import { TokenImage } from '../home/TokenImage'
-import { BaseButton } from '../../components/button/BaseButton'
 import { shortAddress } from '../../lib/utils'
+import { BlueButton } from '../../components/button/ButtonVariations'
 
 export interface transactionInfo {
   to?: string
@@ -91,15 +91,15 @@ const TransactionInfo = ({ transaction }: Props) => {
 
       <View style={{ ...grid.row, ...styles.buttons }}>
         <View style={{ ...grid.column6, ...grid.offset3 }}>
-          <BaseButton
+          <BlueButton
             onPress={() =>
               Linking.openURL(
                 `https://explorer.testnet.rsk.co/tx/${transaction.hash}`,
               )
             }
-            testID="Hash.OpenURLButton">
-            <Text style={styles.explorerText}>view in explorer</Text>
-          </BaseButton>
+            testID="Hash.OpenURLButton"
+            title="view in explorer"
+          />
         </View>
       </View>
     </View>
