@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, StyleSheet, TextInput, Text } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { convertTokenToUSD, convertUSDtoToken } from '../../lib/utils'
+import { convertTokenToUSD } from '../../lib/utils'
 import { colors } from '../../styles/colors'
 import { grid } from '../../styles/grid'
 import { balanceToString } from '../balances/BalancesScreen'
@@ -21,21 +20,17 @@ const SetAmountComponent: React.FC<Interface> = ({
 }) => {
   const { t } = useTranslation()
   const [error, setError] = useState<string | null>(null)
-  const [showUSD, setShowUSD] = useState<boolean>(false)
   const [input, setInput] = useState<string>('')
 
-  const convertedAmount = showUSD
-    ? convertTokenToUSD(Number(input) || 0, usdAmount || 0, true)
-    : convertUSDtoToken(Number(input) || 0, usdAmount || 0, true)
+  const usdConversion =
+    usdAmount && convertTokenToUSD(Number(input) || 0, usdAmount || 0, true)
 
   const handleTextChange = (text: string) => {
     // locally set the amount set and clear error
     setInput(text)
     setError(null)
 
-    const amountToTransfer = showUSD
-      ? convertUSDtoToken(Number(text), usdAmount || 0, false)
-      : Number(text)
+    const amountToTransfer = Number(text)
 
     const availableBalance = Number(
       balanceToString(token.balance, token.decimals || 0),
@@ -56,7 +51,6 @@ const SetAmountComponent: React.FC<Interface> = ({
   useEffect(() => {
     setError(null)
     setInput('')
-    setShowUSD(false)
     setAmount('0', false)
   }, [token])
 
@@ -74,30 +68,15 @@ const SetAmountComponent: React.FC<Interface> = ({
             placeholderTextColor={colors.gray}
           />
         </View>
-        {usdAmount && (
-          <View style={grid.column4}>
-            <TouchableOpacity
-              style={styles.toggleButton}
-              onPress={() => setShowUSD(!showUSD)}>
-              <Text style={styles.toggleText}>
-                {showUSD ? 'USD' : token.symbol}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
       </View>
       {error && <Text style={styles.error}>{error}</Text>}
       <View style={grid.row}>
-        <View style={grid.column6}>
+        <View style={grid.column12}>
           <Text style={styles.text}>
             Max: {balanceToString(token.balance, token.decimals || 0)}
           </Text>
-        </View>
-        <View style={grid.column6}>
-          {usdAmount && (
-            <Text style={{ ...styles.text, ...styles.usdAmount }}>
-              {`${convertedAmount} ${showUSD ? token.symbol : 'USD'}`}
-            </Text>
+          {!!usdConversion && (
+            <Text style={styles.text}>{`${usdConversion} USD`}</Text>
           )}
         </View>
       </View>
@@ -117,22 +96,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     height: 50,
     paddingLeft: 10,
-  },
-  toggleButton: {
-    display: 'flex',
-    alignItems: 'flex-end',
-  },
-  toggleText: {
-    borderColor: colors.white,
-    color: colors.white,
-    borderWidth: 2,
-    borderRadius: 10,
-    paddingVertical: 5,
-    paddingHorizontal: 5,
-    textAlign: 'center',
-    width: '100%',
-    marginTop: 10,
-    marginRight: 10,
   },
   text: {
     color: colors.white,

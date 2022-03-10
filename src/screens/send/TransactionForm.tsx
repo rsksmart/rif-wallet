@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { AddressInput } from '../../components'
-import { BaseButton } from '../../components/button/BaseButton'
 import { BlueButton } from '../../components/button/ButtonVariations'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { colors } from '../../styles/colors'
@@ -84,7 +83,7 @@ const TransactionForm: React.FC<Interface> = ({
             }
           />
         </View>
-        <View style={{ ...grid.column7, ...grid.offset1 }}>
+        <View style={{ ...grid.column6, ...grid.offset1 }}>
           <Text style={styles.label}>set amount</Text>
           <SetAmountComponent
             setAmount={handleAmountChange}
