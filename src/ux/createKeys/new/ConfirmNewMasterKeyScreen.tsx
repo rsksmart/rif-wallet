@@ -6,7 +6,7 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native'
-import { CreateKeysProps, ScreenProps } from '../types'
+import { ScreenProps } from '../types'
 import { useTranslation } from 'react-i18next'
 import { grid } from '../../../styles/grid'
 import { SquareButton } from '../../../components/button/SquareButton'
@@ -15,9 +15,6 @@ import { getTokenColor } from '../../../screens/home/tokenColor'
 import { WordInput } from './WordInput'
 import { colors } from '../../../styles/colors'
 
-interface ConfirmMasterKeyScreenProps {
-  createFirstWallet: CreateKeysProps['createFirstWallet']
-}
 // source: https://stackoverflow.com/questions/63813211/qualtrics-and-javascript-randomly-insert-words-into-sentences
 const shuffle = (array: string[]) => {
   let currentIndex = array.length,
@@ -40,8 +37,8 @@ const shuffle = (array: string[]) => {
 }
 
 export const ConfirmNewMasterKeyScreen: React.FC<
-  ScreenProps<'ConfirmNewMasterKey'> & ConfirmMasterKeyScreenProps
-> = ({ route, navigation, createFirstWallet }) => {
+  ScreenProps<'ConfirmNewMasterKey'>
+> = ({ route, navigation }) => {
   const mnemonic = route.params.mnemonic
   const [selectedWords, setSelectedWords] = useState<string[]>([])
   const [words, setWords] = useState<string[]>(shuffle(mnemonic.split(' ')))
@@ -59,9 +56,8 @@ export const ConfirmNewMasterKeyScreen: React.FC<
     setWords(words.filter(word => !updatedWords.find(w => w === word)))
   }
   const saveAndNavigate = async () => {
-    const rifWallet = await createFirstWallet(mnemonic)
     // @ts-ignore
-    navigation.navigate('KeysCreated', { address: rifWallet.address })
+    navigation.navigate('ManagePin', { mnemonic: mnemonic })
   }
 
   const handleConfirmMnemonic = async () => {

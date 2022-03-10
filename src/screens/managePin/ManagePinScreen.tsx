@@ -1,20 +1,21 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { getPin, savePin } from '../../storage/PinStore'
+import { DialButton } from '../../components/button/DialButton'
 
 import { shareStyles } from '../../components/sharedStyles'
 import { Trans, useTranslation } from 'react-i18next'
 import { KeyPad } from '../../components/keyPad'
 import { colors } from '../../styles/colors'
-import { validateMnemonic } from '../../lib/bip39'
 
 interface Interface {
   unlock: () => void
   route: any
+  navigation: any
 }
 
-export const ManagePinScreen: React.FC<Interface> = ({ unlock, route }) => {
-  const mnemonic = route.params.address
+export const ManagePinScreen: React.FC<Interface> = ({ route, navigation }) => {
+  const mnemonic = route.params && route.params.mnemonic
 
   const [error, setError] = useState<string | null>(null)
   const [pin, setPin] = React.useState<Array<string>>(['', '', '', ''])
@@ -26,10 +27,8 @@ export const ManagePinScreen: React.FC<Interface> = ({ unlock, route }) => {
   const storePin = (enteredPin: string) => () => {
     setError(null)
     savePin(enteredPin).then(() => {
-      setError('pin saved')
       setPosition(4)
       setStoredPin(enteredPin)
-      const rifWallet = await createFirstWallet(mnemonic)
     })
   }
 
@@ -79,6 +78,16 @@ export const ManagePinScreen: React.FC<Interface> = ({ unlock, route }) => {
           />
         ))}
       </View>
+      <View style={styles.buttonWrapper}>
+        {!!storedPin && mnemonic && (
+          <DialButton
+            label={'Finish'}
+            testID={'finish'}
+            onPress={() => navigation.navigate('KeysCreated', { mnemonic })}
+          />
+        )}
+      </View>
+
       {error && <Text style={styles.error}>{error}</Text>}
       {!storedPin && (
         <KeyPad
@@ -120,6 +129,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 40,
   },
+  buttonWrapper: {
+    alignItems: 'center',
+  },
+
   error: {
     color: '#FFFFFF',
     textAlign: 'center',

@@ -1,23 +1,32 @@
 import React from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 import { Button, Paragraph } from '../../components'
-import { ScreenProps } from './types'
+import { CreateKeysProps, ScreenProps } from './types'
 
-export const KeysCreatedScreen: React.FC<ScreenProps<'KeysCreated'>> = ({
+type ImportMasterKeyScreenProps = {
+  createFirstWallet: CreateKeysProps['createFirstWallet']
+}
+export const KeysCreatedScreen: React.FC<
+  ScreenProps<'KeysCreated'> & ImportMasterKeyScreenProps
+> = ({
   route,
   navigation,
+  createFirstWallet,
+}: {
+  route: any
+  navigation: any
+  createFirstWallet: CreateKeysProps['createFirstWallet']
 }) => {
-  const address = route.params.address
+  const mnemonic = route.params.mnemonic
 
   const navigateToReceive = async () => {
     navigation.navigate('Receive' as any)
   }
-
+  createFirstWallet(mnemonic)
   return (
     <ScrollView>
       <View style={styles.sectionCentered}>
         <Paragraph testID="Text.Subtitle">Your new wallet is ready!</Paragraph>
-        <Paragraph testID="Text.Address">{address}</Paragraph>
       </View>
       <View style={styles.section}>
         <Button

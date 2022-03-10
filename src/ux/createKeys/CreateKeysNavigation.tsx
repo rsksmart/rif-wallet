@@ -34,28 +34,18 @@ export const CreateKeysNavigation: React.FC<CreateKeysProps> = ({
             )}
           </Stack.Screen>
           <Stack.Screen name="ConfirmNewMasterKey" options={screensOptions}>
-            {props => (
-              <ConfirmNewMasterKeyScreen
-                {...props}
-                createFirstWallet={createFirstWallet}
-              />
-            )}
+            {props => <ConfirmNewMasterKeyScreen {...props} />}
           </Stack.Screen>
         </Stack.Group>
         <Stack.Screen name="ImportMasterKey" options={screensOptions}>
-          {props => (
-            <ImportMasterKeyScreen
-              {...props}
-              createFirstWallet={createFirstWallet}
-            />
-          )}
+          {props => <ImportMasterKeyScreen {...props} />}
         </Stack.Screen>
       </Stack.Group>
-      <Stack.Screen
-        name="KeysCreated"
-        component={KeysCreatedScreen}
-        options={screensOptions}
-      />
+      <Stack.Screen name="KeysCreated" options={screensOptions}>
+        {props => (
+          <KeysCreatedScreen {...props} createFirstWallet={createFirstWallet} />
+        )}
+      </Stack.Screen>
     </Stack.Navigator>
   )
 }

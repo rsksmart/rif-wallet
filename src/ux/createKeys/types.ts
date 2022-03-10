@@ -11,7 +11,9 @@ export type StackParamList = {
   NewMasterKey: undefined
   ConfirmNewMasterKey: { mnemonic: string }
   ImportMasterKey: undefined
-  KeysCreated: { address: string }
+  KeysCreated: {
+    address: string
+  }
   RevealMasterKey: undefined
 }
 
