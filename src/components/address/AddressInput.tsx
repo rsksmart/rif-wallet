@@ -61,6 +61,9 @@ export const AddressInput: React.FC<AddressInputProps> = ({
     setStatus({ type: 'READY' })
     setRecipient(inputText)
 
+    // send onChange to parent with validation
+    onChangeText(inputText, isValidChecksumAddress(inputText, chainId))
+
     const newValidationMessage = validateAddress(inputText)
 
     if (newValidationMessage === AddressValidationMessage.DOMAIN) {
@@ -86,16 +89,13 @@ export const AddressInput: React.FC<AddressInputProps> = ({
             value: `Could not get address for ${inputText.toLowerCase()}`,
           }),
         )
-    } else {
-      if (newValidationMessage === AddressValidationMessage.INVALID_CHECKSUM) {
-        setStatus({
-          type: 'CHECKSUM',
-          value: 'The checksum is invalid.',
-        })
-      }
-
-      // user may still be typing or finished a valid address
-      onChangeText(inputText, isValidChecksumAddress(inputText))
+    } else if (
+      newValidationMessage === AddressValidationMessage.INVALID_CHECKSUM
+    ) {
+      return setStatus({
+        type: 'CHECKSUM',
+        value: 'The checksum is invalid.',
+      })
     }
   }
 
