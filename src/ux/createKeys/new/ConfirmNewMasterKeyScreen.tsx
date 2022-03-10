@@ -6,7 +6,7 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native'
-import { CreateKeysProps, ScreenProps } from '../types'
+import { ScreenProps } from '../types'
 import { useTranslation } from 'react-i18next'
 import { grid } from '../../../styles/grid'
 import { RefreshIcon } from '../../../components/icons'
@@ -14,9 +14,6 @@ import { WordInput } from './WordInput'
 import { colors } from '../../../styles/colors'
 import { NavigationFooter } from '../../../components/button/NavigationFooter'
 
-interface ConfirmMasterKeyScreenProps {
-  createFirstWallet: CreateKeysProps['createFirstWallet']
-}
 // source: https://stackoverflow.com/questions/63813211/qualtrics-and-javascript-randomly-insert-words-into-sentences
 const shuffle = (array: string[]) => {
   let currentIndex = array.length,
@@ -39,8 +36,8 @@ const shuffle = (array: string[]) => {
 }
 
 export const ConfirmNewMasterKeyScreen: React.FC<
-  ScreenProps<'ConfirmNewMasterKey'> & ConfirmMasterKeyScreenProps
-> = ({ route, navigation, createFirstWallet }) => {
+  ScreenProps<'ConfirmNewMasterKey'>
+> = ({ route, navigation }) => {
   const mnemonic = route.params.mnemonic
   const [selectedWords, setSelectedWords] = useState<string[]>([])
   const [words, setWords] = useState<string[]>(shuffle(mnemonic.split(' ')))
@@ -58,20 +55,21 @@ export const ConfirmNewMasterKeyScreen: React.FC<
     setWords(words.filter(word => !updatedWords.find(w => w === word)))
   }
   const saveAndNavigate = async () => {
-    const rifWallet = await createFirstWallet(mnemonic)
-    navigation.navigate('KeysCreated', { address: rifWallet.address })
+    // @ts-ignore
+    navigation.navigate('ManagePin', { mnemonic: mnemonic })
   }
 
   const handleConfirmMnemonic = async () => {
     const isValid = mnemonic === selectedWords.join(' ')
 
-    if (!isValid) {
+   /* if (!isValid) {
       setError(t('Entered words does not match you your master key'))
       return
-    }
+    }*/
 
     await saveAndNavigate()
   }
+
   const reset = async () => {
     setSelectedWords([])
     setWords(shuffle(mnemonic.split(' ')))
@@ -96,8 +94,6 @@ export const ConfirmNewMasterKeyScreen: React.FC<
             <Text>{row + rows.length}</Text>
           </View>
         ))}
-
-        {error && <Text style={styles.defaultText}>{error}</Text>}
         <View style={styles.badgeArea}>
           {words.map(word => (
             <View key={word} style={styles.badgeContainer}>
@@ -108,6 +104,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
               </TouchableOpacity>
             </View>
           ))}
+          {error && <Text style={styles.defaultText}>{error}</Text>}
         </View>
         <TouchableOpacity style={styles.reset} onPress={reset}>
           <RefreshIcon color={colors.gray} />
@@ -148,13 +145,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
-  reset: {
-    alignSelf: 'center',
-  },
+
   header: {
     color: colors.white,
     fontSize: 22,
     paddingVertical: 20,
     textAlign: 'center',
+  },
+  reset: {
+    alignSelf: 'center',
   },
 })
