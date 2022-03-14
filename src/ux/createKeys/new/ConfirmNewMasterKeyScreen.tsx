@@ -62,10 +62,10 @@ export const ConfirmNewMasterKeyScreen: React.FC<
   const handleConfirmMnemonic = async () => {
     const isValid = mnemonic === selectedWords.join(' ')
 
-   /* if (!isValid) {
-      setError(t('Entered words does not match you your master key'))
+    if (!isValid) {
+      setError(t('Entered words does not match you your master key'))git 
       return
-    }*/
+    }
 
     await saveAndNavigate()
   }
