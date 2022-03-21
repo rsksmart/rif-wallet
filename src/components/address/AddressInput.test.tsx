@@ -72,7 +72,7 @@ describe('address input', () => {
     })
 
     it('empty', () => {
-      const { handleChange, input, getByTestId } = createInstance()
+      const { handleChange, input } = createInstance()
 
       fireEvent.changeText(input, '1')
       fireEvent.changeText(input, '')

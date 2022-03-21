@@ -69,7 +69,6 @@ export const AddressInput: React.FC<AddressInputProps> = ({
       inputText,
       newValidationMessage === AddressValidationMessage.VALID,
     )
-    // console.log({ newValidationMessage, inputText })
 
     switch (newValidationMessage) {
       case AddressValidationMessage.DOMAIN:
