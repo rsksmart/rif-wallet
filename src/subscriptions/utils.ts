@@ -1,4 +1,4 @@
-import { IActivityTransaction } from './types'
+import { IActivityTransaction, IEvent } from './types'
 
 export const sortEnhancedTransactions = (
   first: IActivityTransaction,
@@ -18,4 +18,14 @@ export const filterEnhancedTransactions = (
       tx => tx.originTransaction.hash === transaction.originTransaction.hash,
     )
   )
+}
+
+export const isOutgoinEvent = (event: IEvent, currentAddress: string) => {
+  const from = event.args[0]
+  return from === currentAddress.toLowerCase()
+}
+
+export const isIncomingEvent = (event: IEvent, currentAddress: string) => {
+  const to = event.args[1]
+  return to === currentAddress.toLowerCase()
 }

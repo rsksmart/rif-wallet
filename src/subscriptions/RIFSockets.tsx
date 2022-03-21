@@ -70,6 +70,12 @@ function liveSubscriptionsReducer(state: State, action: Action) {
         },
       }
 
+    case 'newTokenTransfer':
+      return {
+        ...state,
+        events: state.events.concat([action.payload]),
+      }
+
     case 'init':
       const balancesInitial = action.payload.balances.reduce(
         (accum, current) => {
@@ -103,6 +109,7 @@ const initialState = {
   },
   prices: {},
   balances: {},
+  events: [],
 }
 //TODO: Move this to the backend
 const loadRBTCBalance = async (wallet: RIFWallet, dispatch: Dispatch) => {
