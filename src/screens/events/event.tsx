@@ -12,9 +12,13 @@ interface EventProps {
 export const Event: React.FC<EventProps> = ({ from, to, tx, testID }) => {
   return (
     <View style={styles.event} testID={testID}>
-      <Text testID='tx'>Transaction Hash: {getAddressDisplayText(tx).displayAddress}</Text>
-      <Text testID='from'>From: {getAddressDisplayText(from).displayAddress}</Text>
-      <Text testID='to'>To: {getAddressDisplayText(to).displayAddress}</Text>
+      <Text testID="tx">
+        Transaction Hash: {getAddressDisplayText(tx).displayAddress}
+      </Text>
+      <Text testID="from">
+        From: {getAddressDisplayText(from).displayAddress}
+      </Text>
+      <Text testID="to">To: {getAddressDisplayText(to).displayAddress}</Text>
     </View>
   )
 }

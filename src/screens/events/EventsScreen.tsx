@@ -52,9 +52,9 @@ export const EventsScreen: React.FC<EventsScreenProps> = ({
           <Text style={styles.buttonContent}>OUTGOING</Text>
         </Button>
       </View>
-      <ScrollView testID='events'>
+      <ScrollView testID="events">
         {isSelected('ALL') && (
-          <React.Fragment >
+          <React.Fragment>
             {events.map(event => (
               <Event
                 from={event.args[0]}
