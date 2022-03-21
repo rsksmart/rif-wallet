@@ -58,44 +58,61 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   }>({ type: 'READY' })
 
   const handleChangeText = (inputText: string) => {
-    setStatus({ type: 'READY' })
+    setStatus({ type: 'READY', value: '' })
     setRecipient(inputText)
 
-    // send onChange to parent with validation
-    onChangeText(inputText, isValidChecksumAddress(inputText, chainId))
+    // console.log(inputText)
 
-    const newValidationMessage = validateAddress(inputText)
+    const newValidationMessage = validateAddress(inputText, chainId)
 
-    if (newValidationMessage === AddressValidationMessage.DOMAIN) {
-      setStatus({
-        type: 'INFO',
-        value: 'Getting address for domain...',
-      })
+    onChangeText(
+      inputText,
+      newValidationMessage === AddressValidationMessage.VALID,
+    )
+    // console.log({ newValidationMessage, inputText })
 
-      rnsResolver
-        .addr(inputText)
-        .then((address: string) => {
-          setStatus({
-            type: 'INFO',
-            value: `Resolved to ${address}`,
-          })
-
-          // call parent with the resolved address
-          onChangeText(address, isValidChecksumAddress(address, chainId))
+    switch (newValidationMessage) {
+      case AddressValidationMessage.DOMAIN:
+        setStatus({
+          type: 'INFO',
+          value: 'Getting address for domain...',
         })
-        .catch((_e: any) =>
-          setStatus({
-            type: 'ERROR',
-            value: `Could not get address for ${inputText.toLowerCase()}`,
-          }),
-        )
-    } else if (
-      newValidationMessage === AddressValidationMessage.INVALID_CHECKSUM
-    ) {
-      return setStatus({
-        type: 'CHECKSUM',
-        value: 'The checksum is invalid.',
-      })
+
+        rnsResolver
+          .addr(inputText)
+          .then((address: string) => {
+            setStatus({
+              type: 'INFO',
+              value: `Resolved to ${address}`,
+            })
+
+            // call parent with the resolved address
+            onChangeText(
+              address,
+              validateAddress(address, chainId) ===
+                AddressValidationMessage.VALID,
+            )
+          })
+          .catch((_e: any) =>
+            setStatus({
+              type: 'ERROR',
+              value: `Could not get address for ${inputText.toLowerCase()}`,
+            }),
+          )
+        break
+      case AddressValidationMessage.INVALID_CHECKSUM:
+        setStatus({
+          type: 'CHECKSUM',
+          value: 'The checksum is invalid.',
+        })
+        break
+      case AddressValidationMessage.INVALID_ADDRESS:
+        setStatus({
+          type: 'ERROR',
+          value: 'Invalid address',
+        })
+        onChangeText(inputText, false)
+        break
     }
   }
 

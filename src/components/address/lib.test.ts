@@ -19,5 +19,9 @@ describe('validate address', () => {
       expect(validateAddress(testnetCase.wrongChecksum, 31)).toEqual(
         AddressValidationMessage.INVALID_CHECKSUM,
       ))
+    test('empty address', () =>
+      expect(validateAddress('', 31)).toEqual(
+        AddressValidationMessage.INVALID_ADDRESS,
+      ))
   })
 })

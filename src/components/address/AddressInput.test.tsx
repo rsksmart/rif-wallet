@@ -15,14 +15,16 @@ jest.mock('@rsksmart/rns-resolver.js', () => ({
 const WrappedAddressInput = ({ handleChange }: any) => {
   const [address, setAddress] = useState('')
 
+  const onChangeText = (newAddress: string, isValid: boolean) => {
+    handleChange(newAddress, isValid)
+    setAddress(newAddress)
+  }
+
   return (
     <AddressInput
       testID={testId}
       initialValue={address}
-      onChangeText={newAddress => {
-        handleChange(newAddress)
-        setAddress(newAddress)
-      }}
+      onChangeText={onChangeText}
       chainId={31}
     />
   )
@@ -45,11 +47,11 @@ const createInstance = () => {
 
 describe('address input', () => {
   describe('invalid cases', () => {
-    test('empty', () => {
+    test('invlid address', () => {
       const { handleChange, input } = createInstance()
 
       fireEvent.changeText(input, testnetCase.invalid)
-      expect(handleChange).toHaveBeenCalledWith(testnetCase.invalid)
+      expect(handleChange).toHaveBeenCalledWith(testnetCase.invalid, false)
     })
 
     test('wrong checksum', () => {
@@ -57,13 +59,25 @@ describe('address input', () => {
 
       fireEvent.changeText(input, testnetCase.wrongChecksum)
 
-      expect(handleChange).toHaveBeenCalledWith(testnetCase.wrongChecksum)
+      expect(handleChange).toHaveBeenCalledWith(
+        testnetCase.wrongChecksum,
+        false,
+      )
       expect(getByTestId('Input.Address.InputInfo').children[0]).toBe(
         'The checksum is invalid.',
       )
 
       fireEvent.press(getByTestId('Input.Address.Button.Checksum'))
-      expect(handleChange).toHaveBeenCalledWith(testnetCase.checksummed)
+      expect(handleChange).toHaveBeenCalledWith(testnetCase.checksummed, true)
+    })
+
+    it('empty', () => {
+      const { handleChange, input, getByTestId } = createInstance()
+
+      fireEvent.changeText(input, '1')
+      fireEvent.changeText(input, '')
+
+      expect(handleChange).toHaveBeenCalledWith('', false)
     })
   })
 
@@ -73,7 +87,7 @@ describe('address input', () => {
 
       fireEvent.changeText(input, testnetCase.checksummed)
 
-      expect(handleChange).toHaveBeenCalledWith(testnetCase.checksummed)
+      expect(handleChange).toHaveBeenCalledWith(testnetCase.checksummed, true)
     })
 
     test('lower', () => {
@@ -81,7 +95,7 @@ describe('address input', () => {
 
       fireEvent.changeText(input, testnetCase.lower)
 
-      expect(handleChange).toHaveBeenCalledWith(testnetCase.lower)
+      expect(handleChange).toHaveBeenCalledWith(testnetCase.lower, true)
     })
 
     test('rns', async () => {
@@ -95,7 +109,7 @@ describe('address input', () => {
         'Resolved to 0x000_MOCK_DOMAIN_ADDRESS',
       )
 
-      expect(handleChange).toBeCalledWith('0x000_MOCK_DOMAIN_ADDRESS')
+      expect(handleChange).toBeCalledWith('0x000_MOCK_DOMAIN_ADDRESS', false)
     })
   })
 })
