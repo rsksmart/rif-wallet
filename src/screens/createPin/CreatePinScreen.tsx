@@ -10,7 +10,6 @@ interface Interface {
 
 export const CreatePinScreen: React.FC<Interface> = ({ route, navigation }) => {
   const mnemonic = route.params.mnemonic
-  console.log({ mnemonic })
   const onSubmit = async (enteredValue: string) => {
     await savePin(enteredValue)
     navigation.navigate('KeysCreated', { mnemonic: mnemonic })
