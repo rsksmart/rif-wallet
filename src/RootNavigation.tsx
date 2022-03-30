@@ -68,6 +68,7 @@ type RootStackParamList = {
   WalletConnect: undefined
   ChangeLanguage: undefined
   ManagePin: undefined
+  CreatePin: undefined
   InjectedBrowserUX: undefined
   Dapps: undefined
   RNSManager: undefined
@@ -239,6 +240,11 @@ export const RootNavigation: React.FC<{
         <RootStack.Screen
           name="ManagePin"
           component={Screens.ManagePinScreen}
+          options={sharedOptions}
+        />
+        <RootStack.Screen
+          name="CreatePin"
+          component={Screens.CreatePinScreen}
           options={sharedOptions}
         />
 

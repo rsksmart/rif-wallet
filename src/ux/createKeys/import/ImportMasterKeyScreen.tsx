@@ -27,7 +27,7 @@ export const ImportMasterKeyScreen: React.FC<ScreenProps<'ImportMasterKey'>> =
       if (!mnemonicError) {
         try {
           // @ts-ignore
-          navigation.navigate('ManagePin', {
+          navigation.navigate('CreatePin', {
             mnemonic: selectedWords.join(' '),
           })
         } catch (err) {

@@ -56,7 +56,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
   }
   const saveAndNavigate = async () => {
     // @ts-ignore
-    navigation.navigate('ManagePin', { mnemonic: mnemonic })
+    navigation.navigate('CreatePin', { mnemonic: mnemonic })
   }
 
   const handleConfirmMnemonic = async () => {
