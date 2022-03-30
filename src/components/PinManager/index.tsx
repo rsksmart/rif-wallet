@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { getPin } from '../../storage/PinStore'
 
 import { shareStyles } from '../sharedStyles'
 import { Trans, useTranslation } from 'react-i18next'
@@ -18,20 +17,10 @@ export const PinManager: React.FC<Interface> = ({ title, handleSubmit }) => {
 
   const { t } = useTranslation()
 
-  const checkPin = (enteredPin: string) => () => {
+  const onSubmit = (enteredPin: string) => () => {
     handleSubmit(enteredPin).then((response: string) => {
       console.log(response)
     })
-
-    /*setError(null)
-    getPin().then(storedPin => {
-      if (storedPin === enteredPin) {
-        return unlock()
-      }
-      setError('incorrect pin')
-      setPin(['', '', '', ''])
-      setPosition(0)
-    })*/
   }
 
   const onPressKey = (value: string) => {
@@ -80,7 +69,7 @@ export const PinManager: React.FC<Interface> = ({ title, handleSubmit }) => {
       <KeyPad
         onDelete={onDelete}
         onKeyPress={onPressKey}
-        onUnlock={checkPin(pin.join(''))}
+        onUnlock={onSubmit(pin.join(''))}
       />
     </View>
   )
