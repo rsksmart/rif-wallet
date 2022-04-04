@@ -18,8 +18,13 @@ export const PinManager: React.FC<Interface> = ({ title, handleSubmit }) => {
   const { t } = useTranslation()
 
   const onSubmit = (enteredPin: string) => () => {
+    setError(null)
     handleSubmit(enteredPin).then((response: string) => {
-      console.log(response)
+      if (response === 'incorrect pin') {
+        setError('incorrect pin')
+        setPin(['', '', '', ''])
+        setPosition(0)
+      }
     })
   }
 
