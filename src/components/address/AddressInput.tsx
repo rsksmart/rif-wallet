@@ -179,7 +179,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
           </TouchableOpacity>
         </View>
       </View>
-      {status.value && (
+      {!!status.value && (
         <>
           <Text
             style={status.type === 'INFO' ? styles.info : styles.error}
