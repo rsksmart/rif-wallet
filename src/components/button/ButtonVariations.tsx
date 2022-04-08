@@ -24,7 +24,8 @@ const Button: React.FC<ButtonInterface & { buttonStyles: any }> = ({
         disabled
           ? buttonStyles.buttonDisabled.backgroundColor
           : buttonStyles.buttonActive.backgroundColor
-      }>
+      }
+      disabled={disabled}>
       <View style={sharedStyles.contentWrapper}>
         <Text
           style={

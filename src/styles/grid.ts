@@ -53,4 +53,11 @@ export const grid = StyleSheet.create({
   column: {
     display: 'flex',
   },
+
+  offset1: {
+    marginLeft: '8.3%',
+  },
+  offset3: {
+    marginLeft: '25%',
+  },
 })
