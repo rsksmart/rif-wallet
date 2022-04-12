@@ -71,14 +71,8 @@ export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
       <Pagination
         dotsLength={entries.length}
         activeDotIndex={activeSlide}
-        containerStyle={{ backgroundColor: colors.blue }}
-        dotStyle={{
-          width: 10,
-          height: 10,
-          borderRadius: 5,
-          marginHorizontal: 0,
-          backgroundColor: 'rgba(255, 255, 255, 0.92)',
-        }}
+        containerStyle={styles.paginationContainer}
+        dotStyle={styles.dotStyle}
         inactiveDotStyle={{}}
         inactiveDotOpacity={0.4}
         inactiveDotScale={0.6}
@@ -87,7 +81,7 @@ export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
   }
 
   return (
-    <View style={{ backgroundColor: colors.blue, height: '100%' }}>
+    <View style={styles.parent}>
       <View style={{ ...grid.row, ...styles.center, ...styles.row }}>
         <Carousel
           inactiveSlideOpacity={0}
@@ -123,6 +117,10 @@ export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
 }
 
 const styles = StyleSheet.create({
+  parent: {
+    backgroundColor: colors.blue,
+    height: '100%',
+  },
   header: {
     color: colors.white,
     fontSize: 40,
@@ -172,5 +170,13 @@ const styles = StyleSheet.create({
   itemLabel: {
     color: 'white',
     fontSize: 24,
+  },
+  paginationContainer: { backgroundColor: colors.blue },
+  dotStyle: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    marginHorizontal: 0,
+    backgroundColor: 'rgba(255, 255, 255, 0.92)',
   },
 })
