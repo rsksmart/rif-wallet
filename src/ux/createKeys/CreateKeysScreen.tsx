@@ -94,16 +94,16 @@ export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
       <View style={{ ...grid.row, ...styles.section }}>{pagination()}</View>
       <View style={{ ...grid.row, ...styles.section }}>
         <WhiteButton
-          onPress={() => navigation.navigate('ImportMasterKey')}
+          onPress={() => navigation.navigate('NewMasterKey')}
           testID="Address.ShareButton"
-          title={'Import existing wallet'}
+          title={'new wallet'}
         />
       </View>
       <View style={{ ...grid.row, ...styles.section }}>
         <OutlineButton
-          onPress={() => navigation.navigate('NewMasterKey')}
+          onPress={() => navigation.navigate('ImportMasterKey')}
           testID="Address.ShareButton"
-          title={'Create a new wallet'}
+          title={'import  wallet'}
         />
       </View>
     </View>
