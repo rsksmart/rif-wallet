@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
-import { StyleSheet, View, Text, Dimensions, Image } from 'react-native'
+import { StyleSheet, View, Dimensions, Image } from 'react-native'
 import { ScreenProps } from './types'
 import { colors } from '../../styles/colors'
+import { SecondarySlide } from '../slides/SeconderySlide'
+import { MainSlide } from '../slides/MainSlide'
 
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import { grid } from '../../styles/grid'
@@ -13,39 +15,6 @@ import {
 const WINDOW_WIDTH = Dimensions.get('window').width
 const WINDOW_HEIGHT = Dimensions.get('window').height
 const ITEM_WIDTH = Math.round(WINDOW_WIDTH * 0.7)
-const ITEM_HEIGHT = Math.round(WINDOW_HEIGHT * 0.5)
-
-const welcomeSlide = () => (
-  <View style={styles.itemContainer}>
-    <Image
-      style={styles.walletLogo}
-      source={require('../../images/wallet.png')}
-    />
-    <View style={{ ...grid.row, ...styles.center }}>
-      <Text style={styles.header}>Welcome</Text>
-    </View>
-    <View style={{ ...grid.row, ...styles.center }}>
-      <Text style={styles.subHeader}>to SWallet</Text>
-    </View>
-  </View>
-)
-
-const newFeaturesSlide = () => (
-  <View style={styles.itemContainer}>
-    <Image
-      style={styles.walletBulbLogo}
-      source={require('../../images/wallet_bulb.png')}
-    />
-    <View style={{ ...grid.row, ...styles.center }}>
-      <Text style={styles.subSubMainHeader}>Bringing new features</Text>
-    </View>
-    <View style={{ ...grid.row, ...styles.center }}>
-      <Text style={styles.subSubHeader}>
-        Lorem ipsum dolor sit amet consectetur adipiscing elit
-      </Text>
-    </View>
-  </View>
-)
 
 export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
   navigation,
@@ -56,16 +25,43 @@ export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
   const renderItem = ({ item }: { item: number }) => {
     switch (item) {
       case 0:
-        return welcomeSlide()
+        return MainSlide({
+          title: 'Welcome to',
+          subTitle: 'RSK Wallet',
+          image: (
+            <Image
+              style={styles.walletBulbLogo}
+              source={require('../../images/wallet.png')}
+            />
+          ) as unknown as Image,
+        })
       case 1:
-        return newFeaturesSlide()
-      default:
-        return welcomeSlide()
+        return SecondarySlide({
+          title: 'Bringing new features',
+          description: 'Lorem ipsum dolor sit amet consectetur adipiscing elit',
+          image: (
+            <Image
+              style={styles.walletBulbLogo}
+              source={require('../../images/wallet_bulb.png')}
+            />
+          ) as unknown as Image,
+        })
+      case 2:
+        return SecondarySlide({
+          title: 'Fee for deployment',
+          description: 'Lorem ipsum dolor sit amet',
+          image: (
+            <Image
+              style={styles.bulbLogo}
+              source={require('../../images/bulb.png')}
+            />
+          ) as unknown as Image,
+        })
     }
   }
 
   const pagination = () => {
-    const entries = [0, 1]
+    const entries = [0, 1, 2]
     const activeSlide = state.index
     return (
       <Pagination
@@ -82,11 +78,11 @@ export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
 
   return (
     <View style={styles.parent}>
-      <View style={{ ...grid.row, ...styles.center, ...styles.row }}>
+      <View style={{ ...grid.row, ...styles.section }}>
         <Carousel
           inactiveSlideOpacity={0}
           ref={c => setCarousel(c)}
-          data={[0, 1]}
+          data={[0, 1, 2]}
           renderItem={renderItem}
           sliderWidth={WINDOW_WIDTH}
           itemWidth={ITEM_WIDTH}
@@ -95,17 +91,15 @@ export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
           onSnapToItem={index => setState({ index })}
         />
       </View>
-      <View style={{ ...grid.row, ...styles.center, ...styles.row }}>
-        {pagination()}
-      </View>
-      <View style={{ ...grid.row, ...styles.center, ...styles.row }}>
+      <View style={{ ...grid.row, ...styles.section }}>{pagination()}</View>
+      <View style={{ ...grid.row, ...styles.section }}>
         <WhiteButton
           onPress={() => navigation.navigate('ImportMasterKey')}
           testID="Address.ShareButton"
           title={'Import existing wallet'}
         />
       </View>
-      <View style={{ ...grid.row, ...styles.center, ...styles.row }}>
+      <View style={{ ...grid.row, ...styles.section }}>
         <OutlineButton
           onPress={() => navigation.navigate('NewMasterKey')}
           testID="Address.ShareButton"
@@ -121,25 +115,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.blue,
     height: '100%',
   },
-  header: {
-    color: colors.white,
-    fontSize: 40,
-    fontWeight: 'bold',
-  },
-  subHeader: {
-    color: colors.white,
-    fontSize: 40,
-  },
-  subSubMainHeader: {
-    color: colors.white,
-    fontSize: 20,
-    fontWeight: 'bold',
-    paddingBottom: 10,
-  },
-  subSubHeader: {
-    color: colors.white,
-    fontSize: 19,
-  },
+
   walletLogo: {
     resizeMode: 'contain',
     height: Math.round(WINDOW_HEIGHT * 0.3),
@@ -149,28 +125,22 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     height: Math.round(WINDOW_HEIGHT * 0.3),
   },
-  center: {
-    alignSelf: 'center',
+  bulbLogo: {
+    resizeMode: 'contain',
+    height: Math.round(WINDOW_HEIGHT * 0.4),
+    marginBottom: 5,
   },
-  row: {
+  section: {
+    alignSelf: 'center',
     marginVertical: 10,
   },
+
   carouselContainer: {
     marginTop: 5,
     marginBottom: 0,
     paddingBottom: 0,
   },
-  itemContainer: {
-    width: ITEM_WIDTH,
-    height: ITEM_HEIGHT,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.blue,
-  },
-  itemLabel: {
-    color: 'white',
-    fontSize: 24,
-  },
+
   paginationContainer: { backgroundColor: colors.blue },
   dotStyle: {
     width: 10,
