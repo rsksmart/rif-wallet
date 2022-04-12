@@ -51,6 +51,7 @@ export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
   navigation,
 }) => {
   const [state, setState] = useState({ index: 0 })
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [carousel, setCarousel] = useState<any>()
   const renderItem = ({ item }: { item: number }) => {
     switch (item) {
