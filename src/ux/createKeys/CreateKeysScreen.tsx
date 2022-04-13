@@ -94,7 +94,7 @@ export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
       <View style={{ ...grid.row, ...styles.section }}>{pagination()}</View>
       <View style={{ ...grid.row, ...styles.section }}>
         <WhiteButton
-          onPress={() => navigation.navigate('NewMasterKey')}
+          onPress={() => navigation.navigate('SecurityExplanation')}
           testID="Address.ShareButton"
           title={'new wallet'}
         />
