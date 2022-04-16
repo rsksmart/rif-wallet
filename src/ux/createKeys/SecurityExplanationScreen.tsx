@@ -1,13 +1,20 @@
 import React, { useState } from 'react'
-import { StyleSheet, View, Dimensions, Image } from 'react-native'
+import {
+  StyleSheet,
+  View,
+  Dimensions,
+  Image,
+  TouchableOpacity,
+} from 'react-native'
 import { ScreenProps } from './types'
 import { colors } from '../../styles/colors'
 import { SecuritySlide } from '../slides/SecuritySlide'
 
 import Carousel from 'react-native-snap-carousel'
 import { grid } from '../../styles/grid'
-import { NavigationNavigator } from '../../components/button/PaginationNavigator'
+import { PaginationNavigator } from '../../components/button/PaginationNavigator'
 import { LogBox } from 'react-native'
+import { Arrow } from '../../components/icons'
 LogBox.ignoreLogs(['Warning: ...']) // Ignore log notification by message
 LogBox.ignoreAllLogs() //Ignore all log notifications
 
@@ -71,7 +78,23 @@ export const SecurityExplanationScreen: React.FC<
 
   return (
     <View style={styles.parent}>
-      <View style={{ ...grid.row, ...styles.section }}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('CreateKeys')}
+        style={{ zIndex: 1 }}>
+        <View
+          style={{
+            width: 30,
+            height: 30,
+            borderRadius: 30,
+            margin: 15,
+            backgroundColor: colors.purple,
+            /*position: 'absolute',
+            bottom: 100,*/
+          }}>
+          <Arrow color={colors.white} rotate={270} width={30} height={30} />
+        </View>
+      </TouchableOpacity>
+      <View style={{ ...grid.row, ...styles.section, zIndex: 0 }}>
         <Carousel
           inactiveSlideOpacity={0}
           ref={c => setCarousel(c)}
@@ -85,7 +108,7 @@ export const SecurityExplanationScreen: React.FC<
         />
       </View>
 
-      <NavigationNavigator
+      <PaginationNavigator
         onPrevious={() => carousel.snapToPrev()}
         onNext={() => carousel.snapToNext()}
         title="confirm"
@@ -99,6 +122,7 @@ const styles = StyleSheet.create({
   parent: {
     backgroundColor: colors.blue,
     height: '100%',
+    position: 'absolute',
   },
   sliderImage: {
     resizeMode: 'contain',
@@ -107,7 +131,7 @@ const styles = StyleSheet.create({
   },
   section: {
     alignSelf: 'center',
-    marginVertical: 10,
+    marginVertical: -55,
   },
 
   carouselContainer: {

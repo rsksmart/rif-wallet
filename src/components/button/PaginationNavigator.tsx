@@ -22,7 +22,7 @@ interface Interface {
   backgroundColor?: string
 }
 
-export const NavigationNavigator: React.FC<Interface> = ({
+export const PaginationNavigator: React.FC<Interface> = ({
   onPrevious,
   onNext,
   currentIndex,
@@ -63,12 +63,6 @@ export const NavigationNavigator: React.FC<Interface> = ({
             <Arrow color={colors.blue} rotate={270} width={50} height={50} />
           </View>
         </TouchableOpacity>
-        {/*<TouchableOpacity
-          style={styles.buttonLeft}
-          onPress={onBackwards}
-          disabled={disabled}>
-          <View>{pagination()}</View>
-        </TouchableOpacity>*/}
         <View>{pagination(currentIndex)}</View>
         <TouchableOpacity
           style={styles.buttonRight}

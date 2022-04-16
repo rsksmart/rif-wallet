@@ -58,6 +58,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
-  rowContainer: {
-  },
+  rowContainer: {},
 })
