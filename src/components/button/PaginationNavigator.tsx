@@ -97,7 +97,6 @@ const styles = StyleSheet.create({
     height: 65,
     flexDirection: 'row',
     backgroundColor: colors.blue,
-    /*backgroundColor: 'red',*/
     justifyContent: 'space-between',
     position: 'absolute',
     bottom: 0,
