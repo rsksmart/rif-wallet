@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 import { Button, Paragraph } from '../../components'
 import { CreateKeysProps, ScreenProps } from './types'
@@ -22,7 +22,13 @@ export const KeysCreatedScreen: React.FC<
   const navigateToReceive = async () => {
     navigation.navigate('Receive' as any)
   }
-  createFirstWallet(mnemonic)
+
+  useEffect(() => {
+    createFirstWallet(mnemonic).then(() => {
+      console.log('Wallet Created')
+    })
+  }, [])
+
   return (
     <ScrollView>
       <View style={styles.sectionCentered}>
