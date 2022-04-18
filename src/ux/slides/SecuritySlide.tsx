@@ -1,12 +1,9 @@
 import React from 'react'
 
 import { grid } from '../../styles/grid'
-import { StyleSheet, View, Text, Dimensions, Image } from 'react-native'
+import { StyleSheet, View, Text, Image } from 'react-native'
 import { colors } from '../../styles/colors'
-const WINDOW_WIDTH = Dimensions.get('window').width
-const WINDOW_HEIGHT = Dimensions.get('window').height
-const ITEM_WIDTH = Math.round(WINDOW_WIDTH * 0.8)
-const ITEM_HEIGHT = Math.round(WINDOW_HEIGHT * 0.75)
+import { SLIDER_WIDTH, SLIDER_HEIGHT } from './Dimensions'
 export const SecuritySlide = ({
   title,
   description,
@@ -49,8 +46,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   slideContainer: {
-    width: ITEM_WIDTH,
-    height: ITEM_HEIGHT,
+    width: SLIDER_WIDTH,
+    height: SLIDER_HEIGHT,
     justifyContent: 'center',
     backgroundColor: colors.blue,
   },

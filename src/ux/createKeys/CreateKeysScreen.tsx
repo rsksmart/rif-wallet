@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, View, Dimensions, Image } from 'react-native'
+import { StyleSheet, View, Image } from 'react-native'
 import { ScreenProps } from './types'
 import { colors } from '../../styles/colors'
 import { SecondarySlide } from '../slides/SeconderySlide'
@@ -12,16 +12,14 @@ import {
   WhiteButton,
 } from '../../components/button/ButtonVariations'
 
-const WINDOW_WIDTH = Dimensions.get('window').width
-const WINDOW_HEIGHT = Dimensions.get('window').height
-const ITEM_WIDTH = Math.round(WINDOW_WIDTH * 0.7)
+import { WINDOW_WIDTH, WINDOW_HEIGHT, SLIDER_WIDTH } from '../slides/Dimensions'
 
+const slidesIndexes = [0, 1, 2]
 export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
   navigation,
 }) => {
-  const [state, setState] = useState({ index: 0 })
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [carousel, setCarousel] = useState<any>()
+  const [selectedSlide, setSelectedSlide] = useState<number>(0)
+
   const renderItem = ({ item }: { item: number }) => {
     switch (item) {
       case 0:
@@ -60,9 +58,8 @@ export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
     }
   }
 
-  const pagination = () => {
-    const entries = [0, 1, 2]
-    const activeSlide = state.index
+  const pagination = (entries: number[]) => {
+    const activeSlide = selectedSlide
     return (
       <Pagination
         dotsLength={entries.length}
@@ -81,17 +78,18 @@ export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
       <View style={{ ...grid.row, ...styles.section }}>
         <Carousel
           inactiveSlideOpacity={0}
-          ref={c => setCarousel(c)}
-          data={[0, 1, 2]}
+          data={slidesIndexes}
           renderItem={renderItem}
           sliderWidth={WINDOW_WIDTH}
-          itemWidth={ITEM_WIDTH}
+          itemWidth={SLIDER_WIDTH}
           containerCustomStyle={styles.carouselContainer}
           inactiveSlideShift={0}
-          onSnapToItem={index => setState({ index })}
+          onSnapToItem={index => setSelectedSlide(index)}
         />
       </View>
-      <View style={{ ...grid.row, ...styles.section }}>{pagination()}</View>
+      <View style={{ ...grid.row, ...styles.section }}>
+        {pagination(slidesIndexes)}
+      </View>
       <View style={{ ...grid.row, ...styles.section }}>
         <WhiteButton
           onPress={() => navigation.navigate('SecurityExplanation')}

@@ -1,11 +1,5 @@
 import React, { useState } from 'react'
-import {
-  StyleSheet,
-  View,
-  Dimensions,
-  Image,
-  TouchableOpacity,
-} from 'react-native'
+import { StyleSheet, View, Image, TouchableOpacity } from 'react-native'
 import { ScreenProps } from './types'
 import { colors } from '../../styles/colors'
 import { SecuritySlide } from '../slides/SecuritySlide'
@@ -18,15 +12,19 @@ import { Arrow } from '../../components/icons'
 LogBox.ignoreLogs(['Warning: ...']) // Ignore log notification by message
 LogBox.ignoreAllLogs() //Ignore all log notifications
 
-const WINDOW_WIDTH = Dimensions.get('window').width
-const WINDOW_HEIGHT = Dimensions.get('window').height
-const SLIDER_WIDTH = Math.round(WINDOW_WIDTH * 0.7)
-const SLIDER_HEIGHT = Math.round(WINDOW_HEIGHT * 0.75)
+import {
+  WINDOW_WIDTH,
+  WINDOW_HEIGHT,
+  SLIDER_WIDTH,
+  SLIDER_HEIGHT,
+} from '../slides/Dimensions'
+
+const slidesIndexes = [1, 2, 3]
+
 export const SecurityExplanationScreen: React.FC<
   ScreenProps<'SecurityExplanation'>
 > = ({ navigation }) => {
-  const [state, setState] = useState({ index: 0 })
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [selectedSlide, setSelectedSlide] = useState<number>(0)
   const [carousel, setCarousel] = useState<any>()
   const renderItem = ({ item }: { item: number }) => {
     switch (item) {
@@ -80,31 +78,22 @@ export const SecurityExplanationScreen: React.FC<
     <View style={styles.parent}>
       <TouchableOpacity
         onPress={() => navigation.navigate('CreateKeys')}
-        style={{ zIndex: 1 }}>
-        <View
-          style={{
-            width: 30,
-            height: 30,
-            borderRadius: 30,
-            margin: 15,
-            backgroundColor: colors.purple,
-            /*position: 'absolute',
-            bottom: 100,*/
-          }}>
+        style={styles.returnButton}>
+        <View style={styles.returnButtonView}>
           <Arrow color={colors.white} rotate={270} width={30} height={30} />
         </View>
       </TouchableOpacity>
-      <View style={{ ...grid.row, ...styles.section, zIndex: 0 }}>
+      <View style={{ ...grid.row, ...styles.carouselSection }}>
         <Carousel
           inactiveSlideOpacity={0}
           ref={c => setCarousel(c)}
-          data={[0, 1, 2]}
+          data={slidesIndexes}
           renderItem={renderItem}
           sliderWidth={WINDOW_WIDTH}
           itemWidth={SLIDER_WIDTH}
           containerCustomStyle={styles.carouselContainer}
           inactiveSlideShift={0}
-          onSnapToItem={index => setState({ index })}
+          onSnapToItem={index => setSelectedSlide(index)}
         />
       </View>
 
@@ -112,7 +101,8 @@ export const SecurityExplanationScreen: React.FC<
         onPrevious={() => carousel.snapToPrev()}
         onNext={() => carousel.snapToNext()}
         title="confirm"
-        currentIndex={state.index}
+        currentIndex={selectedSlide}
+        slidesAmount={slidesIndexes.length}
       />
     </View>
   )
@@ -124,14 +114,25 @@ const styles = StyleSheet.create({
     height: '100%',
     position: 'absolute',
   },
+  returnButton: {
+    zIndex: 1,
+  },
+  returnButtonView: {
+    width: 30,
+    height: 30,
+    borderRadius: 30,
+    margin: 15,
+    backgroundColor: colors.purple,
+  },
   sliderImage: {
     resizeMode: 'contain',
     width: WINDOW_WIDTH * 0.7,
     height: WINDOW_HEIGHT * 0.4,
   },
-  section: {
+  carouselSection: {
     alignSelf: 'center',
     marginVertical: -55,
+    zIndex: 0,
   },
 
   carouselContainer: {

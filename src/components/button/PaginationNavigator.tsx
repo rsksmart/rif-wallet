@@ -9,6 +9,7 @@ import {
   StyleSheet,
 } from 'react-native'
 import { Arrow } from '../icons'
+import { CheckIcon } from '../icons/CheckIcon'
 
 interface Interface {
   title?: string
@@ -20,6 +21,7 @@ interface Interface {
   testID?: string
   shadowColor?: string
   backgroundColor?: string
+  slidesAmount: number
 }
 
 export const PaginationNavigator: React.FC<Interface> = ({
@@ -28,16 +30,16 @@ export const PaginationNavigator: React.FC<Interface> = ({
   currentIndex,
   disabled,
   shadowColor,
-  backgroundColor = '#fff',
-  children,
+  backgroundColor = 'white',
+  slidesAmount,
 }) => {
   const imageStyle = {
     ...styles.image,
     shadowColor,
     backgroundColor,
   }
-  const pagination = (index: number) => {
-    const entries = [0, 1, 2]
+  const slidePages = [...Array(slidesAmount).keys()] // create an array containing 1...slidesAmount
+  const pagination = (index: number, entries: number[]) => {
     const activeSlide = index
     return (
       <Pagination
@@ -52,18 +54,18 @@ export const PaginationNavigator: React.FC<Interface> = ({
     )
   }
   return (
-    <>
-      <View>{children}</View>
-      <View style={styles.container}>
-        <TouchableOpacity
-          style={styles.buttonLeft}
-          onPress={onPrevious}
-          disabled={disabled}>
-          <View style={imageStyle}>
-            <Arrow color={colors.blue} rotate={270} width={50} height={50} />
-          </View>
-        </TouchableOpacity>
-        <View>{pagination(currentIndex)}</View>
+    <View style={styles.container}>
+      <TouchableOpacity
+        style={styles.buttonLeft}
+        onPress={onPrevious}
+        disabled={disabled}>
+        <View style={imageStyle}>
+          <Arrow color={colors.blue} rotate={270} width={50} height={50} />
+        </View>
+      </TouchableOpacity>
+      <View>{pagination(currentIndex, slidePages)}</View>
+
+      {currentIndex < slidesAmount - 1 && (
         <TouchableOpacity
           style={styles.buttonRight}
           onPress={onNext}
@@ -72,8 +74,20 @@ export const PaginationNavigator: React.FC<Interface> = ({
             <Arrow color={colors.blue} rotate={90} width={50} height={50} />
           </View>
         </TouchableOpacity>
-      </View>
-    </>
+      )}
+      {currentIndex === slidesAmount - 1 && (
+        <TouchableOpacity
+          style={styles.buttonRight}
+          onPress={() => {
+            console.log('Show master key slides')
+          }}
+          disabled={disabled}>
+          <View style={{ ...imageStyle, backgroundColor: colors.green }}>
+            <CheckIcon color={colors.blue} width={50} height={50} />
+          </View>
+        </TouchableOpacity>
+      )}
+    </View>
   )
 }
 
