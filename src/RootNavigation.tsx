@@ -21,6 +21,7 @@ import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServi
 import { ManagerWalletScreenProps } from './screens/settings/ManageWalletsScreen'
 import { SettingsScreenProps } from './screens/settings/SettingsScreen'
 import { colors } from './styles/colors'
+import { hasPin } from './storage/PinStore'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -96,8 +97,10 @@ export type ScreenProps<T extends keyof RootStackParamList> = StackScreenProps<
 export const RootNavigation: React.FC<{
   currentScreen: string
   hasKeys: boolean
+  hasPin: boolean
   rifWalletServicesSocket: IRifWalletServicesSocket
   keyManagementProps: CreateKeysProps
+  handlePinCreated: any
   balancesScreenProps: BalancesScreenProps
   activityScreenProps: ActivityScreenProps
   keysInfoScreenProps: KeysInfoScreenProps
@@ -110,7 +113,9 @@ export const RootNavigation: React.FC<{
 }> = ({
   currentScreen,
   hasKeys,
+  hasPin,
   keyManagementProps,
+  handlePinCreated,
   balancesScreenProps,
   activityScreenProps,
   keysInfoScreenProps,
@@ -121,10 +126,16 @@ export const RootNavigation: React.FC<{
   manageWalletScreenProps,
   settingsScreen,
 }) => {
+  let initialRoute: any = 'CreateKeysUX'
+  if (hasPin) {
+    initialRoute = 'Home'
+  } else if (hasKeys) {
+    initialRoute = 'CreatePin'
+  }
   return (
     <View style={styles.parent}>
       {hasKeys && <AppHeader />}
-      <RootStack.Navigator initialRouteName={hasKeys ? 'Home' : 'CreateKeysUX'}>
+      <RootStack.Navigator initialRouteName={initialRoute}>
         <RootStack.Screen
           name="Home"
           component={Screens.HomeScreen}
@@ -242,11 +253,15 @@ export const RootNavigation: React.FC<{
           component={Screens.ManagePinScreen}
           options={sharedOptions}
         />
-        <RootStack.Screen
-          name="CreatePin"
-          component={Screens.CreatePinScreen}
-          options={sharedOptions}
-        />
+
+        <RootStack.Screen name="CreatePin" options={sharedOptions}>
+          {props => (
+            <Screens.CreatePinScreen
+              {...props}
+              onPinCreated={handlePinCreated}
+            />
+          )}
+        </RootStack.Screen>
 
         <RootStack.Screen name="Contacts" options={sharedOptions}>
           {props => (

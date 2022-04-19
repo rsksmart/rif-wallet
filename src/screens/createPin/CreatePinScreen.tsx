@@ -3,16 +3,13 @@ import { savePin } from '../../storage/PinStore'
 import { PinManager } from '../../components/PinManager'
 
 interface Interface {
-  unlock: () => void
-  route: any
-  navigation: any
+  onPinCreated: () => Promise<void>
 }
 
-export const CreatePinScreen: React.FC<Interface> = ({ route, navigation }) => {
-  const mnemonic = route.params.mnemonic
+export const CreatePinScreen: React.FC<Interface> = ({ onPinCreated }) => {
   const onSubmit = async (enteredValue: string) => {
     await savePin(enteredValue)
-    navigation.navigate('KeysCreated', { mnemonic: mnemonic })
+    await onPinCreated()
     return 'Pin Created'
   }
   return <PinManager title={'Set your pin'} handleSubmit={onSubmit} />

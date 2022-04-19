@@ -6,7 +6,7 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native'
-import { ScreenProps } from '../types'
+import { CreateKeysProps, ScreenProps } from '../types'
 import { useTranslation } from 'react-i18next'
 import { grid } from '../../../styles/grid'
 import { RefreshIcon } from '../../../components/icons'
@@ -35,9 +35,12 @@ const shuffle = (array: string[]) => {
   return array
 }
 
+type ConfirmNewMasterKeyScreenProps = {
+  createFirstWallet: CreateKeysProps['createFirstWallet']
+}
 export const ConfirmNewMasterKeyScreen: React.FC<
-  ScreenProps<'ConfirmNewMasterKey'>
-> = ({ route, navigation }) => {
+  ScreenProps<'ConfirmNewMasterKey'> & ConfirmNewMasterKeyScreenProps
+> = ({ route, navigation, createFirstWallet }) => {
   const mnemonic = route.params.mnemonic
   const [selectedWords, setSelectedWords] = useState<string[]>([])
   const [words, setWords] = useState<string[]>(shuffle(mnemonic.split(' ')))
@@ -54,10 +57,6 @@ export const ConfirmNewMasterKeyScreen: React.FC<
     setSelectedWords(updatedWords)
     setWords(words.filter(word => !updatedWords.find(w => w === word)))
   }
-  const saveAndNavigate = async () => {
-    // @ts-ignore
-    navigation.navigate('CreatePin', { mnemonic: mnemonic })
-  }
 
   const handleConfirmMnemonic = async () => {
     const isValid = mnemonic === selectedWords.join(' ')
@@ -66,8 +65,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
       setError(t('Entered words does not match you your master key'))
       return
     }
-
-    await saveAndNavigate()
+    await createFirstWallet(mnemonic)
   }
 
   const reset = async () => {

@@ -7,6 +7,7 @@ import { i18nInit } from '../lib/i18n'
 
 import {
   hasKeys,
+  hasPin,
   loadExistingWallets,
   creteKMS,
   deleteKeys,
@@ -38,6 +39,7 @@ let timer: NodeJS.Timeout
 
 type State = {
   hasKeys: boolean
+  hasPin: boolean
   kms: KeyManagementSystem | null
   wallets: Wallets
   walletsIsDeployed: WalletsIsDeployed
@@ -55,6 +57,7 @@ const noKeysState = {
 
 const initialState: State = {
   hasKeys: false,
+  hasPin: false,
   ...noKeysState,
   loading: true,
   chainId: undefined,
@@ -75,13 +78,21 @@ const useKeyManagementSystem = (onRequest: OnRequest) => {
   const removeKeys = () => {
     setState({ ...state, ...noKeysState })
   }
-
+  const setHasPin = () => {
+    setState({ ...state, loading: true })
+    setState({
+      ...state,
+      hasPin: true,
+      loading: false,
+    })
+  }
   const setKeys = (
     kms: KeyManagementSystem,
     wallets: Wallets,
     walletsIsDeployed: WalletsIsDeployed,
   ) => {
     setState({
+      ...state,
       hasKeys: true,
       kms,
       wallets,
@@ -140,6 +151,7 @@ const useKeyManagementSystem = (onRequest: OnRequest) => {
     state,
     setState,
     createFirstWallet,
+    handlePinCreated: setHasPin,
     addNewWallet,
     unlockApp,
     removeKeys,
@@ -158,6 +170,7 @@ export const Core = () => {
     state,
     setState,
     createFirstWallet,
+    handlePinCreated,
     addNewWallet,
     unlockApp,
     removeKeys,
@@ -203,9 +216,16 @@ export const Core = () => {
   }, [unlocked])
 
   useEffect(() => {
-    Promise.all([i18nInit(), hasKeys()]).then(([_, hasKeysResult]) => {
-      setState({ ...state, hasKeys: !!hasKeysResult, loading: false })
-    })
+    Promise.all([i18nInit(), hasKeys(), hasPin()]).then(
+      ([_, hasKeysResult, hasPinResult]) => {
+        setState({
+          ...state,
+          hasKeys: !!hasKeysResult,
+          hasPin: !!hasPinResult,
+          loading: false,
+        })
+      },
+    )
   }, [])
 
   useEffect(() => {
@@ -226,7 +246,7 @@ export const Core = () => {
       </SafeAreaView>
       <SafeAreaView style={styles.parent}>
         {!active && <Cover />}
-        {state.hasKeys && !unlocked && (
+        {state.hasKeys && state.hasPin && !unlocked && (
           <RequestPIN
             unlock={() => unlockApp().then(() => setUnlocked(true))}
           />
@@ -244,6 +264,7 @@ export const Core = () => {
                 <RootNavigation
                   currentScreen={currentScreen}
                   hasKeys={state.hasKeys}
+                  hasPin={state.hasPin}
                   rifWalletServicesSocket={rifWalletServicesSocket}
                   keyManagementProps={{
                     generateMnemonic: () =>
@@ -254,6 +275,7 @@ export const Core = () => {
                         return wallet
                       }),
                   }}
+                  handlePinCreated={handlePinCreated}
                   balancesScreenProps={{ fetcher: rifWalletServicesFetcher }}
                   sendScreenProps={{ rnsResolver }}
                   activityScreenProps={{
