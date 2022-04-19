@@ -21,7 +21,6 @@ import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServi
 import { ManagerWalletScreenProps } from './screens/settings/ManageWalletsScreen'
 import { SettingsScreenProps } from './screens/settings/SettingsScreen'
 import { colors } from './styles/colors'
-import { hasPin } from './storage/PinStore'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
