@@ -99,7 +99,7 @@ export const RootNavigation: React.FC<{
   hasPin: boolean
   rifWalletServicesSocket: IRifWalletServicesSocket
   keyManagementProps: CreateKeysProps
-  handlePinCreated: any
+  handlePinCreated: () => Promise<void>
   balancesScreenProps: BalancesScreenProps
   activityScreenProps: ActivityScreenProps
   keysInfoScreenProps: KeysInfoScreenProps
