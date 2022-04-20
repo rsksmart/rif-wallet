@@ -128,3 +128,22 @@ const outlineStyles = StyleSheet.create({
     color: colors.lightPurple,
   },
 })
+
+// gray button:
+export const GrayButton: React.FC<ButtonInterface> = props => (
+  <Button {...props} buttonStyles={grayStyles} />
+)
+
+const grayStyles = StyleSheet.create({
+  button: {
+    backgroundColor: colors.lightGray,
+  },
+  buttonDisabled: {},
+  buttonActive: {
+    backgroundColor: colors.lightPurple,
+  },
+  text: {
+    color: colors.darkPurple3,
+  },
+  textDisabled: {},
+})

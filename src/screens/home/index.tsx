@@ -48,9 +48,7 @@ export const HomeScreen: React.FC<{
           navigation={navigation}
           balances={Object.values(state.balances)}
         />
-        {selected && (
-          <SelectedTokenComponent navigation={navigation} token={selected} />
-        )}
+        {selected && <SelectedTokenComponent token={selected} conversion={1} />}
 
         <View style={{ ...styles.topContainer, ...containerStyles }}>
           <PortfolioComponent
