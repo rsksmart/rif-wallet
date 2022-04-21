@@ -79,11 +79,9 @@ const useKeyManagementSystem = (onRequest: OnRequest) => {
     setState({ ...state, ...noKeysState })
   }
   const setHasPin = () => {
-    setState({ ...state, loading: true })
     setState({
       ...state,
       hasPin: true,
-      loading: false,
     })
   }
   const setKeys = (
@@ -275,7 +273,11 @@ export const Core = () => {
                         return wallet
                       }),
                   }}
-                  handlePinCreated={handlePinCreated}
+                  handlePinCreated={() => {
+                    setState({ ...state, loading: true })
+                    handlePinCreated()
+                    setState({ ...state, loading: false })
+                  }}
                   balancesScreenProps={{ fetcher: rifWalletServicesFetcher }}
                   sendScreenProps={{ rnsResolver }}
                   activityScreenProps={{

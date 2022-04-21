@@ -3,7 +3,7 @@ import { savePin } from '../../storage/PinStore'
 import { PinManager } from '../../components/PinManager'
 
 interface Interface {
-  onPinCreated: () => Promise<void>
+  onPinCreated: () => void
 }
 
 export const CreatePinScreen: React.FC<Interface> = ({ onPinCreated }) => {
