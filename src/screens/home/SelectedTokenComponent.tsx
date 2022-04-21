@@ -17,8 +17,6 @@ interface Interface {
 const SelectedTokenComponent: React.FC<Interface> = ({ token, conversion }) => {
   const [showBalances, setShowBalances] = useState<boolean>(true)
 
-  console.log(token)
-
   return (
     <View style={styles.amountRow}>
       <View style={styles.hideRow}>
@@ -69,7 +67,6 @@ const styles = StyleSheet.create({
   },
   amountRow: {
     marginVertical: 20,
-    marginHorizontal: 40,
     paddingVertical: 20,
     paddingHorizontal: 20,
     borderRadius: 20,

@@ -6,7 +6,7 @@ interface HideShowInterface extends SvgProps {
 }
 
 export const HideShowIcon = (props: HideShowInterface) => (
-  <Svg {...props} viewBox="0 0 11 11">
+  <Svg {...props} viewBox="0 0 12 7">
     <G id="Group_1204" transform="translate(0)">
       <Path
         fill="#171530"
