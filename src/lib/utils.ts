@@ -1,10 +1,11 @@
-export function shortAddress(address?: string): string {
+export function shortAddress(address?: string, trimAmount?: number): string {
   if (!address) {
     return ''
   }
+  const amount = trimAmount || 4
 
-  return `${address.substr(0, 6)}...${address.substr(
-    address.length - 4,
+  return `${address.substr(0, amount + 2)}...${address.substr(
+    address.length - amount,
     address.length,
   )}`
 }
@@ -40,3 +41,15 @@ export const formatTimestamp = (timestamp: any) => {
     date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec
   return time
 }
+
+export const convertTokenToUSD = (
+  balance: number,
+  quote: number,
+  round?: boolean,
+) => (round ? Math.round(balance * quote * 10000) / 10000 : balance * quote)
+
+export const convertUSDtoToken = (
+  balance: number,
+  quote: number,
+  round?: boolean,
+) => (round ? Math.round((balance / quote) * 10000) / 10000 : balance / quote)

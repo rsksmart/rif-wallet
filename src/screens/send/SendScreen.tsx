@@ -1,314 +1,119 @@
 import React, { useEffect, useState } from 'react'
-import LinearGradient from 'react-native-linear-gradient'
-import { useIsFocused } from '@react-navigation/native'
-
-import {
-  StyleSheet,
-  View,
-  TextInput,
-  Linking,
-  TouchableOpacity,
-  ScrollView,
-  Text,
-} from 'react-native'
-
-import { ContractReceipt, BigNumber, utils, ContractTransaction } from 'ethers'
-import { useTranslation } from 'react-i18next'
+import { StyleSheet, ScrollView, Text } from 'react-native'
+import { BigNumber, utils, ContractTransaction } from 'ethers'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
-
-import { convertToERC20Token } from '../../lib/token/tokenMetadata'
-import { IToken } from '../../lib/token/BaseToken'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-
+import {
+  convertToERC20Token,
+  makeRBTCToken,
+} from '../../lib/token/tokenMetadata'
 import { ScreenProps } from '../../RootNavigation'
 import { ScreenWithWallet } from '../types'
-import { AddressInput } from '../../components'
-import { getTokenColor, getTokenColorWithOpacity } from '../home/tokenColor'
-import { grid } from '../../styles/grid'
-import { SquareButton } from '../../components/button/SquareButton'
-import { Arrow, RefreshIcon } from '../../components/icons'
-import { TokenImage } from '../home/TokenImage'
-import Clipboard from '@react-native-community/clipboard'
-import TransactionInfo from './TransactionInfo'
-import MiniModal from '../../components/tokenSelector/MiniModal'
-
-import { balanceToString } from '../balances/BalancesScreen'
+import TransactionInfo, { transactionInfo } from './TransactionInfo'
+import { colors } from '../../styles/colors'
+import TransactionForm from './TransactionForm'
+import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
 export type SendScreenProps = {}
 
 export const SendScreen: React.FC<
   SendScreenProps & ScreenProps<'Send'> & ScreenWithWallet
-> = ({ route, wallet, navigation }) => {
-  const isFocused = useIsFocused()
+> = ({ route, wallet }) => {
   const { state } = useSocketsState()
 
   const contractAddress =
     route.params?.contractAddress || Object.keys(state.balances)[0]
-  const [selectedToken, setSelectedToken] = React.useState(
-    state.balances[contractAddress],
-  )
 
-  const [availableTokens, setAvailableTokens] = useState<IToken[]>()
-
-  const selectedTokenBalance = balanceToString(
-    selectedToken.balance,
-    selectedToken.decimals || 0,
-  )
-  const tokenQuota = state.prices[selectedToken.contractAddress]?.price
-
-  const { t } = useTranslation()
-
-  const [amount, setAmount] = useState('')
-  const [to, setTo] = useState(route.params?.to || '')
-
-  const [tx, setTx] = useState<ContractTransaction>()
-  const [receipt, setReceipt] = useState<ContractReceipt>()
+  const [currentTransaction, setCurrentTransaction] =
+    useState<transactionInfo | null>(null)
   const [error, setError] = useState<string>()
-  const [validationError, setValidationError] = useState(false)
-  const [showSelector, setShowSelector] = useState(false)
 
-  const handleTokenSelection = (token: ITokenWithBalance) => {
-    setShowSelector(false)
-    setSelectedToken(token)
-  }
-
-  const openTokenSelector = () => {
-    setShowSelector(true)
-  }
+  const [chainId, setChainId] = useState<number>(31)
 
   useEffect(() => {
-    setTo(route.params?.to || '')
+    wallet.getChainId().then(setChainId)
+  }, [wallet])
 
-    if (tx && receipt) {
-      setTx(undefined)
-      setReceipt(undefined)
-    }
-
-    const tokensWithBalance = Object.values(state.balances)
-
-    const chainId = 31 // Once https://github.com/rsksmart/swallet/pull/151 gets approved we´ll need to use it from the state
-
-    const tokens: Array<IToken> = tokensWithBalance.map(token =>
-      convertToERC20Token(token, { signer: wallet, chainId }),
-    )
-
-    setAvailableTokens(tokens)
-  }, [wallet, isFocused])
-
-  const transfer = async () => {
-    setTx(undefined)
-    setReceipt(undefined)
+  const transfer = (token: ITokenWithBalance, amount: string, to: string) => {
     setError(undefined)
+    setCurrentTransaction({ status: 'USER_CONFIRM' })
 
-    if (availableTokens) {
-      const token = availableTokens.find(
-        _token => _token.symbol === selectedToken.symbol,
-      )
-      if (token) {
-        try {
-          const decimals = await token.decimals()
-          const tokenAmount = BigNumber.from(utils.parseUnits(amount, decimals))
+    // handle both ERC20 tokens and the native token (gas)
+    const transferMethod =
+      token.symbol === 'TRBTC'
+        ? makeRBTCToken(wallet, chainId)
+        : convertToERC20Token(token, {
+            signer: wallet,
+            chainId,
+          })
 
-          const transferTx = await token.transfer(to.toLowerCase(), tokenAmount)
+    transferMethod.decimals().then((decimals: number) => {
+      const tokenAmount = BigNumber.from(utils.parseUnits(amount, decimals))
 
-          setTx(transferTx)
+      transferMethod
+        .transfer(to.toLowerCase(), tokenAmount)
+        .then((txPending: ContractTransaction) => {
+          const current: transactionInfo = {
+            to,
+            value: amount,
+            symbol: transferMethod.symbol,
+            hash: txPending.hash,
+            status: 'PENDING',
+          }
+          setCurrentTransaction(current)
 
-          const transferReceipt = await transferTx.wait()
-
-          setReceipt(transferReceipt)
-        } catch (e: any) {
-          setError(e.message)
-        }
-      }
-    }
+          txPending
+            .wait()
+            .then(() =>
+              setCurrentTransaction({ ...current, status: 'SUCCESS' }),
+            )
+            .catch(() =>
+              setCurrentTransaction({ ...current, status: 'FAILED' }),
+            )
+        })
+        .catch((err: any) => {
+          setError(err)
+          setCurrentTransaction(null)
+        })
+    })
   }
-
-  const handleTargetAddressChange = (address: string) => {
-    setError(undefined)
-    setTo(address)
-  }
-
-  const handleAmountChange = (currentAmount: string) => {
-    if (Number(currentAmount) > Number(selectedTokenBalance)) {
-      setValidationError(true)
-      setAmount(currentAmount)
-      return
-    }
-    setValidationError(false)
-    setAmount(currentAmount)
-  }
-
-  const imageStyle = {
-    ...styles.image,
-    shadowColor: '#000000',
-  }
-
-  const handleCopy = () => Clipboard.setString(tx!.hash!)
-  const handleOpen = () =>
-    Linking.openURL(`https://explorer.testnet.rsk.co/tx/${tx!.hash}`)
-
-  const isNextDisabled = (!!tx && !receipt) || validationError
 
   return (
-    <LinearGradient
-      colors={['#FFFFFF', getTokenColorWithOpacity(selectedToken.symbol, 0.1)]}
-      style={styles.parent}>
-      <ScrollView>
-        <View>
-          <Text>
-            Balance: {`${selectedTokenBalance} ${selectedToken.symbol}`}
-          </Text>
-          <Text>
-            USD:{' '}
-            {(Number(selectedTokenBalance) * tokenQuota).toFixed(2) || 'N/A'}
-          </Text>
-        </View>
-        <View style={grid.row}>
-          <View style={{ ...grid.column2, ...styles.icon }}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => openTokenSelector()}>
-              <View style={imageStyle}>
-                <TokenImage
-                  symbol={selectedToken.symbol}
-                  height={30}
-                  width={30}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View style={{ ...grid.column10 }}>
-            <TextInput
-              style={styles.input}
-              onChangeText={text => handleAmountChange(text)}
-              value={amount}
-              placeholder={t('Amount')}
-              keyboardType="numeric"
-              testID={'Amount.Input'}
-            />
-            {!!amount && (
-              <Text>
-                {(Number(amount) * tokenQuota).toFixed(2) || 'N/A'} USD
-              </Text>
-            )}
-            {validationError && <Text>Insuficient funds</Text>}
-          </View>
-        </View>
-        <View>
-          <AddressInput
-            initialValue={route.params?.to || ''}
-            onChangeText={handleTargetAddressChange}
-            testID={'To.Input'}
-            navigation={navigation}
-            showContactsIcon={true}
-            chainId={31}
-            color={getTokenColor(selectedToken.symbol)}
-          />
-        </View>
-
-        <View style={styles.centerRow}>
-          <SquareButton
-            disabled={isNextDisabled}
-            onPress={transfer}
-            title="Next"
-            testID="Address.CopyButton"
-            icon={
-              <Arrow color={getTokenColor(selectedToken.symbol)} rotate={90} />
-            }
-          />
-        </View>
-        <View style={styles.section}>
-          {!!tx && (
-            <TransactionInfo
-              hash={tx.hash}
-              info={
-                !receipt
-                  ? t('Transaction Sent. Please wait...')
-                  : t('Transaction Confirmed.')
-              }
-              selectedToken={selectedToken.symbol}
-              handleCopy={handleCopy}
-              handleOpen={handleOpen}
-            />
-          )}
-          {!!error && (
-            <View style={styles.centerRow}>
-              <Text>{t('An error ocurred')}</Text>
-              <SquareButton
-                onPress={transfer}
-                title="Retry"
-                testID="Transfer.RetryButton"
-                icon={
-                  <RefreshIcon color={getTokenColor(selectedToken.symbol)} />
-                }
-              />
-            </View>
-          )}
-        </View>
-      </ScrollView>
-      {showSelector && (
-        <MiniModal
-          onTokenSelection={handleTokenSelection}
-          availableTokens={Object.values(state.balances)}
+    <ScrollView style={styles.parent}>
+      {!currentTransaction ? (
+        <TransactionForm
+          onConfirm={transfer}
+          tokenList={Object.values(state.balances)}
+          tokenPrices={state.prices}
+          chainId={chainId}
+          initialValues={{
+            recipient: route.params?.to,
+            amount: '0',
+            asset: route.params?.contractAddress
+              ? state.balances[route.params.contractAddress]
+              : state.balances[contractAddress],
+          }}
         />
+      ) : (
+        <TransactionInfo transaction={currentTransaction} />
       )}
-    </LinearGradient>
+
+      {!!error && <Text style={styles.error}>{error}</Text>}
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
   parent: {
     height: '100%',
-    width: '100%',
+    backgroundColor: colors.darkBlue,
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    paddingTop: 40,
+    paddingHorizontal: 20,
   },
-  image: {
-    width: 50,
-    height: 50,
-    backgroundColor: '#fff',
-    borderRadius: 15,
-    alignItems: 'center',
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 2,
-    justifyContent: 'center',
-  },
-  button: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  centerRow: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  icon: {
-    marginTop: 14,
-    paddingLeft: 5,
-  },
-  input: {
-    backgroundColor: '#ffffff',
-    borderRadius: 10,
-    display: 'flex',
-    height: 50,
+  error: {
     marginTop: 10,
-    margin: 10,
-  },
-  cameraFrame: {
-    flex: 1,
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, .1)',
-    marginVertical: 40,
-    padding: 20,
-    borderRadius: 20,
-  },
-  cameraContainer: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  section: {
-    marginTop: 5,
-    marginBottom: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
-    flex: 1,
+    color: colors.orange,
+    textAlign: 'center',
   },
 })
