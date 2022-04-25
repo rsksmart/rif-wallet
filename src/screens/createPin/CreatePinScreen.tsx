@@ -1,16 +1,14 @@
 import React from 'react'
-import { savePin } from '../../storage/PinStore'
 import { PinManager } from '../../components/PinManager'
 
 interface Interface {
-  onPinCreated: () => void
+  createPin: (newPin: string) => Promise<void>
 }
 
-export const CreatePinScreen: React.FC<Interface> = ({ onPinCreated }) => {
+export const CreatePinScreen: React.FC<Interface> = ({ createPin }) => {
   const onSubmit = async (enteredValue: string) => {
-    await savePin(enteredValue)
-    await onPinCreated()
+    await createPin(enteredValue)
     return 'Pin Created'
   }
-  return <PinManager title={'Set your pin'} handleSubmit={onSubmit} />
+  return <PinManager title={'Set your pin'} handleSubmit={createPin} />
 }

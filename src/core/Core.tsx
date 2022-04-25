@@ -13,6 +13,7 @@ import {
   deleteKeys,
   addNextWallet,
 } from './operations'
+export { hasPin } from '../storage/PinStore'
 import {
   rifWalletServicesFetcher,
   rnsResolver,
@@ -32,6 +33,7 @@ import { WalletConnectProviderElement } from '../screens/walletConnect/WalletCon
 import { RIFSocketsProvider } from '../subscriptions/RIFSockets'
 import { NavigationContainer, NavigationState } from '@react-navigation/native'
 import { colors } from '../styles/colors'
+import { savePin } from '../storage/PinStore'
 
 const gracePeriod = 3000
 
@@ -78,12 +80,7 @@ const useKeyManagementSystem = (onRequest: OnRequest) => {
   const removeKeys = () => {
     setState({ ...state, ...noKeysState })
   }
-  const setHasPin = () => {
-    setState({
-      ...state,
-      hasPin: true,
-    })
-  }
+
   const setKeys = (
     kms: KeyManagementSystem,
     wallets: Wallets,
@@ -124,6 +121,16 @@ const useKeyManagementSystem = (onRequest: OnRequest) => {
     return rifWallet
   }
 
+  const createPin = async (newPin: string) => {
+    setState({ ...state, loading: true })
+    await savePin(newPin)
+    setState({
+      ...state,
+      hasPin: true,
+      loading: false,
+    })
+  }
+
   const addNewWallet = () => {
     if (!state.kms) {
       throw Error('Can not add new wallet because no KMS created.')
@@ -149,11 +156,11 @@ const useKeyManagementSystem = (onRequest: OnRequest) => {
     state,
     setState,
     createFirstWallet,
-    handlePinCreated: setHasPin,
     addNewWallet,
     unlockApp,
     removeKeys,
     switchActiveWallet,
+    createPin,
   }
 }
 
@@ -168,11 +175,11 @@ export const Core = () => {
     state,
     setState,
     createFirstWallet,
-    handlePinCreated,
     addNewWallet,
     unlockApp,
     removeKeys,
     switchActiveWallet,
+    createPin,
   } = useKeyManagementSystem(onRequest)
 
   const [currentScreen, setCurrentScreen] = useState<string>('Home')
@@ -273,11 +280,7 @@ export const Core = () => {
                         return wallet
                       }),
                   }}
-                  handlePinCreated={() => {
-                    setState({ ...state, loading: true })
-                    handlePinCreated()
-                    setState({ ...state, loading: false })
-                  }}
+                  createPin={createPin}
                   balancesScreenProps={{ fetcher: rifWalletServicesFetcher }}
                   sendScreenProps={{ rnsResolver }}
                   activityScreenProps={{

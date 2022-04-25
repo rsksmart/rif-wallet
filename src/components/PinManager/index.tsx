@@ -8,7 +8,7 @@ import { colors } from '../../styles/colors'
 
 interface Interface {
   title: string
-  handleSubmit: (enteredPin: string) => Promise<string>
+  handleSubmit: (enteredPin: string) => Promise<void>
 }
 export const PinManager: React.FC<Interface> = ({ title, handleSubmit }) => {
   const [error, setError] = useState<string | null>(null)
@@ -16,12 +16,6 @@ export const PinManager: React.FC<Interface> = ({ title, handleSubmit }) => {
   const [position, setPosition] = React.useState(0)
 
   const { t } = useTranslation()
-
-  const onSubmit = (enteredPin: string) => () => {
-    handleSubmit(enteredPin).then((response: string) => {
-      console.log(response)
-    })
-  }
 
   const onPressKey = (value: string) => {
     setPin(prev => {
@@ -69,7 +63,7 @@ export const PinManager: React.FC<Interface> = ({ title, handleSubmit }) => {
       <KeyPad
         onDelete={onDelete}
         onKeyPress={onPressKey}
-        onUnlock={onSubmit(pin.join(''))}
+        onUnlock={() => handleSubmit(pin.join(''))}
       />
     </View>
   )
