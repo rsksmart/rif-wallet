@@ -19,7 +19,6 @@ export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
   navigation,
 }) => {
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
-  const [carousel, setCarousel] = useState<any>()
 
   const renderItem = ({ item }: { item: number }) => {
     switch (item) {
