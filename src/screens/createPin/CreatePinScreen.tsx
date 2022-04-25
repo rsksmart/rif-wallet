@@ -5,10 +5,6 @@ interface Interface {
   createPin: (newPin: string) => Promise<void>
 }
 
-export const CreatePinScreen: React.FC<Interface> = ({ createPin }) => {
-  const onSubmit = async (enteredValue: string) => {
-    await createPin(enteredValue)
-    return 'Pin Created'
-  }
-  return <PinManager title={'Set your pin'} handleSubmit={createPin} />
-}
+export const CreatePinScreen: React.FC<Interface> = ({ createPin }) => (
+  <PinManager title={'Set your pin'} handleSubmit={createPin} />
+)

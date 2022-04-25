@@ -255,10 +255,7 @@ export const RootNavigation: React.FC<{
 
         <RootStack.Screen name="CreatePin" options={sharedOptions}>
           {props => (
-            <Screens.CreatePinScreen
-              {...props}
-              createPin={createPin}
-            />
+            <Screens.CreatePinScreen {...props} createPin={createPin} />
           )}
         </RootStack.Screen>
 
