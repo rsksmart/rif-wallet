@@ -16,6 +16,7 @@ interface Interface {
   icon?: any
   onPrevious: (event: GestureResponderEvent) => any
   onNext?: (event: GestureResponderEvent) => any
+  onComplete?: (event: GestureResponderEvent) => any
   currentIndex: number
   disabled?: boolean
   testID?: string
@@ -27,6 +28,7 @@ interface Interface {
 export const PaginationNavigator: React.FC<Interface> = ({
   onPrevious,
   onNext,
+  onComplete,
   currentIndex,
   disabled,
   shadowColor,
@@ -78,9 +80,7 @@ export const PaginationNavigator: React.FC<Interface> = ({
       {currentIndex === slidesAmount - 1 && (
         <TouchableOpacity
           style={styles.buttonRight}
-          onPress={() => {
-            console.log('Show master key slides')
-          }}
+          onPress={onComplete}
           disabled={disabled}>
           <View style={{ ...imageStyle, backgroundColor: colors.green }}>
             <CheckIcon color={colors.blue} width={50} height={50} />

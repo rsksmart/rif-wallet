@@ -19,6 +19,7 @@ export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
   navigation,
 }) => {
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
+  const [carousel, setCarousel] = useState<any>()
 
   const renderItem = ({ item }: { item: number }) => {
     switch (item) {
@@ -125,8 +126,8 @@ const styles = StyleSheet.create({
   },
   bulbLogo: {
     resizeMode: 'contain',
-    height: Math.round(WINDOW_HEIGHT * 0.4),
-    marginBottom: 5,
+    height: Math.round(WINDOW_HEIGHT * 0.25),
+    marginBottom: 30,
   },
   section: {
     alignSelf: 'center',

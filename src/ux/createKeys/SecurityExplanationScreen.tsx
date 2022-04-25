@@ -19,7 +19,7 @@ import {
   SLIDER_HEIGHT,
 } from '../slides/Dimensions'
 
-const slidesIndexes = [1, 2, 3]
+const slidesIndexes = [0, 1, 2]
 
 export const SecurityExplanationScreen: React.FC<
   ScreenProps<'SecurityExplanation'>
@@ -28,7 +28,6 @@ export const SecurityExplanationScreen: React.FC<
   const [carousel, setCarousel] = useState<any>()
   const renderItem = ({ item }: { item: number }) => {
     switch (item) {
-      default:
       case 0:
         return SecuritySlide({
           title: 'How to store your key?',
@@ -86,6 +85,7 @@ export const SecurityExplanationScreen: React.FC<
       <View style={{ ...grid.row, ...styles.carouselSection }}>
         <Carousel
           inactiveSlideOpacity={0}
+          removeClippedSubviews={false} //https://github.com/meliorence/react-native-snap-carousel/issues/238
           ref={c => setCarousel(c)}
           data={slidesIndexes}
           renderItem={renderItem}
@@ -100,6 +100,7 @@ export const SecurityExplanationScreen: React.FC<
       <PaginationNavigator
         onPrevious={() => carousel.snapToPrev()}
         onNext={() => carousel.snapToNext()}
+        onComplete={() => console.log('Show words in different PR')}
         title="confirm"
         currentIndex={selectedSlide}
         slidesAmount={slidesIndexes.length}
