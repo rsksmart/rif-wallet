@@ -99,7 +99,7 @@ export const RootNavigation: React.FC<{
   hasPin: boolean
   rifWalletServicesSocket: IRifWalletServicesSocket
   keyManagementProps: CreateKeysProps
-  handlePinCreated: () => void
+  createPin: (newPin: string) => Promise<void>
   balancesScreenProps: BalancesScreenProps
   activityScreenProps: ActivityScreenProps
   keysInfoScreenProps: KeysInfoScreenProps
@@ -114,7 +114,7 @@ export const RootNavigation: React.FC<{
   hasKeys,
   hasPin,
   keyManagementProps,
-  handlePinCreated,
+  createPin,
   balancesScreenProps,
   activityScreenProps,
   keysInfoScreenProps,
@@ -257,7 +257,7 @@ export const RootNavigation: React.FC<{
           {props => (
             <Screens.CreatePinScreen
               {...props}
-              onPinCreated={handlePinCreated}
+              createPin={createPin}
             />
           )}
         </RootStack.Screen>
