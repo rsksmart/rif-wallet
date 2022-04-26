@@ -10,6 +10,7 @@ export type StackParamList = {
   CreateKeys: undefined
   NewMasterKey: undefined
   SecurityExplanation: undefined
+  SecureYourWallet: undefined
   ConfirmNewMasterKey: { mnemonic: string }
   ImportMasterKey: undefined
   KeysCreated: { address: string }

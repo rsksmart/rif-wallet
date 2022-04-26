@@ -92,7 +92,7 @@ export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
       </View>
       <View style={{ ...grid.row, ...styles.section }}>
         <WhiteButton
-          onPress={() => navigation.navigate('SecurityExplanation')}
+          onPress={() => navigation.navigate('SecureYourWallet')}
           testID="Address.ShareButton"
           title={'new wallet'}
         />
