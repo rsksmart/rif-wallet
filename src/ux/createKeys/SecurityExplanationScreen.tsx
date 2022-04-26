@@ -100,7 +100,7 @@ export const SecurityExplanationScreen: React.FC<
       <PaginationNavigator
         onPrevious={() => carousel.snapToPrev()}
         onNext={() => carousel.snapToNext()}
-        onComplete={() => console.log('Show words in different PR')}
+        onComplete={() => navigation.navigate('NewMasterKey')}
         title="confirm"
         currentIndex={selectedSlide}
         slidesAmount={slidesIndexes.length}
