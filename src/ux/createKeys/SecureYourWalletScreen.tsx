@@ -1,32 +1,16 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { StyleSheet, View, Image, TouchableOpacity, Text } from 'react-native'
 import { ScreenProps } from './types'
 import { colors } from '../../styles/colors'
-import { SecuritySlide } from '../slides/SecuritySlide'
 
-import Carousel from 'react-native-snap-carousel'
 import { grid } from '../../styles/grid'
-import { PaginationNavigator } from '../../components/button/PaginationNavigator'
-import { LogBox } from 'react-native'
 import { Arrow } from '../../components/icons'
-LogBox.ignoreLogs(['Warning: ...']) // Ignore log notification by message
-LogBox.ignoreAllLogs() //Ignore all log notifications
 
-import {
-  WINDOW_WIDTH,
-  WINDOW_HEIGHT,
-  SLIDER_WIDTH,
-  SLIDER_HEIGHT,
-} from '../slides/Dimensions'
+import { WINDOW_HEIGHT } from '../slides/Dimensions'
 import {
   BlueButton,
-  OutlineButton,
   WhiteButton,
 } from '../../components/button/ButtonVariations'
-import { DialButton } from '../../components/button/DialButton'
-import { TokenButton } from '../../components/button/TokenButton'
-import { Button } from '../../components'
-import { ButtonAlt } from '../../components/button/ButtonAlt'
 
 export const SecureYourWalletScreen: React.FC<ScreenProps<'SecureYourWallet'>> =
   ({ navigation }) => {
@@ -39,27 +23,33 @@ export const SecureYourWalletScreen: React.FC<ScreenProps<'SecureYourWallet'>> =
         </TouchableOpacity>
         <View style={styles.itemContainer}>
           <Image
-            style={styles.walletBulbLogo}
+            style={styles.securitySafeImage}
             source={require('../../images/safe.png')}
           />
-          <View style={{ ...grid.row, ...styles.center }}>
+          <View style={{ ...grid.row, ...styles.section }}>
             <Text style={styles.title}>Secure your wallet</Text>
           </View>
-          <View style={{ ...grid.row, ...styles.center }}>
-            <Text style={styles.subTitle}>Before you create your wallet, we advise you to generate and store your <Text style={styles.bold}>unique Master Key</Text></Text>
+          <View style={{ ...grid.row, ...styles.section }}>
+            <Text style={styles.subTitle}>
+              Before you create your wallet, we advise you to generate and store
+              your <Text style={styles.bold}>unique Master Key</Text>
+            </Text>
           </View>
-          <View style={{ ...grid.row, ...styles.center }}>
-            <Text style={styles.subTitle}>This key will help you restore your wallet and access your funds on a new devise, in case the old one was lost or stolen</Text>
+          <View style={{ ...grid.row, ...styles.section }}>
+            <Text style={styles.subTitle}>
+              This key will help you restore your wallet and access your funds
+              on a new devise, in case the old one was lost or stolen
+            </Text>
           </View>
         </View>
-        <View style={{ ...grid.row, ...styles.section }}>
+        <View style={{ ...grid.row, ...styles.button1 }}>
           <BlueButton
             onPress={() => navigation.navigate('SecurityExplanation')}
             testID="Address.ShareButton"
             title={'secure now'}
           />
         </View>
-        <View style={{ ...grid.row, ...styles.section }}>
+        <View style={{ ...grid.row, ...styles.button2 }}>
           <WhiteButton
             onPress={() => console.log('TODO in different PR')}
             testID="Address.ShareButton"
@@ -80,6 +70,7 @@ const styles = StyleSheet.create({
     height: 30,
     borderRadius: 30,
     margin: 15,
+    marginBottom: 0,
     backgroundColor: colors.blue,
   },
 
@@ -87,7 +78,7 @@ const styles = StyleSheet.create({
     color: colors.black,
     fontSize: 20,
     fontWeight: 'bold',
-    marginVertical: 20,
+    marginBottom: 10,
   },
   bold: {
     fontWeight: 'bold',
@@ -95,28 +86,36 @@ const styles = StyleSheet.create({
   subTitle: {
     color: colors.black,
     fontSize: 16,
-    marginHorizontal: 45,
-    marginVertical: 10,
-  },
-
-  center: {
-    alignSelf: 'center',
+    marginHorizontal: 32,
+    marginBottom: 5,
   },
 
   itemContainer: {
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.lightPurple,
-    marginBottom: 20,
+    marginBottom: 10,
   },
 
-  walletBulbLogo: {
+  securitySafeImage: {
     resizeMode: 'contain',
-    height: Math.round(WINDOW_HEIGHT * 0.3),
+    height: Math.round(WINDOW_HEIGHT * 0.27),
     marginBottom: 10,
   },
   section: {
     alignSelf: 'center',
-    marginVertical: 10,
+    marginVertical: 5,
+  },
+  button1: {
+    position: 'absolute',
+    bottom: 0,
+    alignSelf: 'center',
+    marginVertical: 95,
+  },
+  button2: {
+    position: 'absolute',
+    bottom: 0,
+    alignSelf: 'center',
+    marginVertical: 30,
   },
 })
