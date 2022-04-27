@@ -34,7 +34,7 @@ export const PaginationNavigator: React.FC<Interface> = ({
   disabled,
   shadowColor,
   backgroundColor = 'white',
-  containerBackgroundColor=colors.blue,
+  containerBackgroundColor = colors.blue,
   slidesAmount,
 }) => {
   const imageStyle = {
@@ -49,7 +49,7 @@ export const PaginationNavigator: React.FC<Interface> = ({
       <Pagination
         dotsLength={entries.length}
         activeDotIndex={activeSlide}
-        containerStyle={{backgroundColor:containerBackgroundColor}}
+        containerStyle={{ backgroundColor: containerBackgroundColor }}
         dotStyle={styles.dotStyle}
         inactiveDotStyle={{}}
         inactiveDotOpacity={0.4}
@@ -58,7 +58,11 @@ export const PaginationNavigator: React.FC<Interface> = ({
     )
   }
   return (
-    <View style={{...styles.container, backgroundColor:containerBackgroundColor}}>
+    <View
+      style={{
+        ...styles.container,
+        backgroundColor: containerBackgroundColor,
+      }}>
       <TouchableOpacity
         style={styles.buttonLeft}
         onPress={onPrevious}
