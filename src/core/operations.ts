@@ -4,6 +4,7 @@ import { getKeys, saveKeys } from '../storage/KeyStore'
 import { Wallets } from '../Context'
 
 export { deleteKeys, hasKeys } from '../storage/KeyStore'
+export { hasPin } from '../storage/PinStore'
 
 type CreateRIFWallet = (wallet: Wallet) => Promise<RIFWallet>
 

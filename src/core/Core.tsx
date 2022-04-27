@@ -7,11 +7,13 @@ import { i18nInit } from '../lib/i18n'
 
 import {
   hasKeys,
+  hasPin,
   loadExistingWallets,
   creteKMS,
   deleteKeys,
   addNextWallet,
 } from './operations'
+export { hasPin } from '../storage/PinStore'
 import {
   rifWalletServicesFetcher,
   rnsResolver,
@@ -31,6 +33,7 @@ import { WalletConnectProviderElement } from '../screens/walletConnect/WalletCon
 import { RIFSocketsProvider } from '../subscriptions/RIFSockets'
 import { NavigationContainer, NavigationState } from '@react-navigation/native'
 import { colors } from '../styles/colors'
+import { savePin } from '../storage/PinStore'
 
 const gracePeriod = 3000
 
@@ -38,6 +41,7 @@ let timer: NodeJS.Timeout
 
 type State = {
   hasKeys: boolean
+  hasPin: boolean
   kms: KeyManagementSystem | null
   wallets: Wallets
   walletsIsDeployed: WalletsIsDeployed
@@ -55,6 +59,7 @@ const noKeysState = {
 
 const initialState: State = {
   hasKeys: false,
+  hasPin: false,
   ...noKeysState,
   loading: true,
   chainId: undefined,
@@ -82,6 +87,7 @@ const useKeyManagementSystem = (onRequest: OnRequest) => {
     walletsIsDeployed: WalletsIsDeployed,
   ) => {
     setState({
+      ...state,
       hasKeys: true,
       kms,
       wallets,
@@ -115,6 +121,16 @@ const useKeyManagementSystem = (onRequest: OnRequest) => {
     return rifWallet
   }
 
+  const createPin = async (newPin: string) => {
+    setState({ ...state, loading: true })
+    await savePin(newPin)
+    setState({
+      ...state,
+      hasPin: true,
+      loading: false,
+    })
+  }
+
   const addNewWallet = () => {
     if (!state.kms) {
       throw Error('Can not add new wallet because no KMS created.')
@@ -144,6 +160,7 @@ const useKeyManagementSystem = (onRequest: OnRequest) => {
     unlockApp,
     removeKeys,
     switchActiveWallet,
+    createPin,
   }
 }
 
@@ -162,6 +179,7 @@ export const Core = () => {
     unlockApp,
     removeKeys,
     switchActiveWallet,
+    createPin,
   } = useKeyManagementSystem(onRequest)
 
   const [currentScreen, setCurrentScreen] = useState<string>('Home')
@@ -203,9 +221,16 @@ export const Core = () => {
   }, [unlocked])
 
   useEffect(() => {
-    Promise.all([i18nInit(), hasKeys()]).then(([_, hasKeysResult]) => {
-      setState({ ...state, hasKeys: !!hasKeysResult, loading: false })
-    })
+    Promise.all([i18nInit(), hasKeys(), hasPin()]).then(
+      ([_, hasKeysResult, hasPinResult]) => {
+        setState({
+          ...state,
+          hasKeys: !!hasKeysResult,
+          hasPin: !!hasPinResult,
+          loading: false,
+        })
+      },
+    )
   }, [])
 
   useEffect(() => {
@@ -226,7 +251,7 @@ export const Core = () => {
       </SafeAreaView>
       <SafeAreaView style={styles.parent}>
         {!active && <Cover />}
-        {state.hasKeys && !unlocked && (
+        {state.hasKeys && state.hasPin && !unlocked && (
           <RequestPIN
             unlock={() => unlockApp().then(() => setUnlocked(true))}
           />
@@ -244,6 +269,7 @@ export const Core = () => {
                 <RootNavigation
                   currentScreen={currentScreen}
                   hasKeys={state.hasKeys}
+                  hasPin={state.hasPin}
                   rifWalletServicesSocket={rifWalletServicesSocket}
                   keyManagementProps={{
                     generateMnemonic: () =>
@@ -254,6 +280,7 @@ export const Core = () => {
                         return wallet
                       }),
                   }}
+                  createPin={createPin}
                   balancesScreenProps={{ fetcher: rifWalletServicesFetcher }}
                   sendScreenProps={{ rnsResolver }}
                   activityScreenProps={{
