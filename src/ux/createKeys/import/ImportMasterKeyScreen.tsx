@@ -4,14 +4,14 @@ import { StyleSheet, View, ScrollView, Text } from 'react-native'
 import { CreateKeysProps, ScreenProps } from '../types'
 import { grid } from '../../../styles/grid'
 import { validateMnemonic } from '../../../lib/bip39'
+import { SquareButton } from '../../../components/button/SquareButton'
+import { Arrow } from '../../../components/icons'
 import { colors } from '../../../styles/colors'
 import { WordInput } from './WordInput'
 import { NavigationFooter } from '../../../components/button/NavigationFooter'
-
 type ImportMasterKeyScreenProps = {
   createFirstWallet: CreateKeysProps['createFirstWallet']
 }
-
 export const ImportMasterKeyScreen: React.FC<
   ScreenProps<'ImportMasterKey'> & ImportMasterKeyScreenProps
 > = ({ navigation, createFirstWallet }) => {
@@ -24,17 +24,12 @@ export const ImportMasterKeyScreen: React.FC<
     setSelectedWords(currentWordsSelections)
   }
   const [error, setError] = useState<string | null>(null)
-  const [info, setInfo] = useState<string | null>(null)
+  const [info] = useState<string | null>(null)
   const handleImportMnemonic = async () => {
     const mnemonicError = validateMnemonic(selectedWords.join(' '))
     if (!mnemonicError) {
       try {
-        setInfo('Creating...')
-        const rifWallet = await createFirstWallet(selectedWords.join(' '))
-        setInfo(null)
-        console.log(rifWallet.address)
-        // @ts-ignore
-        navigation.navigate('KeysCreated', { address: rifWallet.address })
+        await createFirstWallet(selectedWords.join(' '))
       } catch (err) {
         console.error(err)
         setError(
@@ -66,6 +61,13 @@ export const ImportMasterKeyScreen: React.FC<
         <View>
           {info && <Text style={styles.defaultText}>{info}</Text>}
           {error && <Text style={styles.defaultText}> {error}</Text>}
+
+          <SquareButton
+            onPress={handleImportMnemonic}
+            title=""
+            testID="Address.CopyButton"
+            icon={<Arrow color={colors.gray} rotate={90} />}
+          />
         </View>
       </ScrollView>
       <NavigationFooter

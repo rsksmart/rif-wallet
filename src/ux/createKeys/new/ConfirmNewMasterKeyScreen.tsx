@@ -14,9 +14,6 @@ import { WordInput } from './WordInput'
 import { colors } from '../../../styles/colors'
 import { NavigationFooter } from '../../../components/button/NavigationFooter'
 
-interface ConfirmMasterKeyScreenProps {
-  createFirstWallet: CreateKeysProps['createFirstWallet']
-}
 // source: https://stackoverflow.com/questions/63813211/qualtrics-and-javascript-randomly-insert-words-into-sentences
 const shuffle = (array: string[]) => {
   let currentIndex = array.length,
@@ -38,8 +35,11 @@ const shuffle = (array: string[]) => {
   return array
 }
 
+type ConfirmNewMasterKeyScreenProps = {
+  createFirstWallet: CreateKeysProps['createFirstWallet']
+}
 export const ConfirmNewMasterKeyScreen: React.FC<
-  ScreenProps<'ConfirmNewMasterKey'> & ConfirmMasterKeyScreenProps
+  ScreenProps<'ConfirmNewMasterKey'> & ConfirmNewMasterKeyScreenProps
 > = ({ route, navigation, createFirstWallet }) => {
   const mnemonic = route.params.mnemonic
   const [selectedWords, setSelectedWords] = useState<string[]>([])
@@ -57,10 +57,6 @@ export const ConfirmNewMasterKeyScreen: React.FC<
     setSelectedWords(updatedWords)
     setWords(words.filter(word => !updatedWords.find(w => w === word)))
   }
-  const saveAndNavigate = async () => {
-    const rifWallet = await createFirstWallet(mnemonic)
-    navigation.navigate('KeysCreated', { address: rifWallet.address })
-  }
 
   const handleConfirmMnemonic = async () => {
     const isValid = mnemonic === selectedWords.join(' ')
@@ -69,9 +65,9 @@ export const ConfirmNewMasterKeyScreen: React.FC<
       setError(t('Entered words does not match you your master key'))
       return
     }
-
-    await saveAndNavigate()
+    await createFirstWallet(mnemonic)
   }
+
   const reset = async () => {
     setSelectedWords([])
     setWords(shuffle(mnemonic.split(' ')))
@@ -96,8 +92,6 @@ export const ConfirmNewMasterKeyScreen: React.FC<
             <Text>{row + rows.length}</Text>
           </View>
         ))}
-
-        {error && <Text style={styles.defaultText}>{error}</Text>}
         <View style={styles.badgeArea}>
           {words.map(word => (
             <View key={word} style={styles.badgeContainer}>
@@ -108,6 +102,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
               </TouchableOpacity>
             </View>
           ))}
+          {error && <Text style={styles.defaultText}>{error}</Text>}
         </View>
         <TouchableOpacity style={styles.reset} onPress={reset}>
           <RefreshIcon color={colors.gray} />
@@ -148,13 +143,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
-  reset: {
-    alignSelf: 'center',
-  },
+
   header: {
     color: colors.white,
     fontSize: 22,
     paddingVertical: 20,
     textAlign: 'center',
+  },
+  reset: {
+    alignSelf: 'center',
   },
 })
