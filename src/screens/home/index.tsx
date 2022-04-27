@@ -57,25 +57,25 @@ export const HomeScreen: React.FC<{
 
   return (
     <View style={styles.parent}>
-      <View style={styles.container}>
-        <FaucetComponent
-          navigation={navigation}
-          balances={Object.values(state.balances)}
-        />
-        {selected && (
-          <SelectedTokenComponent token={selected} conversion={selectedPrice} />
-        )}
+      {/*
+      <FaucetComponent
+        navigation={navigation}
+        balances={Object.values(state.balances)}
+      />
+      */}
+      {selected && (
+        <SelectedTokenComponent token={selected} conversion={selectedPrice} />
+      )}
 
-        <SendReceiveButtonComponent
-          color={selectedColor}
-          onPress={handleSendReceive}
-        />
+      <SendReceiveButtonComponent
+        color={selectedColor}
+        onPress={handleSendReceive}
+      />
 
-        <PortfolioComponent
-          selectedAddress={selectedAddress}
-          setSelected={setSelectedAddress}
-        />
-      </View>
+      <PortfolioComponent
+        selectedAddress={selectedAddress}
+        setSelected={setSelectedAddress}
+      />
     </View>
   )
 }
@@ -86,9 +86,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.darkPurple3,
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
-  },
-  container: {
-    marginTop: 10,
-    marginHorizontal: 30,
+    paddingHorizontal: 30,
+    paddingTop: 10,
   },
 })

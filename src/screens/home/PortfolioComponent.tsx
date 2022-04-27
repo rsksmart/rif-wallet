@@ -21,53 +21,24 @@ const PortfolioComponent: React.FC<Interface> = ({
   const balances = Object.values(state.balances)
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.scrollView}>
       <Paragraph style={styles.heading}>portfolio</Paragraph>
       {/* @JESSE todo! */}
       {balances.length === 0 && (
         <Text style={styles.emptyState}>no balances yet</Text>
       )}
-
-      <ScrollView>
-        <View style={styles.row}>
-          <View style={styles.leftColumn}>
-            {balances[0] && (
-              <BalanceRowComponent
-                token={balances[0]}
-                onPress={setSelected}
-                selected={false}
-              />
-            )}
-          </View>
-          <View style={styles.rightColumn}>
+      <View style={styles.scrollView}>
+        {balances.map((balance: ITokenWithBalance, i: number) => (
+          <View style={i % 2 ? styles.rightColumn : styles.leftColumn} key={i}>
             <BalanceRowComponent
-              token={balances[1]}
+              token={balance}
               onPress={setSelected}
-              selected={false}
+              selected={selectedAddress === balance.contractAddress}
             />
           </View>
-          <View style={styles.leftColumn}>
-            <BalanceRowComponent
-              token={balances[2]}
-              onPress={setSelected}
-              selected={false}
-            />
-          </View>
-        </View>
-      </ScrollView>
-
-      <ScrollView style={styles.balances}>
-        {balances.map((token: any) => (
-          <BalanceRowComponent
-            key={token.contractAddress}
-            selected={selectedAddress === token.contractAddress}
-            token={token}
-            onPress={setSelected}
-            /*quota={state?.prices[token.contractAddress]}*/
-          />
         ))}
-      </ScrollView>
-    </View>
+      </View>
+    </ScrollView>
   )
 }
 
@@ -78,21 +49,11 @@ const styles = StyleSheet.create({
   balances: {
     borderWidth: 1,
     borderColor: '#FFCC33',
-    // width: '100%',
     display: 'flex',
     flexDirection: 'row',
     flexBasis: 500,
-    // flexWrap: 'wrap',
-    // flexGrow: 0.5,
-    height: 350,
-    /*
-    flexDirection: 'column',
-    */
   },
-  row: {
-    ...grid.row,
-    flexWrap: 'wrap',
-  },
+  row: {},
   leftColumn: {
     ...grid.column6,
     paddingRight: 10,
@@ -101,9 +62,14 @@ const styles = StyleSheet.create({
     ...grid.column6,
     paddingLeft: 10,
   },
+
+  scrollView: {
+    ...grid.row,
+    flexWrap: 'wrap',
+  },
   container: {
-    // paddingHorizontal: 25,
-    // borderRadius: 25,
+    borderWidth: 1,
+    borderColor: '#FFCC33',
   },
   emptyState: {
     paddingBottom: 20,
