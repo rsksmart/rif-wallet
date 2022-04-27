@@ -1,57 +1,109 @@
 import React from 'react'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
-import { StyleSheet, Text, View } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { FlatList, StyleSheet, Text, View } from 'react-native'
 import { BalanceRowComponent } from './BalanceRowComponent'
+import { Paragraph } from '../../components'
+import { colors } from '../../styles/colors'
+import { grid } from '../../styles/grid'
+import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import { ScrollView } from 'react-native-gesture-handler'
 
 interface Interface {
   selectedAddress?: string
   setSelected: (token: string) => void
-  visible: boolean
-  setPanelActive: () => void
 }
 
 const PortfolioComponent: React.FC<Interface> = ({
   selectedAddress,
   setSelected,
-  visible,
-  setPanelActive,
 }) => {
   const { state } = useSocketsState()
-
   const balances = Object.values(state.balances)
 
   return (
-    <View style={styles.portfolio}>
-      <TouchableOpacity onPress={setPanelActive} disabled={visible}>
-        <Text style={styles.heading}>portfolio</Text>
-      </TouchableOpacity>
-      {visible && balances.length === 0 && (
+    <View style={styles.container}>
+      <Paragraph style={styles.heading}>portfolio</Paragraph>
+      {/* @JESSE todo! */}
+      {balances.length === 0 && (
         <Text style={styles.emptyState}>no balances yet</Text>
       )}
-      {visible &&
-        balances.map((token: any) => (
+
+      <ScrollView>
+        <View style={styles.row}>
+          <View style={styles.leftColumn}>
+            {balances[0] && (
+              <BalanceRowComponent
+                token={balances[0]}
+                onPress={setSelected}
+                selected={false}
+              />
+            )}
+          </View>
+          <View style={styles.rightColumn}>
+            <BalanceRowComponent
+              token={balances[1]}
+              onPress={setSelected}
+              selected={false}
+            />
+          </View>
+          <View style={styles.leftColumn}>
+            <BalanceRowComponent
+              token={balances[2]}
+              onPress={setSelected}
+              selected={false}
+            />
+          </View>
+        </View>
+      </ScrollView>
+
+      <ScrollView style={styles.balances}>
+        {balances.map((token: any) => (
           <BalanceRowComponent
             key={token.contractAddress}
             selected={selectedAddress === token.contractAddress}
             token={token}
-            onPress={() => setSelected(token.contractAddress)}
-            quota={state?.prices[token.contractAddress]}
+            onPress={setSelected}
+            /*quota={state?.prices[token.contractAddress]}*/
           />
         ))}
+      </ScrollView>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   heading: {
-    paddingVertical: 15,
-    fontSize: 16,
-    color: '#66777E',
+    color: colors.white,
   },
-  portfolio: {
-    paddingHorizontal: 25,
-    borderRadius: 25,
+  balances: {
+    borderWidth: 1,
+    borderColor: '#FFCC33',
+    // width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    flexBasis: 500,
+    // flexWrap: 'wrap',
+    // flexGrow: 0.5,
+    height: 350,
+    /*
+    flexDirection: 'column',
+    */
+  },
+  row: {
+    ...grid.row,
+    flexWrap: 'wrap',
+  },
+  leftColumn: {
+    ...grid.column6,
+    paddingRight: 10,
+  },
+  rightColumn: {
+    ...grid.column6,
+    paddingLeft: 10,
+  },
+  container: {
+    // paddingHorizontal: 25,
+    // borderRadius: 25,
   },
   emptyState: {
     paddingBottom: 20,

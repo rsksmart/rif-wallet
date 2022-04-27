@@ -1,8 +1,10 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import { Paragraph } from '../../components'
 
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import { colors } from '../../styles/colors'
 import { grid } from '../../styles/grid'
 import { balanceToString } from '../balances/BalancesScreen'
 import { getTokenColorWithOpacity } from './tokenColor'
@@ -11,70 +13,80 @@ import { TokenImage } from './TokenImage'
 export const BalanceRowComponent: React.FC<{
   token: ITokenWithBalance
   selected: boolean
-  onPress: () => void
-  quota?: { price: number; lastUpdated: string }
-}> = ({ selected, token, onPress, quota }) => {
+  onPress: (address: string) => void
+  // quota?: { price: number; lastUpdated: string }
+}> = ({ /* selected, token, onPress, quota*/ onPress, token }) => {
   const containerStyles = {
+    // ...grid.column6,
     ...styles.container,
+    /*
     backgroundColor: selected
       ? getTokenColorWithOpacity(token.symbol, 0.2)
       : '#efefef',
+      */
   }
 
   const priceDecimals = 2
+  const handlePress = () => onPress(token.contractAddress)
+
+  console.log(token)
+
+  if (!token) {
+    return <></>
+  }
 
   return (
-    <TouchableOpacity onPress={onPress}>
-      <View style={containerStyles}>
-        <View style={grid.row}>
-          <View style={{ ...grid.column1, ...styles.icon }}>
-            <TokenImage symbol={token.symbol} />
-          </View>
-          <View style={{ ...grid.column5, ...styles.tokenName }}>
-            <Text>{token.name}</Text>
-          </View>
-          <View style={grid.column5}>
-            <Text style={styles.balance}>{`${balanceToString(
-              token.balance,
-              token.decimals,
-            )} ${token.symbol || ''}`}</Text>
-            <Text style={styles.price}>
-              {quota
-                ? `${quota.price.toFixed(priceDecimals)} USD`
-                : 'USD not available'}
-            </Text>
-          </View>
-        </View>
+    <TouchableOpacity onPress={handlePress} style={containerStyles}>
+      <View style={styles.icon}>
+        <TokenImage symbol={token.symbol} height={30} width={30} />
       </View>
+
+      <Paragraph style={styles.text}>{token.symbol}</Paragraph>
+      <Paragraph style={styles.text}>
+        {balanceToString(token.balance, token.decimals)}
+      </Paragraph>
+      <Paragraph style={styles.textUsd}>$1.00</Paragraph>
     </TouchableOpacity>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: 'rgba(0, 134, 255, .25)',
+    // flexBasis: '100%',
+    // flex: 1,
+    // width: '50%', // 150,
+
+    // width: '50%',
     borderRadius: 25,
     padding: 10,
     marginBottom: 15,
+    paddingHorizontal: 20,
+    // width: '100%',
+    // height: 180,
+    // width: '50%',
   },
   icon: {
-    backgroundColor: '#ffffff',
-    height: 26,
-    borderRadius: 12,
-    paddingTop: 3,
-    paddingLeft: 2,
+    backgroundColor: colors.white,
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+    paddingTop: 5,
+    paddingLeft: 5,
+    marginBottom: 15,
+    // margin: 10,
+    // paddingTop: 3,
+    // paddingLeft: 2,
   },
-  tokenName: {
-    marginLeft: 15,
-    marginTop: 3,
+  text: {
+    color: colors.white,
+    fontSize: 26,
+    marginBottom: 0,
+    marginTop: 10,
   },
-  balance: {
-    textAlign: 'right',
-    marginTop: 3,
-  },
-  price: {
-    color: '#66777e',
-    fontSize: 10,
-    letterSpacing: 0.06,
-    textAlign: 'right',
+  textUsd: {
+    color: colors.white,
+    fontSize: 14,
+    fontWeight: '600',
   },
 })

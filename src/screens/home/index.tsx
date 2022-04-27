@@ -55,12 +55,9 @@ export const HomeScreen: React.FC<{
     }
   }
 
-  // @JESSE, below this line may not be needed
-  const [selectedPanel, setSelectedPanel] = useState<string>('portfolio')
-
   return (
     <View style={styles.parent}>
-      <ScrollView style={styles.container}>
+      <View style={styles.container}>
         <FaucetComponent
           navigation={navigation}
           balances={Object.values(state.balances)}
@@ -74,21 +71,11 @@ export const HomeScreen: React.FC<{
           onPress={handleSendReceive}
         />
 
-        {/* @JESSE: below is from before: */}
-        <View style={styles.topContainer}>
-          <PortfolioComponent
-            setPanelActive={() => setSelectedPanel('portfolio')}
-            selectedAddress={selectedAddress}
-            setSelected={setSelectedAddress}
-            visible={selectedPanel === 'portfolio'}
-          />
-          <ActivityComponent
-            navigation={navigation}
-            setPanelActive={() => setSelectedPanel('transactions')}
-            visible={selectedPanel === 'transactions'}
-          />
-        </View>
-      </ScrollView>
+        <PortfolioComponent
+          selectedAddress={selectedAddress}
+          setSelected={setSelectedAddress}
+        />
+      </View>
     </View>
   )
 }
@@ -103,13 +90,5 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 10,
     marginHorizontal: 30,
-  },
-  topContainer: {
-    marginHorizontal: 25,
-    borderRadius: 25,
-    backgroundColor: '#ffffff',
-    shadowOpacity: 0.1,
-    // shadowRadius: 10,
-    elevation: 2,
   },
 })

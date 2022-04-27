@@ -5,6 +5,7 @@ import { ModalIcon } from '../icons/ModalIcon'
 interface Interface {
   children: React.ReactNode
   testID?: string
+  style?: any
 }
 
 export const Header1: React.FC<Interface> = ({ children, testID }) => (
@@ -34,8 +35,8 @@ export const Header3: React.FC<Interface> = ({ children, testID }) => (
   </Text>
 )
 
-export const Paragraph: React.FC<Interface> = ({ children, testID }) => (
-  <Text style={styles.paragraph} testID={testID}>
+export const Paragraph: React.FC<Interface> = ({ children, testID, style }) => (
+  <Text style={{ ...styles.paragraph, ...style }} testID={testID}>
     {children}
   </Text>
 )
