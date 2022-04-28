@@ -9,6 +9,8 @@ export type CreateKeysProps = {
 export type StackParamList = {
   CreateKeys: undefined
   NewMasterKey: undefined
+  SecurityExplanation: undefined
+  SecureYourWallet: undefined
   ConfirmNewMasterKey: { mnemonic: string }
   ImportMasterKey: undefined
   RevealMasterKey: undefined

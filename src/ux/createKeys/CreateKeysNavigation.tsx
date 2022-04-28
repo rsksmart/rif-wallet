@@ -6,6 +6,8 @@ import { NewMasterKeyScreen } from './new/NewMasterKeyScreen'
 import { ConfirmNewMasterKeyScreen } from './new/ConfirmNewMasterKeyScreen'
 import { ImportMasterKeyScreen } from './import/ImportMasterKeyScreen'
 import { StackParamList, CreateKeysProps } from './types'
+import { SecurityExplanationScreen } from './SecurityExplanationScreen'
+import { SecureYourWalletScreen } from './SecureYourWalletScreen'
 
 const Stack = createStackNavigator<StackParamList>()
 
@@ -31,6 +33,12 @@ export const CreateKeysNavigation: React.FC<CreateKeysProps> = ({
                 generateMnemonic={generateMnemonic}
               />
             )}
+          </Stack.Screen>
+          <Stack.Screen name="SecureYourWallet" options={screensOptions}>
+            {props => <SecureYourWalletScreen {...props} />}
+          </Stack.Screen>
+          <Stack.Screen name="SecurityExplanation" options={screensOptions}>
+            {props => <SecurityExplanationScreen {...props} />}
           </Stack.Screen>
           <Stack.Screen name="ConfirmNewMasterKey" options={screensOptions}>
             {props => (
