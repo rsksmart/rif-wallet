@@ -8,12 +8,14 @@ import { grid } from '../../styles/grid'
 
 interface Interface {
   color: string
+  sendDisabled: boolean
   onPress: (decision: 'SEND' | 'RECEIVE' | 'FAUCET') => void
 }
 
 const SendReceiveButtonComponent: React.FC<Interface> = ({
   onPress,
   color,
+  sendDisabled
 }) => {
   const sharedIconProps = {
     width: 25,
@@ -33,6 +35,7 @@ const SendReceiveButtonComponent: React.FC<Interface> = ({
         <WhiteTransparentButton
           icon={<SendIcon {...sharedIconProps} />}
           onPress={() => onPress('SEND')}
+          disabled={sendDisabled}
         />
       </View>
       <View style={styles.column}>

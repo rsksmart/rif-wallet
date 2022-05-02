@@ -63,6 +63,7 @@ export const HomeScreen: React.FC<{
       <SendReceiveButtonComponent
         color={selectedColor}
         onPress={handleSendReceive}
+        sendDisabled={balances.length === 0}
       />
 
       {balances.length === 0 && (

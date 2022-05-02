@@ -95,7 +95,7 @@ const whiteStyles = StyleSheet.create({
     backgroundColor: colors.lightPurple,
   },
   buttonDisabled: {
-    backgroundColor: colors.lightPurple,
+    backgroundColor: colors.black,
   },
   buttonActive: {
     backgroundColor: '#FFCC33',
