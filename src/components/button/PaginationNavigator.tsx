@@ -18,7 +18,6 @@ interface Interface {
   onNext?: (event: GestureResponderEvent) => any
   onComplete?: (event: GestureResponderEvent) => any
   currentIndex: number
-  disabled?: boolean
   testID?: string
   shadowColor?: string
   backgroundColor?: string
@@ -31,7 +30,6 @@ export const PaginationNavigator: React.FC<Interface> = ({
   onNext,
   onComplete,
   currentIndex,
-  disabled,
   shadowColor,
   backgroundColor = 'white',
   containerBackgroundColor = colors.blue,
@@ -66,7 +64,7 @@ export const PaginationNavigator: React.FC<Interface> = ({
       <TouchableOpacity
         style={styles.buttonLeft}
         onPress={onPrevious}
-        disabled={disabled}>
+        disabled={currentIndex === 0}>
         <View style={imageStyle}>
           <Arrow color={colors.blue} rotate={270} width={50} height={50} />
         </View>
@@ -77,7 +75,7 @@ export const PaginationNavigator: React.FC<Interface> = ({
         <TouchableOpacity
           style={styles.buttonRight}
           onPress={onNext}
-          disabled={disabled}>
+          disabled={false}>
           <View style={imageStyle}>
             <Arrow color={colors.blue} rotate={90} width={50} height={50} />
           </View>
@@ -87,7 +85,7 @@ export const PaginationNavigator: React.FC<Interface> = ({
         <TouchableOpacity
           style={styles.buttonRight}
           onPress={onComplete}
-          disabled={disabled}>
+          disabled={false}>
           <View style={{ ...imageStyle, backgroundColor: colors.green }}>
             <CheckIcon color={colors.blue} width={50} height={50} />
           </View>

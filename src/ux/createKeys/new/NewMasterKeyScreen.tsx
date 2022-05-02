@@ -24,7 +24,9 @@ import {
   WINDOW_WIDTH,
 } from '../../slides/Dimensions'
 import { PaginationNavigator } from '../../../components/button/PaginationNavigator'
-const slidesIndexes = [0, 1, 2, 3, 4, 5, 6, 7]
+import { Word } from './Word'
+
+const slidesIndexes = Array.from({ length: 8 }, (_, i) => i) //[0, 1, 2, 3, 4, 5, 6, 7]
 export const NewMasterKeyScreen: React.FC<
   ScreenProps<'NewMasterKey'> & CreateMasterKeyScreenProps
 > = ({ navigation, generateMnemonic }) => {
@@ -32,31 +34,20 @@ export const NewMasterKeyScreen: React.FC<
   const mnemonicArray = mnemonic.split(' ')
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
   const [carousel, setCarousel] = useState<any>()
-  const word = ({ number, text }: { number: number; text: string }) => (
-    <View style={styles.wordContainer}>
-      <View style={styles.wordNumberBadgeContainer}>
-        <View style={styles.wordNumberBadge}>
-          <Text style={styles.wordNumberBadgeText}>{number} </Text>
-        </View>
-      </View>
-      <View style={styles.wordTextContainer}>
-        <Text style={styles.wordText}>{text}</Text>
-      </View>
-    </View>
-  )
+
   const renderItem = ({ item }: { item: number }) => {
     const wordIndex = 3 * item
     return (
       <View style={styles.slideContainer}>
-        {word({
+        {Word({
           number: 1 + wordIndex,
-          text: mnemonicArray[1 + wordIndex - 1],
+          text: mnemonicArray[wordIndex],
         })}
-        {word({
+        {Word({
           number: 2 + wordIndex,
           text: mnemonicArray[2 + wordIndex - 1],
         })}
-        {word({
+        {Word({
           number: 3 + wordIndex,
           text: mnemonicArray[3 + wordIndex - 1],
         })}
@@ -158,35 +149,5 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 60,
     height: 250,
-  },
-  wordContainer: {
-    padding: 15,
-    color: colors.white,
-    flexDirection: 'row',
-    backgroundColor: colors.blue,
-    fontWeight: 'bold',
-    borderRadius: 10,
-  },
-  wordNumberBadgeContainer: {
-    fontSize: 20,
-  },
-  wordNumberBadge: {
-    backgroundColor: colors.darkBlue,
-    padding: 10,
-    borderRadius: 20,
-  },
-  wordNumberBadgeText: {
-    textAlign: 'center',
-    color: colors.white,
-  },
-  wordTextContainer: {
-    color: colors.white,
-    fontSize: 20,
-  },
-  wordText: {
-    color: colors.white,
-    fontSize: 20,
-    marginLeft: 10,
-    paddingTop: 5,
   },
 })
