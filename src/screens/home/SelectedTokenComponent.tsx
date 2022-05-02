@@ -7,14 +7,17 @@ import { TokenImage } from './TokenImage'
 import { colors } from '../../styles/colors'
 import { GrayButton } from '../../components/button/ButtonVariations'
 import { HideShowIcon } from '../../components/icons/HideShowIcon'
-import { balanceToDisplay, balanceToUSD } from '../../lib/utils'
+import { balanceToDisplay } from '../../lib/utils'
 
 interface Interface {
   token: ITokenWithBalance
-  conversion?: number
+  accountNumber: number
 }
 
-const SelectedTokenComponent: React.FC<Interface> = ({ token, conversion }) => {
+const SelectedTokenComponent: React.FC<Interface> = ({
+  token,
+  accountNumber,
+}) => {
   const [showBalances, setShowBalances] = useState<boolean>(true)
 
   return (
@@ -39,15 +42,11 @@ const SelectedTokenComponent: React.FC<Interface> = ({ token, conversion }) => {
             </View>
           </View>
 
-          {!!conversion && (
-            <View style={grid.row}>
-              <View style={grid.column}>
-                <Text style={styles.conversion}>
-                  {balanceToUSD(token.balance, token.decimals, conversion)}
-                </Text>
-              </View>
+          <View style={grid.row}>
+            <View style={grid.column}>
+              <Text style={styles.account}>{`Account ${accountNumber}`}</Text>
             </View>
-          )}
+          </View>
         </>
       ) : (
         <View style={grid.row}>
@@ -81,10 +80,11 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginLeft: 10,
   },
-  conversion: {
-    fontSize: 25,
+  account: {
+    fontSize: 16,
     fontWeight: '300',
     marginTop: 10,
+    color: colors.lightGray,
   },
   amountHidden: {
     fontSize: 20,

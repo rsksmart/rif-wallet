@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { BalanceCardComponent } from './BalanceCardComponent'
 import { Paragraph } from '../../components'
 import { colors } from '../../styles/colors'
@@ -23,11 +23,9 @@ const PortfolioComponent: React.FC<Interface> = ({
 }) => {
   return (
     <ScrollView contentContainerStyle={styles.scrollView}>
-      <Paragraph style={styles.heading}>portfolio</Paragraph>
-      {/* @JESSE todo! */}
-      {balances.length === 0 && (
-        <Text style={styles.emptyState}>no balances yet</Text>
-      )}
+      <View style={grid.row}>
+        <Paragraph style={styles.heading}>portfolio</Paragraph>
+      </View>
       <View style={styles.scrollView}>
         {balances.map((balance: ITokenWithBalance, i: number) => (
           <View style={i % 2 ? styles.rightColumn : styles.leftColumn} key={i}>
@@ -46,6 +44,7 @@ const PortfolioComponent: React.FC<Interface> = ({
 
 const styles = StyleSheet.create({
   heading: {
+    ...grid.column12,
     color: colors.white,
   },
   balances: {
@@ -55,7 +54,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexBasis: 500,
   },
-  row: {},
   leftColumn: {
     ...grid.column6,
     paddingRight: 10,
@@ -68,6 +66,7 @@ const styles = StyleSheet.create({
   scrollView: {
     ...grid.row,
     flexWrap: 'wrap',
+    width: '100%',
   },
   container: {
     borderWidth: 1,
