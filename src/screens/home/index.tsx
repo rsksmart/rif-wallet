@@ -5,10 +5,7 @@ import { NavigationProp } from '../../RootNavigation'
 import SelectedTokenComponent from './SelectedTokenComponent'
 import { getTokenColor } from './tokenColor'
 import PortfolioComponent from './PortfolioComponent'
-import ActivityComponent from './ActivityComponent'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
-import FaucetComponent from './FaucetComponent'
-import { ScrollView } from 'react-native-gesture-handler'
 import { colors } from '../../styles/colors'
 import SendReceiveButtonComponent from './SendReceiveButtonComponent'
 
@@ -16,8 +13,6 @@ export const HomeScreen: React.FC<{
   navigation: NavigationProp
 }> = ({ navigation }) => {
   const { state } = useSocketsState()
-
-  console.log(state)
 
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
     undefined,
@@ -39,8 +34,8 @@ export const HomeScreen: React.FC<{
     }
   }, [state.balances])
 
+  // interact with the navigation
   const handleSendReceive = (screen: 'SEND' | 'RECEIVE' | 'FAUCET') => {
-    console.log('heheheheheheh!', screen)
     switch (screen) {
       case 'SEND':
         return navigation.navigate('Send', {
@@ -75,6 +70,8 @@ export const HomeScreen: React.FC<{
       <PortfolioComponent
         selectedAddress={selectedAddress}
         setSelected={setSelectedAddress}
+        balances={Object.values(state.balances)}
+        prices={state.prices}
       />
     </View>
   )

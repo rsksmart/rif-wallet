@@ -1,39 +1,33 @@
 import React from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Paragraph } from '../../components'
 
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import { balanceToDisplay, balanceToUSD } from '../../lib/utils'
 import { colors } from '../../styles/colors'
-import { grid } from '../../styles/grid'
-import { balanceToString } from '../balances/BalancesScreen'
-import { getTokenColorWithOpacity } from './tokenColor'
+import { IPrice } from '../../subscriptions/types'
+import { getTokenColor } from './tokenColor'
 import { TokenImage } from './TokenImage'
 
-export const BalanceRowComponent: React.FC<{
+export const BalanceCardComponent: React.FC<{
   token: ITokenWithBalance
   selected: boolean
   onPress: (address: string) => void
-  // quota?: { price: number; lastUpdated: string }
-}> = ({ /* selected, token, onPress, quota*/ onPress, token }) => {
+  price?: IPrice
+}> = ({ selected, token, onPress, price }) => {
   const containerStyles = {
-    // ...grid.column6,
     ...styles.container,
-    /*
     backgroundColor: selected
-      ? getTokenColorWithOpacity(token.symbol, 0.2)
-      : '#efefef',
-      */
+      ? getTokenColor(token.symbol)
+      : 'rgba(0, 134, 255, .25)',
   }
 
-  const priceDecimals = 2
+  const usdAmount = price
+    ? balanceToUSD(token.balance, token.decimals, price?.price)
+    : ''
+
   const handlePress = () => onPress(token.contractAddress)
-
-  console.log(token)
-
-  if (!token) {
-    return <></>
-  }
 
   return (
     <TouchableOpacity onPress={handlePress} style={containerStyles}>
@@ -43,28 +37,20 @@ export const BalanceRowComponent: React.FC<{
 
       <Paragraph style={styles.text}>{token.symbol}</Paragraph>
       <Paragraph style={styles.text}>
-        {balanceToString(token.balance, token.decimals)}
+        {balanceToDisplay(token.balance, token.decimals, 4)}
       </Paragraph>
-      <Paragraph style={styles.textUsd}>$1.00</Paragraph>
+      <Paragraph style={styles.textUsd}>{usdAmount}</Paragraph>
     </TouchableOpacity>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'rgba(0, 134, 255, .25)',
-    // flexBasis: '100%',
-    // flex: 1,
-    // width: '50%', // 150,
-
-    // width: '50%',
     borderRadius: 25,
-    padding: 10,
     marginBottom: 15,
     paddingHorizontal: 20,
-    // width: '100%',
-    // height: 180,
-    // width: '50%',
+    paddingTop: 20,
+    paddingBottom: 10,
   },
   icon: {
     backgroundColor: colors.white,
@@ -74,9 +60,6 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     paddingLeft: 5,
     marginBottom: 15,
-    // margin: 10,
-    // paddingTop: 3,
-    // paddingLeft: 2,
   },
   text: {
     color: colors.white,

@@ -3,11 +3,11 @@ import { View, Text, StyleSheet } from 'react-native'
 
 import { grid } from '../../styles/grid'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { balanceToString } from '../balances/BalancesScreen'
 import { TokenImage } from './TokenImage'
 import { colors } from '../../styles/colors'
 import { GrayButton } from '../../components/button/ButtonVariations'
 import { HideShowIcon } from '../../components/icons/HideShowIcon'
+import { balanceToDisplay, balanceToUSD } from '../../lib/utils'
 
 interface Interface {
   token: ITokenWithBalance
@@ -34,16 +34,16 @@ const SelectedTokenComponent: React.FC<Interface> = ({ token, conversion }) => {
             </View>
             <View style={grid.column10}>
               <Text style={styles.amount}>
-                {balanceToString(token.balance, token.decimals)}
+                {balanceToDisplay(token.balance, token.decimals, 5)}
               </Text>
             </View>
           </View>
-          {conversion && (
+
+          {!!conversion && (
             <View style={grid.row}>
               <View style={grid.column}>
                 <Text style={styles.conversion}>
-                  {/* @JESSE: TODO */}$
-                  {conversion * parseInt(token.balance, 10)}
+                  {balanceToUSD(token.balance, token.decimals, conversion)}
                 </Text>
               </View>
             </View>

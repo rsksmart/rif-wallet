@@ -1,25 +1,26 @@
 import React from 'react'
-import { useSocketsState } from '../../subscriptions/RIFSockets'
-import { FlatList, StyleSheet, Text, View } from 'react-native'
-import { BalanceRowComponent } from './BalanceRowComponent'
+import { StyleSheet, Text, View } from 'react-native'
+import { BalanceCardComponent } from './BalanceCardComponent'
 import { Paragraph } from '../../components'
 import { colors } from '../../styles/colors'
 import { grid } from '../../styles/grid'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { ScrollView } from 'react-native-gesture-handler'
+import { IPrice } from '../../subscriptions/types'
 
 interface Interface {
   selectedAddress?: string
   setSelected: (token: string) => void
+  balances: ITokenWithBalance[]
+  prices: Record<string, IPrice>
 }
 
 const PortfolioComponent: React.FC<Interface> = ({
   selectedAddress,
   setSelected,
+  balances,
+  prices,
 }) => {
-  const { state } = useSocketsState()
-  const balances = Object.values(state.balances)
-
   return (
     <ScrollView contentContainerStyle={styles.scrollView}>
       <Paragraph style={styles.heading}>portfolio</Paragraph>
@@ -30,10 +31,11 @@ const PortfolioComponent: React.FC<Interface> = ({
       <View style={styles.scrollView}>
         {balances.map((balance: ITokenWithBalance, i: number) => (
           <View style={i % 2 ? styles.rightColumn : styles.leftColumn} key={i}>
-            <BalanceRowComponent
+            <BalanceCardComponent
               token={balance}
               onPress={setSelected}
               selected={selectedAddress === balance.contractAddress}
+              price={prices[balance.contractAddress]}
             />
           </View>
         ))}
