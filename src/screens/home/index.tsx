@@ -9,11 +9,13 @@ import { useSocketsState } from '../../subscriptions/RIFSockets'
 import { colors } from '../../styles/colors'
 import SendReceiveButtonComponent from './SendReceiveButtonComponent'
 import { Paragraph } from '../../components'
+import { useSelectedWallet } from '../../Context'
 
 export const HomeScreen: React.FC<{
   navigation: NavigationProp
 }> = ({ navigation }) => {
   const { state } = useSocketsState()
+  const { selectedWalletIndex } = useSelectedWallet()
 
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
     undefined,
@@ -57,7 +59,10 @@ export const HomeScreen: React.FC<{
       />
       */}
       {selected && (
-        <SelectedTokenComponent token={selected} accountNumber={1} />
+        <SelectedTokenComponent
+          token={selected}
+          accountNumber={selectedWalletIndex}
+        />
       )}
 
       <SendReceiveButtonComponent

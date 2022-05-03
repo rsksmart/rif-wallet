@@ -13,6 +13,7 @@ export const colors = {
   orange: '#F89F84',
 
   gray: '#707070',
+  darkGray: '#666',
   black: '#000000',
   red: '#F89F84',
   lightGray: '#c7cfec',

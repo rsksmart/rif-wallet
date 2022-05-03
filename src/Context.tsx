@@ -28,6 +28,9 @@ export const useSelectedWallet = () => {
     wallet: wallets[selectedWallet!],
     isDeployed: walletsIsDeployed[selectedWallet!],
     chainId,
+    selectedWalletIndex: selectedWallet
+      ? Object.keys(wallets).indexOf(selectedWallet)
+      : undefined,
   }
 }
 

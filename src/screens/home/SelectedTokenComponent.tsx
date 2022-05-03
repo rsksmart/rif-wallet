@@ -11,7 +11,7 @@ import { balanceToDisplay } from '../../lib/utils'
 
 interface Interface {
   token: ITokenWithBalance
-  accountNumber: number
+  accountNumber?: number
 }
 
 const SelectedTokenComponent: React.FC<Interface> = ({
@@ -42,11 +42,15 @@ const SelectedTokenComponent: React.FC<Interface> = ({
             </View>
           </View>
 
-          <View style={grid.row}>
-            <View style={grid.column}>
-              <Text style={styles.account}>{`Account ${accountNumber}`}</Text>
+          {typeof accountNumber === 'number' && (
+            <View style={grid.row}>
+              <View style={grid.column}>
+                <Text style={styles.account}>{`Account ${
+                  accountNumber + 1
+                }`}</Text>
+              </View>
             </View>
-          </View>
+          )}
         </>
       ) : (
         <View style={grid.row}>
@@ -84,7 +88,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '300',
     marginTop: 10,
-    color: colors.lightGray,
+    color: colors.darkGray,
   },
   amountHidden: {
     fontSize: 20,

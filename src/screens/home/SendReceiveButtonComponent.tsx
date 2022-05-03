@@ -15,7 +15,7 @@ interface Interface {
 const SendReceiveButtonComponent: React.FC<Interface> = ({
   onPress,
   color,
-  sendDisabled
+  sendDisabled,
 }) => {
   const sharedIconProps = {
     width: 25,
