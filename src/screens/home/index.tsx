@@ -25,12 +25,18 @@ export const HomeScreen: React.FC<{
   const selected = selectedAddress ? state.balances[selectedAddress] : undefined
   const selectedColor = getTokenColor(selected ? selected.symbol : undefined)
   const balances = Object.values(state.balances)
+  const backGroundColor = {
+    backgroundColor: selectedAddress ? selectedColor : colors.darkPurple3,
+  }
 
   useEffect(() => {
     if (!selected) {
       balances.length !== 0
         ? setSelectedAddress(balances[0].contractAddress)
         : undefined
+    } else {
+      // reset when changing to an account without balances
+      setSelectedAddress(undefined)
     }
   }, [state.balances])
 
@@ -51,52 +57,73 @@ export const HomeScreen: React.FC<{
   }
 
   return (
-    <View style={styles.parent}>
-      {/*
+    <View style={styles.container}>
+      <View style={{ ...styles.topColor, ...backGroundColor }} />
+      <View style={styles.bottomColor} />
+
+      <View style={styles.parent}>
+        {/*
       <FaucetComponent
         navigation={navigation}
         balances={Object.values(state.balances)}
       />
       */}
-      {selected && (
-        <SelectedTokenComponent
-          token={selected}
-          accountNumber={selectedWalletIndex}
-        />
-      )}
-
-      <SendReceiveButtonComponent
-        color={selectedColor}
-        onPress={handleSendReceive}
-        sendDisabled={balances.length === 0}
-      />
-
-      {balances.length === 0 && (
-        <>
-          <Image
-            source={require('../../images/noBalance.png')}
-            style={styles.noBalance}
+        {selected && (
+          <SelectedTokenComponent
+            token={selected}
+            accountNumber={selectedWalletIndex}
           />
-          <Paragraph style={styles.text}>
-            You don't have any balances, get some here!
-          </Paragraph>
-        </>
-      )}
+        )}
 
-      <PortfolioComponent
-        selectedAddress={selectedAddress}
-        setSelected={setSelectedAddress}
-        balances={balances}
-        prices={state.prices}
-      />
+        <SendReceiveButtonComponent
+          color={selectedColor}
+          onPress={handleSendReceive}
+          sendDisabled={balances.length === 0}
+        />
+
+        {balances.length === 0 && (
+          <>
+            <Image
+              source={require('../../images/noBalance.png')}
+              style={styles.noBalance}
+            />
+            <Paragraph style={styles.text}>
+              You don't have any balances, get some here!
+            </Paragraph>
+          </>
+        )}
+
+        <PortfolioComponent
+          selectedAddress={selectedAddress}
+          setSelected={setSelectedAddress}
+          balances={balances}
+          prices={state.prices}
+        />
+      </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  parent: {
-    height: '100%',
+  container: {
+    flex: 1,
+    flexDirection: 'column',
     backgroundColor: colors.darkPurple3,
+  },
+  topColor: {
+    flex: 1,
+    borderBottomRightRadius: 40,
+    borderBottomLeftRadius: 40,
+  },
+  bottomColor: {
+    flex: 4,
+  },
+
+  parent: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
     paddingHorizontal: 30,

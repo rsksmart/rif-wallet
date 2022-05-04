@@ -1,4 +1,4 @@
-export const getTokenColor = (tokenSymbol?: string) => {
+export const getTokenColor = (tokenSymbol?: string): string => {
   switch (tokenSymbol) {
     case 'TRBTC':
       return '#3d8af7'
@@ -8,7 +8,7 @@ export const getTokenColor = (tokenSymbol?: string) => {
     case 'DOC':
       return '#00a845'
     default:
-      return '#CCCCCC'
+      return '#535D92'
   }
 }
 
