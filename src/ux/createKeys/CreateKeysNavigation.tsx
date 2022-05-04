@@ -5,7 +5,6 @@ import { CreateKeysScreen } from './CreateKeysScreen'
 import { NewMasterKeyScreen } from './new/NewMasterKeyScreen'
 import { ConfirmNewMasterKeyScreen } from './new/ConfirmNewMasterKeyScreen'
 import { ImportMasterKeyScreen } from './import/ImportMasterKeyScreen'
-import { KeysCreatedScreen } from './KeysCreatedScreen'
 import { StackParamList, CreateKeysProps } from './types'
 import { SecurityExplanationScreen } from './SecurityExplanationScreen'
 import { SecureYourWalletScreen } from './SecureYourWalletScreen'
@@ -59,11 +58,6 @@ export const CreateKeysNavigation: React.FC<CreateKeysProps> = ({
           )}
         </Stack.Screen>
       </Stack.Group>
-      <Stack.Screen
-        name="KeysCreated"
-        component={KeysCreatedScreen}
-        options={screensOptions}
-      />
     </Stack.Navigator>
   )
 }

@@ -7,10 +7,9 @@ import { SecuritySlide } from '../slides/SecuritySlide'
 import Carousel from 'react-native-snap-carousel'
 import { grid } from '../../styles/grid'
 import { PaginationNavigator } from '../../components/button/PaginationNavigator'
-import { LogBox } from 'react-native'
+
 import { Arrow } from '../../components/icons'
-LogBox.ignoreLogs(['Warning: ...']) // Ignore log notification by message
-LogBox.ignoreAllLogs() //Ignore all log notifications
+
 
 import {
   WINDOW_WIDTH,
