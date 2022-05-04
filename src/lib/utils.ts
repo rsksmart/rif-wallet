@@ -90,7 +90,7 @@ export const balanceToDisplay = (
 }
 
 /**
- * Gets an ESTIMATE of the total USD balance given a token's balance, decimals and the quote. 
+ * Gets an ESTIMATE of the total USD balance given a token's balance, decimals and the quote.
  * Uses UNSAFE math and SHOULD NOT be used in percise calculations
  * @param tokenBalance BigNumberish
  * @param tokenDecimals number
