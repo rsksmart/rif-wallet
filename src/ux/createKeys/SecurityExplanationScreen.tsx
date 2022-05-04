@@ -10,7 +10,6 @@ import { PaginationNavigator } from '../../components/button/PaginationNavigator
 
 import { Arrow } from '../../components/icons'
 
-
 import {
   WINDOW_WIDTH,
   WINDOW_HEIGHT,
