@@ -34,9 +34,6 @@ export const HomeScreen: React.FC<{
       balances.length !== 0
         ? setSelectedAddress(balances[0].contractAddress)
         : undefined
-    } else {
-      // reset when changing to an account without balances
-      setSelectedAddress(undefined)
     }
   }, [state.balances])
 
@@ -62,12 +59,6 @@ export const HomeScreen: React.FC<{
       <View style={styles.bottomColor} />
 
       <View style={styles.parent}>
-        {/*
-      <FaucetComponent
-        navigation={navigation}
-        balances={Object.values(state.balances)}
-      />
-      */}
         {selected && (
           <SelectedTokenComponent
             token={selected}
@@ -81,7 +72,7 @@ export const HomeScreen: React.FC<{
           sendDisabled={balances.length === 0}
         />
 
-        {balances.length === 0 && (
+        {balances.length === 0 ? (
           <>
             <Image
               source={require('../../images/noBalance.png')}
@@ -91,14 +82,14 @@ export const HomeScreen: React.FC<{
               You don't have any balances, get some here!
             </Paragraph>
           </>
+        ) : (
+          <PortfolioComponent
+            selectedAddress={selectedAddress}
+            setSelected={setSelectedAddress}
+            balances={balances}
+            prices={state.prices}
+          />
         )}
-
-        <PortfolioComponent
-          selectedAddress={selectedAddress}
-          setSelected={setSelectedAddress}
-          balances={balances}
-          prices={state.prices}
-        />
       </View>
     </View>
   )
