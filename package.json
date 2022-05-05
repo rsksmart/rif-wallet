@@ -30,6 +30,7 @@
     "@rsksmart/rsk-contract-metadata": "^1.0.15",
     "@rsksmart/rsk-testnet-contract-metadata": "^1.0.11",
     "@rsksmart/rsk-utils": "^1.1.0",
+    "@rsksmart/relaying-services-sdk": "https://github.com/JONAF2103/relaying-services-sdk",
     "@types/react-native-snap-carousel": "^3.8.5",
     "@walletconnect/client": "^1.6.6",
     "axios": "^0.24.0",

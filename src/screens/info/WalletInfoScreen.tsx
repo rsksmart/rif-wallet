@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Transaction, BigNumber } from 'ethers'
 import { Trans, useTranslation } from 'react-i18next'
@@ -12,13 +12,25 @@ import {
   Header2,
   Paragraph,
 } from '../../components'
-import { ScreenWithWallet } from '../types'
+import { ScreenWithWallet, SmartWalletWithBalance } from '../types'
 import { DevSettings } from 'react-native'
+import { DefaultRelayingServices, RelayingServices, SmartWallet } from '@rsksmart/relaying-services-sdk'
+import Utils, { TRIF_PRICE } from './Utils'
 
 export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
   wallet,
   isWalletDeployed,
 }) => {
+
+  type DeployInfo = {
+    fees: number | string;
+    check: boolean;
+    tokenGas: number | string;
+    relayGas: number;
+  };
+
+  type DeployInfoKey = keyof DeployInfo;
+
   const [eoaBalance, setEoaBalance] = useState<null | BigNumber>(null)
   const [isDeploying, setIsDeploying] = useState(false)
 
@@ -29,6 +41,17 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
   const [sendRifTx, setSendRifTx] = useState<null | Transaction>(null)
   const [sendRifResponse, setSendRifResponse] = useState<null | string>(null)
   const { t } = useTranslation()
+  const [account, setAccount] = useState<string | undefined>('0xa975D1DE6d7dA3140E9e293509337373402558bE');
+  const [provider, setProvider] = useState<RelayingServices | undefined>(
+    undefined
+  );
+  const [deployRif, setDeployRif] = useState<DeployInfo>({
+    fees: 0,
+    check: false,
+    tokenGas: 0,
+    relayGas: 0
+  });
+  const rifTokenAddress = '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe'
 
   const rif = new ERC20Token(
     '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
@@ -59,6 +82,184 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
       setIsDeploying(false)
     }
   }
+
+  const deployRifRelay = async () => {
+    try {
+      setIsDeploying(true)
+
+      const config = {
+        verbose: false, 
+        chainId: 31,
+        gasPriceFactorPercent: '0',
+        relayLookupWindowBlocks: 1e5, 
+        preferredRelays: ['localhost:8090'], 
+        relayHubAddress: '0x66Fa9FEAfB8Db66Fe2160ca7aEAc7FC24e254387', 
+        relayVerifierAddress: '0x56ccdB6D312307Db7A4847c3Ea8Ce2449e9B79e9', 
+        deployVerifierAddress: '0x5C6e96a84271AC19974C3e99d6c4bE4318BfE483', 
+        smartWalletFactoryAddress: '0xeaB5b9fA91aeFFaA9c33F9b33d12AB7088fa7f6f'
+      } as any;
+
+      const contractAddresses = {
+        relayHub: '0x66Fa9FEAfB8Db66Fe2160ca7aEAc7FC24e254387'
+        , smartWallet: '0xEdB6D515C2DB4F9C3C87D7f6Cefb260B3DEe8014'
+        , smartWalletFactory: '0xeaB5b9fA91aeFFaA9c33F9b33d12AB7088fa7f6f'
+        , smartWalletDeployVerifier: '0x5C6e96a84271AC19974C3e99d6c4bE4318BfE483'
+        , smartWalletRelayVerifier: '0x56ccdB6D312307Db7A4847c3Ea8Ce2449e9B79e9'
+        , testToken: rifTokenAddress
+      } as any;
+
+      const relayingServices = new DefaultRelayingServices({
+        rskHost: 'http://relay-01.aws-us-west-2.dev.relay.rifcomputing.net:4444',
+        account: account
+      } as any)
+
+      await relayingServices.initialize(config, contractAddresses)
+      setProvider(relayingServices)      
+
+      if (provider) {
+        const smartWallet = await provider?.generateSmartWallet(1);
+        const smartWalletWithBalance = await setBalance(smartWallet);
+        handleEstimateDeploySmartWalletButtonClick(smartWalletWithBalance);
+        handleDeploySmartWalletButtonClick(smartWalletWithBalance)
+      }
+      
+    } catch (error) {
+      setIsDeploying(false)
+    }
+  }
+
+  async function handleDeploySmartWalletButtonClick(currentSmartWallet: SmartWallet) {
+    deployRif.fees = deployRif.fees === '' ? '0' : deployRif.fees;
+    deployRif.tokenGas = deployRif.tokenGas === '' ? '0' : deployRif.tokenGas;
+
+    const smartWallet = await relaySmartWalletDeployment(deployRif.fees, currentSmartWallet);
+    console.log(smartWallet?.deployed)
+
+  }
+
+  async function relaySmartWalletDeployment(tokenAmount: string | number, currentSmartWallet: SmartWallet) {
+    try {
+        if (provider) {
+            const isTokenAllowed = await provider.isAllowedToken(
+              rifTokenAddress
+            );
+            if (isTokenAllowed) {
+                const fees = await Utils.toWei(`${tokenAmount}`);
+                const smartWallet = await provider.deploySmartWallet(
+                    currentSmartWallet!,
+                    rifTokenAddress,
+                    fees as any
+                );
+                const smartWalledIsDeployed =
+                    await checkSmartWalletDeployment(
+                        smartWallet.deployTransaction!
+                    );
+                if (!smartWalledIsDeployed) {
+                    throw new Error('SmartWallet: deployment failed');
+                }
+                return smartWallet;
+            }
+            throw new Error(
+                'SmartWallet: was not created because Verifier does not accept the specified token for payment'
+            );
+        }
+    } catch (error) {
+        const errorObj = error as Error;
+        if (errorObj.message) {
+            console.log(errorObj.message);
+        }
+        console.error(error);
+    }
+    return undefined;
+  }
+
+  async function checkSmartWalletDeployment(txHash: string) {
+    const receipt = await getReceipt(txHash);
+
+    if (receipt === null) {
+        return false;
+    }
+
+    console.log(`Your receipt is`);
+    console.log(receipt);
+    return receipt.status;
+  }
+  
+  async function getReceipt(transactionHash: string) {
+    let receipt = await Utils.getTransactionReceipt(transactionHash);
+    let times = 0;
+
+    while (receipt === null && times < 40) {
+        times += 1;
+        // eslint-disable-next-line no-promise-executor-return
+        const sleep = new Promise((resolve) => setTimeout(resolve, 1000));
+        // eslint-disable-next-line no-await-in-loop
+        await sleep;
+        // eslint-disable-next-line no-await-in-loop
+        receipt = await Utils.getTransactionReceipt(transactionHash);
+    }
+
+    return receipt;
+  }
+
+  async function handleEstimateDeploySmartWalletButtonClick(currentSmartWallet: SmartWallet) {
+    try {
+      const estimate = await provider?.estimateMaxPossibleRelayGas(
+          currentSmartWallet,
+          '0xc6a4f4839b074b2a75ebf00a9b427ccb8073b7b4'
+      );
+
+      if (estimate) {
+          const costInRBTC = await Utils.fromWei(estimate.toString());
+          console.log('Cost in RBTC:', costInRBTC);
+
+          const costInTrif = parseFloat(costInRBTC) / TRIF_PRICE;
+          const tokenContract = await Utils.getTokenContract();
+          const ritTokenDecimals = await tokenContract.methods
+              .decimals()
+              .call();
+          const costInTrifFixed = costInTrif.toFixed(ritTokenDecimals);
+          console.log('Cost in TRif: ', costInTrifFixed);
+
+          if (deployRif.check === true) {
+              changeValue(costInRBTC, 'fees');
+          } else {
+              changeValue(costInTrifFixed, 'fees');
+          }
+      }
+    } catch (error) {
+        const errorObj = error as Error;
+        if (errorObj.message) {
+            console.log(errorObj.message);
+        }
+        console.error(error);
+    }
+  }
+  
+  function changeValue<T>(value: T, prop: DeployInfoKey) {
+    const obj: DeployInfo = { ...deployRif };
+    // @ts-ignore: TODO: change this to be type safe
+    obj[prop] = value;
+    setDeployRif(obj);
+  }
+
+  const setBalance = useCallback(
+    async (smartWallet: SmartWallet): Promise<SmartWalletWithBalance> => {
+        const balance = await Utils.tokenBalance(smartWallet.address);
+        const rbtcBalance = await Utils.getBalance(smartWallet.address);
+        const swWithBalance = {
+            ...smartWallet,
+            balance: `${Utils.fromWei(balance)} tRIF`,
+            rbtcBalance: `${Utils.fromWei(rbtcBalance)} RBTC`,
+            deployed:
+                (await provider?.isSmartWalletDeployed(
+                    smartWallet.address
+                )) || false
+        };
+        return swWithBalance;
+    },
+    [provider]
+);
 
   const sendRif = async () => {
     setSendRifResponse(null)
@@ -101,6 +302,13 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
         <Button
           title={t('Deploy')}
           onPress={deploy}
+          disabled={isWalletDeployed || isDeploying}
+        />
+      )}
+      {!isWalletDeployed && (
+        <Button
+          title={t('Deploy Rif')}
+          onPress={deployRifRelay}
           disabled={isWalletDeployed || isDeploying}
         />
       )}
