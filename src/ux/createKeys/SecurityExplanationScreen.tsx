@@ -7,6 +7,7 @@ import { SecuritySlide } from '../slides/SecuritySlide'
 import Carousel from 'react-native-snap-carousel'
 import { grid } from '../../styles/grid'
 import { PaginationNavigator } from '../../components/button/PaginationNavigator'
+
 import { Arrow } from '../../components/icons'
 
 import {

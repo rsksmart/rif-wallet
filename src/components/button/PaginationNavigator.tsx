@@ -18,10 +18,10 @@ interface Interface {
   onNext?: (event: GestureResponderEvent) => any
   onComplete?: (event: GestureResponderEvent) => any
   currentIndex: number
-  disabled?: boolean
   testID?: string
   shadowColor?: string
   backgroundColor?: string
+  containerBackgroundColor?: string
   slidesAmount: number
 }
 
@@ -30,9 +30,9 @@ export const PaginationNavigator: React.FC<Interface> = ({
   onNext,
   onComplete,
   currentIndex,
-  disabled,
   shadowColor,
   backgroundColor = 'white',
+  containerBackgroundColor = colors.blue,
   slidesAmount,
 }) => {
   const imageStyle = {
@@ -47,7 +47,7 @@ export const PaginationNavigator: React.FC<Interface> = ({
       <Pagination
         dotsLength={entries.length}
         activeDotIndex={activeSlide}
-        containerStyle={styles.paginationContainer}
+        containerStyle={{ backgroundColor: containerBackgroundColor }}
         dotStyle={styles.dotStyle}
         inactiveDotStyle={{}}
         inactiveDotOpacity={0.4}
@@ -56,11 +56,15 @@ export const PaginationNavigator: React.FC<Interface> = ({
     )
   }
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        ...styles.container,
+        backgroundColor: containerBackgroundColor,
+      }}>
       <TouchableOpacity
         style={styles.buttonLeft}
         onPress={onPrevious}
-        disabled={disabled}>
+        disabled={currentIndex === 0}>
         <View style={imageStyle}>
           <Arrow color={colors.blue} rotate={270} width={50} height={50} />
         </View>
@@ -71,7 +75,7 @@ export const PaginationNavigator: React.FC<Interface> = ({
         <TouchableOpacity
           style={styles.buttonRight}
           onPress={onNext}
-          disabled={disabled}>
+          disabled={false}>
           <View style={imageStyle}>
             <Arrow color={colors.blue} rotate={90} width={50} height={50} />
           </View>
@@ -81,7 +85,7 @@ export const PaginationNavigator: React.FC<Interface> = ({
         <TouchableOpacity
           style={styles.buttonRight}
           onPress={onComplete}
-          disabled={disabled}>
+          disabled={false}>
           <View style={{ ...imageStyle, backgroundColor: colors.green }}>
             <CheckIcon color={colors.blue} width={50} height={50} />
           </View>
@@ -96,7 +100,6 @@ const styles = StyleSheet.create({
     color: colors.white,
     height: 65,
     flexDirection: 'row',
-    backgroundColor: colors.blue,
     justifyContent: 'space-between',
     position: 'absolute',
     bottom: 0,
@@ -104,11 +107,13 @@ const styles = StyleSheet.create({
     marginBottom: 60,
   },
   buttonLeft: {
-    padding: 10,
+    padding: 0,
+    paddingTop: 5,
     flexDirection: 'row',
   },
   buttonRight: {
-    padding: 10,
+    padding: 0,
+    paddingTop: 5,
     flexDirection: 'row',
   },
   image: {
@@ -124,11 +129,11 @@ const styles = StyleSheet.create({
   textDisabled: {
     color: '#cccccc',
   },
-  paginationContainer: { backgroundColor: colors.blue },
   dotStyle: {
-    width: 10,
-    height: 10,
+    width: 6,
+    height: 6,
     marginTop: 20,
+    margin: 0,
     borderRadius: 5,
     marginHorizontal: 0,
     backgroundColor: 'rgba(255, 255, 255, 0.92)',

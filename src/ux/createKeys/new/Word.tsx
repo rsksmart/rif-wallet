@@ -1,54 +1,44 @@
 import React from 'react'
 
-import { grid } from '../../../styles/grid'
 import { StyleSheet, View, Text } from 'react-native'
 import { colors } from '../../../styles/colors'
 
-export const Word = ({
-  wordNumber,
-  text,
-}: {
-  wordNumber: number
-  text: string
-}) => (
-  <View
-    style={{
-      ...grid.column4,
-      ...styles.wordContainer,
-    }}>
-    <Text style={styles.wordNumber}>{wordNumber}. </Text>
-    <View style={styles.wordContent}>
+export const Word = ({ number, text }: { number: number; text: string }) => (
+  <View style={styles.wordContainer}>
+    <View>
+      <View style={styles.wordNumberBadge}>
+        <Text style={styles.wordNumberBadgeText}>{number} </Text>
+      </View>
+    </View>
+    <View>
       <Text style={styles.wordText}>{text}</Text>
     </View>
   </View>
 )
 
 const styles = StyleSheet.create({
-  wordNumber: {
+  wordContainer: {
+    padding: 15,
     color: colors.white,
-    display: 'flex',
-    alignItems: 'flex-start',
-    alignContent: 'flex-start',
-    paddingVertical: 5,
+    flexDirection: 'row',
+    backgroundColor: colors.blue,
+    fontWeight: 'bold',
+    borderRadius: 10,
   },
-  wordContent: {
-    borderRadius: 30,
-    backgroundColor: colors.darkPurple2,
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    paddingHorizontal: 10,
-    paddingVertical: 7,
+  wordNumberBadge: {
+    backgroundColor: colors.darkBlue,
+    padding: 10,
+    borderRadius: 20,
+  },
+  wordNumberBadgeText: {
+    textAlign: 'center',
+    color: colors.white,
+    fontSize: 20,
   },
   wordText: {
     color: colors.white,
-    fontSize: 14,
-  },
-
-  wordContainer: {
-    alignItems: 'flex-start',
-    alignContent: 'flex-start',
-    flexDirection: 'row',
-    marginVertical: 5,
-    marginLeft: 5,
+    fontSize: 20,
+    marginLeft: 10,
+    paddingTop: 5,
   },
 })
