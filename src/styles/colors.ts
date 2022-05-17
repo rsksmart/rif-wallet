@@ -1,6 +1,7 @@
 export const colors = {
   white: '#FFFFFF',
   lightPurple: '#DAE2FF', // #DBE3FF
+  transparentWhite: 'rgba(218,226,255,.15)',
   purple: '#A2A3E5',
   darkPurple: '#74709B',
   darkPurple2: '#514F78',

@@ -111,7 +111,7 @@ const whiteStyles = StyleSheet.create({
 const whiteTransparentStyles = StyleSheet.create({
   ...whiteStyles,
   button: {
-    backgroundColor: 'rgba(218,226,255,.15)',
+    backgroundColor: colors.transparentWhite,
   },
 })
 
