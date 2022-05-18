@@ -167,6 +167,7 @@ const useKeyManagementSystem = (onRequest: OnRequest) => {
 export const Core = () => {
   const [active, setActive] = useState(true)
   const [unlocked, setUnlocked] = useState(false)
+  const [topColor, setTopColor] = useState(colors.darkPurple3)
 
   const timerRef = useRef<NodeJS.Timeout>(timer)
 
@@ -244,12 +245,23 @@ export const Core = () => {
     return <LoadingScreen reason="Getting things setup" />
   }
 
+  // handles the top color behind the clock
+  const styles = StyleSheet.create({
+    top: {
+      flex: 0,
+      backgroundColor: topColor,
+    },
+    body: {
+      backgroundColor: topColor,
+    },
+  })
+
   return (
     <Fragment>
       <SafeAreaView style={styles.top}>
         <StatusBar barStyle="light-content" />
       </SafeAreaView>
-      <SafeAreaView style={styles.parent}>
+      <SafeAreaView style={styles.body}>
         {!active && <Cover />}
         {state.hasKeys && state.hasPin && !unlocked && (
           <RequestPIN
@@ -301,6 +313,7 @@ export const Core = () => {
                     switchActiveWallet,
                   }}
                   settingsScreen={{ deleteKeys }}
+                  changeTopColor={setTopColor}
                 />
 
                 {requests.length !== 0 && (
@@ -317,13 +330,3 @@ export const Core = () => {
     </Fragment>
   )
 }
-
-const styles = StyleSheet.create({
-  top: {
-    flex: 0,
-    backgroundColor: colors.blue,
-  },
-  parent: {
-    backgroundColor: colors.darkPurple,
-  },
-})

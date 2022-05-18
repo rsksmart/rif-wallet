@@ -97,6 +97,7 @@ export const RootNavigation: React.FC<{
   currentScreen: string
   hasKeys: boolean
   hasPin: boolean
+  changeTopColor: (color: string) => void
   rifWalletServicesSocket: IRifWalletServicesSocket
   keyManagementProps: CreateKeysProps
   createPin: (newPin: string) => Promise<void>
@@ -113,6 +114,7 @@ export const RootNavigation: React.FC<{
   currentScreen,
   hasKeys,
   hasPin,
+  changeTopColor,
   keyManagementProps,
   createPin,
   balancesScreenProps,
@@ -135,11 +137,14 @@ export const RootNavigation: React.FC<{
     <View style={styles.parent}>
       {hasKeys && <AppHeader />}
       <RootStack.Navigator initialRouteName={initialRoute}>
-        <RootStack.Screen
-          name="Home"
-          component={Screens.HomeScreen}
-          options={sharedOptions}
-        />
+        <RootStack.Screen name="Home" options={sharedOptions}>
+          {props => (
+            <InjectedScreens.HomeScreen
+              {...props}
+              changeTopColor={changeTopColor}
+            />
+          )}
+        </RootStack.Screen>
         <RootStack.Screen name="Dapps" options={sharedOptions}>
           {props => (
             <InjectedScreens.DappsScreen {...props} {...dappsScreenProps} />
@@ -284,6 +289,5 @@ export const RootNavigation: React.FC<{
 const styles = StyleSheet.create({
   parent: {
     height: '100%',
-    backgroundColor: colors.darkPurple3,
   },
 })

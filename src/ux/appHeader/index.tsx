@@ -64,7 +64,9 @@ export const AppHeader: React.FC<{}> = () => {
 const styles = StyleSheet.create({
   row: {
     alignItems: 'center', // vertical
-    padding: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    marginBottom: 10,
     display: 'flex',
     flexDirection: 'row',
   },
