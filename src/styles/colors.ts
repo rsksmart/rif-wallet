@@ -18,4 +18,6 @@ export const colors = {
   black: '#000000',
   red: '#F89F84',
   lightGray: '#c7cfec',
+
+  none: 'rgba(0, 0, 0, 0)',
 }

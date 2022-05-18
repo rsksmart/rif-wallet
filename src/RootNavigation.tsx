@@ -284,5 +284,6 @@ export const RootNavigation: React.FC<{
 const styles = StyleSheet.create({
   parent: {
     height: '100%',
+    backgroundColor: colors.darkPurple3,
   },
 })
