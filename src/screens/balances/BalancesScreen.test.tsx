@@ -19,7 +19,7 @@ import { RIFSocketsProvider } from '../../subscriptions/RIFSockets'
 import { IRifWalletServicesSocket } from '../../lib/rifWalletServices/RifWalletServicesSocket'
 import EventEmitter from 'events'
 
-import tempRecent from '../home/tempRecent.json'
+import tempRecent from '../../../testLib/mocks/testBalances.json'
 import { constants } from 'ethers'
 import { createMockAbiEnhancer } from '../../../testLib/mocks/rifTransactionsMock'
 

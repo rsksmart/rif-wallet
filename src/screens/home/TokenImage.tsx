@@ -35,7 +35,7 @@ export const TokenImage: React.FC<{
           style={iconStyle}
         />
       )
-    case 'RDOC':
+    case 'rDOC':
       return (
         <Image
           source={require('@rsksmart/rsk-contract-metadata/images/rdoc.png')}

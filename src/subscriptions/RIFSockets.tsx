@@ -116,7 +116,9 @@ const loadRBTCBalance = async (wallet: RIFWallet, dispatch: Dispatch) => {
     decimals: 18,
     balance: rbtcBalanceEntry.toString(),
   } as ITokenWithBalance
-  dispatch({ type: 'newBalance', payload: newEntry })
+
+  !rbtcBalanceEntry.isZero() &&
+    dispatch({ type: 'newBalance', payload: newEntry })
 }
 
 const RIFSocketsContext = React.createContext<

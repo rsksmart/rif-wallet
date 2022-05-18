@@ -5,7 +5,7 @@ import { colors } from '../../styles/colors'
 import BaseButton, { BaseButtonInterface } from './BaseButton'
 
 export interface ButtonInterface extends BaseButtonInterface {
-  title: string
+  title?: string
   icon?: any
 }
 
@@ -27,15 +27,17 @@ const Button: React.FC<ButtonInterface & { buttonStyles: any }> = ({
       }
       disabled={disabled}>
       <View style={sharedStyles.contentWrapper}>
-        <Text
-          style={
-            disabled
-              ? { ...sharedStyles.text, ...buttonStyles.textDisabled }
-              : { ...sharedStyles.text, ...buttonStyles.text }
-          }>
-          {icon && <View style={sharedStyles.iconContainer}>{icon}</View>}
-          {title}
-        </Text>
+        {icon && <View style={sharedStyles.iconContainer}>{icon}</View>}
+        {title && (
+          <Text
+            style={
+              disabled
+                ? { ...sharedStyles.text, ...buttonStyles.textDisabled }
+                : { ...sharedStyles.text, ...buttonStyles.text }
+            }>
+            {title}
+          </Text>
+        )}
       </View>
     </BaseButton>
   )
@@ -44,13 +46,11 @@ const Button: React.FC<ButtonInterface & { buttonStyles: any }> = ({
 const sharedStyles = StyleSheet.create({
   contentWrapper: {
     display: 'flex',
-    alignItems: 'center',
+    flexDirection: 'row',
+    alignItems: 'center', // vertical align
+    alignSelf: 'center', // horizontal align
   },
-
-  iconContainer: {
-    marginTop: -10,
-  },
-
+  iconContainer: {},
   text: {
     textAlign: 'center',
     fontWeight: '500',
@@ -86,12 +86,16 @@ export const WhiteButton: React.FC<ButtonInterface> = props => (
   <Button {...props} buttonStyles={whiteStyles} />
 )
 
+export const WhiteTransparentButton: React.FC<ButtonInterface> = props => (
+  <Button {...props} buttonStyles={whiteTransparentStyles} />
+)
+
 const whiteStyles = StyleSheet.create({
   button: {
     backgroundColor: colors.lightPurple,
   },
   buttonDisabled: {
-    backgroundColor: colors.lightPurple,
+    backgroundColor: colors.black,
   },
   buttonActive: {
     backgroundColor: '#FFCC33',
@@ -101,6 +105,13 @@ const whiteStyles = StyleSheet.create({
   },
   textDisabled: {
     color: '#9296b9',
+  },
+})
+
+const whiteTransparentStyles = StyleSheet.create({
+  ...whiteStyles,
+  button: {
+    backgroundColor: colors.transparentWhite,
   },
 })
 
@@ -127,4 +138,23 @@ const outlineStyles = StyleSheet.create({
   textDisabled: {
     color: colors.lightPurple,
   },
+})
+
+// gray button:
+export const GrayButton: React.FC<ButtonInterface> = props => (
+  <Button {...props} buttonStyles={grayStyles} />
+)
+
+const grayStyles = StyleSheet.create({
+  button: {
+    backgroundColor: colors.lightGray,
+  },
+  buttonDisabled: {},
+  buttonActive: {
+    backgroundColor: colors.lightPurple,
+  },
+  text: {
+    color: colors.darkPurple3,
+  },
+  textDisabled: {},
 })

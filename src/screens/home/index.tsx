@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, Image } from 'react-native'
 
 import { NavigationProp } from '../../RootNavigation'
 import SelectedTokenComponent from './SelectedTokenComponent'
-import { getTokenColor, setOpacity } from './tokenColor'
+import { getTokenColor } from './tokenColor'
 import PortfolioComponent from './PortfolioComponent'
-import ActivityComponent from './ActivityComponent'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
-import FaucetComponent from './FaucetComponent'
-import { ScrollView } from 'react-native-gesture-handler'
 import { colors } from '../../styles/colors'
+import SendReceiveButtonComponent from './SendReceiveButtonComponent'
+import { Paragraph } from '../../components'
+import { useSelectedWallet } from '../../Context'
 
 export const HomeScreen: React.FC<{
   navigation: NavigationProp
 }> = ({ navigation }) => {
   const { state } = useSocketsState()
+  const { selectedWalletIndex } = useSelectedWallet()
 
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
     undefined,
@@ -22,67 +23,111 @@ export const HomeScreen: React.FC<{
 
   // token or undefined
   const selected = selectedAddress ? state.balances[selectedAddress] : undefined
-
-  const [selectedPanel, setSelectedPanel] = useState<string>('portfolio')
+  const selectedColor = getTokenColor(selected ? selected.symbol : undefined)
+  const balances = Object.values(state.balances)
+  const backGroundColor = {
+    backgroundColor: selectedAddress ? selectedColor : colors.darkPurple3,
+  }
 
   useEffect(() => {
     if (!selected) {
-      Object.values(state.balances).length !== 0
-        ? setSelectedAddress(Object.values(state.balances)[0].contractAddress)
+      balances.length !== 0
+        ? setSelectedAddress(balances[0].contractAddress)
         : undefined
     }
   }, [state.balances])
 
-  const selectedTokenColor = selected
-    ? getTokenColor(selected.symbol)
-    : '#CCCCCC'
-
-  const containerStyles = {
-    shadowColor: setOpacity(selectedTokenColor, 0.5),
+  // interact with the navigation
+  const handleSendReceive = (screen: 'SEND' | 'RECEIVE' | 'FAUCET') => {
+    switch (screen) {
+      case 'SEND':
+        return navigation.navigate('Send', {
+          token: selected?.symbol,
+          contractAddress: selected?.contractAddress,
+        })
+      case 'RECEIVE':
+        return navigation.navigate('Receive')
+      case 'FAUCET':
+        console.log('@todo: faucet component is not implemented yet.')
+        return
+    }
   }
 
   return (
-    <View style={styles.parent}>
-      <ScrollView>
-        <FaucetComponent
-          navigation={navigation}
-          balances={Object.values(state.balances)}
-        />
+    <View style={styles.container}>
+      <View style={{ ...styles.topColor, ...backGroundColor }} />
+      <View style={styles.bottomColor} />
+
+      <View style={styles.parent}>
         {selected && (
-          <SelectedTokenComponent navigation={navigation} token={selected} />
+          <SelectedTokenComponent
+            token={selected}
+            accountNumber={selectedWalletIndex}
+          />
         )}
 
-        <View style={{ ...styles.topContainer, ...containerStyles }}>
+        <SendReceiveButtonComponent
+          color={selectedColor}
+          onPress={handleSendReceive}
+          sendDisabled={balances.length === 0}
+        />
+
+        {balances.length === 0 ? (
+          <>
+            <Image
+              source={require('../../images/noBalance.png')}
+              style={styles.noBalance}
+            />
+            <Paragraph style={styles.text}>
+              You don't have any balances, get some here!
+            </Paragraph>
+          </>
+        ) : (
           <PortfolioComponent
-            setPanelActive={() => setSelectedPanel('portfolio')}
             selectedAddress={selectedAddress}
             setSelected={setSelectedAddress}
-            visible={selectedPanel === 'portfolio'}
+            balances={balances}
+            prices={state.prices}
           />
-          <ActivityComponent
-            navigation={navigation}
-            setPanelActive={() => setSelectedPanel('transactions')}
-            visible={selectedPanel === 'transactions'}
-          />
-        </View>
-      </ScrollView>
+        )}
+      </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: colors.darkPurple3,
+  },
+  topColor: {
+    flex: 1,
+    borderBottomRightRadius: 40,
+    borderBottomLeftRadius: 40,
+  },
+  bottomColor: {
+    flex: 4,
+  },
+
   parent: {
+    position: 'absolute',
+    width: '100%',
     height: '100%',
-    backgroundColor: colors.darkBlue,
+
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
+    paddingHorizontal: 30,
+    paddingTop: 10,
   },
-  topContainer: {
-    marginHorizontal: 25,
-    borderRadius: 25,
-    backgroundColor: '#ffffff',
-    shadowOpacity: 0.1,
-    // shadowRadius: 10,
-    elevation: 2,
+  text: {
+    textAlign: 'center',
+    color: colors.white,
+  },
+  noBalance: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
   },
 })
