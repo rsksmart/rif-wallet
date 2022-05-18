@@ -1,10 +1,9 @@
 import { useNavigation } from '@react-navigation/core'
 import React from 'react'
-import { View, StyleSheet, TouchableOpacity, Text } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, Text, Image } from 'react-native'
 import { AddressCopyComponent } from '../../components/copy/AddressCopyComponent'
 import { useSelectedWallet } from '../../Context'
 import { Network } from '@ethersproject/networks'
-import { MenuIcon } from '../../components/icons/MenuIcon'
 import { colors } from '../../styles/colors'
 
 export const networks: Record<number, Network> = {
@@ -41,12 +40,21 @@ export const AppHeader: React.FC<{}> = () => {
           ...styles.column,
           ...styles.walletInfo,
         }}>
-        {wallet && <AddressCopyComponent address={wallet.smartWalletAddress} />}
+        <Image
+          source={require('../../images/rsk-logo.png')}
+          style={styles.logo}
+        />
         {network && <Text style={styles.network}>{network.name}</Text>}
       </View>
       <View style={styles.column}>
-        <TouchableOpacity onPress={openMenu} style={styles.menu}>
-          <MenuIcon color={colors.white} />
+        {wallet && <AddressCopyComponent address={wallet.smartWalletAddress} />}
+      </View>
+      <View style={styles.columnMenu}>
+        <TouchableOpacity onPress={openMenu}>
+          <Image
+            source={require('../../images/settings-icon.png')}
+            style={styles.settingsIcon}
+          />
         </TouchableOpacity>
       </View>
     </View>
@@ -55,16 +63,22 @@ export const AppHeader: React.FC<{}> = () => {
 
 const styles = StyleSheet.create({
   row: {
-    alignItems: 'center',
+    alignItems: 'center', // vertical
     padding: 10,
     display: 'flex',
     flexDirection: 'row',
-    backgroundColor: colors.blue,
   },
   column: {
-    display: 'flex',
-    paddingRight: 5,
-    width: '50%',
+    flex: 5,
+  },
+  columnMenu: {
+    flex: 1,
+    alignItems: 'flex-end',
+  },
+  logo: {
+    height: 25,
+    width: 18,
+    marginRight: 5,
   },
   network: {
     color: colors.white,
@@ -73,7 +87,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
   },
-  menu: {
-    alignItems: 'flex-end',
+  settingsIcon: {
+    height: 18,
+    width: 18,
   },
 })

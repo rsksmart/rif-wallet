@@ -31,8 +31,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   iconColumn: {
-    backgroundColor: 'rgba(255, 255, 255, .2)',
-    borderRadius: 15,
     flex: 1,
     marginRight: 10,
   },
