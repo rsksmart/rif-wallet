@@ -25,15 +25,14 @@ export const WordSelector: React.FC<Props> = ({
   const [options, setOptions] = useState<string[]>([])
 
   const selectWord = (myWord: string) => {
-    if (myWord === expectedWord) {
+    handleTextChange(myWord)
+  }
+  const handleTextChange = (newText: string) => {
+    if (newText === expectedWord) {
       setIsMatch(true)
     } else {
       setIsMatch(false)
     }
-    setWord(myWord)
-    setOptions([])
-  }
-  const handleTextChange = (newText: string) => {
     setWord(newText)
     if (newText === '') {
       setOptions([])
@@ -42,7 +41,7 @@ export const WordSelector: React.FC<Props> = ({
     }
   }
   return (
-    <View style={{ margin: 20 }}>
+    <View>
       <View style={styles.wordContainer}>
         <View>
           <View style={styles.wordNumberBadge}>
@@ -50,6 +49,7 @@ export const WordSelector: React.FC<Props> = ({
           </View>
         </View>
         <TextInput
+          selectionColor={'#fff'}
           placeholderTextColor="#fff"
           style={styles.textInput}
           onChangeText={handleTextChange}
