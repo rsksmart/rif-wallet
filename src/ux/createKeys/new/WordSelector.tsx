@@ -26,6 +26,7 @@ export const WordSelector: React.FC<Props> = ({
 
   const selectWord = (myWord: string) => {
     handleTextChange(myWord)
+    setOptions([])
   }
   const handleTextChange = (newText: string) => {
     if (newText === expectedWord) {
@@ -41,7 +42,7 @@ export const WordSelector: React.FC<Props> = ({
     }
   }
   return (
-    <View>
+    <Viewt s>
       <View style={styles.wordContainer}>
         <View>
           <View style={styles.wordNumberBadge}>
@@ -87,7 +88,7 @@ export const WordSelector: React.FC<Props> = ({
           </View>
         </TouchableOpacity>
       ))}
-    </View>
+    </Viewt>
   )
 }
 
