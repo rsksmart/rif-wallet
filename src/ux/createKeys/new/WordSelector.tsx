@@ -42,7 +42,7 @@ export const WordSelector: React.FC<Props> = ({
     }
   }
   return (
-    <Viewt s>
+    <View>
       <View style={styles.wordContainer}>
         <View>
           <View style={styles.wordNumberBadge}>
@@ -88,7 +88,7 @@ export const WordSelector: React.FC<Props> = ({
           </View>
         </TouchableOpacity>
       ))}
-    </Viewt>
+    </View>
   )
 }
 
