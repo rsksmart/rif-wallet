@@ -133,9 +133,12 @@ export const RootNavigation: React.FC<{
   } else if (hasKeys) {
     initialRoute = 'CreatePin'
   }
+
+  const appIsSetup = hasKeys && hasPin
+
   return (
     <View style={styles.parent}>
-      {hasKeys && <AppHeader />}
+      {appIsSetup && <AppHeader />}
       <RootStack.Navigator initialRouteName={initialRoute}>
         <RootStack.Screen name="Home" options={sharedOptions}>
           {props => (
@@ -281,7 +284,7 @@ export const RootNavigation: React.FC<{
           )}
         </RootStack.Screen>
       </RootStack.Navigator>
-      {hasKeys && <AppFooterMenu currentScreen={currentScreen} />}
+      {appIsSetup && <AppFooterMenu currentScreen={currentScreen} />}
     </View>
   )
 }
