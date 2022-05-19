@@ -259,7 +259,7 @@ export const Core = () => {
   return (
     <Fragment>
       <SafeAreaView style={styles.top}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar backgroundColor={topColor} />
       </SafeAreaView>
       <SafeAreaView style={styles.body}>
         {!active && <Cover />}
