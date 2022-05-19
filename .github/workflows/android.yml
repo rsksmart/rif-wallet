@@ -21,10 +21,11 @@ jobs:
     steps: 
       - uses: actions/checkout@v2
       - name: Install dependencies
-        run: yarn
-        run: yarn ganache &
-        run: yarn test
-        run: yarn lint
+        run: |
+          yarn
+          yarn ganache &
+          yarn test
+          yarn lint
 
       - name: Build Android Release
         run: |
