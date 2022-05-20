@@ -31,7 +31,7 @@ export const AppHeader: React.FC<{}> = () => {
   }
 
   React.useEffect(() => {
-    handleNetworkInfo()
+    wallet && handleNetworkInfo()
   }, [wallet])
 
   return (
