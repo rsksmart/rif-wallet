@@ -18,6 +18,16 @@ export interface NewTransactionsAction {
   payload: IActivity
 }
 
+export interface IEvent {
+  blockNumber: number
+  event: string
+  timestamp: number
+  topics: Array<string>
+  args: Array<string>
+  transactionHash: string
+  txStatus: string
+}
+
 export interface NewBalanceAction {
   type: 'newBalance'
   payload: ITokenWithBalance
@@ -32,6 +42,11 @@ export interface NewTransactionAction {
   type: 'newTransaction'
   payload: IActivityTransaction
 }
+
+export interface NewTokenTransferAction {
+  type: 'newTokenTransfer'
+  payload: IEvent
+}
 export interface InitAction {
   type: 'init'
   payload: {
@@ -44,6 +59,7 @@ export interface State {
   transactions: TransactionsServerResponseWithActivityTransactions
   balances: Record<string, ITokenWithBalance>
   prices: Record<string, IPrice>
+  events: Array<IEvent>
 }
 
 export type Action =
@@ -51,6 +67,7 @@ export type Action =
   | NewBalanceAction
   | NewPriceAction
   | NewTransactionAction
+  | NewTokenTransferAction
   | InitAction
 
 export type Dispatch = (action: Action) => void

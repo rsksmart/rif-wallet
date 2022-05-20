@@ -76,6 +76,7 @@ type RootStackParamList = {
   Contacts: undefined
   Settings: undefined
   ManageWallets: undefined
+  EventsScreen: undefined
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -275,6 +276,11 @@ export const RootNavigation: React.FC<{
             />
           )}
         </RootStack.Screen>
+        <RootStack.Screen
+          name="EventsScreen"
+          component={Screens.EventsScreen}
+          options={sharedOptions}
+        />
       </RootStack.Navigator>
       {hasKeys && <AppFooterMenu currentScreen={currentScreen} />}
     </View>
