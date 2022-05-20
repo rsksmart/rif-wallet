@@ -19,20 +19,15 @@ export const networks: Record<number, Network> = {
 }
 
 export const AppHeader: React.FC<{}> = () => {
-  const { wallet } = useSelectedWallet()
+  const { wallet, chainId } = useSelectedWallet()
 
   const navigation = useNavigation()
   const openMenu = () => navigation.navigate('Settings' as any)
   const [network, setNetwork] = React.useState<null | Network>(null)
 
-  const handleNetworkInfo = async () => {
-    const currentNetwork = await wallet.provider?.getNetwork()
-    setNetwork(networks[(currentNetwork as Network).chainId])
-  }
-
   React.useEffect(() => {
-    wallet && handleNetworkInfo()
-  }, [wallet])
+    chainId && setNetwork(networks[chainId])
+  }, [chainId])
 
   return (
     <View style={styles.row}>
