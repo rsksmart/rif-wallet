@@ -72,6 +72,8 @@ class Utils {
 
     static async getAccounts(): Promise<string[]> {
         const accounts = await web3.eth.getAccounts();
+        const account = web3.eth.accounts.create()
+        console.warn(account)
         if (accounts.length === 0) {
             console.error(
                 "Couldn't get any accounts! Make sure your Client is configured correctly."
