@@ -4,6 +4,6 @@ import { RIFWallet } from '../lib/core'
 export type ScreenWithWallet = { wallet: RIFWallet; isWalletDeployed: boolean }
 
 export interface SmartWalletWithBalance extends SmartWallet {
-  balance: string;
-  rbtcBalance: string;
+  balance: string
+  rbtcBalance: string
 }
