@@ -6,151 +6,274 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native'
+import Carousel from 'react-native-snap-carousel'
+
 import { CreateKeysProps, ScreenProps } from '../types'
-import { useTranslation } from 'react-i18next'
-import { grid } from '../../../styles/grid'
-import { RefreshIcon } from '../../../components/icons'
-import { WordInput } from './WordInput'
+import { Trans } from 'react-i18next'
 import { colors } from '../../../styles/colors'
-import { NavigationFooter } from '../../../components/button/NavigationFooter'
 
-// source: https://stackoverflow.com/questions/63813211/qualtrics-and-javascript-randomly-insert-words-into-sentences
-const shuffle = (array: string[]) => {
-  let currentIndex = array.length,
-    randomIndex
+import { grid } from '../../../styles/grid'
 
-  // While there remain elements to shuffle...
-  while (currentIndex !== 0) {
-    // Pick a remaining element...
-    randomIndex = Math.floor(Math.random() * currentIndex)
-    currentIndex--
+import { Arrow } from '../../../components/icons'
+import {
+  SLIDER_HEIGHT,
+  SLIDER_WIDTH,
+  WINDOW_WIDTH,
+} from '../../slides/Dimensions'
+import { PaginationNavigator } from '../../../components/button/PaginationNavigator'
+import { WordSelector } from './WordSelector'
 
-    // And swap it with the current element.
-    ;[array[currentIndex], array[randomIndex]] = [
-      array[randomIndex],
-      array[currentIndex],
-    ]
-  }
-
-  return array
-}
-
-type ConfirmNewMasterKeyScreenProps = {
+const slidesIndexes = Array.from({ length: 8 }, (_, i) => i) //[0, 1, 2, 3, 4, 5, 6, 7]
+interface ConfirmMasterKeyScreenProps {
   createFirstWallet: CreateKeysProps['createFirstWallet']
 }
+const emptyOptions: string[][] = [
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+]
+const emptyWords = [
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+]
+const emptyMatch: boolean[] = [
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+]
 export const ConfirmNewMasterKeyScreen: React.FC<
-  ScreenProps<'ConfirmNewMasterKey'> & ConfirmNewMasterKeyScreenProps
+  ScreenProps<'ConfirmNewMasterKey'> & ConfirmMasterKeyScreenProps
 > = ({ route, navigation, createFirstWallet }) => {
   const mnemonic = route.params.mnemonic
-  const [selectedWords, setSelectedWords] = useState<string[]>([])
-  const [words, setWords] = useState<string[]>(shuffle(mnemonic.split(' ')))
 
-  //TODO: create "three column grid" component
-  const rows = [1, 2, 3, 4, 5, 6, 7, 8]
+  const [words] = useState<string[]>(mnemonic.split(' '))
 
-  const { t } = useTranslation()
+  const [selectedSlide, setSelectedSlide] = useState<number>(0)
+  const [carousel, setCarousel] = useState<any>()
 
-  const [error, setError] = useState<string | null>(null)
-  const selectWord = (selectedWord: string) => {
-    setError(null)
-    const updatedWords = [...selectedWords, selectedWord]
-    setSelectedWords(updatedWords)
-    setWords(words.filter(word => !updatedWords.find(w => w === word)))
+  //The below state variables are to mange the word selector since the carrousel cant render components with local state. It throws hooks errors
+  const [word, setWord] = useState<string[]>(emptyWords)
+  const [isMatch, setIsMatch] = useState<boolean[]>(emptyMatch)
+  const [options, setOptions] = useState<string[][]>(emptyOptions)
+
+  const selectWord = (selectedOption: string, index: number) => {
+    handleTextChange(selectedOption, index)
+    setOptions(emptyOptions)
   }
-
-  const handleConfirmMnemonic = async () => {
-    const isValid = mnemonic === selectedWords.join(' ')
-
-    if (!isValid) {
-      setError(t('Entered words does not match you your master key'))
-      return
+  const handleTextChange = (newText: string, index: number) => {
+    const newIsMatch = [...isMatch]
+    if (newText === words[index]) {
+      newIsMatch[index] = true
+      setIsMatch(newIsMatch)
+    } else {
+      newIsMatch[index] = false
+      setIsMatch(newIsMatch)
     }
+    const newItems = [...word]
+    newItems[index] = newText
+    setWord(newItems)
+    if (newText === '') {
+      setOptions(emptyOptions)
+    } else {
+      const newOptions = [...emptyOptions]
+      newOptions[index] = words
+        .filter((w: string) => w.startsWith(newText))
+        .slice(0, 3)
+      setOptions(newOptions)
+    }
+  }
+  const handleConfirmMnemonic = async () => {
     await createFirstWallet(mnemonic)
   }
 
-  const reset = async () => {
-    setSelectedWords([])
-    setWords(shuffle(mnemonic.split(' ')))
+  const renderItem = ({ item }: { item: number }) => {
+    const wordIndex = 3 * item
+    return (
+      <View>
+        {WordSelector({
+          number: wordIndex,
+          word: word[wordIndex],
+          isMatch: isMatch[wordIndex],
+          options: options[0],
+          handleTextChange,
+          selectWord,
+        })}
+        {WordSelector({
+          number: 2 + wordIndex - 1,
+          word: word[2 + wordIndex - 1],
+          isMatch: isMatch[2 + wordIndex - 1],
+          options: options[2 + wordIndex - 1],
+          handleTextChange,
+          selectWord,
+        })}
+        {WordSelector({
+          number: 3 + wordIndex - 1,
+          word: word[3 + wordIndex - 1],
+          isMatch: isMatch[3 + wordIndex - 1],
+          options: options[3 + wordIndex - 1],
+          handleTextChange,
+          selectWord,
+        })}
+      </View>
+    )
   }
 
   return (
     <>
       <ScrollView style={styles.parent}>
-        <Text style={styles.header}>Confirm your master key</Text>
-
-        {rows.map(row => (
-          <View style={grid.row}>
-            <WordInput wordNumber={row} initValue={selectedWords[row - 1]} />
-            <WordInput
-              wordNumber={row + rows.length}
-              initValue={selectedWords[row + rows.length - 1]}
-            />
-            <WordInput
-              wordNumber={row + rows.length * 2}
-              initValue={selectedWords[row + rows.length * 2 - 1]}
-            />
-            <Text>{row + rows.length}</Text>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('CreateKeys')}
+          style={styles.returnButton}>
+          <View style={styles.returnButtonView}>
+            <Arrow color={colors.white} rotate={270} width={30} height={30} />
           </View>
-        ))}
-        <View style={styles.badgeArea}>
-          {words.map(word => (
-            <View key={word} style={styles.badgeContainer}>
-              <TouchableOpacity
-                style={styles.badgeText}
-                onPress={() => selectWord(word)}>
-                <Text>{word}</Text>
-              </TouchableOpacity>
-            </View>
-          ))}
-          {error && <Text style={styles.defaultText}>{error}</Text>}
-        </View>
-        <TouchableOpacity style={styles.reset} onPress={reset}>
-          <RefreshIcon color={colors.gray} />
         </TouchableOpacity>
-      </ScrollView>
+        <Text style={styles.header}>
+          <Trans>Your Master Key</Trans>
+        </Text>
+        <Text style={styles.subHeader}>
+          <Trans>Start typing the words in the correct order</Trans>
+        </Text>
 
-      <NavigationFooter
-        onBackwards={() => navigation.navigate('CreateKeys')}
-        onPress={handleConfirmMnemonic}
-        title="confirm"
-      />
+        <View style={{ ...grid.row, ...styles.carouselSection }}>
+          <Carousel
+            inactiveSlideOpacity={0}
+            removeClippedSubviews={false} //https://github.com/meliorence/react-native-snap-carousel/issues/238
+            ref={c => setCarousel(c)}
+            data={slidesIndexes}
+            renderItem={renderItem}
+            sliderWidth={WINDOW_WIDTH}
+            itemWidth={SLIDER_WIDTH}
+            containerCustomStyle={styles.carouselContainer}
+            inactiveSlideShift={0}
+            onSnapToItem={index => setSelectedSlide(index)}
+          />
+        </View>
+
+        <PaginationNavigator
+          onPrevious={() => carousel.snapToPrev()}
+          onNext={() => carousel.snapToNext()}
+          onComplete={() => handleConfirmMnemonic}
+          title="confirm"
+          currentIndex={selectedSlide}
+          slidesAmount={slidesIndexes.length}
+          containerBackgroundColor={colors.darkBlue}
+          completed={isMatch.every(element => element === true)}
+        />
+      </ScrollView>
     </>
   )
 }
 
 const styles = StyleSheet.create({
-  defaultText: {
-    color: colors.white,
-  },
   parent: {
     backgroundColor: colors.darkBlue,
   },
-
-  badgeArea: {
-    flexDirection: 'row',
-    flex: 1,
-    flexWrap: 'wrap',
+  returnButton: {
+    zIndex: 1,
   },
-  badgeContainer: {
-    padding: 1,
-
-    marginVertical: 1,
-  },
-  badgeText: {
-    backgroundColor: colors.purple,
-    color: colors.white,
+  returnButtonView: {
+    width: 30,
+    height: 30,
     borderRadius: 30,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    margin: 15,
+    backgroundColor: colors.purple,
   },
 
   header: {
     color: colors.white,
-    fontSize: 22,
-    paddingVertical: 20,
-    textAlign: 'center',
+    fontSize: 20,
+    paddingVertical: 10,
+    marginBottom: 5,
+    marginLeft: 60,
+    textAlign: 'left',
+    fontWeight: 'bold',
   },
-  reset: {
+  subHeader: {
+    color: colors.white,
+    fontSize: 16,
+    marginLeft: 60,
+    marginBottom: 40,
+    textAlign: 'left',
+  },
+  carouselSection: {
     alignSelf: 'center',
+  },
+
+  carouselContainer: {
+    marginBottom: 0,
+    paddingBottom: 0,
+    height: SLIDER_HEIGHT,
+  },
+
+  slideContainer: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    marginTop: 60,
+    height: 250,
   },
 })

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import {
   StyleSheet,
@@ -11,49 +11,34 @@ import { colors } from '../../../styles/colors'
 import { CheckIcon } from '../../../components/icons/CheckIcon'
 import DeleteIcon from '../../../components/icons/DeleteIcon'
 type Props = {
-  expectedWord: string
-  words: string[]
   number: number
+  word: string
+  isMatch: boolean
+  options: string[]
+  handleTextChange: any
+  selectWord: any
 }
 export const WordSelector: React.FC<Props> = ({
-  expectedWord,
-  words,
   number,
+  word,
+  isMatch,
+  options,
+  handleTextChange,
+  selectWord,
 }) => {
-  const [word, setWord] = useState('')
-  const [isMatch, setIsMatch] = useState(false)
-  const [options, setOptions] = useState<string[]>([])
-
-  const selectWord = (myWord: string) => {
-    handleTextChange(myWord)
-    setOptions([])
-  }
-  const handleTextChange = (newText: string) => {
-    if (newText === expectedWord) {
-      setIsMatch(true)
-    } else {
-      setIsMatch(false)
-    }
-    setWord(newText)
-    if (newText === '') {
-      setOptions([])
-    } else {
-      setOptions(words.filter((w: string) => w.startsWith(newText)).slice(0, 3))
-    }
-  }
   return (
-    <View>
+    <View style={styles.selector}>
       <View style={styles.wordContainer}>
         <View>
           <View style={styles.wordNumberBadge}>
-            <Text style={styles.wordNumberBadgeText}>{number} </Text>
+            <Text style={styles.wordNumberBadgeText}>{number + 1} </Text>
           </View>
         </View>
         <TextInput
           selectionColor={'#fff'}
           placeholderTextColor="#fff"
           style={styles.textInput}
-          onChangeText={handleTextChange}
+          onChangeText={newText => handleTextChange(newText, number)}
           value={word}
           placeholder="type..."
           keyboardType="numeric"
@@ -68,7 +53,7 @@ export const WordSelector: React.FC<Props> = ({
             />
           )}
           {!isMatch && (
-            <TouchableOpacity onPress={() => selectWord('')}>
+            <TouchableOpacity onPress={() => selectWord('', number)}>
               <DeleteIcon
                 color={colors.white}
                 width={40}
@@ -80,7 +65,7 @@ export const WordSelector: React.FC<Props> = ({
         </View>
       </View>
       {options.map(item => (
-        <TouchableOpacity onPress={() => selectWord(item)}>
+        <TouchableOpacity onPress={() => selectWord(item, number)}>
           <View style={styles.wordOptionContainer}>
             <View>
               <Text style={styles.wordText}>{item}</Text>
@@ -93,6 +78,10 @@ export const WordSelector: React.FC<Props> = ({
 }
 
 const styles = StyleSheet.create({
+  selector: {
+    marginBottom: 20,
+  },
+
   wordContainer: {
     padding: 15,
     color: colors.white,
