@@ -13,7 +13,8 @@ import { useSelectedWallet } from '../../Context'
 
 export const HomeScreen: React.FC<{
   navigation: NavigationProp
-}> = ({ navigation }) => {
+  changeTopColor: (color: string) => void
+}> = ({ navigation, changeTopColor }) => {
   const { state } = useSocketsState()
   const { selectedWalletIndex } = useSelectedWallet()
 
@@ -52,6 +53,11 @@ export const HomeScreen: React.FC<{
         return
     }
   }
+
+  // pass the new color to Core to update header:
+  useEffect(() => {
+    changeTopColor(selectedColor)
+  }, [selectedColor])
 
   return (
     <View style={styles.container}>
@@ -107,7 +113,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 40,
   },
   bottomColor: {
-    flex: 4,
+    flex: 5,
   },
 
   parent: {
@@ -118,7 +124,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
     paddingHorizontal: 30,
-    paddingTop: 10,
   },
   text: {
     textAlign: 'center',

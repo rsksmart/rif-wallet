@@ -98,6 +98,7 @@ export const RootNavigation: React.FC<{
   currentScreen: string
   hasKeys: boolean
   hasPin: boolean
+  changeTopColor: (color: string) => void
   rifWalletServicesSocket: IRifWalletServicesSocket
   keyManagementProps: CreateKeysProps
   createPin: (newPin: string) => Promise<void>
@@ -114,6 +115,7 @@ export const RootNavigation: React.FC<{
   currentScreen,
   hasKeys,
   hasPin,
+  changeTopColor,
   keyManagementProps,
   createPin,
   balancesScreenProps,
@@ -132,15 +134,21 @@ export const RootNavigation: React.FC<{
   } else if (hasKeys) {
     initialRoute = 'CreatePin'
   }
+
+  const appIsSetup = hasKeys && hasPin
+
   return (
     <View style={styles.parent}>
-      {hasKeys && <AppHeader />}
+      {appIsSetup && <AppHeader />}
       <RootStack.Navigator initialRouteName={initialRoute}>
-        <RootStack.Screen
-          name="Home"
-          component={Screens.HomeScreen}
-          options={sharedOptions}
-        />
+        <RootStack.Screen name="Home" options={sharedOptions}>
+          {props => (
+            <InjectedScreens.HomeScreen
+              {...props}
+              changeTopColor={changeTopColor}
+            />
+          )}
+        </RootStack.Screen>
         <RootStack.Screen name="Dapps" options={sharedOptions}>
           {props => (
             <InjectedScreens.DappsScreen {...props} {...dappsScreenProps} />
@@ -282,7 +290,7 @@ export const RootNavigation: React.FC<{
           options={sharedOptions}
         />
       </RootStack.Navigator>
-      {hasKeys && <AppFooterMenu currentScreen={currentScreen} />}
+      {appIsSetup && <AppFooterMenu currentScreen={currentScreen} />}
     </View>
   )
 }

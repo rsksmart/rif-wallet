@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   amountRow: {
-    marginVertical: 20,
+    marginBottom: 20,
     paddingVertical: 20,
     paddingHorizontal: 20,
     borderRadius: 20,
