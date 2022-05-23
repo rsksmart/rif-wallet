@@ -10,13 +10,14 @@ export const TRIF_PRICE = 0.000005739;
 export const TRIF_TOKEN_DECIMALS = 18;
 const web3 = new Web3('http://relay-01.aws-us-west-2.dev.relay.rifcomputing.net:4444')
 const rifTokenAddress = '0x19F64674D8A5B4E652319F5e239eFd3bc969A1fE'
+const testTokenAddress = '0xF5859303f76596dD558B438b18d0Ce0e1660F3ea'
 
 class Utils {
 
     static async ritTokenDecimals() {
         const rifTokenContract : any = new web3.eth.Contract(
           TestToken.abi as any,
-          rifTokenAddress
+          testTokenAddress
         );
         rifTokenContract.setProvider(web3.currentProvider);
         const balance = await rifTokenContract.methods.decimals().call();
@@ -26,7 +27,7 @@ class Utils {
     static async tokenBalance(address: string) {
         const rifTokenContract : any= new web3.eth.Contract(
             TestToken.abi as any,
-            rifTokenAddress
+            testTokenAddress
         );
         rifTokenContract.setProvider(web3.currentProvider);
         const balance = await rifTokenContract.methods
@@ -38,7 +39,7 @@ class Utils {
     static async getTokenContract() {
         const rifTokenContract : any = new web3.eth.Contract(
             TestToken.abi as any,
-            rifTokenAddress
+            testTokenAddress
         );
         rifTokenContract.setProvider(web3.currentProvider);
         return rifTokenContract;
