@@ -198,11 +198,13 @@ export function RIFSocketsProvider({
   }, [wallet])
 
   React.useEffect(() => {
-    const interval = setInterval(async () => {
-      loadRBTCBalance(wallet, dispatch).then()
-    }, 5000)
+    const interval = wallet
+      ? setInterval(async () => {
+          loadRBTCBalance(wallet, dispatch).then()
+        }, 5000)
+      : undefined
 
-    return () => clearInterval(interval)
+    return () => interval && clearInterval(interval)
   }, [wallet])
 
   const value = { state, dispatch }
