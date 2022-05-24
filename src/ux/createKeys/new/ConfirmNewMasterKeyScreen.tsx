@@ -27,84 +27,7 @@ const slidesIndexes = Array.from({ length: 8 }, (_, i) => i) //[0, 1, 2, 3, 4, 5
 interface ConfirmMasterKeyScreenProps {
   createFirstWallet: CreateKeysProps['createFirstWallet']
 }
-const emptyOptions: string[][] = [
-  [],
-  [],
-  [],
-  [],
-  [],
-  [],
-  [],
-  [],
-  [],
-  [],
-  [],
-  [],
-  [],
-  [],
-  [],
-  [],
-  [],
-  [],
-  [],
-  [],
-  [],
-  [],
-  [],
-  [],
-]
-const emptyWords = [
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-]
-const emptyMatch: boolean[] = [
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-]
+
 export const ConfirmNewMasterKeyScreen: React.FC<
   ScreenProps<'ConfirmNewMasterKey'> & ConfirmMasterKeyScreenProps
 > = ({ route, navigation, createFirstWallet }) => {
@@ -115,69 +38,17 @@ export const ConfirmNewMasterKeyScreen: React.FC<
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
   const [carousel, setCarousel] = useState<any>()
 
-  //The below state variables are to mange the word selector since the carrousel cant render components with local state. It throws hooks errors
-  const [word, setWord] = useState<string[]>(emptyWords)
-  const [isMatch, setIsMatch] = useState<boolean[]>(emptyMatch)
-  const [options, setOptions] = useState<string[][]>(emptyOptions)
-
-  const selectWord = (selectedOption: string, index: number) => {
-    handleTextChange(selectedOption, index)
-    setOptions(emptyOptions)
-  }
-  const handleTextChange = (newText: string, index: number) => {
-    const newIsMatch = [...isMatch]
-    if (newText === words[index]) {
-      newIsMatch[index] = true
-      setIsMatch(newIsMatch)
-    } else {
-      newIsMatch[index] = false
-      setIsMatch(newIsMatch)
-    }
-    const newItems = [...word]
-    newItems[index] = newText
-    setWord(newItems)
-    if (newText === '') {
-      setOptions(emptyOptions)
-    } else {
-      const newOptions = [...emptyOptions]
-      newOptions[index] = words
-        .filter((w: string) => w.startsWith(newText))
-        .slice(0, 3)
-      setOptions(newOptions)
-    }
-  }
   const handleConfirmMnemonic = async () => {
     await createFirstWallet(mnemonic)
   }
 
-  const renderItem = ({ item }: { item: number }) => {
-    const wordIndex = 3 * item
+  const renderItem: React.FC<{ item: number }> = ({ item }) => {
+    const groupIndex = 3 * item
     return (
       <View>
-        {WordSelector({
-          number: wordIndex,
-          word: word[wordIndex],
-          isMatch: isMatch[wordIndex],
-          options: options[0],
-          handleTextChange,
-          selectWord,
-        })}
-        {WordSelector({
-          number: 2 + wordIndex - 1,
-          word: word[2 + wordIndex - 1],
-          isMatch: isMatch[2 + wordIndex - 1],
-          options: options[2 + wordIndex - 1],
-          handleTextChange,
-          selectWord,
-        })}
-        {WordSelector({
-          number: 3 + wordIndex - 1,
-          word: word[3 + wordIndex - 1],
-          isMatch: isMatch[3 + wordIndex - 1],
-          options: options[3 + wordIndex - 1],
-          handleTextChange,
-          selectWord,
-        })}
+        <WordSelector wordIndex={groupIndex} words={words} />
+        <WordSelector wordIndex={2 + groupIndex - 1} words={words} />
+        <WordSelector wordIndex={3 + groupIndex - 1} words={words} />
       </View>
     )
   }
@@ -222,7 +93,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
           currentIndex={selectedSlide}
           slidesAmount={slidesIndexes.length}
           containerBackgroundColor={colors.darkBlue}
-          completed={isMatch.every(element => element === true)}
+          completed={false}
         />
       </ScrollView>
     </>
