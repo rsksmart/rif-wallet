@@ -42,6 +42,12 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
   const [rifBalance, setRifBalance] = useState<null | BigNumber>(null)
   const [sendRifTx, setSendRifTx] = useState<null | Transaction>(null)
   const [sendRifResponse, setSendRifResponse] = useState<null | string>(null)
+  const [transfer, setTransfer] = useState({
+    check: false,
+    fees: 0,
+    amount: 1,
+    address: '0xa975D1DE6d7dA3140E9e293509337373402558bE'
+});
   const { t } = useTranslation()
   //const [providerRif, setProviderRif] = useState<DefaultRelayingServices | undefined>();
   const [deployRif, setDeployRif] = useState<DeployInfo>({
@@ -52,7 +58,8 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
   })
   //const rifTokenAddress = '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe'
   const testTokenAddress = '0xF5859303f76596dD558B438b18d0Ce0e1660F3ea'
-  let providerRif: any
+  let providerRif: any = undefined
+  let currentSmartWallet: any
 
   const rif = new ERC20Token(
     '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
@@ -84,48 +91,54 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
     }
   }
 
+  async function initRifRelay() {
+    const config = {
+      verbose: false,
+      chainId: 31,
+      gasPriceFactorPercent: '0',
+      relayLookupWindowBlocks: 1e5,
+      preferredRelays: ['https://dev.relay.rifcomputing.net:8090'],
+      relayHubAddress: '0x66Fa9FEAfB8Db66Fe2160ca7aEAc7FC24e254387',
+      relayVerifierAddress: '0x56ccdB6D312307Db7A4847c3Ea8Ce2449e9B79e9',
+      deployVerifierAddress: '0x5C6e96a84271AC19974C3e99d6c4bE4318BfE483',
+      //smartWalletFactoryAddress: '0x3F71ce7BD7912bF3B362fD76dd34fa2F017B6388'.toLowerCase()
+      smartWalletFactoryAddress: '0xeaB5b9fA91aeFFaA9c33F9b33d12AB7088fa7f6f',
+    } as any
+
+    const contractAddresses = {
+      relayHub: '0x66Fa9FEAfB8Db66Fe2160ca7aEAc7FC24e254387',
+      smartWallet: '0xEdB6D515C2DB4F9C3C87D7f6Cefb260B3DEe8014',
+      //smartWalletFactory: '0x3F71ce7BD7912bF3B362fD76dd34fa2F017B6388'.toLowerCase(),
+      smartWalletFactory: '0xeaB5b9fA91aeFFaA9c33F9b33d12AB7088fa7f6f',
+      smartWalletDeployVerifier: '0x5C6e96a84271AC19974C3e99d6c4bE4318BfE483',
+      smartWalletRelayVerifier: '0x56ccdB6D312307Db7A4847c3Ea8Ce2449e9B79e9',
+      testToken: testTokenAddress,
+    } as any
+
+    //@ts-ignore
+    const privateKey = wallet.smartWallet.signer.privateKey
+    const relayingServices = new DefaultRelayingServices({
+      rskHost:
+        'http://relay-01.aws-us-west-2.dev.relay.rifcomputing.net:4444',
+      account: {
+        address: wallet.smartWallet.address,
+        privateKey: privateKey,
+      },
+    } as any)
+
+    await relayingServices.initialize(config, contractAddresses)
+    providerRif = relayingServices
+  }
+  
+
   const deployRifRelay = async () => {
     try {
       setIsDeploying(true)
-
-      const config = {
-        verbose: false,
-        chainId: 31,
-        gasPriceFactorPercent: '0',
-        relayLookupWindowBlocks: 1e5,
-        preferredRelays: ['https://dev.relay.rifcomputing.net:8090'],
-        relayHubAddress: '0x66Fa9FEAfB8Db66Fe2160ca7aEAc7FC24e254387',
-        relayVerifierAddress: '0x56ccdB6D312307Db7A4847c3Ea8Ce2449e9B79e9',
-        deployVerifierAddress: '0x5C6e96a84271AC19974C3e99d6c4bE4318BfE483',
-        smartWalletFactoryAddress: '0xeaB5b9fA91aeFFaA9c33F9b33d12AB7088fa7f6f',
-      } as any
-
-      const contractAddresses = {
-        relayHub: '0x66Fa9FEAfB8Db66Fe2160ca7aEAc7FC24e254387',
-        smartWallet: '0xEdB6D515C2DB4F9C3C87D7f6Cefb260B3DEe8014',
-        smartWalletFactory: '0xeaB5b9fA91aeFFaA9c33F9b33d12AB7088fa7f6f',
-        smartWalletDeployVerifier: '0x5C6e96a84271AC19974C3e99d6c4bE4318BfE483',
-        smartWalletRelayVerifier: '0x56ccdB6D312307Db7A4847c3Ea8Ce2449e9B79e9',
-        testToken: testTokenAddress,
-      } as any
-
-      //@ts-ignore
-      const privateKey = wallet.smartWallet.signer.privateKey
-      const relayingServices = new DefaultRelayingServices({
-        rskHost:
-          'http://relay-01.aws-us-west-2.dev.relay.rifcomputing.net:4444',
-        account: {
-          address: wallet.smartWallet.address,
-          privateKey: privateKey,
-        },
-      } as any)
-
-      await relayingServices.initialize(config, contractAddresses)
-      providerRif = relayingServices
+      if(!providerRif) await initRifRelay()
       const smartWallet = {
         index: 1,
         deployed: isWalletDeployed,
-        address: wallet.smartWallet.address,
+        address: wallet.smartWallet.smartWalletAddress,
       }
       console.debug(smartWallet)
       console.log(providerRif)
@@ -139,6 +152,37 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
       }
     } catch (error) {
       setIsDeploying(false)
+    }
+  }
+
+  const transferTestToken = async () => {
+    try {
+      if(!providerRif) await initRifRelay()
+      const amount = transfer.amount+"";
+      const fees = transfer.fees === 0 ? "0" : transfer.fees;
+      currentSmartWallet = {
+        index: 1,
+        deployed: isWalletDeployed,
+        address: wallet.smartWallet.smartWalletAddress,
+      }
+
+      const encodedAbi = (await Utils.getTokenContract()).methods
+          .transfer(transfer.address, await Utils.toWei(amount)).encodeABI();
+
+      const txDetials = await providerRif.relayTransaction(
+          {
+              to: transfer.address
+              , data: encodedAbi
+          }
+          , {
+              tokenAddress: testTokenAddress
+              , ...currentSmartWallet
+          }
+          , fees
+      );
+      console.log(txDetials);
+    } catch (error) {
+        console.error(error);
     }
   }
 
@@ -336,6 +380,10 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
           disabled={isWalletDeployed || isDeploying}
         />
       )}
+      <Button
+          title={t('Transfer')}
+          onPress={transferTestToken}
+        />
       <Paragraph>
         <Trans>RIF Token balance</Trans>: {rifBalance && rifBalance.toString()}
       </Paragraph>
