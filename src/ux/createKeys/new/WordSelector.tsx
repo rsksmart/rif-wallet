@@ -13,8 +13,13 @@ import DeleteIcon from '../../../components/icons/DeleteIcon'
 type Props = {
   words: string[]
   wordIndex: number
+  onWordSelected: any
 }
-export const WordSelector: React.FC<Props> = ({ words, wordIndex }) => {
+export const WordSelector: React.FC<Props> = ({
+  words,
+  wordIndex,
+  onWordSelected,
+}) => {
   const [word, setWord] = useState('')
   const [isMatch, setIsMatch] = useState(false)
   const [options, setOptions] = useState<string[]>([])
@@ -25,6 +30,8 @@ export const WordSelector: React.FC<Props> = ({ words, wordIndex }) => {
     setOptions([])
   }
   const handleTextChange = (newText: string) => {
+    onWordSelected(newText, wordIndex)
+
     if (newText === expectedWord) {
       setIsMatch(true)
     } else {
@@ -75,8 +82,8 @@ export const WordSelector: React.FC<Props> = ({ words, wordIndex }) => {
           )}
         </View>
       </View>
-      {options.map(item => (
-        <TouchableOpacity onPress={() => selectWord(item)}>
+      {options.map((item, index) => (
+        <TouchableOpacity onPress={() => selectWord(item)} key={index}>
           <View style={styles.wordOptionContainer}>
             <View>
               <Text style={styles.wordText}>{item}</Text>

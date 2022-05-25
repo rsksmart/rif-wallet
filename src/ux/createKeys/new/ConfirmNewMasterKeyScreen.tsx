@@ -33,22 +33,41 @@ export const ConfirmNewMasterKeyScreen: React.FC<
 > = ({ route, navigation, createFirstWallet }) => {
   const mnemonic = route.params.mnemonic
 
-  const [words] = useState<string[]>(mnemonic.split(' '))
+  const mnemonicWords = mnemonic.split(' ')
 
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
+  const [selectedWords, setSelectedWords] = useState<string[]>([])
   const [carousel, setCarousel] = useState<any>()
 
   const handleConfirmMnemonic = async () => {
     await createFirstWallet(mnemonic)
   }
 
+  const handleWordSelected = async (wordSelected: string, index: number) => {
+    const newSelectedWords = [...selectedWords]
+    newSelectedWords[index] = wordSelected
+    setSelectedWords(newSelectedWords)
+  }
+
   const renderItem: React.FC<{ item: number }> = ({ item }) => {
     const groupIndex = 3 * item
     return (
       <View>
-        <WordSelector wordIndex={groupIndex} words={words} />
-        <WordSelector wordIndex={2 + groupIndex - 1} words={words} />
-        <WordSelector wordIndex={3 + groupIndex - 1} words={words} />
+        <WordSelector
+          wordIndex={groupIndex}
+          words={mnemonicWords}
+          onWordSelected={handleWordSelected}
+        />
+        <WordSelector
+          wordIndex={2 + groupIndex - 1}
+          words={mnemonicWords}
+          onWordSelected={handleWordSelected}
+        />
+        <WordSelector
+          wordIndex={3 + groupIndex - 1}
+          words={mnemonicWords}
+          onWordSelected={handleWordSelected}
+        />
       </View>
     )
   }
@@ -88,12 +107,12 @@ export const ConfirmNewMasterKeyScreen: React.FC<
         <PaginationNavigator
           onPrevious={() => carousel.snapToPrev()}
           onNext={() => carousel.snapToNext()}
-          onComplete={() => handleConfirmMnemonic}
+          onComplete={handleConfirmMnemonic}
           title="confirm"
           currentIndex={selectedSlide}
           slidesAmount={slidesIndexes.length}
           containerBackgroundColor={colors.darkBlue}
-          completed={false}
+          completed={selectedWords.join() === mnemonicWords.join()}
         />
       </ScrollView>
     </>
