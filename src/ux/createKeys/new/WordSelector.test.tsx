@@ -1,19 +1,11 @@
 import React from 'react'
-import { render, waitFor, fireEvent, act } from '@testing-library/react-native'
+import { render, waitFor, fireEvent } from '@testing-library/react-native'
 import { cleanup } from '@testing-library/react-native'
 
 import { WordSelector } from './WordSelector'
 import { getTextFromTextNode } from '../../../../testLib/utils'
 
-describe('Word Selector', function (this: {
-  confirm: ReturnType<typeof jest.fn>
-  cancel: ReturnType<typeof jest.fn>
-}) {
-  beforeEach(async () => {
-    this.confirm = jest.fn()
-    this.cancel = jest.fn()
-  })
-
+describe('Word Selector', function () {
   afterEach(cleanup)
 
   it('renders', async () => {
