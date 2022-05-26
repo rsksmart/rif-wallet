@@ -55,17 +55,17 @@ export const ConfirmNewMasterKeyScreen: React.FC<
       <View>
         <WordSelector
           wordIndex={groupIndex}
-          words={mnemonicWords}
+          expectedWord={mnemonicWords[groupIndex]}
           onWordSelected={handleWordSelected}
         />
         <WordSelector
-          wordIndex={2 + groupIndex - 1}
-          words={mnemonicWords}
+          wordIndex={1 + groupIndex}
+          expectedWord={mnemonicWords[groupIndex + 1]}
           onWordSelected={handleWordSelected}
         />
         <WordSelector
-          wordIndex={3 + groupIndex - 1}
-          words={mnemonicWords}
+          wordIndex={2 + groupIndex}
+          expectedWord={mnemonicWords[groupIndex + 2]}
           onWordSelected={handleWordSelected}
         />
       </View>

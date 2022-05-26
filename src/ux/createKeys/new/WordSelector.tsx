@@ -11,40 +11,58 @@ import { colors } from '../../../styles/colors'
 import { CheckIcon } from '../../../components/icons/CheckIcon'
 import DeleteIcon from '../../../components/icons/DeleteIcon'
 import { sharedMnemonicStyles } from './styles'
+import { wordlists } from 'bip39'
+
 type Props = {
-  words: string[]
   wordIndex: number
+  expectedWord: string
   onWordSelected: any
 }
 export const WordSelector: React.FC<Props> = ({
-  words,
   wordIndex,
+  expectedWord,
   onWordSelected,
 }) => {
-  const [word, setWord] = useState('')
+  const [userInput, setUserInput] = useState('')
   const [isMatch, setIsMatch] = useState(false)
   const [options, setOptions] = useState<string[]>([])
-  const expectedWord = words[wordIndex]
 
-  const selectWord = (myWord: string) => {
-    handleTextChange(myWord)
-    setOptions([])
-  }
+  const selectWord = (myWord: string) => handleTextChange(myWord)
+
   const handleTextChange = (newText: string) => {
-    onWordSelected(newText, wordIndex)
+    // don't allow the user to keep typing if there is a match
+    if (isMatch) {
+      return
+    }
+
+    setUserInput(newText)
 
     if (newText === expectedWord) {
       setIsMatch(true)
-    } else {
-      setIsMatch(false)
-    }
-    setWord(newText)
-    if (newText === '') {
       setOptions([])
-    } else {
-      setOptions(words.filter((w: string) => w.startsWith(newText)).slice(0, 3))
+      // only trigger the parent if there is a match
+      return onWordSelected(newText, wordIndex)
+    }
+
+    // user choose the top option but it is not correct
+    if (newText === options[0]) {
+      return setOptions([])
+    }
+
+    // show the suggestions to the user
+    newText === ''
+      ? setOptions([])
+      : setOptions(
+          wordlists.EN.filter((w: string) => w.startsWith(newText)).slice(0, 3),
+        )
+  }
+
+  const handleEnterPress = () => {
+    if (options.length !== 0) {
+      handleTextChange(options[0])
     }
   }
+
   return (
     <View style={styles.selector}>
       <View style={sharedMnemonicStyles.wordContainer}>
@@ -63,7 +81,8 @@ export const WordSelector: React.FC<Props> = ({
           placeholderTextColor="#fff"
           style={styles.textInput}
           onChangeText={handleTextChange}
-          value={word}
+          onSubmitEditing={handleEnterPress}
+          value={userInput}
           placeholder="type..."
           keyboardType="numeric"
         />
