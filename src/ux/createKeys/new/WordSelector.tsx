@@ -49,10 +49,13 @@ export const WordSelector: React.FC<Props> = ({
       <View style={styles.wordContainer}>
         <View>
           <View style={styles.wordNumberBadge}>
-            <Text style={styles.wordNumberBadgeText}>{wordIndex + 1} </Text>
+            <Text testID={'view.indexLabel'} style={styles.wordNumberBadgeText}>
+              {wordIndex + 1}{' '}
+            </Text>
           </View>
         </View>
         <TextInput
+          testID={'input.wordInput'}
           selectionColor={'#fff'}
           placeholderTextColor="#fff"
           style={styles.textInput}
@@ -63,15 +66,19 @@ export const WordSelector: React.FC<Props> = ({
         />
         <View style={styles.wordStatus}>
           {isMatch && (
-            <CheckIcon
-              color={colors.white}
-              rotate={270}
-              width={40}
-              height={40}
-            />
+            <View testID={'checkIcon'}>
+              <CheckIcon
+                color={colors.white}
+                rotate={270}
+                width={40}
+                height={40}
+              />
+            </View>
           )}
           {!isMatch && (
-            <TouchableOpacity onPress={() => selectWord('')}>
+            <TouchableOpacity
+              onPress={() => selectWord('')}
+              testID={'deleteIcon'}>
               <DeleteIcon
                 color={colors.white}
                 width={40}
@@ -86,7 +93,9 @@ export const WordSelector: React.FC<Props> = ({
         <TouchableOpacity onPress={() => selectWord(item)} key={index}>
           <View style={styles.wordOptionContainer}>
             <View>
-              <Text style={styles.wordText}>{item}</Text>
+              <Text testID={`view.option.${index}`} style={styles.wordText}>
+                {item}
+              </Text>
             </View>
           </View>
         </TouchableOpacity>
