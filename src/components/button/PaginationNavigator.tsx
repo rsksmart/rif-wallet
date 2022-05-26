@@ -37,11 +37,16 @@ export const PaginationNavigator: React.FC<Interface> = ({
   slidesAmount,
   completed = true,
 }) => {
-  const imageStyle = {
+  const circleStyle = {
     ...styles.image,
     shadowColor,
     backgroundColor,
   }
+  const circleStyleDisabled = {
+    ...circleStyle,
+    opacity: 0.5,
+  }
+
   const slidePages = [...Array(slidesAmount).keys()] // create an array containing 1...slidesAmount
   const pagination = (index: number, entries: number[]) => {
     const activeSlide = index
@@ -67,7 +72,7 @@ export const PaginationNavigator: React.FC<Interface> = ({
         style={styles.buttonLeft}
         onPress={onPrevious}
         disabled={currentIndex === 0}>
-        <View style={imageStyle}>
+        <View style={currentIndex !== 0 ? circleStyle : circleStyleDisabled}>
           <Arrow color={colors.blue} rotate={270} width={50} height={50} />
         </View>
       </TouchableOpacity>
@@ -78,7 +83,7 @@ export const PaginationNavigator: React.FC<Interface> = ({
           style={styles.buttonRight}
           onPress={onNext}
           disabled={false}>
-          <View style={imageStyle}>
+          <View style={circleStyle}>
             <Arrow color={colors.blue} rotate={90} width={50} height={50} />
           </View>
         </TouchableOpacity>
@@ -88,7 +93,7 @@ export const PaginationNavigator: React.FC<Interface> = ({
           style={styles.buttonRight}
           onPress={onComplete}
           disabled={false}>
-          <View style={{ ...imageStyle, backgroundColor: colors.green }}>
+          <View style={{ ...circleStyle, backgroundColor: colors.green }}>
             <CheckIcon color={colors.blue} width={50} height={50} />
           </View>
         </TouchableOpacity>
