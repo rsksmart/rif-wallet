@@ -26,7 +26,6 @@ import {
 import { PaginationNavigator } from '../../../components/button/PaginationNavigator'
 import { Word } from './Word'
 
-const slidesIndexes = Array.from({ length: 8 }, (_, i) => i) //[0, 1, 2, 3, 4, 5, 6, 7]
 export const NewMasterKeyScreen: React.FC<
   ScreenProps<'NewMasterKey'> & CreateMasterKeyScreenProps
 > = ({ navigation, generateMnemonic }) => {
@@ -34,6 +33,11 @@ export const NewMasterKeyScreen: React.FC<
   const mnemonicArray = mnemonic.split(' ')
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
   const [carousel, setCarousel] = useState<any>()
+
+  const slidesIndexes = Array.from(
+    { length: Math.ceil(mnemonicArray.length / 3) },
+    (_, i) => i,
+  )
 
   const renderItem = ({ item }: { item: number }) => {
     const wordIndex = 3 * item

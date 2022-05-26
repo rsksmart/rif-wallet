@@ -23,7 +23,6 @@ import {
 import { PaginationNavigator } from '../../../components/button/PaginationNavigator'
 import { WordSelector } from './WordSelector'
 
-const slidesIndexes = Array.from({ length: 8 }, (_, i) => i) //[0, 1, 2, 3, 4, 5, 6, 7]
 interface ConfirmMasterKeyScreenProps {
   createFirstWallet: CreateKeysProps['createFirstWallet']
 }
@@ -32,7 +31,10 @@ export const ConfirmNewMasterKeyScreen: React.FC<
   ScreenProps<'ConfirmNewMasterKey'> & ConfirmMasterKeyScreenProps
 > = ({ route, navigation, createFirstWallet }) => {
   const mnemonic = route.params.mnemonic
-
+  const slidesIndexes = Array.from(
+    { length: Math.ceil(mnemonic.split(' ').length / 3) },
+    (_, i) => i,
+  )
   const mnemonicWords = mnemonic.split(' ')
 
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
@@ -43,7 +45,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
     await createFirstWallet(mnemonic)
   }
 
-  const handleWordSelected = async (wordSelected: string, index: number) => {
+  const handleWordSelected = (wordSelected: string, index: number) => {
     const newSelectedWords = [...selectedWords]
     newSelectedWords[index] = wordSelected
     setSelectedWords(newSelectedWords)
@@ -76,7 +78,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
     <>
       <ScrollView style={styles.parent}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('CreateKeys')}
+          onPress={() => navigation.navigate('NewMasterKey')}
           style={styles.returnButton}>
           <View style={styles.returnButtonView}>
             <Arrow color={colors.white} rotate={270} width={30} height={30} />
