@@ -10,6 +10,7 @@ import {
 import { colors } from '../../../styles/colors'
 import { CheckIcon } from '../../../components/icons/CheckIcon'
 import DeleteIcon from '../../../components/icons/DeleteIcon'
+import { sharedMnemonicStyles } from './styles'
 type Props = {
   words: string[]
   wordIndex: number
@@ -46,11 +47,13 @@ export const WordSelector: React.FC<Props> = ({
   }
   return (
     <View style={styles.selector}>
-      <View style={styles.wordContainer}>
+      <View style={sharedMnemonicStyles.wordContainer}>
         <View>
-          <View style={styles.wordNumberBadge}>
-            <Text testID={'view.indexLabel'} style={styles.wordNumberBadgeText}>
-              {wordIndex + 1}{' '}
+          <View style={sharedMnemonicStyles.wordNumberBadge}>
+            <Text
+              testID={'view.indexLabel'}
+              style={sharedMnemonicStyles.wordNumberBadgeText}>
+              {wordIndex + 1}
             </Text>
           </View>
         </View>
@@ -93,7 +96,9 @@ export const WordSelector: React.FC<Props> = ({
         <TouchableOpacity onPress={() => selectWord(item)} key={index}>
           <View style={styles.wordOptionContainer}>
             <View>
-              <Text testID={`view.option.${index}`} style={styles.wordText}>
+              <Text
+                testID={`view.option.${index}`}
+                style={sharedMnemonicStyles.wordText}>
                 {item}
               </Text>
             </View>
@@ -108,16 +113,7 @@ const styles = StyleSheet.create({
   selector: {
     marginBottom: 20,
   },
-  wordContainer: {
-    padding: 15,
-    color: colors.white,
-    flexDirection: 'row',
-    backgroundColor: colors.blue,
-    fontWeight: 'bold',
-    borderRadius: 10,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-  },
+
   wordOptionContainer: {
     padding: 15,
     color: colors.white,
@@ -125,31 +121,13 @@ const styles = StyleSheet.create({
     backgroundColor: colors.darkPurple2,
     fontWeight: 'bold',
   },
-  wordNumberBadge: {
-    backgroundColor: colors.darkBlue,
-    padding: 10,
-    borderRadius: 20,
-  },
-  wordNumberBadgeText: {
-    textAlign: 'center',
-    color: colors.white,
-    fontSize: 20,
-  },
-  wordText: {
-    color: colors.white,
-    fontSize: 20,
-    marginLeft: 10,
-    paddingTop: 5,
-  },
   textInput: {
     marginLeft: 10,
     color: colors.white,
     fontSize: 18,
+    flex: 1,
   },
   wordStatus: {
-    position: 'absolute',
-    right: 15,
-    top: 15,
     borderRadius: 30,
     backgroundColor: colors.purple,
   },
