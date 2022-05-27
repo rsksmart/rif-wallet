@@ -15,16 +15,11 @@ import { colors } from '../../../styles/colors'
 type CreateMasterKeyScreenProps = {
   generateMnemonic: CreateKeysProps['generateMnemonic']
 }
-import { grid } from '../../../styles/grid'
-
 import { Arrow } from '../../../components/icons'
-import {
-  SLIDER_HEIGHT,
-  SLIDER_WIDTH,
-  WINDOW_WIDTH,
-} from '../../slides/Dimensions'
+import { SLIDER_WIDTH, WINDOW_WIDTH } from '../../slides/Dimensions'
 import { PaginationNavigator } from '../../../components/button/PaginationNavigator'
 import { Word } from './Word'
+import { sharedMnemonicStyles } from './styles'
 
 export const NewMasterKeyScreen: React.FC<
   ScreenProps<'NewMasterKey'> & CreateMasterKeyScreenProps
@@ -42,7 +37,7 @@ export const NewMasterKeyScreen: React.FC<
   const renderItem = ({ item }: { item: number }) => {
     const wordIndex = 3 * item
     return (
-      <View style={styles.slideContainer}>
+      <View>
         {Word({
           number: 1 + wordIndex,
           text: mnemonicArray[wordIndex],
@@ -60,8 +55,8 @@ export const NewMasterKeyScreen: React.FC<
   }
 
   return (
-    <>
-      <ScrollView style={styles.parent}>
+    <ScrollView style={sharedMnemonicStyles.parent}>
+      <View style={sharedMnemonicStyles.topContent}>
         <TouchableOpacity
           onPress={() => navigation.navigate('CreateKeys')}
           style={styles.returnButton}>
@@ -75,22 +70,23 @@ export const NewMasterKeyScreen: React.FC<
         <Text style={styles.subHeader}>
           <Trans>Swipe to reveal next part of the phrase</Trans>
         </Text>
+      </View>
 
-        <View style={{ ...grid.row, ...styles.carouselSection }}>
-          <Carousel
-            inactiveSlideOpacity={0}
-            removeClippedSubviews={false} //https://github.com/meliorence/react-native-snap-carousel/issues/238
-            ref={c => setCarousel(c)}
-            data={slidesIndexes}
-            renderItem={renderItem}
-            sliderWidth={WINDOW_WIDTH}
-            itemWidth={SLIDER_WIDTH}
-            containerCustomStyle={styles.carouselContainer}
-            inactiveSlideShift={0}
-            onSnapToItem={index => setSelectedSlide(index)}
-          />
-        </View>
+      <View style={sharedMnemonicStyles.sliderContainer}>
+        <Carousel
+          inactiveSlideOpacity={0}
+          removeClippedSubviews={false} //https://github.com/meliorence/react-native-snap-carousel/issues/238
+          ref={c => setCarousel(c)}
+          data={slidesIndexes}
+          renderItem={renderItem}
+          sliderWidth={WINDOW_WIDTH}
+          itemWidth={SLIDER_WIDTH}
+          inactiveSlideShift={0}
+          onSnapToItem={index => setSelectedSlide(index)}
+        />
+      </View>
 
+      <View style={sharedMnemonicStyles.pagnationContainer}>
         <PaginationNavigator
           onPrevious={() => carousel.snapToPrev()}
           onNext={() => carousel.snapToNext()}
@@ -102,15 +98,12 @@ export const NewMasterKeyScreen: React.FC<
           slidesAmount={slidesIndexes.length}
           containerBackgroundColor={colors.darkBlue}
         />
-      </ScrollView>
-    </>
+      </View>
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
-  parent: {
-    backgroundColor: colors.darkBlue,
-  },
   returnButton: {
     zIndex: 1,
   },
@@ -137,21 +130,5 @@ const styles = StyleSheet.create({
     marginLeft: 60,
     marginBottom: 5,
     textAlign: 'left',
-  },
-  carouselSection: {
-    alignSelf: 'center',
-  },
-
-  carouselContainer: {
-    marginBottom: 0,
-    paddingBottom: 0,
-    height: SLIDER_HEIGHT,
-  },
-
-  slideContainer: {
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    marginTop: 60,
-    height: 250,
   },
 })

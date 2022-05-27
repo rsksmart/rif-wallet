@@ -103,13 +103,9 @@ export const PaginationNavigator: React.FC<Interface> = ({
 const styles = StyleSheet.create({
   container: {
     color: colors.white,
-    height: 65,
+    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-    marginBottom: 60,
   },
   buttonLeft: {
     padding: 0,

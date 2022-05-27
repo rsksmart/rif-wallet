@@ -13,13 +13,10 @@ import { Trans } from 'react-i18next'
 import { colors } from '../../../styles/colors'
 
 import { Arrow } from '../../../components/icons'
-import {
-  SLIDER_HEIGHT,
-  SLIDER_WIDTH,
-  WINDOW_WIDTH,
-} from '../../slides/Dimensions'
+import { SLIDER_WIDTH, WINDOW_WIDTH } from '../../slides/Dimensions'
 import { PaginationNavigator } from '../../../components/button/PaginationNavigator'
 import { WordSelector } from './WordSelector'
+import { sharedMnemonicStyles } from './styles'
 
 interface ConfirmMasterKeyScreenProps {
   createFirstWallet: CreateKeysProps['createFirstWallet']
@@ -56,6 +53,11 @@ export const ConfirmNewMasterKeyScreen: React.FC<
     setSelectedWords(newSelectedWords)
   }
 
+  const handleSlideChange = (index: number) => {
+    setSelectedSlide(index)
+    setError(false)
+  }
+
   const renderItem: React.FC<{ item: number }> = ({ item }) => {
     const groupIndex = 3 * item
     return (
@@ -80,8 +82,8 @@ export const ConfirmNewMasterKeyScreen: React.FC<
   }
 
   return (
-    <>
-      <ScrollView style={styles.parent}>
+    <ScrollView style={sharedMnemonicStyles.parent}>
+      <View style={sharedMnemonicStyles.topContent}>
         <TouchableOpacity
           onPress={() => navigation.navigate('NewMasterKey')}
           style={styles.returnButton}>
@@ -93,28 +95,33 @@ export const ConfirmNewMasterKeyScreen: React.FC<
           <Trans>Your Master Key</Trans>
         </Text>
         <Text style={styles.subHeader}>
-          {error ? (
-            <>Error: The words are not connect!</>
-          ) : (
-            <Trans>Start typing the words in the correct order</Trans>
-          )}
+          <Trans>Start typing the words in the correct order</Trans>
         </Text>
+      </View>
 
-        <View style={styles.carouselSection}>
-          <Carousel
-            inactiveSlideOpacity={0}
-            removeClippedSubviews={false} //https://github.com/meliorence/react-native-snap-carousel/issues/238
-            ref={c => setCarousel(c)}
-            data={slidesIndexes}
-            renderItem={renderItem}
-            sliderWidth={WINDOW_WIDTH}
-            itemWidth={SLIDER_WIDTH}
-            containerCustomStyle={styles.carouselContainer}
-            inactiveSlideShift={0}
-            onSnapToItem={setSelectedSlide}
-          />
+      <View style={sharedMnemonicStyles.sliderContainer}>
+        <Carousel
+          inactiveSlideOpacity={0}
+          removeClippedSubviews={false} //https://github.com/meliorence/react-native-snap-carousel/issues/238
+          ref={c => setCarousel(c)}
+          data={slidesIndexes}
+          renderItem={renderItem}
+          sliderWidth={WINDOW_WIDTH}
+          sliderHeight={200}
+          itemWidth={SLIDER_WIDTH}
+          inactiveSlideShift={0}
+          onSnapToItem={index => handleSlideChange(index)}
+          useScrollView={true}
+        />
+      </View>
+
+      {error && (
+        <View style={styles.errorContainer}>
+          <Text>The words are not correct.</Text>
         </View>
+      )}
 
+      <View style={sharedMnemonicStyles.pagnationContainer}>
         <PaginationNavigator
           onPrevious={() => carousel.snapToPrev()}
           onNext={() => carousel.snapToNext()}
@@ -124,16 +131,12 @@ export const ConfirmNewMasterKeyScreen: React.FC<
           slidesAmount={slidesIndexes.length}
           containerBackgroundColor={colors.darkBlue}
         />
-      </ScrollView>
-    </>
+      </View>
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
-  parent: {
-    flex: 1,
-    backgroundColor: colors.darkBlue,
-  },
   returnButton: {
     zIndex: 1,
   },
@@ -161,20 +164,15 @@ const styles = StyleSheet.create({
     marginBottom: 40,
     textAlign: 'left',
   },
-  carouselSection: {
-    alignSelf: 'center',
-  },
 
-  carouselContainer: {
-    marginBottom: 0,
-    paddingBottom: 0,
-    height: SLIDER_HEIGHT,
+  errorContainer: {
+    padding: 20,
+    marginHorizontal: 60,
+    marginBottom: 10,
+    borderRadius: 20,
+    backgroundColor: colors.red,
   },
-
-  slideContainer: {
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    marginTop: 60,
-    height: 250,
+  errorText: {
+    color: colors.white,
   },
 })

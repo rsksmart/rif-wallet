@@ -129,10 +129,6 @@ export const WordSelector: React.FC<Props> = ({
 }
 
 const styles = StyleSheet.create({
-  selector: {
-    marginBottom: 20,
-  },
-
   wordOptionContainer: {
     padding: 15,
     color: colors.white,
