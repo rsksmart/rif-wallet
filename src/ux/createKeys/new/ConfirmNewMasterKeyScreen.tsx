@@ -12,8 +12,6 @@ import { CreateKeysProps, ScreenProps } from '../types'
 import { Trans } from 'react-i18next'
 import { colors } from '../../../styles/colors'
 
-import { grid } from '../../../styles/grid'
-
 import { Arrow } from '../../../components/icons'
 import {
   SLIDER_HEIGHT,
@@ -40,8 +38,15 @@ export const ConfirmNewMasterKeyScreen: React.FC<
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
   const [selectedWords, setSelectedWords] = useState<string[]>([])
   const [carousel, setCarousel] = useState<any>()
+  const [error, setError] = useState<boolean>(false)
 
   const handleConfirmMnemonic = async () => {
+    if (selectedWords.join() !== mnemonicWords.join()) {
+      return setError(true)
+    }
+
+    setError(false)
+
     await createFirstWallet(mnemonic)
   }
 
@@ -88,10 +93,14 @@ export const ConfirmNewMasterKeyScreen: React.FC<
           <Trans>Your Master Key</Trans>
         </Text>
         <Text style={styles.subHeader}>
-          <Trans>Start typing the words in the correct order</Trans>
+          {error ? (
+            <>Error: The words are not connect!</>
+          ) : (
+            <Trans>Start typing the words in the correct order</Trans>
+          )}
         </Text>
 
-        <View style={{ ...grid.row, ...styles.carouselSection }}>
+        <View style={styles.carouselSection}>
           <Carousel
             inactiveSlideOpacity={0}
             removeClippedSubviews={false} //https://github.com/meliorence/react-native-snap-carousel/issues/238
@@ -102,7 +111,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
             itemWidth={SLIDER_WIDTH}
             containerCustomStyle={styles.carouselContainer}
             inactiveSlideShift={0}
-            onSnapToItem={index => setSelectedSlide(index)}
+            onSnapToItem={setSelectedSlide}
           />
         </View>
 
@@ -114,7 +123,6 @@ export const ConfirmNewMasterKeyScreen: React.FC<
           currentIndex={selectedSlide}
           slidesAmount={slidesIndexes.length}
           containerBackgroundColor={colors.darkBlue}
-          completed={selectedWords.join() === mnemonicWords.join()}
         />
       </ScrollView>
     </>
@@ -123,6 +131,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
 
 const styles = StyleSheet.create({
   parent: {
+    flex: 1,
     backgroundColor: colors.darkBlue,
   },
   returnButton: {

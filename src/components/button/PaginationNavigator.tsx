@@ -23,7 +23,6 @@ interface Interface {
   backgroundColor?: string
   containerBackgroundColor?: string
   slidesAmount: number
-  completed?: boolean
 }
 
 export const PaginationNavigator: React.FC<Interface> = ({
@@ -35,7 +34,6 @@ export const PaginationNavigator: React.FC<Interface> = ({
   backgroundColor = 'white',
   containerBackgroundColor = colors.blue,
   slidesAmount,
-  completed = true,
 }) => {
   const circleStyle = {
     ...styles.image,
@@ -78,7 +76,7 @@ export const PaginationNavigator: React.FC<Interface> = ({
       </TouchableOpacity>
       <View>{pagination(currentIndex, slidePages)}</View>
 
-      {(currentIndex < slidesAmount - 1 || !completed) && (
+      {currentIndex < slidesAmount - 1 && (
         <TouchableOpacity
           style={styles.buttonRight}
           onPress={onNext}
@@ -88,7 +86,7 @@ export const PaginationNavigator: React.FC<Interface> = ({
           </View>
         </TouchableOpacity>
       )}
-      {currentIndex === slidesAmount - 1 && completed && (
+      {currentIndex === slidesAmount - 1 && (
         <TouchableOpacity
           style={styles.buttonRight}
           onPress={onComplete}
