@@ -64,7 +64,7 @@ export const WordSelector: React.FC<Props> = ({
   }
 
   return (
-    <View style={styles.selector}>
+    <View>
       <View style={sharedMnemonicStyles.wordContainer}>
         <View>
           <View style={sharedMnemonicStyles.wordNumberBadge}>
@@ -85,6 +85,7 @@ export const WordSelector: React.FC<Props> = ({
           value={userInput}
           placeholder="type..."
           keyboardType="numeric"
+          onBlur={() => setOptions([])}
         />
         <View style={styles.wordStatus}>
           {isMatch && (
