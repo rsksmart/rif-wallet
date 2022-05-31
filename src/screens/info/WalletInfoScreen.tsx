@@ -113,7 +113,7 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
       smartWalletDeployVerifier: '0x5C6e96a84271AC19974C3e99d6c4bE4318BfE483',
       smartWalletRelayVerifier: '0x56ccdB6D312307Db7A4847c3Ea8Ce2449e9B79e9',
       testToken: testTokenAddress,
-    } as any
+    } as any 
 
     //@ts-ignore
     const privateKey = wallet.smartWallet.signer.privateKey
@@ -135,6 +135,7 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
     try {
       setIsDeploying(true)
       if(!providerRif) await initRifRelay()
+      console.log(await providerRif.generateSmartWallet(1))
       const smartWallet = {
         index: 1,
         deployed: isWalletDeployed,
@@ -196,7 +197,7 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
       deployRif.fees,
       currentSmartWallet,
     )
-    console.log(smartWallet?.deployed)
+    console.log(smartWallet)
   }
 
   async function relaySmartWalletDeployment(
