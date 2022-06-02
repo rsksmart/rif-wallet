@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 0,
-    marginBottom: 10
+    marginBottom: 10,
   },
   smartAddress: {
     padding: 13,
