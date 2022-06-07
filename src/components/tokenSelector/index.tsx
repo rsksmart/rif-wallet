@@ -7,6 +7,7 @@ import { sharedStyles } from '../../ux/requestsModal/sharedStyles'
 import { ModalHeader } from '../index'
 import { balanceToString } from '../../screens/balances/BalancesScreen'
 import { TokenImage } from '../../screens/home/TokenImage'
+import { getTokenColor } from '../../screens/home/tokenColor'
 
 interface Interface {
   availableTokens: ITokenWithBalance[]
@@ -31,6 +32,7 @@ const TokenSelector: React.FC<Interface> = ({
                 title={token.symbol}
                 balance={balance}
                 icon={<TokenImage symbol={token.symbol} />}
+                style={{ backgroundColor: getTokenColor(token.symbol) }}
               />
             </View>
           )

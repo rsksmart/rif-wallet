@@ -6,6 +6,7 @@ import {
   Text,
   StyleSheet,
 } from 'react-native'
+import { colors } from '../../styles/colors'
 
 interface Props {
   title: string
@@ -30,12 +31,16 @@ export const TokenButton: React.FC<Props> = ({
     style={style ? { ...styles.button, ...style } : styles.button}
     onPress={onPress}
     testID={testID}>
-    <View style={styles.contentWrapper}>
-      <View>{!!icon && icon}</View>
-      <View>
-        <Text style={{ ...styles.text, ...textStyle }}>{title}</Text>
-        {!!balance && <Text>{balance}</Text>}
+    <View style={styles.iconContainer}>
+      <View style={styles.icon}>
+        <Text>{!!icon && icon}</Text>
       </View>
+      <View>
+        <Text style={styles.titleText}> {title}</Text>
+      </View>
+    </View>
+    <View style={styles.values}>
+      {!!balance && <Text style={styles.balanceText}>{balance}</Text>}
     </View>
   </TouchableOpacity>
 )
@@ -45,16 +50,31 @@ const styles = StyleSheet.create({
     fontSize: 18,
     padding: 10,
     borderRadius: 10,
-    alignItems: 'center',
-    borderColor: '#575757',
-    borderWidth: 4,
     minWidth: 100,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
   },
-  text: {
-    color: '#575757',
+  balanceText: {
+    color: colors.white,
+    fontWeight: 'bold',
+    paddingTop: 7,
   },
-  contentWrapper: {
-    alignItems: 'center',
+  titleText: {
+    paddingTop: 7,
+    fontWeight: 'bold',
+    color: colors.white,
+  },
+  iconContainer: {
     flexDirection: 'row',
   },
+  icon: {
+    borderRadius: 15,
+    padding: 5,
+    backgroundColor: colors.white,
+  },
+  values: {
+    flexDirection: 'row',
+  },
+  contentWrapper: {},
 })
