@@ -28,7 +28,7 @@ export class SmartWalletFactory implements ISmartWalletFactory {
     return [
       address,
       constants.AddressZero,
-      constants.One
+      constants.Zero
     ]
   }
 
