@@ -12,6 +12,7 @@ import Clipboard from '@react-native-community/clipboard'
 import { colors } from '../../styles/colors'
 import { TokenImage } from '../home/TokenImage'
 import { SearchIcon } from '../../components/icons/SearchIcon'
+import StatusIcon from '../../components/statusIcons'
 
 export interface transactionInfo {
   to?: string
@@ -33,7 +34,7 @@ const TransactionInfo = ({ transaction }: Props) => {
           source={require('../../images/transferWait.png')}
           style={styles.loading}
         />
-        <Text style={styles.loadingLabel}>transfering ...</Text>
+        <Text style={styles.loadingLabel}>transferring ...</Text>
       </View>
     )
   }
@@ -65,9 +66,13 @@ const TransactionInfo = ({ transaction }: Props) => {
       </View>
       <View style={styles.margin30}>
         <Text style={styles.label}>status</Text>
-        <View style={styles.flexDirRow}>
-          <Text style={styles.mr10}>Icon here</Text>
-          <Text style={styles.font16Bold}>{transaction.status}</Text>
+        <View style={styles.sentContainer}>
+          <View>
+            <StatusIcon status={transaction.status} />
+          </View>
+          <Text style={styles.font16Bold}>
+            {transaction.status.toLowerCase()}
+          </Text>
         </View>
       </View>
       <View style={styles.margin30}>
@@ -111,6 +116,7 @@ const styles = StyleSheet.create({
   ml3: { marginLeft: 3 },
   mt7: { marginTop: 7 },
   mr10: { marginRight: 10 },
+  mr6: { marginRight: 6 },
   loadingLabel: {
     textAlign: 'center',
   },
