@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
     paddingHorizontal: 20,
     backgroundColor: '#020034',
+    minHeight: '100%',
   },
   refreshButtonView: {
     paddingVertical: 15,
