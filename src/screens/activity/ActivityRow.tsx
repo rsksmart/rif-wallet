@@ -25,7 +25,11 @@ const ActivityRow: React.FC<Interface> = ({
       <View style={styles.container}>
         <View style={styles.firstHalf}>
           <View style={styles.firstRow}>
-            <TokenImage symbol={activityTransaction?.enhancedTransaction?.symbol || ''} width={30} height={32} />
+            <TokenImage
+              symbol={activityTransaction?.enhancedTransaction?.symbol || ''}
+              width={30}
+              height={32}
+            />
           </View>
           <View style={styles.secondRow}>
             <Text style={styles.mainText}>
