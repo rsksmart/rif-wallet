@@ -95,8 +95,6 @@ export const ActivityScreen: React.FC<
 
   return (
     <View>
-      <Text style={styles.header}>Activity</Text>
-
       {hasTransactions && (
         <FlatList
           data={transactions.activityTransactions}
@@ -120,9 +118,9 @@ export const ActivityScreen: React.FC<
 
 const styles = StyleSheet.create({
   parent: {
+    paddingBottom: 30,
     paddingHorizontal: 20,
-    marginBottom: 30,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#020034',
   },
   refreshButtonView: {
     paddingVertical: 15,
