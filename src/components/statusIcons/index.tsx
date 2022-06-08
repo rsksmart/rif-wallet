@@ -5,7 +5,7 @@ import React from 'react'
 
 type Props = {
   status: string
-  props?: any
+  [key: string]: any
 }
 
 export const STATUS_MAP = {
