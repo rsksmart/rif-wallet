@@ -37,18 +37,18 @@ const ActivityRow: React.FC<Interface> = ({
           </View>
         </View>
         <View style={styles.secondHalf}>
-          <View style={{ alignSelf: 'center' }}>
-            <Text style={[styles.mainText, { alignSelf: 'flex-end' }]}>
+          <View style={styles.alignSelfCenter}>
+            <Text style={[styles.mainText, styles.alignSelfEnd]}>
               {activityTransaction.enhancedTransaction?.value ||
                 activityTransaction.originTransaction.value}
             </Text>
             {/* @TODO get value of transaction $$ for example $ 731.03*/}
             {/* <Text style={[styles.secondaryText]}></Text> */}
           </View>
-          <View style={{ alignSelf: 'center', marginLeft: 10, marginRight: 3 }}>
+          <View style={[styles.mr3, styles.ml10, styles.alignSelfCenter]}>
             {/* @TODO get status of transaction */}
             {/* @TODO create a DICT that maps the bg color to the correct status */}
-            <View style={{ backgroundColor: 'green', borderRadius: 20 }}>
+            <View style={styles.backgroundStatus}>
               <StatusIcon status={'SUCCESS'} color="white" />
             </View>
           </View>
@@ -108,6 +108,18 @@ const styles = StyleSheet.create({
     flexGrow: 10,
   },
   icon: {
+    borderRadius: 20,
+  },
+  alignSelfCenter: {
+    alignSelf: 'center',
+  },
+  alignSelfEnd: {
+    alignSelf: 'flex-end',
+  },
+  ml10: { marginLeft: 10 },
+  mr3: { marginRight: 3 },
+  backgroundStatus: {
+    backgroundColor: 'green',
     borderRadius: 20,
   },
 })
