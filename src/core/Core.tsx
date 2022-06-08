@@ -22,6 +22,7 @@ import {
   createRIFWalletFactory,
   networkId,
   rifWalletServicesSocket,
+  rifRelayService,
 } from './setup'
 
 import { RootNavigation } from '../RootNavigation'
@@ -37,6 +38,7 @@ import { colors } from '../styles/colors'
 import { deletePin, savePin } from '../storage/PinStore'
 import { deleteContacts } from '../storage/ContactsStore'
 import { deleteDomains } from '../storage/DomainsStore'
+import { RifRelayProvider } from '../subscriptions/RifRelayProvider'
 
 const gracePeriod = 3000
 
@@ -290,6 +292,7 @@ export const Core = () => {
               <RIFSocketsProvider
                 rifServiceSocket={rifWalletServicesSocket}
                 abiEnhancer={abiEnhancer}>
+                <RifRelayProvider rifRelayService={rifRelayService}>
                 <RootNavigation
                   currentScreen={currentScreen}
                   hasKeys={state.hasKeys}
@@ -334,6 +337,7 @@ export const Core = () => {
                     request={requests[0]}
                   />
                 )}
+                </RifRelayProvider>
               </RIFSocketsProvider>
             </WalletConnectProviderElement>
           </NavigationContainer>
