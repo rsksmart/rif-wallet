@@ -19,6 +19,7 @@ import {
   SmartWallet,
 } from '@rsksmart/relaying-services-sdk'
 import Utils, { TRIF_PRICE } from './Utils'
+import { getWalletSetting, SETTINGS } from '../../core/config'
 
 export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
   wallet,
@@ -50,7 +51,6 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
     address: '0xa975D1DE6d7dA3140E9e293509337373402558bE'
 });
   const { t } = useTranslation()
-  //const [providerRif, setProviderRif] = useState<DefaultRelayingServices | undefined>();
   const [deployRif, setDeployRif] = useState<DeployInfo>({
     fees: 0,
     check: false,
@@ -59,6 +59,11 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
   })
   //const rifTokenAddress = '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe'
   const testTokenAddress = '0xF5859303f76596dD558B438b18d0Ce0e1660F3ea'
+  const currentSmartWallet = {
+    index: 0,
+    deployed: isWalletDeployed,
+    address: wallet.smartWallet.smartWalletAddress,
+  }
 
   useEffect(() => {
     const rifRelayProvider = async () => {
@@ -69,7 +74,6 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
   },[])
   
   let providerRif: any = undefined
-  let currentSmartWallet: any
 
   const rif = new ERC20Token(
     '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
@@ -111,13 +115,13 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
       relayHubAddress: '0x66Fa9FEAfB8Db66Fe2160ca7aEAc7FC24e254387',
       relayVerifierAddress: '0x56ccdB6D312307Db7A4847c3Ea8Ce2449e9B79e9',
       deployVerifierAddress: '0x5C6e96a84271AC19974C3e99d6c4bE4318BfE483',
-      smartWalletFactoryAddress: '0xeaB5b9fA91aeFFaA9c33F9b33d12AB7088fa7f6f',
+      smartWalletFactoryAddress: getWalletSetting(SETTINGS.SMART_WALLET_FACTORY_ADDRESS),
     } as any
 
     const contractAddresses = {
       relayHub: '0x66Fa9FEAfB8Db66Fe2160ca7aEAc7FC24e254387',
       smartWallet: '0xEdB6D515C2DB4F9C3C87D7f6Cefb260B3DEe8014',
-      smartWalletFactory: '0xeaB5b9fA91aeFFaA9c33F9b33d12AB7088fa7f6f',
+      smartWalletFactory: getWalletSetting(SETTINGS.SMART_WALLET_FACTORY_ADDRESS),
       smartWalletDeployVerifier: '0x5C6e96a84271AC19974C3e99d6c4bE4318BfE483',
       smartWalletRelayVerifier: '0x56ccdB6D312307Db7A4847c3Ea8Ce2449e9B79e9',
       testToken: testTokenAddress,
@@ -127,7 +131,7 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
     const privateKey = wallet.smartWallet.signer.privateKey
     const relayingServices = new DefaultRelayingServices({
       rskHost:
-        'http://relay-01.aws-us-west-2.dev.relay.rifcomputing.net:4444',
+        getWalletSetting(SETTINGS.RPC_URL),
       account: {
         address: wallet.smartWallet.address,
         privateKey: privateKey,
@@ -142,13 +146,11 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
   const deployRifRelay = async () => {
     try {
       setIsDeploying(true)
-      const smartWallet = await rifProvider?.generateSmartWallet(0)
-      if (smartWallet) {
-        const smartWalletWithBalance = await setBalance(smartWallet)
-        await estimateFeesToDeploySmartWallet(smartWalletWithBalance)
-        console.log(deployRif.fees)
-        await deploySmartWalletRifRelay(smartWalletWithBalance)
-      }
+      const smartWalletWithBalance = await setBalance(currentSmartWallet)
+      await estimateFeesToDeploySmartWallet(smartWalletWithBalance)
+      console.log(deployRif.fees)
+      await deploySmartWalletRifRelay(smartWalletWithBalance)
+      DevSettings.reload('Smart wallet deployed')
     } catch (error) {
       setIsDeploying(false)
     }
@@ -157,12 +159,6 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
   const transferTestToken = async () => {
     try {
       const amount = transfer.amount+"";
-      const currentSmartWallet = {
-        index: 0,
-        deployed: isWalletDeployed,
-        address: wallet.smartWallet.smartWalletAddress,
-      }
-
       const encodedAbi = (await Utils.getTokenContract()).methods
           .transfer(transfer.address, await Utils.toWei(amount)).encodeABI();
 
@@ -201,29 +197,27 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
     currentSmartWallet: SmartWallet,
   ) {
     try {
-      if (providerRif) {
-        const isTokenAllowed = await providerRif.isAllowedToken(
+      const isTokenAllowed = await rifProvider?.isAllowedToken(
+        testTokenAddress
+      )
+      if (isTokenAllowed) {
+        const fees = await Utils.toWei(`${tokenAmount}`)
+        const smartWallet = await rifProvider?.deploySmartWallet(
+          currentSmartWallet,
           testTokenAddress,
+          fees as any,
         )
-        if (isTokenAllowed) {
-          const fees = await Utils.toWei(`${tokenAmount}`)
-          const smartWallet = await providerRif.deploySmartWallet(
-            currentSmartWallet!,
-            testTokenAddress,
-            fees as any,
-          )
-          const smartWalledIsDeployed = await checkSmartWalletDeployment(
-            smartWallet.deployTransaction!,
-          )
-          if (!smartWalledIsDeployed) {
-            throw new Error('SmartWallet: deployment failed')
-          }
-          return smartWallet
+        const smartWalledIsDeployed = await checkSmartWalletDeployment(
+          smartWallet?.deployTransaction!,
+        )
+        if (!smartWalledIsDeployed) {
+          throw new Error('SmartWallet: deployment failed')
         }
-        throw new Error(
-          'SmartWallet: was not created because Verifier does not accept the specified token for payment',
-        )
+        return smartWallet
       }
+      throw new Error(
+        'SmartWallet: was not created because Verifier does not accept the specified token for payment',
+      )
     } catch (error) {
       const errorObj = error as Error
       if (errorObj.message) {

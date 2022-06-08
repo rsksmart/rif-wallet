@@ -1,14 +1,11 @@
 import Web3 from 'web3'
-import { toHex } from 'web3-utils'
-// TODO: we should avoid the direct dependency with rif-relay-client and rif-relay-common
-import { RelayClient } from '@rsksmart/rif-relay-client'
-import { EnvelopingTransactionDetails } from '@rsksmart/rif-relay-common'
+import { getWalletSetting, SETTINGS } from '../../core/config'
 import TestToken from './contracts/TestToken.json'
 
 export const TRIF_PRICE = 0.000005739
 export const TRIF_TOKEN_DECIMALS = 18
 const web3 = new Web3(
-  'http://relay-01.aws-us-west-2.dev.relay.rifcomputing.net:4444',
+  getWalletSetting(SETTINGS.RPC_URL)
 )
 //const rifTokenAddress = '0x19F64674D8A5B4E652319F5e239eFd3bc969A1fE'
 const testTokenAddress = '0xF5859303f76596dD558B438b18d0Ce0e1660F3ea'
