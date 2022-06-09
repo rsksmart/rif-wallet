@@ -42,6 +42,8 @@ const TransactionInfo = ({ transaction }: Props) => {
   const onViewExplorerTouch = () =>
     Linking.openURL(`https://explorer.testnet.rsk.co/tx/${transaction.hash}`)
 
+  const onCopyHash = () => Clipboard.setString(transaction.hash || '')
+
   return (
     <View style={styles.mainContainer}>
       <Text style={styles.label}>you have just sent</Text>
@@ -57,7 +59,8 @@ const TransactionInfo = ({ transaction }: Props) => {
         <Text style={[styles.ml3, styles.font16Bold]}>{transaction.value}</Text>
       </View>
       <View style={[styles.margin30, styles.mt7]}>
-        <Text style={styles.font16}>$ 7439.55</Text>
+        {/* @TODO get real amount */}
+        {/*<Text style={styles.font16}>$ 7439.55</Text>*/}
       </View>
       <Text style={styles.label}>to a recipient</Text>
       <View style={styles.margin30}>
@@ -76,8 +79,7 @@ const TransactionInfo = ({ transaction }: Props) => {
         </View>
       </View>
       <View style={styles.margin30}>
-        <TouchableOpacity
-          onPress={() => Clipboard.setString(transaction.hash || '')}>
+        <TouchableOpacity onPress={onCopyHash}>
           <Text style={styles.label}>tx hash</Text>
           <Text style={styles.font16Bold}>{transaction.hash}</Text>
         </TouchableOpacity>
