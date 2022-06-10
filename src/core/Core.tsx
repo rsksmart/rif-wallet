@@ -33,7 +33,7 @@ import { WalletConnectProviderElement } from '../screens/walletConnect/WalletCon
 import { RIFSocketsProvider } from '../subscriptions/RIFSockets'
 import { NavigationContainer, NavigationState } from '@react-navigation/native'
 import { colors } from '../styles/colors'
-import { removePin, savePin } from '../storage/PinStore'
+import { deletePin, savePin } from '../storage/PinStore'
 import { deleteContacts } from '../storage/ContactsStore'
 import { deleteDomains } from '../storage/DomainsStore'
 
@@ -84,7 +84,7 @@ const useKeyManagementSystem = (onRequest: OnRequest) => {
   }
   const resetKeysAndPin = async () => {
     deleteKeys()
-    removePin()
+    deletePin()
     deleteContacts()
     deleteDomains()
     setState({ ...initialState, loading: false })

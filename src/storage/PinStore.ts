@@ -5,5 +5,5 @@ const PINStore = createStore(key)
 
 export const hasPin = PINStore.has
 export const getPin = PINStore.get
-export const removePin = PINStore.remove
+export const deletePin = PINStore.remove
 export const savePin = PINStore.save
