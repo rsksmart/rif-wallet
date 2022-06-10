@@ -52,6 +52,7 @@ export const ReceiveScreen: React.FC<ReceiveScreenProps> = ({
       </View>
       <View style={{ ...qrContainerStyle }}>
         <Tabs
+          title={'share details'}
           tabs={['address', 'domains']}
           selectedTab={activeTab}
           onTabSelected={handleTabSelection}
