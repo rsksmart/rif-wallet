@@ -6,12 +6,11 @@ import { colors } from '../../styles/colors'
 import Clipboard from '@react-native-community/clipboard'
 
 type Props = {
-  children: string
+  text: string
   valueToShare: string
 }
 
-export const ShareableText: React.FC<Props> = ({ children, valueToShare }) => {
-  const text = children
+export const ShareableText: React.FC<Props> = ({ text, valueToShare }) => {
   const handleShare = () =>
     Share.share({
       title: valueToShare,
