@@ -158,7 +158,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
             autoCapitalize="none"
             autoCorrect={false}
             value={recipient}
-            placeholder="Address or RSK domain"
+            placeholder="address or rns domain"
             testID={testID}
             editable={true}
             placeholderTextColor={colors.gray}
@@ -230,9 +230,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   buttonPaste: {
-    paddingRight: 20,
-    borderRightWidth: 1,
-    borderRightColor: colors.white,
+    paddingRight: 5,
   },
   cameraModal: {
     flex: 1,

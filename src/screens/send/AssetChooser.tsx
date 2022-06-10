@@ -30,14 +30,14 @@ const AssetChooser: React.FC<Interface> = ({
     <TouchableOpacity
       onPress={() => setShowSelector(true)}
       style={{ ...styles.container, ...grid.row }}>
-      <View style={{ ...grid.column10, ...styles.tokenSymbol }}>
-        <Text style={styles.symbolText}>{selectedToken.symbol}</Text>
-        <View style={styles.imageContainer}>
-          <TokenImage symbol={selectedToken.symbol} height={25} width={25} />
+      <View style={{ ...grid.column12, ...styles.assetButton }}>
+        <View style={styles.assetContainer}>
+          <View style={styles.assetIcon}>
+            <TokenImage symbol={selectedToken.symbol} height={25} width={25} />
+          </View>
+          <Text style={styles.assetTitle}>{selectedToken.symbol}</Text>
         </View>
-      </View>
-      <View style={{ ...grid.column2, ...styles.dropdown }}>
-        <CarotDownIcon />
+        <Text style={styles.selectLabel}>select</Text>
       </View>
 
       {showSelector && (
@@ -51,33 +51,32 @@ const styles = StyleSheet.create({
   container: {
     height: 50,
   },
-  tokenSymbol: {
+  assetButton: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     backgroundColor: colors.darkPurple2,
-    borderTopLeftRadius: 10,
-    borderBottomLeftRadius: 10,
-    paddingLeft: 10,
-    position: 'relative',
+    borderRadius: 10,
   },
-  symbolText: {
-    position: 'absolute',
-    top: 13,
-    left: 10,
+  assetContainer: {
+    flexDirection: 'row',
+  },
+  assetIcon: {
+    margin: 10,
+    padding: 2,
+    backgroundColor: colors.white,
+    borderRadius: 20,
+    height: 30,
+    width: 30,
+  },
+  assetTitle: {
+    marginTop: 13,
     color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
-  imageContainer: {
-    display: 'flex',
-    position: 'absolute',
-    right: 10,
-    top: 10,
-  },
-  dropdown: {
-    backgroundColor: colors.darkPurple,
-    borderTopRightRadius: 10,
-    borderBottomRightRadius: 10,
-    justifyContent: 'center',
-    paddingLeft: 10,
+  selectLabel: {
+    margin: 15,
+    color: colors.white,
   },
 })
 
