@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
-import {AddressInput, Button} from '../../components'
-import {BlueButton, OutlineButton} from '../../components/button/ButtonVariations'
+import { AddressInput } from '../../components'
+import { OutlineButton } from '../../components/button/ButtonVariations'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { colors } from '../../styles/colors'
 import { grid } from '../../styles/grid'
@@ -9,8 +9,6 @@ import { IPrice } from '../../subscriptions/types'
 import AssetChooser from './AssetChooser'
 import SetAmountComponent from './SetAmountComponent'
 import { Tabs } from '../receive/Tabs'
-import {ButtonAlt} from "../../components/button/ButtonAlt";
-import BaseButton from "../../components/button/BaseButton";
 
 interface Interface {
   onConfirm: (
@@ -156,7 +154,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   centerRow: {
-    marginTop:20,
+    marginTop: 20,
     justifyContent: 'center',
     alignItems: 'center',
   },

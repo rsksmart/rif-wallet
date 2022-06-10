@@ -4,7 +4,6 @@ import { colors } from '../../styles/colors'
 import { grid } from '../../styles/grid'
 
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import CarotDownIcon from '../../components/icons/CarotDown'
 import MiniModal from '../../components/tokenSelector/MiniModal'
 import { TokenImage } from '../home/TokenImage'
 
