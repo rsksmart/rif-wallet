@@ -25,6 +25,7 @@ import { colors } from '../../styles/colors'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { isValidChecksumAddress } from '@rsksmart/rsk-utils'
 import { OutlineButton } from '../button/ButtonVariations'
+import DeleteIcon from '../icons/DeleteIcon'
 
 type AddressInputProps = {
   initialValue: string
@@ -43,6 +44,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   const [recipient, setRecipient] = useState<string>(initialValue)
   // hide or show the QR reader
   const [showQRReader, setShowQRReader] = useState<boolean>(false)
+  const [showDomainHolder, setShowDomainHolder] = useState<boolean>(false)
 
   const windowWidth = Dimensions.get('window').width
 
@@ -80,9 +82,10 @@ export const AddressInput: React.FC<AddressInputProps> = ({
         rnsResolver
           .addr(inputText)
           .then((address: string) => {
+            setShowDomainHolder(true)
             setStatus({
               type: 'INFO',
-              value: `Resolved to ${address}`,
+              value: 'RNS domain associated with this address',
             })
 
             // call parent with the resolved address
@@ -131,6 +134,11 @@ export const AddressInput: React.FC<AddressInputProps> = ({
     }
   }
 
+  const unselectDomain = () => {
+    setShowDomainHolder(false)
+    handleChangeText('')
+  }
+
   return showQRReader ? (
     <Modal presentationStyle="overFullScreen" style={styles.cameraModal}>
       <View
@@ -149,36 +157,53 @@ export const AddressInput: React.FC<AddressInputProps> = ({
     </Modal>
   ) : (
     <View style={styles.parent}>
-      <View style={grid.row}>
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            onChangeText={text => handleChangeText(text)}
-            onBlur={() => validateCurrentInput(recipient)}
-            autoCapitalize="none"
-            autoCorrect={false}
-            value={recipient}
-            placeholder="address or rns domain"
-            testID={testID}
-            editable={true}
-            placeholderTextColor={colors.gray}
-          />
-
-          <TouchableOpacity
-            style={{ ...styles.button, ...styles.buttonPaste }}
-            onPress={handlePasteClick}
-            testID="Address.PasteButton">
-            <ContentPasteIcon color={colors.white} height={20} width={20} />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => setShowQRReader(true)}
-            testID="Address.QRCodeButton">
-            <QRCodeIcon color={colors.white} />
-          </TouchableOpacity>
+      {!!showDomainHolder && (
+        <View style={styles.rnsDomainContainer}>
+          <View>
+            <Text style={styles.rnsDomainName}> moonwalker.rsk</Text>
+            <Text style={styles.rnsDomainAddress}>
+              0x4A727D7943B563462C96d40689836600d20b983B
+            </Text>
+          </View>
+          <View style={styles.rnsDomainUnselect}>
+            <TouchableOpacity onPress={unselectDomain}>
+              <DeleteIcon color={'black'} width={20} height={20} />
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      )}
+      {!showDomainHolder && (
+        <View style={grid.row}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              onChangeText={text => handleChangeText(text)}
+              onBlur={() => validateCurrentInput(recipient)}
+              autoCapitalize="none"
+              autoCorrect={false}
+              value={recipient}
+              placeholder="address or rns domain"
+              testID={testID}
+              editable={true}
+              placeholderTextColor={colors.gray}
+            />
+
+            <TouchableOpacity
+              style={{ ...styles.button, ...styles.buttonPaste }}
+              onPress={handlePasteClick}
+              testID="Address.PasteButton">
+              <ContentPasteIcon color={colors.white} height={20} width={20} />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => setShowQRReader(true)}
+              testID="Address.QRCodeButton">
+              <QRCodeIcon color={colors.white} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
       {!!status.value && (
         <>
           <Text
@@ -208,6 +233,25 @@ const styles = StyleSheet.create({
   parent: {},
   iconColumn: {
     alignItems: 'flex-end',
+  },
+  rnsDomainContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+    backgroundColor: colors.lightGray,
+    borderRadius: 10,
+  },
+  rnsDomainName: {
+    fontWeight: 'bold',
+    fontSize: 15,
+    marginBottom: 3,
+  },
+  rnsDomainUnselect: {
+    margin: 3,
+  },
+  rnsDomainAddress: {
+    marginLeft: 4,
+    fontSize: 11,
   },
   inputContainer: {
     backgroundColor: colors.darkPurple2,
