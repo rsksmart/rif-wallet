@@ -28,7 +28,11 @@ export const SettingsScreen: React.FC<
           text: t('Cancel'),
           onPress: () => undefined,
         },
-        { text: 'Delete', onPress: deleteKeys },
+        {
+          text: 'Delete',
+          onPress: () =>
+            deleteKeys().then(() => navigation.navigate('CreateKeysUX')),
+        },
       ],
     )
   }
