@@ -55,7 +55,7 @@ const ButtonCustom: React.FC<ButtonType> = ({
     <TouchableOpacity
       onPress={onPress}
       style={[styles.buttonTouchOpacity, overrideContainerBackground]}>
-      <View style={firstTextBackgroundStyle}>
+      <View style={[styles.buttonViewMain, firstTextBackgroundStyle]}>
         <Text style={firstTextStyle}>{firstText}</Text>
       </View>
       <View style={styles.mr10}>{icon}</View>
