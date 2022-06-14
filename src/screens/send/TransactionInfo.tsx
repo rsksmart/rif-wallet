@@ -8,8 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native'
 import Clipboard from '@react-native-community/clipboard'
-
-import { colors } from '../../styles/colors'
+import { colors, spacing } from '../../styles/'
 import { TokenImage } from '../home/TokenImage'
 import { SearchIcon } from '../../components/icons/SearchIcon'
 import StatusIcon from '../../components/statusIcons'
@@ -51,23 +50,25 @@ const TransactionInfo = ({ transaction }: Props) => {
         {transaction.symbol && (
           <>
             <TokenImage symbol={transaction.symbol} height={17} width={17} />
-            <Text style={[styles.font16Bold, styles.ml7]}>
+            <Text style={[styles.font16Bold, spacing.ml7]}>
               {transaction.symbol}
             </Text>
           </>
         )}
-        <Text style={[styles.ml3, styles.font16Bold]}>{transaction.value}</Text>
+        <Text style={[spacing.ml3, styles.font16Bold]}>
+          {transaction.value}
+        </Text>
       </View>
-      <View style={[styles.margin30, styles.mt7]}>
+      <View style={[spacing.mb30, spacing.mt7]}>
         {/* @TODO get real amount */}
         {/*<Text style={styles.font16}>$ 7439.55</Text>*/}
       </View>
       <Text style={styles.label}>to a recipient</Text>
-      <View style={styles.margin30}>
+      <View style={spacing.mb30}>
         <Text style={styles.font16Bold}>{transaction.to}</Text>
-        <Text style={styles.mt7}>{transaction.to}</Text>
+        <Text style={spacing.mt7}>{transaction.to}</Text>
       </View>
-      <View style={styles.margin30}>
+      <View style={spacing.mb30}>
         <Text style={styles.label}>status</Text>
         <View style={styles.sentContainer}>
           <View>
@@ -78,7 +79,7 @@ const TransactionInfo = ({ transaction }: Props) => {
           </Text>
         </View>
       </View>
-      <View style={styles.margin30}>
+      <View style={spacing.mb30}>
         <TouchableOpacity onPress={onCopyHash}>
           <Text style={styles.label}>tx hash</Text>
           <Text style={styles.font16Bold}>{transaction.hash}</Text>
@@ -114,11 +115,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontSize: 17,
   },
-  ml7: { marginLeft: 7 },
-  ml3: { marginLeft: 3 },
-  mt7: { marginTop: 7 },
-  mr10: { marginRight: 10 },
-  mr6: { marginRight: 6 },
   loadingLabel: {
     textAlign: 'center',
   },
@@ -128,7 +124,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   sentContainer: { flexDirection: 'row', alignItems: 'center' },
-  margin30: { marginBottom: 30 },
   buttonRow: {
     alignItems: 'center',
     justifyContent: 'center',
