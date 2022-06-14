@@ -24,3 +24,5 @@ export const addDomain = async (owner: string, domain: string) => {
   store[owner].push(domain)
   DomainStore.save(JSON.stringify(store))
 }
+
+export const deleteDomains = DomainStore.remove

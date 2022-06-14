@@ -33,7 +33,9 @@ import { WalletConnectProviderElement } from '../screens/walletConnect/WalletCon
 import { RIFSocketsProvider } from '../subscriptions/RIFSockets'
 import { NavigationContainer, NavigationState } from '@react-navigation/native'
 import { colors } from '../styles/colors'
-import { savePin } from '../storage/PinStore'
+import { deletePin, savePin } from '../storage/PinStore'
+import { deleteContacts } from '../storage/ContactsStore'
+import { deleteDomains } from '../storage/DomainsStore'
 
 const gracePeriod = 3000
 
@@ -79,6 +81,13 @@ const useKeyManagementSystem = (onRequest: OnRequest) => {
 
   const removeKeys = () => {
     setState({ ...state, ...noKeysState })
+  }
+  const resetKeysAndPin = async () => {
+    deleteKeys()
+    deletePin()
+    deleteContacts()
+    deleteDomains()
+    setState({ ...initialState, loading: false })
   }
 
   const setKeys = (
@@ -161,6 +170,7 @@ const useKeyManagementSystem = (onRequest: OnRequest) => {
     removeKeys,
     switchActiveWallet,
     createPin,
+    resetKeysAndPin,
   }
 }
 
@@ -181,6 +191,7 @@ export const Core = () => {
     removeKeys,
     switchActiveWallet,
     createPin,
+    resetKeysAndPin,
   } = useKeyManagementSystem(onRequest)
 
   const [currentScreen, setCurrentScreen] = useState<string>('Home')
@@ -312,7 +323,7 @@ export const Core = () => {
                     addNewWallet,
                     switchActiveWallet,
                   }}
-                  settingsScreen={{ deleteKeys }}
+                  settingsScreen={{ deleteKeys: resetKeysAndPin }}
                   changeTopColor={setTopColor}
                 />
 
