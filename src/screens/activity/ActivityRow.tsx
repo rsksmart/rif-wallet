@@ -1,10 +1,15 @@
 import React from 'react'
-import { formatTimestamp, shortAddress } from '../../lib/utils'
+import {
+  balanceToDisplay,
+  formatTimestamp,
+  shortAddress,
+} from '../../lib/utils'
 import { IActivityTransaction } from './ActivityScreen'
 import { StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { TokenImage } from '../home/TokenImage'
 import StatusIcon from '../../components/statusIcons'
+import { BigNumber } from 'ethers'
 
 interface Interface {
   activityTransaction: IActivityTransaction
@@ -18,6 +23,13 @@ const ActivityRow: React.FC<Interface> = ({
   const handleClick = () =>
     navigation.navigate('ActivityDetails', activityTransaction)
 
+  const valueConverted = React.useMemo(() => {
+    const value =
+      activityTransaction.enhancedTransaction?.value ||
+      activityTransaction.originTransaction.value
+    // @TODO get decimals for transaction
+    return balanceToDisplay(BigNumber.from(value), 18)
+  }, [])
   return (
     <TouchableOpacity
       onPress={handleClick}
@@ -43,8 +55,7 @@ const ActivityRow: React.FC<Interface> = ({
         <View style={styles.secondHalf}>
           <View style={styles.alignSelfCenter}>
             <Text style={[styles.mainText, styles.alignSelfEnd]}>
-              {activityTransaction.enhancedTransaction?.value ||
-                activityTransaction.originTransaction.value}
+              {valueConverted}
             </Text>
             {/* @TODO get value of transaction $$ for example $ 731.03*/}
             {/* <Text style={[styles.secondaryText]}></Text> */}
