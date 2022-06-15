@@ -1,4 +1,3 @@
-// @ts-ignore
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import React from 'react'
 
