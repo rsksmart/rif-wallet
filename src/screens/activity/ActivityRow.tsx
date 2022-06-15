@@ -7,6 +7,7 @@ import {
 import { IActivityTransaction } from './ActivityScreen'
 import { StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import ContractsMap from '@rsksmart/rsk-contract-metadata/contract-map.json'
 import { TokenImage } from '../home/TokenImage'
 import StatusIcon from '../../components/statusIcons'
 import { BigNumber } from 'ethers'
@@ -15,6 +16,16 @@ interface Interface {
   activityTransaction: IActivityTransaction
   navigation: any
 }
+
+interface IContractsMap {
+  [key: string]:
+    | {
+        [key: string]: any
+      }
+    | undefined
+}
+
+const ContractsMapTs: IContractsMap = ContractsMap
 
 const ActivityRow: React.FC<Interface> = ({
   activityTransaction,
@@ -27,8 +38,19 @@ const ActivityRow: React.FC<Interface> = ({
     const value =
       activityTransaction.enhancedTransaction?.value ||
       activityTransaction.originTransaction.value
-    // @TODO get decimals for transaction
-    return balanceToDisplay(BigNumber.from(value), 18)
+    // @TODO get decimals from ERC20 class
+    // So far we are getting decimals from the transaction and the metadata
+    const contractAddress: string =
+      activityTransaction.originTransaction.receipt?.contractAddress
+    const contractDecimals: number | undefined =
+      ContractsMapTs[contractAddress]?.decimals || undefined
+
+    const decimals =
+      activityTransaction.enhancedTransaction?.decimals ||
+      contractDecimals ||
+      18
+
+    return balanceToDisplay(BigNumber.from(value), decimals)
   }, [])
   return (
     <TouchableOpacity
