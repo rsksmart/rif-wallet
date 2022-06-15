@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View, Linking, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Linking } from 'react-native'
 import { utils } from 'ethers'
 import { formatTimestamp } from '../../lib/utils'
 import { IActivityTransaction } from './ActivityScreen'
@@ -8,6 +8,8 @@ import { CopyIcon, RefreshIcon } from '../../components/icons'
 import { SearchIcon } from '../../components/icons/SearchIcon'
 import { TokenImage } from '../home/TokenImage'
 import Clipboard from '@react-native-community/clipboard'
+import StatusIcon from '../../components/statusIcons'
+import ButtonCustom from '../../components/activity/ButtonCustom'
 
 export type ActivityDetailsScreenProps = {
   route: { params: IActivityTransaction }
@@ -17,51 +19,6 @@ type ActivityFieldType = {
   ContainerProps?: object
   title: string
   children: any
-}
-
-type ButtonType = {
-  firstText: string
-  icon: React.FC | any
-  secondText: string
-  containerBackground?: string | null
-  firstTextColor?: string | null
-  firstTextBackgroundColor?: string | null
-  secondTextColor?: string | null
-  onPress: () => null
-}
-
-const ButtonCustom: React.FC<ButtonType> = ({
-  firstText,
-  icon = null,
-  secondText,
-  containerBackground = null,
-  firstTextColor = null,
-  firstTextBackgroundColor = null,
-  secondTextColor = null,
-  onPress,
-}) => {
-  const overrideContainerBackground = containerBackground
-    ? { backgroundColor: containerBackground }
-    : {}
-  const firstTextStyle = { color: firstTextColor || 'white' }
-  const firstTextBackgroundStyle = {
-    backgroundColor:
-      firstTextBackgroundColor || styles.buttonViewMain.backgroundColor,
-  }
-  const secondTextStyle = {
-    color: secondTextColor || 'white',
-  }
-  return (
-    <TouchableOpacity
-      onPress={onPress}
-      style={[styles.buttonTouchOpacity, overrideContainerBackground]}>
-      <View style={[styles.buttonViewMain, firstTextBackgroundStyle]}>
-        <Text style={firstTextStyle}>{firstText}</Text>
-      </View>
-      <View style={styles.mr10}>{icon}</View>
-      <Text style={[secondTextStyle, styles.fwb]}>{secondText}</Text>
-    </TouchableOpacity>
-  )
 }
 
 const ActivityField: React.FC<ActivityFieldType> = ({
@@ -94,6 +51,7 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
     return null
   }
 
+  const status = transaction.originTransaction.receipt ? 'success' : 'pending'
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.transDetails}>transaction details</Text>
@@ -141,19 +99,18 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
         </View>
       </ActivityField>
       {/*  @TODO get tx type */}
-      {/*<ActivityField title="tx type">*/}
-      {/*  <Text>token transfer</Text>*/}
-      {/*</ActivityField>*/}
+      <ActivityField title="tx type">
+        <Text>{transaction.originTransaction.txType}</Text>
+      </ActivityField>
       <View style={styles.statusRow}>
         <ActivityField
           title="status"
           ContainerProps={{ style: [styles.flexHalfSize, styles.statusField] }}>
           {/*  @TODO map status to the correct icon */}
-          <Text>
-            {transaction.originTransaction.receipt
-              ? transaction.originTransaction.receipt.status
-              : 'PENDING'}
-          </Text>
+          <View style={[styles.flexDirRow, styles.alignItemsCenter]}>
+            <StatusIcon status={status} />
+            <Text>{status}</Text>
+          </View>
         </ActivityField>
         <ActivityField
           title="timestamp"
@@ -192,22 +149,6 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
 }
 
 const styles = StyleSheet.create({
-  buttonTouchOpacity: {
-    flexDirection: 'row',
-    padding: 15,
-    borderRadius: 40,
-    backgroundColor: '#050134',
-    alignSelf: 'flex-start',
-    marginBottom: 20,
-    alignItems: 'center',
-  },
-  buttonViewMain: {
-    marginRight: 10,
-    backgroundColor: 'rgba(219, 227, 255, 0.35)',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 100,
-  },
   container: {
     backgroundColor: '#dbe3ff',
     paddingTop: 50,
@@ -252,6 +193,9 @@ const styles = StyleSheet.create({
   mr10: { marginRight: 10 },
   flexDirRow: {
     flexDirection: 'row',
+  },
+  alignItemsCenter: {
+    alignItems: 'center',
   },
   amountContainer: {
     flexDirection: 'column',
