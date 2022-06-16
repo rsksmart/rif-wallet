@@ -6,8 +6,10 @@ import { AbiEnhancer } from '../lib/abiEnhancer/AbiEnhancer'
 import { getWalletSetting, SETTINGS } from './config'
 import { RifWalletServicesSocket } from '../lib/rifWalletServices/RifWalletServicesSocket'
 import { RifRelayService } from '../lib/rifRelayService/RifRelayService'
+import Web3 from 'web3'
 
 export const networkId = 31
+export const testTokenAddress = '0xF5859303f76596dD558B438b18d0Ce0e1660F3ea'
 
 const rpcUrl = getWalletSetting(SETTINGS.RPC_URL, networkId)
 const smartWalletFactoryAddress = getWalletSetting(
@@ -31,8 +33,8 @@ export const rifWalletServicesSocket = new RifWalletServicesSocket(
 export const rifRelayService = new RifRelayService(
   ['https://dev.relay.rifcomputing.net:8090'],
   smartWalletFactoryAddress,
-  '0xF5859303f76596dD558B438b18d0Ce0e1660F3ea',
-  getWalletSetting(SETTINGS.RPC_URL))
+  testTokenAddress,
+  rpcUrl)
 
 export const rnsResolver = Resolver.forRskTestnet({})
 
@@ -43,3 +45,5 @@ export const createRIFWalletFactory =
       smartWalletFactoryAddress,
       onRequest,
     ) // temp - using only testnet
+
+export const web3 = new Web3(rpcUrl)

@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Transaction, BigNumber } from 'ethers'
 import { Trans, useTranslation } from 'react-i18next'
-
+import { toBN } from 'web3-utils';
 import { ERC20Token } from '../../lib/token/ERC20Token'
 
 import {
@@ -15,12 +15,11 @@ import {
 import { ScreenWithWallet, SmartWalletWithBalance } from '../types'
 import { DevSettings } from 'react-native'
 import {
-  DefaultRelayingServices,
   SmartWallet,
 } from '@rsksmart/relaying-services-sdk'
-import Utils, { TRIF_PRICE } from './Utils'
-import { getWalletSetting, SETTINGS } from '../../core/config'
-import { RifRelayProvider, useRifRelayProviderState } from '../../subscriptions/RifRelayProvider'
+import Utils, { estimateMaxPossibleRelayGas, TRIF_PRICE } from './Utils'
+import { useRifRelayProviderState } from '../../subscriptions/RifRelayProvider'
+import { testTokenAddress } from '../../core/setup'
 
 export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
   wallet,
@@ -44,12 +43,12 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
   const [rifBalance, setRifBalance] = useState<null | BigNumber>(null)
   const [sendRifTx, setSendRifTx] = useState<null | Transaction>(null)
   const [sendRifResponse, setSendRifResponse] = useState<null | string>(null)
-  const transfer = {
+  const [transfer, setTransfer] = useState({
     check: false,
     fees: 0,
     amount: 1,
     address: '0xa975D1DE6d7dA3140E9e293509337373402558bE'
-  };
+  });
   const { t } = useTranslation()
   const [deployRif, setDeployRif] = useState<DeployInfo>({
     fees: 0,
@@ -57,10 +56,9 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
     tokenGas: 0,
     relayGas: 0,
   })
+
   const { rifRelayProvider } = useRifRelayProviderState()
 
-  //const rifTokenAddress = '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe'
-  const testTokenAddress = '0xF5859303f76596dD558B438b18d0Ce0e1660F3ea'
   const currentSmartWallet = {
     index: 0,
     deployed: isWalletDeployed,
@@ -155,24 +153,23 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
       const isTokenAllowed = await rifRelayProvider?.isAllowedToken(
         testTokenAddress
       )
-      if (isTokenAllowed) {
-        const fees = await Utils.toWei(`${tokenAmount}`)
-        const smartWallet = await rifRelayProvider?.deploySmartWallet(
-          currentSmartWallet,
-          testTokenAddress,
-          fees as any,
-        )
-        const smartWalledIsDeployed = await checkSmartWalletDeployment(
-          smartWallet?.deployTransaction!,
-        )
-        if (!smartWalledIsDeployed) {
-          throw new Error('SmartWallet: deployment failed')
-        }
-        return smartWallet
-      }
-      throw new Error(
+
+      if (!isTokenAllowed) throw new Error(
         'SmartWallet: was not created because Verifier does not accept the specified token for payment',
       )
+      const fees = await Utils.toWei(`${tokenAmount}`)
+      const smartWallet = await rifRelayProvider?.deploySmartWallet(
+        currentSmartWallet,
+        testTokenAddress,
+        fees as any,
+      )
+      const smartWalledIsDeployed = await checkSmartWalletDeployment(
+        smartWallet?.deployTransaction!,
+      )
+      if (!smartWalledIsDeployed) {
+        throw new Error('SmartWallet: deployment failed')
+      }
+      return smartWallet
     } catch (error) {
       const errorObj = error as Error
       if (errorObj.message) {
@@ -212,7 +209,6 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
     return receipt
   }
 
-  
   async function estimateFeesToDeploySmartWallet(
     currentSmartWallet: SmartWallet,
   ) {
@@ -248,6 +244,61 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
     }
   }
 
+  async function handleEstimateFeesToDeploySmartWallet() {
+    const newSmartWallet = await rifRelayProvider?.generateSmartWallet(2)
+    const smartWalletWithBalance = await setBalance(newSmartWallet!)
+    await estimateFeesToDeploySmartWallet(smartWalletWithBalance)
+    console.log(deployRif.fees)
+  }
+
+  async function handleEstimateFeesToTransferSmartWallet() {
+    try {
+      const encodedTransferFunction = (await Utils.getTokenContract()).methods
+      .transfer(
+          transfer.address,
+          await Utils.toWei(transfer.amount.toString() || "0")
+      )
+      .encodeABI();
+      const trxDetails = {
+          from: wallet.smartWallet.address,
+          to: testTokenAddress,
+          value: "0",
+          relayHub: '0x66Fa9FEAfB8Db66Fe2160ca7aEAc7FC24e254387',
+          callVerifier: '0x56ccdB6D312307Db7A4847c3Ea8Ce2449e9B79e9',
+          callForwarder: currentSmartWallet.address,
+          data: encodedTransferFunction,
+          tokenContract: testTokenAddress,
+          // value set just for the estimation; in the original dapp the estimation is performed using an eight of the user's token balance,
+          tokenAmount: Utils.toWei("1"),
+          onlyPreferredRelays: true,
+      };
+      const maxPossibleGasValue = await estimateMaxPossibleRelayGas(rifRelayProvider!.relayProvider?.relayClient, trxDetails);    
+      const gasPrice = toBN(
+          await rifRelayProvider!.relayProvider.relayClient._calculateGasPrice()
+          );
+      console.log('maxPossibleGas, gasPrice', maxPossibleGasValue.toString(), gasPrice.toString());
+      const maxPossibleGas = toBN(maxPossibleGasValue);
+      const estimate = maxPossibleGas.mul(gasPrice);
+  
+      const costInRBTC = await Utils.fromWei(estimate.toString());
+      console.log("transfer cost in RBTC:", costInRBTC);
+
+      const costInTrif = parseFloat(costInRBTC) / TRIF_PRICE;
+      const tokenContract = await Utils.getTokenContract();
+      const ritTokenDecimals = await tokenContract.methods.decimals().call();
+      const costInTrifFixed = costInTrif.toFixed(ritTokenDecimals);
+      console.log("transfer cost in TRif: ", costInTrifFixed);
+
+      if (transfer.check === true) {
+        changeTransferValue(costInRBTC, 'fees');
+      } else {
+        changeTransferValue(costInTrifFixed, 'fees');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
 
   function changeValue<T>(value: T, prop: DeployInfoKey) {
     const obj: DeployInfo = { ...deployRif }
@@ -256,7 +307,12 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
     setDeployRif(obj)
   }
 
-  
+  function changeTransferValue<T>(value: T, prop: DeployInfoKey) {
+    const obj: any = { ...transfer }
+    // @ts-ignore: TODO: change this to be type safe
+    obj[prop] = value
+    setTransfer(obj)
+  }
 
   const setBalance = useCallback(
     async (smartWallet: SmartWallet): Promise<SmartWalletWithBalance> => {
@@ -326,6 +382,20 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
           disabled={isWalletDeployed || isDeploying}
         />
       )}
+      <Button
+        title={t('Estimate Deploy Rif')}
+        onPress={handleEstimateFeesToDeploySmartWallet}
+      />
+      <Paragraph>
+        <Trans>Fees to deploy smart wallet</Trans>: {deployRif.fees && deployRif.fees.toString()}
+      </Paragraph>
+      <Button
+        title={t('Estimate Transfer Using Rif')}
+        onPress={handleEstimateFeesToTransferSmartWallet}
+      />
+      <Paragraph>
+        <Trans>Fees to transfer smart wallet</Trans>: {transfer.fees && transfer.fees.toString()}
+      </Paragraph>
       <Button
           title={t('Transfer')}
           onPress={transferTestToken}

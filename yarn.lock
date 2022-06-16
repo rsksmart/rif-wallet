@@ -2261,9 +2261,9 @@
     ethjs-query "^0.3.8"
     ethr-did-resolver "^1.0.2"
 
-"@rsksmart/relaying-services-sdk@https://github.com/JONAF2103/relaying-services-sdk":
-  version "1.0.0"
-  resolved "https://github.com/JONAF2103/relaying-services-sdk#a83961be495f506afa0a40ac04e68384c99ebbc6"
+"@rsksmart/relaying-services-sdk@git+ssh://git@github.com:rsksmart/relaying-services-sdk.git":
+  version "0.0.1-alpha-0"
+  resolved "git+ssh://git@github.com:rsksmart/relaying-services-sdk.git#20ec986c6921219418605baf019f6883f6d36f3d"
   dependencies:
     "@rsksmart/rif-relay-client" "https://github.com/infuy/rif-relay-client"
     "@rsksmart/rif-relay-common" "https://github.com/infuy/rif-relay-common"
