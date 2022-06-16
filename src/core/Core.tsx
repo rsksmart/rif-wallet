@@ -3,9 +3,8 @@ import { AppState, SafeAreaView, StatusBar, StyleSheet } from 'react-native'
 import { AppContext, Wallets, WalletsIsDeployed, Requests } from '../Context'
 import { KeyManagementSystem, OnRequest, RIFWallet } from '../lib/core'
 import { i18nInit } from '../lib/i18n'
-import TextOverride from './TextGlobalOverride'
-
-TextOverride()
+// import TextOverride from './TextGlobalOverride'
+// TextOverride()
 
 import {
   hasKeys,
