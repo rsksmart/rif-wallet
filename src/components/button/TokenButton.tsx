@@ -24,7 +24,6 @@ export const TokenButton: React.FC<Props> = ({
   onPress,
   testID,
   style,
-  textStyle,
   icon,
 }) => (
   <TouchableOpacity

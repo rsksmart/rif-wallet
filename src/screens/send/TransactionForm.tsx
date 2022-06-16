@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, StyleSheet, Text } from 'react-native'
 import { AddressInput } from '../../components'
 import { BlueButton } from '../../components/button/ButtonVariations'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
