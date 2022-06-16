@@ -24,13 +24,11 @@ const AssetChooser: React.FC<Interface> = ({
 
   const handleToken = (token: ITokenWithBalance) => {
     setAnimateModal(true)
-    //setShowSelector(false)
     handleTokenSelection(token)
   }
   const handleCloseModal = () => {
     setShowSelector(false)
     setAnimateModal(false)
-    //setShowSelector(true)
   }
 
   const handleAnimateModal = () => {
