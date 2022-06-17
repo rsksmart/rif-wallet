@@ -44,7 +44,8 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   const [recipient, setRecipient] = useState<string>(initialValue)
   // hide or show the QR reader
   const [showQRReader, setShowQRReader] = useState<boolean>(false)
-  const [showDomainHolder, setShowDomainHolder] = useState<boolean>(false)
+  const [domainFound, setDomainFound] = useState<string>('')
+  const [addressResolved, setAddressResolved] = useState<string>('')
 
   const windowWidth = Dimensions.get('window').width
 
@@ -82,7 +83,8 @@ export const AddressInput: React.FC<AddressInputProps> = ({
         rnsResolver
           .addr(inputText)
           .then((address: string) => {
-            setShowDomainHolder(true)
+            setDomainFound(inputText)
+            setAddressResolved(address)
             setStatus({
               type: 'INFO',
               value: 'RNS domain associated with this address',
@@ -135,8 +137,9 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   }
 
   const unselectDomain = () => {
-    setShowDomainHolder(false)
+    setDomainFound('')
     handleChangeText('')
+    setStatus({ type: 'READY', value: '' })
   }
 
   return showQRReader ? (
@@ -157,13 +160,11 @@ export const AddressInput: React.FC<AddressInputProps> = ({
     </Modal>
   ) : (
     <View style={styles.parent}>
-      {!!showDomainHolder && (
+      {!!domainFound && (
         <View style={styles.rnsDomainContainer}>
           <View>
-            <Text style={styles.rnsDomainName}> moonwalker.rsk</Text>
-            <Text style={styles.rnsDomainAddress}>
-              0x4A727D7943B563462C96d40689836600d20b983B
-            </Text>
+            <Text style={styles.rnsDomainName}> {domainFound}</Text>
+            <Text style={styles.rnsDomainAddress}>{addressResolved}</Text>
           </View>
           <View style={styles.rnsDomainUnselect}>
             <TouchableOpacity onPress={unselectDomain}>
@@ -172,12 +173,12 @@ export const AddressInput: React.FC<AddressInputProps> = ({
           </View>
         </View>
       )}
-      {!showDomainHolder && (
+      {!domainFound && (
         <View style={grid.row}>
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
-              onChangeText={text => handleChangeText(text)}
+              onChangeText={handleChangeText}
               onBlur={() => validateCurrentInput(recipient)}
               autoCapitalize="none"
               autoCorrect={false}
