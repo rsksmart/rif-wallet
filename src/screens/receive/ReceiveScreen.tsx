@@ -60,19 +60,20 @@ export const ReceiveScreen: React.FC<ReceiveScreenProps> = ({
       </View>
       {activeTab === 'address' && (
         <View style={qrContainerStyle}>
-          <ShareableText valueToShare={smartWalletAddress}>
-            {getAddressDisplayText(smartWalletAddress).displayAddress}
-          </ShareableText>
+          <ShareableText
+            text={getAddressDisplayText(smartWalletAddress).displayAddress}
+            valueToShare={smartWalletAddress}
+          />
         </View>
       )}
 
       {activeTab === 'domains' && (
         <View style={qrContainerStyle}>
-          {registeredDomains.map(domain => (
-            <ShareableText valueToShare={domain}>{domain}</ShareableText>
+          {registeredDomains.map((domain, index) => (
+            <ShareableText key={index} text={domain} valueToShare={domain} />
           ))}
           {registeredDomains?.length === 0 && (
-            <Text style={styles.noDomainsText}>No domains found</Text>
+            <Text style={styles.noDomainsText}>Domains not found</Text>
           )}
         </View>
       )}

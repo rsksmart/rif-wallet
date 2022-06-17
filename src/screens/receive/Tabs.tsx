@@ -28,6 +28,7 @@ export const Tabs: React.FC<Props> = ({
               : styles.tab
           return (
             <TouchableOpacity
+              key={tab}
               style={tabStyle}
               onPress={() => onTabSelected(tab)}>
               <Text style={styles.tabText}>{tab}</Text>

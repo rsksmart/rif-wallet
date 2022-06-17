@@ -20,4 +20,10 @@ export const colors = {
   lightGray: '#c7cfec',
 
   none: 'rgba(0, 0, 0, 0)',
+
+  // PALETTE
+  background: {
+    button: '#050033',
+    light: '#dbe3ff',
+  },
 }
