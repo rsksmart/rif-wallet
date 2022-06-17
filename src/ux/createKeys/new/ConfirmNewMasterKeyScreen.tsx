@@ -6,151 +6,173 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native'
+import Carousel from 'react-native-snap-carousel'
+
 import { CreateKeysProps, ScreenProps } from '../types'
-import { useTranslation } from 'react-i18next'
-import { grid } from '../../../styles/grid'
-import { RefreshIcon } from '../../../components/icons'
-import { WordInput } from './WordInput'
+import { Trans } from 'react-i18next'
 import { colors } from '../../../styles/colors'
-import { NavigationFooter } from '../../../components/button/NavigationFooter'
 
-// source: https://stackoverflow.com/questions/63813211/qualtrics-and-javascript-randomly-insert-words-into-sentences
-const shuffle = (array: string[]) => {
-  let currentIndex = array.length,
-    randomIndex
+import { Arrow } from '../../../components/icons'
+import { SLIDER_WIDTH, WINDOW_WIDTH } from '../../slides/Dimensions'
+import { PaginationNavigator } from '../../../components/button/PaginationNavigator'
+import { WordSelector } from './WordSelector'
+import { sharedMnemonicStyles } from './styles'
 
-  // While there remain elements to shuffle...
-  while (currentIndex !== 0) {
-    // Pick a remaining element...
-    randomIndex = Math.floor(Math.random() * currentIndex)
-    currentIndex--
-
-    // And swap it with the current element.
-    ;[array[currentIndex], array[randomIndex]] = [
-      array[randomIndex],
-      array[currentIndex],
-    ]
-  }
-
-  return array
-}
-
-type ConfirmNewMasterKeyScreenProps = {
+interface ConfirmMasterKeyScreenProps {
   createFirstWallet: CreateKeysProps['createFirstWallet']
 }
+
 export const ConfirmNewMasterKeyScreen: React.FC<
-  ScreenProps<'ConfirmNewMasterKey'> & ConfirmNewMasterKeyScreenProps
+  ScreenProps<'ConfirmNewMasterKey'> & ConfirmMasterKeyScreenProps
 > = ({ route, navigation, createFirstWallet }) => {
   const mnemonic = route.params.mnemonic
+  const slidesIndexes = Array.from(
+    { length: Math.ceil(mnemonic.split(' ').length / 3) },
+    (_, i) => i,
+  )
+  const mnemonicWords = mnemonic.split(' ')
+
+  const [selectedSlide, setSelectedSlide] = useState<number>(0)
   const [selectedWords, setSelectedWords] = useState<string[]>([])
-  const [words, setWords] = useState<string[]>(shuffle(mnemonic.split(' ')))
-
-  //TODO: create "three column grid" component
-  const rows = [1, 2, 3, 4, 5, 6, 7, 8]
-
-  const { t } = useTranslation()
-
-  const [error, setError] = useState<string | null>(null)
-  const selectWord = (selectedWord: string) => {
-    setError(null)
-    const updatedWords = [...selectedWords, selectedWord]
-    setSelectedWords(updatedWords)
-    setWords(words.filter(word => !updatedWords.find(w => w === word)))
-  }
+  const [carousel, setCarousel] = useState<any>()
+  const [error, setError] = useState<boolean>(false)
 
   const handleConfirmMnemonic = async () => {
-    const isValid = mnemonic === selectedWords.join(' ')
-
-    if (!isValid) {
-      setError(t('Entered words does not match you your master key'))
-      return
+    if (selectedWords.join() !== mnemonicWords.join()) {
+      return setError(true)
     }
+
+    setError(false)
+
     await createFirstWallet(mnemonic)
   }
 
-  const reset = async () => {
-    setSelectedWords([])
-    setWords(shuffle(mnemonic.split(' ')))
+  const handleWordSelected = (wordSelected: string, index: number) => {
+    const newSelectedWords = [...selectedWords]
+    newSelectedWords[index] = wordSelected
+    setSelectedWords(newSelectedWords)
+  }
+
+  const handleSlideChange = (index: number) => {
+    setSelectedSlide(index)
+    setError(false)
+  }
+
+  const renderItem: React.FC<{ item: number }> = ({ item }) => {
+    const groupIndex = 3 * item
+    return (
+      <ScrollView>
+        <WordSelector
+          wordIndex={groupIndex}
+          expectedWord={mnemonicWords[groupIndex]}
+          onWordSelected={handleWordSelected}
+        />
+        <WordSelector
+          wordIndex={1 + groupIndex}
+          expectedWord={mnemonicWords[groupIndex + 1]}
+          onWordSelected={handleWordSelected}
+        />
+        <WordSelector
+          wordIndex={2 + groupIndex}
+          expectedWord={mnemonicWords[groupIndex + 2]}
+          onWordSelected={handleWordSelected}
+        />
+      </ScrollView>
+    )
   }
 
   return (
-    <>
-      <ScrollView style={styles.parent}>
-        <Text style={styles.header}>Confirm your master key</Text>
-
-        {rows.map(row => (
-          <View style={grid.row}>
-            <WordInput wordNumber={row} initValue={selectedWords[row - 1]} />
-            <WordInput
-              wordNumber={row + rows.length}
-              initValue={selectedWords[row + rows.length - 1]}
-            />
-            <WordInput
-              wordNumber={row + rows.length * 2}
-              initValue={selectedWords[row + rows.length * 2 - 1]}
-            />
-            <Text>{row + rows.length}</Text>
+    <ScrollView style={sharedMnemonicStyles.parent}>
+      <View style={sharedMnemonicStyles.topContent}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('NewMasterKey')}
+          style={styles.returnButton}>
+          <View style={styles.returnButtonView}>
+            <Arrow color={colors.white} rotate={270} width={30} height={30} />
           </View>
-        ))}
-        <View style={styles.badgeArea}>
-          {words.map(word => (
-            <View key={word} style={styles.badgeContainer}>
-              <TouchableOpacity
-                style={styles.badgeText}
-                onPress={() => selectWord(word)}>
-                <Text>{word}</Text>
-              </TouchableOpacity>
-            </View>
-          ))}
-          {error && <Text style={styles.defaultText}>{error}</Text>}
-        </View>
-        <TouchableOpacity style={styles.reset} onPress={reset}>
-          <RefreshIcon color={colors.gray} />
         </TouchableOpacity>
-      </ScrollView>
+        <Text style={styles.header}>
+          <Trans>Your Master Key</Trans>
+        </Text>
+        <Text style={styles.subHeader}>
+          <Trans>Start typing the words in the correct order</Trans>
+        </Text>
+      </View>
 
-      <NavigationFooter
-        onBackwards={() => navigation.navigate('CreateKeys')}
-        onPress={handleConfirmMnemonic}
-        title="confirm"
-      />
-    </>
+      <View style={sharedMnemonicStyles.sliderContainer}>
+        <Carousel
+          inactiveSlideOpacity={0}
+          removeClippedSubviews={false} //https://github.com/meliorence/react-native-snap-carousel/issues/238
+          ref={c => setCarousel(c)}
+          data={slidesIndexes}
+          renderItem={renderItem}
+          sliderWidth={WINDOW_WIDTH}
+          sliderHeight={200}
+          itemWidth={SLIDER_WIDTH}
+          inactiveSlideShift={0}
+          onSnapToItem={index => handleSlideChange(index)}
+          useScrollView={true}
+        />
+      </View>
+
+      {error && (
+        <View style={styles.errorContainer}>
+          <Text>The words are not correct.</Text>
+        </View>
+      )}
+
+      <View style={sharedMnemonicStyles.pagnationContainer}>
+        <PaginationNavigator
+          onPrevious={() => carousel.snapToPrev()}
+          onNext={() => carousel.snapToNext()}
+          onComplete={handleConfirmMnemonic}
+          title="confirm"
+          currentIndex={selectedSlide}
+          slidesAmount={slidesIndexes.length}
+          containerBackgroundColor={colors.darkBlue}
+        />
+      </View>
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
-  defaultText: {
-    color: colors.white,
+  returnButton: {
+    zIndex: 1,
   },
-  parent: {
-    backgroundColor: colors.darkBlue,
-  },
-
-  badgeArea: {
-    flexDirection: 'row',
-    flex: 1,
-    flexWrap: 'wrap',
-  },
-  badgeContainer: {
-    padding: 1,
-
-    marginVertical: 1,
-  },
-  badgeText: {
-    backgroundColor: colors.purple,
-    color: colors.white,
+  returnButtonView: {
+    width: 30,
+    height: 30,
     borderRadius: 30,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    margin: 15,
+    backgroundColor: colors.purple,
   },
 
   header: {
     color: colors.white,
-    fontSize: 22,
-    paddingVertical: 20,
-    textAlign: 'center',
+    fontSize: 20,
+    paddingVertical: 10,
+    marginBottom: 5,
+    marginLeft: 60,
+    textAlign: 'left',
+    fontWeight: 'bold',
   },
-  reset: {
-    alignSelf: 'center',
+  subHeader: {
+    color: colors.white,
+    fontSize: 16,
+    marginLeft: 60,
+    marginBottom: 40,
+    textAlign: 'left',
+  },
+
+  errorContainer: {
+    padding: 20,
+    marginHorizontal: 60,
+    marginBottom: 10,
+    borderRadius: 20,
+    backgroundColor: colors.red,
+  },
+  errorText: {
+    color: colors.white,
   },
 })
