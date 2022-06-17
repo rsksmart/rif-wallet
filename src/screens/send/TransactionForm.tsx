@@ -3,12 +3,12 @@ import { View, Text, StyleSheet } from 'react-native'
 import { AddressInput } from '../../components'
 import { OutlineButton } from '../../components/button/ButtonVariations'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { colors } from '../../styles/colors'
-import { grid } from '../../styles/grid'
+import { colors } from '../../styles'
+import { grid } from '../../styles'
 import { IPrice } from '../../subscriptions/types'
 import AssetChooser from './AssetChooser'
 import SetAmountComponent from './SetAmountComponent'
-import { Tabs } from '../receive/Tabs'
+import { Tabs } from '../../components/'
 
 interface Interface {
   onConfirm: (

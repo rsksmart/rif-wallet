@@ -9,7 +9,7 @@ import {
 import { ScreenProps } from '../../RootNavigation'
 import { ScreenWithWallet } from '../types'
 import TransactionInfo, { transactionInfo } from './TransactionInfo'
-import { colors } from '../../styles/colors'
+import { colors } from '../../styles'
 import TransactionForm from './TransactionForm'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 

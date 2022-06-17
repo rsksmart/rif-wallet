@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { Dimensions, StyleSheet, View, ScrollView, Text } from 'react-native'
 import QRCode from 'react-qr-code'
 import { getAddressDisplayText } from '../../components'
-import { ShareableText } from './ShareableText'
-import { Tabs } from './Tabs'
+import { ShareableText } from '../../components/ShareableText'
+import { Tabs } from '../../components/Tabs'
 import { colors } from '../../styles/colors'
 
 export enum TestID {
