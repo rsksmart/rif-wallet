@@ -10,13 +10,15 @@ interface WordInterface {
 
 export const Word: React.FC<WordInterface> = ({ number, text }) => (
   <View style={sharedMnemonicStyles.wordContainer}>
-    <View>
-      <View style={sharedMnemonicStyles.wordNumberBadge}>
-        <Text style={sharedMnemonicStyles.wordNumberBadgeText}>{number}</Text>
+    <View style={sharedMnemonicStyles.wordRow}>
+      <View>
+        <View style={sharedMnemonicStyles.wordNumberBadge}>
+          <Text style={sharedMnemonicStyles.wordNumberBadgeText}>{number}</Text>
+        </View>
       </View>
-    </View>
-    <View>
-      <Text style={sharedMnemonicStyles.wordText}>{text}</Text>
+      <View>
+        <Text style={sharedMnemonicStyles.wordText}>{text}</Text>
+      </View>
     </View>
   </View>
 )

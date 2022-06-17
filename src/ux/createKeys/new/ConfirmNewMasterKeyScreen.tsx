@@ -61,7 +61,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
   const renderItem: React.FC<{ item: number }> = ({ item }) => {
     const groupIndex = 3 * item
     return (
-      <View>
+      <ScrollView>
         <WordSelector
           wordIndex={groupIndex}
           expectedWord={mnemonicWords[groupIndex]}
@@ -77,7 +77,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
           expectedWord={mnemonicWords[groupIndex + 2]}
           onWordSelected={handleWordSelected}
         />
-      </View>
+      </ScrollView>
     )
   }
 

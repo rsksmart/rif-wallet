@@ -38,18 +38,9 @@ export const NewMasterKeyScreen: React.FC<
     const wordIndex = 3 * item
     return (
       <View>
-        {Word({
-          number: 1 + wordIndex,
-          text: mnemonicArray[wordIndex],
-        })}
-        {Word({
-          number: 2 + wordIndex,
-          text: mnemonicArray[2 + wordIndex - 1],
-        })}
-        {Word({
-          number: 3 + wordIndex,
-          text: mnemonicArray[3 + wordIndex - 1],
-        })}
+        <Word number={wordIndex + 1} text={mnemonicArray[wordIndex]} />
+        <Word number={wordIndex + 2} text={mnemonicArray[wordIndex + 1]} />
+        <Word number={wordIndex + 3} text={mnemonicArray[wordIndex + 2]} />
       </View>
     )
   }

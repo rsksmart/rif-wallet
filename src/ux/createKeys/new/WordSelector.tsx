@@ -63,9 +63,14 @@ export const WordSelector: React.FC<Props> = ({
     }
   }
 
+  const wordRowStyle =
+    options.length === 0
+      ? sharedMnemonicStyles.wordRow
+      : styles.wordRowWithSuggestions
+
   return (
-    <View>
-      <View style={sharedMnemonicStyles.wordContainer}>
+    <View style={sharedMnemonicStyles.wordContainer}>
+      <View style={wordRowStyle}>
         <View>
           <View style={sharedMnemonicStyles.wordNumberBadge}>
             <Text
@@ -112,19 +117,26 @@ export const WordSelector: React.FC<Props> = ({
           )}
         </View>
       </View>
-      {options.map((item, index) => (
-        <TouchableOpacity onPress={() => selectWord(item)} key={index}>
-          <View style={styles.wordOptionContainer}>
-            <View>
-              <Text
-                testID={`view.option.${index}`}
-                style={sharedMnemonicStyles.wordText}>
-                {item}
-              </Text>
+      <View style={sharedMnemonicStyles.suggestionRow}>
+        {options.map((item, index) => (
+          <TouchableOpacity onPress={() => selectWord(item)} key={index}>
+            <View
+              style={
+                index === 0
+                  ? styles.firstSuggestion
+                  : styles.wordOptionContainer
+              }>
+              <View>
+                <Text
+                  testID={`view.option.${index}`}
+                  style={sharedMnemonicStyles.wordText}>
+                  {item}
+                </Text>
+              </View>
             </View>
-          </View>
-        </TouchableOpacity>
-      ))}
+          </TouchableOpacity>
+        ))}
+      </View>
     </View>
   )
 }
@@ -134,7 +146,6 @@ const styles = StyleSheet.create({
     padding: 15,
     color: colors.white,
     flexDirection: 'row',
-    backgroundColor: colors.darkPurple2,
     fontWeight: 'bold',
   },
   textInput: {
@@ -146,5 +157,19 @@ const styles = StyleSheet.create({
   wordStatus: {
     borderRadius: 30,
     backgroundColor: colors.purple,
+  },
+  wordRowWithSuggestions: {
+    ...sharedMnemonicStyles.wordRow,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+  },
+  firstSuggestion: {
+    padding: 15,
+    color: colors.white,
+    flexDirection: 'row',
+    fontWeight: 'bold',
+    backgroundColor: colors.blue,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
 })

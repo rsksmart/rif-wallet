@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+import { grid } from '../../../styles'
 import { colors } from '../../../styles/colors'
 import { WINDOW_HEIGHT } from '../../slides/Dimensions'
 
@@ -19,14 +20,16 @@ export const sharedMnemonicStyles = StyleSheet.create({
     flexDirection: 'column',
     flex: 1,
   },
+
   wordContainer: {
-    padding: 15,
-    marginBottom: 20,
-    color: colors.white,
-    flexDirection: 'row',
-    backgroundColor: colors.blue,
-    fontWeight: 'bold',
+    marginTop: 10,
     borderRadius: 10,
+  },
+  wordRow: {
+    ...grid.row,
+    backgroundColor: colors.blue,
+    borderRadius: 10,
+    padding: 15,
   },
   wordNumberBadge: {
     backgroundColor: colors.darkBlue,
@@ -39,6 +42,12 @@ export const sharedMnemonicStyles = StyleSheet.create({
     color: colors.white,
     fontSize: 20,
     paddingTop: 7,
+  },
+
+  suggestionRow: {
+    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 20,
+    backgroundColor: colors.blue2,
   },
 
   // used for displaying the mnemonic and the suggestions
