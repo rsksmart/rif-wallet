@@ -10,47 +10,73 @@ import {
 import { colors } from '../../../styles/colors'
 import { CheckIcon } from '../../../components/icons/CheckIcon'
 import DeleteIcon from '../../../components/icons/DeleteIcon'
+import { sharedMnemonicStyles } from './styles'
+import { wordlists } from 'bip39'
+
 type Props = {
-  words: string[]
   wordIndex: number
+  expectedWord: string
   onWordSelected: any
 }
 export const WordSelector: React.FC<Props> = ({
-  words,
   wordIndex,
+  expectedWord,
   onWordSelected,
 }) => {
-  const [word, setWord] = useState('')
+  const [userInput, setUserInput] = useState('')
   const [isMatch, setIsMatch] = useState(false)
   const [options, setOptions] = useState<string[]>([])
-  const expectedWord = words[wordIndex]
 
-  const selectWord = (myWord: string) => {
-    handleTextChange(myWord)
-    setOptions([])
-  }
+  const selectWord = (myWord: string) => handleTextChange(myWord)
+
   const handleTextChange = (newText: string) => {
-    onWordSelected(newText, wordIndex)
+    // don't allow the user to keep typing if there is a match
+    if (isMatch) {
+      return
+    }
+
+    setUserInput(newText)
 
     if (newText === expectedWord) {
       setIsMatch(true)
-    } else {
-      setIsMatch(false)
-    }
-    setWord(newText)
-    if (newText === '') {
       setOptions([])
-    } else {
-      setOptions(words.filter((w: string) => w.startsWith(newText)).slice(0, 3))
+      // only trigger the parent if there is a match
+      return onWordSelected(newText, wordIndex)
+    }
+
+    // user choose the top option but it is not correct
+    if (newText === options[0]) {
+      return setOptions([])
+    }
+
+    // show the suggestions to the user
+    newText === ''
+      ? setOptions([])
+      : setOptions(
+          wordlists.EN.filter((w: string) => w.startsWith(newText)).slice(0, 3),
+        )
+  }
+
+  const handleEnterPress = () => {
+    if (options.length !== 0) {
+      handleTextChange(options[0])
     }
   }
+
+  const wordRowStyle =
+    options.length === 0
+      ? sharedMnemonicStyles.wordRow
+      : styles.wordRowWithSuggestions
+
   return (
-    <View style={styles.selector}>
-      <View style={styles.wordContainer}>
+    <View style={sharedMnemonicStyles.wordContainer}>
+      <View style={wordRowStyle}>
         <View>
-          <View style={styles.wordNumberBadge}>
-            <Text testID={'view.indexLabel'} style={styles.wordNumberBadgeText}>
-              {wordIndex + 1}{' '}
+          <View style={sharedMnemonicStyles.wordNumberBadge}>
+            <Text
+              testID={'view.indexLabel'}
+              style={sharedMnemonicStyles.wordNumberBadgeText}>
+              {wordIndex + 1}
             </Text>
           </View>
         </View>
@@ -60,9 +86,11 @@ export const WordSelector: React.FC<Props> = ({
           placeholderTextColor="#fff"
           style={styles.textInput}
           onChangeText={handleTextChange}
-          value={word}
+          onSubmitEditing={handleEnterPress}
+          value={userInput}
           placeholder="type..."
           keyboardType="numeric"
+          onBlur={() => setOptions([])}
         />
         <View style={styles.wordStatus}>
           {isMatch && (
@@ -89,68 +117,59 @@ export const WordSelector: React.FC<Props> = ({
           )}
         </View>
       </View>
-      {options.map((item, index) => (
-        <TouchableOpacity onPress={() => selectWord(item)} key={index}>
-          <View style={styles.wordOptionContainer}>
-            <View>
-              <Text testID={`view.option.${index}`} style={styles.wordText}>
-                {item}
-              </Text>
+      <View style={sharedMnemonicStyles.suggestionRow}>
+        {options.map((item, index) => (
+          <TouchableOpacity onPress={() => selectWord(item)} key={index}>
+            <View
+              style={
+                index === 0
+                  ? styles.firstSuggestion
+                  : styles.wordOptionContainer
+              }>
+              <View>
+                <Text
+                  testID={`view.option.${index}`}
+                  style={sharedMnemonicStyles.wordText}>
+                  {item}
+                </Text>
+              </View>
             </View>
-          </View>
-        </TouchableOpacity>
-      ))}
+          </TouchableOpacity>
+        ))}
+      </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  selector: {
-    marginBottom: 20,
-  },
-  wordContainer: {
-    padding: 15,
-    color: colors.white,
-    flexDirection: 'row',
-    backgroundColor: colors.blue,
-    fontWeight: 'bold',
-    borderRadius: 10,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-  },
   wordOptionContainer: {
     padding: 15,
     color: colors.white,
     flexDirection: 'row',
-    backgroundColor: colors.darkPurple2,
     fontWeight: 'bold',
-  },
-  wordNumberBadge: {
-    backgroundColor: colors.darkBlue,
-    padding: 10,
-    borderRadius: 20,
-  },
-  wordNumberBadgeText: {
-    textAlign: 'center',
-    color: colors.white,
-    fontSize: 20,
-  },
-  wordText: {
-    color: colors.white,
-    fontSize: 20,
-    marginLeft: 10,
-    paddingTop: 5,
   },
   textInput: {
     marginLeft: 10,
     color: colors.white,
     fontSize: 18,
+    flex: 1,
   },
   wordStatus: {
-    position: 'absolute',
-    right: 15,
-    top: 15,
     borderRadius: 30,
     backgroundColor: colors.purple,
+  },
+  wordRowWithSuggestions: {
+    ...sharedMnemonicStyles.wordRow,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+  },
+  firstSuggestion: {
+    padding: 15,
+    color: colors.white,
+    flexDirection: 'row',
+    fontWeight: 'bold',
+    backgroundColor: colors.blue,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
 })
