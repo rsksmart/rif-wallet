@@ -3,29 +3,33 @@ import {
   balanceToDisplay,
   formatTimestamp,
   shortAddress,
+  trimValue,
 } from '../../lib/utils'
 import { IActivityTransaction } from './ActivityScreen'
 import { StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import ContractsMap from '@rsksmart/rsk-contract-metadata/contract-map.json'
 import { TokenImage } from '../home/TokenImage'
 import StatusIcon from '../../components/statusIcons'
-import { BigNumber } from 'ethers'
 
 interface Interface {
   activityTransaction: IActivityTransaction
   navigation: any
 }
 
-interface IContractsMap {
-  [key: string]:
-    | {
-        [key: string]: any
-      }
-    | undefined
+const StatusBackgroundColorMap = {
+  success: {
+    color: 'black',
+    background: {
+      backgroundColor: '#00D8A6',
+    },
+  },
+  pending: {
+    color: 'red',
+    background: {
+      backgroundColor: 'white',
+    },
+  },
 }
-
-const ContractsMapTs: IContractsMap = ContractsMap
 
 const ActivityRow: React.FC<Interface> = ({
   activityTransaction,
@@ -34,24 +38,19 @@ const ActivityRow: React.FC<Interface> = ({
   const handleClick = () =>
     navigation.navigate('ActivityDetails', activityTransaction)
 
+  const status = activityTransaction.originTransaction.receipt
+    ? 'success'
+    : 'pending'
   const valueConverted = React.useMemo(() => {
-    const value =
-      activityTransaction.enhancedTransaction?.value ||
-      activityTransaction.originTransaction.value
-    // @TODO get decimals from ERC20 class
-    // So far we are getting decimals from the transaction and the metadata
-    const contractAddress: string =
-      activityTransaction.originTransaction.receipt?.contractAddress
-    const contractDecimals: number | undefined =
-      ContractsMapTs[contractAddress]?.decimals || undefined
-
-    const decimals =
-      activityTransaction.enhancedTransaction?.decimals ||
-      contractDecimals ||
-      18
-
-    return balanceToDisplay(BigNumber.from(value), decimals)
-  }, [])
+    if (activityTransaction.enhancedTransaction?.value) {
+      return activityTransaction.enhancedTransaction.value
+    }
+    if (activityTransaction.originTransaction.txType === 'normal') {
+      return balanceToDisplay(activityTransaction.originTransaction.value, 18)
+    }
+    // @TODO logic for not-known tokens
+    return balanceToDisplay(activityTransaction.originTransaction.value, 18)
+  }, [activityTransaction])
   return (
     <TouchableOpacity
       onPress={handleClick}
@@ -77,16 +76,23 @@ const ActivityRow: React.FC<Interface> = ({
         <View style={styles.secondHalf}>
           <View style={styles.alignSelfCenter}>
             <Text style={[styles.mainText, styles.alignSelfEnd]}>
-              {valueConverted}
+              {trimValue(valueConverted)}
             </Text>
             {/* @TODO get value of transaction $$ for example $ 731.03*/}
             {/* <Text style={[styles.secondaryText]}></Text> */}
           </View>
           <View style={[styles.mr3, styles.ml10, styles.alignSelfCenter]}>
-            {/* @TODO get status of transaction */}
-            {/* @TODO create a DICT that maps the bg color to the correct status */}
-            <View style={styles.backgroundStatus}>
-              <StatusIcon status={'SUCCESS'} color="white" />
+            <View
+              style={[
+                styles.backgroundStatus,
+                StatusBackgroundColorMap[status].background,
+              ]}>
+              <StatusIcon
+                status={status}
+                color={StatusBackgroundColorMap[status].color}
+                width={20}
+                height={20}
+              />
             </View>
           </View>
         </View>
@@ -156,7 +162,6 @@ const styles = StyleSheet.create({
   ml10: { marginLeft: 10 },
   mr3: { marginRight: 3 },
   backgroundStatus: {
-    backgroundColor: 'green',
     borderRadius: 20,
   },
 })

@@ -119,7 +119,7 @@ export const ActivityScreen: React.FC<
 const styles = StyleSheet.create({
   parent: {
     paddingBottom: 30,
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     backgroundColor: '#020034',
     minHeight: '100%',
   },
