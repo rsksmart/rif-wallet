@@ -106,7 +106,7 @@ describe('address input', () => {
       })
 
       expect(getByTestId('Input.Address.InputInfo').children[0]).toBe(
-        'Resolved to 0x000_MOCK_DOMAIN_ADDRESS',
+        'RNS domain associated with this address',
       )
 
       expect(handleChange).toBeCalledWith('0x000_MOCK_DOMAIN_ADDRESS', false)
