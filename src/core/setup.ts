@@ -8,7 +8,6 @@ import { RifWalletServicesSocket } from '../lib/rifWalletServices/RifWalletServi
 import { RifRelayService } from '../lib/rifRelayService/RifRelayService'
 
 export const networkId = 31
-export const testTokenAddress = '0xF5859303f76596dD558B438b18d0Ce0e1660F3ea'
 
 const rpcUrl = getWalletSetting(SETTINGS.RPC_URL, networkId)
 const smartWalletFactoryAddress = getWalletSetting(
@@ -37,7 +36,7 @@ export const rifRelayService = new RifRelayService(
   '0xEdB6D515C2DB4F9C3C87D7f6Cefb260B3DEe8014',
   '0xc6a4f4839b074b2a75ebf00a9b427ccb8073b7b4',
   smartWalletFactoryAddress,
-  testTokenAddress,
+  '0xF5859303f76596dD558B438b18d0Ce0e1660F3ea',
   rpcUrl,
 )
 

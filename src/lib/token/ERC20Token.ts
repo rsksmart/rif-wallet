@@ -3,7 +3,7 @@ import { BaseToken, IToken, ITransferOptions, TokenType } from './BaseToken'
 import { ERC20 as ERC20Type, ERC20__factory } from './types'
 
 class ERC20Token extends BaseToken implements IToken {
-  private tokenContract: ERC20Type
+  readonly tokenContract: ERC20Type
 
   public address: string
 

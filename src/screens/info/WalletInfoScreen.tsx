@@ -110,7 +110,6 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
       transfer.amount,
       transfer.fees,
       isWalletDeployed,
-      wallet,
     )
   }
 
@@ -140,7 +139,6 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
   async function handleEstimateFeesToTransferSmartWallet() {
     const fee = await rifRelayService.estimateFeesToTransfer(
       rifRelayProvider!,
-      wallet,
       transfer.address,
       transfer.amount,
     )
