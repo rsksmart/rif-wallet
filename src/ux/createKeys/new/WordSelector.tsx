@@ -89,7 +89,6 @@ export const WordSelector: React.FC<Props> = ({
           onSubmitEditing={handleEnterPress}
           value={userInput}
           placeholder="type..."
-          keyboardType="numeric"
           onBlur={() => setOptions([])}
         />
         <View style={styles.wordStatus}>
