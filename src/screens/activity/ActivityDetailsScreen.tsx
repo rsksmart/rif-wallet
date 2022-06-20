@@ -1,18 +1,20 @@
 import React from 'react'
-import { StyleSheet, Text, View, Linking } from 'react-native'
+import { StyleSheet, Text, View, Linking, TouchableOpacity } from 'react-native'
 import { utils } from 'ethers'
 import { formatTimestamp } from '../../lib/utils'
 import { IActivityTransaction } from './ActivityScreen'
 import { ScrollView } from 'react-native-gesture-handler'
-import { CopyIcon, RefreshIcon } from '../../components/icons'
+import { Arrow, CopyIcon, RefreshIcon } from '../../components/icons'
 import { SearchIcon } from '../../components/icons/SearchIcon'
 import { TokenImage } from '../home/TokenImage'
 import Clipboard from '@react-native-community/clipboard'
 import StatusIcon from '../../components/statusIcons'
 import ButtonCustom from '../../components/activity/ButtonCustom'
+import { NavigationProp } from '../../RootNavigation'
 
 export type ActivityDetailsScreenProps = {
   route: { params: IActivityTransaction }
+  navigation: NavigationProp
 }
 
 type ActivityFieldType = {
@@ -36,9 +38,9 @@ const ActivityField: React.FC<ActivityFieldType> = ({
 
 export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
   route,
+  navigation,
 }) => {
   const transaction = route.params
-
   const onViewExplorerClick = (): null => {
     Linking.openURL(
       `https://explorer.testnet.rsk.co/tx/${transaction.originTransaction.hash}`,
@@ -51,99 +53,117 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
     return null
   }
 
+  const onBackPress = (): null => {
+    navigation.goBack()
+    return null
+  }
+
   const status = transaction.originTransaction.receipt ? 'success' : 'pending'
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.transDetails}>transaction details</Text>
-      <ActivityField title="transfer">
-        <View style={styles.flexDirRow}>
-          <View style={styles.amountContainer}>
-            {/*  @TODO get cash amount for this text */}
-            {/*<Text style={{ fontWeight: 'bold' }}>Cash Amount</Text>*/}
+      <TouchableOpacity
+        style={styles.backButtonContainer}
+        onPress={onBackPress}>
+        <Arrow color="#DBE3FF" height={25} width={25} rotate={270} />
+      </TouchableOpacity>
+      <View style={styles.ph35}>
+        <Text style={styles.transDetails}>transaction details</Text>
+        <ActivityField title="transfer">
+          <View style={styles.flexDirRow}>
+            <View style={styles.amountContainer}>
+              {/*  @TODO get cash amount for this text */}
+              {/*<Text style={{ fontWeight: 'bold' }}>Cash Amount</Text>*/}
+              <Text>
+                {transaction.enhancedTransaction?.value ||
+                  transaction.originTransaction.value}
+              </Text>
+            </View>
+            <View>
+              <RefreshIcon width={30} height={30} color="black" />
+            </View>
+          </View>
+        </ActivityField>
+        <ActivityField title="to">
+          {/*  @TODO get name of the person who the user sent the coins to*/}
+          {/*<Text>Name Here</Text>*/}
+          <Text>
+            {transaction.enhancedTransaction?.to ||
+              transaction.originTransaction.to}
+          </Text>
+        </ActivityField>
+        <ActivityField title="gas price">
+          <View style={styles.flexDirRow}>
+            <TokenImage
+              symbol={transaction.enhancedTransaction?.symbol || ''}
+            />
+            <Text style={styles.textMrMl}>
+              {transaction.enhancedTransaction?.symbol}
+            </Text>
+            <Text>{transaction.originTransaction.gas}</Text>
+          </View>
+        </ActivityField>
+        <ActivityField title="gas limit">
+          <View style={styles.flexDirRow}>
+            <TokenImage
+              symbol={transaction.enhancedTransaction?.symbol || ''}
+            />
+            <Text style={styles.textMrMl}>
+              {transaction.enhancedTransaction?.symbol}
+            </Text>
             <Text>
-              {transaction.enhancedTransaction?.value ||
-                transaction.originTransaction.value}
+              {utils.formatUnits(transaction.originTransaction.gasPrice)}
             </Text>
           </View>
-          <View>
-            <RefreshIcon width={30} height={30} color="black" />
-          </View>
-        </View>
-      </ActivityField>
-      <ActivityField title="to">
-        {/*  @TODO get name of the person who the user sent the coins to*/}
-        {/*<Text>Name Here</Text>*/}
-        <Text>
-          {transaction.enhancedTransaction?.to ||
-            transaction.originTransaction.to}
-        </Text>
-      </ActivityField>
-      <ActivityField title="gas price">
-        <View style={styles.flexDirRow}>
-          <TokenImage symbol={transaction.enhancedTransaction?.symbol || ''} />
-          <Text style={styles.textMrMl}>
-            {transaction.enhancedTransaction?.symbol}
-          </Text>
-          <Text>{transaction.originTransaction.gas}</Text>
-        </View>
-      </ActivityField>
-      <ActivityField title="gas limit">
-        <View style={styles.flexDirRow}>
-          <TokenImage symbol={transaction.enhancedTransaction?.symbol || ''} />
-          <Text style={styles.textMrMl}>
-            {transaction.enhancedTransaction?.symbol}
-          </Text>
-          <Text>
-            {utils.formatUnits(transaction.originTransaction.gasPrice)}
-          </Text>
-        </View>
-      </ActivityField>
-      {/*  @TODO get tx type */}
-      <ActivityField title="tx type">
-        <Text>{transaction.originTransaction.txType}</Text>
-      </ActivityField>
-      <View style={styles.statusRow}>
-        <ActivityField
-          title="status"
-          ContainerProps={{ style: [styles.flexHalfSize, styles.statusField] }}>
-          {/*  @TODO map status to the correct icon */}
-          <View style={[styles.flexDirRow, styles.alignItemsCenter]}>
-            <StatusIcon status={status} />
-            <Text>{status}</Text>
-          </View>
         </ActivityField>
-        <ActivityField
-          title="timestamp"
-          ContainerProps={{
-            style: [styles.flexHalfSize, styles.timestampField],
-          }}>
-          <Text>
-            {formatTimestamp(transaction.originTransaction.timestamp)}
-          </Text>
+        {/*  @TODO get tx type */}
+        <ActivityField title="tx type">
+          <Text>{transaction.originTransaction.txType}</Text>
         </ActivityField>
+        <View style={styles.statusRow}>
+          <ActivityField
+            title="status"
+            ContainerProps={{
+              style: [styles.flexHalfSize, styles.statusField],
+            }}>
+            {/*  @TODO map status to the correct icon */}
+            <View style={[styles.flexDirRow, styles.alignItemsCenter]}>
+              <StatusIcon status={status} />
+              <Text>{status}</Text>
+            </View>
+          </ActivityField>
+          <ActivityField
+            title="timestamp"
+            ContainerProps={{
+              style: [styles.flexHalfSize, styles.timestampField],
+            }}>
+            <Text>
+              {formatTimestamp(transaction.originTransaction.timestamp)}
+            </Text>
+          </ActivityField>
+        </View>
+        <ActivityField
+          title="tx hash"
+          ContainerProps={{ style: { marginBottom: 40 } }}>
+          <Text>{transaction.originTransaction.hash}</Text>
+        </ActivityField>
+        <ButtonCustom
+          firstText="1"
+          secondText="copy hash"
+          icon={<CopyIcon />}
+          onPress={onHashCopy}
+        />
+        <ButtonCustom
+          firstText="2"
+          firstTextColor="black"
+          secondText="view in explorer"
+          icon={<SearchIcon width={30} height={30} />}
+          containerBackground="#C5CDEB"
+          firstTextBackgroundColor="#A3A7C9"
+          secondTextColor="#979ABE"
+          onPress={onViewExplorerClick}
+        />
+        <View style={styles.mb200} />
       </View>
-      <ActivityField
-        title="tx hash"
-        ContainerProps={{ style: { marginBottom: 40 } }}>
-        <Text>{transaction.originTransaction.hash}</Text>
-      </ActivityField>
-      <ButtonCustom
-        firstText="1"
-        secondText="copy hash"
-        icon={<CopyIcon />}
-        onPress={onHashCopy}
-      />
-      <ButtonCustom
-        firstText="2"
-        firstTextColor="black"
-        secondText="view in explorer"
-        icon={<SearchIcon width={30} height={30} />}
-        containerBackground="#C5CDEB"
-        firstTextBackgroundColor="#A3A7C9"
-        secondTextColor="#979ABE"
-        onPress={onViewExplorerClick}
-      />
-      <View style={styles.mb200} />
     </ScrollView>
   )
 }
@@ -151,8 +171,15 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#dbe3ff',
-    paddingTop: 50,
-    paddingHorizontal: 35,
+    paddingTop: 21,
+  },
+  ph35: { paddingHorizontal: 35 },
+  backButtonContainer: {
+    backgroundColor: '#c6ccea',
+    alignSelf: 'flex-start',
+    borderRadius: 40,
+    marginBottom: 19,
+    marginLeft: 15,
   },
   transDetails: {
     marginBottom: 20,
