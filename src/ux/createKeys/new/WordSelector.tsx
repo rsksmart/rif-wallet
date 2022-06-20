@@ -29,12 +29,13 @@ export const WordSelector: React.FC<Props> = ({
 
   const selectWord = (myWord: string) => handleTextChange(myWord)
 
-  const handleTextChange = (newText: string) => {
+  const handleTextChange = (input: string) => {
     // don't allow the user to keep typing if there is a match
     if (isMatch) {
       return
     }
 
+    const newText = input.toLowerCase()
     setUserInput(newText)
 
     if (newText === expectedWord) {
@@ -89,7 +90,7 @@ export const WordSelector: React.FC<Props> = ({
           onSubmitEditing={handleEnterPress}
           value={userInput}
           placeholder="type..."
-          keyboardType="numeric"
+          autoCapitalize="none"
           onBlur={() => setOptions([])}
         />
         <View style={styles.wordStatus}>
