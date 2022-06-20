@@ -49,6 +49,7 @@ export const SecureYourWalletScreen: React.FC<ScreenProps<'SecureYourWallet'>> =
             title={'secure now'}
           />
         </View>
+        {/*
         <View style={{ ...grid.row, ...styles.button2 }}>
           <WhiteButton
             onPress={() => console.log('TODO in different PR')}
@@ -56,6 +57,7 @@ export const SecureYourWalletScreen: React.FC<ScreenProps<'SecureYourWallet'>> =
             title={'secure later'}
           />
         </View>
+        */}
       </View>
     )
   }
