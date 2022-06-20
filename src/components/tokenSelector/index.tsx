@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: colors.white,
     width: 50,
-    marginTop: 10,
+    marginTop: 15,
   },
   action: {
     marginLeft: 40,
@@ -126,10 +126,10 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   headerContent: {
-    marginTop: 160,
+    marginTop: 100,
   },
   Modal: {
     backgroundColor: colors.darkBlue,
-    marginTop: 220,
+    marginTop: 160,
   },
 })

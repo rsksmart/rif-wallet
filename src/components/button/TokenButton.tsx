@@ -31,9 +31,7 @@ export const TokenButton: React.FC<Props> = ({
     onPress={onPress}
     testID={testID}>
     <View style={styles.iconContainer}>
-      <View style={styles.icon}>
-        <Text>{!!icon && icon}</Text>
-      </View>
+      <View style={styles.icon}>{icon}</View>
       <View>
         <Text style={styles.titleText}> {title}</Text>
       </View>
@@ -47,12 +45,12 @@ export const TokenButton: React.FC<Props> = ({
 const styles = StyleSheet.create({
   button: {
     fontSize: 18,
-    padding: 10,
-    borderRadius: 10,
+    padding: 15,
+    borderRadius: 15,
     minWidth: 100,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 10,
+    marginBottom: 15,
   },
   balanceText: {
     color: colors.white,
@@ -60,7 +58,8 @@ const styles = StyleSheet.create({
     paddingTop: 7,
   },
   titleText: {
-    paddingTop: 7,
+    paddingTop: 5,
+    marginLeft: 5,
     fontWeight: 'bold',
     color: colors.white,
   },
@@ -75,5 +74,4 @@ const styles = StyleSheet.create({
   values: {
     flexDirection: 'row',
   },
-  contentWrapper: {},
 })
