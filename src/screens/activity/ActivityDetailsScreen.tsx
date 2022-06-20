@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View, Linking, TouchableOpacity } from 'react-native'
 import { utils } from 'ethers'
-import { formatTimestamp } from '../../lib/utils'
+import { formatTimestamp, shortAddress } from '../../lib/utils'
 import { IActivityTransaction } from './ActivityScreen'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Arrow, CopyIcon, RefreshIcon } from '../../components/icons'
@@ -59,6 +59,10 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
   }
 
   const status = transaction.originTransaction.receipt ? 'success' : 'pending'
+
+  const shortedAddress = shortAddress(
+    transaction.enhancedTransaction?.to || transaction.originTransaction.to,
+  )
   return (
     <ScrollView style={styles.container}>
       <TouchableOpacity
@@ -86,10 +90,7 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
         <ActivityField title="to">
           {/*  @TODO get name of the person who the user sent the coins to*/}
           {/*<Text>Name Here</Text>*/}
-          <Text>
-            {transaction.enhancedTransaction?.to ||
-              transaction.originTransaction.to}
-          </Text>
+          <Text>{shortedAddress}</Text>
         </ActivityField>
         <ActivityField title="gas price">
           <View style={styles.flexDirRow}>
