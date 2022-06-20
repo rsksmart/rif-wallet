@@ -7,10 +7,7 @@ import { grid } from '../../styles/grid'
 import { Arrow } from '../../components/icons'
 
 import { WINDOW_HEIGHT } from '../slides/Dimensions'
-import {
-  BlueButton,
-  WhiteButton,
-} from '../../components/button/ButtonVariations'
+import { BlueButton } from '../../components/button/ButtonVariations'
 
 export const SecureYourWalletScreen: React.FC<ScreenProps<'SecureYourWallet'>> =
   ({ navigation }) => {
