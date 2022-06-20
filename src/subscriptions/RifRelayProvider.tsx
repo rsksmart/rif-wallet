@@ -1,6 +1,5 @@
 import React from 'react'
 import { DefaultRelayingServices } from "@rsksmart/relaying-services-sdk"
-import { RifRelayService } from '../lib/rifRelayService/RifRelayService'
 import { useSelectedWallet } from '../Context'
 import { RifRelayProviderProps } from './types'
 

@@ -32,6 +32,11 @@ export const rifWalletServicesSocket = new RifWalletServicesSocket(
 
 export const rifRelayService = new RifRelayService(
   ['https://dev.relay.rifcomputing.net:8090'],
+  '0x66Fa9FEAfB8Db66Fe2160ca7aEAc7FC24e254387',
+  '0x56ccdB6D312307Db7A4847c3Ea8Ce2449e9B79e9',
+  '0x5C6e96a84271AC19974C3e99d6c4bE4318BfE483',
+  '0xEdB6D515C2DB4F9C3C87D7f6Cefb260B3DEe8014',
+  '0xc6a4f4839b074b2a75ebf00a9b427ccb8073b7b4',
   smartWalletFactoryAddress,
   testTokenAddress,
   rpcUrl)
@@ -45,5 +50,3 @@ export const createRIFWalletFactory =
       smartWalletFactoryAddress,
       onRequest,
     ) // temp - using only testnet
-
-export const web3 = new Web3(rpcUrl)

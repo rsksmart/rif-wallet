@@ -17,7 +17,6 @@ import { DevSettings } from 'react-native'
 import {
   SmartWallet,
 } from '@rsksmart/relaying-services-sdk'
-import Utils, { estimateMaxPossibleRelayGas, TRIF_PRICE } from './Utils'
 import { useRifRelayProviderState } from '../../subscriptions/RifRelayProvider'
 import { testTokenAddress } from '../../core/setup'
 
@@ -272,8 +271,10 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
           tokenAmount: Utils.toWei("1"),
           onlyPreferredRelays: true,
       };
+      //@ts-ignore
       const maxPossibleGasValue = await estimateMaxPossibleRelayGas(rifRelayProvider!.relayProvider?.relayClient, trxDetails);    
       const gasPrice = toBN(
+          //@ts-ignore
           await rifRelayProvider!.relayProvider.relayClient._calculateGasPrice()
           );
       console.log('maxPossibleGas, gasPrice', maxPossibleGasValue.toString(), gasPrice.toString());
