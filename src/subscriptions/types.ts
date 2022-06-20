@@ -105,7 +105,6 @@ export interface TransactionsServerResponseWithActivityTransactions
   activityTransactions: IActivityTransaction[]
 }
 
-
 export type RifRelayProviderProps = {
   children: React.ReactNode
   rifRelayService: RifRelayService

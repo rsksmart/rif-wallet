@@ -293,50 +293,50 @@ export const Core = () => {
                 rifServiceSocket={rifWalletServicesSocket}
                 abiEnhancer={abiEnhancer}>
                 <RifRelayProvider rifRelayService={rifRelayService}>
-                <RootNavigation
-                  currentScreen={currentScreen}
-                  hasKeys={state.hasKeys}
-                  hasPin={state.hasPin}
-                  rifWalletServicesSocket={rifWalletServicesSocket}
-                  keyManagementProps={{
-                    generateMnemonic: () =>
-                      KeyManagementSystem.create().mnemonic,
-                    createFirstWallet: (mnemonic: string) =>
-                      createFirstWallet(mnemonic).then(wallet => {
-                        setUnlocked(true)
-                        return wallet
-                      }),
-                  }}
-                  createPin={createPin}
-                  balancesScreenProps={{ fetcher: rifWalletServicesFetcher }}
-                  sendScreenProps={{ rnsResolver }}
-                  activityScreenProps={{
-                    fetcher: rifWalletServicesFetcher,
-                    abiEnhancer,
-                  }}
-                  keysInfoScreenProps={{
-                    mnemonic: state.kms?.mnemonic || '',
-                    deleteKeys,
-                  }}
-                  injectedBrowserUXScreenProps={{
-                    fetcher: rifWalletServicesFetcher,
-                  }}
-                  contactsNavigationScreenProps={{ rnsResolver }}
-                  dappsScreenProps={{ fetcher: rifWalletServicesFetcher }}
-                  manageWalletScreenProps={{
-                    addNewWallet,
-                    switchActiveWallet,
-                  }}
-                  settingsScreen={{ deleteKeys: resetKeysAndPin }}
-                  changeTopColor={setTopColor}
-                />
-
-                {requests.length !== 0 && (
-                  <ModalComponent
-                    closeModal={closeRequest}
-                    request={requests[0]}
+                  <RootNavigation
+                    currentScreen={currentScreen}
+                    hasKeys={state.hasKeys}
+                    hasPin={state.hasPin}
+                    rifWalletServicesSocket={rifWalletServicesSocket}
+                    keyManagementProps={{
+                      generateMnemonic: () =>
+                        KeyManagementSystem.create().mnemonic,
+                      createFirstWallet: (mnemonic: string) =>
+                        createFirstWallet(mnemonic).then(wallet => {
+                          setUnlocked(true)
+                          return wallet
+                        }),
+                    }}
+                    createPin={createPin}
+                    balancesScreenProps={{ fetcher: rifWalletServicesFetcher }}
+                    sendScreenProps={{ rnsResolver }}
+                    activityScreenProps={{
+                      fetcher: rifWalletServicesFetcher,
+                      abiEnhancer,
+                    }}
+                    keysInfoScreenProps={{
+                      mnemonic: state.kms?.mnemonic || '',
+                      deleteKeys,
+                    }}
+                    injectedBrowserUXScreenProps={{
+                      fetcher: rifWalletServicesFetcher,
+                    }}
+                    contactsNavigationScreenProps={{ rnsResolver }}
+                    dappsScreenProps={{ fetcher: rifWalletServicesFetcher }}
+                    manageWalletScreenProps={{
+                      addNewWallet,
+                      switchActiveWallet,
+                    }}
+                    settingsScreen={{ deleteKeys }}
+                    changeTopColor={setTopColor}
                   />
-                )}
+
+                  {requests.length !== 0 && (
+                    <ModalComponent
+                      closeModal={closeRequest}
+                      request={requests[0]}
+                    />
+                  )}
                 </RifRelayProvider>
               </RIFSocketsProvider>
             </WalletConnectProviderElement>

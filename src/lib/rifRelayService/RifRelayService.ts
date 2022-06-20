@@ -1,29 +1,27 @@
-import { DefaultRelayingServices, SmartWallet } from "@rsksmart/relaying-services-sdk";
-import { EnvelopingTransactionDetails } from '@rsksmart/rif-relay-common';
-import { RelayClient } from '@rsksmart/rif-relay-client';
-import { RIFWallet } from "../core";
+import {
+  DefaultRelayingServices,
+  SmartWallet,
+} from '@rsksmart/relaying-services-sdk'
+import { EnvelopingTransactionDetails } from '@rsksmart/rif-relay-common'
+import { RelayClient } from '@rsksmart/rif-relay-client'
+import { RIFWallet } from '../core'
 import TestToken from '../core/TestToken.json'
-import { testTokenAddress } from "../../core/setup";
-import { toBN, toHex } from 'web3-utils';
+import { toBN, toHex } from 'web3-utils'
 import Web3 from 'web3'
 
-
 export class RifRelayService {
-
-
-  private preferedRelays: string[];
-  private relayHubAddress: string;
-  private relayVerifierAddress: string;
-  private deployVerifierAddress: string;
-  private smartWalletAddress: string;
-  private relayWorkerAddress: string;
-  private smartWalletFactoryAddress: string;
-  private testTokenAddress: string;
-  private rskHost: string;
-  private web3: Web3;
+  private preferedRelays: string[]
+  private relayHubAddress: string
+  private relayVerifierAddress: string
+  private deployVerifierAddress: string
+  private smartWalletAddress: string
+  private relayWorkerAddress: string
+  private smartWalletFactoryAddress: string
+  private testTokenAddress: string
+  private rskHost: string
+  private web3: Web3
 
   private TRIF_PRICE = 0.000005739
-
 
   constructor(
     preferedRelays: string[],
@@ -34,9 +32,8 @@ export class RifRelayService {
     relayWorkerAddress: string,
     smartWalletFactoryAddress: string,
     testTokenAddress: string,
-    rskHost: string
+    rskHost: string,
   ) {
-  
     this.preferedRelays = preferedRelays
     this.relayHubAddress = relayHubAddress
     this.relayVerifierAddress = relayVerifierAddress
@@ -61,7 +58,7 @@ export class RifRelayService {
       deployVerifierAddress: this.deployVerifierAddress,
       smartWalletFactoryAddress: this.smartWalletFactoryAddress,
     } as any
-  
+
     const contractAddresses = {
       relayHub: this.relayHubAddress,
       smartWallet: this.smartWalletAddress,
@@ -69,8 +66,8 @@ export class RifRelayService {
       smartWalletDeployVerifier: this.deployVerifierAddress,
       smartWalletRelayVerifier: this.relayVerifierAddress,
       testToken: this.testTokenAddress,
-    } as any 
-  
+    } as any
+
     //@ts-ignore
     const privateKey = wallet.smartWallet.signer.privateKey
     const relayingServices = new DefaultRelayingServices({
@@ -82,7 +79,7 @@ export class RifRelayService {
     } as any)
 
     await relayingServices.initialize(config, contractAddresses)
-    return relayingServices;
+    return relayingServices
   }
 
   async estimateFeesToDeploySmartWallet(
@@ -95,25 +92,19 @@ export class RifRelayService {
         this.relayWorkerAddress,
       )
 
-      if (estimate) {
-        const costInRBTC = await this.web3.utils.fromWei(estimate.toString())
-        console.log('Cost in RBTC:', costInRBTC)
-
-        const costInTrif = parseFloat(costInRBTC) / this.TRIF_PRICE
-        const tokenContract = await this.getTokenContract()
-        const ritTokenDecimals = await tokenContract.methods.decimals().call()
-        const costInTrifFixed = costInTrif.toFixed(ritTokenDecimals)
-        console.log('Cost in TRif: ', costInTrifFixed)
-
-        /*
-        if (deployRif.check === true) {
-          changeValue(costInRBTC, 'fees')
-        } else {
-          changeValue(costInTrifFixed, 'fees')
-        }
-        */
-        console.log('Estimation Ended')
+      if (!estimate) {
+        throw new Error('Error getting estimation')
       }
+
+      const costInRBTC = await this.web3.utils.fromWei(estimate.toString())
+      console.log('Cost in RBTC:', costInRBTC)
+
+      const costInTrif = parseFloat(costInRBTC) / this.TRIF_PRICE
+      const tokenContract = await this.getTokenContract()
+      const ritTokenDecimals = await tokenContract.methods.decimals().call()
+      const costInTrifFixed = costInTrif.toFixed(ritTokenDecimals)
+      console.log('Cost in TRif: ', costInTrifFixed)
+      return costInTrifFixed
     } catch (error) {
       const errorObj = error as Error
       if (errorObj.message) {
@@ -122,11 +113,11 @@ export class RifRelayService {
       console.error(error)
     }
   }
-  
+
   private async getTokenContract() {
     const rifTokenContract: any = new this.web3.eth.Contract(
       TestToken.abi as any,
-      testTokenAddress,
+      this.testTokenAddress,
     )
     rifTokenContract.setProvider(this.web3.currentProvider)
     return rifTokenContract
@@ -139,16 +130,18 @@ export class RifRelayService {
   ) {
     try {
       const isTokenAllowed = await rifRelayProvider?.isAllowedToken(
-        testTokenAddress
+        this.testTokenAddress,
       )
 
-      if (!isTokenAllowed) throw new Error(
-        'SmartWallet: was not created because Verifier does not accept the specified token for payment',
-      )
+      if (!isTokenAllowed) {
+        throw new Error(
+          'SmartWallet: was not created because Verifier does not accept the specified token for payment',
+        )
+      }
       const fees = await this.web3.utils.toWei(`${feesAmount}`)
       const smartWallet = await rifRelayProvider?.deploySmartWallet(
         currentSmartWallet,
-        testTokenAddress,
+        this.testTokenAddress,
         fees as any,
       )
       const smartWalledIsDeployed = await this.checkSmartWalletDeployment(
@@ -201,117 +194,117 @@ export class RifRelayService {
     rifRelayProvider: DefaultRelayingServices,
     wallet: RIFWallet,
     address: string,
-    tokenAmount: number | string
+    tokenAmount: number | string,
   ) {
     try {
       const encodedTransferFunction = (await this.getTokenContract()).methods
-      .transfer(
-        address,
-        await this.web3.utils.toWei(tokenAmount.toString() || "0")
-      )
-      .encodeABI();
+        .transfer(
+          address,
+          await this.web3.utils.toWei(tokenAmount.toString() || '0'),
+        )
+        .encodeABI()
       const trxDetails = {
-          from: wallet.smartWallet.address,
-          to: testTokenAddress,
-          value: "0",
-          relayHub: this.relayHubAddress,
-          callVerifier: this.relayVerifierAddress,
-          callForwarder: wallet.smartWallet.smartWalletAddress,
-          data: encodedTransferFunction,
-          tokenContract: testTokenAddress,
-          // value set just for the estimation; in the original dapp the estimation is performed using an eight of the user's token balance,
-          tokenAmount: this.web3.utils.toWei("1"),
-          onlyPreferredRelays: true,
-      };
-      //@ts-ignore
-      const maxPossibleGasValue = await this.estimateMaxPossibleRelayGas(rifRelayProvider.relayProvider.relayClient, trxDetails);    
-      const gasPrice = toBN(
-          //@ts-ignore
-          await rifRelayProvider.relayProvider.relayClient._calculateGasPrice()
-          );
-      console.log('maxPossibleGas, gasPrice', maxPossibleGasValue.toString(), gasPrice.toString());
-      const maxPossibleGas = toBN(maxPossibleGasValue);
-      const estimate = maxPossibleGas.mul(gasPrice);
-  
-      const costInRBTC = await this.web3.utils.fromWei(estimate.toString());
-      console.log("transfer cost in RBTC:", costInRBTC);
-
-      const costInTrif = parseFloat(costInRBTC) / this.TRIF_PRICE;
-      const tokenContract = await this.getTokenContract();
-      const ritTokenDecimals = await tokenContract.methods.decimals().call();
-      const costInTrifFixed = costInTrif.toFixed(ritTokenDecimals);
-      console.log("transfer cost in TRif: ", costInTrifFixed);
-      /*
-      if (transfer.check === true) {
-        changeTransferValue(costInRBTC, 'fees');
-      } else {
-        changeTransferValue(costInTrifFixed, 'fees');
+        from: wallet.smartWallet.address,
+        to: this.testTokenAddress,
+        value: '0',
+        relayHub: this.relayHubAddress,
+        callVerifier: this.relayVerifierAddress,
+        callForwarder: wallet.smartWallet.smartWalletAddress,
+        data: encodedTransferFunction,
+        tokenContract: this.testTokenAddress,
+        // value set just for the estimation; in the original dapp the estimation is performed using an eight of the user's token balance,
+        tokenAmount: this.web3.utils.toWei('1'),
+        onlyPreferredRelays: true,
       }
-      */
+      const maxPossibleGasValue = await this.estimateMaxPossibleRelayGas(
+        //@ts-ignore
+        rifRelayProvider.relayProvider.relayClient,
+        trxDetails,
+      )
+      const gasPrice = toBN(
+        //@ts-ignore
+        await rifRelayProvider.relayProvider.relayClient._calculateGasPrice(),
+      )
+      console.log(
+        'maxPossibleGas, gasPrice',
+        maxPossibleGasValue.toString(),
+        gasPrice.toString(),
+      )
+      const maxPossibleGas = toBN(maxPossibleGasValue)
+      const estimate = maxPossibleGas.mul(gasPrice)
+
+      const costInRBTC = await this.web3.utils.fromWei(estimate.toString())
+      console.log('transfer cost in RBTC:', costInRBTC)
+
+      const costInTrif = parseFloat(costInRBTC) / this.TRIF_PRICE
+      const tokenContract = await this.getTokenContract()
+      const ritTokenDecimals = await tokenContract.methods.decimals().call()
+      const costInTrifFixed = costInTrif.toFixed(ritTokenDecimals)
+      console.log('transfer cost in TRif: ', costInTrifFixed)
+      return costInTrifFixed
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
   }
 
   // TODO: this method should be moved to the sdk
   private async estimateMaxPossibleRelayGas(
     relayClient: RelayClient,
-    trxDetails: EnvelopingTransactionDetails
+    trxDetails: EnvelopingTransactionDetails,
   ) {
     const txDetailsClone = {
-        ...trxDetails
-    };
+      ...trxDetails,
+    }
     const internalCallCost = await this.estimateDestinationContractCallGas(
-        relayClient.getEstimateGasParams(txDetailsClone)
-    );
-    txDetailsClone.gas = toHex(internalCallCost);
+      relayClient.getEstimateGasParams(txDetailsClone),
+    )
+    txDetailsClone.gas = toHex(internalCallCost)
     const tokenGas = (
-        await relayClient.estimateTokenTransferGas(
-            txDetailsClone,
-            '0xc6a4f4839b074b2a75ebf00a9b427ccb8073b7b4'
-        )
-    ).toString();
-    txDetailsClone.tokenGas = tokenGas;
-    const maxPossibleGasValue = await relayClient.estimateMaxPossibleRelayGas(
+      await relayClient.estimateTokenTransferGas(
         txDetailsClone,
-        '0xc6a4f4839b074b2a75ebf00a9b427ccb8073b7b4'
-    );
-    return maxPossibleGasValue;
+        this.relayWorkerAddress
+      )
+    ).toString()
+    txDetailsClone.tokenGas = tokenGas
+    const maxPossibleGasValue = await relayClient.estimateMaxPossibleRelayGas(
+      txDetailsClone,
+      this.relayWorkerAddress,
+    )
+    return maxPossibleGasValue
   }
 
   private async estimateDestinationContractCallGas(
     transactionDetails: EnvelopingTransactionDetails,
-    addCushion = true
+    addCushion = true,
   ): Promise<string | number> {
     // For relay calls, transactionDetails.gas is only the portion of gas sent to the destination contract, the tokenPayment
     // Part is done before, by the SmartWallet
-    const ESTIMATED_GAS_CORRECTION_FACTOR = 1.0;
+    const ESTIMATED_GAS_CORRECTION_FACTOR = 1.0
     // When estimating the gas an internal call is going to spend, we need to subtract some gas inherent to send the parameters to the blockchain
-    const INTERNAL_TRANSACTION_ESTIMATE_CORRECTION = 20000;
+    const INTERNAL_TRANSACTION_ESTIMATE_CORRECTION = 20000
     const estimated = await this.web3.eth.estimateGas({
-        from: transactionDetails.from,
-        to: transactionDetails.to,
-        gasPrice: transactionDetails.gasPrice,
-        data: transactionDetails.data
-    });
+      from: transactionDetails.from,
+      to: transactionDetails.to,
+      gasPrice: transactionDetails.gasPrice,
+      data: transactionDetails.data,
+    })
     let internalCallCost =
-        estimated > INTERNAL_TRANSACTION_ESTIMATE_CORRECTION
-            ? estimated - INTERNAL_TRANSACTION_ESTIMATE_CORRECTION
-            : estimated;
-  
+      estimated > INTERNAL_TRANSACTION_ESTIMATE_CORRECTION
+        ? estimated - INTERNAL_TRANSACTION_ESTIMATE_CORRECTION
+        : estimated
+
     // The INTERNAL_TRANSACTION_ESTIMATE_CORRECTION is substracted because the estimation is done using web3.eth.estimateGas which
     // estimates the call as if it where an external call, and in our case it will be called internally (it's not the same cost).
     // Because of this, the estimated maxPossibleGas in the server (which estimates the whole transaction) might not be enough to successfully pass
     // the following verification made in the SmartWallet:
     // require(gasleft() > req.gas, "Not enough gas left"). This is done right before calling the destination internally
-  
-    if (addCushion) {
-        internalCallCost *= ESTIMATED_GAS_CORRECTION_FACTOR;
-    }
-  
-    return internalCallCost;
-  }
 
+    if (addCushion) {
+      internalCallCost *= ESTIMATED_GAS_CORRECTION_FACTOR
+    }
+
+    return internalCallCost
+  }
 
   async transferToken(
     rifRelayProvider: DefaultRelayingServices,
@@ -322,30 +315,29 @@ export class RifRelayService {
     wallet: RIFWallet,
   ) {
     try {
-
-      const amount = tokenAmount+"";
+      const amount = tokenAmount + ''
       const encodedAbi = (await this.getTokenContract()).methods
-          .transfer(address, await this.web3.utils.toWei(amount)).encodeABI();
+        .transfer(address, await this.web3.utils.toWei(amount))
+        .encodeABI()
       const currentSmartWallet = {
         index: 0,
         deployed: smartWalledIsDeployed,
         address: wallet.smartWallet.smartWalletAddress,
       }
       const txDetials = await rifRelayProvider?.relayTransaction(
-          {
-              to: address
-              , data: encodedAbi
-          }
-          , {
-              tokenAddress: testTokenAddress
-              , ...currentSmartWallet
-          }
-          , fees
-      );
-      console.log(txDetials);
+        {
+          to: address,
+          data: encodedAbi,
+        },
+        {
+          tokenAddress: this.testTokenAddress,
+          ...currentSmartWallet,
+        },
+        fees,
+      )
+      console.log(txDetials)
     } catch (error) {
-        console.error(error);
+      console.error(error)
     }
   }
-
 }
