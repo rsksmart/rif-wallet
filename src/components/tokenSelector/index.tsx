@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 40,
     borderTopLeftRadius: 40,
     height: 70,
-    backgroundColor: colors.darkBlue,
+    backgroundColor: colors.darkPurple3,
   },
   actionsContainer: {
     flexDirection: 'row',
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     marginTop: 100,
   },
   Modal: {
-    backgroundColor: colors.darkBlue,
+    backgroundColor: colors.darkPurple3,
     marginTop: 170,
   },
 })
