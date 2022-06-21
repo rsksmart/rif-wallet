@@ -93,8 +93,7 @@ const styles = StyleSheet.create({
   containerHeader: {
     borderTopRightRadius: 40,
     borderTopLeftRadius: 40,
-
-    height: 60,
+    height: 70,
     backgroundColor: colors.darkBlue,
   },
   actionsContainer: {
@@ -122,7 +121,6 @@ const styles = StyleSheet.create({
   swapper: {
     borderColor: colors.darkBlue,
     borderTopColor: colors.white,
-
     borderWidth: 2,
   },
   headerContent: {
@@ -130,6 +128,6 @@ const styles = StyleSheet.create({
   },
   Modal: {
     backgroundColor: colors.darkBlue,
-    marginTop: 160,
+    marginTop: 170,
   },
 })
