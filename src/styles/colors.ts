@@ -8,6 +8,7 @@ export const colors = {
   darkPurple3: '#050134',
 
   blue: '#6053F8',
+  blue2: '#222071',
   darkBlue: '#002653', // #050134
 
   green: '#71F5AE',
@@ -20,4 +21,10 @@ export const colors = {
   lightGray: '#c7cfec',
 
   none: 'rgba(0, 0, 0, 0)',
+
+  // PALETTE
+  background: {
+    button: '#050033',
+    light: '#dbe3ff',
+  },
 }

@@ -53,6 +53,10 @@ export const CompactParagraph: React.FC<Interface> = ({ children, testID }) => (
   </Text>
 )
 
+export { default as RegularText } from './RegularText'
+export { default as MediumText } from './MediumText'
+export { default as SemiBoldText } from './SemiBoldText'
+
 const styles = StyleSheet.create({
   header1: {
     fontSize: 42,
