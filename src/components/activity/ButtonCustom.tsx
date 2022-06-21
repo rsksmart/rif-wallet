@@ -1,5 +1,6 @@
 import React from 'react'
-import { Text, TouchableOpacity, View, StyleSheet } from 'react-native'
+import { TouchableOpacity, View, StyleSheet } from 'react-native'
+import { MediumText } from '../typography'
 
 type ButtonType = {
   firstText: string
@@ -38,10 +39,12 @@ const ButtonCustom: React.FC<ButtonType> = ({
       onPress={onPress}
       style={[styles.buttonTouchOpacity, overrideContainerBackground]}>
       <View style={[styles.buttonViewMain, firstTextBackgroundStyle]}>
-        <Text style={firstTextStyle}>{firstText}</Text>
+        <MediumText style={firstTextStyle}>{firstText}</MediumText>
       </View>
       <View style={styles.marginRightView}>{icon}</View>
-      <Text style={[secondTextStyle, styles.fontBold]}>{secondText}</Text>
+      <MediumText style={[secondTextStyle, styles.fontBold]}>
+        {secondText}
+      </MediumText>
     </TouchableOpacity>
   )
 }

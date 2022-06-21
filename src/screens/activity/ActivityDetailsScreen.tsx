@@ -1,17 +1,17 @@
 import React from 'react'
-import { StyleSheet, Text, View, Linking, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Linking, TouchableOpacity } from 'react-native'
 import { utils } from 'ethers'
 import { formatTimestamp, shortAddress } from '../../lib/utils'
 import { IActivityTransaction } from './ActivityScreen'
 import { ScrollView } from 'react-native-gesture-handler'
-import { Arrow, CopyIcon, RefreshIcon } from '../../components/icons'
+import { Arrow, RefreshIcon } from '../../components/icons'
 import { SearchIcon } from '../../components/icons/SearchIcon'
 import { TokenImage } from '../home/TokenImage'
-import Clipboard from '@react-native-community/clipboard'
 import StatusIcon from '../../components/statusIcons'
 import ButtonCustom from '../../components/activity/ButtonCustom'
 import CopyField from '../../components/activity/CopyField'
 import { NavigationProp } from '../../RootNavigation'
+import { MediumText, RegularText, SemiBoldText } from '../../components'
 
 export type ActivityDetailsScreenProps = {
   route: { params: IActivityTransaction }
@@ -31,7 +31,7 @@ const ActivityField: React.FC<ActivityFieldType> = ({
 }) => {
   return (
     <View style={styles.fieldContainer} {...ContainerProps}>
-      <Text>{title}</Text>
+      <RegularText>{title}</RegularText>
       <View style={styles.wrapper}>{children}</View>
     </View>
   )
@@ -46,11 +46,6 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
     Linking.openURL(
       `https://explorer.testnet.rsk.co/tx/${transaction.originTransaction.hash}`,
     )
-    return null
-  }
-
-  const onHashCopy = (): null => {
-    Clipboard.setString(transaction.originTransaction.hash)
     return null
   }
 
@@ -73,16 +68,18 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
         <Arrow color="#DBE3FF" height={25} width={25} rotate={270} />
       </TouchableOpacity>
       <View style={styles.ph35}>
-        <Text style={styles.transDetails}>transaction details</Text>
+        <SemiBoldText style={styles.transDetails}>
+          transaction details
+        </SemiBoldText>
         <ActivityField title="transfer">
           <View style={styles.flexDirRow}>
             <View style={styles.amountContainer}>
               {/*  @TODO get cash amount for this text */}
               {/*<Text style={{ fontWeight: 'bold' }}>Cash Amount</Text>*/}
-              <Text>
+              <MediumText>
                 {transaction.enhancedTransaction?.value ||
                   transaction.originTransaction.value}
-              </Text>
+              </MediumText>
             </View>
             <View>
               <RefreshIcon width={30} height={30} color="black" />
@@ -92,17 +89,21 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
         <ActivityField title="to">
           {/*  @TODO get name of the person who the user sent the coins to*/}
           {/*<Text>Name Here</Text>*/}
-          <CopyField text={shortedAddress} textToCopy={currentAddress} />
+          <CopyField
+            text={shortedAddress}
+            textToCopy={currentAddress}
+            TextComp={MediumText}
+          />
         </ActivityField>
         <ActivityField title="gas price">
           <View style={styles.flexDirRow}>
             <TokenImage
               symbol={transaction.enhancedTransaction?.symbol || ''}
             />
-            <Text style={styles.textMrMl}>
+            <MediumText style={styles.textMrMl}>
               {transaction.enhancedTransaction?.symbol}
-            </Text>
-            <Text>{transaction.originTransaction.gas}</Text>
+            </MediumText>
+            <MediumText>{transaction.originTransaction.gas}</MediumText>
           </View>
         </ActivityField>
         <ActivityField title="gas limit">
@@ -110,17 +111,17 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
             <TokenImage
               symbol={transaction.enhancedTransaction?.symbol || ''}
             />
-            <Text style={styles.textMrMl}>
+            <MediumText style={styles.textMrMl}>
               {transaction.enhancedTransaction?.symbol}
-            </Text>
-            <Text>
+            </MediumText>
+            <MediumText>
               {utils.formatUnits(transaction.originTransaction.gasPrice)}
-            </Text>
+            </MediumText>
           </View>
         </ActivityField>
         {/*  @TODO get tx type */}
         <ActivityField title="tx type">
-          <Text>{transaction.originTransaction.txType}</Text>
+          <MediumText>{transaction.originTransaction.txType}</MediumText>
         </ActivityField>
         <View style={styles.statusRow}>
           <ActivityField
@@ -131,7 +132,7 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
             {/*  @TODO map status to the correct icon */}
             <View style={[styles.flexDirRow, styles.alignItemsCenter]}>
               <StatusIcon status={status} />
-              <Text>{status}</Text>
+              <MediumText>{status}</MediumText>
             </View>
           </ActivityField>
           <ActivityField
@@ -139,9 +140,9 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
             ContainerProps={{
               style: [styles.flexHalfSize, styles.timestampField],
             }}>
-            <Text>
+            <MediumText>
               {formatTimestamp(transaction.originTransaction.timestamp)}
-            </Text>
+            </MediumText>
           </ActivityField>
         </View>
         <ActivityField
@@ -150,16 +151,11 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
           <CopyField
             text={shortedTxHash}
             textToCopy={transaction.originTransaction.hash}
+            TextComp={MediumText}
           />
         </ActivityField>
         <ButtonCustom
           firstText="1"
-          secondText="copy hash"
-          icon={<CopyIcon />}
-          onPress={onHashCopy}
-        />
-        <ButtonCustom
-          firstText="2"
           firstTextColor="black"
           secondText="view in explorer"
           icon={<SearchIcon width={30} height={30} />}
@@ -189,7 +185,6 @@ const styles = StyleSheet.create({
   },
   transDetails: {
     marginBottom: 20,
-    fontWeight: 'bold',
   },
   fieldContainer: {
     marginBottom: 20,
@@ -201,7 +196,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingLeft: 20,
     paddingRight: 10,
-    marginTop: 10,
+    marginTop: 7,
   },
   statusRow: {
     flexDirection: 'row',
