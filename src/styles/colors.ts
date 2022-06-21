@@ -22,9 +22,14 @@ export const colors = {
 
   none: 'rgba(0, 0, 0, 0)',
 
+  text: {
+    primary: '#dbe3ff',
+    secondary: '#9ca1c3',
+  },
   // PALETTE
   background: {
     button: '#050033',
     light: '#dbe3ff',
+    primary: '#1a1849',
   },
 }
