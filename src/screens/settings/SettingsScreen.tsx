@@ -20,13 +20,21 @@ export const SettingsScreen: React.FC<
   const { t } = useTranslation()
 
   const handleDeleteKeys = () => {
-    Alert.alert('Delete keys', 'Confirm you want to delete your keys', [
-      {
-        text: t('Cancel'),
-        onPress: () => undefined,
-      },
-      { text: 'Delete', onPress: deleteKeys },
-    ])
+    Alert.alert(
+      'Reset App',
+      'Confirm you want to reset the app. This will delete your master key, pin, saved domains and contacts',
+      [
+        {
+          text: t('Cancel'),
+          onPress: () => undefined,
+        },
+        {
+          text: 'Delete',
+          onPress: () =>
+            deleteKeys().then(() => navigation.navigate('CreateKeysUX')),
+        },
+      ],
+    )
   }
 
   return (
@@ -82,7 +90,7 @@ export const SettingsScreen: React.FC<
               />
               <ButtonAlt
                 onPress={handleDeleteKeys}
-                title={t('Delete master key')}
+                title={t('Reset')}
                 style={styles.marginBottom}
               />
             </Section>

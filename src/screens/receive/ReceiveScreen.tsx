@@ -1,18 +1,10 @@
-import React from 'react'
-import {
-  Dimensions,
-  StyleSheet,
-  View,
-  ScrollView,
-  Share,
-  Text,
-} from 'react-native'
-import BaseButton from '../../components/button/BaseButton'
+import React, { useState } from 'react'
+import { Dimensions, StyleSheet, View, ScrollView, Text } from 'react-native'
 import QRCode from 'react-qr-code'
-import Clipboard from '@react-native-community/clipboard'
-import { CopyIcon, ShareIcon } from '../../components/icons'
-import { grid } from '../../styles/grid'
 import { getAddressDisplayText } from '../../components'
+import { ShareableText } from './ShareableText'
+import { Tabs } from './Tabs'
+import { colors } from '../../styles/colors'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
@@ -30,26 +22,24 @@ export const ReceiveScreen: React.FC<ReceiveScreenProps> = ({
   smartWalletAddress,
   registeredDomains,
 }) => {
+  const [activeTab, setActiveTab] = useState('address')
+
   const windowWidth = Dimensions.get('window').width
   const qrCodeSize = windowWidth * 0.5
-
-  const handleShare = () =>
-    Share.share({
-      title: smartWalletAddress,
-      message: smartWalletAddress,
-    })
-  const handleCopy = () => Clipboard.setString(smartWalletAddress)
 
   const qrContainerStyle = {
     marginHorizontal: (windowWidth - (qrCodeSize + 60)) / 2,
     width: qrCodeSize + 60,
   }
 
-  const hasRegisteredDomains = registeredDomains.length > 0
-  const hasManyDomains = registeredDomains.length > 0
-
+  const handleTabSelection = (selectedTab: string) => {
+    setActiveTab(selectedTab)
+  }
   return (
     <ScrollView style={styles.parent}>
+      <View style={qrContainerStyle}>
+        <Text style={styles.title}>share QR Code</Text>
+      </View>
       <View
         style={{ ...styles.qrContainer, ...qrContainerStyle }}
         testID={TestID.QRCodeDisplay}>
@@ -60,68 +50,33 @@ export const ReceiveScreen: React.FC<ReceiveScreenProps> = ({
           size={qrCodeSize}
         />
       </View>
-      <View>
-        <Text style={{ ...qrContainerStyle, ...styles.smartAddressLabel }}>
-          smart address
-        </Text>
+      <View style={{ ...qrContainerStyle }}>
+        <Tabs
+          title={'share details'}
+          tabs={['address', 'domains']}
+          selectedTab={activeTab}
+          onTabSelected={handleTabSelection}
+        />
       </View>
-      <View style={{ ...styles.addressContainer, ...qrContainerStyle }}>
-        <Text testID={TestID.AddressText} style={styles.smartAddress}>
-          {getAddressDisplayText(smartWalletAddress).displayAddress}
-        </Text>
-      </View>
-      {hasRegisteredDomains && (
-        <React.Fragment>
-          <View>
-            <Text style={{ ...qrContainerStyle, ...styles.smartAddressLabel }}>
-              domain{hasManyDomains && 's'}
-            </Text>
-          </View>
-          <ScrollView style={styles.domainsWrapper}>
-            {registeredDomains.map((registeredDomain: string) => (
-              <View
-                key={registeredDomain}
-                style={{
-                  ...styles.addressContainer,
-                  ...qrContainerStyle,
-                  ...styles.domainContainer,
-                }}>
-                <Text style={styles.smartAddress}>
-                  <Text key={registeredDomain}>{registeredDomain}</Text>
-                </Text>
-              </View>
-            ))}
-          </ScrollView>
-        </React.Fragment>
+      {activeTab === 'address' && (
+        <View style={qrContainerStyle}>
+          <ShareableText
+            text={getAddressDisplayText(smartWalletAddress).displayAddress}
+            valueToShare={smartWalletAddress}
+          />
+        </View>
       )}
-      <View style={{ ...grid.row, ...qrContainerStyle, ...styles.customRow }}>
-        <View
-          style={{
-            ...grid.column5,
-            ...styles.bottomColumn,
-          }}>
-          <BaseButton
-            onPress={handleShare}
-            style={styles.button}
-            testID={TestID.ShareButton}>
-            <View style={styles.buttonContent}>
-              <ShareIcon width={30} height={30} />
-              <Text style={styles.buttonText}>share</Text>
-            </View>
-          </BaseButton>
+
+      {activeTab === 'domains' && (
+        <View style={qrContainerStyle}>
+          {registeredDomains.map((domain, index) => (
+            <ShareableText key={index} text={domain} valueToShare={domain} />
+          ))}
+          {registeredDomains?.length === 0 && (
+            <Text style={styles.noDomainsText}>Domains not found</Text>
+          )}
         </View>
-        <View style={{ ...grid.column5, ...styles.bottomColumn }}>
-          <BaseButton
-            onPress={handleCopy}
-            style={styles.button}
-            testID={TestID.CopyButton}>
-            <View style={styles.buttonContent}>
-              <CopyIcon width={30} height={30} />
-              <Text style={styles.buttonText}>copy</Text>
-            </View>
-          </BaseButton>
-        </View>
-      </View>
+      )}
     </ScrollView>
   )
 }
@@ -135,52 +90,17 @@ const styles = StyleSheet.create({
     opacity: 0.9,
     paddingTop: 40,
   },
+  title: {
+    color: colors.white,
+  },
   qrContainer: {
     backgroundColor: '#dbe3ff',
     marginVertical: 20,
     padding: 30,
     borderRadius: 20,
   },
-  addressContainer: {
-    padding: 10,
-    borderRadius: 10,
-    backgroundColor: '#dbe3ff',
-  },
-  domainsWrapper: {
-    maxHeight: 100,
-    overflow: 'scroll',
-  },
-  domainContainer: {
-    marginBottom: 10,
-  },
-  smartAddress: {
-    color: '#08043c',
-    fontSize: 16,
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-  smartAddressLabel: {
-    color: '#FFFFFF',
-    fontWeight: '500',
-    textAlign: 'left',
-    marginTop: 5,
-    marginBottom: 5,
-  },
-  bottomColumn: {
-    marginVertical: 20,
-  },
-  customRow: { justifyContent: 'space-between' },
-  buttonText: {
-    color: '#FFFFFF',
-  },
-  button: {
-    backgroundColor: 'rgba(219, 227, 255, 0.3)',
-    borderRadius: 30,
-  },
-  buttonContent: {
-    alignItems: 'center',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
+  noDomainsText: {
+    alignSelf: 'center',
+    color: colors.white,
   },
 })

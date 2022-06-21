@@ -8,13 +8,10 @@ import {
   TouchableOpacity,
 } from 'react-native'
 import Clipboard from '@react-native-community/clipboard'
-
-import { ContentPasteIcon, SmileFaceIcon } from '../../components/icons'
-import { grid } from '../../styles/grid'
-import { colors } from '../../styles/colors'
+import { colors, spacing } from '../../styles/'
 import { TokenImage } from '../home/TokenImage'
-import { shortAddress } from '../../lib/utils'
-import { BlueButton } from '../../components/button/ButtonVariations'
+import { SearchIcon } from '../../components/icons/SearchIcon'
+import StatusIcon from '../../components/statusIcons'
 
 export interface transactionInfo {
   to?: string
@@ -31,121 +28,119 @@ type Props = {
 const TransactionInfo = ({ transaction }: Props) => {
   if (transaction.status === 'USER_CONFIRM' || !transaction.hash) {
     return (
-      <View style={styles.parent}>
+      <View style={styles.mainLoadingContainer}>
         <Image
           source={require('../../images/transferWait.png')}
           style={styles.loading}
         />
-        <Text style={styles.loadingReason}>transfering ...</Text>
+        <Text style={styles.loadingLabel}>transferring ...</Text>
       </View>
     )
   }
 
+  const onViewExplorerTouch = () =>
+    Linking.openURL(`https://explorer.testnet.rsk.co/tx/${transaction.hash}`)
+
+  const onCopyHash = () => Clipboard.setString(transaction.hash || '')
+
   return (
-    <View style={styles.parent}>
-      <Text style={styles.label}>You have just sent</Text>
-
-      <View style={{ ...grid.row, ...styles.row }}>
-        <View style={grid.column2}>
-          {transaction.symbol && (
-            <TokenImage symbol={transaction.symbol} height={50} width={50} />
-          )}
-        </View>
-        <View style={grid.column9}>
-          <Text style={{ ...styles.value, ...styles.amount }}>
-            {transaction.value} {transaction.symbol}
+    <View style={styles.mainContainer}>
+      <Text style={styles.label}>you have just sent</Text>
+      <View style={styles.sentContainer}>
+        {transaction.symbol && (
+          <>
+            <TokenImage symbol={transaction.symbol} height={17} width={17} />
+            <Text style={[styles.font16Bold, spacing.ml7]}>
+              {transaction.symbol}
+            </Text>
+          </>
+        )}
+        <Text style={[spacing.ml3, styles.font16Bold]}>
+          {transaction.value}
+        </Text>
+      </View>
+      <View style={[spacing.mb30, spacing.mt7]}>
+        {/* @TODO get real amount */}
+        {/*<Text style={styles.font16}>$ 7439.55</Text>*/}
+      </View>
+      <Text style={styles.label}>to a recipient</Text>
+      <View style={spacing.mb30}>
+        <Text style={styles.font16Bold}>{transaction.to}</Text>
+        <Text style={spacing.mt7}>{transaction.to}</Text>
+      </View>
+      <View style={spacing.mb30}>
+        <Text style={styles.label}>status</Text>
+        <View style={styles.sentContainer}>
+          <View>
+            <StatusIcon status={transaction.status} />
+          </View>
+          <Text style={styles.font16Bold}>
+            {transaction.status.toLowerCase()}
           </Text>
         </View>
       </View>
-
-      <Text style={styles.label}>To the recipient</Text>
-      <View style={{ ...grid.row, ...styles.row }}>
-        <View style={grid.column2}>
-          <SmileFaceIcon height={50} width={50} color={colors.white} />
-        </View>
-        <View style={grid.column9}>
-          <Text style={{ ...styles.value, ...styles.recipient }}>
-            {transaction.to}
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.row}>
-        <Text style={styles.label}>Status</Text>
-        <Text style={styles.value}>{transaction.status}</Text>
-      </View>
-
-      <View style={styles.row}>
-        <TouchableOpacity
-          onPress={() => Clipboard.setString(transaction.hash || '')}>
-          <Text style={styles.label}>TX hash</Text>
-          <Text style={styles.value}>
-            {shortAddress(transaction.hash, 10)}
-            <View style={styles.copy}>
-              <ContentPasteIcon />
-            </View>
-            copy
-          </Text>
+      <View style={spacing.mb30}>
+        <TouchableOpacity onPress={onCopyHash}>
+          <Text style={styles.label}>tx hash</Text>
+          <Text style={styles.font16Bold}>{transaction.hash}</Text>
         </TouchableOpacity>
       </View>
-
-      <View style={{ ...grid.row, ...styles.buttons }}>
-        <View style={{ ...grid.column6, ...grid.offset3 }}>
-          <BlueButton
-            onPress={() =>
-              Linking.openURL(
-                `https://explorer.testnet.rsk.co/tx/${transaction.hash}`,
-              )
-            }
-            testID="Hash.OpenURLButton"
-            title="view in explorer"
-          />
-        </View>
+      <View style={styles.buttonRow}>
+        <TouchableOpacity
+          onPress={onViewExplorerTouch}
+          testID="Hash.OpenURLButton">
+          <View style={styles.buttonContainer}>
+            <SearchIcon color="white" height={25} width={25} />
+            <Text style={styles.buttonText}>view in explorer</Text>
+          </View>
+        </TouchableOpacity>
       </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  parent: {
+  mainContainer: {
     marginTop: 20,
+    backgroundColor: colors.background.light,
+    padding: 50,
   },
-  buttons: {
-    marginTop: 100,
-  },
-  row: {
-    marginBottom: 35,
+  flexDirRow: { flexDirection: 'row' },
+  mainLoadingContainer: {
+    backgroundColor: colors.background.light,
+    paddingBottom: 50,
   },
   label: {
-    color: colors.white,
     fontWeight: '600',
-    marginBottom: 5,
+    marginBottom: 10,
+    fontSize: 17,
   },
-  value: {
-    color: colors.white,
+  loadingLabel: {
+    textAlign: 'center',
+  },
+  font16: { fontSize: 16 },
+  font16Bold: {
     fontSize: 16,
+    fontWeight: 'bold',
   },
-  amount: {
-    marginTop: 15,
+  sentContainer: { flexDirection: 'row', alignItems: 'center' },
+  buttonRow: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
   },
-  recipient: {
-    marginTop: 7,
+  buttonContainer: {
+    backgroundColor: colors.background.button,
+    padding: 15,
+    borderRadius: 40,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 40,
   },
-  copy: {
-    paddingLeft: 15,
-    paddingRight: 5,
-  },
-  explorerText: {
-    color: 'white',
-  },
+  buttonText: { color: 'white', marginLeft: 5 },
   loading: {
     alignSelf: 'center',
-    marginTop: '25%',
-    marginBottom: 10,
-  },
-  loadingReason: {
-    textAlign: 'center',
-    color: colors.white,
+    marginBottom: 20,
   },
 })
 

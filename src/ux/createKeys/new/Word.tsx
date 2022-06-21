@@ -1,44 +1,24 @@
 import React from 'react'
 
-import { StyleSheet, View, Text } from 'react-native'
-import { colors } from '../../../styles/colors'
+import { View, Text } from 'react-native'
+import { sharedMnemonicStyles } from './styles'
 
-export const Word = ({ number, text }: { number: number; text: string }) => (
-  <View style={styles.wordContainer}>
-    <View>
-      <View style={styles.wordNumberBadge}>
-        <Text style={styles.wordNumberBadgeText}>{number} </Text>
+interface WordInterface {
+  number: number
+  text: string
+}
+
+export const Word: React.FC<WordInterface> = ({ number, text }) => (
+  <View style={sharedMnemonicStyles.wordContainer}>
+    <View style={sharedMnemonicStyles.wordRow}>
+      <View>
+        <View style={sharedMnemonicStyles.wordNumberBadge}>
+          <Text style={sharedMnemonicStyles.wordNumberBadgeText}>{number}</Text>
+        </View>
       </View>
-    </View>
-    <View>
-      <Text style={styles.wordText}>{text}</Text>
+      <View>
+        <Text style={sharedMnemonicStyles.wordText}>{text}</Text>
+      </View>
     </View>
   </View>
 )
-
-const styles = StyleSheet.create({
-  wordContainer: {
-    padding: 15,
-    color: colors.white,
-    flexDirection: 'row',
-    backgroundColor: colors.blue,
-    fontWeight: 'bold',
-    borderRadius: 10,
-  },
-  wordNumberBadge: {
-    backgroundColor: colors.darkBlue,
-    padding: 10,
-    borderRadius: 20,
-  },
-  wordNumberBadgeText: {
-    textAlign: 'center',
-    color: colors.white,
-    fontSize: 20,
-  },
-  wordText: {
-    color: colors.white,
-    fontSize: 20,
-    marginLeft: 10,
-    paddingTop: 5,
-  },
-})
