@@ -20,4 +20,12 @@ export const colors = {
   lightGray: '#c7cfec',
 
   none: 'rgba(0, 0, 0, 0)',
+
+  background: {
+    primary: '#1a1849',
+  },
+  text: {
+    primary: '#dbe3ff',
+    secondary: '#9ca1c3',
+  },
 }

@@ -6,6 +6,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { TokenImage } from '../home/TokenImage'
 import StatusIcon from '../../components/statusIcons'
+import { colors } from '../../styles/colors'
 
 interface Interface {
   activityTransaction: IActivityTransaction
@@ -44,10 +45,6 @@ const ActivityRow: React.FC<Interface> = ({
     if (activityTransaction.enhancedTransaction?.value) {
       return activityTransaction.enhancedTransaction.value
     }
-    if (activityTransaction.originTransaction.txType === 'normal') {
-      return balanceToDisplay(activityTransaction.originTransaction.value, 18)
-    }
-    // @TODO logic for not-known tokens
     return balanceToDisplay(activityTransaction.originTransaction.value, 18)
   }, [activityTransaction])
   return (
@@ -65,7 +62,7 @@ const ActivityRow: React.FC<Interface> = ({
           </View>
           <View style={styles.secondRow}>
             <Text style={styles.mainText}>
-              To: {shortAddress(activityTransaction.originTransaction.to, 1)}
+              To: {shortAddress(activityTransaction.originTransaction.to, 3)}
             </Text>
             <Text style={styles.secondaryText}>{timeFormatted}</Text>
           </View>
@@ -104,7 +101,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 10,
     marginHorizontal: 10,
-    backgroundColor: '#1a1849',
+    backgroundColor: colors.background.primary,
     borderRadius: 20,
     marginTop: 18,
   },
@@ -112,11 +109,11 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   mainText: {
-    color: '#dbe3ff',
+    color: colors.text.primary,
     fontWeight: 'bold',
   },
   secondaryText: {
-    color: '#9ca1c3',
+    color: colors.text.secondary,
   },
   firstHalf: {
     flexGrow: 50,
