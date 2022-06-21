@@ -1,10 +1,6 @@
 import React from 'react'
-import {
-  balanceToDisplay,
-  formatTimestamp,
-  shortAddress,
-  trimValue,
-} from '../../lib/utils'
+import moment from 'moment'
+import { balanceToDisplay, shortAddress, trimValue } from '../../lib/utils'
 import { IActivityTransaction } from './ActivityScreen'
 import { StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
@@ -41,6 +37,9 @@ const ActivityRow: React.FC<Interface> = ({
   const status = activityTransaction.originTransaction.receipt
     ? 'success'
     : 'pending'
+  const timeFormatted = moment
+    .unix(activityTransaction.originTransaction.timestamp)
+    .fromNow()
   const valueConverted = React.useMemo(() => {
     if (activityTransaction.enhancedTransaction?.value) {
       return activityTransaction.enhancedTransaction.value
@@ -68,9 +67,7 @@ const ActivityRow: React.FC<Interface> = ({
             <Text style={styles.mainText}>
               To: {shortAddress(activityTransaction.originTransaction.to, 1)}
             </Text>
-            <Text style={styles.secondaryText}>
-              {formatTimestamp(activityTransaction.originTransaction.timestamp)}
-            </Text>
+            <Text style={styles.secondaryText}>{timeFormatted}</Text>
           </View>
         </View>
         <View style={styles.secondHalf}>
