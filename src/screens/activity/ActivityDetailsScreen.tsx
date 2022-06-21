@@ -10,6 +10,7 @@ import { TokenImage } from '../home/TokenImage'
 import Clipboard from '@react-native-community/clipboard'
 import StatusIcon from '../../components/statusIcons'
 import ButtonCustom from '../../components/activity/ButtonCustom'
+import CopyField from '../../components/activity/CopyField'
 import { NavigationProp } from '../../RootNavigation'
 
 export type ActivityDetailsScreenProps = {
@@ -60,9 +61,10 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
 
   const status = transaction.originTransaction.receipt ? 'success' : 'pending'
 
-  const shortedAddress = shortAddress(
-    transaction.enhancedTransaction?.to || transaction.originTransaction.to,
-  )
+  const currentAddress =
+    transaction.enhancedTransaction?.to || transaction.originTransaction.to
+  const shortedAddress = shortAddress(currentAddress, 10)
+  const shortedTxHash = shortAddress(transaction.originTransaction.hash, 10)
   return (
     <ScrollView style={styles.container}>
       <TouchableOpacity
@@ -90,7 +92,7 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
         <ActivityField title="to">
           {/*  @TODO get name of the person who the user sent the coins to*/}
           {/*<Text>Name Here</Text>*/}
-          <Text>{shortedAddress}</Text>
+          <CopyField text={shortedAddress} textToCopy={currentAddress} />
         </ActivityField>
         <ActivityField title="gas price">
           <View style={styles.flexDirRow}>
@@ -145,7 +147,10 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
         <ActivityField
           title="tx hash"
           ContainerProps={{ style: { marginBottom: 40 } }}>
-          <Text>{transaction.originTransaction.hash}</Text>
+          <CopyField
+            text={shortedTxHash}
+            textToCopy={transaction.originTransaction.hash}
+          />
         </ActivityField>
         <ButtonCustom
           firstText="1"
