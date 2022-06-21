@@ -3,11 +3,10 @@ import {
   GestureResponderEvent,
   TouchableOpacity,
   View,
-  Text,
   StyleSheet,
 } from 'react-native'
-import { colors } from '../../styles/colors'
-import {RegularText, SemiBoldText} from "../typography";
+import { colors } from '../../styles'
+import { RegularText } from '../typography'
 
 interface Props {
   title: string
@@ -38,7 +37,9 @@ export const TokenButton: React.FC<Props> = ({
       </View>
     </View>
     <View style={styles.values}>
-      {!!balance && <RegularText style={styles.balanceText}>{balance}</RegularText>}
+      {!!balance && (
+        <RegularText style={styles.balanceText}>{balance}</RegularText>
+      )}
     </View>
   </TouchableOpacity>
 )

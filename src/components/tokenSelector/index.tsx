@@ -1,20 +1,14 @@
 import React from 'react'
 import SwipeUpDownModal from 'react-native-swipe-modal-up-down'
-import {
-  ScrollView,
-  View,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-} from 'react-native'
+import { ScrollView, View, StyleSheet, TouchableOpacity } from 'react-native'
 import { TokenButton } from '../button/TokenButton'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { balanceToString } from '../../screens/balances/BalancesScreen'
 import { TokenImage } from '../../screens/home/TokenImage'
 import { getTokenColor } from '../../screens/home/tokenColor'
-import { colors } from '../../styles/colors'
-import {RegularText} from "../typography";
+import { colors } from '../../styles'
+import { RegularText } from '../typography'
 
 interface Interface {
   availableTokens: ITokenWithBalance[]
