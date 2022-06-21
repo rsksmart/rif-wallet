@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   buttonViewMain: {
     marginRight: 10,
     backgroundColor: 'rgba(219, 227, 255, 0.35)',
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
     paddingVertical: 5,
     borderRadius: 100,
   },
