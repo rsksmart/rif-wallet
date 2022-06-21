@@ -72,9 +72,6 @@ const SetAmountComponent: React.FC<Interface> = ({
       {error && <Text style={styles.error}>{error}</Text>}
       <View style={grid.row}>
         <View style={grid.column12}>
-          {/*<Text style={styles.text}>
-            Max: {balanceToString(token.balance, token.decimals || 0)}
-          </Text>*/}
           {!!usdConversion && (
             <Text style={styles.text}>{`${usdConversion} USD`}</Text>
           )}
