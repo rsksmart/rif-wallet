@@ -1,6 +1,6 @@
 import React from 'react'
 import Clipboard from '@react-native-community/clipboard'
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { CopyIcon } from '../icons'
 
 type ICopyField = {
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   text: {
-    flex: 90
+    flex: 90,
   },
   iconView: {
     flex: 10,
