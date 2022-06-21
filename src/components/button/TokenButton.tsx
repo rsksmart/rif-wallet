@@ -7,6 +7,7 @@ import {
   StyleSheet,
 } from 'react-native'
 import { colors } from '../../styles/colors'
+import {RegularText, SemiBoldText} from "../typography";
 
 interface Props {
   title: string
@@ -33,11 +34,11 @@ export const TokenButton: React.FC<Props> = ({
     <View style={styles.iconContainer}>
       <View style={styles.icon}>{icon}</View>
       <View>
-        <Text style={styles.titleText}> {title}</Text>
+        <RegularText style={styles.titleText}> {title}</RegularText>
       </View>
     </View>
     <View style={styles.values}>
-      {!!balance && <Text style={styles.balanceText}>{balance}</Text>}
+      {!!balance && <RegularText style={styles.balanceText}>{balance}</RegularText>}
     </View>
   </TouchableOpacity>
 )
@@ -54,13 +55,11 @@ const styles = StyleSheet.create({
   },
   balanceText: {
     color: colors.white,
-    fontWeight: 'bold',
     paddingTop: 7,
   },
   titleText: {
     paddingTop: 5,
     marginLeft: 5,
-    fontWeight: 'bold',
     color: colors.white,
   },
   iconContainer: {

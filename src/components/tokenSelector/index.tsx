@@ -14,6 +14,7 @@ import { balanceToString } from '../../screens/balances/BalancesScreen'
 import { TokenImage } from '../../screens/home/TokenImage'
 import { getTokenColor } from '../../screens/home/tokenColor'
 import { colors } from '../../styles/colors'
+import {RegularText} from "../typography";
 
 interface Interface {
   availableTokens: ITokenWithBalance[]
@@ -66,14 +67,14 @@ const TokenSelector: React.FC<Interface> = ({
           </View>
           <View style={styles.actionsContainer}>
             <View>
-              <Text style={styles.action}>select asset</Text>
+              <RegularText style={styles.action}>select asset</RegularText>
             </View>
             <View>
               <TouchableOpacity
                 onPress={() => {
                   onAnimateModal(true)
                 }}>
-                <Text style={styles.action}>hide</Text>
+                <RegularText style={styles.action}>hide</RegularText>
               </TouchableOpacity>
             </View>
           </View>
@@ -116,7 +117,6 @@ const styles = StyleSheet.create({
     marginRight: 40,
     marginTop: 10,
     color: 'white',
-    fontWeight: 'bold',
   },
   swapper: {
     borderColor: colors.darkBlue,
