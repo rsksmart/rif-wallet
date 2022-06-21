@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, View, Text } from 'react-native'
 
-import { colors } from '../../styles/colors'
+import { colors } from '../../styles'
 import BaseButton, { BaseButtonInterface } from './BaseButton'
 
 export interface ButtonInterface extends BaseButtonInterface {
@@ -65,7 +65,7 @@ export const BlueButton: React.FC<ButtonInterface> = props => (
 
 const blueStyles = StyleSheet.create({
   button: {
-    backgroundColor: colors.blue,
+    backgroundColor: colors.lightBlue,
   },
   buttonDisabled: {
     backgroundColor: '#251e79',

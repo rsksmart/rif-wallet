@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { AddressInput } from '../../components'
-import { OutlineButton } from '../../components/button/ButtonVariations'
+import { BlueButton } from '../../components/button/ButtonVariations'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { colors } from '../../styles'
 import { grid } from '../../styles'
@@ -119,7 +119,8 @@ const TransactionForm: React.FC<Interface> = ({
             </View>
 
             <View style={styles.centerRow}>
-              <OutlineButton
+              <BlueButton
+                underlayColor={'red'}
                 onPress={handleConfirmClick}
                 disabled={!isValidTransaction}
                 title="review"
@@ -135,7 +136,7 @@ const TransactionForm: React.FC<Interface> = ({
 const styles = StyleSheet.create({
   label: {
     color: colors.white,
-    padding: 5,
+    padding: 10,
   },
   section: {
     marginBottom: 30,

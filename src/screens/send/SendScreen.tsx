@@ -105,7 +105,7 @@ export const SendScreen: React.FC<
 const styles = StyleSheet.create({
   parent: {
     height: '100%',
-    backgroundColor: colors.darkBlue,
+    backgroundColor: colors.darkPurple3,
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
     paddingTop: 40,

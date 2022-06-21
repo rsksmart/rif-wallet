@@ -16,12 +16,12 @@ import {
   AddressValidationMessage,
   toChecksumAddress,
 } from './lib'
-import { grid } from '../../styles/grid'
+import { grid } from '../../styles'
 import { rnsResolver } from '../../core/setup'
 import QRScanner from '../qrScanner'
 import { BarCodeReadEvent } from 'react-native-camera'
 import { Button } from '../button'
-import { colors } from '../../styles/colors'
+import { colors } from '../../styles'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { isValidChecksumAddress } from '@rsksmart/rsk-utils'
 import { OutlineButton } from '../button/ButtonVariations'
@@ -146,7 +146,6 @@ export const AddressInput: React.FC<AddressInputProps> = ({
     <Modal presentationStyle="overFullScreen" style={styles.cameraModal}>
       <View
         style={{
-          ...styles.cameraWrapper,
           width: windowWidth,
           height: windowWidth,
         }}>
@@ -190,10 +189,10 @@ export const AddressInput: React.FC<AddressInputProps> = ({
             />
 
             <TouchableOpacity
-              style={{ ...styles.button, ...styles.buttonPaste }}
+              style={styles.button}
               onPress={handlePasteClick}
               testID="Address.PasteButton">
-              <ContentPasteIcon color={colors.white} height={20} width={20} />
+              <ContentPasteIcon color={colors.white} height={22} width={22} />
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -238,9 +237,9 @@ const styles = StyleSheet.create({
   rnsDomainContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 10,
+    padding: 15,
     backgroundColor: colors.lightGray,
-    borderRadius: 10,
+    borderRadius: 15,
   },
   rnsDomainName: {
     fontWeight: 'bold',
@@ -255,23 +254,21 @@ const styles = StyleSheet.create({
     fontSize: 11,
   },
   inputContainer: {
-    backgroundColor: colors.darkPurple2,
-    borderRadius: 10,
+    backgroundColor: colors.darkPurple5,
+    borderRadius: 15,
     display: 'flex',
     flexDirection: 'row',
     width: '100%',
+    padding: 20,
   },
   input: {
     flex: 5,
-    height: 50,
-    padding: 10,
     fontSize: 16,
     fontWeight: '400',
     color: colors.white,
   },
   button: {
-    paddingTop: 15,
-    paddingHorizontal: 10,
+    paddingHorizontal: 5,
     flex: 1,
   },
   buttonPaste: {
@@ -283,7 +280,6 @@ const styles = StyleSheet.create({
     height: '100%',
     alignItems: 'center',
   },
-  cameraWrapper: {},
   info: {
     marginTop: 5,
     paddingHorizontal: 10,

@@ -6,9 +6,12 @@ export const colors = {
   darkPurple: '#74709B',
   darkPurple2: '#514F78',
   darkPurple3: '#050134',
+  darkPurple4: '#191446',
+  darkPurple5: '#252352',
 
   blue: '#6053F8',
   darkBlue: '#002653', // #050134
+  lightBlue: '#0086ff',
 
   green: '#71F5AE',
   orange: '#F89F84',

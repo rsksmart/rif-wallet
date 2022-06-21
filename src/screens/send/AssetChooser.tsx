@@ -26,13 +26,11 @@ const AssetChooser: React.FC<Interface> = ({
   }
 
   return (
-    <TouchableOpacity
-      onPress={() => setShowSelector(true)}
-      style={{ ...styles.container, ...grid.row }}>
+    <TouchableOpacity onPress={() => setShowSelector(true)} style={grid.row}>
       <View style={{ ...grid.column12, ...styles.assetButton }}>
         <View style={styles.assetContainer}>
           <View style={styles.assetIcon}>
-            <TokenImage symbol={selectedToken.symbol} height={25} width={25} />
+            <TokenImage symbol={selectedToken.symbol} height={19} width={19} />
           </View>
           <Text style={styles.assetTitle}>{selectedToken.symbol}</Text>
         </View>
@@ -47,34 +45,31 @@ const AssetChooser: React.FC<Interface> = ({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    height: 50,
-  },
   assetButton: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: colors.darkPurple2,
-    borderRadius: 10,
+    backgroundColor: colors.darkPurple5,
+    borderRadius: 15,
   },
   assetContainer: {
     flexDirection: 'row',
   },
   assetIcon: {
-    margin: 10,
-    padding: 2,
+    margin: 18,
+    padding: 5,
     backgroundColor: colors.white,
     borderRadius: 20,
-    height: 30,
-    width: 30,
+    height: 29,
+    width: 29,
   },
   assetTitle: {
-    marginTop: 13,
+    marginTop: 25,
     color: colors.white,
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: '600',
   },
   selectLabel: {
-    margin: 15,
+    margin: 25,
     color: colors.white,
   },
 })
