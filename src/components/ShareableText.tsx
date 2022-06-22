@@ -1,8 +1,8 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Share } from 'react-native'
-import { CopyIcon, ShareIcon } from '../../components/icons'
-import { TestID } from './ReceiveScreen'
-import { colors } from '../../styles/colors'
+import { CopyIcon, ShareIcon } from './icons'
+import { TestID } from '../screens/receive/ReceiveScreen'
+import { colors } from '../styles'
 import Clipboard from '@react-native-community/clipboard'
 
 type Props = {

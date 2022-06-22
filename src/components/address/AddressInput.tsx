@@ -16,15 +16,16 @@ import {
   AddressValidationMessage,
   toChecksumAddress,
 } from './lib'
-import { grid } from '../../styles/grid'
+import { grid } from '../../styles'
 import { rnsResolver } from '../../core/setup'
 import QRScanner from '../qrScanner'
 import { BarCodeReadEvent } from 'react-native-camera'
 import { Button } from '../button'
-import { colors } from '../../styles/colors'
+import { colors } from '../../styles'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { isValidChecksumAddress } from '@rsksmart/rsk-utils'
 import { OutlineButton } from '../button/ButtonVariations'
+import DeleteIcon from '../icons/DeleteIcon'
 
 type AddressInputProps = {
   initialValue: string
@@ -43,6 +44,8 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   const [recipient, setRecipient] = useState<string>(initialValue)
   // hide or show the QR reader
   const [showQRReader, setShowQRReader] = useState<boolean>(false)
+  const [domainFound, setDomainFound] = useState<string>('')
+  const [addressResolved, setAddressResolved] = useState<string>('')
 
   const windowWidth = Dimensions.get('window').width
 
@@ -80,9 +83,11 @@ export const AddressInput: React.FC<AddressInputProps> = ({
         rnsResolver
           .addr(inputText)
           .then((address: string) => {
+            setDomainFound(inputText)
+            setAddressResolved(address)
             setStatus({
               type: 'INFO',
-              value: `Resolved to ${address}`,
+              value: 'RNS domain associated with this address',
             })
 
             // call parent with the resolved address
@@ -131,11 +136,16 @@ export const AddressInput: React.FC<AddressInputProps> = ({
     }
   }
 
+  const unselectDomain = () => {
+    setDomainFound('')
+    handleChangeText('')
+    setStatus({ type: 'READY', value: '' })
+  }
+
   return showQRReader ? (
     <Modal presentationStyle="overFullScreen" style={styles.cameraModal}>
       <View
         style={{
-          ...styles.cameraWrapper,
           width: windowWidth,
           height: windowWidth,
         }}>
@@ -149,36 +159,51 @@ export const AddressInput: React.FC<AddressInputProps> = ({
     </Modal>
   ) : (
     <View style={styles.parent}>
-      <View style={grid.row}>
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            onChangeText={text => handleChangeText(text)}
-            onBlur={() => validateCurrentInput(recipient)}
-            autoCapitalize="none"
-            autoCorrect={false}
-            value={recipient}
-            placeholder="Address or RSK domain"
-            testID={testID}
-            editable={true}
-            placeholderTextColor={colors.gray}
-          />
-
-          <TouchableOpacity
-            style={{ ...styles.button, ...styles.buttonPaste }}
-            onPress={handlePasteClick}
-            testID="Address.PasteButton">
-            <ContentPasteIcon color={colors.white} height={20} width={20} />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => setShowQRReader(true)}
-            testID="Address.QRCodeButton">
-            <QRCodeIcon color={colors.white} />
-          </TouchableOpacity>
+      {!!domainFound && (
+        <View style={styles.rnsDomainContainer}>
+          <View>
+            <Text style={styles.rnsDomainName}> {domainFound}</Text>
+            <Text style={styles.rnsDomainAddress}>{addressResolved}</Text>
+          </View>
+          <View style={styles.rnsDomainUnselect}>
+            <TouchableOpacity onPress={unselectDomain}>
+              <DeleteIcon color={'black'} width={20} height={20} />
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      )}
+      {!domainFound && (
+        <View style={grid.row}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              onChangeText={handleChangeText}
+              onBlur={() => validateCurrentInput(recipient)}
+              autoCapitalize="none"
+              autoCorrect={false}
+              value={recipient}
+              placeholder="address or rns domain"
+              testID={testID}
+              editable={true}
+              placeholderTextColor={colors.gray}
+            />
+
+            <TouchableOpacity
+              style={styles.button}
+              onPress={handlePasteClick}
+              testID="Address.PasteButton">
+              <ContentPasteIcon color={colors.white} height={22} width={22} />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => setShowQRReader(true)}
+              testID="Address.QRCodeButton">
+              <QRCodeIcon color={colors.white} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
       {!!status.value && (
         <>
           <Text
@@ -209,30 +234,45 @@ const styles = StyleSheet.create({
   iconColumn: {
     alignItems: 'flex-end',
   },
+  rnsDomainContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 15,
+    backgroundColor: colors.lightGray,
+    borderRadius: 15,
+  },
+  rnsDomainName: {
+    fontWeight: 'bold',
+    fontSize: 15,
+    marginBottom: 3,
+  },
+  rnsDomainUnselect: {
+    margin: 3,
+  },
+  rnsDomainAddress: {
+    marginLeft: 4,
+    fontSize: 11,
+  },
   inputContainer: {
-    backgroundColor: colors.darkPurple2,
-    borderRadius: 10,
+    backgroundColor: colors.darkPurple5,
+    borderRadius: 15,
     display: 'flex',
     flexDirection: 'row',
     width: '100%',
+    padding: 20,
   },
   input: {
     flex: 5,
-    height: 50,
-    padding: 10,
     fontSize: 16,
     fontWeight: '400',
     color: colors.white,
   },
   button: {
-    paddingTop: 15,
-    paddingHorizontal: 10,
+    paddingHorizontal: 5,
     flex: 1,
   },
   buttonPaste: {
-    paddingRight: 20,
-    borderRightWidth: 1,
-    borderRightColor: colors.white,
+    paddingRight: 5,
   },
   cameraModal: {
     flex: 1,
@@ -240,7 +280,6 @@ const styles = StyleSheet.create({
     height: '100%',
     alignItems: 'center',
   },
-  cameraWrapper: {},
   info: {
     marginTop: 5,
     paddingHorizontal: 10,

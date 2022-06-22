@@ -3,11 +3,12 @@ import { View, StyleSheet, Text } from 'react-native'
 import { AddressInput } from '../../components'
 import { BlueButton } from '../../components/button/ButtonVariations'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { colors } from '../../styles/colors'
-import { grid } from '../../styles/grid'
+import { colors } from '../../styles'
+import { grid } from '../../styles'
 import { IPrice } from '../../subscriptions/types'
 import AssetChooser from './AssetChooser'
 import SetAmountComponent from './SetAmountComponent'
+import { Tabs } from '../../components/'
 
 interface Interface {
   onConfirm: (
@@ -35,6 +36,7 @@ const TransactionForm: React.FC<Interface> = ({
   const [selectedToken, setSelectedToken] = useState<ITokenWithBalance>(
     initialValues.asset || tokenList[0],
   )
+  const [activeTab, setActiveTab] = useState('address')
 
   interface txDetail {
     value: string
@@ -69,12 +71,15 @@ const TransactionForm: React.FC<Interface> = ({
 
   const handleConfirmClick = () =>
     onConfirm(selectedToken, amount.value, to.value)
-
+  const handleTabSelection = (selectedTab: string) => {
+    handleTargetAddressChange('', true)
+    setActiveTab(selectedTab)
+  }
   return (
     <View>
-      <View style={grid.row}>
-        <View style={grid.column5}>
-          <Text style={styles.label}>choose asset</Text>
+      <View style={{ ...grid.row, ...styles.section }}>
+        <View style={grid.column12}>
+          <Text style={styles.label}>asset</Text>
           <AssetChooser
             selectedToken={selectedToken}
             tokenList={tokenList}
@@ -83,8 +88,10 @@ const TransactionForm: React.FC<Interface> = ({
             }
           />
         </View>
-        <View style={{ ...grid.column6, ...grid.offset1 }}>
-          <Text style={styles.label}>set amount</Text>
+      </View>
+      <View style={{ ...grid.row, ...styles.section }}>
+        <View style={grid.column12}>
+          <Text style={styles.label}>amount</Text>
           <SetAmountComponent
             setAmount={handleAmountChange}
             token={selectedToken}
@@ -93,25 +100,34 @@ const TransactionForm: React.FC<Interface> = ({
         </View>
       </View>
       <View>
-        <Text style={styles.label}>choose recipient</Text>
-        <AddressInput
-          initialValue={to.value}
-          onChangeText={handleTargetAddressChange}
-          testID={'To.Input'}
-          chainId={chainId}
+        <Tabs
+          title={'recipient'}
+          tabs={['address', 'recent', 'contact']}
+          selectedTab={activeTab}
+          onTabSelected={handleTabSelection}
         />
-      </View>
+        {activeTab === 'address' && (
+          <>
+            <AddressInput
+              initialValue={to.value}
+              onChangeText={handleTargetAddressChange}
+              testID={'To.Input'}
+              chainId={chainId}
+            />
+            <View>
+              <Text>{error}</Text>
+            </View>
 
-      <View>
-        <Text>{error}</Text>
-      </View>
-
-      <View style={styles.centerRow}>
-        <BlueButton
-          onPress={handleConfirmClick}
-          disabled={!isValidTransaction}
-          title="Confirm"
-        />
+            <View style={styles.centerRow}>
+              <BlueButton
+                underlayColor={'red'}
+                onPress={handleConfirmClick}
+                disabled={!isValidTransaction}
+                title="review"
+              />
+            </View>
+          </>
+        )}
       </View>
     </View>
   )
@@ -120,9 +136,11 @@ const TransactionForm: React.FC<Interface> = ({
 const styles = StyleSheet.create({
   label: {
     color: colors.white,
-    marginBottom: 5,
+    padding: 10,
   },
-
+  section: {
+    marginBottom: 30,
+  },
   chooseAsset: {
     width: '100%',
     backgroundColor: '#fff',
@@ -138,6 +156,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   centerRow: {
+    marginTop: 20,
     justifyContent: 'center',
     alignItems: 'center',
   },

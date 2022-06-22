@@ -4,7 +4,6 @@ import { colors } from '../../styles/colors'
 import { grid } from '../../styles/grid'
 
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import CarotDownIcon from '../../components/icons/CarotDown'
 import { TokenImage } from '../home/TokenImage'
 import TokenSelector from '../../components/tokenSelector'
 
@@ -36,17 +35,15 @@ const AssetChooser: React.FC<Interface> = ({
   }
 
   return (
-    <TouchableOpacity
-      onPress={() => setShowSelector(true)}
-      style={{ ...styles.container, ...grid.row }}>
-      <View style={{ ...grid.column10, ...styles.tokenSymbol }}>
-        <Text style={styles.symbolText}>{selectedToken.symbol}</Text>
-        <View style={styles.imageContainer}>
-          <TokenImage symbol={selectedToken.symbol} height={25} width={25} />
+    <TouchableOpacity onPress={() => setShowSelector(true)} style={grid.row}>
+      <View style={{ ...grid.column12, ...styles.assetButton }}>
+        <View style={styles.assetContainer}>
+          <View style={styles.assetIcon}>
+            <TokenImage symbol={selectedToken.symbol} height={19} width={19} />
+          </View>
+          <Text style={styles.assetTitle}>{selectedToken.symbol}</Text>
         </View>
-      </View>
-      <View style={{ ...grid.column2, ...styles.dropdown }}>
-        <CarotDownIcon />
+        <Text style={styles.selectLabel}>select</Text>
       </View>
 
       <TokenSelector
@@ -62,36 +59,32 @@ const AssetChooser: React.FC<Interface> = ({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    height: 50,
+  assetButton: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: colors.darkPurple5,
+    borderRadius: 15,
   },
-  tokenSymbol: {
-    backgroundColor: colors.darkPurple2,
-    borderTopLeftRadius: 10,
-    borderBottomLeftRadius: 10,
-    paddingLeft: 10,
-    position: 'relative',
+  assetContainer: {
+    flexDirection: 'row',
   },
-  symbolText: {
-    position: 'absolute',
-    top: 13,
-    left: 10,
+  assetIcon: {
+    margin: 18,
+    padding: 5,
+    backgroundColor: colors.white,
+    borderRadius: 20,
+    height: 29,
+    width: 29,
+  },
+  assetTitle: {
+    marginTop: 25,
     color: colors.white,
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: '600',
   },
-  imageContainer: {
-    display: 'flex',
-    position: 'absolute',
-    right: 10,
-    top: 10,
-  },
-  dropdown: {
-    backgroundColor: colors.darkPurple,
-    borderTopRightRadius: 10,
-    borderBottomRightRadius: 10,
-    justifyContent: 'center',
-    paddingLeft: 10,
+  selectLabel: {
+    margin: 25,
+    color: colors.white,
   },
 })
 

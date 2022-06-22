@@ -9,7 +9,7 @@ import {
 import { ScreenProps } from '../../RootNavigation'
 import { ScreenWithWallet } from '../types'
 import TransactionInfo, { transactionInfo } from './TransactionInfo'
-import { colors } from '../../styles/colors'
+import { colors } from '../../styles'
 import TransactionForm from './TransactionForm'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
@@ -105,7 +105,7 @@ export const SendScreen: React.FC<
 const styles = StyleSheet.create({
   parent: {
     height: '100%',
-    backgroundColor: colors.darkBlue,
+    backgroundColor: colors.darkPurple3,
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
     paddingTop: 40,

@@ -72,9 +72,6 @@ const SetAmountComponent: React.FC<Interface> = ({
       {error && <Text style={styles.error}>{error}</Text>}
       <View style={grid.row}>
         <View style={grid.column12}>
-          <Text style={styles.text}>
-            Max: {balanceToString(token.balance, token.decimals || 0)}
-          </Text>
           {!!usdConversion && (
             <Text style={styles.text}>{`${usdConversion} USD`}</Text>
           )}
@@ -86,16 +83,14 @@ const SetAmountComponent: React.FC<Interface> = ({
 
 const styles = StyleSheet.create({
   inputContainer: {
-    backgroundColor: colors.darkPurple2,
-    height: 50,
-    borderRadius: 10,
+    backgroundColor: colors.darkPurple4,
+    borderRadius: 15,
   },
   input: {
     color: colors.white,
     fontSize: 16,
     fontWeight: '600',
-    height: 50,
-    paddingLeft: 10,
+    padding: 22,
   },
   text: {
     color: colors.white,
