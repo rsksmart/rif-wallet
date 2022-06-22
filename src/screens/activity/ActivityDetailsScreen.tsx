@@ -92,7 +92,7 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
         <ActivityField title="tx type">
           <MediumText>{transaction.originTransaction.txType}</MediumText>
         </ActivityField>
-        <View style={spacing.mb20}>
+        <View>
           <View style={[styles.flexNoWrap, styles.flexDirRow]}>
             <View style={styles.statusRow}>
               <ActivityField title="status">
