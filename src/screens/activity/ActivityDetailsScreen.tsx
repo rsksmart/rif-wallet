@@ -6,35 +6,17 @@ import { IActivityTransaction } from './ActivityScreen'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Arrow, RefreshIcon } from '../../components/icons'
 import { SearchIcon } from '../../components/icons/SearchIcon'
-import { TokenImage } from '../home/TokenImage'
 import StatusIcon from '../../components/statusIcons'
 import ButtonCustom from '../../components/activity/ButtonCustom'
 import CopyField from '../../components/activity/CopyField'
 import { NavigationProp } from '../../RootNavigation'
-import { MediumText, RegularText, SemiBoldText } from '../../components'
+import { MediumText, SemiBoldText } from '../../components'
+import ActivityField from '../../components/activity/ActivityField'
+import { spacing } from '../../styles'
 
 export type ActivityDetailsScreenProps = {
   route: { params: IActivityTransaction }
   navigation: NavigationProp
-}
-
-type ActivityFieldType = {
-  ContainerProps?: object
-  title: string
-  children: any
-}
-
-const ActivityField: React.FC<ActivityFieldType> = ({
-  ContainerProps = {},
-  title,
-  children,
-}) => {
-  return (
-    <View style={styles.fieldContainer} {...ContainerProps}>
-      <RegularText>{title}</RegularText>
-      <View style={styles.wrapper}>{children}</View>
-    </View>
-  )
 }
 
 export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
@@ -67,11 +49,11 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
         onPress={onBackPress}>
         <Arrow color="#DBE3FF" height={25} width={25} rotate={270} />
       </TouchableOpacity>
-      <View style={styles.ph35}>
-        <SemiBoldText style={styles.transDetails}>
-          transaction details
-        </SemiBoldText>
-        <ActivityField title="transfer">
+      <SemiBoldText style={styles.transDetails}>
+        transaction details
+      </SemiBoldText>
+      <View style={spacing.mh25}>
+        <ActivityField title="value">
           <View style={styles.flexDirRow}>
             <View style={styles.amountContainer}>
               {/*  @TODO get cash amount for this text */}
@@ -97,75 +79,54 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
         </ActivityField>
         <ActivityField title="gas price">
           <View style={styles.flexDirRow}>
-            <TokenImage
-              symbol={transaction.enhancedTransaction?.symbol || ''}
-            />
-            <MediumText style={styles.textMrMl}>
-              {transaction.enhancedTransaction?.symbol}
-            </MediumText>
             <MediumText>{transaction.originTransaction.gas}</MediumText>
           </View>
         </ActivityField>
         <ActivityField title="gas limit">
           <View style={styles.flexDirRow}>
-            <TokenImage
-              symbol={transaction.enhancedTransaction?.symbol || ''}
-            />
-            <MediumText style={styles.textMrMl}>
-              {transaction.enhancedTransaction?.symbol}
-            </MediumText>
             <MediumText>
               {utils.formatUnits(transaction.originTransaction.gasPrice)}
             </MediumText>
           </View>
         </ActivityField>
-        {/*  @TODO get tx type */}
         <ActivityField title="tx type">
           <MediumText>{transaction.originTransaction.txType}</MediumText>
         </ActivityField>
-        <View style={styles.statusRow}>
-          <ActivityField
-            title="status"
-            ContainerProps={{
-              style: [styles.flexHalfSize, styles.statusField],
-            }}>
-            {/*  @TODO map status to the correct icon */}
-            <View style={[styles.flexDirRow, styles.alignItemsCenter]}>
-              <StatusIcon status={status} />
-              <MediumText>{status}</MediumText>
+        <View style={spacing.mb20}>
+          <View style={[styles.flexNoWrap, styles.flexDirRow]}>
+            <View style={styles.statusRow}>
+              <ActivityField title="status">
+                <View style={[styles.flexDirRow, styles.alignItemsCenter]}>
+                  <StatusIcon status={status} />
+                  <MediumText>{status}</MediumText>
+                </View>
+              </ActivityField>
             </View>
-          </ActivityField>
-          <ActivityField
-            title="timestamp"
-            ContainerProps={{
-              style: [styles.flexHalfSize, styles.timestampField],
-            }}>
-            <MediumText>
-              {formatTimestamp(transaction.originTransaction.timestamp)}
-            </MediumText>
-          </ActivityField>
+            <View style={styles.timestampRow}>
+              <ActivityField title="timestamp">
+                <MediumText>
+                  {formatTimestamp(transaction.originTransaction.timestamp)}
+                </MediumText>
+              </ActivityField>
+            </View>
+          </View>
         </View>
-        <ActivityField
-          title="tx hash"
-          ContainerProps={{ style: { marginBottom: 40 } }}>
+        <ActivityField title="tx hash">
           <CopyField
             text={shortedTxHash}
             textToCopy={transaction.originTransaction.hash}
             TextComp={MediumText}
           />
         </ActivityField>
+      </View>
+      <View style={styles.alignSelfCenter}>
         <ButtonCustom
-          firstText="1"
-          firstTextColor="black"
           secondText="view in explorer"
-          icon={<SearchIcon width={30} height={30} />}
-          containerBackground="#C5CDEB"
-          firstTextBackgroundColor="#A3A7C9"
-          secondTextColor="#979ABE"
+          icon={<SearchIcon width={30} height={30} color="white" />}
           onPress={onViewExplorerClick}
         />
-        <View style={styles.mb200} />
       </View>
+      <View style={styles.mb200} />
     </ScrollView>
   )
 }
@@ -175,7 +136,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#dbe3ff',
     paddingTop: 21,
   },
-  ph35: { paddingHorizontal: 35 },
   backButtonContainer: {
     backgroundColor: '#c6ccea',
     alignSelf: 'flex-start',
@@ -185,25 +145,10 @@ const styles = StyleSheet.create({
   },
   transDetails: {
     marginBottom: 20,
-  },
-  fieldContainer: {
-    marginBottom: 20,
-  },
-  wrapper: {
-    backgroundColor: '#c6ccea',
-    height: 70,
-    borderRadius: 17,
-    justifyContent: 'center',
-    paddingLeft: 20,
-    paddingRight: 10,
-    marginTop: 7,
-  },
-  statusRow: {
-    flexDirection: 'row',
-    marginBottom: 15,
+    paddingHorizontal: 35,
   },
   flexHalfSize: {
-    flexGrow: 50,
+    flexGrow: 1,
   },
   statusField: {
     marginRight: 10,
@@ -218,9 +163,11 @@ const styles = StyleSheet.create({
     marginRight: 4,
     marginLeft: 2,
   },
-  mr10: { marginRight: 10 },
   flexDirRow: {
     flexDirection: 'row',
+  },
+  flexNoWrap: {
+    flexWrap: 'nowrap',
   },
   alignItemsCenter: {
     alignItems: 'center',
@@ -231,4 +178,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   fwb: { fontWeight: 'bold' },
+  statusRow: {
+    flex: 40,
+    marginRight: 10,
+  },
+  timestampRow: {
+    flex: 60,
+  },
+  alignSelfCenter: {
+    alignSelf: 'center',
+  },
 })
