@@ -113,3 +113,10 @@ export const balanceToUSD = (
     ? '< $0.01'
     : `$${Math.round(numberAmount * 100) / 100}`
 }
+
+export const trimValue = (value: string) => {
+  if (value.length > 6) {
+    return `${value.substr(0, 6)}...`
+  }
+  return value
+}

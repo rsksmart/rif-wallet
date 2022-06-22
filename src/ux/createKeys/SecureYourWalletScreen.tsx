@@ -7,10 +7,7 @@ import { grid } from '../../styles/grid'
 import { Arrow } from '../../components/icons'
 
 import { WINDOW_HEIGHT } from '../slides/Dimensions'
-import {
-  BlueButton,
-  WhiteButton,
-} from '../../components/button/ButtonVariations'
+import { BlueButton } from '../../components/button/ButtonVariations'
 
 export const SecureYourWalletScreen: React.FC<ScreenProps<'SecureYourWallet'>> =
   ({ navigation }) => {
@@ -49,6 +46,7 @@ export const SecureYourWalletScreen: React.FC<ScreenProps<'SecureYourWallet'>> =
             title={'secure now'}
           />
         </View>
+        {/*
         <View style={{ ...grid.row, ...styles.button2 }}>
           <WhiteButton
             onPress={() => console.log('TODO in different PR')}
@@ -56,6 +54,7 @@ export const SecureYourWalletScreen: React.FC<ScreenProps<'SecureYourWallet'>> =
             title={'secure later'}
           />
         </View>
+        */}
       </View>
     )
   }

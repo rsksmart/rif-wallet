@@ -3,9 +3,10 @@ import {
   GestureResponderEvent,
   TouchableOpacity,
   View,
-  Text,
   StyleSheet,
 } from 'react-native'
+import { colors } from '../../styles'
+import { RegularText } from '../typography'
 
 interface Props {
   title: string
@@ -23,19 +24,22 @@ export const TokenButton: React.FC<Props> = ({
   onPress,
   testID,
   style,
-  textStyle,
   icon,
 }) => (
   <TouchableOpacity
     style={style ? { ...styles.button, ...style } : styles.button}
     onPress={onPress}
     testID={testID}>
-    <View style={styles.contentWrapper}>
-      <View>{!!icon && icon}</View>
+    <View style={styles.iconContainer}>
+      <View style={styles.icon}>{icon}</View>
       <View>
-        <Text style={{ ...styles.text, ...textStyle }}>{title}</Text>
-        {!!balance && <Text>{balance}</Text>}
+        <RegularText style={styles.titleText}> {title}</RegularText>
       </View>
+    </View>
+    <View style={styles.values}>
+      {!!balance && (
+        <RegularText style={styles.balanceText}>{balance}</RegularText>
+      )}
     </View>
   </TouchableOpacity>
 )
@@ -43,18 +47,31 @@ export const TokenButton: React.FC<Props> = ({
 const styles = StyleSheet.create({
   button: {
     fontSize: 18,
-    padding: 10,
-    borderRadius: 10,
-    alignItems: 'center',
-    borderColor: '#575757',
-    borderWidth: 4,
+    padding: 15,
+    borderRadius: 15,
     minWidth: 100,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 15,
   },
-  text: {
-    color: '#575757',
+  balanceText: {
+    color: colors.white,
+    paddingTop: 7,
   },
-  contentWrapper: {
-    alignItems: 'center',
+  titleText: {
+    paddingTop: 5,
+    marginLeft: 5,
+    color: colors.white,
+  },
+  iconContainer: {
+    flexDirection: 'row',
+  },
+  icon: {
+    borderRadius: 15,
+    padding: 5,
+    backgroundColor: colors.white,
+  },
+  values: {
     flexDirection: 'row',
   },
 })

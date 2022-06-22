@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { FlatList, StyleSheet, View, Text } from 'react-native'
+import { FlatList, StyleSheet, View } from 'react-native'
 
 import { useSocketsState } from '../../subscriptions/RIFSockets'
 import { useTranslation } from 'react-i18next'
@@ -95,8 +95,6 @@ export const ActivityScreen: React.FC<
 
   return (
     <View>
-      <Text style={styles.header}>Activity</Text>
-
       {hasTransactions && (
         <FlatList
           data={transactions.activityTransactions}
@@ -120,9 +118,10 @@ export const ActivityScreen: React.FC<
 
 const styles = StyleSheet.create({
   parent: {
-    paddingHorizontal: 20,
-    marginBottom: 30,
-    backgroundColor: '#ffffff',
+    paddingBottom: 30,
+    paddingHorizontal: 15,
+    backgroundColor: '#020034',
+    minHeight: '100%',
   },
   refreshButtonView: {
     paddingVertical: 15,

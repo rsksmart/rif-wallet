@@ -4,8 +4,8 @@ import { colors } from '../../styles/colors'
 import { grid } from '../../styles/grid'
 
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import MiniModal from '../../components/tokenSelector/MiniModal'
 import { TokenImage } from '../home/TokenImage'
+import TokenSelector from '../../components/tokenSelector'
 
 interface Interface {
   selectedToken: ITokenWithBalance
@@ -19,10 +19,19 @@ const AssetChooser: React.FC<Interface> = ({
   handleTokenSelection,
 }) => {
   const [showSelector, setShowSelector] = useState<boolean>(false)
+  const [animateModal, setAnimateModal] = useState(false)
 
   const handleToken = (token: ITokenWithBalance) => {
-    setShowSelector(false)
+    setAnimateModal(true)
     handleTokenSelection(token)
+  }
+  const handleCloseModal = () => {
+    setShowSelector(false)
+    setAnimateModal(false)
+  }
+
+  const handleAnimateModal = () => {
+    setAnimateModal(true)
   }
 
   return (
@@ -37,9 +46,14 @@ const AssetChooser: React.FC<Interface> = ({
         <Text style={styles.selectLabel}>select</Text>
       </View>
 
-      {showSelector && (
-        <MiniModal onTokenSelection={handleToken} availableTokens={tokenList} />
-      )}
+      <TokenSelector
+        showSelector={showSelector}
+        animateModal={animateModal}
+        availableTokens={tokenList}
+        onTokenSelection={handleToken}
+        onModalClosed={handleCloseModal}
+        onAnimateModal={handleAnimateModal}
+      />
     </TouchableOpacity>
   )
 }
