@@ -2261,13 +2261,14 @@
     ethjs-query "^0.3.8"
     ethr-did-resolver "^1.0.2"
 
-"@rsksmart/relaying-services-sdk@git+ssh://git@github.com:rsksmart/relaying-services-sdk.git":
-  version "0.0.1-alpha-0"
-  resolved "git+ssh://git@github.com:rsksmart/relaying-services-sdk.git#20ec986c6921219418605baf019f6883f6d36f3d"
+"@rsksmart/relaying-services-sdk@0.0.1-alpha.2":
+  version "0.0.1-alpha.2"
+  resolved "https://registry.yarnpkg.com/@rsksmart/relaying-services-sdk/-/relaying-services-sdk-0.0.1-alpha.2.tgz#46c03ffa8a64f551e478a22128363a68e69d5809"
+  integrity sha512-DQMrHKAXIDX+lkXzzrGr6W42MPSLwWKP6CmDEt2wUbWi7uqh8ned/UIBYAgmSDeeMay4nlkVUl3eguAp+vLKVA==
   dependencies:
-    "@rsksmart/rif-relay-client" "https://github.com/infuy/rif-relay-client"
-    "@rsksmart/rif-relay-common" "https://github.com/infuy/rif-relay-common"
-    "@rsksmart/rif-relay-contracts" "https://github.com/anarancio/rif-relay-contracts"
+    "@rsksmart/rif-relay-client" "0.0.2-alpha.2"
+    "@rsksmart/rif-relay-common" "0.0.2-alpha.3"
+    "@rsksmart/rif-relay-contracts" "0.0.2-alpha.2"
     web3 "1.2.6"
     web3-core "1.2.6"
     web3-eth "1.2.6"
@@ -2301,12 +2302,13 @@
     lodash "^4.17.15"
     randombytes "^2.1.0"
 
-"@rsksmart/rif-relay-client@https://github.com/infuy/rif-relay-client":
-  version "1.0.0"
-  resolved "https://github.com/infuy/rif-relay-client#d5748f2571c6f583badbb9f1436640102b8096a1"
+"@rsksmart/rif-relay-client@0.0.2-alpha.2":
+  version "0.0.2-alpha.2"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rif-relay-client/-/rif-relay-client-0.0.2-alpha.2.tgz#a895b2c884addbd51c579067cd39ed0bab8383c2"
+  integrity sha512-NhA/QRYzeZbG8P0e+YV6mFwziUi2m1FDbFWBd/A9bCbsENvw5Dh1e4KlRgdzCz7aniVTCMwCok3hpLTkY+SZ6g==
   dependencies:
-    "@rsksmart/rif-relay-common" "https://github.com/infuy/rif-relay-common"
-    "@rsksmart/rif-relay-contracts" "https://github.com/anarancio/rif-relay-contracts"
+    "@rsksmart/rif-relay-common" "0.0.2-alpha.3"
+    "@rsksmart/rif-relay-contracts" "0.0.2-alpha.2"
     abi-decoder "~2.3.0"
     axios "~0.21.1"
     eth-sig-util "2.5.2"
@@ -2321,13 +2323,14 @@
     web3-eth-contract "1.2.6"
     web3-utils "1.2.6"
 
-"@rsksmart/rif-relay-common@https://github.com/infuy/rif-relay-common":
-  version "1.0.0"
-  resolved "https://github.com/infuy/rif-relay-common#f8e4ce8d90a979f3eec55a0eb5dbd5cc742c40e3"
+"@rsksmart/rif-relay-common@0.0.2-alpha.3":
+  version "0.0.2-alpha.3"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rif-relay-common/-/rif-relay-common-0.0.2-alpha.3.tgz#6059effd8b234aeaf87d1427f9e97220c2e4506c"
+  integrity sha512-CQo+8afbmk8B1BbcSawxavhQJEYTUG1Ia33OE6HiX/CNs6keU06AkxmNCnC4gmfE6rxq7UamMJM4rpGc5hdhdg==
   dependencies:
     "@openeth/truffle-typings" "0.0.6"
     "@openzeppelin/contracts" "~3.2.0"
-    "@rsksmart/rif-relay-contracts" "https://github.com/anarancio/rif-relay-contracts"
+    "@rsksmart/rif-relay-contracts" "0.0.2-alpha.2"
     "@truffle/abi-utils" "~0.2.3"
     "@truffle/contract" "~4.2.23"
     "@truffle/contract-schema" "3.3.2"
@@ -2356,9 +2359,10 @@
     web3-eth-contract "1.2.6"
     web3-utils "1.2.6"
 
-"@rsksmart/rif-relay-contracts@https://github.com/anarancio/rif-relay-contracts":
-  version "0.0.1"
-  resolved "https://github.com/anarancio/rif-relay-contracts#5211cc6cf000be185f85c818378cd31cebfd9acb"
+"@rsksmart/rif-relay-contracts@0.0.2-alpha.2":
+  version "0.0.2-alpha.2"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rif-relay-contracts/-/rif-relay-contracts-0.0.2-alpha.2.tgz#c9cd8d3cc4f0bf38fc29adb337507aa4b4e0d989"
+  integrity sha512-ZCVriHvJJx88YzGmhyz/e4OUSQBqjb8lsLgzoYKbz3oGnrgnEDMVNDOEe140dgsNKw/dLXHLObj2w2AJ9u3plA==
   dependencies:
     "@openeth/truffle-typings" "0.0.6"
     "@openzeppelin/contracts" "~3.2.0"
@@ -3566,10 +3570,9 @@ ansi-fragments@^0.2.1:
     slice-ansi "^2.0.0"
     strip-ansi "^5.0.0"
 
-ansi-mark@^1.0.0:
+ansi-mark@^1.0.0, "ansi-mark@https://github.com/sleyter93/ansi-mark.git":
   version "1.0.4"
-  resolved "https://registry.yarnpkg.com/ansi-mark/-/ansi-mark-1.0.4.tgz#1cd4ba8d57f15f109d6aaf6ec9ca9786c8a4ee6c"
-  integrity sha512-3UG9PiYp/eyLuOojJbcQfiH0s8VmHV4M/K9e24q5EBD8PDoDy0Ii4y/VYnTgF+0hWjm8WXz4ybmX6kftbeelFw==
+  resolved "https://github.com/sleyter93/ansi-mark.git#b68b4ab5816841e9dca861d0b713230362d71f98"
   dependencies:
     ansi-regex "^3.0.0"
     array-uniq "^1.0.3"
@@ -4261,10 +4264,10 @@ borc@^2.1.2:
     json-text-sequence "~0.1.0"
     readable-stream "^3.6.0"
 
-bplist-creator@0.0.8:
-  version "0.0.8"
-  resolved "https://registry.npmjs.org/bplist-creator/-/bplist-creator-0.0.8.tgz"
-  integrity sha512-Za9JKzD6fjLC16oX2wsXfc+qBEhJBJB1YPInoAQpMLhDuj5aVOv1baGeIQSq1Fr3OCqzvsoQcSBSwGId/Ja2PA==
+bplist-creator@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/bplist-creator/-/bplist-creator-0.1.0.tgz#018a2d1b587f769e379ef5519103730f8963ba1e"
+  integrity sha512-sXaHZicyEEmY86WyueLTQesbeoH/mquvarJaQNbjuOQO+7gbFcDEWqKmcWA4cOTLzFlfgvkiVxolk1k5bBIpmg==
   dependencies:
     stream-buffers "2.2.x"
 
@@ -12509,10 +12512,9 @@ sudo-prompt@^9.0.0:
   resolved "https://registry.npmjs.org/sudo-prompt/-/sudo-prompt-9.2.1.tgz"
   integrity sha512-Mu7R0g4ig9TUuGSxJavny5Rv0egCEtpZRNMrZaYS1vxkiIxGiGUwoezU3LazIQ+KE04hTrTfNPgxU5gzi7F5Pw==
 
-super-split@^1.1.0:
+super-split@^1.1.0, "super-split@https://github.com/sleyter93/super-split.git":
   version "1.1.0"
-  resolved "https://registry.yarnpkg.com/super-split/-/super-split-1.1.0.tgz#43b3ba719155f4d43891a32729d59b213d9155fc"
-  integrity sha512-I4bA5mgcb6Fw5UJ+EkpzqXfiuvVGS/7MuND+oBxNFmxu3ugLNrdIatzBLfhFRMVMLxgSsRy+TjIktgkF9RFSNQ==
+  resolved "https://github.com/sleyter93/super-split.git#3a770772c09d5fe07b7b7c4ee4ba133e5842a6ed"
 
 supports-color@^5.3.0:
   version "5.5.0"

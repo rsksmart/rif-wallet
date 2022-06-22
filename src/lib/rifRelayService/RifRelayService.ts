@@ -5,8 +5,8 @@ import {
 import { EnvelopingTransactionDetails } from '@rsksmart/rif-relay-common'
 import { RelayClient } from '@rsksmart/rif-relay-client'
 import { RIFWallet } from '../core'
-import { BigNumber, utils } from 'ethers'
-import { ERC20Token } from '../token/ERC20Token'
+import { BigNumber, ethers, utils } from 'ethers'
+import { ERC20__factory } from '../token/types'
 
 export class RifRelayService {
   private preferedRelays: string[]
@@ -100,8 +100,7 @@ export class RifRelayService {
       console.log('Cost in RBTC:', costInRBTC)
 
       const costInTrif = parseFloat(costInRBTC) / this.TRIF_PRICE
-      const tokenContract = await this.getTokenContract()
-      const ritTokenDecimals = await tokenContract.decimals()
+      const ritTokenDecimals = await this.getTokenContract().decimals()
       const costInTrifFixed = costInTrif.toFixed(ritTokenDecimals)
       console.log('Cost in TRif: ', costInTrifFixed)
       return costInTrifFixed
@@ -114,13 +113,13 @@ export class RifRelayService {
     }
   }
 
-  private async getTokenContract() {
-    return new ERC20Token(
+  private getTokenContract() {
+    const contract = new ethers.Contract(
       this.testTokenAddress,
-      this.wallet!,
-      'TKN',
-      'null.jpg',
+      ERC20__factory.abi,
+      this.wallet?.provider,
     )
+    return contract
   }
 
   async deploySmartWallet(
@@ -174,12 +173,11 @@ export class RifRelayService {
     tokenAmount: number | string,
   ) {
     try {
-      const encodedTransferFunctionEthers = (
-        await this.getTokenContract()
-      ).tokenContract.interface.encodeFunctionData('transfer', [
-        address,
-        utils.parseEther(tokenAmount.toString() || '0'),
-      ])
+      const encodedTransferFunction =
+        this.getTokenContract().interface.encodeFunctionData('transfer', [
+          address,
+          utils.parseEther(tokenAmount.toString() || '0'),
+        ])
       const trxDetails = {
         from: this.wallet!.smartWallet.address,
         to: this.testTokenAddress,
@@ -187,7 +185,7 @@ export class RifRelayService {
         relayHub: this.relayHubAddress,
         callVerifier: this.relayVerifierAddress,
         callForwarder: this.wallet!.smartWallet.smartWalletAddress,
-        data: encodedTransferFunctionEthers,
+        data: encodedTransferFunction,
         tokenContract: this.testTokenAddress,
         // value set just for the estimation; in the original dapp the estimation is performed using an eight of the user's token balance,
         tokenAmount: utils.parseEther('1').toString(),
@@ -214,8 +212,7 @@ export class RifRelayService {
       console.log('transfer cost in RBTC:', costInRBTC)
 
       const costInTrif = parseFloat(costInRBTC) / this.TRIF_PRICE
-      const tokenContract = await this.getTokenContract()
-      const ritTokenDecimals = await tokenContract.decimals()
+      const ritTokenDecimals = await this.getTokenContract().decimals()
       const costInTrifFixed = costInTrif.toFixed(ritTokenDecimals)
       console.log('transfer cost in TRif: ', costInTrifFixed)
       return costInTrifFixed
@@ -294,12 +291,10 @@ export class RifRelayService {
   ) {
     try {
       const amount = tokenAmount + ''
-      const encodedAbi = (
-        await this.getTokenContract()
-      ).tokenContract.interface.encodeFunctionData('transfer', [
-        address,
-        utils.parseEther(amount).toString(),
-      ])
+      const encodedAbi = this.getTokenContract().interface.encodeFunctionData(
+        'transfer',
+        [address, utils.parseEther(amount).toString()],
+      )
 
       const currentSmartWallet = {
         index: 0,
