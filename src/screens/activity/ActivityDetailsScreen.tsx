@@ -10,7 +10,7 @@ import StatusIcon from '../../components/statusIcons'
 import ButtonCustom from '../../components/activity/ButtonCustom'
 import CopyField from '../../components/activity/CopyField'
 import { NavigationProp } from '../../RootNavigation'
-import { MediumText, SemiBoldText } from '../../components'
+import { SemiBoldText } from '../../components'
 import ActivityField from '../../components/activity/ActivityField'
 import { spacing } from '../../styles'
 
@@ -58,10 +58,10 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
             <View style={styles.amountContainer}>
               {/*  @TODO get cash amount for this text */}
               {/*<Text style={{ fontWeight: 'bold' }}>Cash Amount</Text>*/}
-              <MediumText>
+              <SemiBoldText>
                 {transaction.enhancedTransaction?.value ||
                   transaction.originTransaction.value}
-              </MediumText>
+              </SemiBoldText>
             </View>
             <View>
               <RefreshIcon width={30} height={30} color="black" />
@@ -74,23 +74,23 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
           <CopyField
             text={shortedAddress}
             textToCopy={currentAddress}
-            TextComp={MediumText}
+            TextComp={SemiBoldText}
           />
         </ActivityField>
         <ActivityField title="gas price">
           <View style={styles.flexDirRow}>
-            <MediumText>{transaction.originTransaction.gas}</MediumText>
+            <SemiBoldText>{transaction.originTransaction.gas}</SemiBoldText>
           </View>
         </ActivityField>
         <ActivityField title="gas limit">
           <View style={styles.flexDirRow}>
-            <MediumText>
+            <SemiBoldText>
               {utils.formatUnits(transaction.originTransaction.gasPrice)}
-            </MediumText>
+            </SemiBoldText>
           </View>
         </ActivityField>
         <ActivityField title="tx type">
-          <MediumText>{transaction.originTransaction.txType}</MediumText>
+          <SemiBoldText>{transaction.originTransaction.txType}</SemiBoldText>
         </ActivityField>
         <View>
           <View style={[styles.flexNoWrap, styles.flexDirRow]}>
@@ -98,15 +98,15 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
               <ActivityField title="status">
                 <View style={[styles.flexDirRow, styles.alignItemsCenter]}>
                   <StatusIcon status={status} />
-                  <MediumText>{status}</MediumText>
+                  <SemiBoldText>{status}</SemiBoldText>
                 </View>
               </ActivityField>
             </View>
             <View style={styles.timestampRow}>
               <ActivityField title="timestamp">
-                <MediumText>
+                <SemiBoldText>
                   {formatTimestamp(transaction.originTransaction.timestamp)}
-                </MediumText>
+                </SemiBoldText>
               </ActivityField>
             </View>
           </View>
@@ -115,7 +115,7 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
           <CopyField
             text={shortedTxHash}
             textToCopy={transaction.originTransaction.hash}
-            TextComp={MediumText}
+            TextComp={SemiBoldText}
           />
         </ActivityField>
       </View>
