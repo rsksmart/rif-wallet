@@ -40,14 +40,14 @@ export const SettingsScreen: React.FC<ScreenProps<'Settings'>> = ({
             General
           </SemiBoldText>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={goToChangeLanguage}
-          style={styles.rowComponent}>
+        {/* @TODO add link to go to the accounts screen */}
+        <TouchableOpacity style={styles.rowComponent}>
           <AccountsIcon />
           <SemiBoldText style={[styles.textColor, spacing.ml6]}>
             Accounts
           </SemiBoldText>
         </TouchableOpacity>
+        {/* @TODO add link to go to the security screen */}
         <TouchableOpacity style={styles.rowComponent}>
           <LockIcon />
           <SemiBoldText style={[styles.textColor, spacing.ml6]}>
