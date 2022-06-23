@@ -15,10 +15,18 @@ const CustomText: React.FC<CustomTextType & TextType> = ({
   ...props
 }) => {
   const { style, ...rest } = props
+  let styles = style
+
+  if (styles && Array.isArray(style)) {
+    styles = style.reduce((p, c) => {
+      Object.assign(p, c)
+      return p
+    }, {})
+  }
   // Avoids overriding the font when passing style unless the developer does it
   const fontStyle = {
     fontFamily: font,
-    ...(style && { ...style }),
+    ...(styles && { ...styles }),
   }
   return (
     <Text style={fontStyle} {...rest}>
