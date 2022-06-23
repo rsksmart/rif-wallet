@@ -1,129 +1,125 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { ScreenProps } from '../../RootNavigation'
-import { AppContext } from '../../Context'
-import { Alert, StyleSheet, ScrollView, Text } from 'react-native'
-import LinearGradient from 'react-native-linear-gradient'
-import { setOpacity } from '../home/tokenColor'
-import { useTranslation } from 'react-i18next'
-import { ButtonAlt } from '../../components/button/ButtonAlt'
-import { Section } from '../../components/section'
+import { StyleSheet, View, TouchableOpacity } from 'react-native'
 import { version } from '../../../package.json'
 import { getWalletSetting, SETTINGS } from '../../core/config'
+import { colors, spacing } from '../../styles'
+import { MediumText, RegularText, SemiBoldText } from '../../components'
+import DiscoverTuneIcon from '../../components/icons/DiscoverTuneIcon'
+import LockIcon from '../../components/icons/LockIcon'
+import AccountsIcon from '../../components/icons/AccountsIcon'
 
-export type SettingsScreenProps = {
-  deleteKeys: () => Promise<any>
-}
+export const SettingsScreen: React.FC<ScreenProps<'Settings'>> = ({
+  navigation,
+}) => {
+  const smartWalletFactoryAddress = React.useMemo(
+    () => getWalletSetting(SETTINGS.SMART_WALLET_FACTORY_ADDRESS),
+    [],
+  )
 
-export const SettingsScreen: React.FC<
-  SettingsScreenProps & ScreenProps<'Settings'>
-> = ({ navigation, deleteKeys }) => {
-  const { t } = useTranslation()
+  const rpcUrl = React.useMemo(() => getWalletSetting(SETTINGS.RPC_URL), [])
 
-  const handleDeleteKeys = () => {
-    Alert.alert(
-      'Reset App',
-      'Confirm you want to reset the app. This will delete your master key, pin, saved domains and contacts',
-      [
-        {
-          text: t('Cancel'),
-          onPress: () => undefined,
-        },
-        {
-          text: 'Delete',
-          onPress: () =>
-            deleteKeys().then(() => navigation.navigate('CreateKeysUX')),
-        },
-      ],
-    )
-  }
+  const walletServiceUrl = React.useMemo(
+    () => getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL),
+    [],
+  )
+
+  const goToChangeLanguage = () => navigation.navigate('ChangeLanguage' as any)
+
+  // const goToSecurityConfiguration = () =>
+  //   navigation.navigate('SecurityConfiguration' as any)
 
   return (
-    <LinearGradient
-      colors={['#f4f4f4', setOpacity('#373f48', 0.3)]}
-      style={styles.parent}>
-      <ScrollView>
-        <Text style={[styles.header, styles.marginBottom]}>Settings</Text>
-        {!useContext(AppContext).mnemonic ? (
-          <Section title={t('Security')}>
-            <ButtonAlt
-              onPress={() => navigation.navigate('CreateKeysUX')}
-              title={t('Create master key')}
-              style={styles.marginBottom}
-            />
-          </Section>
-        ) : (
-          <React.Fragment>
-            <Section title={t('General')}>
-              <ButtonAlt
-                onPress={() => navigation.navigate('ChangeLanguage')}
-                title={t('Change Language')}
-                style={styles.marginBottom}
-              />
-              <ButtonAlt
-                onPress={() => navigation.navigate('DevMenu')}
-                title={'DevMenu'}
-                style={styles.marginBottom}
-              />
-            </Section>
-            <Section title={t('Accounts')}>
-              <ButtonAlt
-                onPress={() => navigation.navigate('WalletInfo')}
-                title={t('Account Info')}
-                style={styles.marginBottom}
-              />
-              <ButtonAlt
-                onPress={() => navigation.navigate('ManageWallets')}
-                title={t('Manage Wallets')}
-                style={styles.marginBottom}
-              />
-            </Section>
-            <Section title={t('Security')}>
-              <ButtonAlt
-                onPress={() => navigation.navigate('ManagePin')}
-                title={t('Manage Pin')}
-                style={styles.marginBottom}
-              />
-              <ButtonAlt
-                onPress={() => navigation.navigate('KeysInfo')}
-                title={t('Reveal master key')}
-                style={styles.marginBottom}
-              />
-              <ButtonAlt
-                onPress={handleDeleteKeys}
-                title={t('Reset')}
-                style={styles.marginBottom}
-              />
-            </Section>
-          </React.Fragment>
-        )}
-        <Section title={t('Information')}>
-          <Text>Version: {version}</Text>
-          <Text>
-            Smart Wallet Factory:{' '}
-            {getWalletSetting(SETTINGS.SMART_WALLET_FACTORY_ADDRESS)}
-          </Text>
-          <Text>RPC URL: {getWalletSetting(SETTINGS.RPC_URL)}</Text>
-          <Text>
-            Backend URL: {getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL)}
-          </Text>
-        </Section>
-      </ScrollView>
-    </LinearGradient>
+    <View style={styles.container}>
+      <View style={styles.mainView}>
+        <TouchableOpacity
+          onPress={goToChangeLanguage}
+          style={styles.rowComponent}>
+          <DiscoverTuneIcon width={24} height={24} />
+          <SemiBoldText style={[styles.textColor, spacing.ml6]}>
+            General
+          </SemiBoldText>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={goToChangeLanguage}
+          style={styles.rowComponent}>
+          <AccountsIcon />
+          <SemiBoldText style={[styles.textColor, spacing.ml6]}>
+            Accounts
+          </SemiBoldText>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.rowComponent}>
+          <LockIcon />
+          <SemiBoldText style={[styles.textColor, spacing.ml6]}>
+            Security
+          </SemiBoldText>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.bottomView}>
+        <View style={styles.versionComp}>
+          <MediumText style={[styles.textColor]}>Version {version}</MediumText>
+        </View>
+        <View style={styles.secondaryTextView}>
+          <MediumText style={[styles.primaryTextStyles]}>
+            Smart Wallet Factory
+          </MediumText>
+          <RegularText style={[styles.secondaryTextStyles]}>
+            {smartWalletFactoryAddress}
+          </RegularText>
+        </View>
+        <View style={styles.secondaryTextView}>
+          <MediumText style={[styles.primaryTextStyles]}>RPC URL</MediumText>
+          <RegularText style={[styles.secondaryTextStyles]}>
+            {rpcUrl}
+          </RegularText>
+        </View>
+        <View style={styles.secondaryTextView}>
+          <MediumText style={[styles.primaryTextStyles]}>
+            Backend URL
+          </MediumText>
+          <RegularText style={[styles.secondaryTextStyles]}>
+            {walletServiceUrl}
+          </RegularText>
+        </View>
+      </View>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  parent: {
-    height: '100%',
-    width: '100%',
+  container: {
+    backgroundColor: colors.background.darkBlue,
     flex: 1,
-    padding: 10,
-    paddingTop: 0,
   },
-  header: {
-    fontSize: 26,
-    textAlign: 'center',
-    color: '#5c5d5d',
+  mainView: {
+    paddingHorizontal: 50,
+    marginTop: 80,
+    flex: 3,
   },
-  marginBottom: { marginBottom: 10 },
+  bottomView: {
+    flex: 2,
+    paddingHorizontal: 50,
+  },
+  rowComponent: {
+    marginBottom: 40,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  versionComp: {
+    marginBottom: 10,
+  },
+  secondaryTextView: {
+    marginBottom: 10,
+  },
+  textColor: {
+    color: colors.text.primary,
+  },
+  primaryTextStyles: {
+    color: colors.text.primary,
+    fontSize: 11,
+  },
+  secondaryTextStyles: {
+    color: colors.text.secondary,
+    fontSize: 10,
+  },
 })
