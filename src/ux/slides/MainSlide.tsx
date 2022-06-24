@@ -4,6 +4,8 @@ import { grid } from '../../styles/grid'
 import { StyleSheet, View, Text, Image } from 'react-native'
 import { colors } from '../../styles/colors'
 import { WINDOW_HEIGHT, SLIDER_WIDTH } from './Dimensions'
+import Icon from 'react-native-vector-icons/AntDesign'
+
 const SLIDER_HEIGHT = Math.round(WINDOW_HEIGHT * 0.5)
 export const MainSlide = ({
   title,
@@ -21,6 +23,10 @@ export const MainSlide = ({
     </View>
     <View style={{ ...grid.row, ...styles.center }}>
       <Text style={styles.subTitle}>{subTitle}</Text>
+    </View>
+    <Text>hello world2!</Text>
+    <View style={{ borderWidth: 1, borderColor: 'red' }}>
+      <Icon name="customerservice" size={80} color="#FFF" />
     </View>
   </View>
 )
