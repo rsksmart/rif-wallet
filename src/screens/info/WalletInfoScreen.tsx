@@ -80,7 +80,7 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
   const deploy = async () => {
     try {
       setIsDeploying(true)
-      const txPromise = await wallet.smartWalletFactory.deploy()
+      const txPromise = await wallet.smartWalletFactory.deploy(wallet.address)
       setSmartWalletDeployTx(txPromise)
 
       await txPromise.wait()

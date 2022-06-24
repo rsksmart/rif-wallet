@@ -1,11 +1,11 @@
-import { Contract, constants, ContractTransaction, Signer } from 'ethers'
+import { Contract, constants, ContractTransaction, Signer, ethers } from 'ethers'
 import SmartWalletFactoryABI from './SmartWalletFactoryABI.json'
 
 interface ISmartWalletFactory {
   getSmartWalletAddress(): Promise<string>
 
   isDeployed(): Promise<boolean>
-  deploy(): Promise<ContractTransaction>
+  deploy(owner: string): Promise<ContractTransaction>
 }
 
 const createSmartWalletFactoryContract = (address: string) => {
@@ -44,8 +44,23 @@ export class SmartWalletFactory implements ISmartWalletFactory {
 
   isDeployed = (): Promise<boolean> => this.smartWalletFactoryContract.signer.provider!.getCode(this.smartAddress).then(code => code !== '0x')
 
-  deploy = (): Promise<ContractTransaction> => this.smartWalletFactoryContract.selfCreateUserSmartWallet(
+  deploy = async (owner: string): Promise<ContractTransaction> => {
+
+    const toSign: string = ethers.utils.solidityKeccak256(
+      ['bytes2','address','address','uint256'], ['0x1910', owner, constants.AddressZero, constants.Zero]
+    )
+
+    const toSignAsBinaryArray = ethers.utils.arrayify(toSign)
+    //@ts-ignore
+    const privateKey = this.smartWalletFactoryContract.signer.privateKey
+    const signingKey = new ethers.utils.SigningKey(privateKey)
+    const signature = signingKey.signDigest(toSignAsBinaryArray)
+    const signatureCollapsed = ethers.utils.joinSignature(signature)
+    return this.smartWalletFactoryContract.createUserSmartWallet(
+    owner,
     constants.AddressZero,
-    constants.Zero
+    constants.Zero,
+    signatureCollapsed
   )
+  }
 }

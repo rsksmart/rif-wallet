@@ -18,7 +18,7 @@ export const setupTest = async (
     onRequest,
   )
 
-  const deployTx = await rifWallet.smartWalletFactory.deploy()
+  const deployTx = await rifWallet.smartWalletFactory.deploy(wallet.address)
   await deployTx.wait()
 
   return {

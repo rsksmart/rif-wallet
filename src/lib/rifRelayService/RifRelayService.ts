@@ -97,12 +97,10 @@ export class RifRelayService {
       }
 
       const costInRBTC = utils.formatEther(estimate.toString())
-      console.log('Cost in RBTC:', costInRBTC)
 
       const costInTrif = parseFloat(costInRBTC) / this.TRIF_PRICE
       const ritTokenDecimals = await this.getTokenContract().decimals()
       const costInTrifFixed = costInTrif.toFixed(ritTokenDecimals)
-      console.log('Cost in TRif: ', costInTrifFixed)
       return costInTrifFixed
     } catch (error) {
       const errorObj = error as Error
@@ -152,10 +150,6 @@ export class RifRelayService {
       return smartWallet
     } catch (error) {
       const errorObj = error as Error
-      if (errorObj.message) {
-        console.log(errorObj.message)
-      }
-      console.error(error)
     }
     return undefined
   }
@@ -200,21 +194,14 @@ export class RifRelayService {
         //@ts-ignore
         await rifRelayProvider.relayProvider.relayClient._calculateGasPrice(),
       )
-      console.log(
-        'maxPossibleGas, gasPrice',
-        maxPossibleGasValue.toString(),
-        gasPrice.toString(),
-      )
       const maxPossibleGas = BigNumber.from(maxPossibleGasValue)
       const estimate = maxPossibleGas.mul(gasPrice)
 
       const costInRBTC = utils.formatEther(estimate.toString())
-      console.log('transfer cost in RBTC:', costInRBTC)
 
       const costInTrif = parseFloat(costInRBTC) / this.TRIF_PRICE
       const ritTokenDecimals = await this.getTokenContract().decimals()
       const costInTrifFixed = costInTrif.toFixed(ritTokenDecimals)
-      console.log('transfer cost in TRif: ', costInTrifFixed)
       return costInTrifFixed
     } catch (error) {
       console.error(error)
@@ -312,9 +299,8 @@ export class RifRelayService {
         },
         fees,
       )
-      console.log(txDetials)
     } catch (error) {
-      console.error(error)
+      
     }
   }
 }
