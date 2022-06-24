@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, View } from 'react-native'
-import { shareStyles } from '../../components/sharedStyles'
+import { Modal, StyleSheet, View } from 'react-native'
 
 export const LoadingScreen = () => {
   const dotActive = {
@@ -19,18 +18,25 @@ export const LoadingScreen = () => {
   }, [])
 
   return (
-    <View style={{ ...shareStyles.coverAllScreen, ...styles.container }}>
-      <View style={styles.dotContainer}>
-        {Array.from({ length: 3 }).map((_, i) => (
-          <View key={i} style={activeDot === i + 1 ? dotActive : styles.dot} />
-        ))}
+    <Modal animationType="none" transparent={true} visible={true}>
+      <View style={styles.container}>
+        <View style={styles.dotContainer}>
+          {Array.from({ length: 3 }).map((_, i) => (
+            <View
+              key={i}
+              style={activeDot === i + 1 ? dotActive : styles.dot}
+            />
+          ))}
+        </View>
       </View>
-    </View>
+    </Modal>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
+    height: '100%',
+    width: '100%',
     backgroundColor: '#08003a',
     display: 'flex',
   },

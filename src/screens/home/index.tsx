@@ -10,6 +10,7 @@ import { colors } from '../../styles/colors'
 import SendReceiveButtonComponent from './SendReceiveButtonComponent'
 import { Paragraph } from '../../components'
 import { useSelectedWallet } from '../../Context'
+import { LoadingScreen } from '../../core/components/LoadingScreen'
 
 export const HomeScreen: React.FC<{
   navigation: NavigationProp
@@ -58,6 +59,11 @@ export const HomeScreen: React.FC<{
   useEffect(() => {
     changeTopColor(selectedColor)
   }, [selectedColor])
+
+  // waiting for the balances to load:
+  if (Object.keys(state.balances).length === 0) {
+    return <LoadingScreen />
+  }
 
   return (
     <View style={styles.container}>
