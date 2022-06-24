@@ -254,7 +254,7 @@ export const Core = () => {
   }, [state.selectedWallet])
 
   if (state.loading) {
-    return <LoadingScreen reason="Getting things setup" />
+    return <LoadingScreen />
   }
 
   // handles the top color behind the clock
