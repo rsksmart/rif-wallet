@@ -19,7 +19,6 @@ import { EditContactScreenProps } from './screens/contacts/EditContactScreen'
 import { DappsScreenScreenProps } from './screens/dapps'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
 import { ManagerWalletScreenProps } from './screens/settings/ManageWalletsScreen'
-import { SettingsScreenProps } from './screens/settings/SettingsScreen'
 import { colors } from './styles/colors'
 
 const InjectedScreens = {
@@ -111,7 +110,7 @@ export const RootNavigation: React.FC<{
   contactsNavigationScreenProps: EditContactScreenProps
   dappsScreenProps: DappsScreenScreenProps
   manageWalletScreenProps: ManagerWalletScreenProps
-  settingsScreen: SettingsScreenProps
+  settingsScreen: ScreenProps<'Settings'>
 }> = ({
   currentScreen,
   hasKeys,
