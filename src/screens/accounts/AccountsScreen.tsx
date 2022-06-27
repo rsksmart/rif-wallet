@@ -29,7 +29,9 @@ const AccountsScreen = () => {
   return (
     <ScrollView style={styles.container}>
       {walletsArr.length > 0 &&
-        walletsArr.map(wallet => <AccountBox {...wallet} />)}
+        walletsArr.map(wallet => (
+          <AccountBox key={wallet.address} {...wallet} />
+        ))}
       <AddAccountBox />
     </ScrollView>
   )
