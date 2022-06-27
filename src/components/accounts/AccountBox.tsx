@@ -4,6 +4,7 @@ import { MediumText, SemiBoldText } from '../typography'
 import CopyField from '../activity/CopyField'
 import { colors } from '../../styles'
 import { SmartWalletFactory } from '../../lib/core/SmartWalletFactory'
+import EditMaterialIcon from '../icons/EditMaterialIcon'
 
 type AccountBoxProps = {
   address: string
@@ -29,7 +30,7 @@ const AccountBox: React.FC<AccountBoxProps> = ({
       <View style={styles.textContainer}>
         {/* @TODO implement account naming */}
         <SemiBoldText style={styles.text}>account 1</SemiBoldText>
-        {/*<EditMaterialIcon style={styles.icon} size={15} />*/}
+        <EditMaterialIcon style={styles.icon} size={15} />
       </View>
       <View style={styles.infoSection}>
         <MediumText>Status</MediumText>
