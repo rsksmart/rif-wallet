@@ -10,7 +10,7 @@ import { colors } from '../../styles/colors'
 import SendReceiveButtonComponent from './SendReceiveButtonComponent'
 import { Paragraph } from '../../components'
 import { useSelectedWallet } from '../../Context'
-import { LoadingScreen } from '../../core/components/LoadingScreen'
+import { LoadingScreen } from '../../components/loading/LoadingScreen'
 
 export const HomeScreen: React.FC<{
   navigation: NavigationProp

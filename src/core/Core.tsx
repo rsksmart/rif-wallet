@@ -28,7 +28,7 @@ import { RootNavigation } from '../RootNavigation'
 import ModalComponent from '../ux/requestsModal/ModalComponent'
 
 import { Cover } from './components/Cover'
-import { LoadingScreen } from './components/LoadingScreen'
+import { LoadingScreen } from '../components/loading/LoadingScreen'
 import { RequestPIN } from './components/RequestPIN'
 import { WalletConnectProviderElement } from '../screens/walletConnect/WalletConnectContext'
 import { RIFSocketsProvider } from '../subscriptions/RIFSockets'
