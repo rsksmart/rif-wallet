@@ -97,6 +97,9 @@ function liveSubscriptionsReducer(state: State, action: Action) {
         },
       }
 
+    case 'reset':
+      return initialState
+
     default:
       throw new Error(`Unhandled action type: ${type}`)
   }
@@ -188,7 +191,7 @@ export function RIFSocketsProvider({
       // socket is connected to a different wallet
       if (rifServiceSocket.isConnected()) {
         rifServiceSocket.disconnect()
-        dispatch({ type: 'init', payload: { transactions: [], balances: [] } })
+        dispatch({ type: 'reset' })
       }
 
       connect()
