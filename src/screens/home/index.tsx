@@ -61,7 +61,7 @@ export const HomeScreen: React.FC<{
   }, [selectedColor])
 
   // waiting for the balances to load:
-  if (Object.keys(state.balances).length === 0) {
+  if (!state.isSetup) {
     return <LoadingScreen />
   }
 

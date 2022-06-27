@@ -89,6 +89,7 @@ function liveSubscriptionsReducer(state: State, action: Action) {
 
       return {
         ...state,
+        isSetup: true,
         balances: balancesInitial,
         transactions: {
           ...state.transactions,
@@ -110,6 +111,7 @@ const initialState = {
   prices: {},
   balances: {},
   events: [],
+  isSetup: false,
 }
 //TODO: Move this to the backend
 const loadRBTCBalance = async (wallet: RIFWallet, dispatch: Dispatch) => {

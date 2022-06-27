@@ -60,6 +60,7 @@ export interface State {
   balances: Record<string, ITokenWithBalance>
   prices: Record<string, IPrice>
   events: Array<IEvent>
+  isSetup: Boolean
 }
 
 export type Action =
