@@ -29,29 +29,35 @@ export const SettingsScreen: React.FC<ScreenProps<'Settings'>> = ({
   // const goToSecurityConfiguration = () =>
   //   navigation.navigate('SecurityConfiguration' as any)
 
+  const goToDevMenu = () => navigation.navigate('DevMenu' as any)
   return (
     <View style={styles.container}>
       <View style={styles.mainView}>
         <TouchableOpacity
           onPress={goToChangeLanguage}
           style={styles.rowComponent}>
-          <DiscoverTuneIcon width={24} height={24} />
+          <DiscoverTuneIcon width={18} height={18} />
           <SemiBoldText style={[styles.textColor, spacing.ml6]}>
             General
           </SemiBoldText>
         </TouchableOpacity>
         {/* @TODO add link to go to the accounts screen */}
         <TouchableOpacity style={styles.rowComponent}>
-          <AccountsIcon />
+          <AccountsIcon width={18} height={18} />
           <SemiBoldText style={[styles.textColor, spacing.ml6]}>
             Accounts
           </SemiBoldText>
         </TouchableOpacity>
         {/* @TODO add link to go to the security screen */}
         <TouchableOpacity style={styles.rowComponent}>
-          <LockIcon />
+          <LockIcon width={18} height={18} />
           <SemiBoldText style={[styles.textColor, spacing.ml6]}>
             Security
+          </SemiBoldText>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.rowComponent} onPress={goToDevMenu}>
+          <SemiBoldText style={[styles.textColor, spacing.ml6]}>
+            Dev Menu
           </SemiBoldText>
         </TouchableOpacity>
       </View>
