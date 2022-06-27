@@ -5,8 +5,8 @@ import { RifWalletServicesFetcher } from '../lib/rifWalletServices/RifWalletServ
 import { AbiEnhancer } from '../lib/abiEnhancer/AbiEnhancer'
 import { getWalletSetting, SETTINGS } from './config'
 import { RifWalletServicesSocket } from '../lib/rifWalletServices/RifWalletServicesSocket'
-import { RifRelayService } from '../lib/rifRelayService/RifRelayService'
-import { RifRelayConfiguration } from '../lib/rifRelayService/types'
+import { RifRelayServices } from '../lib/rifRelayServices/RifRelayServices'
+import { RifRelayConfiguration } from '../lib/rifRelayServices/types'
 
 export const networkId = 31
 
@@ -41,7 +41,7 @@ const rifRelayConfig: RifRelayConfiguration = {
   rskHost:rpcUrl
 }
 
-export const rifRelayService = new RifRelayService(
+export const rifRelayService = new RifRelayServices(
   rifRelayConfig
 )
 

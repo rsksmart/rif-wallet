@@ -7,8 +7,9 @@ import { RelayClient } from '@rsksmart/rif-relay-client'
 import { RIFWallet } from '../core'
 import { BigNumber, ethers, utils } from 'ethers'
 import { ERC20__factory } from '../token/types'
+import { RifRelayConfiguration } from './types'
 
-export class RifRelayService {
+export class RifRelayServices {
   private preferedRelays: string[]
   private relayHubAddress: string
   private relayVerifierAddress: string
@@ -23,29 +24,22 @@ export class RifRelayService {
   private TRIF_PRICE = 0.000005739
 
   constructor(
-    preferedRelays: string[],
-    relayHubAddress: string,
-    relayVerifierAddress: string,
-    deployVerifierAddress: string,
-    smartWalletAddress: string,
-    relayWorkerAddress: string,
-    smartWalletFactoryAddress: string,
-    testTokenAddress: string,
-    rskHost: string,
+    config: RifRelayConfiguration
   ) {
-    this.preferedRelays = preferedRelays
-    this.relayHubAddress = relayHubAddress
-    this.relayVerifierAddress = relayVerifierAddress
-    this.deployVerifierAddress = deployVerifierAddress
-    this.smartWalletAddress = smartWalletAddress
-    this.relayWorkerAddress = relayWorkerAddress
-    this.smartWalletFactoryAddress = smartWalletFactoryAddress
-    this.testTokenAddress = testTokenAddress
-    this.rskHost = rskHost
+    this.preferedRelays = config.preferedRelays
+    this.relayHubAddress = config.relayHubAddress
+    this.relayVerifierAddress = config.relayVerifierAddress
+    this.deployVerifierAddress = config.deployVerifierAddress
+    this.smartWalletAddress = config.smartWalletAddress
+    this.relayWorkerAddress = config.relayWorkerAddress
+    this.smartWalletFactoryAddress = config.smartWalletFactoryAddress
+    this.testTokenAddress = config.testTokenAddress
+    this.rskHost = config.rskHost
     this.wallet = undefined
   }
 
-  async init(wallet: RIFWallet) {
+  async initialize(wallet: RIFWallet) {
+    console.error('initializing rif relay service')
     this.wallet = wallet
     const config = {
       verbose: false,
@@ -77,9 +71,9 @@ export class RifRelayService {
         privateKey: privateKey,
       },
     } as any)
-
     await relayingServices.initialize(config, contractAddresses)
     return relayingServices
+    // return undefined
   }
 
   async estimateFeesToDeploySmartWallet(

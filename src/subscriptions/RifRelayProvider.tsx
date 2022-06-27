@@ -20,7 +20,7 @@ export function RifRelayProvider({
   React.useEffect(() => {
     if (wallet && rifRelayService) {
       rifRelayService
-        .init(wallet)
+        .initialize(wallet)
         .then(provider => setRifRelayProvider(provider))
     }
   }, [wallet])

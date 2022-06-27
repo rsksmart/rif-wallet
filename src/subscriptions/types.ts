@@ -4,7 +4,7 @@ import { IRIFWalletServicesFetcher } from '../lib/rifWalletServices/RifWalletSer
 import { IAbiEnhancer, IEnhancedResult } from '../lib/abiEnhancer/AbiEnhancer'
 import { ITokenWithBalance } from '../lib/rifWalletServices/RIFWalletServicesTypes'
 import { IRifWalletServicesSocket } from '../lib/rifWalletServices/RifWalletServicesSocket'
-import { RifRelayService } from '../lib/rifRelayService/RifRelayService'
+import { RifRelayServices } from '../lib/rifRelayServices/RifRelayServices'
 
 export interface IActivity
   extends TransactionsServerResponseWithActivityTransactions {}
@@ -107,5 +107,5 @@ export interface TransactionsServerResponseWithActivityTransactions
 
 export type RifRelayProviderProps = {
   children: React.ReactNode
-  rifRelayService: RifRelayService
+  rifRelayService: RifRelayServices
 }
