@@ -26,8 +26,8 @@ export const SettingsScreen: React.FC<ScreenProps<'Settings'>> = ({
 
   const goToChangeLanguage = () => navigation.navigate('ChangeLanguage' as any)
 
-  // const goToSecurityConfiguration = () =>
-  //   navigation.navigate('SecurityConfiguration' as any)
+  const goToSecurityConfiguration = () =>
+    navigation.navigate('SecurityConfigurationScreen' as any)
 
   return (
     <View style={styles.container}>
@@ -47,8 +47,9 @@ export const SettingsScreen: React.FC<ScreenProps<'Settings'>> = ({
             Accounts
           </SemiBoldText>
         </TouchableOpacity>
-        {/* @TODO add link to go to the security screen */}
-        <TouchableOpacity style={styles.rowComponent}>
+        <TouchableOpacity
+          style={styles.rowComponent}
+          onPress={goToSecurityConfiguration}>
           <LockIcon />
           <SemiBoldText style={[styles.textColor, spacing.ml6]}>
             Security
