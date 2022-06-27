@@ -43,7 +43,9 @@ export const SettingsScreen: React.FC<ScreenProps<'Settings'>> = ({
           </SemiBoldText>
         </TouchableOpacity>
         {/* @TODO add link to go to the accounts screen */}
-        <TouchableOpacity style={styles.rowComponent} onPress={goToAccountsScreen}>
+        <TouchableOpacity
+          style={styles.rowComponent}
+          onPress={goToAccountsScreen}>
           <AccountsIcon />
           <SemiBoldText style={[styles.textColor, spacing.ml6]}>
             Accounts
