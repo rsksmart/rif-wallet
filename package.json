@@ -14,7 +14,9 @@
     "test:ci": "jest --coverage --verbose --testTimeout=60000",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --max-warnings=0",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix --max-warnings=0",
-    "postinstall": "rn-nodeify --install buffer,events,stream,crypto --hack --yarn"
+    "postinstall": "rn-nodeify --install buffer,events,stream,crypto --hack --yarn",
+    "clean:android": "cd android && ./gradlew clean && ./gradlew cleanBuildCache && cd ..",
+    "clean:ios": "cd ios && xcodebuild clean && rm -rf ~/Library/Caches/CocoaPods && rm -rf Pods && rm -rf ~/Library/Developer/Xcode/DerivedData/* && pod cache clean --all && pod deintegrate && pod setup && pod install && cd .."
   },
   "dependencies": {
     "@ethersproject/shims": "^5.4.0",
@@ -55,6 +57,7 @@
     "react-native-svg": "^12.1.1",
     "react-native-swipe-modal-up-down": "^1.1.0",
     "react-native-uuid": "^2.0.1",
+    "react-native-vector-icons": "^9.1.0",
     "react-native-webview": "^11.14.3",
     "react-qr-code": "^2.0.2",
     "readable-stream": "1.0.33",
@@ -74,6 +77,7 @@
     "@testing-library/react-native": "^7.2.0",
     "@types/jest": "^26.0.23",
     "@types/react-native": "^0.65.0",
+    "@types/react-native-vector-icons": "^6.4.10",
     "@types/react-test-renderer": "^17.0.1",
     "@types/readable-stream": "^2.3.12",
     "@types/url-parse": "^1.4.5",
