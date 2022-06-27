@@ -115,6 +115,14 @@ export class RIFWallet extends Signer implements TypedDataSigner {
   sendTransaction = this.createDoRequest(
     'sendTransaction',
     (([transactionRequest]: [TransactionRequest], overriddenOptions?: Partial<OverriddableTransactionOptions>) => {
+      // check if attempting to send rBTC from the EOA account
+      if (!transactionRequest.data && !!transactionRequest.value && !!transactionRequest.to) {
+        return this.smartWallet.signer.sendTransaction({
+          to: transactionRequest.to.toLowerCase(),
+          value: transactionRequest.value
+        })
+      }
+
       const txOptions = {
         ...filterTxOptions(transactionRequest),
         ...overriddenOptions || {}

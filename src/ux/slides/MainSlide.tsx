@@ -4,6 +4,7 @@ import { grid } from '../../styles/grid'
 import { StyleSheet, View, Text, Image } from 'react-native'
 import { colors } from '../../styles/colors'
 import { WINDOW_HEIGHT, SLIDER_WIDTH } from './Dimensions'
+
 const SLIDER_HEIGHT = Math.round(WINDOW_HEIGHT * 0.5)
 export const MainSlide = ({
   title,
