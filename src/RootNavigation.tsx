@@ -77,6 +77,7 @@ type RootStackParamList = {
   Settings: undefined
   ManageWallets: undefined
   EventsScreen: undefined
+  AccountsScreen: undefined
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -224,7 +225,11 @@ export const RootNavigation: React.FC<{
           component={Screens.TransactionReceivedScreen}
           options={sharedOptions}
         />
-
+        <RootStack.Screen
+          name="AccountsScreen"
+          component={Screens.AccountsScreen}
+          options={sharedOptions}
+        />
         <RootStack.Screen
           name="WalletInfo"
           component={InjectedScreens.WalletInfoScreen}
