@@ -1,27 +1,21 @@
 import React from 'react'
 import SwipeUpDownModal from 'react-native-swipe-modal-up-down'
 import { ScrollView, View, StyleSheet, TouchableOpacity } from 'react-native'
-import { TokenButton } from '../button/TokenButton'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-
-import { balanceToString } from '../../screens/balances/BalancesScreen'
-import { TokenImage } from '../../screens/home/TokenImage'
-import { getTokenColor } from '../../screens/home/tokenColor'
 import { colors } from '../../styles'
 import { RegularText } from '../typography'
 
 interface Interface {
-  availableTokens: ITokenWithBalance[]
-  onTokenSelection: (token: ITokenWithBalance) => void
+  title: string
+  children: any
   showSelector: boolean
   onModalClosed: any
   animateModal: boolean
   onAnimateModal: any
 }
 
-const TokenSelector: React.FC<Interface> = ({
-  availableTokens,
-  onTokenSelection,
+const SlideUpModal: React.FC<Interface> = ({
+  title,
+  children,
   showSelector,
   onModalClosed,
   animateModal,
@@ -34,22 +28,7 @@ const TokenSelector: React.FC<Interface> = ({
       //if you don't pass HeaderContent you should pass marginTop in view of ContentModel to Make modal swipeable
       ContentModal={
         <View style={styles.containerContent}>
-          <ScrollView>
-            {availableTokens.map((token: ITokenWithBalance) => {
-              const balance = balanceToString(token.balance, token.decimals)
-              return (
-                <View key={token.symbol}>
-                  <TokenButton
-                    onPress={() => onTokenSelection(token)}
-                    title={token.symbol}
-                    balance={balance}
-                    icon={<TokenImage symbol={token.symbol} />}
-                    style={{ backgroundColor: getTokenColor(token.symbol) }}
-                  />
-                </View>
-              )
-            })}
-          </ScrollView>
+          <ScrollView>{children}</ScrollView>
         </View>
       }
       HeaderStyle={styles.headerContent}
@@ -61,7 +40,7 @@ const TokenSelector: React.FC<Interface> = ({
           </View>
           <View style={styles.actionsContainer}>
             <View>
-              <RegularText style={styles.action}>select asset</RegularText>
+              <RegularText style={styles.action}>{title}</RegularText>
             </View>
             <View>
               <TouchableOpacity
@@ -81,7 +60,7 @@ const TokenSelector: React.FC<Interface> = ({
   )
 }
 
-export default TokenSelector
+export default SlideUpModal
 
 const styles = StyleSheet.create({
   containerContent: { marginRight: 40, marginLeft: 40 },

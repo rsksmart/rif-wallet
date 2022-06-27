@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import { colors } from '../../styles/colors'
-import { grid } from '../../styles/grid'
+import { colors } from '../../styles'
+import { grid } from '../../styles'
 
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { TokenImage } from '../home/TokenImage'
-import TokenSelector from '../../components/tokenSelector'
+import SlideUpModal from '../../components/slideUpModal/SlideUpModal'
+import { balanceToString } from '../balances/BalancesScreen'
+import { TokenButton } from '../../components/button/TokenButton'
+import { getTokenColor } from '../home/tokenColor'
 
 interface Interface {
   selectedToken: ITokenWithBalance
@@ -46,14 +49,27 @@ const AssetChooser: React.FC<Interface> = ({
         <Text style={styles.selectLabel}>select</Text>
       </View>
 
-      <TokenSelector
+      <SlideUpModal
+        title={'select asset'}
         showSelector={showSelector}
         animateModal={animateModal}
-        availableTokens={tokenList}
-        onTokenSelection={handleToken}
         onModalClosed={handleCloseModal}
-        onAnimateModal={handleAnimateModal}
-      />
+        onAnimateModal={handleAnimateModal}>
+        {tokenList.map((token: ITokenWithBalance) => {
+          const balance = balanceToString(token.balance, token.decimals)
+          return (
+            <View key={token.symbol}>
+              <TokenButton
+                onPress={() => handleToken(token)}
+                title={token.symbol}
+                balance={balance}
+                icon={<TokenImage symbol={token.symbol} />}
+                style={{ backgroundColor: getTokenColor(token.symbol) }}
+              />
+            </View>
+          )
+        })}
+      </SlideUpModal>
     </TouchableOpacity>
   )
 }
