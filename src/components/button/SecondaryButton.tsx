@@ -20,12 +20,11 @@ const SecondaryButton: React.FC<BaseButtonInterface & SecondaryButtonType> = ({
 const styles = StyleSheet.create({
   buttonStyle: {
     borderRadius: 40,
-    backgroundColor: colors.background.light,
+    backgroundColor: colors.background.gray,
     paddingVertical: 15,
     marginHorizontal: 10,
     width: 150,
     alignItems: 'center',
-    borderWidth: 1,
   },
 })
 
