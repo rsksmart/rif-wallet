@@ -71,7 +71,6 @@ describe('ReviewTransactionModal', function (this: {
     await flushPromises()
 
     // make sure elements are showing up
-    expect(getAllByText('review transaction').length).toBe(1)
     getByPlaceholderText('gas limit')
     getByPlaceholderText('gas price')
   })

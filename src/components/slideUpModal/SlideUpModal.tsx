@@ -11,6 +11,8 @@ interface Interface {
   onModalClosed: any
   animateModal: boolean
   onAnimateModal: any
+  backgroundColor: string
+  headerFontColor: string
 }
 
 const SlideUpModal: React.FC<Interface> = ({
@@ -20,6 +22,8 @@ const SlideUpModal: React.FC<Interface> = ({
   onModalClosed,
   animateModal,
   onAnimateModal,
+  backgroundColor,
+  headerFontColor,
 }) => {
   return (
     <SwipeUpDownModal
@@ -32,22 +36,29 @@ const SlideUpModal: React.FC<Interface> = ({
         </View>
       }
       HeaderStyle={styles.headerContent}
-      ContentModalStyle={styles.Modal}
+      ContentModalStyle={{ ...styles.Modal, backgroundColor }}
       HeaderContent={
-        <View style={styles.containerHeader}>
+        <View style={{ ...styles.containerHeader, backgroundColor }}>
           <View style={styles.handlerContainer}>
-            <View style={styles.handler} />
+            <View
+              style={{ ...styles.handler, backgroundColor: headerFontColor }}
+            />
           </View>
           <View style={styles.actionsContainer}>
             <View>
-              <RegularText style={styles.action}>{title}</RegularText>
+              <RegularText style={{ ...styles.action, color: headerFontColor }}>
+                {title}
+              </RegularText>
             </View>
             <View>
               <TouchableOpacity
                 onPress={() => {
                   onAnimateModal(true)
                 }}>
-                <RegularText style={styles.action}>hide</RegularText>
+                <RegularText
+                  style={{ ...styles.action, color: headerFontColor }}>
+                  hide
+                </RegularText>
               </TouchableOpacity>
             </View>
           </View>
@@ -68,7 +79,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 40,
     borderTopLeftRadius: 40,
     height: 70,
-    backgroundColor: colors.darkPurple3,
   },
   actionsContainer: {
     flexDirection: 'row',
@@ -81,7 +91,6 @@ const styles = StyleSheet.create({
   handler: {
     height: 2,
     borderRadius: 5,
-    backgroundColor: colors.white,
     width: 50,
     marginTop: 15,
   },
@@ -100,7 +109,6 @@ const styles = StyleSheet.create({
     marginTop: 100,
   },
   Modal: {
-    backgroundColor: colors.darkPurple3,
     marginTop: 170,
   },
 })

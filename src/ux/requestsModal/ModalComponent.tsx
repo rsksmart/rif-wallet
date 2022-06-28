@@ -14,6 +14,7 @@ import { sharedStyles } from './sharedStyles'
 import { InjectSelectedWallet } from '../../Context'
 import { SignTypedDataRequest } from '../../lib/core'
 import SlideUpModal from '../../components/slideUpModal/SlideUpModal'
+import { colors } from '../../styles'
 
 interface Interface {
   request: Request
@@ -85,7 +86,9 @@ const ModalComponent: React.FC<Interface> = ({
       showSelector={showSelector}
       animateModal={animateModal}
       onModalClosed={handleCloseModal}
-      onAnimateModal={handleAnimateModal}>
+      onAnimateModal={handleAnimateModal}
+      backgroundColor={colors.lightGray}
+      headerFontColor={colors.black}>
       {RequestTypeSwitch(request, closeModal)}
     </SlideUpModal>
   )

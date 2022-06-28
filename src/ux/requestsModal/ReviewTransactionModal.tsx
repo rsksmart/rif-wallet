@@ -1,11 +1,18 @@
 import React, { useMemo, useState } from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  KeyboardTypeOptions,
+} from 'react-native'
 import { BigNumber } from 'ethers'
+import { RegularText } from '../../components/typography'
 
-import { SendTransactionRequest } from '../../lib/core/RIFWallet'
+import { SendTransactionRequest } from '../../lib/core'
 
 import { sharedStyles } from './sharedStyles'
-import { CustomInput, Loading, ModalHeader, Paragraph } from '../../components'
+import { CustomInput, Loading, Paragraph } from '../../components'
 import { ScreenWithWallet } from '../../screens/types'
 import useEnhancedWithGas from './useEnhancedWithGas'
 import { SquareButton } from '../../components/button/SquareButton'
@@ -13,10 +20,66 @@ import { CancelIcon } from '../../components/icons/CancelIcon'
 import { SignIcon } from '../../components/icons/SignIcon'
 import { useTranslation } from 'react-i18next'
 import { shortAddress } from '../../lib/utils'
+import { BlueButton } from '../../components/button/ButtonVariations'
 
 interface Interface {
   request: SendTransactionRequest
   closeModal: () => void
+}
+
+type IRealOnlyField = {
+  label: string
+  value: string
+  testID: string
+}
+
+const ReadOnlyField: React.FC<IRealOnlyField> = ({ label, value, testID }) => {
+  return (
+    <>
+      <View>
+        <RegularText style={styles.label}>{label}</RegularText>
+      </View>
+      <View>
+        <View style={styles.inputText} testID={testID}>
+          <Text>{value}</Text>
+        </View>
+      </View>
+    </>
+  )
+}
+
+type IInputField = {
+  label: string
+  value: string
+  keyboardType: KeyboardTypeOptions
+  placeholder: string
+  testID: string
+  handleValueOnChange: any
+}
+const InputField: React.FC<IInputField> = ({
+  label,
+  value,
+  keyboardType,
+  placeholder,
+  testID,
+  handleValueOnChange,
+}) => {
+  return (
+    <>
+      <View>
+        <RegularText style={styles.label}>{label}</RegularText>
+      </View>
+      <View>
+        <CustomInput
+          value={value}
+          onChange={handleValueOnChange}
+          keyboardType={keyboardType}
+          placeholder={placeholder}
+          testID={testID}
+        />
+      </View>
+    </>
+  )
 }
 
 const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
@@ -40,7 +103,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
         gasLimit: BigNumber.from(enhancedTransactionRequest.gasLimit),
       })
       closeModal()
-    } catch (err: any) {
+    } catch (err) {
       setError(err)
     }
   }
@@ -52,56 +115,34 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
 
   return isLoaded ? (
     <ScrollView>
-      <View style={[sharedStyles.modalView, sharedStyles.modalViewMainSection]}>
-        <ModalHeader>review transaction</ModalHeader>
-
+      <View>
         {enhancedTransactionRequest && (
           <View
             testID="TX_VIEW"
             style={[sharedStyles.rowInColumn, styles.topBox]}>
-            <View style={[sharedStyles.rowInColumn, styles.marginBottom]}>
-              {enhancedTransactionRequest.balance && (
-                <View style={styles.dataRow}>
-                  <Text style={[styles.paragraphLabel, styles.inputLabel]}>
-                    current balance:
-                  </Text>
-                  <Text style={styles.paragraphValue}>
-                    {enhancedTransactionRequest.balance}
-                  </Text>
-                </View>
-              )}
-            </View>
-            <View style={[sharedStyles.rowInColumn, styles.marginBottom]}>
-              <Text style={[styles.paragraphLabel, styles.inputLabel]}>
-                value
-              </Text>
-              <View style={[styles.message, styles.value]} testID="Data.View">
-                {enhancedTransactionRequest.value && (
-                  <Text>{enhancedTransactionRequest.value}</Text>
-                )}
-                {enhancedTransactionRequest.symbol && (
-                  <Text>{enhancedTransactionRequest.symbol}</Text>
-                )}
-              </View>
-            </View>
-            <View style={sharedStyles.row}>
-              <View style={sharedStyles.column}>
-                <Text style={[styles.paragraphLabel, styles.inputLabel]}>
-                  from
-                </Text>
-                <View style={styles.message} testID="Data.View">
-                  <Text>{shortAddress(enhancedTransactionRequest.from)}</Text>
-                </View>
-              </View>
-              <View style={sharedStyles.column}>
-                <Text style={[styles.paragraphLabel, styles.inputLabel]}>
-                  to
-                </Text>
-                <View style={styles.message} testID="Data.View">
-                  <Text>{shortAddress(enhancedTransactionRequest.to)}</Text>
-                </View>
-              </View>
-            </View>
+            <ReadOnlyField
+              label={'amount'}
+              value={enhancedTransactionRequest.value}
+              testID={'Data.View'}
+            />
+
+            <ReadOnlyField
+              label={'asset'}
+              value={enhancedTransactionRequest.symbol}
+              testID={''}
+            />
+
+            <ReadOnlyField
+              label={'from'}
+              value={shortAddress(enhancedTransactionRequest.from)}
+              testID={'Data.View'}
+            />
+
+            <ReadOnlyField
+              label={'to'}
+              value={shortAddress(enhancedTransactionRequest.to)}
+              testID={'Data.View'}
+            />
 
             <View
               style={
@@ -130,34 +171,24 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
         )}
       </View>
 
-      <View style={styles.advanceSection}>
-        <View style={sharedStyles.row}>
-          <View style={sharedStyles.column}>
-            <Text style={[styles.paragraphLabel, styles.inputLabel]}>
-              gas limit
-            </Text>
-            <CustomInput
-              value={enhancedTransactionRequest.gasLimit}
-              onChange={setGasLimit}
-              keyboardType="number-pad"
-              placeholder="gas limit"
-              testID="gasLimit.TextInput"
-            />
-          </View>
-          <View style={sharedStyles.column}>
-            <Text style={[styles.paragraphLabel, styles.inputLabel]}>
-              gas price
-            </Text>
-            <CustomInput
-              value={enhancedTransactionRequest.gasPrice}
-              onChange={setGasPrice}
-              keyboardType="number-pad"
-              placeholder="gas price"
-              testID="gasPrice.TextInput"
-            />
-          </View>
-        </View>
-      </View>
+      <InputField
+        label={'gas limit'}
+        value={enhancedTransactionRequest.gasLimit}
+        keyboardType="number-pad"
+        placeholder="gas limit"
+        testID={'gasLimit.TextInput'}
+        handleValueOnChange={setGasLimit}
+      />
+
+      <InputField
+        label={'gas price'}
+        value={enhancedTransactionRequest.gasPrice}
+        keyboardType="number-pad"
+        placeholder="gas price"
+        testID={'gasPrice.TextInput'}
+        handleValueOnChange={setGasPrice}
+      />
+
       {error && (
         <View style={sharedStyles.row}>
           <View style={sharedStyles.column}>
@@ -171,24 +202,18 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
 
       <View style={styles.buttonsSection}>
         <View style={sharedStyles.column}>
-          <SquareButton
+          <BlueButton
             onPress={cancelTransaction}
             title={t('reject')}
-            icon={<CancelIcon color={'#ffb4b4'} />}
-            shadowColor="#313c3c"
-            backgroundColor={'#313c3c'}
             testID="Cancel.Button"
             disabled={!isLoaded}
           />
         </View>
         <View style={sharedStyles.column}>
-          <SquareButton
+          <BlueButton
             onPress={confirmTransaction}
             title={t('sign')}
             testID="Confirm.Button"
-            icon={<SignIcon color={'#91ffd9'} />}
-            shadowColor="#313c3c"
-            backgroundColor={'#313c3c'}
             disabled={!isLoaded}
           />
         </View>
@@ -240,15 +265,15 @@ const styles = StyleSheet.create({
     ...sharedStyles.row,
     padding: 20,
   },
-  inputLabel: {
-    marginLeft: 10,
+  label: {
+    margin: 5,
   },
-  message: {
-    padding: 10,
+  inputText: {
+    padding: 15,
     marginTop: 0,
     marginBottom: 10,
 
-    borderRadius: 14,
+    borderRadius: 10,
     backgroundColor: 'rgba(49, 60, 60, 0.1)',
     shadowColor: 'rgba(0, 0, 0, 0)',
     shadowOffset: {
@@ -263,7 +288,6 @@ const styles = StyleSheet.create({
     fontStyle: 'normal',
     letterSpacing: 0.24,
     color: '#373f48',
-    alignItems: 'center',
   },
   value: {
     flexDirection: 'row',

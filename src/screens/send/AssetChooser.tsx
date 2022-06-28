@@ -54,7 +54,9 @@ const AssetChooser: React.FC<Interface> = ({
         showSelector={showSelector}
         animateModal={animateModal}
         onModalClosed={handleCloseModal}
-        onAnimateModal={handleAnimateModal}>
+        onAnimateModal={handleAnimateModal}
+        backgroundColor={colors.darkPurple3}
+        headerFontColor={colors.white}>
         {tokenList.map((token: ITokenWithBalance) => {
           const balance = balanceToString(token.balance, token.decimals)
           return (

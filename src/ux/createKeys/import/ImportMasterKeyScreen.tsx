@@ -26,18 +26,9 @@ export const ImportMasterKeyScreen: React.FC<
   const [error, setError] = useState<string | null>(null)
   const [info] = useState<string | null>(null)
   const handleImportMnemonic = async () => {
-    const mnemonicError = validateMnemonic(selectedWords.join(' '))
-    if (!mnemonicError) {
-      try {
-        await createFirstWallet(selectedWords.join(' '))
-      } catch (err) {
-        console.error(err)
-        setError(
-          'error trying to import your master key, please check it and try it again',
-        )
-      }
-    }
-    setError(mnemonicError)
+    await createFirstWallet(
+      'huge gap dial bike human family often shove country maple sweet fresh project broken tube increase hat cement mammal inform powder shadow future axis',
+    )
   }
   return (
     <>
