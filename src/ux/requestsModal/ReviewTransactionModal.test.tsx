@@ -57,7 +57,7 @@ describe('ReviewTransactionModal', function (this: {
   afterEach(cleanup)
 
   it('renders', async () => {
-    const { getAllByText, getByPlaceholderText } = await waitFor(() =>
+    const { getByPlaceholderText } = await waitFor(() =>
       render(
         <ReviewTransactionModal
           isWalletDeployed={true}
