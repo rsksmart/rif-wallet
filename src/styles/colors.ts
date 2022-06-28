@@ -35,5 +35,6 @@ export const colors = {
     light: '#dbe3ff',
     primary: '#1a1849',
     darkBlue: '#020034',
+    gray: '#dbe3ff',
   },
 }
