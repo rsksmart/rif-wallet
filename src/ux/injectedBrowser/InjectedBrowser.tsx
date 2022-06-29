@@ -5,7 +5,7 @@ import { Paragraph } from '../../components'
 import { ScreenWithWallet } from '../../screens/types'
 
 import { ScreenProps } from '../../screens/injectedBrowser/types'
-import { InjectedBrowserAdapter } from '../../lib/walletAdapters/InjectedBrowserAdapter'
+import { InjectedBrowserAdapter } from 'rif-wallet/packages/walletAdapters'
 
 import Url from 'url-parse'
 

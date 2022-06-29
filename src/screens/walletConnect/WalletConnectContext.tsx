@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import WalletConnect from '@walletconnect/client'
 import { RIFWallet } from '../../lib/core'
-import { WalletConnectAdapter } from '../../lib/walletAdapters/WalletConnectAdapter'
+import { WalletConnectAdapter } from 'rif-wallet/packages/walletAdapters'
 import {
   saveWCSession,
   deleteWCSession,
