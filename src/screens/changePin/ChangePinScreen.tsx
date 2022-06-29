@@ -17,23 +17,28 @@ const ChangePinScreen: React.FC<
     pin: '',
     confirmPin: '',
   })
-
+  const isSubmitting = useRef(false)
   const [confirmPinTitle, setConfirmPinTitle] = useState('Confirm new PIN')
   const [pinError, setPinError] = useState('')
+  const [resetPin, setResetPin] = useState(0)
 
   const onPinSubmit = () => {
-    try {
-      editPin(pinSteps.current.pin).then(() => {
-        setConfirmPinTitle('PIN confirmed')
+    if (!isSubmitting.current) {
+      isSubmitting.current = true
+      try {
+        editPin(pinSteps.current.pin).then(() => {
+          setConfirmPinTitle('PIN confirmed')
 
-        setTimeout(() => {
-          navigation.goBack()
-        }, 2500)
-      })
-    } catch (error) {
-      setPinError(
-        'An error occurred while saving the new PIN. Please try again.',
-      )
+          setTimeout(() => {
+            navigation.goBack()
+          }, 2500)
+        })
+      } catch (error) {
+        setPinError(
+          'An error occurred while saving the new PIN. Please try again.',
+        )
+        isSubmitting.current = false
+      }
     }
   }
 
@@ -59,24 +64,29 @@ const ChangePinScreen: React.FC<
           setPinError('4 digits must be selected.')
         } else if (pinSteps.current.pin !== pinSteps.current.confirmPin) {
           setPinError('PINs do not match. Please verify.')
+          pinSteps.current.confirmPin = ''
+          setResetPin(state => state + 1)
         } else {
           onPinSubmit()
         }
-        //submit and go back...
         break
       default:
         throw new Error('Stepper is wrong. Not implemented case detected.')
     }
   }
   const stepper: { [key: number]: any } = {
-    1: <PinManager title="Enter PIN" handleSubmit={onPinChange(1)} />,
+    1: <PinManager title="Enter new PIN" handleSubmit={onPinChange(1)} />,
     2: (
       <>
         <TouchableOpacity style={styles.backButton} onPress={onBackPress}>
           <Arrow color="#DBE3FF" height={25} width={25} rotate={270} />
         </TouchableOpacity>
         <View>
-          <PinManager title={confirmPinTitle} handleSubmit={onPinChange(2)} />
+          <PinManager
+            key={resetPin}
+            title={confirmPinTitle}
+            handleSubmit={onPinChange(2)}
+          />
         </View>
       </>
     ),
