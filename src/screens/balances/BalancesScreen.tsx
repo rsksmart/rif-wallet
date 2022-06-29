@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, ScrollView, Text } from 'react-native'
 import { BigNumber, BigNumberish } from 'ethers'
 
-import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import { IRIFWalletServicesFetcher,ITokenWithBalance } from 'rif-wallet/packages/types'
 import { useTranslation } from 'react-i18next'
 
 import { ScreenProps, NavigationProp } from '../../RootNavigation'

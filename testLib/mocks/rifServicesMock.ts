@@ -1,8 +1,8 @@
-import { IRIFWalletServicesFetcher } from '../../src/lib/rifWalletServices/RifWalletServicesFetcher'
 import {
   TransactionsServerResponse,
   ITokenWithBalance,
-} from '../../src/lib/rifWalletServices/RIFWalletServicesTypes'
+  IRIFWalletServicesFetcher
+} from 'rif-wallet/packages/types'
 
 export const testCase: ITokenWithBalance[] = [
   {

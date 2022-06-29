@@ -5,7 +5,7 @@ import { ScreenWithWallet } from '../../screens/types'
 import { InjectedBrowser } from '../../ux/injectedBrowser/InjectedBrowser'
 import { BookmarksScreen } from './BookmarksScreen'
 import { StackParamList } from './types'
-import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
+import { IRIFWalletServicesFetcher } from 'rif-wallet/packages/types'
 
 const Stack = createStackNavigator<StackParamList>()
 

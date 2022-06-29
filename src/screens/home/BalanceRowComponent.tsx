@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import { ITokenWithBalance } from 'rif-wallet/packages/types'
 import { grid } from '../../styles/grid'
 import { balanceToString } from '../balances/BalancesScreen'
 import { getTokenColorWithOpacity } from './tokenColor'

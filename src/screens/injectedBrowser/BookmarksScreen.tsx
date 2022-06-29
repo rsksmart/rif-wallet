@@ -2,7 +2,7 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 import { Button, Header3, Paragraph } from '../../components'
-import { IRegisteredDappsGroup } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
+import { IRegisteredDappsGroup } from 'rif-wallet/packages/types'
 import { ScreenWithWallet } from '../types'
 import { InjectedBrowserUXScreenProps } from './InjectedBrowserNavigation'
 

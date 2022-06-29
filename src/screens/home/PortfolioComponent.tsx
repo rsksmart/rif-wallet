@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import { ITokenWithBalance } from 'rif-wallet/packages/types'
 import { BalanceRowComponent } from './BalanceRowComponent'
 
 interface Interface {

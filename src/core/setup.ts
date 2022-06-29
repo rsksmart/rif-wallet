@@ -1,7 +1,7 @@
 import { providers, Wallet } from 'ethers'
 import Resolver from '@rsksmart/rns-resolver.js'
 import { OnRequest, RIFWallet } from '../lib/core'
-import { RifWalletServicesFetcher } from '../lib/rifWalletServices/RifWalletServicesFetcher'
+import { RifWalletServicesFetcher } from 'rif-wallet/packages/rifWalletServices'
 import { AbiEnhancer } from '../lib/abiEnhancer/AbiEnhancer'
 
 const rpcUrl = 'https://public-node.testnet.rsk.co'

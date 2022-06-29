@@ -5,9 +5,9 @@ import { useTranslation } from 'react-i18next'
 import {
   IApiTransaction,
   TransactionsServerResponse,
-} from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+  IRIFWalletServicesFetcher
+} from 'rif-wallet/packages/types'
 
-import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
 
 import {
   IAbiEnhancer,

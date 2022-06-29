@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { StyleSheet } from 'react-native'
 
 import { NavigationProp } from '../../RootNavigation'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import { ITokenWithBalance } from 'rif-wallet/packages/types'
 import SelectedTokenComponent from './SelectedTokenComponent'
 import balances from './tempBalances.json'
 import LinearGradient from 'react-native-linear-gradient'

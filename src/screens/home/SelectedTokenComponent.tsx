@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 
 import { grid } from '../../styles/grid'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import { ITokenWithBalance } from 'rif-wallet/packages/types'
 import { balanceToString } from '../balances/BalancesScreen'
 import { TokenImage } from './TokenImage'
 import { getTokenColor } from './tokenColor'
