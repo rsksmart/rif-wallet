@@ -3,3 +3,5 @@
 
 jest.mock('rn-secure-storage', () => {})
 jest.mock('@rsksmart/rns-resolver.js')
+
+jest.mock('@rsksmart/relaying-services-sdk', () => {})

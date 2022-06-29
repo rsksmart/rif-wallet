@@ -36,7 +36,7 @@ export function useRifRelayProviderState() {
   const context = React.useContext(RifRelayProviderContext)
   if (context === undefined) {
     throw new Error(
-      'useSubscription must be used within a SubscriptionsProvider',
+      'Rif Relay Context is not loaded',
     )
   }
   return context

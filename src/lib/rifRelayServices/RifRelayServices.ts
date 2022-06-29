@@ -39,7 +39,6 @@ export class RifRelayServices {
   }
 
   async initialize(wallet: RIFWallet) {
-    console.error('initializing rif relay service')
     this.wallet = wallet
     const config = {
       verbose: false,
@@ -73,7 +72,6 @@ export class RifRelayServices {
     } as any)
     await relayingServices.initialize(config, contractAddresses)
     return relayingServices
-    // return undefined
   }
 
   async estimateFeesToDeploySmartWallet(
@@ -99,7 +97,7 @@ export class RifRelayServices {
     } catch (error) {
       const errorObj = error as Error
       if (errorObj.message) {
-        console.log(errorObj.message)
+        console.error(errorObj.message)
       }
       console.error(error)
     }
