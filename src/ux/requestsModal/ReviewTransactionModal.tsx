@@ -18,13 +18,10 @@ import useEnhancedWithGas from './useEnhancedWithGas'
 import { useTranslation } from 'react-i18next'
 import { shortAddress } from '../../lib/utils'
 import {
-  BlueButton, DarkBlueButton, GrayButton, OutlineBorderedButton,
-  OutlineButton,
-  WhiteButton,
-  WhiteTransparentButton,
+  DarkBlueButton,
+  OutlineBorderedButton,
 } from '../../components/button/ButtonVariations'
 import { colors } from '../../styles'
-import {ButtonAlt} from "../../components/button/ButtonAlt";
 
 interface Interface {
   request: SendTransactionRequest
