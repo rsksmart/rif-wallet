@@ -81,6 +81,28 @@ const blueStyles = StyleSheet.create({
   },
 })
 
+export const DarkBlueButton: React.FC<ButtonInterface> = props => (
+  <Button {...props} buttonStyles={darkBlueStyles} />
+)
+
+const darkBlueStyles = StyleSheet.create({
+  button: {
+    backgroundColor: colors.darkPurple5,
+  },
+  buttonDisabled: {
+    backgroundColor: '#251e79',
+  },
+  buttonActive: {
+    backgroundColor: colors.gray,
+  },
+  text: {
+    color: colors.lightPurple,
+  },
+  textDisabled: {
+    color: '#7e7eb8',
+  },
+})
+
 // White Variation
 export const WhiteButton: React.FC<ButtonInterface> = props => (
   <Button {...props} buttonStyles={whiteStyles} />
@@ -137,6 +159,30 @@ const outlineStyles = StyleSheet.create({
   },
   textDisabled: {
     color: colors.lightPurple,
+  },
+})
+
+export const OutlineBorderedButton: React.FC<ButtonInterface> = props => (
+  <Button {...props} buttonStyles={outlineBorderedStyles} />
+)
+
+const outlineBorderedStyles = StyleSheet.create({
+  button: {
+    borderWidth: 2,
+    borderColor: colors.black,
+  },
+  buttonDisabled: {
+    borderWidth: 2,
+    borderColor: colors.gray,
+  },
+  buttonActive: {
+    backgroundColor: colors.gray,
+  },
+  text: {
+    color: colors.black,
+  },
+  textDisabled: {
+    color: colors.lightBlue,
   },
 })
 

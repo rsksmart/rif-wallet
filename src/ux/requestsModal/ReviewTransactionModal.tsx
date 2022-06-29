@@ -17,7 +17,14 @@ import { ScreenWithWallet } from '../../screens/types'
 import useEnhancedWithGas from './useEnhancedWithGas'
 import { useTranslation } from 'react-i18next'
 import { shortAddress } from '../../lib/utils'
-import { BlueButton } from '../../components/button/ButtonVariations'
+import {
+  BlueButton, DarkBlueButton, GrayButton, OutlineBorderedButton,
+  OutlineButton,
+  WhiteButton,
+  WhiteTransparentButton,
+} from '../../components/button/ButtonVariations'
+import { colors } from '../../styles'
+import {ButtonAlt} from "../../components/button/ButtonAlt";
 
 interface Interface {
   request: SendTransactionRequest
@@ -114,9 +121,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
     <ScrollView>
       <View>
         {enhancedTransactionRequest && (
-          <View
-            testID="TX_VIEW"
-            style={[sharedStyles.rowInColumn, styles.topBox]}>
+          <View testID="TX_VIEW" style={[sharedStyles.rowInColumn]}>
             <ReadOnlyField
               label={'amount'}
               value={enhancedTransactionRequest.value}
@@ -199,7 +204,8 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
 
       <View style={styles.buttonsSection}>
         <View style={sharedStyles.column}>
-          <BlueButton
+          <OutlineBorderedButton
+            style={{ button: { borderColor: colors.black } }}
             onPress={cancelTransaction}
             title={t('reject')}
             testID="Cancel.Button"
@@ -207,7 +213,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
           />
         </View>
         <View style={sharedStyles.column}>
-          <BlueButton
+          <DarkBlueButton
             onPress={confirmTransaction}
             title={t('sign')}
             testID="Confirm.Button"
@@ -226,38 +232,12 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
 export default ReviewTransactionModal
 
 const styles = StyleSheet.create({
-  lineStyle: {
-    borderWidth: 0.5,
-    borderColor: 'black',
-    marginTop: 40,
-  },
   boxStyle: {
     borderWidth: 0.5,
     borderColor: 'black',
     padding: 5,
   },
-  dataRow: {
-    flexDirection: 'row',
-  },
-  paragraphLabel: {
-    fontSize: 14,
-    color: 'rgba(55, 63, 72, 0.6)',
-    fontWeight: 'bold',
-    marginRight: 5,
-  },
-  paragraphValue: {
-    fontSize: 14,
-    color: 'rgba(55, 63, 72, 0.6)',
-  },
-  topBox: {
-    paddingTop: 10,
-    paddingBottom: 10,
-  },
-  advanceSection: {
-    paddingTop: 20,
-    paddingLeft: 20,
-    paddingRight: 20,
-  },
+
   buttonsSection: {
     ...sharedStyles.row,
     padding: 20,
@@ -286,14 +266,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.24,
     color: '#373f48',
   },
-  value: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-  },
-  marginBottom: {
-    marginBottom: 20,
-  },
+
   loadingContent: {
     padding: 20,
   },
