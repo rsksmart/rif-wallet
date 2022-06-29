@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react'
 import { StyleSheet, TextInput, View } from 'react-native'
 import { BigNumber } from 'ethers'
 
-import { SendTransactionRequest } from '../../lib/core/RIFWallet'
+import { SendTransactionRequest } from 'rif-wallet/packages/core'
 
 import { sharedStyles } from './sharedStyles'
 import { Button, Header2, Paragraph } from '../../components'

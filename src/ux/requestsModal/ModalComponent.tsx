@@ -5,7 +5,7 @@ import {
   Request,
   SignMessageRequest,
   SendTransactionRequest,
-} from '../../lib/core/RIFWallet'
+} from 'rif-wallet/packages/core'
 
 import ReviewTransactionModal from './ReviewTransactionModal'
 import SignMessageModal from './SignMessageModal'

@@ -1,16 +1,14 @@
 import { Contract, ContractFactory } from 'ethers'
 
 import smartWalletBytecode from './SmartWalletBytecode.json'
-import smartWalletABI from '../src/lib/core/SmartWalletABI.json'
-
-import smartWalletFactoryABI from '../src/lib/core/SmartWalletFactoryABI.json'
 import smartWalletFactoryBytecode from './SmartWalletFactoryBytecode.json'
+import { SmartWalletABIJSON, SmartWalletFactoryABIJSON } from 'rif-wallet/packages/core'
 
 import { rpcAccount } from './utils'
 
 export const deploySmartWalletFactory = async (): Promise<Contract> => {
   const smartWalletContractFactory = new ContractFactory(
-    smartWalletABI,
+    SmartWalletABIJSON,
     smartWalletBytecode,
     rpcAccount,
   )
@@ -18,7 +16,7 @@ export const deploySmartWalletFactory = async (): Promise<Contract> => {
   await smartWalletContract.deployTransaction.wait()
 
   const smartWalletFactoryContractFactory = new ContractFactory(
-    smartWalletFactoryABI,
+    SmartWalletFactoryABIJSON,
     smartWalletFactoryBytecode,
     rpcAccount,
   )

@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
-import { SignMessageRequest } from '../../lib/core/RIFWallet'
+import { SignMessageRequest } from 'rif-wallet/packages/core'
 import { useTranslation, Trans } from 'react-i18next'
 
 import { Button, Header2, Paragraph } from '../../components'

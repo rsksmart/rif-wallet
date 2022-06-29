@@ -3,7 +3,7 @@ import { render, waitFor, fireEvent, act } from '@testing-library/react-native'
 import { cleanup } from '@testing-library/react-native'
 
 import ReviewTransactionModal from './ReviewTransactionModal'
-import { RIFWallet, SendTransactionRequest } from '../../lib/core/RIFWallet'
+import { RIFWallet, SendTransactionRequest } from 'rif-wallet/packages/core'
 import { BigNumber } from '@ethersproject/bignumber'
 import { setupTest } from '../../../testLib/setup'
 import * as tokenMetadata from '../../lib/token/tokenMetadata'
