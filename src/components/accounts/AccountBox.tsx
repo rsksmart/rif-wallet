@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { StyleSheet, View } from 'react-native'
-import { MediumText, SemiBoldText } from '../typography'
+import { MediumText } from '../typography'
 import CopyField from '../activity/CopyField'
 import { colors } from '../../styles'
 import { SmartWalletFactory } from '../../lib/core/SmartWalletFactory'
@@ -13,6 +13,10 @@ type AccountBoxProps = {
   smartWalletAddressShort: string
   smartWalletFactory: SmartWalletFactory
 }
+
+const MediumTextStyleOverride: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => <MediumText style={styles.mediumTextOverride}>{children}</MediumText>
 
 const AccountBox: React.FC<AccountBoxProps> = ({
   address,
@@ -29,27 +33,29 @@ const AccountBox: React.FC<AccountBoxProps> = ({
     <View style={styles.accountsContainer}>
       <View style={styles.textContainer}>
         {/* @TODO implement account naming */}
-        <SemiBoldText style={styles.text}>account 1</SemiBoldText>
-        <EditMaterialIcon style={styles.icon} size={15} />
+        <MediumText style={styles.text}>account 1</MediumText>
+        <EditMaterialIcon style={styles.icon} size={11} />
       </View>
       <View style={styles.infoSection}>
-        <MediumText>Status</MediumText>
-        <SemiBoldText>{isDeployed ? 'Deployed' : 'Not Deployed'}</SemiBoldText>
+        <MediumText style={styles.titleFontSize}>Status</MediumText>
+        <MediumText style={styles.titleFontSize}>
+          {isDeployed ? 'Deployed' : 'Not Deployed'}
+        </MediumText>
       </View>
       <View style={styles.infoSection}>
         <MediumText style={styles.addressText}>EOA Address</MediumText>
         <CopyField
           text={addressShort}
           textToCopy={address}
-          TextComp={SemiBoldText}
+          TextComp={MediumTextStyleOverride}
         />
       </View>
-      <View style={styles.infoSection}>
+      <View>
         <MediumText style={styles.addressText}>Smart Wallet Address</MediumText>
         <CopyField
           text={smartWalletAddressShort}
           textToCopy={smartWalletAddress}
-          TextComp={SemiBoldText}
+          TextComp={MediumTextStyleOverride}
         />
       </View>
     </View>
@@ -59,7 +65,8 @@ const AccountBox: React.FC<AccountBoxProps> = ({
 const styles = StyleSheet.create({
   accountsContainer: {
     backgroundColor: colors.background.light,
-    padding: 20,
+    paddingHorizontal: 24,
+    paddingVertical: 38,
     borderRadius: 30,
   },
   textContainer: {
@@ -80,6 +87,14 @@ const styles = StyleSheet.create({
   },
   addressText: {
     marginBottom: 3,
+    fontSize: 13,
+  },
+  titleFontSize: {
+    fontSize: 13,
+  },
+  mediumTextOverride: {
+    fontSize: 13,
+    flex: 90,
   },
 })
 
