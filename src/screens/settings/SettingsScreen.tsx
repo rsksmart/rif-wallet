@@ -29,7 +29,6 @@ export const SettingsScreen: React.FC<ScreenProps<'Settings'>> = ({
   const goToSecurityConfiguration = () =>
     navigation.navigate('SecurityConfigurationScreen' as any)
 
-
   const goToDevMenu = () => navigation.navigate('DevMenu' as any)
   return (
     <View style={styles.container}>
