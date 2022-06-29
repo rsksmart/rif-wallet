@@ -1,7 +1,7 @@
 import React from 'react'
 import { BigNumber } from 'ethers'
 
-import { formatBigNumber } from '../../lib/abiEnhancer/formatBigNumber'
+import { formatBigNumber } from '@rsksmart/rif-wallet/packages/abiEnhancer'
 import { shortAddress } from '../../lib/utils'
 import { IActivityTransaction } from './ActivityScreen'
 import { StyleSheet, Text, View } from 'react-native'

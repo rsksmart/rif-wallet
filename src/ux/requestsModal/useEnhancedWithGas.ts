@@ -1,7 +1,8 @@
 import { TransactionRequest } from '@ethersproject/providers'
 import { BigNumber } from 'ethers'
 import { useEffect, useState } from 'react'
-import { AbiEnhancer, IEnhancedResult } from '../../lib/abiEnhancer/AbiEnhancer'
+import { IEnhancedResult } from '@rsksmart/rif-wallet/packages/types'
+import { AbiEnhancer } from '@rsksmart/rif-wallet/packages/abiEnhancer'
 import { RIFWallet } from '../../lib/core'
 
 const abiEnhancer = new AbiEnhancer()

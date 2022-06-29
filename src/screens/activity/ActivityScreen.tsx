@@ -12,7 +12,7 @@ import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWallet
 import {
   IAbiEnhancer,
   IEnhancedResult,
-} from '../../lib/abiEnhancer/AbiEnhancer'
+} from '@rsksmart/rif-wallet/packages/types'
 import { ScreenWithWallet } from '../types'
 import { ScreenProps } from '../../RootNavigation'
 import { RIFWallet } from '../../lib/core'

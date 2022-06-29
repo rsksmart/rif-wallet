@@ -2,7 +2,7 @@ import { providers, Wallet } from 'ethers'
 import Resolver from '@rsksmart/rns-resolver.js'
 import { OnRequest, RIFWallet } from '../lib/core'
 import { RifWalletServicesFetcher } from '../lib/rifWalletServices/RifWalletServicesFetcher'
-import { AbiEnhancer } from '../lib/abiEnhancer/AbiEnhancer'
+import { AbiEnhancer } from '@rsksmart/rif-wallet/packages/abiEnhancer'
 
 const rpcUrl = 'https://public-node.testnet.rsk.co'
 const smartWalletFactoryAddress = '0x3f71ce7bd7912bf3b362fd76dd34fa2f017b6388'

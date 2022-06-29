@@ -1,7 +1,7 @@
 import {
   IAbiEnhancer,
   IEnhancedResult,
-} from '../../src/lib/abiEnhancer/AbiEnhancer'
+} from '@rsksmart/rif-wallet/packages/types'
 
 export const enhancedTxTestCase: IEnhancedResult = {
   from: '0x6b4f72f48529d86a0f3ddf80f2c7291d16111850',
