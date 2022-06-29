@@ -18,8 +18,8 @@ import { AppFooterMenu } from './ux/appFooter'
 import { EditContactScreenProps } from './screens/contacts/EditContactScreen'
 import { DappsScreenScreenProps } from './screens/dapps'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
-import { ManagerWalletScreenProps } from './screens/settings/ManageWalletsScreen'
-import { colors } from './styles/colors'
+import { colors } from './styles'
+import { AccountsScreenType } from './screens/accounts/AccountsScreen'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -40,7 +40,7 @@ const InjectedScreens = {
   RegisterDomainScreen: InjectSelectedWallet(Screens.RegisterDomainScreen),
   HomeScreen: InjectSelectedWallet(Screens.HomeScreen),
   DappsScreen: InjectSelectedWallet(Screens.DappsScreen),
-  ManageWalletsScreen: InjectSelectedWallet(Screens.ManageWalletsScreen),
+  AccountsScreen: InjectSelectedWallet(Screens.AccountsScreen),
 }
 
 type RootStackParamList = {
@@ -109,8 +109,8 @@ export const RootNavigation: React.FC<{
   injectedBrowserUXScreenProps: InjectedBrowserUXScreenProps
   contactsNavigationScreenProps: EditContactScreenProps
   dappsScreenProps: DappsScreenScreenProps
-  manageWalletScreenProps: ManagerWalletScreenProps
   settingsScreen: ScreenProps<'Settings'>
+  accountsScreenType: AccountsScreenType
 }> = ({
   currentScreen,
   hasKeys,
@@ -125,8 +125,8 @@ export const RootNavigation: React.FC<{
   injectedBrowserUXScreenProps,
   contactsNavigationScreenProps,
   dappsScreenProps,
-  manageWalletScreenProps,
   settingsScreen,
+  accountsScreenType,
 }) => {
   let initialRoute: any = 'CreateKeysUX'
   if (hasPin) {
@@ -164,16 +164,6 @@ export const RootNavigation: React.FC<{
         <RootStack.Screen name="Settings" options={sharedOptions}>
           {props => <Screens.SettingsScreen {...props} {...settingsScreen} />}
         </RootStack.Screen>
-
-        <RootStack.Screen name="ManageWallets" options={sharedOptions}>
-          {props => (
-            <InjectedScreens.ManageWalletsScreen
-              {...props}
-              {...manageWalletScreenProps}
-            />
-          )}
-        </RootStack.Screen>
-
         <RootStack.Screen name="CreateKeysUX" options={sharedOptions}>
           {props => <CreateKeysNavigation {...props} {...keyManagementProps} />}
         </RootStack.Screen>
@@ -224,11 +214,14 @@ export const RootNavigation: React.FC<{
           component={Screens.TransactionReceivedScreen}
           options={sharedOptions}
         />
-        <RootStack.Screen
-          name="AccountsScreen"
-          component={Screens.AccountsScreen}
-          options={sharedOptions}
-        />
+        <RootStack.Screen name="AccountsScreen" options={sharedOptions}>
+          {props => (
+            <InjectedScreens.AccountsScreen
+              {...props}
+              {...accountsScreenType}
+            />
+          )}
+        </RootStack.Screen>
         <RootStack.Screen
           name="WalletInfo"
           component={InjectedScreens.WalletInfoScreen}

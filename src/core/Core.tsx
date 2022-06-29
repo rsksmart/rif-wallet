@@ -320,7 +320,7 @@ export const Core = () => {
                   }}
                   contactsNavigationScreenProps={{ rnsResolver }}
                   dappsScreenProps={{ fetcher: rifWalletServicesFetcher }}
-                  manageWalletScreenProps={{
+                  accountsScreenType={{
                     addNewWallet,
                     switchActiveWallet,
                   }}
