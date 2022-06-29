@@ -18,7 +18,7 @@ const ActiveButton: React.FC<ActiveButtonType & BaseButtonInterface> = ({
 }) => {
   // UX Fix for typography
   const commonTextStyles = {
-    top: 2,
+    top: 1,
   }
   if (isActive) {
     return (
