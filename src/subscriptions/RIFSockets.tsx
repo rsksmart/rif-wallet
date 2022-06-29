@@ -89,12 +89,16 @@ function liveSubscriptionsReducer(state: State, action: Action) {
 
       return {
         ...state,
+        isSetup: true,
         balances: balancesInitial,
         transactions: {
           ...state.transactions,
           activityTransactions: action.payload.transactions,
         },
       }
+
+    case 'reset':
+      return initialState
 
     default:
       throw new Error(`Unhandled action type: ${type}`)
@@ -110,6 +114,7 @@ const initialState = {
   prices: {},
   balances: {},
   events: [],
+  isSetup: false,
 }
 //TODO: Move this to the backend
 const loadRBTCBalance = async (wallet: RIFWallet, dispatch: Dispatch) => {
@@ -186,7 +191,7 @@ export function RIFSocketsProvider({
       // socket is connected to a different wallet
       if (rifServiceSocket.isConnected()) {
         rifServiceSocket.disconnect()
-        dispatch({ type: 'init', payload: { transactions: [], balances: [] } })
+        dispatch({ type: 'reset' })
       }
 
       connect()
