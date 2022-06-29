@@ -28,7 +28,7 @@ import { RootNavigation } from '../RootNavigation'
 import ModalComponent from '../ux/requestsModal/ModalComponent'
 
 import { Cover } from './components/Cover'
-import { LoadingScreen } from './components/LoadingScreen'
+import { LoadingScreen } from '../components/loading/LoadingScreen'
 import { RequestPIN } from './components/RequestPIN'
 import { WalletConnectProviderElement } from '../screens/walletConnect/WalletConnectContext'
 import { RIFSocketsProvider } from '../subscriptions/RIFSockets'
@@ -260,7 +260,7 @@ export const Core = () => {
   }, [state.selectedWallet])
 
   if (state.loading) {
-    return <LoadingScreen reason="Getting things setup" />
+    return <LoadingScreen />
   }
 
   // handles the top color behind the clock
