@@ -55,11 +55,16 @@ export interface InitAction {
   }
 }
 
+export interface ResetAction {
+  type: 'reset'
+}
+
 export interface State {
   transactions: TransactionsServerResponseWithActivityTransactions
   balances: Record<string, ITokenWithBalance>
   prices: Record<string, IPrice>
   events: Array<IEvent>
+  isSetup: Boolean
 }
 
 export type Action =
@@ -69,6 +74,7 @@ export type Action =
   | NewTransactionAction
   | NewTokenTransferAction
   | InitAction
+  | ResetAction
 
 export type Dispatch = (action: Action) => void
 export type SubscriptionsProviderProps = {
