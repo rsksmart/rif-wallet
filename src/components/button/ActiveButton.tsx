@@ -26,7 +26,7 @@ const ActiveButton: React.FC<ActiveButtonType & BaseButtonInterface> = ({
 
   return (
     <SecondaryButton {...rest}>
-      <TextComp style={{ color: colors.background.button }}>{text}</TextComp>
+      <TextComp style={{ color: colors.darkPurple3 }}>{text}</TextComp>
     </SecondaryButton>
   )
 }
