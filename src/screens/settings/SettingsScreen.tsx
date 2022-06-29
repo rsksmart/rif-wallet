@@ -29,7 +29,8 @@ export const SettingsScreen: React.FC<ScreenProps<'Settings'>> = ({
   const goToSecurityConfiguration = () =>
     navigation.navigate('SecurityConfigurationScreen' as any)
 
-  const goToDevMenu = () => navigation.navigate('DevMenu' as any)
+  const goToDevMenu = () => navigation.navigate('WalletInfo')
+
   return (
     <View style={styles.container}>
       <View style={styles.mainView}>
@@ -58,7 +59,7 @@ export const SettingsScreen: React.FC<ScreenProps<'Settings'>> = ({
         </TouchableOpacity>
         <TouchableOpacity style={styles.rowComponent} onPress={goToDevMenu}>
           <SemiBoldText style={[styles.textColor, spacing.ml6]}>
-            Dev Menu
+            Smart Wallet Deploy
           </SemiBoldText>
         </TouchableOpacity>
       </View>
