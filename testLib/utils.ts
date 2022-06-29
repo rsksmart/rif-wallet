@@ -7,10 +7,7 @@ import {
   Signer,
 } from 'ethers'
 import { ReactTestInstance } from 'react-test-renderer'
-import { tenPow } from '../src/lib/token/BaseToken'
-import { ERC20Token } from '../src/lib/token/ERC20Token'
-import { RBTCToken } from '../src/lib/token/RBTCToken'
-import { ERC677__factory } from '../src/lib/token/types'
+import { tenPow, ERC20Token, RBTCToken,ERC677__factory } from 'rif-wallet/packages/token'
 
 const nodeUrl = 'http://localhost:8545'
 

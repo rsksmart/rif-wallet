@@ -12,8 +12,7 @@ import {
 import { ContractReceipt, BigNumber, utils } from 'ethers'
 import { useTranslation } from 'react-i18next'
 
-import { getAllTokens } from '../../lib/token/tokenMetadata'
-import { IToken } from '../../lib/token/BaseToken'
+import { IToken ,getAllTokens } from 'rif-wallet/packages/token'
 
 import { ScreenProps } from '../../RootNavigation'
 import { Button, CopyComponent, Paragraph } from '../../components'

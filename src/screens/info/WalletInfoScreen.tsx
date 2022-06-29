@@ -3,7 +3,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { Transaction, BigNumber } from 'ethers'
 import { Trans, useTranslation } from 'react-i18next'
 
-import { ERC20Token } from '../../lib/token/ERC20Token'
+import { ERC20Token } from 'rif-wallet/packages/token'
 
 import {
   Address,

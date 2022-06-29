@@ -3,7 +3,7 @@ import { BigNumber } from 'ethers'
 import { Signer } from '@ethersproject/abstract-signer'
 
 import { ERC20EnhanceStrategy } from './ERC20EnhanceStrategy'
-import * as tokenMetadata from '../../token/tokenMetadata'
+import * as tokenMetadata from 'rif-wallet/packages/token'
 import { deployTestTokens, getSigner } from '../../../../testLib/utils'
 
 describe('ERC20 Enhance Strategy', () => {

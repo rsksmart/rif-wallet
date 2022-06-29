@@ -1,9 +1,9 @@
-import { IToken } from '../../token/BaseToken'
+import { IToken } from 'rif-wallet/packages/token'
 import { Signer } from '@ethersproject/abstract-signer'
 
 import { OtherEnhanceStrategy } from './OtherEnhanceStrategy'
 import { deployTestTokens, getSigner } from '../../../../testLib/utils'
-import * as tokenMetadata from '../../token/tokenMetadata'
+import * as tokenMetadata from 'rif-wallet/packages/token'
 
 describe('Other Enhance Strategy', () => {
   let transactionRequest = {

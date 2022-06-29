@@ -3,7 +3,7 @@ import React from 'react'
 import { render, fireEvent, act, waitFor } from '@testing-library/react-native'
 
 import { SendScreen } from './SendScreen'
-import * as tokenMetadata from '../../lib/token/tokenMetadata'
+import * as tokenMetadata from 'rif-wallet/packages/token'
 import { deployTestTokens, getSigner } from '../../../testLib/utils'
 
 // eslint-disable-next-line jest/no-disabled-tests
