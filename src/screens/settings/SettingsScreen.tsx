@@ -26,6 +26,8 @@ export const SettingsScreen: React.FC<ScreenProps<'Settings'>> = ({
 
   const goToChangeLanguage = () => navigation.navigate('ChangeLanguage' as any)
 
+  const goToAccountsScreen = () => navigation.navigate('AccountsScreen' as any)
+
   // const goToSecurityConfiguration = () =>
   //   navigation.navigate('SecurityConfiguration' as any)
 
