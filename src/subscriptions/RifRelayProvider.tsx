@@ -35,9 +35,7 @@ export function RifRelayProvider({
 export function useRifRelayProviderState() {
   const context = React.useContext(RifRelayProviderContext)
   if (context === undefined) {
-    throw new Error(
-      'Rif Relay Context is not loaded',
-    )
+    throw new Error('Rif Relay Context is not loaded')
   }
   return context
 }

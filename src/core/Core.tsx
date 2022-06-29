@@ -194,7 +194,6 @@ export const Core = () => {
     removeKeys,
     switchActiveWallet,
     createPin,
-    resetKeysAndPin,
   } = useKeyManagementSystem(onRequest)
 
   const [currentScreen, setCurrentScreen] = useState<string>('Home')

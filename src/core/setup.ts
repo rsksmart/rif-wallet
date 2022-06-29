@@ -35,15 +35,13 @@ const rifRelayConfig: RifRelayConfiguration = {
   relayVerifierAddress: '0x56ccdB6D312307Db7A4847c3Ea8Ce2449e9B79e9',
   deployVerifierAddress: '0x5C6e96a84271AC19974C3e99d6c4bE4318BfE483',
   smartWalletAddress: '0xEdB6D515C2DB4F9C3C87D7f6Cefb260B3DEe8014',
-  relayWorkerAddress:'0xc6a4f4839b074b2a75ebf00a9b427ccb8073b7b4',
-  smartWalletFactoryAddress:smartWalletFactoryAddress,
-  testTokenAddress:'0xF5859303f76596dD558B438b18d0Ce0e1660F3ea',
-  rskHost:rpcUrl
+  relayWorkerAddress: '0xc6a4f4839b074b2a75ebf00a9b427ccb8073b7b4',
+  smartWalletFactoryAddress: smartWalletFactoryAddress,
+  testTokenAddress: '0xF5859303f76596dD558B438b18d0Ce0e1660F3ea',
+  rskHost: rpcUrl,
 }
 
-export const rifRelayService = new RifRelayServices(
-  rifRelayConfig
-)
+export const rifRelayService = new RifRelayServices(rifRelayConfig)
 
 export const rnsResolver = Resolver.forRskTestnet({})
 

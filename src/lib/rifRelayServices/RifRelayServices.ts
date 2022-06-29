@@ -23,9 +23,7 @@ export class RifRelayServices {
 
   private TRIF_PRICE = 0.000005739
 
-  constructor(
-    config: RifRelayConfiguration
-  ) {
+  constructor(config: RifRelayConfiguration) {
     this.preferedRelays = config.preferedRelays
     this.relayHubAddress = config.relayHubAddress
     this.relayVerifierAddress = config.relayVerifierAddress
@@ -142,6 +140,9 @@ export class RifRelayServices {
       return smartWallet
     } catch (error) {
       const errorObj = error as Error
+      if (errorObj.message) {
+        console.error(errorObj.message)
+      }
     }
     return undefined
   }
@@ -280,7 +281,7 @@ export class RifRelayServices {
         deployed: smartWalledIsDeployed,
         address: this.wallet!.smartWallet.smartWalletAddress,
       }
-      const txDetials = await rifRelayProvider?.relayTransaction(
+      await rifRelayProvider?.relayTransaction(
         {
           to: address,
           data: encodedAbi,
@@ -291,8 +292,6 @@ export class RifRelayServices {
         },
         fees,
       )
-    } catch (error) {
-      
-    }
+    } catch (error) {}
   }
 }
