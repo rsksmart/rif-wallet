@@ -99,6 +99,7 @@ export const RootNavigation: React.FC<{
   currentScreen: string
   hasKeys: boolean
   hasPin: boolean
+  deleteKeys: () => Promise<null>
   changeTopColor: (color: string) => void
   rifWalletServicesSocket: IRifWalletServicesSocket
   keyManagementProps: CreateKeysProps
@@ -112,11 +113,12 @@ export const RootNavigation: React.FC<{
   contactsNavigationScreenProps: EditContactScreenProps
   dappsScreenProps: DappsScreenScreenProps
   manageWalletScreenProps: ManagerWalletScreenProps
-  settingsScreen: ScreenProps<'Settings'>
+  // settingsScreen: ScreenProps<'Settings'>
 }> = ({
   currentScreen,
   hasKeys,
   hasPin,
+  deleteKeys,
   changeTopColor,
   keyManagementProps,
   createPin,
@@ -129,7 +131,7 @@ export const RootNavigation: React.FC<{
   contactsNavigationScreenProps,
   dappsScreenProps,
   manageWalletScreenProps,
-  settingsScreen,
+  // settingsScreen,
 }) => {
   let initialRoute: any = 'CreateKeysUX'
   if (hasPin) {
@@ -165,7 +167,7 @@ export const RootNavigation: React.FC<{
         />
 
         <RootStack.Screen name="Settings" options={sharedOptions}>
-          {props => <Screens.SettingsScreen {...props} {...settingsScreen} />}
+          {props => <Screens.SettingsScreen {...props} />}
         </RootStack.Screen>
 
         <RootStack.Screen name="ManageWallets" options={sharedOptions}>
@@ -296,9 +298,14 @@ export const RootNavigation: React.FC<{
         />
         <RootStack.Screen
           name="SecurityConfigurationScreen"
-          component={Screens.SecurityConfigurationScreen}
-          options={sharedOptions}
-        />
+          options={sharedOptions}>
+          {props => (
+            <Screens.SecurityConfigurationScreen
+              {...props}
+              deleteKeys={deleteKeys}
+            />
+          )}
+        </RootStack.Screen>
       </RootStack.Navigator>
       {appIsSetup && <AppFooterMenu currentScreen={currentScreen} />}
     </View>
