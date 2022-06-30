@@ -331,7 +331,9 @@ export const Core = () => {
                     addNewWallet,
                     switchActiveWallet,
                   }}
-                  settingsScreen={{ deleteKeys: resetKeysAndPin }}
+                  securityConfigurationScreenProps={{
+                    deleteKeys: resetKeysAndPin,
+                  }}
                   changeTopColor={setTopColor}
                 />
 
