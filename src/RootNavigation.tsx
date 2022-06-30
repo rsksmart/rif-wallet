@@ -19,7 +19,6 @@ import { EditContactScreenProps } from './screens/contacts/EditContactScreen'
 import { DappsScreenScreenProps } from './screens/dapps'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
 import { ManagerWalletScreenProps } from './screens/settings/ManageWalletsScreen'
-import { SettingsScreenProps } from './screens/settings/SettingsScreen'
 import { colors } from './styles/colors'
 
 const InjectedScreens = {
@@ -77,6 +76,8 @@ type RootStackParamList = {
   Settings: undefined
   ManageWallets: undefined
   EventsScreen: undefined
+  SecurityConfigurationScreen: undefined
+  ChangePinScreen: undefined
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -102,6 +103,7 @@ export const RootNavigation: React.FC<{
   rifWalletServicesSocket: IRifWalletServicesSocket
   keyManagementProps: CreateKeysProps
   createPin: (newPin: string) => Promise<void>
+  editPin: (newPin: string) => Promise<void>
   balancesScreenProps: BalancesScreenProps
   activityScreenProps: ActivityScreenProps
   keysInfoScreenProps: KeysInfoScreenProps
@@ -110,7 +112,7 @@ export const RootNavigation: React.FC<{
   contactsNavigationScreenProps: EditContactScreenProps
   dappsScreenProps: DappsScreenScreenProps
   manageWalletScreenProps: ManagerWalletScreenProps
-  settingsScreen: SettingsScreenProps
+  settingsScreen: ScreenProps<'Settings'>
 }> = ({
   currentScreen,
   hasKeys,
@@ -118,6 +120,7 @@ export const RootNavigation: React.FC<{
   changeTopColor,
   keyManagementProps,
   createPin,
+  editPin,
   balancesScreenProps,
   activityScreenProps,
   keysInfoScreenProps,
@@ -267,7 +270,9 @@ export const RootNavigation: React.FC<{
             <Screens.CreatePinScreen {...props} createPin={createPin} />
           )}
         </RootStack.Screen>
-
+        <RootStack.Screen name="ChangePinScreen" options={sharedOptions}>
+          {props => <Screens.ChangePinScreen {...props} editPin={editPin} />}
+        </RootStack.Screen>
         <RootStack.Screen name="Contacts" options={sharedOptions}>
           {props => (
             <Screens.ContactsNavigationScreen
@@ -287,6 +292,11 @@ export const RootNavigation: React.FC<{
         <RootStack.Screen
           name="EventsScreen"
           component={Screens.EventsScreen}
+          options={sharedOptions}
+        />
+        <RootStack.Screen
+          name="SecurityConfigurationScreen"
+          component={Screens.SecurityConfigurationScreen}
           options={sharedOptions}
         />
       </RootStack.Navigator>

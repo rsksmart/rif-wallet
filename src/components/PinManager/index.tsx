@@ -8,7 +8,7 @@ import { colors } from '../../styles/colors'
 
 interface Interface {
   title: string
-  handleSubmit: (enteredPin: string) => Promise<void>
+  handleSubmit: (enteredPin: string) => Promise<void> | any
 }
 export const PinManager: React.FC<Interface> = ({ title, handleSubmit }) => {
   const [error, setError] = useState<string | null>(null)

@@ -141,6 +141,10 @@ const useKeyManagementSystem = (onRequest: OnRequest) => {
     })
   }
 
+  const editPin = async (newPin: string) => {
+    await savePin(newPin)
+  }
+
   const addNewWallet = () => {
     if (!state.kms) {
       throw Error('Can not add new wallet because no KMS created.')
@@ -172,6 +176,7 @@ const useKeyManagementSystem = (onRequest: OnRequest) => {
     switchActiveWallet,
     createPin,
     resetKeysAndPin,
+    editPin,
   }
 }
 
@@ -192,6 +197,7 @@ export const Core = () => {
     removeKeys,
     switchActiveWallet,
     createPin,
+    editPin,
     resetKeysAndPin,
   } = useKeyManagementSystem(onRequest)
 
@@ -305,6 +311,7 @@ export const Core = () => {
                       }),
                   }}
                   createPin={createPin}
+                  editPin={editPin}
                   balancesScreenProps={{ fetcher: rifWalletServicesFetcher }}
                   sendScreenProps={{ rnsResolver }}
                   activityScreenProps={{
