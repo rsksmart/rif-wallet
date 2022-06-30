@@ -1,6 +1,6 @@
 import React, { createContext, useContext, FC } from 'react'
 import { Paragraph } from './components'
-import { RIFWallet, Request } from './lib/core'
+import { RIFWallet, Request } from 'rif-wallet/packages/core'
 import { ScreenWithWallet } from './screens/types'
 export type Wallets = { [id: string]: RIFWallet }
 export type WalletsIsDeployed = { [id: string]: boolean }

@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View, ScrollView } from 'react-native'
 
-import { SignTypedDataRequest } from '../../lib/core'
+import { SignTypedDataRequest } from 'rif-wallet/packages/core'
 
 import { Button, CompactParagraph, Header2 } from '../../components'
 import { sharedStyles } from './sharedStyles'

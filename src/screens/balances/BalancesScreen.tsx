@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { ScreenProps, NavigationProp } from '../../RootNavigation'
 import { Address, Button } from '../../components'
 import { ScreenWithWallet } from '../types'
-import { RIFWallet } from '../../lib/core'
+import { RIFWallet } from 'rif-wallet/packages/core'
 
 export const balanceToString = (balance: string, decimals: BigNumberish) => {
   const parts = {

@@ -1,4 +1,4 @@
-import { RIFWallet, OnRequest, Request } from '../src/lib/core'
+import { RIFWallet, OnRequest, Request } from 'rif-wallet/packages/core'
 import { deploySmartWalletFactory } from './contracts'
 import { createNewTestWallet } from './utils'
 

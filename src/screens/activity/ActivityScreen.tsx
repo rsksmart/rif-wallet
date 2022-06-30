@@ -15,7 +15,7 @@ import {
 } from '../../lib/abiEnhancer/AbiEnhancer'
 import { ScreenWithWallet } from '../types'
 import { ScreenProps } from '../../RootNavigation'
-import { RIFWallet } from '../../lib/core'
+import { RIFWallet } from 'rif-wallet/packages/core'
 import ActivityRow from './ActivityRow'
 import { grid } from '../../styles/grid'
 import { SquareButton } from '../../components/button/SquareButton'

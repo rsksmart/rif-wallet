@@ -5,7 +5,7 @@ import { render, fireEvent, RenderAPI } from '@testing-library/react-native'
 
 import { ReceiveScreen, TestID } from './ReceiveScreen'
 import { setupTest } from '../../../testLib/setup'
-import { RIFWallet } from '../../lib/core'
+import { RIFWallet } from 'rif-wallet/packages/core'
 import { getAddressDisplayText } from '../../components'
 
 describe('Receive Screen', function (this: {

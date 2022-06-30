@@ -2,7 +2,7 @@ import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { renderHook, act } from '@testing-library/react-hooks'
 import { BigNumber } from 'ethers'
 import { setupTest } from '../../../testLib/setup'
-import { RIFWallet } from '../../lib/core'
+import { RIFWallet } from 'rif-wallet/packages/core'
 
 import useEnhancedWithGas from './useEnhancedWithGas'
 

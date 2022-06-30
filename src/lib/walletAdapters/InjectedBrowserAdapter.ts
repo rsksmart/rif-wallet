@@ -1,5 +1,5 @@
 import { Signer } from 'ethers'
-import { RIFWallet } from '../core'
+import { RIFWallet } from 'rif-wallet/packages/core'
 import { AccountsResolver } from './resolvers/AccountsResolver'
 import { CallsResolver } from './resolvers/CallsResolver'
 import { ChainIdResolver } from './resolvers/ChainIdResolver'

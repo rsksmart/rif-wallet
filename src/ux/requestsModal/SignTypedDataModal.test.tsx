@@ -1,7 +1,7 @@
 import React from 'react'
 import { render } from '@testing-library/react-native'
 import SignTypedDataModal from './SignTypedDataModal'
-import { SignTypedDataRequest } from '../../lib/core'
+import { SignTypedDataRequest } from 'rif-wallet/packages/core'
 
 describe('SignTypedData', function (this: {
   confirm: ReturnType<typeof jest.fn>

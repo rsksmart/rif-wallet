@@ -6,7 +6,7 @@ import { Address, Button, Header1, Paragraph } from '../../components'
 import { AppContext } from '../../Context'
 import { NavigationProp } from '../../RootNavigation'
 import { ScreenProps } from '../../RootNavigation'
-import { RIFWallet } from '../../lib/core'
+import { RIFWallet } from 'rif-wallet/packages/core'
 
 const KeysActionItem = ({
   navigation,

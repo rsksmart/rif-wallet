@@ -1,4 +1,4 @@
-import { RIFWallet } from '../../core'
+import { RIFWallet } from 'rif-wallet/packages/core'
 import { IResolver } from '../RPCAdapter'
 
 export class SignTypedDataV4Resolver implements IResolver {
