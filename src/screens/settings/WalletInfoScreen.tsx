@@ -13,8 +13,9 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
   isWalletDeployed,
 }) => {
   const [eoaBalance, setEoaBalance] = useState<BigNumber>(BigNumber.from(0))
-  const [isDeploying, setIsDeploying] = useState(false)
+  const [isDeploying, setIsDeploying] = useState<boolean>(false)
   const [deployError, setDeployError] = useState<string | null>(null)
+  const [isDeployed, setIsDeployed] = useState<boolean>(isWalletDeployed)
 
   const [smartWalletDeployTx, setSmartWalletDeployTx] =
     useState<null | Transaction>(null)
@@ -35,9 +36,11 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
       setSmartWalletDeployTx(txPromise)
 
       await txPromise.wait()
-    } catch (error: any) {
+      await wallet.smartWalletFactory.isDeployed().then(setIsDeployed)
       setIsDeploying(false)
+    } catch (error: any) {
       setDeployError(error.toString())
+      setIsDeploying(false)
     }
   }
 
@@ -51,17 +54,17 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
         ready.
       </Text>
 
-      {isWalletDeployed && (
-        <Text style={styles.text}>Your smart wallet is already deployed!</Text>
+      {isDeployed && (
+        <Text style={styles.text}>Your smart wallet has been deployed!</Text>
       )}
 
-      {!isWalletDeployed && (
+      {!isDeployed && (
         <View>
           <Text style={styles.heading}>Step 1: Fund your EOA account</Text>
           <View>
             <Text style={styles.text}>
-              Fund your Externally Owned Account (EOA) with rBTC. Here is the
-              address:
+              Fund your Externally Owned Account (EOA) with rBTC. Copy your
+              address below and paste it in the rBTC Faucet.
             </Text>
 
             <View style={grid.row}>
@@ -104,10 +107,12 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
           <Text style={styles.heading}>Step 2: Deploy the wallet</Text>
           <SecondaryButton
             disabled={!hasBalance}
-            onPress={deploy}
+            onPress={deploy || isDeploying}
             style={!hasBalance ? styles.buttonDisabled : styles.button}>
             <Text>Deploy Wallet</Text>
           </SecondaryButton>
+
+          {isDeploying && <Text style={styles.text}>Deploying...</Text>}
 
           {smartWalletDeployTx && (
             <TouchableOpacity
