@@ -113,7 +113,7 @@ export const RootNavigation: React.FC<{
   contactsNavigationScreenProps: EditContactScreenProps
   dappsScreenProps: DappsScreenScreenProps
   manageWalletScreenProps: ManagerWalletScreenProps
-  securityConfiguraitonScreenProps: SecurityScreenProps
+  securityConfigurationScreenProps: SecurityScreenProps
 }> = ({
   currentScreen,
   hasKeys,
@@ -130,7 +130,7 @@ export const RootNavigation: React.FC<{
   contactsNavigationScreenProps,
   dappsScreenProps,
   manageWalletScreenProps,
-  securityConfiguraitonScreenProps,
+  securityConfigurationScreenProps,
 }) => {
   let initialRoute: any = 'CreateKeysUX'
   if (hasPin) {
@@ -301,7 +301,7 @@ export const RootNavigation: React.FC<{
           {props => (
             <Screens.SecurityConfigurationScreen
               {...props}
-              {...securityConfiguraitonScreenProps}
+              {...securityConfigurationScreenProps}
             />
           )}
         </RootStack.Screen>
