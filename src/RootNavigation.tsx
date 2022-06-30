@@ -20,6 +20,7 @@ import { DappsScreenScreenProps } from './screens/dapps'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
 import { ManagerWalletScreenProps } from './screens/settings/ManageWalletsScreen'
 import { colors } from './styles/colors'
+import { SecurityScreenProps } from './screens/security/SecurityConfigurationScreen'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -99,7 +100,6 @@ export const RootNavigation: React.FC<{
   currentScreen: string
   hasKeys: boolean
   hasPin: boolean
-  deleteKeys: () => Promise<null>
   changeTopColor: (color: string) => void
   rifWalletServicesSocket: IRifWalletServicesSocket
   keyManagementProps: CreateKeysProps
@@ -113,12 +113,11 @@ export const RootNavigation: React.FC<{
   contactsNavigationScreenProps: EditContactScreenProps
   dappsScreenProps: DappsScreenScreenProps
   manageWalletScreenProps: ManagerWalletScreenProps
-  // settingsScreen: ScreenProps<'Settings'>
+  securityConfiguraitonScreenProps: SecurityScreenProps
 }> = ({
   currentScreen,
   hasKeys,
   hasPin,
-  deleteKeys,
   changeTopColor,
   keyManagementProps,
   createPin,
@@ -131,7 +130,7 @@ export const RootNavigation: React.FC<{
   contactsNavigationScreenProps,
   dappsScreenProps,
   manageWalletScreenProps,
-  // settingsScreen,
+  securityConfiguraitonScreenProps,
 }) => {
   let initialRoute: any = 'CreateKeysUX'
   if (hasPin) {
@@ -302,7 +301,7 @@ export const RootNavigation: React.FC<{
           {props => (
             <Screens.SecurityConfigurationScreen
               {...props}
-              deleteKeys={deleteKeys}
+              {...securityConfiguraitonScreenProps}
             />
           )}
         </RootStack.Screen>

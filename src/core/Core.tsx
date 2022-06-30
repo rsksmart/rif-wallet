@@ -300,7 +300,6 @@ export const Core = () => {
                   currentScreen={currentScreen}
                   hasKeys={state.hasKeys}
                   hasPin={state.hasPin}
-                  deleteKeys={resetKeysAndPin}
                   rifWalletServicesSocket={rifWalletServicesSocket}
                   keyManagementProps={{
                     generateMnemonic: () =>
@@ -331,6 +330,9 @@ export const Core = () => {
                   manageWalletScreenProps={{
                     addNewWallet,
                     switchActiveWallet,
+                  }}
+                  securityConfiguraitonScreenProps={{
+                    deleteKeys: resetKeysAndPin,
                   }}
                   changeTopColor={setTopColor}
                 />

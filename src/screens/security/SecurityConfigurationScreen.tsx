@@ -6,11 +6,11 @@ import { ScreenProps } from '../../RootNavigation'
 import { useTranslation } from 'react-i18next'
 import ActiveButton from '../../components/button/ActiveButton'
 
-type SettingsScreenProps = {
+export type SecurityScreenProps = {
   deleteKeys: () => Promise<any>
 }
 const SecurityConfigurationScreen: React.FC<
-  ScreenProps<'SecurityConfigurationScreen'> & SettingsScreenProps
+  ScreenProps<'SecurityConfigurationScreen'> & SecurityScreenProps
 > = ({ navigation, deleteKeys }) => {
   const { t } = useTranslation()
 
