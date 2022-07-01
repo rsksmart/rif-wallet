@@ -1,6 +1,7 @@
 import React from 'react'
 import { ScreenProps } from '../../RootNavigation'
 import { StyleSheet, View, TouchableOpacity } from 'react-native'
+import Icon from 'react-native-vector-icons/Ionicons'
 import { version } from '../../../package.json'
 import { getWalletSetting, SETTINGS } from '../../core/config'
 import { colors, spacing } from '../../styles'
@@ -58,6 +59,7 @@ export const SettingsScreen: React.FC<ScreenProps<'Settings'>> = ({
           </SemiBoldText>
         </TouchableOpacity>
         <TouchableOpacity style={styles.rowComponent} onPress={goToDevMenu}>
+          <Icon name="wallet-outline" color={colors.white} size={20} />
           <SemiBoldText style={[styles.textColor, spacing.ml6]}>
             Smart Wallet Deploy
           </SemiBoldText>

@@ -49,10 +49,6 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
   return (
     <ScrollView style={styles.background}>
       <Text style={styles.heading}>Deploy Smart Wallet</Text>
-      <Text style={styles.text}>
-        This is a temporary step that is needed before RIF Relay Server is
-        ready.
-      </Text>
 
       {isDeployed && (
         <Text style={styles.text}>Your smart wallet has been deployed!</Text>
@@ -60,6 +56,10 @@ export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
 
       {!isDeployed && (
         <View>
+          <Text style={styles.text}>
+            This is a temporary step that is needed before RIF Relay Server is
+            ready.
+          </Text>
           <Text style={styles.heading}>Step 1: Fund your EOA account</Text>
           <View>
             <Text style={styles.text}>
