@@ -8,7 +8,7 @@ import { colors, grid } from '../../styles'
 import SecondaryButton from '../../components/button/SecondaryButton'
 import { CopyIcon } from '../../components/icons'
 
-export const WalletInfoScreen: React.FC<ScreenWithWallet> = ({
+export const ManuallyDeployScreen: React.FC<ScreenWithWallet> = ({
   wallet,
   isWalletDeployed,
 }) => {
