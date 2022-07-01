@@ -20,6 +20,8 @@ import { DappsScreenScreenProps } from './screens/dapps'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
 import { colors } from './styles'
 import { AccountsScreenType } from './screens/accounts/AccountsScreen'
+import { ManagerWalletScreenProps } from './screens/settings/ManageWalletsScreen'
+import { SecurityScreenProps } from './screens/security/SecurityConfigurationScreen'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -77,6 +79,8 @@ type RootStackParamList = {
   ManageWallets: undefined
   EventsScreen: undefined
   AccountsScreen: undefined
+  SecurityConfigurationScreen: undefined
+  ChangePinScreen: undefined
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -102,6 +106,7 @@ export const RootNavigation: React.FC<{
   rifWalletServicesSocket: IRifWalletServicesSocket
   keyManagementProps: CreateKeysProps
   createPin: (newPin: string) => Promise<void>
+  editPin: (newPin: string) => Promise<void>
   balancesScreenProps: BalancesScreenProps
   activityScreenProps: ActivityScreenProps
   keysInfoScreenProps: KeysInfoScreenProps
@@ -111,6 +116,8 @@ export const RootNavigation: React.FC<{
   dappsScreenProps: DappsScreenScreenProps
   settingsScreen: ScreenProps<'Settings'>
   accountsScreenType: AccountsScreenType
+  manageWalletScreenProps: ManagerWalletScreenProps
+  securityConfigurationScreenProps: SecurityScreenProps
 }> = ({
   currentScreen,
   hasKeys,
@@ -118,6 +125,7 @@ export const RootNavigation: React.FC<{
   changeTopColor,
   keyManagementProps,
   createPin,
+  editPin,
   balancesScreenProps,
   activityScreenProps,
   keysInfoScreenProps,
@@ -127,6 +135,8 @@ export const RootNavigation: React.FC<{
   dappsScreenProps,
   settingsScreen,
   accountsScreenType,
+  manageWalletScreenProps,
+  securityConfigurationScreenProps,
 }) => {
   let initialRoute: any = 'CreateKeysUX'
   if (hasPin) {
@@ -162,7 +172,7 @@ export const RootNavigation: React.FC<{
         />
 
         <RootStack.Screen name="Settings" options={sharedOptions}>
-          {props => <Screens.SettingsScreen {...props} {...settingsScreen} />}
+          {props => <Screens.SettingsScreen {...props} />}
         </RootStack.Screen>
         <RootStack.Screen name="CreateKeysUX" options={sharedOptions}>
           {props => <CreateKeysNavigation {...props} {...keyManagementProps} />}
@@ -264,7 +274,9 @@ export const RootNavigation: React.FC<{
             <Screens.CreatePinScreen {...props} createPin={createPin} />
           )}
         </RootStack.Screen>
-
+        <RootStack.Screen name="ChangePinScreen" options={sharedOptions}>
+          {props => <Screens.ChangePinScreen {...props} editPin={editPin} />}
+        </RootStack.Screen>
         <RootStack.Screen name="Contacts" options={sharedOptions}>
           {props => (
             <Screens.ContactsNavigationScreen
@@ -286,6 +298,16 @@ export const RootNavigation: React.FC<{
           component={Screens.EventsScreen}
           options={sharedOptions}
         />
+        <RootStack.Screen
+          name="SecurityConfigurationScreen"
+          options={sharedOptions}>
+          {props => (
+            <Screens.SecurityConfigurationScreen
+              {...props}
+              {...securityConfigurationScreenProps}
+            />
+          )}
+        </RootStack.Screen>
       </RootStack.Navigator>
       {appIsSetup && <AppFooterMenu currentScreen={currentScreen} />}
     </View>

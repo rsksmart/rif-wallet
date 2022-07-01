@@ -16,17 +16,25 @@ const ActiveButton: React.FC<ActiveButtonType & BaseButtonInterface> = ({
   TextComp = MediumText,
   ...rest
 }) => {
+  // UX Fix for typography
+  const commonTextStyles = {
+    top: 0.3,
+  }
   if (isActive) {
     return (
       <PrimaryButton {...rest}>
-        <TextComp style={{ color: colors.text.primary }}>{text}</TextComp>
+        <TextComp style={{ color: colors.text.primary, ...commonTextStyles }}>
+          {text}
+        </TextComp>
       </PrimaryButton>
     )
   }
 
   return (
     <SecondaryButton {...rest}>
-      <TextComp style={{ color: colors.darkPurple3 }}>{text}</TextComp>
+      <TextComp style={{ color: colors.darkPurple3, ...commonTextStyles }}>
+        {text}
+      </TextComp>
     </SecondaryButton>
   )
 }
