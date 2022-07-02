@@ -1,18 +1,11 @@
 import React, { useMemo, useState } from 'react'
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  KeyboardTypeOptions,
-} from 'react-native'
+import { ScrollView, StyleSheet, View } from 'react-native'
 import { BigNumber } from 'ethers'
-import { RegularText } from '../../components/typography'
 
 import { SendTransactionRequest } from '../../lib/core'
 
 import { sharedStyles } from './sharedStyles'
-import { CustomInput, Loading, Paragraph } from '../../components'
+import { Loading, Paragraph } from '../../components'
 import { ScreenWithWallet } from '../../screens/types'
 import useEnhancedWithGas from './useEnhancedWithGas'
 import { useTranslation } from 'react-i18next'
@@ -22,65 +15,12 @@ import {
   OutlineBorderedButton,
 } from '../../components/button/ButtonVariations'
 import { colors } from '../../styles'
+import ReadOnlyField from './ReadOnlyField'
+import InputField from './InpuField'
 
 interface Interface {
   request: SendTransactionRequest
   closeModal: () => void
-}
-
-type IRealOnlyField = {
-  label: string
-  value: string
-  testID: string
-}
-
-const ReadOnlyField: React.FC<IRealOnlyField> = ({ label, value, testID }) => {
-  return (
-    <>
-      <View>
-        <RegularText style={styles.label}>{label}</RegularText>
-      </View>
-      <View>
-        <View style={styles.inputText} testID={testID}>
-          <Text>{value}</Text>
-        </View>
-      </View>
-    </>
-  )
-}
-
-type IInputField = {
-  label: string
-  value: string
-  keyboardType: KeyboardTypeOptions
-  placeholder: string
-  testID: string
-  handleValueOnChange: any
-}
-const InputField: React.FC<IInputField> = ({
-  label,
-  value,
-  keyboardType,
-  placeholder,
-  testID,
-  handleValueOnChange,
-}) => {
-  return (
-    <>
-      <View>
-        <RegularText style={styles.label}>{label}</RegularText>
-      </View>
-      <View>
-        <CustomInput
-          value={value}
-          onChange={handleValueOnChange}
-          keyboardType={keyboardType}
-          placeholder={placeholder}
-          testID={testID}
-        />
-      </View>
-    </>
-  )
 }
 
 const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
@@ -239,31 +179,6 @@ const styles = StyleSheet.create({
     ...sharedStyles.row,
     padding: 20,
   },
-  label: {
-    margin: 5,
-  },
-  inputText: {
-    padding: 15,
-    marginTop: 0,
-    marginBottom: 10,
-
-    borderRadius: 10,
-    backgroundColor: 'rgba(49, 60, 60, 0.1)',
-    shadowColor: 'rgba(0, 0, 0, 0)',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowRadius: 6,
-    shadowOpacity: 1,
-
-    fontSize: 16,
-    fontWeight: '500',
-    fontStyle: 'normal',
-    letterSpacing: 0.24,
-    color: '#373f48',
-  },
-
   loadingContent: {
     padding: 20,
   },
