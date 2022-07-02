@@ -6,11 +6,11 @@ import { RegularText } from '../typography'
 
 interface Interface {
   title: string
-  children: any
+  children: React.ReactNode
   showSelector: boolean
-  onModalClosed: any
+  onModalClosed: () => void
   animateModal: boolean
-  onAnimateModal: any
+  onAnimateModal: () => void
   backgroundColor: string
   headerFontColor: string
 }
@@ -53,7 +53,7 @@ const SlideUpModal: React.FC<Interface> = ({
             <View>
               <TouchableOpacity
                 onPress={() => {
-                  onAnimateModal(true)
+                  onAnimateModal()
                 }}>
                 <RegularText
                   style={{ ...styles.action, color: headerFontColor }}>
