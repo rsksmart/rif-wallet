@@ -1,5 +1,11 @@
-import React from 'react'
-import { StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import {
+  StyleSheet,
+  View,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
+} from 'react-native'
 import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
 import { NavigationProp as _NavigationProp } from '@react-navigation/native'
 
@@ -140,7 +146,26 @@ export const RootNavigation: React.FC<{
   }
 
   const appIsSetup = hasKeys && hasPin
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false)
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true) // or some other action
+      },
+    )
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false) // or some other action
+      },
+    )
 
+    return () => {
+      keyboardDidHideListener.remove()
+      keyboardDidShowListener.remove()
+    }
+  }, [])
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -310,7 +335,9 @@ export const RootNavigation: React.FC<{
             )}
           </RootStack.Screen>
         </RootStack.Navigator>
-        {appIsSetup && <AppFooterMenu currentScreen={currentScreen} />}
+        {appIsSetup && !isKeyboardVisible && (
+          <AppFooterMenu currentScreen={currentScreen} />
+        )}
       </View>
     </KeyboardAvoidingView>
   )
