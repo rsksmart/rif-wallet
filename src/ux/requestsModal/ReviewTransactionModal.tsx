@@ -44,7 +44,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
         gasLimit: BigNumber.from(enhancedTransactionRequest.gasLimit),
       })
       closeModal()
-    } catch (err) {
+    } catch (err: any) {
       setError(err)
     }
   }
