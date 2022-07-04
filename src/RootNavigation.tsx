@@ -81,7 +81,6 @@ type RootStackParamList = {
   RegisterDomain: { selectedDomain: string; years: number }
   Contacts: undefined
   Settings: undefined
-  ManageWallets: undefined
   EventsScreen: undefined
   AccountsScreen: undefined
   SecurityConfigurationScreen: undefined
@@ -196,16 +195,6 @@ export const RootNavigation: React.FC<{
           <RootStack.Screen name="Settings" options={sharedOptions}>
             {props => <Screens.SettingsScreen {...props} />}
           </RootStack.Screen>
-
-          <RootStack.Screen name="ManageWallets" options={sharedOptions}>
-            {props => (
-              <InjectedScreens.ManageWalletsScreen
-                {...props}
-                {...manageWalletScreenProps}
-              />
-            )}
-          </RootStack.Screen>
-
           <RootStack.Screen name="CreateKeysUX" options={sharedOptions}>
             {props => (
               <CreateKeysNavigation {...props} {...keyManagementProps} />
