@@ -16,6 +16,7 @@ const screensOptions = { headerShown: false }
 export const CreateKeysNavigation: React.FC<CreateKeysProps> = ({
   generateMnemonic,
   createFirstWallet,
+  isKeyboardVisible,
 }) => {
   return (
     <Stack.Navigator initialRouteName="CreateKeys">
@@ -45,6 +46,7 @@ export const CreateKeysNavigation: React.FC<CreateKeysProps> = ({
               <ConfirmNewMasterKeyScreen
                 {...props}
                 createFirstWallet={createFirstWallet}
+                isKeyboardVisible={isKeyboardVisible}
               />
             )}
           </Stack.Screen>

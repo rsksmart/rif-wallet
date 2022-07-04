@@ -19,12 +19,13 @@ import { WordSelector } from './WordSelector'
 import { sharedMnemonicStyles } from './styles'
 
 interface ConfirmMasterKeyScreenProps {
+  isKeyboardVisible: boolean
   createFirstWallet: CreateKeysProps['createFirstWallet']
 }
 
 export const ConfirmNewMasterKeyScreen: React.FC<
   ScreenProps<'ConfirmNewMasterKey'> & ConfirmMasterKeyScreenProps
-> = ({ route, navigation, createFirstWallet }) => {
+> = ({ route, navigation, createFirstWallet, isKeyboardVisible }) => {
   const mnemonic = route.params.mnemonic
   const slidesIndexes = Array.from(
     { length: Math.ceil(mnemonic.split(' ').length / 3) },
@@ -93,12 +94,16 @@ export const ConfirmNewMasterKeyScreen: React.FC<
             <Arrow color={colors.white} rotate={270} width={30} height={30} />
           </View>
         </TouchableOpacity>
-        <Text style={styles.header}>
-          <Trans>Your Master Key</Trans>
-        </Text>
-        <Text style={styles.subHeader}>
-          <Trans>Start typing the words in the correct order</Trans>
-        </Text>
+        {!isKeyboardVisible && (
+          <View>
+            <Text style={styles.header}>
+              <Trans>Your Master Key</Trans>
+            </Text>
+            <Text style={styles.subHeader}>
+              <Trans>Start typing the words in the correct order</Trans>
+            </Text>
+          </View>
+        )}
       </View>
 
       <View style={sharedMnemonicStyles.sliderContainer}>
@@ -109,12 +114,13 @@ export const ConfirmNewMasterKeyScreen: React.FC<
           data={slidesIndexes}
           renderItem={renderItem}
           sliderWidth={WINDOW_WIDTH}
-          sliderHeight={200}
+          // sliderHeight={200}
           itemWidth={SLIDER_WIDTH}
           inactiveSlideShift={0}
           onSnapToItem={handleSlideChange}
           useScrollView={false}
-          keyboardShouldPersistTaps={true}
+          keyboardShouldPersistTaps="always"
+          pagingEnabled={false}
         />
       </View>
 
@@ -124,17 +130,19 @@ export const ConfirmNewMasterKeyScreen: React.FC<
         </View>
       )}
 
-      <View style={sharedMnemonicStyles.pagnationContainer}>
-        <PaginationNavigator
-          onPrevious={() => carousel.snapToPrev()}
-          onNext={() => carousel.snapToNext()}
-          onComplete={handleConfirmMnemonic}
-          title="confirm"
-          currentIndex={selectedSlide}
-          slidesAmount={slidesIndexes.length}
-          containerBackgroundColor={colors.darkBlue}
-        />
-      </View>
+      {!isKeyboardVisible && (
+        <View style={sharedMnemonicStyles.pagnationContainer}>
+          <PaginationNavigator
+            onPrevious={() => carousel.snapToPrev()}
+            onNext={() => carousel.snapToNext()}
+            onComplete={handleConfirmMnemonic}
+            title="confirm"
+            currentIndex={selectedSlide}
+            slidesAmount={slidesIndexes.length}
+            containerBackgroundColor={colors.darkBlue}
+          />
+        </View>
+      )}
     </ScrollView>
   )
 }

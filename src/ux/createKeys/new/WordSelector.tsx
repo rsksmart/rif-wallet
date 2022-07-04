@@ -6,6 +6,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  Keyboard,
 } from 'react-native'
 import { colors } from '../../../styles/colors'
 import { CheckIcon } from '../../../components/icons/CheckIcon'
@@ -29,12 +30,14 @@ export const WordSelector: React.FC<Props> = ({
 
   const selectWord = (myWord: string) => {
     handleTextChange(myWord)
+    Keyboard.dismiss()
     setOptions([])
   }
 
   const handleTextChange = (input: string) => {
     // don't allow the user to keep typing if there is a match
     if (isMatch) {
+      setOptions([])
       return
     }
 
@@ -44,12 +47,14 @@ export const WordSelector: React.FC<Props> = ({
     if (newText === expectedWord) {
       setIsMatch(true)
       setOptions([])
+      Keyboard.dismiss()
       // only trigger the parent if there is a match
       return onWordSelected(newText, wordIndex)
     }
 
     // user choose the top option but it is not correct
     if (newText === options[0]) {
+      Keyboard.dismiss()
       return setOptions([])
     }
 

@@ -207,7 +207,11 @@ export const RootNavigation: React.FC<{
 
           <RootStack.Screen name="CreateKeysUX" options={sharedOptions}>
             {props => (
-              <CreateKeysNavigation {...props} {...keyManagementProps} />
+              <CreateKeysNavigation
+                {...props}
+                {...keyManagementProps}
+                isKeyboardVisible={isKeyboardVisible}
+              />
             )}
           </RootStack.Screen>
           <RootStack.Screen

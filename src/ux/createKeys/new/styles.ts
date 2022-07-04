@@ -11,14 +11,13 @@ export const sharedMnemonicStyles = StyleSheet.create({
   },
   topContent: {
     flexDirection: 'column',
-    flex: 1,
   },
   sliderContainer: {
-    flex: 3,
+    flex: 5,
   },
   pagnationContainer: {
     flexDirection: 'column',
-    flex: 1,
+    marginBottom: 50,
   },
 
   wordContainer: {
