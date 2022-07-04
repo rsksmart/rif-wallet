@@ -20,7 +20,6 @@ import { DappsScreenScreenProps } from './screens/dapps'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
 import { colors } from './styles'
 import { AccountsScreenType } from './screens/accounts/AccountsScreen'
-import { ManagerWalletScreenProps } from './screens/settings/ManageWalletsScreen'
 import { SecurityScreenProps } from './screens/security/SecurityConfigurationScreen'
 
 const InjectedScreens = {
@@ -114,9 +113,7 @@ export const RootNavigation: React.FC<{
   injectedBrowserUXScreenProps: InjectedBrowserUXScreenProps
   contactsNavigationScreenProps: EditContactScreenProps
   dappsScreenProps: DappsScreenScreenProps
-  settingsScreen: ScreenProps<'Settings'>
   accountsScreenType: AccountsScreenType
-  manageWalletScreenProps: ManagerWalletScreenProps
   securityConfigurationScreenProps: SecurityScreenProps
 }> = ({
   currentScreen,
@@ -133,9 +130,7 @@ export const RootNavigation: React.FC<{
   injectedBrowserUXScreenProps,
   contactsNavigationScreenProps,
   dappsScreenProps,
-  settingsScreen,
   accountsScreenType,
-  manageWalletScreenProps,
   securityConfigurationScreenProps,
 }) => {
   let initialRoute: any = 'CreateKeysUX'

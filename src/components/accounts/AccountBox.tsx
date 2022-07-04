@@ -4,7 +4,7 @@ import { MediumText } from '../typography'
 import CopyField from '../activity/CopyField'
 import { colors } from '../../styles'
 import { SmartWalletFactory } from '../../lib/core/SmartWalletFactory'
-import EditMaterialIcon from '../icons/EditMaterialIcon'
+// import EditMaterialIcon from '../icons/EditMaterialIcon'
 
 type AccountBoxProps = {
   address: string
@@ -12,6 +12,7 @@ type AccountBoxProps = {
   smartWalletAddress: string
   smartWalletAddressShort: string
   smartWalletFactory: SmartWalletFactory
+  id?: number
 }
 
 const MediumTextStyleOverride: React.FC<{ children: React.ReactNode }> = ({
@@ -24,6 +25,7 @@ const AccountBox: React.FC<AccountBoxProps> = ({
   smartWalletAddress,
   smartWalletAddressShort,
   smartWalletFactory,
+  id = 0,
 }) => {
   const [isDeployed, setIsDeployed] = useState(false)
   useEffect(() => {
@@ -32,9 +34,9 @@ const AccountBox: React.FC<AccountBoxProps> = ({
   return (
     <View style={styles.accountsContainer}>
       <View style={styles.textContainer}>
-        {/* @TODO implement account naming */}
-        <MediumText style={styles.text}>account 1</MediumText>
-        <EditMaterialIcon style={styles.icon} size={11} />
+        {/* @TODO implement account naming - will use id for now */}
+        <MediumText style={styles.text}>account {id + 1}</MediumText>
+        {/*<EditMaterialIcon style={styles.icon} size={11} />*/}
       </View>
       <View style={styles.infoSection}>
         <MediumText style={styles.titleFontSize}>Status</MediumText>

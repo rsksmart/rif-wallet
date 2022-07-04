@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { StyleSheet, ScrollView, View } from 'react-native'
+import { StyleSheet, View, FlatList } from 'react-native'
 import { colors } from '../../styles'
 import { AppContext } from '../../Context'
 import { shortAddress } from '../../lib/utils'
@@ -14,25 +14,26 @@ export type AccountsScreenType = {
 const AccountsScreen: React.FC<AccountsScreenType> = ({ addNewWallet }) => {
   const { wallets } = useContext(AppContext)
   const walletsArr = React.useMemo(() => {
-    return Object.keys(wallets).map(key => ({
+    return Object.keys(wallets).map((key, id) => ({
       ...wallets[key],
       address: key,
       addressShort: shortAddress(key, 8),
       smartWalletAddress: wallets[key].smartWalletAddress,
       smartWalletAddressShort: shortAddress(wallets[key].smartWalletAddress, 8),
+      id,
     }))
   }, [wallets])
   return (
-    <ScrollView style={styles.container}>
-      {walletsArr.length > 0 &&
-        walletsArr.map(wallet => (
-          <View key={wallet.address} style={styles.walletView}>
-            <AccountBox {...wallet} />
-          </View>
-        ))}
-      <AddAccountBox addNewWallet={addNewWallet} />
-      <View style={styles.viewBottomFix} />
-    </ScrollView>
+    <FlatList
+      data={walletsArr}
+      initialNumToRender={10}
+      keyExtractor={item => item.id.toString()}
+      renderItem={({ item }) => <AccountBox {...item} />}
+      style={styles.container}
+      ListFooterComponent={() => <AddAccountBox addNewWallet={addNewWallet} />}
+      ItemSeparatorComponent={() => <View style={styles.walletView} />}
+      ListFooterComponentStyle={styles.viewBottomFix}
+    />
   )
 }
 
@@ -43,7 +44,8 @@ const styles = StyleSheet.create({
     paddingTop: '8%',
   },
   viewBottomFix: {
-    marginTop: 150,
+    marginTop: 40,
+    marginBottom: 150,
   },
   walletView: {
     marginBottom: 40,
