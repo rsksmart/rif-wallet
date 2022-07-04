@@ -100,6 +100,7 @@ export const WordSelector: React.FC<Props> = ({
           placeholder="type..."
           autoCapitalize="none"
           onBlur={() => setOptions([])}
+          autoCompleteType="off"
         />
         <View style={styles.wordStatus}>
           {isMatch && (

@@ -6,8 +6,6 @@ export const sharedMnemonicStyles = StyleSheet.create({
   parent: {
     backgroundColor: colors.darkBlue,
     flexDirection: 'row',
-    height: '100%',
-    // maxHeight: WINDOW_HEIGHT - 50,
   },
   topContent: {
     flexDirection: 'column',
