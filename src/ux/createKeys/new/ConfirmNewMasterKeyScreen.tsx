@@ -94,16 +94,12 @@ export const ConfirmNewMasterKeyScreen: React.FC<
             <Arrow color={colors.white} rotate={270} width={30} height={30} />
           </View>
         </TouchableOpacity>
-        {!isKeyboardVisible && (
-          <View>
-            <Text style={styles.header}>
-              <Trans>Your Master Key</Trans>
-            </Text>
-            <Text style={styles.subHeader}>
-              <Trans>Start typing the words in the correct order</Trans>
-            </Text>
-          </View>
-        )}
+        <Text style={styles.header}>
+          <Trans>Your Master Key</Trans>
+        </Text>
+        <Text style={styles.subHeader}>
+          <Trans>Start typing the words in the correct order</Trans>
+        </Text>
       </View>
 
       <View style={sharedMnemonicStyles.sliderContainer}>
