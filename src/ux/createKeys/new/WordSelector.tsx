@@ -27,7 +27,10 @@ export const WordSelector: React.FC<Props> = ({
   const [isMatch, setIsMatch] = useState(false)
   const [options, setOptions] = useState<string[]>([])
 
-  const selectWord = (myWord: string) => handleTextChange(myWord)
+  const selectWord = (myWord: string) => {
+    handleTextChange(myWord)
+    setOptions([])
+  }
 
   const handleTextChange = (input: string) => {
     // don't allow the user to keep typing if there is a match
