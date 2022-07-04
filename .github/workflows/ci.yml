@@ -13,6 +13,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        github-token: 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
+      env:
+        github-token: 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
     - name: Use Node.js 12.x
       uses: actions/setup-node@v1
       with:
