@@ -50,6 +50,8 @@ const AccountBox: React.FC<AccountBoxProps> = ({
           text={addressShort}
           textToCopy={address}
           TextComp={MediumTextStyleOverride}
+          iconSize={20}
+          iconViewBox="0 0 25 25"
         />
       </View>
       <View>
@@ -58,6 +60,8 @@ const AccountBox: React.FC<AccountBoxProps> = ({
           text={smartWalletAddressShort}
           textToCopy={smartWalletAddress}
           TextComp={MediumTextStyleOverride}
+          iconSize={20}
+          iconViewBox="0 0 25 25"
         />
       </View>
     </View>
