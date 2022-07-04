@@ -8,7 +8,7 @@ interface WordInterface {
   text: string
 }
 
-export const Word: React.FC<WordInterface> = ({ number, text }) => (
+export const WordView: React.FC<WordInterface> = ({ number, text }) => (
   <View style={sharedMnemonicStyles.wordContainer}>
     <View style={sharedMnemonicStyles.wordRow}>
       <View>

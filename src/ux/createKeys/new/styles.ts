@@ -1,24 +1,21 @@
 import { StyleSheet } from 'react-native'
 import { grid } from '../../../styles'
 import { colors } from '../../../styles/colors'
-import { WINDOW_HEIGHT } from '../../slides/Dimensions'
 
 export const sharedMnemonicStyles = StyleSheet.create({
   parent: {
     backgroundColor: colors.darkBlue,
     flexDirection: 'row',
-    maxHeight: WINDOW_HEIGHT - 50,
   },
   topContent: {
     flexDirection: 'column',
-    flex: 1,
   },
   sliderContainer: {
-    flex: 3,
+    flex: 5,
   },
   pagnationContainer: {
     flexDirection: 'column',
-    flex: 1,
+    marginBottom: 50,
   },
 
   wordContainer: {

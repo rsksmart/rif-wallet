@@ -19,12 +19,13 @@ import { WordSelector } from './WordSelector'
 import { sharedMnemonicStyles } from './styles'
 
 interface ConfirmMasterKeyScreenProps {
+  isKeyboardVisible: boolean
   createFirstWallet: CreateKeysProps['createFirstWallet']
 }
 
 export const ConfirmNewMasterKeyScreen: React.FC<
   ScreenProps<'ConfirmNewMasterKey'> & ConfirmMasterKeyScreenProps
-> = ({ route, navigation, createFirstWallet }) => {
+> = ({ route, navigation, createFirstWallet, isKeyboardVisible }) => {
   const mnemonic = route.params.mnemonic
   const slidesIndexes = Array.from(
     { length: Math.ceil(mnemonic.split(' ').length / 3) },
@@ -61,7 +62,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
   const renderItem: React.FC<{ item: number }> = ({ item }) => {
     const groupIndex = 3 * item
     return (
-      <ScrollView>
+      <View>
         <WordSelector
           wordIndex={groupIndex}
           expectedWord={mnemonicWords[groupIndex]}
@@ -77,12 +78,14 @@ export const ConfirmNewMasterKeyScreen: React.FC<
           expectedWord={mnemonicWords[groupIndex + 2]}
           onWordSelected={handleWordSelected}
         />
-      </ScrollView>
+      </View>
     )
   }
 
   return (
-    <ScrollView style={sharedMnemonicStyles.parent}>
+    <ScrollView
+      style={sharedMnemonicStyles.parent}
+      keyboardShouldPersistTaps="always">
       <View style={sharedMnemonicStyles.topContent}>
         <TouchableOpacity
           onPress={() => navigation.navigate('NewMasterKey')}
@@ -107,11 +110,13 @@ export const ConfirmNewMasterKeyScreen: React.FC<
           data={slidesIndexes}
           renderItem={renderItem}
           sliderWidth={WINDOW_WIDTH}
-          sliderHeight={200}
+          // sliderHeight={200}
           itemWidth={SLIDER_WIDTH}
           inactiveSlideShift={0}
-          onSnapToItem={index => handleSlideChange(index)}
-          useScrollView={true}
+          onSnapToItem={handleSlideChange}
+          useScrollView={false}
+          keyboardShouldPersistTaps="always"
+          pagingEnabled={false}
         />
       </View>
 
@@ -121,17 +126,19 @@ export const ConfirmNewMasterKeyScreen: React.FC<
         </View>
       )}
 
-      <View style={sharedMnemonicStyles.pagnationContainer}>
-        <PaginationNavigator
-          onPrevious={() => carousel.snapToPrev()}
-          onNext={() => carousel.snapToNext()}
-          onComplete={handleConfirmMnemonic}
-          title="confirm"
-          currentIndex={selectedSlide}
-          slidesAmount={slidesIndexes.length}
-          containerBackgroundColor={colors.darkBlue}
-        />
-      </View>
+      {!isKeyboardVisible && (
+        <View style={sharedMnemonicStyles.pagnationContainer}>
+          <PaginationNavigator
+            onPrevious={() => carousel.snapToPrev()}
+            onNext={() => carousel.snapToNext()}
+            onComplete={handleConfirmMnemonic}
+            title="confirm"
+            currentIndex={selectedSlide}
+            slidesAmount={slidesIndexes.length}
+            containerBackgroundColor={colors.darkBlue}
+          />
+        </View>
+      )}
     </ScrollView>
   )
 }

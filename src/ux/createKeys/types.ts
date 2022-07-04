@@ -4,6 +4,7 @@ import { RIFWallet } from '../../lib/core'
 export type CreateKeysProps = {
   generateMnemonic: () => string
   createFirstWallet: (mnemonic: string) => Promise<RIFWallet>
+  isKeyboardVisible: boolean
 }
 
 export type StackParamList = {
