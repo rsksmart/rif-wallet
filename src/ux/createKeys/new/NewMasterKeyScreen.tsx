@@ -18,7 +18,7 @@ type CreateMasterKeyScreenProps = {
 import { Arrow } from '../../../components/icons'
 import { SLIDER_WIDTH, WINDOW_WIDTH } from '../../slides/Dimensions'
 import { PaginationNavigator } from '../../../components/button/PaginationNavigator'
-import { Word } from './Word'
+import { WordView } from './WordView'
 import { sharedMnemonicStyles } from './styles'
 
 export const NewMasterKeyScreen: React.FC<
@@ -38,9 +38,9 @@ export const NewMasterKeyScreen: React.FC<
     const wordIndex = 3 * item
     return (
       <View>
-        <Word number={wordIndex + 1} text={mnemonicArray[wordIndex]} />
-        <Word number={wordIndex + 2} text={mnemonicArray[wordIndex + 1]} />
-        <Word number={wordIndex + 3} text={mnemonicArray[wordIndex + 2]} />
+        <WordView number={wordIndex + 1} text={mnemonicArray[wordIndex]} />
+        <WordView number={wordIndex + 2} text={mnemonicArray[wordIndex + 1]} />
+        <WordView number={wordIndex + 3} text={mnemonicArray[wordIndex + 2]} />
       </View>
     )
   }
