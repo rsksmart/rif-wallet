@@ -1,13 +1,13 @@
 import { StyleSheet } from 'react-native'
 import { grid } from '../../../styles'
 import { colors } from '../../../styles/colors'
-import { WINDOW_HEIGHT } from '../../slides/Dimensions'
 
 export const sharedMnemonicStyles = StyleSheet.create({
   parent: {
     backgroundColor: colors.darkBlue,
     flexDirection: 'row',
-    maxHeight: WINDOW_HEIGHT - 50,
+    height: '100%',
+    // maxHeight: WINDOW_HEIGHT - 50,
   },
   topContent: {
     flexDirection: 'column',

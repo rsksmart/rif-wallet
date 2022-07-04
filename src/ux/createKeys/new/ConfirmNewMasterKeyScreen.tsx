@@ -61,7 +61,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
   const renderItem: React.FC<{ item: number }> = ({ item }) => {
     const groupIndex = 3 * item
     return (
-      <ScrollView>
+      <View>
         <WordSelector
           wordIndex={groupIndex}
           expectedWord={mnemonicWords[groupIndex]}
@@ -77,12 +77,14 @@ export const ConfirmNewMasterKeyScreen: React.FC<
           expectedWord={mnemonicWords[groupIndex + 2]}
           onWordSelected={handleWordSelected}
         />
-      </ScrollView>
+      </View>
     )
   }
 
   return (
-    <ScrollView style={sharedMnemonicStyles.parent}>
+    <ScrollView
+      style={sharedMnemonicStyles.parent}
+      keyboardShouldPersistTaps="always">
       <View style={sharedMnemonicStyles.topContent}>
         <TouchableOpacity
           onPress={() => navigation.navigate('NewMasterKey')}
@@ -110,8 +112,9 @@ export const ConfirmNewMasterKeyScreen: React.FC<
           sliderHeight={200}
           itemWidth={SLIDER_WIDTH}
           inactiveSlideShift={0}
-          onSnapToItem={index => handleSlideChange(index)}
-          useScrollView={true}
+          onSnapToItem={handleSlideChange}
+          useScrollView={false}
+          keyboardShouldPersistTaps={true}
         />
       </View>
 
