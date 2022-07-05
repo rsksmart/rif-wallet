@@ -1,6 +1,7 @@
 import React from 'react'
 import { ScreenProps } from '../../RootNavigation'
 import { StyleSheet, View, TouchableOpacity } from 'react-native'
+import Icon from 'react-native-vector-icons/Ionicons'
 import { version } from '../../../package.json'
 import { getWalletSetting, SETTINGS } from '../../core/config'
 import { colors, spacing } from '../../styles'
@@ -29,7 +30,8 @@ export const SettingsScreen: React.FC<ScreenProps<'Settings'>> = ({
   const goToSecurityConfiguration = () =>
     navigation.navigate('SecurityConfigurationScreen' as any)
 
-  const goToDevMenu = () => navigation.navigate('DevMenu' as any)
+  const goToDeploy = () => navigation.navigate('ManuallyDeployScreen')
+
   return (
     <View style={styles.container}>
       <View style={styles.mainView}>
@@ -56,9 +58,10 @@ export const SettingsScreen: React.FC<ScreenProps<'Settings'>> = ({
             Security
           </SemiBoldText>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.rowComponent} onPress={goToDevMenu}>
+        <TouchableOpacity style={styles.rowComponent} onPress={goToDeploy}>
+          <Icon name="wallet-outline" color={colors.white} size={20} />
           <SemiBoldText style={[styles.textColor, spacing.ml6]}>
-            Dev Menu
+            Smart Wallet Deploy
           </SemiBoldText>
         </TouchableOpacity>
       </View>

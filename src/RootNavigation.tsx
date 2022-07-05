@@ -34,7 +34,7 @@ const InjectedScreens = {
   ActivityScreen: InjectSelectedWallet(Screens.ActivityScreen),
   ActivityDetailsScreen: InjectSelectedWallet(Screens.ActivityDetailsScreen),
   SignMessageScreen: InjectSelectedWallet(Screens.SignMessageScreen),
-  WalletInfoScreen: InjectSelectedWallet(Screens.WalletInfoScreen),
+  ManuallyDeployScreen: InjectSelectedWallet(Screens.ManuallyDeployScreen),
   KeysInfoScreen: InjectSelectedWallet(Screens.KeysInfoScreen),
   SignTypedDataScreen: InjectSelectedWallet(Screens.SignTypedDataScreen),
   WalletConnectNavigationScreen: InjectSelectedWallet(
@@ -68,7 +68,7 @@ type RootStackParamList = {
   SignMessage: undefined
   SignTypedData: undefined
   TransactionReceived: undefined
-  WalletInfo: undefined
+  ManuallyDeployScreen: undefined
   CreateKeysUX: undefined
   KeysInfo: undefined
   WalletConnect: undefined
@@ -263,8 +263,8 @@ export const RootNavigation: React.FC<{
           />
 
           <RootStack.Screen
-            name="WalletInfo"
-            component={InjectedScreens.WalletInfoScreen}
+            name="ManuallyDeployScreen"
+            component={InjectedScreens.ManuallyDeployScreen}
             options={sharedOptions}
           />
           <RootStack.Screen name="KeysInfo" options={sharedOptions}>
