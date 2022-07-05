@@ -7,6 +7,10 @@ export const sharedMnemonicStyles = StyleSheet.create({
     backgroundColor: colors.darkBlue,
     flexDirection: 'row',
   },
+  purpleParent: {
+    backgroundColor: colors.blue,
+    flexDirection: 'row',
+  },
   topContent: {
     flexDirection: 'column',
   },
