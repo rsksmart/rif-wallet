@@ -1,11 +1,16 @@
 import React, { useState } from 'react'
-import { StyleSheet, View, Image, TouchableOpacity } from 'react-native'
+import {
+  StyleSheet,
+  View,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native'
 import { ScreenProps } from './types'
-import { colors } from '../../styles/colors'
+import { colors } from '../../styles'
 import { SecuritySlide } from '../slides/SecuritySlide'
 
 import Carousel from 'react-native-snap-carousel'
-import { grid } from '../../styles/grid'
 import { PaginationNavigator } from '../../components/button/PaginationNavigator'
 
 import { Arrow } from '../../components/icons'
@@ -16,6 +21,7 @@ import {
   SLIDER_WIDTH,
   SLIDER_HEIGHT,
 } from '../slides/Dimensions'
+import { sharedMnemonicStyles } from './new/styles'
 
 const slidesIndexes = [0, 1, 2]
 
@@ -72,15 +78,17 @@ export const SecurityExplanationScreen: React.FC<
   }
 
   return (
-    <View style={styles.parent}>
-      <TouchableOpacity
-        onPress={() => navigation.navigate('CreateKeys')}
-        style={styles.returnButton}>
-        <View style={styles.returnButtonView}>
-          <Arrow color={colors.white} rotate={270} width={30} height={30} />
-        </View>
-      </TouchableOpacity>
-      <View style={{ ...grid.row, ...styles.carouselSection }}>
+    <ScrollView style={sharedMnemonicStyles.purpleParent}>
+      <View style={sharedMnemonicStyles.topContent}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('CreateKeys')}
+          style={styles.returnButton}>
+          <View style={styles.returnButtonView}>
+            <Arrow color={colors.white} rotate={270} width={30} height={30} />
+          </View>
+        </TouchableOpacity>
+      </View>
+      <View style={sharedMnemonicStyles.sliderContainer}>
         <Carousel
           inactiveSlideOpacity={0}
           removeClippedSubviews={false} //https://github.com/meliorence/react-native-snap-carousel/issues/238
@@ -94,25 +102,21 @@ export const SecurityExplanationScreen: React.FC<
           onSnapToItem={index => setSelectedSlide(index)}
         />
       </View>
-
-      <PaginationNavigator
-        onPrevious={() => carousel.snapToPrev()}
-        onNext={() => carousel.snapToNext()}
-        onComplete={() => navigation.navigate('NewMasterKey')}
-        title="confirm"
-        currentIndex={selectedSlide}
-        slidesAmount={slidesIndexes.length}
-      />
-    </View>
+      <View style={sharedMnemonicStyles.pagnationContainer}>
+        <PaginationNavigator
+          onPrevious={() => carousel.snapToPrev()}
+          onNext={() => carousel.snapToNext()}
+          onComplete={() => navigation.navigate('NewMasterKey')}
+          title="confirm"
+          currentIndex={selectedSlide}
+          slidesAmount={slidesIndexes.length}
+        />
+      </View>
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
-  parent: {
-    backgroundColor: colors.blue,
-    height: '100%',
-    position: 'absolute',
-  },
   returnButton: {
     zIndex: 1,
   },
@@ -126,12 +130,7 @@ const styles = StyleSheet.create({
   sliderImage: {
     resizeMode: 'contain',
     width: WINDOW_WIDTH * 0.7,
-    height: WINDOW_HEIGHT * 0.4,
-  },
-  carouselSection: {
-    alignSelf: 'center',
-    marginVertical: -55,
-    zIndex: 0,
+    height: WINDOW_HEIGHT * 0.3,
   },
 
   carouselContainer: {
