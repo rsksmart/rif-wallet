@@ -147,10 +147,11 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   button: {
-    width: '100%',
+    width: 'auto',
     marginVertical: 10,
   },
   buttonDisabled: {
+    width: 'auto',
     backgroundColor: colors.darkPurple4,
   },
 })
