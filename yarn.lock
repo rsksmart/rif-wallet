@@ -2008,6 +2008,10 @@
     lodash "^4.17.15"
     randombytes "^2.1.0"
 
+"@rsksmart/rif-wallet@git+ssh:git@github.com:rsksmart/rif-wallet.git":
+  version "1.0.0"
+  resolved "git+ssh:git@github.com:rsksmart/rif-wallet.git#0de5137f7db802589e3475c4ebf17635995b4ac7"
+
 "@rsksmart/rlogin-dpath@^1.0.1":
   version "1.0.1"
   resolved "https://registry.npmjs.org/@rsksmart/rlogin-dpath/-/rlogin-dpath-1.0.1.tgz"

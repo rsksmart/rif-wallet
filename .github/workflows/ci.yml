@@ -6,14 +6,13 @@ jobs:
   test:
 
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
       with:
-        github-token: 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
         persist-credentials: false
-      env:
-        github-token: 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
+    - uses: webfactory/ssh-agent@v0.5.4
+      with:
+        ssh-private-key: ${{ secrets.GH_SSH_KEY }}     
     - name: Use Node.js 12.x
       uses: actions/setup-node@v1
       with:
