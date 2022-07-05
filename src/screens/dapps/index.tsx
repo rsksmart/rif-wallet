@@ -1,25 +1,37 @@
 import React, { useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { NavigationProp } from '../../RootNavigation'
-import { setOpacity } from '../home/tokenColor'
 import LinearGradient from 'react-native-linear-gradient'
 import WalletConnectComponent from './WalletConnectComponent'
 import InjectedBrowserComponent from './InjectedBrowserComponent'
+import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
+import { ScreenWithWallet } from '../types'
+import { Button } from '../../components'
 
 type TPanelOptions = 'WalletConnect' | 'InjectedBrowser'
 
-export const DappsScreen: React.FC<{
-  navigation: NavigationProp
-}> = ({ navigation }) => {
+export type DappsScreenScreenProps = {
+  fetcher: IRIFWalletServicesFetcher
+}
+
+export const DappsScreen: React.FC<
+  {
+    navigation: NavigationProp
+  } & DappsScreenScreenProps &
+    ScreenWithWallet
+> = ({ navigation, wallet, isWalletDeployed, fetcher }) => {
   const [selectedPanel, setSelectedPanel] =
     useState<TPanelOptions>('WalletConnect')
 
   return (
     <LinearGradient
-      colors={['#FFFFFF', setOpacity('#CCCCCC', 0.1)]}
+      colors={['#FFFFFF', 'rgba(55, 63, 72, 0.3)']}
       style={styles.parent}>
       <LinearGradient
-        colors={['#FFFFFF', '#E1E1E1']}
+        colors={[
+          '#FFFFFF',
+          selectedPanel === 'InjectedBrowser' ? '#fff' : '#E1E1E1',
+        ]}
         style={styles.topContainer}>
         <WalletConnectComponent
           navigation={navigation}
@@ -27,8 +39,16 @@ export const DappsScreen: React.FC<{
           setPanelActive={() => setSelectedPanel('WalletConnect')}
         />
         <InjectedBrowserComponent
+          navigation={navigation}
+          isWalletDeployed={isWalletDeployed}
+          wallet={wallet}
+          fetcher={fetcher}
           visible={selectedPanel === 'InjectedBrowser'}
           setPanelActive={() => setSelectedPanel('InjectedBrowser')}
+        />
+        <Button
+          title="RNS Manager native"
+          onPress={() => navigation.navigate('RNSManager')}
         />
       </LinearGradient>
     </LinearGradient>
@@ -47,6 +67,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     // shadowRadius: 10,
     elevation: 2,
-    shadowColor: setOpacity('#CCCCCC', 0.5),
+    shadowColor: 'rgba(204, 204, 204, 0.5)',
   },
 })

@@ -6,41 +6,42 @@ import {
   saveWCSession,
   deleteWCSession,
   getWCSession,
-  hasWCSession,
 } from '../../storage/WalletConnectSessionStore'
 import { AppContext } from '../../Context'
 import { useNavigation } from '@react-navigation/core'
+import { Alert } from 'react-native'
 export interface WalletConnectContextInterface {
-  isConnected: boolean
-  connector: WalletConnect | null
-  peerMeta: any
+  connections: IWalletConnectConnections
   createSession: (
     wallet: RIFWallet,
     uri: string,
     session?: any,
   ) => Promise<void>
-  handleApprove: (wallet: RIFWallet) => Promise<void>
-  handleReject: () => Promise<void>
+  handleApprove: (wc: WalletConnect, wallet: RIFWallet) => Promise<void>
+  handleReject: (wc: WalletConnect) => Promise<void>
 }
 
 export const WalletConnectContext =
   React.createContext<WalletConnectContextInterface>({
-    isConnected: false,
-    connector: null,
-    peerMeta: null,
+    connections: {},
     createSession: async () => {},
     handleApprove: async () => {},
     handleReject: async () => {},
   })
 
+export interface IWalletConnectConnections {
+  [key: string]: {
+    connector: WalletConnect
+    address: string
+  }
+}
+
 export const WalletConnectProviderElement: React.FC = ({ children }) => {
   const navigation = useNavigation()
 
+  const [connections, setConnections] = useState<IWalletConnectConnections>({})
+
   const { wallets } = useContext(AppContext)
-
-  const [connector, setConnector] = useState<WalletConnect | null>(null)
-
-  const [peerMeta, setPeerMeta] = useState<any>(null)
 
   const unsubscribeToEvents = async (wc: WalletConnect) => {
     const eventsNames = [
@@ -67,11 +68,12 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
         throw error
       }
 
-      const { peerMeta: sessionPeerMeta } = payload.params[0]
-
-      setPeerMeta(sessionPeerMeta)
-
-      navigation.navigate('SessionRequest' as any)
+      navigation.navigate(
+        'SessionRequest' as never,
+        {
+          wcKey: wc.key,
+        } as never,
+      )
     })
 
     wc.on('call_request', async (error, payload) => {
@@ -86,68 +88,73 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
 
       adapter
         .handleCall(method, params)
-        .then((result: any) => connector?.approveRequest({ id, result }))
+        .then((result: any) => wc?.approveRequest({ id, result }))
         .catch((errorReason: string) =>
-          connector?.rejectRequest({ id, error: { message: errorReason } }),
+          wc?.rejectRequest({ id, error: { message: errorReason } }),
         )
     })
 
     wc.on('disconnect', async error => {
       console.log('EVENT', 'disconnect', error)
 
-      setConnector(null)
-      setPeerMeta(null)
+      setConnections(prev => {
+        const result = { ...prev }
+
+        delete result[wc.key]
+
+        return result
+      })
 
       unsubscribeToEvents(wc)
 
-      await deleteWCSession()
+      await deleteWCSession(wc.uri)
 
       try {
-        await connector?.killSession()
+        await wc?.killSession()
       } catch (err) {
         console.error('could not kill the wc session', err)
       }
 
-      navigation.navigate('Home' as any)
+      Alert.alert('You have disconnected from the dapp')
     })
   }
 
-  const handleApprove = async (wallet: RIFWallet) => {
-    if (!connector) {
+  const handleApprove = async (wc: WalletConnect, wallet: RIFWallet) => {
+    if (!wc) {
       return
     }
 
-    connector.approveSession({
+    wc.approveSession({
       accounts: [wallet.smartWalletAddress],
       chainId: await wallet.getChainId(),
     })
 
     await saveWCSession({
-      uri: connector.uri,
-      session: connector.session,
+      uri: wc.uri,
+      session: wc.session,
       walletAddress: wallet.address,
     })
 
     const adapter = new WalletConnectAdapter(wallet)
 
-    subscribeToEvents(connector, adapter)
+    subscribeToEvents(wc, adapter)
 
-    navigation.navigate('Connected' as any)
+    navigation.navigate('Connected' as never, { wcKey: wc.key } as never)
   }
 
-  const handleReject = async () => {
-    if (!connector) {
+  const handleReject = async (wc: WalletConnect) => {
+    if (!wc) {
       return
     }
 
-    connector.rejectSession({ message: 'user rejected the session' })
+    wc.rejectSession({ message: 'user rejected the session' })
   }
 
   const createSession = async (
     wallet: RIFWallet,
     uri: string,
     session?: any,
-  ) => {
+  ): Promise<void> => {
     const newConnector = new WalletConnect({
       uri,
       session,
@@ -163,36 +170,42 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
 
     const adapter = new WalletConnectAdapter(wallet)
 
-    setPeerMeta(newConnector.peerMeta)
-
     // needs to subscribe to events before createSession
     // this is because we need the 'session_request' event
     subscribeToEvents(newConnector, adapter)
 
-    setConnector(newConnector)
+    setConnections(prev => ({
+      ...prev,
+      [newConnector.key]: {
+        connector: newConnector,
+        address: wallet.address,
+      },
+    }))
   }
 
   useEffect(() => {
     const reconnectWCSession = async () => {
-      try {
-        const hasPrevSession = await hasWCSession()
+      const storedSessions = await getWCSession()
 
-        if (!hasPrevSession) {
-          return
+      if (!storedSessions) {
+        return
+      }
+
+      const sessions = Object.values(storedSessions)
+
+      for (const { walletAddress, uri, session } of sessions) {
+        try {
+          const wallet = wallets[walletAddress]
+
+          if (!wallet) {
+            return
+          }
+
+          await createSession(wallet, uri, session)
+        } catch (error) {
+          console.error('reconnect wc error: ', error)
+          deleteWCSession(uri)
         }
-
-        const { uri, session, walletAddress } = await getWCSession()
-
-        const wallet = wallets[walletAddress]
-
-        if (!wallet) {
-          return
-        }
-
-        await createSession(wallet, uri, session)
-      } catch (error) {
-        console.error('reconnect wc error: ', error)
-        deleteWCSession()
       }
     }
 
@@ -200,9 +213,7 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
   }, [wallets])
 
   const initialContext: WalletConnectContextInterface = {
-    isConnected: connector && peerMeta,
-    connector,
-    peerMeta,
+    connections,
     createSession,
     handleApprove,
     handleReject,

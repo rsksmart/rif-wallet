@@ -8,9 +8,8 @@ export const sharedStyles = StyleSheet.create({
   },
   modalView: {
     margin: 10,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
+    backgroundColor: '#E5E8E8',
+    borderRadius: 40,
 
     shadowColor: '#000',
     shadowOffset: {
@@ -20,6 +19,12 @@ export const sharedStyles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+  },
+
+  modalViewMainSection: {
+    padding: 35,
+    margin: 0,
+    backgroundColor: '#fff',
   },
 
   row: {

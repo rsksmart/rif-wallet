@@ -3,19 +3,30 @@ import Resolver from '@rsksmart/rns-resolver.js'
 import { OnRequest, RIFWallet } from '../lib/core'
 import { RifWalletServicesFetcher } from '../lib/rifWalletServices/RifWalletServicesFetcher'
 import { AbiEnhancer } from '@rsksmart/rif-wallet/packages/abiEnhancer'
-
-const rpcUrl = 'https://public-node.testnet.rsk.co'
-const smartWalletFactoryAddress = '0x3f71ce7bd7912bf3b362fd76dd34fa2f017b6388'
-const rifWalletServicesUrl = 'http://localhost:3000' // 'https://rif-wallet-services-dev.rifcomputing.net'
-
-const jsonRpcProvider = new providers.JsonRpcProvider(rpcUrl)
+import { getWalletSetting, SETTINGS } from './config'
+import { RifWalletServicesSocket } from '../lib/rifWalletServices/RifWalletServicesSocket'
 
 export const networkId = 31
 
-export const rifWalletServicesFetcher = new RifWalletServicesFetcher(
-  rifWalletServicesUrl,
+const rpcUrl = getWalletSetting(SETTINGS.RPC_URL, networkId)
+const smartWalletFactoryAddress = getWalletSetting(
+  SETTINGS.SMART_WALLET_FACTORY_ADDRESS,
 )
+
+const jsonRpcProvider = new providers.JsonRpcProvider(rpcUrl)
+
+export const rifWalletServicesFetcher = new RifWalletServicesFetcher(
+  getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL),
+)
+
 export const abiEnhancer = new AbiEnhancer()
+
+export const rifWalletServicesSocket = new RifWalletServicesSocket(
+  getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL),
+  rifWalletServicesFetcher,
+  abiEnhancer,
+)
+
 export const rnsResolver = Resolver.forRskTestnet({})
 
 export const createRIFWalletFactory =

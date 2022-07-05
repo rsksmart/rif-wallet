@@ -1,159 +1,191 @@
 import React from 'react'
-import { StyleSheet, Text, View, Linking } from 'react-native'
-import { Trans } from 'react-i18next'
-
+import { StyleSheet, View, Linking, TouchableOpacity } from 'react-native'
 import { utils } from 'ethers'
-
-import { formatTimestamp } from '../../lib/utils'
-import { Address } from '../../components'
+import { formatTimestamp, shortAddress } from '../../lib/utils'
 import { IActivityTransaction } from './ActivityScreen'
-import LinearGradient from 'react-native-linear-gradient'
-import { getTokenColor, setOpacity } from '../home/tokenColor'
-import { grid } from '../../styles/grid'
 import { ScrollView } from 'react-native-gesture-handler'
-import { SquareButton } from '../../components/button/SquareButton'
-import { CompassIcon } from '../../components/icons'
+import { Arrow, RefreshIcon } from '../../components/icons'
+import { SearchIcon } from '../../components/icons/SearchIcon'
+import StatusIcon from '../../components/statusIcons'
+import ButtonCustom from '../../components/activity/ButtonCustom'
+import CopyField from '../../components/activity/CopyField'
+import { NavigationProp } from '../../RootNavigation'
+import { SemiBoldText } from '../../components'
+import ActivityField from '../../components/activity/ActivityField'
+import { spacing } from '../../styles'
 
 export type ActivityDetailsScreenProps = {
   route: { params: IActivityTransaction }
+  navigation: NavigationProp
 }
-
-const ActivityRow: React.FC<{ title: any; content: any }> = ({
-  title,
-  content,
-}) => (
-  <View style={{ ...grid.row, ...styles.row }}>
-    <View style={grid.column3}>
-      <Text style={styles.label}>{title}</Text>
-    </View>
-    <View style={grid.column9}>
-      <Text>{content}</Text>
-    </View>
-  </View>
-)
 
 export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
   route,
+  navigation,
 }) => {
   const transaction = route.params
-  const tokenColor = getTokenColor(transaction.enhancedTransaction?.symbol)
+  const onViewExplorerClick = (): null => {
+    Linking.openURL(
+      `https://explorer.testnet.rsk.co/tx/${transaction.originTransaction.hash}`,
+    )
+    return null
+  }
 
+  const onBackPress = (): null => {
+    navigation.goBack()
+    return null
+  }
+
+  const status = transaction.originTransaction.receipt ? 'success' : 'pending'
+
+  const currentAddress =
+    transaction.enhancedTransaction?.to || transaction.originTransaction.to
+  const shortedAddress = shortAddress(currentAddress, 10)
+  const shortedTxHash = shortAddress(transaction.originTransaction.hash, 10)
   return (
-    <LinearGradient
-      style={styles.parent}
-      colors={['#ffffff', setOpacity(tokenColor, 0.1)]}>
-      <Text style={styles.header} testID="txDetailsTitle">
-        <Trans>Transaction Details</Trans>
-      </Text>
-
-      <ScrollView style={styles.transaction}>
-        {transaction.enhancedTransaction ? (
-          <>
-            <ActivityRow
-              title="Token"
-              content={transaction.enhancedTransaction.symbol}
-            />
-            <ActivityRow
-              title="Amount"
-              content={transaction.enhancedTransaction.value}
-            />
-            <ActivityRow
-              title="From"
-              content={
-                <Address>{transaction.enhancedTransaction.from}</Address>
-              }
-            />
-            <ActivityRow
-              title="To"
-              content={<Address>{transaction.enhancedTransaction.to}</Address>}
-            />
-          </>
-        ) : (
-          <>
-            <ActivityRow
-              title="From"
-              content={<Address>{transaction.originTransaction.from}</Address>}
-            />
-            <ActivityRow
-              title="To"
-              content={<Address>{transaction.originTransaction.to}</Address>}
-            />
-            <ActivityRow
-              title="Amount"
-              content={transaction.originTransaction.value}
-            />
-            <ActivityRow
-              title="Data"
-              content={transaction.originTransaction.data}
-            />
-          </>
-        )}
-        <ActivityRow
-          title="TX Hash"
-          content={<Address>{transaction.originTransaction.hash}</Address>}
-        />
-        <ActivityRow title="Gas" content={transaction.originTransaction.gas} />
-
-        <ActivityRow
-          title={<Trans>Gas Price</Trans>}
-          content={utils.formatUnits(transaction.originTransaction.gasPrice)}
-        />
-
-        <ActivityRow
-          title={<Trans>Status</Trans>}
-          content={
-            transaction.originTransaction.receipt
-              ? transaction.originTransaction.receipt.status
-              : 'PENDING'
-          }
-        />
-
-        <ActivityRow
-          title={<Trans>Time</Trans>}
-          content={formatTimestamp(transaction.originTransaction.timestamp)}
-        />
-      </ScrollView>
-
-      <View style={{ ...grid.row, ...styles.explorerRow }}>
-        <SquareButton
-          title="explorer"
-          onPress={() =>
-            Linking.openURL(
-              `https://explorer.testnet.rsk.co/tx/${transaction.originTransaction.hash}`,
-            )
-          }
-          icon={<CompassIcon color={tokenColor} />}
+    <ScrollView style={styles.container}>
+      <TouchableOpacity
+        style={styles.backButtonContainer}
+        onPress={onBackPress}>
+        <Arrow color="#DBE3FF" height={25} width={25} rotate={270} />
+      </TouchableOpacity>
+      <SemiBoldText style={styles.transDetails}>
+        transaction details
+      </SemiBoldText>
+      <View style={spacing.mh25}>
+        <ActivityField title="value">
+          <View style={styles.flexDirRow}>
+            <View style={styles.amountContainer}>
+              {/*  @TODO get cash amount for this text */}
+              {/*<Text style={{ fontWeight: 'bold' }}>Cash Amount</Text>*/}
+              <SemiBoldText>
+                {transaction.enhancedTransaction?.value ||
+                  transaction.originTransaction.value}
+              </SemiBoldText>
+            </View>
+            <View>
+              <RefreshIcon width={30} height={30} color="black" />
+            </View>
+          </View>
+        </ActivityField>
+        <ActivityField title="to">
+          {/*  @TODO get name of the person who the user sent the coins to*/}
+          {/*<Text>Name Here</Text>*/}
+          <CopyField
+            text={shortedAddress}
+            textToCopy={currentAddress}
+            TextComp={SemiBoldText}
+          />
+        </ActivityField>
+        <ActivityField title="gas price">
+          <View style={styles.flexDirRow}>
+            <SemiBoldText>{transaction.originTransaction.gas}</SemiBoldText>
+          </View>
+        </ActivityField>
+        <ActivityField title="gas limit">
+          <View style={styles.flexDirRow}>
+            <SemiBoldText>
+              {utils.formatUnits(transaction.originTransaction.gasPrice)}
+            </SemiBoldText>
+          </View>
+        </ActivityField>
+        <ActivityField title="tx type">
+          <SemiBoldText>{transaction.originTransaction.txType}</SemiBoldText>
+        </ActivityField>
+        <View>
+          <View style={[styles.flexNoWrap, styles.flexDirRow]}>
+            <View style={styles.statusRow}>
+              <ActivityField title="status">
+                <View style={[styles.flexDirRow, styles.alignItemsCenter]}>
+                  <StatusIcon status={status} />
+                  <SemiBoldText>{status}</SemiBoldText>
+                </View>
+              </ActivityField>
+            </View>
+            <View style={styles.timestampRow}>
+              <ActivityField title="timestamp">
+                <SemiBoldText>
+                  {formatTimestamp(transaction.originTransaction.timestamp)}
+                </SemiBoldText>
+              </ActivityField>
+            </View>
+          </View>
+        </View>
+        <ActivityField title="tx hash">
+          <CopyField
+            text={shortedTxHash}
+            textToCopy={transaction.originTransaction.hash}
+            TextComp={SemiBoldText}
+          />
+        </ActivityField>
+      </View>
+      <View style={styles.alignSelfCenter}>
+        <ButtonCustom
+          secondText="view in explorer"
+          icon={<SearchIcon width={30} height={30} color="white" />}
+          onPress={onViewExplorerClick}
         />
       </View>
-    </LinearGradient>
+      <View style={styles.mb200} />
+    </ScrollView>
   )
 }
+
 const styles = StyleSheet.create({
-  parent: {
-    height: '100%',
+  container: {
+    backgroundColor: '#dbe3ff',
+    paddingTop: 21,
   },
-  transaction: {
-    margin: 20,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    padding: 20,
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
+  backButtonContainer: {
+    backgroundColor: '#c6ccea',
+    alignSelf: 'flex-start',
+    borderRadius: 40,
+    marginBottom: 19,
+    marginLeft: 15,
   },
-  row: {
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderColor: '#e1e1e1',
+  transDetails: {
+    marginBottom: 20,
+    paddingHorizontal: 35,
   },
-  label: {
-    fontWeight: '600',
+  flexHalfSize: {
+    flexGrow: 1,
   },
-  header: {
-    fontSize: 26,
-    textAlign: 'center',
+  statusField: {
+    marginRight: 10,
   },
-  explorerRow: {
+  timestampField: {
+    marginLeft: 10,
+  },
+  mb200: {
+    marginBottom: 200,
+  },
+  textMrMl: {
+    marginRight: 4,
+    marginLeft: 2,
+  },
+  flexDirRow: {
+    flexDirection: 'row',
+  },
+  flexNoWrap: {
+    flexWrap: 'nowrap',
+  },
+  alignItemsCenter: {
+    alignItems: 'center',
+  },
+  amountContainer: {
+    flexDirection: 'column',
+    flex: 1,
     justifyContent: 'center',
-    marginBottom: 10,
+  },
+  fwb: { fontWeight: 'bold' },
+  statusRow: {
+    flex: 40,
+    marginRight: 10,
+  },
+  timestampRow: {
+    flex: 60,
+  },
+  alignSelfCenter: {
+    alignSelf: 'center',
   },
 })

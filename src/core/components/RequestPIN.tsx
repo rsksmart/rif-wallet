@@ -1,55 +1,118 @@
 import React, { useState } from 'react'
-import { View, TextInput } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import { getPin } from '../../storage/PinStore'
 
-import { Paragraph } from '../../components/typography'
-import { Button } from '../../components/button'
 import { shareStyles } from '../../components/sharedStyles'
+import { Trans, useTranslation } from 'react-i18next'
+import { KeyPad } from '../../components/keyPad'
+import { colors } from '../../styles/colors'
 
 interface Interface {
   unlock: () => void
 }
 
 export const RequestPIN: React.FC<Interface> = ({ unlock }) => {
-  const [inputtedPin, setInputtedPin] = useState('')
-  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
+  const [pin, setPin] = React.useState<Array<string>>(['', '', '', ''])
+  const [position, setPosition] = React.useState(0)
 
-  const checkPin = (enteredPin: string) => {
+  const { t } = useTranslation()
+
+  const checkPin = (enteredPin: string) => () => {
     setError(null)
-    setIsLoading(true)
-
     getPin().then(storedPin => {
       if (storedPin === enteredPin) {
         return unlock()
       }
-      setIsLoading(false)
       setError('incorrect pin')
+      setPin(['', '', '', ''])
+      setPosition(0)
+    })
+  }
+
+  const onPressKey = (value: string) => {
+    setPin(prev => {
+      if (position < 4) {
+        const tempPin = [...pin]
+        tempPin.splice(position, 1, value)
+        setPosition(position + 1)
+        return tempPin
+      }
+      return prev
+    })
+  }
+
+  const onDelete = () => {
+    setError(null)
+    setPin(prev => {
+      if (position > 0) {
+        const tempPin = [...pin]
+        tempPin.splice(position - 1, 1, '')
+        setPosition(position - 1)
+        return tempPin
+      }
+      return prev
     })
   }
 
   return (
-    <View style={shareStyles.coverAllScreen}>
-      <Paragraph>Enter your pin to unlock the app</Paragraph>
-      <View>
-        <TextInput
-          onChangeText={pin => !isLoading && setInputtedPin(pin)}
-          value={inputtedPin}
-          placeholder={'Pin'}
-          testID={'To.Input'}
-          keyboardType="numeric"
-        />
+    <View
+      style={{
+        ...shareStyles.coverAllScreen,
+        ...styles.container,
+      }}>
+      <Text style={styles.header}>
+        <Trans>{t('Confirm your PIN')}</Trans>
+      </Text>
+      <View style={styles.dotsWrapper}>
+        {pin.map((digit, index) => (
+          <View
+            key={`${digit}${index}`}
+            style={{ ...styles.dot, ...(!!digit && styles.filledDot) }}
+          />
+        ))}
       </View>
-
-      <View>
-        <Button
-          onPress={() => checkPin(inputtedPin)}
-          title="Unlock"
-          testID="Next.Button"
-          disabled={isLoading}
-        />
-      </View>
-      {error && <Paragraph>{error}</Paragraph>}
+      {error && <Text style={styles.error}>{error}</Text>}
+      <KeyPad
+        onDelete={onDelete}
+        onKeyPress={onPressKey}
+        onUnlock={checkPin(pin.join(''))}
+      />
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  header: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#FFFFFF',
+    marginBottom: 20,
+    marginTop: 35,
+  },
+  container: {
+    paddingHorizontal: 60,
+    paddingTop: 60,
+    backgroundColor: colors.darkPurple3,
+  },
+  dot: {
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    borderRadius: 40,
+    height: 30,
+    marginRight: 10,
+    width: 30,
+  },
+  filledDot: {
+    backgroundColor: colors.lightPurple,
+  },
+  dotsWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 40,
+  },
+  error: {
+    color: '#FFFFFF',
+    textAlign: 'center',
+  },
+})

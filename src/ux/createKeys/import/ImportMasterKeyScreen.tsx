@@ -1,32 +1,35 @@
 import React, { useState } from 'react'
-import { StyleSheet, View, ScrollView, TextInput } from 'react-native'
+import { StyleSheet, View, ScrollView, Text } from 'react-native'
 
-import { Button, Header2, Paragraph } from '../../../components'
+import { CreateKeysProps, ScreenProps } from '../types'
+import { grid } from '../../../styles/grid'
 import { validateMnemonic } from '../../../lib/bip39'
-import { ScreenProps, CreateKeysProps } from '../types'
-
+import { SquareButton } from '../../../components/button/SquareButton'
+import { Arrow } from '../../../components/icons'
+import { colors } from '../../../styles/colors'
+import { WordInput } from './WordInput'
+import { NavigationFooter } from '../../../components/button/NavigationFooter'
 type ImportMasterKeyScreenProps = {
   createFirstWallet: CreateKeysProps['createFirstWallet']
 }
-
 export const ImportMasterKeyScreen: React.FC<
   ScreenProps<'ImportMasterKey'> & ImportMasterKeyScreenProps
 > = ({ navigation, createFirstWallet }) => {
-  const [importMnemonic, setImportMnemonic] = useState<string>(
-    'toe among network melt ensure jaguar sleep toddler desert minute degree search that prosper detect recall story quantum scale wall power try replace knock',
-  )
+  const [selectedWords, setSelectedWords] = useState<string[]>([])
 
+  const rows = [1, 2, 3, 4, 5, 6, 7, 8]
+  const onWordSelected = (selectedWord: string, wordNumber: number) => {
+    const currentWordsSelections = selectedWords
+    currentWordsSelections.splice(wordNumber - 1, 0, selectedWord)
+    setSelectedWords(currentWordsSelections)
+  }
   const [error, setError] = useState<string | null>(null)
-  const [info, setInfo] = useState<string | null>(null)
-
+  const [info] = useState<string | null>(null)
   const handleImportMnemonic = async () => {
-    const mnemonicError = validateMnemonic(importMnemonic)
+    const mnemonicError = validateMnemonic(selectedWords.join(' '))
     if (!mnemonicError) {
       try {
-        setInfo('Creating...')
-        const rifWallet = await createFirstWallet(importMnemonic)
-        setInfo(null)
-        navigation.navigate('KeysCreated', { address: rifWallet.address })
+        await createFirstWallet(selectedWords.join(' '))
       } catch (err) {
         console.error(err)
         setError(
@@ -36,63 +39,58 @@ export const ImportMasterKeyScreen: React.FC<
     }
     setError(mnemonicError)
   }
-  const setText = (text: string) => {
-    setError(null)
-    setImportMnemonic(text)
-  }
-
   return (
-    <ScrollView>
-      <View style={styles.sectionCentered}>
-        <Paragraph>enter your private key</Paragraph>
-      </View>
-      <View style={styles.section}>
-        <Header2>Master key</Header2>
-        <TextInput
-          onChangeText={text => setText(text)}
-          value={importMnemonic}
-          placeholder="Enter your 12 words master key"
-          multiline
-          style={styles.input}
-          testID="Input.MasterKey"
-        />
-        {info && <Paragraph>{info}</Paragraph>}
-        {error && <Paragraph>{error}</Paragraph>}
-      </View>
-      <View style={styles.section}>
-        <Button
-          onPress={() => {
-            handleImportMnemonic()
-          }}
-          title={'Confirm'}
-          testID="Button.Confirm"
-          disabled={!!error}
-        />
-      </View>
-    </ScrollView>
+    <>
+      <ScrollView style={styles.parent}>
+        <Text style={styles.header}>Enter your master key</Text>
+
+        {rows.map(row => (
+          <View style={grid.row} key={row}>
+            <WordInput wordNumber={row} handleSelection={onWordSelected} />
+            <WordInput
+              wordNumber={row + rows.length}
+              handleSelection={onWordSelected}
+            />
+            <WordInput
+              wordNumber={row + rows.length * 2}
+              handleSelection={onWordSelected}
+            />
+          </View>
+        ))}
+        <Text style={styles.defaultText}> {selectedWords.join(' ')}</Text>
+        <View>
+          {info && <Text style={styles.defaultText}>{info}</Text>}
+          {error && <Text style={styles.defaultText}> {error}</Text>}
+
+          <SquareButton
+            onPress={handleImportMnemonic}
+            title=""
+            testID="Address.CopyButton"
+            icon={<Arrow color={colors.gray} rotate={90} />}
+          />
+        </View>
+      </ScrollView>
+      <NavigationFooter
+        onBackwards={() => navigation.navigate('CreateKeys')}
+        onPress={handleImportMnemonic}
+        title="confirm"
+      />
+    </>
   )
 }
 
 const styles = StyleSheet.create({
-  section: {
-    paddingTop: 15,
-    paddingBottom: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
+  defaultText: {
+    color: colors.white,
   },
-  sectionCentered: {
-    paddingTop: 15,
-    paddingBottom: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
-    alignItems: 'center',
+  parent: {
+    backgroundColor: colors.darkBlue,
   },
-  input: {
-    height: 80,
-    margin: 12,
-    borderWidth: 1,
-    borderColor: '#000',
-    padding: 10,
-    textAlignVertical: 'top',
+
+  header: {
+    color: '#ffffff',
+    fontSize: 22,
+    paddingVertical: 20,
+    textAlign: 'center',
   },
 })

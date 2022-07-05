@@ -1,7 +1,15 @@
+import { TextProps } from 'react-native'
+
 export interface SVGIconInterface {
   width?: number
   height?: number
   color?: string
+  style?: any
+}
+
+export interface MaterialIconInterface extends TextProps {
+  color?: string
+  size?: number
 }
 
 export { Arrow } from './Arrow'
@@ -13,3 +21,9 @@ export { RefreshIcon } from './RefreshIcon'
 export { SmileFaceIcon } from './SmileIcon'
 export { WalletIcon } from './WalletIcon'
 export { QRCodeIcon } from './QRCodeIcon'
+export { ImportWalletIcon } from './ImportWalletIcon'
+export { NewWalletIcon } from './NewWalletIcon'
+export { ContentPasteIcon } from './ContentPasteIcon'
+export { ShareIcon } from './ShareIcon'
+export { default as ReceiveIcon } from './ReceiveIcon'
+export { HideShowIcon } from './HideShowIcon'

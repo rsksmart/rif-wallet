@@ -6,9 +6,21 @@ export const grid = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
   },
+  column12: {
+    display: 'flex',
+    width: '100%',
+  },
+  column10: {
+    display: 'flex',
+    width: '83.333%',
+  },
   column9: {
     display: 'flex',
     width: '75%',
+  },
+  column8: {
+    display: 'flex',
+    width: '66.667%',
   },
   column7: {
     display: 'flex',
@@ -40,5 +52,12 @@ export const grid = StyleSheet.create({
   },
   column: {
     display: 'flex',
+  },
+
+  offset1: {
+    marginLeft: '8.3%',
+  },
+  offset3: {
+    marginLeft: '25%',
   },
 })

@@ -113,6 +113,11 @@ const WalletRow = ({
         title={t('InjectedBrowser')}
         disabled={!isWalletDeployed}
       />
+      <Button
+        onPress={() => navigation.navigate('EventsScreen')}
+        title={t('EventsScreen')}
+        disabled={!isWalletDeployed}
+      />
     </>
   )
 }

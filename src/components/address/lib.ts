@@ -27,7 +27,7 @@ export const validateAddress = (address: string, chainId = 31) => {
   }
 
   if (!address) {
-    return AddressValidationMessage.VALID
+    return AddressValidationMessage.INVALID_ADDRESS
   }
 
   if (!isAddress(address)) {

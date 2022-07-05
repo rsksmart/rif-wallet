@@ -1,24 +1,55 @@
 import { useNavigation } from '@react-navigation/core'
 import React from 'react'
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, Text, Image } from 'react-native'
 import { AddressCopyComponent } from '../../components/copy/AddressCopyComponent'
 import { useSelectedWallet } from '../../Context'
-import MenuIcon from './MenuIcon'
+import { Network } from '@ethersproject/networks'
+import { colors } from '../../styles/colors'
+
+export const networks: Record<number, Network> = {
+  30: {
+    chainId: 30,
+    name: 'RSK Mainnet',
+  },
+  31: {
+    chainId: 31,
+    name: 'RSK Testnet',
+  },
+}
 
 export const AppHeader: React.FC<{}> = () => {
-  const { wallet } = useSelectedWallet()
+  const { wallet, chainId } = useSelectedWallet()
 
   const navigation = useNavigation()
-  const openMenu = () => navigation.navigate('DevMenu' as any)
+  const openMenu = () => navigation.navigate('Settings' as any)
+  const [network, setNetwork] = React.useState<null | Network>(null)
+
+  React.useEffect(() => {
+    chainId && setNetwork(networks[chainId])
+  }, [chainId])
 
   return (
     <View style={styles.row}>
+      <View
+        style={{
+          ...styles.column,
+          ...styles.walletInfo,
+        }}>
+        <Image
+          source={require('../../images/rsk-logo.png')}
+          style={styles.logo}
+        />
+        {network && <Text style={styles.network}>{network.name}</Text>}
+      </View>
       <View style={styles.column}>
         {wallet && <AddressCopyComponent address={wallet.smartWalletAddress} />}
       </View>
-      <View style={styles.column}>
-        <TouchableOpacity onPress={openMenu} style={styles.menu}>
-          <MenuIcon />
+      <View style={styles.columnMenu}>
+        <TouchableOpacity onPress={openMenu}>
+          <Image
+            source={require('../../images/settings-icon.png')}
+            style={styles.settingsIcon}
+          />
         </TouchableOpacity>
       </View>
     </View>
@@ -27,16 +58,34 @@ export const AppHeader: React.FC<{}> = () => {
 
 const styles = StyleSheet.create({
   row: {
-    padding: 10,
+    alignItems: 'center', // vertical
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    marginBottom: 10,
     display: 'flex',
     flexDirection: 'row',
   },
   column: {
-    display: 'flex',
-    paddingRight: 5,
-    width: '50%',
+    flex: 5,
   },
-  menu: {
+  columnMenu: {
+    flex: 1,
     alignItems: 'flex-end',
+  },
+  logo: {
+    height: 25,
+    width: 18,
+    marginRight: 5,
+  },
+  network: {
+    color: colors.white,
+  },
+  walletInfo: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  settingsIcon: {
+    height: 18,
+    width: 18,
   },
 })

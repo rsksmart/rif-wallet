@@ -1,65 +1,144 @@
-import React, { useState } from 'react'
-import { StyleSheet } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { StyleSheet, View, Image } from 'react-native'
 
 import { NavigationProp } from '../../RootNavigation'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import SelectedTokenComponent from './SelectedTokenComponent'
-import balances from './tempBalances.json'
-import LinearGradient from 'react-native-linear-gradient'
-import { getTokenColor, setOpacity } from './tokenColor'
+import { getTokenColor } from './tokenColor'
 import PortfolioComponent from './PortfolioComponent'
-import ActivityComponent from './ActivityComponent'
+import { useSocketsState } from '../../subscriptions/RIFSockets'
+import { colors } from '../../styles/colors'
+import SendReceiveButtonComponent from './SendReceiveButtonComponent'
+import { Paragraph } from '../../components'
+import { useSelectedWallet } from '../../Context'
+import { LoadingScreen } from '../../components/loading/LoadingScreen'
 
 export const HomeScreen: React.FC<{
   navigation: NavigationProp
-}> = ({ navigation }) => {
-  const [selected, setSelected] = useState<ITokenWithBalance>(
-    balances[0] as ITokenWithBalance,
+  changeTopColor: (color: string) => void
+}> = ({ navigation, changeTopColor }) => {
+  const { state } = useSocketsState()
+  const { selectedWalletIndex } = useSelectedWallet()
+
+  const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
+    undefined,
   )
-  const [selectedPanel, setSelectedPanel] = useState<string>('portfolio')
 
-  const selectedTokenColor = getTokenColor(selected.symbol)
+  // token or undefined
+  const selected = selectedAddress ? state.balances[selectedAddress] : undefined
+  const selectedColor = getTokenColor(selected ? selected.symbol : undefined)
+  const balances = Object.values(state.balances)
+  const backGroundColor = {
+    backgroundColor: selectedAddress ? selectedColor : colors.darkPurple3,
+  }
 
-  const containerStyles = {
-    shadowColor: setOpacity(selectedTokenColor, 0.5),
+  useEffect(() => {
+    if (!selected) {
+      balances.length !== 0
+        ? setSelectedAddress(balances[0].contractAddress)
+        : undefined
+    }
+  }, [state.balances])
+
+  // interact with the navigation
+  const handleSendReceive = (screen: 'SEND' | 'RECEIVE' | 'FAUCET') => {
+    switch (screen) {
+      case 'SEND':
+        return navigation.navigate('Send', {
+          token: selected?.symbol,
+          contractAddress: selected?.contractAddress,
+        })
+      case 'RECEIVE':
+        return navigation.navigate('Receive')
+      case 'FAUCET':
+        console.log('@todo: faucet component is not implemented yet.')
+        return
+    }
+  }
+
+  // pass the new color to Core to update header:
+  useEffect(() => {
+    changeTopColor(selectedColor)
+  }, [selectedColor])
+
+  // waiting for the balances to load:
+  if (!state.isSetup) {
+    return <LoadingScreen />
   }
 
   return (
-    <LinearGradient
-      colors={['#FFFFFF', setOpacity(selectedTokenColor, 0.1)]}
-      style={styles.parent}>
-      <SelectedTokenComponent navigation={navigation} token={selected} />
+    <View style={styles.container}>
+      <View style={{ ...styles.topColor, ...backGroundColor }} />
+      <View style={styles.bottomColor} />
 
-      <LinearGradient
-        colors={['#FFFFFF', '#E1E1E1']}
-        style={{ ...styles.topContainer, ...containerStyles }}>
-        <PortfolioComponent
-          setPanelActive={() => setSelectedPanel('portfolio')}
-          balances={balances}
-          selected={selected}
-          setSelected={setSelected}
-          visible={selectedPanel === 'portfolio'}
+      <View style={styles.parent}>
+        {selected && (
+          <SelectedTokenComponent
+            token={selected}
+            accountNumber={selectedWalletIndex}
+          />
+        )}
+
+        <SendReceiveButtonComponent
+          color={selectedColor}
+          onPress={handleSendReceive}
+          sendDisabled={balances.length === 0}
         />
-        <ActivityComponent
-          navigation={navigation}
-          setPanelActive={() => setSelectedPanel('transactions')}
-          visible={selectedPanel === 'transactions'}
-        />
-      </LinearGradient>
-    </LinearGradient>
+
+        {balances.length === 0 ? (
+          <>
+            <Image
+              source={require('../../images/noBalance.png')}
+              style={styles.noBalance}
+            />
+            <Paragraph style={styles.text}>
+              You don't have any balances, get some here!
+            </Paragraph>
+          </>
+        ) : (
+          <PortfolioComponent
+            selectedAddress={selectedAddress}
+            setSelected={setSelectedAddress}
+            balances={balances}
+            prices={state.prices}
+          />
+        )}
+      </View>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  parent: {
-    height: '100%',
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: colors.darkPurple3,
   },
-  topContainer: {
-    marginHorizontal: 25,
-    borderRadius: 25,
-    backgroundColor: '#ffffff',
-    shadowOpacity: 0.1,
-    // shadowRadius: 10,
-    elevation: 2,
+  topColor: {
+    flex: 1,
+    borderBottomRightRadius: 40,
+    borderBottomLeftRadius: 40,
+  },
+  bottomColor: {
+    flex: 5,
+  },
+
+  parent: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    paddingHorizontal: 30,
+  },
+  text: {
+    textAlign: 'center',
+    color: colors.white,
+  },
+  noBalance: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
   },
 })

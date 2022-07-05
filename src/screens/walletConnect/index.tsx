@@ -1,8 +1,7 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import ScanQRScreen from './ScanQRScreen'
 import { ScreenProps } from '../../RootNavigation'
-import { WalletConnectContext } from './WalletConnectContext'
 import SessionRequestScreen from './SessionRequestScreen'
 import ConnectedScreen from './ConnectedScreen'
 import { ScreenWithWallet } from '../types'
@@ -14,10 +13,8 @@ const screensOptions = { headerShown: false }
 export const WalletConnectNavigationScreen: React.FC<
   ScreenProps<'WalletConnect'> & ScreenWithWallet
 > = () => {
-  const { isConnected } = useContext(WalletConnectContext)
-
   return (
-    <Stack.Navigator initialRouteName={isConnected ? 'Connected' : 'ScanQR'}>
+    <Stack.Navigator initialRouteName={'ScanQR'}>
       <Stack.Screen
         name="ScanQR"
         component={ScanQRScreen}

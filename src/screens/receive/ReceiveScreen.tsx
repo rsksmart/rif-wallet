@@ -1,142 +1,106 @@
-import React from 'react'
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  Dimensions,
-  Share,
-  Text,
-} from 'react-native'
-import LinearGradient from 'react-native-linear-gradient'
+import React, { useState } from 'react'
+import { Dimensions, StyleSheet, View, ScrollView, Text } from 'react-native'
 import QRCode from 'react-qr-code'
-import Clipboard from '@react-native-community/clipboard'
-
-import { SquareButton } from '../../components/button/SquareButton'
-import { CopyIcon } from '../../components/icons/CopyIcon'
-import { grid } from '../../styles/grid'
-import { getTokenColor, getTokenColorWithOpacity } from '../home/tokenColor'
-import { ScreenWithWallet } from '../types'
-import { Arrow } from '../../components/icons/Arrow'
 import { getAddressDisplayText } from '../../components'
+import { ShareableText } from '../../components/ShareableText'
+import { Tabs } from '../../components/Tabs'
+import { colors } from '../../styles/colors'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
   AddressText = 'Address.AddressText',
   ShareButton = 'Address.ShareButton',
+  CopyButton = 'Address.CopyButton',
 }
 
-type ReceiveScreenProps = {
-  route: { params: { token: string | undefined } }
+export type ReceiveScreenProps = {
+  registeredDomains: string[]
+  smartWalletAddress: string
 }
 
-export const ReceiveScreen: React.FC<ScreenWithWallet & ReceiveScreenProps> = ({
-  wallet,
-  route,
+export const ReceiveScreen: React.FC<ReceiveScreenProps> = ({
+  smartWalletAddress,
+  registeredDomains,
 }) => {
-  const smartAddress = wallet.smartWalletAddress
-  const selectedToken = route.params?.token || 'TRBTC'
+  const [activeTab, setActiveTab] = useState('address')
 
   const windowWidth = Dimensions.get('window').width
-  const qrCodeSize = windowWidth * 0.6
-
-  const handleShare = () =>
-    Share.share({
-      title: smartAddress,
-      message: smartAddress,
-    })
-
-  const handleCopy = () => Clipboard.setString(smartAddress)
+  const qrCodeSize = windowWidth * 0.5
 
   const qrContainerStyle = {
-    marginHorizontal: (windowWidth - (qrCodeSize + 20)) / 2,
-    width: qrCodeSize + 40,
+    marginHorizontal: (windowWidth - (qrCodeSize + 60)) / 2,
+    width: qrCodeSize + 60,
   }
 
+  const handleTabSelection = (selectedTab: string) => {
+    setActiveTab(selectedTab)
+  }
   return (
-    <LinearGradient
-      colors={['#FFFFFF', getTokenColorWithOpacity(selectedToken, 0.1)]}
-      style={styles.parent}>
-      <ScrollView>
-        <Text style={styles.header}>Receive</Text>
-        <View
-          style={{ ...styles.qrContainer, ...qrContainerStyle }}
-          testID={TestID.QRCodeDisplay}>
-          <QRCode
-            bgColor="#ffffff"
-            color="#707070"
-            value={smartAddress}
-            size={qrCodeSize}
+    <ScrollView style={styles.parent}>
+      <View style={qrContainerStyle}>
+        <Text style={styles.title}>share QR Code</Text>
+      </View>
+      <View
+        style={{ ...styles.qrContainer, ...qrContainerStyle }}
+        testID={TestID.QRCodeDisplay}>
+        <QRCode
+          bgColor="#dbe3ff"
+          color="#707070"
+          value={smartWalletAddress}
+          size={qrCodeSize}
+        />
+      </View>
+      <View style={{ ...qrContainerStyle }}>
+        <Tabs
+          title={'share details'}
+          tabs={['address', 'domains']}
+          selectedTab={activeTab}
+          onTabSelected={handleTabSelection}
+        />
+      </View>
+      {activeTab === 'address' && (
+        <View style={qrContainerStyle}>
+          <ShareableText
+            text={getAddressDisplayText(smartWalletAddress).displayAddress}
+            valueToShare={smartWalletAddress}
           />
         </View>
+      )}
 
-        <View style={{ ...styles.addressContainer, ...qrContainerStyle }}>
-          <Text testID={TestID.AddressText} style={styles.smartAddress}>
-            {getAddressDisplayText(smartAddress).displayAddress}
-          </Text>
+      {activeTab === 'domains' && (
+        <View style={qrContainerStyle}>
+          {registeredDomains.map((domain, index) => (
+            <ShareableText key={index} text={domain} valueToShare={domain} />
+          ))}
+          {registeredDomains?.length === 0 && (
+            <Text style={styles.noDomainsText}>Domains not found</Text>
+          )}
         </View>
-        <Text style={styles.smartAddressLabel}>smart address</Text>
-
-        <View style={grid.row}>
-          <View style={{ ...grid.column6, ...styles.bottomColumn }}>
-            <SquareButton
-              onPress={handleShare}
-              title="share"
-              testID="Address.ShareButton"
-              icon={<Arrow color={getTokenColor(selectedToken)} rotate={225} />}
-            />
-          </View>
-          <View style={{ ...grid.column6, ...styles.bottomColumn }}>
-            <SquareButton
-              onPress={handleCopy}
-              title="copy"
-              testID="Address.CopyButton"
-              icon={
-                <CopyIcon
-                  width={55}
-                  height={55}
-                  color={getTokenColor(selectedToken)}
-                />
-              }
-            />
-          </View>
-        </View>
-      </ScrollView>
-    </LinearGradient>
+      )}
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
   parent: {
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+    backgroundColor: '#050134',
     height: '100%',
+    opacity: 0.9,
+    paddingTop: 40,
   },
-  header: {
-    fontSize: 26,
-    textAlign: 'center',
+  title: {
+    color: colors.white,
   },
   qrContainer: {
-    backgroundColor: 'rgba(255, 255, 255, .7)',
+    backgroundColor: '#dbe3ff',
     marginVertical: 20,
-    padding: 20,
+    padding: 30,
     borderRadius: 20,
   },
-  addressContainer: {
-    padding: 10,
-    borderRadius: 10,
-    backgroundColor: 'rgba(255, 255, 255, .7)',
-  },
-  smartAddress: {
-    color: '#5C5D5D',
-    fontSize: 16,
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-  smartAddressLabel: {
-    color: '#5C5D5D',
-    textAlign: 'center',
-    marginTop: 5,
-    marginBottom: 20,
-  },
-  bottomColumn: {
-    alignItems: 'center',
+  noDomainsText: {
+    alignSelf: 'center',
+    color: colors.white,
   },
 })

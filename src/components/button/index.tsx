@@ -23,24 +23,22 @@ export const Button: React.FC<Interface> = ({
   testID,
   style,
   textStyle,
-}) => {
-  return (
-    <TouchableOpacity
-      style={style ? { ...styles.button, ...style } : styles.button}
-      onPress={onPress}
-      disabled={disabled}
-      testID={testID}>
-      <View>
-        <Text
-          style={
-            disabled ? styles.textDisabled : { ...styles.text, ...textStyle }
-          }>
-          {title}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  )
-}
+}) => (
+  <TouchableOpacity
+    style={style ? { ...styles.button, ...style } : styles.button}
+    onPress={onPress}
+    disabled={disabled}
+    testID={testID}>
+    <View>
+      <Text
+        style={
+          disabled ? styles.textDisabled : { ...styles.text, ...textStyle }
+        }>
+        {title}
+      </Text>
+    </View>
+  </TouchableOpacity>
+)
 
 const styles = StyleSheet.create({
   button: {

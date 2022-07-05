@@ -1,38 +1,43 @@
 import { useNavigation } from '@react-navigation/core'
 import React from 'react'
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
-import { ContactsIcon, WalletIcon, CompassIcon } from '../../components/icons'
+import { View, StyleSheet, TouchableOpacity, Image } from 'react-native'
+
+import { colors } from '../../styles/colors'
 
 export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
   currentScreen,
 }) => {
   const navigation = useNavigation()
+  const selectedStyle = {
+    ...styles.button,
+    borderBottomColor: colors.blue,
+  }
 
   return (
     <View style={styles.row}>
-      <View style={styles.column}>
-        <ContactsIcon color="#D1D1D1" width={24} />
-      </View>
-      <View style={styles.column}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Home' as never)}
-          style={styles.button}>
-          <WalletIcon
-            color={currentScreen === 'Home' ? '#5D5E5E' : '#D1D1D1'}
-            width={24}
-          />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.column}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Dapps' as never)}
-          style={styles.button}>
-          <CompassIcon
-            color={currentScreen === 'Dapps' ? '#5D5E5E' : '#D1D1D1'}
-            width={24}
-          />
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('Dapps' as never)}
+        style={currentScreen === 'Dapps' ? selectedStyle : styles.button}>
+        <Image source={require('../../images/footer-menu/blocks.png')} />
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => navigation.navigate('Home' as never)}
+        style={currentScreen === 'Home' ? selectedStyle : styles.button}>
+        <Image source={require('../../images/footer-menu/wallet.png')} />
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => navigation.navigate('Activity' as never)}
+        style={currentScreen === 'Activity' ? selectedStyle : styles.button}>
+        <Image source={require('../../images/footer-menu/coins.png')} />
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => navigation.navigate('Contacts' as never)}
+        style={currentScreen === 'Contacts' ? selectedStyle : styles.button}>
+        <Image source={require('../../images/footer-menu/contacts.png')} />
+      </TouchableOpacity>
     </View>
   )
 }
@@ -40,22 +45,19 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
 const styles = StyleSheet.create({
   row: {
     padding: 10,
+    paddingBottom: 40,
     display: 'flex',
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: '10%',
+    backgroundColor: colors.darkPurple3,
   },
   button: {
-    padding: 10,
-    width: 44,
-    height: 44,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
-  },
-  column: {
-    display: 'flex',
-    paddingRight: 5,
-    width: '33%',
-    alignSelf: 'center',
-    alignItems: 'center',
+    borderBottomWidth: 4,
+    borderColor: colors.none,
   },
 })

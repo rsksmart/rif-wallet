@@ -1,8 +1,10 @@
+import WalletConnect from '@walletconnect/client'
 import React, { useContext } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { SquareButton } from '../../components/button/SquareButton'
 import { Arrow, QRCodeIcon } from '../../components/icons'
+import { Separator } from '../../components/separator'
 import { NavigationProp } from '../../RootNavigation'
 import { WalletConnectContext } from '../walletConnect/WalletConnectContext'
 
@@ -17,7 +19,11 @@ const WalletConnectComponent: React.FC<Interface> = ({
   visible,
   setPanelActive,
 }) => {
-  const { isConnected, peerMeta } = useContext(WalletConnectContext)
+  const { connections } = useContext(WalletConnectContext)
+
+  const openedConnections = Object.values(connections).filter(
+    x => x.connector.connected,
+  )
 
   return (
     <View style={visible ? styles.roundedBox : styles.roundedBoxNotVisible}>
@@ -25,32 +31,66 @@ const WalletConnectComponent: React.FC<Interface> = ({
         <Text style={styles.heading}>Connect Dapps</Text>
       </TouchableOpacity>
       {visible && (
-        <View style={styles.row}>
-          <View>
-            {!isConnected && <Text>Connect to dapps</Text>}
-            {isConnected && (
-              <Text style={{ maxWidth: '80%', flexWrap: 'wrap' }}>
-                Connected to: {peerMeta?.name}
-              </Text>
-            )}
-            <Text>via Wallet Connect</Text>
-          </View>
-          <SquareButton
-            color={'#000'}
-            onPress={() => {
-              navigation.navigate('WalletConnect')
-            }}
-            title={isConnected ? 'details' : 'connect'}
-            icon={
-              isConnected ? (
-                <Arrow color={'#000'} rotate={90} />
-              ) : (
-                <QRCodeIcon color={'#000'} />
-              )
-            }
-          />
-        </View>
+        <>
+          <NewConnection navigation={navigation} />
+          {openedConnections.map(({ connector }) => (
+            <React.Fragment key={connector.key}>
+              <Separator />
+              <DappConnected connector={connector} navigation={navigation} />
+            </React.Fragment>
+          ))}
+        </>
       )}
+    </View>
+  )
+}
+
+const DappConnected: React.FC<{
+  connector: WalletConnect
+  navigation: NavigationProp
+}> = ({ connector, navigation }) => {
+  const { peerMeta, key: wcKey } = connector
+
+  return (
+    <View style={styles.row}>
+      <View>
+        <Text style={styles.connectedTo}>Connected to: {peerMeta?.name}</Text>
+        <Text>via Wallet Connect</Text>
+      </View>
+      <SquareButton
+        shadowColor={'#000'}
+        onPress={() => {
+          navigation.navigate('WalletConnect', {
+            screen: 'Connected',
+            params: {
+              wcKey: wcKey,
+            },
+          } as never)
+        }}
+        title={'details'}
+        icon={<Arrow color={'#000'} rotate={90} />}
+      />
+    </View>
+  )
+}
+
+const NewConnection: React.FC<{
+  navigation: NavigationProp
+}> = ({ navigation }) => {
+  return (
+    <View style={styles.row}>
+      <View>
+        <Text>Connect to dapps</Text>
+        <Text>via Wallet Connect</Text>
+      </View>
+      <SquareButton
+        shadowColor={'#000'}
+        onPress={() => {
+          navigation.navigate('WalletConnect')
+        }}
+        title={'connect'}
+        icon={<QRCodeIcon color={'#000'} />}
+      />
     </View>
   )
 }
@@ -75,6 +115,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  connectedTo: {
+    maxWidth: '80%',
+    flexWrap: 'wrap',
   },
 })
 

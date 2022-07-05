@@ -1,210 +1,119 @@
 import React, { useEffect, useState } from 'react'
-
+import { StyleSheet, ScrollView, Text } from 'react-native'
+import { BigNumber, utils, ContractTransaction } from 'ethers'
+import { useSocketsState } from '../../subscriptions/RIFSockets'
 import {
-  StyleSheet,
-  View,
-  ScrollView,
-  TextInput,
-  Linking,
-  Text,
-} from 'react-native'
-
-import { ContractReceipt, BigNumber, utils } from 'ethers'
-import { useTranslation } from 'react-i18next'
-
-import { getAllTokens } from '../../lib/token/tokenMetadata'
-import { IToken } from '../../lib/token/BaseToken'
-
+  convertToERC20Token,
+  makeRBTCToken,
+} from '../../lib/token/tokenMetadata'
 import { ScreenProps } from '../../RootNavigation'
-import { Button, CopyComponent, Paragraph } from '../../components'
 import { ScreenWithWallet } from '../types'
-import { Address } from '../../components'
-import { AddressInput } from '../../components'
-import Resolver from '@rsksmart/rns-resolver.js'
+import TransactionInfo, { transactionInfo } from './TransactionInfo'
+import { colors } from '../../styles'
+import TransactionForm from './TransactionForm'
+import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
-export type SendScreenProps = {
-  rnsResolver: Resolver
-}
+export type SendScreenProps = {}
+
 export const SendScreen: React.FC<
   SendScreenProps & ScreenProps<'Send'> & ScreenWithWallet
-> = ({ rnsResolver, route, wallet }) => {
-  const smartAddress = wallet.smartWalletAddress
-  const { t } = useTranslation()
+> = ({ route, wallet }) => {
+  const { state } = useSocketsState()
 
-  const [to, setTo] = useState('')
-  const [displayTo, setDisplayTo] = useState('')
-  const [isValidTo, setIsValidTo] = useState(false)
-  const [selectedSymbol, setSelectedToken] = useState(
-    route.params?.token || 'tRIF',
-  )
+  const contractAddress =
+    route.params?.contractAddress || Object.keys(state.balances)[0]
 
-  const [availableTokens, setAvailableTokens] = useState<IToken[]>()
-  const [amount, setAmount] = useState('')
-  const [tx, setTx] = useState<ContractReceipt | null>(null)
-  const [txConfirmed, setTxConfirmed] = useState(false)
-  const [txSent, setTxSent] = useState(false)
-  const [info, setInfo] = useState('')
+  const [currentTransaction, setCurrentTransaction] =
+    useState<transactionInfo | null>(null)
+  const [error, setError] = useState<string>()
+
+  const [chainId, setChainId] = useState<number>(31)
 
   useEffect(() => {
-    getAllTokens(wallet).then(tokens => setAvailableTokens(tokens))
+    wallet.getChainId().then(setChainId)
   }, [wallet])
 
-  const transfer = async (tokenSymbol: string) => {
-    setInfo('')
-    if (availableTokens) {
-      const selectedToken = availableTokens.find(
-        token => token.symbol === tokenSymbol,
-      )
-      if (selectedToken) {
-        try {
-          const decimals = await selectedToken.decimals()
-          const numberOfTokens = utils.parseUnits(amount, decimals)
+  const transfer = (token: ITokenWithBalance, amount: string, to: string) => {
+    setError(undefined)
+    setCurrentTransaction({ status: 'USER_CONFIRM' })
 
-          const transferResponse = await selectedToken.transfer(
-            to.toLowerCase(),
-            BigNumber.from(numberOfTokens),
-          )
+    // handle both ERC20 tokens and the native token (gas)
+    const transferMethod =
+      token.symbol === 'TRBTC'
+        ? makeRBTCToken(wallet, chainId)
+        : convertToERC20Token(token, {
+            signer: wallet,
+            chainId,
+          })
 
-          setInfo(t('Transaction Sent. Please wait...'))
-          setTxSent(true)
-          setTxConfirmed(false)
-          const txReceipt = await transferResponse.wait()
-          setTx(txReceipt)
-          setInfo(t('Transaction Confirmed.'))
-          setTxConfirmed(true)
-          // @ts-ignore
-        } catch (e: any) {
-          setInfo(t('Transaction Failed: ') + e.message)
-        }
-      }
-    }
+    transferMethod.decimals().then((decimals: number) => {
+      const tokenAmount = BigNumber.from(utils.parseUnits(amount, decimals))
+
+      transferMethod
+        .transfer(to.toLowerCase(), tokenAmount)
+        .then((txPending: ContractTransaction) => {
+          const current: transactionInfo = {
+            to,
+            value: amount,
+            symbol: transferMethod.symbol,
+            hash: txPending.hash,
+            status: 'PENDING',
+          }
+          setCurrentTransaction(current)
+
+          txPending
+            .wait()
+            .then(() =>
+              setCurrentTransaction({ ...current, status: 'SUCCESS' }),
+            )
+            .catch(() =>
+              setCurrentTransaction({ ...current, status: 'FAILED' }),
+            )
+        })
+        .catch((err: any) => {
+          setError(err)
+          setCurrentTransaction(null)
+        })
+    })
   }
-  const handleTargetAddressChange = (
-    isValid: boolean,
-    address: string,
-    displayAddress: string,
-  ) => {
-    setIsValidTo(isValid)
-    setTo(address)
-    setDisplayTo(displayAddress)
-  }
+
   return (
-    <ScrollView>
-      <View>
-        <Paragraph>
-          From: <Address>{smartAddress}</Address>
-        </Paragraph>
-      </View>
-
-      <View>
-        <AddressInput
-          onChangeText={handleTargetAddressChange}
-          value={displayTo}
-          placeholder={t('To')}
-          testID={'To.Input'}
-          rnsResolver={rnsResolver}
+    <ScrollView style={styles.parent}>
+      {!currentTransaction ? (
+        <TransactionForm
+          onConfirm={transfer}
+          tokenList={Object.values(state.balances)}
+          tokenPrices={state.prices}
+          chainId={chainId}
+          initialValues={{
+            recipient: route.params?.to,
+            amount: '0',
+            asset: route.params?.contractAddress
+              ? state.balances[route.params.contractAddress]
+              : state.balances[contractAddress],
+          }}
         />
-      </View>
-
-      <View>
-        <TextInput
-          onChangeText={text => setAmount(text)}
-          value={amount}
-          placeholder={t('Amount')}
-          keyboardType="numeric"
-          testID={'Amount.Input'}
-        />
-      </View>
-      <View>
-        <Paragraph>
-          <Text>Token: </Text>
-          <Text>{selectedSymbol}</Text>
-        </Paragraph>
-      </View>
-      <View style={styles.section}>
-        <Button
-          onPress={() => setSelectedToken('TRBTC')}
-          disabled={selectedSymbol === 'TRBTC'}
-          title="TRBTC"
-        />
-        <Button
-          onPress={() => setSelectedToken('tRIF')}
-          disabled={selectedSymbol === 'tRIF'}
-          title="tRIF"
-        />
-        {/*<Picker
-          selectedValue={selectedSymbol}
-          onValueChange={itemValue => setSelectedSymbol(itemValue)}
-          testID={'Tokens.Picker'}>
-          {availableTokens &&
-            availableTokens.map(token => (
-              <Picker.Item
-                key={token.symbol}
-                label={token.symbol}
-                value={token.symbol}
-                testID={token.symbol}
-              />
-            ))}
-        </Picker>*/}
-      </View>
-
-      {!txSent && (
-        <View style={styles.section}>
-          <Button
-            disabled={!isValidTo}
-            onPress={() => {
-              transfer(selectedSymbol)
-            }}
-            title="Next"
-            testID="Next.Button"
-          />
-        </View>
+      ) : (
+        <TransactionInfo transaction={currentTransaction} />
       )}
-      <View style={styles.section}>
-        <Paragraph>{info}</Paragraph>
-      </View>
-      {txConfirmed && tx && (
-        <View testID={'TxReceipt.View'} style={styles.section}>
-          {tx && (
-            <CopyComponent value={tx.transactionHash} prefix={'Tx Hash: '} />
-          )}
-          <Button
-            title="View in explorer"
-            onPress={() => {
-              Linking.openURL(
-                `https://explorer.testnet.rsk.co/tx/${tx.transactionHash}`,
-              )
-            }}
-          />
-        </View>
-      )}
+
+      {!!error && <Text style={styles.error}>{error}</Text>}
     </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
-  safeView: {
+  parent: {
     height: '100%',
-  },
-  screen: {
-    paddingRight: 15,
-    paddingLeft: 15,
-  },
-  sections: {
-    flex: 1,
-    flexDirection: 'column',
-  },
-  section: {
-    marginTop: 5,
-    marginBottom: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
-    flex: 1,
-  },
-  link: {
-    color: 'blue',
+    backgroundColor: colors.darkPurple3,
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    paddingTop: 40,
+    paddingHorizontal: 20,
   },
   error: {
-    color: 'red',
+    marginTop: 10,
+    color: colors.orange,
+    textAlign: 'center',
   },
 })

@@ -4,65 +4,52 @@ import { Share } from 'react-native'
 import { render, fireEvent, RenderAPI } from '@testing-library/react-native'
 
 import { ReceiveScreen, TestID } from './ReceiveScreen'
-import { setupTest } from '../../../testLib/setup'
-import { RIFWallet } from '../../lib/core'
 import { getAddressDisplayText } from '../../components'
 
-describe('Receive Screen', function (this: {
-  instance: {
-    rifWallet: RIFWallet
-    container: RenderAPI
-  }
-}) {
+describe('Receive Screen', function () {
+  let container: RenderAPI
+  const smartWalletAddress = '0x0085a940f42d2d9956159d040461b9e343097e09'
+
   beforeEach(async () => {
-    // using the same private key to test with snapshots
-    const { rifWallet } = await setupTest(
-      '0x91de4b5e7256ac842c74f75c2d53804a2ce3df35733e1a716df12337918859e8',
+    container = render(
+      <ReceiveScreen
+        smartWalletAddress={smartWalletAddress}
+        registeredDomains={['helloworld.rsk']}
+      />,
     )
-    this.instance = {
-      rifWallet,
-      container: render(
-        <ReceiveScreen
-          wallet={rifWallet}
-          isWalletDeployed={true}
-          route={{
-            params: {
-              token: 'RIF',
-            },
-          }}
-        />,
-      ),
-    }
   })
 
-  describe('initial screen', () => {
-    test('shows smart wallet wallet', async () => {
-      const { displayAddress } = getAddressDisplayText(
-        this.instance.rifWallet.smartWalletAddress,
-      )
-      expect(
-        this.instance.container
-          .getByTestId(TestID.AddressText)
-          .children.join(''),
-      ).toContain(displayAddress)
-    })
+  test('renders qr', () => {
+    const QRNode = container.getByTestId(TestID.QRCodeDisplay)
 
-    test('shows qr code', async () => {
-      expect(
-        this.instance.container.getByTestId(TestID.QRCodeDisplay),
-      ).toBeDefined()
-    })
+    expect(QRNode).toBeDefined()
   })
 
-  describe('actions', () => {
-    test('share', () => {
-      const spy = jest.spyOn(Share, 'share')
-      fireEvent.press(this.instance.container.getByTestId(TestID.ShareButton))
+  test('renders smart wallet address', () => {
+    const smartWalletAddressNode = container.getByTestId(TestID.AddressText)
+    const { displayAddress } = getAddressDisplayText(smartWalletAddress)
 
-      expect(spy).toHaveBeenCalledWith({
-        message: this.instance.rifWallet.smartWalletAddress,
-        title: this.instance.rifWallet.smartWalletAddress,
-      })
+    expect(smartWalletAddressNode).toBeDefined()
+    expect(container.getByText(displayAddress)).toBeDefined()
+    expect(smartWalletAddressNode.children.join('')).toContain(displayAddress)
+  })
+
+  test('renders copy button', async () => {
+    const copyNode = container.getByTestId(TestID.CopyButton)
+
+    expect(copyNode).toBeDefined()
+  })
+
+  test('renders and presses share button', () => {
+    const shareNode = container.getByTestId(TestID.ShareButton)
+    const spy = jest.spyOn(Share, 'share')
+    fireEvent.press(shareNode)
+
+    expect(shareNode).toBeDefined()
+    expect(spy).toBeCalled()
+    expect(spy).toHaveBeenCalledWith({
+      message: smartWalletAddress,
+      title: smartWalletAddress,
     })
   })
 })

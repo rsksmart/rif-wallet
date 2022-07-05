@@ -5,8 +5,9 @@ import { CreateKeysScreen } from './CreateKeysScreen'
 import { NewMasterKeyScreen } from './new/NewMasterKeyScreen'
 import { ConfirmNewMasterKeyScreen } from './new/ConfirmNewMasterKeyScreen'
 import { ImportMasterKeyScreen } from './import/ImportMasterKeyScreen'
-import { KeysCreatedScreen } from './KeysCreatedScreen'
 import { StackParamList, CreateKeysProps } from './types'
+import { SecurityExplanationScreen } from './SecurityExplanationScreen'
+import { SecureYourWalletScreen } from './SecureYourWalletScreen'
 
 const Stack = createStackNavigator<StackParamList>()
 
@@ -15,6 +16,7 @@ const screensOptions = { headerShown: false }
 export const CreateKeysNavigation: React.FC<CreateKeysProps> = ({
   generateMnemonic,
   createFirstWallet,
+  isKeyboardVisible,
 }) => {
   return (
     <Stack.Navigator initialRouteName="CreateKeys">
@@ -33,11 +35,18 @@ export const CreateKeysNavigation: React.FC<CreateKeysProps> = ({
               />
             )}
           </Stack.Screen>
+          <Stack.Screen name="SecureYourWallet" options={screensOptions}>
+            {props => <SecureYourWalletScreen {...props} />}
+          </Stack.Screen>
+          <Stack.Screen name="SecurityExplanation" options={screensOptions}>
+            {props => <SecurityExplanationScreen {...props} />}
+          </Stack.Screen>
           <Stack.Screen name="ConfirmNewMasterKey" options={screensOptions}>
             {props => (
               <ConfirmNewMasterKeyScreen
                 {...props}
                 createFirstWallet={createFirstWallet}
+                isKeyboardVisible={isKeyboardVisible}
               />
             )}
           </Stack.Screen>
@@ -51,11 +60,6 @@ export const CreateKeysNavigation: React.FC<CreateKeysProps> = ({
           )}
         </Stack.Screen>
       </Stack.Group>
-      <Stack.Screen
-        name="KeysCreated"
-        component={KeysCreatedScreen}
-        options={screensOptions}
-      />
     </Stack.Navigator>
   )
 }
