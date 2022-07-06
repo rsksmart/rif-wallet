@@ -38,7 +38,6 @@ const SlideUpModal: React.FC<Interface> = ({
 }) => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false)
   const keyboard = useKeyboard()
-  const [reference, setReference] = useState()
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
