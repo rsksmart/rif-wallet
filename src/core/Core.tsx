@@ -33,7 +33,7 @@ import { RequestPIN } from './components/RequestPIN'
 import { WalletConnectProviderElement } from '../screens/walletConnect/WalletConnectContext'
 import { RIFSocketsProvider } from '../subscriptions/RIFSockets'
 import { NavigationContainer, NavigationState } from '@react-navigation/native'
-import { colors } from '../styles/colors'
+import { colors } from '../styles'
 import { deletePin, savePin } from '../storage/PinStore'
 import { deleteContacts } from '../storage/ContactsStore'
 import { deleteDomains } from '../storage/DomainsStore'
@@ -151,15 +151,17 @@ const useKeyManagementSystem = (onRequest: OnRequest) => {
     }
 
     return addNextWallet(state.kms, createRIFWallet, networkId).then(response =>
-      setState({
-        ...state,
-        wallets: Object.assign(state.wallets, {
+      setState(oldState => ({
+        ...oldState,
+        wallets: {
+          ...oldState.wallets,
           [response.rifWallet.address]: response.rifWallet,
-        }),
-        walletsIsDeployed: Object.assign(state.walletsIsDeployed, {
+        },
+        walletsIsDeployed: {
+          ...oldState.walletsIsDeployed,
           [response.rifWallet.address]: response.isDeloyed,
-        }),
-      }),
+        },
+      })),
     )
   }
 
@@ -327,7 +329,7 @@ export const Core = () => {
                   }}
                   contactsNavigationScreenProps={{ rnsResolver }}
                   dappsScreenProps={{ fetcher: rifWalletServicesFetcher }}
-                  manageWalletScreenProps={{
+                  accountsScreenType={{
                     addNewWallet,
                     switchActiveWallet,
                   }}

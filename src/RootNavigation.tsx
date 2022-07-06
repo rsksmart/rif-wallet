@@ -24,8 +24,8 @@ import { AppFooterMenu } from './ux/appFooter'
 import { EditContactScreenProps } from './screens/contacts/EditContactScreen'
 import { DappsScreenScreenProps } from './screens/dapps'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
-import { ManagerWalletScreenProps } from './screens/settings/ManageWalletsScreen'
-import { colors } from './styles/colors'
+import { colors } from './styles'
+import { AccountsScreenType } from './screens/accounts/AccountsScreen'
 import { SecurityScreenProps } from './screens/security/SecurityConfigurationScreen'
 
 const InjectedScreens = {
@@ -47,7 +47,7 @@ const InjectedScreens = {
   RegisterDomainScreen: InjectSelectedWallet(Screens.RegisterDomainScreen),
   HomeScreen: InjectSelectedWallet(Screens.HomeScreen),
   DappsScreen: InjectSelectedWallet(Screens.DappsScreen),
-  ManageWalletsScreen: InjectSelectedWallet(Screens.ManageWalletsScreen),
+  AccountsScreen: InjectSelectedWallet(Screens.AccountsScreen),
 }
 
 type RootStackParamList = {
@@ -81,8 +81,8 @@ type RootStackParamList = {
   RegisterDomain: { selectedDomain: string; years: number }
   Contacts: undefined
   Settings: undefined
-  ManageWallets: undefined
   EventsScreen: undefined
+  AccountsScreen: undefined
   SecurityConfigurationScreen: undefined
   ChangePinScreen: undefined
 }
@@ -118,7 +118,7 @@ export const RootNavigation: React.FC<{
   injectedBrowserUXScreenProps: InjectedBrowserUXScreenProps
   contactsNavigationScreenProps: EditContactScreenProps
   dappsScreenProps: DappsScreenScreenProps
-  manageWalletScreenProps: ManagerWalletScreenProps
+  accountsScreenType: AccountsScreenType
   securityConfigurationScreenProps: SecurityScreenProps
 }> = ({
   currentScreen,
@@ -135,7 +135,7 @@ export const RootNavigation: React.FC<{
   injectedBrowserUXScreenProps,
   contactsNavigationScreenProps,
   dappsScreenProps,
-  manageWalletScreenProps,
+  accountsScreenType,
   securityConfigurationScreenProps,
 }) => {
   let initialRoute: any = 'CreateKeysUX'
@@ -195,16 +195,6 @@ export const RootNavigation: React.FC<{
           <RootStack.Screen name="Settings" options={sharedOptions}>
             {props => <Screens.SettingsScreen {...props} />}
           </RootStack.Screen>
-
-          <RootStack.Screen name="ManageWallets" options={sharedOptions}>
-            {props => (
-              <InjectedScreens.ManageWalletsScreen
-                {...props}
-                {...manageWalletScreenProps}
-              />
-            )}
-          </RootStack.Screen>
-
           <RootStack.Screen name="CreateKeysUX" options={sharedOptions}>
             {props => (
               <CreateKeysNavigation
@@ -267,6 +257,14 @@ export const RootNavigation: React.FC<{
             component={InjectedScreens.ManuallyDeployScreen}
             options={sharedOptions}
           />
+          <RootStack.Screen name="AccountsScreen" options={sharedOptions}>
+            {props => (
+              <InjectedScreens.AccountsScreen
+                {...props}
+                {...accountsScreenType}
+              />
+            )}
+          </RootStack.Screen>
           <RootStack.Screen name="KeysInfo" options={sharedOptions}>
             {props => (
               <Screens.KeysInfoScreen {...props} {...keysInfoScreenProps} />
