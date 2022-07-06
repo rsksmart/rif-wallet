@@ -1,6 +1,17 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import SwipeUpDownModal from 'react-native-swipe-modal-up-down'
-import { ScrollView, View, StyleSheet, TouchableOpacity } from 'react-native'
+import { useKeyboard } from '@react-native-community/hooks'
+
+import {
+  ScrollView,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
+} from 'react-native'
+
 import { colors } from '../../styles'
 import { RegularText } from '../typography'
 
@@ -25,15 +36,48 @@ const SlideUpModal: React.FC<Interface> = ({
   backgroundColor,
   headerFontColor,
 }) => {
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false)
+  const keyboard = useKeyboard()
+  const [reference, setReference] = useState()
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true)
+      },
+    )
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false)
+      },
+    )
+
+    return () => {
+      keyboardDidHideListener.remove()
+      keyboardDidShowListener.remove()
+    }
+  }, [])
+  const containerStyle = !isKeyboardVisible
+    ? styles.containerContent
+    : { ...styles.containerContent, marginBottom: keyboard.keyboardHeight - 50 }
+
+  const initialYScroll = isKeyboardVisible ? keyboard.keyboardHeight - 50 : 0
   return (
     <SwipeUpDownModal
       modalVisible={showSelector}
       PressToanimate={animateModal}
       //if you don't pass HeaderContent you should pass marginTop in view of ContentModel to Make modal swipeable
       ContentModal={
-        <View style={styles.containerContent}>
-          <ScrollView>{children}</ScrollView>
-        </View>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+          <View style={containerStyle}>
+            <ScrollView contentOffset={{ x: 0, y: initialYScroll }}>
+              {children}
+            </ScrollView>
+          </View>
+        </KeyboardAvoidingView>
       }
       HeaderStyle={styles.headerContent}
       ContentModalStyle={{ ...styles.Modal, backgroundColor }}
