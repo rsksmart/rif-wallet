@@ -27,6 +27,10 @@ export const SettingsScreen: React.FC<ScreenProps<'Settings'>> = ({
 
   const goToChangeLanguage = () => navigation.navigate('ChangeLanguage' as any)
 
+  const goToAccountsScreen = () => navigation.navigate('AccountsScreen' as any)
+
+  // const goToSecurityConfiguration = () =>
+  //   navigation.navigate('SecurityConfiguration' as any)
   const goToSecurityConfiguration = () =>
     navigation.navigate('SecurityConfigurationScreen' as any)
 
@@ -44,7 +48,9 @@ export const SettingsScreen: React.FC<ScreenProps<'Settings'>> = ({
           </SemiBoldText>
         </TouchableOpacity>
         {/* @TODO add link to go to the accounts screen */}
-        <TouchableOpacity style={styles.rowComponent}>
+        <TouchableOpacity
+          style={styles.rowComponent}
+          onPress={goToAccountsScreen}>
           <AccountsIcon width={18} height={18} />
           <SemiBoldText style={[styles.textColor, spacing.ml6]}>
             Accounts

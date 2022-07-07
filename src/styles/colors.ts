@@ -35,7 +35,9 @@ export const colors = {
     light: '#dbe3ff',
     primary: '#1a1849',
     gray: '#dbe3ff',
-    darkBlue: '#020034',
     lightSteelBlue: '#B8C1E3',
+    darkBlue: '#020034',
+    blue: '#381BE1',
+    purple: '#624FE9',
   },
 }
