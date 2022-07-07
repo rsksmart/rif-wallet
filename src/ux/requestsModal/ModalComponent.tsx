@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Modal, StyleSheet, View } from 'react-native'
 
 import {
   Request,
   SignMessageRequest,
   SendTransactionRequest,
-} from '../../lib/core/RIFWallet'
+} from '../../lib/core'
 
 import ReviewTransactionModal from './ReviewTransactionModal'
 import SignMessageModal from './SignMessageModal'
@@ -13,10 +13,13 @@ import SignTypedDataModal from './SignTypedDataModal'
 import { sharedStyles } from './sharedStyles'
 import { InjectSelectedWallet } from '../../Context'
 import { SignTypedDataRequest } from '../../lib/core'
+import SlideUpModal from '../../components/slideUpModal/SlideUpModal'
+import { colors } from '../../styles'
 
 interface Interface {
   request: Request
   closeModal: () => void
+  isKeyboardVisible: boolean
 }
 
 const ReviewTransactionInjected = InjectSelectedWallet(ReviewTransactionModal)
@@ -47,8 +50,26 @@ const RequestTypeSwitch = (request: Request, closeModal: () => void) => {
   }
 }
 
-const ModalComponent: React.FC<Interface> = ({ request, closeModal }) => {
-  return (
+const ModalComponent: React.FC<Interface> = ({
+  request,
+  closeModal,
+  isKeyboardVisible,
+}) => {
+  const [showSelector, setShowSelector] = useState<boolean>(true)
+  const [animateModal, setAnimateModal] = useState(false)
+
+  const handleCloseModal = () => {
+    closeModal()
+    setShowSelector(false)
+    setAnimateModal(false)
+    request.reject('User cancels transaction')
+  }
+
+  const handleAnimateModal = () => {
+    setAnimateModal(true)
+  }
+
+  return request.type !== 'sendTransaction' ? (
     <View style={sharedStyles.centeredView}>
       <Modal animationType="slide" transparent={true} visible={true}>
         <View style={[sharedStyles.centeredView, styles.blurBackground]}>
@@ -58,6 +79,18 @@ const ModalComponent: React.FC<Interface> = ({ request, closeModal }) => {
         </View>
       </Modal>
     </View>
+  ) : (
+    <SlideUpModal
+      title={'review transaction'}
+      showSelector={showSelector}
+      animateModal={animateModal}
+      onModalClosed={handleCloseModal}
+      onAnimateModal={handleAnimateModal}
+      backgroundColor={colors.lightGray}
+      headerFontColor={colors.black}
+      isKeyboardVisible={isKeyboardVisible}>
+      {RequestTypeSwitch(request, closeModal)}
+    </SlideUpModal>
   )
 }
 

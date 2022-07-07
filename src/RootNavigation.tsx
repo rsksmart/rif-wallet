@@ -1,11 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import {
-  StyleSheet,
-  View,
-  KeyboardAvoidingView,
-  Platform,
-  Keyboard,
-} from 'react-native'
+import React from 'react'
+import { StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native'
 import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
 import { NavigationProp as _NavigationProp } from '@react-navigation/native'
 
@@ -106,6 +100,7 @@ export const RootNavigation: React.FC<{
   currentScreen: string
   hasKeys: boolean
   hasPin: boolean
+  isKeyboardVisible: boolean
   changeTopColor: (color: string) => void
   rifWalletServicesSocket: IRifWalletServicesSocket
   keyManagementProps: CreateKeysProps
@@ -124,6 +119,7 @@ export const RootNavigation: React.FC<{
   currentScreen,
   hasKeys,
   hasPin,
+  isKeyboardVisible,
   changeTopColor,
   keyManagementProps,
   createPin,
@@ -146,26 +142,7 @@ export const RootNavigation: React.FC<{
   }
 
   const appIsSetup = hasKeys && hasPin
-  const [isKeyboardVisible, setKeyboardVisible] = useState(false)
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      () => {
-        setKeyboardVisible(true)
-      },
-    )
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => {
-        setKeyboardVisible(false)
-      },
-    )
 
-    return () => {
-      keyboardDidHideListener.remove()
-      keyboardDidShowListener.remove()
-    }
-  }, [])
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>

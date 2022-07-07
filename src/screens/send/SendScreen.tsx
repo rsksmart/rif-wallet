@@ -25,7 +25,7 @@ export const SendScreen: React.FC<
 
   const [currentTransaction, setCurrentTransaction] =
     useState<transactionInfo | null>(null)
-  const [error, setError] = useState<string>()
+  const [error, setError] = useState<Error>()
 
   const [chainId, setChainId] = useState<number>(31)
 
@@ -97,7 +97,7 @@ export const SendScreen: React.FC<
         <TransactionInfo transaction={currentTransaction} />
       )}
 
-      {!!error && <Text style={styles.error}>{error}</Text>}
+      {!!error && <Text style={styles.error}>{error.message}</Text>}
     </ScrollView>
   )
 }
