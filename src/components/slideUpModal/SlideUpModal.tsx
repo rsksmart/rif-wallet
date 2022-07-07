@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import SwipeUpDownModal from 'react-native-swipe-modal-up-down'
 import { useKeyboard } from '@react-native-community/hooks'
 
@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-  Keyboard,
 } from 'react-native'
 
 import { colors } from '../../styles'
@@ -24,6 +23,7 @@ interface Interface {
   onAnimateModal: () => void
   backgroundColor: string
   headerFontColor: string
+  isKeyboardVisible: boolean
 }
 
 const SlideUpModal: React.FC<Interface> = ({
@@ -35,29 +35,10 @@ const SlideUpModal: React.FC<Interface> = ({
   onAnimateModal,
   backgroundColor,
   headerFontColor,
+  isKeyboardVisible,
 }) => {
-  const [isKeyboardVisible, setKeyboardVisible] = useState(false)
   const keyboard = useKeyboard()
 
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      () => {
-        setKeyboardVisible(true)
-      },
-    )
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => {
-        setKeyboardVisible(false)
-      },
-    )
-
-    return () => {
-      keyboardDidHideListener.remove()
-      keyboardDidShowListener.remove()
-    }
-  }, [])
   const containerStyle = !isKeyboardVisible
     ? styles.containerContent
     : { ...styles.containerContent, marginBottom: keyboard.keyboardHeight - 50 }

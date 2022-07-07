@@ -1,5 +1,11 @@
 import React, { useState, useRef, useEffect, Fragment } from 'react'
-import { AppState, SafeAreaView, StatusBar, StyleSheet } from 'react-native'
+import {
+  AppState,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Keyboard,
+} from 'react-native'
 import { AppContext, Wallets, WalletsIsDeployed, Requests } from '../Context'
 import { KeyManagementSystem, OnRequest, RIFWallet } from '../lib/core'
 import { i18nInit } from '../lib/i18n'
@@ -259,6 +265,27 @@ export const Core = () => {
     }
   }, [state.selectedWallet])
 
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false)
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true)
+      },
+    )
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false)
+      },
+    )
+
+    return () => {
+      keyboardDidHideListener.remove()
+      keyboardDidShowListener.remove()
+    }
+  }, [])
+
   if (state.loading) {
     return <LoadingScreen />
   }
@@ -300,6 +327,7 @@ export const Core = () => {
                   currentScreen={currentScreen}
                   hasKeys={state.hasKeys}
                   hasPin={state.hasPin}
+                  isKeyboardVisible={isKeyboardVisible}
                   rifWalletServicesSocket={rifWalletServicesSocket}
                   keyManagementProps={{
                     generateMnemonic: () =>
@@ -340,6 +368,7 @@ export const Core = () => {
                 {requests.length !== 0 && (
                   <ModalComponent
                     closeModal={closeRequest}
+                    isKeyboardVisible={isKeyboardVisible}
                     request={requests[0]}
                   />
                 )}

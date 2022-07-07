@@ -19,6 +19,7 @@ import { colors } from '../../styles'
 interface Interface {
   request: Request
   closeModal: () => void
+  isKeyboardVisible: boolean
 }
 
 const ReviewTransactionInjected = InjectSelectedWallet(ReviewTransactionModal)
@@ -52,9 +53,7 @@ const RequestTypeSwitch = (request: Request, closeModal: () => void) => {
 const ModalComponent: React.FC<Interface> = ({
   request,
   closeModal,
-}: {
-  request: Request
-  closeModal: any
+  isKeyboardVisible,
 }) => {
   const [showSelector, setShowSelector] = useState<boolean>(true)
   const [animateModal, setAnimateModal] = useState(false)
@@ -88,7 +87,8 @@ const ModalComponent: React.FC<Interface> = ({
       onModalClosed={handleCloseModal}
       onAnimateModal={handleAnimateModal}
       backgroundColor={colors.lightGray}
-      headerFontColor={colors.black}>
+      headerFontColor={colors.black}
+      isKeyboardVisible={isKeyboardVisible}>
       {RequestTypeSwitch(request, closeModal)}
     </SlideUpModal>
   )
