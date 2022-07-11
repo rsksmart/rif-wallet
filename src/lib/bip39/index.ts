@@ -12,8 +12,8 @@ export const validateMnemonic = (importMnemonic: string): string | null => {
   const mnemonic = importMnemonic ? importMnemonic.split(' ') : []
   if (!isWordlistValid(mnemonic)) {
     return 'worldlist is not valid'
-  } else if (mnemonic.length < 12) {
-    return 'you need to enter at least twelve words'
+  } else if (mnemonic.length < 24) {
+    return 'you need to enter at least 24 words'
   } else {
     return null
   }

@@ -16,7 +16,7 @@ import { wordlists } from 'bip39'
 
 type Props = {
   wordIndex: number
-  expectedWord: string
+  expectedWord?: string
   onWordSelected: any
 }
 export const WordSelector: React.FC<Props> = ({
@@ -64,6 +64,10 @@ export const WordSelector: React.FC<Props> = ({
       : setOptions(
           wordlists.EN.filter((w: string) => w.startsWith(newText)).slice(0, 3),
         )
+
+    if (!expectedWord) {
+      return onWordSelected(newText, wordIndex)
+    }
   }
 
   const handleEnterPress = () => {
@@ -71,6 +75,8 @@ export const WordSelector: React.FC<Props> = ({
       handleTextChange(options[0])
     }
   }
+
+  const handleOutOfFocus = () => {}
 
   const wordRowStyle =
     options.length === 0

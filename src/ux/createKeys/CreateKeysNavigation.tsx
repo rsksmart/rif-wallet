@@ -56,6 +56,7 @@ export const CreateKeysNavigation: React.FC<CreateKeysProps> = ({
             <ImportMasterKeyScreen
               {...props}
               createFirstWallet={createFirstWallet}
+              isKeyboardVisible={isKeyboardVisible}
             />
           )}
         </Stack.Screen>
