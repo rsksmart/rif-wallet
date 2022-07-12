@@ -2008,9 +2008,35 @@
     lodash "^4.17.15"
     randombytes "^2.1.0"
 
-"@rsksmart/rif-wallet@git+ssh:git@github.com:rsksmart/rif-wallet.git":
-  version "1.0.0"
-  resolved "git+ssh:git@github.com:rsksmart/rif-wallet.git#0de5137f7db802589e3475c4ebf17635995b4ac7"
+"@rsksmart/rif-wallet-abi-enhancer@1.0.0-beta1":
+  version "1.0.0-beta1"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-abi-enhancer/1.0.0-beta1/f2fe8832d0951fccd9570b849582f09405f37aeb7044613b2559b9aa9e78ce74#365d65facbe858089922c1be1ea73eade3e11b9c"
+  integrity sha512-3jHsjMGlz01LGycGwOtOK9fn3NjqQPViQPIVEKS2fUtQ823zNODbf+qtaNem6VlwpssUfgoT+PYDqlLJrtqGoA==
+  dependencies:
+    "@rsksmart/rif-wallet-token" "*"
+    "@rsksmart/rif-wallet-types" "*"
+    "@rsksmart/rsk-contract-metadata" "^1.0.15"
+    "@rsksmart/rsk-testnet-contract-metadata" "^1.0.11"
+    axios "^0.24.0"
+    ethers "^5.4.7"
+
+"@rsksmart/rif-wallet-token@*":
+  version "1.0.0-beta1"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-token/1.0.0-beta1/93877476ee2c096e3ce3f8539d534728483a3194adc01f786a5258bee013a4bc#7eb0c6afa5a13bf7ae051adbb4cca0912d758e8c"
+  integrity sha512-t4UNpBpcUEv19jl0rBeVxBjYbRCJYSU8h2wGbyOPjw6nSaNFMVBL0giA+RT1BorHkEGP0VQ4j0tiQD3ZDysPVg==
+  dependencies:
+    "@rsksmart/rsk-contract-metadata" "^1.0.15"
+    "@rsksmart/rsk-testnet-contract-metadata" "^1.0.11"
+    ethers "^5.4.7"
+    react-native-config "^1.4.5"
+
+"@rsksmart/rif-wallet-types@*":
+  version "1.0.0-beta1"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-types/1.0.0-beta1/20da996cfabb34b320bfff47f92d17c00724f59a5901bd0601f22dbf7fad3fbe#6a00c875b71636f1cf08667921d1040eb0398505"
+  integrity sha512-ejf68fawxDh22BwZSKyST4PuEZD+qqbmbPPVYSO2IxJwzomOuwBWljLnOSWqf1nbw0VmV7QQ5VUkqaY7ESQN0g==
+  dependencies:
+    ethers "^5.4.7"
+    react "17.0.2"
 
 "@rsksmart/rlogin-dpath@^1.0.1":
   version "1.0.1"
