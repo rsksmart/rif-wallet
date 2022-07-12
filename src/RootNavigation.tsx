@@ -249,11 +249,6 @@ export const RootNavigation: React.FC<{
             component={Screens.ChangeLanguageScreen}
             options={sharedOptions}
           />
-          <RootStack.Screen
-            name="ManagePin"
-            component={Screens.ManagePinScreen}
-            options={sharedOptions}
-          />
 
           <RootStack.Screen name="CreatePin" options={sharedOptions}>
             {props => (

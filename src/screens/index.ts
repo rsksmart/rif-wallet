@@ -9,7 +9,7 @@ export { ManuallyDeployScreen } from './settings/ManuallyDeployScreen'
 export { TransactionReceivedScreen } from './TransactionReceivedScreen'
 export { WalletConnectNavigationScreen } from './walletConnect'
 export { ChangeLanguageScreen } from './settings/ChangeLanguageScreen'
-export { ManagePinScreen } from './managePin/ManagePinScreen'
+
 export { CreatePinScreen } from './createPin/CreatePinScreen'
 export { InjectedBrowserNavigation } from '../screens/injectedBrowser/InjectedBrowserNavigation'
 export { RNSManagerScreen } from './rnsManager/RNSManager'
