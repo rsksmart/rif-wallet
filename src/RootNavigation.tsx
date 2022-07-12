@@ -27,7 +27,6 @@ const InjectedScreens = {
   BalancesScreen: InjectSelectedWallet(Screens.BalancesScreen),
   ActivityScreen: InjectSelectedWallet(Screens.ActivityScreen),
   ActivityDetailsScreen: InjectSelectedWallet(Screens.ActivityDetailsScreen),
-  SignMessageScreen: InjectSelectedWallet(Screens.SignMessageScreen),
   ManuallyDeployScreen: InjectSelectedWallet(Screens.ManuallyDeployScreen),
   KeysInfoScreen: InjectSelectedWallet(Screens.KeysInfoScreen),
   SignTypedDataScreen: InjectSelectedWallet(Screens.SignTypedDataScreen),
@@ -203,11 +202,6 @@ export const RootNavigation: React.FC<{
           <RootStack.Screen
             name="ActivityDetails"
             component={InjectedScreens.ActivityDetailsScreen}
-            options={sharedOptions}
-          />
-          <RootStack.Screen
-            name="SignMessage"
-            component={InjectedScreens.SignMessageScreen}
             options={sharedOptions}
           />
           <RootStack.Screen
