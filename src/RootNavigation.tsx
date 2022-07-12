@@ -205,12 +205,6 @@ export const RootNavigation: React.FC<{
           />
 
           <RootStack.Screen
-            name="TransactionReceived"
-            component={Screens.TransactionReceivedScreen}
-            options={sharedOptions}
-          />
-
-          <RootStack.Screen
             name="ManuallyDeployScreen"
             component={InjectedScreens.ManuallyDeployScreen}
             options={sharedOptions}
