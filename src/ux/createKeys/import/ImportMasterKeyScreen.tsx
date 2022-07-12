@@ -27,17 +27,15 @@ interface ImportMasterKeyScreenProps {
 
 export const ImportMasterKeyScreen: React.FC<
   ScreenProps<'ImportMasterKey'> & ImportMasterKeyScreenProps
-> = ({ route, navigation, createFirstWallet, isKeyboardVisible }) => {
+> = ({ navigation, createFirstWallet, isKeyboardVisible }) => {
   const slidesIndexes = [0, 1, 2, 3, 4, 5, 6, 7]
 
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
   const [selectedWords, setSelectedWords] = useState<string[]>([])
   const [carousel, setCarousel] = useState<any>()
-  //const [error, setError] = useState<boolean | null>(false)
   const [error, setError] = useState<string | null>(null)
 
   const handleImportMnemonic = async () => {
-    console.log({ selectedWords })
     const mnemonicError = validateMnemonic(selectedWords.join(' '))
     if (!mnemonicError) {
       try {

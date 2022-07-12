@@ -51,6 +51,9 @@ export const WordSelector: React.FC<Props> = ({
       // only trigger the parent if there is a match
       return onWordSelected(newText, wordIndex)
     }
+    if (!expectedWord) {
+      onWordSelected(newText, wordIndex)
+    }
 
     // user choose the top option but it is not correct
     if (newText === options[0]) {
@@ -64,10 +67,6 @@ export const WordSelector: React.FC<Props> = ({
       : setOptions(
           wordlists.EN.filter((w: string) => w.startsWith(newText)).slice(0, 3),
         )
-
-    if (!expectedWord) {
-      return onWordSelected(newText, wordIndex)
-    }
   }
 
   const handleEnterPress = () => {
@@ -75,8 +74,6 @@ export const WordSelector: React.FC<Props> = ({
       handleTextChange(options[0])
     }
   }
-
-  const handleOutOfFocus = () => {}
 
   const wordRowStyle =
     options.length === 0
