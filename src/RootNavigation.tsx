@@ -45,7 +45,6 @@ const InjectedScreens = {
 }
 
 type RootStackParamList = {
-  DevMenu: undefined
   Home: undefined
   Send:
     | undefined
@@ -162,12 +161,6 @@ export const RootNavigation: React.FC<{
               <InjectedScreens.DappsScreen {...props} {...dappsScreenProps} />
             )}
           </RootStack.Screen>
-
-          <RootStack.Screen
-            name="DevMenu"
-            component={Screens.DevMenuScreen}
-            options={sharedOptions}
-          />
 
           <RootStack.Screen name="Settings" options={sharedOptions}>
             {props => <Screens.SettingsScreen {...props} />}
