@@ -2,7 +2,7 @@ import { providers, Wallet } from 'ethers'
 import Resolver from '@rsksmart/rns-resolver.js'
 import { OnRequest, RIFWallet } from '../lib/core'
 import { RifWalletServicesFetcher } from '../lib/rifWalletServices/RifWalletServicesFetcher'
-import { AbiEnhancer } from '@rsksmart/rif-wallet/packages/abiEnhancer'
+import { AbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
 import { getWalletSetting, SETTINGS } from './config'
 import { RifWalletServicesSocket } from '../lib/rifWalletServices/RifWalletServicesSocket'
 
