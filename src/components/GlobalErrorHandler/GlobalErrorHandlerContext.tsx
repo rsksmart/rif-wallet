@@ -1,23 +1,26 @@
 import React, { createContext, useState, useContext } from 'react'
-import { View, StyleSheet } from 'react-native'
-import { MediumText, RegularText } from '../typography'
-import ActiveButton from '../button/ActiveButton'
-import WarningIcon from '../icons/WarningIcon'
+import GlobalErrorHandlerView from './GlobalErrorHandlerView'
 
 type GlobalErrorHandlerType = {
   setGlobalError: any
+  globalError: string | null | unknown
+  handleReload: () => void
 }
 
 type GlobalErrorHandlerProviderType = {
   children: React.ReactNode
+  GlobalErrorHandlerViewComp: React.FC
 }
 
 const GlobalErrorHandlerContext = createContext<GlobalErrorHandlerType>({
   setGlobalError: () => {},
+  globalError: null,
+  handleReload: () => {},
 })
 
 const GlobalErrorHandlerProvider: React.FC<GlobalErrorHandlerProviderType> = ({
   children,
+  GlobalErrorHandlerViewComp = GlobalErrorHandlerView,
 }) => {
   const [globalError, setGlobalError] = useState(null)
   const [compKey, setCompKey] = useState(0)
@@ -25,50 +28,24 @@ const GlobalErrorHandlerProvider: React.FC<GlobalErrorHandlerProviderType> = ({
     setGlobalError(null)
     setCompKey(curKey => curKey + 1)
   }
-  if (globalError) {
-    return (
-      <View style={styles.container}>
-        <View>
-          <WarningIcon color="white" size={50} />
-        </View>
-        <MediumText style={styles.text}>There was an error</MediumText>
-        <RegularText style={styles.text}>
-          An error has been found. Please try reloading the app.
-        </RegularText>
-        <ActiveButton text="Reload" onPress={handleReload} />
-      </View>
-    )
-  }
 
   return (
     <GlobalErrorHandlerContext.Provider
-      value={{ setGlobalError }}
+      value={{ setGlobalError, globalError, handleReload }}
       key={compKey}>
-      {children}
+      {globalError && <GlobalErrorHandlerViewComp />}
+      {!globalError && children}
     </GlobalErrorHandlerContext.Provider>
   )
 }
 
-export const useSetGlobalError = () => {
-  const { setGlobalError } = useContext(GlobalErrorHandlerContext)
-  return setGlobalError
+export const useGlobalErrorContext = () => {
+  return useContext(GlobalErrorHandlerContext)
 }
 
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'black',
-  },
-  text: {
-    color: 'white',
-    marginBottom: 20,
-  },
-  exclamation: {
-    fontSize: 32,
-  },
-})
+export const useSetGlobalError = () => {
+  const { setGlobalError } = useGlobalErrorContext()
+  return setGlobalError
+}
 
 export default GlobalErrorHandlerProvider
