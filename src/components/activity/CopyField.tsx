@@ -7,12 +7,16 @@ type ICopyField = {
   text: string
   textToCopy?: string | undefined
   TextComp?: any
+  iconSize?: number
+  iconViewBox?: string
 }
 
 const CopyField: React.FC<ICopyField> = ({
   text,
   textToCopy = undefined,
   TextComp = Text,
+  iconSize = 25,
+  iconViewBox = undefined,
 }) => {
   const onCopy = (): null => {
     Clipboard.setString(textToCopy || text)
@@ -23,7 +27,12 @@ const CopyField: React.FC<ICopyField> = ({
       <View style={styles.container}>
         <TextComp style={styles.text}>{text}</TextComp>
         <View style={styles.iconView}>
-          <CopyIcon width={25} height={25} color="black" />
+          <CopyIcon
+            width={iconSize}
+            height={iconSize}
+            color="black"
+            viewBox={iconViewBox}
+          />
         </View>
       </View>
     </TouchableOpacity>

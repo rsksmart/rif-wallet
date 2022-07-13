@@ -86,12 +86,6 @@ const WalletRow = ({
 
       <View style={styles.subsection}>
         <Button
-          title={t('Wallet info')}
-          onPress={() => navigation.navigate('WalletInfo')}
-        />
-      </View>
-      <View style={styles.subsection}>
-        <Button
           onPress={() => navigation.navigate('WalletConnect')}
           title={t('WalletConnect')}
           disabled={!isWalletDeployed}

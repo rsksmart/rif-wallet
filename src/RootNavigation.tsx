@@ -1,11 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import {
-  StyleSheet,
-  View,
-  KeyboardAvoidingView,
-  Platform,
-  Keyboard,
-} from 'react-native'
+import React from 'react'
+import { StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native'
 import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
 import { NavigationProp as _NavigationProp } from '@react-navigation/native'
 
@@ -24,8 +18,8 @@ import { AppFooterMenu } from './ux/appFooter'
 import { EditContactScreenProps } from './screens/contacts/EditContactScreen'
 import { DappsScreenScreenProps } from './screens/dapps'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
-import { ManagerWalletScreenProps } from './screens/settings/ManageWalletsScreen'
-import { colors } from './styles/colors'
+import { colors } from './styles'
+import { AccountsScreenType } from './screens/accounts/AccountsScreen'
 import { SecurityScreenProps } from './screens/security/SecurityConfigurationScreen'
 
 const InjectedScreens = {
@@ -34,7 +28,7 @@ const InjectedScreens = {
   ActivityScreen: InjectSelectedWallet(Screens.ActivityScreen),
   ActivityDetailsScreen: InjectSelectedWallet(Screens.ActivityDetailsScreen),
   SignMessageScreen: InjectSelectedWallet(Screens.SignMessageScreen),
-  WalletInfoScreen: InjectSelectedWallet(Screens.WalletInfoScreen),
+  ManuallyDeployScreen: InjectSelectedWallet(Screens.ManuallyDeployScreen),
   KeysInfoScreen: InjectSelectedWallet(Screens.KeysInfoScreen),
   SignTypedDataScreen: InjectSelectedWallet(Screens.SignTypedDataScreen),
   WalletConnectNavigationScreen: InjectSelectedWallet(
@@ -47,7 +41,7 @@ const InjectedScreens = {
   RegisterDomainScreen: InjectSelectedWallet(Screens.RegisterDomainScreen),
   HomeScreen: InjectSelectedWallet(Screens.HomeScreen),
   DappsScreen: InjectSelectedWallet(Screens.DappsScreen),
-  ManageWalletsScreen: InjectSelectedWallet(Screens.ManageWalletsScreen),
+  AccountsScreen: InjectSelectedWallet(Screens.AccountsScreen),
 }
 
 type RootStackParamList = {
@@ -68,7 +62,7 @@ type RootStackParamList = {
   SignMessage: undefined
   SignTypedData: undefined
   TransactionReceived: undefined
-  WalletInfo: undefined
+  ManuallyDeployScreen: undefined
   CreateKeysUX: undefined
   KeysInfo: undefined
   WalletConnect: undefined
@@ -81,8 +75,8 @@ type RootStackParamList = {
   RegisterDomain: { selectedDomain: string; years: number }
   Contacts: undefined
   Settings: undefined
-  ManageWallets: undefined
   EventsScreen: undefined
+  AccountsScreen: undefined
   SecurityConfigurationScreen: undefined
   ChangePinScreen: undefined
 }
@@ -106,6 +100,7 @@ export const RootNavigation: React.FC<{
   currentScreen: string
   hasKeys: boolean
   hasPin: boolean
+  isKeyboardVisible: boolean
   changeTopColor: (color: string) => void
   rifWalletServicesSocket: IRifWalletServicesSocket
   keyManagementProps: CreateKeysProps
@@ -118,12 +113,13 @@ export const RootNavigation: React.FC<{
   injectedBrowserUXScreenProps: InjectedBrowserUXScreenProps
   contactsNavigationScreenProps: EditContactScreenProps
   dappsScreenProps: DappsScreenScreenProps
-  manageWalletScreenProps: ManagerWalletScreenProps
+  accountsScreenType: AccountsScreenType
   securityConfigurationScreenProps: SecurityScreenProps
 }> = ({
   currentScreen,
   hasKeys,
   hasPin,
+  isKeyboardVisible,
   changeTopColor,
   keyManagementProps,
   createPin,
@@ -135,7 +131,7 @@ export const RootNavigation: React.FC<{
   injectedBrowserUXScreenProps,
   contactsNavigationScreenProps,
   dappsScreenProps,
-  manageWalletScreenProps,
+  accountsScreenType,
   securityConfigurationScreenProps,
 }) => {
   let initialRoute: any = 'CreateKeysUX'
@@ -146,26 +142,7 @@ export const RootNavigation: React.FC<{
   }
 
   const appIsSetup = hasKeys && hasPin
-  const [isKeyboardVisible, setKeyboardVisible] = useState(false)
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      () => {
-        setKeyboardVisible(true)
-      },
-    )
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => {
-        setKeyboardVisible(false)
-      },
-    )
 
-    return () => {
-      keyboardDidHideListener.remove()
-      keyboardDidShowListener.remove()
-    }
-  }, [])
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -195,16 +172,6 @@ export const RootNavigation: React.FC<{
           <RootStack.Screen name="Settings" options={sharedOptions}>
             {props => <Screens.SettingsScreen {...props} />}
           </RootStack.Screen>
-
-          <RootStack.Screen name="ManageWallets" options={sharedOptions}>
-            {props => (
-              <InjectedScreens.ManageWalletsScreen
-                {...props}
-                {...manageWalletScreenProps}
-              />
-            )}
-          </RootStack.Screen>
-
           <RootStack.Screen name="CreateKeysUX" options={sharedOptions}>
             {props => (
               <CreateKeysNavigation
@@ -263,10 +230,18 @@ export const RootNavigation: React.FC<{
           />
 
           <RootStack.Screen
-            name="WalletInfo"
-            component={InjectedScreens.WalletInfoScreen}
+            name="ManuallyDeployScreen"
+            component={InjectedScreens.ManuallyDeployScreen}
             options={sharedOptions}
           />
+          <RootStack.Screen name="AccountsScreen" options={sharedOptions}>
+            {props => (
+              <InjectedScreens.AccountsScreen
+                {...props}
+                {...accountsScreenType}
+              />
+            )}
+          </RootStack.Screen>
           <RootStack.Screen name="KeysInfo" options={sharedOptions}>
             {props => (
               <Screens.KeysInfoScreen {...props} {...keysInfoScreenProps} />

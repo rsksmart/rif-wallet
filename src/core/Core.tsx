@@ -1,5 +1,11 @@
 import React, { useState, useRef, useEffect, Fragment } from 'react'
-import { AppState, SafeAreaView, StatusBar, StyleSheet } from 'react-native'
+import {
+  AppState,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Keyboard,
+} from 'react-native'
 import { AppContext, Wallets, WalletsIsDeployed, Requests } from '../Context'
 import { KeyManagementSystem, OnRequest, RIFWallet } from '../lib/core'
 import { i18nInit } from '../lib/i18n'
@@ -33,7 +39,7 @@ import { RequestPIN } from './components/RequestPIN'
 import { WalletConnectProviderElement } from '../screens/walletConnect/WalletConnectContext'
 import { RIFSocketsProvider } from '../subscriptions/RIFSockets'
 import { NavigationContainer, NavigationState } from '@react-navigation/native'
-import { colors } from '../styles/colors'
+import { colors } from '../styles'
 import { deletePin, savePin } from '../storage/PinStore'
 import { deleteContacts } from '../storage/ContactsStore'
 import { deleteDomains } from '../storage/DomainsStore'
@@ -151,15 +157,17 @@ const useKeyManagementSystem = (onRequest: OnRequest) => {
     }
 
     return addNextWallet(state.kms, createRIFWallet, networkId).then(response =>
-      setState({
-        ...state,
-        wallets: Object.assign(state.wallets, {
+      setState(oldState => ({
+        ...oldState,
+        wallets: {
+          ...oldState.wallets,
           [response.rifWallet.address]: response.rifWallet,
-        }),
-        walletsIsDeployed: Object.assign(state.walletsIsDeployed, {
+        },
+        walletsIsDeployed: {
+          ...oldState.walletsIsDeployed,
           [response.rifWallet.address]: response.isDeloyed,
-        }),
-      }),
+        },
+      })),
     )
   }
 
@@ -259,6 +267,27 @@ export const Core = () => {
     }
   }, [state.selectedWallet])
 
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false)
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true)
+      },
+    )
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false)
+      },
+    )
+
+    return () => {
+      keyboardDidHideListener.remove()
+      keyboardDidShowListener.remove()
+    }
+  }, [])
+
   if (state.loading) {
     return <LoadingScreen />
   }
@@ -300,6 +329,7 @@ export const Core = () => {
                   currentScreen={currentScreen}
                   hasKeys={state.hasKeys}
                   hasPin={state.hasPin}
+                  isKeyboardVisible={isKeyboardVisible}
                   rifWalletServicesSocket={rifWalletServicesSocket}
                   keyManagementProps={{
                     generateMnemonic: () =>
@@ -327,7 +357,7 @@ export const Core = () => {
                   }}
                   contactsNavigationScreenProps={{ rnsResolver }}
                   dappsScreenProps={{ fetcher: rifWalletServicesFetcher }}
-                  manageWalletScreenProps={{
+                  accountsScreenType={{
                     addNewWallet,
                     switchActiveWallet,
                   }}
@@ -340,6 +370,7 @@ export const Core = () => {
                 {requests.length !== 0 && (
                   <ModalComponent
                     closeModal={closeRequest}
+                    isKeyboardVisible={isKeyboardVisible}
                     request={requests[0]}
                   />
                 )}

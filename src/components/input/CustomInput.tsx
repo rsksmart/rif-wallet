@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { KeyboardTypeOptions, StyleSheet, TextInput, View } from 'react-native'
 import { Button } from '../button'
+import { colors } from '../../styles'
 
 export const CustomInput: React.FC<{
   onChange?: (text: string) => void
@@ -62,11 +63,11 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     marginTop: 10,
-    padding: 4,
+    padding: 10,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 4,
-    borderColor: '#e6e6e6',
+    borderColor: colors.white,
     borderRadius: 10,
     backgroundColor: '#fff',
   },

@@ -57,7 +57,7 @@ const SetAmountComponent: React.FC<Interface> = ({
   return (
     <View>
       <View style={{ ...grid.row, ...styles.inputContainer }}>
-        <View style={grid.column8}>
+        <View style={grid.column12}>
           <TextInput
             style={styles.input}
             onChangeText={handleTextChange}
