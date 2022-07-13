@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   wordStatus: {
-    borderRadius: 30,
+    ...sharedMnemonicStyles.wordNumberBadge,
     backgroundColor: colors.purple,
   },
   wordRowWithSuggestions: {
