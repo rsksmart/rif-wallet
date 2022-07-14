@@ -3,17 +3,17 @@ import { FlatList, StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { shortAddress } from '../../lib/utils'
 import { colors } from '../../styles'
-import { useSocketsState } from '../../subscriptions/RIFSockets'
+import { TransactionsServerResponseWithActivityTransactions } from '../../subscriptions/types'
 
 interface Props {
+  transactions: TransactionsServerResponseWithActivityTransactions
   onSelect: (address: string) => void
 }
 
-export const RecentTransactions: React.FC<Props> = ({ onSelect }) => {
-  const {
-    state: { transactions },
-  } = useSocketsState()
-
+export const RecentTransactions: React.FC<Props> = ({
+  transactions,
+  onSelect,
+}) => {
   const recentRecipientAddresses = new Set(
     transactions?.activityTransactions?.map(
       ({ originTransaction: { to } }) => to,

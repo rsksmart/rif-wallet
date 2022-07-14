@@ -92,6 +92,7 @@ export const SendScreen: React.FC<
               ? state.balances[route.params.contractAddress]
               : state.balances[contractAddress],
           }}
+          transactions={state.transactions}
         />
       ) : (
         <TransactionInfo transaction={currentTransaction} />

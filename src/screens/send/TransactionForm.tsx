@@ -1,15 +1,17 @@
 import React, { useState } from 'react'
-import { View, StyleSheet, Text } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import { AddressInput } from '../../components'
+import { Tabs } from '../../components/'
 import { BlueButton } from '../../components/button/ButtonVariations'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { colors } from '../../styles'
-import { grid } from '../../styles'
-import { IPrice } from '../../subscriptions/types'
+import { colors, grid } from '../../styles'
+import {
+  IPrice,
+  TransactionsServerResponseWithActivityTransactions,
+} from '../../subscriptions/types'
 import AssetChooser from './AssetChooser'
-import SetAmountComponent from './SetAmountComponent'
-import { Tabs } from '../../components/'
 import { RecentTransactions } from './RecentTransactions'
+import SetAmountComponent from './SetAmountComponent'
 
 interface Interface {
   onConfirm: (
@@ -25,6 +27,7 @@ interface Interface {
     amount?: string
     recipient?: string
   }
+  transactions: TransactionsServerResponseWithActivityTransactions
 }
 
 const TransactionForm: React.FC<Interface> = ({
@@ -32,6 +35,7 @@ const TransactionForm: React.FC<Interface> = ({
   tokenList,
   chainId,
   tokenPrices,
+  transactions,
   onConfirm,
 }) => {
   const [selectedToken, setSelectedToken] = useState<ITokenWithBalance>(
@@ -138,7 +142,10 @@ const TransactionForm: React.FC<Interface> = ({
         )}
         {activeTab === 'recent' && (
           <>
-            <RecentTransactions onSelect={handleSelectRecentAddress} />
+            <RecentTransactions
+              transactions={transactions}
+              onSelect={handleSelectRecentAddress}
+            />
             <View>
               <Text>{error}</Text>
             </View>
