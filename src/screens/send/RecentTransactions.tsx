@@ -20,12 +20,13 @@ export const RecentTransactions: React.FC<Props> = ({ onSelect }) => {
     ),
   )
 
-  // convert set to list
-  const addresses = [...recentRecipientAddresses]
+  // convert set to list and get last 5 items
+  const addresses = [...recentRecipientAddresses].slice(0, 5)
 
   return (
     <View>
       <FlatList
+        style={styles.mb40}
         data={addresses}
         renderItem={({ item: address }) => (
           <TouchableOpacity
@@ -78,4 +79,5 @@ const styles = StyleSheet.create({
 
   ml10: { marginLeft: 10 },
   mr10: { marginRight: 10 },
+  mb40: { marginBottom: 40 },
 })
