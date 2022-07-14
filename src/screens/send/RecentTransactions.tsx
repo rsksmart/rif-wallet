@@ -5,9 +5,11 @@ import { shortAddress } from '../../lib/utils'
 import { colors } from '../../styles'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
 
-interface Props {}
+interface Props {
+  onSelect: (address: string) => void
+}
 
-export const RecentTransactions: React.FC<Props> = () => {
+export const RecentTransactions: React.FC<Props> = ({ onSelect }) => {
   const {
     state: { transactions },
   } = useSocketsState()
@@ -21,17 +23,13 @@ export const RecentTransactions: React.FC<Props> = () => {
   // convert set to list
   const addresses = [...recentRecipientAddresses]
 
-  const handleClick = (address: any) => {
-    console.log(address)
-  }
-
   return (
     <View>
       <FlatList
         data={addresses}
         renderItem={({ item: address }) => (
           <TouchableOpacity
-            onPress={() => handleClick(address)}
+            onPress={() => onSelect(address)}
             testID={`${address}.Button`}>
             <View style={styles.container}>
               <View style={styles.firstHalf}>

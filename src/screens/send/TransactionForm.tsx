@@ -70,12 +70,19 @@ const TransactionForm: React.FC<Interface> = ({
     setTo({ value: address, isValid })
   }
 
+  const handleSelectRecentAddress = (address: string) => {
+    handleTargetAddressChange(address, true)
+    setActiveTab('address')
+  }
+
   const handleConfirmClick = () =>
     onConfirm(selectedToken, amount.value, to.value)
+
   const handleTabSelection = (selectedTab: string) => {
     handleTargetAddressChange('', true)
     setActiveTab(selectedTab)
   }
+
   return (
     <View>
       <View style={{ ...grid.row, ...styles.section }}>
@@ -131,7 +138,7 @@ const TransactionForm: React.FC<Interface> = ({
         )}
         {activeTab === 'recent' && (
           <>
-            <RecentTransactions />
+            <RecentTransactions onSelect={handleSelectRecentAddress} />
             <View>
               <Text>{error}</Text>
             </View>
