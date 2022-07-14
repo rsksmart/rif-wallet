@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
   assetTitle: {
     marginTop: 25,
     color: colors.white,
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: '600',
   },
   selectLabel: {

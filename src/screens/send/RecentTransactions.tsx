@@ -1,6 +1,7 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import { RegularText } from '../../components'
 import { shortAddress } from '../../lib/utils'
 import { colors } from '../../styles'
 import { TransactionsServerResponseWithActivityTransactions } from '../../subscriptions/types'
@@ -28,17 +29,18 @@ export const RecentTransactions: React.FC<Props> = ({
     <View style={styles.mb40}>
       {addresses.map((address: string) => (
         <TouchableOpacity
-          key={address}
           testID={`${address}.Button`}
           onPress={() => onSelect(address)}>
           <View style={styles.container}>
             <View style={styles.firstHalf}>
-              <Text style={[styles.secondaryText, styles.ml10]}>
+              <RegularText style={[styles.addressText, styles.ml10]}>
                 {shortAddress(address, 10)}
-              </Text>
+              </RegularText>
             </View>
             <View style={styles.secondHalf}>
-              <Text style={[styles.secondaryText, styles.mr10]}>select</Text>
+              <RegularText style={[styles.selectLabel, styles.mr10]}>
+                select
+              </RegularText>
             </View>
           </View>
         </TouchableOpacity>
@@ -49,20 +51,21 @@ export const RecentTransactions: React.FC<Props> = ({
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: colors.darkPurple5,
+    borderRadius: 15,
+    display: 'flex',
     flexDirection: 'row',
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-    marginHorizontal: 10,
-    backgroundColor: colors.background.primary,
-    borderRadius: 20,
-    marginTop: 18,
+    width: '100%',
+    padding: 20,
+    margin: 5,
   },
-  mainText: {
-    color: colors.text.primary,
-    fontWeight: 'bold',
+  addressText: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: colors.white,
   },
-  secondaryText: {
-    color: colors.text.secondary,
+  selectLabel: {
+    color: colors.white,
   },
   firstHalf: {
     flexGrow: 50,
