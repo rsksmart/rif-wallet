@@ -1,5 +1,5 @@
 import React from 'react'
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { shortAddress } from '../../lib/utils'
 import { colors } from '../../styles'
@@ -14,37 +14,35 @@ export const RecentTransactions: React.FC<Props> = ({
   transactions,
   onSelect,
 }) => {
+  // get recipient addresses from transactions
   const recentRecipientAddresses = new Set(
     transactions?.activityTransactions?.map(
       ({ originTransaction: { to } }) => to,
     ),
   )
 
-  // convert set to list and get last 5 items
+  // convert set to list, get last 5 items
   const addresses = [...recentRecipientAddresses].slice(0, 5)
 
   return (
-    <View>
-      <FlatList
-        style={styles.mb40}
-        data={addresses}
-        renderItem={({ item: address }) => (
-          <TouchableOpacity
-            onPress={() => onSelect(address)}
-            testID={`${address}.Button`}>
-            <View style={styles.container}>
-              <View style={styles.firstHalf}>
-                <Text style={[styles.secondaryText, styles.ml10]}>
-                  {shortAddress(address, 10)}
-                </Text>
-              </View>
-              <View style={styles.secondHalf}>
-                <Text style={[styles.secondaryText, styles.mr10]}>select</Text>
-              </View>
+    <View style={styles.mb40}>
+      {addresses.map((address: string) => (
+        <TouchableOpacity
+          key={address}
+          testID={`${address}.Button`}
+          onPress={() => onSelect(address)}>
+          <View style={styles.container}>
+            <View style={styles.firstHalf}>
+              <Text style={[styles.secondaryText, styles.ml10]}>
+                {shortAddress(address, 10)}
+              </Text>
             </View>
-          </TouchableOpacity>
-        )}
-      />
+            <View style={styles.secondHalf}>
+              <Text style={[styles.secondaryText, styles.mr10]}>select</Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+      ))}
     </View>
   )
 }
@@ -76,7 +74,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'flex-end',
   },
-
   ml10: { marginLeft: 10 },
   mr10: { marginRight: 10 },
   mb40: { marginBottom: 40 },
