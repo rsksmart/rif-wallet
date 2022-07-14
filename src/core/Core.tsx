@@ -348,9 +348,8 @@ export const Core = () => {
                     fetcher: rifWalletServicesFetcher,
                     abiEnhancer,
                   }}
-                  keysInfoScreenProps={{
+                  showMnemonicScreenProps={{
                     mnemonic: state.kms?.mnemonic || '',
-                    deleteKeys,
                   }}
                   injectedBrowserUXScreenProps={{
                     fetcher: rifWalletServicesFetcher,

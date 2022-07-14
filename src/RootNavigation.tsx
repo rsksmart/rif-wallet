@@ -7,9 +7,8 @@ import { CreateKeysNavigation, CreateKeysProps } from './ux/createKeys'
 
 import * as Screens from './screens'
 import { InjectSelectedWallet } from './Context'
-
 import { BalancesScreenProps } from './screens/balances/BalancesScreen'
-import { KeysInfoScreenProps } from './screens/info/KeysInfoScreen'
+import { ShowMnemonicScreenProps } from './screens/info/ShowMnemonicScreen'
 import { SendScreenProps } from './screens/send/SendScreen'
 import { ActivityScreenProps } from './screens/activity/ActivityScreen'
 import { InjectedBrowserUXScreenProps } from './screens/injectedBrowser/InjectedBrowserNavigation'
@@ -28,7 +27,6 @@ const InjectedScreens = {
   ActivityScreen: InjectSelectedWallet(Screens.ActivityScreen),
   ActivityDetailsScreen: InjectSelectedWallet(Screens.ActivityDetailsScreen),
   ManuallyDeployScreen: InjectSelectedWallet(Screens.ManuallyDeployScreen),
-  KeysInfoScreen: InjectSelectedWallet(Screens.KeysInfoScreen),
   WalletConnectNavigationScreen: InjectSelectedWallet(
     Screens.WalletConnectNavigationScreen,
   ),
@@ -61,7 +59,7 @@ type RootStackParamList = {
   TransactionReceived: undefined
   ManuallyDeployScreen: undefined
   CreateKeysUX: undefined
-  KeysInfo: undefined
+  ShowMnemonicScreen: undefined
   WalletConnect: undefined
   ChangeLanguage: undefined
   ManagePin: undefined
@@ -105,7 +103,7 @@ export const RootNavigation: React.FC<{
   editPin: (newPin: string) => Promise<void>
   balancesScreenProps: BalancesScreenProps
   activityScreenProps: ActivityScreenProps
-  keysInfoScreenProps: KeysInfoScreenProps
+  showMnemonicScreenProps: ShowMnemonicScreenProps
   sendScreenProps: SendScreenProps
   injectedBrowserUXScreenProps: InjectedBrowserUXScreenProps
   contactsNavigationScreenProps: EditContactScreenProps
@@ -123,7 +121,7 @@ export const RootNavigation: React.FC<{
   editPin,
   balancesScreenProps,
   activityScreenProps,
-  keysInfoScreenProps,
+  showMnemonicScreenProps,
   sendScreenProps,
   injectedBrowserUXScreenProps,
   contactsNavigationScreenProps,
@@ -217,9 +215,12 @@ export const RootNavigation: React.FC<{
               />
             )}
           </RootStack.Screen>
-          <RootStack.Screen name="KeysInfo" options={sharedOptions}>
+          <RootStack.Screen name="ShowMnemonicScreen" options={sharedOptions}>
             {props => (
-              <Screens.KeysInfoScreen {...props} {...keysInfoScreenProps} />
+              <Screens.ShowMnemonicScreen
+                {...props}
+                {...showMnemonicScreenProps}
+              />
             )}
           </RootStack.Screen>
 

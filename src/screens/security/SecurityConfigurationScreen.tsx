@@ -14,7 +14,7 @@ const SecurityConfigurationScreen: React.FC<
 > = ({ navigation, deleteKeys }) => {
   const { t } = useTranslation()
 
-  const revealMasterKey = () => navigation.navigate('KeysInfo' as any)
+  const revealMasterKey = () => navigation.navigate('ShowMnemonicScreen' as any)
   const changePin = () => navigation.navigate('ChangePinScreen' as any)
 
   const handleDeleteKeys = () => {
