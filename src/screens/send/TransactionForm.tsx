@@ -9,6 +9,7 @@ import { IPrice } from '../../subscriptions/types'
 import AssetChooser from './AssetChooser'
 import SetAmountComponent from './SetAmountComponent'
 import { Tabs } from '../../components/'
+import { RecentTransactions } from './RecentTransactions'
 
 interface Interface {
   onConfirm: (
@@ -125,6 +126,14 @@ const TransactionForm: React.FC<Interface> = ({
                 disabled={!isValidTransaction}
                 title="review"
               />
+            </View>
+          </>
+        )}
+        {activeTab === 'recent' && (
+          <>
+            <RecentTransactions />
+            <View>
+              <Text>{error}</Text>
             </View>
           </>
         )}
