@@ -51,7 +51,11 @@ export const AddressInput: React.FC<AddressInputProps> = ({
 
   useEffect(() => {
     setRecipient(initialValue)
-    onChangeText(initialValue, isValidChecksumAddress(initialValue, chainId))
+    if (initialValue) {
+      handleChangeText(initialValue)
+    } else {
+      onChangeText(initialValue, isValidChecksumAddress(initialValue, chainId))
+    }
   }, [])
 
   // status
