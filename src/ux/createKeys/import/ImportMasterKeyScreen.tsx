@@ -1,30 +1,40 @@
 import React, { useState } from 'react'
-import { StyleSheet, View, ScrollView, Text } from 'react-native'
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+} from 'react-native'
+import Carousel from 'react-native-snap-carousel'
 
 import { CreateKeysProps, ScreenProps } from '../types'
-import { grid } from '../../../styles/grid'
-import { validateMnemonic } from '../../../lib/bip39'
-import { SquareButton } from '../../../components/button/SquareButton'
-import { Arrow } from '../../../components/icons'
+import { Trans } from 'react-i18next'
 import { colors } from '../../../styles/colors'
-import { WordInput } from './WordInput'
-import { NavigationFooter } from '../../../components/button/NavigationFooter'
-type ImportMasterKeyScreenProps = {
+
+import { Arrow } from '../../../components/icons'
+import { SLIDER_WIDTH, WINDOW_WIDTH } from '../../slides/Dimensions'
+import { PaginationNavigator } from '../../../components/button/PaginationNavigator'
+import { WordSelector } from '../new/WordSelector'
+import { sharedMnemonicStyles } from '../new/styles'
+import { Paragraph } from '../../../components'
+import { validateMnemonic } from '../../../lib/bip39'
+
+interface ImportMasterKeyScreenProps {
+  isKeyboardVisible: boolean
   createFirstWallet: CreateKeysProps['createFirstWallet']
 }
+
 export const ImportMasterKeyScreen: React.FC<
   ScreenProps<'ImportMasterKey'> & ImportMasterKeyScreenProps
-> = ({ navigation, createFirstWallet }) => {
-  const [selectedWords, setSelectedWords] = useState<string[]>([])
+> = ({ navigation, createFirstWallet, isKeyboardVisible }) => {
+  const slidesIndexes = [0, 1, 2, 3, 4, 5, 6, 7]
 
-  const rows = [1, 2, 3, 4, 5, 6, 7, 8]
-  const onWordSelected = (selectedWord: string, wordNumber: number) => {
-    const currentWordsSelections = selectedWords
-    currentWordsSelections.splice(wordNumber - 1, 0, selectedWord)
-    setSelectedWords(currentWordsSelections)
-  }
+  const [selectedSlide, setSelectedSlide] = useState<number>(0)
+  const [selectedWords, setSelectedWords] = useState<string[]>([])
+  const [carousel, setCarousel] = useState<any>()
   const [error, setError] = useState<string | null>(null)
-  const [info] = useState<string | null>(null)
+
   const handleImportMnemonic = async () => {
     const mnemonicError = validateMnemonic(selectedWords.join(' '))
     if (!mnemonicError) {
@@ -39,58 +49,140 @@ export const ImportMasterKeyScreen: React.FC<
     }
     setError(mnemonicError)
   }
+
+  const handleWordSelected = (wordSelected: string, index: number) => {
+    const newSelectedWords = [...selectedWords]
+    newSelectedWords[index] = wordSelected
+    setSelectedWords(newSelectedWords)
+  }
+
+  const handleSlideChange = (index: number) => {
+    setSelectedSlide(index)
+    setError('')
+  }
+
+  const renderItem: React.FC<{ item: number }> = ({ item }) => {
+    const groupIndex = 3 * item
+    return (
+      <View>
+        <WordSelector
+          wordIndex={groupIndex}
+          onWordSelected={handleWordSelected}
+        />
+        <WordSelector
+          wordIndex={1 + groupIndex}
+          onWordSelected={handleWordSelected}
+        />
+        <WordSelector
+          wordIndex={2 + groupIndex}
+          onWordSelected={handleWordSelected}
+        />
+      </View>
+    )
+  }
+
   return (
-    <>
-      <ScrollView style={styles.parent}>
-        <Text style={styles.header}>Enter your master key</Text>
-
-        {rows.map(row => (
-          <View style={grid.row} key={row}>
-            <WordInput wordNumber={row} handleSelection={onWordSelected} />
-            <WordInput
-              wordNumber={row + rows.length}
-              handleSelection={onWordSelected}
-            />
-            <WordInput
-              wordNumber={row + rows.length * 2}
-              handleSelection={onWordSelected}
-            />
+    <ScrollView
+      style={sharedMnemonicStyles.parent}
+      keyboardShouldPersistTaps="always">
+      <View style={sharedMnemonicStyles.topContent}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('CreateKeys')}
+          style={styles.returnButton}>
+          <View style={styles.returnButtonView}>
+            <Arrow color={colors.white} rotate={270} width={30} height={30} />
           </View>
-        ))}
-        <Text style={styles.defaultText}> {selectedWords.join(' ')}</Text>
-        <View>
-          {info && <Text style={styles.defaultText}>{info}</Text>}
-          {error && <Text style={styles.defaultText}> {error}</Text>}
+        </TouchableOpacity>
+        <Text style={styles.header}>
+          <Trans>Sign in with a Master Key</Trans>
+        </Text>
+        <Paragraph style={styles.subHeader}>
+          <Trans>
+            Input the words you were given when you created your wallet in
+            correct order
+          </Trans>
+        </Paragraph>
+      </View>
 
-          <SquareButton
-            onPress={handleImportMnemonic}
-            title=""
-            testID="Address.CopyButton"
-            icon={<Arrow color={colors.gray} rotate={90} />}
+      <View style={sharedMnemonicStyles.sliderContainer}>
+        <Carousel
+          inactiveSlideOpacity={0}
+          removeClippedSubviews={false} //https://github.com/meliorence/react-native-snap-carousel/issues/238
+          ref={c => setCarousel(c)}
+          data={slidesIndexes}
+          renderItem={renderItem}
+          sliderWidth={WINDOW_WIDTH}
+          // sliderHeight={200}
+          itemWidth={SLIDER_WIDTH}
+          inactiveSlideShift={0}
+          onSnapToItem={handleSlideChange}
+          useScrollView={false}
+          keyboardShouldPersistTaps="always"
+          pagingEnabled={false}
+        />
+      </View>
+
+      {!!error && (
+        <View style={styles.errorContainer}>
+          <Text>{error}</Text>
+        </View>
+      )}
+
+      {!isKeyboardVisible && (
+        <View style={sharedMnemonicStyles.pagnationContainer}>
+          <PaginationNavigator
+            onPrevious={() => carousel.snapToPrev()}
+            onNext={() => carousel.snapToNext()}
+            onComplete={handleImportMnemonic}
+            title="confirm"
+            currentIndex={selectedSlide}
+            slidesAmount={slidesIndexes.length}
+            containerBackgroundColor={colors.darkBlue}
           />
         </View>
-      </ScrollView>
-      <NavigationFooter
-        onBackwards={() => navigation.navigate('CreateKeys')}
-        onPress={handleImportMnemonic}
-        title="confirm"
-      />
-    </>
+      )}
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
-  defaultText: {
-    color: colors.white,
+  returnButton: {
+    zIndex: 1,
   },
-  parent: {
-    backgroundColor: colors.darkBlue,
+  returnButtonView: {
+    width: 30,
+    height: 30,
+    borderRadius: 30,
+    margin: 15,
+    backgroundColor: colors.purple,
   },
 
   header: {
-    color: '#ffffff',
-    fontSize: 22,
-    paddingVertical: 20,
-    textAlign: 'center',
+    color: colors.white,
+    fontSize: 20,
+    paddingVertical: 10,
+    marginBottom: 5,
+    marginLeft: 60,
+    textAlign: 'left',
+    fontWeight: 'bold',
+  },
+  subHeader: {
+    color: colors.white,
+    fontSize: 16,
+    marginLeft: 60,
+    marginBottom: 40,
+    textAlign: 'left',
+    width: SLIDER_WIDTH,
+  },
+
+  errorContainer: {
+    padding: 20,
+    marginHorizontal: 60,
+    marginBottom: 10,
+    borderRadius: 20,
+    backgroundColor: colors.red,
+  },
+  errorText: {
+    color: colors.white,
   },
 })

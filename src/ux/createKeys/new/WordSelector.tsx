@@ -16,7 +16,7 @@ import { wordlists } from 'bip39'
 
 type Props = {
   wordIndex: number
-  expectedWord: string
+  expectedWord?: string
   onWordSelected: any
 }
 export const WordSelector: React.FC<Props> = ({
@@ -50,6 +50,9 @@ export const WordSelector: React.FC<Props> = ({
       Keyboard.dismiss()
       // only trigger the parent if there is a match
       return onWordSelected(newText, wordIndex)
+    }
+    if (!expectedWord) {
+      onWordSelected(newText, wordIndex)
     }
 
     // user choose the top option but it is not correct
@@ -165,7 +168,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   wordStatus: {
-    borderRadius: 30,
+    ...sharedMnemonicStyles.wordNumberBadge,
     backgroundColor: colors.purple,
   },
   wordRowWithSuggestions: {
