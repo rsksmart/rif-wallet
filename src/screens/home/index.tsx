@@ -6,7 +6,7 @@ import SelectedTokenComponent from './SelectedTokenComponent'
 import { getTokenColor } from './tokenColor'
 import PortfolioComponent from './PortfolioComponent'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
-import { colors } from '../../styles/colors'
+import { colors } from '../../styles'
 import SendReceiveButtonComponent from './SendReceiveButtonComponent'
 import { Paragraph } from '../../components'
 import { useSelectedWallet } from '../../Context'
@@ -78,8 +78,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       <View style={styles.parent}>
         {selected && (
           <SelectedTokenComponent
-            token={selected}
             accountNumber={selectedWalletIndex}
+            amount={'0'}
+            change={-0}
           />
         )}
 
