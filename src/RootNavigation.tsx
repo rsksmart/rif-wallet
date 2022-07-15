@@ -3,8 +3,9 @@ import { StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native'
 import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
 import { NavigationProp as _NavigationProp } from '@react-navigation/native'
 
-import { CreateKeysNavigation, CreateKeysProps } from './ux/createKeys'
+import { CreateKeysNavigation, CreateKeysProps } from './screens/createKeys'
 
+/* JESSE!!!! cleanup this list: */
 import * as Screens from './screens'
 import { InjectSelectedWallet } from './Context'
 import { BalancesScreenProps } from './screens/balances/BalancesScreen'

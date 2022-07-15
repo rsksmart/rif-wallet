@@ -16,7 +16,7 @@ type CreateMasterKeyScreenProps = {
   generateMnemonic: CreateKeysProps['generateMnemonic']
 }
 import { Arrow } from '../../../components/icons'
-import { SLIDER_WIDTH, WINDOW_WIDTH } from '../../slides/Dimensions'
+import { SLIDER_WIDTH, WINDOW_WIDTH } from '../../../ux/slides/Dimensions'
 import { PaginationNavigator } from '../../../components/button/PaginationNavigator'
 import { WordView } from './WordView'
 import { sharedMnemonicStyles } from './styles'
