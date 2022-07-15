@@ -27,6 +27,7 @@ const SetAmountComponent: React.FC<Interface> = ({
 
   const handleTextChange = (text: string) => {
     // locally set the amount set and clear error
+    text = text.replace(',', '.')
     setInput(text)
     setError(null)
 
