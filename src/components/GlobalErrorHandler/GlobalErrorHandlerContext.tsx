@@ -3,13 +3,13 @@ import GlobalErrorHandlerView from './GlobalErrorHandlerView'
 
 type GlobalErrorHandlerType = {
   setGlobalError: any
-  globalError: string | null | unknown
+  globalError: string | null
   handleReload: () => void
 }
 
 type GlobalErrorHandlerProviderType = {
-  children: React.ReactNode
-  GlobalErrorHandlerViewComp: React.FC
+  children?: React.FC<any> | React.ReactNode
+  GlobalErrorHandlerViewComp?: React.FC
 }
 
 const GlobalErrorHandlerContext = createContext<GlobalErrorHandlerType>({
@@ -22,19 +22,21 @@ const GlobalErrorHandlerProvider: React.FC<GlobalErrorHandlerProviderType> = ({
   children,
   GlobalErrorHandlerViewComp = GlobalErrorHandlerView,
 }) => {
-  const [globalError, setGlobalError] = useState(null)
+  const [globalError, setGlobalError] = useState<string | null>(null)
   const [compKey, setCompKey] = useState(0)
   const handleReload = () => {
     setGlobalError(null)
     setCompKey(curKey => curKey + 1)
   }
 
+  if (globalError) {
+    return <GlobalErrorHandlerViewComp />
+  }
   return (
     <GlobalErrorHandlerContext.Provider
       value={{ setGlobalError, globalError, handleReload }}
       key={compKey}>
-      {globalError && <GlobalErrorHandlerViewComp />}
-      {!globalError && children}
+      {children}
     </GlobalErrorHandlerContext.Provider>
   )
 }

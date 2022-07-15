@@ -47,6 +47,7 @@ import {
   GlobalErrorHandler,
   useSetGlobalError,
 } from '../components/GlobalErrorHandler'
+import ErrorBoundary from '../components/ErrorBoundary/ErrorBoundary'
 
 const gracePeriod = 3000
 
@@ -314,7 +315,6 @@ export const Core = () => {
       backgroundColor: topColor,
     },
   })
-
   return (
     <Fragment>
       <SafeAreaView style={styles.top}>
@@ -395,6 +395,8 @@ export const Core = () => {
 
 export const CoreGlobalErrorHandler = () => (
   <GlobalErrorHandler>
-    <Core />
+    <ErrorBoundary>
+      <Core />
+    </ErrorBoundary>
   </GlobalErrorHandler>
 )
