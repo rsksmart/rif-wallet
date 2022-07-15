@@ -1,16 +1,17 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 
 import { DialButton } from '../button/DialButton'
-import { grid } from '../../styles/grid'
+import { grid } from '../../styles'
+import { Arrow } from '../icons'
 
 type Props = {
   onKeyPress: (value: string) => void
   onDelete: () => void
-  onUnlock: () => void
+  onUnlock?: () => void
 }
 
-export const KeyPad: React.FC<Props> = ({ onDelete, onKeyPress, onUnlock }) => {
+export const KeyPad: React.FC<Props> = ({ onDelete, onKeyPress }) => {
   return (
     <View style={{ ...grid.row, ...styles.root }}>
       {Array.from({ length: 9 }).map((_, index) => (
@@ -31,14 +32,8 @@ export const KeyPad: React.FC<Props> = ({ onDelete, onKeyPress, onUnlock }) => {
         style={{
           ...grid.column4,
           ...styles.keyWrapper,
-        }}>
-        <DialButton
-          label="DEL"
-          testID="DEL"
-          variant="error"
-          onPress={onDelete}
-        />
-      </View>
+        }}
+      />
       <View
         style={{
           ...grid.column4,
@@ -51,18 +46,14 @@ export const KeyPad: React.FC<Props> = ({ onDelete, onKeyPress, onUnlock }) => {
           onPress={() => onKeyPress('0')}
         />
       </View>
-      <View
+      <TouchableOpacity
         style={{
           ...grid.column4,
           ...styles.keyWrapper,
-        }}>
-        <DialButton
-          label="OK"
-          testID="OK"
-          variant="success"
-          onPress={onUnlock}
-        />
-      </View>
+        }}
+        onPress={onDelete}>
+        <Arrow color="white" rotate={270} />
+      </TouchableOpacity>
     </View>
   )
 }
@@ -77,5 +68,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: 6.5,
     paddingHorizontal: 15,
+    marginBottom: 8,
   },
 })
