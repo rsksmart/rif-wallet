@@ -82,11 +82,6 @@ const TransactionForm: React.FC<Interface> = ({
   const handleConfirmClick = () =>
     onConfirm(selectedToken, amount.value, to.value)
 
-  const handleTabSelection = (selectedTab: string) => {
-    handleTargetAddressChange('', true)
-    setActiveTab(selectedTab)
-  }
-
   return (
     <View>
       <View style={{ ...grid.row, ...styles.section }}>
@@ -116,7 +111,7 @@ const TransactionForm: React.FC<Interface> = ({
           title={'recipient'}
           tabs={['address', 'recent', 'contact']}
           selectedTab={activeTab}
-          onTabSelected={handleTabSelection}
+          onTabSelected={setActiveTab}
         />
         {activeTab === 'address' && (
           <>

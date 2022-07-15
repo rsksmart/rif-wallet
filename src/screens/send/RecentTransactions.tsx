@@ -29,11 +29,12 @@ export const RecentTransactions: React.FC<Props> = ({
     <View style={styles.mb40}>
       {addresses.map((address: string) => (
         <TouchableOpacity
+          key={address}
           testID={`${address}.Button`}
           onPress={() => onSelect(address)}>
           <View style={styles.container}>
             <View style={styles.firstHalf}>
-              <RegularText style={[styles.addressText, styles.ml10]}>
+              <RegularText style={[styles.addressText]}>
                 {shortAddress(address, 10)}
               </RegularText>
             </View>
@@ -56,8 +57,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     width: '100%',
-    padding: 20,
-    margin: 5,
+    padding: 30,
+    marginBottom: 5,
   },
   addressText: {
     fontSize: 16,
