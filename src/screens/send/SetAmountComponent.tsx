@@ -25,13 +25,23 @@ const SetAmountComponent: React.FC<Interface> = ({
   const usdConversion =
     usdAmount && convertTokenToUSD(Number(input) || 0, usdAmount || 0, true)
 
+  const sanitizeDecimalText = (text: string) => {
+    let newText = text.replace(/[^0-9,.]/g, '').replace(',', '.')
+    const dots = newText.split('.').length - 1
+    if (dots > 1 || (dots === 1 && newText.length === 1)) {
+      newText = newText.slice(0, -1)
+    }
+    return newText
+  }
+
   const handleTextChange = (text: string) => {
+    const amountText = sanitizeDecimalText(text)
+
     // locally set the amount set and clear error
-    text = text.replace(',', '.')
-    setInput(text)
+    setInput(amountText)
     setError(null)
 
-    const amountToTransfer = Number(text)
+    const amountToTransfer = Number(amountText)
 
     const availableBalance = Number(
       balanceToString(token.balance, token.decimals || 0),
