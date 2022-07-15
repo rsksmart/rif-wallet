@@ -17,12 +17,12 @@ export const RecentTransactions: React.FC<Props> = ({
 }) => {
   // get recipient addresses from transactions
   const recentRecipientAddresses = new Set(
-    transactions?.activityTransactions?.map(
-      ({ originTransaction: { to } }) => to,
-    ),
+    transactions.activityTransactions
+      .map(({ enhancedTransaction: et }) => et?.to)
+      .filter(to => !!to) as string[],
   )
 
-  // convert set to list, get last 5 items
+  // convert set to list and get last 5 items
   const addresses = [...recentRecipientAddresses].slice(0, 5)
 
   return (

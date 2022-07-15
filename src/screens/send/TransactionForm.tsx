@@ -1,3 +1,4 @@
+import { toChecksumAddress } from '@rsksmart/rsk-utils'
 import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { AddressInput } from '../../components'
@@ -75,7 +76,7 @@ const TransactionForm: React.FC<Interface> = ({
   }
 
   const handleSelectRecentAddress = (address: string) => {
-    handleTargetAddressChange(address, true)
+    handleTargetAddressChange(toChecksumAddress(address, chainId), true)
     setActiveTab('address')
   }
 
