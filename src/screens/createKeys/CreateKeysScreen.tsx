@@ -12,7 +12,11 @@ import {
   WhiteButton,
 } from '../../components/button/ButtonVariations'
 
-import { WINDOW_WIDTH, WINDOW_HEIGHT, SLIDER_WIDTH } from '../../ux/slides/Dimensions'
+import {
+  WINDOW_WIDTH,
+  WINDOW_HEIGHT,
+  SLIDER_WIDTH,
+} from '../../ux/slides/Dimensions'
 
 const slidesIndexes = [0, 1, 2]
 export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
