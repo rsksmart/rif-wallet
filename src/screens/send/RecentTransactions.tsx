@@ -25,6 +25,16 @@ export const RecentTransactions: React.FC<Props> = ({
   // convert set to list and get last 5 items
   const addresses = [...recentRecipientAddresses].slice(0, 5)
 
+  if (addresses.length === 0) {
+    return (
+      <View style={styles.mb40}>
+        <RegularText style={[styles.empty, styles.ml10]}>
+          no recent transactions
+        </RegularText>
+      </View>
+    )
+  }
+
   return (
     <View style={styles.mb40}>
       {addresses.map((address: string) => (
@@ -34,7 +44,7 @@ export const RecentTransactions: React.FC<Props> = ({
           onPress={() => onSelect(address)}>
           <View style={styles.container}>
             <View style={styles.firstHalf}>
-              <RegularText style={[styles.addressText]}>
+              <RegularText style={styles.addressText}>
                 {shortAddress(address, 10)}
               </RegularText>
             </View>
@@ -77,6 +87,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'flex-end',
+  },
+  empty: {
+    color: colors.white,
   },
   ml10: { marginLeft: 10 },
   mr10: { marginRight: 10 },
