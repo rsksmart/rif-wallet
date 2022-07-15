@@ -2,25 +2,13 @@ import React from 'react'
 import { StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native'
 import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
 import { NavigationProp as _NavigationProp } from '@react-navigation/native'
-
 import { CreateKeysNavigation, CreateKeysProps } from './screens/createKeys'
-
-/* JESSE!!!! cleanup this list: */
 import * as Screens from './screens'
 import { InjectSelectedWallet } from './Context'
-import { BalancesScreenProps } from './screens/balances/BalancesScreen'
-import { ShowMnemonicScreenProps } from './screens/info/ShowMnemonicScreen'
-import { SendScreenProps } from './screens/send/SendScreen'
-import { ActivityScreenProps } from './screens/activity/ActivityScreen'
-import { InjectedBrowserUXScreenProps } from './screens/injectedBrowser/InjectedBrowserNavigation'
 import { AppHeader } from './ux/appHeader'
 import { AppFooterMenu } from './ux/appFooter'
-import { EditContactScreenProps } from './screens/contacts/EditContactScreen'
-import { DappsScreenScreenProps } from './screens/dapps'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
 import { colors } from './styles'
-import { AccountsScreenType } from './screens/accounts/AccountsScreen'
-import { SecurityScreenProps } from './screens/security/SecurityConfigurationScreen'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -102,15 +90,15 @@ export const RootNavigation: React.FC<{
   keyManagementProps: CreateKeysProps
   createPin: (newPin: string) => Promise<void>
   editPin: (newPin: string) => Promise<void>
-  balancesScreenProps: BalancesScreenProps
-  activityScreenProps: ActivityScreenProps
-  showMnemonicScreenProps: ShowMnemonicScreenProps
-  sendScreenProps: SendScreenProps
-  injectedBrowserUXScreenProps: InjectedBrowserUXScreenProps
-  contactsNavigationScreenProps: EditContactScreenProps
-  dappsScreenProps: DappsScreenScreenProps
-  accountsScreenType: AccountsScreenType
-  securityConfigurationScreenProps: SecurityScreenProps
+  balancesScreenProps: Screens.BalancesScreenProps
+  activityScreenProps: Screens.ActivityScreenProps
+  showMnemonicScreenProps: Screens.ShowMnemonicScreenProps
+  sendScreenProps: Screens.SendScreenProps
+  injectedBrowserUXScreenProps: Screens.InjectedBrowserUXScreenProps
+  contactsNavigationScreenProps: Screens.ContactsScreenProps
+  dappsScreenProps: Screens.DappsScreenScreenProps
+  accountsScreenType: Screens.AccountsScreenType
+  securityConfigurationScreenProps: Screens.SecurityScreenProps
 }> = ({
   currentScreen,
   hasKeys,
