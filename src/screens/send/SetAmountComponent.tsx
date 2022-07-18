@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, StyleSheet, TextInput, Text } from 'react-native'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { convertTokenToUSD } from '../../lib/utils'
+import { convertTokenToUSD, sanitizeDecimalText } from '../../lib/utils'
 import { colors } from '../../styles/colors'
 import { grid } from '../../styles/grid'
 import { balanceToString } from '../balances/BalancesScreen'
@@ -24,18 +24,6 @@ const SetAmountComponent: React.FC<Interface> = ({
 
   const usdConversion =
     usdAmount && convertTokenToUSD(Number(input) || 0, usdAmount || 0, true)
-
-  const sanitizeDecimalText = (text: string) => {
-    // convert commas to dots
-    let newText = text.replace(/[^0-9,.]/g, '').replace(',', '.')
-    const dotsCount = newText.split('.').length - 1
-    if (dotsCount > 1 || (dotsCount === 1 && newText.length === 1)) {
-      // remove the last character if it is a duplicated dot
-      // or if the dot is the first character
-      newText = newText.slice(0, -1)
-    }
-    return newText
-  }
 
   const handleTextChange = (text: string) => {
     const amountText = sanitizeDecimalText(text)
