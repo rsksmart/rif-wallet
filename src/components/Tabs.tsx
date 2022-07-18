@@ -63,7 +63,9 @@ const styles = StyleSheet.create({
   },
   tabText: {
     color: colors.white,
-    padding: 10,
+    paddingLeft: 10,
+    paddingTop: 10,
+    paddingRight: 10,
   },
   tabTitleText: {
     color: colors.white,

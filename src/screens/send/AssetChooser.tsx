@@ -57,20 +57,17 @@ const AssetChooser: React.FC<Interface> = ({
         onAnimateModal={handleAnimateModal}
         backgroundColor={colors.darkPurple3}
         headerFontColor={colors.white}>
-        {tokenList.map((token: ITokenWithBalance) => {
-          const balance = balanceToString(token.balance, token.decimals)
-          return (
-            <View key={token.symbol}>
-              <TokenButton
-                onPress={() => handleToken(token)}
-                title={token.symbol}
-                balance={balance}
-                icon={<TokenImage symbol={token.symbol} />}
-                style={{ backgroundColor: getTokenColor(token.symbol) }}
-              />
-            </View>
-          )
-        })}
+        {tokenList.map((token: ITokenWithBalance) => (
+          <View key={token.symbol}>
+            <TokenButton
+              onPress={() => handleToken(token)}
+              title={token.symbol}
+              balance={balanceToString(token.balance, token.decimals)}
+              icon={<TokenImage symbol={token.symbol} />}
+              style={{ backgroundColor: getTokenColor(token.symbol) }}
+            />
+          </View>
+        ))}
       </SlideUpModal>
     </TouchableOpacity>
   )
@@ -87,7 +84,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   assetIcon: {
-    margin: 18,
+    marginLeft: 20,
+    marginTop: 20,
+    marginRight: 15,
     padding: 5,
     backgroundColor: colors.white,
     borderRadius: 20,
