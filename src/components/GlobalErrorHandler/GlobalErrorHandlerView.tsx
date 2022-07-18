@@ -42,15 +42,16 @@ const GlobalErrorHandlerView: React.FC<GlobalErrorHandlerViewType> = ({
           <RegularText style={[styles.errorDetailsText, styles.whiteText]}>
             error details
           </RegularText>
-          <TouchableOpacity
-            style={styles.errorDetailsTouch}
-            onPress={onCopyError}>
-            <RegularText style={[styles.whiteText, styles.detailsText]}>
-              {messageToShow}
-            </RegularText>
-            {/* Clipboard icon */}
-            <ContentCopyMaterialIcon color="white" size={25} />
-          </TouchableOpacity>
+          {messageToShow !== '' && (
+            <TouchableOpacity
+              style={styles.errorDetailsTouch}
+              onPress={onCopyError}>
+              <RegularText style={[styles.whiteText, styles.detailsText]}>
+                {messageToShow}
+              </RegularText>
+              <ContentCopyMaterialIcon color="white" size={25} />
+            </TouchableOpacity>
+          )}
         </View>
         <View style={styles.reloadButtonView}>
           <ActiveButton
