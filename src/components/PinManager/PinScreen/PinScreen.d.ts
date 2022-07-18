@@ -1,6 +1,11 @@
 import React from 'react'
+import { ViewProps, TextProps } from 'react-native'
 
-export type MessageComponentDefaultType = { message?: string }
+export type MessageComponentDefaultType = {
+  message?: string
+  TextProps?: TextProps
+  ViewProps?: ViewProps
+}
 
 export type DotsComponentDefaultType = {
   pin: Array<string>
