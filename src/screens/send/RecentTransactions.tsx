@@ -4,10 +4,10 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { RegularText } from '../../components'
 import { shortAddress } from '../../lib/utils'
 import { colors } from '../../styles'
-import { TransactionsServerResponseWithActivityTransactions } from '../../subscriptions/types'
+import { IActivityTransaction } from '../../subscriptions/types'
 
 interface Props {
-  transactions: TransactionsServerResponseWithActivityTransactions
+  transactions: IActivityTransaction[]
   onSelect: (address: string) => void
 }
 
@@ -17,7 +17,7 @@ export const RecentTransactions: React.FC<Props> = ({
 }) => {
   // get recipient addresses from transactions
   const recentRecipientAddresses = new Set(
-    transactions.activityTransactions
+    transactions
       .map(({ enhancedTransaction: et }) => et?.to)
       .filter(to => !!to) as string[],
   )
@@ -28,7 +28,9 @@ export const RecentTransactions: React.FC<Props> = ({
   if (addresses.length === 0) {
     return (
       <View style={styles.mb40}>
-        <RegularText style={[styles.empty, styles.ml10]}>
+        <RegularText
+          style={[styles.empty, styles.ml10]}
+          testID={'Empty.RegularText'}>
           no recent transactions
         </RegularText>
       </View>
@@ -36,7 +38,7 @@ export const RecentTransactions: React.FC<Props> = ({
   }
 
   return (
-    <View style={styles.mb40}>
+    <View style={styles.mb40} testID={'Data.View'}>
       {addresses.map((address: string) => (
         <TouchableOpacity
           key={address}

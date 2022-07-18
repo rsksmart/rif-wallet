@@ -73,7 +73,7 @@ export interface IApiTransaction {
   receipt: any
   txType: string
   txId: string
-  data: string
+  data?: string
 }
 
 export interface TransactionsServerResponse {

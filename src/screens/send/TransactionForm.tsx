@@ -6,10 +6,7 @@ import { Tabs } from '../../components/'
 import { BlueButton } from '../../components/button/ButtonVariations'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { colors, grid } from '../../styles'
-import {
-  IPrice,
-  TransactionsServerResponseWithActivityTransactions,
-} from '../../subscriptions/types'
+import { IActivityTransaction, IPrice } from '../../subscriptions/types'
 import AssetChooser from './AssetChooser'
 import { RecentTransactions } from './RecentTransactions'
 import SetAmountComponent from './SetAmountComponent'
@@ -28,7 +25,7 @@ interface Interface {
     amount?: string
     recipient?: string
   }
-  transactions: TransactionsServerResponseWithActivityTransactions
+  transactions: IActivityTransaction[]
 }
 
 const TransactionForm: React.FC<Interface> = ({
