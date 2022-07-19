@@ -14,17 +14,19 @@ export const AddressCopyComponent: React.FC<Interface> = ({
   address,
   chainId,
 }) => {
+  const { checksumAddress, displayAddress } = getAddressDisplayText(
+    address,
+    chainId,
+  )
   return (
     <TouchableOpacity
-      onPress={() => Clipboard.setString(address)}
+      onPress={() => Clipboard.setString(checksumAddress)}
       style={styles.row}>
       <View style={styles.iconColumn}>
         <CopyIcon color={colors.white} />
       </View>
       <View style={styles.textColumn}>
-        <Text style={styles.address}>
-          {getAddressDisplayText(address, chainId).displayAddress}
-        </Text>
+        <Text style={styles.address}>{displayAddress}</Text>
       </View>
     </TouchableOpacity>
   )
