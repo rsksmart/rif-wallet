@@ -12,6 +12,8 @@ import TransactionInfo, { transactionInfo } from './TransactionInfo'
 import { colors } from '../../styles'
 import TransactionForm from './TransactionForm'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import WalletNotDeployedView from './WalletNotDeployedModal'
+import { useSetGlobalError } from '../../components/GlobalErrorHandler'
 
 export type SendScreenProps = {}
 
@@ -19,7 +21,21 @@ export const SendScreen: React.FC<
   SendScreenProps & ScreenProps<'Send'> & ScreenWithWallet
 > = ({ route, wallet }) => {
   const { state } = useSocketsState()
+  const { setGlobalError } = useSetGlobalError()
+  const [isWalletDeployed, setIsWalletDeployed] = React.useState(true)
 
+  const checkIfWalletIsDeployed = () => {
+    wallet.smartWalletFactory
+      .isDeployed()
+      .then(isDeployed => {
+        setIsWalletDeployed(isDeployed)
+      })
+      .catch(_ =>
+        setGlobalError(
+          'An error ocurred while retrieving the deployed wallet in SendScreen',
+        ),
+      )
+  }
   const contractAddress =
     route.params?.contractAddress || Object.keys(state.balances)[0]
 
@@ -77,8 +93,12 @@ export const SendScreen: React.FC<
     })
   }
 
+  React.useEffect(() => {
+    checkIfWalletIsDeployed()
+  }, [])
   return (
     <ScrollView style={styles.parent}>
+      {!isWalletDeployed && <WalletNotDeployedView />}
       {!currentTransaction ? (
         <TransactionForm
           onConfirm={transfer}
