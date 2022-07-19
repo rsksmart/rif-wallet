@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/core'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, StyleSheet, TouchableOpacity, Text, Image } from 'react-native'
 import { AddressCopyComponent } from '../../components/copy/AddressCopyComponent'
 import { useSelectedWallet } from '../../Context'
@@ -24,7 +24,7 @@ export const AppHeader: React.FC<{}> = () => {
   const openMenu = () => navigation.navigate('Settings' as any)
   const [network, setNetwork] = React.useState<null | Network>(null)
 
-  React.useEffect(() => {
+  useEffect(() => {
     chainId && setNetwork(networks[chainId])
   }, [chainId])
 
@@ -42,7 +42,12 @@ export const AppHeader: React.FC<{}> = () => {
         {network && <Text style={styles.network}>{network.name}</Text>}
       </View>
       <View style={styles.column}>
-        {wallet && <AddressCopyComponent address={wallet.smartWalletAddress} />}
+        {wallet && (
+          <AddressCopyComponent
+            address={wallet.smartWalletAddress}
+            chainId={chainId}
+          />
+        )}
       </View>
       <View style={styles.columnMenu}>
         <TouchableOpacity onPress={openMenu}>

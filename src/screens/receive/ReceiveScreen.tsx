@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Dimensions, StyleSheet, View, ScrollView, Text } from 'react-native'
+import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native'
 import QRCode from 'react-qr-code'
 import { getAddressDisplayText } from '../../components'
 import { ShareableText } from '../../components/ShareableText'
@@ -16,11 +16,13 @@ export enum TestID {
 export type ReceiveScreenProps = {
   registeredDomains: string[]
   smartWalletAddress: string
+  chainId: number
 }
 
 export const ReceiveScreen: React.FC<ReceiveScreenProps> = ({
   smartWalletAddress,
   registeredDomains,
+  chainId,
 }) => {
   const [activeTab, setActiveTab] = useState('address')
 
@@ -61,7 +63,9 @@ export const ReceiveScreen: React.FC<ReceiveScreenProps> = ({
       {activeTab === 'address' && (
         <View style={qrContainerStyle}>
           <ShareableText
-            text={getAddressDisplayText(smartWalletAddress).displayAddress}
+            text={
+              getAddressDisplayText(smartWalletAddress, chainId).displayAddress
+            }
             valueToShare={smartWalletAddress}
           />
         </View>
