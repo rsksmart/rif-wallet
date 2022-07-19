@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, StyleSheet, TextInput, Text } from 'react-native'
+import { StyleSheet, Text, TextInput, View } from 'react-native'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { convertTokenToUSD } from '../../lib/utils'
 import { colors } from '../../styles/colors'
@@ -18,7 +17,6 @@ const SetAmountComponent: React.FC<Interface> = ({
   token,
   usdAmount,
 }) => {
-  const { t } = useTranslation()
   const [error, setError] = useState<string | null>(null)
   const [input, setInput] = useState<string>('')
 
@@ -62,7 +60,7 @@ const SetAmountComponent: React.FC<Interface> = ({
             style={styles.input}
             onChangeText={handleTextChange}
             value={input}
-            placeholder={t('Amount')}
+            placeholder="0.00"
             keyboardType="numeric"
             testID={'Amount.Input'}
             placeholderTextColor={colors.gray}

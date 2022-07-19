@@ -1,14 +1,15 @@
+import { toChecksumAddress } from '@rsksmart/rsk-utils'
 import React, { useState } from 'react'
-import { View, StyleSheet, Text } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import { AddressInput } from '../../components'
+import { Tabs } from '../../components/'
 import { BlueButton } from '../../components/button/ButtonVariations'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { colors } from '../../styles'
-import { grid } from '../../styles'
-import { IPrice } from '../../subscriptions/types'
+import { colors, grid } from '../../styles'
+import { IActivityTransaction, IPrice } from '../../subscriptions/types'
 import AssetChooser from './AssetChooser'
+import { RecentTransactions } from './RecentTransactions'
 import SetAmountComponent from './SetAmountComponent'
-import { Tabs } from '../../components/'
 
 interface Interface {
   onConfirm: (
@@ -24,6 +25,7 @@ interface Interface {
     amount?: string
     recipient?: string
   }
+  transactions: IActivityTransaction[]
 }
 
 const TransactionForm: React.FC<Interface> = ({
@@ -31,6 +33,7 @@ const TransactionForm: React.FC<Interface> = ({
   tokenList,
   chainId,
   tokenPrices,
+  transactions,
   onConfirm,
 }) => {
   const [selectedToken, setSelectedToken] = useState<ITokenWithBalance>(
@@ -69,12 +72,14 @@ const TransactionForm: React.FC<Interface> = ({
     setTo({ value: address, isValid })
   }
 
+  const handleSelectRecentAddress = (address: string) => {
+    handleTargetAddressChange(toChecksumAddress(address, chainId), true)
+    setActiveTab('address')
+  }
+
   const handleConfirmClick = () =>
     onConfirm(selectedToken, amount.value, to.value)
-  const handleTabSelection = (selectedTab: string) => {
-    handleTargetAddressChange('', true)
-    setActiveTab(selectedTab)
-  }
+
   return (
     <View>
       <View style={{ ...grid.row, ...styles.section }}>
@@ -104,7 +109,7 @@ const TransactionForm: React.FC<Interface> = ({
           title={'recipient'}
           tabs={['address', 'recent', 'contact']}
           selectedTab={activeTab}
-          onTabSelected={handleTabSelection}
+          onTabSelected={setActiveTab}
         />
         {activeTab === 'address' && (
           <>
@@ -125,6 +130,17 @@ const TransactionForm: React.FC<Interface> = ({
                 disabled={!isValidTransaction}
                 title="review"
               />
+            </View>
+          </>
+        )}
+        {activeTab === 'recent' && (
+          <>
+            <RecentTransactions
+              transactions={transactions}
+              onSelect={handleSelectRecentAddress}
+            />
+            <View>
+              <Text>{error}</Text>
             </View>
           </>
         )}

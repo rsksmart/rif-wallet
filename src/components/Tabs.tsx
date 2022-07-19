@@ -27,11 +27,8 @@ export const Tabs: React.FC<Props> = ({
               ? { ...styles.tab, ...styles.selectedTab }
               : styles.tab
           return (
-            <TouchableOpacity
-              key={tab}
-              style={tabStyle}
-              onPress={() => onTabSelected(tab)}>
-              <Text style={styles.tabText}>{tab}</Text>
+            <TouchableOpacity key={tab} onPress={() => onTabSelected(tab)}>
+              <Text style={[tabStyle, styles.tabText]}>{tab}</Text>
             </TouchableOpacity>
           )
         })}
@@ -63,7 +60,10 @@ const styles = StyleSheet.create({
   },
   tabText: {
     color: colors.white,
-    padding: 10,
+    paddingLeft: 10,
+    paddingTop: 10,
+    paddingRight: 10,
+    paddingBottom: 5,
   },
   tabTitleText: {
     color: colors.white,
