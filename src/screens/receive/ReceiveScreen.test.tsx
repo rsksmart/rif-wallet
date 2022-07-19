@@ -1,10 +1,10 @@
 import React from 'react'
 import { Share } from 'react-native'
 
-import { render, fireEvent, RenderAPI } from '@testing-library/react-native'
+import { fireEvent, render, RenderAPI } from '@testing-library/react-native'
 
-import { ReceiveScreen, TestID } from './ReceiveScreen'
 import { getAddressDisplayText } from '../../components'
+import { ReceiveScreen, TestID } from './ReceiveScreen'
 
 describe('Receive Screen', function () {
   let container: RenderAPI
@@ -41,6 +41,7 @@ describe('Receive Screen', function () {
   })
 
   test('renders and presses share button', () => {
+    const { checksumAddress } = getAddressDisplayText(smartWalletAddress)
     const shareNode = container.getByTestId(TestID.ShareButton)
     const spy = jest.spyOn(Share, 'share')
     fireEvent.press(shareNode)
@@ -48,8 +49,8 @@ describe('Receive Screen', function () {
     expect(shareNode).toBeDefined()
     expect(spy).toBeCalled()
     expect(spy).toHaveBeenCalledWith({
-      message: smartWalletAddress,
-      title: smartWalletAddress,
+      message: checksumAddress,
+      title: checksumAddress,
     })
   })
 })
