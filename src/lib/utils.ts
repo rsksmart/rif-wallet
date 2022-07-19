@@ -120,3 +120,16 @@ export const trimValue = (value: string) => {
   }
   return value
 }
+
+// should be used for input components
+export const sanitizeDecimalText = (text: string) => {
+  // convert commas to dots
+  let newText = text.replace(/[^0-9,.]/g, '').replace(',', '.')
+  const dotsCount = newText.split('.').length - 1
+  if (dotsCount > 1 || (dotsCount === 1 && newText.length === 1)) {
+    // remove the last character if it is a duplicated dot
+    // or if the dot is the first character
+    newText = newText.slice(0, -1)
+  }
+  return newText
+}

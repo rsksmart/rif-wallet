@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, TextInput, View } from 'react-native'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { convertTokenToUSD } from '../../lib/utils'
+import { convertTokenToUSD, sanitizeDecimalText } from '../../lib/utils'
 import { colors } from '../../styles/colors'
 import { grid } from '../../styles/grid'
 import { balanceToString } from '../balances/BalancesScreen'
@@ -24,11 +24,13 @@ const SetAmountComponent: React.FC<Interface> = ({
     usdAmount && convertTokenToUSD(Number(input) || 0, usdAmount || 0, true)
 
   const handleTextChange = (text: string) => {
+    const amountText = sanitizeDecimalText(text)
+
     // locally set the amount set and clear error
-    setInput(text)
+    setInput(amountText)
     setError(null)
 
-    const amountToTransfer = Number(text)
+    const amountToTransfer = Number(amountText)
 
     const availableBalance = Number(
       balanceToString(token.balance, token.decimals || 0),
