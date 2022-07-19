@@ -46,24 +46,19 @@ const ChangePinScreen: React.FC<
     setCurrentStep(1)
     setPinError('')
   }
-  const onPinChange = (index: number) => (pin: string) => {
+  const onPinChange = (index: number) => async (pin: string) => {
     setPinError('')
     switch (index) {
       case 1:
         if (pin.length === 4) {
           setCurrentStep(2)
         }
-        if (pin.length !== 4) {
-          setPinError('4 digits must be selected.')
-        }
         pinSteps.current = { pin, confirmPin: '' }
         break
       case 2:
         pinSteps.current = { ...pinSteps.current, confirmPin: pin }
-        if (pinSteps.current.confirmPin.length !== 4) {
-          setPinError('4 digits must be selected.')
-        } else if (pinSteps.current.pin !== pinSteps.current.confirmPin) {
-          setPinError('PINs do not match. Please verify.')
+        if (pinSteps.current.pin !== pinSteps.current.confirmPin) {
+          setPinError('PINs do not match.')
           pinSteps.current.confirmPin = ''
           setResetPin(state => state + 1)
         } else {
@@ -73,6 +68,7 @@ const ChangePinScreen: React.FC<
       default:
         throw new Error('Stepper is wrong. Not implemented case detected.')
     }
+    return null
   }
   const stepper: { [key: number]: any } = {
     1: <PinManager title="Enter new PIN" handleSubmit={onPinChange(1)} />,
@@ -81,7 +77,7 @@ const ChangePinScreen: React.FC<
         <TouchableOpacity style={styles.backButton} onPress={onBackPress}>
           <Arrow color="#DBE3FF" height={25} width={25} rotate={270} />
         </TouchableOpacity>
-        <View>
+        <View style={styles.pinView}>
           <PinManager
             key={resetPin}
             title={confirmPinTitle}
@@ -111,7 +107,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 20,
     top: 20,
-    zIndex: 3,
+    zIndex: 5,
     backgroundColor: 'rgba(198, 204, 234, 0.5)',
     borderRadius: 40,
   },
@@ -120,7 +116,7 @@ const styles = StyleSheet.create({
     width: '100%',
     top: 17,
     alignItems: 'center',
-    zIndex: 1,
+    zIndex: 4,
   },
   errorTextContainer: {
     backgroundColor: 'red',
@@ -130,6 +126,9 @@ const styles = StyleSheet.create({
     color: 'white',
     paddingHorizontal: 20,
     paddingVertical: 5,
+  },
+  pinView: {
+    height: '100%',
   },
 })
 export default ChangePinScreen

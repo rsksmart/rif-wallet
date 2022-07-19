@@ -1,6 +1,7 @@
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity } from 'react-native'
-import { colors } from '../../styles/colors'
+import { StyleSheet, TouchableOpacity } from 'react-native'
+import { colors } from '../../styles'
+import { MediumText } from '../typography'
 
 type Props = {
   disabled?: boolean
@@ -23,7 +24,7 @@ export const DialButton: React.FC<Props> = ({
       onPress={onPress}
       style={{ ...styles.root, ...styles[variant] }}
       testID={testID}>
-      <Text style={styles.label}>{label}</Text>
+      <MediumText style={styles.label}>{label}</MediumText>
     </TouchableOpacity>
   )
 }
@@ -32,11 +33,10 @@ const styles = StyleSheet.create({
   root: {
     alignItems: 'center',
     borderRadius: 100,
-    borderStyle: 'solid',
-    borderWidth: 2,
-    height: 70,
+    height: 55,
     justifyContent: 'center',
-    width: 70,
+    width: 55,
+    backgroundColor: '#2B295B',
   },
   default: {
     borderColor: 'rgba(255, 255, 255, 0.23)',
@@ -49,5 +49,6 @@ const styles = StyleSheet.create({
   },
   label: {
     color: colors.white,
+    fontSize: 19,
   },
 })
