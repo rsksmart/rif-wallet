@@ -12,10 +12,15 @@ import { Paragraph } from '../../components'
 import { useSelectedWallet } from '../../Context'
 import { LoadingScreen } from '../../components/loading/LoadingScreen'
 
-export const HomeScreen: React.FC<{
+export type HomeScreenProps = {
   navigation: NavigationProp
   changeTopColor: (color: string) => void
-}> = ({ navigation, changeTopColor }) => {
+}
+
+export const HomeScreen: React.FC<HomeScreenProps> = ({
+  navigation,
+  changeTopColor,
+}) => {
   const { state } = useSocketsState()
   const { selectedWalletIndex } = useSelectedWallet()
 

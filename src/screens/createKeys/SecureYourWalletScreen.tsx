@@ -6,7 +6,7 @@ import { colors } from '../../styles/colors'
 import { grid } from '../../styles/grid'
 import { Arrow } from '../../components/icons'
 
-import { WINDOW_HEIGHT } from '../slides/Dimensions'
+import { WINDOW_HEIGHT } from '../../ux/slides/Dimensions'
 import { BlueButton } from '../../components/button/ButtonVariations'
 
 export const SecureYourWalletScreen: React.FC<ScreenProps<'SecureYourWallet'>> =

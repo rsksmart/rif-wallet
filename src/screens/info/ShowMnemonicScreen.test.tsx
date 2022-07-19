@@ -1,28 +1,16 @@
 import React from 'react'
 import { render } from '@testing-library/react-native'
-import { KeysInfoScreen, TestID } from './KeysInfoScreen'
+import { ShowMnemonicScreen, TestID } from './ShowMnemonicScreen'
 import { setupTest } from '../../../testLib/setup'
 import { Awaited, getTextFromTextNode } from '../../../testLib/utils'
-import { AppContext } from '../../Context'
 
 const createTestInstance = async () => {
   const { rifWallet } = await setupTest()
   const testMnemonic = 'MNEMONIC'
-  const deleteKeys = jest.fn()
 
-  const container = render(
-    <AppContext.Provider
-      value={{
-        wallets: { [rifWallet.address]: rifWallet },
-        setRequests: (() => {}) as any,
-        mnemonic: 'MNEMONIC',
-        selectedWallet: rifWallet.address,
-      }}>
-      <KeysInfoScreen mnemonic={testMnemonic} deleteKeys={deleteKeys} />
-    </AppContext.Provider>,
-  )
+  const container = render(<ShowMnemonicScreen mnemonic={testMnemonic} />)
 
-  return { container, rifWallet, testMnemonic, deleteKeys }
+  return { container, rifWallet, testMnemonic }
 }
 
 describe('Keys Info Screen', function (this: {

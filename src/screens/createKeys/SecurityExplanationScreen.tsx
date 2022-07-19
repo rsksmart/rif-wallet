@@ -8,7 +8,7 @@ import {
 } from 'react-native'
 import { ScreenProps } from './types'
 import { colors } from '../../styles'
-import { SecuritySlide } from '../slides/SecuritySlide'
+import { SecuritySlide } from '../../ux/slides/SecuritySlide'
 
 import Carousel from 'react-native-snap-carousel'
 import { PaginationNavigator } from '../../components/button/PaginationNavigator'
@@ -20,7 +20,7 @@ import {
   WINDOW_HEIGHT,
   SLIDER_WIDTH,
   SLIDER_HEIGHT,
-} from '../slides/Dimensions'
+} from '../../ux/slides/Dimensions'
 import { sharedMnemonicStyles } from './new/styles'
 
 const slidesIndexes = [0, 1, 2]

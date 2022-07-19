@@ -16,7 +16,7 @@ export enum TestID {
 export type ReceiveScreenProps = {
   registeredDomains: string[]
   smartWalletAddress: string
-  chainId: number
+  chainId?: number
 }
 
 export const ReceiveScreen: React.FC<ReceiveScreenProps> = ({

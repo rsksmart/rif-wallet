@@ -4,15 +4,15 @@ import { CopyComponent, Header2, Paragraph } from '../../components'
 import { Trans } from 'react-i18next'
 export enum TestID {
   Mnemonic = 'Mnemonic.Text',
-  Delete = 'Delete.Button',
 }
 
-export type KeysInfoScreenProps = {
+export type ShowMnemonicScreenProps = {
   mnemonic: string
-  deleteKeys: () => Promise<any>
 }
 
-export const KeysInfoScreen: React.FC<KeysInfoScreenProps> = ({ mnemonic }) => (
+export const ShowMnemonicScreen: React.FC<ShowMnemonicScreenProps> = ({
+  mnemonic,
+}) => (
   <ScrollView>
     <View style={styles.sectionCentered}>
       <Paragraph>
