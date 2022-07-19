@@ -101,6 +101,7 @@ export class RifWalletServicesSocket
       this.socket = socket
     } catch (error) {
       console.error('socket error', error)
+      throw new Error(error)
     }
   }
 

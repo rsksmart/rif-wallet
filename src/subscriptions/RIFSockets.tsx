@@ -14,6 +14,7 @@ import { constants } from 'ethers'
 
 import { ITokenWithBalance } from '../lib/rifWalletServices/RIFWalletServicesTypes'
 import { RIFWallet } from '../lib/core'
+import { useSetGlobalError } from '../components/GlobalErrorHandler'
 
 function liveSubscriptionsReducer(state: State, action: Action) {
   const { type } = action
@@ -146,6 +147,7 @@ export function RIFSocketsProvider({
     liveSubscriptionsReducer,
     initialState,
   )
+  const setGlobalError = useSetGlobalError()
 
   const { wallet } = useSelectedWallet()
 
@@ -183,7 +185,9 @@ export function RIFSocketsProvider({
       }
     })
 
-    rifServiceSocket?.connect(wallet)
+    rifServiceSocket?.connect(wallet).catch(() => {
+      setGlobalError('Error connecting to the socket')
+    })
   }
 
   React.useEffect(() => {

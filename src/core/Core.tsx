@@ -43,6 +43,11 @@ import { colors } from '../styles'
 import { deletePin, savePin } from '../storage/PinStore'
 import { deleteContacts } from '../storage/ContactsStore'
 import { deleteDomains } from '../storage/DomainsStore'
+import {
+  GlobalErrorHandler,
+  useSetGlobalError,
+} from '../components/GlobalErrorHandler'
+import ErrorBoundary from '../components/ErrorBoundary/ErrorBoundary'
 
 const gracePeriod = 3000
 
@@ -215,6 +220,14 @@ export const Core = () => {
       newState ? newState.routes[newState.routes.length - 1].name : 'Home',
     )
 
+  const setGlobalError = useSetGlobalError()
+
+  const onScreenUnlock = () => {
+    unlockApp()
+      .then(() => setUnlocked(true))
+      .catch(err => setGlobalError(err.toString()))
+  }
+
   const retrieveChainId = (wallet: RIFWallet) =>
     wallet.getChainId().then(chainId => setState({ ...state, chainId }))
 
@@ -302,7 +315,6 @@ export const Core = () => {
       backgroundColor: topColor,
     },
   })
-
   return (
     <Fragment>
       <SafeAreaView style={styles.top}>
@@ -311,9 +323,7 @@ export const Core = () => {
       <SafeAreaView style={styles.body}>
         {!active && <Cover />}
         {state.hasKeys && state.hasPin && !unlocked && (
-          <RequestPIN
-            unlock={() => unlockApp().then(() => setUnlocked(true))}
-          />
+          <RequestPIN unlock={onScreenUnlock} />
         )}
         <AppContext.Provider
           value={{
@@ -382,3 +392,11 @@ export const Core = () => {
     </Fragment>
   )
 }
+
+export const CoreGlobalErrorHandler = () => (
+  <GlobalErrorHandler>
+    <ErrorBoundary>
+      <Core />
+    </ErrorBoundary>
+  </GlobalErrorHandler>
+)

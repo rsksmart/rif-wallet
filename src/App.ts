@@ -3,6 +3,6 @@ import '@ethersproject/shims' // ref: https://docs.ethers.io/v5/cookbook/react-n
 import 'react-native-gesture-handler'
 import 'react-native-get-random-values'
 
-import { Core } from './core'
+import { CoreGlobalErrorHandler } from './core'
 
-export default Core
+export default CoreGlobalErrorHandler

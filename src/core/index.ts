@@ -1,1 +1,1 @@
-export { Core } from './Core'
+export { CoreGlobalErrorHandler, Core } from './Core'
