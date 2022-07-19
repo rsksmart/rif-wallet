@@ -13,7 +13,7 @@ import { Trans } from 'react-i18next'
 import { colors } from '../../../styles/colors'
 
 import { Arrow } from '../../../components/icons'
-import { SLIDER_WIDTH, WINDOW_WIDTH } from '../../slides/Dimensions'
+import { SLIDER_WIDTH, WINDOW_WIDTH } from '../../../ux/slides/Dimensions'
 import { PaginationNavigator } from '../../../components/button/PaginationNavigator'
 import { WordSelector } from './WordSelector'
 import { sharedMnemonicStyles } from './styles'

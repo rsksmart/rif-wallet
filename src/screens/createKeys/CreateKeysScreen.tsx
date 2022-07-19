@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { StyleSheet, View, Image } from 'react-native'
 import { ScreenProps } from './types'
 import { colors } from '../../styles/colors'
-import { SecondarySlide } from '../slides/SeconderySlide'
-import { MainSlide } from '../slides/MainSlide'
+import { SecondarySlide } from '../../ux/slides/SeconderySlide'
+import { MainSlide } from '../../ux/slides/MainSlide'
 
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import { grid } from '../../styles/grid'
@@ -12,7 +12,11 @@ import {
   WhiteButton,
 } from '../../components/button/ButtonVariations'
 
-import { WINDOW_WIDTH, WINDOW_HEIGHT, SLIDER_WIDTH } from '../slides/Dimensions'
+import {
+  WINDOW_WIDTH,
+  WINDOW_HEIGHT,
+  SLIDER_WIDTH,
+} from '../../ux/slides/Dimensions'
 
 const slidesIndexes = [0, 1, 2]
 export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({

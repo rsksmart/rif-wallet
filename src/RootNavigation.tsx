@@ -2,35 +2,20 @@ import React from 'react'
 import { StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native'
 import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
 import { NavigationProp as _NavigationProp } from '@react-navigation/native'
-
-import { CreateKeysNavigation, CreateKeysProps } from './ux/createKeys'
-
+import { CreateKeysNavigation, CreateKeysProps } from './screens/createKeys'
 import * as Screens from './screens'
 import { InjectSelectedWallet } from './Context'
-
-import { BalancesScreenProps } from './screens/balances/BalancesScreen'
-import { KeysInfoScreenProps } from './screens/info/KeysInfoScreen'
-import { SendScreenProps } from './screens/send/SendScreen'
-import { ActivityScreenProps } from './screens/activity/ActivityScreen'
-import { InjectedBrowserUXScreenProps } from './screens/injectedBrowser/InjectedBrowserNavigation'
 import { AppHeader } from './ux/appHeader'
 import { AppFooterMenu } from './ux/appFooter'
-import { EditContactScreenProps } from './screens/contacts/EditContactScreen'
-import { DappsScreenScreenProps } from './screens/dapps'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
 import { colors } from './styles'
-import { AccountsScreenType } from './screens/accounts/AccountsScreen'
-import { SecurityScreenProps } from './screens/security/SecurityConfigurationScreen'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
   BalancesScreen: InjectSelectedWallet(Screens.BalancesScreen),
   ActivityScreen: InjectSelectedWallet(Screens.ActivityScreen),
   ActivityDetailsScreen: InjectSelectedWallet(Screens.ActivityDetailsScreen),
-  SignMessageScreen: InjectSelectedWallet(Screens.SignMessageScreen),
   ManuallyDeployScreen: InjectSelectedWallet(Screens.ManuallyDeployScreen),
-  KeysInfoScreen: InjectSelectedWallet(Screens.KeysInfoScreen),
-  SignTypedDataScreen: InjectSelectedWallet(Screens.SignTypedDataScreen),
   WalletConnectNavigationScreen: InjectSelectedWallet(
     Screens.WalletConnectNavigationScreen,
   ),
@@ -45,7 +30,6 @@ const InjectedScreens = {
 }
 
 type RootStackParamList = {
-  DevMenu: undefined
   Home: undefined
   Send:
     | undefined
@@ -64,7 +48,7 @@ type RootStackParamList = {
   TransactionReceived: undefined
   ManuallyDeployScreen: undefined
   CreateKeysUX: undefined
-  KeysInfo: undefined
+  ShowMnemonicScreen: undefined
   WalletConnect: undefined
   ChangeLanguage: undefined
   ManagePin: undefined
@@ -106,15 +90,15 @@ export const RootNavigation: React.FC<{
   keyManagementProps: CreateKeysProps
   createPin: (newPin: string) => Promise<void>
   editPin: (newPin: string) => Promise<void>
-  balancesScreenProps: BalancesScreenProps
-  activityScreenProps: ActivityScreenProps
-  keysInfoScreenProps: KeysInfoScreenProps
-  sendScreenProps: SendScreenProps
-  injectedBrowserUXScreenProps: InjectedBrowserUXScreenProps
-  contactsNavigationScreenProps: EditContactScreenProps
-  dappsScreenProps: DappsScreenScreenProps
-  accountsScreenType: AccountsScreenType
-  securityConfigurationScreenProps: SecurityScreenProps
+  balancesScreenProps: Screens.BalancesScreenProps
+  activityScreenProps: Screens.ActivityScreenProps
+  showMnemonicScreenProps: Screens.ShowMnemonicScreenProps
+  sendScreenProps: Screens.SendScreenProps
+  injectedBrowserUXScreenProps: Screens.InjectedBrowserUXScreenProps
+  contactsNavigationScreenProps: Screens.ContactsScreenProps
+  dappsScreenProps: Screens.DappsScreenScreenProps
+  accountsScreenType: Screens.AccountsScreenType
+  securityConfigurationScreenProps: Screens.SecurityScreenProps
 }> = ({
   currentScreen,
   hasKeys,
@@ -126,7 +110,7 @@ export const RootNavigation: React.FC<{
   editPin,
   balancesScreenProps,
   activityScreenProps,
-  keysInfoScreenProps,
+  showMnemonicScreenProps,
   sendScreenProps,
   injectedBrowserUXScreenProps,
   contactsNavigationScreenProps,
@@ -162,12 +146,6 @@ export const RootNavigation: React.FC<{
               <InjectedScreens.DappsScreen {...props} {...dappsScreenProps} />
             )}
           </RootStack.Screen>
-
-          <RootStack.Screen
-            name="DevMenu"
-            component={Screens.DevMenuScreen}
-            options={sharedOptions}
-          />
 
           <RootStack.Screen name="Settings" options={sharedOptions}>
             {props => <Screens.SettingsScreen {...props} />}
@@ -212,22 +190,6 @@ export const RootNavigation: React.FC<{
             component={InjectedScreens.ActivityDetailsScreen}
             options={sharedOptions}
           />
-          <RootStack.Screen
-            name="SignMessage"
-            component={InjectedScreens.SignMessageScreen}
-            options={sharedOptions}
-          />
-          <RootStack.Screen
-            name="SignTypedData"
-            component={InjectedScreens.SignTypedDataScreen}
-            options={sharedOptions}
-          />
-
-          <RootStack.Screen
-            name="TransactionReceived"
-            component={Screens.TransactionReceivedScreen}
-            options={sharedOptions}
-          />
 
           <RootStack.Screen
             name="ManuallyDeployScreen"
@@ -242,9 +204,12 @@ export const RootNavigation: React.FC<{
               />
             )}
           </RootStack.Screen>
-          <RootStack.Screen name="KeysInfo" options={sharedOptions}>
+          <RootStack.Screen name="ShowMnemonicScreen" options={sharedOptions}>
             {props => (
-              <Screens.KeysInfoScreen {...props} {...keysInfoScreenProps} />
+              <Screens.ShowMnemonicScreen
+                {...props}
+                {...showMnemonicScreenProps}
+              />
             )}
           </RootStack.Screen>
 
@@ -266,11 +231,6 @@ export const RootNavigation: React.FC<{
           <RootStack.Screen
             name="ChangeLanguage"
             component={Screens.ChangeLanguageScreen}
-            options={sharedOptions}
-          />
-          <RootStack.Screen
-            name="ManagePin"
-            component={Screens.ManagePinScreen}
             options={sharedOptions}
           />
 

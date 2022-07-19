@@ -9,7 +9,11 @@ const Stack = createStackNavigator()
 
 const screensOptions = { headerShown: false }
 
-export const ContactsNavigationScreen: React.FC<{ rnsResolver: Resolver }> = ({
+export type ContactsScreenProps = {
+  rnsResolver: Resolver
+}
+
+export const ContactsNavigationScreen: React.FC<ContactsScreenProps> = ({
   rnsResolver,
 }) => {
   return (
