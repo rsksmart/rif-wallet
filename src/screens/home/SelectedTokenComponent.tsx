@@ -10,7 +10,7 @@ import { HideShowIcon } from '../../components/icons'
 interface Interface {
   accountNumber?: number
   amount: BigNumberish
-  change: number
+  change?: number
 }
 
 const SelectedTokenComponent: React.FC<Interface> = ({
@@ -19,7 +19,7 @@ const SelectedTokenComponent: React.FC<Interface> = ({
   change,
 }) => {
   const [showBalances, setShowBalances] = useState<boolean>(true)
-  const badgeColor = change >= 0 ? styles.greenBadge : styles.redBadge
+  const badgeColor = change && change >= 0 ? styles.greenBadge : styles.redBadge
   return (
     <View style={styles.balanceCard}>
       <View style={styles.topRow}>
@@ -53,13 +53,15 @@ const SelectedTokenComponent: React.FC<Interface> = ({
           </Text>
         )}
       </View>
-      <View style={styles.changeRow}>
-        <View style={{ ...styles.badge, ...badgeColor }}>
-          <RegularText style={styles.badgeText}>
-            {`${change > 0 ? '+' : ''}${change}%`}
-          </RegularText>
+      {!!change && (
+        <View style={styles.changeRow}>
+          <View style={{ ...styles.badge, ...badgeColor }}>
+            <RegularText style={styles.badgeText}>
+              {`${change > 0 ? '+' : ''}${change}%`}
+            </RegularText>
+          </View>
         </View>
-      </View>
+      )}
     </View>
   )
 }

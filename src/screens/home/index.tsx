@@ -11,6 +11,7 @@ import SendReceiveButtonComponent from './SendReceiveButtonComponent'
 import { Paragraph } from '../../components'
 import { useSelectedWallet } from '../../Context'
 import { LoadingScreen } from '../../components/loading/LoadingScreen'
+import { balanceToDisplay } from '../../lib/utils'
 
 export type HomeScreenProps = {
   navigation: NavigationProp
@@ -79,8 +80,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         {selected && (
           <SelectedTokenComponent
             accountNumber={selectedWalletIndex}
-            amount={'0'}
-            change={-0}
+            amount={
+              selected
+                ? balanceToDisplay(selected.balance, selected.decimals, 5)
+                : '0'
+            }
+            change={0}
           />
         )}
 
