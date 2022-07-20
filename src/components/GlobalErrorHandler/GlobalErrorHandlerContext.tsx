@@ -29,14 +29,11 @@ const GlobalErrorHandlerProvider: React.FC<GlobalErrorHandlerProviderType> = ({
     setCompKey(curKey => curKey + 1)
   }
 
-  if (globalError) {
-    return <GlobalErrorHandlerViewComp />
-  }
   return (
     <GlobalErrorHandlerContext.Provider
       value={{ setGlobalError, globalError, handleReload }}
       key={compKey}>
-      {children}
+      {globalError ? <GlobalErrorHandlerViewComp /> : children}
     </GlobalErrorHandlerContext.Provider>
   )
 }
