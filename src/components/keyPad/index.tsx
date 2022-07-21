@@ -49,7 +49,7 @@ export const KeyPad: React.FC<Props> = ({ onDelete, onKeyPress }) => {
       <TouchableOpacity
         style={{
           ...grid.column4,
-          ...styles.keyWrapper,
+          ...styles.backButton,
         }}
         onPress={onDelete}
         testID="keypad_DEL">
@@ -70,5 +70,10 @@ const styles = StyleSheet.create({
     paddingVertical: 6.5,
     paddingHorizontal: 15,
     marginBottom: 8,
+  },
+  backButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: -5,
   },
 })
