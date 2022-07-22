@@ -11,7 +11,7 @@ import SendReceiveButtonComponent from './SendReceiveButtonComponent'
 import { Paragraph } from '../../components'
 import { useSelectedWallet } from '../../Context'
 import { LoadingScreen } from '../../components/loading/LoadingScreen'
-import RampSdk from '@ramp-network/react-native-sdk';
+import RampSdk from '@ramp-network/react-native-sdk'
 
 export type HomeScreenProps = {
   navigation: NavigationProp
@@ -56,12 +56,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       case 'RECEIVE':
         return navigation.navigate('Receive')
       case 'FAUCET':
-        ramp(selectedAddress!)
+        addBalance(selectedAddress!)
         return
     }
   }
 
-  const ramp = (address: string) => {
+  const addBalance = (address: string) => {
     console.log('address', address)
     const ramp = new RampSdk({
       // for testnet:
