@@ -11,6 +11,7 @@ import SendReceiveButtonComponent from './SendReceiveButtonComponent'
 import { Paragraph } from '../../components'
 import { useSelectedWallet } from '../../Context'
 import { LoadingScreen } from '../../components/loading/LoadingScreen'
+import RampSdk from '@ramp-network/react-native-sdk';
 
 export type HomeScreenProps = {
   navigation: NavigationProp
@@ -55,9 +56,30 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       case 'RECEIVE':
         return navigation.navigate('Receive')
       case 'FAUCET':
-        console.log('@todo: faucet component is not implemented yet.')
+        ramp(selectedAddress!)
         return
     }
+  }
+
+  const ramp = (address: string) => {
+    console.log('address', address)
+    const ramp = new RampSdk({
+      // for testnet:
+      // url: 'https://ri-widget-staging.firebaseapp.com/',
+      url: 'https://ri-widget-staging.web.app/',
+
+      // for IOV:
+      swapAsset: 'RSK_RDOC',
+      // userAddress must be lowercase or checksummed correctly:
+      userAddress: address,
+
+      // for the dapp:
+      hostAppName: 'Ramp POC',
+      hostLogoUrl: 'https://rampnetwork.github.io/assets/misc/test-logo.png',
+    })
+
+    ramp.on('*', e => console.log(e))
+    ramp.show()
   }
 
   // pass the new color to Core to update header:
