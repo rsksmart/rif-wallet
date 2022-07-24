@@ -1,197 +1,45 @@
-import React, { useState, useRef, useEffect, Fragment } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 import {
   AppState,
+  Keyboard,
   SafeAreaView,
   StatusBar,
   StyleSheet,
-  Keyboard,
 } from 'react-native'
-import { AppContext, Wallets, WalletsIsDeployed, Requests } from '../Context'
-import { KeyManagementSystem, OnRequest, RIFWallet } from '../lib/core'
+import { AppContext } from '../Context'
+import { KeyManagementSystem, RIFWallet } from '../lib/core'
 import { i18nInit } from '../lib/i18n'
-// import TextOverride from './TextGlobalOverride'
-// TextOverride()
 
+import { hasKeys, hasPin } from './operations'
 import {
-  hasKeys,
-  hasPin,
-  loadExistingWallets,
-  creteKMS,
-  deleteKeys,
-  addNextWallet,
-} from './operations'
-export { hasPin } from '../storage/PinStore'
-import {
-  rifWalletServicesFetcher,
-  rnsResolver,
   abiEnhancer,
-  createRIFWalletFactory,
-  networkId,
+  rifWalletServicesFetcher,
   rifWalletServicesSocket,
+  rnsResolver,
 } from './setup'
+export { hasPin } from '../storage/PinStore'
 
 import { RootNavigation } from '../RootNavigation'
 import ModalComponent from '../ux/requestsModal/ModalComponent'
 
-import { Cover } from './components/Cover'
-import { LoadingScreen } from '../components/loading/LoadingScreen'
-import { RequestPIN } from './components/RequestPIN'
-import { WalletConnectProviderElement } from '../screens/walletConnect/WalletConnectContext'
-import { RIFSocketsProvider } from '../subscriptions/RIFSockets'
 import { NavigationContainer, NavigationState } from '@react-navigation/native'
-import { colors } from '../styles'
-import { deletePin, savePin } from '../storage/PinStore'
-import { deleteContacts } from '../storage/ContactsStore'
-import { deleteDomains } from '../storage/DomainsStore'
+import ErrorBoundary from '../components/ErrorBoundary/ErrorBoundary'
 import {
   GlobalErrorHandler,
   useSetGlobalError,
 } from '../components/GlobalErrorHandler'
-import ErrorBoundary from '../components/ErrorBoundary/ErrorBoundary'
+import { LoadingScreen } from '../components/loading/LoadingScreen'
+import { WalletConnectProviderElement } from '../screens/walletConnect/WalletConnectContext'
+import { colors } from '../styles'
+import { RIFSocketsProvider } from '../subscriptions/RIFSockets'
+import { Cover } from './components/Cover'
+import { RequestPIN } from './components/RequestPIN'
+import { useKeyManagementSystem } from './hooks/useKeyManagementSystem'
+import { useRequests } from './hooks/useRequests'
 
 const gracePeriod = 3000
 
 let timer: NodeJS.Timeout
-
-type State = {
-  hasKeys: boolean
-  hasPin: boolean
-  kms: KeyManagementSystem | null
-  wallets: Wallets
-  walletsIsDeployed: WalletsIsDeployed
-  selectedWallet: string
-  loading: boolean
-  chainId?: number
-}
-
-const noKeysState = {
-  kms: null,
-  wallets: {},
-  walletsIsDeployed: {},
-  selectedWallet: '',
-}
-
-const initialState: State = {
-  hasKeys: false,
-  hasPin: false,
-  ...noKeysState,
-  loading: true,
-  chainId: undefined,
-}
-
-const useRequests = () => {
-  const [requests, setRequests] = useState<Requests>([])
-
-  const onRequest: OnRequest = request => setRequests([request])
-  const closeRequest = () => setRequests([] as Requests)
-
-  return { requests, onRequest, closeRequest }
-}
-
-const useKeyManagementSystem = (onRequest: OnRequest) => {
-  const [state, setState] = useState(initialState)
-
-  const removeKeys = () => {
-    setState({ ...state, ...noKeysState })
-  }
-  const resetKeysAndPin = async () => {
-    deleteKeys()
-    deletePin()
-    deleteContacts()
-    deleteDomains()
-    setState({ ...initialState, loading: false })
-  }
-
-  const setKeys = (
-    kms: KeyManagementSystem,
-    wallets: Wallets,
-    walletsIsDeployed: WalletsIsDeployed,
-  ) => {
-    setState({
-      ...state,
-      hasKeys: true,
-      kms,
-      wallets,
-      walletsIsDeployed,
-      selectedWallet: wallets[Object.keys(wallets)[0]].address,
-      loading: false,
-    })
-  }
-
-  const createRIFWallet = createRIFWalletFactory(onRequest)
-
-  const handleLoadExistingWallets = loadExistingWallets(createRIFWallet)
-  const handleCreateKMS = creteKMS(createRIFWallet, networkId) // using only testnet
-
-  const unlockApp = async () => {
-    setState({ ...state, loading: true })
-    const { kms, rifWalletsDictionary, rifWalletsIsDeployedDictionary } =
-      await handleLoadExistingWallets()
-    setKeys(kms, rifWalletsDictionary, rifWalletsIsDeployedDictionary)
-  }
-
-  const createFirstWallet = async (mnemonic: string) => {
-    setState({ ...state, loading: true })
-    const {
-      kms,
-      rifWallet,
-      rifWalletsDictionary,
-      rifWalletsIsDeployedDictionary,
-    } = await handleCreateKMS(mnemonic)
-    setKeys(kms, rifWalletsDictionary, rifWalletsIsDeployedDictionary)
-    return rifWallet
-  }
-
-  const createPin = async (newPin: string) => {
-    setState({ ...state, loading: true })
-    await savePin(newPin)
-    setState({
-      ...state,
-      hasPin: true,
-      loading: false,
-    })
-  }
-
-  const editPin = async (newPin: string) => {
-    await savePin(newPin)
-  }
-
-  const addNewWallet = () => {
-    if (!state.kms) {
-      throw Error('Can not add new wallet because no KMS created.')
-    }
-
-    return addNextWallet(state.kms, createRIFWallet, networkId).then(response =>
-      setState(oldState => ({
-        ...oldState,
-        wallets: {
-          ...oldState.wallets,
-          [response.rifWallet.address]: response.rifWallet,
-        },
-        walletsIsDeployed: {
-          ...oldState.walletsIsDeployed,
-          [response.rifWallet.address]: response.isDeloyed,
-        },
-      })),
-    )
-  }
-
-  const switchActiveWallet = (address: string) =>
-    setState({ ...state, selectedWallet: address })
-
-  return {
-    state,
-    setState,
-    createFirstWallet,
-    addNewWallet,
-    unlockApp,
-    removeKeys,
-    switchActiveWallet,
-    createPin,
-    resetKeysAndPin,
-    editPin,
-  }
-}
 
 export const Core = () => {
   const [active, setActive] = useState(true)
