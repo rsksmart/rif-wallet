@@ -27,6 +27,7 @@ const InjectedScreens = {
   HomeScreen: InjectSelectedWallet(Screens.HomeScreen),
   DappsScreen: InjectSelectedWallet(Screens.DappsScreen),
   AccountsScreen: InjectSelectedWallet(Screens.AccountsScreen),
+  RelayDeployScreen: InjectSelectedWallet(Screens.RelayDeploySreen),
 }
 
 type RootStackParamList = {
@@ -63,6 +64,7 @@ type RootStackParamList = {
   AccountsScreen: undefined
   SecurityConfigurationScreen: undefined
   ChangePinScreen: undefined
+  RelayDeployScreen: undefined
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -277,6 +279,11 @@ export const RootNavigation: React.FC<{
               />
             )}
           </RootStack.Screen>
+          <RootStack.Screen
+            name="RelayDeployScreen"
+            options={sharedOptions}
+            component={InjectedScreens.RelayDeployScreen}
+          />
         </RootStack.Navigator>
         {appIsSetup && !isKeyboardVisible && (
           <AppFooterMenu currentScreen={currentScreen} />
