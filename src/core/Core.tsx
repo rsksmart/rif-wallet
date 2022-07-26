@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react'
-import { Keyboard, SafeAreaView, StatusBar, StyleSheet } from 'react-native'
+import { SafeAreaView, StatusBar, StyleSheet } from 'react-native'
 import { AppContext } from '../Context'
 import { KeyManagementSystem, RIFWallet } from '../lib/core'
 import { i18nInit } from '../lib/i18n'
@@ -28,6 +28,7 @@ import { colors } from '../styles'
 import { RIFSocketsProvider } from '../subscriptions/RIFSockets'
 import { Cover } from './components/Cover'
 import { RequestPIN } from './components/RequestPIN'
+import { useKeyboardIsVisible } from './hooks/useKeyboardIsVisible'
 import { useKeyManagementSystem } from './hooks/useKeyManagementSystem'
 import { useRequests } from './hooks/useRequests'
 import { useStateSubscription } from './hooks/useStateSubscription'
@@ -49,6 +50,7 @@ export const Core = () => {
   } = useKeyManagementSystem(onRequest)
 
   const { unlocked, setUnlocked, active } = useStateSubscription(onRequest)
+  const isKeyboardVisible = useKeyboardIsVisible()
 
   const [currentScreen, setCurrentScreen] = useState<string>('Home')
   const handleScreenChange = (newState: NavigationState | undefined) =>
@@ -87,27 +89,6 @@ export const Core = () => {
     }
   }, [state.selectedWallet])
 
-  const [isKeyboardVisible, setKeyboardVisible] = useState(false)
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      () => {
-        setKeyboardVisible(true)
-      },
-    )
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => {
-        setKeyboardVisible(false)
-      },
-    )
-
-    return () => {
-      keyboardDidHideListener.remove()
-      keyboardDidShowListener.remove()
-    }
-  }, [])
-
   if (state.loading) {
     return <LoadingScreen />
   }
@@ -122,6 +103,7 @@ export const Core = () => {
       backgroundColor: topColor,
     },
   })
+
   return (
     <Fragment>
       <SafeAreaView style={styles.top}>
