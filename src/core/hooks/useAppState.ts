@@ -9,5 +9,5 @@ export default function useAppState() {
     return () => sub.remove()
   }, [appState])
 
-  return [appState, setAppState]
+  return { appState, setAppState }
 }

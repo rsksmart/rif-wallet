@@ -7,7 +7,7 @@ let timer: NodeJS.Timeout
 export const useStateSubscription = (onScreenLock?: Function) => {
   const [active, setActive] = useState(true)
   const [unlocked, setUnlocked] = useState(false)
-  const [appState] = useAppState()
+  const { appState } = useAppState()
   const timerRef = useRef<NodeJS.Timeout>(timer)
 
   useEffect(() => {
