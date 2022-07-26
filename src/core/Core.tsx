@@ -1,11 +1,5 @@
-import React, { Fragment, useEffect, useRef, useState } from 'react'
-import {
-  AppState,
-  Keyboard,
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-} from 'react-native'
+import React, { Fragment, useEffect, useState } from 'react'
+import { Keyboard, SafeAreaView, StatusBar, StyleSheet } from 'react-native'
 import { AppContext } from '../Context'
 import { KeyManagementSystem, RIFWallet } from '../lib/core'
 import { i18nInit } from '../lib/i18n'
@@ -36,17 +30,10 @@ import { Cover } from './components/Cover'
 import { RequestPIN } from './components/RequestPIN'
 import { useKeyManagementSystem } from './hooks/useKeyManagementSystem'
 import { useRequests } from './hooks/useRequests'
-
-const gracePeriod = 3000
-
-let timer: NodeJS.Timeout
+import { useStateSubscription } from './hooks/useStateSubscription'
 
 export const Core = () => {
-  const [active, setActive] = useState(true)
-  const [unlocked, setUnlocked] = useState(false)
   const [topColor, setTopColor] = useState(colors.darkPurple3)
-
-  const timerRef = useRef<NodeJS.Timeout>(timer)
 
   const { requests, onRequest, closeRequest } = useRequests()
   const {
@@ -55,12 +42,13 @@ export const Core = () => {
     createFirstWallet,
     addNewWallet,
     unlockApp,
-    removeKeys,
     switchActiveWallet,
     createPin,
     editPin,
     resetKeysAndPin,
   } = useKeyManagementSystem(onRequest)
+
+  const { unlocked, setUnlocked, active } = useStateSubscription(onRequest)
 
   const [currentScreen, setCurrentScreen] = useState<string>('Home')
   const handleScreenChange = (newState: NavigationState | undefined) =>
@@ -78,35 +66,6 @@ export const Core = () => {
 
   const retrieveChainId = (wallet: RIFWallet) =>
     wallet.getChainId().then(chainId => setState({ ...state, chainId }))
-
-  useEffect(() => {
-    const stateSubscription = AppState.addEventListener(
-      'change',
-      appStateStatus => {
-        const isNowActive = appStateStatus === 'active'
-        setActive(isNowActive)
-
-        if (unlocked) {
-          if (!isNowActive) {
-            const newTimer = setTimeout(() => {
-              setUnlocked(false)
-              removeKeys()
-            }, gracePeriod)
-
-            timerRef.current = newTimer
-          } else {
-            if (timerRef.current) {
-              clearTimeout(timerRef.current)
-            }
-          }
-        }
-      },
-    )
-
-    return () => {
-      stateSubscription.remove()
-    }
-  }, [unlocked])
 
   useEffect(() => {
     Promise.all([i18nInit(), hasKeys(), hasPin()]).then(
