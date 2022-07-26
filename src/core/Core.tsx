@@ -47,9 +47,12 @@ export const Core = () => {
     createPin,
     editPin,
     resetKeysAndPin,
+    removeKeys,
   } = useKeyManagementSystem(onRequest)
 
-  const { unlocked, setUnlocked, active } = useStateSubscription(onRequest)
+  const onScreenLock = removeKeys
+
+  const { unlocked, setUnlocked, active } = useStateSubscription(onScreenLock)
   const isKeyboardVisible = useKeyboardIsVisible()
 
   const [currentScreen, setCurrentScreen] = useState<string>('Home')

@@ -1,47 +1,30 @@
 import { useEffect, useRef, useState } from 'react'
-import { AppState } from 'react-native'
-import { OnRequest } from '../../lib/core'
-import { useKeyManagementSystem } from './useKeyManagementSystem'
+import useAppState from './useAppState'
 
 const gracePeriod = 3000
 let timer: NodeJS.Timeout
 
-export const useStateSubscription = (onRequest: OnRequest) => {
+export const useStateSubscription = (onScreenLock?: Function) => {
   const [active, setActive] = useState(true)
   const [unlocked, setUnlocked] = useState(false)
-
+  const [appState] = useAppState()
   const timerRef = useRef<NodeJS.Timeout>(timer)
 
-  const { removeKeys } = useKeyManagementSystem(onRequest)
-
   useEffect(() => {
-    const stateSubscription = AppState.addEventListener(
-      'change',
-      appStateStatus => {
-        const isNowActive = appStateStatus === 'active'
-        setActive(isNowActive)
+    const isNowActive = appState === 'active'
+    setActive(isNowActive)
 
-        if (unlocked) {
-          if (!isNowActive) {
-            const newTimer = setTimeout(() => {
-              setUnlocked(false)
-              removeKeys()
-            }, gracePeriod)
-
-            timerRef.current = newTimer
-          } else {
-            if (timerRef.current) {
-              clearTimeout(timerRef.current)
-            }
-          }
-        }
-      },
-    )
-
-    return () => {
-      stateSubscription.remove()
+    if (unlocked) {
+      if (!isNowActive) {
+        timerRef.current = setTimeout(() => {
+          setUnlocked(false)
+          onScreenLock?.()
+        }, gracePeriod)
+      } else if (timerRef.current) {
+        clearTimeout(timerRef.current)
+      }
     }
-  }, [unlocked])
+  }, [unlocked, appState])
 
   return {
     unlocked,
