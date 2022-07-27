@@ -13,6 +13,14 @@ PODS:
     - ReactCommon/turbomodule/core (= 0.65.1)
   - fmt (6.2.1)
   - glog (0.3.5)
+  - Microblink (5.16.0)
+  - Passbase (2.13.3):
+    - Microblink (= 5.16.0)
+  - Ramp (2.0.0):
+    - Passbase (~> 2.8)
+  - ramp-network-react-native-sdk (0.3.1):
+    - Ramp
+    - React-Core
   - RCT-Folly (2021.04.26.00):
     - boost-for-react-native
     - DoubleConversion
@@ -312,6 +320,8 @@ DEPENDENCIES:
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/React/FBReactNativeSpec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - Ramp (from `https://github.com/RampNetwork/ramp-sdk-ios`, tag `2.0.0`)
+  - "ramp-network-react-native-sdk (from `../node_modules/@ramp-network/react-native-sdk`)"
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
@@ -352,6 +362,10 @@ DEPENDENCIES:
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
+  https://github.com/passbase/cocoapods-specs.git:
+    - Passbase
+  https://github.com/passbase/microblink-cocoapods-specs.git:
+    - Microblink
   trunk:
     - boost-for-react-native
     - fmt
@@ -367,6 +381,11 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/React/FBReactNativeSpec"
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
+  Ramp:
+    :git: https://github.com/RampNetwork/ramp-sdk-ios
+    :tag: 2.0.0
+  ramp-network-react-native-sdk:
+    :path: "../node_modules/@ramp-network/react-native-sdk"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -440,6 +459,11 @@ EXTERNAL SOURCES:
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
+CHECKOUT OPTIONS:
+  Ramp:
+    :git: https://github.com/RampNetwork/ramp-sdk-ios
+    :tag: 2.0.0
+
 SPEC CHECKSUMS:
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   BVLinearGradient: e3aad03778a456d77928f594a649e96995f1c872
@@ -448,6 +472,10 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: df8f81d2a7541ee6755a047b398a5cb5a72acd0e
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 5337263514dd6f09803962437687240c5dc39aa4
+  Microblink: 9443ff3c708a97673e4999389626079e10a1bbc1
+  Passbase: 0a99aa0ff15364b6bb7b2bede91467074811d460
+  Ramp: c522303707480a458eef7d05c96e8c9604be4840
+  ramp-network-react-native-sdk: 4f3f021d49252d34d9803bf1b4eebea905996c52
   RCT-Folly: 0dd9e1eb86348ecab5ba76f910b56f4b5fef3c46
   RCTRequired: 6cf071ab2adfd769014b3d94373744ee6e789530
   RCTTypeSafety: b829c59453478bb5b02487b8de3336386ab93ab1
@@ -485,6 +513,6 @@ SPEC CHECKSUMS:
   RNVectorIcons: 7923e585eaeb139b9f4531d25a125a1500162a0b
   Yoga: aa0cb45287ebe1004c02a13f279c55a95f1572f4
 
-PODFILE CHECKSUM: 45ccdf422c53f99d18932c65c92bacf5e3dc499a
+PODFILE CHECKSUM: 268f26543aabd02fc65a249aa5e19c498b3c39f3
 
 COCOAPODS: 1.11.3
