@@ -18,18 +18,14 @@ export type SendScreenProps = {}
 
 export const SendScreen: React.FC<
   SendScreenProps & ScreenProps<'Send'> & ScreenWithWallet
-> = ({ route, wallet, isWalletDeployed }) => {
+> = ({ route, wallet, isWalletDeployed, navigation }) => {
   const { state } = useSocketsState()
-
   const contractAddress =
     route.params?.contractAddress || Object.keys(state.balances)[0]
-
   const [currentTransaction, setCurrentTransaction] =
     useState<transactionInfo | null>(null)
   const [error, setError] = useState<Error>()
-
   const [chainId, setChainId] = useState<number>(31)
-
   useEffect(() => {
     wallet.getChainId().then(setChainId)
   }, [wallet])
@@ -77,9 +73,14 @@ export const SendScreen: React.FC<
         })
     })
   }
+
+  const onDeployWalletNavigate = () =>
+    navigation.navigate('ManuallyDeployScreen' as any)
   return (
     <ScrollView style={styles.parent}>
-      {!isWalletDeployed && <WalletNotDeployedView />}
+      {!isWalletDeployed && (
+        <WalletNotDeployedView onDeployWalletPress={onDeployWalletNavigate} />
+      )}
       {!currentTransaction ? (
         <TransactionForm
           onConfirm={transfer}

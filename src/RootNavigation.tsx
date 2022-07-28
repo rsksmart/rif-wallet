@@ -90,6 +90,7 @@ export const RootNavigation: React.FC<{
   keyManagementProps: CreateKeysProps
   createPin: (newPin: string) => Promise<void>
   editPin: (newPin: string) => Promise<void>
+  setWalletIsDeployed: (address: string, value?: boolean) => void
   balancesScreenProps: Screens.BalancesScreenProps
   activityScreenProps: Screens.ActivityScreenProps
   showMnemonicScreenProps: Screens.ShowMnemonicScreenProps
@@ -117,6 +118,7 @@ export const RootNavigation: React.FC<{
   dappsScreenProps,
   accountsScreenType,
   securityConfigurationScreenProps,
+  setWalletIsDeployed,
 }) => {
   let initialRoute: any = 'CreateKeysUX'
   if (hasPin) {
@@ -190,12 +192,14 @@ export const RootNavigation: React.FC<{
             component={InjectedScreens.ActivityDetailsScreen}
             options={sharedOptions}
           />
-
-          <RootStack.Screen
-            name="ManuallyDeployScreen"
-            component={InjectedScreens.ManuallyDeployScreen}
-            options={sharedOptions}
-          />
+          <RootStack.Screen name="ManuallyDeployScreen" options={sharedOptions}>
+            {props => (
+              <InjectedScreens.ManuallyDeployScreen
+                {...props}
+                setWalletIsDeployed={setWalletIsDeployed}
+              />
+            )}
+          </RootStack.Screen>
           <RootStack.Screen name="AccountsScreen" options={sharedOptions}>
             {props => (
               <InjectedScreens.AccountsScreen

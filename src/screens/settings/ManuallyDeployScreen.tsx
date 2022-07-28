@@ -8,10 +8,11 @@ import { colors, grid } from '../../styles'
 import SecondaryButton from '../../components/button/SecondaryButton'
 import { CopyIcon } from '../../components/icons'
 
-export const ManuallyDeployScreen: React.FC<ScreenWithWallet> = ({
-  wallet,
-  isWalletDeployed,
-}) => {
+export const ManuallyDeployScreen: React.FC<
+  ScreenWithWallet & {
+    setWalletIsDeployed: (address: string, value?: boolean) => void
+  }
+> = ({ wallet, isWalletDeployed, setWalletIsDeployed }) => {
   const [eoaBalance, setEoaBalance] = useState<BigNumber>(BigNumber.from(0))
   const [isDeploying, setIsDeploying] = useState<boolean>(false)
   const [deployError, setDeployError] = useState<string | null>(null)
@@ -34,11 +35,13 @@ export const ManuallyDeployScreen: React.FC<ScreenWithWallet> = ({
     try {
       const txPromise = await wallet.smartWalletFactory.deploy()
       setSmartWalletDeployTx(txPromise)
-
       await txPromise.wait()
-      await wallet.smartWalletFactory.isDeployed().then(setIsDeployed)
-      setIsDeploying(false)
-    } catch (error: any) {
+      await wallet.smartWalletFactory.isDeployed().then(async result => {
+        setIsDeployed(result)
+        setWalletIsDeployed(wallet.smartWallet.address, result)
+        setIsDeploying(false)
+      })
+    } catch (error) {
       setDeployError(error.toString())
       setIsDeploying(false)
     }

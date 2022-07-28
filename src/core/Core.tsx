@@ -179,6 +179,19 @@ const useKeyManagementSystem = (onRequest: OnRequest) => {
   const switchActiveWallet = (address: string) =>
     setState({ ...state, selectedWallet: address })
 
+  const setWalletIsDeployed: (address: string, value?: boolean) => void = (
+    address,
+    value = true,
+  ) => {
+    setState(curState => ({
+      ...curState,
+      walletsIsDeployed: {
+        ...curState.walletsIsDeployed,
+        [address]: value,
+      },
+    }))
+  }
+
   return {
     state,
     setState,
@@ -190,6 +203,7 @@ const useKeyManagementSystem = (onRequest: OnRequest) => {
     createPin,
     resetKeysAndPin,
     editPin,
+    setWalletIsDeployed,
   }
 }
 
@@ -212,6 +226,7 @@ export const Core = () => {
     createPin,
     editPin,
     resetKeysAndPin,
+    setWalletIsDeployed,
   } = useKeyManagementSystem(onRequest)
 
   const [currentScreen, setCurrentScreen] = useState<string>('Home')
@@ -352,6 +367,7 @@ export const Core = () => {
                   }}
                   createPin={createPin}
                   editPin={editPin}
+                  setWalletIsDeployed={setWalletIsDeployed}
                   balancesScreenProps={{ fetcher: rifWalletServicesFetcher }}
                   sendScreenProps={{ rnsResolver }}
                   activityScreenProps={{
