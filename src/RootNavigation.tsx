@@ -27,7 +27,7 @@ const InjectedScreens = {
   HomeScreen: InjectSelectedWallet(Screens.HomeScreen),
   DappsScreen: InjectSelectedWallet(Screens.DappsScreen),
   AccountsScreen: InjectSelectedWallet(Screens.AccountsScreen),
-  RelayDeployScreen: InjectSelectedWallet(Screens.RelayDeploySreen),
+  RelayDeployScreen: InjectSelectedWallet(Screens.RelayDeployScreen),
 }
 
 type RootStackParamList = {

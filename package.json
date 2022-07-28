@@ -14,7 +14,7 @@
     "test:ci": "jest --coverage --verbose --testTimeout=60000",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --max-warnings=0",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix --max-warnings=0",
-    "postinstall": "rn-nodeify --install buffer,events,stream,crypto --hack --yarn",
+    "postinstall": "rn-nodeify --install buffer,events,stream,crypto,assert --hack --yarn",
     "clean:android": "cd android && ./gradlew clean && ./gradlew cleanBuildCache && cd ..",
     "clean:ios": "cd ios && xcodebuild clean && rm -rf ~/Library/Caches/CocoaPods && rm -rf Pods && rm -rf ~/Library/Developer/Xcode/DerivedData/* && pod cache clean --all && pod deintegrate && pod setup && pod install && cd .."
   },
@@ -37,9 +37,11 @@
     "@rsksmart/rsk-utils": "^1.1.0",
     "@types/react-native-snap-carousel": "^3.8.5",
     "@walletconnect/client": "^1.6.6",
+    "assert": "^1.1.1",
     "axios": "^0.24.0",
     "bignumber.js": "^9.0.1",
     "buffer": "^4.9.2",
+    "eth-sig-util": "2.5.2",
     "ethers": "^5.4.7",
     "events": "^1.1.1",
     "i18next": "^21.4.1",
@@ -67,9 +69,7 @@
     "rn-secure-storage": "^2.0.7",
     "socket.io-client": "^4.4.1",
     "stream-browserify": "^1.0.0",
-    "url-parse": "^1.5.9",
-
-    "eth-sig-util": "2.5.2"
+    "url-parse": "^1.5.9"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
