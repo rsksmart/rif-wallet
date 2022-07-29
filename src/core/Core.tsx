@@ -43,11 +43,12 @@ export const Core = () => {
     createFirstWallet,
     addNewWallet,
     unlockApp,
+    removeKeys,
     switchActiveWallet,
     createPin,
     editPin,
     resetKeysAndPin,
-    removeKeys,
+    setWalletIsDeployed,
   } = useKeyManagementSystem(onRequest)
 
   const onScreenLock = removeKeys
@@ -144,6 +145,7 @@ export const Core = () => {
                   }}
                   createPin={createPin}
                   editPin={editPin}
+                  setWalletIsDeployed={setWalletIsDeployed}
                   balancesScreenProps={{ fetcher: rifWalletServicesFetcher }}
                   sendScreenProps={{ rnsResolver }}
                   activityScreenProps={{

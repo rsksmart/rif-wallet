@@ -130,6 +130,19 @@ export const useKeyManagementSystem = (onRequest: OnRequest) => {
   const switchActiveWallet = (address: string) =>
     setState({ ...state, selectedWallet: address })
 
+  const setWalletIsDeployed: (address: string, value?: boolean) => void = (
+    address,
+    value = true,
+  ) => {
+    setState(curState => ({
+      ...curState,
+      walletsIsDeployed: {
+        ...curState.walletsIsDeployed,
+        [address]: value,
+      },
+    }))
+  }
+
   return {
     state,
     setState,
@@ -141,5 +154,6 @@ export const useKeyManagementSystem = (onRequest: OnRequest) => {
     createPin,
     resetKeysAndPin,
     editPin,
+    setWalletIsDeployed,
   }
 }
