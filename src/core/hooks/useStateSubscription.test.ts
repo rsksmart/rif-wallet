@@ -13,7 +13,6 @@ describe('hook: useStateSubscription', () => {
     act(() => {
       appStateSpy.mock.calls[0][1]('active')
     })
-
     expect(result.current.unlocked).toBeFalsy()
     expect(result.current.active).toBeTruthy()
 
@@ -21,7 +20,6 @@ describe('hook: useStateSubscription', () => {
     act(() => {
       result.current.setUnlocked(true)
     })
-
     expect(result.current.unlocked).toBeTruthy()
     expect(result.current.active).toBeTruthy()
 
@@ -29,7 +27,6 @@ describe('hook: useStateSubscription', () => {
     act(() => {
       appStateSpy.mock.calls[0][1]('background')
     })
-
     expect(result.current.unlocked).toBeTruthy()
     expect(result.current.active).toBeFalsy()
 
@@ -37,7 +34,6 @@ describe('hook: useStateSubscription', () => {
     act(() => {
       appStateSpy.mock.calls[0][1]('active')
     })
-
     expect(result.current.unlocked).toBeTruthy()
     expect(result.current.active).toBeTruthy()
 
@@ -46,7 +42,6 @@ describe('hook: useStateSubscription', () => {
       appStateSpy.mock.calls[0][1]('background')
       result.current.setUnlocked(false)
     })
-
     expect(result.current.unlocked).toBeFalsy()
     expect(result.current.active).toBeFalsy()
 
@@ -54,7 +49,6 @@ describe('hook: useStateSubscription', () => {
     act(() => {
       appStateSpy.mock.calls[0][1]('active')
     })
-
     expect(result.current.unlocked).toBeFalsy()
     expect(result.current.active).toBeTruthy()
 
@@ -62,7 +56,6 @@ describe('hook: useStateSubscription', () => {
     act(() => {
       result.current.setUnlocked(true)
     })
-
     expect(result.current.unlocked).toBeTruthy()
     expect(result.current.active).toBeTruthy()
   })
