@@ -34,7 +34,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const selectedColor = getTokenColor(selected ? selected.symbol : undefined)
   const balances = Object.values(state.balances)
   const backGroundColor = {
-    backgroundColor: selectedAddress ? selectedColor : colors.darkPurple3,
+    backgroundColor: selectedAddress ? selectedColor : getTokenColor('DEFAULT'),
   }
 
   useEffect(() => {
@@ -77,7 +77,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       <View style={styles.bottomColor} />
 
       <View style={styles.parent}>
-        {selected && (
+
           <SelectedTokenComponent
             accountNumber={selectedWalletIndex}
             amount={
@@ -87,7 +87,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             }
             change={0}
           />
-        )}
 
         <SendReceiveButtonComponent
           color={selectedColor}
