@@ -7,30 +7,15 @@ const PinDotsRenderer: React.FC<PinDotsRendererType> = ({
   digit,
   arr,
 }) => {
-  switch (index) {
-    case 0:
-      return (
-        <>
-          <PinConnector.BarComp />
-          <PinConnector.CenterComp
-            CenterInnerComponentProps={{ isFilled: !!digit }}
-          />
-          <PinConnector.BarComp isActive={!!digit} />
-        </>
-      )
-    default:
-      return (
-        <>
-          <PinConnector.BarComp isActive={!!arr[index - 1]} />
-          <PinConnector.CenterComp
-            CenterInnerComponentProps={{ isFilled: !!digit }}
-          />
-          <PinConnector.BarComp
-            isActive={index !== arr.length - 1 && !!digit}
-          />
-        </>
-      )
-  }
+  return (
+    <>
+      <PinConnector.BarComp isActive={index > 0 && !!digit} />
+      <PinConnector.CenterComp
+        CenterInnerComponentProps={{ isFilled: !!digit }}
+      />
+      <PinConnector.BarComp isActive={index < arr.length && !!arr[index + 1]} />
+    </>
+  )
 }
 
 export default PinDotsRenderer
