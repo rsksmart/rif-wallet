@@ -10,6 +10,9 @@ const resources = {
     translation: {
       'Create master key': 'Create master key',
       'Reveal master key': 'Reveal master key',
+      'Sign in with a Master Key': 'Sign in with a Master Key',
+      'Input the words you were given when you created your wallet in correct order':
+        'Input the words you were given when you created your wallet in correct order',
       Receive: 'Receive',
       'Send Transaction': 'Send Transaction',
       Balances: 'Balances',
@@ -20,7 +23,6 @@ const resources = {
       'Sign Typed Data': 'Sign Typed Data',
       'Wallet info': 'Wallet info',
       WalletConnect: 'WalletConnect',
-
       'Please select your language': 'Please select your language',
       'Welcome to sWallet!': 'Welcome to sWallet!',
       'Transaction Details': 'Transaction Details',
