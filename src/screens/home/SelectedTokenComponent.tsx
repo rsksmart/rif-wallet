@@ -20,6 +20,7 @@ const SelectedTokenComponent: React.FC<Interface> = ({
 }) => {
   const [showBalances, setShowBalances] = useState<boolean>(true)
   const badgeColor = change && change >= 0 ? styles.greenBadge : styles.redBadge
+  const onSetBalances = () => setShowBalances(!showBalances)
   return (
     <View style={styles.balanceCard}>
       <View style={styles.topRow}>
@@ -30,7 +31,7 @@ const SelectedTokenComponent: React.FC<Interface> = ({
             }`}</RegularText>
           </View>
         )}
-        <TouchableOpacity onPress={() => setShowBalances(!showBalances)}>
+        <TouchableOpacity onPress={onSetBalances}>
           <View style={styles.badge}>
             <HideShowIcon
               style={styles.icon}
