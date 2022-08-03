@@ -77,16 +77,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       <View style={styles.bottomColor} />
 
       <View style={styles.parent}>
-
-          <SelectedTokenComponent
-            accountNumber={selectedWalletIndex}
-            amount={
-              selected
-                ? balanceToDisplay(selected.balance, selected.decimals, 5)
-                : '0'
-            }
-            change={0}
-          />
+        <SelectedTokenComponent
+          accountNumber={selectedWalletIndex}
+          amount={
+            selected
+              ? balanceToDisplay(selected.balance, selected.decimals, 5)
+              : '0'
+          }
+          change={0}
+        />
 
         <SendReceiveButtonComponent
           color={selectedColor}
