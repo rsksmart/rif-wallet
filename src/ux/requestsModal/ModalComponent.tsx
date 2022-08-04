@@ -69,6 +69,16 @@ const ModalComponent: React.FC<Interface> = ({
     setAnimateModal(true)
   }
 
+  let modalTitle = ''
+  switch (request.type) {
+    case 'signMessage':
+      modalTitle = 'signMessage'
+      break
+    case 'sendTransaction':
+      modalTitle = 'review transaction'
+      break
+  }
+
   return request.type !== 'sendTransaction' &&
     request.type !== 'signMessage' ? (
     <View style={sharedStyles.centeredView}>
@@ -82,7 +92,7 @@ const ModalComponent: React.FC<Interface> = ({
     </View>
   ) : (
     <SlideUpModal
-      title={'review transaction'}
+      title={modalTitle}
       showSelector={showSelector}
       animateModal={animateModal}
       onModalClosed={handleCloseModal}
