@@ -1,14 +1,16 @@
 import React from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import { SignMessageRequest } from '../../lib/core/RIFWallet'
-import { useTranslation, Trans } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
-import { ModalHeader, ParagraphSoft } from '../../components'
 import { sharedStyles } from './sharedStyles'
-import { SquareButton } from '../../components/button/SquareButton'
-import { SignIcon } from '../../components/icons/SignIcon'
-import { CancelIcon } from '../../components/icons/CancelIcon'
 import { ScrollView } from 'react-native-gesture-handler'
+import ReadOnlyField from './ReadOnlyField'
+import {
+  DarkBlueButton,
+  OutlineBorderedButton,
+} from '../../components/button/ButtonVariations'
+import { colors } from '../../styles'
 
 interface Interface {
   request: SignMessageRequest
@@ -30,36 +32,30 @@ const SignMessageModal: React.FC<Interface> = ({ request, closeModal }) => {
 
   return (
     <ScrollView>
-      <View style={[sharedStyles.modalView, sharedStyles.modalViewMainSection]}>
-        <ModalHeader>sign message</ModalHeader>
-
-        <ParagraphSoft>
-          <Trans>Do you want to sign this message?</Trans>
-        </ParagraphSoft>
-
-        <Text style={styles.message} testID="Text.Message">
-          {request.payload}
-        </Text>
+      <View>
+        <View testID="TX_VIEW" style={[sharedStyles.rowInColumn]}>
+          <ReadOnlyField
+            label={'Payload'}
+            value={request.payload}
+            testID={'Data.View'}
+          />
+        </View>
       </View>
+
       <View style={styles.buttonsSection}>
         <View style={sharedStyles.column}>
-          <SquareButton
+          <OutlineBorderedButton
+            style={{ button: { borderColor: colors.black } }}
             onPress={reject}
             title={t('reject')}
-            testID="Button.Reject"
-            icon={<CancelIcon color={'#ffb4b4'} />}
-            shadowColor="#313c3c"
-            backgroundColor={'#313c3c'}
+            testID="Cancel.Button"
           />
         </View>
         <View style={sharedStyles.column}>
-          <SquareButton
+          <DarkBlueButton
             onPress={signMessage}
             title={t('sign')}
-            testID="Button.Confirm"
-            icon={<SignIcon color={'#91ffd9'} />}
-            shadowColor="#313c3c"
-            backgroundColor={'#313c3c'}
+            testID="Confirm.Button"
           />
         </View>
       </View>
@@ -68,27 +64,6 @@ const SignMessageModal: React.FC<Interface> = ({ request, closeModal }) => {
 }
 
 const styles = StyleSheet.create({
-  message: {
-    padding: 20,
-    marginTop: 10,
-    marginBottom: 10,
-
-    borderRadius: 14,
-    backgroundColor: 'rgba(49, 60, 60, 0.1)',
-    shadowColor: 'rgba(0, 0, 0, 0)',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowRadius: 6,
-    shadowOpacity: 1,
-
-    fontSize: 16,
-    fontWeight: '500',
-    fontStyle: 'normal',
-    letterSpacing: 0.24,
-    color: '#373f48',
-  },
   buttonsSection: {
     ...sharedStyles.row,
     padding: 20,

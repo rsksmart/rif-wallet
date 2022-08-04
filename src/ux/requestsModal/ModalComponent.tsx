@@ -69,7 +69,8 @@ const ModalComponent: React.FC<Interface> = ({
     setAnimateModal(true)
   }
 
-  return request.type !== 'sendTransaction' ? (
+  return request.type !== 'sendTransaction' &&
+    request.type !== 'signMessage' ? (
     <View style={sharedStyles.centeredView}>
       <Modal animationType="slide" transparent={true} visible={true}>
         <View style={[sharedStyles.centeredView, styles.blurBackground]}>
