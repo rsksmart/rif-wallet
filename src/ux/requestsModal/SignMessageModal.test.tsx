@@ -20,14 +20,6 @@ describe('SignMessageRequest', function (this: {
     }
   })
 
-  it('renders', () => {
-    const { getAllByText, getByTestId } = render(
-      <SignMessageModal request={this.request} closeModal={jest.fn()} />,
-    )
-    expect(getAllByText('sign message').length).toBe(1)
-    expect(getByTestId('Text.Message').props.children).toBe('Hello World!')
-  })
-
   it('handles confirm', () => {
     const { getByTestId } = render(
       <SignMessageModal request={this.request} closeModal={jest.fn()} />,
