@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 40,
   },
   bottomColor: {
-    flex: 5,
+    flex: 6,
   },
 
   parent: {
