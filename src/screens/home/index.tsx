@@ -6,11 +6,12 @@ import SelectedTokenComponent from './SelectedTokenComponent'
 import { getTokenColor } from './tokenColor'
 import PortfolioComponent from './PortfolioComponent'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
-import { colors } from '../../styles/colors'
+import { colors } from '../../styles'
 import SendReceiveButtonComponent from './SendReceiveButtonComponent'
 import { Paragraph } from '../../components'
 import { useSelectedWallet } from '../../Context'
 import { LoadingScreen } from '../../components/loading/LoadingScreen'
+import { balanceToDisplay } from '../../lib/utils'
 
 export type HomeScreenProps = {
   navigation: NavigationProp
@@ -33,7 +34,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const selectedColor = getTokenColor(selected ? selected.symbol : undefined)
   const balances = Object.values(state.balances)
   const backGroundColor = {
-    backgroundColor: selectedAddress ? selectedColor : colors.darkPurple3,
+    backgroundColor: selectedAddress ? selectedColor : getTokenColor('DEFAULT'),
   }
 
   useEffect(() => {
@@ -76,12 +77,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       <View style={styles.bottomColor} />
 
       <View style={styles.parent}>
-        {selected && (
-          <SelectedTokenComponent
-            token={selected}
-            accountNumber={selectedWalletIndex}
-          />
-        )}
+        <SelectedTokenComponent
+          accountNumber={selectedWalletIndex}
+          amount={
+            selected
+              ? balanceToDisplay(selected.balance, selected.decimals, 5)
+              : '0'
+          }
+          change={0}
+        />
 
         <SendReceiveButtonComponent
           color={selectedColor}
@@ -124,7 +128,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 40,
   },
   bottomColor: {
-    flex: 5,
+    flex: 6,
   },
 
   parent: {
