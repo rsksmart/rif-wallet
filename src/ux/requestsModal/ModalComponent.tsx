@@ -72,7 +72,7 @@ const ModalComponent: React.FC<Interface> = ({
   let modalTitle = ''
   switch (request.type) {
     case 'signMessage':
-      modalTitle = 'signMessage'
+      modalTitle = 'sign message'
       break
     case 'sendTransaction':
       modalTitle = 'review transaction'
