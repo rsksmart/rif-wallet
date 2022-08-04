@@ -37,7 +37,7 @@ const SignMessageModal: React.FC<Interface> = ({ request, closeModal }) => {
           <ReadOnlyField
             label={'Payload'}
             value={request.payload}
-            testID={'Data.View'}
+            testID="Text.Message"
           />
         </View>
       </View>
@@ -48,14 +48,14 @@ const SignMessageModal: React.FC<Interface> = ({ request, closeModal }) => {
             style={{ button: { borderColor: colors.black } }}
             onPress={reject}
             title={t('reject')}
-            testID="Cancel.Button"
+            testID="Button.Reject"
           />
         </View>
         <View style={sharedStyles.column}>
           <DarkBlueButton
             onPress={signMessage}
             title={t('sign')}
-            testID="Confirm.Button"
+            testID="Button.Confirm"
           />
         </View>
       </View>
