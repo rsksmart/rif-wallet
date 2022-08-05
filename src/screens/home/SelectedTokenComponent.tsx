@@ -1,62 +1,66 @@
 import React, { useState } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
+import { BigNumberish } from 'ethers'
+import { RegularText } from '../../components'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
-import { grid } from '../../styles/grid'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { TokenImage } from './TokenImage'
-import { colors } from '../../styles/colors'
-import { GrayButton } from '../../components/button/ButtonVariations'
-import { HideShowIcon } from '../../components/icons/HideShowIcon'
-import { balanceToDisplay } from '../../lib/utils'
+import { colors } from '../../styles'
+import { HideShowIcon } from '../../components/icons'
 
 interface Interface {
-  token: ITokenWithBalance
   accountNumber?: number
+  amount: BigNumberish
+  change?: number
 }
 
 const SelectedTokenComponent: React.FC<Interface> = ({
-  token,
   accountNumber,
+  amount,
+  change,
 }) => {
   const [showBalances, setShowBalances] = useState<boolean>(true)
-
+  const badgeColor = change && change >= 0 ? styles.greenBadge : styles.redBadge
+  const onSetBalances = () => setShowBalances(!showBalances)
   return (
-    <View style={styles.amountRow}>
-      <View style={styles.hideRow}>
-        <GrayButton
-          title={showBalances ? ' hide' : ' show'}
-          onPress={() => setShowBalances(!showBalances)}
-          icon={<HideShowIcon height={24} width={24} isHidden={showBalances} />}
-        />
-      </View>
-      {showBalances ? (
-        <>
-          <View style={grid.row}>
-            <View style={{ ...grid.column2, ...styles.icon }}>
-              <TokenImage symbol={token.symbol} height={45} width={45} />
-            </View>
-            <View style={grid.column10}>
-              <Text style={styles.amount}>
-                {balanceToDisplay(token.balance, token.decimals, 5)}
-              </Text>
-            </View>
+    <View style={styles.balanceCard}>
+      <View style={styles.topRow}>
+        {typeof accountNumber === 'number' && (
+          <View style={styles.accountLabel}>
+            <RegularText style={styles.accountText}>{`account ${
+              accountNumber + 1
+            }`}</RegularText>
           </View>
-
-          {typeof accountNumber === 'number' && (
-            <View style={grid.row}>
-              <View style={grid.column}>
-                <Text style={styles.account}>{`Account ${
-                  accountNumber + 1
-                }`}</Text>
-              </View>
-            </View>
-          )}
-        </>
-      ) : (
-        <View style={grid.row}>
+        )}
+        <TouchableOpacity onPress={onSetBalances}>
+          <View style={styles.badge}>
+            <HideShowIcon
+              style={styles.icon}
+              height={15}
+              width={15}
+              isHidden={showBalances}
+            />
+            <RegularText style={styles.badgeText}>
+              {showBalances ? ' hide' : ' show'}
+            </RegularText>
+          </View>
+        </TouchableOpacity>
+      </View>
+      <View>
+        {showBalances ? (
+          <RegularText style={styles.amount}>{amount}</RegularText>
+        ) : (
           <Text style={{ ...styles.amount, ...styles.amountHidden }}>
             {'\u25CF    \u25CF     \u25CF     \u25CF     \u25CF'}
           </Text>
+        )}
+      </View>
+      {!!change && (
+        <View style={styles.changeRow}>
+          <View style={{ ...styles.badge, ...badgeColor }}>
+            <RegularText style={styles.badgeText}>
+              {`${change > 0 ? '+' : ''}${change}%`}
+            </RegularText>
+          </View>
         </View>
       )}
     </View>
@@ -64,32 +68,51 @@ const SelectedTokenComponent: React.FC<Interface> = ({
 }
 
 const styles = StyleSheet.create({
-  hideRow: {
-    ...grid.row,
-    alignSelf: 'flex-end',
-  },
-  amountRow: {
+  balanceCard: {
     marginBottom: 20,
-    paddingVertical: 20,
-    paddingHorizontal: 20,
+    paddingVertical: 15,
+    paddingHorizontal: 15,
     borderRadius: 20,
     backgroundColor: colors.lightPurple,
   },
+  topRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  accountLabel: {
+    paddingTop: 5,
+  },
+  accountText: {
+    color: colors.darkGray,
+  },
+  badge: {
+    backgroundColor: colors.lightGray,
+    padding: 8,
+    borderRadius: 25,
+    flexDirection: 'row',
+  },
+  greenBadge: {
+    backgroundColor: colors.green,
+  },
+  redBadge: {
+    backgroundColor: colors.red,
+  },
   icon: {
-    marginTop: 10,
+    paddingTop: 15,
+  },
+  badgeText: {
+    fontSize: 10,
+  },
+  changeRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
   amount: {
     color: colors.darkBlue,
     fontSize: 50,
     fontWeight: '500',
-    marginLeft: 10,
   },
-  account: {
-    fontSize: 16,
-    fontWeight: '300',
-    marginTop: 10,
-    color: colors.darkGray,
-  },
+
   amountHidden: {
     fontSize: 20,
     paddingVertical: 18,

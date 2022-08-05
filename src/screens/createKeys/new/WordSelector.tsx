@@ -41,7 +41,8 @@ export const WordSelector: React.FC<Props> = ({
       return
     }
 
-    const newText = input.toLowerCase()
+    // sanitize input
+    const newText = input.replace(/[^a-zA-Z]/g, '').toLowerCase()
     setUserInput(newText)
 
     if (newText === expectedWord) {
@@ -62,11 +63,13 @@ export const WordSelector: React.FC<Props> = ({
     }
 
     // show the suggestions to the user
-    newText === ''
-      ? setOptions([])
-      : setOptions(
-          wordlists.EN.filter((w: string) => w.startsWith(newText)).slice(0, 3),
-        )
+    if (newText) {
+      setOptions(
+        wordlists.EN.filter((w: string) => w.startsWith(newText)).slice(0, 3),
+      )
+    } else {
+      setOptions([])
+    }
   }
 
   const handleEnterPress = () => {

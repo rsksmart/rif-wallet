@@ -18,6 +18,7 @@ const PinContainer: React.FC<PinContainerType> = ({
   const [pin, setPin] = useState<Array<string>>(defaultPinArray)
   const [position, setPosition] = useState<number>(0)
   const [error, setError] = useState<string | null>(null)
+
   const onPinDigitAdd = (numberTouched: string) => {
     const newPin = [...pin]
     newPin[position] = numberTouched
@@ -46,7 +47,7 @@ const PinContainer: React.FC<PinContainerType> = ({
 
   const onPinDigitDelete = () => {
     const newPin = [...pin]
-    const oldPosition = position - 1
+    const oldPosition = position > 0 ? position - 1 : 0
     newPin[oldPosition] = ''
     setPin(newPin)
     setPosition(oldPosition)
