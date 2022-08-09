@@ -10,6 +10,7 @@ export class SmartWallet {
   smartWalletContract: Contract
 
   get signer (): Signer {
+    console.log('called get signer', this.smartWalletContract.signer)
     return this.smartWalletContract.signer
   }
 

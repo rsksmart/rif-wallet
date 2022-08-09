@@ -99,11 +99,16 @@ export class RIFWallet extends Signer implements TypedDataSigner {
   }
 
   createDoRequest: CreateDoRequest = (type, onConfirm) => {
+    console.log('createDoRequest', type)
     return (...payload) => new Promise((resolve, reject) => {
+      console.log({ payload })
       const nextRequest = Object.freeze({
         type,
         payload,
-        confirm: (args?: RequestConfirmOverrides) => resolve(onConfirm(payload, args)),
+        confirm: (args?: RequestConfirmOverrides) => {
+          console.log('createDoRequest', { payload, args })
+          return resolve(onConfirm(payload, args))
+        },
         reject
       })
 
@@ -139,7 +144,13 @@ export class RIFWallet extends Signer implements TypedDataSigner {
 
   _signTypedData = this.createDoRequest(
     'signTypedData',
-    ((args: SignTypedDataArgs) => (this.smartWallet.signer as any as TypedDataSigner)._signTypedData(...args)) as CreateDoRequestOnConfirm
+    ((args: SignTypedDataArgs) => {
+      console.log('hheheheheh', args)
+      return (this.smartWallet.signer as any as TypedDataSigner)._signTypedData(...args).then((signed: any) => {
+        console.log(signed)
+        return signed
+      })
+    }) as CreateDoRequestOnConfirm
   ) as (...args: SignTypedDataArgs) => Promise<string>
 
   estimateGas (transaction: TransactionRequest): Promise<BigNumber> {
