@@ -9,44 +9,45 @@ import { Arrow } from '../../components/icons'
 import { WINDOW_HEIGHT } from '../../ux/slides/Dimensions'
 import { BlueButton } from '../../components/button/ButtonVariations'
 
-export const SecureYourWalletScreen: React.FC<ScreenProps<'SecureYourWallet'>> =
-  ({ navigation }) => {
-    return (
-      <View style={styles.parent}>
-        <TouchableOpacity onPress={() => navigation.navigate('CreateKeys')}>
-          <View style={styles.returnButtonView}>
-            <Arrow color={colors.white} rotate={270} width={30} height={30} />
-          </View>
-        </TouchableOpacity>
-        <View style={styles.itemContainer}>
-          <Image
-            style={styles.securitySafeImage}
-            source={require('../../images/safe.png')}
-          />
-          <View style={{ ...grid.row, ...styles.section }}>
-            <Text style={styles.title}>Secure your wallet</Text>
-          </View>
-          <View style={{ ...grid.row, ...styles.section }}>
-            <Text style={styles.subTitle}>
-              Before you create your wallet, we advise you to generate and store
-              your <Text style={styles.bold}>unique Master Key</Text>
-            </Text>
-          </View>
-          <View style={{ ...grid.row, ...styles.section }}>
-            <Text style={styles.subTitle}>
-              This key will help you restore your wallet and access your funds
-              on a new devise, in case the old one was lost or stolen
-            </Text>
-          </View>
+export const SecureYourWalletScreen: React.FC<
+  ScreenProps<'SecureYourWallet'>
+> = ({ navigation }) => {
+  return (
+    <View style={styles.parent}>
+      <TouchableOpacity onPress={() => navigation.navigate('CreateKeys')}>
+        <View style={styles.returnButtonView}>
+          <Arrow color={colors.white} rotate={270} width={30} height={30} />
         </View>
-        <View style={{ ...grid.row, ...styles.button1 }}>
-          <BlueButton
-            onPress={() => navigation.navigate('SecurityExplanation')}
-            testID="Address.ShareButton"
-            title={'secure now'}
-          />
+      </TouchableOpacity>
+      <View style={styles.itemContainer}>
+        <Image
+          style={styles.securitySafeImage}
+          source={require('../../images/safe.png')}
+        />
+        <View style={{ ...grid.row, ...styles.section }}>
+          <Text style={styles.title}>Secure your wallet</Text>
         </View>
-        {/*
+        <View style={{ ...grid.row, ...styles.section }}>
+          <Text style={styles.subTitle}>
+            Before you create your wallet, we advise you to generate and store
+            your <Text style={styles.bold}>unique Master Key</Text>
+          </Text>
+        </View>
+        <View style={{ ...grid.row, ...styles.section }}>
+          <Text style={styles.subTitle}>
+            This key will help you restore your wallet and access your funds on
+            a new devise, in case the old one was lost or stolen
+          </Text>
+        </View>
+      </View>
+      <View style={{ ...grid.row, ...styles.button1 }}>
+        <BlueButton
+          onPress={() => navigation.navigate('SecurityExplanation')}
+          testID="Address.ShareButton"
+          title={'secure now'}
+        />
+      </View>
+      {/*
         <View style={{ ...grid.row, ...styles.button2 }}>
           <WhiteButton
             onPress={() => console.log('TODO in different PR')}
@@ -55,9 +56,9 @@ export const SecureYourWalletScreen: React.FC<ScreenProps<'SecureYourWallet'>> =
           />
         </View>
         */}
-      </View>
-    )
-  }
+    </View>
+  )
+}
 
 const styles = StyleSheet.create({
   parent: {

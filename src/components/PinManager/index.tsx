@@ -9,21 +9,22 @@ interface Interface {
   handleSubmit: (enteredPin: string) => Promise<void> | any
 }
 
-const PinManagerView: React.FC<PinScreenType & { title: string | undefined }> =
-  ({ title, ...props }) => {
-    return (
-      <PinScreen
-        {...props}
-        MessageComponent={() => (
-          <MessageComponent
-            message={title}
-            ViewProps={{ testID: 'messageComponentView' }}
-            TextProps={{ testID: 'messageTextComponent' }}
-          />
-        )}
-      />
-    )
-  }
+const PinManagerView: React.FC<
+  PinScreenType & { title: string | undefined }
+> = ({ title, ...props }) => {
+  return (
+    <PinScreen
+      {...props}
+      MessageComponent={() => (
+        <MessageComponent
+          message={title}
+          ViewProps={{ testID: 'messageComponentView' }}
+          TextProps={{ testID: 'messageTextComponent' }}
+        />
+      )}
+    />
+  )
+}
 export const PinManager: React.FC<Interface> = ({ title, handleSubmit }) => {
   return (
     <PinContainer
