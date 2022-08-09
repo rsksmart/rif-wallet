@@ -1,15 +1,15 @@
 import React, { useContext } from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
-import { NavigationProp } from '../../RootNavigation'
-import LinearGradient from 'react-native-linear-gradient'
-import { setOpacity } from '../home/tokenColor'
-import { grid } from '../../styles/grid'
-import { SquareButton } from '../../components/button/SquareButton'
-import PlusIcon from '../../components/icons/PlusIcon'
-import { ContactsContext, IContact } from './ContactsContext'
 import { Paragraph } from '../../components'
+import { SquareButton } from '../../components/button/SquareButton'
 import { Arrow } from '../../components/icons'
 import DeleteIcon from '../../components/icons/DeleteIcon'
+import PlusIcon from '../../components/icons/PlusIcon'
+import { NavigationProp } from '../../RootNavigation'
+import { colors } from '../../styles'
+import { grid } from '../../styles/grid'
+import { setOpacity } from '../home/tokenColor'
+import { ContactsContext, IContact } from './ContactsContext'
 
 export const ContactsScreen: React.FC<{
   navigation: NavigationProp
@@ -17,20 +17,19 @@ export const ContactsScreen: React.FC<{
   const { contacts, deleteContact } = useContext(ContactsContext)
 
   return (
-    <LinearGradient
-      colors={['#f4f4f4', setOpacity('#373f48', 0.3)]}
-      style={styles.parent}>
+    <View style={styles.parent}>
       <View style={styles.titleLine}>
-        <Text style={styles.header}>My Contacts</Text>
+        <Text style={styles.header}>contacts</Text>
         <SquareButton
           title="add"
-          color="#000"
-          onPress={() => navigation.navigate('ContactEdit' as any)}
+          onPress={() => navigation.navigate('ContactEdit' as never)}
           icon={<PlusIcon color={'#000'} />}
         />
       </View>
       <ScrollView style={styles.contacts}>
-        {contacts.length === 0 && <Paragraph>No contacts yet</Paragraph>}
+        {contacts.length === 0 && (
+          <Paragraph style={styles.noContacts}>no contacts yet</Paragraph>
+        )}
         {contacts.map(contact => (
           <ContactRow
             key={contact.id.toString()}
@@ -40,7 +39,7 @@ export const ContactsScreen: React.FC<{
           />
         ))}
       </ScrollView>
-    </LinearGradient>
+    </View>
   )
 }
 
@@ -93,16 +92,20 @@ const ContactRow: React.FC<{
 
 const styles = StyleSheet.create({
   header: {
-    fontSize: 26,
-    textAlign: 'center',
-    color: '#5c5d5d',
+    fontSize: 20,
+    color: colors.text.primary,
+    padding: 20,
   },
   parent: {
     height: '100%',
+    backgroundColor: '#020034',
+    padding: 20,
+  },
+  noContacts: {
+    color: colors.text.primary,
   },
   contacts: {
-    margin: 20,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: setOpacity('#ffffff', 0.05),
     borderRadius: 20,
     padding: 20,
     shadowOpacity: 0.1,
@@ -120,7 +123,7 @@ const styles = StyleSheet.create({
   titleLine: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
   },
   center: {
     alignItems: 'center',
