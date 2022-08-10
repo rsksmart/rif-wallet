@@ -5,7 +5,7 @@ import { BigNumber } from 'ethers'
 import { SendTransactionRequest } from '../../lib/core'
 
 import { sharedStyles } from './sharedStyles'
-import { Loading, Paragraph } from '../../components'
+import { Loading, Paragraph, RegularText } from '../../components'
 import { ScreenWithWallet } from '../../screens/types'
 import useEnhancedWithGas from './useEnhancedWithGas'
 import { useTranslation } from 'react-i18next'
@@ -91,18 +91,25 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
               }>
               {enhancedTransactionRequest.functionName && (
                 <>
-                  <Paragraph>contract interaction</Paragraph>
-                  <Paragraph>
-                    function: {enhancedTransactionRequest.functionName}
-                  </Paragraph>
+                  <RegularText style={styles.label}>
+                    contract interaction
+                  </RegularText>
+
+                  <ReadOnlyField
+                    label={'function'}
+                    value={enhancedTransactionRequest.functionName}
+                    testID={'Data.View'}
+                  />
                 </>
               )}
               {enhancedTransactionRequest.functionParameters &&
                 enhancedTransactionRequest.functionParameters.map(
                   ({ name, value }: any) => (
-                    <Paragraph>
-                      {name}: {value.toString()}
-                    </Paragraph>
+                    <ReadOnlyField
+                      label={name}
+                      value={value.toString()}
+                      testID={'Data.View'}
+                    />
                   ),
                 )}
             </View>
@@ -169,10 +176,17 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
 export default ReviewTransactionModal
 
 const styles = StyleSheet.create({
+  label: {
+    margin: 5,
+  },
   boxStyle: {
     borderWidth: 0.5,
-    borderColor: 'black',
-    padding: 5,
+    borderColor: colors.darkGray,
+    padding: 10,
+    paddingBottom: 5,
+    borderRadius: 15,
+    marginTop: 5,
+    marginBottom: 5,
   },
 
   buttonsSection: {
