@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { Paragraph } from '../../components'
+import PrimaryButton from '../../components/button/PrimaryButton'
 import { SquareButton } from '../../components/button/SquareButton'
 import { Arrow } from '../../components/icons'
 import DeleteIcon from '../../components/icons/DeleteIcon'
@@ -19,13 +20,14 @@ export const ContactsScreen: React.FC<{
 
   return (
     <View style={styles.parent}>
-      <View style={styles.titleLine}>
-        <Text style={styles.header}>Contacts</Text>
-        <SquareButton
-          title="add"
-          onPress={() => navigation.navigate('ContactEdit' as never)}
-          icon={<PlusIcon color={'#000'} />}
-        />
+      <View style={styles.header}>
+        <Text style={styles.title}>Contacts</Text>
+        <PrimaryButton
+          style={styles.addButton}
+          onPress={() => navigation.navigate('ContactEdit' as never)}>
+          {/* Change this icon later */}
+          <PlusIcon style={styles.addButtonIcon} color={'#fff'} />
+        </PrimaryButton>
       </View>
       <ScrollView style={styles.contacts}>
         {contacts.length === 0 && (
@@ -92,16 +94,30 @@ const ContactRow: React.FC<{
 )
 
 const styles = StyleSheet.create({
+  parent: {
+    height: '100%',
+    backgroundColor: '#020034',
+    padding: 20,
+  },
   header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  title: {
     fontFamily: fonts.regular,
     fontSize: 22,
     color: colors.text.primary,
     padding: 10,
   },
-  parent: {
-    height: '100%',
-    backgroundColor: '#020034',
-    padding: 20,
+  addButton: {
+    backgroundColor: colors.background.bustyBlue,
+    flexDirection: 'row',
+    height: 32,
+    width: 32,
+  },
+  addButtonIcon: {
+    alignSelf: 'center',
   },
   noContacts: {
     fontFamily: fonts.regular,
@@ -122,11 +138,6 @@ const styles = StyleSheet.create({
   },
   label: {
     fontWeight: '600',
-  },
-  titleLine: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
   },
   center: {
     alignItems: 'center',
