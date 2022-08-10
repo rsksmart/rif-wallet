@@ -7,6 +7,7 @@ import DeleteIcon from '../../components/icons/DeleteIcon'
 import PlusIcon from '../../components/icons/PlusIcon'
 import { NavigationProp } from '../../RootNavigation'
 import { colors } from '../../styles'
+import { fonts } from '../../styles/fonts'
 import { grid } from '../../styles/grid'
 import { setOpacity } from '../home/tokenColor'
 import { ContactsContext, IContact } from './ContactsContext'
@@ -19,7 +20,7 @@ export const ContactsScreen: React.FC<{
   return (
     <View style={styles.parent}>
       <View style={styles.titleLine}>
-        <Text style={styles.header}>contacts</Text>
+        <Text style={styles.header}>Contacts</Text>
         <SquareButton
           title="add"
           onPress={() => navigation.navigate('ContactEdit' as never)}
@@ -92,9 +93,10 @@ const ContactRow: React.FC<{
 
 const styles = StyleSheet.create({
   header: {
-    fontSize: 20,
+    fontFamily: fonts.regular,
+    fontSize: 22,
     color: colors.text.primary,
-    padding: 20,
+    padding: 10,
   },
   parent: {
     height: '100%',
@@ -102,6 +104,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   noContacts: {
+    fontFamily: fonts.regular,
     color: colors.text.primary,
   },
   contacts: {
