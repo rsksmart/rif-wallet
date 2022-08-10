@@ -1,11 +1,12 @@
 import React, { useContext } from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import { Paragraph } from '../../components'
 import PrimaryButton from '../../components/button/PrimaryButton'
 import { SquareButton } from '../../components/button/SquareButton'
 import { Arrow } from '../../components/icons'
 import DeleteIcon from '../../components/icons/DeleteIcon'
 import PlusIcon from '../../components/icons/PlusIcon'
+import { SearchIcon } from '../../components/icons/SearchIcon'
 import { NavigationProp } from '../../RootNavigation'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
@@ -34,12 +35,25 @@ export const ContactsScreen: React.FC<{
           <Paragraph style={styles.noContacts}>no contacts yet</Paragraph>
         )}
         {contacts.map(contact => (
-          <ContactRow
-            key={contact.id.toString()}
-            contact={contact}
-            deleteContact={deleteContact}
-            navigation={navigation}
-          />
+          <>
+            <View style={styles.searchView}>
+              <TextInput
+                style={styles.searchInput}
+                placeholder={'type to find...'}
+                placeholderTextColor={colors.purple}
+              />
+              <SearchIcon
+                color={colors.purple}
+                width={40}
+                height={40}></SearchIcon>
+            </View>
+            <ContactRow
+              key={contact.id.toString()}
+              contact={contact}
+              deleteContact={deleteContact}
+              navigation={navigation}
+            />
+          </>
         ))}
       </ScrollView>
     </View>
@@ -96,7 +110,7 @@ const ContactRow: React.FC<{
 const styles = StyleSheet.create({
   parent: {
     height: '100%',
-    backgroundColor: '#020034',
+    backgroundColor: colors.background.darkBlue,
     padding: 20,
   },
   header: {
@@ -118,6 +132,23 @@ const styles = StyleSheet.create({
   },
   addButtonIcon: {
     alignSelf: 'center',
+  },
+  searchView: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: colors.background.darkBlue,
+    borderWidth: 0.8,
+    borderColor: colors.purple,
+    borderRadius: 40,
+    paddingHorizontal: 10,
+  },
+  searchInput: {
+    flex: 5,
+    fontSize: 14,
+    color: colors.purple,
+    fontFamily: fonts.regular,
   },
   noContacts: {
     fontFamily: fonts.regular,
