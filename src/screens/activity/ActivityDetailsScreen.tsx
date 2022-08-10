@@ -68,6 +68,13 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
             </View>
           </View>
         </ActivityField>
+        <ActivityField title="symbol">
+          <View style={styles.flexDirRow}>
+            <SemiBoldText>
+              {transaction.enhancedTransaction?.symbol}
+            </SemiBoldText>
+          </View>
+        </ActivityField>
         <ActivityField title="to">
           {/*  @TODO get name of the person who the user sent the coins to*/}
           {/*<Text>Name Here</Text>*/}
