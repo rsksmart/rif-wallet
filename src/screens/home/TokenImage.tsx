@@ -355,7 +355,7 @@ export const TokenImage: React.FC<{
     case 'XUSD':
       return (
         <Image
-          source={require('@rsksmart/rsk-contract-metadata/images/xusd.svg')}
+          source={require('@rsksmart/rsk-contract-metadata/images/xusd.png')}
           style={iconStyle}
         />
       )
