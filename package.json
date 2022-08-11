@@ -30,7 +30,7 @@
     "@rsksmart/rlogin-dpath": "^1.0.1",
     "@rsksmart/rns-resolver.js": "^1.0.1",
     "@rsksmart/rns-sdk": "^1.0.0-beta.3",
-    "@rsksmart/rsk-contract-metadata": "^1.0.15",
+    "@rsksmart/rsk-contract-metadata": "^1.0.17",
     "@rsksmart/rsk-testnet-contract-metadata": "^1.0.11",
     "@rsksmart/rsk-utils": "^1.1.0",
     "@types/react-native-snap-carousel": "^3.8.5",
