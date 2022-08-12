@@ -1,19 +1,17 @@
 import React, { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
+  Image,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
-  Image,
 } from 'react-native'
-import { Paragraph } from '../../components'
-import PrimaryButton from '../../components/button/PrimaryButton'
+import Icon from 'react-native-vector-icons/FontAwesome5'
 import { SquareButton } from '../../components/button/SquareButton'
 import { Arrow } from '../../components/icons'
 import DeleteIcon from '../../components/icons/DeleteIcon'
-import PlusIcon from '../../components/icons/PlusIcon'
 import { SearchIcon } from '../../components/icons/SearchIcon'
 import { NavigationProp } from '../../RootNavigation'
 import { colors } from '../../styles'
@@ -32,12 +30,14 @@ export const ContactsScreen: React.FC<{
     <View style={styles.parent}>
       <View style={styles.header}>
         <Text style={styles.title}>Contacts</Text>
-        <PrimaryButton
-          style={styles.addButton}
-          onPress={() => navigation.navigate('ContactEdit' as never)}>
-          {/* Change this icon later */}
-          <PlusIcon style={styles.addButtonIcon} color={'#fff'} />
-        </PrimaryButton>
+        <Icon.Button
+          name="user-plus"
+          onPress={() => navigation.navigate('ContactEdit' as never)}
+          backgroundColor={colors.background.bustyBlue}
+          iconStyle={styles.addButton}
+          size={15}
+          borderRadius={20}
+        />
       </View>
       {contacts.length === 0 ? (
         <>
@@ -148,13 +148,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   addButton: {
-    backgroundColor: colors.background.bustyBlue,
-    flexDirection: 'row',
-    height: 32,
-    width: 32,
-  },
-  addButtonIcon: {
-    alignSelf: 'center',
+    padding: 3,
+    marginRight: 0,
+    color: colors.lightPurple,
   },
   searchView: {
     flex: 1,
