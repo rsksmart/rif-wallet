@@ -1752,7 +1752,7 @@
     ethers "^5.5.1"
     js-sha3 "^0.8.0"
 
-"@rsksmart/rsk-contract-metadata@^1.0.15":
+"@rsksmart/rsk-contract-metadata@^1.0.17":
   version "1.0.17"
   resolved "https://registry.yarnpkg.com/@rsksmart/rsk-contract-metadata/-/rsk-contract-metadata-1.0.17.tgz#d7558628c983bc4e9937235388276946c6d907d0"
   integrity sha512-99eDgEQ4/FOsSg1K65/A+cJYvDYaEHXQmU/zT46BkdlH/KVwHNm12UyyZ4OJXWXJZD/qQ6iV6ltonV8QBYToiA==
