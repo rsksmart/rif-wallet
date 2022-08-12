@@ -7,6 +7,7 @@ import BaseButton, { BaseButtonInterface } from './BaseButton'
 export interface ButtonInterface extends BaseButtonInterface {
   title?: string
   icon?: any
+  accessibilityLabel?: string
 }
 
 const Button: React.FC<ButtonInterface & { buttonStyles: any }> = ({

@@ -107,6 +107,7 @@ export const WordSelector: React.FC<Props> = ({
           autoCapitalize="none"
           onBlur={() => setOptions([])}
           autoCompleteType="off"
+          accessibilityLabel={`wordInput${wordIndex + 1}`}
         />
         <View style={styles.wordStatus}>
           {isMatch && (
@@ -122,7 +123,8 @@ export const WordSelector: React.FC<Props> = ({
           {!isMatch && (
             <TouchableOpacity
               onPress={() => selectWord('')}
-              testID={'deleteIcon'}>
+              testID={'deleteIcon'}
+              accessibilityLabel={`deleteButton${wordIndex + 1}`}>
               <DeleteIcon
                 color={colors.white}
                 width={40}
@@ -135,7 +137,10 @@ export const WordSelector: React.FC<Props> = ({
       </View>
       <View style={sharedMnemonicStyles.suggestionRow}>
         {options.map((item, index) => (
-          <TouchableOpacity onPress={() => selectWord(item)} key={index}>
+          <TouchableOpacity
+            onPress={() => selectWord(item)}
+            key={index}
+            accessibilityLabel={`selectSuggestion${index}`}>
             <View
               style={
                 index === 0

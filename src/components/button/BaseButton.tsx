@@ -5,6 +5,7 @@ export interface BaseButtonInterface {
   onPress?: () => any
   disabled?: boolean
   testID?: string
+  accessibilityLabel?: string
   style?: any
   underlayColor?: string
 }
@@ -15,6 +16,7 @@ const BaseButton: React.FC<BaseButtonInterface & { children: ReactNode }> = ({
   underlayColor,
   disabled,
   testID,
+  accessibilityLabel,
   onPress,
 }) => {
   return (
@@ -23,7 +25,8 @@ const BaseButton: React.FC<BaseButtonInterface & { children: ReactNode }> = ({
       onPress={disabled ? undefined : onPress}
       underlayColor={underlayColor}
       disabled={disabled}
-      testID={testID}>
+      testID={testID}
+      accessibilityLabel={accessibilityLabel}>
       <View style={styles.wrapper}>{children}</View>
     </TouchableHighlight>
   )
