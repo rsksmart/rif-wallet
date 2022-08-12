@@ -1,5 +1,13 @@
 import React, { useContext } from 'react'
-import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { useTranslation } from 'react-i18next'
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Image,
+} from 'react-native'
 import { Paragraph } from '../../components'
 import PrimaryButton from '../../components/button/PrimaryButton'
 import { SquareButton } from '../../components/button/SquareButton'
@@ -17,6 +25,7 @@ import { ContactsContext, IContact } from './ContactsContext'
 export const ContactsScreen: React.FC<{
   navigation: NavigationProp
 }> = ({ navigation }) => {
+  const { t } = useTranslation()
   const { contacts, deleteContact } = useContext(ContactsContext)
 
   return (
@@ -30,32 +39,46 @@ export const ContactsScreen: React.FC<{
           <PlusIcon style={styles.addButtonIcon} color={'#fff'} />
         </PrimaryButton>
       </View>
-      <ScrollView style={styles.contacts}>
-        {contacts.length === 0 && (
-          <Paragraph style={styles.noContacts}>no contacts yet</Paragraph>
-        )}
-        {contacts.map(contact => (
-          <>
-            <View style={styles.searchView}>
-              <TextInput
-                style={styles.searchInput}
-                placeholder={'type to find...'}
-                placeholderTextColor={colors.purple}
+      {contacts.length === 0 ? (
+        <>
+          <Image
+            source={require('../../images/empty-contact.png')}
+            style={styles.noContactsImage}
+          />
+          <View style={styles.noContactsTextView}>
+            <Text style={styles.noContactsText}>
+              {t('Your contact list is empty.')}
+            </Text>
+            <Text style={styles.noContactsText}>
+              {t('Start by creating a new contact.')}
+            </Text>
+          </View>
+        </>
+      ) : (
+        <ScrollView style={styles.contactsList}>
+          {contacts.map(contact => (
+            <>
+              <View style={styles.searchView}>
+                <TextInput
+                  style={styles.searchInput}
+                  placeholder={'type to find...'}
+                  placeholderTextColor={colors.purple}
+                />
+                <SearchIcon
+                  color={colors.purple}
+                  width={40}
+                  height={40}></SearchIcon>
+              </View>
+              <ContactRow
+                key={contact.id.toString()}
+                contact={contact}
+                deleteContact={deleteContact}
+                navigation={navigation}
               />
-              <SearchIcon
-                color={colors.purple}
-                width={40}
-                height={40}></SearchIcon>
-            </View>
-            <ContactRow
-              key={contact.id.toString()}
-              contact={contact}
-              deleteContact={deleteContact}
-              navigation={navigation}
-            />
-          </>
-        ))}
-      </ScrollView>
+            </>
+          ))}
+        </ScrollView>
+      )}
     </View>
   )
 }
@@ -150,11 +173,23 @@ const styles = StyleSheet.create({
     color: colors.purple,
     fontFamily: fonts.regular,
   },
-  noContacts: {
-    fontFamily: fonts.regular,
-    color: colors.text.primary,
+  noContactsImage: {
+    flex: 4,
+    alignSelf: 'center',
+    width: '90%',
+    resizeMode: 'contain',
   },
-  contacts: {
+  noContactsTextView: {
+    flex: 1,
+    alignSelf: 'center',
+  },
+  noContactsText: {
+    color: colors.text.primary,
+    fontFamily: fonts.regular,
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  contactsList: {
     backgroundColor: setOpacity('#ffffff', 0.05),
     borderRadius: 20,
     padding: 20,
