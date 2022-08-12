@@ -79,6 +79,7 @@ const resources = {
       Save: 'Save',
       "Your contact list is empty.": 'Your contact list is empty.',
       "Start by creating a new contact.": 'Start by creating a new contact.',
+      'type to find...': 'type to find...',
     },
   },
   es: {
@@ -88,6 +89,7 @@ const resources = {
       Refresh: 'Refrescar',
       "Your contact list is empty.": 'Su lista de contactos está vacía.',
       "Start by creating a new contact.": 'Comience creando un nuevo contacto.',
+      'type to find...': 'escriba para buscar...',
     },
   },
 }

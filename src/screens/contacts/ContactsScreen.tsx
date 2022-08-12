@@ -61,7 +61,7 @@ export const ContactsScreen: React.FC<{
               <View style={styles.searchView}>
                 <TextInput
                   style={styles.searchInput}
-                  placeholder={'type to find...'}
+                  placeholder={t('type to find...')}
                   placeholderTextColor={colors.purple}
                 />
                 <SearchIcon
@@ -140,12 +140,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    padding: 10,
   },
   title: {
     fontFamily: fonts.regular,
     fontSize: 22,
     color: colors.text.primary,
-    padding: 10,
   },
   addButton: {
     padding: 3,
@@ -168,6 +168,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.purple,
     fontFamily: fonts.regular,
+    paddingLeft: 15,
   },
   noContactsImage: {
     flex: 4,
@@ -188,7 +189,8 @@ const styles = StyleSheet.create({
   contactsList: {
     backgroundColor: setOpacity('#ffffff', 0.05),
     borderRadius: 20,
-    padding: 20,
+    marginTop: 10,
+    padding: 10,
     shadowOpacity: 0.1,
     shadowRadius: 10,
   },
