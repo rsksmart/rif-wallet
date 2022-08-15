@@ -1,5 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import { shortAddress } from '../../lib/utils'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
 import { grid } from '../../styles/grid'
@@ -29,7 +30,9 @@ export const ContactRow: React.FC<IContactRowProps> = ({
       }}>
       <View style={grid.column}>
         <Text style={styles.label}>{contact.name}</Text>
-        <Text style={styles.address}>{contact.displayAddress}</Text>
+        <Text style={styles.address}>
+          {shortAddress(contact.displayAddress, 8)}
+        </Text>
       </View>
       {/* //     <View style={grid.column3}>
 //       <Text style={styles.label}>{contact.name}</Text>
