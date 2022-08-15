@@ -1,13 +1,14 @@
 import React, { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
+  Alert,
   Image,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { SearchIcon } from '../../components/icons/SearchIcon'
@@ -15,7 +16,7 @@ import { NavigationProp } from '../../RootNavigation'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
 import { ContactRow } from './ContactRow'
-import { ContactsContext } from './ContactsContext'
+import { ContactsContext, IContact } from './ContactsContext'
 
 export const ContactsScreen: React.FC<{
   navigation: NavigationProp
@@ -23,6 +24,14 @@ export const ContactsScreen: React.FC<{
   const { t } = useTranslation()
   const { contacts, deleteContact } = useContext(ContactsContext)
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
+
+  const removalConfirmation = (contact: IContact) => {
+    // TODO: improve this alert
+    Alert.alert("Delete contact", "Are you sure you want to delete this contact?", [
+      { text: "Cancel", onPress: () => {}, style: "cancel" },
+      { text: "Delete", onPress: () => deleteContact(contact.id) },
+    ])
+  }
 
   return (
     <View style={styles.parent}>
@@ -73,7 +82,7 @@ export const ContactsScreen: React.FC<{
               }>
               <ContactRow
                 contact={contact}
-                deleteContact={deleteContact}
+                onDelete={() => removalConfirmation(contact)}
                 navigation={navigation}
                 selected={selectedIndex === index}
               />
