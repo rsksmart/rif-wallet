@@ -8,7 +8,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { SearchIcon } from '../../components/icons/SearchIcon'
@@ -27,10 +27,14 @@ export const ContactsScreen: React.FC<{
 
   const removalConfirmation = (contact: IContact) => {
     // TODO: improve this alert
-    Alert.alert("Delete contact", "Are you sure you want to delete this contact?", [
-      { text: "Cancel", onPress: () => {}, style: "cancel" },
-      { text: "Delete", onPress: () => deleteContact(contact.id) },
-    ])
+    Alert.alert(
+      'Delete contact',
+      'Are you sure you want to delete this contact?',
+      [
+        { text: 'Cancel', onPress: () => {}, style: 'cancel' },
+        { text: 'Delete', onPress: () => deleteContact(contact.id) },
+      ],
+    )
   }
 
   return (
@@ -74,20 +78,24 @@ export const ContactsScreen: React.FC<{
               width={40}
               height={40}></SearchIcon>
           </View>
-          {contacts.map((contact, index) => (
-            <TouchableOpacity
-              key={index}
-              onPress={() =>
-                setSelectedIndex(selectedIndex === index ? null : index)
-              }>
-              <ContactRow
-                contact={contact}
-                onDelete={() => removalConfirmation(contact)}
-                navigation={navigation}
-                selected={selectedIndex === index}
-              />
-            </TouchableOpacity>
-          ))}
+          {contacts
+            .sort((a, b) =>
+              a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1,
+            )
+            .map((contact, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() =>
+                  setSelectedIndex(selectedIndex === index ? null : index)
+                }>
+                <ContactRow
+                  contact={contact}
+                  onDelete={() => removalConfirmation(contact)}
+                  navigation={navigation}
+                  selected={selectedIndex === index}
+                />
+              </TouchableOpacity>
+            ))}
         </ScrollView>
       )}
     </View>
