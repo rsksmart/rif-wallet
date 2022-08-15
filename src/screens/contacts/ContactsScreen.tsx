@@ -65,25 +65,20 @@ export const ContactsScreen: React.FC<{
               width={40}
               height={40}></SearchIcon>
           </View>
-          {contacts
-            .map(contact => {
-              console.log('contact', contact)
-              return contact
-            })
-            .map((contact, index) => (
-              <TouchableOpacity
-                onPress={() =>
-                  setSelectedIndex(selectedIndex === index ? null : index)
-                }>
-                <ContactRow
-                  key={contact.id.toString()}
-                  contact={contact}
-                  deleteContact={deleteContact}
-                  navigation={navigation}
-                  selected={selectedIndex === index}
-                />
-              </TouchableOpacity>
-            ))}
+          {contacts.map((contact, index) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() =>
+                setSelectedIndex(selectedIndex === index ? null : index)
+              }>
+              <ContactRow
+                contact={contact}
+                deleteContact={deleteContact}
+                navigation={navigation}
+                selected={selectedIndex === index}
+              />
+            </TouchableOpacity>
+          ))}
         </ScrollView>
       )}
     </View>

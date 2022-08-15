@@ -1,5 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import Icon from 'react-native-vector-icons/FontAwesome'
+import DeleteIcon from '../../components/icons/DeleteIcon'
 import { shortAddress } from '../../lib/utils'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
@@ -22,18 +24,29 @@ export const ContactRow: React.FC<IContactRowProps> = ({
   return (
     <View
       style={{
-        ...grid.row,
         ...styles.card,
         backgroundColor: selected
           ? colors.background.bustyBlue
           : colors.background.primary,
       }}>
-      <View style={grid.column}>
-        <Text style={styles.label}>{contact.name}</Text>
+      <View style={styles.contactInfo}>
+        <Text style={styles.contactName}>{contact.name}</Text>
         <Text style={styles.address}>
           {shortAddress(contact.displayAddress, 8)}
         </Text>
       </View>
+      {selected && (
+        <View style={styles.actions}>
+          <DeleteIcon
+            style={styles.delete}
+            color={colors.purple}
+            viewBox={'-8 -8 40 40'}
+            width={30}
+            height={30}
+            onPress={() => deleteContact(contact.id)}
+          />
+        </View>
+      )}
       {/* //     <View style={grid.column3}>
 //       <Text style={styles.label}>{contact.name}</Text>
 //     </View>
@@ -78,25 +91,36 @@ export const ContactRow: React.FC<IContactRowProps> = ({
 
 const styles = StyleSheet.create({
   card: {
+    flexDirection: 'row',
     paddingVertical: 20,
     marginVertical: 5,
     borderRadius: 15,
     backgroundColor: colors.background.primary,
+    paddingHorizontal: 20,
   },
-  label: {
+  contactInfo: {
+    flex: 1,
+  },
+  contactName: {
     fontFamily: fonts.regular,
     fontSize: 13,
     fontWeight: '600',
     color: colors.text.primary,
-    paddingLeft: 20,
   },
   address: {
     fontFamily: fonts.regular,
     fontSize: 10,
     color: colors.text.secondary,
-    paddingLeft: 20,
   },
-  center: {
-    alignItems: 'center',
+  actions: {
+    flex: 1,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+  },
+  delete: {
+    flex: 1,
+    borderRadius: 50,
+    borderWidth: 1,
+    borderColor: colors.lightPurple,
   },
 })
