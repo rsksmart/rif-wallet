@@ -9,7 +9,6 @@ source 'https://github.com/passbase/cocoapods-specs.git'
 source 'https://github.com/passbase/microblink-cocoapods-specs.git'
 
 target 'sWallet' do
-  use_frameworks!
   config = use_native_modules!
 
   use_react_native!(
