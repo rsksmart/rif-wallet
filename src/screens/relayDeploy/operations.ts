@@ -23,7 +23,7 @@ const setupSDK = async (rifWallet: RIFWallet): Promise<SDK> => {
   const sdkFullConfig: SDKConfiguration = {
     ...sdkConfig,
     chainId,
-    signer: rifWallet, // .smartWallet.signer,
+    signer: rifWallet.smartWallet.signer,
   }
 
   // @ts-ignore provider is not undefiend from the rifWallet
@@ -37,35 +37,10 @@ const createDeployRequest = async (sdk: SDK, rifWallet: RIFWallet) => {
   const rifToken = '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe'
   const testToken = '0xF5859303f76596dD558B438b18d0Ce0e1660F3ea'
 
-  /*
-  const deployRequest: DeployRequest = {
-    request: {
-      relayHub: this.relayHubAddress,
-      from: from,
-      to: ZERO_ADDRESS,
-      value: '0',
-      nonce: nonce,
-      data: '0x',
-      tokenContract: tokenContract,
-      tokenAmount: tokenAmount.toString(),
-      tokenGas: tokenGas.toString(),
-      recoverer: recoverer ?? ZERO_ADDRESS,
-      index: index?.toString() ?? '0'
-    },
-    relayData: {
-      gasPrice: gasPrice?.toString() ??  (await this.provider.getGasPrice()).toString(), //in WEI
-      relayWorker: this.relayWorkerAddress,
-      callForwarder: this.factory.address,
-      callVerifier: this.deployVerifierContract.address,
-      domainSeparator: getDomainSeparatorHash(this.factory.address, this.chainId)
-    }
-  }
-  */
-
   return relayUtils.createDeployRequest(
     signerAddress.toLowerCase(),
     rifToken,
-    '1', // 10,
+    '0', // 10,
     '0x00', // 30000,
   )
 }
@@ -96,7 +71,7 @@ const postRequestToRelay = async (
       relayRequest: request,
       metadata,
     })
-    .then((response: AxiosResponse) => console.log('SERVER', response.data))
+    .then((response: AxiosResponse) => console.log('SERVER', response))
     .catch(console.log)
 }
 
@@ -121,6 +96,7 @@ export const deploySmartWallet = async (rifWallet: RIFWallet) => {
     deployRequest,
   )
 
+  /*
   // @ts-ignore
   const signature2 = await rifWallet.smartWallet.signer._signTypedData(
     domain,
@@ -133,7 +109,7 @@ export const deploySmartWallet = async (rifWallet: RIFWallet) => {
     signature2,
     equal: signature === signature2,
   })
-
+  */
   // let's check the signature:
   /*
   const typedMessage = {

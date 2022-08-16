@@ -145,9 +145,10 @@ export class RIFWallet extends Signer implements TypedDataSigner {
   _signTypedData = this.createDoRequest(
     'signTypedData',
     ((args: SignTypedDataArgs) => {
-      console.log('hheheheheh', args)
+      console.log('[RIF Wallet] - signedTypedData hit ;-)')
+
       return (this.smartWallet.signer as any as TypedDataSigner)._signTypedData(...args).then((signed: any) => {
-        console.log(signed)
+        console.log('[RIF Wallet]', { signed })
         return signed
       })
     }) as CreateDoRequestOnConfirm
