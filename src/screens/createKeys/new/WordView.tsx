@@ -17,7 +17,11 @@ export const WordView: React.FC<WordInterface> = ({ number, text }) => (
         </View>
       </View>
       <View>
-        <Text style={sharedMnemonicStyles.wordText}>{text}</Text>
+        <Text
+          style={sharedMnemonicStyles.wordText}
+          accessibilityLabel={`word${number}`}>
+          {text}
+        </Text>
       </View>
     </View>
   </View>
