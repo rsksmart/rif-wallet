@@ -1,0 +1,29 @@
+{
+  "relayRequest":{
+     "request":{
+        "relayHub":"0x66Fa9FEAfB8Db66Fe2160ca7aEAc7FC24e254387",
+        "to":"0x0000000000000000000000000000000000000000",
+        "data":"0x",
+        "from":"0x3Dd03d7d6c3137f1Eb7582Ba5957b8A2e26f304A",
+        "value":"0",
+        "nonce":"0",
+        "tokenAmount":"0",
+        "tokenGas":"0x00",
+        "tokenContract":"0xF5859303f76596dD558B438b18d0Ce0e1660F3ea",
+        "recoverer":"0x0000000000000000000000000000000000000000",
+        "index":"1"
+     },
+     "relayData":{
+        "gasPrice":"65164000",
+        "callVerifier":"0x5C6e96a84271AC19974C3e99d6c4bE4318BfE483",
+        "domainSeparator":"0xa81483953da7601ef828906dbab2e4baf21ddfd3d3c484fe7c43c55836c6c772",
+        "callForwarder":"0xeaB5b9fA91aeFFaA9c33F9b33d12AB7088fa7f6f",
+        "relayWorker":"0x74105590d404df3f384a099c2e55135281ca6b40"
+     }
+  },
+  "metadata":{
+     "relayHubAddress":"0x66Fa9FEAfB8Db66Fe2160ca7aEAc7FC24e254387",
+     "signature":"0x188146b302c61965e5539b5555ef451967355290bb7a0170374f8cfcc28e26a8520bb494e506901e581c29c47be861a16ac660f858a156812e9eadb9c83a4ebd1b",
+     "relayMaxNonce":71
+  }
+}

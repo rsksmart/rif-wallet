@@ -1,4 +1,4 @@
-import { EIP712Domain } from 'eth-sig-util'
+import { Signer } from "ethers"
 
 export const DeployRequestDataType = [
   { name: 'relayHub', type: 'address' },
@@ -45,17 +45,6 @@ export const RelayRequestType = [
   { name: 'relayData', type: 'RelayData' },
 ]
 
-export const dataTypeFields = (isDeployRequest: boolean) =>
-  isDeployRequest
-    ? {
-        RelayRequest: DeployRequestType,
-        RelayData: RelayDataType,
-      }
-    : {
-        RelayRequest: RelayRequestType,
-        RelayData: RelayDataType,
-      }
-
 // use these values in registerDomainSeparator
 export const DomainSeparatorType = {
   prefix: 'string name,string version',
@@ -63,14 +52,13 @@ export const DomainSeparatorType = {
   version: '2',
 }
 
-export function getDomainSeparator(
-  verifyingContract: string,
-  chainId: number,
-): EIP712Domain {
-  return {
-    name: DomainSeparatorType.name,
-    version: DomainSeparatorType.version,
-    chainId: chainId,
-    verifyingContract: verifyingContract,
-  }
+export interface SDKConfiguration {
+  chainId?: number
+  signer?: Signer
+  smartWalletFactoryContractAddress?: string
+  smartWalletContractAddress?: string
+  relayHubContractAddress?: string
+  relayWorkerAddress: string
+  relayVerifierAddress: string
+  deployVerifierAddress: string
 }
