@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View, Image } from 'react-native'
+import { Image, StyleSheet, View } from 'react-native'
 
-import { NavigationProp } from '../../RootNavigation'
-import SelectedTokenComponent from './SelectedTokenComponent'
-import { getTokenColor } from './tokenColor'
-import PortfolioComponent from './PortfolioComponent'
-import { useSocketsState } from '../../subscriptions/RIFSockets'
-import { colors } from '../../styles'
-import SendReceiveButtonComponent from './SendReceiveButtonComponent'
+import RampSdk from '@ramp-network/react-native-sdk'
 import { Paragraph } from '../../components'
-import { useSelectedWallet } from '../../Context'
+import { toChecksumAddress } from '../../components/address/lib'
 import { LoadingScreen } from '../../components/loading/LoadingScreen'
+import { useSelectedWallet } from '../../Context'
 import { balanceToDisplay } from '../../lib/utils'
+import { NavigationProp } from '../../RootNavigation'
+import { colors } from '../../styles'
+import { useSocketsState } from '../../subscriptions/RIFSockets'
+import PortfolioComponent from './PortfolioComponent'
+import SelectedTokenComponent from './SelectedTokenComponent'
+import SendReceiveButtonComponent from './SendReceiveButtonComponent'
+import { getTokenColor } from './tokenColor'
 
 export type HomeScreenProps = {
   navigation: NavigationProp
@@ -23,7 +25,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   changeTopColor,
 }) => {
   const { state } = useSocketsState()
-  const { selectedWalletIndex } = useSelectedWallet()
+  const { selectedWalletIndex, wallet, chainId } = useSelectedWallet()
 
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
     undefined,
@@ -56,9 +58,30 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       case 'RECEIVE':
         return navigation.navigate('Receive')
       case 'FAUCET':
-        console.log('@todo: faucet component is not implemented yet.')
+        let address = wallet?.smartWallet.smartWalletContract.address
+        addBalance(toChecksumAddress(address, chainId))
         return
     }
+  }
+
+  const addBalance = (address: string) => {
+    const ramp = new RampSdk({
+      // for testnet:
+      // url: 'https://ri-widget-staging.firebaseapp.com/',
+      url: 'https://ri-widget-staging.web.app/',
+
+      // for IOV:
+      swapAsset: 'RSK_RDOC',
+      // userAddress must be lowercase or checksummed correctly:
+      userAddress: address,
+
+      // for the dapp:
+      hostAppName: 'Ramp POC',
+      hostLogoUrl: 'https://rampnetwork.github.io/assets/misc/test-logo.png',
+    })
+
+    ramp.on('*', e => console.log(e))
+    ramp.show()
   }
 
   // pass the new color to Core to update header:
