@@ -37,6 +37,10 @@ export const ContactsScreen: React.FC<{
     )
   }
 
+  const editContact = (contact: IContact) => {
+    console.log('edit contact', contact)
+  }
+
   return (
     <View style={styles.parent}>
       <View style={styles.header}>
@@ -91,6 +95,7 @@ export const ContactsScreen: React.FC<{
                 <ContactRow
                   contact={contact}
                   onDelete={() => removalConfirmation(contact)}
+                  onEdit={() => editContact(contact)}
                   navigation={navigation}
                   selected={selectedIndex === index}
                 />
