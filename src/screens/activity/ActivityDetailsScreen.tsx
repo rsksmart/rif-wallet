@@ -13,6 +13,7 @@ import { NavigationProp } from '../../RootNavigation'
 import { SemiBoldText } from '../../components'
 import ActivityField from '../../components/activity/ActivityField'
 import { spacing } from '../../styles'
+import { TokenImage } from '../home/TokenImage'
 
 export type ActivityDetailsScreenProps = {
   route: { params: IActivityTransaction }
@@ -55,24 +56,30 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
       <View style={spacing.mh25}>
         <ActivityField title="value">
           <View style={styles.flexDirRow}>
+            {transaction.enhancedTransaction?.symbol && (
+              <View style={styles.assetIcon}>
+                <TokenImage
+                  symbol={transaction.enhancedTransaction?.symbol}
+                  height={24}
+                  width={24}
+                />
+              </View>
+            )}
             <View style={styles.amountContainer}>
               {/*  @TODO get cash amount for this text */}
               {/*<Text style={{ fontWeight: 'bold' }}>Cash Amount</Text>*/}
+
               <SemiBoldText>
                 {transaction.enhancedTransaction?.value ||
                   transaction.originTransaction.value}
+              </SemiBoldText>
+              <SemiBoldText>
+                {transaction.enhancedTransaction?.symbol}
               </SemiBoldText>
             </View>
             <View>
               <RefreshIcon width={30} height={30} color="black" />
             </View>
-          </View>
-        </ActivityField>
-        <ActivityField title="symbol">
-          <View style={styles.flexDirRow}>
-            <SemiBoldText>
-              {transaction.enhancedTransaction?.symbol}
-            </SemiBoldText>
           </View>
         </ActivityField>
         <ActivityField title="to">
@@ -180,9 +187,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   amountContainer: {
-    flexDirection: 'column',
+    paddingTop: 5,
+    flexDirection: 'row',
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   fwb: { fontWeight: 'bold' },
   statusRow: {
@@ -194,5 +202,9 @@ const styles = StyleSheet.create({
   },
   alignSelfCenter: {
     alignSelf: 'center',
+  },
+  assetIcon: {
+    paddingTop: 3,
+    paddingRight: 6,
   },
 })
