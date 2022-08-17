@@ -93,10 +93,7 @@ export const ContactsScreen: React.FC<{
               placeholderTextColor={colors.purple}
               onChangeText={searchContact}
             />
-            <SearchIcon
-              color={colors.purple}
-              width={40}
-              height={40}></SearchIcon>
+            <SearchIcon color={colors.purple} width={40} height={40} />
           </View>
           {filteredContacts
             .sort((a, b) =>
