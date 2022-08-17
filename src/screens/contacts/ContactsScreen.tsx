@@ -23,7 +23,18 @@ export const ContactsScreen: React.FC<{
 }> = ({ navigation }) => {
   const { t } = useTranslation()
   const { contacts, deleteContact } = useContext(ContactsContext)
+  const [filteredContacts, setFilteredContacts] = useState(contacts)
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
+
+  const searchContact = (text: string) => {
+    let filtered = contacts
+    if (text) {
+      filtered = contacts.filter(contact =>
+        contact.name.toLowerCase().includes(text.toLowerCase()),
+      )
+    }
+    setFilteredContacts(filtered)
+  }
 
   const removalConfirmation = (contact: IContact) => {
     // TODO: improve this alert
@@ -80,13 +91,14 @@ export const ContactsScreen: React.FC<{
               style={styles.searchInput}
               placeholder={t('type to find...')}
               placeholderTextColor={colors.purple}
+              onChangeText={searchContact}
             />
             <SearchIcon
               color={colors.purple}
               width={40}
               height={40}></SearchIcon>
           </View>
-          {contacts
+          {filteredContacts
             .sort((a, b) =>
               a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1,
             )
