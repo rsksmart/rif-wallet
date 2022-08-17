@@ -41,6 +41,10 @@ export const ContactsScreen: React.FC<{
     console.log('edit contact', contact)
   }
 
+  const sendContact = (contact: IContact) => {
+    console.log('send contact', contact)
+  }
+
   return (
     <View style={styles.parent}>
       <View style={styles.header}>
@@ -94,9 +98,9 @@ export const ContactsScreen: React.FC<{
                 }>
                 <ContactRow
                   contact={contact}
+                  onSend={() => sendContact(contact)}
                   onDelete={() => removalConfirmation(contact)}
                   onEdit={() => editContact(contact)}
-                  navigation={navigation}
                   selected={selectedIndex === index}
                 />
               </TouchableOpacity>
@@ -125,9 +129,9 @@ const styles = StyleSheet.create({
     color: colors.text.primary,
   },
   addButton: {
+    color: colors.lightPurple,
     padding: 3,
     marginRight: 0,
-    color: colors.lightPurple,
   },
   searchView: {
     flex: 1,
