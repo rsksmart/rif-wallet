@@ -19,9 +19,15 @@ export const ContactFormScreen: React.FC<ContactFormScreenProps> = ({
   chainId,
 }) => {
   const [name, setName] = React.useState('')
-  const [address, setAddress] = React.useState('')
-  const isValidContact = name && address
-  const isAddress = address.startsWith('0x')
+  const [address, setAddress] = React.useState({
+    value: '',
+    isValid: false,
+  })
+  const isValidContact = name && address.isValid
+
+  const handleAddressChange = (value: string, isValid: boolean) => {
+    setAddress({ value, isValid })
+  }
 
   return (
     <View style={styles.parent}>
@@ -49,17 +55,12 @@ export const ContactFormScreen: React.FC<ContactFormScreenProps> = ({
           testID="nameInput"
         />
         <View style={grid.row}>
-          <Text
-            style={address && !isAddress ? styles.label : styles.disabledLabel}>
-            alias
-          </Text>
-          <Text style={isAddress ? styles.label : styles.disabledLabel}>
-            address
-          </Text>
+          {/* <Text style={styles.disabledLabel}>alias</Text> */}
+          <Text style={styles.label}>address</Text>
         </View>
         <AddressInput
-          initialValue={address}
-          onChangeText={text => setAddress(text)}
+          initialValue={address.value}
+          onChangeText={handleAddressChange}
           chainId={chainId}
           testID="addressInput"
           backgroundColor={colors.darkPurple4}
