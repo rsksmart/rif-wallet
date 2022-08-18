@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -15,13 +15,10 @@ interface ContactFormScreenProps {
 export const ContactFormScreen: React.FC<ContactFormScreenProps> = ({
   navigation,
 }) => {
-  const [disabled, setDisabled] = React.useState(true)
   const [name, setName] = React.useState('')
-
-  useEffect(() => {
-    console.log('name', name)
-    setDisabled(!name)
-  }, [name])
+  const [address, setAddress] = React.useState('')
+  const isValidContact = name && address
+  const isAddress = address.startsWith('0x')
 
   return (
     <View style={styles.parent}>
@@ -34,6 +31,7 @@ export const ContactFormScreen: React.FC<ContactFormScreenProps> = ({
           style={styles.backButton}
           size={15}
           borderRadius={20}
+          testID={'backButton'}
         />
         <Text style={styles.title}>Create Contact</Text>
       </View>
@@ -44,22 +42,25 @@ export const ContactFormScreen: React.FC<ContactFormScreenProps> = ({
           onChangeText={text => setName(text)}
           // value={input}
           placeholder="name your contact..."
-          keyboardType="numeric"
-          testID={'Amount.Input'}
           placeholderTextColor={colors.text.secondary}
+          testID={'nameInput'}
         />
         <View style={grid.row}>
-          <Text style={styles.label}>alias</Text>
-          <Text style={styles.label}>address</Text>
+          <Text
+            style={address && !isAddress ? styles.label : styles.disabledLabel}>
+            alias
+          </Text>
+          <Text style={isAddress ? styles.label : styles.disabledLabel}>
+            address
+          </Text>
         </View>
         <TextInput
           style={styles.input}
-          // onChangeText={handleTextChange}
+          onChangeText={text => setAddress(text)}
           // value={input}
           placeholder="paste or type the alias..."
-          keyboardType="numeric"
-          testID={'Amount.Input'}
           placeholderTextColor={colors.text.secondary}
+          testID={'addressInput'}
         />
       </View>
       <View style={styles.footer}>
@@ -67,7 +68,8 @@ export const ContactFormScreen: React.FC<ContactFormScreenProps> = ({
           title="Save Contact"
           onPress={() => {}}
           style={styles.saveButton}
-          disabled={disabled}
+          disabled={!isValidContact}
+          testID={'saveButton'}
         />
       </View>
     </View>
@@ -107,6 +109,10 @@ const styles = StyleSheet.create({
   },
   label: {
     color: colors.text.primary,
+    padding: 10,
+  },
+  disabledLabel: {
+    color: setOpacity(colors.text.primary, 0.4),
     padding: 10,
   },
   input: {
