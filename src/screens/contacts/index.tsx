@@ -17,6 +17,8 @@ export type ContactsScreenProps = {
 export const ContactsNavigationScreen: React.FC<ContactsScreenProps> = ({
   navigation,
 }) => {
+  // TODO: get chainId from wallet
+  const chainId = 31
   return (
     <ContactsProviderElement>
       <Stack.Navigator initialRouteName={'ContactsList'}>
@@ -29,7 +31,13 @@ export const ContactsNavigationScreen: React.FC<ContactsScreenProps> = ({
           {props => <EditContactScreen {...props} />}
         </Stack.Screen>
         <Stack.Screen name="ContactForm" options={screensOptions}>
-          {props => <ContactFormScreen {...props} navigation={navigation} />}
+          {props => (
+            <ContactFormScreen
+              {...props}
+              navigation={navigation}
+              chainId={chainId}
+            />
+          )}
         </Stack.Screen>
       </Stack.Navigator>
     </ContactsProviderElement>

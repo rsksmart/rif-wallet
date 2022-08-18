@@ -2,6 +2,7 @@ import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
+import { AddressInput } from '../../components'
 import { BlueButton } from '../../components/button/ButtonVariations'
 import { NavigationProp } from '../../RootNavigation'
 import { colors, grid } from '../../styles'
@@ -10,10 +11,12 @@ import { setOpacity } from '../home/tokenColor'
 
 interface ContactFormScreenProps {
   navigation: NavigationProp
+  chainId: number
 }
 
 export const ContactFormScreen: React.FC<ContactFormScreenProps> = ({
   navigation,
+  chainId,
 }) => {
   const [name, setName] = React.useState('')
   const [address, setAddress] = React.useState('')
@@ -31,7 +34,7 @@ export const ContactFormScreen: React.FC<ContactFormScreenProps> = ({
           style={styles.backButton}
           size={15}
           borderRadius={20}
-          testID={'backButton'}
+          testID="backButton"
         />
         <Text style={styles.title}>Create Contact</Text>
       </View>
@@ -43,7 +46,7 @@ export const ContactFormScreen: React.FC<ContactFormScreenProps> = ({
           // value={input}
           placeholder="name your contact..."
           placeholderTextColor={colors.text.secondary}
-          testID={'nameInput'}
+          testID="nameInput"
         />
         <View style={grid.row}>
           <Text
@@ -54,13 +57,12 @@ export const ContactFormScreen: React.FC<ContactFormScreenProps> = ({
             address
           </Text>
         </View>
-        <TextInput
-          style={styles.input}
+        <AddressInput
+          initialValue={address}
           onChangeText={text => setAddress(text)}
-          // value={input}
-          placeholder="paste or type the alias..."
-          placeholderTextColor={colors.text.secondary}
-          testID={'addressInput'}
+          chainId={chainId}
+          testID="addressInput"
+          backgroundColor={colors.darkPurple4}
         />
       </View>
       <View style={styles.footer}>
@@ -69,7 +71,7 @@ export const ContactFormScreen: React.FC<ContactFormScreenProps> = ({
           onPress={() => {}}
           style={styles.saveButton}
           disabled={!isValidContact}
-          testID={'saveButton'}
+          testID="saveButton"
         />
       </View>
     </View>
