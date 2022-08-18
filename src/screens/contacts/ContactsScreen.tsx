@@ -67,7 +67,7 @@ export const ContactsScreen: React.FC<{
         <Text style={styles.title}>Contacts</Text>
         <Icon.Button
           name="user-plus"
-          onPress={() => navigation.navigate('ContactEdit' as never)}
+          onPress={() => navigation.navigate('ContactForm' as never)}
           backgroundColor={colors.background.bustyBlue}
           iconStyle={styles.addButton}
           size={15}

@@ -1,20 +1,21 @@
-import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
+import React from 'react'
+import { NavigationProp } from '../../RootNavigation'
+import { ContactFormScreen } from './ContactFormScreen'
+import { ContactsProviderElement } from './ContactsContext'
 import { ContactsScreen } from './ContactsScreen'
 import { EditContactScreen } from './EditContactScreen'
-import { ContactsProviderElement } from './ContactsContext'
-import Resolver from '@rsksmart/rns-resolver.js'
 
 const Stack = createStackNavigator()
 
 const screensOptions = { headerShown: false }
 
 export type ContactsScreenProps = {
-  rnsResolver: Resolver
+  navigation: NavigationProp
 }
 
 export const ContactsNavigationScreen: React.FC<ContactsScreenProps> = ({
-  rnsResolver,
+  navigation,
 }) => {
   return (
     <ContactsProviderElement>
@@ -25,7 +26,10 @@ export const ContactsNavigationScreen: React.FC<ContactsScreenProps> = ({
           options={screensOptions}
         />
         <Stack.Screen name="ContactEdit" options={screensOptions}>
-          {props => <EditContactScreen {...props} rnsResolver={rnsResolver} />}
+          {props => <EditContactScreen {...props} />}
+        </Stack.Screen>
+        <Stack.Screen name="ContactForm" options={screensOptions}>
+          {props => <ContactFormScreen {...props} navigation={navigation} />}
         </Stack.Screen>
       </Stack.Navigator>
     </ContactsProviderElement>
