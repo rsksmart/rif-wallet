@@ -2,6 +2,7 @@ import React from 'react'
 import { StyleSheet, View, Text } from 'react-native'
 
 import { colors } from '../../styles'
+import { fonts } from '../../styles/fonts'
 import BaseButton, { BaseButtonInterface } from './BaseButton'
 
 export interface ButtonInterface extends BaseButtonInterface {
