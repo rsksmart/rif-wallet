@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Alert,
@@ -55,6 +55,11 @@ export const ContactsScreen: React.FC<{
   const sendContact = (contact: IContact) => {
     console.log('send contact', contact)
   }
+
+  useEffect(() => {
+    setFilteredContacts(contacts)
+    setSelectedIndex(null)
+  }, [contacts])
 
   return (
     <View style={styles.parent}>
