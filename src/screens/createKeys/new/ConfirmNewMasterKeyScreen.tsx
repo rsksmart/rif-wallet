@@ -40,7 +40,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
 
   const handleConfirmMnemonic = async () => {
     if (selectedWords.join() !== mnemonicWords.join()) {
-      return setError(true)
+      //return setError(true)
     }
 
     setError(false)
