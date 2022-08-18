@@ -16,11 +16,10 @@ export const WordView: React.FC<WordInterface> = ({ number, text }) => (
           <Text style={sharedMnemonicStyles.wordNumberBadgeText}>{number}</Text>
         </View>
       </View>
-      <View accessibilityLabel={`wordWrapper${number}`}>
+      <View>
         <Text
           style={sharedMnemonicStyles.wordText}
-          accessibilityLabel={`word${number}`}
-          testID={`word${number}`}>
+          accessibilityLabel={`word${number} ${text}`}>
           {text}
         </Text>
       </View>
