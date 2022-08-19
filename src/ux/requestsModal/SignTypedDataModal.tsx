@@ -54,7 +54,7 @@ const SignTypedDataModal: React.FC<Interface> = ({ request, closeModal }) => {
           <ReadOnlyField
             label={'tx type'}
             value={request.type}
-            testID="Domain.Name"
+            testID="tx.type"
           />
 
           <ReadOnlyField

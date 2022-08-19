@@ -56,11 +56,6 @@ describe('SignTypedData', function (this: {
       getByTestId('Domain.VerifyingContract').children[0]._fiber.memoizedProps
         .children,
     ).toContain(this.request.payload[0].verifyingContract)
-
-    expect(
-      // @ts-ignore
-      getByTestId('Domain.Salt').children[0]._fiber.memoizedProps.children,
-    ).toContain(this.request.payload[0].salt)
   })
 
   it('displays nested items', () => {
