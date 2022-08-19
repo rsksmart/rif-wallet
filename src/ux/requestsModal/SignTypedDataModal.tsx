@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View, ScrollView } from 'react-native'
+import { StyleSheet, View, ScrollView, Text } from 'react-native'
 
 import { SignTypedDataRequest } from '../../lib/core'
 
@@ -11,6 +11,7 @@ import {
   OutlineBorderedButton,
 } from '../../components/button/ButtonVariations'
 import { colors } from '../../styles'
+import { RegularText } from '../../components'
 
 interface Interface {
   request: SignTypedDataRequest
@@ -19,11 +20,18 @@ interface Interface {
 
 const formatter = (data: any) =>
   Object.keys(data).map((key: string) => (
-    <ReadOnlyField
-      label={key}
-      value={data[key].toString()}
-      testID="Text.Message"
-    />
+    <View key={key} style={styles.nested} testID="Formatter.Row">
+      <Text style={styles.heading} testID="Text.Heading">
+        {key}
+      </Text>
+      {typeof data[key] !== 'object' ? (
+        <Text style={styles.value} testID="Text.Value">
+          {data[key].toString()}
+        </Text>
+      ) : (
+        formatter(data[key])
+      )}
+    </View>
   ))
 
 const SignTypedDataModal: React.FC<Interface> = ({ request, closeModal }) => {
@@ -43,6 +51,12 @@ const SignTypedDataModal: React.FC<Interface> = ({ request, closeModal }) => {
     <ScrollView>
       <View>
         <View testID="TX_VIEW" style={[sharedStyles.rowInColumn]}>
+          <ReadOnlyField
+            label={'tx type'}
+            value={request.type}
+            testID="Domain.Name"
+          />
+
           <ReadOnlyField
             label={'name'}
             value={request.payload[0].name}
@@ -66,20 +80,10 @@ const SignTypedDataModal: React.FC<Interface> = ({ request, closeModal }) => {
             value={request.payload[0].verifyingContract}
             testID="Domain.VerifyingContract"
           />
-
-          <ReadOnlyField
-            label={'salt'}
-            value={request.payload[0].salt}
-            testID="Domain.Salt"
-          />
-
-          <ReadOnlyField
-            label={'mail'}
-            value={request.payload[1].mail}
-            testID="Text.Message"
-          />
-
-          {formatter(request.payload[2])}
+          <View>
+            <RegularText style={styles.label}>message</RegularText>
+          </View>
+          <View style={styles.message}>{formatter(request.payload[2])}</View>
         </View>
       </View>
 
@@ -108,6 +112,27 @@ export const styles = StyleSheet.create({
   buttonsSection: {
     ...sharedStyles.row,
     padding: 20,
+  },
+  label: {
+    margin: 5,
+  },
+  message: {
+    borderColor: colors.darkGray,
+    borderWidth: 1,
+    borderRadius: 15,
+  },
+  nested: {
+    marginLeft: 20,
+    marginTop: 5,
+  },
+  heading: {
+    fontWeight: 'bold',
+    width: '100%',
+  },
+  value: {
+    paddingLeft: 10,
+    paddingTop: 5,
+    paddingBottom: 5,
   },
 })
 
