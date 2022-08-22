@@ -26,12 +26,13 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { isValidChecksumAddress } from '@rsksmart/rsk-utils'
 import { OutlineButton } from '../button/ButtonVariations'
 import DeleteIcon from '../icons/DeleteIcon'
+import Icon from 'react-native-vector-icons/Ionicons'
 
 type AddressInputProps = {
   initialValue: string
   onChangeText: (newValue: string, isValid: boolean) => void
   testID?: string
-  chainId: number,
+  chainId: number
   backgroundColor?: string
 }
 
@@ -70,7 +71,9 @@ export const AddressInput: React.FC<AddressInputProps> = ({
     setStatus({ type: 'READY', value: '' })
     setRecipient(inputText)
 
-    // console.log(inputText)
+    if (!inputText) {
+      return
+    }
 
     const newValidationMessage = validateAddress(inputText, chainId)
 
@@ -180,7 +183,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
       )}
       {!domainFound && (
         <View style={grid.row}>
-          <View style={{...styles.inputContainer, backgroundColor}}>
+          <View style={{ ...styles.inputContainer, backgroundColor }}>
             <TextInput
               style={styles.input}
               onChangeText={handleChangeText}
@@ -194,19 +197,38 @@ export const AddressInput: React.FC<AddressInputProps> = ({
               placeholderTextColor={colors.text.secondary}
             />
 
-            <TouchableOpacity
-              style={styles.button}
-              onPress={handlePasteClick}
-              testID="Address.PasteButton">
-              <ContentPasteIcon color={colors.text.secondary} height={22} width={22} />
-            </TouchableOpacity>
+            {!recipient ? (
+              <>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={handlePasteClick}
+                  testID="Address.PasteButton">
+                  <ContentPasteIcon
+                    color={colors.text.secondary}
+                    height={22}
+                    width={22}
+                  />
+                </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => setShowQRReader(true)}
-              testID="Address.QRCodeButton">
-              <QRCodeIcon color={colors.text.secondary} />
-            </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => setShowQRReader(true)}
+                  testID="Address.QRCodeButton">
+                  <QRCodeIcon color={colors.text.secondary} />
+                </TouchableOpacity>
+              </>
+            ) : (
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => handleChangeText('')}
+                testID="Adress.ClearButton">
+                <Icon
+                  name="close-outline"
+                  style={styles.clearButton}
+                  size={15}
+                />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       )}
@@ -278,8 +300,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     justifyContent: 'center',
   },
-  buttonPaste: {
-    paddingRight: 5,
+  clearButton: {
+    backgroundColor: colors.background.secondary,
+    padding: 5,
+    borderRadius: 20,
+    color: colors.lightPurple,
   },
   cameraModal: {
     flex: 1,

@@ -34,6 +34,7 @@ export const colors = {
     button: '#050033',
     light: '#dbe3ff',
     primary: '#1a1849',
+    secondary: '#2d2d6c',
     gray: '#dbe3ff',
     lightSteelBlue: '#B8C1E3',
     darkBlue: '#020034',
