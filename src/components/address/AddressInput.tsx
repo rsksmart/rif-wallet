@@ -71,16 +71,16 @@ export const AddressInput: React.FC<AddressInputProps> = ({
     setStatus({ type: 'READY', value: '' })
     setRecipient(inputText)
 
-    if (!inputText) {
-      return
-    }
-
     const newValidationMessage = validateAddress(inputText, chainId)
 
     onChangeText(
       inputText,
       newValidationMessage === AddressValidationMessage.VALID,
     )
+
+    if (!inputText) {
+      return
+    }
 
     switch (newValidationMessage) {
       case AddressValidationMessage.DOMAIN:

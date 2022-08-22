@@ -10,9 +10,9 @@ import { IContact } from './ContactsContext'
 
 interface IContactRowProps {
   contact: IContact
-  onSend: () => void
-  onDelete: () => void
-  onEdit: () => void
+  onSend: (contact: IContact) => void
+  onDelete: (contact: IContact) => void
+  onEdit: (contact: IContact) => void
   selected: boolean
 }
 
@@ -41,7 +41,7 @@ export const ContactRow: React.FC<IContactRowProps> = ({
         <View style={styles.actions}>
           <Icon.Button
             name="arrow-up-right"
-            onPress={onSend}
+            onPress={() => onSend(contact)}
             backgroundColor={colors.purple}
             iconStyle={styles.sendButton}
             size={15}
@@ -53,13 +53,13 @@ export const ContactRow: React.FC<IContactRowProps> = ({
             viewBox={'-8 -8 40 40'}
             width={32}
             height={32}
-            onPress={onDelete}
+            onPress={() => onDelete(contact)}
           />
           <EditMaterialIcon
             color={colors.purple}
             size={17}
             style={styles.editButton}
-            onPress={onEdit}
+            onPress={() => onEdit(contact)}
           />
         </View>
       )}

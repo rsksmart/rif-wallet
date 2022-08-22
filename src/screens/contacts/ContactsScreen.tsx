@@ -49,7 +49,7 @@ export const ContactsScreen: React.FC<{
   }
 
   const editContact = (contact: IContact) => {
-    console.log('edit contact', contact)
+    navigation.navigate('ContactForm', { initialValue: contact })
   }
 
   const sendContact = (contact: IContact) => {
@@ -112,9 +112,9 @@ export const ContactsScreen: React.FC<{
                 }>
                 <ContactRow
                   contact={contact}
-                  onSend={() => sendContact(contact)}
-                  onDelete={() => removalConfirmation(contact)}
-                  onEdit={() => editContact(contact)}
+                  onSend={sendContact}
+                  onDelete={removalConfirmation}
+                  onEdit={editContact}
                   selected={selectedIndex === index}
                 />
               </TouchableOpacity>

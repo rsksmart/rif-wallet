@@ -4,24 +4,28 @@ import { TextInput } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { AddressInput } from '../../components'
 import { BlueButton } from '../../components/button/ButtonVariations'
-import { NavigationProp } from '../../RootNavigation'
+import { ScreenProps } from '../../RootNavigation'
 import { colors, grid } from '../../styles'
 import { fonts } from '../../styles/fonts'
 import { setOpacity } from '../home/tokenColor'
+import { IContact } from './ContactsContext'
 
 interface ContactFormScreenProps {
-  navigation: NavigationProp
   chainId: number
 }
 
-export const ContactFormScreen: React.FC<ContactFormScreenProps> = ({
-  navigation,
-  chainId,
-}) => {
-  const [name, setName] = React.useState('')
+export const ContactFormScreen: React.FC<
+  ContactFormScreenProps & ScreenProps<'Contacts'>
+> = ({ navigation, chainId, route }) => {
+  const initialValue = (route.params?.['initialValue'] ?? {
+    name: '',
+    address: '',
+  }) as IContact
+
+  const [name, setName] = React.useState(initialValue.name)
   const [address, setAddress] = React.useState({
-    value: '',
-    isValid: false,
+    value: initialValue.address,
+    isValid: !!initialValue.address,
   })
   const isValidContact = name && address.isValid
 
@@ -48,8 +52,8 @@ export const ContactFormScreen: React.FC<ContactFormScreenProps> = ({
         <Text style={styles.label}>name</Text>
         <TextInput
           style={styles.input}
-          onChangeText={text => setName(text)}
-          // value={input}
+          onChangeText={setName}
+          value={name}
           placeholder="name your contact..."
           placeholderTextColor={colors.text.secondary}
           testID="nameInput"
@@ -59,7 +63,7 @@ export const ContactFormScreen: React.FC<ContactFormScreenProps> = ({
           <Text style={styles.label}>address</Text>
         </View>
         <AddressInput
-          initialValue={address.value}
+          initialValue={initialValue.address}
           onChangeText={handleAddressChange}
           chainId={chainId}
           testID="addressInput"
