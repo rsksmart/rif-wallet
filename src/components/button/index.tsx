@@ -11,7 +11,6 @@ interface Interface {
   title: string
   onPress?: (event: GestureResponderEvent) => any
   disabled?: boolean
-  textDisabledStyle?: any
   testID?: string
   style?: any
   textStyle?: any

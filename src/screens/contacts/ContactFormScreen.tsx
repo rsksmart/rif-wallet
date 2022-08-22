@@ -1,17 +1,18 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { AddressInput } from '../../components'
 import { BlueButton } from '../../components/button/ButtonVariations'
-import { ScreenProps } from '../../RootNavigation'
+import { NavigationProp, ScreenProps } from '../../RootNavigation'
 import { colors, grid } from '../../styles'
 import { fonts } from '../../styles/fonts'
 import { setOpacity } from '../home/tokenColor'
-import { IContact } from './ContactsContext'
+import { ContactsContext, IContact } from './ContactsContext'
 
 interface ContactFormScreenProps {
   chainId: number
+  navigation: NavigationProp
 }
 
 export const ContactFormScreen: React.FC<
@@ -22,6 +23,7 @@ export const ContactFormScreen: React.FC<
     address: '',
   }) as IContact
 
+  const { addContact, editContact } = useContext(ContactsContext)
   const [name, setName] = React.useState(initialValue.name)
   const [address, setAddress] = React.useState({
     value: initialValue.address,
@@ -31,6 +33,21 @@ export const ContactFormScreen: React.FC<
 
   const handleAddressChange = (value: string, isValid: boolean) => {
     setAddress({ value, isValid })
+  }
+
+  const saveContact = () => {
+    if (initialValue.id) {
+      const contact = {
+        ...initialValue,
+        name,
+        address: address.value,
+        displayAddress: address.value,
+      }
+      editContact(contact)
+    } else {
+      addContact(name, address.value, address.value)
+    }
+    navigation.navigate('ContactsList' as never)
   }
 
   return (
@@ -73,7 +90,7 @@ export const ContactFormScreen: React.FC<
       <View style={styles.footer}>
         <BlueButton
           title="Save Contact"
-          onPress={() => {}}
+          onPress={saveContact}
           style={styles.saveButton}
           disabled={!isValidContact}
           testID="saveButton"

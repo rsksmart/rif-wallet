@@ -49,7 +49,10 @@ export const ContactsScreen: React.FC<{
   }
 
   const editContact = (contact: IContact) => {
-    navigation.navigate('ContactForm', { initialValue: contact })
+    navigation.navigate(
+      'ContactForm' as never,
+      { initialValue: contact } as never,
+    )
   }
 
   const sendContact = (contact: IContact) => {

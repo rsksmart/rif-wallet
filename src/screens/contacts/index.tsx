@@ -4,7 +4,6 @@ import { NavigationProp } from '../../RootNavigation'
 import { ContactFormScreen } from './ContactFormScreen'
 import { ContactsProviderElement } from './ContactsContext'
 import { ContactsScreen } from './ContactsScreen'
-import { EditContactScreen } from './EditContactScreen'
 
 const Stack = createStackNavigator()
 
@@ -27,9 +26,6 @@ export const ContactsNavigationScreen: React.FC<ContactsScreenProps> = ({
           component={ContactsScreen}
           options={screensOptions}
         />
-        <Stack.Screen name="ContactEdit" options={screensOptions}>
-          {props => <EditContactScreen {...props} />}
-        </Stack.Screen>
         <Stack.Screen name="ContactForm" options={screensOptions}>
           {props => (
             <ContactFormScreen
