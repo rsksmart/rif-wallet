@@ -56,7 +56,7 @@ export const ContactsScreen: React.FC<{
   }
 
   const sendContact = (contact: IContact) => {
-    console.log('send contact', contact)
+    navigation.navigate('Send' as never, { to: contact.address } as never)
   }
 
   useEffect(() => {

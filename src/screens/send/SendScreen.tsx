@@ -27,6 +27,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
     useState<transactionInfo | null>(null)
   const [error, setError] = useState<Error>()
   const [chainId, setChainId] = useState<number>(31)
+
   useEffect(() => {
     wallet.getChainId().then(setChainId)
   }, [wallet])
