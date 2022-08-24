@@ -1,10 +1,11 @@
 import { useNavigation } from '@react-navigation/core'
-import React, { useEffect } from 'react'
-import { View, StyleSheet, TouchableOpacity, Text, Image } from 'react-native'
+
+import React from 'react'
+import { View, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import { AddressCopyComponent } from '../../components/copy/AddressCopyComponent'
 import { useSelectedWallet } from '../../Context'
 import { Network } from '@ethersproject/networks'
-import { colors } from '../../styles/colors'
+import { ProfileHandler } from './ProfileHandler'
 
 export const networks: Record<number, Network> = {
   30: {
@@ -22,11 +23,6 @@ export const AppHeader: React.FC<{}> = () => {
 
   const navigation = useNavigation()
   const openMenu = () => navigation.navigate('Settings' as any)
-  const [network, setNetwork] = React.useState<null | Network>(null)
-
-  useEffect(() => {
-    chainId && setNetwork(networks[chainId])
-  }, [chainId])
 
   return (
     <View style={styles.row}>
@@ -35,11 +31,7 @@ export const AppHeader: React.FC<{}> = () => {
           ...styles.column,
           ...styles.walletInfo,
         }}>
-        <Image
-          source={require('../../images/rsk-logo.png')}
-          style={styles.logo}
-        />
-        {network && <Text style={styles.network}>{network.name}</Text>}
+        <ProfileHandler />
       </View>
       <View style={styles.column}>
         {wallet && (
@@ -82,9 +74,7 @@ const styles = StyleSheet.create({
     width: 18,
     marginRight: 5,
   },
-  network: {
-    color: colors.white,
-  },
+
   walletInfo: {
     alignItems: 'center',
     flexDirection: 'row',
