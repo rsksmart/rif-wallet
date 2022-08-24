@@ -63,7 +63,9 @@ export const ContactFormScreen: React.FC<
           borderRadius={20}
           testID="backButton"
         />
-        <Text style={styles.title}>Create Contact</Text>
+        <Text style={styles.title}>
+          {initialValue.id ? 'Edit Contact' : 'Create Contact'}
+        </Text>
       </View>
       <View style={styles.body}>
         <Text style={styles.label}>name</Text>
