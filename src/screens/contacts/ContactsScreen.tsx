@@ -10,14 +10,13 @@ import {
 } from 'react-native'
 import { TouchableHighlight } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import PrimaryButton from '../../components/button/PrimaryButton'
 import { SearchIcon } from '../../components/icons/SearchIcon'
-import { Modal } from '../../components/modal/Modal'
 import { NavigationProp } from '../../RootNavigation'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
 import { ContactRow } from './ContactRow'
 import { ContactsContext, IContact } from './ContactsContext'
+import { DeleteModal } from './DeleteModal'
 
 export const ContactsScreen: React.FC<{
   navigation: NavigationProp
@@ -83,31 +82,14 @@ export const ContactsScreen: React.FC<{
           borderRadius={20}
         />
       </View>
-      <Modal isVisible={isModalVisible}>
-        <Modal.Container style={styles.modalContainer}>
-          <Modal.Body>
-            <Text style={styles.modalText}>
-              {t('Are you sure you want to delete this contact?')}
-            </Text>
-          </Modal.Body>
-          <Modal.Footer>
-            <View>
-              <PrimaryButton
-                style={styles.deleteButton}
-                onPress={() => removeContact(selectedContact!)}
-                underlayColor={colors.blue}>
-                <Text style={styles.deleteText}>Delete</Text>
-              </PrimaryButton>
-              <PrimaryButton
-                style={styles.cancelButton}
-                onPress={hideModal}
-                underlayColor={colors.blue}>
-                <Text style={styles.cancelText}>Cancel</Text>
-              </PrimaryButton>
-            </View>
-          </Modal.Footer>
-        </Modal.Container>
-      </Modal>
+      {selectedContact && (
+        <DeleteModal
+          isVisible={isModalVisible}
+          text={t(`Are you sure you want to delete ${selectedContact.name}?`)}
+          onOk={() => removeContact(selectedContact)}
+          onCancel={hideModal}
+        />
+      )}
       {contacts.length === 0 ? (
         <>
           <Image
@@ -229,40 +211,5 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '#e1e1e1',
     flexWrap: 'wrap',
-  },
-  modalContainer: {
-    backgroundColor: colors.background.blue2,
-  },
-  modalText: {
-    fontFamily: fonts.regular,
-    textAlign: 'center',
-    paddingHorizontal: 60,
-    color: colors.text.primary,
-  },
-  deleteButton: {
-    backgroundColor: colors.background.light,
-    borderColor: colors.background.light,
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingVertical: 10,
-  },
-  deleteText: {
-    fontFamily: fonts.regular,
-    fontWeight: 'bold',
-    fontSize: 15,
-    color: colors.darkPurple3,
-  },
-  cancelButton: {
-    backgroundColor: colors.background.blue2,
-    borderColor: colors.background.light,
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingVertical: 8,
-    paddingTop: 12,
-  },
-  cancelText: {
-    fontFamily: fonts.regular,
-    fontSize: 15,
-    color: colors.text.primary,
   },
 })
