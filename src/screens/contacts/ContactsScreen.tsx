@@ -6,9 +6,9 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from 'react-native'
-import { TouchableHighlight } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { SearchIcon } from '../../components/icons/SearchIcon'
 import { NavigationProp } from '../../RootNavigation'
@@ -121,12 +121,11 @@ export const ContactsScreen: React.FC<{
               a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1,
             )
             .map((contact, index) => (
-              <TouchableHighlight
+              <TouchableOpacity
                 key={index}
                 onPress={() =>
                   setSelectedIndex(selectedIndex === index ? null : index)
-                }
-                underlayColor="none">
+                }>
                 <ContactRow
                   contact={contact}
                   onSend={sendContact}
@@ -134,7 +133,7 @@ export const ContactsScreen: React.FC<{
                   onEdit={editContact}
                   selected={selectedIndex === index}
                 />
-              </TouchableHighlight>
+              </TouchableOpacity>
             ))}
         </ScrollView>
       )}
