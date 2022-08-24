@@ -41,8 +41,10 @@ export const ContactsScreen: React.FC<{
   const searchContact = (text: string) => {
     let filtered = contacts
     if (text) {
-      filtered = contacts.filter(contact =>
-        contact.name.toLowerCase().includes(text.toLowerCase()),
+      filtered = contacts.filter(
+        contact =>
+          contact.name.toLowerCase().includes(text.toLowerCase()) ||
+          contact.displayAddress.toLowerCase().includes(text.toLowerCase()),
       )
     }
     setFilteredContacts(filtered)
