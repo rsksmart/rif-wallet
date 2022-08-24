@@ -54,6 +54,7 @@ export const ContactFormScreen: React.FC<
     <View style={styles.parent}>
       <View style={styles.header}>
         <Icon.Button
+          testID="backButton"
           name="arrow-back"
           onPress={() => navigation.navigate('ContactsList' as never)}
           backgroundColor={colors.background.primary}
@@ -61,7 +62,6 @@ export const ContactFormScreen: React.FC<
           style={styles.backButton}
           size={15}
           borderRadius={20}
-          testID="backButton"
         />
         <Text style={styles.title}>
           {initialValue.id ? 'Edit Contact' : 'Create Contact'}
@@ -70,32 +70,32 @@ export const ContactFormScreen: React.FC<
       <View style={styles.body}>
         <Text style={styles.label}>name</Text>
         <TextInput
+          testID="nameInput"
           style={styles.input}
           onChangeText={setName}
           value={name}
           placeholder="name your contact..."
           placeholderTextColor={colors.text.secondary}
-          testID="nameInput"
         />
         <View style={grid.row}>
           {/* <Text style={styles.disabledLabel}>alias</Text> */}
           <Text style={styles.label}>address</Text>
         </View>
         <AddressInput
+          testID="addressInput"
           initialValue={initialValue.address}
           onChangeText={handleAddressChange}
           chainId={chainId}
-          testID="addressInput"
           backgroundColor={colors.darkPurple4}
         />
       </View>
       <View style={styles.footer}>
         <BlueButton
+          testID="saveButton"
           title="Save Contact"
           onPress={saveContact}
           style={styles.saveButton}
           disabled={!isValidContact}
-          testID="saveButton"
         />
       </View>
     </View>

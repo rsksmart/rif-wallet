@@ -74,6 +74,7 @@ export const ContactsScreen: React.FC<{
       <View style={styles.header}>
         <Text style={styles.title}>Contacts</Text>
         <Icon.Button
+          testID="addContact"
           name="user-plus"
           onPress={() => navigation.navigate('ContactForm' as never)}
           backgroundColor={colors.background.bustyBlue}
@@ -111,6 +112,7 @@ export const ContactsScreen: React.FC<{
         <ScrollView style={styles.contactsList}>
           <View style={styles.searchView}>
             <TextInput
+              testID="searchInput"
               style={styles.searchInput}
               placeholder={t('type to find...')}
               placeholderTextColor={colors.purple}
@@ -124,11 +126,13 @@ export const ContactsScreen: React.FC<{
             )
             .map((contact, index) => (
               <TouchableOpacity
+                testID={`contactCard-${index}`}
                 key={index}
                 onPress={() =>
                   setSelectedIndex(selectedIndex === index ? null : index)
                 }>
                 <ContactRow
+                  index={index}
                   contact={contact}
                   onSend={sendContact}
                   onDelete={showModal}

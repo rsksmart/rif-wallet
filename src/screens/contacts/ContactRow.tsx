@@ -9,6 +9,7 @@ import { fonts } from '../../styles/fonts'
 import { IContact } from './ContactsContext'
 
 interface IContactRowProps {
+  index: number
   contact: IContact
   onSend: (contact: IContact) => void
   onDelete: (contact: IContact) => void
@@ -17,6 +18,7 @@ interface IContactRowProps {
 }
 
 export const ContactRow: React.FC<IContactRowProps> = ({
+  index,
   contact,
   onSend,
   onDelete,
@@ -40,6 +42,7 @@ export const ContactRow: React.FC<IContactRowProps> = ({
       {selected && (
         <View style={styles.actions}>
           <Icon.Button
+            testID={`sendButton-${index}`}
             name="arrow-up-right"
             onPress={() => onSend(contact)}
             backgroundColor={colors.purple}
@@ -48,6 +51,7 @@ export const ContactRow: React.FC<IContactRowProps> = ({
             borderRadius={20}
           />
           <DeleteIcon
+            testID={`deleteButton-${index}`}
             style={styles.deleteButton}
             color={colors.purple}
             viewBox={'-8 -8 40 40'}
@@ -56,6 +60,7 @@ export const ContactRow: React.FC<IContactRowProps> = ({
             onPress={() => onDelete(contact)}
           />
           <EditMaterialIcon
+            testID={`editButton-${index}`}
             color={colors.purple}
             size={17}
             style={styles.editButton}
