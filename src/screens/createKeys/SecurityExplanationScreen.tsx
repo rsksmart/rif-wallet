@@ -82,7 +82,8 @@ export const SecurityExplanationScreen: React.FC<
       <View style={sharedMnemonicStyles.topContent}>
         <TouchableOpacity
           onPress={() => navigation.navigate('CreateKeys')}
-          style={styles.returnButton}>
+          style={styles.returnButton}
+          accessibilityLabel="backButton">
           <View style={styles.returnButtonView}>
             <Arrow color={colors.white} rotate={270} width={30} height={30} />
           </View>

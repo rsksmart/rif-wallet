@@ -69,7 +69,8 @@ export const PaginationNavigator: React.FC<Interface> = ({
       <TouchableOpacity
         style={styles.buttonLeft}
         onPress={onPrevious}
-        disabled={currentIndex === 0}>
+        disabled={currentIndex === 0}
+        accessibilityLabel="buttonLeft">
         <View style={currentIndex !== 0 ? circleStyle : circleStyleDisabled}>
           <Arrow color={colors.blue} rotate={270} width={50} height={50} />
         </View>
@@ -80,7 +81,8 @@ export const PaginationNavigator: React.FC<Interface> = ({
         <TouchableOpacity
           style={styles.buttonRight}
           onPress={onNext}
-          disabled={false}>
+          disabled={false}
+          accessibilityLabel="buttonRight">
           <View style={circleStyle}>
             <Arrow color={colors.blue} rotate={90} width={50} height={50} />
           </View>
@@ -90,7 +92,8 @@ export const PaginationNavigator: React.FC<Interface> = ({
         <TouchableOpacity
           style={styles.buttonRight}
           onPress={onComplete}
-          disabled={false}>
+          disabled={false}
+          accessibilityLabel="buttonRight">
           <View style={{ ...circleStyle, backgroundColor: colors.green }}>
             <CheckIcon color={colors.blue} width={50} height={50} />
           </View>
