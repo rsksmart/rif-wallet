@@ -39,6 +39,7 @@ export const colors = {
     lightSteelBlue: '#B8C1E3',
     darkBlue: '#020034',
     blue: '#381BE1',
+    blue2: '#3F06D3',
     purple: '#624FE9',
     bustyBlue: '#4200D8',
   },

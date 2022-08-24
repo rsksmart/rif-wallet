@@ -1,17 +1,18 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  Alert,
   Image,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from 'react-native'
+import { TouchableHighlight } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import PrimaryButton from '../../components/button/PrimaryButton'
 import { SearchIcon } from '../../components/icons/SearchIcon'
+import { Modal } from '../../components/modal/Modal'
 import { NavigationProp } from '../../RootNavigation'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
@@ -25,6 +26,18 @@ export const ContactsScreen: React.FC<{
   const { contacts, deleteContact } = useContext(ContactsContext)
   const [filteredContacts, setFilteredContacts] = useState(contacts)
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [selectedContact, setSelectedContact] = useState<IContact | null>(null)
+
+  const showModal = (contact: IContact) => {
+    setIsModalVisible(true)
+    setSelectedContact(contact)
+  }
+
+  const hideModal = () => {
+    setIsModalVisible(false)
+    setSelectedContact(null)
+  }
 
   const searchContact = (text: string) => {
     let filtered = contacts
@@ -36,18 +49,6 @@ export const ContactsScreen: React.FC<{
     setFilteredContacts(filtered)
   }
 
-  const removalConfirmation = (contact: IContact) => {
-    // TODO: improve this alert
-    Alert.alert(
-      'Delete contact',
-      'Are you sure you want to delete this contact?',
-      [
-        { text: 'Cancel', onPress: () => {}, style: 'cancel' },
-        { text: 'Delete', onPress: () => deleteContact(contact.id) },
-      ],
-    )
-  }
-
   const editContact = (contact: IContact) => {
     navigation.navigate(
       'ContactForm' as never,
@@ -57,6 +58,11 @@ export const ContactsScreen: React.FC<{
 
   const sendContact = (contact: IContact) => {
     navigation.navigate('Send' as never, { to: contact.address } as never)
+  }
+
+  const removeContact = (contact: IContact) => {
+    deleteContact(contact.id)
+    hideModal()
   }
 
   useEffect(() => {
@@ -77,6 +83,31 @@ export const ContactsScreen: React.FC<{
           borderRadius={20}
         />
       </View>
+      <Modal isVisible={isModalVisible}>
+        <Modal.Container style={styles.modalContainer}>
+          <Modal.Body>
+            <Text style={styles.modalText}>
+              {t('Are you sure you want to delete this contact?')}
+            </Text>
+          </Modal.Body>
+          <Modal.Footer>
+            <View>
+              <PrimaryButton
+                style={styles.deleteButton}
+                onPress={() => removeContact(selectedContact!)}
+                underlayColor={colors.blue}>
+                <Text style={styles.deleteText}>Delete</Text>
+              </PrimaryButton>
+              <PrimaryButton
+                style={styles.cancelButton}
+                onPress={hideModal}
+                underlayColor={colors.blue}>
+                <Text style={styles.cancelText}>Cancel</Text>
+              </PrimaryButton>
+            </View>
+          </Modal.Footer>
+        </Modal.Container>
+      </Modal>
       {contacts.length === 0 ? (
         <>
           <Image
@@ -108,19 +139,20 @@ export const ContactsScreen: React.FC<{
               a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1,
             )
             .map((contact, index) => (
-              <TouchableOpacity
+              <TouchableHighlight
                 key={index}
                 onPress={() =>
                   setSelectedIndex(selectedIndex === index ? null : index)
-                }>
+                }
+                underlayColor="none">
                 <ContactRow
                   contact={contact}
                   onSend={sendContact}
-                  onDelete={removalConfirmation}
+                  onDelete={showModal}
                   onEdit={editContact}
                   selected={selectedIndex === index}
                 />
-              </TouchableOpacity>
+              </TouchableHighlight>
             ))}
         </ScrollView>
       )}
@@ -197,5 +229,40 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '#e1e1e1',
     flexWrap: 'wrap',
+  },
+  modalContainer: {
+    backgroundColor: colors.background.blue2,
+  },
+  modalText: {
+    fontFamily: fonts.regular,
+    textAlign: 'center',
+    paddingHorizontal: 60,
+    color: colors.text.primary,
+  },
+  deleteButton: {
+    backgroundColor: colors.background.light,
+    borderColor: colors.background.light,
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingVertical: 10,
+  },
+  deleteText: {
+    fontFamily: fonts.regular,
+    fontWeight: 'bold',
+    fontSize: 15,
+    color: colors.darkPurple3,
+  },
+  cancelButton: {
+    backgroundColor: colors.background.blue2,
+    borderColor: colors.background.light,
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingVertical: 8,
+    paddingTop: 12,
+  },
+  cancelText: {
+    fontFamily: fonts.regular,
+    fontSize: 15,
+    color: colors.text.primary,
   },
 })

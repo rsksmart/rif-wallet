@@ -80,6 +80,8 @@ const resources = {
       'Your contact list is empty.': 'Your contact list is empty.',
       'Start by creating a new contact.': 'Start by creating a new contact.',
       'type to find...': 'type to find...',
+      'Are you sure you want to delete this contact?':
+        'Are you sure you want to delete this contact?',
     },
   },
   es: {
@@ -90,6 +92,8 @@ const resources = {
       'Your contact list is empty.': 'Su lista de contactos está vacía.',
       'Start by creating a new contact.': 'Comience creando un nuevo contacto.',
       'type to find...': 'escriba para buscar...',
+      'Are you sure you want to delete this contact?':
+        '¿Está seguro de que desea eliminar este contacto?',
     },
   },
 }
