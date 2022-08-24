@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, Text, View } from 'react-native'
 import PrimaryButton from '../../components/button/PrimaryButton'
 import { Modal } from '../../components/modal/Modal'
 import { colors } from '../../styles'
@@ -21,6 +21,12 @@ export const DeleteModal = ({
   <Modal isVisible={isVisible}>
     <Modal.Container style={styles.container}>
       <Modal.Body>
+        <View style={styles.imageView}>
+          <Image
+            source={require('../../images/contact-trash.png')}
+            style={styles.image}
+          />
+        </View>
         <Text style={styles.text}>{text}</Text>
       </Modal.Body>
       <Modal.Footer>
@@ -46,6 +52,19 @@ export const DeleteModal = ({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.background.blue2,
+  },
+  imageView: {
+    backgroundColor: colors.background.purple,
+    borderRadius: 40,
+    width: 75,
+    height: 75,
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
+  image: {
+    width: '70%',
+    height: '100%',
+    alignSelf: 'center',
   },
   text: {
     fontFamily: fonts.regular,
