@@ -221,7 +221,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
               <TouchableOpacity
                 style={styles.button}
                 onPress={() => handleChangeText('')}
-                testID="Adress.ClearButton">
+                testID="Address.ClearButton">
                 <View style={styles.clearButtonView}>
                   <Icon
                     name="close-outline"
