@@ -85,7 +85,9 @@ export const ContactsScreen: React.FC<{
       {selectedContact && (
         <DeleteModal
           isVisible={isModalVisible}
-          text={`${t('Are you sure you want to delete')} ${selectedContact.name}?`}
+          text={`${t('Are you sure you want to delete')} ${
+            selectedContact.name
+          }?`}
           onOk={() => removeContact(selectedContact)}
           onCancel={hideModal}
         />
