@@ -222,11 +222,13 @@ export const AddressInput: React.FC<AddressInputProps> = ({
                 style={styles.button}
                 onPress={() => handleChangeText('')}
                 testID="Adress.ClearButton">
-                <Icon
-                  name="close-outline"
-                  style={styles.clearButton}
-                  size={15}
-                />
+                <View style={styles.clearButtonView}>
+                  <Icon
+                    name="close-outline"
+                    style={styles.clearButton}
+                    size={15}
+                  />
+                </View>
               </TouchableOpacity>
             )}
           </View>
@@ -300,10 +302,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     justifyContent: 'center',
   },
-  clearButton: {
+  clearButtonView: {
     backgroundColor: colors.background.secondary,
-    padding: 5,
-    borderRadius: 20,
+    borderRadius: 30,
+    padding: 2,
+  },
+  clearButton: {
     color: colors.lightPurple,
   },
   cameraModal: {
