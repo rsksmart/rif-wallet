@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Modal, StyleSheet, View } from 'react-native'
 
 import {
   Request,
@@ -10,7 +9,6 @@ import {
 import ReviewTransactionModal from './ReviewTransactionModal'
 import SignMessageModal from './SignMessageModal'
 import SignTypedDataModal from './SignTypedDataModal'
-import { sharedStyles } from './sharedStyles'
 import { InjectSelectedWallet } from '../../Context'
 import { SignTypedDataRequest } from '../../lib/core'
 import SlideUpModal from '../../components/slideUpModal/SlideUpModal'
@@ -79,18 +77,7 @@ const ModalComponent: React.FC<Interface> = ({
       break
   }
 
-  return request.type !== 'sendTransaction' &&
-    request.type !== 'signMessage' ? (
-    <View style={sharedStyles.centeredView}>
-      <Modal animationType="slide" transparent={true} visible={true}>
-        <View style={[sharedStyles.centeredView, styles.blurBackground]}>
-          <View style={sharedStyles.modalView}>
-            {RequestTypeSwitch(request, closeModal)}
-          </View>
-        </View>
-      </Modal>
-    </View>
-  ) : (
+  return (
     <SlideUpModal
       title={modalTitle}
       showSelector={showSelector}
@@ -106,10 +93,3 @@ const ModalComponent: React.FC<Interface> = ({
 }
 
 export default ModalComponent
-
-const styles = StyleSheet.create({
-  blurBackground: {
-    marginTop: 0,
-    backgroundColor: 'rgba(55, 63, 72, 0.88)',
-  },
-})

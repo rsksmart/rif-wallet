@@ -37,10 +37,10 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>The app will use the camera to operate with Wallet Connect</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Please give us access to your photo library to verify you.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Please give us access to your photo library to verify you.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Poppins-Medium.ttf</string>

@@ -29,7 +29,7 @@ export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
       case 0:
         return MainSlide({
           title: 'Welcome to',
-          subTitle: 'RSK Wallet',
+          subTitle: 'RIF Wallet',
           image: (
             <Image
               style={styles.walletBulbLogo}
@@ -97,14 +97,14 @@ export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
       <View style={{ ...grid.row, ...styles.section }}>
         <WhiteButton
           onPress={() => navigation.navigate('SecureYourWallet')}
-          testID="Address.ShareButton"
+          accessibilityLabel="newWallet"
           title={'new wallet'}
         />
       </View>
       <View style={{ ...grid.row, ...styles.section }}>
         <OutlineButton
           onPress={() => navigation.navigate('ImportMasterKey')}
-          testID="Address.ShareButton"
+          accessibilityLabel="importWallet"
           title={'import  wallet'}
         />
       </View>

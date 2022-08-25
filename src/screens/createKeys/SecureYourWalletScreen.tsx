@@ -42,8 +42,8 @@ export const SecureYourWalletScreen: React.FC<
       </View>
       <View style={{ ...grid.row, ...styles.button1 }}>
         <BlueButton
+          accessibilityLabel="secureNow"
           onPress={() => navigation.navigate('SecurityExplanation')}
-          testID="Address.ShareButton"
           title={'secure now'}
         />
       </View>

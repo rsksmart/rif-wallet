@@ -1,15 +1,17 @@
 import React from 'react'
-import { StyleSheet, Text, View, ScrollView } from 'react-native'
+import { StyleSheet, View, ScrollView, Text } from 'react-native'
 
 import { SignTypedDataRequest } from '../../lib/core'
 
-import { ModalHeader } from '../../components'
 import { sharedStyles } from './sharedStyles'
 import { useTranslation } from 'react-i18next'
-import { SquareButton } from '../../components/button/SquareButton'
-import { CancelIcon } from '../../components/icons/CancelIcon'
-import { SignIcon } from '../../components/icons/SignIcon'
-import { shortAddress } from '../../lib/utils'
+import ReadOnlyField from './ReadOnlyField'
+import {
+  DarkBlueButton,
+  OutlineBorderedButton,
+} from '../../components/button/ButtonVariations'
+import { colors } from '../../styles'
+import { RegularText } from '../../components'
 
 interface Interface {
   request: SignTypedDataRequest
@@ -47,70 +49,58 @@ const SignTypedDataModal: React.FC<Interface> = ({ request, closeModal }) => {
 
   return (
     <ScrollView>
-      <View style={[sharedStyles.modalView, sharedStyles.modalViewMainSection]}>
-        <ModalHeader>sign typed data</ModalHeader>
+      <View>
+        <View testID="TX_VIEW" style={[sharedStyles.rowInColumn]}>
+          <ReadOnlyField
+            label={'tx type'}
+            value={request.type}
+            testID="tx.type"
+          />
 
-        <View style={[sharedStyles.rowInColumn, styles.topBox]}>
-          <View style={styles.dataRow}>
-            <Text style={styles.paragraphLabel}>name:</Text>
-            <Text style={styles.paragraphValue} testID="Domain.Name">
-              {request.payload[0].name}
-            </Text>
+          <ReadOnlyField
+            label={'name'}
+            value={request.payload[0].name}
+            testID="Domain.Name"
+          />
+
+          <ReadOnlyField
+            label={'version'}
+            value={request.payload[0].version}
+            testID="Domain.Version"
+          />
+
+          <ReadOnlyField
+            label={'chain id'}
+            value={request.payload[0].chainId}
+            testID="Domain.ChainId"
+          />
+
+          <ReadOnlyField
+            label={'verifying Contract'}
+            value={request.payload[0].verifyingContract}
+            testID="Domain.VerifyingContract"
+          />
+          <View>
+            <RegularText style={styles.label}>message</RegularText>
           </View>
-          <View style={styles.dataRow}>
-            <Text style={styles.paragraphLabel}>version:</Text>
-            <Text style={styles.paragraphValue} testID="Domain.Version">
-              {request.payload[0].version}
-            </Text>
-          </View>
-          <View style={styles.dataRow}>
-            <Text style={styles.paragraphLabel}>chain id:</Text>
-            <Text style={styles.paragraphValue} testID="Domain.ChainId">
-              {request.payload[0].chainId}
-            </Text>
-          </View>
-          {request.payload[0].verifyingContract && (
-            <View style={styles.dataRow}>
-              <Text style={styles.paragraphLabel}>verifying contract:</Text>
-              <Text
-                style={styles.paragraphValue}
-                testID="Domain.VerifyingContract">
-                {shortAddress(request.payload[0].verifyingContract)}
-              </Text>
-            </View>
-          )}
+          <View style={styles.message}>{formatter(request.payload[2])}</View>
         </View>
-
-        <View style={styles.dataRow}>
-          <Text style={styles.paragraphLabel}>salt:</Text>
-          <Text style={styles.paragraphValue} testID="Domain.Salt">
-            {request.payload[0].salt}
-          </Text>
-        </View>
-
-        <ScrollView style={styles.message} testID="Data.View">
-          {formatter(request.payload[2])}
-        </ScrollView>
       </View>
+
       <View style={styles.buttonsSection}>
         <View style={sharedStyles.column}>
-          <SquareButton
+          <OutlineBorderedButton
+            style={{ button: { borderColor: colors.black } }}
             onPress={reject}
             title={t('reject')}
             testID="Button.Reject"
-            icon={<CancelIcon color={'#ffb4b4'} />}
-            shadowColor="#313c3c"
-            backgroundColor={'#313c3c'}
           />
         </View>
         <View style={sharedStyles.column}>
-          <SquareButton
+          <DarkBlueButton
             onPress={approve}
             title={t('sign')}
             testID="Button.Confirm"
-            icon={<SignIcon color={'#91ffd9'} />}
-            shadowColor="#313c3c"
-            backgroundColor={'#313c3c'}
           />
         </View>
       </View>
@@ -119,26 +109,17 @@ const SignTypedDataModal: React.FC<Interface> = ({ request, closeModal }) => {
 }
 
 export const styles = StyleSheet.create({
+  buttonsSection: {
+    ...sharedStyles.row,
+    padding: 20,
+  },
+  label: {
+    margin: 5,
+  },
   message: {
-    padding: 10,
-    marginTop: 10,
-    marginBottom: 10,
-
-    borderRadius: 14,
-    backgroundColor: 'rgba(49, 60, 60, 0.1)',
-    shadowColor: 'rgba(0, 0, 0, 0)',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowRadius: 6,
-    shadowOpacity: 1,
-
-    fontSize: 16,
-    fontWeight: '500',
-    fontStyle: 'normal',
-    letterSpacing: 0.24,
-    color: '#373f48',
+    borderColor: colors.darkGray,
+    borderWidth: 1,
+    borderRadius: 15,
   },
   nested: {
     marginLeft: 20,
@@ -152,28 +133,6 @@ export const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingTop: 5,
     paddingBottom: 5,
-  },
-  buttonsSection: {
-    ...sharedStyles.row,
-    padding: 20,
-  },
-  paragraphLabel: {
-    fontSize: 14,
-    color: 'rgba(55, 63, 72, 0.6)',
-    fontWeight: 'bold',
-    marginRight: 5,
-  },
-  paragraphValue: {
-    fontSize: 14,
-    color: 'rgba(55, 63, 72, 0.6)',
-  },
-  topBox: {
-    paddingTop: 10,
-    paddingBottom: 10,
-  },
-  dataRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
   },
 })
 
