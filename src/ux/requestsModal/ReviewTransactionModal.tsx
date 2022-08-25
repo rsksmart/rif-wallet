@@ -36,8 +36,6 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
 
   const [error, setError] = useState<Error | null>(null)
 
-  console.log(txRequest)
-
   // convert from string to Transaction and pass out of component
   const confirmTransaction = async () => {
     try {

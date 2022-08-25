@@ -89,7 +89,13 @@ export class RIFWallet extends Signer implements TypedDataSigner {
     return new RIFWallet(smartWalletFactory, smartWallet, onRequest)
   }
 
-  getAddress = (): Promise<string> => Promise.resolve(this.smartWallet.smartWalletAddress)
+  // THIS NEEDS TO BE THE EOA address for signAndVerify to work from T!:
+  getAddress = (): Promise<string> => {
+    console.log('[RIFWallet.ts] called getAddress()')
+    this.smartWallet.signer.getAddress()
+      .then((addr: string) => console.log('RIFWallet.ts] response:', addr))
+    return this.smartWallet.signer.getAddress() // Promise.resolve(this.smartWallet.signer.getAddress)
+  }
 
   signTransaction = (transaction: TransactionRequest): Promise<string> => this.smartWallet.signer.signTransaction(transaction)
 
@@ -146,6 +152,7 @@ export class RIFWallet extends Signer implements TypedDataSigner {
     'signTypedData',
     ((args: SignTypedDataArgs) => {
       console.log('[RIF Wallet] - signedTypedData hit ;-)')
+      console.log(...args)
 
       return (this.smartWallet.signer as any as TypedDataSigner)._signTypedData(...args).then((signed: any) => {
         console.log('[RIF Wallet]', { signed })

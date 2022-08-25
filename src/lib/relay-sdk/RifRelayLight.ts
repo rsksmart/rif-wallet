@@ -10,4 +10,8 @@ export class RifRelayLight {
     this.addresses = addresses
     this.chainId = chainId
   }
+
+  createRelayRequest = () => {
+    console.log('creating relay request...')
+  }
 }
