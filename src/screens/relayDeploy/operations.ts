@@ -1,7 +1,9 @@
 import SDK from '@jessgusclark/rsk-multi-token-sdk'
 import axios, { AxiosResponse } from 'axios'
+import { Transaction } from 'ethers'
 
 import { RIFWallet } from '../../lib/core'
+import { ERC20 } from '../../lib/token/types'
 import { dataTypeFields, getDomainSeparator } from './helpers'
 import { SDKConfiguration } from './types'
 
@@ -25,7 +27,7 @@ const setupSDK = async (rifWallet: RIFWallet): Promise<SDK> => {
   const sdkFullConfig: SDKConfiguration = {
     ...sdkConfig,
     chainId,
-    signer: rifWallet.smartWallet.signer,
+    signer: rifWallet.smartWallet.signer, // with the RIF wallet, signature is not correct :-(
   }
 
   // @ts-ignore provider is not undefiend from the rifWallet
@@ -44,11 +46,17 @@ const createDeployRequest = async (sdk: SDK, rifWallet: RIFWallet) => {
   )
 }
 
-const createRelayRequest = async (sdk: SDK, rifWallet: RIFWallet) => {
-  /** @param from - sender's wallet address (EOA)
+const createRelayRequest = async (
+  sdk: SDK,
+  rifWallet: RIFWallet,
+  transaction: any,
+) => {
+  /**
+   * @param from - sender's wallet address (EOA)
    * @param to - recipient contract
    * @param forwarder - smart wallet address forwarding the relay request
    * @param data - payload for the execution (e.g. encoded call when invoking an smart contract) - Hex prefixed string
+   * tokenContract
    * @param gasLimit - gas limit of the relayed transaction
    * @param tokenContract - the token the user will use to pay to the Worker for relaying
    * @param tokenAmount - the token amount the user will pay for relaying, zero if the call is subsidized
@@ -57,11 +65,11 @@ const createRelayRequest = async (sdk: SDK, rifWallet: RIFWallet) => {
 
   const relayRequest = await sdk.instance.modules.relayUtils.createRelayRequest(
     rifWallet.smartWallet.address, // from,
-    '0x3dd03d7d6c3137f1eb7582ba5957b8a2e26f304a', // to, JESSE
-    rifWallet.smartWalletAddress,
-    '', // data,
+    transaction.to, // to, the RIF token
+    rifWallet.smartWalletAddress, // forwarder
+    transaction.data, // data,
     rifToken, // tokenContract,
-    '.5', // tokenAmount,
+    '0', // tokenAmount,
     '65164000', // tokenGas
   )
 
@@ -103,8 +111,24 @@ export const relayTransaction = async (rifWallet: RIFWallet) => {
   const sdk = await setupSDK(rifWallet)
   console.log('checkpoint 1', { sdk })
 
-  const relayRequest = await createRelayRequest(sdk, rifWallet)
-  console.log('checkpoint 2', { relayRequest })
+  const transaction = {
+    to: rifToken,
+    // send 1 tRIF to jesse:
+    data: '0xa9059cbb0000000000000000000000003dd03d7d6c3137f1eb7582ba5957b8a2e26f304a0000000000000000000000000000000000000000000000000de0b6b3a7640000',
+    from: rifWallet.address,
+  }
+
+  console.log('checkpoint 2', { transaction })
+
+  const relayRequest = await createRelayRequest(sdk, rifWallet, transaction)
+  console.log('checkpoint 3', { relayRequest })
+
+  const signature = await sdk.instance.modules.relayUtils.signRelayRequest(
+    relayRequest,
+  )
+  console.log('checkpoint 4', { signature })
+
+  postRequestToRelay(rifWallet, relayRequest, signature)
 }
 
 export const deploySmartWallet = async (rifWallet: RIFWallet) => {
