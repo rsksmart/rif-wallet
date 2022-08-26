@@ -38,35 +38,35 @@ export const TokenImage: React.FC<{
 }
 
 const getIconSource = (symbol: string): ImageRequireSource | undefined => {
-  switch (symbol) {
+  switch (symbol.toUpperCase()) {
     case 'TRBTC':
       return require('../../images/RBTC-logo.png')
     case 'RIF':
-    case 'tRIF':
+    case 'TRIF':
       return require('@rsksmart/rsk-contract-metadata/images/rif.png')
     case 'DOC':
       return require('@rsksmart/rsk-contract-metadata/images/doc.png')
-    case 'rDOC':
+    case 'RDOC':
       return require('@rsksmart/rsk-contract-metadata/images/rdoc.png')
     case 'RIFP':
       return require('@rsksmart/rsk-contract-metadata/images/rifpro.png')
-    case 'BPro':
+    case 'BPRO':
       return require('@rsksmart/rsk-contract-metadata/images/bpro.png')
     case 'RNS':
-    case 'tRNS':
+    case 'TRNS':
       return require('@rsksmart/rsk-contract-metadata/images/rif.png')
     case 'INV':
       return require('@rsksmart/rsk-contract-metadata/images/inv.png')
-    case 'rDAI':
-    case 'rKovDAI':
+    case 'RDAI':
+    case 'RKOVDAI':
       return require('@rsksmart/rsk-contract-metadata/images/dai.png')
     case 'WRBTC':
       return require('@rsksmart/rsk-contract-metadata/images/wrbtc.png')
     case '🦄RBTC:RIF':
-    case '🦄RBTC:tRIF':
+    case '🦄RBTC:TRIF':
       return require('@rsksmart/rsk-contract-metadata/images/rif-rbtc.png')
     case '🦄RIF:DOC':
-    case '🦄tRIF:DOC':
+    case '🦄TRIF:DOC':
       return require('@rsksmart/rsk-contract-metadata/images/rif-doc.png')
     case '🦄BPRO:DOC':
       return require('@rsksmart/rsk-contract-metadata/images/bpro-doc.png')
@@ -74,40 +74,40 @@ const getIconSource = (symbol: string): ImageRequireSource | undefined => {
       return require('@rsksmart/rsk-contract-metadata/images/rdoc-doc.png')
     case '🦄DAI:DOC':
       return require('@rsksmart/rsk-contract-metadata/images/rdai-doc.png')
-    case '🦄rDAI:RBTC':
+    case '🦄RDAI:RBTC':
       return require('@rsksmart/rsk-contract-metadata/images/rdai-rbtc.png')
-    case '🦄RIF:rDAI':
+    case '🦄RIF:RDAI':
       return require('@rsksmart/rsk-contract-metadata/images/rif-rdai.png')
-    case 'rFLIXX':
+    case 'RFLIXX':
       return require('@rsksmart/rsk-contract-metadata/images/flixx.png')
-    case 'rLINK':
-    case 'rKovLINK':
+    case 'RLINK':
+    case 'RKOVLINK':
       return require('@rsksmart/rsk-contract-metadata/images/link.png')
-    case 'rUSDC':
-    case 'rKovUSDC':
+    case 'RUSDC':
+    case 'RKOVUSDC':
       return require('@rsksmart/rsk-contract-metadata/images/usdc.png')
-    case 'rUSDT':
-    case 'rKovUSDT':
+    case 'RUSDT':
+    case 'RKOVUSDT':
       return require('@rsksmart/rsk-contract-metadata/images/usdt.png')
-    case 'rRFOX':
+    case 'RRFOX':
       return require('@rsksmart/rsk-contract-metadata/images/rfox.png')
-    case 'crUSDT':
+    case 'CRUSDT':
       return require('@rsksmart/rsk-contract-metadata/images/crusdt.png')
-    case 'cRIF':
+    case 'CRIF':
       return require('@rsksmart/rsk-contract-metadata/images/crif.png')
-    case 'cRBTC':
+    case 'CRBTC':
       return require('@rsksmart/rsk-contract-metadata/images/crbtc.png')
-    case 'rBUND':
-    case 'rKovBUND':
+    case 'RBUND':
+    case 'RKOVBUND':
       return require('@rsksmart/rsk-contract-metadata/images/bund.png')
-    case 'rAMLT':
+    case 'RAMLT':
       return require('@rsksmart/rsk-contract-metadata/images/amlt.png')
     case 'SOV':
       return require('@rsksmart/rsk-contract-metadata/images/sov.png')
     case 'MOC':
       return require('@rsksmart/rsk-contract-metadata/images/moc.png')
-    case 'rUBI':
-    case 'rKovUBI':
+    case 'RUBI':
+    case 'RKOVUBI':
       return require('@rsksmart/rsk-contract-metadata/images/ubi.png')
     case 'ARSCB':
       return require('@rsksmart/rsk-contract-metadata/images/arscb.png')
