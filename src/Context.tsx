@@ -20,6 +20,8 @@ export const AppContext = createContext<AppContextType>({
   chainId: undefined,
 })
 
+export const useGlobalAppContext = () => useContext(AppContext)
+
 export const useSelectedWallet = () => {
   const { wallets, walletsIsDeployed, selectedWallet, chainId } =
     useContext(AppContext)
