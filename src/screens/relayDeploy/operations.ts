@@ -71,6 +71,7 @@ const createRelayRequest = async (
     '65164000', // tokenGas
   )
 
+  /*
   const relayRequestManual = {
     request: {
       relayHub: '0x66Fa9FEAfB8Db66Fe2160ca7aEAc7FC24e254387',
@@ -90,9 +91,10 @@ const createRelayRequest = async (
       callForwarder: '0x06c439A2C332C639e9B1AEA4a7F371aEAdB999Dd',
       callVerifier: '0x56ccdB6D312307Db7A4847c3Ea8Ce2449e9B79e9',
       domainSeparator:
-        '0x44649f761bbaf55f4a957109dbc787a68ed6833e18b1bc7b120d52440ec06afc',,
+        '0x44649f761bbaf55f4a957109dbc787a68ed6833e18b1bc7b120d52440ec06afc',
     },
   }
+  */
 
   return relayRequest
 }
