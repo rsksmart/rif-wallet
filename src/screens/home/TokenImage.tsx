@@ -13,28 +13,25 @@ export const TokenImage: React.FC<{
   symbol: string
   height?: number
   width?: number
-}> = ({ symbol, height, width }) => {
+}> = ({ symbol, height = 20, width = 20 }) => {
   const viewStyle: StyleProp<ViewStyle> = {
     aspectRatio: 1,
     justifyContent: 'center',
     alignItems: 'center',
   }
 
-  const iconStyle: StyleProp<ImageStyle> = {
-    height: height || 20,
-    width: width || 20,
-  }
+  const iconStyle: StyleProp<ImageStyle> = { height, width }
 
   const src = getIconSource(symbol)
-  if (src) {
-    return (
-      <View style={viewStyle}>
+  return (
+    <View style={viewStyle}>
+      {src ? (
         <Image source={src} style={iconStyle} resizeMode="contain" />
-      </View>
-    )
-  }
-
-  return <FrownFaceIcon height={height} width={width} />
+      ) : (
+        <FrownFaceIcon height={height} width={width} />
+      )}
+    </View>
+  )
 }
 
 const getIconSource = (symbol: string): ImageRequireSource | undefined => {
