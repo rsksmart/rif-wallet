@@ -1,5 +1,6 @@
 import { createStackNavigator } from '@react-navigation/stack'
 import React from 'react'
+import { useSelectedWallet } from '../../Context'
 import { NavigationProp } from '../../RootNavigation'
 import { ContactFormScreen } from './ContactFormScreen'
 import { ContactsProviderElement } from './ContactsContext'
@@ -16,8 +17,7 @@ export type ContactsScreenProps = {
 export const ContactsNavigationScreen: React.FC<ContactsScreenProps> = ({
   navigation,
 }) => {
-  // TODO: get chainId from wallet
-  const chainId = 31
+  const { chainId = 31 } = useSelectedWallet()
   return (
     <ContactsProviderElement>
       <Stack.Navigator initialRouteName={'ContactsList'}>

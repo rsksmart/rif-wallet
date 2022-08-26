@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -24,8 +24,8 @@ export const ContactFormScreen: React.FC<
   }) as IContact
 
   const { addContact, editContact } = useContext(ContactsContext)
-  const [name, setName] = React.useState(initialValue.name)
-  const [address, setAddress] = React.useState({
+  const [name, setName] = useState(initialValue.name)
+  const [address, setAddress] = useState({
     value: initialValue.address,
     isValid: !!initialValue.address,
   })
