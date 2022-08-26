@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/Feather'
 import DeleteIcon from '../../components/icons/DeleteIcon'
 import EditMaterialIcon from '../../components/icons/EditMaterialIcon'
@@ -14,12 +14,14 @@ interface IContactRowProps {
   onSend: (contact: IContact) => void
   onDelete: (contact: IContact) => void
   onEdit: (contact: IContact) => void
+  onPress: () => void
   selected: boolean
 }
 
 export const ContactRow: React.FC<IContactRowProps> = ({
   index,
   contact,
+  onPress,
   onSend,
   onDelete,
   onEdit,
@@ -33,12 +35,16 @@ export const ContactRow: React.FC<IContactRowProps> = ({
           ? colors.background.bustyBlue
           : colors.background.primary,
       }}>
-      <View style={styles.contactInfo}>
+      <TouchableOpacity
+        testID={`contactCard-${index}`}
+        key={index}
+        onPress={onPress}
+        style={styles.contactInfo}>
         <Text style={styles.contactName}>{contact.name}</Text>
         <Text style={styles.address}>
           {shortAddress(contact.displayAddress, 8)}
         </Text>
-      </View>
+      </TouchableOpacity>
       {selected && (
         <View style={styles.actions}>
           <Icon.Button
@@ -75,14 +81,13 @@ export const ContactRow: React.FC<IContactRowProps> = ({
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
-    paddingVertical: 20,
     marginVertical: 5,
     borderRadius: 15,
-    backgroundColor: colors.background.primary,
-    paddingHorizontal: 20,
   },
   contactInfo: {
     flex: 5,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
   },
   contactName: {
     fontFamily: fonts.regular,
@@ -100,6 +105,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    paddingRight: 20,
   },
   sendButton: {
     color: colors.darkBlue,
@@ -110,6 +116,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     borderWidth: 1,
     borderColor: colors.lightPurple,
+    marginLeft: 5,
   },
   editButton: {
     borderRadius: 50,

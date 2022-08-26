@@ -6,7 +6,6 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
@@ -127,21 +126,17 @@ export const ContactsScreen: React.FC<{
               a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1,
             )
             .map((contact, index) => (
-              <TouchableOpacity
-                testID={`contactCard-${index}`}
-                key={index}
+              <ContactRow
+                index={index}
+                contact={contact}
+                onSend={sendContact}
+                onDelete={showModal}
+                onEdit={editContact}
                 onPress={() =>
                   setSelectedIndex(selectedIndex === index ? null : index)
-                }>
-                <ContactRow
-                  index={index}
-                  contact={contact}
-                  onSend={sendContact}
-                  onDelete={showModal}
-                  onEdit={editContact}
-                  selected={selectedIndex === index}
-                />
-              </TouchableOpacity>
+                }
+                selected={selectedIndex === index}
+              />
             ))}
         </ScrollView>
       )}
