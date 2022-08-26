@@ -127,6 +127,7 @@ export const ContactsScreen: React.FC<{
             )
             .map((contact, index) => (
               <ContactRow
+                key={index}
                 index={index}
                 contact={contact}
                 onSend={sendContact}
