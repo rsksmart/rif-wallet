@@ -63,6 +63,7 @@ type RootStackParamList = {
   EventsScreen: undefined
   AccountsScreen: undefined
   SecurityConfigurationScreen: undefined
+  CreateProfileScreen: undefined
   ChangePinScreen: undefined
   BitcoinScreen: undefined
 }
@@ -284,6 +285,11 @@ export const RootNavigation: React.FC<{
               />
             )}
           </RootStack.Screen>
+          <RootStack.Screen
+            name="CreateProfileScreen"
+            component={Screens.CreateProfileScreen}
+            options={sharedOptions}
+          />
         </RootStack.Navigator>
         {appIsSetup && !isKeyboardVisible && (
           <AppFooterMenu currentScreen={currentScreen} />

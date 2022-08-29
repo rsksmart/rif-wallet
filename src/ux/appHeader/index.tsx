@@ -31,7 +31,7 @@ export const AppHeader: React.FC<{}> = () => {
           ...styles.column,
           ...styles.walletInfo,
         }}>
-        <ProfileHandler />
+        <ProfileHandler navigation={navigation} />
       </View>
       <View style={styles.column}>
         {wallet && (

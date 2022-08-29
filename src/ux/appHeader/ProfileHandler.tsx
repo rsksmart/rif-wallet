@@ -4,12 +4,15 @@ import { colors } from '../../styles'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 type Props = {
+  navigation: any
   alias?: string
 }
 
-export const ProfileHandler: React.FC<Props> = ({ alias }) => {
+export const ProfileHandler: React.FC<Props> = ({ navigation, alias }) => {
   return (
-    <TouchableOpacity style={styles.profileHandler}>
+    <TouchableOpacity
+      style={styles.profileHandler}
+      onPress={() => navigation.navigate('CreateProfileScreen' as any)}>
       {!alias && (
         <>
           <View style={styles.profileHandlerImage}>
