@@ -138,6 +138,7 @@ export const RNSManagerScreen: React.FC<
           </View>
         </View>
       )}
+      {/*TODO: Remove this since this is temporal to enable domain selection */}
       <View style={styles.sectionCentered}>
         <TouchableOpacity
           onPress={() =>
