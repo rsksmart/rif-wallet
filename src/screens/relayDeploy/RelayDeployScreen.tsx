@@ -1,41 +1,45 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import PrimaryButton from '../../components/button/PrimaryButton'
-import { RifRelayLight } from '../../lib/relay-sdk/RifRelayLight'
+// import { RifRelayLight } from '../../lib/relay-sdk/RifRelayLight'
 
 import { ScreenWithWallet } from '../types'
-import { deploySmartWallet, relayTransaction } from './operations'
+import {
+  deploySmartWallet,
+  relayTransaction,
+} from '../../lib/relay-sdk/relayOperations'
 
 type Interface = {}
 
 // rif relay variables:
-const hubAddress = '0x66Fa9FEAfB8Db66Fe2160ca7aEAc7FC24e254387'
+// const hubAddress = '0x66Fa9FEAfB8Db66Fe2160ca7aEAc7FC24e254387'
+const rifToken = '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe'
 
 const RelayDeployScreen: React.FC<Interface & ScreenWithWallet> = ({
   wallet,
+  isWalletDeployed,
 }) => {
   const doIt = async () => deploySmartWallet(wallet)
 
-  const handleTransaction = async () => relayTransaction(wallet)
+  const transaction = {
+    to: rifToken,
+    // send 1 tRIF to jesse:
+    data: '0xa9059cbb0000000000000000000000003dd03d7d6c3137f1eb7582ba5957b8a2e26f304a0000000000000000000000000000000000000000000000000de0b6b3a7640000',
+    from: wallet.address,
+  }
 
-  const relayClient = new RifRelayLight(wallet, hubAddress)
-  const handleTransactionPackage = async () =>
-    await relayClient.createRelayRequest()
+  const handleTransaction = async () => relayTransaction(wallet, transaction)
 
   return (
     <View>
       <Text>Hello World</Text>
 
-      <PrimaryButton onPress={doIt}>
+      <PrimaryButton onPress={doIt} disabled={isWalletDeployed}>
         <Text style={styles.buttonText}>Deploy SmartWallet!</Text>
       </PrimaryButton>
 
       <PrimaryButton onPress={handleTransaction}>
         <Text style={styles.buttonText}>Relay Tranasction</Text>
-      </PrimaryButton>
-
-      <PrimaryButton onPress={handleTransactionPackage}>
-        <Text style={styles.buttonText}>Relay Transaction Light</Text>
       </PrimaryButton>
     </View>
   )
