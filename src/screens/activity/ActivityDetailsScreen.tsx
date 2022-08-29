@@ -60,8 +60,8 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
               <View style={styles.assetIcon}>
                 <TokenImage
                   symbol={transaction.enhancedTransaction?.symbol}
-                  height={24}
-                  width={24}
+                  height={30}
+                  width={30}
                 />
               </View>
             )}
@@ -71,9 +71,7 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
 
               <SemiBoldText>
                 {transaction.enhancedTransaction?.value ||
-                  transaction.originTransaction.value}
-              </SemiBoldText>
-              <SemiBoldText>
+                  transaction.originTransaction.value}{' '}
                 {transaction.enhancedTransaction?.symbol}
               </SemiBoldText>
             </View>
@@ -204,7 +202,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   assetIcon: {
-    paddingTop: 3,
+    alignSelf: 'center',
     paddingRight: 6,
   },
 })
