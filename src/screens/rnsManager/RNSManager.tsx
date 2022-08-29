@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, TouchableOpacity } from 'react-native'
 import addresses from './addresses.json'
 import LinearGradient from 'react-native-linear-gradient'
 
@@ -133,8 +133,22 @@ export const RNSManagerScreen: React.FC<
               <Text key={registeredDomain}>{registeredDomain}</Text>
             </View>
           ))}
+          <View style={styles.sectionCentered}>
+            <Text key={'hardcoded'}>{'hardcoded-domain.rsk'}</Text>
+          </View>
         </View>
       )}
+      <View style={styles.sectionCentered}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('CreateProfileScreen', {
+              navigation,
+              selectedAlias: 'sample-domain.rsk',
+            })
+          }>
+          <Text key={'hardcoded'}>{'sample-domain.rsk (click to select)'}</Text>
+        </TouchableOpacity>
+      </View>
     </LinearGradient>
   )
 }

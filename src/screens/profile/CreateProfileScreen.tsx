@@ -1,12 +1,27 @@
-import React, { useState } from 'react'
-import { View, StyleSheet, TextInput, Image } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  Image,
+  Text,
+  TouchableOpacity,
+} from 'react-native'
 import { colors } from '../../styles'
 import { MediumText } from '../../components'
 import { PurpleButton } from '../../components/button/ButtonVariations'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
-export const CreateProfileScreen: React.FC = () => {
+export const CreateProfileScreen: React.FC = ({ route }) => {
+  const navigation = route.params.navigation
   const [phoneNumber, setPhoneNumber] = useState<string>()
   const [email, setEmail] = useState<string>()
+  const [alias, setAlias] = useState<string>()
+  useEffect(() => {
+    if (route.params.selectedAlias) {
+      setAlias(route.params.selectedAlias)
+    }
+  }, [route.params.navigation])
   return (
     <View style={styles.container}>
       <MediumText style={styles.titleText}>create profile</MediumText>
@@ -16,17 +31,45 @@ export const CreateProfileScreen: React.FC = () => {
           source={require('../../images/image_place_holder.jpeg')}
         />
       </View>
-
-      <View style={styles.rowContainer}>
+      <View>
         <MediumText style={[styles.masterText, styles.textLeftMargin]}>
           alias
         </MediumText>
-        <PurpleButton
-          onPress={() => {}}
-          accessibilityLabel="importWallet"
-          title={'register new'}
-        />
       </View>
+      {!alias && (
+        <>
+          <View style={styles.rowContainer}>
+            <PurpleButton
+              onPress={() => navigation.navigate('RNSManager')}
+              accessibilityLabel="importWallet"
+              title={'register new'}
+            />
+          </View>
+          <View style={styles.rowContainer}>
+            <PurpleButton
+              onPress={() => navigation.navigate('RNSManager')}
+              accessibilityLabel="choose from existing"
+              title={'choose from existing'}
+            />
+          </View>
+        </>
+      )}
+
+      {alias && (
+        <View style={styles.rowContainer}>
+          <View style={styles.aliasContainer}>
+            <View>
+              <Text style={styles.aliasText}>{alias}</Text>
+            </View>
+            <View>
+              <TouchableOpacity onPress={() => setAlias(undefined)}>
+                <MaterialIcon name="close" color={colors.white} size={20} />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      )}
+
       <View style={styles.rowContainer}>
         <MediumText style={[styles.masterText, styles.textLeftMargin]}>
           phone
@@ -61,6 +104,7 @@ export const CreateProfileScreen: React.FC = () => {
           onPress={() => {}}
           accessibilityLabel="create"
           title={'create'}
+          disabled={!alias}
         />
       </View>
     </View>
@@ -104,12 +148,22 @@ const styles = StyleSheet.create({
     color: colors.white,
   },
   rowContainer: {
-    marginTop: 30,
+    margin: 5,
   },
   buttonFirstStyle: {
     width: undefined,
     marginHorizontal: undefined,
     marginBottom: 20,
     backgroundColor: colors.blue,
+  },
+  aliasContainer: {
+    backgroundColor: colors.darkPurple5,
+    padding: 17,
+    borderRadius: 25,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  aliasText: {
+    color: colors.white,
   },
 })

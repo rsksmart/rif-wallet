@@ -12,7 +12,9 @@ export const ProfileHandler: React.FC<Props> = ({ navigation, alias }) => {
   return (
     <TouchableOpacity
       style={styles.profileHandler}
-      onPress={() => navigation.navigate('CreateProfileScreen' as any)}>
+      onPress={() =>
+        navigation.navigate('CreateProfileScreen', { navigation })
+      }>
       {!alias && (
         <>
           <View style={styles.profileHandlerImage}>

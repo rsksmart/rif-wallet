@@ -68,7 +68,7 @@ const purpleStyles = StyleSheet.create({
     backgroundColor: colors.background.bustyBlue,
   },
   buttonDisabled: {
-    backgroundColor: colors.background.lightSteelBlue,
+    backgroundColor: colors.darkPurple2,
   },
   buttonActive: {
     backgroundColor: '#7f77fa',
