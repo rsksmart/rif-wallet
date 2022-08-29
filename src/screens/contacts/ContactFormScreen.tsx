@@ -54,7 +54,7 @@ export const ContactFormScreen: React.FC<
     <View style={styles.parent}>
       <View style={styles.header}>
         <Icon.Button
-          testID="backButton"
+          accessibilityLabel="backButton"
           name="arrow-back"
           onPress={() => navigation.navigate('ContactsList' as never)}
           backgroundColor={colors.background.primary}
@@ -70,7 +70,7 @@ export const ContactFormScreen: React.FC<
       <View style={styles.body}>
         <Text style={styles.label}>name</Text>
         <TextInput
-          testID="nameInput"
+          accessibilityLabel="nameInput"
           style={styles.input}
           onChangeText={setName}
           value={name}
@@ -91,7 +91,7 @@ export const ContactFormScreen: React.FC<
       </View>
       <View style={styles.footer}>
         <BlueButton
-          testID="saveButton"
+          accessibilityLabel="saveButton"
           title="Save Contact"
           onPress={saveContact}
           style={styles.saveButton}

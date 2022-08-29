@@ -75,7 +75,7 @@ export const ContactsScreen: React.FC<{
       <View style={styles.header}>
         <Text style={styles.title}>Contacts</Text>
         <Icon.Button
-          testID="addContact"
+          accessibilityLabel="addContact"
           name="user-plus"
           onPress={() => navigation.navigate('ContactForm' as never)}
           backgroundColor={colors.background.bustyBlue}
@@ -113,7 +113,7 @@ export const ContactsScreen: React.FC<{
         <ScrollView style={styles.contactsList}>
           <View style={styles.searchView}>
             <TextInput
-              testID="searchInput"
+              accessibilityLabel="searchInput"
               style={styles.searchInput}
               placeholder={t('type to find...')}
               placeholderTextColor={colors.purple}
@@ -130,13 +130,13 @@ export const ContactsScreen: React.FC<{
                 key={index}
                 index={index}
                 contact={contact}
+                selected={selectedIndex === index}
                 onSend={sendContact}
                 onDelete={showModal}
                 onEdit={editContact}
                 onPress={() =>
                   setSelectedIndex(selectedIndex === index ? null : index)
                 }
-                selected={selectedIndex === index}
               />
             ))}
         </ScrollView>
