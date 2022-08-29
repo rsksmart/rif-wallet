@@ -1,21 +1,31 @@
-import React from 'react'
-import { View, StyleSheet, TextInput } from 'react-native'
+import React, { useState } from 'react'
+import { View, StyleSheet, TextInput, Image } from 'react-native'
 import { colors } from '../../styles'
-import { MediumText, RegularText } from '../../components'
-import PrimaryButton from '../../components/button/PrimaryButton'
+import { MediumText } from '../../components'
+import { PurpleButton } from '../../components/button/ButtonVariations'
 
 export const CreateProfileScreen: React.FC = () => {
+  const [phoneNumber, setPhoneNumber] = useState<string>()
+  const [email, setEmail] = useState<string>()
   return (
     <View style={styles.container}>
-      <View>
+      <MediumText style={styles.titleText}>create profile</MediumText>
+      <View style={styles.profileImageContainer}>
+        <Image
+          style={styles.profileImage}
+          source={require('../../images/image_place_holder.jpeg')}
+        />
+      </View>
+
+      <View style={styles.rowContainer}>
         <MediumText style={[styles.masterText, styles.textLeftMargin]}>
           alias
         </MediumText>
-        <PrimaryButton style={styles.buttonFirstStyle}>
-          <View>
-            <RegularText>deploy wallet</RegularText>
-          </View>
-        </PrimaryButton>
+        <PurpleButton
+          onPress={() => {}}
+          accessibilityLabel="importWallet"
+          title={'register new'}
+        />
       </View>
       <View style={styles.rowContainer}>
         <MediumText style={[styles.masterText, styles.textLeftMargin]}>
@@ -24,9 +34,9 @@ export const CreateProfileScreen: React.FC = () => {
 
         <TextInput
           style={styles.input}
-          onChangeText={() => {}}
-          value={''}
-          placeholder="0.00"
+          onChangeText={setPhoneNumber}
+          value={phoneNumber}
+          placeholder=""
           keyboardType="numeric"
           testID={'Amount.Input'}
           placeholderTextColor={colors.gray}
@@ -38,12 +48,19 @@ export const CreateProfileScreen: React.FC = () => {
         </MediumText>
         <TextInput
           style={styles.input}
-          onChangeText={() => {}}
-          value={''}
-          placeholder="0.00"
+          onChangeText={setEmail}
+          value={email}
+          placeholder=""
           keyboardType="numeric"
           testID={'Amount.Input'}
           placeholderTextColor={colors.gray}
+        />
+      </View>
+      <View style={styles.rowContainer}>
+        <PurpleButton
+          onPress={() => {}}
+          accessibilityLabel="create"
+          title={'create'}
         />
       </View>
     </View>
@@ -57,30 +74,42 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingHorizontal: 40,
   },
+  profileImageContainer: {
+    alignItems: 'center',
+  },
+  profileImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 100,
+  },
   input: {
     borderColor: colors.white,
     borderWidth: 1,
-    borderRadius: 20,
+    borderRadius: 100,
     color: colors.white,
     fontSize: 16,
     fontWeight: '600',
-    padding: 22,
+    padding: 14,
   },
   textLeftMargin: {
     marginLeft: 10,
   },
+  titleText: {
+    alignSelf: 'center',
+    marginBottom: 12,
+    color: colors.white,
+  },
   masterText: {
-    marginBottom: 8,
+    marginBottom: 0,
     color: colors.white,
   },
   rowContainer: {
     marginTop: 30,
   },
   buttonFirstStyle: {
-    color: colors.lightGray,
     width: undefined,
     marginHorizontal: undefined,
     marginBottom: 20,
-    backgroundColor: colors.lightGray,
+    backgroundColor: colors.blue,
   },
 })

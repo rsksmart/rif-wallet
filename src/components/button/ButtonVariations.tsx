@@ -59,6 +59,28 @@ const sharedStyles = StyleSheet.create({
   },
 })
 
+export const PurpleButton: React.FC<ButtonInterface> = props => (
+  <Button {...props} buttonStyles={purpleStyles} />
+)
+
+const purpleStyles = StyleSheet.create({
+  button: {
+    backgroundColor: colors.background.bustyBlue,
+  },
+  buttonDisabled: {
+    backgroundColor: colors.background.lightSteelBlue,
+  },
+  buttonActive: {
+    backgroundColor: '#7f77fa',
+  },
+  text: {
+    color: colors.lightPurple,
+  },
+  textDisabled: {
+    color: '#7e7eb8',
+  },
+})
+
 // Blue Variation
 export const BlueButton: React.FC<ButtonInterface> = props => (
   <Button {...props} buttonStyles={blueStyles} />
