@@ -1,5 +1,9 @@
 import { Signer } from 'ethers'
 
+export type Address = string
+export type IntString = string
+export type PrefixedHexString = string
+
 export const DeployRequestDataType = [
   { name: 'relayHub', type: 'address' },
   { name: 'from', type: 'address' },
@@ -62,3 +66,36 @@ export interface SDKConfiguration {
   relayVerifierAddress: string
   deployVerifierAddress: string
 }
+
+export interface RelayData {
+  gasPrice: IntString
+  domainSeparator: PrefixedHexString
+  relayWorker: Address
+  callForwarder: Address
+  callVerifier: Address
+}
+
+export interface ForwardRequest {
+  relayHub: Address
+  from: Address
+  to: Address
+  tokenContract: Address
+  value: IntString
+  gas: IntString
+  nonce: IntString
+  tokenAmount: IntString
+  tokenGas: IntString
+  data: PrefixedHexString
+}
+
+export interface RelayRequest {
+  request: ForwardRequest
+  relayData: RelayData
+}
+
+export const EIP712DomainType = [
+  { name: 'name', type: 'string' },
+  { name: 'version', type: 'string' },
+  { name: 'chainId', type: 'uint256' },
+  { name: 'verifyingContract', type: 'address' },
+]

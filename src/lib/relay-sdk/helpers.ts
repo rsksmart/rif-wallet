@@ -1,7 +1,11 @@
-import { EIP712Domain } from 'eth-sig-util'
+import { bufferToHex } from 'ethereumjs-util'
+import { EIP712Domain, TypedDataUtils } from 'eth-sig-util'
 import {
+  Address,
   DeployRequestType,
   DomainSeparatorType,
+  EIP712DomainType,
+  PrefixedHexString,
   RelayDataType,
   RelayRequestType,
 } from './types'
@@ -27,4 +31,17 @@ export function getDomainSeparator(
     chainId: chainId,
     verifyingContract: verifyingContract,
   }
+}
+
+export function getDomainSeparatorHash(
+  verifier: Address,
+  chainId: number,
+): PrefixedHexString {
+  return bufferToHex(
+    TypedDataUtils.hashStruct(
+      'EIP712Domain',
+      getDomainSeparator(verifier, chainId),
+      { EIP712Domain: EIP712DomainType },
+    ),
+  )
 }

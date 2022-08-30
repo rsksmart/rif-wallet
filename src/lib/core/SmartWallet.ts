@@ -36,5 +36,7 @@ export class SmartWallet {
     return ret
   }
 
-  
+  nonce = async (): Promise<number> => {
+    return (await this.smartWalletContract.nonce()).toNumber()
+  }
 }

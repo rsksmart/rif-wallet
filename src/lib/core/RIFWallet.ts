@@ -1,11 +1,17 @@
-import { Signer, BigNumberish, BytesLike, constants, BigNumber } from 'ethers'
+import { Signer, BigNumberish, BytesLike, constants, BigNumber, Transaction, ethers } from 'ethers'
 import { TransactionRequest, Provider, TransactionResponse, BlockTag } from '@ethersproject/abstract-provider'
 import { TypedDataSigner } from '@ethersproject/abstract-signer'
 import { defineReadOnly } from '@ethersproject/properties'
-import { resolveProperties } from 'ethers/lib/utils'
+import { Deferrable, resolveProperties } from 'ethers/lib/utils'
+import SDK from '@jessgusclark/rsk-multi-token-sdk'
+
 import { SmartWalletFactory } from './SmartWalletFactory'
 import { SmartWallet } from './SmartWallet'
 import { filterTxOptions } from './filterTxOptions'
+import { relayTransaction, setupSDK } from '../relay-sdk/relayOperations'
+import { RelayRequest } from '@jessgusclark/rsk-multi-token-sdk/dist/modules/typedRequestData'
+import { RIFRelaySDK } from '../relay-sdk/RifRelaySdk'
+import { getDomainSeparator, dataTypeFields } from '../relay-sdk/helpers'
 
 type IRequest<Type, Payload, ReturnType, ConfirmArgs> = {
   type: Type,
@@ -63,14 +69,16 @@ type CreateDoRequest = (
 export class RIFWallet extends Signer implements TypedDataSigner {
   smartWallet: SmartWallet
   smartWalletFactory: SmartWalletFactory
+  rifRelaySdk: RIFRelaySDK
   onRequest: OnRequest
 
-  private constructor (smartWalletFactory: SmartWalletFactory, smartWallet: SmartWallet, onRequest: OnRequest) {
+  private constructor (smartWalletFactory: SmartWalletFactory, smartWallet: SmartWallet, onRequest: OnRequest, sdk: RIFRelaySDK) {
     super()
     this.smartWalletFactory = smartWalletFactory
     this.smartWallet = smartWallet
     this.onRequest = onRequest
-
+    this.rifRelaySdk = sdk
+    
     defineReadOnly(this, 'provider', this.smartWallet.signer.provider) // ref: https://github.com/ethers-io/ethers.js/blob/b1458989761c11bf626591706aa4ce98dae2d6a9/packages/abstract-signer/src.ts/index.ts#L130
   }
 
@@ -86,16 +94,14 @@ export class RIFWallet extends Signer implements TypedDataSigner {
     const smartWalletFactory = await SmartWalletFactory.create(signer, smartWalletFactoryAddress)
     const smartWalletAddress = await smartWalletFactory.getSmartWalletAddress()
     const smartWallet = await SmartWallet.create(signer, smartWalletAddress)
-    return new RIFWallet(smartWalletFactory, smartWallet, onRequest)
+
+    const sdk = await RIFRelaySDK.create(smartWallet, 31)
+
+    return new RIFWallet(smartWalletFactory, smartWallet, onRequest, sdk)
   }
 
-  // THIS NEEDS TO BE THE EOA address for signAndVerify to work from T!:
-  getAddress = (): Promise<string> => {
-    console.log('[RIFWallet.ts] called getAddress()')
-    this.smartWallet.signer.getAddress()
-      .then((addr: string) => console.log('RIFWallet.ts] response:', addr))
-    return this.smartWallet.signer.getAddress() // Promise.resolve(this.smartWallet.signer.getAddress)
-  }
+  // This needs to return the eoa address for T! RIF Relay's package to work:
+  getAddress = (): Promise<string> => this.smartWallet.signer.getAddress()
 
   signTransaction = (transaction: TransactionRequest): Promise<string> => this.smartWallet.signer.signTransaction(transaction)
 
@@ -108,16 +114,11 @@ export class RIFWallet extends Signer implements TypedDataSigner {
   */
 
   createDoRequest: CreateDoRequest = (type, onConfirm) => {
-    console.log('createDoRequest', type)
     return (...payload) => new Promise((resolve, reject) => {
-      console.log({ payload })
       const nextRequest = Object.freeze({
         type,
         payload,
-        confirm: (args?: RequestConfirmOverrides) => {
-          console.log('createDoRequest', { payload, args })
-          return resolve(onConfirm(payload, args))
-        },
+        confirm: (args?: RequestConfirmOverrides) => resolve(onConfirm(payload, args)),
         reject
       })
 
@@ -126,9 +127,33 @@ export class RIFWallet extends Signer implements TypedDataSigner {
     })
   }
 
+  // @todo rename to sendRelayedTransaction
+  async sendTransaction(transaction: Deferrable<any>): Promise<any> {
+    console.log('sendTransaction', transaction)
+    const payment = {
+      tokenContract: '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
+      tokenAmount: '0'
+    }
+
+    const { relayRequest, domain, types } = await this.rifRelaySdk.createRelayRequest(transaction, payment)
+    console.log({ relayRequest, domain, types })
+    const value = {
+      ...relayRequest.request,
+      relayData: relayRequest.relayData,
+    }
+
+    console.log({ value })
+
+    // (this.smartWallet.signer as any as TypedDataSigner)._signTypedData()
+
+    return this._signTypedData(domain, types, value)
+  }
+
+  /*
   sendTransaction = this.createDoRequest(
     'sendTransaction',
     (([transactionRequest]: [TransactionRequest], overriddenOptions?: Partial<OverriddableTransactionOptions>) => {
+      
       // check if attempting to send rBTC from the EOA account
       if (!transactionRequest.data && !!transactionRequest.value && !!transactionRequest.to) {
         return this.smartWallet.signer.sendTransaction({
@@ -143,8 +168,11 @@ export class RIFWallet extends Signer implements TypedDataSigner {
       }
 
       return this.smartWallet.directExecute(transactionRequest.to!, transactionRequest.data ?? constants.HashZero, txOptions)
+      
+      
     }) as CreateDoRequestOnConfirm
   ) as (transactionRequest: TransactionRequest) => Promise<TransactionResponse>
+  */
 
   signMessage = this.createDoRequest(
     'signMessage',
@@ -153,16 +181,9 @@ export class RIFWallet extends Signer implements TypedDataSigner {
 
   _signTypedData = this.createDoRequest(
     'signTypedData',
-    ((args: SignTypedDataArgs) => {
-      console.log('[RIF Wallet] - signedTypedData hit ;-)')
-      console.log(...args)
-
-      return (this.smartWallet.signer as any as TypedDataSigner)._signTypedData(...args).then((signed: any) => {
-        console.log('[RIF Wallet]', { signed })
-        return signed
-      })
-    }) as CreateDoRequestOnConfirm
+    ((args: SignTypedDataArgs) => (this.smartWallet.signer as any as TypedDataSigner)._signTypedData(...args)) as CreateDoRequestOnConfirm
   ) as (...args: SignTypedDataArgs) => Promise<string>
+
 
   estimateGas (transaction: TransactionRequest): Promise<BigNumber> {
     return resolveProperties(this.checkTransaction(transaction))

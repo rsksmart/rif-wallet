@@ -1,40 +1,66 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
 import { RegularText, SemiBoldText } from '../../components'
 import { colors } from '../../styles'
 import PrimaryButton from '../../components/button/PrimaryButton'
 import { Arrow } from '../../components/icons'
+import { deploySmartWallet } from '../../lib/relay-sdk/relayOperations'
+import { RIFWallet } from '../../lib/core'
 
-type WalletNotDeployedViewType = {
-  onDeployWalletPress: () => void
+interface Interface {
+  wallet: RIFWallet
 }
-const WalletNotDeployedView: React.FC<WalletNotDeployedViewType> = ({
-  onDeployWalletPress,
-}) => (
-  <View style={styles.container} testID="WalletNotDeployedView">
-    <Image
-      source={require('../../images/undeployed_wallet.png')}
-      style={styles.imageStyle}
-      resizeMode="contain"
-    />
-    <View>
-      <SemiBoldText style={styles.oopsText}>
-        Oops... Your wallet has not yet been deployed.
-      </SemiBoldText>
-      <RegularText style={styles.regularText}>
-        To be able to send funds, you need to deploy your wallet first.
-      </RegularText>
-      <PrimaryButton style={styles.buttonDeploy} onPress={onDeployWalletPress}>
-        <View style={styles.buttonView}>
-          <Arrow color={'white'} rotate={45} width={35} height={35} />
-          <View>
-            <RegularText style={styles.deployText}>deploy wallet</RegularText>
+
+const WalletNotDeployedView: React.FC<Interface> = ({ wallet }) => {
+  const [isDeploying, setIsDeploying] = useState<boolean>(false)
+
+  const onDeployWalletPress = () => {
+    setIsDeploying(true)
+    deploySmartWallet(wallet)
+      .then((response: any) => {
+        console.log('is deployed!', response)
+      })
+      .finally(() => setIsDeploying(false))
+  }
+
+  if (isDeploying) {
+    return (
+      <View style={styles.container} testID="WalletNotDeployedView">
+        <SemiBoldText style={styles.oopsText}>
+          Deploying your smartwallet now!
+        </SemiBoldText>
+      </View>
+    )
+  }
+
+  return (
+    <View style={styles.container} testID="WalletNotDeployedView">
+      <Image
+        source={require('../../images/undeployed_wallet.png')}
+        style={styles.imageStyle}
+        resizeMode="contain"
+      />
+      <View>
+        <SemiBoldText style={styles.oopsText}>
+          Oops... Your wallet has not yet been deployed.
+        </SemiBoldText>
+        <RegularText style={styles.regularText}>
+          To be able to send funds, you need to deploy your wallet first.
+        </RegularText>
+        <PrimaryButton
+          style={styles.buttonDeploy}
+          onPress={onDeployWalletPress}>
+          <View style={styles.buttonView}>
+            <Arrow color={'white'} rotate={45} width={35} height={35} />
+            <View>
+              <RegularText style={styles.deployText}>deploy wallet</RegularText>
+            </View>
           </View>
-        </View>
-      </PrimaryButton>
+        </PrimaryButton>
+      </View>
     </View>
-  </View>
-)
+  )
+}
 
 const styles = StyleSheet.create({
   container: {

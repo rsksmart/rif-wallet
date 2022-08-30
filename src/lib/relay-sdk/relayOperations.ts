@@ -2,11 +2,12 @@
 
 import SDK from '@jessgusclark/rsk-multi-token-sdk'
 import axios, { AxiosResponse } from 'axios'
-import { Transaction } from 'ethers'
+import { TransactionRequest } from '@ethersproject/abstract-provider'
 
 import { RIFWallet } from '../../lib/core'
 import { dataTypeFields, getDomainSeparator } from './helpers'
 import { SDKConfiguration } from './types'
+import { Deferrable } from 'ethers/lib/utils'
 
 export const MAX_RELAY_NONCE_GAP = 3
 
@@ -22,7 +23,7 @@ const sdkConfig: SDKConfiguration = {
 
 const rifToken = '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe'
 
-const setupSDK = async (rifWallet: RIFWallet): Promise<SDK> => {
+export const setupSDK = async (rifWallet: RIFWallet): Promise<SDK> => {
   const chainId = 31 // (await provider.getNetwork()).chainId
 
   const sdkFullConfig: SDKConfiguration = {
@@ -35,7 +36,7 @@ const setupSDK = async (rifWallet: RIFWallet): Promise<SDK> => {
   return SDK.create(rifWallet.provider, sdkFullConfig)
 }
 
-const createDeployRequest = async (sdk: SDK, rifWallet: RIFWallet) => {
+export const createDeployRequest = async (sdk: SDK, rifWallet: RIFWallet) => {
   const relayUtils = sdk.instance.modules.relayUtils
   const signerAddress = await rifWallet.smartWallet.signer.getAddress()
 
@@ -47,16 +48,16 @@ const createDeployRequest = async (sdk: SDK, rifWallet: RIFWallet) => {
   )
 }
 
-const createRelayRequest = async (
+export const createRelayRequest = async (
   sdk: SDK,
   rifWallet: RIFWallet,
-  transaction: Partial<Transaction>,
+  transaction: TransactionRequest,
 ) => {
   const relayRequest = await sdk.instance.modules.relayUtils.createRelayRequest(
     rifWallet.smartWallet.address, // from,
     transaction.to || '0x0000000000000000000000000000000000000000', // to, the RIF token
     rifWallet.smartWalletAddress, // forwarder
-    transaction.data || '0x', // data,
+    transaction.data, // data,
     rifToken, // tokenContract,
     '0', // tokenAmount,
     '65164000', // tokenGas
@@ -95,9 +96,14 @@ const postRequestToRelay = async (
     .catch(console.log)
 }
 
+/**
+ * BELOW IS THE ENTIRE PROCESS:
+ */
+
+
 export const relayTransaction = async (
   rifWallet: RIFWallet,
-  transaction: Partial<Transaction>,
+  transaction: Deferrable<TransactionRequest>,
 ) => {
   const sdk = await setupSDK(rifWallet)
   console.log('🦄 checkpoint 1', { sdk })

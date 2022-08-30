@@ -74,13 +74,9 @@ export const SendScreen: React.FC<
     })
   }
 
-  const onDeployWalletNavigate = () =>
-    navigation.navigate('ManuallyDeployScreen' as any)
   return (
     <ScrollView style={styles.parent}>
-      {!isWalletDeployed && (
-        <WalletNotDeployedView onDeployWalletPress={onDeployWalletNavigate} />
-      )}
+      {!isWalletDeployed && <WalletNotDeployedView wallet={wallet} />}
       {!currentTransaction ? (
         <TransactionForm
           onConfirm={transfer}
