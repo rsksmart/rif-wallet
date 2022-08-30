@@ -13,7 +13,6 @@ import { SearchIcon } from '../../components/icons/SearchIcon'
 import { NavigationProp } from '../../RootNavigation'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
-import { useSocketsState } from '../../subscriptions/RIFSockets'
 import { ContactRow } from './ContactRow'
 import { ContactsContext, IContact } from './ContactsContext'
 import { DeleteModal } from './DeleteModal'
@@ -22,14 +21,11 @@ export const ContactsScreen: React.FC<{
   navigation: NavigationProp
 }> = ({ navigation }) => {
   const { t } = useTranslation()
-  const { state } = useSocketsState()
   const { contacts, deleteContact } = useContext(ContactsContext)
   const [filteredContacts, setFilteredContacts] = useState(contacts)
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [selectedContact, setSelectedContact] = useState<IContact | null>(null)
-
-  const hideSendButton = Object.values(state.balances).length === 0
 
   const showModal = (contact: IContact) => {
     setIsModalVisible(true)
@@ -136,7 +132,6 @@ export const ContactsScreen: React.FC<{
                 index={index}
                 contact={contact}
                 selected={selectedIndex === index}
-                hideSendButton={hideSendButton}
                 onSend={sendContact}
                 onDelete={showModal}
                 onEdit={editContact}

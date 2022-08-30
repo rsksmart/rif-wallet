@@ -6,6 +6,7 @@ import EditMaterialIcon from '../../components/icons/EditMaterialIcon'
 import { shortAddress } from '../../lib/utils'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
+import { useSocketsState } from '../../subscriptions/RIFSockets'
 import { IContact } from './ContactsContext'
 
 interface IContactRowProps {
@@ -23,12 +24,14 @@ export const ContactRow: React.FC<IContactRowProps> = ({
   index,
   contact,
   selected,
-  hideSendButton = false,
   onPress,
   onSend,
   onDelete,
   onEdit,
 }) => {
+  const { state } = useSocketsState()
+  const hideSendButton = Object.values(state.balances).length === 0
+
   return (
     <View
       style={{

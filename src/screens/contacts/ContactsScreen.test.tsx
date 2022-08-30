@@ -1,12 +1,17 @@
 import { fireEvent, render } from '@testing-library/react-native'
 import React from 'react'
 import { act } from 'react-test-renderer'
+import * as hooks from '../../subscriptions/RIFSockets'
 import { ContactsContext, IContact } from './ContactsContext'
 import { ContactsScreen } from './ContactsScreen'
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }))
+
+jest
+  .spyOn(hooks, 'useSocketsState')
+  .mockImplementation(() => ({ state: { balances: [{}] } } as any))
 
 describe('ContactsScreen', () => {
   const navigationMock = { navigate: jest.fn() } as any
