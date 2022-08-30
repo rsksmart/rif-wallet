@@ -128,25 +128,38 @@ export class RIFWallet extends Signer implements TypedDataSigner {
   }
 
   // @todo rename to sendRelayedTransaction
-  async sendTransaction(transaction: Deferrable<any>): Promise<any> {
+  sendTransaction(transaction: Deferrable<any>): Promise<any> {
     console.log('sendTransaction', transaction)
     const payment = {
       tokenContract: '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
       tokenAmount: '0'
     }
 
-    const { relayRequest, domain, types } = await this.rifRelaySdk.createRelayRequest(transaction, payment)
-    console.log({ relayRequest, domain, types })
-    const value = {
-      ...relayRequest.request,
-      relayData: relayRequest.relayData,
-    }
+    return this.rifRelaySdk.createRelayRequest(transaction, payment)
+      .then((response) => {
+        const { relayRequest, domain, types } = response
 
-    console.log({ value })
+        const onConfirm = (args: SignTypedDataArgs) =>
+          // console.log('onConfirm', args)
+          (this.smartWallet.signer as unknown as TypedDataSigner)
+            ._signTypedData(...args)
+              .then((signed: string) => {
+                console.log('[RIF Wallet]', { signed, ...args })
+                return signed
+              })
+        
+              
+        const request = this.createDoRequest(
+          'signTypedData',
+          onConfirm as CreateDoRequestOnConfirm
+        ) as (...args: SignTypedDataArgs) => Promise<string>
 
-    // (this.smartWallet.signer as any as TypedDataSigner)._signTypedData()
-
-    return this._signTypedData(domain, types, value)
+        const value = {
+          ...relayRequest.request,
+          relayData: relayRequest.relayData,
+        }
+        return request(domain, types, value)
+      })
   }
 
   /*

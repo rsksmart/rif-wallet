@@ -5,7 +5,9 @@ import {
   dataTypeFields,
   getDomainSeparator,
   getDomainSeparatorHash,
+  MAX_RELAY_NONCE_GAP,
 } from './helpers'
+import axios, { AxiosResponse } from 'axios'
 
 export class RIFRelaySDK {
   chainId: number
@@ -41,6 +43,7 @@ export class RIFRelaySDK {
       smartWalletFactoryContractAddress:
         '0xeaB5b9fA91aeFFaA9c33F9b33d12AB7088fa7f6f',
       relayHubAddress: '0x66Fa9FEAfB8Db66Fe2160ca7aEAc7FC24e254387',
+      relayServer: 'https://dev.relay.rifcomputing.net:8090',
     }
 
     const eoaAddress = await smartWallet.signer.getAddress()
@@ -85,4 +88,36 @@ export class RIFRelaySDK {
   // createDeployRequest
 
   // esitmate transaction cost
+
+  sendRequestToRelay = (request: any, signature: string) => {
+    console.log('sending to the server...', request)
+    // @ts-ignore - provider is defined
+    return this.rifWallet.provider
+      .getTransactionCount(this.sdkConfig.relayWorkerAddress)
+      .then((relayMaxNonce: number) => {
+        const metadata = {
+          relayHubAddress: this.sdkConfig.relayHubContractAddress,
+          relayMaxNonce: relayMaxNonce + MAX_RELAY_NONCE_GAP,
+          signature,
+        }
+
+        console.log('checkpoint 5', {
+          relayRequest: request,
+          metadata,
+        })
+
+        return axios
+          .post(`${this.sdkConfig.relayServer}/relay`, {
+            relayRequest: request,
+            metadata,
+          })
+          .then((response: AxiosResponse) => {
+            console.log('SERVER', response)
+            // if okay...
+            console.log('returning FAKE txHash...')
+            return '0xbd6bee7d78d64492083974f1c83328088317795a204bbfc3890aa1bd4cbe67cf'
+          })
+          .catch(console.log)
+      })
+  }
 }

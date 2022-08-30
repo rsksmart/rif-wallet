@@ -45,3 +45,5 @@ export function getDomainSeparatorHash(
     ),
   )
 }
+
+export const MAX_RELAY_NONCE_GAP = 3
