@@ -36,6 +36,7 @@ export const ContactRow: React.FC<IContactRowProps> = ({
           : colors.background.primary,
       }}>
       <TouchableOpacity
+        testID={`contactCard-${index}`}
         accessibilityLabel={`contactCard-${index}`}
         key={index}
         onPress={onPress}
@@ -48,6 +49,7 @@ export const ContactRow: React.FC<IContactRowProps> = ({
       {selected && (
         <View style={styles.actions}>
           <Icon.Button
+            testID={`sendButton-${index}`}
             accessibilityLabel={`sendButton-${index}`}
             name="arrow-up-right"
             onPress={() => onSend(contact)}
@@ -57,6 +59,7 @@ export const ContactRow: React.FC<IContactRowProps> = ({
             borderRadius={20}
           />
           <DeleteIcon
+            testID={`deleteButton-${index}`}
             accessibilityLabel={`deleteButton-${index}`}
             style={styles.deleteButton}
             color={colors.purple}
@@ -66,6 +69,7 @@ export const ContactRow: React.FC<IContactRowProps> = ({
             onPress={() => onDelete(contact)}
           />
           <EditMaterialIcon
+            testID={`editButton-${index}`}
             accessibilityLabel={`editButton-${index}`}
             color={colors.purple}
             size={17}

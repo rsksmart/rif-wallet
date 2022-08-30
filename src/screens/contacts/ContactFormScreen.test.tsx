@@ -49,7 +49,10 @@ describe('ContactFormScreen', () => {
       />,
     )
     fireEvent.changeText(getByTestId('nameInput'), 'Alice')
-    fireEvent.changeText(getByTestId('addressInput'), '0xA2193A393AA0C94a4d52893496F02B56c61C36a1')
+    fireEvent.changeText(
+      getByTestId('addressInput'),
+      '0xA2193A393AA0C94a4d52893496F02B56c61C36a1',
+    )
     fireEvent.press(getByTestId('saveButton'))
     expect(navigationMock.navigate).toHaveBeenCalledWith('ContactsList')
   })
