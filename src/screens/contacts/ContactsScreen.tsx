@@ -100,7 +100,7 @@ export const ContactsScreen: React.FC<{
             source={require('../../images/empty-contact.png')}
             style={styles.noContactsImage}
           />
-          <View style={styles.noContactsTextView}>
+          <View style={styles.noContactsTextView} testID="emptyView">
             <Text style={styles.noContactsText}>
               {t('Your contact list is empty.')}
             </Text>
@@ -113,6 +113,7 @@ export const ContactsScreen: React.FC<{
         <ScrollView style={styles.contactsList}>
           <View style={styles.searchView}>
             <TextInput
+              testID="searchInput"
               accessibilityLabel="searchInput"
               style={styles.searchInput}
               placeholder={t('type to find...')}
