@@ -1,23 +1,29 @@
-import { useGlobalAppContext } from '../../Context'
+import { useBitcoinCoreContext } from '../../Context'
 import React, { useMemo } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { MediumText, SemiBoldText } from '../typography'
-import BitcoinCore from './BitcoinCore'
 import { colors } from '../../styles'
 
 const BitcoinContainer = () => {
-  const { mnemonic } = useGlobalAppContext()
+  const btc = useBitcoinCoreContext()
 
-  const btc = new BitcoinCore(mnemonic || '')
   const first20addresses: Array<string> = useMemo(() => {
     let counter = 0
     let addresses = []
     while (counter < 20) {
-      addresses.push(btc.getAccountAddress(counter))
+      addresses.push(btc?.getAccountAddress(counter))
       counter++
     }
     return addresses
   }, [btc])
+
+  if (!btc) {
+    return (
+      <View style={styles.container}>
+        <MediumText>Bitcoin is not defined.</MediumText>
+      </View>
+    )
+  }
   return (
     <View style={styles.container}>
       <View>
@@ -27,7 +33,9 @@ const BitcoinContainer = () => {
       <View>
         <SemiBoldText>Addresses:</SemiBoldText>
         {first20addresses.map(address => (
-          <MediumText style={styles.addressText}>{address}</MediumText>
+          <MediumText key={address} style={styles.addressText}>
+            {address}
+          </MediumText>
         ))}
       </View>
     </View>
