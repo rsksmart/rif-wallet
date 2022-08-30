@@ -12,6 +12,7 @@ interface IContactRowProps {
   index: number
   contact: IContact
   selected: boolean
+  hideSendButton?: boolean
   onSend: (contact: IContact) => void
   onDelete: (contact: IContact) => void
   onEdit: (contact: IContact) => void
@@ -22,6 +23,7 @@ export const ContactRow: React.FC<IContactRowProps> = ({
   index,
   contact,
   selected,
+  hideSendButton = false,
   onPress,
   onSend,
   onDelete,
@@ -48,16 +50,20 @@ export const ContactRow: React.FC<IContactRowProps> = ({
       </TouchableOpacity>
       {selected && (
         <View style={styles.actions}>
-          <Icon.Button
-            testID={`sendButton-${index}`}
-            accessibilityLabel={`sendButton-${index}`}
-            name="arrow-up-right"
-            onPress={() => onSend(contact)}
-            backgroundColor={colors.purple}
-            iconStyle={styles.sendButton}
-            size={15}
-            borderRadius={20}
-          />
+          {!hideSendButton ? (
+            <Icon.Button
+              testID={`sendButton-${index}`}
+              accessibilityLabel={`sendButton-${index}`}
+              name="arrow-up-right"
+              onPress={() => onSend(contact)}
+              backgroundColor={colors.purple}
+              iconStyle={styles.sendButton}
+              size={15}
+              borderRadius={20}
+            />
+          ) : (
+            <View style={styles.emptyView} />
+          )}
           <DeleteIcon
             testID={`deleteButton-${index}`}
             accessibilityLabel={`deleteButton-${index}`}
@@ -103,6 +109,9 @@ const styles = StyleSheet.create({
     fontFamily: fonts.regular,
     fontSize: 10,
     color: colors.text.secondary,
+  },
+  emptyView: {
+    width: 32,
   },
   actions: {
     flex: 3,
