@@ -38,6 +38,7 @@
     "@walletconnect/client": "^1.6.6",
     "axios": "^0.24.0",
     "bignumber.js": "^9.0.1",
+    "bip84": "^0.2.7",
     "buffer": "^4.9.2",
     "ethers": "^5.4.7",
     "events": "^1.1.1",

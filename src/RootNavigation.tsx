@@ -9,6 +9,7 @@ import { AppHeader } from './ux/appHeader'
 import { AppFooterMenu } from './ux/appFooter'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
 import { colors } from './styles'
+import BitcoinAddressesScreen from './screens/bitcoin/BitcoinAddressesScreen'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -63,6 +64,7 @@ type RootStackParamList = {
   AccountsScreen: undefined
   SecurityConfigurationScreen: undefined
   ChangePinScreen: undefined
+  BitcoinScreen: undefined
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -171,6 +173,11 @@ export const RootNavigation: React.FC<{
               <InjectedScreens.SendScreen {...props} {...sendScreenProps} />
             )}
           </RootStack.Screen>
+          <RootStack.Screen
+            name="BitcoinScreen"
+            options={sharedOptions}
+            component={BitcoinAddressesScreen}
+          />
           <RootStack.Screen name="Balances">
             {props => (
               <InjectedScreens.BalancesScreen
