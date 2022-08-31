@@ -1,21 +1,23 @@
-import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
-import { ContactsScreen } from './ContactsScreen'
-import { EditContactScreen } from './EditContactScreen'
+import React from 'react'
+import { useSelectedWallet } from '../../Context'
+import { NavigationProp } from '../../RootNavigation'
+import { ContactFormScreen } from './ContactFormScreen'
 import { ContactsProviderElement } from './ContactsContext'
-import Resolver from '@rsksmart/rns-resolver.js'
+import { ContactsScreen } from './ContactsScreen'
 
 const Stack = createStackNavigator()
 
 const screensOptions = { headerShown: false }
 
 export type ContactsScreenProps = {
-  rnsResolver: Resolver
+  navigation: NavigationProp
 }
 
 export const ContactsNavigationScreen: React.FC<ContactsScreenProps> = ({
-  rnsResolver,
+  navigation,
 }) => {
+  const { chainId = 31 } = useSelectedWallet()
   return (
     <ContactsProviderElement>
       <Stack.Navigator initialRouteName={'ContactsList'}>
@@ -24,8 +26,14 @@ export const ContactsNavigationScreen: React.FC<ContactsScreenProps> = ({
           component={ContactsScreen}
           options={screensOptions}
         />
-        <Stack.Screen name="ContactEdit" options={screensOptions}>
-          {props => <EditContactScreen {...props} rnsResolver={rnsResolver} />}
+        <Stack.Screen name="ContactForm" options={screensOptions}>
+          {props => (
+            <ContactFormScreen
+              {...props}
+              navigation={navigation}
+              chainId={chainId}
+            />
+          )}
         </Stack.Screen>
       </Stack.Navigator>
     </ContactsProviderElement>

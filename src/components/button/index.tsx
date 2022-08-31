@@ -1,10 +1,10 @@
 import React from 'react'
 import {
   GestureResponderEvent,
+  StyleSheet,
+  Text,
   TouchableOpacity,
   View,
-  Text,
-  StyleSheet,
 } from 'react-native'
 
 interface Interface {

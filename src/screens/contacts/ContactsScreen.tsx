@@ -1,110 +1,212 @@
-import React, { useContext } from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native'
+import Icon from 'react-native-vector-icons/FontAwesome5'
+import { SearchIcon } from '../../components/icons/SearchIcon'
 import { NavigationProp } from '../../RootNavigation'
-import LinearGradient from 'react-native-linear-gradient'
-import { setOpacity } from '../home/tokenColor'
-import { grid } from '../../styles/grid'
-import { SquareButton } from '../../components/button/SquareButton'
-import PlusIcon from '../../components/icons/PlusIcon'
+import { colors } from '../../styles'
+import { fonts } from '../../styles/fonts'
+import { ContactRow } from './ContactRow'
 import { ContactsContext, IContact } from './ContactsContext'
-import { Paragraph } from '../../components'
-import { Arrow } from '../../components/icons'
-import DeleteIcon from '../../components/icons/DeleteIcon'
+import { DeleteModal } from './DeleteModal'
 
 export const ContactsScreen: React.FC<{
   navigation: NavigationProp
 }> = ({ navigation }) => {
+  const { t } = useTranslation()
   const { contacts, deleteContact } = useContext(ContactsContext)
+  const [filteredContacts, setFilteredContacts] = useState(contacts)
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [selectedContact, setSelectedContact] = useState<IContact | null>(null)
+
+  const showModal = (contact: IContact) => {
+    setIsModalVisible(true)
+    setSelectedContact(contact)
+  }
+
+  const hideModal = () => {
+    setIsModalVisible(false)
+    setSelectedContact(null)
+  }
+
+  const searchContact = (text: string) => {
+    let filtered = contacts
+    if (text) {
+      filtered = contacts.filter(
+        contact =>
+          contact.name.toLowerCase().includes(text.toLowerCase()) ||
+          contact.displayAddress.toLowerCase().includes(text.toLowerCase()),
+      )
+    }
+    setFilteredContacts(filtered)
+  }
+
+  const editContact = (contact: IContact) => {
+    navigation.navigate(
+      'ContactForm' as never,
+      { initialValue: contact } as never,
+    )
+  }
+
+  const sendContact = (contact: IContact) => {
+    navigation.navigate('Send' as never, { to: contact.address } as never)
+  }
+
+  const removeContact = (contact: IContact) => {
+    deleteContact(contact.id)
+    hideModal()
+  }
+
+  useEffect(() => {
+    setFilteredContacts(contacts)
+    setSelectedIndex(null)
+  }, [contacts])
 
   return (
-    <LinearGradient
-      colors={['#f4f4f4', setOpacity('#373f48', 0.3)]}
-      style={styles.parent}>
-      <View style={styles.titleLine}>
-        <Text style={styles.header}>My Contacts</Text>
-        <SquareButton
-          title="add"
-          color="#000"
-          onPress={() => navigation.navigate('ContactEdit' as any)}
-          icon={<PlusIcon color={'#000'} />}
+    <View style={styles.parent}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Contacts</Text>
+        <Icon.Button
+          accessibilityLabel="addContact"
+          name="user-plus"
+          onPress={() => navigation.navigate('ContactForm' as never)}
+          backgroundColor={colors.background.bustyBlue}
+          iconStyle={styles.addButton}
+          size={15}
+          borderRadius={20}
         />
       </View>
-      <ScrollView style={styles.contacts}>
-        {contacts.length === 0 && <Paragraph>No contacts yet</Paragraph>}
-        {contacts.map(contact => (
-          <ContactRow
-            key={contact.id.toString()}
-            contact={contact}
-            deleteContact={deleteContact}
-            navigation={navigation}
+      {selectedContact && (
+        <DeleteModal
+          isVisible={isModalVisible}
+          text={`${t('Are you sure you want to delete')} ${
+            selectedContact.name
+          }?`}
+          onOk={() => removeContact(selectedContact)}
+          onCancel={hideModal}
+        />
+      )}
+      {contacts.length === 0 ? (
+        <>
+          <Image
+            source={require('../../images/empty-contact.png')}
+            style={styles.noContactsImage}
           />
-        ))}
-      </ScrollView>
-    </LinearGradient>
+          <View style={styles.noContactsTextView} testID="emptyView">
+            <Text style={styles.noContactsText}>
+              {t('Your contact list is empty.')}
+            </Text>
+            <Text style={styles.noContactsText}>
+              {t('Start by creating a new contact.')}
+            </Text>
+          </View>
+        </>
+      ) : (
+        <ScrollView style={styles.contactsList}>
+          <View style={styles.searchView}>
+            <TextInput
+              testID="searchInput"
+              accessibilityLabel="searchInput"
+              style={styles.searchInput}
+              placeholder={t('type to find...')}
+              placeholderTextColor={colors.purple}
+              onChangeText={searchContact}
+            />
+            <SearchIcon color={colors.purple} width={40} height={40} />
+          </View>
+          {filteredContacts
+            .sort((a, b) =>
+              a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1,
+            )
+            .map((contact, index) => (
+              <ContactRow
+                key={index}
+                index={index}
+                contact={contact}
+                selected={selectedIndex === index}
+                onSend={sendContact}
+                onDelete={showModal}
+                onEdit={editContact}
+                onPress={() =>
+                  setSelectedIndex(selectedIndex === index ? null : index)
+                }
+              />
+            ))}
+        </ScrollView>
+      )}
+    </View>
   )
 }
 
-const ContactRow: React.FC<{
-  contact: IContact
-  deleteContact: (id: string | number[]) => void
-  navigation: any
-}> = ({ contact, deleteContact, navigation }) => (
-  <View style={{ ...grid.row, ...styles.row }}>
-    <View style={grid.column3}>
-      <Text style={styles.label}>{contact.name}</Text>
-    </View>
-    <View style={grid.column9}>
-      <Text>{contact.displayAddress}</Text>
-    </View>
-    <View style={grid.column3} />
-    <View
-      style={{
-        ...grid.column3,
-        ...styles.center,
-      }}>
-      <SquareButton
-        color={'#c73d3d'}
-        onPress={() => {
-          deleteContact(contact.id)
-        }}
-        title="delete"
-        icon={<DeleteIcon color={'#c73d3d'} />}
-      />
-    </View>
-    <View
-      style={{
-        ...grid.column3,
-        ...styles.center,
-      }}>
-      <SquareButton
-        color={'#000'}
-        onPress={() => {
-          navigation.navigate('Send', {
-            to: contact.address,
-            displayTo: contact.displayAddress,
-          })
-        }}
-        title="send"
-        icon={<Arrow color={'#000'} rotate={45} />}
-      />
-    </View>
-  </View>
-)
-
 const styles = StyleSheet.create({
-  header: {
-    fontSize: 26,
-    textAlign: 'center',
-    color: '#5c5d5d',
-  },
   parent: {
     height: '100%',
-  },
-  contacts: {
-    margin: 20,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
+    backgroundColor: colors.background.darkBlue,
     padding: 20,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 10,
+  },
+  title: {
+    fontFamily: fonts.regular,
+    fontSize: 22,
+    color: colors.text.primary,
+  },
+  addButton: {
+    color: colors.lightPurple,
+    padding: 3,
+    marginRight: 0,
+  },
+  searchView: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: colors.background.darkBlue,
+    borderWidth: 0.8,
+    borderColor: colors.purple,
+    borderRadius: 40,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+  },
+  searchInput: {
+    flex: 5,
+    fontSize: 14,
+    color: colors.purple,
+    fontFamily: fonts.regular,
+    paddingLeft: 15,
+  },
+  noContactsImage: {
+    flex: 4,
+    alignSelf: 'center',
+    width: '90%',
+    resizeMode: 'contain',
+  },
+  noContactsTextView: {
+    flex: 1,
+    alignSelf: 'center',
+  },
+  noContactsText: {
+    color: colors.text.primary,
+    fontFamily: fonts.regular,
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  contactsList: {
+    borderRadius: 20,
+    marginTop: 10,
+    padding: 10,
     shadowOpacity: 0.1,
     shadowRadius: 10,
   },
@@ -113,16 +215,5 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '#e1e1e1',
     flexWrap: 'wrap',
-  },
-  label: {
-    fontWeight: '600',
-  },
-  titleLine: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-  },
-  center: {
-    alignItems: 'center',
   },
 })
