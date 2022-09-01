@@ -32,6 +32,7 @@ import { useKeyboardIsVisible } from './hooks/useKeyboardIsVisible'
 import { useKeyManagementSystem } from './hooks/useKeyManagementSystem'
 import { useRequests } from './hooks/useRequests'
 import { useStateSubscription } from './hooks/useStateSubscription'
+import useBitcoinCore from './hooks/useBitcoinCore'
 
 export const Core = () => {
   const [topColor, setTopColor] = useState(colors.darkPurple3)
@@ -72,6 +73,8 @@ export const Core = () => {
 
   const retrieveChainId = (wallet: RIFWallet) =>
     wallet.getChainId().then(chainId => setState({ ...state, chainId }))
+
+  const BitcoinCore = useBitcoinCore(state?.kms?.mnemonic || '')
 
   useEffect(() => {
     Promise.all([i18nInit(), hasKeys(), hasPin()]).then(
@@ -122,6 +125,7 @@ export const Core = () => {
           value={{
             ...state,
             mnemonic: state.kms?.mnemonic,
+            BitcoinCore,
           }}>
           <NavigationContainer onStateChange={handleScreenChange}>
             <WalletConnectProviderElement>

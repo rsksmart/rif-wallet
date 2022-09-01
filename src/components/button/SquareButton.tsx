@@ -43,7 +43,7 @@ export const SquareButton: React.FC<Interface> = ({
       disabled={disabled}
       testID={testID}>
       <View style={imageStyle}>{icon}</View>
-      {(title ? true : false) && <Text style={styles.text}>{title}</Text>}
+      {title && <Text style={styles.text}>{title}</Text>}
     </TouchableOpacity>
   )
 }

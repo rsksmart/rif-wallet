@@ -26,12 +26,14 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { isValidChecksumAddress } from '@rsksmart/rsk-utils'
 import { OutlineButton } from '../button/ButtonVariations'
 import DeleteIcon from '../icons/DeleteIcon'
+import Icon from 'react-native-vector-icons/Ionicons'
 
 type AddressInputProps = {
   initialValue: string
   onChangeText: (newValue: string, isValid: boolean) => void
   testID?: string
   chainId: number
+  backgroundColor?: string
 }
 
 export const AddressInput: React.FC<AddressInputProps> = ({
@@ -39,6 +41,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   onChangeText,
   testID,
   chainId,
+  backgroundColor = colors.darkPurple5,
 }) => {
   // the address of the recipient
   const [recipient, setRecipient] = useState<string>(initialValue)
@@ -68,14 +71,16 @@ export const AddressInput: React.FC<AddressInputProps> = ({
     setStatus({ type: 'READY', value: '' })
     setRecipient(inputText)
 
-    // console.log(inputText)
-
     const newValidationMessage = validateAddress(inputText, chainId)
 
     onChangeText(
       inputText,
       newValidationMessage === AddressValidationMessage.VALID,
     )
+
+    if (!inputText) {
+      return
+    }
 
     switch (newValidationMessage) {
       case AddressValidationMessage.DOMAIN:
@@ -178,7 +183,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
       )}
       {!domainFound && (
         <View style={grid.row}>
-          <View style={styles.inputContainer}>
+          <View style={{ ...styles.inputContainer, backgroundColor }}>
             <TextInput
               style={styles.input}
               onChangeText={handleChangeText}
@@ -189,22 +194,43 @@ export const AddressInput: React.FC<AddressInputProps> = ({
               placeholder="address or rns domain"
               testID={testID}
               editable={true}
-              placeholderTextColor={colors.gray}
+              placeholderTextColor={colors.text.secondary}
             />
 
-            <TouchableOpacity
-              style={styles.button}
-              onPress={handlePasteClick}
-              testID="Address.PasteButton">
-              <ContentPasteIcon color={colors.white} height={22} width={22} />
-            </TouchableOpacity>
+            {!recipient ? (
+              <>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={handlePasteClick}
+                  testID="Address.PasteButton">
+                  <ContentPasteIcon
+                    color={colors.text.secondary}
+                    height={22}
+                    width={22}
+                  />
+                </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => setShowQRReader(true)}
-              testID="Address.QRCodeButton">
-              <QRCodeIcon color={colors.white} />
-            </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => setShowQRReader(true)}
+                  testID="Address.QRCodeButton">
+                  <QRCodeIcon color={colors.text.secondary} />
+                </TouchableOpacity>
+              </>
+            ) : (
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => handleChangeText('')}
+                testID="Address.ClearButton">
+                <View style={styles.clearButtonView}>
+                  <Icon
+                    name="close-outline"
+                    style={styles.clearButton}
+                    size={15}
+                  />
+                </View>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       )}
@@ -272,11 +298,17 @@ const styles = StyleSheet.create({
     color: colors.white,
   },
   button: {
-    paddingHorizontal: 5,
     flex: 1,
+    paddingHorizontal: 5,
+    justifyContent: 'center',
   },
-  buttonPaste: {
-    paddingRight: 5,
+  clearButtonView: {
+    backgroundColor: colors.background.secondary,
+    borderRadius: 30,
+    padding: 2,
+  },
+  clearButton: {
+    color: colors.lightPurple,
   },
   cameraModal: {
     flex: 1,

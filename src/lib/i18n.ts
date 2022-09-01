@@ -77,6 +77,10 @@ const resources = {
       'Delete your Pin': 'Delete your Pin',
       'Set your pin': 'Set your pin',
       Save: 'Save',
+      'Your contact list is empty.': 'Your contact list is empty.',
+      'Start by creating a new contact.': 'Start by creating a new contact.',
+      'type to find...': 'type to find...',
+      'Are you sure you want to delete': 'Are you sure you want to delete',
     },
   },
   es: {
@@ -84,6 +88,10 @@ const resources = {
       'Please select your language': 'Por favor seleccionar su idioma',
       'Welcome to sWallet!': 'Bienvenido a sWallet!',
       Refresh: 'Refrescar',
+      'Your contact list is empty.': 'Su lista de contactos está vacía.',
+      'Start by creating a new contact.': 'Comience creando un nuevo contacto.',
+      'type to find...': 'escriba para buscar...',
+      'Are you sure you want to delete': '¿Está seguro de que desea eliminar',
     },
   },
 }

@@ -14,11 +14,12 @@ import TransactionForm from './TransactionForm'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import WalletNotDeployedView from './WalletNotDeployedModal'
 
-export type SendScreenProps = {}
-
-export const SendScreen: React.FC<
-  SendScreenProps & ScreenProps<'Send'> & ScreenWithWallet
-> = ({ route, wallet, isWalletDeployed, navigation }) => {
+export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
+  route,
+  wallet,
+  isWalletDeployed,
+  navigation,
+}) => {
   const { state } = useSocketsState()
   const contractAddress =
     route.params?.contractAddress || Object.keys(state.balances)[0]
@@ -26,6 +27,7 @@ export const SendScreen: React.FC<
     useState<transactionInfo | null>(null)
   const [error, setError] = useState<Error>()
   const [chainId, setChainId] = useState<number>(31)
+
   useEffect(() => {
     wallet.getChainId().then(setChainId)
   }, [wallet])
