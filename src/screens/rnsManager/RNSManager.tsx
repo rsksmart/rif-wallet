@@ -16,6 +16,7 @@ import { SquareButton } from '../../components/button/SquareButton'
 import { getTokenColor, getTokenColorWithOpacity } from '../home/tokenColor'
 import { SearchIcon } from '../../components/icons/SearchIcon'
 import { RegisterIcon } from '../../components/icons/RegisterIcon'
+import BaseButton from "../../components/button/BaseButton";
 
 const years = 3
 
@@ -86,13 +87,11 @@ export const RNSManagerScreen: React.FC<
         </View>
         <View style={{ ...grid.column2 }}>
           <View style={styles.centerRow}>
-            <SquareButton
-              // @ts-ignore
-              onPress={() => searchDomain(domainToLookUp)}
-              title=""
-              testID="Address.CopyButton"
-              icon={<SearchIcon color={getTokenColor('TRBTC')} />}
-            />
+            <BaseButton
+                testID={'Address.CopyButton'}
+                onPress={() => searchDomain(domainToLookUp)}>
+              <SearchIcon color={getTokenColor('TRBTC')} />
+            </BaseButton>
           </View>
         </View>
       </View>
@@ -133,9 +132,6 @@ export const RNSManagerScreen: React.FC<
               <Text key={registeredDomain}>{registeredDomain}</Text>
             </View>
           ))}
-          <View style={styles.sectionCentered}>
-            <Text key={'hardcoded'}>{'hardcoded-domain.rsk'}</Text>
-          </View>
         </View>
       )}
       {/*TODO: Remove this since this is temporal to enable domain selection */}
