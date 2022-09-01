@@ -1,6 +1,7 @@
 import EventEmitter from 'events'
 import { io } from 'socket.io-client'
 import { enhanceTransactionInput } from '../../screens/activity/ActivityScreen'
+import { RealmDb } from '../../storage/db/RealmDb'
 import { IActivityTransaction } from '../../subscriptions/types'
 import { IAbiEnhancer } from '../abiEnhancer/AbiEnhancer'
 import { RIFWallet } from '../core'
@@ -52,14 +53,27 @@ export class RifWalletServicesSocket
     const fetchedTransactions = await this.fetcher.fetchTransactionsByAddress(
       wallet.smartWalletAddress,
     )
+    const db = new RealmDb()
+    await db.init();
 
     const activityTransactions = await Promise.all<IActivityTransaction[]>(
       fetchedTransactions.data.map(async (tx: IApiTransaction) => {
+        if(db.has(tx.hash)) {
+          console.log('From DB', db.get(tx.hash))
+          return {
+            originTransaction: tx,
+            enhancedTransaction: db.get(tx.hash)
+          } as any
+        }
+
         const enhancedTransaction = await enhanceTransactionInput(
           tx,
           wallet,
           this.abiEnhancer,
         )
+
+        db.store(tx.hash, enhancedTransaction)
+
         return {
           originTransaction: tx,
           enhancedTransaction,
