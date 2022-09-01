@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/core'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { View, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import { AddressCopyComponent } from '../../components/copy/AddressCopyComponent'
 import { useSelectedWallet } from '../../Context'
@@ -18,12 +18,12 @@ export const networks: Record<number, Network> = {
   },
 }
 
-export const AppHeader: React.FC<{}> = () => {
+export const AppHeader: React.FC<{ alias: string | undefined }> = ({
+  alias,
+}) => {
   const { wallet, chainId } = useSelectedWallet()
-
   const navigation = useNavigation()
   const openMenu = () => navigation.navigate('Settings' as any)
-
   return (
     <View style={styles.row}>
       <View
@@ -31,7 +31,7 @@ export const AppHeader: React.FC<{}> = () => {
           ...styles.column,
           ...styles.walletInfo,
         }}>
-        <ProfileHandler navigation={navigation} />
+        <ProfileHandler navigation={navigation} alias={alias} />
       </View>
       <View style={styles.column}>
         {wallet && (

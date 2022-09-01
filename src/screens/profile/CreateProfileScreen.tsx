@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react'
+import {saveProfile, getProfile, deleteProfile} from '../../storage/ProfileStore'
+
 import {
   View,
   StyleSheet,
@@ -11,8 +13,16 @@ import { colors } from '../../styles'
 import { MediumText } from '../../components'
 import { PurpleButton } from '../../components/button/ButtonVariations'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import { ScreenProps } from '../../RootNavigation'
+import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
-export const CreateProfileScreen: React.FC = ({ route }) => {
+export type CreateProfileScreenProps = {
+  route: any
+  onAliasChange: any
+}
+export const CreateProfileScreen: React.FC<
+  ScreenProps<'CreateProfileScreen'> & CreateProfileScreenProps
+> = ({ route, onAliasChange }) => {
   const navigation = route.params.navigation
   const [phoneNumber, setPhoneNumber] = useState<string>()
   const [email, setEmail] = useState<string>()
@@ -22,6 +32,17 @@ export const CreateProfileScreen: React.FC = ({ route }) => {
       setAlias(route.params.selectedAlias)
     }
   }, [route.params.navigation])
+
+  const createAlias = (selectedAlias: string) => {
+    onAliasChange(selectedAlias)
+    saveProfile(selectedAlias)
+    navigation.navigate('Home')
+  }
+  const deleteAlias = () => {
+    deleteProfile()
+    onAliasChange(undefined)
+    navigation.navigate('Home')
+  }
   return (
     <View style={styles.container}>
       <MediumText style={styles.titleText}>create profile</MediumText>
@@ -47,9 +68,9 @@ export const CreateProfileScreen: React.FC = ({ route }) => {
           </View>
           <View style={styles.rowContainer}>
             <PurpleButton
-              onPress={() => navigation.navigate('RNSManager')}
-              accessibilityLabel="choose from existing"
-              title={'choose from existing'}
+              onPress={() => deleteAlias()}
+              accessibilityLabel="delete"
+              title={'delete'}
             />
           </View>
         </>
@@ -101,7 +122,7 @@ export const CreateProfileScreen: React.FC = ({ route }) => {
       </View>
       <View style={styles.rowContainer}>
         <PurpleButton
-          onPress={() => {}}
+          onPress={() => createAlias(alias)}
           accessibilityLabel="create"
           title={'create'}
           disabled={!alias}

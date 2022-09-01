@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native'
 import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
 import { NavigationProp as _NavigationProp } from '@react-navigation/native'
@@ -10,6 +10,8 @@ import { AppFooterMenu } from './ux/appFooter'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
 import { colors } from './styles'
 import BitcoinAddressesScreen from './screens/bitcoin/BitcoinAddressesScreen'
+
+import { getProfile } from './storage/ProfileStore'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -123,6 +125,8 @@ export const RootNavigation: React.FC<{
   securityConfigurationScreenProps,
   setWalletIsDeployed,
 }) => {
+  const [alias, setAlias] = useState<string>()
+
   let initialRoute: any = 'CreateKeysUX'
   if (hasPin) {
     initialRoute = 'Home'
@@ -130,13 +134,16 @@ export const RootNavigation: React.FC<{
     initialRoute = 'CreatePin'
   }
 
+  useEffect(() => {
+    getProfile().then(profile => setAlias(profile || undefined))
+  }, [])
   const appIsSetup = hasKeys && hasPin
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <View style={styles.parent}>
-        {appIsSetup && <AppHeader />}
+        {appIsSetup && <AppHeader alias={alias} />}
         <RootStack.Navigator initialRouteName={initialRoute}>
           <RootStack.Screen name="Home" options={sharedOptions}>
             {props => (
@@ -285,11 +292,14 @@ export const RootNavigation: React.FC<{
               />
             )}
           </RootStack.Screen>
-          <RootStack.Screen
-            name="CreateProfileScreen"
-            component={Screens.CreateProfileScreen}
-            options={sharedOptions}
-          />
+          <RootStack.Screen name="CreateProfileScreen" options={sharedOptions}>
+            {props => (
+              <Screens.CreateProfileScreen
+                {...props}
+                onAliasChange={setAlias}
+              />
+            )}
+          </RootStack.Screen>
         </RootStack.Navigator>
         {appIsSetup && !isKeyboardVisible && (
           <AppFooterMenu currentScreen={currentScreen} />

@@ -2,6 +2,7 @@ import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import { colors } from '../../styles'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import { getProfile } from '../../storage/ProfileStore'
 
 type Props = {
   navigation: any
@@ -13,7 +14,7 @@ export const ProfileHandler: React.FC<Props> = ({ navigation, alias }) => {
     <TouchableOpacity
       style={styles.profileHandler}
       onPress={() =>
-        navigation.navigate('CreateProfileScreen', { navigation })
+        navigation.navigate('CreateProfileScreen', { navigation, selectedAlias:alias })
       }>
       {!alias && (
         <>
