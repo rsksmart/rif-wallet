@@ -19,7 +19,7 @@ export const networks: Record<number, Network> = {
   },
 }
 
-export const AppHeader: React.FC<{ profile: IProfileStore }> = ({
+export const AppHeader: React.FC<{ profile: IProfileStore | undefined }> = ({
   profile,
 }) => {
   const { wallet, chainId } = useSelectedWallet()

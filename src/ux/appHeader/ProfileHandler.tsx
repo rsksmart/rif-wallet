@@ -6,7 +6,7 @@ import { IProfileStore } from '../../storage/ProfileStore'
 
 type Props = {
   navigation: any
-  profile: IProfileStore
+  profile: IProfileStore | undefined
 }
 
 export const ProfileHandler: React.FC<Props> = ({ navigation, profile }) => {
@@ -19,7 +19,7 @@ export const ProfileHandler: React.FC<Props> = ({ navigation, profile }) => {
           profile: profile,
         })
       }>
-      {!profile.alias && (
+      {!profile && (
         <>
           <View style={styles.profileHandlerImage}>
             <MaterialIcon name="person" color="gray" size={20} />
@@ -29,14 +29,16 @@ export const ProfileHandler: React.FC<Props> = ({ navigation, profile }) => {
           </View>
         </>
       )}
-      {profile.alias && (
+      {profile && (
         <>
           <Image
             style={styles.profileAvatar}
             source={require('../../images/avataaars.png')}
           />
           <View>
-            <Text style={styles.profileName}>{profile.alias}</Text>
+            {profile?.alias !== '' && (
+              <Text style={styles.profileName}>{profile.alias}</Text>
+            )}
           </View>
         </>
       )}

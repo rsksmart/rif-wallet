@@ -125,8 +125,7 @@ export const RootNavigation: React.FC<{
   securityConfigurationScreenProps,
   setWalletIsDeployed,
 }) => {
-  //const [alias, setAlias] = useState<string>()
-  const [profile, setProfile] = useState<IProfileStore>({
+  const [profile, setProfile] = useState<IProfileStore | undefined>({
     alias: 'a',
     phone: 'b',
     email: 'c',
@@ -141,6 +140,7 @@ export const RootNavigation: React.FC<{
       if (r) {
         await getProfile().then((profile: IProfileStore) => setProfile(profile))
       } else {
+        setProfile(undefined)
       }
     })
   }, [])

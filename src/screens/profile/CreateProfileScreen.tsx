@@ -30,24 +30,26 @@ export const CreateProfileScreen: React.FC<
   const initialProfile: IProfileStore = route.params.profile
   const [profile, setProfile] = useState<IProfileStore>(initialProfile)
   useEffect(() => {
-    setProfile(route.params.profile)
+    setProfile(
+      route.params.profile ?? {
+        alias: '',
+        phone: '',
+        email: '',
+      },
+    )
   }, [route.params.profile])
   const createProfile = async () => {
     onAliasChange(profile)
     await saveProfile({
-      alias: profile.alias,
-      phone: profile.phone,
-      email: profile.email,
+      alias: profile?.alias ?? '',
+      phone: profile?.phone ?? '',
+      email: profile?.email ?? '',
     })
     navigation.navigate('Home')
   }
   const deleteAlias = () => {
     deleteProfile()
-    onAliasChange({
-      alias: 'def',
-      phone: 'def',
-      email: 'def',
-    })
+    onAliasChange(undefined)
     navigation.navigate('Home')
   }
   return (
@@ -64,7 +66,7 @@ export const CreateProfileScreen: React.FC<
           alias
         </MediumText>
       </View>
-      {!profile.alias && (
+      {!profile?.alias && (
         <>
           <View style={styles.rowContainer}>
             <PurpleButton
@@ -83,11 +85,11 @@ export const CreateProfileScreen: React.FC<
         </>
       )}
 
-      {profile.alias != '' && (
+      {profile?.alias !== '' && (
         <View style={styles.rowContainer}>
           <View style={styles.aliasContainer}>
             <View>
-              <Text style={styles.aliasText}>{profile.alias}</Text>
+              <Text style={styles.aliasText}>{profile?.alias}</Text>
             </View>
             <View>
               <TouchableOpacity
@@ -107,7 +109,7 @@ export const CreateProfileScreen: React.FC<
         <TextInput
           style={styles.input}
           onChangeText={value => setProfile({ ...profile, phone: value })}
-          value={profile.phone}
+          value={profile?.phone}
           placeholder=""
           keyboardType="numeric"
           testID={'Phone.Input'}
@@ -121,7 +123,7 @@ export const CreateProfileScreen: React.FC<
         <TextInput
           style={styles.input}
           onChangeText={value => setProfile({ ...profile, email: value })}
-          value={profile.email}
+          value={profile?.email}
           placeholder=""
           keyboardType="numeric"
           testID={'Email.Input'}
