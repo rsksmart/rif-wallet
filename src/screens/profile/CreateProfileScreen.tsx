@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import {saveProfile, getProfile, deleteProfile} from '../../storage/ProfileStore'
+import {
+  saveProfile,
+  deleteProfile,
+  IProfileStore,
+} from '../../storage/ProfileStore'
 
 import {
   View,
@@ -14,7 +18,6 @@ import { MediumText } from '../../components'
 import { PurpleButton } from '../../components/button/ButtonVariations'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { ScreenProps } from '../../RootNavigation'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
 export type CreateProfileScreenProps = {
   route: any
@@ -24,23 +27,27 @@ export const CreateProfileScreen: React.FC<
   ScreenProps<'CreateProfileScreen'> & CreateProfileScreenProps
 > = ({ route, onAliasChange }) => {
   const navigation = route.params.navigation
-  const [phoneNumber, setPhoneNumber] = useState<string>()
-  const [email, setEmail] = useState<string>()
-  const [alias, setAlias] = useState<string>()
+  const initialProfile: IProfileStore = route.params.profile
+  const [profile, setProfile] = useState<IProfileStore>(initialProfile)
   useEffect(() => {
-    if (route.params.selectedAlias) {
-      setAlias(route.params.selectedAlias)
-    }
-  }, [route.params.navigation])
-
-  const createAlias = (selectedAlias: string) => {
-    onAliasChange(selectedAlias)
-    saveProfile(selectedAlias)
+    setProfile(route.params.profile)
+  }, [route.params.profile])
+  const createProfile = async () => {
+    onAliasChange(profile)
+    await saveProfile({
+      alias: profile.alias,
+      phone: profile.phone,
+      email: profile.email,
+    })
     navigation.navigate('Home')
   }
   const deleteAlias = () => {
     deleteProfile()
-    onAliasChange(undefined)
+    onAliasChange({
+      alias: 'def',
+      phone: 'def',
+      email: 'def',
+    })
     navigation.navigate('Home')
   }
   return (
@@ -57,7 +64,7 @@ export const CreateProfileScreen: React.FC<
           alias
         </MediumText>
       </View>
-      {!alias && (
+      {!profile.alias && (
         <>
           <View style={styles.rowContainer}>
             <PurpleButton
@@ -76,14 +83,15 @@ export const CreateProfileScreen: React.FC<
         </>
       )}
 
-      {alias && (
+      {profile.alias != '' && (
         <View style={styles.rowContainer}>
           <View style={styles.aliasContainer}>
             <View>
-              <Text style={styles.aliasText}>{alias}</Text>
+              <Text style={styles.aliasText}>{profile.alias}</Text>
             </View>
             <View>
-              <TouchableOpacity onPress={() => setAlias(undefined)}>
+              <TouchableOpacity
+                onPress={() => setProfile({ ...profile, alias: '' })}>
                 <MaterialIcon name="close" color={colors.white} size={20} />
               </TouchableOpacity>
             </View>
@@ -98,11 +106,11 @@ export const CreateProfileScreen: React.FC<
 
         <TextInput
           style={styles.input}
-          onChangeText={setPhoneNumber}
-          value={phoneNumber}
+          onChangeText={value => setProfile({ ...profile, phone: value })}
+          value={profile.phone}
           placeholder=""
           keyboardType="numeric"
-          testID={'Amount.Input'}
+          testID={'Phone.Input'}
           placeholderTextColor={colors.gray}
         />
       </View>
@@ -112,20 +120,19 @@ export const CreateProfileScreen: React.FC<
         </MediumText>
         <TextInput
           style={styles.input}
-          onChangeText={setEmail}
-          value={email}
+          onChangeText={value => setProfile({ ...profile, email: value })}
+          value={profile.email}
           placeholder=""
           keyboardType="numeric"
-          testID={'Amount.Input'}
+          testID={'Email.Input'}
           placeholderTextColor={colors.gray}
         />
       </View>
       <View style={styles.rowContainer}>
         <PurpleButton
-          onPress={() => createAlias(alias)}
+          onPress={() => createProfile()}
           accessibilityLabel="create"
           title={'create'}
-          disabled={!alias}
         />
       </View>
     </View>

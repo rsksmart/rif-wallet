@@ -11,7 +11,7 @@ import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServi
 import { colors } from './styles'
 import BitcoinAddressesScreen from './screens/bitcoin/BitcoinAddressesScreen'
 
-import { getProfile } from './storage/ProfileStore'
+import { getProfile, hasProfile, IProfileStore } from './storage/ProfileStore'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -125,8 +125,25 @@ export const RootNavigation: React.FC<{
   securityConfigurationScreenProps,
   setWalletIsDeployed,
 }) => {
-  const [alias, setAlias] = useState<string>()
+  //const [alias, setAlias] = useState<string>()
+  const [profile, setProfile] = useState<IProfileStore>({
+    alias: 'a',
+    phone: 'b',
+    email: 'c',
+  })
 
+  const setAlias = (myProfile: IProfileStore) => {
+    setProfile(myProfile)
+  }
+
+  useEffect(() => {
+    hasProfile().then(async r => {
+      if (r) {
+        await getProfile().then((profile: IProfileStore) => setProfile(profile))
+      } else {
+      }
+    })
+  }, [])
   let initialRoute: any = 'CreateKeysUX'
   if (hasPin) {
     initialRoute = 'Home'
@@ -134,16 +151,13 @@ export const RootNavigation: React.FC<{
     initialRoute = 'CreatePin'
   }
 
-  useEffect(() => {
-    getProfile().then(profile => setAlias(profile || undefined))
-  }, [])
   const appIsSetup = hasKeys && hasPin
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <View style={styles.parent}>
-        {appIsSetup && <AppHeader alias={alias} />}
+        {appIsSetup && <AppHeader profile={profile} />}
         <RootStack.Navigator initialRouteName={initialRoute}>
           <RootStack.Screen name="Home" options={sharedOptions}>
             {props => (

@@ -16,7 +16,7 @@ import { SquareButton } from '../../components/button/SquareButton'
 import { getTokenColor, getTokenColorWithOpacity } from '../home/tokenColor'
 import { SearchIcon } from '../../components/icons/SearchIcon'
 import { RegisterIcon } from '../../components/icons/RegisterIcon'
-import BaseButton from "../../components/button/BaseButton";
+import BaseButton from '../../components/button/BaseButton'
 
 const years = 3
 
@@ -88,8 +88,8 @@ export const RNSManagerScreen: React.FC<
         <View style={{ ...grid.column2 }}>
           <View style={styles.centerRow}>
             <BaseButton
-                testID={'Address.CopyButton'}
-                onPress={() => searchDomain(domainToLookUp)}>
+              testID={'Address.CopyButton'}
+              onPress={() => searchDomain(domainToLookUp)}>
               <SearchIcon color={getTokenColor('TRBTC')} />
             </BaseButton>
           </View>
@@ -140,7 +140,7 @@ export const RNSManagerScreen: React.FC<
           onPress={() =>
             navigation.navigate('CreateProfileScreen', {
               navigation,
-              selectedAlias: 'sample-domain.rsk',
+              profile: { alias: 'sample-domain.rsk' },
             })
           }>
           <Text key={'hardcoded'}>{'sample-domain.rsk (click to select)'}</Text>

@@ -6,6 +6,7 @@ import { AddressCopyComponent } from '../../components/copy/AddressCopyComponent
 import { useSelectedWallet } from '../../Context'
 import { Network } from '@ethersproject/networks'
 import { ProfileHandler } from './ProfileHandler'
+import { IProfileStore } from '../../storage/ProfileStore'
 
 export const networks: Record<number, Network> = {
   30: {
@@ -18,8 +19,8 @@ export const networks: Record<number, Network> = {
   },
 }
 
-export const AppHeader: React.FC<{ alias: string | undefined }> = ({
-  alias,
+export const AppHeader: React.FC<{ profile: IProfileStore }> = ({
+  profile,
 }) => {
   const { wallet, chainId } = useSelectedWallet()
   const navigation = useNavigation()
@@ -31,7 +32,7 @@ export const AppHeader: React.FC<{ alias: string | undefined }> = ({
           ...styles.column,
           ...styles.walletInfo,
         }}>
-        <ProfileHandler navigation={navigation} alias={alias} />
+        <ProfileHandler navigation={navigation} profile={profile} />
       </View>
       <View style={styles.column}>
         {wallet && (
