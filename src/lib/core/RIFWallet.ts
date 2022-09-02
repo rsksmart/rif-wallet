@@ -24,6 +24,10 @@ type IRequest<Type, Payload, ReturnType, ConfirmArgs> = {
 export type OverriddableTransactionOptions = {
   gasLimit: BigNumberish,
   gasPrice: BigNumberish,
+  tokenPayment?: {
+    tokenContract: string,
+    tokenAmount: string | number
+  }
 }
 
 export type SendTransactionRequest = IRequest<
@@ -127,6 +131,7 @@ export class RIFWallet extends Signer implements TypedDataSigner {
     })
   }
 
+  /*
   // @todo rename to sendRelayedTransaction
   sendTransaction(transaction: Deferrable<any>): Promise<any> {
     console.log('sendTransaction', transaction)
@@ -161,18 +166,29 @@ export class RIFWallet extends Signer implements TypedDataSigner {
         return request(domain, types, value)
       })
   }
+  */
 
-  /*
   sendTransaction = this.createDoRequest(
     'sendTransaction',
     (([transactionRequest]: [TransactionRequest], overriddenOptions?: Partial<OverriddableTransactionOptions>) => {
-      
       // check if attempting to send rBTC from the EOA account
+      /*
       if (!transactionRequest.data && !!transactionRequest.value && !!transactionRequest.to) {
         return this.smartWallet.signer.sendTransaction({
           to: transactionRequest.to.toLowerCase(),
           value: transactionRequest.value
         })
+      }
+      */
+     console.log('[RIFWallet sendTransaction:', {overriddenOptions})
+
+      if (overriddenOptions && overriddenOptions.tokenPayment) {
+        console.log('PAYING WITH TOKENS...', overriddenOptions.tokenPayment)
+        this.rifRelaySdk.sendRelayRequest(transactionRequest, overriddenOptions.tokenPayment)
+          .then((value: any) => {
+            console.log('value or someshit...', value)
+          })
+        return 'hehe hoho'
       }
 
       const txOptions = {
@@ -180,12 +196,10 @@ export class RIFWallet extends Signer implements TypedDataSigner {
         ...overriddenOptions || {}
       }
 
-      return this.smartWallet.directExecute(transactionRequest.to!, transactionRequest.data ?? constants.HashZero, txOptions)
-      
-      
+      return this.smartWallet.directExecute(transactionRequest.to!, transactionRequest.data ?? constants.HashZero, txOptions)      
     }) as CreateDoRequestOnConfirm
   ) as (transactionRequest: TransactionRequest) => Promise<TransactionResponse>
-  */
+
 
   signMessage = this.createDoRequest(
     'signMessage',

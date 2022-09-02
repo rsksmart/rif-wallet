@@ -33,6 +33,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   }, [wallet])
 
   const transfer = (token: ITokenWithBalance, amount: string, to: string) => {
+    console.log('transfering balance...', token, amount, to)
     setError(undefined)
     setCurrentTransaction({ status: 'USER_CONFIRM' })
 
@@ -60,6 +61,9 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
           }
           setCurrentTransaction(current)
 
+          // @JESSE - fix this later:
+          setCurrentTransaction({ ...current, status: 'SUCCESS' })
+          /*
           txPending
             .wait()
             .then(() =>
@@ -68,6 +72,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
             .catch(() =>
               setCurrentTransaction({ ...current, status: 'FAILED' }),
             )
+          */
         })
         .catch((err: any) => {
           setError(err)

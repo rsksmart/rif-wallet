@@ -42,6 +42,11 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
       await request.confirm({
         gasPrice: BigNumber.from(enhancedTransactionRequest.gasPrice),
         gasLimit: BigNumber.from(enhancedTransactionRequest.gasLimit),
+        // @JESSE: fix this in the future:
+        tokenPayment: {
+          tokenContract: '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
+          tokenAmount: 1,
+        },
       })
       closeModal()
     } catch (err: any) {

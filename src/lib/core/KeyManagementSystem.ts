@@ -89,7 +89,6 @@ export class KeyManagementSystem implements IKeyManagementSystem {
   static fromSerialized (serialized: string): { kms: KeyManagementSystem, wallets: Wallet[] } {
     const { mnemonic, state }: KeyManagementSystemSerialization = JSON.parse(serialized)
 
-    console.log("JESSE!!!!", state.derivedPaths)
     const kms = new KeyManagementSystem(mnemonic, state)
     const wallets = Object.keys(state.derivedPaths)
       .filter(derivedPath => state.derivedPaths[derivedPath])

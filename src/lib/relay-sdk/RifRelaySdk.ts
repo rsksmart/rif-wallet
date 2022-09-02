@@ -1,4 +1,5 @@
 import { ethers } from 'ethers'
+import { TypedDataSigner } from '@ethersproject/abstract-signer'
 import { SmartWallet } from '../core/SmartWallet'
 import { RelayRequest } from './types'
 import {
@@ -23,9 +24,7 @@ export class RIFRelaySDK {
     eoaAddress: string,
     sdkConfig: any,
   ) {
-    this.provider = new ethers.providers.JsonRpcProvider(
-      'https://public-node.testnet.rsk.co',
-    )
+    this.provider = smartWallet.signer.provider
     this.smartWallet = smartWallet
     this.chainId = chainId
     this.sdkConfig = sdkConfig
@@ -45,15 +44,14 @@ export class RIFRelaySDK {
       relayHubAddress: '0x66Fa9FEAfB8Db66Fe2160ca7aEAc7FC24e254387',
       relayServer: 'https://dev.relay.rifcomputing.net:8090',
     }
+    console.log('does the signer have a provider?', smartWallet.signer.provider)
 
     const eoaAddress = await smartWallet.signer.getAddress()
 
     return new RIFRelaySDK(smartWallet, chainId, eoaAddress, sdkConfig)
   }
 
-  async createRelayRequest(tx: any, payment: any): Promise<any> {
-    console.log('creating request', tx, payment)
-
+  async createRelayRequest(tx: any, payment: any): Promise<RelayRequest> {
     const gasToSend = '65164000' // await this.provider.getGasPrice() //in WEI @JESSE!
     const nonce = await (await this.smartWallet.nonce()).toString()
 
@@ -63,7 +61,7 @@ export class RIFRelaySDK {
         from: this.eoaAddress,
         to: tx.to,
         data: tx.data,
-        value: tx.value ? tx.value.toString() : '0x',
+        value: tx.value ? tx.value.toString() : '0',
         gas: gasToSend,
         nonce,
         tokenContract: payment.tokenContract,
@@ -79,10 +77,32 @@ export class RIFRelaySDK {
       },
     }
 
+    return relayRequest // { domain, types, value:  }
+  }
+
+  signRelayRequest = (relayRequest: RelayRequest) => {
     const domain = getDomainSeparator(this.smartWalletAddress, this.chainId)
     const types = dataTypeFields(false)
 
-    return { relayRequest, domain, types }
+    const value = {
+      ...relayRequest.request,
+      relayData: relayRequest.relayData,
+    }
+    return (this.smartWallet.signer as any as TypedDataSigner)._signTypedData(
+      domain,
+      types,
+      value,
+    )
+  }
+
+  sendRelayRequest = async (tx: any, payment: any) => {
+    console.log('THIS DOES IT ALL!', tx, payment)
+    const request = await this.createRelayRequest(tx, payment)
+    const signature = await this.signRelayRequest(request)
+    const txHash = await this.sendRequestToRelay(request, signature)
+    console.log({ request, signature, txHash })
+
+    return 'hehe hoho haha'
   }
 
   // createDeployRequest
@@ -91,12 +111,11 @@ export class RIFRelaySDK {
 
   sendRequestToRelay = (request: any, signature: string) => {
     console.log('sending to the server...', request)
-    // @ts-ignore - provider is defined
-    return this.rifWallet.provider
+    return this.provider
       .getTransactionCount(this.sdkConfig.relayWorkerAddress)
       .then((relayMaxNonce: number) => {
         const metadata = {
-          relayHubAddress: this.sdkConfig.relayHubContractAddress,
+          relayHubAddress: this.sdkConfig.relayHubAddress,
           relayMaxNonce: relayMaxNonce + MAX_RELAY_NONCE_GAP,
           signature,
         }
@@ -113,8 +132,12 @@ export class RIFRelaySDK {
           })
           .then((response: AxiosResponse) => {
             console.log('SERVER', response)
+            if (response.data.error) {
+              return console.log('ERROR!', response.data.error)
+            }
+
             // if okay...
-            console.log('returning FAKE txHash...')
+            console.log('SUCCESS: returning FAKE txHash for now...')
             return '0xbd6bee7d78d64492083974f1c83328088317795a204bbfc3890aa1bd4cbe67cf'
           })
           .catch(console.log)
