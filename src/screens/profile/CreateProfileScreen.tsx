@@ -31,11 +31,17 @@ export const CreateProfileScreen: React.FC<
   const [profile, setProfile] = useState<IProfileStore>(initialProfile)
   useEffect(() => {
     setProfile(
-      route.params.profile ?? {
-        alias: '',
-        phone: '',
-        email: '',
-      },
+      route.params.profile
+        ? {
+            ...route.params.profile,
+            phone: profile.phone,
+            email: profile.email,
+          }
+        : {
+            alias: '',
+            phone: '',
+            email: '',
+          },
     )
   }, [route.params.profile])
   const createProfile = async () => {
