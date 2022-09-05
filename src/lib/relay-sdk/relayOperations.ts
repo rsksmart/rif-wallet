@@ -120,9 +120,16 @@ export const relayTransaction = async (
     ...relayRequest.request,
     relayData: relayRequest.relayData,
   }
-  const signature = await rifWallet._signTypedData(domain, types, value)
 
-  postRequestToRelay(rifWallet, relayRequest, signature)
+  console.log({ domain, types, value })
+
+  const signature = await rifWallet._signTypedData(domain, types, value)
+  const signature2 = await rifWallet.smartWallet.signer._signTypedData(domain, types, value)
+
+  console.log('checkpoint 4', signature, signature2)
+
+  console.log('JESSE, END, NOT POSTING TO SERVER')
+  // postRequestToRelay(rifWallet, relayRequest, signature)
 }
 
 export const deploySmartWallet = async (rifWallet: RIFWallet) => {

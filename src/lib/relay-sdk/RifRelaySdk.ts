@@ -29,8 +29,10 @@ export class RIFRelaySDK {
     this.chainId = chainId
     this.sdkConfig = sdkConfig
 
-    this.smartWalletAddress = smartWallet.address
+    this.smartWalletAddress = smartWallet.smartWalletAddress
     this.eoaAddress = eoaAddress
+
+    console.log('constructor JESSE', smartWallet.address)
   }
 
   static async create(smartWallet: SmartWallet, chainId: number) {
@@ -44,7 +46,6 @@ export class RIFRelaySDK {
       relayHubAddress: '0x66Fa9FEAfB8Db66Fe2160ca7aEAc7FC24e254387',
       relayServer: 'https://dev.relay.rifcomputing.net:8090',
     }
-    console.log('does the signer have a provider?', smartWallet.signer.provider)
 
     const eoaAddress = await smartWallet.signer.getAddress()
 
@@ -62,25 +63,37 @@ export class RIFRelaySDK {
         to: tx.to,
         data: tx.data,
         value: tx.value ? tx.value.toString() : '0',
-        gas: gasToSend,
+        gas: '0x41f9',
         nonce,
         tokenContract: payment.tokenContract,
-        tokenAmount: payment.tokenAmount.toString(),
+        tokenAmount: '0', // payment.tokenAmount.toString(),
         tokenGas: gasToSend,
       },
       relayData: {
         gasPrice: gasToSend,
         relayWorker: this.sdkConfig.relayWorkerAddress,
-        callForwarder: this.eoaAddress,
+        callForwarder: this.smartWalletAddress,
         callVerifier: this.sdkConfig.relayVerifierAddress,
-        domainSeparator: getDomainSeparatorHash(this.eoaAddress, this.chainId),
+        domainSeparator: getDomainSeparatorHash(
+          this.smartWalletAddress,
+          this.chainId,
+        ),
       },
+    }
+
+    if (
+      relayRequest.relayData.domainSeparator !==
+      '0xf5db4a9640032c635f7d2e6b756ca32267e73c7c5b68ec203d06df0fa346b379'
+    ) {
+      console.log({ relayRequest })
+      console.log(relayRequest.relayData.domainSeparator)
+      throw 'DOMAIN SEPARATOR IS INCORRECT'
     }
 
     return relayRequest // { domain, types, value:  }
   }
 
-  signRelayRequest = (relayRequest: RelayRequest) => {
+  signRelayRequest = async (relayRequest: RelayRequest): Promise<string> => {
     const domain = getDomainSeparator(this.smartWalletAddress, this.chainId)
     const types = dataTypeFields(false)
 
@@ -88,17 +101,38 @@ export class RIFRelaySDK {
       ...relayRequest.request,
       relayData: relayRequest.relayData,
     }
-    return (this.smartWallet.signer as any as TypedDataSigner)._signTypedData(
-      domain,
-      types,
-      value,
-    )
+    /*
+    console.log('DOMAIN', domain)
+    console.log('TYPES', types)
+    console.log('VALUEs', value)
+    */
+
+    console.log({ domain, types, value })
+
+    const signature = await (
+      this.smartWallet.signer as any as TypedDataSigner
+    )._signTypedData(domain, types, value)
+    // const thisSigner = await this._signTypedData(domain, types, value)
+
+    console.log({ signature })
+
+    const expected =
+      '0xe6098cc4bc72974fcef92f7dff713e72640a345b8d9f3d5c7fc895250f3517625155b8606b574e08e3f21d5f497196cf797ccdaf3262d9d86e15d3c7873492881b'
+    if (signature !== expected) {
+      console.log('expected:', expected)
+      console.log('recieved:', signature)
+
+      throw 'SIGNATURE DOES NOT MATCH!'
+    }
+
+    return signature
   }
 
   sendRelayRequest = async (tx: any, payment: any) => {
     console.log('THIS DOES IT ALL!', tx, payment)
     const request = await this.createRelayRequest(tx, payment)
     const signature = await this.signRelayRequest(request)
+
     const txHash = await this.sendRequestToRelay(request, signature)
     console.log({ request, signature, txHash })
 
