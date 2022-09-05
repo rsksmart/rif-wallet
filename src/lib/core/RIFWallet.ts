@@ -1,4 +1,4 @@
-import { Signer, BigNumberish, BytesLike, constants, BigNumber, Transaction, ethers } from 'ethers'
+import { Signer, BigNumberish, BytesLike, constants, BigNumber, Transaction, ethers, ContractTransaction } from 'ethers'
 import { TransactionRequest, Provider, TransactionResponse, BlockTag } from '@ethersproject/abstract-provider'
 import { TypedDataSigner } from '@ethersproject/abstract-signer'
 import { defineReadOnly } from '@ethersproject/properties'
@@ -171,26 +171,24 @@ export class RIFWallet extends Signer implements TypedDataSigner {
   sendTransaction = this.createDoRequest(
     'sendTransaction',
     (([transactionRequest]: [TransactionRequest], overriddenOptions?: Partial<OverriddableTransactionOptions>) => {
-      // check if attempting to send rBTC from the EOA account
-      /*
-      if (!transactionRequest.data && !!transactionRequest.value && !!transactionRequest.to) {
+      // check if attempting to send rBTC from the EOA account and paying with gas:
+      if (!transactionRequest.data && !!transactionRequest.value && !!transactionRequest.to && !overriddenOptions?.tokenPayment) {
         return this.smartWallet.signer.sendTransaction({
           to: transactionRequest.to.toLowerCase(),
           value: transactionRequest.value
         })
       }
-      */
-     console.log('[RIFWallet sendTransaction:', {overriddenOptions})
 
+      // check if paying with tokens:
       if (overriddenOptions && overriddenOptions.tokenPayment) {
-        console.log('PAYING WITH TOKENS...', overriddenOptions.tokenPayment)
-        this.rifRelaySdk.sendRelayRequest(transactionRequest, overriddenOptions.tokenPayment)
-          .then((value: any) => {
-            console.log('value or someshit...', value)
+        return this.rifRelaySdk.sendRelayRequest(transactionRequest, overriddenOptions.tokenPayment)
+          .then((response: TransactionResponse) => {
+            console.log('value or someshit...', response)
+            return response
           })
-        return 'hehe hoho'
       }
 
+      // direct execute transaction paying gas with EOA wallet:
       const txOptions = {
         ...filterTxOptions(transactionRequest),
         ...overriddenOptions || {}

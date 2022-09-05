@@ -63,6 +63,8 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
 
           // @JESSE - fix this later:
           setCurrentTransaction({ ...current, status: 'SUCCESS' })
+
+          console.log('COMPONENT level:', { txPending })
           /*
           txPending
             .wait()
