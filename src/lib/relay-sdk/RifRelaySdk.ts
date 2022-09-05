@@ -11,7 +11,7 @@ import {
 } from './helpers'
 import axios, { AxiosResponse } from 'axios'
 import { ethers } from 'ethers'
-import { DeployRequest } from '@jessgusclark/rsk-multi-token-sdk/dist/modules/typedRequestData'
+import { DeployRequest } from './types'
 import { SmartWalletFactory } from '../core/SmartWalletFactory'
 
 export class RIFRelaySDK {

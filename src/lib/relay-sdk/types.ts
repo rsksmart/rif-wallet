@@ -93,6 +93,25 @@ export interface RelayRequest {
   relayData: RelayData
 }
 
+export interface DeployRequestStruct {
+  relayHub: Address
+  from: Address
+  to: Address
+  tokenContract: Address
+  recoverer: Address
+  value: IntString
+  nonce: IntString
+  tokenAmount: IntString
+  tokenGas: IntString
+  index: IntString
+  data: PrefixedHexString
+}
+
+export interface DeployRequest {
+  request: DeployRequestStruct
+  relayData: RelayData
+}
+
 export const EIP712DomainType = [
   { name: 'name', type: 'string' },
   { name: 'version', type: 'string' },

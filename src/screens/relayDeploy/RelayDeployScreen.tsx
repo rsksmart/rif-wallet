@@ -4,10 +4,7 @@ import PrimaryButton from '../../components/button/PrimaryButton'
 // import { RifRelayLight } from '../../lib/relay-sdk/RifRelayLight'
 
 import { ScreenWithWallet } from '../types'
-import {
-  deploySmartWallet,
-  relayTransaction,
-} from '../../lib/relay-sdk/relayOperations'
+
 import { RelayPayment } from '../../lib/relay-sdk/types'
 
 type Interface = {}
@@ -20,7 +17,7 @@ const RelayDeployScreen: React.FC<Interface & ScreenWithWallet> = ({
   wallet,
   isWalletDeployed,
 }) => {
-  const doIt = async () => deploySmartWallet(wallet)
+  // const doIt = async () => deploySmartWallet(wallet)
 
   const transaction = {
     to: rifToken,
@@ -29,7 +26,7 @@ const RelayDeployScreen: React.FC<Interface & ScreenWithWallet> = ({
     from: wallet.address,
   }
 
-  const handleTransaction = async () => relayTransaction(wallet, transaction)
+  // const handleTransaction = async () => relayTransaction(wallet, transaction)
 
   const payment: RelayPayment = {
     tokenContract: '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
@@ -42,13 +39,6 @@ const RelayDeployScreen: React.FC<Interface & ScreenWithWallet> = ({
     <View>
       <Text>Hello World</Text>
 
-      <PrimaryButton onPress={doIt} disabled={isWalletDeployed}>
-        <Text style={styles.buttonText}>Deploy SmartWallet!</Text>
-      </PrimaryButton>
-
-      <PrimaryButton onPress={handleTransaction}>
-        <Text style={styles.buttonText}>Relay Tranasction</Text>
-      </PrimaryButton>
 
       <PrimaryButton onPress={deployNew}>
         <Text style={styles.buttonText}>Deploy New Method</Text>

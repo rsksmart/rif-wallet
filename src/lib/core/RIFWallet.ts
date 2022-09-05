@@ -132,7 +132,7 @@ export class RIFWallet extends Signer implements TypedDataSigner {
 
   deploySmartWallet = (payment: RelayPayment) => {
     console.log('DEPLOY SMART WALLET FROM RIFWALLET')
-    this.rifRelaySdk.sendDeployTransaction(payment)
+    return this.rifRelaySdk.sendDeployTransaction(payment)
   }
 
   sendTransaction = this.createDoRequest(

@@ -4,8 +4,8 @@ import { RegularText, SemiBoldText } from '../../components'
 import { colors } from '../../styles'
 import PrimaryButton from '../../components/button/PrimaryButton'
 import { Arrow } from '../../components/icons'
-import { deploySmartWallet } from '../../lib/relay-sdk/relayOperations'
 import { RIFWallet } from '../../lib/core'
+import { RelayPayment } from '../../lib/relay-sdk/types'
 
 interface Interface {
   wallet: RIFWallet
@@ -14,9 +14,15 @@ interface Interface {
 const WalletNotDeployedView: React.FC<Interface> = ({ wallet }) => {
   const [isDeploying, setIsDeploying] = useState<boolean>(false)
 
+  const payment: RelayPayment = {
+    tokenContract: '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
+    tokenAmount: '0',
+  }
+
   const onDeployWalletPress = () => {
     setIsDeploying(true)
-    deploySmartWallet(wallet)
+    wallet
+      .deploySmartWallet(payment)
       .then((response: any) => {
         console.log('is deployed!', response)
       })
