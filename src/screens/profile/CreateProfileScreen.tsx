@@ -77,7 +77,7 @@ export const CreateProfileScreen: React.FC<
           <View style={styles.rowContainer}>
             <PurpleButton
               onPress={() => navigation.navigate('RNSManager')}
-              accessibilityLabel="importWallet"
+              accessibilityLabel="register new"
               title={'register new'}
             />
           </View>
@@ -118,7 +118,7 @@ export const CreateProfileScreen: React.FC<
           value={profile?.phone}
           placeholder=""
           keyboardType="numeric"
-          testID={'Phone.Input'}
+          accessibilityLabel={'Phone.Input'}
           placeholderTextColor={colors.gray}
         />
       </View>
@@ -132,7 +132,7 @@ export const CreateProfileScreen: React.FC<
           value={profile?.email}
           placeholder=""
           keyboardType="numeric"
-          testID={'Email.Input'}
+          accessibilityLabel={'Email.Input'}
           placeholderTextColor={colors.gray}
         />
       </View>

@@ -126,9 +126,9 @@ export const RootNavigation: React.FC<{
   setWalletIsDeployed,
 }) => {
   const [profile, setProfile] = useState<IProfileStore | undefined>({
-    alias: 'a',
-    phone: 'b',
-    email: 'c',
+    alias: '',
+    phone: '',
+    email: '',
   })
 
   const setAlias = (myProfile: IProfileStore) => {
@@ -138,7 +138,9 @@ export const RootNavigation: React.FC<{
   useEffect(() => {
     hasProfile().then(async r => {
       if (r) {
-        await getProfile().then((profile: IProfileStore) => setProfile(profile))
+        await getProfile().then((storedProfile: IProfileStore) =>
+          setProfile(storedProfile),
+        )
       } else {
         setProfile(undefined)
       }
