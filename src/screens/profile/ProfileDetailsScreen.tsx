@@ -17,7 +17,7 @@ export const ProfileDetailsScreen: React.FC<
 > = ({ route, navigation }) => {
   const initialProfile: IProfileStore = route.params.profile
   return (
-    <>
+    <View style={styles.staticBackground}>
       <View style={styles.profileHeader}>
         <TouchableOpacity onPress={() => navigation.navigate('Home')}>
           <View style={styles.backButton}>
@@ -36,27 +36,30 @@ export const ProfileDetailsScreen: React.FC<
           <MaterialIcon name="edit" color="white" size={20} />
         </TouchableOpacity>
       </View>
-      <View style={styles.container}>
-        <View style={styles.profileImageContainer}>
-          <Image
-            style={styles.profileImage}
-            source={require('../../images/image_place_holder.jpeg')}
-          />
-        </View>
-        <View>
-          <MediumText style={[styles.masterText, styles.textLeftMargin]}>
-            alias
-          </MediumText>
-        </View>
-
-        <View style={styles.rowContainer}>
-          <View style={styles.fieldContainer}>
+      <View style={styles.roundedContainer}>
+        <View style={styles.topContainer}>
+          <View style={styles.profileImageContainer}>
+            <Image
+              style={styles.profileImage}
+              source={require('../../images/image_place_holder.jpeg')}
+            />
+          </View>
+          <View>
             <MediumText style={[styles.masterText, styles.textLeftMargin]}>
-              {initialProfile.alias}
+              alias
             </MediumText>
           </View>
-        </View>
 
+          <View style={styles.rowContainer}>
+            <View style={styles.fieldContainer}>
+              <MediumText style={[styles.masterText, styles.textLeftMargin]}>
+                {initialProfile.alias}
+              </MediumText>
+            </View>
+          </View>
+        </View>
+      </View>
+      <View style={styles.container}>
         <View>
           <MediumText style={[styles.masterText, styles.textLeftMargin]}>
             phone
@@ -85,23 +88,37 @@ export const ProfileDetailsScreen: React.FC<
           </View>
         </View>
       </View>
-    </>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
+  staticBackground: {
+    position: 'absolute',
+    height: '100%',
+    width: '100%',
+    backgroundColor: colors.background.darkBlue,
+  },
   container: {
     flex: 1,
     backgroundColor: colors.background.darkBlue,
     paddingTop: 10,
     paddingHorizontal: 40,
   },
+  topContainer: {
+    paddingHorizontal: 20,
+  },
+  roundedContainer: {
+    backgroundColor: colors.background.bustyBlue,
+    padding: 20,
+    borderBottomLeftRadius: 40,
+    borderBottomRightRadius: 40,
+  },
   profileHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 20,
-    backgroundColor: colors.background.darkBlue,
-    //backgroundColor: 'red',
+    backgroundColor: colors.background.bustyBlue,
   },
   titleText: {
     color: colors.white,
@@ -127,7 +144,7 @@ const styles = StyleSheet.create({
   },
 
   masterText: {
-    marginBottom: 0,
+    marginTop: 5,
     color: colors.white,
   },
 
