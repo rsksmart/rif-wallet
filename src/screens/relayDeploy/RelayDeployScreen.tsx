@@ -8,6 +8,7 @@ import {
   deploySmartWallet,
   relayTransaction,
 } from '../../lib/relay-sdk/relayOperations'
+import { RelayPayment } from '../../lib/relay-sdk/types'
 
 type Interface = {}
 
@@ -30,6 +31,13 @@ const RelayDeployScreen: React.FC<Interface & ScreenWithWallet> = ({
 
   const handleTransaction = async () => relayTransaction(wallet, transaction)
 
+  const payment: RelayPayment = {
+    tokenContract: '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
+    tokenAmount: '0',
+  }
+
+  const deployNew = async () => wallet.deploySmartWallet(payment)
+
   return (
     <View>
       <Text>Hello World</Text>
@@ -40,6 +48,10 @@ const RelayDeployScreen: React.FC<Interface & ScreenWithWallet> = ({
 
       <PrimaryButton onPress={handleTransaction}>
         <Text style={styles.buttonText}>Relay Tranasction</Text>
+      </PrimaryButton>
+
+      <PrimaryButton onPress={deployNew}>
+        <Text style={styles.buttonText}>Deploy New Method</Text>
       </PrimaryButton>
     </View>
   )

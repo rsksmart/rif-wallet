@@ -48,4 +48,12 @@ export class SmartWalletFactory implements ISmartWalletFactory {
     constants.AddressZero,
     constants.Zero
   )
+
+  getNonce = async (owner:string): Promise<string> => {
+    return (await this.smartWalletFactoryContract.nonce(owner)).toString()
+  }
+
+  get address(): string {
+    return this.smartWalletFactoryContract.address
+  }
 }

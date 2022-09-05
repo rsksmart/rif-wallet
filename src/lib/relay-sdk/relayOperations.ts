@@ -145,5 +145,8 @@ export const deploySmartWallet = async (rifWallet: RIFWallet) => {
     deployRequest,
   )
 
-  postRequestToRelay(rifWallet, deployRequest, signature)
+  console.log({ signature })
+
+  console.log('JESSE END, NOT POSTING TO SERVER!')
+  // postRequestToRelay(rifWallet, deployRequest, signature)
 }

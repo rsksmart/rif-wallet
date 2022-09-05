@@ -1,26 +1,31 @@
 import { TypedDataSigner } from '@ethersproject/abstract-signer'
 import { TransactionResponse } from '@ethersproject/abstract-provider'
 import { SmartWallet } from '../core/SmartWallet'
-import { RelayRequest } from './types'
+import { RelayPayment, RelayRequest } from './types'
 import {
   dataTypeFields,
   getDomainSeparator,
   getDomainSeparatorHash,
   MAX_RELAY_NONCE_GAP,
+  ZERO_ADDRESS,
 } from './helpers'
 import axios, { AxiosResponse } from 'axios'
 import { ethers } from 'ethers'
+import { DeployRequest } from '@jessgusclark/rsk-multi-token-sdk/dist/modules/typedRequestData'
+import { SmartWalletFactory } from '../core/SmartWalletFactory'
 
 export class RIFRelaySDK {
   chainId: number
   sdkConfig: any
   smartWallet: SmartWallet
+  smartWalletFactory: SmartWalletFactory
   smartWalletAddress: string
   eoaAddress: string
   provider: ethers.providers.JsonRpcProvider
 
   constructor(
     smartWallet: SmartWallet,
+    smartWalletFactory: SmartWalletFactory,
     chainId: number,
     eoaAddress: string,
     sdkConfig: any,
@@ -28,31 +33,46 @@ export class RIFRelaySDK {
     //@ts-ignore: smartWallet.signer.provider is defined from RIF Wallet
     this.provider = smartWallet.signer.provider
     this.smartWallet = smartWallet
+    this.smartWalletFactory = smartWalletFactory
     this.chainId = chainId
     this.sdkConfig = sdkConfig
 
     this.smartWalletAddress = smartWallet.smartWalletAddress
     this.eoaAddress = eoaAddress
+
+    console.log(smartWalletFactory)
   }
 
-  static async create(smartWallet: SmartWallet, chainId: number) {
+  static async create(
+    smartWallet: SmartWallet,
+    smartWalletFactory: SmartWalletFactory,
+    chainId: number,
+  ) {
     const sdkConfig = {
       relayWorkerAddress: '0x74105590d404df3f384a099c2e55135281ca6b40',
       relayVerifierAddress: '0x56ccdB6D312307Db7A4847c3Ea8Ce2449e9B79e9',
       deployVerifierAddress: '0x5C6e96a84271AC19974C3e99d6c4bE4318BfE483',
       smartWalletContractAddress: '0xEdB6D515C2DB4F9C3C87D7f6Cefb260B3DEe8014',
-      smartWalletFactoryContractAddress:
-        '0xeaB5b9fA91aeFFaA9c33F9b33d12AB7088fa7f6f',
       relayHubAddress: '0x66Fa9FEAfB8Db66Fe2160ca7aEAc7FC24e254387',
       relayServer: 'https://dev.relay.rifcomputing.net:8090',
     }
 
     const eoaAddress = await smartWallet.signer.getAddress()
 
-    return new RIFRelaySDK(smartWallet, chainId, eoaAddress, sdkConfig)
+    return new RIFRelaySDK(
+      smartWallet,
+      smartWalletFactory,
+      chainId,
+      eoaAddress,
+      sdkConfig,
+    )
   }
 
-  async createRelayRequest(tx: any, payment: any): Promise<RelayRequest> {
+  // The following 3 methods are for relaying transactions:
+  createRelayRequest = async (
+    tx: any,
+    payment: RelayPayment,
+  ): Promise<RelayRequest> => {
     const gasToSend = '65164000' // await this.provider.getGasPrice() //in WEI @JESSE!
     const nonce = await (await this.smartWallet.nonce()).toString()
 
@@ -84,9 +104,17 @@ export class RIFRelaySDK {
     return relayRequest
   }
 
-  signRelayRequest = async (relayRequest: RelayRequest): Promise<string> => {
-    const domain = getDomainSeparator(this.smartWalletAddress, this.chainId)
-    const types = dataTypeFields(false)
+  signRelayRequest = async (
+    relayRequest: RelayRequest | DeployRequest,
+    isDeployRequest: boolean,
+  ): Promise<string> => {
+    const domain = getDomainSeparator(
+      isDeployRequest
+        ? this.smartWalletFactory.address
+        : this.smartWalletAddress,
+      this.chainId,
+    )
+    const types = dataTypeFields(isDeployRequest)
 
     const value = {
       ...relayRequest.request,
@@ -100,19 +128,62 @@ export class RIFRelaySDK {
     return signature
   }
 
-  sendRelayRequest = async (
+  sendRelayTransaction = async (
     tx: any,
     payment: any,
   ): Promise<TransactionResponse> => {
     const request = await this.createRelayRequest(tx, payment)
-    const signature = await this.signRelayRequest(request)
+    const signature = await this.signRelayRequest(request, false)
 
     const txHash = await this.sendRequestToRelay(request, signature)
 
     return await this.provider.getTransaction(txHash)
   }
 
-  // createDeployRequest
+  // The following methods are for deploying a smart wallet
+  createDeployRequest = async (
+    payment: RelayPayment,
+  ): Promise<DeployRequest> => {
+    const gasToSend = '65164000' // await this.provider.getGasPrice() //in WEI @JESSE!
+    const nonce = await this.smartWalletFactory.getNonce(this.eoaAddress)
+
+    const deployRequest: DeployRequest = {
+      request: {
+        relayHub: this.sdkConfig.relayHubAddress,
+        from: this.eoaAddress.toLowerCase(),
+        to: ZERO_ADDRESS,
+        value: '0',
+        nonce: nonce,
+        data: '0x',
+        tokenContract: payment.tokenContract,
+        tokenAmount: payment.tokenAmount.toString(),
+        tokenGas: '0x00', // gasToSend, // needs hex value?
+        recoverer: ZERO_ADDRESS,
+        index: '0',
+      },
+      relayData: {
+        gasPrice: gasToSend,
+        relayWorker: this.sdkConfig.relayWorkerAddress,
+        callForwarder: this.smartWalletFactory.address,
+        callVerifier: this.sdkConfig.deployVerifierAddress,
+        domainSeparator: getDomainSeparatorHash(
+          this.smartWalletFactory.address,
+          this.chainId,
+        ),
+      },
+    }
+
+    return deployRequest
+  }
+
+  async sendDeployTransaction(payment: RelayPayment) {
+    const deployRequest = await this.createDeployRequest(payment)
+    const signature = await this.signRelayRequest(deployRequest, true)
+
+    const txHash = await this.sendRequestToRelay(deployRequest, signature)
+
+    return await this.provider.getTransaction(txHash)
+  }
 
   // esitmate transaction cost
   sendRequestToRelay = (request: any, signature: string) =>
@@ -132,6 +203,7 @@ export class RIFRelaySDK {
               metadata,
             })
             .then((response: AxiosResponse) => {
+              console.log(response)
               if (response.data.error) {
                 reject(response.data.error)
               }

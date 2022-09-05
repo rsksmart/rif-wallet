@@ -3,15 +3,14 @@ import { TransactionRequest, Provider, TransactionResponse, BlockTag } from '@et
 import { TypedDataSigner } from '@ethersproject/abstract-signer'
 import { defineReadOnly } from '@ethersproject/properties'
 import { Deferrable, resolveProperties } from 'ethers/lib/utils'
-import SDK from '@jessgusclark/rsk-multi-token-sdk'
+
 
 import { SmartWalletFactory } from './SmartWalletFactory'
 import { SmartWallet } from './SmartWallet'
 import { filterTxOptions } from './filterTxOptions'
-import { relayTransaction, setupSDK } from '../relay-sdk/relayOperations'
-import { RelayRequest } from '@jessgusclark/rsk-multi-token-sdk/dist/modules/typedRequestData'
 import { RIFRelaySDK } from '../relay-sdk/RifRelaySdk'
 import { getDomainSeparator, dataTypeFields } from '../relay-sdk/helpers'
+import { RelayPayment } from '../relay-sdk/types'
 
 type IRequest<Type, Payload, ReturnType, ConfirmArgs> = {
   type: Type,
@@ -99,7 +98,7 @@ export class RIFWallet extends Signer implements TypedDataSigner {
     const smartWalletAddress = await smartWalletFactory.getSmartWalletAddress()
     const smartWallet = await SmartWallet.create(signer, smartWalletAddress)
 
-    const sdk = await RIFRelaySDK.create(smartWallet, 31)
+    const sdk = await RIFRelaySDK.create(smartWallet, smartWalletFactory, 31)
 
     return new RIFWallet(smartWalletFactory, smartWallet, onRequest, sdk)
   }
@@ -131,42 +130,10 @@ export class RIFWallet extends Signer implements TypedDataSigner {
     })
   }
 
-  /*
-  // @todo rename to sendRelayedTransaction
-  sendTransaction(transaction: Deferrable<any>): Promise<any> {
-    console.log('sendTransaction', transaction)
-    const payment = {
-      tokenContract: '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
-      tokenAmount: '0'
-    }
-
-    return this.rifRelaySdk.createRelayRequest(transaction, payment)
-      .then((response) => {
-        const { relayRequest, domain, types } = response
-
-        const onConfirm = (args: SignTypedDataArgs) =>
-          // console.log('onConfirm', args)
-          (this.smartWallet.signer as unknown as TypedDataSigner)
-            ._signTypedData(...args)
-              .then((signed: string) => {
-                console.log('[RIF Wallet]', { signed, ...args })
-                return signed
-              })
-        
-              
-        const request = this.createDoRequest(
-          'signTypedData',
-          onConfirm as CreateDoRequestOnConfirm
-        ) as (...args: SignTypedDataArgs) => Promise<string>
-
-        const value = {
-          ...relayRequest.request,
-          relayData: relayRequest.relayData,
-        }
-        return request(domain, types, value)
-      })
+  deploySmartWallet = (payment: RelayPayment) => {
+    console.log('DEPLOY SMART WALLET FROM RIFWALLET')
+    this.rifRelaySdk.sendDeployTransaction(payment)
   }
-  */
 
   sendTransaction = this.createDoRequest(
     'sendTransaction',
@@ -181,11 +148,7 @@ export class RIFWallet extends Signer implements TypedDataSigner {
 
       // check if paying with tokens:
       if (overriddenOptions && overriddenOptions.tokenPayment) {
-        return this.rifRelaySdk.sendRelayRequest(transactionRequest, overriddenOptions.tokenPayment)
-          .then((response: TransactionResponse) => {
-            console.log('value or someshit...', response)
-            return response
-          })
+        return this.rifRelaySdk.sendRelayTransaction(transactionRequest, overriddenOptions.tokenPayment)
       }
 
       // direct execute transaction paying gas with EOA wallet:

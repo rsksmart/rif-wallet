@@ -99,3 +99,8 @@ export const EIP712DomainType = [
   { name: 'chainId', type: 'uint256' },
   { name: 'verifyingContract', type: 'address' },
 ]
+
+export interface RelayPayment {
+  tokenContract: string
+  tokenAmount: number | string
+}

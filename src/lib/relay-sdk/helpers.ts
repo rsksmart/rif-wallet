@@ -47,3 +47,4 @@ export function getDomainSeparatorHash(
 }
 
 export const MAX_RELAY_NONCE_GAP = 3
+export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
