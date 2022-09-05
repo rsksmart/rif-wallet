@@ -2,15 +2,11 @@ import { Signer, BigNumberish, BytesLike, constants, BigNumber, Transaction, eth
 import { TransactionRequest, Provider, TransactionResponse, BlockTag } from '@ethersproject/abstract-provider'
 import { TypedDataSigner } from '@ethersproject/abstract-signer'
 import { defineReadOnly } from '@ethersproject/properties'
-import { Deferrable, resolveProperties } from 'ethers/lib/utils'
-
-
+import { resolveProperties } from 'ethers/lib/utils'
 import { SmartWalletFactory } from './SmartWalletFactory'
 import { SmartWallet } from './SmartWallet'
 import { filterTxOptions } from './filterTxOptions'
-import { RIFRelaySDK } from '../relay-sdk/RifRelaySdk'
-import { getDomainSeparator, dataTypeFields } from '../relay-sdk/helpers'
-import { RelayPayment } from '../relay-sdk/types'
+import { RIFRelaySDK, RelayPayment } from '../relay-sdk'
 
 type IRequest<Type, Payload, ReturnType, ConfirmArgs> = {
   type: Type,
@@ -23,10 +19,7 @@ type IRequest<Type, Payload, ReturnType, ConfirmArgs> = {
 export type OverriddableTransactionOptions = {
   gasLimit: BigNumberish,
   gasPrice: BigNumberish,
-  tokenPayment?: {
-    tokenContract: string,
-    tokenAmount: string | number
-  }
+  tokenPayment?: RelayPayment
 }
 
 export type SendTransactionRequest = IRequest<
@@ -130,10 +123,7 @@ export class RIFWallet extends Signer implements TypedDataSigner {
     })
   }
 
-  deploySmartWallet = (payment: RelayPayment) => {
-    console.log('DEPLOY SMART WALLET FROM RIFWALLET')
-    return this.rifRelaySdk.sendDeployTransaction(payment)
-  }
+  deploySmartWallet = (payment: RelayPayment) => this.rifRelaySdk.sendDeployTransaction(payment)
 
   sendTransaction = this.createDoRequest(
     'sendTransaction',
@@ -157,7 +147,7 @@ export class RIFWallet extends Signer implements TypedDataSigner {
         ...overriddenOptions || {}
       }
 
-      return this.smartWallet.directExecute(transactionRequest.to!, transactionRequest.data ?? constants.HashZero, txOptions)      
+      return this.smartWallet.directExecute(transactionRequest.to!, transactionRequest.data ?? constants.HashZero, txOptions)
     }) as CreateDoRequestOnConfirm
   ) as (transactionRequest: TransactionRequest) => Promise<TransactionResponse>
 
@@ -171,7 +161,6 @@ export class RIFWallet extends Signer implements TypedDataSigner {
     'signTypedData',
     ((args: SignTypedDataArgs) => (this.smartWallet.signer as any as TypedDataSigner)._signTypedData(...args)) as CreateDoRequestOnConfirm
   ) as (...args: SignTypedDataArgs) => Promise<string>
-
 
   estimateGas (transaction: TransactionRequest): Promise<BigNumber> {
     return resolveProperties(this.checkTransaction(transaction))
