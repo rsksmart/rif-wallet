@@ -30,6 +30,7 @@ export const ProfileDetailsScreen: React.FC<
             navigation.navigate('ProfileCreateScreen', {
               navigation,
               profile: initialProfile,
+              editProfile: true,
             })
           }>
           <MaterialIcon name="edit" color="white" size={20} />

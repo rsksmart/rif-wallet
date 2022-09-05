@@ -28,6 +28,8 @@ export const ProfileCreateScreen: React.FC<
 > = ({ route, onAliasChange }) => {
   const navigation = route.params.navigation
   const initialProfile: IProfileStore = route.params.profile
+  const [editProfile] = useState<boolean>(route.params.editProfile)
+
   const [profile, setProfile] = useState<IProfileStore>(initialProfile)
   useEffect(() => {
     setProfile(
@@ -66,7 +68,9 @@ export const ProfileCreateScreen: React.FC<
             <MaterialIcon name="west" color="white" size={10} />
           </View>
         </TouchableOpacity>
-        <MediumText style={styles.titleText}>{'create profile'}</MediumText>
+        <MediumText style={styles.titleText}>
+          {editProfile ? 'edit profile' : 'create profile'}
+        </MediumText>
         <TouchableOpacity onPress={() => deleteAlias()}>
           {initialProfile && (
             <MaterialIcon name="delete" color="white" size={20} />
@@ -146,7 +150,7 @@ export const ProfileCreateScreen: React.FC<
           <PurpleButton
             onPress={() => createProfile()}
             accessibilityLabel="create"
-            title={'save'}
+            title={editProfile ? 'save' : 'create'}
           />
         </View>
       </View>
