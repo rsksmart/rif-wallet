@@ -14,10 +14,13 @@ export const ProfileHandler: React.FC<Props> = ({ navigation, profile }) => {
     <TouchableOpacity
       style={styles.profileHandler}
       onPress={() =>
-        navigation.navigate('CreateProfileScreen', {
-          navigation,
-          profile: profile,
-        })
+        navigation.navigate(
+          profile ? 'ProfileDetailsScreen' : 'ProfileCreateScreen',
+          {
+            navigation,
+            profile: profile,
+          },
+        )
       }>
       {!profile && (
         <>

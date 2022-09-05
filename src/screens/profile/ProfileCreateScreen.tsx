@@ -23,8 +23,8 @@ export type CreateProfileScreenProps = {
   route: any
   onAliasChange: any
 }
-export const CreateProfileScreen: React.FC<
-  ScreenProps<'CreateProfileScreen'> & CreateProfileScreenProps
+export const ProfileCreateScreen: React.FC<
+  ScreenProps<'ProfileCreateScreen'> & CreateProfileScreenProps
 > = ({ route, onAliasChange }) => {
   const navigation = route.params.navigation
   const initialProfile: IProfileStore = route.params.profile

@@ -138,7 +138,7 @@ export const RNSManagerScreen: React.FC<
       <View style={styles.sectionCentered}>
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate('CreateProfileScreen', {
+            navigation.navigate('ProfileCreateScreen', {
               navigation,
               profile: { alias: 'sample-domain.rsk' },
             })

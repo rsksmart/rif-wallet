@@ -35,4 +35,5 @@ export {
   default as AccountsScreen,
   AccountsScreenType,
 } from './accounts/AccountsScreen'
-export { CreateProfileScreen } from './profile/CreateProfileScreen'
+export { ProfileCreateScreen } from './profile/ProfileCreateScreen'
+export { ProfileDetailsScreen } from './profile/ProfileDetailsScreen'

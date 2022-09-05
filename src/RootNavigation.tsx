@@ -65,7 +65,8 @@ type RootStackParamList = {
   EventsScreen: undefined
   AccountsScreen: undefined
   SecurityConfigurationScreen: undefined
-  CreateProfileScreen: undefined
+  ProfileCreateScreen: undefined
+  ProfileDetailsScreen: undefined
   ChangePinScreen: undefined
   BitcoinScreen: undefined
 }
@@ -308,9 +309,17 @@ export const RootNavigation: React.FC<{
               />
             )}
           </RootStack.Screen>
-          <RootStack.Screen name="CreateProfileScreen" options={sharedOptions}>
+          <RootStack.Screen name="ProfileCreateScreen" options={sharedOptions}>
             {props => (
-              <Screens.CreateProfileScreen
+              <Screens.ProfileCreateScreen
+                {...props}
+                onAliasChange={setAlias}
+              />
+            )}
+          </RootStack.Screen>
+          <RootStack.Screen name="ProfileDetailsScreen" options={sharedOptions}>
+            {props => (
+              <Screens.ProfileDetailsScreen
                 {...props}
                 onAliasChange={setAlias}
               />
