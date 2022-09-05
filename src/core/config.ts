@@ -16,7 +16,6 @@ export const getWalletSetting = (
     case SETTINGS.RPC_URL:
       return Config[`NETWORK${chainId.toString()}_RPC_URL`]
     case SETTINGS.SMART_WALLET_FACTORY_ADDRESS:
-      return '0xeaB5b9fA91aeFFaA9c33F9b33d12AB7088fa7f6f'
       return Config[`NETWORK${chainId.toString()}_SW_ADDRESS`]
   }
 }
