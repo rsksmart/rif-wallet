@@ -64,7 +64,6 @@ type RootStackParamList = {
   AccountsScreen: undefined
   SecurityConfigurationScreen: undefined
   ChangePinScreen: undefined
-  RelayDeployScreen: undefined
   BitcoinScreen: undefined
 }
 
