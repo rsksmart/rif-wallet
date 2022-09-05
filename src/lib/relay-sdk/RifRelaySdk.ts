@@ -30,7 +30,7 @@ export class RIFRelaySDK {
     eoaAddress: string,
     sdkConfig: any,
   ) {
-    //@ts-ignore: smartWallet.signer.provider is defined from RIF Wallet
+    // @ts-ignore: smartWallet.signer.provider is defined from RIF Wallet
     this.provider = smartWallet.signer.provider
     this.smartWallet = smartWallet
     this.smartWalletFactory = smartWalletFactory
@@ -39,8 +39,6 @@ export class RIFRelaySDK {
 
     this.smartWalletAddress = smartWallet.smartWalletAddress
     this.eoaAddress = eoaAddress
-
-    console.log(smartWalletFactory)
   }
 
   static async create(
@@ -52,7 +50,6 @@ export class RIFRelaySDK {
       relayWorkerAddress: '0x74105590d404df3f384a099c2e55135281ca6b40',
       relayVerifierAddress: '0x56ccdB6D312307Db7A4847c3Ea8Ce2449e9B79e9',
       deployVerifierAddress: '0x5C6e96a84271AC19974C3e99d6c4bE4318BfE483',
-      smartWalletContractAddress: '0xEdB6D515C2DB4F9C3C87D7f6Cefb260B3DEe8014',
       relayHubAddress: '0x66Fa9FEAfB8Db66Fe2160ca7aEAc7FC24e254387',
       relayServer: 'https://dev.relay.rifcomputing.net:8090',
     }

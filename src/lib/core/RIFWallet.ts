@@ -96,18 +96,15 @@ export class RIFWallet extends Signer implements TypedDataSigner {
     return new RIFWallet(smartWalletFactory, smartWallet, onRequest, sdk)
   }
 
-  // This needs to return the eoa address for T! RIF Relay's package to work:
-  getAddress = (): Promise<string> => this.smartWallet.signer.getAddress()
+  getAddress = (): Promise<string> => Promise.resolve(this.smartWallet.smartWalletAddress)
 
   signTransaction = (transaction: TransactionRequest): Promise<string> => this.smartWallet.signer.signTransaction(transaction)
 
   // calls via smart wallet
-  /*
   call (transactionRequest: TransactionRequest, blockTag?: BlockTag): Promise<any> {
     console.log('[RIFWallet] call()', transactionRequest)
     return this.smartWallet.callStaticDirectExecute(transactionRequest.to!, transactionRequest.data!, { ...filterTxOptions(transactionRequest), blockTag })
   }
-  */
 
   createDoRequest: CreateDoRequest = (type, onConfirm) => {
     return (...payload) => new Promise((resolve, reject) => {
