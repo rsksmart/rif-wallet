@@ -35,4 +35,3 @@ export {
   default as AccountsScreen,
   AccountsScreenType,
 } from './accounts/AccountsScreen'
-export { default as RelayDeployScreen } from './relayDeploy/RelayDeployScreen'

@@ -29,12 +29,12 @@ export const SettingsScreen: React.FC<ScreenProps<'Settings'>> = ({
 
   const goToAccountsScreen = () => navigation.navigate('AccountsScreen' as any)
 
-  const goToRelayScreen = () => navigation.navigate('RelayDeployScreen')
-
   const goToBitcoinScreen = () => navigation.navigate('BitcoinScreen' as any)
 
   const goToSecurityConfiguration = () =>
     navigation.navigate('SecurityConfigurationScreen' as any)
+
+  const goToDeploy = () => navigation.navigate('ManuallyDeployScreen' as any)
 
   return (
     <View style={styles.container}>
@@ -64,7 +64,7 @@ export const SettingsScreen: React.FC<ScreenProps<'Settings'>> = ({
             Security
           </SemiBoldText>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.rowComponent} onPress={goToRelayScreen}>
+        <TouchableOpacity style={styles.rowComponent} onPress={goToDeploy}>
           <Icon name="wallet-outline" color={colors.white} size={20} />
           <SemiBoldText style={[styles.textColor, spacing.ml6]}>
             Smart Wallet Deploy
