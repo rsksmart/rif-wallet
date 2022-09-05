@@ -2,6 +2,7 @@ import React from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 import { IProfileStore } from '../../storage/ProfileStore'
+import Clipboard from '@react-native-community/clipboard'
 
 import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import { colors } from '../../styles'
@@ -55,6 +56,15 @@ export const ProfileDetailsScreen: React.FC<
               <MediumText style={[styles.masterText, styles.textLeftMargin]}>
                 {initialProfile.alias}
               </MediumText>
+              <TouchableOpacity
+                onPress={() => Clipboard.setString(initialProfile.alias)}>
+                <MaterialIcon
+                  style={styles.copyIcon}
+                  name="content-copy"
+                  color="white"
+                  size={18}
+                />
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -153,11 +163,16 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   fieldContainer: {
+    flexDirection: 'row',
     backgroundColor: colors.blue2,
     padding: 20,
     borderRadius: 15,
+    justifyContent: 'space-between',
   },
   aliasText: {
     color: colors.white,
+  },
+  copyIcon: {
+    margin: 5,
   },
 })
