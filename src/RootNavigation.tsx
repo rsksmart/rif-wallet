@@ -318,12 +318,7 @@ export const RootNavigation: React.FC<{
             )}
           </RootStack.Screen>
           <RootStack.Screen name="ProfileDetailsScreen" options={sharedOptions}>
-            {props => (
-              <Screens.ProfileDetailsScreen
-                {...props}
-                onAliasChange={setAlias}
-              />
-            )}
+            {props => <Screens.ProfileDetailsScreen {...props} />}
           </RootStack.Screen>
         </RootStack.Navigator>
         {appIsSetup && !isKeyboardVisible && (

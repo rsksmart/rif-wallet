@@ -59,91 +59,98 @@ export const ProfileCreateScreen: React.FC<
     navigation.navigate('Home')
   }
   return (
-    <View style={styles.container}>
-      <MediumText style={styles.titleText}>create profile</MediumText>
-      <View style={styles.profileImageContainer}>
-        <Image
-          style={styles.profileImage}
-          source={require('../../images/image_place_holder.jpeg')}
-        />
+    <>
+      <View style={styles.profileHeader}>
+        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+          <View style={styles.backButton}>
+            <MaterialIcon name="west" color="white" size={10} />
+          </View>
+        </TouchableOpacity>
+        <MediumText style={styles.titleText}>{'create profile'}</MediumText>
+        <TouchableOpacity onPress={() => deleteAlias()}>
+          {initialProfile && (
+            <MaterialIcon name="delete" color="white" size={20} />
+          )}
+        </TouchableOpacity>
       </View>
-      <View>
-        <MediumText style={[styles.masterText, styles.textLeftMargin]}>
-          alias
-        </MediumText>
-      </View>
-      {!profile?.alias && (
-        <>
-          <View style={styles.rowContainer}>
-            <PurpleButton
-              onPress={() => navigation.navigate('RNSManager')}
-              accessibilityLabel="register new"
-              title={'register new'}
-            />
-          </View>
-          <View style={styles.rowContainer}>
-            <PurpleButton
-              onPress={() => deleteAlias()}
-              accessibilityLabel="delete"
-              title={'delete'}
-            />
-          </View>
-        </>
-      )}
-
-      {profile?.alias !== '' && (
-        <View style={styles.rowContainer}>
-          <View style={styles.aliasContainer}>
-            <View>
-              <Text style={styles.aliasText}>{profile?.alias}</Text>
-            </View>
-            <View>
-              <TouchableOpacity
-                onPress={() => setProfile({ ...profile, alias: '' })}>
-                <MaterialIcon name="close" color={colors.white} size={20} />
-              </TouchableOpacity>
-            </View>
-          </View>
+      <View style={styles.container}>
+        <View style={styles.profileImageContainer}>
+          <Image
+            style={styles.profileImage}
+            source={require('../../images/image_place_holder.jpeg')}
+          />
         </View>
-      )}
+        <View>
+          <MediumText style={[styles.masterText, styles.textLeftMargin]}>
+            alias
+          </MediumText>
+        </View>
+        {!profile?.alias && (
+          <>
+            <View style={styles.rowContainer}>
+              <PurpleButton
+                onPress={() => navigation.navigate('RNSManager')}
+                accessibilityLabel="register new"
+                title={'register new'}
+              />
+            </View>
+          </>
+        )}
 
-      <View style={styles.rowContainer}>
-        <MediumText style={[styles.masterText, styles.textLeftMargin]}>
-          phone
-        </MediumText>
+        {profile?.alias !== '' && (
+          <View style={styles.rowContainer}>
+            <View style={styles.aliasContainer}>
+              <View>
+                <Text style={styles.aliasText}>{profile?.alias}</Text>
+              </View>
+              <View>
+                <TouchableOpacity
+                  onPress={() => setProfile({ ...profile, alias: '' })}>
+                  <MaterialIcon name="close" color={colors.white} size={20} />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        )}
 
-        <TextInput
-          style={styles.input}
-          onChangeText={value => setProfile({ ...profile, phone: value })}
-          value={profile?.phone}
-          placeholder=""
-          keyboardType="numeric"
-          accessibilityLabel={'Phone.Input'}
-          placeholderTextColor={colors.gray}
-        />
+        <View style={styles.rowContainer}>
+          <MediumText style={[styles.masterText, styles.textLeftMargin]}>
+            phone
+          </MediumText>
+
+          <TextInput
+            style={styles.input}
+            onChangeText={value => setProfile({ ...profile, phone: value })}
+            value={profile?.phone}
+            placeholder=""
+            keyboardType="numeric"
+            accessibilityLabel={'Phone.Input'}
+            placeholderTextColor={colors.gray}
+          />
+        </View>
+        <View style={styles.rowContainer}>
+          <MediumText style={[styles.masterText, styles.textLeftMargin]}>
+            email
+          </MediumText>
+          <TextInput
+            style={styles.input}
+            onChangeText={value => setProfile({ ...profile, email: value })}
+            value={profile?.email}
+            placeholder=""
+            keyboardType="numeric"
+            accessibilityLabel={'Email.Input'}
+            placeholderTextColor={colors.gray}
+          />
+        </View>
+        <View style={styles.rowContainer}>
+          <PurpleButton
+            onPress={() => createProfile()}
+            accessibilityLabel="create"
+            title={'save'}
+          />
+        </View>
       </View>
-      <View style={styles.rowContainer}>
-        <MediumText style={[styles.masterText, styles.textLeftMargin]}>
-          email
-        </MediumText>
-        <TextInput
-          style={styles.input}
-          onChangeText={value => setProfile({ ...profile, email: value })}
-          value={profile?.email}
-          placeholder=""
-          keyboardType="numeric"
-          accessibilityLabel={'Email.Input'}
-          placeholderTextColor={colors.gray}
-        />
-      </View>
-      <View style={styles.rowContainer}>
-        <PurpleButton
-          onPress={() => createProfile()}
-          accessibilityLabel="create"
-          title={'create'}
-        />
-      </View>
-    </View>
+    </>
   )
 }
 
@@ -153,6 +160,23 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background.darkBlue,
     paddingTop: 10,
     paddingHorizontal: 40,
+  },
+  profileHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 20,
+    backgroundColor: colors.background.darkBlue,
+    //backgroundColor: 'red',
+  },
+  titleText: {
+    color: colors.white,
+  },
+  backButton: {
+    color: colors.white,
+    backgroundColor: colors.blue2,
+    borderRadius: 20,
+    padding: 10,
+    bottom: 3,
   },
   profileImageContainer: {
     alignItems: 'center',
@@ -173,11 +197,6 @@ const styles = StyleSheet.create({
   },
   textLeftMargin: {
     marginLeft: 10,
-  },
-  titleText: {
-    alignSelf: 'center',
-    marginBottom: 12,
-    color: colors.white,
   },
   masterText: {
     marginBottom: 0,
