@@ -14,7 +14,7 @@ import {
   DarkBlueButton,
   OutlineBorderedButton,
 } from '../../components/button/ButtonVariations'
-import { colors } from '../../styles'
+import { colors, grid } from '../../styles'
 import ReadOnlyField from './ReadOnlyField'
 import InputField from './InpuField'
 
@@ -35,19 +35,22 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
     useEnhancedWithGas(wallet, txRequest)
 
   const [error, setError] = useState<Error | null>(null)
+  const [payWithGas, setPayWithGas] = useState<boolean>(true)
 
   // convert from string to Transaction and pass out of component
   const confirmTransaction = async () => {
+    const confirmObject = {
+      gasPrice: BigNumber.from(enhancedTransactionRequest.gasPrice),
+      gasLimit: BigNumber.from(enhancedTransactionRequest.gasLimit),
+      tokenPayment: payWithGas
+        ? undefined
+        : {
+            tokenContract: '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
+            tokenAmount: 0,
+          },
+    }
     try {
-      await request.confirm({
-        gasPrice: BigNumber.from(enhancedTransactionRequest.gasPrice),
-        gasLimit: BigNumber.from(enhancedTransactionRequest.gasLimit),
-        // @JESSE: fix this in the future:
-        tokenPayment: {
-          tokenContract: '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
-          tokenAmount: 1,
-        },
-      })
+      await request.confirm(confirmObject)
       closeModal()
     } catch (err: any) {
       setError(err)
@@ -123,23 +126,47 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
         )}
       </View>
 
-      <InputField
-        label={'gas limit'}
-        value={enhancedTransactionRequest.gasLimit}
-        keyboardType="number-pad"
-        placeholder="gas limit"
-        testID={'gasLimit.TextInput'}
-        handleValueOnChange={setGasLimit}
-      />
+      <View style={grid.row}>
+        <View style={grid.column6}>
+          <ReadOnlyField
+            label="Paying the fee with"
+            value={payWithGas ? 'rBTC' : 'tRIF'}
+            testID="Fee.Type"
+          />
+        </View>
+        <View style={styles.toggleContainer}>
+          <OutlineBorderedButton
+            title="Toggle"
+            onPress={() => setPayWithGas(!payWithGas)}
+          />
+        </View>
+      </View>
 
-      <InputField
-        label={'gas price'}
-        value={enhancedTransactionRequest.gasPrice}
-        keyboardType="number-pad"
-        placeholder="gas price"
-        testID={'gasPrice.TextInput'}
-        handleValueOnChange={setGasPrice}
-      />
+      {!payWithGas && (
+        <ReadOnlyField label="Fee in tRIF" value="0 tRIF" testID="tRIF.fee" />
+      )}
+
+      {payWithGas && (
+        <>
+          <InputField
+            label={'gas limit'}
+            value={enhancedTransactionRequest.gasLimit}
+            keyboardType="number-pad"
+            placeholder="gas limit"
+            testID={'gasLimit.TextInput'}
+            handleValueOnChange={setGasLimit}
+          />
+
+          <InputField
+            label={'gas price'}
+            value={enhancedTransactionRequest.gasPrice}
+            keyboardType="number-pad"
+            placeholder="gas price"
+            testID={'gasPrice.TextInput'}
+            handleValueOnChange={setGasPrice}
+          />
+        </>
+      )}
 
       {error && (
         <View style={sharedStyles.row}>
@@ -201,5 +228,10 @@ const styles = StyleSheet.create({
   },
   loadingContent: {
     padding: 20,
+  },
+  toggleContainer: {
+    ...grid.column5,
+    marginTop: 25,
+    marginLeft: 15,
   },
 })
