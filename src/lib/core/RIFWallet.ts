@@ -1,4 +1,4 @@
-import { Signer, BigNumberish, BytesLike, constants, BigNumber, Transaction, ethers, ContractTransaction } from 'ethers'
+import { Signer, BigNumberish, BytesLike, constants, BigNumber } from 'ethers'
 import { TransactionRequest, Provider, TransactionResponse, BlockTag } from '@ethersproject/abstract-provider'
 import { TypedDataSigner } from '@ethersproject/abstract-signer'
 import { defineReadOnly } from '@ethersproject/properties'
@@ -91,7 +91,7 @@ export class RIFWallet extends Signer implements TypedDataSigner {
     const smartWalletAddress = await smartWalletFactory.getSmartWalletAddress()
     const smartWallet = await SmartWallet.create(signer, smartWalletAddress)
 
-    const sdk = await RIFRelaySDK.create(smartWallet, smartWalletFactory, 31)
+    const sdk = await RIFRelaySDK.create(smartWallet, smartWalletFactory)
 
     return new RIFWallet(smartWalletFactory, smartWallet, onRequest, sdk)
   }

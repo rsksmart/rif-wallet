@@ -123,3 +123,11 @@ export interface RelayPayment {
   tokenContract: string
   tokenAmount: number | string
 }
+
+export interface SdkConfig {
+  relayWorkerAddress: Address
+  relayVerifierAddress: Address
+  deployVerifierAddress: Address
+  relayHubAddress: Address
+  relayServer: string
+}

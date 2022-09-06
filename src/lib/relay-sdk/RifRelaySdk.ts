@@ -1,7 +1,7 @@
 import { TypedDataSigner } from '@ethersproject/abstract-signer'
 import { TransactionResponse } from '@ethersproject/abstract-provider'
 import { SmartWallet } from '../core/SmartWallet'
-import { RelayPayment, RelayRequest } from './types'
+import { RelayPayment, RelayRequest, SdkConfig } from './types'
 import {
   dataTypeFields,
   getDomainSeparator,
@@ -28,7 +28,7 @@ export class RIFRelaySDK {
     smartWalletFactory: SmartWalletFactory,
     chainId: number,
     eoaAddress: string,
-    sdkConfig: any,
+    sdkConfig: SdkConfig,
   ) {
     // @ts-ignore: smartWallet.signer.provider is defined from RIF Wallet
     this.provider = smartWallet.signer.provider
@@ -44,7 +44,6 @@ export class RIFRelaySDK {
   static async create(
     smartWallet: SmartWallet,
     smartWalletFactory: SmartWalletFactory,
-    chainId: number,
   ) {
     const sdkConfig = {
       relayWorkerAddress: '0x74105590d404df3f384a099c2e55135281ca6b40',
@@ -55,6 +54,7 @@ export class RIFRelaySDK {
     }
 
     const eoaAddress = await smartWallet.signer.getAddress()
+    const chainId = await smartWallet.signer.getChainId()
 
     return new RIFRelaySDK(
       smartWallet,
@@ -65,7 +65,6 @@ export class RIFRelaySDK {
     )
   }
 
-  // The following 3 methods are for relaying transactions:
   createRelayRequest = async (
     tx: any,
     payment: RelayPayment,
@@ -127,7 +126,7 @@ export class RIFRelaySDK {
 
   sendRelayTransaction = async (
     tx: any,
-    payment: any,
+    payment: RelayPayment,
   ): Promise<TransactionResponse> => {
     const request = await this.createRelayRequest(tx, payment)
     const signature = await this.signRelayRequest(request, false)
@@ -200,9 +199,9 @@ export class RIFRelaySDK {
               metadata,
             })
             .then((response: AxiosResponse) => {
-              console.log(response)
               if (response.data.error) {
-                reject(response.data.error)
+                console.log(response)
+                return reject(response.data.error)
               }
 
               // if okay...
