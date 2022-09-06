@@ -9,10 +9,9 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { rnsResolver } from '../../core/setup'
 import { colors, grid } from '../../styles'
-import { Button } from '../button'
 import { OutlineButton } from '../button/ButtonVariations'
 import DeleteIcon from '../icons/DeleteIcon'
-import QRCodeScanner from '../QRCodeScanner'
+import { QRCodeScanner } from '../QRCodeScanner'
 import {
   AddressValidationMessage,
   toChecksumAddress,
@@ -142,8 +141,10 @@ export const AddressInput: React.FC<AddressInputProps> = ({
 
   return showQRScanner ? (
     <Modal presentationStyle="overFullScreen" style={styles.cameraModal}>
-      <QRCodeScanner />
-      <Button onPress={() => setShowQRScanner(false)} title="close" />
+      <QRCodeScanner
+        onClose={() => setShowQRScanner(false)}
+        onCodeRead={handleChangeText}
+      />
     </Modal>
   ) : (
     <View style={styles.parent}>
