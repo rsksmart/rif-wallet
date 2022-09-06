@@ -1,7 +1,7 @@
 import { TypedDataSigner } from '@ethersproject/abstract-signer'
 import { TransactionResponse } from '@ethersproject/abstract-provider'
 import axios, { AxiosResponse } from 'axios'
-import { ethers } from 'ethers'
+import { ethers, Transaction } from 'ethers'
 
 import { SmartWallet } from '../core/SmartWallet'
 import {
@@ -15,6 +15,7 @@ import {
   dataTypeFields,
   getDomainSeparator,
   getDomainSeparatorHash,
+  INTERNAL_TRANSACTION_ESTIMATE_CORRECTION,
   MAX_RELAY_NONCE_GAP,
   ZERO_ADDRESS,
 } from './helpers'
@@ -76,27 +77,39 @@ export class RIFRelaySDK {
     axios.get(`${server}/getaddr`).then((value: AxiosResponse) => value.data)
 
   createRelayRequest = async (
-    tx: any,
+    tx: Transaction,
     payment: RelayPayment,
   ): Promise<RelayRequest> => {
-    const gasToSend = '65164000' // await this.provider.getGasPrice() //in WEI @JESSE!
+    const gasToSend = tx.gasPrice || (await this.provider.getGasPrice())
     const nonce = await (await this.smartWallet.nonce()).toString()
+
+    const estimated = await this.provider.estimateGas({
+      from: tx.from,
+      to: tx.to,
+      gasPrice: gasToSend,
+      data: tx.data,
+    })
+    const internalCallCost = estimated.gt(
+      INTERNAL_TRANSACTION_ESTIMATE_CORRECTION,
+    )
+      ? estimated.sub(INTERNAL_TRANSACTION_ESTIMATE_CORRECTION)
+      : estimated
 
     const relayRequest: RelayRequest = {
       request: {
         relayHub: this.sdkConfig.relayHubAddress,
         from: this.eoaAddress,
-        to: tx.to,
+        to: tx.to || ZERO_ADDRESS,
         data: tx.data,
         value: tx.value ? tx.value.toString() : '0',
-        gas: '0x41f9',
+        gas: internalCallCost.toHexString(),
         nonce,
         tokenContract: payment.tokenContract,
-        tokenAmount: '0', // payment.tokenAmount.toString(),
-        tokenGas: gasToSend,
+        tokenAmount: payment.tokenAmount.toString(),
+        tokenGas: gasToSend.toString(),
       },
       relayData: {
-        gasPrice: gasToSend,
+        gasPrice: gasToSend.toString(),
         relayWorker: this.sdkConfig.relayWorkerAddress,
         callForwarder: this.smartWalletAddress,
         callVerifier: this.sdkConfig.relayVerifierAddress,
@@ -163,7 +176,7 @@ export class RIFRelaySDK {
         data: '0x',
         tokenContract: payment.tokenContract,
         tokenAmount: payment.tokenAmount.toString(),
-        tokenGas: '0x00', // gasToSend, // needs hex value?
+        tokenGas: '0x00',
         recoverer: ZERO_ADDRESS,
         index: '0',
       },
@@ -191,8 +204,10 @@ export class RIFRelaySDK {
     return await this.provider.getTransaction(txHash)
   }
 
-  // esitmate transaction cost
-  sendRequestToRelay = (request: any, signature: string) =>
+  sendRequestToRelay = (
+    request: RelayRequest | DeployRequest,
+    signature: string,
+  ) =>
     new Promise<string>((resolve, reject) =>
       this.provider
         .getTransactionCount(this.sdkConfig.relayWorkerAddress)

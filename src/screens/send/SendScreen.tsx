@@ -18,7 +18,6 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   route,
   wallet,
   isWalletDeployed,
-  navigation,
 }) => {
   const { state } = useSocketsState()
   const contractAddress =
@@ -33,7 +32,6 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   }, [wallet])
 
   const transfer = (token: ITokenWithBalance, amount: string, to: string) => {
-    console.log('transfering balance...', token, amount, to)
     setError(undefined)
     setCurrentTransaction({ status: 'USER_CONFIRM' })
 
@@ -60,22 +58,6 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
             status: 'PENDING',
           }
           setCurrentTransaction(current)
-
-          /*
-          // @JESSE - fix this later:
-          setCurrentTransaction({ ...current, status: 'SUCCESS' })
-
-          console.log('COMPONENT level:', { txPending })
-
-          txPending
-            .wait()
-            .then(() =>
-              setCurrentTransaction({ ...current, status: 'SUCCESS' }),
-            )
-            .catch(() =>
-              setCurrentTransaction({ ...current, status: 'FAILED' }),
-            )
-          */
         })
         .catch((err: any) => {
           setError(err)

@@ -102,7 +102,6 @@ export class RIFWallet extends Signer implements TypedDataSigner {
 
   // calls via smart wallet
   call (transactionRequest: TransactionRequest, blockTag?: BlockTag): Promise<any> {
-    console.log('[RIFWallet] call()', transactionRequest)
     return this.smartWallet.callStaticDirectExecute(transactionRequest.to!, transactionRequest.data!, { ...filterTxOptions(transactionRequest), blockTag })
   }
 
