@@ -124,10 +124,13 @@ export interface RelayPayment {
   tokenAmount: number | string
 }
 
-export interface SdkConfig {
+export interface SdkConfig extends RifRelayConfig {
   relayWorkerAddress: Address
+  relayHubAddress: Address
+}
+
+export interface RifRelayConfig {
   relayVerifierAddress: Address
   deployVerifierAddress: Address
-  relayHubAddress: Address
   relayServer: string
 }

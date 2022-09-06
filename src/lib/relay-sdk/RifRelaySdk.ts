@@ -1,7 +1,16 @@
 import { TypedDataSigner } from '@ethersproject/abstract-signer'
 import { TransactionResponse } from '@ethersproject/abstract-provider'
+import axios, { AxiosResponse } from 'axios'
+import { ethers } from 'ethers'
+
 import { SmartWallet } from '../core/SmartWallet'
-import { RelayPayment, RelayRequest, SdkConfig } from './types'
+import {
+  RelayPayment,
+  RelayRequest,
+  SdkConfig,
+  DeployRequest,
+  RifRelayConfig,
+} from './types'
 import {
   dataTypeFields,
   getDomainSeparator,
@@ -9,9 +18,7 @@ import {
   MAX_RELAY_NONCE_GAP,
   ZERO_ADDRESS,
 } from './helpers'
-import axios, { AxiosResponse } from 'axios'
-import { ethers } from 'ethers'
-import { DeployRequest } from './types'
+
 import { SmartWalletFactory } from '../core/SmartWalletFactory'
 
 export class RIFRelaySDK {
@@ -44,26 +51,29 @@ export class RIFRelaySDK {
   static async create(
     smartWallet: SmartWallet,
     smartWalletFactory: SmartWalletFactory,
+    rifRelayConfig: RifRelayConfig,
   ) {
-    const sdkConfig = {
-      relayWorkerAddress: '0x74105590d404df3f384a099c2e55135281ca6b40',
-      relayVerifierAddress: '0x56ccdB6D312307Db7A4847c3Ea8Ce2449e9B79e9',
-      deployVerifierAddress: '0x5C6e96a84271AC19974C3e99d6c4bE4318BfE483',
-      relayHubAddress: '0x66Fa9FEAfB8Db66Fe2160ca7aEAc7FC24e254387',
-      relayServer: 'https://dev.relay.rifcomputing.net:8090',
-    }
-
     const eoaAddress = await smartWallet.signer.getAddress()
     const chainId = await smartWallet.signer.getChainId()
+
+    const { relayWorkerAddress, relayHubAddress } =
+      await this.getAddrFromServer(rifRelayConfig.relayServer)
 
     return new RIFRelaySDK(
       smartWallet,
       smartWalletFactory,
       chainId,
       eoaAddress,
-      sdkConfig,
+      {
+        ...rifRelayConfig,
+        relayWorkerAddress,
+        relayHubAddress,
+      },
     )
   }
+
+  static getAddrFromServer = (server: string) =>
+    axios.get(`${server}/getaddr`).then((value: AxiosResponse) => value.data)
 
   createRelayRequest = async (
     tx: any,

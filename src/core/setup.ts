@@ -29,10 +29,17 @@ export const rifWalletServicesSocket = new RifWalletServicesSocket(
 
 export const rnsResolver = Resolver.forRskTestnet({})
 
+export const rifRelayConfig = {
+  relayVerifierAddress: getWalletSetting(SETTINGS.RELAY_VERIFIER_ADDRESS),
+  deployVerifierAddress: getWalletSetting(SETTINGS.RELAY_VERIFIER_ADDRESS),
+  relayServer: getWalletSetting(SETTINGS.RIF_RELAY_SERVER),
+}
+
 export const createRIFWalletFactory =
   (onRequest: OnRequest) => (wallet: Wallet) =>
     RIFWallet.create(
       wallet.connect(jsonRpcProvider),
       smartWalletFactoryAddress,
       onRequest,
+      rifRelayConfig,
     ) // temp - using only testnet

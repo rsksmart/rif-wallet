@@ -4,6 +4,9 @@ export enum SETTINGS {
   RIF_WALLET_SERVICE_URL = 'RIF_WALLET_SERVICE_URL',
   RPC_URL = 'RPC_URL',
   SMART_WALLET_FACTORY_ADDRESS = 'SMART_WALLET_FACTORY_ADDRESS',
+  RIF_RELAY_SERVER = 'RIF_RELAY_SERVER',
+  RELAY_VERIFIER_ADDRESS = 'RELAY_VERIFIER_ADDRESS',
+  DEPLOY_VERIFIER_ADDRESS = 'DEPLOY_VERIFIER_ADDRESS',
 }
 
 export const getWalletSetting = (
@@ -11,11 +14,11 @@ export const getWalletSetting = (
   chainId: 31 = 31,
 ): string => {
   switch (setting) {
-    case SETTINGS.RIF_WALLET_SERVICE_URL:
-      return Config.RIF_WALLET_SERVICE_URL
     case SETTINGS.RPC_URL:
       return Config[`NETWORK${chainId.toString()}_RPC_URL`]
     case SETTINGS.SMART_WALLET_FACTORY_ADDRESS:
       return Config[`NETWORK${chainId.toString()}_SW_ADDRESS`]
+    default:
+      return Config[setting]
   }
 }
