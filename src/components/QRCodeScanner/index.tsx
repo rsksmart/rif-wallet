@@ -14,6 +14,7 @@ export default () => {
     <RNCamera
       ref={cameraRef}
       style={styles.container}
+      captureAudio={false}
       onBarCodeRead={onBarCodeRead}>
       <BarcodeMask showAnimatedLine={false} outerMaskOpacity={0.8} />
     </RNCamera>
