@@ -15,6 +15,7 @@ export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
 
   const onBarCodeRead = (event: BarCodeReadEvent) => {
     onCodeRead(decodeURIComponent(event.data))
+    onClose()
   }
 
   return (
@@ -31,7 +32,7 @@ export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
         buttonPositive: 'Ok',
         buttonNegative: 'Cancel',
       }}>
-      <BarcodeMask showAnimatedLine={false} outerMaskOpacity={0.8} />
+      <BarcodeMask showAnimatedLine={false} outerMaskOpacity={0.5} />
       <View style={styles.floatButton}>
         <Icon.Button
           accessibilityLabel="closeButton"
