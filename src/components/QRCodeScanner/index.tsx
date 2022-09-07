@@ -14,8 +14,11 @@ export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
   const cameraRef = useRef<RNCamera>(null)
 
   const onBarCodeRead = (event: BarCodeReadEvent) => {
-    onCodeRead(decodeURIComponent(event.data))
-    onClose()
+    // @ts-ignore
+    if (event.type === 'QR_CODE') {
+      onCodeRead(decodeURIComponent(event.data))
+      onClose()
+    }
   }
 
   return (
