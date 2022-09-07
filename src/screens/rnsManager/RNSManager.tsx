@@ -87,9 +87,7 @@ export const RNSManagerScreen: React.FC<
         <View style={{ ...grid.column2 }}>
           <View style={styles.centerRow}>
             <SquareButton
-              // @ts-ignore
               onPress={() => searchDomain(domainToLookUp)}
-              title=""
               testID="Address.CopyButton"
               icon={<SearchIcon color={getTokenColor('TRBTC')} />}
             />
@@ -108,9 +106,7 @@ export const RNSManagerScreen: React.FC<
               <Text>{`${selectedDomainPrice} RIF for ${years} years`}</Text>
 
               <SquareButton
-                // @ts-ignore
                 onPress={() => {
-                  // @ts-ignore
                   navigation.navigate('RegisterDomain', {
                     selectedDomain,
                     years,
