@@ -181,7 +181,7 @@ export class RIFRelaySDK {
         index: '0',
       },
       relayData: {
-        gasPrice: gasToSend,
+        gasPrice: gasToSend.toString(),
         relayWorker: this.sdkConfig.relayWorkerAddress,
         callForwarder: this.smartWalletFactory.address,
         callVerifier: this.sdkConfig.deployVerifierAddress,
@@ -197,7 +197,9 @@ export class RIFRelaySDK {
 
   async sendDeployTransaction(payment: RelayPayment) {
     const deployRequest = await this.createDeployRequest(payment)
+    console.log({ deployRequest })
     const signature = await this.signRelayRequest(deployRequest, true)
+    console.log({ signature })
 
     const txHash = await this.sendRequestToRelay(deployRequest, signature)
 
