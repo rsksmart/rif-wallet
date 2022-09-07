@@ -143,7 +143,10 @@ export const AddressInput: React.FC<AddressInputProps> = ({
     <Modal presentationStyle="overFullScreen" style={styles.cameraModal}>
       <QRCodeScanner
         onClose={() => setShowQRScanner(false)}
-        onCodeRead={handleChangeText}
+        onCodeRead={data => {
+          handleChangeText(data)
+          setShowQRScanner(false)
+        }}
       />
     </Modal>
   ) : (

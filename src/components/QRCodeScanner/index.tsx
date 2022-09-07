@@ -7,7 +7,7 @@ import { colors } from '../../styles'
 
 interface QRCodeScannerProps {
   onClose: () => void
-  onCodeRead: (data: string) => Promise<void> | void
+  onCodeRead: (data: string) => void
 }
 
 export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
@@ -17,7 +17,6 @@ export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
     // @ts-ignore
     if (event.type === 'QR_CODE') {
       onCodeRead(decodeURIComponent(event.data))
-      onClose()
     }
   }
 
