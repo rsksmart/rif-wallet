@@ -5,6 +5,7 @@ import { RifWalletServicesFetcher } from '../lib/rifWalletServices/RifWalletServ
 import { AbiEnhancer } from '../lib/abiEnhancer/AbiEnhancer'
 import { getWalletSetting, SETTINGS } from './config'
 import { RifWalletServicesSocket } from '../lib/rifWalletServices/RifWalletServicesSocket'
+import { RealmDb } from '../storage/db/RealmDb'
 
 export const networkId = 31
 
@@ -20,6 +21,7 @@ export const rifWalletServicesFetcher = new RifWalletServicesFetcher(
 )
 
 export const abiEnhancer = new AbiEnhancer()
+export const db = new RealmDb(getWalletSetting(SETTINGS.ENCRYPTION_KEY))
 
 export const rifWalletServicesSocket = new RifWalletServicesSocket(
   getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL),

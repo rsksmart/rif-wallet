@@ -1,4 +1,6 @@
 import { Contract, constants, ContractTransaction, Signer } from 'ethers'
+import { db } from '../../core/setup'
+import { WalletSchema } from '../../storage/db/RealmDb'
 import SmartWalletFactoryABI from './SmartWalletFactoryABI.json'
 
 interface ISmartWalletFactory {
@@ -35,7 +37,12 @@ export class SmartWalletFactory implements ISmartWalletFactory {
   static async create (signer: Signer, smartWalletFactoryContractAddress: string) {
     const smartWalletFactoryContract = createSmartWalletFactoryContract(smartWalletFactoryContractAddress).connect(signer)
     const address = await signer.getAddress()
+    if(db.has(WalletSchema.name, address)) {
+      return new SmartWalletFactory(db.get(WalletSchema.name, address).value.smartWalletAddress, smartWalletFactoryContract)
+    }
+    // Heavy Process
     const smartWalletAddress = await smartWalletFactoryContract.getSmartWalletAddress(...SmartWalletFactory.getSmartWalletParams(address))
+    db.store(WalletSchema.name, address, {smartWalletAddress, isDeployed: false})
     return new SmartWalletFactory(smartWalletAddress, smartWalletFactoryContract)
   }
 

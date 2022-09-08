@@ -1,48 +1,74 @@
-import Realm from "realm"
+import Realm from 'realm'
+import { Buffer } from 'buffer'
 
-const TransactionSchema = {
+export const TransactionSchema = {
   name: 'Transaction',
   properties: {
-    hash: 'string',
+    key: 'string',
     value: '{}',
   },
-  primaryKey:'hash'
+  primaryKey: 'key',
+}
+
+export const WalletSchema = {
+  name: 'Wallet',
+  properties: {
+    key: 'string',
+    value: '{}',
+  },
+  primaryKey: 'key',
 }
 export class RealmDb {
+  realm: Realm | undefined = undefined
+  private encryptionKey: string
 
-  private realm: Realm | undefined = undefined;
-
-  async init() {
+  constructor(encryptionKey: string) {
+    this.encryptionKey = encryptionKey
+  }
+  async init(schema: Realm.ObjectSchema) {
     this.realm = await Realm.open({
-      schema: [TransactionSchema],
-      deleteRealmIfMigrationNeeded: true
+      schema: [schema],
+      path: `${schema.name.toLowerCase()}.realm`,
+      schemaVersion: 1,
+      deleteRealmIfMigrationNeeded: true,
+      encryptionKey: Buffer.from(this.encryptionKey),
     })
   }
-  
-  has(hash: string) :boolean {
-    const enhancedTrx = this.realm?.objectForPrimaryKey(TransactionSchema.name, hash)
+
+  has(type: string, key: string): boolean {
+    const enhancedTrx = this.realm?.objectForPrimaryKey(type, key)
     return !!enhancedTrx
   }
 
-  get(hash: string) {
-    return this.realm?.objectForPrimaryKey(TransactionSchema.name, hash)
-
+  get(type: string, key: string): any {
+    return this.realm?.objectForPrimaryKey(type, key)
   }
 
-  store(hash: string, value: any) {
+  store(type: string, key: string, value: any) {
     return this.realm?.write(() => {
-      this.realm?.create(TransactionSchema.name, {
-        hash,
-        value
-      })
+      this.realm?.create(
+        type,
+        {
+          key,
+          value,
+        },
+        Realm.UpdateMode.Modified,
+      )
     })
   }
 
-  delete(hash: string) {
-    this.realm?.write( () => {
-      const enhancedTrx = this.realm?.objectForPrimaryKey(TransactionSchema.name, hash)
+  delete(type: string, key: string) {
+    this.realm?.write(() => {
+      const enhancedTrx = this.realm?.objectForPrimaryKey(type, key)
       this.realm?.delete(enhancedTrx)
     })
   }
 
+  close() {
+    try {
+      this.realm?.close()
+    } catch (error) {
+      console.error('Failed to close db', error)
+    }
+  }
 }

@@ -1,7 +1,8 @@
 import EventEmitter from 'events'
 import { io } from 'socket.io-client'
+import { db } from '../../core/setup'
 import { enhanceTransactionInput } from '../../screens/activity/ActivityScreen'
-import { RealmDb } from '../../storage/db/RealmDb'
+import { TransactionSchema } from '../../storage/db/RealmDb'
 import { IActivityTransaction } from '../../subscriptions/types'
 import { IAbiEnhancer } from '../abiEnhancer/AbiEnhancer'
 import { RIFWallet } from '../core'
@@ -50,19 +51,19 @@ export class RifWalletServicesSocket
   }
 
   private async init(wallet: RIFWallet) {
+    await db.init(TransactionSchema)
+    const init = new Date().getTime()
     const fetchedTransactions = await this.fetcher.fetchTransactionsByAddress(
       wallet.smartWalletAddress,
     )
-    const db = new RealmDb()
-    await db.init();
-
+    const end1 = new Date().getTime()
+    console.log('Fetch transactions', new Date().getTime() - init)
     const activityTransactions = await Promise.all<IActivityTransaction[]>(
       fetchedTransactions.data.map(async (tx: IApiTransaction) => {
-        if(db.has(tx.hash)) {
-          console.log('From DB', db.get(tx.hash))
+        if (db.has(TransactionSchema.name, tx.hash)) {
           return {
             originTransaction: tx,
-            enhancedTransaction: db.get(tx.hash)
+            enhancedTransaction: db.get(TransactionSchema.name, tx.hash).value,
           } as any
         }
 
@@ -71,24 +72,26 @@ export class RifWalletServicesSocket
           wallet,
           this.abiEnhancer,
         )
-
-        db.store(tx.hash, enhancedTransaction)
-
+        db.store(TransactionSchema.name, tx.hash, enhancedTransaction)
         return {
           originTransaction: tx,
           enhancedTransaction,
         } as any
       }),
     )
-
+    const end3 = new Date().getTime()
+    console.log('Enhance Transactions', end3 - end1)
     const fetchedTokens = (await this.fetcher.fetchTokensByAddress(
       wallet.smartWalletAddress,
     )) as ITokenWithBalance[]
-
+    const end4 = new Date().getTime()
+    console.log('Fetch Token Events', end4 - end3)
     this.emit('init', {
       transactions: activityTransactions,
       balances: fetchedTokens,
     })
+    const end5 = new Date().getTime()
+    console.log('Emmitting', end5 - end4)
   }
 
   async connect(wallet: RIFWallet) {
