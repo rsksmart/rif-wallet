@@ -1,6 +1,6 @@
 import Clipboard from '@react-native-community/clipboard'
 import React, { useEffect, useState } from 'react'
-import { Modal, StyleSheet, Text, TextInput, View } from 'react-native'
+import { StyleSheet, Text, TextInput, View } from 'react-native'
 
 import { ContentPasteIcon, QRCodeIcon } from '../icons'
 
