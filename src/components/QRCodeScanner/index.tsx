@@ -35,7 +35,12 @@ export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
           buttonPositive: 'Ok',
           buttonNegative: 'Cancel',
         }}>
-        <BarcodeMask showAnimatedLine={false} outerMaskOpacity={0.5} />
+        <BarcodeMask
+          showAnimatedLine={false}
+          outerMaskOpacity={0.5}
+          width={280}
+          height={280}
+        />
         <View style={styles.floatButton}>
           <Icon.Button
             accessibilityLabel="closeButton"
