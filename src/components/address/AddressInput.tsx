@@ -140,15 +140,13 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   }
 
   return showQRScanner ? (
-    <Modal presentationStyle="overFullScreen" style={styles.cameraModal}>
-      <QRCodeScanner
-        onClose={() => setShowQRScanner(false)}
-        onCodeRead={data => {
-          handleChangeText(data)
-          setShowQRScanner(false)
-        }}
-      />
-    </Modal>
+    <QRCodeScanner
+      onClose={() => setShowQRScanner(false)}
+      onCodeRead={data => {
+        handleChangeText(data)
+        setShowQRScanner(false)
+      }}
+    />
   ) : (
     <View style={styles.parent}>
       {!!domainFound && (
@@ -292,12 +290,6 @@ const styles = StyleSheet.create({
   },
   clearButton: {
     color: colors.lightPurple,
-  },
-  cameraModal: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
   },
   info: {
     marginTop: 5,

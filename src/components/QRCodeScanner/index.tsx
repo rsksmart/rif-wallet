@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { Modal, StyleSheet, View } from 'react-native'
 import BarcodeMask from 'react-native-barcode-mask'
 import { BarCodeReadEvent, RNCamera } from 'react-native-camera'
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -21,37 +21,45 @@ export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
   }
 
   return (
-    <RNCamera
-      ref={cameraRef}
-      style={styles.container}
-      onBarCodeRead={onBarCodeRead}
-      captureAudio={false}
-      type={RNCamera.Constants.Type.back}
-      flashMode={RNCamera.Constants.FlashMode.off}
-      androidCameraPermissionOptions={{
-        title: 'Permission to use camera',
-        message: 'We need your permission to use your camera',
-        buttonPositive: 'Ok',
-        buttonNegative: 'Cancel',
-      }}>
-      <BarcodeMask showAnimatedLine={false} outerMaskOpacity={0.5} />
-      <View style={styles.floatButton}>
-        <Icon.Button
-          accessibilityLabel="closeButton"
-          name="close-outline"
-          onPress={onClose}
-          backgroundColor={colors.lightBlue}
-          color={colors.lightPurple}
-          style={styles.closeButton}
-          size={30}
-          borderRadius={40}
-        />
-      </View>
-    </RNCamera>
+    <Modal presentationStyle="overFullScreen" style={styles.modal}>
+      <RNCamera
+        ref={cameraRef}
+        style={styles.container}
+        onBarCodeRead={onBarCodeRead}
+        captureAudio={false}
+        type={RNCamera.Constants.Type.back}
+        flashMode={RNCamera.Constants.FlashMode.off}
+        androidCameraPermissionOptions={{
+          title: 'Permission to use camera',
+          message: 'We need your permission to use your camera',
+          buttonPositive: 'Ok',
+          buttonNegative: 'Cancel',
+        }}>
+        <BarcodeMask showAnimatedLine={false} outerMaskOpacity={0.5} />
+        <View style={styles.floatButton}>
+          <Icon.Button
+            accessibilityLabel="closeButton"
+            name="close-outline"
+            onPress={onClose}
+            backgroundColor={colors.lightBlue}
+            color={colors.lightPurple}
+            style={styles.closeButton}
+            size={30}
+            borderRadius={40}
+          />
+        </View>
+      </RNCamera>
+    </Modal>
   )
 }
 
 const styles = StyleSheet.create({
+  modal: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+  },
   container: {
     flex: 1,
     paddingHorizontal: 16,
