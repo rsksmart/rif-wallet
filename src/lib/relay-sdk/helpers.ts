@@ -10,16 +10,10 @@ import {
   RelayRequestType,
 } from './types'
 
-export const dataTypeFields = (isDeployRequest: boolean) =>
-  isDeployRequest
-    ? {
-        RelayRequest: DeployRequestType,
-        RelayData: RelayDataType,
-      }
-    : {
-        RelayRequest: RelayRequestType,
-        RelayData: RelayDataType,
-      }
+export const dataTypeFields = (isDeployRequest: boolean) => ({
+  RelayRequest: isDeployRequest ? DeployRequestType : RelayRequestType,
+  RelayData: RelayDataType,
+})
 
 export function getDomainSeparator(
   verifyingContract: string,
