@@ -31,7 +31,7 @@ export const rnsResolver = Resolver.forRskTestnet({})
 
 export const rifRelayConfig = {
   relayVerifierAddress: getWalletSetting(SETTINGS.RELAY_VERIFIER_ADDRESS),
-  deployVerifierAddress: getWalletSetting(SETTINGS.RELAY_VERIFIER_ADDRESS),
+  deployVerifierAddress: getWalletSetting(SETTINGS.DEPLOY_VERIFIER_ADDRESS),
   relayServer: getWalletSetting(SETTINGS.RIF_RELAY_SERVER),
 }
 

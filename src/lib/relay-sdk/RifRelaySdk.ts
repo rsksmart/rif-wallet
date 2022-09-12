@@ -2,7 +2,6 @@ import { TypedDataSigner } from '@ethersproject/abstract-signer'
 import { TransactionResponse } from '@ethersproject/abstract-provider'
 import axios, { AxiosResponse } from 'axios'
 import { ethers, Transaction } from 'ethers'
-import sigUtil from 'eth-sig-util'
 
 import { SmartWallet } from '../core/SmartWallet'
 import {
@@ -11,10 +10,6 @@ import {
   SdkConfig,
   DeployRequest,
   RifRelayConfig,
-  EIP712DomainType,
-  RelayRequestType,
-  RelayDataType,
-  DeployRequestType,
 } from './types'
 import {
   dataTypeFields,
@@ -138,7 +133,6 @@ export class RIFRelaySDK {
         : this.smartWalletAddress,
       this.chainId,
     )
-    console.log({ isDeployRequest })
 
     const types = dataTypeFields(isDeployRequest)
 
@@ -147,35 +141,9 @@ export class RIFRelaySDK {
       relayData: relayRequest.relayData,
     }
 
-    console.log({ domain, types, value })
-
     const signature = await (
       this.smartWallet.signer as any as TypedDataSigner
     )._signTypedData(domain, types, value)
-
-    const dataToSign = {
-      types: {
-        EIP712Domain: EIP712DomainType,
-        RelayRequest: DeployRequestType,
-        RelayData: RelayDataType,
-      },
-      domain,
-      primaryType: 'RelayRequest',
-      message: value,
-    }
-
-    console.log({ dataToSign })
-
-    // @ts-ignore
-    const recovered = sigUtil.recoverTypedSignature_v4({
-      data: dataToSign,
-      sig: signature,
-    })
-
-    console.log({
-      recovered,
-      match: recovered.toLowerCase() === this.eoaAddress.toLowerCase(),
-    })
 
     return signature
   }
@@ -230,9 +198,9 @@ export class RIFRelaySDK {
 
   async sendDeployTransaction(payment: RelayPayment) {
     const deployRequest = await this.createDeployRequest(payment)
-    console.log({ deployRequest })
+
     const signature = await this.signRelayRequest(deployRequest, true)
-    console.log({ signature })
+
 
     const txHash = await this.sendRequestToRelay(deployRequest, signature)
 
