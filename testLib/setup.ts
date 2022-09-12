@@ -12,10 +12,17 @@ export const setupTest = async (
   const smartWalletFactory = await deploySmartWalletFactory()
   const wallet = await createNewTestWallet(privateKey)
   const onRequest: OnRequest = (nextRequest: Request) => nextRequest.confirm()
+  const rifRelayConfig = {
+    relayVerifierAddress: '',
+    deployVerifierAddress: '',
+    relayServer: 'https://dev.relay.rifcomputing.net:8090',
+  }
+
   const rifWallet = await RIFWallet.create(
     wallet,
     smartWalletFactory.address,
     onRequest,
+    rifRelayConfig,
   )
 
   const deployTx = await rifWallet.smartWalletFactory.deploy()
