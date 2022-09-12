@@ -201,7 +201,6 @@ export class RIFRelaySDK {
 
     const signature = await this.signRelayRequest(deployRequest, true)
 
-
     const txHash = await this.sendRequestToRelay(deployRequest, signature)
 
     return await this.provider.getTransaction(txHash)
