@@ -135,6 +135,8 @@ const getIconSource = (symbol: string): ImageRequireSource | undefined => {
     case 'UYUCB':
       return require('@rsksmart/rsk-contract-metadata/images/uyucb.png')
     case 'BTCCB':
+    case 'BTCT':
+    case 'BTC':
       return require('@rsksmart/rsk-contract-metadata/images/btccb.png')
     case 'ETHCB':
       return require('@rsksmart/rsk-contract-metadata/images/ethcb.png')

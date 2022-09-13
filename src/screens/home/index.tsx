@@ -5,7 +5,7 @@ import RampSdk from '@ramp-network/react-native-sdk'
 import { Paragraph } from '../../components'
 import { toChecksumAddress } from '../../components/address/lib'
 import { LoadingScreen } from '../../components/loading/LoadingScreen'
-import { useSelectedWallet } from '../../Context'
+import { useBitcoinCoreContext, useSelectedWallet } from '../../Context'
 import { balanceToDisplay } from '../../lib/utils'
 import { NavigationProp } from '../../RootNavigation'
 import { colors } from '../../styles'
@@ -14,6 +14,8 @@ import PortfolioComponent from './PortfolioComponent'
 import SelectedTokenComponent from './SelectedTokenComponent'
 import SendReceiveButtonComponent from './SendReceiveButtonComponent'
 import { getTokenColor } from './tokenColor'
+import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import BitcoinNetwork from '../../components/bitcoin/BitcoinNetwork'
 
 export type HomeScreenProps = {
   navigation: NavigationProp
@@ -25,16 +27,22 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   changeTopColor,
 }) => {
   const { state } = useSocketsState()
+  const { networksMap } = useBitcoinCoreContext()
   const { selectedWalletIndex, wallet, chainId } = useSelectedWallet()
 
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
     undefined,
   )
-
+  const balances: Array<ITokenWithBalance | BitcoinNetwork> =
+    React.useMemo(() => {
+      return [...Object.values(state.balances), ...Object.values(networksMap)]
+    }, [state.balances, networksMap])
   // token or undefined
-  const selected = selectedAddress ? state.balances[selectedAddress] : undefined
+  const selected: ITokenWithBalance | BitcoinNetwork | undefined =
+    selectedAddress
+      ? state.balances[selectedAddress] || networksMap[selectedAddress]
+      : undefined
   const selectedColor = getTokenColor(selected ? selected.symbol : undefined)
-  const balances = Object.values(state.balances)
   const backGroundColor = {
     backgroundColor: selectedAddress ? selectedColor : getTokenColor('DEFAULT'),
   }
@@ -45,7 +53,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         ? setSelectedAddress(balances[0].contractAddress)
         : undefined
     }
-  }, [state.balances])
+  }, [balances])
 
   // interact with the navigation
   const handleSendReceive = (screen: 'SEND' | 'RECEIVE' | 'FAUCET') => {
@@ -54,9 +62,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         return navigation.navigate('Send', {
           token: selected?.symbol,
           contractAddress: selected?.contractAddress,
-        })
+        } as any)
       case 'RECEIVE':
-        return navigation.navigate('Receive')
+        return navigation.navigate('Receive' as any)
       case 'FAUCET':
         let address = wallet?.smartWallet.smartWalletContract.address
         addBalance(toChecksumAddress(address, chainId))
@@ -89,11 +97,19 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     changeTopColor(selectedColor)
   }, [selectedColor])
 
+  const selectedTokenAmount = React.useMemo(() => {
+    if (selected instanceof BitcoinNetwork) {
+      return selected.balance
+    }
+    if (selected) {
+      return balanceToDisplay(selected.balance, selected.decimals, 5)
+    }
+    return '0'
+  }, [selected])
   // waiting for the balances to load:
   if (!state.isSetup) {
     return <LoadingScreen />
   }
-
   return (
     <View style={styles.container}>
       <View style={{ ...styles.topColor, ...backGroundColor }} />
@@ -102,11 +118,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       <View style={styles.parent}>
         <SelectedTokenComponent
           accountNumber={selectedWalletIndex}
-          amount={
-            selected
-              ? balanceToDisplay(selected.balance, selected.decimals, 5)
-              : '0'
-          }
+          amount={selectedTokenAmount}
           change={0}
         />
 
