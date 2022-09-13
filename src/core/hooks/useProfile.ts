@@ -6,7 +6,7 @@ import {
 } from '../../storage/ProfileStore'
 
 export const emptyProfile = {
-  name: '',
+  alias: '',
   phone: '',
   email: '',
 }

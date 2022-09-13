@@ -12,7 +12,7 @@ import { colors } from './styles'
 import BitcoinAddressesScreen from './screens/bitcoin/BitcoinAddressesScreen'
 
 import { IProfileStore } from './storage/ProfileStore'
-import { useProfile } from './core/hooks/useProfile'
+import { emptyProfile, useProfile } from './core/hooks/useProfile'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -127,11 +127,7 @@ export const RootNavigation: React.FC<{
   securityConfigurationScreenProps,
   setWalletIsDeployed,
 }) => {
-  const [profile, setProfile] = useProfile({
-    alias: '',
-    phone: '',
-    email: '',
-  })
+  const [profile, setProfile] = useProfile(emptyProfile)
 
   const setAlias = (myProfile: IProfileStore) => {
     setProfile(myProfile)
