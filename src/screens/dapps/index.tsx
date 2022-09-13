@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, Text, View } from 'react-native'
 import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
 import { NavigationProp } from '../../RootNavigation'
 import { colors } from '../../styles'
@@ -28,6 +28,14 @@ export const DappsScreen: React.FC<
           </Text>
         </View>
         <View style={styles.innerHeader2} />
+      </View>
+      <Image
+        source={require('../../images/empty-contact.png')}
+        style={styles.noDappsImage}
+      />
+      <View style={styles.noDappsTextView} testID="emptyView">
+        <Text style={styles.noDappsText}>{t('You are currently not')}</Text>
+        <Text style={styles.noDappsText}>{t('connected to any Dapp.')}</Text>
       </View>
     </View>
   )
@@ -58,5 +66,21 @@ const styles = StyleSheet.create({
     fontFamily: fonts.regular,
     fontSize: 13,
     color: colors.text.primary,
+  },
+  noDappsImage: {
+    flex: 4,
+    alignSelf: 'center',
+    width: '90%',
+    resizeMode: 'contain',
+  },
+  noDappsTextView: {
+    flex: 1,
+    alignSelf: 'center',
+  },
+  noDappsText: {
+    color: colors.text.primary,
+    fontFamily: fonts.regular,
+    fontSize: 14,
+    textAlign: 'center',
   },
 })

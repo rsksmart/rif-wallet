@@ -82,7 +82,10 @@ const resources = {
       'type to find...': 'type to find...',
       'Are you sure you want to delete': 'Are you sure you want to delete',
       'Connected Dapps': 'Connected Dapps',
-      'Connect new Dapp by scanning a QR code.': 'Connect new Dapp by scanning a QR code.'
+      'Connect new Dapp by scanning a QR code.':
+        'Connect new Dapp by scanning a QR code.',
+      'You are currently not': 'You are currently not',
+      'connected to any Dapp.': 'connected to any Dapp.',
     },
   },
   es: {
@@ -95,7 +98,10 @@ const resources = {
       'type to find...': 'escriba para buscar...',
       'Are you sure you want to delete': '¿Está seguro de que desea eliminar',
       'Connected Dapps': 'Dapps conectadas',
-      'Connect new Dapp by scanning a QR code.': 'Conecte una nueva Dapp escaneando un código QR.',
+      'Connect new Dapp by scanning a QR code.':
+        'Conecte una nueva Dapp escaneando un código QR.',
+      'You are currently not': 'Actualmente no',
+      'connected to any Dapp.': 'conectado a ninguna Dapp.',
     },
   },
 }
