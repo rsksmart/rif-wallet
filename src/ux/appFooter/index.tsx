@@ -1,7 +1,14 @@
 import { useNavigation } from '@react-navigation/core'
 import React from 'react'
-import { View, StyleSheet, TouchableOpacity, Image } from 'react-native'
-
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
+import ActivityIcon from '../../components/icons/ActivityIcon'
+import ActivitySelectedIcon from '../../components/icons/ActivitySelectedIcon'
+import ContactIcon from '../../components/icons/ContactIcon'
+import ContactSelectedIcon from '../../components/icons/ContactSelectedIcon'
+import DappsIcon from '../../components/icons/DappsIcon'
+import DappsSelectedIcon from '../../components/icons/DappsSelectedIcon'
+import HomeIcon from '../../components/icons/HomeIcon'
+import HomeSelectedIcon from '../../components/icons/HomeSelectedIcon'
 import { colors } from '../../styles/colors'
 
 export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
@@ -13,49 +20,33 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
       <TouchableOpacity
         onPress={() => navigation.navigate('Home' as never)}
         style={styles.button}>
-        <Image
-          source={
-            currentScreen === 'Home'
-              ? require('../../images/footer-menu/home.png')
-              : require('../../images/footer-menu/home-o.png')
-          }
-        />
+        {currentScreen === 'Home' ? <HomeSelectedIcon /> : <HomeIcon />}
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={() => navigation.navigate('Activity' as never)}
         style={styles.button}>
-        <Image
-          source={
-            currentScreen === 'Activity'
-              ? require('../../images/footer-menu/activity.png')
-              : require('../../images/footer-menu/activity-o.png')
-          }
-        />
+        {currentScreen === 'Activity' ? (
+          <ActivitySelectedIcon />
+        ) : (
+          <ActivityIcon />
+        )}
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={() => navigation.navigate('Contacts' as never)}
         style={styles.button}>
-        <Image
-          source={
-            currentScreen === 'Contacts'
-              ? require('../../images/footer-menu/contacts.png')
-              : require('../../images/footer-menu/contacts-o.png')
-          }
-        />
+        {currentScreen === 'Contacts' ? (
+          <ContactSelectedIcon />
+        ) : (
+          <ContactIcon />
+        )}
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={() => navigation.navigate('Dapps' as never)}
         style={styles.button}>
-        <Image
-          source={
-            currentScreen === 'Dapps'
-              ? require('../../images/footer-menu/dapps.png')
-              : require('../../images/footer-menu/dapps-o.png')
-          }
-        />
+        {currentScreen === 'Dapps' ? <DappsSelectedIcon /> : <DappsIcon />}
       </TouchableOpacity>
     </View>
   )
