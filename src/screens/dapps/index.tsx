@@ -1,14 +1,11 @@
-import React, { useState } from 'react'
-import { StyleSheet } from 'react-native'
-import { NavigationProp } from '../../RootNavigation'
-import LinearGradient from 'react-native-linear-gradient'
-import WalletConnectComponent from './WalletConnectComponent'
-import InjectedBrowserComponent from './InjectedBrowserComponent'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { StyleSheet, Text, View } from 'react-native'
 import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
+import { NavigationProp } from '../../RootNavigation'
+import { colors } from '../../styles'
+import { fonts } from '../../styles/fonts'
 import { ScreenWithWallet } from '../types'
-import { Button } from '../../components'
-
-type TPanelOptions = 'WalletConnect' | 'InjectedBrowser'
 
 export type DappsScreenScreenProps = {
   fetcher: IRIFWalletServicesFetcher
@@ -20,53 +17,46 @@ export const DappsScreen: React.FC<
   } & DappsScreenScreenProps &
     ScreenWithWallet
 > = ({ navigation, wallet, isWalletDeployed, fetcher }) => {
-  const [selectedPanel, setSelectedPanel] =
-    useState<TPanelOptions>('WalletConnect')
-
+  const { t } = useTranslation()
   return (
-    <LinearGradient
-      colors={['#FFFFFF', 'rgba(55, 63, 72, 0.3)']}
-      style={styles.parent}>
-      <LinearGradient
-        colors={[
-          '#FFFFFF',
-          selectedPanel === 'InjectedBrowser' ? '#fff' : '#E1E1E1',
-        ]}
-        style={styles.topContainer}>
-        <WalletConnectComponent
-          navigation={navigation}
-          visible={selectedPanel === 'WalletConnect'}
-          setPanelActive={() => setSelectedPanel('WalletConnect')}
-        />
-        <InjectedBrowserComponent
-          navigation={navigation}
-          isWalletDeployed={isWalletDeployed}
-          wallet={wallet}
-          fetcher={fetcher}
-          visible={selectedPanel === 'InjectedBrowser'}
-          setPanelActive={() => setSelectedPanel('InjectedBrowser')}
-        />
-        <Button
-          title="RNS Manager native"
-          onPress={() => navigation.navigate('RNSManager')}
-        />
-      </LinearGradient>
-    </LinearGradient>
+    <View style={styles.parent}>
+      <View style={styles.header}>
+        <View style={styles.innerHeader1}>
+          <Text style={styles.title}>{t('Connected Dapps')}</Text>
+          <Text style={styles.subtitle}>
+            {t('Connect new Dapp by scanning a QR code.')}
+          </Text>
+        </View>
+        <View style={styles.innerHeader2} />
+      </View>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   parent: {
     height: '100%',
-    paddingTop: 20,
+    backgroundColor: colors.background.darkBlue,
+    padding: 20,
   },
-  topContainer: {
-    marginHorizontal: 25,
-    borderRadius: 25,
-    backgroundColor: '#ffffff',
-    shadowOpacity: 0.1,
-    // shadowRadius: 10,
-    elevation: 2,
-    shadowColor: 'rgba(204, 204, 204, 0.5)',
+  header: {
+    flexDirection: 'row',
+    padding: 10,
+  },
+  innerHeader1: {
+    flex: 3,
+  },
+  innerHeader2: {
+    flex: 2,
+  },
+  title: {
+    fontFamily: fonts.regular,
+    fontSize: 22,
+    color: colors.text.primary,
+  },
+  subtitle: {
+    fontFamily: fonts.regular,
+    fontSize: 13,
+    color: colors.text.primary,
   },
 })
