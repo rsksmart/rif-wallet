@@ -62,6 +62,7 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
 const styles = StyleSheet.create({
   row: {
     padding: 10,
+    paddingBottom: 30,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
