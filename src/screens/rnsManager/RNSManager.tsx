@@ -107,9 +107,7 @@ export const RNSManagerScreen: React.FC<
               <Text>{`${selectedDomainPrice} RIF for ${years} years`}</Text>
 
               <SquareButton
-                // @ts-ignore
                 onPress={() => {
-                  // @ts-ignore
                   navigation.navigate('RegisterDomain', {
                     selectedDomain,
                     years,
