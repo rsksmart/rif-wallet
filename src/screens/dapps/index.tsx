@@ -30,7 +30,7 @@ export const DappsScreen: React.FC<
         <View style={styles.innerHeader2} />
       </View>
       <Image
-        source={require('../../images/empty-contact.png')}
+        source={require('../../images/empty-dapps.png')}
         style={styles.noDappsImage}
       />
       <View style={styles.noDappsTextView} testID="emptyView">
