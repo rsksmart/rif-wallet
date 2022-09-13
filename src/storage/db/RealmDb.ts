@@ -25,13 +25,13 @@ export class RealmDb {
   constructor(encryptionKey: string) {
     this.encryptionKey = encryptionKey
   }
-  async init(schema: Realm.ObjectSchema) {
+  async init(schema: Realm.ObjectSchema, privateKey?: string) {
     this.realm = await Realm.open({
       schema: [schema],
       path: `${schema.name.toLowerCase()}.realm`,
       schemaVersion: 1,
       deleteRealmIfMigrationNeeded: true,
-      encryptionKey: Buffer.from(this.encryptionKey),
+      encryptionKey: Buffer.from(privateKey ? privateKey : this.encryptionKey),
     })
   }
 

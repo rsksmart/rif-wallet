@@ -6,6 +6,8 @@ import { resolveProperties } from 'ethers/lib/utils'
 import { SmartWalletFactory } from './SmartWalletFactory'
 import { SmartWallet } from './SmartWallet'
 import { filterTxOptions } from './filterTxOptions'
+import { db } from '../../core/setup'
+import { WalletSchema } from '../../storage/db/RealmDb'
 
 type IRequest<Type, Payload, ReturnType, ConfirmArgs> = {
   type: Type,
@@ -83,8 +85,16 @@ export class RIFWallet extends Signer implements TypedDataSigner {
   }
 
   static async create (signer: Signer, smartWalletFactoryAddress: string, onRequest: OnRequest) {
+    const address = await signer.getAddress()
+    if(db.has(WalletSchema.name, address)) {
+      const smartWalletAddressFromCache = db.get(WalletSchema.name, address).value.smartWalletAddress
+      const smartWalletFactoryFromCache = await SmartWalletFactory.create(signer, smartWalletFactoryAddress, smartWalletAddressFromCache)
+      const smartWalletFromCache = await SmartWallet.create(signer, smartWalletAddressFromCache)
+      return new RIFWallet(smartWalletFactoryFromCache, smartWalletFromCache, onRequest)
+    }
     const smartWalletFactory = await SmartWalletFactory.create(signer, smartWalletFactoryAddress)
     const smartWalletAddress = await smartWalletFactory.getSmartWalletAddress()
+    db.store(WalletSchema.name, address, {smartWalletAddress, isDeployed: false})
     const smartWallet = await SmartWallet.create(signer, smartWalletAddress)
     return new RIFWallet(smartWalletFactory, smartWallet, onRequest)
   }
