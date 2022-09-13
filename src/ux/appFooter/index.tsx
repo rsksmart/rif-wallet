@@ -9,6 +9,7 @@ import DappsIcon from '../../components/icons/DappsIcon'
 import DappsSelectedIcon from '../../components/icons/DappsSelectedIcon'
 import HomeIcon from '../../components/icons/HomeIcon'
 import HomeSelectedIcon from '../../components/icons/HomeSelectedIcon'
+import QRCodeIconFooter from '../../components/icons/QRCodeIconFooter'
 import { colors } from '../../styles/colors'
 
 export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
@@ -34,6 +35,12 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
       </TouchableOpacity>
 
       <TouchableOpacity
+        // onPress={() => navigation.navigate('Activity' as never)}
+        style={styles.button}>
+        <QRCodeIconFooter />
+      </TouchableOpacity>
+
+      <TouchableOpacity
         onPress={() => navigation.navigate('Contacts' as never)}
         style={styles.button}>
         {currentScreen === 'Contacts' ? (
@@ -55,7 +62,6 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
 const styles = StyleSheet.create({
   row: {
     padding: 10,
-    paddingBottom: 40,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -63,11 +69,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.darkPurple3,
   },
   button: {
+    alignSelf: 'center',
     paddingVertical: 10,
     paddingHorizontal: 10,
     display: 'flex',
     alignItems: 'center',
-    borderBottomWidth: 4,
-    borderColor: colors.none,
+    width: 50,
+    borderColor: 'white',
   },
 })
