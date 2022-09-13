@@ -49,7 +49,7 @@ export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
             backgroundColor={colors.lightBlue}
             color={colors.lightPurple}
             style={styles.closeButton}
-            size={30}
+            size={35}
             borderRadius={40}
           />
         </View>
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     top: 0,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginBottom: 50,
+    marginBottom: 30,
   },
   closeButton: {
     paddingRight: 0,
