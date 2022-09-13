@@ -3,7 +3,9 @@ const { fromSeed } = require('bip32')
 import { COIN_BIPS, BIP_DATA } from './constants'
 import BitcoinNetwork from './BitcoinNetwork'
 import AddressFactory from './AddressFactory'
-import axios from 'axios'
+import { RifWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
+import { rifWalletServicesFetcher as defaultFetcherInstance } from '../../core/setup'
+
 export default class BIP {
   network: BitcoinNetwork
   PathDerivator: PathDerivator
@@ -15,16 +17,17 @@ export default class BIP {
   accountPrivateKey!: any
   networkInfo!: any
   AddressFactory!: AddressFactory
-  axiosInstance: typeof axios
+  RifWalletServicesFetcherInstance: RifWalletServicesFetcher
   balance!: number
   btc!: number
+
   constructor(
     networkInstance: BitcoinNetwork,
     bipId: string,
     seed: Buffer,
-    axiosInstance = axios,
+    rifWalletServicesFetcherInstance = defaultFetcherInstance,
   ) {
-    this.axiosInstance = axiosInstance
+    this.RifWalletServicesFetcherInstance = rifWalletServicesFetcherInstance
     this.network = networkInstance
     this.bipId = bipId
     this.bipNumber = BIP_DATA[bipId].number
@@ -63,10 +66,9 @@ export default class BIP {
     )
     return this.AddressFactory.getAddress(bip32Instance.publicKey)
   }
-  /* Get balance from blockbook api endpoint */
   async fetchBalance() {
-    const { data } = await this.axiosInstance.get(
-      `http://localhost:3000/bitcoin/getXpubBalance/${this.accountPublicKey}`,
+    const data = await this.RifWalletServicesFetcherInstance.fetchXpubBalance(
+      this.accountPublicKey,
     )
     this.balance = parseInt(data.balance, 10)
     this.btc = data.btc

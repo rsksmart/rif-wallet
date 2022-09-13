@@ -53,7 +53,6 @@ const BitcoinNetworkPresentation: React.FC<{ network: BitcoinNetwork }> = ({
     <View>
       <SemiBoldText>Network {network.networkName}</SemiBoldText>
       <SemiBoldText>Satoshis: {network.balance}</SemiBoldText>
-      <SemiBoldText>Balance: {network.balance / Math.pow(10, 8)}</SemiBoldText>
       {network.bips.map(bip => (
         <BitcoinNetworkBIPPresentation key={bip.bipId} bip={bip} />
       ))}

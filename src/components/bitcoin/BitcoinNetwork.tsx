@@ -43,7 +43,6 @@ export default class BitcoinNetwork {
     }
   }
   async updateBalance() {
-    console.log('bal')
     const balances = this.bips.map(bip => bip.fetchBalance())
     const balancesCompleted = await Promise.all(balances)
     this.balance = balancesCompleted.reduce((prev, curr) => {
