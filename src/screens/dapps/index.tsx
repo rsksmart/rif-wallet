@@ -2,7 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image, StyleSheet, Text, View } from 'react-native'
 import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
-import { NavigationProp } from '../../RootNavigation'
+import { NavigationProp, ScreenProps } from '../../RootNavigation'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
 import { ScreenWithWallet } from '../types'
@@ -15,9 +15,14 @@ export const DappsScreen: React.FC<
   {
     navigation: NavigationProp
   } & DappsScreenScreenProps &
-    ScreenWithWallet
-> = ({ navigation, wallet, isWalletDeployed, fetcher }) => {
+    ScreenWithWallet &
+    ScreenProps<'Dapps'>
+> = ({ route }) => {
   const { t } = useTranslation()
+  const url = route.params?.url
+  if (url) {
+    console.log('url', url)
+  }
   return (
     <View style={styles.parent}>
       <View style={styles.header}>

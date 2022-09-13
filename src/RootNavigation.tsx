@@ -55,7 +55,7 @@ type RootStackParamList = {
   ManagePin: undefined
   CreatePin: undefined
   InjectedBrowserUX: undefined
-  Dapps: undefined
+  Dapps: undefined | { url?: string }
   RNSManager: undefined
   RegisterDomain: { selectedDomain: string; years: number }
   Contacts: undefined
