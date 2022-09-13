@@ -104,7 +104,6 @@ export const ProfileDetailsScreen: React.FC<
 
 const styles = StyleSheet.create({
   staticBackground: {
-    position: 'absolute',
     height: '100%',
     width: '100%',
     backgroundColor: colors.background.darkBlue,

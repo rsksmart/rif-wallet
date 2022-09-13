@@ -18,6 +18,7 @@ import { MediumText } from '../../components'
 import { PurpleButton } from '../../components/button/ButtonVariations'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { ScreenProps } from '../../RootNavigation'
+import { emptyProfile } from '../../core/hooks/useProfile'
 
 export type CreateProfileScreenProps = {
   route: any
@@ -39,11 +40,7 @@ export const ProfileCreateScreen: React.FC<
             phone: profile.phone,
             email: profile.email,
           }
-        : {
-            alias: '',
-            phone: '',
-            email: '',
-          },
+        : emptyProfile,
     )
   }, [route.params.profile])
   const createProfile = async () => {
@@ -101,7 +98,7 @@ export const ProfileCreateScreen: React.FC<
           </>
         )}
 
-        {profile?.alias !== '' && (
+        {!!profile?.alias && (
           <View style={styles.rowContainer}>
             <View style={styles.aliasContainer}>
               <View>
@@ -127,7 +124,6 @@ export const ProfileCreateScreen: React.FC<
             onChangeText={value => setProfile({ ...profile, phone: value })}
             value={profile?.phone}
             placeholder=""
-            keyboardType="numeric"
             accessibilityLabel={'Phone.Input'}
             placeholderTextColor={colors.gray}
           />
@@ -141,7 +137,6 @@ export const ProfileCreateScreen: React.FC<
             onChangeText={value => setProfile({ ...profile, email: value })}
             value={profile?.email}
             placeholder=""
-            keyboardType="numeric"
             accessibilityLabel={'Email.Input'}
             placeholderTextColor={colors.gray}
           />

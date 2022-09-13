@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native'
 import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
 import { NavigationProp as _NavigationProp } from '@react-navigation/native'
@@ -11,7 +11,8 @@ import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServi
 import { colors } from './styles'
 import BitcoinAddressesScreen from './screens/bitcoin/BitcoinAddressesScreen'
 
-import { getProfile, hasProfile, IProfileStore } from './storage/ProfileStore'
+import { IProfileStore } from './storage/ProfileStore'
+import { useProfile } from './core/hooks/useProfile'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -126,7 +127,7 @@ export const RootNavigation: React.FC<{
   securityConfigurationScreenProps,
   setWalletIsDeployed,
 }) => {
-  const [profile, setProfile] = useState<IProfileStore | undefined>({
+  const [profile, setProfile] = useProfile({
     alias: '',
     phone: '',
     email: '',
@@ -136,17 +137,6 @@ export const RootNavigation: React.FC<{
     setProfile(myProfile)
   }
 
-  useEffect(() => {
-    hasProfile().then(async r => {
-      if (r) {
-        await getProfile().then((storedProfile: IProfileStore) =>
-          setProfile(storedProfile),
-        )
-      } else {
-        setProfile(undefined)
-      }
-    })
-  }, [])
   let initialRoute: any = 'CreateKeysUX'
   if (hasPin) {
     initialRoute = 'Home'
