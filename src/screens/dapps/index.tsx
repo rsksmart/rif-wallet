@@ -57,10 +57,10 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   innerHeader1: {
-    flex: 3,
+    flex: 2,
   },
   innerHeader2: {
-    flex: 2,
+    flex: 1,
   },
   title: {
     fontFamily: fonts.regular,
@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.regular,
     fontSize: 13,
     color: colors.text.primary,
+    marginTop: 10,
   },
   noDappsImage: {
     flex: 4,
