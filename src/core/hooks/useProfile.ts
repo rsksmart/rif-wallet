@@ -25,8 +25,8 @@ export function useProfile(initProfile?: IProfileStore) {
     })
   }, [])
 
-  function setCustomProfile(profile: IProfileStore) {
-    setProfile(profile)
+  function setCustomProfile(_profile: IProfileStore) {
+    setProfile(_profile)
   }
 
   return [profile, setCustomProfile] as const
