@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/core'
 import React from 'react'
-import { StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import ActivityIcon from '../../components/icons/ActivityIcon'
 import ActivitySelectedIcon from '../../components/icons/ActivitySelectedIcon'
 import ContactIcon from '../../components/icons/ContactIcon'
@@ -21,7 +21,14 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
       <TouchableOpacity
         onPress={() => navigation.navigate('Home' as never)}
         style={styles.button}>
-        {currentScreen === 'Home' ? <HomeSelectedIcon /> : <HomeIcon />}
+        <Image
+          style={styles.walletIcon}
+          source={
+            currentScreen === 'Home'
+              ? require('../../images/footer-menu/wallet.png')
+              : require('../../images/footer-menu/wallet-o.png')
+          }
+        />
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -76,6 +83,9 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     width: 50,
-    borderColor: 'white',
+  },
+  walletIcon: {
+    height: 20,
+    resizeMode: 'contain',
   },
 })
