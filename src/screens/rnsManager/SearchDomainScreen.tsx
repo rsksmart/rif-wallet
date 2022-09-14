@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { BigNumber, utils } from 'ethers'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 import { View, StyleSheet, Image, Text, TouchableOpacity } from 'react-native'
@@ -8,8 +7,6 @@ import { PurpleButton } from '../../components/button/ButtonVariations'
 
 import { ScreenProps } from '../../RootNavigation'
 import { ScreenWithWallet } from '../types'
-import addresses from './addresses.json'
-import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import { DomainLookUp } from '../../components/domain'
 
 export const SearchDomainScreen: React.FC<
@@ -17,40 +14,34 @@ export const SearchDomainScreen: React.FC<
 > = ({ wallet, navigation }) => {
   const [domainToLookUp, setDomainToLookUp] = useState<string>('')
 
-  const [selectedDomain, setSelectedDomain] = useState<string | undefined>(
-    undefined,
-  )
-  const [selectedDomainAvailable, setSelectedDomainAvailable] =
-    useState<boolean>(false)
-  const [selectedYears, setSelectedYears] = useState<number>(3)
-  const [selectedDomainPrice, setSelectedDomainPrice] = useState<string>('')
+  useState<boolean>(false)
+  const [selectedYears, setSelectedYears] = useState<number>(1)
+  const [selectedDomainPrice, setSelectedDomainPrice] = useState<string>('2')
 
-  const [error, setError] = useState('')
-  const rskRegistrar = new RSKRegistrar(
-    addresses.rskOwnerAddress,
-    addresses.fifsAddrRegistrarAddress,
-    addresses.rifTokenAddress,
-    wallet,
-  )
+  const calculatePrice = async (domain: string, years: number) => {
+    /*const price = await rskRegistrar.price(domain, BigNumber.from(years))
+    return utils.formatUnits(price, 18)*/
+    if (years < 3) {
+      return years * 2
+    } else {
+      return 4 + (years - 2)
+    }
+  }
+
   const handleDomainAvailable = async (domain: string) => {
-    const price = await rskRegistrar.price(
-      domain,
-      BigNumber.from(selectedYears),
-    )
-    setSelectedDomain(domain)
-    setSelectedDomainPrice(utils.formatUnits(price, 18))
+    const price = await calculatePrice(domain, selectedYears)
+    setSelectedDomainPrice(price + '')
   }
   const handleYearsChange = async (years: number) => {
     setSelectedYears(years)
-    const price = await rskRegistrar.price(
-      domainToLookUp,
-      BigNumber.from(years),
-    )
-    setSelectedDomainPrice(utils.formatUnits(price, 18))
+    const price = await calculatePrice(domainToLookUp, years)
+    setSelectedDomainPrice(price + '')
   }
+
   return (
     <>
       <View style={styles.profileHeader}>
+        {/*@ts-ignore*/}
         <TouchableOpacity onPress={() => navigation.navigate('Home')}>
           <View style={styles.backButton}>
             <MaterialIcon name="west" color="white" size={10} />
@@ -68,62 +59,41 @@ export const SearchDomainScreen: React.FC<
         <DomainLookUp
           initialValue={domainToLookUp}
           onChangeText={setDomainToLookUp}
-          domainAvailable={selectedDomainAvailable}
-          testID={'To.Input'}
           wallet={wallet}
           onDomainAvailable={handleDomainAvailable}
         />
         <View style={styles.rowContainer}>
-          <View style={{ flexDirection: 'row' }}>
-            <View
-              style={{
-                backgroundColor: colors.background.secondary,
-                borderRadius: 15,
-                width: '100%',
-                padding: 15,
-              }}>
-              <Text
-                style={{
-                  color: 'white',
-                }}>{`${selectedYears} years ${selectedDomainPrice} rif`}</Text>
-            </View>
-            {selectedDomain && (
+          <View style={styles.flexContainer}>
+            <>
+              <View style={styles.priceContainer}>
+                <Text
+                  style={
+                    styles.priceText
+                  }>{`${selectedYears} years ${selectedDomainPrice} rif`}</Text>
+              </View>
               <TouchableOpacity
                 onPress={() => handleYearsChange(selectedYears + 1)}
-                style={{
-                  right: 60,
-                  top: 15,
-                  backgroundColor: 'gray',
-                  height: 20,
-                  borderRadius: 20,
-                }}>
+                style={styles.addIcon}>
                 <MaterialIcon
                   name="add"
                   color={colors.background.darkBlue}
                   size={20}
                 />
               </TouchableOpacity>
-            )}
-            {selectedDomain && selectedYears > 1 && (
-              <TouchableOpacity
-                onPress={() => handleYearsChange(selectedYears - 1)}
-                style={{
-                  right: 50,
-                  top: 15,
-                  backgroundColor: 'gray',
-                  height: 20,
-                  borderRadius: 20,
-                }}>
-                <MaterialIcon
-                  name="remove"
-                  color={colors.background.darkBlue}
-                  size={20}
-                />
-              </TouchableOpacity>
-            )}
+              {selectedYears > 1 && (
+                <TouchableOpacity
+                  onPress={() => handleYearsChange(selectedYears - 1)}
+                  style={styles.minusIcon}>
+                  <MaterialIcon
+                    name="remove"
+                    color={colors.background.darkBlue}
+                    size={20}
+                  />
+                </TouchableOpacity>
+              )}
+            </>
           </View>
         </View>
-        {!!error && <Text style={styles.red}>{error}</Text>}
 
         <View style={styles.rowContainer}>
           <PurpleButton
@@ -150,9 +120,7 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: colors.background.darkBlue,
   },
-  titleText: {
-    color: colors.white,
-  },
+
   backButton: {
     color: colors.white,
     backgroundColor: colors.blue2,
@@ -169,47 +137,34 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 100,
   },
-  input: {
-    width: '100%',
-    backgroundColor: colors.background.secondary,
-    borderWidth: 1,
-    borderRadius: 15,
-    color: colors.white,
-    fontSize: 16,
-    fontWeight: '600',
-    padding: 14,
-    paddingRight: 100,
-  },
-  redBorder: {
-    borderColor: colors.red,
-  },
-  textLeftMargin: {
-    marginLeft: 10,
-  },
-  masterText: {
-    marginBottom: 0,
-    color: colors.white,
-  },
+
   rowContainer: {
     margin: 5,
   },
-  buttonFirstStyle: {
-    width: undefined,
-    marginHorizontal: undefined,
-    marginBottom: 20,
-    backgroundColor: colors.blue,
-  },
-  aliasContainer: {
-    backgroundColor: colors.darkPurple5,
-    padding: 17,
-    borderRadius: 25,
+  flexContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
   },
-  aliasText: {
-    color: colors.white,
+  priceContainer: {
+    backgroundColor: colors.background.secondary,
+    borderRadius: 15,
+    width: '100%',
+    padding: 15,
   },
-  red: {
-    color: colors.red,
+  priceText: {
+    color: 'white',
+  },
+  addIcon: {
+    right: 60,
+    top: 15,
+    backgroundColor: 'gray',
+    height: 20,
+    borderRadius: 20,
+  },
+  minusIcon: {
+    right: 50,
+    top: 15,
+    backgroundColor: 'gray',
+    height: 20,
+    borderRadius: 20,
   },
 })

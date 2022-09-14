@@ -8,7 +8,6 @@ import addresses from '../../screens/rnsManager/addresses.json'
 type DomainLookUpProps = {
   initialValue: string
   onChangeText: (newValue: string) => void
-  domainAvailable: boolean
   wallet: any
   testID?: string
   backgroundColor?: string
@@ -28,24 +27,12 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
     wallet,
   )
   useState<boolean>(false)
-  // the address of the recipient
-  const [recipient, setRecipient] = useState<string>(initialValue)
-  const [info, setInfo] = useState('')
   const [error, setError] = useState('')
-  const [selectedDomain, setSelectedDomain] = useState('')
-  const [selectedDomainAvailable, setSelectedDomainAvailable] =
-    useState<boolean>(false)
-
-  const [status, setStatus] = useState<{
-    type: 'READY' | 'INFO' | 'ERROR' | 'CHECKSUM'
-    value?: string
-  }>({ type: 'READY' })
+  const [domainAvailability, setDomainAvailability] = useState<
+    'taken' | 'available' | 'no valid' | ''
+  >('')
 
   const handleChangeText = async (inputText: string) => {
-    console.log({ inputText })
-    setStatus({ type: 'READY', value: '' })
-    setRecipient(inputText)
-
     onChangeText(inputText)
 
     if (!inputText) {
@@ -54,24 +41,25 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
     const newValidationMessage = validateAddress(inputText, -1)
     if (newValidationMessage === AddressValidationMessage.DOMAIN) {
       await searchDomain(inputText)
-      setStatus({
-        type: 'INFO',
-        value: 'Getting address for domain...',
-      })
+    } else {
+      setDomainAvailability('')
     }
   }
   const searchDomain = async (domain: string) => {
-    setSelectedDomain('')
     const domainName = domain.replace('.rsk', '')
 
     if (!/^[a-z0-9]*$/.test(domainName)) {
       console.log('Only lower cases and numbers are allowed')
       setError('Only lower cases and numbers are allowed')
+      setDomainAvailability('no valid')
+      onDomainAvailable(domainName, false)
       return
     }
     if (domainName.length < 5) {
       console.log('Only domains with 5 or more characters are allowed')
       setError('Only domains with 5 or more characters are allowed')
+      setDomainAvailability('no valid')
+      onDomainAvailable(domainName, false)
       return
     }
     setError('')
@@ -80,8 +68,7 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
       domainName,
     )) as any as boolean
 
-    setSelectedDomainAvailable(available)
-
+    setDomainAvailability(available ? 'available' : 'taken')
     if (available) {
       onDomainAvailable(domainName)
     }
@@ -95,28 +82,24 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
           onChangeText={handleChangeText}
           value={initialValue}
           placeholder="enter an alias name"
-          keyboardType="numeric"
           accessibilityLabel={'Phone.Input'}
           placeholderTextColor={colors.gray}
         />
-        {selectedDomainAvailable && (
+        {domainAvailability === 'available' && (
           <View>
-            <Text style={{ color: colors.green, right: 80, top: 19 }}>
-              available
-            </Text>
+            <Text style={styles.availableLabel}>{domainAvailability}</Text>
           </View>
         )}
-        {!selectedDomainAvailable && (
+        {(domainAvailability === 'taken' ||
+          domainAvailability === 'no valid') && (
           <View>
-            <Text style={{ color: colors.red, right: 50, top: 19 }}>taken</Text>
+            <Text style={styles.takenLabel}>{domainAvailability}</Text>
           </View>
         )}
       </View>
       <View>
-        {info !== '' && <Text style={{ color: colors.white }}>{info}</Text>}
-
         <View>
-          {error !== '' && <Text style={{ color: colors.white }}>{error}</Text>}
+          {error !== '' && <Text style={styles.infoLabel}>{error}</Text>}
         </View>
       </View>
     </>
@@ -127,6 +110,19 @@ const styles = StyleSheet.create({
   rowContainer: {
     margin: 5,
     flexDirection: 'row',
+  },
+  availableLabel: {
+    color: colors.green,
+    right: 80,
+    top: 19,
+  },
+  takenLabel: {
+    color: colors.red,
+    right: 60,
+    top: 19,
+  },
+  infoLabel: {
+    color: colors.white,
   },
   input: {
     width: '100%',
