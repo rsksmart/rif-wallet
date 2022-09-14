@@ -1,9 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import {
-  saveProfile,
-  deleteProfile,
-  IProfileStore,
-} from '../../storage/ProfileStore'
+import React, { useState } from 'react'
+import { IProfileStore } from '../../storage/ProfileStore'
 
 import {
   View,
@@ -18,7 +14,7 @@ import { MediumText } from '../../components'
 import { PurpleButton } from '../../components/button/ButtonVariations'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { ScreenProps } from '../../RootNavigation'
-import { emptyProfile } from '../../core/hooks/useProfile'
+import { useProfile } from '../../core/hooks/useProfile'
 
 export type CreateProfileScreenProps = {
   route: any
@@ -30,31 +26,15 @@ export const ProfileCreateScreen: React.FC<
   const navigation = route.params.navigation
   const initialProfile: IProfileStore = route.params.profile
   const [editProfile] = useState<boolean>(route.params.editProfile)
-
-  const [profile, setProfile] = useState<IProfileStore>(initialProfile)
-  useEffect(() => {
-    setProfile(
-      route.params.profile
-        ? {
-            ...route.params.profile,
-            phone: profile.phone,
-            email: profile.email,
-          }
-        : emptyProfile,
-    )
-  }, [route.params.profile])
+  const { profile, setProfile, storeProfile, eraseProfile } =
+    useProfile(initialProfile)
   const createProfile = async () => {
     onAliasChange(profile)
-    await saveProfile({
-      alias: profile?.alias ?? '',
-      phone: profile?.phone ?? '',
-      email: profile?.email ?? '',
-    })
+    await storeProfile()
     navigation.navigate('Home')
   }
-  const deleteAlias = () => {
-    deleteProfile()
-    onAliasChange(undefined)
+  const deleteAlias = async () => {
+    await eraseProfile()
     navigation.navigate('Home')
   }
   return (
@@ -69,9 +49,7 @@ export const ProfileCreateScreen: React.FC<
           {editProfile ? 'edit profile' : 'create profile'}
         </MediumText>
         <TouchableOpacity onPress={() => deleteAlias()}>
-          {initialProfile && (
-            <MaterialIcon name="delete" color="white" size={20} />
-          )}
+          <MaterialIcon name="delete" color="white" size={20} />
         </TouchableOpacity>
       </View>
       <View style={styles.container}>
@@ -121,7 +99,12 @@ export const ProfileCreateScreen: React.FC<
 
           <TextInput
             style={styles.input}
-            onChangeText={value => setProfile({ ...profile, phone: value })}
+            onChangeText={value =>
+              setProfile({
+                ...profile,
+                phone: value,
+              } as unknown as IProfileStore)
+            }
             value={profile?.phone}
             placeholder=""
             accessibilityLabel={'Phone.Input'}
@@ -134,7 +117,12 @@ export const ProfileCreateScreen: React.FC<
           </MediumText>
           <TextInput
             style={styles.input}
-            onChangeText={value => setProfile({ ...profile, email: value })}
+            onChangeText={value =>
+              setProfile({
+                ...profile,
+                email: value,
+              } as unknown as IProfileStore)
+            }
             value={profile?.email}
             placeholder=""
             accessibilityLabel={'Email.Input'}

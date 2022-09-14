@@ -11,7 +11,6 @@ import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServi
 import { colors } from './styles'
 import BitcoinAddressesScreen from './screens/bitcoin/BitcoinAddressesScreen'
 
-import { IProfileStore } from './storage/ProfileStore'
 import { emptyProfile, useProfile } from './core/hooks/useProfile'
 
 const InjectedScreens = {
@@ -127,11 +126,9 @@ export const RootNavigation: React.FC<{
   securityConfigurationScreenProps,
   setWalletIsDeployed,
 }) => {
-  const [profile, setProfile] = useProfile(emptyProfile)
+  const { profile, setProfile } = useProfile(emptyProfile)
 
-  const setAlias = (myProfile: IProfileStore) => {
-    setProfile(myProfile)
-  }
+  //  const setAlias = setProfile
 
   let initialRoute: any = 'CreateKeysUX'
   if (hasPin) {
@@ -299,7 +296,7 @@ export const RootNavigation: React.FC<{
             {props => (
               <Screens.ProfileCreateScreen
                 {...props}
-                onAliasChange={setAlias}
+                onAliasChange={setProfile}
               />
             )}
           </RootStack.Screen>

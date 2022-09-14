@@ -1,13 +1,13 @@
 import React from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
-import { IProfileStore } from '../../storage/ProfileStore'
 import Clipboard from '@react-native-community/clipboard'
 
 import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import { colors } from '../../styles'
 import { ScreenProps } from '../../RootNavigation'
 import { MediumText } from '../../components'
+import { emptyProfile, useProfile } from '../../core/hooks/useProfile'
 
 export type ProfileDetailsScreenProps = {
   route: any
@@ -15,8 +15,8 @@ export type ProfileDetailsScreenProps = {
 }
 export const ProfileDetailsScreen: React.FC<
   ScreenProps<'ProfileDetailsScreen'> & ProfileDetailsScreenProps
-> = ({ route, navigation }) => {
-  const initialProfile: IProfileStore = route.params.profile
+> = ({ navigation }) => {
+  const { profile } = useProfile(emptyProfile)
   return (
     <View style={styles.staticBackground}>
       <View style={styles.profileHeader}>
@@ -30,7 +30,6 @@ export const ProfileDetailsScreen: React.FC<
           onPress={() =>
             navigation.navigate('ProfileCreateScreen', {
               navigation,
-              profile: initialProfile,
               editProfile: true,
             })
           }>
@@ -54,10 +53,10 @@ export const ProfileDetailsScreen: React.FC<
           <View style={styles.rowContainer}>
             <View style={styles.fieldContainer}>
               <MediumText style={[styles.masterText, styles.textLeftMargin]}>
-                {initialProfile.alias}
+                {profile?.alias}
               </MediumText>
               <TouchableOpacity
-                onPress={() => Clipboard.setString(initialProfile.alias)}>
+                onPress={() => Clipboard.setString(profile?.alias || '')}>
                 <MaterialIcon
                   style={styles.copyIcon}
                   name="content-copy"
@@ -79,7 +78,7 @@ export const ProfileDetailsScreen: React.FC<
         <View style={styles.rowContainer}>
           <View style={styles.fieldContainer}>
             <MediumText style={[styles.masterText, styles.textLeftMargin]}>
-              {initialProfile.phone}
+              {profile?.phone}
             </MediumText>
           </View>
         </View>
@@ -93,7 +92,7 @@ export const ProfileDetailsScreen: React.FC<
         <View style={styles.rowContainer}>
           <View style={styles.fieldContainer}>
             <MediumText style={[styles.masterText, styles.textLeftMargin]}>
-              {initialProfile.email}
+              {profile?.email}
             </MediumText>
           </View>
         </View>

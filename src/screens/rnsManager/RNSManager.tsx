@@ -17,12 +17,15 @@ import { getTokenColor, getTokenColorWithOpacity } from '../home/tokenColor'
 import { SearchIcon } from '../../components/icons/SearchIcon'
 import { RegisterIcon } from '../../components/icons/RegisterIcon'
 import BaseButton from '../../components/button/BaseButton'
+import { useProfile } from '../../core/hooks/useProfile'
+import { IProfileStore } from '../../storage/ProfileStore'
 
 const years = 3
 
 export const RNSManagerScreen: React.FC<
   ScreenProps<'Activity'> & ScreenWithWallet
 > = ({ wallet, navigation }) => {
+  const { profile, setProfile, storeProfile } = useProfile()
   const [domainToLookUp, setDomainToLookUp] = useState('')
   const [error, setError] = useState('')
   const [selectedDomain, setSelectedDomain] = useState('')
@@ -65,6 +68,18 @@ export const RNSManagerScreen: React.FC<
     setSelectedDomainAvailable(available)
     setSelectedDomain(domain)
     setSelectedDomainPrice(utils.formatUnits(price, 18))
+  }
+  const selectDomain = async (domain: string) => {
+    await setProfile({
+      ...profile,
+      alias: domain,
+      phone: 'test',
+    } as unknown as IProfileStore)
+    await storeProfile()
+    navigation.navigate('ProfileCreateScreen', {
+      navigation,
+      profile: { alias: 'sample-domain.rsk' },
+    })
   }
 
   return (
@@ -134,13 +149,7 @@ export const RNSManagerScreen: React.FC<
       )}
       {/*TODO: Remove this since this is temporal to enable domain selection */}
       <View style={styles.sectionCentered}>
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate('ProfileCreateScreen', {
-              navigation,
-              profile: { alias: 'sample-domain.rsk' },
-            })
-          }>
+        <TouchableOpacity onPress={() => selectDomain('sample-domain.rsk')}>
           <Text key={'hardcoded'}>{'sample-domain.rsk (click to select)'}</Text>
         </TouchableOpacity>
       </View>

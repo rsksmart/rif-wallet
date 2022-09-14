@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import {
+  deleteProfile,
   getProfile,
   hasProfile,
   IProfileStore,
+  saveProfile,
 } from '../../storage/ProfileStore'
 
 export const emptyProfile = {
@@ -16,18 +18,23 @@ export function useProfile(initProfile?: IProfileStore) {
   useEffect(() => {
     hasProfile().then(async r => {
       if (r) {
-        await getProfile().then((storedProfile: IProfileStore) =>
-          setProfile(storedProfile),
-        )
+        await getProfile().then(setProfile)
       } else {
         setProfile(initProfile)
       }
     })
   }, [])
-
-  function setCustomProfile(_profile: IProfileStore) {
-    setProfile(_profile)
+  const storeProfile = async () => {
+    await saveProfile({
+      alias: profile?.alias ?? '',
+      phone: profile?.phone ?? '',
+      email: profile?.email ?? '',
+    })
+  }
+  const eraseProfile = async () => {
+    await deleteProfile()
+    setProfile(undefined)
   }
 
-  return [profile, setCustomProfile] as const
+  return { profile, setProfile, storeProfile, eraseProfile }
 }
