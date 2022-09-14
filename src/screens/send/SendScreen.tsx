@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, ScrollView, Text } from 'react-native'
-import { BigNumber, utils, ContractTransaction } from 'ethers'
+import { BigNumber, utils, ethers } from 'ethers'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
 import {
   convertToERC20Token,
@@ -16,6 +16,7 @@ import WalletNotDeployedView from './WalletNotDeployedModal'
 
 export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   route,
+  navigation,
   wallet,
   isWalletDeployed,
 }) => {
@@ -49,26 +50,33 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
 
       transferMethod
         .transfer(to.toLowerCase(), tokenAmount)
-        .then((txPending: ContractTransaction) => {
-          const current: transactionInfo = {
+        .then((txPending: ethers.providers.TransactionResponse) => {
+          const tx: transactionInfo = {
             to,
             value: amount,
             symbol: transferMethod.symbol,
             hash: txPending.hash,
             status: 'PENDING',
           }
-          setCurrentTransaction(current)
+          setCurrentTransaction(tx)
+          txPending
+            .wait()
+            .then(() => setCurrentTransaction({ ...tx, status: 'SUCCESS' }))
+            .catch(() => setCurrentTransaction({ ...tx, status: 'FAILED' }))
         })
         .catch((err: any) => {
           setError(err)
-          setCurrentTransaction(null)
         })
     })
   }
 
+  const navigateToDeploy = () => navigation.navigate('ManuallyDeployScreen')
+
   return (
     <ScrollView style={styles.parent}>
-      {!isWalletDeployed && <WalletNotDeployedView wallet={wallet} />}
+      {!isWalletDeployed && (
+        <WalletNotDeployedView onDeployWalletPress={navigateToDeploy} />
+      )}
       {!currentTransaction ? (
         <TransactionForm
           onConfirm={transfer}

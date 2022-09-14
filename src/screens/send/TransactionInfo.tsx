@@ -107,7 +107,6 @@ const styles = StyleSheet.create({
   },
   flexDirRow: { flexDirection: 'row' },
   mainLoadingContainer: {
-    backgroundColor: colors.background.light,
     paddingBottom: 50,
   },
   label: {
