@@ -7,8 +7,6 @@ import ContactIcon from '../../components/icons/ContactIcon'
 import ContactSelectedIcon from '../../components/icons/ContactSelectedIcon'
 import DappsIcon from '../../components/icons/DappsIcon'
 import DappsSelectedIcon from '../../components/icons/DappsSelectedIcon'
-import HomeIcon from '../../components/icons/HomeIcon'
-import HomeSelectedIcon from '../../components/icons/HomeSelectedIcon'
 import QRCodeIconFooter from '../../components/icons/QRCodeIconFooter'
 import { colors } from '../../styles/colors'
 
