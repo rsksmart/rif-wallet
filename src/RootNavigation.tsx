@@ -251,11 +251,16 @@ export const RootNavigation: React.FC<{
             )}
           </RootStack.Screen>
 
-          <RootStack.Screen
-            name="SearchDomain"
-            component={InjectedScreens.SearchDomainScreen}
-            options={sharedOptions}
-          />
+          <RootStack.Screen name="SearchDomain" options={sharedOptions}>
+            {props => (
+              <InjectedScreens.SearchDomainScreen
+                {...props}
+                profile={profile}
+                setProfile={setProfile}
+              />
+            )}
+          </RootStack.Screen>
+
           <RootStack.Screen
             name="RegisterDomain"
             component={InjectedScreens.RegisterDomainScreen}

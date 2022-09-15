@@ -9,10 +9,15 @@ import { ScreenProps } from '../../RootNavigation'
 import { ScreenWithWallet } from '../types'
 import { DomainLookUp } from '../../components/domain'
 import { MediumText } from '../../components'
+import { IProfileStore } from '../../storage/ProfileStore'
 
+type Props = {
+  profile: IProfileStore
+  setProfile: (p: IProfileStore) => void
+}
 export const SearchDomainScreen: React.FC<
-  ScreenProps<'SearchDomain'> & ScreenWithWallet
-> = ({ wallet, navigation }) => {
+  ScreenProps<'SearchDomain'> & ScreenWithWallet & Props
+> = ({ wallet, navigation, profile, setProfile }) => {
   const [domainToLookUp, setDomainToLookUp] = useState<string>('')
 
   useState<boolean>(false)
@@ -39,7 +44,19 @@ export const SearchDomainScreen: React.FC<
     const price = await calculatePrice(domainToLookUp, years)
     setSelectedDomainPrice(price + '')
   }
+  //TODO: remove this when remaining slices are done
+  const selectDomain = async (domain: string) => {
+    await setProfile({
+      ...profile,
+      alias: domain,
+    } as unknown as IProfileStore)
 
+    // @ts-ignore
+    navigation.navigate('ProfileCreateScreen', {
+      navigation,
+      profile: { alias: domainToLookUp },
+    })
+  }
   return (
     <>
       <View style={styles.profileHeader}>
@@ -99,7 +116,7 @@ export const SearchDomainScreen: React.FC<
 
         <View style={styles.rowContainer}>
           <PurpleButton
-            onPress={() => {}}
+            onPress={() => selectDomain(domainToLookUp)}
             accessibilityLabel="request"
             title={'request'}
           />
