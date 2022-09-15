@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
-import { Text, TextInput, StyleSheet, View } from 'react-native'
+import { TextInput } from 'react-native-gesture-handler'
+
+import { Text, StyleSheet, View } from 'react-native'
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import { validateAddress, AddressValidationMessage } from '../address/lib'
 import { colors } from '../../styles'

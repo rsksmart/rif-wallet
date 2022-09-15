@@ -19,6 +19,7 @@ export const SearchDomainScreen: React.FC<
   const [selectedDomainPrice, setSelectedDomainPrice] = useState<string>('2')
 
   const calculatePrice = async (domain: string, years: number) => {
+    //TODO: reenable this later
     /*const price = await rskRegistrar.price(domain, BigNumber.from(years))
     return utils.formatUnits(price, 18)*/
     if (years < 3) {
