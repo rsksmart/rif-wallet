@@ -6,6 +6,7 @@ import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import { validateAddress, AddressValidationMessage } from '../address/lib'
 import { colors } from '../../styles'
 import addresses from '../../screens/rnsManager/addresses.json'
+import {MediumText} from "../typography";
 
 type DomainLookUpProps = {
   initialValue: string
@@ -89,19 +90,19 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
         />
         {domainAvailability === 'available' && (
           <View>
-            <Text style={styles.availableLabel}>{domainAvailability}</Text>
+            <MediumText style={styles.availableLabel}>{domainAvailability}</MediumText>
           </View>
         )}
         {(domainAvailability === 'taken' ||
           domainAvailability === 'no valid') && (
           <View>
-            <Text style={styles.takenLabel}>{domainAvailability}</Text>
+            <MediumText style={styles.takenLabel}>{domainAvailability}</MediumText>
           </View>
         )}
       </View>
       <View>
         <View>
-          {error !== '' && <Text style={styles.infoLabel}>{error}</Text>}
+          {error !== '' && <MediumText style={styles.infoLabel}>{error}</MediumText>}
         </View>
       </View>
     </>

@@ -8,6 +8,7 @@ import { PurpleButton } from '../../components/button/ButtonVariations'
 import { ScreenProps } from '../../RootNavigation'
 import { ScreenWithWallet } from '../types'
 import { DomainLookUp } from '../../components/domain'
+import {MediumText} from "../../components";
 
 export const SearchDomainScreen: React.FC<
   ScreenProps<'SearchDomain'> & ScreenWithWallet
@@ -67,10 +68,10 @@ export const SearchDomainScreen: React.FC<
           <View style={styles.flexContainer}>
             <>
               <View style={styles.priceContainer}>
-                <Text
+                <MediumText
                   style={
                     styles.priceText
-                  }>{`${selectedYears} years ${selectedDomainPrice} rif`}</Text>
+                  }>{`${selectedYears} years ${selectedDomainPrice} rif`}</MediumText>
               </View>
               <TouchableOpacity
                 onPress={() => handleYearsChange(selectedYears + 1)}
