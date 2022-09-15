@@ -1,20 +1,16 @@
 import React, { useState } from 'react'
 import { IProfileStore } from '../../storage/ProfileStore'
+import { RegularText } from '../../components/typography'
+import { TextInput } from 'react-native-gesture-handler'
 
-import {
-  View,
-  StyleSheet,
-  TextInput,
-  Image,
-  Text,
-  TouchableOpacity,
-} from 'react-native'
+import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import { colors } from '../../styles'
 import { MediumText } from '../../components'
 import { PurpleButton } from '../../components/button/ButtonVariations'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { ScreenProps } from '../../RootNavigation'
 import { emptyProfile } from '../../core/hooks/useProfile'
+import { fonts } from '../../styles/fonts'
 
 export type CreateProfileScreenProps = {
   route: any
@@ -80,7 +76,9 @@ export const ProfileCreateScreen: React.FC<
           <View style={styles.rowContainer}>
             <View style={styles.aliasContainer}>
               <View>
-                <Text style={styles.aliasText}>{profile?.alias}</Text>
+                <RegularText style={styles.aliasText}>
+                  {profile?.alias}
+                </RegularText>
               </View>
               <View>
                 <TouchableOpacity
@@ -175,13 +173,12 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   input: {
-    borderColor: colors.white,
-    borderWidth: 1,
-    borderRadius: 100,
-    color: colors.white,
-    fontSize: 16,
-    fontWeight: '600',
-    padding: 14,
+    color: colors.text.primary,
+    fontFamily: fonts.regular,
+    backgroundColor: colors.darkPurple4,
+    borderRadius: 15,
+    padding: 20,
+    marginBottom: 20,
   },
   textLeftMargin: {
     marginLeft: 10,
@@ -200,9 +197,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.blue,
   },
   aliasContainer: {
-    backgroundColor: colors.darkPurple5,
-    padding: 17,
-    borderRadius: 25,
+    color: colors.text.primary,
+    fontFamily: fonts.regular,
+    backgroundColor: colors.darkPurple4,
+    borderRadius: 15,
+    padding: 20,
+    marginBottom: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },

@@ -1,8 +1,9 @@
 import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, View, TouchableOpacity, Image } from 'react-native'
 import { colors } from '../../styles'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { IProfileStore } from '../../storage/ProfileStore'
+import { RegularText } from '../../components'
 
 type Props = {
   navigation: any
@@ -44,7 +45,9 @@ export const ProfileHandler: React.FC<Props> = ({
           />
           <View>
             {profile?.phone !== '' && (
-              <Text style={styles.profileName}>{profile.alias}</Text>
+              <RegularText style={styles.profileName}>
+                {profile.alias}
+              </RegularText>
             )}
           </View>
         </>
