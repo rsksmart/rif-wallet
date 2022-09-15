@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { TextInput } from 'react-native-gesture-handler'
 
-import { Text, StyleSheet, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import { validateAddress, AddressValidationMessage } from '../address/lib'
 import { colors } from '../../styles'
 import addresses from '../../screens/rnsManager/addresses.json'
-import {MediumText} from "../typography";
+import { MediumText } from '../typography'
 
 type DomainLookUpProps = {
   initialValue: string
@@ -90,19 +90,25 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
         />
         {domainAvailability === 'available' && (
           <View>
-            <MediumText style={styles.availableLabel}>{domainAvailability}</MediumText>
+            <MediumText style={styles.availableLabel}>
+              {domainAvailability}
+            </MediumText>
           </View>
         )}
         {(domainAvailability === 'taken' ||
           domainAvailability === 'no valid') && (
           <View>
-            <MediumText style={styles.takenLabel}>{domainAvailability}</MediumText>
+            <MediumText style={styles.takenLabel}>
+              {domainAvailability}
+            </MediumText>
           </View>
         )}
       </View>
       <View>
         <View>
-          {error !== '' && <MediumText style={styles.infoLabel}>{error}</MediumText>}
+          {error !== '' && (
+            <MediumText style={styles.infoLabel}>{error}</MediumText>
+          )}
         </View>
       </View>
     </>
