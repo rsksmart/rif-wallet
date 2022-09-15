@@ -126,9 +126,8 @@ export const RootNavigation: React.FC<{
   securityConfigurationScreenProps,
   setWalletIsDeployed,
 }) => {
-  const { profile, setProfile } = useProfile(emptyProfile)
-
-  //  const setAlias = setProfile
+  const { profile, setProfile, storeProfile, eraseProfile, profileCreated } =
+    useProfile(emptyProfile)
 
   let initialRoute: any = 'CreateKeysUX'
   if (hasPin) {
@@ -143,7 +142,9 @@ export const RootNavigation: React.FC<{
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <View style={styles.parent}>
-        {appIsSetup && <AppHeader profile={profile} />}
+        {appIsSetup && (
+          <AppHeader profile={profile} profileCreated={profileCreated} />
+        )}
         <RootStack.Navigator initialRouteName={initialRoute}>
           <RootStack.Screen name="Home" options={sharedOptions}>
             {props => (
@@ -237,11 +238,22 @@ export const RootNavigation: React.FC<{
             component={InjectedScreens.WalletConnectNavigationScreen}
             options={sharedOptions}
           />
-          <RootStack.Screen
+          {/* <RootStack.Screen
             name="RNSManager"
             component={InjectedScreens.RNSManagerScreen}
             options={sharedOptions}
-          />
+          />*/}
+
+          <RootStack.Screen name="RNSManager" options={sharedOptions}>
+            {props => (
+              <InjectedScreens.RNSManagerScreen
+                {...props}
+                profile={profile}
+                setProfile={setProfile}
+              />
+            )}
+          </RootStack.Screen>
+
           <RootStack.Screen
             name="RegisterDomain"
             component={InjectedScreens.RegisterDomainScreen}
@@ -297,11 +309,17 @@ export const RootNavigation: React.FC<{
               <Screens.ProfileCreateScreen
                 {...props}
                 onAliasChange={setProfile}
+                profile={profile}
+                setProfile={setProfile}
+                storeProfile={storeProfile}
+                eraseProfile={eraseProfile}
               />
             )}
           </RootStack.Screen>
           <RootStack.Screen name="ProfileDetailsScreen" options={sharedOptions}>
-            {props => <Screens.ProfileDetailsScreen {...props} />}
+            {props => (
+              <Screens.ProfileDetailsScreen {...props} profile={profile} />
+            )}
           </RootStack.Screen>
         </RootStack.Navigator>
         {appIsSetup && !isKeyboardVisible && (

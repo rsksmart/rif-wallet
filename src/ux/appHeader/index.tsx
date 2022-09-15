@@ -4,24 +4,13 @@ import React from 'react'
 import { View, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import { AddressCopyComponent } from '../../components/copy/AddressCopyComponent'
 import { useSelectedWallet } from '../../Context'
-import { Network } from '@ethersproject/networks'
 import { ProfileHandler } from './ProfileHandler'
 import { IProfileStore } from '../../storage/ProfileStore'
 
-export const networks: Record<number, Network> = {
-  30: {
-    chainId: 30,
-    name: 'RSK Mainnet',
-  },
-  31: {
-    chainId: 31,
-    name: 'RSK Testnet',
-  },
-}
-
-export const AppHeader: React.FC<{ profile: IProfileStore | undefined }> = ({
-  profile,
-}) => {
+export const AppHeader: React.FC<{
+  profile: IProfileStore
+  profileCreated: boolean
+}> = ({ profile, profileCreated }) => {
   const { wallet, chainId } = useSelectedWallet()
   const navigation = useNavigation()
   const openMenu = () => navigation.navigate('Settings' as any)
@@ -32,7 +21,11 @@ export const AppHeader: React.FC<{ profile: IProfileStore | undefined }> = ({
           ...styles.column,
           ...styles.walletInfo,
         }}>
-        <ProfileHandler navigation={navigation} profile={profile} />
+        <ProfileHandler
+          navigation={navigation}
+          profile={profile}
+          profileCreated={profileCreated}
+        />
       </View>
       <View style={styles.column}>
         {wallet && (

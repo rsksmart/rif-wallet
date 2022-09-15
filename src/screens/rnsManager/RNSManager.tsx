@@ -11,21 +11,23 @@ import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import { ScreenWithWallet } from '../types'
 import { ScreenProps } from '../../RootNavigation'
 import { getDomains } from '../../storage/DomainsStore'
-import { grid } from '../../styles/grid'
+import { grid } from '../../styles'
 import { SquareButton } from '../../components/button/SquareButton'
 import { getTokenColor, getTokenColorWithOpacity } from '../home/tokenColor'
 import { SearchIcon } from '../../components/icons/SearchIcon'
 import { RegisterIcon } from '../../components/icons/RegisterIcon'
 import BaseButton from '../../components/button/BaseButton'
-import { useProfile } from '../../core/hooks/useProfile'
 import { IProfileStore } from '../../storage/ProfileStore'
-
+type Props = {
+  navigation: any
+  profile: IProfileStore
+  setProfile: (p: IProfileStore) => void
+}
 const years = 3
 
 export const RNSManagerScreen: React.FC<
-  ScreenProps<'Activity'> & ScreenWithWallet
-> = ({ wallet, navigation }) => {
-  const { profile, setProfile, storeProfile } = useProfile()
+  ScreenProps<'RNSManager'> & ScreenWithWallet & Props
+> = ({ wallet, navigation, profile, setProfile }) => {
   const [domainToLookUp, setDomainToLookUp] = useState('')
   const [error, setError] = useState('')
   const [selectedDomain, setSelectedDomain] = useState('')
@@ -73,9 +75,8 @@ export const RNSManagerScreen: React.FC<
     await setProfile({
       ...profile,
       alias: domain,
-      phone: 'test',
     } as unknown as IProfileStore)
-    await storeProfile()
+
     navigation.navigate('ProfileCreateScreen', {
       navigation,
       profile: { alias: 'sample-domain.rsk' },

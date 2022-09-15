@@ -14,27 +14,30 @@ export const emptyProfile = {
 }
 
 export function useProfile(initProfile?: IProfileStore) {
-  const [profile, setProfile] = useState<IProfileStore | undefined>(initProfile)
+  const [profile, setProfile] = useState<IProfileStore>(
+    initProfile || emptyProfile,
+  )
+
+  const profileCreated = profile !== emptyProfile
+
   useEffect(() => {
-    hasProfile().then(async r => {
+    hasProfile().then(r => {
       if (r) {
-        await getProfile().then(setProfile)
+        getProfile().then(setProfile)
       } else {
-        setProfile(initProfile)
+        setProfile(initProfile || emptyProfile)
       }
     })
   }, [])
-  const storeProfile = async () => {
-    await saveProfile({
-      alias: profile?.alias ?? '',
-      phone: profile?.phone ?? '',
-      email: profile?.email ?? '',
-    })
-  }
-  const eraseProfile = async () => {
-    await deleteProfile()
-    setProfile(undefined)
+  const storeProfile = async (newProfile: IProfileStore) => {
+    setProfile(newProfile)
+    await saveProfile(newProfile)
   }
 
-  return { profile, setProfile, storeProfile, eraseProfile }
+  const eraseProfile = async () => {
+    await deleteProfile()
+    setProfile(emptyProfile)
+  }
+
+  return { profile, setProfile, storeProfile, eraseProfile, profileCreated }
 }

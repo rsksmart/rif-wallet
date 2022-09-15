@@ -14,23 +14,32 @@ import { MediumText } from '../../components'
 import { PurpleButton } from '../../components/button/ButtonVariations'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { ScreenProps } from '../../RootNavigation'
-import { useProfile } from '../../core/hooks/useProfile'
+import { emptyProfile } from '../../core/hooks/useProfile'
 
 export type CreateProfileScreenProps = {
   route: any
   onAliasChange: any
+  profile: IProfileStore
+  setProfile: (p: IProfileStore) => void
+  storeProfile: (p: IProfileStore) => Promise<void>
+  eraseProfile: () => Promise<void>
 }
 export const ProfileCreateScreen: React.FC<
   ScreenProps<'ProfileCreateScreen'> & CreateProfileScreenProps
-> = ({ route, onAliasChange }) => {
+> = ({
+  route,
+  onAliasChange,
+  profile,
+  setProfile,
+  storeProfile,
+  eraseProfile,
+}) => {
   const navigation = route.params.navigation
-  const initialProfile: IProfileStore = route.params.profile
-  const [editProfile] = useState<boolean>(route.params.editProfile)
-  const { profile, setProfile, storeProfile, eraseProfile } =
-    useProfile(initialProfile)
+  const editProfile = route.params.editProfile
+  const [localProfile, setLocalProfile] = useState<IProfileStore>(profile)
   const createProfile = async () => {
     onAliasChange(profile)
-    await storeProfile()
+    await storeProfile({ ...localProfile, alias: profile.alias })
     navigation.navigate('Home')
   }
   const deleteAlias = async () => {
@@ -100,12 +109,12 @@ export const ProfileCreateScreen: React.FC<
           <TextInput
             style={styles.input}
             onChangeText={value =>
-              setProfile({
-                ...profile,
+              setLocalProfile({
+                ...localProfile,
                 phone: value,
-              } as unknown as IProfileStore)
+              })
             }
-            value={profile?.phone}
+            value={localProfile?.phone}
             placeholder=""
             accessibilityLabel={'Phone.Input'}
             placeholderTextColor={colors.gray}
@@ -118,12 +127,12 @@ export const ProfileCreateScreen: React.FC<
           <TextInput
             style={styles.input}
             onChangeText={value =>
-              setProfile({
-                ...profile,
+              setLocalProfile({
+                ...localProfile,
                 email: value,
-              } as unknown as IProfileStore)
+              })
             }
-            value={profile?.email}
+            value={localProfile?.email}
             placeholder=""
             accessibilityLabel={'Email.Input'}
             placeholderTextColor={colors.gray}
@@ -134,6 +143,7 @@ export const ProfileCreateScreen: React.FC<
             onPress={() => createProfile()}
             accessibilityLabel="create"
             title={editProfile ? 'save' : 'create'}
+            disabled={localProfile === emptyProfile}
           />
         </View>
       </View>

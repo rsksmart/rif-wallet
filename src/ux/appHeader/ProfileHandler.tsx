@@ -2,27 +2,31 @@ import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import { colors } from '../../styles'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import { emptyProfile, useProfile } from '../../core/hooks/useProfile'
+import { IProfileStore } from '../../storage/ProfileStore'
 
 type Props = {
   navigation: any
+  profile: IProfileStore
+  profileCreated: boolean
 }
 
-export const ProfileHandler: React.FC<Props> = ({ navigation }) => {
-  const { profile } = useProfile(emptyProfile)
-
+export const ProfileHandler: React.FC<Props> = ({
+  navigation,
+  profile,
+  profileCreated,
+}) => {
   return (
     <TouchableOpacity
       style={styles.profileHandler}
       onPress={() =>
         navigation.navigate(
-          profile ? 'ProfileDetailsScreen' : 'ProfileCreateScreen',
+          profileCreated ? 'ProfileDetailsScreen' : 'ProfileCreateScreen',
           {
             navigation,
           },
         )
       }>
-      {!profile && (
+      {!profileCreated && (
         <>
           <View style={styles.profileHandlerImage}>
             <MaterialIcon name="person" color="gray" size={20} />
@@ -32,7 +36,7 @@ export const ProfileHandler: React.FC<Props> = ({ navigation }) => {
           </View>
         </>
       )}
-      {profile && (
+      {profileCreated && (
         <>
           <Image
             style={styles.profileAvatar}
@@ -40,7 +44,7 @@ export const ProfileHandler: React.FC<Props> = ({ navigation }) => {
           />
           <View>
             {profile?.phone !== '' && (
-              <Text style={styles.profileName}>{profile.phone}</Text>
+              <Text style={styles.profileName}>{profile.alias}</Text>
             )}
           </View>
         </>

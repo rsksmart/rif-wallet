@@ -7,16 +7,16 @@ import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import { colors } from '../../styles'
 import { ScreenProps } from '../../RootNavigation'
 import { MediumText } from '../../components'
-import { emptyProfile, useProfile } from '../../core/hooks/useProfile'
+import { IProfileStore } from '../../storage/ProfileStore'
 
 export type ProfileDetailsScreenProps = {
   route: any
   navigation: any
+  profile: IProfileStore
 }
 export const ProfileDetailsScreen: React.FC<
   ScreenProps<'ProfileDetailsScreen'> & ProfileDetailsScreenProps
-> = ({ navigation }) => {
-  const { profile } = useProfile(emptyProfile)
+> = ({ navigation, profile }) => {
   return (
     <View style={styles.staticBackground}>
       <View style={styles.profileHeader}>
