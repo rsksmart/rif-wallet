@@ -2,8 +2,6 @@ import { Wallet } from '@ethersproject/wallet'
 import { KeyManagementSystem, RIFWallet } from '../lib/core'
 import { getKeys, saveKeys } from '../storage/KeyStore'
 import { Wallets } from '../Context'
-import { db } from './setup'
-import { WalletSchema } from '../storage/db/RealmDb'
 
 export { deleteKeys, hasKeys } from '../storage/KeyStore'
 export { hasPin } from '../storage/PinStore'
@@ -15,25 +13,11 @@ export const loadExistingWallets =
     const serializedKeys = await getKeys()
     const { kms, wallets } = KeyManagementSystem.fromSerialized(serializedKeys!)
 
-    await db.init(WalletSchema)
     const rifWallets = await Promise.all(wallets.map(createRIFWallet))
     const isDeployedWallets = await Promise.all(
-      rifWallets.map(w => {
-        if (
-          db.has(WalletSchema.name, w.address) &&
-          db.get(WalletSchema.name, w.address).value.isDeployed
-        ) {
-          return true
-        }
-        return w.smartWalletFactory.isDeployed()
-      }),
+      rifWallets.map(w => w.smartWalletFactory.isDeployed()),
     )
-    rifWallets.forEach((w, i) => {
-      db.store(WalletSchema.name, w.address, {
-        smartWalletAddress: w.smartWalletAddress,
-        isDeployed: isDeployedWallets[i],
-      })
-    })
+
     const rifWalletsDictionary = rifWallets.reduce(
       (p: Wallets, c: RIFWallet) => Object.assign(p, { [c.address]: c }),
       {},

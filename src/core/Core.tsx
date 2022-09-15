@@ -66,13 +66,8 @@ export const Core = () => {
   const setGlobalError = useSetGlobalError()
 
   const onScreenUnlock = () => {
-    const start = new Date().getTime()
     unlockApp()
-      .then(() => {
-        setUnlocked(true)
-        const end = new Date().getTime()
-        console.log('Validate pin and load smart wallet', end - start)
-      })
+      .then(() => setUnlocked(true))
       .catch(err => setGlobalError(err.toString()))
   }
 

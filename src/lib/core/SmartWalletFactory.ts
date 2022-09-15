@@ -32,10 +32,10 @@ export class SmartWalletFactory implements ISmartWalletFactory {
     ]
   }
 
-  static async create (signer: Signer, smartWalletFactoryContractAddress: string, smartWalletAddressFromCache?: string) {
+  static async create (signer: Signer, smartWalletFactoryContractAddress: string) {
     const smartWalletFactoryContract = createSmartWalletFactoryContract(smartWalletFactoryContractAddress).connect(signer)
     const address = await signer.getAddress()
-    const smartWalletAddress = smartWalletAddressFromCache || await smartWalletFactoryContract.getSmartWalletAddress(...SmartWalletFactory.getSmartWalletParams(address))
+    const smartWalletAddress = await smartWalletFactoryContract.getSmartWalletAddress(...SmartWalletFactory.getSmartWalletParams(address))
     return new SmartWalletFactory(smartWalletAddress, smartWalletFactoryContract)
   }
 

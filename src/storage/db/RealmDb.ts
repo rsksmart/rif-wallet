@@ -20,18 +20,14 @@ export const WalletSchema = {
 }
 export class RealmDb {
   realm: Realm | undefined = undefined
-  private encryptionKey: string
 
-  constructor(encryptionKey: string) {
-    this.encryptionKey = encryptionKey
-  }
-  async init(schema: Realm.ObjectSchema, privateKey?: string) {
+  async init(schema: Realm.ObjectSchema, privateKey: string) {
     this.realm = await Realm.open({
       schema: [schema],
       path: `${schema.name.toLowerCase()}.realm`,
       schemaVersion: 1,
       deleteRealmIfMigrationNeeded: true,
-      encryptionKey: Buffer.from(privateKey ? privateKey : this.encryptionKey),
+      encryptionKey: Buffer.from(privateKey),
     })
   }
 

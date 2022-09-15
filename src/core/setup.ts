@@ -21,7 +21,7 @@ export const rifWalletServicesFetcher = new RifWalletServicesFetcher(
 )
 
 export const abiEnhancer = new AbiEnhancer()
-export const db = new RealmDb(getWalletSetting(SETTINGS.ENCRYPTION_KEY))
+export const db = new RealmDb()
 
 export const rifWalletServicesSocket = new RifWalletServicesSocket(
   getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL),

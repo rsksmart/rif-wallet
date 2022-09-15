@@ -20,7 +20,7 @@ export interface IServiceInitEvent {
 }
 
 export interface IRifWalletServicesSocket extends EventEmitter {
-  connect: (wallet: RIFWallet) => Promise<void>
+  connect: (wallet: RIFWallet, privateKey: string) => Promise<void>
 
   disconnect(): void
   isConnected(): boolean
@@ -50,14 +50,11 @@ export class RifWalletServicesSocket
     this.rifWalletServicesUrl = rifWalletServicesUrl
   }
 
-  private async init(wallet: RIFWallet) {
-    await db.init(TransactionSchema)
-    const init = new Date().getTime()
+  private async init(wallet: RIFWallet, privateKey: string) {
+    await db.init(TransactionSchema, privateKey)
     const fetchedTransactions = await this.fetcher.fetchTransactionsByAddress(
       wallet.smartWalletAddress,
     )
-    const end1 = new Date().getTime()
-    console.log('Fetch transactions', new Date().getTime() - init)
     const activityTransactions = await Promise.all<IActivityTransaction[]>(
       fetchedTransactions.data.map(async (tx: IApiTransaction) => {
         if (db.has(TransactionSchema.name, tx.hash)) {
@@ -79,24 +76,18 @@ export class RifWalletServicesSocket
         } as any
       }),
     )
-    const end3 = new Date().getTime()
-    console.log('Enhance Transactions', end3 - end1)
     const fetchedTokens = (await this.fetcher.fetchTokensByAddress(
       wallet.smartWalletAddress,
     )) as ITokenWithBalance[]
-    const end4 = new Date().getTime()
-    console.log('Fetch Token Events', end4 - end3)
     this.emit('init', {
       transactions: activityTransactions,
       balances: fetchedTokens,
     })
-    const end5 = new Date().getTime()
-    console.log('Emmitting', end5 - end4)
   }
 
-  async connect(wallet: RIFWallet) {
+  async connect(wallet: RIFWallet, privateKey: string) {
     try {
-      await this.init(wallet)
+      await this.init(wallet, privateKey)
 
       const socket = io(this.rifWalletServicesUrl, {
         path: '/ws',

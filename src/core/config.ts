@@ -4,7 +4,6 @@ export enum SETTINGS {
   RIF_WALLET_SERVICE_URL = 'RIF_WALLET_SERVICE_URL',
   RPC_URL = 'RPC_URL',
   SMART_WALLET_FACTORY_ADDRESS = 'SMART_WALLET_FACTORY_ADDRESS',
-  ENCRYPTION_KEY = 'ENCRYPTION_KEY',
 }
 
 export const getWalletSetting = (
@@ -18,7 +17,5 @@ export const getWalletSetting = (
       return Config[`NETWORK${chainId.toString()}_RPC_URL`]
     case SETTINGS.SMART_WALLET_FACTORY_ADDRESS:
       return Config[`NETWORK${chainId.toString()}_SW_ADDRESS`]
-    case SETTINGS.ENCRYPTION_KEY:
-      return Config.ENCRYPTION_KEY
   }
 }
