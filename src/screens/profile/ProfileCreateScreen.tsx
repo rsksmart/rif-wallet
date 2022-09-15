@@ -18,7 +18,6 @@ import { emptyProfile } from '../../core/hooks/useProfile'
 
 export type CreateProfileScreenProps = {
   route: any
-  onAliasChange: any
   profile: IProfileStore
   setProfile: (p: IProfileStore) => void
   storeProfile: (p: IProfileStore) => Promise<void>
@@ -26,19 +25,11 @@ export type CreateProfileScreenProps = {
 }
 export const ProfileCreateScreen: React.FC<
   ScreenProps<'ProfileCreateScreen'> & CreateProfileScreenProps
-> = ({
-  route,
-  onAliasChange,
-  profile,
-  setProfile,
-  storeProfile,
-  eraseProfile,
-}) => {
+> = ({ route, profile, setProfile, storeProfile, eraseProfile }) => {
   const navigation = route.params.navigation
   const editProfile = route.params.editProfile
   const [localProfile, setLocalProfile] = useState<IProfileStore>(profile)
   const createProfile = async () => {
-    onAliasChange(profile)
     await storeProfile({ ...localProfile, alias: profile.alias })
     navigation.navigate('Home')
   }

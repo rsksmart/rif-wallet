@@ -303,7 +303,6 @@ export const RootNavigation: React.FC<{
             {props => (
               <Screens.ProfileCreateScreen
                 {...props}
-                onAliasChange={setProfile}
                 profile={profile}
                 setProfile={setProfile}
                 storeProfile={storeProfile}
