@@ -100,7 +100,7 @@ export const RootNavigation: React.FC<{
   balancesScreenProps: Screens.BalancesScreenProps
   activityScreenProps: Screens.ActivityScreenProps
   showMnemonicScreenProps: Screens.ShowMnemonicScreenProps
-  sendScreenProps: Screens.SendScreenProps
+  sendScreenProps: ScreenProps<'Send'>
   injectedBrowserUXScreenProps: Screens.InjectedBrowserUXScreenProps
   contactsNavigationScreenProps: Screens.ContactsScreenProps
   dappsScreenProps: Screens.DappsScreenScreenProps
@@ -238,11 +238,6 @@ export const RootNavigation: React.FC<{
             component={InjectedScreens.WalletConnectNavigationScreen}
             options={sharedOptions}
           />
-          {/* <RootStack.Screen
-            name="RNSManager"
-            component={InjectedScreens.RNSManagerScreen}
-            options={sharedOptions}
-          />*/}
 
           <RootStack.Screen name="RNSManager" options={sharedOptions}>
             {props => (
