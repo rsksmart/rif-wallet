@@ -15,7 +15,7 @@ export const SearchDomainScreen: React.FC<
   const [domainToLookUp, setDomainToLookUp] = useState<string>('')
 
   useState<boolean>(false)
-  const [selectedYears, setSelectedYears] = useState<number>(1)
+  const [selectedYears, setSelectedYears] = useState<number>(2)
   const [selectedDomainPrice, setSelectedDomainPrice] = useState<string>('2')
 
   const calculatePrice = async (domain: string, years: number) => {
