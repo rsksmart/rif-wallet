@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { Modal, StyleSheet, View } from 'react-native'
+import { Modal, StyleSheet, TextInput, View } from 'react-native'
 import BarcodeMask from 'react-native-barcode-mask'
 import { BarCodeReadEvent, RNCamera } from 'react-native-camera'
 import Icon from 'react-native-vector-icons/Ionicons'

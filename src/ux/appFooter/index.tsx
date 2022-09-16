@@ -19,15 +19,15 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
 
   if (showQRScanner) {
     const onCodeRead = (url: string) => {
+      console.log('onCodeRead', url)
       setShowQRScanner(false)
       navigation.navigate('Dapps', { url })
     }
-    return (
-      <QRCodeScanner
-        onClose={() => setShowQRScanner(false)}
-        onCodeRead={onCodeRead}
-      />
-    )
+    const onClose = () => {
+      console.log('onClose')
+      setShowQRScanner(false)
+    }
+    return <QRCodeScanner onClose={onClose} onCodeRead={onCodeRead} />
   }
 
   return (

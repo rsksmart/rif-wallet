@@ -1,11 +1,14 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image, StyleSheet, Text, View } from 'react-native'
+import LinearGradient from 'react-native-linear-gradient'
+import { useSelectedWallet } from '../../Context'
 import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
 import { NavigationProp, ScreenProps } from '../../RootNavigation'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
 import { ScreenWithWallet } from '../types'
+import { WalletConnectContext } from '../walletConnect/WalletConnectContext'
 
 export type DappsScreenScreenProps = {
   fetcher: IRIFWalletServicesFetcher
@@ -19,10 +22,25 @@ export const DappsScreen: React.FC<
     ScreenProps<'Dapps'>
 > = ({ route }) => {
   const { t } = useTranslation()
-  const url = route.params?.url
-  if (url) {
-    console.log('url', url)
-  }
+  const { createSession, connections } = useContext(WalletConnectContext)
+  const { wallet } = useSelectedWallet()
+  const [isConnecting, setIsConnecting] = useState(false)
+
+  const openedConnections = Object.values(connections).filter(
+    ({ connector: c }) => c.connected,
+  )
+
+  useEffect(() => {
+    const url = route.params?.url
+    if (url && !isConnecting) {
+      setIsConnecting(true)
+      console.log('url', url)
+      createSession(wallet, url)
+    }
+  }, [route.params?.url])
+
+  console.log('openedConnections', JSON.stringify(openedConnections, null, 1))
+
   return (
     <View style={styles.parent}>
       <View style={styles.header}>
@@ -34,14 +52,40 @@ export const DappsScreen: React.FC<
         </View>
         <View style={styles.innerHeader2} />
       </View>
-      <Image
-        source={require('../../images/empty-dapps.png')}
-        style={styles.noDappsImage}
-      />
-      <View style={styles.noDappsTextView} testID="emptyView">
-        <Text style={styles.noDappsText}>{t('You are currently not')}</Text>
-        <Text style={styles.noDappsText}>{t('connected to any Dapp.')}</Text>
-      </View>
+      {openedConnections.length === 0 ? (
+        <>
+          <Image
+            source={require('../../images/empty-dapps.png')}
+            style={styles.noDappsImage}
+          />
+          <View style={styles.noDappsTextView} testID="emptyView">
+            <Text style={styles.noDappsText}>{t('You are currently not')}</Text>
+            <Text style={styles.noDappsText}>
+              {t('connected to any Dapp.')}
+            </Text>
+          </View>
+        </>
+      ) : (
+        <View style={styles.dappsList}>
+          {openedConnections.map(({ connector: c }) => (
+            <LinearGradient
+              key={c.key}
+              colors={[colors.background.secondary, colors.background.primary]}
+              style={styles.dapp}>
+              <View style={styles.dappInner}>
+                <Image
+                  source={require('../../images/dapp-icon.png')}
+                  style={styles.dappIcon}
+                />
+                <View style={styles.dappNameView}>
+                  <Text style={styles.dappName}>{c.peerMeta?.name}</Text>
+                  <Text style={styles.dappUrl}>{c.peerMeta?.url}</Text>
+                </View>
+              </View>
+            </LinearGradient>
+          ))}
+        </View>
+      )}
     </View>
   )
 }
@@ -88,5 +132,35 @@ const styles = StyleSheet.create({
     fontFamily: fonts.regular,
     fontSize: 14,
     textAlign: 'center',
+  },
+  dappsList: {
+    flex: 1,
+    marginTop: 20,
+  },
+  dapp: {
+    borderRadius: 10,
+    padding: 20,
+    marginBottom: 20,
+  },
+  dappInner: {
+    flexDirection: 'row',
+  },
+  dappIcon: {
+    width: 40,
+    height: 40,
+    resizeMode: 'contain',
+  },
+  dappNameView: {
+    marginLeft: 20,
+  },
+  dappName: {
+    fontFamily: fonts.semibold,
+    fontSize: 16,
+    color: colors.text.primary,
+  },
+  dappUrl: {
+    fontFamily: fonts.regular,
+    fontSize: 12,
+    color: colors.text.secondary,
   },
 })
