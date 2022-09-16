@@ -34,9 +34,11 @@ export const BIP_ID = {
 export const BIP_DATA = {
   [BIP_ID.BIP44]: {
     number: 44,
+    name: 'BIP44',
   },
   [BIP_ID.BIP84]: {
     number: 84,
+    name: 'Native SegWit',
   },
 }
 // Coins BIPs current supported implementation OR Network Names current supported implementation

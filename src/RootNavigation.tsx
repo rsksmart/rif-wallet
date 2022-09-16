@@ -10,6 +10,8 @@ import { AppFooterMenu } from './ux/appFooter'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
 import { colors } from './styles'
 import BitcoinAddressesScreen from './screens/bitcoin/BitcoinAddressesScreen'
+import BitcoinReceiveScreen from './screens/receive/BitcoinReceiveScreen'
+import BitcoinNetwork from './components/bitcoin/BitcoinNetwork'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -41,6 +43,9 @@ type RootStackParamList = {
         contractAddress?: string
       }
   Receive: undefined
+  ReceiveBitcoin: {
+    network: BitcoinNetwork
+  }
   Balances: undefined
   Activity: undefined
   ActivityDetails: undefined
@@ -177,6 +182,11 @@ export const RootNavigation: React.FC<{
             name="BitcoinScreen"
             options={sharedOptions}
             component={BitcoinAddressesScreen}
+          />
+          <RootStack.Screen
+            name="ReceiveBitcoin"
+            component={BitcoinReceiveScreen}
+            options={sharedOptions}
           />
           <RootStack.Screen name="Balances">
             {props => (
