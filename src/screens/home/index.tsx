@@ -105,7 +105,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       return balanceToDisplay(selected.balance, selected.decimals, 5)
     }
     return '0'
-  }, [selected])
+  }, [selected, balances])
   // waiting for the balances to load:
   if (!state.isSetup) {
     return <LoadingScreen />
