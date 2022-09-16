@@ -11,6 +11,8 @@ import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServi
 import { colors } from './styles'
 import BitcoinAddressesScreen from './screens/bitcoin/BitcoinAddressesScreen'
 
+import { emptyProfile, useProfile } from './core/hooks/useProfile'
+
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
   BalancesScreen: InjectSelectedWallet(Screens.BalancesScreen),
@@ -63,6 +65,8 @@ type RootStackParamList = {
   EventsScreen: undefined
   AccountsScreen: undefined
   SecurityConfigurationScreen: undefined
+  ProfileCreateScreen: undefined
+  ProfileDetailsScreen: undefined
   ChangePinScreen: undefined
   BitcoinScreen: undefined
 }
@@ -96,7 +100,7 @@ export const RootNavigation: React.FC<{
   balancesScreenProps: Screens.BalancesScreenProps
   activityScreenProps: Screens.ActivityScreenProps
   showMnemonicScreenProps: Screens.ShowMnemonicScreenProps
-  sendScreenProps: Screens.SendScreenProps
+  sendScreenProps: ScreenProps<'Send'>
   injectedBrowserUXScreenProps: Screens.InjectedBrowserUXScreenProps
   contactsNavigationScreenProps: Screens.ContactsScreenProps
   dappsScreenProps: Screens.DappsScreenScreenProps
@@ -122,6 +126,9 @@ export const RootNavigation: React.FC<{
   securityConfigurationScreenProps,
   setWalletIsDeployed,
 }) => {
+  const { profile, setProfile, storeProfile, eraseProfile, profileCreated } =
+    useProfile(emptyProfile)
+
   let initialRoute: any = 'CreateKeysUX'
   if (hasPin) {
     initialRoute = 'Home'
@@ -135,7 +142,9 @@ export const RootNavigation: React.FC<{
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <View style={styles.parent}>
-        {appIsSetup && <AppHeader />}
+        {appIsSetup && (
+          <AppHeader profile={profile} profileCreated={profileCreated} />
+        )}
         <RootStack.Navigator initialRouteName={initialRoute}>
           <RootStack.Screen name="Home" options={sharedOptions}>
             {props => (
@@ -229,11 +238,17 @@ export const RootNavigation: React.FC<{
             component={InjectedScreens.WalletConnectNavigationScreen}
             options={sharedOptions}
           />
-          <RootStack.Screen
-            name="RNSManager"
-            component={InjectedScreens.RNSManagerScreen}
-            options={sharedOptions}
-          />
+
+          <RootStack.Screen name="RNSManager" options={sharedOptions}>
+            {props => (
+              <InjectedScreens.RNSManagerScreen
+                {...props}
+                profile={profile}
+                setProfile={setProfile}
+              />
+            )}
+          </RootStack.Screen>
+
           <RootStack.Screen
             name="RegisterDomain"
             component={InjectedScreens.RegisterDomainScreen}
@@ -282,6 +297,22 @@ export const RootNavigation: React.FC<{
                 {...props}
                 {...securityConfigurationScreenProps}
               />
+            )}
+          </RootStack.Screen>
+          <RootStack.Screen name="ProfileCreateScreen" options={sharedOptions}>
+            {props => (
+              <Screens.ProfileCreateScreen
+                {...props}
+                profile={profile}
+                setProfile={setProfile}
+                storeProfile={storeProfile}
+                eraseProfile={eraseProfile}
+              />
+            )}
+          </RootStack.Screen>
+          <RootStack.Screen name="ProfileDetailsScreen" options={sharedOptions}>
+            {props => (
+              <Screens.ProfileDetailsScreen {...props} profile={profile} />
             )}
           </RootStack.Screen>
         </RootStack.Navigator>
