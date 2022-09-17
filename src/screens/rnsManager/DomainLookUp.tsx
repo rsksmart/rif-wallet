@@ -3,10 +3,13 @@ import { TextInput } from 'react-native-gesture-handler'
 
 import { StyleSheet, View } from 'react-native'
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
-import { validateAddress, AddressValidationMessage } from '../address/lib'
+import {
+  validateAddress,
+  AddressValidationMessage,
+} from '../../components/address/lib'
 import { colors } from '../../styles'
-import addresses from '../../screens/rnsManager/addresses.json'
-import { MediumText } from '../typography'
+import addresses from './addresses.json'
+import { MediumText } from '../../components/typography'
 
 type DomainLookUpProps = {
   initialValue: string
@@ -145,3 +148,5 @@ const styles = StyleSheet.create({
     paddingRight: 100,
   },
 })
+
+export default DomainLookUp

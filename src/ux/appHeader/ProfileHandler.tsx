@@ -5,9 +5,6 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { IProfileStore } from '../../storage/ProfileStore'
 import { RegularText } from '../../components'
 
-import { IProfileStore } from '../../storage/ProfileStore'
-import { RegularText } from '../../components'
-
 type Props = {
   navigation: any
   profile: IProfileStore

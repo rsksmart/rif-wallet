@@ -7,7 +7,7 @@ import { PurpleButton } from '../../components/button/ButtonVariations'
 
 import { ScreenProps } from '../../RootNavigation'
 import { ScreenWithWallet } from '../types'
-import { DomainLookUp } from '../../components/domain'
+import DomainLookUp from '../../screens/rnsManager/DomainLookUp'
 import { MediumText } from '../../components'
 import { IProfileStore } from '../../storage/ProfileStore'
 
