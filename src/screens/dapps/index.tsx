@@ -18,8 +18,6 @@ export const DappsScreen: React.FC<{
     ({ connector: c }) => c.connected,
   )
 
-  console.log('openedConnections', JSON.stringify(openedConnections, null, 1))
-
   return (
     <View style={styles.parent}>
       <View style={styles.header}>
@@ -60,7 +58,9 @@ export const DappsScreen: React.FC<{
                   <Text style={styles.dappName}>{c.peerMeta?.name}</Text>
                   <Text style={styles.dappUrl}>{c.peerMeta?.url}</Text>
                 </View>
-                <TouchableOpacity style={styles.dappButtonView}>
+                <TouchableOpacity
+                  style={styles.dappButtonView}
+                  onPress={() => c.killSession()}>
                   <Image
                     source={require('../../images/connected-dapp.png')}
                     style={styles.dappButton}

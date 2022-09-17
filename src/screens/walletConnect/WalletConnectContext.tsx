@@ -1,15 +1,15 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useNavigation } from '@react-navigation/core'
 import WalletConnect from '@walletconnect/client'
+import React, { useContext, useEffect, useState } from 'react'
+import { AppContext } from '../../Context'
 import { RIFWallet } from '../../lib/core'
 import { WalletConnectAdapter } from '../../lib/walletAdapters/WalletConnectAdapter'
 import {
-  saveWCSession,
   deleteWCSession,
   getWCSession,
+  saveWCSession,
 } from '../../storage/WalletConnectSessionStore'
-import { AppContext } from '../../Context'
-import { useNavigation } from '@react-navigation/core'
-import { Alert } from 'react-native'
+
 export interface WalletConnectContextInterface {
   connections: IWalletConnectConnections
   createSession: (
@@ -114,8 +114,6 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
       } catch (err) {
         console.error('could not kill the wc session', err)
       }
-
-      Alert.alert('You have disconnected from the dapp')
     })
   }
 
