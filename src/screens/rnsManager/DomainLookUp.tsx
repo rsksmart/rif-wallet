@@ -90,6 +90,8 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
           placeholder="enter an alias name"
           accessibilityLabel={'Phone.Input'}
           placeholderTextColor={colors.gray}
+          spellCheck={false}
+          autoCapitalize="none"
         />
         {domainAvailability === 'available' && (
           <View>
