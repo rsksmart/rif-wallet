@@ -1,43 +1,21 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image, StyleSheet, Text, View } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
-import { useSelectedWallet } from '../../Context'
-import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
-import { NavigationProp, ScreenProps } from '../../RootNavigation'
+import { NavigationProp } from '../../RootNavigation'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
-import { ScreenWithWallet } from '../types'
 import { WalletConnectContext } from '../walletConnect/WalletConnectContext'
 
-export type DappsScreenScreenProps = {
-  fetcher: IRIFWalletServicesFetcher
-}
-
-export const DappsScreen: React.FC<
-  {
-    navigation: NavigationProp
-  } & DappsScreenScreenProps &
-    ScreenWithWallet &
-    ScreenProps<'Dapps'>
-> = ({ route }) => {
+export const DappsScreen: React.FC<{
+  navigation: NavigationProp
+}> = () => {
   const { t } = useTranslation()
-  const { createSession, connections } = useContext(WalletConnectContext)
-  const { wallet } = useSelectedWallet()
-  const [isConnecting, setIsConnecting] = useState(false)
+  const { connections } = useContext(WalletConnectContext)
 
   const openedConnections = Object.values(connections).filter(
     ({ connector: c }) => c.connected,
   )
-
-  useEffect(() => {
-    const url = route.params?.url
-    if (url && !isConnecting) {
-      setIsConnecting(true)
-      console.log('url', url)
-      createSession(wallet, url)
-    }
-  }, [route.params?.url])
 
   console.log('openedConnections', JSON.stringify(openedConnections, null, 1))
 

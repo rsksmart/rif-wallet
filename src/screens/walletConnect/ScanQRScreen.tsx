@@ -20,12 +20,15 @@ const ScanQRScreen = () => {
     }
   }
 
-  return (
-    <QRCodeScanner
-      onCodeRead={onBarCodeRead}
-      onClose={() => navigation.navigate('Dapps' as never)}
-    />
-  )
+  const onClose = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack()
+    } else {
+      navigation.navigate('Home' as never)
+    }
+  }
+
+  return <QRCodeScanner onCodeRead={onBarCodeRead} onClose={onClose} />
 }
 
 export default ScanQRScreen

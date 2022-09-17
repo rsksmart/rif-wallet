@@ -8,27 +8,12 @@ import ContactSelectedIcon from '../../components/icons/ContactSelectedIcon'
 import DappsIcon from '../../components/icons/DappsIcon'
 import DappsSelectedIcon from '../../components/icons/DappsSelectedIcon'
 import QRCodeIconFooter from '../../components/icons/QRCodeIconFooter'
-import { QRCodeScanner } from '../../components/QRCodeScanner'
 import { colors } from '../../styles/colors'
 
 export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
   currentScreen,
 }) => {
   const navigation = useNavigation()
-  const [showQRScanner, setShowQRScanner] = React.useState(false)
-
-  if (showQRScanner) {
-    const onCodeRead = (url: string) => {
-      console.log('onCodeRead', url)
-      setShowQRScanner(false)
-      navigation.navigate('Dapps', { url })
-    }
-    const onClose = () => {
-      console.log('onClose')
-      setShowQRScanner(false)
-    }
-    return <QRCodeScanner onClose={onClose} onCodeRead={onCodeRead} />
-  }
 
   return (
     <View style={styles.row}>
@@ -56,7 +41,7 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => setShowQRScanner(true)}
+        onPress={() => navigation.navigate('WalletConnect' as never)}
         style={styles.button}>
         <QRCodeIconFooter />
       </TouchableOpacity>

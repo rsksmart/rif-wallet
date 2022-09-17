@@ -85,9 +85,7 @@ const NewConnection: React.FC<{
       </View>
       <SquareButton
         shadowColor={'#000'}
-        onPress={() => {
-          navigation.navigate('WalletConnect')
-        }}
+        onPress={() => navigation.navigate('WalletConnect')}
         title={'connect'}
         icon={<QRCodeIcon color={'#000'} />}
       />
