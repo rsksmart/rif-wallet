@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image, StyleSheet, Text, View } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
 import { NavigationProp } from '../../RootNavigation'
 import { colors } from '../../styles'
@@ -59,6 +60,12 @@ export const DappsScreen: React.FC<{
                   <Text style={styles.dappName}>{c.peerMeta?.name}</Text>
                   <Text style={styles.dappUrl}>{c.peerMeta?.url}</Text>
                 </View>
+                <TouchableOpacity style={styles.dappButtonView}>
+                  <Image
+                    source={require('../../images/connected-dapp.png')}
+                    style={styles.dappButton}
+                  />
+                </TouchableOpacity>
               </View>
             </LinearGradient>
           ))}
@@ -124,17 +131,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   dappIcon: {
-    width: 40,
-    height: 40,
+    width: 30,
+    height: 30,
     resizeMode: 'contain',
+    alignSelf: 'center',
   },
   dappNameView: {
+    flex: 3,
     marginLeft: 20,
   },
   dappName: {
     fontFamily: fonts.semibold,
     fontSize: 16,
     color: colors.text.primary,
+  },
+  dappButtonView: {
+    flex: 1,
+  },
+  dappButton: {
+    flex: 1,
+    width: 50,
+    height: 50,
+    resizeMode: 'contain',
   },
   dappUrl: {
     fontFamily: fonts.regular,
