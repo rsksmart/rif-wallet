@@ -2,6 +2,8 @@ import React from 'react'
 import { StyleSheet, View, TouchableOpacity, Image } from 'react-native'
 import { colors } from '../../styles'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import { IProfileStore } from '../../storage/ProfileStore'
+import { RegularText } from '../../components'
 
 import { IProfileStore } from '../../storage/ProfileStore'
 import { RegularText } from '../../components'

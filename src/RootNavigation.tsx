@@ -251,6 +251,7 @@ export const RootNavigation: React.FC<{
             )}
           </RootStack.Screen>
 
+
           <RootStack.Screen name="SearchDomain" options={sharedOptions}>
             {props => (
               <InjectedScreens.SearchDomainScreen
@@ -260,6 +261,7 @@ export const RootNavigation: React.FC<{
               />
             )}
           </RootStack.Screen>
+
 
           <RootStack.Screen
             name="RegisterDomain"
