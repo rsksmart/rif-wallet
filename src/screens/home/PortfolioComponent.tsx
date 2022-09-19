@@ -10,7 +10,7 @@ import { grid } from '../../styles/grid'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { ScrollView } from 'react-native-gesture-handler'
 import { IPrice } from '../../subscriptions/types'
-import BitcoinNetwork from '../../components/bitcoin/BitcoinNetwork'
+import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 
 interface Interface {
   selectedAddress?: string

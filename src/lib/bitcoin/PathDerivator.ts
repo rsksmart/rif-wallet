@@ -2,16 +2,18 @@ export default class PathDerivator {
   purpose: number | string
   coinTypeNumber: number | string
   account: number | string
-  externalOrInternal: number | string = 0
+  changeIndex: number | string = 0
 
   constructor(
     purpose: number | string,
     coinTypeNumber: number | string,
     account: number | string,
+    changeIndex: number | string = 0,
   ) {
     this.purpose = purpose
     this.coinTypeNumber = coinTypeNumber
     this.account = account
+    this.changeIndex = changeIndex
   }
   getAccountDerivation() {
     return `m/${this.purpose}'/${this.coinTypeNumber}'/${this.account}'`
@@ -20,6 +22,6 @@ export default class PathDerivator {
     return `m/${this.purpose}'/${this.coinTypeNumber}'/${this.account}'/0`
   }
   getAddressDerivation(index: number | string) {
-    return `m/${this.purpose}'/${this.coinTypeNumber}'/${this.account}'/${this.externalOrInternal}/${index}`
+    return `m/${this.purpose}'/${this.coinTypeNumber}'/${this.account}'/${this.changeIndex}/${index}`
   }
 }

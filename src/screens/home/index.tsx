@@ -15,7 +15,7 @@ import SelectedTokenComponent from './SelectedTokenComponent'
 import SendReceiveButtonComponent from './SendReceiveButtonComponent'
 import { getTokenColor } from './tokenColor'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import BitcoinNetwork from '../../components/bitcoin/BitcoinNetwork'
+import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 
 export type HomeScreenProps = {
   navigation: NavigationProp
