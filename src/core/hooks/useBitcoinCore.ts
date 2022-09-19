@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
-import BIP39 from '../../components/bitcoin/BIP39'
+import BIP39 from '../../lib/bitcoin/BIP39'
 import useBitcoinNetworks from '../../components/bitcoin/useBitcoinNetworks'
-import BitcoinNetwork from '../../components/bitcoin/BitcoinNetwork'
+import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 export type useBitcoinCoreResultType = {
   networks: Array<BitcoinNetwork>
   networksMap: {

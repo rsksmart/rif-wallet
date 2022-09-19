@@ -15,7 +15,7 @@ import SelectedTokenComponent from './SelectedTokenComponent'
 import SendReceiveButtonComponent from './SendReceiveButtonComponent'
 import { getTokenColor } from './tokenColor'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import BitcoinNetwork from '../../components/bitcoin/BitcoinNetwork'
+import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 
 export type HomeScreenProps = {
   navigation: NavigationProp
@@ -117,7 +117,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       return balanceToDisplay(selected.balance, selected.decimals, 5)
     }
     return '0'
-  }, [selected])
+  }, [selected, balances])
   // waiting for the balances to load:
   if (!state.isSetup) {
     return <LoadingScreen />

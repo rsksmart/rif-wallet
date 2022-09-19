@@ -29,6 +29,13 @@ const BitcoinNetworkStore = {
     await BitcoinStore.save(currentNetworks)
     return network
   },
+  deleteNetwork: async (networkName: string): Promise<boolean> => {
+    const currentNetworks = await BitcoinNetworkStore.getStoredNetworks()
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { [networkName]: removed, ...newNetworks } = currentNetworks
+    await BitcoinStore.save(newNetworks)
+    return true
+  },
 }
 
 export default BitcoinNetworkStore

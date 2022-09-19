@@ -3,7 +3,7 @@ const { fromSeed } = require('bip32')
 import { COIN_BIPS, BIP_DATA } from './constants'
 import BitcoinNetwork from './BitcoinNetwork'
 import AddressFactory from './AddressFactory'
-import { RifWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
+import { RifWalletServicesFetcher } from '../rifWalletServices/RifWalletServicesFetcher'
 import { rifWalletServicesFetcher as defaultFetcherInstance } from '../../core/setup'
 
 export default class BIP {
