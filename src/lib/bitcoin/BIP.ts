@@ -76,4 +76,11 @@ export default class BIP {
     this.btc = data.btc
     return this.btc
   }
+  async fetchExternalAvailableAddress() {
+    const index =
+      await this.RifWalletServicesFetcherInstance.fetchXpubNextUnusedIndex(
+        this.accountPublicKey,
+      )
+    return this.getAddress(index)
+  }
 }
