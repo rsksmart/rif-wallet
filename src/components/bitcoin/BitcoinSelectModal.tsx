@@ -26,7 +26,7 @@ const BitcoinSelectModal: React.FC<BitcoinSelectModalType> = ({
     itemsArray={items}
     renderKey={renderKey}
     RenderComponent={({ item, [textKeyValue]: renderValue }) => (
-      <TouchableOpacity onPress={onSelect(item)}>
+      <TouchableOpacity onPress={onSelect(item)} style={styles.touchStyle}>
         <MediumText style={styles.whiteColor}>{renderValue}</MediumText>
       </TouchableOpacity>
     )}
@@ -36,6 +36,15 @@ const BitcoinSelectModal: React.FC<BitcoinSelectModalType> = ({
 )
 
 const styles = StyleSheet.create({
-  whiteColor: { color: 'white' },
+  whiteColor: { color: 'black' },
+  touchStyle: {
+    marginBottom: 30,
+    height: 70,
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderRadius: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#c6ccea',
+  },
 })
 export default BitcoinSelectModal
