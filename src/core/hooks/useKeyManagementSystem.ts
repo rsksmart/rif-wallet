@@ -7,6 +7,7 @@ import { deletePin, savePin } from '../../storage/PinStore'
 import {
   addNextWallet,
   creteKMS,
+  deleteDb,
   deleteKeys,
   loadExistingWallets,
 } from '../operations'
@@ -50,6 +51,7 @@ export const useKeyManagementSystem = (onRequest: OnRequest) => {
     deletePin()
     deleteContacts()
     deleteDomains()
+    deleteDb()
     setState({ ...initialState, loading: false })
   }
 

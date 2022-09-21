@@ -67,4 +67,13 @@ export class RealmDb {
       console.error('Failed to close db', error)
     }
   }
+
+  deleteAll() {
+    this.realm?.schema.forEach(schema => {
+      Realm.deleteFile({
+        schema: [schema],
+        path: `${schema.name.toLowerCase()}.realm`,
+      })
+    })
+  }
 }

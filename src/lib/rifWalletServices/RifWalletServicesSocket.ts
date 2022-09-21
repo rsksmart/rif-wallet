@@ -51,6 +51,7 @@ export class RifWalletServicesSocket
   }
 
   private async init(wallet: RIFWallet, privateKey: string) {
+    console.log('Path', db.realm?.path)
     await db.init(TransactionSchema, privateKey)
     const fetchedTransactions = await this.fetcher.fetchTransactionsByAddress(
       wallet.smartWalletAddress,
