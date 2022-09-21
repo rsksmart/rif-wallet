@@ -24,6 +24,15 @@ export interface IRegisteredDappsGroup {
   dapps: IRegisteredDapp[]
 }
 
+export interface IXPubBalanceData {
+  address: string
+  balance: string
+  totalReceived: string
+  totalSent: string
+  txs: number
+  btc: number
+}
+
 const RESULTS_LIMIT = 10
 
 export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
@@ -65,4 +74,9 @@ export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
 
   fetchDapps = (): Promise<IRegisteredDappsGroup[]> =>
     fetch(`${this.uri}/dapps`).then(response => response.json())
+
+  fetchXpubBalance = (xpub: string): Promise<IXPubBalanceData> =>
+    fetch(`${this.uri}/bitcoin/getXpubBalance/${xpub}`).then(response =>
+      response.json(),
+    )
 }
