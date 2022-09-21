@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { colors } from '../../styles'
 import BitcoinReceiveField from './BitcoinReceiveField'
 import BitcoinSelectModal from './BitcoinSelectModal'
@@ -8,6 +8,7 @@ import { MediumText } from '../typography'
 import ActivityField from '../activity/ActivityField'
 import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 import BIP from '../../lib/bitcoin/BIP'
+import { CopyIcon } from '../icons'
 
 export type BitcoinReceivePresentationType = {
   selectedNetwork?: BitcoinNetwork
@@ -25,6 +26,7 @@ export type BitcoinReceivePresentationType = {
   onGenerateNewAddress: () => void
   address: string | null
   isFetchingAddress: boolean
+  onCopyAddressPressed: () => void
 }
 
 const BitcoinReceivePresentation: React.FC<BitcoinReceivePresentationType> = ({
@@ -43,6 +45,7 @@ const BitcoinReceivePresentation: React.FC<BitcoinReceivePresentationType> = ({
   onGenerateNewAddress,
   address,
   isFetchingAddress,
+  onCopyAddressPressed,
 }) => (
   <View style={styles.container}>
     <BitcoinReceiveField
@@ -84,9 +87,14 @@ const BitcoinReceivePresentation: React.FC<BitcoinReceivePresentationType> = ({
         <MediumText style={styles.textColor}>Loading new address...</MediumText>
       )}
       {!isFetchingAddress && address && (
-        <ActivityField title="Address" LabelStyle={styles.textColor}>
-          <MediumText>{address}</MediumText>
-        </ActivityField>
+        <TouchableOpacity onPress={onCopyAddressPressed}>
+          <ActivityField title="Address" LabelStyle={styles.textColor}>
+            <View style={styles.addressViewStyle}>
+              <MediumText style={styles.addressFontStyle}>{address}</MediumText>
+              <CopyIcon width={35} color="black" />
+            </View>
+          </ActivityField>
+        </TouchableOpacity>
       )}
     </View>
   </View>
@@ -107,6 +115,14 @@ const styles = StyleSheet.create({
   },
   viewTop: { marginTop: 20 },
   textColor: { color: 'white' },
+  addressViewStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  addressFontStyle: {
+    fontSize: 12,
+    flexShrink: 1,
+  },
 })
 
 export default BitcoinReceivePresentation

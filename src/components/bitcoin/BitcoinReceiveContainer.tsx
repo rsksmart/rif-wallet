@@ -5,6 +5,7 @@ import { useBitcoinCoreContext } from '../../Context'
 import BitcoinReceivePresentation, {
   BitcoinReceivePresentationType,
 } from './BitcoinReceivePresentation'
+import Clipboard from '@react-native-community/clipboard'
 
 type BitcoinReceiveContainerType = {
   BitcoinReceivePresentationComp?: React.FC<BitcoinReceivePresentationType>
@@ -36,6 +37,7 @@ const BitcoinReceiveContainer: React.FC<BitcoinReceiveContainerType> = ({
   const onNetworkSelect = React.useCallback(
     networkItem => () => {
       setSelectedNetwork(networksMap[networkItem.networkId])
+      setSelectedBip(networksMap[networkItem.networkId].bips?.[0] || undefined)
       setShowNetworkModal(false)
     },
     [],
@@ -74,6 +76,12 @@ const BitcoinReceiveContainer: React.FC<BitcoinReceiveContainerType> = ({
       })
   }
 
+  const onCopyAddressPressed = React.useCallback(() => {
+    if (address) {
+      Clipboard.setString(address)
+    }
+  }, [address])
+
   return (
     <BitcoinReceivePresentationComp
       networks={networks}
@@ -91,6 +99,7 @@ const BitcoinReceiveContainer: React.FC<BitcoinReceiveContainerType> = ({
       onGenerateNewAddress={onGenerateNewAddressTouch}
       address={address}
       isFetchingAddress={isFetchingAddress}
+      onCopyAddressPressed={onCopyAddressPressed}
     />
   )
 }
