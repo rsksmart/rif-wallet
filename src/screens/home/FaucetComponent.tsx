@@ -5,11 +5,10 @@ import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServices
 import { TokenImage } from './TokenImage'
 
 interface Interface {
-  navigation: any
   balances: ITokenWithBalance[]
 }
 
-const FaucetComponent: React.FC<Interface> = ({ navigation, balances }) => {
+const FaucetComponent: React.FC<Interface> = ({ balances }) => {
   const [rifToken, setRifToken] = useState<ITokenWithBalance | undefined>(
     undefined,
   )
