@@ -1,5 +1,5 @@
+import { render } from '@testing-library/react-native'
 import React from 'react'
-import { render, fireEvent } from '@testing-library/react-native'
 import FaucetComponent from './FaucetComponent'
 
 const rifTokenMock = {
@@ -31,15 +31,8 @@ describe('FaucetComponent', () => {
     )
 
     expect(getByTestId('Faucet.Text').children[0]).toBe(
-      "Your wallet doesn't have any TRBTC. Click here to get some from the faucet!",
+      "Your wallet doesn't have any TRBTC.",
     )
-
-    fireEvent.press(getByTestId('Faucet.Text'))
-
-    expect(navigation.navigate).toBeCalledWith('InjectedBrowserUX', {
-      params: { uri: 'https://faucet.rsk.co/' },
-      screen: 'InjectedBrowser',
-    })
   })
 
   it('shows tRIF', () => {
@@ -48,15 +41,8 @@ describe('FaucetComponent', () => {
     )
 
     expect(getByTestId('Faucet.Text').children[0]).toBe(
-      "Your wallet doesn't have any tRIF. Click here to get some from the faucet!",
+      "Your wallet doesn't have any tRIF.",
     )
-
-    fireEvent.press(getByTestId('Faucet.Text'))
-
-    expect(navigation.navigate).toBeCalledWith('InjectedBrowserUX', {
-      params: { uri: 'https://faucet.rifos.org/' },
-      screen: 'InjectedBrowser',
-    })
   })
 
   it('shows nothing', () => {
