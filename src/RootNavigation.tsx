@@ -27,7 +27,9 @@ const InjectedScreens = {
   ),
   RNSManagerScreen: InjectSelectedWallet(Screens.RNSManagerScreen),
   SearchDomainScreen: InjectSelectedWallet(Screens.SearchDomainScreen),
+  RequestDomainScreen: InjectSelectedWallet(Screens.RequestDomainScreen),
   RegisterDomainScreen: InjectSelectedWallet(Screens.RegisterDomainScreen),
+  BuyDomainScreen: InjectSelectedWallet(Screens.BuyDomainScreen),
   HomeScreen: InjectSelectedWallet(Screens.HomeScreen),
   DappsScreen: InjectSelectedWallet(Screens.DappsScreen),
   AccountsScreen: InjectSelectedWallet(Screens.AccountsScreen),
@@ -61,6 +63,8 @@ type RootStackParamList = {
   Dapps: undefined
   RNSManager: undefined
   SearchDomain: undefined
+  RequestDomain: undefined
+  BuyDomain: undefined
   RegisterDomain: { selectedDomain: string; years: number }
   Contacts: undefined
   Settings: undefined
@@ -254,6 +258,26 @@ export const RootNavigation: React.FC<{
           <RootStack.Screen name="SearchDomain" options={sharedOptions}>
             {props => (
               <InjectedScreens.SearchDomainScreen
+                {...props}
+                profile={profile}
+                setProfile={setProfile}
+              />
+            )}
+          </RootStack.Screen>
+
+          <RootStack.Screen name="RequestDomain" options={sharedOptions}>
+            {props => (
+              <InjectedScreens.RequestDomainScreen
+                {...props}
+                profile={profile}
+                setProfile={setProfile}
+              />
+            )}
+          </RootStack.Screen>
+
+          <RootStack.Screen name="BuyDomain" options={sharedOptions}>
+            {props => (
+              <InjectedScreens.BuyDomainScreen
                 {...props}
                 profile={profile}
                 setProfile={setProfile}

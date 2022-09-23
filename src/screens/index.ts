@@ -21,6 +21,8 @@ export {
 } from '../screens/injectedBrowser/InjectedBrowserNavigation'
 export { RNSManagerScreen } from './rnsManager/RNSManager'
 export { SearchDomainScreen } from './rnsManager/SearchDomainScreen'
+export { RequestDomainScreen } from './rnsManager/RequestDomainScreen'
+export { BuyDomainScreen } from './rnsManager/BuyDomainScreen'
 export { RegisterDomainScreen } from './rnsManager/RegisterDomainScreen'
 export { HomeScreen, HomeScreenProps } from './home/index'
 export { DappsScreen, DappsScreenScreenProps } from './dapps/index'

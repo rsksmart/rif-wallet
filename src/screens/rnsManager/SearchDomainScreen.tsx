@@ -10,14 +10,16 @@ import { ScreenWithWallet } from '../types'
 import DomainLookUp from '../../screens/rnsManager/DomainLookUp'
 import { MediumText } from '../../components'
 import { IProfileStore } from '../../storage/ProfileStore'
+import TitleStatus from './TitleStatus'
 
 type Props = {
   profile: IProfileStore
   setProfile: (p: IProfileStore) => void
 }
+
 export const SearchDomainScreen: React.FC<
   ScreenProps<'SearchDomain'> & ScreenWithWallet & Props
-> = ({ wallet, navigation, profile, setProfile }) => {
+> = ({ wallet, navigation }) => {
   const [domainToLookUp, setDomainToLookUp] = useState<string>('')
 
   useState<boolean>(false)
@@ -44,19 +46,7 @@ export const SearchDomainScreen: React.FC<
     const price = await calculatePrice(domainToLookUp, years)
     setSelectedDomainPrice(price + '')
   }
-  //TODO: remove this when remaining slices are done
-  const selectDomain = async (domain: string) => {
-    await setProfile({
-      ...profile,
-      alias: domain,
-    } as unknown as IProfileStore)
 
-    // @ts-ignore
-    navigation.navigate('ProfileCreateScreen', {
-      navigation,
-      profile: { alias: domainToLookUp },
-    })
-  }
   return (
     <>
       <View style={styles.profileHeader}>
@@ -68,55 +58,67 @@ export const SearchDomainScreen: React.FC<
         </TouchableOpacity>
       </View>
       <View style={styles.container}>
-        <View style={styles.profileImageContainer}>
-          <Image
-            style={styles.profileImage}
-            source={require('../../images/image_place_holder.jpeg')}
-          />
-        </View>
-
-        <DomainLookUp
-          initialValue={domainToLookUp}
-          onChangeText={setDomainToLookUp}
-          wallet={wallet}
-          onDomainAvailable={handleDomainAvailable}
-        />
-        <View style={styles.rowContainer}>
-          <View style={styles.flexContainer}>
-            <>
-              <View style={styles.priceContainer}>
-                <MediumText
-                  style={
-                    styles.priceText
-                  }>{`${selectedYears} years ${selectedDomainPrice} rif`}</MediumText>
-              </View>
-              <TouchableOpacity
-                onPress={() => handleYearsChange(selectedYears + 1)}
-                style={styles.addIcon}>
-                <MaterialIcon
-                  name="add"
-                  color={colors.background.darkBlue}
-                  size={20}
-                />
-              </TouchableOpacity>
-              {selectedYears > 1 && (
-                <TouchableOpacity
-                  onPress={() => handleYearsChange(selectedYears - 1)}
-                  style={styles.minusIcon}>
-                  <MaterialIcon
-                    name="remove"
-                    color={colors.background.darkBlue}
-                    size={20}
-                  />
-                </TouchableOpacity>
-              )}
-            </>
+        <TitleStatus title={'Choose alias'} />
+        <View style={styles.marginBottom}>
+          <View style={styles.profileImageContainer}>
+            <Image
+              style={styles.profileImage}
+              source={require('../../images/image_place_holder.jpeg')}
+            />
+            <View>
+              <MediumText style={styles.profileDisplayAlias}>
+                {domainToLookUp !== '' ? domainToLookUp : 'alias name'}
+              </MediumText>
+            </View>
           </View>
         </View>
 
-        <View style={styles.rowContainer}>
+        <View style={styles.marginBottom}>
+          <DomainLookUp
+            initialValue={domainToLookUp}
+            onChangeText={setDomainToLookUp}
+            wallet={wallet}
+            onDomainAvailable={handleDomainAvailable}
+          />
+        </View>
+        <View style={styles.flexContainer}>
+          <View style={styles.priceContainer}>
+            <MediumText
+              style={
+                styles.priceText
+              }>{`${selectedYears} years ${selectedDomainPrice} rif`}</MediumText>
+          </View>
+          <TouchableOpacity
+            onPress={() => handleYearsChange(selectedYears + 1)}
+            style={styles.addIcon}>
+            <MaterialIcon
+              name="add"
+              color={colors.background.darkBlue}
+              size={20}
+            />
+          </TouchableOpacity>
+          {selectedYears > 1 && (
+            <TouchableOpacity
+              onPress={() => handleYearsChange(selectedYears - 1)}
+              style={styles.minusIcon}>
+              <MaterialIcon
+                name="remove"
+                color={colors.background.darkBlue}
+                size={20}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
+
+        <View style={styles.bottomContainer}>
           <PurpleButton
-            onPress={() => selectDomain(domainToLookUp)}
+            onPress={() =>
+              // @ts-ignore
+              navigation.navigate('RequestDomain', {
+                navigation,
+                alias: domainToLookUp,
+              })
+            }
             accessibilityLabel="request"
             title={'request'}
           />
@@ -132,6 +134,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background.darkBlue,
     paddingTop: 10,
     paddingHorizontal: 40,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   profileHeader: {
     flexDirection: 'row',
@@ -149,16 +155,27 @@ const styles = StyleSheet.create({
   },
   profileImageContainer: {
     alignItems: 'center',
-    marginBottom: 30,
+    backgroundColor: colors.background.secondary,
+    borderRadius: 20,
+    paddingTop: 10,
+    paddingBottom: 10,
   },
   profileImage: {
-    width: 120,
-    height: 120,
+    width: 80,
+    height: 80,
     borderRadius: 100,
   },
-
-  rowContainer: {
-    margin: 5,
+  profileDisplayAlias: {
+    color: colors.white,
+    padding: 10,
+  },
+  marginBottom: {
+    marginBottom: 10,
+  },
+  bottomContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    paddingBottom: 10,
   },
   flexContainer: {
     flexDirection: 'row',
