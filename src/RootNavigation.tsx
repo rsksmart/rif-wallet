@@ -26,6 +26,7 @@ const InjectedScreens = {
     Screens.InjectedBrowserNavigation,
   ),
   RNSManagerScreen: InjectSelectedWallet(Screens.RNSManagerScreen),
+  SearchDomainScreen: InjectSelectedWallet(Screens.SearchDomainScreen),
   RegisterDomainScreen: InjectSelectedWallet(Screens.RegisterDomainScreen),
   HomeScreen: InjectSelectedWallet(Screens.HomeScreen),
   DappsScreen: InjectSelectedWallet(Screens.DappsScreen),
@@ -59,6 +60,7 @@ type RootStackParamList = {
   InjectedBrowserUX: undefined
   Dapps: undefined
   RNSManager: undefined
+  SearchDomain: undefined
   RegisterDomain: { selectedDomain: string; years: number }
   Contacts: undefined
   Settings: undefined
@@ -242,6 +244,16 @@ export const RootNavigation: React.FC<{
           <RootStack.Screen name="RNSManager" options={sharedOptions}>
             {props => (
               <InjectedScreens.RNSManagerScreen
+                {...props}
+                profile={profile}
+                setProfile={setProfile}
+              />
+            )}
+          </RootStack.Screen>
+
+          <RootStack.Screen name="SearchDomain" options={sharedOptions}>
+            {props => (
+              <InjectedScreens.SearchDomainScreen
                 {...props}
                 profile={profile}
                 setProfile={setProfile}

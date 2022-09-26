@@ -20,6 +20,7 @@ export {
   InjectedBrowserUXScreenProps,
 } from '../screens/injectedBrowser/InjectedBrowserNavigation'
 export { RNSManagerScreen } from './rnsManager/RNSManager'
+export { SearchDomainScreen } from './rnsManager/SearchDomainScreen'
 export { RegisterDomainScreen } from './rnsManager/RegisterDomainScreen'
 export { HomeScreen, HomeScreenProps } from './home/index'
 export { DappsScreen, DappsScreenScreenProps } from './dapps/index'
