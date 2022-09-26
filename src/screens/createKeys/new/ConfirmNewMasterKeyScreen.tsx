@@ -39,7 +39,13 @@ export const ConfirmNewMasterKeyScreen: React.FC<
   const [error, setError] = useState<boolean>(false)
 
   const handleConfirmMnemonic = async () => {
-    await createFirstWallet(mnemonicWords.join())
+    if (selectedWords.join() !== mnemonicWords.join()) {
+      return setError(true)
+    }
+
+    setError(false)
+
+    await createFirstWallet(mnemonic)
   }
 
   const handleWordSelected = (wordSelected: string, index: number) => {
