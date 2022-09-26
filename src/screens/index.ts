@@ -15,10 +15,6 @@ export { ManuallyDeployScreen } from './settings/ManuallyDeployScreen'
 export { WalletConnectNavigationScreen } from './walletConnect'
 export { ChangeLanguageScreen } from './settings/ChangeLanguageScreen'
 export { CreatePinScreen } from './createPin/CreatePinScreen'
-export {
-  InjectedBrowserNavigation,
-  InjectedBrowserUXScreenProps,
-} from '../screens/injectedBrowser/InjectedBrowserNavigation'
 export { RNSManagerScreen } from './rnsManager/RNSManager'
 export { SearchDomainScreen } from './rnsManager/SearchDomainScreen'
 export { RegisterDomainScreen } from './rnsManager/RegisterDomainScreen'
