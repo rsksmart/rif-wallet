@@ -4,7 +4,9 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import { colors } from '../../styles'
 import { PurpleButton } from '../../components/button/ButtonVariations'
+
 import { rnsManagerStyles } from './rnsManagerStyles'
+
 
 import { ScreenProps } from '../../RootNavigation'
 import { ScreenWithWallet } from '../types'
@@ -12,6 +14,7 @@ import DomainLookUp from '../../screens/rnsManager/DomainLookUp'
 import { MediumText } from '../../components'
 import { IProfileStore } from '../../storage/ProfileStore'
 import TitleStatus from './TitleStatus'
+
 
 type Props = {
   profile: IProfileStore
@@ -21,6 +24,7 @@ type Props = {
 export const SearchDomainScreen: React.FC<
   ScreenProps<'SearchDomain'> & ScreenWithWallet & Props
 > = ({ wallet, navigation }) => {
+
   const [domainToLookUp, setDomainToLookUp] = useState<string>('')
 
   useState<boolean>(false)
@@ -47,6 +51,7 @@ export const SearchDomainScreen: React.FC<
     const price = await calculatePrice(domainToLookUp, years)
     setSelectedDomainPrice(price + '')
   }
+
 
   return (
     <>

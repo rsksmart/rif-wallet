@@ -1,17 +1,21 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
-import { BalanceCardComponent } from './BalanceCardComponent'
+import {
+  BalanceCardComponent,
+  BitcoinCardComponent,
+} from './BalanceCardComponent'
 import { Paragraph } from '../../components'
 import { colors } from '../../styles/colors'
 import { grid } from '../../styles/grid'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { ScrollView } from 'react-native-gesture-handler'
 import { IPrice } from '../../subscriptions/types'
+import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 
 interface Interface {
   selectedAddress?: string
   setSelected: (token: string) => void
-  balances: ITokenWithBalance[]
+  balances: Array<ITokenWithBalance | BitcoinNetwork>
   prices: Record<string, IPrice>
 }
 
@@ -27,16 +31,28 @@ const PortfolioComponent: React.FC<Interface> = ({
         <Paragraph style={styles.heading}>portfolio</Paragraph>
       </View>
       <View style={styles.scrollView}>
-        {balances.map((balance: ITokenWithBalance, i: number) => (
-          <View style={i % 2 ? styles.rightColumn : styles.leftColumn} key={i}>
-            <BalanceCardComponent
-              token={balance}
-              onPress={setSelected}
-              selected={selectedAddress === balance.contractAddress}
-              price={prices[balance.contractAddress]}
-            />
-          </View>
-        ))}
+        {balances.map(
+          (balance: ITokenWithBalance | BitcoinNetwork, i: number) => (
+            <View
+              style={i % 2 ? styles.rightColumn : styles.leftColumn}
+              key={i}>
+              {balance instanceof BitcoinNetwork ? (
+                <BitcoinCardComponent
+                  {...balance}
+                  isSelected={selectedAddress === balance.contractAddress}
+                  onPress={setSelected}
+                />
+              ) : (
+                <BalanceCardComponent
+                  token={balance}
+                  onPress={setSelected}
+                  selected={selectedAddress === balance.contractAddress}
+                  price={prices[balance.contractAddress]}
+                />
+              )}
+            </View>
+          ),
+        )}
       </View>
     </ScrollView>
   )
