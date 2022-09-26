@@ -33,8 +33,8 @@ export const BuyDomainScreen: React.FC<
   const [registerInProcess, setRegisterInProcess] = useState(false)
   const [domainPrice, setDomainPrice] = useState<BigNumber>()
 
-  const [setResolvingAddress] = useState('')
-
+  const [resolvingAddress, setResolvingAddress] = useState('')
+  console.log({ resolvingAddress })
   const rskRegistrar = new RSKRegistrar(
     addresses.rskOwnerAddress,
     addresses.fifsAddrRegistrarAddress,
