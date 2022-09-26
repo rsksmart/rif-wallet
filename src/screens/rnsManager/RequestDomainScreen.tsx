@@ -23,6 +23,7 @@ import TitleStatus from './TitleStatus'
 type Props = {
   profile: IProfileStore
   setProfile: (p: IProfileStore) => void
+  route: any
 }
 
 export const RequestDomainScreen: React.FC<
@@ -37,45 +38,46 @@ export const RequestDomainScreen: React.FC<
     wallet,
   )
   const [commitToRegisterInfo, setCommitToRegisterInfo] = useState('')
+  const [commitToRegisterInfo2, setCommitToRegisterInfo2] = useState('')
+  const [processing, setProcessing] = useState(false)
   const [domainSecret, setDomainSecret] = useState('')
-  const [commitReady, setCommitReady] = useState(false)
-  const [error, setError] = useState('')
-  const [progress, setProgress] = useState(0.1)
+  const [progress, setProgress] = useState(0.0)
 
   const commitToRegister = async () => {
+    setProcessing(true)
     try {
       const { makeCommitmentTransaction, secret, canReveal } =
         await rskRegistrar.commitToRegister(
-          'moonwalker_game',
+          alias.replace('.rsk', ''),
           wallet.smartWallet.address,
         )
 
       setDomainSecret(secret)
-      setCommitToRegisterInfo('Transaction sent. Please wait...')
-
-      await makeCommitmentTransaction.wait()
-
-      setCommitToRegisterInfo(
-        'Transaction confirmed. Please wait approximately 2 mins to secure your domain',
-      )
+      setCommitToRegisterInfo('registering your alias...')
+      setCommitToRegisterInfo2('estimated wait: 3 minutes')
 
       const intervalId = setInterval(async () => {
         const ready = await canReveal()
-        setProgress(prev => prev + 0.02)
+        setProgress(prev => prev + 0.015)
         if (ready) {
+          setProcessing(false)
           navigation.navigate('BuyDomain', {
             navigation,
             alias,
+            domainSecret,
           })
           setCommitToRegisterInfo(
             'Waiting period ended. You can now register your domain',
           )
-          setCommitReady(true)
           clearInterval(intervalId)
         }
       }, 1000)
+      await makeCommitmentTransaction.wait()
+      setCommitToRegisterInfo('Transaction confirmed. Please wait...')
     } catch (e: any) {
-      setError(e.message)
+      setProcessing(false)
+      setCommitToRegisterInfo(e.message)
+      setCommitToRegisterInfo2('')
     }
   }
   useEffect(() => {
@@ -83,12 +85,9 @@ export const RequestDomainScreen: React.FC<
   }, [])
   return (
     <>
-      <View>
-        <MediumText>{commitToRegisterInfo}</MediumText>
-      </View>
       <View style={styles.profileHeader}>
         {/*@ts-ignore*/}
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity onPress={() => navigation.navigate('SearchDomain')}>
           <View style={styles.backButton}>
             <MaterialIcon name="west" color="white" size={10} />
           </View>
@@ -96,27 +95,46 @@ export const RequestDomainScreen: React.FC<
       </View>
 
       <View style={styles.container}>
-        <TitleStatus title={'Request alias'} />
+        <TitleStatus
+          title={'Request alias'}
+          subTitle={'next: Purchase Alias'}
+          progress={0.59}
+          progressText={'2/5'}
+        />
+        <View style={styles.marginBottom}>
+          <View style={styles.profileImageContainer}>
+            <Image
+              style={styles.profileImage}
+              source={require('../../images/image_place_holder.jpeg')}
+            />
+            <View>
+              <MediumText style={styles.profileDisplayAlias}>
+                {alias}
+              </MediumText>
+              <Progress.Bar
+                progress={progress}
+                width={Dimensions.get('window').width * 0.6}
+                style={styles.progressBar}
+                color={colors.green}
+                borderColor={colors.background.secondary}
+                unfilledColor={colors.gray}
+              />
+              <MediumText style={styles.aliasRequestInfo}>
+                {commitToRegisterInfo}
+              </MediumText>
+              <MediumText style={styles.aliasRequestInfo2}>
+                {commitToRegisterInfo2}
+              </MediumText>
+            </View>
+          </View>
+        </View>
 
-        <View style={styles.profileImageContainer}>
-          <Image
-            style={styles.profileImage}
-            source={require('../../images/image_place_holder.jpeg')}
-          />
-          <MediumText style={{ color: 'white' }}>{alias}</MediumText>
-        </View>
-        <View style={{}}>
-          <Progress.Bar
-            progress={progress}
-            width={Dimensions.get('window').width * 0.8}
-            style={styles.progressBar}
-          />
-        </View>
-        <View style={styles.rowContainer}>
+        <View style={styles.bottomContainer}>
           <PurpleButton
             onPress={() => commitToRegister()}
             accessibilityLabel="request"
             title={'request'}
+            disabled={processing}
           />
         </View>
       </View>
@@ -148,16 +166,35 @@ const styles = StyleSheet.create({
   },
   profileImageContainer: {
     alignItems: 'center',
-    marginBottom: 30,
+    backgroundColor: colors.background.secondary,
+    borderRadius: 20,
+    paddingTop: 10,
+    paddingBottom: 10,
   },
   profileImage: {
-    width: 120,
-    height: 120,
+    width: 80,
+    height: 80,
     borderRadius: 100,
   },
-
-  rowContainer: {
-    margin: 5,
+  profileDisplayAlias: {
+    color: colors.white,
+    padding: 10,
+    alignSelf: 'center',
+    fontSize: 18,
+  },
+  aliasRequestInfo: {
+    color: colors.white,
+    alignSelf: 'center',
+    padding: 5,
+    paddingTop: 10,
+  },
+  aliasRequestInfo2: {
+    color: colors.gray,
+    alignSelf: 'center',
+    padding: 5,
+  },
+  marginBottom: {
+    marginBottom: 10,
   },
   flexContainer: {
     flexDirection: 'row',
@@ -184,5 +221,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'gray',
     height: 20,
     borderRadius: 20,
+  },
+  bottomContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    paddingBottom: 10,
   },
 })

@@ -6,25 +6,28 @@ import * as Progress from 'react-native-progress'
 
 type ITitleStatus = {
   title: string
+  subTitle: string
+  progress: number
+  progressText: string
 }
-const format = (progress: number) => {
-  return '1/5'
-}
-const TitleStatus: React.FC<ITitleStatus> = ({ title }) => (
+const TitleStatus: React.FC<ITitleStatus> = ({
+  title,
+  subTitle,
+  progress,
+  progressText,
+}) => (
   <View style={styles.header}>
     <View style={styles.titleContainer}>
-      <MediumText style={styles.titleText}>{title} </MediumText>
-      <MediumText style={styles.subTitleText}>
-        next: Request Process{' '}
-      </MediumText>
+      <MediumText style={styles.titleText}>{title}</MediumText>
+      <MediumText style={styles.subTitleText}>{subTitle}</MediumText>
     </View>
     <Progress.Circle
       style={styles.progress}
       textStyle={styles.progressText}
       showsText={true}
-      formatText={format}
+      formatText={() => progressText}
       size={45}
-      progress={0.3}
+      progress={progress}
       indeterminate={false}
       color={colors.white}
       unfilledColor={colors.darkPurple}

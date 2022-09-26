@@ -58,7 +58,12 @@ export const SearchDomainScreen: React.FC<
         </TouchableOpacity>
       </View>
       <View style={styles.container}>
-        <TitleStatus title={'Choose alias'} />
+        <TitleStatus
+          title={'Choose alias'}
+          subTitle={'next: Request process'}
+          progress={0.25}
+          progressText={'1/5'}
+        />
         <View style={styles.marginBottom}>
           <View style={styles.profileImageContainer}>
             <Image
