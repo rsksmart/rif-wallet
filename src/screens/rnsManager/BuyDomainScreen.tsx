@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import { RSKRegistrar } from '@rsksmart/rns-sdk'
-import * as Progress from 'react-native-progress'
+import { BigNumber, utils } from 'ethers'
+import { RSKRegistrar, AddrResolver } from '@rsksmart/rns-sdk'
 
-import {
-  View,
-  StyleSheet,
-  Dimensions,
-  Image,
-  TouchableOpacity,
-} from 'react-native'
+import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import { colors } from '../../styles'
+import { rnsManagerStyles } from './rnsManagerStyles'
+
 import { PurpleButton } from '../../components/button/ButtonVariations'
 
 import { ScreenProps } from '../../RootNavigation'
@@ -19,16 +15,25 @@ import { MediumText } from '../../components'
 import { IProfileStore } from '../../storage/ProfileStore'
 import addresses from './addresses.json'
 import TitleStatus from './TitleStatus'
+import { addDomain } from '../../storage/DomainsStore'
 
 type Props = {
   profile: IProfileStore
   setProfile: (p: IProfileStore) => void
+  route: any
 }
 
 export const BuyDomainScreen: React.FC<
   ScreenProps<'BuyDomain'> & ScreenWithWallet & Props
-> = ({ wallet, navigation, route }) => {
-  const { alias } = route.params
+> = ({ wallet, profile, setProfile, navigation, route }) => {
+  const { alias, domainSecret, duration } = route.params
+
+  const [registerDomainInfo, setRegisterDomainInfo] = useState('')
+  const [registerReady, setRegisterReady] = useState(false)
+  const [registerInProcess, setRegisterInProcess] = useState(false)
+  const [domainPrice, setDomainPrice] = useState<BigNumber>()
+
+  const [setResolvingAddress] = useState('')
 
   const rskRegistrar = new RSKRegistrar(
     addresses.rskOwnerAddress,
@@ -36,38 +41,118 @@ export const BuyDomainScreen: React.FC<
     addresses.rifTokenAddress,
     wallet,
   )
+  const addrResolver = new AddrResolver(addresses.rnsRegistryAddress, wallet)
 
+  useEffect(() => {
+    setDomainPrice(undefined)
+    if (duration) {
+      rskRegistrar
+        .price(alias, BigNumber.from(duration))
+        .then(price => setDomainPrice(price))
+    }
+  }, [])
+  const registerDomain = async (domain: string) => {
+    try {
+      const durationToRegister = BigNumber.from(2)
+
+      const tx = await rskRegistrar.register(
+        domain,
+        wallet.smartWallet.address,
+        domainSecret,
+        durationToRegister,
+        domainPrice!,
+      )
+
+      setRegisterDomainInfo('Transaction sent. Please wait...')
+      setRegisterInProcess(true)
+      await tx.wait()
+
+      await addDomain(wallet.smartWalletAddress, `${alias}.rsk`)
+
+      const address = await addrResolver.addr(`${alias}.rsk`)
+      setResolvingAddress(address)
+
+      setRegisterDomainInfo('Registered!!')
+      setRegisterReady(true)
+      // @ts-ignore
+    } catch (e: any) {
+      setRegisterInProcess(false)
+      setRegisterDomainInfo(e.message)
+    }
+  }
+  const selectDomain = async (domain: string) => {
+    await setProfile({
+      ...profile,
+      alias: domain,
+    } as unknown as IProfileStore)
+
+    // @ts-ignore
+    navigation.navigate('ProfileCreateScreen', {
+      navigation,
+      profile: { alias: alias },
+    })
+  }
   return (
     <>
-      <View>
-        <MediumText>{'Buy domain'}</MediumText>
-      </View>
-      <View style={styles.profileHeader}>
+      <View style={rnsManagerStyles.profileHeader}>
         {/*@ts-ignore*/}
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <View style={styles.backButton}>
+        <TouchableOpacity onPress={() => navigation.navigate('SearchDomain')}>
+          <View style={rnsManagerStyles.backButton}>
             <MaterialIcon name="west" color="white" size={10} />
           </View>
         </TouchableOpacity>
       </View>
 
-      <View style={styles.container}>
-        <TitleStatus title={'Buy alias'} />
-
-        <View style={styles.profileImageContainer}>
-          <Image
-            style={styles.profileImage}
-            source={require('../../images/image_place_holder.jpeg')}
-          />
-          <MediumText style={{ color: 'white' }}>{alias}</MediumText>
+      <View style={rnsManagerStyles.container}>
+        <TitleStatus
+          title={'Buy alias'}
+          subTitle={'next: Confirm'}
+          progress={0.66}
+          progressText={'3/4'}
+        />
+        <View style={rnsManagerStyles.marginBottom}>
+          {domainPrice && (
+            <>
+              <MediumText style={styles.priceLabel}>
+                {utils.formatUnits(domainPrice, 18)} RIF
+              </MediumText>
+              <MediumText style={styles.priceLabel}>
+                {duration} years
+              </MediumText>
+            </>
+          )}
+          <View style={rnsManagerStyles.profileImageContainer}>
+            <Image
+              style={rnsManagerStyles.profileImage}
+              source={require('../../images/image_place_holder.jpeg')}
+            />
+            <View>
+              <MediumText style={rnsManagerStyles.profileDisplayAlias}>
+                {alias}.rsk
+              </MediumText>
+            </View>
+          </View>
         </View>
 
-        <View style={styles.rowContainer}>
-          <PurpleButton
-            onPress={() => {}}
-            accessibilityLabel="buy"
-            title={'buy'}
-          />
+        <MediumText style={rnsManagerStyles.profileDisplayAlias}>
+          {registerDomainInfo}
+        </MediumText>
+
+        <View style={rnsManagerStyles.bottomContainer}>
+          {!registerInProcess && (
+            <PurpleButton
+              onPress={() => registerDomain(alias)}
+              accessibilityLabel="buy"
+              title={'buy'}
+            />
+          )}
+          {registerReady && (
+            <PurpleButton
+              onPress={() => selectDomain(alias + '.rsk')}
+              accessibilityLabel="Set alias in profile"
+              title={'Set alias in profile'}
+            />
+          )}
         </View>
       </View>
     </>
@@ -75,64 +160,9 @@ export const BuyDomainScreen: React.FC<
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background.darkBlue,
-    paddingTop: 10,
-    paddingHorizontal: 40,
-  },
-  profileHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 20,
-    backgroundColor: colors.background.darkBlue,
-  },
-  progressBar: {},
-
-  backButton: {
+  priceLabel: {
     color: colors.white,
-    backgroundColor: colors.blue2,
-    borderRadius: 20,
-    padding: 10,
-    bottom: 3,
-  },
-  profileImageContainer: {
-    alignItems: 'center',
-    marginBottom: 30,
-  },
-  profileImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 100,
-  },
-
-  rowContainer: {
-    margin: 5,
-  },
-  flexContainer: {
-    flexDirection: 'row',
-  },
-  priceContainer: {
-    backgroundColor: colors.background.secondary,
-    borderRadius: 15,
-    width: '100%',
-    padding: 15,
-  },
-  priceText: {
-    color: 'white',
-  },
-  addIcon: {
-    right: 60,
-    top: 15,
-    backgroundColor: 'gray',
-    height: 20,
-    borderRadius: 20,
-  },
-  minusIcon: {
-    right: 50,
-    top: 15,
-    backgroundColor: 'gray',
-    height: 20,
-    borderRadius: 20,
+    alignSelf: 'center',
+    fontSize: 25,
   },
 })

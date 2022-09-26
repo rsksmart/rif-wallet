@@ -4,6 +4,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import { colors } from '../../styles'
 import { PurpleButton } from '../../components/button/ButtonVariations'
+import { rnsManagerStyles } from './rnsManagerStyles'
 
 import { ScreenProps } from '../../RootNavigation'
 import { ScreenWithWallet } from '../types'
@@ -49,36 +50,36 @@ export const SearchDomainScreen: React.FC<
 
   return (
     <>
-      <View style={styles.profileHeader}>
+      <View style={rnsManagerStyles.profileHeader}>
         {/*@ts-ignore*/}
         <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <View style={styles.backButton}>
+          <View style={rnsManagerStyles.backButton}>
             <MaterialIcon name="west" color="white" size={10} />
           </View>
         </TouchableOpacity>
       </View>
-      <View style={styles.container}>
+      <View style={rnsManagerStyles.container}>
         <TitleStatus
           title={'Choose alias'}
           subTitle={'next: Request process'}
           progress={0.25}
-          progressText={'1/5'}
+          progressText={'1/4'}
         />
-        <View style={styles.marginBottom}>
-          <View style={styles.profileImageContainer}>
+        <View style={rnsManagerStyles.marginBottom}>
+          <View style={rnsManagerStyles.profileImageContainer}>
             <Image
-              style={styles.profileImage}
+              style={rnsManagerStyles.profileImage}
               source={require('../../images/image_place_holder.jpeg')}
             />
             <View>
-              <MediumText style={styles.profileDisplayAlias}>
+              <MediumText style={rnsManagerStyles.profileDisplayAlias}>
                 {domainToLookUp !== '' ? domainToLookUp : 'alias name'}
               </MediumText>
             </View>
           </View>
         </View>
 
-        <View style={styles.marginBottom}>
+        <View style={rnsManagerStyles.marginBottom}>
           <DomainLookUp
             initialValue={domainToLookUp}
             onChangeText={setDomainToLookUp}
@@ -115,13 +116,14 @@ export const SearchDomainScreen: React.FC<
           )}
         </View>
 
-        <View style={styles.bottomContainer}>
+        <View style={rnsManagerStyles.bottomContainer}>
           <PurpleButton
             onPress={() =>
               // @ts-ignore
               navigation.navigate('RequestDomain', {
                 navigation,
-                alias: domainToLookUp,
+                alias: domainToLookUp.replace('.rsk', ''),
+                duration: selectedYears,
               })
             }
             accessibilityLabel="request"
@@ -134,54 +136,6 @@ export const SearchDomainScreen: React.FC<
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background.darkBlue,
-    paddingTop: 10,
-    paddingHorizontal: 40,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  profileHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 20,
-    backgroundColor: colors.background.darkBlue,
-  },
-
-  backButton: {
-    color: colors.white,
-    backgroundColor: colors.blue2,
-    borderRadius: 20,
-    padding: 10,
-    bottom: 3,
-  },
-  profileImageContainer: {
-    alignItems: 'center',
-    backgroundColor: colors.background.secondary,
-    borderRadius: 20,
-    paddingTop: 10,
-    paddingBottom: 10,
-  },
-  profileImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 100,
-  },
-  profileDisplayAlias: {
-    color: colors.white,
-    padding: 10,
-  },
-  marginBottom: {
-    marginBottom: 10,
-  },
-  bottomContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    paddingBottom: 10,
-  },
   flexContainer: {
     flexDirection: 'row',
   },
