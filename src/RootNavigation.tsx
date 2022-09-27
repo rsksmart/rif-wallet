@@ -9,8 +9,6 @@ import { AppHeader } from './ux/appHeader'
 import { AppFooterMenu } from './ux/appFooter'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
 import { colors } from './styles'
-import BitcoinAddressesScreen from './screens/bitcoin/BitcoinAddressesScreen'
-import BitcoinReceiveScreen from './screens/receive/BitcoinReceiveScreen'
 import BitcoinNetwork from './lib/bitcoin/BitcoinNetwork'
 
 import { emptyProfile, useProfile } from './core/hooks/useProfile'
@@ -190,11 +188,11 @@ export const RootNavigation: React.FC<{
           <RootStack.Screen
             name="BitcoinScreen"
             options={sharedOptions}
-            component={BitcoinAddressesScreen}
+            component={Screens.BitcoinAddressesScreen}
           />
           <RootStack.Screen
             name="ReceiveBitcoin"
-            component={BitcoinReceiveScreen}
+            component={Screens.BitcoinReceiveScreen}
             options={sharedOptions}
           />
           <RootStack.Screen name="Balances">
