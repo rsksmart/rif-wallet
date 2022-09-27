@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native'
 import QRCode from 'react-qr-code'
-import { getAddressDisplayText } from '../../components'
 import { ShareableText } from '../../components/ShareableText'
 import { Tabs } from '../../components/Tabs'
 import { colors } from '../../styles/colors'
@@ -15,20 +14,16 @@ export enum TestID {
 
 export type ReceiveScreenProps = {
   registeredDomains: string[]
-  smartWalletAddress: string
-  chainId?: number
+  address: string
+  displayAddress: string
 }
 
 export const ReceiveScreen: React.FC<ReceiveScreenProps> = ({
-  smartWalletAddress,
   registeredDomains,
-  chainId,
+  address,
+  displayAddress,
 }) => {
   const [activeTab, setActiveTab] = useState('address')
-  const { checksumAddress, displayAddress } = getAddressDisplayText(
-    smartWalletAddress,
-    chainId,
-  )
 
   const windowWidth = Dimensions.get('window').width
   const qrCodeSize = windowWidth * 0.5
@@ -52,7 +47,7 @@ export const ReceiveScreen: React.FC<ReceiveScreenProps> = ({
         <QRCode
           bgColor="#dbe3ff"
           color="#707070"
-          value={checksumAddress}
+          value={address}
           size={qrCodeSize}
         />
       </View>
@@ -66,7 +61,7 @@ export const ReceiveScreen: React.FC<ReceiveScreenProps> = ({
       </View>
       {activeTab === 'address' && (
         <View style={qrContainerStyle}>
-          <ShareableText text={displayAddress} valueToShare={checksumAddress} />
+          <ShareableText text={displayAddress} valueToShare={address} />
         </View>
       )}
 
