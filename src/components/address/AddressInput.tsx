@@ -1,32 +1,22 @@
-import React, { useState, useEffect } from 'react'
-import {
-  Text,
-  TextInput,
-  StyleSheet,
-  View,
-  Modal,
-  Dimensions,
-} from 'react-native'
 import Clipboard from '@react-native-community/clipboard'
+import React, { useEffect, useState } from 'react'
+import { StyleSheet, Text, TextInput, View } from 'react-native'
 
 import { ContentPasteIcon, QRCodeIcon } from '../icons'
 
-import {
-  validateAddress,
-  AddressValidationMessage,
-  toChecksumAddress,
-} from './lib'
-import { grid } from '../../styles'
-import { rnsResolver } from '../../core/setup'
-import QRScanner from '../qrScanner'
-import { BarCodeReadEvent } from 'react-native-camera'
-import { Button } from '../button'
-import { colors } from '../../styles'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import { isValidChecksumAddress } from '@rsksmart/rsk-utils'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import Icon from 'react-native-vector-icons/Ionicons'
+import { rnsResolver } from '../../core/setup'
+import { colors, grid } from '../../styles'
 import { OutlineButton } from '../button/ButtonVariations'
 import DeleteIcon from '../icons/DeleteIcon'
-import Icon from 'react-native-vector-icons/Ionicons'
+import { QRCodeScanner } from '../QRCodeScanner'
+import {
+  AddressValidationMessage,
+  toChecksumAddress,
+  validateAddress,
+} from './lib'
 
 type AddressInputProps = {
   initialValue: string
@@ -45,12 +35,10 @@ export const AddressInput: React.FC<AddressInputProps> = ({
 }) => {
   // the address of the recipient
   const [recipient, setRecipient] = useState<string>(initialValue)
-  // hide or show the QR reader
-  const [showQRReader, setShowQRReader] = useState<boolean>(false)
+  // hide or show the QR scanner
+  const [showQRScanner, setShowQRScanner] = useState<boolean>(false)
   const [domainFound, setDomainFound] = useState<string>('')
   const [addressResolved, setAddressResolved] = useState<string>('')
-
-  const windowWidth = Dimensions.get('window').width
 
   useEffect(() => {
     setRecipient(initialValue)
@@ -151,21 +139,14 @@ export const AddressInput: React.FC<AddressInputProps> = ({
     setStatus({ type: 'READY', value: '' })
   }
 
-  return showQRReader ? (
-    <Modal presentationStyle="overFullScreen" style={styles.cameraModal}>
-      <View
-        style={{
-          width: windowWidth,
-          height: windowWidth,
-        }}>
-        <QRScanner
-          onBarCodeRead={(event: BarCodeReadEvent) =>
-            handleChangeText(decodeURIComponent(event.data))
-          }
-        />
-        <Button onPress={() => setShowQRReader(false)} title="close" />
-      </View>
-    </Modal>
+  return showQRScanner ? (
+    <QRCodeScanner
+      onClose={() => setShowQRScanner(false)}
+      onCodeRead={data => {
+        handleChangeText(data)
+        setShowQRScanner(false)
+      }}
+    />
   ) : (
     <View style={styles.parent}>
       {!!domainFound && (
@@ -212,7 +193,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
 
                 <TouchableOpacity
                   style={styles.button}
-                  onPress={() => setShowQRReader(true)}
+                  onPress={() => setShowQRScanner(true)}
                   testID="Address.QRCodeButton">
                   <QRCodeIcon color={colors.text.secondary} />
                 </TouchableOpacity>
@@ -309,12 +290,6 @@ const styles = StyleSheet.create({
   },
   clearButton: {
     color: colors.lightPurple,
-  },
-  cameraModal: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
   },
   info: {
     marginTop: 5,

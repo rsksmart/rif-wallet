@@ -1,42 +1,64 @@
 import { useNavigation } from '@react-navigation/core'
 import React from 'react'
-import { View, StyleSheet, TouchableOpacity, Image } from 'react-native'
-
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import ActivityIcon from '../../components/icons/ActivityIcon'
+import ActivitySelectedIcon from '../../components/icons/ActivitySelectedIcon'
+import ContactIcon from '../../components/icons/ContactIcon'
+import ContactSelectedIcon from '../../components/icons/ContactSelectedIcon'
+import DappsIcon from '../../components/icons/DappsIcon'
+import DappsSelectedIcon from '../../components/icons/DappsSelectedIcon'
+import QRCodeIconFooter from '../../components/icons/QRCodeIconFooter'
 import { colors } from '../../styles/colors'
 
 export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
   currentScreen,
 }) => {
   const navigation = useNavigation()
-  const selectedStyle = {
-    ...styles.button,
-    borderBottomColor: colors.blue,
-  }
-
   return (
     <View style={styles.row}>
       <TouchableOpacity
-        onPress={() => navigation.navigate('Dapps' as never)}
-        style={currentScreen === 'Dapps' ? selectedStyle : styles.button}>
-        <Image source={require('../../images/footer-menu/blocks.png')} />
-      </TouchableOpacity>
-
-      <TouchableOpacity
         onPress={() => navigation.navigate('Home' as never)}
-        style={currentScreen === 'Home' ? selectedStyle : styles.button}>
-        <Image source={require('../../images/footer-menu/wallet.png')} />
+        style={styles.button}>
+        <Image
+          style={styles.walletIcon}
+          source={
+            currentScreen === 'Home'
+              ? require('../../images/footer-menu/wallet.png')
+              : require('../../images/footer-menu/wallet-o.png')
+          }
+        />
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={() => navigation.navigate('Activity' as never)}
-        style={currentScreen === 'Activity' ? selectedStyle : styles.button}>
-        <Image source={require('../../images/footer-menu/coins.png')} />
+        style={styles.button}>
+        {currentScreen === 'Activity' ? (
+          <ActivitySelectedIcon />
+        ) : (
+          <ActivityIcon />
+        )}
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        // onPress={() => navigation.navigate('Activity' as never)}
+        style={styles.button}>
+        <QRCodeIconFooter />
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={() => navigation.navigate('Contacts' as never)}
-        style={currentScreen === 'Contacts' ? selectedStyle : styles.button}>
-        <Image source={require('../../images/footer-menu/contacts.png')} />
+        style={styles.button}>
+        {currentScreen === 'Contacts' ? (
+          <ContactSelectedIcon />
+        ) : (
+          <ContactIcon />
+        )}
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => navigation.navigate('Dapps' as never)}
+        style={styles.button}>
+        {currentScreen === 'Dapps' ? <DappsSelectedIcon /> : <DappsIcon />}
       </TouchableOpacity>
     </View>
   )
@@ -45,7 +67,7 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
 const styles = StyleSheet.create({
   row: {
     padding: 10,
-    paddingBottom: 40,
+    paddingBottom: 30,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -53,11 +75,15 @@ const styles = StyleSheet.create({
     backgroundColor: colors.darkPurple3,
   },
   button: {
+    alignSelf: 'center',
     paddingVertical: 10,
     paddingHorizontal: 10,
     display: 'flex',
     alignItems: 'center',
-    borderBottomWidth: 4,
-    borderColor: colors.none,
+    width: 50,
+  },
+  walletIcon: {
+    height: 20,
+    resizeMode: 'contain',
   },
 })

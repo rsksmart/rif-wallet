@@ -1,7 +1,6 @@
 import WalletConnect from '@walletconnect/client'
 import React, { useContext } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import { SquareButton } from '../../components/button/SquareButton'
 import { Arrow, QRCodeIcon } from '../../components/icons'
 import { Separator } from '../../components/separator'
@@ -10,15 +9,9 @@ import { WalletConnectContext } from '../walletConnect/WalletConnectContext'
 
 interface Interface {
   navigation: NavigationProp
-  visible: boolean
-  setPanelActive: () => void
 }
 
-const WalletConnectComponent: React.FC<Interface> = ({
-  navigation,
-  visible,
-  setPanelActive,
-}) => {
+const WalletConnectComponent: React.FC<Interface> = ({ navigation }) => {
   const { connections } = useContext(WalletConnectContext)
 
   const openedConnections = Object.values(connections).filter(
@@ -26,21 +19,14 @@ const WalletConnectComponent: React.FC<Interface> = ({
   )
 
   return (
-    <View style={visible ? styles.roundedBox : styles.roundedBoxNotVisible}>
-      <TouchableOpacity onPress={setPanelActive} disabled={visible}>
-        <Text style={styles.heading}>Connect Dapps</Text>
-      </TouchableOpacity>
-      {visible && (
-        <>
-          <NewConnection navigation={navigation} />
-          {openedConnections.map(({ connector }) => (
-            <React.Fragment key={connector.key}>
-              <Separator />
-              <DappConnected connector={connector} navigation={navigation} />
-            </React.Fragment>
-          ))}
-        </>
-      )}
+    <View style={styles.roundedBox}>
+      <NewConnection navigation={navigation} />
+      {openedConnections.map(({ connector }) => (
+        <React.Fragment key={connector.key}>
+          <Separator />
+          <DappConnected connector={connector} navigation={navigation} />
+        </React.Fragment>
+      ))}
     </View>
   )
 }
