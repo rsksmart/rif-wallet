@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, TouchableOpacity } from 'react-native'
 import addresses from './addresses.json'
 import LinearGradient from 'react-native-linear-gradient'
 
@@ -11,17 +11,23 @@ import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import { ScreenWithWallet } from '../types'
 import { ScreenProps } from '../../RootNavigation'
 import { getDomains } from '../../storage/DomainsStore'
-import { grid } from '../../styles/grid'
+import { grid } from '../../styles'
 import { SquareButton } from '../../components/button/SquareButton'
 import { getTokenColor, getTokenColorWithOpacity } from '../home/tokenColor'
 import { SearchIcon } from '../../components/icons/SearchIcon'
 import { RegisterIcon } from '../../components/icons/RegisterIcon'
-
+import BaseButton from '../../components/button/BaseButton'
+import { IProfileStore } from '../../storage/ProfileStore'
+type Props = {
+  navigation: any
+  profile: IProfileStore
+  setProfile: (p: IProfileStore) => void
+}
 const years = 3
 
 export const RNSManagerScreen: React.FC<
-  ScreenProps<'Activity'> & ScreenWithWallet
-> = ({ wallet, navigation }) => {
+  ScreenProps<'RNSManager'> & ScreenWithWallet & Props
+> = ({ wallet, navigation, profile, setProfile }) => {
   const [domainToLookUp, setDomainToLookUp] = useState('')
   const [error, setError] = useState('')
   const [selectedDomain, setSelectedDomain] = useState('')
@@ -65,6 +71,17 @@ export const RNSManagerScreen: React.FC<
     setSelectedDomain(domain)
     setSelectedDomainPrice(utils.formatUnits(price, 18))
   }
+  const selectDomain = async (domain: string) => {
+    await setProfile({
+      ...profile,
+      alias: domain,
+    } as unknown as IProfileStore)
+
+    navigation.navigate('ProfileCreateScreen', {
+      navigation,
+      profile: { alias: 'sample-domain.rsk' },
+    })
+  }
 
   return (
     <LinearGradient
@@ -86,11 +103,11 @@ export const RNSManagerScreen: React.FC<
         </View>
         <View style={{ ...grid.column2 }}>
           <View style={styles.centerRow}>
-            <SquareButton
-              onPress={() => searchDomain(domainToLookUp)}
-              testID="Address.CopyButton"
-              icon={<SearchIcon color={getTokenColor('TRBTC')} />}
-            />
+            <BaseButton
+              testID={'Address.CopyButton'}
+              onPress={() => searchDomain(domainToLookUp)}>
+              <SearchIcon color={getTokenColor('TRBTC')} />
+            </BaseButton>
           </View>
         </View>
       </View>
@@ -131,6 +148,12 @@ export const RNSManagerScreen: React.FC<
           ))}
         </View>
       )}
+      {/*TODO: Remove this since this is temporal to enable domain selection */}
+      <View style={styles.sectionCentered}>
+        <TouchableOpacity onPress={() => selectDomain('sample-domain.rsk')}>
+          <Text key={'hardcoded'}>{'sample-domain.rsk (click to select)'}</Text>
+        </TouchableOpacity>
+      </View>
     </LinearGradient>
   )
 }

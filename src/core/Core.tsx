@@ -159,9 +159,6 @@ export const Core = () => {
                   showMnemonicScreenProps={{
                     mnemonic: state.kms?.mnemonic || '',
                   }}
-                  injectedBrowserUXScreenProps={{
-                    fetcher: rifWalletServicesFetcher,
-                  }}
                   contactsNavigationScreenProps={{ rnsResolver }}
                   dappsScreenProps={{ fetcher: rifWalletServicesFetcher }}
                   accountsScreenType={{

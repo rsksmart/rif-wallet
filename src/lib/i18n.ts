@@ -67,8 +67,6 @@ const resources = {
       'RBTC Balance (EOA)': 'RBTC Balance (EOA)',
       'Do you want to sign this message?': 'Do you want to sign this message?',
 
-      InjectedBrowser: 'InjectedBrowser',
-
       'Enter your pin': 'Enter your pin',
       'to unlock the app': 'to unlock the app',
       Pin: 'Pin',

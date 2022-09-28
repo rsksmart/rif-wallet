@@ -1,16 +1,33 @@
 import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, View, TouchableOpacity, Image } from 'react-native'
 import { colors } from '../../styles'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import { IProfileStore } from '../../storage/ProfileStore'
+import { RegularText } from '../../components'
 
 type Props = {
-  alias?: string
+  navigation: any
+  profile: IProfileStore
+  profileCreated: boolean
 }
 
-export const ProfileHandler: React.FC<Props> = ({ alias }) => {
+export const ProfileHandler: React.FC<Props> = ({
+  navigation,
+  profile,
+  profileCreated,
+}) => {
   return (
-    <TouchableOpacity style={styles.profileHandler}>
-      {!alias && (
+    <TouchableOpacity
+      style={styles.profileHandler}
+      onPress={() =>
+        navigation.navigate(
+          profileCreated ? 'ProfileDetailsScreen' : 'ProfileCreateScreen',
+          {
+            navigation,
+          },
+        )
+      }>
+      {!profileCreated && (
         <>
           <View style={styles.profileHandlerImage}>
             <MaterialIcon name="person" color="gray" size={20} />
@@ -20,14 +37,18 @@ export const ProfileHandler: React.FC<Props> = ({ alias }) => {
           </View>
         </>
       )}
-      {alias && (
+      {profileCreated && (
         <>
           <Image
             style={styles.profileAvatar}
             source={require('../../images/avataaars.png')}
           />
           <View>
-            <Text style={styles.profileName}>{alias}</Text>
+            {profile?.phone !== '' && (
+              <RegularText style={styles.profileName}>
+                {profile.alias}
+              </RegularText>
+            )}
           </View>
         </>
       )}

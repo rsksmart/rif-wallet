@@ -1,4 +1,4 @@
-export { SendScreen, SendScreenProps } from './send/SendScreen'
+export { SendScreen } from './send/SendScreen'
 export { ReceiveScreen, ReceiveScreenProps } from './receive/ReceiveScreen'
 export { ReceiveScreenHOC } from './receive/ReceiveScreenHOC'
 export { BalancesScreen, BalancesScreenProps } from './balances/BalancesScreen'
@@ -15,11 +15,8 @@ export { ManuallyDeployScreen } from './settings/ManuallyDeployScreen'
 export { WalletConnectNavigationScreen } from './walletConnect'
 export { ChangeLanguageScreen } from './settings/ChangeLanguageScreen'
 export { CreatePinScreen } from './createPin/CreatePinScreen'
-export {
-  InjectedBrowserNavigation,
-  InjectedBrowserUXScreenProps,
-} from '../screens/injectedBrowser/InjectedBrowserNavigation'
 export { RNSManagerScreen } from './rnsManager/RNSManager'
+export { SearchDomainScreen } from './rnsManager/SearchDomainScreen'
 export { RegisterDomainScreen } from './rnsManager/RegisterDomainScreen'
 export { HomeScreen, HomeScreenProps } from './home/index'
 export { DappsScreen, DappsScreenScreenProps } from './dapps/index'
@@ -35,3 +32,5 @@ export {
   default as AccountsScreen,
   AccountsScreenType,
 } from './accounts/AccountsScreen'
+export { ProfileCreateScreen } from './profile/ProfileCreateScreen'
+export { ProfileDetailsScreen } from './profile/ProfileDetailsScreen'
