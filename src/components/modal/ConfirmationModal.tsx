@@ -1,47 +1,58 @@
 import React from 'react'
-import { Image, StyleSheet, Text, View } from 'react-native'
+import {
+  Image,
+  ImageSourcePropType,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
 import PrimaryButton from '../../components/button/PrimaryButton'
 import { Modal } from '../../components/modal/Modal'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
 
-interface DeleteModalProps {
+interface ConfirmationModalProps {
   isVisible: boolean
-  text: string
+  imgSrc?: ImageSourcePropType
+  title: string
+  okText?: string
+  cancelText?: string
   onOk: () => void
   onCancel: () => void
 }
 
-export const DeleteModal = ({
+export const ConfirmationModal = ({
   isVisible,
-  text,
+  imgSrc,
+  title,
+  okText,
+  cancelText,
   onOk,
   onCancel,
-}: DeleteModalProps) => (
+}: ConfirmationModalProps) => (
   <Modal isVisible={isVisible}>
     <Modal.Container style={styles.container}>
       <Modal.Body>
-        <View style={styles.imageView}>
-          <Image
-            source={require('../../images/contact-trash.png')}
-            style={styles.image}
-          />
-        </View>
-        <Text style={styles.text}>{text}</Text>
+        {imgSrc && (
+          <View style={styles.imageView}>
+            <Image source={imgSrc} style={styles.image} />
+          </View>
+        )}
+        <Text style={styles.title}>{title}</Text>
       </Modal.Body>
       <Modal.Footer>
         <View>
           <PrimaryButton
-            style={styles.deleteButton}
+            style={styles.okButton}
             onPress={onOk}
             underlayColor={colors.blue}>
-            <Text style={styles.deleteText}>Delete</Text>
+            <Text style={styles.okText}>{okText || 'OK'}</Text>
           </PrimaryButton>
           <PrimaryButton
             style={styles.cancelButton}
             onPress={onCancel}
             underlayColor={colors.blue}>
-            <Text style={styles.cancelText}>Cancel</Text>
+            <Text style={styles.cancelText}>{cancelText || 'Cancel'}</Text>
           </PrimaryButton>
         </View>
       </Modal.Footer>
@@ -66,20 +77,21 @@ const styles = StyleSheet.create({
     height: '100%',
     alignSelf: 'center',
   },
-  text: {
+  title: {
     fontFamily: fonts.regular,
+    fontSize: 18,
     textAlign: 'center',
     paddingHorizontal: 60,
     color: colors.text.primary,
   },
-  deleteButton: {
+  okButton: {
     backgroundColor: colors.background.light,
     borderColor: colors.background.light,
     borderWidth: 1,
     marginBottom: 10,
     paddingVertical: 10,
   },
-  deleteText: {
+  okText: {
     fontFamily: fonts.regular,
     fontWeight: 'bold',
     fontSize: 15,

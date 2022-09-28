@@ -18,8 +18,10 @@ export const DappsScreen: React.FC<{
   const openedConnections = Object.values(connections).filter(
     ({ connector: c }) => c.connected,
   )
-  const params = route.params
-  console.log('params', params)
+
+  const wcKey = route.params?.wcKey
+  const currentConnector = connections[wcKey]?.connector
+  console.log('currentConnector.connected', currentConnector?.connected)
 
   return (
     <View style={styles.parent}>

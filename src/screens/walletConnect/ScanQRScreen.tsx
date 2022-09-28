@@ -12,7 +12,7 @@ const ScanQRScreen = () => {
   const { createSession } = useContext(WalletConnectContext)
   const [isConnecting, setIsConnecting] = useState(false)
 
-  const onBarCodeRead = async (data: string) => {
+  const onBarCodeRead = (data: string) => {
     if (!isConnecting) {
       console.log('onBarCodeRead', data)
       setIsConnecting(true)

@@ -68,6 +68,7 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
     })
 
     wc.on('call_request', async (error, payload) => {
+      console.log('EVENT', 'call_request', error, payload)
       if (error) {
         throw error
       }
