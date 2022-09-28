@@ -57,7 +57,7 @@ describe('ReviewTransactionModal', function (this: {
   afterEach(cleanup)
 
   it('renders', async () => {
-    const { getByPlaceholderText } = await waitFor(() =>
+    const { getByText } = await waitFor(() =>
       render(
         <ReviewTransactionModal
           isWalletDeployed={true}
@@ -71,8 +71,7 @@ describe('ReviewTransactionModal', function (this: {
     await flushPromises()
 
     // make sure elements are showing up
-    getByPlaceholderText('gas limit')
-    getByPlaceholderText('gas price')
+    getByText('Fee in tRIF')
   })
 
   it('returns the initial transaction', async () => {
@@ -89,6 +88,7 @@ describe('ReviewTransactionModal', function (this: {
     )
 
     await flushPromises()
+    fireEvent.press(getByTestId('Toggle.Button'))
 
     act(() => {
       fireEvent.press(getByTestId('Confirm.Button'))
@@ -142,6 +142,8 @@ describe('ReviewTransactionModal', function (this: {
     )
 
     await flushPromises()
+
+    fireEvent.press(getByTestId('Toggle.Button'))
 
     act(() => {
       fireEvent.changeText(getByTestId('gasLimit.TextInput'), '1000')

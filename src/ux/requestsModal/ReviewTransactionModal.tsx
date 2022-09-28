@@ -138,6 +138,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
           <OutlineBorderedButton
             title="Toggle"
             onPress={() => setPayWithGas(!payWithGas)}
+            testID="Toggle.Button"
           />
         </View>
       </View>
