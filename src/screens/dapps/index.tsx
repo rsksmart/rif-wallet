@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { Image, StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
+import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
+import { useSelectedWallet } from '../../Context'
 import { NavigationProp } from '../../RootNavigation'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
@@ -13,15 +15,21 @@ export const DappsScreen: React.FC<{
   route: any
 }> = ({ route }) => {
   const { t } = useTranslation()
-  const { connections } = useContext(WalletConnectContext)
+  const { wallet } = useSelectedWallet()
+  const { connections, handleApprove, handleReject } =
+    useContext(WalletConnectContext)
 
   const openedConnections = Object.values(connections).filter(
     ({ connector: c }) => c.connected,
   )
 
   const wcKey = route.params?.wcKey
-  const currentConnector = connections[wcKey]?.connector
-  console.log('currentConnector.connected', currentConnector?.connected)
+  const pendingConnector = connections[wcKey]?.connector
+  const [modalVisible, setModalVisible] = React.useState(
+    pendingConnector && !pendingConnector.connected,
+  )
+  console.log('wcKey', wcKey)
+  console.log('pendingConnector.connected', pendingConnector?.connected)
 
   return (
     <View style={styles.parent}>
@@ -34,6 +42,22 @@ export const DappsScreen: React.FC<{
         </View>
         <View style={styles.innerHeader2} />
       </View>
+      {pendingConnector && !pendingConnector.connected && (
+        <ConfirmationModal
+          isVisible={modalVisible}
+          title={`${t('Connect to')} ${pendingConnector?.peerMeta?.name}?`}
+          okText={t('Connect')}
+          cancelText={t('Reject')}
+          onOk={() => {
+            handleApprove(pendingConnector, wallet)
+            setModalVisible(false)
+          }}
+          onCancel={() => {
+            handleReject(pendingConnector)
+            setModalVisible(false)
+          }}
+        />
+      )}
       {openedConnections.length === 0 ? (
         <>
           <Image

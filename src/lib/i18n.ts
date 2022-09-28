@@ -84,6 +84,9 @@ const resources = {
         'Connect new Dapp by scanning a QR code.',
       'You are currently not': 'You are currently not',
       'connected to any Dapp.': 'connected to any Dapp.',
+      'Connect to': 'Connect to',
+      Connect: 'Connect',
+      Reject: 'Reject',
     },
   },
   es: {
@@ -100,6 +103,9 @@ const resources = {
         'Conecte una nueva Dapp escaneando un código QR.',
       'You are currently not': 'Actualmente no',
       'connected to any Dapp.': 'conectado a ninguna Dapp.',
+      'Connect to': 'Conectar a',
+      Connect: 'Conectar',
+      Reject: 'Rechazar',
     },
   },
 }
