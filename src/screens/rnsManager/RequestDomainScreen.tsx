@@ -46,7 +46,7 @@ export const RequestDomainScreen: React.FC<
 
       const intervalId = setInterval(async () => {
         const ready = await canReveal()
-        setProgress(prev => prev + 0.012)
+        setProgress(prev => prev + 0.09)
         if (ready) {
           setProcessing(false)
           navigation.navigate('BuyDomain', {

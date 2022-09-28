@@ -11,14 +11,11 @@ import { ScreenProps } from '../../RootNavigation'
 import { ScreenWithWallet } from '../types'
 import DomainLookUp from '../../screens/rnsManager/DomainLookUp'
 import { MediumText } from '../../components'
-import { IProfileStore } from '../../storage/ProfileStore'
 import TitleStatus from './TitleStatus'
 
 type Props = {
-  profile: IProfileStore
-  setProfile: (p: IProfileStore) => void
+  route: any
 }
-
 export const SearchDomainScreen: React.FC<
   ScreenProps<'SearchDomain'> & ScreenWithWallet & Props
 > = ({ wallet, navigation }) => {
@@ -29,7 +26,7 @@ export const SearchDomainScreen: React.FC<
   const [selectedDomainPrice, setSelectedDomainPrice] = useState<string>('2')
 
   const calculatePrice = async (domain: string, years: number) => {
-    //TODO: reenable this later
+    //TODO: re enable this later
     /*const price = await rskRegistrar.price(domain, BigNumber.from(years))
     return utils.formatUnits(price, 18)*/
     if (years < 3) {
@@ -120,7 +117,6 @@ export const SearchDomainScreen: React.FC<
         <View style={rnsManagerStyles.bottomContainer}>
           <PurpleButton
             onPress={() =>
-              // @ts-ignore
               navigation.navigate('RequestDomain', {
                 navigation,
                 alias: domainToLookUp.replace('.rsk', ''),

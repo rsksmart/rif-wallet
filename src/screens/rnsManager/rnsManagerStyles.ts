@@ -25,7 +25,7 @@ export const rnsManagerStyles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.background.secondary,
     borderRadius: 20,
-    paddingTop: 10,
+    paddingTop: 20,
     paddingBottom: 10,
   },
   profileImage: {

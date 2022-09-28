@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { BigNumber, utils } from 'ethers'
-import { RSKRegistrar, AddrResolver } from '@rsksmart/rns-sdk'
+import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import moment from 'moment'
 
 import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
@@ -13,40 +13,32 @@ import { PurpleButton } from '../../components/button/ButtonVariations'
 import { ScreenProps } from '../../RootNavigation'
 import { ScreenWithWallet } from '../types'
 import { MediumText } from '../../components'
-import { IProfileStore } from '../../storage/ProfileStore'
 import addresses from './addresses.json'
 import TitleStatus from './TitleStatus'
-import { addDomain } from '../../storage/DomainsStore'
 import { TokenImage } from '../home/TokenImage'
 
 type Props = {
-  profile: IProfileStore
-  setProfile: (p: IProfileStore) => void
   route: any
 }
 
 export const BuyDomainScreen: React.FC<
   ScreenProps<'BuyDomain'> & ScreenWithWallet & Props
-> = ({ wallet, profile, setProfile, navigation, route }) => {
+> = ({ wallet, navigation, route }) => {
   const { alias, domainSecret, duration } = route.params
 
   const expiryDate = moment(moment(), 'MM-DD-YYYY').add(duration, 'years')
 
   const [registerDomainInfo, setRegisterDomainInfo] = useState('')
-  const [registerReady, setRegisterReady] = useState(false)
   const [registerInProcess, setRegisterInProcess] = useState(false)
   const [domainPrice, setDomainPrice] = useState<BigNumber>()
   const [domainFiatPrice, setDomainFiatPrice] = useState<number>(0.0)
 
-  const [resolvingAddress, setResolvingAddress] = useState('')
-  console.log({ resolvingAddress })
   const rskRegistrar = new RSKRegistrar(
     addresses.rskOwnerAddress,
     addresses.fifsAddrRegistrarAddress,
     addresses.rifTokenAddress,
     wallet,
   )
-  const addrResolver = new AddrResolver(addresses.rnsRegistryAddress, wallet)
 
   useEffect(() => {
     setDomainPrice(undefined)
@@ -73,33 +65,18 @@ export const BuyDomainScreen: React.FC<
 
       setRegisterDomainInfo('Transaction sent. Please wait...')
       setRegisterInProcess(true)
-      await tx.wait()
 
-      await addDomain(wallet.smartWalletAddress, `${alias}.rsk`)
-
-      const address = await addrResolver.addr(`${alias}.rsk`)
-      setResolvingAddress(address)
-
-      setRegisterDomainInfo('Registered!!')
-      setRegisterReady(true)
-      // @ts-ignore
+      navigation.navigate('AliasBought', {
+        navigation,
+        alias: alias,
+        tx,
+      })
     } catch (e: any) {
       setRegisterInProcess(false)
       setRegisterDomainInfo(e.message)
     }
   }
-  const selectDomain = async (domain: string) => {
-    await setProfile({
-      ...profile,
-      alias: domain,
-    } as unknown as IProfileStore)
 
-    // @ts-ignore
-    navigation.navigate('ProfileCreateScreen', {
-      navigation,
-      profile: { alias: alias },
-    })
-  }
   return (
     <>
       <View style={rnsManagerStyles.profileHeader}>
@@ -156,13 +133,6 @@ export const BuyDomainScreen: React.FC<
               onPress={() => registerDomain(alias)}
               accessibilityLabel="buy"
               title={`buy for $${domainFiatPrice}`}
-            />
-          )}
-          {registerReady && (
-            <PurpleButton
-              onPress={() => selectDomain(alias + '.rsk')}
-              accessibilityLabel="Set alias in profile"
-              title={'Set alias in profile'}
             />
           )}
         </View>
