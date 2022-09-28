@@ -160,7 +160,6 @@ export const Core = () => {
                     mnemonic: state.kms?.mnemonic || '',
                   }}
                   contactsNavigationScreenProps={{ rnsResolver }}
-                  dappsScreenProps={{ fetcher: rifWalletServicesFetcher }}
                   accountsScreenType={{
                     addNewWallet,
                     switchActiveWallet,

@@ -64,12 +64,7 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
         throw error
       }
 
-      navigation.navigate(
-        'SessionRequest' as never,
-        {
-          wcKey: wc.key,
-        } as never,
-      )
+      navigation.navigate('Dapps' as never, { wcKey: wc.key } as never)
     })
 
     wc.on('call_request', async (error, payload) => {

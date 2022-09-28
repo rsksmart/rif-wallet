@@ -55,7 +55,7 @@ type RootStackParamList = {
   ChangeLanguage: undefined
   ManagePin: undefined
   CreatePin: undefined
-  Dapps: undefined | { url?: string }
+  Dapps: undefined | { wcKey?: string }
   RNSManager: undefined
   SearchDomain: undefined
   RegisterDomain: { selectedDomain: string; years: number }
@@ -101,7 +101,7 @@ export const RootNavigation: React.FC<{
   showMnemonicScreenProps: Screens.ShowMnemonicScreenProps
   sendScreenProps: ScreenProps<'Send'>
   contactsNavigationScreenProps: Screens.ContactsScreenProps
-  dappsScreenProps: Screens.DappsScreenScreenProps
+  dappsScreenProps: ScreenProps<'Dapps'>
   accountsScreenType: Screens.AccountsScreenType
   securityConfigurationScreenProps: Screens.SecurityScreenProps
 }> = ({

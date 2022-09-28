@@ -10,13 +10,16 @@ import { WalletConnectContext } from '../walletConnect/WalletConnectContext'
 
 export const DappsScreen: React.FC<{
   navigation: NavigationProp
-}> = () => {
+  route: any
+}> = ({ route }) => {
   const { t } = useTranslation()
   const { connections } = useContext(WalletConnectContext)
 
   const openedConnections = Object.values(connections).filter(
     ({ connector: c }) => c.connected,
   )
+  const params = route.params
+  console.log('params', params)
 
   return (
     <View style={styles.parent}>
