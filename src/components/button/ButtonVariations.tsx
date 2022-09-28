@@ -77,7 +77,7 @@ const purpleStyles = StyleSheet.create({
     color: colors.lightPurple,
   },
   textDisabled: {
-    color: '#7e7eb8',
+    color: colors.gray,
   },
 })
 
