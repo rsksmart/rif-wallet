@@ -35,7 +35,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
     useEnhancedWithGas(wallet, txRequest)
 
   const [error, setError] = useState<Error | null>(null)
-  const [payWithGas, setPayWithGas] = useState<boolean>(true)
+  const [payWithGas, setPayWithGas] = useState<boolean>(false)
 
   // convert from string to Transaction and pass out of component
   const confirmTransaction = async () => {
