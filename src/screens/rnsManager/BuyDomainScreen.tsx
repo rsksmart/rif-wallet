@@ -63,7 +63,6 @@ export const BuyDomainScreen: React.FC<
         domainPrice!,
       )
 
-
       setRegisterDomainInfo('Transaction sent. Please wait...')
       setRegisterInProcess(true)
 

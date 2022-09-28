@@ -53,7 +53,7 @@ export const AliasBoughtScreen: React.FC<
         <View style={rnsManagerStyles.marginBottom}>
           <View style={styles.imageContainer}>
             <Image
-              style={styles.imageContainer}
+              style={styles.image}
               source={require('../../images/AliasBought.png')}
             />
             <View>
@@ -93,6 +93,10 @@ export const AliasBoughtScreen: React.FC<
 const styles = StyleSheet.create({
   imageContainer: {
     alignItems: 'center',
+    paddingTop: 50,
+    paddingBottom: 10,
+  },
+  image: {
     paddingTop: 50,
     paddingBottom: 10,
   },
