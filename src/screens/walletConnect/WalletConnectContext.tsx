@@ -12,11 +12,7 @@ import {
 
 export interface WalletConnectContextInterface {
   connections: IWalletConnectConnections
-  createSession: (
-    wallet: RIFWallet,
-    uri: string,
-    session?: any,
-  ) => Promise<void>
+  createSession: (wallet: RIFWallet, uri: string, session?: any) => void
   handleApprove: (wc: WalletConnect, wallet: RIFWallet) => Promise<void>
   handleReject: (wc: WalletConnect) => Promise<void>
 }
@@ -24,7 +20,7 @@ export interface WalletConnectContextInterface {
 export const WalletConnectContext =
   React.createContext<WalletConnectContextInterface>({
     connections: {},
-    createSession: async () => {},
+    createSession: () => {},
     handleApprove: async () => {},
     handleReject: async () => {},
   })
@@ -148,11 +144,7 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
     wc.rejectSession({ message: 'user rejected the session' })
   }
 
-  const createSession = async (
-    wallet: RIFWallet,
-    uri: string,
-    session?: any,
-  ): Promise<void> => {
+  const createSession = (wallet: RIFWallet, uri: string, session?: any) => {
     const newConnector = new WalletConnect({
       uri,
       session,
@@ -194,15 +186,12 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
       for (const { walletAddress, uri, session } of sessions) {
         try {
           const wallet = wallets[walletAddress]
-
-          if (!wallet) {
-            return
+          if (wallet) {
+            createSession(wallet, uri, session)
           }
-
-          await createSession(wallet, uri, session)
         } catch (error) {
           console.error('reconnect wc error: ', error)
-          deleteWCSession(uri)
+          await deleteWCSession(uri)
         }
       }
     }
