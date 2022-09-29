@@ -4,6 +4,7 @@ import { useSelectedWallet } from '../../Context'
 import { getDomains } from '../../storage/DomainsStore'
 
 import { ReceiveScreen, ReceiveScreenProps } from './ReceiveScreen'
+import { getAddressDisplayText } from '../../components'
 
 export const ReceiveScreenHOC: React.FC<ReceiveScreenProps> = () => {
   const { wallet, chainId } = useSelectedWallet()
@@ -13,11 +14,16 @@ export const ReceiveScreenHOC: React.FC<ReceiveScreenProps> = () => {
     getDomains(wallet.smartWalletAddress).then(setRegisteredDomains)
   }, [wallet])
 
+  const { checksumAddress, displayAddress } = getAddressDisplayText(
+    wallet.smartWalletAddress,
+    chainId,
+  )
+
   return (
     <ReceiveScreen
-      smartWalletAddress={wallet.smartWalletAddress}
+      address={checksumAddress}
+      displayAddress={displayAddress}
       registeredDomains={registeredDomains}
-      chainId={chainId}
     />
   )
 }

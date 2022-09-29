@@ -7,13 +7,13 @@ export default class AddressFactory {
     this.purpose = purpose
     this.network = network
   }
-  getAddress(publicKey: Buffer) {
+  getAddress(publicKey: Buffer): string {
     switch (this.purpose) {
       case 84:
         return payments.p2wpkh({
           network: this.network,
           pubkey: publicKey,
-        }).address
+        }).address as string
       default:
         return ''
     }

@@ -4,8 +4,9 @@ import React from 'react'
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native'
 import { InjectSelectedWallet } from './Context'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
+
+import BitcoinNetwork from './lib/bitcoin/BitcoinNetwork'
 import * as Screens from './screens'
-import BitcoinAddressesScreen from './screens/bitcoin/BitcoinAddressesScreen'
 import { CreateKeysNavigation, CreateKeysProps } from './screens/createKeys'
 import { colors } from './styles'
 import { AppFooterMenu } from './ux/appFooter'
@@ -45,6 +46,9 @@ type RootStackParamList = {
         contractAddress?: string
       }
   Receive: undefined
+  ReceiveBitcoin: {
+    network: BitcoinNetwork
+  }
   Balances: undefined
   Activity: undefined
   ActivityDetails: undefined
@@ -188,7 +192,12 @@ export const RootNavigation: React.FC<{
           <RootStack.Screen
             name="BitcoinScreen"
             options={sharedOptions}
-            component={BitcoinAddressesScreen}
+            component={Screens.BitcoinAddressesScreen}
+          />
+          <RootStack.Screen
+            name="ReceiveBitcoin"
+            component={Screens.BitcoinReceiveScreen}
+            options={sharedOptions}
           />
           <RootStack.Screen name="Balances">
             {props => (

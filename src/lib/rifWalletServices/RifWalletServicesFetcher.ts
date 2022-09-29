@@ -79,4 +79,15 @@ export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
     fetch(`${this.uri}/bitcoin/getXpubBalance/${xpub}`).then(response =>
       response.json(),
     )
+
+  fetchXpubNextUnusedIndex = (
+    xpub: string,
+    changeIndex = 0,
+    knownLastUsedIndex = 0,
+  ): Promise<number> =>
+    fetch(
+      `${this.uri}/bitcoin/getNextUnusedIndex/${xpub}?changeIndex=${changeIndex}&knownLastUsedIndex=${knownLastUsedIndex}`,
+    )
+      .then(response => response.json())
+      .then(json => json.index)
 }

@@ -1,7 +1,8 @@
-import { useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
 import BIP39 from '../../lib/bitcoin/BIP39'
 import useBitcoinNetworks from '../../components/bitcoin/useBitcoinNetworks'
 import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
+import bitcoinNetworkStore from '../../storage/BitcoinNetworkStore'
 export type useBitcoinCoreResultType = {
   networks: Array<BitcoinNetwork>
   networksMap: {
@@ -30,6 +31,13 @@ const useBitcoinCore = (mnemonic: string): useBitcoinCoreResultType => {
     return { networksArr, networksObj }
   }, [mnemonic, networks])
 
+  useEffect(() => {
+    if (memoizedNetworks.networksArr.length < 1) {
+      bitcoinNetworkStore
+        .addNewNetwork('BITCOIN_TESTNET', ['BIP84'])
+        .then(refreshStoredNetworks)
+    }
+  }, [memoizedNetworks])
   return {
     networks: memoizedNetworks.networksArr,
     networksMap: memoizedNetworks.networksObj,
