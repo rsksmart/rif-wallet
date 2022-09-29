@@ -4,13 +4,7 @@ import { BigNumber, utils } from 'ethers'
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import moment from 'moment'
 
-import {
-  View,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native'
+import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import { colors } from '../../styles'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
@@ -107,8 +101,7 @@ export const BuyDomainScreen: React.FC<
               <MediumText style={styles.fiatPriceLabel}>
                 ${domainFiatPrice}
               </MediumText>
-              <View
-                style={styles.rifTokenImageContainer}>
+              <View style={styles.rifTokenImageContainer}>
                 <MediumText style={styles.rifTokenImage}>
                   <TokenImage symbol={'RIF'} height={20} width={20} />
                 </MediumText>
@@ -163,7 +156,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     fontSize: 45,
   },
-  rifTokenImageContainer:{
+  rifTokenImageContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     marginBottom: 10,
