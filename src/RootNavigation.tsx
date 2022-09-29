@@ -12,7 +12,6 @@ import { colors } from './styles'
 import { AppFooterMenu } from './ux/appFooter'
 import { AppHeader } from './ux/appHeader'
 
-
 import { emptyProfile, useProfile } from './core/hooks/useProfile'
 
 const InjectedScreens = {

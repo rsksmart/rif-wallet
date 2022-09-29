@@ -3,7 +3,6 @@ import { Share } from 'react-native'
 
 import { fireEvent, render, RenderAPI } from '@testing-library/react-native'
 
-import { getAddressDisplayText } from '../../components'
 import { ReceiveScreen, TestID } from './ReceiveScreen'
 
 describe('Receive Screen', function () {
