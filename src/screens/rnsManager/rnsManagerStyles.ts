@@ -36,6 +36,7 @@ export const rnsManagerStyles = StyleSheet.create({
   profileDisplayAlias: {
     color: colors.white,
     padding: 10,
+    paddingBottom: 0,
     alignSelf: 'center',
     fontSize: 18,
   },

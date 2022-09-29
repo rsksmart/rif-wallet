@@ -4,7 +4,13 @@ import { BigNumber, utils } from 'ethers'
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import moment from 'moment'
 
-import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import {
+  View,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native'
 import { colors } from '../../styles'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
@@ -101,10 +107,15 @@ export const BuyDomainScreen: React.FC<
               <MediumText style={styles.fiatPriceLabel}>
                 ${domainFiatPrice}
               </MediumText>
-              <MediumText style={styles.priceLabel}>
-                <TokenImage symbol={'RIF'} height={17} width={17} />{' '}
-                {utils.formatUnits(domainPrice, 18)}
-              </MediumText>
+              <View
+                style={styles.rifTokenImageContainer}>
+                <MediumText style={styles.rifTokenImage}>
+                  <TokenImage symbol={'RIF'} height={20} width={20} />
+                </MediumText>
+                <MediumText style={styles.priceLabel}>
+                  {utils.formatUnits(domainPrice, 18)}
+                </MediumText>
+              </View>
             </>
           )}
           <View style={rnsManagerStyles.profileImageContainer}>
@@ -113,7 +124,7 @@ export const BuyDomainScreen: React.FC<
               source={require('../../images/image_place_holder.jpeg')}
             />
             <View>
-              <MediumText style={rnsManagerStyles.aliasRequestInfo}>
+              <MediumText style={rnsManagerStyles.profileDisplayAlias}>
                 {alias}.rsk
               </MediumText>
               <MediumText style={rnsManagerStyles.aliasRequestInfo2}>
@@ -123,7 +134,7 @@ export const BuyDomainScreen: React.FC<
           </View>
         </View>
 
-        <MediumText style={rnsManagerStyles.profileDisplayAlias}>
+        <MediumText style={rnsManagerStyles.aliasRequestInfo}>
           {registerDomainInfo}
         </MediumText>
 
@@ -151,5 +162,19 @@ const styles = StyleSheet.create({
     color: colors.white,
     alignSelf: 'center',
     fontSize: 45,
+  },
+  rifTokenImageContainer:{
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
+  rifTokenImage: {
+    backgroundColor: colors.white,
+    borderRadius: 15,
+    height: 30,
+    width: 30,
+    padding: 5,
+    marginRight: 5,
+    marginTop: 3,
   },
 })
