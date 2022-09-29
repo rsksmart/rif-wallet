@@ -7,7 +7,6 @@ import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServi
 
 import BitcoinNetwork from './lib/bitcoin/BitcoinNetwork'
 import * as Screens from './screens'
-import BitcoinAddressesScreen from './screens/bitcoin/BitcoinAddressesScreen'
 import { CreateKeysNavigation, CreateKeysProps } from './screens/createKeys'
 import { colors } from './styles'
 import { AppFooterMenu } from './ux/appFooter'
