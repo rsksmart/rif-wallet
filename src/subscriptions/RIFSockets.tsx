@@ -217,10 +217,14 @@ export function RIFSocketsProvider({
     return () => interval && clearInterval(interval)
   }, [wallet])
 
+  // Disconnect from the rifServiceSocket when the app goes to the background
   React.useEffect(() => {
     if (!appActive) {
-      // disconnect from service:
-      rifServiceSocket?.disconnect()
+      return rifServiceSocket?.disconnect()
+    }
+
+    if (wallet && !rifServiceSocket?.isConnected()) {
+      connect()
     }
   }, [appActive])
 
