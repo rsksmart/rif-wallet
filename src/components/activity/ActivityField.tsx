@@ -6,21 +6,12 @@ import { spacing } from '../../styles'
 type ActivityFieldType = {
   title: string
   children: any
-  LabelStyle?: { [key: string]: any }
 }
 
-const ActivityField: React.FC<ActivityFieldType> = ({
-  title,
-  children,
-  LabelStyle,
-}) => {
-  const labelStyle = React.useMemo(
-    () => ({ ...spacing.pl10, ...LabelStyle }),
-    [LabelStyle],
-  )
+const ActivityField: React.FC<ActivityFieldType> = ({ title, children }) => {
   return (
     <View style={styles.fieldContainer}>
-      <MediumText style={labelStyle}>{title}</MediumText>
+      <MediumText style={spacing.pl10}>{title}</MediumText>
       <View style={styles.wrapper}>{children}</View>
     </View>
   )
