@@ -1,7 +1,13 @@
 import { NavigationProp as _NavigationProp } from '@react-navigation/native'
 import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
 import React from 'react'
-import { KeyboardAvoidingView, Platform, StyleSheet, View, Dimensions } from 'react-native'
+import {
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  View,
+  Dimensions,
+} from 'react-native'
 import { InjectSelectedWallet } from './Context'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
 import * as Screens from './screens'
