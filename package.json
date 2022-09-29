@@ -7,6 +7,7 @@
     "android:local": "ENVFILE=.env.local.android react-native run-android",
     "ios": "ENVFILE=.env react-native run-ios",
     "ios:local": "ENVFILE=.env.local react-native run-ios",
+    "ios:small": "ENVFILE=.env npx react-native run-ios --simulator=\"iPhone 8\"",
     "start": "ENVFILE=.env react-native start",
     "ganache": "npx ganache-cli",
     "test": "ENVFILE=.env.test jest --verbose --testTimeout=60000",
