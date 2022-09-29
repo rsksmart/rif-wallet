@@ -30,7 +30,9 @@ describe('Receive Screen', function () {
 
     expect(smartWalletAddressNode).toBeDefined()
     expect(container.getByText(smartWalletAddress)).toBeDefined()
-    expect(smartWalletAddressNode.children.join('')).toContain(smartWalletAddress)
+    expect(smartWalletAddressNode.children.join('')).toContain(
+      smartWalletAddress,
+    )
   })
 
   test('renders copy button', async () => {
