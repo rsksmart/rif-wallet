@@ -1,7 +1,7 @@
 import { NavigationProp as _NavigationProp } from '@react-navigation/native'
 import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
 import React from 'react'
-import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native'
+import { KeyboardAvoidingView, Platform, StyleSheet, View, Dimensions } from 'react-native'
 import { InjectSelectedWallet } from './Context'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
 import * as Screens from './screens'
@@ -10,6 +10,7 @@ import { CreateKeysNavigation, CreateKeysProps } from './screens/createKeys'
 import { colors } from './styles'
 import { AppFooterMenu } from './ux/appFooter'
 import { AppHeader } from './ux/appHeader'
+export const WINDOW_HEIGHT = Dimensions.get('window').height
 
 import { emptyProfile, useProfile } from './core/hooks/useProfile'
 
@@ -342,6 +343,6 @@ export const RootNavigation: React.FC<{
 
 const styles = StyleSheet.create({
   parent: {
-    height: '100%',
+    height: WINDOW_HEIGHT,
   },
 })
