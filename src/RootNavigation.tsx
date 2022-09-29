@@ -49,6 +49,9 @@ type RootStackParamList = {
   ReceiveBitcoin: {
     network: BitcoinNetwork
   }
+  SendBitcoin: {
+    network: BitcoinNetwork
+  }
   Balances: undefined
   Activity: undefined
   ActivityDetails: undefined
@@ -197,6 +200,11 @@ export const RootNavigation: React.FC<{
           <RootStack.Screen
             name="ReceiveBitcoin"
             component={Screens.BitcoinReceiveScreen}
+            options={sharedOptions}
+          />
+          <RootStack.Screen
+            name="SendBitcoin"
+            component={Screens.SendBitcoinScreen}
             options={sharedOptions}
           />
           <RootStack.Screen name="Balances">
