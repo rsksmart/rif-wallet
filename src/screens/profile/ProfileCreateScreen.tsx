@@ -64,7 +64,7 @@ export const ProfileCreateScreen: React.FC<
           <>
             <View style={styles.rowContainer}>
               <PurpleButton
-                onPress={() => navigation.navigate('RNSManager')}
+                onPress={() => navigation.navigate('SearchDomain')}
                 accessibilityLabel="register new"
                 title={'register new'}
               />

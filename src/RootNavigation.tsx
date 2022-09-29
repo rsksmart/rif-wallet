@@ -1,15 +1,18 @@
-import React from 'react'
-import { StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native'
-import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
 import { NavigationProp as _NavigationProp } from '@react-navigation/native'
-import { CreateKeysNavigation, CreateKeysProps } from './screens/createKeys'
-import * as Screens from './screens'
+import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
+import React from 'react'
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native'
 import { InjectSelectedWallet } from './Context'
-import { AppHeader } from './ux/appHeader'
-import { AppFooterMenu } from './ux/appFooter'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
-import { colors } from './styles'
+
 import BitcoinNetwork from './lib/bitcoin/BitcoinNetwork'
+import * as Screens from './screens'
+import BitcoinAddressesScreen from './screens/bitcoin/BitcoinAddressesScreen'
+import { CreateKeysNavigation, CreateKeysProps } from './screens/createKeys'
+import { colors } from './styles'
+import { AppFooterMenu } from './ux/appFooter'
+import { AppHeader } from './ux/appHeader'
+
 
 import { emptyProfile, useProfile } from './core/hooks/useProfile'
 
@@ -22,11 +25,13 @@ const InjectedScreens = {
   WalletConnectNavigationScreen: InjectSelectedWallet(
     Screens.WalletConnectNavigationScreen,
   ),
-  InjectedBrowserNavigation: InjectSelectedWallet(
-    Screens.InjectedBrowserNavigation,
-  ),
+
   RNSManagerScreen: InjectSelectedWallet(Screens.RNSManagerScreen),
+  SearchDomainScreen: InjectSelectedWallet(Screens.SearchDomainScreen),
+  RequestDomainScreen: InjectSelectedWallet(Screens.RequestDomainScreen),
   RegisterDomainScreen: InjectSelectedWallet(Screens.RegisterDomainScreen),
+  BuyDomainScreen: InjectSelectedWallet(Screens.BuyDomainScreen),
+  AliasBoughtScreen: InjectSelectedWallet(Screens.AliasBoughtScreen),
   HomeScreen: InjectSelectedWallet(Screens.HomeScreen),
   DappsScreen: InjectSelectedWallet(Screens.DappsScreen),
   AccountsScreen: InjectSelectedWallet(Screens.AccountsScreen),
@@ -59,9 +64,12 @@ type RootStackParamList = {
   ChangeLanguage: undefined
   ManagePin: undefined
   CreatePin: undefined
-  InjectedBrowserUX: undefined
   Dapps: undefined
   RNSManager: undefined
+  SearchDomain: undefined
+  RequestDomain: undefined
+  BuyDomain: undefined
+  AliasBought: undefined
   RegisterDomain: { selectedDomain: string; years: number }
   Contacts: undefined
   Settings: undefined
@@ -104,7 +112,6 @@ export const RootNavigation: React.FC<{
   activityScreenProps: Screens.ActivityScreenProps
   showMnemonicScreenProps: Screens.ShowMnemonicScreenProps
   sendScreenProps: ScreenProps<'Send'>
-  injectedBrowserUXScreenProps: Screens.InjectedBrowserUXScreenProps
   contactsNavigationScreenProps: Screens.ContactsScreenProps
   dappsScreenProps: Screens.DappsScreenScreenProps
   accountsScreenType: Screens.AccountsScreenType
@@ -122,7 +129,6 @@ export const RootNavigation: React.FC<{
   activityScreenProps,
   showMnemonicScreenProps,
   sendScreenProps,
-  injectedBrowserUXScreenProps,
   contactsNavigationScreenProps,
   dappsScreenProps,
   accountsScreenType,
@@ -257,6 +263,27 @@ export const RootNavigation: React.FC<{
             )}
           </RootStack.Screen>
 
+          <RootStack.Screen name="SearchDomain" options={sharedOptions}>
+            {props => <InjectedScreens.SearchDomainScreen {...props} />}
+          </RootStack.Screen>
+          <RootStack.Screen name="RequestDomain" options={sharedOptions}>
+            {props => <InjectedScreens.RequestDomainScreen {...props} />}
+          </RootStack.Screen>
+
+          <RootStack.Screen name="BuyDomain" options={sharedOptions}>
+            {props => <InjectedScreens.BuyDomainScreen {...props} />}
+          </RootStack.Screen>
+
+          <RootStack.Screen name="AliasBought" options={sharedOptions}>
+            {props => (
+              <InjectedScreens.AliasBoughtScreen
+                {...props}
+                profile={profile}
+                setProfile={setProfile}
+              />
+            )}
+          </RootStack.Screen>
+
           <RootStack.Screen
             name="RegisterDomain"
             component={InjectedScreens.RegisterDomainScreen}
@@ -281,14 +308,6 @@ export const RootNavigation: React.FC<{
               <Screens.ContactsNavigationScreen
                 {...props}
                 {...contactsNavigationScreenProps}
-              />
-            )}
-          </RootStack.Screen>
-          <RootStack.Screen name="InjectedBrowserUX" options={sharedOptions}>
-            {props => (
-              <InjectedScreens.InjectedBrowserNavigation
-                {...props}
-                {...injectedBrowserUXScreenProps}
               />
             )}
           </RootStack.Screen>
