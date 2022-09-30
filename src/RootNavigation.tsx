@@ -349,6 +349,6 @@ export const RootNavigation: React.FC<{
 
 const styles = StyleSheet.create({
   parent: {
-    height: WINDOW_HEIGHT,
+    height: '100%',
   },
 })
