@@ -105,11 +105,13 @@ export default class BIP {
     amountToPay: number,
     addressToPay: string,
     unspentTransactions: Array<any>,
+    miningFee: number,
   ) {
     return this.paymentInstance.generateHexPayment(
       amountToPay,
       addressToPay,
       unspentTransactions,
+      miningFee,
     )
   }
 

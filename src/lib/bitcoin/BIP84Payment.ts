@@ -19,8 +19,9 @@ class BIP84Payment {
     amountToPay: number,
     addressToPay: string,
     unspentTransactions: Array<UnspentTransactionType>,
+    miningFee: number,
   ) {
-    let amount: number = Math.floor((amountToPay + 141) * 1.1)
+    let amount: number = amountToPay + miningFee
     const psbt = new Psbt({ network: this.networkInfo })
     for (const transaction of unspentTransactions) {
       amount = amount - Number(transaction.value)

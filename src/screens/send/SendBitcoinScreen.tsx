@@ -1,24 +1,34 @@
 import React, { useState, useEffect } from 'react'
 import { UnspentTransactionType } from '../../lib/bitcoin/BIP84Payment'
-import { StyleSheet, Text, TextInput, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import { colors, grid } from '../../styles'
 import AssetChooser from './AssetChooser'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { BlueButton } from '../../components/button/ButtonVariations'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { ContentPasteIcon } from '../../components/icons'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { MediumText } from '../../components'
 import Clipboard from '@react-native-community/clipboard'
+import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 
-const SendBitcoinScreen: React.FC<any> = ({
+type SendBitcoinScreenType = {
+  route: {
+    params: {
+      network: BitcoinNetwork
+    }
+  }
+}
+const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
   route: {
     params: { network },
   },
 }) => {
   const [utxos, setUtxos] = useState<Array<UnspentTransactionType>>([])
-  const [amountToPay, setAmountToPay] = useState<string>('0')
-  const [addressToPay, setAddressToPay] = useState<string>('')
+  const [amountToPay, setAmountToPay] = useState<string>('')
+  const [addressToPay, setAddressToPay] = useState<string>(
+    'tb1qmey3qsyz5tk29eul3cmw7q26r4yxpjczmvaskp',
+  )
+  const [miningFee, setMiningFee] = useState<string>('')
   const [status, setStatus] = useState<string>('')
   const [txid, setTxid] = useState<string>('')
   const [error, setError] = useState<string>('')
@@ -39,14 +49,20 @@ const SendBitcoinScreen: React.FC<any> = ({
   const isAddressValid = (): boolean => {
     return addressToPay.startsWith(network.bips[0].networkInfo.bech32)
   }
-
   const handleAddressToPayChange = (address: string) => {
     setAddressToPay(address)
+  }
+  const handleMiningFeeChange = (miningFeeValue: string) => {
+    setMiningFee(miningFeeValue)
   }
   const balance = network.bips[0].balance
   const onReviewTouch = async () => {
     if (Number(amountToPay) > Number(balance)) {
       setStatus(`Amount must not be greater than ${balance}`)
+      return
+    }
+    if (Number(miningFee) <= 0) {
+      setStatus('Mining fee must be over 0')
       return
     }
     if (!isAddressValid()) {
@@ -60,6 +76,7 @@ const SendBitcoinScreen: React.FC<any> = ({
       Number(amountToPay),
       addressToPay,
       utxos,
+      Number(miningFee),
     )
     setStatus('Sending payment...')
     const txIdJson = await network.bips[0].sendTransaction(hexData)
@@ -80,12 +97,12 @@ const SendBitcoinScreen: React.FC<any> = ({
     }
   }
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={{ ...grid.row, ...styles.section }}>
         <View style={grid.column12}>
           <Text style={styles.label}>asset</Text>
           <AssetChooser
-            selectedToken={network as ITokenWithBalance}
+            selectedToken={network as any}
             tokenList={[]}
             handleTokenSelection={() => {}}
           />
@@ -101,6 +118,20 @@ const SendBitcoinScreen: React.FC<any> = ({
             placeholder="0.00"
             keyboardType="numeric"
             testID={'Amount.Input'}
+            placeholderTextColor={colors.gray}
+          />
+        </View>
+      </View>
+      <View style={{ ...grid.row, ...styles.section }}>
+        <View style={grid.column12}>
+          <Text style={styles.label}>mining fee</Text>
+          <TextInput
+            style={styles.textInputStyle}
+            onChangeText={handleMiningFeeChange}
+            value={miningFee}
+            placeholder="0.00"
+            keyboardType="numeric"
+            testID={'Amount.MiningFee'}
             placeholderTextColor={colors.gray}
           />
         </View>
@@ -163,7 +194,7 @@ const SendBitcoinScreen: React.FC<any> = ({
           </TouchableOpacity>
         )}
       </View>
-    </View>
+    </ScrollView>
   )
 }
 
@@ -173,6 +204,7 @@ const styles = StyleSheet.create({
     minHeight: '100%',
     paddingHorizontal: 20,
     paddingTop: 20,
+    paddingBottom: 100,
   },
   section: {
     marginBottom: 10,
