@@ -8,7 +8,7 @@ export const sendFeedbackToGithub = (
 ) => {
   // hardcoding this value for now:
   const url = 'https://api.github.com/repos/rsksmart/rif-wallet-feedback/issues'
-  const token = Config.GITHUB_ISSUES_TOKEN
+  const token = Config.GH_ISSUES_TOKEN
 
   const body = `
 ${feedback}
