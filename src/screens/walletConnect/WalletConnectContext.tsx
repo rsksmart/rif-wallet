@@ -128,8 +128,6 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
     const adapter = new WalletConnectAdapter(wallet)
 
     subscribeToEvents(wc, adapter)
-
-    navigation.navigate('Connected' as never, { wcKey: wc.key } as never)
   }
 
   const handleReject = async (wc: WalletConnect) => {

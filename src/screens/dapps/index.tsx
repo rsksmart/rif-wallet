@@ -13,7 +13,7 @@ import { WalletConnectContext } from '../walletConnect/WalletConnectContext'
 export const DappsScreen: React.FC<{
   navigation: NavigationProp
   route: any
-}> = ({ route }) => {
+}> = ({ navigation, route }) => {
   const { t } = useTranslation()
   const { wallet } = useSelectedWallet()
   const { connections, handleApprove, handleReject } =
@@ -25,11 +25,12 @@ export const DappsScreen: React.FC<{
 
   const wcKey = route.params?.wcKey
   const pendingConnector = connections[wcKey]?.connector
-  const [modalVisible, setModalVisible] = React.useState(
-    pendingConnector && !pendingConnector.connected,
-  )
   console.log('wcKey', wcKey)
   console.log('pendingConnector.connected', pendingConnector?.connected)
+
+  const closeModal = () => {
+    navigation.navigate('Dapps')
+  }
 
   return (
     <View style={styles.parent}>
@@ -44,17 +45,16 @@ export const DappsScreen: React.FC<{
       </View>
       {pendingConnector && !pendingConnector.connected && (
         <ConfirmationModal
-          isVisible={modalVisible}
           title={`${t('Connect to')} ${pendingConnector?.peerMeta?.name}?`}
           okText={t('Connect')}
           cancelText={t('Reject')}
           onOk={() => {
             handleApprove(pendingConnector, wallet)
-            setModalVisible(false)
+            closeModal()
           }}
           onCancel={() => {
             handleReject(pendingConnector)
-            setModalVisible(false)
+            closeModal()
           }}
         />
       )}

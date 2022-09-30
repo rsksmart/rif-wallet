@@ -12,7 +12,7 @@ import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
 
 interface ConfirmationModalProps {
-  isVisible: boolean
+  isVisible?: boolean
   imgSrc?: ImageSourcePropType
   title: string
   okText?: string
@@ -22,7 +22,7 @@ interface ConfirmationModalProps {
 }
 
 export const ConfirmationModal = ({
-  isVisible,
+  isVisible = true,
   imgSrc,
   title,
   okText,
