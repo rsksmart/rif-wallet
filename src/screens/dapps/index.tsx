@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
 import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
@@ -72,7 +72,7 @@ export const DappsScreen: React.FC<{
           </View>
         </>
       ) : (
-        <View style={styles.dappsList}>
+        <ScrollView style={styles.dappsList}>
           {openedConnections.map(({ connector: c }) => (
             <LinearGradient
               key={c.key}
@@ -98,7 +98,7 @@ export const DappsScreen: React.FC<{
               </View>
             </LinearGradient>
           ))}
-        </View>
+        </ScrollView>
       )}
     </View>
   )
