@@ -38,6 +38,7 @@ export const TextInputWithLabel: React.FC<TextInputInterface> = ({
         placeholder={placeholder}
         placeholderTextColor={colors.text.secondary}
         multiline={multiline || false}
+        textAlignVertical="top"
       />
     </View>
   )
