@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react'
 
-import { View, StyleSheet, Image } from 'react-native'
+import { View, StyleSheet, Image, Linking, Clipboard } from 'react-native'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
-import { PurpleButton } from '../../components/button/ButtonVariations'
+import {
+  OutlineButton,
+  PurpleButton,
+} from '../../components/button/ButtonVariations'
 
 import { ScreenProps } from '../../RootNavigation'
 import { ScreenWithWallet } from '../types'
@@ -25,6 +28,11 @@ export const AliasBoughtScreen: React.FC<
     'Transaction for your alias is being processed',
   )
 
+  const copyHashAndOpenExplorer = (hash: string) => {
+    Clipboard.setString(hash)
+    Linking.openURL(`https://explorer.testnet.rsk.co/tx/${hash}`)
+  }
+
   useEffect(() => {
     setProfile({
       ...profile,
@@ -45,7 +53,7 @@ export const AliasBoughtScreen: React.FC<
         <View style={rnsManagerStyles.marginBottom}>
           <View style={styles.imageContainer}>
             <Image
-              style={styles.profileImage}
+              style={styles.image}
               source={require('../../images/AliasBought.png')}
             />
             <View>
@@ -60,8 +68,14 @@ export const AliasBoughtScreen: React.FC<
         </View>
 
         <View style={rnsManagerStyles.bottomContainer}>
-          <PurpleButton
-            style={rnsManagerStyles.marginBottom}
+          <View style={styles.buttonContainer}>
+            <PurpleButton
+              onPress={() => copyHashAndOpenExplorer(tx.hash)}
+              accessibilityLabel="Copy Hash & Open Explorer"
+              title={'Copy Hash & Open Explorer'}
+            />
+          </View>
+          <OutlineButton
             onPress={() =>
               navigation.navigate('ProfileDetailsScreen', {
                 navigation,
@@ -81,5 +95,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 50,
     paddingBottom: 10,
+  },
+  image: {
+    paddingTop: 50,
+    paddingBottom: 10,
+  },
+  buttonContainer: {
+    marginBottom: 15,
   },
 })
