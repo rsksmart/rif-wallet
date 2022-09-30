@@ -111,6 +111,10 @@ export const Core = () => {
     },
   })
 
+  if (state.hasKeys && state.hasPin && !unlocked) {
+    return <RequestPIN unlock={onScreenUnlock} />
+  }
+
   return (
     <Fragment>
       <SafeAreaView style={styles.top}>
@@ -118,9 +122,6 @@ export const Core = () => {
       </SafeAreaView>
       <SafeAreaView style={styles.body}>
         {!active && <Cover />}
-        {state.hasKeys && state.hasPin && !unlocked && (
-          <RequestPIN unlock={onScreenUnlock} />
-        )}
         <AppContext.Provider
           value={{
             ...state,
