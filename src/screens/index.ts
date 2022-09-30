@@ -37,6 +37,7 @@ export {
 } from './accounts/AccountsScreen'
 export { ProfileCreateScreen } from './profile/ProfileCreateScreen'
 export { ProfileDetailsScreen } from './profile/ProfileDetailsScreen'
+export { default as SendBitcoinScreen } from './send/SendBitcoinScreen'
 export { default as BitcoinReceiveScreen } from './receive/BitcoinReceiveScreen'
 export { default as BitcoinAddressesScreen } from './bitcoin/BitcoinAddressesScreen'
-export { default as SendBitcoinScreen } from './send/SendBitcoinScreen'
+
