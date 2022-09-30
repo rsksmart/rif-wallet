@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 import { UnspentTransactionType } from '../../lib/bitcoin/BIP84Payment'
 import { StyleSheet, Text, TextInput, View } from 'react-native'
 import { colors, grid } from '../../styles'
@@ -12,10 +11,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import { MediumText } from '../../components'
 import Clipboard from '@react-native-community/clipboard'
 
-type SendBitcoinScreenType = {
-  network: BitcoinNetwork
-}
-const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
+const SendBitcoinScreen: React.FC<any> = ({
   route: {
     params: { network },
   },
@@ -41,10 +37,7 @@ const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
   }
 
   const isAddressValid = (): boolean => {
-    if (!addressToPay.startsWith(network.bips[0].networkInfo.bech32)) {
-      return false
-    }
-    return true
+    return addressToPay.startsWith(network.bips[0].networkInfo.bech32)
   }
 
   const handleAddressToPayChange = (address: string) => {
