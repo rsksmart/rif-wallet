@@ -25,8 +25,6 @@ export const DappsScreen: React.FC<{
 
   const wcKey = route.params?.wcKey
   const pendingConnector = connections[wcKey]?.connector
-  console.log('wcKey', wcKey)
-  console.log('pendingConnector.connected', pendingConnector?.connected)
 
   const closeModal = () => {
     navigation.navigate('Dapps')
