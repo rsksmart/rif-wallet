@@ -84,7 +84,9 @@ export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
     fetch(`${this.uri}/bitcoin/getXpubUtxos/${xpub}`).then(res => res.json())
 
   sendTransactionHexData = (hexdata: string): Promise<any> =>
-    fetch(`${this.uri}/bitcoin/sendTransaction/${hexdata}`).then(res => res.json())
+    fetch(`${this.uri}/bitcoin/sendTransaction/${hexdata}`).then(res =>
+      res.json(),
+    )
 
   fetchXpubNextUnusedIndex = (
     xpub: string,
