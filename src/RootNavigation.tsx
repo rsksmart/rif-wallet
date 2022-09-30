@@ -78,6 +78,7 @@ type RootStackParamList = {
   ProfileDetailsScreen: undefined
   ChangePinScreen: undefined
   BitcoinScreen: undefined
+  FeedbackScreen: undefined
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -340,6 +341,11 @@ export const RootNavigation: React.FC<{
               <Screens.ProfileDetailsScreen {...props} profile={profile} />
             )}
           </RootStack.Screen>
+          <RootStack.Screen
+            name="FeedbackScreen"
+            options={sharedOptions}
+            component={Screens.FeedbackScreen}
+          />
         </RootStack.Navigator>
         {appIsSetup && !isKeyboardVisible && (
           <AppFooterMenu currentScreen={currentScreen} />
