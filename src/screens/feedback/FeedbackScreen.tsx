@@ -4,6 +4,7 @@ import { RegularText } from '../../components'
 import { PurpleButton } from '../../components/button/ButtonVariations'
 import { TextInputWithLabel } from '../../components/input/TextInputWithLabel'
 import { colors } from '../../styles'
+import { ThankYouComponent } from './ThankYouComponent'
 
 interface FeedbackInterface {}
 
@@ -18,7 +19,7 @@ export const FeedbackScreen: React.FC<FeedbackInterface> = ({}) => {
   }
 
   if (isSent) {
-    return <RegularText>Thank you!</RegularText>
+    return <ThankYouComponent />
   }
 
   return (
