@@ -2,7 +2,7 @@ import {
   ITokenWithBalance,
   TransactionsServerResponse,
 } from './RIFWalletServicesTypes'
-import { UnspentTransactionType } from '../bitcoin/payments/BIP84Payment'
+import { UnspentTransactionType } from '../bitcoin/BIP84Payment'
 
 export interface IRIFWalletServicesFetcher {
   fetchTokensByAddress(address: string): Promise<ITokenWithBalance[]>
@@ -82,6 +82,9 @@ export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
     )
   fetchUtxos = (xpub: string): Promise<Array<UnspentTransactionType>> =>
     fetch(`${this.uri}/bitcoin/getXpubUtxos/${xpub}`).then(res => res.json())
+
+  sendTransactionHexData = (hexdata: string): Promise<any> =>
+    fetch(`${this.uri}/bitcoin/sendTransaction/${hexdata}`).then(res => res.json())
 
   fetchXpubNextUnusedIndex = (
     xpub: string,
