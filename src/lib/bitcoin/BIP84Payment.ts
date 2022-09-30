@@ -20,10 +20,10 @@ class BIP84Payment {
     addressToPay: string,
     unspentTransactions: Array<UnspentTransactionType>,
   ) {
-    let amount: number = amountToPay * 1.1
+    let amount: number = Math.floor((amountToPay + 141) * 1.1)
     const psbt = new Psbt({ network: this.networkInfo })
     for (const transaction of unspentTransactions) {
-      amount -= Number(transaction.value)
+      amount = amount - Number(transaction.value)
       const transactionWithInput = this.createTransactionInput(transaction)
       psbt.addInput(transactionWithInput.input as any)
       if (amount <= 0) {
@@ -34,7 +34,7 @@ class BIP84Payment {
       // Send back to the first address
       psbt.addOutput({
         address: unspentTransactions[0].address,
-        value: +amount,
+        value: amount * -1,
       })
     }
     psbt.addOutput({
@@ -43,7 +43,7 @@ class BIP84Payment {
     })
     psbt.signAllInputsHD(this.bip32root)
     psbt.finalizeAllInputs()
-    return psbt.extractTransaction().toHex()
+    return psbt.extractTransaction().toHex().toString()
   }
 
   createTransactionInput(transaction: UnspentTransactionType) {

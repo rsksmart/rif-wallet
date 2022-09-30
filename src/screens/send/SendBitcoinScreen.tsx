@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
-import { UnspentTransactionType } from '../../lib/bitcoin/payments/BIP84Payment'
+import { UnspentTransactionType } from '../../lib/bitcoin/BIP84Payment'
 import { StyleSheet, Text, TextInput, View } from 'react-native'
 import { colors, grid } from '../../styles'
 import AssetChooser from './AssetChooser'
@@ -9,6 +9,8 @@ import { BlueButton } from '../../components/button/ButtonVariations'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { ContentPasteIcon } from '../../components/icons'
 import Icon from 'react-native-vector-icons/Ionicons'
+import { MediumText } from '../../components'
+import Clipboard from '@react-native-community/clipboard'
 
 type SendBitcoinScreenType = {
   network: BitcoinNetwork
@@ -20,9 +22,10 @@ const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
 }) => {
   const [utxos, setUtxos] = useState<Array<UnspentTransactionType>>([])
   const [amountToPay, setAmountToPay] = useState<string>('0')
-  const [addressToPay, setAddressToPay] = useState<string>(
-    'tb1qfxl3azt5mr44564yjznptxmxl2djc2mg9w6qre',
-  )
+  const [addressToPay, setAddressToPay] = useState<string>('')
+  const [status, setStatus] = useState<string>('')
+  const [txid, setTxid] = useState<string>('')
+  const [error, setError] = useState<string>('')
   const fetchUtxo = async () => {
     network.bips[0]
       .fetchUtxos()
@@ -37,17 +40,51 @@ const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
     setAmountToPay(amount)
   }
 
+  const isAddressValid = (): boolean => {
+    if (!addressToPay.startsWith(network.bips[0].networkInfo.bech32)) {
+      return false
+    }
+    return true
+  }
+
   const handleAddressToPayChange = (address: string) => {
     setAddressToPay(address)
   }
-
-  const onReviewTouch = () => {
-    const hexData = network.bips[0].paymentInstance.generateHexPayment(
+  const balance = network.bips[0].balance
+  const onReviewTouch = async () => {
+    if (Number(amountToPay) > Number(balance)) {
+      setStatus(`Amount must not be greater than ${balance}`)
+      return
+    }
+    if (!isAddressValid()) {
+      setStatus('Address is not valid. Please verify')
+      return
+    }
+    setTxid('')
+    setError('')
+    setStatus('Loading payment...')
+    const hexData = await network.bips[0].generatePayment(
       Number(amountToPay),
       addressToPay,
       utxos,
     )
-    console.log(hexData)
+    setStatus('Sending payment...')
+    const txIdJson = await network.bips[0].sendTransaction(hexData)
+    if (txIdJson.result) {
+      setStatus(`${txIdJson.result}`)
+      setTxid(txIdJson.result)
+    } else {
+      setStatus(`Transaction Error: ${txIdJson.error}`)
+      setError(txIdJson.error)
+    }
+  }
+
+  const onTransactionCopy = (type: string) => () => {
+    if (type === 'error') {
+      Clipboard.setString(error)
+    } else {
+      Clipboard.setString(txid)
+    }
   }
   return (
     <View style={styles.container}>
@@ -123,6 +160,16 @@ const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
           </View>
         </>
       </View>
+      <View style={styles.statusView}>
+        {status !== '' && (
+          <TouchableOpacity
+            onPress={onTransactionCopy(error !== '' ? 'error' : 'txid')}>
+            <View style={styles.addressContainer}>
+              <MediumText style={styles.label}>{status}</MediumText>
+            </View>
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
   )
 }
@@ -178,6 +225,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  statusView: {
+    marginTop: 20,
   },
 })
 export default SendBitcoinScreen

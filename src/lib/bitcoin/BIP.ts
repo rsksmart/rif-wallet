@@ -4,7 +4,7 @@ import BitcoinNetwork from './BitcoinNetwork'
 import AddressFactory from './AddressFactory'
 import { RifWalletServicesFetcher } from '../rifWalletServices/RifWalletServicesFetcher'
 import { rifWalletServicesFetcher as defaultFetcherInstance } from '../../core/setup'
-import getPaymentInstance from './payments/getPaymentInstance'
+import getPaymentInstance from './getPaymentInstance'
 
 const { fromSeed } = require('bip32')
 
@@ -106,10 +106,14 @@ export default class BIP {
     addressToPay: string,
     unspentTransactions: Array<any>,
   ) {
-    this.paymentInstance.generateHexPayment(
+    return this.paymentInstance.generateHexPayment(
       amountToPay,
       addressToPay,
       unspentTransactions,
     )
+  }
+
+  async sendTransaction(hexData: string) {
+    return this.RifWalletServicesFetcherInstance.sendTransactionHexData(hexData)
   }
 }
