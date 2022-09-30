@@ -4,18 +4,27 @@ import { RegularText } from '../../components'
 import { PurpleButton } from '../../components/button/ButtonVariations'
 import { TextInputWithLabel } from '../../components/input/TextInputWithLabel'
 import { colors } from '../../styles'
+import { sendFeedbackToGithub } from './operations'
 import { ThankYouComponent } from './ThankYouComponent'
 
-interface FeedbackInterface {}
-
-export const FeedbackScreen: React.FC<FeedbackInterface> = ({}) => {
+export const FeedbackScreen: React.FC = () => {
   const [isSent, setIsSent] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+
   const [name, setName] = useState<string>('')
   const [email, setEmail] = useState<string>('')
   const [feedback, setFeedback] = useState<string>('')
 
   const submitFeedback = () => {
-    setIsSent(true)
+    setIsLoading(true)
+    if (feedback !== '') {
+      sendFeedbackToGithub(name, email, feedback)
+        .then(() => setIsSent(true))
+        .catch((error: any) => {
+          console.log({ error })
+          setIsLoading(false)
+        })
+    }
   }
 
   if (isSent) {
@@ -49,7 +58,11 @@ export const FeedbackScreen: React.FC<FeedbackInterface> = ({}) => {
         inputStyle={styles.feedback}
       />
 
-      <PurpleButton title="Submit" onPress={submitFeedback} />
+      <PurpleButton
+        title="Submit"
+        onPress={submitFeedback}
+        disabled={isLoading}
+      />
     </View>
   )
 }
