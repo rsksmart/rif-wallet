@@ -94,9 +94,9 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
       await deleteWCSession(wc.uri)
 
       setConnections(prev => {
-        const connections = { ...prev }
-        delete connections[wc.key]
-        return connections
+        const result = { ...prev }
+        delete result[wc.key]
+        return result
       })
 
       try {

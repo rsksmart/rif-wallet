@@ -21,7 +21,7 @@ const ScanQRScreen = () => {
     // wait for session request
     navigation.reset({
       index: 0,
-      routes: [{ name: 'Dapps' as never}],
+      routes: [{ name: 'Dapps' as never }],
     })
   }
 
