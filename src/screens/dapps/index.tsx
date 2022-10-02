@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
@@ -43,7 +43,9 @@ export const DappsScreen: React.FC<{
       </View>
       {pendingConnector && !pendingConnector.connected && (
         <ConfirmationModal
-          title={`${t('Connect to')} ${pendingConnector?.peerMeta?.name}?`}
+          title={`${t('Connect to')} ${
+            pendingConnector?.peerMeta?.name || 'Dapp'
+          }?`}
           okText={t('Connect')}
           cancelText={t('Reject')}
           onOk={() => {

@@ -51,7 +51,7 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
     eventsNames.forEach(x => wc.off(x))
   }
 
-  const subscribeToEvents = async (
+  const subscribeToEvents = (
     wc: WalletConnect,
     adapter: WalletConnectAdapter,
   ) => {
@@ -89,17 +89,14 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
     wc.on('disconnect', async error => {
       console.log('EVENT', 'disconnect', error)
 
-      setConnections(prev => {
-        const result = { ...prev }
-
-        delete result[wc.key]
-
-        return result
-      })
-
       unsubscribeToEvents(wc)
 
       await deleteWCSession(wc.uri)
+      setConnections(prev => {
+        const connections = { ...prev }
+        delete connections[wc.key]
+        return connections
+      })
 
       try {
         await wc?.killSession()
@@ -120,6 +117,7 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
     })
 
     await saveWCSession({
+      key: wc.key,
       uri: wc.uri,
       session: wc.session,
       walletAddress: wallet.address,

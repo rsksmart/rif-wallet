@@ -1,42 +1,29 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-const key = 'WALLET_CONNECT_SESSION'
+const WC_KEY = 'WALLET_CONNECT_SESSION'
 
 export interface IWCSession {
+  key: string
   uri: string
   session: any
   walletAddress: string
 }
 
 export interface ISessionsStorage {
-  [uri: string]: IWCSession
+  [key: string]: IWCSession
 }
 
 export const createStore = () => ({
   has: async () => {
-    const value = await AsyncStorage.getItem(key)
-    return value !== null
+    const value = await AsyncStorage.getItem(WC_KEY)
+    return !!value
   },
   get: async () => {
-    const value = await AsyncStorage.getItem(key)
-
-    return value !== null ? (JSON.parse(value) as ISessionsStorage) : null
-  },
-  remove: async (uri: string) => {
-    const value = await AsyncStorage.getItem(key)
-
-    if (value === null) {
-      return
-    }
-
-    const result = JSON.parse(value) as ISessionsStorage
-
-    delete result[uri]
-
-    return AsyncStorage.setItem(key, JSON.stringify(result))
+    const value = await AsyncStorage.getItem(WC_KEY)
+    return value && (JSON.parse(value) as ISessionsStorage)
   },
   save: async (session: IWCSession) => {
-    const storedSessionsJson = await AsyncStorage.getItem(key)
+    const storedSessionsJson = await AsyncStorage.getItem(WC_KEY)
     const storedSessions =
       storedSessionsJson !== null
         ? (JSON.parse(storedSessionsJson) as ISessionsStorage)
@@ -44,10 +31,19 @@ export const createStore = () => ({
 
     const jsonValue = JSON.stringify({
       ...storedSessions,
-      [session.uri]: session,
+      [session.key]: session,
     })
 
-    return AsyncStorage.setItem(key, jsonValue)
+    return AsyncStorage.setItem(WC_KEY, jsonValue)
+  },
+  remove: async (key: string) => {
+    const value = await AsyncStorage.getItem(WC_KEY)
+
+    if (value) {
+      const sessions = JSON.parse(value) as ISessionsStorage
+      delete sessions[key]
+      await AsyncStorage.setItem(WC_KEY, JSON.stringify({}))
+    }
   },
 })
 
