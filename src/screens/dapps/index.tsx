@@ -27,6 +27,7 @@ export const DappsScreen: React.FC<{
   const pendingConnector = connections[wcKey]?.connector
 
   if (pendingConnector?.connected) {
+    // clear pendingConnector
     navigation.navigate('Dapps' as never)
   }
 

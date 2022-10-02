@@ -17,7 +17,12 @@ const ScanQRScreen = () => {
       setIsConnecting(true)
       createSession(wallet, data)
     }
-    navigation.navigate('Dapps' as never)
+
+    // wait for session request
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Dapps' as never}],
+    })
   }
 
   const onClose = () => {
