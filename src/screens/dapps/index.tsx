@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
@@ -26,8 +26,8 @@ export const DappsScreen: React.FC<{
   const wcKey = route.params?.wcKey
   const pendingConnector = connections[wcKey]?.connector
 
-  const closeModal = () => {
-    navigation.navigate('Dapps')
+  if (pendingConnector?.connected) {
+    navigation.navigate('Dapps' as never)
   }
 
   return (
@@ -48,14 +48,8 @@ export const DappsScreen: React.FC<{
           }?`}
           okText={t('Connect')}
           cancelText={t('Reject')}
-          onOk={() => {
-            handleApprove(pendingConnector, wallet)
-            closeModal()
-          }}
-          onCancel={() => {
-            handleReject(pendingConnector)
-            closeModal()
-          }}
+          onOk={() => handleApprove(pendingConnector, wallet)}
+          onCancel={() => handleReject(pendingConnector)}
         />
       )}
       {openedConnections.length === 0 ? (

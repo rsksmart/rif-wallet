@@ -12,12 +12,12 @@ const ScanQRScreen = () => {
   const { createSession } = useContext(WalletConnectContext)
   const [isConnecting, setIsConnecting] = useState(false)
 
-  const onBarCodeRead = (data: string) => {
+  const onCodeRead = (data: string) => {
     if (!isConnecting) {
-      console.log('onBarCodeRead', data)
       setIsConnecting(true)
       createSession(wallet, data)
     }
+    navigation.navigate('Dapps' as never)
   }
 
   const onClose = () => {
@@ -28,7 +28,7 @@ const ScanQRScreen = () => {
     }
   }
 
-  return <QRCodeScanner onCodeRead={onBarCodeRead} onClose={onClose} />
+  return <QRCodeScanner onCodeRead={onCodeRead} onClose={onClose} />
 }
 
 export default ScanQRScreen

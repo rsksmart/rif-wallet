@@ -92,6 +92,7 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
       unsubscribeToEvents(wc)
 
       await deleteWCSession(wc.uri)
+
       setConnections(prev => {
         const connections = { ...prev }
         delete connections[wc.key]
@@ -101,7 +102,7 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
       try {
         await wc?.killSession()
       } catch (err) {
-        console.error('could not kill the wc session', err)
+        console.warn('could not kill the wc session', err)
       }
     })
   }
@@ -126,6 +127,7 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
     const adapter = new WalletConnectAdapter(wallet)
 
     subscribeToEvents(wc, adapter)
+    navigation.navigate('Dapps' as never, { wcKey: wc.key } as never)
   }
 
   const handleReject = async (wc: WalletConnect) => {
@@ -134,6 +136,7 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
     }
 
     wc.rejectSession({ message: 'user rejected the session' })
+    navigation.navigate('Dapps' as never)
   }
 
   const createSession = (wallet: RIFWallet, uri: string, session?: any) => {
