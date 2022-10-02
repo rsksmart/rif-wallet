@@ -86,7 +86,7 @@ export const DappsScreen: React.FC<{
                   style={styles.dappButtonView}
                   onPress={() => c.killSession()}>
                   <Image
-                    source={require('../../images/connected-dapp.png')}
+                    source={require('../../images/disconnect-dapp.png')}
                     style={styles.dappButton}
                   />
                 </TouchableOpacity>
