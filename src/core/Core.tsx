@@ -132,7 +132,8 @@ export const Core = () => {
             <WalletConnectProviderElement>
               <RIFSocketsProvider
                 rifServiceSocket={rifWalletServicesSocket}
-                abiEnhancer={abiEnhancer}>
+                abiEnhancer={abiEnhancer}
+                appActive={active}>
                 <RootNavigation
                   currentScreen={currentScreen}
                   hasKeys={state.hasKeys}

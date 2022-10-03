@@ -112,6 +112,10 @@ export class RifWalletServicesSocket
   }
 
   isConnected() {
-    return !!this.socket
+    if (!this.socket) {
+      return false
+    }
+
+    return this.socket.connected
   }
 }

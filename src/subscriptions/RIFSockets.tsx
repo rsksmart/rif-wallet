@@ -142,6 +142,7 @@ export function RIFSocketsProvider({
   children,
   rifServiceSocket,
   abiEnhancer,
+  appActive,
 }: SubscriptionsProviderProps) {
   const [state, dispatch] = React.useReducer(
     liveSubscriptionsReducer,
@@ -215,6 +216,17 @@ export function RIFSocketsProvider({
 
     return () => interval && clearInterval(interval)
   }, [wallet])
+
+  // Disconnect from the rifServiceSocket when the app goes to the background
+  React.useEffect(() => {
+    if (!appActive) {
+      return rifServiceSocket?.disconnect()
+    }
+
+    if (wallet && !rifServiceSocket?.isConnected()) {
+      connect()
+    }
+  }, [appActive])
 
   const value = { state, dispatch }
   return (
