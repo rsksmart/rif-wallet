@@ -78,6 +78,7 @@ export const RegisterDomainScreen: React.FC<
           clearInterval(intervalId)
         }
       }, 5000)
+      // @ts-ignore
     } catch (e: any) {
       setError(e.message)
     }
@@ -107,6 +108,7 @@ export const RegisterDomainScreen: React.FC<
 
       setRegisterDomainInfo('Registered!!')
       setRegisterReady(true)
+      // @ts-ignore
     } catch (e: any) {
       setError(e.message)
     }

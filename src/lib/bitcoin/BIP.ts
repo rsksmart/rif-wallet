@@ -20,7 +20,7 @@ export default class BIP {
   RifWalletServicesFetcherInstance: RifWalletServicesFetcher
   balance!: number
   btc!: number
-
+  bipName: string
   constructor(
     networkInstance: BitcoinNetwork,
     bipId: string,
@@ -31,6 +31,7 @@ export default class BIP {
     this.network = networkInstance
     this.bipId = bipId
     this.bipNumber = BIP_DATA[bipId].number
+    this.bipName = BIP_DATA[bipId].name
     this.PathDerivator = new PathDerivator(
       this.bipNumber,
       this.network.coinTypeNumber,
@@ -60,7 +61,7 @@ export default class BIP {
   setAddressFactory() {
     this.AddressFactory = new AddressFactory(this.bipNumber, this.networkInfo)
   }
-  getAddress(index = 0) {
+  getAddress(index = 0): string {
     const bip32Instance = this.bip32Root.derivePath(
       this.PathDerivator.getAddressDerivation(index),
     )
@@ -73,5 +74,12 @@ export default class BIP {
     this.balance = parseInt(data.balance, 10)
     this.btc = data.btc
     return this.btc
+  }
+  async fetchExternalAvailableAddress() {
+    const index =
+      await this.RifWalletServicesFetcherInstance.fetchXpubNextUnusedIndex(
+        this.accountPublicKey,
+      )
+    return this.getAddress(index)
   }
 }

@@ -44,7 +44,7 @@ export const ProfileHandler: React.FC<Props> = ({
             source={require('../../images/avataaars.png')}
           />
           <View>
-            {profile?.phone !== '' && (
+            {profile?.alias !== '' && (
               <RegularText style={styles.profileName}>
                 {profile.alias}
               </RegularText>

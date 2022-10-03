@@ -122,7 +122,6 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
 
 const styles = StyleSheet.create({
   rowContainer: {
-    margin: 5,
     flexDirection: 'row',
   },
   availableLabel: {
