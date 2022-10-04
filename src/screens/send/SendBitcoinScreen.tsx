@@ -25,9 +25,7 @@ const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
 }) => {
   const [utxos, setUtxos] = useState<Array<UnspentTransactionType>>([])
   const [amountToPay, setAmountToPay] = useState<string>('')
-  const [addressToPay, setAddressToPay] = useState<string>(
-    'tb1qmey3qsyz5tk29eul3cmw7q26r4yxpjczmvaskp',
-  )
+  const [addressToPay, setAddressToPay] = useState<string>('')
   const [miningFee, setMiningFee] = useState<string>('')
   const [status, setStatus] = useState<string>('')
   const [txid, setTxid] = useState<string>('')
