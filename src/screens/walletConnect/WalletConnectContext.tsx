@@ -166,7 +166,6 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
         address: wallet.address,
       },
     }))
-    navigation.navigate('Dapps' as never, { wcKey: newConnector.key } as never)
   }
 
   useEffect(() => {
