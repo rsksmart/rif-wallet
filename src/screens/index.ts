@@ -13,6 +13,7 @@ export {
 } from './info/ShowMnemonicScreen'
 export { ManuallyDeployScreen } from './settings/ManuallyDeployScreen'
 export { WalletConnectScreen } from './walletConnect'
+export { ScanQRScreen } from './walletConnect/ScanQRScreen'
 export { ChangeLanguageScreen } from './settings/ChangeLanguageScreen'
 export { CreatePinScreen } from './createPin/CreatePinScreen'
 export { RNSManagerScreen } from './rnsManager/RNSManager'

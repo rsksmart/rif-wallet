@@ -20,6 +20,7 @@ const InjectedScreens = {
   ActivityDetailsScreen: InjectSelectedWallet(Screens.ActivityDetailsScreen),
   ManuallyDeployScreen: InjectSelectedWallet(Screens.ManuallyDeployScreen),
   WalletConnectScreen: InjectSelectedWallet(Screens.WalletConnectScreen),
+  ScanQRScreen: InjectSelectedWallet(Screens.ScanQRScreen),
   RNSManagerScreen: InjectSelectedWallet(Screens.RNSManagerScreen),
   SearchDomainScreen: InjectSelectedWallet(Screens.SearchDomainScreen),
   RegisterDomainScreen: InjectSelectedWallet(Screens.RegisterDomainScreen),
@@ -48,6 +49,7 @@ type RootStackParamList = {
   CreateKeysUX: undefined
   ShowMnemonicScreen: undefined
   WalletConnect: undefined | { wcKey?: string }
+  ScanQR: undefined
   ChangeLanguage: undefined
   ManagePin: undefined
   CreatePin: undefined
@@ -153,6 +155,9 @@ export const RootNavigation: React.FC<{
                 {...walletConnectScreenProps}
               />
             )}
+          </RootStack.Screen>
+          <RootStack.Screen name="ScanQR" options={sharedOptions}>
+            {props => <InjectedScreens.ScanQRScreen />}
           </RootStack.Screen>
 
           <RootStack.Screen name="Settings" options={sharedOptions}>

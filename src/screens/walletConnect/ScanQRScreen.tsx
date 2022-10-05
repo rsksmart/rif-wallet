@@ -5,7 +5,7 @@ import { QRCodeScanner } from '../../components/QRCodeScanner'
 import { useSelectedWallet } from '../../Context'
 import { WalletConnectContext } from './WalletConnectContext'
 
-const ScanQRScreen = () => {
+export const ScanQRScreen = () => {
   const { wallet } = useSelectedWallet()
   const navigation = useNavigation()
 
@@ -21,7 +21,7 @@ const ScanQRScreen = () => {
     // wait for session request
     navigation.reset({
       index: 0,
-      routes: [{ name: 'Dapps' as never }],
+      routes: [{ name: 'WalletConnect' as never }],
     })
   }
 
@@ -35,5 +35,3 @@ const ScanQRScreen = () => {
 
   return <QRCodeScanner onCodeRead={onCodeRead} onClose={onClose} />
 }
-
-export default ScanQRScreen

@@ -64,7 +64,7 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
         throw error
       }
 
-      navigation.navigate('Dapps' as never, { wcKey: wc.key } as never)
+      navigation.navigate('WalletConnect' as never, { wcKey: wc.key } as never)
     })
 
     wc.on('call_request', async (error, payload) => {
@@ -122,7 +122,7 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
     const adapter = new WalletConnectAdapter(wallet)
 
     subscribeToEvents(wc, adapter)
-    navigation.navigate('Dapps' as never, { wcKey: wc.key } as never)
+    navigation.navigate('WalletConnect' as never)
   }
 
   const handleReject = async (wc: WalletConnect) => {
@@ -131,7 +131,7 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
     }
 
     wc.rejectSession({ message: 'user rejected the session' })
-    navigation.navigate('Dapps' as never)
+    navigation.navigate('WalletConnect' as never)
   }
 
   const createSession = (wallet: RIFWallet, uri: string, session?: any) => {

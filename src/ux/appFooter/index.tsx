@@ -41,7 +41,7 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate('WalletConnect' as never)}
+        onPress={() => navigation.navigate('ScanQR' as never)}
         style={styles.button}>
         <QRCodeIconFooter />
       </TouchableOpacity>

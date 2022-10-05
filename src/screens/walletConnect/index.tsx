@@ -28,7 +28,7 @@ export const WalletConnectScreen: React.FC<{
 
   if (pendingConnector?.connected) {
     // clear pendingConnector
-    navigation.navigate('Dapps' as never)
+    navigation.navigate('WalletConnect' as never)
   }
 
   return (
