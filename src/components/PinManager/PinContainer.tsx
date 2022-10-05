@@ -6,6 +6,8 @@ const PinContainer: React.FC<PinContainerType> = ({
   pinLength = 4,
   onPinSubmit,
   PinScreenComponent = PinScreen,
+  resetKeysAndPin,
+  resetEnabled,
 }) => {
   const createPinArray = React.useCallback(
     length => Array.from({ length }, () => ''),
@@ -60,6 +62,8 @@ const PinContainer: React.FC<PinContainerType> = ({
       onKeypadPress={onPinDigitAdd}
       onKeypadDelete={onPinDigitDelete}
       error={error}
+      resetEnabled={resetEnabled}
+      resetKeysAndPin={resetKeysAndPin}
     />
   )
 }

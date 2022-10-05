@@ -19,12 +19,16 @@ export type PinScreenType = {
   onKeypadDelete: () => any
   error?: string | null
   pin: Array<string>
+  resetEnabled: boolean
+  resetKeysAndPin: () => void
 }
 
 export type PinContainerType = {
   pinLength: number
   onPinSubmit: (enteredPin: string) => Promise<unknown>
   PinScreenComponent?: React.FC<PinScreenType>
+  resetEnabled: boolean
+  resetKeysAndPin: () => void
 }
 
 export type PinDotsRendererType = {
