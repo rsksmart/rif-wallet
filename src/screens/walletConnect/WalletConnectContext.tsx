@@ -88,22 +88,17 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
 
     wc.on('disconnect', async error => {
       console.log('EVENT', 'disconnect', error)
+      if (error) {
+        throw error
+      }
 
       unsubscribeToEvents(wc)
-
       await deleteWCSession(wc.uri)
-
       setConnections(prev => {
         const result = { ...prev }
         delete result[wc.key]
         return result
       })
-
-      try {
-        await wc?.killSession()
-      } catch (err) {
-        console.warn('could not kill the wc session', err)
-      }
     })
   }
 
