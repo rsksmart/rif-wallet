@@ -57,9 +57,13 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate('Dapps' as never)}
+        onPress={() => navigation.navigate('WalletConnect' as never)}
         style={styles.button}>
-        {currentScreen === 'Dapps' ? <DappsSelectedIcon /> : <DappsIcon />}
+        {currentScreen === 'WalletConnect' ? (
+          <DappsSelectedIcon />
+        ) : (
+          <DappsIcon />
+        )}
       </TouchableOpacity>
     </View>
   )
