@@ -57,6 +57,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
   // interact with the navigation
   const handleSendReceive = (screen: 'SEND' | 'RECEIVE' | 'FAUCET') => {
+    if (selected instanceof BitcoinNetwork) {
+      return handleBitcoinSendReceive(screen)
+    }
     switch (screen) {
       case 'SEND':
         return navigation.navigate('Send', {
@@ -69,6 +72,19 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         let address = wallet?.smartWallet.smartWalletContract.address
         addBalance(toChecksumAddress(address, chainId))
         return
+    }
+  }
+
+  const handleBitcoinSendReceive = (screen: 'SEND' | 'RECEIVE' | 'FAUCET') => {
+    switch (screen) {
+      case 'RECEIVE':
+        return navigation.navigate('ReceiveBitcoin', {
+          network: selected,
+        } as any)
+      case 'SEND':
+        return navigation.navigate('SendBitcoin', {
+          network: selected,
+        } as any)
     }
   }
 

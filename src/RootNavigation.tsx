@@ -4,8 +4,9 @@ import React from 'react'
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native'
 import { InjectSelectedWallet } from './Context'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
+
+import BitcoinNetwork from './lib/bitcoin/BitcoinNetwork'
 import * as Screens from './screens'
-import BitcoinAddressesScreen from './screens/bitcoin/BitcoinAddressesScreen'
 import { CreateKeysNavigation, CreateKeysProps } from './screens/createKeys'
 import { colors } from './styles'
 import { AppFooterMenu } from './ux/appFooter'
@@ -23,7 +24,10 @@ const InjectedScreens = {
   ScanQRScreen: InjectSelectedWallet(Screens.ScanQRScreen),
   RNSManagerScreen: InjectSelectedWallet(Screens.RNSManagerScreen),
   SearchDomainScreen: InjectSelectedWallet(Screens.SearchDomainScreen),
+  RequestDomainScreen: InjectSelectedWallet(Screens.RequestDomainScreen),
   RegisterDomainScreen: InjectSelectedWallet(Screens.RegisterDomainScreen),
+  BuyDomainScreen: InjectSelectedWallet(Screens.BuyDomainScreen),
+  AliasBoughtScreen: InjectSelectedWallet(Screens.AliasBoughtScreen),
   HomeScreen: InjectSelectedWallet(Screens.HomeScreen),
   AccountsScreen: InjectSelectedWallet(Screens.AccountsScreen),
 }
@@ -39,6 +43,12 @@ type RootStackParamList = {
         contractAddress?: string
       }
   Receive: undefined
+  ReceiveBitcoin: {
+    network: BitcoinNetwork
+  }
+  SendBitcoin: {
+    network: BitcoinNetwork
+  }
   Balances: undefined
   Activity: undefined
   ActivityDetails: undefined
@@ -55,6 +65,9 @@ type RootStackParamList = {
   CreatePin: undefined
   RNSManager: undefined
   SearchDomain: undefined
+  RequestDomain: undefined
+  BuyDomain: undefined
+  AliasBought: undefined
   RegisterDomain: { selectedDomain: string; years: number }
   Contacts: undefined
   Settings: undefined
@@ -65,6 +78,7 @@ type RootStackParamList = {
   ProfileDetailsScreen: undefined
   ChangePinScreen: undefined
   BitcoinScreen: undefined
+  FeedbackScreen: undefined
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
@@ -185,7 +199,17 @@ export const RootNavigation: React.FC<{
           <RootStack.Screen
             name="BitcoinScreen"
             options={sharedOptions}
-            component={BitcoinAddressesScreen}
+            component={Screens.BitcoinAddressesScreen}
+          />
+          <RootStack.Screen
+            name="ReceiveBitcoin"
+            component={Screens.BitcoinReceiveScreen}
+            options={sharedOptions}
+          />
+          <RootStack.Screen
+            name="SendBitcoin"
+            component={Screens.SendBitcoinScreen}
+            options={sharedOptions}
           />
           <RootStack.Screen name="Balances">
             {props => (
@@ -243,8 +267,19 @@ export const RootNavigation: React.FC<{
           </RootStack.Screen>
 
           <RootStack.Screen name="SearchDomain" options={sharedOptions}>
+            {props => <InjectedScreens.SearchDomainScreen {...props} />}
+          </RootStack.Screen>
+          <RootStack.Screen name="RequestDomain" options={sharedOptions}>
+            {props => <InjectedScreens.RequestDomainScreen {...props} />}
+          </RootStack.Screen>
+
+          <RootStack.Screen name="BuyDomain" options={sharedOptions}>
+            {props => <InjectedScreens.BuyDomainScreen {...props} />}
+          </RootStack.Screen>
+
+          <RootStack.Screen name="AliasBought" options={sharedOptions}>
             {props => (
-              <InjectedScreens.SearchDomainScreen
+              <InjectedScreens.AliasBoughtScreen
                 {...props}
                 profile={profile}
                 setProfile={setProfile}
@@ -310,6 +345,11 @@ export const RootNavigation: React.FC<{
               <Screens.ProfileDetailsScreen {...props} profile={profile} />
             )}
           </RootStack.Screen>
+          <RootStack.Screen
+            name="FeedbackScreen"
+            options={sharedOptions}
+            component={Screens.FeedbackScreen}
+          />
         </RootStack.Navigator>
         {appIsSetup && !isKeyboardVisible && (
           <AppFooterMenu currentScreen={currentScreen} />

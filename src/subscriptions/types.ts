@@ -81,6 +81,7 @@ export type SubscriptionsProviderProps = {
   children: React.ReactNode
   rifServiceSocket?: IRifWalletServicesSocket
   abiEnhancer: IAbiEnhancer
+  appActive: boolean
 }
 
 export interface IActivityTransaction {

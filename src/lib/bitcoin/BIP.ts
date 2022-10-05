@@ -1,10 +1,12 @@
 import PathDerivator from './PathDerivator'
-const { fromSeed } = require('bip32')
-import { COIN_BIPS, BIP_DATA } from './constants'
+import { BIP_DATA, COIN_BIPS } from './constants'
 import BitcoinNetwork from './BitcoinNetwork'
 import AddressFactory from './AddressFactory'
 import { RifWalletServicesFetcher } from '../rifWalletServices/RifWalletServicesFetcher'
 import { rifWalletServicesFetcher as defaultFetcherInstance } from '../../core/setup'
+import getPaymentInstance from './getPaymentInstance'
+
+const { fromSeed } = require('bip32')
 
 export default class BIP {
   network: BitcoinNetwork
@@ -20,7 +22,9 @@ export default class BIP {
   RifWalletServicesFetcherInstance: RifWalletServicesFetcher
   balance!: number
   btc!: number
-
+  bipName: string
+  paymentType: string
+  paymentInstance!: any
   constructor(
     networkInstance: BitcoinNetwork,
     bipId: string,
@@ -31,6 +35,8 @@ export default class BIP {
     this.network = networkInstance
     this.bipId = bipId
     this.bipNumber = BIP_DATA[bipId].number
+    this.bipName = BIP_DATA[bipId].name
+    this.paymentType = 'p2wpkh' // For escalation use constants.ts and implement a paymentType constant there for all BIPs
     this.PathDerivator = new PathDerivator(
       this.bipNumber,
       this.network.coinTypeNumber,
@@ -39,6 +45,7 @@ export default class BIP {
     this.setBIP32RootKey(seed)
     this.setAccount()
     this.setNetworkInfo()
+    this.setPaymentInstance()
     this.setAddressFactory()
   }
 
@@ -57,10 +64,17 @@ export default class BIP {
   setNetworkInfo() {
     this.networkInfo = COIN_BIPS[this.network.networkId][this.bipId]
   }
+  setPaymentInstance() {
+    this.paymentInstance = getPaymentInstance(
+      this.paymentType,
+      this.bip32Root,
+      this.networkInfo,
+    )
+  }
   setAddressFactory() {
     this.AddressFactory = new AddressFactory(this.bipNumber, this.networkInfo)
   }
-  getAddress(index = 0) {
+  getAddress(index = 0): string {
     const bip32Instance = this.bip32Root.derivePath(
       this.PathDerivator.getAddressDerivation(index),
     )
@@ -73,5 +87,35 @@ export default class BIP {
     this.balance = parseInt(data.balance, 10)
     this.btc = data.btc
     return this.btc
+  }
+
+  async fetchUtxos() {
+    return await this.RifWalletServicesFetcherInstance.fetchUtxos(
+      this.accountPublicKey,
+    )
+  }
+  async fetchExternalAvailableAddress() {
+    const index =
+      await this.RifWalletServicesFetcherInstance.fetchXpubNextUnusedIndex(
+        this.accountPublicKey,
+      )
+    return this.getAddress(index)
+  }
+  async generatePayment(
+    amountToPay: number,
+    addressToPay: string,
+    unspentTransactions: Array<any>,
+    miningFee: number,
+  ) {
+    return this.paymentInstance.generateHexPayment(
+      amountToPay,
+      addressToPay,
+      unspentTransactions,
+      miningFee,
+    )
+  }
+
+  async sendTransaction(hexData: string) {
+    return this.RifWalletServicesFetcherInstance.sendTransactionHexData(hexData)
   }
 }
