@@ -171,7 +171,7 @@ export const RootNavigation: React.FC<{
             )}
           </RootStack.Screen>
           <RootStack.Screen name="ScanQR" options={sharedOptions}>
-            {props => <InjectedScreens.ScanQRScreen />}
+            {_ => <InjectedScreens.ScanQRScreen />}
           </RootStack.Screen>
 
           <RootStack.Screen name="Settings" options={sharedOptions}>
