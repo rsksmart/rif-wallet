@@ -14,7 +14,7 @@ export interface WalletConnectContextInterface {
   connections: IWalletConnectConnections
   createSession: (wallet: RIFWallet, uri: string, session?: any) => void
   handleApprove: (wc: WalletConnect, wallet: RIFWallet) => Promise<void>
-  handleReject: (wc: WalletConnect) => Promise<void>
+  handleReject: (wc: WalletConnect) => void
 }
 
 export const WalletConnectContext =
@@ -22,7 +22,7 @@ export const WalletConnectContext =
     connections: {},
     createSession: () => {},
     handleApprove: async () => {},
-    handleReject: async () => {},
+    handleReject: () => {},
   })
 
 export interface IWalletConnectConnections {
@@ -103,64 +103,64 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
   }
 
   const handleApprove = async (wc: WalletConnect, wallet: RIFWallet) => {
-    if (!wc) {
-      return
+    if (wc) {
+      wc.approveSession({
+        accounts: [wallet.smartWalletAddress],
+        chainId: await wallet.getChainId(),
+      })
+
+      await saveWCSession({
+        key: wc.key,
+        uri: wc.uri,
+        session: wc.session,
+        walletAddress: wallet.address,
+      })
+
+      const adapter = new WalletConnectAdapter(wallet)
+
+      subscribeToEvents(wc, adapter)
+      navigation.navigate('WalletConnect' as never)
     }
-
-    wc.approveSession({
-      accounts: [wallet.smartWalletAddress],
-      chainId: await wallet.getChainId(),
-    })
-
-    await saveWCSession({
-      key: wc.key,
-      uri: wc.uri,
-      session: wc.session,
-      walletAddress: wallet.address,
-    })
-
-    const adapter = new WalletConnectAdapter(wallet)
-
-    subscribeToEvents(wc, adapter)
-    navigation.navigate('WalletConnect' as never)
   }
 
-  const handleReject = async (wc: WalletConnect) => {
-    if (!wc) {
-      return
+  const handleReject = (wc: WalletConnect) => {
+    if (wc) {
+      wc.rejectSession({ message: 'user rejected the session' })
+      navigation.navigate('WalletConnect' as never)
     }
-
-    wc.rejectSession({ message: 'user rejected the session' })
-    navigation.navigate('WalletConnect' as never)
   }
 
   const createSession = (wallet: RIFWallet, uri: string, session?: any) => {
-    const newConnector = new WalletConnect({
-      uri,
-      session,
-      clientMeta: {
-        description: 'sWallet App',
-        url: 'https://www.rifos.org/',
-        icons: [
-          'https://raw.githubusercontent.com/rsksmart/rif-scheduler-ui/develop/src/assets/logoColor.svg',
-        ],
-        name: 'sWalletApp',
-      },
-    })
+    try {
+      const newConnector = new WalletConnect({
+        uri,
+        session,
+        clientMeta: {
+          description: 'sWallet App',
+          url: 'https://www.rifos.org/',
+          icons: [
+            'https://raw.githubusercontent.com/rsksmart/rif-scheduler-ui/develop/src/assets/logoColor.svg',
+          ],
+          name: 'sWalletApp',
+        },
+      })
 
-    const adapter = new WalletConnectAdapter(wallet)
+      const adapter = new WalletConnectAdapter(wallet)
 
-    // needs to subscribe to events before createSession
-    // this is because we need the 'session_request' event
-    subscribeToEvents(newConnector, adapter)
+      // needs to subscribe to events before createSession
+      // this is because we need the 'session_request' event
+      subscribeToEvents(newConnector, adapter)
 
-    setConnections(prev => ({
-      ...prev,
-      [newConnector.key]: {
-        connector: newConnector,
-        address: wallet.address,
-      },
-    }))
+      setConnections(prev => ({
+        ...prev,
+        [newConnector.key]: {
+          connector: newConnector,
+          address: wallet.address,
+        },
+      }))
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   useEffect(() => {
