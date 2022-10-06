@@ -20,10 +20,8 @@ const InjectedScreens = {
   ActivityScreen: InjectSelectedWallet(Screens.ActivityScreen),
   ActivityDetailsScreen: InjectSelectedWallet(Screens.ActivityDetailsScreen),
   ManuallyDeployScreen: InjectSelectedWallet(Screens.ManuallyDeployScreen),
-  WalletConnectNavigationScreen: InjectSelectedWallet(
-    Screens.WalletConnectNavigationScreen,
-  ),
-
+  WalletConnectScreen: InjectSelectedWallet(Screens.WalletConnectScreen),
+  ScanQRScreen: InjectSelectedWallet(Screens.ScanQRScreen),
   RNSManagerScreen: InjectSelectedWallet(Screens.RNSManagerScreen),
   SearchDomainScreen: InjectSelectedWallet(Screens.SearchDomainScreen),
   RequestDomainScreen: InjectSelectedWallet(Screens.RequestDomainScreen),
@@ -31,7 +29,6 @@ const InjectedScreens = {
   BuyDomainScreen: InjectSelectedWallet(Screens.BuyDomainScreen),
   AliasBoughtScreen: InjectSelectedWallet(Screens.AliasBoughtScreen),
   HomeScreen: InjectSelectedWallet(Screens.HomeScreen),
-  DappsScreen: InjectSelectedWallet(Screens.DappsScreen),
   AccountsScreen: InjectSelectedWallet(Screens.AccountsScreen),
 }
 
@@ -61,11 +58,11 @@ type RootStackParamList = {
   ManuallyDeployScreen: undefined
   CreateKeysUX: undefined
   ShowMnemonicScreen: undefined
-  WalletConnect: undefined
+  WalletConnect: undefined | { wcKey?: string }
+  ScanQR: undefined
   ChangeLanguage: undefined
   ManagePin: undefined
   CreatePin: undefined
-  Dapps: undefined
   RNSManager: undefined
   SearchDomain: undefined
   RequestDomain: undefined
@@ -115,7 +112,7 @@ export const RootNavigation: React.FC<{
   showMnemonicScreenProps: Screens.ShowMnemonicScreenProps
   sendScreenProps: ScreenProps<'Send'>
   contactsNavigationScreenProps: Screens.ContactsScreenProps
-  dappsScreenProps: Screens.DappsScreenScreenProps
+  walletConnectScreenProps: ScreenProps<'WalletConnect'>
   accountsScreenType: Screens.AccountsScreenType
   securityConfigurationScreenProps: Screens.SecurityScreenProps
 }> = ({
@@ -132,7 +129,7 @@ export const RootNavigation: React.FC<{
   showMnemonicScreenProps,
   sendScreenProps,
   contactsNavigationScreenProps,
-  dappsScreenProps,
+  walletConnectScreenProps,
   accountsScreenType,
   securityConfigurationScreenProps,
   setWalletIsDeployed,
@@ -165,10 +162,16 @@ export const RootNavigation: React.FC<{
               />
             )}
           </RootStack.Screen>
-          <RootStack.Screen name="Dapps" options={sharedOptions}>
+          <RootStack.Screen name="WalletConnect" options={sharedOptions}>
             {props => (
-              <InjectedScreens.DappsScreen {...props} {...dappsScreenProps} />
+              <InjectedScreens.WalletConnectScreen
+                {...props}
+                {...walletConnectScreenProps}
+              />
             )}
+          </RootStack.Screen>
+          <RootStack.Screen name="ScanQR" options={sharedOptions}>
+            {_ => <InjectedScreens.ScanQRScreen />}
           </RootStack.Screen>
 
           <RootStack.Screen name="Settings" options={sharedOptions}>
@@ -253,13 +256,6 @@ export const RootNavigation: React.FC<{
               />
             )}
           </RootStack.Screen>
-
-          <RootStack.Screen
-            name="WalletConnect"
-            component={InjectedScreens.WalletConnectNavigationScreen}
-            options={sharedOptions}
-          />
-
           <RootStack.Screen name="RNSManager" options={sharedOptions}>
             {props => (
               <InjectedScreens.RNSManagerScreen

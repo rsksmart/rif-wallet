@@ -5,26 +5,33 @@ import { QRCodeScanner } from '../../components/QRCodeScanner'
 import { useSelectedWallet } from '../../Context'
 import { WalletConnectContext } from './WalletConnectContext'
 
-const ScanQRScreen = () => {
+export const ScanQRScreen = () => {
   const { wallet } = useSelectedWallet()
   const navigation = useNavigation()
 
   const { createSession } = useContext(WalletConnectContext)
   const [isConnecting, setIsConnecting] = useState(false)
 
-  const onBarCodeRead = async (data: string) => {
+  const onCodeRead = (data: string) => {
     if (!isConnecting) {
       setIsConnecting(true)
       createSession(wallet, data)
     }
+
+    // wait for session request
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'WalletConnect' as never }],
+    })
   }
 
-  return (
-    <QRCodeScanner
-      onCodeRead={onBarCodeRead}
-      onClose={() => navigation.navigate('Dapps' as never)}
-    />
-  )
-}
+  const onClose = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack()
+    } else {
+      navigation.navigate('Home' as never)
+    }
+  }
 
-export default ScanQRScreen
+  return <QRCodeScanner onCodeRead={onCodeRead} onClose={onClose} />
+}
