@@ -1,4 +1,4 @@
-export { SendScreen } from './send/SendScreen'
+export { SendScreenContainer as SendScreen } from './send/SendScreenContainer'
 export { ReceiveScreen, ReceiveScreenProps } from './receive/ReceiveScreen'
 export { ReceiveScreenHOC } from './receive/ReceiveScreenHOC'
 export { BalancesScreen, BalancesScreenProps } from './balances/BalancesScreen'

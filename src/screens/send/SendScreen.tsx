@@ -26,6 +26,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   const [currentTransaction, setCurrentTransaction] =
     useState<transactionInfo | null>(null)
   const [error, setError] = useState<Error>()
+
   const [chainId, setChainId] = useState<number>(31)
 
   useEffect(() => {
@@ -78,6 +79,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
 
   const onDeployWalletNavigate = () =>
     navigation.navigate('ManuallyDeployScreen' as any)
+
   return (
     <ScrollView style={styles.parent}>
       {!isWalletDeployed && (
