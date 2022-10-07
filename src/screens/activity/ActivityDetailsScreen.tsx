@@ -1,8 +1,8 @@
 import React from 'react'
-import { StyleSheet, View, Linking, TouchableOpacity } from 'react-native'
+import { View, Linking, TouchableOpacity } from 'react-native'
 import { utils } from 'ethers'
 import { formatTimestamp, shortAddress } from '../../lib/utils'
-import { IActivityTransaction } from './ActivityScreen'
+import { IActivityTransaction } from './types'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Arrow, RefreshIcon } from '../../components/icons'
 import { SearchIcon } from '../../components/icons/SearchIcon'
@@ -14,6 +14,8 @@ import { SemiBoldText } from '../../components'
 import ActivityField from '../../components/activity/ActivityField'
 import { spacing } from '../../styles'
 import { TokenImage } from '../home/TokenImage'
+import ActivityDetailsBitcoinScreen from './ActivityDetailsBitcoinScreen'
+import { activityDetailsStyles as styles } from './styles'
 
 export type ActivityDetailsScreenProps = {
   route: { params: IActivityTransaction }
@@ -25,15 +27,22 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
   navigation,
 }) => {
   const transaction = route.params
+  const onBackPress = (): null => {
+    navigation.goBack()
+    return null
+  }
+  if ('isBitcoin' in transaction) {
+    return (
+      <ActivityDetailsBitcoinScreen
+        {...transaction}
+        onBackPress={onBackPress}
+      />
+    )
+  }
   const onViewExplorerClick = (): null => {
     Linking.openURL(
       `https://explorer.testnet.rsk.co/tx/${transaction.originTransaction.hash}`,
     )
-    return null
-  }
-
-  const onBackPress = (): null => {
-    navigation.goBack()
     return null
   }
 
@@ -142,67 +151,3 @@ export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
     </ScrollView>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#dbe3ff',
-    paddingTop: 21,
-  },
-  backButtonContainer: {
-    backgroundColor: '#c6ccea',
-    alignSelf: 'flex-start',
-    borderRadius: 40,
-    marginBottom: 19,
-    marginLeft: 15,
-  },
-  transDetails: {
-    marginBottom: 20,
-    paddingHorizontal: 35,
-  },
-  flexHalfSize: {
-    flexGrow: 1,
-  },
-  statusField: {
-    marginRight: 10,
-  },
-  timestampField: {
-    marginLeft: 10,
-  },
-  mb200: {
-    marginBottom: 200,
-  },
-  textMrMl: {
-    marginRight: 4,
-    marginLeft: 2,
-  },
-  flexDirRow: {
-    flexDirection: 'row',
-  },
-  flexNoWrap: {
-    flexWrap: 'nowrap',
-  },
-  alignItemsCenter: {
-    alignItems: 'center',
-  },
-  amountContainer: {
-    paddingTop: 5,
-    flexDirection: 'row',
-    flex: 1,
-    justifyContent: 'flex-start',
-  },
-  fwb: { fontWeight: 'bold' },
-  statusRow: {
-    flex: 40,
-    marginRight: 10,
-  },
-  timestampRow: {
-    flex: 60,
-  },
-  alignSelfCenter: {
-    alignSelf: 'center',
-  },
-  assetIcon: {
-    alignSelf: 'center',
-    paddingRight: 6,
-  },
-})

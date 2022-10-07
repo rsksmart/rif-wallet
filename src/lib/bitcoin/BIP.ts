@@ -118,4 +118,12 @@ export default class BIP {
   async sendTransaction(hexData: string) {
     return this.RifWalletServicesFetcherInstance.sendTransactionHexData(hexData)
   }
+
+  async fetchTransactions(pageSize: number = 10, pageNumber: number = 1) {
+    return this.RifWalletServicesFetcherInstance.fetchXpubTransactions(
+      this.accountPublicKey,
+      pageSize,
+      pageNumber,
+    )
+  }
 }

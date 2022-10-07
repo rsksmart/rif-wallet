@@ -81,3 +81,52 @@ export interface TransactionsServerResponse {
   next: string | null | undefined
   prev: string | null | undefined
 }
+
+export interface VinType {
+  txid: string
+  vout: number
+  sequence: any
+  n: number
+  addresses: string[]
+  isAddress: boolean
+  value: string
+}
+
+export interface VoutType {
+  value: string
+  n: number
+  hex: string
+  addresses: string[]
+  isAddress: boolean
+}
+
+export interface BitcoinTransactionType {
+  txid: string
+  version: number
+  vin: VinType[]
+  vout: VoutType[]
+  blockHash: string
+  blockHeight: number
+  confirmations: number
+  blockTime: number
+  value: string
+  valueIn: string
+  fees: string
+  hex: string
+  isBitcoin: boolean
+}
+
+export interface BitcoinTransactionContainerType {
+  page: number
+  totalPages: number
+  itemsOnPage: number
+  address: string
+  balance: string
+  totalReceived: string
+  totalSent: string
+  unconfirmedBalance: string
+  unconfirmedTxs: number
+  txs: number
+  transactions: BitcoinTransactionType[]
+  usedTokens: number
+}
