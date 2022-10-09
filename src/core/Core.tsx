@@ -112,7 +112,9 @@ export const Core = () => {
   })
 
   if (state.hasKeys && state.hasPin && !unlocked) {
-    return <RequestPIN unlock={onScreenUnlock} />
+    return (
+      <RequestPIN unlock={onScreenUnlock} resetKeysAndPin={resetKeysAndPin} />
+    )
   }
 
   return (
