@@ -1,19 +1,20 @@
-import { ActivityRowPresentationType } from './types'
-import moment from 'moment'
-import { balanceToDisplay } from '../../lib/utils'
-import { ActivityMixedType } from './ActivityRow'
+import { ActivityRowPresentationObjectType, ActivityMixedType } from './types'
+import {
+  balanceToDisplay,
+  convertUnixTimeToFromNowFormat,
+} from '../../lib/utils'
 
 const useActivityDeserializer: (
   activityTransaction: ActivityMixedType,
-) => ActivityRowPresentationType = activityTransaction => {
+) => ActivityRowPresentationObjectType = activityTransaction => {
   if ('isBitcoin' in activityTransaction) {
     return {
       symbol: activityTransaction.symbol,
       to: activityTransaction.to,
       value: activityTransaction.valueBtc,
-      timeHumanFormatted: moment
-        .unix(Number(activityTransaction.blockTime))
-        .fromNow(),
+      timeHumanFormatted: convertUnixTimeToFromNowFormat(
+        activityTransaction.blockTime,
+      ),
       status: activityTransaction.status,
       id: activityTransaction.txid,
     }
@@ -21,9 +22,9 @@ const useActivityDeserializer: (
     const status = activityTransaction.originTransaction.receipt
       ? 'success'
       : 'pending'
-    const timeFormatted = moment
-      .unix(activityTransaction.originTransaction.timestamp)
-      .fromNow()
+    const timeFormatted = convertUnixTimeToFromNowFormat(
+      activityTransaction.originTransaction.timestamp,
+    )
     const valueConverted = () => {
       if (activityTransaction.enhancedTransaction?.value) {
         return activityTransaction.enhancedTransaction.value

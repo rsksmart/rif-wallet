@@ -22,9 +22,15 @@ const StatusBackgroundColorMap = {
   },
 }
 
-const ActivityRowPresentation: React.FC<
-  ActivityRowPresentationType & { onPress: () => void }
-> = ({ onPress, symbol, to, timeHumanFormatted, value, status, id }) => (
+const ActivityRowPresentation: React.FC<ActivityRowPresentationType> = ({
+  onPress,
+  symbol,
+  to,
+  timeHumanFormatted,
+  value,
+  status,
+  id,
+}) => (
   <TouchableOpacity onPress={onPress} testID={`${id}.Button`}>
     <View style={styles.container}>
       <View style={styles.firstHalf}>

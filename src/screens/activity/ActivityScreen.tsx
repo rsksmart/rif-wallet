@@ -31,6 +31,7 @@ export const ActivityScreen: React.FC<
   const { networks } = useBitcoinCoreContext()
   const btcTransactionFetcher = useBitcoinTransactionsHandler({
     bip: networks[0].bips[0],
+    shouldMergeTransactions: true,
   })
   const {
     state: { transactions },
@@ -107,7 +108,7 @@ export const ActivityScreen: React.FC<
           onEndReachedThreshold={0.2}
           onRefresh={() => {
             fetchTransactionsPage()
-            btcTransactionFetcher.fetchTransactions()
+            btcTransactionFetcher.fetchTransactions(undefined, 1)
           }}
           refreshing={!!info}
           renderItem={({ item }) => (

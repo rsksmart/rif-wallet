@@ -1,36 +1,41 @@
-import React from 'react'
+import { Linking, TouchableOpacity, View } from 'react-native'
+import { formatTimestamp, shortAddress } from '../../lib/utils'
 import { ScrollView } from 'react-native-gesture-handler'
-import { TouchableOpacity, View } from 'react-native'
+import { activityDetailsStyles as styles } from './styles'
 import { Arrow, RefreshIcon } from '../../components/icons'
 import { SemiBoldText } from '../../components'
 import { spacing } from '../../styles'
 import ActivityField from '../../components/activity/ActivityField'
 import { TokenImage } from '../home/TokenImage'
 import CopyField from '../../components/activity/CopyField'
+import { utils } from 'ethers'
 import StatusIcon from '../../components/statusIcons'
-import { formatTimestamp } from '../../lib/utils'
 import ButtonCustom from '../../components/activity/ButtonCustom'
 import { SearchIcon } from '../../components/icons/SearchIcon'
-import { activityDetailsStyles as styles } from './styles'
-import { BitcoinTransactionType } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { IBitcoinTransaction } from './types'
+import React from 'react'
+import { IActivityTransaction } from './types'
 
-export default function ActivityDetailsBitcoinScreen({
-  valueBtc,
-  symbol,
-  to,
-  status,
-  id,
-  fees,
-  blockTime,
+type ActivityDetailsContainer = {
+  transaction: IActivityTransaction
+  onBackPress: () => void
+}
+export default function ActivityDetailsContainer({
+  transaction,
   onBackPress,
-  ...rest
-}: BitcoinTransactionType & IBitcoinTransaction & { onBackPress: () => void }) {
-  console.log(rest)
-  const onViewTransactionClick = (): null => {
-    // @TODO: should open browser to block explorer for btc
+}: ActivityDetailsContainer) {
+  const onViewExplorerClick = (): null => {
+    Linking.openURL(
+      `https://explorer.testnet.rsk.co/tx/${transaction.originTransaction.hash}`,
+    )
     return null
   }
+
+  const status = transaction.originTransaction.receipt ? 'success' : 'pending'
+
+  const currentAddress =
+    transaction.enhancedTransaction?.to || transaction.originTransaction.to
+  const shortedAddress = shortAddress(currentAddress, 10)
+  const shortedTxHash = shortAddress(transaction.originTransaction.hash, 10)
   return (
     <ScrollView style={styles.container}>
       <TouchableOpacity
@@ -44,16 +49,23 @@ export default function ActivityDetailsBitcoinScreen({
       <View style={spacing.mh25}>
         <ActivityField title="value">
           <View style={styles.flexDirRow}>
-            {symbol && (
+            {transaction.enhancedTransaction?.symbol && (
               <View style={styles.assetIcon}>
-                <TokenImage symbol={symbol} height={30} width={30} />
+                <TokenImage
+                  symbol={transaction.enhancedTransaction?.symbol}
+                  height={30}
+                  width={30}
+                />
               </View>
             )}
             <View style={styles.amountContainer}>
               {/*  @TODO get cash amount for this text */}
               {/*<Text style={{ fontWeight: 'bold' }}>Cash Amount</Text>*/}
+
               <SemiBoldText>
-                {valueBtc} {symbol}
+                {transaction.enhancedTransaction?.value ||
+                  transaction.originTransaction.value}{' '}
+                {transaction.enhancedTransaction?.symbol}
               </SemiBoldText>
             </View>
             <View>
@@ -64,12 +76,26 @@ export default function ActivityDetailsBitcoinScreen({
         <ActivityField title="to">
           {/*  @TODO get name of the person who the user sent the coins to*/}
           {/*<Text>Name Here</Text>*/}
-          <CopyField text={to} textToCopy={to} TextComp={SemiBoldText} />
+          <CopyField
+            text={shortedAddress}
+            textToCopy={currentAddress}
+            TextComp={SemiBoldText}
+          />
         </ActivityField>
-        <ActivityField title="mining fee">
+        <ActivityField title="gas price">
           <View style={styles.flexDirRow}>
-            <SemiBoldText>{fees} satoshi</SemiBoldText>
+            <SemiBoldText>{transaction.originTransaction.gas}</SemiBoldText>
           </View>
+        </ActivityField>
+        <ActivityField title="gas limit">
+          <View style={styles.flexDirRow}>
+            <SemiBoldText>
+              {utils.formatUnits(transaction.originTransaction.gasPrice)}
+            </SemiBoldText>
+          </View>
+        </ActivityField>
+        <ActivityField title="tx type">
+          <SemiBoldText>{transaction.originTransaction.txType}</SemiBoldText>
         </ActivityField>
         <View>
           <View style={[styles.flexNoWrap, styles.flexDirRow]}>
@@ -83,20 +109,26 @@ export default function ActivityDetailsBitcoinScreen({
             </View>
             <View style={styles.timestampRow}>
               <ActivityField title="timestamp">
-                <SemiBoldText>{formatTimestamp(blockTime)}</SemiBoldText>
+                <SemiBoldText>
+                  {formatTimestamp(transaction.originTransaction.timestamp)}
+                </SemiBoldText>
               </ActivityField>
             </View>
           </View>
         </View>
         <ActivityField title="tx hash">
-          <CopyField text={id} textToCopy={id} TextComp={SemiBoldText} />
+          <CopyField
+            text={shortedTxHash}
+            textToCopy={transaction.originTransaction.hash}
+            TextComp={SemiBoldText}
+          />
         </ActivityField>
       </View>
       <View style={styles.alignSelfCenter}>
         <ButtonCustom
           secondText="view in explorer"
           icon={<SearchIcon width={30} height={30} color="white" />}
-          onPress={onViewTransactionClick}
+          onPress={onViewExplorerClick}
         />
       </View>
       <View style={styles.mb200} />

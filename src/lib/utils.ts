@@ -1,4 +1,5 @@
 import { BigNumberish, BigNumber, FixedNumber } from 'ethers'
+import moment from 'moment'
 
 export function shortAddress(address?: string, trimAmount?: number): string {
   if (!address) {
@@ -133,3 +134,6 @@ export const sanitizeDecimalText = (text: string) => {
   }
   return newText
 }
+
+export const convertUnixTimeToFromNowFormat = (unixTime: number): string =>
+  moment.unix(Number(unixTime)).fromNow()

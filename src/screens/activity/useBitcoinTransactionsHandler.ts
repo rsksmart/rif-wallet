@@ -18,43 +18,59 @@ function transformTransaction(bip: BIP) {
     }
   }
 }
+
+type useBitcoinTransactionsHandlerType = {
+  bip: BIP
+  pageSize?: number
+  page?: number
+  shouldMergeTransactions?: boolean
+}
+
 const useBitcoinTransactionsHandler = ({
   bip,
   pageSize = 10,
   page = 1,
-}: {
-  bip: BIP
-  pageSize?: number
-  page?: number
-}) => {
+  shouldMergeTransactions = false,
+}: useBitcoinTransactionsHandlerType) => {
   const [transactions, setTransactions] = useState<Array<IBitcoinTransaction>>(
     [],
   )
   const pageRef = React.useRef({
     pageSize,
     page,
+    totalPages: 1,
   })
   const fetchTransactions = async (
-    pageSizeTransaction = null,
-    pageNumberTransaction = null,
-  ) => {
-    pageRef.current = {
-      pageSize: pageSizeTransaction || pageRef.current.pageSize,
-      page: pageNumberTransaction || pageRef.current.page,
-    }
+    pageSizeTransaction?: number,
+    pageNumberTransaction?: number,
+  ): Promise<BitcoinTransactionType[]> => {
+    pageRef.current.pageSize = pageSizeTransaction || pageRef.current.pageSize
+    pageRef.current.page = pageNumberTransaction || pageRef.current.page
     const data = await bip.fetchTransactions(
       pageRef.current.pageSize,
       pageRef.current.page,
     )
-    setTransactions(data.transactions.map(transformTransaction(bip)))
+    pageRef.current.totalPages = data.totalPages
+    const transactionsTransformed = data.transactions.map(
+      transformTransaction(bip),
+    )
+    if (shouldMergeTransactions && pageRef.current.page !== 1) {
+      setTransactions(cur => [...cur, ...transactionsTransformed])
+    } else {
+      setTransactions(transactionsTransformed)
+    }
     return data.transactions
   }
 
   const fetchNextTransactionPage = () => {
     pageRef.current.page = pageRef.current.page + 1
+    // If the next page is greater than the total pages, don't do anything
+    if (pageRef.current.page > pageRef.current.totalPages) {
+      return
+    }
     return fetchTransactions()
   }
-  return { fetchNextTransactionPage, fetchTransactions, transactions }
+  return { fetchNextTransactionPage, fetchTransactions, transactions, pageRef }
 }
 
 export default useBitcoinTransactionsHandler
