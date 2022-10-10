@@ -24,7 +24,6 @@ const resources = {
       'Wallet info': 'Wallet info',
       WalletConnect: 'WalletConnect',
       'Please select your language': 'Please select your language',
-      'Welcome to sWallet!': 'Welcome to sWallet!',
       'Transaction Details': 'Transaction Details',
       Token: 'Token',
       Amount: 'Amount',
@@ -92,7 +91,6 @@ const resources = {
   es: {
     translation: {
       'Please select your language': 'Por favor seleccionar su idioma',
-      'Welcome to sWallet!': 'Bienvenido a sWallet!',
       Refresh: 'Refrescar',
       'Your contact list is empty.': 'Su lista de contactos está vacía.',
       'Start by creating a new contact.': 'Comience creando un nuevo contacto.',
