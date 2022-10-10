@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { FlatList, StyleSheet, View } from 'react-native'
+import { FlatList, StyleSheet, View, RefreshControl } from 'react-native'
 import ActivityRow from './ActivityRow'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
 import { useTranslation } from 'react-i18next'
@@ -94,6 +94,10 @@ export const ActivityScreen: React.FC<
     }
   }
 
+  const onRefresh = () => {
+    fetchTransactionsPage()
+    btcTransactionFetcher.fetchTransactions(undefined, 1)
+  }
   return (
     <View style={styles.mainContainer}>
       {hasTransactions && (
@@ -106,15 +110,18 @@ export const ActivityScreen: React.FC<
             btcTransactionFetcher.fetchNextTransactionPage()
           }}
           onEndReachedThreshold={0.2}
-          onRefresh={() => {
-            fetchTransactionsPage()
-            btcTransactionFetcher.fetchTransactions(undefined, 1)
-          }}
           refreshing={!!info}
           renderItem={({ item }) => (
             <ActivityRow activityTransaction={item} navigation={navigation} />
           )}
           style={styles.parent}
+          refreshControl={
+            <RefreshControl
+              refreshing={!!info}
+              tintColor="white"
+              onRefresh={onRefresh}
+            />
+          }
         />
       )}
     </View>
@@ -125,6 +132,8 @@ const styles = StyleSheet.create({
   mainContainer: {
     backgroundColor: colors.background.darkBlue,
     minHeight: '100%',
+    marginBottom: 200,
+    position: 'relative',
   },
   parent: {
     paddingBottom: 30,
