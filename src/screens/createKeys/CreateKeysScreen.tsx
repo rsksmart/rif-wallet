@@ -1,21 +1,22 @@
 import React, { useState } from 'react'
-import { StyleSheet, View, Image } from 'react-native'
-import { ScreenProps } from './types'
+import { Image, StyleSheet, View } from 'react-native'
 import { colors } from '../../styles/colors'
-import { SecondarySlide } from '../../ux/slides/SeconderySlide'
 import { MainSlide } from '../../ux/slides/MainSlide'
+import { SecondarySlide } from '../../ux/slides/SeconderySlide'
+import { ScreenProps } from './types'
 
 import Carousel, { Pagination } from 'react-native-snap-carousel'
-import { grid } from '../../styles/grid'
 import {
   OutlineButton,
   WhiteButton,
 } from '../../components/button/ButtonVariations'
+import { grid } from '../../styles/grid'
 
+import { name as appName } from '../../../app.json'
 import {
-  WINDOW_WIDTH,
-  WINDOW_HEIGHT,
   SLIDER_WIDTH,
+  WINDOW_HEIGHT,
+  WINDOW_WIDTH,
 } from '../../ux/slides/Dimensions'
 
 const slidesIndexes = [0, 1, 2]
@@ -29,7 +30,7 @@ export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
       case 0:
         return MainSlide({
           title: 'Welcome to',
-          subTitle: 'RIF Wallet',
+          subTitle: appName,
           image: (
             <Image
               style={styles.walletBulbLogo}
