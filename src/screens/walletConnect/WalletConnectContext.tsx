@@ -10,8 +10,6 @@ import {
   saveWCSession,
 } from '../../storage/WalletConnectSessionStore'
 
-import { displayName, name as appName } from '../../../app.json'
-
 export interface WalletConnectContextInterface {
   connections: IWalletConnectConnections
   createSession: (wallet: RIFWallet, uri: string, session?: any) => void
@@ -138,12 +136,12 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
         uri,
         session,
         clientMeta: {
-          description: displayName,
+          description: 'RIF Wallet',
           url: 'https://www.rifos.org/',
           icons: [
             'https://raw.githubusercontent.com/rsksmart/rif-scheduler-ui/develop/src/assets/logoColor.svg',
           ],
-          name: appName,
+          name: 'RIF Wallet',
         },
       })
 
