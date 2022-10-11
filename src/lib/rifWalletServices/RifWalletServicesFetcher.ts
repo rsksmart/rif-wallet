@@ -1,4 +1,5 @@
 import {
+  BitcoinTransactionContainerType,
   ITokenWithBalance,
   TransactionsServerResponse,
 } from './RIFWalletServicesTypes'
@@ -98,4 +99,13 @@ export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
     )
       .then(response => response.json())
       .then(json => json.index)
+
+  fetchXpubTransactions = (
+    xpub: string,
+    pageSize: number | undefined = undefined,
+    pageNumber: number = 1,
+  ): Promise<BitcoinTransactionContainerType> =>
+    fetch(
+      `${this.uri}/bitcoin/getXpubTransactions/${xpub}?pageSize=${pageSize}&page=${pageNumber}`,
+    ).then(response => response.json())
 }
