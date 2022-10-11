@@ -44,7 +44,6 @@ export const ConfirmNewMasterKeyScreen: React.FC<
     }
 
     setError(false)
-
     await createFirstWallet(mnemonic)
   }
 

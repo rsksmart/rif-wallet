@@ -5,6 +5,7 @@ import DotsComponentDefault from './DotsComponent'
 import { PinScreenType, DotsComponentDefaultType } from './PinScreen'
 import MessageComponentDefault from './MessageComponent'
 import { colors } from '../../../styles'
+import { WhiteButton } from '../../button/ButtonVariations'
 
 const PinScreen: React.FC<PinScreenType & DotsComponentDefaultType> = ({
   MessageComponent = MessageComponentDefault,
@@ -14,6 +15,8 @@ const PinScreen: React.FC<PinScreenType & DotsComponentDefaultType> = ({
   onKeypadPress,
   pin,
   error = null,
+  resetEnabled,
+  resetKeysAndPin,
 }) => {
   return (
     <View style={styles.container}>
@@ -26,6 +29,14 @@ const PinScreen: React.FC<PinScreenType & DotsComponentDefaultType> = ({
       <View>
         <KeypadComponent onDelete={onKeypadDelete} onKeyPress={onKeypadPress} />
       </View>
+
+      {resetEnabled && (
+        <WhiteButton
+          onPress={resetKeysAndPin}
+          accessibilityLabel="newWallet"
+          title={'reset'}
+        />
+      )}
     </View>
   )
 }

@@ -112,7 +112,9 @@ export const Core = () => {
   })
 
   if (state.hasKeys && state.hasPin && !unlocked) {
-    return <RequestPIN unlock={onScreenUnlock} />
+    return (
+      <RequestPIN unlock={onScreenUnlock} resetKeysAndPin={resetKeysAndPin} />
+    )
   }
 
   return (
@@ -162,7 +164,6 @@ export const Core = () => {
                     mnemonic: state.kms?.mnemonic || '',
                   }}
                   contactsNavigationScreenProps={{ rnsResolver }}
-                  dappsScreenProps={{ fetcher: rifWalletServicesFetcher }}
                   accountsScreenType={{
                     addNewWallet,
                     switchActiveWallet,

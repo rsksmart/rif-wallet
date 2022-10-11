@@ -10,12 +10,12 @@ import {
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { SearchIcon } from '../../components/icons/SearchIcon'
+import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
 import { NavigationProp } from '../../RootNavigation'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
 import { ContactRow } from './ContactRow'
 import { ContactsContext, IContact } from './ContactsContext'
-import { DeleteModal } from './DeleteModal'
 
 export const ContactsScreen: React.FC<{
   navigation: NavigationProp
@@ -85,11 +85,14 @@ export const ContactsScreen: React.FC<{
         />
       </View>
       {selectedContact && (
-        <DeleteModal
+        <ConfirmationModal
           isVisible={isModalVisible}
-          text={`${t('Are you sure you want to delete')} ${
+          imgSrc={require('../../images/contact-trash.png')}
+          title={`${t('Are you sure you want to delete')} ${
             selectedContact.name
           }?`}
+          okText={t('Delete')}
+          cancelText={t('Cancel')}
           onOk={() => removeContact(selectedContact)}
           onCancel={hideModal}
         />

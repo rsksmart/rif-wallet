@@ -1,32 +1,30 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useNavigation } from '@react-navigation/core'
 import WalletConnect from '@walletconnect/client'
+import React, { useContext, useEffect, useState } from 'react'
+import { AppContext } from '../../Context'
 import { RIFWallet } from '../../lib/core'
 import { WalletConnectAdapter } from '../../lib/walletAdapters/WalletConnectAdapter'
 import {
-  saveWCSession,
   deleteWCSession,
   getWCSession,
+  saveWCSession,
 } from '../../storage/WalletConnectSessionStore'
-import { AppContext } from '../../Context'
-import { useNavigation } from '@react-navigation/core'
-import { Alert } from 'react-native'
+
+import { displayName, name as appName } from '../../../app.json'
+
 export interface WalletConnectContextInterface {
   connections: IWalletConnectConnections
-  createSession: (
-    wallet: RIFWallet,
-    uri: string,
-    session?: any,
-  ) => Promise<void>
+  createSession: (wallet: RIFWallet, uri: string, session?: any) => void
   handleApprove: (wc: WalletConnect, wallet: RIFWallet) => Promise<void>
-  handleReject: (wc: WalletConnect) => Promise<void>
+  handleReject: (wc: WalletConnect) => void
 }
 
 export const WalletConnectContext =
   React.createContext<WalletConnectContextInterface>({
     connections: {},
-    createSession: async () => {},
+    createSession: () => {},
     handleApprove: async () => {},
-    handleReject: async () => {},
+    handleReject: () => {},
   })
 
 export interface IWalletConnectConnections {
@@ -55,7 +53,7 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
     eventsNames.forEach(x => wc.off(x))
   }
 
-  const subscribeToEvents = async (
+  const subscribeToEvents = (
     wc: WalletConnect,
     adapter: WalletConnectAdapter,
   ) => {
@@ -68,15 +66,11 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
         throw error
       }
 
-      navigation.navigate(
-        'SessionRequest' as never,
-        {
-          wcKey: wc.key,
-        } as never,
-      )
+      navigation.navigate('WalletConnect' as never, { wcKey: wc.key } as never)
     })
 
     wc.on('call_request', async (error, payload) => {
+      console.log('EVENT', 'call_request', error, payload)
       if (error) {
         throw error
       }
@@ -96,91 +90,79 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
 
     wc.on('disconnect', async error => {
       console.log('EVENT', 'disconnect', error)
-
-      setConnections(prev => {
-        const result = { ...prev }
-
-        delete result[wc.key]
-
-        return result
-      })
-
-      unsubscribeToEvents(wc)
-
-      await deleteWCSession(wc.uri)
-
-      try {
-        await wc?.killSession()
-      } catch (err) {
-        console.error('could not kill the wc session', err)
+      if (error) {
+        throw error
       }
 
-      Alert.alert('You have disconnected from the dapp')
+      unsubscribeToEvents(wc)
+      await deleteWCSession(wc.uri)
+      setConnections(prev => {
+        const result = { ...prev }
+        delete result[wc.key]
+        return result
+      })
     })
   }
 
   const handleApprove = async (wc: WalletConnect, wallet: RIFWallet) => {
-    if (!wc) {
-      return
+    if (wc) {
+      wc.approveSession({
+        accounts: [wallet.smartWalletAddress],
+        chainId: await wallet.getChainId(),
+      })
+
+      await saveWCSession({
+        key: wc.key,
+        uri: wc.uri,
+        session: wc.session,
+        walletAddress: wallet.address,
+      })
+
+      const adapter = new WalletConnectAdapter(wallet)
+
+      subscribeToEvents(wc, adapter)
+      navigation.navigate('WalletConnect' as never)
     }
-
-    wc.approveSession({
-      accounts: [wallet.smartWalletAddress],
-      chainId: await wallet.getChainId(),
-    })
-
-    await saveWCSession({
-      uri: wc.uri,
-      session: wc.session,
-      walletAddress: wallet.address,
-    })
-
-    const adapter = new WalletConnectAdapter(wallet)
-
-    subscribeToEvents(wc, adapter)
-
-    navigation.navigate('Connected' as never, { wcKey: wc.key } as never)
   }
 
-  const handleReject = async (wc: WalletConnect) => {
-    if (!wc) {
-      return
+  const handleReject = (wc: WalletConnect) => {
+    if (wc) {
+      wc.rejectSession({ message: 'user rejected the session' })
+      navigation.navigate('WalletConnect' as never)
     }
-
-    wc.rejectSession({ message: 'user rejected the session' })
   }
 
-  const createSession = async (
-    wallet: RIFWallet,
-    uri: string,
-    session?: any,
-  ): Promise<void> => {
-    const newConnector = new WalletConnect({
-      uri,
-      session,
-      clientMeta: {
-        description: 'sWallet App',
-        url: 'https://www.rifos.org/',
-        icons: [
-          'https://raw.githubusercontent.com/rsksmart/rif-scheduler-ui/develop/src/assets/logoColor.svg',
-        ],
-        name: 'sWalletApp',
-      },
-    })
+  const createSession = (wallet: RIFWallet, uri: string, session?: any) => {
+    try {
+      const newConnector = new WalletConnect({
+        uri,
+        session,
+        clientMeta: {
+          description: displayName,
+          url: 'https://www.rifos.org/',
+          icons: [
+            'https://raw.githubusercontent.com/rsksmart/rif-scheduler-ui/develop/src/assets/logoColor.svg',
+          ],
+          name: appName,
+        },
+      })
 
-    const adapter = new WalletConnectAdapter(wallet)
+      const adapter = new WalletConnectAdapter(wallet)
 
-    // needs to subscribe to events before createSession
-    // this is because we need the 'session_request' event
-    subscribeToEvents(newConnector, adapter)
+      // needs to subscribe to events before createSession
+      // this is because we need the 'session_request' event
+      subscribeToEvents(newConnector, adapter)
 
-    setConnections(prev => ({
-      ...prev,
-      [newConnector.key]: {
-        connector: newConnector,
-        address: wallet.address,
-      },
-    }))
+      setConnections(prev => ({
+        ...prev,
+        [newConnector.key]: {
+          connector: newConnector,
+          address: wallet.address,
+        },
+      }))
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   useEffect(() => {
@@ -196,15 +178,12 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
       for (const { walletAddress, uri, session } of sessions) {
         try {
           const wallet = wallets[walletAddress]
-
-          if (!wallet) {
-            return
+          if (wallet) {
+            createSession(wallet, uri, session)
           }
-
-          await createSession(wallet, uri, session)
         } catch (error) {
           console.error('reconnect wc error: ', error)
-          deleteWCSession(uri)
+          await deleteWCSession(uri)
         }
       }
     }

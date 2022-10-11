@@ -14,6 +14,7 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
   currentScreen,
 }) => {
   const navigation = useNavigation()
+
   return (
     <View style={styles.row}>
       <TouchableOpacity
@@ -40,7 +41,7 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
       </TouchableOpacity>
 
       <TouchableOpacity
-        // onPress={() => navigation.navigate('Activity' as never)}
+        onPress={() => navigation.navigate('ScanQR' as never)}
         style={styles.button}>
         <QRCodeIconFooter />
       </TouchableOpacity>
@@ -56,9 +57,13 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate('Dapps' as never)}
+        onPress={() => navigation.navigate('WalletConnect' as never)}
         style={styles.button}>
-        {currentScreen === 'Dapps' ? <DappsSelectedIcon /> : <DappsIcon />}
+        {currentScreen === 'WalletConnect' ? (
+          <DappsSelectedIcon />
+        ) : (
+          <DappsIcon />
+        )}
       </TouchableOpacity>
     </View>
   )

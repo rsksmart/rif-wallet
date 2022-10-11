@@ -81,6 +81,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         return navigation.navigate('ReceiveBitcoin', {
           network: selected,
         } as any)
+      case 'SEND':
+        return navigation.navigate('SendBitcoin', {
+          network: selected,
+        } as any)
     }
   }
 
