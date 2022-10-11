@@ -100,7 +100,7 @@ export default function ActivityDetailsBitcoinContainer({
           onPress={onViewTransactionClick}
         />
       </View>
-      <View style={styles.mb200} />
+      <View style={styles.mb50} />
     </ScrollView>
   )
 }

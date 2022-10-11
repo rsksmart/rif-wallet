@@ -131,7 +131,7 @@ export default function ActivityDetailsContainer({
           onPress={onViewExplorerClick}
         />
       </View>
-      <View style={styles.mb200} />
+      <View style={styles.mb50} />
     </ScrollView>
   )
 }

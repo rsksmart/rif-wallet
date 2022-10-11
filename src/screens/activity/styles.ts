@@ -28,6 +28,9 @@ export const activityDetailsStyles = StyleSheet.create({
   mb200: {
     marginBottom: 200,
   },
+  mb50: {
+    marginBottom: 50,
+  },
   textMrMl: {
     marginRight: 4,
     marginLeft: 2,
