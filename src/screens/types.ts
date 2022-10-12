@@ -1,3 +1,7 @@
 import { RIFWallet } from '../lib/core'
 
-export type ScreenWithWallet = { wallet: RIFWallet; isWalletDeployed: boolean }
+export type ScreenWithWallet = {
+  wallet: RIFWallet
+  isWalletDeployed: boolean
+  chainId: number
+}

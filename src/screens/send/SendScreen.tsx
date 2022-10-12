@@ -13,10 +13,12 @@ import { colors } from '../../styles'
 import TransactionForm from './TransactionForm'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import WalletNotDeployedView from './WalletNotDeployedModal'
+import { sendTransaction } from './operations'
 
 export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   route,
   wallet,
+  chainId,
   isWalletDeployed,
   navigation,
 }) => {
