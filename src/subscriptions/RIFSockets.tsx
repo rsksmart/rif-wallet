@@ -1,6 +1,5 @@
 import React from 'react'
 import { useSelectedWallet } from '../Context'
-import { enhanceTransactionInput } from '../screens/activity/ActivityScreen'
 import { filterEnhancedTransactions, sortEnhancedTransactions } from './utils'
 
 import {
@@ -162,15 +161,23 @@ export function RIFSocketsProvider({
 
     rifServiceSocket?.on('change', result => {
       if (result.type === 'newTransaction') {
-        enhanceTransactionInput(result.payload, wallet, abiEnhancer)
+        abiEnhancer
+          .enhance(wallet, {
+            from: wallet.smartWalletAddress,
+            to: result.payload.to.toLowerCase(),
+            data: result.payload.input,
+            value: result.payload.value,
+          })
           .then(enhancedTransaction => {
-            dispatch({
-              type: 'newTransaction',
-              payload: {
-                originTransaction: result.payload,
-                enhancedTransaction,
-              },
-            })
+            if (enhancedTransaction) {
+              dispatch({
+                type: 'newTransaction',
+                payload: {
+                  originTransaction: result.payload,
+                  enhancedTransaction,
+                },
+              })
+            }
           })
           .catch(() => {
             dispatch({
