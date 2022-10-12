@@ -5,7 +5,7 @@ platform :ios, '11.0'
 inhibit_all_warnings!
 
 # Dependecies required for Ramp.network:
-source 'https://github.com/passbase/zoomauthentication-cocoapods-specs.git'
+source 'https://github.com/CocoaPods/Specs.git'
 source 'https://github.com/passbase/cocoapods-specs.git'
 source 'https://github.com/passbase/microblink-cocoapods-specs.git'
 
@@ -21,8 +21,6 @@ target 'sWallet' do
   pod 'react-native-config', :path => '../node_modules/react-native-config'
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
   pod 'Ramp', :git => 'https://github.com/RampNetwork/ramp-sdk-ios', :tag => '2.0.0'
-  pod 'MMKVCore', :git => 'https://github.com/Tencent/MMKV.git', :tag => 'v1.2.13'
-  pod 'MMKV', :git => 'https://github.com/Tencent/MMKV.git', :tag => 'v1.2.13'
 
   target 'sWalletTests' do
     inherit! :complete
@@ -33,11 +31,12 @@ target 'sWallet' do
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
   # you should disable the next line.
-  # use_flipper!()
+  use_flipper!({'Flipper' => '0.166.0'})
 
   post_install do |installer|
     # Run the React-Native post install
     react_native_post_install(installer)
+    flipper_post_install(installer)
 
     # Reconfigure the pods to match the iOS version we're targetting
     installer.pods_project.targets.each do |target|
