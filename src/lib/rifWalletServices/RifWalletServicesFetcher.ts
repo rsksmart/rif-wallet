@@ -3,7 +3,7 @@ import {
   ITokenWithBalance,
   TransactionsServerResponse,
 } from './RIFWalletServicesTypes'
-import { UnspentTransactionType } from '../bitcoin/BIP84Payment'
+import { UnspentTransactionType } from '../bitcoin/types'
 
 export interface IRIFWalletServicesFetcher {
   fetchTokensByAddress(address: string): Promise<ITokenWithBalance[]>

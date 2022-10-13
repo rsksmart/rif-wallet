@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { UnspentTransactionType } from '../../lib/bitcoin/BIP84Payment'
 import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import { colors, grid } from '../../styles'
 import AssetChooser from './AssetChooser'
@@ -10,6 +9,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import { MediumText } from '../../components'
 import Clipboard from '@react-native-community/clipboard'
 import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
+import { UnspentTransactionType } from '../../lib/bitcoin/types'
 
 type SendBitcoinScreenType = {
   route: {
@@ -24,9 +24,11 @@ const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
   },
 }) => {
   const [utxos, setUtxos] = useState<Array<UnspentTransactionType>>([])
-  const [amountToPay, setAmountToPay] = useState<string>('')
-  const [addressToPay, setAddressToPay] = useState<string>('')
-  const [miningFee, setMiningFee] = useState<string>('')
+  const [amountToPay, setAmountToPay] = useState<string>('1111')
+  const [addressToPay, setAddressToPay] = useState<string>(
+    'tb1qxctqphp7l5zeh2a38ehaqe3asz33luxr9mv9yx',
+  )
+  const [miningFee, setMiningFee] = useState<string>('141')
   const [status, setStatus] = useState<string>('')
   const [txid, setTxid] = useState<string>('')
   const [error, setError] = useState<string>('')
@@ -69,22 +71,30 @@ const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
     }
     setTxid('')
     setError('')
+    // @TODO: refactor to use request
     setStatus('Loading payment...')
-    const hexData = await network.bips[0].generatePayment(
-      Number(amountToPay),
-      addressToPay,
-      utxos,
-      Number(miningFee),
-    )
-    setStatus('Sending payment...')
-    const txIdJson = await network.bips[0].sendTransaction(hexData)
-    if (txIdJson.result) {
-      setStatus(`${txIdJson.result}`)
-      setTxid(txIdJson.result)
-    } else {
-      setStatus(`Transaction Error: ${txIdJson.error}`)
-      setError(txIdJson.error)
-    }
+    network.bips[0].payment
+      .onRequestPayment({
+        amountToPay: Number(amountToPay),
+        addressToPay,
+        unspentTransactions: utxos,
+        miningFee: Number(miningFee),
+      })
+      .then(async () => {
+        setStatus('Sending payment...')
+        const txIdJson =
+          await network.bips[0].payment.onRequestPaymentConfirmed()
+        if (txIdJson.result) {
+          setStatus(`${txIdJson.result}`)
+          setTxid(txIdJson.result)
+        } else {
+          setStatus(`Transaction Error: ${txIdJson.error}`)
+          setError(txIdJson.error)
+        }
+      })
+      .catch((err: { toString: () => any }) => {
+        console.log('Payment rejected', err.toString())
+      })
   }
 
   const onTransactionCopy = (type: string) => () => {

@@ -6,8 +6,9 @@ import { resolveProperties } from 'ethers/lib/utils'
 import { SmartWalletFactory } from './SmartWalletFactory'
 import { SmartWallet } from './SmartWallet'
 import { filterTxOptions } from './filterTxOptions'
+import { SendBitcoinRequestType } from "../bitcoin/types";
 
-type IRequest<Type, Payload, ReturnType, ConfirmArgs> = {
+export type IRequest<Type, Payload, ReturnType, ConfirmArgs> = {
   type: Type,
   payload: Payload
   returnType: ReturnType
@@ -43,7 +44,7 @@ export type SignTypedDataRequest = IRequest<
   void
 >
 
-export type Request = SendTransactionRequest | SignMessageRequest | SignTypedDataRequest
+export type Request = SendTransactionRequest | SignMessageRequest | SignTypedDataRequest | SendBitcoinRequestType
 export type OnRequest = (request: Request) => void
 
 type RequestType = Request['type']

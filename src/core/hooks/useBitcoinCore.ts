@@ -3,6 +3,8 @@ import BIP39 from '../../lib/bitcoin/BIP39'
 import useBitcoinNetworks from '../../components/bitcoin/useBitcoinNetworks'
 import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 import bitcoinNetworkStore from '../../storage/BitcoinNetworkStore'
+import { OnRequest } from '../../lib/core'
+import createBitcoinNetworkWithRequest from '../../lib/bitcoin/BitcoinNetworkWithRequestPayments'
 export type useBitcoinCoreResultType = {
   networks: Array<BitcoinNetwork>
   networksMap: {
@@ -10,7 +12,10 @@ export type useBitcoinCoreResultType = {
   }
   refreshStoredNetworks: () => void
 }
-const useBitcoinCore = (mnemonic: string): useBitcoinCoreResultType => {
+const useBitcoinCore = (
+  mnemonic: string,
+  request: OnRequest,
+): useBitcoinCoreResultType => {
   const [networks, refreshStoredNetworks] = useBitcoinNetworks()
   const memoizedNetworks = useMemo(() => {
     if (!mnemonic) {
@@ -19,7 +24,8 @@ const useBitcoinCore = (mnemonic: string): useBitcoinCoreResultType => {
     const BIP39Instance = new BIP39(mnemonic)
     const networksObj: any = {}
     const networksArr = Object.values(networks).map(network => {
-      const bitcoinNetwork = new BitcoinNetwork(
+      const bitcoinNetwork = createBitcoinNetworkWithRequest(
+        request,
         network.name,
         network.bips,
         BIP39Instance,
