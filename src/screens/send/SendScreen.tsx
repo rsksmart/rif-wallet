@@ -1,19 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, ScrollView, Text } from 'react-native'
-import { BigNumber, utils, ContractTransaction } from 'ethers'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
-import {
-  convertToERC20Token,
-  makeRBTCToken,
-} from '../../lib/token/tokenMetadata'
+
 import { ScreenProps } from '../../RootNavigation'
 import { ScreenWithWallet } from '../types'
-import TransactionInfo, { transactionInfo } from './TransactionInfo'
+import TransactionInfo from './TransactionInfo'
 import { colors } from '../../styles'
 import TransactionForm from './TransactionForm'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import WalletNotDeployedView from './WalletNotDeployedModal'
 import { sendTransaction } from './operations'
+import { transactionInfo, TransactionStatus } from './types'
+import { WaitingOnUserScreen } from './WaitingOnUserScreen'
 
 export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   route,
@@ -25,85 +23,72 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   const { state } = useSocketsState()
   const contractAddress =
     route.params?.contractAddress || Object.keys(state.balances)[0]
+
+  const defaultTransactin = { status: TransactionStatus.USER_CONFRIM }
   const [currentTransaction, setCurrentTransaction] =
-    useState<transactionInfo | null>(null)
+    useState<transactionInfo>(defaultTransactin)
   const [error, setError] = useState<Error>()
-  const [chainId, setChainId] = useState<number>(31)
 
-  useEffect(() => {
-    wallet.getChainId().then(setChainId)
-  }, [wallet])
-
-  const transfer = (token: ITokenWithBalance, amount: string, to: string) => {
+  const handleTransfer = (
+    token: ITokenWithBalance,
+    amount: string,
+    to: string,
+  ) => {
+    const network = token.symbol === 'TBTC' ? 'TBTC' : 'TRSK'
     setError(undefined)
-    setCurrentTransaction({ status: 'USER_CONFIRM' })
 
-    // handle both ERC20 tokens and the native token (gas)
-    const transferMethod =
-      token.symbol === 'TRBTC'
-        ? makeRBTCToken(wallet, chainId)
-        : convertToERC20Token(token, {
-            signer: wallet,
-            chainId,
-          })
-
-    transferMethod.decimals().then((decimals: number) => {
-      const tokenAmount = BigNumber.from(utils.parseUnits(amount, decimals))
-
-      transferMethod
-        .transfer(to.toLowerCase(), tokenAmount)
-        .then((txPending: ContractTransaction) => {
-          const current: transactionInfo = {
-            to,
-            value: amount,
-            symbol: transferMethod.symbol,
-            hash: txPending.hash,
-            status: 'PENDING',
-          }
-          setCurrentTransaction(current)
-
-          txPending
-            .wait()
-            .then(() =>
-              setCurrentTransaction({ ...current, status: 'SUCCESS' }),
-            )
-            .catch(() =>
-              setCurrentTransaction({ ...current, status: 'FAILED' }),
-            )
-        })
-        .catch((err: any) => {
-          setError(err)
-          setCurrentTransaction(null)
-        })
+    setCurrentTransaction({
+      status: TransactionStatus.USER_CONFRIM,
+      network,
     })
+
+    sendTransaction(wallet, chainId, token, to, amount)
+      .then((hash: string) =>
+        setCurrentTransaction({
+          status: TransactionStatus.PENDING,
+          hash,
+          network,
+        }),
+      )
+      .catch((sendError: Error) => {
+        setError(sendError)
+        setCurrentTransaction(defaultTransactin)
+      })
   }
 
   const onDeployWalletNavigate = () =>
     navigation.navigate('ManuallyDeployScreen' as any)
+
+  if (!isWalletDeployed) {
+    return (
+      <WalletNotDeployedView onDeployWalletPress={onDeployWalletNavigate} />
+    )
+  }
+
+  if (currentTransaction?.status === TransactionStatus.USER_CONFRIM) {
+    return <WaitingOnUserScreen />
+  }
+
+  if (currentTransaction?.status === TransactionStatus.PENDING) {
+    // return <TransactionInfo transaction={currentTransaction} />
+  }
+
   return (
     <ScrollView style={styles.parent}>
-      {!isWalletDeployed && (
-        <WalletNotDeployedView onDeployWalletPress={onDeployWalletNavigate} />
-      )}
-      {!currentTransaction ? (
-        <TransactionForm
-          onConfirm={transfer}
-          tokenList={Object.values(state.balances)}
-          tokenPrices={state.prices}
-          chainId={chainId}
-          initialValues={{
-            recipient: route.params?.to,
-            amount: '0',
-            asset: route.params?.contractAddress
-              ? state.balances[route.params.contractAddress]
-              : state.balances[contractAddress],
-          }}
-          transactions={state.transactions.activityTransactions}
-        />
-      ) : (
-        <TransactionInfo transaction={currentTransaction} />
-      )}
-
+      <TransactionForm
+        onConfirm={handleTransfer}
+        tokenList={Object.values(state.balances)}
+        tokenPrices={state.prices}
+        chainId={chainId}
+        initialValues={{
+          recipient: route.params?.to,
+          amount: '0',
+          asset: route.params?.contractAddress
+            ? state.balances[route.params.contractAddress]
+            : state.balances[contractAddress],
+        }}
+        transactions={state.transactions.activityTransactions}
+      />
       {!!error && <Text style={styles.error}>{error.message}</Text>}
     </ScrollView>
   )

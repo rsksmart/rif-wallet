@@ -12,32 +12,13 @@ import { colors, spacing } from '../../styles/'
 import { TokenImage } from '../home/TokenImage'
 import { SearchIcon } from '../../components/icons/SearchIcon'
 import StatusIcon from '../../components/statusIcons'
-
-export interface transactionInfo {
-  to?: string
-  value?: string
-  symbol?: string
-  hash?: string
-  status: 'USER_CONFIRM' | 'PENDING' | 'SUCCESS' | 'FAILED'
-}
+import { transactionInfo } from './types'
 
 type Props = {
   transaction: transactionInfo
 }
 
 const TransactionInfo = ({ transaction }: Props) => {
-  if (transaction.status === 'USER_CONFIRM' || !transaction.hash) {
-    return (
-      <View style={styles.mainLoadingContainer}>
-        <Image
-          source={require('../../images/transferWait.png')}
-          style={styles.loading}
-        />
-        <Text style={styles.loadingLabel}>transferring ...</Text>
-      </View>
-    )
-  }
-
   const onViewExplorerTouch = () =>
     Linking.openURL(`https://explorer.testnet.rsk.co/tx/${transaction.hash}`)
 
@@ -106,17 +87,10 @@ const styles = StyleSheet.create({
     padding: 50,
   },
   flexDirRow: { flexDirection: 'row' },
-  mainLoadingContainer: {
-    backgroundColor: colors.background.light,
-    paddingBottom: 50,
-  },
   label: {
     fontWeight: '600',
     marginBottom: 10,
     fontSize: 17,
-  },
-  loadingLabel: {
-    textAlign: 'center',
   },
   font16: { fontSize: 16 },
   font16Bold: {
@@ -138,10 +112,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
   },
   buttonText: { color: 'white', marginLeft: 5 },
-  loading: {
-    alignSelf: 'center',
-    marginBottom: 20,
-  },
 })
 
 export default TransactionInfo
