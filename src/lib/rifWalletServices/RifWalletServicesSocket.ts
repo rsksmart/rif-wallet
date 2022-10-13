@@ -58,7 +58,6 @@ export class RifWalletServicesSocket
     const activityTransactions = await Promise.all<IActivityTransaction[]>(
       fetchedTransactions.data.map(async (tx: IApiTransaction) => {
         if (cache.has(tx.hash)) {
-          console.log('Getting from cache', cache.get(tx.hash))
           return {
             originTransaction: tx,
             enhancedTransaction: cache.get(tx.hash),
