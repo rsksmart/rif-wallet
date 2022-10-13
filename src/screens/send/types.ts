@@ -1,3 +1,5 @@
+import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+
 export enum TransactionStatus {
   NONE = 'NONE',
   USER_CONFRIM = 'USER_CONFIRM',
@@ -7,7 +9,10 @@ export enum TransactionStatus {
 }
 
 export interface transactionInfo {
+  status: TransactionStatus
   hash?: string
   network?: 'TRSK' | 'TBTC'
-  status: TransactionStatus
+  token?: ITokenWithBalance
+  amount?: number
+  to?: string
 }

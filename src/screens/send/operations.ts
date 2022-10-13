@@ -1,4 +1,4 @@
-import { BigNumber, utils, ContractTransaction } from 'ethers'
+import { BigNumber, utils, ContractTransaction, ethers } from 'ethers'
 import { RIFWallet } from '../../lib/core'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import {
@@ -60,3 +60,18 @@ export const sendTransaction = (
       return sendERC20Transaction(wallet, chainId, token, to, amount)
   }
 }
+
+export const pollTransaction = (rifWallet: RIFWallet, hash: string) =>
+  new Promise<boolean>((resolve, reject) => {
+    const checkInterval = setInterval(() => {
+      rifWallet.provider
+        ?.getTransactionReceipt(hash)
+        .then((response: ethers.providers.TransactionReceipt) => {
+          if (response) {
+            clearInterval(checkInterval)
+            resolve(response.status === 1)
+          }
+        })
+        .catch((err: Error) => reject(err))
+    }, 2000)
+  })

@@ -151,8 +151,6 @@ const TransactionForm: React.FC<Interface> = ({
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
-    // alignItems: 'stretch',
     minHeight: '100%',
     backgroundColor: colors.darkPurple3,
     borderTopLeftRadius: 40,

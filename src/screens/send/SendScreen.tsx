@@ -8,10 +8,11 @@ import { colors } from '../../styles'
 import TransactionForm from './TransactionForm'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import WalletNotDeployedView from './WalletNotDeployedModal'
-import { sendTransaction } from './operations'
+import { pollTransaction, sendTransaction } from './operations'
 import { transactionInfo, TransactionStatus } from './types'
 import { WaitingOnUserScreen } from './WaitingOnUserScreen'
 import { MediumText } from '../../components'
+import TransactionInfo from './TransactionInfo'
 
 export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   route,
@@ -38,18 +39,30 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
     setError(undefined)
 
     setCurrentTransaction({
+      token,
+      amount: parseInt(amount, 10),
+      to,
       status: TransactionStatus.USER_CONFRIM,
       network,
     })
 
     sendTransaction(wallet, chainId, token, to, amount)
-      .then((hash: string) =>
+      .then((hash: string) => {
         setCurrentTransaction({
+          ...currentTransaction,
           status: TransactionStatus.PENDING,
           hash,
-          network,
-        }),
-      )
+        })
+
+        pollTransaction(wallet, hash).then((success: boolean) =>
+          setCurrentTransaction({
+            ...currentTransaction,
+            status: success
+              ? TransactionStatus.SUCCESS
+              : TransactionStatus.FAILED,
+          }),
+        )
+      })
       .catch((sendError: Error) => {
         setError(sendError)
         setCurrentTransaction(defaultTransactin)
@@ -70,7 +83,9 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   }
 
   if (currentTransaction?.status === TransactionStatus.PENDING) {
-    // return <TransactionInfo transaction={currentTransaction} />
+  return (
+    <TransactionInfo transaction={currentTransaction} />
+  )
   }
 
   return (

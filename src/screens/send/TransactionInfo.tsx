@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Image,
   Linking,
@@ -14,31 +14,29 @@ import { SearchIcon } from '../../components/icons/SearchIcon'
 import StatusIcon from '../../components/statusIcons'
 import { transactionInfo } from './types'
 
-type Props = {
+interface Interface {
   transaction: transactionInfo
 }
 
-const TransactionInfo = ({ transaction }: Props) => {
-  const onViewExplorerTouch = () =>
-    Linking.openURL(`https://explorer.testnet.rsk.co/tx/${transaction.hash}`)
+const TransactionInfo: React.FC<Interface> = ({ transaction }) => {
+  const { token, amount, to, hash } = transaction
 
-  const onCopyHash = () => Clipboard.setString(transaction.hash || '')
+  const onViewExplorerTouch = () =>
+    Linking.openURL(`https://explorer.testnet.rsk.co/tx/${hash}`)
+
+  const onCopyHash = () => Clipboard.setString(hash || '')
 
   return (
     <View style={styles.mainContainer}>
       <Text style={styles.label}>you have just sent</Text>
       <View style={styles.sentContainer}>
-        {transaction.symbol && (
+        {token && token.symbol && (
           <>
-            <TokenImage symbol={transaction.symbol} height={17} width={17} />
-            <Text style={[styles.font16Bold, spacing.ml7]}>
-              {transaction.symbol}
-            </Text>
+            <TokenImage symbol={token.symbol} height={17} width={17} />
+            <Text style={[styles.font16Bold, spacing.ml7]}>{token.symbol}</Text>
           </>
         )}
-        <Text style={[spacing.ml3, styles.font16Bold]}>
-          {transaction.value}
-        </Text>
+        <Text style={[spacing.ml3, styles.font16Bold]}>{amount}</Text>
       </View>
       <View style={[spacing.mb30, spacing.mt7]}>
         {/* @TODO get real amount */}
@@ -46,8 +44,8 @@ const TransactionInfo = ({ transaction }: Props) => {
       </View>
       <Text style={styles.label}>to a recipient</Text>
       <View style={spacing.mb30}>
-        <Text style={styles.font16Bold}>{transaction.to}</Text>
-        <Text style={spacing.mt7}>{transaction.to}</Text>
+        <Text style={styles.font16Bold}>{to}</Text>
+        <Text style={spacing.mt7}>{to}</Text>
       </View>
       <View style={spacing.mb30}>
         <Text style={styles.label}>status</Text>
