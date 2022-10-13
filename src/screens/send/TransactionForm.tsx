@@ -81,7 +81,7 @@ const TransactionForm: React.FC<Interface> = ({
     onConfirm(selectedToken, amount.value, to.value)
 
   return (
-    <View>
+    <View style={styles.container}>
       <View style={{ ...grid.row, ...styles.section }}>
         <View style={grid.column12}>
           <Text style={styles.label}>asset</Text>
@@ -150,6 +150,16 @@ const TransactionForm: React.FC<Interface> = ({
 }
 
 const styles = StyleSheet.create({
+  container: {
+    // flex: 1,
+    // alignItems: 'stretch',
+    minHeight: '100%',
+    backgroundColor: colors.darkPurple3,
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    paddingTop: 40,
+    paddingHorizontal: 20,
+  },
   label: {
     color: colors.white,
     padding: 10,

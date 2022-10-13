@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
-import { StyleSheet, ScrollView, Text } from 'react-native'
+import { StyleSheet, ScrollView, View } from 'react-native'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
 
 import { ScreenProps } from '../../RootNavigation'
 import { ScreenWithWallet } from '../types'
-import TransactionInfo from './TransactionInfo'
 import { colors } from '../../styles'
 import TransactionForm from './TransactionForm'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
@@ -12,6 +11,7 @@ import WalletNotDeployedView from './WalletNotDeployedModal'
 import { sendTransaction } from './operations'
 import { transactionInfo, TransactionStatus } from './types'
 import { WaitingOnUserScreen } from './WaitingOnUserScreen'
+import { MediumText } from '../../components'
 
 export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   route,
@@ -24,7 +24,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   const contractAddress =
     route.params?.contractAddress || Object.keys(state.balances)[0]
 
-  const defaultTransactin = { status: TransactionStatus.USER_CONFRIM }
+  const defaultTransactin = { status: TransactionStatus.NONE }
   const [currentTransaction, setCurrentTransaction] =
     useState<transactionInfo>(defaultTransactin)
   const [error, setError] = useState<Error>()
@@ -74,34 +74,34 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   }
 
   return (
-    <ScrollView style={styles.parent}>
-      <TransactionForm
-        onConfirm={handleTransfer}
-        tokenList={Object.values(state.balances)}
-        tokenPrices={state.prices}
-        chainId={chainId}
-        initialValues={{
-          recipient: route.params?.to,
-          amount: '0',
-          asset: route.params?.contractAddress
-            ? state.balances[route.params.contractAddress]
-            : state.balances[contractAddress],
-        }}
-        transactions={state.transactions.activityTransactions}
-      />
-      {!!error && <Text style={styles.error}>{error.message}</Text>}
-    </ScrollView>
+    <View style={styles.parent}>
+      <ScrollView>
+        <TransactionForm
+          onConfirm={handleTransfer}
+          tokenList={Object.values(state.balances)}
+          tokenPrices={state.prices}
+          chainId={chainId}
+          initialValues={{
+            recipient: route.params?.to,
+            amount: '0',
+            asset: route.params?.contractAddress
+              ? state.balances[route.params.contractAddress]
+              : state.balances[contractAddress],
+          }}
+          transactions={state.transactions.activityTransactions}
+        />
+        {!!error && (
+          <MediumText style={styles.error}>{error.message}</MediumText>
+        )}
+      </ScrollView>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   parent: {
+    display: 'flex',
     height: '100%',
-    backgroundColor: colors.darkPurple3,
-    borderTopLeftRadius: 40,
-    borderTopRightRadius: 40,
-    paddingTop: 40,
-    paddingHorizontal: 20,
   },
   error: {
     marginTop: 10,
