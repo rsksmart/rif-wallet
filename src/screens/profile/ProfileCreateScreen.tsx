@@ -136,6 +136,19 @@ export const ProfileCreateScreen: React.FC<
             accessibilityLabel={'Email.Input'}
             placeholderTextColor={colors.gray}
           />
+          <TextInput
+            style={styles.input}
+            onChangeText={value =>
+              setLocalProfile({
+                ...localProfile,
+                email: value,
+              })
+            }
+            value={localProfile?.email}
+            placeholder=""
+            accessibilityLabel={'Email.Input'}
+            placeholderTextColor={colors.gray}
+          />
         </View>
         <View style={styles.rowContainer}>
           <PurpleButton
@@ -152,10 +165,10 @@ export const ProfileCreateScreen: React.FC<
 
 const styles = StyleSheet.create({
   container: {
+    flexGrow: 1,
     backgroundColor: colors.background.darkBlue,
     paddingTop: 10,
     paddingHorizontal: 40,
-    height: 2000,
   },
   profileHeader: {
     flexDirection: 'row',
