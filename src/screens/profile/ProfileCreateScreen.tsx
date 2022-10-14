@@ -136,19 +136,6 @@ export const ProfileCreateScreen: React.FC<
             accessibilityLabel={'Email.Input'}
             placeholderTextColor={colors.gray}
           />
-          <TextInput
-            style={styles.input}
-            onChangeText={value =>
-              setLocalProfile({
-                ...localProfile,
-                email: value,
-              })
-            }
-            value={localProfile?.email}
-            placeholder=""
-            accessibilityLabel={'Email.Input'}
-            placeholderTextColor={colors.gray}
-          />
         </View>
         <View style={styles.rowContainer}>
           <PurpleButton
