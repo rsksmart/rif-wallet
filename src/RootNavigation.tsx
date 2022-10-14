@@ -147,215 +147,212 @@ export const RootNavigation: React.FC<{
   const appIsSetup = hasKeys && hasPin
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <View style={styles.parent}>
-        {appIsSetup && (
-          <AppHeader profile={profile} profileCreated={profileCreated} />
-        )}
-        <RootStack.Navigator initialRouteName={initialRoute}>
-          <RootStack.Screen name="Home" options={sharedOptions}>
-            {props => (
-              <InjectedScreens.HomeScreen
-                {...props}
-                changeTopColor={changeTopColor}
-              />
-            )}
-          </RootStack.Screen>
-          <RootStack.Screen name="WalletConnect" options={sharedOptions}>
-            {props => (
-              <InjectedScreens.WalletConnectScreen
-                {...props}
-                {...walletConnectScreenProps}
-              />
-            )}
-          </RootStack.Screen>
-          <RootStack.Screen name="ScanQR" options={sharedOptions}>
-            {_ => <InjectedScreens.ScanQRScreen />}
-          </RootStack.Screen>
+    <View style={styles.parent}>
+      {appIsSetup && (
+        <AppHeader profile={profile} profileCreated={profileCreated} />
+      )}
+      <RootStack.Navigator initialRouteName={initialRoute}>
+        <RootStack.Screen name="Home" options={sharedOptions}>
+          {props => (
+            <InjectedScreens.HomeScreen
+              {...props}
+              changeTopColor={changeTopColor}
+            />
+          )}
+        </RootStack.Screen>
+        <RootStack.Screen name="WalletConnect" options={sharedOptions}>
+          {props => (
+            <InjectedScreens.WalletConnectScreen
+              {...props}
+              {...walletConnectScreenProps}
+            />
+          )}
+        </RootStack.Screen>
+        <RootStack.Screen name="ScanQR" options={sharedOptions}>
+          {_ => <InjectedScreens.ScanQRScreen />}
+        </RootStack.Screen>
 
-          <RootStack.Screen name="Settings" options={sharedOptions}>
-            {props => <Screens.SettingsScreen {...props} />}
-          </RootStack.Screen>
-          <RootStack.Screen name="CreateKeysUX" options={sharedOptions}>
-            {props => (
-              <CreateKeysNavigation
-                {...props}
-                {...keyManagementProps}
-                isKeyboardVisible={isKeyboardVisible}
-              />
-            )}
-          </RootStack.Screen>
-          <RootStack.Screen
-            component={Screens.ReceiveScreenHOC}
-            name="Receive"
-            options={sharedOptions}
-          />
-          <RootStack.Screen name="Send" options={sharedOptions}>
-            {props => (
-              <InjectedScreens.SendScreen {...props} {...sendScreenProps} />
-            )}
-          </RootStack.Screen>
-          <RootStack.Screen
-            name="BitcoinScreen"
-            options={sharedOptions}
-            component={Screens.BitcoinAddressesScreen}
-          />
-          <RootStack.Screen
-            name="ReceiveBitcoin"
-            component={Screens.BitcoinReceiveScreen}
-            options={sharedOptions}
-          />
-          <RootStack.Screen
-            name="SendBitcoin"
-            component={Screens.SendBitcoinScreen}
-            options={sharedOptions}
-          />
-          <RootStack.Screen name="Balances">
-            {props => (
-              <InjectedScreens.BalancesScreen
-                {...props}
-                {...balancesScreenProps}
-              />
-            )}
-          </RootStack.Screen>
-          <RootStack.Screen name="Activity" options={sharedOptions}>
-            {props => (
-              <InjectedScreens.ActivityScreen
-                {...props}
-                {...activityScreenProps}
-              />
-            )}
-          </RootStack.Screen>
-          <RootStack.Screen
-            name="ActivityDetails"
-            component={InjectedScreens.ActivityDetailsScreen}
-            options={sharedOptions}
-          />
-          <RootStack.Screen name="ManuallyDeployScreen" options={sharedOptions}>
-            {props => (
-              <InjectedScreens.ManuallyDeployScreen
-                {...props}
-                setWalletIsDeployed={setWalletIsDeployed}
-              />
-            )}
-          </RootStack.Screen>
-          <RootStack.Screen name="AccountsScreen" options={sharedOptions}>
-            {props => (
-              <InjectedScreens.AccountsScreen
-                {...props}
-                {...accountsScreenType}
-              />
-            )}
-          </RootStack.Screen>
-          <RootStack.Screen name="ShowMnemonicScreen" options={sharedOptions}>
-            {props => (
-              <Screens.ShowMnemonicScreen
-                {...props}
-                {...showMnemonicScreenProps}
-              />
-            )}
-          </RootStack.Screen>
-          <RootStack.Screen name="RNSManager" options={sharedOptions}>
-            {props => (
-              <InjectedScreens.RNSManagerScreen
-                {...props}
-                profile={profile}
-                setProfile={setProfile}
-              />
-            )}
-          </RootStack.Screen>
+        <RootStack.Screen name="Settings" options={sharedOptions}>
+          {props => <Screens.SettingsScreen {...props} />}
+        </RootStack.Screen>
+        <RootStack.Screen name="CreateKeysUX" options={sharedOptions}>
+          {props => (
+            <CreateKeysNavigation
+              {...props}
+              {...keyManagementProps}
+              isKeyboardVisible={isKeyboardVisible}
+            />
+          )}
+        </RootStack.Screen>
+        <RootStack.Screen
+          component={Screens.ReceiveScreenHOC}
+          name="Receive"
+          options={sharedOptions}
+        />
+        <RootStack.Screen name="Send" options={sharedOptions}>
+          {props => (
+            <InjectedScreens.SendScreen {...props} {...sendScreenProps} />
+          )}
+        </RootStack.Screen>
+        <RootStack.Screen
+          name="BitcoinScreen"
+          options={sharedOptions}
+          component={Screens.BitcoinAddressesScreen}
+        />
+        <RootStack.Screen
+          name="ReceiveBitcoin"
+          component={Screens.BitcoinReceiveScreen}
+          options={sharedOptions}
+        />
+        <RootStack.Screen
+          name="SendBitcoin"
+          component={Screens.SendBitcoinScreen}
+          options={sharedOptions}
+        />
+        <RootStack.Screen name="Balances">
+          {props => (
+            <InjectedScreens.BalancesScreen
+              {...props}
+              {...balancesScreenProps}
+            />
+          )}
+        </RootStack.Screen>
+        <RootStack.Screen name="Activity" options={sharedOptions}>
+          {props => (
+            <InjectedScreens.ActivityScreen
+              {...props}
+              {...activityScreenProps}
+            />
+          )}
+        </RootStack.Screen>
+        <RootStack.Screen
+          name="ActivityDetails"
+          component={InjectedScreens.ActivityDetailsScreen}
+          options={sharedOptions}
+        />
+        <RootStack.Screen name="ManuallyDeployScreen" options={sharedOptions}>
+          {props => (
+            <InjectedScreens.ManuallyDeployScreen
+              {...props}
+              setWalletIsDeployed={setWalletIsDeployed}
+            />
+          )}
+        </RootStack.Screen>
+        <RootStack.Screen name="AccountsScreen" options={sharedOptions}>
+          {props => (
+            <InjectedScreens.AccountsScreen
+              {...props}
+              {...accountsScreenType}
+            />
+          )}
+        </RootStack.Screen>
+        <RootStack.Screen name="ShowMnemonicScreen" options={sharedOptions}>
+          {props => (
+            <Screens.ShowMnemonicScreen
+              {...props}
+              {...showMnemonicScreenProps}
+            />
+          )}
+        </RootStack.Screen>
+        <RootStack.Screen name="RNSManager" options={sharedOptions}>
+          {props => (
+            <InjectedScreens.RNSManagerScreen
+              {...props}
+              profile={profile}
+              setProfile={setProfile}
+            />
+          )}
+        </RootStack.Screen>
 
-          <RootStack.Screen name="SearchDomain" options={sharedOptions}>
-            {props => <InjectedScreens.SearchDomainScreen {...props} />}
-          </RootStack.Screen>
-          <RootStack.Screen name="RequestDomain" options={sharedOptions}>
-            {props => <InjectedScreens.RequestDomainScreen {...props} />}
-          </RootStack.Screen>
+        <RootStack.Screen name="SearchDomain" options={sharedOptions}>
+          {props => <InjectedScreens.SearchDomainScreen {...props} />}
+        </RootStack.Screen>
+        <RootStack.Screen name="RequestDomain" options={sharedOptions}>
+          {props => <InjectedScreens.RequestDomainScreen {...props} />}
+        </RootStack.Screen>
 
-          <RootStack.Screen name="BuyDomain" options={sharedOptions}>
-            {props => <InjectedScreens.BuyDomainScreen {...props} />}
-          </RootStack.Screen>
+        <RootStack.Screen name="BuyDomain" options={sharedOptions}>
+          {props => <InjectedScreens.BuyDomainScreen {...props} />}
+        </RootStack.Screen>
 
-          <RootStack.Screen name="AliasBought" options={sharedOptions}>
-            {props => (
-              <InjectedScreens.AliasBoughtScreen
-                {...props}
-                profile={profile}
-                setProfile={setProfile}
-              />
-            )}
-          </RootStack.Screen>
+        <RootStack.Screen name="AliasBought" options={sharedOptions}>
+          {props => (
+            <InjectedScreens.AliasBoughtScreen
+              {...props}
+              profile={profile}
+              setProfile={setProfile}
+            />
+          )}
+        </RootStack.Screen>
 
-          <RootStack.Screen
-            name="RegisterDomain"
-            component={InjectedScreens.RegisterDomainScreen}
-            options={sharedOptions}
-          />
-          <RootStack.Screen
-            name="ChangeLanguage"
-            component={Screens.ChangeLanguageScreen}
-            options={sharedOptions}
-          />
+        <RootStack.Screen
+          name="RegisterDomain"
+          component={InjectedScreens.RegisterDomainScreen}
+          options={sharedOptions}
+        />
+        <RootStack.Screen
+          name="ChangeLanguage"
+          component={Screens.ChangeLanguageScreen}
+          options={sharedOptions}
+        />
 
-          <RootStack.Screen name="CreatePin" options={sharedOptions}>
-            {props => (
-              <Screens.CreatePinScreen {...props} createPin={createPin} />
-            )}
-          </RootStack.Screen>
-          <RootStack.Screen name="ChangePinScreen" options={sharedOptions}>
-            {props => <Screens.ChangePinScreen {...props} editPin={editPin} />}
-          </RootStack.Screen>
-          <RootStack.Screen name="Contacts" options={sharedOptions}>
-            {props => (
-              <Screens.ContactsNavigationScreen
-                {...props}
-                {...contactsNavigationScreenProps}
-              />
-            )}
-          </RootStack.Screen>
-          <RootStack.Screen
-            name="EventsScreen"
-            component={Screens.EventsScreen}
-            options={sharedOptions}
-          />
-          <RootStack.Screen
-            name="SecurityConfigurationScreen"
-            options={sharedOptions}>
-            {props => (
-              <Screens.SecurityConfigurationScreen
-                {...props}
-                {...securityConfigurationScreenProps}
-              />
-            )}
-          </RootStack.Screen>
-          <RootStack.Screen name="ProfileCreateScreen" options={sharedOptions}>
-            {props => (
-              <Screens.ProfileCreateScreen
-                {...props}
-                profile={profile}
-                setProfile={setProfile}
-                storeProfile={storeProfile}
-                eraseProfile={eraseProfile}
-              />
-            )}
-          </RootStack.Screen>
-          <RootStack.Screen name="ProfileDetailsScreen" options={sharedOptions}>
-            {props => (
-              <Screens.ProfileDetailsScreen {...props} profile={profile} />
-            )}
-          </RootStack.Screen>
-          <RootStack.Screen
-            name="FeedbackScreen"
-            options={sharedOptions}
-            component={Screens.FeedbackScreen}
-          />
-        </RootStack.Navigator>
-        {appIsSetup && !isKeyboardVisible && (
-          <AppFooterMenu currentScreen={currentScreen} />
-        )}
-      </View>
-    </KeyboardAvoidingView>
+        <RootStack.Screen name="CreatePin" options={sharedOptions}>
+          {props => (
+            <Screens.CreatePinScreen {...props} createPin={createPin} />
+          )}
+        </RootStack.Screen>
+        <RootStack.Screen name="ChangePinScreen" options={sharedOptions}>
+          {props => <Screens.ChangePinScreen {...props} editPin={editPin} />}
+        </RootStack.Screen>
+        <RootStack.Screen name="Contacts" options={sharedOptions}>
+          {props => (
+            <Screens.ContactsNavigationScreen
+              {...props}
+              {...contactsNavigationScreenProps}
+            />
+          )}
+        </RootStack.Screen>
+        <RootStack.Screen
+          name="EventsScreen"
+          component={Screens.EventsScreen}
+          options={sharedOptions}
+        />
+        <RootStack.Screen
+          name="SecurityConfigurationScreen"
+          options={sharedOptions}>
+          {props => (
+            <Screens.SecurityConfigurationScreen
+              {...props}
+              {...securityConfigurationScreenProps}
+            />
+          )}
+        </RootStack.Screen>
+        <RootStack.Screen name="ProfileCreateScreen" options={sharedOptions}>
+          {props => (
+            <Screens.ProfileCreateScreen
+              {...props}
+              profile={profile}
+              setProfile={setProfile}
+              storeProfile={storeProfile}
+              eraseProfile={eraseProfile}
+            />
+          )}
+        </RootStack.Screen>
+        <RootStack.Screen name="ProfileDetailsScreen" options={sharedOptions}>
+          {props => (
+            <Screens.ProfileDetailsScreen {...props} profile={profile} />
+          )}
+        </RootStack.Screen>
+        <RootStack.Screen
+          name="FeedbackScreen"
+          options={sharedOptions}
+          component={Screens.FeedbackScreen}
+        />
+      </RootStack.Navigator>
+      {appIsSetup && !isKeyboardVisible && (
+        <AppFooterMenu currentScreen={currentScreen} />
+      )}
+    </View>
   )
 }
 

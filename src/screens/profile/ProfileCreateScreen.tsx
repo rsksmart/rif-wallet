@@ -3,7 +3,15 @@ import { IProfileStore } from '../../storage/ProfileStore'
 import { RegularText } from '../../components/typography'
 import { TextInput } from 'react-native-gesture-handler'
 
-import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import {
+  KeyboardAvoidingView,
+  Platform,
+  View,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+} from 'react-native'
+
 import { colors } from '../../styles'
 import { MediumText } from '../../components'
 import { PurpleButton } from '../../components/button/ButtonVariations'
@@ -48,7 +56,9 @@ export const ProfileCreateScreen: React.FC<
           <MaterialIcon name="delete" color="white" size={20} />
         </TouchableOpacity>
       </View>
-      <View style={styles.container}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}>
         <View style={styles.profileImageContainer}>
           <Image
             style={styles.profileImage}
@@ -135,17 +145,17 @@ export const ProfileCreateScreen: React.FC<
             disabled={localProfile === emptyProfile}
           />
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: colors.background.darkBlue,
     paddingTop: 10,
     paddingHorizontal: 40,
+    height: 2000,
   },
   profileHeader: {
     flexDirection: 'row',
