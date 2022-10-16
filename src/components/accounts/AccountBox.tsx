@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { MediumText } from '../typography'
-import CopyField from '../activity/CopyField'
 import { colors } from '../../styles'
 import { SmartWalletFactory } from '../../lib/core/SmartWalletFactory'
-// import EditMaterialIcon from '../icons/EditMaterialIcon'
+import AccountField from './AccountField'
+import accountSharedStyles from './styles'
+import { PublicKeyItemType } from '../../screens/accounts/types'
 
 type AccountBoxProps = {
   address: string
@@ -13,11 +14,8 @@ type AccountBoxProps = {
   smartWalletAddressShort: string
   smartWalletFactory: SmartWalletFactory
   id?: number
+  publicKeys: PublicKeyItemType[]
 }
-
-const MediumTextStyleOverride: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => <MediumText style={styles.mediumTextOverride}>{children}</MediumText>
 
 const AccountBox: React.FC<AccountBoxProps> = ({
   address,
@@ -25,6 +23,7 @@ const AccountBox: React.FC<AccountBoxProps> = ({
   smartWalletAddress,
   smartWalletAddressShort,
   smartWalletFactory,
+  publicKeys = [],
   id = 0,
 }) => {
   const [isDeployed, setIsDeployed] = useState(false)
@@ -38,32 +37,29 @@ const AccountBox: React.FC<AccountBoxProps> = ({
         <MediumText style={styles.text}>account {id + 1}</MediumText>
         {/*<EditMaterialIcon style={styles.icon} size={11} />*/}
       </View>
-      <View style={styles.infoSection}>
+      <View style={accountSharedStyles.infoSection}>
         <MediumText style={styles.titleFontSize}>Status</MediumText>
         <MediumText style={styles.titleFontSize}>
           {isDeployed ? 'Deployed' : 'Not Deployed'}
         </MediumText>
       </View>
-      <View style={styles.infoSection}>
-        <MediumText style={styles.addressText}>EOA Address</MediumText>
-        <CopyField
-          text={addressShort}
-          textToCopy={address}
-          TextComp={MediumTextStyleOverride}
-          iconSize={20}
-          iconViewBox="0 0 25 25"
+      <AccountField
+        label="EOA Address"
+        value={addressShort}
+        valueToCopy={address}
+      />
+      <AccountField
+        label="Smart Wallet Address"
+        value={smartWalletAddressShort}
+        valueToCopy={smartWalletAddress}
+      />
+      {publicKeys.map(publicKey => (
+        <AccountField
+          label={publicKey.networkName + ' Public Key'}
+          value={publicKey.shortedPublicKey}
+          valueToCopy={publicKey.publicKey}
         />
-      </View>
-      <View>
-        <MediumText style={styles.addressText}>Smart Wallet Address</MediumText>
-        <CopyField
-          text={smartWalletAddressShort}
-          textToCopy={smartWalletAddress}
-          TextComp={MediumTextStyleOverride}
-          iconSize={20}
-          iconViewBox="0 0 25 25"
-        />
-      </View>
+      ))}
     </View>
   )
 }
@@ -88,19 +84,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 1,
   },
-  infoSection: {
-    marginBottom: 20,
-  },
-  addressText: {
-    marginBottom: 3,
-    fontSize: 13,
-  },
   titleFontSize: {
     fontSize: 13,
-  },
-  mediumTextOverride: {
-    fontSize: 13,
-    flex: 90,
   },
 })
 
