@@ -58,6 +58,7 @@ const AccountBox: React.FC<AccountBoxProps> = ({
           label={publicKey.networkName + ' Public Key'}
           value={publicKey.shortedPublicKey}
           valueToCopy={publicKey.publicKey}
+          key={publicKey.publicKey}
         />
       ))}
     </View>
