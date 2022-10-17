@@ -1,7 +1,7 @@
 import EventEmitter from 'events'
 import { io } from 'socket.io-client'
 import { enhanceTransactionInput } from '../../screens/activity/ActivityScreen'
-import { Cache } from '../../storage/cache/Cache'
+import { Cache } from '../../storage/cache/MMKVCache'
 import { IActivityTransaction } from '../../subscriptions/types'
 import { IAbiEnhancer } from '../abiEnhancer/AbiEnhancer'
 import { RIFWallet } from '../core'

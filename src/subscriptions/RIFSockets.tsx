@@ -1,6 +1,5 @@
 import React, { useContext } from 'react'
 import { AppContext, useSelectedWallet } from '../Context'
-import { enhanceTransactionInput } from '../screens/activity/ActivityScreen'
 import { filterEnhancedTransactions, sortEnhancedTransactions } from './utils'
 
 import {
