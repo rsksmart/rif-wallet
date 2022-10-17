@@ -35,6 +35,7 @@ import { useRequests } from './hooks/useRequests'
 import { useStateSubscription } from './hooks/useStateSubscription'
 
 import JailMonkey from 'jail-monkey'
+import { ConfirmationModal } from '../components/modal/ConfirmationModal'
 
 export const Core = () => {
   const [topColor, setTopColor] = useState(colors.darkPurple3)
@@ -78,6 +79,9 @@ export const Core = () => {
 
   const BitcoinCore = useBitcoinCore(state?.kms?.mnemonic || '')
 
+  const isDeviceRooted = JailMonkey.isJailBroken()
+  const [isWarningVisible, setIsWarningVisible] = useState(isDeviceRooted)
+
   useEffect(() => {
     Promise.all([i18nInit(), hasKeys(), hasPin()]).then(
       ([_, hasKeysResult, hasPinResult]) => {
@@ -100,12 +104,6 @@ export const Core = () => {
 
   if (state.loading) {
     return <LoadingScreen />
-  }
-
-  const isRooted = JailMonkey.isJailBroken()
-  if (isRooted) {
-    // TODO: show a modal with a warning
-    console.log('Device is rooted')
   }
 
   // handles the top color behind the clock
@@ -189,6 +187,15 @@ export const Core = () => {
                     request={requests[0]}
                   />
                 )}
+
+                <ConfirmationModal
+                  isVisible={isWarningVisible}
+                  title="DEVICE SECURITY COMPROMISED"
+                  description='Any "rooted" app can access your private keys and steal your funds. Wipe this wallet immediately and restore it on a secure device.'
+                  okText="OK"
+                  onOk={() => setIsWarningVisible(false)}
+                  onCancel={() => setIsWarningVisible(false)}
+                />
               </RIFSocketsProvider>
             </WalletConnectProviderElement>
           </NavigationContainer>
