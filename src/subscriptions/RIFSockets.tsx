@@ -1,5 +1,6 @@
-import React from 'react'
-import { useSelectedWallet } from '../Context'
+import React, { useContext } from 'react'
+import { AppContext, useSelectedWallet } from '../Context'
+import { enhanceTransactionInput } from '../screens/activity/ActivityScreen'
 import { filterEnhancedTransactions, sortEnhancedTransactions } from './utils'
 
 import {
@@ -149,6 +150,8 @@ export function RIFSocketsProvider({
   )
   const setGlobalError = useSetGlobalError()
 
+  const { mnemonic } = useContext(AppContext)
+
   const { wallet } = useSelectedWallet()
 
   const connect = () => {
@@ -193,7 +196,7 @@ export function RIFSocketsProvider({
       }
     })
 
-    rifServiceSocket?.connect(wallet).catch(() => {
+    rifServiceSocket?.connect(wallet, mnemonic!).catch(() => {
       setGlobalError('Error connecting to the socket')
     })
   }

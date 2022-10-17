@@ -4,10 +4,11 @@ export class Cache {
   private id: string
   private cache: MMKV
 
-  constructor(id: string) {
+  constructor(id: string, encryptionKey: string) {
     this.id = id
     this.cache = new MMKV({
       id,
+      encryptionKey,
     })
   }
 
