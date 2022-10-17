@@ -137,13 +137,3 @@ export const sanitizeDecimalText = (text: string) => {
 
 export const convertUnixTimeToFromNowFormat = (unixTime: number): string =>
   moment.unix(Number(unixTime)).fromNow()
-
-export function trimBitcoinBalance(
-  balance: string,
-  trimLength: number = 7,
-): string {
-  if (balance.length > trimLength) {
-    return balance.substr(0, trimLength) + '..'
-  }
-  return balance
-}

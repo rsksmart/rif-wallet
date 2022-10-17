@@ -1,13 +1,10 @@
 import React from 'react'
 import useContainerStyles from './useContainerStyles'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import {
-  balanceToUSD,
-  balanceToDisplay,
-  trimBitcoinBalance,
-} from '../../lib/utils'
+import { balanceToUSD, balanceToDisplay } from '../../lib/utils'
 import { IPrice } from '../../subscriptions/types'
 import BalanceCardPresentationComponent from './BalanceCardPresentationComponent'
+import { BigNumber } from 'ethers'
 
 export const BalanceCardComponent: React.FC<{
   token: ITokenWithBalance
@@ -47,7 +44,7 @@ export const BitcoinCardComponent: React.FC<{
   const containerStyles = useContainerStyles(isSelected, symbol)
 
   const balanceFormatted = React.useMemo(
-    () => trimBitcoinBalance(balance.toString()),
+    () => balanceToDisplay(BigNumber.from((balance * 10e8).toString()), 8, 4),
     [balance],
   )
   const handlePress = () => {
