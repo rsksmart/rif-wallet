@@ -1,7 +1,11 @@
 import React from 'react'
 import useContainerStyles from './useContainerStyles'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { balanceToUSD, balanceToDisplay } from '../../lib/utils'
+import {
+  balanceToUSD,
+  balanceToDisplay,
+  trimBitcoinBalance,
+} from '../../lib/utils'
 import { IPrice } from '../../subscriptions/types'
 import BalanceCardPresentationComponent from './BalanceCardPresentationComponent'
 
@@ -40,16 +44,21 @@ export const BitcoinCardComponent: React.FC<{
   contractAddress: string
   onPress: (address: string) => void
 }> = ({ symbol, balance, isSelected, contractAddress, onPress }) => {
+  const containerStyles = useContainerStyles(isSelected, symbol)
+
+  const balanceFormatted = React.useMemo(
+    () => trimBitcoinBalance(balance.toString()),
+    [balance],
+  )
   const handlePress = () => {
     onPress(contractAddress)
   }
-  const containerStyles = useContainerStyles(isSelected, symbol)
   return (
     <BalanceCardPresentationComponent
       handlePress={handlePress}
       containerStyles={containerStyles}
       symbol={symbol}
-      balance={balance.toString()}
+      balance={balanceFormatted}
     />
   )
 }
