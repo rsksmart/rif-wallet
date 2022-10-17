@@ -5,6 +5,7 @@ import { balanceToUSD, balanceToDisplay } from '../../lib/utils'
 import { IPrice } from '../../subscriptions/types'
 import BalanceCardPresentationComponent from './BalanceCardPresentationComponent'
 import { BigNumber } from 'ethers'
+import { useSocketsState } from '../../subscriptions/RIFSockets'
 
 export const BalanceCardComponent: React.FC<{
   token: ITokenWithBalance
@@ -42,9 +43,20 @@ export const BitcoinCardComponent: React.FC<{
   onPress: (address: string) => void
 }> = ({ symbol, balance, isSelected, contractAddress, onPress }) => {
   const containerStyles = useContainerStyles(isSelected, symbol)
+  const balanceBigNumber = React.useMemo(
+    () => BigNumber.from(balance * 10e8),
+    [balance],
+  )
+  const { state } = useSocketsState()
+  // Future TODO: should be set in the network constants if another coin is implemented
+  const price = React.useMemo(() => {
+    return state.prices.BTC
+      ? balanceToUSD(balanceBigNumber, 8, state.prices.BTC.price)
+      : ''
+  }, [balance, state.prices.BTC])
 
   const balanceFormatted = React.useMemo(
-    () => balanceToDisplay(BigNumber.from((balance * 10e8).toString()), 8, 4),
+    () => balanceToDisplay(balanceBigNumber.toString(), 8, 4),
     [balance],
   )
   const handlePress = () => {
@@ -56,6 +68,7 @@ export const BitcoinCardComponent: React.FC<{
       containerStyles={containerStyles}
       symbol={symbol}
       balance={balanceFormatted}
+      usdAmount={price}
     />
   )
 }
