@@ -33,7 +33,7 @@ export const ContactRow: React.FC<IContactRowProps> = ({
   const { state } = useSocketsState()
   const hideSendButton = Object.values(state.balances).length === 0
 
-  const config = {
+  const avatarConfig = {
     lightness: {
       color: [0.4, 0.8],
       grayscale: [0.3, 0.6],
@@ -42,6 +42,7 @@ export const ContactRow: React.FC<IContactRowProps> = ({
       color: 0.7,
       grayscale: 0.5,
     },
+    padding: 0.15,
   }
   return (
     <View
@@ -61,7 +62,7 @@ export const ContactRow: React.FC<IContactRowProps> = ({
           size={40}
           value={contact.name + contact.address}
           style={styles.avatar}
-          config={config}
+          config={avatarConfig}
         />
         <View>
           <Text style={styles.contactName}>{contact.name}</Text>
