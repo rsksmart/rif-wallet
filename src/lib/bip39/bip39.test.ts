@@ -14,7 +14,7 @@ describe('Validate Mnemonic', () => {
   })
   test('mnemonic is too short', async () => {
     const error = validateMnemonic(SEED_PHRASE_TOO_SHORT)
-    expect(error).toEqual('you need to enter at least 24 words')
+    expect(error).toEqual('you need to enter at least 12 words')
   })
 
   test('mnemonic is has valid words', async () => {
