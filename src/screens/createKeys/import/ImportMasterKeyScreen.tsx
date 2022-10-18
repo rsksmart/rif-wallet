@@ -28,7 +28,7 @@ interface ImportMasterKeyScreenProps {
 export const ImportMasterKeyScreen: React.FC<
   ScreenProps<'ImportMasterKey'> & ImportMasterKeyScreenProps
 > = ({ navigation, createFirstWallet, isKeyboardVisible }) => {
-  const slidesIndexes = [0, 1, 2, 3, 4, 5, 6, 7]
+  const slidesIndexes = [0, 1, 2, 3]
 
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
   const [selectedWords, setSelectedWords] = useState<string[]>([])
