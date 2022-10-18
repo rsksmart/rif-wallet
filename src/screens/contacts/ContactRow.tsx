@@ -1,5 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import Jdenticon from 'react-native-jdenticon'
 import Icon from 'react-native-vector-icons/Feather'
 import DeleteIcon from '../../components/icons/DeleteIcon'
 import EditMaterialIcon from '../../components/icons/EditMaterialIcon'
@@ -32,6 +33,16 @@ export const ContactRow: React.FC<IContactRowProps> = ({
   const { state } = useSocketsState()
   const hideSendButton = Object.values(state.balances).length === 0
 
+  const config = {
+    lightness: {
+      color: [0.4, 0.8],
+      grayscale: [0.3, 0.6],
+    },
+    saturation: {
+      color: 0.7,
+      grayscale: 0.5,
+    },
+  }
   return (
     <View
       style={{
@@ -46,10 +57,18 @@ export const ContactRow: React.FC<IContactRowProps> = ({
         key={index}
         onPress={onPress}
         style={styles.contactInfo}>
-        <Text style={styles.contactName}>{contact.name}</Text>
-        <Text style={styles.address}>
-          {shortAddress(contact.displayAddress, 8)}
-        </Text>
+        <Jdenticon
+          size={40}
+          value={contact.name + contact.address}
+          style={styles.avatar}
+          config={config}
+        />
+        <View>
+          <Text style={styles.contactName}>{contact.name}</Text>
+          <Text style={styles.address}>
+            {shortAddress(contact.displayAddress, 8)}
+          </Text>
+        </View>
       </TouchableOpacity>
       {selected && (
         <View style={styles.actions}>
@@ -98,9 +117,14 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   contactInfo: {
+    flexDirection: 'row',
     flex: 5,
     paddingVertical: 20,
-    paddingHorizontal: 20,
+  },
+  avatar: {
+    marginHorizontal: 20,
+    borderRadius: 50,
+    backgroundColor: colors.lightPurple,
   },
   contactName: {
     fontFamily: fonts.regular,
