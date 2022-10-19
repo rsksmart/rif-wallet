@@ -78,7 +78,6 @@ const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
       })
       .then(async txIdJson => {
         setStatus('Sending payment...')
-        console.log('send btc', txIdJson)
         if (txIdJson.result) {
           setStatus(`${txIdJson.result}`)
           setTxid(txIdJson.result)
@@ -89,9 +88,8 @@ const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
           }
         }
       })
-      .catch((err: { toString: () => any }) => {
-        console.log('Payment rejected', err.toString())
-        setStatus('Payment rejected')
+      .catch(() => {
+        setStatus('Transaction cancelled')
       })
   }
 
