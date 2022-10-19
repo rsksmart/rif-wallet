@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { sharedStyles } from './sharedStyles'
 import ReadOnlyField from './ReadOnlyField'
@@ -9,52 +9,98 @@ import {
 import { colors } from '../../styles'
 import { ScrollView } from 'react-native-gesture-handler'
 import { SendBitcoinRequestType } from '../../lib/bitcoin/types'
+import InputField from './InpuField'
 
 type ConfirmBitcoinTransactionModal = {
   request: SendBitcoinRequestType
   closeModal: () => void
 }
 
+const TEST_IDS = {
+  MODAL_SCROLLVIEW: 'MODAL_SCROLLVIEW',
+  SENDING_VIEW: 'SENDING_VIEW',
+  SENDING_VIEW_MESSAGE: 'SENDING_VIEW_MESSAGE',
+  TO_VIEW: 'TO_VIEW',
+  TO_VIEW_MESSAGE: 'TO_VIEW_MESSAGE',
+  MINING_FEE_VIEW: 'MINING_FEE_VIEW',
+  MINING_FEE_TEXT_INPUT: 'MINING_FEE_TEXT_INPUT',
+  BUTTON_CONFIRM: 'BUTTON_CONFIRM',
+  BUTTON_REJECT: 'BUTTON_REJECT',
+}
+
 const ConfirmBitcoinTransactionModal: React.FC<
   ConfirmBitcoinTransactionModal
 > = ({ request, closeModal }) => {
   const { payload, confirm, reject } = request
-
+  const { balance, amountToPay } = payload
+  const [miningFee, setMiningFee] = useState<string>(
+    payload.miningFee.toString(),
+  )
+  const maximumMiningFee = React.useMemo(
+    () => payload.balance - payload.amountToPay,
+    [payload],
+  )
+  const isPaymentValid = () => {
+    if (Number(miningFee) && Number(miningFee) < 141) {
+      return false
+    }
+    const totalPayment = Number(miningFee) + Number(amountToPay)
+    return totalPayment <= Number(balance)
+  }
   const onReject = () => {
     reject('Closed')
     closeModal()
   }
 
+  const handleMiningFeeChange = (miningFeeValue: string) => {
+    payload.payment.setMiningFee(Number(miningFeeValue))
+    setMiningFee(miningFeeValue)
+  }
+
   const onConfirm = () => {
+    if (!isPaymentValid()) {
+      return
+    }
     confirm()
-    closeModal()
+      .then(result => {
+        console.log(result)
+        closeModal()
+      })
+      .catch(error => {
+        console.log(error.toString())
+      })
   }
   return (
-    <ScrollView>
+    <ScrollView testID={TEST_IDS.MODAL_SCROLLVIEW}>
       <View>
-        <View testID="TX_VIEW" style={[sharedStyles.rowInColumn]}>
+        <View testID={TEST_IDS.SENDING_VIEW} style={[sharedStyles.rowInColumn]}>
           <ReadOnlyField
             label={'Sending'}
             value={payload.amountToPay.toString()}
-            testID="Text.Message"
+            testID={TEST_IDS.SENDING_VIEW_MESSAGE}
           />
         </View>
       </View>
       <View>
-        <View testID="TX_TO_VIEW" style={[sharedStyles.rowInColumn]}>
+        <View testID={TEST_IDS.TO_VIEW} style={[sharedStyles.rowInColumn]}>
           <ReadOnlyField
             label="To"
             value={payload.addressToPay}
-            testID="Text.Message"
+            testID={TEST_IDS.TO_VIEW_MESSAGE}
           />
         </View>
       </View>
       <View>
-        <View testID="TX_MINING_FEE_VIEW" style={[sharedStyles.rowInColumn]}>
-          <ReadOnlyField
-            label="Mining Fee"
-            value={payload.miningFee.toString()}
-            testID="Text.Message"
+        <View
+          testID={TEST_IDS.MINING_FEE_VIEW}
+          style={[sharedStyles.rowInColumn]}>
+          <InputField
+            label={`Mining fee (MAX: ${maximumMiningFee})`}
+            value={miningFee}
+            keyboardType="number-pad"
+            placeholder="mining fee"
+            testID={TEST_IDS.MINING_FEE_TEXT_INPUT}
+            handleValueOnChange={handleMiningFeeChange}
           />
         </View>
       </View>
@@ -64,14 +110,14 @@ const ConfirmBitcoinTransactionModal: React.FC<
             style={{ button: { borderColor: colors.black } }}
             onPress={onReject}
             title="reject"
-            testID="Button.Reject"
+            testID={TEST_IDS.BUTTON_REJECT}
           />
         </View>
         <View style={sharedStyles.column}>
           <DarkBlueButton
             onPress={onConfirm}
             title="confirm"
-            testID="Button.Confirm"
+            testID={TEST_IDS.BUTTON_CONFIRM}
           />
         </View>
       </View>

@@ -1,37 +1,94 @@
 import { OnRequest } from '../core'
 import BIPPaymentFacade from './BIPPaymentFacade'
-import { PaymentType, Psbt, SendBitcoinRequestType } from './types'
+import {
+  PaymentType,
+  Psbt,
+  SendBitcoinRequestType,
+  UnspentTransactionType,
+} from './types'
 import { BITCOIN_REQUEST_TYPES } from './constants'
+import { ISendTransactionJsonReturnData } from '../rifWalletServices/RifWalletServicesFetcher'
 
 export default class BIPRequestPaymentFacade {
   request: OnRequest
   payment: BIPPaymentFacade
   generatedPayment!: Psbt
+  miningFee!: number
+  amountToPay!: number
+  addressToPay!: string
+  utxos!: UnspentTransactionType[]
   constructor(request: OnRequest, payment: BIPPaymentFacade) {
     this.request = request
     this.payment = payment
   }
+  setArguments({
+    amountToPay,
+    addressToPay,
+    unspentTransactions,
+    miningFee,
+  }: PaymentType) {
+    this.amountToPay = amountToPay
+    this.addressToPay = addressToPay
+    this.utxos = unspentTransactions
+    this.miningFee = miningFee
+  }
 
+  getPaymentArguments(): PaymentType {
+    return {
+      amountToPay: this.amountToPay,
+      addressToPay: this.addressToPay,
+      unspentTransactions: this.utxos,
+      miningFee: this.miningFee,
+    }
+  }
+  /*
+    Sets the generatedPayment property with the current arguments
+  * */
+  async setGeneratedPayment() {
+    this.generatedPayment = await this.payment.generatePayment(
+      this.getPaymentArguments(),
+    )
+    return this.generatedPayment
+  }
   /**
    * Build request
    */
-  async onRequestPayment({ ...args }: PaymentType) {
-    this.generatedPayment = await this.payment.generatePayment(args)
-    console.log(this.generatedPayment)
+  async onRequestPayment({
+    ...args
+  }: PaymentType & {
+    balance: number
+  }): Promise<ISendTransactionJsonReturnData> {
+    this.setArguments({ ...args })
+    await this.setGeneratedPayment()
     return new Promise((res, rej) => {
       this.request({
         type: BITCOIN_REQUEST_TYPES.SEND_BITCOIN,
-        payload: args,
-        confirm: res,
+        payload: {
+          ...args,
+          payment: this as BIPRequestPaymentFacade,
+        },
+        confirm: () => this.onRequestPaymentConfirmed(res),
         reject: rej,
       } as SendBitcoinRequestType)
     })
   }
 
   /**
-   * When payment confirmed = proceed with sign and send
+   * When payment is confirmed then proceed with:
+   * 1- recreating payment with the previous arguments and new mining fee;
+   * 2- signing
+   * 3- sending
    */
-  async onRequestPaymentConfirmed() {
-    return this.payment.signAndSend(this.generatedPayment)
+  async onRequestPaymentConfirmed(
+    resolve: (value: ISendTransactionJsonReturnData) => void,
+  ) {
+    await this.setGeneratedPayment()
+    const tx = await this.payment.signAndSend(this.generatedPayment)
+    resolve(tx)
+  }
+
+  setMiningFee(miningFee: number) {
+    this.miningFee = miningFee
+    return miningFee
   }
 }

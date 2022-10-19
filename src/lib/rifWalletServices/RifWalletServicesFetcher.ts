@@ -35,6 +35,11 @@ export interface IXPubBalanceData {
   btc: number
 }
 
+export interface ISendTransactionJsonReturnData {
+  error?: string
+  result?: string
+}
+
 const RESULTS_LIMIT = 10
 
 export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
@@ -84,7 +89,9 @@ export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
   fetchUtxos = (xpub: string): Promise<Array<UnspentTransactionType>> =>
     fetch(`${this.uri}/bitcoin/getXpubUtxos/${xpub}`).then(res => res.json())
 
-  sendTransactionHexData = (hexdata: string): Promise<any> =>
+  sendTransactionHexData = (
+    hexdata: string,
+  ): Promise<ISendTransactionJsonReturnData> =>
     fetch(`${this.uri}/bitcoin/sendTransaction/${hexdata}`).then(res =>
       res.json(),
     )

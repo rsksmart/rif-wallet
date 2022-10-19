@@ -8,16 +8,20 @@ import { ContentPasteIcon } from '../../components/icons'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { MediumText } from '../../components'
 import Clipboard from '@react-native-community/clipboard'
-import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
-import { UnspentTransactionType } from '../../lib/bitcoin/types'
+import {
+  BitcoinNetworkWithBIPRequest,
+  UnspentTransactionType,
+} from '../../lib/bitcoin/types'
 
 type SendBitcoinScreenType = {
   route: {
     params: {
-      network: BitcoinNetwork
+      network: BitcoinNetworkWithBIPRequest
     }
   }
 }
+
+const MINIMUM_FEE = 141
 const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
   route: {
     params: { network },
@@ -28,7 +32,6 @@ const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
   const [addressToPay, setAddressToPay] = useState<string>(
     'tb1qxctqphp7l5zeh2a38ehaqe3asz33luxr9mv9yx',
   )
-  const [miningFee, setMiningFee] = useState<string>('141')
   const [status, setStatus] = useState<string>('')
   const [txid, setTxid] = useState<string>('')
   const [error, setError] = useState<string>('')
@@ -52,17 +55,11 @@ const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
   const handleAddressToPayChange = (address: string) => {
     setAddressToPay(address)
   }
-  const handleMiningFeeChange = (miningFeeValue: string) => {
-    setMiningFee(miningFeeValue)
-  }
+
   const balance = network.bips[0].balance
   const onReviewTouch = async () => {
     if (Number(amountToPay) > Number(balance)) {
       setStatus(`Amount must not be greater than ${balance}`)
-      return
-    }
-    if (Number(miningFee) <= 0) {
-      setStatus('Mining fee must be over 0')
       return
     }
     if (!isAddressValid()) {
@@ -73,27 +70,30 @@ const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
     setError('')
     // @TODO: refactor to use request
     setStatus('Loading payment...')
-    network.bips[0].payment
+    network.bips[0].requestPayment
       .onRequestPayment({
         amountToPay: Number(amountToPay),
         addressToPay,
         unspentTransactions: utxos,
-        miningFee: Number(miningFee),
+        miningFee: Number(MINIMUM_FEE),
+        balance,
       })
-      .then(async () => {
+      .then(async txIdJson => {
         setStatus('Sending payment...')
-        const txIdJson =
-          await network.bips[0].payment.onRequestPaymentConfirmed()
+        console.log('send btc', txIdJson)
         if (txIdJson.result) {
           setStatus(`${txIdJson.result}`)
           setTxid(txIdJson.result)
         } else {
-          setStatus(`Transaction Error: ${txIdJson.error}`)
-          setError(txIdJson.error)
+          if (txIdJson.error) {
+            setStatus(`Transaction Error: ${txIdJson.error}`)
+            setError(txIdJson.error)
+          }
         }
       })
       .catch((err: { toString: () => any }) => {
         console.log('Payment rejected', err.toString())
+        setStatus('Payment rejected')
       })
   }
 
@@ -126,20 +126,6 @@ const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
             placeholder="0.00"
             keyboardType="numeric"
             testID={'Amount.Input'}
-            placeholderTextColor={colors.gray}
-          />
-        </View>
-      </View>
-      <View style={{ ...grid.row, ...styles.section }}>
-        <View style={grid.column12}>
-          <Text style={styles.label}>mining fee</Text>
-          <TextInput
-            style={styles.textInputStyle}
-            onChangeText={handleMiningFeeChange}
-            value={miningFee}
-            placeholder="0.00"
-            keyboardType="numeric"
-            testID={'Amount.MiningFee'}
             placeholderTextColor={colors.gray}
           />
         </View>

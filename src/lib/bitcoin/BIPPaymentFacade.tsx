@@ -1,5 +1,8 @@
 import { IPayment, PaymentType, Psbt } from './types'
-import { RifWalletServicesFetcher } from '../rifWalletServices/RifWalletServicesFetcher'
+import {
+  ISendTransactionJsonReturnData,
+  RifWalletServicesFetcher,
+} from '../rifWalletServices/RifWalletServicesFetcher'
 import { rifWalletServicesFetcher as defaultFetcherInstance } from '../../core/setup'
 
 export default class BIPPaymentFacade {
@@ -36,12 +39,12 @@ export default class BIPPaymentFacade {
     return this.fetcher.sendTransactionHexData(hexData)
   }
 
-  async signAndSend(payment: Psbt): Promise<any> {
+  async signAndSend(payment: Psbt): Promise<ISendTransactionJsonReturnData> {
     console.log('signing...')
     const transaction = this.signPayment(payment)
     console.log('getting hex...')
     const hexData = this.getPaymentHex(transaction)
-    console.log('sending tx...')
+    console.log('sending tx...', hexData)
     return this.sendTransaction(hexData)
   }
 }
