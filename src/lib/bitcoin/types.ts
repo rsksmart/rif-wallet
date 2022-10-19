@@ -1,9 +1,6 @@
 import BIP84Payment from './BIP84Payment'
 import { IRequest, OnRequest } from '../core'
-import {
-  ISendTransactionJsonReturnData,
-  RifWalletServicesFetcher,
-} from '../rifWalletServices/RifWalletServicesFetcher'
+import { RifWalletServicesFetcher } from '../rifWalletServices/RifWalletServicesFetcher'
 import { BIP32Interface } from 'bip32'
 import { Psbt, Network, HDSigner } from 'bitcoinjs-lib'
 import BIPRequestPaymentFacade from './BIPRequestPaymentFacade'
@@ -81,6 +78,8 @@ export interface IPayment {
   signPayment: (...args: any[]) => Psbt | any
   convertPaymentToHexString: (...args: any[]) => string
 }
+
+export type BitcoinRequest = SendBitcoinRequestType
 
 export type BitcoinNetworkWithBIPRequest = Omit<BitcoinNetwork, 'bips'> & {
   bips: BIPWithRequest[]
