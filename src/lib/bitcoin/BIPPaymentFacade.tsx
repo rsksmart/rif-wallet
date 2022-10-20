@@ -40,11 +40,8 @@ export default class BIPPaymentFacade {
   }
 
   async signAndSend(payment: Psbt): Promise<ISendTransactionJsonReturnData> {
-    console.log('signing...')
     const transaction = this.signPayment(payment)
-    console.log('getting hex...')
     const hexData = this.getPaymentHex(transaction)
-    console.log('sending tx...', hexData)
     return this.sendTransaction(hexData)
   }
 }
