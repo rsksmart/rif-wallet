@@ -12,6 +12,7 @@ import { ScreenWithWallet } from '../types'
 import DomainLookUp from '../../screens/rnsManager/DomainLookUp'
 import { MediumText } from '../../components'
 import TitleStatus from './TitleStatus'
+import { AvatarIcon } from '../../components/icons/AvatarIcon'
 
 type Props = {
   route: any
@@ -65,10 +66,14 @@ export const SearchDomainScreen: React.FC<
         />
         <View style={rnsManagerStyles.marginBottom}>
           <View style={rnsManagerStyles.profileImageContainer}>
-            <Image
-              style={rnsManagerStyles.profileImage}
-              source={require('../../images/image_place_holder.jpeg')}
-            />
+            {domainToLookUp?.endsWith('.rsk') ? (
+              <AvatarIcon value={domainToLookUp} size={80} />
+            ) : (
+              <Image
+                style={rnsManagerStyles.profileImage}
+                source={require('../../images/image_place_holder.jpeg')}
+              />
+            )}
             <View>
               <MediumText style={rnsManagerStyles.profileDisplayAlias}>
                 {domainToLookUp !== '' ? domainToLookUp : 'alias name'}
