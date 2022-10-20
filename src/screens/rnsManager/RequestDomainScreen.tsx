@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from 'react'
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
+import React, { useEffect, useState } from 'react'
 import * as Progress from 'react-native-progress'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
-import { View, Dimensions, Image, TouchableOpacity } from 'react-native'
+import { Dimensions, TouchableOpacity, View } from 'react-native'
 import { colors } from '../../styles'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
 import { PurpleButton } from '../../components/button/ButtonVariations'
 
+import { MediumText } from '../../components'
+import { AvatarIcon } from '../../components/icons/AvatarIcon'
 import { ScreenProps } from '../../RootNavigation'
 import { ScreenWithWallet } from '../types'
-import { MediumText } from '../../components'
 import addresses from './addresses.json'
 import TitleStatus from './TitleStatus'
 
@@ -23,6 +24,7 @@ export const RequestDomainScreen: React.FC<
   ScreenProps<'RequestDomain'> & ScreenWithWallet & Props
 > = ({ wallet, navigation, route }) => {
   const { alias, duration } = route.params
+  const fullAlias = alias + '.rsk'
 
   const rskRegistrar = new RSKRegistrar(
     addresses.rskOwnerAddress,
@@ -92,13 +94,10 @@ export const RequestDomainScreen: React.FC<
         />
         <View style={rnsManagerStyles.marginBottom}>
           <View style={rnsManagerStyles.profileImageContainer}>
-            <Image
-              style={rnsManagerStyles.profileImage}
-              source={require('../../images/image_place_holder.jpeg')}
-            />
+            <AvatarIcon value={fullAlias} size={80} />
             <View>
               <MediumText style={rnsManagerStyles.profileDisplayAlias}>
-                {alias}.rsk
+                {fullAlias}
               </MediumText>
               <Progress.Bar
                 progress={progress}
