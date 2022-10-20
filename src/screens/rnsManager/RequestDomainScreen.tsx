@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
-import * as Progress from 'react-native-progress'
 
-import { View, Dimensions, Image, TouchableOpacity } from 'react-native'
-import { colors } from '../../styles'
+import { View, Image, TouchableOpacity } from 'react-native'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
 import { PurpleButton } from '../../components/button/ButtonVariations'
@@ -33,7 +31,6 @@ export const RequestDomainScreen: React.FC<
   const [commitToRegisterInfo, setCommitToRegisterInfo] = useState('')
   const [commitToRegisterInfo2, setCommitToRegisterInfo2] = useState('')
   const [processing, setProcessing] = useState(false)
-  const [progress, setProgress] = useState(0.0)
 
   const commitToRegister = async () => {
     setProcessing(true)
@@ -46,7 +43,6 @@ export const RequestDomainScreen: React.FC<
 
       const intervalId = setInterval(async () => {
         const ready = await canReveal()
-        setProgress(prev => prev + 0.009)
         if (ready) {
           setProcessing(false)
           navigation.navigate('BuyDomain', {
@@ -100,13 +96,7 @@ export const RequestDomainScreen: React.FC<
               <MediumText style={rnsManagerStyles.profileDisplayAlias}>
                 {alias}.rsk
               </MediumText>
-              <Progress.Bar
-                progress={progress}
-                width={Dimensions.get('window').width * 0.6}
-                color={colors.green}
-                borderColor={colors.background.secondary}
-                unfilledColor={colors.gray}
-              />
+
               <MediumText style={rnsManagerStyles.aliasRequestInfo}>
                 {commitToRegisterInfo}
               </MediumText>
