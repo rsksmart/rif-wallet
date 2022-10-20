@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
 import { TextInput } from 'react-native-gesture-handler'
 
-import { StyleSheet, View } from 'react-native'
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
+import { StyleSheet, View } from 'react-native'
 import {
-  validateAddress,
   AddressValidationMessage,
+  validateAddress,
 } from '../../components/address/lib'
+import { MediumText } from '../../components/typography'
 import { colors } from '../../styles'
 import addresses from './addresses.json'
-import { MediumText } from '../../components/typography'
 
 type DomainLookUpProps = {
   initialValue: string
@@ -135,14 +135,14 @@ const styles = StyleSheet.create({
     top: 19,
   },
   infoLabel: {
-    color: colors.white,
+    color: colors.lightPurple,
   },
   input: {
     width: '100%',
     backgroundColor: colors.background.secondary,
     borderWidth: 1,
     borderRadius: 15,
-    color: colors.white,
+    color: colors.lightPurple,
     fontSize: 16,
     fontWeight: '600',
     padding: 14,

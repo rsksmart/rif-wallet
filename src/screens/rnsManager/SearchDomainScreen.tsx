@@ -53,7 +53,7 @@ export const SearchDomainScreen: React.FC<
         {/*@ts-ignore*/}
         <TouchableOpacity onPress={() => navigation.navigate('Home')}>
           <View style={rnsManagerStyles.backButton}>
-            <MaterialIcon name="west" color="white" size={10} />
+            <MaterialIcon name="west" color={colors.lightPurple} size={10} />
           </View>
         </TouchableOpacity>
       </View>
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   priceText: {
-    color: 'white',
+    color: colors.lightPurple,
   },
   addIcon: {
     right: 60,

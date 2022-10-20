@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 23,
-    color: colors.white,
+    color: colors.lightPurple,
   },
   subTitleText: {
     color: colors.gray,
@@ -58,5 +58,5 @@ const styles = StyleSheet.create({
   progress: {
     marginTop: 5,
   },
-  progressText: { color: colors.white, fontSize: 16 },
+  progressText: { color: colors.lightPurple, fontSize: 16 },
 })
