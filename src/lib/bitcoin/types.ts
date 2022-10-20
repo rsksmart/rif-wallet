@@ -1,4 +1,3 @@
-import BIP84Payment from './BIP84Payment'
 import { IRequest, OnRequest } from '../core'
 import { RifWalletServicesFetcher } from '../rifWalletServices/RifWalletServicesFetcher'
 import { BIP32Interface } from 'bip32'
@@ -26,8 +25,6 @@ export type NetworkInfoType = {
   wif: number
   bech32: string
 }
-
-export type PaymentInstanceType = BIP84Payment
 
 export type UnspentTransactionType = {
   txid: string
@@ -58,7 +55,7 @@ export type SendBitcoinRequestType = IRequest<
   'SEND_BITCOIN',
   PaymentTypeWithPaymentFacade,
   any,
-  () => Promise<any>
+  any
 >
 
 export type BIPOptionsType = {

@@ -10,6 +10,7 @@ import { colors } from '../../styles'
 import { ScrollView } from 'react-native-gesture-handler'
 import { SendBitcoinRequestType } from '../../lib/bitcoin/types'
 import InputField from './InpuField'
+import { MediumText } from '../../components'
 
 type ConfirmBitcoinTransactionModal = {
   request: SendBitcoinRequestType
@@ -31,6 +32,7 @@ const TEST_IDS = {
 const ConfirmBitcoinTransactionModal: React.FC<
   ConfirmBitcoinTransactionModal
 > = ({ request, closeModal }) => {
+  const [loading, setIsLoading] = useState(false)
   const { payload, confirm, reject } = request
   const { balance, amountToPay } = payload
   const [miningFee, setMiningFee] = useState<string>(
@@ -61,12 +63,14 @@ const ConfirmBitcoinTransactionModal: React.FC<
     if (!isPaymentValid()) {
       return
     }
+    setIsLoading(true)
     confirm()
-      .then(result => {
-        console.log(result)
+      .then(() => {
+        setIsLoading(false)
         closeModal()
       })
       .catch(error => {
+        setIsLoading(false)
         console.log(error.toString())
       })
   }
@@ -121,6 +125,7 @@ const ConfirmBitcoinTransactionModal: React.FC<
           />
         </View>
       </View>
+      {loading && <MediumText>Sending transaction...</MediumText>}
     </ScrollView>
   )
 }

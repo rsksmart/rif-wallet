@@ -17,6 +17,7 @@ export default class BIPRequestPaymentFacade {
   amountToPay!: number
   addressToPay!: string
   utxos!: UnspentTransactionType[]
+  resolve!: (value: ISendTransactionJsonReturnData) => void
   constructor(request: OnRequest, payment: BIPPaymentFacade) {
     this.request = request
     this.payment = payment
@@ -61,6 +62,7 @@ export default class BIPRequestPaymentFacade {
     this.setArguments({ ...args })
     await this.setGeneratedPayment()
     return new Promise((res, rej) => {
+      this.resolve = res
       this.request({
         type: BITCOIN_REQUEST_TYPES.SEND_BITCOIN,
         payload: {
