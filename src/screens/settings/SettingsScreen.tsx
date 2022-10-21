@@ -35,7 +35,7 @@ export const SettingsScreen: React.FC<ScreenProps<'Settings'>> = ({
 
   const goToDeploy = () => navigation.navigate('ManuallyDeployScreen' as any)
 
-  const goToFeedbackScreen = () => navigation.navigate('FeedbackScreen')
+  const goToFeedbackScreen = () => navigation.navigate('FeedbackScreen' as any)
 
   return (
     <ScrollView style={styles.container}>

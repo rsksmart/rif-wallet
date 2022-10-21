@@ -8,6 +8,7 @@ import ActiveButton from '../../components/button/ActiveButton'
 import {
   getKeyVerificationReminder,
   hasKeyVerificationReminder,
+  saveKeyVerificationReminder,
 } from '../../storage/KeyVerificationReminderStore'
 
 export type SecurityScreenProps = {
@@ -34,7 +35,10 @@ const SecurityConfigurationScreen: React.FC<
         {
           text: 'Delete',
           onPress: () =>
-            deleteKeys().then(() => navigation.navigate('CreateKeysUX' as any)),
+            deleteKeys().then(() => {
+              saveKeyVerificationReminder(false).then()
+              navigation.navigate('CreateKeysUX' as any)
+            }),
         },
       ],
     )

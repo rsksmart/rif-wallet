@@ -26,7 +26,8 @@ export const SecureYourWalletScreen: React.FC<
   }
   return (
     <View style={styles.parent}>
-      <TouchableOpacity onPress={() => navigation.navigate('CreateKeys' as any)}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('CreateKeys' as any)}>
         <View style={styles.returnButtonView}>
           <Arrow color={colors.white} rotate={270} width={30} height={30} />
         </View>
