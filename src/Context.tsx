@@ -50,14 +50,19 @@ export function InjectSelectedWallet<T>(
   Component: FC<ScreenWithWallet & T>,
 ): FC<T> {
   return function InjectedComponent(props) {
-    const { wallet, isDeployed } = useSelectedWallet()
+    const { wallet, chainId, isDeployed } = useSelectedWallet()
 
     if (!wallet) {
       return <Paragraph>No selected wallet</Paragraph>
     }
 
     return (
-      <Component wallet={wallet} isWalletDeployed={isDeployed} {...props} />
+      <Component
+        wallet={wallet}
+        isWalletDeployed={isDeployed}
+        chainId={chainId}
+        {...props}
+      />
     )
   }
 }
