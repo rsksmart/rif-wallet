@@ -1,10 +1,14 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, Alert } from 'react-native'
 import { colors } from '../../styles'
 import { MediumText } from '../../components'
 import { ScreenProps } from '../../RootNavigation'
 import { useTranslation } from 'react-i18next'
 import ActiveButton from '../../components/button/ActiveButton'
+import {
+  getKeyVerificationReminder,
+  hasKeyVerificationReminder,
+} from '../../storage/KeyVerificationReminderStore'
 
 export type SecurityScreenProps = {
   deleteKeys: () => Promise<any>
@@ -16,6 +20,7 @@ const SecurityConfigurationScreen: React.FC<
 
   const revealMasterKey = () => navigation.navigate('ShowMnemonicScreen' as any)
   const changePin = () => navigation.navigate('ChangePinScreen' as any)
+  const [showReminder, setShowReminder] = useState<boolean>(false)
 
   const handleDeleteKeys = () => {
     Alert.alert(
@@ -35,6 +40,18 @@ const SecurityConfigurationScreen: React.FC<
     )
   }
 
+  useEffect(() => {
+    async function fetchMyAPI() {
+      const reminderIsSet = await hasKeyVerificationReminder()
+      if (reminderIsSet) {
+        const keyVerificationReminder = await getKeyVerificationReminder()
+        setShowReminder(keyVerificationReminder)
+      }
+    }
+
+    fetchMyAPI().then()
+  }, [])
+
   return (
     <View style={styles.container}>
       <View>
@@ -46,6 +63,20 @@ const SecurityConfigurationScreen: React.FC<
           text="Reveal Master Key"
           isActive
           onPress={revealMasterKey}
+        />
+        <ActiveButton
+          style={styles.buttonFirstStyle}
+          text={
+            showReminder
+              ? 'Confirm Master Key'
+              : 'Master key already confirmed!'
+          }
+          onPress={() =>
+            navigation.navigate('CreateKeysUX', {
+              screen: 'SecurityExplanation',
+            })
+          }
+          disabled={!showReminder}
         />
         <ActiveButton
           style={styles.buttonFirstStyle}

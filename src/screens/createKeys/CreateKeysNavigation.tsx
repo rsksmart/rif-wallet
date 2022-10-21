@@ -36,7 +36,13 @@ export const CreateKeysNavigation: React.FC<CreateKeysProps> = ({
             )}
           </Stack.Screen>
           <Stack.Screen name="SecureYourWallet" options={screensOptions}>
-            {props => <SecureYourWalletScreen {...props} />}
+            {props => (
+              <SecureYourWalletScreen
+                {...props}
+                generateMnemonic={generateMnemonic}
+                createFirstWallet={createFirstWallet}
+              />
+            )}
           </Stack.Screen>
           <Stack.Screen name="SecurityExplanation" options={screensOptions}>
             {props => <SecurityExplanationScreen {...props} />}
