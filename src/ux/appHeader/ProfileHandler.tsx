@@ -39,11 +39,7 @@ export const ProfileHandler: React.FC<Props> = ({
         </>
       ) : (
         <>
-          <AvatarIcon
-            value={profile.alias + '.rsk'}
-            size={30}
-            style={{ backgroundColor: 'white' }}
-          />
+          <AvatarIcon value={profile.alias + '.rsk'} size={30} />
           <View>
             {profile?.alias !== '' && (
               <RegularText style={styles.profileName}>

@@ -26,7 +26,7 @@ export const AvatarIcon: React.FC<AvatarIconProps> = ({
   }
   const iconStyle = {
     borderRadius: 50,
-    backgroundColor: colors.lightPurple,
+    backgroundColor: colors.white,
     ...style,
   }
   return (
