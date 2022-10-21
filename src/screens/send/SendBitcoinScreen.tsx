@@ -12,6 +12,11 @@ import {
   BitcoinNetworkWithBIPRequest,
   UnspentTransactionType,
 } from '../../lib/bitcoin/types'
+import {
+  convertBtcToSatoshi,
+  convertSatoshiToBtcHuman,
+} from '../../lib/bitcoin/utils'
+import { BigNumber } from 'ethers'
 
 type SendBitcoinScreenType = {
   route: {
@@ -36,28 +41,61 @@ const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
   const fetchUtxo = async () => {
     network.bips[0]
       .fetchUtxos()
-      .then((data: Array<UnspentTransactionType>) => setUtxos(data))
+      .then((data: Array<UnspentTransactionType>) =>
+        setUtxos(data.filter(tx => tx.confirmations > 0)),
+      )
   }
   useEffect(() => {
     // Fetch UTXOs
     fetchUtxo()
   }, [])
 
-  const handleAmountChange = (amount: string) => {
+  const handleAmountChange = React.useCallback((amount: string) => {
     setAmountToPay(amount)
-  }
+  }, [])
 
-  const isAddressValid = (): boolean => {
+  const isAddressValid = React.useCallback((): boolean => {
     return addressToPay.startsWith(network.bips[0].networkInfo.bech32)
-  }
-  const handleAddressToPayChange = (address: string) => {
-    setAddressToPay(address)
-  }
+  }, [])
 
-  const balance = network.bips[0].balance
+  const handleAddressToPayChange = React.useCallback((address: string) => {
+    setAddressToPay(address)
+  }, [])
+
+  const satoshisToPay = React.useMemo(
+    () => convertBtcToSatoshi(amountToPay || '0'),
+    [amountToPay],
+  )
+
+  const balanceAvailable = React.useMemo(
+    () =>
+      utxos.reduce((prev, utxo) => {
+        prev = prev.add(BigNumber.from(utxo.value))
+        return prev
+      }, BigNumber.from(0)),
+    [utxos],
+  )
+
+  const balanceLeft = React.useMemo(
+    () => balanceAvailable.sub(satoshisToPay),
+    [balanceAvailable, satoshisToPay],
+  )
+
+  const balanceAvailableHuman = React.useMemo(
+    () => convertSatoshiToBtcHuman(balanceAvailable),
+    [balanceAvailable],
+  )
+  const balanceLeftHuman = React.useMemo(
+    () => convertSatoshiToBtcHuman(balanceLeft),
+    [balanceLeft],
+  )
   const onReviewTouch = async () => {
-    if (Number(amountToPay) > Number(balance)) {
-      setStatus(`Amount must not be greater than ${balance}`)
+    if (satoshisToPay.gt(balanceAvailable)) {
+      setStatus(`Amount must not be greater than ${balanceAvailableHuman}`)
+      return
+    }
+    if (satoshisToPay.lte(0)) {
+      setStatus('Amount must not be less or equal to 0')
       return
     }
     if (!isAddressValid()) {
@@ -70,17 +108,18 @@ const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
     setStatus('Loading payment...')
     network.bips[0].requestPayment
       .onRequestPayment({
-        amountToPay: Number(amountToPay),
+        amountToPay: satoshisToPay.toNumber(),
         addressToPay,
         unspentTransactions: utxos,
         miningFee: Number(MINIMUM_FEE),
-        balance,
+        balance: balanceAvailable.toNumber(),
       })
       .then(async txIdJson => {
         setStatus('Sending payment...')
         if (txIdJson.result) {
           setStatus(`${txIdJson.result}`)
           setTxid(txIdJson.result)
+          fetchUtxo()
         } else {
           if (txIdJson.error) {
             setStatus(`Transaction Error: ${txIdJson.error}`)
@@ -88,8 +127,8 @@ const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
           }
         }
       })
-      .catch(() => {
-        setStatus('Transaction cancelled')
+      .catch(err => {
+        setStatus(`Transaction cancelled: ${err.toString()}`)
       })
   }
 
@@ -114,7 +153,7 @@ const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
       </View>
       <View style={{ ...grid.row, ...styles.section }}>
         <View style={grid.column12}>
-          <Text style={styles.label}>amount</Text>
+          <Text style={styles.label}>amount ({balanceLeftHuman} left)</Text>
           <TextInput
             style={styles.textInputStyle}
             onChangeText={handleAmountChange}

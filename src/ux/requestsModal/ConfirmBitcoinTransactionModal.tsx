@@ -11,6 +11,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { SendBitcoinRequestType } from '../../lib/bitcoin/types'
 import InputField from './InpuField'
 import { MediumText } from '../../components'
+import { convertSatoshiToBtcHuman } from '../../lib/bitcoin/utils'
 
 type ConfirmBitcoinTransactionModal = {
   request: SendBitcoinRequestType
@@ -59,6 +60,11 @@ const ConfirmBitcoinTransactionModal: React.FC<
     setMiningFee(miningFeeValue)
   }
 
+  const amountToPayHuman = React.useMemo(
+    () => convertSatoshiToBtcHuman(amountToPay),
+    [amountToPay],
+  )
+
   const onConfirm = () => {
     if (!isPaymentValid()) {
       return
@@ -80,7 +86,7 @@ const ConfirmBitcoinTransactionModal: React.FC<
         <View testID={TEST_IDS.SENDING_VIEW} style={[sharedStyles.rowInColumn]}>
           <ReadOnlyField
             label={'Sending'}
-            value={payload.amountToPay.toString()}
+            value={amountToPayHuman}
             testID={TEST_IDS.SENDING_VIEW_MESSAGE}
           />
         </View>

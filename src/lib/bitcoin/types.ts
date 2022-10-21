@@ -32,6 +32,7 @@ export type UnspentTransactionType = {
   value: string
   path: string
   address: string
+  confirmations: number
 }
 /**
  * amountToPay: number
