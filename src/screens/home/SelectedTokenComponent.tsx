@@ -24,7 +24,7 @@ const SelectedTokenComponent: React.FC<Interface> = ({
     typeof accountNumber === 'number' ? `account ${accountNumber + 1}` : ''
   const [accountName, setAccountName] = useState<string>(initialAccountName)
   const [showBalances, setShowBalances] = useState<boolean>(true)
-  const [showAccountInput, setShowAccountInput] = useState<boolean>(false)
+  const [showAccountNameInput, setShowAccountInput] = useState<boolean>(false)
   const badgeColor = change && change >= 0 ? styles.greenBadge : styles.redBadge
   const onSetBalances = () => setShowBalances(!showBalances)
 
@@ -50,7 +50,7 @@ const SelectedTokenComponent: React.FC<Interface> = ({
       <View style={styles.topRow}>
         {typeof accountNumber === 'number' && (
           <View style={styles.accountLabel}>
-            {!showAccountInput ? (
+            {!showAccountNameInput ? (
               <>
                 <RegularText style={styles.accountText}>
                   {accountName}
@@ -70,6 +70,7 @@ const SelectedTokenComponent: React.FC<Interface> = ({
                   style={styles.accountInput}
                   value={accountName}
                   onChangeText={onChangeAccountName}
+                  onSubmitEditing={onSubmit}
                 />
                 <TouchableOpacity onPress={onSubmit}>
                   <View>
