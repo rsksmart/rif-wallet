@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, ScrollView, Text } from 'react-native'
 import { BigNumber, utils, ContractTransaction } from 'ethers'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
