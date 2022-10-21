@@ -44,7 +44,7 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
     if (!inputText) {
       return
     }
-    const newValidationMessage = validateAddress(inputText, -1)
+    const newValidationMessage = validateAddress(inputText + '.rsk', -1)
     if (newValidationMessage === AddressValidationMessage.DOMAIN) {
       await searchDomain(inputText)
     } else {

@@ -66,8 +66,8 @@ export const SearchDomainScreen: React.FC<
         />
         <View style={rnsManagerStyles.marginBottom}>
           <View style={rnsManagerStyles.profileImageContainer}>
-            {domainToLookUp?.endsWith('.rsk') ? (
-              <AvatarIcon value={domainToLookUp} size={80} />
+            {domainToLookUp ? (
+              <AvatarIcon value={domainToLookUp + '.rsk'} size={80} />
             ) : (
               <Image
                 style={rnsManagerStyles.profileImage}
@@ -76,7 +76,7 @@ export const SearchDomainScreen: React.FC<
             )}
             <View>
               <MediumText style={rnsManagerStyles.profileDisplayAlias}>
-                {domainToLookUp !== '' ? domainToLookUp : 'alias name'}
+                {domainToLookUp !== '' ? domainToLookUp + '.rsk' : 'alias name'}
               </MediumText>
             </View>
           </View>
