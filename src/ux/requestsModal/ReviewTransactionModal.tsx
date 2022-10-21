@@ -46,7 +46,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
         ? undefined
         : {
             tokenContract: '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
-            tokenAmount: 0,
+            tokenAmount: 2,
           },
     }
     try {
@@ -144,7 +144,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
       </View>
 
       {!payWithGas && (
-        <ReadOnlyField label="Fee in tRIF" value="0 tRIF" testID="tRIF.fee" />
+        <ReadOnlyField label="Fee in tRIF" value="2 tRIF" testID="tRIF.fee" />
       )}
 
       {payWithGas && (
