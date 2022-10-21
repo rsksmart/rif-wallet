@@ -3,11 +3,12 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 import Clipboard from '@react-native-community/clipboard'
 
-import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { colors } from '../../styles'
 import { ScreenProps } from '../../RootNavigation'
 import { MediumText } from '../../components'
 import { IProfileStore } from '../../storage/ProfileStore'
+import { AvatarIcon } from '../../components/icons/AvatarIcon'
 
 export type ProfileDetailsScreenProps = {
   route: any
@@ -17,6 +18,7 @@ export type ProfileDetailsScreenProps = {
 export const ProfileDetailsScreen: React.FC<
   ScreenProps<'ProfileDetailsScreen'> & ProfileDetailsScreenProps
 > = ({ navigation, profile }) => {
+  const fullAlias = profile.alias + '.rsk'
   return (
     <View style={styles.staticBackground}>
       <View style={styles.profileHeader}>
@@ -39,10 +41,7 @@ export const ProfileDetailsScreen: React.FC<
       <View style={styles.roundedContainer}>
         <View style={styles.topContainer}>
           <View style={styles.profileImageContainer}>
-            <Image
-              style={styles.profileImage}
-              source={require('../../images/image_place_holder.jpeg')}
-            />
+            <AvatarIcon value={fullAlias} size={80} />
           </View>
           <View>
             <MediumText style={[styles.masterText, styles.textLeftMargin]}>
