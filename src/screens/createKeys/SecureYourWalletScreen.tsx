@@ -1,9 +1,9 @@
 import React from 'react'
 import { StyleSheet, View, Image, TouchableOpacity, Text } from 'react-native'
 import { ScreenProps } from './types'
-import { colors } from '../../styles/colors'
+import { colors } from '../../styles'
 
-import { grid } from '../../styles/grid'
+import { grid } from '../../styles'
 import { Arrow } from '../../components/icons'
 
 import { WINDOW_HEIGHT } from '../../ux/slides/Dimensions'
@@ -14,19 +14,19 @@ import {
 import { RIFWallet } from '../../lib/core'
 import { saveKeyVerificationReminder } from '../../storage/KeyVerificationReminderStore'
 type SecureYourWalletProps = {
-  generateMnemonic: () => string
-  createFirstWallet: (mnemonic: string) => Promise<RIFWallet>
+  mnemonic: string
+  createWallet: (mnemonic: string) => Promise<RIFWallet>
 }
 export const SecureYourWalletScreen: React.FC<
   ScreenProps<'SecureYourWallet'> & SecureYourWalletProps
-> = ({ navigation, createFirstWallet, generateMnemonic }) => {
+> = ({ navigation, createWallet, mnemonic }) => {
   const secureLater = async () => {
     await saveKeyVerificationReminder(true)
-    createFirstWallet(generateMnemonic())
+    createWallet(mnemonic)
   }
   return (
     <View style={styles.parent}>
-      <TouchableOpacity onPress={() => navigation.navigate('CreateKeys')}>
+      <TouchableOpacity onPress={() => navigation.navigate('CreateKeys' as any)}>
         <View style={styles.returnButtonView}>
           <Arrow color={colors.white} rotate={270} width={30} height={30} />
         </View>
@@ -55,7 +55,7 @@ export const SecureYourWalletScreen: React.FC<
 
       <View style={{ ...grid.row, ...styles.section }}>
         <BlueButton
-          onPress={() => navigation.navigate('SecurityExplanation')}
+          onPress={() => navigation.navigate('SecurityExplanation' as any)}
           accessibilityLabel="secureNow"
           title={'secure now'}
         />

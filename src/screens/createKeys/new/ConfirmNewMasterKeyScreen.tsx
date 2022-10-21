@@ -21,12 +21,12 @@ import { saveKeyVerificationReminder } from '../../../storage/KeyVerificationRem
 
 interface ConfirmMasterKeyScreenProps {
   isKeyboardVisible: boolean
-  createFirstWallet: CreateKeysProps['createFirstWallet']
+  createWallet: CreateKeysProps['createFirstWallet']
 }
 
 export const ConfirmNewMasterKeyScreen: React.FC<
   ScreenProps<'ConfirmNewMasterKey'> & ConfirmMasterKeyScreenProps
-> = ({ route, navigation, createFirstWallet, isKeyboardVisible }) => {
+> = ({ route, navigation, createWallet, isKeyboardVisible }) => {
   const mnemonic = route.params.mnemonic
   const slidesIndexes = Array.from(
     { length: Math.ceil(mnemonic.split(' ').length / 3) },
@@ -45,7 +45,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
     }
     setError(false)
     await saveKeyVerificationReminder(false)
-    await createFirstWallet(mnemonic)
+    await createWallet(mnemonic)
   }
 
   const handleWordSelected = (wordSelected: string, index: number) => {
@@ -88,7 +88,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
       keyboardShouldPersistTaps="always">
       <View style={sharedMnemonicStyles.topContent}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('NewMasterKey')}
+          onPress={() => navigation.navigate('NewMasterKey' as any)}
           style={styles.returnButton}>
           <View style={styles.returnButtonView}>
             <Arrow color={colors.white} rotate={270} width={30} height={30} />

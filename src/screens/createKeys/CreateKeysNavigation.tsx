@@ -18,6 +18,8 @@ export const CreateKeysNavigation: React.FC<CreateKeysProps> = ({
   createFirstWallet,
   isKeyboardVisible,
 }) => {
+  const createWallet = (mnemonic: string) => createFirstWallet(mnemonic)
+
   return (
     <Stack.Navigator initialRouteName="CreateKeys">
       <Stack.Screen
@@ -39,8 +41,8 @@ export const CreateKeysNavigation: React.FC<CreateKeysProps> = ({
             {props => (
               <SecureYourWalletScreen
                 {...props}
-                generateMnemonic={generateMnemonic}
-                createFirstWallet={createFirstWallet}
+                mnemonic={generateMnemonic()}
+                createWallet={createWallet}
               />
             )}
           </Stack.Screen>
@@ -51,7 +53,7 @@ export const CreateKeysNavigation: React.FC<CreateKeysProps> = ({
             {props => (
               <ConfirmNewMasterKeyScreen
                 {...props}
-                createFirstWallet={createFirstWallet}
+                createWallet={createWallet}
                 isKeyboardVisible={isKeyboardVisible}
               />
             )}
@@ -61,7 +63,7 @@ export const CreateKeysNavigation: React.FC<CreateKeysProps> = ({
           {props => (
             <ImportMasterKeyScreen
               {...props}
-              createFirstWallet={createFirstWallet}
+              createWallet={createWallet}
               isKeyboardVisible={isKeyboardVisible}
             />
           )}
