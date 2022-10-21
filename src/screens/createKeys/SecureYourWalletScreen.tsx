@@ -10,8 +10,6 @@ import { WINDOW_HEIGHT } from '../../ux/slides/Dimensions'
 import {
   BlueButton,
   DarkBlueButton,
-  OutlineButton,
-  WhiteButton,
 } from '../../components/button/ButtonVariations'
 import { RIFWallet } from '../../lib/core'
 import { saveKeyVerificationReminder } from '../../storage/KeyVerificationReminderStore'
@@ -128,5 +126,4 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginVertical: 5,
   },
-
 })
