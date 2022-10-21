@@ -77,7 +77,6 @@ type RootStackParamList = {
   ProfileCreateScreen: undefined
   ProfileDetailsScreen: undefined
   ChangePinScreen: undefined
-  BitcoinScreen: undefined
   FeedbackScreen: undefined
 }
 
@@ -196,11 +195,6 @@ export const RootNavigation: React.FC<{
               <InjectedScreens.SendScreen {...props} {...sendScreenProps} />
             )}
           </RootStack.Screen>
-          <RootStack.Screen
-            name="BitcoinScreen"
-            options={sharedOptions}
-            component={Screens.BitcoinAddressesScreen}
-          />
           <RootStack.Screen
             name="ReceiveBitcoin"
             component={Screens.BitcoinReceiveScreen}

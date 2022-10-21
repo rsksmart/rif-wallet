@@ -1,10 +1,11 @@
 import React, { useContext } from 'react'
 import { StyleSheet, View, FlatList } from 'react-native'
 import { colors } from '../../styles'
-import { AppContext } from '../../Context'
+import { AppContext, useBitcoinCoreContext } from '../../Context'
 import { shortAddress } from '../../lib/utils'
 import AddAccountBox from '../../components/accounts/AddAccountBox'
 import AccountBox from '../../components/accounts/AccountBox'
+import { PublicKeyItemType } from './types'
 
 export type AccountsScreenType = {
   addNewWallet: any
@@ -13,6 +14,16 @@ export type AccountsScreenType = {
 
 const AccountsScreen: React.FC<AccountsScreenType> = ({ addNewWallet }) => {
   const { wallets } = useContext(AppContext)
+  const { networks } = useBitcoinCoreContext()
+  const publicKeys: PublicKeyItemType[] = React.useMemo(
+    () =>
+      networks.map(network => ({
+        publicKey: network.bips[0].accountPublicKey,
+        shortedPublicKey: shortAddress(network.bips[0].accountPublicKey, 8),
+        networkName: network.networkName,
+      })),
+    [networks],
+  )
   const walletsArr = React.useMemo(() => {
     return Object.keys(wallets).map((key, id) => ({
       ...wallets[key],
@@ -28,7 +39,9 @@ const AccountsScreen: React.FC<AccountsScreenType> = ({ addNewWallet }) => {
       data={walletsArr}
       initialNumToRender={10}
       keyExtractor={item => item.id.toString()}
-      renderItem={({ item }) => <AccountBox {...item} />}
+      renderItem={({ item }) => (
+        <AccountBox {...item} publicKeys={publicKeys} />
+      )}
       style={styles.container}
       ListFooterComponent={() => <AddAccountBox addNewWallet={addNewWallet} />}
       ItemSeparatorComponent={() => <View style={styles.walletView} />}

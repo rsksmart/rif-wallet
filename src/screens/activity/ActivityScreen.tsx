@@ -1,54 +1,54 @@
 import React, { useState } from 'react'
-import { FlatList, StyleSheet, View } from 'react-native'
-
+import { FlatList, StyleSheet, View, RefreshControl } from 'react-native'
+import ActivityRow from './ActivityRow'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
 import { useTranslation } from 'react-i18next'
-import {
-  IApiTransaction,
-  TransactionsServerResponse,
-} from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-
+import { useBitcoinCoreContext } from '../../Context'
+import useBitcoinTransactionsHandler from './useBitcoinTransactionsHandler'
+import useTransactionsCombiner from './useTransactionsCombiner'
+import { IApiTransaction } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
-
 import {
   IAbiEnhancer,
   IEnhancedResult,
 } from '../../lib/abiEnhancer/AbiEnhancer'
+import { RIFWallet } from '../../lib/core'
 import { ScreenWithWallet } from '../types'
 import { ScreenProps } from '../../RootNavigation'
-import { RIFWallet } from '../../lib/core'
-import ActivityRow from './ActivityRow'
 import { IActivity } from '../../subscriptions/types'
-
-export interface IActivityTransaction {
-  originTransaction: IApiTransaction
-  enhancedTransaction?: IEnhancedResult
-}
+import { TransactionsServerResponseWithActivityTransactions } from './types'
+import { colors } from '../../styles'
 
 export type ActivityScreenProps = {
   fetcher: IRIFWalletServicesFetcher
   abiEnhancer: IAbiEnhancer
 }
 
-interface TransactionsServerResponseWithActivityTransactions
-  extends TransactionsServerResponse {
-  activityTransactions?: IActivityTransaction[]
-}
-
 export const ActivityScreen: React.FC<
   ScreenProps<'Activity'> & ScreenWithWallet & ActivityScreenProps
 > = ({ wallet, fetcher, abiEnhancer, navigation }) => {
   const [info, setInfo] = useState('')
-
+  const { networks } = useBitcoinCoreContext()
+  const btcTransactionFetcher = useBitcoinTransactionsHandler({
+    bip: networks[0].bips[0],
+    shouldMergeTransactions: true,
+  })
   const {
     state: { transactions },
     dispatch,
   } = useSocketsState()
-
   const { t } = useTranslation()
 
-  const hasTransactions =
-    transactions && transactions.activityTransactions!.length > 0
+  const transactionsCombined = useTransactionsCombiner(
+    transactions.activityTransactions,
+    btcTransactionFetcher.transactions,
+  )
+  const hasTransactions = transactionsCombined.length > 0
+
+  // On load, fetch btc transactions
+  React.useEffect(() => {
+    btcTransactionFetcher.fetchTransactions()
+  }, [])
 
   const fetchTransactionsPage = async ({
     prev,
@@ -78,6 +78,7 @@ export const ActivityScreen: React.FC<
           return {
             originTransaction: tx,
             enhancedTransaction,
+            id: tx.hash,
           }
         }),
       )
@@ -88,28 +89,39 @@ export const ActivityScreen: React.FC<
       })
 
       setInfo('')
-    } catch (e: any) {
+    } catch (e) {
       setInfo(t('Error reaching API: ') + e.message)
     }
   }
 
+  const onRefresh = () => {
+    fetchTransactionsPage()
+    btcTransactionFetcher.fetchTransactions(undefined, 1)
+  }
   return (
-    <View>
+    <View style={styles.mainContainer}>
       {hasTransactions && (
         <FlatList
-          data={transactions.activityTransactions}
+          data={transactionsCombined}
           initialNumToRender={10}
-          keyExtractor={item => item.originTransaction.hash}
-          onEndReached={() =>
+          keyExtractor={item => item.id}
+          onEndReached={() => {
             fetchTransactionsPage({ next: transactions?.next })
-          }
+            btcTransactionFetcher.fetchNextTransactionPage()
+          }}
           onEndReachedThreshold={0.2}
-          onRefresh={fetchTransactionsPage}
           refreshing={!!info}
           renderItem={({ item }) => (
             <ActivityRow activityTransaction={item} navigation={navigation} />
           )}
           style={styles.parent}
+          refreshControl={
+            <RefreshControl
+              refreshing={!!info}
+              tintColor="white"
+              onRefresh={onRefresh}
+            />
+          }
         />
       )}
     </View>
@@ -117,10 +129,16 @@ export const ActivityScreen: React.FC<
 }
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    backgroundColor: colors.background.darkBlue,
+    minHeight: '100%',
+    marginBottom: 200,
+    position: 'relative',
+  },
   parent: {
     paddingBottom: 30,
     paddingHorizontal: 15,
-    backgroundColor: '#020034',
+    backgroundColor: colors.background.darkBlue,
     minHeight: '100%',
   },
   refreshButtonView: {
