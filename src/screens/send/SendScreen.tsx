@@ -18,6 +18,7 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   route,
   wallet,
   isWalletDeployed,
+  chainId,
   navigation,
 }) => {
   const { state } = useSocketsState()
@@ -26,11 +27,6 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   const [currentTransaction, setCurrentTransaction] =
     useState<transactionInfo | null>(null)
   const [error, setError] = useState<Error>()
-  const [chainId, setChainId] = useState<number>(31)
-
-  useEffect(() => {
-    wallet.getChainId().then(setChainId)
-  }, [wallet])
 
   const transfer = (token: ITokenWithBalance, amount: string, to: string) => {
     setError(undefined)
