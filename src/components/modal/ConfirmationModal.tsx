@@ -19,7 +19,7 @@ interface ConfirmationModalProps {
   okText?: string
   cancelText?: string
   onOk: () => void
-  onCancel: () => void
+  onCancel?: () => void
 }
 
 export const ConfirmationModal = ({
