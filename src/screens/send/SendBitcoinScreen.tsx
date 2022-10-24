@@ -17,6 +17,7 @@ import {
   convertSatoshiToBtcHuman,
 } from '../../lib/bitcoin/utils'
 import { BigNumber } from 'ethers'
+import { sanitizeDecimalText } from '../../lib/utils'
 
 type SendBitcoinScreenType = {
   route: {
@@ -51,7 +52,7 @@ const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
   }, [])
 
   const handleAmountChange = React.useCallback((amount: string) => {
-    setAmountToPay(amount)
+    setAmountToPay(sanitizeDecimalText(amount))
   }, [])
 
   const isAddressValid = React.useCallback((): boolean => {
