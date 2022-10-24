@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - develop
+      - android-build
 
 jobs:
   install-and-test:
@@ -19,7 +20,7 @@ jobs:
     needs: install-and-test
     runs-on: ubuntu-latest
     steps: 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install dependencies
         run: |
           yarn
