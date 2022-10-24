@@ -13,10 +13,14 @@ import {
 } from './setup'
 export { hasPin } from '../storage/PinStore'
 
-import { RootNavigation } from '../RootNavigation'
+import { RootNavigation, RootStackParamList } from '../RootNavigation'
 import ModalComponent from '../ux/requestsModal/ModalComponent'
 
-import { NavigationContainer, NavigationState } from '@react-navigation/native'
+import {
+  createNavigationContainerRef,
+  NavigationContainer,
+  NavigationState,
+} from '@react-navigation/native'
 import { useSetGlobalError } from '../components/GlobalErrorHandler'
 import { LoadingScreen } from '../components/loading/LoadingScreen'
 import { WalletConnectProviderElement } from '../screens/walletConnect/WalletConnectContext'
@@ -29,6 +33,9 @@ import { useKeyboardIsVisible } from './hooks/useKeyboardIsVisible'
 import { useKeyManagementSystem } from './hooks/useKeyManagementSystem'
 import { useRequests } from './hooks/useRequests'
 import { useStateSubscription } from './hooks/useStateSubscription'
+
+export const navigationContainerRef =
+  createNavigationContainerRef<RootStackParamList>()
 
 export const Core = () => {
   const [topColor, setTopColor] = useState(colors.darkPurple3)
@@ -126,7 +133,9 @@ export const Core = () => {
             mnemonic: state.kms?.mnemonic,
             BitcoinCore,
           }}>
-          <NavigationContainer onStateChange={handleScreenChange}>
+          <NavigationContainer
+            onStateChange={handleScreenChange}
+            ref={navigationContainerRef}>
             <WalletConnectProviderElement>
               <RIFSocketsProvider
                 rifServiceSocket={rifWalletServicesSocket}
