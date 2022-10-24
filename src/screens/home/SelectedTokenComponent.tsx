@@ -1,11 +1,12 @@
 import { BigNumberish } from 'ethers'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, TextInput, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { RegularText } from '../../components'
 
 import { EditMaterialIcon, HideShowIcon } from '../../components/icons'
 import { CheckIcon } from '../../components/icons/CheckIcon'
+import { useProfile } from '../../core/hooks/useProfile'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
 
@@ -20,8 +21,13 @@ const SelectedTokenComponent: React.FC<Interface> = ({
   amount,
   change,
 }) => {
-  const initialAccountName =
-    typeof accountNumber === 'number' ? `account ${accountNumber + 1}` : ''
+  const { profile, storeProfile } = useProfile()
+  let initialAccountName = ''
+  if (typeof accountNumber === 'number') {
+    initialAccountName =
+      profile.accounts[accountNumber]?.name || `account ${accountNumber + 1}`
+  }
+
   const [accountName, setAccountName] = useState<string>(initialAccountName)
   const [showBalances, setShowBalances] = useState<boolean>(true)
   const [showAccountNameInput, setShowAccountInput] = useState<boolean>(false)
@@ -34,16 +40,24 @@ const SelectedTokenComponent: React.FC<Interface> = ({
     }
   }
 
-  const onEdit = () => {
-    setShowAccountInput(true)
-  }
+  const onEdit = () => setShowAccountInput(true)
 
   const onSubmit = () => {
-    if (accountName.length > 0) {
+    if (accountName) {
       setAccountName(accountName.trim())
       setShowAccountInput(false)
+      profile.accounts[accountNumber!] = {
+        name: accountName,
+      }
+      storeProfile(profile)
     }
   }
+
+  useEffect(() => {
+    if (accountName !== initialAccountName) {
+      setAccountName(initialAccountName)
+    }
+  }, [initialAccountName])
 
   return (
     <View style={styles.balanceCard}>

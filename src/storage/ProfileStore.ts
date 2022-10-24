@@ -2,11 +2,14 @@ import { createStore } from './SecureStore'
 
 const key = 'PROFILE'
 const ProfileStore = createStore(key)
+
 export type IProfileStore = {
   alias: string
   phone: string
   email: string
+  accounts: any
 }
+
 export const hasProfile = ProfileStore.has
 
 export const getProfile = async () => {

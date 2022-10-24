@@ -11,6 +11,7 @@ export const emptyProfile = {
   alias: '',
   phone: '',
   email: '',
+  accounts: [{ name: '' }],
 }
 
 export function useProfile(initProfile?: IProfileStore) {
@@ -29,6 +30,7 @@ export function useProfile(initProfile?: IProfileStore) {
       }
     })
   }, [])
+
   const storeProfile = async (newProfile: IProfileStore) => {
     setProfile(newProfile)
     await saveProfile(newProfile)
