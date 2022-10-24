@@ -105,7 +105,6 @@ const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
     }
     setTxid('')
     setError('')
-    // @TODO: refactor to use request
     setStatus('Loading payment...')
     network.bips[0].requestPayment
       .onRequestPayment({
@@ -140,6 +139,16 @@ const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
       Clipboard.setString(txid)
     }
   }
+
+  const onClipboardPastePress = React.useCallback(() => {
+    Clipboard.getString().then((value: string) => {
+      setAddressToPay(value)
+    })
+  }, [])
+
+  const onAddressClear = React.useCallback(() => {
+    setAddressToPay('')
+  }, [])
   return (
     <ScrollView style={styles.container}>
       <View style={{ ...grid.row, ...styles.section }}>
@@ -183,7 +192,7 @@ const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
               />
               <TouchableOpacity
                 style={styles.button}
-                onPress={() => {}}
+                onPress={onClipboardPastePress}
                 testID="Address.PasteButton">
                 <ContentPasteIcon
                   color={colors.text.secondary}
@@ -193,7 +202,7 @@ const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.button}
-                onPress={() => {}}
+                onPress={onAddressClear}
                 testID="Address.ClearButton">
                 <View style={styles.closeButton}>
                   <Icon
