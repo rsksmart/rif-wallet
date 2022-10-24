@@ -4,22 +4,22 @@ import { AddressCopyComponent } from '../../components/copy/AddressCopyComponent
 import { useSelectedWallet } from '../../Context'
 import { ProfileHandler } from './ProfileHandler'
 import { IProfileStore } from '../../storage/ProfileStore'
-import {navigationContainerRef} from '../../core/Core'
+import { navigationContainerRef } from '../../core/Core'
 
 export const AppHeader: React.FC<{
   profile: IProfileStore
   profileCreated: boolean
 }> = ({ profile, profileCreated }) => {
   const { wallet, chainId } = useSelectedWallet()
-  
+
   const openMenu = () => {
-      const navState = navigationContainerRef.getCurrentRoute()
-      console.log('NAV', navState)
-      if(navState && navState.name === 'Home') {
-        navigationContainerRef.navigate('Settings')
-      } else {
-        navigationContainerRef.navigate('Home')
-      }
+    const navState = navigationContainerRef.getCurrentRoute()
+    console.log('NAV', navState)
+    if (navState && navState.name === 'Home') {
+      navigationContainerRef.navigate('Settings')
+    } else {
+      navigationContainerRef.navigate('Home')
+    }
   }
 
   return (
