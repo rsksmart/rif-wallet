@@ -34,9 +34,6 @@ import { useKeyManagementSystem } from './hooks/useKeyManagementSystem'
 import { useRequests } from './hooks/useRequests'
 import { useStateSubscription } from './hooks/useStateSubscription'
 
-import JailMonkey from 'jail-monkey'
-import { ConfirmationModal } from '../components/modal/ConfirmationModal'
-
 export const Core = () => {
   const [topColor, setTopColor] = useState(colors.darkPurple3)
 
@@ -78,9 +75,6 @@ export const Core = () => {
     wallet.getChainId().then(chainId => setState({ ...state, chainId }))
 
   const BitcoinCore = useBitcoinCore(state?.kms?.mnemonic || '')
-
-  const isDeviceRooted = JailMonkey.isJailBroken()
-  const [isWarningVisible, setIsWarningVisible] = useState(isDeviceRooted)
 
   useEffect(() => {
     Promise.all([i18nInit(), hasKeys(), hasPin()]).then(
@@ -187,14 +181,6 @@ export const Core = () => {
                     request={requests[0]}
                   />
                 )}
-
-                <ConfirmationModal
-                  isVisible={isWarningVisible}
-                  title="DEVICE SECURITY COMPROMISED"
-                  description='Any "rooted" app can access your private keys and steal your funds. Wipe this wallet immediately and restore it on a secure device.'
-                  okText="OK"
-                  onOk={() => setIsWarningVisible(false)}
-                />
               </RIFSocketsProvider>
             </WalletConnectProviderElement>
           </NavigationContainer>

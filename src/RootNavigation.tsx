@@ -1,10 +1,11 @@
 import { NavigationProp as _NavigationProp } from '@react-navigation/native'
 import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
-import React from 'react'
+import React, { useState } from 'react'
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native'
 import { InjectSelectedWallet } from './Context'
 import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
 
+import JailMonkey from 'jail-monkey'
 import BitcoinNetwork from './lib/bitcoin/BitcoinNetwork'
 import * as Screens from './screens'
 import { CreateKeysNavigation, CreateKeysProps } from './screens/createKeys'
@@ -13,6 +14,7 @@ import { AppFooterMenu } from './ux/appFooter'
 import { AppHeader } from './ux/appHeader'
 
 import { emptyProfile, useProfile } from './core/hooks/useProfile'
+import { ConfirmationModal } from './components/modal/ConfirmationModal'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -135,6 +137,9 @@ export const RootNavigation: React.FC<{
 }) => {
   const { profile, setProfile, storeProfile, eraseProfile, profileCreated } =
     useProfile(emptyProfile)
+
+  const isDeviceRooted = JailMonkey.isJailBroken()
+  const [isWarningVisible, setIsWarningVisible] = useState(isDeviceRooted)
 
   let initialRoute: any = 'CreateKeysUX'
   if (hasPin) {
@@ -348,6 +353,13 @@ export const RootNavigation: React.FC<{
         {appIsSetup && !isKeyboardVisible && (
           <AppFooterMenu currentScreen={currentScreen} />
         )}
+        <ConfirmationModal
+          isVisible={isWarningVisible}
+          title="DEVICE SECURITY COMPROMISED"
+          description='Any "rooted" app can access your private keys and steal your funds. Wipe this wallet immediately and restore it on a secure device.'
+          okText="OK"
+          onOk={() => setIsWarningVisible(false)}
+        />
       </View>
     </KeyboardAvoidingView>
   )
