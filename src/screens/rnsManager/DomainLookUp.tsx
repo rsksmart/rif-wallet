@@ -92,19 +92,15 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
           autoCapitalize="none"
         />
         {domainAvailability === 'available' && (
-          <View>
-            <MediumText style={styles.availableLabel}>
-              {domainAvailability}
-            </MediumText>
-          </View>
+          <MediumText style={styles.availableLabel}>
+            {domainAvailability}
+          </MediumText>
         )}
         {(domainAvailability === 'taken' ||
           domainAvailability === 'no valid') && (
-          <View>
-            <MediumText style={styles.takenLabel}>
-              {domainAvailability}
-            </MediumText>
-          </View>
+          <MediumText style={styles.takenLabel}>
+            {domainAvailability}
+          </MediumText>
         )}
       </View>
       <View>
@@ -121,30 +117,30 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
 const styles = StyleSheet.create({
   rowContainer: {
     flexDirection: 'row',
-  },
-  availableLabel: {
-    color: colors.green,
-    right: 80,
-    top: 19,
-  },
-  takenLabel: {
-    color: colors.red,
-    right: 60,
-    top: 19,
-  },
-  infoLabel: {
-    color: colors.lightPurple,
-  },
-  input: {
-    width: '100%',
+    display: 'flex',
     backgroundColor: colors.background.secondary,
     borderWidth: 1,
     borderRadius: 15,
+    paddingHorizontal: 9,
+    paddingVertical: 3,
+  },
+  input: {
+    flex: 1,
+    width: '100%',
     color: colors.lightPurple,
     fontSize: 16,
     fontWeight: '600',
-    padding: 14,
-    paddingRight: 100,
+  },
+  availableLabel: {
+    color: colors.green,
+    alignSelf: 'center',
+  },
+  takenLabel: {
+    color: colors.red,
+    alignSelf: 'center',
+  },
+  infoLabel: {
+    color: colors.lightPurple,
   },
 })
 
