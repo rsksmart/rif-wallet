@@ -201,7 +201,6 @@ const styles = StyleSheet.create({
     fontSize: 50,
     fontWeight: '500',
   },
-
   amountHidden: {
     fontSize: 20,
     paddingVertical: 18,

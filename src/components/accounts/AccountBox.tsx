@@ -1,11 +1,16 @@
-import React, { useState, useEffect } from 'react'
-import { StyleSheet, View } from 'react-native'
-import { MediumText } from '../typography'
-import { colors } from '../../styles'
+import React, { useEffect, useState } from 'react'
+import { StyleSheet, TextInput, View } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import { useProfile } from '../../core/hooks/useProfile'
 import { SmartWalletFactory } from '../../lib/core/SmartWalletFactory'
+import { PublicKeyItemType } from '../../screens/accounts/types'
+import { colors } from '../../styles'
+import { fonts } from '../../styles/fonts'
+import { EditMaterialIcon } from '../icons'
+import { CheckIcon } from '../icons/CheckIcon'
+import { MediumText } from '../typography'
 import AccountField from './AccountField'
 import accountSharedStyles from './styles'
-import { PublicKeyItemType } from '../../screens/accounts/types'
 
 type AccountBoxProps = {
   address: string
@@ -26,16 +31,60 @@ const AccountBox: React.FC<AccountBoxProps> = ({
   publicKeys = [],
   id = 0,
 }) => {
+  const { profile, storeProfile } = useProfile()
+  let initialAccountName = ''
+  initialAccountName = profile.accounts[id]?.name || `account ${id + 1}`
+  const [accountName, setAccountName] = useState<string>(initialAccountName)
   const [isDeployed, setIsDeployed] = useState(false)
+  const [showAccountNameInput, setShowAccountInput] = useState<boolean>(false)
+
+  const onEdit = () => setShowAccountInput(true)
+
+  const onChangeAccountName = (text: string) => {
+    if (text.length <= 30) {
+      setAccountName(text)
+    }
+  }
+
+  const onSubmit = () => {
+    if (accountName) {
+      setAccountName(accountName.trim())
+      setShowAccountInput(false)
+      profile.accounts[id] = {
+        name: accountName,
+      }
+      storeProfile(profile)
+    }
+  }
+
   useEffect(() => {
-    smartWalletFactory.isDeployed().then(result => setIsDeployed(result))
-  }, [])
+    smartWalletFactory.isDeployed().then(setIsDeployed)
+  })
+
   return (
     <View style={styles.accountsContainer}>
       <View style={styles.textContainer}>
-        {/* @TODO implement account naming - will use id for now */}
-        <MediumText style={styles.text}>account {id + 1}</MediumText>
-        {/*<EditMaterialIcon style={styles.icon} size={11} />*/}
+        {!showAccountNameInput ? (
+          <>
+            <MediumText style={styles.text}>{accountName}</MediumText>
+            <TouchableOpacity onPress={onEdit}>
+              <EditMaterialIcon style={styles.editIcon} size={18} />
+            </TouchableOpacity>
+          </>
+        ) : (
+          <>
+            <TextInput
+              autoFocus={true}
+              style={styles.accountInput}
+              value={accountName}
+              onChangeText={onChangeAccountName}
+              onSubmitEditing={onSubmit}
+            />
+            <TouchableOpacity onPress={onSubmit}>
+              <CheckIcon color={colors.darkPurple2} width={35} height={35} />
+            </TouchableOpacity>
+          </>
+        )}
       </View>
       <View style={accountSharedStyles.infoSection}>
         <MediumText style={styles.titleFontSize}>Status</MediumText>
@@ -80,10 +129,20 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 20,
   },
-  icon: {
+  editIcon: {
     marginLeft: 10,
+    color: colors.darkPurple2,
+    paddingBottom: 5,
+  },
+  accountInput: {
+    color: colors.darkGray,
+    fontFamily: fonts.medium,
     borderWidth: 1,
-    borderRadius: 1,
+    borderColor: colors.darkPurple,
+    borderRadius: 5,
+    paddingHorizontal: 5,
+    paddingTop: 0,
+    paddingBottom: 0,
   },
   titleFontSize: {
     fontSize: 13,
