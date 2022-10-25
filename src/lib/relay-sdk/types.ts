@@ -1,5 +1,3 @@
-import { Signer } from 'ethers'
-
 export type Address = string
 export type IntString = string
 export type PrefixedHexString = string
@@ -20,8 +18,7 @@ export const DeployRequestDataType = [
 
 export const RelayDataType = [
   { name: 'gasPrice', type: 'uint256' },
-  { name: 'domainSeparator', type: 'bytes32' },
-  { name: 'relayWorker', type: 'address' },
+  { name: 'feesReceiver', type: 'address' },
   { name: 'callForwarder', type: 'address' },
   { name: 'callVerifier', type: 'address' },
 ]
@@ -56,21 +53,9 @@ export const DomainSeparatorType = {
   version: '2',
 }
 
-export interface SDKConfiguration {
-  chainId?: number
-  signer?: Signer
-  smartWalletFactoryContractAddress?: string
-  smartWalletContractAddress?: string
-  relayHubContractAddress?: string
-  relayWorkerAddress: string
-  relayVerifierAddress: string
-  deployVerifierAddress: string
-}
-
 export interface RelayData {
   gasPrice: IntString
-  domainSeparator: PrefixedHexString
-  relayWorker: Address
+  feesReceiver: Address
   callForwarder: Address
   callVerifier: Address
 }
@@ -112,13 +97,6 @@ export interface DeployRequest {
   relayData: RelayData
 }
 
-export const EIP712DomainType = [
-  { name: 'name', type: 'string' },
-  { name: 'version', type: 'string' },
-  { name: 'chainId', type: 'uint256' },
-  { name: 'verifyingContract', type: 'address' },
-]
-
 export interface RelayPayment {
   tokenContract: string
   tokenAmount: number | string
@@ -127,10 +105,23 @@ export interface RelayPayment {
 export interface SdkConfig extends RifRelayConfig {
   relayWorkerAddress: Address
   relayHubAddress: Address
+  feesReceiver: Address
 }
 
 export interface RifRelayConfig {
   relayVerifierAddress: Address
   deployVerifierAddress: Address
   relayServer: string
+}
+
+export interface RifRelayServerGetAddr {
+  relayWorkerAddress: string
+  relayManagerAddress: string
+  relayHubAddress: string
+  minGasPrice: string
+  chainId: string
+  networkId: string
+  ready: boolean
+  version: string
+  feesReceiver: string
 }

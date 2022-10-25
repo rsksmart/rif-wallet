@@ -25,7 +25,7 @@ export const ManuallyDeployScreen: React.FC<
 
     const freePayment = {
       tokenContract: '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
-      tokenAmount: '0',
+      tokenAmount: '4',
     }
 
     wallet

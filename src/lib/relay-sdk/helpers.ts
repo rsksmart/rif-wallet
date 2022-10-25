@@ -1,14 +1,17 @@
-import { bufferToHex } from 'ethereumjs-util'
-import { EIP712Domain, TypedDataUtils } from 'eth-sig-util'
 import {
-  Address,
   DeployRequestType,
   DomainSeparatorType,
-  EIP712DomainType,
-  PrefixedHexString,
   RelayDataType,
   RelayRequestType,
 } from './types'
+
+export interface EIP712Domain {
+  name?: string | undefined
+  version?: string | undefined
+  chainId?: string | number | undefined
+  verifyingContract?: string | undefined
+  salt?: string | undefined
+}
 
 export const dataTypeFields = (isDeployRequest: boolean) => ({
   RelayRequest: isDeployRequest ? DeployRequestType : RelayRequestType,
@@ -25,19 +28,6 @@ export function getDomainSeparator(
     chainId: chainId,
     verifyingContract: verifyingContract,
   }
-}
-
-export function getDomainSeparatorHash(
-  verifier: Address,
-  chainId: number,
-): PrefixedHexString {
-  return bufferToHex(
-    TypedDataUtils.hashStruct(
-      'EIP712Domain',
-      getDomainSeparator(verifier, chainId),
-      { EIP712Domain: EIP712DomainType },
-    ),
-  )
 }
 
 export const MAX_RELAY_NONCE_GAP = 3

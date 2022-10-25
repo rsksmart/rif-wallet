@@ -10,11 +10,11 @@ import {
   SdkConfig,
   DeployRequest,
   RifRelayConfig,
+  RifRelayServerGetAddr,
 } from './types'
 import {
   dataTypeFields,
   getDomainSeparator,
-  getDomainSeparatorHash,
   INTERNAL_TRANSACTION_ESTIMATE_CORRECTION,
   MAX_RELAY_NONCE_GAP,
   ZERO_ADDRESS,
@@ -24,7 +24,7 @@ import { SmartWalletFactory } from '../core/SmartWalletFactory'
 
 export class RIFRelaySDK {
   chainId: number
-  sdkConfig: any
+  sdkConfig: SdkConfig
   smartWallet: SmartWallet
   smartWalletFactory: SmartWalletFactory
   smartWalletAddress: string
@@ -55,25 +55,25 @@ export class RIFRelaySDK {
     rifRelayConfig: RifRelayConfig,
   ) {
     const eoaAddress = await smartWallet.signer.getAddress()
-    const chainId = await smartWallet.signer.getChainId()
 
-    const { relayWorkerAddress, relayHubAddress } =
+    const { chainId, relayWorkerAddress, relayHubAddress, feesReceiver } =
       await this.getAddrFromServer(rifRelayConfig.relayServer)
 
     return new RIFRelaySDK(
       smartWallet,
       smartWalletFactory,
-      chainId,
+      parseInt(chainId, 10),
       eoaAddress,
       {
         ...rifRelayConfig,
         relayWorkerAddress,
         relayHubAddress,
+        feesReceiver,
       },
     )
   }
 
-  static getAddrFromServer = (server: string) =>
+  static getAddrFromServer = (server: string): Promise<RifRelayServerGetAddr> =>
     axios.get(`${server}/getaddr`).then((value: AxiosResponse) => value.data)
 
   createRelayRequest = async (
@@ -110,13 +110,9 @@ export class RIFRelaySDK {
       },
       relayData: {
         gasPrice: gasToSend.toString(),
-        relayWorker: this.sdkConfig.relayWorkerAddress,
+        feesReceiver: this.sdkConfig.feesReceiver, // '0x9b91c655aae10e6cd0a941aa90a6e7aa97fb02f4',
         callForwarder: this.smartWalletAddress,
         callVerifier: this.sdkConfig.relayVerifierAddress,
-        domainSeparator: getDomainSeparatorHash(
-          this.smartWalletAddress,
-          this.chainId,
-        ),
       },
     }
 
@@ -183,13 +179,9 @@ export class RIFRelaySDK {
       },
       relayData: {
         gasPrice: gasToSend.toString(),
-        relayWorker: this.sdkConfig.relayWorkerAddress,
+        feesReceiver: '0x9b91c655aae10e6cd0a941aa90a6e7aa97fb02f4', // this.sdkConfig.relayWorkerAddress,
         callForwarder: this.smartWalletFactory.address,
         callVerifier: this.sdkConfig.deployVerifierAddress,
-        domainSeparator: getDomainSeparatorHash(
-          this.smartWalletFactory.address,
-          this.chainId,
-        ),
       },
     }
 
