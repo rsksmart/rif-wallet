@@ -54,7 +54,7 @@ export const SettingsScreen: React.FC<ScreenProps<'Settings'>> = ({
           onPress={goToAccountsScreen}>
           <AccountsIcon width={18} height={18} />
           <SemiBoldText style={[styles.textColor, spacing.ml6]}>
-            Accounts
+            Account
           </SemiBoldText>
         </TouchableOpacity>
         <TouchableOpacity
