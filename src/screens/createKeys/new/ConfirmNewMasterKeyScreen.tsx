@@ -88,7 +88,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
       keyboardShouldPersistTaps="always">
       <View style={sharedMnemonicStyles.topContent}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('NewMasterKey' as any)}
+          onPress={() => navigation.navigate('NewMasterKey')}
           style={styles.returnButton}>
           <View style={styles.returnButtonView}>
             <Arrow color={colors.white} rotate={270} width={30} height={30} />
