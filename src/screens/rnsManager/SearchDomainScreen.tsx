@@ -91,21 +91,9 @@ export const SearchDomainScreen: React.FC<
           />
         </View>
         <View style={styles.flexContainer}>
-          <View style={styles.priceContainer}>
-            <MediumText
-              style={
-                styles.priceText
-              }>{`${selectedYears} years ${selectedDomainPrice} rif`}</MediumText>
-          </View>
-          <TouchableOpacity
-            onPress={() => handleYearsChange(selectedYears + 1)}
-            style={styles.addIcon}>
-            <MaterialIcon
-              name="add"
-              color={colors.background.darkBlue}
-              size={20}
-            />
-          </TouchableOpacity>
+          <MediumText style={styles.priceText}>
+            {`${selectedYears} years ${selectedDomainPrice} rif`}
+          </MediumText>
           {selectedYears > 1 && (
             <TouchableOpacity
               onPress={() => handleYearsChange(selectedYears - 1)}
@@ -117,6 +105,15 @@ export const SearchDomainScreen: React.FC<
               />
             </TouchableOpacity>
           )}
+          <TouchableOpacity
+            onPress={() => handleYearsChange(selectedYears + 1)}
+            style={styles.addIcon}>
+            <MaterialIcon
+              name="add"
+              color={colors.background.darkBlue}
+              size={20}
+            />
+          </TouchableOpacity>
         </View>
 
         <View style={rnsManagerStyles.bottomContainer}>
@@ -141,28 +138,27 @@ export const SearchDomainScreen: React.FC<
 const styles = StyleSheet.create({
   flexContainer: {
     flexDirection: 'row',
-  },
-  priceContainer: {
     backgroundColor: colors.background.secondary,
+    borderWidth: 1,
     borderRadius: 15,
-    width: '100%',
-    padding: 15,
+    paddingVertical: 12,
+    alignItems: 'center',
   },
   priceText: {
+    flex: 1,
+    width: '100%',
     color: colors.lightPurple,
-  },
-  addIcon: {
-    right: 60,
-    top: 15,
-    backgroundColor: 'gray',
-    height: 20,
-    borderRadius: 20,
+    marginLeft: 15,
   },
   minusIcon: {
-    right: 50,
-    top: 15,
     backgroundColor: 'gray',
-    height: 20,
     borderRadius: 20,
+    margin: 5,
+  },
+  addIcon: {
+    backgroundColor: 'gray',
+    borderRadius: 20,
+    margin: 5,
+    marginRight: 10,
   },
 })

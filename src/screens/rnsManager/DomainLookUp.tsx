@@ -117,27 +117,25 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
 const styles = StyleSheet.create({
   rowContainer: {
     flexDirection: 'row',
-    display: 'flex',
     backgroundColor: colors.background.secondary,
     borderWidth: 1,
     borderRadius: 15,
     paddingHorizontal: 9,
     paddingVertical: 3,
+    alignItems: 'center',
   },
   input: {
     flex: 1,
     width: '100%',
     color: colors.lightPurple,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: 'bold',
   },
   availableLabel: {
     color: colors.green,
-    alignSelf: 'center',
   },
   takenLabel: {
     color: colors.red,
-    alignSelf: 'center',
   },
   infoLabel: {
     color: colors.lightPurple,
