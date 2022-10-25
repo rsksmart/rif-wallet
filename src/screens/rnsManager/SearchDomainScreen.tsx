@@ -66,7 +66,7 @@ export const SearchDomainScreen: React.FC<
         />
         <View style={rnsManagerStyles.marginBottom}>
           <View style={rnsManagerStyles.profileImageContainer}>
-            {domainToLookUp ? (
+            {domainToLookUp.length >= 5 ? (
               <AvatarIcon value={domainToLookUp + '.rsk'} size={80} />
             ) : (
               <Image
@@ -121,6 +121,7 @@ export const SearchDomainScreen: React.FC<
 
         <View style={rnsManagerStyles.bottomContainer}>
           <PurpleButton
+            disabled={domainToLookUp.length < 5}
             onPress={() =>
               navigation.navigate('RequestDomain', {
                 navigation,
