@@ -4,6 +4,9 @@ import { Paragraph } from '../../components'
 import { toChecksumAddress } from '../../components/address/lib'
 import { LoadingScreen } from '../../components/loading/LoadingScreen'
 import { useBitcoinCoreContext, useSelectedWallet } from '../../Context'
+import { useProfile } from '../../core/hooks/useProfile'
+import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
+import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { balanceToDisplay } from '../../lib/utils'
 import { NavigationProp } from '../../RootNavigation'
 import { colors } from '../../styles'
@@ -12,8 +15,6 @@ import PortfolioComponent from './PortfolioComponent'
 import SelectedTokenComponent from './SelectedTokenComponent'
 import SendReceiveButtonComponent from './SendReceiveButtonComponent'
 import { getTokenColor } from './tokenColor'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 
 export type HomeScreenProps = {
   navigation: NavigationProp
@@ -27,6 +28,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const { state } = useSocketsState()
   const { networksMap } = useBitcoinCoreContext()
   const { selectedWalletIndex, wallet, chainId } = useSelectedWallet()
+  const { profile } = useProfile()
 
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
     undefined,
@@ -108,6 +110,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   if (!state.isSetup) {
     return <LoadingScreen />
   }
+
+  let accountName = ''
+  if (typeof selectedWalletIndex === 'number') {
+    accountName =
+      profile.accounts[selectedWalletIndex]?.name ||
+      `account ${selectedWalletIndex + 1}`
+  }
   return (
     <View style={styles.container}>
       <View style={{ ...styles.topColor, ...backGroundColor }} />
@@ -115,7 +124,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
       <View style={styles.parent}>
         <SelectedTokenComponent
-          accountNumber={selectedWalletIndex}
+          accountName={accountName}
           amount={selectedTokenAmount}
           change={0}
         />

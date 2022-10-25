@@ -1,102 +1,34 @@
 import { BigNumberish } from 'ethers'
-import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, TextInput, View } from 'react-native'
+import React, { useState } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { RegularText } from '../../components'
 
-import { EditMaterialIcon, HideShowIcon } from '../../components/icons'
-import { CheckIcon } from '../../components/icons/CheckIcon'
-import { useProfile } from '../../core/hooks/useProfile'
+import { HideShowIcon } from '../../components/icons'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
 
 interface Interface {
-  accountNumber?: number
+  accountName: string
   amount: BigNumberish
   change?: number
 }
 
 const SelectedTokenComponent: React.FC<Interface> = ({
-  accountNumber,
+  accountName,
   amount,
   change,
 }) => {
-  const { profile, storeProfile } = useProfile()
-  let initialAccountName = ''
-  if (typeof accountNumber === 'number') {
-    initialAccountName =
-      profile.accounts[accountNumber]?.name || `account ${accountNumber + 1}`
-  }
-
-  const [accountName, setAccountName] = useState<string>(initialAccountName)
   const [showBalances, setShowBalances] = useState<boolean>(true)
-  const [showAccountNameInput, setShowAccountInput] = useState<boolean>(false)
   const badgeColor = change && change >= 0 ? styles.greenBadge : styles.redBadge
   const onSetBalances = () => setShowBalances(!showBalances)
-
-  const onChangeAccountName = (text: string) => {
-    if (text.length <= 30) {
-      setAccountName(text)
-    }
-  }
-
-  const onEdit = () => setShowAccountInput(true)
-
-  const onSubmit = () => {
-    if (accountName) {
-      setAccountName(accountName.trim())
-      setShowAccountInput(false)
-      profile.accounts[accountNumber!] = {
-        name: accountName,
-      }
-      storeProfile(profile)
-    }
-  }
-
-  useEffect(() => {
-    if (accountName !== initialAccountName) {
-      setAccountName(initialAccountName)
-    }
-  }, [initialAccountName])
 
   return (
     <View style={styles.balanceCard}>
       <View style={styles.topRow}>
-        {typeof accountNumber === 'number' && (
+        {accountName && (
           <View style={styles.accountLabel}>
-            {!showAccountNameInput ? (
-              <>
-                <RegularText style={styles.accountText}>
-                  {accountName}
-                </RegularText>
-                <TouchableOpacity onPress={onEdit}>
-                  <EditMaterialIcon
-                    color={colors.darkPurple2}
-                    size={16}
-                    style={styles.editIcon}
-                  />
-                </TouchableOpacity>
-              </>
-            ) : (
-              <>
-                <TextInput
-                  autoFocus={true}
-                  style={styles.accountInput}
-                  value={accountName}
-                  onChangeText={onChangeAccountName}
-                  onSubmitEditing={onSubmit}
-                />
-                <TouchableOpacity onPress={onSubmit}>
-                  <View>
-                    <CheckIcon
-                      color={colors.darkPurple2}
-                      width={30}
-                      height={30}
-                    />
-                  </View>
-                </TouchableOpacity>
-              </>
-            )}
+            <RegularText style={styles.accountText}>{accountName}</RegularText>
           </View>
         )}
         <TouchableOpacity onPress={onSetBalances}>

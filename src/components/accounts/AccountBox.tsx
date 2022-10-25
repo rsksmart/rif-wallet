@@ -32,8 +32,7 @@ const AccountBox: React.FC<AccountBoxProps> = ({
   id = 0,
 }) => {
   const { profile, storeProfile } = useProfile()
-  let initialAccountName = ''
-  initialAccountName = profile.accounts[id]?.name || `account ${id + 1}`
+  const initialAccountName = profile.accounts[id]?.name || `account ${id + 1}`
   const [accountName, setAccountName] = useState<string>(initialAccountName)
   const [isDeployed, setIsDeployed] = useState(false)
   const [showAccountNameInput, setShowAccountInput] = useState<boolean>(false)
@@ -48,10 +47,12 @@ const AccountBox: React.FC<AccountBoxProps> = ({
 
   const onSubmit = () => {
     if (accountName) {
-      setAccountName(accountName.trim())
+      const name = accountName.trim()
+      setAccountName(name)
       setShowAccountInput(false)
       profile.accounts[id] = {
-        name: accountName,
+        ...profile.accounts[id],
+        name,
       }
       storeProfile(profile)
     }
@@ -60,6 +61,12 @@ const AccountBox: React.FC<AccountBoxProps> = ({
   useEffect(() => {
     smartWalletFactory.isDeployed().then(setIsDeployed)
   })
+
+  useEffect(() => {
+    if (accountName !== initialAccountName) {
+      setAccountName(initialAccountName)
+    }
+  }, [initialAccountName])
 
   return (
     <View style={styles.accountsContainer}>
