@@ -26,22 +26,22 @@ export const ProfileHandler: React.FC<Props> = ({
           { navigation },
         )
       }>
-      {!profile?.alias ? (
-        <>
-          <View style={styles.profileHandlerImage}>
-            <MaterialIcon name="person" color="gray" size={20} />
-          </View>
-          <View style={styles.profileAddImage}>
-            <MaterialIcon name="add" color="gray" size={15} />
-          </View>
-        </>
-      ) : (
+      {profile?.alias ? (
         <>
           <AvatarIcon value={profile.alias + '.rsk'} size={30} />
           <View>
             <RegularText style={styles.profileName}>
               {profile.alias}
             </RegularText>
+          </View>
+        </>
+      ) : (
+        <>
+          <View style={styles.profileHandlerImage}>
+            <MaterialIcon name="person" color="gray" size={20} />
+          </View>
+          <View style={styles.profileAddImage}>
+            <MaterialIcon name="add" color="gray" size={15} />
           </View>
         </>
       )}
