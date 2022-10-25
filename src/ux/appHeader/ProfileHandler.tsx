@@ -23,12 +23,10 @@ export const ProfileHandler: React.FC<Props> = ({
       onPress={() =>
         navigation.navigate(
           profileCreated ? 'ProfileDetailsScreen' : 'ProfileCreateScreen',
-          {
-            navigation,
-          },
+          { navigation },
         )
       }>
-      {!profileCreated ? (
+      {!profile?.alias ? (
         <>
           <View style={styles.profileHandlerImage}>
             <MaterialIcon name="person" color="gray" size={20} />
@@ -41,11 +39,9 @@ export const ProfileHandler: React.FC<Props> = ({
         <>
           <AvatarIcon value={profile.alias + '.rsk'} size={30} />
           <View>
-            {profile?.alias !== '' && (
-              <RegularText style={styles.profileName}>
-                {profile.alias}
-              </RegularText>
-            )}
+            <RegularText style={styles.profileName}>
+              {profile.alias}
+            </RegularText>
           </View>
         </>
       )}
