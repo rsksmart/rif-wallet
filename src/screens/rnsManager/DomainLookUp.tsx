@@ -53,6 +53,7 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
   }
   const searchDomain = async (domain: string) => {
     const domainName = domain.replace('.rsk', '')
+    setError('')
 
     if (!/^[a-z0-9]*$/.test(domainName)) {
       console.log('Only lower cases and numbers are allowed')
@@ -61,14 +62,11 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
       onDomainAvailable(domainName, false)
       return
     }
+
     if (domainName.length < 5) {
-      console.log('Only domains with 5 or more characters are allowed')
-      setError('Only domains with 5 or more characters are allowed')
-      setDomainAvailability('no valid')
-      onDomainAvailable(domainName, false)
+      setDomainAvailability('')
       return
     }
-    setError('')
 
     const available = (await rskRegistrar.available(
       domainName,
