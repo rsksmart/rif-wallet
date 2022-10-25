@@ -3,16 +3,14 @@ import { StyleSheet, View, FlatList } from 'react-native'
 import { colors } from '../../styles'
 import { AppContext, useBitcoinCoreContext } from '../../Context'
 import { shortAddress } from '../../lib/utils'
-import AddAccountBox from '../../components/accounts/AddAccountBox'
 import AccountBox from '../../components/accounts/AccountBox'
 import { PublicKeyItemType } from './types'
 
 export type AccountsScreenType = {
-  addNewWallet: any
   switchActiveWallet?: any
 }
 
-const AccountsScreen: React.FC<AccountsScreenType> = ({ addNewWallet }) => {
+const AccountsScreen: React.FC<AccountsScreenType> = () => {
   const { wallets } = useContext(AppContext)
   const { networks } = useBitcoinCoreContext()
   const publicKeys: PublicKeyItemType[] = React.useMemo(
@@ -43,7 +41,6 @@ const AccountsScreen: React.FC<AccountsScreenType> = ({ addNewWallet }) => {
         <AccountBox {...item} publicKeys={publicKeys} />
       )}
       style={styles.container}
-      ListFooterComponent={() => <AddAccountBox addNewWallet={addNewWallet} />}
       ItemSeparatorComponent={() => <View style={styles.walletView} />}
       ListFooterComponentStyle={styles.viewBottomFix}
     />
