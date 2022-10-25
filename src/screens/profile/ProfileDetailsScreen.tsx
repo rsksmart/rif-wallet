@@ -18,7 +18,7 @@ export type ProfileDetailsScreenProps = {
 export const ProfileDetailsScreen: React.FC<
   ScreenProps<'ProfileDetailsScreen'> & ProfileDetailsScreenProps
 > = ({ navigation, profile }) => {
-  const fullAlias = profile.alias + '.rsk'
+  const fullAlias = `${profile.alias}.rsk`
   return (
     <View style={styles.staticBackground}>
       <View style={styles.profileHeader}>
