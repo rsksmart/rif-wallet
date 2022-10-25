@@ -37,7 +37,7 @@ const SecurityConfigurationScreen: React.FC<
           onPress: () =>
             deleteKeys().then(() => {
               saveKeyVerificationReminder(false).then()
-              navigation.navigate('CreateKeysUX' as any)
+              navigation.navigate('CreateKeysUX')
             }),
         },
       ],
@@ -68,20 +68,17 @@ const SecurityConfigurationScreen: React.FC<
           isActive
           onPress={revealMasterKey}
         />
-        <ActiveButton
-          style={styles.buttonFirstStyle}
-          text={
-            showReminder
-              ? 'Confirm Master Key'
-              : 'Master key already confirmed!'
-          }
-          onPress={() =>
-            navigation.navigate('CreateKeysUX', {
-              screen: 'SecurityExplanation',
-            })
-          }
-          disabled={!showReminder}
-        />
+        {showReminder && (
+          <ActiveButton
+            style={styles.buttonFirstStyle}
+            text={'Confirm Master Key'}
+            onPress={() =>
+              navigation.navigate('CreateKeysUX', {
+                screen: 'SecurityExplanation',
+              })
+            }
+          />
+        )}
         <ActiveButton
           style={styles.buttonFirstStyle}
           text="Delete Master Key"

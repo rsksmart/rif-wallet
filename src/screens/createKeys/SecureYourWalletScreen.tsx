@@ -56,14 +56,14 @@ export const SecureYourWalletScreen: React.FC<
 
       <View style={{ ...grid.row, ...styles.section }}>
         <BlueButton
-          onPress={() => navigation.navigate('SecurityExplanation' as any)}
+          onPress={() => navigation.navigate('SecurityExplanation')}
           accessibilityLabel="secureNow"
           title={'secure now'}
         />
       </View>
       <View style={{ ...grid.row, ...styles.section }}>
         <DarkBlueButton
-          onPress={() => secureLater()}
+          onPress={secureLater}
           accessibilityLabel="secureLater"
           title={'secure later'}
         />
