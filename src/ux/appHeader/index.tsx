@@ -14,7 +14,6 @@ export const AppHeader: React.FC<{
 
   const openMenu = () => {
     const navState = navigationContainerRef.getCurrentRoute()
-    console.log('NAV', navState)
     if (navState && navState.name === 'Home') {
       navigationContainerRef.navigate('Settings')
     } else {
