@@ -12,8 +12,10 @@ export default class BitcoinNetwork {
   BIPFactory: typeof createBipFactory
   bips: Array<BIP> = []
   balance = 0
+  satoshis = 0
   contractAddress: string
   symbol!: string
+  decimals = 8
   constructor(
     networkId: string,
     bipNames: Array<string> = [],
@@ -52,10 +54,15 @@ export default class BitcoinNetwork {
   }
   async updateBalance() {
     const balances = this.bips.map(bip => bip.fetchBalance())
-    const balancesCompleted = await Promise.all(balances)
-    this.balance = balancesCompleted.reduce((prev, curr) => {
-      return prev + curr
-    }, 0)
+    await Promise.all(balances)
+    let satoshis = 0
+    let balance = 0
+    this.bips.map(bip => {
+      satoshis += bip.balance
+      balance += bip.btc
+    })
+    this.satoshis = satoshis
+    this.balance = balance
     return this.balance
   }
 }

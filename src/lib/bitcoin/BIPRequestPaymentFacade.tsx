@@ -84,6 +84,7 @@ export default class BIPRequestPaymentFacade {
   async onRequestPaymentConfirmed(
     resolve: (value: ISendTransactionJsonReturnData) => void,
   ) {
+    console.log('Payment confirmed')
     await this.setGeneratedPayment()
     const tx = await this.payment.signAndSend(this.generatedPayment)
     resolve(tx)

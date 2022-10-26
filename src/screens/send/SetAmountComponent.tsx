@@ -6,13 +6,13 @@ import { colors } from '../../styles/colors'
 import { grid } from '../../styles/grid'
 import { balanceToString } from '../balances/BalancesScreen'
 
-interface Interface {
+export interface ISetAmountComponent {
   setAmount: (amount: string, isValid: boolean) => void
   token: ITokenWithBalance
   usdAmount: number | undefined
 }
 
-const SetAmountComponent: React.FC<Interface> = ({
+const SetAmountComponent: React.FC<ISetAmountComponent> = ({
   setAmount,
   token,
   usdAmount,

@@ -1,7 +1,6 @@
 import { toChecksumAddress } from '@rsksmart/rsk-utils'
 import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { AddressInput } from '../../components'
 import { Tabs } from '../../components/'
 import { BlueButton } from '../../components/button/ButtonVariations'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
@@ -9,15 +8,18 @@ import { colors, grid } from '../../styles'
 import { IActivityTransaction, IPrice } from '../../subscriptions/types'
 import AssetChooser from './AssetChooser'
 import { RecentTransactions } from './RecentTransactions'
-import SetAmountComponent from './SetAmountComponent'
+import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
+import { MixedTokenAndNetworkType } from './types'
+import { SetAmountHOCComponent } from './SetAmountHOCComponent'
+import { AddressInputSelector } from '../../components/address/AddressInputSelector'
 
 interface Interface {
   onConfirm: (
-    selectedToken: ITokenWithBalance,
+    selectedToken: ITokenWithBalance | BitcoinNetwork,
     amount: string,
     to: string,
   ) => void
-  tokenList: ITokenWithBalance[]
+  tokenList: MixedTokenAndNetworkType[]
   tokenPrices: Record<string, IPrice>
   chainId: number
   initialValues: {
@@ -26,6 +28,7 @@ interface Interface {
     recipient?: string
   }
   transactions: IActivityTransaction[]
+  onTokenSelected?: (tokenSelected: ITokenWithBalance | BitcoinNetwork) => void
 }
 
 const TransactionForm: React.FC<Interface> = ({
@@ -35,12 +38,13 @@ const TransactionForm: React.FC<Interface> = ({
   tokenPrices,
   transactions,
   onConfirm,
+  onTokenSelected,
 }) => {
-  const [selectedToken, setSelectedToken] = useState<ITokenWithBalance>(
+  const [selectedToken, setSelectedToken] = useState<MixedTokenAndNetworkType>(
     initialValues.asset || tokenList[0],
   )
-  const [activeTab, setActiveTab] = useState('address')
 
+  const [activeTab, setActiveTab] = useState('address')
   interface txDetail {
     value: string
     isValid: boolean
@@ -52,7 +56,8 @@ const TransactionForm: React.FC<Interface> = ({
   })
 
   const [to, setTo] = useState<txDetail>({
-    value: initialValues.recipient || '',
+    value:
+      initialValues.recipient || 'tb1qxctqphp7l5zeh2a38ehaqe3asz33luxr9mv9yx',
     isValid: false,
   })
 
@@ -80,24 +85,27 @@ const TransactionForm: React.FC<Interface> = ({
   const handleConfirmClick = () =>
     onConfirm(selectedToken, amount.value, to.value)
 
+  const onTokenSelect = React.useCallback((token: MixedTokenAndNetworkType) => {
+    setSelectedToken(token)
+    if (onTokenSelected) {
+      onTokenSelected(token)
+    }
+  }, [])
   return (
     <View>
       <View style={{ ...grid.row, ...styles.section }}>
         <View style={grid.column12}>
           <Text style={styles.label}>asset</Text>
           <AssetChooser
-            selectedToken={selectedToken}
-            tokenList={tokenList}
-            handleTokenSelection={(token: ITokenWithBalance) =>
-              setSelectedToken(token)
-            }
+            selectedAsset={selectedToken}
+            assetList={tokenList}
+            onAssetSelected={onTokenSelect}
           />
         </View>
       </View>
       <View style={{ ...grid.row, ...styles.section }}>
         <View style={grid.column12}>
-          <Text style={styles.label}>amount</Text>
-          <SetAmountComponent
+          <SetAmountHOCComponent
             setAmount={handleAmountChange}
             token={selectedToken}
             usdAmount={tokenQuote}
@@ -113,11 +121,12 @@ const TransactionForm: React.FC<Interface> = ({
         />
         {activeTab === 'address' && (
           <>
-            <AddressInput
+            <AddressInputSelector
               initialValue={to.value}
               onChangeText={handleTargetAddressChange}
               testID={'To.Input'}
               chainId={chainId}
+              token={selectedToken}
             />
             <View>
               <Text>{error}</Text>

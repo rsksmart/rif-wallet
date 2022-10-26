@@ -35,7 +35,9 @@ const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
 }) => {
   const [utxos, setUtxos] = useState<Array<UnspentTransactionType>>([])
   const [amountToPay, setAmountToPay] = useState<string>('')
-  const [addressToPay, setAddressToPay] = useState<string>('')
+  const [addressToPay, setAddressToPay] = useState<string>(
+    'tb1qxctqphp7l5zeh2a38ehaqe3asz33luxr9mv9yx',
+  )
   const [status, setStatus] = useState<string>('')
   const [txid, setTxid] = useState<string>('')
   const [error, setError] = useState<string>('')
@@ -46,6 +48,7 @@ const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
         setUtxos(data.filter(tx => tx.confirmations > 0)),
       )
   }
+  console.log(utxos)
   useEffect(() => {
     // Fetch UTXOs
     fetchUtxo()
@@ -155,9 +158,9 @@ const SendBitcoinScreen: React.FC<SendBitcoinScreenType> = ({
         <View style={grid.column12}>
           <Text style={styles.label}>asset</Text>
           <AssetChooser
-            selectedToken={network as any}
-            tokenList={[]}
-            handleTokenSelection={() => {}}
+            selectedAsset={network as any}
+            assetList={[]}
+            onAssetSelected={() => {}}
           />
         </View>
       </View>
