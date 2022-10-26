@@ -44,16 +44,15 @@ const SecurityConfigurationScreen: React.FC<
     )
   }
 
-  useEffect(() => {
-    async function fetchMyAPI() {
-      const reminderIsSet = await hasKeyVerificationReminder()
-      if (reminderIsSet) {
-        const keyVerificationReminder = await getKeyVerificationReminder()
-        setShowReminder(keyVerificationReminder)
-      }
+  async function checkReminder() {
+    const reminderIsSet = await hasKeyVerificationReminder()
+    if (reminderIsSet) {
+      const keyVerificationReminder = await getKeyVerificationReminder()
+      setShowReminder(keyVerificationReminder)
     }
-
-    fetchMyAPI().then()
+  }
+  useEffect(() => {
+    checkReminder()
   }, [])
 
   return (
