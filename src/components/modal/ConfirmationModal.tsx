@@ -15,16 +15,18 @@ interface ConfirmationModalProps {
   isVisible?: boolean
   imgSrc?: ImageSourcePropType
   title: string
+  description?: string
   okText?: string
   cancelText?: string
   onOk: () => void
-  onCancel: () => void
+  onCancel?: () => void
 }
 
 export const ConfirmationModal = ({
   isVisible = true,
   imgSrc,
   title,
+  description = '',
   okText,
   cancelText,
   onOk,
@@ -39,6 +41,7 @@ export const ConfirmationModal = ({
           </View>
         )}
         <Text style={styles.title}>{title}</Text>
+        {description && <Text style={styles.description}>{description}</Text>}
       </Modal.Body>
       <Modal.Footer>
         <View>
@@ -48,12 +51,14 @@ export const ConfirmationModal = ({
             underlayColor={colors.blue}>
             <Text style={styles.okText}>{okText || 'OK'}</Text>
           </PrimaryButton>
-          <PrimaryButton
-            style={styles.cancelButton}
-            onPress={onCancel}
-            underlayColor={colors.blue}>
-            <Text style={styles.cancelText}>{cancelText || 'Cancel'}</Text>
-          </PrimaryButton>
+          {cancelText && (
+            <PrimaryButton
+              style={styles.cancelButton}
+              onPress={onCancel}
+              underlayColor={colors.blue}>
+              <Text style={styles.cancelText}>{cancelText}</Text>
+            </PrimaryButton>
+          )}
         </View>
       </Modal.Footer>
     </Modal.Container>
@@ -80,6 +85,13 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: fonts.regular,
     fontSize: 18,
+    textAlign: 'center',
+    paddingHorizontal: 60,
+    color: colors.text.primary,
+  },
+  description: {
+    fontFamily: fonts.regular,
+    fontSize: 14,
     textAlign: 'center',
     paddingHorizontal: 60,
     color: colors.text.primary,
