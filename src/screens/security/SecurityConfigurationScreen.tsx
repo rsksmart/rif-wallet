@@ -1,10 +1,15 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, Alert } from 'react-native'
 import { colors } from '../../styles'
 import { MediumText } from '../../components'
 import { ScreenProps } from '../../RootNavigation'
 import { useTranslation } from 'react-i18next'
 import ActiveButton from '../../components/button/ActiveButton'
+import {
+  getKeyVerificationReminder,
+  hasKeyVerificationReminder,
+  saveKeyVerificationReminder,
+} from '../../storage/KeyVerificationReminderStore'
 
 export type SecurityScreenProps = {
   deleteKeys: () => Promise<any>
@@ -16,6 +21,7 @@ const SecurityConfigurationScreen: React.FC<
 
   const revealMasterKey = () => navigation.navigate('ShowMnemonicScreen' as any)
   const changePin = () => navigation.navigate('ChangePinScreen' as any)
+  const [showReminder, setShowReminder] = useState<boolean>(false)
 
   const handleDeleteKeys = () => {
     Alert.alert(
@@ -29,11 +35,25 @@ const SecurityConfigurationScreen: React.FC<
         {
           text: 'Delete',
           onPress: () =>
-            deleteKeys().then(() => navigation.navigate('CreateKeysUX' as any)),
+            deleteKeys().then(() => {
+              saveKeyVerificationReminder(false).then()
+              navigation.navigate('CreateKeysUX')
+            }),
         },
       ],
     )
   }
+
+  async function checkReminder() {
+    const reminderIsSet = await hasKeyVerificationReminder()
+    if (reminderIsSet) {
+      const keyVerificationReminder = await getKeyVerificationReminder()
+      setShowReminder(keyVerificationReminder)
+    }
+  }
+  useEffect(() => {
+    checkReminder()
+  }, [])
 
   return (
     <View style={styles.container}>
@@ -47,6 +67,17 @@ const SecurityConfigurationScreen: React.FC<
           isActive
           onPress={revealMasterKey}
         />
+        {showReminder && (
+          <ActiveButton
+            style={styles.buttonFirstStyle}
+            text={'Confirm Master Key'}
+            onPress={() =>
+              navigation.navigate('CreateKeysUX', {
+                screen: 'SecurityExplanation',
+              })
+            }
+          />
+        )}
         <ActiveButton
           style={styles.buttonFirstStyle}
           text="Delete Master Key"
