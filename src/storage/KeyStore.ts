@@ -1,4 +1,4 @@
-import { createStore } from './SecureStore'
+import { createStore } from './NormalStore'
 
 const key = 'KEY_MANAGEMENT'
 const KeyStore = createStore(key)
