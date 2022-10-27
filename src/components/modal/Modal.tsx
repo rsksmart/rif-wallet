@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#000',
     borderStyle: 'solid',
+    padding: 15,
   },
   header: {
     alignItems: 'center',
@@ -66,12 +67,11 @@ const styles = StyleSheet.create({
   },
   body: {
     justifyContent: 'center',
-    padding: 15,
   },
   footer: {
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 10,
+    paddingTop: 20,
     flexDirection: 'row',
   },
 })
