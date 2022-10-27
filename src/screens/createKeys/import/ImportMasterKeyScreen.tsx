@@ -22,12 +22,12 @@ import { validateMnemonic } from '../../../lib/bip39'
 
 interface ImportMasterKeyScreenProps {
   isKeyboardVisible: boolean
-  createFirstWallet: CreateKeysProps['createFirstWallet']
+  createWallet: CreateKeysProps['createFirstWallet']
 }
 
 export const ImportMasterKeyScreen: React.FC<
   ScreenProps<'ImportMasterKey'> & ImportMasterKeyScreenProps
-> = ({ navigation, createFirstWallet, isKeyboardVisible }) => {
+> = ({ navigation, createWallet, isKeyboardVisible }) => {
   const slidesIndexes = [0, 1, 2, 3, 4, 5, 6, 7]
 
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
@@ -39,7 +39,7 @@ export const ImportMasterKeyScreen: React.FC<
     const mnemonicError = validateMnemonic(selectedWords.join(' '))
     if (!mnemonicError) {
       try {
-        await createFirstWallet(selectedWords.join(' '))
+        await createWallet(selectedWords.join(' '))
       } catch (err) {
         console.error(err)
         setError(

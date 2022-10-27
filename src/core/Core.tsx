@@ -28,11 +28,11 @@ import { colors } from '../styles'
 import { RIFSocketsProvider } from '../subscriptions/RIFSockets'
 import { Cover } from './components/Cover'
 import { RequestPIN } from './components/RequestPIN'
+import useBitcoinCore from './hooks/useBitcoinCore'
 import { useKeyboardIsVisible } from './hooks/useKeyboardIsVisible'
 import { useKeyManagementSystem } from './hooks/useKeyManagementSystem'
 import { useRequests } from './hooks/useRequests'
 import { useStateSubscription } from './hooks/useStateSubscription'
-import useBitcoinCore from './hooks/useBitcoinCore'
 
 export const Core = () => {
   const [topColor, setTopColor] = useState(colors.darkPurple3)
