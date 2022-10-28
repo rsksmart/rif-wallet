@@ -12,6 +12,10 @@ export enum AddressValidationMessage {
   VALID = '',
 }
 
+/**
+ * This will validate if the text is a valid RNS Domain (matches *.rsk)
+ * @param text
+ */
 export const isDomain = (text: string) => {
   const re = /\.rsk$/ // match *.rsk domains
   return re.test(String(text).toLowerCase())
