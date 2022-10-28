@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import { Text, TextInput, View } from 'react-native'
 import { sharedAddressStyles as styles } from './sharedAddressStyles'
 import { ContentPasteIcon, QRCodeIcon } from '../icons'
-
 import { isValidChecksumAddress } from '@rsksmart/rsk-utils'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -112,7 +111,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
           type: 'ERROR',
           value: 'Invalid address',
         })
-        onChangeText(inputText, true)
+        onChangeText(inputText, false)
         break
     }
   }
