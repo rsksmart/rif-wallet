@@ -47,3 +47,32 @@ export const createAndInitializeBipWithRequest =
     initializeBipWithRequest(request, bip)
     return bip
   }
+
+/**
+ * Validates the amount (in satoshis) to pay with the balance available (in satoshis too)
+ * @param satoshisToPay
+ * @param balanceAvailable
+ */
+export const validateAmount = (
+  satoshisToPay: BigNumber,
+  balanceAvailable: BigNumber,
+): { isValid: boolean; message: string } => {
+  if (satoshisToPay.gt(balanceAvailable)) {
+    return {
+      isValid: false,
+      message: `Amount must not be greater than ${convertSatoshiToBtcHuman(
+        balanceAvailable,
+      )}`,
+    }
+  }
+  if (satoshisToPay.lte(0)) {
+    return {
+      isValid: false,
+      message: 'Amount must not be less or equal to 0',
+    }
+  }
+  return {
+    isValid: true,
+    message: '',
+  }
+}

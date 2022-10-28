@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
 import { UnspentTransactionType } from '../../lib/bitcoin/types'
-import { convertBtcToSatoshi } from '../../lib/bitcoin/utils'
+import { convertBtcToSatoshi, validateAmount } from '../../lib/bitcoin/utils'
 import { BigNumber } from 'ethers'
 import { sanitizeDecimalText } from '../../lib/utils'
 import { ISetAmountComponent } from './SetAmountComponent'
 import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 import { BitcoinSetAmountPresentation } from './BitcoinSetAmountPresentation'
-import { validateAmount } from './transferBitcoin'
 import { usePaymentExecutorContext } from './usePaymentExecutor'
 
 interface IBitcoinSetAmountContainer {

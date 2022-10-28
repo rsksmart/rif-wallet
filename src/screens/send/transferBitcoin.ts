@@ -1,6 +1,5 @@
 import { BigNumber } from 'ethers'
 import BIPWithRequest from '../../lib/bitcoin/BIPWithRequest'
-import { convertSatoshiToBtcHuman } from '../../lib/bitcoin/utils'
 import { UnspentTransactionType } from '../../lib/bitcoin/types'
 
 interface ITransferBitcoin {
@@ -13,46 +12,7 @@ interface ITransferBitcoin {
   balance: number
 }
 
-export const validateAmount = (
-  satoshisToPay: BigNumber,
-  balanceAvailable: BigNumber,
-): { isValid: boolean; message: string } => {
-  if (satoshisToPay.gt(balanceAvailable)) {
-    return {
-      isValid: false,
-      message: `Amount must not be greater than ${convertSatoshiToBtcHuman(
-        balanceAvailable,
-      )}`,
-    }
-  }
-  if (satoshisToPay.lte(0)) {
-    return {
-      isValid: false,
-      message: 'Amount must not be less or equal to 0',
-    }
-  }
-  return {
-    isValid: true,
-    message: '',
-  }
-}
-
-// const validateBitcoinTransfer = (satoshisToPay, balanceAvailable, addressToPay, bip) => {
-//   if (satoshisToPay.gt(balanceAvailable)) {
-//     setStatus(`Amount must not be greater than ${balanceAvailableHuman}`)
-//     return
-//   }
-//   if (satoshisToPay.lte(0)) {
-//     setStatus('Amount must not be less or equal to 0')
-//     return
-//   }
-//   if (!isAddressValid(addressToPay, bip)) {
-//     setStatus('Address is not valid. Please verify')
-//     return
-//   }
-// }
-
-const MINIMUM_FEE = 141
+const MINIMUM_FEE = 141 // should be removed when estimate fee is up...
 
 export const transferBitcoin = ({
   satoshisToPay,
