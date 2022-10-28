@@ -25,7 +25,7 @@ export const createBipWithRequest = (...args: createBipFactoryType) =>
   new BIPWithRequest(...args)
 
 /**
- * Initializes an array of BIPWithRequest with the request passed as the first function (currying)
+ * Initializes an array of BIPWithRequest with the request and the bip
  * @param request {OnRequest}
  * @param bip {BIPWithRequest}
  */
@@ -35,7 +35,8 @@ export const initializeBipWithRequest = (
 ) => bip.initialize(request)
 
 /**
- * Creates and initializes the BIPWithRequest
+ * Creates and initializes the BIPWithRequest using currying - first creating a function that, when executed, receives a request
+ * then returns another function that, when executed, will return a BIPWithRequest already initialized with the request
  * @param request
  * @returns BIPWithRequest
  */
