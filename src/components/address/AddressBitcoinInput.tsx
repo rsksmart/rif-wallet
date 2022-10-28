@@ -59,7 +59,6 @@ export const AddressBitcoinInput: React.FC<AddressInputProps> = ({
   }, [])
 
   const onBeforeChangeText = (address: string) => {
-    console.log(address, isBitcoinAddressValid(address, token.bips[0]))
     onChangeText(address, isBitcoinAddressValid(address, token.bips[0]))
   }
   const onBlurValidate = () => validateAddress(to.value)
@@ -75,8 +74,6 @@ export const AddressBitcoinInput: React.FC<AddressInputProps> = ({
             type: TYPES.DOMAIN,
             addressResolved: text,
           })
-          // @todo implement bitcoin address validation
-          // Set the address to valid === true
           onBeforeChangeText(address)
         })
         .catch((_e: any) => {})
@@ -92,7 +89,7 @@ export const AddressBitcoinInput: React.FC<AddressInputProps> = ({
 
   const handlePasteClick = () =>
     Clipboard.getString().then((value: string) => {
-      handleChangeText(value)
+      onBeforeChangeText(value)
     })
 
   const onClearText = React.useCallback(() => handleChangeText(''), [])
