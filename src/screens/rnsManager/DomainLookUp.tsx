@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
-import { TextInput } from 'react-native-gesture-handler'
 
-import { StyleSheet, View } from 'react-native'
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
+import { StyleSheet, View } from 'react-native'
 import {
-  validateAddress,
   AddressValidationMessage,
+  validateAddress,
 } from '../../components/address/lib'
+import { BaseInput } from '../../components/input/BaseInput'
+import { MediumText } from '../../components/typography'
 import { colors } from '../../styles'
 import addresses from './addresses.json'
-import { MediumText } from '../../components/typography'
 
 type DomainLookUpProps = {
   initialValue: string
@@ -83,7 +83,7 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
   return (
     <>
       <View style={styles.rowContainer}>
-        <TextInput
+        {/* <TextInput
           style={styles.input}
           onChangeText={handleChangeText}
           value={initialValue}
@@ -92,6 +92,12 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
           placeholderTextColor={colors.gray}
           spellCheck={false}
           autoCapitalize="none"
+        /> */}
+        <BaseInput
+          style={styles.input}
+          value={initialValue}
+          onChangeText={handleChangeText}
+          status="none"
         />
         {domainAvailability === 'available' && (
           <View>
