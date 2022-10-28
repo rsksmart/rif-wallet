@@ -66,9 +66,7 @@ export const transferBitcoin = ({
   if (onSetError) {
     onSetError(undefined)
   }
-  if (onSetCurrentTransaction) {
-    onSetCurrentTransaction({ status: 'USER_CONFIRM' })
-  }
+
   bip.requestPayment
     .onRequestPayment({
       amountToPay: Number(satoshisToPay),
@@ -78,7 +76,6 @@ export const transferBitcoin = ({
       balance,
     })
     .then(async txIdJson => {
-      console.log(txIdJson)
       if (onSetCurrentTransaction) {
         onSetCurrentTransaction({ status: 'PENDING' })
       }

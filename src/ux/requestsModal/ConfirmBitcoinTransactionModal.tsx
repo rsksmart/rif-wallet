@@ -33,18 +33,20 @@ const TEST_IDS = {
 const ConfirmBitcoinTransactionModal: React.FC<
   ConfirmBitcoinTransactionModal
 > = ({ request, closeModal }) => {
-  const [loading, setIsLoading] = useState(false)
+  const [status, setStatus] = useState<string>('')
   const { payload, confirm, reject } = request
   const { balance, amountToPay } = payload
   const [miningFee, setMiningFee] = useState<string>(
     payload.miningFee.toString(),
   )
+  const minimumFee = React.useRef(141)
   const maximumMiningFee = React.useMemo(
     () => payload.balance - payload.amountToPay,
     [payload],
   )
   const isPaymentValid = () => {
-    if (Number(miningFee) && Number(miningFee) < 141) {
+    if (Number(miningFee) && Number(miningFee) < minimumFee.current) {
+      setStatus(`Mining fee is ${minimumFee.current}`)
       return false
     }
     const totalPayment = Number(miningFee) + Number(amountToPay)
@@ -69,15 +71,24 @@ const ConfirmBitcoinTransactionModal: React.FC<
     if (!isPaymentValid()) {
       return
     }
-    setIsLoading(true)
+    setStatus('Sending transaction...')
     confirm()
       .then(() => {
-        setIsLoading(false)
         closeModal()
       })
       .catch(error => {
-        setIsLoading(false)
-        console.log(error.toString())
+        switch (true) {
+          case error.toString().includes('min relay fee not met'):
+            const minimumFeeResponse = error.toString().split('<')[1].trim()
+            minimumFee.current = Number(minimumFeeResponse)
+            setStatus(
+              `Transaction failure due to low mining fee. Mining fee increased to ${minimumFeeResponse}`,
+            )
+            handleMiningFeeChange(minimumFeeResponse)
+            break
+          default:
+            setStatus(`Error: ${error.toString()}`)
+        }
       })
   }
   return (
@@ -131,7 +142,7 @@ const ConfirmBitcoinTransactionModal: React.FC<
           />
         </View>
       </View>
-      {loading && <MediumText>Sending transaction...</MediumText>}
+      {status !== '' && <MediumText>{status}</MediumText>}
     </ScrollView>
   )
 }
