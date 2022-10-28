@@ -14,6 +14,13 @@ export type useBitcoinCoreResultType = {
   }
   refreshStoredNetworks: () => void
 }
+/**
+ * Hook that will return networks as an array, networks as a map (networksMap) and a function to refresh networks from the storage
+ * This hook will also instantiate the bitcoin networks with a BIPWithRequest class that will handle the payments for the onRequest method
+ * that is required in the wallet
+ * @param mnemonic
+ * @param request
+ */
 const useBitcoinCore = (
   mnemonic: string,
   request: OnRequest,
