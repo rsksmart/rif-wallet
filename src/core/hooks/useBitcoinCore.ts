@@ -4,8 +4,8 @@ import useBitcoinNetworks from '../../components/bitcoin/useBitcoinNetworks'
 import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 import bitcoinNetworkStore from '../../storage/BitcoinNetworkStore'
 import { OnRequest } from '../../lib/core'
-import BIPWithRequest from '../../lib/bitcoin/BIPWithRequest'
 import { BitcoinNetworkWithBIPRequest } from '../../lib/bitcoin/types'
+import { createAndInitializeBipWithRequest } from '../../lib/bitcoin/utils'
 
 export type useBitcoinCoreResultType = {
   networks: Array<BitcoinNetwork>
@@ -37,15 +37,8 @@ const useBitcoinCore = (
         network.name,
         network.bips,
         BIP39Instance,
-        (...args) => {
-          return new BIPWithRequest(...args)
-        },
+        createAndInitializeBipWithRequest(request),
       ) as BitcoinNetworkWithBIPRequest
-      bitcoinNetwork.bips.map((bip: BIPWithRequest) => {
-        bip.setPaymentFacade()
-        bip.setRequest(request)
-        bip.init()
-      })
       networksObj[network.name] = bitcoinNetwork
       return bitcoinNetwork
     })

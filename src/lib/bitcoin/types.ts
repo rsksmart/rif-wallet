@@ -5,6 +5,7 @@ import { Psbt, Network, HDSigner } from 'bitcoinjs-lib'
 import BIPRequestPaymentFacade from './BIPRequestPaymentFacade'
 import BitcoinNetwork from './BitcoinNetwork'
 import BIPWithRequest from './BIPWithRequest'
+import BIP from './BIP'
 export { BIP32Interface, Psbt, Network, HDSigner }
 export type TransactionInputType = {
   hash: string
@@ -82,3 +83,5 @@ export type BitcoinRequest = SendBitcoinRequestType
 export type BitcoinNetworkWithBIPRequest = Omit<BitcoinNetwork, 'bips'> & {
   bips: BIPWithRequest[]
 }
+
+export type createBipFactoryType = ConstructorParameters<typeof BIP>

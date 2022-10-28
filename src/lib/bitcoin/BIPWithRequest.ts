@@ -13,7 +13,9 @@ class BIPWithRequest extends BIP {
   setPaymentFacade() {
     this.paymentFacade = new BIPPaymentFacade(this.payment)
   }
-  init() {
+  initialize(request: OnRequest) {
+    this.setPaymentFacade()
+    this.setRequest(request)
     this.requestPayment = new BIPRequestPaymentFacade(
       this.request,
       this.paymentFacade,
