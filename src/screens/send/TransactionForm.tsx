@@ -8,14 +8,13 @@ import { colors, grid } from '../../styles'
 import { IActivityTransaction, IPrice } from '../../subscriptions/types'
 import AssetChooser from './AssetChooser'
 import { RecentTransactions } from './RecentTransactions'
-import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 import { MixedTokenAndNetworkType } from './types'
 import { SetAmountHOCComponent } from './SetAmountHOCComponent'
 import { AddressInputSelector } from '../../components/address/AddressInputSelector'
 
 interface Interface {
   onConfirm: (
-    selectedToken: ITokenWithBalance | BitcoinNetwork,
+    selectedToken: MixedTokenAndNetworkType,
     amount: string,
     to: string,
   ) => void
@@ -28,7 +27,7 @@ interface Interface {
     recipient?: string
   }
   transactions: IActivityTransaction[]
-  onTokenSelected?: (tokenSelected: ITokenWithBalance | BitcoinNetwork) => void
+  onTokenSelected?: (tokenSelected: MixedTokenAndNetworkType) => void
 }
 
 const TransactionForm: React.FC<Interface> = ({
@@ -56,8 +55,7 @@ const TransactionForm: React.FC<Interface> = ({
   })
 
   const [to, setTo] = useState<txDetail>({
-    value:
-      initialValues.recipient || 'tb1qxctqphp7l5zeh2a38ehaqe3asz33luxr9mv9yx',
+    value: initialValues.recipient || '',
     isValid: false,
   })
 
