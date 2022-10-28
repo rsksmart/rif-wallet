@@ -17,7 +17,8 @@ export function isBitcoinAddressValid(addressToPay: string, bip: BIP): boolean {
 }
 
 /**
- * Factory to create BIP With Request class with the arguments of BIP plus the Request arguments, which are necessary.
+ * Factory to create BIP With Request class with the arguments of BIP, creating an enhanced BIP With Request class
+ * that has to be initialized with a OnRequest type request
  * @param args
  */
 export const createBipWithRequest = (...args: createBipFactoryType) =>
