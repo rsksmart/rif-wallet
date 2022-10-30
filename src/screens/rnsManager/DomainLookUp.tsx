@@ -11,12 +11,10 @@ import { MediumText } from '../../components/typography'
 import { colors } from '../../styles'
 import addresses from './addresses.json'
 
-type DomainLookUpProps = {
+interface DomainLookUpProps {
   initialValue: string
   onChangeText: (newValue: string) => void
   wallet: any
-  testID?: string
-  backgroundColor?: string
   onDomainAvailable: any
 }
 
@@ -78,11 +76,17 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
     }
   }
 
+  const status =
+    domainAvailability === 'available'
+      ? 'valid'
+      : domainAvailability === 'taken'
+      ? 'invalid'
+      : 'neutral'
+
   return (
     <>
-      <View style={styles.rowContainer}>
-        {/* <TextInput
-          style={styles.input}
+      <View>
+        <BaseInput
           onChangeText={handleChangeText}
           value={initialValue}
           placeholder="enter an alias name"
@@ -90,13 +94,8 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
           placeholderTextColor={colors.gray}
           spellCheck={false}
           autoCapitalize="none"
-        /> */}
-        <BaseInput
-          style={styles.input}
-          value={initialValue}
-          onChangeText={handleChangeText}
-          status="valid"
-          suffix='.rsk'
+          suffix=".rsk"
+          status={status}
         />
         {domainAvailability === 'available' && (
           <MediumText style={styles.availableLabel}>
@@ -122,22 +121,6 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
 }
 
 const styles = StyleSheet.create({
-  rowContainer: {
-    flexDirection: 'row',
-    backgroundColor: colors.background.secondary,
-    borderWidth: 1,
-    borderRadius: 15,
-    paddingHorizontal: 9,
-    paddingVertical: 3,
-    alignItems: 'center',
-  },
-  input: {
-    flex: 1,
-    width: '100%',
-    color: colors.lightPurple,
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
   availableLabel: {
     color: colors.green,
   },

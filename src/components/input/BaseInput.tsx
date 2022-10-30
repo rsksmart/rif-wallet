@@ -1,24 +1,19 @@
 import React from 'react'
-import { StyleSheet, Text, View, ViewStyle } from 'react-native'
+import { StyleSheet, Text, TextInputProps, View } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
 import { colors } from '../../styles'
 
 interface Props {
-  value: string
-  onChangeText: (text: string) => void
-  testID?: string
   status?: 'valid' | 'invalid' | 'neutral' | 'none'
-  style?: ViewStyle,
   suffix?: string
 }
 
-export const BaseInput: React.FC<Props> = ({
-  value,
-  onChangeText,
-  testID,
+export const BaseInput: React.FC<TextInputProps & Props> = ({
   status = 'none',
+  suffix = '',
   style,
-  suffix
+  onChangeText,
+  ...params
 }) => {
   const borderColor =
     status === 'valid'
@@ -30,16 +25,12 @@ export const BaseInput: React.FC<Props> = ({
       : 'transparent'
 
   return (
-    <View style={styles.container}>
+    <View style={{ ...styles.container, borderColor }}>
       <TextInput
-        style={{ ...style, borderColor, ...styles.input }}
-        value={value}
+        style={{ ...styles.input, ...style }}
         onChangeText={onChangeText}
-        testID={testID}
-        spellCheck={false}
-        autoCapitalize="none"
-        selectionColor={borderColor}
         maxLength={30}
+        {...params}
       />
       {suffix && <Text style={styles.suffix}>{suffix}</Text>}
     </View>
@@ -49,10 +40,16 @@ export const BaseInput: React.FC<Props> = ({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
+    backgroundColor: colors.background.secondary,
     alignItems: 'center',
+    borderWidth: 1,
+    borderRadius: 15,
+    paddingHorizontal: 9,
+    paddingVertical: 3,
   },
   input: {
-    borderWidth: 1,
+    color: colors.lightPurple,
+    fontSize: 16,
   },
   suffix: {
     position: 'absolute',
