@@ -44,9 +44,11 @@ export const ProfileCreateScreen: React.FC<
         <MediumText style={styles.titleText}>
           {editProfile ? 'edit profile' : 'create profile'}
         </MediumText>
-        <TouchableOpacity onPress={() => deleteAlias()}>
-          <MaterialIcon name="delete" color="white" size={20} />
-        </TouchableOpacity>
+        {editProfile && (
+          <TouchableOpacity onPress={() => deleteAlias()}>
+            <MaterialIcon name="delete" color="white" size={20} />
+          </TouchableOpacity>
+        )}
       </View>
       <View style={styles.container}>
         <View style={styles.profileImageContainer}>
