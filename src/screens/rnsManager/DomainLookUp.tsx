@@ -97,7 +97,8 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
           style={styles.input}
           value={initialValue}
           onChangeText={handleChangeText}
-          status="none"
+          status="valid"
+          suffix='.rsk'
         />
         {domainAvailability === 'available' && (
           <View>
