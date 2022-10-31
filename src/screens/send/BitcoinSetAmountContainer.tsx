@@ -84,7 +84,6 @@ export const BitcoinSetAmountContainer: React.FC<
     )
   }, [amountToPay])
 
-
   return (
     <BitcoinSetAmountComponent
       utxos={utxos}
