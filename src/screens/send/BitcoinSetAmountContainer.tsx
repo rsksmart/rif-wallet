@@ -40,7 +40,7 @@ export const BitcoinSetAmountContainer: React.FC<
   }
 
   const satoshisToPay = React.useMemo(
-    () => convertBtcToSatoshi(amountToPay || '0'),
+    () => convertBtcToSatoshi(amountToPay),
     [amountToPay],
   )
 
@@ -63,6 +63,7 @@ export const BitcoinSetAmountContainer: React.FC<
     (amount: string) => {
       setError('')
       const amountSanitized = sanitizeDecimalText(amount)
+
       const { message } = validateAmount(
         convertBtcToSatoshi(amountSanitized),
         balanceAvailable,
@@ -74,10 +75,16 @@ export const BitcoinSetAmountContainer: React.FC<
     },
     [balanceAvailable],
   )
+
   // When amount to pay changes - update setAmount
   React.useEffect(() => {
-    setAmount(satoshisToPay.toString(), error === '')
-  }, [amountToPay, error])
+    setAmount(
+      satoshisToPay.toString(),
+      validateAmount(satoshisToPay, balanceAvailable).isValid,
+    )
+  }, [amountToPay])
+
+
   return (
     <BitcoinSetAmountComponent
       utxos={utxos}

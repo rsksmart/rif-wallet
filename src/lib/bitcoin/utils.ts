@@ -5,6 +5,9 @@ import BIPWithRequest from './BIPWithRequest'
 import { OnRequest } from '../core'
 
 export function convertBtcToSatoshi(btc: string) {
+  if (btc === '') {
+    return utils.parseUnits('0', 8)
+  }
   return utils.parseUnits(btc, 8)
 }
 

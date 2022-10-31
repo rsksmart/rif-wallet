@@ -12,6 +12,7 @@ import { rnsResolver } from '../../core/setup'
 import { isBitcoinAddressValid } from '../../lib/bitcoin/utils'
 import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 import DeleteIcon from '../icons/DeleteIcon'
+import { MediumText } from '../typography'
 
 type AddressInputProps = {
   initialValue: string
@@ -37,7 +38,11 @@ export const AddressBitcoinInput: React.FC<AddressInputProps> = ({
     addressResolved: '',
   })
   const [shouldShowQRScanner, setShouldShowQRScanner] = useState<boolean>(false)
-
+  const [isAddressValid, setIsAddressValid] = useState(false)
+  const [isUserWriting, setIsUserWriting] = useState(false)
+  const handleUserIsWriting = React.useCallback((isWriting = true) => {
+    setIsUserWriting(isWriting)
+  }, [])
   const hideQRScanner = React.useCallback(
     () => setShouldShowQRScanner(false),
     [],
@@ -53,16 +58,21 @@ export const AddressBitcoinInput: React.FC<AddressInputProps> = ({
     hideQRScanner()
   }, [])
 
-  /* set and validate */
+  /* set  */
   const handleChangeText = React.useCallback((text: string) => {
     setTo({ value: text, type: TYPES.NORMAL })
   }, [])
 
   const onBeforeChangeText = (address: string) => {
-    onChangeText(address, isBitcoinAddressValid(address, token.bips[0]))
+    const isBtcAddressValid = isBitcoinAddressValid(address, token.bips[0])
+    setIsAddressValid(isBtcAddressValid)
+    onChangeText(address, isBtcAddressValid)
   }
-  const onBlurValidate = () => validateAddress(to.value)
-
+  const onBlurValidate = () => {
+    handleUserIsWriting(false)
+    validateAddress(to.value)
+  }
+  /* Function to validate address and to set it */
   const validateAddress = (text: string) => {
     // If domain, fetch it
     if (isDomain(text)) {
@@ -104,6 +114,7 @@ export const AddressBitcoinInput: React.FC<AddressInputProps> = ({
             style={styles.input}
             onChangeText={handleChangeText}
             onBlur={onBlurValidate}
+            onFocus={handleUserIsWriting}
             autoCapitalize="none"
             autoCorrect={false}
             value={to.value}
@@ -157,6 +168,11 @@ export const AddressBitcoinInput: React.FC<AddressInputProps> = ({
           </TouchableOpacity>
         )}
       </View>
+      {to.value !== '' && !isUserWriting && !isAddressValid && (
+        <MediumText style={styles.invalidAddressText}>
+          Address is not valid
+        </MediumText>
+      )}
     </>
   )
 }

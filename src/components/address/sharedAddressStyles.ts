@@ -39,6 +39,9 @@ export const sharedAddressStyles = StyleSheet.create({
     fontWeight: '400',
     color: colors.white,
   },
+  invalidAddressText: {
+    color: 'white',
+  },
   button: {
     flex: 1,
     paddingHorizontal: 5,
