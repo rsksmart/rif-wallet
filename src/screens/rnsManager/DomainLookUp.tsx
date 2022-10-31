@@ -123,12 +123,15 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
 const styles = StyleSheet.create({
   availableLabel: {
     color: colors.green,
+    paddingLeft: 5,
   },
   takenLabel: {
     color: colors.red,
+    paddingLeft: 5,
   },
   infoLabel: {
     color: colors.lightPurple,
+    paddingLeft: 5,
   },
 })
 
