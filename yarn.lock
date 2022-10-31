@@ -7950,10 +7950,10 @@ react-error-boundary@^3.1.0:
   dependencies:
     "@babel/runtime" "^7.12.5"
 
-react-i18next@^11.13.0:
-  version "11.18.3"
-  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.18.3.tgz#50211810bcc9fdea2d70c8aefdfff5f1eb39a923"
-  integrity sha512-EttTX31HbqzZymUM3SIrMPuvamfSXFZVsDHm/ZAqoDfTLjhzlwyxqfbDNxcKNAGOi2mjZaXfR7hSNMlvLNpB/g==
+react-i18next@^12.0.0:
+  version "12.0.0"
+  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-12.0.0.tgz#634015a2c035779c5736ae4c2e5c34c1659753b1"
+  integrity sha512-/O7N6aIEAl1FaWZBNvhdIo9itvF/MO/nRKr9pYqRc9LhuC1u21SlfwpiYQqvaeNSEW3g3qUXLREOWMt+gxrWbg==
   dependencies:
     "@babel/runtime" "^7.14.5"
     html-parse-stringify "^3.0.1"
@@ -7984,13 +7984,6 @@ react-native-barcode-mask@^1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/react-native-barcode-mask/-/react-native-barcode-mask-1.2.4.tgz#271b868d1d9040e04b9f8f32ec4ee6f6a2639b3b"
   integrity sha512-Jh3mEs/xUBs/z9mKkj2mM07MMQ2SdtW9mU4FOo5DQyA2kDte6lW87vIYFkWw1nxpzc7sy28ahMsgId8LTtKZsg==
-  dependencies:
-    prop-types "^15.6.2"
-
-react-native-camera@^4.2.1:
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/react-native-camera/-/react-native-camera-4.2.1.tgz#caf74081f055e89d7e9b0cd5108965d808c60e90"
-  integrity sha512-+Vkql24PFYQfsPRznJCvPwJQfyzCnjlcww/iZ4Ej80bgivKjL9eU0IMQIXp4yi6XCrKi4voWXxIDPMupQZKeIQ==
   dependencies:
     prop-types "^15.6.2"
 
@@ -8531,11 +8524,6 @@ rn-nodeify@^10.3.0:
     run-parallel "^1.1.2"
     semver "^5.0.1"
     xtend "^4.0.0"
-
-rn-secure-storage@^2.0.7:
-  version "2.0.7"
-  resolved "https://registry.yarnpkg.com/rn-secure-storage/-/rn-secure-storage-2.0.7.tgz#c8dd76c34e65244f8a880cc624279fc539d9ff21"
-  integrity sha512-yf+AA/oRoEADLHUven1C+TyGYaMZ11lWTBwF4e728ryHs+mQi7PJp4PCpV1LCs0UGF/ZvgF9FmXTr0/EMN7wsQ==
 
 rskjs-util@^1.0.3:
   version "1.0.3"

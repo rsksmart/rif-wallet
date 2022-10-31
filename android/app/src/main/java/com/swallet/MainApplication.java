@@ -11,7 +11,7 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.config.ReactFeatureFlags;
 import com.facebook.soloader.SoLoader;
-import com.rndiffapp.newarchitecture.MainApplicationReactNativeHost;
+import com.swallet.newarchitecture.MainApplicationReactNativeHost;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import android.webkit.WebView;
@@ -39,6 +39,9 @@ public class MainApplication extends Application implements ReactApplication {
           return "index";
         }
       };
+
+  private final ReactNativeHost mNewArchitectureNativeHost =
+    new MainApplicationReactNativeHost(this);
 
   @Override
   public ReactNativeHost getReactNativeHost() {
