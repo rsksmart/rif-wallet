@@ -1,11 +1,12 @@
 import React from 'react'
-import { StyleSheet, Text, TextInputProps, View } from 'react-native'
+import { StyleSheet, Text, TextInputProps, TextStyle, View } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
 import { colors } from '../../styles'
 
 interface Props {
   status?: 'valid' | 'invalid' | 'neutral' | 'none'
   suffix?: string
+  style?: TextStyle
 }
 
 export const BaseInput: React.FC<TextInputProps & Props> = ({
@@ -24,15 +25,17 @@ export const BaseInput: React.FC<TextInputProps & Props> = ({
       ? colors.lightPurple
       : 'transparent'
 
+  const fontSize = style?.fontSize || 16
+
   return (
     <View style={{ ...styles.container, borderColor }}>
       <TextInput
-        style={{ ...styles.input, ...style }}
+        style={{ ...styles.input, ...style, fontSize }}
         onChangeText={onChangeText}
         maxLength={30}
         {...params}
       />
-      {suffix && <Text style={styles.suffix}>{suffix}</Text>}
+      {suffix && <Text style={{ ...styles.suffix, fontSize }}>{suffix}</Text>}
     </View>
   )
 }
@@ -49,7 +52,6 @@ const styles = StyleSheet.create({
   },
   input: {
     color: colors.lightPurple,
-    fontSize: 16,
   },
   suffix: {
     position: 'absolute',
