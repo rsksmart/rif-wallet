@@ -101,10 +101,7 @@ export const AddressBitcoinInput: React.FC<AddressInputProps> = ({
     }
   }
 
-  const handlePasteClick = () =>
-    Clipboard.getString().then((value: string) => {
-      onBeforeChangeText(value)
-    })
+  const handlePasteClick = () => Clipboard.getString().then(validateAddress)
 
   const onClearText = React.useCallback(() => handleChangeText(''), [])
   return (
