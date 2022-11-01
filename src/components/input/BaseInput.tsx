@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   suffix: {
     position: 'absolute',
     right: 15,
-    top: 15,
+    top: 18,
     color: colors.lightPurple,
   },
 })
