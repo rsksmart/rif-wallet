@@ -103,6 +103,7 @@ export const ProfileCreateScreen: React.FC<
               })
             }
             placeholder="your phone number"
+            keyboardType="phone-pad"
           />
         </View>
         <View style={styles.rowContainer}>
