@@ -36,7 +36,7 @@ export const FeedbackScreen: React.FC = () => {
       <RegularText style={styles.heading}>Feedback form</RegularText>
 
       <TextInputWithLabel
-        label="Name"
+        label="name"
         placeholder="your name"
         value={name}
         setValue={setName}
@@ -44,15 +44,15 @@ export const FeedbackScreen: React.FC = () => {
       />
 
       <TextInputWithLabel
-        label="Email"
-        placeholder="your email"
+        label="e-mail"
+        placeholder="your e-mail"
         value={email}
         setValue={setEmail}
         style={styles.input}
       />
 
       <TextInputWithLabel
-        label="Comments"
+        label="comments"
         placeholder="your feedback"
         value={feedback}
         setValue={setFeedback}
