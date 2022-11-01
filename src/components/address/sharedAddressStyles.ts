@@ -40,6 +40,7 @@ export const sharedAddressStyles = StyleSheet.create({
     color: colors.white,
   },
   invalidAddressText: {
+    marginTop: 10,
     color: 'white',
   },
   button: {

@@ -112,66 +112,72 @@ export const AddressBitcoinInput: React.FC<AddressInputProps> = ({
       {shouldShowQRScanner && (
         <QRCodeScanner onClose={hideQRScanner} onCodeRead={onQRRead} />
       )}
-      <View style={styles.inputContainer}>
-        {to.type === TYPES.NORMAL && (
-          <TextInput
-            style={styles.input}
-            onChangeText={handleChangeText}
-            onBlur={onBlurValidate}
-            onFocus={handleUserIsWriting}
-            autoCapitalize="none"
-            autoCorrect={false}
-            value={to.value}
-            placeholder="address or rns domain"
-            testID={'AddressBitcoinInput.Text'}
-            editable={true}
-            placeholderTextColor={colors.text.secondary}
-          />
-        )}
-        {to.type === TYPES.DOMAIN && (
-          <View style={styles.rnsDomainContainer}>
-            <View>
-              <Text style={styles.rnsDomainName}> {to.addressResolved}</Text>
-              <Text style={styles.rnsDomainAddress}>{to.value}</Text>
-            </View>
-            <View style={styles.rnsDomainUnselect}>
-              <TouchableOpacity onPress={onClearText}>
-                <DeleteIcon color={'black'} width={20} height={20} />
-              </TouchableOpacity>
-            </View>
+      {to.type === TYPES.DOMAIN && (
+        <View style={styles.rnsDomainContainer}>
+          <View>
+            <Text style={styles.rnsDomainName}> {to.addressResolved}</Text>
+            <Text style={styles.rnsDomainAddress}>{to.value}</Text>
           </View>
-        )}
-        {to.value === '' && to.type !== TYPES.DOMAIN && (
-          <>
+          <View style={styles.rnsDomainUnselect}>
+            <TouchableOpacity onPress={onClearText}>
+              <DeleteIcon color={'black'} width={20} height={20} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+      {to.type !== TYPES.DOMAIN && (
+        <View style={styles.inputContainer}>
+          {to.type === TYPES.NORMAL && (
+            <TextInput
+              style={styles.input}
+              onChangeText={handleChangeText}
+              onBlur={onBlurValidate}
+              onFocus={handleUserIsWriting}
+              autoCapitalize="none"
+              autoCorrect={false}
+              value={to.value}
+              placeholder="address or rns domain"
+              testID={'AddressBitcoinInput.Text'}
+              editable={true}
+              placeholderTextColor={colors.text.secondary}
+            />
+          )}
+          {to.value === '' && to.type !== TYPES.DOMAIN && (
+            <>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handlePasteClick}
+                testID="Address.PasteButton">
+                <ContentPasteIcon
+                  color={colors.text.secondary}
+                  height={22}
+                  width={22}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={showQRScanner}
+                testID="Address.QRCodeButton">
+                <QRCodeIcon color={colors.text.secondary} />
+              </TouchableOpacity>
+            </>
+          )}
+          {to.value !== '' && to.type !== TYPES.DOMAIN && (
             <TouchableOpacity
               style={styles.button}
-              onPress={handlePasteClick}
-              testID="Address.PasteButton">
-              <ContentPasteIcon
-                color={colors.text.secondary}
-                height={22}
-                width={22}
-              />
+              onPress={onClearText}
+              testID="Address.ClearButton">
+              <View style={styles.clearButtonView}>
+                <Icon
+                  name="close-outline"
+                  style={styles.clearButton}
+                  size={15}
+                />
+              </View>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={showQRScanner}
-              testID="Address.QRCodeButton">
-              <QRCodeIcon color={colors.text.secondary} />
-            </TouchableOpacity>
-          </>
-        )}
-        {to.value !== '' && to.type !== TYPES.DOMAIN && (
-          <TouchableOpacity
-            style={styles.button}
-            onPress={onClearText}
-            testID="Address.ClearButton">
-            <View style={styles.clearButtonView}>
-              <Icon name="close-outline" style={styles.clearButton} size={15} />
-            </View>
-          </TouchableOpacity>
-        )}
-      </View>
+          )}
+        </View>
+      )}
       {to.value !== '' &&
         !isUserWriting &&
         !isAddressValid &&
