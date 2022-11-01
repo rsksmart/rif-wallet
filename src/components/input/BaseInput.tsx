@@ -30,10 +30,10 @@ export const BaseInput: React.FC<TextInputProps & Props> = ({
   const { fontSize, borderColor, ...rest } = StyleSheet.flatten(inputStyle)
 
   const getBorderColor = (
-    status: BaseInputStatus,
-    borderColor: ColorValue | undefined,
+    inputStatus: BaseInputStatus,
+    borderColorValue: ColorValue | undefined,
   ) => {
-    switch (status) {
+    switch (inputStatus) {
       case BaseInputStatus.VALID:
         return colors.border.green
       case BaseInputStatus.INVALID:
@@ -41,7 +41,7 @@ export const BaseInput: React.FC<TextInputProps & Props> = ({
       case BaseInputStatus.NEUTRAL:
         return colors.lightPurple
       default:
-        return borderColor || 'transparent'
+        return borderColorValue || 'transparent'
     }
   }
 

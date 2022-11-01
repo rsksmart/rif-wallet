@@ -86,8 +86,8 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
     }
   }
 
-  const getStatus = (domainAvailability: DomainStatus) => {
-    switch (domainAvailability) {
+  const getStatus = (domainStatus: DomainStatus) => {
+    switch (domainStatus) {
       case DomainStatus.AVAILABLE:
         return BaseInputStatus.VALID
       case DomainStatus.TAKEN:
