@@ -7,6 +7,7 @@ import {
   validateAddress,
 } from '../../components/address/lib'
 import { TextInputWithLabel } from '../../components/input/TextInputWithLabel'
+import { BaseInputStatus } from '../../components/shared'
 import { MediumText } from '../../components/typography'
 import { colors } from '../../styles'
 import addresses from './addresses.json'
@@ -16,6 +17,13 @@ interface DomainLookUpProps {
   onChangeText: (newValue: string) => void
   wallet: any
   onDomainAvailable: any
+}
+
+enum DomainStatus {
+  AVAILABLE,
+  TAKEN,
+  NO_VALID,
+  NONE,
 }
 
 export const DomainLookUp: React.FC<DomainLookUpProps> = ({
@@ -32,9 +40,9 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
   )
   useState<boolean>(false)
   const [error, setError] = useState('')
-  const [domainAvailability, setDomainAvailability] = useState<
-    'taken' | 'available' | 'no valid' | ''
-  >('')
+  const [domainAvailability, setDomainAvailability] = useState<DomainStatus>(
+    DomainStatus.NONE,
+  )
 
   const handleChangeText = async (inputText: string) => {
     onChangeText(inputText)
@@ -46,7 +54,7 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
     if (newValidationMessage === AddressValidationMessage.DOMAIN) {
       await searchDomain(inputText)
     } else {
-      setDomainAvailability('')
+      setDomainAvailability(DomainStatus.NONE)
     }
   }
   const searchDomain = async (domain: string) => {
@@ -56,13 +64,13 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
     if (!/^[a-z0-9]*$/.test(domainName)) {
       console.log('Only lower cases and numbers are allowed')
       setError('Only lower cases and numbers are allowed')
-      setDomainAvailability('no valid')
+      setDomainAvailability(DomainStatus.NO_VALID)
       onDomainAvailable(domainName, false)
       return
     }
 
     if (domainName.length < 5) {
-      setDomainAvailability('')
+      setDomainAvailability(DomainStatus.NONE)
       return
     }
 
@@ -70,20 +78,22 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
       domainName,
     )) as any as boolean
 
-    setDomainAvailability(available ? 'available' : 'taken')
+    setDomainAvailability(
+      available ? DomainStatus.AVAILABLE : DomainStatus.TAKEN,
+    )
     if (available) {
       onDomainAvailable(domainName)
     }
   }
 
-  const getStatus = (domainAvailability: string) => {
+  const getStatus = (domainAvailability: DomainStatus) => {
     switch (domainAvailability) {
-      case 'available':
-        return 'valid'
-      case 'taken':
-        return 'invalid'
+      case DomainStatus.AVAILABLE:
+        return BaseInputStatus.VALID
+      case DomainStatus.TAKEN:
+        return BaseInputStatus.INVALID
       default:
-        return 'neutral'
+        return BaseInputStatus.NEUTRAL
     }
   }
 
@@ -101,13 +111,13 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
           suffix=".rsk"
           status={status}
         />
-        {domainAvailability === 'available' && (
+        {domainAvailability === DomainStatus.AVAILABLE && (
           <MediumText style={styles.availableLabel}>
             {domainAvailability}
           </MediumText>
         )}
-        {(domainAvailability === 'taken' ||
-          domainAvailability === 'no valid') && (
+        {(domainAvailability === DomainStatus.TAKEN ||
+          domainAvailability === DomainStatus.NO_VALID) && (
           <MediumText style={styles.takenLabel}>
             {domainAvailability}
           </MediumText>

@@ -11,33 +11,34 @@ import {
 import { TextInput } from 'react-native-gesture-handler'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
+import { BaseInputStatus } from '../shared'
 
 interface Props {
   inputStyle?: StyleProp<TextStyle>
   setValue?: (value: string) => void
-  status?: 'valid' | 'invalid' | 'neutral' | 'none'
+  status?: BaseInputStatus
   suffix?: string
 }
 
 export const BaseInput: React.FC<TextInputProps & Props> = ({
   inputStyle = {},
   setValue,
-  status = 'none',
+  status = BaseInputStatus.NONE,
   suffix = '',
   ...params
 }) => {
   const { fontSize, borderColor, ...rest } = StyleSheet.flatten(inputStyle)
 
   const getBorderColor = (
-    status: string,
+    status: BaseInputStatus,
     borderColor: ColorValue | undefined,
   ) => {
     switch (status) {
-      case 'valid':
+      case BaseInputStatus.VALID:
         return colors.border.green
-      case 'invalid':
+      case BaseInputStatus.INVALID:
         return colors.border.red
-      case 'neutral':
+      case BaseInputStatus.NEUTRAL:
         return colors.lightPurple
       default:
         return borderColor || 'transparent'

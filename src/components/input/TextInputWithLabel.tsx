@@ -8,6 +8,7 @@ import {
   ViewStyle,
 } from 'react-native'
 import { colors } from '../../styles'
+import { BaseInputStatus } from '../shared'
 import { RegularText } from '../typography'
 import { BaseInput } from './BaseInput'
 
@@ -17,7 +18,7 @@ interface Props {
   inputStyle?: StyleProp<TextStyle>
   setValue?: (value: string) => void
   suffix?: string
-  status?: 'valid' | 'invalid' | 'neutral' | 'none'
+  status?: BaseInputStatus
 }
 
 export const TextInputWithLabel: React.FC<TextInputProps & Props> = ({
@@ -26,7 +27,7 @@ export const TextInputWithLabel: React.FC<TextInputProps & Props> = ({
   inputStyle,
   setValue,
   suffix = '',
-  status = 'none',
+  status = BaseInputStatus.NONE,
   ...params
 }) => {
   return (
