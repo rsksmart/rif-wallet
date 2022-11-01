@@ -224,11 +224,7 @@ export class RIFRelaySDK {
               }
 
               // if okay...
-              console.log('SUCCESS: returning FAKE txHash for now...')
-              resolve(
-                response.data.txHash ||
-                  '0xbd6bee7d78d64492083974f1c83328088317795a204bbfc3890aa1bd4cbe67cf',
-              )
+              resolve(response.data.transactionHash)
             })
             .catch(reject)
         }),
