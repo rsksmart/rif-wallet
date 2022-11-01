@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, StyleSheet } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { RegularText } from '../../components'
 import { PurpleButton } from '../../components/button/ButtonVariations'
 import { TextInputWithLabel } from '../../components/input/TextInputWithLabel'
@@ -40,6 +40,7 @@ export const FeedbackScreen: React.FC = () => {
         placeholder="your name"
         value={name}
         setValue={setName}
+        style={styles.input}
       />
 
       <TextInputWithLabel
@@ -47,6 +48,7 @@ export const FeedbackScreen: React.FC = () => {
         placeholder="your email"
         value={email}
         setValue={setEmail}
+        style={styles.input}
       />
 
       <TextInputWithLabel
@@ -56,6 +58,8 @@ export const FeedbackScreen: React.FC = () => {
         setValue={setFeedback}
         multiline={true}
         inputStyle={styles.feedback}
+        style={styles.input}
+        textAlignVertical="top"
       />
 
       <PurpleButton
@@ -78,6 +82,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
     marginVertical: 20,
+  },
+  input: {
+    marginBottom: 10,
   },
   feedback: {
     paddingTop: 20,

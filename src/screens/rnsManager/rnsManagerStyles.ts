@@ -57,6 +57,6 @@ export const rnsManagerStyles = StyleSheet.create({
   bottomContainer: {
     flex: 1,
     justifyContent: 'flex-end',
-    paddingBottom: 10,
+    marginTop: 10,
   },
 })

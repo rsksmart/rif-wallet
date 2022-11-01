@@ -13,6 +13,7 @@ import DomainLookUp from '../../screens/rnsManager/DomainLookUp'
 import { MediumText } from '../../components'
 import TitleStatus from './TitleStatus'
 import { AvatarIcon } from '../../components/icons/AvatarIcon'
+import { ScrollView } from 'react-native-gesture-handler'
 
 type Props = {
   route: any
@@ -64,6 +65,7 @@ export const SearchDomainScreen: React.FC<
           progress={0.25}
           progressText={'1/4'}
         />
+
         <View style={rnsManagerStyles.marginBottom}>
           <View style={rnsManagerStyles.profileImageContainer}>
             {domainToLookUp.length >= 5 ? (

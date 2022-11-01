@@ -10,6 +10,7 @@ import { BaseInput } from '../../components/input/BaseInput'
 import { MediumText } from '../../components/typography'
 import { colors } from '../../styles'
 import addresses from './addresses.json'
+import { TextInputWithLabel } from '../../components/input/TextInputWithLabel'
 
 interface DomainLookUpProps {
   initialValue: string
@@ -86,7 +87,8 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
   return (
     <>
       <View>
-        <BaseInput
+        <TextInputWithLabel
+          label="username"
           value={initialValue}
           setValue={handleChangeText}
           placeholder="enter an alias name"

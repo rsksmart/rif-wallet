@@ -11,17 +11,17 @@ import { TextInput } from 'react-native-gesture-handler'
 import { colors } from '../../styles'
 
 interface Props {
-  status?: 'valid' | 'invalid' | 'neutral' | 'none'
-  suffix?: string
   inputStyle?: StyleProp<TextStyle>
   setValue?: (value: string) => void
+  status?: 'valid' | 'invalid' | 'neutral' | 'none'
+  suffix?: string
 }
 
 export const BaseInput: React.FC<TextInputProps & Props> = ({
-  status = 'none',
-  suffix = '',
   inputStyle = {},
   setValue,
+  status = 'none',
+  suffix = '',
   ...params
 }) => {
   const { fontSize, borderColor, ...rest } = StyleSheet.flatten(inputStyle)
@@ -35,15 +35,17 @@ export const BaseInput: React.FC<TextInputProps & Props> = ({
       ? colors.lightPurple
       : borderColor || 'transparent'
 
+  const inputStyles = {
+    ...styles.input,
+    ...rest,
+    fontSize,
+    borderColor: borderColorValue,
+  }
+
   return (
-    <View style={{ ...styles.container, borderColor: borderColorValue }}>
+    <View style={styles.container}>
       <TextInput
-        style={{
-          ...styles.input,
-          ...rest,
-          fontSize,
-          borderColor: borderColorValue,
-        }}
+        style={inputStyles}
         onChangeText={setValue}
         maxLength={30}
         placeholderTextColor={colors.text.secondary}
@@ -61,19 +63,20 @@ export const BaseInput: React.FC<TextInputProps & Props> = ({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: colors.darkPurple4,
     alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 15,
-    paddingHorizontal: 9,
-    paddingVertical: 3,
   },
   input: {
+    flex: 1,
     color: colors.lightPurple,
+    backgroundColor: colors.darkPurple4,
+    borderWidth: 1,
+    borderRadius: 15,
+    paddingLeft: 15,
   },
   suffix: {
     position: 'absolute',
     right: 15,
+    top: 15,
     color: colors.lightPurple,
   },
 })
