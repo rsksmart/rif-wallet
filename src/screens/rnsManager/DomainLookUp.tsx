@@ -6,11 +6,10 @@ import {
   AddressValidationMessage,
   validateAddress,
 } from '../../components/address/lib'
-import { BaseInput } from '../../components/input/BaseInput'
+import { TextInputWithLabel } from '../../components/input/TextInputWithLabel'
 import { MediumText } from '../../components/typography'
 import { colors } from '../../styles'
 import addresses from './addresses.json'
-import { TextInputWithLabel } from '../../components/input/TextInputWithLabel'
 
 interface DomainLookUpProps {
   initialValue: string
