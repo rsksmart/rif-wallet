@@ -87,13 +87,10 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
     <>
       <View>
         <BaseInput
-          onChangeText={handleChangeText}
           value={initialValue}
+          setValue={handleChangeText}
           placeholder="enter an alias name"
           accessibilityLabel={'Alias.Input'}
-          placeholderTextColor={colors.gray}
-          spellCheck={false}
-          autoCapitalize="none"
           suffix=".rsk"
           status={status}
         />

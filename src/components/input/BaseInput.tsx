@@ -1,41 +1,59 @@
 import React from 'react'
-import { StyleSheet, Text, TextInputProps, TextStyle, View } from 'react-native'
+import {
+  StyleProp,
+  StyleSheet,
+  Text,
+  TextInputProps,
+  TextStyle,
+  View,
+} from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
 import { colors } from '../../styles'
 
 interface Props {
   status?: 'valid' | 'invalid' | 'neutral' | 'none'
   suffix?: string
-  style?: TextStyle
+  inputStyle?: StyleProp<TextStyle>
+  setValue?: (value: string) => void
 }
 
 export const BaseInput: React.FC<TextInputProps & Props> = ({
   status = 'none',
   suffix = '',
-  style,
-  onChangeText,
+  inputStyle = {},
+  setValue,
   ...params
 }) => {
-  const borderColor =
+  const { fontSize, borderColor, ...rest } = StyleSheet.flatten(inputStyle)
+
+  const borderColorValue =
     status === 'valid'
       ? colors.border.green
       : status === 'invalid'
       ? colors.border.red
       : status === 'neutral'
       ? colors.lightPurple
-      : 'transparent'
-
-  const fontSize = style?.fontSize || 16
+      : borderColor || 'transparent'
 
   return (
-    <View style={{ ...styles.container, borderColor }}>
+    <View style={{ ...styles.container, borderColor: borderColorValue }}>
       <TextInput
-        style={{ ...styles.input, ...style, fontSize }}
-        onChangeText={onChangeText}
+        style={{
+          ...styles.input,
+          ...rest,
+          fontSize,
+          borderColor: borderColorValue,
+        }}
+        onChangeText={setValue}
         maxLength={30}
+        placeholderTextColor={colors.text.secondary}
+        spellCheck={false}
+        autoCapitalize="none"
         {...params}
       />
-      {suffix && <Text style={{ ...styles.suffix, fontSize }}>{suffix}</Text>}
+      {suffix ? (
+        <Text style={{ ...styles.suffix, fontSize }}>{suffix}</Text>
+      ) : null}
     </View>
   )
 }
@@ -43,7 +61,7 @@ export const BaseInput: React.FC<TextInputProps & Props> = ({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: colors.background.secondary,
+    backgroundColor: colors.darkPurple4,
     alignItems: 'center',
     borderWidth: 1,
     borderRadius: 15,
