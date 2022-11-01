@@ -40,6 +40,7 @@ export const AddressBitcoinInput: React.FC<AddressInputProps> = ({
   const [shouldShowQRScanner, setShouldShowQRScanner] = useState<boolean>(false)
   const [isAddressValid, setIsAddressValid] = useState(false)
   const [isUserWriting, setIsUserWriting] = useState(false)
+  const [isValidating, setIsValidating] = useState(false)
   const handleUserIsWriting = React.useCallback((isWriting = true) => {
     setIsUserWriting(isWriting)
   }, [])
@@ -75,6 +76,7 @@ export const AddressBitcoinInput: React.FC<AddressInputProps> = ({
   /* Function to validate address and to set it */
   const validateAddress = (text: string) => {
     // If domain, fetch it
+    setIsValidating(true)
     if (isDomain(text)) {
       rnsResolver
         .addr(text)
@@ -87,6 +89,7 @@ export const AddressBitcoinInput: React.FC<AddressInputProps> = ({
           onBeforeChangeText(address)
         })
         .catch((_e: any) => {})
+        .finally(() => setIsValidating(false))
     } /* default to normal validation */ else {
       onBeforeChangeText(text)
       setTo({
@@ -94,6 +97,7 @@ export const AddressBitcoinInput: React.FC<AddressInputProps> = ({
         type: TYPES.NORMAL,
         addressResolved: text,
       })
+      setIsValidating(false)
     }
   }
 
@@ -131,7 +135,7 @@ export const AddressBitcoinInput: React.FC<AddressInputProps> = ({
               <Text style={styles.rnsDomainAddress}>{to.value}</Text>
             </View>
             <View style={styles.rnsDomainUnselect}>
-              <TouchableOpacity onPress={() => {}}>
+              <TouchableOpacity onPress={onClearText}>
                 <DeleteIcon color={'black'} width={20} height={20} />
               </TouchableOpacity>
             </View>
@@ -168,10 +172,16 @@ export const AddressBitcoinInput: React.FC<AddressInputProps> = ({
           </TouchableOpacity>
         )}
       </View>
-      {to.value !== '' && !isUserWriting && !isAddressValid && (
-        <MediumText style={styles.invalidAddressText}>
-          Address is not valid
-        </MediumText>
+      {to.value !== '' &&
+        !isUserWriting &&
+        !isAddressValid &&
+        !isValidating && (
+          <MediumText style={styles.invalidAddressText}>
+            Address is not valid
+          </MediumText>
+        )}
+      {isValidating && (
+        <MediumText style={styles.invalidAddressText}>Validating...</MediumText>
       )}
     </>
   )
