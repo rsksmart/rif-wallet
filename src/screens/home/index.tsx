@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
-
-import RampSdk from '@ramp-network/react-native-sdk'
 import { Paragraph } from '../../components'
 import { toChecksumAddress } from '../../components/address/lib'
 import { LoadingScreen } from '../../components/loading/LoadingScreen'
@@ -89,23 +87,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   }
 
   const addBalance = (address: string) => {
-    const ramp = new RampSdk({
-      // for testnet:
-      // url: 'https://ri-widget-staging.firebaseapp.com/',
-      url: 'https://ri-widget-staging.web.app/',
-
-      // for IOV:
-      swapAsset: 'RSK_RDOC',
-      // userAddress must be lowercase or checksummed correctly:
-      userAddress: address,
-
-      // for the dapp:
-      hostAppName: 'Ramp POC',
-      hostLogoUrl: 'https://rampnetwork.github.io/assets/misc/test-logo.png',
-    })
-
-    ramp.on('*', e => console.log(e))
-    ramp.show()
+    console.log('temporarly removed', address)
   }
 
   // pass the new color to Core to update header:
