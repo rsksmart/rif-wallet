@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
-import { IProfileStore } from '../../storage/ProfileStore'
 import { RegularText } from '../../components/typography'
-import { TextInput } from 'react-native-gesture-handler'
+import { IProfileStore } from '../../storage/ProfileStore'
 
-import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
-import { colors } from '../../styles'
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { MediumText } from '../../components'
 import { PurpleButton } from '../../components/button/ButtonVariations'
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import { ScreenProps } from '../../RootNavigation'
+import { TextInputWithLabel } from '../../components/input/TextInputWithLabel'
 import { emptyProfile } from '../../core/hooks/useProfile'
+import { ScreenProps } from '../../RootNavigation'
+import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
 
 export type CreateProfileScreenProps = {
@@ -93,40 +93,29 @@ export const ProfileCreateScreen: React.FC<
         )}
 
         <View style={styles.rowContainer}>
-          <MediumText style={[styles.masterText, styles.textLeftMargin]}>
-            phone
-          </MediumText>
-
-          <TextInput
-            style={styles.input}
-            onChangeText={value =>
+          <TextInputWithLabel
+            label="phone"
+            value={localProfile?.phone}
+            setValue={value =>
               setLocalProfile({
                 ...localProfile,
                 phone: value,
               })
             }
-            value={localProfile?.phone}
-            placeholder=""
-            accessibilityLabel={'Phone.Input'}
-            placeholderTextColor={colors.gray}
+            placeholder="your phone number"
           />
         </View>
         <View style={styles.rowContainer}>
-          <MediumText style={[styles.masterText, styles.textLeftMargin]}>
-            email
-          </MediumText>
-          <TextInput
-            style={styles.input}
-            onChangeText={value =>
+          <TextInputWithLabel
+            label="email"
+            value={localProfile?.email}
+            setValue={value =>
               setLocalProfile({
                 ...localProfile,
                 email: value,
               })
             }
-            value={localProfile?.email}
-            placeholder=""
-            accessibilityLabel={'Email.Input'}
-            placeholderTextColor={colors.gray}
+            placeholder="your email"
           />
         </View>
         <View style={styles.rowContainer}>
@@ -154,7 +143,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 20,
     backgroundColor: colors.background.darkBlue,
-    //backgroundColor: 'red',
   },
   titleText: {
     color: colors.white,
@@ -173,14 +161,6 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 100,
-  },
-  input: {
-    color: colors.text.primary,
-    fontFamily: fonts.regular,
-    backgroundColor: colors.darkPurple4,
-    borderRadius: 15,
-    padding: 20,
-    marginBottom: 20,
   },
   textLeftMargin: {
     marginLeft: 10,

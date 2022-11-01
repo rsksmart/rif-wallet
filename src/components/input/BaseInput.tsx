@@ -9,6 +9,7 @@ import {
 } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
 import { colors } from '../../styles'
+import { fonts } from '../../styles/fonts'
 
 interface Props {
   inputStyle?: StyleProp<TextStyle>
@@ -67,11 +68,12 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
+    fontFamily: fonts.regular,
     color: colors.lightPurple,
     backgroundColor: colors.darkPurple4,
     borderWidth: 1,
     borderRadius: 15,
-    paddingLeft: 15,
+    padding: 15,
   },
   suffix: {
     position: 'absolute',
