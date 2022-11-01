@@ -45,7 +45,7 @@ export const ProfileCreateScreen: React.FC<
           {editProfile ? 'edit profile' : 'create profile'}
         </MediumText>
         {editProfile && (
-          <TouchableOpacity onPress={() => deleteAlias()}>
+          <TouchableOpacity onPress={deleteAlias}>
             <MaterialIcon name="delete" color="white" size={20} />
           </TouchableOpacity>
         )}
@@ -121,7 +121,7 @@ export const ProfileCreateScreen: React.FC<
         </View>
         <View style={styles.rowContainer}>
           <PurpleButton
-            onPress={() => createProfile()}
+            onPress={createProfile}
             accessibilityLabel="create"
             title={editProfile ? 'save' : 'create'}
             disabled={localProfile === emptyProfile}
