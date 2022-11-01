@@ -65,7 +65,9 @@ export const transferBitcoin = ({
     })
     .catch(err => {
       if (onSetError) {
-        onSetError(`Transaction cancelled: ${err.toString()}`)
+        onSetError({
+          message: `Transaction cancelled: ${err.toString()}`,
+        })
       }
     })
 }
