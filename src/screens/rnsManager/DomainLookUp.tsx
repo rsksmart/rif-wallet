@@ -76,12 +76,18 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
     }
   }
 
-  const status =
-    domainAvailability === 'available'
-      ? 'valid'
-      : domainAvailability === 'taken'
-      ? 'invalid'
-      : 'neutral'
+  const getStatus = (domainAvailability: string) => {
+    switch (domainAvailability) {
+      case 'available':
+        return 'valid'
+      case 'taken':
+        return 'invalid'
+      default:
+        return 'neutral'
+    }
+  }
+
+  const status = getStatus(domainAvailability)
 
   return (
     <>

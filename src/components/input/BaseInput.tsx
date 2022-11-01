@@ -1,5 +1,6 @@
 import React from 'react'
 import {
+  ColorValue,
   StyleProp,
   StyleSheet,
   Text,
@@ -27,14 +28,23 @@ export const BaseInput: React.FC<TextInputProps & Props> = ({
 }) => {
   const { fontSize, borderColor, ...rest } = StyleSheet.flatten(inputStyle)
 
-  const borderColorValue =
-    status === 'valid'
-      ? colors.border.green
-      : status === 'invalid'
-      ? colors.border.red
-      : status === 'neutral'
-      ? colors.lightPurple
-      : borderColor || 'transparent'
+  const getBorderColor = (
+    status: string,
+    borderColor: ColorValue | undefined,
+  ) => {
+    switch (status) {
+      case 'valid':
+        return colors.border.green
+      case 'invalid':
+        return colors.border.red
+      case 'neutral':
+        return colors.lightPurple
+      default:
+        return borderColor || 'transparent'
+    }
+  }
+
+  const borderColorValue = getBorderColor(status, borderColor)
 
   const inputStyles = {
     ...styles.input,
