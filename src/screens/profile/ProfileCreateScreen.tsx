@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { RegularText } from '../../components/typography'
 import { IProfileStore } from '../../storage/ProfileStore'
 
@@ -33,6 +33,20 @@ export const ProfileCreateScreen: React.FC<
     await eraseProfile()
     navigation.navigate('Home')
   }
+
+  const onSetEmail = useCallback(
+    (email: string) => {
+      setLocalProfile(prev => ({ ...prev, email }))
+    },
+    [localProfile],
+  )
+
+  const onSetPhone = useCallback(
+    (phone: string) => {
+      setLocalProfile(prev => ({ ...prev, phone }))
+    },
+    [localProfile],
+  )
   return (
     <>
       <View style={styles.profileHeader}>
@@ -96,12 +110,7 @@ export const ProfileCreateScreen: React.FC<
           <TextInputWithLabel
             label="phone"
             value={localProfile?.phone}
-            setValue={value =>
-              setLocalProfile({
-                ...localProfile,
-                phone: value,
-              })
-            }
+            setValue={onSetPhone}
             placeholder="your phone number"
             keyboardType="phone-pad"
             optional={true}
@@ -111,12 +120,7 @@ export const ProfileCreateScreen: React.FC<
           <TextInputWithLabel
             label="email"
             value={localProfile?.email}
-            setValue={value =>
-              setLocalProfile({
-                ...localProfile,
-                email: value,
-              })
-            }
+            setValue={onSetEmail}
             placeholder="your email"
             optional={true}
           />
