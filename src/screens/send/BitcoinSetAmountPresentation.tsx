@@ -7,12 +7,15 @@ interface IBitcoinSetAmountPresentation {
   handleAmountChange: any
   amountToPay: string
   error?: string
+  available?: string
 }
 export const BitcoinSetAmountPresentation: React.FC<
   IBitcoinSetAmountPresentation
-> = ({ handleAmountChange, amountToPay, error = '' }) => (
+> = ({ handleAmountChange, amountToPay, error = '', available }) => (
   <>
-    <Text style={styles.label}>amount</Text>
+    <Text style={styles.label}>
+      amount {available && `(Available: ${available})`}
+    </Text>
     <TextInput
       style={styles.textInputStyle}
       onChangeText={handleAmountChange}

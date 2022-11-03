@@ -1,6 +1,10 @@
 import React, { useState } from 'react'
 import { UnspentTransactionType } from '../../lib/bitcoin/types'
-import { convertBtcToSatoshi, validateAmount } from '../../lib/bitcoin/utils'
+import {
+  convertBtcToSatoshi,
+  convertSatoshiToBtcHuman,
+  validateAmount,
+} from '../../lib/bitcoin/utils'
 import { BigNumber } from 'ethers'
 import { sanitizeDecimalText, sanitizeMaxDecimalText } from '../../lib/utils'
 import { ISetAmountComponent } from './SetAmountComponent'
@@ -86,12 +90,18 @@ export const BitcoinSetAmountContainer: React.FC<
     )
   }, [amountToPay])
 
+  const balanceAvailableString = React.useMemo(
+    () => convertSatoshiToBtcHuman(balanceAvailable),
+    [balanceAvailable],
+  )
+
   return (
     <BitcoinSetAmountComponent
       utxos={utxos}
       amountToPay={amountToPay}
       handleAmountChange={handleAmountChange}
       error={error}
+      available={balanceAvailableString}
     />
   )
 }
