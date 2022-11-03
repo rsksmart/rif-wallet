@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     backgroundColor: 'transparent',
-    // color: 'black', @todo revisit because in android this text is white and invisible...
+    color: 'black',
   },
   buttonWrapper: {
     flex: 1,

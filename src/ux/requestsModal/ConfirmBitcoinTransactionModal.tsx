@@ -39,7 +39,7 @@ const ConfirmBitcoinTransactionModal: React.FC<
   const [miningFee, setMiningFee] = useState<string>(
     payload.miningFee.toString(),
   )
-  const minimumFee = React.useRef(141)
+  const minimumFee = React.useRef(payload.miningFee)
   const maximumMiningFee = React.useMemo(
     () => payload.balance - payload.amountToPay,
     [payload],
@@ -91,7 +91,9 @@ const ConfirmBitcoinTransactionModal: React.FC<
                 : minimumFeeResponse
             if (minimumFeeResponse > maximumMiningFee) {
               setStatus(
-                'Transaction failure due to insufficient funds dedicated to the mining fee. Try to decrease the value sent.',
+                'Transaction failure due to insufficient funds dedicated to the mining fee. ' +
+                  'Try to decrease the value sent. ' +
+                  `The suggested minimum fee for this transaction is ${minimumFeeResponse}`,
               )
             } else {
               setStatus(
@@ -99,7 +101,7 @@ const ConfirmBitcoinTransactionModal: React.FC<
               )
             }
 
-            handleMiningFeeChange(newFee)
+            handleMiningFeeChange(newFee.toString())
             break
           default:
             setStatus(`Error: ${error.toString()}`)
