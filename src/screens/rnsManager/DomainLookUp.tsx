@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import { StyleSheet, View } from 'react-native'
@@ -20,10 +20,21 @@ interface DomainLookUpProps {
 }
 
 enum DomainStatus {
-  AVAILABLE,
-  TAKEN,
-  NO_VALID,
-  NONE,
+  AVAILABLE = 'available',
+  TAKEN = 'taken',
+  NO_VALID = 'no valid',
+  NONE = '',
+}
+
+const getStatus = (domainStatus: DomainStatus) => {
+  switch (domainStatus) {
+    case DomainStatus.AVAILABLE:
+      return BaseInputStatus.VALID
+    case DomainStatus.TAKEN:
+      return BaseInputStatus.INVALID
+    default:
+      return BaseInputStatus.NEUTRAL
+  }
 }
 
 export const DomainLookUp: React.FC<DomainLookUpProps> = ({
@@ -38,10 +49,13 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
     addresses.rifTokenAddress,
     wallet,
   )
-  useState<boolean>(false)
   const [error, setError] = useState('')
   const [domainAvailability, setDomainAvailability] = useState<DomainStatus>(
     DomainStatus.NONE,
+  )
+  const status = useMemo(
+    () => getStatus(domainAvailability),
+    [domainAvailability],
   )
 
   const handleChangeText = async (inputText: string) => {
@@ -85,19 +99,6 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
       onDomainAvailable(domainName)
     }
   }
-
-  const getStatus = (domainStatus: DomainStatus) => {
-    switch (domainStatus) {
-      case DomainStatus.AVAILABLE:
-        return BaseInputStatus.VALID
-      case DomainStatus.TAKEN:
-        return BaseInputStatus.INVALID
-      default:
-        return BaseInputStatus.NEUTRAL
-    }
-  }
-
-  const status = getStatus(domainAvailability)
 
   return (
     <>
