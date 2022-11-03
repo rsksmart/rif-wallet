@@ -12,7 +12,7 @@ describe('BaseButton component', () => {
         <Text>copy</Text>
       </BaseButton>,
     )
-    expect(component.getByTestId(testID)).toBeDefined()
+      expect(component.getByTestId(testID)).toBeDefined()
   })
 
   test('calls function on press', () => {
@@ -41,7 +41,7 @@ describe('BaseButton component', () => {
     fireEvent.press(getByTestId('button'))
     expect(onPress).toBeCalledTimes(1)
   })
-  
+
   it.skip('is not clickable when disabled', () => {
     const onPressDisabled = jest.fn()
     const { getByTestId } = render(
