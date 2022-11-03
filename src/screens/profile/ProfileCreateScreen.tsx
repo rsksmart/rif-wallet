@@ -34,19 +34,13 @@ export const ProfileCreateScreen: React.FC<
     navigation.navigate('Home')
   }
 
-  const onSetEmail = useCallback(
-    (email: string) => {
-      setLocalProfile(prev => ({ ...prev, email }))
-    },
-    [localProfile],
-  )
+  const onSetEmail = useCallback((email: string) => {
+    setLocalProfile(prev => ({ ...prev, email }))
+  }, [])
 
-  const onSetPhone = useCallback(
-    (phone: string) => {
-      setLocalProfile(prev => ({ ...prev, phone }))
-    },
-    [localProfile],
-  )
+  const onSetPhone = useCallback((phone: string) => {
+    setLocalProfile(prev => ({ ...prev, phone }))
+  }, [])
   return (
     <>
       <View style={styles.profileHeader}>
