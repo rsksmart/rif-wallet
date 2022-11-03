@@ -58,7 +58,7 @@ export default class BitcoinNetwork {
     let satoshis = 0
     let balance = 0
     this.bips.map(bip => {
-      satoshis += bip.balance
+      satoshis += Number(bip.balance) || 0
       balance += bip.btc
     })
     this.satoshis = satoshis
