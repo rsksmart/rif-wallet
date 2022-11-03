@@ -70,6 +70,7 @@
     "react-native-swipe-modal-up-down": "^1.1.0",
     "react-native-uuid": "^2.0.1",
     "react-native-vector-icons": "^9.1.0",
+    "react-native-vision-camera": "^2.15.2",
     "react-native-webview": "^11.14.3",
     "react-qr-code": "^2.0.2",
     "readable-stream": "1.0.33",
