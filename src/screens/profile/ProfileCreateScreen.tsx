@@ -104,6 +104,7 @@ export const ProfileCreateScreen: React.FC<
             }
             placeholder="your phone number"
             keyboardType="phone-pad"
+            optional={true}
           />
         </View>
         <View style={styles.rowContainer}>
@@ -117,6 +118,7 @@ export const ProfileCreateScreen: React.FC<
               })
             }
             placeholder="your email"
+            optional={true}
           />
         </View>
         <View style={styles.rowContainer}>
@@ -146,10 +148,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background.darkBlue,
   },
   titleText: {
-    color: colors.white,
+    color: colors.lightPurple,
   },
   backButton: {
-    color: colors.white,
+    color: colors.lightPurple,
     backgroundColor: colors.blue2,
     borderRadius: 20,
     padding: 10,
@@ -168,7 +170,7 @@ const styles = StyleSheet.create({
   },
   masterText: {
     marginBottom: 0,
-    color: colors.white,
+    color: colors.lightPurple,
   },
   rowContainer: {
     margin: 5,
@@ -190,6 +192,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   aliasText: {
-    color: colors.white,
+    color: colors.lightPurple,
   },
 })

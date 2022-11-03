@@ -44,8 +44,8 @@ export const FeedbackScreen: React.FC = () => {
       />
 
       <TextInputWithLabel
-        label="e-mail"
-        placeholder="your e-mail"
+        label="email"
+        placeholder="your email"
         value={email}
         setValue={setEmail}
         style={styles.input}

@@ -19,6 +19,7 @@ interface Props {
   setValue?: (value: string) => void
   suffix?: string
   status?: BaseInputStatus
+  optional?: boolean
 }
 
 export const TextInputWithLabel: React.FC<TextInputProps & Props> = ({
@@ -28,11 +29,17 @@ export const TextInputWithLabel: React.FC<TextInputProps & Props> = ({
   setValue,
   suffix = '',
   status = BaseInputStatus.NONE,
+  optional = false,
   ...params
 }) => {
   return (
     <View style={style}>
-      <RegularText style={styles.label}>{label}</RegularText>
+      <View style={styles.labelView}>
+        <RegularText style={styles.label}>{label}</RegularText>
+        <RegularText style={styles.optional}>
+          {optional ? 'optional' : ''}
+        </RegularText>
+      </View>
       <BaseInput
         accessibilityLabel="nameInput"
         inputStyle={inputStyle}
@@ -46,8 +53,17 @@ export const TextInputWithLabel: React.FC<TextInputProps & Props> = ({
 }
 
 const styles = StyleSheet.create({
+  labelView: {
+    flexDirection: 'row',
+  },
   label: {
-    color: colors.white,
+    color: colors.lightPurple,
     paddingLeft: 5,
+  },
+  optional: {
+    fontStyle: 'italic',
+    color: colors.lightPurple,
+    paddingLeft: 5,
+    opacity: 0.5,
   },
 })
