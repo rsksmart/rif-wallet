@@ -42,7 +42,7 @@ describe('BaseButton component', () => {
     expect(onPress).toBeCalledTimes(1)
   })
 
-  it.skip('is not clickable when disabled', () => {
+  it('is not clickable when disabled', () => {
     const onPressDisabled = jest.fn()
     const { getByTestId } = render(
       <BaseButton onPress={onPressDisabled} testID="button" disabled={true}>
@@ -50,8 +50,7 @@ describe('BaseButton component', () => {
       </BaseButton>,
     )
 
-    const click = () => fireEvent.press(getByTestId('button'))
-    console.log('CLICK', click())
-    expect(click).toThrow('No handler function found for event: "press"')
+    expect(fireEvent.press(getByTestId('button'))).toBeUndefined()
+    expect(onPressDisabled).toBeCalledTimes(0)
   })
 })
