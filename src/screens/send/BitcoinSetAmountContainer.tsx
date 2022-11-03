@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { UnspentTransactionType } from '../../lib/bitcoin/types'
 import { convertBtcToSatoshi, validateAmount } from '../../lib/bitcoin/utils'
 import { BigNumber } from 'ethers'
-import { sanitizeDecimalText } from '../../lib/utils'
+import { sanitizeDecimalText, sanitizeMaxDecimalText } from '../../lib/utils'
 import { ISetAmountComponent } from './SetAmountComponent'
 import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 import { BitcoinSetAmountPresentation } from './BitcoinSetAmountPresentation'
@@ -62,7 +62,9 @@ export const BitcoinSetAmountContainer: React.FC<
   const handleAmountChange = React.useCallback(
     (amount: string) => {
       setError('')
-      const amountSanitized = sanitizeDecimalText(amount)
+      const amountSanitized = sanitizeMaxDecimalText(
+        sanitizeDecimalText(amount),
+      )
 
       const { message } = validateAmount(
         convertBtcToSatoshi(amountSanitized),
