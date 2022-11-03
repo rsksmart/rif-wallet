@@ -46,7 +46,11 @@ const ConfirmBitcoinTransactionModal: React.FC<
   )
   const isPaymentValid = () => {
     if (Number(miningFee) && Number(miningFee) < minimumFee.current) {
-      setStatus(`Mining fee is ${minimumFee.current}`)
+      setStatus(`Minimum mining fee is ${minimumFee.current}`)
+      return false
+    }
+    if (Number(miningFee) && Number(miningFee) > maximumMiningFee) {
+      setStatus(`Maximum mining fee is ${maximumMiningFee}`)
       return false
     }
     const totalPayment = Number(miningFee) + Number(amountToPay)
@@ -81,10 +85,21 @@ const ConfirmBitcoinTransactionModal: React.FC<
           case error.toString().includes('min relay fee not met'):
             const minimumFeeResponse = error.toString().split('<')[1].trim()
             minimumFee.current = Number(minimumFeeResponse)
-            setStatus(
-              `Transaction failure due to low mining fee. Mining fee increased to ${minimumFeeResponse}`,
-            )
-            handleMiningFeeChange(minimumFeeResponse)
+            const newFee =
+              minimumFeeResponse > maximumMiningFee
+                ? maximumMiningFee
+                : minimumFeeResponse
+            if (minimumFeeResponse > maximumMiningFee) {
+              setStatus(
+                'Transaction failure due to insufficient funds dedicated to the mining fee. Try to decrease the value sent.',
+              )
+            } else {
+              setStatus(
+                `Transaction failure due to low mining fee. Mining fee increased to ${newFee}`,
+              )
+            }
+
+            handleMiningFeeChange(newFee)
             break
           default:
             setStatus(`Error: ${error.toString()}`)
