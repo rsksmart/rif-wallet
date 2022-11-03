@@ -18,7 +18,7 @@ export const BitcoinSetAmountPresentation: React.FC<
       onChangeText={handleAmountChange}
       value={amountToPay}
       placeholder="0.00"
-      keyboardType="numeric"
+      keyboardType="phone-pad"
       testID={'Amount.Input'}
       placeholderTextColor={colors.gray}
     />
