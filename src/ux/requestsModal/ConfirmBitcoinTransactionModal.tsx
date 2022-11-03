@@ -39,7 +39,7 @@ const ConfirmBitcoinTransactionModal: React.FC<
   const [miningFee, setMiningFee] = useState<string>(
     payload.miningFee.toString(),
   )
-  const minimumFee = React.useRef(payload.miningFee)
+  const minimumFee = React.useRef(141)
   const maximumMiningFee = React.useMemo(
     () => payload.balance - payload.amountToPay,
     [payload],
