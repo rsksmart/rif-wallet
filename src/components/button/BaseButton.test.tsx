@@ -12,7 +12,7 @@ describe('BaseButton component', () => {
         <Text>copy</Text>
       </BaseButton>,
     )
-      expect(component.getByTestId(testID)).toBeDefined()
+    expect(component.getByTestId(testID)).toBeDefined()
   })
 
   test('calls function on press', () => {
