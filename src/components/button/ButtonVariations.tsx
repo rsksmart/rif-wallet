@@ -40,8 +40,8 @@ const Button: React.FC<ButtonProps & { buttonStyles: any }> = ({
       onShowUnderlay={() => setIsPressed(true)}
       onHideUnderlay={() => setIsPressed(false)}>
       <View style={sharedStyles.contentWrapper}>
-        {icon && <View style={sharedStyles.iconContainer}>{icon}</View>}
-        {title && (
+        {icon && <View>{icon}</View>}
+        {title ? (
           <Text
             style={
               disabled
@@ -50,7 +50,7 @@ const Button: React.FC<ButtonProps & { buttonStyles: any }> = ({
             }>
             {title}
           </Text>
-        )}
+        ) : null}
       </View>
     </BaseButton>
   )
@@ -63,10 +63,8 @@ const sharedStyles = StyleSheet.create({
     alignItems: 'center', // vertical align
     alignSelf: 'center', // horizontal align
   },
-  iconContainer: {},
   text: {
     textAlign: 'center',
-    fontWeight: '500',
     fontSize: 16,
   },
 })
