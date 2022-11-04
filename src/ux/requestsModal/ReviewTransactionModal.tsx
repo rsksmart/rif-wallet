@@ -16,7 +16,7 @@ import {
 } from '../../components/button/ButtonVariations'
 import { colors, grid } from '../../styles'
 import ReadOnlyField from './ReadOnlyField'
-import InputField from './InpuField'
+import { RIF_TOKEN_ADDRESS_TESTNET, TWO_RIF } from '../../lib/relay-sdk/helpers'
 
 interface Interface {
   request: SendTransactionRequest
@@ -31,23 +31,22 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
   const { t } = useTranslation()
 
   const txRequest = useMemo(() => request.payload[0], [request])
-  const { enhancedTransactionRequest, isLoaded, setGasLimit, setGasPrice } =
-    useEnhancedWithGas(wallet, txRequest)
+  const { enhancedTransactionRequest, isLoaded } = useEnhancedWithGas(
+    wallet,
+    txRequest,
+  )
 
   const [error, setError] = useState<Error | null>(null)
-  const [payWithGas, setPayWithGas] = useState<boolean>(false)
 
   // convert from string to Transaction and pass out of component
   const confirmTransaction = async () => {
     const confirmObject = {
       gasPrice: BigNumber.from(enhancedTransactionRequest.gasPrice),
       gasLimit: BigNumber.from(enhancedTransactionRequest.gasLimit),
-      tokenPayment: payWithGas
-        ? undefined
-        : {
-            tokenContract: '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
-            tokenAmount: 2,
-          },
+      tokenPayment: {
+        tokenContract: RIF_TOKEN_ADDRESS_TESTNET,
+        tokenAmount: TWO_RIF,
+      },
     }
     try {
       await request.confirm(confirmObject)
@@ -126,48 +125,36 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
         )}
       </View>
 
+      {/*
       <View style={grid.row}>
         <View style={grid.column6}>
           <ReadOnlyField
             label="Paying the fee with"
-            value={payWithGas ? 'rBTC' : 'tRIF'}
+            value={payWithGas ? 'rDOC' : 'tRIF'}
             testID="Fee.Type"
           />
         </View>
         <View style={styles.toggleContainer}>
           <OutlineBorderedButton
             title="Toggle"
-            onPress={() => setPayWithGas(!payWithGas)}
             testID="Toggle.Button"
           />
         </View>
       </View>
 
-      {!payWithGas && (
-        <ReadOnlyField label="Fee in tRIF" value="2 tRIF" testID="tRIF.fee" />
-      )}
 
-      {payWithGas && (
-        <>
-          <InputField
-            label={'gas limit'}
-            value={enhancedTransactionRequest.gasLimit}
-            keyboardType="number-pad"
-            placeholder="gas limit"
-            testID={'gasLimit.TextInput'}
-            handleValueOnChange={setGasLimit}
-          />
-
-          <InputField
-            label={'gas price'}
-            value={enhancedTransactionRequest.gasPrice}
-            keyboardType="number-pad"
-            placeholder="gas price"
-            testID={'gasPrice.TextInput'}
-            handleValueOnChange={setGasPrice}
-          />
-        </>
-      )}
+      <ReadOnlyField label="Fee in tRIF" value="2 tRIF" testID="tRIF.fee" />
+      <ReadOnlyField
+        label="Gas price"
+        value={enhancedTransactionRequest.gasPrice}
+        testID="Gas.Price"
+      />
+      <ReadOnlyField
+        label="Gas limit"
+        value={enhancedTransactionRequest.gasLimit}
+        testID="Gas.Limit"
+      />
+      */}
 
       {error && (
         <View style={sharedStyles.row}>
