@@ -3,6 +3,10 @@ import BIP39 from '../../lib/bitcoin/BIP39'
 import useBitcoinNetworks from '../../components/bitcoin/useBitcoinNetworks'
 import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 import bitcoinNetworkStore from '../../storage/BitcoinNetworkStore'
+import { OnRequest } from '../../lib/core'
+import { BitcoinNetworkWithBIPRequest } from '../../lib/bitcoin/types'
+import { createAndInitializeBipWithRequest } from '../../lib/bitcoin/utils'
+
 export type useBitcoinCoreResultType = {
   networks: Array<BitcoinNetwork>
   networksMap: {
@@ -10,7 +14,17 @@ export type useBitcoinCoreResultType = {
   }
   refreshStoredNetworks: () => void
 }
-const useBitcoinCore = (mnemonic: string): useBitcoinCoreResultType => {
+/**
+ * Hook that will return networks as an array, networks as a map (networksMap) and a function to refresh networks from the storage
+ * This hook will also instantiate the bitcoin networks with a BIPWithRequest class that will handle the payments for the onRequest method
+ * that is required in the wallet
+ * @param mnemonic
+ * @param request
+ */
+const useBitcoinCore = (
+  mnemonic: string,
+  request: OnRequest,
+): useBitcoinCoreResultType => {
   const [networks, refreshStoredNetworks] = useBitcoinNetworks()
   const memoizedNetworks = useMemo(() => {
     if (!mnemonic) {
@@ -19,11 +33,12 @@ const useBitcoinCore = (mnemonic: string): useBitcoinCoreResultType => {
     const BIP39Instance = new BIP39(mnemonic)
     const networksObj: any = {}
     const networksArr = Object.values(networks).map(network => {
-      const bitcoinNetwork = new BitcoinNetwork(
+      const bitcoinNetwork: BitcoinNetworkWithBIPRequest = new BitcoinNetwork(
         network.name,
         network.bips,
         BIP39Instance,
-      )
+        createAndInitializeBipWithRequest(request),
+      ) as BitcoinNetworkWithBIPRequest
       networksObj[network.name] = bitcoinNetwork
       return bitcoinNetwork
     })

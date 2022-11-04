@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     backgroundColor: 'transparent',
+    color: 'black',
   },
   buttonWrapper: {
     flex: 1,

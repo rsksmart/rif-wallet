@@ -1,4 +1,4 @@
-import { createStore } from './SecureStore'
+import { createStore } from './NormalStore'
 
 const key = 'PIN'
 const PINStore = createStore(key)
