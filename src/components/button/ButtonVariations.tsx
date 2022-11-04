@@ -86,6 +86,7 @@ const purpleStyles = StyleSheet.create({
   },
   buttonPressed: {
     backgroundColor: colors.button.primaryPressed,
+    opacity: 0.8,
   },
   text: {
     color: colors.lightPurple,
