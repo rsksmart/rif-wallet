@@ -48,4 +48,25 @@ export const sharedStyles = StyleSheet.create({
     paddingRight: 10,
     marginBottom: 10,
   },
+  inputText: {
+    padding: 15,
+    marginTop: 0,
+    marginBottom: 10,
+
+    borderRadius: 10,
+    backgroundColor: 'rgba(49, 60, 60, 0.1)',
+    shadowColor: 'rgba(0, 0, 0, 0)',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowRadius: 6,
+    shadowOpacity: 1,
+
+    fontSize: 16,
+    fontWeight: '500',
+    fontStyle: 'normal',
+    letterSpacing: 0.24,
+    color: '#373f48',
+  },
 })

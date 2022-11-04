@@ -135,5 +135,15 @@ export const sanitizeDecimalText = (text: string) => {
   return newText
 }
 
+export const sanitizeMaxDecimalText = (
+  text: string,
+  maxDecimal: number = 8,
+) => {
+  let textSplitted = text.split('.')
+  if (textSplitted[1] && textSplitted[1].length > maxDecimal) {
+    return `${textSplitted[0]}.${textSplitted[1].slice(0, 8)}`
+  }
+  return text
+}
 export const convertUnixTimeToFromNowFormat = (unixTime: number): string =>
   moment.unix(Number(unixTime)).fromNow()

@@ -3,9 +3,11 @@ import { Paragraph } from './components'
 import { RIFWallet, Request } from './lib/core'
 import { ScreenWithWallet } from './screens/types'
 import { useBitcoinCoreResultType } from './core/hooks/useBitcoinCore'
+import { BitcoinRequest } from './lib/bitcoin/types'
 export type Wallets = { [id: string]: RIFWallet }
 export type WalletsIsDeployed = { [id: string]: boolean }
-export type Requests = Request[]
+type RequestMixed = Request & BitcoinRequest
+export type Requests = RequestMixed[]
 
 export type AppContextType = {
   mnemonic?: string
