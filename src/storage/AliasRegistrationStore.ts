@@ -3,6 +3,8 @@ import { createStore } from './NormalStore'
 const key = 'ALIAS_REGISTRATION'
 const ProfileRegistrationStore = createStore(key)
 export type IProfileRegistrationStore = {
+  alias: string
+  duration: number
   commitToRegisterHash: string
   commitToRegisterSecret: string
 }

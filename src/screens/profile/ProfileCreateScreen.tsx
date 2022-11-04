@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { IProfileStore } from '../../storage/ProfileStore'
 import { RegularText } from '../../components/typography'
 import { TextInput } from 'react-native-gesture-handler'
@@ -11,6 +11,11 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { ScreenProps } from '../../RootNavigation'
 import { emptyProfile } from '../../core/hooks/useProfile'
 import { fonts } from '../../styles/fonts'
+import {
+  getAliasRegistration,
+  hasAliasRegistration,
+  IProfileRegistrationStore,
+} from '../../storage/AliasRegistrationStore'
 
 export type CreateProfileScreenProps = {
   route: any
@@ -33,6 +38,31 @@ export const ProfileCreateScreen: React.FC<
     await eraseProfile()
     navigation.navigate('Home')
   }
+  const checkRegistrationStatus = async () => {
+    let aliasRegistration: IProfileRegistrationStore
+    let alias: string
+    let duration: number
+    let hash: string
+    const hasStartedRegistration = await hasAliasRegistration()
+
+    if (hasStartedRegistration) {
+      aliasRegistration = await getAliasRegistration()
+      alias = aliasRegistration.alias
+      duration = aliasRegistration.duration
+      hash = aliasRegistration.commitToRegisterHash
+      if (hash) {
+        navigation.navigate('RequestDomain', {
+          navigation,
+          alias: alias,
+          duration: duration,
+        })
+      }
+    }
+  }
+
+  useEffect(() => {
+    checkRegistrationStatus().then()
+  }, [])
   return (
     <>
       <View style={styles.profileHeader}>

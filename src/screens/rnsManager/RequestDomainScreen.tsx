@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import * as Progress from 'react-native-progress'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import { View, Dimensions, Image, TouchableOpacity } from 'react-native'
 import { colors } from '../../styles'
@@ -65,6 +64,8 @@ export const RequestDomainScreen: React.FC<
         secret = commitToRegisterResponse.secret
         hash = commitToRegisterResponse.hash
         await saveAliasRegistration({
+          alias: alias,
+          duration: duration,
           commitToRegisterSecret: commitToRegisterResponse.secret,
           commitToRegisterHash: commitToRegisterResponse.hash,
         })
