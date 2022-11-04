@@ -79,7 +79,7 @@ export const RequestDomainScreen: React.FC<
         const ready = await canReveal()
         setProgress(prev => prev + 0.009)
         if (ready) {
-          await deleteAliasRegistration()
+
           setProcessing(false)
           navigation.navigate('BuyDomain', {
             navigation,
