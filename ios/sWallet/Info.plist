@@ -36,7 +36,7 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>The app will use the camera to operate with Wallet Connect</string>
+	<string>$PRODUCT_NAME will use the camera to operate with Wallet Connect</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSPhotoLibraryUsageDescription</key>
