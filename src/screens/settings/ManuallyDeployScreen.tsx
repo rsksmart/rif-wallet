@@ -7,6 +7,7 @@ import Clipboard from '@react-native-community/clipboard'
 import { colors } from '../../styles'
 import SecondaryButton from '../../components/button/SecondaryButton'
 import { CopyIcon } from '../../components/icons'
+import { RIF_TOKEN_ADDRESS_TESTNET, TWO_RIF } from '../../lib/relay-sdk/helpers'
 
 export const ManuallyDeployScreen: React.FC<
   ScreenWithWallet & {
@@ -24,8 +25,8 @@ export const ManuallyDeployScreen: React.FC<
     setIsDeploying(true)
 
     const freePayment = {
-      tokenContract: '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
-      tokenAmount: '4',
+      tokenContract: RIF_TOKEN_ADDRESS_TESTNET,
+      tokenAmount: TWO_RIF,
     }
 
     wallet

@@ -134,7 +134,11 @@ export class RIFWallet extends Signer implements TypedDataSigner {
 
       // check if paying with tokens:
       if (overriddenOptions && overriddenOptions.tokenPayment) {
-        return this.rifRelaySdk.sendRelayTransaction(transactionRequest, overriddenOptions.tokenPayment)
+        return this.rifRelaySdk.sendRelayTransaction({
+          ...transactionRequest,
+          gasPrice: overriddenOptions.gasPrice,
+          gasLimit: overriddenOptions.gasLimit,
+        }, overriddenOptions.tokenPayment)
       }
 
       // direct execute transaction paying gas with EOA wallet:
