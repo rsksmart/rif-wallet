@@ -50,7 +50,6 @@ export const SearchDomainScreen: React.FC<
   return (
     <>
       <View style={rnsManagerStyles.profileHeader}>
-        {/*@ts-ignore*/}
         <TouchableOpacity onPress={() => navigation.navigate('Home')}>
           <View style={rnsManagerStyles.backButton}>
             <MaterialIcon name="west" color={colors.lightPurple} size={10} />
@@ -121,6 +120,7 @@ export const SearchDomainScreen: React.FC<
           <PurpleButton
             disabled={domainToLookUp.length < 5}
             onPress={() =>
+              // @ts-ignore
               navigation.navigate('RequestDomain', {
                 navigation,
                 alias: domainToLookUp.replace('.rsk', ''),

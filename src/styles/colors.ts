@@ -47,4 +47,8 @@ export const colors = {
     green: '#00d8a6',
     red: '#b02f47',
   },
+  button: {
+    primary: '#3901BD',
+    primaryPressed: '#4918c3',
+  },
 }
