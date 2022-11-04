@@ -16,7 +16,7 @@ import { MediumText } from '../../components'
 import addresses from './addresses.json'
 import TitleStatus from './TitleStatus'
 import { TokenImage } from '../home/TokenImage'
-import {deleteAliasRegistration} from "../../storage/AliasRegistrationStore";
+import { deleteAliasRegistration } from '../../storage/AliasRegistrationStore'
 
 type Props = {
   route: any

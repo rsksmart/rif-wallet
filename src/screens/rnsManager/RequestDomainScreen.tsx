@@ -15,7 +15,6 @@ import { MediumText } from '../../components'
 import addresses from './addresses.json'
 import TitleStatus from './TitleStatus'
 import {
-  deleteAliasRegistration,
   getAliasRegistration,
   hasAliasRegistration,
   IProfileRegistrationStore,
@@ -79,7 +78,6 @@ export const RequestDomainScreen: React.FC<
         const ready = await canReveal()
         setProgress(prev => prev + 0.009)
         if (ready) {
-
           setProcessing(false)
           navigation.navigate('BuyDomain', {
             navigation,
