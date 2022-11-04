@@ -48,6 +48,10 @@ export type PaymentType = {
   miningFee: number
 }
 
+export type PaymentTypeWithBalance = PaymentType & { balance: number }
+
+export type EstimateFeeType = Omit<PaymentType, 'miningFee'>
+
 type PaymentTypeWithPaymentFacade = PaymentType & {
   payment: BIPRequestPaymentFacade
   balance: number
