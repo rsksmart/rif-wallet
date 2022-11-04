@@ -50,7 +50,7 @@ describe('BaseButton component', () => {
       </BaseButton>,
     )
 
-    const click = () => fireEvent.press(getByTestId('button'))
-    expect(click).toThrow('No handler function found for event: "press"')
+    expect(fireEvent.press(getByTestId('button'))).toBeUndefined()
+    expect(onPressDisabled).toBeCalledTimes(0)
   })
 })
