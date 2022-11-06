@@ -29,4 +29,7 @@ const styles = StyleSheet.create({
     color: colors.lightPurple,
     opacity: 0.5,
   },
+  textPressed: {
+    color: colors.lightPurple,
+  }
 })
