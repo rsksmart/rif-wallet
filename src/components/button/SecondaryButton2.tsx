@@ -37,5 +37,5 @@ const styles = StyleSheet.create({
   },
   textPressed: {
     color: colors.button.secondary,
-  }
+  },
 })

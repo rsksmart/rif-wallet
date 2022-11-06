@@ -31,5 +31,5 @@ const styles = StyleSheet.create({
   },
   textPressed: {
     color: colors.lightPurple,
-  }
+  },
 })

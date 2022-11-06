@@ -11,7 +11,6 @@ import { emptyProfile } from '../../core/hooks/useProfile'
 import { ScreenProps } from '../../RootNavigation'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
-import PrimaryButton from '../../components/button/PrimaryButton'
 
 export type CreateProfileScreenProps = {
   route: any
