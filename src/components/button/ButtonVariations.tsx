@@ -10,7 +10,7 @@ export interface ButtonProps extends BaseButtonInterface {
   accessibilityLabel?: string
 }
 
-const Button: React.FC<ButtonProps & { buttonStyles: any }> = ({
+export const Button: React.FC<ButtonProps & { buttonStyles: any }> = ({
   title,
   disabled,
   icon,
@@ -66,34 +66,6 @@ const sharedStyles = StyleSheet.create({
   text: {
     textAlign: 'center',
     fontSize: 16,
-  },
-})
-
-export const PurpleButton: React.FC<ButtonProps> = props => (
-  <Button {...props} buttonStyles={purpleStyles} />
-)
-
-const purpleStyles = StyleSheet.create({
-  button: {
-    backgroundColor: colors.background.bustyBlue,
-  },
-  buttonDisabled: {
-    backgroundColor: colors.button.primary,
-    opacity: 0.5,
-  },
-  buttonActive: {
-    backgroundColor: colors.button.primary,
-  },
-  buttonPressed: {
-    backgroundColor: colors.button.primaryPressed,
-    opacity: 0.8,
-  },
-  text: {
-    color: colors.lightPurple,
-  },
-  textDisabled: {
-    color: colors.lightPurple,
-    opacity: 0.5,
   },
 })
 

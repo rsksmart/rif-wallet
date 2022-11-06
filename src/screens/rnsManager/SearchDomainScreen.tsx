@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
-import { PurpleButton } from '../../components/button/ButtonVariations'
+import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
 import { colors } from '../../styles'
 
 import { rnsManagerStyles } from './rnsManagerStyles'
@@ -117,7 +117,7 @@ export const SearchDomainScreen: React.FC<
         </View>
 
         <View style={rnsManagerStyles.bottomContainer}>
-          <PurpleButton
+          <PrimaryButton2
             disabled={domainToLookUp.length < 5}
             onPress={() =>
               // @ts-ignore
