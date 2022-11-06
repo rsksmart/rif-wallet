@@ -31,6 +31,12 @@ export const Button: React.FC<ButtonProps & { buttonStyles: any }> = ({
       : buttonStyles.buttonActive.backgroundColor
     : buttonStyles.buttonPressed?.backgroundColor
 
+  const textStyle = isPressed
+    ? buttonStyles.textPressed
+    : disabled
+    ? buttonStyles.textDisabled
+    : buttonStyles.text
+
   return (
     <BaseButton
       {...props}
@@ -42,14 +48,7 @@ export const Button: React.FC<ButtonProps & { buttonStyles: any }> = ({
       <View style={sharedStyles.contentWrapper}>
         {icon && <View>{icon}</View>}
         {title ? (
-          <Text
-            style={
-              disabled
-                ? { ...sharedStyles.text, ...buttonStyles.textDisabled }
-                : { ...sharedStyles.text, ...buttonStyles.text }
-            }>
-            {title}
-          </Text>
+          <Text style={{ ...sharedStyles.text, ...textStyle }}>{title}</Text>
         ) : null}
       </View>
     </BaseButton>

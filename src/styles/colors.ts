@@ -49,6 +49,8 @@ export const colors = {
   },
   button: {
     primary: '#3901BD',
-    primaryPressed: '#4918c3',
+    primaryPressed: '#4918C3',
+    secondary: '#020034',
+    secondaryPressed: '#DBE3FF',
   },
 }

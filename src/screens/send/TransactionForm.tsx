@@ -11,6 +11,7 @@ import { RecentTransactions } from './RecentTransactions'
 import { MixedTokenAndNetworkType } from './types'
 import { SetAmountHOCComponent } from './SetAmountHOCComponent'
 import { AddressInputSelector } from '../../components/address/AddressInputSelector'
+import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
 
 interface Interface {
   onConfirm: (
@@ -131,7 +132,7 @@ const TransactionForm: React.FC<Interface> = ({
             </View>
 
             <View style={styles.centerRow}>
-              <BlueButton
+              <PrimaryButton2
                 underlayColor={'red'}
                 onPress={handleConfirmClick}
                 disabled={!isValidTransaction}
