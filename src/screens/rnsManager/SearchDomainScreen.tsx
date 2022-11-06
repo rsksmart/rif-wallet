@@ -21,6 +21,7 @@ export const SearchDomainScreen: React.FC<
   ScreenProps<'SearchDomain'> & ScreenWithWallet & Props
 > = ({ wallet, navigation }) => {
   const [domainToLookUp, setDomainToLookUp] = useState<string>('')
+  const [validDomain, setValidDomain] = useState<boolean>(false)
 
   useState<boolean>(false)
   const [selectedYears, setSelectedYears] = useState<number>(2)
@@ -37,9 +38,12 @@ export const SearchDomainScreen: React.FC<
     }
   }
 
-  const handleDomainAvailable = async (domain: string) => {
-    const price = await calculatePrice(domain, selectedYears)
-    setSelectedDomainPrice(price + '')
+  const handleDomainAvailable = async (domain: string, valid: boolean) => {
+    setValidDomain(valid)
+    if (valid) {
+      const price = await calculatePrice(domain, selectedYears)
+      setSelectedDomainPrice(price + '')
+    }
   }
   const handleYearsChange = async (years: number) => {
     setSelectedYears(years)
@@ -118,7 +122,7 @@ export const SearchDomainScreen: React.FC<
 
         <View style={rnsManagerStyles.bottomContainer}>
           <PrimaryButton2
-            disabled={domainToLookUp.length < 5}
+            disabled={!validDomain}
             onPress={() =>
               // @ts-ignore
               navigation.navigate('RequestDomain', {
