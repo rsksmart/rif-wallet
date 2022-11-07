@@ -1,6 +1,7 @@
 import React from 'react'
 import { render, fireEvent, RenderAPI } from '@testing-library/react-native'
-import PinContainer from './PinContainer'
+import { PinContainer } from './PinContainer'
+import { pinLength } from '../../shared/costants'
 
 describe('PinContainer test', () => {
   let pinResult: string
@@ -16,7 +17,9 @@ describe('PinContainer test', () => {
     Array.from(Array(length), (_, i) => curComponent.getByTestId(`keypad_${i}`))
   beforeEach(() => {
     jest.clearAllMocks()
-    component = render(<PinContainer pinLength={4} onPinSubmit={onPinSubmit} />)
+    component = render(
+      <PinContainer pinLength={pinLength} onPinSubmit={onPinSubmit} />,
+    )
   })
   test('should not submit the pin after 3 digits press', () => {
     const keypadNodes = getStaticKeypadNumberNodes(component, 3)
