@@ -100,7 +100,6 @@ export const RootNavigation: React.FC<{
   hasPin: boolean
   isKeyboardVisible: boolean
   changeTopColor: (color: string) => void
-  rifWalletServicesSocket: IRifWalletServicesSocket
   keyManagementProps: CreateKeysProps
   createPin: (newPin: string) => Promise<void>
   editPin: (newPin: string) => Promise<void>

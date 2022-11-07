@@ -146,7 +146,6 @@ export const Core = () => {
                   hasKeys={state.hasKeys}
                   hasPin={state.hasPin}
                   isKeyboardVisible={isKeyboardVisible}
-                  rifWalletServicesSocket={rifWalletServicesSocket}
                   keyManagementProps={{
                     generateMnemonic: () =>
                       KeyManagementSystem.create().mnemonic,
