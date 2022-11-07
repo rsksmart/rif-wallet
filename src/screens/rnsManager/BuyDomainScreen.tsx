@@ -4,7 +4,7 @@ import { BigNumber, utils } from 'ethers'
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import moment from 'moment'
 
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import { colors } from '../../styles'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
@@ -16,7 +16,7 @@ import { MediumText } from '../../components'
 import addresses from './addresses.json'
 import TitleStatus from './TitleStatus'
 import { TokenImage } from '../home/TokenImage'
-import { AvatarIcon } from '../../components/icons/AvatarIcon'
+import { deleteAliasRegistration } from '../../storage/AliasRegistrationStore'
 
 type Props = {
   route: any
@@ -26,7 +26,6 @@ export const BuyDomainScreen: React.FC<
   ScreenProps<'BuyDomain'> & ScreenWithWallet & Props
 > = ({ wallet, navigation, route }) => {
   const { alias, domainSecret, duration } = route.params
-  const fullAlias = alias + '.rsk'
 
   const expiryDate = moment(moment(), 'MM-DD-YYYY').add(duration, 'years')
 
@@ -53,7 +52,6 @@ export const BuyDomainScreen: React.FC<
       })
     }
   }, [])
-
   const registerDomain = async (domain: string) => {
     try {
       const durationToRegister = BigNumber.from(2)
@@ -65,7 +63,7 @@ export const BuyDomainScreen: React.FC<
         durationToRegister,
         domainPrice!,
       )
-
+      await deleteAliasRegistration()
       setRegisterDomainInfo('Transaction sent. Please wait...')
       setRegisterInProcess(true)
 
@@ -115,8 +113,10 @@ export const BuyDomainScreen: React.FC<
             </>
           )}
           <View style={rnsManagerStyles.profileImageContainer}>
-            <AvatarIcon value={fullAlias} size={80} />
-
+            <Image
+              style={rnsManagerStyles.profileImage}
+              source={require('../../images/image_place_holder.jpeg')}
+            />
             <View>
               <MediumText style={rnsManagerStyles.profileDisplayAlias}>
                 {alias}.rsk

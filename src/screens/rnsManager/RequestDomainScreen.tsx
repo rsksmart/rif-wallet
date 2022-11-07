@@ -1,20 +1,25 @@
-import { RSKRegistrar } from '@rsksmart/rns-sdk'
-import React, { useEffect, useState } from 'react'
-import * as Progress from 'react-native-progress'
+import React, { useState, useEffect } from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import { RSKRegistrar } from '@rsksmart/rns-sdk'
+import * as Progress from 'react-native-progress'
 
-import { Dimensions, TouchableOpacity, View } from 'react-native'
+import { View, Dimensions, Image, TouchableOpacity } from 'react-native'
 import { colors } from '../../styles'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
 import { PurpleButton } from '../../components/button/ButtonVariations'
 
-import { MediumText } from '../../components'
-import { AvatarIcon } from '../../components/icons/AvatarIcon'
 import { ScreenProps } from '../../RootNavigation'
 import { ScreenWithWallet } from '../types'
+import { MediumText } from '../../components'
 import addresses from './addresses.json'
 import TitleStatus from './TitleStatus'
+import {
+  getAliasRegistration,
+  hasAliasRegistration,
+  IProfileRegistrationStore,
+  saveAliasRegistration,
+} from '../../storage/AliasRegistrationStore'
 
 type Props = {
   route: any
@@ -24,7 +29,6 @@ export const RequestDomainScreen: React.FC<
   ScreenProps<'RequestDomain'> & ScreenWithWallet & Props
 > = ({ wallet, navigation, route }) => {
   const { alias, duration } = route.params
-  const fullAlias = alias + '.rsk'
 
   const rskRegistrar = new RSKRegistrar(
     addresses.rskOwnerAddress,
@@ -40,13 +44,37 @@ export const RequestDomainScreen: React.FC<
   const commitToRegister = async () => {
     setProcessing(true)
     try {
-      const { makeCommitmentTransaction, secret, canReveal } =
-        await rskRegistrar.commitToRegister(alias, wallet.smartWallet.address)
+      let aliasRegistration: IProfileRegistrationStore
+      let secret: string
+      let hash: string
+
+      let commitToRegisterResponse
+      const hasStartedRegistration = await hasAliasRegistration()
+
+      if (hasStartedRegistration) {
+        aliasRegistration = await getAliasRegistration()
+        secret = aliasRegistration.commitToRegisterSecret
+        hash = aliasRegistration.commitToRegisterHash
+      } else {
+        commitToRegisterResponse = await rskRegistrar.commitToRegister(
+          alias,
+          wallet.smartWallet.address,
+        )
+        secret = commitToRegisterResponse.secret
+        hash = commitToRegisterResponse.hash
+        await saveAliasRegistration({
+          alias: alias,
+          duration: duration,
+          commitToRegisterSecret: commitToRegisterResponse.secret,
+          commitToRegisterHash: commitToRegisterResponse.hash,
+        })
+      }
 
       setCommitToRegisterInfo('registering your alias...')
       setCommitToRegisterInfo2('estimated wait: 3 minutes')
 
       const intervalId = setInterval(async () => {
+        const canReveal = await rskRegistrar.canReveal(hash)
         const ready = await canReveal()
         setProgress(prev => prev + 0.009)
         if (ready) {
@@ -63,7 +91,9 @@ export const RequestDomainScreen: React.FC<
           clearInterval(intervalId)
         }
       }, 1000)
-      await makeCommitmentTransaction.wait()
+      if (commitToRegisterResponse) {
+        await commitToRegisterResponse.makeCommitmentTransaction.wait()
+      }
       setCommitToRegisterInfo('Transaction confirmed. Please wait...')
     } catch (e: any) {
       setProcessing(false)
@@ -94,10 +124,13 @@ export const RequestDomainScreen: React.FC<
         />
         <View style={rnsManagerStyles.marginBottom}>
           <View style={rnsManagerStyles.profileImageContainer}>
-            <AvatarIcon value={fullAlias} size={80} />
+            <Image
+              style={rnsManagerStyles.profileImage}
+              source={require('../../images/image_place_holder.jpeg')}
+            />
             <View>
               <MediumText style={rnsManagerStyles.profileDisplayAlias}>
-                {fullAlias}
+                {alias}.rsk
               </MediumText>
               <Progress.Bar
                 progress={progress}

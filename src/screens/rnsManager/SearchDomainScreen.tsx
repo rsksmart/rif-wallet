@@ -12,7 +12,6 @@ import { ScreenWithWallet } from '../types'
 import DomainLookUp from '../../screens/rnsManager/DomainLookUp'
 import { MediumText } from '../../components'
 import TitleStatus from './TitleStatus'
-import { AvatarIcon } from '../../components/icons/AvatarIcon'
 
 type Props = {
   route: any
@@ -53,7 +52,7 @@ export const SearchDomainScreen: React.FC<
         {/*@ts-ignore*/}
         <TouchableOpacity onPress={() => navigation.navigate('Home')}>
           <View style={rnsManagerStyles.backButton}>
-            <MaterialIcon name="west" color={colors.lightPurple} size={10} />
+            <MaterialIcon name="west" color="white" size={10} />
           </View>
         </TouchableOpacity>
       </View>
@@ -66,17 +65,13 @@ export const SearchDomainScreen: React.FC<
         />
         <View style={rnsManagerStyles.marginBottom}>
           <View style={rnsManagerStyles.profileImageContainer}>
-            {domainToLookUp.length >= 5 ? (
-              <AvatarIcon value={domainToLookUp + '.rsk'} size={80} />
-            ) : (
-              <Image
-                style={rnsManagerStyles.profileImage}
-                source={require('../../images/image_place_holder.jpeg')}
-              />
-            )}
+            <Image
+              style={rnsManagerStyles.profileImage}
+              source={require('../../images/image_place_holder.jpeg')}
+            />
             <View>
               <MediumText style={rnsManagerStyles.profileDisplayAlias}>
-                {domainToLookUp !== '' ? domainToLookUp + '.rsk' : 'alias name'}
+                {domainToLookUp !== '' ? domainToLookUp : 'alias name'}
               </MediumText>
             </View>
           </View>
@@ -91,9 +86,21 @@ export const SearchDomainScreen: React.FC<
           />
         </View>
         <View style={styles.flexContainer}>
-          <MediumText style={styles.priceText}>
-            {`${selectedYears} years ${selectedDomainPrice} rif`}
-          </MediumText>
+          <View style={styles.priceContainer}>
+            <MediumText
+              style={
+                styles.priceText
+              }>{`${selectedYears} years ${selectedDomainPrice} rif`}</MediumText>
+          </View>
+          <TouchableOpacity
+            onPress={() => handleYearsChange(selectedYears + 1)}
+            style={styles.addIcon}>
+            <MaterialIcon
+              name="add"
+              color={colors.background.darkBlue}
+              size={20}
+            />
+          </TouchableOpacity>
           {selectedYears > 1 && (
             <TouchableOpacity
               onPress={() => handleYearsChange(selectedYears - 1)}
@@ -105,20 +112,10 @@ export const SearchDomainScreen: React.FC<
               />
             </TouchableOpacity>
           )}
-          <TouchableOpacity
-            onPress={() => handleYearsChange(selectedYears + 1)}
-            style={styles.addIcon}>
-            <MaterialIcon
-              name="add"
-              color={colors.background.darkBlue}
-              size={20}
-            />
-          </TouchableOpacity>
         </View>
 
         <View style={rnsManagerStyles.bottomContainer}>
           <PurpleButton
-            disabled={domainToLookUp.length < 5}
             onPress={() =>
               navigation.navigate('RequestDomain', {
                 navigation,
@@ -138,27 +135,28 @@ export const SearchDomainScreen: React.FC<
 const styles = StyleSheet.create({
   flexContainer: {
     flexDirection: 'row',
+  },
+  priceContainer: {
     backgroundColor: colors.background.secondary,
-    borderWidth: 1,
     borderRadius: 15,
-    paddingVertical: 12,
-    alignItems: 'center',
+    width: '100%',
+    padding: 15,
   },
   priceText: {
-    flex: 1,
-    width: '100%',
-    color: colors.lightPurple,
-    marginLeft: 15,
-  },
-  minusIcon: {
-    backgroundColor: 'gray',
-    borderRadius: 20,
-    margin: 5,
+    color: 'white',
   },
   addIcon: {
+    right: 60,
+    top: 15,
     backgroundColor: 'gray',
+    height: 20,
     borderRadius: 20,
-    margin: 5,
-    marginRight: 10,
+  },
+  minusIcon: {
+    right: 50,
+    top: 15,
+    backgroundColor: 'gray',
+    height: 20,
+    borderRadius: 20,
   },
 })

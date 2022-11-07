@@ -15,7 +15,7 @@ export const rnsManagerStyles = StyleSheet.create({
   },
 
   backButton: {
-    color: colors.lightPurple,
+    color: colors.white,
     backgroundColor: colors.blue2,
     borderRadius: 20,
     padding: 10,
@@ -34,14 +34,14 @@ export const rnsManagerStyles = StyleSheet.create({
     borderRadius: 100,
   },
   profileDisplayAlias: {
-    color: colors.lightPurple,
+    color: colors.white,
     padding: 10,
     paddingBottom: 0,
     alignSelf: 'center',
     fontSize: 18,
   },
   aliasRequestInfo: {
-    color: colors.lightPurple,
+    color: colors.white,
     alignSelf: 'center',
     padding: 5,
     paddingTop: 10,

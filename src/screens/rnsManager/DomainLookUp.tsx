@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
 import { TextInput } from 'react-native-gesture-handler'
 
-import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import { StyleSheet, View } from 'react-native'
+import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import {
-  AddressValidationMessage,
   validateAddress,
+  AddressValidationMessage,
 } from '../../components/address/lib'
-import { MediumText } from '../../components/typography'
 import { colors } from '../../styles'
 import addresses from './addresses.json'
+import { MediumText } from '../../components/typography'
 
 type DomainLookUpProps = {
   initialValue: string
@@ -44,7 +44,7 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
     if (!inputText) {
       return
     }
-    const newValidationMessage = validateAddress(inputText + '.rsk', -1)
+    const newValidationMessage = validateAddress(inputText, -1)
     if (newValidationMessage === AddressValidationMessage.DOMAIN) {
       await searchDomain(inputText)
     } else {
@@ -53,7 +53,6 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
   }
   const searchDomain = async (domain: string) => {
     const domainName = domain.replace('.rsk', '')
-    setError('')
 
     if (!/^[a-z0-9]*$/.test(domainName)) {
       console.log('Only lower cases and numbers are allowed')
@@ -62,11 +61,14 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
       onDomainAvailable(domainName, false)
       return
     }
-
     if (domainName.length < 5) {
-      setDomainAvailability('')
+      console.log('Only domains with 5 or more characters are allowed')
+      setError('Only domains with 5 or more characters are allowed')
+      setDomainAvailability('no valid')
+      onDomainAvailable(domainName, false)
       return
     }
+    setError('')
 
     const available = (await rskRegistrar.available(
       domainName,
@@ -92,15 +94,19 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
           autoCapitalize="none"
         />
         {domainAvailability === 'available' && (
-          <MediumText style={styles.availableLabel}>
-            {domainAvailability}
-          </MediumText>
+          <View>
+            <MediumText style={styles.availableLabel}>
+              {domainAvailability}
+            </MediumText>
+          </View>
         )}
         {(domainAvailability === 'taken' ||
           domainAvailability === 'no valid') && (
-          <MediumText style={styles.takenLabel}>
-            {domainAvailability}
-          </MediumText>
+          <View>
+            <MediumText style={styles.takenLabel}>
+              {domainAvailability}
+            </MediumText>
+          </View>
         )}
       </View>
       <View>
@@ -117,28 +123,30 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
 const styles = StyleSheet.create({
   rowContainer: {
     flexDirection: 'row',
-    backgroundColor: colors.background.secondary,
-    borderWidth: 1,
-    borderRadius: 15,
-    paddingHorizontal: 9,
-    paddingVertical: 3,
-    alignItems: 'center',
-  },
-  input: {
-    flex: 1,
-    width: '100%',
-    color: colors.lightPurple,
-    fontSize: 16,
-    fontWeight: 'bold',
   },
   availableLabel: {
     color: colors.green,
+    right: 80,
+    top: 19,
   },
   takenLabel: {
     color: colors.red,
+    right: 60,
+    top: 19,
   },
   infoLabel: {
-    color: colors.lightPurple,
+    color: colors.white,
+  },
+  input: {
+    width: '100%',
+    backgroundColor: colors.background.secondary,
+    borderWidth: 1,
+    borderRadius: 15,
+    color: colors.white,
+    fontSize: 16,
+    fontWeight: '600',
+    padding: 14,
+    paddingRight: 100,
   },
 })
 
