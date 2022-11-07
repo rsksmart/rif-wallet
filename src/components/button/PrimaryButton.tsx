@@ -1,13 +1,13 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
 import { colors } from '../../styles'
-import BaseButton, { BaseButtonInterface } from './BaseButton'
+import BaseButton, { BaseButtonProps } from './BaseButton'
 
 type PrimaryButtonType = {
   children: React.ReactNode
   style?: object
 }
-const PrimaryButton: React.FC<BaseButtonInterface & PrimaryButtonType> = ({
+const PrimaryButton: React.FC<BaseButtonProps & PrimaryButtonType> = ({
   children,
   style = {},
   ...props

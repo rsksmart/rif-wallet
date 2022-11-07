@@ -1,18 +1,19 @@
 import React, { ReactNode } from 'react'
 import { StyleSheet, TouchableHighlight, View } from 'react-native'
 
-export interface BaseButtonInterface {
+export interface BaseButtonProps {
   disabled?: boolean
   testID?: string
   accessibilityLabel?: string
   style?: any
   underlayColor?: string
+  children?: ReactNode
   onPress?: () => any
   onShowUnderlay?: () => any
   onHideUnderlay?: () => any
 }
 
-const BaseButton: React.FC<BaseButtonInterface & { children: ReactNode }> = ({
+const BaseButton: React.FC<BaseButtonProps> = ({
   children,
   style,
   underlayColor,

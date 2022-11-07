@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Tabs } from '../../components/'
 import { AddressInputSelector } from '../../components/address/AddressInputSelector'
-import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
+import { TransferButton } from '../../components/button/TransferButton'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { colors, grid } from '../../styles'
 import { IActivityTransaction, IPrice } from '../../subscriptions/types'
@@ -131,11 +131,10 @@ const TransactionForm: React.FC<Interface> = ({
             </View>
 
             <View style={styles.centerRow}>
-              <PrimaryButton2
-                underlayColor={'red'}
+              <TransferButton
+                style={styles.button}
                 onPress={handleConfirmClick}
                 disabled={!isValidTransaction}
-                title="review"
               />
             </View>
           </>

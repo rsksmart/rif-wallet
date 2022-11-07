@@ -1,25 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
 import { colors } from '../../styles'
-import BaseButton, { BaseButtonInterface } from './BaseButton'
+import BaseButton, { BaseButtonProps } from './BaseButton'
 
-export interface ButtonProps extends BaseButtonInterface {
+export interface ButtonProps extends BaseButtonProps {
   title?: string
   icon?: any
   accessibilityLabel?: string
+  buttonStyles?: any
 }
 
-export const Button: React.FC<ButtonProps & { buttonStyles: any }> = ({
+export const Button: React.FC<ButtonProps> = ({
   title,
   disabled,
   icon,
+  style,
   buttonStyles,
   ...props
 }) => {
-  const [isPressed, setIsPressed] = React.useState(false)
+  const [isPressed, setIsPressed] = useState(false)
 
-  const style = isPressed
+  const baseButtonStyle = isPressed
     ? buttonStyles.buttonPressed
     : disabled
     ? buttonStyles.buttonDisabled
@@ -40,16 +42,16 @@ export const Button: React.FC<ButtonProps & { buttonStyles: any }> = ({
   return (
     <BaseButton
       {...props}
-      style={style}
+      style={{ ...style, ...baseButtonStyle }}
       underlayColor={underlayColor}
       disabled={disabled}
       onShowUnderlay={() => setIsPressed(true)}
       onHideUnderlay={() => setIsPressed(false)}>
       <View style={sharedStyles.contentWrapper}>
         {icon && <View>{icon}</View>}
-        {title ? (
+        {title && (
           <Text style={{ ...sharedStyles.text, ...textStyle }}>{title}</Text>
-        ) : null}
+        )}
       </View>
     </BaseButton>
   )
