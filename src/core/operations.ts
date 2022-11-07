@@ -59,7 +59,7 @@ export const creteKMS =
     }
   }
 
-export const addNextWallet = (
+export const addNextWallet = async (
   kms: KeyManagementSystem,
   createRIFWallet: CreateRIFWallet,
   networkId: number,
@@ -69,14 +69,14 @@ export const addNextWallet = (
   // save wallet in KSM
   save()
   // save serialized wallet in storage
-  return saveKeys(kms.serialize()).then(() =>
-    createRIFWallet(wallet).then(rifWallet =>
-      rifWallet.smartWalletFactory.isDeployed().then(isDeloyed => ({
-        rifWallet,
-        isDeloyed,
-      })),
-    ),
-  )
+  saveKeys(kms.serialize())
+  const rifWallet = await createRIFWallet(wallet)
+  const isDeloyed = await rifWallet.smartWalletFactory.isDeployed()
+
+  return {
+    rifWallet,
+    isDeloyed,
+  }
 }
 
 export const deleteCache = () => {
