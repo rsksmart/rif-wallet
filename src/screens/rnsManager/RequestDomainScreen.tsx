@@ -15,6 +15,12 @@ import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { ScreenWithWallet } from '../types'
 import addresses from './addresses.json'
 import TitleStatus from './TitleStatus'
+import {
+  getAliasRegistration,
+  hasAliasRegistration,
+  IProfileRegistrationStore,
+  saveAliasRegistration,
+} from '../../storage/AliasRegistrationStore'
 
 type Props = {
   route: any
@@ -40,13 +46,37 @@ export const RequestDomainScreen: React.FC<
   const commitToRegister = async () => {
     setProcessing(true)
     try {
-      const { makeCommitmentTransaction, secret, canReveal } =
-        await rskRegistrar.commitToRegister(alias, wallet.smartWallet.address)
+      let aliasRegistration: IProfileRegistrationStore
+      let secret: string
+      let hash: string
+
+      let commitToRegisterResponse
+      const hasStartedRegistration = await hasAliasRegistration()
+
+      if (hasStartedRegistration) {
+        aliasRegistration = await getAliasRegistration()
+        secret = aliasRegistration.commitToRegisterSecret
+        hash = aliasRegistration.commitToRegisterHash
+      } else {
+        commitToRegisterResponse = await rskRegistrar.commitToRegister(
+          alias,
+          wallet.smartWallet.address,
+        )
+        secret = commitToRegisterResponse.secret
+        hash = commitToRegisterResponse.hash
+        await saveAliasRegistration({
+          alias: alias,
+          duration: duration,
+          commitToRegisterSecret: commitToRegisterResponse.secret,
+          commitToRegisterHash: commitToRegisterResponse.hash,
+        })
+      }
 
       setCommitToRegisterInfo('registering your alias...')
       setCommitToRegisterInfo2('estimated wait: 3 minutes')
 
       const intervalId = setInterval(async () => {
+        const canReveal = await rskRegistrar.canReveal(hash)
         const ready = await canReveal()
         setProgress(prev => prev + 0.009)
         if (ready) {
@@ -63,7 +93,9 @@ export const RequestDomainScreen: React.FC<
           clearInterval(intervalId)
         }
       }, 1000)
-      await makeCommitmentTransaction.wait()
+      if (commitToRegisterResponse) {
+        await commitToRegisterResponse.makeCommitmentTransaction.wait()
+      }
       setCommitToRegisterInfo('Transaction confirmed. Please wait...')
     } catch (e: any) {
       setProcessing(false)

@@ -34,7 +34,7 @@ export const AliasBoughtScreen: React.FC<
   useEffect(() => {
     setProfile({
       ...profile,
-      alias,
+      alias: `${alias}.rsk`,
     })
     const fetchData = async () => {
       await tx.wait()

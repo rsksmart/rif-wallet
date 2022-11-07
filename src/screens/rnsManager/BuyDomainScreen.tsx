@@ -17,7 +17,7 @@ import addresses from './addresses.json'
 import TitleStatus from './TitleStatus'
 import { TokenImage } from '../home/TokenImage'
 import { AvatarIcon } from '../../components/icons/AvatarIcon'
-
+import { deleteAliasRegistration } from '../../storage/AliasRegistrationStore'
 type Props = {
   route: any
 }
@@ -65,7 +65,7 @@ export const BuyDomainScreen: React.FC<
         durationToRegister,
         domainPrice!,
       )
-
+      await deleteAliasRegistration()
       setRegisterDomainInfo('Transaction sent. Please wait...')
       setRegisterInProcess(true)
 

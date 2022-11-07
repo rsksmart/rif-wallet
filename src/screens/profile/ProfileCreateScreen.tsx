@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { RegularText } from '../../components/typography'
-import { IProfileStore } from '../../storage/ProfileStore'
+import { IProfileStore } from '../../storage/MainStorage'
 
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
