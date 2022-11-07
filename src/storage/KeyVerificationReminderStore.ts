@@ -1,11 +1,11 @@
-import { createStore } from './NormalStore'
+import { Store } from './Store'
 
 const key = 'KeyVerificationReminder'
-const KeyVerificationReminderStore = createStore(key)
+const KeyVerificationReminderStore = new Store(key)
 
 export const hasKeyVerificationReminder = KeyVerificationReminderStore.has
 export const getKeyVerificationReminder = async () => {
   return (await KeyVerificationReminderStore.get()) === 'true'
 }
 export const saveKeyVerificationReminder = (value: boolean) =>
-  KeyVerificationReminderStore.save(value.toString())
+  KeyVerificationReminderStore.set(value.toString())

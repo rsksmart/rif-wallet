@@ -1,7 +1,7 @@
-import { createStore } from './NormalStore'
+import { Store } from './Store'
 
 const key = 'PROFILE'
-const ProfileStore = createStore(key)
+const ProfileStore = new Store(key)
 export type IProfileStore = {
   alias: string
   phone: string
@@ -17,7 +17,7 @@ export const getProfile = async () => {
   return store
 }
 
-export const deleteProfile = ProfileStore.remove
+export const deleteProfile = ProfileStore.deleteAll
 
 export const saveProfile = async (profile: IProfileStore) =>
-  ProfileStore.save(JSON.stringify(profile))
+  ProfileStore.set(JSON.stringify(profile))

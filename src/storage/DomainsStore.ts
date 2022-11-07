@@ -1,7 +1,7 @@
-import { createStore } from './NormalStore'
+import { Store } from './Store'
 
 const key = 'DOMAINS'
-const DomainStore = createStore(key)
+const DomainStore = new Store(key)
 
 type DomainStoreType = {
   [owner: string]: string[]
@@ -22,7 +22,7 @@ export const addDomain = async (owner: string, domain: string) => {
     store[owner] = []
   }
   store[owner].push(domain)
-  DomainStore.save(JSON.stringify(store))
+  DomainStore.set(store)
 }
 
-export const deleteDomains = DomainStore.remove
+export const deleteDomains = DomainStore.deleteAll
