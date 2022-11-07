@@ -6,27 +6,48 @@ import { AvatarIcon } from '../../components/icons/AvatarIcon'
 import { IProfileStore } from '../../storage/MainStorage'
 import { colors } from '../../styles'
 
+import { useAliasRegistration } from '../../core/hooks/useAliasRegistration'
+
 interface Props {
   navigation: any
   profile: IProfileStore
   profileCreated: boolean
+  wallet: any
 }
 
 export const ProfileHandler: React.FC<Props> = ({
   navigation,
   profile,
   profileCreated,
+  wallet,
 }) => {
+  const { registrationStarted, readyToRegister, getRegistrationData } =
+    useAliasRegistration(wallet)
+  const routeNextStep = async () => {
+    if (await readyToRegister()) {
+      const myAliasRegistration = await getRegistrationData()
+      navigation.navigate('BuyDomain', {
+        navigation,
+        alias: myAliasRegistration?.alias,
+        domainSecret: myAliasRegistration?.commitToRegisterSecret,
+        duration: myAliasRegistration?.duration,
+      })
+    } else if (await registrationStarted()) {
+      const myAliasRegistration = await getRegistrationData()
+      navigation.navigate('RequestDomain', {
+        navigation,
+        alias: myAliasRegistration?.alias,
+        duration: myAliasRegistration?.duration,
+      })
+    } else {
+      navigation.navigate(
+        profileCreated ? 'ProfileDetailsScreen' : 'ProfileCreateScreen',
+        { navigation },
+      )
+    }
+  }
   return (
-    <TouchableOpacity
-      style={styles.profileHandler}
-      accessibilityLabel="profile"
-      onPress={() =>
-        navigation.navigate(
-          profileCreated ? 'ProfileDetailsScreen' : 'ProfileCreateScreen',
-          { navigation },
-        )
-      }>
+    <TouchableOpacity style={styles.profileHandler} onPress={routeNextStep}>
       {profile?.alias ? (
         <>
           <AvatarIcon value={profile.alias + '.rsk'} size={30} />

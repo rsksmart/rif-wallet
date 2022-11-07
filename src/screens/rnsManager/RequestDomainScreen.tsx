@@ -54,6 +54,7 @@ export const RequestDomainScreen: React.FC<
       const hasStartedRegistration = await hasAliasRegistration()
 
       if (hasStartedRegistration) {
+        setProgress(0.2)
         aliasRegistration = await getAliasRegistration()
         secret = aliasRegistration.commitToRegisterSecret
         hash = aliasRegistration.commitToRegisterHash
@@ -80,6 +81,7 @@ export const RequestDomainScreen: React.FC<
         const ready = await canReveal()
         setProgress(prev => prev + 0.009)
         if (ready) {
+          setProgress(1)
           setProcessing(false)
           navigation.navigate('BuyDomain', {
             navigation,

@@ -32,6 +32,7 @@ export const AppHeader: React.FC<{
           navigation={navigationContainerRef}
           profile={profile}
           profileCreated={profileCreated}
+          wallet={wallet}
         />
       </View>
       <View style={styles.column}>
