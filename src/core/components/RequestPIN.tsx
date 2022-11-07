@@ -1,6 +1,6 @@
 import React from 'react'
 import { getPin } from '../../storage/PinStore'
-import PinContainer from '../../components/PinManager/PinContainer'
+import { PinContainer } from '../../components/PinManager/PinContainer'
 import { useState } from 'react'
 
 interface Interface {

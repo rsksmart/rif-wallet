@@ -1,5 +1,5 @@
 import React from 'react'
-import PinContainer from './PinContainer'
+import { PinContainer } from './PinContainer'
 import PinScreen from './PinScreen'
 import MessageComponent from './PinScreen/MessageComponent'
 import { PinScreenType } from './PinScreen/PinScreen'
