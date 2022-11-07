@@ -1,7 +1,7 @@
-import { createStore } from './NormalStore'
+import { Store } from './Store'
 
 const key = 'BITCOIN_NETWORK'
-const BitcoinStore = createStore(key)
+const BitcoinStore = new Store(key)
 
 type BitcoinNetworkObjectType = {
   name: string
@@ -26,14 +26,14 @@ const BitcoinNetworkStore = {
     }
 
     currentNetworks[networkName] = network
-    await BitcoinStore.save(currentNetworks)
+    await BitcoinStore.set(currentNetworks)
     return network
   },
   deleteNetwork: async (networkName: string): Promise<boolean> => {
     const currentNetworks = await BitcoinNetworkStore.getStoredNetworks()
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { [networkName]: removed, ...newNetworks } = currentNetworks
-    await BitcoinStore.save(newNetworks)
+    await BitcoinStore.set(newNetworks)
     return true
   },
 }

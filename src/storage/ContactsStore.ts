@@ -1,9 +1,9 @@
-import { createStore } from './NormalStore'
+import { Store } from './Store'
 
 const key = 'CONTACTS'
-const ContactsStore = createStore(key)
+const ContactsStore = new Store(key)
 
 export const hasContacts = ContactsStore.has
 export const getContacts = ContactsStore.get
-export const saveContacts = ContactsStore.save
-export const deleteContacts = ContactsStore.remove
+export const saveContacts = ContactsStore.get
+export const deleteContacts = ContactsStore.deleteAll
