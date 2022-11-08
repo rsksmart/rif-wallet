@@ -2,18 +2,15 @@ import { useState } from 'react'
 import { Wallets, WalletsIsDeployed } from '../../Context'
 import { KeyManagementSystem, OnRequest } from '../../lib/core'
 import { deleteDomains } from '../../storage/DomainsStore'
+
 import {
   deletePin,
   savePin,
   deleteContacts,
   deleteKeys,
 } from '../../storage/MainStorage'
-import {
-  addNextWallet,
-  creteKMS,
-  deleteCache,
-  loadExistingWallets,
-} from '../operations'
+import { addNextWallet, creteKMS, deleteCache } from '../operations'
+
 import { createRIFWalletFactory, networkId } from '../setup'
 
 type State = {
@@ -76,14 +73,14 @@ export const useKeyManagementSystem = (onRequest: OnRequest) => {
 
   const createRIFWallet = createRIFWalletFactory(onRequest)
 
-  const handleLoadExistingWallets = loadExistingWallets(createRIFWallet)
   const handleCreateKMS = creteKMS(createRIFWallet, networkId) // using only testnet
 
   const unlockApp = async () => {
-    setState({ ...state, loading: true })
-    const { kms, rifWalletsDictionary, rifWalletsIsDeployedDictionary } =
-      await handleLoadExistingWallets()
-    setKeys(kms, rifWalletsDictionary, rifWalletsIsDeployedDictionary)
+    setState({
+      ...state,
+      hasKeys: true,
+      loading: false,
+    })
   }
 
   const createFirstWallet = async (mnemonic: string) => {

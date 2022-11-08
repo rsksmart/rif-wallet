@@ -51,7 +51,6 @@ export const Core = () => {
     createFirstWallet,
     addNewWallet,
     unlockApp,
-    removeKeys,
     switchActiveWallet,
     createPin,
     editPin,
@@ -59,9 +58,8 @@ export const Core = () => {
     setWalletIsDeployed,
   } = useKeyManagementSystem(onRequest)
 
-  const onScreenLock = removeKeys
 
-  const { unlocked, setUnlocked, active } = useStateSubscription(onScreenLock)
+  const { unlocked, setUnlocked, active } = useStateSubscription()
   const isKeyboardVisible = useKeyboardIsVisible()
 
   const [currentScreen, setCurrentScreen] = useState<string>('Home')
