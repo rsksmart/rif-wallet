@@ -1,13 +1,16 @@
 import React, { useState } from 'react'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Transaction } from 'ethers'
+import {
+  TransactionResponse,
+  TransactionReceipt,
+} from '@ethersproject/abstract-provider'
 import { ScreenWithWallet } from '../types'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import Clipboard from '@react-native-community/clipboard'
+import { Linking, StyleSheet, View } from 'react-native'
 import { colors } from '../../styles'
 import SecondaryButton from '../../components/button/SecondaryButton'
-import { CopyIcon } from '../../components/icons'
-import { RIF_TOKEN_ADDRESS_TESTNET, TWO_RIF } from '../../lib/relay-sdk/helpers'
+import { RIF_TOKEN_ADDRESS_TESTNET } from '../../lib/relay-sdk/helpers'
+import { MediumText, SemiBoldText } from '../../components'
 
 export const ManuallyDeployScreen: React.FC<
   ScreenWithWallet & {
@@ -26,14 +29,21 @@ export const ManuallyDeployScreen: React.FC<
 
     const freePayment = {
       tokenContract: RIF_TOKEN_ADDRESS_TESTNET,
-      tokenAmount: TWO_RIF,
+      tokenAmount: 0,
     }
 
     wallet
       .deploySmartWallet(freePayment)
-      .then((result: Transaction) => {
+      .then((result: TransactionResponse) => {
         setSmartWalletDeployTx(result)
-        setWalletIsDeployed(wallet.smartWallet.address, true)
+
+        result.wait().then((reciept: TransactionReceipt) => {
+          reciept.status
+            ? setWalletIsDeployed(wallet.smartWallet.address, true)
+            : setDeployError('Tx failed, could not deploy smart wallet')
+
+          setIsDeploying(false)
+        })
       })
       .catch((error: Error) => {
         setDeployError(error.toString())
@@ -41,41 +51,50 @@ export const ManuallyDeployScreen: React.FC<
       })
   }
 
+  const openRifFaucet = () => Linking.openURL('https://faucet.rifos.org/')
+
   return (
     <ScrollView style={styles.background}>
-      <Text style={styles.heading}>Deploy Smart Wallet</Text>
+      <SemiBoldText style={styles.text}>Deploy Smart Wallet</SemiBoldText>
 
       {isWalletDeployed && (
-        <Text style={styles.text}>Your smart wallet has been deployed!</Text>
+        <View>
+          <MediumText style={styles.text}>
+            Your smart wallet has been deployed!
+          </MediumText>
+
+          <SecondaryButton onPress={openRifFaucet} style={styles.button}>
+            <MediumText style={styles.text}>Open the RIF Faucet</MediumText>
+          </SecondaryButton>
+        </View>
       )}
 
       {!isWalletDeployed && (
         <View>
-          <Text style={styles.text}>
+          <MediumText style={styles.text}>
             Your smart wallet is a smart contract that sits on the RSK network.
             This first step will deploy the contract.
-          </Text>
+          </MediumText>
 
           <SecondaryButton
             onPress={deploy || isDeploying}
             style={isDeploying ? styles.buttonDisabled : styles.button}>
-            <Text>Deploy my Wallet</Text>
+            <MediumText>Deploy my Wallet</MediumText>
           </SecondaryButton>
 
-          {isDeploying && <Text style={styles.text}>Deploying...</Text>}
-
-          {smartWalletDeployTx && (
-            <TouchableOpacity
-              onPress={() =>
-                Clipboard.setString(smartWalletDeployTx.hash || '')
-              }>
-              <Text style={styles.text}>
-                {smartWalletDeployTx.hash || ''}
-                <CopyIcon />
-              </Text>
-            </TouchableOpacity>
+          {isDeploying && (
+            <View>
+              <MediumText style={styles.text}>Deploying...</MediumText>
+              <MediumText style={styles.text}>Status: Pending</MediumText>
+              <MediumText style={styles.text}>
+                Hash: {smartWalletDeployTx?.hash}
+              </MediumText>
+            </View>
           )}
-          {deployError && <Text style={styles.text}>{deployError}</Text>}
+
+          {deployError && (
+            <MediumText style={styles.text}>{deployError}</MediumText>
+          )}
         </View>
       )}
     </ScrollView>
