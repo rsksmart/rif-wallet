@@ -161,7 +161,7 @@ export class RIFRelaySDK {
   createDeployRequest = async (
     payment: RelayPayment,
   ): Promise<DeployRequest> => {
-    const gasToSend = await this.provider.getGasPrice()
+    const gasPrice = await this.provider.getGasPrice()
     const nonce = await this.smartWalletFactory.getNonce(this.eoaAddress)
     const tokenGas = await this.estimateTokenTransferCost()
 
@@ -180,7 +180,7 @@ export class RIFRelaySDK {
         index: '0',
       },
       relayData: {
-        gasPrice: gasToSend.toString(),
+        gasPrice: gasPrice.toString(),
         feesReceiver: this.sdkConfig.feesReceiver,
         callForwarder: this.smartWalletFactory.address,
         callVerifier: this.sdkConfig.deployVerifierAddress,
