@@ -44,7 +44,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
       return setError(true)
     }
     setError(false)
-    await saveKeyVerificationReminder(false)
+    saveKeyVerificationReminder(false)
     await createWallet(mnemonic)
   }
 

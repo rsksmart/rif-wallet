@@ -21,7 +21,7 @@ export const SecureYourWalletScreen: React.FC<
   ScreenProps<'SecureYourWallet'> & SecureYourWalletProps
 > = ({ navigation, createWallet, mnemonic }) => {
   const secureLater = async () => {
-    await saveKeyVerificationReminder(true)
+    saveKeyVerificationReminder(true)
     createWallet(mnemonic)
   }
   return (
