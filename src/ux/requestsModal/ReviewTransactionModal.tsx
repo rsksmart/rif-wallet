@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { ScrollView, StyleSheet, View } from 'react-native'
 import { BigNumber } from 'ethers'
 
@@ -9,14 +9,14 @@ import { Loading, Paragraph, RegularText } from '../../components'
 import { ScreenWithWallet } from '../../screens/types'
 import useEnhancedWithGas from './useEnhancedWithGas'
 import { useTranslation } from 'react-i18next'
-import { shortAddress } from '../../lib/utils'
+import { balanceToDisplay, shortAddress } from '../../lib/utils'
 import {
   DarkBlueButton,
   OutlineBorderedButton,
 } from '../../components/button/ButtonVariations'
 import { colors, grid } from '../../styles'
 import ReadOnlyField from './ReadOnlyField'
-import { RIF_TOKEN_ADDRESS_TESTNET, TWO_RIF } from '../../lib/relay-sdk/helpers'
+import { RIF_TOKEN_ADDRESS_TESTNET } from '../../lib/relay-sdk/helpers'
 
 interface Interface {
   request: SendTransactionRequest
@@ -37,6 +37,11 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
   )
 
   const [error, setError] = useState<Error | null>(null)
+  const [txCostInRif, setTxCostInRif] = useState(0)
+
+  useEffect(() => {
+    wallet.rifRelaySdk.estimateTransactionCost().then(setTxCostInRif)
+  }, [request])
 
   // convert from string to Transaction and pass out of component
   const confirmTransaction = async () => {
@@ -45,7 +50,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
       gasLimit: BigNumber.from(enhancedTransactionRequest.gasLimit),
       tokenPayment: {
         tokenContract: RIF_TOKEN_ADDRESS_TESTNET,
-        tokenAmount: TWO_RIF,
+        tokenAmount: txCostInRif,
       },
     }
     try {
@@ -125,6 +130,11 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
         )}
       </View>
 
+      <ReadOnlyField
+        label="Fee in tRIF"
+        value={`${balanceToDisplay(txCostInRif, 18, 0)} tRIF`}
+        testID="tRIF.fee"
+      />
       {/*
       <View style={grid.row}>
         <View style={grid.column6}>
@@ -142,8 +152,6 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
         </View>
       </View>
 
-
-      <ReadOnlyField label="Fee in tRIF" value="2 tRIF" testID="tRIF.fee" />
       <ReadOnlyField
         label="Gas price"
         value={enhancedTransactionRequest.gasPrice}

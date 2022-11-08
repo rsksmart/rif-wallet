@@ -1,7 +1,10 @@
 import { TypedDataSigner } from '@ethersproject/abstract-signer'
-import { TransactionResponse } from '@ethersproject/abstract-provider'
+import {
+  TransactionResponse,
+  TransactionRequest,
+} from '@ethersproject/abstract-provider'
 import axios, { AxiosResponse } from 'axios'
-import { ethers, Transaction } from 'ethers'
+import { ethers } from 'ethers'
 
 import { SmartWallet } from '../core/SmartWallet'
 import {
@@ -17,6 +20,7 @@ import {
   getDomainSeparator,
   INTERNAL_TRANSACTION_ESTIMATE_CORRECTION,
   MAX_RELAY_NONCE_GAP,
+  TWO_RIF,
   ZERO_ADDRESS,
 } from './helpers'
 
@@ -77,44 +81,45 @@ export class RIFRelaySDK {
     axios.get(`${server}/getaddr`).then((value: AxiosResponse) => value.data)
 
   createRelayRequest = async (
-    tx: Transaction,
+    tx: TransactionRequest,
     payment: RelayPayment,
   ): Promise<RelayRequest> => {
-    const gasToSend = tx.gasPrice || (await this.provider.getGasPrice())
+    const gasPrice = tx.gasPrice || (await this.provider.getGasPrice())
     const nonce = await (await this.smartWallet.nonce()).toString()
 
-    const estimated = await this.provider.estimateGas({
-      from: tx.from,
-      to: tx.to,
-      gasPrice: gasToSend,
-      data: tx.data,
-    })
-    const internalCallCost = estimated.gt(
-      INTERNAL_TRANSACTION_ESTIMATE_CORRECTION,
-    )
-      ? estimated.sub(INTERNAL_TRANSACTION_ESTIMATE_CORRECTION)
-      : estimated
+    const tokenGas = '16889' // the amount it costs to send and ERC20 token as payment (from Antonio)
+
+    // THIS WORKS FOR `gas` property!!!!
+    // const correction = '16889' // estimated.add(tokenGas)
+
+    // TESTING THIGS:
+    const estimated = await this.provider.estimateGas({ ...tx, gasPrice })
+    const correction = estimated.sub(INTERNAL_TRANSACTION_ESTIMATE_CORRECTION)
+
+    console.log({ estimated, correction })
 
     const relayRequest: RelayRequest = {
       request: {
         relayHub: this.sdkConfig.relayHubAddress,
         from: this.eoaAddress,
         to: tx.to || ZERO_ADDRESS,
-        data: tx.data,
-        value: tx.value ? tx.value.toString() : '0',
-        gas: internalCallCost.toHexString(),
+        data: tx.data?.toString() || '0x',
+        value: tx.value?.toString() || '0',
+        gas: correction.toString(),
         nonce,
         tokenContract: payment.tokenContract,
         tokenAmount: payment.tokenAmount.toString(),
-        tokenGas: gasToSend.toString(),
+        tokenGas,
       },
       relayData: {
-        gasPrice: gasToSend.toString(),
-        feesReceiver: this.sdkConfig.feesReceiver, // '0x9b91c655aae10e6cd0a941aa90a6e7aa97fb02f4',
+        gasPrice: gasPrice.toString(),
+        feesReceiver: this.sdkConfig.feesReceiver,
         callForwarder: this.smartWalletAddress,
         callVerifier: this.sdkConfig.relayVerifierAddress,
       },
     }
+
+    console.log(relayRequest)
 
     return relayRequest
   }
@@ -145,15 +150,15 @@ export class RIFRelaySDK {
   }
 
   sendRelayTransaction = async (
-    tx: any,
+    tx: TransactionRequest,
     payment: RelayPayment,
   ): Promise<TransactionResponse> => {
     const request = await this.createRelayRequest(tx, payment)
     const signature = await this.signRelayRequest(request, false)
 
-    const txHash = await this.sendRequestToRelay(request, signature)
-
-    return await this.provider.getTransaction(txHash)
+    return this.sendRequestToRelay(request, signature).then((hash: string) =>
+      this.provider.getTransaction(hash),
+    )
   }
 
   // The following methods are for deploying a smart wallet
@@ -173,29 +178,33 @@ export class RIFRelaySDK {
         data: '0x',
         tokenContract: payment.tokenContract,
         tokenAmount: payment.tokenAmount.toString(),
-        tokenGas: '0',
+        tokenGas: '16889', // from Antonio
         recoverer: ZERO_ADDRESS,
         index: '0',
       },
       relayData: {
         gasPrice: gasToSend.toString(),
-        feesReceiver: '0x9b91c655aae10e6cd0a941aa90a6e7aa97fb02f4', // this.sdkConfig.relayWorkerAddress,
+        feesReceiver: this.sdkConfig.feesReceiver,
         callForwarder: this.smartWalletFactory.address,
         callVerifier: this.sdkConfig.deployVerifierAddress,
       },
     }
 
+    console.log({ deployRequest })
+
     return deployRequest
   }
 
-  async sendDeployTransaction(payment: RelayPayment) {
+  async sendDeployTransaction(
+    payment: RelayPayment,
+  ): Promise<TransactionResponse> {
     const deployRequest = await this.createDeployRequest(payment)
 
     const signature = await this.signRelayRequest(deployRequest, true)
 
-    const txHash = await this.sendRequestToRelay(deployRequest, signature)
-
-    return await this.provider.getTransaction(txHash)
+    return this.sendRequestToRelay(deployRequest, signature).then(
+      (hash: string) => this.provider.getTransaction(hash),
+    )
   }
 
   sendRequestToRelay = (
@@ -219,7 +228,7 @@ export class RIFRelaySDK {
             })
             .then((response: AxiosResponse) => {
               if (response.data.error) {
-                console.log(response)
+                console.log('axis fail', response)
                 return reject(response.data.error)
               }
 
@@ -229,4 +238,7 @@ export class RIFRelaySDK {
             .catch(reject)
         }),
     )
+
+  // all tx, 2 RIF:
+  estimateTransactionCost = () => Promise.resolve(TWO_RIF)
 }

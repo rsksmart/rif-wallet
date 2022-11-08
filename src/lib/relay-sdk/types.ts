@@ -99,7 +99,7 @@ export interface DeployRequest {
 
 export interface RelayPayment {
   tokenContract: string
-  tokenAmount: number | string
+  tokenAmount: number
 }
 
 export interface SdkConfig extends RifRelayConfig {
