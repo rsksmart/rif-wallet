@@ -1,3 +1,4 @@
+import { Axios } from 'axios'
 import EventEmitter from 'events'
 import { io, Socket } from 'socket.io-client'
 
@@ -6,7 +7,7 @@ import { MMKVStorage } from 'src/storage/MMKVStorage'
 import { IActivityTransaction } from 'src/subscriptions/types'
 import { IAbiEnhancer } from '../abiEnhancer/AbiEnhancer'
 import { RIFWallet } from '../core'
-import { IRIFWalletServicesFetcher } from './RifWalletServicesFetcher'
+import { IRIFWalletServicesFetcher, RifWalletServicesFetcher } from './RifWalletServicesFetcher'
 import { IApiTransaction, ITokenWithBalance } from './RIFWalletServicesTypes'
 import { filterEnhancedTransactions } from 'src/subscriptions/utils'
 
@@ -21,7 +22,7 @@ export interface IServiceInitEvent {
 }
 
 export interface IRifWalletServicesSocket extends EventEmitter {
-  connect: (wallet: RIFWallet, encryptionKey: string) => Promise<void>
+  connect: (wallet: RIFWallet, encryptionKey: string, fetcher: RifWalletServicesFetcher) => Promise<void>
 
   disconnect(): void
   isConnected(): boolean
@@ -51,11 +52,11 @@ export class RifWalletServicesSocket
     this.rifWalletServicesUrl = rifWalletServicesUrl
   }
 
-  private async init(wallet: RIFWallet, encryptionKey: string) {
+  private async init(wallet: RIFWallet, encryptionKey: string, fetcher: RifWalletServicesFetcher) {
     const cache = new MMKVStorage('txs', encryptionKey)
     const blockNumber = cache.get('blockNumber') || '0'
     const catchedTxs = cache.get('cachedTxs') || []
-    const fetchedTransactions = await this.fetcher.fetchTransactionsByAddress(
+    const fetchedTransactions = await fetcher.fetchTransactionsByAddress(
       wallet.smartWalletAddress,
       null,
       null,
@@ -109,9 +110,9 @@ export class RifWalletServicesSocket
     })
   }
 
-  async connect(wallet: RIFWallet, encriptionKey: string) {
+  async connect(wallet: RIFWallet, encriptionKey: string, fetcher: RifWalletServicesFetcher) {
     try {
-      await this.init(wallet, encriptionKey)
+      await this.init(wallet, encriptionKey, fetcher)
 
       const socket = io(this.rifWalletServicesUrl, {
         path: '/ws',

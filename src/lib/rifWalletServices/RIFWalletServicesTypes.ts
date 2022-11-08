@@ -141,3 +141,12 @@ export interface BitcoinTransactionContainerType {
   transactions: BitcoinTransactionType[]
   usedTokens: number
 }
+
+export interface AuthenticationChallengeType {
+  challenge: string
+}
+
+export interface AuthenticationTokensType {
+  accessToken: string
+  refreshToken: string
+}
