@@ -1,28 +1,28 @@
-import React, { useRef } from 'react'
-import { Modal, StyleSheet, View } from 'react-native'
-import BarcodeMask from 'react-native-barcode-mask'
-import { BarCodeReadEvent, RNCamera } from 'react-native-camera'
-import Icon from 'react-native-vector-icons/Ionicons'
-import { colors } from '../../styles'
+import React from 'react'
+import { Modal, StyleSheet } from 'react-native'
+// import BarcodeMask from 'react-native-barcode-mask'
+// import { BarCodeReadEvent, RNCamera } from 'react-native-camera'
+// import Icon from 'react-native-vector-icons/Ionicons'
+// import { colors } from '../../styles'
 
 interface QRCodeScannerProps {
   onClose: () => void
   onCodeRead: (data: string) => void
 }
 
-export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
-  const cameraRef = useRef<RNCamera>(null)
+export const QRCodeScanner = (_: QRCodeScannerProps) => {
+  // const cameraRef = useRef<RNCamera>(null)
 
-  const onBarCodeRead = (event: BarCodeReadEvent) => {
-    // @ts-ignore
-    if (event.type === 'QR_CODE') {
-      onCodeRead(decodeURIComponent(event.data))
-    }
-  }
+  // const onBarCodeRead = (event: BarCodeReadEvent) => {
+  //   // @ts-ignore
+  //   if (event.type === 'QR_CODE') {
+  //     onCodeRead(decodeURIComponent(event.data))
+  //   }
+  // }
 
   return (
     <Modal presentationStyle="overFullScreen" style={styles.modal}>
-      <RNCamera
+      {/* <RNCamera
         ref={cameraRef}
         style={styles.container}
         onBarCodeRead={onBarCodeRead}
@@ -53,7 +53,7 @@ export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
             borderRadius={40}
           />
         </View>
-      </RNCamera>
+      </RNCamera> */}
     </Modal>
   )
 }

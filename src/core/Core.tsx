@@ -74,7 +74,7 @@ export const Core = () => {
   const retrieveChainId = (wallet: RIFWallet) =>
     wallet.getChainId().then(chainId => setState({ ...state, chainId }))
 
-  const BitcoinCore = useBitcoinCore(state?.kms?.mnemonic || '')
+  const BitcoinCore = useBitcoinCore(state?.kms?.mnemonic || '', onRequest)
 
   useEffect(() => {
     Promise.all([i18nInit(), hasKeys(), hasPin()]).then(

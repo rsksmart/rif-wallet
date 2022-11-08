@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, ScrollView, Text } from 'react-native'
-import { BigNumber, utils, ethers } from 'ethers'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
-import {
-  convertToERC20Token,
-  makeRBTCToken,
-} from '../../lib/token/tokenMetadata'
 import { ScreenProps } from '../../RootNavigation'
 import { ScreenWithWallet } from '../types'
-import TransactionInfo, { transactionInfo } from './TransactionInfo'
+import TransactionInfo from './TransactionInfo'
 import { colors } from '../../styles'
 import TransactionForm from './TransactionForm'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import WalletNotDeployedView from './WalletNotDeployedModal'
+import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
+import {
+  usePaymentExecutor,
+  PaymentExecutorContext,
+} from './usePaymentExecutor'
+import { useFetchBitcoinNetworksAndTokens } from './useFetchBitcoinNetworksAndTokens'
+import { MixedTokenAndNetworkType } from './types'
+import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
 export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   route,
@@ -20,53 +22,38 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
   wallet,
   isWalletDeployed,
 }) => {
+  const assets =
+    useFetchBitcoinNetworksAndTokens() as unknown as MixedTokenAndNetworkType[]
+
   const { state } = useSocketsState()
   const contractAddress =
     route.params?.contractAddress || Object.keys(state.balances)[0]
-  const [currentTransaction, setCurrentTransaction] =
-    useState<transactionInfo | null>(null)
-  const [error, setError] = useState<Error>()
+
   const [chainId, setChainId] = useState<number>(31)
+
+  const {
+    currentTransaction,
+    error,
+    executePayment,
+    setUtxos,
+    setBitcoinBalance,
+  } = usePaymentExecutor()
 
   useEffect(() => {
     wallet.getChainId().then(setChainId)
   }, [wallet])
 
-  const transfer = (token: ITokenWithBalance, amount: string, to: string) => {
-    setError(undefined)
-    setCurrentTransaction({ status: 'USER_CONFIRM' })
-
-    // handle both ERC20 tokens and the native token (gas)
-    const transferMethod =
-      token.symbol === 'TRBTC'
-        ? makeRBTCToken(wallet, chainId)
-        : convertToERC20Token(token, {
-            signer: wallet,
-            chainId,
-          })
-
-    transferMethod.decimals().then((decimals: number) => {
-      const tokenAmount = BigNumber.from(utils.parseUnits(amount, decimals))
-
-      transferMethod
-        .transfer(to.toLowerCase(), tokenAmount)
-        .then((txPending: ethers.providers.TransactionResponse) => {
-          const tx: transactionInfo = {
-            to,
-            value: amount,
-            symbol: transferMethod.symbol,
-            hash: txPending.hash,
-            status: 'PENDING',
-          }
-          setCurrentTransaction(tx)
-          txPending
-            .wait()
-            .then(() => setCurrentTransaction({ ...tx, status: 'SUCCESS' }))
-            .catch(() => setCurrentTransaction({ ...tx, status: 'FAILED' }))
-        })
-        .catch((err: any) => {
-          setError(err)
-        })
+  const onExecuteTransfer = (
+    token: ITokenWithBalance | BitcoinNetwork,
+    amount: string,
+    to: string,
+  ) => {
+    executePayment({
+      token,
+      amount,
+      to,
+      wallet,
+      chainId,
     })
   }
 
@@ -78,20 +65,26 @@ export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
         <WalletNotDeployedView onDeployWalletPress={navigateToDeploy} />
       )}
       {!currentTransaction ? (
-        <TransactionForm
-          onConfirm={transfer}
-          tokenList={Object.values(state.balances)}
-          tokenPrices={state.prices}
-          chainId={chainId}
-          initialValues={{
-            recipient: route.params?.to,
-            amount: '0',
-            asset: route.params?.contractAddress
-              ? state.balances[route.params.contractAddress]
-              : state.balances[contractAddress],
-          }}
-          transactions={state.transactions.activityTransactions}
-        />
+        <PaymentExecutorContext.Provider
+          value={{
+            setUtxosGlobal: setUtxos,
+            setBitcoinBalanceGlobal: setBitcoinBalance,
+          }}>
+          <TransactionForm
+            onConfirm={onExecuteTransfer}
+            tokenList={assets}
+            tokenPrices={state.prices}
+            chainId={chainId}
+            initialValues={{
+              recipient: route.params?.to,
+              amount: '0',
+              asset: route.params?.contractAddress
+                ? state.balances[route.params.contractAddress]
+                : state.balances[contractAddress],
+            }}
+            transactions={state.transactions.activityTransactions}
+          />
+        </PaymentExecutorContext.Provider>
       ) : (
         <TransactionInfo transaction={currentTransaction} />
       )}

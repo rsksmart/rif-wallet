@@ -8,7 +8,7 @@ import { SmartWallet } from './SmartWallet'
 import { filterTxOptions } from './filterTxOptions'
 import { RIFRelaySDK, RelayPayment, RifRelayConfig } from '../relay-sdk'
 
-type IRequest<Type, Payload, ReturnType, ConfirmArgs> = {
+export type IRequest<Type, Payload, ReturnType, ConfirmArgs> = {
   type: Type,
   payload: Payload
   returnType: ReturnType

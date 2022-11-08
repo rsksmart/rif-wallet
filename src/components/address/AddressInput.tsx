@@ -1,9 +1,8 @@
 import Clipboard from '@react-native-community/clipboard'
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, TextInput, View } from 'react-native'
-
+import { Text, TextInput, View } from 'react-native'
+import { sharedAddressStyles as styles } from './sharedAddressStyles'
 import { ContentPasteIcon, QRCodeIcon } from '../icons'
-
 import { isValidChecksumAddress } from '@rsksmart/rsk-utils'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -239,66 +238,3 @@ export const AddressInput: React.FC<AddressInputProps> = ({
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  parent: {},
-  iconColumn: {
-    alignItems: 'flex-end',
-  },
-  rnsDomainContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 15,
-    backgroundColor: colors.lightGray,
-    borderRadius: 15,
-  },
-  rnsDomainName: {
-    fontWeight: 'bold',
-    fontSize: 15,
-    marginBottom: 3,
-  },
-  rnsDomainUnselect: {
-    margin: 3,
-  },
-  rnsDomainAddress: {
-    marginLeft: 4,
-    fontSize: 11,
-  },
-  inputContainer: {
-    backgroundColor: colors.darkPurple5,
-    borderRadius: 15,
-    display: 'flex',
-    flexDirection: 'row',
-    width: '100%',
-    padding: 20,
-  },
-  input: {
-    flex: 5,
-    fontSize: 16,
-    fontWeight: '400',
-    color: colors.white,
-  },
-  button: {
-    flex: 1,
-    paddingHorizontal: 5,
-    justifyContent: 'center',
-  },
-  clearButtonView: {
-    backgroundColor: colors.background.secondary,
-    borderRadius: 30,
-    padding: 2,
-  },
-  clearButton: {
-    color: colors.lightPurple,
-  },
-  info: {
-    marginTop: 5,
-    paddingHorizontal: 10,
-    color: '#999',
-  },
-  error: {
-    marginTop: 5,
-    paddingHorizontal: 10,
-    color: colors.orange,
-  },
-})
