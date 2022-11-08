@@ -1,22 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { IUsdPricesState } from './types'
 
-interface IUsdPrice {
-  lastUpdated: string
-  price: number
-}
-export interface UsdPricesState {
-  [id: string]: IUsdPrice
-}
-
-const initialState: UsdPricesState = {}
+const initialState: IUsdPricesState = {}
 
 const usdPricesSlice = createSlice({
   name: 'usdPrices',
   initialState,
   reducers: {
-    setUsdPrices: (state, action: PayloadAction<UsdPricesState>) => {
-      state = action.payload
-    },
+    setUsdPrices: (state, action: PayloadAction<IUsdPricesState>) => ({
+      ...action.payload,
+    }),
   },
 })
 
