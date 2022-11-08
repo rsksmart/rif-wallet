@@ -58,7 +58,6 @@ export const Core = () => {
     setWalletIsDeployed,
   } = useKeyManagementSystem(onRequest)
 
-
   const { unlocked, setUnlocked, active } = useStateSubscription()
   const isKeyboardVisible = useKeyboardIsVisible()
 
