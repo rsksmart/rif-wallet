@@ -86,11 +86,7 @@ export class RIFRelaySDK {
   ): Promise<RelayRequest> => {
     const gasPrice = tx.gasPrice || (await this.provider.getGasPrice())
     const nonce = await (await this.smartWallet.nonce()).toString()
-
-    const tokenGas = '16889' // the amount it costs to send and ERC20 token as payment (from Antonio)
-
-    // THIS WORKS FOR `gas` property!!!!
-    // const correction = '16889' // estimated.add(tokenGas)
+    const tokenGas = await this.estimateTokenTransferCost()
 
     // TESTING THIGS:
     const estimated = await this.provider.estimateGas({ ...tx, gasPrice })
@@ -167,6 +163,7 @@ export class RIFRelaySDK {
   ): Promise<DeployRequest> => {
     const gasToSend = await this.provider.getGasPrice()
     const nonce = await this.smartWalletFactory.getNonce(this.eoaAddress)
+    const tokenGas = await this.estimateTokenTransferCost()
 
     const deployRequest: DeployRequest = {
       request: {
@@ -178,7 +175,7 @@ export class RIFRelaySDK {
         data: '0x',
         tokenContract: payment.tokenContract,
         tokenAmount: payment.tokenAmount.toString(),
-        tokenGas: '16889', // from Antonio
+        tokenGas,
         recoverer: ZERO_ADDRESS,
         index: '0',
       },
@@ -239,6 +236,10 @@ export class RIFRelaySDK {
         }),
     )
 
-  // all tx, 2 RIF:
+  // @todo: We will get this value from the RIF relay server, but for now, we will overpay
+  // to ensure transaction goes through:
   estimateTransactionCost = () => Promise.resolve(TWO_RIF)
+
+  // the cost to send the token payment from the smartwallet to the fee collector:
+  estimateTokenTransferCost = () => Promise.resolve('16889')
 }
