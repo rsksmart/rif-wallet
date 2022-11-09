@@ -1,18 +1,18 @@
 import React, { useState } from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
-import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
-import { colors } from '../../styles'
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { PurpleButton } from '../../components/button/ButtonVariations'
+import { colors } from '../../styles'
 
 import { rnsManagerStyles } from './rnsManagerStyles'
 
-import { ScreenProps } from '../../RootNavigation'
-import { ScreenWithWallet } from '../types'
-import DomainLookUp from '../../screens/rnsManager/DomainLookUp'
 import { MediumText } from '../../components'
-import TitleStatus from './TitleStatus'
 import { AvatarIcon } from '../../components/icons/AvatarIcon'
+import { ScreenProps } from '../../RootNavigation'
+import DomainLookUp from '../../screens/rnsManager/DomainLookUp'
+import { ScreenWithWallet } from '../types'
+import TitleStatus from './TitleStatus'
 
 type Props = {
   route: any
@@ -64,6 +64,7 @@ export const SearchDomainScreen: React.FC<
           progress={0.25}
           progressText={'1/4'}
         />
+
         <View style={rnsManagerStyles.marginBottom}>
           <View style={rnsManagerStyles.profileImageContainer}>
             {domainToLookUp.length >= 5 ? (
