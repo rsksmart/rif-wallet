@@ -1,4 +1,3 @@
-import { Axios } from 'axios'
 import EventEmitter from 'events'
 import { io, Socket } from 'socket.io-client'
 
@@ -7,7 +6,7 @@ import { MMKVStorage } from 'src/storage/MMKVStorage'
 import { IActivityTransaction } from 'src/subscriptions/types'
 import { IAbiEnhancer } from '../abiEnhancer/AbiEnhancer'
 import { RIFWallet } from '../core'
-import { IRIFWalletServicesFetcher, RifWalletServicesFetcher } from './RifWalletServicesFetcher'
+import { RifWalletServicesFetcher } from './RifWalletServicesFetcher'
 import { IApiTransaction, ITokenWithBalance } from './RIFWalletServicesTypes'
 import { filterEnhancedTransactions } from 'src/subscriptions/utils'
 
@@ -36,19 +35,16 @@ export class RifWalletServicesSocket
   implements IRifWalletServicesSocket
 {
   private rifWalletServicesUrl: string
-  private fetcher: IRIFWalletServicesFetcher
   private abiEnhancer: IAbiEnhancer
   private socket: Socket | undefined
 
   constructor(
     rifWalletServicesUrl: string,
-    fetcher: IRIFWalletServicesFetcher,
     abiEnhancer: IAbiEnhancer,
   ) {
     super()
 
     this.abiEnhancer = abiEnhancer
-    this.fetcher = fetcher
     this.rifWalletServicesUrl = rifWalletServicesUrl
   }
 
@@ -100,7 +96,7 @@ export class RifWalletServicesSocket
       .filter(filterEnhancedTransactions)
     cache.set('cachedTxs', transactions)
     cache.set('blockNumber', lastBlockNumber.toString())
-    const fetchedTokens = await this.fetcher.fetchTokensByAddress(
+    const fetchedTokens = await fetcher.fetchTokensByAddress(
       wallet.smartWalletAddress,
     )
 

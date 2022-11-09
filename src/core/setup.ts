@@ -7,6 +7,7 @@ import { getWalletSetting, SETTINGS } from './config'
 import { RifWalletServicesSocket } from '../lib/rifWalletServices/RifWalletServicesSocket'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { RifRelayConfig } from 'src/lib/relay-sdk'
+import axios from 'axios'
 
 export const networkType = getWalletSetting(
   SETTINGS.DEFAULT_CHAIN_TYPE,
@@ -20,15 +21,18 @@ const smartWalletFactoryAddress = getWalletSetting(
 
 const jsonRpcProvider = new providers.JsonRpcProvider(rpcUrl)
 
-export const rifWalletServicesFetcher = new RifWalletServicesFetcher(
-  getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL, networkType),
-)
+// export const rifWalletServicesFetcher = new RifWalletServicesFetcher(
+//   getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL),
+// )
+
+const publicAxios = axios.create({
+  baseURL: getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL),
+})
 
 export const abiEnhancer = new AbiEnhancer()
 
 export const rifWalletServicesSocket = new RifWalletServicesSocket(
   getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL, networkType),
-  rifWalletServicesFetcher,
   abiEnhancer,
 )
 

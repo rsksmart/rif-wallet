@@ -45,16 +45,14 @@ export interface ISendTransactionJsonReturnData {
 const RESULTS_LIMIT = 10
 
 export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
-  uri: string
   axios: Axios
 
-  constructor(uri: string, axios: Axios) {
-    this.uri = uri
+  constructor(axios: Axios) {
     this.axios = axios
   }
 
   protected async fetchAvailableTokens() {
-    return this.axios.get(`${this.uri}/tokens`)
+    return this.axios.get(`/tokens`)
   }
 
   fetchTransactionsByAddress = (
@@ -63,7 +61,7 @@ export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
     next?: string | null,
     blockNumber?: string | null,
   ) => {
-    let transactionsUrl = `${this.uri}/address/${smartAddress}/transactions?limit=${RESULTS_LIMIT}`
+    let transactionsUrl = `/address/${smartAddress}/transactions?limit=${RESULTS_LIMIT}`
 
     if (prev) {
       transactionsUrl = `${transactionsUrl}&prev=${prev}`
@@ -79,25 +77,25 @@ export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
   }
 
   fetchEventsByAddress = (smartAddress: string) =>
-    this.axios.get(`${this.uri}/address/${smartAddress}/events`)
+    this.axios.get(`/address/${smartAddress}/events`)
 
   fetchTokensByAddress = (address: string): Promise<ITokenWithBalance[]> =>
-    this.axios.get<ITokenWithBalance[]>(`${this.uri}/address/${address.toLowerCase()}/tokens`).then(response => response.data)
+    this.axios.get<ITokenWithBalance[]>(`/address/${address.toLowerCase()}/tokens`).then(response => response.data)
 
   fetchDapps = (): Promise<IRegisteredDappsGroup[]> =>
-    this.axios.get<IRegisteredDappsGroup[]>(`${this.uri}/dapps`).then(response => response.data)
+    this.axios.get<IRegisteredDappsGroup[]>(`/dapps`).then(response => response.data)
 
   fetchXpubBalance = (xpub: string): Promise<IXPubBalanceData> =>
-    this.axios.get<IXPubBalanceData>(`${this.uri}/bitcoin/getXpubBalance/${xpub}`).then(response =>
+    this.axios.get<IXPubBalanceData>(`/bitcoin/getXpubBalance/${xpub}`).then(response =>
       response.data
     )
   fetchUtxos = (xpub: string): Promise<Array<UnspentTransactionType>> =>
-    this.axios.get<Array<UnspentTransactionType>>(`${this.uri}/bitcoin/getXpubUtxos/${xpub}`).then(res =>
+    this.axios.get<Array<UnspentTransactionType>>(`/bitcoin/getXpubUtxos/${xpub}`).then(res =>
       res.data,
     )
 
   sendTransactionHexData = (hexdata: string): Promise<any> =>
-    this.axios.get(`${this.uri}/bitcoin/sendTransaction/${hexdata}`).then(res =>
+    this.axios.get(`/bitcoin/sendTransaction/${hexdata}`).then(res =>
       res.data
     )
 
@@ -107,7 +105,7 @@ export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
     knownLastUsedIndex = 0,
   ): Promise<number> =>
     this.axios.get(
-      `${this.uri}/bitcoin/getNextUnusedIndex/${xpub}?changeIndex=${changeIndex}&knownLastUsedIndex=${knownLastUsedIndex}`,
+      `/bitcoin/getNextUnusedIndex/${xpub}?changeIndex=${changeIndex}&knownLastUsedIndex=${knownLastUsedIndex}`,
     )
       .then(response => response.data)
       .then(json => json.index)
@@ -118,6 +116,6 @@ export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
     pageNumber = 1,
   ): Promise<BitcoinTransactionContainerType> =>
     this.axios.get<BitcoinTransactionContainerType>(
-      `${this.uri}/bitcoin/getXpubTransactions/${xpub}?pageSize=${pageSize}&page=${pageNumber}`,
+      `/bitcoin/getXpubTransactions/${xpub}?pageSize=${pageSize}&page=${pageNumber}`,
     ).then(response => response.data)
 }

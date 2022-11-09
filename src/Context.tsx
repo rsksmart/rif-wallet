@@ -1,4 +1,4 @@
-import React, { createContext, useContext, FC, useState, useEffect, useCallback } from 'react'
+import React, { createContext, useContext, FC } from 'react'
 import { Paragraph } from './components'
 import { RIFWallet, Request } from './lib/core'
 import { ScreenWithWallet } from './screens/types'

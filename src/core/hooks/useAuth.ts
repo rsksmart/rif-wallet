@@ -1,6 +1,4 @@
 import { Axios } from 'axios'
-import { useContext, useEffect, useState } from 'react'
-import { AppContext, useSelectedWallet } from '../../Context'
 import {
   AuthenticationChallengeType,
   AuthenticationTokensType,
@@ -28,7 +26,7 @@ const emptyAuthState: IAuthState = {
   signedup: false
 }
 
-export const useAuthentication = (publicAxios: Axios, wallet?: RIFWallet) => {
+export const useAuth = (publicAxios: Axios, wallet?: RIFWallet) => {
 
   const did = `did:ethr:rsk:testnet:${wallet?.address}`
 

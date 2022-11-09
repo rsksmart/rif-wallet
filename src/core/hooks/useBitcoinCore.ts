@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useContext } from 'react'
+import { useMemo, useEffect } from 'react'
 import BIP39 from '../../lib/bitcoin/BIP39'
 import useBitcoinNetworks from '../../components/bitcoin/useBitcoinNetworks'
 import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
@@ -22,7 +22,10 @@ export type useBitcoinCoreResultType = {
  * @param mnemonic
  * @param request
  */
-const useBitcoinCore = (mnemonic: string, request: OnRequest, fetcher: RifWalletServicesFetcher): useBitcoinCoreResultType => {
+const useBitcoinCore = (
+  mnemonic: string,
+  request: OnRequest,
+): useBitcoinCoreResultType => {
   const [networks, refreshStoredNetworks] = useBitcoinNetworks()
   const memoizedNetworks = useMemo(() => {
     if (!mnemonic) {
@@ -36,9 +39,7 @@ const useBitcoinCore = (mnemonic: string, request: OnRequest, fetcher: RifWallet
         network.bips,
         BIP39Instance,
         createAndInitializeBipWithRequest(request),
-        fetcher
       ) as BitcoinNetworkWithBIPRequest
-      
       networksObj[network.name] = bitcoinNetwork
       return bitcoinNetwork
     })

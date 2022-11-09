@@ -14,8 +14,8 @@ import { constants } from 'ethers'
 import { ITokenWithBalance } from '../lib/rifWalletServices/RIFWalletServicesTypes'
 import { RIFWallet } from '../lib/core'
 import { useSetGlobalError } from '../components/GlobalErrorHandler'
-import { AxiosContext } from '../security/Authentication'
-import { useAuthentication } from '../core/hooks/useAuthentication'
+import { AxiosContext, IAuthState } from '../security/Authentication'
+import { useAuth } from '../core/hooks/useAuth'
 
 function liveSubscriptionsReducer(state: State, action: Action) {
   const { type } = action
@@ -154,7 +154,7 @@ export function RIFSocketsProvider({
   const { mnemonic } = useContext(AppContext)
   const { publicAxios, fetcher, authState, setAuthState } = useContext(AxiosContext)
   const { wallet } = useSelectedWallet()
-  const { login } = useAuthentication(publicAxios, wallet)
+  const { login } = useAuth(publicAxios, wallet)
 
 
   const connect = () => {
@@ -201,7 +201,7 @@ export function RIFSocketsProvider({
 
     login().then(({accessToken, refreshToken}) => {
       setAuthState({accessToken, refreshToken, authenticated: true, signedup: true})
-      console.log('Auth',authState)
+      console.log('Auth',authState, accessToken)
       rifServiceSocket?.connect(wallet, mnemonic!, fetcher).catch(() => {
         setGlobalError('Error connecting to the socket')
       })
