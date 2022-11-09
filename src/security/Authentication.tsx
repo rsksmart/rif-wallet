@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useEffect } from 'react'
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import axios, { Axios } from 'axios'
 import createAuthRefreshInterceptor from 'axios-auth-refresh'
 import * as Keychain from 'react-native-keychain'
@@ -11,9 +11,25 @@ import { useAuthentication } from '../core/hooks/useAuthentication'
 interface AuthenticationContextType {
   BitcoinCore: useBitcoinCoreResultType
   fetcher: RifWalletServicesFetcher
-  publicAxios: Axios
+  publicAxios: Axios,
+  authState: IAuthState,
+  setAuthState: (value: IAuthState) => void;
+  
 }
 
+export type IAuthState = { 
+  accessToken: string;
+  refreshToken: string;
+  authenticated: boolean;
+  signedup: boolean;
+}
+
+const emptyAuthState: IAuthState = {
+  accessToken: '',
+  refreshToken: '',
+  authenticated: false,
+  signedup: false
+}
 const AxiosContext = createContext<AuthenticationContextType>({
   BitcoinCore: {
     networks: [],
@@ -22,22 +38,32 @@ const AxiosContext = createContext<AuthenticationContextType>({
   },
   fetcher: {} as any,
   publicAxios: {} as any,
+  setAuthState: {} as any,
+  authState: emptyAuthState
 })
+
 
 const AxiosProvider = ({ children, value }: any) => {
   const { mnemonic } = useContext(AppContext)
-  const { wallet } = useSelectedWallet()
-  const { authState, setAuthState } = useAuthentication(value.publicAxios, wallet)
+  const [authState, setAuthState] = useState<IAuthState>(emptyAuthState)
   const uri = getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL)
 
   const authAxios = axios.create({
     baseURL: uri,
   })
+
+  const getAccessToken = () => {
+    return authState.accessToken
+  }
+
+  const getRefreshToken = () => {
+    return authState.refreshToken
+  }
   
   authAxios.interceptors.request.use(
     config => {
       if (!config.headers?.Authorization) {
-        config.headers!.Authorization = `DIDAuth ${authState.accessToken}`
+        config.headers!.Authorization = `DIDAuth ${getAccessToken()}`
       }
 
       return config
@@ -48,8 +74,9 @@ const AxiosProvider = ({ children, value }: any) => {
   )
 
   const refreshAuthLogic = async (failedRequest: any) => {
+    const refreshToken = getRefreshToken()
     const data = {
-      refreshToken: authState.refreshToken,
+      refreshToken
     }
 
     const options = {
@@ -63,10 +90,12 @@ const AxiosProvider = ({ children, value }: any) => {
       failedRequest.response.config.headers.Authorization =
         'DIDAuth ' + tokenRefreshResponse.data.accessToken
 
-      setAuthState({
-        ...authState,
-        accessToken: tokenRefreshResponse.data.accessToken,
-        refreshToken: tokenRefreshResponse.data.refreshToken,
+      setAuthState( (authState) => {
+        return {
+          ...authState,
+          accessToken: tokenRefreshResponse.data.accessToken,
+          refreshToken: tokenRefreshResponse.data.refreshToken,
+        }
       })
 
       await Keychain.setInternetCredentials(
@@ -79,11 +108,13 @@ const AxiosProvider = ({ children, value }: any) => {
       )
       return await Promise.resolve()
     } catch (e) {
-      setAuthState({
-        ...authState,
-        accessToken: '',
-        refreshToken: '',
-        authenticated: false,
+      setAuthState((authState) => {
+        return {
+          ...authState,
+          accessToken: '',
+          refreshToken: '',
+          authenticated: false,
+        }
       })
     }
   }
@@ -98,7 +129,9 @@ const AxiosProvider = ({ children, value }: any) => {
       value={{
         ...value,
         BitcoinCore,
-        fetcher
+        fetcher,
+        authState,
+        setAuthState
       }}>
       {children}
     </AxiosContext.Provider>

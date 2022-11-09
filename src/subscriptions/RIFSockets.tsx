@@ -152,7 +152,7 @@ export function RIFSocketsProvider({
   const setGlobalError = useSetGlobalError()
 
   const { mnemonic } = useContext(AppContext)
-  const { publicAxios, fetcher } = useContext(AxiosContext)
+  const { publicAxios, fetcher, authState, setAuthState } = useContext(AxiosContext)
   const { wallet } = useSelectedWallet()
   const { login } = useAuthentication(publicAxios, wallet)
 
@@ -199,7 +199,9 @@ export function RIFSocketsProvider({
       }
     })
 
-    login().then(() => {
+    login().then(({accessToken, refreshToken}) => {
+      setAuthState({accessToken, refreshToken, authenticated: true, signedup: true})
+      console.log('Auth',authState)
       rifServiceSocket?.connect(wallet, mnemonic!, fetcher).catch(() => {
         setGlobalError('Error connecting to the socket')
       })

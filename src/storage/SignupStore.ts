@@ -1,4 +1,4 @@
-import { createStore } from './SecureStore'
+import { createStore } from './NormalStore'
 
 const key = 'SIGNUP'
 const SignupStore = createStore(key)

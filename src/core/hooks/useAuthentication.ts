@@ -14,15 +14,23 @@ import {
 } from '../../storage/SignupStore'
 import { RIFWallet } from '../../lib/core'
 
-export const useAuthentication = (publicAxios: Axios, wallet: RIFWallet) => {
-  const [authState, setAuthState] = useState({
-    accessToken: '',
-    refreshToken: '',
-    authenticated: false,
-    signedup: false
-  })
+export type IAuthState = { 
+  accessToken: string;
+  refreshToken: string;
+  authenticated: boolean;
+  signedup: boolean;
+}
 
-  const did = `did:ethr:rsk:testnet:${wallet.address}`
+const emptyAuthState: IAuthState = {
+  accessToken: '',
+  refreshToken: '',
+  authenticated: false,
+  signedup: false
+}
+
+export const useAuthentication = (publicAxios: Axios, wallet?: RIFWallet) => {
+
+  const did = `did:ethr:rsk:testnet:${wallet?.address}`
 
   const signup = async () => {
     const {
@@ -36,13 +44,6 @@ export const useAuthentication = (publicAxios: Axios, wallet: RIFWallet) => {
     } = await publicAxios.post<AuthenticationTokensType>('/signup', {
       response: { sig, did },
     })
-    setAuthState({
-      accessToken,
-      refreshToken,
-      authenticated: true,
-      signedup: true
-    })
-    console.log('Credentials',authState)
     await Keychain.setInternetCredentials(
       'jwt',
       'token',
@@ -52,11 +53,12 @@ export const useAuthentication = (publicAxios: Axios, wallet: RIFWallet) => {
       }),
     );
     await saveSignUp({ signedup: true })
+    return {accessToken, refreshToken}
   }
 
   const signMessage = async (challenge: string) => {
     const message = `URL: ${publicAxios.getUri()}\nVerification code: ${challenge}`
-    return await wallet.smartWallet.signer.signMessage(message)
+    return await wallet?.smartWallet.signer.signMessage(message)
   }
 
   const authenticate = async () => {
@@ -71,12 +73,6 @@ export const useAuthentication = (publicAxios: Axios, wallet: RIFWallet) => {
     } = await publicAxios.post<AuthenticationTokensType>('/auth', {
       response: { sig, did },
     })
-    setAuthState({
-      ...authState,
-      accessToken,
-      refreshToken,
-      authenticated: true,
-    })
     await Keychain.setInternetCredentials(
       'jwt',
       'token',
@@ -85,37 +81,38 @@ export const useAuthentication = (publicAxios: Axios, wallet: RIFWallet) => {
         refreshToken,
       }),
     );
+    return {accessToken, refreshToken}
   }
 
   const login = async () => {
-    if (!authState.signedup) {
-      console.log('Signup')
-      await signup()
+    if(await hasSignUP()){
+      const {signedup} = await getSignUP()
+      if(signedup) {
+        return await signup()
+      } else {
+        return await authenticate()
+      }
     } else {
-      console.log('authenticate')
-      await authenticate()
+      return await authenticate()
     }
   }
 
-  const refresh = async () => {
+  const refresh = async (oldRefreshToken: string) => {
     const { data: { accessToken, refreshToken }} =
-      await publicAxios.post<AuthenticationTokensType>('/refresh-token', { refreshToken: authState.refreshToken })
-    setAuthState({ ...authState, accessToken, refreshToken })
+      await publicAxios.post<AuthenticationTokensType>('/refresh-token', { refreshToken: oldRefreshToken })
+
+    return {accessToken, refreshToken}
   }
 
-  const logout = async () => {
-    await publicAxios.post<void>('/logout',{}, { headers: { 'Authorization': `DIDAuth ${authState.accessToken}`}})
+  const logout = async (accessToken: string) => {
+    await publicAxios.post<void>('/logout',{}, { headers: { 'Authorization': `DIDAuth ${accessToken}`}})
   }
 
   const deleteCredentials = async () => {
-    setAuthState({
-      ...authState,
-      accessToken: '',
-      refreshToken: '',
-      authenticated: false,
-    })
+    await Keychain.resetInternetCredentials('jwt')
     await deleteSignUp()
   }
+  
 
-  return { authState, setAuthState, login, refresh, logout, deleteCredentials }
+  return { login, refresh, logout, deleteCredentials }
 }
