@@ -44,7 +44,7 @@ export const BitcoinCardComponent: React.FC<{
 }> = ({ symbol, balance, isSelected, contractAddress, onPress }) => {
   const containerStyles = useContainerStyles(isSelected, symbol)
   const balanceBigNumber = React.useMemo(
-    () => BigNumber.from(balance * 10e8),
+    () => BigNumber.from(Math.round(balance * 10e8)),
     [balance],
   )
   const { state } = useSocketsState()
