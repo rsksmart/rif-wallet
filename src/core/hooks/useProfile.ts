@@ -21,13 +21,11 @@ export function useProfile(initProfile?: IProfileStore) {
   const profileCreated = profile !== emptyProfile
 
   useEffect(() => {
-    hasProfile().then(r => {
-      if (r) {
-        getProfile().then(setProfile)
-      } else {
-        setProfile(initProfile || emptyProfile)
-      }
-    })
+    if (hasProfile()) {
+      setProfile(getProfile())
+    } else {
+      setProfile(initProfile || emptyProfile)
+    }
   }, [])
   const storeProfile = async (newProfile: IProfileStore) => {
     setProfile(newProfile)
