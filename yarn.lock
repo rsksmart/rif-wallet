@@ -5449,7 +5449,7 @@ flow-parser@^0.121.0:
   resolved "https://registry.yarnpkg.com/flow-parser/-/flow-parser-0.121.0.tgz#9f9898eaec91a9f7c323e9e992d81ab5c58e618f"
   integrity sha512-1gIBiWJNR0tKUNv8gZuk7l9rVX06OuLzY9AoGio7y/JT4V1IZErEMEq2TJS+PFcw/y0RshZ1J/27VfK1UQzYVg==
 
-follow-redirects@^1.14.9:
+follow-redirects@^1.15.0:
   version "1.15.2"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.2.tgz#b460864144ba63f2681096f274c4e57026da2c13"
   integrity sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==
@@ -5465,15 +5465,6 @@ for-in@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/for-in/-/for-in-1.0.2.tgz#81068d295a8142ec0ac726c6e2200c30fb6d5e80"
   integrity sha512-7EwmXrOjyL+ChxMhmG5lnW9MPt1aIeZEwKhQzoBUdTV0N3zuwWDZYVJatDvZ2OyzPUvdIAZDsCetk3coyMfcnQ==
-
-form-data@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/form-data/-/form-data-4.0.0.tgz#93919daeaf361ee529584b9b31664dc12c9fa452"
-  integrity sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==
-  dependencies:
-    asynckit "^0.4.0"
-    combined-stream "^1.0.8"
-    mime-types "^2.1.12"
 
 form-data@^4.0.0:
   version "4.0.0"
@@ -8517,11 +8508,6 @@ proxy-from-env@^1.1.0:
   resolved "https://registry.yarnpkg.com/proxy-from-env/-/proxy-from-env-1.1.0.tgz#e102f16ca355424865755d2c9e8ea4f24d58c3e2"
   integrity sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==
 
-psl@^1.1.33:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/psl/-/psl-1.9.0.tgz#d0df2a137f00794565fcaf3b2c00cd09f8d5a5a7"
-  integrity sha512-E/ZsdU4HLs/68gYzgGTkMicWTLPdAftJLfJFlLUAAKZGkStNU72sZjT66SnMDVOfOWY/YAoiD7Jxa9iHvngcag==
-
 public-encrypt@^4.0.0:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/public-encrypt/-/public-encrypt-4.0.3.tgz#4fcc9d77a07e48ba7527e7cbe0de33d0701331e0"
@@ -8745,10 +8731,7 @@ react-native-jdenticon@^0.0.3:
   integrity sha512-NVmvu/r78z+kFNQa4dDD2opOdCuuYtiQNXUlKK6JvUbfHTykuKqecoxCSXCnIZ3bSUjFofbU+tC2F5zwNcf7QQ==
   dependencies:
     jdenticon "^2.2.0"
-react-native-gradle-plugin@^0.70.3:
-  version "0.70.3"
-  resolved "https://registry.yarnpkg.com/react-native-gradle-plugin/-/react-native-gradle-plugin-0.70.3.tgz#cbcf0619cbfbddaa9128701aa2d7b4145f9c4fc8"
-  integrity sha512-oOanj84fJEXUg9FoEAQomA8ISG+DVIrTZ3qF7m69VQUJyOGYyDZmPqKcjvRku4KXlEH6hWO9i4ACLzNBh8gC0A==
+
 react-native-keychain@^8.1.1:
   version "8.1.1"
   resolved "https://registry.yarnpkg.com/react-native-keychain/-/react-native-keychain-8.1.1.tgz#3bb5e37946b964a7bcf7df2fe470dd244e01a340"

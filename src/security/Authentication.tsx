@@ -91,7 +91,7 @@ const AxiosProvider = ({ children, value }: any) => {
   createAuthRefreshInterceptor(authAxios, refreshAuthLogic, {})
 
   const fetcher = new RifWalletServicesFetcher(uri, authAxios)
-  const BitcoinCore = useBitcoinCore(mnemonic || '', fetcher)
+  const BitcoinCore = useBitcoinCore(mnemonic || '', value.onRequest , fetcher)
 
   return (
     <AxiosContext.Provider
