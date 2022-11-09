@@ -1,7 +1,7 @@
 import { OnRequest } from '../core'
 import BIPPaymentFacade from './BIPPaymentFacade'
 import {
-  PaymentType,
+  PaymentTypeWithBalance,
   Psbt,
   SendBitcoinRequestType,
   UnspentTransactionType,
@@ -17,6 +17,7 @@ export default class BIPRequestPaymentFacade {
   amountToPay!: number
   addressToPay!: string
   utxos!: UnspentTransactionType[]
+  balance!: number
   resolve!: (value: ISendTransactionJsonReturnData) => void
   constructor(request: OnRequest, payment: BIPPaymentFacade) {
     this.request = request
@@ -27,19 +28,22 @@ export default class BIPRequestPaymentFacade {
     addressToPay,
     unspentTransactions,
     miningFee,
-  }: PaymentType) {
+    balance,
+  }: PaymentTypeWithBalance) {
     this.amountToPay = amountToPay
     this.addressToPay = addressToPay
     this.utxos = unspentTransactions
     this.miningFee = miningFee
+    this.balance = balance
   }
 
-  getPaymentArguments(): PaymentType {
+  getPaymentArguments(): PaymentTypeWithBalance {
     return {
       amountToPay: this.amountToPay,
       addressToPay: this.addressToPay,
       unspentTransactions: this.utxos,
       miningFee: this.miningFee,
+      balance: this.balance,
     }
   }
   /*
@@ -51,22 +55,37 @@ export default class BIPRequestPaymentFacade {
     )
     return this.generatedPayment
   }
+  async getEstimatedMiningFee(): Promise<number> {
+    const { addressToPay, amountToPay, unspentTransactions, balance } =
+      this.getPaymentArguments()
+    const miningFee = await this.payment.estimateMiningFee({
+      addressToPay,
+      amountToPay,
+      unspentTransactions,
+    })
+    if (amountToPay + miningFee > balance) {
+      return balance - amountToPay
+    }
+    return miningFee
+  }
   /**
    * Build request
    */
   async onRequestPayment({
     ...args
-  }: PaymentType & {
-    balance: number
-  }): Promise<ISendTransactionJsonReturnData> {
+  }: PaymentTypeWithBalance): Promise<ISendTransactionJsonReturnData> {
     this.setArguments({ ...args })
+    const estimatedMiningFee = await this.getEstimatedMiningFee()
+    this.setMiningFee(estimatedMiningFee)
     await this.setGeneratedPayment()
+
     return new Promise((res, rej) => {
       this.resolve = res
       this.request({
         type: BITCOIN_REQUEST_TYPES.SEND_BITCOIN,
         payload: {
           ...args,
+          miningFee: estimatedMiningFee,
           payment: this as BIPRequestPaymentFacade,
         },
         confirm: () => this.onRequestPaymentConfirmed(res),

@@ -1,4 +1,4 @@
-import { IPayment, PaymentType, Psbt } from './types'
+import { EstimateFeeType, IPayment, PaymentType, Psbt } from './types'
 import {
   ISendTransactionJsonReturnData,
   RifWalletServicesFetcher,
@@ -43,5 +43,20 @@ export default class BIPPaymentFacade {
     const transaction = this.signPayment(payment)
     const hexData = this.getPaymentHex(transaction)
     return this.sendTransaction(hexData)
+  }
+
+  async estimateMiningFee({
+    amountToPay,
+    addressToPay,
+    unspentTransactions,
+  }: EstimateFeeType) {
+    const payment: Psbt = await this.generatePayment({
+      amountToPay,
+      addressToPay,
+      unspentTransactions,
+      miningFee: 0,
+    })
+    const signedPayment: Psbt = this.signPayment(payment)
+    return signedPayment.extractTransaction().virtualSize()
   }
 }
