@@ -9,11 +9,9 @@ export type IProfileStore = {
 }
 export const hasProfile = ProfileStore.has
 
-export const getProfile = async () => {
-  const jsonProfile = (await ProfileStore.has())
-    ? await ProfileStore.get()
-    : '{}'
-  const store: IProfileStore = JSON.parse(jsonProfile || '{}')
+export const getProfile = () => {
+  const jsonProfile = ProfileStore.has() ? ProfileStore.get() : '{}'
+  const store: IProfileStore = JSON.parse(jsonProfile)
   return store
 }
 
