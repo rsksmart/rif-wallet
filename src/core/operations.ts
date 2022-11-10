@@ -1,11 +1,11 @@
 import { Wallet } from '@ethersproject/wallet'
 import { KeyManagementSystem, RIFWallet } from '../lib/core'
-import { getKeys, saveKeys } from '../storage/KeyStore'
+import { getKeys, saveKeys } from '../storage/MainStorage'
 import { Wallets } from '../Context'
 import { Store } from '../storage/Store'
 
-export { deleteKeys, hasKeys } from '../storage/KeyStore'
-export { hasPin } from '../storage/PinStore'
+export { deleteKeys, hasKeys } from '../storage/MainStorage'
+export { hasPin } from '../storage/MainStorage'
 
 type CreateRIFWallet = (wallet: Wallet) => Promise<RIFWallet>
 

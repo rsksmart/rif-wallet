@@ -11,7 +11,7 @@ import {
   rifWalletServicesSocket,
   rnsResolver,
 } from './setup'
-export { hasPin } from '../storage/PinStore'
+export { hasPin } from '../storage/MainStorage'
 
 import { RootNavigation, RootStackParamList } from '../RootNavigation'
 import ModalComponent from '../ux/requestsModal/ModalComponent'

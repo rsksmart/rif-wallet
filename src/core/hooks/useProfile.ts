@@ -5,7 +5,7 @@ import {
   hasProfile,
   IProfileStore,
   saveProfile,
-} from '../../storage/ProfileStore'
+} from '../../storage/MainStorage'
 
 export const emptyProfile = {
   alias: '',
