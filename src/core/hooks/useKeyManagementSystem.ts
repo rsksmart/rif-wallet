@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import { Wallets, WalletsIsDeployed } from '../../Context'
 import { KeyManagementSystem, OnRequest } from '../../lib/core'
-import { deleteContacts } from '../../storage/MainStorage'
 import { deleteDomains } from '../../storage/DomainsStore'
-import { deletePin, savePin } from '../../storage/MainStorage'
+import { deletePin, savePin, deleteContacts } from '../../storage/MainStorage'
 import {
   addNextWallet,
   creteKMS,
@@ -46,7 +45,7 @@ export const useKeyManagementSystem = (onRequest: OnRequest) => {
     setState({ ...state, ...noKeysState })
   }
 
-  const resetKeysAndPin = async () => {
+  const resetKeysAndPin = () => {
     deleteKeys()
     deletePin()
     deleteContacts()
@@ -97,7 +96,7 @@ export const useKeyManagementSystem = (onRequest: OnRequest) => {
 
   const createPin = async (newPin: string) => {
     setState({ ...state, loading: true })
-    await savePin(newPin)
+    savePin(newPin)
     setState({
       ...state,
       hasPin: true,
@@ -105,8 +104,8 @@ export const useKeyManagementSystem = (onRequest: OnRequest) => {
     })
   }
 
-  const editPin = async (newPin: string) => {
-    await savePin(newPin)
+  const editPin = (newPin: string) => {
+    savePin(newPin)
   }
 
   const addNewWallet = () => {

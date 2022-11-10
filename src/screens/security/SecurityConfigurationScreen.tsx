@@ -12,7 +12,7 @@ import {
 } from '../../storage/MainStorage'
 
 export type SecurityScreenProps = {
-  deleteKeys: () => Promise<any>
+  deleteKeys: () => any
 }
 const SecurityConfigurationScreen: React.FC<
   ScreenProps<'SecurityConfigurationScreen'> & SecurityScreenProps
@@ -34,20 +34,20 @@ const SecurityConfigurationScreen: React.FC<
         },
         {
           text: 'Delete',
-          onPress: () =>
-            deleteKeys().then(() => {
-              saveKeyVerificationReminder(false).then()
-              navigation.navigate('CreateKeysUX')
-            }),
+          onPress: () => {
+            deleteKeys()
+            saveKeyVerificationReminder(false)
+            navigation.navigate('CreateKeysUX')
+          },
         },
       ],
     )
   }
 
   async function checkReminder() {
-    const reminderIsSet = await hasKeyVerificationReminder()
+    const reminderIsSet = hasKeyVerificationReminder()
     if (reminderIsSet) {
-      const keyVerificationReminder = await getKeyVerificationReminder()
+      const keyVerificationReminder = getKeyVerificationReminder()
       setShowReminder(keyVerificationReminder)
     }
   }

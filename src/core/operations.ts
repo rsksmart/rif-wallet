@@ -4,14 +4,13 @@ import { getKeys, saveKeys } from '../storage/MainStorage'
 import { Wallets } from '../Context'
 import { MMKVStorage } from '../storage/MMKVStorage'
 
-export { deleteKeys, hasKeys } from '../storage/MainStorage'
-export { hasPin } from '../storage/MainStorage'
+export { deleteKeys, hasKeys, hasPin } from '../storage/MainStorage'
 
 type CreateRIFWallet = (wallet: Wallet) => Promise<RIFWallet>
 
 export const loadExistingWallets =
   (createRIFWallet: CreateRIFWallet) => async () => {
-    const serializedKeys = await getKeys()
+    const serializedKeys = getKeys()
     const { kms, wallets } = KeyManagementSystem.fromSerialized(serializedKeys!)
 
     const rifWallets = await Promise.all(wallets.map(createRIFWallet))
@@ -44,7 +43,7 @@ export const creteKMS =
 
     save()
     const serialized = kms.serialize()
-    await saveKeys(serialized)
+    saveKeys(serialized)
 
     const rifWalletsDictionary = { [rifWallet.address]: rifWallet }
     const rifWalletsIsDeployedDictionary = {
