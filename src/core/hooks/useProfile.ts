@@ -29,11 +29,11 @@ export function useProfile(initProfile?: IProfileStore) {
   }, [])
   const storeProfile = async (newProfile: IProfileStore) => {
     setProfile(newProfile)
-    await saveProfile(newProfile)
+    saveProfile(newProfile)
   }
 
   const eraseProfile = async () => {
-    await deleteProfile()
+    deleteProfile()
     setProfile(emptyProfile)
   }
 

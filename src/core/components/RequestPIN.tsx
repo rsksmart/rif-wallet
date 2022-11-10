@@ -16,8 +16,8 @@ export const RequestPIN: React.FC<Interface> = ({
   const [resetEnabled, setResetEnabled] = useState<boolean>(false)
   const checkPin = useCallback(async (enteredPin: string) => {
     try {
-      const storedPin = await getPin()
-      if (storedPin && storedPin.password === enteredPin) {
+      const storedPin = getPin()
+      if (storedPin === enteredPin) {
         unlock()
       } else {
         setResetEnabled(true)

@@ -11,7 +11,6 @@ import {
   rifWalletServicesSocket,
   rnsResolver,
 } from './setup'
-export { hasPin } from '../storage/MainStorage'
 
 import { RootNavigation, RootStackParamList } from '../RootNavigation'
 import ModalComponent from '../ux/requestsModal/ModalComponent'
@@ -80,16 +79,14 @@ export const Core = () => {
   const BitcoinCore = useBitcoinCore(state?.kms?.mnemonic || '', onRequest)
 
   useEffect(() => {
-    Promise.all([i18nInit(), hasKeys(), hasPin()]).then(
-      ([_, hasKeysResult, hasPinResult]) => {
-        setState({
-          ...state,
-          hasKeys: !!hasKeysResult,
-          hasPin: !!hasPinResult,
-          loading: false,
-        })
-      },
-    )
+    i18nInit().then(() => {
+      setState({
+        ...state,
+        hasKeys: hasKeys(),
+        hasPin: hasPin(),
+        loading: false,
+      })
+    })
   }, [])
 
   useEffect(() => {
