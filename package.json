@@ -40,6 +40,7 @@
     "axios": "^0.27.2",
     "bignumber.js": "^9.0.1",
     "bip32": "^2.0.6",
+    "bitcoin-address-validation": "^2.2.1",
     "bitcoinjs-lib": "^6.0.2",
     "buffer": "^4.9.2",
     "deprecated-react-native-prop-types": "^2.3.0",
