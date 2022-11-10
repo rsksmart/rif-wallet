@@ -2,15 +2,17 @@ import { MainStorage } from './MainStorage'
 
 const key = 'BITCOIN_NETWORK'
 
-export interface BitcoinNetworks {
-  [key: string]: {
-    name: string
-    bips: Array<string>
-  }
+export interface StoredBitcoinNetworkValue {
+  name: string
+  bips: string[]
+}
+
+export interface StoredBitcoinNetworks {
+  [key: string]: StoredBitcoinNetworkValue
 }
 
 export const BitcoinNetworkStore = {
-  getStoredNetworks: (): BitcoinNetworks => {
+  getStoredNetworks: (): StoredBitcoinNetworks => {
     return MainStorage.get(key) || {}
   },
   addNewNetwork: (networkName: string, bips: Array<string> = []) => {
