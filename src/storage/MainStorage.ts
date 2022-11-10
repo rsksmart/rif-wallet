@@ -12,6 +12,7 @@ const pin = 'PIN'
 const profile = 'PROFILE'
 const keyManagement = 'KEY_MANAGEMENT'
 const keyVerificationReminder = 'KEY_VERIFICATION_REMINDER'
+const contacts = 'CONTACTS'
 
 // pin functions
 export const hasPin = () => MainStorage.has()
@@ -44,3 +45,10 @@ export const getKeyVerificationReminder = () => {
 }
 export const saveKeyVerificationReminder = (value: boolean) =>
   MainStorage.set(keyVerificationReminder, value.toString())
+
+// contacts functions
+export const hasContacts = () => MainStorage.has(contacts)
+export const getContacts = () => MainStorage.get(contacts)
+// TODO define type for contacts
+export const saveContacts = (value: any) => MainStorage.set(contacts, value)
+export const deleteContacts = () => MainStorage.delete(contacts)
