@@ -1,10 +1,10 @@
 import { MMKV } from 'react-native-mmkv'
 
 export class Store {
-  private id: string
-  private storage: MMKV
+  private id: string = 'mmkv.default'
+  private storage: MMKV | null = null
 
-  constructor(id: string, encryptionKey?: string) {
+  constructor(id: string = 'mmkv.default', encryptionKey?: string) {
     this.id = id
     this.storage = new MMKV({
       id,
@@ -12,25 +12,38 @@ export class Store {
     })
   }
 
-  public set(value: any, key: string = 'default') {
-    if (typeof value !== 'undefined') {
+  public set(key: string, value: any) {
+    console.log('VALUE STORED', value)
+    if (this.storage && typeof value !== 'undefined') {
       this.storage.set(key, JSON.stringify(value))
     }
   }
 
   public get(key: string = 'default') {
-    return JSON.parse(this.storage.getString(key)!)
+    if (this.storage) {
+      const value = this.storage.getString(key)
+      console.log('VALUE FETCHED', value)
+      return value && JSON.parse(value)
+    }
   }
 
   public has(key: string = 'default') {
-    return this.storage.contains(key)
+    if (this.storage) {
+      return this.storage.contains(key)
+    } else {
+      return false
+    }
   }
 
   public delete(key: string) {
-    this.storage.delete(key)
+    if (this.storage) {
+      this.storage.delete(key)
+    }
   }
 
   public deleteAll() {
-    this.storage.clearAll()
+    if (this.storage) {
+      this.storage.clearAll()
+    }
   }
 }
