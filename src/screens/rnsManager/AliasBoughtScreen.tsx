@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { View, StyleSheet, Image, Linking, Clipboard } from 'react-native'
+import { Clipboard, Image, Linking, StyleSheet, View } from 'react-native'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
-import {
-  OutlineButton,
-  PurpleButton,
-} from '../../components/button/ButtonVariations'
+import { OutlineButton } from '../../components/button/ButtonVariations'
 
-import { ScreenProps } from '../../RootNavigation'
-import { ScreenWithWallet } from '../types'
 import { MediumText } from '../../components'
+import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
+import { ScreenProps } from '../../RootNavigation'
 import { IProfileStore } from '../../storage/ProfileStore'
+import { ScreenWithWallet } from '../types'
 
 type Props = {
   profile: IProfileStore
@@ -69,7 +67,7 @@ export const AliasBoughtScreen: React.FC<
 
         <View style={rnsManagerStyles.bottomContainer}>
           <View style={styles.buttonContainer}>
-            <PurpleButton
+            <PrimaryButton2
               onPress={() => copyHashAndOpenExplorer(tx.hash)}
               accessibilityLabel="Copy Hash & Open Explorer"
               title={'Copy Hash & Open Explorer'}

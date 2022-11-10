@@ -43,4 +43,14 @@ export const colors = {
     purple: '#624FE9',
     bustyBlue: '#4200D8',
   },
+  border: {
+    green: '#00d8a6',
+    red: '#b02f47',
+  },
+  button: {
+    primary: '#3901BD',
+    primaryPressed: '#4918C3',
+    secondary: '#020034',
+    secondaryPressed: '#DBE3FF',
+  },
 }

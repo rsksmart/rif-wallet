@@ -4,7 +4,6 @@ export const rnsManagerStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background.darkBlue,
-    paddingTop: 10,
     paddingHorizontal: 40,
   },
   profileHeader: {
@@ -13,7 +12,6 @@ export const rnsManagerStyles = StyleSheet.create({
     padding: 20,
     backgroundColor: colors.background.darkBlue,
   },
-
   backButton: {
     color: colors.lightPurple,
     backgroundColor: colors.blue2,
@@ -57,6 +55,6 @@ export const rnsManagerStyles = StyleSheet.create({
   bottomContainer: {
     flex: 1,
     justifyContent: 'flex-end',
-    paddingBottom: 10,
+    marginTop: 10,
   },
 })

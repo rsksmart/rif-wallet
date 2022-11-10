@@ -1,7 +1,7 @@
 import React from 'react'
 import PrimaryButton from './PrimaryButton'
 import SecondaryButton from './SecondaryButton'
-import { BaseButtonInterface } from './BaseButton'
+import { BaseButtonProps } from './BaseButton'
 import { MediumText } from '../typography'
 import { colors } from '../../styles'
 
@@ -10,7 +10,7 @@ type ActiveButtonType = {
   text: React.FC | string
   TextComp?: React.FC | undefined
 }
-const ActiveButton: React.FC<ActiveButtonType & BaseButtonInterface> = ({
+const ActiveButton: React.FC<ActiveButtonType & BaseButtonProps> = ({
   isActive,
   text,
   TextComp = MediumText,

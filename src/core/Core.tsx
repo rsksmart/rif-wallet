@@ -17,11 +17,7 @@ import { RootNavigation } from '../RootNavigation'
 import ModalComponent from '../ux/requestsModal/ModalComponent'
 
 import { NavigationContainer, NavigationState } from '@react-navigation/native'
-import ErrorBoundary from '../components/ErrorBoundary/ErrorBoundary'
-import {
-  GlobalErrorHandler,
-  useSetGlobalError,
-} from '../components/GlobalErrorHandler'
+import { useSetGlobalError } from '../components/GlobalErrorHandler'
 import { LoadingScreen } from '../components/loading/LoadingScreen'
 import { WalletConnectProviderElement } from '../screens/walletConnect/WalletConnectContext'
 import { colors } from '../styles'
@@ -189,11 +185,3 @@ export const Core = () => {
     </Fragment>
   )
 }
-
-export const CoreGlobalErrorHandler = () => (
-  <GlobalErrorHandler>
-    <ErrorBoundary>
-      <Core />
-    </ErrorBoundary>
-  </GlobalErrorHandler>
-)
