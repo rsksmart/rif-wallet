@@ -12,7 +12,7 @@ import {
   DarkBlueButton,
 } from '../../components/button/ButtonVariations'
 import { RIFWallet } from '../../lib/core'
-import { saveKeyVerificationReminder } from '../../storage/KeyVerificationReminderStore'
+import { saveKeyVerificationReminder } from '../../storage/MainStorage'
 type SecureYourWalletProps = {
   mnemonic: string
   createWallet: (mnemonic: string) => Promise<RIFWallet>
