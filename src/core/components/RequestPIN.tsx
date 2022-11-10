@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { getPin } from '../../storage/PinStore'
+import { getPin } from '../../storage/MainStorage'
 import { PinContainer } from '../../components/PinManager/PinContainer'
 import { useState } from 'react'
 import { pinLength } from '../../shared/costants'

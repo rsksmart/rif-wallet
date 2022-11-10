@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { RegularText } from '../../components'
 import { AvatarIcon } from '../../components/icons/AvatarIcon'
-import { IProfileStore } from '../../storage/ProfileStore'
+import { IProfileStore } from '../../storage/MainStorage'
 import { colors } from '../../styles'
 
 interface Props {

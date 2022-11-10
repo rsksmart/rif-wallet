@@ -3,7 +3,7 @@ import { Wallets, WalletsIsDeployed } from '../../Context'
 import { KeyManagementSystem, OnRequest } from '../../lib/core'
 import { deleteContacts } from '../../storage/ContactsStore'
 import { deleteDomains } from '../../storage/DomainsStore'
-import { deletePin, savePin } from '../../storage/PinStore'
+import { deletePin, savePin } from '../../storage/MainStorage'
 import {
   addNextWallet,
   creteKMS,

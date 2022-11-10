@@ -5,7 +5,7 @@ import { View, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import { AddressCopyComponent } from '../../components/copy/AddressCopyComponent'
 import { useSelectedWallet } from '../../Context'
 import { ProfileHandler } from './ProfileHandler'
-import { IProfileStore } from '../../storage/ProfileStore'
+import { IProfileStore } from '../../storage/MainStorage'
 
 export const AppHeader: React.FC<{
   profile: IProfileStore
