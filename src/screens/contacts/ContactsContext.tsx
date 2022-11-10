@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { getContacts, saveContacts } from '../../storage/ContactsStore'
+import { getContacts, saveContacts } from '../../storage/MainStorage'
 import uuid from 'react-native-uuid'
 
 export interface IContact {
