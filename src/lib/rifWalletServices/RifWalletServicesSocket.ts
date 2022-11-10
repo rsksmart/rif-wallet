@@ -21,7 +21,11 @@ export interface IServiceInitEvent {
 }
 
 export interface IRifWalletServicesSocket extends EventEmitter {
-  connect: (wallet: RIFWallet, encryptionKey: string, fetcher: RifWalletServicesFetcher) => Promise<void>
+  connect: (
+    wallet: RIFWallet,
+    encryptionKey: string,
+    fetcher: RifWalletServicesFetcher,
+  ) => Promise<void>
 
   disconnect(): void
   isConnected(): boolean
@@ -38,10 +42,7 @@ export class RifWalletServicesSocket
   private abiEnhancer: IAbiEnhancer
   private socket: Socket | undefined
 
-  constructor(
-    rifWalletServicesUrl: string,
-    abiEnhancer: IAbiEnhancer,
-  ) {
+  constructor(rifWalletServicesUrl: string, abiEnhancer: IAbiEnhancer) {
     super()
 
     this.abiEnhancer = abiEnhancer
@@ -106,7 +107,11 @@ export class RifWalletServicesSocket
     })
   }
 
-  async connect(wallet: RIFWallet, encriptionKey: string, fetcher: RifWalletServicesFetcher) {
+  async connect(
+    wallet: RIFWallet,
+    encriptionKey: string,
+    fetcher: RifWalletServicesFetcher
+  ) {
     try {
       await this.init(wallet, encriptionKey, fetcher)
 

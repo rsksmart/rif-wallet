@@ -2,6 +2,7 @@ import BIP39 from './BIP39'
 import { NETWORK_DATA } from './constants'
 import BIP from './BIP'
 import createBipFactory from './BIPFactory'
+import { RifWalletServicesFetcher } from '../rifWalletServices/RifWalletServicesFetcher'
 
 export default class BitcoinNetwork {
   networkId: string
@@ -21,6 +22,7 @@ export default class BitcoinNetwork {
     bipNames: Array<string> = [],
     BIP39Instance: BIP39,
     bipFactory = createBipFactory,
+    fetcher: RifWalletServicesFetcher
   ) {
     this.networkId = networkId
     this.contractAddress = networkId
@@ -30,21 +32,22 @@ export default class BitcoinNetwork {
     if (bipNames.length === 0) {
       throw new Error('You must define a BIP for this Network')
     }
-    this.setBips(bipNames)
-    this.updateBalance()
+    this.setBips(bipNames, fetcher)
+    // this.updateBalance()
   }
   setCoinConfiguration() {
     this.coinTypeNumber = NETWORK_DATA[this.networkId].coinTypeNumber
     this.networkName = NETWORK_DATA[this.networkId].networkName
     this.symbol = NETWORK_DATA[this.networkId].symbol
   }
-  setBips(bips: Array<string>) {
+  setBips(bips: Array<string>, fetcher: RifWalletServicesFetcher) {
     let counter = 0
     for (const bipName of bips) {
       const BIPInstance = this.BIPFactory(
         this,
         bipName,
         this.BIP39Instance.seed,
+        { fetcher }
       )
       this.bipNames[counter] = BIPInstance
       this.bipNames[bipName] = BIPInstance

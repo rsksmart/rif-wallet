@@ -4,7 +4,9 @@ import {
   TransactionsServerResponse,
 } from './RIFWalletServicesTypes'
 import { UnspentTransactionType } from '../bitcoin/BIP84Payment'
-import { Axios } from 'axios'
+import * as Keychain from 'react-native-keychain'
+import axios, { AxiosInstance } from 'axios'
+import createAuthRefreshInterceptor from 'axios-auth-refresh'
 
 export interface IRIFWalletServicesFetcher {
   fetchTokensByAddress(address: string): Promise<ITokenWithBalance[]>
@@ -45,14 +47,64 @@ export interface ISendTransactionJsonReturnData {
 const RESULTS_LIMIT = 10
 
 export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
-  axios: Axios
+  axiosInstance: AxiosInstance
+  accessToken: string = ''
+  refreshToken: string = ''
 
-  constructor(axios: Axios) {
-    this.axios = axios
+  constructor(axiosInstance: AxiosInstance, accessToken: string, refreshToken: string) {
+    this.axiosInstance = axiosInstance
+    this.accessToken = accessToken
+    this.refreshToken = refreshToken
+    this.axiosInstance.interceptors.request.use(
+      config => {
+        if (!config.headers?.Authorization) {
+          config.headers!.Authorization = `DIDAuth ${accessToken}`
+        }
+        return config
+      },
+      error => {
+        return Promise.reject(error)
+      },
+    )
+
+    const refreshAuthLogic = async (failedRequest: any) => {
+      const data = {
+        refreshToken: this.refreshToken,
+      }
+      const options = {
+        method: 'POST',
+        data,
+        url: `${this.axiosInstance.getUri()}/refresh-token`,
+      }
+  
+      try {
+        const { data : {accessToken, refreshToken}} = await axios(options)
+        failedRequest.response.config.headers.Authorization =
+          'DIDAuth ' + accessToken
+  
+        await Keychain.setInternetCredentials(
+          'jwt',
+          'token',
+          JSON.stringify({
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+          }),
+        )
+        this.accessToken = accessToken,
+        this.refreshToken = refreshToken
+        return await Promise.resolve()
+      } catch (e) {}
+    }
+  
+    createAuthRefreshInterceptor(this.axiosInstance, refreshAuthLogic, { shouldRefresh: (error) => {
+      const message = error.response?.data as string
+      return message.includes('expired');
+    }})
+  
   }
 
   protected async fetchAvailableTokens() {
-    return this.axios.get(`/tokens`)
+    return this.axiosInstance.get('/tokens')
   }
 
   fetchTransactionsByAddress = (
@@ -73,40 +125,45 @@ export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
       transactionsUrl = `${transactionsUrl}&blockNumber=${blockNumber}`
     }
 
-    return this.axios.get<TransactionsServerResponse>(transactionsUrl).then(response => response.data)
+    return this.axiosInstance
+      .get<TransactionsServerResponse>(transactionsUrl)
+      .then(response => response.data)
   }
 
   fetchEventsByAddress = (smartAddress: string) =>
-    this.axios.get(`/address/${smartAddress}/events`)
+    this.axiosInstance.get(`/address/${smartAddress}/events`)
 
   fetchTokensByAddress = (address: string): Promise<ITokenWithBalance[]> =>
-    this.axios.get<ITokenWithBalance[]>(`/address/${address.toLowerCase()}/tokens`).then(response => response.data)
+    this.axiosInstance
+      .get<ITokenWithBalance[]>(`/address/${address.toLowerCase()}/tokens`)
+      .then(response => response.data)
 
   fetchDapps = (): Promise<IRegisteredDappsGroup[]> =>
-    this.axios.get<IRegisteredDappsGroup[]>(`/dapps`).then(response => response.data)
+    this.axiosInstance
+      .get<IRegisteredDappsGroup[]>('/dapps')
+      .then(response => response.data)
 
   fetchXpubBalance = (xpub: string): Promise<IXPubBalanceData> =>
-    this.axios.get<IXPubBalanceData>(`/bitcoin/getXpubBalance/${xpub}`).then(response =>
-      response.data
-    )
+    this.axiosInstance
+      .get<IXPubBalanceData>(`/bitcoin/getXpubBalance/${xpub}`)
+      .then(response => response.data)
   fetchUtxos = (xpub: string): Promise<Array<UnspentTransactionType>> =>
-    this.axios.get<Array<UnspentTransactionType>>(`/bitcoin/getXpubUtxos/${xpub}`).then(res =>
-      res.data,
-    )
+    this.axiosInstance
+      .get<Array<UnspentTransactionType>>(`/bitcoin/getXpubUtxos/${xpub}`)
+      .then(res => res.data)
 
   sendTransactionHexData = (hexdata: string): Promise<any> =>
-    this.axios.get(`/bitcoin/sendTransaction/${hexdata}`).then(res =>
-      res.data
-    )
+    this.axiosInstance.get(`/bitcoin/sendTransaction/${hexdata}`).then(res => res.data)
 
   fetchXpubNextUnusedIndex = (
     xpub: string,
     changeIndex = 0,
     knownLastUsedIndex = 0,
   ): Promise<number> =>
-    this.axios.get(
-      `/bitcoin/getNextUnusedIndex/${xpub}?changeIndex=${changeIndex}&knownLastUsedIndex=${knownLastUsedIndex}`,
-    )
+    this.axiosInstance
+      .get(
+        `/bitcoin/getNextUnusedIndex/${xpub}?changeIndex=${changeIndex}&knownLastUsedIndex=${knownLastUsedIndex}`,
+      )
       .then(response => response.data)
       .then(json => json.index)
 
@@ -115,7 +172,9 @@ export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
     pageSize: number | undefined = undefined,
     pageNumber = 1,
   ): Promise<BitcoinTransactionContainerType> =>
-    this.axios.get<BitcoinTransactionContainerType>(
-      `/bitcoin/getXpubTransactions/${xpub}?pageSize=${pageSize}&page=${pageNumber}`,
-    ).then(response => response.data)
+    this.axiosInstance
+      .get<BitcoinTransactionContainerType>(
+        `/bitcoin/getXpubTransactions/${xpub}?pageSize=${pageSize}&page=${pageNumber}`,
+      )
+      .then(response => response.data)
 }

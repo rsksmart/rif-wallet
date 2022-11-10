@@ -6,6 +6,10 @@ import bitcoinNetworkStore from '../../storage/BitcoinNetworkStore'
 import { OnRequest } from '../../lib/core'
 import { BitcoinNetworkWithBIPRequest } from '../../lib/bitcoin/types'
 import { createAndInitializeBipWithRequest } from '../../lib/bitcoin/utils'
+import { useAuth } from './useAuth'
+import { useSelectedWallet } from '../../Context'
+import { authAxios, publicAxios } from '../setup'
+import { RifWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
 
 import { RifWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
 export type useBitcoinCoreResultType = {
@@ -27,24 +31,32 @@ const useBitcoinCore = (
   request: OnRequest,
 ): useBitcoinCoreResultType => {
   const [networks, refreshStoredNetworks] = useBitcoinNetworks()
+  const { wallet } = useSelectedWallet()
+  // const { login } = useAuth(publicAxios, wallet)
   const memoizedNetworks = useMemo(() => {
     if (!mnemonic) {
       return { networksArr: [], networksObj: {} }
     }
     const BIP39Instance = new BIP39(mnemonic)
     const networksObj: any = {}
-    const networksArr = Object.values(networks).map(network => {
-      const bitcoinNetwork: BitcoinNetworkWithBIPRequest = new BitcoinNetwork(
-        network.name,
-        network.bips,
-        BIP39Instance,
-        createAndInitializeBipWithRequest(request),
-      ) as BitcoinNetworkWithBIPRequest
-      networksObj[network.name] = bitcoinNetwork
-      return bitcoinNetwork
-    })
-
-    return { networksArr, networksObj }
+    // let networksArr: BitcoinNetworkWithBIPRequest[] = []
+    // login().then(({accessToken, refreshToken}) => {
+      // const fetcher = new RifWalletServicesFetcher(authAxios, accessToken, refreshToken)
+      const networksArr = Object.values(networks).map(network => {
+        const bitcoinNetwork: BitcoinNetworkWithBIPRequest = new BitcoinNetwork(
+          network.name,
+          network.bips,
+          BIP39Instance,
+          createAndInitializeBipWithRequest(request),
+          {} as any
+        ) as BitcoinNetworkWithBIPRequest
+        networksObj[network.name] = bitcoinNetwork
+        return bitcoinNetwork
+      })
+      // networksArr = ntwkArr
+    // })
+    return { networksArr, networksObj}
+    
   }, [mnemonic, networks])
 
   useEffect(() => {
@@ -56,7 +68,7 @@ const useBitcoinCore = (
   }, [memoizedNetworks])
   return {
     networks: memoizedNetworks.networksArr,
-    networksMap: memoizedNetworks.networksObj,
+    networksMap: memoizedNetworks!.networksObj,
     refreshStoredNetworks,
   }
 }

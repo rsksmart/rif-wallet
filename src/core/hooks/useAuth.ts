@@ -12,22 +12,7 @@ import {
 } from '../../storage/SignupStore'
 import { RIFWallet } from '../../lib/core'
 
-export type IAuthState = { 
-  accessToken: string;
-  refreshToken: string;
-  authenticated: boolean;
-  signedup: boolean;
-}
-
-const emptyAuthState: IAuthState = {
-  accessToken: '',
-  refreshToken: '',
-  authenticated: false,
-  signedup: false
-}
-
 export const useAuth = (publicAxios: Axios, wallet?: RIFWallet) => {
-
   const did = `did:ethr:rsk:testnet:${wallet?.address}`
 
   const signup = async () => {
@@ -49,9 +34,9 @@ export const useAuth = (publicAxios: Axios, wallet?: RIFWallet) => {
         accessToken,
         refreshToken,
       }),
-    );
+    )
     await saveSignUp({ signedup: true })
-    return {accessToken, refreshToken}
+    return { accessToken, refreshToken }
   }
 
   const signMessage = async (challenge: string) => {
@@ -78,14 +63,19 @@ export const useAuth = (publicAxios: Axios, wallet?: RIFWallet) => {
         accessToken,
         refreshToken,
       }),
-    );
-    return {accessToken, refreshToken}
+    )
+    return { accessToken, refreshToken }
   }
 
   const login = async () => {
-    if(await hasSignUP()){
-      const {signedup} = await getSignUP()
-      if(signedup) {
+    // const credentials = await Keychain.getInternetCredentials('jwt')
+    // if(credentials) {
+    //   const {accessToken, refreshToken } = JSON.parse(credentials.password)
+    //   return { accessToken, refreshToken }
+    // }
+    if (await hasSignUP()) {
+      const { signedup } = await getSignUP()
+      if (signedup) {
         return await signup()
       } else {
         return await authenticate()
@@ -96,21 +86,27 @@ export const useAuth = (publicAxios: Axios, wallet?: RIFWallet) => {
   }
 
   const refresh = async (oldRefreshToken: string) => {
-    const { data: { accessToken, refreshToken }} =
-      await publicAxios.post<AuthenticationTokensType>('/refresh-token', { refreshToken: oldRefreshToken })
+    const {
+      data: { accessToken, refreshToken },
+    } = await publicAxios.post<AuthenticationTokensType>('/refresh-token', {
+      refreshToken: oldRefreshToken,
+    })
 
-    return {accessToken, refreshToken}
+    return { accessToken, refreshToken }
   }
 
   const logout = async (accessToken: string) => {
-    await publicAxios.post<void>('/logout',{}, { headers: { 'Authorization': `DIDAuth ${accessToken}`}})
+    await publicAxios.post<void>(
+      '/logout',
+      {},
+      { headers: { Authorization: `DIDAuth ${accessToken}` } },
+    )
   }
 
   const deleteCredentials = async () => {
     await Keychain.resetInternetCredentials('jwt')
     await deleteSignUp()
   }
-  
 
   return { login, refresh, logout, deleteCredentials }
 }
