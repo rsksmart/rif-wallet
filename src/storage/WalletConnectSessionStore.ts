@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import { MainStorage } from './MainStorage'
 
 const WC_KEY = 'WALLET_CONNECT_SESSION'
 
@@ -14,35 +14,30 @@ export interface ISessionsStorage {
 }
 
 export const createStore = () => ({
-  has: async () => {
-    const value = await AsyncStorage.getItem(WC_KEY)
+  has: () => {
+    const value = MainStorage.get(WC_KEY)
     return !!value
   },
-  get: async () => {
-    const value = await AsyncStorage.getItem(WC_KEY)
-    return value && (JSON.parse(value) as ISessionsStorage)
+  get: (): ISessionsStorage | undefined => {
+    const value = MainStorage.get(WC_KEY)
+    return value ? JSON.parse(value) : undefined
   },
-  save: async (session: IWCSession) => {
-    const storedSessionsJson = await AsyncStorage.getItem(WC_KEY)
-    const storedSessions =
-      storedSessionsJson !== null
-        ? (JSON.parse(storedSessionsJson) as ISessionsStorage)
-        : {}
+  save: (session: IWCSession) => {
+    const storedSessions = MainStorage.get(WC_KEY)
 
-    const jsonValue = JSON.stringify({
-      ...storedSessions,
-      [session.key]: session,
-    })
-
-    return AsyncStorage.setItem(WC_KEY, jsonValue)
+    if (storedSessions && typeof storedSessions === 'object') {
+      return MainStorage.set(WC_KEY, {
+        ...storedSessions,
+        [session.key]: session,
+      })
+    }
   },
-  remove: async (key: string) => {
-    const value = await AsyncStorage.getItem(WC_KEY)
+  remove: (key: string) => {
+    const sessions = MainStorage.get(WC_KEY)
 
-    if (value) {
-      const sessions = JSON.parse(value) as ISessionsStorage
+    if (sessions) {
       delete sessions[key]
-      await AsyncStorage.setItem(WC_KEY, JSON.stringify({}))
+      MainStorage.set(WC_KEY, sessions)
     }
   },
 })

@@ -1,7 +1,6 @@
-import { MMKVStorage } from './MMKVStorage'
+import { MainStorage } from './MainStorage'
 
 const key = 'BITCOIN_NETWORK'
-const BitcoinStore = new MMKVStorage(key)
 
 export interface BitcoinNetworks {
   [key: string]: {
@@ -12,7 +11,7 @@ export interface BitcoinNetworks {
 
 export const BitcoinNetworkStore = {
   getStoredNetworks: (): BitcoinNetworks => {
-    return BitcoinStore.get() || {}
+    return MainStorage.get(key) || {}
   },
   addNewNetwork: (networkName: string, bips: Array<string> = []) => {
     const currentNetworks = BitcoinNetworkStore.getStoredNetworks()
@@ -22,14 +21,14 @@ export const BitcoinNetworkStore = {
     }
 
     currentNetworks[networkName] = network
-    BitcoinStore.set(currentNetworks)
+    MainStorage.set(key, currentNetworks)
     return network
   },
   deleteNetwork: (networkName: string): boolean => {
     const currentNetworks = BitcoinNetworkStore.getStoredNetworks()
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { [networkName]: removed, ...newNetworks } = currentNetworks
-    BitcoinStore.set(newNetworks)
+    MainStorage.set(key, newNetworks)
     return true
   },
 }

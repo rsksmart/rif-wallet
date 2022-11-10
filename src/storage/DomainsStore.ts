@@ -1,28 +1,27 @@
-import { MMKVStorage } from './MMKVStorage'
+import { MainStorage } from './MainStorage'
 
 const key = 'DOMAINS'
-const DomainStore = new MMKVStorage(key)
 
-type DomainStoreType = {
+interface DomainStoreType {
   [owner: string]: string[]
 }
 
-export const getDomains = async (owner: string) => {
+export const getDomains = (owner: string) => {
   const store: DomainStoreType = JSON.parse(
-    (await DomainStore.has()) ? await DomainStore.get()! : '{}',
+    MainStorage.has(key) ? MainStorage.get(key)! : '{}',
   )
   return store[owner] || []
 }
 
 export const addDomain = async (owner: string, domain: string) => {
   const store: DomainStoreType = JSON.parse(
-    (await DomainStore.has()) ? await DomainStore.get()! : '{}',
+    MainStorage.has(key) ? MainStorage.get(key) : '{}',
   )
   if (!store[owner]) {
     store[owner] = []
   }
   store[owner].push(domain)
-  DomainStore.set(store)
+  MainStorage.set(key, store)
 }
 
-export const deleteDomains = DomainStore.deleteAll
+export const deleteDomains = () => MainStorage.delete(key)
