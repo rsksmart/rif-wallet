@@ -21,23 +21,28 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
   const [isPressed, setIsPressed] = useState(false)
 
-  const baseButtonStyle = isPressed
-    ? buttonStyles.buttonPressed
-    : disabled
-    ? buttonStyles.buttonDisabled
-    : buttonStyles.button
+  let baseButtonStyle = buttonStyles.button
+  if (isPressed) {
+    baseButtonStyle = buttonStyles.buttonPressed
+  } else if (disabled) {
+    baseButtonStyle = buttonStyles.buttonDisabled
+  }
 
-  const underlayColor = isPressed
-    ? disabled
-      ? buttonStyles.buttonDisabled.backgroundColor
-      : buttonStyles.buttonActive.backgroundColor
-    : buttonStyles.buttonPressed?.backgroundColor
+  let underlayColor = buttonStyles.buttonPressed?.backgroundColor
+  if (isPressed) {
+    if (disabled) {
+      underlayColor = buttonStyles.buttonDisabled.backgroundColor
+    } else {
+      underlayColor = buttonStyles.buttonActive.backgroundColor
+    }
+  }
 
-  const textStyle = isPressed
-    ? buttonStyles.textPressed
-    : disabled
-    ? buttonStyles.textDisabled
-    : buttonStyles.text
+  let textStyle = buttonStyles.text
+  if (isPressed) {
+    textStyle = buttonStyles.textPressed
+  } else if (disabled) {
+    textStyle = buttonStyles.textDisabled
+  }
 
   return (
     <BaseButton
