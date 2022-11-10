@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: fonts.regular,
     fontSize: 18,
+    fontWeight: 'bold',
     textAlign: 'center',
     paddingHorizontal: 60,
     color: colors.text.primary,
@@ -92,7 +93,8 @@ const styles = StyleSheet.create({
     fontFamily: fonts.regular,
     fontSize: 14,
     textAlign: 'center',
-    paddingHorizontal: 60,
+    marginHorizontal: 20,
+    marginVertical: 10,
     color: colors.text.primary,
   },
   okButton: {

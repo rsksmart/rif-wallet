@@ -9,6 +9,7 @@ import { rnsManagerStyles } from './rnsManagerStyles'
 
 import { MediumText } from '../../components'
 import { AvatarIcon } from '../../components/icons/AvatarIcon'
+import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
 import { ScreenProps } from '../../RootNavigation'
 import DomainLookUp from '../../screens/rnsManager/DomainLookUp'
 import { ScreenWithWallet } from '../types'
@@ -22,10 +23,9 @@ export const SearchDomainScreen: React.FC<
 > = ({ wallet, navigation }) => {
   const [domainToLookUp, setDomainToLookUp] = useState<string>('')
   const [validDomain, setValidDomain] = useState<boolean>(false)
-
-  useState<boolean>(false)
   const [selectedYears, setSelectedYears] = useState<number>(2)
   const [selectedDomainPrice, setSelectedDomainPrice] = useState<string>('2')
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(true)
 
   const calculatePrice = async (domain: string, years: number) => {
     //TODO: re enable this later
@@ -136,6 +136,14 @@ export const SearchDomainScreen: React.FC<
           />
         </View>
       </View>
+      <ConfirmationModal
+        isVisible={isModalVisible}
+        title="2 step process"
+        description={`Registering a username requires you to make two transactions in RIF. First transaction is requesting the username. Second transaction is the actual purchase of the username.
+          \nWe are working hard on improving this experience for you!`}
+        okText="Ok, thank you!"
+        onOk={() => setIsModalVisible(false)}
+      />
     </>
   )
 }
