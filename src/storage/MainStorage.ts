@@ -1,4 +1,4 @@
-import { Store } from './Store'
+import { MMKVStorage } from './MMKVStorage'
 
 export interface IProfileStore {
   alias: string
@@ -6,7 +6,7 @@ export interface IProfileStore {
   email: string
 }
 
-export const MainStorage = new Store()
+export const MainStorage = new MMKVStorage()
 
 const pin = 'PIN'
 const profile = 'PROFILE'
