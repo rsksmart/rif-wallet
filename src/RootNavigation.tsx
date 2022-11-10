@@ -349,7 +349,6 @@ export const RootNavigation: React.FC<{
           isVisible={isWarningVisible}
           title="DEVICE SECURITY COMPROMISED"
           description='Any "rooted" app can access your private keys and steal your funds. Wipe this wallet immediately and restore it on a secure device.'
-          okText="OK"
           onOk={() => setIsWarningVisible(false)}
         />
       </View>

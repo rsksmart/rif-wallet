@@ -6,10 +6,11 @@ import {
   Text,
   View,
 } from 'react-native'
-import PrimaryButton from '../../components/button/PrimaryButton'
 import { Modal } from '../../components/modal/Modal'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
+import { PrimaryButton2 } from '../button/PrimaryButton2'
+import { SecondaryButton2 } from '../button/SecondaryButton2'
 
 interface ConfirmationModalProps {
   isVisible?: boolean
@@ -27,7 +28,7 @@ export const ConfirmationModal = ({
   imgSrc,
   title,
   description = '',
-  okText,
+  okText = 'OK',
   cancelText,
   onOk,
   onCancel,
@@ -45,19 +46,17 @@ export const ConfirmationModal = ({
       </Modal.Body>
       <Modal.Footer>
         <View>
-          <PrimaryButton
+          <PrimaryButton2
             style={styles.okButton}
+            title={okText}
             onPress={onOk}
-            underlayColor={colors.blue}>
-            <Text style={styles.okText}>{okText || 'OK'}</Text>
-          </PrimaryButton>
+          />
           {cancelText && (
-            <PrimaryButton
+            <SecondaryButton2
               style={styles.cancelButton}
+              title={cancelText}
               onPress={onCancel}
-              underlayColor={colors.blue}>
-              <Text style={styles.cancelText}>{cancelText}</Text>
-            </PrimaryButton>
+            />
           )}
         </View>
       </Modal.Footer>
@@ -97,11 +96,11 @@ const styles = StyleSheet.create({
     color: colors.text.primary,
   },
   okButton: {
-    backgroundColor: colors.background.light,
     borderColor: colors.background.light,
     borderWidth: 1,
     marginBottom: 10,
     paddingVertical: 10,
+    paddingHorizontal: 50,
   },
   okText: {
     fontFamily: fonts.regular,
@@ -110,12 +109,9 @@ const styles = StyleSheet.create({
     color: colors.darkPurple3,
   },
   cancelButton: {
-    backgroundColor: colors.background.blue2,
-    borderColor: colors.background.light,
-    borderWidth: 1,
     marginBottom: 10,
-    paddingVertical: 8,
-    paddingTop: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 50,
   },
   cancelText: {
     fontFamily: fonts.regular,
