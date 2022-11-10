@@ -15,7 +15,7 @@ const keyVerificationReminder = 'KEY_VERIFICATION_REMINDER'
 const contacts = 'CONTACTS'
 
 // pin functions
-export const hasPin = () => MainStorage.has()
+export const hasPin = () => MainStorage.has(pin)
 export const getPin = (): string => MainStorage.get(pin)
 export const deletePin = () => MainStorage.delete(pin)
 export const savePin = (pinValue: string) => MainStorage.set(pin, pinValue)

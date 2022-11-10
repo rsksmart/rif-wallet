@@ -4,7 +4,7 @@ import { AppContext } from '../Context'
 import { KeyManagementSystem, RIFWallet } from '../lib/core'
 import { i18nInit } from '../lib/i18n'
 
-import { hasKeys, hasPin } from './operations'
+import { hasKeys, hasPin } from '../storage/MainStorage'
 import {
   abiEnhancer,
   rifWalletServicesFetcher,

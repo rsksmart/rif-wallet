@@ -140,7 +140,7 @@ export const RootNavigation: React.FC<{
   let initialRoute: any = 'CreateKeysUX'
   if (hasPin) {
     initialRoute = 'Home'
-  } else if (hasKeys) {
+  } else if (hasKeys && !hasPin) {
     initialRoute = 'CreatePin'
   }
 

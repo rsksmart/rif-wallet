@@ -4,8 +4,6 @@ import { getKeys, saveKeys } from '../storage/MainStorage'
 import { Wallets } from '../Context'
 import { MMKVStorage } from '../storage/MMKVStorage'
 
-export { deleteKeys, hasKeys, hasPin } from '../storage/MainStorage'
-
 type CreateRIFWallet = (wallet: Wallet) => Promise<RIFWallet>
 
 export const loadExistingWallets =
