@@ -86,6 +86,8 @@ const resources = {
       'Connect to': 'Connect to',
       Connect: 'Connect',
       Reject: 'Reject',
+      Delete: 'Delete',
+      Cancel: 'Cancel',
     },
   },
   es: {
@@ -104,6 +106,8 @@ const resources = {
       'Connect to': 'Conectar a',
       Connect: 'Conectar',
       Reject: 'Rechazar',
+      Delete: 'Eliminar',
+      Cancel: 'Cancelar',
     },
   },
 }
