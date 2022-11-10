@@ -5,6 +5,7 @@ import { Text, TextInput, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { rnsResolver } from '../../core/setup'
+import { decodeString } from '../../lib/eip681/decodeString'
 import { colors, grid } from '../../styles'
 import { SecondaryButton2 } from '../button/SecondaryButton2'
 import { ContentPasteIcon, QRCodeIcon } from '../icons'
@@ -58,7 +59,12 @@ export const AddressInput: React.FC<AddressInputProps> = ({
     setStatus({ type: 'READY', value: '' })
     setRecipient(inputText)
 
-    const newValidationMessage = validateAddress(inputText, chainId)
+    const parsedString = decodeString(inputText)
+
+    const newValidationMessage = validateAddress(
+      parsedString.address || inputText,
+      chainId,
+    )
 
     onChangeText(
       inputText,
