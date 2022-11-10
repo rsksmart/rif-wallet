@@ -26,11 +26,11 @@ export function useAliasRegistration(wallet: any) {
       return !!hash
     }
   }
-  const readyToRegister = async () => {
+  const readyToRegister = async (_hash: string) => {
     if (await registrationStarted()) {
       const myAliasRegistration: IProfileRegistrationStore =
         await getAliasRegistration()
-      const hash = myAliasRegistration.commitToRegisterHash
+      const hash = _hash || myAliasRegistration.commitToRegisterHash
       const canReveal = await rskRegistrar.canReveal(hash)
       return await canReveal()
     } else {

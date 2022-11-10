@@ -16,11 +16,10 @@ import { ScreenWithWallet } from '../types'
 import addresses from './addresses.json'
 import TitleStatus from './TitleStatus'
 import {
-  getAliasRegistration,
-  hasAliasRegistration,
   IProfileRegistrationStore,
   saveAliasRegistration,
 } from '../../storage/AliasRegistrationStore'
+import { useAliasRegistration } from '../../core/hooks/useAliasRegistration'
 
 type Props = {
   route: any
@@ -29,6 +28,8 @@ type Props = {
 export const RequestDomainScreen: React.FC<
   RootStackScreenProps<'RequestDomain'> & ScreenWithWallet & Props
 > = ({ wallet, navigation, route }) => {
+  const { registrationStarted, readyToRegister, getRegistrationData } =
+    useAliasRegistration(wallet)
   const { alias, duration } = route.params
   const fullAlias = alias + '.rsk'
 
@@ -51,11 +52,10 @@ export const RequestDomainScreen: React.FC<
       let hash: string
 
       let commitToRegisterResponse
-      const hasStartedRegistration = await hasAliasRegistration()
 
-      if (hasStartedRegistration) {
+      if (await registrationStarted()) {
         setProgress(0.2)
-        aliasRegistration = await getAliasRegistration()
+        aliasRegistration = await getRegistrationData()
         secret = aliasRegistration.commitToRegisterSecret
         hash = aliasRegistration.commitToRegisterHash
       } else {
@@ -77,10 +77,8 @@ export const RequestDomainScreen: React.FC<
       setCommitToRegisterInfo2('estimated wait: 3 minutes')
 
       const intervalId = setInterval(async () => {
-        const canReveal = await rskRegistrar.canReveal(hash)
-        const ready = await canReveal()
         setProgress(prev => prev + 0.009)
-        if (ready) {
+        if (await readyToRegister(hash)) {
           setProgress(1)
           setProcessing(false)
           navigation.navigate('BuyDomain', {
