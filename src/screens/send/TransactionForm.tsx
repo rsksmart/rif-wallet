@@ -2,15 +2,15 @@ import { toChecksumAddress } from '@rsksmart/rsk-utils'
 import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Tabs } from '../../components/'
-import { BlueButton } from '../../components/button/ButtonVariations'
+import { AddressInputSelector } from '../../components/address/AddressInputSelector'
+import { TransferButton } from '../../components/button/TransferButton'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { colors, grid } from '../../styles'
 import { IActivityTransaction, IPrice } from '../../subscriptions/types'
 import AssetChooser from './AssetChooser'
 import { RecentTransactions } from './RecentTransactions'
-import { MixedTokenAndNetworkType } from './types'
 import { SetAmountHOCComponent } from './SetAmountHOCComponent'
-import { AddressInputSelector } from '../../components/address/AddressInputSelector'
+import { MixedTokenAndNetworkType } from './types'
 
 interface Interface {
   onConfirm: (
@@ -131,11 +131,10 @@ const TransactionForm: React.FC<Interface> = ({
             </View>
 
             <View style={styles.centerRow}>
-              <BlueButton
-                underlayColor={'red'}
+              <TransferButton
+                style={styles.button}
                 onPress={handleConfirmClick}
                 disabled={!isValidTransaction}
-                title="review"
               />
             </View>
           </>

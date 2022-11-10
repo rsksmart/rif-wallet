@@ -7,7 +7,7 @@ import { Dimensions, TouchableOpacity, View } from 'react-native'
 import { colors } from '../../styles'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
-import { PurpleButton } from '../../components/button/ButtonVariations'
+import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
 
 import { MediumText } from '../../components'
 import { AvatarIcon } from '../../components/icons/AvatarIcon'
@@ -117,7 +117,7 @@ export const RequestDomainScreen: React.FC<
         </View>
 
         <View style={rnsManagerStyles.bottomContainer}>
-          <PurpleButton
+          <PrimaryButton2
             onPress={() => commitToRegister()}
             accessibilityLabel="request"
             title={'request'}

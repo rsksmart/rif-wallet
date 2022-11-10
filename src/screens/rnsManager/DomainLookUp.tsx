@@ -16,7 +16,7 @@ interface DomainLookUpProps {
   initialValue: string
   onChangeText: (newValue: string) => void
   wallet: any
-  onDomainAvailable: any
+  onDomainAvailable: (domain: string, valid: boolean) => void
 }
 
 enum DomainStatus {
@@ -85,6 +85,7 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
 
     if (domainName.length < 5) {
       setDomainAvailability(DomainStatus.NONE)
+      onDomainAvailable(domainName, false)
       return
     }
 
@@ -95,9 +96,7 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
     setDomainAvailability(
       available ? DomainStatus.AVAILABLE : DomainStatus.TAKEN,
     )
-    if (available) {
-      onDomainAvailable(domainName)
-    }
+    onDomainAvailable(domainName, available)
   }
 
   return (

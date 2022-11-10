@@ -1,14 +1,13 @@
 import Clipboard from '@react-native-community/clipboard'
+import { isValidChecksumAddress } from '@rsksmart/rsk-utils'
 import React, { useEffect, useState } from 'react'
 import { Text, TextInput, View } from 'react-native'
-import { sharedAddressStyles as styles } from './sharedAddressStyles'
-import { ContentPasteIcon, QRCodeIcon } from '../icons'
-import { isValidChecksumAddress } from '@rsksmart/rsk-utils'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { rnsResolver } from '../../core/setup'
 import { colors, grid } from '../../styles'
-import { OutlineButton } from '../button/ButtonVariations'
+import { SecondaryButton2 } from '../button/SecondaryButton2'
+import { ContentPasteIcon, QRCodeIcon } from '../icons'
 import DeleteIcon from '../icons/DeleteIcon'
 import { QRCodeScanner } from '../QRCodeScanner'
 import {
@@ -16,6 +15,7 @@ import {
   toChecksumAddress,
   validateAddress,
 } from './lib'
+import { sharedAddressStyles as styles } from './sharedAddressStyles'
 
 type AddressInputProps = {
   initialValue: string
@@ -222,7 +222,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
             {status.value}
           </Text>
           {status.type === 'CHECKSUM' && (
-            <OutlineButton
+            <SecondaryButton2
               testID={`${testID}.Button.Checksum`}
               title="Convert to correct checksum"
               onPress={() =>

@@ -47,4 +47,10 @@ export const colors = {
     green: '#00d8a6',
     red: '#b02f47',
   },
+  button: {
+    primary: '#3901BD',
+    primaryPressed: '#4918C3',
+    secondary: '#020034',
+    secondaryPressed: '#DBE3FF',
+  },
 }

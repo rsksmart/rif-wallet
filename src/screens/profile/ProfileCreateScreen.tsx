@@ -5,7 +5,7 @@ import { IProfileStore } from '../../storage/ProfileStore'
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { MediumText } from '../../components'
-import { PurpleButton } from '../../components/button/ButtonVariations'
+import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
 import { TextInputWithLabel } from '../../components/input/TextInputWithLabel'
 import { emptyProfile } from '../../core/hooks/useProfile'
 import { ScreenProps } from '../../RootNavigation'
@@ -73,7 +73,7 @@ export const ProfileCreateScreen: React.FC<
         {!profile?.alias && (
           <>
             <View style={styles.rowContainer}>
-              <PurpleButton
+              <PrimaryButton2
                 onPress={() => navigation.navigate('SearchDomain')}
                 accessibilityLabel="register new"
                 title={'register new'}
@@ -120,7 +120,7 @@ export const ProfileCreateScreen: React.FC<
           />
         </View>
         <View style={styles.rowContainer}>
-          <PurpleButton
+          <PrimaryButton2
             onPress={createProfile}
             accessibilityLabel="create"
             title={editProfile ? 'save' : 'create'}
