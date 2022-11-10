@@ -1,7 +1,7 @@
 import { isAddress } from '@rsksmart/rsk-utils'
 
 interface DecodedString {
-  address: string
+  address?: string
   network?: string
 }
 
@@ -17,7 +17,7 @@ export const decodeString = (input: string): DecodedString => {
   }
 
   // a network prefix and an address:
-  if (input.indexOf(':')) {
+  if (input.indexOf(':') !== -1) {
     const array = input.split(':')
     let address = array[1]
 
@@ -34,5 +34,5 @@ export const decodeString = (input: string): DecodedString => {
   }
 
   // failed:
-  return { address: '', network: '' }
+  return {}
 }

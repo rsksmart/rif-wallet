@@ -50,4 +50,14 @@ describe('decodeString', () => {
       address: '0x19d03d7d6c3137f1Eb7582Ba5957b8A2e26f304A',
     })
   })
+
+  describe('returns nothing', () => {
+    it('junk text', () => {
+      expect(decodeString('ashjdhasjdkasd')).toMatchObject({})
+    })
+
+    it('junk text with colon', () => {
+      expect(decodeString('ashjdhas:4jdkasd')).toMatchObject({})
+    })
+  })
 })
