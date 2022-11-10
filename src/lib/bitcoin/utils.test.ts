@@ -1,5 +1,5 @@
 import { isBitcoinAddressValid } from './utils'
-import * as mocks from './bitcoinMock'
+import { addressesOrganized } from './bitcoinMock'
 
 function testAddresses(
   addresses: string[],
@@ -7,26 +7,46 @@ function testAddresses(
   expect: jest.Expect,
 ) {
   for (const address of addresses) {
-    console.log(address)
     expect(isBitcoinAddressValid(address)).toEqual(shouldBeValid)
   }
 }
 describe('Utils', () => {
   describe('isBitcoinAddressValid', () => {
-    it('Should return true (VALID) for the bitcoin mainnet addresses array mock', () => {
-      testAddresses(mocks.bitcoinValidMainnetAddresses, true, expect)
+    const { BIP84, BIP44 } = addressesOrganized
+    it('Should return true (VALID) for the bitcoin mainnet BIP84 addresses array mock', () => {
+      testAddresses(BIP84.mainnet.valid, true, expect)
     })
 
-    it('Should return false (INVALID) for the bitcoin mainnet addresses array mock', () => {
-      testAddresses(mocks.bitcoinInvalidMainnetAddresses, false, expect)
+    it('Should return false (INVALID) for the bitcoin mainnet BIP84 addresses array mock', () => {
+      testAddresses(BIP84.mainnet.invalid, false, expect)
     })
 
-    it('Should return true (VALID) for the bitcoin testnet addresses array mock', () => {
-      testAddresses(mocks.bitcoinValidTestnetAddresses, true, expect)
+    it('Should return true (VALID) for the bitcoin testnet BIP84 addresses array mock', () => {
+      testAddresses(BIP84.testnet.valid, true, expect)
     })
 
-    it('Should return false (INVALID) for the bitcoin testnet addresses array mock', () => {
-      testAddresses(mocks.bitcoinInvalidTestnetAddresses, false, expect)
+    it('Should return false (INVALID) for the bitcoin testnet BIP84 addresses array mock', () => {
+      testAddresses(BIP84.testnet.invalid, false, expect)
+    })
+
+    /**
+     * BIP 44 Tests
+     */
+
+    it('Should return true (VALID) for the bitcoin mainnet BIP44 addresses array mock', () => {
+      testAddresses(BIP44.mainnet.valid, true, expect)
+    })
+
+    it('Should return false (INVALID) for the bitcoin mainnet BIP44 addresses array mock', () => {
+      testAddresses(BIP44.mainnet.invalid, false, expect)
+    })
+
+    it('Should return true (VALID) for the bitcoin testnet BIP44 addresses array mock', () => {
+      testAddresses(BIP44.testnet.valid, true, expect)
+    })
+
+    it('Should return false (INVALID) for the bitcoin testnet BIP44 addresses array mock', () => {
+      testAddresses(BIP44.testnet.invalid, false, expect)
     })
   })
 })
