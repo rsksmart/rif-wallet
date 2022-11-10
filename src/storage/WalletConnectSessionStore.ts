@@ -14,13 +14,10 @@ export interface ISessionsStorage {
 }
 
 export const createStore = () => ({
-  has: () => {
-    const value = MainStorage.get(WC_KEY)
-    return !!value
-  },
+  has: () => MainStorage.has(WC_KEY),
   get: (): ISessionsStorage | undefined => {
     const value = MainStorage.get(WC_KEY)
-    return value ? JSON.parse(value) : undefined
+    return value ? value : undefined
   },
   save: (session: IWCSession) => {
     const storedSessions = MainStorage.get(WC_KEY)
