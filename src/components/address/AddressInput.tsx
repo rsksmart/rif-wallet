@@ -57,17 +57,15 @@ export const AddressInput: React.FC<AddressInputProps> = ({
 
   const handleChangeText = (inputText: string) => {
     setStatus({ type: 'READY', value: '' })
-    setRecipient(inputText)
 
     const parsedString = decodeString(inputText)
+    const userInput = parsedString.address ? parsedString.address : inputText
 
-    const newValidationMessage = validateAddress(
-      parsedString.address || inputText,
-      chainId,
-    )
+    setRecipient(userInput)
+    const newValidationMessage = validateAddress(userInput, chainId)
 
     onChangeText(
-      inputText,
+      userInput,
       newValidationMessage === AddressValidationMessage.VALID,
     )
 
@@ -83,9 +81,9 @@ export const AddressInput: React.FC<AddressInputProps> = ({
         })
 
         rnsResolver
-          .addr(inputText)
+          .addr(userInput)
           .then((address: string) => {
-            setDomainFound(inputText)
+            setDomainFound(userInput)
             setAddressResolved(address)
             setStatus({
               type: 'INFO',
@@ -117,7 +115,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
           type: 'ERROR',
           value: 'Invalid address',
         })
-        onChangeText(inputText, false)
+        onChangeText(userInput, false)
         break
     }
   }
