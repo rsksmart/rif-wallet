@@ -9,7 +9,7 @@ import {
   getKeyVerificationReminder,
   hasKeyVerificationReminder,
   saveKeyVerificationReminder,
-} from '../../storage/KeyVerificationReminderStore'
+} from '../../storage/MainStorage'
 
 export type SecurityScreenProps = {
   deleteKeys: () => Promise<any>

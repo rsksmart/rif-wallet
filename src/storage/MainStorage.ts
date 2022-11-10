@@ -11,6 +11,7 @@ export const MainStorage = new Store()
 const pin = 'PIN'
 const profile = 'PROFILE'
 const keyManagement = 'KEY_MANAGEMENT'
+const keyVerificationReminder = 'KEY_VERIFICATION_REMINDER'
 
 // pin functions
 export const hasPin = () => MainStorage.has()
@@ -34,3 +35,12 @@ export const getKeys = () => MainStorage.get(keyManagement)
 export const saveKeys = (keysValue: string) =>
   MainStorage.set(keyManagement, keysValue)
 export const deleteKeys = MainStorage.deleteAll
+
+// keyVerificationReminder functions
+export const hasKeyVerificationReminder = () =>
+  MainStorage.has(keyVerificationReminder)
+export const getKeyVerificationReminder = () => {
+  return MainStorage.get(keyVerificationReminder) === 'true'
+}
+export const saveKeyVerificationReminder = (value: boolean) =>
+  MainStorage.set(keyVerificationReminder, value.toString())
