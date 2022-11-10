@@ -1,7 +1,7 @@
-import { Store } from './Store'
+import { MMKVStorage } from './MMKVStorage'
 
 const key = 'DOMAINS'
-const DomainStore = new Store(key)
+const DomainStore = new MMKVStorage(key)
 
 type DomainStoreType = {
   [owner: string]: string[]

@@ -2,7 +2,7 @@ import { Wallet } from '@ethersproject/wallet'
 import { KeyManagementSystem, RIFWallet } from '../lib/core'
 import { getKeys, saveKeys } from '../storage/MainStorage'
 import { Wallets } from '../Context'
-import { Store } from '../storage/Store'
+import { MMKVStorage } from '../storage/MMKVStorage'
 
 export { deleteKeys, hasKeys } from '../storage/MainStorage'
 export { hasPin } from '../storage/MainStorage'
@@ -80,6 +80,6 @@ export const addNextWallet = async (
 }
 
 export const deleteCache = () => {
-  const cache = new Store('txs')
+  const cache = new MMKVStorage('txs')
   cache.deleteAll()
 }

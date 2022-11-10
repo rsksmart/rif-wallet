@@ -1,7 +1,7 @@
-import { Store } from './Store'
+import { MMKVStorage } from './MMKVStorage'
 
 const key = 'CONTACTS'
-const ContactsStore = new Store(key)
+const ContactsStore = new MMKVStorage(key)
 
 export const hasContacts = ContactsStore.has
 export const getContacts = ContactsStore.get

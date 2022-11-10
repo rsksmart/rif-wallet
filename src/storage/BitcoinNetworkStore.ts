@@ -1,7 +1,7 @@
-import { Store } from './Store'
+import { MMKVStorage } from './MMKVStorage'
 
 const key = 'BITCOIN_NETWORK'
-const BitcoinStore = new Store(key)
+const BitcoinStore = new MMKVStorage(key)
 
 export interface BitcoinNetworks {
   [key: string]: {

@@ -1,6 +1,6 @@
 import { MMKV } from 'react-native-mmkv'
 
-export class Store {
+export class MMKVStorage {
   private id: string = 'mmkv.default'
   private storage: MMKV | null = null
 
