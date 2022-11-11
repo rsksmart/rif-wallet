@@ -1,8 +1,10 @@
+import { useEffect, useMemo, useState } from 'react'
+import { Image, StyleSheet, View } from 'react-native'
+import RampSdk from '@ramp-network/react-native-sdk'
+
 import { toChecksumAddress } from 'components/address/lib'
 import { LoadingScreen } from 'components/loading/LoadingScreen'
 import { balanceToDisplay } from 'lib/utils'
-import { useEffect, useMemo, useState } from 'react'
-import { Image, StyleSheet, View } from 'react-native'
 
 import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
@@ -73,7 +75,7 @@ export const HomeScreen = ({
 
   // interact with the navigation
   const handleSendReceive = (screen: 'SEND' | 'RECEIVE' | 'FAUCET') => {
-    if (selected instanceof BitcoinNetwork) {
+    if (selected instanceof BitcoinNetwork && screen !== 'FAUCET') {
       return handleBitcoinSendReceive(screen)
     }
     switch (screen) {
@@ -108,7 +110,23 @@ export const HomeScreen = ({
   }
 
   const addBalance = (address: string) => {
-    console.log('temporarly removed', address)
+    const ramp = new RampSdk({
+      // for testnet:
+      // url: 'https://ri-widget-staging.firebaseapp.com/',
+      url: 'https://ri-widget-staging.web.app/',
+
+      // for IOV:
+      swapAsset: 'RSK_RDOC',
+      // userAddress must be lowercase or checksummed correctly:
+      userAddress: address,
+
+      // for the dapp:
+      hostAppName: 'Ramp POC',
+      hostLogoUrl: 'https://rampnetwork.github.io/assets/misc/test-logo.png',
+    })
+
+    ramp.on('*', e => console.log(e))
+    ramp.show()
   }
 
   // pass the new color to Core to update header:

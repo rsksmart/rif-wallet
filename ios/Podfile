@@ -3,6 +3,15 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 platform :ios, '12.4'
 install! 'cocoapods', :deterministic_uuids => false
+inhibit_all_warnings!
+
+# Dependecy required for MMKV
+source 'https://github.com/CocoaPods/Specs.git'
+
+# Dependecies required for Ramp.network:
+source 'https://github.com/passbase/zoomauthentication-cocoapods-specs.git'
+source 'https://github.com/passbase/cocoapods-specs.git'
+source 'https://github.com/passbase/microblink-cocoapods-specs.git'
 
 target 'sWallet' do
   config = use_native_modules!
@@ -28,6 +37,7 @@ target 'sWallet' do
 
   pod 'react-native-config', :path => '../node_modules/react-native-config'
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+  pod 'Ramp', :git => 'https://github.com/RampNetwork/ramp-sdk-ios', :tag => '2.0.0'
 
   target 'sWalletTests' do
     inherit! :complete
