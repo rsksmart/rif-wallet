@@ -3,7 +3,6 @@ import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
 import React, { useState } from 'react'
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native'
 import { InjectSelectedWallet } from './Context'
-import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
 
 import JailMonkey from 'jail-monkey'
 import BitcoinNetwork from './lib/bitcoin/BitcoinNetwork'
