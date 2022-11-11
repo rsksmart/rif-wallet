@@ -45,7 +45,7 @@ export const RequestDomainScreen: React.FC<
     } else {
       setCommitToRegisterInfo('committing to register...')
       setProgress(0)
-      return await setRegistrationData(alias, parseInt(duration))
+      return await setRegistrationData(alias, parseInt(duration, 10))
     }
   }
 
