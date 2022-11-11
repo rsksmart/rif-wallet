@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import { TextInput } from 'react-native-gesture-handler'
+import React, { useMemo, useState } from 'react'
 
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import { StyleSheet, View } from 'react-native'
@@ -7,17 +6,35 @@ import {
   AddressValidationMessage,
   validateAddress,
 } from '../../components/address/lib'
+import { TextInputWithLabel } from '../../components/input/TextInputWithLabel'
+import { BaseInputStatus } from '../../components/shared'
 import { MediumText } from '../../components/typography'
 import { colors } from '../../styles'
 import addresses from './addresses.json'
 
-type DomainLookUpProps = {
+interface DomainLookUpProps {
   initialValue: string
   onChangeText: (newValue: string) => void
   wallet: any
-  testID?: string
-  backgroundColor?: string
-  onDomainAvailable: any
+  onDomainAvailable: (domain: string, valid: boolean) => void
+}
+
+enum DomainStatus {
+  AVAILABLE = 'available',
+  TAKEN = 'taken',
+  NO_VALID = 'no valid',
+  NONE = '',
+}
+
+const getStatus = (domainStatus: DomainStatus) => {
+  switch (domainStatus) {
+    case DomainStatus.AVAILABLE:
+      return BaseInputStatus.VALID
+    case DomainStatus.TAKEN:
+      return BaseInputStatus.INVALID
+    default:
+      return BaseInputStatus.NEUTRAL
+  }
 }
 
 export const DomainLookUp: React.FC<DomainLookUpProps> = ({
@@ -32,11 +49,14 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
     addresses.rifTokenAddress,
     wallet,
   )
-  useState<boolean>(false)
   const [error, setError] = useState('')
-  const [domainAvailability, setDomainAvailability] = useState<
-    'taken' | 'available' | 'no valid' | ''
-  >('')
+  const [domainAvailability, setDomainAvailability] = useState<DomainStatus>(
+    DomainStatus.NONE,
+  )
+  const status = useMemo(
+    () => getStatus(domainAvailability),
+    [domainAvailability],
+  )
 
   const handleChangeText = async (inputText: string) => {
     onChangeText(inputText)
@@ -48,7 +68,7 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
     if (newValidationMessage === AddressValidationMessage.DOMAIN) {
       await searchDomain(inputText)
     } else {
-      setDomainAvailability('')
+      setDomainAvailability(DomainStatus.NONE)
     }
   }
   const searchDomain = async (domain: string) => {
@@ -58,13 +78,14 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
     if (!/^[a-z0-9]*$/.test(domainName)) {
       console.log('Only lower cases and numbers are allowed')
       setError('Only lower cases and numbers are allowed')
-      setDomainAvailability('no valid')
+      setDomainAvailability(DomainStatus.NO_VALID)
       onDomainAvailable(domainName, false)
       return
     }
 
     if (domainName.length < 5) {
-      setDomainAvailability('')
+      setDomainAvailability(DomainStatus.NONE)
+      onDomainAvailable(domainName, false)
       return
     }
 
@@ -72,32 +93,31 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
       domainName,
     )) as any as boolean
 
-    setDomainAvailability(available ? 'available' : 'taken')
-    if (available) {
-      onDomainAvailable(domainName)
-    }
+    setDomainAvailability(
+      available ? DomainStatus.AVAILABLE : DomainStatus.TAKEN,
+    )
+    onDomainAvailable(domainName, available)
   }
 
   return (
     <>
-      <View style={styles.rowContainer}>
-        <TextInput
-          style={styles.input}
-          onChangeText={handleChangeText}
+      <View>
+        <TextInputWithLabel
+          label="username"
           value={initialValue}
+          setValue={handleChangeText}
           placeholder="enter an alias name"
           accessibilityLabel={'Alias.Input'}
-          placeholderTextColor={colors.gray}
-          spellCheck={false}
-          autoCapitalize="none"
+          suffix=".rsk"
+          status={status}
         />
-        {domainAvailability === 'available' && (
+        {domainAvailability === DomainStatus.AVAILABLE && (
           <MediumText style={styles.availableLabel}>
             {domainAvailability}
           </MediumText>
         )}
-        {(domainAvailability === 'taken' ||
-          domainAvailability === 'no valid') && (
+        {(domainAvailability === DomainStatus.TAKEN ||
+          domainAvailability === DomainStatus.NO_VALID) && (
           <MediumText style={styles.takenLabel}>
             {domainAvailability}
           </MediumText>
@@ -115,30 +135,17 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
 }
 
 const styles = StyleSheet.create({
-  rowContainer: {
-    flexDirection: 'row',
-    backgroundColor: colors.background.secondary,
-    borderWidth: 1,
-    borderRadius: 15,
-    paddingHorizontal: 9,
-    paddingVertical: 3,
-    alignItems: 'center',
-  },
-  input: {
-    flex: 1,
-    width: '100%',
-    color: colors.lightPurple,
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
   availableLabel: {
     color: colors.green,
+    paddingLeft: 5,
   },
   takenLabel: {
     color: colors.red,
+    paddingLeft: 5,
   },
   infoLabel: {
     color: colors.lightPurple,
+    paddingLeft: 5,
   },
 })
 

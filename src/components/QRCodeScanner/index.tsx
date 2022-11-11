@@ -1,40 +1,59 @@
-import React from 'react'
-import { Modal, StyleSheet } from 'react-native'
-// import BarcodeMask from 'react-native-barcode-mask'
-// import { BarCodeReadEvent, RNCamera } from 'react-native-camera'
-// import Icon from 'react-native-vector-icons/Ionicons'
-// import { colors } from '../../styles'
+import React, { useCallback, useEffect } from 'react'
+import {
+  ActivityIndicator,
+  Linking,
+  Modal,
+  StyleSheet,
+  View,
+} from 'react-native'
+import BarcodeMask from 'react-native-barcode-mask'
+import { Camera, useCameraDevices } from 'react-native-vision-camera'
+import { useScanBarcodes, BarcodeFormat } from 'vision-camera-code-scanner'
+import Icon from 'react-native-vector-icons/Ionicons'
+import { colors } from '../../styles'
 
 interface QRCodeScannerProps {
   onClose: () => void
   onCodeRead: (data: string) => void
 }
 
-export const QRCodeScanner = (_: QRCodeScannerProps) => {
-  // const cameraRef = useRef<RNCamera>(null)
+export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
+  const device = useCameraDevices('wide-angle-camera').back
+  const [frameProcessor, barcodes] = useScanBarcodes([BarcodeFormat.QR_CODE], {
+    checkInverted: true,
+  })
 
-  // const onBarCodeRead = (event: BarCodeReadEvent) => {
-  //   // @ts-ignore
-  //   if (event.type === 'QR_CODE') {
-  //     onCodeRead(decodeURIComponent(event.data))
-  //   }
-  // }
+  const permissionHandler = useCallback(async () => {
+    const cameraPermission = await Camera.getCameraPermissionStatus()
+    if (cameraPermission === 'not-determined') {
+      await Camera.requestCameraPermission()
+    } else if (cameraPermission === 'denied') {
+      Linking.openSettings()
+    }
+  }, [])
+
+  useEffect(() => {
+    permissionHandler()
+  }, [])
+
+  useEffect(() => {
+    if (barcodes && barcodes[0] && barcodes[0].rawValue) {
+      onCodeRead(barcodes[0].rawValue)
+    }
+  }, [barcodes])
+
+  if (device == null) {
+    return <ActivityIndicator size={'large'} />
+  }
 
   return (
     <Modal presentationStyle="overFullScreen" style={styles.modal}>
-      {/* <RNCamera
-        ref={cameraRef}
-        style={styles.container}
-        onBarCodeRead={onBarCodeRead}
-        captureAudio={false}
-        type={RNCamera.Constants.Type.back}
-        flashMode={RNCamera.Constants.FlashMode.off}
-        androidCameraPermissionOptions={{
-          title: 'Permission to use camera',
-          message: 'We need your permission to use your camera',
-          buttonPositive: 'Ok',
-          buttonNegative: 'Cancel',
-        }}>
+      <Camera
+        frameProcessor={frameProcessor}
+        frameProcessorFps={5}
+        device={device}
+        isActive={true}
+        style={styles.container}>
         <BarcodeMask
           showAnimatedLine={false}
           outerMaskOpacity={0.5}
@@ -53,7 +72,7 @@ export const QRCodeScanner = (_: QRCodeScannerProps) => {
             borderRadius={40}
           />
         </View>
-      </RNCamera> */}
+      </Camera>
     </Modal>
   )
 }

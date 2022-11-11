@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { View, StyleSheet } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { RegularText } from '../../components'
-import { PurpleButton } from '../../components/button/ButtonVariations'
+import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
 import { TextInputWithLabel } from '../../components/input/TextInputWithLabel'
 import { colors } from '../../styles'
 import { sendFeedbackToGithub } from './operations'
@@ -36,29 +36,33 @@ export const FeedbackScreen: React.FC = () => {
       <RegularText style={styles.heading}>Feedback form</RegularText>
 
       <TextInputWithLabel
-        label="Name"
+        label="name"
         placeholder="your name"
         value={name}
         setValue={setName}
+        style={styles.input}
       />
 
       <TextInputWithLabel
-        label="Email"
+        label="email"
         placeholder="your email"
         value={email}
         setValue={setEmail}
+        style={styles.input}
       />
 
       <TextInputWithLabel
-        label="Comments"
+        label="comments"
         placeholder="your feedback"
         value={feedback}
         setValue={setFeedback}
         multiline={true}
         inputStyle={styles.feedback}
+        style={styles.input}
+        textAlignVertical="top"
       />
 
-      <PurpleButton
+      <PrimaryButton2
         title="Submit"
         onPress={submitFeedback}
         disabled={isLoading}
@@ -78,6 +82,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
     marginVertical: 20,
+  },
+  input: {
+    marginBottom: 10,
   },
   feedback: {
     paddingTop: 20,

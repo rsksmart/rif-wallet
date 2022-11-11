@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native'
 import QRCode from 'react-qr-code'
+import { ToggleButtons } from '../../components/button/ToggleButtons'
 import { ShareableText } from '../../components/ShareableText'
-import { Tabs } from '../../components/Tabs'
 import { colors } from '../../styles/colors'
 
 export enum TestID {
@@ -31,9 +31,10 @@ export const ReceiveScreen: React.FC<ReceiveScreenProps> = ({
   const qrContainerStyle = {
     marginHorizontal: (windowWidth - (qrCodeSize + 60)) / 2,
     width: qrCodeSize + 60,
+    marginTop: 10,
   }
 
-  const handleTabSelection = (selectedTab: string) => {
+  const handleOptionSelected = (selectedTab: string) => {
     setActiveTab(selectedTab)
   }
   return (
@@ -51,12 +52,12 @@ export const ReceiveScreen: React.FC<ReceiveScreenProps> = ({
           size={qrCodeSize}
         />
       </View>
-      <View style={{ ...qrContainerStyle }}>
-        <Tabs
-          title={'share details'}
-          tabs={['address', 'domains']}
-          selectedTab={activeTab}
-          onTabSelected={handleTabSelection}
+      <View style={qrContainerStyle}>
+        <ToggleButtons
+          label={'share details'}
+          options={['address', 'domains']}
+          selectedOption={activeTab}
+          onOptionSelected={handleOptionSelected}
         />
       </View>
       {activeTab === 'address' && (
