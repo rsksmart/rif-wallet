@@ -14,7 +14,7 @@ export const RequestPIN: React.FC<Interface> = ({
   resetKeysAndPin,
 }) => {
   const [resetEnabled, setResetEnabled] = useState<boolean>(false)
-  const checkPin = useCallback(async (enteredPin: string) => {
+  const checkPin = useCallback((enteredPin: string) => {
     try {
       const storedPin = getPin()
       if (storedPin === enteredPin) {
