@@ -71,17 +71,21 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
       <View>
         {enhancedTransactionRequest && (
           <View testID="TX_VIEW" style={[sharedStyles.rowInColumn]}>
-            <ReadOnlyField
-              label={'amount'}
-              value={enhancedTransactionRequest.value}
-              testID={'Data.View'}
-            />
+            {enhancedTransactionRequest.value && (
+              <ReadOnlyField
+                label={'amount'}
+                value={enhancedTransactionRequest.value}
+                testID={'Data.View'}
+              />
+            )}
 
-            <ReadOnlyField
-              label={'asset'}
-              value={enhancedTransactionRequest.symbol}
-              testID={''}
-            />
+            {enhancedTransactionRequest.symbol && (
+              <ReadOnlyField
+                label={'asset'}
+                value={enhancedTransactionRequest.symbol}
+                testID={''}
+              />
+            )}
 
             <ReadOnlyField
               label={'from'}

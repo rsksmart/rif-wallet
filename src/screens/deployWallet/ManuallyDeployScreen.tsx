@@ -6,7 +6,7 @@ import {
   TransactionReceipt,
 } from '@ethersproject/abstract-provider'
 import { ScreenWithWallet } from '../types'
-import { Linking, StyleSheet, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { colors } from '../../styles'
 import SecondaryButton from '../../components/button/SecondaryButton'
 import { RIF_TOKEN_ADDRESS_TESTNET } from '../../lib/relay-sdk/helpers'
@@ -51,8 +51,6 @@ export const ManuallyDeployScreen: React.FC<
       })
   }
 
-  const openRifFaucet = () => Linking.openURL('https://faucet.rifos.org/')
-
   return (
     <ScrollView style={styles.background}>
       <SemiBoldText style={styles.text}>Deploy Smart Wallet</SemiBoldText>
@@ -62,10 +60,6 @@ export const ManuallyDeployScreen: React.FC<
           <MediumText style={styles.text}>
             Your smart wallet has been deployed!
           </MediumText>
-
-          <SecondaryButton onPress={openRifFaucet} style={styles.button}>
-            <MediumText style={styles.text}>Open the RIF Faucet</MediumText>
-          </SecondaryButton>
         </View>
       )}
 
