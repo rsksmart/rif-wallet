@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { ScrollView, StyleSheet, View } from 'react-native'
 import { BigNumber } from 'ethers'
-
-import { SendTransactionRequest } from '../../lib/core'
-
+import {
+  OverriddableTransactionOptions,
+  SendTransactionRequest,
+} from '../../lib/core'
 import { sharedStyles } from './sharedStyles'
 import { Loading, Paragraph, RegularText } from '../../components'
 import { ScreenWithWallet } from '../../screens/types'
@@ -37,15 +38,15 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
   )
 
   const [error, setError] = useState<Error | null>(null)
-  const [txCostInRif, setTxCostInRif] = useState(0)
+  const [txCostInRif, setTxCostInRif] = useState<BigNumber>(BigNumber.from(0))
 
   useEffect(() => {
     wallet.rifRelaySdk.estimateTransactionCost().then(setTxCostInRif)
   }, [request])
 
   // convert from string to Transaction and pass out of component
-  const confirmTransaction = async () => {
-    const confirmObject = {
+  const confirmTransaction = () => {
+    const confirmObject: OverriddableTransactionOptions = {
       gasPrice: BigNumber.from(enhancedTransactionRequest.gasPrice),
       gasLimit: BigNumber.from(enhancedTransactionRequest.gasLimit),
       tokenPayment: {
@@ -53,12 +54,8 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
         tokenAmount: txCostInRif,
       },
     }
-    try {
-      await request.confirm(confirmObject)
-      closeModal()
-    } catch (err: any) {
-      setError(err)
-    }
+
+    return request.confirm(confirmObject).then(closeModal).catch(setError)
   }
 
   const cancelTransaction = () => {
@@ -134,39 +131,13 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
         )}
       </View>
 
-      <ReadOnlyField
-        label="Fee in tRIF"
-        value={`${balanceToDisplay(txCostInRif, 18, 0)} tRIF`}
-        testID="tRIF.fee"
-      />
-      {/*
-      <View style={grid.row}>
-        <View style={grid.column6}>
-          <ReadOnlyField
-            label="Paying the fee with"
-            value={payWithGas ? 'rDOC' : 'tRIF'}
-            testID="Fee.Type"
-          />
-        </View>
-        <View style={styles.toggleContainer}>
-          <OutlineBorderedButton
-            title="Toggle"
-            testID="Toggle.Button"
-          />
-        </View>
-      </View>
-
-      <ReadOnlyField
-        label="Gas price"
-        value={enhancedTransactionRequest.gasPrice}
-        testID="Gas.Price"
-      />
-      <ReadOnlyField
-        label="Gas limit"
-        value={enhancedTransactionRequest.gasLimit}
-        testID="Gas.Limit"
-      />
-      */}
+      {txCostInRif && (
+        <ReadOnlyField
+          label="Fee in tRIF"
+          value={`${balanceToDisplay(txCostInRif, 18, 0)} tRIF`}
+          testID="tRIF.fee"
+        />
+      )}
 
       {error && (
         <View style={sharedStyles.row}>

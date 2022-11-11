@@ -1,3 +1,5 @@
+import { BigNumber } from 'ethers'
+
 export type Address = string
 export type IntString = string
 export type PrefixedHexString = string
@@ -99,7 +101,7 @@ export interface DeployRequest {
 
 export interface RelayPayment {
   tokenContract: string
-  tokenAmount: number
+  tokenAmount: BigNumber
 }
 
 export interface SdkConfig extends RifRelayConfig {

@@ -33,7 +33,7 @@ export class RIFRelaySDK {
   smartWalletFactory: SmartWalletFactory
   smartWalletAddress: string
   eoaAddress: string
-  provider: ethers.providers.JsonRpcProvider
+  provider: ethers.providers.Provider
 
   constructor(
     smartWallet: SmartWallet,
@@ -42,7 +42,11 @@ export class RIFRelaySDK {
     eoaAddress: string,
     sdkConfig: SdkConfig,
   ) {
-    // @ts-ignore: smartWallet.signer.provider is defined from RIF Wallet
+    // this should not happen but is more for typescript:
+    if (!smartWallet.signer.provider) {
+      throw new Error('unexpected signer/provider is null')
+    }
+
     this.provider = smartWallet.signer.provider
     this.smartWallet = smartWallet
     this.smartWalletFactory = smartWalletFactory
@@ -88,11 +92,20 @@ export class RIFRelaySDK {
     const nonce = await (await this.smartWallet.nonce()).toString()
     const tokenGas = await this.estimateTokenTransferCost()
 
-    // TESTING THIGS:
     const estimated = await this.provider.estimateGas({ ...tx, gasPrice })
-    const correction = estimated.sub(INTERNAL_TRANSACTION_ESTIMATE_CORRECTION)
+    const correction =
+      estimated.toNumber() > INTERNAL_TRANSACTION_ESTIMATE_CORRECTION
+        ? estimated.sub(INTERNAL_TRANSACTION_ESTIMATE_CORRECTION)
+        : estimated
+    const internalCallCost = Math.round(correction.toNumber() * 1.01)
 
-    console.log({ estimated, correction })
+    console.log({
+      txGasLimit: tx.gasLimit?.toString(),
+      txGasPrice: tx.gasPrice?.toString(),
+      estimated: estimated.toString(),
+      correction: correction.toString(),
+      internalCallCost: internalCallCost,
+    })
 
     const relayRequest: RelayRequest = {
       request: {
@@ -101,7 +114,7 @@ export class RIFRelaySDK {
         to: tx.to || ZERO_ADDRESS,
         data: tx.data?.toString() || '0x',
         value: tx.value?.toString() || '0',
-        gas: correction.toString(),
+        gas: internalCallCost.toString(),
         nonce,
         tokenContract: payment.tokenContract,
         tokenAmount: payment.tokenAmount.toString(),
@@ -114,8 +127,6 @@ export class RIFRelaySDK {
         callVerifier: this.sdkConfig.relayVerifierAddress,
       },
     }
-
-    console.log(relayRequest)
 
     return relayRequest
   }
@@ -186,8 +197,6 @@ export class RIFRelaySDK {
         callVerifier: this.sdkConfig.deployVerifierAddress,
       },
     }
-
-    console.log({ deployRequest })
 
     return deployRequest
   }
