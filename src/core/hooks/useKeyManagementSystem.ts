@@ -2,12 +2,16 @@ import { useState } from 'react'
 import { Wallets, WalletsIsDeployed } from '../../Context'
 import { KeyManagementSystem, OnRequest } from '../../lib/core'
 import { deleteDomains } from '../../storage/DomainsStore'
-import { deletePin, savePin, deleteContacts } from '../../storage/MainStorage'
+import {
+  deletePin,
+  savePin,
+  deleteContacts,
+  deleteKeys,
+} from '../../storage/MainStorage'
 import {
   addNextWallet,
   creteKMS,
   deleteCache,
-  deleteKeys,
   loadExistingWallets,
 } from '../operations'
 import { createRIFWalletFactory, networkId } from '../setup'
