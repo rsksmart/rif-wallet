@@ -7,12 +7,13 @@ import { IProfileStore } from '../../storage/MainStorage'
 import { colors } from '../../styles'
 
 import { useAliasRegistration } from '../../core/hooks/useAliasRegistration'
+import { RIFWallet } from '../../lib/core'
 
 interface Props {
   navigation: any
   profile: IProfileStore
   profileCreated: boolean
-  wallet: any
+  wallet: RIFWallet
 }
 
 export const ProfileHandler: React.FC<Props> = ({

@@ -4,10 +4,12 @@ import {
   getAliasRegistration,
   hasAliasRegistration,
   IProfileRegistrationStore,
+  saveAliasRegistration,
 } from '../../storage/AliasRegistrationStore'
 import addresses from '../../screens/rnsManager/addresses.json'
+import { RIFWallet } from '../../lib/core'
 
-export function useAliasRegistration(wallet: any) {
+export function useAliasRegistration(wallet: RIFWallet) {
   const rskRegistrar = new RSKRegistrar(
     addresses.rskOwnerAddress,
     addresses.fifsAddrRegistrarAddress,
@@ -26,7 +28,7 @@ export function useAliasRegistration(wallet: any) {
       return !!hash
     }
   }
-  const readyToRegister = async (_hash: string) => {
+  const readyToRegister = async (_hash?: string) => {
     if (await registrationStarted()) {
       const myAliasRegistration: IProfileRegistrationStore =
         await getAliasRegistration()
@@ -37,11 +39,36 @@ export function useAliasRegistration(wallet: any) {
       return false
     }
   }
-  const getRegistrationData = async () => {
+  const getRegistrationData = async (): Promise<IProfileRegistrationStore> => {
     const myAliasRegistration: IProfileRegistrationStore =
       await getAliasRegistration()
     return myAliasRegistration
   }
 
-  return { registrationStarted, readyToRegister, getRegistrationData }
+  const setRegistrationData = async (
+    alias: string,
+    duration: number,
+  ): Promise<IProfileRegistrationStore> => {
+    const response = await rskRegistrar.commitToRegister(
+      alias,
+      wallet.smartWallet.address,
+    )
+
+    await saveAliasRegistration({
+      alias: alias,
+      duration: duration,
+      commitToRegisterSecret: response.secret,
+      commitToRegisterHash: response.hash,
+    })
+    await response.makeCommitmentTransaction.wait()
+    console.log('commitToRegister succesfull')
+    return getRegistrationData()
+  }
+
+  return {
+    registrationStarted,
+    readyToRegister,
+    getRegistrationData,
+    setRegistrationData,
+  }
 }
