@@ -5,7 +5,7 @@ import { colors } from '../../styles'
 import BaseButton, { BaseButtonProps } from './BaseButton'
 
 export interface ButtonProps extends BaseButtonProps {
-  title?: string
+  title: string
   icon?: any
   accessibilityLabel?: string
   buttonStyles?: any
