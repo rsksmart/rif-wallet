@@ -5,6 +5,7 @@ import { Text, TextInput, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { rnsResolver } from '../../core/setup'
+import { decodeString } from '../../lib/eip681/decodeString'
 import { colors, grid } from '../../styles'
 import { SecondaryButton2 } from '../button/SecondaryButton2'
 import { ContentPasteIcon, QRCodeIcon } from '../icons'
@@ -56,12 +57,15 @@ export const AddressInput: React.FC<AddressInputProps> = ({
 
   const handleChangeText = (inputText: string) => {
     setStatus({ type: 'READY', value: '' })
-    setRecipient(inputText)
 
-    const newValidationMessage = validateAddress(inputText, chainId)
+    const parsedString = decodeString(inputText)
+    const userInput = parsedString.address ? parsedString.address : inputText
+
+    setRecipient(userInput)
+    const newValidationMessage = validateAddress(userInput, chainId)
 
     onChangeText(
-      inputText,
+      userInput,
       newValidationMessage === AddressValidationMessage.VALID,
     )
 
@@ -77,9 +81,9 @@ export const AddressInput: React.FC<AddressInputProps> = ({
         })
 
         rnsResolver
-          .addr(inputText)
+          .addr(userInput)
           .then((address: string) => {
-            setDomainFound(inputText)
+            setDomainFound(userInput)
             setAddressResolved(address)
             setStatus({
               type: 'INFO',
@@ -111,7 +115,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
           type: 'ERROR',
           value: 'Invalid address',
         })
-        onChangeText(inputText, false)
+        onChangeText(userInput, false)
         break
     }
   }
