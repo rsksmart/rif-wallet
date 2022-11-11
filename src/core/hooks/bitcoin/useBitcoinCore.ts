@@ -91,7 +91,7 @@ export const useBitcoinCore = (
     if (transformedNetworks) {
       setNetworks(transformedNetworks)
     }
-  }, [storedNetworks])
+  }, [storedNetworks, mnemonic])
 
   return {
     networks: networks.networksArr,
