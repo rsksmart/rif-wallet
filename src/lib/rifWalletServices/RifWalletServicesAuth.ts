@@ -1,11 +1,18 @@
-import { AxiosInstance } from "axios";
-import { deleteSignUp, getSignUP, hasSignUP, saveSignUp } from "../../storage/SignupStore";
-import { RIFWallet } from "../core";
+import { AxiosInstance } from 'axios'
+import {
+  deleteSignUp,
+  getSignUP,
+  hasSignUP,
+  saveSignUp,
+} from '../../storage/SignupStore'
+import { RIFWallet } from '../core'
 import * as Keychain from 'react-native-keychain'
-import { AuthenticationChallengeType, AuthenticationTokensType } from "./RIFWalletServicesTypes";
+import {
+  AuthenticationChallengeType,
+  AuthenticationTokensType,
+} from './RIFWalletServicesTypes'
 
 export class RifWalletServicesAuth {
-
   axiosInstance: AxiosInstance
   wallet: RIFWallet
   did: string
@@ -84,9 +91,12 @@ export class RifWalletServicesAuth {
   refresh = async (oldRefreshToken: string) => {
     const {
       data: { accessToken, refreshToken },
-    } = await this.axiosInstance.post<AuthenticationTokensType>('/refresh-token', {
-      refreshToken: oldRefreshToken,
-    })
+    } = await this.axiosInstance.post<AuthenticationTokensType>(
+      '/refresh-token',
+      {
+        refreshToken: oldRefreshToken,
+      },
+    )
 
     return { accessToken, refreshToken }
   }

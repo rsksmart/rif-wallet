@@ -203,11 +203,12 @@ export const RootNavigation: React.FC<{
             options={sharedOptions}
           />
           <RootStack.Screen name="Balances">
-            {props => 
-              <InjectedScreens.BalancesScreen 
+            {props => (
+              <InjectedScreens.BalancesScreen
                 {...props}
-                {...balancesScreenProps} 
-            />}
+                {...balancesScreenProps}
+              />
+            )}
           </RootStack.Screen>
           <RootStack.Screen name="Activity" options={sharedOptions}>
             {props => (

@@ -3,10 +3,10 @@ import {
   ITokenWithBalance,
   TransactionsServerResponse,
 } from './RIFWalletServicesTypes'
-import { UnspentTransactionType } from '../bitcoin/BIP84Payment'
 import * as Keychain from 'react-native-keychain'
 import axios, { AxiosInstance } from 'axios'
 import createAuthRefreshInterceptor from 'axios-auth-refresh'
+import { UnspentTransactionType } from '../bitcoin/types'
 
 export interface IRIFWalletServicesFetcher {
   fetchTokensByAddress(address: string): Promise<ITokenWithBalance[]>
@@ -51,7 +51,11 @@ export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
   accessToken: string = ''
   refreshToken: string = ''
 
-  constructor(axiosInstance: AxiosInstance, accessToken: string, refreshToken: string) {
+  constructor(
+    axiosInstance: AxiosInstance,
+    accessToken: string,
+    refreshToken: string,
+  ) {
     this.axiosInstance = axiosInstance
     this.accessToken = accessToken
     this.refreshToken = refreshToken
@@ -76,31 +80,37 @@ export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
         data,
         url: `${this.axiosInstance.getUri()}/refresh-token`,
       }
-  
+
       try {
-        const { data : {accessToken, refreshToken}} = await axios(options)
+        const {
+          data: {
+            accessToken: currentAccessToken,
+            refreshToken: currentRefreshToken,
+          },
+        } = await axios(options)
         failedRequest.response.config.headers.Authorization =
-          'DIDAuth ' + accessToken
-  
+          'DIDAuth ' + currentAccessToken
+
         await Keychain.setInternetCredentials(
           'jwt',
           'token',
           JSON.stringify({
-            accessToken: accessToken,
-            refreshToken: refreshToken,
+            accessToken: currentAccessToken,
+            refreshToken: currentRefreshToken,
           }),
         )
-        this.accessToken = accessToken,
-        this.refreshToken = refreshToken
+        this.accessToken = currentAccessToken
+        this.refreshToken = currentRefreshToken
         return await Promise.resolve()
       } catch (e) {}
     }
-  
-    createAuthRefreshInterceptor(this.axiosInstance, refreshAuthLogic, { shouldRefresh: (error) => {
-      const message = error.response?.data as string
-      return message.includes('expired');
-    }})
-  
+
+    createAuthRefreshInterceptor(this.axiosInstance, refreshAuthLogic, {
+      shouldRefresh: error => {
+        const message = error.response?.data as string
+        return message.includes('expired')
+      },
+    })
   }
 
   private getAccessToken = () => {
@@ -161,7 +171,9 @@ export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
       .then(res => res.data)
 
   sendTransactionHexData = (hexdata: string): Promise<any> =>
-    this.axiosInstance.get(`/bitcoin/sendTransaction/${hexdata}`).then(res => res.data)
+    this.axiosInstance
+      .get(`/bitcoin/sendTransaction/${hexdata}`)
+      .then(res => res.data)
 
   fetchXpubNextUnusedIndex = (
     xpub: string,

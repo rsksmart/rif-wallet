@@ -22,7 +22,7 @@ export default class BitcoinNetwork {
     bipNames: Array<string> = [],
     BIP39Instance: BIP39,
     bipFactory = createBipFactory,
-    fetcher: RifWalletServicesFetcher
+    fetcher: RifWalletServicesFetcher,
   ) {
     this.networkId = networkId
     this.contractAddress = networkId
@@ -47,7 +47,7 @@ export default class BitcoinNetwork {
         this,
         bipName,
         this.BIP39Instance.seed,
-        { fetcher }
+        { fetcher },
       )
       this.bipNames[counter] = BIPInstance
       this.bipNames[bipName] = BIPInstance

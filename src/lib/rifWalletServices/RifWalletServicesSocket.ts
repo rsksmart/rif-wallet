@@ -110,7 +110,7 @@ export class RifWalletServicesSocket
   async connect(
     wallet: RIFWallet,
     encriptionKey: string,
-    fetcher: RifWalletServicesFetcher
+    fetcher: RifWalletServicesFetcher,
   ) {
     try {
       await this.init(wallet, encriptionKey, fetcher)
