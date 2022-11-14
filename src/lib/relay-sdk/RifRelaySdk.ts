@@ -89,7 +89,7 @@ export class RIFRelaySDK {
     payment: RelayPayment,
   ): Promise<RelayRequest> => {
     const gasPrice = tx.gasPrice || (await this.provider.getGasPrice())
-    const nonce = await (await this.smartWallet.nonce()).toString()
+    const nonce = await this.smartWallet.nonce()
     const tokenGas = await this.estimateTokenTransferCost()
 
     const estimated = await this.provider.estimateGas({ ...tx, gasPrice })
@@ -99,14 +99,6 @@ export class RIFRelaySDK {
         : estimated
     const internalCallCost = Math.round(correction.toNumber() * 1.01)
 
-    console.log({
-      txGasLimit: tx.gasLimit?.toString(),
-      txGasPrice: tx.gasPrice?.toString(),
-      estimated: estimated.toString(),
-      correction: correction.toString(),
-      internalCallCost: internalCallCost,
-    })
-
     const relayRequest: RelayRequest = {
       request: {
         relayHub: this.sdkConfig.relayHubAddress,
@@ -115,7 +107,7 @@ export class RIFRelaySDK {
         data: tx.data?.toString() || '0x',
         value: tx.value?.toString() || '0',
         gas: internalCallCost.toString(),
-        nonce,
+        nonce: nonce.toString(),
         tokenContract: payment.tokenContract,
         tokenAmount: payment.tokenAmount.toString(),
         tokenGas,
