@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { ScrollView, StyleSheet, View } from 'react-native'
 import { BigNumber } from 'ethers'
+import { useTranslation } from 'react-i18next'
+
 import {
   OverriddableTransactionOptions,
   SendTransactionRequest,
@@ -9,7 +11,6 @@ import { sharedStyles } from './sharedStyles'
 import { Loading, Paragraph, RegularText } from '../../components'
 import { ScreenWithWallet } from '../../screens/types'
 import useEnhancedWithGas from './useEnhancedWithGas'
-import { useTranslation } from 'react-i18next'
 import { balanceToDisplay, shortAddress } from '../../lib/utils'
 import {
   DarkBlueButton,
@@ -44,8 +45,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
     wallet.rifRelaySdk.estimateTransactionCost().then(setTxCostInRif)
   }, [request])
 
-  // convert from string to Transaction and pass out of component
-  const confirmTransaction = () => {
+  const confirmTransaction = async () => {
     const confirmObject: OverriddableTransactionOptions = {
       gasPrice: BigNumber.from(enhancedTransactionRequest.gasPrice),
       gasLimit: BigNumber.from(enhancedTransactionRequest.gasLimit),
@@ -55,7 +55,12 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
       },
     }
 
-    return request.confirm(confirmObject).then(closeModal).catch(setError)
+    try {
+      await request.confirm(confirmObject)
+      closeModal()
+    } catch (err: any) {
+      setError(err)
+    }
   }
 
   const cancelTransaction = () => {
