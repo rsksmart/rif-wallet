@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import { sharedStyles } from './sharedStyles'
+import { sharedStyles } from '../../shared/styles'
 import ReadOnlyField from './ReadOnlyField'
 import {
   DarkBlueButton,

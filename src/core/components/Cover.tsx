@@ -1,4 +1,4 @@
 import { View } from 'react-native'
-import { shareStyles } from '../../shared/styles'
+import { sharedStyles } from '../../shared/styles'
 
-export const Cover = () => <View style={shareStyles.coverAllScreen} />
+export const Cover = () => <View style={sharedStyles.coverAllScreen} />
