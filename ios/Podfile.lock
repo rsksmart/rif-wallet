@@ -106,17 +106,6 @@ PODS:
   - GTMSessionFetcher/Core (1.7.2)
   - hermes-engine (0.70.6)
   - jail-monkey (2.7.0):
-  - Microblink (5.16.0)
-  - MMKV (1.2.14):
-    - MMKVCore (~> 1.2.14)
-  - MMKVCore (1.2.14)
-  - OpenSSL-Universal (1.1.180)
-  - Passbase (2.13.3):
-    - Microblink (= 5.16.0)
-  - Ramp (2.0.0):
-    - Passbase (~> 2.8)
-  - ramp-network-react-native-sdk (0.3.1):
-    - Ramp
     - React-Core
   - libevent (2.1.12)
   - MLImage (1.0.0-beta3)
@@ -547,10 +536,6 @@ DEPENDENCIES:
   - jail-monkey (from `../node_modules/jail-monkey`)
   - libevent (~> 2.1.12)
   - OpenSSL-Universal (= 1.1.1100)
-  - MMKV (from `https://github.com/Tencent/MMKV.git`, tag `v1.2.13`)
-  - MMKVCore (from `https://github.com/Tencent/MMKV.git`, tag `v1.2.13`)
-  - Ramp (from `https://github.com/RampNetwork/ramp-sdk-ios`, tag `2.0.0`)
-  - "ramp-network-react-native-sdk (from `../node_modules/@ramp-network/react-native-sdk`)"
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
@@ -647,17 +632,6 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/sdks/hermes/hermes-engine.podspec"
   jail-monkey:
     :path: "../node_modules/jail-monkey"
-  MMKV:
-    :git: https://github.com/Tencent/MMKV.git
-    :tag: v1.2.13
-  MMKVCore:
-    :git: https://github.com/Tencent/MMKV.git
-    :tag: v1.2.13
-  Ramp:
-    :git: https://github.com/RampNetwork/ramp-sdk-ios
-    :tag: 2.0.0
-  ramp-network-react-native-sdk:
-    :path: "../node_modules/@ramp-network/react-native-sdk"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -736,6 +710,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-screens"
   RNKeychain:
     :path: "../node_modules/react-native-keychain"
+  RNReanimated:
+    :path: "../node_modules/react-native-reanimated"
   RNSVG:
     :path: "../node_modules/react-native-svg"
   RNVectorIcons:
@@ -746,17 +722,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-vision-camera"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
-
-CHECKOUT OPTIONS:
-  MMKV:
-    :git: https://github.com/Tencent/MMKV.git
-    :tag: v1.2.13
-  MMKVCore:
-    :git: https://github.com/Tencent/MMKV.git
-    :tag: v1.2.13
-  Ramp:
-    :git: https://github.com/RampNetwork/ramp-sdk-ios
-    :tag: 2.0.0
 
 SPEC CHECKSUMS:
   boost: a7c83b31436843459a1961bfd74b96033dc77234
@@ -834,6 +799,7 @@ SPEC CHECKSUMS:
   RNReanimated: 2a91e85fcd343f8af3c58d3425b99fdd285590a5
   RNScreens: 34cc502acf1b916c582c60003dc3089fa01dc66d
   RNKeychain: ff836453cba46938e0e9e4c22e43d43fa2c90333
+  RNReanimated: 2a91e85fcd343f8af3c58d3425b99fdd285590a5
   RNSVG: ecd661f380a07ba690c9c5929c475a44f432d674
   RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608

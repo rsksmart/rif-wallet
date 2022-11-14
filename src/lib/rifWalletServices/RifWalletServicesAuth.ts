@@ -78,7 +78,7 @@ export class RifWalletServicesAuth {
   login = async () => {
     if (await hasSignUP()) {
       const { signedup } = await getSignUP()
-      if (signedup) {
+      if (!signedup) {
         return await this.signup()
       } else {
         return await this.authenticate()
