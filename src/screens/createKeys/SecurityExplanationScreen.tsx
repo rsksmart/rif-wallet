@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native'
-import { ScreenProps } from './types'
+import { CreateKeysScreenProps } from '../../navigation/createKeysNavigator/types'
 import { colors } from '../../styles'
 import { SecuritySlide } from '../../ux/slides/SecuritySlide'
 
@@ -26,7 +26,7 @@ import { sharedMnemonicStyles } from './new/styles'
 const slidesIndexes = [0, 1, 2]
 
 export const SecurityExplanationScreen: React.FC<
-  ScreenProps<'SecurityExplanation'>
+  CreateKeysScreenProps<'SecurityExplanation'>
 > = ({ navigation }) => {
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
   const [carousel, setCarousel] = useState<any>()

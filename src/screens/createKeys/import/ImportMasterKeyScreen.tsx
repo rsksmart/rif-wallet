@@ -8,7 +8,10 @@ import {
 } from 'react-native'
 import Carousel from 'react-native-snap-carousel'
 
-import { CreateKeysProps, ScreenProps } from '../types'
+import {
+  CreateKeysProps,
+  CreateKeysScreenProps,
+} from 'navigation/createKeysNavigator/types'
 import { Trans } from 'react-i18next'
 import { colors } from '../../../styles/colors'
 
@@ -26,7 +29,7 @@ interface ImportMasterKeyScreenProps {
 }
 
 export const ImportMasterKeyScreen: React.FC<
-  ScreenProps<'ImportMasterKey'> & ImportMasterKeyScreenProps
+  CreateKeysScreenProps<'ImportMasterKey'> & ImportMasterKeyScreenProps
 > = ({ navigation, createWallet, isKeyboardVisible }) => {
   const slidesIndexes = [0, 1, 2, 3, 4, 5, 6, 7]
 
