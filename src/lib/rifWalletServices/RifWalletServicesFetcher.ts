@@ -58,7 +58,7 @@ export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
     this.axiosInstance.interceptors.request.use(
       config => {
         if (!config.headers?.Authorization) {
-          config.headers!.Authorization = `DIDAuth ${accessToken}`
+          config.headers!.Authorization = `DIDAuth ${this.getAccessToken()}`
         }
         return config
       },
@@ -69,7 +69,7 @@ export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
 
     const refreshAuthLogic = async (failedRequest: any) => {
       const data = {
-        refreshToken: this.refreshToken,
+        refreshToken: this.getRefreshToken(),
       }
       const options = {
         method: 'POST',
@@ -101,6 +101,14 @@ export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
       return message.includes('expired');
     }})
   
+  }
+
+  private getAccessToken = () => {
+    return this.accessToken
+  }
+
+  private getRefreshToken = () => {
+    return this.refreshToken
   }
 
   protected async fetchAvailableTokens() {

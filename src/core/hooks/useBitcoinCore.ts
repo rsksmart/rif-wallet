@@ -1,4 +1,4 @@
-import { useMemo, useEffect } from 'react'
+import { useMemo, useEffect, useContext } from 'react'
 import BIP39 from '../../lib/bitcoin/BIP39'
 import useBitcoinNetworks from '../../components/bitcoin/useBitcoinNetworks'
 import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
@@ -7,7 +7,7 @@ import { OnRequest } from '../../lib/core'
 import { BitcoinNetworkWithBIPRequest } from '../../lib/bitcoin/types'
 import { createAndInitializeBipWithRequest } from '../../lib/bitcoin/utils'
 import { useAuth } from './useAuth'
-import { useSelectedWallet } from '../../Context'
+import { AppContext, useSelectedWallet } from '../../Context'
 import { authAxios, publicAxios } from '../setup'
 import { RifWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
 
@@ -32,7 +32,7 @@ const useBitcoinCore = (
 ): useBitcoinCoreResultType => {
   const [networks, refreshStoredNetworks] = useBitcoinNetworks()
   const { wallet } = useSelectedWallet()
-  // const { login } = useAuth(publicAxios, wallet)
+  const { fetcher } = useContext(AppContext)
   const memoizedNetworks = useMemo(() => {
     if (!mnemonic) {
       return { networksArr: [], networksObj: {} }

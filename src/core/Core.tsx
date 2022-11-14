@@ -107,6 +107,11 @@ export const Core = () => {
     if (selectedWallet && wallets) {
       const currentWallet = wallets[selectedWallet]
       retrieveChainId(currentWallet)
+      const rifWalletAuth = new RifWalletServicesAuth(publicAxios, currentWallet)
+      rifWalletAuth.login().then(({accessToken, refreshToken}) => {
+        const fetcher = new RifWalletServicesFetcher(authAxios, accessToken, refreshToken)
+        setFetcher(fetcher)
+      })
     }
   }, [selectedWallet, retrieveChainId, wallets])
 
