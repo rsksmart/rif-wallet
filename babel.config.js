@@ -26,7 +26,7 @@ module.exports = {
           src: './src',
           components: './src/components',
           shared: './src/shared',
-          redux: './src/redux',
+          store: './src/redux',
           navigation: './src/navigation',
           screens: './src/screens/',
           lib: './src/lib',
