@@ -1,4 +1,11 @@
+import { NavigationProp } from '@react-navigation/native'
+import { StackScreenProps } from '@react-navigation/stack'
 import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
+
+export type RootStackScreenProps<T extends keyof RootStackParamList> =
+  StackScreenProps<RootStackParamList, T>
+
+export type RootStackNavigationProp = NavigationProp<RootStackParamList>
 
 export enum rootStackRouteNames {
   Home = 'Home',

@@ -14,7 +14,7 @@ import {
 } from '../../lib/abiEnhancer/AbiEnhancer'
 import { RIFWallet } from '../../lib/core'
 import { ScreenWithWallet } from '../types'
-import { ScreenProps } from '../../navigation/rootNavigator'
+import { RootStackScreenProps } from '../../navigation/rootNavigator/types'
 import { IActivity } from '../../subscriptions/types'
 import { TransactionsServerResponseWithActivityTransactions } from './types'
 import { colors } from '../../styles'
@@ -25,7 +25,7 @@ export type ActivityScreenProps = {
 }
 
 export const ActivityScreen: React.FC<
-  ScreenProps<'Activity'> & ScreenWithWallet & ActivityScreenProps
+  RootStackScreenProps<'Activity'> & ScreenWithWallet & ActivityScreenProps
 > = ({ wallet, fetcher, abiEnhancer, navigation }) => {
   const [info, setInfo] = useState('')
   const { networks } = useBitcoinCoreContext()

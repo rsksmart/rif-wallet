@@ -1,5 +1,4 @@
-import { NavigationProp as _NavigationProp } from '@react-navigation/native'
-import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
+import { createStackNavigator } from '@react-navigation/stack'
 import { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import JailMonkey from 'jail-monkey'
@@ -15,7 +14,11 @@ import { AppHeader } from '../../ux/appHeader'
 
 import { emptyProfile, useProfile } from '../../core/hooks/useProfile'
 import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
-import { RootStackParamList, rootStackRouteNames } from '../types'
+import {
+  RootStackParamList,
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from './types'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -36,7 +39,6 @@ const InjectedScreens = {
 }
 
 const RootStack = createStackNavigator<RootStackParamList>()
-export type NavigationProp = _NavigationProp<RootStackParamList>
 
 const sharedOptions = {
   headerShown: false,
@@ -44,11 +46,6 @@ const sharedOptions = {
     backgroundColor: colors.blue,
   },
 }
-
-export type ScreenProps<T extends keyof RootStackParamList> = StackScreenProps<
-  RootStackParamList,
-  T
->
 
 interface Props {
   currentScreen: string
@@ -64,9 +61,9 @@ interface Props {
   balancesScreenProps: Screens.BalancesScreenProps
   activityScreenProps: Screens.ActivityScreenProps
   showMnemonicScreenProps: Screens.ShowMnemonicScreenProps
-  sendScreenProps: ScreenProps<'Send'>
+  sendScreenProps: RootStackScreenProps<'Send'>
   contactsNavigationScreenProps: Screens.ContactsScreenProps
-  walletConnectScreenProps: ScreenProps<'WalletConnect'>
+  walletConnectScreenProps: RootStackScreenProps<'WalletConnect'>
   accountsScreenType: Screens.AccountsScreenType
   securityConfigurationScreenProps: Screens.SecurityScreenProps
 }
@@ -96,7 +93,7 @@ export const RootNavigationComponent = ({
   const isDeviceRooted = JailMonkey.isJailBroken()
   const [isWarningVisible, setIsWarningVisible] = useState(isDeviceRooted)
 
-  let initialRoute: any = rootStackRouteNames.CreateKeysUX
+  let initialRoute: rootStackRouteNames = rootStackRouteNames.CreateKeysUX
   if (hasPin) {
     initialRoute = rootStackRouteNames.Home
   } else if (hasKeys) {
