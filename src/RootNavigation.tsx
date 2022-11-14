@@ -34,7 +34,7 @@ const InjectedScreens = {
   AccountsScreen: InjectSelectedWallet(Screens.AccountsScreen),
 }
 
-type RootStackParamList = {
+export type RootStackParamList = {
   Home: undefined
   Send:
     | undefined
