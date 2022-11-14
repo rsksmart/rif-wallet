@@ -2,11 +2,11 @@ import React from 'react'
 import { ActivityMixedType } from './types'
 import ActivityRowPresentation from './ActivityRowPresentation'
 import useActivityDeserializer from './useActivityDeserializer'
-import { NavigationProp } from '../../RootNavigation'
+import { RootStackNavigationProp } from 'navigation/rootNavigator/types'
 
 interface Interface {
   activityTransaction: ActivityMixedType
-  navigation: NavigationProp
+  navigation: RootStackNavigationProp
 }
 
 const ActivityRow: React.FC<Interface> = ({

@@ -1,7 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack'
 import React from 'react'
 import { useSelectedWallet } from '../../Context'
-import { NavigationProp } from '../../RootNavigation'
+import { RootStackNavigationProp } from 'navigation/rootNavigator/types'
 import { ContactFormScreen } from './ContactFormScreen'
 import { ContactsProviderElement } from './ContactsContext'
 import { ContactsScreen } from './ContactsScreen'
@@ -11,7 +11,7 @@ const Stack = createStackNavigator()
 const screensOptions = { headerShown: false }
 
 export type ContactsScreenProps = {
-  navigation: NavigationProp
+  navigation: RootStackNavigationProp
 }
 
 export const ContactsNavigationScreen: React.FC<ContactsScreenProps> = ({

@@ -8,7 +8,7 @@ import { MediumText } from '../../components'
 import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
 import { TextInputWithLabel } from '../../components/input/TextInputWithLabel'
 import { emptyProfile } from '../../core/hooks/useProfile'
-import { ScreenProps } from '../../RootNavigation'
+import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
 
@@ -20,7 +20,7 @@ export type CreateProfileScreenProps = {
   eraseProfile: () => Promise<void>
 }
 export const ProfileCreateScreen: React.FC<
-  ScreenProps<'ProfileCreateScreen'> & CreateProfileScreenProps
+  RootStackScreenProps<'ProfileCreateScreen'> & CreateProfileScreenProps
 > = ({ route, profile, setProfile, storeProfile, eraseProfile }) => {
   const navigation = route.params.navigation
   const editProfile = route.params.editProfile

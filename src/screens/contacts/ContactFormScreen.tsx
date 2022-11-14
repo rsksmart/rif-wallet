@@ -4,7 +4,10 @@ import { TextInput } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { AddressInput } from '../../components'
 import { BlueButton } from '../../components/button/ButtonVariations'
-import { NavigationProp, ScreenProps } from '../../RootNavigation'
+import {
+  RootStackNavigationProp,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
 import { colors, grid } from '../../styles'
 import { fonts } from '../../styles/fonts'
 import { setOpacity } from '../home/tokenColor'
@@ -12,13 +15,13 @@ import { ContactsContext, IContact } from './ContactsContext'
 
 interface ContactFormScreenProps {
   chainId: number
-  navigation: NavigationProp
+  navigation: RootStackNavigationProp
 }
 
 export const ContactFormScreen: React.FC<
-  ContactFormScreenProps & ScreenProps<'Contacts'>
+  ContactFormScreenProps & RootStackScreenProps<'Contacts'>
 > = ({ navigation, chainId, route }) => {
-  const initialValue = (route.params?.['initialValue'] ?? {
+  const initialValue = (route.params?.initialValue ?? {
     name: '',
     address: '',
   }) as IContact

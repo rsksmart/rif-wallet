@@ -5,13 +5,13 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
 import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
 import { useSelectedWallet } from '../../Context'
-import { NavigationProp } from '../../RootNavigation'
+import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
 import { WalletConnectContext } from './WalletConnectContext'
 
 export const WalletConnectScreen: React.FC<{
-  navigation: NavigationProp
+  navigation: RootStackScreenProps
   route: any
 }> = ({ navigation, route }) => {
   const { t } = useTranslation()

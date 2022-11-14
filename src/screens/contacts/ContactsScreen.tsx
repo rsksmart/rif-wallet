@@ -11,14 +11,14 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { SearchIcon } from '../../components/icons/SearchIcon'
 import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
-import { NavigationProp } from '../../RootNavigation'
+import { RootStackNavigationProp } from 'navigation/rootNavigator/types'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
 import { ContactRow } from './ContactRow'
 import { ContactsContext, IContact } from './ContactsContext'
 
 export const ContactsScreen: React.FC<{
-  navigation: NavigationProp
+  navigation: RootStackNavigationProp
 }> = ({ navigation }) => {
   const { t } = useTranslation()
   const { contacts, deleteContact } = useContext(ContactsContext)

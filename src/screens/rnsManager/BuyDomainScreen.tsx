@@ -10,7 +10,7 @@ import { rnsManagerStyles } from './rnsManagerStyles'
 
 import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
 
-import { ScreenProps } from '../../RootNavigation'
+import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { ScreenWithWallet } from '../types'
 import { MediumText } from '../../components'
 import addresses from './addresses.json'
@@ -23,7 +23,7 @@ type Props = {
 }
 
 export const BuyDomainScreen: React.FC<
-  ScreenProps<'BuyDomain'> & ScreenWithWallet & Props
+  RootStackScreenProps<'BuyDomain'> & ScreenWithWallet & Props
 > = ({ wallet, navigation, route }) => {
   const { alias, domainSecret, duration } = route.params
   const fullAlias = alias + '.rsk'
