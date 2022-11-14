@@ -12,7 +12,7 @@ import {
   rnsResolver,
 } from './setup'
 
-import { RootNavigation, RootStackParamList } from '../RootNavigation'
+import { RootNavigationComponent } from '../navigation/rootNavigator'
 import ModalComponent from '../ux/requestsModal/ModalComponent'
 
 import {
@@ -138,7 +138,7 @@ export const Core = () => {
                 rifServiceSocket={rifWalletServicesSocket}
                 abiEnhancer={abiEnhancer}
                 appActive={active}>
-                <RootNavigation
+                <RootNavigationComponent
                   currentScreen={currentScreen}
                   hasKeys={state.hasKeys}
                   hasPin={state.hasPin}

@@ -14,7 +14,7 @@ import {
 } from '../../lib/abiEnhancer/AbiEnhancer'
 import { RIFWallet } from '../../lib/core'
 import { ScreenWithWallet } from '../types'
-import { ScreenProps } from '../../RootNavigation'
+import { ScreenProps } from '../../navigation/rootNavigator'
 import { IActivity } from '../../subscriptions/types'
 import { TransactionsServerResponseWithActivityTransactions } from './types'
 import { colors } from '../../styles'
