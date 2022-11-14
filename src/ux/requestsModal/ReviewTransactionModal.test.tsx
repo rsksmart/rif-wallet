@@ -88,16 +88,16 @@ describe('ReviewTransactionModal', function (this: {
     )
 
     await flushPromises()
-    fireEvent.press(getByTestId('Toggle.Button'))
 
     act(() => {
       fireEvent.press(getByTestId('Confirm.Button'))
     })
 
-    expect(this.confirm).toBeCalledWith({
-      gasPrice: this.queuedTransaction.payload[0].gasPrice,
-      gasLimit: this.queuedTransaction.payload[0].gasLimit,
-    })
+    const { gasPrice, gasLimit } = this.confirm.mock.calls[0][0]
+    const { payload } = this.queuedTransaction
+
+    expect(gasPrice.toString()).toBe(payload[0].gasPrice?.toString())
+    expect(gasLimit.toString()).toBe(payload[0].gasLimit?.toString())
 
     await flushPromises()
 
@@ -126,47 +126,5 @@ describe('ReviewTransactionModal', function (this: {
 
     expect(this.cancel).toBeCalled()
     expect(closeModal).toBeCalled()
-  })
-
-  it('allows the user to change the text inputs', async () => {
-    const closeModal = jest.fn()
-    const { getByTestId } = await waitFor(() =>
-      render(
-        <ReviewTransactionModal
-          isWalletDeployed={true}
-          wallet={this.rifWallet}
-          request={this.queuedTransaction}
-          closeModal={closeModal}
-        />,
-      ),
-    )
-
-    await flushPromises()
-
-    fireEvent.press(getByTestId('Toggle.Button'))
-
-    act(() => {
-      fireEvent.changeText(getByTestId('gasLimit.TextInput'), '1000')
-    })
-
-    act(() => {
-      fireEvent.changeText(getByTestId('gasPrice.TextInput'), '20')
-    })
-
-    await flushPromises()
-    expect(getByTestId('gasLimit.TextInput').props.value).toBe('1000')
-    expect(getByTestId('gasPrice.TextInput').props.value).toBe('20')
-
-    act(() => {
-      fireEvent.press(getByTestId('Confirm.Button'))
-    })
-
-    expect(this.confirm).toBeCalledWith({
-      gasPrice: BigNumber.from(20),
-      gasLimit: BigNumber.from(1000),
-    })
-
-    await flushPromises()
-    expect(closeModal).toHaveBeenCalled()
   })
 })
