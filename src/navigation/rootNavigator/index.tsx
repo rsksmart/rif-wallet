@@ -2,10 +2,11 @@ import { NavigationProp as _NavigationProp } from '@react-navigation/native'
 import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
 import { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
+import JailMonkey from 'jail-monkey'
+
 import { InjectSelectedWallet } from '../../Context'
 import { IRifWalletServicesSocket } from '../../lib/rifWalletServices/RifWalletServicesSocket'
 
-import JailMonkey from 'jail-monkey'
 import * as Screens from '../../screens'
 import { CreateKeysNavigation, CreateKeysProps } from '../../screens/createKeys'
 import { colors } from '../../styles'
