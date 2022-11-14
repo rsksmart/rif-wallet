@@ -33,7 +33,7 @@ export default class BitcoinNetwork {
       throw new Error('You must define a BIP for this Network')
     }
     this.setBips(bipNames, fetcher)
-    // this.updateBalance()
+    this.updateBalance()
   }
   setCoinConfiguration() {
     this.coinTypeNumber = NETWORK_DATA[this.networkId].coinTypeNumber

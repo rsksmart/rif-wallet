@@ -3,7 +3,6 @@ import { BIP_DATA, COIN_BIPS } from './constants'
 import BitcoinNetwork from './BitcoinNetwork'
 import AddressFactory from './AddressFactory'
 import { RifWalletServicesFetcher } from '../rifWalletServices/RifWalletServicesFetcher'
-import { rifWalletServicesFetcher as defaultFetcherInstance } from '../../core/setup'
 import getPaymentInstance from './getPaymentInstance'
 import {
   NetworkInfoType,
@@ -59,8 +58,7 @@ export default class BIP {
     this.setAddressFactory()
   }
   setOptions() {
-    this.RifWalletServicesFetcherInstance =
-      this.options.fetcher || defaultFetcherInstance
+    this.RifWalletServicesFetcherInstance = this.options.fetcher!
     this.paymentFactory = this.options.paymentFactory || getPaymentInstance
   }
   setBIP32RootKey(seed: Buffer) {

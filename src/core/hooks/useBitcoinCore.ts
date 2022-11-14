@@ -6,9 +6,7 @@ import bitcoinNetworkStore from '../../storage/BitcoinNetworkStore'
 import { OnRequest } from '../../lib/core'
 import { BitcoinNetworkWithBIPRequest } from '../../lib/bitcoin/types'
 import { createAndInitializeBipWithRequest } from '../../lib/bitcoin/utils'
-import { useAuth } from './useAuth'
 import { AppContext, useSelectedWallet } from '../../Context'
-import { authAxios, publicAxios } from '../setup'
 import { RifWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
 
 import { RifWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
@@ -29,43 +27,37 @@ export type useBitcoinCoreResultType = {
 const useBitcoinCore = (
   mnemonic: string,
   request: OnRequest,
+  fetcher: RifWalletServicesFetcher | undefined
 ): useBitcoinCoreResultType => {
   const [networks, refreshStoredNetworks] = useBitcoinNetworks()
-  const { wallet } = useSelectedWallet()
-  const { fetcher } = useContext(AppContext)
   const memoizedNetworks = useMemo(() => {
-    if (!mnemonic) {
+    if (!mnemonic || !fetcher) {
       return { networksArr: [], networksObj: {} }
     }
     const BIP39Instance = new BIP39(mnemonic)
     const networksObj: any = {}
-    // let networksArr: BitcoinNetworkWithBIPRequest[] = []
-    // login().then(({accessToken, refreshToken}) => {
-      // const fetcher = new RifWalletServicesFetcher(authAxios, accessToken, refreshToken)
       const networksArr = Object.values(networks).map(network => {
         const bitcoinNetwork: BitcoinNetworkWithBIPRequest = new BitcoinNetwork(
           network.name,
           network.bips,
           BIP39Instance,
           createAndInitializeBipWithRequest(request),
-          {} as any
+          fetcher!
         ) as BitcoinNetworkWithBIPRequest
         networksObj[network.name] = bitcoinNetwork
         return bitcoinNetwork
       })
-      // networksArr = ntwkArr
-    // })
     return { networksArr, networksObj}
     
-  }, [mnemonic, networks])
+  }, [mnemonic, fetcher, networks ])
 
   useEffect(() => {
-    if (memoizedNetworks.networksArr.length < 1) {
+    if (memoizedNetworks.networksArr.length < 1 && fetcher) {
       bitcoinNetworkStore
         .addNewNetwork('BITCOIN_TESTNET', ['BIP84'])
         .then(refreshStoredNetworks)
     }
-  }, [memoizedNetworks])
+  }, [fetcher, memoizedNetworks ])
   return {
     networks: memoizedNetworks.networksArr,
     networksMap: memoizedNetworks!.networksObj,

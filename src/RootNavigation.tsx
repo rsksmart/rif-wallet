@@ -105,6 +105,7 @@ export const RootNavigation: React.FC<{
   createPin: (newPin: string) => Promise<void>
   editPin: (newPin: string) => Promise<void>
   setWalletIsDeployed: (address: string, value?: boolean) => void
+  balancesScreenProps: Screens.BalancesScreenProps
   activityScreenProps: Screens.ActivityScreenProps
   showMnemonicScreenProps: Screens.ShowMnemonicScreenProps
   sendScreenProps: ScreenProps<'Send'>
@@ -121,6 +122,7 @@ export const RootNavigation: React.FC<{
   keyManagementProps,
   createPin,
   editPin,
+  balancesScreenProps,
   activityScreenProps,
   showMnemonicScreenProps,
   sendScreenProps,
@@ -201,7 +203,11 @@ export const RootNavigation: React.FC<{
             options={sharedOptions}
           />
           <RootStack.Screen name="Balances">
-            {props => <InjectedScreens.BalancesScreen {...props} />}
+            {props => 
+              <InjectedScreens.BalancesScreen 
+                {...props}
+                {...balancesScreenProps} 
+            />}
           </RootStack.Screen>
           <RootStack.Screen name="Activity" options={sharedOptions}>
             {props => (
