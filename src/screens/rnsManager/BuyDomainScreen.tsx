@@ -105,9 +105,9 @@ export const BuyDomainScreen: React.FC<
                 ${domainFiatPrice}
               </MediumText>
               <View style={styles.rifTokenImageContainer}>
-                <MediumText style={styles.rifTokenImage}>
-                  <TokenImage symbol={'RIF'} height={20} width={20} />
-                </MediumText>
+                <View style={styles.assetIcon}>
+                  <TokenImage symbol={'RIF'} height={22} width={25} />
+                </View>
                 <MediumText style={styles.priceLabel}>
                   {utils.formatUnits(domainPrice, 18)}
                 </MediumText>
@@ -162,13 +162,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 10,
   },
-  rifTokenImage: {
+  assetIcon: {
+    alignSelf: 'center',
+    overflow: 'hidden',
     backgroundColor: colors.white,
-    borderRadius: 15,
-    height: 30,
-    width: 30,
-    padding: 5,
-    marginRight: 5,
-    marginTop: 3,
+    borderRadius: 18,
+    padding: 6,
+    marginRight: 10,
   },
 })
