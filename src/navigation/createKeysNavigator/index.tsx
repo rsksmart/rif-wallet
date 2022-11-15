@@ -1,17 +1,18 @@
-import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 
-import { CreateKeysScreen } from '../../screens/createKeys/CreateKeysScreen'
-import { NewMasterKeyScreen } from '../../screens/createKeys/new/NewMasterKeyScreen'
-import { ConfirmNewMasterKeyScreen } from '../../screens/createKeys/new/ConfirmNewMasterKeyScreen'
-import { ImportMasterKeyScreen } from '../../screens/createKeys/import/ImportMasterKeyScreen'
+import {
+  CreateKeysScreen,
+  NewMasterKeyScreen,
+  ConfirmNewMasterKeyScreen,
+  ImportMasterKeyScreen,
+  SecurityExplanationScreen,
+  SecureYourWalletScreen,
+} from 'screens/createKeys'
 import {
   CreateKeysStackParamList,
   CreateKeysProps,
   createKeysRouteNames,
 } from './types'
-import { SecurityExplanationScreen } from '../../screens/createKeys/SecurityExplanationScreen'
-import { SecureYourWalletScreen } from '../../screens/createKeys/SecureYourWalletScreen'
 
 const Stack = createStackNavigator<CreateKeysStackParamList>()
 
