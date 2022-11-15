@@ -12,7 +12,10 @@ import {
   rnsResolver,
 } from './setup'
 
-import { RootNavigationComponent } from '../navigation/rootNavigator'
+import {
+  RootNavigationComponent,
+  RootStackParamList,
+} from '../navigation/rootNavigator'
 import ModalComponent from '../ux/requestsModal/ModalComponent'
 
 import {
