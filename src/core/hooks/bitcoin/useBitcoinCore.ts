@@ -9,7 +9,7 @@ import { OnRequest } from '../../../lib/core'
 import { BitcoinNetworkWithBIPRequest } from '../../../lib/bitcoin/types'
 import { createAndInitializeBipWithRequest } from '../../../lib/bitcoin/utils'
 import { bitcoinTestnet } from '../../../shared/costants'
-import { useStoredBitcoinNetworks } from './useBitcoinNetworks'
+import { useStoredBitcoinNetworks } from './useStoredBitcoinNetworks'
 
 export interface UseBitcoinCoreResult {
   networks: Array<BitcoinNetwork>
