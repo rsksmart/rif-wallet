@@ -36,12 +36,14 @@ export const PinContainer: React.FC<PinContainerType> = ({
   }
 
   const onLastPinDigitAdded = (enteredPin: Array<string>) => {
-    const parsedPin = enteredPin.join('')
-    setError(null)
-    onPinSubmit(parsedPin).catch((errorProm: any) => {
+    try {
+      const parsedPin = enteredPin.join('')
+      setError(null)
+      onPinSubmit(parsedPin)
+    } catch (errorProm: any) {
       setError(errorProm.toString())
       onPinReset()
-    })
+    }
   }
 
   const onPinDigitDelete = () => {

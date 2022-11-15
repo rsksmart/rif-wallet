@@ -98,7 +98,7 @@ export const useKeyManagementSystem = (onRequest: OnRequest) => {
     return rifWallet
   }
 
-  const createPin = async (newPin: string) => {
+  const createPin = (newPin: string) => {
     setState({ ...state, loading: true })
     savePin(newPin)
     setState({
