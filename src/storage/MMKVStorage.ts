@@ -13,7 +13,6 @@ export class MMKVStorage {
   }
 
   public set(key: string, value: any) {
-    console.log('VALUE STORED', value)
     if (this.storage && typeof value !== 'undefined') {
       this.storage.set(key, JSON.stringify(value))
     }
@@ -22,7 +21,6 @@ export class MMKVStorage {
   public get(key: string = 'default') {
     if (this.storage) {
       const value = this.storage.getString(key)
-      console.log('VALUE FETCHED', value)
       return value && JSON.parse(value)
     }
   }
