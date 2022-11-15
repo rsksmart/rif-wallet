@@ -72,15 +72,14 @@ export const useKeyManagementSystem = (onRequest: OnRequest) => {
   }
 
   const createRIFWallet = createRIFWalletFactory(onRequest)
-
+  const handleLoadExistingWallets = loadExistingWallets(createRIFWallet)
   const handleCreateKMS = creteKMS(createRIFWallet, networkId) // using only testnet
 
   const unlockApp = async () => {
-    setState({
-      ...state,
-      hasKeys: true,
-      loading: false,
-    })
+    setState({ ...state, loading: true })
+    const { kms, rifWalletsDictionary, rifWalletsIsDeployedDictionary } =
+      await handleLoadExistingWallets()
+    setKeys(kms, rifWalletsDictionary, rifWalletsIsDeployedDictionary)
   }
 
   const createFirstWallet = async (mnemonic: string) => {
