@@ -7,7 +7,10 @@ import { InjectSelectedWallet } from '../../Context'
 import { IRifWalletServicesSocket } from '../../lib/rifWalletServices/RifWalletServicesSocket'
 
 import * as Screens from '../../screens'
-import { CreateKeysNavigation, CreateKeysProps } from '../../screens/createKeys'
+import {
+  CreateKeysNavigation,
+  CreateKeysProps,
+} from 'navigation/createKeysNavigator'
 import { colors } from '../../styles'
 import { AppFooterMenu } from '../../ux/appFooter'
 import { AppHeader } from '../../ux/appHeader'
@@ -354,3 +357,5 @@ const styles = StyleSheet.create({
     height: '100%',
   },
 })
+
+export * from './types'

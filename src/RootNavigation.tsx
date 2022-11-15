@@ -7,7 +7,10 @@ import { InjectSelectedWallet } from './Context'
 import JailMonkey from 'jail-monkey'
 import BitcoinNetwork from './lib/bitcoin/BitcoinNetwork'
 import * as Screens from './screens'
-import { CreateKeysNavigation, CreateKeysProps } from './screens/createKeys'
+import {
+  CreateKeysNavigation,
+  CreateKeysProps,
+} from 'navigation/createKeysNavigator'
 import { colors } from './styles'
 import { AppFooterMenu } from './ux/appFooter'
 import { AppHeader } from './ux/appHeader'
