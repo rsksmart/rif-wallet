@@ -14,7 +14,6 @@ export const enhancedTxTestCase: IEnhancedResult = {
 
 // @ts-ignore
 export const createMockAbiEnhancer = (): IAbiEnhancer => ({
-  // eslint-disable-next-line no-undef
   enhance: jest.fn(() => Promise.resolve(enhancedTxTestCase)),
 })
 

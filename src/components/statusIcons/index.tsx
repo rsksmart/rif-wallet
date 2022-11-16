@@ -1,6 +1,5 @@
 import { CheckIcon } from '../icons/CheckIcon'
 import DeleteIcon from '../icons/DeleteIcon'
-import React from 'react'
 import ScheduleIcon from '../icons/ScheduleIcon'
 
 type Props = {

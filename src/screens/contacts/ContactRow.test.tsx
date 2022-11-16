@@ -1,5 +1,4 @@
 import { fireEvent, render } from '@testing-library/react-native'
-import React from 'react'
 import * as hooks from '../../subscriptions/RIFSockets'
 import { ContactRow } from './ContactRow'
 import { IContact } from './ContactsContext'

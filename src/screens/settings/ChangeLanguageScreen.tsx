@@ -1,4 +1,3 @@
-import React from 'react'
 import { View, StyleSheet } from 'react-native'
 import { RegularText } from '../../components'
 import { colors } from '../../styles'

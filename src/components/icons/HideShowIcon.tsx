@@ -1,4 +1,3 @@
-import React from 'react'
 import Svg, { SvgProps, Path, G, Line } from 'react-native-svg'
 
 interface HideShowInterface extends SvgProps {

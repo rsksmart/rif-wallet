@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { SafeAreaView, StatusBar, StyleSheet } from 'react-native'
 import { AppContext } from '../Context'
 import { KeyManagementSystem, RIFWallet } from '../lib/core'

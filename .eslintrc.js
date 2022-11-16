@@ -18,6 +18,9 @@ module.exports = {
     semi: 'off',
     'eslint-comments/no-unlimited-disable': 'off',
     'react-hooks/exhaustive-deps': 'off',
+    'no-undef': 'off',
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': ['error'],
   },
   settings: {
     'import/resolver': {
