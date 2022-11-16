@@ -50,16 +50,19 @@ export const useBitcoinCore = (
     networksObj: {},
   })
 
-  const transformNetwork = useCallback((network: StoredBitcoinNetworkValue) => {
-    const bitcoinNetwork = new BitcoinNetwork(
-      network.name,
-      network.bips,
-      BIP39Instance,
-      createAndInitializeBipWithRequest(request),
-    ) as BitcoinNetworkWithBIPRequest
-    networksObj[network.name] = bitcoinNetwork
-    return bitcoinNetwork
-  }, [])
+  const transformNetwork = useCallback(
+    (network: StoredBitcoinNetworkValue) => {
+      const bitcoinNetwork = new BitcoinNetwork(
+        network.name,
+        network.bips,
+        BIP39Instance,
+        createAndInitializeBipWithRequest(request),
+      ) as BitcoinNetworkWithBIPRequest
+      networksObj[network.name] = bitcoinNetwork
+      return bitcoinNetwork
+    },
+    [BIP39Instance],
+  )
 
   const transformStoredNetworks = useCallback(
     (values: StoredBitcoinNetworkValue[]) => {
