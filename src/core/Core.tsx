@@ -1,5 +1,5 @@
-import { Fragment, useEffect, useState } from 'react'
-import { SafeAreaView, StatusBar, StyleSheet } from 'react-native'
+import { useEffect, useState } from 'react'
+import { StatusBar, StyleSheet, View } from 'react-native'
 import { AppContext } from '../Context'
 import { KeyManagementSystem, RIFWallet } from '../lib/core'
 import { i18nInit } from '../lib/i18n'
@@ -35,11 +35,13 @@ import { useKeyboardIsVisible } from './hooks/useKeyboardIsVisible'
 import { useKeyManagementSystem } from './hooks/useKeyManagementSystem'
 import { useRequests } from './hooks/useRequests'
 import { useStateSubscription } from './hooks/useStateSubscription'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export const navigationContainerRef =
   createNavigationContainerRef<RootStackParamList>()
 
 export const Core = () => {
+  const insets = useSafeAreaInsets()
   const [topColor, setTopColor] = useState(colors.darkPurple3)
 
   const { requests, onRequest, closeRequest } = useRequests()
@@ -105,10 +107,7 @@ export const Core = () => {
 
   // handles the top color behind the clock
   const styles = StyleSheet.create({
-    top: {
-      flex: 0,
-      backgroundColor: topColor,
-    },
+    top: { backgroundColor: topColor, paddingTop: insets.top },
     body: {
       backgroundColor: topColor,
     },
@@ -126,75 +125,71 @@ export const Core = () => {
   }
 
   return (
-    <Fragment>
-      <SafeAreaView style={styles.top}>
-        <StatusBar backgroundColor={topColor} />
-      </SafeAreaView>
-      <SafeAreaView style={styles.body}>
-        {!active && <Cover />}
-        <AppContext.Provider
-          value={{
-            ...state,
-            mnemonic: state.kms?.mnemonic,
-            BitcoinCore,
-          }}>
-          <NavigationContainer
-            onStateChange={handleScreenChange}
-            ref={navigationContainerRef}>
-            <WalletConnectProviderElement>
-              <RIFSocketsProvider
-                rifServiceSocket={rifWalletServicesSocket}
-                abiEnhancer={abiEnhancer}
-                appActive={active}>
-                <RootNavigationComponent
-                  currentScreen={currentScreen}
-                  hasKeys={state.hasKeys}
-                  hasPin={state.hasPin}
-                  isKeyboardVisible={isKeyboardVisible}
-                  keyManagementProps={{
-                    generateMnemonic: () =>
-                      KeyManagementSystem.create().mnemonic,
-                    createFirstWallet: (mnemonic: string) =>
-                      createFirstWallet(mnemonic).then(wallet => {
-                        setUnlocked(true)
-                        return wallet
-                      }),
-                  }}
-                  createPin={createPin}
-                  editPin={handleUpdatePin}
-                  setWalletIsDeployed={setWalletIsDeployed}
-                  balancesScreenProps={{ fetcher: rifWalletServicesFetcher }}
-                  sendScreenProps={{ rnsResolver }}
-                  activityScreenProps={{
-                    fetcher: rifWalletServicesFetcher,
-                    abiEnhancer,
-                  }}
-                  showMnemonicScreenProps={{
-                    mnemonic: state.kms?.mnemonic || '',
-                  }}
-                  contactsNavigationScreenProps={{ rnsResolver }}
-                  accountsScreenType={{
-                    addNewWallet,
-                    switchActiveWallet,
-                  }}
-                  securityConfigurationScreenProps={{
-                    deleteKeys: resetKeysAndPin,
-                  }}
-                  changeTopColor={setTopColor}
-                />
+    <View style={styles.top}>
+      <StatusBar backgroundColor={topColor} />
+      {!active && <Cover />}
+      <AppContext.Provider
+        value={{
+          ...state,
+          mnemonic: state.kms?.mnemonic,
+          BitcoinCore,
+        }}>
+        <NavigationContainer
+          onStateChange={handleScreenChange}
+          ref={navigationContainerRef}>
+          <WalletConnectProviderElement>
+            <RIFSocketsProvider
+              rifServiceSocket={rifWalletServicesSocket}
+              abiEnhancer={abiEnhancer}
+              appActive={active}>
+              <RootNavigationComponent
+                currentScreen={currentScreen}
+                hasKeys={state.hasKeys}
+                hasPin={state.hasPin}
+                isKeyboardVisible={isKeyboardVisible}
+                rifWalletServicesSocket={rifWalletServicesSocket}
+                keyManagementProps={{
+                  generateMnemonic: () => KeyManagementSystem.create().mnemonic,
+                  createFirstWallet: (mnemonic: string) =>
+                    createFirstWallet(mnemonic).then(wallet => {
+                      setUnlocked(true)
+                      return wallet
+                    }),
+                }}
+                createPin={handleUpdatePin}
+                editPin={editPin}
+                setWalletIsDeployed={setWalletIsDeployed}
+                balancesScreenProps={{ fetcher: rifWalletServicesFetcher }}
+                sendScreenProps={{ rnsResolver }}
+                activityScreenProps={{
+                  fetcher: rifWalletServicesFetcher,
+                  abiEnhancer,
+                }}
+                showMnemonicScreenProps={{
+                  mnemonic: state.kms?.mnemonic || '',
+                }}
+                contactsNavigationScreenProps={{ rnsResolver }}
+                accountsScreenType={{
+                  addNewWallet,
+                  switchActiveWallet,
+                }}
+                securityConfigurationScreenProps={{
+                  deleteKeys: resetKeysAndPin,
+                }}
+                changeTopColor={setTopColor}
+              />
 
-                {requests.length !== 0 && (
-                  <ModalComponent
-                    closeModal={closeRequest}
-                    isKeyboardVisible={isKeyboardVisible}
-                    request={requests[0]}
-                  />
-                )}
-              </RIFSocketsProvider>
-            </WalletConnectProviderElement>
-          </NavigationContainer>
-        </AppContext.Provider>
-      </SafeAreaView>
-    </Fragment>
+              {requests.length !== 0 && (
+                <ModalComponent
+                  closeModal={closeRequest}
+                  isKeyboardVisible={isKeyboardVisible}
+                  request={requests[0]}
+                />
+              )}
+            </RIFSocketsProvider>
+          </WalletConnectProviderElement>
+        </NavigationContainer>
+      </AppContext.Provider>
+    </View>
   )
 }
