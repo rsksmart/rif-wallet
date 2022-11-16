@@ -5,7 +5,8 @@ import { balanceToUSD, balanceToDisplay } from '../../lib/utils'
 import { IPrice } from '../../subscriptions/types'
 import BalanceCardPresentationComponent from './BalanceCardPresentationComponent'
 import { BigNumber } from 'ethers'
-import { useSocketsState } from '../../subscriptions/RIFSockets'
+import { useAppSelector } from '../../redux/storeHooks'
+import { selectUsdPrices } from '../../redux/slices/usdPricesSlice/selectors'
 
 export const BalanceCardComponent: React.FC<{
   token: ITokenWithBalance
@@ -47,13 +48,11 @@ export const BitcoinCardComponent: React.FC<{
     () => BigNumber.from(Math.round(balance * 10e8)),
     [balance],
   )
-  const { state } = useSocketsState()
+  const prices = useAppSelector(selectUsdPrices)
   // Future TODO: should be set in the network constants if another coin is implemented
   const price = React.useMemo(() => {
-    return state.prices.BTC
-      ? balanceToUSD(balanceBigNumber, 8, state.prices.BTC.price)
-      : ''
-  }, [balance, state.prices.BTC])
+    return prices.BTC ? balanceToUSD(balanceBigNumber, 8, prices.BTC.price) : ''
+  }, [balance, prices.BTC])
 
   const balanceFormatted = React.useMemo(
     () => balanceToDisplay(balanceBigNumber.toString(), 8, 4),

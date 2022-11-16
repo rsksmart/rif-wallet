@@ -15,6 +15,8 @@ import {
 import { useFetchBitcoinNetworksAndTokens } from './useFetchBitcoinNetworksAndTokens'
 import { MixedTokenAndNetworkType } from './types'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import { selectUsdPrices } from '../../redux/slices/usdPricesSlice/selectors'
+import { useAppSelector } from '../../redux/storeHooks'
 
 export const SendScreen: React.FC<
   RootStackScreenProps<'Send'> & ScreenWithWallet
@@ -23,6 +25,7 @@ export const SendScreen: React.FC<
     useFetchBitcoinNetworksAndTokens() as unknown as MixedTokenAndNetworkType[]
 
   const { state } = useSocketsState()
+  const prices = useAppSelector(selectUsdPrices)
   const contractAddress =
     route.params?.contractAddress || Object.keys(state.balances)[0]
 
@@ -70,7 +73,7 @@ export const SendScreen: React.FC<
           <TransactionForm
             onConfirm={onExecuteTransfer}
             tokenList={assets}
-            tokenPrices={state.prices}
+            tokenPrices={prices}
             chainId={chainId}
             initialValues={{
               recipient: route.params?.to,

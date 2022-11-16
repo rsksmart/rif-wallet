@@ -4,6 +4,7 @@ import { IRIFWalletServicesFetcher } from '../lib/rifWalletServices/RifWalletSer
 import { IAbiEnhancer, IEnhancedResult } from '../lib/abiEnhancer/AbiEnhancer'
 import { ITokenWithBalance } from '../lib/rifWalletServices/RIFWalletServicesTypes'
 import { IRifWalletServicesSocket } from '../lib/rifWalletServices/RifWalletServicesSocket'
+import { RIFWallet } from '../lib/core'
 
 export interface IActivity
   extends TransactionsServerResponseWithActivityTransactions {}
@@ -62,7 +63,6 @@ export interface ResetAction {
 export interface State {
   transactions: TransactionsServerResponseWithActivityTransactions
   balances: Record<string, ITokenWithBalance>
-  prices: Record<string, IPrice>
   events: Array<IEvent>
   isSetup: Boolean
 }
@@ -109,4 +109,15 @@ export interface TransactionsServerResponse {
 export interface TransactionsServerResponseWithActivityTransactions
   extends TransactionsServerResponse {
   activityTransactions: IActivityTransaction[]
+}
+
+export interface ISocketsChangeEmitted {
+  dispatch: React.Dispatch<Action>
+  abiEnhancer: IAbiEnhancer
+  wallet: RIFWallet
+}
+
+export interface IChangeEmittedFunction {
+  type: string
+  payload: any
 }

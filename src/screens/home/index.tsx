@@ -14,6 +14,8 @@ import SendReceiveButtonComponent from './SendReceiveButtonComponent'
 import { getTokenColor } from './tokenColor'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
+import { useAppSelector } from '../../redux/storeHooks'
+import { selectUsdPrices } from '../../redux/slices/usdPricesSlice/selectors'
 
 export type HomeScreenProps = {
   navigation: RootStackNavigationProp
@@ -25,6 +27,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   changeTopColor,
 }) => {
   const { state } = useSocketsState()
+  const prices = useAppSelector(selectUsdPrices)
   const { networksMap } = useBitcoinCoreContext()
   const { selectedWalletIndex, wallet, chainId } = useSelectedWallet()
 
@@ -142,7 +145,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             selectedAddress={selectedAddress}
             setSelected={setSelectedAddress}
             balances={balances}
-            prices={state.prices}
+            prices={prices}
           />
         )}
       </View>
