@@ -12,7 +12,7 @@ import {
   DarkBlueButton,
 } from '../../components/button/ButtonVariations'
 import { RIFWallet } from '../../lib/core'
-import { saveKeyVerificationReminder } from '../../storage/KeyVerificationReminderStore'
+import { saveKeyVerificationReminder } from '../../storage/MainStorage'
 type SecureYourWalletProps = {
   mnemonic: string
   createWallet: (mnemonic: string) => Promise<RIFWallet>
@@ -21,7 +21,7 @@ export const SecureYourWalletScreen: React.FC<
   ScreenProps<'SecureYourWallet'> & SecureYourWalletProps
 > = ({ navigation, createWallet, mnemonic }) => {
   const secureLater = async () => {
-    await saveKeyVerificationReminder(true)
+    saveKeyVerificationReminder(true)
     createWallet(mnemonic)
   }
   return (

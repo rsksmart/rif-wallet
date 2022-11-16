@@ -3,7 +3,6 @@ import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
 import React, { useState } from 'react'
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native'
 import { InjectSelectedWallet } from './Context'
-import { IRifWalletServicesSocket } from './lib/rifWalletServices/RifWalletServicesSocket'
 
 import JailMonkey from 'jail-monkey'
 import BitcoinNetwork from './lib/bitcoin/BitcoinNetwork'
@@ -100,7 +99,6 @@ export const RootNavigation: React.FC<{
   hasPin: boolean
   isKeyboardVisible: boolean
   changeTopColor: (color: string) => void
-  rifWalletServicesSocket: IRifWalletServicesSocket
   keyManagementProps: CreateKeysProps
   createPin: (newPin: string) => Promise<void>
   editPin: (newPin: string) => Promise<void>
@@ -141,7 +139,7 @@ export const RootNavigation: React.FC<{
   let initialRoute: any = 'CreateKeysUX'
   if (hasPin) {
     initialRoute = 'Home'
-  } else if (hasKeys) {
+  } else if (hasKeys && !hasPin) {
     initialRoute = 'CreatePin'
   }
 

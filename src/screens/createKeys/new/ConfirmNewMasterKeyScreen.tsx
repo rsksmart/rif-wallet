@@ -17,7 +17,7 @@ import { SLIDER_WIDTH, WINDOW_WIDTH } from '../../../ux/slides/Dimensions'
 import { PaginationNavigator } from '../../../components/button/PaginationNavigator'
 import { WordSelector } from './WordSelector'
 import { sharedMnemonicStyles } from './styles'
-import { saveKeyVerificationReminder } from '../../../storage/KeyVerificationReminderStore'
+import { saveKeyVerificationReminder } from '../../../storage/MainStorage'
 
 interface ConfirmMasterKeyScreenProps {
   isKeyboardVisible: boolean
@@ -44,7 +44,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
       return setError(true)
     }
     setError(false)
-    await saveKeyVerificationReminder(false)
+    saveKeyVerificationReminder(false)
     await createWallet(mnemonic)
   }
 

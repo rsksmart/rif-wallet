@@ -17,7 +17,7 @@ import { getTokenColor, getTokenColorWithOpacity } from '../home/tokenColor'
 import { SearchIcon } from '../../components/icons/SearchIcon'
 import { RegisterIcon } from '../../components/icons/RegisterIcon'
 import BaseButton from '../../components/button/BaseButton'
-import { IProfileStore } from '../../storage/ProfileStore'
+import { IProfileStore } from '../../storage/MainStorage'
 type Props = {
   navigation: any
   profile: IProfileStore
@@ -43,7 +43,7 @@ export const RNSManagerScreen: React.FC<
   )
 
   useEffect(() => {
-    getDomains(wallet.smartWalletAddress).then(setRegisteredDomains)
+    setRegisteredDomains(getDomains(wallet.smartWalletAddress))
   }, [wallet])
 
   const searchDomain = async (domain: string) => {

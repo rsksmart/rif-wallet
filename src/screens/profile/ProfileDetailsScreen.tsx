@@ -7,7 +7,7 @@ import { View, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import { colors } from '../../styles'
 import { ScreenProps } from '../../RootNavigation'
 import { MediumText } from '../../components'
-import { IProfileStore } from '../../storage/ProfileStore'
+import { IProfileStore } from '../../storage/MainStorage'
 import { AvatarIcon } from '../../components/icons/AvatarIcon'
 
 export type ProfileDetailsScreenProps = {

@@ -1,17 +1,14 @@
 import { Wallet } from '@ethersproject/wallet'
 import { KeyManagementSystem, RIFWallet } from '../lib/core'
-import { getKeys, saveKeys } from '../storage/KeyStore'
+import { getKeys, saveKeys } from '../storage/MainStorage'
 import { Wallets } from '../Context'
-import { Cache } from '../storage/cache/MMKVCache'
-
-export { deleteKeys, hasKeys } from '../storage/KeyStore'
-export { hasPin } from '../storage/PinStore'
+import { MMKVStorage } from '../storage/MMKVStorage'
 
 type CreateRIFWallet = (wallet: Wallet) => Promise<RIFWallet>
 
 export const loadExistingWallets =
   (createRIFWallet: CreateRIFWallet) => async () => {
-    const serializedKeys = await getKeys()
+    const serializedKeys = getKeys()
     const { kms, wallets } = KeyManagementSystem.fromSerialized(serializedKeys!)
 
     const rifWallets = await Promise.all(wallets.map(createRIFWallet))
@@ -44,7 +41,7 @@ export const creteKMS =
 
     save()
     const serialized = kms.serialize()
-    await saveKeys(serialized)
+    saveKeys(serialized)
 
     const rifWalletsDictionary = { [rifWallet.address]: rifWallet }
     const rifWalletsIsDeployedDictionary = {
@@ -59,7 +56,7 @@ export const creteKMS =
     }
   }
 
-export const addNextWallet = (
+export const addNextWallet = async (
   kms: KeyManagementSystem,
   createRIFWallet: CreateRIFWallet,
   networkId: number,
@@ -69,17 +66,17 @@ export const addNextWallet = (
   // save wallet in KSM
   save()
   // save serialized wallet in storage
-  return saveKeys(kms.serialize()).then(() =>
-    createRIFWallet(wallet).then(rifWallet =>
-      rifWallet.smartWalletFactory.isDeployed().then(isDeloyed => ({
-        rifWallet,
-        isDeloyed,
-      })),
-    ),
-  )
+  saveKeys(kms.serialize())
+  const rifWallet = await createRIFWallet(wallet)
+  const isDeloyed = await rifWallet.smartWalletFactory.isDeployed()
+
+  return {
+    rifWallet,
+    isDeloyed,
+  }
 }
 
 export const deleteCache = () => {
-  const cache = new Cache('txs')
+  const cache = new MMKVStorage('txs')
   cache.deleteAll()
 }

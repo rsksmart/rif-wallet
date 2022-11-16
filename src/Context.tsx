@@ -2,10 +2,14 @@ import React, { createContext, useContext, FC } from 'react'
 import { Paragraph } from './components'
 import { RIFWallet, Request } from './lib/core'
 import { ScreenWithWallet } from './screens/types'
-import { useBitcoinCoreResultType } from './core/hooks/useBitcoinCore'
+import { UseBitcoinCoreResult } from './core/hooks/bitcoin/useBitcoinCore'
 import { BitcoinRequest } from './lib/bitcoin/types'
-export type Wallets = { [id: string]: RIFWallet }
-export type WalletsIsDeployed = { [id: string]: boolean }
+export interface Wallets {
+  [id: string]: RIFWallet
+}
+export interface WalletsIsDeployed {
+  [id: string]: boolean
+}
 type RequestMixed = Request & BitcoinRequest
 export type Requests = RequestMixed[]
 
@@ -15,7 +19,7 @@ export type AppContextType = {
   walletsIsDeployed: WalletsIsDeployed
   selectedWallet?: string
   chainId?: number
-  BitcoinCore: useBitcoinCoreResultType
+  BitcoinCore: UseBitcoinCoreResult
 }
 
 export const AppContext = createContext<AppContextType>({

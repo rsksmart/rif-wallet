@@ -4,14 +4,13 @@ import { AppContext } from '../Context'
 import { KeyManagementSystem, RIFWallet } from '../lib/core'
 import { i18nInit } from '../lib/i18n'
 
-import { hasKeys, hasPin } from './operations'
+import { hasKeys, hasPin } from '../storage/MainStorage'
 import {
   abiEnhancer,
   rifWalletServicesFetcher,
   rifWalletServicesSocket,
   rnsResolver,
 } from './setup'
-export { hasPin } from '../storage/PinStore'
 
 import { RootNavigation, RootStackParamList } from '../RootNavigation'
 import ModalComponent from '../ux/requestsModal/ModalComponent'
@@ -28,7 +27,7 @@ import { colors } from '../styles'
 import { RIFSocketsProvider } from '../subscriptions/RIFSockets'
 import { Cover } from './components/Cover'
 import { RequestPIN } from './components/RequestPIN'
-import useBitcoinCore from './hooks/useBitcoinCore'
+import { useBitcoinCore } from './hooks/bitcoin/useBitcoinCore'
 import { useKeyboardIsVisible } from './hooks/useKeyboardIsVisible'
 import { useKeyManagementSystem } from './hooks/useKeyManagementSystem'
 import { useRequests } from './hooks/useRequests'
@@ -80,16 +79,14 @@ export const Core = () => {
   const BitcoinCore = useBitcoinCore(state?.kms?.mnemonic || '', onRequest)
 
   useEffect(() => {
-    Promise.all([i18nInit(), hasKeys(), hasPin()]).then(
-      ([_, hasKeysResult, hasPinResult]) => {
-        setState({
-          ...state,
-          hasKeys: !!hasKeysResult,
-          hasPin: !!hasPinResult,
-          loading: false,
-        })
-      },
-    )
+    i18nInit().then(() => {
+      setState({
+        ...state,
+        hasKeys: hasKeys(),
+        hasPin: hasPin(),
+        loading: false,
+      })
+    })
   }, [])
 
   useEffect(() => {
@@ -146,7 +143,6 @@ export const Core = () => {
                   hasKeys={state.hasKeys}
                   hasPin={state.hasPin}
                   isKeyboardVisible={isKeyboardVisible}
-                  rifWalletServicesSocket={rifWalletServicesSocket}
                   keyManagementProps={{
                     generateMnemonic: () =>
                       KeyManagementSystem.create().mnemonic,
