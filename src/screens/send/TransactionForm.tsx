@@ -11,6 +11,7 @@ import AssetChooser from './AssetChooser'
 import { RecentTransactions } from './RecentTransactions'
 import { SetAmountHOCComponent } from './SetAmountHOCComponent'
 import { MixedTokenAndNetworkType } from './types'
+import { useTokenSelectedTabs } from './useTokenSelectedTabs'
 
 interface Interface {
   onConfirm: (
@@ -30,6 +31,11 @@ interface Interface {
   onTokenSelected?: (tokenSelected: MixedTokenAndNetworkType) => void
 }
 
+interface txDetail {
+  value: string
+  isValid: boolean
+}
+
 const TransactionForm: React.FC<Interface> = ({
   initialValues,
   tokenList,
@@ -44,10 +50,7 @@ const TransactionForm: React.FC<Interface> = ({
   )
 
   const [activeTab, setActiveTab] = useState('address')
-  interface txDetail {
-    value: string
-    isValid: boolean
-  }
+  const { tabs } = useTokenSelectedTabs(selectedToken, setActiveTab)
 
   const [amount, setAmount] = useState<txDetail>({
     value: initialValues.amount || '0',
@@ -84,7 +87,13 @@ const TransactionForm: React.FC<Interface> = ({
     onConfirm(selectedToken, amount.value, to.value)
 
   const onTokenSelect = React.useCallback((token: MixedTokenAndNetworkType) => {
-    setSelectedToken(token)
+    setSelectedToken(oldToken => {
+      // Reset address when token type is changed
+      if ('isBitcoin' in oldToken === !('isBitcoin' in token)) {
+        handleTargetAddressChange('', false)
+      }
+      return token
+    })
     if (onTokenSelected) {
       onTokenSelected(token)
     }
@@ -113,7 +122,7 @@ const TransactionForm: React.FC<Interface> = ({
       <View>
         <Tabs
           title={'recipient'}
-          tabs={['address', 'recent', 'contact']}
+          tabs={tabs}
           selectedTab={activeTab}
           onTabSelected={setActiveTab}
         />
