@@ -43,7 +43,7 @@ export const RNSManagerScreen: React.FC<
   )
 
   useEffect(() => {
-    getDomains(wallet.smartWalletAddress).then(setRegisteredDomains)
+    setRegisteredDomains(getDomains(wallet.smartWalletAddress))
   }, [wallet])
 
   const searchDomain = async (domain: string) => {

@@ -11,7 +11,7 @@ export const ReceiveScreenHOC: React.FC<ReceiveScreenProps> = () => {
   const [registeredDomains, setRegisteredDomains] = useState<string[]>([])
 
   useEffect(() => {
-    getDomains(wallet.smartWalletAddress).then(setRegisteredDomains)
+    setRegisteredDomains(getDomains(wallet.smartWalletAddress))
   }, [wallet])
 
   const { checksumAddress, displayAddress } = getAddressDisplayText(
