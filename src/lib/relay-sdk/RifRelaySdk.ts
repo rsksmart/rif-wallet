@@ -174,7 +174,7 @@ export class RIFRelaySDK {
         from: this.eoaAddress,
         to: ZERO_ADDRESS,
         value: '0',
-        nonce,
+        nonce: nonce.toString(),
         data: '0x',
         tokenContract: payment.tokenContract,
         tokenAmount: payment.tokenAmount.toString(),
