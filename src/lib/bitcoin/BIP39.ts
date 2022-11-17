@@ -2,7 +2,7 @@ import { mnemonicToSeedSync } from '@rsksmart/rif-id-mnemonic'
 
 export default class BIP39 {
   mnemonic: string
-  seed: any
+  seed!: Buffer
   constructor(mnemonic: string) {
     this.mnemonic = mnemonic
     this.setSeed()

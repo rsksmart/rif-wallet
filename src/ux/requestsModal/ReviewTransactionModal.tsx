@@ -4,7 +4,7 @@ import { BigNumber } from 'ethers'
 
 import { SendTransactionRequest } from '../../lib/core'
 
-import { sharedStyles } from './sharedStyles'
+import { sharedStyles } from '../../shared/styles'
 import { Loading, Paragraph, RegularText } from '../../components'
 import { ScreenWithWallet } from '../../screens/types'
 import useEnhancedWithGas from './useEnhancedWithGas'

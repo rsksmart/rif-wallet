@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
-
-import RampSdk from '@ramp-network/react-native-sdk'
 import { Paragraph } from '../../components'
 import { toChecksumAddress } from '../../components/address/lib'
 import { LoadingScreen } from '../../components/loading/LoadingScreen'
 import { useBitcoinCoreContext, useSelectedWallet } from '../../Context'
 import { balanceToDisplay } from '../../lib/utils'
-import { NavigationProp } from '../../RootNavigation'
+import { RootStackNavigationProp } from 'navigation/rootNavigator/types'
 import { colors } from '../../styles'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
 import PortfolioComponent from './PortfolioComponent'
@@ -18,7 +16,7 @@ import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServices
 import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 
 export type HomeScreenProps = {
-  navigation: NavigationProp
+  navigation: RootStackNavigationProp
   changeTopColor: (color: string) => void
 }
 
@@ -69,7 +67,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       case 'RECEIVE':
         return navigation.navigate('Receive' as any)
       case 'FAUCET':
-        let address = wallet?.smartWallet.smartWalletContract.address
+        const address = wallet?.smartWallet.smartWalletContract.address
         addBalance(toChecksumAddress(address, chainId))
         return
     }
@@ -82,30 +80,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           network: selected,
         } as any)
       case 'SEND':
-        return navigation.navigate('SendBitcoin', {
-          network: selected,
+        return navigation.navigate('Send', {
+          token: selected?.symbol,
+          contractAddress: selected?.contractAddress,
         } as any)
     }
   }
 
   const addBalance = (address: string) => {
-    const ramp = new RampSdk({
-      // for testnet:
-      // url: 'https://ri-widget-staging.firebaseapp.com/',
-      url: 'https://ri-widget-staging.web.app/',
-
-      // for IOV:
-      swapAsset: 'RSK_RDOC',
-      // userAddress must be lowercase or checksummed correctly:
-      userAddress: address,
-
-      // for the dapp:
-      hostAppName: 'Ramp POC',
-      hostLogoUrl: 'https://rampnetwork.github.io/assets/misc/test-logo.png',
-    })
-
-    ramp.on('*', e => console.log(e))
-    ramp.show()
+    console.log('temporarly removed', address)
   }
 
   // pass the new color to Core to update header:

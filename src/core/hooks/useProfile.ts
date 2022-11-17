@@ -5,7 +5,7 @@ import {
   hasProfile,
   IProfileStore,
   saveProfile,
-} from '../../storage/ProfileStore'
+} from '../../storage/MainStorage'
 
 export const emptyProfile = {
   alias: '',
@@ -21,21 +21,19 @@ export function useProfile(initProfile?: IProfileStore) {
   const profileCreated = profile !== emptyProfile
 
   useEffect(() => {
-    hasProfile().then(r => {
-      if (r) {
-        getProfile().then(setProfile)
-      } else {
-        setProfile(initProfile || emptyProfile)
-      }
-    })
+    if (hasProfile()) {
+      setProfile(getProfile())
+    } else {
+      setProfile(initProfile || emptyProfile)
+    }
   }, [])
   const storeProfile = async (newProfile: IProfileStore) => {
     setProfile(newProfile)
-    await saveProfile(newProfile)
+    saveProfile(newProfile)
   }
 
   const eraseProfile = async () => {
-    await deleteProfile()
+    deleteProfile()
     setProfile(emptyProfile)
   }
 

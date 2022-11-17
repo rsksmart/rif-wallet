@@ -1,6 +1,7 @@
 import EventEmitter from 'events'
 import { io } from 'socket.io-client'
 import { enhanceTransactionInput } from '../../screens/activity/ActivityScreen'
+import { MMKVStorage } from '../../storage/MMKVStorage'
 import { IActivityTransaction } from '../../subscriptions/types'
 import { IAbiEnhancer } from '../abiEnhancer/AbiEnhancer'
 import { RIFWallet } from '../core'
@@ -18,7 +19,7 @@ export interface IServiceInitEvent {
 }
 
 export interface IRifWalletServicesSocket extends EventEmitter {
-  connect: (wallet: RIFWallet) => Promise<void>
+  connect: (wallet: RIFWallet, encryptionKey: string) => Promise<void>
 
   disconnect(): void
   isConnected(): boolean
@@ -48,18 +49,26 @@ export class RifWalletServicesSocket
     this.rifWalletServicesUrl = rifWalletServicesUrl
   }
 
-  private async init(wallet: RIFWallet) {
+  private async init(wallet: RIFWallet, encryptionKey: string) {
+    const cache = new MMKVStorage('txs', encryptionKey)
     const fetchedTransactions = await this.fetcher.fetchTransactionsByAddress(
       wallet.smartWalletAddress,
     )
 
     const activityTransactions = await Promise.all<IActivityTransaction[]>(
       fetchedTransactions.data.map(async (tx: IApiTransaction) => {
+        if (cache.has(tx.hash)) {
+          return {
+            originTransaction: tx,
+            enhancedTransaction: cache.get(tx.hash),
+          }
+        }
         const enhancedTransaction = await enhanceTransactionInput(
           tx,
           wallet,
           this.abiEnhancer,
         )
+        cache.set(tx.hash, enhancedTransaction)
         return {
           originTransaction: tx,
           enhancedTransaction,
@@ -77,9 +86,9 @@ export class RifWalletServicesSocket
     })
   }
 
-  async connect(wallet: RIFWallet) {
+  async connect(wallet: RIFWallet, encriptionKey: string) {
     try {
-      await this.init(wallet)
+      await this.init(wallet, encriptionKey)
 
       const socket = io(this.rifWalletServicesUrl, {
         path: '/ws',

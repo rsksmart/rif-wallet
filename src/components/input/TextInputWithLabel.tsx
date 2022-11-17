@@ -1,61 +1,69 @@
 import React from 'react'
-import { StyleSheet, TextInput, View } from 'react-native'
+import {
+  StyleProp,
+  StyleSheet,
+  TextInputProps,
+  TextStyle,
+  View,
+  ViewStyle,
+} from 'react-native'
 import { colors } from '../../styles'
-import { fonts } from '../../styles/fonts'
+import { BaseInputStatus } from '../shared'
 import { RegularText } from '../typography'
+import { BaseInput } from './BaseInput'
 
-interface TextInputInterface {
+interface Props {
   label: string
-  placeholder?: string
-  testID?: string
-  value: string
-  setValue: (value: string) => void
-  multiline?: boolean
-  inputStyle?: any
+  style?: StyleProp<ViewStyle>
+  inputStyle?: StyleProp<TextStyle>
+  setValue?: (value: string) => void
+  suffix?: string
+  status?: BaseInputStatus
+  optional?: boolean
 }
 
-export const TextInputWithLabel: React.FC<TextInputInterface> = ({
+export const TextInputWithLabel: React.FC<TextInputProps & Props> = ({
   label,
-  placeholder,
-  testID,
-  value,
-  setValue,
-  multiline,
+  style,
   inputStyle,
+  setValue,
+  suffix = '',
+  status = BaseInputStatus.NONE,
+  optional = false,
+  ...params
 }) => {
-  const inputStyles = inputStyle
-    ? { ...inputStyle, ...styles.input }
-    : styles.input
   return (
-    <View>
-      <RegularText style={styles.label}>{label}</RegularText>
-      <TextInput
-        testID={testID}
+    <View style={style}>
+      <View style={styles.labelView}>
+        <RegularText style={styles.label}>{label}</RegularText>
+        <RegularText style={styles.optional}>
+          {optional ? 'optional' : ''}
+        </RegularText>
+      </View>
+      <BaseInput
         accessibilityLabel="nameInput"
-        style={inputStyles}
-        onChangeText={setValue}
-        value={value}
-        placeholder={placeholder}
-        placeholderTextColor={colors.text.secondary}
-        multiline={multiline || false}
-        textAlignVertical="top"
+        inputStyle={inputStyle}
+        setValue={setValue}
+        status={status}
+        suffix={suffix}
+        {...params}
       />
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  label: {
-    color: colors.white,
-    paddingLeft: 5,
-    paddingBottom: 10,
+  labelView: {
+    flexDirection: 'row',
   },
-  input: {
-    color: colors.text.primary,
-    fontFamily: fonts.regular,
-    backgroundColor: colors.darkPurple4,
-    borderRadius: 15,
-    padding: 20,
-    marginBottom: 20,
+  label: {
+    color: colors.lightPurple,
+    paddingLeft: 5,
+  },
+  optional: {
+    fontStyle: 'italic',
+    color: colors.lightPurple,
+    paddingLeft: 5,
+    opacity: 0.5,
   },
 })

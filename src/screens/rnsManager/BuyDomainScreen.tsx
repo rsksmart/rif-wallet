@@ -4,27 +4,29 @@ import { BigNumber, utils } from 'ethers'
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import moment from 'moment'
 
-import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { colors } from '../../styles'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
-import { PurpleButton } from '../../components/button/ButtonVariations'
+import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
 
-import { ScreenProps } from '../../RootNavigation'
+import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { ScreenWithWallet } from '../types'
 import { MediumText } from '../../components'
 import addresses from './addresses.json'
 import TitleStatus from './TitleStatus'
 import { TokenImage } from '../home/TokenImage'
+import { AvatarIcon } from '../../components/icons/AvatarIcon'
 
 type Props = {
   route: any
 }
 
 export const BuyDomainScreen: React.FC<
-  ScreenProps<'BuyDomain'> & ScreenWithWallet & Props
+  RootStackScreenProps<'BuyDomain'> & ScreenWithWallet & Props
 > = ({ wallet, navigation, route }) => {
   const { alias, domainSecret, duration } = route.params
+  const fullAlias = alias + '.rsk'
 
   const expiryDate = moment(moment(), 'MM-DD-YYYY').add(duration, 'years')
 
@@ -51,6 +53,7 @@ export const BuyDomainScreen: React.FC<
       })
     }
   }, [])
+
   const registerDomain = async (domain: string) => {
     try {
       const durationToRegister = BigNumber.from(2)
@@ -102,9 +105,9 @@ export const BuyDomainScreen: React.FC<
                 ${domainFiatPrice}
               </MediumText>
               <View style={styles.rifTokenImageContainer}>
-                <MediumText style={styles.rifTokenImage}>
-                  <TokenImage symbol={'RIF'} height={20} width={20} />
-                </MediumText>
+                <View style={styles.assetIcon}>
+                  <TokenImage symbol={'RIF'} height={22} width={25} />
+                </View>
                 <MediumText style={styles.priceLabel}>
                   {utils.formatUnits(domainPrice, 18)}
                 </MediumText>
@@ -112,10 +115,8 @@ export const BuyDomainScreen: React.FC<
             </>
           )}
           <View style={rnsManagerStyles.profileImageContainer}>
-            <Image
-              style={rnsManagerStyles.profileImage}
-              source={require('../../images/image_place_holder.jpeg')}
-            />
+            <AvatarIcon value={fullAlias} size={80} />
+
             <View>
               <MediumText style={rnsManagerStyles.profileDisplayAlias}>
                 {alias}.rsk
@@ -133,7 +134,7 @@ export const BuyDomainScreen: React.FC<
 
         <View style={rnsManagerStyles.bottomContainer}>
           {!registerInProcess && (
-            <PurpleButton
+            <PrimaryButton2
               onPress={() => registerDomain(alias)}
               accessibilityLabel="buy"
               title={`buy for $${domainFiatPrice}`}
@@ -161,13 +162,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 10,
   },
-  rifTokenImage: {
+  assetIcon: {
+    alignSelf: 'center',
+    overflow: 'hidden',
     backgroundColor: colors.white,
-    borderRadius: 15,
-    height: 30,
-    width: 30,
-    padding: 5,
-    marginRight: 5,
-    marginTop: 3,
+    borderRadius: 18,
+    padding: 6,
+    marginRight: 10,
   },
 })

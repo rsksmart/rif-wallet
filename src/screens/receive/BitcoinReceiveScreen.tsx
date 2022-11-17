@@ -3,6 +3,7 @@ import { Loading } from '../../components'
 import { useSelectedWallet } from '../../Context'
 import { getDomains } from '../../storage/DomainsStore'
 import { ReceiveScreen } from './ReceiveScreen'
+import { shortAddress } from '../../lib/utils'
 
 const BitcoinReceiveScreen: React.FC<any> = ({
   route: {
@@ -15,7 +16,7 @@ const BitcoinReceiveScreen: React.FC<any> = ({
   const { wallet } = useSelectedWallet()
 
   useEffect(() => {
-    getDomains(wallet.smartWalletAddress).then(setRegisteredDomains)
+    setRegisteredDomains(getDomains(wallet.smartWalletAddress))
   }, [wallet])
 
   // In the future we must be able to select address type
@@ -25,11 +26,15 @@ const BitcoinReceiveScreen: React.FC<any> = ({
       .then((addressBackend: string) => setAddress(addressBackend))
   }, [])
 
+  const shortedAddress = React.useMemo(
+    () => shortAddress(address, 8),
+    [address],
+  )
   return address ? (
     <ReceiveScreen
       registeredDomains={registeredDomains}
       address={address}
-      displayAddress={address}
+      displayAddress={shortedAddress}
     />
   ) : (
     <Loading />

@@ -1,4 +1,3 @@
-import React from 'react'
 import { render } from '@testing-library/react-native'
 import { ShowMnemonicScreen, TestID } from './ShowMnemonicScreen'
 import { setupTest } from '../../../testLib/setup'

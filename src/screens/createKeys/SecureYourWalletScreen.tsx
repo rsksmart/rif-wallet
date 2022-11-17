@@ -1,17 +1,29 @@
 import React from 'react'
 import { StyleSheet, View, Image, TouchableOpacity, Text } from 'react-native'
-import { ScreenProps } from './types'
-import { colors } from '../../styles/colors'
+import { CreateKeysScreenProps } from '../../navigation/createKeysNavigator/types'
+import { colors } from '../../styles'
 
-import { grid } from '../../styles/grid'
+import { grid } from '../../styles'
 import { Arrow } from '../../components/icons'
 
 import { WINDOW_HEIGHT } from '../../ux/slides/Dimensions'
-import { BlueButton } from '../../components/button/ButtonVariations'
-
+import {
+  BlueButton,
+  DarkBlueButton,
+} from '../../components/button/ButtonVariations'
+import { RIFWallet } from '../../lib/core'
+import { saveKeyVerificationReminder } from '../../storage/MainStorage'
+type SecureYourWalletProps = {
+  mnemonic: string
+  createWallet: (mnemonic: string) => Promise<RIFWallet>
+}
 export const SecureYourWalletScreen: React.FC<
-  ScreenProps<'SecureYourWallet'>
-> = ({ navigation }) => {
+  CreateKeysScreenProps<'SecureYourWallet'> & SecureYourWalletProps
+> = ({ navigation, createWallet, mnemonic }) => {
+  const secureLater = async () => {
+    saveKeyVerificationReminder(true)
+    createWallet(mnemonic)
+  }
   return (
     <View style={styles.parent}>
       <TouchableOpacity onPress={() => navigation.navigate('CreateKeys')}>
@@ -40,11 +52,19 @@ export const SecureYourWalletScreen: React.FC<
           </Text>
         </View>
       </View>
-      <View style={{ ...grid.row, ...styles.button1 }}>
+
+      <View style={{ ...grid.row, ...styles.section }}>
         <BlueButton
-          accessibilityLabel="secureNow"
           onPress={() => navigation.navigate('SecurityExplanation')}
+          accessibilityLabel="secureNow"
           title={'secure now'}
+        />
+      </View>
+      <View style={{ ...grid.row, ...styles.section }}>
+        <DarkBlueButton
+          onPress={secureLater}
+          accessibilityLabel="secureLater"
+          title={'secure later'}
         />
       </View>
       {/*
@@ -94,7 +114,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.lightPurple,
-    marginBottom: 10,
+    marginBottom: 30,
   },
 
   securitySafeImage: {
@@ -105,17 +125,5 @@ const styles = StyleSheet.create({
   section: {
     alignSelf: 'center',
     marginVertical: 5,
-  },
-  button1: {
-    position: 'absolute',
-    bottom: 0,
-    alignSelf: 'center',
-    marginVertical: 95,
-  },
-  button2: {
-    position: 'absolute',
-    bottom: 0,
-    alignSelf: 'center',
-    marginVertical: 30,
   },
 })

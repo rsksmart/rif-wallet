@@ -1,4 +1,3 @@
-import React from 'react'
 import { Share } from 'react-native'
 
 import { fireEvent, render, RenderAPI } from '@testing-library/react-native'

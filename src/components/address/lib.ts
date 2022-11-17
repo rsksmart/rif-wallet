@@ -13,6 +13,14 @@ export enum AddressValidationMessage {
 }
 
 /**
+ * This will validate if the text is a valid RNS Domain (matches *.rsk)
+ * @param text
+ */
+export const isDomain = (text: string) => {
+  const re = /\.rsk$/ // match *.rsk domains
+  return re.test(String(text).toLowerCase())
+}
+/**
  * validate addresses according to rskip-60
  * https://github.com/rsksmart/RSKIPs/blob/master/IPs/RSKIP60.md
  * @param {string} address to validate
@@ -20,9 +28,7 @@ export enum AddressValidationMessage {
  * @returns {string} null if it's valid and an error message if it is not
  */
 export const validateAddress = (address: string, chainId = 31) => {
-  const re = /\.rsk$/ // match *.rsk domains
-  const isDomain = re.test(String(address).toLowerCase())
-  if (isDomain) {
+  if (isDomain(address)) {
     return AddressValidationMessage.DOMAIN
   }
 

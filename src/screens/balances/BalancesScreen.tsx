@@ -7,7 +7,10 @@ import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServices
 import { useTranslation } from 'react-i18next'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
 
-import { ScreenProps, NavigationProp } from '../../RootNavigation'
+import {
+  RootStackScreenProps,
+  RootStackNavigationProp,
+} from 'navigation/rootNavigator/types'
 import { Address, Button } from '../../components'
 import { ScreenWithWallet } from '../types'
 
@@ -33,7 +36,7 @@ export const BalancesRow = ({
   navigation,
 }: {
   token: ITokenWithBalance
-  navigation: NavigationProp
+  navigation: RootStackNavigationProp
 }) => (
   <View style={styles.tokenRow} testID={`${contractAddress}.View`}>
     <View style={styles.tokenBalance}>
@@ -58,7 +61,7 @@ export const BalancesRow = ({
 export type BalancesScreenProps = { fetcher: IRIFWalletServicesFetcher }
 
 export const BalancesScreen: React.FC<
-  ScreenProps<'Balances'> & ScreenWithWallet & BalancesScreenProps
+  RootStackScreenProps<'Balances'> & ScreenWithWallet & BalancesScreenProps
 > = ({ navigation, wallet }) => {
   const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(true)

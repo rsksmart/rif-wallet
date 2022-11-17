@@ -1,4 +1,3 @@
-import React from 'react'
 import { render, fireEvent } from '@testing-library/react-native'
 import { Text } from 'react-native'
 import BaseButton from './BaseButton'
@@ -50,7 +49,7 @@ describe('BaseButton component', () => {
       </BaseButton>,
     )
 
-    const click = () => fireEvent.press(getByTestId('button'))
-    expect(click).toThrow('No handler function found for event: "press"')
+    expect(fireEvent.press(getByTestId('button'))).toBeUndefined()
+    expect(onPressDisabled).toBeCalledTimes(0)
   })
 })

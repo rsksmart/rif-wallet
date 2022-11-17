@@ -8,7 +8,10 @@ import {
 } from 'react-native'
 import Carousel from 'react-native-snap-carousel'
 
-import { CreateKeysProps, ScreenProps } from '../types'
+import {
+  CreateKeysProps,
+  CreateKeysScreenProps,
+} from 'navigation/createKeysNavigator/types'
 import { Trans } from 'react-i18next'
 import { colors } from '../../../styles/colors'
 
@@ -22,12 +25,12 @@ import { validateMnemonic } from '../../../lib/bip39'
 
 interface ImportMasterKeyScreenProps {
   isKeyboardVisible: boolean
-  createFirstWallet: CreateKeysProps['createFirstWallet']
+  createWallet: CreateKeysProps['createFirstWallet']
 }
 
 export const ImportMasterKeyScreen: React.FC<
-  ScreenProps<'ImportMasterKey'> & ImportMasterKeyScreenProps
-> = ({ navigation, createFirstWallet, isKeyboardVisible }) => {
+  CreateKeysScreenProps<'ImportMasterKey'> & ImportMasterKeyScreenProps
+> = ({ navigation, createWallet, isKeyboardVisible }) => {
   const slidesIndexes = [0, 1, 2, 3]
 
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
@@ -39,7 +42,7 @@ export const ImportMasterKeyScreen: React.FC<
     const mnemonicError = validateMnemonic(selectedWords.join(' '))
     if (!mnemonicError) {
       try {
-        await createFirstWallet(selectedWords.join(' '))
+        await createWallet(selectedWords.join(' '))
       } catch (err) {
         console.error(err)
         setError(

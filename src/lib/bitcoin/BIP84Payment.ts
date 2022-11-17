@@ -1,32 +1,33 @@
-import { HDSigner, payments, Psbt } from 'bitcoinjs-lib'
+import { payments } from 'bitcoinjs-lib'
+import {
+  HDSigner,
+  IPayment,
+  Network,
+  NetworkInfoType,
+  Psbt,
+  TransactionInputType,
+  UnspentTransactionType,
+} from './types'
 
-export type UnspentTransactionType = {
-  txid: string
-  vout: number
-  value: string
-  path: string
-  address: string
-}
-
-class BIP84Payment {
+class BIP84Payment implements IPayment {
   bip32root!: HDSigner
-  networkInfo: any
-  constructor(bip32root: HDSigner, networkInfo: any) {
+  networkInfo: NetworkInfoType
+  constructor(bip32root: HDSigner, networkInfo: NetworkInfoType) {
     this.bip32root = bip32root
     this.networkInfo = networkInfo
   }
-  generateHexPayment(
+  generatePayment(
     amountToPay: number,
     addressToPay: string,
     unspentTransactions: Array<UnspentTransactionType>,
     miningFee: number,
   ) {
     let amount: number = amountToPay + miningFee
-    const psbt = new Psbt({ network: this.networkInfo })
+    const psbt = new Psbt({ network: this.networkInfo as Network })
     for (const transaction of unspentTransactions) {
       amount = amount - Number(transaction.value)
       const transactionWithInput = this.createTransactionInput(transaction)
-      psbt.addInput(transactionWithInput.input as any)
+      psbt.addInput(transactionWithInput.input)
       if (amount <= 0) {
         break
       }
@@ -42,20 +43,27 @@ class BIP84Payment {
       address: addressToPay,
       value: amountToPay,
     })
-    psbt.signAllInputsHD(this.bip32root)
-    psbt.finalizeAllInputs()
-    return psbt.extractTransaction().toHex().toString()
+    return psbt
   }
 
+  signPayment(psbt: Psbt) {
+    psbt.signAllInputsHD(this.bip32root)
+    psbt.finalizeAllInputs()
+    return psbt
+  }
+
+  convertPaymentToHexString(psbt: Psbt) {
+    return psbt.extractTransaction().toHex().toString()
+  }
   createTransactionInput(transaction: UnspentTransactionType) {
     const path = transaction.path
     const derived = this.bip32root.derivePath(path)
     const payment = payments.p2wpkh({
-      network: this.networkInfo,
+      network: this.networkInfo as Network,
       pubkey: derived.publicKey,
     })
-    const hexoutput = payment.output
-    const input = {
+    const hexoutput = payment.output as Buffer
+    const input: TransactionInputType = {
       hash: transaction.txid,
       index: transaction.vout,
       witnessUtxo: {

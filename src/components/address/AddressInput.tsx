@@ -1,15 +1,14 @@
 import Clipboard from '@react-native-community/clipboard'
-import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, TextInput, View } from 'react-native'
-
-import { ContentPasteIcon, QRCodeIcon } from '../icons'
-
 import { isValidChecksumAddress } from '@rsksmart/rsk-utils'
+import React, { useEffect, useState } from 'react'
+import { Text, TextInput, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { rnsResolver } from '../../core/setup'
+import { decodeString } from '../../lib/eip681/decodeString'
 import { colors, grid } from '../../styles'
-import { OutlineButton } from '../button/ButtonVariations'
+import { SecondaryButton2 } from '../button/SecondaryButton2'
+import { ContentPasteIcon, QRCodeIcon } from '../icons'
 import DeleteIcon from '../icons/DeleteIcon'
 import { QRCodeScanner } from '../QRCodeScanner'
 import {
@@ -17,6 +16,7 @@ import {
   toChecksumAddress,
   validateAddress,
 } from './lib'
+import { sharedAddressStyles as styles } from './sharedAddressStyles'
 
 type AddressInputProps = {
   initialValue: string
@@ -57,12 +57,15 @@ export const AddressInput: React.FC<AddressInputProps> = ({
 
   const handleChangeText = (inputText: string) => {
     setStatus({ type: 'READY', value: '' })
-    setRecipient(inputText)
 
-    const newValidationMessage = validateAddress(inputText, chainId)
+    const parsedString = decodeString(inputText)
+    const userInput = parsedString.address ? parsedString.address : inputText
+
+    setRecipient(userInput)
+    const newValidationMessage = validateAddress(userInput, chainId)
 
     onChangeText(
-      inputText,
+      userInput,
       newValidationMessage === AddressValidationMessage.VALID,
     )
 
@@ -78,9 +81,9 @@ export const AddressInput: React.FC<AddressInputProps> = ({
         })
 
         rnsResolver
-          .addr(inputText)
+          .addr(userInput)
           .then((address: string) => {
-            setDomainFound(inputText)
+            setDomainFound(userInput)
             setAddressResolved(address)
             setStatus({
               type: 'INFO',
@@ -112,7 +115,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
           type: 'ERROR',
           value: 'Invalid address',
         })
-        onChangeText(inputText, false)
+        onChangeText(userInput, false)
         break
     }
   }
@@ -223,7 +226,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
             {status.value}
           </Text>
           {status.type === 'CHECKSUM' && (
-            <OutlineButton
+            <SecondaryButton2
               testID={`${testID}.Button.Checksum`}
               title="Convert to correct checksum"
               onPress={() =>
@@ -239,66 +242,3 @@ export const AddressInput: React.FC<AddressInputProps> = ({
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  parent: {},
-  iconColumn: {
-    alignItems: 'flex-end',
-  },
-  rnsDomainContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 15,
-    backgroundColor: colors.lightGray,
-    borderRadius: 15,
-  },
-  rnsDomainName: {
-    fontWeight: 'bold',
-    fontSize: 15,
-    marginBottom: 3,
-  },
-  rnsDomainUnselect: {
-    margin: 3,
-  },
-  rnsDomainAddress: {
-    marginLeft: 4,
-    fontSize: 11,
-  },
-  inputContainer: {
-    backgroundColor: colors.darkPurple5,
-    borderRadius: 15,
-    display: 'flex',
-    flexDirection: 'row',
-    width: '100%',
-    padding: 20,
-  },
-  input: {
-    flex: 5,
-    fontSize: 16,
-    fontWeight: '400',
-    color: colors.white,
-  },
-  button: {
-    flex: 1,
-    paddingHorizontal: 5,
-    justifyContent: 'center',
-  },
-  clearButtonView: {
-    backgroundColor: colors.background.secondary,
-    borderRadius: 30,
-    padding: 2,
-  },
-  clearButton: {
-    color: colors.lightPurple,
-  },
-  info: {
-    marginTop: 5,
-    paddingHorizontal: 10,
-    color: '#999',
-  },
-  error: {
-    marginTop: 5,
-    paddingHorizontal: 10,
-    color: colors.orange,
-  },
-})

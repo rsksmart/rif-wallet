@@ -8,7 +8,10 @@ import {
 } from 'react-native'
 import Carousel from 'react-native-snap-carousel'
 
-import { CreateKeysProps, ScreenProps } from '../types'
+import {
+  CreateKeysProps,
+  CreateKeysScreenProps,
+} from '../../../navigation/createKeysNavigator/types'
 import { Trans } from 'react-i18next'
 import { colors } from '../../../styles/colors'
 
@@ -17,15 +20,16 @@ import { SLIDER_WIDTH, WINDOW_WIDTH } from '../../../ux/slides/Dimensions'
 import { PaginationNavigator } from '../../../components/button/PaginationNavigator'
 import { WordSelector } from './WordSelector'
 import { sharedMnemonicStyles } from './styles'
+import { saveKeyVerificationReminder } from '../../../storage/MainStorage'
 
 interface ConfirmMasterKeyScreenProps {
   isKeyboardVisible: boolean
-  createFirstWallet: CreateKeysProps['createFirstWallet']
+  createWallet: CreateKeysProps['createFirstWallet']
 }
 
 export const ConfirmNewMasterKeyScreen: React.FC<
-  ScreenProps<'ConfirmNewMasterKey'> & ConfirmMasterKeyScreenProps
-> = ({ route, navigation, createFirstWallet, isKeyboardVisible }) => {
+  CreateKeysScreenProps<'ConfirmNewMasterKey'> & ConfirmMasterKeyScreenProps
+> = ({ route, navigation, createWallet, isKeyboardVisible }) => {
   const mnemonic = route.params.mnemonic
   const slidesIndexes = Array.from(
     { length: Math.ceil(mnemonic.split(' ').length / 3) },
@@ -42,9 +46,9 @@ export const ConfirmNewMasterKeyScreen: React.FC<
     if (selectedWords.join() !== mnemonicWords.join()) {
       return setError(true)
     }
-
     setError(false)
-    await createFirstWallet(mnemonic)
+    saveKeyVerificationReminder(false)
+    await createWallet(mnemonic)
   }
 
   const handleWordSelected = (wordSelected: string, index: number) => {

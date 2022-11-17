@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { getContacts, saveContacts } from '../../storage/ContactsStore'
+import { getContacts, saveContacts } from '../../storage/MainStorage'
 import uuid from 'react-native-uuid'
 
 export interface IContact {
@@ -31,10 +31,8 @@ export const ContactsProviderElement: React.FC = ({ children }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
-    getContacts().then(value => {
-      setContacts(value ?? [])
-      setIsLoading(false)
-    })
+    setContacts(getContacts() ?? [])
+    setIsLoading(false)
   }, [])
 
   useEffect(() => {

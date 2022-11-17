@@ -1,5 +1,5 @@
 import React from 'react'
-import { ScreenProps } from '../../RootNavigation'
+import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5'
@@ -11,7 +11,7 @@ import DiscoverTuneIcon from '../../components/icons/DiscoverTuneIcon'
 import LockIcon from '../../components/icons/LockIcon'
 import AccountsIcon from '../../components/icons/AccountsIcon'
 
-export const SettingsScreen: React.FC<ScreenProps<'Settings'>> = ({
+export const SettingsScreen: React.FC<RootStackScreenProps<'Settings'>> = ({
   navigation,
 }) => {
   const smartWalletFactoryAddress = React.useMemo(
@@ -54,7 +54,7 @@ export const SettingsScreen: React.FC<ScreenProps<'Settings'>> = ({
           onPress={goToAccountsScreen}>
           <AccountsIcon width={18} height={18} />
           <SemiBoldText style={[styles.textColor, spacing.ml6]}>
-            Accounts
+            Account
           </SemiBoldText>
         </TouchableOpacity>
         <TouchableOpacity

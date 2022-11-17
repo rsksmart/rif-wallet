@@ -1,4 +1,4 @@
-import React from 'react'
+import { Component } from 'react'
 import GlobalErrorHandlerView from '../GlobalErrorHandler/GlobalErrorHandlerView'
 
 interface IErrorBoundaryProps {
@@ -9,7 +9,7 @@ interface IErrorBoundaryState {
   hasError: boolean
   message: string | undefined
 }
-class ErrorBoundary extends React.Component<
+class ErrorBoundary extends Component<
   IErrorBoundaryProps,
   IErrorBoundaryState
 > {

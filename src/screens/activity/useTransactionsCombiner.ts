@@ -3,13 +3,13 @@ import {
   IBitcoinTransaction,
   ActivityMixedType,
 } from './types'
-import React from 'react'
+import { useMemo } from 'react'
 
 export default function useTransactionsCombiner(
   rifTransactions: IActivityTransaction[],
   btcTransactions: (IBitcoinTransaction & { sortTime: number })[],
 ): ActivityMixedType[] {
-  return React.useMemo(() => {
+  return useMemo(() => {
     // If any of them changed, then merge
     return [
       ...rifTransactions.map(rifTransaction => ({

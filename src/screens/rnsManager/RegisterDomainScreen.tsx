@@ -8,7 +8,7 @@ import addresses from './addresses.json'
 
 import { ScreenWithWallet } from '../types'
 import { Button } from '../../components'
-import { ScreenProps } from '../../RootNavigation'
+import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { RSKRegistrar, AddrResolver } from '@rsksmart/rns-sdk'
 import { addDomain } from '../../storage/DomainsStore'
 import { getTokenColorWithOpacity } from '../home/tokenColor'
@@ -16,7 +16,7 @@ import { formatUnits } from 'ethers/lib/utils'
 import { ScrollView } from 'react-native-gesture-handler'
 
 export const RegisterDomainScreen: React.FC<
-  ScreenProps<'RegisterDomain'> & ScreenWithWallet
+  RootStackScreenProps<'RegisterDomain'> & ScreenWithWallet
 > = ({ wallet, route, navigation }) => {
   const { selectedDomain, years } = route.params
 

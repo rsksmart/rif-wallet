@@ -1,5 +1,6 @@
 import React from 'react'
-import PinContainer from './PinContainer'
+import { pinLength } from '../../shared/costants'
+import { PinContainer } from './PinContainer'
 import PinScreen from './PinScreen'
 import MessageComponent from './PinScreen/MessageComponent'
 import { PinScreenType } from './PinScreen/PinScreen'
@@ -28,7 +29,7 @@ const PinManagerView: React.FC<
 export const PinManager: React.FC<Interface> = ({ title, handleSubmit }) => {
   return (
     <PinContainer
-      pinLength={4}
+      pinLength={pinLength}
       onPinSubmit={handleSubmit}
       PinScreenComponent={props => <PinManagerView title={title} {...props} />}
     />

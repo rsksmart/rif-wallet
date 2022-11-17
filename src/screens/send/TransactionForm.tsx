@@ -1,23 +1,25 @@
 import { toChecksumAddress } from '@rsksmart/rsk-utils'
 import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { AddressInput } from '../../components'
 import { Tabs } from '../../components/'
-import { BlueButton } from '../../components/button/ButtonVariations'
+import { AddressInputSelector } from '../../components/address/AddressInputSelector'
+import { TransferButton } from '../../components/button/TransferButton'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { colors, grid } from '../../styles'
 import { IActivityTransaction, IPrice } from '../../subscriptions/types'
 import AssetChooser from './AssetChooser'
 import { RecentTransactions } from './RecentTransactions'
-import SetAmountComponent from './SetAmountComponent'
+import { SetAmountHOCComponent } from './SetAmountHOCComponent'
+import { MixedTokenAndNetworkType } from './types'
+import { useTokenSelectedTabs } from './useTokenSelectedTabs'
 
 interface Interface {
   onConfirm: (
-    selectedToken: ITokenWithBalance,
+    selectedToken: MixedTokenAndNetworkType,
     amount: string,
     to: string,
   ) => void
-  tokenList: ITokenWithBalance[]
+  tokenList: MixedTokenAndNetworkType[]
   tokenPrices: Record<string, IPrice>
   chainId: number
   initialValues: {
@@ -26,6 +28,12 @@ interface Interface {
     recipient?: string
   }
   transactions: IActivityTransaction[]
+  onTokenSelected?: (tokenSelected: MixedTokenAndNetworkType) => void
+}
+
+interface txDetail {
+  value: string
+  isValid: boolean
 }
 
 const TransactionForm: React.FC<Interface> = ({
@@ -35,16 +43,14 @@ const TransactionForm: React.FC<Interface> = ({
   tokenPrices,
   transactions,
   onConfirm,
+  onTokenSelected,
 }) => {
-  const [selectedToken, setSelectedToken] = useState<ITokenWithBalance>(
+  const [selectedToken, setSelectedToken] = useState<MixedTokenAndNetworkType>(
     initialValues.asset || tokenList[0],
   )
-  const [activeTab, setActiveTab] = useState('address')
 
-  interface txDetail {
-    value: string
-    isValid: boolean
-  }
+  const [activeTab, setActiveTab] = useState('address')
+  const { tabs } = useTokenSelectedTabs(selectedToken, setActiveTab)
 
   const [amount, setAmount] = useState<txDetail>({
     value: initialValues.amount || '0',
@@ -80,24 +86,33 @@ const TransactionForm: React.FC<Interface> = ({
   const handleConfirmClick = () =>
     onConfirm(selectedToken, amount.value, to.value)
 
+  const onTokenSelect = React.useCallback((token: MixedTokenAndNetworkType) => {
+    setSelectedToken(oldToken => {
+      // Reset address when token type is changed
+      if ('isBitcoin' in oldToken === !('isBitcoin' in token)) {
+        handleTargetAddressChange('', false)
+      }
+      return token
+    })
+    if (onTokenSelected) {
+      onTokenSelected(token)
+    }
+  }, [])
   return (
     <View>
       <View style={{ ...grid.row, ...styles.section }}>
         <View style={grid.column12}>
           <Text style={styles.label}>asset</Text>
           <AssetChooser
-            selectedToken={selectedToken}
-            tokenList={tokenList}
-            handleTokenSelection={(token: ITokenWithBalance) =>
-              setSelectedToken(token)
-            }
+            selectedAsset={selectedToken}
+            assetList={tokenList}
+            onAssetSelected={onTokenSelect}
           />
         </View>
       </View>
       <View style={{ ...grid.row, ...styles.section }}>
         <View style={grid.column12}>
-          <Text style={styles.label}>amount</Text>
-          <SetAmountComponent
+          <SetAmountHOCComponent
             setAmount={handleAmountChange}
             token={selectedToken}
             usdAmount={tokenQuote}
@@ -107,28 +122,28 @@ const TransactionForm: React.FC<Interface> = ({
       <View>
         <Tabs
           title={'recipient'}
-          tabs={['address', 'recent', 'contact']}
+          tabs={tabs}
           selectedTab={activeTab}
           onTabSelected={setActiveTab}
         />
         {activeTab === 'address' && (
           <>
-            <AddressInput
+            <AddressInputSelector
               initialValue={to.value}
               onChangeText={handleTargetAddressChange}
               testID={'To.Input'}
               chainId={chainId}
+              token={selectedToken}
             />
             <View>
               <Text>{error}</Text>
             </View>
 
             <View style={styles.centerRow}>
-              <BlueButton
-                underlayColor={'red'}
+              <TransferButton
+                style={styles.button}
                 onPress={handleConfirmClick}
                 disabled={!isValidTransaction}
-                title="review"
               />
             </View>
           </>

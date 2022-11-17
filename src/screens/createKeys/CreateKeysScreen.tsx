@@ -3,7 +3,7 @@ import { Image, StyleSheet, View } from 'react-native'
 import { colors } from '../../styles/colors'
 import { MainSlide } from '../../ux/slides/MainSlide'
 import { SecondarySlide } from '../../ux/slides/SeconderySlide'
-import { ScreenProps } from './types'
+import { CreateKeysScreenProps } from '../../navigation/createKeysNavigator/types'
 
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import {
@@ -20,9 +20,9 @@ import {
 } from '../../ux/slides/Dimensions'
 
 const slidesIndexes = [0, 1, 2]
-export const CreateKeysScreen: React.FC<ScreenProps<'CreateKeys'>> = ({
-  navigation,
-}) => {
+export const CreateKeysScreen: React.FC<
+  CreateKeysScreenProps<'CreateKeys'>
+> = ({ navigation }) => {
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
 
   const renderItem = ({ item }: { item: number }) => {

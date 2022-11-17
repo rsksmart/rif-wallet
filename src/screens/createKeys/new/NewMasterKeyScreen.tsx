@@ -8,7 +8,10 @@ import {
 } from 'react-native'
 import Carousel from 'react-native-snap-carousel'
 
-import { CreateKeysProps, ScreenProps } from '../types'
+import {
+  CreateKeysProps,
+  CreateKeysScreenProps,
+} from '../../../navigation/createKeysNavigator/types'
 import { Trans } from 'react-i18next'
 import { colors } from '../../../styles/colors'
 
@@ -22,7 +25,7 @@ import { WordView } from './WordView'
 import { sharedMnemonicStyles } from './styles'
 
 export const NewMasterKeyScreen: React.FC<
-  ScreenProps<'NewMasterKey'> & CreateMasterKeyScreenProps
+  CreateKeysScreenProps<'NewMasterKey'> & CreateMasterKeyScreenProps
 > = ({ navigation, generateMnemonic }) => {
   const mnemonic = useMemo(generateMnemonic, [])
   const mnemonicArray = mnemonic.split(' ')

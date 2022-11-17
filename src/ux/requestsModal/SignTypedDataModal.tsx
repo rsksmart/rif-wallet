@@ -3,7 +3,7 @@ import { StyleSheet, View, ScrollView, Text } from 'react-native'
 
 import { SignTypedDataRequest } from '../../lib/core'
 
-import { sharedStyles } from './sharedStyles'
+import { sharedStyles } from '../../shared/styles'
 import { useTranslation } from 'react-i18next'
 import ReadOnlyField from './ReadOnlyField'
 import {

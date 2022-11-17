@@ -1,14 +1,12 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import { MainStorage } from './MainStorage'
 
 const getLastAddressIndexPrefix = (networkName: string, bipName: string) =>
   `${networkName}_${bipName}_LAST_ADDRESS_INDEX`
+
 // @todo implement abstraction when user wants to receive bitcoin
-const BitcoinNetworkAddressStore = {
-  getLastAddressUsedIndex: async (
-    networkName: string,
-    bipName: string,
-  ): Promise<number> => {
-    const lastAddress = await AsyncStorage.getItem(
+export const BitcoinNetworkAddressStore = {
+  getLastAddressUsedIndex: (networkName: string, bipName: string): number => {
+    const lastAddress = MainStorage.get(
       getLastAddressIndexPrefix(networkName, bipName),
     )
     if (!lastAddress) {
@@ -16,17 +14,15 @@ const BitcoinNetworkAddressStore = {
     }
     return parseInt(lastAddress, 10)
   },
-  saveLastAddressUsedIndex: async (
+  saveLastAddressUsedIndex: (
     networkName: string,
     bipName: string,
     index: number,
-  ): Promise<number> => {
-    await AsyncStorage.setItem(
+  ): number => {
+    MainStorage.set(
       getLastAddressIndexPrefix(networkName, bipName),
       index.toString(),
     )
     return index
   },
 }
-
-export default BitcoinNetworkAddressStore

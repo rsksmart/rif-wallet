@@ -1,15 +1,15 @@
-import React, { useState } from 'react'
-import { IProfileStore } from '../../storage/ProfileStore'
+import React, { useCallback, useState } from 'react'
 import { RegularText } from '../../components/typography'
-import { TextInput } from 'react-native-gesture-handler'
+import { IProfileStore } from '../../storage/ProfileStore'
 
-import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
-import { colors } from '../../styles'
-import { MediumText } from '../../components'
-import { PurpleButton } from '../../components/button/ButtonVariations'
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import { ScreenProps } from '../../RootNavigation'
+import { MediumText } from '../../components'
+import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
+import { TextInputWithLabel } from '../../components/input/TextInputWithLabel'
 import { emptyProfile } from '../../core/hooks/useProfile'
+import { RootStackScreenProps } from 'navigation/rootNavigator/types'
+import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
 
 export type CreateProfileScreenProps = {
@@ -20,7 +20,7 @@ export type CreateProfileScreenProps = {
   eraseProfile: () => Promise<void>
 }
 export const ProfileCreateScreen: React.FC<
-  ScreenProps<'ProfileCreateScreen'> & CreateProfileScreenProps
+  RootStackScreenProps<'ProfileCreateScreen'> & CreateProfileScreenProps
 > = ({ route, profile, setProfile, storeProfile, eraseProfile }) => {
   const navigation = route.params.navigation
   const editProfile = route.params.editProfile
@@ -33,6 +33,14 @@ export const ProfileCreateScreen: React.FC<
     await eraseProfile()
     navigation.navigate('Home')
   }
+
+  const onSetEmail = useCallback((email: string) => {
+    setLocalProfile(prev => ({ ...prev, email }))
+  }, [])
+
+  const onSetPhone = useCallback((phone: string) => {
+    setLocalProfile(prev => ({ ...prev, phone }))
+  }, [])
   return (
     <>
       <View style={styles.profileHeader}>
@@ -44,9 +52,11 @@ export const ProfileCreateScreen: React.FC<
         <MediumText style={styles.titleText}>
           {editProfile ? 'edit profile' : 'create profile'}
         </MediumText>
-        <TouchableOpacity onPress={() => deleteAlias()}>
-          <MaterialIcon name="delete" color="white" size={20} />
-        </TouchableOpacity>
+        {editProfile && (
+          <TouchableOpacity onPress={deleteAlias}>
+            <MaterialIcon name="delete" color="white" size={20} />
+          </TouchableOpacity>
+        )}
       </View>
       <View style={styles.container}>
         <View style={styles.profileImageContainer}>
@@ -63,7 +73,7 @@ export const ProfileCreateScreen: React.FC<
         {!profile?.alias && (
           <>
             <View style={styles.rowContainer}>
-              <PurpleButton
+              <PrimaryButton2
                 onPress={() => navigation.navigate('SearchDomain')}
                 accessibilityLabel="register new"
                 title={'register new'}
@@ -91,45 +101,27 @@ export const ProfileCreateScreen: React.FC<
         )}
 
         <View style={styles.rowContainer}>
-          <MediumText style={[styles.masterText, styles.textLeftMargin]}>
-            phone
-          </MediumText>
-
-          <TextInput
-            style={styles.input}
-            onChangeText={value =>
-              setLocalProfile({
-                ...localProfile,
-                phone: value,
-              })
-            }
+          <TextInputWithLabel
+            label="phone"
             value={localProfile?.phone}
-            placeholder=""
-            accessibilityLabel={'Phone.Input'}
-            placeholderTextColor={colors.gray}
+            setValue={onSetPhone}
+            placeholder="your phone number"
+            keyboardType="phone-pad"
+            optional={true}
           />
         </View>
         <View style={styles.rowContainer}>
-          <MediumText style={[styles.masterText, styles.textLeftMargin]}>
-            email
-          </MediumText>
-          <TextInput
-            style={styles.input}
-            onChangeText={value =>
-              setLocalProfile({
-                ...localProfile,
-                email: value,
-              })
-            }
+          <TextInputWithLabel
+            label="email"
             value={localProfile?.email}
-            placeholder=""
-            accessibilityLabel={'Email.Input'}
-            placeholderTextColor={colors.gray}
+            setValue={onSetEmail}
+            placeholder="your email"
+            optional={true}
           />
         </View>
         <View style={styles.rowContainer}>
-          <PurpleButton
-            onPress={() => createProfile()}
+          <PrimaryButton2
+            onPress={createProfile}
             accessibilityLabel="create"
             title={editProfile ? 'save' : 'create'}
             disabled={localProfile === emptyProfile}
@@ -152,13 +144,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 20,
     backgroundColor: colors.background.darkBlue,
-    //backgroundColor: 'red',
   },
   titleText: {
-    color: colors.white,
+    color: colors.lightPurple,
   },
   backButton: {
-    color: colors.white,
+    color: colors.lightPurple,
     backgroundColor: colors.blue2,
     borderRadius: 20,
     padding: 10,
@@ -172,20 +163,12 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 100,
   },
-  input: {
-    color: colors.text.primary,
-    fontFamily: fonts.regular,
-    backgroundColor: colors.darkPurple4,
-    borderRadius: 15,
-    padding: 20,
-    marginBottom: 20,
-  },
   textLeftMargin: {
     marginLeft: 10,
   },
   masterText: {
     marginBottom: 0,
-    color: colors.white,
+    color: colors.lightPurple,
   },
   rowContainer: {
     margin: 5,
@@ -207,6 +190,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   aliasText: {
-    color: colors.white,
+    color: colors.lightPurple,
   },
 })
