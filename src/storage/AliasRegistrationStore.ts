@@ -1,25 +1,24 @@
-import { createStore } from './NormalStore'
+import { MainStorage } from './MainStorage'
 
 const key = 'ALIAS_REGISTRATION'
-const ProfileRegistrationStore = createStore(key)
 export type IProfileRegistrationStore = {
   alias: string
   duration: number
   commitToRegisterHash: string
   commitToRegisterSecret: string
 }
-export const hasAliasRegistration = ProfileRegistrationStore.has
+export const hasAliasRegistration = () => MainStorage.has(key)
 
 export const getAliasRegistration = async () => {
-  const jsonProfile = (await ProfileRegistrationStore.has())
-    ? await ProfileRegistrationStore.get()
+  const jsonProfile = (await MainStorage.has(key))
+    ? await MainStorage.get(key)
     : '{}'
   const store: IProfileRegistrationStore = JSON.parse(jsonProfile || '{}')
   return store
 }
 
-export const deleteAliasRegistration = ProfileRegistrationStore.remove
+export const deleteAliasRegistration = () => MainStorage.delete(key)
 
 export const saveAliasRegistration = async (
   aliasRegistration: IProfileRegistrationStore,
-) => ProfileRegistrationStore.save(JSON.stringify(aliasRegistration))
+) => MainStorage.set(key, JSON.stringify(aliasRegistration))
