@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, Alert } from 'react-native'
 import { colors } from '../../styles'
 import { MediumText } from '../../components'
-import { ScreenProps } from '../../RootNavigation'
+import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { useTranslation } from 'react-i18next'
 import ActiveButton from '../../components/button/ActiveButton'
 import {
@@ -15,7 +15,7 @@ export type SecurityScreenProps = {
   deleteKeys: () => any
 }
 const SecurityConfigurationScreen: React.FC<
-  ScreenProps<'SecurityConfigurationScreen'> & SecurityScreenProps
+  RootStackScreenProps<'SecurityConfigurationScreen'> & SecurityScreenProps
 > = ({ navigation, deleteKeys }) => {
   const { t } = useTranslation()
 

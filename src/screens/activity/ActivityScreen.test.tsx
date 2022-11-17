@@ -1,5 +1,4 @@
 /* eslint-disable jest/no-disabled-tests */
-import React from 'react'
 import { render, act, waitFor, fireEvent } from '@testing-library/react-native'
 
 import { setupTest } from '../../../testLib/setup'

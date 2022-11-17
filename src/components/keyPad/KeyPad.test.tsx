@@ -1,4 +1,3 @@
-import React from 'react'
 import { render, fireEvent, RenderAPI } from '@testing-library/react-native'
 import { KeyPad } from './index'
 

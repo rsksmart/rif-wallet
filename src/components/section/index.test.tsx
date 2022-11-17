@@ -1,4 +1,3 @@
-import React from 'react'
 import { Section } from './index'
 import { render } from '@testing-library/react-native'
 import { Text } from 'react-native'

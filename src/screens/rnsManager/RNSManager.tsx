@@ -9,7 +9,7 @@ import { View, TextInput, Text } from 'react-native'
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
 
 import { ScreenWithWallet } from '../types'
-import { ScreenProps } from '../../RootNavigation'
+import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { getDomains } from '../../storage/DomainsStore'
 import { grid } from '../../styles'
 import { SquareButton } from '../../components/button/SquareButton'
@@ -26,7 +26,7 @@ type Props = {
 const years = 3
 
 export const RNSManagerScreen: React.FC<
-  ScreenProps<'RNSManager'> & ScreenWithWallet & Props
+  RootStackScreenProps<'RNSManager'> & ScreenWithWallet & Props
 > = ({ wallet, navigation, profile, setProfile }) => {
   const [domainToLookUp, setDomainToLookUp] = useState('')
   const [error, setError] = useState('')

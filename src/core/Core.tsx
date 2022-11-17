@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { SafeAreaView, StatusBar, StyleSheet } from 'react-native'
 import { AppContext } from '../Context'
 import { KeyManagementSystem, RIFWallet } from '../lib/core'
@@ -12,7 +12,10 @@ import {
   rnsResolver,
 } from './setup'
 
-import { RootNavigation, RootStackParamList } from '../RootNavigation'
+import {
+  RootNavigationComponent,
+  RootStackParamList,
+} from '../navigation/rootNavigator'
 import ModalComponent from '../ux/requestsModal/ModalComponent'
 
 import {
@@ -138,7 +141,7 @@ export const Core = () => {
                 rifServiceSocket={rifWalletServicesSocket}
                 abiEnhancer={abiEnhancer}
                 appActive={active}>
-                <RootNavigation
+                <RootNavigationComponent
                   currentScreen={currentScreen}
                   hasKeys={state.hasKeys}
                   hasPin={state.hasPin}

@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native'
 import { SignMessageRequest } from '../../lib/core/RIFWallet'
 import { useTranslation } from 'react-i18next'
 
-import { sharedStyles } from './sharedStyles'
+import { sharedStyles } from '../../shared/styles'
 import { ScrollView } from 'react-native-gesture-handler'
 import ReadOnlyField from './ReadOnlyField'
 import {

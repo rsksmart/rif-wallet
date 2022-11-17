@@ -1,4 +1,3 @@
-import * as React from 'react'
 import Svg, { SvgProps, G, Path, Defs, ClipPath } from 'react-native-svg'
 
 const ActivityIcon = (props: SvgProps) => (

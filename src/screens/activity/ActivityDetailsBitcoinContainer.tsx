@@ -1,4 +1,3 @@
-import React from 'react'
 import { ScrollView } from 'react-native-gesture-handler'
 import { TouchableOpacity, View } from 'react-native'
 import { Arrow, RefreshIcon } from '../../components/icons'

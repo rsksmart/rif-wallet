@@ -426,9 +426,7 @@ export const txTestCase: TransactionsServerResponse = {
 
 // @ts-ignore
 export const createMockFetcher = (): IRIFWalletServicesFetcher => ({
-  // eslint-disable-next-line no-undef
   fetchTokensByAddress: jest.fn(() => Promise.resolve([...testCase])),
-  // eslint-disable-next-line no-undef
   fetchTransactionsByAddress: jest.fn(() => Promise.resolve(txTestCase)),
 })
 

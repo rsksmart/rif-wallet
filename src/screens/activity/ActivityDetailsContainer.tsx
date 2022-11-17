@@ -12,7 +12,6 @@ import { utils } from 'ethers'
 import StatusIcon from '../../components/statusIcons'
 import ButtonCustom from '../../components/activity/ButtonCustom'
 import { SearchIcon } from '../../components/icons/SearchIcon'
-import React from 'react'
 import { IActivityTransaction } from './types'
 
 type ActivityDetailsContainer = {

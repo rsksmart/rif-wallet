@@ -7,7 +7,7 @@ import { OutlineButton } from '../../components/button/ButtonVariations'
 
 import { MediumText } from '../../components'
 import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
-import { ScreenProps } from '../../RootNavigation'
+import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { IProfileStore } from '../../storage/ProfileStore'
 import { ScreenWithWallet } from '../types'
 
@@ -18,7 +18,7 @@ type Props = {
 }
 
 export const AliasBoughtScreen: React.FC<
-  ScreenProps<'AliasBought'> & ScreenWithWallet & Props
+  RootStackScreenProps<'AliasBought'> & ScreenWithWallet & Props
 > = ({ profile, setProfile, navigation, route }) => {
   const { alias, tx } = route.params
 

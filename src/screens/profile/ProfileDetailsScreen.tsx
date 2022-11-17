@@ -5,7 +5,7 @@ import Clipboard from '@react-native-community/clipboard'
 
 import { View, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import { colors } from '../../styles'
-import { ScreenProps } from '../../RootNavigation'
+import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { MediumText } from '../../components'
 import { IProfileStore } from '../../storage/MainStorage'
 import { AvatarIcon } from '../../components/icons/AvatarIcon'
@@ -16,7 +16,7 @@ export type ProfileDetailsScreenProps = {
   profile: IProfileStore
 }
 export const ProfileDetailsScreen: React.FC<
-  ScreenProps<'ProfileDetailsScreen'> & ProfileDetailsScreenProps
+  RootStackScreenProps<'ProfileDetailsScreen'> & ProfileDetailsScreenProps
 > = ({ navigation, profile }) => {
   const fullAlias = `${profile.alias}.rsk`
   return (
