@@ -5,7 +5,7 @@ import {
   SubscriptionsProviderProps,
 } from './types'
 import React, { useContext, useEffect } from 'react'
-import { useSetGlobalError } from '../components/GlobalErrorHandler'
+import { useSetGlobalError } from 'components/GlobalErrorHandler'
 import { AppContext, useSelectedWallet } from '../Context'
 import { filterEnhancedTransactions, sortEnhancedTransactions } from './utils'
 import { loadRBTCBalance } from './loadRBTCBalance'
