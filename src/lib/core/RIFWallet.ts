@@ -151,7 +151,6 @@ export class RIFWallet extends Signer implements TypedDataSigner {
     }) as CreateDoRequestOnConfirm
   ) as (transactionRequest: TransactionRequest) => Promise<TransactionResponse>
 
-
   signMessage = this.createDoRequest(
     'signMessage',
     (([message]: [BytesLike]) => this.smartWallet.signer.signMessage(message)) as CreateDoRequestOnConfirm
