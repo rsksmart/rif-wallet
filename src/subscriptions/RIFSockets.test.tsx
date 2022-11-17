@@ -1,10 +1,13 @@
 import React from 'react'
 import { act, renderHook } from '@testing-library/react-hooks'
 import { RIFSocketsProvider, useSocketsState } from './RIFSockets'
+import { Provider, store } from 'store'
 
 describe('Live Subscriptions Context', () => {
   const wrapper = ({ children }: { children: React.ReactNode }) => (
-    <RIFSocketsProvider>{children}</RIFSocketsProvider>
+    <Provider store={store}>
+      <RIFSocketsProvider>{children}</RIFSocketsProvider>
+    </Provider>
   )
 
   describe('useSusbscription hook', () => {
