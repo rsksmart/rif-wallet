@@ -23,7 +23,10 @@ export { BuyDomainScreen } from './rnsManager/BuyDomainScreen'
 export { AliasBoughtScreen } from './rnsManager/AliasBoughtScreen'
 export { RegisterDomainScreen } from './rnsManager/RegisterDomainScreen'
 export { HomeScreen, HomeScreenProps } from './home/index'
-export { ContactsNavigationScreen, ContactsScreenProps } from './contacts/index'
+export {
+  ContactsNavigation,
+  ContactsStackScreenProps,
+} from '../navigation/contactsNavigator/index'
 export { SettingsScreen } from './settings/SettingsScreen'
 export { EventsScreenHOC as EventsScreen } from './events'
 export {

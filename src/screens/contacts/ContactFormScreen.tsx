@@ -1,30 +1,38 @@
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
+import { CompositeScreenProps } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { AddressInput } from '../../components'
 import { BlueButton } from '../../components/button/ButtonVariations'
 import {
-  RootStackNavigationProp,
+  rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
 import { colors, grid } from '../../styles'
 import { fonts } from '../../styles/fonts'
 import { setOpacity } from '../home/tokenColor'
 import { ContactsContext, IContact } from './ContactsContext'
+import { useSelectedWallet } from 'src/Context'
+import {
+  contactsStackRouteNames,
+  ContactsStackScreenProps,
+} from 'src/navigation/contactsNavigator'
 
-interface ContactFormScreenProps {
-  chainId: number
-  navigation: RootStackNavigationProp
-}
+type ContactFormScreenProps = CompositeScreenProps<
+  ContactsStackScreenProps<contactsStackRouteNames.ContactForm>,
+  RootStackScreenProps<rootStackRouteNames.Contacts>
+>
 
-export const ContactFormScreen: React.FC<
-  ContactFormScreenProps & RootStackScreenProps<'Contacts'>
-> = ({ navigation, chainId, route }) => {
-  const initialValue = (route.params?.initialValue ?? {
+export const ContactFormScreen = ({
+  navigation,
+  route,
+}: ContactFormScreenProps) => {
+  const { chainId = 31 } = useSelectedWallet()
+  const initialValue: Partial<IContact> = route.params?.initialValue ?? {
     name: '',
     address: '',
-  }) as IContact
+  }
 
   const { addContact, editContact } = useContext(ContactsContext)
   const [name, setName] = useState(initialValue.name)
@@ -50,7 +58,7 @@ export const ContactFormScreen: React.FC<
     } else {
       addContact(name, address.value, address.value)
     }
-    navigation.navigate('ContactsList' as never)
+    navigation.navigate(contactsStackRouteNames.ContactsList)
   }
 
   return (
@@ -59,7 +67,9 @@ export const ContactFormScreen: React.FC<
         <Icon.Button
           accessibilityLabel="backButton"
           name="arrow-back"
-          onPress={() => navigation.navigate('ContactsList' as never)}
+          onPress={() =>
+            navigation.navigate(contactsStackRouteNames.ContactsList)
+          }
           backgroundColor={colors.background.primary}
           color={colors.lightPurple}
           style={styles.backButton}

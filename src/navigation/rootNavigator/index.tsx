@@ -65,7 +65,6 @@ interface Props {
   activityScreenProps: Screens.ActivityScreenProps
   showMnemonicScreenProps: Screens.ShowMnemonicScreenProps
   sendScreenProps: RootStackScreenProps<'Send'>
-  contactsNavigationScreenProps: Screens.ContactsScreenProps
   walletConnectScreenProps: RootStackScreenProps<'WalletConnect'>
   accountsScreenType: Screens.AccountsScreenType
   securityConfigurationScreenProps: Screens.SecurityScreenProps
@@ -84,7 +83,6 @@ export const RootNavigationComponent = ({
   activityScreenProps,
   showMnemonicScreenProps,
   sendScreenProps,
-  contactsNavigationScreenProps,
   walletConnectScreenProps,
   accountsScreenType,
   securityConfigurationScreenProps,
@@ -289,14 +287,9 @@ export const RootNavigationComponent = ({
         </RootStack.Screen>
         <RootStack.Screen
           name={rootStackRouteNames.Contacts}
-          options={sharedOptions}>
-          {props => (
-            <Screens.ContactsNavigationScreen
-              {...props}
-              {...contactsNavigationScreenProps}
-            />
-          )}
-        </RootStack.Screen>
+          options={sharedOptions}
+          component={Screens.ContactsNavigation}
+        />
         <RootStack.Screen
           name={rootStackRouteNames.EventsScreen}
           component={Screens.EventsScreen}
