@@ -1,4 +1,4 @@
-import { Contract, constants, ContractTransaction, Signer } from 'ethers'
+import { Contract, constants, ContractTransaction, Signer, BigNumber } from 'ethers'
 import SmartWalletFactoryABI from './SmartWalletFactoryABI.json'
 
 interface ISmartWalletFactory {
@@ -48,4 +48,11 @@ export class SmartWalletFactory implements ISmartWalletFactory {
     constants.AddressZero,
     constants.Zero
   )
+
+  getNonce = async (owner:string): Promise<BigNumber> =>
+    this.smartWalletFactoryContract.nonce(owner)
+
+  get address(): string {
+    return this.smartWalletFactoryContract.address
+  }
 }
