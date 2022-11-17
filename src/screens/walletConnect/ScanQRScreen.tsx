@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 
 import { useNavigation } from '@react-navigation/native'
 import { QRCodeScanner } from '../../components/QRCodeScanner'

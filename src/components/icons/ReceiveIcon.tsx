@@ -1,4 +1,3 @@
-import React from 'react'
 import Svg, { SvgProps, Path, G, PathProps } from 'react-native-svg'
 
 // export this for Send and Faucet

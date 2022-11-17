@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
 import { RegularText } from '../../components/typography'
-import { sharedStyles } from './sharedStyles'
+import { sharedStyles } from '../../shared/styles'
 
 type IRealOnlyField = {
   label: string

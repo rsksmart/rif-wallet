@@ -1,4 +1,3 @@
-import React from 'react'
 import Svg, { SvgProps, Path, Circle } from 'react-native-svg'
 
 export const ModalIcon = (props: SvgProps) => (

@@ -10,7 +10,7 @@ import { rnsManagerStyles } from './rnsManagerStyles'
 import { MediumText } from '../../components'
 import { AvatarIcon } from '../../components/icons/AvatarIcon'
 import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
-import { ScreenProps } from '../../RootNavigation'
+import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import DomainLookUp from '../../screens/rnsManager/DomainLookUp'
 import { ScreenWithWallet } from '../types'
 import TitleStatus from './TitleStatus'
@@ -19,7 +19,7 @@ type Props = {
   route: any
 }
 export const SearchDomainScreen: React.FC<
-  ScreenProps<'SearchDomain'> & ScreenWithWallet & Props
+  RootStackScreenProps<'SearchDomain'> & ScreenWithWallet & Props
 > = ({ wallet, navigation }) => {
   const [domainToLookUp, setDomainToLookUp] = useState<string>('')
   const [validDomain, setValidDomain] = useState<boolean>(false)

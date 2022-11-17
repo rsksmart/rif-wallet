@@ -1,6 +1,10 @@
 import { StyleSheet } from 'react-native'
 
 export const sharedStyles = StyleSheet.create({
+  coverAllScreen: {
+    height: '100%',
+    backgroundColor: '#F5FCFF',
+  },
   centeredView: {
     flex: 1,
     justifyContent: 'center',

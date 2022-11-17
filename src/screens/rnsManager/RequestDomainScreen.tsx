@@ -11,7 +11,7 @@ import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
 
 import { MediumText } from '../../components'
 import { AvatarIcon } from '../../components/icons/AvatarIcon'
-import { ScreenProps } from '../../RootNavigation'
+import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { ScreenWithWallet } from '../types'
 import addresses from './addresses.json'
 import TitleStatus from './TitleStatus'
@@ -21,7 +21,7 @@ type Props = {
 }
 
 export const RequestDomainScreen: React.FC<
-  ScreenProps<'RequestDomain'> & ScreenWithWallet & Props
+  RootStackScreenProps<'RequestDomain'> & ScreenWithWallet & Props
 > = ({ wallet, navigation, route }) => {
   const { alias, duration } = route.params
   const fullAlias = alias + '.rsk'

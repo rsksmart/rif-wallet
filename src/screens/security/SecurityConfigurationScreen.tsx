@@ -2,20 +2,20 @@ import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, Alert } from 'react-native'
 import { colors } from '../../styles'
 import { MediumText } from '../../components'
-import { ScreenProps } from '../../RootNavigation'
+import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { useTranslation } from 'react-i18next'
 import ActiveButton from '../../components/button/ActiveButton'
 import {
   getKeyVerificationReminder,
   hasKeyVerificationReminder,
   saveKeyVerificationReminder,
-} from '../../storage/KeyVerificationReminderStore'
+} from '../../storage/MainStorage'
 
 export type SecurityScreenProps = {
-  deleteKeys: () => Promise<any>
+  deleteKeys: () => any
 }
 const SecurityConfigurationScreen: React.FC<
-  ScreenProps<'SecurityConfigurationScreen'> & SecurityScreenProps
+  RootStackScreenProps<'SecurityConfigurationScreen'> & SecurityScreenProps
 > = ({ navigation, deleteKeys }) => {
   const { t } = useTranslation()
 
@@ -34,20 +34,20 @@ const SecurityConfigurationScreen: React.FC<
         },
         {
           text: 'Delete',
-          onPress: () =>
-            deleteKeys().then(() => {
-              saveKeyVerificationReminder(false).then()
-              navigation.navigate('CreateKeysUX')
-            }),
+          onPress: () => {
+            deleteKeys()
+            saveKeyVerificationReminder(false)
+            navigation.navigate('CreateKeysUX')
+          },
         },
       ],
     )
   }
 
   async function checkReminder() {
-    const reminderIsSet = await hasKeyVerificationReminder()
+    const reminderIsSet = hasKeyVerificationReminder()
     if (reminderIsSet) {
-      const keyVerificationReminder = await getKeyVerificationReminder()
+      const keyVerificationReminder = getKeyVerificationReminder()
       setShowReminder(keyVerificationReminder)
     }
   }

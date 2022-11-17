@@ -1,19 +1,26 @@
-import { useNavigation } from '@react-navigation/core'
-
 import React from 'react'
 import { View, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import { AddressCopyComponent } from '../../components/copy/AddressCopyComponent'
 import { useSelectedWallet } from '../../Context'
 import { ProfileHandler } from './ProfileHandler'
 import { IProfileStore } from '../../storage/ProfileStore'
+import { navigationContainerRef } from '../../core/Core'
 
 export const AppHeader: React.FC<{
   profile: IProfileStore
   profileCreated: boolean
 }> = ({ profile, profileCreated }) => {
   const { wallet, chainId } = useSelectedWallet()
-  const navigation = useNavigation()
-  const openMenu = () => navigation.navigate('Settings' as any)
+
+  const openMenu = () => {
+    const navState = navigationContainerRef.getCurrentRoute()
+    if (navState && navState.name === 'Home') {
+      navigationContainerRef.navigate('Settings')
+    } else {
+      navigationContainerRef.navigate('Home')
+    }
+  }
+
   return (
     <View style={styles.row}>
       <View
@@ -22,7 +29,7 @@ export const AppHeader: React.FC<{
           ...styles.walletInfo,
         }}>
         <ProfileHandler
-          navigation={navigation}
+          navigation={navigationContainerRef}
           profile={profile}
           profileCreated={profileCreated}
         />

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { ScrollView, StyleSheet, View } from 'react-native'
 import { BigNumber } from 'ethers'
 import { useTranslation } from 'react-i18next'
@@ -7,7 +7,8 @@ import {
   OverriddableTransactionOptions,
   SendTransactionRequest,
 } from '../../lib/core'
-import { sharedStyles } from './sharedStyles'
+
+import { sharedStyles } from '../../shared/styles'
 import { Loading, Paragraph, RegularText } from '../../components'
 import { ScreenWithWallet } from '../../screens/types'
 import useEnhancedWithGas from './useEnhancedWithGas'

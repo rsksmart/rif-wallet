@@ -1,7 +1,7 @@
 <p align="middle">
   <img src="https://www.rifos.org/assets/img/logo.svg" alt="logo" height="100" >
 </p>
-<h3 align="middle"><code>sWallet</code></h3>
+<h3 align="middle"><code>RIF Wallet</code></h3>
 <p align="middle">
   Smart Wallet for RSK.
 </p>
@@ -9,23 +9,25 @@
   <a href="https://github.com/rsksmart/swallet/actions/workflows/ci.yml">
     <img src="https://github.com/rsksmart/swallet/actions/workflows/ci.yml/badge.svg" alt="npm" />
   </a>
-  <a href="https://lgtm.com/projects/g/rsksmart/swallet/alerts/">
-    <img src="https://img.shields.io/lgtm/alerts/github/rsksmart/swallet" alt="Alerts">
-  </a>
-  <a href="https://lgtm.com/projects/g/rsksmart/swallet/context:javascript">
-    <img src="https://img.shields.io/lgtm/grade/javascript/github/rsksmart/swallet" alt="Code Quality">
-  </a>
 </p>
 
 ## Install and setup
 
 - [Setup your enviornment using the official instructions](https://reactnative.dev/docs/environment-setup)
+  - Use the 'React Native CLI Quickstart' tabs not the 'Expo' tabs.
+  - Follow the instructions explicitly as a small deviation can cause it to fail.
 - Install the dependecies using yarn. This will also run the postinstall script that shims the missing packages: `yarn`
-- Run the app:
+  - The postinstall script runs the `rn-nodeify` package which adds packages that are native to the browser but not to react native.
+  - For **iOS** you need to run the additional installation steps: `cd ios` and then `pod install`
+- Run the app using the desired platform:
   - `yarn ios`
   - `yarn android`
 
-### Run with local services
+## Troubleshooting
+
+When you encounter errors running the app, please run `yarn clean:ios` or `yarn clean:android` first. This will clear the cache and reinstall the native dependecies. When running the iOS command, if you get the error `Could not delete [...]/build' because it was not created by the build system.` delete the build folder manually.
+
+## Run with local services
 
 See [`@rsksmart/rif-wallet-services`](https://github.com/rsksmart/rif-wallet-services) to run RIF Wallet Services. You can then use
 
@@ -39,6 +41,8 @@ You can build your own configuration and run
 ```
 ENVFILE=.env.custom react-native run-ios
 ```
+
+You do not need to run the server to run the RIF Wallet app.
 
 ## Folder Structure
 

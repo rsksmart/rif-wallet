@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import { View, StyleSheet } from 'react-native'
 import { MediumText } from '../typography'
 import { spacing } from '../../styles'

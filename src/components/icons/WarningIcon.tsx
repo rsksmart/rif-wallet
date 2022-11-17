@@ -1,5 +1,4 @@
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import React from 'react'
 import { MaterialIconInterface } from '.'
 
 const WarningIcon = (props?: MaterialIconInterface) => (

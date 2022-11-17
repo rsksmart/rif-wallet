@@ -31,7 +31,6 @@ export const setupTest = async (
   return {
     rifWallet,
     navigation: {
-      // eslint-disable-next-line no-undef
       navigate: jest.fn(),
     },
     route: {} as any,

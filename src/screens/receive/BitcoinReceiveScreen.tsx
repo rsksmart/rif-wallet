@@ -16,7 +16,7 @@ const BitcoinReceiveScreen: React.FC<any> = ({
   const { wallet } = useSelectedWallet()
 
   useEffect(() => {
-    getDomains(wallet.smartWalletAddress).then(setRegisteredDomains)
+    setRegisteredDomains(getDomains(wallet.smartWalletAddress))
   }, [wallet])
 
   // In the future we must be able to select address type

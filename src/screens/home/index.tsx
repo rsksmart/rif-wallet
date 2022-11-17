@@ -5,7 +5,7 @@ import { toChecksumAddress } from '../../components/address/lib'
 import { LoadingScreen } from '../../components/loading/LoadingScreen'
 import { useBitcoinCoreContext, useSelectedWallet } from '../../Context'
 import { balanceToDisplay } from '../../lib/utils'
-import { NavigationProp } from '../../RootNavigation'
+import { RootStackNavigationProp } from 'navigation/rootNavigator/types'
 import { colors } from '../../styles'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
 import PortfolioComponent from './PortfolioComponent'
@@ -16,7 +16,7 @@ import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServices
 import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 
 export type HomeScreenProps = {
-  navigation: NavigationProp
+  navigation: RootStackNavigationProp
   changeTopColor: (color: string) => void
 }
 
@@ -67,7 +67,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       case 'RECEIVE':
         return navigation.navigate('Receive' as any)
       case 'FAUCET':
-        let address = wallet?.smartWallet.smartWalletContract.address
+        const address = wallet?.smartWallet.smartWalletContract.address
         addBalance(toChecksumAddress(address, chainId))
         return
     }

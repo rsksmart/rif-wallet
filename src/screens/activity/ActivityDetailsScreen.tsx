@@ -1,12 +1,12 @@
 import React from 'react'
 import { IActivityTransaction } from './types'
-import { NavigationProp } from '../../RootNavigation'
+import { RootStackNavigationProp } from 'navigation/rootNavigator/types'
 import ActivityDetailsBitcoinContainer from './ActivityDetailsBitcoinContainer'
 import ActivityDetailsContainer from './ActivityDetailsContainer'
 
 export type ActivityDetailsScreenProps = {
   route: { params: IActivityTransaction }
-  navigation: NavigationProp
+  navigation: RootStackNavigationProp
 }
 export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
   route,

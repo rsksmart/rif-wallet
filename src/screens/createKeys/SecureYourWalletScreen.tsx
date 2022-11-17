@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, View, Image, TouchableOpacity, Text } from 'react-native'
-import { ScreenProps } from './types'
+import { CreateKeysScreenProps } from '../../navigation/createKeysNavigator/types'
 import { colors } from '../../styles'
 
 import { grid } from '../../styles'
@@ -12,16 +12,16 @@ import {
   DarkBlueButton,
 } from '../../components/button/ButtonVariations'
 import { RIFWallet } from '../../lib/core'
-import { saveKeyVerificationReminder } from '../../storage/KeyVerificationReminderStore'
+import { saveKeyVerificationReminder } from '../../storage/MainStorage'
 type SecureYourWalletProps = {
   mnemonic: string
   createWallet: (mnemonic: string) => Promise<RIFWallet>
 }
 export const SecureYourWalletScreen: React.FC<
-  ScreenProps<'SecureYourWallet'> & SecureYourWalletProps
+  CreateKeysScreenProps<'SecureYourWallet'> & SecureYourWalletProps
 > = ({ navigation, createWallet, mnemonic }) => {
   const secureLater = async () => {
-    await saveKeyVerificationReminder(true)
+    saveKeyVerificationReminder(true)
     createWallet(mnemonic)
   }
   return (

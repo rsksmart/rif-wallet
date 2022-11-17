@@ -9,7 +9,7 @@ import { View, TextInput, Text } from 'react-native'
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
 
 import { ScreenWithWallet } from '../types'
-import { ScreenProps } from '../../RootNavigation'
+import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { getDomains } from '../../storage/DomainsStore'
 import { grid } from '../../styles'
 import { SquareButton } from '../../components/button/SquareButton'
@@ -17,7 +17,7 @@ import { getTokenColor, getTokenColorWithOpacity } from '../home/tokenColor'
 import { SearchIcon } from '../../components/icons/SearchIcon'
 import { RegisterIcon } from '../../components/icons/RegisterIcon'
 import BaseButton from '../../components/button/BaseButton'
-import { IProfileStore } from '../../storage/ProfileStore'
+import { IProfileStore } from '../../storage/MainStorage'
 type Props = {
   navigation: any
   profile: IProfileStore
@@ -26,7 +26,7 @@ type Props = {
 const years = 3
 
 export const RNSManagerScreen: React.FC<
-  ScreenProps<'RNSManager'> & ScreenWithWallet & Props
+  RootStackScreenProps<'RNSManager'> & ScreenWithWallet & Props
 > = ({ wallet, navigation, profile, setProfile }) => {
   const [domainToLookUp, setDomainToLookUp] = useState('')
   const [error, setError] = useState('')
@@ -43,7 +43,7 @@ export const RNSManagerScreen: React.FC<
   )
 
   useEffect(() => {
-    getDomains(wallet.smartWalletAddress).then(setRegisteredDomains)
+    setRegisteredDomains(getDomains(wallet.smartWalletAddress))
   }, [wallet])
 
   const searchDomain = async (domain: string) => {

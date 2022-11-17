@@ -1,35 +1,42 @@
-import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 
-import { CreateKeysScreen } from './CreateKeysScreen'
-import { NewMasterKeyScreen } from './new/NewMasterKeyScreen'
-import { ConfirmNewMasterKeyScreen } from './new/ConfirmNewMasterKeyScreen'
-import { ImportMasterKeyScreen } from './import/ImportMasterKeyScreen'
-import { StackParamList, CreateKeysProps } from './types'
-import { SecurityExplanationScreen } from './SecurityExplanationScreen'
-import { SecureYourWalletScreen } from './SecureYourWalletScreen'
+import {
+  CreateKeysScreen,
+  NewMasterKeyScreen,
+  ConfirmNewMasterKeyScreen,
+  ImportMasterKeyScreen,
+  SecurityExplanationScreen,
+  SecureYourWalletScreen,
+} from 'screens/createKeys'
+import {
+  CreateKeysStackParamList,
+  CreateKeysProps,
+  createKeysRouteNames,
+} from './types'
 
-const Stack = createStackNavigator<StackParamList>()
+const Stack = createStackNavigator<CreateKeysStackParamList>()
 
 const screensOptions = { headerShown: false }
 
-export const CreateKeysNavigation: React.FC<CreateKeysProps> = ({
+export const CreateKeysNavigation = ({
   generateMnemonic,
   createFirstWallet,
   isKeyboardVisible,
-}) => {
+}: CreateKeysProps) => {
   const createWallet = (mnemonic: string) => createFirstWallet(mnemonic)
 
   return (
-    <Stack.Navigator initialRouteName="CreateKeys">
+    <Stack.Navigator initialRouteName={createKeysRouteNames.CreateKeys}>
       <Stack.Screen
-        name="CreateKeys"
+        name={createKeysRouteNames.CreateKeys}
         component={CreateKeysScreen}
         options={screensOptions}
       />
       <Stack.Group>
         <Stack.Group>
-          <Stack.Screen name="NewMasterKey" options={screensOptions}>
+          <Stack.Screen
+            name={createKeysRouteNames.NewMasterKey}
+            options={screensOptions}>
             {props => (
               <NewMasterKeyScreen
                 {...props}
@@ -37,7 +44,9 @@ export const CreateKeysNavigation: React.FC<CreateKeysProps> = ({
               />
             )}
           </Stack.Screen>
-          <Stack.Screen name="SecureYourWallet" options={screensOptions}>
+          <Stack.Screen
+            name={createKeysRouteNames.SecureYourWallet}
+            options={screensOptions}>
             {props => (
               <SecureYourWalletScreen
                 {...props}
@@ -46,10 +55,14 @@ export const CreateKeysNavigation: React.FC<CreateKeysProps> = ({
               />
             )}
           </Stack.Screen>
-          <Stack.Screen name="SecurityExplanation" options={screensOptions}>
-            {props => <SecurityExplanationScreen {...props} />}
-          </Stack.Screen>
-          <Stack.Screen name="ConfirmNewMasterKey" options={screensOptions}>
+          <Stack.Screen
+            name={createKeysRouteNames.SecurityExplanation}
+            options={screensOptions}
+            component={SecurityExplanationScreen}
+          />
+          <Stack.Screen
+            name={createKeysRouteNames.ConfirmNewMasterKey}
+            options={screensOptions}>
             {props => (
               <ConfirmNewMasterKeyScreen
                 {...props}
@@ -59,7 +72,9 @@ export const CreateKeysNavigation: React.FC<CreateKeysProps> = ({
             )}
           </Stack.Screen>
         </Stack.Group>
-        <Stack.Screen name="ImportMasterKey" options={screensOptions}>
+        <Stack.Screen
+          name={createKeysRouteNames.ImportMasterKey}
+          options={screensOptions}>
           {props => (
             <ImportMasterKeyScreen
               {...props}
@@ -72,3 +87,5 @@ export const CreateKeysNavigation: React.FC<CreateKeysProps> = ({
     </Stack.Navigator>
   )
 }
+
+export * from './types'

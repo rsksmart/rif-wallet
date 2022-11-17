@@ -1,6 +1,5 @@
 /* eslint-disable */
-import React from 'react'
-import { fireEvent, render, waitFor } from '@testing-library/react-native'
+import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import { BalancesScreen, balanceToString } from './BalancesScreen'
 
 import { setupTest } from '../../../testLib/setup'

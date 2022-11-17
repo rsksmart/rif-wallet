@@ -1,4 +1,3 @@
-import React from 'react'
 import { render, waitFor, fireEvent, act } from '@testing-library/react-native'
 import { cleanup } from '@testing-library/react-native'
 

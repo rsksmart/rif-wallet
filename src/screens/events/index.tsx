@@ -1,4 +1,3 @@
-import React from 'react'
 import { useSelectedWallet } from '../../Context'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
 import { EventsScreen } from './EventsScreen'

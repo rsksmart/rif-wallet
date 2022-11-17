@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, ScrollView, Text } from 'react-native'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
-import { ScreenProps } from '../../RootNavigation'
+import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { ScreenWithWallet } from '../types'
 import TransactionInfo from './TransactionInfo'
 import { colors } from '../../styles'
@@ -16,12 +16,9 @@ import { useFetchBitcoinNetworksAndTokens } from './useFetchBitcoinNetworksAndTo
 import { MixedTokenAndNetworkType } from './types'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
-export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
-  route,
-  navigation,
-  wallet,
-  isWalletDeployed,
-}) => {
+export const SendScreen: React.FC<
+  RootStackScreenProps<'Send'> & ScreenWithWallet
+> = ({ route, wallet, isWalletDeployed, navigation }) => {
   const assets =
     useFetchBitcoinNetworksAndTokens() as unknown as MixedTokenAndNetworkType[]
 

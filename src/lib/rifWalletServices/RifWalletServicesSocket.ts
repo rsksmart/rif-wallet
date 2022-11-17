@@ -1,7 +1,7 @@
 import EventEmitter from 'events'
 import { io } from 'socket.io-client'
 import { enhanceTransactionInput } from '../../screens/activity/ActivityScreen'
-import { Cache } from '../../storage/cache/MMKVCache'
+import { MMKVStorage } from '../../storage/MMKVStorage'
 import { IActivityTransaction } from '../../subscriptions/types'
 import { IAbiEnhancer } from '../abiEnhancer/AbiEnhancer'
 import { RIFWallet } from '../core'
@@ -50,7 +50,7 @@ export class RifWalletServicesSocket
   }
 
   private async init(wallet: RIFWallet, encryptionKey: string) {
-    const cache = new Cache('txs', encryptionKey)
+    const cache = new MMKVStorage('txs', encryptionKey)
     const fetchedTransactions = await this.fetcher.fetchTransactionsByAddress(
       wallet.smartWalletAddress,
     )

@@ -8,7 +8,10 @@ import {
 } from 'react-native'
 import Carousel from 'react-native-snap-carousel'
 
-import { CreateKeysProps, ScreenProps } from '../types'
+import {
+  CreateKeysProps,
+  CreateKeysScreenProps,
+} from '../../../navigation/createKeysNavigator/types'
 import { Trans } from 'react-i18next'
 import { colors } from '../../../styles/colors'
 
@@ -17,7 +20,7 @@ import { SLIDER_WIDTH, WINDOW_WIDTH } from '../../../ux/slides/Dimensions'
 import { PaginationNavigator } from '../../../components/button/PaginationNavigator'
 import { WordSelector } from './WordSelector'
 import { sharedMnemonicStyles } from './styles'
-import { saveKeyVerificationReminder } from '../../../storage/KeyVerificationReminderStore'
+import { saveKeyVerificationReminder } from '../../../storage/MainStorage'
 
 interface ConfirmMasterKeyScreenProps {
   isKeyboardVisible: boolean
@@ -25,7 +28,7 @@ interface ConfirmMasterKeyScreenProps {
 }
 
 export const ConfirmNewMasterKeyScreen: React.FC<
-  ScreenProps<'ConfirmNewMasterKey'> & ConfirmMasterKeyScreenProps
+  CreateKeysScreenProps<'ConfirmNewMasterKey'> & ConfirmMasterKeyScreenProps
 > = ({ route, navigation, createWallet, isKeyboardVisible }) => {
   const mnemonic = route.params.mnemonic
   const slidesIndexes = Array.from(
@@ -44,7 +47,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
       return setError(true)
     }
     setError(false)
-    await saveKeyVerificationReminder(false)
+    saveKeyVerificationReminder(false)
     await createWallet(mnemonic)
   }
 

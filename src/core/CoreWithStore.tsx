@@ -1,5 +1,4 @@
-import React from 'react'
-import { store, Provider } from './../redux'
+import { store, Provider } from 'store/index'
 import { Core } from './Core'
 
 export const CoreWithStore = () => (

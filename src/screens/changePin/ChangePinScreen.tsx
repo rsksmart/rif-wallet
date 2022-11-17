@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { PinManager } from '../../components/PinManager'
-import { ScreenProps } from '../../RootNavigation'
+import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { TouchableOpacity, View, StyleSheet } from 'react-native'
 import { Arrow } from '../../components/icons'
 import { MediumText } from '../../components'
@@ -9,7 +9,7 @@ type ChangePinProps = {
   editPin: any
 }
 const ChangePinScreen: React.FC<
-  ScreenProps<'ChangePinScreen'> & ChangePinProps
+  RootStackScreenProps<'ChangePinScreen'> & ChangePinProps
 > = ({ editPin, navigation }) => {
   const [currentStep, setCurrentStep] = useState(1)
 

@@ -10,7 +10,7 @@ import { rnsManagerStyles } from './rnsManagerStyles'
 
 import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
 
-import { ScreenProps } from '../../RootNavigation'
+import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { ScreenWithWallet } from '../types'
 import { MediumText } from '../../components'
 import addresses from './addresses.json'
@@ -23,7 +23,7 @@ type Props = {
 }
 
 export const BuyDomainScreen: React.FC<
-  ScreenProps<'BuyDomain'> & ScreenWithWallet & Props
+  RootStackScreenProps<'BuyDomain'> & ScreenWithWallet & Props
 > = ({ wallet, navigation, route }) => {
   const { alias, domainSecret, duration } = route.params
   const fullAlias = alias + '.rsk'
@@ -105,9 +105,9 @@ export const BuyDomainScreen: React.FC<
                 ${domainFiatPrice}
               </MediumText>
               <View style={styles.rifTokenImageContainer}>
-                <MediumText style={styles.rifTokenImage}>
-                  <TokenImage symbol={'RIF'} height={20} width={20} />
-                </MediumText>
+                <View style={styles.assetIcon}>
+                  <TokenImage symbol={'RIF'} height={22} width={25} />
+                </View>
                 <MediumText style={styles.priceLabel}>
                   {utils.formatUnits(domainPrice, 18)}
                 </MediumText>
@@ -162,13 +162,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 10,
   },
-  rifTokenImage: {
+  assetIcon: {
+    alignSelf: 'center',
+    overflow: 'hidden',
     backgroundColor: colors.white,
-    borderRadius: 15,
-    height: 30,
-    width: 30,
-    padding: 5,
-    marginRight: 5,
-    marginTop: 3,
+    borderRadius: 18,
+    padding: 6,
+    marginRight: 10,
   },
 })
