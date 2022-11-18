@@ -13,7 +13,7 @@ import {
   IPayment,
 } from './types'
 
-const { fromSeed } = require('bip32')
+import { fromSeed } from 'bip32'
 
 export default class BIP {
   network: BitcoinNetwork

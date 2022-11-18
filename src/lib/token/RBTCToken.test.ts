@@ -40,9 +40,9 @@ describe('RBTC token', () => {
   })
 
   test('get balance', async () => {
-    const result = await rbtcToken!.balance()
+    const result = await rbtcToken?.balance()
 
-    expect(result.gt(0)).toBe(true)
+    expect(result?.gt(0)).toBe(true)
   })
 
   test('transfer', async () => {
@@ -53,9 +53,9 @@ describe('RBTC token', () => {
 
     const amountToTransfer = BigNumber.from(100)
 
-    const transferTx = await rbtcToken!.transfer(toAddress, amountToTransfer)
+    const transferTx = await rbtcToken?.transfer(toAddress, amountToTransfer)
 
-    await transferTx.wait()
+    await transferTx?.wait()
 
     const balanceRecipient = await to.getBalance()
 

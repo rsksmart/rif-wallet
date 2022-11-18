@@ -20,12 +20,14 @@ describe('RBTC Enhance Strategy', () => {
   it('should return transaction info enhanced', async () => {
     const strategy = new RBTCEnhanceStrategy()
 
-    const result = await strategy.parse(accountSigner!, transactionRequest)
+    if (accountSigner) {
+      const result = await strategy.parse(accountSigner, transactionRequest)
 
-    expect(result).not.toBeNull()
-    expect(result?.from).toBe(transactionRequest.from)
-    expect(result?.to).toBe('0x1D4F6A5FE927f0E0e4497B91CebfBcF64dA1c934')
-    expect(result?.balance).toBe(initialBalance.toString())
-    expect(result?.value).toBe('0.001')
+      expect(result).not.toBeNull()
+      expect(result?.from).toBe(transactionRequest.from)
+      expect(result?.to).toBe('0x1D4F6A5FE927f0E0e4497B91CebfBcF64dA1c934')
+      expect(result?.balance).toBe(initialBalance.toString())
+      expect(result?.value).toBe('0.001')
+    }
   })
 })

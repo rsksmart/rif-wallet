@@ -70,21 +70,22 @@ export const BalancesScreen: React.FC<
 
   const loadRBTCBalance = async () => {
     setIsLoading(true)
-
-    const rbtcBalanceEntry = await wallet
-      .provider!.getBalance(wallet.smartWallet.address)
-      .then(
-        rbtcBalance =>
-          ({
-            name: 'TRBTC',
-            logo: 'TRBTC',
-            symbol: 'TRBTC (eoa wallet)',
-            contractAddress: constants.AddressZero,
-            decimals: 18,
-            balance: rbtcBalance.toString(),
-          } as ITokenWithBalance),
-      )
-    dispatch({ type: 'newBalance', payload: rbtcBalanceEntry })
+    if (wallet.provider) {
+      const rbtcBalanceEntry = await wallet.provider
+        .getBalance(wallet.smartWallet.address)
+        .then(
+          rbtcBalance =>
+            ({
+              name: 'TRBTC',
+              logo: 'TRBTC',
+              symbol: 'TRBTC (eoa wallet)',
+              contractAddress: constants.AddressZero,
+              decimals: 18,
+              balance: rbtcBalance.toString(),
+            } as ITokenWithBalance),
+        )
+      dispatch({ type: 'newBalance', payload: rbtcBalanceEntry })
+    }
     setIsLoading(false)
   }
 
