@@ -1,3 +1,4 @@
+import { FC } from 'react'
 import { StyleSheet, View, ScrollView, Text } from 'react-native'
 import { BigNumber, BigNumberish } from 'ethers'
 
