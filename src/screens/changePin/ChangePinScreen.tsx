@@ -1,6 +1,9 @@
 import React, { useState, useRef } from 'react'
 import { PinManager } from '../../components/PinManager'
-import { RootStackScreenProps } from 'navigation/rootNavigator/types'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
 import { TouchableOpacity, View, StyleSheet } from 'react-native'
 import { Arrow } from '../../components/icons'
 import { MediumText } from '../../components'
@@ -18,7 +21,6 @@ const ChangePinScreen: React.FC<
     confirmPin: '',
   })
   const isSubmitting = useRef(false)
-  const [confirmPinTitle, setConfirmPinTitle] = useState('Confirm new PIN')
   const [pinError, setPinError] = useState('')
   const [resetPin, setResetPin] = useState(0)
 
@@ -27,11 +29,7 @@ const ChangePinScreen: React.FC<
       isSubmitting.current = true
       try {
         editPin(pinSteps.current.pin)
-        setConfirmPinTitle('PIN confirmed')
-
-        setTimeout(() => {
-          navigation.goBack()
-        }, 2500)
+        navigation.navigate(rootStackRouteNames.Home)
       } catch (error) {
         setPinError(
           'An error occurred while saving the new PIN. Please try again.',
@@ -79,7 +77,7 @@ const ChangePinScreen: React.FC<
         <View style={styles.pinView}>
           <PinManager
             key={resetPin}
-            title={confirmPinTitle}
+            title="Confirm new PIN"
             handleSubmit={onPinChange(2)}
           />
         </View>

@@ -114,6 +114,11 @@ export const Core = () => {
     },
   })
 
+  const handleUpdatePin = (newPin: string) => {
+    editPin(newPin)
+    setState({ ...state, hasPin: true })
+  }
+
   if (state.hasKeys && state.hasPin && !unlocked) {
     return (
       <RequestPIN unlock={onScreenUnlock} resetKeysAndPin={resetKeysAndPin} />
@@ -156,7 +161,7 @@ export const Core = () => {
                       }),
                   }}
                   createPin={createPin}
-                  editPin={editPin}
+                  editPin={handleUpdatePin}
                   setWalletIsDeployed={setWalletIsDeployed}
                   balancesScreenProps={{ fetcher: rifWalletServicesFetcher }}
                   sendScreenProps={{ rnsResolver }}

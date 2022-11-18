@@ -59,7 +59,7 @@ interface Props {
   rifWalletServicesSocket: IRifWalletServicesSocket
   keyManagementProps: CreateKeysProps
   createPin: (newPin: string) => Promise<void>
-  editPin: (newPin: string) => Promise<void>
+  editPin: (newPin: string) => void
   setWalletIsDeployed: (address: string, value?: boolean) => void
   balancesScreenProps: Screens.BalancesScreenProps
   activityScreenProps: Screens.ActivityScreenProps
