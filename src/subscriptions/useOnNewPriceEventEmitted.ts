@@ -1,11 +1,7 @@
-import React from 'react'
-import { setUsdPrices } from '../redux/slices/usdPricesSlice/usdPricesSlice'
+import { setUsdPrices } from 'store/slices/usdPricesSlice/usdPricesSlice'
 
 export const useOnNewPriceEventEmitted = (dispatch: any) => {
-  return React.useCallback(
-    payload => {
-      dispatch(setUsdPrices(payload))
-    },
-    [dispatch],
-  )
+  return (payload: any) => {
+    dispatch(setUsdPrices(payload))
+  }
 }
