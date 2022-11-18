@@ -1,12 +1,12 @@
 import React from 'react'
 import useContainerStyles from './useContainerStyles'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { balanceToUSD, balanceToDisplay } from '../../lib/utils'
-import { IPrice } from '../../subscriptions/types'
+import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { balanceToUSD, balanceToDisplay } from 'lib/utils'
+import { IPrice } from 'src/subscriptions/types'
 import BalanceCardPresentationComponent from './BalanceCardPresentationComponent'
 import { BigNumber } from 'ethers'
-import { useAppSelector } from '../../redux/storeHooks'
-import { selectUsdPrices } from '../../redux/slices/usdPricesSlice/selectors'
+import { useAppSelector } from 'store/storeHooks'
+import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 
 export const BalanceCardComponent: React.FC<{
   token: ITokenWithBalance
