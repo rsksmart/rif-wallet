@@ -6,13 +6,11 @@ import { SecondarySlide } from '../../ux/slides/SeconderySlide'
 import { CreateKeysScreenProps } from '../../navigation/createKeysNavigator/types'
 
 import Carousel, { Pagination } from 'react-native-snap-carousel'
-import {
-  OutlineButton,
-  WhiteButton,
-} from '../../components/button/ButtonVariations'
 import { grid } from '../../styles/grid'
 
 import { name as appName } from '../../../app.json'
+import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
+import { SecondaryButton2 } from '../../components/button/SecondaryButton2'
 import {
   SLIDER_WIDTH,
   WINDOW_HEIGHT,
@@ -96,17 +94,17 @@ export const CreateKeysScreen: React.FC<
         {pagination(slidesIndexes)}
       </View>
       <View style={{ ...grid.row, ...styles.section }}>
-        <WhiteButton
+        <PrimaryButton2
           onPress={() => navigation.navigate('SecureYourWallet')}
           accessibilityLabel="newWallet"
           title={'new wallet'}
         />
       </View>
       <View style={{ ...grid.row, ...styles.section }}>
-        <OutlineButton
+        <SecondaryButton2
           onPress={() => navigation.navigate('ImportMasterKey')}
           accessibilityLabel="importWallet"
-          title={'import  wallet'}
+          title={'import wallet'}
         />
       </View>
     </View>

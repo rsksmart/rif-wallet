@@ -1,18 +1,16 @@
 import React from 'react'
-import { StyleSheet, View, Image, TouchableOpacity, Text } from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { CreateKeysScreenProps } from '../../navigation/createKeysNavigator/types'
 import { colors } from '../../styles'
 
-import { grid } from '../../styles'
 import { Arrow } from '../../components/icons'
+import { grid } from '../../styles'
 
-import { WINDOW_HEIGHT } from '../../ux/slides/Dimensions'
-import {
-  BlueButton,
-  DarkBlueButton,
-} from '../../components/button/ButtonVariations'
+import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
+import { SecondaryButton2 } from '../../components/button/SecondaryButton2'
 import { RIFWallet } from '../../lib/core'
 import { saveKeyVerificationReminder } from '../../storage/MainStorage'
+import { WINDOW_HEIGHT } from '../../ux/slides/Dimensions'
 type SecureYourWalletProps = {
   mnemonic: string
   createWallet: (mnemonic: string) => Promise<RIFWallet>
@@ -54,14 +52,14 @@ export const SecureYourWalletScreen: React.FC<
       </View>
 
       <View style={{ ...grid.row, ...styles.section }}>
-        <BlueButton
+        <PrimaryButton2
           onPress={() => navigation.navigate('SecurityExplanation')}
           accessibilityLabel="secureNow"
           title={'secure now'}
         />
       </View>
       <View style={{ ...grid.row, ...styles.section }}>
-        <DarkBlueButton
+        <SecondaryButton2
           onPress={secureLater}
           accessibilityLabel="secureLater"
           title={'secure later'}
