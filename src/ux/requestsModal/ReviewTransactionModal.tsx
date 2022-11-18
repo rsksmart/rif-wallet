@@ -1,20 +1,27 @@
-import { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { ScrollView, StyleSheet, View } from 'react-native'
 import { BigNumber } from 'ethers'
-
-import { SendTransactionRequest } from 'src/lib/core'
-
 import { useTranslation } from 'react-i18next'
-import { PrimaryButton } from 'src/components/button/PrimaryButton'
-import { SecondaryButton } from 'src/components/button/SecondaryButton'
-import { Loading, Paragraph, RegularText } from 'src/components'
-import { shortAddress } from 'src/lib/utils'
-import { ScreenWithWallet } from 'src/screens/types'
-import { sharedStyles } from 'src/shared/styles'
-import { colors } from 'src/styles'
-import InputField from './InpuField'
-import ReadOnlyField from './ReadOnlyField'
+
+import {
+  OverriddableTransactionOptions,
+  SendTransactionRequest,
+} from '../../lib/core'
+
+import { sharedStyles } from '../../shared/styles'
+import {
+  Loading,
+  Paragraph,
+  PrimaryButton,
+  RegularText,
+  SecondaryButton,
+} from '../../components'
+import { ScreenWithWallet } from '../../screens/types'
 import useEnhancedWithGas from './useEnhancedWithGas'
+import { balanceToDisplay, shortAddress } from '../../lib/utils'
+import { colors, grid } from '../../styles'
+import ReadOnlyField from './ReadOnlyField'
+import { RIF_TOKEN_ADDRESS_TESTNET } from '../../lib/relay-sdk/helpers'
 import { errorHandler } from 'src/shared/utils'
 
 interface Props {
@@ -30,18 +37,30 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Props> = ({
   const { t } = useTranslation()
 
   const txRequest = useMemo(() => request.payload[0], [request])
-  const { enhancedTransactionRequest, isLoaded, setGasLimit, setGasPrice } =
-    useEnhancedWithGas(wallet, txRequest)
+  const { enhancedTransactionRequest, isLoaded } = useEnhancedWithGas(
+    wallet,
+    txRequest,
+  )
 
   const [error, setError] = useState<string | null>(null)
+  const [txCostInRif, setTxCostInRif] = useState<BigNumber>(BigNumber.from(0))
 
-  // convert from string to Transaction and pass out of component
+  useEffect(() => {
+    wallet.rifRelaySdk.estimateTransactionCost().then(setTxCostInRif)
+  }, [request])
+
   const confirmTransaction = async () => {
+    const confirmObject: OverriddableTransactionOptions = {
+      gasPrice: BigNumber.from(enhancedTransactionRequest.gasPrice),
+      gasLimit: BigNumber.from(enhancedTransactionRequest.gasLimit),
+      tokenPayment: {
+        tokenContract: RIF_TOKEN_ADDRESS_TESTNET,
+        tokenAmount: txCostInRif,
+      },
+    }
+
     try {
-      await request.confirm({
-        gasPrice: BigNumber.from(enhancedTransactionRequest.gasPrice),
-        gasLimit: BigNumber.from(enhancedTransactionRequest.gasLimit),
-      })
+      await request.confirm(confirmObject)
       closeModal()
     } catch (err) {
       setError(errorHandler(err))
@@ -110,25 +129,11 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Props> = ({
         )}
       </View>
 
-      {enhancedTransactionRequest.gasLimit && (
-        <InputField
-          label={'gas limit'}
-          value={enhancedTransactionRequest.gasLimit.toString()}
-          keyboardType="number-pad"
-          placeholder="gas limit"
-          testID={'gasLimit.TextInput'}
-          handleValueOnChange={setGasLimit}
-        />
-      )}
-
-      {enhancedTransactionRequest.gasPrice && (
-        <InputField
-          label={'gas price'}
-          value={enhancedTransactionRequest.gasPrice.toString()}
-          keyboardType="number-pad"
-          placeholder="gas price"
-          testID={'gasPrice.TextInput'}
-          handleValueOnChange={setGasPrice}
+      {txCostInRif && (
+        <ReadOnlyField
+          label="Fee in tRIF"
+          value={`${balanceToDisplay(txCostInRif, 18, 0)} tRIF`}
+          testID="tRIF.fee"
         />
       )}
 
@@ -193,5 +198,10 @@ const styles = StyleSheet.create({
   },
   loadingContent: {
     padding: 20,
+  },
+  toggleContainer: {
+    ...grid.column5,
+    marginTop: 25,
+    marginLeft: 15,
   },
 })
