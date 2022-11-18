@@ -7,7 +7,7 @@ const usdPricesSlice = createSlice({
   name: 'usdPrices',
   initialState,
   reducers: {
-    setUsdPrices: (state, action: PayloadAction<IUsdPricesState>) => ({
+    setUsdPrices: (_state, action: PayloadAction<IUsdPricesState>) => ({
       ...action.payload,
     }),
   },

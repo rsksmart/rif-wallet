@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import { FC } from 'react'
 import { StyleSheet, View, ScrollView, Text } from 'react-native'
-import { BigNumber, BigNumberish, constants } from 'ethers'
+import { BigNumber, BigNumberish } from 'ethers'
 
-import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { useTranslation } from 'react-i18next'
-import { useSocketsState } from '../../subscriptions/RIFSockets'
+import { IRIFWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
+import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { useSocketsState } from 'src/subscriptions/RIFSockets'
 
 import {
   RootStackScreenProps,
   RootStackNavigationProp,
 } from 'navigation/rootNavigator/types'
-import { Address, Button } from '../../components'
+import { Address, Button } from 'src/components'
 import { ScreenWithWallet } from '../types'
 
 export const balanceToString = (
@@ -60,67 +59,24 @@ export const BalancesRow = ({
 
 export type BalancesScreenProps = { fetcher: IRIFWalletServicesFetcher }
 
-export const BalancesScreen: React.FC<
+export const BalancesScreen: FC<
   RootStackScreenProps<'Balances'> & ScreenWithWallet & BalancesScreenProps
 > = ({ navigation, wallet }) => {
-  const { t } = useTranslation()
-  const [isLoading, setIsLoading] = useState(true)
-
-  const { state, dispatch } = useSocketsState()
-
-  const loadRBTCBalance = async () => {
-    setIsLoading(true)
-
-    const rbtcBalanceEntry = await wallet
-      .provider!.getBalance(wallet.smartWallet.address)
-      .then(
-        rbtcBalance =>
-          ({
-            name: 'TRBTC',
-            logo: 'TRBTC',
-            symbol: 'TRBTC (eoa wallet)',
-            contractAddress: constants.AddressZero,
-            decimals: 18,
-            balance: rbtcBalance.toString(),
-          } as ITokenWithBalance),
-      )
-    dispatch({ type: 'newBalance', payload: rbtcBalanceEntry })
-    setIsLoading(false)
-  }
-
-  useEffect(() => {
-    loadRBTCBalance()
-  }, [])
+  const { state } = useSocketsState()
 
   return (
     <ScrollView>
       <View>
         <Address>{wallet.smartWalletAddress}</Address>
       </View>
-
       <View>
-        <Text testID="Info.Text">
-          {isLoading ? t('Loading balances. Please wait...') : ''}
-        </Text>
-      </View>
-
-      <View>
-        {!isLoading &&
-          Object.values(state.balances).map(token => (
-            <BalancesRow
-              key={token.contractAddress}
-              token={token}
-              navigation={navigation}
-            />
-          ))}
-      </View>
-
-      <View style={styles.refreshButtonView}>
-        <Button
-          onPress={loadRBTCBalance}
-          title={t('Refresh')}
-          testID={'Refresh.Button'}
-        />
+        {Object.values(state.balances).map(token => (
+          <BalancesRow
+            key={token.contractAddress}
+            token={token}
+            navigation={navigation}
+          />
+        ))}
       </View>
     </ScrollView>
   )
