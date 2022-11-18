@@ -1,4 +1,4 @@
-import { setUsdPrices } from 'store/slices/usdPricesSlice/usdPricesSlice'
+import { setUsdPrices } from 'store/slices/usdPricesSlice'
 
 export const useOnNewPriceEventEmitted = (dispatch: any) => {
   return (payload: any) => {
