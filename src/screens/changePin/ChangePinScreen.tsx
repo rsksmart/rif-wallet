@@ -26,13 +26,12 @@ const ChangePinScreen: React.FC<
     if (!isSubmitting.current) {
       isSubmitting.current = true
       try {
-        editPin(pinSteps.current.pin).then(() => {
-          setConfirmPinTitle('PIN confirmed')
+        editPin(pinSteps.current.pin)
+        setConfirmPinTitle('PIN confirmed')
 
-          setTimeout(() => {
-            navigation.goBack()
-          }, 2500)
-        })
+        setTimeout(() => {
+          navigation.goBack()
+        }, 2500)
       } catch (error) {
         setPinError(
           'An error occurred while saving the new PIN. Please try again.',

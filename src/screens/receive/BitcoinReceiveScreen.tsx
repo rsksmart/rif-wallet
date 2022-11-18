@@ -5,7 +5,7 @@ import { getDomains } from '../../storage/DomainsStore'
 import { ReceiveScreen } from './ReceiveScreen'
 import { shortAddress } from '../../lib/utils'
 
-const BitcoinReceiveScreen: React.FC<any> = ({
+export const BitcoinReceiveScreen: React.FC<any> = ({
   route: {
     params: { network },
   },
@@ -40,5 +40,3 @@ const BitcoinReceiveScreen: React.FC<any> = ({
     <Loading />
   )
 }
-
-export default BitcoinReceiveScreen
