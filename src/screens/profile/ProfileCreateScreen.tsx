@@ -2,7 +2,13 @@ import React, { useCallback, useState } from 'react'
 import { RegularText } from '../../components/typography'
 import { IProfileStore } from '../../storage/ProfileStore'
 
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import {
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  ScrollView,
+} from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { MediumText } from '../../components'
 import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
@@ -42,7 +48,7 @@ export const ProfileCreateScreen: React.FC<
     setLocalProfile(prev => ({ ...prev, phone }))
   }, [])
   return (
-    <>
+    <ScrollView>
       <View style={styles.profileHeader}>
         <TouchableOpacity onPress={() => navigation.navigate('Home')}>
           <View style={styles.backButton}>
@@ -128,15 +134,15 @@ export const ProfileCreateScreen: React.FC<
           />
         </View>
       </View>
-    </>
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: colors.background.darkBlue,
     paddingTop: 10,
+    paddingBottom: 1000,
     paddingHorizontal: 40,
   },
   profileHeader: {
