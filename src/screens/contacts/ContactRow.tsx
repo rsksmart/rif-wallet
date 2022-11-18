@@ -1,12 +1,13 @@
 import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/Feather'
+import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
+import { useAppSelector } from 'src/redux/storeHooks'
 import DeleteIcon from '../../components/icons/DeleteIcon'
 import EditMaterialIcon from '../../components/icons/EditMaterialIcon'
-import { shortAddress } from '../../lib/utils'
-import { colors } from '../../styles'
-import { fonts } from '../../styles/fonts'
-import { useSocketsState } from '../../subscriptions/RIFSockets'
+import { shortAddress } from 'lib/utils'
+import { colors } from 'src/styles'
+import { fonts } from 'src/styles/fonts'
 import { IContact } from './ContactsContext'
 
 interface IContactRowProps {
@@ -29,8 +30,9 @@ export const ContactRow: React.FC<IContactRowProps> = ({
   onDelete,
   onEdit,
 }) => {
-  const { state } = useSocketsState()
-  const hideSendButton = Object.values(state.balances).length === 0
+  const tokenBalances = useAppSelector(selectBalances)
+
+  const hideSendButton = Object.values(tokenBalances).length === 0
 
   return (
     <View

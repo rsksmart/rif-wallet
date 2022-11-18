@@ -3,7 +3,6 @@ import { BigNumber, BigNumberish } from 'ethers'
 
 import { IRIFWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
-import { useSocketsState } from 'src/subscriptions/RIFSockets'
 
 import {
   RootStackScreenProps,
@@ -11,6 +10,8 @@ import {
 } from 'navigation/rootNavigator/types'
 import { Address, Button } from 'src/components'
 import { ScreenWithWallet } from '../types'
+import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
+import { useAppSelector } from 'src/redux/storeHooks'
 
 export const balanceToString = (
   balance: string,
@@ -63,15 +64,14 @@ type Props = RootStackScreenProps<'Balances'> &
   BalancesScreenProps
 
 export const BalancesScreen = ({ navigation, wallet }: Props) => {
-  const { state } = useSocketsState()
-
+  const balances = useAppSelector(selectBalances)
   return (
     <ScrollView>
       <View>
         <Address>{wallet.smartWalletAddress}</Address>
       </View>
       <View>
-        {Object.values(state.balances).map(token => (
+        {Object.values(balances).map(token => (
           <BalancesRow
             key={token.contractAddress}
             token={token}
