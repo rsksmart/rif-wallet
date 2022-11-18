@@ -1,5 +1,5 @@
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import * as Progress from 'react-native-progress'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
@@ -11,18 +11,18 @@ import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
 
 import { MediumText } from '../../components'
 import { AvatarIcon } from '../../components/icons/AvatarIcon'
-import { RootStackScreenProps } from 'navigation/rootNavigator/types'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
 import { ScreenWithWallet } from '../types'
 import addresses from './addresses.json'
 import TitleStatus from './TitleStatus'
 
-type Props = {
-  route: any
-}
+type Props = RootStackScreenProps<rootStackRouteNames.RequestDomain> &
+  ScreenWithWallet
 
-export const RequestDomainScreen: React.FC<
-  RootStackScreenProps<'RequestDomain'> & ScreenWithWallet & Props
-> = ({ wallet, navigation, route }) => {
+export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
   const { alias, duration } = route.params
   const fullAlias = alias + '.rsk'
 
@@ -51,8 +51,7 @@ export const RequestDomainScreen: React.FC<
         setProgress(prev => prev + 0.009)
         if (ready) {
           setProcessing(false)
-          navigation.navigate('BuyDomain', {
-            navigation,
+          navigation.navigate(rootStackRouteNames.BuyDomain, {
             alias,
             domainSecret: secret,
             duration,
@@ -65,9 +64,9 @@ export const RequestDomainScreen: React.FC<
       }, 1000)
       await makeCommitmentTransaction.wait()
       setCommitToRegisterInfo('Transaction confirmed. Please wait...')
-    } catch (e: any) {
+    } catch (e: unknown) {
       setProcessing(false)
-      setCommitToRegisterInfo(e.message)
+      setCommitToRegisterInfo(e?.message || '')
       setCommitToRegisterInfo2('')
     }
   }
@@ -77,7 +76,6 @@ export const RequestDomainScreen: React.FC<
   return (
     <>
       <View style={rnsManagerStyles.profileHeader}>
-        {/*@ts-ignore*/}
         <TouchableOpacity onPress={() => navigation.navigate('SearchDomain')}>
           <View style={rnsManagerStyles.backButton}>
             <MaterialIcon name="west" color="white" size={10} />

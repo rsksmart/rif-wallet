@@ -11,15 +11,24 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { SearchIcon } from '../../components/icons/SearchIcon'
 import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
-import { RootStackNavigationProp } from 'navigation/rootNavigator/types'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
 import { ContactRow } from './ContactRow'
 import { ContactsContext, IContact } from './ContactsContext'
+import { CompositeScreenProps } from '@react-navigation/native'
+import { ContactsStackScreenProps } from '..'
+import { contactsStackRouteNames } from 'src/navigation/contactsNavigator'
 
-export const ContactsScreen: React.FC<{
-  navigation: RootStackNavigationProp
-}> = ({ navigation }) => {
+export type ContactsListScreenProps = CompositeScreenProps<
+  ContactsStackScreenProps<contactsStackRouteNames.ContactsList>,
+  RootStackScreenProps<rootStackRouteNames.Contacts>
+>
+
+export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
   const { t } = useTranslation()
   const { contacts, deleteContact } = useContext(ContactsContext)
   const [filteredContacts, setFilteredContacts] = useState(contacts)

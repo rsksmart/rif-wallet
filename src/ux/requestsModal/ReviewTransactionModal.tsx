@@ -44,7 +44,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
         gasLimit: BigNumber.from(enhancedTransactionRequest.gasLimit),
       })
       closeModal()
-    } catch (err: any) {
+    } catch (err) {
       setError(err)
     }
   }
@@ -104,7 +104,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
               )}
               {enhancedTransactionRequest.functionParameters &&
                 enhancedTransactionRequest.functionParameters.map(
-                  ({ name, value }: any) => (
+                  ({ name, value }: { name: string; value: string }) => (
                     <ReadOnlyField
                       key={name}
                       label={name}

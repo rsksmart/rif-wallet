@@ -5,9 +5,6 @@ import { IAbiEnhancer, IEnhancedResult } from '../lib/abiEnhancer/AbiEnhancer'
 import { ITokenWithBalance } from '../lib/rifWalletServices/RIFWalletServicesTypes'
 import { IRifWalletServicesSocket } from '../lib/rifWalletServices/RifWalletServicesSocket'
 
-export interface IActivity
-  extends TransactionsServerResponseWithActivityTransactions {}
-
 export interface IPrice {
   price: number
   lastUpdated: string
@@ -15,7 +12,7 @@ export interface IPrice {
 
 export interface NewTransactionsAction {
   type: 'newTransactions'
-  payload: IActivity
+  payload: TransactionsServerResponseWithActivityTransactions
 }
 
 export interface IEvent {
@@ -64,7 +61,7 @@ export interface State {
   balances: Record<string, ITokenWithBalance>
   prices: Record<string, IPrice>
   events: Array<IEvent>
-  isSetup: Boolean
+  isSetup: boolean
 }
 
 export type Action =

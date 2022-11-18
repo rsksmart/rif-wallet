@@ -12,13 +12,14 @@ import {
 } from '../../components/button/ButtonVariations'
 import { colors } from '../../styles'
 import { RegularText } from '../../components'
+import { AnyObject } from 'immer/dist/internal'
 
 interface Interface {
   request: SignTypedDataRequest
   closeModal: () => void
 }
 
-const formatter = (data: any) =>
+const formatter = (data: AnyObject) =>
   Object.keys(data).map((key: string) => (
     <View key={key} style={styles.nested} testID="Formatter.Row">
       <Text style={styles.heading} testID="Text.Heading">
@@ -59,25 +60,25 @@ const SignTypedDataModal: React.FC<Interface> = ({ request, closeModal }) => {
 
           <ReadOnlyField
             label={'name'}
-            value={request.payload[0].name}
+            value={request.payload[0].name || ''}
             testID="Domain.Name"
           />
 
           <ReadOnlyField
             label={'version'}
-            value={request.payload[0].version}
+            value={request.payload[0].version || ''}
             testID="Domain.Version"
           />
 
           <ReadOnlyField
             label={'chain id'}
-            value={request.payload[0].chainId}
+            value={request.payload[0].chainId?.toString() || ''}
             testID="Domain.ChainId"
           />
 
           <ReadOnlyField
             label={'verifying Contract'}
-            value={request.payload[0].verifyingContract}
+            value={request.payload[0].verifyingContract || ''}
             testID="Domain.VerifyingContract"
           />
           <View>

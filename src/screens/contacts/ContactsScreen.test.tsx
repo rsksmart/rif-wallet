@@ -1,20 +1,21 @@
+import { useNavigation } from '@react-navigation/native'
 import { fireEvent, render } from '@testing-library/react-native'
 import { act } from 'react-test-renderer'
 import * as hooks from '../../subscriptions/RIFSockets'
-import { ContactsContext, IContact } from './ContactsContext'
-import { ContactsScreen } from './ContactsScreen'
+import { ContactsContext, ContactsContextInterface, IContact } from './ContactsContext'
+import { ContactsListScreenProps, ContactsScreen } from './ContactsScreen'
 
 jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: any) => key }),
+  useTranslation: () => ({ t: (key: string) => key }),
 }))
 
 jest
   .spyOn(hooks, 'useSocketsState')
-  .mockImplementation(() => ({ state: { balances: [{}] } } as any))
+  .mockImplementation(() => ({ state: { balances: [{}] }, dispatch: () => void }))
 
 describe('ContactsScreen', () => {
-  const navigationMock = { navigate: jest.fn() } as any
-  let contactsContextMock: any
+  const navigation = useNavigation<ContactsListScreenProps>()
+  let contactsContextMock: ContactsContextInterface
   const contactsMock: IContact[] = [
     {
       id: '1',
@@ -38,15 +39,18 @@ describe('ContactsScreen', () => {
 
   beforeEach(() => {
     contactsContextMock = {
-      contacts: [] as IContact[],
+      contacts: [],
       deleteContact: jest.fn(),
+      addContact: jest.fn(),
+      isLoading: false,
+      editContact: jest.fn()
     }
   })
 
   test('renders correctly with empty contacts', () => {
     const { getByTestId } = render(
       <ContactsContext.Provider value={contactsContextMock}>
-        <ContactsScreen navigation={navigationMock} />
+        <ContactsScreen navigation={navigation.navigation} route={navigation.route} />
       </ContactsContext.Provider>,
     )
     expect(getByTestId('emptyView')).toBeTruthy()
@@ -56,7 +60,7 @@ describe('ContactsScreen', () => {
     contactsContextMock.contacts = contactsMock
     const { getByText, getByTestId } = render(
       <ContactsContext.Provider value={contactsContextMock}>
-        <ContactsScreen navigation={navigationMock} />
+        <ContactsScreen navigation={navigation.navigation} route={navigation.route}/>
       </ContactsContext.Provider>,
     )
 
@@ -70,7 +74,7 @@ describe('ContactsScreen', () => {
     contactsContextMock.contacts = contactsMock
     const { getByTestId, queryByText } = render(
       <ContactsContext.Provider value={contactsContextMock}>
-        <ContactsScreen navigation={navigationMock} />
+        <ContactsScreen navigation={navigation.navigation} route={navigation.route}/>
       </ContactsContext.Provider>,
     )
 
@@ -88,7 +92,7 @@ describe('ContactsScreen', () => {
     contactsContextMock.contacts = contactsMock
     const { getByTestId, queryByText } = render(
       <ContactsContext.Provider value={contactsContextMock}>
-        <ContactsScreen navigation={navigationMock} />
+        <ContactsScreen navigation={navigation.navigation} route={navigation.route} />
       </ContactsContext.Provider>,
     )
 

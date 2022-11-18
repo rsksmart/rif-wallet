@@ -15,7 +15,6 @@ import {
 import { RIFWallet } from '../../lib/core'
 import { ScreenWithWallet } from '../types'
 import { RootStackScreenProps } from '../../navigation/rootNavigator/types'
-import { IActivity } from '../../subscriptions/types'
 import { TransactionsServerResponseWithActivityTransactions } from './types'
 import { colors } from '../../styles'
 
@@ -85,7 +84,7 @@ export const ActivityScreen: React.FC<
 
       dispatch({
         type: 'newTransactions',
-        payload: fetchedTransactions as IActivity,
+        payload: fetchedTransactions,
       })
 
       setInfo('')

@@ -43,8 +43,8 @@ export const useSelectedWallet = () => {
     useContext(AppContext)
 
   return {
-    wallet: wallets[selectedWallet!],
-    isDeployed: walletsIsDeployed[selectedWallet!],
+    wallet: selectedWallet && wallets[selectedWallet],
+    isDeployed: selectedWallet && walletsIsDeployed[selectedWallet],
     chainId,
     selectedWalletIndex: selectedWallet
       ? Object.keys(wallets).indexOf(selectedWallet)
@@ -63,7 +63,11 @@ export function InjectSelectedWallet<T>(
     }
 
     return (
-      <Component wallet={wallet} isWalletDeployed={isDeployed} {...props} />
+      <Component
+        wallet={wallet}
+        isWalletDeployed={Boolean(isDeployed)}
+        {...props}
+      />
     )
   }
 }

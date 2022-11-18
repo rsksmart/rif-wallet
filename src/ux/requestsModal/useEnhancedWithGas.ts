@@ -6,8 +6,10 @@ import { RIFWallet } from '../../lib/core'
 
 const abiEnhancer = new AbiEnhancer()
 
-const convertValueToString = (value?: any) => (value ? value.toString() : '')
-const convertNumberToString = (value?: any) => (value ? value.toString() : '0')
+const convertValueToString = (value?: object | boolean | string) =>
+  value ? value.toString() : ''
+const convertNumberToString = (value?: number) =>
+  value ? value.toString() : '0'
 
 const convertTransactionToStrings = (tx: IEnhancedResult) => ({
   ...tx,

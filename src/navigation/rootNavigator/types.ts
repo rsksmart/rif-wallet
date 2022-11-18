@@ -1,5 +1,6 @@
 import { NavigationProp } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
+import { ContractTransaction } from 'ethers'
 import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =
@@ -73,9 +74,19 @@ export type RootStackParamList = {
   CreatePin: undefined
   RNSManager: undefined
   SearchDomain: undefined
-  RequestDomain: undefined
-  BuyDomain: undefined
-  AliasBought: undefined
+  RequestDomain: {
+    alias: string
+    duration: number
+  }
+  BuyDomain: {
+    alias: string
+    domainSecret: string
+    duration: number
+  }
+  AliasBought: {
+    alias: string
+    tx: ContractTransaction
+  }
   RegisterDomain: { selectedDomain: string; years: number }
   Contacts: undefined
   Settings: undefined

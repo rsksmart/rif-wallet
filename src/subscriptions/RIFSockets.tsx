@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import { useContext, useEffect, useReducer, createContext } from 'react'
 import { AppContext, useSelectedWallet } from '../Context'
 import { filterEnhancedTransactions, sortEnhancedTransactions } from './utils'
 
@@ -21,8 +21,8 @@ function liveSubscriptionsReducer(state: State, action: Action) {
   switch (action.type) {
     case 'newTransactions':
       const sortedTxs: Array<IActivityTransaction> = [
-        ...action.payload!.activityTransactions,
-        ...state.transactions!.activityTransactions,
+        ...action.payload.activityTransactions,
+        ...state.transactions.activityTransactions,
       ]
         .sort(sortEnhancedTransactions)
         .filter(filterEnhancedTransactions)
@@ -57,7 +57,7 @@ function liveSubscriptionsReducer(state: State, action: Action) {
     case 'newTransaction':
       const sortedTx: Array<IActivityTransaction> = [
         action.payload,
-        ...state.transactions!.activityTransactions,
+        ...state.transactions.activityTransactions,
       ]
         .sort(sortEnhancedTransactions)
         .filter(filterEnhancedTransactions)
@@ -118,22 +118,24 @@ const initialState = {
 }
 //TODO: Move this to the backend
 const loadRBTCBalance = async (wallet: RIFWallet, dispatch: Dispatch) => {
-  const rbtcBalanceEntry = await wallet.provider!.getBalance(wallet.address)
+  if (wallet.provider) {
+    const rbtcBalanceEntry = await wallet.provider.getBalance(wallet.address)
 
-  const newEntry = {
-    name: 'TRBTC (EOA)',
-    logo: 'TRBTC',
-    symbol: 'TRBTC',
-    contractAddress: constants.AddressZero,
-    decimals: 18,
-    balance: rbtcBalanceEntry.toString(),
-  } as ITokenWithBalance
+    const newEntry = {
+      name: 'TRBTC (EOA)',
+      logo: 'TRBTC',
+      symbol: 'TRBTC',
+      contractAddress: constants.AddressZero,
+      decimals: 18,
+      balance: rbtcBalanceEntry.toString(),
+    } as ITokenWithBalance
 
-  !rbtcBalanceEntry.isZero() &&
-    dispatch({ type: 'newBalance', payload: newEntry })
+    !rbtcBalanceEntry.isZero() &&
+      dispatch({ type: 'newBalance', payload: newEntry })
+  }
 }
 
-const RIFSocketsContext = React.createContext<
+const RIFSocketsContext = createContext<
   { state: State; dispatch: Dispatch } | undefined
 >(undefined)
 
@@ -143,10 +145,7 @@ export function RIFSocketsProvider({
   abiEnhancer,
   appActive,
 }: SubscriptionsProviderProps) {
-  const [state, dispatch] = React.useReducer(
-    liveSubscriptionsReducer,
-    initialState,
-  )
+  const [state, dispatch] = useReducer(liveSubscriptionsReducer, initialState)
   const setGlobalError = useSetGlobalError()
 
   const { mnemonic } = useContext(AppContext)
@@ -191,16 +190,18 @@ export function RIFSocketsProvider({
             })
           })
       } else {
-        dispatch(result as any)
+        dispatch(result.type)
       }
     })
 
-    rifServiceSocket?.connect(wallet, mnemonic!).catch(() => {
-      setGlobalError('Error connecting to the socket')
-    })
+    if (mnemonic) {
+      rifServiceSocket?.connect(wallet, mnemonic).catch(() => {
+        setGlobalError('Error connecting to the socket')
+      })
+    }
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (wallet && rifServiceSocket) {
       // socket is connected to a different wallet
       if (rifServiceSocket.isConnected()) {
@@ -209,14 +210,11 @@ export function RIFSocketsProvider({
       }
 
       connect()
-
-      return function cleanup() {
-        rifServiceSocket?.disconnect()
-      }
     }
+    return () => rifServiceSocket?.disconnect()
   }, [wallet])
 
-  React.useEffect(() => {
+  useEffect(() => {
     const interval = wallet
       ? setInterval(async () => {
           loadRBTCBalance(wallet, dispatch).then()
@@ -227,7 +225,7 @@ export function RIFSocketsProvider({
   }, [wallet])
 
   // Disconnect from the rifServiceSocket when the app goes to the background
-  React.useEffect(() => {
+  useEffect(() => {
     if (!appActive) {
       return rifServiceSocket?.disconnect()
     }
@@ -246,7 +244,7 @@ export function RIFSocketsProvider({
 }
 
 export function useSocketsState() {
-  const context = React.useContext(RIFSocketsContext)
+  const context = useContext(RIFSocketsContext)
   if (context === undefined) {
     throw new Error(
       'useSubscription must be used within a SubscriptionsProvider',

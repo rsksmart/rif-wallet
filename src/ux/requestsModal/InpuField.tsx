@@ -8,7 +8,7 @@ type IInputField = {
   keyboardType: KeyboardTypeOptions
   placeholder: string
   testID: string
-  handleValueOnChange: any
+  handleValueOnChange: (value: string) => void
 }
 const InputField: React.FC<IInputField> = ({
   label,

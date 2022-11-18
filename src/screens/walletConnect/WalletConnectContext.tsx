@@ -1,6 +1,12 @@
 import { useNavigation } from '@react-navigation/core'
 import WalletConnect from '@walletconnect/client'
-import React, { useContext, useEffect, useState } from 'react'
+import {
+  useContext,
+  useEffect,
+  useState,
+  createContext,
+  ReactChildren,
+} from 'react'
 import { AppContext } from '../../Context'
 import { RIFWallet } from '../../lib/core'
 import { WalletConnectAdapter } from '../../lib/walletAdapters/WalletConnectAdapter'
@@ -12,13 +18,13 @@ import {
 
 export interface WalletConnectContextInterface {
   connections: IWalletConnectConnections
-  createSession: (wallet: RIFWallet, uri: string, session?: any) => void
+  createSession: (wallet: RIFWallet, uri: string, session?: any) => void //TODO: make it IWalletConnectSession
   handleApprove: (wc: WalletConnect, wallet: RIFWallet) => Promise<void>
   handleReject: (wc: WalletConnect) => void
 }
 
 export const WalletConnectContext =
-  React.createContext<WalletConnectContextInterface>({
+  createContext<WalletConnectContextInterface>({
     connections: {},
     createSession: () => {},
     handleApprove: async () => {},
@@ -32,7 +38,11 @@ export interface IWalletConnectConnections {
   }
 }
 
-export const WalletConnectProviderElement: React.FC = ({ children }) => {
+interface Props {
+  children: ReactChildren
+}
+
+export const WalletConnectProviderElement = ({ children }: Props) => {
   const navigation = useNavigation()
 
   const [connections, setConnections] = useState<IWalletConnectConnections>({})
@@ -131,6 +141,7 @@ export const WalletConnectProviderElement: React.FC = ({ children }) => {
   }
 
   const createSession = (wallet: RIFWallet, uri: string, session?: any) => {
+    // TODO: make it IWallectConnectSession
     try {
       const newConnector = new WalletConnect({
         uri,

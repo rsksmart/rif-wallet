@@ -5,7 +5,10 @@ import { toChecksumAddress } from '../../components/address/lib'
 import { LoadingScreen } from '../../components/loading/LoadingScreen'
 import { useBitcoinCoreContext, useSelectedWallet } from '../../Context'
 import { balanceToDisplay } from '../../lib/utils'
-import { RootStackNavigationProp } from 'navigation/rootNavigator/types'
+import {
+  RootStackNavigationProp,
+  rootStackRouteNames,
+} from 'navigation/rootNavigator/types'
 import { colors } from '../../styles'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
 import PortfolioComponent from './PortfolioComponent'
@@ -63,9 +66,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         return navigation.navigate('Send', {
           token: selected?.symbol,
           contractAddress: selected?.contractAddress,
-        } as any)
+        })
       case 'RECEIVE':
-        return navigation.navigate('Receive' as any)
+        return navigation.navigate('Receive')
       case 'FAUCET':
         const address = wallet?.smartWallet.smartWalletContract.address
         addBalance(toChecksumAddress(address, chainId))
@@ -74,16 +77,18 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   }
 
   const handleBitcoinSendReceive = (screen: 'SEND' | 'RECEIVE' | 'FAUCET') => {
-    switch (screen) {
-      case 'RECEIVE':
-        return navigation.navigate('ReceiveBitcoin', {
-          network: selected,
-        } as any)
-      case 'SEND':
-        return navigation.navigate('Send', {
-          token: selected?.symbol,
-          contractAddress: selected?.contractAddress,
-        } as any)
+    if (selected instanceof BitcoinNetwork) {
+      switch (screen) {
+        case 'RECEIVE':
+          return navigation.navigate(rootStackRouteNames.ReceiveBitcoin, {
+            network: selected,
+          })
+        case 'SEND':
+          return navigation.navigate(rootStackRouteNames.Send, {
+            token: selected?.symbol,
+            contractAddress: selected?.contractAddress,
+          })
+      }
     }
   }
 

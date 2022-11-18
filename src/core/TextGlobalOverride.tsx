@@ -1,11 +1,9 @@
 import { Text } from 'react-native'
 import React from 'react'
 
-// @ts-ignore
 const oldTextRender = Text.render
 
 export default function () {
-  // @ts-ignore
   Text.render = function (...args) {
     const origin = oldTextRender.call(this, ...args)
     const children = origin.props.children

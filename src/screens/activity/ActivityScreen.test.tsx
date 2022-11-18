@@ -83,8 +83,7 @@ describe('Activity Screen', function (this: {
       } = this.testInstance
 
       await waitForEffect()
-      for (let v of txTestCase.data) {
-        // @ts-ignore
+      for (const v of txTestCase.data) {
         const enhancedTx = enhancedTxTestCase
         const activityText = getByTestId(`${v.hash}.Text`)
         expect(getTextFromTextNode(activityText)).toEqual(
@@ -129,7 +128,6 @@ describe('Activity Screen with Error in Fetcher', function (this: {
       fetchTransactionsByAddress: jest.fn(() => Promise.reject(new Error())),
     }
     await act(async () => {
-      // @ts-ignore
       this.testInstance = await createTestInstance(this.fetcher)
     })
   })

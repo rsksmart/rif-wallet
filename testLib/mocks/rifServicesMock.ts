@@ -424,8 +424,7 @@ export const txTestCase: TransactionsServerResponse = {
   next: null,
 }
 
-// @ts-ignore
-export const createMockFetcher = (): IRIFWalletServicesFetcher => ({
+export const createMockFetcher = (): Partial<IRIFWalletServicesFetcher> => ({
   fetchTokensByAddress: jest.fn(() => Promise.resolve([...testCase])),
   fetchTransactionsByAddress: jest.fn(() => Promise.resolve(txTestCase)),
 })
