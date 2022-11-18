@@ -35,7 +35,7 @@ export const hasKeys = () => MainStorage.has(keyManagement)
 export const getKeys = () => MainStorage.get(keyManagement)
 export const saveKeys = (keysValue: string) =>
   MainStorage.set(keyManagement, keysValue)
-export const deleteKeys = MainStorage.deleteAll
+export const deleteKeys = () => MainStorage.delete(keyManagement)
 
 // keyVerificationReminder functions
 export const hasKeyVerificationReminder = () =>
