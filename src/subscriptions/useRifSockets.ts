@@ -8,7 +8,6 @@ import React, { useContext, useEffect } from 'react'
 import { useSetGlobalError } from 'components/GlobalErrorHandler'
 import { AppContext, useSelectedWallet } from '../Context'
 import { filterEnhancedTransactions, sortEnhancedTransactions } from './utils'
-import { loadRBTCBalance } from './loadRBTCBalance'
 import { useConnectSocket } from './useConnectSocket'
 import { useOnSocketChangeEmitted } from './useOnSocketChangeEmitted'
 import { useOnSocketInit } from './useOnSocketInit'
@@ -146,16 +145,6 @@ export const useRifSockets = ({
         rifServiceSocket?.disconnect()
       }
     }
-  }, [wallet])
-
-  React.useEffect(() => {
-    const interval = wallet
-      ? setInterval(async () => {
-          loadRBTCBalance(wallet, dispatch).then()
-        }, 5000)
-      : undefined
-
-    return () => interval && clearInterval(interval)
   }, [wallet])
 
   // Disconnect from the rifServiceSocket when the app goes to the background
