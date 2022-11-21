@@ -10,15 +10,15 @@ export const ChangeLanguageScreen = () => {
       <View>
         <RegularText>Select language</RegularText>
         <View style={styles.languageView}>
-          <ActiveButton text="ENG" />
-          <ActiveButton text="ESP" />
+          <ActiveButton title="ENG" />
+          <ActiveButton title="ESP" />
         </View>
       </View>
       <View style={styles.modeView}>
         <RegularText>Mode</RegularText>
         <View style={styles.languageView}>
-          <ActiveButton text="dark mode" />
-          <ActiveButton text="light mode" />
+          <ActiveButton title="dark mode" />
+          <ActiveButton title="light mode" />
         </View>
       </View>
     </View>
