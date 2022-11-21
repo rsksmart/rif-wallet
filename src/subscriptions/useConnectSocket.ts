@@ -1,11 +1,14 @@
-import { IRifWalletServicesSocket } from 'lib/rifWalletServices/RifWalletServicesSocket'
+import {
+  IRifWalletServicesSocket,
+  IServiceChangeEvent,
+} from 'lib/rifWalletServices/RifWalletServicesSocket'
 import { RIFWallet } from 'lib/core'
-import { IChangeEmittedFunction } from './types'
+import { Action } from 'src/subscriptions/types'
 
 interface IUseConnectSocket {
   rifServiceSocket?: IRifWalletServicesSocket
   onInit: (result: any) => void
-  onChange: ({}: IChangeEmittedFunction) => void
+  onChange: (action: Action) => void
   onError: () => void
   wallet: RIFWallet
   mnemonic?: string
@@ -21,7 +24,10 @@ export const useConnectSocket = ({
 }: IUseConnectSocket) => {
   return () => {
     rifServiceSocket?.on('init', onInit)
-    rifServiceSocket?.on('change', onChange)
+    rifServiceSocket?.on(
+      'change',
+      onChange as (action: IServiceChangeEvent) => void,
+    )
     rifServiceSocket?.connect(wallet, mnemonic!).catch(onError)
   }
 }

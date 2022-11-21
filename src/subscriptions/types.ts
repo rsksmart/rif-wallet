@@ -58,6 +58,7 @@ export interface InitAction {
 
 export interface ResetAction {
   type: 'reset'
+  payload?: undefined
 }
 
 export interface State {
@@ -115,9 +116,4 @@ export interface ISocketsChangeEmitted {
   dispatch: React.Dispatch<Action>
   abiEnhancer: IAbiEnhancer
   wallet: RIFWallet
-}
-
-export interface IChangeEmittedFunction {
-  type: string
-  payload: any
 }

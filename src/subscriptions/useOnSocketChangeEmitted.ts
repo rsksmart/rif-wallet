@@ -1,7 +1,7 @@
 import { useOnNewPriceEventEmitted } from './useOnNewPriceEventEmitted'
-import { useAppDispatch } from '../redux/storeHooks'
+import { useAppDispatch } from 'store/storeHooks'
 import { useOnNewTransactionEventEmitted } from './useOnNewTransactionEventEmitted'
-import { IChangeEmittedFunction, ISocketsChangeEmitted } from './types'
+import { Action, ISocketsChangeEmitted } from './types'
 
 export const useOnSocketChangeEmitted = ({
   dispatch,
@@ -15,13 +15,13 @@ export const useOnSocketChangeEmitted = ({
     wallet,
     dispatch,
   })
-  return ({ type, payload }: IChangeEmittedFunction) => {
+  return ({ type, payload }: Action) => {
     if (type === 'newPrice') {
       onNewPriceEventEmitted(payload)
     } else if (type === 'newTransaction') {
       onNewTransactionEventEmitted(payload)
     } else {
-      dispatch({ type, payload } as any)
+      dispatch({ type, payload } as Action)
     }
   }
 }
