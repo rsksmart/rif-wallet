@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { RegularText } from '../../components'
-import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
+import { PrimaryButton } from '../../components/button/PrimaryButton'
 import { TextInputWithLabel } from '../../components/input/TextInputWithLabel'
 import { colors } from '../../styles'
 import { sendFeedbackToGithub } from './operations'
@@ -62,7 +62,7 @@ export const FeedbackScreen: React.FC = () => {
         textAlignVertical="top"
       />
 
-      <PrimaryButton2
+      <PrimaryButton
         title="Submit"
         onPress={submitFeedback}
         disabled={isLoading}

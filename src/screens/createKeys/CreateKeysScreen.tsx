@@ -5,7 +5,7 @@ import Carousel, { Pagination } from 'react-native-snap-carousel'
 
 import { name as appName } from 'src/../app.json'
 import { OutlineButton } from 'src/components/button/OutlineButton'
-import { PrimaryButton2 } from 'src/components/button/PrimaryButton2'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
 import { CreateKeysScreenProps } from 'src/navigation/createKeysNavigator'
 import { colors, grid } from 'src/styles'
 import {
@@ -93,7 +93,7 @@ export const CreateKeysScreen: React.FC<
         {pagination(slidesIndexes)}
       </View>
       <View style={{ ...grid.row, ...styles.section }}>
-        <PrimaryButton2
+        <PrimaryButton
           onPress={() => navigation.navigate('SecureYourWallet')}
           accessibilityLabel="newWallet"
           title={'new wallet'}

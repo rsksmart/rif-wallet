@@ -6,8 +6,8 @@ import { colors } from '../../styles'
 import { Arrow } from '../../components/icons'
 import { grid } from '../../styles'
 
-import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
-import { SecondaryButton2 } from '../../components/button/SecondaryButton2'
+import { PrimaryButton } from '../../components/button/PrimaryButton'
+import { SecondaryButton } from '../../components/button/SecondaryButton'
 import { RIFWallet } from '../../lib/core'
 import { saveKeyVerificationReminder } from '../../storage/MainStorage'
 import { WINDOW_HEIGHT } from '../../ux/slides/Dimensions'
@@ -52,7 +52,7 @@ export const SecureYourWalletScreen: React.FC<
       </View>
 
       <View style={{ ...grid.row, ...styles.section }}>
-        <PrimaryButton2
+        <PrimaryButton
           onPress={() => navigation.navigate('SecurityExplanation')}
           accessibilityLabel="secureNow"
           title={'secure now'}
@@ -60,7 +60,7 @@ export const SecureYourWalletScreen: React.FC<
         />
       </View>
       <View style={{ ...grid.row, ...styles.section }}>
-        <SecondaryButton2
+        <SecondaryButton
           onPress={secureLater}
           accessibilityLabel="secureLater"
           title={'secure later'}
@@ -128,5 +128,5 @@ const styles = StyleSheet.create({
   },
   button: {
     width: 150,
-  }
+  },
 })

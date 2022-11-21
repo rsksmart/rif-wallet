@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
-import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
+import { PrimaryButton } from '../../components/button/PrimaryButton'
 import { colors } from '../../styles'
 
 import { rnsManagerStyles } from './rnsManagerStyles'
@@ -121,7 +121,7 @@ export const SearchDomainScreen: React.FC<
         </View>
 
         <View style={rnsManagerStyles.bottomContainer}>
-          <PrimaryButton2
+          <PrimaryButton
             disabled={!validDomain}
             onPress={() =>
               // @ts-ignore

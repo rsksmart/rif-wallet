@@ -4,9 +4,9 @@ import { Clipboard, Image, Linking, StyleSheet, View } from 'react-native'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
 import { RootStackScreenProps } from 'navigation/rootNavigator/types'
-import { SecondaryButton2 } from 'src/components/button/SecondaryButton2'
+import { SecondaryButton } from 'src/components/button/SecondaryButton'
 import { MediumText } from '../../components'
-import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
+import { PrimaryButton } from '../../components/button/PrimaryButton'
 import { IProfileStore } from '../../storage/ProfileStore'
 import { ScreenWithWallet } from '../types'
 
@@ -66,13 +66,13 @@ export const AliasBoughtScreen: React.FC<
 
         <View style={rnsManagerStyles.bottomContainer}>
           <View style={styles.buttonContainer}>
-            <PrimaryButton2
+            <PrimaryButton
               onPress={() => copyHashAndOpenExplorer(tx.hash)}
               accessibilityLabel="Copy Hash & Open Explorer"
               title={'Copy Hash & Open Explorer'}
             />
           </View>
-          <SecondaryButton2
+          <SecondaryButton
             onPress={() =>
               navigation.navigate('ProfileDetailsScreen', { navigation })
             }

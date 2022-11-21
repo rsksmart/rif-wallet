@@ -1,6 +1,6 @@
 import React from 'react'
 import { Image, StyleSheet, View } from 'react-native'
-import { PrimaryButton2 } from 'src/components/button/PrimaryButton2'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
 import { RegularText, SemiBoldText } from '../../components'
 import { Arrow } from '../../components/icons'
 import { colors } from '../../styles'
@@ -24,7 +24,7 @@ const WalletNotDeployedView: React.FC<WalletNotDeployedViewType> = ({
       <RegularText style={styles.regularText}>
         To be able to send funds, you need to deploy your wallet first.
       </RegularText>
-      <PrimaryButton2
+      <PrimaryButton
         title="deploy wallet"
         style={styles.buttonDeploy}
         onPress={onDeployWalletPress}

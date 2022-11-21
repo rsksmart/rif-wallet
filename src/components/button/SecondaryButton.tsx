@@ -3,23 +3,29 @@ import { StyleSheet } from 'react-native'
 import { colors } from '../../styles'
 import { Button, ButtonProps } from './ButtonVariations'
 
-export const PrimaryButton2: React.FC<ButtonProps> = props => (
+export const SecondaryButton: React.FC<ButtonProps> = props => (
   <Button {...props} buttonStyles={styles} />
 )
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: colors.background.bustyBlue,
+    borderWidth: 1,
+    borderColor: colors.lightPurple,
+    backgroundColor: colors.background.darkBlue,
   },
   buttonDisabled: {
-    backgroundColor: colors.button.primary,
+    borderWidth: 1,
+    borderColor: colors.lightPurple,
+    backgroundColor: colors.background.darkBlue,
     opacity: 0.5,
   },
   buttonActive: {
-    backgroundColor: colors.button.primary,
+    backgroundColor: colors.button.secondary,
   },
   buttonPressed: {
-    backgroundColor: colors.button.primaryPressed,
+    borderWidth: 1,
+    borderColor: colors.lightPurple,
+    backgroundColor: colors.button.secondaryPressed,
     opacity: 0.8,
   },
   text: {
@@ -30,6 +36,6 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   textPressed: {
-    color: colors.lightPurple,
+    color: colors.button.secondary,
   },
 })

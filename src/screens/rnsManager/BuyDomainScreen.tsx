@@ -8,7 +8,7 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { colors } from '../../styles'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
-import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
+import { PrimaryButton } from '../../components/button/PrimaryButton'
 
 import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { ScreenWithWallet } from '../types'
@@ -134,7 +134,7 @@ export const BuyDomainScreen: React.FC<
 
         <View style={rnsManagerStyles.bottomContainer}>
           {!registerInProcess && (
-            <PrimaryButton2
+            <PrimaryButton
               onPress={() => registerDomain(alias)}
               accessibilityLabel="buy"
               title={`buy for $${domainFiatPrice}`}

@@ -8,8 +8,8 @@ import {
 import { Modal } from '../../components/modal/Modal'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
-import { PrimaryButton2 } from '../button/PrimaryButton2'
-import { SecondaryButton2 } from '../button/SecondaryButton2'
+import { PrimaryButton } from '../button/PrimaryButton'
+import { SecondaryButton } from '../button/SecondaryButton'
 
 interface ConfirmationModalProps {
   isVisible?: boolean
@@ -45,13 +45,13 @@ export const ConfirmationModal = ({
       </Modal.Body>
       <Modal.Footer>
         <View>
-          <PrimaryButton2
+          <PrimaryButton
             style={styles.okButton}
             title={okText}
             onPress={onOk}
           />
           {cancelText && (
-            <SecondaryButton2
+            <SecondaryButton
               style={styles.cancelButton}
               title={cancelText}
               onPress={onCancel}

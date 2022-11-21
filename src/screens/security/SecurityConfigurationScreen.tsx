@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Alert, StyleSheet, View } from 'react-native'
 import { MediumText } from 'src/components'
-import { PrimaryButton2 } from 'src/components/button/PrimaryButton2'
-import { SecondaryButton2 } from 'src/components/button/SecondaryButton2'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { SecondaryButton } from 'src/components/button/SecondaryButton'
 import {
   getKeyVerificationReminder,
   hasKeyVerificationReminder,
@@ -62,13 +62,13 @@ const SecurityConfigurationScreen: React.FC<
         <MediumText style={[styles.masterText, styles.textLeftMargin]}>
           Manage master key
         </MediumText>
-        <PrimaryButton2
+        <PrimaryButton
           style={styles.buttonFirstStyle}
           title="Reveal Master Key"
           onPress={revealMasterKey}
         />
         {showReminder && (
-          <SecondaryButton2
+          <SecondaryButton
             style={styles.buttonFirstStyle}
             title="Confirm Master Key"
             onPress={() =>
@@ -78,7 +78,7 @@ const SecurityConfigurationScreen: React.FC<
             }
           />
         )}
-        <SecondaryButton2
+        <SecondaryButton
           style={styles.buttonFirstStyle}
           title="Delete Master Key"
           onPress={handleDeleteKeys}
@@ -88,7 +88,7 @@ const SecurityConfigurationScreen: React.FC<
         <MediumText style={[styles.pinText, styles.textLeftMargin]}>
           Manage PIN
         </MediumText>
-        <SecondaryButton2
+        <SecondaryButton
           style={styles.buttonFirstStyle}
           title="Change PIN"
           onPress={changePin}

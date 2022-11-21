@@ -7,7 +7,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { AvatarIcon } from 'src/components/icons/AvatarIcon'
 import { IProfileStore } from 'src/storage/MainStorage'
 import { MediumText } from '../../components'
-import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
+import { PrimaryButton } from '../../components/button/PrimaryButton'
 import { TextInputWithLabel } from '../../components/input/TextInputWithLabel'
 import { emptyProfile } from '../../core/hooks/useProfile'
 import { colors } from '../../styles'
@@ -82,7 +82,7 @@ export const ProfileCreateScreen: React.FC<
         {!profile?.alias && (
           <>
             <View style={styles.rowContainer}>
-              <PrimaryButton2
+              <PrimaryButton
                 onPress={() => navigation.navigate('SearchDomain')}
                 accessibilityLabel="register new"
                 title={'register new'}
@@ -129,7 +129,7 @@ export const ProfileCreateScreen: React.FC<
           />
         </View>
         <View style={styles.rowContainer}>
-          <PrimaryButton2
+          <PrimaryButton
             onPress={createProfile}
             accessibilityLabel="create"
             title={editProfile ? 'save' : 'create'}

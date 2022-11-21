@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import { rnsResolver } from '../../core/setup'
 import { decodeString } from '../../lib/eip681/decodeString'
 import { colors, grid } from '../../styles'
-import { SecondaryButton2 } from '../button/SecondaryButton2'
+import { SecondaryButton } from '../button/SecondaryButton'
 import { ContentPasteIcon, QRCodeIcon } from '../icons'
 import DeleteIcon from '../icons/DeleteIcon'
 import { QRCodeScanner } from '../QRCodeScanner'
@@ -226,7 +226,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
             {status.value}
           </Text>
           {status.type === 'CHECKSUM' && (
-            <SecondaryButton2
+            <SecondaryButton
               testID={`${testID}.Button.Checksum`}
               title="Convert to correct checksum"
               onPress={() =>

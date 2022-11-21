@@ -7,7 +7,7 @@ import { useContext, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { PrimaryButton2 } from 'src/components/button/PrimaryButton2'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
 import { useSelectedWallet } from 'src/Context'
 import {
   contactsStackRouteNames,
@@ -104,7 +104,7 @@ export const ContactFormScreen = ({
         />
       </View>
       <View style={styles.footer}>
-        <PrimaryButton2
+        <PrimaryButton
           testID="saveButton"
           accessibilityLabel="saveButton"
           title="Save Contact"
