@@ -19,7 +19,8 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
     <View style={styles.row}>
       <TouchableOpacity
         onPress={() => navigation.navigate('Home' as never)}
-        style={styles.button}>
+        style={styles.button}
+        accessibilityLabel="home">
         <Image
           style={styles.walletIcon}
           source={
@@ -32,7 +33,8 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
 
       <TouchableOpacity
         onPress={() => navigation.navigate('Activity' as never)}
-        style={styles.button}>
+        style={styles.button}
+        accessibilityLabel="activity">
         {currentScreen === 'Activity' ? (
           <ActivitySelectedIcon />
         ) : (
@@ -42,13 +44,15 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
 
       <TouchableOpacity
         onPress={() => navigation.navigate('ScanQR' as never)}
-        style={styles.button}>
+        style={styles.button}
+        accessibilityLabel="scan">
         <QRCodeIconFooter />
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={() => navigation.navigate('Contacts' as never)}
-        style={styles.button}>
+        style={styles.button}
+        accessibilityLabel="contacts">
         {currentScreen === 'Contacts' ? (
           <ContactSelectedIcon />
         ) : (
@@ -58,7 +62,8 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
 
       <TouchableOpacity
         onPress={() => navigation.navigate('WalletConnect' as never)}
-        style={styles.button}>
+        style={styles.button}
+        accessibilityLabel="dapps">
         {currentScreen === 'WalletConnect' ? (
           <DappsSelectedIcon />
         ) : (
