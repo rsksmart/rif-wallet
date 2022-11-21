@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import { ScrollView } from 'react-native-gesture-handler'
-import { Transaction, BigNumber } from 'ethers'
-import { ScreenWithWallet } from '../types'
-import { Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Clipboard from '@react-native-community/clipboard'
-import { colors, grid } from '../../styles'
-import SecondaryButton from '../../components/button/SecondaryButton'
-import { CopyIcon } from '../../components/icons'
+import { BigNumber, Transaction } from 'ethers'
+import React, { useEffect, useState } from 'react'
+import { Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler'
+import { PrimaryButton2 } from 'src/components/button/PrimaryButton2'
+import { SecondaryButton2 } from 'src/components/button/SecondaryButton2'
+import { CopyIcon } from 'src/components/icons'
+import { colors, grid } from 'src/styles'
+import { ScreenWithWallet } from '../types'
 
 export const ManuallyDeployScreen: React.FC<
   ScreenWithWallet & {
@@ -99,21 +100,21 @@ export const ManuallyDeployScreen: React.FC<
             </View>
 
             {!hasBalance && (
-              <SecondaryButton
+              <SecondaryButton2
                 onPress={() => Linking.openURL('https://faucet.rsk.co/')}
-                style={styles.button}>
-                <Text>Open the RBTC Faucet in your browser</Text>
-              </SecondaryButton>
+                style={styles.button}
+                title="Open the RBTC Faucet in your browser"
+              />
             )}
           </View>
 
           <Text style={styles.heading}>Step 2: Deploy the wallet</Text>
-          <SecondaryButton
+          <PrimaryButton2
             disabled={!hasBalance}
             onPress={deploy || isDeploying}
-            style={!hasBalance ? styles.buttonDisabled : styles.button}>
-            <Text>Deploy Wallet</Text>
-          </SecondaryButton>
+            style={!hasBalance ? styles.buttonDisabled : styles.button}
+            title="Deploy Wallet"
+          />
 
           {isDeploying && <Text style={styles.text}>Deploying...</Text>}
 
