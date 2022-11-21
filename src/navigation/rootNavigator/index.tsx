@@ -348,10 +348,5 @@ export const RootNavigationComponent = ({
   )
 }
 
-const styles = StyleSheet.create({
-  parent: {
-    height: '100%',
-  },
-})
 
 export * from './types'
