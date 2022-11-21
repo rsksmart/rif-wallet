@@ -1,4 +1,3 @@
-import { FC } from 'react'
 import { StyleSheet, View, ScrollView, Text } from 'react-native'
 import { BigNumber, BigNumberish } from 'ethers'
 
@@ -59,9 +58,11 @@ export const BalancesRow = ({
 
 export type BalancesScreenProps = { fetcher: IRIFWalletServicesFetcher }
 
-export const BalancesScreen: FC<
-  RootStackScreenProps<'Balances'> & ScreenWithWallet & BalancesScreenProps
-> = ({ navigation, wallet }) => {
+type Props = RootStackScreenProps<'Balances'> &
+  ScreenWithWallet &
+  BalancesScreenProps
+
+export const BalancesScreen = ({ navigation, wallet }: Props) => {
   const { state } = useSocketsState()
 
   return (

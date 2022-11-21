@@ -1,5 +1,5 @@
-import { IRifWalletServicesSocket } from '../lib/rifWalletServices/RifWalletServicesSocket'
-import { RIFWallet } from '../lib/core'
+import { IRifWalletServicesSocket } from 'lib/rifWalletServices/RifWalletServicesSocket'
+import { RIFWallet } from 'lib/core'
 import { IChangeEmittedFunction } from './types'
 
 interface IUseConnectSocket {

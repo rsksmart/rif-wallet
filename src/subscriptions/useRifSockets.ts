@@ -4,7 +4,7 @@ import {
   State,
   SubscriptionsProviderProps,
 } from './types'
-import React, { useContext, useEffect } from 'react'
+import { useContext, useEffect, useReducer } from 'react'
 import { useSetGlobalError } from 'components/GlobalErrorHandler'
 import { AppContext, useSelectedWallet } from '../Context'
 import { filterEnhancedTransactions, sortEnhancedTransactions } from './utils'
@@ -108,10 +108,7 @@ export const useRifSockets = ({
   abiEnhancer,
   appActive,
 }: Omit<SubscriptionsProviderProps, 'children'>) => {
-  const [state, dispatch] = React.useReducer(
-    liveSubscriptionsReducer,
-    initialState,
-  )
+  const [state, dispatch] = useReducer(liveSubscriptionsReducer, initialState)
   const setGlobalError = useSetGlobalError()
   const { mnemonic } = useContext(AppContext)
   const { wallet } = useSelectedWallet()
@@ -132,7 +129,7 @@ export const useRifSockets = ({
     wallet,
   })
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (wallet && rifServiceSocket) {
       // socket is connected to a different wallet
       if (rifServiceSocket.isConnected()) {

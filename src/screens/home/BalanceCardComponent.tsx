@@ -1,4 +1,3 @@
-import React from 'react'
 import useContainerStyles from './useContainerStyles'
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { balanceToUSD, balanceToDisplay } from 'lib/utils'
@@ -7,19 +6,27 @@ import BalanceCardPresentationComponent from './BalanceCardPresentationComponent
 import { BigNumber } from 'ethers'
 import { useAppSelector } from 'store/storeHooks'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
+import { useMemo } from 'react'
 
-export const BalanceCardComponent: React.FC<{
+interface IBalanceCardComponentProps {
   token: ITokenWithBalance
   selected: boolean
   onPress: (address: string) => void
   price?: IPrice
-}> = ({ selected, token, onPress, price }) => {
+}
+
+export const BalanceCardComponent = ({
+  selected,
+  token,
+  onPress,
+  price,
+}: IBalanceCardComponentProps) => {
   const containerStyles = useContainerStyles(selected, token.symbol)
   const usdAmount = price
     ? balanceToUSD(token.balance, token.decimals, price?.price)
     : ''
 
-  const balance = React.useMemo(
+  const balance = useMemo(
     () => balanceToDisplay(token.balance, token.decimals, 4),
     [token.balance, token.decimals],
   )
@@ -36,25 +43,33 @@ export const BalanceCardComponent: React.FC<{
   )
 }
 
-export const BitcoinCardComponent: React.FC<{
+interface IBitcoinCardComponentProps {
   symbol: string
   balance: number
   isSelected: boolean
   contractAddress: string
   onPress: (address: string) => void
-}> = ({ symbol, balance, isSelected, contractAddress, onPress }) => {
+}
+
+export const BitcoinCardComponent = ({
+  symbol,
+  balance,
+  isSelected,
+  contractAddress,
+  onPress,
+}: IBitcoinCardComponentProps) => {
   const containerStyles = useContainerStyles(isSelected, symbol)
-  const balanceBigNumber = React.useMemo(
+  const balanceBigNumber = useMemo(
     () => BigNumber.from(Math.round(balance * 10e8)),
     [balance],
   )
   const prices = useAppSelector(selectUsdPrices)
   // Future TODO: should be set in the network constants if another coin is implemented
-  const price = React.useMemo(() => {
+  const price = useMemo(() => {
     return prices.BTC ? balanceToUSD(balanceBigNumber, 8, prices.BTC.price) : ''
   }, [balance, prices.BTC])
 
-  const balanceFormatted = React.useMemo(
+  const balanceFormatted = useMemo(
     () => balanceToDisplay(balanceBigNumber.toString(), 8, 4),
     [balance],
   )
