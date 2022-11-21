@@ -37,6 +37,8 @@ export const SettingsScreen: React.FC<RootStackScreenProps<'Settings'>> = ({
 
   const goToFeedbackScreen = () => navigation.navigate('FeedbackScreen')
 
+  const goToGatewayScreen = () => navigation.navigate('GatewayScreen')
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.mainView}>
@@ -77,6 +79,15 @@ export const SettingsScreen: React.FC<RootStackScreenProps<'Settings'>> = ({
           <FontAwesomeIcon name="comment" color={colors.white} size={20} />
           <SemiBoldText style={[styles.textColor, spacing.ml6]}>
             Feedback
+          </SemiBoldText>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.rowComponent}
+          onPress={goToGatewayScreen}>
+          <FontAwesomeIcon name="smile" color={colors.white} size={20} />
+          <SemiBoldText style={[styles.textColor, spacing.ml6]}>
+            Gateway
           </SemiBoldText>
         </TouchableOpacity>
       </View>

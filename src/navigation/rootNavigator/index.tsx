@@ -330,6 +330,11 @@ export const RootNavigationComponent = ({
           component={Screens.FeedbackScreen}
           options={sharedOptions}
         />
+        <RootStack.Screen
+          name={rootStackRouteNames.GatewayScreen}
+          component={Screens.GatewayScreen}
+          options={sharedOptions}
+        />
       </RootStack.Navigator>
       {appIsSetup && !isKeyboardVisible && (
         <AppFooterMenu currentScreen={currentScreen} />

@@ -41,6 +41,7 @@ export enum rootStackRouteNames {
   ProfileDetailsScreen = 'ProfileDetailsScreen',
   ChangePinScreen = 'ChangePinScreen',
   FeedbackScreen = 'FeedbackScreen',
+  GatewayScreen = 'GatewayScreen',
 }
 
 export type RootStackParamList = {
@@ -86,4 +87,5 @@ export type RootStackParamList = {
   ProfileDetailsScreen: undefined
   ChangePinScreen: undefined
   FeedbackScreen: undefined
+  GatewayScreen: undefined
 }
