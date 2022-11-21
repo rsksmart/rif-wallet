@@ -1,11 +1,11 @@
+import Clipboard from '@react-native-community/clipboard'
 import React from 'react'
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
-import { RegularText, SemiBoldText } from '../typography'
-import ActiveButton from '../button/ActiveButton'
-import { useGlobalErrorContext } from './GlobalErrorHandlerContext'
 import { colors } from '../../styles'
+import { PrimaryButton2 } from '../button/PrimaryButton2'
 import ContentCopyMaterialIcon from '../icons/ContentCopyMaterialIcon'
-import Clipboard from '@react-native-community/clipboard'
+import { RegularText, SemiBoldText } from '../typography'
+import { useGlobalErrorContext } from './GlobalErrorHandlerContext'
 
 export type GlobalErrorHandlerViewType = {
   message?: string | undefined
@@ -55,10 +55,9 @@ const GlobalErrorHandlerView: React.FC<GlobalErrorHandlerViewType> = ({
           </View>
         )}
         <View style={styles.reloadButtonView}>
-          <ActiveButton
-            text="reload"
+          <PrimaryButton2
+            title="reload"
             onPress={handleReload}
-            isActive
             style={styles.reload}
           />
         </View>
