@@ -156,8 +156,8 @@ export const Core = () => {
                       return wallet
                     }),
                 }}
-                createPin={handleUpdatePin}
-                editPin={editPin}
+                createPin={createPin}
+                editPin={handleUpdatePin}
                 setWalletIsDeployed={setWalletIsDeployed}
                 balancesScreenProps={{ fetcher: rifWalletServicesFetcher }}
                 sendScreenProps={{ rnsResolver }}
