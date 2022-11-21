@@ -1,11 +1,9 @@
 import React from 'react'
 import { Image, StyleSheet, View } from 'react-native'
-import { RegularText, SemiBoldText } from '../../components'
-import { colors } from '../../styles'
-import PrimaryButton from '../../components/button/PrimaryButton'
-import { Arrow } from '../../components/icons'
 import { PrimaryButton2 } from 'src/components/button/PrimaryButton2'
-import { color } from 'react-native-reanimated'
+import { RegularText, SemiBoldText } from '../../components'
+import { Arrow } from '../../components/icons'
+import { colors } from '../../styles'
 
 type WalletNotDeployedViewType = {
   onDeployWalletPress: () => void
