@@ -348,5 +348,4 @@ export const RootNavigationComponent = ({
   )
 }
 
-
 export * from './types'
