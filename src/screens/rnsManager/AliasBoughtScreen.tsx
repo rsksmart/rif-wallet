@@ -3,14 +3,12 @@ import React, { useEffect, useState } from 'react'
 import { Clipboard, Image, Linking, StyleSheet, View } from 'react-native'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
-import { OutlineButton } from '../../components/button/ButtonVariations'
-
+import { RootStackScreenProps } from 'navigation/rootNavigator/types'
+import { SecondaryButton2 } from 'src/components/button/SecondaryButton2'
 import { MediumText } from '../../components'
 import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
-import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { IProfileStore } from '../../storage/ProfileStore'
 import { ScreenWithWallet } from '../types'
-import { SecondaryButton2 } from 'src/components/button/SecondaryButton2'
 
 type Props = {
   profile: IProfileStore

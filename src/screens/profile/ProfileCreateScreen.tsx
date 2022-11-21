@@ -1,11 +1,11 @@
 import React, { useCallback, useState } from 'react'
 import { RegularText } from '../../components/typography'
-import { IProfileStore } from '../../storage/ProfileStore'
 
 import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { AvatarIcon } from 'src/components/icons/AvatarIcon'
+import { IProfileStore } from 'src/storage/MainStorage'
 import { MediumText } from '../../components'
 import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
 import { TextInputWithLabel } from '../../components/input/TextInputWithLabel'
