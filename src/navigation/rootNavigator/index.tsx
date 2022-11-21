@@ -106,7 +106,7 @@ export const RootNavigationComponent = ({
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <View style={{ height: '100%' }}>
+      <View style={styles.parent}>
         {appIsSetup && (
           <AppHeader profile={profile} profileCreated={profileCreated} />
         )}
@@ -347,5 +347,11 @@ export const RootNavigationComponent = ({
     </KeyboardAvoidingView>
   )
 }
+
+const styles = StyleSheet.create({
+  parent: {
+    height: '100%',
+  },
+})
 
 export * from './types'
