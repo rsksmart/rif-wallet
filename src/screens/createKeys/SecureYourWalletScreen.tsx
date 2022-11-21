@@ -56,6 +56,7 @@ export const SecureYourWalletScreen: React.FC<
           onPress={() => navigation.navigate('SecurityExplanation')}
           accessibilityLabel="secureNow"
           title={'secure now'}
+          style={styles.button}
         />
       </View>
       <View style={{ ...grid.row, ...styles.section }}>
@@ -63,6 +64,7 @@ export const SecureYourWalletScreen: React.FC<
           onPress={secureLater}
           accessibilityLabel="secureLater"
           title={'secure later'}
+          style={styles.button}
         />
       </View>
       {/*
@@ -124,4 +126,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginVertical: 5,
   },
+  button: {
+    width: 150,
+  }
 })

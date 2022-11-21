@@ -133,6 +133,7 @@ const styles = StyleSheet.create({
   },
   reload: {
     backgroundColor: colors.background.bustyBlue,
+    width: 150,
   },
 })
 

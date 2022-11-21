@@ -53,7 +53,7 @@ export const Button: React.FC<ButtonProps> = ({
       onShowUnderlay={() => setIsPressed(true)}
       onHideUnderlay={() => setIsPressed(false)}>
       <View style={sharedStyles.contentWrapper}>
-        {icon && <View>{icon}</View>}
+        {icon}
         {title && (
           <Text style={{ ...sharedStyles.text, ...textStyle }}>{title}</Text>
         )}
