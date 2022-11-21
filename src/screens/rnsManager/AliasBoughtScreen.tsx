@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Clipboard, Image, Linking, StyleSheet, View } from 'react-native'
 import { rnsManagerStyles } from './rnsManagerStyles'
@@ -7,19 +7,24 @@ import { OutlineButton } from '../../components/button/ButtonVariations'
 
 import { MediumText } from '../../components'
 import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
-import { RootStackScreenProps } from 'navigation/rootNavigator/types'
-import { IProfileStore } from '../../storage/ProfileStore'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
 import { ScreenWithWallet } from '../types'
+import { IProfileStore } from 'src/storage/MainStorage'
 
-type Props = {
+interface Props {
   profile: IProfileStore
   setProfile: (p: IProfileStore) => void
-  route: any
 }
 
-export const AliasBoughtScreen: React.FC<
-  RootStackScreenProps<'AliasBought'> & ScreenWithWallet & Props
-> = ({ profile, setProfile, navigation, route }) => {
+export const AliasBoughtScreen = ({
+  profile,
+  setProfile,
+  navigation,
+  route,
+}: RootStackScreenProps<'AliasBought'> & ScreenWithWallet & Props) => {
   const { alias, tx } = route.params
 
   const [registerDomainInfo, setRegisterDomainInfo] = useState(
@@ -27,7 +32,7 @@ export const AliasBoughtScreen: React.FC<
   )
 
   const copyHashAndOpenExplorer = (hash: string) => {
-    Clipboard.setString(hash)
+    Clipboard.setString(hash) // TODO: fix deprecated Clipboard
     Linking.openURL(`https://explorer.testnet.rsk.co/tx/${hash}`)
   }
 
@@ -75,9 +80,7 @@ export const AliasBoughtScreen: React.FC<
           </View>
           <OutlineButton
             onPress={() =>
-              navigation.navigate('ProfileDetailsScreen', {
-                navigation,
-              })
+              navigation.navigate(rootStackRouteNames.ProfileDetailsScreen)
             }
             accessibilityLabel="close"
             title={'Close'}

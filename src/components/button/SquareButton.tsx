@@ -1,4 +1,4 @@
-import React from 'react'
+import { ReactNode } from 'react'
 import {
   GestureResponderEvent,
   TouchableOpacity,
@@ -13,15 +13,15 @@ export interface IconButtonInterface extends Interface {
 
 interface Interface {
   title?: string
-  icon?: any
-  onPress?: (event: GestureResponderEvent) => any
+  icon?: ReactNode
+  onPress?: (event: GestureResponderEvent) => void
   disabled?: boolean
   testID?: string
   shadowColor?: string
   backgroundColor?: string
 }
 
-export const SquareButton: React.FC<Interface> = ({
+export const SquareButton = ({
   title,
   icon,
   onPress,
@@ -29,7 +29,7 @@ export const SquareButton: React.FC<Interface> = ({
   testID,
   shadowColor,
   backgroundColor = '#fff',
-}) => {
+}: Interface) => {
   const imageStyle = {
     ...styles.image,
     shadowColor,

@@ -1,37 +1,44 @@
-import React, { useCallback, useState } from 'react'
-import { RegularText } from '../../components/typography'
-import { IProfileStore } from '../../storage/ProfileStore'
-
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { useCallback, useState } from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import { MediumText } from '../../components'
-import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
-import { TextInputWithLabel } from '../../components/input/TextInputWithLabel'
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+
+import { MediumText, RegularText } from 'components/index'
+import { PrimaryButton2 } from 'components/button/PrimaryButton2'
+import { TextInputWithLabel } from 'components/input/TextInputWithLabel'
 import { emptyProfile } from '../../core/hooks/useProfile'
-import { RootStackScreenProps } from 'navigation/rootNavigator/types'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
+import { IProfileStore } from 'src/storage/MainStorage'
 
-export type CreateProfileScreenProps = {
-  route: any
+export interface CreateProfileScreenProps {
   profile: IProfileStore
   setProfile: (p: IProfileStore) => void
   storeProfile: (p: IProfileStore) => Promise<void>
   eraseProfile: () => Promise<void>
 }
-export const ProfileCreateScreen: React.FC<
-  RootStackScreenProps<'ProfileCreateScreen'> & CreateProfileScreenProps
-> = ({ route, profile, setProfile, storeProfile, eraseProfile }) => {
-  const navigation = route.params.navigation
+
+export const ProfileCreateScreen = ({
+  navigation,
+  route,
+  profile,
+  setProfile,
+  storeProfile,
+  eraseProfile,
+}: RootStackScreenProps<rootStackRouteNames.ProfileCreateScreen> &
+  CreateProfileScreenProps) => {
   const editProfile = route.params.editProfile
   const [localProfile, setLocalProfile] = useState<IProfileStore>(profile)
   const createProfile = async () => {
     await storeProfile({ ...localProfile, alias: profile.alias })
-    navigation.navigate('Home')
+    navigation.navigate(rootStackRouteNames.Home)
   }
   const deleteAlias = async () => {
     await eraseProfile()
-    navigation.navigate('Home')
+    navigation.navigate(rootStackRouteNames.Home)
   }
 
   const onSetEmail = useCallback((email: string) => {
@@ -44,7 +51,8 @@ export const ProfileCreateScreen: React.FC<
   return (
     <>
       <View style={styles.profileHeader}>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate(rootStackRouteNames.Home)}>
           <View style={styles.backButton}>
             <MaterialIcon name="west" color="white" size={10} />
           </View>
@@ -74,7 +82,9 @@ export const ProfileCreateScreen: React.FC<
           <>
             <View style={styles.rowContainer}>
               <PrimaryButton2
-                onPress={() => navigation.navigate('SearchDomain')}
+                onPress={() =>
+                  navigation.navigate(rootStackRouteNames.SearchDomain)
+                }
                 accessibilityLabel="register new"
                 title={'register new'}
               />

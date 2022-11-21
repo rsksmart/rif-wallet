@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { View, StyleSheet, Alert } from 'react-native'
 import { colors } from '../../styles'
 import { MediumText } from '../../components'
-import { RootStackScreenProps } from 'navigation/rootNavigator/types'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
 import { useTranslation } from 'react-i18next'
 import ActiveButton from '../../components/button/ActiveButton'
 import {
@@ -10,17 +13,23 @@ import {
   hasKeyVerificationReminder,
   saveKeyVerificationReminder,
 } from '../../storage/MainStorage'
+import { createKeysRouteNames } from 'src/navigation/createKeysNavigator'
 
-export type SecurityScreenProps = {
-  deleteKeys: () => any
+export interface SecurityScreenProps {
+  deleteKeys: () => void
 }
-const SecurityConfigurationScreen: React.FC<
-  RootStackScreenProps<'SecurityConfigurationScreen'> & SecurityScreenProps
-> = ({ navigation, deleteKeys }) => {
+
+export const SecurityConfigurationScreen = ({
+  navigation,
+  deleteKeys,
+}: RootStackScreenProps<rootStackRouteNames.SecurityConfigurationScreen> &
+  SecurityScreenProps) => {
   const { t } = useTranslation()
 
-  const revealMasterKey = () => navigation.navigate('ShowMnemonicScreen' as any)
-  const changePin = () => navigation.navigate('ChangePinScreen' as any)
+  const revealMasterKey = () =>
+    navigation.navigate(rootStackRouteNames.ShowMnemonicScreen)
+  const changePin = () =>
+    navigation.navigate(rootStackRouteNames.ChangePinScreen)
   const [showReminder, setShowReminder] = useState<boolean>(false)
 
   const handleDeleteKeys = () => {
@@ -37,7 +46,7 @@ const SecurityConfigurationScreen: React.FC<
           onPress: () => {
             deleteKeys()
             saveKeyVerificationReminder(false)
-            navigation.navigate('CreateKeysUX')
+            navigation.navigate(rootStackRouteNames.CreateKeysUX)
           },
         },
       ],
@@ -72,8 +81,8 @@ const SecurityConfigurationScreen: React.FC<
             style={styles.buttonFirstStyle}
             text={'Confirm Master Key'}
             onPress={() =>
-              navigation.navigate('CreateKeysUX', {
-                screen: 'SecurityExplanation',
+              navigation.navigate(rootStackRouteNames.CreateKeysUX, {
+                screen: createKeysRouteNames.SecurityExplanation,
               })
             }
           />
@@ -124,5 +133,3 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 })
-
-export default SecurityConfigurationScreen

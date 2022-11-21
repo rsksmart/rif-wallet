@@ -1,13 +1,13 @@
-import React from 'react'
+import { FC } from 'react'
 import { StyleSheet, View, ViewProps } from 'react-native'
 
-type CenterInnerCompType = React.FC<ViewProps> & {
+type CenterInnerCompType = ViewProps & {
   isFilled?: boolean
 }
-const CenterInnerComp: React.FC<CenterInnerCompType> = ({
+const CenterInnerComp = ({
   isFilled = false,
   ...props
-}) => (
+}: CenterInnerCompType) => (
   <View
     style={[
       dotConnectorStyles.dotStyle,
@@ -17,14 +17,14 @@ const CenterInnerComp: React.FC<CenterInnerCompType> = ({
   />
 )
 type CenterCompType = ViewProps & {
-  CenterInnerComponent?: any
+  CenterInnerComponent?: FC
   CenterInnerComponentProps?: object
 }
-const CenterComp: React.FC<CenterCompType> = ({
+const CenterComp = ({
   CenterInnerComponent = CenterInnerComp,
   CenterInnerComponentProps = {},
   ...props
-}) => (
+}: CenterCompType) => (
   <View style={dotConnectorStyles.centerCompView} {...props}>
     <CenterInnerComponent {...CenterInnerComponentProps} />
   </View>
@@ -33,7 +33,7 @@ const CenterComp: React.FC<CenterCompType> = ({
 type BarCompType = ViewProps & {
   isActive?: boolean
 }
-const BarComp: React.FC<BarCompType> = ({ isActive, ...props }) => (
+const BarComp = ({ isActive, ...props }: BarCompType) => (
   <View
     style={[
       dotConnectorStyles.commonBar,
@@ -45,24 +45,23 @@ const BarComp: React.FC<BarCompType> = ({ isActive, ...props }) => (
 const ContainerComp: React.FC<ViewProps> = ({ children }) => (
   <View style={dotConnectorStyles.container}>{children}</View>
 )
-type DotConnectorProps = {
-  CenterComponent?: React.FC
-  LeftComponent?: React.FC
-  RightComponent?: React.FC
-  [key: string]: any
+interface DotConnectorProps {
+  CenterComponent?: FC
+  LeftComponent?: FC
+  RightComponent?: FC
 }
 
-type CompositionType = {
-  Container: React.FC
-  BarComp: React.FC<BarCompType>
-  CenterComp: React.FC<CenterCompType>
+interface CompositionType {
+  Container: FC
+  BarComp: BarCompType
+  CenterComp: CenterCompType
 }
 
-const PinConnector: React.FC<DotConnectorProps> & CompositionType = ({
+const PinConnector = ({
   LeftComponent = BarComp,
   RightComponent = BarComp,
   CenterComponent = CenterComp,
-}) => {
+}: DotConnectorProps & CompositionType) => {
   return (
     <ContainerComp>
       {LeftComponent && <LeftComponent />}

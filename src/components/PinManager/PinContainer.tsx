@@ -1,14 +1,14 @@
-import React, { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import PinScreen from './PinScreen'
 import { PinContainerType } from './PinScreen/PinScreen'
 
-export const PinContainer: React.FC<PinContainerType> = ({
+export const PinContainer = ({
   pinLength = 4,
   onPinSubmit,
   PinScreenComponent = PinScreen,
   resetKeysAndPin,
   resetEnabled,
-}) => {
+}: PinContainerType) => {
   const createPinArray = useCallback(
     length => Array.from({ length }, () => ''),
     [],
@@ -40,7 +40,7 @@ export const PinContainer: React.FC<PinContainerType> = ({
       const parsedPin = enteredPin.join('')
       setError(null)
       onPinSubmit(parsedPin)
-    } catch (errorProm: any) {
+    } catch (errorProm) {
       setError(errorProm.toString())
       onPinReset()
     }
@@ -61,8 +61,8 @@ export const PinContainer: React.FC<PinContainerType> = ({
       onKeypadPress={onPinDigitAdd}
       onKeypadDelete={onPinDigitDelete}
       error={error}
-      resetEnabled={resetEnabled}
-      resetKeysAndPin={resetKeysAndPin}
+      resetEnabled={resetEnabled ? resetEnabled : false}
+      resetKeysAndPin={resetKeysAndPin ? resetKeysAndPin : () => {}}
     />
   )
 }

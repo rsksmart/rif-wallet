@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
+import { ReactNode } from 'react'
+import { TextStyle, ViewStyle } from 'react-native'
 import { StyleSheet, Text, View } from 'react-native'
 
 import { colors } from '../../styles'
@@ -6,19 +8,27 @@ import BaseButton, { BaseButtonProps } from './BaseButton'
 
 export interface ButtonProps extends BaseButtonProps {
   title: string
-  icon?: any
+  icon?: ReactNode
   accessibilityLabel?: string
-  buttonStyles?: any
+  buttonStyles?: {
+    button: ViewStyle
+    buttonPressed: ViewStyle
+    buttonDisabled: ViewStyle
+    buttonActive: ViewStyle
+    text: TextStyle
+    textPressed: TextStyle
+    textDisabled: TextStyle
+  }
 }
 
-export const Button: React.FC<ButtonProps> = ({
+export const Button = ({
   title,
   disabled,
   icon,
   style,
   buttonStyles,
   ...props
-}) => {
+}: ButtonProps) => {
   const [isPressed, setIsPressed] = useState(false)
 
   let baseButtonStyle = buttonStyles.button

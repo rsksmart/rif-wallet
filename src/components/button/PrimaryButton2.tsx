@@ -1,9 +1,8 @@
-import React from 'react'
 import { StyleSheet } from 'react-native'
 import { colors } from '../../styles'
 import { Button, ButtonProps } from './ButtonVariations'
 
-export const PrimaryButton2: React.FC<ButtonProps> = props => (
+export const PrimaryButton2 = (props: ButtonProps) => (
   <Button {...props} buttonStyles={styles} />
 )
 

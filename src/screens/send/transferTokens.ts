@@ -3,9 +3,10 @@ import {
   makeRBTCToken,
 } from '../../lib/token/tokenMetadata'
 import { BigNumber, ContractTransaction, utils } from 'ethers'
-import { transactionInfo } from './TransactionInfo'
+import { TransactionInformation } from './TransactionInfo'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { RIFWallet } from '../../lib/core'
+import { OnSetCurrentTransactionFunction, OnSetErrorFunction } from './types'
 
 interface IRifTransfer {
   token: ITokenWithBalance
@@ -13,8 +14,8 @@ interface IRifTransfer {
   to: string
   wallet: RIFWallet
   chainId: number
-  onSetError?: (key: any) => void
-  onSetCurrentTransaction?: (key: any) => void
+  onSetError?: OnSetErrorFunction
+  onSetCurrentTransaction?: OnSetCurrentTransactionFunction
 }
 
 export const transfer = ({
@@ -48,7 +49,7 @@ export const transfer = ({
     transferMethod
       .transfer(to.toLowerCase(), tokenAmount)
       .then((txPending: ContractTransaction) => {
-        const current: transactionInfo = {
+        const current: TransactionInformation = {
           to,
           value: amount,
           symbol: transferMethod.symbol,
@@ -72,7 +73,7 @@ export const transfer = ({
             }
           })
       })
-      .catch((err: any) => {
+      .catch(err => {
         if (onSetError) {
           onSetError(err)
         }

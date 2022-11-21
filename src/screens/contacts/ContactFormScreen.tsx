@@ -19,7 +19,7 @@ import {
   ContactsStackScreenProps,
 } from 'src/navigation/contactsNavigator'
 
-type ContactFormScreenProps = CompositeScreenProps<
+export type ContactFormScreenProps = CompositeScreenProps<
   ContactsStackScreenProps<contactsStackRouteNames.ContactForm>,
   RootStackScreenProps<rootStackRouteNames.Contacts>
 >

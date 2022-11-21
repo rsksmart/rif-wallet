@@ -1,20 +1,21 @@
-import React, { useState } from 'react'
-import { QRCodeScanner } from '../QRCodeScanner'
-import { sharedAddressStyles as styles } from './sharedAddressStyles'
+import { useState, useCallback } from 'react'
 import { Text, TextInput, View } from 'react-native'
-import { colors } from '../../styles'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { ContentPasteIcon, QRCodeIcon } from '../icons'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Clipboard from '@react-native-community/clipboard'
+
+import { QRCodeScanner } from '../QRCodeScanner'
+import { sharedAddressStyles as styles } from './sharedAddressStyles'
+import { colors } from '../../styles'
+import { ContentPasteIcon, QRCodeIcon } from '../icons'
 import { isDomain } from './lib'
 import { rnsResolver } from '../../core/setup'
-import { isBitcoinAddressValid } from '../../lib/bitcoin/utils'
-import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
+import { isBitcoinAddressValid } from 'lib/bitcoin/utils'
+import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
 import DeleteIcon from '../icons/DeleteIcon'
 import { MediumText } from '../typography'
 
-type AddressInputProps = {
+interface AddressInputProps {
   initialValue: string
   onChangeText: (newValue: string, isValid: boolean) => void
   testID?: string
@@ -27,12 +28,11 @@ const TYPES = {
   DOMAIN: 'DOMAIN',
 }
 
-export const AddressBitcoinInput: React.FC<AddressInputProps> = ({
+export const AddressBitcoinInput = ({
   initialValue = '',
   onChangeText,
-  token,
-}) => {
-  const [to, setTo] = useState<any>({
+}: AddressInputProps) => {
+  const [to, setTo] = useState({
     value: initialValue,
     type: TYPES.NORMAL,
     addressResolved: '',
@@ -41,31 +41,25 @@ export const AddressBitcoinInput: React.FC<AddressInputProps> = ({
   const [isAddressValid, setIsAddressValid] = useState(false)
   const [isUserWriting, setIsUserWriting] = useState(false)
   const [isValidating, setIsValidating] = useState(false)
-  const handleUserIsWriting = React.useCallback((isWriting = true) => {
+  const handleUserIsWriting = useCallback((isWriting = true) => {
     setIsUserWriting(isWriting)
   }, [])
-  const hideQRScanner = React.useCallback(
-    () => setShouldShowQRScanner(false),
-    [],
-  )
+  const hideQRScanner = useCallback(() => setShouldShowQRScanner(false), [])
 
-  const showQRScanner = React.useCallback(
-    () => setShouldShowQRScanner(true),
-    [],
-  )
+  const showQRScanner = useCallback(() => setShouldShowQRScanner(true), [])
 
-  const onQRRead = React.useCallback((qrText: string) => {
+  const onQRRead = useCallback((qrText: string) => {
     validateAddress(qrText)
     hideQRScanner()
   }, [])
 
   /* set  */
-  const handleChangeText = React.useCallback((text: string) => {
-    setTo({ value: text, type: TYPES.NORMAL })
+  const handleChangeText = useCallback((text: string) => {
+    setTo({ ...to, value: text, type: TYPES.NORMAL })
   }, [])
 
   const onBeforeChangeText = (address: string) => {
-    const isBtcAddressValid = isBitcoinAddressValid(address, token.bips[0])
+    const isBtcAddressValid = isBitcoinAddressValid(address)
     setIsAddressValid(isBtcAddressValid)
     onChangeText(address, isBtcAddressValid)
   }
@@ -88,7 +82,7 @@ export const AddressBitcoinInput: React.FC<AddressInputProps> = ({
           })
           onBeforeChangeText(address)
         })
-        .catch((_e: any) => {})
+        .catch(_e => {})
         .finally(() => setIsValidating(false))
     } /* default to normal validation */ else {
       onBeforeChangeText(text)
@@ -103,7 +97,8 @@ export const AddressBitcoinInput: React.FC<AddressInputProps> = ({
 
   const handlePasteClick = () => Clipboard.getString().then(validateAddress)
 
-  const onClearText = React.useCallback(() => handleChangeText(''), [])
+  const onClearText = useCallback(() => handleChangeText(''), [])
+
   return (
     <>
       {shouldShowQRScanner && (

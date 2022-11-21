@@ -1,19 +1,20 @@
-import React from 'react'
+import { useState } from 'react'
 import { ScrollView, StyleSheet, View, Text } from 'react-native'
 import { Event } from './event'
 import Button from '../../components/button/BaseButton'
 import { isIncomingEvent, isOutgoinEvent } from '../../subscriptions/utils'
+import { IEvent } from 'src/subscriptions/types'
 
 export interface EventsScreenProps {
-  events: Array<any>
+  events: Array<IEvent>
   smartWalletAddress: string
 }
 
-export const EventsScreen: React.FC<EventsScreenProps> = ({
+export const EventsScreen = ({
   events,
   smartWalletAddress,
-}) => {
-  const [tab, setTab] = React.useState<'ALL' | 'INC' | 'OUT'>('ALL')
+}: EventsScreenProps) => {
+  const [tab, setTab] = useState<'ALL' | 'INC' | 'OUT'>('ALL')
 
   const incoming = events.filter(event =>
     isIncomingEvent(event, smartWalletAddress),
@@ -54,7 +55,7 @@ export const EventsScreen: React.FC<EventsScreenProps> = ({
       </View>
       <ScrollView testID="events">
         {isSelected('ALL') && (
-          <React.Fragment>
+          <>
             {events.map(event => (
               <Event
                 from={event.args[0]}
@@ -64,10 +65,10 @@ export const EventsScreen: React.FC<EventsScreenProps> = ({
                 testID={event.transactionHash}
               />
             ))}
-          </React.Fragment>
+          </>
         )}
         {isSelected('INC') && (
-          <React.Fragment>
+          <>
             {incoming.map(event => (
               <Event
                 from={event.args[0]}
@@ -77,10 +78,10 @@ export const EventsScreen: React.FC<EventsScreenProps> = ({
                 testID={event.transactionHash}
               />
             ))}
-          </React.Fragment>
+          </>
         )}
         {isSelected('OUT') && (
-          <React.Fragment>
+          <>
             {outgoing.map(event => (
               <Event
                 from={event.args[0]}
@@ -90,7 +91,7 @@ export const EventsScreen: React.FC<EventsScreenProps> = ({
                 testID={event.transactionHash}
               />
             ))}
-          </React.Fragment>
+          </>
         )}
       </ScrollView>
     </View>

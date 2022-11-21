@@ -12,19 +12,19 @@ import { TokenImage } from '../home/TokenImage'
 import { SearchIcon } from '../../components/icons/SearchIcon'
 import StatusIcon from '../../components/statusIcons'
 
-export interface transactionInfo {
+export interface TransactionInformation {
+  status: 'USER_CONFIRM' | 'PENDING' | 'SUCCESS' | 'FAILED'
   to?: string
   value?: string
   symbol?: string
   hash?: string
-  status: 'USER_CONFIRM' | 'PENDING' | 'SUCCESS' | 'FAILED'
 }
 
 type Props = {
-  transaction: transactionInfo
+  transaction: TransactionInformation
 }
 
-const TransactionInfo = ({ transaction }: Props) => {
+export const TransactionInfo = ({ transaction }: Props) => {
   if (transaction.status === 'USER_CONFIRM' || !transaction.hash) {
     return (
       <View style={styles.mainLoadingContainer}>
@@ -142,5 +142,3 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 })
-
-export default TransactionInfo

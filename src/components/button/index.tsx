@@ -1,29 +1,30 @@
-import React from 'react'
 import {
   GestureResponderEvent,
   StyleSheet,
   Text,
+  TextStyle,
   TouchableOpacity,
   View,
+  ViewStyle,
 } from 'react-native'
 
 interface Interface {
   title: string
-  onPress?: (event: GestureResponderEvent) => any
+  onPress?: (event: GestureResponderEvent) => void
   disabled?: boolean
   testID?: string
-  style?: any
-  textStyle?: any
+  style?: ViewStyle
+  textStyle?: TextStyle
 }
 
-export const Button: React.FC<Interface> = ({
+export const Button = ({
   title,
   onPress,
   disabled,
   testID,
   style,
   textStyle,
-}) => (
+}: Interface) => (
   <TouchableOpacity
     style={style ? { ...styles.button, ...style } : styles.button}
     onPress={onPress}

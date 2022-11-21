@@ -1,10 +1,10 @@
-import { TextProps } from 'react-native'
+import { StyleProp, TextProps, TextStyle } from 'react-native'
 
 export interface SVGIconInterface {
   width?: number
   height?: number
   color?: string
-  style?: any
+  style?: StyleProp<TextStyle>
 }
 
 export interface MaterialIconInterface extends TextProps {

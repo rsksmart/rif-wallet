@@ -1,12 +1,7 @@
-import React from 'react'
 import Svg, { Path } from 'react-native-svg'
-import { SVGIconInterface } from '.'
+import { SVGIconInterface } from './index'
 
-export const FrownFaceIcon: React.FC<SVGIconInterface> = ({
-  width,
-  height,
-  color,
-}) => (
+export const FrownFaceIcon = ({ width, height, color }: SVGIconInterface) => (
   <Svg viewBox={'0 0 50 50'} width={width || 50} height={height || 50}>
     <Path
       d="M25.1,3.3c11.7-0.4,22,9.9,21.9,22C46.8,36.7,37.4,47.1,25,47C12.9,46.9,3.1,37.1,3.1,25 C3.1,12.8,13.7,2.9,25.1,3.3 M42.4,25.2c0.2-9.5-8.2-17.4-17.3-17.5c-9,0-17.5,7.7-17.5,17.3c0,9.6,7.8,17.5,17.4,17.5c0,0,0,0,0,0 C34.5,42.5,42.4,34.6,42.4,25.2"

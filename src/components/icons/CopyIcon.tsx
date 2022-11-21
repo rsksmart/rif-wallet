@@ -1,13 +1,12 @@
-import React from 'react'
 import Svg, { Path } from 'react-native-svg'
-import { SVGIconInterface } from '.'
+import { SVGIconInterface } from './index'
 
-export const CopyIcon: React.FC<SVGIconInterface & { viewBox?: string }> = ({
+export const CopyIcon = ({
   width,
   height,
   color,
   viewBox = undefined,
-}) => (
+}: SVGIconInterface & { viewBox?: string }) => (
   <Svg width={width || '25'} height={height || '25'} viewBox={viewBox}>
     <Path
       d="M7.8 3.1H7C5.4 3 4 4.3 4 5.9v6.9c0 1.6 1.4 2.9 3 2.8h7.5c1.6.1 3-1.2 3.1-2.8V5.9c-.1-1.6-1.4-2.9-3.1-2.8H7.8"

@@ -1,9 +1,10 @@
-import Clipboard from '@react-native-community/clipboard'
-import { isValidChecksumAddress } from '@rsksmart/rsk-utils'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Text, TextInput, View } from 'react-native'
+import Clipboard from '@react-native-community/clipboard'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
+import { isValidChecksumAddress } from '@rsksmart/rsk-utils'
+
 import { rnsResolver } from '../../core/setup'
 import { decodeString } from '../../lib/eip681/decodeString'
 import { colors, grid } from '../../styles'
@@ -18,7 +19,7 @@ import {
 } from './lib'
 import { sharedAddressStyles as styles } from './sharedAddressStyles'
 
-type AddressInputProps = {
+interface AddressInputProps {
   initialValue: string
   onChangeText: (newValue: string, isValid: boolean) => void
   testID?: string
@@ -26,13 +27,13 @@ type AddressInputProps = {
   backgroundColor?: string
 }
 
-export const AddressInput: React.FC<AddressInputProps> = ({
+export const AddressInput = ({
   initialValue,
   onChangeText,
   testID,
   chainId,
   backgroundColor = colors.darkPurple5,
-}) => {
+}: AddressInputProps) => {
   // the address of the recipient
   const [recipient, setRecipient] = useState<string>(initialValue)
   // hide or show the QR scanner
@@ -97,7 +98,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
                 AddressValidationMessage.VALID,
             )
           })
-          .catch((_e: any) =>
+          .catch(_e =>
             setStatus({
               type: 'ERROR',
               value: `Could not get address for ${inputText.toLowerCase()}`,

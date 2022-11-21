@@ -190,7 +190,7 @@ export function RIFSocketsProvider({
             })
           })
       } else {
-        dispatch(result.type)
+        dispatch(result)
       }
     })
 

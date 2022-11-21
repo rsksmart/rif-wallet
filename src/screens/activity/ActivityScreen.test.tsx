@@ -15,10 +15,17 @@ import {
 } from '../../../testLib/mocks/rifTransactionsMock'
 import { ActivityScreen } from './ActivityScreen'
 import { getAddressDisplayText } from '../../components'
+import { IRIFWalletServicesFetcher } from 'src/lib/rifWalletServices/RifWalletServicesFetcher'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'src/navigation/rootNavigator'
+import { useNavigation } from '@react-navigation/native'
 
 const createTestInstance = async (
   fetcher = createMockFetcher(),
   abiEnhancer = createMockAbiEnhancer(),
+  { navigation, route }: RootStackScreenProps<rootStackRouteNames.Activity>,
 ) => {
   const mock = await setupTest()
 
@@ -27,8 +34,8 @@ const createTestInstance = async (
       wallet={mock.rifWallet}
       fetcher={fetcher}
       abiEnhancer={abiEnhancer}
-      navigation={mock.navigation}
-      route={{} as any}
+      navigation={navigation}
+      route={route}
       isWalletDeployed
     />,
   )
@@ -44,15 +51,17 @@ const createTestInstance = async (
 }
 
 jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: any) => key }),
+  useTranslation: () => ({ t: (key: string) => key }),
 }))
 
 describe('Activity Screen', function (this: {
   testInstance: Awaited<ReturnType<typeof createTestInstance>>
 }) {
+  const navigation =
+    useNavigation<RootStackScreenProps<rootStackRouteNames.Activity>>()
   beforeEach(async () => {
-    await act(async () => {
-      this.testInstance = await createTestInstance()
+    act(async () => {
+      this.testInstance = await createTestInstance(null, null, navigation)
     })
   })
 
@@ -121,14 +130,16 @@ describe('Activity Screen', function (this: {
 
 describe('Activity Screen with Error in Fetcher', function (this: {
   testInstance: Awaited<ReturnType<typeof createTestInstance>>
-  fetcher: any
+  fetcher: IRIFWalletServicesFetcher
 }) {
   beforeEach(async () => {
     this.fetcher = {
       fetchTransactionsByAddress: jest.fn(() => Promise.reject(new Error())),
+      fetchTokensByAddress: jest.fn(),
+      fetchDapps: jest.fn(),
     }
-    await act(async () => {
-      this.testInstance = await createTestInstance(this.fetcher)
+    act(async () => {
+      this.testInstance = await createTestInstance(this.fetcher, null)
     })
   })
 

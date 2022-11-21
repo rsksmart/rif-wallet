@@ -1,7 +1,10 @@
-import { NavigationProp } from '@react-navigation/native'
+import { NavigationProp, NavigatorScreenParams } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import { ContractTransaction } from 'ethers'
+import { ActivityMixedType } from 'src/screens/activity/types'
+import { IProfileStore } from 'src/storage/MainStorage'
 import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
+import { CreateKeysStackParamList } from '../createKeysNavigator'
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =
   StackScreenProps<RootStackParamList, T>
@@ -60,12 +63,12 @@ export type RootStackParamList = {
   }
   Balances: undefined
   Activity: undefined
-  ActivityDetails: undefined
+  ActivityDetails: ActivityMixedType
   SignMessage: undefined
   SignTypedData: undefined
   TransactionReceived: undefined
   ManuallyDeployScreen: undefined
-  CreateKeysUX: undefined
+  CreateKeysUX: NavigatorScreenParams<CreateKeysStackParamList> | undefined
   ShowMnemonicScreen: undefined
   WalletConnect: undefined | { wcKey?: string }
   ScanQR: undefined
@@ -93,7 +96,10 @@ export type RootStackParamList = {
   EventsScreen: undefined
   AccountsScreen: undefined
   SecurityConfigurationScreen: undefined
-  ProfileCreateScreen: undefined
+  ProfileCreateScreen: {
+    editProfile: boolean
+    profile?: IProfileStore
+  }
   ProfileDetailsScreen: undefined
   ChangePinScreen: undefined
   FeedbackScreen: undefined

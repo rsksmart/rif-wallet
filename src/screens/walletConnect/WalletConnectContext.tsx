@@ -5,20 +5,21 @@ import {
   useEffect,
   useState,
   createContext,
-  ReactChildren,
+  ReactElement,
 } from 'react'
 import { AppContext } from '../../Context'
-import { RIFWallet } from '../../lib/core'
-import { WalletConnectAdapter } from '../../lib/walletAdapters/WalletConnectAdapter'
+import { RIFWallet } from 'lib/core'
+import { WalletConnectAdapter } from 'lib/walletAdapters/WalletConnectAdapter'
 import {
   deleteWCSession,
   getWCSession,
+  IWCSession,
   saveWCSession,
 } from '../../storage/WalletConnectSessionStore'
 
 export interface WalletConnectContextInterface {
   connections: IWalletConnectConnections
-  createSession: (wallet: RIFWallet, uri: string, session?: any) => void //TODO: make it IWalletConnectSession
+  createSession: (wallet: RIFWallet, uri: string, session?: IWCSession) => void
   handleApprove: (wc: WalletConnect, wallet: RIFWallet) => Promise<void>
   handleReject: (wc: WalletConnect) => void
 }
@@ -39,7 +40,7 @@ export interface IWalletConnectConnections {
 }
 
 interface Props {
-  children: ReactChildren
+  children: ReactElement
 }
 
 export const WalletConnectProviderElement = ({ children }: Props) => {
@@ -90,7 +91,7 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
 
       adapter
         .handleCall(method, params)
-        .then((result: any) => wc?.approveRequest({ id, result }))
+        .then(result => wc?.approveRequest({ id, result }))
         .catch((errorReason: string) =>
           wc?.rejectRequest({ id, error: { message: errorReason } }),
         )
@@ -140,8 +141,11 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
     }
   }
 
-  const createSession = (wallet: RIFWallet, uri: string, session?: any) => {
-    // TODO: make it IWallectConnectSession
+  const createSession = (
+    wallet: RIFWallet,
+    uri: string,
+    session?: IWCSession,
+  ) => {
     try {
       const newConnector = new WalletConnect({
         uri,
@@ -176,7 +180,7 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
 
   useEffect(() => {
     const reconnectWCSession = async () => {
-      const storedSessions = await getWCSession()
+      const storedSessions = getWCSession()
 
       if (!storedSessions) {
         return
@@ -192,7 +196,7 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
           }
         } catch (error) {
           console.error('reconnect wc error: ', error)
-          await deleteWCSession(uri)
+          deleteWCSession(uri)
         }
       }
     }

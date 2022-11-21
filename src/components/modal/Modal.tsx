@@ -1,11 +1,9 @@
-import React from 'react'
 import { StyleSheet, Text, View, ViewStyle } from 'react-native'
 import RNModal from 'react-native-modal'
 
 interface ModalProps {
   isVisible: boolean
   children: React.ReactNode
-  [x: string]: any
 }
 
 interface ModalChildrenProps {

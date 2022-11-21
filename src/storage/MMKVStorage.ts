@@ -1,5 +1,7 @@
 import { MMKV } from 'react-native-mmkv'
 
+type AcceptedValue = boolean | string | number | object
+
 export class MMKVStorage {
   private id = 'mmkv.default'
   private storage: MMKV | null = null
@@ -12,7 +14,7 @@ export class MMKVStorage {
     })
   }
 
-  public set(key: string, value: any) {
+  public set(key: string, value: AcceptedValue) {
     if (this.storage && typeof value !== 'undefined') {
       this.storage.set(key, JSON.stringify(value))
     }

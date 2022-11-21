@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Image,
@@ -59,14 +59,13 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
   }
 
   const editContact = (contact: IContact) => {
-    navigation.navigate(
-      'ContactForm' as never,
-      { initialValue: contact } as never,
-    )
+    navigation.navigate(contactsStackRouteNames.ContactForm, {
+      initialValue: contact,
+    })
   }
 
   const sendContact = (contact: IContact) => {
-    navigation.navigate('Send' as never, { to: contact.address } as never)
+    navigation.navigate(rootStackRouteNames.Send, { to: contact.address })
   }
 
   const removeContact = (contact: IContact) => {
@@ -86,7 +85,9 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
         <Icon.Button
           accessibilityLabel="addContact"
           name="user-plus"
-          onPress={() => navigation.navigate('ContactForm' as never)}
+          onPress={() =>
+            navigation.navigate(contactsStackRouteNames.ContactForm)
+          }
           backgroundColor={colors.background.bustyBlue}
           iconStyle={styles.addButton}
           size={15}

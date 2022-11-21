@@ -5,7 +5,7 @@ import { IContact } from './ContactsContext'
 
 jest
   .spyOn(hooks, 'useSocketsState')
-  .mockImplementation(() => ({ state: { balances: [{}] } } as any))
+  .mockImplementation(() => ({ state: { balances: [{}] } }))
 
 describe('ContactRow', () => {
   const contact: IContact = {
@@ -90,7 +90,7 @@ describe('ContactRow', () => {
   test('user does not have any balance, so send button should be hidden', () => {
     jest
       .spyOn(hooks, 'useSocketsState')
-      .mockImplementation(() => ({ state: { balances: [] } } as any))
+      .mockImplementation(() => ({ state: { balances: [] } }))
 
     const onSend = jest.fn()
     const onDelete = jest.fn()

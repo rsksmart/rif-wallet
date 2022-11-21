@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { StyleSheet, ScrollView, Text } from 'react-native'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
-import { RootStackScreenProps } from 'navigation/rootNavigator/types'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
 import { ScreenWithWallet } from '../types'
-import TransactionInfo from './TransactionInfo'
+import { TransactionInfo } from './TransactionInfo'
 import { colors } from '../../styles'
 import TransactionForm from './TransactionForm'
 import WalletNotDeployedView from './WalletNotDeployedModal'
@@ -16,9 +19,12 @@ import { useFetchBitcoinNetworksAndTokens } from './useFetchBitcoinNetworksAndTo
 import { MixedTokenAndNetworkType } from './types'
 import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 
-export const SendScreen: React.FC<
-  RootStackScreenProps<'Send'> & ScreenWithWallet
-> = ({ route, wallet, isWalletDeployed, navigation }) => {
+export const SendScreen = ({
+  route,
+  wallet,
+  isWalletDeployed,
+  navigation,
+}: RootStackScreenProps<rootStackRouteNames.Send> & ScreenWithWallet) => {
   const assets =
     useFetchBitcoinNetworksAndTokens() as unknown as MixedTokenAndNetworkType[]
 
@@ -55,7 +61,8 @@ export const SendScreen: React.FC<
   }
 
   const onDeployWalletNavigate = () =>
-    navigation.navigate('ManuallyDeployScreen' as any)
+    navigation.navigate(rootStackRouteNames.ManuallyDeployScreen)
+
   return (
     <ScrollView style={styles.parent}>
       {!isWalletDeployed && (

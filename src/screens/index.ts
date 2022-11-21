@@ -30,14 +30,11 @@ export {
 export { SettingsScreen } from './settings/SettingsScreen'
 export { EventsScreenHOC as EventsScreen } from './events'
 export {
-  default as SecurityConfigurationScreen,
+  SecurityConfigurationScreen,
   SecurityScreenProps,
 } from './security/SecurityConfigurationScreen'
-export { default as ChangePinScreen } from './changePin/ChangePinScreen'
-export {
-  default as AccountsScreen,
-  AccountsScreenType,
-} from './accounts/AccountsScreen'
+export { ChangePinScreen } from './changePin/ChangePinScreen'
+export { AccountsScreen, AccountsScreenType } from './accounts/AccountsScreen'
 export { ProfileCreateScreen } from './profile/ProfileCreateScreen'
 export { ProfileDetailsScreen } from './profile/ProfileDetailsScreen'
 export { BitcoinReceiveScreen } from './receive/BitcoinReceiveScreen'

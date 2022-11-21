@@ -1,29 +1,30 @@
-import React from 'react'
 import {
   GestureResponderEvent,
   TouchableOpacity,
   Text,
   StyleSheet,
+  ViewStyle,
+  TextStyle,
 } from 'react-native'
 import ChevronIcon from '../icons/ChevronIcon'
 
-interface Interface {
+interface Props {
   title: string
-  onPress?: (event: GestureResponderEvent) => any
+  onPress?: (event: GestureResponderEvent) => void
   disabled?: boolean
   testID?: string
-  style?: any
-  textStyle?: any
+  style?: ViewStyle
+  textStyle?: TextStyle
 }
 
-export const ButtonAlt: React.FC<Interface> = ({
+export const ButtonAlt = ({
   title,
   onPress,
   disabled,
   testID,
   style,
   textStyle,
-}) => {
+}: Props) => {
   return (
     <TouchableOpacity
       style={style ? { ...styles.button, ...style } : styles.button}
