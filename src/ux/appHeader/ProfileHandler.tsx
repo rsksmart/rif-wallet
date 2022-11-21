@@ -20,6 +20,7 @@ export const ProfileHandler: React.FC<Props> = ({
   return (
     <TouchableOpacity
       style={styles.profileHandler}
+      accessibilityLabel="profile"
       onPress={() =>
         navigation.navigate(
           profileCreated ? 'ProfileDetailsScreen' : 'ProfileCreateScreen',
