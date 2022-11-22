@@ -1,12 +1,12 @@
 import { toChecksumAddress } from '@rsksmart/rsk-utils'
 import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { Tabs } from '../../components/'
-import { AddressInputSelector } from '../../components/address/AddressInputSelector'
-import { TransferButton } from '../../components/button/TransferButton'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { colors, grid } from '../../styles'
-import { IActivityTransaction, IPrice } from '../../subscriptions/types'
+import { Tabs } from 'src/components'
+import { AddressInputSelector } from 'components/address/AddressInputSelector'
+import { TransferButton } from 'components/button/TransferButton'
+import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { colors, grid } from 'src/styles'
+import { IActivityTransaction, IPrice } from 'src/subscriptions/types'
 import AssetChooser from './AssetChooser'
 import { RecentTransactions } from './RecentTransactions'
 import { SetAmountHOCComponent } from './SetAmountHOCComponent'
@@ -36,7 +36,7 @@ interface txDetail {
   isValid: boolean
 }
 
-const TransactionForm: React.FC<Interface> = ({
+export const TransactionForm: React.FC<Interface> = ({
   initialValues,
   tokenList,
   chainId,
@@ -144,6 +144,7 @@ const TransactionForm: React.FC<Interface> = ({
                 style={styles.button}
                 onPress={handleConfirmClick}
                 disabled={!isValidTransaction}
+                title=""
               />
             </View>
           </>
@@ -204,5 +205,3 @@ const styles = StyleSheet.create({
     margin: 10,
   },
 })
-
-export default TransactionForm

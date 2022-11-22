@@ -5,7 +5,7 @@ import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { ScreenWithWallet } from '../types'
 import TransactionInfo from './TransactionInfo'
 import { colors } from 'src/styles'
-import TransactionForm from './TransactionForm'
+import { TransactionForm } from './TransactionForm'
 import WalletNotDeployedView from './WalletNotDeployedModal'
 import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 import {
