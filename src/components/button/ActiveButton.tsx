@@ -1,12 +1,12 @@
 import React from 'react'
-import { ButtonProps } from './Button'
+import { StyledButtonProps } from './StyledButton'
 import { PrimaryButton } from './PrimaryButton'
 import { SecondaryButton } from './SecondaryButton'
 
 type ActiveButtonType = {
   isActive?: boolean
 }
-const ActiveButton: React.FC<ActiveButtonType & ButtonProps> = ({
+const ActiveButton: React.FC<ActiveButtonType & StyledButtonProps> = ({
   isActive = false,
   style,
   ...rest

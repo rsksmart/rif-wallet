@@ -1,11 +1,11 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
 
-import { colors } from '../../styles'
-import { Button, ButtonProps } from './Button'
+import { colors } from 'src/styles'
+import { StyledButton, StyledButtonProps } from './StyledButton'
 
-export const WhiteButton: React.FC<ButtonProps> = props => (
-  <Button {...props} buttonStyles={whiteStyles} />
+export const WhiteButton: React.FC<StyledButtonProps> = props => (
+  <StyledButton {...props} buttonStyles={whiteStyles} />
 )
 
 const whiteStyles = StyleSheet.create({
@@ -26,8 +26,8 @@ const whiteStyles = StyleSheet.create({
   },
 })
 
-export const WhiteTransparentButton: React.FC<ButtonProps> = props => (
-  <Button {...props} buttonStyles={whiteTransparentStyles} />
+export const WhiteTransparentButton: React.FC<StyledButtonProps> = props => (
+  <StyledButton {...props} buttonStyles={whiteTransparentStyles} />
 )
 
 const whiteTransparentStyles = StyleSheet.create({

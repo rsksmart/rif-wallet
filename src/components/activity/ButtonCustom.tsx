@@ -1,7 +1,7 @@
 import React from 'react'
 import { TouchableOpacity, View, StyleSheet } from 'react-native'
 import { MediumText } from '../typography'
-import { colors, spacing } from '../../styles'
+import { colors, spacing } from 'src/styles'
 
 type ButtonType = {
   icon: React.FC | any

@@ -1,10 +1,10 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
 import { colors } from '../../styles'
-import { Button, ButtonProps } from './Button'
+import { StyledButton, StyledButtonProps } from './StyledButton'
 
-export const PrimaryButton: React.FC<ButtonProps> = props => (
-  <Button {...props} buttonStyles={styles} />
+export const PrimaryButton: React.FC<StyledButtonProps> = props => (
+  <StyledButton {...props} buttonStyles={styles} />
 )
 
 const styles = StyleSheet.create({
