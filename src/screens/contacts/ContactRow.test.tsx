@@ -1,12 +1,19 @@
 import { fireEvent, render } from '@testing-library/react-native'
-import * as hooks from '../../subscriptions/RIFSockets'
 import { ContactRow } from './ContactRow'
 import { IContact } from './ContactsContext'
 import { ReduxWrapper } from '../../../testLib/ReduxWrapper'
+import * as balancesSelectors from 'store/slices/balancesSlice/selectors'
 
-jest
-  .spyOn(hooks, 'useSocketsState')
-  .mockImplementation(() => ({ state: { balances: [{}] } } as any))
+jest.spyOn(balancesSelectors, 'selectBalances').mockImplementation(() => ({
+  test: {
+    balance: '10',
+    name: 'test',
+    logo: 'test',
+    symbol: 'test',
+    contractAddress: '',
+    decimals: 18,
+  },
+}))
 
 describe('ContactRow', () => {
   const contact: IContact = {
@@ -93,8 +100,8 @@ describe('ContactRow', () => {
 
   test('user does not have any balance, so send button should be hidden', () => {
     jest
-      .spyOn(hooks, 'useSocketsState')
-      .mockImplementation(() => ({ state: { balances: [] } } as any))
+      .spyOn(balancesSelectors, 'selectBalances')
+      .mockImplementation(() => ({}))
 
     const onSend = jest.fn()
     const onDelete = jest.fn()
