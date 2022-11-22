@@ -20,6 +20,7 @@ import addresses from './addresses.json'
 import TitleStatus from './TitleStatus'
 import { TokenImage } from '../home/TokenImage'
 import { AvatarIcon } from '../../components/icons/AvatarIcon'
+import { errorHandler } from 'shared/utils'
 
 type Props = RootStackScreenProps<rootStackRouteNames.BuyDomain> &
   ScreenWithWallet
@@ -76,7 +77,7 @@ export const BuyDomainScreen = ({ wallet, navigation, route }: Props) => {
       }
     } catch (e) {
       setRegisterInProcess(false)
-      setRegisterDomainInfo(e.message)
+      setRegisterDomainInfo(errorHandler(e))
     }
   }
 

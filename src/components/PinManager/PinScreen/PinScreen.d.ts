@@ -26,7 +26,7 @@ export interface PinScreenType {
 
 export interface PinContainerType {
   pinLength: number
-  onPinSubmit: (enteredPin: string) => Promise<void>
+  onPinSubmit: (enteredPin: string) => void
   resetKeysAndPin?: () => void
   resetEnabled?: boolean
   PinScreenComponent?: FC<PinScreenType>

@@ -1,5 +1,6 @@
 import { NavigationProp, NavigatorScreenParams } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
+import Resolver from '@rsksmart/rns-resolver.js'
 import { ContractTransaction } from 'ethers'
 import { ActivityMixedType } from 'src/screens/activity/types'
 import { IProfileStore } from 'src/storage/MainStorage'
@@ -56,6 +57,7 @@ export type RootStackParamList = {
         to?: string
         displayTo?: string
         contractAddress?: string
+        rnsResolver: Resolver
       }
   Receive: undefined
   ReceiveBitcoin: {

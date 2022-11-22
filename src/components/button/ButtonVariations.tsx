@@ -12,12 +12,12 @@ export interface ButtonProps extends BaseButtonProps {
   accessibilityLabel?: string
   buttonStyles?: {
     button: ViewStyle
-    buttonPressed: ViewStyle
-    buttonDisabled: ViewStyle
-    buttonActive: ViewStyle
-    text: TextStyle
-    textPressed: TextStyle
-    textDisabled: TextStyle
+    buttonDisabled?: ViewStyle
+    buttonActive?: ViewStyle
+    text?: TextStyle
+    textDisabled?: TextStyle
+    textPressed?: TextStyle
+    buttonPressed?: ViewStyle
   }
 }
 
@@ -31,27 +31,27 @@ export const Button = ({
 }: ButtonProps) => {
   const [isPressed, setIsPressed] = useState(false)
 
-  let baseButtonStyle = buttonStyles.button
+  let baseButtonStyle = buttonStyles?.button
   if (isPressed) {
-    baseButtonStyle = buttonStyles.buttonPressed
+    baseButtonStyle = buttonStyles?.buttonPressed
   } else if (disabled) {
-    baseButtonStyle = buttonStyles.buttonDisabled
+    baseButtonStyle = buttonStyles?.buttonDisabled
   }
 
-  let underlayColor = buttonStyles.buttonPressed?.backgroundColor
+  let underlayColor = buttonStyles?.buttonPressed?.backgroundColor
   if (isPressed) {
     if (disabled) {
-      underlayColor = buttonStyles.buttonDisabled.backgroundColor
+      underlayColor = buttonStyles?.buttonDisabled?.backgroundColor
     } else {
-      underlayColor = buttonStyles.buttonActive.backgroundColor
+      underlayColor = buttonStyles?.buttonActive?.backgroundColor
     }
   }
 
-  let textStyle = buttonStyles.text
+  let textStyle = buttonStyles?.text
   if (isPressed) {
-    textStyle = buttonStyles.textPressed
+    textStyle = buttonStyles?.textPressed
   } else if (disabled) {
-    textStyle = buttonStyles.textDisabled
+    textStyle = buttonStyles?.textDisabled
   }
 
   return (
@@ -189,7 +189,7 @@ const outlineStyles = StyleSheet.create({
   },
 })
 
-export const OutlineBorderedButton: React.FC<ButtonProps> = props => (
+export const OutlineBorderedButton = (props: ButtonProps) => (
   <Button {...props} buttonStyles={outlineBorderedStyles} />
 )
 

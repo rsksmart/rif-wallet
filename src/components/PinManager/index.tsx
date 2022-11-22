@@ -6,7 +6,7 @@ import { PinScreenType } from './PinScreen/PinScreen'
 
 interface PinManagerProps {
   title: string
-  handleSubmit: (enteredPin: string) => Promise<void>
+  handleSubmit: (enteredPin: string) => void
 }
 
 const PinManagerView = ({

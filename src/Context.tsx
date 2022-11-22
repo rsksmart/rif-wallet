@@ -43,8 +43,8 @@ export const useSelectedWallet = () => {
     useContext(AppContext)
 
   return {
-    wallet: selectedWallet && wallets[selectedWallet],
-    isDeployed: selectedWallet && walletsIsDeployed[selectedWallet],
+    wallet: selectedWallet ? wallets[selectedWallet] : null,
+    isDeployed: selectedWallet ? walletsIsDeployed[selectedWallet] : null,
     chainId,
     selectedWalletIndex: selectedWallet
       ? Object.keys(wallets).indexOf(selectedWallet)

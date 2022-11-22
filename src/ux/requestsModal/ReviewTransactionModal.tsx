@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { ScrollView, StyleSheet, View } from 'react-native'
 import { BigNumber } from 'ethers'
 
@@ -17,24 +17,25 @@ import {
 import { colors } from '../../styles'
 import ReadOnlyField from './ReadOnlyField'
 import InputField from './InpuField'
+import { errorHandler } from 'shared/utils'
 
-interface Interface {
+interface Props {
   request: SendTransactionRequest
   closeModal: () => void
 }
 
-const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
+const ReviewTransactionModal = ({
   request,
   closeModal,
   wallet,
-}) => {
+}: ScreenWithWallet & Props) => {
   const { t } = useTranslation()
 
   const txRequest = useMemo(() => request.payload[0], [request])
   const { enhancedTransactionRequest, isLoaded, setGasLimit, setGasPrice } =
     useEnhancedWithGas(wallet, txRequest)
 
-  const [error, setError] = useState<Error | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   // convert from string to Transaction and pass out of component
   const confirmTransaction = async () => {
@@ -45,7 +46,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
       })
       closeModal()
     } catch (err) {
-      setError(err)
+      setError(errorHandler(err))
     }
   }
 
@@ -61,13 +62,21 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
           <View testID="TX_VIEW" style={[sharedStyles.rowInColumn]}>
             <ReadOnlyField
               label={'amount'}
-              value={enhancedTransactionRequest.value}
+              value={
+                enhancedTransactionRequest.value
+                  ? enhancedTransactionRequest.value.toString()
+                  : ''
+              }
               testID={'Data.View'}
             />
 
             <ReadOnlyField
               label={'asset'}
-              value={enhancedTransactionRequest.symbol}
+              value={
+                enhancedTransactionRequest.symbol // TODO: this does not exist on type!
+                  ? enhancedTransactionRequest.symbol
+                  : ''
+              }
               testID={''}
             />
 
@@ -85,7 +94,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
 
             <View
               style={
-                enhancedTransactionRequest.functionName
+                enhancedTransactionRequest.functionName // TODO: this also does not exist!
                   ? styles.boxStyle
                   : undefined
               }>
@@ -120,7 +129,11 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
 
       <InputField
         label={'gas limit'}
-        value={enhancedTransactionRequest.gasLimit}
+        value={
+          enhancedTransactionRequest.gasLimit
+            ? enhancedTransactionRequest.gasLimit.toString()
+            : ''
+        }
         keyboardType="number-pad"
         placeholder="gas limit"
         testID={'gasLimit.TextInput'}
@@ -129,7 +142,11 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
 
       <InputField
         label={'gas price'}
-        value={enhancedTransactionRequest.gasPrice}
+        value={
+          enhancedTransactionRequest.gasPrice
+            ? enhancedTransactionRequest.gasPrice.toString()
+            : ''
+        }
         keyboardType="number-pad"
         placeholder="gas price"
         testID={'gasPrice.TextInput'}
@@ -142,7 +159,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
             <Paragraph>Error:</Paragraph>
           </View>
           <View style={sharedStyles.column}>
-            <Paragraph>{error.message}</Paragraph>
+            <Paragraph>{error}</Paragraph>
           </View>
         </View>
       )}
@@ -150,7 +167,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
       <View style={styles.buttonsSection}>
         <View style={sharedStyles.column}>
           <OutlineBorderedButton
-            style={{ button: { borderColor: colors.black } }}
+            buttonStyles={{ button: { borderColor: colors.black } }}
             onPress={cancelTransaction}
             title={t('reject')}
             testID="Cancel.Button"

@@ -58,7 +58,7 @@ interface Props {
   changeTopColor: (color: string) => void
   rifWalletServicesSocket: IRifWalletServicesSocket
   keyManagementProps: CreateKeysProps
-  createPin: (newPin: string) => Promise<void>
+  createPin: (newPin: string) => void
   editPin: (newPin: string) => void
   setWalletIsDeployed: (address: string, value?: boolean) => void
   balancesScreenProps: Screens.BalancesScreenProps
