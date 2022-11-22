@@ -75,35 +75,9 @@ const sharedStyles = StyleSheet.create({
   },
 })
 
-export const DarkBlueButton: React.FC<ButtonProps> = props => (
-  <Button {...props} buttonStyles={darkBlueStyles} />
-)
-
-const darkBlueStyles = StyleSheet.create({
-  button: {
-    backgroundColor: colors.darkPurple5,
-  },
-  buttonDisabled: {
-    backgroundColor: '#251e79',
-  },
-  buttonActive: {
-    backgroundColor: colors.gray,
-  },
-  text: {
-    color: colors.lightPurple,
-  },
-  textDisabled: {
-    color: '#7e7eb8',
-  },
-})
-
 // White Variation
 export const WhiteButton: React.FC<ButtonProps> = props => (
   <Button {...props} buttonStyles={whiteStyles} />
-)
-
-export const WhiteTransparentButton: React.FC<ButtonProps> = props => (
-  <Button {...props} buttonStyles={whiteTransparentStyles} />
 )
 
 const whiteStyles = StyleSheet.create({
@@ -121,36 +95,5 @@ const whiteStyles = StyleSheet.create({
   },
   textDisabled: {
     color: '#9296b9',
-  },
-})
-
-const whiteTransparentStyles = StyleSheet.create({
-  ...whiteStyles,
-  button: {
-    backgroundColor: colors.transparentWhite,
-  },
-})
-
-export const OutlineBorderedButton: React.FC<ButtonProps> = props => (
-  <Button {...props} buttonStyles={outlineBorderedStyles} />
-)
-
-const outlineBorderedStyles = StyleSheet.create({
-  button: {
-    borderWidth: 2,
-    borderColor: colors.black,
-  },
-  buttonDisabled: {
-    borderWidth: 2,
-    borderColor: colors.gray,
-  },
-  buttonActive: {
-    backgroundColor: colors.gray,
-  },
-  text: {
-    color: colors.black,
-  },
-  textDisabled: {
-    color: colors.lightBlue,
   },
 })
