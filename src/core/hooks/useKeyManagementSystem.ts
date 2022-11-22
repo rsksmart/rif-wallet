@@ -9,7 +9,7 @@ import {
   deleteContacts,
   deleteKeys,
 } from '../../storage/MainStorage'
-import { addNextWallet, creteKMS, deleteCache } from '../operations'
+import { addNextWallet, creteKMS, deleteCache, loadExistingWallets } from '../operations'
 
 import { createRIFWalletFactory, networkId } from '../setup'
 
