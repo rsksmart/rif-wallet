@@ -1,17 +1,15 @@
 import React from 'react'
-import { StyleSheet, View, ScrollView, Text } from 'react-native'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 
 import { SignTypedDataRequest } from '../../lib/core'
 
-import { sharedStyles } from '../../shared/styles'
 import { useTranslation } from 'react-i18next'
-import ReadOnlyField from './ReadOnlyField'
-import {
-  DarkBlueButton,
-  OutlineBorderedButton,
-} from '../../components/button/ButtonVariations'
-import { colors } from '../../styles'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { SecondaryButton } from 'src/components/button/SecondaryButton'
 import { RegularText } from '../../components'
+import { sharedStyles } from '../../shared/styles'
+import { colors } from '../../styles'
+import ReadOnlyField from './ReadOnlyField'
 
 interface Interface {
   request: SignTypedDataRequest
@@ -89,7 +87,7 @@ const SignTypedDataModal: React.FC<Interface> = ({ request, closeModal }) => {
 
       <View style={styles.buttonsSection}>
         <View style={sharedStyles.column}>
-          <OutlineBorderedButton
+          <SecondaryButton
             style={{ button: { borderColor: colors.black } }}
             onPress={reject}
             title={t('reject')}
@@ -97,7 +95,7 @@ const SignTypedDataModal: React.FC<Interface> = ({ request, closeModal }) => {
           />
         </View>
         <View style={sharedStyles.column}>
-          <DarkBlueButton
+          <PrimaryButton
             onPress={approve}
             title={t('sign')}
             testID="Button.Confirm"

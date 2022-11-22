@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-
-import { colors } from '../../styles'
 import BaseButton, { BaseButtonProps } from './BaseButton'
 
 export interface ButtonProps extends BaseButtonProps {
@@ -52,17 +50,15 @@ export const Button: React.FC<ButtonProps> = ({
       disabled={disabled}
       onShowUnderlay={() => setIsPressed(true)}
       onHideUnderlay={() => setIsPressed(false)}>
-      <View style={sharedStyles.contentWrapper}>
+      <View style={styles.contentWrapper}>
         {icon}
-        {title && (
-          <Text style={{ ...sharedStyles.text, ...textStyle }}>{title}</Text>
-        )}
+        {title && <Text style={{ ...styles.text, ...textStyle }}>{title}</Text>}
       </View>
     </BaseButton>
   )
 }
 
-const sharedStyles = StyleSheet.create({
+const styles = StyleSheet.create({
   contentWrapper: {
     display: 'flex',
     flexDirection: 'row',
@@ -72,28 +68,5 @@ const sharedStyles = StyleSheet.create({
   text: {
     textAlign: 'center',
     fontSize: 16,
-  },
-})
-
-// White Variation
-export const WhiteButton: React.FC<ButtonProps> = props => (
-  <Button {...props} buttonStyles={whiteStyles} />
-)
-
-const whiteStyles = StyleSheet.create({
-  button: {
-    backgroundColor: colors.lightPurple,
-  },
-  buttonDisabled: {
-    backgroundColor: colors.black,
-  },
-  buttonActive: {
-    backgroundColor: '#FFCC33',
-  },
-  text: {
-    color: '#51517c',
-  },
-  textDisabled: {
-    color: '#9296b9',
   },
 })

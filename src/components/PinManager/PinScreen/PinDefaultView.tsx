@@ -5,7 +5,7 @@ import DotsComponentDefault from './DotsComponent'
 import { PinScreenType, DotsComponentDefaultType } from './PinScreen'
 import MessageComponentDefault from './MessageComponent'
 import { colors } from '../../../styles'
-import { WhiteButton } from '../../button/ButtonVariations'
+import { WhiteButton } from '../../button/WhiteButton'
 
 const PinScreen: React.FC<PinScreenType & DotsComponentDefaultType> = ({
   MessageComponent = MessageComponentDefault,

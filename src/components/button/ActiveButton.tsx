@@ -1,5 +1,5 @@
 import React from 'react'
-import { ButtonProps } from './ButtonVariations'
+import { ButtonProps } from './Button'
 import { PrimaryButton } from './PrimaryButton'
 import { SecondaryButton } from './SecondaryButton'
 

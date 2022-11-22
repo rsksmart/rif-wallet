@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
 import { colors } from '../../styles'
-import { Button, ButtonProps } from './ButtonVariations'
+import { Button, ButtonProps } from './Button'
 
 export const SecondaryButton: React.FC<ButtonProps> = props => (
   <Button {...props} buttonStyles={styles} />

@@ -3,7 +3,7 @@ import { StyleSheet, Text } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import { colors } from '../../styles'
 import BaseButton from './BaseButton'
-import { ButtonProps } from './ButtonVariations'
+import { ButtonProps } from './Button'
 
 export const TransferButton: React.FC<ButtonProps> = ({
   style,
