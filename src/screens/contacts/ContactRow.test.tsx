@@ -2,6 +2,7 @@ import { fireEvent, render } from '@testing-library/react-native'
 import * as hooks from '../../subscriptions/RIFSockets'
 import { ContactRow } from './ContactRow'
 import { IContact } from './ContactsContext'
+import { ReduxWrapper } from '../../../testLib/ReduxWrapper'
 
 jest
   .spyOn(hooks, 'useSocketsState')
@@ -25,6 +26,7 @@ describe('ContactRow', () => {
         onEdit={jest.fn}
         onPress={jest.fn}
       />,
+      { wrapper: ReduxWrapper },
     )
     expect(getByText('Alice')).toBeTruthy()
   })
@@ -41,6 +43,7 @@ describe('ContactRow', () => {
         onEdit={jest.fn}
         onPress={onPress}
       />,
+      { wrapper: ReduxWrapper },
     )
     const { getByTestId, queryByTestId } = component
 
@@ -67,6 +70,7 @@ describe('ContactRow', () => {
         onEdit={onEdit}
         onPress={jest.fn}
       />,
+      { wrapper: ReduxWrapper },
     )
     const { getByTestId, queryByTestId } = component
 
@@ -105,6 +109,7 @@ describe('ContactRow', () => {
         onEdit={onEdit}
         onPress={jest.fn}
       />,
+      { wrapper: ReduxWrapper },
     )
     const { getByTestId, queryByTestId } = component
 
