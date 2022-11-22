@@ -2,6 +2,7 @@ import { useOnNewPriceEventEmitted } from './useOnNewPriceEventEmitted'
 import { useAppDispatch } from 'store/storeHooks'
 import { useOnNewTransactionEventEmitted } from './useOnNewTransactionEventEmitted'
 import { Action, ISocketsChangeEmitted } from './types'
+import { IServiceChangeEvent } from 'lib/rifWalletServices/RifWalletServicesSocket'
 
 export const useOnSocketChangeEmitted = ({
   dispatch,
@@ -15,7 +16,7 @@ export const useOnSocketChangeEmitted = ({
     wallet,
     dispatch,
   })
-  return ({ type, payload }: Action) => {
+  return ({ type, payload }: IServiceChangeEvent) => {
     if (type === 'newPrice') {
       onNewPriceEventEmitted(payload)
     } else if (type === 'newTransaction') {

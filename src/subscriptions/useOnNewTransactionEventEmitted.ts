@@ -1,11 +1,12 @@
 import { ISocketsChangeEmitted } from './types'
+import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 
 export const useOnNewTransactionEventEmitted = ({
   abiEnhancer,
   wallet,
   dispatch,
 }: ISocketsChangeEmitted) => {
-  return (payload: any) => {
+  return (payload: IApiTransaction) => {
     abiEnhancer
       .enhance(wallet, {
         from: wallet.smartWalletAddress,
