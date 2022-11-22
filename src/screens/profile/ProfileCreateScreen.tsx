@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { RegularText } from '../../components/typography'
-import { IProfileStore } from '../../storage/ProfileStore'
+import { IProfileStore } from 'src/storage/MainStorage'
 
 import {
   Image,
