@@ -3,8 +3,8 @@ import { Linking, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { SemiBoldText } from 'src/components'
 import ActivityField from 'src/components/activity/ActivityField'
-import ButtonCustom from 'src/components/activity/ButtonCustom'
 import CopyField from 'src/components/activity/CopyField'
+import { SecondaryButton } from 'src/components/button/SecondaryButton'
 import { Arrow, RefreshIcon } from 'src/components/icons'
 import { SearchIcon } from 'src/components/icons/SearchIcon'
 import StatusIcon from 'src/components/statusIcons'
@@ -124,10 +124,11 @@ export default function ActivityDetailsContainer({
         </ActivityField>
       </View>
       <View style={styles.alignSelfCenter}>
-        <ButtonCustom
-          secondText="view in explorer"
+        <SecondaryButton
+          title="view in explorer"
           icon={<SearchIcon width={30} height={30} color="white" />}
           onPress={onViewExplorerClick}
+          style={styles.viewExplorerButton}
         />
       </View>
       <View style={styles.mb50} />

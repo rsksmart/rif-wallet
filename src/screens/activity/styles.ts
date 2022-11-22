@@ -65,4 +65,7 @@ export const activityDetailsStyles = StyleSheet.create({
     alignSelf: 'center',
     paddingRight: 6,
   },
+  viewExplorerButton: {
+    borderRadius: 40,
+  },
 })

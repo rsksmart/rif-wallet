@@ -1,17 +1,17 @@
-import { ScrollView } from 'react-native-gesture-handler'
 import { TouchableOpacity, View } from 'react-native'
-import { Arrow, RefreshIcon } from '../../components/icons'
+import { ScrollView } from 'react-native-gesture-handler'
+import { SecondaryButton } from 'src/components/button/SecondaryButton'
 import { SemiBoldText } from '../../components'
-import { spacing } from '../../styles'
 import ActivityField from '../../components/activity/ActivityField'
-import { TokenImage } from '../home/TokenImage'
 import CopyField from '../../components/activity/CopyField'
-import StatusIcon from '../../components/statusIcons'
-import { formatTimestamp } from '../../lib/utils'
-import ButtonCustom from '../../components/activity/ButtonCustom'
+import { Arrow, RefreshIcon } from '../../components/icons'
 import { SearchIcon } from '../../components/icons/SearchIcon'
-import { activityDetailsStyles as styles } from './styles'
+import StatusIcon from '../../components/statusIcons'
 import { BitcoinTransactionType } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import { formatTimestamp } from '../../lib/utils'
+import { spacing } from '../../styles'
+import { TokenImage } from '../home/TokenImage'
+import { activityDetailsStyles as styles } from './styles'
 import { IBitcoinTransaction } from './types'
 
 type ActivityDetailsBitcoinContainerType = BitcoinTransactionType &
@@ -93,10 +93,11 @@ export default function ActivityDetailsBitcoinContainer({
         </ActivityField>
       </View>
       <View style={styles.alignSelfCenter}>
-        <ButtonCustom
-          secondText="view in explorer"
+        <SecondaryButton
+          title="view in explorer"
           icon={<SearchIcon width={30} height={30} color="white" />}
           onPress={onViewTransactionClick}
+          style={styles.viewExplorerButton}
         />
       </View>
       <View style={styles.mb50} />
