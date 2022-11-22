@@ -16,7 +16,10 @@ type BalancePresentationComponentType = {
 const BalanceCardPresentationComponent: React.FC<
   BalancePresentationComponentType
 > = ({ handlePress, containerStyles, symbol, balance, usdAmount }) => (
-  <TouchableOpacity onPress={handlePress} style={containerStyles}>
+  <TouchableOpacity
+    onPress={handlePress}
+    style={containerStyles}
+    accessibilityLabel={symbol.toLowerCase()}>
     <View style={styles.icon}>
       <TokenImage symbol={symbol} height={30} width={30} />
     </View>

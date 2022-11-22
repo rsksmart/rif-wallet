@@ -27,12 +27,14 @@ const SendReceiveButtonComponent: React.FC<Interface> = ({
     <View style={styles.row}>
       <View style={styles.column}>
         <WhiteTransparentButton
+          accessibilityLabel="receive"
           icon={<ReceiveIcon {...sharedIconProps} />}
           onPress={() => onPress('RECEIVE')}
         />
       </View>
       <View style={styles.column}>
         <WhiteTransparentButton
+          accessibilityLabel="send"
           icon={<SendIcon {...sharedIconProps} />}
           onPress={() => onPress('SEND')}
           disabled={sendDisabled}
@@ -40,6 +42,7 @@ const SendReceiveButtonComponent: React.FC<Interface> = ({
       </View>
       <View style={styles.column}>
         <WhiteTransparentButton
+          accessibilityLabel="faucet"
           icon={<ExchangeIcon {...sharedIconProps} />}
           onPress={() => onPress('FAUCET')}
         />
