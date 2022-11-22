@@ -6,8 +6,10 @@ import BIPRequestPaymentFacade from './BIPRequestPaymentFacade'
 import BitcoinNetwork from './BitcoinNetwork'
 import BIPWithRequest from './BIPWithRequest'
 import BIP from './BIP'
+
 export { BIP32Interface, Psbt, Network, HDSigner }
-export type TransactionInputType = {
+
+export interface TransactionInputType {
   hash: string
   index: number
   witnessUtxo: {
@@ -21,13 +23,13 @@ export type TransactionInputType = {
   }[]
 }
 
-export type NetworkInfoType = {
+export interface NetworkInfoType {
   bip32: { public: number; private: number }
   wif: number
   bech32: string
 }
 
-export type UnspentTransactionType = {
+export interface UnspentTransactionType {
   txid: string
   vout: number
   value: string
@@ -41,7 +43,7 @@ export type UnspentTransactionType = {
  * unspentTransactions: Array<>
  * miningFee: number
  */
-export type PaymentType = {
+export interface PaymentType {
   amountToPay: number
   addressToPay: string
   unspentTransactions: Array<UnspentTransactionType>
@@ -60,26 +62,31 @@ type PaymentTypeWithPaymentFacade = PaymentType & {
 export type SendBitcoinRequestType = IRequest<
   'SEND_BITCOIN',
   PaymentTypeWithPaymentFacade,
-  any,
-  any
+  void, // TODO: is this correct?
+  unknown // TODO: is this correct?
 >
 
-export type BIPOptionsType = {
+export interface BIPOptionsType {
   request?: OnRequest
   fetcher?: RifWalletServicesFetcher
-  paymentFactory?: any
+  paymentFactory?: PaymentFactoryType
 }
 
 export type PaymentFactoryType = (
   paymentType: string,
   bip32root: BIP32Interface,
   networkInfo: NetworkInfoType,
-) => any
+) => IPayment // TODO: is this correct?
 
 export interface IPayment {
-  generatePayment: (...args: any[]) => Psbt
-  signPayment: (...args: any[]) => Psbt | any
-  convertPaymentToHexString: (...args: any[]) => string
+  generatePayment: (
+    amountToPay: number, // TODO: is this correct?
+    addressToPay: string,
+    unspentTransactions: UnspentTransactionType[],
+    miningFee: number,
+  ) => Psbt
+  signPayment: (psbt: Psbt) => Psbt
+  convertPaymentToHexString: (psbt: Psbt) => string
 }
 
 export type BitcoinRequest = SendBitcoinRequestType

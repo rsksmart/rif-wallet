@@ -1,3 +1,4 @@
+import { BlockTag } from '@ethersproject/abstract-provider'
 import { Signer } from 'ethers'
 import { IResolver } from '../RPCAdapter'
 
@@ -9,7 +10,7 @@ export class GetBlockByNumberResolver implements IResolver {
     this.signer = signer
   }
 
-  async resolve([blockOrTag]: any) {
+  async resolve(blockOrTag: BlockTag) {
     return this.signer.provider?.getBlock(blockOrTag)
   }
 }

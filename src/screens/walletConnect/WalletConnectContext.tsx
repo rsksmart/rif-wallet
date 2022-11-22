@@ -120,7 +120,7 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
         chainId: await wallet.getChainId(),
       })
 
-      await saveWCSession({
+      saveWCSession({
         key: wc.key,
         uri: wc.uri,
         session: wc.session,

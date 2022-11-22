@@ -10,6 +10,7 @@ export class EstimateGasResolver implements IResolver {
   }
 
   async resolve(params: any[]) {
+    // TODO: fix the type
     const tx = params[0]
 
     return this.signer.estimateGas(tx).then(b => b.toHexString())

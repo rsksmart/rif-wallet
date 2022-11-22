@@ -6,6 +6,7 @@ export class RPCAdapter {
   }
 
   async handleCall(method: string, params: any[]) {
+    // TODO: what exactly goes here?
     const resolver = this.resolvers.find(x => x.methodName === method)
 
     if (!resolver) {
@@ -18,5 +19,6 @@ export class RPCAdapter {
 
 export interface IResolver {
   methodName: string
-  resolve: (params: any[]) => Promise<any>
+  resolve: (params: any[]) => Promise<any> // TODO: this is not correct?
+  // There are many different types this param can be
 }

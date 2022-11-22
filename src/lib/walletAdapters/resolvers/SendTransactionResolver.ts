@@ -2,6 +2,7 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { Signer, BigNumber } from 'ethers'
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { IResolver } from '../RPCAdapter'
+import { IApiTransaction } from 'src/lib/rifWalletServices/RIFWalletServicesTypes'
 
 export class SendTransactionResolver implements IResolver {
   private signer: Signer
@@ -12,6 +13,7 @@ export class SendTransactionResolver implements IResolver {
   }
 
   async resolve(params: any[]) {
+    // TODO: Figure out passed type
     const payload = params.reduce((prev, curr) => ({ ...prev, ...curr }), {})
 
     const formattedPayload: TransactionRequest = {

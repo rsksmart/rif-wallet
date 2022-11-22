@@ -8,7 +8,8 @@ export class GetTransactionReceiptResolver implements IResolver {
     this.signer = signer
   }
 
-  async resolve(params: any[]) {
+  async resolve(params: string[]) {
+    // TODO: is this correct?
     const txHash = params[0]
 
     let result = await this.signer.provider?.getTransactionReceipt(txHash)

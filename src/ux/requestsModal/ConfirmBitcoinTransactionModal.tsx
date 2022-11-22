@@ -13,7 +13,7 @@ import InputField from './InpuField'
 import { MediumText } from '../../components'
 import { convertSatoshiToBtcHuman } from '../../lib/bitcoin/utils'
 
-type ConfirmBitcoinTransactionModal = {
+interface ConfirmBitcoinTransactionModalType {
   request: SendBitcoinRequestType
   closeModal: () => void
 }
@@ -30,9 +30,10 @@ const TEST_IDS = {
   BUTTON_REJECT: 'BUTTON_REJECT',
 }
 
-const ConfirmBitcoinTransactionModal: React.FC<
-  ConfirmBitcoinTransactionModal
-> = ({ request, closeModal }) => {
+const ConfirmBitcoinTransactionModal = ({
+  request,
+  closeModal,
+}: ConfirmBitcoinTransactionModalType) => {
   const [status, setStatus] = useState<string>('')
   const { payload, confirm, reject } = request
   const { balance, amountToPay } = payload

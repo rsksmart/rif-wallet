@@ -424,9 +424,10 @@ export const txTestCase: TransactionsServerResponse = {
   next: null,
 }
 
-export const createMockFetcher = (): Partial<IRIFWalletServicesFetcher> => ({
+export const createMockFetcher = (): IRIFWalletServicesFetcher => ({
   fetchTokensByAddress: jest.fn(() => Promise.resolve([...testCase])),
   fetchTransactionsByAddress: jest.fn(() => Promise.resolve(txTestCase)),
+  fetchDapps: jest.fn(),
 })
 
 export const lastToken = testCase[testCase.length - 1]

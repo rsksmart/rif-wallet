@@ -10,6 +10,7 @@ export class GetTransactionByHashResolver implements IResolver {
   }
 
   async resolve(params: any[]) {
+    // TODO: fix the type!
     const txHash = params[0]
 
     return this.signer.provider?.getTransaction(txHash)
