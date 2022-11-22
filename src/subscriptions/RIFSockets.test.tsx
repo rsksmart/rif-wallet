@@ -18,27 +18,6 @@ describe('Live Subscriptions Context', () => {
       )
     })
 
-    test('expect useSubscription to dispatch new balance and update state', () => {
-      const { result } = renderHook(() => useSocketsState(), { wrapper })
-      expect(Object.keys(result.current.state.balances).length).toEqual(0)
-      act(() => {
-        result.current.dispatch({
-          type: 'newBalance',
-          payload: {
-            name: 'tRIF Token',
-            symbol: 'tRIF',
-            contractAddress: '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
-            decimals: 18,
-            balance: '',
-          },
-        })
-      })
-      expect(Object.keys(result.current.state.balances).length).toEqual(1)
-      expect(Object.keys(result.current.state.balances)[0]).toBe(
-        '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
-      )
-    })
-
     test('expect useSubscription to dispatch new transaction and update state', () => {
       const { result } = renderHook(() => useSocketsState(), { wrapper })
       expect(
