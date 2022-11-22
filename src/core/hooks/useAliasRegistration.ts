@@ -5,9 +5,9 @@ import {
   hasAliasRegistration,
   IProfileRegistrationStore,
   saveAliasRegistration,
-} from '../../storage/AliasRegistrationStore'
+} from 'src/storage/AliasRegistrationStore'
 import addresses from '../../screens/rnsManager/addresses.json'
-import { RIFWallet } from '../../lib/core'
+import { RIFWallet } from 'lib/core'
 
 export function useAliasRegistration(wallet: RIFWallet) {
   const rskRegistrar = new RSKRegistrar(
@@ -17,21 +17,19 @@ export function useAliasRegistration(wallet: RIFWallet) {
     wallet,
   )
 
-  const registrationStarted = async () => {
-    let myAliasRegistration: IProfileRegistrationStore
-    let hash: string
-    const hasStartedRegistration = await hasAliasRegistration()
+  const registrationStarted = () => {
+    const hasStartedRegistration = hasAliasRegistration()
 
     if (hasStartedRegistration) {
-      myAliasRegistration = await getAliasRegistration()
-      hash = myAliasRegistration.commitToRegisterHash
+      const myAliasRegistration = getAliasRegistration()
+      const hash = myAliasRegistration.commitToRegisterHash
       return !!hash
     }
   }
   const readyToRegister = async (_hash?: string) => {
-    if (await registrationStarted()) {
+    if (registrationStarted()) {
       const myAliasRegistration: IProfileRegistrationStore =
-        await getAliasRegistration()
+        getAliasRegistration()
       const hash = _hash || myAliasRegistration.commitToRegisterHash
       const canReveal = await rskRegistrar.canReveal(hash)
       return await canReveal()
@@ -39,11 +37,7 @@ export function useAliasRegistration(wallet: RIFWallet) {
       return false
     }
   }
-  const getRegistrationData = async (): Promise<IProfileRegistrationStore> => {
-    const myAliasRegistration: IProfileRegistrationStore =
-      await getAliasRegistration()
-    return myAliasRegistration
-  }
+  const getRegistrationData = getAliasRegistration
 
   const setRegistrationData = async (
     alias: string,

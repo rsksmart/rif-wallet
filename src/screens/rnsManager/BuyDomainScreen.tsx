@@ -65,7 +65,7 @@ export const BuyDomainScreen: React.FC<
         durationToRegister,
         domainPrice!,
       )
-      await deleteAliasRegistration()
+      deleteAliasRegistration()
       setRegisterDomainInfo('Transaction sent. Please wait...')
       setRegisterInProcess(true)
 
