@@ -1,12 +1,12 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
-import { SignMessageRequest } from '../../lib/core/RIFWallet'
+import { SignMessageRequest } from 'src/lib/core/RIFWallet'
 
 import { ScrollView } from 'react-native-gesture-handler'
 import { PrimaryButton } from 'src/components/button/PrimaryButton'
 import { SecondaryButton } from 'src/components/button/SecondaryButton'
-import { sharedStyles } from '../../shared/styles'
+import { sharedStyles } from 'src/shared/styles'
 import ReadOnlyField from './ReadOnlyField'
 
 interface Interface {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
-import { colors } from '../../styles'
+import { colors } from 'src/styles'
 import BaseButton from './BaseButton'
 import { StyledButtonProps } from './StyledButton'
 

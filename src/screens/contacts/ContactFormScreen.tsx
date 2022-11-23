@@ -13,9 +13,9 @@ import {
   contactsStackRouteNames,
   ContactsStackScreenProps,
 } from 'src/navigation/contactsNavigator'
-import { AddressInput } from '../../components'
-import { colors, grid } from '../../styles'
-import { fonts } from '../../styles/fonts'
+import { AddressInput } from 'src/components'
+import { colors, grid } from 'src/styles'
+import { fonts } from 'src/styles/fonts'
 import { setOpacity } from '../home/tokenColor'
 import { ContactsContext, IContact } from './ContactsContext'
 

@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import { RegularText } from '../../components'
-import { PrimaryButton } from '../../components/button/PrimaryButton'
-import { TextInputWithLabel } from '../../components/input/TextInputWithLabel'
-import { colors } from '../../styles'
+import { RegularText } from 'src/components'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { TextInputWithLabel } from 'src/components/input/TextInputWithLabel'
+import { colors } from 'src/styles'
 import { sendFeedbackToGithub } from './operations'
 import { ThankYouComponent } from './ThankYouComponent'
 

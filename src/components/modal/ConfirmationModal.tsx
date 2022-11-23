@@ -5,9 +5,9 @@ import {
   Text,
   View,
 } from 'react-native'
-import { Modal } from '../../components/modal/Modal'
-import { colors } from '../../styles'
-import { fonts } from '../../styles/fonts'
+import { Modal } from 'src/components/modal/Modal'
+import { colors } from 'src/styles'
+import { fonts } from 'src/styles/fonts'
 import { PrimaryButton } from '../button/PrimaryButton'
 import { SecondaryButton } from '../button/SecondaryButton'
 

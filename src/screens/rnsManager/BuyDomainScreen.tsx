@@ -5,18 +5,18 @@ import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import moment from 'moment'
 
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
-import { colors } from '../../styles'
+import { colors } from 'src/styles'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
-import { PrimaryButton } from '../../components/button/PrimaryButton'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
 
 import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { ScreenWithWallet } from '../types'
-import { MediumText } from '../../components'
+import { MediumText } from 'src/components'
 import addresses from './addresses.json'
 import TitleStatus from './TitleStatus'
 import { TokenImage } from '../home/TokenImage'
-import { AvatarIcon } from '../../components/icons/AvatarIcon'
+import { AvatarIcon } from 'src/components/icons/AvatarIcon'
 
 type Props = {
   route: any

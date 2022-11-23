@@ -1,17 +1,17 @@
 import React, { useCallback, useState } from 'react'
-import { RegularText } from '../../components/typography'
+import { RegularText } from 'src/components/typography'
 
 import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { AvatarIcon } from 'src/components/icons/AvatarIcon'
 import { IProfileStore } from 'src/storage/MainStorage'
-import { MediumText } from '../../components'
-import { PrimaryButton } from '../../components/button/PrimaryButton'
-import { TextInputWithLabel } from '../../components/input/TextInputWithLabel'
-import { emptyProfile } from '../../core/hooks/useProfile'
-import { colors } from '../../styles'
-import { fonts } from '../../styles/fonts'
+import { MediumText } from 'src/components'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { TextInputWithLabel } from 'src/components/input/TextInputWithLabel'
+import { emptyProfile } from 'src/core/hooks/useProfile'
+import { colors } from 'src/styles'
+import { fonts } from 'src/styles/fonts'
 
 export type CreateProfileScreenProps = {
   route: any

@@ -1,14 +1,14 @@
 import React from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 
-import { SignTypedDataRequest } from '../../lib/core'
+import { SignTypedDataRequest } from 'src/lib/core'
 
 import { useTranslation } from 'react-i18next'
 import { PrimaryButton } from 'src/components/button/PrimaryButton'
 import { SecondaryButton } from 'src/components/button/SecondaryButton'
-import { RegularText } from '../../components'
-import { sharedStyles } from '../../shared/styles'
-import { colors } from '../../styles'
+import { RegularText } from 'src/components'
+import { sharedStyles } from 'src/shared/styles'
+import { colors } from 'src/styles'
 import ReadOnlyField from './ReadOnlyField'
 
 interface Interface {

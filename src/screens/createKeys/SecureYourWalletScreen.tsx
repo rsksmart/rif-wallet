@@ -1,16 +1,17 @@
 import React from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { CreateKeysScreenProps } from '../../navigation/createKeysNavigator/types'
-import { colors } from '../../styles'
+import { CreateKeysScreenProps } from 'src/navigation/createKeysNavigator/types'
+import { colors } from 'src/styles'
 
-import { Arrow } from '../../components/icons'
-import { grid } from '../../styles'
+import { Arrow } from 'src/components/icons'
+import { grid } from 'src/styles'
 
-import { PrimaryButton } from '../../components/button/PrimaryButton'
-import { SecondaryButton } from '../../components/button/SecondaryButton'
-import { RIFWallet } from '../../lib/core'
-import { saveKeyVerificationReminder } from '../../storage/MainStorage'
-import { WINDOW_HEIGHT } from '../../ux/slides/Dimensions'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { SecondaryButton } from 'src/components/button/SecondaryButton'
+import { RIFWallet } from 'src/lib/core'
+import { saveKeyVerificationReminder } from 'src/storage/MainStorage'
+import { WINDOW_HEIGHT } from 'src/ux/slides/Dimensions'
+
 type SecureYourWalletProps = {
   mnemonic: string
   createWallet: (mnemonic: string) => Promise<RIFWallet>

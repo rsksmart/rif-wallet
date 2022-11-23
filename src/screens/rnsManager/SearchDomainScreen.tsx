@@ -2,16 +2,16 @@ import React, { useState } from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
-import { PrimaryButton } from '../../components/button/PrimaryButton'
-import { colors } from '../../styles'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { colors } from 'src/styles'
 
 import { rnsManagerStyles } from './rnsManagerStyles'
 
-import { MediumText } from '../../components'
-import { AvatarIcon } from '../../components/icons/AvatarIcon'
-import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
+import { MediumText } from 'src/components'
+import { AvatarIcon } from 'src/components/icons/AvatarIcon'
+import { ConfirmationModal } from 'src/components/modal/ConfirmationModal'
 import { RootStackScreenProps } from 'navigation/rootNavigator/types'
-import DomainLookUp from '../../screens/rnsManager/DomainLookUp'
+import DomainLookUp from 'src/screens/rnsManager/DomainLookUp'
 import { ScreenWithWallet } from '../types'
 import TitleStatus from './TitleStatus'
 

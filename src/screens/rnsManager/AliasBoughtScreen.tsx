@@ -5,9 +5,9 @@ import { rnsManagerStyles } from './rnsManagerStyles'
 
 import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { SecondaryButton } from 'src/components/button/SecondaryButton'
-import { MediumText } from '../../components'
-import { PrimaryButton } from '../../components/button/PrimaryButton'
-import { IProfileStore } from '../../storage/ProfileStore'
+import { MediumText } from 'src/components'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { IProfileStore } from 'src/storage/MainStorage'
 import { ScreenWithWallet } from '../types'
 
 type Props = {

@@ -1,9 +1,9 @@
 import React from 'react'
 import { Image, StyleSheet, View } from 'react-native'
 import { PrimaryButton } from 'src/components/button/PrimaryButton'
-import { RegularText, SemiBoldText } from '../../components'
-import { Arrow } from '../../components/icons'
-import { colors } from '../../styles'
+import { RegularText, SemiBoldText } from 'src/components'
+import { Arrow } from 'src/components/icons'
+import { colors } from 'src/styles'
 
 type WalletNotDeployedViewType = {
   onDeployWalletPress: () => void
@@ -13,7 +13,7 @@ const WalletNotDeployedView: React.FC<WalletNotDeployedViewType> = ({
 }) => (
   <View style={styles.container} testID="WalletNotDeployedView">
     <Image
-      source={require('../../images/undeployed_wallet.png')}
+      source={require('src/images/undeployed_wallet.png')}
       style={styles.imageStyle}
       resizeMode="contain"
     />
