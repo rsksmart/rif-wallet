@@ -1,7 +1,7 @@
 import { BigNumber, Contract, ethers, Signer } from 'ethers'
 import { IServiceABI } from './ABIs'
 import { RGSigner } from './RGSigner'
-import { IRGService, RGListing } from './types'
+import { IRGService, IRGListing } from './types'
 
 class RGService implements IRGService {
   contract: Contract
@@ -12,9 +12,9 @@ class RGService implements IRGService {
     this.contract = new ethers.Contract(serviceAddress, IServiceABI.abi)
   }
 
-  async getListings(): Promise<RGListing[]> {
+  async getListings(): Promise<IRGListing[]> {
     const listingsCount = await this.getListingCount()
-    const listings: RGListing[] = []
+    const listings: IRGListing[] = []
 
     for (let i = 0; i < listingsCount.toNumber(); i++) {
       listings.push(this.contract.functions['getListing(uint256)'](i))

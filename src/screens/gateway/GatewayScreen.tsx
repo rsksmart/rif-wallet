@@ -1,65 +1,56 @@
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import { useEffect, useState } from 'react'
-import { BigNumber } from 'ethers'
-
-import { SemiBoldText, MediumText } from 'src/components'
+import { colors } from 'src/styles'
+import { fonts } from 'src/styles/fonts'
+import { DefaultRIFGateway, IRGListing } from 'src/lib/gateway'
 import { useSelectedWallet } from 'src/Context'
-import { AddressCopyComponent } from 'src/components/copy/AddressCopyComponent'
+import { ethers } from 'ethers'
 
 // interface Props {}
 
 export const GatewayScreen = () => {
-  // RIFWallet (the smartwallet):
   const { wallet, chainId } = useSelectedWallet()
+  const [listings, setListings] = useState<IRGListing[]>([])
 
-  // the RPC Provider:
-  const provider = wallet.provider
-
-  // the signer (i.e. the EOA account)
-  const signer = wallet.smartWallet.signer
-
-  const [rbtcBalance, setRbtcBalance] = useState<BigNumber>(BigNumber.from(0))
-  const [eoaAddress, setEoaAddress] = useState<string>('')
-  const [block, setBlock] = useState<number>(0)
-
-  // the following should all outside of this component, but it is for demostration right now
   useEffect(() => {
-    signer.getAddress().then(setEoaAddress)
+    if (wallet) {
+      console.log('get rGateway 😲')
+      const rGateway = DefaultRIFGateway(
+        wallet.provider as ethers.providers.Web3Provider,
+      )
 
-    signer.getAddress().then((address: string) => {
-      console.log('signer address', address)
-    })
-
-    wallet.getAddress().then((address: string) => {
-      console.log('wallet address', address)
-    })
+      rGateway.getServices().then(data => {
+        const IRGServices = console.log('services')
+        console.log(IRGServices)
+        console.log(data)
+      })
+    }
   }, [wallet])
-
-  useEffect(() => {
-    signer.getBalance().then(setRbtcBalance)
-  }, [wallet])
-
-  useEffect(() => {
-    provider?.getBlockNumber().then(setBlock)
-  })
 
   return (
     <View style={styles.parent}>
-      <SemiBoldText style={styles.heading}>Gateway Screen</SemiBoldText>
-      <MediumText>Chain Id: {chainId}</MediumText>
-      <MediumText>Block: {block}</MediumText>
-      <MediumText>Address:</MediumText>
-      <AddressCopyComponent address={eoaAddress} />
-      <MediumText>rBTC Balance: {rbtcBalance.toString()}</MediumText>
+      <View style={styles.header}>
+        <Text style={styles.title}>Contacts</Text>
+      </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   parent: {
+    height: '100%',
+    backgroundColor: colors.background.darkBlue,
     padding: 20,
   },
-  heading: {
-    fontSize: 26,
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 10,
+  },
+  title: {
+    fontFamily: fonts.regular,
+    fontSize: 22,
+    color: colors.text.primary,
   },
 })

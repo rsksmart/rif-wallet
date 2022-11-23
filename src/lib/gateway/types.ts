@@ -1,13 +1,25 @@
 import { BigNumber, BigNumberish } from 'ethers'
 
-export type RGListing = {}
+export type IRGListing = {
+  id: BigNumber
+  minAmount: BigNumber
+  maxAmount: BigNumber
+  minDuration: BigNumber
+  maxDuration: BigNumber
+  interestRate: BigNumber
+  loanToValueCurrency: BigNumber
+  currency: BigNumber
+  payBackOption: BigNumber
+  enabled: boolean
+  name: string
+}
 
 export type IRIFGateway = {
   getServices(): Promise<IRGService[]>
 }
 
 export type IRGService = {
-  getListings(): Promise<RGListing[]>
+  getListings(): Promise<IRGListing[]>
   getBalance(address: string): Promise<BigNumber>
   getServiceProviderName(): Promise<string>
   getListingCount(): Promise<BigNumber>
