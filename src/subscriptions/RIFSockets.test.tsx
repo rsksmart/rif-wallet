@@ -1,10 +1,13 @@
 import React from 'react'
 import { act, renderHook } from '@testing-library/react-hooks'
 import { RIFSocketsProvider, useSocketsState } from './RIFSockets'
+import { Provider, store } from 'store'
 
 describe('Live Subscriptions Context', () => {
   const wrapper = ({ children }: { children: React.ReactNode }) => (
-    <RIFSocketsProvider>{children}</RIFSocketsProvider>
+    <Provider store={store}>
+      <RIFSocketsProvider>{children}</RIFSocketsProvider>
+    </Provider>
   )
 
   describe('useSusbscription hook', () => {
@@ -12,26 +15,6 @@ describe('Live Subscriptions Context', () => {
       const { result } = renderHook(() => useSocketsState())
       expect(result.error?.message).toBe(
         'useSubscription must be used within a SubscriptionsProvider',
-      )
-    })
-
-    test('expect useSubscription to dispatch new price and update state', () => {
-      const { result } = renderHook(() => useSocketsState(), { wrapper })
-      expect(Object.keys(result.current.state.prices).length).toEqual(0)
-      act(() => {
-        result.current.dispatch({
-          type: 'newPrice',
-          payload: {
-            '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe': {
-              price: 0.2239,
-              lastUpdated: '2021-12-20-T21:56:08.000Z',
-            },
-          },
-        })
-      })
-      expect(Object.keys(result.current.state.prices).length).toEqual(1)
-      expect(Object.keys(result.current.state.prices)[0]).toBe(
-        '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
       )
     })
 
