@@ -1,16 +1,17 @@
 import React, { useCallback, useState } from 'react'
-import { RegularText } from '../../components/typography'
-import { IProfileStore } from '../../storage/ProfileStore'
+import { RegularText } from 'src/components/typography'
 
+import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import { MediumText } from '../../components'
-import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
-import { TextInputWithLabel } from '../../components/input/TextInputWithLabel'
-import { emptyProfile } from '../../core/hooks/useProfile'
-import { RootStackScreenProps } from 'navigation/rootNavigator/types'
-import { colors } from '../../styles'
-import { fonts } from '../../styles/fonts'
+import { AvatarIcon } from 'src/components/icons/AvatarIcon'
+import { IProfileStore } from 'src/storage/MainStorage'
+import { MediumText } from 'src/components'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { TextInputWithLabel } from 'src/components/input/TextInputWithLabel'
+import { emptyProfile } from 'src/core/hooks/useProfile'
+import { colors } from 'src/styles'
+import { fonts } from 'src/styles/fonts'
 
 export type CreateProfileScreenProps = {
   route: any
@@ -25,10 +26,13 @@ export const ProfileCreateScreen: React.FC<
   const navigation = route.params.navigation
   const editProfile = route.params.editProfile
   const [localProfile, setLocalProfile] = useState<IProfileStore>(profile)
+  const fullAlias = `${profile.alias}.rsk`
+
   const createProfile = async () => {
     await storeProfile({ ...localProfile, alias: profile.alias })
     navigation.navigate('Home')
   }
+
   const deleteAlias = async () => {
     await eraseProfile()
     navigation.navigate('Home')
@@ -41,6 +45,7 @@ export const ProfileCreateScreen: React.FC<
   const onSetPhone = useCallback((phone: string) => {
     setLocalProfile(prev => ({ ...prev, phone }))
   }, [])
+
   return (
     <>
       <View style={styles.profileHeader}>
@@ -60,10 +65,14 @@ export const ProfileCreateScreen: React.FC<
       </View>
       <View style={styles.container}>
         <View style={styles.profileImageContainer}>
-          <Image
-            style={styles.profileImage}
-            source={require('../../images/image_place_holder.jpeg')}
-          />
+          {profile.alias ? (
+            <AvatarIcon value={fullAlias} size={80} />
+          ) : (
+            <Image
+              style={styles.profileImage}
+              source={require('../../images/image_place_holder.jpeg')}
+            />
+          )}
         </View>
         <View>
           <MediumText style={[styles.masterText, styles.textLeftMargin]}>
@@ -73,7 +82,7 @@ export const ProfileCreateScreen: React.FC<
         {!profile?.alias && (
           <>
             <View style={styles.rowContainer}>
-              <PrimaryButton2
+              <PrimaryButton
                 onPress={() => navigation.navigate('SearchDomain')}
                 accessibilityLabel="register new"
                 title={'register new'}
@@ -120,7 +129,7 @@ export const ProfileCreateScreen: React.FC<
           />
         </View>
         <View style={styles.rowContainer}>
-          <PrimaryButton2
+          <PrimaryButton
             onPress={createProfile}
             accessibilityLabel="create"
             title={editProfile ? 'save' : 'create'}

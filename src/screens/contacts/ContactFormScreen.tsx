@@ -1,23 +1,23 @@
-import { useContext, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
-import { TextInput } from 'react-native-gesture-handler'
 import { CompositeScreenProps } from '@react-navigation/native'
-import Icon from 'react-native-vector-icons/Ionicons'
-import { AddressInput } from '../../components'
-import { BlueButton } from '../../components/button/ButtonVariations'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
-import { colors, grid } from '../../styles'
-import { fonts } from '../../styles/fonts'
-import { setOpacity } from '../home/tokenColor'
-import { ContactsContext, IContact } from './ContactsContext'
+import { useContext, useState } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
+import { TextInput } from 'react-native-gesture-handler'
+import Icon from 'react-native-vector-icons/Ionicons'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
 import { useSelectedWallet } from 'src/Context'
 import {
   contactsStackRouteNames,
   ContactsStackScreenProps,
 } from 'src/navigation/contactsNavigator'
+import { AddressInput } from 'src/components'
+import { colors, grid } from 'src/styles'
+import { fonts } from 'src/styles/fonts'
+import { setOpacity } from '../home/tokenColor'
+import { ContactsContext, IContact } from './ContactsContext'
 
 type ContactFormScreenProps = CompositeScreenProps<
   ContactsStackScreenProps<contactsStackRouteNames.ContactForm>,
@@ -104,7 +104,7 @@ export const ContactFormScreen = ({
         />
       </View>
       <View style={styles.footer}>
-        <BlueButton
+        <PrimaryButton
           testID="saveButton"
           accessibilityLabel="saveButton"
           title="Save Contact"

@@ -5,11 +5,11 @@ import {
   Text,
   View,
 } from 'react-native'
-import { Modal } from '../../components/modal/Modal'
-import { colors } from '../../styles'
-import { fonts } from '../../styles/fonts'
-import { PrimaryButton2 } from '../button/PrimaryButton2'
-import { SecondaryButton2 } from '../button/SecondaryButton2'
+import { Modal } from 'src/components/modal/Modal'
+import { colors } from 'src/styles'
+import { fonts } from 'src/styles/fonts'
+import { PrimaryButton } from '../button/PrimaryButton'
+import { SecondaryButton } from '../button/SecondaryButton'
 
 interface ConfirmationModalProps {
   isVisible?: boolean
@@ -45,13 +45,13 @@ export const ConfirmationModal = ({
       </Modal.Body>
       <Modal.Footer>
         <View>
-          <PrimaryButton2
+          <PrimaryButton
             style={styles.okButton}
             title={okText}
             onPress={onOk}
           />
           {cancelText && (
-            <SecondaryButton2
+            <SecondaryButton
               style={styles.cancelButton}
               title={cancelText}
               onPress={onCancel}

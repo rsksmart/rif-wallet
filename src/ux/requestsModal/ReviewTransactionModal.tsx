@@ -1,22 +1,20 @@
+import { BigNumber } from 'ethers'
 import React, { useMemo, useState } from 'react'
 import { ScrollView, StyleSheet, View } from 'react-native'
-import { BigNumber } from 'ethers'
 
-import { SendTransactionRequest } from '../../lib/core'
+import { SendTransactionRequest } from 'src/lib/core'
 
-import { sharedStyles } from '../../shared/styles'
-import { Loading, Paragraph, RegularText } from '../../components'
-import { ScreenWithWallet } from '../../screens/types'
-import useEnhancedWithGas from './useEnhancedWithGas'
 import { useTranslation } from 'react-i18next'
-import { shortAddress } from '../../lib/utils'
-import {
-  DarkBlueButton,
-  OutlineBorderedButton,
-} from '../../components/button/ButtonVariations'
-import { colors } from '../../styles'
-import ReadOnlyField from './ReadOnlyField'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { SecondaryButton } from 'src/components/button/SecondaryButton'
+import { Loading, Paragraph, RegularText } from 'src/components'
+import { shortAddress } from 'src/lib/utils'
+import { ScreenWithWallet } from 'src/screens/types'
+import { sharedStyles } from 'src/shared/styles'
+import { colors } from 'src/styles'
 import InputField from './InpuField'
+import ReadOnlyField from './ReadOnlyField'
+import useEnhancedWithGas from './useEnhancedWithGas'
 
 interface Interface {
   request: SendTransactionRequest
@@ -149,8 +147,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
 
       <View style={styles.buttonsSection}>
         <View style={sharedStyles.column}>
-          <OutlineBorderedButton
-            style={{ button: { borderColor: colors.black } }}
+          <SecondaryButton
             onPress={cancelTransaction}
             title={t('reject')}
             testID="Cancel.Button"
@@ -158,7 +155,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
           />
         </View>
         <View style={sharedStyles.column}>
-          <DarkBlueButton
+          <PrimaryButton
             onPress={confirmTransaction}
             title={t('sign')}
             testID="Confirm.Button"

@@ -3,12 +3,11 @@ import React, { useEffect, useState } from 'react'
 import { Clipboard, Image, Linking, StyleSheet, View } from 'react-native'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
-import { OutlineButton } from '../../components/button/ButtonVariations'
-
-import { MediumText } from '../../components'
-import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
 import { RootStackScreenProps } from 'navigation/rootNavigator/types'
-import { IProfileStore } from '../../storage/ProfileStore'
+import { SecondaryButton } from 'src/components/button/SecondaryButton'
+import { MediumText } from 'src/components'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { IProfileStore } from 'src/storage/MainStorage'
 import { ScreenWithWallet } from '../types'
 
 type Props = {
@@ -67,17 +66,15 @@ export const AliasBoughtScreen: React.FC<
 
         <View style={rnsManagerStyles.bottomContainer}>
           <View style={styles.buttonContainer}>
-            <PrimaryButton2
+            <PrimaryButton
               onPress={() => copyHashAndOpenExplorer(tx.hash)}
               accessibilityLabel="Copy Hash & Open Explorer"
               title={'Copy Hash & Open Explorer'}
             />
           </View>
-          <OutlineButton
+          <SecondaryButton
             onPress={() =>
-              navigation.navigate('ProfileDetailsScreen', {
-                navigation,
-              })
+              navigation.navigate('ProfileDetailsScreen', { navigation })
             }
             accessibilityLabel="close"
             title={'Close'}

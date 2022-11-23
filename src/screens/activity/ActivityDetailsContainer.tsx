@@ -1,17 +1,17 @@
-import { Linking, TouchableOpacity, View } from 'react-native'
-import { formatTimestamp, shortAddress } from '../../lib/utils'
-import { ScrollView } from 'react-native-gesture-handler'
-import { activityDetailsStyles as styles } from './styles'
-import { Arrow, RefreshIcon } from '../../components/icons'
-import { SemiBoldText } from '../../components'
-import { spacing } from '../../styles'
-import ActivityField from '../../components/activity/ActivityField'
-import { TokenImage } from '../home/TokenImage'
-import CopyField from '../../components/activity/CopyField'
 import { utils } from 'ethers'
-import StatusIcon from '../../components/statusIcons'
-import ButtonCustom from '../../components/activity/ButtonCustom'
-import { SearchIcon } from '../../components/icons/SearchIcon'
+import { Linking, TouchableOpacity, View } from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler'
+import { SemiBoldText } from 'src/components'
+import ActivityField from 'src/components/activity/ActivityField'
+import CopyField from 'src/components/activity/CopyField'
+import { SecondaryButton } from 'src/components/button/SecondaryButton'
+import { Arrow, RefreshIcon } from 'src/components/icons'
+import { SearchIcon } from 'src/components/icons/SearchIcon'
+import StatusIcon from 'src/components/statusIcons'
+import { formatTimestamp, shortAddress } from 'src/lib/utils'
+import { spacing } from 'src/styles'
+import { TokenImage } from '../home/TokenImage'
+import { activityDetailsStyles as styles } from './styles'
 import { IActivityTransaction } from './types'
 
 type ActivityDetailsContainer = {
@@ -124,10 +124,11 @@ export default function ActivityDetailsContainer({
         </ActivityField>
       </View>
       <View style={styles.alignSelfCenter}>
-        <ButtonCustom
-          secondText="view in explorer"
+        <SecondaryButton
+          title="view in explorer"
           icon={<SearchIcon width={30} height={30} color="white" />}
           onPress={onViewExplorerClick}
+          style={styles.viewExplorerButton}
         />
       </View>
       <View style={styles.mb50} />

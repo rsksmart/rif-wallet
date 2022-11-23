@@ -1,16 +1,13 @@
 import React from 'react'
-import { View, StyleSheet } from 'react-native'
-import { SignMessageRequest } from '../../lib/core/RIFWallet'
 import { useTranslation } from 'react-i18next'
+import { StyleSheet, View } from 'react-native'
+import { SignMessageRequest } from 'src/lib/core/RIFWallet'
 
-import { sharedStyles } from '../../shared/styles'
 import { ScrollView } from 'react-native-gesture-handler'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { SecondaryButton } from 'src/components/button/SecondaryButton'
+import { sharedStyles } from 'src/shared/styles'
 import ReadOnlyField from './ReadOnlyField'
-import {
-  DarkBlueButton,
-  OutlineBorderedButton,
-} from '../../components/button/ButtonVariations'
-import { colors } from '../../styles'
 
 interface Interface {
   request: SignMessageRequest
@@ -44,15 +41,14 @@ const SignMessageModal: React.FC<Interface> = ({ request, closeModal }) => {
 
       <View style={styles.buttonsSection}>
         <View style={sharedStyles.column}>
-          <OutlineBorderedButton
-            style={{ button: { borderColor: colors.black } }}
+          <SecondaryButton
             onPress={reject}
             title={t('reject')}
             testID="Button.Reject"
           />
         </View>
         <View style={sharedStyles.column}>
-          <DarkBlueButton
+          <PrimaryButton
             onPress={signMessage}
             title={t('sign')}
             testID="Button.Confirm"
