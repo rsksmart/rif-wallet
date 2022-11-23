@@ -25,6 +25,14 @@ export const GatewayScreen = () => {
   // the following should all outside of this component, but it is for demostration right now
   useEffect(() => {
     signer.getAddress().then(setEoaAddress)
+
+    signer.getAddress().then((address: string) => {
+      console.log('signer address', address)
+    })
+
+    wallet.getAddress().then((address: string) => {
+      console.log('wallet address', address)
+    })
   }, [wallet])
 
   useEffect(() => {

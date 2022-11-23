@@ -1,0 +1,150 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "IRIFGateway",
+  "sourceName": "contracts/services/IRIFGateway.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "provider",
+          "type": "address"
+        }
+      ],
+      "name": "InvalidProviderAddress",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract Service",
+          "name": "service",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes4",
+          "name": "serviceType",
+          "type": "bytes4"
+        }
+      ],
+      "name": "InvalidServiceImplementation",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "nonConformityErrMsg",
+          "type": "string"
+        }
+      ],
+      "name": "NonConformity",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "provider",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "service",
+          "type": "address"
+        }
+      ],
+      "name": "ServiceAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "provider",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "service",
+          "type": "address"
+        }
+      ],
+      "name": "ServiceValidated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "provider",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "service",
+          "type": "address"
+        }
+      ],
+      "name": "ValidationRequested",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract Service",
+          "name": "service",
+          "type": "address"
+        }
+      ],
+      "name": "addService",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getServices",
+      "outputs": [
+        {
+          "internalType": "contract Service[]",
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "provider",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "service",
+          "type": "address"
+        }
+      ],
+      "name": "requestValidation",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
