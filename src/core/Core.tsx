@@ -29,7 +29,6 @@ import { WalletConnectProviderElement } from 'screens/walletConnect/WalletConnec
 import { Cover } from './components/Cover'
 import { RequestPIN } from './components/RequestPIN'
 import { useBitcoinCore } from './hooks/bitcoin/useBitcoinCore'
-import { useKeyboardIsVisible } from './hooks/useKeyboardIsVisible'
 import { useKeyManagementSystem } from './hooks/useKeyManagementSystem'
 import { useRequests } from './hooks/useRequests'
 import { useStateSubscription } from './hooks/useStateSubscription'
@@ -63,7 +62,6 @@ export const Core = () => {
   const onScreenLock = removeKeys
 
   const { unlocked, setUnlocked, active } = useStateSubscription(onScreenLock)
-  const isKeyboardVisible = useKeyboardIsVisible()
 
   const [currentScreen, setCurrentScreen] = useState<string>('Home')
   const handleScreenChange = (newState: NavigationState | undefined) =>
@@ -151,7 +149,6 @@ export const Core = () => {
               currentScreen={currentScreen}
               hasKeys={state.hasKeys}
               hasPin={state.hasPin}
-              isKeyboardVisible={isKeyboardVisible}
               rifWalletServicesSocket={rifWalletServicesSocket}
               keyManagementProps={{
                 generateMnemonic: () => KeyManagementSystem.create().mnemonic,
@@ -184,11 +181,7 @@ export const Core = () => {
             />
 
             {requests.length !== 0 && (
-              <ModalComponent
-                closeModal={closeRequest}
-                isKeyboardVisible={isKeyboardVisible}
-                request={requests[0]}
-              />
+              <ModalComponent closeModal={closeRequest} request={requests[0]} />
             )}
           </WalletConnectProviderElement>
         </NavigationContainer>

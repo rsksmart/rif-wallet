@@ -54,7 +54,6 @@ interface Props {
   currentScreen: string
   hasKeys: boolean
   hasPin: boolean
-  isKeyboardVisible: boolean
   rifWalletServicesSocket: IRifWalletServicesSocket
   keyManagementProps: CreateKeysProps
   createPin: (newPin: string) => void
@@ -73,7 +72,6 @@ export const RootNavigationComponent = ({
   currentScreen,
   hasKeys,
   hasPin,
-  isKeyboardVisible,
   keyManagementProps,
   createPin,
   editPin,
@@ -136,13 +134,7 @@ export const RootNavigationComponent = ({
         <RootStack.Screen
           name={rootStackRouteNames.CreateKeysUX}
           options={sharedOptions}>
-          {props => (
-            <CreateKeysNavigation
-              {...props}
-              {...keyManagementProps}
-              isKeyboardVisible={isKeyboardVisible}
-            />
-          )}
+          {props => <CreateKeysNavigation {...props} {...keyManagementProps} />}
         </RootStack.Screen>
         <RootStack.Screen
           name={rootStackRouteNames.Receive}

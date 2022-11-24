@@ -21,9 +21,9 @@ import { PaginationNavigator } from '../../../components/button/PaginationNaviga
 import { WordSelector } from './WordSelector'
 import { sharedMnemonicStyles } from './styles'
 import { saveKeyVerificationReminder } from '../../../storage/MainStorage'
+import { useKeyboardIsVisible } from 'core/hooks/useKeyboardIsVisible'
 
 interface ConfirmMasterKeyScreenProps {
-  isKeyboardVisible: boolean
   createWallet: CreateKeysProps['createFirstWallet']
 }
 
@@ -31,9 +31,9 @@ export const ConfirmNewMasterKeyScreen = ({
   route,
   navigation,
   createWallet,
-  isKeyboardVisible,
 }: CreateKeysScreenProps<'ConfirmNewMasterKey'> &
   ConfirmMasterKeyScreenProps) => {
+  const isKeyboardVisible = useKeyboardIsVisible()
   const mnemonic = route.params.mnemonic
   const slidesIndexes = Array.from(
     { length: Math.ceil(mnemonic.split(' ').length / 3) },

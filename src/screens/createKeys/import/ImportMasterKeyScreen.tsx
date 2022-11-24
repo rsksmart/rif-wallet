@@ -26,10 +26,10 @@ import { validateMnemonic } from '../../../lib/bip39'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
-} from 'src/navigation/rootNavigator'
+} from 'navigation/rootNavigator'
+import { useKeyboardIsVisible } from 'core/hooks/useKeyboardIsVisible'
 
 interface ImportMasterKeyScreenProps {
-  isKeyboardVisible: boolean
   createWallet: CreateKeysProps['createFirstWallet']
 }
 
@@ -39,13 +39,10 @@ type Props = CompositeScreenProps<
 > &
   ImportMasterKeyScreenProps
 
-export const ImportMasterKeyScreen = ({
-  navigation,
-  createWallet,
-  isKeyboardVisible,
-}: Props) => {
+export const ImportMasterKeyScreen = ({ navigation, createWallet }: Props) => {
   const slidesIndexes = [0, 1, 2, 3]
 
+  const isKeyboardVisible = useKeyboardIsVisible()
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
   const [selectedWords, setSelectedWords] = useState<string[]>([])
   const [carousel, setCarousel] = useState<Carousel<number>>()

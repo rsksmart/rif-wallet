@@ -14,7 +14,6 @@ export enum createKeysRouteNames {
 export interface CreateKeysProps {
   generateMnemonic: () => string
   createFirstWallet: (mnemonic: string) => Promise<RIFWallet>
-  isKeyboardVisible: boolean
 }
 
 export type CreateKeysStackParamList = {

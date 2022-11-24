@@ -21,7 +21,6 @@ const screensOptions = { headerShown: false }
 export const CreateKeysNavigation = ({
   generateMnemonic,
   createFirstWallet,
-  isKeyboardVisible,
 }: CreateKeysProps) => {
   const createWallet = (mnemonic: string) => createFirstWallet(mnemonic)
 
@@ -67,7 +66,6 @@ export const CreateKeysNavigation = ({
               <ConfirmNewMasterKeyScreen
                 {...props}
                 createWallet={createWallet}
-                isKeyboardVisible={isKeyboardVisible}
               />
             )}
           </Stack.Screen>
@@ -76,11 +74,7 @@ export const CreateKeysNavigation = ({
           name={createKeysRouteNames.ImportMasterKey}
           options={screensOptions}>
           {props => (
-            <ImportMasterKeyScreen
-              {...props}
-              createWallet={createWallet}
-              isKeyboardVisible={isKeyboardVisible}
-            />
+            <ImportMasterKeyScreen {...props} createWallet={createWallet} />
           )}
         </Stack.Screen>
       </Stack.Group>
