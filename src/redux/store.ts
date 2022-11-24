@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import createDebugger from 'redux-flipper'
 import { usdPriceReducer } from './slices/usdPricesSlice/usdPricesSlice'
+import { transactionsReducer } from 'store/slices/transactionsSlice/transactionsSlice'
 import { balancesReducer } from 'store/slices/balancesSlice/balancesSlice'
 
 // Must use redux-debugger plugin in flipper for the redux debugger to work
@@ -8,6 +9,7 @@ import { balancesReducer } from 'store/slices/balancesSlice/balancesSlice'
 export const store = configureStore({
   reducer: {
     usdPrices: usdPriceReducer,
+    transactions: transactionsReducer,
     balances: balancesReducer,
   },
   middleware: getDefaultMiddlewares => {
