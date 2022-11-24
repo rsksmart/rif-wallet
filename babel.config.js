@@ -30,6 +30,7 @@ module.exports = {
           navigation: './src/navigation',
           screens: './src/screens/',
           lib: './src/lib',
+          core: './src/core',
         },
       },
     ],
