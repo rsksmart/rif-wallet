@@ -1,5 +1,4 @@
 import { useNavigation } from '@react-navigation/core'
-import React from 'react'
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import ActivityIcon from '../../components/icons/ActivityIcon'
 import ActivitySelectedIcon from '../../components/icons/ActivitySelectedIcon'
@@ -10,17 +9,18 @@ import DappsSelectedIcon from '../../components/icons/DappsSelectedIcon'
 import QRCodeIconFooter from '../../components/icons/QRCodeIconFooter'
 import { colors } from '../../styles/colors'
 
-export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
-  currentScreen,
-}) => {
+interface Props {
+  currentScreen: string
+}
+
+export const AppFooterMenu = ({ currentScreen }: Props) => {
   const navigation = useNavigation()
 
   return (
     <View style={styles.row}>
       <TouchableOpacity
-        onPress={() => navigation.navigate('Home' as never)}
-        style={styles.button}
-        accessibilityLabel="home">
+        onPress={() => navigation.navigate('Home')}
+        style={styles.button}>
         <Image
           style={styles.walletIcon}
           source={
@@ -32,9 +32,8 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate('Activity' as never)}
-        style={styles.button}
-        accessibilityLabel="activity">
+        onPress={() => navigation.navigate('Activity')}
+        style={styles.button}>
         {currentScreen === 'Activity' ? (
           <ActivitySelectedIcon />
         ) : (
@@ -43,16 +42,14 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate('ScanQR' as never)}
-        style={styles.button}
-        accessibilityLabel="scan">
+        onPress={() => navigation.navigate('ScanQR')}
+        style={styles.button}>
         <QRCodeIconFooter />
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate('Contacts' as never)}
-        style={styles.button}
-        accessibilityLabel="contacts">
+        onPress={() => navigation.navigate('Contacts')}
+        style={styles.button}>
         {currentScreen === 'Contacts' ? (
           <ContactSelectedIcon />
         ) : (
@@ -61,9 +58,8 @@ export const AppFooterMenu: React.FC<{ currentScreen: string }> = ({
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate('WalletConnect' as never)}
-        style={styles.button}
-        accessibilityLabel="dapps">
+        onPress={() => navigation.navigate('WalletConnect')}
+        style={styles.button}>
         {currentScreen === 'WalletConnect' ? (
           <DappsSelectedIcon />
         ) : (

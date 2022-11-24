@@ -54,9 +54,9 @@ export type RootStackParamList = {
     | {
         token?: string
         to?: string
+        rnsResolver?: Resolver
         displayTo?: string
         contractAddress?: string
-        rnsResolver?: Resolver
       }
   Receive: undefined
   ReceiveBitcoin: {

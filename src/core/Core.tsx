@@ -26,7 +26,6 @@ import {
 import { useSetGlobalError } from 'components/GlobalErrorHandler'
 import { LoadingScreen } from 'components/loading/LoadingScreen'
 import { WalletConnectProviderElement } from 'screens/walletConnect/WalletConnectContext'
-import { colors } from '../styles'
 import { Cover } from './components/Cover'
 import { RequestPIN } from './components/RequestPIN'
 import { useBitcoinCore } from './hooks/bitcoin/useBitcoinCore'
@@ -36,13 +35,15 @@ import { useRequests } from './hooks/useRequests'
 import { useStateSubscription } from './hooks/useStateSubscription'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRifSockets } from 'src/subscriptions/useRifSockets'
+import { useAppSelector } from 'store/storeHooks'
+import { selectTopColor } from 'store/slices/settingsSlice/selectors'
 
 export const navigationContainerRef =
   createNavigationContainerRef<RootStackParamList>()
 
 export const Core = () => {
   const insets = useSafeAreaInsets()
-  const [topColor, setTopColor] = useState(colors.darkPurple3)
+  const topColor = useAppSelector(selectTopColor)
 
   const { requests, onRequest, closeRequest } = useRequests()
   const {
@@ -180,7 +181,6 @@ export const Core = () => {
               securityConfigurationScreenProps={{
                 deleteKeys: resetKeysAndPin,
               }}
-              changeTopColor={setTopColor}
             />
 
             {requests.length !== 0 && (

@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native'
 import JailMonkey from 'jail-monkey'
 
 import { InjectSelectedWallet } from '../../Context'
-import { IRifWalletServicesSocket } from '../../lib/rifWalletServices/RifWalletServicesSocket'
+import { IRifWalletServicesSocket } from 'lib/rifWalletServices/RifWalletServicesSocket'
 
 import * as Screens from '../../screens'
 import {
@@ -16,7 +16,7 @@ import { AppFooterMenu } from '../../ux/appFooter'
 import { AppHeader } from '../../ux/appHeader'
 
 import { emptyProfile, useProfile } from '../../core/hooks/useProfile'
-import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
+import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import {
   RootStackParamList,
   rootStackRouteNames,
@@ -55,7 +55,6 @@ interface Props {
   hasKeys: boolean
   hasPin: boolean
   isKeyboardVisible: boolean
-  changeTopColor: (color: string) => void
   rifWalletServicesSocket: IRifWalletServicesSocket
   keyManagementProps: CreateKeysProps
   createPin: (newPin: string) => void
@@ -75,7 +74,6 @@ export const RootNavigationComponent = ({
   hasKeys,
   hasPin,
   isKeyboardVisible,
-  changeTopColor,
   keyManagementProps,
   createPin,
   editPin,
@@ -111,14 +109,9 @@ export const RootNavigationComponent = ({
       <RootStack.Navigator initialRouteName={initialRoute}>
         <RootStack.Screen
           name={rootStackRouteNames.Home}
-          options={sharedOptions}>
-          {props => (
-            <InjectedScreens.HomeScreen
-              {...props}
-              changeTopColor={changeTopColor}
-            />
-          )}
-        </RootStack.Screen>
+          options={sharedOptions}
+          component={InjectedScreens.HomeScreen}
+        />
         <RootStack.Screen
           name={rootStackRouteNames.WalletConnect}
           options={sharedOptions}>

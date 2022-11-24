@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
-import { Paragraph } from 'src/components'
+
+import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
+import { balanceToDisplay } from 'lib/utils'
+
+import { Paragraph } from 'components/index'
 import { toChecksumAddress } from 'components/address/lib'
 import { LoadingScreen } from 'components/loading/LoadingScreen'
 import { useBitcoinCoreContext, useSelectedWallet } from 'src/Context'
-import { balanceToDisplay } from 'lib/utils'
 import {
   RootStackNavigationProp,
   rootStackRouteNames,
@@ -14,22 +17,20 @@ import PortfolioComponent from './PortfolioComponent'
 import SelectedTokenComponent from './SelectedTokenComponent'
 import SendReceiveButtonComponent from './SendReceiveButtonComponent'
 import { getTokenColor } from './tokenColor'
-import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
-import { useAppSelector } from 'store/storeHooks'
+import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { useAppSelector, useAppDispatch } from 'store/storeHooks'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { selectAppState } from 'store/slices/appStateSlice/selectors'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
+import { changeTopColor } from 'store/slices/settingsSlice'
 
-export type HomeScreenProps = {
+export interface HomeScreenProps {
   navigation: RootStackNavigationProp
-  changeTopColor: (color: string) => void
 }
 
-export const HomeScreen: React.FC<HomeScreenProps> = ({
-  navigation,
-  changeTopColor,
-}) => {
+export const HomeScreen = ({ navigation }: HomeScreenProps) => {
+  const dispatch = useAppDispatch()
   const tokenBalances = useAppSelector(selectBalances)
   const prices = useAppSelector(selectUsdPrices)
   const { networksMap } = useBitcoinCoreContext()
@@ -38,10 +39,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
     undefined,
   )
-  const balances: Array<ITokenWithoutLogo | BitcoinNetwork> =
-    React.useMemo(() => {
-      return [...Object.values(tokenBalances), ...Object.values(networksMap)]
-    }, [tokenBalances, networksMap])
+  const balances: Array<ITokenWithBalance | BitcoinNetwork> = useMemo(() => {
+    return [...Object.values(tokenBalances), ...Object.values(networksMap)]
+  }, [tokenBalances, networksMap])
   // token or undefined
   const selected: ITokenWithoutLogo | BitcoinNetwork | undefined =
     selectedAddress
@@ -102,10 +102,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
   // pass the new color to Core to update header:
   useEffect(() => {
-    changeTopColor(selectedColor)
+    dispatch(changeTopColor(selectedColor))
   }, [selectedColor])
 
-  const selectedTokenAmount = React.useMemo(() => {
+  const selectedTokenAmount = useMemo(() => {
     if (selected instanceof BitcoinNetwork) {
       return selected.balance
     }
