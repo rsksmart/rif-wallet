@@ -331,9 +331,7 @@ export const RootNavigationComponent = ({
           options={sharedOptions}
         />
       </RootStack.Navigator>
-      {appIsSetup && !isKeyboardVisible && (
-        <AppFooterMenu currentScreen={currentScreen} />
-      )}
+      {appIsSetup && <AppFooterMenu currentScreen={currentScreen} />}
       <ConfirmationModal
         isVisible={isWarningVisible}
         title="DEVICE SECURITY COMPROMISED"
@@ -347,7 +345,7 @@ export const RootNavigationComponent = ({
 
 const styles = StyleSheet.create({
   parent: {
-    height: '100%',
+    flex: 1,
   },
 })
 

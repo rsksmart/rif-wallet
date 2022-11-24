@@ -30,8 +30,14 @@ export type CreateProfileScreenProps = {
 }
 export const ProfileCreateScreen: React.FC<
   RootStackScreenProps<'ProfileCreateScreen'> & CreateProfileScreenProps
-> = ({ route, profile, setProfile, storeProfile, eraseProfile }) => {
-  const navigation = route.params.navigation
+> = ({
+  route,
+  navigation,
+  profile,
+  setProfile,
+  storeProfile,
+  eraseProfile,
+}) => {
   const editProfile = route.params.editProfile
   const [localProfile, setLocalProfile] = useState<IProfileStore>(profile)
   const fullAlias = `${profile.alias}.rsk`
@@ -61,7 +67,7 @@ export const ProfileCreateScreen: React.FC<
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView>
         <View style={styles.profileHeader}>
-          <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <View style={styles.backButton}>
               <MaterialIcon name="west" color="white" size={10} />
             </View>
