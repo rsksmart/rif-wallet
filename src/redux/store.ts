@@ -1,9 +1,18 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { usdPriceReducer } from './slices/usdPricesSlice/usdPricesSlice'
 
+// Must use redux-debugger plugin in flipper for the redux debugger to work
+
 export const store = configureStore({
   reducer: {
     usdPrices: usdPriceReducer,
+  },
+  middleware: getDefaultMiddlewares => {
+    let middlewares = getDefaultMiddlewares()
+    if (__DEV__) {
+      return middlewares.concat(require('redux-flipper').default())
+    }
+    return middlewares
   },
 })
 
