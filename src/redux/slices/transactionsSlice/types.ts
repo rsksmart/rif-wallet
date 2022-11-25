@@ -1,7 +1,7 @@
 import { IActivityTransaction } from 'src/subscriptions/types'
 
 export interface ITransactionsState {
-  prev: string | undefined
-  next: string | undefined
+  prev: string | null | undefined
+  next: string | null | undefined
   transactions: IActivityTransaction[]
 }

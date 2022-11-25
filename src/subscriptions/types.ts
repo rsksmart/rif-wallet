@@ -110,7 +110,7 @@ export interface TransactionsServerResponseWithActivityTransactions
 }
 
 export interface ISocketsChangeEmitted {
-  dispatch: React.Dispatch<Action>
+  dispatch: any
   abiEnhancer: IAbiEnhancer
   wallet: RIFWallet
 }

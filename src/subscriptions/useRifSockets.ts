@@ -7,7 +7,6 @@ import {
 import { useContext, useEffect, useReducer } from 'react'
 import { useSetGlobalError } from 'components/GlobalErrorHandler'
 import { AppContext, useSelectedWallet } from '../Context'
-import { filterEnhancedTransactions, sortEnhancedTransactions } from './utils'
 import { useConnectSocket } from './useConnectSocket'
 import { useOnSocketChangeEmitted } from './useOnSocketChangeEmitted'
 import { useOnSocketInit } from './useOnSocketInit'
@@ -15,39 +14,6 @@ import { useOnSocketInit } from './useOnSocketInit'
 function liveSubscriptionsReducer(state: State, action: Action) {
   const { type } = action
   switch (action.type) {
-    case 'newTransactions':
-      const sortedTxs: Array<IActivityTransaction> = [
-        ...action.payload?.activityTransactions,
-        ...state.transactions?.activityTransactions,
-      ]
-        .sort(sortEnhancedTransactions)
-        .filter(filterEnhancedTransactions)
-
-      return {
-        ...state,
-        transactions: {
-          prev: action.payload.prev,
-          next: action.payload.next,
-          activityTransactions: sortedTxs,
-        },
-      }
-
-    case 'newTransaction':
-      const sortedTx: Array<IActivityTransaction> = [
-        action.payload,
-        ...state.transactions?.activityTransactions,
-      ]
-        .sort(sortEnhancedTransactions)
-        .filter(filterEnhancedTransactions)
-
-      return {
-        ...state,
-        transactions: {
-          ...state.transactions,
-          activityTransactions: sortedTx,
-        },
-      }
-
     case 'newTokenTransfer':
       return {
         ...state,

@@ -5,6 +5,7 @@ import {
   sortEnhancedTransactions,
 } from 'src/subscriptions/utils'
 import { IActivityTransaction } from 'src/subscriptions/types'
+import { TransactionsServerResponseWithActivityTransactions } from 'src/screens/activity/types'
 
 const initialState: ITransactionsState = {
   next: '',
@@ -21,27 +22,28 @@ const transactionsSlice = createSlice({
   reducers: {
     addNewTransactions: (
       state,
-      { payload }: PayloadAction<ITransactionsState>,
+      {
+        payload,
+      }: PayloadAction<TransactionsServerResponseWithActivityTransactions>,
     ) => {
       state.transactions = deserializeTransactions(
-        state.transactions.concat(payload.transactions),
+        state.transactions.concat(payload.activityTransactions || []),
       )
       state.next = payload.next
       state.prev = payload.prev
       return state
     },
-    setNewTransactions: (
+    addNewTransaction: (
       state,
-      { payload }: PayloadAction<ITransactionsState>,
+      { payload }: PayloadAction<IActivityTransaction>,
     ) => {
-      state.transactions = deserializeTransactions(payload.transactions)
-      state.next = payload.next
-      state.prev = payload.prev
+      state.transactions.push(payload)
+      state.transactions = deserializeTransactions(state.transactions || [])
       return state
     },
   },
 })
 
-export const { addNewTransactions, setNewTransactions } =
+export const { addNewTransactions, addNewTransaction } =
   transactionsSlice.actions
 export const transactionsReducer = transactionsSlice.reducer

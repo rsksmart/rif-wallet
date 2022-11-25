@@ -1,53 +1,50 @@
-import React, { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { FlatList, StyleSheet, View, RefreshControl } from 'react-native'
 import ActivityRow from './ActivityRow'
-import { useSocketsState } from '../../subscriptions/RIFSockets'
 import { useTranslation } from 'react-i18next'
-import { useBitcoinCoreContext } from '../../Context'
+import { useBitcoinCoreContext } from 'src/Context'
 import useBitcoinTransactionsHandler from './useBitcoinTransactionsHandler'
 import useTransactionsCombiner from './useTransactionsCombiner'
-import { IApiTransaction } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
-import {
-  IAbiEnhancer,
-  IEnhancedResult,
-} from '../../lib/abiEnhancer/AbiEnhancer'
-import { RIFWallet } from '../../lib/core'
+import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { IRIFWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
+import { IAbiEnhancer, IEnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
+import { RIFWallet } from 'lib/core'
 import { ScreenWithWallet } from '../types'
-import { RootStackScreenProps } from '../../navigation/rootNavigator/types'
+import { RootStackScreenProps } from 'navigation/rootNavigator'
 import { TransactionsServerResponseWithActivityTransactions } from './types'
-import { colors } from '../../styles'
+import { colors } from 'src/styles'
+import { useAppDispatch, useAppSelector } from 'store/storeHooks'
+import { addNewTransactions } from 'store/slices/transactionsSlice/transactionsSlice'
+import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
 
 export type ActivityScreenProps = {
   fetcher: IRIFWalletServicesFetcher
   abiEnhancer: IAbiEnhancer
 }
 
-export const ActivityScreen: React.FC<
-  RootStackScreenProps<'Activity'> & ScreenWithWallet & ActivityScreenProps
-> = ({ wallet, fetcher, abiEnhancer, navigation }) => {
+export const ActivityScreen = ({
+  wallet,
+  fetcher,
+  abiEnhancer,
+  navigation,
+}: RootStackScreenProps<'Activity'> &
+  ScreenWithWallet &
+  ActivityScreenProps) => {
   const [info, setInfo] = useState('')
   const { networks } = useBitcoinCoreContext()
   const btcTransactionFetcher = useBitcoinTransactionsHandler({
     bip: networks[0].bips[0],
     shouldMergeTransactions: true,
   })
-  const {
-    state: { transactions },
-    dispatch,
-  } = useSocketsState()
+
+  const { transactions, next: nextCurrent } = useAppSelector(selectTransactions)
+  const dispatch = useAppDispatch()
   const { t } = useTranslation()
 
   const transactionsCombined = useTransactionsCombiner(
-    transactions.activityTransactions,
+    transactions,
     btcTransactionFetcher.transactions,
   )
-  const hasTransactions = transactionsCombined.length > 0
-
-  // On load, fetch btc transactions
-  React.useEffect(() => {
-    btcTransactionFetcher.fetchTransactions()
-  }, [])
 
   const fetchTransactionsPage = async ({
     prev,
@@ -81,17 +78,21 @@ export const ActivityScreen: React.FC<
           }
         }),
       )
-
-      dispatch({
-        type: 'newTransactions',
-        payload: fetchedTransactions,
-      })
+      dispatch(addNewTransactions(fetchedTransactions))
 
       setInfo('')
     } catch (e) {
-      setInfo(t('Error reaching API: ') + e.message)
+      if (e instanceof Error) {
+        setInfo(t('Error reaching API: ') + e.message)
+      }
     }
   }
+
+  // On load, fetch both BTC and WALLET transactions
+  useEffect(() => {
+    btcTransactionFetcher.fetchTransactions()
+    fetchTransactionsPage()
+  }, [])
 
   const onRefresh = () => {
     fetchTransactionsPage()
@@ -99,30 +100,28 @@ export const ActivityScreen: React.FC<
   }
   return (
     <View style={styles.mainContainer}>
-      {hasTransactions && (
-        <FlatList
-          data={transactionsCombined}
-          initialNumToRender={10}
-          keyExtractor={item => item.id}
-          onEndReached={() => {
-            fetchTransactionsPage({ next: transactions?.next })
-            btcTransactionFetcher.fetchNextTransactionPage()
-          }}
-          onEndReachedThreshold={0.2}
-          refreshing={!!info}
-          renderItem={({ item }) => (
-            <ActivityRow activityTransaction={item} navigation={navigation} />
-          )}
-          style={styles.parent}
-          refreshControl={
-            <RefreshControl
-              refreshing={!!info}
-              tintColor="white"
-              onRefresh={onRefresh}
-            />
-          }
-        />
-      )}
+      <FlatList
+        data={transactionsCombined}
+        initialNumToRender={10}
+        keyExtractor={item => item.id}
+        onEndReached={() => {
+          fetchTransactionsPage({ next: nextCurrent })
+          btcTransactionFetcher.fetchNextTransactionPage()
+        }}
+        onEndReachedThreshold={0.2}
+        refreshing={!!info}
+        renderItem={({ item }) => (
+          <ActivityRow activityTransaction={item} navigation={navigation} />
+        )}
+        style={styles.parent}
+        refreshControl={
+          <RefreshControl
+            refreshing={!!info}
+            tintColor="white"
+            onRefresh={onRefresh}
+          />
+        }
+      />
     </View>
   )
 }
