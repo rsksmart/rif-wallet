@@ -16,7 +16,6 @@ export const balancesSlice = createSlice({
     ) => {
       state[action.payload.contractAddress] = {
         ...action.payload,
-        logo: '', // We need to define where this is coming from
       }
       return state
     },

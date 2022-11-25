@@ -1,7 +1,6 @@
 import { fireEvent, render } from '@testing-library/react-native'
 import { ContactRow } from './ContactRow'
 import { IContact } from './ContactsContext'
-import { ReduxWrapper } from '../../../testLib/ReduxWrapper'
 import * as balancesSelectors from 'store/slices/balancesSlice/selectors'
 
 jest.spyOn(balancesSelectors, 'selectBalances').mockImplementation(() => ({
@@ -33,7 +32,6 @@ describe('ContactRow', () => {
         onEdit={jest.fn}
         onPress={jest.fn}
       />,
-      { wrapper: ReduxWrapper },
     )
     expect(getByText('Alice')).toBeTruthy()
   })
@@ -50,7 +48,6 @@ describe('ContactRow', () => {
         onEdit={jest.fn}
         onPress={onPress}
       />,
-      { wrapper: ReduxWrapper },
     )
     const { getByTestId, queryByTestId } = component
 
@@ -76,8 +73,8 @@ describe('ContactRow', () => {
         onDelete={onDelete}
         onEdit={onEdit}
         onPress={jest.fn}
+        hideSendButton={false}
       />,
-      { wrapper: ReduxWrapper },
     )
     const { getByTestId, queryByTestId } = component
 
@@ -115,8 +112,8 @@ describe('ContactRow', () => {
         onDelete={onDelete}
         onEdit={onEdit}
         onPress={jest.fn}
+        hideSendButton
       />,
-      { wrapper: ReduxWrapper },
     )
     const { getByTestId, queryByTestId } = component
 
