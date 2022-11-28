@@ -22,16 +22,21 @@ export const useOnSocketChangeEmitted = ({
     useOnNewTransactionsEventEmitted(dispatchRedux)
   const onNewBalanceEventEmitted = useOnNewBalanceEventEmitted(dispatchRedux)
   return ({ type, payload }: IServiceChangeEvent) => {
-    if (type === 'newPrice') {
-      onNewPriceEventEmitted(payload)
-    } else if (type === 'newTransaction') {
-      onNewTransactionEventEmitted(payload)
-    } else if (type === 'newTransactions') {
-      onNewTransactionsEventEmitted(payload)
-    } else if (type === 'newBalance') {
-      onNewBalanceEventEmitted(payload)
-    } else {
-      dispatch({ type, payload } as Action)
+    switch (type) {
+      case 'newPrice':
+        onNewPriceEventEmitted(payload)
+        break
+      case 'newTransaction':
+        onNewTransactionEventEmitted(payload)
+        break
+      case 'newTransactions':
+        onNewTransactionsEventEmitted(payload)
+        break
+      case 'newBalance':
+        onNewBalanceEventEmitted(payload)
+        break
+      default:
+        dispatch({ type, payload } as Action)
     }
   }
 }

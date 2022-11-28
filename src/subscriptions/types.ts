@@ -1,4 +1,4 @@
-import React from 'react'
+import { ReactNode, Dispatch as ReactDispatch } from 'react'
 import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { IRIFWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
 import { IAbiEnhancer, IEnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
@@ -55,7 +55,7 @@ export interface InitAction {
 
 export interface ResetAction {
   type: 'reset'
-  payload?: undefined
+  payload: undefined
 }
 
 export interface State {
@@ -76,7 +76,7 @@ export type Action =
 
 export type Dispatch = (action: Action) => void
 export type SubscriptionsProviderProps = {
-  children: React.ReactNode
+  children: ReactNode
   rifServiceSocket?: IRifWalletServicesSocket
   abiEnhancer: IAbiEnhancer
   appActive: boolean
@@ -110,7 +110,7 @@ export interface TransactionsServerResponseWithActivityTransactions
 }
 
 export interface ISocketsChangeEmitted {
-  dispatch: any
+  dispatch: ReactDispatch<Action>
   abiEnhancer: IAbiEnhancer
   wallet: RIFWallet
 }

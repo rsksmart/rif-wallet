@@ -1,9 +1,4 @@
-import {
-  Action,
-  IActivityTransaction,
-  State,
-  SubscriptionsProviderProps,
-} from './types'
+import { Action, State, SubscriptionsProviderProps } from './types'
 import { useContext, useEffect, useReducer } from 'react'
 import { useSetGlobalError } from 'components/GlobalErrorHandler'
 import { AppContext, useSelectedWallet } from '../Context'
@@ -91,7 +86,7 @@ export const useRifSockets = ({
       // socket is connected to a different wallet
       if (rifServiceSocket.isConnected()) {
         rifServiceSocket.disconnect()
-        dispatch({ type: 'reset' })
+        dispatch({ type: 'reset', payload: undefined })
       }
       connect()
 
