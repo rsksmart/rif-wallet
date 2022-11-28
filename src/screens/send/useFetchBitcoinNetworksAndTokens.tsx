@@ -1,13 +1,14 @@
-import { useSocketsState } from '../../subscriptions/RIFSockets'
-import { useBitcoinCoreContext } from '../../Context'
+import { useBitcoinCoreContext } from 'src/Context'
 import { useMemo } from 'react'
 import { IAsset } from './types'
+import { useAppSelector } from 'store/storeHooks'
+import { selectBalances } from 'store/slices/balancesSlice/selectors'
 
 export const useFetchBitcoinNetworksAndTokens = () => {
-  const { state } = useSocketsState()
+  const tokenBalances = useAppSelector(selectBalances)
   const { networks } = useBitcoinCoreContext()
 
-  const tokens = useMemo(() => Object.values(state.balances), [state])
+  const tokens = useMemo(() => Object.values(tokenBalances), [tokenBalances])
   const networksSer = networks.map(network => ({
     ...network,
     balance: network.satoshis,

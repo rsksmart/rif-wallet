@@ -32,15 +32,6 @@ function liveSubscriptionsReducer(state: State, action: Action) {
         },
       }
 
-    case 'newBalance':
-      return {
-        ...state,
-        balances: {
-          ...state.balances,
-          [action.payload.contractAddress]: { ...action.payload, logo: '' }, // Need to define where are this logos coming from
-        },
-      }
-
     case 'newTransaction':
       const sortedTx: Array<IActivityTransaction> = [
         action.payload,

@@ -16,6 +16,7 @@ import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 import { useAppSelector } from 'store/storeHooks'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
+import { selectBalances } from 'store/slices/balancesSlice/selectors'
 
 export type HomeScreenProps = {
   navigation: RootStackNavigationProp
@@ -27,6 +28,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   changeTopColor,
 }) => {
   const { state } = useSocketsState()
+  const tokenBalances = useAppSelector(selectBalances)
   const prices = useAppSelector(selectUsdPrices)
   const { networksMap } = useBitcoinCoreContext()
   const { selectedWalletIndex, wallet, chainId } = useSelectedWallet()
@@ -36,12 +38,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   )
   const balances: Array<ITokenWithBalance | BitcoinNetwork> =
     React.useMemo(() => {
-      return [...Object.values(state.balances), ...Object.values(networksMap)]
-    }, [state.balances, networksMap])
+      return [...Object.values(tokenBalances), ...Object.values(networksMap)]
+    }, [tokenBalances, networksMap])
   // token or undefined
   const selected: ITokenWithBalance | BitcoinNetwork | undefined =
     selectedAddress
-      ? state.balances[selectedAddress] || networksMap[selectedAddress]
+      ? tokenBalances[selectedAddress] || networksMap[selectedAddress]
       : undefined
   const selectedColor = getTokenColor(selected ? selected.symbol : undefined)
   const backGroundColor = {

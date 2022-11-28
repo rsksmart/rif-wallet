@@ -9,13 +9,15 @@ import {
   View,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import { SearchIcon } from '../../components/icons/SearchIcon'
-import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
+import { SearchIcon } from 'components/icons/SearchIcon'
+import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import { RootStackNavigationProp } from 'navigation/rootNavigator/types'
-import { colors } from '../../styles'
-import { fonts } from '../../styles/fonts'
+import { colors } from 'src/styles'
+import { fonts } from 'src/styles/fonts'
 import { ContactRow } from './ContactRow'
 import { ContactsContext, IContact } from './ContactsContext'
+import { useAppSelector } from 'store/storeHooks'
+import { selectBalances } from 'store/slices/balancesSlice/selectors'
 
 export const ContactsScreen: React.FC<{
   navigation: RootStackNavigationProp
@@ -26,6 +28,9 @@ export const ContactsScreen: React.FC<{
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [selectedContact, setSelectedContact] = useState<IContact | null>(null)
+
+  const tokenBalances = useAppSelector(selectBalances)
+  const shouldHideSendButton = Object.values(tokenBalances).length === 0
 
   const showModal = (contact: IContact) => {
     setIsModalVisible(true)
@@ -141,6 +146,7 @@ export const ContactsScreen: React.FC<{
                 onPress={() =>
                   setSelectedIndex(selectedIndex === index ? null : index)
                 }
+                hideSendButton={shouldHideSendButton}
               />
             ))}
         </ScrollView>

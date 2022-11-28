@@ -3,6 +3,7 @@ import { act } from 'react-test-renderer'
 import * as hooks from '../../subscriptions/RIFSockets'
 import { ContactsContext, IContact } from './ContactsContext'
 import { ContactsScreen } from './ContactsScreen'
+import { ReduxWrapper } from '../../../testLib/ReduxWrapper'
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -48,6 +49,9 @@ describe('ContactsScreen', () => {
       <ContactsContext.Provider value={contactsContextMock}>
         <ContactsScreen navigation={navigationMock} />
       </ContactsContext.Provider>,
+      {
+        wrapper: ReduxWrapper,
+      },
     )
     expect(getByTestId('emptyView')).toBeTruthy()
   })
@@ -58,6 +62,7 @@ describe('ContactsScreen', () => {
       <ContactsContext.Provider value={contactsContextMock}>
         <ContactsScreen navigation={navigationMock} />
       </ContactsContext.Provider>,
+      { wrapper: ReduxWrapper },
     )
 
     expect(getByTestId('searchInput')).toBeTruthy()
@@ -72,6 +77,7 @@ describe('ContactsScreen', () => {
       <ContactsContext.Provider value={contactsContextMock}>
         <ContactsScreen navigation={navigationMock} />
       </ContactsContext.Provider>,
+      { wrapper: ReduxWrapper },
     )
 
     const searchInput = getByTestId('searchInput')
@@ -90,6 +96,7 @@ describe('ContactsScreen', () => {
       <ContactsContext.Provider value={contactsContextMock}>
         <ContactsScreen navigation={navigationMock} />
       </ContactsContext.Provider>,
+      { wrapper: ReduxWrapper },
     )
 
     const searchInput = getByTestId('searchInput')
