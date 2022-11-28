@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, ScrollView, Text } from 'react-native'
-import { useSocketsState } from '../../subscriptions/RIFSockets'
+import { useSocketsState } from 'src/subscriptions/RIFSockets'
 import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { ScreenWithWallet } from '../types'
 import TransactionInfo from './TransactionInfo'
-import { colors } from '../../styles'
-import TransactionForm from './TransactionForm'
+import { colors } from 'src/styles'
+import { TransactionForm } from './TransactionForm'
 import WalletNotDeployedView from './WalletNotDeployedModal'
 import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 import {
@@ -14,7 +14,10 @@ import {
 } from './usePaymentExecutor'
 import { useFetchBitcoinNetworksAndTokens } from './useFetchBitcoinNetworksAndTokens'
 import { MixedTokenAndNetworkType } from './types'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { selectUsdPrices } from 'store/slices/usdPricesSlice'
+import { useAppSelector } from 'store/storeHooks'
+import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
 
 export const SendScreen: React.FC<
   RootStackScreenProps<'Send'> & ScreenWithWallet
@@ -23,8 +26,10 @@ export const SendScreen: React.FC<
     useFetchBitcoinNetworksAndTokens() as unknown as MixedTokenAndNetworkType[]
 
   const { state } = useSocketsState()
+  const tokenBalances = useAppSelector(selectBalances)
+  const prices = useAppSelector(selectUsdPrices)
   const contractAddress =
-    route.params?.contractAddress || Object.keys(state.balances)[0]
+    route.params?.contractAddress || Object.keys(tokenBalances)[0]
 
   const [chainId, setChainId] = useState<number>(31)
 
@@ -56,6 +61,7 @@ export const SendScreen: React.FC<
 
   const onDeployWalletNavigate = () =>
     navigation.navigate('ManuallyDeployScreen' as any)
+
   return (
     <ScrollView style={styles.parent}>
       {!isWalletDeployed && (
@@ -70,14 +76,14 @@ export const SendScreen: React.FC<
           <TransactionForm
             onConfirm={onExecuteTransfer}
             tokenList={assets}
-            tokenPrices={state.prices}
+            tokenPrices={prices}
             chainId={chainId}
             initialValues={{
               recipient: route.params?.to,
               amount: '0',
               asset: route.params?.contractAddress
-                ? state.balances[route.params.contractAddress]
-                : state.balances[contractAddress],
+                ? tokenBalances[route.params.contractAddress]
+                : tokenBalances[contractAddress],
             }}
             transactions={state.transactions.activityTransactions}
           />

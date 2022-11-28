@@ -1,9 +1,9 @@
 import React from 'react'
 import { Image, StyleSheet, View } from 'react-native'
-import { RegularText, SemiBoldText } from '../../components'
-import { colors } from '../../styles'
-import PrimaryButton from '../../components/button/PrimaryButton'
-import { Arrow } from '../../components/icons'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { RegularText, SemiBoldText } from 'src/components'
+import { Arrow } from 'src/components/icons'
+import { colors } from 'src/styles'
 
 type WalletNotDeployedViewType = {
   onDeployWalletPress: () => void
@@ -13,7 +13,7 @@ const WalletNotDeployedView: React.FC<WalletNotDeployedViewType> = ({
 }) => (
   <View style={styles.container} testID="WalletNotDeployedView">
     <Image
-      source={require('../../images/undeployed_wallet.png')}
+      source={require('src/images/undeployed_wallet.png')}
       style={styles.imageStyle}
       resizeMode="contain"
     />
@@ -24,14 +24,21 @@ const WalletNotDeployedView: React.FC<WalletNotDeployedViewType> = ({
       <RegularText style={styles.regularText}>
         To be able to send funds, you need to deploy your wallet first.
       </RegularText>
-      <PrimaryButton style={styles.buttonDeploy} onPress={onDeployWalletPress}>
-        <View style={styles.buttonView}>
-          <Arrow color={'white'} rotate={45} width={35} height={35} />
-          <View>
-            <RegularText style={styles.deployText}>deploy wallet</RegularText>
+      <PrimaryButton
+        title="deploy wallet"
+        style={styles.buttonDeploy}
+        onPress={onDeployWalletPress}
+        icon={
+          <View style={styles.deployIcon}>
+            <Arrow
+              color={colors.lightPurple}
+              rotate={45}
+              width={35}
+              height={35}
+            />
           </View>
-        </View>
-      </PrimaryButton>
+        }
+      />
     </View>
   </View>
 )
@@ -47,7 +54,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.darkPurple3,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 40,
   },
   imageStyle: {
     width: '100%',
@@ -68,15 +74,13 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   buttonDeploy: {
-    backgroundColor: colors.background.bustyBlue,
-    flexDirection: 'row',
-    height: 60,
-    paddingHorizontal: 30,
-    width: 200,
     alignSelf: 'center',
+    justifyContent: 'center',
+    width: 200,
+    height: 50,
   },
-  deployText: {
-    color: 'white',
+  deployIcon: {
+    marginLeft: -20,
   },
   buttonView: {
     flexDirection: 'row',

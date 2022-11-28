@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { usdPriceReducer } from './slices/usdPricesSlice/usdPricesSlice'
+import { balancesReducer } from 'store/slices/balancesSlice/balancesSlice'
 
 export const store = configureStore({
   reducer: {
     usdPrices: usdPriceReducer,
+    balances: balancesReducer,
   },
 })
 

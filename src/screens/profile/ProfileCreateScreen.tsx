@@ -1,16 +1,24 @@
 import React, { useCallback, useState } from 'react'
-import { RegularText } from '../../components/typography'
-import { IProfileStore } from '../../storage/MainStorage'
-
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import { MediumText } from '../../components'
-import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
-import { TextInputWithLabel } from '../../components/input/TextInputWithLabel'
-import { emptyProfile } from '../../core/hooks/useProfile'
 import { RootStackScreenProps } from 'navigation/rootNavigator/types'
-import { colors } from '../../styles'
-import { fonts } from '../../styles/fonts'
+import {
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import { AvatarIcon } from 'src/components/icons/AvatarIcon'
+import { IProfileStore } from 'src/storage/MainStorage'
+import { MediumText } from 'src/components'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { TextInputWithLabel } from 'src/components/input/TextInputWithLabel'
+import { emptyProfile } from 'src/core/hooks/useProfile'
+import { colors } from 'src/styles'
+import { fonts } from 'src/styles/fonts'
+import { RegularText } from 'src/components/typography'
 
 export type CreateProfileScreenProps = {
   route: any
@@ -21,14 +29,23 @@ export type CreateProfileScreenProps = {
 }
 export const ProfileCreateScreen: React.FC<
   RootStackScreenProps<'ProfileCreateScreen'> & CreateProfileScreenProps
-> = ({ route, profile, setProfile, storeProfile, eraseProfile }) => {
-  const navigation = route.params.navigation
+> = ({
+  route,
+  navigation,
+  profile,
+  setProfile,
+  storeProfile,
+  eraseProfile,
+}) => {
   const editProfile = route.params.editProfile
   const [localProfile, setLocalProfile] = useState<IProfileStore>(profile)
+  const fullAlias = `${profile.alias}.rsk`
+
   const createProfile = async () => {
     await storeProfile({ ...localProfile, alias: profile.alias })
     navigation.navigate('Home')
   }
+
   const deleteAlias = async () => {
     await eraseProfile()
     navigation.navigate('Home')
@@ -41,99 +58,113 @@ export const ProfileCreateScreen: React.FC<
   const onSetPhone = useCallback((phone: string) => {
     setLocalProfile(prev => ({ ...prev, phone }))
   }, [])
+
   return (
-    <>
-      <View style={styles.profileHeader}>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <View style={styles.backButton}>
-            <MaterialIcon name="west" color="white" size={10} />
-          </View>
-        </TouchableOpacity>
-        <MediumText style={styles.titleText}>
-          {editProfile ? 'edit profile' : 'create profile'}
-        </MediumText>
-        {editProfile && (
-          <TouchableOpacity onPress={deleteAlias}>
-            <MaterialIcon name="delete" color="white" size={20} />
+    <KeyboardAvoidingView
+      style={styles.screen}
+      keyboardVerticalOffset={100}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <ScrollView>
+        <View style={styles.profileHeader}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <View style={styles.backButton}>
+              <MaterialIcon name="west" color="white" size={10} />
+            </View>
           </TouchableOpacity>
-        )}
-      </View>
-      <View style={styles.container}>
-        <View style={styles.profileImageContainer}>
-          <Image
-            style={styles.profileImage}
-            source={require('../../images/image_place_holder.jpeg')}
-          />
-        </View>
-        <View>
-          <MediumText style={[styles.masterText, styles.textLeftMargin]}>
-            alias
+          <MediumText style={styles.titleText}>
+            {editProfile ? 'edit profile' : 'create profile'}
           </MediumText>
+          {editProfile && (
+            <TouchableOpacity onPress={deleteAlias}>
+              <MaterialIcon name="delete" color="white" size={20} />
+            </TouchableOpacity>
+          )}
         </View>
-        {!profile?.alias && (
-          <>
-            <View style={styles.rowContainer}>
-              <PrimaryButton2
-                onPress={() => navigation.navigate('SearchDomain')}
-                accessibilityLabel="register new"
-                title={'register new'}
+        <View style={styles.bodyContainer}>
+          <View style={styles.profileImageContainer}>
+            {profile.alias ? (
+              <AvatarIcon value={fullAlias} size={80} />
+            ) : (
+              <Image
+                style={styles.profileImage}
+                source={require('../../images/image_place_holder.jpeg')}
               />
-            </View>
-          </>
-        )}
-
-        {!!profile?.alias && (
-          <View style={styles.rowContainer}>
-            <View style={styles.aliasContainer}>
-              <View>
-                <RegularText style={styles.aliasText}>
-                  {profile?.alias}
-                </RegularText>
-              </View>
-              <View>
-                <TouchableOpacity
-                  onPress={() => setProfile({ ...profile, alias: '' })}>
-                  <MaterialIcon name="close" color={colors.white} size={20} />
-                </TouchableOpacity>
-              </View>
-            </View>
+            )}
           </View>
-        )}
+          <View>
+            <MediumText style={[styles.masterText, styles.textLeftMargin]}>
+              alias
+            </MediumText>
+          </View>
+          {!profile?.alias && (
+            <>
+              <View style={styles.rowContainer}>
+                <PrimaryButton
+                  onPress={() => navigation.navigate('SearchDomain')}
+                  accessibilityLabel="register new"
+                  title={'register new'}
+                />
+              </View>
+            </>
+          )}
 
-        <View style={styles.rowContainer}>
-          <TextInputWithLabel
-            label="phone"
-            value={localProfile?.phone}
-            setValue={onSetPhone}
-            placeholder="your phone number"
-            keyboardType="phone-pad"
-            optional={true}
-          />
+          {!!profile?.alias && (
+            <View style={styles.rowContainer}>
+              <View style={styles.aliasContainer}>
+                <View>
+                  <RegularText style={styles.aliasText}>
+                    {profile?.alias}
+                  </RegularText>
+                </View>
+                <View>
+                  <TouchableOpacity
+                    onPress={() => setProfile({ ...profile, alias: '' })}>
+                    <MaterialIcon name="close" color={colors.white} size={20} />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          )}
+
+          <View style={styles.rowContainer}>
+            <TextInputWithLabel
+              label="phone"
+              value={localProfile?.phone}
+              setValue={onSetPhone}
+              placeholder="your phone number"
+              keyboardType="phone-pad"
+              optional={true}
+            />
+          </View>
+          <View style={styles.rowContainer}>
+            <TextInputWithLabel
+              label="email"
+              value={localProfile?.email}
+              setValue={onSetEmail}
+              placeholder="your email"
+              optional={true}
+            />
+          </View>
+          <View style={styles.rowContainer}>
+            <PrimaryButton
+              onPress={createProfile}
+              accessibilityLabel="create"
+              title={editProfile ? 'save' : 'create'}
+              disabled={localProfile === emptyProfile}
+            />
+          </View>
         </View>
-        <View style={styles.rowContainer}>
-          <TextInputWithLabel
-            label="email"
-            value={localProfile?.email}
-            setValue={onSetEmail}
-            placeholder="your email"
-            optional={true}
-          />
-        </View>
-        <View style={styles.rowContainer}>
-          <PrimaryButton2
-            onPress={createProfile}
-            accessibilityLabel="create"
-            title={editProfile ? 'save' : 'create'}
-            disabled={localProfile === emptyProfile}
-          />
-        </View>
-      </View>
-    </>
+      </ScrollView>
+    </KeyboardAvoidingView>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
+  screen: {
+    flex: 1,
+    backgroundColor: colors.background.darkBlue,
+  },
+  bodyContainer: {
     flex: 1,
     backgroundColor: colors.background.darkBlue,
     paddingTop: 10,

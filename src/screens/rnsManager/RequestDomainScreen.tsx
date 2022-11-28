@@ -3,13 +3,13 @@ import * as Progress from 'react-native-progress'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 import { Dimensions, TouchableOpacity, View } from 'react-native'
-import { colors } from '../../styles'
+import { colors } from 'src/styles'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
-import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
 
-import { MediumText } from '../../components'
-import { AvatarIcon } from '../../components/icons/AvatarIcon'
+import { MediumText } from 'src/components'
+import { AvatarIcon } from 'src/components/icons/AvatarIcon'
 import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { ScreenWithWallet } from '../types'
 import TitleStatus from './TitleStatus'
@@ -128,7 +128,7 @@ export const RequestDomainScreen: React.FC<
         </View>
 
         <View style={rnsManagerStyles.bottomContainer}>
-          <PrimaryButton2
+          <PrimaryButton
             onPress={() => commitToRegister()}
             accessibilityLabel="request"
             title={'request'}
