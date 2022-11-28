@@ -8,7 +8,7 @@ import { RifWalletServicesSocket } from '../lib/rifWalletServices/RifWalletServi
 
 export const networkId = getWalletSetting(SETTINGS.DEFAULT_CHAIN_ID)
 
-const rpcUrl = getWalletSetting(SETTINGS.RPC_URL, parseInt(networkId))
+const rpcUrl = getWalletSetting(SETTINGS.RPC_URL, parseInt(networkId, 10))
 const smartWalletFactoryAddress = getWalletSetting(
   SETTINGS.SMART_WALLET_FACTORY_ADDRESS,
 )
