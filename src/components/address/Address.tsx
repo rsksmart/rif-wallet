@@ -1,16 +1,12 @@
 import React from 'react'
-import { Text, Linking } from 'react-native'
+import { Linking, Text } from 'react-native'
 import Clipboard from '@react-native-community/clipboard'
 import { shortAddress } from '../../lib/utils'
 import { Paragraph } from '../typography'
 import { toChecksumAddress } from './lib'
 import { CompassIcon, CopyIcon } from '../icons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-
-const explorerAddressUrlByChainId: { [chainId: number]: string } = {
-  30: 'https://explorer.rsk.co/address/',
-  31: 'https://explorer.testnet.rsk.co/address/',
-}
+import { getWalletSetting, SETTINGS } from 'src/core/config'
 
 export const getAddressDisplayText = (inputAddress: string, chainId = 31) => {
   const checksumAddress = toChecksumAddress(inputAddress, chainId)
@@ -30,7 +26,7 @@ export const Address: React.FC<{ chainId?: number; testID?: string }> = ({
     chainId,
   )
 
-  const explorerUrl = explorerAddressUrlByChainId[chainId]
+  const explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainId)
 
   return (
     <Paragraph>

@@ -6,9 +6,9 @@ import { AbiEnhancer } from '../lib/abiEnhancer/AbiEnhancer'
 import { getWalletSetting, SETTINGS } from './config'
 import { RifWalletServicesSocket } from '../lib/rifWalletServices/RifWalletServicesSocket'
 
-export const networkId = 31
+export const networkId = getWalletSetting(SETTINGS.DEFAULT_CHAIN_ID)
 
-const rpcUrl = getWalletSetting(SETTINGS.RPC_URL, networkId)
+const rpcUrl = getWalletSetting(SETTINGS.RPC_URL, parseInt(networkId))
 const smartWalletFactoryAddress = getWalletSetting(
   SETTINGS.SMART_WALLET_FACTORY_ADDRESS,
 )
