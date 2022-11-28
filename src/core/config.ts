@@ -20,9 +20,7 @@ export const getWalletSetting = (
     case SETTINGS.DEFAULT_CHAIN_ID:
       return Config.DEFAULT_CHAIN_ID
     case SETTINGS.RIF_WALLET_SERVICE_URL:
-      return chainId === 31
-        ? Config.RIF_WALLET_SERVICE_URL_TESTNET
-        : Config.RIF_WALLET_SERVICE_URL
+      return Config.RIF_WALLET_SERVICE_URL
     case SETTINGS.EXPLORER_ADDRESS_URL:
       return chainId === 31
         ? Config.EXPLORER_ADDRESS_URL_TESTNET
