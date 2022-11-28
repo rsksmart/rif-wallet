@@ -6,6 +6,7 @@ import {
 } from 'src/subscriptions/utils'
 import { IActivityTransaction } from 'src/subscriptions/types'
 import { TransactionsServerResponseWithActivityTransactions } from 'src/screens/activity/types'
+import { resetSocketState } from 'store/shared/resetSocketState'
 
 const initialState: ITransactionsState = {
   next: '',
@@ -41,6 +42,9 @@ const transactionsSlice = createSlice({
       state.transactions = deserializeTransactions(state.transactions || [])
       return state
     },
+  },
+  extraReducers: builder => {
+    builder.addCase(resetSocketState, () => initialState)
   },
 })
 

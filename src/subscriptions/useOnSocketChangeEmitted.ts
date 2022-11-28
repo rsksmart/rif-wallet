@@ -5,6 +5,7 @@ import { Action, ISocketsChangeEmitted } from './types'
 import { IServiceChangeEvent } from 'lib/rifWalletServices/RifWalletServicesSocket'
 import { useOnNewTransactionsEventEmitted } from 'src/subscriptions/useOnNewTransactionsEventEmitted'
 import { useOnNewBalanceEventEmitted } from 'src/subscriptions/useOnNewBalanceEventEmitted'
+import { resetSocketState } from 'store/shared/resetSocketState'
 
 export const useOnSocketChangeEmitted = ({
   dispatch,
@@ -34,6 +35,9 @@ export const useOnSocketChangeEmitted = ({
         break
       case 'newBalance':
         onNewBalanceEventEmitted(payload)
+        break
+      case 'reset':
+        dispatchRedux(resetSocketState())
         break
       default:
         dispatch({ type, payload } as Action)

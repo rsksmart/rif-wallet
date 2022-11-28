@@ -3,6 +3,7 @@ import {
   BalanceState,
   ITokenWithoutLogo,
 } from 'store/slices/balancesSlice/types'
+import { resetSocketState } from 'store/shared/resetSocketState'
 
 const initialState: BalanceState = {}
 
@@ -19,6 +20,9 @@ export const balancesSlice = createSlice({
       }
       return state
     },
+  },
+  extraReducers: builder => {
+    builder.addCase(resetSocketState, () => initialState)
   },
 })
 
