@@ -4,7 +4,7 @@ import {
   filterEnhancedTransactions,
   sortEnhancedTransactions,
 } from 'src/subscriptions/utils'
-import { IActivityTransaction } from 'src/subscriptions/types'
+import { IActivityTransaction, IEvent } from 'src/subscriptions/types'
 import { TransactionsServerResponseWithActivityTransactions } from 'src/screens/activity/types'
 import { resetSocketState } from 'store/shared/resetSocketState'
 
@@ -12,6 +12,7 @@ const initialState: ITransactionsState = {
   next: '',
   prev: '',
   transactions: [],
+  events: [],
 }
 
 const deserializeTransactions = (transactions: IActivityTransaction[]) =>
@@ -42,12 +43,16 @@ const transactionsSlice = createSlice({
       state.transactions = deserializeTransactions(state.transactions || [])
       return state
     },
+    addNewEvent: (state, { payload }: PayloadAction<IEvent>) => {
+      state.events.push(payload)
+      return state
+    },
   },
   extraReducers: builder => {
     builder.addCase(resetSocketState, () => initialState)
   },
 })
 
-export const { addNewTransactions, addNewTransaction } =
+export const { addNewTransactions, addNewTransaction, addNewEvent } =
   transactionsSlice.actions
 export const transactionsReducer = transactionsSlice.reducer

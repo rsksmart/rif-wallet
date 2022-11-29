@@ -7,6 +7,7 @@ import { useOnNewBalanceEventEmitted } from 'src/subscriptions/useOnNewBalanceEv
 import { resetSocketState } from 'store/shared/resetSocketState'
 import { addOrUpdateBalances } from 'src/redux/slices/balancesSlice/balancesSlice'
 import { setIsSetup } from 'store/slices/appStateSlice/appStateSlice'
+import { addNewEvent } from 'store/slices/transactionsSlice/transactionsSlice'
 
 export const useOnSocketChangeEmitted = ({
   dispatch,
@@ -48,6 +49,10 @@ export const useOnSocketChangeEmitted = ({
         })
         dispatch(addOrUpdateBalances(payload.balances))
         dispatch(setIsSetup(true))
+        break
+      case 'newTokenTransfer':
+        // This is not being used anywhere
+        dispatch(addNewEvent(payload))
         break
       default:
         throw new Error(`${type} not implemented`)
