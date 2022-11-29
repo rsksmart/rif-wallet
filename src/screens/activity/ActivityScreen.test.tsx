@@ -13,7 +13,7 @@ import {
   createMockAbiEnhancer,
   enhancedTxTestCase,
 } from '../../../testLib/mocks/rifTransactionsMock'
-import { ActivityScreen } from './ActivityScreen'
+import { ActivityScreen, ActivityScreenProps } from './ActivityScreen'
 import { getAddressDisplayText } from '../../components'
 import { IRIFWalletServicesFetcher } from 'src/lib/rifWalletServices/RifWalletServicesFetcher'
 import {
@@ -54,11 +54,17 @@ jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }))
 
+jest.mock('@react-navigation/native', () => ({
+  ...jest.requireActual('@react-navigation/native'),
+  useNavigation: () => {
+    return jest.fn()
+  },
+}))
+
 describe('Activity Screen', function (this: {
   testInstance: Awaited<ReturnType<typeof createTestInstance>>
 }) {
-  const navigation =
-    useNavigation<RootStackScreenProps<rootStackRouteNames.Activity>>()
+  const navigation = useNavigation<ActivityScreenProps>()
   beforeEach(async () => {
     act(async () => {
       this.testInstance = await createTestInstance(null, null, navigation)
@@ -139,7 +145,7 @@ describe('Activity Screen with Error in Fetcher', function (this: {
       fetchDapps: jest.fn(),
     }
     act(async () => {
-      this.testInstance = await createTestInstance(this.fetcher, null)
+      this.testInstance = await createTestInstance(this.fetcher, null, null)
     })
   })
 

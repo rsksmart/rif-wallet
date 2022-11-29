@@ -35,9 +35,9 @@ export const ContactFormScreen = ({
   }
 
   const { addContact, editContact } = useContext(ContactsContext)
-  const [name, setName] = useState(initialValue.name)
+  const [name, setName] = useState(initialValue.name || '')
   const [address, setAddress] = useState({
-    value: initialValue.address,
+    value: initialValue.address || '',
     isValid: !!initialValue.address,
   })
   const isValidContact = name && address.isValid
@@ -48,7 +48,7 @@ export const ContactFormScreen = ({
 
   const saveContact = () => {
     if (initialValue.id) {
-      const contact = {
+      const contact: IContact = {
         ...initialValue,
         name,
         address: address.value,
@@ -97,7 +97,7 @@ export const ContactFormScreen = ({
         </View>
         <AddressInput
           testID="addressInput"
-          initialValue={initialValue.address}
+          initialValue={initialValue.address || ''}
           onChangeText={handleAddressChange}
           chainId={chainId}
           backgroundColor={colors.darkPurple4}

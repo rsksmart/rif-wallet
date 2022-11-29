@@ -1,4 +1,3 @@
-import { useNavigation } from '@react-navigation/native'
 import { fireEvent, render } from '@testing-library/react-native'
 import { act } from 'react-test-renderer'
 import {
@@ -6,20 +5,19 @@ import {
   ContactsContextInterface,
   IContact,
 } from './ContactsContext'
-import { ContactsListScreenProps, ContactsScreen } from './ContactsScreen'
+import { ContactsScreen } from './ContactsScreen'
 import { ReduxWrapper } from '../../../testLib/ReduxWrapper'
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }))
 
-// jest.spyOn(hooks, 'useSocketsState').mockImplementation(() => ({
-//   state: { balances: [{}] },
-//   dispatch: () => {},
-// }))
-
 describe('ContactsScreen', () => {
-  const navigation = useNavigation<ContactsListScreenProps>()
+  const navigation = {
+    navigation: jest.fn(),
+    route: jest.fn(),
+  }
+
   let contactsContextMock: ContactsContextInterface
   const contactsMock: IContact[] = [
     {
