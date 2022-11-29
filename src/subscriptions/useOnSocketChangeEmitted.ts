@@ -1,27 +1,26 @@
 import { useOnNewPriceEventEmitted } from './useOnNewPriceEventEmitted'
-import { useAppDispatch } from 'store/storeHooks'
 import { useOnNewTransactionEventEmitted } from './useOnNewTransactionEventEmitted'
-import { Action, ISocketsChangeEmitted } from './types'
+import { ISocketsChangeEmitted } from './types'
 import { IServiceChangeEvent } from 'lib/rifWalletServices/RifWalletServicesSocket'
 import { useOnNewTransactionsEventEmitted } from 'src/subscriptions/useOnNewTransactionsEventEmitted'
 import { useOnNewBalanceEventEmitted } from 'src/subscriptions/useOnNewBalanceEventEmitted'
 import { resetSocketState } from 'store/shared/resetSocketState'
+import { addOrUpdateBalances } from 'src/redux/slices/balancesSlice/balancesSlice'
 
 export const useOnSocketChangeEmitted = ({
   dispatch,
   abiEnhancer,
   wallet,
 }: ISocketsChangeEmitted) => {
-  const dispatchRedux = useAppDispatch()
-  const onNewPriceEventEmitted = useOnNewPriceEventEmitted(dispatchRedux)
+  const onNewPriceEventEmitted = useOnNewPriceEventEmitted(dispatch)
   const onNewTransactionEventEmitted = useOnNewTransactionEventEmitted({
     abiEnhancer,
     wallet,
-    dispatch: dispatchRedux,
+    dispatch: dispatch,
   })
   const onNewTransactionsEventEmitted =
-    useOnNewTransactionsEventEmitted(dispatchRedux)
-  const onNewBalanceEventEmitted = useOnNewBalanceEventEmitted(dispatchRedux)
+    useOnNewTransactionsEventEmitted(dispatch)
+  const onNewBalanceEventEmitted = useOnNewBalanceEventEmitted(dispatch)
   return ({ type, payload }: IServiceChangeEvent) => {
     switch (type) {
       case 'newPrice':
@@ -37,10 +36,19 @@ export const useOnSocketChangeEmitted = ({
         onNewBalanceEventEmitted(payload)
         break
       case 'reset':
-        dispatchRedux(resetSocketState())
+        dispatch(resetSocketState())
+        break
+      case 'init':
+        onNewTransactionsEventEmitted({
+          data: [],
+          next: undefined,
+          prev: undefined,
+          activityTransactions: payload.transactions,
+        })
+        dispatch(addOrUpdateBalances(payload.balances))
         break
       default:
-        dispatch({ type, payload } as Action)
+        throw new Error(`${type} not implemented`)
     }
   }
 }

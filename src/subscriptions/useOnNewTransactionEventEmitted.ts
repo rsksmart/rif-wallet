@@ -2,13 +2,12 @@ import { ISocketsChangeEmitted } from './types'
 import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { addNewTransaction } from 'store/slices/transactionsSlice/transactionsSlice'
 import { IEnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
-import { AppDispatch } from 'src/redux'
 
 export const useOnNewTransactionEventEmitted = ({
   abiEnhancer,
   wallet,
   dispatch,
-}: Omit<ISocketsChangeEmitted, 'dispatch'> & { dispatch: AppDispatch }) => {
+}: ISocketsChangeEmitted) => {
   return async (payload: IApiTransaction) => {
     const payloadToUse: {
       originTransaction: IApiTransaction

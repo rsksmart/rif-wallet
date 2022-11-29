@@ -20,11 +20,21 @@ export const balancesSlice = createSlice({
       }
       return state
     },
+    addOrUpdateBalances: (
+      state,
+      { payload }: PayloadAction<ITokenWithoutLogo[]>,
+    ) => {
+      payload.map(token => {
+        state[token.contractAddress] = token
+      })
+      return state
+    },
   },
   extraReducers: builder => {
     builder.addCase(resetSocketState, () => initialState)
   },
 })
 
-export const { addOrUpdateNewBalance } = balancesSlice.actions
+export const { addOrUpdateNewBalance, addOrUpdateBalances } =
+  balancesSlice.actions
 export const balancesReducer = balancesSlice.reducer

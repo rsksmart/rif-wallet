@@ -1,10 +1,11 @@
-import { ReactNode, Dispatch as ReactDispatch } from 'react'
+import { ReactNode } from 'react'
 import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { IRIFWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
 import { IAbiEnhancer, IEnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { IRifWalletServicesSocket } from 'lib/rifWalletServices/RifWalletServicesSocket'
 import { RIFWallet } from 'lib/core'
+import { AppDispatch } from 'src/redux'
 
 export interface IPrice {
   price: number
@@ -59,8 +60,6 @@ export interface ResetAction {
 }
 
 export interface State {
-  transactions: TransactionsServerResponseWithActivityTransactions
-  balances: Record<string, ITokenWithBalance>
   events: Array<IEvent>
   isSetup: boolean
 }
@@ -110,7 +109,7 @@ export interface TransactionsServerResponseWithActivityTransactions
 }
 
 export interface ISocketsChangeEmitted {
-  dispatch: ReactDispatch<Action>
+  dispatch: AppDispatch
   abiEnhancer: IAbiEnhancer
   wallet: RIFWallet
 }

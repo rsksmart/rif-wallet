@@ -1,10 +1,10 @@
-import { Action, State, SubscriptionsProviderProps } from './types'
+import { Action, InitAction, State, SubscriptionsProviderProps } from './types'
 import { useContext, useEffect, useReducer } from 'react'
 import { useSetGlobalError } from 'components/GlobalErrorHandler'
 import { AppContext, useSelectedWallet } from '../Context'
 import { useConnectSocket } from './useConnectSocket'
 import { useOnSocketChangeEmitted } from './useOnSocketChangeEmitted'
-import { useOnSocketInit } from './useOnSocketInit'
+import { useAppDispatch } from 'store/storeHooks'
 
 function liveSubscriptionsReducer(state: State, action: Action) {
   const { type } = action
@@ -15,44 +15,14 @@ function liveSubscriptionsReducer(state: State, action: Action) {
         events: state.events.concat([action.payload]),
       }
 
-    case 'init':
-      const balancesInitial = action.payload.balances.reduce(
-        (accum, current) => {
-          return {
-            ...accum,
-            [current.contractAddress]: { ...current, logo: '' }, // why logo is empty?
-          }
-        },
-        {},
-      )
-
-      return {
-        ...state,
-        isSetup: true,
-        balances: balancesInitial,
-        transactions: {
-          ...state.transactions,
-          activityTransactions: action.payload.transactions,
-        },
-      }
-
-    case 'reset':
-      return initialState
-
     default:
       throw new Error(`Unhandled action type: ${type}`)
   }
 }
 
 const initialState = {
-  transactions: {
-    activityTransactions: [],
-    next: null,
-    prev: null,
-  },
-  balances: {},
   events: [],
-  isSetup: false,
+  isSetup: true,
 }
 
 export const useRifSockets = ({
@@ -61,16 +31,21 @@ export const useRifSockets = ({
   appActive,
 }: Omit<SubscriptionsProviderProps, 'children'>) => {
   const [state, dispatch] = useReducer(liveSubscriptionsReducer, initialState)
+  const dispatchRedux = useAppDispatch()
+
   const setGlobalError = useSetGlobalError()
   const { mnemonic } = useContext(AppContext)
   const { wallet } = useSelectedWallet()
 
   const onSocketsChange = useOnSocketChangeEmitted({
-    dispatch,
+    dispatch: dispatchRedux,
     abiEnhancer,
     wallet,
   })
-  const onSocketInit = useOnSocketInit({ dispatch })
+
+  const onSocketInit = (payload: InitAction['payload']) => {
+    return onSocketsChange({ type: 'init', payload })
+  }
   const onSocketError = () => setGlobalError('Error connecting to the socket')
   const connect = useConnectSocket({
     rifServiceSocket,
