@@ -1,10 +1,6 @@
 import { fireEvent, render } from '@testing-library/react-native'
 import { act } from 'react-test-renderer'
-import {
-  ContactsContext,
-  ContactsContextInterface,
-  IContact,
-} from './ContactsContext'
+import { ContactsContext, IContact } from './ContactsContext'
 import { ContactsScreen } from './ContactsScreen'
 import { ReduxWrapper } from '../../../testLib/ReduxWrapper'
 

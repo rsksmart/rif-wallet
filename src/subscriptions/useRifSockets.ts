@@ -1,5 +1,5 @@
-import { Action, InitAction, State, SubscriptionsProviderProps } from './types'
-import { useContext, useEffect, useReducer } from 'react'
+import { InitAction, SubscriptionsProviderProps } from './types'
+import { useContext, useEffect } from 'react'
 import { useSetGlobalError } from 'components/GlobalErrorHandler'
 import { AppContext, useSelectedWallet } from '../Context'
 import { useConnectSocket } from './useConnectSocket'
@@ -7,31 +7,11 @@ import { useOnSocketChangeEmitted } from './useOnSocketChangeEmitted'
 import { useAppDispatch } from 'store/storeHooks'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 
-function liveSubscriptionsReducer(state: State, action: Action) {
-  const { type } = action
-  switch (action.type) {
-    case 'newTokenTransfer':
-      return {
-        ...state,
-        events: state.events.concat([action.payload]),
-      }
-
-    default:
-      throw new Error(`Unhandled action type: ${type}`)
-  }
-}
-
-const initialState = {
-  events: [],
-  isSetup: true,
-}
-
 export const useRifSockets = ({
   rifServiceSocket,
   abiEnhancer,
   appActive,
 }: Omit<SubscriptionsProviderProps, 'children'>) => {
-  const [state] = useReducer(liveSubscriptionsReducer, initialState)
   const dispatchRedux = useAppDispatch()
 
   const setGlobalError = useSetGlobalError()
@@ -86,5 +66,5 @@ export const useRifSockets = ({
     onWalletAppActiveChange()
   }, [appActive])
 
-  return { state }
+  return null
 }

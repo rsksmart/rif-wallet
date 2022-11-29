@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { StatusBar, StyleSheet, View } from 'react-native'
 import { AppContext } from '../Context'
-import { KeyManagementSystem, RIFWallet } from '../lib/core'
-import { i18nInit } from '../lib/i18n'
+import { KeyManagementSystem, RIFWallet } from 'lib/core'
+import { i18nInit } from 'lib/i18n'
 
 import { hasKeys, hasPin } from '../storage/MainStorage'
 import {
@@ -15,7 +15,7 @@ import {
 import {
   RootNavigationComponent,
   RootStackParamList,
-} from '../navigation/rootNavigator'
+} from 'navigation/rootNavigator'
 import ModalComponent from '../ux/requestsModal/ModalComponent'
 
 import {
@@ -23,11 +23,10 @@ import {
   NavigationContainer,
   NavigationState,
 } from '@react-navigation/native'
-import { useSetGlobalError } from '../components/GlobalErrorHandler'
-import { LoadingScreen } from '../components/loading/LoadingScreen'
-import { WalletConnectProviderElement } from '../screens/walletConnect/WalletConnectContext'
+import { useSetGlobalError } from 'components/GlobalErrorHandler'
+import { LoadingScreen } from 'components/loading/LoadingScreen'
+import { WalletConnectProviderElement } from 'screens/walletConnect/WalletConnectContext'
 import { colors } from '../styles'
-import { RIFSocketsProvider } from '../subscriptions/RIFSockets'
 import { Cover } from './components/Cover'
 import { RequestPIN } from './components/RequestPIN'
 import { useBitcoinCore } from './hooks/bitcoin/useBitcoinCore'
@@ -36,6 +35,7 @@ import { useKeyManagementSystem } from './hooks/useKeyManagementSystem'
 import { useRequests } from './hooks/useRequests'
 import { useStateSubscription } from './hooks/useStateSubscription'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useRifSockets } from 'src/subscriptions/useRifSockets'
 
 export const navigationContainerRef =
   createNavigationContainerRef<RootStackParamList>()
@@ -80,6 +80,12 @@ export const Core = () => {
 
   const retrieveChainId = (wallet: RIFWallet) =>
     wallet.getChainId().then(chainId => setState({ ...state, chainId }))
+
+  useRifSockets({
+    rifServiceSocket: rifWalletServicesSocket,
+    abiEnhancer,
+    appActive: active,
+  })
 
   const BitcoinCore = useBitcoinCore(state?.kms?.mnemonic || '', onRequest)
 
@@ -138,55 +144,50 @@ export const Core = () => {
           onStateChange={handleScreenChange}
           ref={navigationContainerRef}>
           <WalletConnectProviderElement>
-            <RIFSocketsProvider
-              rifServiceSocket={rifWalletServicesSocket}
-              abiEnhancer={abiEnhancer}
-              appActive={active}>
-              <RootNavigationComponent
-                currentScreen={currentScreen}
-                hasKeys={state.hasKeys}
-                hasPin={state.hasPin}
-                isKeyboardVisible={isKeyboardVisible}
-                rifWalletServicesSocket={rifWalletServicesSocket}
-                keyManagementProps={{
-                  generateMnemonic: () => KeyManagementSystem.create().mnemonic,
-                  createFirstWallet: (mnemonic: string) =>
-                    createFirstWallet(mnemonic).then(wallet => {
-                      setUnlocked(true)
-                      return wallet
-                    }),
-                }}
-                createPin={createPin}
-                editPin={handleUpdatePin}
-                setWalletIsDeployed={setWalletIsDeployed}
-                balancesScreenProps={{ fetcher: rifWalletServicesFetcher }}
-                sendScreenProps={{ rnsResolver }}
-                activityScreenProps={{
-                  fetcher: rifWalletServicesFetcher,
-                  abiEnhancer,
-                }}
-                showMnemonicScreenProps={{
-                  mnemonic: state.kms?.mnemonic || '',
-                }}
-                contactsNavigationScreenProps={{ rnsResolver }}
-                accountsScreenType={{
-                  addNewWallet,
-                  switchActiveWallet,
-                }}
-                securityConfigurationScreenProps={{
-                  deleteKeys: resetKeysAndPin,
-                }}
-                changeTopColor={setTopColor}
-              />
+            <RootNavigationComponent
+              currentScreen={currentScreen}
+              hasKeys={state.hasKeys}
+              hasPin={state.hasPin}
+              isKeyboardVisible={isKeyboardVisible}
+              rifWalletServicesSocket={rifWalletServicesSocket}
+              keyManagementProps={{
+                generateMnemonic: () => KeyManagementSystem.create().mnemonic,
+                createFirstWallet: (mnemonic: string) =>
+                  createFirstWallet(mnemonic).then(wallet => {
+                    setUnlocked(true)
+                    return wallet
+                  }),
+              }}
+              createPin={createPin}
+              editPin={handleUpdatePin}
+              setWalletIsDeployed={setWalletIsDeployed}
+              balancesScreenProps={{ fetcher: rifWalletServicesFetcher }}
+              sendScreenProps={{ rnsResolver }}
+              activityScreenProps={{
+                fetcher: rifWalletServicesFetcher,
+                abiEnhancer,
+              }}
+              showMnemonicScreenProps={{
+                mnemonic: state.kms?.mnemonic || '',
+              }}
+              contactsNavigationScreenProps={{ rnsResolver }}
+              accountsScreenType={{
+                addNewWallet,
+                switchActiveWallet,
+              }}
+              securityConfigurationScreenProps={{
+                deleteKeys: resetKeysAndPin,
+              }}
+              changeTopColor={setTopColor}
+            />
 
-              {requests.length !== 0 && (
-                <ModalComponent
-                  closeModal={closeRequest}
-                  isKeyboardVisible={isKeyboardVisible}
-                  request={requests[0]}
-                />
-              )}
-            </RIFSocketsProvider>
+            {requests.length !== 0 && (
+              <ModalComponent
+                closeModal={closeRequest}
+                isKeyboardVisible={isKeyboardVisible}
+                request={requests[0]}
+              />
+            )}
           </WalletConnectProviderElement>
         </NavigationContainer>
       </AppContext.Provider>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { StyleSheet, ScrollView, Text } from 'react-native'
-import { useSocketsState } from '../../subscriptions/RIFSockets'
+import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
@@ -21,6 +21,7 @@ import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppSelector } from 'store/storeHooks'
 import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
+import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
 
 export const SendScreen = ({
   route,
@@ -31,7 +32,7 @@ export const SendScreen = ({
   const assets =
     useFetchBitcoinNetworksAndTokens() as unknown as MixedTokenAndNetworkType[]
 
-  const { state } = useSocketsState()
+  const { transactions } = useAppSelector(selectTransactions)
   const tokenBalances = useAppSelector(selectBalances)
   const prices = useAppSelector(selectUsdPrices)
   const contractAddress =
@@ -91,7 +92,7 @@ export const SendScreen = ({
                 ? tokenBalances[route.params.contractAddress]
                 : tokenBalances[contractAddress],
             }}
-            transactions={state.transactions.activityTransactions}
+            transactions={transactions}
           />
         </PaymentExecutorContext.Provider>
       ) : (
