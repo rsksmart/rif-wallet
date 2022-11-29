@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
+import createDebugger from 'redux-flipper'
 import { usdPriceReducer } from './slices/usdPricesSlice/usdPricesSlice'
 import { balancesReducer } from 'store/slices/balancesSlice/balancesSlice'
 
@@ -10,9 +11,9 @@ export const store = configureStore({
     balances: balancesReducer,
   },
   middleware: getDefaultMiddlewares => {
-    let middlewares = getDefaultMiddlewares()
+    const middlewares = getDefaultMiddlewares()
     if (__DEV__) {
-      return middlewares.concat(require('redux-flipper').default())
+      return middlewares.concat(createDebugger())
     }
     return middlewares
   },
