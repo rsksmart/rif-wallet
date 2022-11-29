@@ -2,7 +2,6 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { Signer, BigNumber } from 'ethers'
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { IResolver } from '../RPCAdapter'
-import { IApiTransaction } from 'src/lib/rifWalletServices/RIFWalletServicesTypes'
 
 export class SendTransactionResolver implements IResolver {
   private signer: Signer

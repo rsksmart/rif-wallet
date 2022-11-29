@@ -1,12 +1,23 @@
-import React, { useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import React, { ReactNode, useState } from 'react'
+import { ViewStyle } from 'react-native'
+import { StyleSheet, Text, TextStyle, View } from 'react-native'
 import BaseButton, { BaseButtonProps } from './BaseButton'
+
+interface ButtonStyles {
+  button: ViewStyle
+  buttonPressed: ViewStyle
+  buttonDisabled: ViewStyle
+  buttonActive: ViewStyle
+  text: TextStyle
+  textPressed: TextStyle
+  textDisabled: TextStyle
+}
 
 export interface StyledButtonProps extends BaseButtonProps {
   title?: string
-  icon?: any
+  icon?: ReactNode
   accessibilityLabel?: string
-  buttonStyles?: any
+  buttonStyles: ButtonStyles
 }
 
 export const StyledButton: React.FC<StyledButtonProps> = ({

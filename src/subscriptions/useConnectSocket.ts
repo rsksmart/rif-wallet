@@ -1,13 +1,14 @@
 import {
   IRifWalletServicesSocket,
   IServiceChangeEvent,
+  IServiceInitEvent,
 } from 'lib/rifWalletServices/RifWalletServicesSocket'
 import { RIFWallet } from 'lib/core'
 import { Action } from 'src/subscriptions/types'
 
 interface IUseConnectSocket {
   rifServiceSocket?: IRifWalletServicesSocket
-  onInit: (result: any) => void
+  onInit: (result: IServiceInitEvent) => void
   onChange: (action: Action) => void
   onError: () => void
   wallet: RIFWallet
@@ -28,6 +29,6 @@ export const useConnectSocket = ({
       'change',
       onChange as (action: IServiceChangeEvent) => void,
     )
-    rifServiceSocket?.connect(wallet, mnemonic!).catch(onError)
+    mnemonic && rifServiceSocket?.connect(wallet, mnemonic).catch(onError)
   }
 }

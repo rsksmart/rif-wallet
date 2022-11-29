@@ -105,17 +105,6 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Props> = ({
                   />
                 </>
               )}
-              {enhancedTransactionRequest.functionParameters &&
-                enhancedTransactionRequest.functionParameters.map(
-                  ({ name, value }: any) => (
-                    <ReadOnlyField
-                      key={name}
-                      label={name}
-                      value={value.toString()}
-                      testID={'Data.View'}
-                    />
-                  ),
-                )}
             </View>
           </View>
         )}

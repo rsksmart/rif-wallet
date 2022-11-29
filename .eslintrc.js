@@ -23,6 +23,15 @@ module.exports = {
     '@typescript-eslint/no-shadow': ['error'],
     '@typescript-eslint/no-empty-function': 'off',
   },
+  overrides: [
+    {
+      files: ['src/lib/**/*.ts', 'src/lib/**/*.tsx'],
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/no-non-null-assertion': 'off',
+      },
+    },
+  ],
   settings: {
     'import/resolver': {
       node: {
