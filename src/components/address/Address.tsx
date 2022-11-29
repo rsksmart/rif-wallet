@@ -36,7 +36,7 @@ export const Address: React.FC<{ chainId?: number; testID?: string }> = ({
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => {
-          Linking.openURL(`${explorerUrl}/${checksumAddress}`)
+          Linking.openURL(`${explorerUrl}/address/${checksumAddress}`)
         }}>
         <CompassIcon width={20} height={20} />
       </TouchableOpacity>
