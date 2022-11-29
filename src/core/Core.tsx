@@ -85,6 +85,8 @@ export const Core = () => {
     rifServiceSocket: rifWalletServicesSocket,
     abiEnhancer,
     appActive: active,
+    wallet: state.wallets[state.selectedWallet!],
+    mnemonic: state.kms?.mnemonic,
   })
 
   const BitcoinCore = useBitcoinCore(state?.kms?.mnemonic || '', onRequest)

@@ -1,9 +1,7 @@
-import { ReactNode } from 'react'
 import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { IRIFWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
 import { IAbiEnhancer, IEnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
-import { IRifWalletServicesSocket } from 'lib/rifWalletServices/RifWalletServicesSocket'
 import { RIFWallet } from 'lib/core'
 import { AppDispatch } from 'src/redux'
 
@@ -72,14 +70,6 @@ export type Action =
   | NewTokenTransferAction
   | InitAction
   | ResetAction
-
-export type Dispatch = (action: Action) => void
-export type SubscriptionsProviderProps = {
-  children: ReactNode
-  rifServiceSocket?: IRifWalletServicesSocket
-  abiEnhancer: IAbiEnhancer
-  appActive: boolean
-}
 
 export interface IActivityTransaction {
   originTransaction: IApiTransaction

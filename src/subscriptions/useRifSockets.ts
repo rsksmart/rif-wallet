@@ -1,22 +1,30 @@
-import { InitAction, SubscriptionsProviderProps } from './types'
-import { useContext, useEffect } from 'react'
+import { InitAction } from './types'
+import { useEffect } from 'react'
 import { useSetGlobalError } from 'components/GlobalErrorHandler'
-import { AppContext, useSelectedWallet } from '../Context'
 import { useConnectSocket } from './useConnectSocket'
 import { useOnSocketChangeEmitted } from './useOnSocketChangeEmitted'
 import { useAppDispatch } from 'store/storeHooks'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
+import { RIFWallet } from 'lib/core'
+import { IRifWalletServicesSocket } from 'lib/rifWalletServices/RifWalletServicesSocket'
+import { IAbiEnhancer } from 'lib/abiEnhancer/AbiEnhancer'
 
+interface IUseRifSockets {
+  rifServiceSocket?: IRifWalletServicesSocket
+  abiEnhancer: IAbiEnhancer
+  appActive: boolean
+  wallet: RIFWallet
+  mnemonic?: string
+}
 export const useRifSockets = ({
   rifServiceSocket,
   abiEnhancer,
   appActive,
-}: Omit<SubscriptionsProviderProps, 'children'>) => {
+  wallet,
+  mnemonic,
+}: IUseRifSockets) => {
   const dispatchRedux = useAppDispatch()
-
   const setGlobalError = useSetGlobalError()
-  const { mnemonic } = useContext(AppContext)
-  const { wallet } = useSelectedWallet()
 
   const onSocketsChange = useOnSocketChangeEmitted({
     dispatch: dispatchRedux,
