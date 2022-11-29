@@ -1,6 +1,6 @@
 import { AppState } from 'store/slices/appStateSlice/types'
 import { createSlice } from '@reduxjs/toolkit'
-import { resetSocketState } from 'store/shared/resetSocketState'
+import { resetSocketState } from 'store/shared/actions/resetSocketState'
 
 const initialState: AppState = {
   isSetup: false,

@@ -3,7 +3,7 @@ import {
   BalanceState,
   ITokenWithoutLogo,
 } from 'store/slices/balancesSlice/types'
-import { resetSocketState } from 'store/shared/resetSocketState'
+import { resetSocketState } from 'store/shared/actions/resetSocketState'
 
 const initialState: BalanceState = {}
 

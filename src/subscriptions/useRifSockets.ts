@@ -5,7 +5,7 @@ import { AppContext, useSelectedWallet } from '../Context'
 import { useConnectSocket } from './useConnectSocket'
 import { useOnSocketChangeEmitted } from './useOnSocketChangeEmitted'
 import { useAppDispatch } from 'store/storeHooks'
-import { resetSocketState } from 'store/shared/resetSocketState'
+import { resetSocketState } from 'store/shared/actions/resetSocketState'
 
 function liveSubscriptionsReducer(state: State, action: Action) {
   const { type } = action

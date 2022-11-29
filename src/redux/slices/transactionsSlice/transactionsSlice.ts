@@ -6,7 +6,7 @@ import {
 } from 'src/subscriptions/utils'
 import { IActivityTransaction, IEvent } from 'src/subscriptions/types'
 import { TransactionsServerResponseWithActivityTransactions } from 'src/screens/activity/types'
-import { resetSocketState } from 'store/shared/resetSocketState'
+import { resetSocketState } from 'store/shared/actions/resetSocketState'
 
 const initialState: ITransactionsState = {
   next: '',
