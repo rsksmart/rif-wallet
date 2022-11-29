@@ -4,6 +4,9 @@ import { RIFWallet, Request } from './lib/core'
 import { ScreenWithWallet } from './screens/types'
 import { UseBitcoinCoreResult } from './core/hooks/bitcoin/useBitcoinCore'
 import { BitcoinRequest } from './lib/bitcoin/types'
+import { useAppSelector } from 'store/storeUtils'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
+
 export interface Wallets {
   [id: string]: RIFWallet
 }
@@ -56,7 +59,7 @@ export function InjectSelectedWallet<T>(
   Component: FC<ScreenWithWallet & T>,
 ): FC<T> {
   return function InjectedComponent(props) {
-    const { wallet, isDeployed } = useSelectedWallet()
+    const { wallet, isDeployed } = useAppSelector(selectActiveWallet)
 
     if (!wallet) {
       return <Paragraph>No selected wallet</Paragraph>
