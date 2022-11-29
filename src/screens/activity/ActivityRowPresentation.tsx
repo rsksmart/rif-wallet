@@ -3,7 +3,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { StyleSheet, Text, View } from 'react-native'
 import { TokenImage } from '../home/TokenImage'
 import { shortAddress, trimValue } from '../../lib/utils'
-import StatusIcon from '../../components/statusIcons'
+import { StatusIcon } from '../../components/statusIcons'
 import { colors } from '../../styles'
 import { ActivityRowPresentationType } from './types'
 

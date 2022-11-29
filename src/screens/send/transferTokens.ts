@@ -28,7 +28,7 @@ export const transfer = ({
   onSetCurrentTransaction,
 }: IRifTransfer) => {
   if (onSetError) {
-    onSetError(undefined)
+    onSetError(null)
   }
   if (onSetCurrentTransaction) {
     onSetCurrentTransaction({ status: 'USER_CONFIRM' })
@@ -45,6 +45,8 @@ export const transfer = ({
 
   transferMethod.decimals().then((decimals: number) => {
     const tokenAmount = BigNumber.from(utils.parseUnits(amount, decimals))
+
+    console.log('JESSE!!', transferMethod, tokenAmount.toString())
 
     transferMethod
       .transfer(to.toLowerCase(), tokenAmount)

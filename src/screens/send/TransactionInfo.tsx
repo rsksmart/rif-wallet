@@ -10,7 +10,7 @@ import Clipboard from '@react-native-community/clipboard'
 import { colors, spacing } from '../../styles/'
 import { TokenImage } from '../home/TokenImage'
 import { SearchIcon } from '../../components/icons/SearchIcon'
-import StatusIcon from '../../components/statusIcons'
+import { StatusIcon } from '../../components/statusIcons'
 
 export interface TransactionInformation {
   status: 'USER_CONFIRM' | 'PENDING' | 'SUCCESS' | 'FAILED'
