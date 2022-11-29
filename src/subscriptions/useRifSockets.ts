@@ -5,6 +5,7 @@ import { AppContext, useSelectedWallet } from '../Context'
 import { useConnectSocket } from './useConnectSocket'
 import { useOnSocketChangeEmitted } from './useOnSocketChangeEmitted'
 import { useAppDispatch } from 'store/storeHooks'
+import { resetSocketState } from 'store/shared/resetSocketState'
 
 function liveSubscriptionsReducer(state: State, action: Action) {
   const { type } = action
@@ -30,7 +31,7 @@ export const useRifSockets = ({
   abiEnhancer,
   appActive,
 }: Omit<SubscriptionsProviderProps, 'children'>) => {
-  const [state, dispatch] = useReducer(liveSubscriptionsReducer, initialState)
+  const [state] = useReducer(liveSubscriptionsReducer, initialState)
   const dispatchRedux = useAppDispatch()
 
   const setGlobalError = useSetGlobalError()
@@ -61,7 +62,7 @@ export const useRifSockets = ({
       // socket is connected to a different wallet
       if (rifServiceSocket.isConnected()) {
         rifServiceSocket.disconnect()
-        dispatch({ type: 'reset', payload: undefined })
+        dispatchRedux(resetSocketState())
       }
       connect()
 
@@ -85,5 +86,5 @@ export const useRifSockets = ({
     onWalletAppActiveChange()
   }, [appActive])
 
-  return { state, dispatch }
+  return { state }
 }
