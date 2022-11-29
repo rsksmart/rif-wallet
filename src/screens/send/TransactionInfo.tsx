@@ -10,13 +10,9 @@ import Clipboard from '@react-native-community/clipboard'
 import { colors, spacing } from '../../styles/'
 import { TokenImage } from '../home/TokenImage'
 import { SearchIcon } from '../../components/icons/SearchIcon'
-<<<<<<< HEAD
 import { StatusIcon } from '../../components/statusIcons'
-=======
-import StatusIcon from '../../components/statusIcons'
-import {useSelectedWallet} from "src/Context";
-import {getWalletSetting, SETTINGS} from "src/core/config";
->>>>>>> 72a81bfe (fix: remove pending hardcoded explorer url)
+import { useSelectedWallet } from 'src/Context'
+import { getWalletSetting, SETTINGS } from 'src/core/config'
 
 export interface TransactionInformation {
   status: 'USER_CONFIRM' | 'PENDING' | 'SUCCESS' | 'FAILED'
@@ -30,14 +26,10 @@ type Props = {
   transaction: TransactionInformation
 }
 
-<<<<<<< HEAD
 export const TransactionInfo = ({ transaction }: Props) => {
-=======
-const TransactionInfo = ({ transaction }: Props) => {
-  const { chainId = 31 } = useSelectedWallet()
+  const { chainId } = useSelectedWallet()
   const explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainId)
 
->>>>>>> 72a81bfe (fix: remove pending hardcoded explorer url)
   if (transaction.status === 'USER_CONFIRM' || !transaction.hash) {
     return (
       <View style={styles.mainLoadingContainer}>
