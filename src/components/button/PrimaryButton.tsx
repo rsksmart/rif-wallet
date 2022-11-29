@@ -1,31 +1,35 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
-import { colors } from '../../styles'
-import BaseButton, { BaseButtonProps } from './BaseButton'
+import { colors } from 'src/styles'
+import { StyledButton, StyledButtonProps } from './StyledButton'
 
-type PrimaryButtonType = {
-  children: React.ReactNode
-  style?: object
-}
-const PrimaryButton: React.FC<BaseButtonProps & PrimaryButtonType> = ({
-  children,
-  style = {},
-  ...props
-}) => (
-  <BaseButton style={{ ...styles.buttonStyle, ...style }} {...props}>
-    {children}
-  </BaseButton>
+export const PrimaryButton: React.FC<StyledButtonProps> = props => (
+  <StyledButton {...props} buttonStyles={styles} />
 )
 
 const styles = StyleSheet.create({
-  buttonStyle: {
-    borderRadius: 40,
-    backgroundColor: colors.background.button,
-    paddingVertical: 20,
-    marginHorizontal: 10,
-    width: 150,
-    alignItems: 'center',
+  button: {
+    backgroundColor: colors.background.bustyBlue,
+  },
+  buttonDisabled: {
+    backgroundColor: colors.button.primary,
+    opacity: 0.5,
+  },
+  buttonActive: {
+    backgroundColor: colors.button.primary,
+  },
+  buttonPressed: {
+    backgroundColor: colors.button.primaryPressed,
+    opacity: 0.8,
+  },
+  text: {
+    color: colors.lightPurple,
+  },
+  textDisabled: {
+    color: colors.lightPurple,
+    opacity: 0.5,
+  },
+  textPressed: {
+    color: colors.lightPurple,
   },
 })
-
-export default PrimaryButton

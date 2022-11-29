@@ -2,8 +2,8 @@ import { useState } from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
-import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
-import { colors } from '../../styles'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { colors } from 'src/styles'
 
 import { rnsManagerStyles } from './rnsManagerStyles'
 
@@ -122,7 +122,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
         </View>
 
         <View style={rnsManagerStyles.bottomContainer}>
-          <PrimaryButton2
+          <PrimaryButton
             disabled={!validDomain}
             onPress={() =>
               navigation.navigate(rootStackRouteNames.RequestDomain, {

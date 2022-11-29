@@ -20,9 +20,15 @@ const convertTransactionToStrings = (tx: TransactionRequest) => ({
   gasPrice: convertNumberToString(Number(tx.gasPrice)),
 })
 
+export interface EnhancedTransactionRequest extends TransactionRequest {
+  symbol?: string
+  functionName?: string
+  functionParameters?: string[]
+}
+
 const useEnhancedWithGas = (wallet: RIFWallet, tx: TransactionRequest) => {
   const [enhancedTransactionRequest, setEnhancedTransactionRequest] =
-    useState<TransactionRequest>({
+    useState<EnhancedTransactionRequest>({
       gasPrice: '0',
       gasLimit: '0',
     })

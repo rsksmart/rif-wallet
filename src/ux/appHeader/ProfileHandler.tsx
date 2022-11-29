@@ -16,6 +16,7 @@ export const ProfileHandler = ({ profile, profileCreated }: Props) => {
   return (
     <TouchableOpacity
       style={styles.profileHandler}
+      accessibilityLabel="profile"
       onPress={() =>
         navigationContainerRef.navigate(
           profileCreated

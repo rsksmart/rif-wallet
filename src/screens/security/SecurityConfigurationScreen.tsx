@@ -1,19 +1,22 @@
 import { useEffect, useState } from 'react'
 import { View, StyleSheet, Alert } from 'react-native'
-import { colors } from '../../styles'
-import { MediumText } from '../../components'
+
 import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
 import { useTranslation } from 'react-i18next'
-import ActiveButton from '../../components/button/ActiveButton'
+
+import { MediumText } from 'src/components'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { SecondaryButton } from 'src/components/button/SecondaryButton'
 import {
   getKeyVerificationReminder,
   hasKeyVerificationReminder,
   saveKeyVerificationReminder,
 } from '../../storage/MainStorage'
 import { createKeysRouteNames } from 'src/navigation/createKeysNavigator'
+import { colors } from '../../styles'
 
 export interface SecurityScreenProps {
   deleteKeys: () => void
@@ -70,16 +73,15 @@ export const SecurityConfigurationScreen = ({
         <MediumText style={[styles.masterText, styles.textLeftMargin]}>
           Manage master key
         </MediumText>
-        <ActiveButton
+        <PrimaryButton
           style={styles.buttonFirstStyle}
-          text="Reveal Master Key"
-          isActive
+          title="Reveal Master Key"
           onPress={revealMasterKey}
         />
         {showReminder && (
-          <ActiveButton
+          <SecondaryButton
             style={styles.buttonFirstStyle}
-            text={'Confirm Master Key'}
+            title="Confirm Master Key"
             onPress={() =>
               navigation.navigate(rootStackRouteNames.CreateKeysUX, {
                 screen: createKeysRouteNames.SecurityExplanation,
@@ -87,9 +89,9 @@ export const SecurityConfigurationScreen = ({
             }
           />
         )}
-        <ActiveButton
+        <SecondaryButton
           style={styles.buttonFirstStyle}
-          text="Delete Master Key"
+          title="Delete Master Key"
           onPress={handleDeleteKeys}
         />
       </View>
@@ -97,10 +99,9 @@ export const SecurityConfigurationScreen = ({
         <MediumText style={[styles.pinText, styles.textLeftMargin]}>
           Manage PIN
         </MediumText>
-        <ActiveButton
+        <SecondaryButton
           style={styles.buttonFirstStyle}
-          text="Change PIN"
-          isActive
+          title="Change PIN"
           onPress={changePin}
         />
       </View>

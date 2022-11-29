@@ -2,33 +2,31 @@ import { useMemo, useState } from 'react'
 import { ScrollView, StyleSheet, View } from 'react-native'
 import { BigNumber } from 'ethers'
 
-import { SendTransactionRequest } from '../../lib/core'
+import { SendTransactionRequest } from 'src/lib/core'
 
-import { sharedStyles } from '../../shared/styles'
-import { Loading, Paragraph, RegularText } from '../../components'
-import { ScreenWithWallet } from '../../screens/types'
-import useEnhancedWithGas from './useEnhancedWithGas'
 import { useTranslation } from 'react-i18next'
-import { shortAddress } from '../../lib/utils'
-import {
-  DarkBlueButton,
-  OutlineBorderedButton,
-} from '../../components/button/ButtonVariations'
-import { colors } from '../../styles'
-import ReadOnlyField from './ReadOnlyField'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { SecondaryButton } from 'src/components/button/SecondaryButton'
+import { Loading, Paragraph, RegularText } from 'src/components'
+import { shortAddress } from 'src/lib/utils'
+import { ScreenWithWallet } from 'src/screens/types'
+import { sharedStyles } from 'src/shared/styles'
+import { colors } from 'src/styles'
 import InputField from './InpuField'
-import { errorHandler } from 'shared/utils'
+import ReadOnlyField from './ReadOnlyField'
+import useEnhancedWithGas from './useEnhancedWithGas'
+import { errorHandler } from 'src/shared/utils'
 
 interface Props {
   request: SendTransactionRequest
   closeModal: () => void
 }
 
-const ReviewTransactionModal = ({
+const ReviewTransactionModal: React.FC<ScreenWithWallet & Props> = ({
   request,
   closeModal,
   wallet,
-}: ScreenWithWallet & Props) => {
+}) => {
   const { t } = useTranslation()
 
   const txRequest = useMemo(() => request.payload[0], [request])
@@ -60,25 +58,21 @@ const ReviewTransactionModal = ({
       <View>
         {enhancedTransactionRequest && (
           <View testID="TX_VIEW" style={[sharedStyles.rowInColumn]}>
-            <ReadOnlyField
-              label={'amount'}
-              value={
-                enhancedTransactionRequest.value
-                  ? enhancedTransactionRequest.value.toString()
-                  : ''
-              }
-              testID={'Data.View'}
-            />
+            {enhancedTransactionRequest.value && (
+              <ReadOnlyField
+                label={'amount'}
+                value={enhancedTransactionRequest.value.toString()}
+                testID={'Data.View'}
+              />
+            )}
 
-            <ReadOnlyField
-              label={'asset'}
-              value={
-                enhancedTransactionRequest.symbol // TODO: this does not exist on type!
-                  ? enhancedTransactionRequest.symbol
-                  : ''
-              }
-              testID={''}
-            />
+            {enhancedTransactionRequest.symbol && (
+              <ReadOnlyField
+                label={'asset'}
+                value={enhancedTransactionRequest.symbol}
+                testID={''}
+              />
+            )}
 
             <ReadOnlyField
               label={'from'}
@@ -94,7 +88,7 @@ const ReviewTransactionModal = ({
 
             <View
               style={
-                enhancedTransactionRequest.functionName // TODO: this also does not exist!
+                enhancedTransactionRequest.functionName
                   ? styles.boxStyle
                   : undefined
               }>
@@ -113,7 +107,7 @@ const ReviewTransactionModal = ({
               )}
               {enhancedTransactionRequest.functionParameters &&
                 enhancedTransactionRequest.functionParameters.map(
-                  ({ name, value }: { name: string; value: string }) => (
+                  ({ name, value }: any) => (
                     <ReadOnlyField
                       key={name}
                       label={name}
@@ -127,31 +121,27 @@ const ReviewTransactionModal = ({
         )}
       </View>
 
-      <InputField
-        label={'gas limit'}
-        value={
-          enhancedTransactionRequest.gasLimit
-            ? enhancedTransactionRequest.gasLimit.toString()
-            : ''
-        }
-        keyboardType="number-pad"
-        placeholder="gas limit"
-        testID={'gasLimit.TextInput'}
-        handleValueOnChange={setGasLimit}
-      />
+      {enhancedTransactionRequest.gasLimit && (
+        <InputField
+          label={'gas limit'}
+          value={enhancedTransactionRequest.gasLimit.toString()}
+          keyboardType="number-pad"
+          placeholder="gas limit"
+          testID={'gasLimit.TextInput'}
+          handleValueOnChange={setGasLimit}
+        />
+      )}
 
-      <InputField
-        label={'gas price'}
-        value={
-          enhancedTransactionRequest.gasPrice
-            ? enhancedTransactionRequest.gasPrice.toString()
-            : ''
-        }
-        keyboardType="number-pad"
-        placeholder="gas price"
-        testID={'gasPrice.TextInput'}
-        handleValueOnChange={setGasPrice}
-      />
+      {enhancedTransactionRequest.gasPrice && (
+        <InputField
+          label={'gas price'}
+          value={enhancedTransactionRequest.gasPrice.toString()}
+          keyboardType="number-pad"
+          placeholder="gas price"
+          testID={'gasPrice.TextInput'}
+          handleValueOnChange={setGasPrice}
+        />
+      )}
 
       {error && (
         <View style={sharedStyles.row}>
@@ -166,8 +156,7 @@ const ReviewTransactionModal = ({
 
       <View style={styles.buttonsSection}>
         <View style={sharedStyles.column}>
-          <OutlineBorderedButton
-            buttonStyles={{ button: { borderColor: colors.black } }}
+          <SecondaryButton
             onPress={cancelTransaction}
             title={t('reject')}
             testID="Cancel.Button"
@@ -175,7 +164,7 @@ const ReviewTransactionModal = ({
           />
         </View>
         <View style={sharedStyles.column}>
-          <DarkBlueButton
+          <PrimaryButton
             onPress={confirmTransaction}
             title={t('sign')}
             testID="Confirm.Button"

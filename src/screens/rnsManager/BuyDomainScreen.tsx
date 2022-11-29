@@ -5,17 +5,17 @@ import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import moment from 'moment'
 
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
-import { colors } from '../../styles'
+import { colors } from 'src/styles'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
-import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
 
 import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
 import { ScreenWithWallet } from '../types'
-import { MediumText } from '../../components'
+import { MediumText } from 'src/components'
 import addresses from './addresses.json'
 import TitleStatus from './TitleStatus'
 import { TokenImage } from '../home/TokenImage'
@@ -134,7 +134,7 @@ export const BuyDomainScreen = ({ wallet, navigation, route }: Props) => {
 
         <View style={rnsManagerStyles.bottomContainer}>
           {!registerInProcess && (
-            <PrimaryButton2
+            <PrimaryButton
               onPress={() => registerDomain(alias)}
               accessibilityLabel="buy"
               title={`buy for $${domainFiatPrice}`}

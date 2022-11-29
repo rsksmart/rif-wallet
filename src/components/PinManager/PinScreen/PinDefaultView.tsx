@@ -3,8 +3,8 @@ import { StyleSheet, View } from 'react-native'
 import DotsComponentDefault from './DotsComponent'
 import { PinScreenType, DotsComponentDefaultType } from './PinScreen'
 import MessageComponentDefault from './MessageComponent'
-import { colors } from '../../../styles'
-import { WhiteButton } from '../../button/ButtonVariations'
+import { colors } from 'src/styles'
+import { WhiteButton } from 'src/components/button/WhiteButton'
 
 const PinScreen = ({
   MessageComponent = MessageComponentDefault,

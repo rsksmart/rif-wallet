@@ -1,9 +1,10 @@
 import React from 'react'
-import { IApiTransaction } from '../lib/rifWalletServices/RIFWalletServicesTypes'
-import { IRIFWalletServicesFetcher } from '../lib/rifWalletServices/RifWalletServicesFetcher'
-import { IAbiEnhancer, IEnhancedResult } from '../lib/abiEnhancer/AbiEnhancer'
-import { ITokenWithBalance } from '../lib/rifWalletServices/RIFWalletServicesTypes'
-import { IRifWalletServicesSocket } from '../lib/rifWalletServices/RifWalletServicesSocket'
+import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { IRIFWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
+import { IAbiEnhancer, IEnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
+import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { IRifWalletServicesSocket } from 'lib/rifWalletServices/RifWalletServicesSocket'
+import { RIFWallet } from 'lib/core'
 
 export interface IPrice {
   price: number
@@ -54,12 +55,12 @@ export interface InitAction {
 
 export interface ResetAction {
   type: 'reset'
+  payload?: undefined
 }
 
 export interface State {
   transactions: TransactionsServerResponseWithActivityTransactions
   balances: Record<string, ITokenWithBalance>
-  prices: Record<string, IPrice>
   events: Array<IEvent>
   isSetup: boolean
 }
@@ -106,4 +107,10 @@ export interface TransactionsServerResponse {
 export interface TransactionsServerResponseWithActivityTransactions
   extends TransactionsServerResponse {
   activityTransactions: IActivityTransaction[]
+}
+
+export interface ISocketsChangeEmitted {
+  dispatch: React.Dispatch<Action>
+  abiEnhancer: IAbiEnhancer
+  wallet: RIFWallet
 }

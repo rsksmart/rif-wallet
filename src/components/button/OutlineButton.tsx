@@ -1,17 +1,17 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
-import { colors } from '../../styles'
-import { Button, ButtonProps } from './ButtonVariations'
+import { colors } from 'src/styles'
+import { StyledButton, StyledButtonProps } from './StyledButton'
 
-export const SecondaryButton2: React.FC<ButtonProps> = props => (
-  <Button {...props} buttonStyles={styles} />
+export const OutlineButton: React.FC<StyledButtonProps> = props => (
+  <StyledButton buttonStyles={styles} {...props} />
 )
 
 const styles = StyleSheet.create({
   button: {
     borderWidth: 1,
     borderColor: colors.lightPurple,
-    backgroundColor: colors.background.darkBlue,
+    backgroundColor: 'transparent',
   },
   buttonDisabled: {
     borderWidth: 1,

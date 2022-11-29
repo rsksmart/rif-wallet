@@ -42,7 +42,7 @@ export const AppHeader = ({ profile, profileCreated }: Props) => {
         )}
       </View>
       <View style={styles.columnMenu}>
-        <TouchableOpacity onPress={openMenu}>
+        <TouchableOpacity onPress={openMenu} accessibilityLabel="settings">
           <Image
             source={require('../../images/settings-icon.png')}
             style={styles.settingsIcon}

@@ -31,7 +31,7 @@ const SelectedTokenComponent: React.FC<Interface> = ({
             }`}</RegularText>
           </View>
         )}
-        <TouchableOpacity onPress={onSetBalances}>
+        <TouchableOpacity onPress={onSetBalances} accessibilityLabel="hide">
           <View style={styles.badge}>
             <HideShowIcon
               style={styles.icon}

@@ -1,17 +1,14 @@
 import React, { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import { sharedStyles } from '../../shared/styles'
-import ReadOnlyField from './ReadOnlyField'
-import {
-  DarkBlueButton,
-  OutlineBorderedButton,
-} from '../../components/button/ButtonVariations'
-import { colors } from '../../styles'
 import { ScrollView } from 'react-native-gesture-handler'
-import { SendBitcoinRequestType } from '../../lib/bitcoin/types'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { SecondaryButton } from 'src/components/button/SecondaryButton'
+import { MediumText } from 'src/components'
+import { SendBitcoinRequestType } from 'src/lib/bitcoin/types'
+import { convertSatoshiToBtcHuman } from 'src/lib/bitcoin/utils'
+import { sharedStyles } from 'src/shared/styles'
 import InputField from './InpuField'
-import { MediumText } from '../../components'
-import { convertSatoshiToBtcHuman } from '../../lib/bitcoin/utils'
+import ReadOnlyField from './ReadOnlyField'
 
 interface ConfirmBitcoinTransactionModalType {
   request: SendBitcoinRequestType
@@ -145,15 +142,14 @@ const ConfirmBitcoinTransactionModal = ({
       </View>
       <View style={{ ...sharedStyles.row, ...styles.spacing }}>
         <View style={sharedStyles.column}>
-          <OutlineBorderedButton
-            style={{ button: { borderColor: colors.black } }}
+          <SecondaryButton
             onPress={onReject}
             title="reject"
             testID={TEST_IDS.BUTTON_REJECT}
           />
         </View>
         <View style={sharedStyles.column}>
-          <DarkBlueButton
+          <PrimaryButton
             onPress={onConfirm}
             title="confirm"
             testID={TEST_IDS.BUTTON_CONFIRM}

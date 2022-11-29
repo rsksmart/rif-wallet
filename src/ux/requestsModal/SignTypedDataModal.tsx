@@ -1,17 +1,15 @@
 import React from 'react'
-import { StyleSheet, View, ScrollView, Text } from 'react-native'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 
-import { SignTypedDataRequest } from '../../lib/core'
+import { SignTypedDataRequest } from 'src/lib/core'
 
-import { sharedStyles } from '../../shared/styles'
 import { useTranslation } from 'react-i18next'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { SecondaryButton } from 'src/components/button/SecondaryButton'
+import { RegularText } from 'src/components'
+import { sharedStyles } from 'src/shared/styles'
+import { colors } from 'src/styles'
 import ReadOnlyField from './ReadOnlyField'
-import {
-  DarkBlueButton,
-  OutlineBorderedButton,
-} from '../../components/button/ButtonVariations'
-import { colors } from '../../styles'
-import { RegularText } from '../../components'
 import { AnyObject } from 'immer/dist/internal'
 
 interface Interface {
@@ -90,15 +88,14 @@ const SignTypedDataModal: React.FC<Interface> = ({ request, closeModal }) => {
 
       <View style={styles.buttonsSection}>
         <View style={sharedStyles.column}>
-          <OutlineBorderedButton
-            style={{ button: { borderColor: colors.black } }}
+          <SecondaryButton
             onPress={reject}
             title={t('reject')}
             testID="Button.Reject"
           />
         </View>
         <View style={sharedStyles.column}>
-          <DarkBlueButton
+          <PrimaryButton
             onPress={approve}
             title={t('sign')}
             testID="Button.Confirm"

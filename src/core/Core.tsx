@@ -107,7 +107,7 @@ export const Core = () => {
 
   // handles the top color behind the clock
   const styles = StyleSheet.create({
-    top: { backgroundColor: topColor, paddingTop: insets.top },
+    top: { backgroundColor: topColor, paddingTop: insets.top, flex: 1 },
     body: {
       backgroundColor: topColor,
     },

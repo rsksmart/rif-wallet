@@ -22,6 +22,8 @@ import { ContactsContext, IContact } from './ContactsContext'
 import { CompositeScreenProps } from '@react-navigation/native'
 import { ContactsStackScreenProps } from '..'
 import { contactsStackRouteNames } from 'src/navigation/contactsNavigator'
+import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
+import { useAppSelector } from 'src/redux/storeHooks'
 
 export type ContactsListScreenProps = CompositeScreenProps<
   ContactsStackScreenProps<contactsStackRouteNames.ContactsList>,
@@ -35,6 +37,9 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [selectedContact, setSelectedContact] = useState<IContact | null>(null)
+
+  const tokenBalances = useAppSelector(selectBalances)
+  const shouldHideSendButton = Object.values(tokenBalances).length === 0
 
   const showModal = (contact: IContact) => {
     setIsModalVisible(true)
@@ -151,6 +156,7 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
                 onPress={() =>
                   setSelectedIndex(selectedIndex === index ? null : index)
                 }
+                hideSendButton={shouldHideSendButton}
               />
             ))}
         </ScrollView>
