@@ -1,27 +1,34 @@
-import React from 'react'
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { CreateKeysScreenProps } from 'src/navigation/createKeysNavigator/types'
-import { colors } from 'src/styles'
+import { StyleSheet, View, Image, TouchableOpacity, Text } from 'react-native'
 
-import { Arrow } from 'src/components/icons'
-import { grid } from 'src/styles'
+import {
+  createKeysRouteNames,
+  CreateKeysScreenProps,
+} from 'navigation/createKeysNavigator/types'
+import { colors } from '../../styles'
 
-import { PrimaryButton } from 'src/components/button/PrimaryButton'
-import { SecondaryButton } from 'src/components/button/SecondaryButton'
-import { RIFWallet } from 'src/lib/core'
-import { saveKeyVerificationReminder } from 'src/storage/MainStorage'
-import { WINDOW_HEIGHT } from 'src/ux/slides/Dimensions'
+import { grid } from '../../styles'
 
-type SecureYourWalletProps = {
-  mnemonic: string
-  createWallet: (mnemonic: string) => Promise<RIFWallet>
-}
-export const SecureYourWalletScreen: React.FC<
-  CreateKeysScreenProps<'SecureYourWallet'> & SecureYourWalletProps
-> = ({ navigation, createWallet, mnemonic }) => {
+import { WINDOW_HEIGHT } from '../../ux/slides/Dimensions'
+import { Arrow } from 'components/icons'
+import { PrimaryButton } from 'components/button/PrimaryButton'
+import { SecondaryButton } from 'components/button/SecondaryButton'
+import { saveKeyVerificationReminder } from '../../storage/MainStorage'
+import { useAppDispatch } from 'store/storeUtils'
+import { createWallet } from 'store/slices/settingsSlice'
+import { KeyManagementSystem } from 'lib/core'
+
+export const SecureYourWalletScreen = ({
+  navigation,
+}: CreateKeysScreenProps<createKeysRouteNames.SecureYourWallet>) => {
+  const dispatch = useAppDispatch()
+
   const secureLater = async () => {
     saveKeyVerificationReminder(true)
-    createWallet(mnemonic)
+    dispatch(
+      createWallet({
+        mnemonic: KeyManagementSystem.create().mnemonic,
+      }),
+    )
   }
   return (
     <View style={styles.parent}>

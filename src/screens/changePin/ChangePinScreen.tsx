@@ -1,20 +1,20 @@
 import { useState, useRef } from 'react'
-import { PinManager } from '../../components/PinManager'
+import { TouchableOpacity, View, StyleSheet } from 'react-native'
+
 import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
-import { TouchableOpacity, View, StyleSheet } from 'react-native'
-import { Arrow } from '../../components/icons'
-import { MediumText } from '../../components'
+import { PinManager } from 'components/PinManager'
+import { Arrow } from 'components/icons'
+import { MediumText } from 'components/index'
+import { useAppDispatch } from 'store/storeUtils'
+import { setPinState } from 'store/slices/settingsSlice'
 
-interface ChangePinProps {
-  editPin: (pin: string) => void
-}
 export const ChangePinScreen = ({
-  editPin,
   navigation,
-}: RootStackScreenProps<'ChangePinScreen'> & ChangePinProps) => {
+}: RootStackScreenProps<rootStackRouteNames.ChangePinScreen>) => {
+  const dispatch = useAppDispatch()
   const [currentStep, setCurrentStep] = useState(1)
 
   const pinSteps = useRef({
@@ -29,7 +29,7 @@ export const ChangePinScreen = ({
     if (!isSubmitting.current) {
       isSubmitting.current = true
       try {
-        editPin(pinSteps.current.pin)
+        dispatch(setPinState(pinSteps.current.pin))
         navigation.navigate(rootStackRouteNames.Home)
       } catch (error) {
         setPinError(

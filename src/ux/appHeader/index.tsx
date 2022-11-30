@@ -1,11 +1,12 @@
 import { View, StyleSheet, TouchableOpacity, Image } from 'react-native'
 
 import { AddressCopyComponent } from 'components/copy/AddressCopyComponent'
-import { useSelectedWallet } from '../../Context'
 import { ProfileHandler } from './ProfileHandler'
-import { navigationContainerRef } from '../../core/Core'
-import { IProfileStore } from 'src/storage/MainStorage'
-import { rootStackRouteNames } from 'src/navigation/rootNavigator'
+import { navigationContainerRef } from 'core/Core'
+import { IProfileStore } from 'storage/MainStorage'
+import { rootStackRouteNames } from 'navigation/rootNavigator'
+import { useAppSelector } from 'store/storeUtils'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
 
 interface Props {
   profile: IProfileStore
@@ -13,7 +14,7 @@ interface Props {
 }
 
 export const AppHeader = ({ profile, profileCreated }: Props) => {
-  const { wallet, chainId } = useSelectedWallet()
+  const { wallet, chainId } = useAppSelector(selectActiveWallet)
 
   const openMenu = () => {
     const navState = navigationContainerRef.getCurrentRoute()
@@ -37,7 +38,7 @@ export const AppHeader = ({ profile, profileCreated }: Props) => {
         {wallet && (
           <AddressCopyComponent
             address={wallet.smartWalletAddress}
-            chainId={chainId}
+            chainId={chainId || 31}
           />
         )}
       </View>

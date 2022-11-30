@@ -1,12 +1,17 @@
 import { useNavigation } from '@react-navigation/core'
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
-import ActivityIcon from '../../components/icons/ActivityIcon'
-import ActivitySelectedIcon from '../../components/icons/ActivitySelectedIcon'
-import ContactIcon from '../../components/icons/ContactIcon'
-import ContactSelectedIcon from '../../components/icons/ContactSelectedIcon'
-import DappsIcon from '../../components/icons/DappsIcon'
-import DappsSelectedIcon from '../../components/icons/DappsSelectedIcon'
-import QRCodeIconFooter from '../../components/icons/QRCodeIconFooter'
+
+import {
+  RootStackNavigationProp,
+  rootStackRouteNames,
+} from 'navigation/rootNavigator'
+import ActivityIcon from 'components/icons/ActivityIcon'
+import ActivitySelectedIcon from 'components/icons/ActivitySelectedIcon'
+import ContactIcon from 'components/icons/ContactIcon'
+import ContactSelectedIcon from 'components/icons/ContactSelectedIcon'
+import DappsIcon from 'components/icons/DappsIcon'
+import DappsSelectedIcon from 'components/icons/DappsSelectedIcon'
+import QRCodeIconFooter from 'components/icons/QRCodeIconFooter'
 import { colors } from '../../styles/colors'
 
 interface Props {
@@ -14,12 +19,12 @@ interface Props {
 }
 
 export const AppFooterMenu = ({ currentScreen }: Props) => {
-  const navigation = useNavigation()
+  const navigation = useNavigation<RootStackNavigationProp>()
 
   return (
     <View style={styles.row}>
       <TouchableOpacity
-        onPress={() => navigation.navigate('Home')}
+        onPress={() => navigation.navigate(rootStackRouteNames.Home)}
         style={styles.button}>
         <Image
           style={styles.walletIcon}
@@ -32,7 +37,7 @@ export const AppFooterMenu = ({ currentScreen }: Props) => {
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate('Activity')}
+        onPress={() => navigation.navigate(rootStackRouteNames.Activity)}
         style={styles.button}>
         {currentScreen === 'Activity' ? (
           <ActivitySelectedIcon />
@@ -42,13 +47,13 @@ export const AppFooterMenu = ({ currentScreen }: Props) => {
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate('ScanQR')}
+        onPress={() => navigation.navigate(rootStackRouteNames.ScanQR)}
         style={styles.button}>
         <QRCodeIconFooter />
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate('Contacts')}
+        onPress={() => navigation.navigate(rootStackRouteNames.Contacts)}
         style={styles.button}>
         {currentScreen === 'Contacts' ? (
           <ContactSelectedIcon />
@@ -58,7 +63,7 @@ export const AppFooterMenu = ({ currentScreen }: Props) => {
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate('WalletConnect')}
+        onPress={() => navigation.navigate(rootStackRouteNames.WalletConnect)}
         style={styles.button}>
         {currentScreen === 'WalletConnect' ? (
           <DappsSelectedIcon />

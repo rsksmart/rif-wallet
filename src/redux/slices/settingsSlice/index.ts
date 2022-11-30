@@ -34,7 +34,6 @@ export const createWallet = createAsyncThunk(
   'settings/createWallet',
   async ({ mnemonic, networkId }: CreateFirstWalletAction, thunkAPI) => {
     const { settings } = thunkAPI.getState()
-    console.log('CREATE FIRST WALLET', settings)
     const rifWalletFactory = createRIFWalletFactory(request =>
       thunkAPI.dispatch(onRequest({ request })),
     )

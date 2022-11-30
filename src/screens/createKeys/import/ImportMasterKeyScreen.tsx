@@ -11,7 +11,6 @@ import { Trans } from 'react-i18next'
 import { CompositeScreenProps } from '@react-navigation/native'
 
 import {
-  CreateKeysProps,
   createKeysRouteNames,
   CreateKeysScreenProps,
 } from 'navigation/createKeysNavigator/types'
@@ -28,19 +27,17 @@ import {
   RootStackScreenProps,
 } from 'navigation/rootNavigator'
 import { useKeyboardIsVisible } from 'core/hooks/useKeyboardIsVisible'
-
-interface ImportMasterKeyScreenProps {
-  createWallet: CreateKeysProps['createFirstWallet']
-}
+import { useAppDispatch } from 'store/storeUtils'
+import { createWallet } from 'store/slices/settingsSlice'
 
 type Props = CompositeScreenProps<
   CreateKeysScreenProps<createKeysRouteNames.ImportMasterKey>,
   RootStackScreenProps<rootStackRouteNames.CreateKeysUX>
-> &
-  ImportMasterKeyScreenProps
+>
 
-export const ImportMasterKeyScreen = ({ navigation, createWallet }: Props) => {
+export const ImportMasterKeyScreen = ({ navigation }: Props) => {
   const slidesIndexes = [0, 1, 2, 3]
+  const dispatch = useAppDispatch()
 
   const isKeyboardVisible = useKeyboardIsVisible()
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
@@ -52,7 +49,11 @@ export const ImportMasterKeyScreen = ({ navigation, createWallet }: Props) => {
     const mnemonicError = validateMnemonic(selectedWords.join(' '))
     if (!mnemonicError) {
       try {
-        await createWallet(selectedWords.join(' '))
+        await dispatch(
+          createWallet({
+            mnemonic: selectedWords.join(' '),
+          }),
+        )
       } catch (err) {
         console.error(err)
         setError(

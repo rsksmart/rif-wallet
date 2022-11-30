@@ -3,11 +3,14 @@ import { BigNumber, BigNumberish } from 'ethers'
 
 import { IRIFWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
 
-import { RootStackScreenProps } from 'navigation/rootNavigator/types'
-import { Address } from 'src/components'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
+import { Address } from 'components/index'
 import { ScreenWithWallet } from '../types'
-import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
-import { useAppSelector } from 'src/redux/storeHooks'
+import { selectBalances } from 'store/slices/balancesSlice/selectors'
+import { useAppSelector } from 'store/storeUtils'
 import { BalancesRow } from './BalancesRow'
 
 export const balanceToString = (
@@ -29,7 +32,7 @@ export const balanceToString = (
 
 export type BalancesScreenProps = { fetcher: IRIFWalletServicesFetcher }
 
-type Props = RootStackScreenProps<'Balances'> &
+type Props = RootStackScreenProps<rootStackRouteNames.Balances> &
   ScreenWithWallet &
   BalancesScreenProps
 
