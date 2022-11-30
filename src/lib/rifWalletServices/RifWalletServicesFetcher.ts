@@ -3,7 +3,7 @@ import {
   ITokenWithBalance,
   TransactionsServerResponse,
 } from './RIFWalletServicesTypes'
-import { UnspentTransactionType } from '../bitcoin/BIP84Payment'
+import { UnspentTransactionType } from '../bitcoin/types'
 
 export interface IRIFWalletServicesFetcher {
   fetchTokensByAddress(address: string): Promise<ITokenWithBalance[]>
@@ -33,6 +33,11 @@ export interface IXPubBalanceData {
   totalSent: string
   txs: number
   btc: number
+}
+
+export interface ISendTransactionJsonReturnData {
+  error?: string
+  result?: string
 }
 
 const RESULTS_LIMIT = 10
@@ -84,7 +89,9 @@ export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
   fetchUtxos = (xpub: string): Promise<Array<UnspentTransactionType>> =>
     fetch(`${this.uri}/bitcoin/getXpubUtxos/${xpub}`).then(res => res.json())
 
-  sendTransactionHexData = (hexdata: string): Promise<any> =>
+  sendTransactionHexData = (
+    hexdata: string,
+  ): Promise<ISendTransactionJsonReturnData> =>
     fetch(`${this.uri}/bitcoin/sendTransaction/${hexdata}`).then(res =>
       res.json(),
     )
@@ -103,7 +110,7 @@ export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
   fetchXpubTransactions = (
     xpub: string,
     pageSize: number | undefined = undefined,
-    pageNumber: number = 1,
+    pageNumber = 1,
   ): Promise<BitcoinTransactionContainerType> =>
     fetch(
       `${this.uri}/bitcoin/getXpubTransactions/${xpub}?pageSize=${pageSize}&page=${pageNumber}`,

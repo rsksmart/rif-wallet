@@ -14,8 +14,7 @@ import {
 } from '../../lib/abiEnhancer/AbiEnhancer'
 import { RIFWallet } from '../../lib/core'
 import { ScreenWithWallet } from '../types'
-import { ScreenProps } from '../../RootNavigation'
-import { IActivity } from '../../subscriptions/types'
+import { RootStackScreenProps } from '../../navigation/rootNavigator/types'
 import { TransactionsServerResponseWithActivityTransactions } from './types'
 import { colors } from '../../styles'
 
@@ -25,7 +24,7 @@ export type ActivityScreenProps = {
 }
 
 export const ActivityScreen: React.FC<
-  ScreenProps<'Activity'> & ScreenWithWallet & ActivityScreenProps
+  RootStackScreenProps<'Activity'> & ScreenWithWallet & ActivityScreenProps
 > = ({ wallet, fetcher, abiEnhancer, navigation }) => {
   const [info, setInfo] = useState('')
   const { networks } = useBitcoinCoreContext()
@@ -85,7 +84,7 @@ export const ActivityScreen: React.FC<
 
       dispatch({
         type: 'newTransactions',
-        payload: fetchedTransactions as IActivity,
+        payload: fetchedTransactions,
       })
 
       setInfo('')
@@ -159,20 +158,20 @@ export const enhanceTransactionInput = async (
   transaction: IApiTransaction,
   wallet: RIFWallet,
   abiEnhancer: IAbiEnhancer,
-): Promise<IEnhancedResult | undefined> => {
+): Promise<IEnhancedResult | null> => {
   let tx
   try {
     tx = wallet.smartWallet.smartWalletContract.interface.decodeFunctionData(
       'directExecute',
       transaction.input,
     )
-    return (await abiEnhancer.enhance(wallet, {
+    return await abiEnhancer.enhance(wallet, {
       from: wallet.smartWalletAddress,
       to: tx.to.toLowerCase(),
       data: tx.data,
       value: transaction.value,
-    }))!
+    })
   } catch {
-    return undefined
+    return null
   }
 }

@@ -1,21 +1,23 @@
-import React from 'react'
 import { ActivityMixedType } from './types'
 import ActivityRowPresentation from './ActivityRowPresentation'
 import useActivityDeserializer from './useActivityDeserializer'
-import { NavigationProp } from '../../RootNavigation'
+import {
+  RootStackNavigationProp,
+  rootStackRouteNames,
+} from 'navigation/rootNavigator/types'
 
-interface Interface {
+interface Props {
   activityTransaction: ActivityMixedType
-  navigation: NavigationProp
+  navigation: RootStackNavigationProp
 }
 
-const ActivityRow: React.FC<Interface> = ({
-  activityTransaction,
-  navigation,
-}) => {
+const ActivityRow = ({ activityTransaction, navigation }: Props) => {
   const activityDetails = useActivityDeserializer(activityTransaction)
   const handlePress = () =>
-    navigation.navigate('ActivityDetails', activityTransaction as any)
+    navigation.navigate(
+      rootStackRouteNames.ActivityDetails,
+      activityTransaction,
+    )
 
   return <ActivityRowPresentation {...activityDetails} onPress={handlePress} />
 }

@@ -1,5 +1,5 @@
-import React from 'react'
-import { ScreenProps } from '../../RootNavigation'
+import { useMemo } from 'react'
+import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5'
@@ -11,29 +11,29 @@ import DiscoverTuneIcon from '../../components/icons/DiscoverTuneIcon'
 import LockIcon from '../../components/icons/LockIcon'
 import AccountsIcon from '../../components/icons/AccountsIcon'
 
-export const SettingsScreen: React.FC<ScreenProps<'Settings'>> = ({
+export const SettingsScreen = ({
   navigation,
-}) => {
-  const smartWalletFactoryAddress = React.useMemo(
+}: RootStackScreenProps<'Settings'>) => {
+  const smartWalletFactoryAddress = useMemo(
     () => getWalletSetting(SETTINGS.SMART_WALLET_FACTORY_ADDRESS),
     [],
   )
 
-  const rpcUrl = React.useMemo(() => getWalletSetting(SETTINGS.RPC_URL), [])
+  const rpcUrl = useMemo(() => getWalletSetting(SETTINGS.RPC_URL), [])
 
-  const walletServiceUrl = React.useMemo(
+  const walletServiceUrl = useMemo(
     () => getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL),
     [],
   )
 
-  const goToChangeLanguage = () => navigation.navigate('ChangeLanguage' as any)
+  const goToChangeLanguage = () => navigation.navigate('ChangeLanguage')
 
-  const goToAccountsScreen = () => navigation.navigate('AccountsScreen' as any)
+  const goToAccountsScreen = () => navigation.navigate('AccountsScreen')
 
   const goToSecurityConfiguration = () =>
-    navigation.navigate('SecurityConfigurationScreen' as any)
+    navigation.navigate('SecurityConfigurationScreen')
 
-  const goToDeploy = () => navigation.navigate('ManuallyDeployScreen' as any)
+  const goToDeploy = () => navigation.navigate('ManuallyDeployScreen')
 
   const goToFeedbackScreen = () => navigation.navigate('FeedbackScreen')
 

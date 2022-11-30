@@ -1,14 +1,8 @@
-// @ts-ignore
 import contractMapMainnet from '@rsksmart/rsk-contract-metadata'
-// @ts-ignore
 import contractMapTestNet from '@rsksmart/rsk-testnet-contract-metadata'
-// @ts-ignore
 import rbtcMainnet from './assets/RBTC-mainnet.svg'
-// @ts-ignore
 import rbtcTestnet from './assets/RBTC-testnet.svg'
-// @ts-ignore
 import tokenMainnet from './assets/token-mainnet.svg'
-// @ts-ignore
 import tokenTestnet from './assets/token-testnet.svg'
 
 import { IToken } from './BaseToken'

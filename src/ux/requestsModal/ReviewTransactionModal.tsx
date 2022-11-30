@@ -1,29 +1,28 @@
-import React, { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { ScrollView, StyleSheet, View } from 'react-native'
 import { BigNumber } from 'ethers'
 
-import { SendTransactionRequest } from '../../lib/core'
+import { SendTransactionRequest } from 'src/lib/core'
 
-import { sharedStyles } from './sharedStyles'
-import { Loading, Paragraph, RegularText } from '../../components'
-import { ScreenWithWallet } from '../../screens/types'
-import useEnhancedWithGas from './useEnhancedWithGas'
 import { useTranslation } from 'react-i18next'
-import { shortAddress } from '../../lib/utils'
-import {
-  DarkBlueButton,
-  OutlineBorderedButton,
-} from '../../components/button/ButtonVariations'
-import { colors } from '../../styles'
-import ReadOnlyField from './ReadOnlyField'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { SecondaryButton } from 'src/components/button/SecondaryButton'
+import { Loading, Paragraph, RegularText } from 'src/components'
+import { shortAddress } from 'src/lib/utils'
+import { ScreenWithWallet } from 'src/screens/types'
+import { sharedStyles } from 'src/shared/styles'
+import { colors } from 'src/styles'
 import InputField from './InpuField'
+import ReadOnlyField from './ReadOnlyField'
+import useEnhancedWithGas from './useEnhancedWithGas'
+import { errorHandler } from 'src/shared/utils'
 
-interface Interface {
+interface Props {
   request: SendTransactionRequest
   closeModal: () => void
 }
 
-const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
+const ReviewTransactionModal: React.FC<ScreenWithWallet & Props> = ({
   request,
   closeModal,
   wallet,
@@ -34,7 +33,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
   const { enhancedTransactionRequest, isLoaded, setGasLimit, setGasPrice } =
     useEnhancedWithGas(wallet, txRequest)
 
-  const [error, setError] = useState<Error | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   // convert from string to Transaction and pass out of component
   const confirmTransaction = async () => {
@@ -44,8 +43,8 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
         gasLimit: BigNumber.from(enhancedTransactionRequest.gasLimit),
       })
       closeModal()
-    } catch (err: any) {
-      setError(err)
+    } catch (err) {
+      setError(errorHandler(err))
     }
   }
 
@@ -59,17 +58,21 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
       <View>
         {enhancedTransactionRequest && (
           <View testID="TX_VIEW" style={[sharedStyles.rowInColumn]}>
-            <ReadOnlyField
-              label={'amount'}
-              value={enhancedTransactionRequest.value}
-              testID={'Data.View'}
-            />
+            {enhancedTransactionRequest.value && (
+              <ReadOnlyField
+                label={'amount'}
+                value={enhancedTransactionRequest.value.toString()}
+                testID={'Data.View'}
+              />
+            )}
 
-            <ReadOnlyField
-              label={'asset'}
-              value={enhancedTransactionRequest.symbol}
-              testID={''}
-            />
+            {enhancedTransactionRequest.symbol && (
+              <ReadOnlyField
+                label={'asset'}
+                value={enhancedTransactionRequest.symbol}
+                testID={''}
+              />
+            )}
 
             <ReadOnlyField
               label={'from'}
@@ -102,39 +105,32 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
                   />
                 </>
               )}
-              {enhancedTransactionRequest.functionParameters &&
-                enhancedTransactionRequest.functionParameters.map(
-                  ({ name, value }: any) => (
-                    <ReadOnlyField
-                      key={name}
-                      label={name}
-                      value={value.toString()}
-                      testID={'Data.View'}
-                    />
-                  ),
-                )}
             </View>
           </View>
         )}
       </View>
 
-      <InputField
-        label={'gas limit'}
-        value={enhancedTransactionRequest.gasLimit}
-        keyboardType="number-pad"
-        placeholder="gas limit"
-        testID={'gasLimit.TextInput'}
-        handleValueOnChange={setGasLimit}
-      />
+      {enhancedTransactionRequest.gasLimit && (
+        <InputField
+          label={'gas limit'}
+          value={enhancedTransactionRequest.gasLimit.toString()}
+          keyboardType="number-pad"
+          placeholder="gas limit"
+          testID={'gasLimit.TextInput'}
+          handleValueOnChange={setGasLimit}
+        />
+      )}
 
-      <InputField
-        label={'gas price'}
-        value={enhancedTransactionRequest.gasPrice}
-        keyboardType="number-pad"
-        placeholder="gas price"
-        testID={'gasPrice.TextInput'}
-        handleValueOnChange={setGasPrice}
-      />
+      {enhancedTransactionRequest.gasPrice && (
+        <InputField
+          label={'gas price'}
+          value={enhancedTransactionRequest.gasPrice.toString()}
+          keyboardType="number-pad"
+          placeholder="gas price"
+          testID={'gasPrice.TextInput'}
+          handleValueOnChange={setGasPrice}
+        />
+      )}
 
       {error && (
         <View style={sharedStyles.row}>
@@ -142,15 +138,14 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
             <Paragraph>Error:</Paragraph>
           </View>
           <View style={sharedStyles.column}>
-            <Paragraph>{error.message}</Paragraph>
+            <Paragraph>{error}</Paragraph>
           </View>
         </View>
       )}
 
       <View style={styles.buttonsSection}>
         <View style={sharedStyles.column}>
-          <OutlineBorderedButton
-            style={{ button: { borderColor: colors.black } }}
+          <SecondaryButton
             onPress={cancelTransaction}
             title={t('reject')}
             testID="Cancel.Button"
@@ -158,7 +153,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Interface> = ({
           />
         </View>
         <View style={sharedStyles.column}>
-          <DarkBlueButton
+          <PrimaryButton
             onPress={confirmTransaction}
             title={t('sign')}
             testID="Confirm.Button"

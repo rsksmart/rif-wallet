@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { grid } from '../../styles/grid'
 import { StyleSheet, View, Text, Image } from 'react-native'
 import { colors } from '../../styles/colors'

@@ -1,7 +1,5 @@
 import Resolver from '@rsksmart/rns-resolver.js'
 
-// @ts-ignore
-export const createMockRnsResolver = (): Resolver => ({
-  // eslint-disable-next-line no-undef
+export const createMockRnsResolver = (): Partial<Resolver> => ({
   addr: jest.fn(() => Promise.resolve('0x000_MOCK_DOMAIN_ADDRESS')),
 })

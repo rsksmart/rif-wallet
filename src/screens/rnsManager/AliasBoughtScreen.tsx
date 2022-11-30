@@ -1,27 +1,29 @@
-import React, { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
-import { View, StyleSheet, Image, Linking, Clipboard } from 'react-native'
+import { Clipboard, Image, Linking, StyleSheet, View } from 'react-native'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
 import {
-  OutlineButton,
-  PurpleButton,
-} from '../../components/button/ButtonVariations'
-
-import { ScreenProps } from '../../RootNavigation'
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
+import { SecondaryButton } from 'src/components/button/SecondaryButton'
+import { MediumText } from 'src/components'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { IProfileStore } from 'src/storage/MainStorage'
 import { ScreenWithWallet } from '../types'
-import { MediumText } from '../../components'
-import { IProfileStore } from '../../storage/ProfileStore'
 
-type Props = {
+interface Props {
   profile: IProfileStore
   setProfile: (p: IProfileStore) => void
-  route: any
 }
 
-export const AliasBoughtScreen: React.FC<
-  ScreenProps<'AliasBought'> & ScreenWithWallet & Props
-> = ({ profile, setProfile, navigation, route }) => {
+export const AliasBoughtScreen = ({
+  profile,
+  setProfile,
+  navigation,
+  route,
+}: RootStackScreenProps<'AliasBought'> & ScreenWithWallet & Props) => {
   const { alias, tx } = route.params
 
   const [registerDomainInfo, setRegisterDomainInfo] = useState(
@@ -29,7 +31,7 @@ export const AliasBoughtScreen: React.FC<
   )
 
   const copyHashAndOpenExplorer = (hash: string) => {
-    Clipboard.setString(hash)
+    Clipboard.setString(hash) // TODO: fix deprecated Clipboard
     Linking.openURL(`https://explorer.testnet.rsk.co/tx/${hash}`)
   }
 
@@ -69,17 +71,15 @@ export const AliasBoughtScreen: React.FC<
 
         <View style={rnsManagerStyles.bottomContainer}>
           <View style={styles.buttonContainer}>
-            <PurpleButton
+            <PrimaryButton
               onPress={() => copyHashAndOpenExplorer(tx.hash)}
               accessibilityLabel="Copy Hash & Open Explorer"
               title={'Copy Hash & Open Explorer'}
             />
           </View>
-          <OutlineButton
+          <SecondaryButton
             onPress={() =>
-              navigation.navigate('ProfileDetailsScreen', {
-                navigation,
-              })
+              navigation.navigate(rootStackRouteNames.ProfileDetailsScreen)
             }
             accessibilityLabel="close"
             title={'Close'}

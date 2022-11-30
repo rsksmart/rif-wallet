@@ -13,6 +13,8 @@ import { InjectSelectedWallet } from '../../Context'
 import { SignTypedDataRequest } from '../../lib/core'
 import SlideUpModal from '../../components/slideUpModal/SlideUpModal'
 import { colors } from '../../styles'
+import ConfirmBitcoinTransactionModal from './ConfirmBitcoinTransactionModal'
+import { SendBitcoinRequestType } from '../../lib/bitcoin/types'
 
 interface Interface {
   request: Request
@@ -42,6 +44,13 @@ const RequestTypeSwitch = (request: Request, closeModal: () => void) => {
       return (
         <SignTypedDataModal
           request={request as SignTypedDataRequest}
+          closeModal={closeModal}
+        />
+      )
+    case 'SEND_BITCOIN':
+      return (
+        <ConfirmBitcoinTransactionModal
+          request={request as SendBitcoinRequestType}
           closeModal={closeModal}
         />
       )

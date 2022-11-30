@@ -1,13 +1,12 @@
-import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import { RegularText } from '../../typography'
 import { MessageComponentDefaultType } from './PinScreen'
 
-const MessageComponent: React.FC<MessageComponentDefaultType> = ({
+const MessageComponent = ({
   message = 'Enter PIN',
   ViewProps = {},
   TextProps = {},
-}) => {
+}: MessageComponentDefaultType) => {
   return (
     <View style={messageStyles.container} {...ViewProps}>
       <RegularText style={messageStyles.text} {...TextProps}>

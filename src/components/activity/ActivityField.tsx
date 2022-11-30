@@ -1,14 +1,14 @@
-import React from 'react'
+import { ReactChild } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { MediumText } from '../typography'
 import { spacing } from '../../styles'
 
-type ActivityFieldType = {
+interface ActivityFieldProps {
   title: string
-  children: any
+  children: ReactChild
 }
 
-const ActivityField: React.FC<ActivityFieldType> = ({ title, children }) => {
+const ActivityField = ({ title, children }: ActivityFieldProps) => {
   return (
     <View style={styles.fieldContainer}>
       <MediumText style={spacing.pl10}>{title}</MediumText>

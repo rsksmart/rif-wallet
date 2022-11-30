@@ -1,8 +1,7 @@
-import React from 'react'
 import { fonts } from '../../styles/fonts'
-import CustomText, { TextType } from './CustomText'
+import { CustomText, TextType } from './CustomText'
 
-const SemiBoldText: React.FC<TextType> = ({ children, ...props }) => (
+const SemiBoldText = ({ children, ...props }: TextType) => (
   <CustomText font={fonts.semibold} {...props}>
     {children}
   </CustomText>

@@ -14,13 +14,13 @@ export function shortAddress(address?: string, trimAmount?: number): string {
 }
 
 export const roundBalance = (num: number, decimalPlaces?: number) => {
-  var decimals = Math.pow(10, decimalPlaces || 5)
+  const decimals = Math.pow(10, decimalPlaces || 5)
   return Math.round(num * decimals) / decimals
 }
 
-export const formatTimestamp = (timestamp: any) => {
-  var a = new Date(timestamp * 1000)
-  var months = [
+export const formatTimestamp = (timestamp: number) => {
+  const a = new Date(timestamp * 1000)
+  const months = [
     'Jan',
     'Feb',
     'Mar',
@@ -34,13 +34,13 @@ export const formatTimestamp = (timestamp: any) => {
     'Nov',
     'Dec',
   ]
-  var year = a.getFullYear()
-  var month = months[a.getMonth()]
-  var date = a.getDate()
-  var hour = a.getHours()
-  var min = a.getMinutes()
-  var sec = a.getSeconds()
-  var time =
+  const year = a.getFullYear()
+  const month = months[a.getMonth()]
+  const date = a.getDate()
+  const hour = a.getHours()
+  const min = a.getMinutes()
+  const sec = a.getSeconds()
+  const time =
     date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec
   return time
 }
@@ -135,5 +135,12 @@ export const sanitizeDecimalText = (text: string) => {
   return newText
 }
 
+export const sanitizeMaxDecimalText = (text: string, maxDecimal = 8) => {
+  const textSplitted = text.split('.')
+  if (textSplitted[1] && textSplitted[1].length > maxDecimal) {
+    return `${textSplitted[0]}.${textSplitted[1].slice(0, 8)}`
+  }
+  return text
+}
 export const convertUnixTimeToFromNowFormat = (unixTime: number): string =>
   moment.unix(Number(unixTime)).fromNow()

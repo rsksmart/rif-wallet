@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { render, fireEvent } from '@testing-library/react-native'
-import { AddressInput } from '.'
+import { AddressInput } from './AddressInput'
 import { testnetCase } from './testCase'
 import { act } from 'react-test-renderer'
 
@@ -12,7 +12,11 @@ jest.mock('@rsksmart/rns-resolver.js', () => ({
   }),
 }))
 
-const WrappedAddressInput = ({ handleChange }: any) => {
+const WrappedAddressInput = ({
+  handleChange,
+}: {
+  handleChange: (newAddress: string, isValid: boolean) => void
+}) => {
   const [address, setAddress] = useState('')
 
   const onChangeText = (newAddress: string, isValid: boolean) => {

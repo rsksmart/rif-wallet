@@ -1,4 +1,3 @@
-import React from 'react'
 import Svg, { Path, PathProps } from 'react-native-svg'
 import { ReceiveIconInterface, sendRecieveSvgShared } from './ReceiveIcon'
 

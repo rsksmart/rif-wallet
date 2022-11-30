@@ -1,7 +1,6 @@
-import React from 'react'
 import Svg, { SvgProps, Path } from 'react-native-svg'
 
-const DeleteIcon = (props: SvgProps) => (
+export const DeleteIcon = (props: SvgProps) => (
   <Svg height={24} width={24} {...props} viewBox={props.viewBox ?? '0 0 40 40'}>
     <Path d="M0 0h24v24H0V0z" fill="none" />
     <Path
@@ -11,5 +10,3 @@ const DeleteIcon = (props: SvgProps) => (
     />
   </Svg>
 )
-
-export default DeleteIcon

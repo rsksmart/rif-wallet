@@ -1,23 +1,24 @@
-import React from 'react'
+import { ReactNode } from 'react'
 import { TouchableOpacity, View, StyleSheet } from 'react-native'
 import { MediumText } from '../typography'
+
 import { colors, spacing } from '../../styles'
 
-type ButtonType = {
-  icon: React.FC | any
+interface ButtonProps {
+  icon: ReactNode | undefined
   secondText: string
   containerBackground?: string | null
   secondTextColor?: string | null
   onPress: () => null
 }
 
-const ButtonCustom: React.FC<ButtonType> = ({
+const ButtonCustom = ({
   icon = null,
   secondText,
   containerBackground = null,
   secondTextColor = null,
   onPress,
-}) => {
+}: ButtonProps) => {
   const overrideContainerBackground = containerBackground
     ? { backgroundColor: containerBackground }
     : {}

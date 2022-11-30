@@ -4,7 +4,7 @@ import useAppState from './useAppState'
 const gracePeriod = 3000
 let timer: NodeJS.Timeout
 
-export const useStateSubscription = (onScreenLock?: Function) => {
+export const useStateSubscription = (onScreenLock?: () => void) => {
   const [active, setActive] = useState(true)
   const [unlocked, setUnlocked] = useState(false)
   const { appState } = useAppState()

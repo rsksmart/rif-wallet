@@ -1,12 +1,7 @@
-import React from 'react'
 import Svg, { Path } from 'react-native-svg'
-import { SVGIconInterface } from '.'
+import { SVGIconInterface } from './index'
 
-export const SmileFaceIcon: React.FC<SVGIconInterface> = ({
-  width,
-  height,
-  color,
-}) => (
+export const SmileFaceIcon = ({ width, height, color }: SVGIconInterface) => (
   <Svg
     viewBox={`0 0 ${width || 50} ${height || 50}`}
     width={width || 50}

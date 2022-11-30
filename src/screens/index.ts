@@ -23,20 +23,19 @@ export { BuyDomainScreen } from './rnsManager/BuyDomainScreen'
 export { AliasBoughtScreen } from './rnsManager/AliasBoughtScreen'
 export { RegisterDomainScreen } from './rnsManager/RegisterDomainScreen'
 export { HomeScreen, HomeScreenProps } from './home/index'
-export { ContactsNavigationScreen, ContactsScreenProps } from './contacts/index'
+export {
+  ContactsNavigation,
+  ContactsStackScreenProps,
+} from '../navigation/contactsNavigator/index'
 export { SettingsScreen } from './settings/SettingsScreen'
 export { EventsScreenHOC as EventsScreen } from './events'
 export {
-  default as SecurityConfigurationScreen,
+  SecurityConfigurationScreen,
   SecurityScreenProps,
 } from './security/SecurityConfigurationScreen'
-export { default as ChangePinScreen } from './changePin/ChangePinScreen'
-export {
-  default as AccountsScreen,
-  AccountsScreenType,
-} from './accounts/AccountsScreen'
+export { ChangePinScreen } from './changePin/ChangePinScreen'
+export { AccountsScreen, AccountsScreenType } from './accounts/AccountsScreen'
 export { ProfileCreateScreen } from './profile/ProfileCreateScreen'
 export { ProfileDetailsScreen } from './profile/ProfileDetailsScreen'
-export { default as SendBitcoinScreen } from './send/SendBitcoinScreen'
-export { default as BitcoinReceiveScreen } from './receive/BitcoinReceiveScreen'
+export { BitcoinReceiveScreen } from './receive/BitcoinReceiveScreen'
 export { FeedbackScreen } from './feedback/FeedbackScreen'

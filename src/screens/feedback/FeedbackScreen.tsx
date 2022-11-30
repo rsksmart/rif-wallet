@@ -1,13 +1,13 @@
-import React, { useState } from 'react'
-import { View, StyleSheet } from 'react-native'
-import { RegularText } from '../../components'
-import { PurpleButton } from '../../components/button/ButtonVariations'
-import { TextInputWithLabel } from '../../components/input/TextInputWithLabel'
-import { colors } from '../../styles'
+import { useState } from 'react'
+import { StyleSheet, View } from 'react-native'
+import { RegularText } from 'src/components'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { TextInputWithLabel } from 'src/components/input/TextInputWithLabel'
+import { colors } from 'src/styles'
 import { sendFeedbackToGithub } from './operations'
 import { ThankYouComponent } from './ThankYouComponent'
 
-export const FeedbackScreen: React.FC = () => {
+export const FeedbackScreen = () => {
   const [isSent, setIsSent] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -20,7 +20,7 @@ export const FeedbackScreen: React.FC = () => {
     if (feedback !== '') {
       sendFeedbackToGithub(name, email, feedback)
         .then(() => setIsSent(true))
-        .catch((error: any) => {
+        .catch(error => {
           console.log({ error })
           setIsLoading(false)
         })
@@ -36,29 +36,33 @@ export const FeedbackScreen: React.FC = () => {
       <RegularText style={styles.heading}>Feedback form</RegularText>
 
       <TextInputWithLabel
-        label="Name"
+        label="name"
         placeholder="your name"
         value={name}
         setValue={setName}
+        style={styles.input}
       />
 
       <TextInputWithLabel
-        label="Email"
+        label="email"
         placeholder="your email"
         value={email}
         setValue={setEmail}
+        style={styles.input}
       />
 
       <TextInputWithLabel
-        label="Comments"
+        label="comments"
         placeholder="your feedback"
         value={feedback}
         setValue={setFeedback}
         multiline={true}
         inputStyle={styles.feedback}
+        style={styles.input}
+        textAlignVertical="top"
       />
 
-      <PurpleButton
+      <PrimaryButton
         title="Submit"
         onPress={submitFeedback}
         disabled={isLoading}
@@ -78,6 +82,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
     marginVertical: 20,
+  },
+  input: {
+    marginBottom: 10,
   },
   feedback: {
     paddingTop: 20,

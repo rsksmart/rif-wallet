@@ -1,33 +1,45 @@
-import React, { useState, useEffect } from 'react'
-import { StyleSheet, TouchableOpacity } from 'react-native'
-import addresses from './addresses.json'
-import LinearGradient from 'react-native-linear-gradient'
-
+import { useState, useEffect } from 'react'
+import {
+  View,
+  TextInput,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native'
 import { BigNumber, utils } from 'ethers'
-import { View, TextInput, Text } from 'react-native'
+import LinearGradient from 'react-native-linear-gradient'
+import addresses from './addresses.json'
 
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
 
 import { ScreenWithWallet } from '../types'
-import { ScreenProps } from '../../RootNavigation'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
 import { getDomains } from '../../storage/DomainsStore'
 import { grid } from '../../styles'
-import { SquareButton } from '../../components/button/SquareButton'
 import { getTokenColor, getTokenColorWithOpacity } from '../home/tokenColor'
-import { SearchIcon } from '../../components/icons/SearchIcon'
-import { RegisterIcon } from '../../components/icons/RegisterIcon'
-import BaseButton from '../../components/button/BaseButton'
-import { IProfileStore } from '../../storage/ProfileStore'
-type Props = {
-  navigation: any
+import { SquareButton } from 'components/button/SquareButton'
+import { SearchIcon } from 'components/icons/SearchIcon'
+import { RegisterIcon } from 'components/icons/RegisterIcon'
+import BaseButton from 'components/button/BaseButton'
+import { IProfileStore } from '../../storage/MainStorage'
+
+interface Props {
   profile: IProfileStore
   setProfile: (p: IProfileStore) => void
 }
 const years = 3
 
-export const RNSManagerScreen: React.FC<
-  ScreenProps<'RNSManager'> & ScreenWithWallet & Props
-> = ({ wallet, navigation, profile, setProfile }) => {
+export const RNSManagerScreen = ({
+  wallet,
+  navigation,
+  profile,
+  setProfile,
+}: RootStackScreenProps<rootStackRouteNames.RNSManager> &
+  ScreenWithWallet &
+  Props) => {
   const [domainToLookUp, setDomainToLookUp] = useState('')
   const [error, setError] = useState('')
   const [selectedDomain, setSelectedDomain] = useState('')
@@ -43,7 +55,7 @@ export const RNSManagerScreen: React.FC<
   )
 
   useEffect(() => {
-    getDomains(wallet.smartWalletAddress).then(setRegisteredDomains)
+    setRegisteredDomains(getDomains(wallet.smartWalletAddress))
   }, [wallet])
 
   const searchDomain = async (domain: string) => {
@@ -61,24 +73,23 @@ export const RNSManagerScreen: React.FC<
 
     setError('')
 
-    const available = (await rskRegistrar.available(domain)) as any as boolean
+    const available = await rskRegistrar.available(domain)
     const price = await rskRegistrar.price(
       domainToLookUp,
       BigNumber.from(years),
     )
 
-    setSelectedDomainAvailable(available)
+    setSelectedDomainAvailable(Boolean(available))
     setSelectedDomain(domain)
     setSelectedDomainPrice(utils.formatUnits(price, 18))
   }
   const selectDomain = async (domain: string) => {
-    await setProfile({
+    setProfile({
       ...profile,
       alias: domain,
-    } as unknown as IProfileStore)
+    })
 
-    navigation.navigate('ProfileCreateScreen', {
-      navigation,
+    navigation.navigate(rootStackRouteNames.ProfileCreateScreen, {
       profile: { alias: 'sample-domain.rsk' },
     })
   }

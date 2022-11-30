@@ -1,14 +1,17 @@
 import { useState } from 'react'
 import { Wallets, WalletsIsDeployed } from '../../Context'
 import { KeyManagementSystem, OnRequest } from '../../lib/core'
-import { deleteContacts } from '../../storage/ContactsStore'
 import { deleteDomains } from '../../storage/DomainsStore'
-import { deletePin, savePin } from '../../storage/PinStore'
+import {
+  deletePin,
+  savePin,
+  deleteContacts,
+  deleteKeys,
+} from '../../storage/MainStorage'
 import {
   addNextWallet,
   creteKMS,
   deleteCache,
-  deleteKeys,
   loadExistingWallets,
 } from '../operations'
 import { createRIFWalletFactory, networkId } from '../setup'
@@ -46,7 +49,7 @@ export const useKeyManagementSystem = (onRequest: OnRequest) => {
     setState({ ...state, ...noKeysState })
   }
 
-  const resetKeysAndPin = async () => {
+  const resetKeysAndPin = () => {
     deleteKeys()
     deletePin()
     deleteContacts()
@@ -95,9 +98,9 @@ export const useKeyManagementSystem = (onRequest: OnRequest) => {
     return rifWallet
   }
 
-  const createPin = async (newPin: string) => {
+  const createPin = (newPin: string) => {
     setState({ ...state, loading: true })
-    await savePin(newPin)
+    savePin(newPin)
     setState({
       ...state,
       hasPin: true,
@@ -105,8 +108,8 @@ export const useKeyManagementSystem = (onRequest: OnRequest) => {
     })
   }
 
-  const editPin = async (newPin: string) => {
-    await savePin(newPin)
+  const editPin = (newPin: string) => {
+    savePin(newPin)
   }
 
   const addNewWallet = () => {

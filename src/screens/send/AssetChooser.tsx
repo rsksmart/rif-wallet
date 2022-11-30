@@ -1,32 +1,25 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { colors } from '../../styles'
 import { grid } from '../../styles'
-
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import { IAsset, IAssetChooser } from './types'
 import { TokenImage } from '../home/TokenImage'
 import SlideUpModal from '../../components/slideUpModal/SlideUpModal'
 import { balanceToString } from '../balances/BalancesScreen'
 import { TokenButton } from '../../components/button/TokenButton'
 import { getTokenColor } from '../home/tokenColor'
 
-interface Interface {
-  selectedToken: ITokenWithBalance
-  tokenList: ITokenWithBalance[]
-  handleTokenSelection: (token: ITokenWithBalance) => void
-}
-
-const AssetChooser: React.FC<Interface> = ({
-  selectedToken,
-  tokenList,
-  handleTokenSelection,
-}) => {
+const AssetChooser = ({
+  assetList,
+  selectedAsset,
+  onAssetSelected,
+}: IAssetChooser) => {
   const [showSelector, setShowSelector] = useState<boolean>(false)
   const [animateModal, setAnimateModal] = useState(false)
 
-  const handleToken = (token: ITokenWithBalance) => {
+  const handleAsset = (asset: IAsset) => () => {
     setAnimateModal(true)
-    handleTokenSelection(token)
+    onAssetSelected(asset)
   }
   const handleCloseModal = () => {
     setShowSelector(false)
@@ -42,29 +35,32 @@ const AssetChooser: React.FC<Interface> = ({
       <View style={{ ...grid.column12, ...styles.assetButton }}>
         <View style={styles.assetContainer}>
           <View style={styles.assetIcon}>
-            <TokenImage symbol={selectedToken.symbol} height={19} width={19} />
+            <TokenImage symbol={selectedAsset.symbol} height={19} width={19} />
           </View>
-          <Text style={styles.assetTitle}>{selectedToken.symbol}</Text>
+          <Text style={styles.assetTitle}>{selectedAsset.symbol}</Text>
         </View>
         <Text style={styles.selectLabel}>select</Text>
       </View>
-
       <SlideUpModal
         title={'select asset'}
         showSelector={showSelector}
         animateModal={animateModal}
         onModalClosed={handleCloseModal}
         onAnimateModal={handleAnimateModal}
+        isKeyboardVisible={false}
         backgroundColor={colors.darkPurple3}
         headerFontColor={colors.white}>
-        {tokenList.map((token: ITokenWithBalance) => (
-          <View key={token.symbol}>
+        {assetList.map((asset: IAsset) => (
+          <View key={asset.symbol}>
             <TokenButton
-              onPress={() => handleToken(token)}
-              title={token.symbol}
-              balance={balanceToString(token.balance, token.decimals)}
-              icon={<TokenImage symbol={token.symbol} />}
-              style={{ backgroundColor: getTokenColor(token.symbol) }}
+              onPress={handleAsset(asset)}
+              title={asset.symbol}
+              balance={balanceToString(
+                asset.balance.toString(),
+                asset.decimals,
+              )}
+              icon={<TokenImage symbol={asset.symbol} />}
+              style={{ backgroundColor: getTokenColor(asset.symbol) }}
             />
           </View>
         ))}

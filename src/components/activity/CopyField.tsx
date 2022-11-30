@@ -1,23 +1,24 @@
-import React from 'react'
-import Clipboard from '@react-native-community/clipboard'
+import { ReactNode } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import Clipboard from '@react-native-community/clipboard'
+
 import { CopyIcon } from '../icons'
 
-type ICopyField = {
+interface ICopyField {
   text: string
   textToCopy?: string | undefined
-  TextComp?: any
+  TextComp?: ReactNode
   iconSize?: number
   iconViewBox?: string
 }
 
-const CopyField: React.FC<ICopyField> = ({
+const CopyField = ({
   text,
   textToCopy = undefined,
   TextComp = Text,
   iconSize = 25,
   iconViewBox = undefined,
-}) => {
+}: ICopyField) => {
   const onCopy = (): null => {
     Clipboard.setString(textToCopy || text)
     return null

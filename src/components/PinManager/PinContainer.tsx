@@ -1,22 +1,19 @@
-import React, { useState } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import PinScreen from './PinScreen'
 import { PinContainerType } from './PinScreen/PinScreen'
 
-const PinContainer: React.FC<PinContainerType> = ({
+export const PinContainer = ({
   pinLength = 4,
   onPinSubmit,
   PinScreenComponent = PinScreen,
   resetKeysAndPin,
   resetEnabled,
-}) => {
-  const createPinArray = React.useCallback(
+}: PinContainerType) => {
+  const createPinArray = useCallback(
     length => Array.from({ length }, () => ''),
     [],
   )
-  const defaultPinArray = React.useMemo(
-    () => createPinArray(pinLength),
-    [pinLength],
-  )
+  const defaultPinArray = useMemo(() => createPinArray(pinLength), [pinLength])
   const [pin, setPin] = useState<Array<string>>(defaultPinArray)
   const [position, setPosition] = useState<number>(0)
   const [error, setError] = useState<string | null>(null)
@@ -39,12 +36,14 @@ const PinContainer: React.FC<PinContainerType> = ({
   }
 
   const onLastPinDigitAdded = (enteredPin: Array<string>) => {
-    const parsedPin = enteredPin.join('')
-    setError(null)
-    onPinSubmit(parsedPin).catch((errorProm: any) => {
+    try {
+      const parsedPin = enteredPin.join('')
+      setError(null)
+      onPinSubmit(parsedPin)
+    } catch (errorProm) {
       setError(errorProm.toString())
       onPinReset()
-    })
+    }
   }
 
   const onPinDigitDelete = () => {
@@ -62,10 +61,8 @@ const PinContainer: React.FC<PinContainerType> = ({
       onKeypadPress={onPinDigitAdd}
       onKeypadDelete={onPinDigitDelete}
       error={error}
-      resetEnabled={resetEnabled}
-      resetKeysAndPin={resetKeysAndPin}
+      resetEnabled={resetEnabled ? resetEnabled : false}
+      resetKeysAndPin={resetKeysAndPin ? resetKeysAndPin : () => {}}
     />
   )
 }
-
-export default PinContainer

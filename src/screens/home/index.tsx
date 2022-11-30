@@ -5,19 +5,25 @@ import { toChecksumAddress } from '../../components/address/lib'
 import { LoadingScreen } from '../../components/loading/LoadingScreen'
 import { useBitcoinCoreContext, useSelectedWallet } from '../../Context'
 import { useProfile } from '../../core/hooks/useProfile'
-import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { balanceToDisplay } from '../../lib/utils'
-import { NavigationProp } from '../../RootNavigation'
+import {
+  RootStackNavigationProp,
+  rootStackRouteNames,
+} from 'navigation/rootNavigator/types'
 import { colors } from '../../styles'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
 import PortfolioComponent from './PortfolioComponent'
 import SelectedTokenComponent from './SelectedTokenComponent'
 import SendReceiveButtonComponent from './SendReceiveButtonComponent'
 import { getTokenColor } from './tokenColor'
+import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
+import { useAppSelector } from 'store/storeHooks'
+import { selectUsdPrices } from 'store/slices/usdPricesSlice'
+import { selectBalances } from 'store/slices/balancesSlice/selectors'
 
 export type HomeScreenProps = {
-  navigation: NavigationProp
+  navigation: RootStackNavigationProp
   changeTopColor: (color: string) => void
 }
 
@@ -26,6 +32,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   changeTopColor,
 }) => {
   const { state } = useSocketsState()
+  const tokenBalances = useAppSelector(selectBalances)
+  const prices = useAppSelector(selectUsdPrices)
   const { networksMap } = useBitcoinCoreContext()
   const { selectedWalletIndex, wallet, chainId } = useSelectedWallet()
   const { profile } = useProfile()
@@ -35,12 +43,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   )
   const balances: Array<ITokenWithBalance | BitcoinNetwork> =
     React.useMemo(() => {
-      return [...Object.values(state.balances), ...Object.values(networksMap)]
-    }, [state.balances, networksMap])
+      return [...Object.values(tokenBalances), ...Object.values(networksMap)]
+    }, [tokenBalances, networksMap])
   // token or undefined
   const selected: ITokenWithBalance | BitcoinNetwork | undefined =
     selectedAddress
-      ? state.balances[selectedAddress] || networksMap[selectedAddress]
+      ? tokenBalances[selectedAddress] || networksMap[selectedAddress]
       : undefined
   const selectedColor = getTokenColor(selected ? selected.symbol : undefined)
   const backGroundColor = {
@@ -62,29 +70,32 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     }
     switch (screen) {
       case 'SEND':
-        return navigation.navigate('Send', {
+        return navigation.navigate(rootStackRouteNames.Send, {
           token: selected?.symbol,
           contractAddress: selected?.contractAddress,
-        } as any)
+        })
       case 'RECEIVE':
-        return navigation.navigate('Receive' as any)
+        return navigation.navigate(rootStackRouteNames.Receive)
       case 'FAUCET':
-        let address = wallet?.smartWallet.smartWalletContract.address
-        addBalance(toChecksumAddress(address, chainId))
+        const address = wallet?.smartWallet.smartWalletContract.address
+        address && addBalance(toChecksumAddress(address, chainId))
         return
     }
   }
 
   const handleBitcoinSendReceive = (screen: 'SEND' | 'RECEIVE' | 'FAUCET') => {
-    switch (screen) {
-      case 'RECEIVE':
-        return navigation.navigate('ReceiveBitcoin', {
-          network: selected,
-        } as any)
-      case 'SEND':
-        return navigation.navigate('SendBitcoin', {
-          network: selected,
-        } as any)
+    if (selected instanceof BitcoinNetwork) {
+      switch (screen) {
+        case 'RECEIVE':
+          return navigation.navigate(rootStackRouteNames.ReceiveBitcoin, {
+            network: selected,
+          })
+        case 'SEND':
+          return navigation.navigate(rootStackRouteNames.Send, {
+            token: selected?.symbol,
+            contractAddress: selected?.contractAddress,
+          })
+      }
     }
   }
 
@@ -150,7 +161,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             selectedAddress={selectedAddress}
             setSelected={setSelectedAddress}
             balances={balances}
-            prices={state.prices}
+            prices={prices}
           />
         )}
       </View>

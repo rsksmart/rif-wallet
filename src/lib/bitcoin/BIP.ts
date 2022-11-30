@@ -5,33 +5,41 @@ import AddressFactory from './AddressFactory'
 import { RifWalletServicesFetcher } from '../rifWalletServices/RifWalletServicesFetcher'
 import { rifWalletServicesFetcher as defaultFetcherInstance } from '../../core/setup'
 import getPaymentInstance from './getPaymentInstance'
+import {
+  NetworkInfoType,
+  BIP32Interface,
+  BIPOptionsType,
+  PaymentFactoryType,
+  IPayment,
+} from './types'
 
-const { fromSeed } = require('bip32')
+import { fromSeed } from 'bip32'
 
 export default class BIP {
   network: BitcoinNetwork
   PathDerivator: PathDerivator
   bipId: string
   bipNumber: number
-  bip32Root!: any
-  account!: any
-  accountPublicKey!: any
-  accountPrivateKey!: any
-  networkInfo!: any
+  bip32Root!: BIP32Interface
+  account!: BIP32Interface
+  accountPublicKey!: string
+  accountPrivateKey!: string
+  networkInfo!: NetworkInfoType
   AddressFactory!: AddressFactory
-  RifWalletServicesFetcherInstance: RifWalletServicesFetcher
+  RifWalletServicesFetcherInstance!: RifWalletServicesFetcher
   balance!: number
   btc!: number
   bipName: string
   paymentType: string
-  paymentInstance!: any
+  paymentFactory!: PaymentFactoryType
+  payment!: IPayment
+  options: BIPOptionsType
   constructor(
     networkInstance: BitcoinNetwork,
     bipId: string,
     seed: Buffer,
-    rifWalletServicesFetcherInstance = defaultFetcherInstance,
+    options: BIPOptionsType = {},
   ) {
-    this.RifWalletServicesFetcherInstance = rifWalletServicesFetcherInstance
     this.network = networkInstance
     this.bipId = bipId
     this.bipNumber = BIP_DATA[bipId].number
@@ -42,13 +50,19 @@ export default class BIP {
       this.network.coinTypeNumber,
       0,
     )
+    this.options = options
+    this.setOptions()
     this.setBIP32RootKey(seed)
     this.setAccount()
     this.setNetworkInfo()
     this.setPaymentInstance()
     this.setAddressFactory()
   }
-
+  setOptions() {
+    this.RifWalletServicesFetcherInstance =
+      this.options.fetcher || defaultFetcherInstance
+    this.paymentFactory = this.options.paymentFactory || getPaymentInstance
+  }
   setBIP32RootKey(seed: Buffer) {
     this.bip32Root = fromSeed(
       seed,
@@ -65,7 +79,7 @@ export default class BIP {
     this.networkInfo = COIN_BIPS[this.network.networkId][this.bipId]
   }
   setPaymentInstance() {
-    this.paymentInstance = getPaymentInstance(
+    this.payment = this.paymentFactory(
       this.paymentType,
       this.bip32Root,
       this.networkInfo,
@@ -74,6 +88,7 @@ export default class BIP {
   setAddressFactory() {
     this.AddressFactory = new AddressFactory(this.bipNumber, this.networkInfo)
   }
+
   getAddress(index = 0): string {
     const bip32Instance = this.bip32Root.derivePath(
       this.PathDerivator.getAddressDerivation(index),
@@ -101,25 +116,8 @@ export default class BIP {
       )
     return this.getAddress(index)
   }
-  async generatePayment(
-    amountToPay: number,
-    addressToPay: string,
-    unspentTransactions: Array<any>,
-    miningFee: number,
-  ) {
-    return this.paymentInstance.generateHexPayment(
-      amountToPay,
-      addressToPay,
-      unspentTransactions,
-      miningFee,
-    )
-  }
 
-  async sendTransaction(hexData: string) {
-    return this.RifWalletServicesFetcherInstance.sendTransactionHexData(hexData)
-  }
-
-  async fetchTransactions(pageSize: number = 10, pageNumber: number = 1) {
+  async fetchTransactions(pageSize = 10, pageNumber = 1) {
     return this.RifWalletServicesFetcherInstance.fetchXpubTransactions(
       this.accountPublicKey,
       pageSize,

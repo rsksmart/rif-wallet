@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import {
   StyleSheet,
@@ -8,22 +8,22 @@ import {
   TouchableOpacity,
   Keyboard,
 } from 'react-native'
-import { colors } from '../../../styles/colors'
-import { CheckIcon } from '../../../components/icons/CheckIcon'
-import DeleteIcon from '../../../components/icons/DeleteIcon'
+import { colors } from 'src/styles/colors'
+import { CheckIcon } from 'src/components/icons/CheckIcon'
+import { DeleteIcon } from 'src/components/icons'
 import { sharedMnemonicStyles } from './styles'
 import { wordlists } from 'bip39'
 
-type Props = {
+interface Props {
   wordIndex: number
   expectedWord?: string
-  onWordSelected: any
+  onWordSelected: (word: string, index: number) => void
 }
-export const WordSelector: React.FC<Props> = ({
+export const WordSelector = ({
   wordIndex,
   expectedWord,
   onWordSelected,
-}) => {
+}: Props) => {
   const [userInput, setUserInput] = useState('')
   const [isMatch, setIsMatch] = useState(false)
   const [options, setOptions] = useState<string[]>([])

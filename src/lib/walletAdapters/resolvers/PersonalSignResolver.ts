@@ -9,7 +9,8 @@ export class PersonalSignResolver implements IResolver {
     this.signer = signer
   }
 
-  async resolve(params: any[]) {
+  async resolve(params: string[]) {
+    // TODO: is this correct?
     let message = params[0]
 
     try {

@@ -1,103 +1,99 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { StyleSheet, ScrollView, Text } from 'react-native'
-import { BigNumber, utils, ContractTransaction } from 'ethers'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
 import {
-  convertToERC20Token,
-  makeRBTCToken,
-} from '../../lib/token/tokenMetadata'
-import { ScreenProps } from '../../RootNavigation'
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
 import { ScreenWithWallet } from '../types'
-import TransactionInfo, { transactionInfo } from './TransactionInfo'
+import { TransactionInfo } from './TransactionInfo'
 import { colors } from '../../styles'
-import TransactionForm from './TransactionForm'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import { TransactionForm } from './TransactionForm'
 import WalletNotDeployedView from './WalletNotDeployedModal'
+import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
+import {
+  usePaymentExecutor,
+  PaymentExecutorContext,
+} from './usePaymentExecutor'
+import { useFetchBitcoinNetworksAndTokens } from './useFetchBitcoinNetworksAndTokens'
+import { MixedTokenAndNetworkType } from './types'
+import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { selectUsdPrices } from 'store/slices/usdPricesSlice'
+import { useAppSelector } from 'store/storeHooks'
+import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
 
-export const SendScreen: React.FC<ScreenProps<'Send'> & ScreenWithWallet> = ({
+export const SendScreen = ({
   route,
   wallet,
   isWalletDeployed,
   navigation,
-}) => {
+}: RootStackScreenProps<rootStackRouteNames.Send> & ScreenWithWallet) => {
+  const assets =
+    useFetchBitcoinNetworksAndTokens() as unknown as MixedTokenAndNetworkType[]
+
   const { state } = useSocketsState()
+  const tokenBalances = useAppSelector(selectBalances)
+  const prices = useAppSelector(selectUsdPrices)
   const contractAddress =
-    route.params?.contractAddress || Object.keys(state.balances)[0]
-  const [currentTransaction, setCurrentTransaction] =
-    useState<transactionInfo | null>(null)
-  const [error, setError] = useState<Error>()
+    route.params?.contractAddress || Object.keys(tokenBalances)[0]
+
   const [chainId, setChainId] = useState<number>(31)
+
+  const {
+    currentTransaction,
+    error,
+    executePayment,
+    setUtxos,
+    setBitcoinBalance,
+  } = usePaymentExecutor()
 
   useEffect(() => {
     wallet.getChainId().then(setChainId)
   }, [wallet])
 
-  const transfer = (token: ITokenWithBalance, amount: string, to: string) => {
-    setError(undefined)
-    setCurrentTransaction({ status: 'USER_CONFIRM' })
-
-    // handle both ERC20 tokens and the native token (gas)
-    const transferMethod =
-      token.symbol === 'TRBTC'
-        ? makeRBTCToken(wallet, chainId)
-        : convertToERC20Token(token, {
-            signer: wallet,
-            chainId,
-          })
-
-    transferMethod.decimals().then((decimals: number) => {
-      const tokenAmount = BigNumber.from(utils.parseUnits(amount, decimals))
-
-      transferMethod
-        .transfer(to.toLowerCase(), tokenAmount)
-        .then((txPending: ContractTransaction) => {
-          const current: transactionInfo = {
-            to,
-            value: amount,
-            symbol: transferMethod.symbol,
-            hash: txPending.hash,
-            status: 'PENDING',
-          }
-          setCurrentTransaction(current)
-
-          txPending
-            .wait()
-            .then(() =>
-              setCurrentTransaction({ ...current, status: 'SUCCESS' }),
-            )
-            .catch(() =>
-              setCurrentTransaction({ ...current, status: 'FAILED' }),
-            )
-        })
-        .catch((err: any) => {
-          setError(err)
-          setCurrentTransaction(null)
-        })
+  const onExecuteTransfer = (
+    token: ITokenWithBalance | BitcoinNetwork,
+    amount: string,
+    to: string,
+  ) => {
+    executePayment({
+      token,
+      amount,
+      to,
+      wallet,
+      chainId,
     })
   }
 
   const onDeployWalletNavigate = () =>
-    navigation.navigate('ManuallyDeployScreen' as any)
+    navigation.navigate(rootStackRouteNames.ManuallyDeployScreen)
+
   return (
     <ScrollView style={styles.parent}>
       {!isWalletDeployed && (
         <WalletNotDeployedView onDeployWalletPress={onDeployWalletNavigate} />
       )}
       {!currentTransaction ? (
-        <TransactionForm
-          onConfirm={transfer}
-          tokenList={Object.values(state.balances)}
-          tokenPrices={state.prices}
-          chainId={chainId}
-          initialValues={{
-            recipient: route.params?.to,
-            amount: '0',
-            asset: route.params?.contractAddress
-              ? state.balances[route.params.contractAddress]
-              : state.balances[contractAddress],
-          }}
-          transactions={state.transactions.activityTransactions}
-        />
+        <PaymentExecutorContext.Provider
+          value={{
+            setUtxosGlobal: setUtxos,
+            setBitcoinBalanceGlobal: setBitcoinBalance,
+          }}>
+          <TransactionForm
+            onConfirm={onExecuteTransfer}
+            tokenList={assets}
+            tokenPrices={prices}
+            chainId={chainId}
+            initialValues={{
+              recipient: route.params?.to,
+              amount: '0',
+              asset: route.params?.contractAddress
+                ? tokenBalances[route.params.contractAddress]
+                : tokenBalances[contractAddress],
+            }}
+            transactions={state.transactions.activityTransactions}
+          />
+        </PaymentExecutorContext.Provider>
       ) : (
         <TransactionInfo transaction={currentTransaction} />
       )}

@@ -7,7 +7,7 @@ import { SmartWalletFactory } from './SmartWalletFactory'
 import { SmartWallet } from './SmartWallet'
 import { filterTxOptions } from './filterTxOptions'
 
-type IRequest<Type, Payload, ReturnType, ConfirmArgs> = {
+export type IRequest<Type, Payload, ReturnType, ConfirmArgs> = {
   type: Type,
   payload: Payload
   returnType: ReturnType
@@ -151,7 +151,7 @@ export class RIFWallet extends Signer implements TypedDataSigner {
       ))
   }
 
-  connect = (provider: Provider): Signer => {
+  connect = (_: Provider): Signer => {
     throw new Error('Method not implemented')
   }
 }

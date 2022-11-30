@@ -1,28 +1,30 @@
-import React, { useState, useEffect } from 'react'
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
+import { useEffect, useState } from 'react'
 import * as Progress from 'react-native-progress'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
-import { View, Dimensions, Image, TouchableOpacity } from 'react-native'
-import { colors } from '../../styles'
+import { Dimensions, TouchableOpacity, View } from 'react-native'
+import { colors } from 'src/styles'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
-import { PurpleButton } from '../../components/button/ButtonVariations'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
 
-import { ScreenProps } from '../../RootNavigation'
-import { ScreenWithWallet } from '../types'
 import { MediumText } from '../../components'
+import { AvatarIcon } from '../../components/icons/AvatarIcon'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
+import { ScreenWithWallet } from '../types'
 import addresses from './addresses.json'
 import TitleStatus from './TitleStatus'
 
-type Props = {
-  route: any
-}
+type Props = RootStackScreenProps<rootStackRouteNames.RequestDomain> &
+  ScreenWithWallet
 
-export const RequestDomainScreen: React.FC<
-  ScreenProps<'RequestDomain'> & ScreenWithWallet & Props
-> = ({ wallet, navigation, route }) => {
+export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
   const { alias, duration } = route.params
+  const fullAlias = alias + '.rsk'
 
   const rskRegistrar = new RSKRegistrar(
     addresses.rskOwnerAddress,
@@ -49,8 +51,7 @@ export const RequestDomainScreen: React.FC<
         setProgress(prev => prev + 0.009)
         if (ready) {
           setProcessing(false)
-          navigation.navigate('BuyDomain', {
-            navigation,
+          navigation.navigate(rootStackRouteNames.BuyDomain, {
             alias,
             domainSecret: secret,
             duration,
@@ -63,9 +64,9 @@ export const RequestDomainScreen: React.FC<
       }, 1000)
       await makeCommitmentTransaction.wait()
       setCommitToRegisterInfo('Transaction confirmed. Please wait...')
-    } catch (e: any) {
+    } catch (e: unknown) {
       setProcessing(false)
-      setCommitToRegisterInfo(e.message)
+      setCommitToRegisterInfo(e?.message || '')
       setCommitToRegisterInfo2('')
     }
   }
@@ -75,7 +76,6 @@ export const RequestDomainScreen: React.FC<
   return (
     <>
       <View style={rnsManagerStyles.profileHeader}>
-        {/*@ts-ignore*/}
         <TouchableOpacity onPress={() => navigation.navigate('SearchDomain')}>
           <View style={rnsManagerStyles.backButton}>
             <MaterialIcon name="west" color="white" size={10} />
@@ -92,13 +92,10 @@ export const RequestDomainScreen: React.FC<
         />
         <View style={rnsManagerStyles.marginBottom}>
           <View style={rnsManagerStyles.profileImageContainer}>
-            <Image
-              style={rnsManagerStyles.profileImage}
-              source={require('../../images/image_place_holder.jpeg')}
-            />
+            <AvatarIcon value={fullAlias} size={80} />
             <View>
               <MediumText style={rnsManagerStyles.profileDisplayAlias}>
-                {alias}.rsk
+                {fullAlias}
               </MediumText>
               <Progress.Bar
                 progress={progress}
@@ -118,7 +115,7 @@ export const RequestDomainScreen: React.FC<
         </View>
 
         <View style={rnsManagerStyles.bottomContainer}>
-          <PurpleButton
+          <PrimaryButton
             onPress={() => commitToRegister()}
             accessibilityLabel="request"
             title={'request'}

@@ -30,7 +30,7 @@ export const Address: React.FC<{ chainId?: number; testID?: string }> = ({
     chainId,
   )
 
-  const explorerUrl = explorerAddressUrlByChainId[chainId]!
+  const explorerUrl = explorerAddressUrlByChainId[chainId]
 
   return (
     <Paragraph>

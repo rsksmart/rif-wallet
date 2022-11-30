@@ -1,31 +1,34 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
-import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
-import { colors } from '../../styles'
-import { PurpleButton } from '../../components/button/ButtonVariations'
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { colors } from 'src/styles'
 
 import { rnsManagerStyles } from './rnsManagerStyles'
 
-import { ScreenProps } from '../../RootNavigation'
-import { ScreenWithWallet } from '../types'
-import DomainLookUp from '../../screens/rnsManager/DomainLookUp'
 import { MediumText } from '../../components'
+import { AvatarIcon } from '../../components/icons/AvatarIcon'
+import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
+import DomainLookUp from '../../screens/rnsManager/DomainLookUp'
+import { ScreenWithWallet } from '../types'
 import TitleStatus from './TitleStatus'
 
-type Props = {
-  route: any
-}
-export const SearchDomainScreen: React.FC<
-  ScreenProps<'SearchDomain'> & ScreenWithWallet & Props
-> = ({ wallet, navigation }) => {
-  const [domainToLookUp, setDomainToLookUp] = useState<string>('')
+type Props = RootStackScreenProps<rootStackRouteNames.SearchDomain> &
+  ScreenWithWallet
 
-  useState<boolean>(false)
+export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
+  const [domainToLookUp, setDomainToLookUp] = useState<string>('')
+  const [validDomain, setValidDomain] = useState<boolean>(false)
   const [selectedYears, setSelectedYears] = useState<number>(2)
   const [selectedDomainPrice, setSelectedDomainPrice] = useState<string>('2')
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(true)
 
-  const calculatePrice = async (domain: string, years: number) => {
+  const calculatePrice = async (_: string, years: number) => {
     //TODO: re enable this later
     /*const price = await rskRegistrar.price(domain, BigNumber.from(years))
     return utils.formatUnits(price, 18)*/
@@ -36,9 +39,12 @@ export const SearchDomainScreen: React.FC<
     }
   }
 
-  const handleDomainAvailable = async (domain: string) => {
-    const price = await calculatePrice(domain, selectedYears)
-    setSelectedDomainPrice(price + '')
+  const handleDomainAvailable = async (domain: string, valid: boolean) => {
+    setValidDomain(valid)
+    if (valid) {
+      const price = await calculatePrice(domain, selectedYears)
+      setSelectedDomainPrice(price + '')
+    }
   }
   const handleYearsChange = async (years: number) => {
     setSelectedYears(years)
@@ -49,10 +55,9 @@ export const SearchDomainScreen: React.FC<
   return (
     <>
       <View style={rnsManagerStyles.profileHeader}>
-        {/*@ts-ignore*/}
         <TouchableOpacity onPress={() => navigation.navigate('Home')}>
           <View style={rnsManagerStyles.backButton}>
-            <MaterialIcon name="west" color="white" size={10} />
+            <MaterialIcon name="west" color={colors.lightPurple} size={10} />
           </View>
         </TouchableOpacity>
       </View>
@@ -63,15 +68,20 @@ export const SearchDomainScreen: React.FC<
           progress={0.25}
           progressText={'1/4'}
         />
+
         <View style={rnsManagerStyles.marginBottom}>
           <View style={rnsManagerStyles.profileImageContainer}>
-            <Image
-              style={rnsManagerStyles.profileImage}
-              source={require('../../images/image_place_holder.jpeg')}
-            />
+            {domainToLookUp.length >= 5 ? (
+              <AvatarIcon value={domainToLookUp + '.rsk'} size={80} />
+            ) : (
+              <Image
+                style={rnsManagerStyles.profileImage}
+                source={require('../../images/image_place_holder.jpeg')}
+              />
+            )}
             <View>
               <MediumText style={rnsManagerStyles.profileDisplayAlias}>
-                {domainToLookUp !== '' ? domainToLookUp : 'alias name'}
+                {domainToLookUp !== '' ? domainToLookUp + '.rsk' : 'alias name'}
               </MediumText>
             </View>
           </View>
@@ -86,21 +96,9 @@ export const SearchDomainScreen: React.FC<
           />
         </View>
         <View style={styles.flexContainer}>
-          <View style={styles.priceContainer}>
-            <MediumText
-              style={
-                styles.priceText
-              }>{`${selectedYears} years ${selectedDomainPrice} rif`}</MediumText>
-          </View>
-          <TouchableOpacity
-            onPress={() => handleYearsChange(selectedYears + 1)}
-            style={styles.addIcon}>
-            <MaterialIcon
-              name="add"
-              color={colors.background.darkBlue}
-              size={20}
-            />
-          </TouchableOpacity>
+          <MediumText style={styles.priceText}>
+            {`${selectedYears} years ${selectedDomainPrice} rif`}
+          </MediumText>
           {selectedYears > 1 && (
             <TouchableOpacity
               onPress={() => handleYearsChange(selectedYears - 1)}
@@ -112,13 +110,22 @@ export const SearchDomainScreen: React.FC<
               />
             </TouchableOpacity>
           )}
+          <TouchableOpacity
+            onPress={() => handleYearsChange(selectedYears + 1)}
+            style={styles.addIcon}>
+            <MaterialIcon
+              name="add"
+              color={colors.background.darkBlue}
+              size={20}
+            />
+          </TouchableOpacity>
         </View>
 
         <View style={rnsManagerStyles.bottomContainer}>
-          <PurpleButton
+          <PrimaryButton
+            disabled={!validDomain}
             onPress={() =>
-              navigation.navigate('RequestDomain', {
-                navigation,
+              navigation.navigate(rootStackRouteNames.RequestDomain, {
                 alias: domainToLookUp.replace('.rsk', ''),
                 duration: selectedYears,
               })
@@ -128,6 +135,14 @@ export const SearchDomainScreen: React.FC<
           />
         </View>
       </View>
+      <ConfirmationModal
+        isVisible={isModalVisible}
+        title="2 step process"
+        description={`Registering a username requires you to make two transactions in RIF. First transaction is requesting the username. Second transaction is the actual purchase of the username.
+          \nWe are working hard on improving this experience for you!`}
+        okText="Ok, thank you!"
+        onOk={() => setIsModalVisible(false)}
+      />
     </>
   )
 }
@@ -135,28 +150,27 @@ export const SearchDomainScreen: React.FC<
 const styles = StyleSheet.create({
   flexContainer: {
     flexDirection: 'row',
-  },
-  priceContainer: {
     backgroundColor: colors.background.secondary,
+    borderWidth: 1,
     borderRadius: 15,
-    width: '100%',
-    padding: 15,
+    paddingVertical: 12,
+    alignItems: 'center',
   },
   priceText: {
-    color: 'white',
-  },
-  addIcon: {
-    right: 60,
-    top: 15,
-    backgroundColor: 'gray',
-    height: 20,
-    borderRadius: 20,
+    flex: 1,
+    width: '100%',
+    color: colors.lightPurple,
+    marginLeft: 15,
   },
   minusIcon: {
-    right: 50,
-    top: 15,
     backgroundColor: 'gray',
-    height: 20,
     borderRadius: 20,
+    margin: 5,
+  },
+  addIcon: {
+    backgroundColor: 'gray',
+    borderRadius: 20,
+    margin: 5,
+    marginRight: 10,
   },
 })

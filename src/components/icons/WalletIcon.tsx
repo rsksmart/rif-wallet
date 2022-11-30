@@ -1,12 +1,7 @@
-import React from 'react'
 import Svg, { Path, G } from 'react-native-svg'
-import { SVGIconInterface } from '.'
+import { SVGIconInterface } from './index'
 
-export const WalletIcon: React.FC<SVGIconInterface> = ({
-  height,
-  width,
-  style,
-}) => (
+export const WalletIcon = ({ height, width, style }: SVGIconInterface) => (
   <Svg
     x="0px"
     y="0px"

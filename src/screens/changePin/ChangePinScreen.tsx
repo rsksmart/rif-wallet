@@ -1,16 +1,20 @@
-import React, { useState, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { PinManager } from '../../components/PinManager'
-import { ScreenProps } from '../../RootNavigation'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
 import { TouchableOpacity, View, StyleSheet } from 'react-native'
 import { Arrow } from '../../components/icons'
 import { MediumText } from '../../components'
 
-type ChangePinProps = {
-  editPin: any
+interface ChangePinProps {
+  editPin: (pin: string) => void
 }
-const ChangePinScreen: React.FC<
-  ScreenProps<'ChangePinScreen'> & ChangePinProps
-> = ({ editPin, navigation }) => {
+export const ChangePinScreen = ({
+  editPin,
+  navigation,
+}: RootStackScreenProps<'ChangePinScreen'> & ChangePinProps) => {
   const [currentStep, setCurrentStep] = useState(1)
 
   const pinSteps = useRef({
@@ -18,7 +22,6 @@ const ChangePinScreen: React.FC<
     confirmPin: '',
   })
   const isSubmitting = useRef(false)
-  const [confirmPinTitle, setConfirmPinTitle] = useState('Confirm new PIN')
   const [pinError, setPinError] = useState('')
   const [resetPin, setResetPin] = useState(0)
 
@@ -26,13 +29,8 @@ const ChangePinScreen: React.FC<
     if (!isSubmitting.current) {
       isSubmitting.current = true
       try {
-        editPin(pinSteps.current.pin).then(() => {
-          setConfirmPinTitle('PIN confirmed')
-
-          setTimeout(() => {
-            navigation.goBack()
-          }, 2500)
-        })
+        editPin(pinSteps.current.pin)
+        navigation.navigate(rootStackRouteNames.Home)
       } catch (error) {
         setPinError(
           'An error occurred while saving the new PIN. Please try again.',
@@ -70,7 +68,7 @@ const ChangePinScreen: React.FC<
     }
     return null
   }
-  const stepper: { [key: number]: any } = {
+  const stepper: { [key: number]: JSX.Element } = {
     1: <PinManager title="Enter new PIN" handleSubmit={onPinChange(1)} />,
     2: (
       <>
@@ -80,7 +78,7 @@ const ChangePinScreen: React.FC<
         <View style={styles.pinView}>
           <PinManager
             key={resetPin}
-            title={confirmPinTitle}
+            title="Confirm new PIN"
             handleSubmit={onPinChange(2)}
           />
         </View>

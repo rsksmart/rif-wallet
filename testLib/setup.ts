@@ -5,8 +5,8 @@ import { createNewTestWallet } from './utils'
 export const setupTest = async (
   privateKey?: string,
 ): Promise<{
-  navigation: any // { navigate: ReturnType<typeof jest.fn> }
-  route: any
+  navigation: { navigate: () => ReturnType<typeof jest.fn> }
+  route: object
   rifWallet: RIFWallet
 }> => {
   const smartWalletFactory = await deploySmartWalletFactory()
@@ -24,9 +24,8 @@ export const setupTest = async (
   return {
     rifWallet,
     navigation: {
-      // eslint-disable-next-line no-undef
       navigate: jest.fn(),
     },
-    route: {} as any,
+    route: {},
   }
 }

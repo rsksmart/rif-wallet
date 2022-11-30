@@ -7,7 +7,7 @@ import { RBTCEnhanceStrategy } from './strategies/RBTCEnhanceStrategy'
 export interface IEnhancedResult {
   from?: string
   to?: string
-  [key: string]: any
+  symbol?: string
 }
 
 export interface IEnhanceStrategy {

@@ -1,21 +1,24 @@
 import { fireEvent, render } from '@testing-library/react-native'
-import React from 'react'
 import { act } from 'react-test-renderer'
-import * as hooks from '../../subscriptions/RIFSockets'
-import { ContactsContext, IContact } from './ContactsContext'
+import {
+  ContactsContext,
+  ContactsContextInterface,
+  IContact,
+} from './ContactsContext'
 import { ContactsScreen } from './ContactsScreen'
+import { ReduxWrapper } from '../../../testLib/ReduxWrapper'
 
 jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: any) => key }),
+  useTranslation: () => ({ t: (key: string) => key }),
 }))
 
-jest
-  .spyOn(hooks, 'useSocketsState')
-  .mockImplementation(() => ({ state: { balances: [{}] } } as any))
-
 describe('ContactsScreen', () => {
-  const navigationMock = { navigate: jest.fn() } as any
-  let contactsContextMock: any
+  const navigation = {
+    navigation: jest.fn(),
+    route: jest.fn(),
+  }
+
+  let contactsContextMock: ContactsContextInterface
   const contactsMock: IContact[] = [
     {
       id: '1',
@@ -39,16 +42,25 @@ describe('ContactsScreen', () => {
 
   beforeEach(() => {
     contactsContextMock = {
-      contacts: [] as IContact[],
+      contacts: [],
       deleteContact: jest.fn(),
+      addContact: jest.fn(),
+      isLoading: false,
+      editContact: jest.fn(),
     }
   })
 
   test('renders correctly with empty contacts', () => {
     const { getByTestId } = render(
       <ContactsContext.Provider value={contactsContextMock}>
-        <ContactsScreen navigation={navigationMock} />
+        <ContactsScreen
+          navigation={navigation.navigation}
+          route={navigation.route}
+        />
       </ContactsContext.Provider>,
+      {
+        wrapper: ReduxWrapper,
+      },
     )
     expect(getByTestId('emptyView')).toBeTruthy()
   })
@@ -57,8 +69,12 @@ describe('ContactsScreen', () => {
     contactsContextMock.contacts = contactsMock
     const { getByText, getByTestId } = render(
       <ContactsContext.Provider value={contactsContextMock}>
-        <ContactsScreen navigation={navigationMock} />
+        <ContactsScreen
+          navigation={navigation.navigation}
+          route={navigation.route}
+        />
       </ContactsContext.Provider>,
+      { wrapper: ReduxWrapper },
     )
 
     expect(getByTestId('searchInput')).toBeTruthy()
@@ -71,8 +87,12 @@ describe('ContactsScreen', () => {
     contactsContextMock.contacts = contactsMock
     const { getByTestId, queryByText } = render(
       <ContactsContext.Provider value={contactsContextMock}>
-        <ContactsScreen navigation={navigationMock} />
+        <ContactsScreen
+          navigation={navigation.navigation}
+          route={navigation.route}
+        />
       </ContactsContext.Provider>,
+      { wrapper: ReduxWrapper },
     )
 
     const searchInput = getByTestId('searchInput')
@@ -89,8 +109,12 @@ describe('ContactsScreen', () => {
     contactsContextMock.contacts = contactsMock
     const { getByTestId, queryByText } = render(
       <ContactsContext.Provider value={contactsContextMock}>
-        <ContactsScreen navigation={navigationMock} />
+        <ContactsScreen
+          navigation={navigation.navigation}
+          route={navigation.route}
+        />
       </ContactsContext.Provider>,
+      { wrapper: ReduxWrapper },
     )
 
     const searchInput = getByTestId('searchInput')

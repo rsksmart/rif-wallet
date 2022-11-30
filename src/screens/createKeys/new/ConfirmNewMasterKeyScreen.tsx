@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import {
   StyleSheet,
   View,
@@ -8,7 +8,10 @@ import {
 } from 'react-native'
 import Carousel from 'react-native-snap-carousel'
 
-import { CreateKeysProps, ScreenProps } from '../types'
+import {
+  CreateKeysProps,
+  CreateKeysScreenProps,
+} from '../../../navigation/createKeysNavigator/types'
 import { Trans } from 'react-i18next'
 import { colors } from '../../../styles/colors'
 
@@ -17,16 +20,20 @@ import { SLIDER_WIDTH, WINDOW_WIDTH } from '../../../ux/slides/Dimensions'
 import { PaginationNavigator } from '../../../components/button/PaginationNavigator'
 import { WordSelector } from './WordSelector'
 import { sharedMnemonicStyles } from './styles'
-import { saveKeyVerificationReminder } from '../../../storage/KeyVerificationReminderStore'
+import { saveKeyVerificationReminder } from '../../../storage/MainStorage'
 
 interface ConfirmMasterKeyScreenProps {
   isKeyboardVisible: boolean
   createWallet: CreateKeysProps['createFirstWallet']
 }
 
-export const ConfirmNewMasterKeyScreen: React.FC<
-  ScreenProps<'ConfirmNewMasterKey'> & ConfirmMasterKeyScreenProps
-> = ({ route, navigation, createWallet, isKeyboardVisible }) => {
+export const ConfirmNewMasterKeyScreen = ({
+  route,
+  navigation,
+  createWallet,
+  isKeyboardVisible,
+}: CreateKeysScreenProps<'ConfirmNewMasterKey'> &
+  ConfirmMasterKeyScreenProps) => {
   const mnemonic = route.params.mnemonic
   const slidesIndexes = Array.from(
     { length: Math.ceil(mnemonic.split(' ').length / 3) },
@@ -36,7 +43,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
 
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
   const [selectedWords, setSelectedWords] = useState<string[]>([])
-  const [carousel, setCarousel] = useState<any>()
+  const [carousel, setCarousel] = useState<Carousel<number>>()
   const [error, setError] = useState<boolean>(false)
 
   const handleConfirmMnemonic = async () => {
@@ -44,7 +51,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
       return setError(true)
     }
     setError(false)
-    await saveKeyVerificationReminder(false)
+    saveKeyVerificationReminder(false)
     await createWallet(mnemonic)
   }
 
@@ -59,7 +66,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
     setError(false)
   }
 
-  const renderItem: React.FC<{ item: number }> = ({ item }) => {
+  const renderItem = ({ item }: { item: number }) => {
     const groupIndex = 3 * item
     return (
       <View>
@@ -129,8 +136,8 @@ export const ConfirmNewMasterKeyScreen: React.FC<
       {!isKeyboardVisible && (
         <View style={sharedMnemonicStyles.pagnationContainer}>
           <PaginationNavigator
-            onPrevious={() => carousel.snapToPrev()}
-            onNext={() => carousel.snapToNext()}
+            onPrevious={() => carousel?.snapToPrev()}
+            onNext={() => carousel?.snapToNext()}
             onComplete={handleConfirmMnemonic}
             title="confirm"
             currentIndex={selectedSlide}

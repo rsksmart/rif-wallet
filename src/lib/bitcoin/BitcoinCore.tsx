@@ -6,9 +6,9 @@ const NETWORKS = {
 
 class BitcoinCore {
   mnemonic: string
-  root: any
-  wallet: any
-  account: any
+  root: any // TODO: what is root?
+  wallet: any // TODO: what is wallet?
+  account: any // TODO: what is account?
   BIP84 = require('bip84')
   addressCursor = -1
   constructor(mnemonic: string) {

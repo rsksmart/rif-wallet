@@ -1,5 +1,5 @@
 import BIP from '../../lib/bitcoin/BIP'
-import React, { useState } from 'react'
+import { useRef, useState } from 'react'
 import { IBitcoinTransaction } from './types'
 import { BitcoinTransactionType } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { BigNumber, utils } from 'ethers'
@@ -35,7 +35,7 @@ const useBitcoinTransactionsHandler = ({
   const [transactions, setTransactions] = useState<Array<IBitcoinTransaction>>(
     [],
   )
-  const pageRef = React.useRef({
+  const pageRef = useRef({
     pageSize,
     page,
     totalPages: 1,

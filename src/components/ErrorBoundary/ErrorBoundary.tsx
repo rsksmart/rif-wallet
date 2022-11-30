@@ -1,19 +1,19 @@
-import React from 'react'
+import { Component } from 'react'
 import GlobalErrorHandlerView from '../GlobalErrorHandler/GlobalErrorHandlerView'
 
 interface IErrorBoundaryProps {
-  [key: string]: any
+  [key: string]: string
 }
 
 interface IErrorBoundaryState {
   hasError: boolean
   message: string | undefined
 }
-class ErrorBoundary extends React.Component<
+class ErrorBoundary extends Component<
   IErrorBoundaryProps,
   IErrorBoundaryState
 > {
-  constructor(props: any) {
+  constructor(props) {
     super(props)
     this.state = {
       hasError: false,
@@ -21,7 +21,7 @@ class ErrorBoundary extends React.Component<
     }
   }
 
-  static getDerivedStateFromError(error: any) {
+  static getDerivedStateFromError(error: Error) {
     return { hasError: true, message: error.toString() }
   }
 

@@ -1,17 +1,16 @@
-import React from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 
 import { DialButton } from '../button/DialButton'
 import { grid } from '../../styles'
 import { Arrow } from '../icons'
 
-type Props = {
+export interface KeypadComponentProps {
   onKeyPress: (value: string) => void
   onDelete: () => void
   onUnlock?: () => void
 }
 
-export const KeyPad: React.FC<Props> = ({ onDelete, onKeyPress }) => {
+export const KeyPad = ({ onDelete, onKeyPress }: KeypadComponentProps) => {
   return (
     <View style={{ ...grid.row, ...styles.root }}>
       {Array.from({ length: 9 }).map((_, index) => (

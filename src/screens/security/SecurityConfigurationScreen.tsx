@@ -1,26 +1,38 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { View, StyleSheet, Alert } from 'react-native'
-import { colors } from '../../styles'
-import { MediumText } from '../../components'
-import { ScreenProps } from '../../RootNavigation'
+
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
 import { useTranslation } from 'react-i18next'
-import ActiveButton from '../../components/button/ActiveButton'
+
+import { MediumText } from 'src/components'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { SecondaryButton } from 'src/components/button/SecondaryButton'
 import {
   getKeyVerificationReminder,
   hasKeyVerificationReminder,
   saveKeyVerificationReminder,
-} from '../../storage/KeyVerificationReminderStore'
+} from '../../storage/MainStorage'
+import { createKeysRouteNames } from 'src/navigation/createKeysNavigator'
+import { colors } from '../../styles'
 
-export type SecurityScreenProps = {
-  deleteKeys: () => Promise<any>
+export interface SecurityScreenProps {
+  deleteKeys: () => void
 }
-const SecurityConfigurationScreen: React.FC<
-  ScreenProps<'SecurityConfigurationScreen'> & SecurityScreenProps
-> = ({ navigation, deleteKeys }) => {
+
+export const SecurityConfigurationScreen = ({
+  navigation,
+  deleteKeys,
+}: RootStackScreenProps<rootStackRouteNames.SecurityConfigurationScreen> &
+  SecurityScreenProps) => {
   const { t } = useTranslation()
 
-  const revealMasterKey = () => navigation.navigate('ShowMnemonicScreen' as any)
-  const changePin = () => navigation.navigate('ChangePinScreen' as any)
+  const revealMasterKey = () =>
+    navigation.navigate(rootStackRouteNames.ShowMnemonicScreen)
+  const changePin = () =>
+    navigation.navigate(rootStackRouteNames.ChangePinScreen)
   const [showReminder, setShowReminder] = useState<boolean>(false)
 
   const handleDeleteKeys = () => {
@@ -34,20 +46,20 @@ const SecurityConfigurationScreen: React.FC<
         },
         {
           text: 'Delete',
-          onPress: () =>
-            deleteKeys().then(() => {
-              saveKeyVerificationReminder(false).then()
-              navigation.navigate('CreateKeysUX')
-            }),
+          onPress: () => {
+            deleteKeys()
+            saveKeyVerificationReminder(false)
+            navigation.navigate(rootStackRouteNames.CreateKeysUX)
+          },
         },
       ],
     )
   }
 
   async function checkReminder() {
-    const reminderIsSet = await hasKeyVerificationReminder()
+    const reminderIsSet = hasKeyVerificationReminder()
     if (reminderIsSet) {
-      const keyVerificationReminder = await getKeyVerificationReminder()
+      const keyVerificationReminder = getKeyVerificationReminder()
       setShowReminder(keyVerificationReminder)
     }
   }
@@ -61,26 +73,25 @@ const SecurityConfigurationScreen: React.FC<
         <MediumText style={[styles.masterText, styles.textLeftMargin]}>
           Manage master key
         </MediumText>
-        <ActiveButton
+        <PrimaryButton
           style={styles.buttonFirstStyle}
-          text="Reveal Master Key"
-          isActive
+          title="Reveal Master Key"
           onPress={revealMasterKey}
         />
         {showReminder && (
-          <ActiveButton
+          <SecondaryButton
             style={styles.buttonFirstStyle}
-            text={'Confirm Master Key'}
+            title="Confirm Master Key"
             onPress={() =>
-              navigation.navigate('CreateKeysUX', {
-                screen: 'SecurityExplanation',
+              navigation.navigate(rootStackRouteNames.CreateKeysUX, {
+                screen: createKeysRouteNames.SecurityExplanation,
               })
             }
           />
         )}
-        <ActiveButton
+        <SecondaryButton
           style={styles.buttonFirstStyle}
-          text="Delete Master Key"
+          title="Delete Master Key"
           onPress={handleDeleteKeys}
         />
       </View>
@@ -88,10 +99,9 @@ const SecurityConfigurationScreen: React.FC<
         <MediumText style={[styles.pinText, styles.textLeftMargin]}>
           Manage PIN
         </MediumText>
-        <ActiveButton
+        <SecondaryButton
           style={styles.buttonFirstStyle}
-          text="Change PIN"
-          isActive
+          title="Change PIN"
           onPress={changePin}
         />
       </View>
@@ -124,5 +134,3 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 })
-
-export default SecurityConfigurationScreen

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import {
   StyleSheet,
   View,
@@ -6,30 +6,40 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native'
-import { ScreenProps } from './types'
-import { colors } from '../../styles'
-import { SecuritySlide } from '../../ux/slides/SecuritySlide'
-
 import Carousel from 'react-native-snap-carousel'
-import { PaginationNavigator } from '../../components/button/PaginationNavigator'
 
-import { Arrow } from '../../components/icons'
-
+import {
+  createKeysRouteNames,
+  CreateKeysScreenProps,
+} from 'navigation/createKeysNavigator/types'
+import { SecuritySlide } from '../../ux/slides/SecuritySlide'
+import { PaginationNavigator } from 'components/button/PaginationNavigator'
+import { Arrow } from 'components/icons'
 import {
   WINDOW_WIDTH,
   WINDOW_HEIGHT,
   SLIDER_WIDTH,
   SLIDER_HEIGHT,
 } from '../../ux/slides/Dimensions'
+import { colors } from '../../styles'
 import { sharedMnemonicStyles } from './new/styles'
+import { CompositeScreenProps } from '@react-navigation/native'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'src/navigation/rootNavigator'
 
 const slidesIndexes = [0, 1, 2]
 
-export const SecurityExplanationScreen: React.FC<
-  ScreenProps<'SecurityExplanation'>
-> = ({ navigation }) => {
+type Props = CompositeScreenProps<
+  CreateKeysScreenProps<createKeysRouteNames.SecurityExplanation>,
+  RootStackScreenProps<rootStackRouteNames.CreateKeysUX>
+>
+
+export const SecurityExplanationScreen = ({ navigation }: Props) => {
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
-  const [carousel, setCarousel] = useState<any>()
+  const [carousel, setCarousel] = useState<Carousel<number>>()
+
   const renderItem = ({ item }: { item: number }) => {
     switch (item) {
       case 0:
@@ -74,6 +84,8 @@ export const SecurityExplanationScreen: React.FC<
             />
           ) as unknown as Image,
         })
+      default:
+        return null
     }
   }
 
@@ -93,7 +105,7 @@ export const SecurityExplanationScreen: React.FC<
         <Carousel
           inactiveSlideOpacity={0}
           removeClippedSubviews={false} //https://github.com/meliorence/react-native-snap-carousel/issues/238
-          ref={c => setCarousel(c)}
+          ref={c => c && setCarousel(c)}
           data={slidesIndexes}
           renderItem={renderItem}
           sliderWidth={WINDOW_WIDTH}
@@ -105,8 +117,8 @@ export const SecurityExplanationScreen: React.FC<
       </View>
       <View style={sharedMnemonicStyles.pagnationContainer}>
         <PaginationNavigator
-          onPrevious={() => carousel.snapToPrev()}
-          onNext={() => carousel.snapToNext()}
+          onPrevious={() => carousel?.snapToPrev()}
+          onNext={() => carousel?.snapToNext()}
           onComplete={() => navigation.navigate('NewMasterKey')}
           title="confirm"
           currentIndex={selectedSlide}

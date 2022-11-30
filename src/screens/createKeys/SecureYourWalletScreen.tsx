@@ -1,27 +1,26 @@
 import React from 'react'
-import { StyleSheet, View, Image, TouchableOpacity, Text } from 'react-native'
-import { ScreenProps } from './types'
-import { colors } from '../../styles'
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { CreateKeysScreenProps } from 'src/navigation/createKeysNavigator/types'
+import { colors } from 'src/styles'
 
-import { grid } from '../../styles'
-import { Arrow } from '../../components/icons'
+import { Arrow } from 'src/components/icons'
+import { grid } from 'src/styles'
 
-import { WINDOW_HEIGHT } from '../../ux/slides/Dimensions'
-import {
-  BlueButton,
-  DarkBlueButton,
-} from '../../components/button/ButtonVariations'
-import { RIFWallet } from '../../lib/core'
-import { saveKeyVerificationReminder } from '../../storage/KeyVerificationReminderStore'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { SecondaryButton } from 'src/components/button/SecondaryButton'
+import { RIFWallet } from 'src/lib/core'
+import { saveKeyVerificationReminder } from 'src/storage/MainStorage'
+import { WINDOW_HEIGHT } from 'src/ux/slides/Dimensions'
+
 type SecureYourWalletProps = {
   mnemonic: string
   createWallet: (mnemonic: string) => Promise<RIFWallet>
 }
 export const SecureYourWalletScreen: React.FC<
-  ScreenProps<'SecureYourWallet'> & SecureYourWalletProps
+  CreateKeysScreenProps<'SecureYourWallet'> & SecureYourWalletProps
 > = ({ navigation, createWallet, mnemonic }) => {
   const secureLater = async () => {
-    await saveKeyVerificationReminder(true)
+    saveKeyVerificationReminder(true)
     createWallet(mnemonic)
   }
   return (
@@ -54,17 +53,19 @@ export const SecureYourWalletScreen: React.FC<
       </View>
 
       <View style={{ ...grid.row, ...styles.section }}>
-        <BlueButton
+        <PrimaryButton
           onPress={() => navigation.navigate('SecurityExplanation')}
           accessibilityLabel="secureNow"
           title={'secure now'}
+          style={styles.button}
         />
       </View>
       <View style={{ ...grid.row, ...styles.section }}>
-        <DarkBlueButton
+        <SecondaryButton
           onPress={secureLater}
           accessibilityLabel="secureLater"
           title={'secure later'}
+          style={styles.button}
         />
       </View>
       {/*
@@ -125,5 +126,8 @@ const styles = StyleSheet.create({
   section: {
     alignSelf: 'center',
     marginVertical: 5,
+  },
+  button: {
+    width: 150,
   },
 })

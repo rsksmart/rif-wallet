@@ -1,54 +1,46 @@
-import React from 'react'
-import { StyleSheet, View, TouchableOpacity, Image } from 'react-native'
-import { colors } from '../../styles'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import { IProfileStore } from '../../storage/ProfileStore'
+import { navigationContainerRef } from 'src/core/Core'
+import { rootStackRouteNames } from 'src/navigation/rootNavigator'
 import { RegularText } from '../../components'
+import { AvatarIcon } from '../../components/icons/AvatarIcon'
+import { IProfileStore } from '../../storage/MainStorage'
+import { colors } from '../../styles'
 
-type Props = {
-  navigation: any
+interface Props {
   profile: IProfileStore
   profileCreated: boolean
 }
 
-export const ProfileHandler: React.FC<Props> = ({
-  navigation,
-  profile,
-  profileCreated,
-}) => {
+export const ProfileHandler = ({ profile, profileCreated }: Props) => {
   return (
     <TouchableOpacity
       style={styles.profileHandler}
+      accessibilityLabel="profile"
       onPress={() =>
-        navigation.navigate(
-          profileCreated ? 'ProfileDetailsScreen' : 'ProfileCreateScreen',
-          {
-            navigation,
-          },
+        navigationContainerRef.navigate(
+          profileCreated
+            ? rootStackRouteNames.ProfileDetailsScreen
+            : rootStackRouteNames.ProfileCreateScreen,
+          profileCreated ? undefined : { editProfile: true },
         )
       }>
-      {!profileCreated && (
+      {profile?.alias ? (
+        <>
+          <AvatarIcon value={profile.alias + '.rsk'} size={30} />
+          <View>
+            <RegularText style={styles.profileName}>
+              {profile.alias}
+            </RegularText>
+          </View>
+        </>
+      ) : (
         <>
           <View style={styles.profileHandlerImage}>
             <MaterialIcon name="person" color="gray" size={20} />
           </View>
           <View style={styles.profileAddImage}>
             <MaterialIcon name="add" color="gray" size={15} />
-          </View>
-        </>
-      )}
-      {profileCreated && (
-        <>
-          <Image
-            style={styles.profileAvatar}
-            source={require('../../images/avataaars.png')}
-          />
-          <View>
-            {profile?.alias !== '' && (
-              <RegularText style={styles.profileName}>
-                {profile.alias}
-              </RegularText>
-            )}
           </View>
         </>
       )}

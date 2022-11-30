@@ -1,10 +1,9 @@
-import React from 'react'
 import { View, StyleSheet } from 'react-native'
 import Icons from 'react-native-vector-icons/AntDesign'
 import { RegularText } from '../../components'
 import { colors } from '../../styles'
 
-export const ThankYouComponent: React.FC<{}> = () => (
+export const ThankYouComponent = () => (
   <View style={styles.container}>
     <Icons name="checkcircle" size={60} color={colors.green} />
     <RegularText style={styles.text}>Thank You!</RegularText>

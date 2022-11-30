@@ -8,7 +8,10 @@ import addresses from './addresses.json'
 
 import { ScreenWithWallet } from '../types'
 import { Button } from '../../components'
-import { ScreenProps } from '../../RootNavigation'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
 import { RSKRegistrar, AddrResolver } from '@rsksmart/rns-sdk'
 import { addDomain } from '../../storage/DomainsStore'
 import { getTokenColorWithOpacity } from '../home/tokenColor'
@@ -16,7 +19,7 @@ import { formatUnits } from 'ethers/lib/utils'
 import { ScrollView } from 'react-native-gesture-handler'
 
 export const RegisterDomainScreen: React.FC<
-  ScreenProps<'RegisterDomain'> & ScreenWithWallet
+  RootStackScreenProps<'RegisterDomain'> & ScreenWithWallet
 > = ({ wallet, route, navigation }) => {
   const { selectedDomain, years } = route.params
 
@@ -78,9 +81,8 @@ export const RegisterDomainScreen: React.FC<
           clearInterval(intervalId)
         }
       }, 5000)
-      // @ts-ignore
-    } catch (e: any) {
-      setError(e.message)
+    } catch (e) {
+      setError(e.message || '')
     }
   }
 
@@ -88,29 +90,30 @@ export const RegisterDomainScreen: React.FC<
     try {
       const durationToRegister = BigNumber.from(duration)
 
-      const tx = await rskRegistrar.register(
-        domain,
-        wallet.smartWallet.address,
-        domainSecret,
-        durationToRegister,
-        domainPrice!,
-      )
+      if (domainPrice) {
+        const tx = await rskRegistrar.register(
+          domain,
+          wallet.smartWallet.address,
+          domainSecret,
+          durationToRegister,
+          domainPrice,
+        )
 
-      setRegisterDomainInfo('Transaction sent. Please wait...')
+        setRegisterDomainInfo('Transaction sent. Please wait...')
 
-      await tx.wait()
+        await tx.wait()
 
-      await addDomain(wallet.smartWalletAddress, `${selectedDomain}.rsk`)
+        await addDomain(wallet.smartWalletAddress, `${selectedDomain}.rsk`)
 
-      const address = await addrResolver.addr(`${selectedDomain}.rsk`)
-      console.log({ address })
-      setResolvingAddress(address)
+        const address = await addrResolver.addr(`${selectedDomain}.rsk`)
+        console.log({ address })
+        setResolvingAddress(address)
 
-      setRegisterDomainInfo('Registered!!')
-      setRegisterReady(true)
-      // @ts-ignore
-    } catch (e: any) {
-      setError(e.message)
+        setRegisterDomainInfo('Registered!!')
+        setRegisterReady(true)
+      }
+    } catch (e) {
+      setError(e.message || '')
     }
   }
 
@@ -173,8 +176,7 @@ export const RegisterDomainScreen: React.FC<
             <Text>Address: {resolvingAddress}</Text>
             <Button
               onPress={() => {
-                // @ts-ignore
-                navigation.navigate('Home')
+                navigation.navigate(rootStackRouteNames.Home)
               }}
               title={'Home'}
             />

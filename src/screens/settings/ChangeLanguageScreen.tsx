@@ -1,4 +1,3 @@
-import React from 'react'
 import { View, StyleSheet } from 'react-native'
 import { RegularText } from '../../components'
 import { colors } from '../../styles'
@@ -9,17 +8,17 @@ export const ChangeLanguageScreen = () => {
   return (
     <View style={styles.container}>
       <View>
-        <RegularText>Select language</RegularText>
+        <RegularText style={styles.label}>Select language</RegularText>
         <View style={styles.languageView}>
-          <ActiveButton text="ENG" />
-          <ActiveButton text="ESP" />
+          <ActiveButton isActive title="ENG" />
+          <ActiveButton title="ESP" />
         </View>
       </View>
       <View style={styles.modeView}>
-        <RegularText>Mode</RegularText>
+        <RegularText style={styles.label}>Mode</RegularText>
         <View style={styles.languageView}>
-          <ActiveButton text="dark mode" />
-          <ActiveButton text="light mode" />
+          <ActiveButton isActive title="dark mode" />
+          <ActiveButton title="light mode" />
         </View>
       </View>
     </View>
@@ -29,9 +28,12 @@ export const ChangeLanguageScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background.light,
+    backgroundColor: colors.background.darkBlue,
     paddingTop: 10,
     paddingHorizontal: 40,
+  },
+  label: {
+    color: colors.lightPurple,
   },
   languageView: {
     flexDirection: 'row',

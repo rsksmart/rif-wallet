@@ -1,8 +1,7 @@
-import React from 'react'
 import Svg, { Path, SvgProps } from 'react-native-svg'
-import { SVGIconInterface } from '.'
+import { SVGIconInterface } from './index'
 
-export const ShareIcon: React.FC<SVGIconInterface> = (props: SvgProps) => {
+export const ShareIcon = (props: SvgProps & SVGIconInterface) => {
   const { width, height, color } = props
   return (
     <Svg width={width || 50} height={height || 50} fill={color || '#5D5E5E'}>

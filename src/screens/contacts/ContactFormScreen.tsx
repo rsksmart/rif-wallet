@@ -1,32 +1,43 @@
-import React, { useContext, useState } from 'react'
+import { CompositeScreenProps } from '@react-navigation/native'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
+import { useContext, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { AddressInput } from '../../components'
-import { BlueButton } from '../../components/button/ButtonVariations'
-import { NavigationProp, ScreenProps } from '../../RootNavigation'
-import { colors, grid } from '../../styles'
-import { fonts } from '../../styles/fonts'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { useSelectedWallet } from 'src/Context'
+import {
+  contactsStackRouteNames,
+  ContactsStackScreenProps,
+} from 'src/navigation/contactsNavigator'
+import { AddressInput } from 'src/components'
+import { colors, grid } from 'src/styles'
+import { fonts } from 'src/styles/fonts'
 import { setOpacity } from '../home/tokenColor'
 import { ContactsContext, IContact } from './ContactsContext'
 
-interface ContactFormScreenProps {
-  chainId: number
-  navigation: NavigationProp
-}
+export type ContactFormScreenProps = CompositeScreenProps<
+  ContactsStackScreenProps<contactsStackRouteNames.ContactForm>,
+  RootStackScreenProps<rootStackRouteNames.Contacts>
+>
 
-export const ContactFormScreen: React.FC<
-  ContactFormScreenProps & ScreenProps<'Contacts'>
-> = ({ navigation, chainId, route }) => {
-  const initialValue = (route.params?.['initialValue'] ?? {
+export const ContactFormScreen = ({
+  navigation,
+  route,
+}: ContactFormScreenProps) => {
+  const { chainId = 31 } = useSelectedWallet()
+  const initialValue: Partial<IContact> = route.params?.initialValue ?? {
     name: '',
     address: '',
-  }) as IContact
+  }
 
   const { addContact, editContact } = useContext(ContactsContext)
-  const [name, setName] = useState(initialValue.name)
+  const [name, setName] = useState(initialValue.name || '')
   const [address, setAddress] = useState({
-    value: initialValue.address,
+    value: initialValue.address || '',
     isValid: !!initialValue.address,
   })
   const isValidContact = name && address.isValid
@@ -37,7 +48,7 @@ export const ContactFormScreen: React.FC<
 
   const saveContact = () => {
     if (initialValue.id) {
-      const contact = {
+      const contact: IContact = {
         ...initialValue,
         name,
         address: address.value,
@@ -47,7 +58,7 @@ export const ContactFormScreen: React.FC<
     } else {
       addContact(name, address.value, address.value)
     }
-    navigation.navigate('ContactsList' as never)
+    navigation.navigate(contactsStackRouteNames.ContactsList)
   }
 
   return (
@@ -56,7 +67,9 @@ export const ContactFormScreen: React.FC<
         <Icon.Button
           accessibilityLabel="backButton"
           name="arrow-back"
-          onPress={() => navigation.navigate('ContactsList' as never)}
+          onPress={() =>
+            navigation.navigate(contactsStackRouteNames.ContactsList)
+          }
           backgroundColor={colors.background.primary}
           color={colors.lightPurple}
           style={styles.backButton}
@@ -84,14 +97,14 @@ export const ContactFormScreen: React.FC<
         </View>
         <AddressInput
           testID="addressInput"
-          initialValue={initialValue.address}
+          initialValue={initialValue.address || ''}
           onChangeText={handleAddressChange}
           chainId={chainId}
           backgroundColor={colors.darkPurple4}
         />
       </View>
       <View style={styles.footer}>
-        <BlueButton
+        <PrimaryButton
           testID="saveButton"
           accessibilityLabel="saveButton"
           title="Save Contact"

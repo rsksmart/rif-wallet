@@ -1,16 +1,21 @@
-import React, { ReactNode } from 'react'
-import { TouchableHighlight, View, StyleSheet } from 'react-native'
+import { ReactNode } from 'react'
+import { ViewStyle } from 'react-native'
+import { ColorValue } from 'react-native'
+import { StyleSheet, TouchableHighlight, View } from 'react-native'
 
-export interface BaseButtonInterface {
-  onPress?: () => any
+export interface BaseButtonProps {
   disabled?: boolean
   testID?: string
   accessibilityLabel?: string
-  style?: any
-  underlayColor?: string
+  style?: ViewStyle
+  underlayColor?: ColorValue
+  children?: ReactNode
+  onPress?: () => void
+  onShowUnderlay?: () => void
+  onHideUnderlay?: () => void
 }
 
-const BaseButton: React.FC<BaseButtonInterface & { children: ReactNode }> = ({
+const BaseButton = ({
   children,
   style,
   underlayColor,
@@ -18,12 +23,17 @@ const BaseButton: React.FC<BaseButtonInterface & { children: ReactNode }> = ({
   testID,
   accessibilityLabel,
   onPress,
-}) => {
+  onShowUnderlay,
+  onHideUnderlay,
+}: BaseButtonProps) => {
   return (
     <TouchableHighlight
       style={{ ...styles.container, ...style }}
       onPress={disabled ? undefined : onPress}
+      onShowUnderlay={onShowUnderlay}
+      onHideUnderlay={onHideUnderlay}
       underlayColor={underlayColor}
+      activeOpacity={1}
       disabled={disabled}
       testID={testID}
       accessibilityLabel={accessibilityLabel}>

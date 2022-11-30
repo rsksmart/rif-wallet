@@ -1,8 +1,7 @@
-import React from 'react'
 import { fonts } from '../../styles/fonts'
-import CustomText, { TextType } from './CustomText'
+import { CustomText, TextType } from './CustomText'
 
-const RegularText: React.FC<TextType> = ({ children, ...props }) => (
+const RegularText = ({ children, ...props }: TextType) => (
   <CustomText font={fonts.regular} {...props}>
     {children}
   </CustomText>

@@ -1,10 +1,16 @@
-import React from 'react'
+import { useCallback } from 'react'
+import { navigationContainerRef } from '../../core/Core'
 import { PinManager } from '../../components/PinManager'
 
-interface Interface {
-  createPin: (newPin: string) => Promise<void>
+interface Props {
+  createPin: (newPin: string) => void
 }
 
-export const CreatePinScreen: React.FC<Interface> = ({ createPin }) => (
-  <PinManager title={'Set your pin'} handleSubmit={createPin} />
-)
+export const CreatePinScreen = ({ createPin }: Props) => {
+  const handleSubmit = useCallback((enteredPin: string) => {
+    createPin(enteredPin)
+    navigationContainerRef.navigate('Home')
+  }, [])
+
+  return <PinManager title={'Set your pin'} handleSubmit={handleSubmit} />
+}

@@ -20,10 +20,10 @@ describe('Other Enhance Strategy', () => {
     const { firstErc20Token, secondErc20Token, rbtcToken } =
       await deployTestTokens(accountSigner)
 
-    ;(tokenMetadata.getAllTokens as any) = jest.fn(() =>
+    tokenMetadata.getAllTokens = jest.fn(() =>
       Promise.resolve([firstErc20Token, secondErc20Token]),
     )
-    ;(tokenMetadata.makeRBTCToken as any) = jest.fn(() => rbtcToken)
+    tokenMetadata.makeRBTCToken = jest.fn(() => rbtcToken)
 
     transactionRequest = { ...transactionRequest, to: firstErc20Token.address }
     testToken = firstErc20Token
@@ -32,24 +32,28 @@ describe('Other Enhance Strategy', () => {
   it('should return transaction info enhanced', async () => {
     const strategy = new OtherEnhanceStrategy()
 
-    const result = await strategy.parse(accountSigner!, transactionRequest)
+    if (accountSigner) {
+      const result = await strategy.parse(accountSigner, transactionRequest)
 
-    expect(result).not.toBeNull()
-    expect(result!.functionName).toBe('transfer')
-    expect(result!.from).toBe(transactionRequest.from)
-    expect(result!.to).toBe(testToken?.address)
-    expect(result!.functionParameters.length).toBeGreaterThan(0)
+      expect(result).not.toBeNull()
+      expect(result?.functionName).toBe('transfer')
+      expect(result?.from).toBe(transactionRequest.from)
+      expect(result?.to).toBe(testToken?.address)
+      expect(result?.functionParameters.length).toBeGreaterThan(0)
+    }
   })
 
   it('should return null if data is empty', async () => {
     const strategy = new OtherEnhanceStrategy()
 
-    const result = await strategy.parse(accountSigner!, {
-      ...transactionRequest,
-      data: undefined,
-    })
+    if (accountSigner) {
+      const result = await strategy.parse(accountSigner, {
+        ...transactionRequest,
+        data: undefined,
+      })
 
-    expect(result).toBeNull()
+      expect(result).toBeNull()
+    }
   })
 
   it('should return null if it could not find the method definition', async () => {
@@ -58,11 +62,13 @@ describe('Other Enhance Strategy', () => {
 
     const strategy = new OtherEnhanceStrategy()
 
-    const result = await strategy.parse(accountSigner!, {
-      ...transactionRequest,
-      data: customFunctionData,
-    })
+    if (accountSigner) {
+      const result = await strategy.parse(accountSigner, {
+        ...transactionRequest,
+        data: customFunctionData,
+      })
 
-    expect(result).toBeNull()
+      expect(result).toBeNull()
+    }
   })
 })

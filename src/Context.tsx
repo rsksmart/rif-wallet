@@ -1,11 +1,17 @@
-import React, { createContext, useContext, FC } from 'react'
+import { createContext, useContext, FC } from 'react'
 import { Paragraph } from './components'
 import { RIFWallet, Request } from './lib/core'
 import { ScreenWithWallet } from './screens/types'
-import { useBitcoinCoreResultType } from './core/hooks/useBitcoinCore'
-export type Wallets = { [id: string]: RIFWallet }
-export type WalletsIsDeployed = { [id: string]: boolean }
-export type Requests = Request[]
+import { UseBitcoinCoreResult } from './core/hooks/bitcoin/useBitcoinCore'
+import { BitcoinRequest } from './lib/bitcoin/types'
+export interface Wallets {
+  [id: string]: RIFWallet
+}
+export interface WalletsIsDeployed {
+  [id: string]: boolean
+}
+type RequestMixed = Request & BitcoinRequest
+export type Requests = RequestMixed[]
 
 export type AppContextType = {
   mnemonic?: string
@@ -13,7 +19,7 @@ export type AppContextType = {
   walletsIsDeployed: WalletsIsDeployed
   selectedWallet?: string
   chainId?: number
-  BitcoinCore: useBitcoinCoreResultType
+  BitcoinCore: UseBitcoinCoreResult
 }
 
 export const AppContext = createContext<AppContextType>({
@@ -37,8 +43,8 @@ export const useSelectedWallet = () => {
     useContext(AppContext)
 
   return {
-    wallet: wallets[selectedWallet!],
-    isDeployed: walletsIsDeployed[selectedWallet!],
+    wallet: selectedWallet ? wallets[selectedWallet] : null,
+    isDeployed: selectedWallet ? walletsIsDeployed[selectedWallet] : null,
     chainId,
     selectedWalletIndex: selectedWallet
       ? Object.keys(wallets).indexOf(selectedWallet)
@@ -57,7 +63,11 @@ export function InjectSelectedWallet<T>(
     }
 
     return (
-      <Component wallet={wallet} isWalletDeployed={isDeployed} {...props} />
+      <Component
+        wallet={wallet}
+        isWalletDeployed={Boolean(isDeployed)}
+        {...props}
+      />
     )
   }
 }

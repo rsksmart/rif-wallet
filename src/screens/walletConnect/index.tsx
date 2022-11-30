@@ -1,19 +1,25 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
 import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
 import { useSelectedWallet } from '../../Context'
-import { NavigationProp } from '../../RootNavigation'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
 import { WalletConnectContext } from './WalletConnectContext'
 
-export const WalletConnectScreen: React.FC<{
-  navigation: NavigationProp
-  route: any
-}> = ({ navigation, route }) => {
+type WalletConnectScreenProps =
+  RootStackScreenProps<rootStackRouteNames.WalletConnect>
+
+export const WalletConnectScreen = ({
+  navigation,
+  route,
+}: WalletConnectScreenProps) => {
   const { t } = useTranslation()
   const { wallet } = useSelectedWallet()
   const { connections, handleApprove, handleReject } =

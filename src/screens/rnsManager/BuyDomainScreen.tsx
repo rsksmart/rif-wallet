@@ -1,30 +1,33 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { BigNumber, utils } from 'ethers'
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import moment from 'moment'
 
-import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
-import { colors } from '../../styles'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
+import { colors } from 'src/styles'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
-import { PurpleButton } from '../../components/button/ButtonVariations'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
 
-import { ScreenProps } from '../../RootNavigation'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
 import { ScreenWithWallet } from '../types'
-import { MediumText } from '../../components'
+import { MediumText } from 'src/components'
 import addresses from './addresses.json'
 import TitleStatus from './TitleStatus'
 import { TokenImage } from '../home/TokenImage'
+import { AvatarIcon } from '../../components/icons/AvatarIcon'
+import { errorHandler } from 'shared/utils'
 
-type Props = {
-  route: any
-}
+type Props = RootStackScreenProps<rootStackRouteNames.BuyDomain> &
+  ScreenWithWallet
 
-export const BuyDomainScreen: React.FC<
-  ScreenProps<'BuyDomain'> & ScreenWithWallet & Props
-> = ({ wallet, navigation, route }) => {
+export const BuyDomainScreen = ({ wallet, navigation, route }: Props) => {
   const { alias, domainSecret, duration } = route.params
+  const fullAlias = alias + '.rsk'
 
   const expiryDate = moment(moment(), 'MM-DD-YYYY').add(duration, 'years')
 
@@ -51,36 +54,36 @@ export const BuyDomainScreen: React.FC<
       })
     }
   }, [])
+
   const registerDomain = async (domain: string) => {
     try {
       const durationToRegister = BigNumber.from(2)
+      if (domainPrice) {
+        const tx = await rskRegistrar.register(
+          domain,
+          wallet.smartWallet.address,
+          domainSecret,
+          durationToRegister,
+          domainPrice,
+        )
 
-      const tx = await rskRegistrar.register(
-        domain,
-        wallet.smartWallet.address,
-        domainSecret,
-        durationToRegister,
-        domainPrice!,
-      )
+        setRegisterDomainInfo('Transaction sent. Please wait...')
+        setRegisterInProcess(true)
 
-      setRegisterDomainInfo('Transaction sent. Please wait...')
-      setRegisterInProcess(true)
-
-      navigation.navigate('AliasBought', {
-        navigation,
-        alias: alias,
-        tx,
-      })
-    } catch (e: any) {
+        navigation.navigate(rootStackRouteNames.AliasBought, {
+          alias: alias,
+          tx,
+        })
+      }
+    } catch (e) {
       setRegisterInProcess(false)
-      setRegisterDomainInfo(e.message)
+      setRegisterDomainInfo(errorHandler(e))
     }
   }
 
   return (
     <>
       <View style={rnsManagerStyles.profileHeader}>
-        {/*@ts-ignore*/}
         <TouchableOpacity onPress={() => navigation.navigate('SearchDomain')}>
           <View style={rnsManagerStyles.backButton}>
             <MaterialIcon name="west" color="white" size={10} />
@@ -102,9 +105,9 @@ export const BuyDomainScreen: React.FC<
                 ${domainFiatPrice}
               </MediumText>
               <View style={styles.rifTokenImageContainer}>
-                <MediumText style={styles.rifTokenImage}>
-                  <TokenImage symbol={'RIF'} height={20} width={20} />
-                </MediumText>
+                <View style={styles.assetIcon}>
+                  <TokenImage symbol={'RIF'} height={22} width={25} />
+                </View>
                 <MediumText style={styles.priceLabel}>
                   {utils.formatUnits(domainPrice, 18)}
                 </MediumText>
@@ -112,10 +115,8 @@ export const BuyDomainScreen: React.FC<
             </>
           )}
           <View style={rnsManagerStyles.profileImageContainer}>
-            <Image
-              style={rnsManagerStyles.profileImage}
-              source={require('../../images/image_place_holder.jpeg')}
-            />
+            <AvatarIcon value={fullAlias} size={80} />
+
             <View>
               <MediumText style={rnsManagerStyles.profileDisplayAlias}>
                 {alias}.rsk
@@ -133,7 +134,7 @@ export const BuyDomainScreen: React.FC<
 
         <View style={rnsManagerStyles.bottomContainer}>
           {!registerInProcess && (
-            <PurpleButton
+            <PrimaryButton
               onPress={() => registerDomain(alias)}
               accessibilityLabel="buy"
               title={`buy for $${domainFiatPrice}`}
@@ -161,13 +162,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 10,
   },
-  rifTokenImage: {
+  assetIcon: {
+    alignSelf: 'center',
+    overflow: 'hidden',
     backgroundColor: colors.white,
-    borderRadius: 15,
-    height: 30,
-    width: 30,
-    padding: 5,
-    marginRight: 5,
-    marginTop: 3,
+    borderRadius: 18,
+    padding: 6,
+    marginRight: 10,
   },
 })
