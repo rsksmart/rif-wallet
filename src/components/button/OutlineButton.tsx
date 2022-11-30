@@ -1,9 +1,8 @@
-import React from 'react'
 import { StyleSheet } from 'react-native'
 import { colors } from 'src/styles'
 import { StyledButton, StyledButtonProps } from './StyledButton'
 
-export const OutlineButton: React.FC<StyledButtonProps> = props => (
+export const OutlineButton = (props: StyledButtonProps) => (
   <StyledButton buttonStyles={styles} {...props} />
 )
 

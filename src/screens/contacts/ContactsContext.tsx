@@ -4,7 +4,7 @@ import { getContacts, saveContacts } from '../../storage/MainStorage'
 import uuid from 'react-native-uuid'
 
 export interface IContact {
-  id: string | number[]
+  id?: string | number[]
   name: string
   address: string
   displayAddress: string

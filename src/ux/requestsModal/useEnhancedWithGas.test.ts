@@ -24,9 +24,11 @@ describe('hook: useEnhancedWithGas', function (this: {
       .spyOn(this.rifWallet.smartWallet, 'estimateDirectExecute')
       .mockResolvedValue(BigNumber.from(600))
 
-    // @ts-ignore - provider does exist
-    // eslint-disable-next-line prettier/prettier
-    jest.spyOn(this.rifWallet.provider, 'getGasPrice').mockResolvedValue(BigNumber.from(2000))
+    if (this.rifWallet.provider) {
+      jest
+        .spyOn(this.rifWallet.provider, 'getGasPrice')
+        .mockResolvedValue(BigNumber.from(2000))
+    }
   })
 
   const runHook = async (tx: TransactionRequest) => {

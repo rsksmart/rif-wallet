@@ -1,26 +1,34 @@
 import { TransactionRequest } from '@ethersproject/providers'
 import { BigNumber } from 'ethers'
 import { useEffect, useState } from 'react'
-import { AbiEnhancer, IEnhancedResult } from '../../lib/abiEnhancer/AbiEnhancer'
+import { AbiEnhancer } from '../../lib/abiEnhancer/AbiEnhancer'
 import { RIFWallet } from '../../lib/core'
 
 const abiEnhancer = new AbiEnhancer()
 
-const convertValueToString = (value?: any) => (value ? value.toString() : '')
-const convertNumberToString = (value?: any) => (value ? value.toString() : '0')
+const convertValueToString = (value?: object | boolean | string) =>
+  value ? value.toString() : ''
+const convertNumberToString = (value?: number) =>
+  value ? value.toString() : '0'
 
-const convertTransactionToStrings = (tx: IEnhancedResult) => ({
+const convertTransactionToStrings = (tx: TransactionRequest) => ({
   ...tx,
   to: convertValueToString(tx.to),
   from: convertValueToString(tx.from),
   data: convertValueToString(tx.data),
-  gasLimit: convertNumberToString(tx.gasLimit),
-  gasPrice: convertNumberToString(tx.gasPrice),
+  gasLimit: convertNumberToString(Number(tx.gasLimit)),
+  gasPrice: convertNumberToString(Number(tx.gasPrice)),
 })
+
+export interface EnhancedTransactionRequest extends TransactionRequest {
+  symbol?: string
+  functionName?: string
+  functionParameters?: string[]
+}
 
 const useEnhancedWithGas = (wallet: RIFWallet, tx: TransactionRequest) => {
   const [enhancedTransactionRequest, setEnhancedTransactionRequest] =
-    useState<IEnhancedResult>({
+    useState<EnhancedTransactionRequest>({
       gasPrice: '0',
       gasLimit: '0',
     })

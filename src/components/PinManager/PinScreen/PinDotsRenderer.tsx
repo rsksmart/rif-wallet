@@ -1,12 +1,7 @@
-import React from 'react'
 import PinConnector from '../PinConnector'
 import { PinDotsRendererType } from './PinScreen'
 
-const PinDotsRenderer: React.FC<PinDotsRendererType> = ({
-  index,
-  digit,
-  arr,
-}) => {
+const PinDotsRenderer = ({ index, digit, arr }: PinDotsRendererType) => {
   return (
     <>
       <PinConnector.BarComp isActive={index > 0 && !!digit} />

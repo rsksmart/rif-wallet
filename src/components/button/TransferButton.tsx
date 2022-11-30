@@ -1,16 +1,16 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { StyleSheet, Text } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import { colors } from 'src/styles'
 import BaseButton from './BaseButton'
 import { StyledButtonProps } from './StyledButton'
 
-export const TransferButton: React.FC<StyledButtonProps> = ({
+export const TransferButton = ({
   style,
   disabled,
   title = 'transfer',
   ...props
-}) => {
+}: StyledButtonProps) => {
   const [isPressed, setIsPressed] = useState(false)
 
   const gradientColors = isPressed

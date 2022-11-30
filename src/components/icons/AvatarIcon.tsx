@@ -1,18 +1,15 @@
-import React from 'react'
+import { TextStyle } from 'react-native'
 import Jdenticon from 'react-native-jdenticon'
+
 import { colors } from '../../styles'
 
 interface AvatarIconProps {
   value: string
   size?: number
-  style?: any
+  style?: TextStyle
 }
 
-export const AvatarIcon: React.FC<AvatarIconProps> = ({
-  value,
-  size = 40,
-  style,
-}) => {
+export const AvatarIcon = ({ value, size = 40, style }: AvatarIconProps) => {
   const config = {
     lightness: {
       color: [0.4, 0.8],

@@ -1,26 +1,26 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleProp, StyleSheet, Text, TextStyle, View } from 'react-native'
 import { ModalIcon } from '../icons/ModalIcon'
 
-interface Interface {
+interface Props {
   children: React.ReactNode
   testID?: string
-  style?: any
+  style?: StyleProp<TextStyle>
 }
 
-export const Header1: React.FC<Interface> = ({ children, testID }) => (
+export const Header1 = ({ children, testID }: Props) => (
   <Text style={styles.header1} testID={testID}>
     {children}
   </Text>
 )
 
-export const Header2: React.FC<Interface> = ({ children, testID }) => (
+export const Header2 = ({ children, testID }: Props) => (
   <Text style={styles.header2} testID={testID}>
     {children}
   </Text>
 )
 
-export const ModalHeader: React.FC<Interface> = ({ children, testID }) => (
+export const ModalHeader = ({ children, testID }: Props) => (
   <View style={styles.modalHeaderWrapper}>
     <ModalIcon color={'#313c3c'} />
     <Text style={styles.modalHeader} testID={testID}>
@@ -29,25 +29,25 @@ export const ModalHeader: React.FC<Interface> = ({ children, testID }) => (
   </View>
 )
 
-export const Header3: React.FC<Interface> = ({ children, testID }) => (
+export const Header3 = ({ children, testID }: Props) => (
   <Text style={styles.header3} testID={testID}>
     {children}
   </Text>
 )
 
-export const Paragraph: React.FC<Interface> = ({ children, testID, style }) => (
-  <Text style={{ ...styles.paragraph, ...style }} testID={testID}>
+export const Paragraph = ({ children, testID, style }: Props) => (
+  <Text style={[styles.paragraph, style]} testID={testID}>
     {children}
   </Text>
 )
 
-export const ParagraphSoft: React.FC<Interface> = ({ children, testID }) => (
+export const ParagraphSoft = ({ children, testID }: Props) => (
   <Text style={styles.paragraphSoft} testID={testID}>
     {children}
   </Text>
 )
 
-export const CompactParagraph: React.FC<Interface> = ({ children, testID }) => (
+export const CompactParagraph = ({ children, testID }: Props) => (
   <Text style={styles.compactParagraph} testID={testID}>
     {children}
   </Text>

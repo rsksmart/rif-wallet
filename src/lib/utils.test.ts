@@ -11,7 +11,8 @@ describe('utils', () => {
         ['0x1b1ae4d6e2ef50000', 18, '31.25'],
       ]
 
-      testCases.forEach((value: any) => {
+      // TODO: correct types, why is this the case?
+      testCases.forEach(value => {
         expect(balanceToDisplay(value[0], value[1])).toEqual(value[2])
       })
     })
@@ -24,7 +25,8 @@ describe('utils', () => {
         ['0x1b1ae4d6e2ef50000', 18, 1, '31.2'],
       ]
 
-      testCases.forEach((value: any) => {
+      // TODO: correct types, why is this the case?
+      testCases.forEach(value => {
         expect(balanceToDisplay(value[0], value[1], value[2])).toEqual(value[3])
       })
     })
@@ -48,8 +50,10 @@ describe('utils', () => {
         { number: '1000', decimals: 18, quote: 38774, expected: '< $0.01' },
       ]
 
-      testCases.forEach((v: any) => {
-        expect(balanceToUSD(v.number, v.decimals, v.quote)).toEqual(v.expected)
+      testCases.forEach(value => {
+        expect(balanceToUSD(value.number, value.decimals, value.quote)).toEqual(
+          value.expected,
+        )
       })
     })
   })

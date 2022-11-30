@@ -1,6 +1,11 @@
-import { NavigationProp } from '@react-navigation/native'
+import { NavigationProp, NavigatorScreenParams } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
+import Resolver from '@rsksmart/rns-resolver.js'
+import { ContractTransaction } from 'ethers'
+import { ActivityMixedType } from 'src/screens/activity/types'
+import { IProfileStore } from 'src/storage/MainStorage'
 import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
+import { CreateKeysStackParamList } from '../createKeysNavigator'
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =
   StackScreenProps<RootStackParamList, T>
@@ -52,6 +57,7 @@ export type RootStackParamList = {
         to?: string
         displayTo?: string
         contractAddress?: string
+        rnsResolver: Resolver
       }
   Receive: undefined
   ReceiveBitcoin: {
@@ -59,12 +65,12 @@ export type RootStackParamList = {
   }
   Balances: undefined
   Activity: undefined
-  ActivityDetails: undefined
+  ActivityDetails: ActivityMixedType
   SignMessage: undefined
   SignTypedData: undefined
   TransactionReceived: undefined
   ManuallyDeployScreen: undefined
-  CreateKeysUX: undefined
+  CreateKeysUX: NavigatorScreenParams<CreateKeysStackParamList> | undefined
   ShowMnemonicScreen: undefined
   WalletConnect: undefined | { wcKey?: string }
   ScanQR: undefined
@@ -73,16 +79,29 @@ export type RootStackParamList = {
   CreatePin: undefined
   RNSManager: undefined
   SearchDomain: undefined
-  RequestDomain: undefined
-  BuyDomain: undefined
-  AliasBought: undefined
+  RequestDomain: {
+    alias: string
+    duration: number
+  }
+  BuyDomain: {
+    alias: string
+    domainSecret: string
+    duration: number
+  }
+  AliasBought: {
+    alias: string
+    tx: ContractTransaction
+  }
   RegisterDomain: { selectedDomain: string; years: number }
   Contacts: undefined
   Settings: undefined
   EventsScreen: undefined
   AccountsScreen: undefined
   SecurityConfigurationScreen: undefined
-  ProfileCreateScreen: undefined
+  ProfileCreateScreen: {
+    editProfile: boolean
+    profile?: IProfileStore
+  }
   ProfileDetailsScreen: undefined
   ChangePinScreen: undefined
   FeedbackScreen: undefined

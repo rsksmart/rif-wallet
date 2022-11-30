@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Image,
@@ -9,19 +9,28 @@ import {
   View,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import { SearchIcon } from 'components/icons/SearchIcon'
-import { ConfirmationModal } from 'components/modal/ConfirmationModal'
-import { RootStackNavigationProp } from 'navigation/rootNavigator/types'
-import { colors } from 'src/styles'
-import { fonts } from 'src/styles/fonts'
+import { SearchIcon } from '../../components/icons/SearchIcon'
+import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
+import { colors } from '../../styles'
+import { fonts } from '../../styles/fonts'
 import { ContactRow } from './ContactRow'
 import { ContactsContext, IContact } from './ContactsContext'
-import { useAppSelector } from 'store/storeHooks'
-import { selectBalances } from 'store/slices/balancesSlice/selectors'
+import { CompositeScreenProps } from '@react-navigation/native'
+import { ContactsStackScreenProps } from '..'
+import { contactsStackRouteNames } from 'src/navigation/contactsNavigator'
+import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
+import { useAppSelector } from 'src/redux/storeHooks'
 
-export const ContactsScreen: React.FC<{
-  navigation: RootStackNavigationProp
-}> = ({ navigation }) => {
+export type ContactsListScreenProps = CompositeScreenProps<
+  ContactsStackScreenProps<contactsStackRouteNames.ContactsList>,
+  RootStackScreenProps<rootStackRouteNames.Contacts>
+>
+
+export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
   const { t } = useTranslation()
   const { contacts, deleteContact } = useContext(ContactsContext)
   const [filteredContacts, setFilteredContacts] = useState(contacts)
@@ -55,14 +64,13 @@ export const ContactsScreen: React.FC<{
   }
 
   const editContact = (contact: IContact) => {
-    navigation.navigate(
-      'ContactForm' as never,
-      { initialValue: contact } as never,
-    )
+    navigation.navigate(contactsStackRouteNames.ContactForm, {
+      initialValue: contact,
+    })
   }
 
   const sendContact = (contact: IContact) => {
-    navigation.navigate('Send' as never, { to: contact.address } as never)
+    navigation.navigate(rootStackRouteNames.Send, { to: contact.address })
   }
 
   const removeContact = (contact: IContact) => {
@@ -82,7 +90,9 @@ export const ContactsScreen: React.FC<{
         <Icon.Button
           accessibilityLabel="addContact"
           name="user-plus"
-          onPress={() => navigation.navigate('ContactForm' as never)}
+          onPress={() =>
+            navigation.navigate(contactsStackRouteNames.ContactForm)
+          }
           backgroundColor={colors.background.bustyBlue}
           iconStyle={styles.addButton}
           size={15}

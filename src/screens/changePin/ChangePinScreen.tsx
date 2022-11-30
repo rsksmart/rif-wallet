@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { PinManager } from '../../components/PinManager'
 import {
   rootStackRouteNames,
@@ -8,12 +8,13 @@ import { TouchableOpacity, View, StyleSheet } from 'react-native'
 import { Arrow } from '../../components/icons'
 import { MediumText } from '../../components'
 
-type ChangePinProps = {
-  editPin: any
+interface ChangePinProps {
+  editPin: (pin: string) => void
 }
-const ChangePinScreen: React.FC<
-  RootStackScreenProps<'ChangePinScreen'> & ChangePinProps
-> = ({ editPin, navigation }) => {
+export const ChangePinScreen = ({
+  editPin,
+  navigation,
+}: RootStackScreenProps<'ChangePinScreen'> & ChangePinProps) => {
   const [currentStep, setCurrentStep] = useState(1)
 
   const pinSteps = useRef({
@@ -67,7 +68,7 @@ const ChangePinScreen: React.FC<
     }
     return null
   }
-  const stepper: { [key: number]: any } = {
+  const stepper: { [key: number]: JSX.Element } = {
     1: <PinManager title="Enter new PIN" handleSubmit={onPinChange(1)} />,
     2: (
       <>

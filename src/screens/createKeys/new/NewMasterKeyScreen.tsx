@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import {
   StyleSheet,
   View,
@@ -7,30 +7,40 @@ import {
   TouchableOpacity,
 } from 'react-native'
 import Carousel from 'react-native-snap-carousel'
+import { Trans } from 'react-i18next'
+import { CompositeScreenProps } from '@react-navigation/native'
 
 import {
   CreateKeysProps,
+  createKeysRouteNames,
   CreateKeysScreenProps,
-} from '../../../navigation/createKeysNavigator/types'
-import { Trans } from 'react-i18next'
+} from 'navigation/createKeysNavigator/types'
 import { colors } from '../../../styles/colors'
-
-type CreateMasterKeyScreenProps = {
-  generateMnemonic: CreateKeysProps['generateMnemonic']
-}
-import { Arrow } from '../../../components/icons'
+import { Arrow } from 'components/icons'
+import { PaginationNavigator } from 'components/button/PaginationNavigator'
 import { SLIDER_WIDTH, WINDOW_WIDTH } from '../../../ux/slides/Dimensions'
-import { PaginationNavigator } from '../../../components/button/PaginationNavigator'
 import { WordView } from './WordView'
 import { sharedMnemonicStyles } from './styles'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'src/navigation/rootNavigator'
 
-export const NewMasterKeyScreen: React.FC<
-  CreateKeysScreenProps<'NewMasterKey'> & CreateMasterKeyScreenProps
-> = ({ navigation, generateMnemonic }) => {
+interface CreateMasterKeyScreenProps {
+  generateMnemonic: CreateKeysProps['generateMnemonic']
+}
+
+type Props = CompositeScreenProps<
+  CreateKeysScreenProps<createKeysRouteNames.NewMasterKey>,
+  RootStackScreenProps<rootStackRouteNames.CreateKeysUX>
+> &
+  CreateMasterKeyScreenProps
+
+export const NewMasterKeyScreen = ({ navigation, generateMnemonic }: Props) => {
   const mnemonic = useMemo(generateMnemonic, [])
   const mnemonicArray = mnemonic.split(' ')
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
-  const [carousel, setCarousel] = useState<any>()
+  const [carousel, setCarousel] = useState<Carousel<number>>()
 
   const slidesIndexes = Array.from(
     { length: Math.ceil(mnemonicArray.length / 3) },
@@ -52,7 +62,7 @@ export const NewMasterKeyScreen: React.FC<
     <ScrollView style={sharedMnemonicStyles.parent}>
       <View style={sharedMnemonicStyles.topContent}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('CreateKeys')}
+          onPress={() => navigation.navigate(createKeysRouteNames.CreateKeys)}
           style={styles.returnButton}
           accessibilityLabel="backButton">
           <View style={styles.returnButtonView}>
@@ -71,7 +81,7 @@ export const NewMasterKeyScreen: React.FC<
         <Carousel
           inactiveSlideOpacity={0}
           removeClippedSubviews={false} //https://github.com/meliorence/react-native-snap-carousel/issues/238
-          ref={c => setCarousel(c)}
+          ref={c => c && setCarousel(c)}
           data={slidesIndexes}
           renderItem={renderItem}
           sliderWidth={WINDOW_WIDTH}
@@ -83,10 +93,12 @@ export const NewMasterKeyScreen: React.FC<
 
       <View style={sharedMnemonicStyles.pagnationContainer}>
         <PaginationNavigator
-          onPrevious={() => carousel.snapToPrev()}
-          onNext={() => carousel.snapToNext()}
+          onPrevious={() => carousel?.snapToPrev()}
+          onNext={() => carousel?.snapToNext()}
           onComplete={() =>
-            navigation.navigate('ConfirmNewMasterKey', { mnemonic })
+            navigation.navigate(createKeysRouteNames.ConfirmNewMasterKey, {
+              mnemonic,
+            })
           }
           title="confirm"
           currentIndex={selectedSlide}

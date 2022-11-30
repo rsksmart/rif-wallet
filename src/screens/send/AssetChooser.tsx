@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { colors } from '../../styles'
 import { grid } from '../../styles'
@@ -9,11 +9,11 @@ import { balanceToString } from '../balances/BalancesScreen'
 import { TokenButton } from '../../components/button/TokenButton'
 import { getTokenColor } from '../home/tokenColor'
 
-const AssetChooser: React.FC<IAssetChooser> = ({
+const AssetChooser = ({
   assetList,
   selectedAsset,
   onAssetSelected,
-}) => {
+}: IAssetChooser) => {
   const [showSelector, setShowSelector] = useState<boolean>(false)
   const [animateModal, setAnimateModal] = useState(false)
 

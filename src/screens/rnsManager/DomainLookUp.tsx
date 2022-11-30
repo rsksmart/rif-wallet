@@ -11,11 +11,12 @@ import { BaseInputStatus } from '../../components/shared'
 import { MediumText } from '../../components/typography'
 import { colors } from '../../styles'
 import addresses from './addresses.json'
+import { RIFWallet } from 'lib/core'
 
 interface DomainLookUpProps {
   initialValue: string
   onChangeText: (newValue: string) => void
-  wallet: any
+  wallet: RIFWallet
   onDomainAvailable: (domain: string, valid: boolean) => void
 }
 
@@ -89,14 +90,12 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
       return
     }
 
-    const available = (await rskRegistrar.available(
-      domainName,
-    )) as any as boolean
+    const available = await rskRegistrar.available(domainName)
 
     setDomainAvailability(
       available ? DomainStatus.AVAILABLE : DomainStatus.TAKEN,
     )
-    onDomainAvailable(domainName, available)
+    onDomainAvailable(domainName, Boolean(available))
   }
 
   return (

@@ -13,7 +13,7 @@ import {
   IPayment,
 } from './types'
 
-const { fromSeed } = require('bip32')
+import { fromSeed } from 'bip32'
 
 export default class BIP {
   network: BitcoinNetwork
@@ -117,7 +117,7 @@ export default class BIP {
     return this.getAddress(index)
   }
 
-  async fetchTransactions(pageSize: number = 10, pageNumber: number = 1) {
+  async fetchTransactions(pageSize = 10, pageNumber = 1) {
     return this.RifWalletServicesFetcherInstance.fetchXpubTransactions(
       this.accountPublicKey,
       pageSize,

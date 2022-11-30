@@ -30,10 +30,10 @@ describe('ReviewTransactionModal', function (this: {
     const { firstErc20Token, secondErc20Token, rbtcToken } =
       await deployTestTokens(accountSigner)
 
-    ;(tokenMetadata.getAllTokens as any) = jest.fn(() =>
+    tokenMetadata.getAllTokens = jest.fn(() =>
       Promise.resolve([firstErc20Token, secondErc20Token]),
     )
-    ;(tokenMetadata.makeRBTCToken as any) = jest.fn(() => rbtcToken)
+    tokenMetadata.makeRBTCToken = jest.fn(() => rbtcToken)
 
     this.queuedTransaction = {
       type: 'sendTransaction',
@@ -47,7 +47,6 @@ describe('ReviewTransactionModal', function (this: {
           gasPrice: BigNumber.from(20200000000),
         },
       ],
-      //@ts-ignore
       confirm: this.confirm,
       reject: this.cancel,
     }

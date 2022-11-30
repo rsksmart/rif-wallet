@@ -1,6 +1,7 @@
 import EventEmitter from 'events'
-import { io } from 'socket.io-client'
-import { enhanceTransactionInput } from '../../screens/activity/ActivityScreen'
+import { io, Socket } from 'socket.io-client'
+
+import { enhanceTransactionInput } from 'screens/activity/ActivityScreen'
 import { MMKVStorage } from '../../storage/MMKVStorage'
 import { IActivityTransaction } from '../../subscriptions/types'
 import { IAbiEnhancer } from '../abiEnhancer/AbiEnhancer'
@@ -10,7 +11,7 @@ import { IApiTransaction, ITokenWithBalance } from './RIFWalletServicesTypes'
 
 export interface IServiceChangeEvent {
   type: string
-  payload: any
+  payload: unknown // TODO: what is the payload?
 }
 
 export interface IServiceInitEvent {
@@ -35,7 +36,7 @@ export class RifWalletServicesSocket
   private rifWalletServicesUrl: string
   private fetcher: IRIFWalletServicesFetcher
   private abiEnhancer: IAbiEnhancer
-  private socket: any
+  private socket: Socket | undefined
 
   constructor(
     rifWalletServicesUrl: string,
@@ -55,7 +56,8 @@ export class RifWalletServicesSocket
       wallet.smartWalletAddress,
     )
 
-    const activityTransactions = await Promise.all<IActivityTransaction[]>(
+    const activityTransactions = await Promise.all(
+      // TODO: why Promise.all?
       fetchedTransactions.data.map(async (tx: IApiTransaction) => {
         if (cache.has(tx.hash)) {
           return {
@@ -68,17 +70,21 @@ export class RifWalletServicesSocket
           wallet,
           this.abiEnhancer,
         )
-        cache.set(tx.hash, enhancedTransaction)
-        return {
-          originTransaction: tx,
-          enhancedTransaction,
-        } as any
+        if (enhancedTransaction) {
+          cache.set(tx.hash, enhancedTransaction)
+          return {
+            originTransaction: tx,
+            enhancedTransaction,
+          }
+        } else {
+          return null
+        }
       }),
     )
 
-    const fetchedTokens = (await this.fetcher.fetchTokensByAddress(
+    const fetchedTokens = await this.fetcher.fetchTokensByAddress(
       wallet.smartWalletAddress,
-    )) as ITokenWithBalance[]
+    )
 
     this.emit('init', {
       transactions: activityTransactions,

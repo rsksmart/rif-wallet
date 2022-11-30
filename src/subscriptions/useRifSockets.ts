@@ -17,8 +17,8 @@ function liveSubscriptionsReducer(state: State, action: Action) {
   switch (action.type) {
     case 'newTransactions':
       const sortedTxs: Array<IActivityTransaction> = [
-        ...action.payload!.activityTransactions,
-        ...state.transactions!.activityTransactions,
+        ...action.payload?.activityTransactions,
+        ...state.transactions?.activityTransactions,
       ]
         .sort(sortEnhancedTransactions)
         .filter(filterEnhancedTransactions)
@@ -35,7 +35,7 @@ function liveSubscriptionsReducer(state: State, action: Action) {
     case 'newTransaction':
       const sortedTx: Array<IActivityTransaction> = [
         action.payload,
-        ...state.transactions!.activityTransactions,
+        ...state.transactions?.activityTransactions,
       ]
         .sort(sortEnhancedTransactions)
         .filter(filterEnhancedTransactions)

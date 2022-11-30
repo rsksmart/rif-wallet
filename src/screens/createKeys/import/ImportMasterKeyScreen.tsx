@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import {
   StyleSheet,
   View,
@@ -7,35 +7,48 @@ import {
   TouchableOpacity,
 } from 'react-native'
 import Carousel from 'react-native-snap-carousel'
+import { Trans } from 'react-i18next'
+import { CompositeScreenProps } from '@react-navigation/native'
 
 import {
   CreateKeysProps,
+  createKeysRouteNames,
   CreateKeysScreenProps,
 } from 'navigation/createKeysNavigator/types'
-import { Trans } from 'react-i18next'
 import { colors } from '../../../styles/colors'
-
-import { Arrow } from '../../../components/icons'
+import { Arrow } from 'components/icons'
+import { PaginationNavigator } from 'components/button/PaginationNavigator'
+import { Paragraph } from 'components/index'
 import { SLIDER_WIDTH, WINDOW_WIDTH } from '../../../ux/slides/Dimensions'
-import { PaginationNavigator } from '../../../components/button/PaginationNavigator'
 import { WordSelector } from '../new/WordSelector'
 import { sharedMnemonicStyles } from '../new/styles'
-import { Paragraph } from '../../../components'
 import { validateMnemonic } from '../../../lib/bip39'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'src/navigation/rootNavigator'
 
 interface ImportMasterKeyScreenProps {
   isKeyboardVisible: boolean
   createWallet: CreateKeysProps['createFirstWallet']
 }
 
-export const ImportMasterKeyScreen: React.FC<
-  CreateKeysScreenProps<'ImportMasterKey'> & ImportMasterKeyScreenProps
-> = ({ navigation, createWallet, isKeyboardVisible }) => {
-  const slidesIndexes = [0, 1, 2, 3]
+type Props = CompositeScreenProps<
+  CreateKeysScreenProps<createKeysRouteNames.ImportMasterKey>,
+  RootStackScreenProps<rootStackRouteNames.CreateKeysUX>
+> &
+  ImportMasterKeyScreenProps
+
+export const ImportMasterKeyScreen = ({
+  navigation,
+  createWallet,
+  isKeyboardVisible,
+}: Props) => {
+  const slidesIndexes = [0, 1, 2, 3, 4, 5, 6, 7]
 
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
   const [selectedWords, setSelectedWords] = useState<string[]>([])
-  const [carousel, setCarousel] = useState<any>()
+  const [carousel, setCarousel] = useState<Carousel<number>>()
   const [error, setError] = useState<string | null>(null)
 
   const handleImportMnemonic = async () => {
@@ -64,7 +77,7 @@ export const ImportMasterKeyScreen: React.FC<
     setError('')
   }
 
-  const renderItem: React.FC<{ item: number }> = ({ item }) => {
+  const renderItem = ({ item }: { item: number }) => {
     const groupIndex = 3 * item
     return (
       <View>
@@ -111,7 +124,7 @@ export const ImportMasterKeyScreen: React.FC<
         <Carousel
           inactiveSlideOpacity={0}
           removeClippedSubviews={false} //https://github.com/meliorence/react-native-snap-carousel/issues/238
-          ref={c => setCarousel(c)}
+          ref={c => c && setCarousel(c)}
           data={slidesIndexes}
           renderItem={renderItem}
           sliderWidth={WINDOW_WIDTH}
@@ -134,8 +147,8 @@ export const ImportMasterKeyScreen: React.FC<
       {!isKeyboardVisible && (
         <View style={sharedMnemonicStyles.pagnationContainer}>
           <PaginationNavigator
-            onPrevious={() => carousel.snapToPrev()}
-            onNext={() => carousel.snapToNext()}
+            onPrevious={() => carousel?.snapToPrev()}
+            onNext={() => carousel?.snapToNext()}
             onComplete={handleImportMnemonic}
             title="confirm"
             currentIndex={selectedSlide}

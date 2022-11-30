@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck
 import {
   IAbiEnhancer,
   IEnhancedResult,
@@ -12,7 +14,6 @@ export const enhancedTxTestCase: IEnhancedResult = {
   value: '32',
 }
 
-// @ts-ignore
 export const createMockAbiEnhancer = (): IAbiEnhancer => ({
   enhance: jest.fn(() => Promise.resolve(enhancedTxTestCase)),
 })

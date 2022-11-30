@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
@@ -7,27 +7,28 @@ import { colors } from 'src/styles'
 
 import { rnsManagerStyles } from './rnsManagerStyles'
 
-import { MediumText } from 'src/components'
-import { AvatarIcon } from 'src/components/icons/AvatarIcon'
-import { ConfirmationModal } from 'src/components/modal/ConfirmationModal'
-import { RootStackScreenProps } from 'navigation/rootNavigator/types'
-import DomainLookUp from 'src/screens/rnsManager/DomainLookUp'
+import { MediumText } from '../../components'
+import { AvatarIcon } from '../../components/icons/AvatarIcon'
+import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
+import DomainLookUp from '../../screens/rnsManager/DomainLookUp'
 import { ScreenWithWallet } from '../types'
 import TitleStatus from './TitleStatus'
 
-type Props = {
-  route: any
-}
-export const SearchDomainScreen: React.FC<
-  RootStackScreenProps<'SearchDomain'> & ScreenWithWallet & Props
-> = ({ wallet, navigation }) => {
+type Props = RootStackScreenProps<rootStackRouteNames.SearchDomain> &
+  ScreenWithWallet
+
+export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const [domainToLookUp, setDomainToLookUp] = useState<string>('')
   const [validDomain, setValidDomain] = useState<boolean>(false)
   const [selectedYears, setSelectedYears] = useState<number>(2)
   const [selectedDomainPrice, setSelectedDomainPrice] = useState<string>('2')
   const [isModalVisible, setIsModalVisible] = useState<boolean>(true)
 
-  const calculatePrice = async (domain: string, years: number) => {
+  const calculatePrice = async (_: string, years: number) => {
     //TODO: re enable this later
     /*const price = await rskRegistrar.price(domain, BigNumber.from(years))
     return utils.formatUnits(price, 18)*/
@@ -124,9 +125,7 @@ export const SearchDomainScreen: React.FC<
           <PrimaryButton
             disabled={!validDomain}
             onPress={() =>
-              // @ts-ignore
-              navigation.navigate('RequestDomain', {
-                navigation,
+              navigation.navigate(rootStackRouteNames.RequestDomain, {
                 alias: domainToLookUp.replace('.rsk', ''),
                 duration: selectedYears,
               })

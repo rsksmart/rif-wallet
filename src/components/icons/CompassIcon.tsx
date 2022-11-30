@@ -1,12 +1,7 @@
-import React from 'react'
 import Svg, { Path } from 'react-native-svg'
-import { SVGIconInterface } from '.'
+import { SVGIconInterface } from './index'
 
-export const CompassIcon: React.FC<SVGIconInterface> = ({
-  width,
-  height,
-  color,
-}) => (
+export const CompassIcon = ({ width, height, color }: SVGIconInterface) => (
   <Svg width={width || '50'} height={height || '50'} viewBox="0 0 50 50">
     <Path
       d="M43.7,24.8c0,10.2-8.3,18.6-18.5,18.6S6.6,35,6.6,24.8C6.7,14.6,15,6.3,25.2,6.2 C35.4,6.3,43.6,14.6,43.7,24.8 M36,14c-0.3,0.1-0.5,0.2-0.6,0.2c-4.6,2.1-9.1,4.2-13.7,6.4c-0.4,0.2-0.7,0.5-0.8,0.9 c-1.7,3.7-3.4,7.4-5.1,11.1c-0.5,1-0.9,2-1.4,3.1c0.3-0.1,0.4-0.1,0.6-0.2c4.6-2.1,9.2-4.3,13.8-6.4c0.3-0.2,0.6-0.5,0.8-0.8 c1.8-3.9,3.6-7.8,5.5-11.8C35.2,15.6,35.6,14.9,36,14"

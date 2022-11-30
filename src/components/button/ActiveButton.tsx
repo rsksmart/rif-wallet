@@ -1,16 +1,15 @@
-import React from 'react'
 import { StyledButtonProps } from './StyledButton'
 import { PrimaryButton } from './PrimaryButton'
 import { SecondaryButton } from './SecondaryButton'
 
-type ActiveButtonType = {
+interface ActiveButtonType extends StyledButtonProps {
   isActive?: boolean
 }
-const ActiveButton: React.FC<ActiveButtonType & StyledButtonProps> = ({
+const ActiveButton = ({
   isActive = false,
   style,
   ...rest
-}) => {
+}: ActiveButtonType) => {
   const buttonStyles = {
     ...style,
     marginHorizontal: 10,

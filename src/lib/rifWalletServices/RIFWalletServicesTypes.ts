@@ -1,3 +1,5 @@
+import { ContractReceipt } from 'ethers'
+
 export interface IApiTokens {
   address: string
   balance: string
@@ -70,7 +72,7 @@ export interface IApiTransaction {
   value: string
   input: string
   timestamp: number
-  receipt: any
+  receipt: ContractReceipt // TODO: is this what should be here?
   txType: string
   txId: string
   data?: string
@@ -85,7 +87,7 @@ export interface TransactionsServerResponse {
 export interface VinType {
   txid: string
   vout: number
-  sequence: any
+  sequence: string // TODO: is this correct?
   n: number
   addresses: string[]
   isAddress: boolean

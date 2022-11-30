@@ -1,19 +1,20 @@
-import React, { useContext } from 'react'
+import { useContext, useMemo } from 'react'
 import { StyleSheet, View, FlatList } from 'react-native'
+
 import { colors } from '../../styles'
 import { AppContext, useBitcoinCoreContext } from '../../Context'
-import { shortAddress } from '../../lib/utils'
-import AccountBox from '../../components/accounts/AccountBox'
+import { shortAddress } from 'lib/utils'
+import AccountBox from 'components/accounts/AccountBox'
 import { PublicKeyItemType } from './types'
 
-export type AccountsScreenType = {
-  switchActiveWallet?: any
+export interface AccountsScreenType {
+  switchActiveWallet?: () => void
 }
 
-const AccountsScreen: React.FC<AccountsScreenType> = () => {
+export const AccountsScreen = ({}: AccountsScreenType) => {
   const { wallets } = useContext(AppContext)
   const { networks } = useBitcoinCoreContext()
-  const publicKeys: PublicKeyItemType[] = React.useMemo(
+  const publicKeys: PublicKeyItemType[] = useMemo(
     () =>
       networks.map(network => ({
         publicKey: network.bips[0].accountPublicKey,
@@ -22,7 +23,7 @@ const AccountsScreen: React.FC<AccountsScreenType> = () => {
       })),
     [networks],
   )
-  const walletsArr = React.useMemo(() => {
+  const walletsArr = useMemo(() => {
     return Object.keys(wallets).map((key, id) => ({
       ...wallets[key],
       address: key,
@@ -61,5 +62,3 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
 })
-
-export default AccountsScreen

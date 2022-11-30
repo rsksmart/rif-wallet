@@ -6,9 +6,6 @@ import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { IRifWalletServicesSocket } from 'lib/rifWalletServices/RifWalletServicesSocket'
 import { RIFWallet } from 'lib/core'
 
-export interface IActivity
-  extends TransactionsServerResponseWithActivityTransactions {}
-
 export interface IPrice {
   price: number
   lastUpdated: string
@@ -16,7 +13,7 @@ export interface IPrice {
 
 export interface NewTransactionsAction {
   type: 'newTransactions'
-  payload: IActivity
+  payload: TransactionsServerResponseWithActivityTransactions
 }
 
 export interface IEvent {
@@ -65,7 +62,7 @@ export interface State {
   transactions: TransactionsServerResponseWithActivityTransactions
   balances: Record<string, ITokenWithBalance>
   events: Array<IEvent>
-  isSetup: Boolean
+  isSetup: boolean
 }
 
 export type Action =

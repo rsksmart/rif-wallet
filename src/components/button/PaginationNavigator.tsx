@@ -1,7 +1,7 @@
+import { ReactNode } from 'react'
 import { colors } from '../../styles/colors'
 import { Pagination } from 'react-native-snap-carousel'
 
-import React from 'react'
 import {
   GestureResponderEvent,
   TouchableOpacity,
@@ -11,12 +11,12 @@ import {
 import { Arrow } from '../icons'
 import { CheckIcon } from '../icons/CheckIcon'
 
-interface Interface {
+interface Props {
   title?: string
-  icon?: any
-  onPrevious: (event: GestureResponderEvent) => any
-  onNext?: (event: GestureResponderEvent) => any
-  onComplete?: (event: GestureResponderEvent) => any
+  icon?: ReactNode
+  onPrevious: (event: GestureResponderEvent) => void
+  onNext?: (event: GestureResponderEvent) => void
+  onComplete?: (event: GestureResponderEvent) => void
   currentIndex: number
   testID?: string
   shadowColor?: string
@@ -25,7 +25,7 @@ interface Interface {
   slidesAmount: number
 }
 
-export const PaginationNavigator: React.FC<Interface> = ({
+export const PaginationNavigator = ({
   onPrevious,
   onNext,
   onComplete,
@@ -34,7 +34,7 @@ export const PaginationNavigator: React.FC<Interface> = ({
   backgroundColor = 'white',
   containerBackgroundColor = colors.blue,
   slidesAmount,
-}) => {
+}: Props) => {
   const circleStyle = {
     ...styles.image,
     shadowColor,

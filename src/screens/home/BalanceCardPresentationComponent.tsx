@@ -1,25 +1,26 @@
-import React from 'react'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, ViewStyle } from 'react-native'
+
 import { TokenImage } from './TokenImage'
-import { Paragraph } from '../../components'
+import { Paragraph } from 'components/index'
 import { colors } from '../../styles'
 
-type BalancePresentationComponentType = {
+interface BalancePresentationComponentProps {
   handlePress: () => void
-  containerStyles: { [key: string]: any }
+  containerStyles: ViewStyle
   symbol: string
   balance: string
   usdAmount?: string
 }
 
-const BalanceCardPresentationComponent: React.FC<
-  BalancePresentationComponentType
-> = ({ handlePress, containerStyles, symbol, balance, usdAmount }) => (
-  <TouchableOpacity
-    onPress={handlePress}
-    style={containerStyles}
-    accessibilityLabel={symbol.toLowerCase()}>
+const BalanceCardPresentationComponent = ({
+  handlePress,
+  containerStyles,
+  symbol,
+  balance,
+  usdAmount,
+}: BalancePresentationComponentProps) => (
+  <TouchableOpacity onPress={handlePress} style={containerStyles}>
     <View style={styles.icon}>
       <TokenImage symbol={symbol} height={30} width={30} />
     </View>

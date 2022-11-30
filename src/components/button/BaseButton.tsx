@@ -1,19 +1,21 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
+import { ViewStyle } from 'react-native'
+import { ColorValue } from 'react-native'
 import { StyleSheet, TouchableHighlight, View } from 'react-native'
 
 export interface BaseButtonProps {
   disabled?: boolean
   testID?: string
   accessibilityLabel?: string
-  style?: any
-  underlayColor?: string
+  style?: ViewStyle
+  underlayColor?: ColorValue
   children?: ReactNode
-  onPress?: () => any
-  onShowUnderlay?: () => any
-  onHideUnderlay?: () => any
+  onPress?: () => void
+  onShowUnderlay?: () => void
+  onHideUnderlay?: () => void
 }
 
-const BaseButton: React.FC<BaseButtonProps> = ({
+const BaseButton = ({
   children,
   style,
   underlayColor,
@@ -23,7 +25,7 @@ const BaseButton: React.FC<BaseButtonProps> = ({
   onPress,
   onShowUnderlay,
   onHideUnderlay,
-}) => {
+}: BaseButtonProps) => {
   return (
     <TouchableHighlight
       style={{ ...styles.container, ...style }}

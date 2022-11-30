@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { RegularText } from 'src/components'
 import { PrimaryButton } from 'src/components/button/PrimaryButton'
@@ -7,7 +7,7 @@ import { colors } from 'src/styles'
 import { sendFeedbackToGithub } from './operations'
 import { ThankYouComponent } from './ThankYouComponent'
 
-export const FeedbackScreen: React.FC = () => {
+export const FeedbackScreen = () => {
   const [isSent, setIsSent] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -20,7 +20,7 @@ export const FeedbackScreen: React.FC = () => {
     if (feedback !== '') {
       sendFeedbackToGithub(name, email, feedback)
         .then(() => setIsSent(true))
-        .catch((error: any) => {
+        .catch(error => {
           console.log({ error })
           setIsLoading(false)
         })

@@ -1,7 +1,10 @@
-import React, { useCallback, useState } from 'react'
-import { RegularText } from 'src/components/typography'
+import { useCallback, useState } from 'react'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
-import { RootStackScreenProps } from 'navigation/rootNavigator/types'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
 import {
   Image,
   StyleSheet,
@@ -11,7 +14,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native'
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+
 import { AvatarIcon } from 'src/components/icons/AvatarIcon'
 import { IProfileStore } from 'src/storage/MainStorage'
 import { MediumText } from 'src/components'
@@ -20,9 +23,9 @@ import { TextInputWithLabel } from 'src/components/input/TextInputWithLabel'
 import { emptyProfile } from 'src/core/hooks/useProfile'
 import { colors } from 'src/styles'
 import { fonts } from 'src/styles/fonts'
+import { RegularText } from 'src/components/typography'
 
 export type CreateProfileScreenProps = {
-  route: any
   profile: IProfileStore
   setProfile: (p: IProfileStore) => void
   storeProfile: (p: IProfileStore) => Promise<void>
@@ -44,12 +47,12 @@ export const ProfileCreateScreen: React.FC<
 
   const createProfile = async () => {
     await storeProfile({ ...localProfile, alias: profile.alias })
-    navigation.navigate('Home')
+    navigation.navigate(rootStackRouteNames.Home)
   }
 
   const deleteAlias = async () => {
     await eraseProfile()
-    navigation.navigate('Home')
+    navigation.navigate(rootStackRouteNames.Home)
   }
 
   const onSetEmail = useCallback((email: string) => {
@@ -67,7 +70,8 @@ export const ProfileCreateScreen: React.FC<
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView>
         <View style={styles.profileHeader}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate(rootStackRouteNames.Home)}>
             <View style={styles.backButton}>
               <MaterialIcon name="west" color="white" size={10} />
             </View>

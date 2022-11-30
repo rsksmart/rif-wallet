@@ -1,15 +1,15 @@
 import BIP84Payment from './BIP84Payment'
-import { IPayment } from './types'
+import { IPayment, NetworkInfoType, HDSigner } from './types'
 
 function getPaymentInstance(
-  paymentType: string = 'p2wpkh',
-  ...args: any
+  paymentType = 'p2wpkh',
+  bip32root: HDSigner, // TODO: is this correct?
+  networkInfo: NetworkInfoType,
 ): IPayment {
   switch (paymentType) {
     case 'p2wpkh':
     default:
-      // @ts-ignore
-      return new BIP84Payment(...args)
+      return new BIP84Payment(bip32root, networkInfo)
   }
 }
 

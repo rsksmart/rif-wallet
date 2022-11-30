@@ -1,28 +1,30 @@
-import React from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-
 import Clipboard from '@react-native-community/clipboard'
-
 import { View, StyleSheet, TouchableOpacity, Image } from 'react-native'
+
 import { colors } from '../../styles'
-import { RootStackScreenProps } from 'navigation/rootNavigator/types'
-import { MediumText } from '../../components'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
+import { MediumText } from 'components/index'
+import { AvatarIcon } from 'components/icons/AvatarIcon'
 import { IProfileStore } from '../../storage/MainStorage'
-import { AvatarIcon } from '../../components/icons/AvatarIcon'
 
 export type ProfileDetailsScreenProps = {
-  route: any
-  navigation: any
   profile: IProfileStore
 }
-export const ProfileDetailsScreen: React.FC<
-  RootStackScreenProps<'ProfileDetailsScreen'> & ProfileDetailsScreenProps
-> = ({ navigation, profile }) => {
+export const ProfileDetailsScreen = ({
+  navigation,
+  profile,
+}: RootStackScreenProps<rootStackRouteNames.ProfileDetailsScreen> &
+  ProfileDetailsScreenProps) => {
   const fullAlias = `${profile.alias}.rsk`
   return (
     <View style={styles.staticBackground}>
       <View style={styles.profileHeader}>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate(rootStackRouteNames.Home)}>
           <View style={styles.backButton}>
             <MaterialIcon name="west" color="white" size={10} />
           </View>
@@ -30,8 +32,7 @@ export const ProfileDetailsScreen: React.FC<
         <MediumText style={styles.titleText}>profile</MediumText>
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate('ProfileCreateScreen', {
-              navigation,
+            navigation.navigate(rootStackRouteNames.ProfileCreateScreen, {
               editProfile: true,
             })
           }>

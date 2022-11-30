@@ -1,8 +1,7 @@
-import React from 'react'
 import { fonts } from '../../styles/fonts'
-import CustomText, { TextType } from './CustomText'
+import { CustomText, TextType } from './CustomText'
 
-const MediumText: React.FC<TextType> = ({ children, ...props }) => (
+const MediumText = ({ children, ...props }: TextType) => (
   <CustomText font={fonts.medium} {...props}>
     {children}
   </CustomText>

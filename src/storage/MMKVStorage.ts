@@ -1,10 +1,12 @@
 import { MMKV } from 'react-native-mmkv'
 
+type AcceptedValue = boolean | string | number | object
+
 export class MMKVStorage {
-  private id: string = 'mmkv.default'
+  private id = 'mmkv.default'
   private storage: MMKV | null = null
 
-  constructor(id: string = 'mmkv.default', encryptionKey?: string) {
+  constructor(id = 'mmkv.default', encryptionKey?: string) {
     this.id = id
     this.storage = new MMKV({
       id,
@@ -12,20 +14,20 @@ export class MMKVStorage {
     })
   }
 
-  public set(key: string, value: any) {
+  public set(key: string, value: AcceptedValue) {
     if (this.storage && typeof value !== 'undefined') {
       this.storage.set(key, JSON.stringify(value))
     }
   }
 
-  public get(key: string = 'default') {
+  public get(key = 'default') {
     if (this.storage) {
       const value = this.storage.getString(key)
       return value && JSON.parse(value)
     }
   }
 
-  public has(key: string = 'default') {
+  public has(key = 'default') {
     if (this.storage) {
       return this.storage.contains(key)
     } else {

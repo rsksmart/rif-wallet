@@ -8,7 +8,7 @@ interface DomainStoreType {
 
 export const getDomains = (owner: string) => {
   const store: DomainStoreType = JSON.parse(
-    MainStorage.has(key) ? MainStorage.get(key)! : '{}',
+    MainStorage.has(key) ? MainStorage.get(key) : '{}',
   )
   return store[owner] || []
 }

@@ -5,7 +5,7 @@ const WC_KEY = 'WALLET_CONNECT_SESSION'
 export interface IWCSession {
   key: string
   uri: string
-  session: any
+  session: unknown // TODO: make IWalletConnectSession
   walletAddress: string
 }
 

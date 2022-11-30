@@ -31,7 +31,7 @@ describe('Wallet Connect Adapter', function (this: {
 
     const mockIt = jest.fn()
 
-    jest.spyOn(this.signer, 'sendTransaction').mockImplementation((tx: any) => {
+    jest.spyOn(this.signer, 'sendTransaction').mockImplementation(tx => {
       mockIt(tx)
       return Promise.resolve(tx)
     })
@@ -65,7 +65,7 @@ describe('Wallet Connect Adapter', function (this: {
 
     const mockIt = jest.fn()
 
-    jest.spyOn(this.signer, 'sendTransaction').mockImplementation((tx: any) => {
+    jest.spyOn(this.signer, 'sendTransaction').mockImplementation(tx => {
       mockIt(tx)
       return Promise.resolve(tx)
     })

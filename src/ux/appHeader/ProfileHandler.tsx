@@ -1,30 +1,28 @@
-import React from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import { navigationContainerRef } from 'src/core/Core'
+import { rootStackRouteNames } from 'src/navigation/rootNavigator'
 import { RegularText } from '../../components'
 import { AvatarIcon } from '../../components/icons/AvatarIcon'
 import { IProfileStore } from '../../storage/MainStorage'
 import { colors } from '../../styles'
 
 interface Props {
-  navigation: any
   profile: IProfileStore
   profileCreated: boolean
 }
 
-export const ProfileHandler: React.FC<Props> = ({
-  navigation,
-  profile,
-  profileCreated,
-}) => {
+export const ProfileHandler = ({ profile, profileCreated }: Props) => {
   return (
     <TouchableOpacity
       style={styles.profileHandler}
       accessibilityLabel="profile"
       onPress={() =>
-        navigation.navigate(
-          profileCreated ? 'ProfileDetailsScreen' : 'ProfileCreateScreen',
-          { navigation },
+        navigationContainerRef.navigate(
+          profileCreated
+            ? rootStackRouteNames.ProfileDetailsScreen
+            : rootStackRouteNames.ProfileCreateScreen,
+          profileCreated ? undefined : { editProfile: true },
         )
       }>
       {profile?.alias ? (

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import {
   StyleSheet,
   View,
@@ -27,9 +27,13 @@ interface ConfirmMasterKeyScreenProps {
   createWallet: CreateKeysProps['createFirstWallet']
 }
 
-export const ConfirmNewMasterKeyScreen: React.FC<
-  CreateKeysScreenProps<'ConfirmNewMasterKey'> & ConfirmMasterKeyScreenProps
-> = ({ route, navigation, createWallet, isKeyboardVisible }) => {
+export const ConfirmNewMasterKeyScreen = ({
+  route,
+  navigation,
+  createWallet,
+  isKeyboardVisible,
+}: CreateKeysScreenProps<'ConfirmNewMasterKey'> &
+  ConfirmMasterKeyScreenProps) => {
   const mnemonic = route.params.mnemonic
   const slidesIndexes = Array.from(
     { length: Math.ceil(mnemonic.split(' ').length / 3) },
@@ -39,7 +43,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
 
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
   const [selectedWords, setSelectedWords] = useState<string[]>([])
-  const [carousel, setCarousel] = useState<any>()
+  const [carousel, setCarousel] = useState<Carousel<number>>()
   const [error, setError] = useState<boolean>(false)
 
   const handleConfirmMnemonic = async () => {
@@ -62,7 +66,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
     setError(false)
   }
 
-  const renderItem: React.FC<{ item: number }> = ({ item }) => {
+  const renderItem = ({ item }: { item: number }) => {
     const groupIndex = 3 * item
     return (
       <View>
@@ -132,8 +136,8 @@ export const ConfirmNewMasterKeyScreen: React.FC<
       {!isKeyboardVisible && (
         <View style={sharedMnemonicStyles.pagnationContainer}>
           <PaginationNavigator
-            onPrevious={() => carousel.snapToPrev()}
-            onNext={() => carousel.snapToNext()}
+            onPrevious={() => carousel?.snapToPrev()}
+            onNext={() => carousel?.snapToNext()}
             onComplete={handleConfirmMnemonic}
             title="confirm"
             currentIndex={selectedSlide}

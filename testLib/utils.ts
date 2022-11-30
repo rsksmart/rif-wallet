@@ -47,7 +47,7 @@ export type Awaited<T> = T extends PromiseLike<infer U> ? U : T
 export const TEST_TOKEN_DECIMALS = 18
 export const TEST_CHAIN_ID = 31
 
-export const getSigner = (index: number = 0) => {
+export const getSigner = (index = 0) => {
   return testJsonRpcProvider.getSigner(index)
 }
 
@@ -61,19 +61,19 @@ export const deployTestTokens = async (
   // using ERC677__factory that supports ERC20 to set totalSupply (just for testing purpose)
   const initialSupply = initialBalance.mul(tenPow(TEST_TOKEN_DECIMALS))
   const erc677Factory = new ERC677__factory(accountSigner)
-  const firstErc20 = (await erc677Factory.deploy(
+  const firstErc20 = await erc677Factory.deploy(
     deploySignerAddress,
     initialSupply,
     'FIRST_TEST_ERC20',
     'FIRST_TEST_ERC20',
-  )) as any
+  )
 
-  const secondErc20 = (await erc677Factory.deploy(
+  const secondErc20 = await erc677Factory.deploy(
     deploySignerAddress,
     initialSupply,
     'SECOND_TEST_ERC20',
     'SECOND_TEST_ERC20',
-  )) as any
+  )
 
   const firstErc20Token = new ERC20Token(
     firstErc20.address,
