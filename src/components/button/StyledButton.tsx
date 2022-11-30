@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react'
+import { ReactNode, useState } from 'react'
 import { ViewStyle } from 'react-native'
 import { StyleSheet, Text, TextStyle, View } from 'react-native'
 import BaseButton, { BaseButtonProps } from './BaseButton'
