@@ -1,4 +1,4 @@
-import { createContext, useContext, FC } from 'react'
+import { FC } from 'react'
 import { Paragraph } from './components'
 import { RIFWallet, Request } from './lib/core'
 import { ScreenWithWallet } from './screens/types'
