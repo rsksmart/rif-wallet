@@ -144,7 +144,6 @@ export const TransactionForm: React.FC<Interface> = ({
                 style={styles.button}
                 onPress={handleConfirmClick}
                 disabled={!isValidTransaction}
-                title=""
               />
             </View>
           </>
