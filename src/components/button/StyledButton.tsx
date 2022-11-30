@@ -20,14 +20,14 @@ export interface StyledButtonProps extends BaseButtonProps {
   buttonStyles: ButtonStyles
 }
 
-export const StyledButton: React.FC<StyledButtonProps> = ({
+export const StyledButton = ({
   title,
   disabled,
   icon,
   style,
   buttonStyles,
   ...props
-}) => {
+}: StyledButtonProps) => {
   const [isPressed, setIsPressed] = useState(false)
 
   let baseButtonStyle = buttonStyles.button
