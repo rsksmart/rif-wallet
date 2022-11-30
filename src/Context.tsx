@@ -25,17 +25,6 @@ export type AppContextType = {
   BitcoinCore: UseBitcoinCoreResult
 }
 
-export const AppContext = createContext<AppContextType>({
-  wallets: {},
-  walletsIsDeployed: {},
-  chainId: undefined,
-  BitcoinCore: {
-    networks: [],
-    networksMap: {},
-    refreshStoredNetworks: () => {},
-  },
-})
-
 export function InjectSelectedWallet<T>(
   Component: FC<ScreenWithWallet & T>,
 ): FC<T> {
