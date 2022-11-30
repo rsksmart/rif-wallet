@@ -36,11 +36,6 @@ export const AppContext = createContext<AppContextType>({
   },
 })
 
-export const useBitcoinCoreContext = () => {
-  const { BitcoinCore } = useContext(AppContext)
-  return BitcoinCore
-}
-
 export function InjectSelectedWallet<T>(
   Component: FC<ScreenWithWallet & T>,
 ): FC<T> {
