@@ -41,20 +41,6 @@ export const useBitcoinCoreContext = () => {
   return BitcoinCore
 }
 
-export const useSelectedWallet = () => {
-  const { wallets, walletsIsDeployed, selectedWallet, chainId } =
-    useContext(AppContext)
-
-  return {
-    wallet: selectedWallet ? wallets[selectedWallet] : null,
-    isDeployed: selectedWallet ? walletsIsDeployed[selectedWallet] : null,
-    chainId,
-    selectedWalletIndex: selectedWallet
-      ? Object.keys(wallets).indexOf(selectedWallet)
-      : undefined,
-  }
-}
-
 export function InjectSelectedWallet<T>(
   Component: FC<ScreenWithWallet & T>,
 ): FC<T> {
