@@ -27,12 +27,9 @@ export {
   ContactsStackScreenProps,
 } from '../navigation/contactsNavigator/index'
 export { SettingsScreen } from './settings/SettingsScreen'
-export {
-  SecurityConfigurationScreen,
-  SecurityScreenProps,
-} from './security/SecurityConfigurationScreen'
+export { SecurityConfigurationScreen } from './security/SecurityConfigurationScreen'
 export { ChangePinScreen } from './changePin/ChangePinScreen'
-export { AccountsScreen, AccountsScreenType } from './accounts/AccountsScreen'
+export { AccountsScreen } from './accounts/AccountsScreen'
 export { ProfileCreateScreen } from './profile/ProfileCreateScreen'
 export { ProfileDetailsScreen } from './profile/ProfileDetailsScreen'
 export { BitcoinReceiveScreen } from './receive/BitcoinReceiveScreen'
