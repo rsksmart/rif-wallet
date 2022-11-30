@@ -28,7 +28,6 @@ import {
   networkId as defaultNetwordId,
 } from 'core/setup'
 // import { createAppAsyncThunk } from 'store/storeUtils'
-import { hasKeys, hasPin } from 'src/storage/MainStorage'
 import { UseBitcoinCoreResult } from 'core/hooks/bitcoin/useBitcoinCore'
 
 export const createWallet = createAsyncThunk(
@@ -88,14 +87,14 @@ export const addNewWallet = createAsyncThunk(
   'settings/addNewWallet',
   async ({ networkId }: AddNewWalletAction, thunkAPI) => {
     try {
-      const { settings: state } = thunkAPI.getState()
-      if (!state.kms) {
+      const { settings } = thunkAPI.getState()
+      if (!settings.kms) {
         return thunkAPI.rejectWithValue(
           'Can not add new wallet because no KMS created.',
         )
       }
       const { rifWallet, isDeloyed } = await addNextWallet(
-        state.kms,
+        settings.kms,
         createRIFWalletFactory(request =>
           thunkAPI.dispatch(onRequest({ request })),
         ),
@@ -115,8 +114,6 @@ export const addNewWallet = createAsyncThunk(
 const initialState: SettingsSlice = {
   topColor: colors.darkPurple3,
   requests: [],
-  hasKeys: false,
-  hasPin: false,
   kms: null,
   wallets: null,
   walletsIsDeployed: null,
@@ -148,14 +145,8 @@ const settingsSlice = createSlice({
     setChainId: (state, { payload }: PayloadAction<number>) => {
       state.chainId = payload
     },
-    setPinState: (state, { payload }: PayloadAction<string>) => {
+    setPinState: (_, { payload }: PayloadAction<string>) => {
       savePin(payload)
-      state.hasPin = true
-    },
-    setHasKeysHasPin: state => {
-      state.hasKeys = hasKeys()
-      state.hasPin = hasPin()
-      state.loading = false
     },
     setKeysState: (state, { payload }: PayloadAction<SetKeysAction>) => {
       state.kms = payload.kms
@@ -218,18 +209,18 @@ const settingsSlice = createSlice({
     builder.addCase(unlockApp.rejected, state => {
       state.loading = false
     })
-    builder.addCase(unlockApp.fulfilled, (state, { payload }) => {
+    builder.addCase(unlockApp.fulfilled, state => {
       state.loading = false
     })
-    // builder.addCase(addNewWallet.pending, state => {
-    //   state.loading = true
-    // })
-    // builder.addCase(addNewWallet.rejected, state => {
-    //   state.loading = false
-    // })
-    // builder.addCase(addNewWallet.fulfilled, state => {
-    //   state.loading = false
-    // })
+    builder.addCase(addNewWallet.pending, state => {
+      state.loading = true
+    })
+    builder.addCase(addNewWallet.rejected, state => {
+      state.loading = false
+    })
+    builder.addCase(addNewWallet.fulfilled, state => {
+      state.loading = false
+    })
   },
 })
 
@@ -242,7 +233,6 @@ export const {
   setNewWallet,
   setChainId,
   setWalletIsDeployed,
-  setHasKeysHasPin,
   setBitcoinCore,
   removeKeysFromState,
   resetKeysAndPin,

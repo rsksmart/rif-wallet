@@ -40,8 +40,6 @@ export type Requests = RequestMixed[]
 export interface SettingsSlice {
   requests: Requests
   topColor: ColorValue
-  hasKeys: boolean
-  hasPin: boolean
   kms: KeyManagementSystem | null
   wallets: Wallets | null
   walletsIsDeployed: WalletsIsDeployed | null
