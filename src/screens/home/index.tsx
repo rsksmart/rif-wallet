@@ -11,6 +11,7 @@ import { LoadingScreen } from 'components/loading/LoadingScreen'
 import {
   RootStackNavigationProp,
   rootStackRouteNames,
+  RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
 import { colors } from 'src/styles'
 import PortfolioComponent from './PortfolioComponent'
@@ -29,11 +30,9 @@ import {
   selectBitcoinCore,
 } from 'store/slices/settingsSlice'
 
-export interface HomeScreenProps {
-  navigation: RootStackNavigationProp
-}
-
-export const HomeScreen = ({ navigation }: HomeScreenProps) => {
+export const HomeScreen = ({
+  navigation,
+}: RootStackScreenProps<rootStackRouteNames.Home>) => {
   const dispatch = useAppDispatch()
   const tokenBalances = useAppSelector(selectBalances)
   const prices = useAppSelector(selectUsdPrices)

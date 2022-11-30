@@ -1,16 +1,13 @@
 export { SendScreen } from './send/SendScreen'
 export { ReceiveScreen, ReceiveScreenProps } from './receive/ReceiveScreen'
 export { ReceiveScreenHOC } from './receive/ReceiveScreenHOC'
-export { BalancesScreen, BalancesScreenProps } from './balances/BalancesScreen'
-export { ActivityScreen, ActivityScreenProps } from './activity/ActivityScreen'
+export { BalancesScreen } from './balances/BalancesScreen'
+export { ActivityScreen } from './activity/ActivityScreen'
 export {
   ActivityDetailsScreen,
   ActivityDetailsScreenProps,
 } from './activity/ActivityDetailsScreen'
-export {
-  ShowMnemonicScreen,
-  ShowMnemonicScreenProps,
-} from './info/ShowMnemonicScreen'
+export { ShowMnemonicScreen } from './info/ShowMnemonicScreen'
 export { ManuallyDeployScreen } from './settings/ManuallyDeployScreen'
 export { WalletConnectScreen } from './walletConnect'
 export { ScanQRScreen } from './walletConnect/ScanQRScreen'
@@ -21,7 +18,7 @@ export { RequestDomainScreen } from './rnsManager/RequestDomainScreen'
 export { BuyDomainScreen } from './rnsManager/BuyDomainScreen'
 export { AliasBoughtScreen } from './rnsManager/AliasBoughtScreen'
 export { RegisterDomainScreen } from './rnsManager/RegisterDomainScreen'
-export { HomeScreen, HomeScreenProps } from './home/index'
+export { HomeScreen } from './home/index'
 export {
   ContactsNavigation,
   ContactsStackScreenProps,
