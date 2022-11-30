@@ -1,5 +1,4 @@
 import { StackScreenProps } from '@react-navigation/stack'
-import { RIFWallet } from '../../lib/core'
 
 export enum createKeysRouteNames {
   CreateKeys = 'CreateKeys',
@@ -9,11 +8,6 @@ export enum createKeysRouteNames {
   ConfirmNewMasterKey = 'ConfirmNewMasterKey',
   ImportMasterKey = 'ImportMasterKey',
   RevealMasterKey = 'RevealMasterKey',
-}
-
-export interface CreateKeysProps {
-  generateMnemonic: () => string
-  createFirstWallet: (mnemonic: string) => Promise<RIFWallet>
 }
 
 export type CreateKeysStackParamList = {
