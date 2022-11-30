@@ -3,10 +3,7 @@ export { ReceiveScreen, ReceiveScreenProps } from './receive/ReceiveScreen'
 export { ReceiveScreenHOC } from './receive/ReceiveScreenHOC'
 export { BalancesScreen } from './balances/BalancesScreen'
 export { ActivityScreen } from './activity/ActivityScreen'
-export {
-  ActivityDetailsScreen,
-  ActivityDetailsScreenProps,
-} from './activity/ActivityDetailsScreen'
+export { ActivityDetailsScreen } from './activity/ActivityDetailsScreen'
 export { ShowMnemonicScreen } from './info/ShowMnemonicScreen'
 export { ManuallyDeployScreen } from './settings/ManuallyDeployScreen'
 export { WalletConnectScreen } from './walletConnect'
