@@ -12,10 +12,7 @@ export enum SETTINGS {
  * RSK Mainnet: 30
  * RSK Testnet: 31
  */
-export const getWalletSetting = (
-  setting: SETTINGS,
-  chainId: number = 31,
-): string => {
+export const getWalletSetting = (setting: SETTINGS, chainId = 31): string => {
   switch (setting) {
     case SETTINGS.DEFAULT_CHAIN_ID:
       return Config.DEFAULT_CHAIN_ID
