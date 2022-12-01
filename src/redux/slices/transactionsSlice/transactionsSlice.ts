@@ -4,8 +4,11 @@ import {
   filterEnhancedTransactions,
   sortEnhancedTransactions,
 } from 'src/subscriptions/utils'
-import { IActivityTransaction, IEvent } from 'src/subscriptions/types'
-import { TransactionsServerResponseWithActivityTransactions } from 'src/screens/activity/types'
+import {
+  IActivityTransaction,
+  IEvent,
+  TransactionsServerResponseWithActivityTransactions,
+} from 'src/subscriptions/types'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 
 const initialState: ITransactionsState = {
@@ -31,8 +34,8 @@ const transactionsSlice = createSlice({
       state.transactions = deserializeTransactions(
         state.transactions.concat(payload.activityTransactions || []),
       )
-      state.next = payload.next
-      state.prev = payload.prev
+      state.next = payload.next || null
+      state.prev = payload.prev || null
       return state
     },
     addNewTransaction: (

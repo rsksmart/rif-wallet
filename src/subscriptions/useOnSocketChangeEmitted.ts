@@ -1,6 +1,5 @@
 import { useOnNewTransactionEventEmitted } from './useOnNewTransactionEventEmitted'
-import { ISocketsChangeEmitted } from './types'
-import { IServiceChangeEvent } from 'lib/rifWalletServices/RifWalletServicesSocket'
+import { Action, ISocketsChangeEmitted } from './types'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import {
   addOrUpdateBalances,
@@ -23,41 +22,42 @@ export const useOnSocketChangeEmitted = ({
     wallet,
     dispatch: dispatch,
   })
-  return ({ type, payload }: IServiceChangeEvent) => {
-    switch (type) {
-      case 'newPrice':
-        dispatch(setUsdPrices(payload))
-        break
-      case 'newTransaction':
-        onNewTransactionEventEmitted(payload)
-        break
-      case 'newTransactions':
-        dispatch(addNewTransactions(payload))
-        break
-      case 'newBalance':
-        dispatch(addOrUpdateNewBalance(payload))
-        break
-      case 'reset':
-        dispatch(resetSocketState())
-        break
-      case 'init':
-        dispatch(
-          addNewTransactions({
-            data: [],
-            next: undefined,
-            prev: undefined,
-            activityTransactions: payload.transactions,
-          }),
-        )
-        dispatch(addOrUpdateBalances(payload.balances))
-        dispatch(setIsSetup(true))
-        break
-      case 'newTokenTransfer':
-        // This is not being used anywhere
-        dispatch(addNewEvent(payload))
-        break
-      default:
-        throw new Error(`${type} not implemented`)
+  return (action: Action) => {
+    if (action.type === 'reset') {
+      dispatch(resetSocketState())
+    } else {
+      const { type, payload } = action
+      switch (type) {
+        case 'newPrice':
+          dispatch(setUsdPrices(payload))
+          break
+        case 'newTransaction':
+          onNewTransactionEventEmitted(payload.originTransaction)
+          break
+        case 'newTransactions':
+          dispatch(addNewTransactions(payload))
+          break
+        case 'newBalance':
+          dispatch(addOrUpdateNewBalance(payload))
+          break
+        case 'init':
+          dispatch(
+            addNewTransactions({
+              next: null,
+              prev: null,
+              activityTransactions: payload.transactions,
+            }),
+          )
+          dispatch(addOrUpdateBalances(payload.balances))
+          dispatch(setIsSetup(true))
+          break
+        case 'newTokenTransfer':
+          // This is not being used anywhere
+          dispatch(addNewEvent(payload))
+          break
+        default:
+          throw new Error(`${type} not implemented`)
+      }
     }
   }
 }

@@ -54,12 +54,6 @@ export interface InitAction {
 
 export interface ResetAction {
   type: 'reset'
-  payload: undefined
-}
-
-export interface State {
-  events: Array<IEvent>
-  isSetup: boolean
 }
 
 export type Action =
@@ -77,13 +71,6 @@ export interface IActivityTransaction {
 }
 
 export type ActivityScreenProps = {
-  fetcher: IRIFWalletServicesFetcher
-  abiEnhancer: IAbiEnhancer
-}
-
-export interface FetchTransactionsOptions {
-  next: string | null
-  prev: string | null
   fetcher: IRIFWalletServicesFetcher
   abiEnhancer: IAbiEnhancer
 }
