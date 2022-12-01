@@ -1,30 +1,31 @@
-import { InitAction } from './types'
 import { useEffect } from 'react'
+
+import { IAbiEnhancer } from 'lib/abiEnhancer/AbiEnhancer'
+import { IRifWalletServicesSocket } from 'lib/rifWalletServices/RifWalletServicesSocket'
+
 import { useSetGlobalError } from 'components/GlobalErrorHandler'
 import { useConnectSocket } from './useConnectSocket'
 import { useOnSocketChangeEmitted } from './useOnSocketChangeEmitted'
-import { useAppDispatch } from 'store/storeHooks'
+import { useAppSelector, useAppDispatch } from 'store/storeUtils'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
-import { RIFWallet } from 'lib/core'
-import { IRifWalletServicesSocket } from 'lib/rifWalletServices/RifWalletServicesSocket'
-import { IAbiEnhancer } from 'lib/abiEnhancer/AbiEnhancer'
+import { selectActiveWallet, selectKMS } from 'store/slices/settingsSlice'
+import { InitAction } from './types'
 
 interface IUseRifSockets {
   rifServiceSocket?: IRifWalletServicesSocket
   abiEnhancer: IAbiEnhancer
   appActive: boolean
-  wallet: RIFWallet
   mnemonic?: string
 }
 export const useRifSockets = ({
   rifServiceSocket,
   abiEnhancer,
   appActive,
-  wallet,
-  mnemonic,
 }: IUseRifSockets) => {
   const dispatchRedux = useAppDispatch()
   const setGlobalError = useSetGlobalError()
+  const kms = useAppSelector(selectKMS)
+  const { wallet } = useAppSelector(selectActiveWallet)
 
   const onSocketsChange = useOnSocketChangeEmitted({
     dispatch: dispatchRedux,
@@ -41,7 +42,7 @@ export const useRifSockets = ({
     onError: onSocketError,
     onChange: onSocketsChange,
     onInit: onSocketInit,
-    mnemonic,
+    mnemonic: kms?.mnemonic,
     wallet,
   })
 
@@ -58,6 +59,8 @@ export const useRifSockets = ({
         rifServiceSocket?.disconnect()
       }
     }
+
+    return () => rifServiceSocket?.disconnect()
   }, [wallet])
 
   // Disconnect from the rifServiceSocket when the app goes to the background
