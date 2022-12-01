@@ -26,10 +26,8 @@ export default function ActivityDetailsContainer({
 }: ActivityDetailsContainer) {
   const { chainId = 31 } = useSelectedWallet()
   const explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainId)
-  const onViewExplorerClick = (): null => {
-    Linking.openURL(`${explorerUrl}tx/${transaction.originTransaction.hash}`)
-    return null
-  }
+  const onViewExplorerClick = () =>
+    Linking.openURL(`${explorerUrl}/tx/${transaction.originTransaction.hash}`)
 
   const status = transaction.originTransaction.receipt ? 'success' : 'pending'
 
