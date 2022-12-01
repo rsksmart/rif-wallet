@@ -4,7 +4,6 @@ import { Paragraph } from '../../components'
 import { toChecksumAddress } from '../../components/address/lib'
 import { LoadingScreen } from '../../components/loading/LoadingScreen'
 import { useBitcoinCoreContext, useSelectedWallet } from '../../Context'
-import { useProfile } from '../../core/hooks/useProfile'
 import { balanceToDisplay } from '../../lib/utils'
 import {
   RootStackNavigationProp,
@@ -21,6 +20,7 @@ import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 import { useAppSelector } from 'store/storeHooks'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
+import { selectProfile } from 'src/redux/slices/profileSlice/selector'
 
 export type HomeScreenProps = {
   navigation: RootStackNavigationProp
@@ -36,7 +36,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const prices = useAppSelector(selectUsdPrices)
   const { networksMap } = useBitcoinCoreContext()
   const { selectedWalletIndex, wallet, chainId } = useSelectedWallet()
-  const { profile } = useProfile()
+  const profile = useAppSelector(selectProfile)
 
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
     undefined,
@@ -122,7 +122,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     return <LoadingScreen />
   }
 
-  let accountName = ''
+  let accountName = 'account 1'
   if (typeof selectedWalletIndex === 'number') {
     accountName =
       profile.accounts[selectedWalletIndex]?.name ||
@@ -149,7 +149,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         {balances.length === 0 ? (
           <>
             <Image
-              source={require('../../images/noBalance.png')}
+              source={require('src/images/noBalance.png')}
               style={styles.noBalance}
             />
             <Paragraph style={styles.text}>

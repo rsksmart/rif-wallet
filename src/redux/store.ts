@@ -1,13 +1,15 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import createDebugger from 'redux-flipper'
+import { balancesReducer } from './slices/balancesSlice/balancesSlice'
+import { profileReducer } from './slices/profileSlice/profileSlice'
 import { usdPriceReducer } from './slices/usdPricesSlice/usdPricesSlice'
-import { balancesReducer } from 'store/slices/balancesSlice/balancesSlice'
 
 // Must use redux-debugger plugin in flipper for the redux debugger to work
 
 const rootReducer = combineReducers({
   usdPrices: usdPriceReducer,
   balances: balancesReducer,
+  profile: profileReducer,
 })
 
 export const store = configureStore({

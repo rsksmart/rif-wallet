@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, TextInput, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { useProfile } from '../../core/hooks/useProfile'
+import { setAccount } from 'src/redux/slices/profileSlice/profileSlice'
+import { selectProfile } from 'src/redux/slices/profileSlice/selector'
+import { useAppDispatch, useAppSelector } from 'src/redux/storeHooks'
 import { SmartWalletFactory } from '../../lib/core/SmartWalletFactory'
 import { PublicKeyItemType } from '../../screens/accounts/types'
 import { colors } from '../../styles'
@@ -31,7 +33,8 @@ const AccountBox: React.FC<AccountBoxProps> = ({
   publicKeys = [],
   id = 0,
 }) => {
-  const { profile, storeProfile } = useProfile()
+  const profile = useAppSelector(selectProfile)
+  const dispatch = useAppDispatch()
   const initialAccountName = profile.accounts[id]?.name || `account ${id + 1}`
   const [accountName, setAccountName] = useState<string>(initialAccountName)
   const [isDeployed, setIsDeployed] = useState(false)
@@ -54,7 +57,13 @@ const AccountBox: React.FC<AccountBoxProps> = ({
         ...profile.accounts[id],
         name,
       }
-      storeProfile(profile)
+      // storeProfile(profile)
+      dispatch(
+        setAccount({
+          index: id,
+          account: { name },
+        }),
+      )
     }
   }
 
