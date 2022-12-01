@@ -10,7 +10,8 @@ import { CreateKeysStackParamList } from '../createKeysNavigator'
 export type RootStackScreenProps<T extends keyof RootStackParamList> =
   StackScreenProps<RootStackParamList, T>
 
-export type RootStackNavigationProp = NavigationProp<RootStackParamList>
+export type RootStackNavigationProp<T extends keyof RootStackParamList> =
+  NavigationProp<T>
 
 export enum rootStackRouteNames {
   Home = 'Home',

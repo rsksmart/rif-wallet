@@ -19,10 +19,6 @@ export const selectWalletIsDeployed = ({ settings }: RootState) =>
 export const selectSettingsIsLoading = ({ settings }: RootState) =>
   settings.loading
 
-export const selectHasPin = ({ settings }: RootState) => settings.hasPin
-
-export const selectHasKeys = ({ settings }: RootState) => settings.hasKeys
-
 export const selectWholeSettingsState = ({ settings }: RootState) => settings
 
 export const selectActiveWallet = ({ settings }: RootState) => ({
