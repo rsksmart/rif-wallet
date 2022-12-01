@@ -1,21 +1,20 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import {
   Request,
   SignMessageRequest,
   SendTransactionRequest,
-} from '../../lib/core'
+  SignTypedDataRequest,
+} from 'lib/core'
+import { SendBitcoinRequestType } from 'lib/bitcoin/types'
 
+import SlideUpModal from 'components/slideUpModal/SlideUpModal'
 import ReviewTransactionModal from './ReviewTransactionModal'
 import SignMessageModal from './SignMessageModal'
 import SignTypedDataModal from './SignTypedDataModal'
 import { InjectSelectedWallet } from '../../Context'
-import { SignTypedDataRequest } from '../../lib/core'
-import SlideUpModal from '../../components/slideUpModal/SlideUpModal'
 import { colors } from '../../styles'
 import ConfirmBitcoinTransactionModal from './ConfirmBitcoinTransactionModal'
-import { SendBitcoinRequestType } from '../../lib/bitcoin/types'
-import { useKeyboardIsVisible } from 'src/core/hooks/useKeyboardIsVisible'
 
 interface Props {
   request: Request

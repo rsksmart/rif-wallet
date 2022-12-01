@@ -33,7 +33,6 @@ import { UseBitcoinCoreResult } from 'core/hooks/bitcoin/useBitcoinCore'
 export const createWallet = createAsyncThunk(
   'settings/createWallet',
   async ({ mnemonic, networkId }: CreateFirstWalletAction, thunkAPI) => {
-    const { settings } = thunkAPI.getState()
     const rifWalletFactory = createRIFWalletFactory(request =>
       thunkAPI.dispatch(onRequest({ request })),
     )

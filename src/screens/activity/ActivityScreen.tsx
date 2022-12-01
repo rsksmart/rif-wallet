@@ -3,9 +3,9 @@ import { FlatList, StyleSheet, View, RefreshControl } from 'react-native'
 import { useTranslation } from 'react-i18next'
 
 import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
-import { IEnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
 import { RIFWallet } from 'lib/core'
 import BIP from 'lib/bitcoin/BIP'
+import { IEnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
 
 import ActivityRow from './ActivityRow'
 import useBitcoinTransactionsHandler from './useBitcoinTransactionsHandler'
@@ -45,7 +45,6 @@ export const ActivityScreen = ({
     transactions,
     btcTransactionFetcher.transactions,
   )
-  const hasTransactions = transactionsCombined.length > 0
 
   // On load, fetch btc transactions
   useEffect(() => {
@@ -72,11 +71,7 @@ export const ActivityScreen = ({
 
       fetchedTransactions.activityTransactions = await Promise.all(
         fetchedTransactions.data.map(async (tx: IApiTransaction) => {
-          const enhancedTransaction = await enhanceTransactionInput(
-            tx,
-            wallet,
-            abiEnhancer,
-          )
+          const enhancedTransaction = await enhanceTransactionInput(tx, wallet)
           return {
             originTransaction: tx,
             enhancedTransaction,

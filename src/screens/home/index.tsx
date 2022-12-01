@@ -9,7 +9,6 @@ import { Paragraph } from 'components/index'
 import { toChecksumAddress } from 'components/address/lib'
 import { LoadingScreen } from 'components/loading/LoadingScreen'
 import {
-  RootStackNavigationProp,
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
