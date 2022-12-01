@@ -11,6 +11,8 @@ import { colors, spacing } from '../../styles/'
 import { TokenImage } from '../home/TokenImage'
 import { SearchIcon } from '../../components/icons/SearchIcon'
 import { StatusIcon } from '../../components/statusIcons'
+import { useSelectedWallet } from 'src/Context'
+import { getWalletSetting, SETTINGS } from 'src/core/config'
 
 export interface TransactionInformation {
   status: 'USER_CONFIRM' | 'PENDING' | 'SUCCESS' | 'FAILED'
@@ -25,6 +27,9 @@ type Props = {
 }
 
 export const TransactionInfo = ({ transaction }: Props) => {
+  const { chainId } = useSelectedWallet()
+  const explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainId)
+
   if (transaction.status === 'USER_CONFIRM' || !transaction.hash) {
     return (
       <View style={styles.mainLoadingContainer}>
@@ -38,7 +43,7 @@ export const TransactionInfo = ({ transaction }: Props) => {
   }
 
   const onViewExplorerTouch = () =>
-    Linking.openURL(`https://explorer.testnet.rsk.co/tx/${transaction.hash}`)
+    Linking.openURL(`${explorerUrl}/tx/${transaction.hash}`)
 
   const onCopyHash = () => Clipboard.setString(transaction.hash || '')
 

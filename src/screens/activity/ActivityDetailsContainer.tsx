@@ -13,6 +13,8 @@ import { spacing } from 'src/styles'
 import { TokenImage } from '../home/TokenImage'
 import { activityDetailsStyles as styles } from './styles'
 import { IActivityTransaction } from './types'
+import { useSelectedWallet } from 'src/Context'
+import { getWalletSetting, SETTINGS } from 'src/core/config'
 
 type ActivityDetailsContainer = {
   transaction: IActivityTransaction
@@ -22,12 +24,10 @@ export default function ActivityDetailsContainer({
   transaction,
   onBackPress,
 }: ActivityDetailsContainer) {
-  const onViewExplorerClick = (): null => {
-    Linking.openURL(
-      `https://explorer.testnet.rsk.co/tx/${transaction.originTransaction.hash}`,
-    )
-    return null
-  }
+  const { chainId = 31 } = useSelectedWallet()
+  const explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainId)
+  const onViewExplorerClick = () =>
+    Linking.openURL(`${explorerUrl}/tx/${transaction.originTransaction.hash}`)
 
   const status = transaction.originTransaction.receipt ? 'success' : 'pending'
 

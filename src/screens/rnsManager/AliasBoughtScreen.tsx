@@ -12,6 +12,8 @@ import { MediumText } from 'src/components'
 import { PrimaryButton } from 'src/components/button/PrimaryButton'
 import { IProfileStore } from 'src/storage/MainStorage'
 import { ScreenWithWallet } from '../types'
+import { getWalletSetting, SETTINGS } from 'src/core/config'
+import { useSelectedWallet } from 'src/Context'
 
 interface Props {
   profile: IProfileStore
@@ -30,9 +32,13 @@ export const AliasBoughtScreen = ({
     'Transaction for your alias is being processed',
   )
 
+  const { chainId } = useSelectedWallet()
+
+  const explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainId)
+
   const copyHashAndOpenExplorer = (hash: string) => {
-    Clipboard.setString(hash) // TODO: fix deprecated Clipboard
-    Linking.openURL(`https://explorer.testnet.rsk.co/tx/${hash}`)
+    Clipboard.setString(hash)
+    Linking.openURL(`${explorerUrl}/tx/${hash}`)
   }
 
   useEffect(() => {
