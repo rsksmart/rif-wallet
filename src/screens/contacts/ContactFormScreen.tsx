@@ -25,10 +25,6 @@ import {
   contactsStackRouteNames,
   ContactsStackScreenProps,
 } from 'navigation/contactsNavigator'
-import { colors, grid } from 'src/styles'
-import { fonts } from 'src/styles/fonts'
-import { setOpacity } from '../home/tokenColor'
-import { ContactsContext, IContact } from './ContactsContext'
 import { useAppSelector } from 'store/storeUtils'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 
