@@ -96,7 +96,8 @@ export const ConfirmNewMasterKeyScreen = ({
       <View style={sharedMnemonicStyles.topContent}>
         <TouchableOpacity
           onPress={() => navigation.navigate('NewMasterKey')}
-          style={styles.returnButton}>
+          style={styles.returnButton}
+          accessibilityLabel="back">
           <View style={styles.returnButtonView}>
             <Arrow color={colors.white} rotate={270} width={30} height={30} />
           </View>

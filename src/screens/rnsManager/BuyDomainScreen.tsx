@@ -84,7 +84,9 @@ export const BuyDomainScreen = ({ wallet, navigation, route }: Props) => {
   return (
     <>
       <View style={rnsManagerStyles.profileHeader}>
-        <TouchableOpacity onPress={() => navigation.navigate('SearchDomain')}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('SearchDomain')}
+          accessibilityLabel="search">
           <View style={rnsManagerStyles.backButton}>
             <MaterialIcon name="west" color="white" size={10} />
           </View>

@@ -82,7 +82,8 @@ export const ManuallyDeployScreen: React.FC<
               <View style={grid.column1}>
                 <TouchableOpacity
                   style={styles.button}
-                  onPress={() => Clipboard.setString(wallet.address)}>
+                  onPress={() => Clipboard.setString(wallet.address)}
+                  accessibilityLabel="copy">
                   <CopyIcon width={25} height={25} color="white" />
                 </TouchableOpacity>
               </View>
@@ -124,7 +125,8 @@ export const ManuallyDeployScreen: React.FC<
             <TouchableOpacity
               onPress={() =>
                 Clipboard.setString(smartWalletDeployTx.hash || '')
-              }>
+              }
+              accessibilityLabel="explorer">
               <Text style={styles.text}>
                 {smartWalletDeployTx.hash || ''}
                 <CopyIcon />

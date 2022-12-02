@@ -31,7 +31,10 @@ const AssetChooser = ({
   }
 
   return (
-    <TouchableOpacity onPress={() => setShowSelector(true)} style={grid.row}>
+    <TouchableOpacity
+      onPress={() => setShowSelector(true)}
+      style={grid.row}
+      accessibilityLabel="choose">
       <View style={{ ...grid.column12, ...styles.assetButton }}>
         <View style={styles.assetContainer}>
           <View style={styles.assetIcon}>

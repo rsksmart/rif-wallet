@@ -71,7 +71,8 @@ export const ProfileCreateScreen: React.FC<
       <ScrollView>
         <View style={styles.profileHeader}>
           <TouchableOpacity
-            onPress={() => navigation.navigate(rootStackRouteNames.Home)}>
+            onPress={() => navigation.navigate(rootStackRouteNames.Home)}
+            accessibilityLabel="home">
             <View style={styles.backButton}>
               <MaterialIcon name="west" color="white" size={10} />
             </View>
@@ -80,7 +81,7 @@ export const ProfileCreateScreen: React.FC<
             {editProfile ? 'edit profile' : 'create profile'}
           </MediumText>
           {editProfile && (
-            <TouchableOpacity onPress={deleteAlias}>
+            <TouchableOpacity onPress={deleteAlias} accessibilityLabel="delete">
               <MaterialIcon name="delete" color="white" size={20} />
             </TouchableOpacity>
           )}
@@ -123,6 +124,7 @@ export const ProfileCreateScreen: React.FC<
                 </View>
                 <View>
                   <TouchableOpacity
+                    accessibilityLabel="close"
                     onPress={() => setProfile({ ...profile, alias: '' })}>
                     <MaterialIcon name="close" color={colors.white} size={20} />
                   </TouchableOpacity>

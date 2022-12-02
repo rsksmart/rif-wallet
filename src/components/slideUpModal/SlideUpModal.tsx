@@ -76,6 +76,7 @@ const SlideUpModal: React.FC<Interface> = ({
             </View>
             <View>
               <TouchableOpacity
+                accessibilityLabel="hide"
                 onPress={() => {
                   onAnimateModal()
                 }}>

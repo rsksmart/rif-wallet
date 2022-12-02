@@ -24,6 +24,7 @@ export const ProfileDetailsScreen = ({
     <View style={styles.staticBackground}>
       <View style={styles.profileHeader}>
         <TouchableOpacity
+          accessibilityLabel="home"
           onPress={() => navigation.navigate(rootStackRouteNames.Home)}>
           <View style={styles.backButton}>
             <MaterialIcon name="west" color="white" size={10} />
@@ -31,6 +32,7 @@ export const ProfileDetailsScreen = ({
         </TouchableOpacity>
         <MediumText style={styles.titleText}>profile</MediumText>
         <TouchableOpacity
+          accessibilityLabel="profile"
           onPress={() =>
             navigation.navigate(rootStackRouteNames.ProfileCreateScreen, {
               editProfile: true,
@@ -63,6 +65,7 @@ export const ProfileDetailsScreen = ({
                 {profile.alias}
               </MediumText>
               <TouchableOpacity
+                accessibilityLabel="copy"
                 onPress={() => Clipboard.setString(profile.alias || '')}>
                 <MaterialIcon
                   style={styles.copyIcon}

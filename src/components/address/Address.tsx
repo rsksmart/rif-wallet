@@ -31,10 +31,13 @@ export const Address: React.FC<{ chainId?: number; testID?: string }> = ({
   return (
     <Paragraph>
       <Text testID={testID}>{displayAddress} </Text>
-      <TouchableOpacity onPress={() => Clipboard.setString(checksumAddress)}>
+      <TouchableOpacity
+        onPress={() => Clipboard.setString(checksumAddress)}
+        accessibilityLabel="copy">
         <CopyIcon width={30} height={30} />
       </TouchableOpacity>
       <TouchableOpacity
+        accessibilityLabel="explorer"
         onPress={() => {
           Linking.openURL(`${explorerUrl}/address/${checksumAddress}`)
         }}>
