@@ -85,7 +85,7 @@ export const Core = () => {
     rifServiceSocket: rifWalletServicesSocket,
     abiEnhancer,
     appActive: active,
-    wallet: state.wallets[state.selectedWallet!],
+    wallet: state.wallets[state.selectedWallet],
     mnemonic: state.kms?.mnemonic,
   })
 
