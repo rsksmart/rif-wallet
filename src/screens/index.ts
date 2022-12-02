@@ -28,7 +28,6 @@ export {
   ContactsStackScreenProps,
 } from '../navigation/contactsNavigator/index'
 export { SettingsScreen } from './settings/SettingsScreen'
-export { EventsScreenHOC as EventsScreen } from './events'
 export {
   SecurityConfigurationScreen,
   SecurityScreenProps,
