@@ -104,6 +104,7 @@ export const ManuallyDeployScreen: React.FC<
                 onPress={() => Linking.openURL('https://faucet.rsk.co/')}
                 style={styles.button}
                 title="Open the RBTC Faucet in your browser"
+                accessibilityLabel="faucet"
               />
             )}
           </View>
@@ -114,6 +115,7 @@ export const ManuallyDeployScreen: React.FC<
             onPress={deploy || isDeploying}
             style={!hasBalance ? styles.buttonDisabled : styles.button}
             title="Deploy Wallet"
+            accessibilityLabel="deploy"
           />
 
           {isDeploying && <Text style={styles.text}>Deploying...</Text>}

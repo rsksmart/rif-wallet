@@ -229,6 +229,7 @@ export const AddressInput = ({
           {status.type === 'CHECKSUM' && (
             <SecondaryButton
               testID={`${testID}.Button.Checksum`}
+              accessibilityLabel="convert"
               title="Convert to correct checksum"
               onPress={() =>
                 handleChangeText(toChecksumAddress(recipient, chainId))

@@ -5,10 +5,11 @@ import { ButtonProps } from './types'
 interface ActiveButtonType extends ButtonProps {
   isActive?: boolean
 }
+
 export const ActiveButton = ({
   isActive = false,
   style,
-  ...rest
+  ...props
 }: ActiveButtonType) => {
   const buttonStyles = {
     ...style,
@@ -16,8 +17,9 @@ export const ActiveButton = ({
     width: 150,
   }
 
-  if (isActive) {
-    return <PrimaryButton {...rest} style={buttonStyles} />
-  }
-  return <SecondaryButton {...rest} style={buttonStyles} />
+  return isActive ? (
+    <PrimaryButton {...props} style={buttonStyles} />
+  ) : (
+    <SecondaryButton {...props} style={buttonStyles} />
+  )
 }

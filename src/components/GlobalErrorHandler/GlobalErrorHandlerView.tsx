@@ -57,6 +57,7 @@ const GlobalErrorHandlerView: React.FC<GlobalErrorHandlerViewType> = ({
         <View style={styles.reloadButtonView}>
           <PrimaryButton
             title="reload"
+            accessibilityLabel="reload"
             onPress={handleReload}
             style={styles.reload}
           />
