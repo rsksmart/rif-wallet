@@ -5,6 +5,7 @@ export { OutlineButton } from './OutlineButton'
 export { PrimaryButton } from './PrimaryButton'
 export { SecondaryButton } from './SecondaryButton'
 export { TransferButton } from './TransferButton'
+export { WhiteTransparentButton } from './WhiteButton'
 
 // Button-like things
 export { PaginationNavigator } from './PaginationNavigator'
