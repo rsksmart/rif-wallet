@@ -31,7 +31,8 @@ export const TokenButton = ({
   <TouchableOpacity
     style={style ? { ...styles.button, ...style } : styles.button}
     onPress={onPress}
-    testID={testID}>
+    testID={testID}
+    accessibilityLabel={title}>
     <View style={styles.iconContainer}>
       <View style={styles.icon}>{icon}</View>
       <View>

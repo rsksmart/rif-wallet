@@ -4,10 +4,14 @@ import BaseButton from './BaseButton'
 
 describe('BaseButton component', () => {
   const testID = 'button'
+  const accessibilityLabel = 'label'
 
   test('renders children', () => {
     const component = render(
-      <BaseButton testID={testID} onPress={() => {}}>
+      <BaseButton
+        testID={testID}
+        accessibilityLabel={accessibilityLabel}
+        onPress={() => {}}>
         <Text>copy</Text>
       </BaseButton>,
     )
@@ -17,7 +21,10 @@ describe('BaseButton component', () => {
   test('calls function on press', () => {
     const onPress = jest.fn()
     const component = render(
-      <BaseButton testID={testID} onPress={onPress}>
+      <BaseButton
+        testID={testID}
+        accessibilityLabel={accessibilityLabel}
+        onPress={onPress}>
         <Text>copy</Text>
       </BaseButton>,
     )
@@ -30,7 +37,10 @@ describe('BaseButton component', () => {
   it('renders correctly with defaults', () => {
     const onPress = jest.fn()
     const { getByTestId } = render(
-      <BaseButton onPress={onPress} testID="button">
+      <BaseButton
+        onPress={onPress}
+        accessibilityLabel={accessibilityLabel}
+        testID="button">
         <Text>Hello</Text>
       </BaseButton>,
     )
@@ -44,7 +54,11 @@ describe('BaseButton component', () => {
   it('is not clickable when disabled', () => {
     const onPressDisabled = jest.fn()
     const { getByTestId } = render(
-      <BaseButton onPress={onPressDisabled} testID="button" disabled={true}>
+      <BaseButton
+        onPress={onPressDisabled}
+        accessibilityLabel={accessibilityLabel}
+        testID="button"
+        disabled={true}>
         <Text>Hello</Text>
       </BaseButton>,
     )

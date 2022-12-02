@@ -43,6 +43,7 @@ export const ToggleButtons: React.FC<Props> = ({
           <BaseButton
             key={option}
             style={optionStyle}
+            accessibilityLabel="option"
             onPress={() => onOptionSelected(option)}>
             <MediumText style={optionTextStyle}>{option}</MediumText>
           </BaseButton>

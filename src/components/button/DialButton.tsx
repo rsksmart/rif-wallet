@@ -7,6 +7,7 @@ type Props = {
   disabled?: boolean
   label: string
   testID: string
+  accessibilityLabel: string
   variant?: 'default' | 'error' | 'success'
   onPress: () => void
 }
@@ -15,6 +16,7 @@ export const DialButton: React.FC<Props> = ({
   disabled,
   label,
   testID,
+  accessibilityLabel,
   variant = 'default',
   onPress,
 }) => {
@@ -23,7 +25,8 @@ export const DialButton: React.FC<Props> = ({
       disabled={disabled}
       onPress={onPress}
       style={{ ...styles.root, ...styles[variant] }}
-      testID={testID}>
+      testID={testID}
+      accessibilityLabel={accessibilityLabel}>
       <MediumText style={styles.label}>{label}</MediumText>
     </TouchableOpacity>
   )

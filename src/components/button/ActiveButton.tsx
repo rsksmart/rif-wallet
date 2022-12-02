@@ -1,11 +1,11 @@
-import { StyledButtonProps } from './StyledButton'
 import { PrimaryButton } from './PrimaryButton'
 import { SecondaryButton } from './SecondaryButton'
+import { ButtonProps } from './types'
 
-interface ActiveButtonType extends StyledButtonProps {
+interface ActiveButtonType extends ButtonProps {
   isActive?: boolean
 }
-const ActiveButton = ({
+export const ActiveButton = ({
   isActive = false,
   style,
   ...rest
@@ -21,5 +21,3 @@ const ActiveButton = ({
   }
   return <SecondaryButton {...rest} style={buttonStyles} />
 }
-
-export default ActiveButton
