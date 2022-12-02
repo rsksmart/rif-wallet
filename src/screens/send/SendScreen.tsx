@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react'
-import { StyleSheet, ScrollView, Text } from 'react-native'
+import {
+  StyleSheet,
+  ScrollView,
+  Text,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native'
 import { useSocketsState } from '../../subscriptions/RIFSockets'
 import {
   rootStackRouteNames,
@@ -69,41 +75,50 @@ export const SendScreen = ({
     navigation.navigate(rootStackRouteNames.ManuallyDeployScreen)
 
   return (
-    <ScrollView style={styles.parent}>
-      {!isWalletDeployed && (
-        <WalletNotDeployedView onDeployWalletPress={onDeployWalletNavigate} />
-      )}
-      {!currentTransaction ? (
-        <PaymentExecutorContext.Provider
-          value={{
-            setUtxosGlobal: setUtxos,
-            setBitcoinBalanceGlobal: setBitcoinBalance,
-          }}>
-          <TransactionForm
-            onConfirm={onExecuteTransfer}
-            tokenList={assets}
-            tokenPrices={prices}
-            chainId={chainId}
-            initialValues={{
-              recipient: route.params?.to,
-              amount: '0',
-              asset: route.params?.contractAddress
-                ? tokenBalances[route.params.contractAddress]
-                : tokenBalances[contractAddress],
-            }}
-            transactions={state.transactions.activityTransactions}
-          />
-        </PaymentExecutorContext.Provider>
-      ) : (
-        <TransactionInfo transaction={currentTransaction} />
-      )}
+    <KeyboardAvoidingView
+      style={styles.screen}
+      keyboardVerticalOffset={100}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <ScrollView style={styles.parent}>
+        {!isWalletDeployed && (
+          <WalletNotDeployedView onDeployWalletPress={onDeployWalletNavigate} />
+        )}
+        {!currentTransaction ? (
+          <PaymentExecutorContext.Provider
+            value={{
+              setUtxosGlobal: setUtxos,
+              setBitcoinBalanceGlobal: setBitcoinBalance,
+            }}>
+            <TransactionForm
+              onConfirm={onExecuteTransfer}
+              tokenList={assets}
+              tokenPrices={prices}
+              chainId={chainId}
+              initialValues={{
+                recipient: route.params?.to,
+                amount: '0',
+                asset: route.params?.contractAddress
+                  ? tokenBalances[route.params.contractAddress]
+                  : tokenBalances[contractAddress],
+              }}
+              transactions={state.transactions.activityTransactions}
+            />
+          </PaymentExecutorContext.Provider>
+        ) : (
+          <TransactionInfo transaction={currentTransaction} />
+        )}
 
-      {!!error && <Text style={styles.error}>{error.message}</Text>}
-    </ScrollView>
+        {!!error && <Text style={styles.error}>{error.message}</Text>}
+      </ScrollView>
+    </KeyboardAvoidingView>
   )
 }
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: colors.background.darkBlue,
+  },
   parent: {
     height: '100%',
     backgroundColor: colors.darkPurple3,
