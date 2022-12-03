@@ -5,18 +5,21 @@ import { toChecksumAddress } from 'components/address/lib'
 import { LoadingScreen } from 'components/loading/LoadingScreen'
 import { useBitcoinCoreContext, useSelectedWallet } from 'src/Context'
 import { balanceToDisplay } from 'lib/utils'
-import { RootStackNavigationProp } from 'navigation/rootNavigator/types'
+import {
+  RootStackNavigationProp,
+  rootStackRouteNames,
+} from 'navigation/rootNavigator/types'
 import { colors } from 'src/styles'
 import PortfolioComponent from './PortfolioComponent'
 import SelectedTokenComponent from './SelectedTokenComponent'
 import SendReceiveButtonComponent from './SendReceiveButtonComponent'
 import { getTokenColor } from './tokenColor'
-import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 import { useAppSelector } from 'store/storeHooks'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { selectAppState } from 'store/slices/appStateSlice/selectors'
+import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 
 export type HomeScreenProps = {
   navigation: RootStackNavigationProp
@@ -35,12 +38,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
     undefined,
   )
-  const balances: Array<ITokenWithBalance | BitcoinNetwork> =
+  const balances: Array<ITokenWithoutLogo | BitcoinNetwork> =
     React.useMemo(() => {
       return [...Object.values(tokenBalances), ...Object.values(networksMap)]
     }, [tokenBalances, networksMap])
   // token or undefined
-  const selected: ITokenWithBalance | BitcoinNetwork | undefined =
+  const selected: ITokenWithoutLogo | BitcoinNetwork | undefined =
     selectedAddress
       ? tokenBalances[selectedAddress] || networksMap[selectedAddress]
       : undefined
