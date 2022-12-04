@@ -5,16 +5,16 @@ import Icon from 'react-native-vector-icons/Feather'
 import { DeleteIcon, EditMaterialIcon } from 'src/components/icons'
 import { colors } from 'src/styles'
 import { fonts } from 'src/styles/fonts'
-import { IContact } from './ContactsContext'
+import { Contact } from 'store/slices/contactsSlice/types'
 
 interface IContactRowProps {
   index: number
-  contact: IContact
+  contact: Contact
   selected: boolean
   hideSendButton?: boolean
-  onSend: (contact: IContact) => void
-  onDelete: (contact: IContact) => void
-  onEdit: (contact: IContact) => void
+  onSend: (contact: Contact) => void
+  onDelete: (contact: Contact) => void
+  onEdit: (contact: Contact) => void
   onPress: () => void
 }
 

@@ -32,6 +32,7 @@ module.exports = {
           screens: './src/screens/',
           lib: './src/lib',
           core: './src/core',
+          testLib: './testLib',
         },
       },
     ],

@@ -13,20 +13,24 @@ import { rootReducer } from './rootReducer'
 
 // Must use redux-debugger plugin in flipper for the redux debugger to work
 
-export const store = configureStore({
-  reducer: rootReducer,
-  middleware: getDefaultMiddlewares => {
-    const middlewares = getDefaultMiddlewares({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-    })
-    if (__DEV__) {
-      return middlewares.concat(createDebugger())
-    }
-    return middlewares
-  },
-})
+export const createStore = (preloadedState = {}) =>
+  configureStore({
+    reducer: rootReducer,
+    preloadedState,
+    middleware: getDefaultMiddlewares => {
+      const middlewares = getDefaultMiddlewares({
+        serializableCheck: {
+          ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        },
+      })
+      if (__DEV__) {
+        return middlewares.concat(createDebugger())
+      }
+      return middlewares
+    },
+  })
+
+export const store = createStore()
 
 export const persistor = persistStore(store)
 
