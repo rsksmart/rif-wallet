@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { persistReducer } from 'redux-persist'
-import { IAccount, IProfileStore } from 'src/storage/MainStorage'
+import { getProfile, IAccount, IProfileStore } from 'src/storage/MainStorage'
 import { reduxStorage } from 'src/storage/ReduxStorage'
 
-const initialState: IProfileStore = {
+const emptyProfile: IProfileStore = {
   alias: '',
   phone: '',
   email: '',
@@ -12,7 +12,7 @@ const initialState: IProfileStore = {
 
 const profileSlice = createSlice({
   name: 'profile',
-  initialState,
+  initialState: getProfile() || emptyProfile,
   reducers: {
     setProfile: (_state, action: PayloadAction<IProfileStore>) => ({
       ...action.payload,

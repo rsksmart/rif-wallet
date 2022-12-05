@@ -94,8 +94,6 @@ export const Core = () => {
         hasPin: hasPin(),
         loading: false,
       })
-
-      dispatch(setProfile(getProfile()))
     })
   }, [])
 

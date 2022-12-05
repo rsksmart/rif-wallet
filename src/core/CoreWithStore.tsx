@@ -5,7 +5,7 @@ import { Core } from './Core'
 
 export const CoreWithStore = () => (
   <Provider store={store}>
-    <PersistGate loading={null} persistor={persistor}>
+    <PersistGate persistor={persistor}>
       <Core />
     </PersistGate>
   </Provider>
