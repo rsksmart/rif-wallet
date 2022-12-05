@@ -149,6 +149,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Props> = ({
             onPress={cancelTransaction}
             title={t('reject')}
             testID="Cancel.Button"
+            accessibilityLabel="cancel"
             disabled={!isLoaded}
           />
         </View>
@@ -157,6 +158,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Props> = ({
             onPress={confirmTransaction}
             title={t('sign')}
             testID="Confirm.Button"
+            accessibilityLabel="confirm"
             disabled={!isLoaded}
           />
         </View>

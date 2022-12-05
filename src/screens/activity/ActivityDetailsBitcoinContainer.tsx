@@ -95,6 +95,7 @@ export default function ActivityDetailsBitcoinContainer({
       <View style={styles.alignSelfCenter}>
         <SecondaryButton
           title="view in explorer"
+          accessibilityLabel="explorer"
           icon={<SearchIcon width={30} height={30} color="white" />}
           onPress={onViewTransactionClick}
           style={styles.viewExplorerButton}

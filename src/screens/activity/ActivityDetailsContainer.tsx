@@ -126,6 +126,7 @@ export default function ActivityDetailsContainer({
       <View style={styles.alignSelfCenter}>
         <SecondaryButton
           title="view in explorer"
+          accessibilityLabel="explorer"
           icon={<SearchIcon width={30} height={30} color="white" />}
           onPress={onViewExplorerClick}
           style={styles.viewExplorerButton}

@@ -104,7 +104,8 @@ export const ImportMasterKeyScreen = ({
       <View style={sharedMnemonicStyles.topContent}>
         <TouchableOpacity
           onPress={() => navigation.navigate('CreateKeys')}
-          style={styles.returnButton}>
+          style={styles.returnButton}
+          accessibilityLabel="back">
           <View style={styles.returnButtonView}>
             <Arrow color={colors.white} rotate={270} width={30} height={30} />
           </View>

@@ -5,7 +5,12 @@ describe('Dial Button', () => {
   test('renders correctly with defaults', () => {
     const onPress = jest.fn()
     const component = render(
-      <DialButton testID="1" label="1" onPress={onPress} />,
+      <DialButton
+        testID="1"
+        accessibilityLabel="1"
+        label="1"
+        onPress={onPress}
+      />,
     )
     const buttonNode = component.getByTestId('1')
 

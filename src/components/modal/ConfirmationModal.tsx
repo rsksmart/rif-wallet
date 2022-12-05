@@ -49,12 +49,14 @@ export const ConfirmationModal = ({
             style={styles.okButton}
             title={okText}
             onPress={onOk}
+            accessibilityLabel="okText"
           />
           {cancelText && (
             <SecondaryButton
               style={styles.cancelButton}
               title={cancelText}
               onPress={onCancel}
+              accessibilityLabel="cancelText"
             />
           )}
         </View>

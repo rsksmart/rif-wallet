@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
-import { WhiteTransparentButton } from 'src/components/button/WhiteButton'
+import { WhiteTransparentButton } from 'src/components'
 import ExchangeIcon from 'src/components/icons/ExchangeIcon'
 import ReceiveIcon from 'src/components/icons/ReceiveIcon'
 import SendIcon from 'src/components/icons/SendIcon'

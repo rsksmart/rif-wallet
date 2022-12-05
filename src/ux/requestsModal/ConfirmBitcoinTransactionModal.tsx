@@ -146,6 +146,7 @@ const ConfirmBitcoinTransactionModal = ({
             onPress={onReject}
             title="reject"
             testID={TEST_IDS.BUTTON_REJECT}
+            accessibilityLabel="reject"
           />
         </View>
         <View style={sharedStyles.column}>
@@ -153,6 +154,7 @@ const ConfirmBitcoinTransactionModal = ({
             onPress={onConfirm}
             title="confirm"
             testID={TEST_IDS.BUTTON_CONFIRM}
+            accessibilityLabel="confirm"
           />
         </View>
       </View>

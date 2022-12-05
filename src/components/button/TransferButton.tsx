@@ -3,14 +3,14 @@ import { StyleSheet, Text } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import { colors } from 'src/styles'
 import BaseButton from './BaseButton'
-import { StyledButtonProps } from './StyledButton'
+import { ButtonProps } from './types'
 
 export const TransferButton = ({
   style,
   disabled,
   title = 'transfer',
   ...props
-}: StyledButtonProps) => {
+}: ButtonProps) => {
   const [isPressed, setIsPressed] = useState(false)
 
   const gradientColors = isPressed

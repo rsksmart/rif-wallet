@@ -82,7 +82,8 @@ export const ManuallyDeployScreen: React.FC<
               <View style={grid.column1}>
                 <TouchableOpacity
                   style={styles.button}
-                  onPress={() => Clipboard.setString(wallet.address)}>
+                  onPress={() => Clipboard.setString(wallet.address)}
+                  accessibilityLabel="copy">
                   <CopyIcon width={25} height={25} color="white" />
                 </TouchableOpacity>
               </View>
@@ -104,6 +105,7 @@ export const ManuallyDeployScreen: React.FC<
                 onPress={() => Linking.openURL('https://faucet.rsk.co/')}
                 style={styles.button}
                 title="Open the RBTC Faucet in your browser"
+                accessibilityLabel="faucet"
               />
             )}
           </View>
@@ -114,6 +116,7 @@ export const ManuallyDeployScreen: React.FC<
             onPress={deploy || isDeploying}
             style={!hasBalance ? styles.buttonDisabled : styles.button}
             title="Deploy Wallet"
+            accessibilityLabel="deploy"
           />
 
           {isDeploying && <Text style={styles.text}>Deploying...</Text>}
@@ -122,7 +125,8 @@ export const ManuallyDeployScreen: React.FC<
             <TouchableOpacity
               onPress={() =>
                 Clipboard.setString(smartWalletDeployTx.hash || '')
-              }>
+              }
+              accessibilityLabel="explorer">
               <Text style={styles.text}>
                 {smartWalletDeployTx.hash || ''}
                 <CopyIcon />

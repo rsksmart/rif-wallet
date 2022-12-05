@@ -84,7 +84,7 @@ export const TransactionInfo = ({ transaction }: Props) => {
         </View>
       </View>
       <View style={spacing.mb30}>
-        <TouchableOpacity onPress={onCopyHash}>
+        <TouchableOpacity onPress={onCopyHash} accessibilityLabel="copy">
           <Text style={styles.label}>tx hash</Text>
           <Text style={styles.font16Bold}>{transaction.hash}</Text>
         </TouchableOpacity>
@@ -92,7 +92,8 @@ export const TransactionInfo = ({ transaction }: Props) => {
       <View style={styles.buttonRow}>
         <TouchableOpacity
           onPress={onViewExplorerTouch}
-          testID="Hash.OpenURLButton">
+          testID="Hash.OpenURLButton"
+          accessibilityLabel="explorer">
           <View style={styles.buttonContainer}>
             <SearchIcon color="white" height={25} width={25} />
             <Text style={styles.buttonText}>view in explorer</Text>

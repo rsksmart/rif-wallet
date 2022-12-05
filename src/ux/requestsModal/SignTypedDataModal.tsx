@@ -92,6 +92,7 @@ const SignTypedDataModal: React.FC<Interface> = ({ request, closeModal }) => {
             onPress={reject}
             title={t('reject')}
             testID="Button.Reject"
+            accessibilityLabel="reject"
           />
         </View>
         <View style={sharedStyles.column}>
@@ -99,6 +100,7 @@ const SignTypedDataModal: React.FC<Interface> = ({ request, closeModal }) => {
             onPress={approve}
             title={t('sign')}
             testID="Button.Confirm"
+            accessibilityLabel="confirm"
           />
         </View>
       </View>

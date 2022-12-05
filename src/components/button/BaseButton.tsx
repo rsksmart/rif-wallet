@@ -1,19 +1,5 @@
-import { ReactNode } from 'react'
-import { ViewStyle } from 'react-native'
-import { ColorValue } from 'react-native'
 import { StyleSheet, TouchableHighlight, View } from 'react-native'
-
-export interface BaseButtonProps {
-  disabled?: boolean
-  testID?: string
-  accessibilityLabel?: string
-  style?: ViewStyle
-  underlayColor?: ColorValue
-  children?: ReactNode
-  onPress?: () => void
-  onShowUnderlay?: () => void
-  onHideUnderlay?: () => void
-}
+import { BaseButtonProps } from './types'
 
 const BaseButton = ({
   children,
