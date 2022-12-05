@@ -28,13 +28,10 @@ export const savePin = (pinValue: string) => MainStorage.set(pin, pinValue)
 
 // profile functions
 export const hasProfile = () => MainStorage.has(profile)
-export const getProfile = () => {
-  const profileReturned = MainStorage.get(profile) || {}
-  return profileReturned
-}
+export const getProfile = () => MainStorage.get(profile) || {}
 export const deleteProfile = () => MainStorage.delete(profile)
 export const saveProfile = (profileValue: IProfileStore) =>
-  MainStorage.set(profile, JSON.stringify(profileValue))
+  MainStorage.set(profile, profileValue)
 
 //keys functions
 export const hasKeys = () => MainStorage.has(keyManagement)

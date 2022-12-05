@@ -4,7 +4,7 @@ import { AppContext } from '../Context'
 import { KeyManagementSystem, RIFWallet } from '../lib/core'
 import { i18nInit } from '../lib/i18n'
 
-import { hasKeys, hasPin } from '../storage/MainStorage'
+import { getProfile, hasKeys, hasPin } from '../storage/MainStorage'
 import {
   abiEnhancer,
   rifWalletServicesFetcher,
@@ -36,6 +36,8 @@ import { useKeyManagementSystem } from './hooks/useKeyManagementSystem'
 import { useRequests } from './hooks/useRequests'
 import { useStateSubscription } from './hooks/useStateSubscription'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useAppDispatch } from 'src/redux/storeHooks'
+import { setProfile } from 'src/redux/slices/profileSlice/profileSlice'
 
 export const navigationContainerRef =
   createNavigationContainerRef<RootStackParamList>()
@@ -58,6 +60,7 @@ export const Core = () => {
     resetKeysAndPin,
     setWalletIsDeployed,
   } = useKeyManagementSystem(onRequest)
+  const dispatch = useAppDispatch()
 
   const onScreenLock = removeKeys
 
@@ -91,6 +94,8 @@ export const Core = () => {
         hasPin: hasPin(),
         loading: false,
       })
+
+      dispatch(setProfile(getProfile()))
     })
   }, [])
 

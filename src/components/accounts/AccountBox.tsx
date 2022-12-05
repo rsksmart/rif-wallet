@@ -4,6 +4,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { setAccount } from 'src/redux/slices/profileSlice/profileSlice'
 import { selectProfile } from 'src/redux/slices/profileSlice/selector'
 import { useAppDispatch, useAppSelector } from 'src/redux/storeHooks'
+import { saveProfile } from 'src/storage/MainStorage'
 import { SmartWalletFactory } from '../../lib/core/SmartWalletFactory'
 import { PublicKeyItemType } from '../../screens/accounts/types'
 import { colors } from '../../styles'
@@ -57,7 +58,6 @@ const AccountBox: React.FC<AccountBoxProps> = ({
         ...profile.accounts[id],
         name,
       }
-      // storeProfile(profile)
       dispatch(
         setAccount({
           index: id,
@@ -76,6 +76,10 @@ const AccountBox: React.FC<AccountBoxProps> = ({
       setAccountName(initialAccountName)
     }
   }, [initialAccountName])
+
+  useEffect(() => {
+    saveProfile(profile)
+  }, [profile])
 
   return (
     <View style={styles.accountsContainer}>
