@@ -1,5 +1,4 @@
 import useContainerStyles from './useContainerStyles'
-import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { balanceToUSD, balanceToDisplay } from 'lib/utils'
 import { IPrice } from 'src/subscriptions/types'
 import BalanceCardPresentationComponent from './BalanceCardPresentationComponent'
@@ -7,9 +6,10 @@ import { BigNumber } from 'ethers'
 import { useAppSelector } from 'store/storeHooks'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useMemo } from 'react'
+import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 
 interface IBalanceCardComponentProps {
-  token: ITokenWithBalance
+  token: ITokenWithoutLogo
   selected: boolean
   onPress: (address: string) => void
   price?: IPrice

@@ -1,10 +1,9 @@
 import { toChecksumAddress } from '@rsksmart/rsk-utils'
-import React, { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Tabs } from 'src/components'
 import { AddressInputSelector } from 'components/address/AddressInputSelector'
 import { TransferButton } from 'components/button/TransferButton'
-import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { colors, grid } from 'src/styles'
 import { IActivityTransaction, IPrice } from 'src/subscriptions/types'
 import AssetChooser from './AssetChooser'
@@ -12,6 +11,7 @@ import { RecentTransactions } from './RecentTransactions'
 import { SetAmountHOCComponent } from './SetAmountHOCComponent'
 import { MixedTokenAndNetworkType } from './types'
 import { useTokenSelectedTabs } from './useTokenSelectedTabs'
+import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 
 interface Interface {
   onConfirm: (
@@ -23,7 +23,7 @@ interface Interface {
   tokenPrices: Record<string, IPrice>
   chainId: number
   initialValues: {
-    asset?: ITokenWithBalance
+    asset?: ITokenWithoutLogo
     amount?: string
     recipient?: string
   }
@@ -86,7 +86,7 @@ export const TransactionForm: React.FC<Interface> = ({
   const handleConfirmClick = () =>
     onConfirm(selectedToken, amount.value, to.value)
 
-  const onTokenSelect = React.useCallback((token: MixedTokenAndNetworkType) => {
+  const onTokenSelect = useCallback((token: MixedTokenAndNetworkType) => {
     setSelectedToken(oldToken => {
       // Reset address when token type is changed
       if ('isBitcoin' in oldToken === !('isBitcoin' in token)) {

@@ -1,10 +1,9 @@
-import React from 'react'
 import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { IRIFWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
 import { IAbiEnhancer, IEnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
-import { IRifWalletServicesSocket } from 'lib/rifWalletServices/RifWalletServicesSocket'
 import { RIFWallet } from 'lib/core'
+import { AppDispatch } from 'src/redux'
 
 export interface IPrice {
   price: number
@@ -55,14 +54,6 @@ export interface InitAction {
 
 export interface ResetAction {
   type: 'reset'
-  payload?: undefined
-}
-
-export interface State {
-  transactions: TransactionsServerResponseWithActivityTransactions
-  balances: Record<string, ITokenWithBalance>
-  events: Array<IEvent>
-  isSetup: boolean
 }
 
 export type Action =
@@ -74,27 +65,12 @@ export type Action =
   | InitAction
   | ResetAction
 
-export type Dispatch = (action: Action) => void
-export type SubscriptionsProviderProps = {
-  children: React.ReactNode
-  rifServiceSocket?: IRifWalletServicesSocket
-  abiEnhancer: IAbiEnhancer
-  appActive: boolean
-}
-
 export interface IActivityTransaction {
   originTransaction: IApiTransaction
   enhancedTransaction?: IEnhancedResult
 }
 
 export type ActivityScreenProps = {
-  fetcher: IRIFWalletServicesFetcher
-  abiEnhancer: IAbiEnhancer
-}
-
-export interface FetchTransactionsOptions {
-  next: string | null
-  prev: string | null
   fetcher: IRIFWalletServicesFetcher
   abiEnhancer: IAbiEnhancer
 }
@@ -110,7 +86,7 @@ export interface TransactionsServerResponseWithActivityTransactions
 }
 
 export interface ISocketsChangeEmitted {
-  dispatch: React.Dispatch<Action>
+  dispatch: AppDispatch
   abiEnhancer: IAbiEnhancer
   wallet: RIFWallet
 }

@@ -1,23 +1,23 @@
 import { useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import { colors } from '../../styles'
-import { grid } from '../../styles'
-import { IAsset, IAssetChooser } from './types'
+import { colors } from 'src/styles'
+import { grid } from 'src/styles'
+import { IAssetChooser } from './types'
 import { TokenImage } from '../home/TokenImage'
 import SlideUpModal from '../../components/slideUpModal/SlideUpModal'
 import { balanceToString } from '../balances/BalancesScreen'
-import { TokenButton } from '../../components/button/TokenButton'
+import { TokenButton } from 'components/button/TokenButton'
 import { getTokenColor } from '../home/tokenColor'
 
-const AssetChooser = ({
+const AssetChooser = <T,>({
   assetList,
   selectedAsset,
   onAssetSelected,
-}: IAssetChooser) => {
+}: IAssetChooser<T>) => {
   const [showSelector, setShowSelector] = useState<boolean>(false)
   const [animateModal, setAnimateModal] = useState(false)
 
-  const handleAsset = (asset: IAsset) => () => {
+  const handleAsset = (asset: T) => () => {
     setAnimateModal(true)
     onAssetSelected(asset)
   }
@@ -53,7 +53,7 @@ const AssetChooser = ({
         isKeyboardVisible={false}
         backgroundColor={colors.darkPurple3}
         headerFontColor={colors.white}>
-        {assetList.map((asset: IAsset) => (
+        {assetList.map(asset => (
           <View key={asset.symbol}>
             <TokenButton
               onPress={handleAsset(asset)}
