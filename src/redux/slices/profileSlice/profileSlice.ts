@@ -30,7 +30,7 @@ const profileSlice = createSlice({
 export const { setProfile, setAccount } = profileSlice.actions
 
 const persistConfig = {
-  key: 'root',
+  key: 'PROFILE',
   storage: reduxStorage,
 }
 
