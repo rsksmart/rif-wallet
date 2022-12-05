@@ -44,7 +44,7 @@ export const ImportMasterKeyScreen = ({
   createWallet,
   isKeyboardVisible,
 }: Props) => {
-  const slidesIndexes = [0, 1, 2, 3, 4, 5, 6, 7]
+  const slidesIndexes = [0, 1, 2, 3]
 
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
   const [selectedWords, setSelectedWords] = useState<string[]>([])
