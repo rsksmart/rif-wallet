@@ -1,5 +1,6 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import createDebugger from 'redux-flipper'
+import { persistStore } from 'redux-persist'
 import { balancesReducer } from './slices/balancesSlice/balancesSlice'
 import { profileReducer } from './slices/profileSlice/profileSlice'
 import { usdPriceReducer } from './slices/usdPricesSlice/usdPricesSlice'
@@ -22,6 +23,8 @@ export const store = configureStore({
     return middlewares
   },
 })
+
+export const persistor = persistStore(store)
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>

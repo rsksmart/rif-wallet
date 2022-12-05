@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { persistReducer } from 'redux-persist'
 import { IAccount, IProfileStore } from 'src/storage/MainStorage'
+import { reduxStorage } from 'src/storage/ReduxStorage'
 
 const initialState: IProfileStore = {
   alias: '',
@@ -27,4 +29,12 @@ const profileSlice = createSlice({
 
 export const { setProfile, setAccount } = profileSlice.actions
 
-export const profileReducer = profileSlice.reducer
+const persistConfig = {
+  key: 'root',
+  storage: reduxStorage,
+}
+
+export const profileReducer = persistReducer(
+  persistConfig,
+  profileSlice.reducer,
+)
