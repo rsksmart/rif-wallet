@@ -104,26 +104,11 @@ export interface RelayPayment {
   tokenAmount: BigNumber
 }
 
-export interface SdkConfig extends RifRelayConfig {
-  relayWorkerAddress: Address
-  relayHubAddress: Address
-  feesReceiver: Address
-}
-
 export interface RifRelayConfig {
   relayVerifierAddress: Address
   deployVerifierAddress: Address
   relayServer: string
-}
-
-export interface RifRelayServerGetAddr {
-  relayWorkerAddress: string
-  relayManagerAddress: string
-  relayHubAddress: string
-  minGasPrice: string
-  chainId: string
-  networkId: string
-  ready: boolean
-  version: string
-  feesReceiver: string
+  relayWorkerAddress: Address
+  relayHubAddress: Address
+  feesReceiver: Address
 }

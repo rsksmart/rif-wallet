@@ -38,6 +38,9 @@ export const rifRelayConfig: RifRelayConfig = {
   relayVerifierAddress: getWalletSetting(SETTINGS.RELAY_VERIFIER_ADDRESS),
   deployVerifierAddress: getWalletSetting(SETTINGS.DEPLOY_VERIFIER_ADDRESS),
   relayServer: getWalletSetting(SETTINGS.RIF_RELAY_SERVER),
+  relayWorkerAddress: getWalletSetting(SETTINGS.RELAY_WORKER_ADDRESS),
+  relayHubAddress: getWalletSetting(SETTINGS.RELAY_HUB_ADDRESS),
+  feesReceiver: getWalletSetting(SETTINGS.FEES_RECEIVER),
 }
 
 export const createRIFWalletFactory =

@@ -10,10 +10,8 @@ import { SmartWallet } from '../core/SmartWallet'
 import {
   RelayPayment,
   RelayRequest,
-  SdkConfig,
   DeployRequest,
   RifRelayConfig,
-  RifRelayServerGetAddr,
 } from './types'
 import {
   dataTypeFields,
@@ -28,7 +26,7 @@ import { SmartWalletFactory } from '../core/SmartWalletFactory'
 
 export class RIFRelaySDK {
   chainId: number
-  sdkConfig: SdkConfig
+  sdkConfig: RifRelayConfig
   smartWallet: SmartWallet
   smartWalletFactory: SmartWalletFactory
   smartWalletAddress: string
@@ -40,7 +38,7 @@ export class RIFRelaySDK {
     smartWalletFactory: SmartWalletFactory,
     chainId: number,
     eoaAddress: string,
-    sdkConfig: SdkConfig,
+    sdkConfig: RifRelayConfig,
   ) {
     // this should not happen but is more for typescript:
     if (!smartWallet.signer.provider) {
@@ -63,26 +61,16 @@ export class RIFRelaySDK {
     rifRelayConfig: RifRelayConfig,
   ) {
     const eoaAddress = await smartWallet.signer.getAddress()
-
-    const { chainId, relayWorkerAddress, relayHubAddress, feesReceiver } =
-      await this.getAddrFromServer(rifRelayConfig.relayServer)
+    const chainId = await smartWallet.signer.getChainId()
 
     return new RIFRelaySDK(
       smartWallet,
       smartWalletFactory,
-      parseInt(chainId, 10),
+      chainId,
       eoaAddress,
-      {
-        ...rifRelayConfig,
-        relayWorkerAddress,
-        relayHubAddress,
-        feesReceiver,
-      },
+      rifRelayConfig,
     )
   }
-
-  static getAddrFromServer = (server: string): Promise<RifRelayServerGetAddr> =>
-    axios.get(`${server}/getaddr`).then((value: AxiosResponse) => value.data)
 
   createRelayRequest = async (
     tx: TransactionRequest,
