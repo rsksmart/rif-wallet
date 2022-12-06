@@ -1,5 +1,18 @@
 import { BigNumber, BigNumberish } from 'ethers'
 
+export enum RGSERVICE_TYPE {
+  LENDING,
+  BORROWING,
+  UNDEFINED,
+}
+
+export enum IRGListingAction {
+  LEND,
+  BORROW,
+  PAY,
+  WITHDRAW,
+}
+
 export type IRGListing = {
   id: BigNumber
   minAmount: BigNumber
@@ -7,15 +20,20 @@ export type IRGListing = {
   minDuration: BigNumber
   maxDuration: BigNumber
   interestRate: BigNumber
-  loanToValueCurrency: BigNumber
-  currency: BigNumber
+  loanToValueCurrency: string
+  currency: string
   payBackOption: BigNumber
   enabled: boolean
   name: string
+  type: RGSERVICE_TYPE
+  currencyName: string
+  currencySymbol: string
+  service: string
+  balance?: BigNumber
 }
 
 export type IRIFGateway = {
-  getServices(): Promise<IRGService[]>
+  getServicesAndProviders(): Promise<[string[], string[]]>
 }
 
 export type IRGService = {
@@ -30,6 +48,11 @@ export type IRGLendingService = {
 }
 
 export type IRGBorrowService = {}
+
+export type RGSubscription = {
+  service: string
+  listing: BigNumber
+}
 
 export type PromiseOrValue<T> = T | Promise<T>
 

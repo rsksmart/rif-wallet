@@ -1,37 +1,27 @@
 import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/Feather'
-import { IRGListing } from 'src/lib/gateway'
-import DeleteIcon from '../../components/icons/DeleteIcon'
-import EditMaterialIcon from '../../components/icons/EditMaterialIcon'
-import { shortAddress } from '../../lib/utils'
+import { IRGListing, IRGListingAction, RGSERVICE_TYPE } from 'src/lib/gateway'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
-import { useSocketsState } from '../../subscriptions/RIFSockets'
 
-enum IRGListingAction {
-  LEND,
-  BORROW,
-  PAY,
-  WITHDRAW,
-}
-
-interface IContactRowProps {
+interface IRGListingRowProps {
+  index: number
   listing: IRGListing
   selected: boolean
-  onPress: () => void
-  onAction: (action: IRGListingAction, listing: IRGListing) => void
+  consumed?: boolean
+  onPress: (listing: IRGListing, index: number) => void
+  onAction: (action: IRGListingAction, showsModal?: boolean) => void
 }
 
-export const ContactRow: React.FC<IContactRowProps> = ({
+export const RGListingRow: React.FC<IRGListingRowProps> = ({
+  index,
   listing,
   selected,
+  consumed,
   onPress,
   onAction,
 }) => {
-  const { state } = useSocketsState()
-  const hideSendButton = Object.values(state.balances).length === 0
-
   return (
     <View
       style={{
@@ -43,46 +33,84 @@ export const ContactRow: React.FC<IContactRowProps> = ({
       <TouchableOpacity
         testID={`contactCard-${listing.id}`}
         accessibilityLabel={`contactCard-${listing.name}`}
-        key={listing.id.toNumber()}
-        onPress={onPress}
+        key={index}
+        onPress={() => {
+          onPress(listing, index)
+        }}
         style={styles.contactInfo}>
         <Text style={styles.contactName}>{listing.name}</Text>
-        <Text style={styles.address}>{+listing.interestRate / 1e20}%</Text>
+        <Text style={styles.address}>{listing.currencySymbol}</Text>
+        <Text style={styles.address}>
+          {(+listing.interestRate / 1e20).toFixed(4)}%
+          {listing.type === RGSERVICE_TYPE.LENDING && <> APY</>}
+          {listing.type === RGSERVICE_TYPE.BORROWING && <> Interest</>}
+        </Text>
+        {!consumed && listing.type === RGSERVICE_TYPE.LENDING && (
+          <Text style={styles.address}>
+            From {+listing.minAmount / 1e18} to {+listing.maxAmount / 1e18}
+            {listing.currencySymbol}
+          </Text>
+        )}
+        {consumed && listing.balance && (
+          <Text style={styles.address}>
+            Balance: {+listing.balance / 1e18} {listing.currencySymbol}
+          </Text>
+        )}
       </TouchableOpacity>
 
       <View style={styles.actions}>
-        {/* {!hideSendButton ? (
-          <Icon.Button
-            testID={`sendButton-${index}`}
-            accessibilityLabel={`sendButton-${index}`}
-            name="arrow-up-right"
-            onPress={() => onSend(contact)}
-            backgroundColor={colors.purple}
-            iconStyle={styles.sendButton}
-            size={15}
-            borderRadius={20}
-          />
+        {selected ? (
+          <>
+            {!consumed && (
+              <Icon.Button
+                testID={`sendButton-${index}`}
+                accessibilityLabel={`sendButton-${index}`}
+                name="arrow-up-right"
+                onPress={() => {
+                  onAction(IRGListingAction.LEND)
+                }}
+                backgroundColor={colors.purple}
+                iconStyle={styles.sendButton}
+                size={15}
+                borderRadius={20}
+              />
+            )}
+            {consumed && (
+              <Icon.Button
+                testID={`sendButton-${index}`}
+                accessibilityLabel={`sendButton-${index}`}
+                name="arrow-down-left"
+                onPress={() => {
+                  onAction(IRGListingAction.WITHDRAW, false)
+                }}
+                backgroundColor={colors.purple}
+                iconStyle={styles.sendButton}
+                size={15}
+                borderRadius={20}
+              />
+            )}
+            {/* <DeleteIcon
+              testID={`deleteButton-${index}`}
+              accessibilityLabel={`deleteButton-${index}`}
+              style={styles.deleteButton}
+              color={colors.purple}
+              viewBox={'-8 -8 40 40'}
+              width={32}
+              height={32}
+              onPress={() => {}}
+            />
+            <EditMaterialIcon
+              testID={`editButton-${index}`}
+              accessibilityLabel={`editButton-${index}`}
+              color={colors.purple}
+              size={17}
+              style={styles.editButton}
+              onPress={() => {}}
+            /> */}
+          </>
         ) : (
           <View style={styles.emptyView} />
         )}
-        <DeleteIcon
-          testID={`deleteButton-${index}`}
-          accessibilityLabel={`deleteButton-${index}`}
-          style={styles.deleteButton}
-          color={colors.purple}
-          viewBox={'-8 -8 40 40'}
-          width={32}
-          height={32}
-          onPress={() => onDelete(contact)}
-        />
-        <EditMaterialIcon
-          testID={`editButton-${index}`}
-          accessibilityLabel={`editButton-${index}`}
-          color={colors.purple}
-          size={17}
-          style={styles.editButton}
-          onPress={() => onEdit(contact)}
-        /> */}
       </View>
     </View>
   )
@@ -117,7 +145,7 @@ const styles = StyleSheet.create({
     flex: 3,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     paddingRight: 20,
   },
   sendButton: {

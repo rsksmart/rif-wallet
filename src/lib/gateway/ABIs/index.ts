@@ -1,15 +1,17 @@
-import IBorrowServiceABI from './IBorrowService.json'
-import ILendingServiceABI from './ILendingService.json'
-import IRIFGatewayABI from './IRIFGateway.json'
+import BorrowServiceABI from './BorrowService.json'
+import LendingServiceABI from './LendingService.json'
+import RIFGatewayABI from './RIFGateway.json'
 import IServiceABI from './IService.json'
 import ISmartWalletFactoryABI from './ISmartWalletFactory.json'
 import SmartWalletABI from './SmartWallet.json'
+import ERC20ABI from './ERC20.json'
 
 export {
-  IBorrowServiceABI,
-  ILendingServiceABI,
-  IRIFGatewayABI,
+  BorrowServiceABI,
+  LendingServiceABI,
+  RIFGatewayABI,
   IServiceABI,
   ISmartWalletFactoryABI,
   SmartWalletABI,
+  ERC20ABI,
 }

@@ -9,25 +9,20 @@ class RGSigner {
     provider: ethers.providers.Web3Provider,
     executor: string,
     chainId: string,
+    signFn: (domain: any, types: any, value: any) => Promise<any>,
     fn: Function,
     args: Array<any>,
-  ): Promise<void> {
+  ): Promise<any> {
     const swFactoryAddr = Config.GATEWAY_SW_FACTORY || ''
     const from = await signer.getAddress()
-    const swFactory = new RGSmartWalletFactory(swFactoryAddr)
+    const swFactory = new RGSmartWalletFactory(swFactoryAddr, provider)
     const { smartWalletAddress, nonce } = await swFactory.getSmartWalletNonce(
       from,
     )
 
-    const msgParams = JSON.stringify({
+    const msgParams = {
       types: {
         // TODO: Clarify if EIP712Domain refers to the domain the contract is hosted on
-        EIP712Domain: [
-          { name: 'name', type: 'string' },
-          { name: 'version', type: 'string' },
-          { name: 'chainId', type: 'uint256' },
-          { name: 'verifyingContract', type: 'address' },
-        ],
         ForwardRequest: [
           { name: 'from', type: 'address' },
           { name: 'nonce', type: 'uint256' },
@@ -52,20 +47,23 @@ class RGSigner {
         nonce: nonce.toString(),
         executor: executor,
       },
-    })
+    }
 
-    const params = [from, msgParams]
-    const method = 'eth_signTypedData_v4'
-
-    const signature = await provider.send(method, params)
+    const signature = await signFn(
+      msgParams.domain,
+      msgParams.types,
+      msgParams.message,
+    )
 
     const forwardRequest: ForwardRequestStruct = {
       from: from,
-      nonce: nonce!,
+      nonce: nonce!.toString(),
       executor: executor,
     }
 
-    const suffixData = ethers.constants.Zero
+    const suffixData = ethers.constants.HashZero
+
+    console.log('Signed transaction, signature: ', signature)
 
     return fn(suffixData, forwardRequest, signature, ...args)
   }
