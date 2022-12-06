@@ -1,19 +1,22 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import createDebugger from 'redux-flipper'
-import { usdPriceReducer } from './slices/usdPricesSlice/usdPricesSlice'
-import { transactionsReducer } from 'store/slices/transactionsSlice/transactionsSlice'
-import { balancesReducer } from 'store/slices/balancesSlice/balancesSlice'
+import { persistStore } from 'redux-persist'
 import { appStateReducer } from 'store/slices/appStateSlice/appStateSlice'
+import { balancesReducer } from 'store/slices/balancesSlice/balancesSlice'
+import { profileReducer } from './slices/profileSlice/profileSlice'
+import { usdPriceReducer } from './slices/usdPricesSlice/usdPricesSlice'
 
 // Must use redux-debugger plugin in flipper for the redux debugger to work
 
+const rootReducer = combineReducers({
+  usdPrices: usdPriceReducer,
+  balances: balancesReducer,
+  appState: appStateReducer,
+  profile: profileReducer,
+})
+
 export const store = configureStore({
-  reducer: {
-    usdPrices: usdPriceReducer,
-    transactions: transactionsReducer,
-    balances: balancesReducer,
-    appState: appStateReducer,
-  },
+  reducer: rootReducer,
   middleware: getDefaultMiddlewares => {
     const middlewares = getDefaultMiddlewares()
     if (__DEV__) {
@@ -22,6 +25,8 @@ export const store = configureStore({
     return middlewares
   },
 })
+
+export const persistor = persistStore(store)
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>
