@@ -6,7 +6,7 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native'
-import { validate, Network } from 'bitcoin-address-validation'
+import { Network } from 'bitcoin-address-validation'
 
 import Clipboard from '@react-native-community/clipboard'
 import { colors, spacing } from '../../styles/'
@@ -15,6 +15,7 @@ import { SearchIcon } from '../../components/icons/SearchIcon'
 import { StatusIcon } from '../../components/statusIcons'
 import { useSelectedWallet } from 'src/Context'
 import { getWalletSetting, SETTINGS } from 'src/core/config'
+import { isBitcoinAddressValid } from 'lib/bitcoin/utils'
 
 export interface TransactionInformation {
   status: 'USER_CONFIRM' | 'PENDING' | 'SUCCESS' | 'FAILED'
@@ -31,7 +32,8 @@ type Props = {
 const isBtcAddress = (address?: string) => {
   if (address) {
     return (
-      validate(address, Network.testnet) || validate(address, Network.mainnet)
+      isBitcoinAddressValid(address, Network.testnet) ||
+      isBitcoinAddressValid(address, Network.mainnet)
     )
   }
   return false

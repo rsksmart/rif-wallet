@@ -2,7 +2,7 @@ import { BigNumber, utils } from 'ethers'
 import { createBipFactoryType } from './types'
 import BIPWithRequest from './BIPWithRequest'
 import { OnRequest } from '../core'
-import { validate } from 'bitcoin-address-validation'
+import { validate, Network } from 'bitcoin-address-validation'
 
 export function convertBtcToSatoshi(btc: string) {
   if (btc === '') {
@@ -15,8 +15,11 @@ export function convertSatoshiToBtcHuman(satoshi: number | string | BigNumber) {
   return utils.formatUnits(BigNumber.from(satoshi), 8)
 }
 
-export function isBitcoinAddressValid(addressToPay: string): boolean {
-  return validate(addressToPay)
+export function isBitcoinAddressValid(
+  addressToPay: string,
+  network?: Network,
+): boolean {
+  return validate(addressToPay, network)
 }
 
 /**
