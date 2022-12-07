@@ -9,10 +9,10 @@ const profileSlice = createSlice({
   reducers: {
     setProfile: (_state, action: PayloadAction<IProfileStore>) =>
       action.payload,
-    eraseProfile: () => null,
+    deleteProfile: () => null,
   },
 })
 
-export const { setProfile, eraseProfile } = profileSlice.actions
+export const { setProfile, deleteProfile } = profileSlice.actions
 
 export const profileReducer = profileSlice.reducer

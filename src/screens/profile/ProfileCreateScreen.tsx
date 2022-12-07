@@ -25,7 +25,7 @@ import { RegularText } from 'src/components/typography'
 import { useAppDispatch, useAppSelector } from 'src/redux/storeHooks'
 import { selectProfile } from 'src/redux/slices/profileSlice/selector'
 import {
-  eraseProfile,
+  deleteProfile,
   setProfile,
 } from 'src/redux/slices/profileSlice/profileSlice'
 import { IProfileStore } from 'src/redux/slices/profileSlice/types'
@@ -50,7 +50,7 @@ export const ProfileCreateScreen: React.FC<
   }
 
   const deleteAlias = async () => {
-    dispatch(eraseProfile())
+    dispatch(deleteProfile())
     navigation.navigate(rootStackRouteNames.Home)
   }
 
