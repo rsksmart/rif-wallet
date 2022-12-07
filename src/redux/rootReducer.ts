@@ -5,7 +5,7 @@ import { profileReducer } from './slices/profileSlice/profileSlice'
 import { transactionsReducer } from './slices/transactionsSlice/transactionsSlice'
 import { usdPriceReducer } from './slices/usdPricesSlice/usdPricesSlice'
 
-export default combineReducers({
+export const rootReducer = combineReducers({
   usdPrices: usdPriceReducer,
   balances: balancesReducer,
   appState: appStateReducer,
