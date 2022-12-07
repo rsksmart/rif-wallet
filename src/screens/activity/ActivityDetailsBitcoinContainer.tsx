@@ -1,4 +1,4 @@
-import { TouchableOpacity, View } from 'react-native'
+import { TouchableOpacity, View, Linking } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { SecondaryButton } from 'src/components/button/SecondaryButton'
 import { SemiBoldText } from 'src/components'
@@ -13,6 +13,8 @@ import { spacing } from 'src/styles'
 import { TokenImage } from '../home/TokenImage'
 import { activityDetailsStyles as styles } from './styles'
 import { IBitcoinTransaction } from './types'
+import { getWalletSetting, SETTINGS } from 'src/core/config'
+import { useSelectedWallet } from 'src/Context'
 
 type ActivityDetailsBitcoinContainerType = BitcoinTransactionType &
   IBitcoinTransaction & { onBackPress: () => void }
@@ -27,8 +29,15 @@ export default function ActivityDetailsBitcoinContainer({
   blockTime,
   onBackPress,
 }: ActivityDetailsBitcoinContainerType) {
+  const { chainType } = useSelectedWallet()
+
+  const explorerUrl = getWalletSetting(
+    SETTINGS.EXPLORER_ADDRESS_URL_BTC,
+    0,
+    chainType,
+  )
   const onViewTransactionClick = (): null => {
-    // @TODO: should open browser to block explorer for btc
+    Linking.openURL(`${explorerUrl}/${id}`)
     return null
   }
   return (

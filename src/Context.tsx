@@ -19,6 +19,7 @@ export type AppContextType = {
   walletsIsDeployed: WalletsIsDeployed
   selectedWallet?: string
   chainId?: number
+  chainType?: string
   BitcoinCore: UseBitcoinCoreResult
 }
 
@@ -26,6 +27,7 @@ export const AppContext = createContext<AppContextType>({
   wallets: {},
   walletsIsDeployed: {},
   chainId: undefined,
+  chainType: 'testnet',
   BitcoinCore: {
     networks: [],
     networksMap: {},
@@ -39,13 +41,14 @@ export const useBitcoinCoreContext = () => {
 }
 
 export const useSelectedWallet = () => {
-  const { wallets, walletsIsDeployed, selectedWallet, chainId } =
+  const { wallets, walletsIsDeployed, selectedWallet, chainId, chainType } =
     useContext(AppContext)
 
   return {
     wallet: selectedWallet ? wallets[selectedWallet] : null,
     isDeployed: selectedWallet ? walletsIsDeployed[selectedWallet] : null,
     chainId,
+    chainType,
     selectedWalletIndex: selectedWallet
       ? Object.keys(wallets).indexOf(selectedWallet)
       : undefined,
