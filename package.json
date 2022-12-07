@@ -81,8 +81,7 @@
     "socket.io-client": "^4.4.1",
     "stream-browserify": "^1.0.0",
     "url-parse": "^1.5.9",
-    "vision-camera-code-scanner": "^0.2.0",
-    "yarn": "^1.22.19"
+    "vision-camera-code-scanner": "^0.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.2",
