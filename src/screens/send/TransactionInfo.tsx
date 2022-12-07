@@ -6,6 +6,8 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native'
+import { validate, Network } from 'bitcoin-address-validation'
+
 import Clipboard from '@react-native-community/clipboard'
 import { colors, spacing } from '../../styles/'
 import { TokenImage } from '../home/TokenImage'
@@ -26,9 +28,24 @@ type Props = {
   transaction: TransactionInformation
 }
 
+const isBtcAddress = (address?: string) => {
+  if (address) {
+    return (
+      validate(address, Network.testnet) || validate(address, Network.mainnet)
+    )
+  }
+  return false
+}
+
 export const TransactionInfo = ({ transaction }: Props) => {
-  const { chainId } = useSelectedWallet()
-  const explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainId)
+  const { chainId, chainType } = useSelectedWallet()
+  const explorerUrl = isBtcAddress(transaction.to)
+    ? `${getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL_BTC, 0, chainType)}/${
+        transaction.hash
+      }`
+    : `${getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainId)}/tx/${
+        transaction.hash
+      }`
 
   if (transaction.status === 'USER_CONFIRM' || !transaction.hash) {
     return (
@@ -42,8 +59,7 @@ export const TransactionInfo = ({ transaction }: Props) => {
     )
   }
 
-  const onViewExplorerTouch = () =>
-    Linking.openURL(`${explorerUrl}/tx/${transaction.hash}`)
+  const onViewExplorerTouch = () => Linking.openURL(explorerUrl)
 
   const onCopyHash = () => Clipboard.setString(transaction.hash || '')
 
