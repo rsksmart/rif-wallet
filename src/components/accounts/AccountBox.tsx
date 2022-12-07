@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, TextInput, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { updateAccount } from 'src/redux/slices/accountsSlice/accountsSlice'
-import { selectProfile } from 'src/redux/slices/profileSlice/selector'
+import { setAccounts } from 'src/redux/slices/accountsSlice/accountsSlice'
+import { selectAccounts } from 'src/redux/slices/accountsSlice/selector'
 import { useAppDispatch, useAppSelector } from 'src/redux/storeHooks'
-import { saveProfile } from 'src/storage/MainStorage'
 import { SmartWalletFactory } from '../../lib/core/SmartWalletFactory'
 import { PublicKeyItemType } from '../../screens/accounts/types'
 import { colors } from '../../styles'
@@ -34,9 +33,9 @@ const AccountBox: React.FC<AccountBoxProps> = ({
   publicKeys = [],
   id = 0,
 }) => {
-  const profile = useAppSelector(selectProfile)
   const dispatch = useAppDispatch()
-  const initialAccountName = profile.accounts[id]?.name || `account ${id + 1}`
+  const accounts = useAppSelector(selectAccounts)
+  const initialAccountName = accounts[id]?.name || `account ${id + 1}`
   const [accountName, setAccountName] = useState<string>(initialAccountName)
   const [isDeployed, setIsDeployed] = useState(false)
   const [showAccountNameInput, setShowAccountInput] = useState<boolean>(false)
@@ -54,16 +53,10 @@ const AccountBox: React.FC<AccountBoxProps> = ({
       const name = accountName.trim()
       setAccountName(name)
       setShowAccountInput(false)
-      profile.accounts[id] = {
-        ...profile.accounts[id],
-        name,
-      }
-      dispatch(
-        updateAccount({
-          index: id,
-          account: { name },
-        }),
-      )
+      const cpy = JSON.parse(JSON.stringify(accounts[0]))
+      const accountsPayload = [cpy]
+      accountsPayload[id].name = name
+      dispatch(setAccounts(accountsPayload))
     }
   }
 
@@ -76,10 +69,6 @@ const AccountBox: React.FC<AccountBoxProps> = ({
       setAccountName(initialAccountName)
     }
   }, [initialAccountName])
-
-  useEffect(() => {
-    saveProfile(profile)
-  }, [profile])
 
   return (
     <View style={styles.accountsContainer}>

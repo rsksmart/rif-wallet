@@ -2,21 +2,19 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { persistReducer } from 'redux-persist'
 import { getAccounts as getAccountsFromStorage } from 'src/storage/MainStorage'
 import { reduxStorage } from 'src/storage/ReduxStorage'
-import { AccountAction as AccountPayload, IAccount } from './types'
+import { IAccount } from './types'
 
 const initialState: IAccount[] = [{ name: 'account 1' }]
 
-const profileSlice = createSlice({
+const accountsSlice = createSlice({
   name: 'accounts',
   initialState: getAccountsFromStorage() || initialState,
   reducers: {
-    updateAccount: (state, action: PayloadAction<AccountPayload>) => {
-      state[action.payload.index] = action.payload.account
-    },
+    setAccounts: (_state, action: PayloadAction<IAccount[]>) => action.payload,
   },
 })
 
-export const { updateAccount } = profileSlice.actions
+export const { setAccounts } = accountsSlice.actions
 
 const persistConfig = {
   key: 'ACCOUNTS',
@@ -25,5 +23,5 @@ const persistConfig = {
 
 export const accountsReducer = persistReducer(
   persistConfig,
-  profileSlice.reducer,
+  accountsSlice.reducer,
 )
