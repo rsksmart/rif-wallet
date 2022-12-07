@@ -4,7 +4,14 @@ import {
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
 import { useContext, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { PrimaryButton } from 'src/components/button/PrimaryButton'
@@ -62,62 +69,73 @@ export const ContactFormScreen = ({
   }
 
   return (
-    <View style={styles.parent}>
-      <View style={styles.header}>
-        <Icon.Button
-          accessibilityLabel="backButton"
-          name="arrow-back"
-          onPress={() =>
-            navigation.navigate(contactsStackRouteNames.ContactsList)
-          }
-          backgroundColor={colors.background.primary}
-          color={colors.lightPurple}
-          style={styles.backButton}
-          size={15}
-          borderRadius={20}
-        />
-        <Text style={styles.title}>
-          {initialValue.id ? 'Edit Contact' : 'Create Contact'}
-        </Text>
-      </View>
-      <View style={styles.body}>
-        <Text style={styles.label}>name</Text>
-        <TextInput
-          testID="nameInput"
-          accessibilityLabel="nameInput"
-          style={styles.input}
-          onChangeText={setName}
-          value={name}
-          placeholder="name your contact..."
-          placeholderTextColor={colors.text.secondary}
-        />
-        <View style={grid.row}>
-          {/* <Text style={styles.disabledLabel}>alias</Text> */}
-          <Text style={styles.label}>address</Text>
+    <KeyboardAvoidingView
+      style={styles.screen}
+      keyboardVerticalOffset={100}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <ScrollView>
+        <View style={styles.parent}>
+          <View style={styles.header}>
+            <Icon.Button
+              accessibilityLabel="backButton"
+              name="arrow-back"
+              onPress={() =>
+                navigation.navigate(contactsStackRouteNames.ContactsList)
+              }
+              backgroundColor={colors.background.primary}
+              color={colors.lightPurple}
+              style={styles.backButton}
+              size={15}
+              borderRadius={20}
+            />
+            <Text style={styles.title}>
+              {initialValue.id ? 'Edit Contact' : 'Create Contact'}
+            </Text>
+          </View>
+          <View style={styles.body}>
+            <Text style={styles.label}>name</Text>
+            <TextInput
+              testID="nameInput"
+              accessibilityLabel="nameInput"
+              style={styles.input}
+              onChangeText={setName}
+              value={name}
+              placeholder="name your contact..."
+              placeholderTextColor={colors.text.secondary}
+            />
+            <View style={grid.row}>
+              {/* <Text style={styles.disabledLabel}>alias</Text> */}
+              <Text style={styles.label}>address</Text>
+            </View>
+            <AddressInput
+              testID="addressInput"
+              initialValue={initialValue.address || ''}
+              onChangeText={handleAddressChange}
+              chainId={chainId}
+              backgroundColor={colors.darkPurple4}
+            />
+          </View>
+          <View style={styles.footer}>
+            <PrimaryButton
+              testID="saveButton"
+              accessibilityLabel="saveButton"
+              title="Save Contact"
+              onPress={saveContact}
+              style={styles.saveButton}
+              disabled={!isValidContact}
+            />
+          </View>
         </View>
-        <AddressInput
-          testID="addressInput"
-          initialValue={initialValue.address || ''}
-          onChangeText={handleAddressChange}
-          chainId={chainId}
-          backgroundColor={colors.darkPurple4}
-        />
-      </View>
-      <View style={styles.footer}>
-        <PrimaryButton
-          testID="saveButton"
-          accessibilityLabel="saveButton"
-          title="Save Contact"
-          onPress={saveContact}
-          style={styles.saveButton}
-          disabled={!isValidContact}
-        />
-      </View>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   )
 }
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: colors.background.darkBlue,
+  },
   parent: {
     alignContent: 'space-around',
     height: '100%',
@@ -165,8 +183,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   footer: {
-    flex: 2,
-    justifyContent: 'flex-end',
+    marginTop: 25,
   },
   saveButton: {
     justifyContent: 'center',

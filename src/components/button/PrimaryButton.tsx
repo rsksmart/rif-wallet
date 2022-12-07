@@ -1,9 +1,10 @@
 import { StyleSheet } from 'react-native'
 import { colors } from 'src/styles'
-import { StyledButton, StyledButtonProps } from './StyledButton'
+import { StyledButton } from './StyledButton'
+import { ButtonProps } from './types'
 
-export const PrimaryButton = (props: StyledButtonProps) => (
-  <StyledButton {...props} buttonStyles={styles} />
+export const PrimaryButton = (props: ButtonProps) => (
+  <StyledButton {...props} title={props.title || ''} buttonStyles={styles} />
 )
 
 const styles = StyleSheet.create({

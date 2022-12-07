@@ -4,7 +4,7 @@ import DotsComponentDefault from './DotsComponent'
 import { PinScreenType, DotsComponentDefaultType } from './PinScreen'
 import MessageComponentDefault from './MessageComponent'
 import { colors } from 'src/styles'
-import { WhiteButton } from 'src/components/button/WhiteButton'
+import { OutlineButton } from 'src/components/button'
 
 const PinScreen = ({
   MessageComponent = MessageComponentDefault,
@@ -30,7 +30,7 @@ const PinScreen = ({
       </View>
 
       {resetEnabled && (
-        <WhiteButton
+        <OutlineButton
           onPress={resetKeysAndPin}
           accessibilityLabel="newWallet"
           title={'reset'}

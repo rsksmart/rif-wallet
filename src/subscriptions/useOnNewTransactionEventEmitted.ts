@@ -1,38 +1,34 @@
 import { ISocketsChangeEmitted } from './types'
 import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { addNewTransaction } from 'store/slices/transactionsSlice/transactionsSlice'
+import { IEnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
 
 export const useOnNewTransactionEventEmitted = ({
   abiEnhancer,
   wallet,
   dispatch,
 }: ISocketsChangeEmitted) => {
-  return (payload: IApiTransaction) => {
-    abiEnhancer
-      .enhance(wallet, {
+  return async (payload: IApiTransaction) => {
+    const payloadToUse: {
+      originTransaction: IApiTransaction
+      enhancedTransaction?: IEnhancedResult
+    } = {
+      originTransaction: payload,
+      enhancedTransaction: undefined,
+    }
+    try {
+      const enhancedTransaction = await abiEnhancer.enhance(wallet, {
         from: wallet.smartWalletAddress,
         to: payload.to.toLowerCase(),
         data: payload.input,
         value: payload.value,
       })
-      .then(enhancedTransaction => {
-        if (enhancedTransaction) {
-          dispatch({
-            type: 'newTransaction',
-            payload: {
-              originTransaction: payload,
-              enhancedTransaction,
-            },
-          })
-        }
-      })
-      .catch(() => {
-        dispatch({
-          type: 'newTransaction',
-          payload: {
-            originTransaction: payload,
-            enhancedTransaction: undefined,
-          },
-        })
-      })
+      if (enhancedTransaction) {
+        payloadToUse.enhancedTransaction = enhancedTransaction
+      }
+    } catch (err) {
+    } finally {
+      dispatch(addNewTransaction(payloadToUse))
+    }
   }
 }

@@ -1,22 +1,26 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit'
+import { configureStore } from '@reduxjs/toolkit'
 import createDebugger from 'redux-flipper'
-import { persistStore } from 'redux-persist'
-import { balancesReducer } from './slices/balancesSlice/balancesSlice'
-import { profileReducer } from './slices/profileSlice/profileSlice'
-import { usdPriceReducer } from './slices/usdPricesSlice/usdPricesSlice'
+import {
+  persistStore,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist'
+import { rootReducer } from './rootReducer'
 
 // Must use redux-debugger plugin in flipper for the redux debugger to work
-
-const rootReducer = combineReducers({
-  usdPrices: usdPriceReducer,
-  balances: balancesReducer,
-  profile: profileReducer,
-})
 
 export const store = configureStore({
   reducer: rootReducer,
   middleware: getDefaultMiddlewares => {
-    const middlewares = getDefaultMiddlewares()
+    const middlewares = getDefaultMiddlewares({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    })
     if (__DEV__) {
       return middlewares.concat(createDebugger())
     }

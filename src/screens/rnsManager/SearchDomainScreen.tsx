@@ -55,7 +55,9 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   return (
     <>
       <View style={rnsManagerStyles.profileHeader}>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Home')}
+          accessibilityLabel="home">
           <View style={rnsManagerStyles.backButton}>
             <MaterialIcon name="west" color={colors.lightPurple} size={10} />
           </View>
@@ -101,6 +103,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           </MediumText>
           {selectedYears > 1 && (
             <TouchableOpacity
+              accessibilityLabel="decreases"
               onPress={() => handleYearsChange(selectedYears - 1)}
               style={styles.minusIcon}>
               <MaterialIcon
@@ -111,6 +114,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
             </TouchableOpacity>
           )}
           <TouchableOpacity
+            accessibilityLabel="increase"
             onPress={() => handleYearsChange(selectedYears + 1)}
             style={styles.addIcon}>
             <MaterialIcon

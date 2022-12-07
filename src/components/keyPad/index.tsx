@@ -23,6 +23,7 @@ export const KeyPad = ({ onDelete, onKeyPress }: KeypadComponentProps) => {
           <DialButton
             label={`${index + 1}`}
             testID={`keypad_${index + 1}`}
+            accessibilityLabel={`${index + 1}`}
             onPress={() => onKeyPress(`${index + 1}`)}
           />
         </View>
@@ -41,6 +42,7 @@ export const KeyPad = ({ onDelete, onKeyPress }: KeypadComponentProps) => {
         <DialButton
           label="0"
           testID="keypad_0"
+          accessibilityLabel="0"
           variant="default"
           onPress={() => onKeyPress('0')}
         />

@@ -43,6 +43,7 @@ export const RecentTransactions: React.FC<Props> = ({
         <TouchableOpacity
           key={address}
           testID={`${address}.Button`}
+          accessibilityLabel={address}
           onPress={() => onSelect(address)}>
           <View style={styles.container}>
             <View style={styles.firstHalf}>

@@ -291,11 +291,6 @@ export const RootNavigationComponent = ({
           component={Screens.ContactsNavigation}
         />
         <RootStack.Screen
-          name={rootStackRouteNames.EventsScreen}
-          component={Screens.EventsScreen}
-          options={sharedOptions}
-        />
-        <RootStack.Screen
           name={rootStackRouteNames.SecurityConfigurationScreen}
           options={sharedOptions}>
           {props => (

@@ -2,8 +2,8 @@ import EventEmitter from 'events'
 import { io, Socket } from 'socket.io-client'
 
 import { enhanceTransactionInput } from 'screens/activity/ActivityScreen'
-import { MMKVStorage } from '../../storage/MMKVStorage'
-import { IActivityTransaction } from '../../subscriptions/types'
+import { MMKVStorage } from 'src/storage/MMKVStorage'
+import { IActivityTransaction } from 'src/subscriptions/types'
 import { IAbiEnhancer } from '../abiEnhancer/AbiEnhancer'
 import { RIFWallet } from '../core'
 import { IRIFWalletServicesFetcher } from './RifWalletServicesFetcher'
@@ -77,7 +77,10 @@ export class RifWalletServicesSocket
             enhancedTransaction,
           }
         } else {
-          return null
+          return {
+            originTransaction: tx,
+            enhancedTransaction: undefined,
+          }
         }
       }),
     )

@@ -1,7 +1,7 @@
 import { View, StyleSheet } from 'react-native'
 import { RegularText } from '../../components'
 import { colors } from '../../styles'
-import ActiveButton from '../../components/button/ActiveButton'
+import { ActiveButton } from '../../components/button'
 
 export const ChangeLanguageScreen = () => {
   // @TODO logic to implement language change and mode change...
@@ -10,15 +10,19 @@ export const ChangeLanguageScreen = () => {
       <View>
         <RegularText style={styles.label}>Select language</RegularText>
         <View style={styles.languageView}>
-          <ActiveButton isActive title="ENG" />
-          <ActiveButton title="ESP" />
+          <ActiveButton isActive title="ENG" accessibilityLabel="English" />
+          <ActiveButton title="ESP" accessibilityLabel="Spanish" />
         </View>
       </View>
       <View style={styles.modeView}>
         <RegularText style={styles.label}>Mode</RegularText>
         <View style={styles.languageView}>
-          <ActiveButton isActive title="dark mode" />
-          <ActiveButton title="light mode" />
+          <ActiveButton
+            isActive
+            title="dark mode"
+            accessibilityLabel="dark mode"
+          />
+          <ActiveButton title="light mode" accessibilityLabel="light mode" />
         </View>
       </View>
     </View>

@@ -89,6 +89,7 @@ export const WalletConnectScreen = ({
                   <Text style={styles.dappUrl}>{c.peerMeta?.url}</Text>
                 </View>
                 <TouchableOpacity
+                  accessibilityLabel="dapp"
                   style={styles.dappButtonView}
                   onPress={() => c.killSession()}>
                   <Image

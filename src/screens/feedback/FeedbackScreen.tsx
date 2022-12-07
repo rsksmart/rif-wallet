@@ -64,6 +64,7 @@ export const FeedbackScreen = () => {
 
       <PrimaryButton
         title="Submit"
+        accessibilityLabel="submit"
         onPress={submitFeedback}
         disabled={isLoading}
       />

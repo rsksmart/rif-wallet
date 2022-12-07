@@ -28,6 +28,7 @@ const WalletNotDeployedView: React.FC<WalletNotDeployedViewType> = ({
         title="deploy wallet"
         style={styles.buttonDeploy}
         onPress={onDeployWalletPress}
+        accessibilityLabel="deploy"
         icon={
           <View style={styles.deployIcon}>
             <Arrow

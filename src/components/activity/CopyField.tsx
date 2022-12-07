@@ -24,7 +24,7 @@ const CopyField = ({
     return null
   }
   return (
-    <TouchableOpacity onPress={onCopy}>
+    <TouchableOpacity onPress={onCopy} accessibilityLabel="copy">
       <View style={styles.container}>
         <TextComp style={styles.text}>{text}</TextComp>
         <View style={styles.iconView}>

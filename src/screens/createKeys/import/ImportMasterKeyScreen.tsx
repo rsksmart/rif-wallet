@@ -44,7 +44,7 @@ export const ImportMasterKeyScreen = ({
   createWallet,
   isKeyboardVisible,
 }: Props) => {
-  const slidesIndexes = [0, 1, 2, 3, 4, 5, 6, 7]
+  const slidesIndexes = [0, 1, 2, 3]
 
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
   const [selectedWords, setSelectedWords] = useState<string[]>([])
@@ -104,7 +104,8 @@ export const ImportMasterKeyScreen = ({
       <View style={sharedMnemonicStyles.topContent}>
         <TouchableOpacity
           onPress={() => navigation.navigate('CreateKeys')}
-          style={styles.returnButton}>
+          style={styles.returnButton}
+          accessibilityLabel="back">
           <View style={styles.returnButtonView}>
             <Arrow color={colors.white} rotate={270} width={30} height={30} />
           </View>

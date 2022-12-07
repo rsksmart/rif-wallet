@@ -76,7 +76,9 @@ export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
   return (
     <>
       <View style={rnsManagerStyles.profileHeader}>
-        <TouchableOpacity onPress={() => navigation.navigate('SearchDomain')}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('SearchDomain')}
+          accessibilityLabel="back">
           <View style={rnsManagerStyles.backButton}>
             <MaterialIcon name="west" color="white" size={10} />
           </View>

@@ -41,6 +41,7 @@ export const SettingsScreen = ({
     <ScrollView style={styles.container}>
       <View style={styles.mainView}>
         <TouchableOpacity
+          accessibilityLabel="language"
           onPress={goToChangeLanguage}
           style={styles.rowComponent}>
           <DiscoverTuneIcon width={18} height={18} />
@@ -50,6 +51,7 @@ export const SettingsScreen = ({
         </TouchableOpacity>
         {/* @TODO add link to go to the accounts screen */}
         <TouchableOpacity
+          accessibilityLabel="account"
           style={styles.rowComponent}
           onPress={goToAccountsScreen}>
           <AccountsIcon width={18} height={18} />
@@ -58,6 +60,7 @@ export const SettingsScreen = ({
           </SemiBoldText>
         </TouchableOpacity>
         <TouchableOpacity
+          accessibilityLabel="security"
           style={styles.rowComponent}
           onPress={goToSecurityConfiguration}>
           <LockIcon />
@@ -65,13 +68,17 @@ export const SettingsScreen = ({
             Security
           </SemiBoldText>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.rowComponent} onPress={goToDeploy}>
+        <TouchableOpacity
+          style={styles.rowComponent}
+          onPress={goToDeploy}
+          accessibilityLabel="deploy">
           <Icon name="wallet-outline" color={colors.white} size={20} />
           <SemiBoldText style={[styles.textColor, spacing.ml6]}>
             Smart Wallet Deploy
           </SemiBoldText>
         </TouchableOpacity>
         <TouchableOpacity
+          accessibilityLabel="feedback"
           style={styles.rowComponent}
           onPress={goToFeedbackScreen}>
           <FontAwesomeIcon name="comment" color={colors.white} size={20} />

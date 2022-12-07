@@ -45,6 +45,7 @@ const SignMessageModal: React.FC<Interface> = ({ request, closeModal }) => {
             onPress={reject}
             title={t('reject')}
             testID="Button.Reject"
+            accessibilityLabel="reject"
           />
         </View>
         <View style={sharedStyles.column}>
@@ -52,6 +53,7 @@ const SignMessageModal: React.FC<Interface> = ({ request, closeModal }) => {
             onPress={signMessage}
             title={t('sign')}
             testID="Button.Confirm"
+            accessibilityLabel="confirm"
           />
         </View>
       </View>

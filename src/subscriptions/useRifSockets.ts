@@ -1,115 +1,40 @@
-import {
-  Action,
-  IActivityTransaction,
-  State,
-  SubscriptionsProviderProps,
-} from './types'
-import { useContext, useEffect, useReducer } from 'react'
+import { InitAction } from './types'
+import { useEffect } from 'react'
 import { useSetGlobalError } from 'components/GlobalErrorHandler'
-import { AppContext, useSelectedWallet } from '../Context'
-import { filterEnhancedTransactions, sortEnhancedTransactions } from './utils'
 import { useConnectSocket } from './useConnectSocket'
 import { useOnSocketChangeEmitted } from './useOnSocketChangeEmitted'
-import { useOnSocketInit } from './useOnSocketInit'
+import { useAppDispatch } from 'store/storeHooks'
+import { resetSocketState } from 'store/shared/actions/resetSocketState'
+import { RIFWallet } from 'lib/core'
+import { IRifWalletServicesSocket } from 'lib/rifWalletServices/RifWalletServicesSocket'
+import { IAbiEnhancer } from 'lib/abiEnhancer/AbiEnhancer'
 
-function liveSubscriptionsReducer(state: State, action: Action) {
-  const { type } = action
-  switch (action.type) {
-    case 'newTransactions':
-      const sortedTxs: Array<IActivityTransaction> = [
-        ...action.payload?.activityTransactions,
-        ...state.transactions?.activityTransactions,
-      ]
-        .sort(sortEnhancedTransactions)
-        .filter(filterEnhancedTransactions)
-
-      return {
-        ...state,
-        transactions: {
-          prev: action.payload.prev,
-          next: action.payload.next,
-          activityTransactions: sortedTxs,
-        },
-      }
-
-    case 'newTransaction':
-      const sortedTx: Array<IActivityTransaction> = [
-        action.payload,
-        ...state.transactions?.activityTransactions,
-      ]
-        .sort(sortEnhancedTransactions)
-        .filter(filterEnhancedTransactions)
-
-      return {
-        ...state,
-        transactions: {
-          ...state.transactions,
-          activityTransactions: sortedTx,
-        },
-      }
-
-    case 'newTokenTransfer':
-      return {
-        ...state,
-        events: state.events.concat([action.payload]),
-      }
-
-    case 'init':
-      const balancesInitial = action.payload.balances.reduce(
-        (accum, current) => {
-          return {
-            ...accum,
-            [current.contractAddress]: { ...current, logo: '' }, // why logo is empty?
-          }
-        },
-        {},
-      )
-
-      return {
-        ...state,
-        isSetup: true,
-        balances: balancesInitial,
-        transactions: {
-          ...state.transactions,
-          activityTransactions: action.payload.transactions,
-        },
-      }
-
-    case 'reset':
-      return initialState
-
-    default:
-      throw new Error(`Unhandled action type: ${type}`)
-  }
+interface IUseRifSockets {
+  rifServiceSocket?: IRifWalletServicesSocket
+  abiEnhancer: IAbiEnhancer
+  appActive: boolean
+  wallet: RIFWallet
+  mnemonic?: string
 }
-
-const initialState = {
-  transactions: {
-    activityTransactions: [],
-    next: null,
-    prev: null,
-  },
-  balances: {},
-  events: [],
-  isSetup: false,
-}
-
 export const useRifSockets = ({
   rifServiceSocket,
   abiEnhancer,
   appActive,
-}: Omit<SubscriptionsProviderProps, 'children'>) => {
-  const [state, dispatch] = useReducer(liveSubscriptionsReducer, initialState)
+  wallet,
+  mnemonic,
+}: IUseRifSockets) => {
+  const dispatchRedux = useAppDispatch()
   const setGlobalError = useSetGlobalError()
-  const { mnemonic } = useContext(AppContext)
-  const { wallet } = useSelectedWallet()
 
   const onSocketsChange = useOnSocketChangeEmitted({
-    dispatch,
+    dispatch: dispatchRedux,
     abiEnhancer,
     wallet,
   })
-  const onSocketInit = useOnSocketInit({ dispatch })
+
+  const onSocketInit = (payload: InitAction['payload']) => {
+    return onSocketsChange({ type: 'init', payload })
+  }
   const onSocketError = () => setGlobalError('Error connecting to the socket')
   const connect = useConnectSocket({
     rifServiceSocket,
@@ -125,7 +50,7 @@ export const useRifSockets = ({
       // socket is connected to a different wallet
       if (rifServiceSocket.isConnected()) {
         rifServiceSocket.disconnect()
-        dispatch({ type: 'reset' })
+        dispatchRedux(resetSocketState())
       }
       connect()
 
@@ -149,5 +74,5 @@ export const useRifSockets = ({
     onWalletAppActiveChange()
   }, [appActive])
 
-  return { state, dispatch }
+  return null
 }

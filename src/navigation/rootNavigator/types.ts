@@ -39,7 +39,6 @@ export enum rootStackRouteNames {
   RegisterDomain = 'RegisterDomain',
   Contacts = 'Contacts',
   Settings = 'Settings',
-  EventsScreen = 'EventsScreen',
   AccountsScreen = 'AccountsScreen',
   SecurityConfigurationScreen = 'SecurityConfigurationScreen',
   ProfileCreateScreen = 'ProfileCreateScreen',
@@ -57,7 +56,7 @@ export type RootStackParamList = {
         to?: string
         displayTo?: string
         contractAddress?: string
-        rnsResolver: Resolver
+        rnsResolver?: Resolver
       }
   Receive: undefined
   ReceiveBitcoin: {
@@ -95,7 +94,6 @@ export type RootStackParamList = {
   RegisterDomain: { selectedDomain: string; years: number }
   Contacts: undefined
   Settings: undefined
-  EventsScreen: undefined
   AccountsScreen: undefined
   SecurityConfigurationScreen: undefined
   ProfileCreateScreen: {

@@ -159,7 +159,9 @@ export const AddressInput = ({
             <Text style={styles.rnsDomainAddress}>{addressResolved}</Text>
           </View>
           <View style={styles.rnsDomainUnselect}>
-            <TouchableOpacity onPress={unselectDomain}>
+            <TouchableOpacity
+              onPress={unselectDomain}
+              accessibilityLabel="delete">
               <DeleteIcon color={'black'} width={20} height={20} />
             </TouchableOpacity>
           </View>
@@ -186,7 +188,8 @@ export const AddressInput = ({
                 <TouchableOpacity
                   style={styles.button}
                   onPress={handlePasteClick}
-                  testID="Address.PasteButton">
+                  testID="Address.PasteButton"
+                  accessibilityLabel="paste">
                   <ContentPasteIcon
                     color={colors.text.secondary}
                     height={22}
@@ -197,7 +200,8 @@ export const AddressInput = ({
                 <TouchableOpacity
                   style={styles.button}
                   onPress={() => setShowQRScanner(true)}
-                  testID="Address.QRCodeButton">
+                  testID="Address.QRCodeButton"
+                  accessibilityLabel="qr">
                   <QRCodeIcon color={colors.text.secondary} />
                 </TouchableOpacity>
               </>
@@ -205,7 +209,8 @@ export const AddressInput = ({
               <TouchableOpacity
                 style={styles.button}
                 onPress={() => handleChangeText('')}
-                testID="Address.ClearButton">
+                testID="Address.ClearButton"
+                accessibilityLabel="clear">
                 <View style={styles.clearButtonView}>
                   <Icon
                     name="close-outline"
@@ -228,6 +233,7 @@ export const AddressInput = ({
           {status.type === 'CHECKSUM' && (
             <SecondaryButton
               testID={`${testID}.Button.Checksum`}
+              accessibilityLabel="convert"
               title="Convert to correct checksum"
               onPress={() =>
                 handleChangeText(toChecksumAddress(recipient, chainId))

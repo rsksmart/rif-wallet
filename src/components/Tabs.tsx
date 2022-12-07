@@ -21,7 +21,10 @@ export const Tabs = ({ title, tabs, selectedTab, onTabSelected }: Props) => {
               ? { ...styles.tab, ...styles.selectedTab }
               : styles.tab
           return (
-            <TouchableOpacity key={tab} onPress={() => onTabSelected(tab)}>
+            <TouchableOpacity
+              key={tab}
+              onPress={() => onTabSelected(tab)}
+              accessibilityLabel={tab}>
               <Text style={[tabStyle, styles.tabText]}>{tab}</Text>
             </TouchableOpacity>
           )

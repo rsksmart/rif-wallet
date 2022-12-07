@@ -1,24 +1,7 @@
-import { ReactNode, useState } from 'react'
-import { ViewStyle } from 'react-native'
-import { StyleSheet, Text, TextStyle, View } from 'react-native'
-import BaseButton, { BaseButtonProps } from './BaseButton'
-
-interface ButtonStyles {
-  button: ViewStyle
-  buttonPressed: ViewStyle
-  buttonDisabled: ViewStyle
-  buttonActive: ViewStyle
-  text: TextStyle
-  textPressed: TextStyle
-  textDisabled: TextStyle
-}
-
-export interface StyledButtonProps extends BaseButtonProps {
-  title?: string
-  icon?: ReactNode
-  accessibilityLabel?: string
-  buttonStyles: ButtonStyles
-}
+import { useState } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
+import BaseButton from './BaseButton'
+import { StyledButtonProps } from './types'
 
 export const StyledButton = ({
   title,

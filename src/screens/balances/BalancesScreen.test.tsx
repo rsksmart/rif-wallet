@@ -14,49 +14,21 @@ import {
   lastToken,
   lastTokenTextTestId,
 } from '../../../testLib/mocks/rifServicesMock'
-import { RIFSocketsProvider } from '../../subscriptions/RIFSockets'
-import { IRifWalletServicesSocket } from '../../lib/rifWalletServices/RifWalletServicesSocket'
-import EventEmitter from 'events'
-
-import tempRecent from '../../../testLib/mocks/testBalances.json'
 import { constants } from 'ethers'
-import { createMockAbiEnhancer } from '../../../testLib/mocks/rifTransactionsMock'
-
-class RifWalletServicesSocketMock
-  extends EventEmitter
-  implements IRifWalletServicesSocket
-{
-  async connect() {
-    this.emit('init', {
-      transactions: tempRecent,
-      balances: testCase,
-    })
-  }
-  disconnect() {
-    // nothing
-  }
-}
-
-const abiEnhancer = createMockAbiEnhancer()
+import { ReduxWrapper } from "../../../testLib/ReduxWrapper";
 
 const createTestInstance = async (fetcher = createMockFetcher()) => {
   const mock = await setupTest()
 
-  const socketMock = new RifWalletServicesSocketMock()
-
   const container = render(
-    <RIFSocketsProvider
-      rifServiceSocket={socketMock}
-      isWalletDeployed={true}
-      abiEnhancer={abiEnhancer}>
       <BalancesScreen
         wallet={mock.rifWallet}
         isWalletDeployed={true}
         navigation={mock.navigation}
         route={{} as any}
         fetcher={fetcher}
-      />
-    </RIFSocketsProvider>,
+      />,
+    { wrapper: ReduxWrapper }
   )
 
   const loadingText = container.getByTestId('Info.Text')

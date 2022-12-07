@@ -110,7 +110,7 @@ export const AddressBitcoinInput = ({
             <Text style={styles.rnsDomainAddress}>{to.value}</Text>
           </View>
           <View style={styles.rnsDomainUnselect}>
-            <TouchableOpacity onPress={onClearText}>
+            <TouchableOpacity onPress={onClearText} accessibilityLabel="delete">
               <DeleteIcon color={'black'} width={20} height={20} />
             </TouchableOpacity>
           </View>

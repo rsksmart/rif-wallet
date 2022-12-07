@@ -77,11 +77,13 @@ export const SecurityConfigurationScreen = ({
           style={styles.buttonFirstStyle}
           title="Reveal Master Key"
           onPress={revealMasterKey}
+          accessibilityLabel="reveal"
         />
         {showReminder && (
           <SecondaryButton
             style={styles.buttonFirstStyle}
             title="Confirm Master Key"
+            accessibilityLabel="confirm"
             onPress={() =>
               navigation.navigate(rootStackRouteNames.CreateKeysUX, {
                 screen: createKeysRouteNames.SecurityExplanation,
@@ -93,6 +95,7 @@ export const SecurityConfigurationScreen = ({
           style={styles.buttonFirstStyle}
           title="Delete Master Key"
           onPress={handleDeleteKeys}
+          accessibilityLabel="delete"
         />
       </View>
       <View style={styles.pinContainer}>
@@ -102,6 +105,7 @@ export const SecurityConfigurationScreen = ({
         <SecondaryButton
           style={styles.buttonFirstStyle}
           title="Change PIN"
+          accessibilityLabel="change"
           onPress={changePin}
         />
       </View>
