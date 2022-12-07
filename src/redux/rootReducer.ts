@@ -1,4 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit'
+import { accountsReducer } from './slices/accountsSlice/accountsSlice'
 import { appStateReducer } from './slices/appStateSlice/appStateSlice'
 import { balancesReducer } from './slices/balancesSlice/balancesSlice'
 import { profileReducer } from './slices/profileSlice/profileSlice'
@@ -11,4 +12,5 @@ export const rootReducer = combineReducers({
   appState: appStateReducer,
   transactions: transactionsReducer,
   profile: profileReducer,
+  accounts: accountsReducer,
 })

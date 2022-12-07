@@ -1,21 +1,12 @@
+import { IProfileStore } from 'src/redux/slices/profileSlice/types'
 import { IContact } from 'src/screens/contacts/ContactsContext'
 import { MMKVStorage } from './MMKVStorage'
-
-export interface IAccount {
-  name: string
-}
-
-export interface IProfileStore {
-  alias: string
-  phone: string
-  email: string
-  accounts: IAccount[]
-}
 
 export const MainStorage = new MMKVStorage()
 
 const pin = 'PIN'
 const profile = 'PROFILE'
+const accounts = 'ACCOUNTS'
 const keyManagement = 'KEY_MANAGEMENT'
 const keyVerificationReminder = 'KEY_VERIFICATION_REMINDER'
 const contacts = 'CONTACTS'
@@ -28,10 +19,13 @@ export const savePin = (pinValue: string) => MainStorage.set(pin, pinValue)
 
 // profile functions
 export const hasProfile = () => MainStorage.has(profile)
-export const getProfile = () => MainStorage.get(profile) || {}
+export const getProfile = () => MainStorage.get(profile)
 export const deleteProfile = () => MainStorage.delete(profile)
 export const saveProfile = (profileValue: IProfileStore) =>
   MainStorage.set(profile, profileValue)
+
+// accounts function
+export const getAccounts = () => MainStorage.get(accounts)
 
 //keys functions
 export const hasKeys = () => MainStorage.has(keyManagement)
