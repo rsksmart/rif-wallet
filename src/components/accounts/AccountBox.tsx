@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, TextInput, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { setAccount } from 'src/redux/slices/profileSlice/profileSlice'
+import { updateAccount } from 'src/redux/slices/accountsSlice/accountsSlice'
 import { selectProfile } from 'src/redux/slices/profileSlice/selector'
 import { useAppDispatch, useAppSelector } from 'src/redux/storeHooks'
 import { saveProfile } from 'src/storage/MainStorage'
@@ -59,7 +59,7 @@ const AccountBox: React.FC<AccountBoxProps> = ({
         name,
       }
       dispatch(
-        setAccount({
+        updateAccount({
           index: id,
           account: { name },
         }),

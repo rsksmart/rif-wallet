@@ -1,26 +1,26 @@
-import React, { useEffect, useState } from 'react'
-import { Image, StyleSheet, View } from 'react-native'
-import { Paragraph } from 'src/components'
 import { toChecksumAddress } from 'components/address/lib'
 import { LoadingScreen } from 'components/loading/LoadingScreen'
-import { useBitcoinCoreContext, useSelectedWallet } from 'src/Context'
 import { balanceToDisplay } from 'lib/utils'
 import {
   RootStackNavigationProp,
   rootStackRouteNames,
 } from 'navigation/rootNavigator/types'
+import React, { useEffect, useState } from 'react'
+import { Image, StyleSheet, View } from 'react-native'
+import { Paragraph } from 'src/components'
+import { useBitcoinCoreContext, useSelectedWallet } from 'src/Context'
+import { selectAccounts } from 'src/redux/slices/accountsSlice/selector'
 import { colors } from 'src/styles'
+import { selectAppState } from 'store/slices/appStateSlice/selectors'
+import { selectBalances } from 'store/slices/balancesSlice/selectors'
+import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
+import { selectUsdPrices } from 'store/slices/usdPricesSlice'
+import { useAppSelector } from 'store/storeHooks'
+import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 import PortfolioComponent from './PortfolioComponent'
 import SelectedTokenComponent from './SelectedTokenComponent'
 import SendReceiveButtonComponent from './SendReceiveButtonComponent'
 import { getTokenColor } from './tokenColor'
-import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
-import { useAppSelector } from 'store/storeHooks'
-import { selectUsdPrices } from 'store/slices/usdPricesSlice'
-import { selectBalances } from 'store/slices/balancesSlice/selectors'
-import { selectProfile } from 'src/redux/slices/profileSlice/selector'
-import { selectAppState } from 'store/slices/appStateSlice/selectors'
-import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 
 export type HomeScreenProps = {
   navigation: RootStackNavigationProp
@@ -35,7 +35,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const prices = useAppSelector(selectUsdPrices)
   const { networksMap } = useBitcoinCoreContext()
   const { selectedWalletIndex, wallet, chainId } = useSelectedWallet()
-  const profile = useAppSelector(selectProfile)
+  const accounts = useAppSelector(selectAccounts)
 
   const { isSetup } = useAppSelector(selectAppState)
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
@@ -125,7 +125,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   let accountName = 'account 1'
   if (typeof selectedWalletIndex === 'number') {
     accountName =
-      profile.accounts[selectedWalletIndex]?.name ||
+      accounts[selectedWalletIndex]?.name ||
       `account ${selectedWalletIndex + 1}`
   }
   return (
