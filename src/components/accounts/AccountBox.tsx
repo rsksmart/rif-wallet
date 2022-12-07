@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, TextInput, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { setAccounts } from 'src/redux/slices/accountsSlice/accountsSlice'
+import { setAccount } from 'src/redux/slices/accountsSlice/accountsSlice'
 import { selectAccounts } from 'src/redux/slices/accountsSlice/selector'
+import { AccountPayload } from 'src/redux/slices/accountsSlice/types'
 import { useAppDispatch, useAppSelector } from 'src/redux/storeHooks'
 import { SmartWalletFactory } from '../../lib/core/SmartWalletFactory'
 import { PublicKeyItemType } from '../../screens/accounts/types'
@@ -53,10 +54,11 @@ const AccountBox: React.FC<AccountBoxProps> = ({
       const name = accountName.trim()
       setAccountName(name)
       setShowAccountInput(false)
-      const cpy = JSON.parse(JSON.stringify(accounts[0]))
-      const accountsPayload = [cpy]
-      accountsPayload[id].name = name
-      dispatch(setAccounts(accountsPayload))
+      const accountPayload: AccountPayload = {
+        index: id,
+        account: { name },
+      }
+      dispatch(setAccount(accountPayload))
     }
   }
 
