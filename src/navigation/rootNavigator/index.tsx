@@ -1,21 +1,20 @@
 import { createStackNavigator } from '@react-navigation/stack'
+import JailMonkey from 'jail-monkey'
 import { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import JailMonkey from 'jail-monkey'
 
 import { InjectSelectedWallet } from '../../Context'
 import { IRifWalletServicesSocket } from '../../lib/rifWalletServices/RifWalletServicesSocket'
 
-import * as Screens from '../../screens'
 import {
   CreateKeysNavigation,
   CreateKeysProps,
 } from 'navigation/createKeysNavigator'
+import * as Screens from '../../screens'
 import { colors } from '../../styles'
 import { AppFooterMenu } from '../../ux/appFooter'
 import { AppHeader } from '../../ux/appHeader'
 
-import { emptyProfile, useProfile } from '../../core/hooks/useProfile'
 import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
 import {
   RootStackParamList,
@@ -88,9 +87,6 @@ export const RootNavigationComponent = ({
   securityConfigurationScreenProps,
   setWalletIsDeployed,
 }: Props) => {
-  const { profile, setProfile, storeProfile, eraseProfile, profileCreated } =
-    useProfile(emptyProfile)
-
   const isDeviceRooted = JailMonkey.isJailBroken()
   const [isWarningVisible, setIsWarningVisible] = useState(isDeviceRooted)
 
@@ -105,9 +101,7 @@ export const RootNavigationComponent = ({
 
   return (
     <View style={styles.parent}>
-      {appIsSetup && (
-        <AppHeader profile={profile} profileCreated={profileCreated} />
-      )}
+      {appIsSetup && <AppHeader />}
       <RootStack.Navigator initialRouteName={initialRoute}>
         <RootStack.Screen
           name={rootStackRouteNames.Home}
@@ -224,13 +218,7 @@ export const RootNavigationComponent = ({
         <RootStack.Screen
           name={rootStackRouteNames.RNSManager}
           options={sharedOptions}>
-          {props => (
-            <InjectedScreens.RNSManagerScreen
-              {...props}
-              profile={profile}
-              setProfile={setProfile}
-            />
-          )}
+          {props => <InjectedScreens.RNSManagerScreen {...props} />}
         </RootStack.Screen>
 
         <RootStack.Screen
@@ -253,13 +241,7 @@ export const RootNavigationComponent = ({
         <RootStack.Screen
           name={rootStackRouteNames.AliasBought}
           options={sharedOptions}>
-          {props => (
-            <InjectedScreens.AliasBoughtScreen
-              {...props}
-              profile={profile}
-              setProfile={setProfile}
-            />
-          )}
+          {props => <InjectedScreens.AliasBoughtScreen {...props} />}
         </RootStack.Screen>
 
         <RootStack.Screen
@@ -303,22 +285,12 @@ export const RootNavigationComponent = ({
         <RootStack.Screen
           name={rootStackRouteNames.ProfileCreateScreen}
           options={sharedOptions}>
-          {props => (
-            <Screens.ProfileCreateScreen
-              {...props}
-              profile={profile}
-              setProfile={setProfile}
-              storeProfile={storeProfile}
-              eraseProfile={eraseProfile}
-            />
-          )}
+          {props => <Screens.ProfileCreateScreen {...props} />}
         </RootStack.Screen>
         <RootStack.Screen
           name={rootStackRouteNames.ProfileDetailsScreen}
           options={sharedOptions}>
-          {props => (
-            <Screens.ProfileDetailsScreen {...props} profile={profile} />
-          )}
+          {props => <Screens.ProfileDetailsScreen {...props} />}
         </RootStack.Screen>
         <RootStack.Screen
           name={rootStackRouteNames.FeedbackScreen}

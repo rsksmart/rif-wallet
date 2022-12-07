@@ -1,24 +1,21 @@
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import Clipboard from '@react-native-community/clipboard'
-import { View, StyleSheet, TouchableOpacity, Image } from 'react-native'
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
-import { colors } from '../../styles'
+import { AvatarIcon } from 'components/icons/AvatarIcon'
+import { MediumText } from 'components/index'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
-import { MediumText } from 'components/index'
-import { AvatarIcon } from 'components/icons/AvatarIcon'
-import { IProfileStore } from '../../storage/MainStorage'
+import { selectProfile } from 'src/redux/slices/profileSlice/selector'
+import { useAppSelector } from 'src/redux/storeHooks'
+import { colors } from '../../styles'
 
-export type ProfileDetailsScreenProps = {
-  profile: IProfileStore
-}
 export const ProfileDetailsScreen = ({
   navigation,
-  profile,
-}: RootStackScreenProps<rootStackRouteNames.ProfileDetailsScreen> &
-  ProfileDetailsScreenProps) => {
+}: RootStackScreenProps<rootStackRouteNames.ProfileDetailsScreen>) => {
+  const profile = useAppSelector(selectProfile)
   const fullAlias = `${profile.alias}.rsk`
   return (
     <View style={styles.staticBackground}>

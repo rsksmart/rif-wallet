@@ -1,27 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { persistReducer } from 'redux-persist'
-import { getProfile as getProfileFromStorage } from 'src/storage/MainStorage'
-import { reduxStorage } from 'src/storage/ReduxStorage'
 import { IProfileStore } from './types'
+
+const initialState = null as IProfileStore | null
 
 const profileSlice = createSlice({
   name: 'profile',
-  initialState: getProfileFromStorage() || null,
+  initialState,
   reducers: {
-    setProfile: (_state, action: PayloadAction<IProfileStore>) => ({
-      ...action.payload,
-    }),
+    setProfile: (_state, action: PayloadAction<IProfileStore>) =>
+      action.payload,
+    eraseProfile: () => null,
   },
 })
 
-export const { setProfile } = profileSlice.actions
+export const { setProfile, eraseProfile } = profileSlice.actions
 
-const persistConfig = {
-  key: 'PROFILE',
-  storage: reduxStorage,
-}
-
-export const profileReducer = persistReducer(
-  persistConfig,
-  profileSlice.reducer,
-)
+export const profileReducer = profileSlice.reducer

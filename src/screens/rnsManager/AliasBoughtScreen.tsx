@@ -7,25 +7,20 @@ import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
-import { SecondaryButton } from 'src/components/button/SecondaryButton'
 import { MediumText } from 'src/components'
 import { PrimaryButton } from 'src/components/button/PrimaryButton'
-import { IProfileStore } from 'src/storage/MainStorage'
-import { ScreenWithWallet } from '../types'
-import { getWalletSetting, SETTINGS } from 'src/core/config'
+import { SecondaryButton } from 'src/components/button/SecondaryButton'
 import { useSelectedWallet } from 'src/Context'
-
-interface Props {
-  profile: IProfileStore
-  setProfile: (p: IProfileStore) => void
-}
+import { getWalletSetting, SETTINGS } from 'src/core/config'
+import { setProfile } from 'src/redux/slices/profileSlice/profileSlice'
+import { selectProfile } from 'src/redux/slices/profileSlice/selector'
+import { useAppDispatch, useAppSelector } from 'src/redux/storeHooks'
+import { ScreenWithWallet } from '../types'
 
 export const AliasBoughtScreen = ({
-  profile,
-  setProfile,
   navigation,
   route,
-}: RootStackScreenProps<'AliasBought'> & ScreenWithWallet & Props) => {
+}: RootStackScreenProps<'AliasBought'> & ScreenWithWallet) => {
   const { alias, tx } = route.params
 
   const [registerDomainInfo, setRegisterDomainInfo] = useState(
@@ -33,6 +28,8 @@ export const AliasBoughtScreen = ({
   )
 
   const { chainId } = useSelectedWallet()
+  const dispatch = useAppDispatch()
+  const profile = useAppSelector(selectProfile)
 
   const explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainId)
 
@@ -42,10 +39,7 @@ export const AliasBoughtScreen = ({
   }
 
   useEffect(() => {
-    setProfile({
-      ...profile,
-      alias,
-    })
+    dispatch(setProfile({ ...profile, alias }))
     const fetchData = async () => {
       await tx.wait()
       setRegisterDomainInfo('Your alias has been registered successfully')
