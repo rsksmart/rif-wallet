@@ -11,16 +11,17 @@ import {
   addNewTransactions,
 } from 'store/slices/transactionsSlice/transactionsSlice'
 import { setUsdPrices } from 'store/slices/usdPricesSlice'
+import { useAppDispatch } from 'store/storeUtils'
 
 export const useOnSocketChangeEmitted = ({
-  dispatch,
   abiEnhancer,
   wallet,
 }: ISocketsChangeEmitted) => {
+  const dispatch = useAppDispatch()
+
   const onNewTransactionEventEmitted = useOnNewTransactionEventEmitted({
     abiEnhancer,
     wallet,
-    dispatch: dispatch,
   })
   return (action: Action) => {
     if (action.type === 'reset') {

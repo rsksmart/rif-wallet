@@ -22,13 +22,12 @@ export const useRifSockets = ({
   abiEnhancer,
   appActive,
 }: IUseRifSockets) => {
-  const dispatchRedux = useAppDispatch()
+  const dispatch = useAppDispatch()
   const setGlobalError = useSetGlobalError()
   const kms = useAppSelector(selectKMS)
   const { wallet } = useAppSelector(selectActiveWallet)
 
   const onSocketsChange = useOnSocketChangeEmitted({
-    dispatch: dispatchRedux,
     abiEnhancer,
     wallet,
   })
@@ -51,7 +50,7 @@ export const useRifSockets = ({
       // socket is connected to a different wallet
       if (rifServiceSocket.isConnected()) {
         rifServiceSocket.disconnect()
-        dispatchRedux(resetSocketState())
+        dispatch(resetSocketState())
       }
       connect()
 
