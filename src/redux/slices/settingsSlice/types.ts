@@ -2,7 +2,6 @@ import { KeyManagementSystem, RIFWallet, Request } from 'lib/core'
 import { BitcoinRequest } from 'lib/bitcoin/types'
 
 import { Wallets, WalletsIsDeployed } from 'src/Context'
-import { UseBitcoinCoreResult } from 'core/hooks/bitcoin/useBitcoinCore'
 import { ColorValue } from 'react-native'
 
 export interface CreateFirstWalletAction {
@@ -45,6 +44,5 @@ export interface SettingsSlice {
   walletsIsDeployed: WalletsIsDeployed | null
   selectedWallet: string
   loading: boolean
-  BitcoinCore: UseBitcoinCoreResult | null
   chainId: number | null
 }

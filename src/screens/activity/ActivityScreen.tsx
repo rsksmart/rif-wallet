@@ -16,19 +16,19 @@ import {
 } from 'navigation/rootNavigator/types'
 import { abiEnhancer, rifWalletServicesFetcher } from 'core/setup'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { selectBitcoinCore } from 'store/slices/settingsSlice'
 import { addNewTransactions } from 'store/slices/transactionsSlice/transactionsSlice'
 import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
-import { colors } from '../../styles'
+import { colors } from 'src/styles'
 import { ScreenWithWallet } from '../types'
 import { TransactionsServerResponseWithActivityTransactions } from './types'
+import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 
 export const ActivityScreen = ({
   wallet,
   navigation,
 }: RootStackScreenProps<rootStackRouteNames.Activity> & ScreenWithWallet) => {
   const [info, setInfo] = useState('')
-  const bitcoinCore = useAppSelector(selectBitcoinCore)
+  const bitcoinCore = useBitcoinContext()
   const btcTransactionFetcher = useBitcoinTransactionsHandler({
     bip:
       bitcoinCore && bitcoinCore.networks[0]

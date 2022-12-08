@@ -33,6 +33,3 @@ export const selectActiveWallet = ({ settings }: RootState) => ({
       ? Object.keys(settings.wallets).indexOf(settings.selectedWallet)
       : undefined,
 })
-
-export const selectBitcoinCore = ({ settings }: RootState) =>
-  settings.BitcoinCore

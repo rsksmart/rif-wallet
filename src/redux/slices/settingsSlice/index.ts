@@ -28,7 +28,6 @@ import {
   networkId as defaultNetwordId,
 } from 'core/setup'
 // import { createAppAsyncThunk } from 'store/storeUtils'
-import { UseBitcoinCoreResult } from 'core/hooks/bitcoin/useBitcoinCore'
 
 export const createWallet = createAsyncThunk(
   'settings/createWallet',
@@ -118,7 +117,6 @@ const initialState: SettingsSlice = {
   selectedWallet: '',
   loading: false,
   chainId: 31,
-  BitcoinCore: null,
 }
 
 const settingsSlice = createSlice({
@@ -133,12 +131,6 @@ const settingsSlice = createSlice({
     },
     closeRequest: state => {
       state.requests = []
-    },
-    setBitcoinCore: (
-      state,
-      { payload }: PayloadAction<UseBitcoinCoreResult>,
-    ) => {
-      state.BitcoinCore = payload
     },
     setChainId: (state, { payload }: PayloadAction<number>) => {
       state.chainId = payload
@@ -231,7 +223,6 @@ export const {
   setNewWallet,
   setChainId,
   setWalletIsDeployed,
-  setBitcoinCore,
   removeKeysFromState,
   resetKeysAndPin,
   switchSelectedWallet,
