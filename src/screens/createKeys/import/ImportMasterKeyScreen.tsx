@@ -32,23 +32,12 @@ import { WordSelector } from '../new/WordSelector'
 import { sharedMnemonicStyles } from '../new/styles'
 import { SLIDER_WIDTH, WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
 import { colors } from 'src/styles/colors'
+import { handleInputRefCreation } from 'src/shared/utils'
 
 type Props = CompositeScreenProps<
   CreateKeysScreenProps<createKeysRouteNames.ImportMasterKey>,
   RootStackScreenProps<rootStackRouteNames.CreateKeysUX>
 >
-
-const handleInputRefCreation = () => {
-  const firstRef = createRef<TextInput>()
-  const secondRef = createRef<TextInput>()
-  const thirdRef = createRef<TextInput>()
-
-  return {
-    firstRef,
-    secondRef,
-    thirdRef,
-  }
-}
 
 const slidesIndexes = [0, 1, 2, 3]
 

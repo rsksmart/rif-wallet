@@ -1,26 +1,27 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import {
   StyleSheet,
   View,
   ScrollView,
   Text,
   TouchableOpacity,
+  ListRenderItemInfo,
 } from 'react-native'
 import Carousel from 'react-native-snap-carousel'
 import { Trans } from 'react-i18next'
 
 import { CreateKeysScreenProps } from 'navigation/createKeysNavigator/types'
-import { colors } from '../../../styles/colors'
-
+import { createWallet } from 'store/slices/settingsSlice'
+import { useAppDispatch } from 'store/storeUtils'
+import { useKeyboardIsVisible } from 'core/hooks/useKeyboardIsVisible'
 import { Arrow } from 'components/icons'
 import { PaginationNavigator } from 'components/button/PaginationNavigator'
-import { SLIDER_WIDTH, WINDOW_WIDTH } from '../../../ux/slides/Dimensions'
 import { WordSelector } from './WordSelector'
-import { sharedMnemonicStyles } from './styles'
-import { useKeyboardIsVisible } from 'core/hooks/useKeyboardIsVisible'
-import { useAppDispatch } from 'store/storeUtils'
-import { createWallet } from 'store/slices/settingsSlice'
+import { SLIDER_WIDTH, WINDOW_WIDTH } from '../../../ux/slides/Dimensions'
 import { saveKeyVerificationReminder } from 'storage/MainStorage'
+import { handleInputRefCreation } from 'shared/utils'
+import { colors } from 'src/styles/colors'
+import { sharedMnemonicStyles } from './styles'
 
 export const ConfirmNewMasterKeyScreen = ({
   route,
@@ -60,28 +61,51 @@ export const ConfirmNewMasterKeyScreen = ({
     setError(false)
   }
 
-  const renderItem = ({ item }: { item: number }) => {
-    const groupIndex = 3 * item
-    return (
-      <View>
-        <WordSelector
-          wordIndex={groupIndex}
-          expectedWord={mnemonicWords[groupIndex]}
-          onWordSelected={handleWordSelected}
-        />
-        <WordSelector
-          wordIndex={1 + groupIndex}
-          expectedWord={mnemonicWords[groupIndex + 1]}
-          onWordSelected={handleWordSelected}
-        />
-        <WordSelector
-          wordIndex={2 + groupIndex}
-          expectedWord={mnemonicWords[groupIndex + 2]}
-          onWordSelected={handleWordSelected}
-        />
-      </View>
-    )
-  }
+  const onSubmitEditing = useCallback(
+    (index: number) => {
+      carousel?.snapToNext()
+      handleSlideChange(index)
+    },
+    [carousel],
+  )
+
+  const renderItem =
+    (
+      onWordSelected: (word: string, index: number) => void,
+      onSubmitEditingFn: (index: number) => void,
+    ) =>
+    ({ item }: ListRenderItemInfo<number>) => {
+      const groupIndex = 3 * item
+
+      const { firstRef, secondRef, thirdRef } = handleInputRefCreation()
+
+      return (
+        <View>
+          <WordSelector
+            ref={firstRef}
+            nextTextInputRef={secondRef}
+            wordIndex={groupIndex}
+            expectedWord={mnemonicWords[groupIndex]}
+            onWordSelected={onWordSelected}
+          />
+          <WordSelector
+            ref={secondRef}
+            nextTextInputRef={thirdRef}
+            wordIndex={1 + groupIndex}
+            expectedWord={mnemonicWords[groupIndex + 1]}
+            onWordSelected={handleWordSelected}
+          />
+          <WordSelector
+            ref={thirdRef}
+            itemIndex={item}
+            wordIndex={2 + groupIndex}
+            expectedWord={mnemonicWords[groupIndex + 2]}
+            onWordSelected={onWordSelected}
+            onSubmitEditing={onSubmitEditingFn}
+          />
+        </View>
+      )
+    }
 
   return (
     <ScrollView
@@ -110,7 +134,7 @@ export const ConfirmNewMasterKeyScreen = ({
           removeClippedSubviews={false} //https://github.com/meliorence/react-native-snap-carousel/issues/238
           ref={c => c && setCarousel(c)}
           data={slidesIndexes}
-          renderItem={renderItem}
+          renderItem={renderItem(handleWordSelected, onSubmitEditing)}
           sliderWidth={WINDOW_WIDTH}
           // sliderHeight={200}
           itemWidth={SLIDER_WIDTH}
