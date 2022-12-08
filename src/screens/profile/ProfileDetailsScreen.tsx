@@ -15,8 +15,8 @@ import { useAppSelector } from 'src/redux/storeUtils'
 export const ProfileDetailsScreen = ({
   navigation,
 }: RootStackScreenProps<rootStackRouteNames.ProfileDetailsScreen>) => {
-  const profile = useAppSelector(selectProfile)!
-  const fullAlias = `${profile.alias}.rsk`
+  const profile = useAppSelector(selectProfile)
+  const fullAlias = `${profile?.alias}.rsk`
   return (
     <View style={styles.staticBackground}>
       <View style={styles.profileHeader}>
@@ -41,7 +41,7 @@ export const ProfileDetailsScreen = ({
       <View style={styles.roundedContainer}>
         <View style={styles.topContainer}>
           <View style={styles.profileImageContainer}>
-            {profile.alias ? (
+            {profile?.alias ? (
               <AvatarIcon value={fullAlias} size={80} />
             ) : (
               <Image
@@ -59,11 +59,11 @@ export const ProfileDetailsScreen = ({
           <View style={styles.rowContainer}>
             <View style={styles.fieldContainer}>
               <MediumText style={[styles.masterText, styles.textLeftMargin]}>
-                {profile.alias}
+                {profile?.alias}
               </MediumText>
               <TouchableOpacity
                 accessibilityLabel="copy"
-                onPress={() => Clipboard.setString(profile.alias || '')}>
+                onPress={() => Clipboard.setString(profile?.alias || '')}>
                 <MaterialIcon
                   style={styles.copyIcon}
                   name="content-copy"
@@ -85,7 +85,7 @@ export const ProfileDetailsScreen = ({
         <View style={styles.rowContainer}>
           <View style={styles.fieldContainer}>
             <MediumText style={[styles.masterText, styles.textLeftMargin]}>
-              {profile.phone}
+              {profile?.phone}
             </MediumText>
           </View>
         </View>
@@ -99,7 +99,7 @@ export const ProfileDetailsScreen = ({
         <View style={styles.rowContainer}>
           <View style={styles.fieldContainer}>
             <MediumText style={[styles.masterText, styles.textLeftMargin]}>
-              {profile.email}
+              {profile?.email}
             </MediumText>
           </View>
         </View>

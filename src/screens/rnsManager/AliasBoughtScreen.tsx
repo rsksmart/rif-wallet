@@ -7,14 +7,14 @@ import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
-import { MediumText } from 'src/components'
+import { MediumText, SecondaryButton } from 'src/components'
 import { PrimaryButton } from 'src/components/button/PrimaryButton'
-import { ScreenWithWallet } from '../types'
 import { getWalletSetting, SETTINGS } from 'src/core/config'
-import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { selectActiveWallet } from 'store/slices/settingsSlice'
-import { selectProfile } from 'src/redux/slices/profileSlice/selector'
 import { setProfile } from 'src/redux/slices/profileSlice/profileSlice'
+import { selectProfile } from 'src/redux/slices/profileSlice/selector'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { ScreenWithWallet } from '../types'
 
 export const AliasBoughtScreen = ({
   navigation,
@@ -38,7 +38,10 @@ export const AliasBoughtScreen = ({
   }
 
   useEffect(() => {
-    dispatch(setProfile({ ...profile!, alias }))
+    if (profile) {
+      dispatch(setProfile({ ...profile, alias }))
+    }
+
     const fetchData = async () => {
       await tx.wait()
       setRegisterDomainInfo('Your alias has been registered successfully')

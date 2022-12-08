@@ -12,7 +12,6 @@ import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
-import React from 'react'
 import { selectAccounts } from 'src/redux/slices/accountsSlice/selector'
 import { colors } from 'src/styles'
 import { selectAppState } from 'store/slices/appStateSlice/selectors'
