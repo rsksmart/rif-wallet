@@ -24,11 +24,8 @@ import SelectedTokenComponent from './SelectedTokenComponent'
 import SendReceiveButtonComponent from './SendReceiveButtonComponent'
 import { getTokenColor } from './tokenColor'
 
-import {
-  changeTopColor,
-  selectActiveWallet,
-  selectBitcoinCore,
-} from 'store/slices/settingsSlice'
+import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
+import { changeTopColor, selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 
 export const HomeScreen = ({
@@ -39,7 +36,7 @@ export const HomeScreen = ({
   const prices = useAppSelector(selectUsdPrices)
   const accounts = useAppSelector(selectAccounts)
   const { isSetup } = useAppSelector(selectAppState)
-  const bitcoinCore = useAppSelector(selectBitcoinCore)
+  const bitcoinCore = useBitcoinContext()
   const { activeWalletIndex, wallet, chainId } =
     useAppSelector(selectActiveWallet)
 
