@@ -1,14 +1,16 @@
 import { useState, useEffect, useMemo } from 'react'
 
-import { Loading } from '../../components'
-import { useSelectedWallet } from '../../Context'
-import { getDomains } from '../../storage/DomainsStore'
+import { shortAddress } from 'lib/utils'
+
+import { Loading } from 'components/index'
+import { getDomains } from 'storage/DomainsStore'
 import { ReceiveScreen } from './ReceiveScreen'
-import { shortAddress } from '../../lib/utils'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
-} from 'src/navigation/rootNavigator'
+} from 'navigation/rootNavigator'
+import { useAppSelector } from 'store/storeUtils'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
 
 export const BitcoinReceiveScreen = ({
   route: {
@@ -18,7 +20,7 @@ export const BitcoinReceiveScreen = ({
   const [address, setAddress] = useState<string | undefined>(undefined)
   const [registeredDomains, setRegisteredDomains] = useState<string[]>([])
 
-  const { wallet } = useSelectedWallet()
+  const { wallet } = useAppSelector(selectActiveWallet)
 
   useEffect(() => {
     if (wallet) {

@@ -1,25 +1,24 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import {
   Request,
   SignMessageRequest,
   SendTransactionRequest,
-} from '../../lib/core'
+  SignTypedDataRequest,
+} from 'lib/core'
+import { SendBitcoinRequestType } from 'lib/bitcoin/types'
 
+import SlideUpModal from 'components/slideUpModal/SlideUpModal'
 import ReviewTransactionModal from './ReviewTransactionModal'
 import SignMessageModal from './SignMessageModal'
 import SignTypedDataModal from './SignTypedDataModal'
 import { InjectSelectedWallet } from '../../Context'
-import { SignTypedDataRequest } from '../../lib/core'
-import SlideUpModal from '../../components/slideUpModal/SlideUpModal'
 import { colors } from '../../styles'
 import ConfirmBitcoinTransactionModal from './ConfirmBitcoinTransactionModal'
-import { SendBitcoinRequestType } from '../../lib/bitcoin/types'
 
-interface Interface {
+interface Props {
   request: Request
   closeModal: () => void
-  isKeyboardVisible: boolean
 }
 
 const ReviewTransactionInjected = InjectSelectedWallet(ReviewTransactionModal)
@@ -57,11 +56,7 @@ const RequestTypeSwitch = (request: Request, closeModal: () => void) => {
   }
 }
 
-const ModalComponent: React.FC<Interface> = ({
-  request,
-  closeModal,
-  isKeyboardVisible,
-}) => {
+const ModalComponent = ({ request, closeModal }: Props) => {
   const [showSelector, setShowSelector] = useState<boolean>(true)
   const [animateModal, setAnimateModal] = useState(false)
 
@@ -94,8 +89,7 @@ const ModalComponent: React.FC<Interface> = ({
       onModalClosed={handleCloseModal}
       onAnimateModal={handleAnimateModal}
       backgroundColor={colors.lightGray}
-      headerFontColor={colors.black}
-      isKeyboardVisible={isKeyboardVisible}>
+      headerFontColor={colors.black}>
       {RequestTypeSwitch(request, closeModal)}
     </SlideUpModal>
   )

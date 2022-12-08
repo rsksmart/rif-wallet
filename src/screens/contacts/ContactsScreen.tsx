@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { CompositeScreenProps } from '@react-navigation/native'
 import {
   Image,
   ScrollView,
@@ -9,21 +10,21 @@ import {
   View,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import { SearchIcon } from '../../components/icons/SearchIcon'
-import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
+
+import { SearchIcon } from 'components/icons/SearchIcon'
+import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
+import { contactsStackRouteNames } from 'navigation/contactsNavigator'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
 import { ContactRow } from './ContactRow'
 import { ContactsContext, IContact } from './ContactsContext'
-import { CompositeScreenProps } from '@react-navigation/native'
-import { ContactsStackScreenProps } from '..'
-import { contactsStackRouteNames } from 'src/navigation/contactsNavigator'
-import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
-import { useAppSelector } from 'src/redux/storeHooks'
+import { ContactsStackScreenProps } from '../index'
+import { selectBalances } from 'store/slices/balancesSlice/selectors'
+import { useAppSelector } from 'store/storeUtils'
 
 export type ContactsListScreenProps = CompositeScreenProps<
   ContactsStackScreenProps<contactsStackRouteNames.ContactsList>,

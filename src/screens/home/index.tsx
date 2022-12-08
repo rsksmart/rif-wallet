@@ -1,51 +1,63 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
-import { Paragraph } from 'src/components'
+
+import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
+import { balanceToDisplay } from 'lib/utils'
+
+import { Paragraph } from 'components/index'
 import { toChecksumAddress } from 'components/address/lib'
 import { LoadingScreen } from 'components/loading/LoadingScreen'
-import { useBitcoinCoreContext, useSelectedWallet } from 'src/Context'
-import { balanceToDisplay } from 'lib/utils'
 import {
-  RootStackNavigationProp,
   rootStackRouteNames,
+  RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
 import { colors } from 'src/styles'
 import PortfolioComponent from './PortfolioComponent'
 import SelectedTokenComponent from './SelectedTokenComponent'
 import SendReceiveButtonComponent from './SendReceiveButtonComponent'
 import { getTokenColor } from './tokenColor'
-import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
-import { useAppSelector } from 'store/storeHooks'
+
+import { useAppSelector, useAppDispatch } from 'store/storeUtils'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
-import { selectAppState } from 'store/slices/appStateSlice/selectors'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
-
-export type HomeScreenProps = {
-  navigation: RootStackNavigationProp
-  changeTopColor: (color: string) => void
-}
-
-export const HomeScreen: React.FC<HomeScreenProps> = ({
-  navigation,
+import { selectAppState } from 'store/slices/appStateSlice/selectors'
+import {
   changeTopColor,
-}) => {
+  selectActiveWallet,
+  selectBitcoinCore,
+} from 'store/slices/settingsSlice'
+
+export const HomeScreen = ({
+  navigation,
+}: RootStackScreenProps<rootStackRouteNames.Home>) => {
+  const dispatch = useAppDispatch()
   const tokenBalances = useAppSelector(selectBalances)
   const prices = useAppSelector(selectUsdPrices)
-  const { networksMap } = useBitcoinCoreContext()
-  const { selectedWalletIndex, wallet, chainId } = useSelectedWallet()
   const { isSetup } = useAppSelector(selectAppState)
+  const bitcoinCore = useAppSelector(selectBitcoinCore)
+  const { activeWalletIndex, wallet, chainId } =
+    useAppSelector(selectActiveWallet)
+
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
     undefined,
   )
-  const balances: Array<ITokenWithoutLogo | BitcoinNetwork> =
-    React.useMemo(() => {
-      return [...Object.values(tokenBalances), ...Object.values(networksMap)]
-    }, [tokenBalances, networksMap])
+  const balances: Array<ITokenWithBalance | BitcoinNetwork> = useMemo(() => {
+    if (bitcoinCore) {
+      return [
+        ...Object.values(tokenBalances),
+        ...Object.values(bitcoinCore.networksMap),
+      ]
+    } else {
+      return []
+    }
+  }, [tokenBalances, bitcoinCore])
   // token or undefined
   const selected: ITokenWithoutLogo | BitcoinNetwork | undefined =
-    selectedAddress
-      ? tokenBalances[selectedAddress] || networksMap[selectedAddress]
+    selectedAddress && bitcoinCore
+      ? tokenBalances[selectedAddress] ||
+        bitcoinCore.networksMap[selectedAddress]
       : undefined
   const selectedColor = getTokenColor(selected ? selected.symbol : undefined)
   const backGroundColor = {
@@ -102,10 +114,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
   // pass the new color to Core to update header:
   useEffect(() => {
-    changeTopColor(selectedColor)
+    dispatch(changeTopColor(selectedColor))
   }, [selectedColor])
 
-  const selectedTokenAmount = React.useMemo(() => {
+  const selectedTokenAmount = useMemo(() => {
     if (selected instanceof BitcoinNetwork) {
       return selected.balance
     }
@@ -125,7 +137,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
       <View style={styles.parent}>
         <SelectedTokenComponent
-          accountNumber={selectedWalletIndex}
+          accountNumber={activeWalletIndex}
           amount={selectedTokenAmount}
           change={0}
         />

@@ -1,17 +1,39 @@
 import { useNavigation } from '@react-navigation/native'
 import { render, fireEvent } from '@testing-library/react-native'
+import { Provider } from 'react-redux'
+import { contactsStackRouteNames } from 'src/navigation/contactsNavigator'
+
+import { store } from 'store/index'
 import { ContactFormScreen, ContactFormScreenProps } from './ContactFormScreen'
 
 jest.mock('@react-navigation/native', () => ({
   ...jest.requireActual('@react-navigation/native'),
   useNavigation: () => {
-    return jest.fn()
+    return {
+      navigate: jest.fn(),
+    }
   },
 }))
 
 describe('ContactFormScreen', () => {
-  const { navigation } = useNavigation<ContactFormScreenProps>()
-  const route = {
+  const navigation = useNavigation<ContactFormScreenProps['navigation']>()
+  const route: Readonly<{
+    key: string
+    name: contactsStackRouteNames.ContactForm
+    path: string
+  }> & {
+    params: {
+      initialValue: {
+        id: string
+        name: string
+        address: string
+        displayAddress: string
+      }
+    }
+  } = {
+    key: '',
+    name: contactsStackRouteNames.ContactForm,
+    path: 'smth/smth',
     params: {
       initialValue: {
         id: '',
@@ -24,7 +46,9 @@ describe('ContactFormScreen', () => {
 
   test('create contact form', async () => {
     const { getByTestId, getByText } = render(
-      <ContactFormScreen navigation={navigation} route={route} />,
+      <Provider store={store}>
+        <ContactFormScreen navigation={navigation} route={route} />
+      </Provider>,
     )
     expect(getByText('Create Contact')).toBeTruthy()
     expect(getByTestId('nameInput').props.value).toBe('')
@@ -33,19 +57,17 @@ describe('ContactFormScreen', () => {
   })
 
   test('edit contact form', async () => {
-    const mockRoute = {
-      params: {
-        initialValue: {
-          id: '1',
-          name: 'Alice',
-          address: '0x123',
-          displayAddress: '0x123',
-        },
-      },
+    route.params.initialValue = {
+      id: '1',
+      name: 'Alice',
+      address: '0x123',
+      displayAddress: '0x123',
     }
 
     const { getByTestId, getByText } = render(
-      <ContactFormScreen navigation={navigation} route={mockRoute} />,
+      <Provider store={store}>
+        <ContactFormScreen navigation={navigation} route={route} />
+      </Provider>,
     )
     expect(getByText('Edit Contact')).toBeTruthy()
     expect(getByTestId('nameInput').props.value).toBe('Alice')
@@ -53,10 +75,10 @@ describe('ContactFormScreen', () => {
   })
 
   test('save contact', async () => {
-    const navigate = jest.fn()
-    const mockNavigation = { ...navigation, navigate }
     const { getByTestId } = render(
-      <ContactFormScreen navigation={mockNavigation} route={route} />,
+      <Provider store={store}>
+        <ContactFormScreen navigation={navigation} route={route} />
+      </Provider>,
     )
     fireEvent.changeText(getByTestId('nameInput'), 'Alice')
     fireEvent.changeText(
@@ -64,6 +86,6 @@ describe('ContactFormScreen', () => {
       '0xA2193A393AA0C94a4d52893496F02B56c61C36a1',
     )
     fireEvent.press(getByTestId('saveButton'))
-    expect(navigate).toHaveBeenCalledWith('ContactsList')
+    expect(navigation.navigate).toHaveBeenCalledWith('ContactsList')
   })
 })

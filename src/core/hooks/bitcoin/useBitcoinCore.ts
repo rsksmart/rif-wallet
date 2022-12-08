@@ -1,14 +1,15 @@
 import { useMemo, useEffect, useCallback, useState, useRef } from 'react'
-import BIP39 from '../../../lib/bitcoin/BIP39'
-import BitcoinNetwork from '../../../lib/bitcoin/BitcoinNetwork'
+import BIP39 from 'lib/bitcoin/BIP39'
+import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
+import { BitcoinNetworkWithBIPRequest } from 'lib/bitcoin/types'
+import { createAndInitializeBipWithRequest } from 'lib/bitcoin/utils'
+import { OnRequest } from 'lib/core'
+
 import {
   BitcoinNetworkStore,
   StoredBitcoinNetworkValue,
-} from '../../../storage/BitcoinNetworkStore'
-import { OnRequest } from '../../../lib/core'
-import { BitcoinNetworkWithBIPRequest } from '../../../lib/bitcoin/types'
-import { createAndInitializeBipWithRequest } from '../../../lib/bitcoin/utils'
-import { bitcoinTestnet } from '../../../shared/costants'
+} from 'storage/BitcoinNetworkStore'
+import { bitcoinTestnet } from 'shared/costants'
 import { useStoredBitcoinNetworks } from './useStoredBitcoinNetworks'
 
 export interface UseBitcoinCoreResult {
