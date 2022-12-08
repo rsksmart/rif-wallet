@@ -1,19 +1,28 @@
 import Clipboard from '@react-native-community/clipboard'
 import { BigNumber, Transaction } from 'ethers'
-import React, { useEffect, useState } from 'react'
-import { Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler'
-import { PrimaryButton } from 'src/components/button/PrimaryButton'
-import { SecondaryButton } from 'src/components/button/SecondaryButton'
-import { CopyIcon } from 'src/components/icons'
-import { colors, grid } from 'src/styles'
-import { ScreenWithWallet } from '../types'
+import { useEffect, useState } from 'react'
+import {
+  Linking,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ScrollView,
+} from 'react-native'
 
-export const ManuallyDeployScreen: React.FC<
-  ScreenWithWallet & {
-    setWalletIsDeployed: (address: string, value?: boolean) => void
-  }
-> = ({ wallet, isWalletDeployed, setWalletIsDeployed }) => {
+import { CopyIcon } from 'components/icons'
+import { PrimaryButton } from 'components/button/PrimaryButton'
+import { SecondaryButton } from 'components/button/SecondaryButton'
+import { useAppDispatch } from 'store/storeUtils'
+import { setWalletIsDeployed } from 'store/slices/settingsSlice'
+import { ScreenWithWallet } from '../types'
+import { colors, grid } from '../../styles'
+
+export const ManuallyDeployScreen = ({
+  wallet,
+  isWalletDeployed,
+}: ScreenWithWallet) => {
+  const dispatch = useAppDispatch()
   const [eoaBalance, setEoaBalance] = useState<BigNumber>(BigNumber.from(0))
   const [isDeploying, setIsDeploying] = useState<boolean>(false)
   const [deployError, setDeployError] = useState<string | null>(null)
@@ -39,7 +48,12 @@ export const ManuallyDeployScreen: React.FC<
       await txPromise.wait()
       await wallet.smartWalletFactory.isDeployed().then(async result => {
         setIsDeployed(result)
-        setWalletIsDeployed(wallet.smartWallet.address, result)
+        dispatch(
+          setWalletIsDeployed({
+            address: wallet.smartWallet.address,
+            value: result,
+          }),
+        )
         setIsDeploying(false)
       })
     } catch (error) {

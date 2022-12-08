@@ -1,39 +1,39 @@
 import { useState, useEffect } from 'react'
 import { FlatList, StyleSheet, View, RefreshControl } from 'react-native'
-import ActivityRow from './ActivityRow'
 import { useTranslation } from 'react-i18next'
-import { useBitcoinCoreContext } from 'src/Context'
+
+import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { RIFWallet } from 'lib/core'
+import BIP from 'lib/bitcoin/BIP'
+import { IEnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
+
+import ActivityRow from './ActivityRow'
 import useBitcoinTransactionsHandler from './useBitcoinTransactionsHandler'
 import useTransactionsCombiner from './useTransactionsCombiner'
-import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
-import { IRIFWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
-import { IAbiEnhancer, IEnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
-import { RIFWallet } from 'lib/core'
-import { ScreenWithWallet } from '../types'
-import { RootStackScreenProps } from 'navigation/rootNavigator'
-import { TransactionsServerResponseWithActivityTransactions } from './types'
-import { colors } from 'src/styles'
-import { useAppDispatch, useAppSelector } from 'store/storeHooks'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
+import { abiEnhancer, rifWalletServicesFetcher } from 'core/setup'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { selectBitcoinCore } from 'store/slices/settingsSlice'
 import { addNewTransactions } from 'store/slices/transactionsSlice/transactionsSlice'
 import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
-
-export type ActivityScreenProps = {
-  fetcher: IRIFWalletServicesFetcher
-  abiEnhancer: IAbiEnhancer
-}
+import { colors } from '../../styles'
+import { ScreenWithWallet } from '../types'
+import { TransactionsServerResponseWithActivityTransactions } from './types'
 
 export const ActivityScreen = ({
   wallet,
-  fetcher,
-  abiEnhancer,
   navigation,
-}: RootStackScreenProps<'Activity'> &
-  ScreenWithWallet &
-  ActivityScreenProps) => {
+}: RootStackScreenProps<rootStackRouteNames.Activity> & ScreenWithWallet) => {
   const [info, setInfo] = useState('')
-  const { networks } = useBitcoinCoreContext()
+  const bitcoinCore = useAppSelector(selectBitcoinCore)
   const btcTransactionFetcher = useBitcoinTransactionsHandler({
-    bip: networks[0].bips[0],
+    bip:
+      bitcoinCore && bitcoinCore.networks[0]
+        ? bitcoinCore.networks[0].bips[0]
+        : ({} as BIP),
     shouldMergeTransactions: true,
   })
 
@@ -45,6 +45,11 @@ export const ActivityScreen = ({
     transactions,
     btcTransactionFetcher.transactions,
   )
+
+  // On load, fetch btc transactions
+  useEffect(() => {
+    btcTransactionFetcher.fetchTransactions()
+  }, [])
 
   const fetchTransactionsPage = async ({
     prev,
@@ -58,7 +63,7 @@ export const ActivityScreen = ({
       setInfo(t('Loading transactions. Please wait...'))
 
       const fetchedTransactions: TransactionsServerResponseWithActivityTransactions =
-        await fetcher.fetchTransactionsByAddress(
+        await rifWalletServicesFetcher.fetchTransactionsByAddress(
           wallet.smartWalletAddress.toLowerCase(),
           prev,
           next,
@@ -66,11 +71,7 @@ export const ActivityScreen = ({
 
       fetchedTransactions.activityTransactions = await Promise.all(
         fetchedTransactions.data.map(async (tx: IApiTransaction) => {
-          const enhancedTransaction = await enhanceTransactionInput(
-            tx,
-            wallet,
-            abiEnhancer,
-          )
+          const enhancedTransaction = await enhanceTransactionInput(tx, wallet)
           return {
             originTransaction: tx,
             enhancedTransaction,
@@ -156,7 +157,6 @@ const styles = StyleSheet.create({
 export const enhanceTransactionInput = async (
   transaction: IApiTransaction,
   wallet: RIFWallet,
-  abiEnhancer: IAbiEnhancer,
 ): Promise<IEnhancedResult | null> => {
   let tx
   try {

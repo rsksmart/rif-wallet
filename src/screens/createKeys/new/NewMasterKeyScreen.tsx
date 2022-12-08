@@ -11,7 +11,6 @@ import { Trans } from 'react-i18next'
 import { CompositeScreenProps } from '@react-navigation/native'
 
 import {
-  CreateKeysProps,
   createKeysRouteNames,
   CreateKeysScreenProps,
 } from 'navigation/createKeysNavigator/types'
@@ -25,20 +24,16 @@ import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'src/navigation/rootNavigator'
-
-interface CreateMasterKeyScreenProps {
-  generateMnemonic: CreateKeysProps['generateMnemonic']
-}
+import { KeyManagementSystem } from 'lib/core'
 
 type Props = CompositeScreenProps<
   CreateKeysScreenProps<createKeysRouteNames.NewMasterKey>,
   RootStackScreenProps<rootStackRouteNames.CreateKeysUX>
-> &
-  CreateMasterKeyScreenProps
+>
 
-export const NewMasterKeyScreen = ({ navigation, generateMnemonic }: Props) => {
-  const mnemonic = useMemo(generateMnemonic, [])
-  const mnemonicArray = mnemonic.split(' ')
+export const NewMasterKeyScreen = ({ navigation }: Props) => {
+  const mnemonic = useMemo(() => KeyManagementSystem.create().mnemonic, [])
+  const mnemonicArray = mnemonic ? mnemonic.split(' ') : []
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
   const [carousel, setCarousel] = useState<Carousel<number>>()
 

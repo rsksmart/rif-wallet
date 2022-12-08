@@ -9,13 +9,13 @@ import {
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
 import { selectProfile } from 'src/redux/slices/profileSlice/selector'
-import { useAppSelector } from 'src/redux/storeHooks'
-import { colors } from '../../styles'
+import { colors } from 'src/styles'
+import { useAppSelector } from 'src/redux/storeUtils'
 
 export const ProfileDetailsScreen = ({
   navigation,
 }: RootStackScreenProps<rootStackRouteNames.ProfileDetailsScreen>) => {
-  const profile = useAppSelector(selectProfile)
+  const profile = useAppSelector(selectProfile)!
   const fullAlias = `${profile.alias}.rsk`
   return (
     <View style={styles.staticBackground}>
@@ -46,7 +46,7 @@ export const ProfileDetailsScreen = ({
             ) : (
               <Image
                 style={styles.profileImage}
-                source={require('../../images/image_place_holder.jpeg')}
+                source={require('src/images/image_place_holder.jpeg')}
               />
             )}
           </View>

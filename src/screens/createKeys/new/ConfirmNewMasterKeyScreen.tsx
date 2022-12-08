@@ -7,33 +7,27 @@ import {
   TouchableOpacity,
 } from 'react-native'
 import Carousel from 'react-native-snap-carousel'
-
-import {
-  CreateKeysProps,
-  CreateKeysScreenProps,
-} from '../../../navigation/createKeysNavigator/types'
 import { Trans } from 'react-i18next'
+
+import { CreateKeysScreenProps } from 'navigation/createKeysNavigator/types'
 import { colors } from '../../../styles/colors'
 
-import { Arrow } from '../../../components/icons'
+import { Arrow } from 'components/icons'
+import { PaginationNavigator } from 'components/button/PaginationNavigator'
 import { SLIDER_WIDTH, WINDOW_WIDTH } from '../../../ux/slides/Dimensions'
-import { PaginationNavigator } from '../../../components/button/PaginationNavigator'
 import { WordSelector } from './WordSelector'
 import { sharedMnemonicStyles } from './styles'
-import { saveKeyVerificationReminder } from '../../../storage/MainStorage'
-
-interface ConfirmMasterKeyScreenProps {
-  isKeyboardVisible: boolean
-  createWallet: CreateKeysProps['createFirstWallet']
-}
+import { useKeyboardIsVisible } from 'core/hooks/useKeyboardIsVisible'
+import { useAppDispatch } from 'store/storeUtils'
+import { createWallet } from 'store/slices/settingsSlice'
+import { saveKeyVerificationReminder } from 'storage/MainStorage'
 
 export const ConfirmNewMasterKeyScreen = ({
   route,
   navigation,
-  createWallet,
-  isKeyboardVisible,
-}: CreateKeysScreenProps<'ConfirmNewMasterKey'> &
-  ConfirmMasterKeyScreenProps) => {
+}: CreateKeysScreenProps<'ConfirmNewMasterKey'>) => {
+  const dispatch = useAppDispatch()
+  const isKeyboardVisible = useKeyboardIsVisible()
   const mnemonic = route.params.mnemonic
   const slidesIndexes = Array.from(
     { length: Math.ceil(mnemonic.split(' ').length / 3) },
@@ -52,7 +46,7 @@ export const ConfirmNewMasterKeyScreen = ({
     }
     setError(false)
     saveKeyVerificationReminder(false)
-    await createWallet(mnemonic)
+    await dispatch(createWallet({ mnemonic }))
   }
 
   const handleWordSelected = (wordSelected: string, index: number) => {
@@ -114,7 +108,7 @@ export const ConfirmNewMasterKeyScreen = ({
         <Carousel
           inactiveSlideOpacity={0}
           removeClippedSubviews={false} //https://github.com/meliorence/react-native-snap-carousel/issues/238
-          ref={c => setCarousel(c)}
+          ref={c => c && setCarousel(c)}
           data={slidesIndexes}
           renderItem={renderItem}
           sliderWidth={WINDOW_WIDTH}

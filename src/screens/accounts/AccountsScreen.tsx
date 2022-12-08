@@ -1,38 +1,48 @@
-import { useContext, useMemo } from 'react'
+import { useMemo } from 'react'
 import { StyleSheet, View, FlatList } from 'react-native'
 
-import { colors } from '../../styles'
-import { AppContext, useBitcoinCoreContext } from '../../Context'
 import { shortAddress } from 'lib/utils'
+
 import AccountBox from 'components/accounts/AccountBox'
-import { PublicKeyItemType } from './types'
+import { colors } from '../../styles'
+import { useAppSelector } from 'src/redux/storeUtils'
+import {
+  selectBitcoinCore,
+  selectWallets,
+} from 'src/redux/slices/settingsSlice'
 
-export interface AccountsScreenType {
-  switchActiveWallet?: () => void
-}
-
-export const AccountsScreen = ({}: AccountsScreenType) => {
-  const { wallets } = useContext(AppContext)
-  const { networks } = useBitcoinCoreContext()
-  const publicKeys: PublicKeyItemType[] = useMemo(
+export const AccountsScreen = () => {
+  const wallets = useAppSelector(selectWallets)
+  const bitcoinCore = useAppSelector(selectBitcoinCore)
+  const publicKeys = useMemo(
     () =>
-      networks.map(network => ({
-        publicKey: network.bips[0].accountPublicKey,
-        shortedPublicKey: shortAddress(network.bips[0].accountPublicKey, 8),
-        networkName: network.networkName,
-      })),
-    [networks],
+      bitcoinCore
+        ? bitcoinCore.networks.map(network => ({
+            publicKey: network.bips[0].accountPublicKey,
+            shortedPublicKey: shortAddress(network.bips[0].accountPublicKey, 8),
+            networkName: network.networkName,
+          }))
+        : [],
+    [bitcoinCore],
   )
-  const walletsArr = useMemo(() => {
-    return Object.keys(wallets).map((key, id) => ({
-      ...wallets[key],
-      address: key,
-      addressShort: shortAddress(key, 8),
-      smartWalletAddress: wallets[key].smartWalletAddress,
-      smartWalletAddressShort: shortAddress(wallets[key].smartWalletAddress, 8),
-      id,
-    }))
-  }, [wallets])
+  const walletsArr = useMemo(
+    () =>
+      wallets
+        ? Object.keys(wallets).map((key, id) => ({
+            ...wallets[key],
+            address: key,
+            addressShort: shortAddress(key, 8),
+            smartWalletAddress: wallets[key].smartWalletAddress,
+            smartWalletAddressShort: shortAddress(
+              wallets[key].smartWalletAddress,
+              8,
+            ),
+            id,
+          }))
+        : [],
+    [wallets],
+  )
+
   return (
     <FlatList
       data={walletsArr}

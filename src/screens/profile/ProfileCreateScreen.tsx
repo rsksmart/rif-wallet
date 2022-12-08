@@ -22,13 +22,13 @@ import { TextInputWithLabel } from 'src/components/input/TextInputWithLabel'
 import { colors } from 'src/styles'
 import { fonts } from 'src/styles/fonts'
 import { RegularText } from 'src/components/typography'
-import { useAppDispatch, useAppSelector } from 'src/redux/storeHooks'
 import { selectProfile } from 'src/redux/slices/profileSlice/selector'
 import {
   deleteProfile,
   setProfile,
 } from 'src/redux/slices/profileSlice/profileSlice'
 import { IProfileStore } from 'src/redux/slices/profileSlice/types'
+import { useAppDispatch, useAppSelector } from 'src/redux/storeUtils'
 
 export const ProfileCreateScreen: React.FC<
   RootStackScreenProps<'ProfileCreateScreen'>
@@ -41,8 +41,6 @@ export const ProfileCreateScreen: React.FC<
     profile || emptyProfile,
   )
   const fullAlias = profile ? `${profile.alias}.rsk` : ''
-
-  const profileCreated = !!profile
 
   const createProfile = async () => {
     dispatch(setProfile({ ...localProfile, alias: profile?.alias || '' }))
@@ -156,7 +154,7 @@ export const ProfileCreateScreen: React.FC<
               onPress={createProfile}
               accessibilityLabel="create"
               title={editProfile ? 'save' : 'create'}
-              disabled={!profileCreated}
+              disabled={!profile}
             />
           </View>
         </View>

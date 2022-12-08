@@ -9,13 +9,12 @@ import {
 } from 'navigation/rootNavigator/types'
 import { MediumText } from 'src/components'
 import { PrimaryButton } from 'src/components/button/PrimaryButton'
-import { SecondaryButton } from 'src/components/button/SecondaryButton'
-import { useSelectedWallet } from 'src/Context'
-import { getWalletSetting, SETTINGS } from 'src/core/config'
-import { setProfile } from 'src/redux/slices/profileSlice/profileSlice'
-import { selectProfile } from 'src/redux/slices/profileSlice/selector'
-import { useAppDispatch, useAppSelector } from 'src/redux/storeHooks'
 import { ScreenWithWallet } from '../types'
+import { getWalletSetting, SETTINGS } from 'src/core/config'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { selectProfile } from 'src/redux/slices/profileSlice/selector'
+import { setProfile } from 'src/redux/slices/profileSlice/profileSlice'
 
 export const AliasBoughtScreen = ({
   navigation,
@@ -27,7 +26,7 @@ export const AliasBoughtScreen = ({
     'Transaction for your alias is being processed',
   )
 
-  const { chainId } = useSelectedWallet()
+  const { chainId } = useAppSelector(selectActiveWallet)
   const dispatch = useAppDispatch()
   const profile = useAppSelector(selectProfile)
 
@@ -39,7 +38,7 @@ export const AliasBoughtScreen = ({
   }
 
   useEffect(() => {
-    dispatch(setProfile({ ...profile, alias }))
+    dispatch(setProfile({ ...profile!, alias }))
     const fetchData = async () => {
       await tx.wait()
       setRegisterDomainInfo('Your alias has been registered successfully')

@@ -11,6 +11,7 @@ export interface IRIFWalletServicesFetcher {
     address: string,
     prev?: string | null,
     next?: string | null,
+    blockNumber?: string | null,
   ): Promise<TransactionsServerResponse>
   fetchDapps(): Promise<IRegisteredDappsGroup[]>
 }

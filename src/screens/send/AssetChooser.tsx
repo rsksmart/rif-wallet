@@ -9,7 +9,7 @@ import { balanceToString } from '../balances/BalancesScreen'
 import { TokenButton } from 'components/button/TokenButton'
 import { getTokenColor } from '../home/tokenColor'
 
-const AssetChooser = <T,>({
+export const AssetChooser = ({
   assetList,
   selectedAsset,
   onAssetSelected,
@@ -50,7 +50,6 @@ const AssetChooser = <T,>({
         animateModal={animateModal}
         onModalClosed={handleCloseModal}
         onAnimateModal={handleAnimateModal}
-        isKeyboardVisible={false}
         backgroundColor={colors.darkPurple3}
         headerFontColor={colors.white}>
         {assetList.map(asset => (
@@ -103,5 +102,3 @@ const styles = StyleSheet.create({
     color: colors.white,
   },
 })
-
-export default AssetChooser

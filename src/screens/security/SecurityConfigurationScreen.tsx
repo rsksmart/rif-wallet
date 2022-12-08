@@ -1,32 +1,28 @@
 import { useEffect, useState } from 'react'
 import { View, StyleSheet, Alert } from 'react-native'
+import { useTranslation } from 'react-i18next'
 
+import { colors } from '../../styles'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
-import { useTranslation } from 'react-i18next'
-
-import { MediumText } from 'src/components'
-import { PrimaryButton } from 'src/components/button/PrimaryButton'
-import { SecondaryButton } from 'src/components/button/SecondaryButton'
+import { createKeysRouteNames } from 'navigation/createKeysNavigator'
+import { MediumText } from 'components/index'
+import { PrimaryButton } from 'components/button/PrimaryButton'
+import { SecondaryButton } from 'components/button/SecondaryButton'
 import {
   getKeyVerificationReminder,
   hasKeyVerificationReminder,
   saveKeyVerificationReminder,
-} from '../../storage/MainStorage'
-import { createKeysRouteNames } from 'src/navigation/createKeysNavigator'
-import { colors } from '../../styles'
-
-export interface SecurityScreenProps {
-  deleteKeys: () => void
-}
+} from 'storage/MainStorage'
+import { useAppDispatch } from 'store/storeUtils'
+import { resetKeysAndPin } from 'store/slices/settingsSlice'
 
 export const SecurityConfigurationScreen = ({
   navigation,
-  deleteKeys,
-}: RootStackScreenProps<rootStackRouteNames.SecurityConfigurationScreen> &
-  SecurityScreenProps) => {
+}: RootStackScreenProps<rootStackRouteNames.SecurityConfigurationScreen>) => {
+  const dispatch = useAppDispatch()
   const { t } = useTranslation()
 
   const revealMasterKey = () =>
@@ -47,7 +43,7 @@ export const SecurityConfigurationScreen = ({
         {
           text: 'Delete',
           onPress: () => {
-            deleteKeys()
+            dispatch(resetKeysAndPin())
             saveKeyVerificationReminder(false)
             navigation.navigate(rootStackRouteNames.CreateKeysUX)
           },

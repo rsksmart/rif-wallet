@@ -30,7 +30,7 @@ export const loadExistingWallets =
     return { kms, rifWalletsDictionary, rifWalletsIsDeployedDictionary }
   }
 
-export const creteKMS =
+export const createKMS =
   (createRIFWallet: CreateRIFWallet, networkId: number) =>
   async (mnemonic: string) => {
     const kms = KeyManagementSystem.import(mnemonic)
