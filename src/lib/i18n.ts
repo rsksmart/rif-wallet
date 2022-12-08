@@ -8,6 +8,7 @@ import { initReactI18next } from 'react-i18next'
 const resources = {
   en: {
     translation: {
+      type_placeholder: 'type...',
       'Create master key': 'Create master key',
       'Reveal master key': 'Reveal master key',
       'Sign in with a Master Key': 'Sign in with a Master Key',
