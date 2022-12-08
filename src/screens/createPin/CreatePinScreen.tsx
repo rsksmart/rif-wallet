@@ -1,15 +1,17 @@
 import { useCallback } from 'react'
-import { navigationContainerRef } from '../../core/Core'
-import { PinManager } from '../../components/PinManager'
 
-interface Props {
-  createPin: (newPin: string) => void
-}
+import { navigationContainerRef } from 'core/Core'
+import { PinManager } from 'components/PinManager'
+import { useAppDispatch } from 'store/storeUtils'
+import { setPinState } from 'store/slices/settingsSlice'
+import { rootStackRouteNames } from 'navigation/rootNavigator'
 
-export const CreatePinScreen = ({ createPin }: Props) => {
+export const CreatePinScreen = () => {
+  const dispatch = useAppDispatch()
+
   const handleSubmit = useCallback((enteredPin: string) => {
-    createPin(enteredPin)
-    navigationContainerRef.navigate('Home')
+    dispatch(setPinState(enteredPin))
+    navigationContainerRef.navigate(rootStackRouteNames.Home)
   }, [])
 
   return <PinManager title={'Set your pin'} handleSubmit={handleSubmit} />

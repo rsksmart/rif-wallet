@@ -13,7 +13,8 @@ import { PrimaryButton } from 'src/components/button/PrimaryButton'
 import { IProfileStore } from 'src/storage/MainStorage'
 import { ScreenWithWallet } from '../types'
 import { getWalletSetting, SETTINGS } from 'src/core/config'
-import { useSelectedWallet } from 'src/Context'
+import { useAppSelector } from 'store/storeUtils'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
 
 interface Props {
   profile: IProfileStore
@@ -32,8 +33,7 @@ export const AliasBoughtScreen = ({
     'Transaction for your alias is being processed',
   )
 
-  const { chainId } = useSelectedWallet()
-
+  const { chainId } = useAppSelector(selectActiveWallet)
   const explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainId)
 
   const copyHashAndOpenExplorer = (hash: string) => {

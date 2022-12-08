@@ -8,23 +8,13 @@ import {
   SecurityExplanationScreen,
   SecureYourWalletScreen,
 } from 'screens/createKeys'
-import {
-  CreateKeysStackParamList,
-  CreateKeysProps,
-  createKeysRouteNames,
-} from './types'
+import { CreateKeysStackParamList, createKeysRouteNames } from './types'
 
 const Stack = createStackNavigator<CreateKeysStackParamList>()
 
 const screensOptions = { headerShown: false }
 
-export const CreateKeysNavigation = ({
-  generateMnemonic,
-  createFirstWallet,
-  isKeyboardVisible,
-}: CreateKeysProps) => {
-  const createWallet = (mnemonic: string) => createFirstWallet(mnemonic)
-
+export const CreateKeysNavigation = () => {
   return (
     <Stack.Navigator initialRouteName={createKeysRouteNames.CreateKeys}>
       <Stack.Screen
@@ -36,53 +26,30 @@ export const CreateKeysNavigation = ({
         <Stack.Group>
           <Stack.Screen
             name={createKeysRouteNames.NewMasterKey}
-            options={screensOptions}>
-            {props => (
-              <NewMasterKeyScreen
-                {...props}
-                generateMnemonic={generateMnemonic}
-              />
-            )}
-          </Stack.Screen>
+            component={NewMasterKeyScreen}
+            options={screensOptions}
+          />
           <Stack.Screen
             name={createKeysRouteNames.SecureYourWallet}
-            options={screensOptions}>
-            {props => (
-              <SecureYourWalletScreen
-                {...props}
-                mnemonic={generateMnemonic()}
-                createWallet={createWallet}
-              />
-            )}
-          </Stack.Screen>
+            component={SecureYourWalletScreen}
+            options={screensOptions}
+          />
           <Stack.Screen
             name={createKeysRouteNames.SecurityExplanation}
-            options={screensOptions}
             component={SecurityExplanationScreen}
+            options={screensOptions}
           />
           <Stack.Screen
             name={createKeysRouteNames.ConfirmNewMasterKey}
-            options={screensOptions}>
-            {props => (
-              <ConfirmNewMasterKeyScreen
-                {...props}
-                createWallet={createWallet}
-                isKeyboardVisible={isKeyboardVisible}
-              />
-            )}
-          </Stack.Screen>
+            component={ConfirmNewMasterKeyScreen}
+            options={screensOptions}
+          />
         </Stack.Group>
         <Stack.Screen
           name={createKeysRouteNames.ImportMasterKey}
-          options={screensOptions}>
-          {props => (
-            <ImportMasterKeyScreen
-              {...props}
-              createWallet={createWallet}
-              isKeyboardVisible={isKeyboardVisible}
-            />
-          )}
-        </Stack.Screen>
+          component={ImportMasterKeyScreen}
+          options={screensOptions}
+        />
       </Stack.Group>
     </Stack.Navigator>
   )

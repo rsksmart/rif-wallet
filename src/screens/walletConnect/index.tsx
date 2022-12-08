@@ -4,14 +4,15 @@ import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
 import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
-import { useSelectedWallet } from '../../Context'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
+import { WalletConnectContext } from './WalletConnectContext'
+import { useAppSelector } from 'store/storeUtils'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
-import { WalletConnectContext } from './WalletConnectContext'
 
 type WalletConnectScreenProps =
   RootStackScreenProps<rootStackRouteNames.WalletConnect>
@@ -20,8 +21,9 @@ export const WalletConnectScreen = ({
   navigation,
   route,
 }: WalletConnectScreenProps) => {
+  const wcKey = route.params?.wcKey
   const { t } = useTranslation()
-  const { wallet } = useSelectedWallet()
+  const { wallet } = useAppSelector(selectActiveWallet)
   const { connections, handleApprove, handleReject } =
     useContext(WalletConnectContext)
 
@@ -29,12 +31,11 @@ export const WalletConnectScreen = ({
     ({ connector: c }) => c.connected,
   )
 
-  const wcKey = route.params?.wcKey
-  const pendingConnector = connections[wcKey]?.connector
+  const pendingConnector = wcKey ? connections[wcKey]?.connector : null
 
   if (pendingConnector?.connected) {
     // clear pendingConnector
-    navigation.navigate('WalletConnect' as never)
+    navigation.navigate(rootStackRouteNames.WalletConnect)
   }
 
   return (

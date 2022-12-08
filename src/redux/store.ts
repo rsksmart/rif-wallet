@@ -34,3 +34,10 @@ export const persistor = persistStore(store)
 export type RootState = ReturnType<typeof store.getState>
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch
+
+export interface AsyncThunkWithTypes {
+  state: RootState
+  dispatch: AppDispatch
+  rejectValue: string
+  extra?: { s: string; n: number }
+}

@@ -11,8 +11,9 @@ import { colors, spacing } from '../../styles/'
 import { TokenImage } from '../home/TokenImage'
 import { SearchIcon } from '../../components/icons/SearchIcon'
 import { StatusIcon } from '../../components/statusIcons'
-import { useSelectedWallet } from 'src/Context'
 import { getWalletSetting, SETTINGS } from 'src/core/config'
+import { useAppSelector } from 'store/storeUtils'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
 
 export interface TransactionInformation {
   status: 'USER_CONFIRM' | 'PENDING' | 'SUCCESS' | 'FAILED'
@@ -27,7 +28,7 @@ type Props = {
 }
 
 export const TransactionInfo = ({ transaction }: Props) => {
-  const { chainId } = useSelectedWallet()
+  const { chainId } = useAppSelector(selectActiveWallet)
   const explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainId)
 
   if (transaction.status === 'USER_CONFIRM' || !transaction.hash) {

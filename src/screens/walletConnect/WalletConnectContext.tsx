@@ -1,13 +1,7 @@
 import { useNavigation } from '@react-navigation/core'
 import WalletConnect from '@walletconnect/client'
-import {
-  useContext,
-  useEffect,
-  useState,
-  createContext,
-  ReactElement,
-} from 'react'
-import { AppContext } from '../../Context'
+import { useEffect, useState, createContext, ReactElement } from 'react'
+
 import { RIFWallet } from 'lib/core'
 import { WalletConnectAdapter } from 'lib/walletAdapters/WalletConnectAdapter'
 import {
@@ -15,7 +9,9 @@ import {
   getWCSession,
   IWCSession,
   saveWCSession,
-} from '../../storage/WalletConnectSessionStore'
+} from 'storage/WalletConnectSessionStore'
+import { useAppSelector } from 'store/storeUtils'
+import { selectWallets } from 'store/slices/settingsSlice'
 
 export interface WalletConnectContextInterface {
   connections: IWalletConnectConnections
@@ -48,7 +44,7 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
 
   const [connections, setConnections] = useState<IWalletConnectConnections>({})
 
-  const { wallets } = useContext(AppContext)
+  const wallets = useAppSelector(selectWallets)
 
   const unsubscribeToEvents = async (wc: WalletConnect) => {
     const eventsNames = [
@@ -190,7 +186,7 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
 
       for (const { walletAddress, uri, session } of sessions) {
         try {
-          const wallet = wallets[walletAddress]
+          const wallet = wallets ? wallets[walletAddress] : null
           if (wallet) {
             createSession(wallet, uri, session)
           }

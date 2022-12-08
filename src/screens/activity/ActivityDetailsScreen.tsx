@@ -1,17 +1,14 @@
-import React from 'react'
-import { IActivityTransaction } from './types'
-import { RootStackNavigationProp } from 'navigation/rootNavigator/types'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
 import ActivityDetailsBitcoinContainer from './ActivityDetailsBitcoinContainer'
 import ActivityDetailsContainer from './ActivityDetailsContainer'
 
-export type ActivityDetailsScreenProps = {
-  route: { params: IActivityTransaction }
-  navigation: RootStackNavigationProp
-}
-export const ActivityDetailsScreen: React.FC<ActivityDetailsScreenProps> = ({
+export const ActivityDetailsScreen = ({
   route,
   navigation,
-}) => {
+}: RootStackScreenProps<rootStackRouteNames.ActivityDetails>) => {
   const transaction = route.params
   const onBackPress = (): void => {
     navigation.goBack()

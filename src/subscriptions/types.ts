@@ -3,7 +3,6 @@ import { IRIFWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServic
 import { IAbiEnhancer, IEnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { RIFWallet } from 'lib/core'
-import { AppDispatch } from 'src/redux'
 
 export interface IPrice {
   price: number
@@ -86,7 +85,6 @@ export interface TransactionsServerResponseWithActivityTransactions
 }
 
 export interface ISocketsChangeEmitted {
-  dispatch: AppDispatch
   abiEnhancer: IAbiEnhancer
   wallet: RIFWallet
 }

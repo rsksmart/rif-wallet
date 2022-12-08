@@ -1,19 +1,24 @@
 import { useContext, useState } from 'react'
 
-import { useNavigation } from '@react-navigation/native'
 import { QRCodeScanner } from '../../components/QRCodeScanner'
-import { useSelectedWallet } from '../../Context'
 import { WalletConnectContext } from './WalletConnectContext'
+import { useAppSelector } from 'src/redux/storeUtils'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator'
 
-export const ScanQRScreen = () => {
-  const { wallet } = useSelectedWallet()
-  const navigation = useNavigation()
+export const ScanQRScreen = ({
+  navigation,
+}: RootStackScreenProps<rootStackRouteNames.ScanQR>) => {
+  const { wallet } = useAppSelector(selectActiveWallet)
 
   const { createSession } = useContext(WalletConnectContext)
   const [isConnecting, setIsConnecting] = useState(false)
 
   const onCodeRead = (data: string) => {
-    if (!isConnecting) {
+    if (!isConnecting && wallet) {
       setIsConnecting(true)
       createSession(wallet, data)
     }
@@ -21,7 +26,7 @@ export const ScanQRScreen = () => {
     // wait for session request
     navigation.reset({
       index: 0,
-      routes: [{ name: 'WalletConnect' as never }],
+      routes: [{ name: rootStackRouteNames.WalletConnect }],
     })
   }
 
@@ -29,7 +34,7 @@ export const ScanQRScreen = () => {
     if (navigation.canGoBack()) {
       navigation.goBack()
     } else {
-      navigation.navigate('Home' as never)
+      navigation.navigate(rootStackRouteNames.Home)
     }
   }
 

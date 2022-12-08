@@ -1,8 +1,4 @@
 import { CompositeScreenProps } from '@react-navigation/native'
-import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator/types'
 import { useContext, useState } from 'react'
 import {
   StyleSheet,
@@ -14,17 +10,23 @@ import {
 } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { PrimaryButton } from 'src/components/button/PrimaryButton'
-import { useSelectedWallet } from 'src/Context'
+
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
+import { PrimaryButton } from 'components/button/PrimaryButton'
+import { AddressInput } from 'components/index'
+import { colors, grid } from '../../styles'
+import { fonts } from '../../styles/fonts'
+import { setOpacity } from '../home/tokenColor'
+import { ContactsContext, IContact } from './ContactsContext'
 import {
   contactsStackRouteNames,
   ContactsStackScreenProps,
-} from 'src/navigation/contactsNavigator'
-import { AddressInput } from 'src/components'
-import { colors, grid } from 'src/styles'
-import { fonts } from 'src/styles/fonts'
-import { setOpacity } from '../home/tokenColor'
-import { ContactsContext, IContact } from './ContactsContext'
+} from 'navigation/contactsNavigator'
+import { useAppSelector } from 'store/storeUtils'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
 
 export type ContactFormScreenProps = CompositeScreenProps<
   ContactsStackScreenProps<contactsStackRouteNames.ContactForm>,
@@ -35,7 +37,7 @@ export const ContactFormScreen = ({
   navigation,
   route,
 }: ContactFormScreenProps) => {
-  const { chainId = 31 } = useSelectedWallet()
+  const { chainId = 31 } = useAppSelector(selectActiveWallet)
   const initialValue: Partial<IContact> = route.params?.initialValue ?? {
     name: '',
     address: '',
