@@ -1,11 +1,13 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 import { TransactionInformation } from './TransactionInfo'
 import { transferBitcoin } from './transferBitcoin'
 import { transfer } from './transferTokens'
-import { UnspentTransactionType } from '../../lib/bitcoin/types'
+import { UnspentTransactionType } from 'lib/bitcoin/types'
 import { BigNumber } from 'ethers'
 import { RIFWallet } from 'src/lib/core'
-import { MixedTokenAndNetworkType } from './types'
+import { MixedTokenAndNetworkType, OnSetPendingTransaction } from './types'
+import { useAppDispatch } from 'store/storeHooks'
+import { addPendingTransaction } from 'store/slices/transactionsSlice/transactionsSlice'
 
 interface IPaymentExecutorContext {
   setUtxosGlobal: (utxos: UnspentTransactionType[]) => void
@@ -23,10 +25,13 @@ export const usePaymentExecutorContext = () => {
 export const usePaymentExecutor = () => {
   const [currentTransaction, setCurrentTransaction] =
     useState<TransactionInformation | null>(null)
-  const [error, setError] = useState<Error>()
+  const [error, setError] = useState<string | null | { message: string }>()
   const [utxos, setUtxos] = useState<UnspentTransactionType[]>([])
   const [bitcoinBalance, setBitcoinBalance] = useState<number>(Number(0))
-
+  const dispatch = useAppDispatch()
+  const [pendingTx, setPendingTx] = useState<
+    Parameters<OnSetPendingTransaction>[0] | null
+  >(null)
   const executePayment = ({
     token,
     amount,
@@ -61,10 +66,24 @@ export const usePaymentExecutor = () => {
           chainId,
           onSetCurrentTransaction: setCurrentTransaction,
           onSetError: setError,
+          onSetPendingTx: setPendingTx,
         })
         break
     }
   }
+
+  // When a pending RIF transaction is sent - add it to redux
+  useEffect(() => {
+    if (pendingTx !== null) {
+      dispatch(
+        addPendingTransaction({
+          ...pendingTx,
+          to: pendingTx.to as string,
+          gasPrice: pendingTx.gasPrice?._hex,
+        }),
+      )
+    }
+  }, [pendingTx])
 
   return {
     currentTransaction,

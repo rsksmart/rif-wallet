@@ -10,6 +10,7 @@ import {
   TransactionsServerResponseWithActivityTransactions,
 } from 'src/subscriptions/types'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
+import { PendingTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 
 const initialState: ITransactionsState = {
   next: '',
@@ -50,12 +51,59 @@ const transactionsSlice = createSlice({
       state.events.push(payload)
       return state
     },
+    addPendingTransaction: (
+      state,
+      { payload }: PayloadAction<PendingTransaction>,
+    ) => {
+      const pendingTransaction = {
+        originTransaction: {
+          to: payload.to as string,
+          value: payload.valueConverted,
+          nonce: payload.nonce,
+          hash: payload.hash,
+          blockHash: '',
+          blockNumber: 0,
+          transactionIndex: 0,
+          from: payload.from,
+          gas: 0,
+          gasPrice: payload.gasPrice || '',
+          input: '',
+          timestamp: Date.now(),
+          txType: '',
+          txId: '',
+          data: payload.data,
+        },
+        enhancedTransaction: undefined,
+      }
+      state.transactions.push(pendingTransaction)
+      return state
+    },
+    modifyTransaction: (
+      state,
+      { payload }: PayloadAction<IActivityTransaction>,
+    ) => {
+      const indexOfTransactionToModify = state.transactions.findIndex(
+        transaction =>
+          transaction.originTransaction.hash === payload.originTransaction.hash,
+      )
+      state.transactions[indexOfTransactionToModify] = {
+        ...state.transactions[indexOfTransactionToModify],
+        ...payload,
+      }
+      state.transactions = deserializeTransactions(state.transactions || [])
+      return state
+    },
   },
   extraReducers: builder => {
     builder.addCase(resetSocketState, () => initialState)
   },
 })
 
-export const { addNewTransactions, addNewTransaction, addNewEvent } =
-  transactionsSlice.actions
+export const {
+  addNewTransactions,
+  addNewTransaction,
+  addNewEvent,
+  modifyTransaction,
+  addPendingTransaction,
+} = transactionsSlice.actions
 export const transactionsReducer = transactionsSlice.reducer

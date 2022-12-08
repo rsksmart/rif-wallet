@@ -1,12 +1,13 @@
-import {
-  convertToERC20Token,
-  makeRBTCToken,
-} from '../../lib/token/tokenMetadata'
+import { convertToERC20Token, makeRBTCToken } from 'lib/token/tokenMetadata'
 import { BigNumber, ContractTransaction, utils } from 'ethers'
 import { TransactionInformation } from './TransactionInfo'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { RIFWallet } from '../../lib/core'
-import { OnSetCurrentTransactionFunction, OnSetErrorFunction } from './types'
+import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { RIFWallet } from 'lib/core'
+import {
+  OnSetCurrentTransactionFunction,
+  OnSetErrorFunction,
+  OnSetPendingTransaction,
+} from './types'
 
 interface IRifTransfer {
   token: ITokenWithBalance
@@ -16,6 +17,7 @@ interface IRifTransfer {
   chainId: number
   onSetError?: OnSetErrorFunction
   onSetCurrentTransaction?: OnSetCurrentTransactionFunction
+  onSetPendingTx?: OnSetPendingTransaction
 }
 
 export const transfer = ({
@@ -26,6 +28,7 @@ export const transfer = ({
   token,
   onSetError,
   onSetCurrentTransaction,
+  onSetPendingTx,
 }: IRifTransfer) => {
   if (onSetError) {
     onSetError(null)
@@ -49,6 +52,9 @@ export const transfer = ({
     transferMethod
       .transfer(to.toLowerCase(), tokenAmount)
       .then((txPending: ContractTransaction) => {
+        if (onSetPendingTx) {
+          onSetPendingTx({ ...txPending, valueConverted: amount })
+        }
         const current: TransactionInformation = {
           to,
           value: amount,

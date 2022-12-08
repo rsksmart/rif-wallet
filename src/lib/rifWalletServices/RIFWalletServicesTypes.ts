@@ -72,12 +72,21 @@ export interface IApiTransaction {
   value: string
   input: string
   timestamp: number
-  receipt: ContractReceipt // TODO: is this what should be here?
+  receipt?: ContractReceipt // TODO: is this what should be here?
   txType: string
   txId: string
   data?: string
 }
 
+export interface PendingTransaction {
+  to: string
+  valueConverted: string
+  nonce: number
+  hash: string
+  from: string
+  gasPrice?: string
+  data?: string
+}
 export interface TransactionsServerResponse {
   data: IApiTransaction[]
   next: string | null | undefined

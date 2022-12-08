@@ -3,6 +3,7 @@ import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { UnspentTransactionType } from 'lib/bitcoin/types'
 import { TransactionInformation } from './TransactionInfo'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
+import { ContractTransaction } from 'ethers/lib/ethers'
 
 export type OnSetErrorFunction = (
   error: string | null | { message: string },
@@ -10,6 +11,10 @@ export type OnSetErrorFunction = (
 
 export type OnSetCurrentTransactionFunction = (
   object: TransactionInformation | null,
+) => void
+
+export type OnSetPendingTransaction = (
+  pendingTransaction: ContractTransaction & { valueConverted: string },
 ) => void
 
 export interface IAssetChooser<T = unknown> {
