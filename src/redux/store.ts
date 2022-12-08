@@ -1,30 +1,34 @@
 import { configureStore } from '@reduxjs/toolkit'
 import createDebugger from 'redux-flipper'
-
-import { usdPriceReducer } from './slices/usdPricesSlice/usdPricesSlice'
-import { transactionsReducer } from 'store/slices/transactionsSlice/transactionsSlice'
-import { balancesReducer } from 'store/slices/balancesSlice/balancesSlice'
-import { appStateReducer } from 'store/slices/appStateSlice/appStateSlice'
-import { settingsSliceReducer } from 'store/slices/settingsSlice'
+import {
+  persistStore,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist'
+import { rootReducer } from './rootReducer'
 
 // Must use redux-debugger plugin in flipper for the redux debugger to work
 
 export const store = configureStore({
-  reducer: {
-    usdPrices: usdPriceReducer,
-    transactions: transactionsReducer,
-    settings: settingsSliceReducer,
-    balances: balancesReducer,
-    appState: appStateReducer,
-  },
+  reducer: rootReducer,
   middleware: getDefaultMiddlewares => {
-    const middlewares = getDefaultMiddlewares()
+    const middlewares = getDefaultMiddlewares({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    })
     if (__DEV__) {
       return middlewares.concat(createDebugger())
     }
     return middlewares
   },
 })
+
+export const persistor = persistStore(store)
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>

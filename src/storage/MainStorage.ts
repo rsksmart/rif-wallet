@@ -1,10 +1,15 @@
 import { IContact } from 'src/screens/contacts/ContactsContext'
 import { MMKVStorage } from './MMKVStorage'
 
+export interface IAccount {
+  name: string
+}
+
 export interface IProfileStore {
   alias: string
   phone: string
   email: string
+  accounts: IAccount[]
 }
 
 export const MainStorage = new MMKVStorage()
