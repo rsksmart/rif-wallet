@@ -3,7 +3,7 @@ import { render, fireEvent } from '@testing-library/react-native'
 import { Provider } from 'react-redux'
 import { contactsStackRouteNames } from 'src/navigation/contactsNavigator'
 
-import { store } from 'store/index'
+import { store } from 'store/store'
 import { ContactFormScreen, ContactFormScreenProps } from './ContactFormScreen'
 
 jest.mock('@react-navigation/native', () => ({
