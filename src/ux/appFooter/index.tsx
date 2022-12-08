@@ -25,7 +25,8 @@ export const AppFooterMenu = ({ currentScreen }: Props) => {
     <View style={styles.row}>
       <TouchableOpacity
         onPress={() => navigation.navigate(rootStackRouteNames.Home)}
-        style={styles.button}>
+        style={styles.button}
+        accessibilityLabel="home">
         <Image
           style={styles.walletIcon}
           source={
@@ -38,7 +39,8 @@ export const AppFooterMenu = ({ currentScreen }: Props) => {
 
       <TouchableOpacity
         onPress={() => navigation.navigate(rootStackRouteNames.Activity)}
-        style={styles.button}>
+        style={styles.button}
+        accessibilityLabel="activity">
         {currentScreen === 'Activity' ? (
           <ActivitySelectedIcon />
         ) : (
@@ -48,13 +50,15 @@ export const AppFooterMenu = ({ currentScreen }: Props) => {
 
       <TouchableOpacity
         onPress={() => navigation.navigate(rootStackRouteNames.ScanQR)}
-        style={styles.button}>
+        style={styles.button}
+        accessibilityLabel="scan">
         <QRCodeIconFooter />
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={() => navigation.navigate(rootStackRouteNames.Contacts)}
-        style={styles.button}>
+        style={styles.button}
+        accessibilityLabel="contacts">
         {currentScreen === 'Contacts' ? (
           <ContactSelectedIcon />
         ) : (
@@ -64,7 +68,8 @@ export const AppFooterMenu = ({ currentScreen }: Props) => {
 
       <TouchableOpacity
         onPress={() => navigation.navigate(rootStackRouteNames.WalletConnect)}
-        style={styles.button}>
+        style={styles.button}
+        accessibilityLabel="dapps">
         {currentScreen === 'WalletConnect' ? (
           <DappsSelectedIcon />
         ) : (
