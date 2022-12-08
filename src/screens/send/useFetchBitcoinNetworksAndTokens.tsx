@@ -1,13 +1,13 @@
 import { useMemo } from 'react'
 
 import { useAppSelector } from 'store/storeUtils'
-import { selectBitcoinCore } from 'store/slices/settingsSlice'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { IAsset } from './types'
+import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 
 export const useFetchBitcoinNetworksAndTokens = () => {
   const tokenBalances = useAppSelector(selectBalances)
-  const bitcoinCore = useAppSelector(selectBitcoinCore)
+  const bitcoinCore = useBitcoinContext()
 
   const tokens = useMemo(() => Object.values(tokenBalances), [tokenBalances])
   const networksSer = bitcoinCore
