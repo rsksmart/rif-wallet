@@ -8,6 +8,7 @@ import { IAbiEnhancer } from '../abiEnhancer/AbiEnhancer'
 import { RIFWallet } from '../core'
 import { IRIFWalletServicesFetcher } from './RifWalletServicesFetcher'
 import { IApiTransaction, ITokenWithBalance } from './RIFWalletServicesTypes'
+import { filterEnhancedTransactions } from 'src/subscriptions/utils'
 
 export interface IServiceChangeEvent {
   type: string
@@ -52,13 +53,22 @@ export class RifWalletServicesSocket
 
   private async init(wallet: RIFWallet, encryptionKey: string) {
     const cache = new MMKVStorage('txs', encryptionKey)
+    const blockNumber = cache.get('blockNumber') || '0'
+    const catchedTxs = cache.get('cachedTxs') || []
     const fetchedTransactions = await this.fetcher.fetchTransactionsByAddress(
       wallet.smartWalletAddress,
+      null,
+      null,
+      blockNumber,
     )
 
+    let lastBlockNumber = blockNumber
     const activityTransactions = await Promise.all(
       // TODO: why Promise.all?
       fetchedTransactions.data.map(async (tx: IApiTransaction) => {
+        if (parseInt(blockNumber, 10) < tx.blockNumber) {
+          lastBlockNumber = tx.blockNumber
+        }
         if (cache.has(tx.hash)) {
           return {
             originTransaction: tx,
@@ -84,13 +94,17 @@ export class RifWalletServicesSocket
         }
       }),
     )
-
+    const transactions = catchedTxs
+      .concat(activityTransactions)
+      .filter(filterEnhancedTransactions)
+    cache.set('cachedTxs', transactions)
+    cache.set('blockNumber', lastBlockNumber.toString())
     const fetchedTokens = await this.fetcher.fetchTokensByAddress(
       wallet.smartWalletAddress,
     )
 
     this.emit('init', {
-      transactions: activityTransactions,
+      transactions: transactions,
       balances: fetchedTokens,
     })
   }
@@ -119,7 +133,9 @@ export class RifWalletServicesSocket
       this.socket = socket
     } catch (error) {
       console.error('socket error', error)
-      throw new Error(error)
+      if (error instanceof Error) {
+        throw new Error(error.toString())
+      }
     }
   }
 
