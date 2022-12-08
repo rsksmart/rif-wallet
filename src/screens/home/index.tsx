@@ -23,11 +23,8 @@ import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { selectAppState } from 'store/slices/appStateSlice/selectors'
-import {
-  changeTopColor,
-  selectActiveWallet,
-  selectBitcoinCore,
-} from 'store/slices/settingsSlice'
+import { changeTopColor, selectActiveWallet } from 'store/slices/settingsSlice'
+import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 
 export const HomeScreen = ({
   navigation,
@@ -36,7 +33,7 @@ export const HomeScreen = ({
   const tokenBalances = useAppSelector(selectBalances)
   const prices = useAppSelector(selectUsdPrices)
   const { isSetup } = useAppSelector(selectAppState)
-  const bitcoinCore = useAppSelector(selectBitcoinCore)
+  const bitcoinCore = useBitcoinContext()
   const { activeWalletIndex, wallet, chainId } =
     useAppSelector(selectActiveWallet)
 

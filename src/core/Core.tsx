@@ -20,7 +20,7 @@ import {
   NavigationState,
 } from '@react-navigation/native'
 
-import { WalletConnectProviderElement } from '../screens/walletConnect/WalletConnectContext'
+import { WalletConnectProviderElement } from 'screens/walletConnect/WalletConnectContext'
 import { useRifSockets } from 'src/subscriptions/useRifSockets'
 import { LoadingScreen } from 'components/loading/LoadingScreen'
 import { useSetGlobalError } from 'components/GlobalErrorHandler'
@@ -31,7 +31,6 @@ import { useStateSubscription } from './hooks/useStateSubscription'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import {
   setChainId,
-  setBitcoinCore,
   unlockApp,
   removeKeysFromState,
   resetKeysAndPin,
@@ -45,6 +44,7 @@ import {
   closeRequest,
 } from 'store/slices/settingsSlice'
 import { hasKeys, hasPin } from 'storage/MainStorage'
+import { BitcoinProvider } from 'core/hooks/bitcoin/BitcoinContext'
 
 export const navigationContainerRef =
   createNavigationContainerRef<RootStackParamList>()
@@ -64,7 +64,6 @@ export const Core = () => {
   const BitcoinCore = useBitcoinCore(kms?.mnemonic || '', request =>
     dispatch(onRequest({ request })),
   )
-
   const onScreenLock = () => dispatch(removeKeysFromState())
 
   const { unlocked, setUnlocked, active } = useStateSubscription(onScreenLock)
@@ -107,7 +106,6 @@ export const Core = () => {
   useEffect(() => {
     const fn = async () => {
       await i18nInit()
-      dispatch(setBitcoinCore(BitcoinCore))
     }
     fn()
   }, [])
@@ -144,20 +142,22 @@ export const Core = () => {
     <View style={styles.top}>
       <StatusBar backgroundColor={topColor} />
       {!active && <Cover />}
-      <NavigationContainer
-        onStateChange={handleScreenChange}
-        ref={navigationContainerRef}>
-        <WalletConnectProviderElement>
-          <RootNavigationComponent currentScreen={currentScreen} />
+      <BitcoinProvider BitcoinCore={BitcoinCore}>
+        <NavigationContainer
+          onStateChange={handleScreenChange}
+          ref={navigationContainerRef}>
+          <WalletConnectProviderElement>
+            <RootNavigationComponent currentScreen={currentScreen} />
 
-          {requests.length !== 0 && (
-            <ModalComponent
-              closeModal={() => dispatch(closeRequest())}
-              request={requests[0]}
-            />
-          )}
-        </WalletConnectProviderElement>
-      </NavigationContainer>
+            {requests.length !== 0 && (
+              <ModalComponent
+                closeModal={() => dispatch(closeRequest())}
+                request={requests[0]}
+              />
+            )}
+          </WalletConnectProviderElement>
+        </NavigationContainer>
+      </BitcoinProvider>
     </View>
   )
 }

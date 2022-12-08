@@ -4,16 +4,14 @@ import { StyleSheet, View, FlatList } from 'react-native'
 import { shortAddress } from 'lib/utils'
 
 import AccountBox from 'components/accounts/AccountBox'
-import { colors } from '../../styles'
+import { colors } from 'src/styles'
 import { useAppSelector } from 'src/redux/storeUtils'
-import {
-  selectBitcoinCore,
-  selectWallets,
-} from 'src/redux/slices/settingsSlice'
+import { selectWallets } from 'src/redux/slices/settingsSlice'
+import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 
 export const AccountsScreen = () => {
   const wallets = useAppSelector(selectWallets)
-  const bitcoinCore = useAppSelector(selectBitcoinCore)
+  const bitcoinCore = useBitcoinContext()
   const publicKeys = useMemo(
     () =>
       bitcoinCore
