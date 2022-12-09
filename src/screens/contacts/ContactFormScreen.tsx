@@ -25,10 +25,7 @@ import { fonts } from 'src/styles/fonts'
 import { setOpacity } from '../home/tokenColor'
 import { Contact } from 'store/slices/contactsSlice/types'
 import { useAppDispatch } from 'store/storeUtils'
-import {
-  addContact,
-  editContact,
-} from 'store/slices/contactsSlice'
+import { addContact, editContact } from 'store/slices/contactsSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 
