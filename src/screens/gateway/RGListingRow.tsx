@@ -31,8 +31,8 @@ export const RGListingRow: React.FC<IRGListingRowProps> = ({
           : colors.background.primary,
       }}>
       <TouchableOpacity
-        testID={`contactCard-${listing.id}`}
-        accessibilityLabel={`contactCard-${listing.name}`}
+        testID={`rgListing-${listing.id}`}
+        accessibilityLabel={`rgListing-${listing.name}`}
         key={index}
         onPress={() => {
           onPress(listing, index)
@@ -41,13 +41,13 @@ export const RGListingRow: React.FC<IRGListingRowProps> = ({
         <Text style={styles.contactName}>{listing.name}</Text>
         <Text style={styles.address}>{listing.currencySymbol}</Text>
         <Text style={styles.address}>
-          {(+listing.interestRate / 1e20).toFixed(4)}%
+          {(+listing.interestRate / 1e16).toFixed(2)}%
           {listing.type === RGSERVICE_TYPE.LENDING && <> APY</>}
           {listing.type === RGSERVICE_TYPE.BORROWING && <> Interest</>}
         </Text>
         {!consumed && listing.type === RGSERVICE_TYPE.LENDING && (
           <Text style={styles.address}>
-            From {+listing.minAmount / 1e18} to {+listing.maxAmount / 1e18}
+            From {+listing.minAmount / 1e18} to {+listing.maxAmount / 1e18}{' '}
             {listing.currencySymbol}
           </Text>
         )}
