@@ -13,6 +13,7 @@ import { CheckIcon } from 'components/icons/CheckIcon'
 import { DeleteIcon } from 'components/icons'
 import { sharedMnemonicStyles } from './styles'
 import { colors } from 'src/styles/colors'
+import { testIDs } from 'shared/constants'
 
 interface Props {
   wordIndex: number
@@ -105,7 +106,7 @@ export const WordSelector = forwardRef<TextInput, Props>(
           <View>
             <View style={sharedMnemonicStyles.wordNumberBadge}>
               <Text
-                testID={'view.indexLabel'}
+                testID={testIDs.indexLabel}
                 style={sharedMnemonicStyles.wordNumberBadgeText}>
                 {wordIndex + 1}
               </Text>
@@ -114,7 +115,7 @@ export const WordSelector = forwardRef<TextInput, Props>(
           {ref && (
             <TextInput
               ref={ref}
-              testID={'input.wordInput'}
+              testID={testIDs.wordInput}
               selectionColor={'#fff'}
               placeholderTextColor="#fff"
               style={styles.textInput}
