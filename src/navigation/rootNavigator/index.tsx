@@ -23,7 +23,6 @@ const InjectedScreens = {
   ManuallyDeployScreen: InjectSelectedWallet(Screens.ManuallyDeployScreen),
   WalletConnectScreen: InjectSelectedWallet(Screens.WalletConnectScreen),
   ScanQRScreen: InjectSelectedWallet(Screens.ScanQRScreen),
-  RNSManagerScreen: InjectSelectedWallet(Screens.RNSManagerScreen),
   SearchDomainScreen: InjectSelectedWallet(Screens.SearchDomainScreen),
   RequestDomainScreen: InjectSelectedWallet(Screens.RequestDomainScreen),
   RegisterDomainScreen: InjectSelectedWallet(Screens.RegisterDomainScreen),
@@ -133,11 +132,6 @@ export const RootNavigationComponent = ({ currentScreen }: Props) => {
           component={Screens.ShowMnemonicScreen}
           options={sharedOptions}
         />
-        <RootStack.Screen
-          name={rootStackRouteNames.RNSManager}
-          options={sharedOptions}>
-          {props => <InjectedScreens.RNSManagerScreen {...props} />}
-        </RootStack.Screen>
 
         <RootStack.Screen
           name={rootStackRouteNames.SearchDomain}
@@ -158,10 +152,9 @@ export const RootNavigationComponent = ({ currentScreen }: Props) => {
 
         <RootStack.Screen
           name={rootStackRouteNames.AliasBought}
-          options={sharedOptions}>
-          {props => <InjectedScreens.AliasBoughtScreen {...props} />}
-        </RootStack.Screen>
-
+          component={InjectedScreens.AliasBoughtScreen}
+          options={sharedOptions}
+        />
         <RootStack.Screen
           name={rootStackRouteNames.RegisterDomain}
           component={InjectedScreens.RegisterDomainScreen}
@@ -195,14 +188,14 @@ export const RootNavigationComponent = ({ currentScreen }: Props) => {
         />
         <RootStack.Screen
           name={rootStackRouteNames.ProfileCreateScreen}
-          options={sharedOptions}>
-          {props => <Screens.ProfileCreateScreen {...props} />}
-        </RootStack.Screen>
+          component={Screens.ProfileCreateScreen}
+          options={sharedOptions}
+        />
         <RootStack.Screen
           name={rootStackRouteNames.ProfileDetailsScreen}
-          options={sharedOptions}>
-          {props => <Screens.ProfileDetailsScreen {...props} />}
-        </RootStack.Screen>
+          component={Screens.ProfileDetailsScreen}
+          options={sharedOptions}
+        />
         <RootStack.Screen
           name={rootStackRouteNames.FeedbackScreen}
           component={Screens.FeedbackScreen}
