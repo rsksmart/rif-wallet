@@ -24,7 +24,7 @@ import { ContactsStackScreenProps } from '..'
 import { contactsStackRouteNames } from 'src/navigation/contactsNavigator'
 import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { getContactsAsArrayAndSelected } from 'store/slices/contactsSlice/selectors'
+import { getContactsAsArrayAndSelected } from 'store/slices/contactsSlice'
 import {
   deleteContactById,
   setSelectedContactById,

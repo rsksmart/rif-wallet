@@ -58,3 +58,5 @@ export const {
 } = contactsSlice.actions
 
 export const contactsReducer = contactsSlice.reducer
+
+export * from './selectors'
