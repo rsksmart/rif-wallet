@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { BigNumber } from 'ethers'
 import { StyleSheet, View, TextInput } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
@@ -12,16 +12,18 @@ import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
-import { RSKRegistrar, AddrResolver } from '@rsksmart/rns-sdk'
+import { AddrResolver } from '@rsksmart/rns-sdk'
 import { addDomain } from '../../storage/DomainsStore'
 import { getTokenColorWithOpacity } from '../home/tokenColor'
 import { formatUnits } from 'ethers/lib/utils'
 import { ScrollView } from 'react-native-gesture-handler'
+import { createRSKRegistrar } from '.'
 
 export const RegisterDomainScreen: React.FC<
-  RootStackScreenProps<'RegisterDomain'> & ScreenWithWallet
+  RootStackScreenProps<rootStackRouteNames.RegisterDomain> & ScreenWithWallet
 > = ({ wallet, route, navigation }) => {
   const { selectedDomain, years } = route.params
+  const rskRegistrar = useMemo(() => createRSKRegistrar(wallet), [wallet])
 
   const [error, setError] = useState('')
 
@@ -37,12 +39,6 @@ export const RegisterDomainScreen: React.FC<
 
   const [resolvingAddress, setResolvingAddress] = useState('')
 
-  const rskRegistrar = new RSKRegistrar(
-    addresses.rskOwnerAddress,
-    addresses.fifsAddrRegistrarAddress,
-    addresses.rifTokenAddress,
-    wallet,
-  )
   const addrResolver = new AddrResolver(addresses.rnsRegistryAddress, wallet)
 
   useEffect(() => {
@@ -52,9 +48,9 @@ export const RegisterDomainScreen: React.FC<
         .price(selectedDomain, BigNumber.from(duration))
         .then(price => setDomainPrice(price))
     }
-  }, [duration])
+  }, [duration, wallet, selectedDomain, rskRegistrar])
 
-  const commitToRegister = async () => {
+  const commitToRegister = useCallback(async () => {
     try {
       const { makeCommitmentTransaction, secret, canReveal } =
         await rskRegistrar.commitToRegister(
@@ -82,9 +78,9 @@ export const RegisterDomainScreen: React.FC<
         }
       }, 5000)
     } catch (e) {
-      setError(e.message || '')
+      setError(e instanceof Error ? e.message : '')
     }
-  }
+  }, [selectedDomain, wallet.smartWallet.address, rskRegistrar])
 
   const registerDomain = async (domain: string) => {
     try {

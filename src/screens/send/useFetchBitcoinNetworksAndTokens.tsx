@@ -10,16 +10,21 @@ export const useFetchBitcoinNetworksAndTokens = () => {
   const bitcoinCore = useBitcoinContext()
 
   const tokens = useMemo(() => Object.values(tokenBalances), [tokenBalances])
-  const networksSer = bitcoinCore
-    ? bitcoinCore.networks.map(network => ({
-        ...network,
-        balance: network.satoshis,
-        isBitcoin: true,
-      }))
-    : []
+  const networksSer = useMemo(
+    () =>
+      bitcoinCore
+        ? bitcoinCore.networks.map(network => ({
+            ...network,
+            balance: network.satoshis,
+            isBitcoin: true,
+          }))
+        : [],
+    [bitcoinCore],
+  )
+
   return useMemo(() => {
     return [...networksSer, ...tokens].sort((a, b) =>
       a.symbol.localeCompare(b.symbol),
     ) as IAsset[]
-  }, [bitcoinCore, tokens])
+  }, [tokens, networksSer])
 }

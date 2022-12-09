@@ -4,14 +4,16 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Clipboard from '@react-native-community/clipboard'
 
+import { isDomain } from './lib'
+import { isBitcoinAddressValid } from 'lib/bitcoin/utils'
+import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
+
 import { QRCodeScanner } from '../QRCodeScanner'
 import { sharedAddressStyles as styles } from './sharedAddressStyles'
 import { colors } from '../../styles'
-import { ContentPasteIcon, QRCodeIcon, DeleteIcon } from '../icons'
-import { isDomain } from './lib'
+import { ContentPasteIcon, QRCodeIcon } from '../icons'
 import { rnsResolver } from '../../core/setup'
-import { isBitcoinAddressValid } from 'lib/bitcoin/utils'
-import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
+import { DeleteIcon } from '../icons/DeleteIcon'
 import { MediumText } from '../typography'
 
 interface AddressInputProps {
@@ -47,56 +49,73 @@ export const AddressBitcoinInput = ({
 
   const showQRScanner = useCallback(() => setShouldShowQRScanner(true), [])
 
-  const onQRRead = useCallback((qrText: string) => {
-    validateAddress(qrText)
-    hideQRScanner()
-  }, [])
+  const onBeforeChangeText = useCallback(
+    (address: string) => {
+      const isBtcAddressValid = isBitcoinAddressValid(address)
+      setIsAddressValid(isBtcAddressValid)
+      onChangeText(address, isBtcAddressValid)
+    },
+    [onChangeText],
+  )
+
+  /* Function to validate address and to set it */
+  const validateAddress = useCallback(
+    (text: string) => {
+      // If domain, fetch it
+      setIsValidating(true)
+      if (isDomain(text)) {
+        rnsResolver
+          .addr(text)
+          .then((address: string) => {
+            setTo({
+              value: address,
+              type: TYPES.DOMAIN,
+              addressResolved: text,
+            })
+            onBeforeChangeText(address)
+          })
+          .catch(_e => {})
+          .finally(() => setIsValidating(false))
+      } /* default to normal validation */ else {
+        onBeforeChangeText(text)
+        setTo({
+          value: text,
+          type: TYPES.NORMAL,
+          addressResolved: text,
+        })
+        setIsValidating(false)
+      }
+    },
+    [onBeforeChangeText],
+  )
+
+  const onQRRead = useCallback(
+    (qrText: string) => {
+      validateAddress(qrText)
+      hideQRScanner()
+    },
+    [hideQRScanner, validateAddress],
+  )
 
   /* set  */
-  const handleChangeText = useCallback((text: string) => {
-    setTo({ ...to, value: text, type: TYPES.NORMAL })
-  }, [])
+  const handleChangeText = useCallback(
+    (text: string) => {
+      setTo({ ...to, value: text, type: TYPES.NORMAL })
+    },
+    [to],
+  )
 
-  const onBeforeChangeText = (address: string) => {
-    const isBtcAddressValid = isBitcoinAddressValid(address)
-    setIsAddressValid(isBtcAddressValid)
-    onChangeText(address, isBtcAddressValid)
-  }
   const onBlurValidate = () => {
     handleUserIsWriting(false)
     validateAddress(to.value)
   }
-  /* Function to validate address and to set it */
-  const validateAddress = (text: string) => {
-    // If domain, fetch it
-    setIsValidating(true)
-    if (isDomain(text)) {
-      rnsResolver
-        .addr(text)
-        .then((address: string) => {
-          setTo({
-            value: address,
-            type: TYPES.DOMAIN,
-            addressResolved: text,
-          })
-          onBeforeChangeText(address)
-        })
-        .catch(_e => {})
-        .finally(() => setIsValidating(false))
-    } /* default to normal validation */ else {
-      onBeforeChangeText(text)
-      setTo({
-        value: text,
-        type: TYPES.NORMAL,
-        addressResolved: text,
-      })
-      setIsValidating(false)
-    }
-  }
 
   const handlePasteClick = () => Clipboard.getString().then(validateAddress)
 
-  const onClearText = useCallback(() => handleChangeText(''), [])
+  const onClearText = useCallback(
+    () => handleChangeText(''),
+    [handleChangeText],
+  )
 
   return (
     <>

@@ -69,7 +69,7 @@ export const HomeScreen = ({
         ? setSelectedAddress(balances[0].contractAddress)
         : undefined
     }
-  }, [balances])
+  }, [balances, selected])
 
   // interact with the navigation
   const handleSendReceive = (screen: 'SEND' | 'RECEIVE' | 'FAUCET') => {
@@ -114,7 +114,7 @@ export const HomeScreen = ({
   // pass the new color to Core to update header:
   useEffect(() => {
     dispatch(changeTopColor(selectedColor))
-  }, [selectedColor])
+  }, [selectedColor, dispatch])
 
   const selectedTokenAmount = useMemo(() => {
     if (selected instanceof BitcoinNetwork) {
@@ -124,7 +124,8 @@ export const HomeScreen = ({
       return balanceToDisplay(selected.balance, selected.decimals, 5)
     }
     return '0'
-  }, [selected, balances])
+  }, [selected])
+
   // waiting for the balances to load:
   if (!isSetup) {
     return <LoadingScreen />

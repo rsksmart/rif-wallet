@@ -1,14 +1,16 @@
-import React, { useState } from 'react'
-import { UnspentTransactionType } from '../../lib/bitcoin/types'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { BigNumber } from 'ethers'
+
+import { UnspentTransactionType } from 'lib/bitcoin/types'
 import {
   convertBtcToSatoshi,
   convertSatoshiToBtcHuman,
   validateAmount,
-} from '../../lib/bitcoin/utils'
-import { BigNumber } from 'ethers'
-import { sanitizeDecimalText, sanitizeMaxDecimalText } from '../../lib/utils'
+} from 'lib/bitcoin/utils'
+import { sanitizeDecimalText, sanitizeMaxDecimalText } from 'lib/utils'
+import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
+
 import { ISetAmountComponent } from './SetAmountComponent'
-import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 import { BitcoinSetAmountPresentation } from './BitcoinSetAmountPresentation'
 import { usePaymentExecutorContext } from './usePaymentExecutor'
 
@@ -22,33 +24,31 @@ interface IBitcoinSetAmountContainer {
   }>
 }
 
-export const BitcoinSetAmountContainer: React.FC<
-  IBitcoinSetAmountContainer
-> = ({
+export const BitcoinSetAmountContainer = ({
   setAmount,
   token,
   BitcoinSetAmountComponent = BitcoinSetAmountPresentation,
-}) => {
+}: IBitcoinSetAmountContainer) => {
   const [utxos, setUtxos] = useState<Array<UnspentTransactionType>>([])
   const [amountToPay, setAmountToPay] = useState<string>('')
   const [error, setError] = useState<string>('')
   const { setUtxosGlobal, setBitcoinBalanceGlobal } =
     usePaymentExecutorContext()
 
-  const fetchUtxo = async () => {
+  const fetchUtxo = useCallback(async () => {
     token.bips[0].fetchUtxos().then((data: Array<UnspentTransactionType>) => {
       const filtered = data.filter(tx => tx.confirmations > 0)
       setUtxos(filtered)
       setUtxosGlobal(filtered)
     })
-  }
+  }, [setUtxosGlobal, token.bips])
 
-  const satoshisToPay = React.useMemo(
+  const satoshisToPay = useMemo(
     () => convertBtcToSatoshi(amountToPay),
     [amountToPay],
   )
 
-  const balanceAvailable = React.useMemo(
+  const balanceAvailable = useMemo(
     () =>
       utxos.reduce((prev, utxo) => {
         prev = prev.add(BigNumber.from(utxo.value))
@@ -57,13 +57,15 @@ export const BitcoinSetAmountContainer: React.FC<
     [utxos],
   )
 
-  React.useEffect(() => {
+  useEffect(() => {
     setBitcoinBalanceGlobal(balanceAvailable.toNumber())
-  }, [balanceAvailable])
-  React.useEffect(() => {
+  }, [balanceAvailable, setBitcoinBalanceGlobal])
+
+  useEffect(() => {
     fetchUtxo()
-  }, [])
-  const handleAmountChange = React.useCallback(
+  }, [fetchUtxo])
+
+  const handleAmountChange = useCallback(
     (amount: string) => {
       setError('')
       const amountSanitized = sanitizeMaxDecimalText(
@@ -83,14 +85,14 @@ export const BitcoinSetAmountContainer: React.FC<
   )
 
   // When amount to pay changes - update setAmount
-  React.useEffect(() => {
+  useEffect(() => {
     setAmount(
       satoshisToPay.toString(),
       validateAmount(satoshisToPay, balanceAvailable).isValid,
     )
-  }, [amountToPay])
+  }, [amountToPay, balanceAvailable, satoshisToPay, setAmount])
 
-  const balanceAvailableString = React.useMemo(
+  const balanceAvailableString = useMemo(
     () => convertSatoshiToBtcHuman(balanceAvailable),
     [balanceAvailable],
   )

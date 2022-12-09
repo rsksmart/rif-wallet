@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { FlatList, StyleSheet, View, RefreshControl } from 'react-native'
 import { useTranslation } from 'react-i18next'
 
@@ -49,51 +49,57 @@ export const ActivityScreen = ({
   // On load, fetch btc transactions
   useEffect(() => {
     btcTransactionFetcher.fetchTransactions()
-  }, [])
+  }, [btcTransactionFetcher])
 
-  const fetchTransactionsPage = async ({
-    prev,
-    next,
-  }: {
-    prev?: string | null
-    next?: string | null
-  } = {}) => {
-    /*i18n.changeLanguage('es')*/
-    try {
-      setInfo(t('Loading transactions. Please wait...'))
+  const fetchTransactionsPage = useCallback(
+    async ({
+      prev,
+      next,
+    }: {
+      prev?: string | null
+      next?: string | null
+    } = {}) => {
+      /*i18n.changeLanguage('es')*/
+      try {
+        setInfo(t('Loading transactions. Please wait...'))
 
-      const fetchedTransactions: TransactionsServerResponseWithActivityTransactions =
-        await rifWalletServicesFetcher.fetchTransactionsByAddress(
-          wallet.smartWalletAddress.toLowerCase(),
-          prev,
-          next,
+        const fetchedTransactions: TransactionsServerResponseWithActivityTransactions =
+          await rifWalletServicesFetcher.fetchTransactionsByAddress(
+            wallet.smartWalletAddress.toLowerCase(),
+            prev,
+            next,
+          )
+
+        fetchedTransactions.activityTransactions = await Promise.all(
+          fetchedTransactions.data.map(async (tx: IApiTransaction) => {
+            const enhancedTransaction = await enhanceTransactionInput(
+              tx,
+              wallet,
+            )
+            return {
+              originTransaction: tx,
+              enhancedTransaction,
+              id: tx.hash,
+            }
+          }),
         )
+        dispatch(addNewTransactions(fetchedTransactions))
 
-      fetchedTransactions.activityTransactions = await Promise.all(
-        fetchedTransactions.data.map(async (tx: IApiTransaction) => {
-          const enhancedTransaction = await enhanceTransactionInput(tx, wallet)
-          return {
-            originTransaction: tx,
-            enhancedTransaction,
-            id: tx.hash,
-          }
-        }),
-      )
-      dispatch(addNewTransactions(fetchedTransactions))
-
-      setInfo('')
-    } catch (e) {
-      if (e instanceof Error) {
-        setInfo(t('Error reaching API: ') + e.message)
+        setInfo('')
+      } catch (e) {
+        if (e instanceof Error) {
+          setInfo(t('Error reaching API: ') + e.message)
+        }
       }
-    }
-  }
+    },
+    [dispatch, t, wallet],
+  )
 
   // On load, fetch both BTC and WALLET transactions
   useEffect(() => {
     btcTransactionFetcher.fetchTransactions()
     fetchTransactionsPage()
-  }, [])
+  }, [btcTransactionFetcher, fetchTransactionsPage])
 
   const onRefresh = () => {
     fetchTransactionsPage()

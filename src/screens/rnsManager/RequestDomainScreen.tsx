@@ -1,23 +1,20 @@
-import { RSKRegistrar } from '@rsksmart/rns-sdk'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import * as Progress from 'react-native-progress'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-
 import { Dimensions, TouchableOpacity, View } from 'react-native'
-import { colors } from 'src/styles'
-import { rnsManagerStyles } from './rnsManagerStyles'
 
-import { PrimaryButton } from 'src/components/button/PrimaryButton'
-
-import { MediumText } from '../../components'
-import { AvatarIcon } from '../../components/icons/AvatarIcon'
+import { PrimaryButton } from 'components/button/PrimaryButton'
+import { MediumText } from 'components/index'
+import { AvatarIcon } from 'components/icons/AvatarIcon'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
-import { ScreenWithWallet } from '../types'
-import addresses from './addresses.json'
 import TitleStatus from './TitleStatus'
+import { colors } from 'src/styles'
+import { rnsManagerStyles } from './rnsManagerStyles'
+import { ScreenWithWallet } from '../types'
+import { createRSKRegistrar } from './index'
 
 type Props = RootStackScreenProps<rootStackRouteNames.RequestDomain> &
   ScreenWithWallet
@@ -25,21 +22,15 @@ type Props = RootStackScreenProps<rootStackRouteNames.RequestDomain> &
 export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
   const { alias, duration } = route.params
   const fullAlias = alias + '.rsk'
-
-  const rskRegistrar = new RSKRegistrar(
-    addresses.rskOwnerAddress,
-    addresses.fifsAddrRegistrarAddress,
-    addresses.rifTokenAddress,
-    wallet,
-  )
   const [commitToRegisterInfo, setCommitToRegisterInfo] = useState('')
   const [commitToRegisterInfo2, setCommitToRegisterInfo2] = useState('')
   const [processing, setProcessing] = useState(false)
   const [progress, setProgress] = useState(0.0)
 
-  const commitToRegister = async () => {
+  const commitToRegister = useCallback(async () => {
     setProcessing(true)
     try {
+      const rskRegistrar = createRSKRegistrar(wallet)
       const { makeCommitmentTransaction, secret, canReveal } =
         await rskRegistrar.commitToRegister(alias, wallet.smartWallet.address)
 
@@ -69,15 +60,17 @@ export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
       setCommitToRegisterInfo(e?.message || '')
       setCommitToRegisterInfo2('')
     }
-  }
+  }, [alias, duration, navigation, wallet])
+
   useEffect(() => {
     commitToRegister().then()
-  }, [])
+  }, [commitToRegister])
+
   return (
     <>
       <View style={rnsManagerStyles.profileHeader}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('SearchDomain')}
+          onPress={() => navigation.navigate(rootStackRouteNames.SearchDomain)}
           accessibilityLabel="back">
           <View style={rnsManagerStyles.backButton}>
             <MaterialIcon name="west" color="white" size={10} />

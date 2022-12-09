@@ -86,18 +86,22 @@ export const TransactionForm: React.FC<Interface> = ({
   const handleConfirmClick = () =>
     onConfirm(selectedToken, amount.value, to.value)
 
-  const onTokenSelect = useCallback((token: MixedTokenAndNetworkType) => {
-    setSelectedToken(oldToken => {
-      // Reset address when token type is changed
-      if ('isBitcoin' in oldToken === !('isBitcoin' in token)) {
-        handleTargetAddressChange('', false)
+  const onTokenSelect = useCallback(
+    (token: MixedTokenAndNetworkType) => {
+      setSelectedToken(oldToken => {
+        // Reset address when token type is changed
+        if ('isBitcoin' in oldToken === !('isBitcoin' in token)) {
+          handleTargetAddressChange('', false)
+        }
+        return token
+      })
+      if (onTokenSelected) {
+        onTokenSelected(token)
       }
-      return token
-    })
-    if (onTokenSelected) {
-      onTokenSelected(token)
-    }
-  }, [])
+    },
+    [onTokenSelected],
+  )
+
   return (
     <View>
       <View style={{ ...grid.row, ...styles.section }}>

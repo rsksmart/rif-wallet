@@ -33,7 +33,7 @@ export const BitcoinReceiveScreen = ({
     network.bips[0]
       .fetchExternalAvailableAddress()
       .then((addressBackend: string) => setAddress(addressBackend))
-  }, [])
+  }, [network.bips])
 
   const shortedAddress = useMemo(() => shortAddress(address, 8), [address])
   return address ? (

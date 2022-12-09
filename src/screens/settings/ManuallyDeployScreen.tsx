@@ -1,6 +1,6 @@
 import Clipboard from '@react-native-community/clipboard'
 import { BigNumber, Transaction } from 'ethers'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   Linking,
   StyleSheet,
@@ -31,12 +31,14 @@ export const ManuallyDeployScreen = ({
   const [smartWalletDeployTx, setSmartWalletDeployTx] =
     useState<null | Transaction>(null)
 
+  const getInfo = useCallback(
+    () => wallet.smartWallet.signer.getBalance().then(setEoaBalance),
+    [wallet.smartWallet.signer],
+  )
+
   useEffect(() => {
     getInfo()
-  }, [])
-
-  const getInfo = () =>
-    wallet.smartWallet.signer.getBalance().then(setEoaBalance)
+  }, [getInfo])
 
   const deploy = async () => {
     setDeployError(null)
@@ -57,7 +59,9 @@ export const ManuallyDeployScreen = ({
         setIsDeploying(false)
       })
     } catch (error) {
-      setDeployError(error.toString())
+      if (error instanceof Error) {
+        setDeployError(error.toString())
+      }
       setIsDeploying(false)
     }
   }

@@ -1,11 +1,13 @@
-import useContainerStyles from './useContainerStyles'
+import { useMemo } from 'react'
+import { BigNumber } from 'ethers'
+
 import { balanceToUSD, balanceToDisplay } from 'lib/utils'
+
+import useContainerStyles from './useContainerStyles'
 import { IPrice } from 'src/subscriptions/types'
 import BalanceCardPresentationComponent from './BalanceCardPresentationComponent'
-import { BigNumber } from 'ethers'
 import { useAppSelector } from 'store/storeUtils'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
-import { useMemo } from 'react'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 
 interface IBalanceCardComponentProps {
@@ -67,11 +69,11 @@ export const BitcoinCardComponent = ({
   // Future TODO: should be set in the network constants if another coin is implemented
   const price = useMemo(() => {
     return prices.BTC ? balanceToUSD(balanceBigNumber, 8, prices.BTC.price) : ''
-  }, [balance, prices.BTC])
+  }, [prices.BTC, balanceBigNumber])
 
   const balanceFormatted = useMemo(
     () => balanceToDisplay(balanceBigNumber.toString(), 8, 4),
-    [balance],
+    [balanceBigNumber],
   )
   const handlePress = () => {
     onPress(contractAddress)

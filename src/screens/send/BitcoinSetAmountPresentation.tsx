@@ -3,7 +3,7 @@ import { colors } from '../../styles'
 import { sharedStyles as styles } from './sharedStyles'
 
 interface IBitcoinSetAmountPresentation {
-  handleAmountChange: () => void
+  handleAmountChange: (value: string) => void
   amountToPay: string
   error?: string
   available?: string

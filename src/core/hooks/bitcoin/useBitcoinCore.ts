@@ -1,4 +1,5 @@
 import { useMemo, useEffect, useCallback, useState, useRef } from 'react'
+
 import BIP39 from 'lib/bitcoin/BIP39'
 import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
 import { BitcoinNetworkWithBIPRequest } from 'lib/bitcoin/types'
@@ -62,8 +63,13 @@ export const useBitcoinCore = (
       networksObj[network.name] = bitcoinNetwork
       return bitcoinNetwork
     },
-    [BIP39Instance],
+    [BIP39Instance, networksObj, request],
   )
+
+  const onNoNetworksPresent = useCallback(() => {
+    BitcoinNetworkStore.addNewNetwork(bitcoinTestnet.name, bitcoinTestnet.bips)
+    refreshStoredNetworks()
+  }, [refreshStoredNetworks])
 
   const transformStoredNetworks = useCallback(
     (values: StoredBitcoinNetworkValue[]) => {
@@ -78,13 +84,8 @@ export const useBitcoinCore = (
 
       return { networksArr, networksObj }
     },
-    [mnemonic],
+    [networksObj, mnemonic, onNoNetworksPresent, transformNetwork],
   )
-
-  const onNoNetworksPresent = useCallback(() => {
-    BitcoinNetworkStore.addNewNetwork(bitcoinTestnet.name, bitcoinTestnet.bips)
-    refreshStoredNetworks()
-  }, [])
 
   useEffect(() => {
     if (storedNetworksValues.length < 1) {
@@ -95,7 +96,13 @@ export const useBitcoinCore = (
     if (transformedNetworks) {
       setNetworks(transformedNetworks)
     }
-  }, [storedNetworks, mnemonic])
+  }, [
+    storedNetworks,
+    mnemonic,
+    onNoNetworksPresent,
+    storedNetworksValues,
+    transformStoredNetworks,
+  ])
 
   return {
     networks: networks.networksArr,

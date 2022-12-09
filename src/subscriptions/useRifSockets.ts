@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import { IAbiEnhancer } from 'lib/abiEnhancer/AbiEnhancer'
 import { IRifWalletServicesSocket } from 'lib/rifWalletServices/RifWalletServicesSocket'
@@ -60,10 +60,10 @@ export const useRifSockets = ({
     }
 
     return () => rifServiceSocket?.disconnect()
-  }, [wallet])
+  }, [wallet, connect, dispatch, rifServiceSocket])
 
   // Disconnect from the rifServiceSocket when the app goes to the background
-  const onWalletAppActiveChange = () => {
+  const onWalletAppActiveChange = useCallback(() => {
     if (!appActive) {
       return rifServiceSocket?.disconnect()
     }
@@ -71,10 +71,11 @@ export const useRifSockets = ({
     if (wallet && rifServiceSocket && !rifServiceSocket.isConnected()) {
       connect()
     }
-  }
+  }, [appActive, connect, rifServiceSocket, wallet])
+
   useEffect(() => {
     onWalletAppActiveChange()
-  }, [appActive])
+  }, [onWalletAppActiveChange])
 
   return null
 }

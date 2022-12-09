@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Text, TextInput, View } from 'react-native'
 import Clipboard from '@react-native-community/clipboard'
 import { TouchableOpacity } from 'react-native-gesture-handler'
@@ -40,6 +40,80 @@ export const AddressInput = ({
   const [domainFound, setDomainFound] = useState<string>('')
   const [addressResolved, setAddressResolved] = useState<string>('')
 
+  // status
+  const [status, setStatus] = useState<{
+    type: 'READY' | 'INFO' | 'ERROR' | 'CHECKSUM'
+    value?: string
+  }>({ type: 'READY' })
+
+  const handleChangeText = useCallback(
+    (inputText: string) => {
+      setStatus({ type: 'READY', value: '' })
+
+      const parsedString = decodeString(inputText)
+      const userInput = parsedString.address ? parsedString.address : inputText
+
+      setRecipient(userInput)
+      const newValidationMessage = validateAddress(userInput, chainId)
+
+      onChangeText(
+        userInput,
+        newValidationMessage === AddressValidationMessage.VALID,
+      )
+
+      if (!inputText) {
+        return
+      }
+
+      switch (newValidationMessage) {
+        case AddressValidationMessage.DOMAIN:
+          setStatus({
+            type: 'INFO',
+            value: 'Getting address for domain...',
+          })
+
+          rnsResolver
+            .addr(userInput)
+            .then((address: string) => {
+              setDomainFound(userInput)
+              setAddressResolved(address)
+              setStatus({
+                type: 'INFO',
+                value: 'RNS domain associated with this address',
+              })
+
+              // call parent with the resolved address
+              onChangeText(
+                address,
+                validateAddress(address, chainId) ===
+                  AddressValidationMessage.VALID,
+              )
+            })
+            .catch(_e =>
+              setStatus({
+                type: 'ERROR',
+                value: `Could not get address for ${inputText.toLowerCase()}`,
+              }),
+            )
+          break
+        case AddressValidationMessage.INVALID_CHECKSUM:
+          setStatus({
+            type: 'CHECKSUM',
+            value: 'The checksum is invalid.',
+          })
+          break
+        case AddressValidationMessage.INVALID_ADDRESS:
+          setStatus({
+            type: 'ERROR',
+            value: 'Invalid address',
+          })
+          onChangeText(userInput, false)
+          break
+      }
+    },
+    [chainId, onChangeText],
+  )
+
   useEffect(() => {
     setRecipient(initialValue)
     if (initialValue) {
@@ -47,78 +121,7 @@ export const AddressInput = ({
     } else {
       onChangeText(initialValue, isValidChecksumAddress(initialValue, chainId))
     }
-  }, [])
-
-  // status
-  const [status, setStatus] = useState<{
-    type: 'READY' | 'INFO' | 'ERROR' | 'CHECKSUM'
-    value?: string
-  }>({ type: 'READY' })
-
-  const handleChangeText = (inputText: string) => {
-    setStatus({ type: 'READY', value: '' })
-
-    const parsedString = decodeString(inputText)
-    const userInput = parsedString.address ? parsedString.address : inputText
-
-    setRecipient(userInput)
-    const newValidationMessage = validateAddress(userInput, chainId)
-
-    onChangeText(
-      userInput,
-      newValidationMessage === AddressValidationMessage.VALID,
-    )
-
-    if (!inputText) {
-      return
-    }
-
-    switch (newValidationMessage) {
-      case AddressValidationMessage.DOMAIN:
-        setStatus({
-          type: 'INFO',
-          value: 'Getting address for domain...',
-        })
-
-        rnsResolver
-          .addr(userInput)
-          .then((address: string) => {
-            setDomainFound(userInput)
-            setAddressResolved(address)
-            setStatus({
-              type: 'INFO',
-              value: 'RNS domain associated with this address',
-            })
-
-            // call parent with the resolved address
-            onChangeText(
-              address,
-              validateAddress(address, chainId) ===
-                AddressValidationMessage.VALID,
-            )
-          })
-          .catch(_e =>
-            setStatus({
-              type: 'ERROR',
-              value: `Could not get address for ${inputText.toLowerCase()}`,
-            }),
-          )
-        break
-      case AddressValidationMessage.INVALID_CHECKSUM:
-        setStatus({
-          type: 'CHECKSUM',
-          value: 'The checksum is invalid.',
-        })
-        break
-      case AddressValidationMessage.INVALID_ADDRESS:
-        setStatus({
-          type: 'ERROR',
-          value: 'Invalid address',
-        })
-        onChangeText(userInput, false)
-        break
-    }
-  }
+  }, [chainId, handleChangeText, initialValue, onChangeText])
 
   const handlePasteClick = () =>
     Clipboard.getString().then((value: string) => {

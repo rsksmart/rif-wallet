@@ -13,7 +13,10 @@ export const PinContainer = ({
     length => Array.from({ length }, () => ''),
     [],
   )
-  const defaultPinArray = useMemo(() => createPinArray(pinLength), [pinLength])
+  const defaultPinArray = useMemo(
+    () => createPinArray(pinLength),
+    [pinLength, createPinArray],
+  )
   const [pin, setPin] = useState<Array<string>>(defaultPinArray)
   const [position, setPosition] = useState<number>(0)
   const [error, setError] = useState<string | null>(null)
@@ -41,7 +44,7 @@ export const PinContainer = ({
       setError(null)
       onPinSubmit(parsedPin)
     } catch (errorProm) {
-      setError(errorProm.toString())
+      setError(errorProm instanceof Error ? errorProm.toString() : '')
       onPinReset()
     }
   }

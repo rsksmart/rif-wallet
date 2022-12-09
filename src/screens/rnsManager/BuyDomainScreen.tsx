@@ -1,26 +1,23 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { BigNumber, utils } from 'ethers'
-import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import moment from 'moment'
-
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
-import { colors } from 'src/styles'
-import { rnsManagerStyles } from './rnsManagerStyles'
-
-import { PrimaryButton } from 'src/components/button/PrimaryButton'
 
 import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
 import { ScreenWithWallet } from '../types'
-import { MediumText } from 'src/components'
-import addresses from './addresses.json'
+import { PrimaryButton } from 'components/button/PrimaryButton'
+import { MediumText } from 'components/index'
+import { AvatarIcon } from 'components/icons/AvatarIcon'
 import TitleStatus from './TitleStatus'
 import { TokenImage } from '../home/TokenImage'
-import { AvatarIcon } from '../../components/icons/AvatarIcon'
 import { errorHandler } from 'shared/utils'
+import { createRSKRegistrar } from './index'
+import { colors } from 'src/styles'
+import { rnsManagerStyles } from './rnsManagerStyles'
 
 type Props = RootStackScreenProps<rootStackRouteNames.BuyDomain> &
   ScreenWithWallet
@@ -28,6 +25,7 @@ type Props = RootStackScreenProps<rootStackRouteNames.BuyDomain> &
 export const BuyDomainScreen = ({ wallet, navigation, route }: Props) => {
   const { alias, domainSecret, duration } = route.params
   const fullAlias = alias + '.rsk'
+  const rskRegistrar = useMemo(() => createRSKRegistrar(wallet), [wallet])
 
   const expiryDate = moment(moment(), 'MM-DD-YYYY').add(duration, 'years')
 
@@ -35,13 +33,6 @@ export const BuyDomainScreen = ({ wallet, navigation, route }: Props) => {
   const [registerInProcess, setRegisterInProcess] = useState(false)
   const [domainPrice, setDomainPrice] = useState<BigNumber>()
   const [domainFiatPrice, setDomainFiatPrice] = useState<number>(0.0)
-
-  const rskRegistrar = new RSKRegistrar(
-    addresses.rskOwnerAddress,
-    addresses.fifsAddrRegistrarAddress,
-    addresses.rifTokenAddress,
-    wallet,
-  )
 
   useEffect(() => {
     setDomainPrice(undefined)
@@ -53,7 +44,7 @@ export const BuyDomainScreen = ({ wallet, navigation, route }: Props) => {
         setDomainFiatPrice(rifMockPrice * rifPrice)
       })
     }
-  }, [])
+  }, [alias, duration, rskRegistrar])
 
   const registerDomain = async (domain: string) => {
     try {
@@ -85,7 +76,7 @@ export const BuyDomainScreen = ({ wallet, navigation, route }: Props) => {
     <>
       <View style={rnsManagerStyles.profileHeader}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('SearchDomain')}
+          onPress={() => navigation.navigate(rootStackRouteNames.SearchDomain)}
           accessibilityLabel="search">
           <View style={rnsManagerStyles.backButton}>
             <MaterialIcon name="west" color="white" size={10} />

@@ -34,13 +34,13 @@ export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
 
   useEffect(() => {
     permissionHandler()
-  }, [])
+  }, [permissionHandler])
 
   useEffect(() => {
     if (barcodes && barcodes[0] && barcodes[0].rawValue) {
       onCodeRead(barcodes[0].rawValue)
     }
-  }, [barcodes])
+  }, [barcodes, onCodeRead])
 
   if (device == null) {
     return <ActivityIndicator size={'large'} />

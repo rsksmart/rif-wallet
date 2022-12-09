@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { StyleSheet, Text, TextInput, View } from 'react-native'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { convertTokenToUSD, sanitizeDecimalText } from '../../lib/utils'
+
+import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { convertTokenToUSD, sanitizeDecimalText } from 'lib/utils'
+
 import { colors } from '../../styles/colors'
 import { grid } from '../../styles/grid'
 import { balanceToString } from '../balances/BalancesScreen'
@@ -12,11 +14,11 @@ export interface ISetAmountComponent {
   usdAmount: number | undefined
 }
 
-const SetAmountComponent: React.FC<ISetAmountComponent> = ({
+const SetAmountComponent = ({
   setAmount,
   token,
   usdAmount,
-}) => {
+}: ISetAmountComponent) => {
   const [error, setError] = useState<string | null>(null)
   const [input, setInput] = useState<string>('')
 
@@ -52,7 +54,7 @@ const SetAmountComponent: React.FC<ISetAmountComponent> = ({
     setError(null)
     setInput('')
     setAmount('0', false)
-  }, [token])
+  }, [setAmount])
 
   return (
     <View>

@@ -1,6 +1,12 @@
 import { useNavigation } from '@react-navigation/core'
 import WalletConnect from '@walletconnect/client'
-import { useEffect, useState, createContext, ReactElement } from 'react'
+import {
+  useEffect,
+  useState,
+  createContext,
+  ReactElement,
+  useCallback,
+} from 'react'
 
 import { RIFWallet } from 'lib/core'
 import { WalletConnectAdapter } from 'lib/walletAdapters/WalletConnectAdapter'
@@ -58,56 +64,59 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
     eventsNames.forEach(x => wc.off(x))
   }
 
-  const subscribeToEvents = (
-    wc: WalletConnect,
-    adapter: WalletConnectAdapter,
-  ) => {
-    unsubscribeToEvents(wc)
-
-    wc.on('session_request', async (error, payload) => {
-      console.log('EVENT', 'session_request', error, payload)
-
-      if (error) {
-        throw error
-      }
-
-      navigation.navigate('WalletConnect' as never, { wcKey: wc.key } as never)
-    })
-
-    wc.on('call_request', async (error, payload) => {
-      console.log('EVENT', 'call_request', error, payload)
-      if (error) {
-        throw error
-      }
-      if (!adapter) {
-        throw new Error('Missing adapter')
-      }
-
-      const { id, method, params } = payload
-
-      adapter
-        .handleCall(method, params)
-        .then(result => wc?.approveRequest({ id, result }))
-        .catch((errorReason: string) =>
-          wc?.rejectRequest({ id, error: { message: errorReason } }),
-        )
-    })
-
-    wc.on('disconnect', async error => {
-      console.log('EVENT', 'disconnect', error)
-      if (error) {
-        throw error
-      }
-
+  const subscribeToEvents = useCallback(
+    (wc: WalletConnect, adapter: WalletConnectAdapter) => {
       unsubscribeToEvents(wc)
-      await deleteWCSession(wc.uri)
-      setConnections(prev => {
-        const result = { ...prev }
-        delete result[wc.key]
-        return result
+
+      wc.on('session_request', async (error, payload) => {
+        console.log('EVENT', 'session_request', error, payload)
+
+        if (error) {
+          throw error
+        }
+
+        navigation.navigate(
+          'WalletConnect' as never,
+          { wcKey: wc.key } as never,
+        )
       })
-    })
-  }
+
+      wc.on('call_request', async (error, payload) => {
+        console.log('EVENT', 'call_request', error, payload)
+        if (error) {
+          throw error
+        }
+        if (!adapter) {
+          throw new Error('Missing adapter')
+        }
+
+        const { id, method, params } = payload
+
+        adapter
+          .handleCall(method, params)
+          .then(result => wc?.approveRequest({ id, result }))
+          .catch((errorReason: string) =>
+            wc?.rejectRequest({ id, error: { message: errorReason } }),
+          )
+      })
+
+      wc.on('disconnect', async error => {
+        console.log('EVENT', 'disconnect', error)
+        if (error) {
+          throw error
+        }
+
+        unsubscribeToEvents(wc)
+        await deleteWCSession(wc.uri)
+        setConnections(prev => {
+          const result = { ...prev }
+          delete result[wc.key]
+          return result
+        })
+      })
+    },
+    [navigation],
+  )
 
   const handleApprove = async (wc: WalletConnect, wallet: RIFWallet) => {
     if (wc) {
@@ -137,42 +146,41 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
     }
   }
 
-  const createSession = (
-    wallet: RIFWallet,
-    uri: string,
-    session?: IWCSession,
-  ) => {
-    try {
-      const newConnector = new WalletConnect({
-        uri,
-        session,
-        clientMeta: {
-          description: 'RIF Wallet',
-          url: 'https://www.rifos.org/',
-          icons: [
-            'https://raw.githubusercontent.com/rsksmart/rif-scheduler-ui/develop/src/assets/logoColor.svg',
-          ],
-          name: 'RIF Wallet',
-        },
-      })
+  const createSession = useCallback(
+    (wallet: RIFWallet, uri: string, session?: IWCSession) => {
+      try {
+        const newConnector = new WalletConnect({
+          uri,
+          session,
+          clientMeta: {
+            description: 'RIF Wallet',
+            url: 'https://www.rifos.org/',
+            icons: [
+              'https://raw.githubusercontent.com/rsksmart/rif-scheduler-ui/develop/src/assets/logoColor.svg',
+            ],
+            name: 'RIF Wallet',
+          },
+        })
 
-      const adapter = new WalletConnectAdapter(wallet)
+        const adapter = new WalletConnectAdapter(wallet)
 
-      // needs to subscribe to events before createSession
-      // this is because we need the 'session_request' event
-      subscribeToEvents(newConnector, adapter)
+        // needs to subscribe to events before createSession
+        // this is because we need the 'session_request' event
+        subscribeToEvents(newConnector, adapter)
 
-      setConnections(prev => ({
-        ...prev,
-        [newConnector.key]: {
-          connector: newConnector,
-          address: wallet.address,
-        },
-      }))
-    } catch (error) {
-      console.error(error)
-    }
-  }
+        setConnections(prev => ({
+          ...prev,
+          [newConnector.key]: {
+            connector: newConnector,
+            address: wallet.address,
+          },
+        }))
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    [subscribeToEvents],
+  )
 
   useEffect(() => {
     const reconnectWCSession = async () => {
@@ -198,7 +206,7 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
     }
 
     reconnectWCSession()
-  }, [wallets])
+  }, [wallets, createSession])
 
   const initialContext: WalletConnectContextInterface = {
     connections,
