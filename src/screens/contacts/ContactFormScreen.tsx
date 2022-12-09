@@ -28,7 +28,7 @@ import { useAppDispatch } from 'store/storeUtils'
 import {
   addContact,
   editContact,
-} from 'store/slices/contactsSlice/contactsSlice'
+} from 'store/slices/contactsSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 

@@ -28,7 +28,7 @@ import { getContactsAsArrayAndSelected } from 'store/slices/contactsSlice/select
 import {
   deleteContactById,
   setSelectedContactById,
-} from 'store/slices/contactsSlice/contactsSlice'
+} from 'store/slices/contactsSlice'
 
 export type ContactsListScreenProps = CompositeScreenProps<
   ContactsStackScreenProps<contactsStackRouteNames.ContactsList>,
