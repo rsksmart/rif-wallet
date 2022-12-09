@@ -1,19 +1,13 @@
-import { View, StyleSheet, TouchableOpacity, Image } from 'react-native'
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 
 import { AddressCopyComponent } from 'components/copy/AddressCopyComponent'
-import { ProfileHandler } from './ProfileHandler'
-import { navigationContainerRef } from 'core/Core'
-import { IProfileStore } from 'storage/MainStorage'
-import { rootStackRouteNames } from 'navigation/rootNavigator'
-import { useAppSelector } from 'store/storeUtils'
+import { rootStackRouteNames } from 'src/navigation/rootNavigator'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { useAppSelector } from 'store/storeUtils'
+import { navigationContainerRef } from '../../core/Core'
+import { ProfileHandler } from './ProfileHandler'
 
-interface Props {
-  profile: IProfileStore
-  profileCreated: boolean
-}
-
-export const AppHeader = ({ profile, profileCreated }: Props) => {
+export const AppHeader = () => {
   const { wallet, chainId } = useAppSelector(selectActiveWallet)
 
   const openMenu = () => {
@@ -32,7 +26,7 @@ export const AppHeader = ({ profile, profileCreated }: Props) => {
           ...styles.column,
           ...styles.walletInfo,
         }}>
-        <ProfileHandler profile={profile} profileCreated={profileCreated} />
+        <ProfileHandler />
       </View>
       <View style={styles.column}>
         {wallet && (

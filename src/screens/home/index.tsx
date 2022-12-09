@@ -1,30 +1,31 @@
-import { useEffect, useState, useMemo } from 'react'
-import { Image, StyleSheet, View } from 'react-native'
-
-import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
-import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
-import { balanceToDisplay } from 'lib/utils'
-
-import { Paragraph } from 'components/index'
 import { toChecksumAddress } from 'components/address/lib'
 import { LoadingScreen } from 'components/loading/LoadingScreen'
+import { balanceToDisplay } from 'lib/utils'
+import { useEffect, useMemo, useState } from 'react'
+import { Image, StyleSheet, View } from 'react-native'
+
+import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
+import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+
+import { Paragraph } from 'components/index'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
+import { selectAccounts } from 'src/redux/slices/accountsSlice/selector'
 import { colors } from 'src/styles'
+import { selectAppState } from 'store/slices/appStateSlice/selectors'
+import { selectBalances } from 'store/slices/balancesSlice/selectors'
+import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
+import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import PortfolioComponent from './PortfolioComponent'
 import SelectedTokenComponent from './SelectedTokenComponent'
 import SendReceiveButtonComponent from './SendReceiveButtonComponent'
 import { getTokenColor } from './tokenColor'
 
-import { useAppSelector, useAppDispatch } from 'store/storeUtils'
-import { selectUsdPrices } from 'store/slices/usdPricesSlice'
-import { selectBalances } from 'store/slices/balancesSlice/selectors'
-import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
-import { selectAppState } from 'store/slices/appStateSlice/selectors'
-import { changeTopColor, selectActiveWallet } from 'store/slices/settingsSlice'
 import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
+import { changeTopColor, selectActiveWallet } from 'store/slices/settingsSlice'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 
 export const HomeScreen = ({
   navigation,
@@ -32,6 +33,7 @@ export const HomeScreen = ({
   const dispatch = useAppDispatch()
   const tokenBalances = useAppSelector(selectBalances)
   const prices = useAppSelector(selectUsdPrices)
+  const accounts = useAppSelector(selectAccounts)
   const { isSetup } = useAppSelector(selectAppState)
   const bitcoinCore = useBitcoinContext()
   const { activeWalletIndex, wallet, chainId } =
@@ -127,6 +129,12 @@ export const HomeScreen = ({
   if (!isSetup) {
     return <LoadingScreen />
   }
+
+  let accountName = 'account 1'
+  if (typeof activeWalletIndex === 'number') {
+    accountName =
+      accounts[activeWalletIndex]?.name || `account ${activeWalletIndex + 1}`
+  }
   return (
     <View style={styles.container}>
       <View style={{ ...styles.topColor, ...backGroundColor }} />
@@ -134,7 +142,7 @@ export const HomeScreen = ({
 
       <View style={styles.parent}>
         <SelectedTokenComponent
-          accountNumber={activeWalletIndex}
+          accountName={accountName}
           amount={selectedTokenAmount}
           change={0}
         />
@@ -148,7 +156,7 @@ export const HomeScreen = ({
         {balances.length === 0 ? (
           <>
             <Image
-              source={require('../../images/noBalance.png')}
+              source={require('src/images/noBalance.png')}
               style={styles.noBalance}
             />
             <Paragraph style={styles.text}>

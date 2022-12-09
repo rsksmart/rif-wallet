@@ -9,8 +9,7 @@ import { rnsResolver } from 'src/core/setup'
 import { decodeString } from 'src/lib/eip681/decodeString'
 import { colors, grid } from 'src/styles'
 import { SecondaryButton } from '../button/SecondaryButton'
-import { ContentPasteIcon, QRCodeIcon } from '../icons'
-import DeleteIcon from '../icons/DeleteIcon'
+import { ContentPasteIcon, QRCodeIcon, DeleteIcon } from '../icons'
 import { QRCodeScanner } from '../QRCodeScanner'
 import {
   AddressValidationMessage,

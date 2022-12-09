@@ -16,42 +16,39 @@ import {
 } from 'react-native'
 
 import { AvatarIcon } from 'src/components/icons/AvatarIcon'
-import { IProfileStore } from 'src/storage/MainStorage'
 import { MediumText } from 'src/components'
 import { PrimaryButton } from 'src/components/button/PrimaryButton'
 import { TextInputWithLabel } from 'src/components/input/TextInputWithLabel'
-import { emptyProfile } from 'src/core/hooks/useProfile'
 import { colors } from 'src/styles'
 import { fonts } from 'src/styles/fonts'
 import { RegularText } from 'src/components/typography'
-
-export type CreateProfileScreenProps = {
-  profile: IProfileStore
-  setProfile: (p: IProfileStore) => void
-  storeProfile: (p: IProfileStore) => Promise<void>
-  eraseProfile: () => Promise<void>
-}
-export const ProfileCreateScreen: React.FC<
-  RootStackScreenProps<'ProfileCreateScreen'> & CreateProfileScreenProps
-> = ({
-  route,
-  navigation,
-  profile,
+import { selectProfile } from 'src/redux/slices/profileSlice/selector'
+import {
+  deleteProfile,
   setProfile,
-  storeProfile,
-  eraseProfile,
-}) => {
-  const editProfile = route.params.editProfile
-  const [localProfile, setLocalProfile] = useState<IProfileStore>(profile)
-  const fullAlias = `${profile.alias}.rsk`
+} from 'src/redux/slices/profileSlice/profileSlice'
+import { IProfileStore } from 'src/redux/slices/profileSlice/types'
+import { useAppDispatch, useAppSelector } from 'src/redux/storeUtils'
+
+export const ProfileCreateScreen: React.FC<
+  RootStackScreenProps<'ProfileCreateScreen'>
+> = ({ route, navigation }) => {
+  const editProfile = route.params?.editProfile
+  const dispatch = useAppDispatch()
+  const profile = useAppSelector(selectProfile)
+  const emptyProfile = { alias: '', email: '', phone: '' }
+  const [localProfile, setLocalProfile] = useState<IProfileStore>(
+    profile || emptyProfile,
+  )
+  const fullAlias = profile ? `${profile.alias}.rsk` : ''
 
   const createProfile = async () => {
-    await storeProfile({ ...localProfile, alias: profile.alias })
+    dispatch(setProfile({ ...localProfile, alias: profile?.alias || '' }))
     navigation.navigate(rootStackRouteNames.Home)
   }
 
   const deleteAlias = async () => {
-    await eraseProfile()
+    dispatch(deleteProfile())
     navigation.navigate(rootStackRouteNames.Home)
   }
 
@@ -88,7 +85,7 @@ export const ProfileCreateScreen: React.FC<
         </View>
         <View style={styles.bodyContainer}>
           <View style={styles.profileImageContainer}>
-            {profile.alias ? (
+            {profile?.alias ? (
               <AvatarIcon value={fullAlias} size={80} />
             ) : (
               <Image
@@ -157,7 +154,7 @@ export const ProfileCreateScreen: React.FC<
               onPress={createProfile}
               accessibilityLabel="create"
               title={editProfile ? 'save' : 'create'}
-              disabled={localProfile === emptyProfile}
+              disabled={!profile}
             />
           </View>
         </View>

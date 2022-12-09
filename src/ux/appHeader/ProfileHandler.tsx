@@ -2,17 +2,15 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { navigationContainerRef } from 'src/core/Core'
 import { rootStackRouteNames } from 'src/navigation/rootNavigator'
+import { selectProfile } from 'src/redux/slices/profileSlice/selector'
+import { useAppSelector } from 'src/redux/storeUtils'
 import { RegularText } from '../../components'
 import { AvatarIcon } from '../../components/icons/AvatarIcon'
-import { IProfileStore } from '../../storage/MainStorage'
 import { colors } from '../../styles'
 
-interface Props {
-  profile: IProfileStore
-  profileCreated: boolean
-}
-
-export const ProfileHandler = ({ profile, profileCreated }: Props) => {
+export const ProfileHandler = () => {
+  const profile = useAppSelector(selectProfile)
+  const profileCreated = !!profile
   return (
     <TouchableOpacity
       style={styles.profileHandler}
@@ -22,7 +20,7 @@ export const ProfileHandler = ({ profile, profileCreated }: Props) => {
           profileCreated
             ? rootStackRouteNames.ProfileDetailsScreen
             : rootStackRouteNames.ProfileCreateScreen,
-          profileCreated ? undefined : { editProfile: true },
+          { editProfile: profileCreated },
         )
       }>
       {profile?.alias ? (

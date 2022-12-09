@@ -1,7 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack'
+import JailMonkey from 'jail-monkey'
 import { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import JailMonkey from 'jail-monkey'
 
 import { InjectSelectedWallet } from '../../Context'
 
@@ -11,7 +11,6 @@ import { colors } from '../../styles'
 import { AppFooterMenu } from '../../ux/appFooter'
 import { AppHeader } from '../../ux/appHeader'
 
-import { emptyProfile, useProfile } from 'core/hooks/useProfile'
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import { RootStackParamList, rootStackRouteNames } from './types'
 import { hasKeys, hasPin } from 'storage/MainStorage'
@@ -24,7 +23,6 @@ const InjectedScreens = {
   ManuallyDeployScreen: InjectSelectedWallet(Screens.ManuallyDeployScreen),
   WalletConnectScreen: InjectSelectedWallet(Screens.WalletConnectScreen),
   ScanQRScreen: InjectSelectedWallet(Screens.ScanQRScreen),
-  RNSManagerScreen: InjectSelectedWallet(Screens.RNSManagerScreen),
   SearchDomainScreen: InjectSelectedWallet(Screens.SearchDomainScreen),
   RequestDomainScreen: InjectSelectedWallet(Screens.RequestDomainScreen),
   RegisterDomainScreen: InjectSelectedWallet(Screens.RegisterDomainScreen),
@@ -48,9 +46,6 @@ interface Props {
 }
 
 export const RootNavigationComponent = ({ currentScreen }: Props) => {
-  const { profile, setProfile, storeProfile, eraseProfile, profileCreated } =
-    useProfile(emptyProfile)
-
   const isDeviceRooted = JailMonkey.isJailBroken()
   const [isWarningVisible, setIsWarningVisible] = useState(isDeviceRooted)
 
@@ -65,9 +60,7 @@ export const RootNavigationComponent = ({ currentScreen }: Props) => {
 
   return (
     <View style={styles.parent}>
-      {appIsSetup && (
-        <AppHeader profile={profile} profileCreated={profileCreated} />
-      )}
+      {appIsSetup && <AppHeader />}
       <RootStack.Navigator initialRouteName={initialRoute}>
         <RootStack.Screen
           name={rootStackRouteNames.Home}
@@ -139,17 +132,6 @@ export const RootNavigationComponent = ({ currentScreen }: Props) => {
           component={Screens.ShowMnemonicScreen}
           options={sharedOptions}
         />
-        <RootStack.Screen
-          name={rootStackRouteNames.RNSManager}
-          options={sharedOptions}>
-          {props => (
-            <InjectedScreens.RNSManagerScreen
-              {...props}
-              profile={profile}
-              setProfile={setProfile}
-            />
-          )}
-        </RootStack.Screen>
 
         <RootStack.Screen
           name={rootStackRouteNames.SearchDomain}
@@ -170,16 +152,9 @@ export const RootNavigationComponent = ({ currentScreen }: Props) => {
 
         <RootStack.Screen
           name={rootStackRouteNames.AliasBought}
-          options={sharedOptions}>
-          {props => (
-            <InjectedScreens.AliasBoughtScreen
-              {...props}
-              profile={profile}
-              setProfile={setProfile}
-            />
-          )}
-        </RootStack.Screen>
-
+          component={InjectedScreens.AliasBoughtScreen}
+          options={sharedOptions}
+        />
         <RootStack.Screen
           name={rootStackRouteNames.RegisterDomain}
           component={InjectedScreens.RegisterDomainScreen}
@@ -213,24 +188,14 @@ export const RootNavigationComponent = ({ currentScreen }: Props) => {
         />
         <RootStack.Screen
           name={rootStackRouteNames.ProfileCreateScreen}
-          options={sharedOptions}>
-          {props => (
-            <Screens.ProfileCreateScreen
-              {...props}
-              profile={profile}
-              setProfile={setProfile}
-              storeProfile={storeProfile}
-              eraseProfile={eraseProfile}
-            />
-          )}
-        </RootStack.Screen>
+          component={Screens.ProfileCreateScreen}
+          options={sharedOptions}
+        />
         <RootStack.Screen
           name={rootStackRouteNames.ProfileDetailsScreen}
-          options={sharedOptions}>
-          {props => (
-            <Screens.ProfileDetailsScreen {...props} profile={profile} />
-          )}
-        </RootStack.Screen>
+          component={Screens.ProfileDetailsScreen}
+          options={sharedOptions}
+        />
         <RootStack.Screen
           name={rootStackRouteNames.FeedbackScreen}
           component={Screens.FeedbackScreen}

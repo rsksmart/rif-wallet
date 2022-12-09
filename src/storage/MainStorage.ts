@@ -1,21 +1,9 @@
 import { IContact } from 'src/screens/contacts/ContactsContext'
 import { MMKVStorage } from './MMKVStorage'
 
-export interface IAccount {
-  name: string
-}
-
-export interface IProfileStore {
-  alias: string
-  phone: string
-  email: string
-  accounts: IAccount[]
-}
-
 export const MainStorage = new MMKVStorage()
 
 const pin = 'PIN'
-const profile = 'PROFILE'
 const keyManagement = 'KEY_MANAGEMENT'
 const keyVerificationReminder = 'KEY_VERIFICATION_REMINDER'
 const contacts = 'CONTACTS'
@@ -25,16 +13,6 @@ export const hasPin = () => MainStorage.has(pin)
 export const getPin = (): string => MainStorage.get(pin)
 export const deletePin = () => MainStorage.delete(pin)
 export const savePin = (pinValue: string) => MainStorage.set(pin, pinValue)
-
-// profile functions
-export const hasProfile = () => MainStorage.has(profile)
-export const getProfile = () => {
-  const profileReturned = MainStorage.get(profile) || {}
-  return profileReturned
-}
-export const deleteProfile = () => MainStorage.delete(profile)
-export const saveProfile = (profileValue: IProfileStore) =>
-  MainStorage.set(profile, JSON.stringify(profileValue))
 
 //keys functions
 export const hasKeys = () => MainStorage.has(keyManagement)

@@ -1,30 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { getProfile, IAccount, IProfileStore } from 'src/storage/MainStorage'
+import { IProfileStore } from './types'
 
-const emptyProfile: IProfileStore = {
-  alias: '',
-  phone: '',
-  email: '',
-  accounts: [{ name: '' }],
-}
+const initialState = null as IProfileStore | null
 
 const profileSlice = createSlice({
   name: 'profile',
-  initialState: getProfile() || emptyProfile,
+  initialState,
   reducers: {
-    setProfile: (_state, action: PayloadAction<IProfileStore>) => ({
-      ...action.payload,
-    }),
-    setAccount: (
-      state,
-      action: PayloadAction<{ index: number; account: IAccount }>,
-    ) => {
-      state.accounts[action.payload.index] = action.payload.account
-      return state
-    },
+    setProfile: (_state, action: PayloadAction<IProfileStore>) =>
+      action.payload,
+    deleteProfile: () => null,
   },
 })
 
-export const { setProfile, setAccount } = profileSlice.actions
+export const { setProfile, deleteProfile } = profileSlice.actions
 
 export const profileReducer = profileSlice.reducer

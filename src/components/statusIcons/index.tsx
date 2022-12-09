@@ -1,5 +1,5 @@
 import { CheckIcon } from '../icons/CheckIcon'
-import DeleteIcon from '../icons/DeleteIcon'
+import { DeleteIcon } from '../icons'
 import ScheduleIcon from '../icons/ScheduleIcon'
 
 export const STATUS_MAP = {

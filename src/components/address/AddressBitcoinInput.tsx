@@ -7,12 +7,11 @@ import Clipboard from '@react-native-community/clipboard'
 import { QRCodeScanner } from '../QRCodeScanner'
 import { sharedAddressStyles as styles } from './sharedAddressStyles'
 import { colors } from '../../styles'
-import { ContentPasteIcon, QRCodeIcon } from '../icons'
+import { ContentPasteIcon, QRCodeIcon, DeleteIcon } from '../icons'
 import { isDomain } from './lib'
 import { rnsResolver } from '../../core/setup'
 import { isBitcoinAddressValid } from 'lib/bitcoin/utils'
 import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
-import DeleteIcon from '../icons/DeleteIcon'
 import { MediumText } from '../typography'
 
 interface AddressInputProps {
