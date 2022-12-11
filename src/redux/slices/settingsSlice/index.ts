@@ -16,6 +16,7 @@ import {
 import { colors } from 'src/styles'
 import {
   AddNewWalletAction,
+  ChainTypeEnum,
   CreateFirstWalletAction,
   OnRequestAction,
   SetKeysAction,
@@ -116,7 +117,7 @@ const initialState: SettingsSlice = {
   walletsIsDeployed: null,
   selectedWallet: '',
   loading: false,
-  chainId: 31,
+  chainType: ChainTypeEnum.TESTNET,
 }
 
 const settingsSlice = createSlice({
@@ -132,8 +133,8 @@ const settingsSlice = createSlice({
     closeRequest: state => {
       state.requests = []
     },
-    setChainId: (state, { payload }: PayloadAction<number>) => {
-      state.chainId = payload
+    setChainType: (state, { payload }: PayloadAction<ChainTypeEnum>) => {
+      state.chainType = payload
     },
     setPinState: (_, { payload }: PayloadAction<string>) => {
       savePin(payload)
@@ -221,7 +222,7 @@ export const {
   setKeysState,
   setPinState,
   setNewWallet,
-  setChainId,
+  setChainType,
   setWalletIsDeployed,
   removeKeysFromState,
   resetKeysAndPin,

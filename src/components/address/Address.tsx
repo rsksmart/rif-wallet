@@ -1,32 +1,42 @@
 import React from 'react'
 import { Linking, Text } from 'react-native'
 import Clipboard from '@react-native-community/clipboard'
-import { shortAddress } from '../../lib/utils'
+import { getChainIdByType, shortAddress } from '../../lib/utils'
 import { Paragraph } from '../typography'
 import { toChecksumAddress } from './lib'
 import { CompassIcon, CopyIcon } from '../icons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { getWalletSetting, SETTINGS } from 'src/core/config'
+import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 
-export const getAddressDisplayText = (inputAddress: string, chainId = 31) => {
-  const checksumAddress = toChecksumAddress(inputAddress, chainId)
+export const getAddressDisplayText = (
+  inputAddress: string,
+  chainType: ChainTypeEnum,
+) => {
+  const checksumAddress = toChecksumAddress(
+    inputAddress,
+    getChainIdByType(chainType),
+  )
   const displayAddress = shortAddress(checksumAddress)
   return { checksumAddress, displayAddress }
 }
 
-export const Address: React.FC<{ chainId?: number; testID?: string }> = ({
+export const Address: React.FC<{
+  chainType?: ChainTypeEnum
+  testID?: string
+}> = ({
   children,
-  chainId = 31, //RSK Testnet: 31
+  chainType = ChainTypeEnum.TESTNET, //RSK Testnet: 31
   testID,
 }) => {
   const inputAddress = children as string
 
   const { displayAddress, checksumAddress } = getAddressDisplayText(
     inputAddress,
-    chainId,
+    chainType,
   )
 
-  const explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainId)
+  const explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainType)
 
   return (
     <Paragraph>

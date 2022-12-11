@@ -36,6 +36,10 @@ export interface SetNewWalletAction {
 type RequestMixed = Request & BitcoinRequest
 export type Requests = RequestMixed[]
 
+export enum ChainTypeEnum {
+  TESTNET = 'TESTNET',
+  MAINNET = 'MAINNET',
+}
 export interface SettingsSlice {
   requests: Requests
   topColor: ColorValue
@@ -44,5 +48,5 @@ export interface SettingsSlice {
   walletsIsDeployed: WalletsIsDeployed | null
   selectedWallet: string
   loading: boolean
-  chainId: number | null
+  chainType: ChainTypeEnum
 }

@@ -1,5 +1,6 @@
-import { BigNumberish, BigNumber, FixedNumber } from 'ethers'
+import { BigNumber, BigNumberish, FixedNumber } from 'ethers'
 import moment from 'moment'
+import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 
 export function shortAddress(address?: string, trimAmount?: number): string {
   if (!address) {
@@ -18,6 +19,16 @@ export const roundBalance = (num: number, decimalPlaces?: number) => {
   return Math.round(num * decimals) / decimals
 }
 
+export const getChainIdByType = (chainType: ChainTypeEnum) => {
+  switch (chainType) {
+    case ChainTypeEnum.MAINNET:
+      return 30
+    case ChainTypeEnum.TESTNET:
+      return 31
+    default:
+      return 31
+  }
+}
 export const formatTimestamp = (timestamp: number) => {
   const a = new Date(timestamp * 1000)
   const months = [
