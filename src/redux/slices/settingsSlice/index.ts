@@ -26,8 +26,9 @@ import {
 } from './types'
 import {
   createRIFWalletFactory,
-  networkId as defaultNetwordId,
+  networkType as defaultNetworkType,
 } from 'core/setup'
+import { getChainIdByType } from 'lib/utils'
 // import { createAppAsyncThunk } from 'store/storeUtils'
 
 export const createWallet = createAsyncThunk(
@@ -43,7 +44,7 @@ export const createWallet = createAsyncThunk(
       rifWalletsIsDeployedDictionary,
     } = await createKMS(
       rifWalletFactory,
-      networkId ? networkId : defaultNetwordId,
+      networkId ? networkId : getChainIdByType(defaultNetworkType),
     )(mnemonic)
 
     thunkAPI.dispatch(

@@ -28,8 +28,8 @@ type Props = {
 }
 
 export const TransactionInfo = ({ transaction }: Props) => {
-  const { chainId } = useAppSelector(selectActiveWallet)
-  const explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainId)
+  const { chainType } = useAppSelector(selectActiveWallet)
+  const explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainType)
 
   if (transaction.status === 'USER_CONFIRM' || !transaction.hash) {
     return (
