@@ -14,12 +14,12 @@ import {
 } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { PrimaryButton } from 'components/button'
 import {
   contactsStackRouteNames,
   ContactsStackScreenProps,
-} from 'src/navigation/contactsNavigator'
-import { AddressInput } from 'src/components'
+} from 'navigation/contactsNavigator'
+import { AddressInput } from 'components/address'
 import { colors, grid } from 'src/styles'
 import { fonts } from 'src/styles/fonts'
 import { setOpacity } from '../home/tokenColor'

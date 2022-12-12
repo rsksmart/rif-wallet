@@ -17,8 +17,8 @@ export const ContactsNavigation = () => {
       />
       <Stack.Screen
         name={contactsStackRouteNames.ContactForm}
-        options={screensOptions}
         component={ContactFormScreen}
+        options={screensOptions}
       />
     </Stack.Navigator>
   )
