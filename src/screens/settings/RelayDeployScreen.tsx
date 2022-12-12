@@ -1,153 +1,103 @@
-import Clipboard from '@react-native-community/clipboard'
+import { useState } from 'react'
+import { StyleSheet, View } from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler'
 import { BigNumber, Transaction } from 'ethers'
-import { useEffect, useState } from 'react'
 import {
-  Linking,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  ScrollView,
-} from 'react-native'
+  TransactionResponse,
+  TransactionReceipt,
+} from '@ethersproject/abstract-provider'
 
-import { CopyIcon } from 'components/icons'
-import { PrimaryButton } from 'components/button/PrimaryButton'
-import { SecondaryButton } from 'components/button/SecondaryButton'
-import { useAppDispatch } from 'store/storeUtils'
-import { setWalletIsDeployed } from 'store/slices/settingsSlice'
 import { ScreenWithWallet } from '../types'
-import { colors, grid } from '../../styles'
+import { colors } from 'src/styles'
+import { RIF_TOKEN_ADDRESS_TESTNET } from 'src/lib/relay-sdk/helpers'
+import { MediumText, SecondaryButton, SemiBoldText } from 'src/components'
+import { setWalletIsDeployed } from 'store/slices/settingsSlice'
+import { useAppDispatch } from 'src/redux/storeUtils'
 
-export const ManuallyDeployScreen = ({
+export const RelayDeployScreen = ({
   wallet,
   isWalletDeployed,
 }: ScreenWithWallet) => {
   const dispatch = useAppDispatch()
-  const [eoaBalance, setEoaBalance] = useState<BigNumber>(BigNumber.from(0))
   const [isDeploying, setIsDeploying] = useState<boolean>(false)
   const [deployError, setDeployError] = useState<string | null>(null)
-  const [isDeployed, setIsDeployed] = useState<boolean>(isWalletDeployed)
 
   const [smartWalletDeployTx, setSmartWalletDeployTx] =
     useState<null | Transaction>(null)
-
-  useEffect(() => {
-    getInfo()
-  }, [])
-
-  const getInfo = () =>
-    wallet.smartWallet.signer.getBalance().then(setEoaBalance)
 
   const deploy = async () => {
     setDeployError(null)
     setIsDeploying(true)
 
-    try {
-      const txPromise = await wallet.smartWalletFactory.deploy()
-      setSmartWalletDeployTx(txPromise)
-      await txPromise.wait()
-      await wallet.smartWalletFactory.isDeployed().then(async result => {
-        setIsDeployed(result)
-        dispatch(
-          setWalletIsDeployed({
-            address: wallet.smartWallet.address,
-            value: result,
-          }),
-        )
+    const freePayment = {
+      tokenContract: RIF_TOKEN_ADDRESS_TESTNET,
+      tokenAmount: BigNumber.from(0),
+    }
+
+    wallet
+      .deploySmartWallet(freePayment)
+      .then((result: TransactionResponse) => {
+        setSmartWalletDeployTx(result)
+
+        result.wait().then((reciept: TransactionReceipt) => {
+          if (reciept.status) {
+            dispatch(
+              setWalletIsDeployed({
+                address: wallet.smartWallet.address,
+                value: true,
+              }),
+            )
+          } else {
+            setDeployError('Tx failed, could not deploy smart wallet')
+          }
+          setIsDeploying(false)
+        })
+      })
+      .catch((error: Error) => {
+        setDeployError(error.toString())
         setIsDeploying(false)
       })
-    } catch (error) {
-      setDeployError(error.toString())
-      setIsDeploying(false)
-    }
   }
-
-  const hasBalance = eoaBalance.toString() !== '0'
 
   return (
     <ScrollView style={styles.background}>
-      <Text style={styles.heading}>Deploy Smart Wallet</Text>
+      <SemiBoldText style={styles.text}>Deploy Smart Wallet</SemiBoldText>
 
-      {isDeployed && (
-        <Text style={styles.text}>Your smart wallet has been deployed!</Text>
+      {isWalletDeployed && (
+        <View>
+          <MediumText style={styles.text}>
+            Your smart wallet has been deployed!
+          </MediumText>
+        </View>
       )}
 
-      {!isDeployed && (
+      {!isWalletDeployed && (
         <View>
-          <Text style={styles.text}>
-            This is a temporary step that is needed before RIF Relay Server is
-            ready.
-          </Text>
-          <Text style={styles.heading}>Step 1: Fund your EOA account</Text>
-          <View>
-            <Text style={styles.text}>
-              Fund your Externally Owned Account (EOA) with rBTC. Copy your
-              address below and paste it in the rBTC Faucet.
-            </Text>
+          <MediumText style={styles.text}>
+            Your smart wallet is a smart contract that sits on the RSK network.
+            This first step will deploy the contract.
+          </MediumText>
 
-            <View style={grid.row}>
-              <View style={grid.column3}>
-                <Text style={styles.text}>Address:</Text>
-              </View>
-
-              <View style={grid.column8}>
-                <Text style={styles.text}>{wallet.address}</Text>
-              </View>
-              <View style={grid.column1}>
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={() => Clipboard.setString(wallet.address)}
-                  accessibilityLabel="copy">
-                  <CopyIcon width={25} height={25} color="white" />
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            <View style={grid.row}>
-              <View style={grid.column3}>
-                <Text style={styles.text}>Balance:</Text>
-              </View>
-              <View style={grid.column8}>
-                <Text style={styles.text}>
-                  {eoaBalance ? eoaBalance.toString() : '0'}
-                </Text>
-              </View>
-            </View>
-
-            {!hasBalance && (
-              <SecondaryButton
-                onPress={() => Linking.openURL('https://faucet.rsk.co/')}
-                style={styles.button}
-                title="Open the RBTC Faucet in your browser"
-                accessibilityLabel="faucet"
-              />
-            )}
-          </View>
-
-          <Text style={styles.heading}>Step 2: Deploy the wallet</Text>
-          <PrimaryButton
-            disabled={!hasBalance}
+          <SecondaryButton
+            title="Deploy my Wallet"
             onPress={deploy || isDeploying}
-            style={!hasBalance ? styles.buttonDisabled : styles.button}
-            title="Deploy Wallet"
+            style={isDeploying ? styles.buttonDisabled : styles.button}
             accessibilityLabel="deploy"
           />
 
-          {isDeploying && <Text style={styles.text}>Deploying...</Text>}
-
-          {smartWalletDeployTx && (
-            <TouchableOpacity
-              onPress={() =>
-                Clipboard.setString(smartWalletDeployTx.hash || '')
-              }
-              accessibilityLabel="explorer">
-              <Text style={styles.text}>
-                {smartWalletDeployTx.hash || ''}
-                <CopyIcon />
-              </Text>
-            </TouchableOpacity>
+          {isDeploying && (
+            <View>
+              <MediumText style={styles.text}>Deploying...</MediumText>
+              <MediumText style={styles.text}>Status: Pending</MediumText>
+              <MediumText style={styles.text}>
+                Hash: {smartWalletDeployTx?.hash}
+              </MediumText>
+            </View>
           )}
-          {deployError && <Text style={styles.text}>{deployError}</Text>}
+
+          {deployError && (
+            <MediumText style={styles.text}>{deployError}</MediumText>
+          )}
         </View>
       )}
     </ScrollView>

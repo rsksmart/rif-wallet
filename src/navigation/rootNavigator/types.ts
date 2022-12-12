@@ -24,7 +24,7 @@ export enum rootStackRouteNames {
   SignMessage = 'SignMessage',
   SignTypedData = 'SignTypedData',
   TransactionReceived = 'TransactionReceived',
-  ManuallyDeployScreen = 'ManuallyDeployScreen',
+  RelayDeployScreen = 'RelayDeployScreen',
   CreateKeysUX = 'CreateKeysUX',
   ShowMnemonicScreen = 'ShowMnemonicScreen',
   WalletConnect = 'WalletConnect',
@@ -69,7 +69,7 @@ export type RootStackParamList = {
   [rootStackRouteNames.SignMessage]: undefined
   [rootStackRouteNames.SignTypedData]: undefined
   [rootStackRouteNames.TransactionReceived]: undefined
-  [rootStackRouteNames.ManuallyDeployScreen]: undefined
+  [rootStackRouteNames.RelayDeployScreen]: undefined
   [rootStackRouteNames.CreateKeysUX]:
     | NavigatorScreenParams<CreateKeysStackParamList>
     | undefined

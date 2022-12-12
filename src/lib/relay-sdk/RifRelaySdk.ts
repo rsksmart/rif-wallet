@@ -4,7 +4,7 @@ import {
   TransactionRequest,
 } from '@ethersproject/abstract-provider'
 import axios, { AxiosResponse } from 'axios'
-import { ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 
 import { SmartWallet } from '../core/SmartWallet'
 import {
@@ -18,7 +18,7 @@ import {
   getDomainSeparator,
   INTERNAL_TRANSACTION_ESTIMATE_CORRECTION,
   MAX_RELAY_NONCE_GAP,
-  TWO_RIF,
+  validUntilTime,
   ZERO_ADDRESS,
 } from './helpers'
 
@@ -78,7 +78,10 @@ export class RIFRelaySDK {
   ): Promise<RelayRequest> => {
     const gasPrice = tx.gasPrice || (await this.provider.getGasPrice())
     const nonce = await this.smartWallet.nonce()
-    const tokenGas = await this.estimateTokenTransferCost()
+    const tokenGas = await this.estimateTokenTransferCost(
+      payment.tokenContract,
+      payment.tokenAmount,
+    )
 
     const estimated = await this.provider.estimateGas({ ...tx, gasPrice })
     const correction =
@@ -99,6 +102,7 @@ export class RIFRelaySDK {
         tokenContract: payment.tokenContract,
         tokenAmount: payment.tokenAmount.toString(),
         tokenGas,
+        validUntilTime: validUntilTime().toString(),
       },
       relayData: {
         gasPrice: gasPrice.toString(),
@@ -154,7 +158,10 @@ export class RIFRelaySDK {
   ): Promise<DeployRequest> => {
     const gasPrice = await this.provider.getGasPrice()
     const nonce = await this.smartWalletFactory.getNonce(this.eoaAddress)
-    const tokenGas = await this.estimateTokenTransferCost()
+    const tokenGas = await this.estimateTokenTransferCost(
+      payment.tokenContract,
+      payment.tokenAmount,
+    )
 
     const deployRequest: DeployRequest = {
       request: {
@@ -169,6 +176,7 @@ export class RIFRelaySDK {
         tokenGas,
         recoverer: ZERO_ADDRESS,
         index: '0',
+        validUntilTime: validUntilTime().toString(),
       },
       relayData: {
         gasPrice: gasPrice.toString(),
@@ -207,14 +215,21 @@ export class RIFRelaySDK {
             signature,
           }
 
+          const modifyType = {
+            ...request,
+            request: {
+              ...request.request,
+              validUntilTime: request.request.validUntilTime.toString(),
+            },
+          }
+
           return axios
             .post(`${this.sdkConfig.relayServer}/relay`, {
-              relayRequest: request,
+              relayRequest: modifyType,
               metadata,
             })
             .then((response: AxiosResponse) => {
               if (response.data.error) {
-                console.log('axis fail', response)
                 return reject(response.data.error)
               }
 
@@ -227,8 +242,19 @@ export class RIFRelaySDK {
 
   // @todo: We will get this value from the RIF relay server, but for now, we will overpay
   // to ensure transaction goes through:
-  estimateTransactionCost = () => Promise.resolve(TWO_RIF)
+  estimateTransactionCost = () => Promise.resolve(BigNumber.from(0))
 
   // the cost to send the token payment from the smartwallet to the fee collector:
-  estimateTokenTransferCost = () => Promise.resolve('16889')
+  estimateTokenTransferCost = (tokenAddress: string, feeAmount: BigNumber) => {
+    const feesReceiver = this.sdkConfig.feesReceiver.replace('0x', '')
+    const feeHex = feeAmount.toHexString().replace('0x', '')
+    const amount = String(feeHex).padStart(64 - feeHex.length, '0')
+
+    return this.smartWallet.signer
+      .estimateGas({
+        to: tokenAddress.toLowerCase(),
+        data: `0xa9059cbb000000000000000000000000${feesReceiver}${amount}`,
+      })
+      .then((estGas: BigNumber) => estGas.toString())
+  }
 }

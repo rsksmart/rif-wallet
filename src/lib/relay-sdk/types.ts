@@ -14,6 +14,7 @@ export const DeployRequestDataType = [
   { name: 'nonce', type: 'uint256' },
   { name: 'tokenAmount', type: 'uint256' },
   { name: 'tokenGas', type: 'uint256' },
+  { name: 'validUntilTime', type: 'uint256' },
   { name: 'index', type: 'uint256' },
   { name: 'data', type: 'bytes' },
 ]
@@ -35,6 +36,7 @@ export const ForwardRequestType = [
   { name: 'nonce', type: 'uint256' },
   { name: 'tokenAmount', type: 'uint256' },
   { name: 'tokenGas', type: 'uint256' },
+  { name: 'validUntilTime', type: 'uint256' },
   { name: 'data', type: 'bytes' },
 ]
 
@@ -73,6 +75,7 @@ export interface ForwardRequest {
   tokenAmount: IntString
   tokenGas: IntString
   data: PrefixedHexString
+  validUntilTime: IntString
 }
 
 export interface RelayRequest {
@@ -92,6 +95,7 @@ export interface DeployRequestStruct {
   tokenGas: IntString
   index: IntString
   data: PrefixedHexString
+  validUntilTime: IntString
 }
 
 export interface DeployRequest {
