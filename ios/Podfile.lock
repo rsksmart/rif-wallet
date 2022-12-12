@@ -142,7 +142,7 @@ PODS:
     - Microblink (= 5.16.0)
   - PromisesObjC (2.1.1)
   - Protobuf (3.21.9)
-  - Ramp (2.0.0):
+  - Ramp (3.0.0):
     - Passbase (~> 2.8)
   - ramp-network-react-native-sdk (0.3.1):
     - Ramp
@@ -542,7 +542,7 @@ DEPENDENCIES:
   - jail-monkey (from `../node_modules/jail-monkey`)
   - libevent (~> 2.1.12)
   - OpenSSL-Universal (= 1.1.1100)
-  - Ramp (from `https://github.com/RampNetwork/ramp-sdk-ios`, tag `2.0.0`)
+  - Ramp (from `https://github.com/RampNetwork/ramp-sdk-ios`, tag `3.0.0`)
   - "ramp-network-react-native-sdk (from `../node_modules/@ramp-network/react-native-sdk`)"
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
@@ -646,7 +646,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/jail-monkey"
   Ramp:
     :git: https://github.com/RampNetwork/ramp-sdk-ios
-    :tag: 2.0.0
+    :tag: 3.0.0
   ramp-network-react-native-sdk:
     :path: "../node_modules/@ramp-network/react-native-sdk"
   RCT-Folly:
@@ -739,7 +739,7 @@ EXTERNAL SOURCES:
 CHECKOUT OPTIONS:
   Ramp:
     :git: https://github.com/RampNetwork/ramp-sdk-ios
-    :tag: 2.0.0
+    :tag: 3.0.0
 
 SPEC CHECKSUMS:
   boost: a7c83b31436843459a1961bfd74b96033dc77234
@@ -780,7 +780,7 @@ SPEC CHECKSUMS:
   Passbase: bce91be2e3be1b9c72ab42ee91c57a106095bd65
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
   Protobuf: 02524ec14183fe08fb259741659e79683788158b
-  Ramp: c522303707480a458eef7d05c96e8c9604be4840
+  Ramp: 0c989543f1fabf7409aa2e16a1c883120f063419
   ramp-network-react-native-sdk: 4f3f021d49252d34d9803bf1b4eebea905996c52
   RCT-Folly: 0080d0a6ebf2577475bda044aa59e2ca1f909cda
   RCTRequired: 5cf7e7d2f12699724b59f90350257a422eaa9492
@@ -828,6 +828,6 @@ SPEC CHECKSUMS:
   Yoga: 2ed968a4f060a92834227c036279f2736de0fce3
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 8a6c42ed2d823cf3fda5e61ff43ba2e5b83f170e
+PODFILE CHECKSUM: b967b7d5f4e37928c0975d3503280e321163582c
 
 COCOAPODS: 1.11.3
