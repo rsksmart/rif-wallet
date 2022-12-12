@@ -15,9 +15,11 @@ describe('Word Selector', function () {
   afterEach(cleanup)
 
   it('renders', async () => {
+    const ref = createRef<TextInput>()
     const { getByTestId } = await waitFor(() =>
       render(
         <WordSelector
+          ref={ref}
           expectedWord="one"
           wordIndex={0}
           onWordSelected={() => {}}
