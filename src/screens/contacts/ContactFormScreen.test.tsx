@@ -1,21 +1,19 @@
 import { useNavigation } from '@react-navigation/native'
 import { render, fireEvent } from '@testing-library/react-native'
-import { Provider } from 'react-redux'
-import { contactsStackRouteNames } from 'src/navigation/contactsNavigator'
-
-import { store } from 'store/store'
 import { ContactFormScreen, ContactFormScreenProps } from './ContactFormScreen'
+import { createReduxWrapper } from 'testLib/ReduxWrapper'
+import { contactsStackRouteNames } from 'src/navigation/contactsNavigator'
 
 jest.mock('@react-navigation/native', () => ({
   ...jest.requireActual('@react-navigation/native'),
-  useNavigation: () => {
-    return {
-      navigate: jest.fn(),
-    }
-  },
+  useNavigation: () => ({
+    navigate: jest.fn(),
+  }),
 }))
 
 describe('ContactFormScreen', () => {
+  const { ReduxWrapper } = createReduxWrapper()
+
   const navigation = useNavigation<ContactFormScreenProps['navigation']>()
   const route: Readonly<{
     key: string
@@ -46,9 +44,8 @@ describe('ContactFormScreen', () => {
 
   test('create contact form', async () => {
     const { getByTestId, getByText } = render(
-      <Provider store={store}>
-        <ContactFormScreen navigation={navigation} route={route} />
-      </Provider>,
+      <ContactFormScreen navigation={navigation} route={route} />,
+      { wrapper: ReduxWrapper },
     )
     expect(getByText('Create Contact')).toBeTruthy()
     expect(getByTestId('nameInput').props.value).toBe('')
@@ -65,9 +62,8 @@ describe('ContactFormScreen', () => {
     }
 
     const { getByTestId, getByText } = render(
-      <Provider store={store}>
-        <ContactFormScreen navigation={navigation} route={route} />
-      </Provider>,
+      <ContactFormScreen navigation={navigation} route={route} />,
+      { wrapper: ReduxWrapper },
     )
     expect(getByText('Edit Contact')).toBeTruthy()
     expect(getByTestId('nameInput').props.value).toBe('Alice')
@@ -76,9 +72,8 @@ describe('ContactFormScreen', () => {
 
   test('save contact', async () => {
     const { getByTestId } = render(
-      <Provider store={store}>
-        <ContactFormScreen navigation={navigation} route={route} />
-      </Provider>,
+      <ContactFormScreen navigation={navigation} route={route} />,
+      { wrapper: ReduxWrapper },
     )
     fireEvent.changeText(getByTestId('nameInput'), 'Alice')
     fireEvent.changeText(
