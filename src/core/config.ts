@@ -5,6 +5,7 @@ export enum SETTINGS {
   DEFAULT_CHAIN_TYPE = 'DEFAULT_CHAIN_TYPE', //the chain id used by default when creating a new account
   RIF_WALLET_SERVICE_URL = 'RIF_WALLET_SERVICE_URL',
   EXPLORER_ADDRESS_URL = 'EXPLORER_ADDRESS_URL',
+  EXPLORER_ADDRESS_URL_BTC = 'EXPLORER_ADDRESS_URL_BTC',
   RPC_URL = 'RPC_URL',
   SMART_WALLET_FACTORY_ADDRESS = 'SMART_WALLET_FACTORY_ADDRESS',
 }
@@ -26,6 +27,10 @@ export const getWalletSetting = (
       return chainType === ChainTypeEnum.TESTNET
         ? Config.EXPLORER_ADDRESS_URL_TESTNET
         : Config.EXPLORER_ADDRESS_URL_MAINNET
+    case SETTINGS.EXPLORER_ADDRESS_URL_BTC:
+      return chainType === ChainTypeEnum.TESTNET
+        ? Config.BTC_EXPLORER_ADDRESS_URL_TESTNET
+        : Config.BTC_EXPLORER_ADDRESS_URL_MAINNET
     case SETTINGS.RPC_URL:
       return chainType === ChainTypeEnum.TESTNET
         ? Config.NETWORK_RPC_URL_TESTNET

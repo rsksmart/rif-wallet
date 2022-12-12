@@ -6,6 +6,7 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native'
+import { Network } from 'bitcoin-address-validation'
 import Clipboard from '@react-native-community/clipboard'
 import { colors, spacing } from '../../styles/'
 import { TokenImage } from '../home/TokenImage'
@@ -14,7 +15,7 @@ import { StatusIcon } from '../../components/statusIcons'
 import { getWalletSetting, SETTINGS } from 'src/core/config'
 import { useAppSelector } from 'store/storeUtils'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
-
+import { isBitcoinAddressValid } from 'lib/bitcoin/utils'
 export interface TransactionInformation {
   status: 'USER_CONFIRM' | 'PENDING' | 'SUCCESS' | 'FAILED'
   to?: string
@@ -27,9 +28,24 @@ type Props = {
   transaction: TransactionInformation
 }
 
+const isBtcAddress = (address?: string) => {
+  if (address) {
+    return (
+      isBitcoinAddressValid(address, Network.testnet) ||
+      isBitcoinAddressValid(address, Network.mainnet)
+    )
+  }
+  return false
+}
 export const TransactionInfo = ({ transaction }: Props) => {
   const { chainType } = useAppSelector(selectActiveWallet)
-  const explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainType)
+  const explorerUrl = isBtcAddress(transaction.to)
+    ? `${getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL_BTC, chainType)}/${
+        transaction.hash
+      }`
+    : `${getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainType)}/tx/${
+        transaction.hash
+      }`
 
   if (transaction.status === 'USER_CONFIRM' || !transaction.hash) {
     return (
@@ -43,8 +59,7 @@ export const TransactionInfo = ({ transaction }: Props) => {
     )
   }
 
-  const onViewExplorerTouch = () =>
-    Linking.openURL(`${explorerUrl}/tx/${transaction.hash}`)
+  const onViewExplorerTouch = () => Linking.openURL(explorerUrl)
 
   const onCopyHash = () => Clipboard.setString(transaction.hash || '')
 
