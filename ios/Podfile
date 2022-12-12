@@ -3,12 +3,9 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 platform :ios, '12.4'
 install! 'cocoapods', :deterministic_uuids => false
-inhibit_all_warnings!
-
-# Dependecy required for MMKV
-source 'https://github.com/CocoaPods/Specs.git'
 
 # Dependecies required for Ramp.network:
+source 'https://github.com/CocoaPods/Specs.git'
 source 'https://github.com/passbase/zoomauthentication-cocoapods-specs.git'
 source 'https://github.com/passbase/cocoapods-specs.git'
 source 'https://github.com/passbase/microblink-cocoapods-specs.git'
