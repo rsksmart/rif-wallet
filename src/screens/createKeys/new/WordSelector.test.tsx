@@ -4,6 +4,8 @@ import {
   fireEvent,
   cleanup,
 } from '@testing-library/react-native'
+import { createRef } from 'react'
+import { TextInput } from 'react-native'
 
 import { WordSelector } from './WordSelector'
 import { getTextFromTextNode } from '../../../../testLib/utils'
@@ -27,9 +29,11 @@ describe('Word Selector', function () {
   })
 
   test('show options', async () => {
+    const ref = createRef<TextInput>()
     const { getByTestId } = await waitFor(() =>
       render(
         <WordSelector
+          ref={ref}
           expectedWord="one"
           wordIndex={0}
           onWordSelected={() => {}}
@@ -48,9 +52,11 @@ describe('Word Selector', function () {
 
   test('select correct word', async () => {
     const onWordSelected = jest.fn()
+    const ref = createRef<TextInput>()
     const { getByTestId } = await waitFor(() =>
       render(
         <WordSelector
+          ref={ref}
           expectedWord="table"
           wordIndex={2}
           onWordSelected={onWordSelected}
@@ -67,9 +73,11 @@ describe('Word Selector', function () {
   })
 
   test('select incorrect word', async () => {
+    const ref = createRef<TextInput>()
     const { getByTestId, queryByTestId } = await waitFor(() =>
       render(
         <WordSelector
+          ref={ref}
           expectedWord="one"
           wordIndex={2}
           onWordSelected={() => {}}
