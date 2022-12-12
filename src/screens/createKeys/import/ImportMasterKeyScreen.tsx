@@ -1,11 +1,10 @@
-import { createRef, useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import {
   StyleSheet,
   View,
   ScrollView,
   Text,
   TouchableOpacity,
-  TextInput,
   ListRenderItemInfo,
 } from 'react-native'
 import Carousel from 'react-native-snap-carousel'
