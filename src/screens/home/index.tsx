@@ -6,8 +6,6 @@ import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { toChecksumAddress } from 'components/address/lib'
-import { LoadingScreen } from 'components/loading/LoadingScreen'
-
 import { Paragraph } from 'components/index'
 import {
   rootStackRouteNames,
@@ -15,7 +13,6 @@ import {
 } from 'navigation/rootNavigator/types'
 import { selectAccounts } from 'store/slices/accountsSlice/selector'
 import { colors } from 'src/styles'
-import { selectAppState } from 'store/slices/appStateSlice/selectors'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
@@ -35,7 +32,6 @@ export const HomeScreen = ({
   const tokenBalances = useAppSelector(selectBalances)
   const prices = useAppSelector(selectUsdPrices)
   const accounts = useAppSelector(selectAccounts)
-  const { isSetup } = useAppSelector(selectAppState)
   const bitcoinCore = useBitcoinContext()
   const { activeWalletIndex, wallet, chainType } =
     useAppSelector(selectActiveWallet)
@@ -137,11 +133,6 @@ export const HomeScreen = ({
     }
     return '0'
   }, [selected])
-
-  // waiting for the balances to load:
-  if (!isSetup) {
-    return <LoadingScreen />
-  }
 
   let accountName = 'account 1'
   if (typeof activeWalletIndex === 'number') {

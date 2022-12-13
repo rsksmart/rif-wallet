@@ -9,6 +9,7 @@ const resources = {
   en: {
     translation: {
       type_placeholder: 'type...',
+      err_unknown: 'Unknown error occurred',
       'Create master key': 'Create master key',
       'Reveal master key': 'Reveal master key',
       'Sign in with a Master Key': 'Sign in with a Master Key',

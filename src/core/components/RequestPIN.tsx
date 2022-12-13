@@ -1,29 +1,45 @@
-import { useCallback } from 'react'
-import { getPin } from '../../storage/MainStorage'
-import { PinContainer } from '../../components/PinManager/PinContainer'
-import { useState } from 'react'
-import { pinLength } from '../../shared/costants'
+import { useCallback, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
-interface Props {
-  unlock: () => void
-  resetKeysAndPin: () => void
-}
+import { getPin } from 'storage/MainStorage'
+import { PinContainer } from 'components/PinManager/PinContainer'
+import { useSetGlobalError } from 'components/GlobalErrorHandler'
+import { pinLength } from 'shared/costants'
+import { useAppDispatch } from 'store/storeUtils'
+import { resetKeysAndPin, unlockApp } from 'store/slices/settingsSlice'
+import { useStateSubscription } from '../hooks/useStateSubscription'
 
-export const RequestPIN = ({ unlock, resetKeysAndPin }: Props) => {
+export const RequestPIN = () => {
+  const storedPin = useMemo(() => getPin(), [])
+  const { t } = useTranslation
+  const dispatch = useAppDispatch()
   const [resetEnabled, setResetEnabled] = useState<boolean>(false)
+
+  const { setUnlocked } = useStateSubscription()
+
+  const setGlobalError = useSetGlobalError()
+
+  const onScreenUnlock = useCallback(async () => {
+    try {
+      await dispatch(unlockApp())
+      setUnlocked(true)
+    } catch (err) {
+      setGlobalError(err instanceof Error ? err.toString() : t('err_unknown'))
+    }
+  }, [dispatch, setGlobalError, setUnlocked, t])
+
   const checkPin = useCallback(
     (enteredPin: string) => {
       try {
-        const storedPin = getPin()
         if (storedPin === enteredPin) {
-          unlock()
+          onScreenUnlock()
         } else {
           setResetEnabled(true)
           throw new Error('Pin do not match.')
         }
       } catch (err) {}
     },
-    [unlock],
+    [onScreenUnlock, storedPin],
   )
 
   return (
@@ -32,7 +48,7 @@ export const RequestPIN = ({ unlock, resetKeysAndPin }: Props) => {
       key={pinLength}
       onPinSubmit={checkPin}
       resetEnabled={resetEnabled}
-      resetKeysAndPin={resetKeysAndPin}
+      resetKeysAndPin={() => dispatch(resetKeysAndPin())}
     />
   )
 }

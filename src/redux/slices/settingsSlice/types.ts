@@ -40,6 +40,7 @@ export enum ChainTypeEnum {
   TESTNET = 'TESTNET',
   MAINNET = 'MAINNET',
 }
+
 export interface SettingsSlice {
   requests: Requests
   topColor: ColorValue
@@ -50,4 +51,6 @@ export interface SettingsSlice {
   loading: boolean
   chainId?: number
   chainType: ChainTypeEnum
+  appIsActive: boolean
+  unlocked: boolean
 }
