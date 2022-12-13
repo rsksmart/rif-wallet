@@ -139,7 +139,7 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
 
       {!!error && (
         <View style={styles.errorContainer}>
-          <Text>{error}</Text>
+          <Text accessibilityLabel="error-text">{error}</Text>
         </View>
       )}
 
