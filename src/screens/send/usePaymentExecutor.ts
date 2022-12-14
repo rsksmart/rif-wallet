@@ -79,7 +79,6 @@ export const usePaymentExecutor = () => {
   // When a pending RIF transaction is sent - add it to redux
   useEffect(() => {
     if (transactionStatusChange !== null) {
-      console.log(transactionStatusChange)
       switch (transactionStatusChange.txStatus) {
         case 'PENDING':
           const { to, hash, data, from, gasPrice, nonce, value, type } =
