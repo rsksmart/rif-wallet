@@ -1,52 +1,53 @@
-import React, { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { FlatList, StyleSheet, View, RefreshControl } from 'react-native'
-import ActivityRow from './ActivityRow'
-import { useSocketsState } from '../../subscriptions/RIFSockets'
 import { useTranslation } from 'react-i18next'
-import { useBitcoinCoreContext } from '../../Context'
+
+import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { RIFWallet } from 'lib/core'
+import BIP from 'lib/bitcoin/BIP'
+import { IEnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
+
+import ActivityRow from './ActivityRow'
 import useBitcoinTransactionsHandler from './useBitcoinTransactionsHandler'
 import useTransactionsCombiner from './useTransactionsCombiner'
-import { IApiTransaction } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
 import {
-  IAbiEnhancer,
-  IEnhancedResult,
-} from '../../lib/abiEnhancer/AbiEnhancer'
-import { RIFWallet } from '../../lib/core'
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
+import { abiEnhancer, rifWalletServicesFetcher } from 'core/setup'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { addNewTransactions } from 'store/slices/transactionsSlice/transactionsSlice'
+import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
+import { colors } from 'src/styles'
 import { ScreenWithWallet } from '../types'
-import { RootStackScreenProps } from '../../navigation/rootNavigator/types'
-import { IActivity } from '../../subscriptions/types'
 import { TransactionsServerResponseWithActivityTransactions } from './types'
-import { colors } from '../../styles'
+import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 
-export type ActivityScreenProps = {
-  fetcher: IRIFWalletServicesFetcher
-  abiEnhancer: IAbiEnhancer
-}
-
-export const ActivityScreen: React.FC<
-  RootStackScreenProps<'Activity'> & ScreenWithWallet & ActivityScreenProps
-> = ({ wallet, fetcher, abiEnhancer, navigation }) => {
+export const ActivityScreen = ({
+  wallet,
+  navigation,
+}: RootStackScreenProps<rootStackRouteNames.Activity> & ScreenWithWallet) => {
   const [info, setInfo] = useState('')
-  const { networks } = useBitcoinCoreContext()
+  const bitcoinCore = useBitcoinContext()
   const btcTransactionFetcher = useBitcoinTransactionsHandler({
-    bip: networks[0].bips[0],
+    bip:
+      bitcoinCore && bitcoinCore.networks[0]
+        ? bitcoinCore.networks[0].bips[0]
+        : ({} as BIP),
     shouldMergeTransactions: true,
   })
-  const {
-    state: { transactions },
-    dispatch,
-  } = useSocketsState()
+
+  const { transactions, next: nextCurrent } = useAppSelector(selectTransactions)
+  const dispatch = useAppDispatch()
   const { t } = useTranslation()
 
   const transactionsCombined = useTransactionsCombiner(
-    transactions.activityTransactions,
+    transactions,
     btcTransactionFetcher.transactions,
   )
-  const hasTransactions = transactionsCombined.length > 0
 
   // On load, fetch btc transactions
-  React.useEffect(() => {
+  useEffect(() => {
     btcTransactionFetcher.fetchTransactions()
   }, [])
 
@@ -62,7 +63,7 @@ export const ActivityScreen: React.FC<
       setInfo(t('Loading transactions. Please wait...'))
 
       const fetchedTransactions: TransactionsServerResponseWithActivityTransactions =
-        await fetcher.fetchTransactionsByAddress(
+        await rifWalletServicesFetcher.fetchTransactionsByAddress(
           wallet.smartWalletAddress.toLowerCase(),
           prev,
           next,
@@ -70,11 +71,7 @@ export const ActivityScreen: React.FC<
 
       fetchedTransactions.activityTransactions = await Promise.all(
         fetchedTransactions.data.map(async (tx: IApiTransaction) => {
-          const enhancedTransaction = await enhanceTransactionInput(
-            tx,
-            wallet,
-            abiEnhancer,
-          )
+          const enhancedTransaction = await enhanceTransactionInput(tx, wallet)
           return {
             originTransaction: tx,
             enhancedTransaction,
@@ -82,17 +79,21 @@ export const ActivityScreen: React.FC<
           }
         }),
       )
-
-      dispatch({
-        type: 'newTransactions',
-        payload: fetchedTransactions as IActivity,
-      })
+      dispatch(addNewTransactions(fetchedTransactions))
 
       setInfo('')
     } catch (e) {
-      setInfo(t('Error reaching API: ') + e.message)
+      if (e instanceof Error) {
+        setInfo(t('Error reaching API: ') + e.message)
+      }
     }
   }
+
+  // On load, fetch both BTC and WALLET transactions
+  useEffect(() => {
+    btcTransactionFetcher.fetchTransactions()
+    fetchTransactionsPage()
+  }, [])
 
   const onRefresh = () => {
     fetchTransactionsPage()
@@ -100,30 +101,28 @@ export const ActivityScreen: React.FC<
   }
   return (
     <View style={styles.mainContainer}>
-      {hasTransactions && (
-        <FlatList
-          data={transactionsCombined}
-          initialNumToRender={10}
-          keyExtractor={item => item.id}
-          onEndReached={() => {
-            fetchTransactionsPage({ next: transactions?.next })
-            btcTransactionFetcher.fetchNextTransactionPage()
-          }}
-          onEndReachedThreshold={0.2}
-          refreshing={!!info}
-          renderItem={({ item }) => (
-            <ActivityRow activityTransaction={item} navigation={navigation} />
-          )}
-          style={styles.parent}
-          refreshControl={
-            <RefreshControl
-              refreshing={!!info}
-              tintColor="white"
-              onRefresh={onRefresh}
-            />
-          }
-        />
-      )}
+      <FlatList
+        data={transactionsCombined}
+        initialNumToRender={10}
+        keyExtractor={item => item.id}
+        onEndReached={() => {
+          fetchTransactionsPage({ next: nextCurrent })
+          btcTransactionFetcher.fetchNextTransactionPage()
+        }}
+        onEndReachedThreshold={0.2}
+        refreshing={!!info}
+        renderItem={({ item }) => (
+          <ActivityRow activityTransaction={item} navigation={navigation} />
+        )}
+        style={styles.parent}
+        refreshControl={
+          <RefreshControl
+            refreshing={!!info}
+            tintColor="white"
+            onRefresh={onRefresh}
+          />
+        }
+      />
     </View>
   )
 }
@@ -158,21 +157,20 @@ const styles = StyleSheet.create({
 export const enhanceTransactionInput = async (
   transaction: IApiTransaction,
   wallet: RIFWallet,
-  abiEnhancer: IAbiEnhancer,
-): Promise<IEnhancedResult | undefined> => {
+): Promise<IEnhancedResult | null> => {
   let tx
   try {
     tx = wallet.smartWallet.smartWalletContract.interface.decodeFunctionData(
       'directExecute',
       transaction.input,
     )
-    return (await abiEnhancer.enhance(wallet, {
+    return await abiEnhancer.enhance(wallet, {
       from: wallet.smartWalletAddress,
       to: tx.to.toLowerCase(),
       data: tx.data,
       value: transaction.value,
-    }))!
+    })
   } catch {
-    return undefined
+    return null
   }
 }

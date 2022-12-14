@@ -1,13 +1,12 @@
-import React from 'react'
 import { KeyPad } from '../../keyPad'
 import { StyleSheet, View } from 'react-native'
 import DotsComponentDefault from './DotsComponent'
 import { PinScreenType, DotsComponentDefaultType } from './PinScreen'
 import MessageComponentDefault from './MessageComponent'
-import { colors } from '../../../styles'
-import { WhiteButton } from '../../button/ButtonVariations'
+import { colors } from 'src/styles'
+import { OutlineButton } from 'src/components/button'
 
-const PinScreen: React.FC<PinScreenType & DotsComponentDefaultType> = ({
+const PinScreen = ({
   MessageComponent = MessageComponentDefault,
   DotsComponent = DotsComponentDefault,
   KeypadComponent = KeyPad,
@@ -17,7 +16,7 @@ const PinScreen: React.FC<PinScreenType & DotsComponentDefaultType> = ({
   error = null,
   resetEnabled,
   resetKeysAndPin,
-}) => {
+}: PinScreenType & DotsComponentDefaultType) => {
   return (
     <View style={styles.container}>
       <View style={styles.messageView}>
@@ -31,7 +30,7 @@ const PinScreen: React.FC<PinScreenType & DotsComponentDefaultType> = ({
       </View>
 
       {resetEnabled && (
-        <WhiteButton
+        <OutlineButton
           onPress={resetKeysAndPin}
           accessibilityLabel="newWallet"
           title={'reset'}

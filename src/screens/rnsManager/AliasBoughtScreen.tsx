@@ -1,41 +1,46 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Clipboard, Image, Linking, StyleSheet, View } from 'react-native'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
-import { OutlineButton } from '../../components/button/ButtonVariations'
-
-import { MediumText } from '../../components'
-import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
-import { RootStackScreenProps } from 'navigation/rootNavigator/types'
-import { IProfileStore } from '../../storage/ProfileStore'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
+import { MediumText, SecondaryButton } from 'src/components'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { getWalletSetting, SETTINGS } from 'src/core/config'
+import { setProfile } from 'src/redux/slices/profileSlice/profileSlice'
+import { selectProfile } from 'src/redux/slices/profileSlice/selector'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { ScreenWithWallet } from '../types'
 
-type Props = {
-  profile: IProfileStore
-  setProfile: (p: IProfileStore) => void
-  route: any
-}
-
-export const AliasBoughtScreen: React.FC<
-  RootStackScreenProps<'AliasBought'> & ScreenWithWallet & Props
-> = ({ profile, setProfile, navigation, route }) => {
+export const AliasBoughtScreen = ({
+  navigation,
+  route,
+}: RootStackScreenProps<'AliasBought'> & ScreenWithWallet) => {
   const { alias, tx } = route.params
 
   const [registerDomainInfo, setRegisterDomainInfo] = useState(
     'Transaction for your alias is being processed',
   )
 
+  const { chainId } = useAppSelector(selectActiveWallet)
+  const dispatch = useAppDispatch()
+  const profile = useAppSelector(selectProfile)
+
+  const explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainId)
+
   const copyHashAndOpenExplorer = (hash: string) => {
     Clipboard.setString(hash)
-    Linking.openURL(`https://explorer.testnet.rsk.co/tx/${hash}`)
+    Linking.openURL(`${explorerUrl}/tx/${hash}`)
   }
 
   useEffect(() => {
-    setProfile({
-      ...profile,
-      alias: `${alias}.rsk`,
-    })
+    if (profile) {
+      dispatch(setProfile({ ...profile, `${alias}.rsk` }))
+    }
     const fetchData = async () => {
       await tx.wait()
       setRegisterDomainInfo('Your alias has been registered successfully')
@@ -67,17 +72,15 @@ export const AliasBoughtScreen: React.FC<
 
         <View style={rnsManagerStyles.bottomContainer}>
           <View style={styles.buttonContainer}>
-            <PrimaryButton2
+            <PrimaryButton
               onPress={() => copyHashAndOpenExplorer(tx.hash)}
               accessibilityLabel="Copy Hash & Open Explorer"
               title={'Copy Hash & Open Explorer'}
             />
           </View>
-          <OutlineButton
+          <SecondaryButton
             onPress={() =>
-              navigation.navigate('ProfileDetailsScreen', {
-                navigation,
-              })
+              navigation.navigate(rootStackRouteNames.ProfileDetailsScreen)
             }
             accessibilityLabel="close"
             title={'Close'}

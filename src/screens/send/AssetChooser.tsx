@@ -1,23 +1,23 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import { colors } from '../../styles'
-import { grid } from '../../styles'
-import { IAsset, IAssetChooser } from './types'
+import { colors } from 'src/styles'
+import { grid } from 'src/styles'
+import { IAssetChooser } from './types'
 import { TokenImage } from '../home/TokenImage'
 import SlideUpModal from '../../components/slideUpModal/SlideUpModal'
 import { balanceToString } from '../balances/BalancesScreen'
-import { TokenButton } from '../../components/button/TokenButton'
+import { TokenButton } from 'components/button/TokenButton'
 import { getTokenColor } from '../home/tokenColor'
 
-const AssetChooser: React.FC<IAssetChooser> = ({
+export const AssetChooser = ({
   assetList,
   selectedAsset,
   onAssetSelected,
-}) => {
+}: IAssetChooser<T>) => {
   const [showSelector, setShowSelector] = useState<boolean>(false)
   const [animateModal, setAnimateModal] = useState(false)
 
-  const handleAsset = (asset: IAsset) => () => {
+  const handleAsset = (asset: T) => () => {
     setAnimateModal(true)
     onAssetSelected(asset)
   }
@@ -31,7 +31,10 @@ const AssetChooser: React.FC<IAssetChooser> = ({
   }
 
   return (
-    <TouchableOpacity onPress={() => setShowSelector(true)} style={grid.row}>
+    <TouchableOpacity
+      onPress={() => setShowSelector(true)}
+      style={grid.row}
+      accessibilityLabel="choose">
       <View style={{ ...grid.column12, ...styles.assetButton }}>
         <View style={styles.assetContainer}>
           <View style={styles.assetIcon}>
@@ -47,10 +50,9 @@ const AssetChooser: React.FC<IAssetChooser> = ({
         animateModal={animateModal}
         onModalClosed={handleCloseModal}
         onAnimateModal={handleAnimateModal}
-        isKeyboardVisible={false}
         backgroundColor={colors.darkPurple3}
         headerFontColor={colors.white}>
-        {assetList.map((asset: IAsset) => (
+        {assetList.map(asset => (
           <View key={asset.symbol}>
             <TokenButton
               onPress={handleAsset(asset)}
@@ -100,5 +102,3 @@ const styles = StyleSheet.create({
     color: colors.white,
   },
 })
-
-export default AssetChooser

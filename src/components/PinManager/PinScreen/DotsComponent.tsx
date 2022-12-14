@@ -1,10 +1,9 @@
-import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import PinConnector from '../PinConnector'
 import PinDotsRenderer from './PinDotsRenderer'
 import { DotsComponentDefaultType } from './PinScreen'
 
-const DotsComponentDefault: React.FC<DotsComponentDefaultType> = ({ pin }) => {
+const DotsComponentDefault = ({ pin }: DotsComponentDefaultType) => {
   return (
     <View style={styles.dotsWrapper}>
       {pin.map((digit, index, arr) => (

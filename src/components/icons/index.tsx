@@ -1,10 +1,10 @@
-import { TextProps } from 'react-native'
+import { StyleProp, TextProps, TextStyle } from 'react-native'
 
 export interface SVGIconInterface {
   width?: number
   height?: number
   color?: string
-  style?: any
+  style?: StyleProp<TextStyle>
 }
 
 export interface MaterialIconInterface extends TextProps {
@@ -27,3 +27,5 @@ export { ContentPasteIcon } from './ContentPasteIcon'
 export { ShareIcon } from './ShareIcon'
 export { default as ReceiveIcon } from './ReceiveIcon'
 export { HideShowIcon } from './HideShowIcon'
+export { EditMaterialIcon } from './EditMaterialIcon'
+export { DeleteIcon } from './DeleteIcon'

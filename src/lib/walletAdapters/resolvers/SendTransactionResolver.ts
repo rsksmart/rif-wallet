@@ -12,6 +12,7 @@ export class SendTransactionResolver implements IResolver {
   }
 
   async resolve(params: any[]) {
+    // TODO: Figure out passed type
     const payload = params.reduce((prev, curr) => ({ ...prev, ...curr }), {})
 
     const formattedPayload: TransactionRequest = {

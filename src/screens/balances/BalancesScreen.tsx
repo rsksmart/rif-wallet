@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from 'react'
-import { StyleSheet, View, ScrollView, Text } from 'react-native'
-import { BigNumber, BigNumberish, constants } from 'ethers'
+import { View, ScrollView } from 'react-native'
+import { BigNumber, BigNumberish } from 'ethers'
 
-import { IRIFWalletServicesFetcher } from '../../lib/rifWalletServices/RifWalletServicesFetcher'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { useTranslation } from 'react-i18next'
-import { useSocketsState } from '../../subscriptions/RIFSockets'
+import { IRIFWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
 
 import {
+  rootStackRouteNames,
   RootStackScreenProps,
-  RootStackNavigationProp,
 } from 'navigation/rootNavigator/types'
-import { Address, Button } from '../../components'
+import { Address } from 'components/index'
 import { ScreenWithWallet } from '../types'
+import { selectBalances } from 'store/slices/balancesSlice/selectors'
+import { useAppSelector } from 'store/storeUtils'
+import { BalancesRow } from './BalancesRow'
 
 export const balanceToString = (
   balance: string,
@@ -31,120 +30,28 @@ export const balanceToString = (
   return `${parts.integerPart}.${parts.decimalPart}`
 }
 
-export const BalancesRow = ({
-  token: { symbol, balance, decimals, contractAddress },
-  navigation,
-}: {
-  token: ITokenWithBalance
-  navigation: RootStackNavigationProp
-}) => (
-  <View style={styles.tokenRow} testID={`${contractAddress}.View`}>
-    <View style={styles.tokenBalance}>
-      <Text testID={`${contractAddress}.Text`}>
-        {`${balanceToString(balance, decimals || 0)} ${symbol}`}
-      </Text>
-    </View>
-    <View style={styles.button}>
-      <Button
-        onPress={() => {
-          navigation.navigate('Send', {
-            token: symbol,
-          })
-        }}
-        title={'Send'}
-        testID={`${contractAddress}.SendButton`}
-      />
-    </View>
-  </View>
-)
-
 export type BalancesScreenProps = { fetcher: IRIFWalletServicesFetcher }
 
-export const BalancesScreen: React.FC<
-  RootStackScreenProps<'Balances'> & ScreenWithWallet & BalancesScreenProps
-> = ({ navigation, wallet }) => {
-  const { t } = useTranslation()
-  const [isLoading, setIsLoading] = useState(true)
+type Props = RootStackScreenProps<rootStackRouteNames.Balances> &
+  ScreenWithWallet &
+  BalancesScreenProps
 
-  const { state, dispatch } = useSocketsState()
-
-  const loadRBTCBalance = async () => {
-    setIsLoading(true)
-
-    const rbtcBalanceEntry = await wallet
-      .provider!.getBalance(wallet.smartWallet.address)
-      .then(
-        rbtcBalance =>
-          ({
-            name: 'TRBTC',
-            logo: 'TRBTC',
-            symbol: 'TRBTC (eoa wallet)',
-            contractAddress: constants.AddressZero,
-            decimals: 18,
-            balance: rbtcBalance.toString(),
-          } as ITokenWithBalance),
-      )
-    dispatch({ type: 'newBalance', payload: rbtcBalanceEntry })
-    setIsLoading(false)
-  }
-
-  useEffect(() => {
-    loadRBTCBalance()
-  }, [])
-
+export const BalancesScreen = ({ navigation, wallet }: Props) => {
+  const balances = useAppSelector(selectBalances)
   return (
     <ScrollView>
       <View>
         <Address>{wallet.smartWalletAddress}</Address>
       </View>
-
       <View>
-        <Text testID="Info.Text">
-          {isLoading ? t('Loading balances. Please wait...') : ''}
-        </Text>
-      </View>
-
-      <View>
-        {!isLoading &&
-          Object.values(state.balances).map(token => (
-            <BalancesRow
-              key={token.contractAddress}
-              token={token}
-              navigation={navigation}
-            />
-          ))}
-      </View>
-
-      <View style={styles.refreshButtonView}>
-        <Button
-          onPress={loadRBTCBalance}
-          title={t('Refresh')}
-          testID={'Refresh.Button'}
-        />
+        {Object.values(balances).map(token => (
+          <BalancesRow
+            key={token.contractAddress}
+            token={token}
+            navigation={navigation}
+          />
+        ))}
       </View>
     </ScrollView>
   )
 }
-
-const styles = StyleSheet.create({
-  tokenRow: {
-    height: 50,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
-  },
-  tokenBalance: {
-    position: 'absolute',
-    left: 0,
-  },
-  button: {
-    position: 'absolute',
-    right: 0,
-  },
-  refreshButtonView: {
-    paddingTop: 15,
-    paddingBottom: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
-    alignItems: 'center',
-  },
-})

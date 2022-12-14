@@ -1,15 +1,16 @@
-import React, { createContext, useState, useContext } from 'react'
+import { Dispatch, SetStateAction } from 'react'
+import { FC, ReactNode, createContext, useState, useContext } from 'react'
 import GlobalErrorHandlerView from './GlobalErrorHandlerView'
 
-type GlobalErrorHandlerType = {
-  setGlobalError: any
+interface GlobalErrorHandlerType {
+  setGlobalError: Dispatch<SetStateAction<string | null>>
   globalError: string | null
   handleReload: () => void
 }
 
-type GlobalErrorHandlerProviderType = {
-  children?: React.FC<any> | React.ReactNode
-  GlobalErrorHandlerViewComp?: React.FC
+interface GlobalErrorHandlerProviderType {
+  children?: FC | ReactNode
+  GlobalErrorHandlerViewComp?: FC
 }
 
 const GlobalErrorHandlerContext = createContext<GlobalErrorHandlerType>({

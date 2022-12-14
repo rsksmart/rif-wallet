@@ -18,7 +18,7 @@ describe('SignTypedData', function (this: {
       payload: [
         {
           name: 'Ether Mail',
-          version: 1,
+          version: '1',
           chainId: 1,
           verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
           salt: '0xabcd',
@@ -37,7 +37,7 @@ describe('SignTypedData', function (this: {
         this.cancel
         return Promise.reject()
       },
-    } as SignTypedDataRequest
+    }
   })
 
   it('displays domain', () => {
@@ -45,16 +45,22 @@ describe('SignTypedData', function (this: {
       <SignTypedDataModal request={this.request} closeModal={jest.fn()} />,
     )
 
-    expect(
-      // @ts-ignore
-      getByTestId('Domain.Name').children[0]._fiber.memoizedProps.children,
-    ).toContain(this.request.payload[0].name)
+    const domainNameFirstChild = getByTestId('Domain.Name').children[0]
+    const domainVeriFyingContractFirstChild = getByTestId(
+      'Domain.VerifyingContract',
+    ).children[0]
 
-    expect(
-      // @ts-ignore
-      getByTestId('Domain.VerifyingContract').children[0]._fiber.memoizedProps
-        .children,
-    ).toContain(this.request.payload[0].verifyingContract)
+    if (
+      typeof domainNameFirstChild !== 'string' &&
+      typeof domainVeriFyingContractFirstChild !== 'string'
+    ) {
+      expect(domainNameFirstChild._fiber.memoizedProps.children).toContain(
+        this.request.payload[0].name,
+      )
+      expect(
+        domainVeriFyingContractFirstChild._fiber.memoizedProps.children,
+      ).toContain(this.request.payload[0].verifyingContract)
+    }
   })
 
   it('displays nested items', () => {

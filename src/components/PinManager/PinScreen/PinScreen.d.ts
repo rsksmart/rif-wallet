@@ -1,38 +1,39 @@
-import React from 'react'
+import { FC } from 'react'
 import { ViewProps, TextProps } from 'react-native'
+import { KeypadComponentProps } from 'src/components/keyPad'
 
-export type MessageComponentDefaultType = {
+export interface MessageComponentDefaultType {
   message?: string
   TextProps?: TextProps
   ViewProps?: ViewProps
 }
 
-export type DotsComponentDefaultType = {
+export interface DotsComponentDefaultType {
   pin: Array<string>
 }
 
-export type PinScreenType = {
-  MessageComponent?: React.FC<MessageComponentDefaultType>
-  DotsComponent?: React.FC<DotsComponentDefaultType>
-  KeypadComponent?: React.FC<any>
-  onKeypadPress: (numberTouched: string) => any
-  onKeypadDelete: () => any
+export interface PinScreenType {
+  MessageComponent?: FC<MessageComponentDefaultType>
+  DotsComponent?: FC<DotsComponentDefaultType>
+  KeypadComponent?: FC<KeypadComponentProps>
+  onKeypadPress: (numberTouched: string) => void
+  onKeypadDelete: () => void
   error?: string | null
   pin: Array<string>
   resetEnabled: boolean
   resetKeysAndPin: () => void
 }
 
-export type PinContainerType = {
+export interface PinContainerType {
   pinLength: number
-  onPinSubmit: (enteredPin: string) => Promise<unknown>
-  PinScreenComponent?: React.FC<PinScreenType>
-  resetEnabled: boolean
-  resetKeysAndPin: () => void
+  onPinSubmit: (enteredPin: string) => void
+  resetKeysAndPin?: () => void
+  resetEnabled?: boolean
+  PinScreenComponent?: FC<PinScreenType>
 }
 
-export type PinDotsRendererType = {
+export interface PinDotsRendererType {
   index: number
   digit: string
-  arr: Array<any>
+  arr: Array<unknown>
 }

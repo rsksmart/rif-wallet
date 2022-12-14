@@ -12,7 +12,11 @@ jest.mock('@rsksmart/rns-resolver.js', () => ({
   }),
 }))
 
-const WrappedAddressInput = ({ handleChange }: any) => {
+const WrappedAddressInput = ({
+  handleChange,
+}: {
+  handleChange: (newAddress: string, isValid: boolean) => void
+}) => {
   const [address, setAddress] = useState('')
 
   const onChangeText = (newAddress: string, isValid: boolean) => {

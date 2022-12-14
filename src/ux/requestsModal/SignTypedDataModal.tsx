@@ -1,24 +1,23 @@
 import React from 'react'
-import { StyleSheet, View, ScrollView, Text } from 'react-native'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 
-import { SignTypedDataRequest } from '../../lib/core'
+import { SignTypedDataRequest } from 'src/lib/core'
 
-import { sharedStyles } from '../../shared/styles'
 import { useTranslation } from 'react-i18next'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { SecondaryButton } from 'src/components/button/SecondaryButton'
+import { RegularText } from 'src/components'
+import { sharedStyles } from 'src/shared/styles'
+import { colors } from 'src/styles'
 import ReadOnlyField from './ReadOnlyField'
-import {
-  DarkBlueButton,
-  OutlineBorderedButton,
-} from '../../components/button/ButtonVariations'
-import { colors } from '../../styles'
-import { RegularText } from '../../components'
+import { AnyObject } from 'immer/dist/internal'
 
 interface Interface {
   request: SignTypedDataRequest
   closeModal: () => void
 }
 
-const formatter = (data: any) =>
+const formatter = (data: AnyObject) =>
   Object.keys(data).map((key: string) => (
     <View key={key} style={styles.nested} testID="Formatter.Row">
       <Text style={styles.heading} testID="Text.Heading">
@@ -59,25 +58,25 @@ const SignTypedDataModal: React.FC<Interface> = ({ request, closeModal }) => {
 
           <ReadOnlyField
             label={'name'}
-            value={request.payload[0].name}
+            value={request.payload[0].name || ''}
             testID="Domain.Name"
           />
 
           <ReadOnlyField
             label={'version'}
-            value={request.payload[0].version}
+            value={request.payload[0].version || ''}
             testID="Domain.Version"
           />
 
           <ReadOnlyField
             label={'chain id'}
-            value={request.payload[0].chainId}
+            value={request.payload[0].chainId?.toString() || ''}
             testID="Domain.ChainId"
           />
 
           <ReadOnlyField
             label={'verifying Contract'}
-            value={request.payload[0].verifyingContract}
+            value={request.payload[0].verifyingContract || ''}
             testID="Domain.VerifyingContract"
           />
           <View>
@@ -89,18 +88,19 @@ const SignTypedDataModal: React.FC<Interface> = ({ request, closeModal }) => {
 
       <View style={styles.buttonsSection}>
         <View style={sharedStyles.column}>
-          <OutlineBorderedButton
-            style={{ button: { borderColor: colors.black } }}
+          <SecondaryButton
             onPress={reject}
             title={t('reject')}
             testID="Button.Reject"
+            accessibilityLabel="reject"
           />
         </View>
         <View style={sharedStyles.column}>
-          <DarkBlueButton
+          <PrimaryButton
             onPress={approve}
             title={t('sign')}
             testID="Button.Confirm"
+            accessibilityLabel="confirm"
           />
         </View>
       </View>

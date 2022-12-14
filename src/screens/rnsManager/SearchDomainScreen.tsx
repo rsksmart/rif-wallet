@@ -1,33 +1,34 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
-import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
-import { colors } from '../../styles'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { colors } from 'src/styles'
 
 import { rnsManagerStyles } from './rnsManagerStyles'
 
 import { MediumText } from '../../components'
 import { AvatarIcon } from '../../components/icons/AvatarIcon'
 import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
-import { RootStackScreenProps } from 'navigation/rootNavigator/types'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
 import DomainLookUp from '../../screens/rnsManager/DomainLookUp'
 import { ScreenWithWallet } from '../types'
 import TitleStatus from './TitleStatus'
 
-type Props = {
-  route: any
-}
-export const SearchDomainScreen: React.FC<
-  RootStackScreenProps<'SearchDomain'> & ScreenWithWallet & Props
-> = ({ wallet, navigation }) => {
+type Props = RootStackScreenProps<rootStackRouteNames.SearchDomain> &
+  ScreenWithWallet
+
+export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const [domainToLookUp, setDomainToLookUp] = useState<string>('')
   const [validDomain, setValidDomain] = useState<boolean>(false)
   const [selectedYears, setSelectedYears] = useState<number>(2)
   const [selectedDomainPrice, setSelectedDomainPrice] = useState<string>('2')
   const [isModalVisible, setIsModalVisible] = useState<boolean>(true)
 
-  const calculatePrice = async (domain: string, years: number) => {
+  const calculatePrice = async (_: string, years: number) => {
     //TODO: re enable this later
     /*const price = await rskRegistrar.price(domain, BigNumber.from(years))
     return utils.formatUnits(price, 18)*/
@@ -54,7 +55,9 @@ export const SearchDomainScreen: React.FC<
   return (
     <>
       <View style={rnsManagerStyles.profileHeader}>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Home')}
+          accessibilityLabel="home">
           <View style={rnsManagerStyles.backButton}>
             <MaterialIcon name="west" color={colors.lightPurple} size={10} />
           </View>
@@ -100,6 +103,7 @@ export const SearchDomainScreen: React.FC<
           </MediumText>
           {selectedYears > 1 && (
             <TouchableOpacity
+              accessibilityLabel="decreases"
               onPress={() => handleYearsChange(selectedYears - 1)}
               style={styles.minusIcon}>
               <MaterialIcon
@@ -110,6 +114,7 @@ export const SearchDomainScreen: React.FC<
             </TouchableOpacity>
           )}
           <TouchableOpacity
+            accessibilityLabel="increase"
             onPress={() => handleYearsChange(selectedYears + 1)}
             style={styles.addIcon}>
             <MaterialIcon
@@ -121,12 +126,10 @@ export const SearchDomainScreen: React.FC<
         </View>
 
         <View style={rnsManagerStyles.bottomContainer}>
-          <PrimaryButton2
+          <PrimaryButton
             disabled={!validDomain}
             onPress={() =>
-              // @ts-ignore
-              navigation.navigate('RequestDomain', {
-                navigation,
+              navigation.navigate(rootStackRouteNames.RequestDomain, {
                 alias: domainToLookUp.replace('.rsk', ''),
                 duration: selectedYears,
               })

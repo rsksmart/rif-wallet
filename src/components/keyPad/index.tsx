@@ -1,17 +1,16 @@
-import React from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 
 import { DialButton } from '../button/DialButton'
 import { grid } from '../../styles'
 import { Arrow } from '../icons'
 
-type Props = {
+export interface KeypadComponentProps {
   onKeyPress: (value: string) => void
   onDelete: () => void
   onUnlock?: () => void
 }
 
-export const KeyPad: React.FC<Props> = ({ onDelete, onKeyPress }) => {
+export const KeyPad = ({ onDelete, onKeyPress }: KeypadComponentProps) => {
   return (
     <View style={{ ...grid.row, ...styles.root }}>
       {Array.from({ length: 9 }).map((_, index) => (
@@ -24,6 +23,7 @@ export const KeyPad: React.FC<Props> = ({ onDelete, onKeyPress }) => {
           <DialButton
             label={`${index + 1}`}
             testID={`keypad_${index + 1}`}
+            accessibilityLabel={`${index + 1}`}
             onPress={() => onKeyPress(`${index + 1}`)}
           />
         </View>
@@ -42,6 +42,7 @@ export const KeyPad: React.FC<Props> = ({ onDelete, onKeyPress }) => {
         <DialButton
           label="0"
           testID="keypad_0"
+          accessibilityLabel="0"
           variant="default"
           onPress={() => onKeyPress('0')}
         />

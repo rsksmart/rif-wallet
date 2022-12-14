@@ -1,29 +1,36 @@
-import React, { useEffect, useState } from 'react'
-import { useSelectedWallet } from '../../Context'
+import { useEffect, useState } from 'react'
 
 import { getDomains } from '../../storage/DomainsStore'
 
-import { ReceiveScreen, ReceiveScreenProps } from './ReceiveScreen'
+import { ReceiveScreen } from './ReceiveScreen'
 import { getAddressDisplayText } from '../../components'
+import { useAppSelector } from 'store/storeUtils'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
 
-export const ReceiveScreenHOC: React.FC<ReceiveScreenProps> = () => {
-  const { wallet, chainId } = useSelectedWallet()
+export const ReceiveScreenHOC = () => {
+  const { wallet, chainId } = useAppSelector(selectActiveWallet)
   const [registeredDomains, setRegisteredDomains] = useState<string[]>([])
 
   useEffect(() => {
-    setRegisteredDomains(getDomains(wallet.smartWalletAddress))
+    if (wallet) {
+      setRegisteredDomains(getDomains(wallet.smartWalletAddress))
+    }
   }, [wallet])
 
-  const { checksumAddress, displayAddress } = getAddressDisplayText(
-    wallet.smartWalletAddress,
-    chainId,
-  )
+  if (wallet && chainId) {
+    const { checksumAddress, displayAddress } = getAddressDisplayText(
+      wallet.smartWalletAddress,
+      chainId,
+    )
 
-  return (
-    <ReceiveScreen
-      address={checksumAddress}
-      displayAddress={displayAddress}
-      registeredDomains={registeredDomains}
-    />
-  )
+    return (
+      <ReceiveScreen
+        address={checksumAddress}
+        displayAddress={displayAddress}
+        registeredDomains={registeredDomains}
+      />
+    )
+  } else {
+    return null
+  }
 }

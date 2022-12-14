@@ -1,34 +1,36 @@
-import React, { useEffect, useState } from 'react'
+import { RSKRegistrar } from '@rsksmart/rns-sdk'
+import { useEffect, useState } from 'react'
 import * as Progress from 'react-native-progress'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 import { Dimensions, TouchableOpacity, View } from 'react-native'
-import { colors } from '../../styles'
+import { colors } from 'src/styles'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
-import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
 
 import { MediumText } from '../../components'
 import { AvatarIcon } from '../../components/icons/AvatarIcon'
-import { RootStackScreenProps } from 'navigation/rootNavigator/types'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
 import { ScreenWithWallet } from '../types'
 import TitleStatus from './TitleStatus'
 import { IProfileRegistrationStore } from '../../storage/AliasRegistrationStore'
 import { useAliasRegistration } from '../../core/hooks/useAliasRegistration'
 
-type Props = {
-  route: any
-}
+type Props = RootStackScreenProps<rootStackRouteNames.RequestDomain> &
+  ScreenWithWallet
 
-export const RequestDomainScreen: React.FC<
-  RootStackScreenProps<'RequestDomain'> & ScreenWithWallet & Props
-> = ({ wallet, navigation, route }) => {
+
+export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
   const {
-    registrationStarted,
-    readyToRegister,
-    getRegistrationData,
-    setRegistrationData,
-  } = useAliasRegistration(wallet)
+      registrationStarted,
+      readyToRegister,
+      getRegistrationData,
+      setRegistrationData,
+    } = useAliasRegistration(wallet)
   const { alias, duration } = route.params
   const fullAlias = alias + '.rsk'
 
@@ -64,8 +66,7 @@ export const RequestDomainScreen: React.FC<
         if (ready) {
           setProgress(1)
           setProcessing(false)
-          navigation.navigate('BuyDomain', {
-            navigation,
+          navigation.navigate(rootStackRouteNames.BuyDomain, {
             alias,
             domainSecret: profileRegistrationStore.commitToRegisterSecret,
             duration,
@@ -76,9 +77,11 @@ export const RequestDomainScreen: React.FC<
           clearInterval(intervalId)
         }
       }, 1000)
-    } catch (e: any) {
+      await makeCommitmentTransaction.wait()
+      setCommitToRegisterInfo('Transaction confirmed. Please wait...')
+    } catch (e: unknown) {
       setProcessing(false)
-      setCommitToRegisterInfo(e.message)
+      setCommitToRegisterInfo(e?.message || '')
       setCommitToRegisterInfo2('')
     }
   }
@@ -88,8 +91,9 @@ export const RequestDomainScreen: React.FC<
   return (
     <>
       <View style={rnsManagerStyles.profileHeader}>
-        {/*@ts-ignore*/}
-        <TouchableOpacity onPress={() => navigation.navigate('SearchDomain')}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('SearchDomain')}
+          accessibilityLabel="back">
           <View style={rnsManagerStyles.backButton}>
             <MaterialIcon name="west" color="white" size={10} />
           </View>
@@ -128,7 +132,7 @@ export const RequestDomainScreen: React.FC<
         </View>
 
         <View style={rnsManagerStyles.bottomContainer}>
-          <PrimaryButton2
+          <PrimaryButton
             onPress={() => commitToRegister()}
             accessibilityLabel="request"
             title={'request'}

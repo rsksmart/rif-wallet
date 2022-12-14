@@ -1,23 +1,21 @@
-import React from 'react'
-import { View, StyleSheet, TouchableOpacity, Image } from 'react-native'
-import { AddressCopyComponent } from '../../components/copy/AddressCopyComponent'
-import { useSelectedWallet } from '../../Context'
-import { ProfileHandler } from './ProfileHandler'
-import { IProfileStore } from '../../storage/ProfileStore'
-import { navigationContainerRef } from '../../core/Core'
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 
-export const AppHeader: React.FC<{
-  profile: IProfileStore
-  profileCreated: boolean
-}> = ({ profile, profileCreated }) => {
-  const { wallet, chainId } = useSelectedWallet()
+import { AddressCopyComponent } from 'components/copy/AddressCopyComponent'
+import { rootStackRouteNames } from 'src/navigation/rootNavigator'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { useAppSelector } from 'store/storeUtils'
+import { navigationContainerRef } from '../../core/Core'
+import { ProfileHandler } from './ProfileHandler'
+
+export const AppHeader = () => {
+  const { wallet, chainId } = useAppSelector(selectActiveWallet)
 
   const openMenu = () => {
     const navState = navigationContainerRef.getCurrentRoute()
-    if (navState && navState.name === 'Home') {
-      navigationContainerRef.navigate('Settings')
+    if (navState && navState.name === rootStackRouteNames.Home) {
+      navigationContainerRef.navigate(rootStackRouteNames.Settings)
     } else {
-      navigationContainerRef.navigate('Home')
+      navigationContainerRef.navigate(rootStackRouteNames.Home)
     }
   }
 
@@ -39,7 +37,7 @@ export const AppHeader: React.FC<{
         {wallet && (
           <AddressCopyComponent
             address={wallet.smartWalletAddress}
-            chainId={chainId}
+            chainId={chainId || 31}
           />
         )}
       </View>

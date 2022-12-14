@@ -1,11 +1,6 @@
 import { OnRequest } from '../core'
 import BIPPaymentFacade from './BIPPaymentFacade'
-import {
-  PaymentTypeWithBalance,
-  Psbt,
-  SendBitcoinRequestType,
-  UnspentTransactionType,
-} from './types'
+import { PaymentTypeWithBalance, Psbt, UnspentTransactionType } from './types'
 import { BITCOIN_REQUEST_TYPES } from './constants'
 import { ISendTransactionJsonReturnData } from '../rifWalletServices/RifWalletServicesFetcher'
 
@@ -90,7 +85,7 @@ export default class BIPRequestPaymentFacade {
         },
         confirm: () => this.onRequestPaymentConfirmed(res),
         reject: rej,
-      } as SendBitcoinRequestType)
+      })
     })
   }
 

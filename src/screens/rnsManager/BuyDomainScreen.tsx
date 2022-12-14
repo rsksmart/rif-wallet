@@ -1,30 +1,32 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { BigNumber, utils } from 'ethers'
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import moment from 'moment'
 
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
-import { colors } from '../../styles'
+import { colors } from 'src/styles'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
-import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
 
-import { RootStackScreenProps } from 'navigation/rootNavigator/types'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
 import { ScreenWithWallet } from '../types'
-import { MediumText } from '../../components'
+import { MediumText } from 'src/components'
 import addresses from './addresses.json'
 import TitleStatus from './TitleStatus'
 import { TokenImage } from '../home/TokenImage'
 import { AvatarIcon } from '../../components/icons/AvatarIcon'
+import { errorHandler } from 'shared/utils'
 import { deleteAliasRegistration } from '../../storage/AliasRegistrationStore'
-type Props = {
-  route: any
-}
 
-export const BuyDomainScreen: React.FC<
-  RootStackScreenProps<'BuyDomain'> & ScreenWithWallet & Props
-> = ({ wallet, navigation, route }) => {
+type Props = RootStackScreenProps<rootStackRouteNames.BuyDomain> &
+  ScreenWithWallet
+
+export const BuyDomainScreen = ({ wallet, navigation, route }: Props) => {
   const { alias, domainSecret, duration } = route.params
   const fullAlias = alias + '.rsk'
 
@@ -57,34 +59,35 @@ export const BuyDomainScreen: React.FC<
   const registerDomain = async (domain: string) => {
     try {
       const durationToRegister = BigNumber.from(2)
+      if (domainPrice) {
+        const tx = await rskRegistrar.register(
+          domain,
+          wallet.smartWallet.address,
+          domainSecret,
+          durationToRegister,
+          domainPrice,
+        )
+        deleteAliasRegistration()
+        setRegisterDomainInfo('Transaction sent. Please wait...')
+        setRegisterInProcess(true)
 
-      const tx = await rskRegistrar.register(
-        domain,
-        wallet.smartWallet.address,
-        domainSecret,
-        durationToRegister,
-        domainPrice!,
-      )
-      deleteAliasRegistration()
-      setRegisterDomainInfo('Transaction sent. Please wait...')
-      setRegisterInProcess(true)
-
-      navigation.navigate('AliasBought', {
-        navigation,
-        alias: alias,
-        tx,
-      })
-    } catch (e: any) {
+        navigation.navigate(rootStackRouteNames.AliasBought, {
+          alias: alias,
+          tx,
+        })
+      }
+    } catch (e) {
       setRegisterInProcess(false)
-      setRegisterDomainInfo(e.message)
+      setRegisterDomainInfo(errorHandler(e))
     }
   }
 
   return (
     <>
       <View style={rnsManagerStyles.profileHeader}>
-        {/*@ts-ignore*/}
-        <TouchableOpacity onPress={() => navigation.navigate('SearchDomain')}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('SearchDomain')}
+          accessibilityLabel="search">
           <View style={rnsManagerStyles.backButton}>
             <MaterialIcon name="west" color="white" size={10} />
           </View>
@@ -134,7 +137,7 @@ export const BuyDomainScreen: React.FC<
 
         <View style={rnsManagerStyles.bottomContainer}>
           {!registerInProcess && (
-            <PrimaryButton2
+            <PrimaryButton
               onPress={() => registerDomain(alias)}
               accessibilityLabel="buy"
               title={`buy for $${domainFiatPrice}`}

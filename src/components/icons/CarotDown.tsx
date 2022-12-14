@@ -1,12 +1,7 @@
-import React from 'react'
 import Svg, { Path } from 'react-native-svg'
 import { SVGIconInterface } from '.'
 
-export const CarotDownIcon: React.FC<SVGIconInterface> = ({
-  width,
-  height,
-  color,
-}) => (
+export const CarotDownIcon = ({ width, height, color }: SVGIconInterface) => (
   <Svg
     width={width || 6.143}
     height={height || 4.091}

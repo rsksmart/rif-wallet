@@ -1,14 +1,15 @@
 import { BigNumber } from 'ethers'
 import BIPWithRequest from '../../lib/bitcoin/BIPWithRequest'
 import { UnspentTransactionType } from '../../lib/bitcoin/types'
+import { OnSetCurrentTransactionFunction, OnSetErrorFunction } from './types'
 
 interface ITransferBitcoin {
   bip: BIPWithRequest
   satoshisToPay: BigNumber
   to: string
   utxos: Array<UnspentTransactionType>
-  onSetError?: (key: any) => void
-  onSetCurrentTransaction?: (key: any) => void
+  onSetError?: OnSetErrorFunction
+  onSetCurrentTransaction?: OnSetCurrentTransactionFunction
   balance: number
 }
 
@@ -24,7 +25,7 @@ export const transferBitcoin = ({
   balance,
 }: ITransferBitcoin) => {
   if (onSetError) {
-    onSetError(undefined)
+    onSetError(null)
   }
 
   bip.requestPayment
@@ -45,7 +46,7 @@ export const transferBitcoin = ({
           onSetCurrentTransaction({
             status: 'SUCCESS',
             to,
-            value: satoshisToPay,
+            value: satoshisToPay.toString(),
             hash: txIdJson.result,
           })
         }

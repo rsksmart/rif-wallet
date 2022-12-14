@@ -1,9 +1,11 @@
 import { createContext, useContext, useState } from 'react'
-import { transactionInfo } from './TransactionInfo'
+import { TransactionInformation } from './TransactionInfo'
 import { transferBitcoin } from './transferBitcoin'
 import { transfer } from './transferTokens'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import { UnspentTransactionType } from '../../lib/bitcoin/types'
+import { BigNumber } from 'ethers'
+import { RIFWallet } from 'src/lib/core'
+import { MixedTokenAndNetworkType } from './types'
 
 interface IPaymentExecutorContext {
   setUtxosGlobal: (utxos: UnspentTransactionType[]) => void
@@ -20,10 +22,11 @@ export const usePaymentExecutorContext = () => {
 
 export const usePaymentExecutor = () => {
   const [currentTransaction, setCurrentTransaction] =
-    useState<transactionInfo | null>(null)
+    useState<TransactionInformation | null>(null)
   const [error, setError] = useState<Error>()
   const [utxos, setUtxos] = useState<UnspentTransactionType[]>([])
   const [bitcoinBalance, setBitcoinBalance] = useState<number>(Number(0))
+
   const executePayment = ({
     token,
     amount,
@@ -31,7 +34,11 @@ export const usePaymentExecutor = () => {
     wallet,
     chainId,
   }: {
-    [key: string]: any
+    token: MixedTokenAndNetworkType
+    amount: BigNumber
+    to: string
+    wallet: RIFWallet
+    chainId: number
   }) => {
     switch (true) {
       case 'isBitcoin' in token:
@@ -47,8 +54,8 @@ export const usePaymentExecutor = () => {
         break
       default:
         transfer({
-          token: token as ITokenWithBalance,
-          amount,
+          token,
+          amount: amount.toString(),
           to,
           wallet,
           chainId,

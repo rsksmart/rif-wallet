@@ -14,7 +14,7 @@ import {
 import { colors } from '../../styles'
 import { RegularText } from '../typography'
 
-interface Interface {
+interface Props {
   title: string
   children: React.ReactNode
   showSelector: boolean
@@ -23,10 +23,9 @@ interface Interface {
   onAnimateModal: () => void
   backgroundColor: string
   headerFontColor: string
-  isKeyboardVisible: boolean
 }
 
-const SlideUpModal: React.FC<Interface> = ({
+const SlideUpModal = ({
   title,
   children,
   showSelector,
@@ -35,15 +34,16 @@ const SlideUpModal: React.FC<Interface> = ({
   onAnimateModal,
   backgroundColor,
   headerFontColor,
-  isKeyboardVisible,
-}) => {
+}: Props) => {
   const keyboard = useKeyboard()
 
-  const containerStyle = !isKeyboardVisible
+  const containerStyle = !keyboard.keyboardShown
     ? styles.containerContent
     : { ...styles.containerContent, marginBottom: keyboard.keyboardHeight - 50 }
 
-  const initialYScroll = isKeyboardVisible ? keyboard.keyboardHeight - 50 : 0
+  const initialYScroll = keyboard.keyboardShown
+    ? keyboard.keyboardHeight - 50
+    : 0
   return (
     <SwipeUpDownModal
       modalVisible={showSelector}
@@ -76,6 +76,7 @@ const SlideUpModal: React.FC<Interface> = ({
             </View>
             <View>
               <TouchableOpacity
+                accessibilityLabel="hide"
                 onPress={() => {
                   onAnimateModal()
                 }}>

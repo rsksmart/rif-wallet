@@ -1,11 +1,17 @@
-import { NavigationProp } from '@react-navigation/native'
+import { NavigationProp, NavigatorScreenParams } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
+import Resolver from '@rsksmart/rns-resolver.js'
+import { ContractTransaction } from 'ethers'
+import { ActivityMixedType } from 'src/screens/activity/types'
+import { IProfileStore } from 'src/redux/slices/profileSlice/types'
 import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
+import { CreateKeysStackParamList } from '../createKeysNavigator'
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =
   StackScreenProps<RootStackParamList, T>
 
-export type RootStackNavigationProp = NavigationProp<RootStackParamList>
+export type RootStackNavigationProp<T extends keyof RootStackParamList> =
+  NavigationProp<T>
 
 export enum rootStackRouteNames {
   Home = 'Home',
@@ -34,7 +40,6 @@ export enum rootStackRouteNames {
   RegisterDomain = 'RegisterDomain',
   Contacts = 'Contacts',
   Settings = 'Settings',
-  EventsScreen = 'EventsScreen',
   AccountsScreen = 'AccountsScreen',
   SecurityConfigurationScreen = 'SecurityConfigurationScreen',
   ProfileCreateScreen = 'ProfileCreateScreen',
@@ -44,46 +49,64 @@ export enum rootStackRouteNames {
 }
 
 export type RootStackParamList = {
-  Home: undefined
-  Send:
+  [rootStackRouteNames.Home]: undefined
+  [rootStackRouteNames.Send]:
     | undefined
     | {
         token?: string
         to?: string
+        rnsResolver?: Resolver
         displayTo?: string
         contractAddress?: string
       }
-  Receive: undefined
-  ReceiveBitcoin: {
+  [rootStackRouteNames.Receive]: undefined
+  [rootStackRouteNames.ReceiveBitcoin]: {
     network: BitcoinNetwork
   }
-  Balances: undefined
-  Activity: undefined
-  ActivityDetails: undefined
-  SignMessage: undefined
-  SignTypedData: undefined
-  TransactionReceived: undefined
-  ManuallyDeployScreen: undefined
-  CreateKeysUX: undefined
-  ShowMnemonicScreen: undefined
-  WalletConnect: undefined | { wcKey?: string }
-  ScanQR: undefined
-  ChangeLanguage: undefined
-  ManagePin: undefined
-  CreatePin: undefined
-  RNSManager: undefined
-  SearchDomain: undefined
-  RequestDomain: undefined
-  BuyDomain: undefined
-  AliasBought: undefined
-  RegisterDomain: { selectedDomain: string; years: number }
-  Contacts: undefined
-  Settings: undefined
-  EventsScreen: undefined
-  AccountsScreen: undefined
-  SecurityConfigurationScreen: undefined
-  ProfileCreateScreen: undefined
-  ProfileDetailsScreen: undefined
-  ChangePinScreen: undefined
-  FeedbackScreen: undefined
+  [rootStackRouteNames.Balances]: undefined
+  [rootStackRouteNames.Activity]: undefined
+  [rootStackRouteNames.ActivityDetails]: ActivityMixedType
+  [rootStackRouteNames.SignMessage]: undefined
+  [rootStackRouteNames.SignTypedData]: undefined
+  [rootStackRouteNames.TransactionReceived]: undefined
+  [rootStackRouteNames.ManuallyDeployScreen]: undefined
+  [rootStackRouteNames.CreateKeysUX]:
+    | NavigatorScreenParams<CreateKeysStackParamList>
+    | undefined
+  [rootStackRouteNames.ShowMnemonicScreen]: undefined
+  [rootStackRouteNames.WalletConnect]: undefined | { wcKey: string }
+  [rootStackRouteNames.ScanQR]: undefined
+  [rootStackRouteNames.ChangeLanguage]: undefined
+  [rootStackRouteNames.ManagePin]: undefined
+  [rootStackRouteNames.CreatePin]: undefined
+  [rootStackRouteNames.RNSManager]: undefined
+  [rootStackRouteNames.SearchDomain]: undefined
+  [rootStackRouteNames.RequestDomain]: {
+    alias: string
+    duration: number
+  }
+  [rootStackRouteNames.BuyDomain]: {
+    alias: string
+    domainSecret: string
+    duration: number
+  }
+  [rootStackRouteNames.AliasBought]: {
+    alias: string
+    tx: ContractTransaction
+  }
+  [rootStackRouteNames.RegisterDomain]: {
+    selectedDomain: string
+    years: number
+  }
+  [rootStackRouteNames.Contacts]: undefined
+  [rootStackRouteNames.Settings]: undefined
+  [rootStackRouteNames.AccountsScreen]: undefined
+  [rootStackRouteNames.SecurityConfigurationScreen]: undefined
+  [rootStackRouteNames.ProfileCreateScreen]: {
+    editProfile: boolean
+    profile?: IProfileStore
+  }
+  [rootStackRouteNames.ProfileDetailsScreen]: undefined
+  [rootStackRouteNames.ChangePinScreen]: undefined
+  [rootStackRouteNames.FeedbackScreen]: undefined
 }

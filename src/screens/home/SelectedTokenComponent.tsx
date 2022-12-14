@@ -1,34 +1,34 @@
-import React, { useState } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
 import { BigNumberish } from 'ethers'
-import { RegularText } from '../../components'
+import React, { useState } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import { RegularText } from '../../components'
 
-import { colors } from '../../styles'
 import { HideShowIcon } from '../../components/icons'
+import { colors } from '../../styles'
+import { fonts } from '../../styles/fonts'
 
 interface Interface {
-  accountNumber?: number
+  accountName: string
   amount: BigNumberish
   change?: number
 }
 
 const SelectedTokenComponent: React.FC<Interface> = ({
-  accountNumber,
+  accountName,
   amount,
   change,
 }) => {
   const [showBalances, setShowBalances] = useState<boolean>(true)
   const badgeColor = change && change >= 0 ? styles.greenBadge : styles.redBadge
   const onSetBalances = () => setShowBalances(!showBalances)
+
   return (
     <View style={styles.balanceCard}>
       <View style={styles.topRow}>
-        {typeof accountNumber === 'number' && (
+        {accountName && (
           <View style={styles.accountLabel}>
-            <RegularText style={styles.accountText}>{`account ${
-              accountNumber + 1
-            }`}</RegularText>
+            <RegularText style={styles.accountText}>{accountName}</RegularText>
           </View>
         )}
         <TouchableOpacity onPress={onSetBalances} accessibilityLabel="hide">
@@ -80,10 +80,31 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   accountLabel: {
+    flexDirection: 'row',
     paddingTop: 5,
+    alignItems: 'center',
   },
   accountText: {
     color: colors.darkGray,
+    borderWidth: 1,
+    borderColor: colors.lightPurple,
+    paddingHorizontal: 5,
+    paddingTop: 3,
+    paddingBottom: 1,
+  },
+  accountInput: {
+    color: colors.darkGray,
+    fontFamily: fonts.regular,
+    borderWidth: 1,
+    borderColor: colors.darkPurple,
+    borderRadius: 5,
+    paddingHorizontal: 5,
+    paddingTop: 0,
+    paddingBottom: 0,
+  },
+  editIcon: {
+    marginLeft: 2,
+    marginBottom: 5,
   },
   badge: {
     backgroundColor: colors.lightGray,
@@ -112,7 +133,6 @@ const styles = StyleSheet.create({
     fontSize: 50,
     fontWeight: '500',
   },
-
   amountHidden: {
     fontSize: 20,
     paddingVertical: 18,

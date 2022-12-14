@@ -1,22 +1,20 @@
+import { shortAddress } from 'lib/utils'
 import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/Feather'
-import DeleteIcon from '../../components/icons/DeleteIcon'
-import EditMaterialIcon from '../../components/icons/EditMaterialIcon'
-import { shortAddress } from '../../lib/utils'
-import { colors } from '../../styles'
-import { fonts } from '../../styles/fonts'
-import { useSocketsState } from '../../subscriptions/RIFSockets'
-import { IContact } from './ContactsContext'
+import { DeleteIcon, EditMaterialIcon } from 'src/components/icons'
+import { colors } from 'src/styles'
+import { fonts } from 'src/styles/fonts'
+import { Contact } from 'store/slices/contactsSlice/types'
 
 interface IContactRowProps {
   index: number
-  contact: IContact
+  contact: Contact
   selected: boolean
   hideSendButton?: boolean
-  onSend: (contact: IContact) => void
-  onDelete: (contact: IContact) => void
-  onEdit: (contact: IContact) => void
+  onSend: (contact: Contact) => void
+  onDelete: (contact: Contact) => void
+  onEdit: (contact: Contact) => void
   onPress: () => void
 }
 
@@ -28,10 +26,8 @@ export const ContactRow: React.FC<IContactRowProps> = ({
   onSend,
   onDelete,
   onEdit,
+  hideSendButton,
 }) => {
-  const { state } = useSocketsState()
-  const hideSendButton = Object.values(state.balances).length === 0
-
   return (
     <View
       style={{

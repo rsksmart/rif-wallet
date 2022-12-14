@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import {
   StyleSheet,
   View,
@@ -7,29 +7,27 @@ import {
   TouchableOpacity,
 } from 'react-native'
 import Carousel from 'react-native-snap-carousel'
-
-import {
-  CreateKeysProps,
-  CreateKeysScreenProps,
-} from '../../../navigation/createKeysNavigator/types'
 import { Trans } from 'react-i18next'
+
+import { CreateKeysScreenProps } from 'navigation/createKeysNavigator/types'
 import { colors } from '../../../styles/colors'
 
-import { Arrow } from '../../../components/icons'
+import { Arrow } from 'components/icons'
+import { PaginationNavigator } from 'components/button/PaginationNavigator'
 import { SLIDER_WIDTH, WINDOW_WIDTH } from '../../../ux/slides/Dimensions'
-import { PaginationNavigator } from '../../../components/button/PaginationNavigator'
 import { WordSelector } from './WordSelector'
 import { sharedMnemonicStyles } from './styles'
-import { saveKeyVerificationReminder } from '../../../storage/MainStorage'
+import { useKeyboardIsVisible } from 'core/hooks/useKeyboardIsVisible'
+import { useAppDispatch } from 'store/storeUtils'
+import { createWallet } from 'store/slices/settingsSlice'
+import { saveKeyVerificationReminder } from 'storage/MainStorage'
 
-interface ConfirmMasterKeyScreenProps {
-  isKeyboardVisible: boolean
-  createWallet: CreateKeysProps['createFirstWallet']
-}
-
-export const ConfirmNewMasterKeyScreen: React.FC<
-  CreateKeysScreenProps<'ConfirmNewMasterKey'> & ConfirmMasterKeyScreenProps
-> = ({ route, navigation, createWallet, isKeyboardVisible }) => {
+export const ConfirmNewMasterKeyScreen = ({
+  route,
+  navigation,
+}: CreateKeysScreenProps<'ConfirmNewMasterKey'>) => {
+  const dispatch = useAppDispatch()
+  const isKeyboardVisible = useKeyboardIsVisible()
   const mnemonic = route.params.mnemonic
   const slidesIndexes = Array.from(
     { length: Math.ceil(mnemonic.split(' ').length / 3) },
@@ -39,7 +37,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
 
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
   const [selectedWords, setSelectedWords] = useState<string[]>([])
-  const [carousel, setCarousel] = useState<any>()
+  const [carousel, setCarousel] = useState<Carousel<number>>()
   const [error, setError] = useState<boolean>(false)
 
   const handleConfirmMnemonic = async () => {
@@ -48,7 +46,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
     }
     setError(false)
     saveKeyVerificationReminder(false)
-    await createWallet(mnemonic)
+    await dispatch(createWallet({ mnemonic }))
   }
 
   const handleWordSelected = (wordSelected: string, index: number) => {
@@ -62,7 +60,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
     setError(false)
   }
 
-  const renderItem: React.FC<{ item: number }> = ({ item }) => {
+  const renderItem = ({ item }: { item: number }) => {
     const groupIndex = 3 * item
     return (
       <View>
@@ -92,7 +90,8 @@ export const ConfirmNewMasterKeyScreen: React.FC<
       <View style={sharedMnemonicStyles.topContent}>
         <TouchableOpacity
           onPress={() => navigation.navigate('NewMasterKey')}
-          style={styles.returnButton}>
+          style={styles.returnButton}
+          accessibilityLabel="back">
           <View style={styles.returnButtonView}>
             <Arrow color={colors.white} rotate={270} width={30} height={30} />
           </View>
@@ -109,7 +108,7 @@ export const ConfirmNewMasterKeyScreen: React.FC<
         <Carousel
           inactiveSlideOpacity={0}
           removeClippedSubviews={false} //https://github.com/meliorence/react-native-snap-carousel/issues/238
-          ref={c => setCarousel(c)}
+          ref={c => c && setCarousel(c)}
           data={slidesIndexes}
           renderItem={renderItem}
           sliderWidth={WINDOW_WIDTH}
@@ -132,8 +131,8 @@ export const ConfirmNewMasterKeyScreen: React.FC<
       {!isKeyboardVisible && (
         <View style={sharedMnemonicStyles.pagnationContainer}>
           <PaginationNavigator
-            onPrevious={() => carousel.snapToPrev()}
-            onNext={() => carousel.snapToNext()}
+            onPrevious={() => carousel?.snapToPrev()}
+            onNext={() => carousel?.snapToNext()}
             onComplete={handleConfirmMnemonic}
             title="confirm"
             currentIndex={selectedSlide}

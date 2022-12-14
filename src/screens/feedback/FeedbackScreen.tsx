@@ -1,13 +1,13 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import { RegularText } from '../../components'
-import { PrimaryButton2 } from '../../components/button/PrimaryButton2'
-import { TextInputWithLabel } from '../../components/input/TextInputWithLabel'
-import { colors } from '../../styles'
+import { RegularText } from 'src/components'
+import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { TextInputWithLabel } from 'src/components/input/TextInputWithLabel'
+import { colors } from 'src/styles'
 import { sendFeedbackToGithub } from './operations'
 import { ThankYouComponent } from './ThankYouComponent'
 
-export const FeedbackScreen: React.FC = () => {
+export const FeedbackScreen = () => {
   const [isSent, setIsSent] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -20,7 +20,7 @@ export const FeedbackScreen: React.FC = () => {
     if (feedback !== '') {
       sendFeedbackToGithub(name, email, feedback)
         .then(() => setIsSent(true))
-        .catch((error: any) => {
+        .catch(error => {
           console.log({ error })
           setIsLoading(false)
         })
@@ -62,8 +62,9 @@ export const FeedbackScreen: React.FC = () => {
         textAlignVertical="top"
       />
 
-      <PrimaryButton2
+      <PrimaryButton
         title="Submit"
+        accessibilityLabel="submit"
         onPress={submitFeedback}
         disabled={isLoading}
       />

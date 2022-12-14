@@ -1,17 +1,19 @@
-import React from 'react'
 import { Text, TextInput } from 'react-native'
 import { colors } from '../../styles'
 import { sharedStyles as styles } from './sharedStyles'
 
 interface IBitcoinSetAmountPresentation {
-  handleAmountChange: any
+  handleAmountChange: () => void
   amountToPay: string
   error?: string
   available?: string
 }
-export const BitcoinSetAmountPresentation: React.FC<
-  IBitcoinSetAmountPresentation
-> = ({ handleAmountChange, amountToPay, error = '', available }) => (
+export const BitcoinSetAmountPresentation = ({
+  handleAmountChange,
+  amountToPay,
+  error = '',
+  available,
+}: IBitcoinSetAmountPresentation) => (
   <>
     <Text style={styles.label}>
       amount {available && `(Available: ${available})`}

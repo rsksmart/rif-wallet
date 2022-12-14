@@ -1,31 +1,41 @@
-import React from 'react'
 import { StyleSheet } from 'react-native'
-import { colors } from '../../styles'
-import BaseButton, { BaseButtonProps } from './BaseButton'
+import { colors } from 'src/styles'
+import { StyledButton } from './StyledButton'
+import { ButtonProps } from './types'
 
-type SecondaryButtonType = {
-  children: React.ReactNode
-  style?: object
-}
-const SecondaryButton: React.FC<BaseButtonProps & SecondaryButtonType> = ({
-  children,
-  style = {},
-  ...props
-}) => (
-  <BaseButton style={{ ...styles.buttonStyle, ...style }} {...props}>
-    {children}
-  </BaseButton>
+export const SecondaryButton = (props: ButtonProps) => (
+  <StyledButton {...props} title={props.title || ''} buttonStyles={styles} />
 )
 
 const styles = StyleSheet.create({
-  buttonStyle: {
-    borderRadius: 40,
-    backgroundColor: colors.background.lightSteelBlue,
-    paddingVertical: 20,
-    marginHorizontal: 10,
-    width: 150,
-    alignItems: 'center',
+  button: {
+    borderWidth: 1,
+    borderColor: colors.lightPurple,
+    backgroundColor: colors.background.darkBlue,
+  },
+  buttonDisabled: {
+    borderWidth: 1,
+    borderColor: colors.lightPurple,
+    backgroundColor: colors.background.darkBlue,
+    opacity: 0.5,
+  },
+  buttonActive: {
+    backgroundColor: colors.button.secondary,
+  },
+  buttonPressed: {
+    borderWidth: 1,
+    borderColor: colors.lightPurple,
+    backgroundColor: colors.button.secondaryPressed,
+    opacity: 0.8,
+  },
+  text: {
+    color: colors.lightPurple,
+  },
+  textDisabled: {
+    color: colors.lightPurple,
+    opacity: 0.5,
+  },
+  textPressed: {
+    color: colors.button.secondary,
   },
 })
-
-export default SecondaryButton

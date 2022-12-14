@@ -1,16 +1,15 @@
-import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
 import { RegularText } from '../../components/typography'
 import { sharedStyles } from '../../shared/styles'
 
-type IRealOnlyField = {
+interface IRealOnlyField {
   label: string
   value: string
   testID: string
 }
 
-const ReadOnlyField: React.FC<IRealOnlyField> = ({ label, value, testID }) => {
+const ReadOnlyField = ({ label, value, testID }: IRealOnlyField) => {
   return (
     <>
       <View>

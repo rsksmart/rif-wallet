@@ -73,7 +73,7 @@ const parseSignatureWithParametersNames = (
 
 export class OtherEnhanceStrategy implements IEnhanceStrategy {
   public async parse(
-    signer: Signer,
+    _: Signer,
     transactionRequest: TransactionRequest,
   ): Promise<IEnhancedResult | null> {
     if (!transactionRequest.data) {
@@ -98,7 +98,7 @@ export class OtherEnhanceStrategy implements IEnhanceStrategy {
     const [functionName, parametersTypes] = parseSignature(signatures)
 
     let parametersNames: string[] = []
-    let parametersValues: ReadonlyArray<any> = []
+    let parametersValues: ReadonlyArray<string> = []
 
     if (parametersTypes.length > 0) {
       parametersNames = parseSignatureWithParametersNames(
@@ -112,12 +112,12 @@ export class OtherEnhanceStrategy implements IEnhanceStrategy {
       )
     }
 
-    let result: IEnhancedResult = {
+    const result: IEnhancedResult = {
       ...transactionRequest,
       functionName,
       functionParameters: [],
-      from: transactionRequest.from!,
-      to: transactionRequest.to!,
+      from: transactionRequest.from,
+      to: transactionRequest.to,
     }
     for (let index = 0; index < parametersNames.length; index++) {
       const name = parametersNames[index]

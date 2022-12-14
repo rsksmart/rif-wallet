@@ -1,9 +1,10 @@
-import { payments } from 'bitcoinjs-lib'
+import { Network, payments } from 'bitcoinjs-lib'
 
 export default class AddressFactory {
   purpose: string | number
-  network: any
-  constructor(purpose = 84, network: any) {
+  network: Network
+
+  constructor(purpose = 84, network: Network) {
     this.purpose = purpose
     this.network = network
   }

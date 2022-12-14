@@ -9,7 +9,7 @@ type CreateRIFWallet = (wallet: Wallet) => Promise<RIFWallet>
 export const loadExistingWallets =
   (createRIFWallet: CreateRIFWallet) => async () => {
     const serializedKeys = getKeys()
-    const { kms, wallets } = KeyManagementSystem.fromSerialized(serializedKeys!)
+    const { kms, wallets } = KeyManagementSystem.fromSerialized(serializedKeys)
 
     const rifWallets = await Promise.all(wallets.map(createRIFWallet))
     const isDeployedWallets = await Promise.all(
@@ -30,7 +30,7 @@ export const loadExistingWallets =
     return { kms, rifWalletsDictionary, rifWalletsIsDeployedDictionary }
   }
 
-export const creteKMS =
+export const createKMS =
   (createRIFWallet: CreateRIFWallet, networkId: number) =>
   async (mnemonic: string) => {
     const kms = KeyManagementSystem.import(mnemonic)

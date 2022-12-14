@@ -1,16 +1,18 @@
 import EventEmitter from 'events'
-import { io } from 'socket.io-client'
-import { enhanceTransactionInput } from '../../screens/activity/ActivityScreen'
-import { MMKVStorage } from '../../storage/MMKVStorage'
-import { IActivityTransaction } from '../../subscriptions/types'
+import { io, Socket } from 'socket.io-client'
+
+import { enhanceTransactionInput } from 'screens/activity/ActivityScreen'
+import { MMKVStorage } from 'src/storage/MMKVStorage'
+import { IActivityTransaction } from 'src/subscriptions/types'
 import { IAbiEnhancer } from '../abiEnhancer/AbiEnhancer'
 import { RIFWallet } from '../core'
 import { IRIFWalletServicesFetcher } from './RifWalletServicesFetcher'
 import { IApiTransaction, ITokenWithBalance } from './RIFWalletServicesTypes'
+import { filterEnhancedTransactions } from 'src/subscriptions/utils'
 
 export interface IServiceChangeEvent {
   type: string
-  payload: any
+  payload: unknown // TODO: what is the payload?
 }
 
 export interface IServiceInitEvent {
@@ -35,7 +37,7 @@ export class RifWalletServicesSocket
   private rifWalletServicesUrl: string
   private fetcher: IRIFWalletServicesFetcher
   private abiEnhancer: IAbiEnhancer
-  private socket: any
+  private socket: Socket | undefined
 
   constructor(
     rifWalletServicesUrl: string,
@@ -51,12 +53,22 @@ export class RifWalletServicesSocket
 
   private async init(wallet: RIFWallet, encryptionKey: string) {
     const cache = new MMKVStorage('txs', encryptionKey)
+    const blockNumber = cache.get('blockNumber') || '0'
+    const catchedTxs = cache.get('cachedTxs') || []
     const fetchedTransactions = await this.fetcher.fetchTransactionsByAddress(
       wallet.smartWalletAddress,
+      null,
+      null,
+      blockNumber,
     )
 
-    const activityTransactions = await Promise.all<IActivityTransaction[]>(
+    let lastBlockNumber = blockNumber
+    const activityTransactions = await Promise.all(
+      // TODO: why Promise.all?
       fetchedTransactions.data.map(async (tx: IApiTransaction) => {
+        if (parseInt(blockNumber, 10) < tx.blockNumber) {
+          lastBlockNumber = tx.blockNumber
+        }
         if (cache.has(tx.hash)) {
           return {
             originTransaction: tx,
@@ -68,20 +80,31 @@ export class RifWalletServicesSocket
           wallet,
           this.abiEnhancer,
         )
-        cache.set(tx.hash, enhancedTransaction)
-        return {
-          originTransaction: tx,
-          enhancedTransaction,
-        } as any
+        if (enhancedTransaction) {
+          cache.set(tx.hash, enhancedTransaction)
+          return {
+            originTransaction: tx,
+            enhancedTransaction,
+          }
+        } else {
+          return {
+            originTransaction: tx,
+            enhancedTransaction: undefined,
+          }
+        }
       }),
     )
-
-    const fetchedTokens = (await this.fetcher.fetchTokensByAddress(
+    const transactions = catchedTxs
+      .concat(activityTransactions)
+      .filter(filterEnhancedTransactions)
+    cache.set('cachedTxs', transactions)
+    cache.set('blockNumber', lastBlockNumber.toString())
+    const fetchedTokens = await this.fetcher.fetchTokensByAddress(
       wallet.smartWalletAddress,
-    )) as ITokenWithBalance[]
+    )
 
     this.emit('init', {
-      transactions: activityTransactions,
+      transactions: transactions,
       balances: fetchedTokens,
     })
   }
@@ -110,7 +133,9 @@ export class RifWalletServicesSocket
       this.socket = socket
     } catch (error) {
       console.error('socket error', error)
-      throw new Error(error)
+      if (error instanceof Error) {
+        throw new Error(error.toString())
+      }
     }
   }
 

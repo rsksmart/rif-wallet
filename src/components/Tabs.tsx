@@ -1,20 +1,14 @@
-import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { colors } from '../styles'
 
-type Props = {
+interface Props {
   title: string
   tabs: string[]
   selectedTab: string
-  onTabSelected: any
+  onTabSelected: (tab: string) => void
 }
 
-export const Tabs: React.FC<Props> = ({
-  title,
-  tabs,
-  selectedTab,
-  onTabSelected,
-}) => {
+export const Tabs = ({ title, tabs, selectedTab, onTabSelected }: Props) => {
   return (
     <View style={styles.container}>
       <View style={styles.tabTitleContainer}>
@@ -27,7 +21,10 @@ export const Tabs: React.FC<Props> = ({
               ? { ...styles.tab, ...styles.selectedTab }
               : styles.tab
           return (
-            <TouchableOpacity key={tab} onPress={() => onTabSelected(tab)}>
+            <TouchableOpacity
+              key={tab}
+              onPress={() => onTabSelected(tab)}
+              accessibilityLabel={tab}>
               <Text style={[tabStyle, styles.tabText]}>{tab}</Text>
             </TouchableOpacity>
           )

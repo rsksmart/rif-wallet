@@ -10,21 +10,27 @@ import Clipboard from '@react-native-community/clipboard'
 import { colors, spacing } from '../../styles/'
 import { TokenImage } from '../home/TokenImage'
 import { SearchIcon } from '../../components/icons/SearchIcon'
-import StatusIcon from '../../components/statusIcons'
+import { StatusIcon } from '../../components/statusIcons'
+import { getWalletSetting, SETTINGS } from 'src/core/config'
+import { useAppSelector } from 'store/storeUtils'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
 
-export interface transactionInfo {
+export interface TransactionInformation {
+  status: 'USER_CONFIRM' | 'PENDING' | 'SUCCESS' | 'FAILED'
   to?: string
   value?: string
   symbol?: string
   hash?: string
-  status: 'USER_CONFIRM' | 'PENDING' | 'SUCCESS' | 'FAILED'
 }
 
 type Props = {
-  transaction: transactionInfo
+  transaction: TransactionInformation
 }
 
-const TransactionInfo = ({ transaction }: Props) => {
+export const TransactionInfo = ({ transaction }: Props) => {
+  const { chainId } = useAppSelector(selectActiveWallet)
+  const explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainId)
+
   if (transaction.status === 'USER_CONFIRM' || !transaction.hash) {
     return (
       <View style={styles.mainLoadingContainer}>
@@ -38,7 +44,7 @@ const TransactionInfo = ({ transaction }: Props) => {
   }
 
   const onViewExplorerTouch = () =>
-    Linking.openURL(`https://explorer.testnet.rsk.co/tx/${transaction.hash}`)
+    Linking.openURL(`${explorerUrl}/tx/${transaction.hash}`)
 
   const onCopyHash = () => Clipboard.setString(transaction.hash || '')
 
@@ -79,7 +85,7 @@ const TransactionInfo = ({ transaction }: Props) => {
         </View>
       </View>
       <View style={spacing.mb30}>
-        <TouchableOpacity onPress={onCopyHash}>
+        <TouchableOpacity onPress={onCopyHash} accessibilityLabel="copy">
           <Text style={styles.label}>tx hash</Text>
           <Text style={styles.font16Bold}>{transaction.hash}</Text>
         </TouchableOpacity>
@@ -87,7 +93,8 @@ const TransactionInfo = ({ transaction }: Props) => {
       <View style={styles.buttonRow}>
         <TouchableOpacity
           onPress={onViewExplorerTouch}
-          testID="Hash.OpenURLButton">
+          testID="Hash.OpenURLButton"
+          accessibilityLabel="explorer">
           <View style={styles.buttonContainer}>
             <SearchIcon color="white" height={25} width={25} />
             <Text style={styles.buttonText}>view in explorer</Text>
@@ -142,5 +149,3 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 })
-
-export default TransactionInfo

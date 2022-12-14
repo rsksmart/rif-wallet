@@ -25,7 +25,10 @@ export const ShareableText: React.FC<Props> = ({ text, valueToShare }) => {
         </Text>
       </View>
       <View style={styles.actions}>
-        <TouchableOpacity onPress={handleShare} testID={TestID.ShareButton}>
+        <TouchableOpacity
+          onPress={handleShare}
+          testID={TestID.ShareButton}
+          accessibilityLabel="share">
           <ShareIcon
             style={styles.icon}
             width={30}
@@ -33,7 +36,10 @@ export const ShareableText: React.FC<Props> = ({ text, valueToShare }) => {
             color={'white'}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleCopy} testID={TestID.CopyButton}>
+        <TouchableOpacity
+          onPress={handleCopy}
+          testID={TestID.CopyButton}
+          accessibilityLabel="copy">
           <CopyIcon
             style={styles.icon}
             width={30}

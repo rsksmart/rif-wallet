@@ -1,18 +1,28 @@
-import React, { useEffect, useState } from 'react'
-import { ScrollView } from 'react-native-gesture-handler'
-import { Transaction, BigNumber } from 'ethers'
-import { ScreenWithWallet } from '../types'
-import { Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Clipboard from '@react-native-community/clipboard'
-import { colors, grid } from '../../styles'
-import SecondaryButton from '../../components/button/SecondaryButton'
-import { CopyIcon } from '../../components/icons'
+import { BigNumber, Transaction } from 'ethers'
+import { useEffect, useState } from 'react'
+import {
+  Linking,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ScrollView,
+} from 'react-native'
 
-export const ManuallyDeployScreen: React.FC<
-  ScreenWithWallet & {
-    setWalletIsDeployed: (address: string, value?: boolean) => void
-  }
-> = ({ wallet, isWalletDeployed, setWalletIsDeployed }) => {
+import { CopyIcon } from 'components/icons'
+import { PrimaryButton } from 'components/button/PrimaryButton'
+import { SecondaryButton } from 'components/button/SecondaryButton'
+import { useAppDispatch } from 'store/storeUtils'
+import { setWalletIsDeployed } from 'store/slices/settingsSlice'
+import { ScreenWithWallet } from '../types'
+import { colors, grid } from '../../styles'
+
+export const ManuallyDeployScreen = ({
+  wallet,
+  isWalletDeployed,
+}: ScreenWithWallet) => {
+  const dispatch = useAppDispatch()
   const [eoaBalance, setEoaBalance] = useState<BigNumber>(BigNumber.from(0))
   const [isDeploying, setIsDeploying] = useState<boolean>(false)
   const [deployError, setDeployError] = useState<string | null>(null)
@@ -38,7 +48,12 @@ export const ManuallyDeployScreen: React.FC<
       await txPromise.wait()
       await wallet.smartWalletFactory.isDeployed().then(async result => {
         setIsDeployed(result)
-        setWalletIsDeployed(wallet.smartWallet.address, result)
+        dispatch(
+          setWalletIsDeployed({
+            address: wallet.smartWallet.address,
+            value: result,
+          }),
+        )
         setIsDeploying(false)
       })
     } catch (error) {
@@ -81,7 +96,8 @@ export const ManuallyDeployScreen: React.FC<
               <View style={grid.column1}>
                 <TouchableOpacity
                   style={styles.button}
-                  onPress={() => Clipboard.setString(wallet.address)}>
+                  onPress={() => Clipboard.setString(wallet.address)}
+                  accessibilityLabel="copy">
                   <CopyIcon width={25} height={25} color="white" />
                 </TouchableOpacity>
               </View>
@@ -101,19 +117,21 @@ export const ManuallyDeployScreen: React.FC<
             {!hasBalance && (
               <SecondaryButton
                 onPress={() => Linking.openURL('https://faucet.rsk.co/')}
-                style={styles.button}>
-                <Text>Open the RBTC Faucet in your browser</Text>
-              </SecondaryButton>
+                style={styles.button}
+                title="Open the RBTC Faucet in your browser"
+                accessibilityLabel="faucet"
+              />
             )}
           </View>
 
           <Text style={styles.heading}>Step 2: Deploy the wallet</Text>
-          <SecondaryButton
+          <PrimaryButton
             disabled={!hasBalance}
             onPress={deploy || isDeploying}
-            style={!hasBalance ? styles.buttonDisabled : styles.button}>
-            <Text>Deploy Wallet</Text>
-          </SecondaryButton>
+            style={!hasBalance ? styles.buttonDisabled : styles.button}
+            title="Deploy Wallet"
+            accessibilityLabel="deploy"
+          />
 
           {isDeploying && <Text style={styles.text}>Deploying...</Text>}
 
@@ -121,7 +139,8 @@ export const ManuallyDeployScreen: React.FC<
             <TouchableOpacity
               onPress={() =>
                 Clipboard.setString(smartWalletDeployTx.hash || '')
-              }>
+              }
+              accessibilityLabel="explorer">
               <Text style={styles.text}>
                 {smartWalletDeployTx.hash || ''}
                 <CopyIcon />

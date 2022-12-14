@@ -1,27 +1,19 @@
 import { createStackNavigator } from '@react-navigation/stack'
+import JailMonkey from 'jail-monkey'
 import { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import JailMonkey from 'jail-monkey'
 
 import { InjectSelectedWallet } from '../../Context'
-import { IRifWalletServicesSocket } from '../../lib/rifWalletServices/RifWalletServicesSocket'
 
 import * as Screens from '../../screens'
-import {
-  CreateKeysNavigation,
-  CreateKeysProps,
-} from 'navigation/createKeysNavigator'
+import { CreateKeysNavigation } from 'navigation/createKeysNavigator'
 import { colors } from '../../styles'
 import { AppFooterMenu } from '../../ux/appFooter'
 import { AppHeader } from '../../ux/appHeader'
 
-import { emptyProfile, useProfile } from '../../core/hooks/useProfile'
-import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
-import {
-  RootStackParamList,
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from './types'
+import { ConfirmationModal } from 'components/modal/ConfirmationModal'
+import { RootStackParamList, rootStackRouteNames } from './types'
+import { hasKeys, hasPin } from 'storage/MainStorage'
 
 const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -31,7 +23,6 @@ const InjectedScreens = {
   ManuallyDeployScreen: InjectSelectedWallet(Screens.ManuallyDeployScreen),
   WalletConnectScreen: InjectSelectedWallet(Screens.WalletConnectScreen),
   ScanQRScreen: InjectSelectedWallet(Screens.ScanQRScreen),
-  RNSManagerScreen: InjectSelectedWallet(Screens.RNSManagerScreen),
   SearchDomainScreen: InjectSelectedWallet(Screens.SearchDomainScreen),
   RequestDomainScreen: InjectSelectedWallet(Screens.RequestDomainScreen),
   RegisterDomainScreen: InjectSelectedWallet(Screens.RegisterDomainScreen),
@@ -52,83 +43,35 @@ const sharedOptions = {
 
 interface Props {
   currentScreen: string
-  hasKeys: boolean
-  hasPin: boolean
-  isKeyboardVisible: boolean
-  changeTopColor: (color: string) => void
-  rifWalletServicesSocket: IRifWalletServicesSocket
-  keyManagementProps: CreateKeysProps
-  createPin: (newPin: string) => Promise<void>
-  editPin: (newPin: string) => void
-  setWalletIsDeployed: (address: string, value?: boolean) => void
-  balancesScreenProps: Screens.BalancesScreenProps
-  activityScreenProps: Screens.ActivityScreenProps
-  showMnemonicScreenProps: Screens.ShowMnemonicScreenProps
-  sendScreenProps: RootStackScreenProps<'Send'>
-  walletConnectScreenProps: RootStackScreenProps<'WalletConnect'>
-  accountsScreenType: Screens.AccountsScreenType
-  securityConfigurationScreenProps: Screens.SecurityScreenProps
 }
 
-export const RootNavigationComponent = ({
-  currentScreen,
-  hasKeys,
-  hasPin,
-  isKeyboardVisible,
-  changeTopColor,
-  keyManagementProps,
-  createPin,
-  editPin,
-  balancesScreenProps,
-  activityScreenProps,
-  showMnemonicScreenProps,
-  sendScreenProps,
-  walletConnectScreenProps,
-  accountsScreenType,
-  securityConfigurationScreenProps,
-  setWalletIsDeployed,
-}: Props) => {
-  const { profile, setProfile, storeProfile, eraseProfile, profileCreated } =
-    useProfile(emptyProfile)
-
+export const RootNavigationComponent = ({ currentScreen }: Props) => {
   const isDeviceRooted = JailMonkey.isJailBroken()
   const [isWarningVisible, setIsWarningVisible] = useState(isDeviceRooted)
 
   let initialRoute: rootStackRouteNames = rootStackRouteNames.CreateKeysUX
-  if (hasPin) {
+  if (hasPin()) {
     initialRoute = rootStackRouteNames.Home
-  } else if (hasKeys) {
+  } else if (hasKeys()) {
     initialRoute = rootStackRouteNames.ChangePinScreen
   }
 
-  const appIsSetup = hasKeys && hasPin
+  const appIsSetup = hasKeys() && hasPin()
 
   return (
     <View style={styles.parent}>
-      {appIsSetup && (
-        <AppHeader profile={profile} profileCreated={profileCreated} />
-      )}
+      {appIsSetup && <AppHeader />}
       <RootStack.Navigator initialRouteName={initialRoute}>
         <RootStack.Screen
           name={rootStackRouteNames.Home}
-          options={sharedOptions}>
-          {props => (
-            <InjectedScreens.HomeScreen
-              {...props}
-              changeTopColor={changeTopColor}
-            />
-          )}
-        </RootStack.Screen>
+          component={InjectedScreens.HomeScreen}
+          options={sharedOptions}
+        />
         <RootStack.Screen
           name={rootStackRouteNames.WalletConnect}
-          options={sharedOptions}>
-          {props => (
-            <InjectedScreens.WalletConnectScreen
-              {...props}
-              {...walletConnectScreenProps}
-            />
-          )}
-        </RootStack.Screen>
+          component={InjectedScreens.WalletConnectScreen}
+          options={sharedOptions}
+        />
         <RootStack.Screen
           name={rootStackRouteNames.ScanQR}
           component={InjectedScreens.ScanQRScreen}
@@ -137,20 +80,14 @@ export const RootNavigationComponent = ({
 
         <RootStack.Screen
           name={rootStackRouteNames.Settings}
-          options={sharedOptions}
           component={Screens.SettingsScreen}
+          options={sharedOptions}
         />
         <RootStack.Screen
           name={rootStackRouteNames.CreateKeysUX}
-          options={sharedOptions}>
-          {props => (
-            <CreateKeysNavigation
-              {...props}
-              {...keyManagementProps}
-              isKeyboardVisible={isKeyboardVisible}
-            />
-          )}
-        </RootStack.Screen>
+          component={CreateKeysNavigation}
+          options={sharedOptions}
+        />
         <RootStack.Screen
           name={rootStackRouteNames.Receive}
           component={Screens.ReceiveScreenHOC}
@@ -158,34 +95,23 @@ export const RootNavigationComponent = ({
         />
         <RootStack.Screen
           name={rootStackRouteNames.Send}
-          options={sharedOptions}>
-          {props => (
-            <InjectedScreens.SendScreen {...props} {...sendScreenProps} />
-          )}
-        </RootStack.Screen>
+          component={InjectedScreens.SendScreen}
+          options={sharedOptions}
+        />
         <RootStack.Screen
           name={rootStackRouteNames.ReceiveBitcoin}
           component={Screens.BitcoinReceiveScreen}
           options={sharedOptions}
         />
-        <RootStack.Screen name={rootStackRouteNames.Balances}>
-          {props => (
-            <InjectedScreens.BalancesScreen
-              {...props}
-              {...balancesScreenProps}
-            />
-          )}
-        </RootStack.Screen>
+        <RootStack.Screen
+          name={rootStackRouteNames.Balances}
+          component={InjectedScreens.BalancesScreen}
+        />
         <RootStack.Screen
           name={rootStackRouteNames.Activity}
-          options={sharedOptions}>
-          {props => (
-            <InjectedScreens.ActivityScreen
-              {...props}
-              {...activityScreenProps}
-            />
-          )}
-        </RootStack.Screen>
+          component={InjectedScreens.ActivityScreen}
+          options={sharedOptions}
+        />
         <RootStack.Screen
           name={rootStackRouteNames.ActivityDetails}
           component={InjectedScreens.ActivityDetailsScreen}
@@ -193,50 +119,24 @@ export const RootNavigationComponent = ({
         />
         <RootStack.Screen
           name={rootStackRouteNames.ManuallyDeployScreen}
-          options={sharedOptions}>
-          {props => (
-            <InjectedScreens.ManuallyDeployScreen
-              {...props}
-              setWalletIsDeployed={setWalletIsDeployed}
-            />
-          )}
-        </RootStack.Screen>
+          component={InjectedScreens.ManuallyDeployScreen}
+          options={sharedOptions}
+        />
         <RootStack.Screen
           name={rootStackRouteNames.AccountsScreen}
-          options={sharedOptions}>
-          {props => (
-            <InjectedScreens.AccountsScreen
-              {...props}
-              {...accountsScreenType}
-            />
-          )}
-        </RootStack.Screen>
+          component={InjectedScreens.AccountsScreen}
+          options={sharedOptions}
+        />
         <RootStack.Screen
           name={rootStackRouteNames.ShowMnemonicScreen}
-          options={sharedOptions}>
-          {props => (
-            <Screens.ShowMnemonicScreen
-              {...props}
-              {...showMnemonicScreenProps}
-            />
-          )}
-        </RootStack.Screen>
-        <RootStack.Screen
-          name={rootStackRouteNames.RNSManager}
-          options={sharedOptions}>
-          {props => (
-            <InjectedScreens.RNSManagerScreen
-              {...props}
-              profile={profile}
-              setProfile={setProfile}
-            />
-          )}
-        </RootStack.Screen>
+          component={Screens.ShowMnemonicScreen}
+          options={sharedOptions}
+        />
 
         <RootStack.Screen
           name={rootStackRouteNames.SearchDomain}
-          options={sharedOptions}
           component={InjectedScreens.SearchDomainScreen}
+          options={sharedOptions}
         />
         <RootStack.Screen
           name={rootStackRouteNames.RequestDomain}
@@ -252,16 +152,9 @@ export const RootNavigationComponent = ({
 
         <RootStack.Screen
           name={rootStackRouteNames.AliasBought}
-          options={sharedOptions}>
-          {props => (
-            <InjectedScreens.AliasBoughtScreen
-              {...props}
-              profile={profile}
-              setProfile={setProfile}
-            />
-          )}
-        </RootStack.Screen>
-
+          component={InjectedScreens.AliasBoughtScreen}
+          options={sharedOptions}
+        />
         <RootStack.Screen
           name={rootStackRouteNames.RegisterDomain}
           component={InjectedScreens.RegisterDomainScreen}
@@ -275,65 +168,41 @@ export const RootNavigationComponent = ({
 
         <RootStack.Screen
           name={rootStackRouteNames.CreatePin}
-          options={sharedOptions}>
-          {props => (
-            <Screens.CreatePinScreen {...props} createPin={createPin} />
-          )}
-        </RootStack.Screen>
+          options={sharedOptions}
+          component={Screens.CreatePinScreen}
+        />
         <RootStack.Screen
           name={rootStackRouteNames.ChangePinScreen}
-          options={sharedOptions}>
-          {props => <Screens.ChangePinScreen {...props} editPin={editPin} />}
-        </RootStack.Screen>
+          options={sharedOptions}
+          component={Screens.ChangePinScreen}
+        />
         <RootStack.Screen
           name={rootStackRouteNames.Contacts}
           options={sharedOptions}
           component={Screens.ContactsNavigation}
         />
         <RootStack.Screen
-          name={rootStackRouteNames.EventsScreen}
-          component={Screens.EventsScreen}
+          name={rootStackRouteNames.SecurityConfigurationScreen}
+          component={Screens.SecurityConfigurationScreen}
           options={sharedOptions}
         />
         <RootStack.Screen
-          name={rootStackRouteNames.SecurityConfigurationScreen}
-          options={sharedOptions}>
-          {props => (
-            <Screens.SecurityConfigurationScreen
-              {...props}
-              {...securityConfigurationScreenProps}
-            />
-          )}
-        </RootStack.Screen>
-        <RootStack.Screen
           name={rootStackRouteNames.ProfileCreateScreen}
-          options={sharedOptions}>
-          {props => (
-            <Screens.ProfileCreateScreen
-              {...props}
-              profile={profile}
-              setProfile={setProfile}
-              storeProfile={storeProfile}
-              eraseProfile={eraseProfile}
-            />
-          )}
-        </RootStack.Screen>
+          component={Screens.ProfileCreateScreen}
+          options={sharedOptions}
+        />
         <RootStack.Screen
           name={rootStackRouteNames.ProfileDetailsScreen}
-          options={sharedOptions}>
-          {props => (
-            <Screens.ProfileDetailsScreen {...props} profile={profile} />
-          )}
-        </RootStack.Screen>
+          component={Screens.ProfileDetailsScreen}
+          options={sharedOptions}
+        />
         <RootStack.Screen
           name={rootStackRouteNames.FeedbackScreen}
           component={Screens.FeedbackScreen}
           options={sharedOptions}
         />
       </RootStack.Navigator>
-      {appIsSetup && !isKeyboardVisible && (
-        <AppFooterMenu currentScreen={currentScreen} />
-      )}
+      {appIsSetup && <AppFooterMenu currentScreen={currentScreen} />}
       <ConfirmationModal
         isVisible={isWarningVisible}
         title="DEVICE SECURITY COMPROMISED"
@@ -347,7 +216,7 @@ export const RootNavigationComponent = ({
 
 const styles = StyleSheet.create({
   parent: {
-    height: '100%',
+    flex: 1,
   },
 })
 

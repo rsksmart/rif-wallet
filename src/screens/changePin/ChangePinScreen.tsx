@@ -1,19 +1,20 @@
-import React, { useState, useRef } from 'react'
-import { PinManager } from '../../components/PinManager'
+import { useState, useRef } from 'react'
+import { TouchableOpacity, View, StyleSheet } from 'react-native'
+
 import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
-import { TouchableOpacity, View, StyleSheet } from 'react-native'
-import { Arrow } from '../../components/icons'
-import { MediumText } from '../../components'
+import { PinManager } from 'components/PinManager'
+import { Arrow } from 'components/icons'
+import { MediumText } from 'components/index'
+import { useAppDispatch } from 'store/storeUtils'
+import { setPinState } from 'store/slices/settingsSlice'
 
-type ChangePinProps = {
-  editPin: any
-}
-const ChangePinScreen: React.FC<
-  RootStackScreenProps<'ChangePinScreen'> & ChangePinProps
-> = ({ editPin, navigation }) => {
+export const ChangePinScreen = ({
+  navigation,
+}: RootStackScreenProps<rootStackRouteNames.ChangePinScreen>) => {
+  const dispatch = useAppDispatch()
   const [currentStep, setCurrentStep] = useState(1)
 
   const pinSteps = useRef({
@@ -28,7 +29,7 @@ const ChangePinScreen: React.FC<
     if (!isSubmitting.current) {
       isSubmitting.current = true
       try {
-        editPin(pinSteps.current.pin)
+        dispatch(setPinState(pinSteps.current.pin))
         navigation.navigate(rootStackRouteNames.Home)
       } catch (error) {
         setPinError(
@@ -67,7 +68,7 @@ const ChangePinScreen: React.FC<
     }
     return null
   }
-  const stepper: { [key: number]: any } = {
+  const stepper: { [key: number]: JSX.Element } = {
     1: <PinManager title="Enter new PIN" handleSubmit={onPinChange(1)} />,
     2: (
       <>

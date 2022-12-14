@@ -1,4 +1,4 @@
-import React from 'react'
+import { useMemo } from 'react'
 import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -11,29 +11,29 @@ import DiscoverTuneIcon from '../../components/icons/DiscoverTuneIcon'
 import LockIcon from '../../components/icons/LockIcon'
 import AccountsIcon from '../../components/icons/AccountsIcon'
 
-export const SettingsScreen: React.FC<RootStackScreenProps<'Settings'>> = ({
+export const SettingsScreen = ({
   navigation,
-}) => {
-  const smartWalletFactoryAddress = React.useMemo(
+}: RootStackScreenProps<'Settings'>) => {
+  const smartWalletFactoryAddress = useMemo(
     () => getWalletSetting(SETTINGS.SMART_WALLET_FACTORY_ADDRESS),
     [],
   )
 
-  const rpcUrl = React.useMemo(() => getWalletSetting(SETTINGS.RPC_URL), [])
+  const rpcUrl = useMemo(() => getWalletSetting(SETTINGS.RPC_URL), [])
 
-  const walletServiceUrl = React.useMemo(
+  const walletServiceUrl = useMemo(
     () => getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL),
     [],
   )
 
-  const goToChangeLanguage = () => navigation.navigate('ChangeLanguage' as any)
+  const goToChangeLanguage = () => navigation.navigate('ChangeLanguage')
 
-  const goToAccountsScreen = () => navigation.navigate('AccountsScreen' as any)
+  const goToAccountsScreen = () => navigation.navigate('AccountsScreen')
 
   const goToSecurityConfiguration = () =>
-    navigation.navigate('SecurityConfigurationScreen' as any)
+    navigation.navigate('SecurityConfigurationScreen')
 
-  const goToDeploy = () => navigation.navigate('ManuallyDeployScreen' as any)
+  const goToDeploy = () => navigation.navigate('ManuallyDeployScreen')
 
   const goToFeedbackScreen = () => navigation.navigate('FeedbackScreen')
 
@@ -41,6 +41,7 @@ export const SettingsScreen: React.FC<RootStackScreenProps<'Settings'>> = ({
     <ScrollView style={styles.container}>
       <View style={styles.mainView}>
         <TouchableOpacity
+          accessibilityLabel="language"
           onPress={goToChangeLanguage}
           style={styles.rowComponent}>
           <DiscoverTuneIcon width={18} height={18} />
@@ -50,6 +51,7 @@ export const SettingsScreen: React.FC<RootStackScreenProps<'Settings'>> = ({
         </TouchableOpacity>
         {/* @TODO add link to go to the accounts screen */}
         <TouchableOpacity
+          accessibilityLabel="account"
           style={styles.rowComponent}
           onPress={goToAccountsScreen}>
           <AccountsIcon width={18} height={18} />
@@ -58,6 +60,7 @@ export const SettingsScreen: React.FC<RootStackScreenProps<'Settings'>> = ({
           </SemiBoldText>
         </TouchableOpacity>
         <TouchableOpacity
+          accessibilityLabel="security"
           style={styles.rowComponent}
           onPress={goToSecurityConfiguration}>
           <LockIcon />
@@ -65,13 +68,17 @@ export const SettingsScreen: React.FC<RootStackScreenProps<'Settings'>> = ({
             Security
           </SemiBoldText>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.rowComponent} onPress={goToDeploy}>
+        <TouchableOpacity
+          style={styles.rowComponent}
+          onPress={goToDeploy}
+          accessibilityLabel="deploy">
           <Icon name="wallet-outline" color={colors.white} size={20} />
           <SemiBoldText style={[styles.textColor, spacing.ml6]}>
             Smart Wallet Deploy
           </SemiBoldText>
         </TouchableOpacity>
         <TouchableOpacity
+          accessibilityLabel="feedback"
           style={styles.rowComponent}
           onPress={goToFeedbackScreen}>
           <FontAwesomeIcon name="comment" color={colors.white} size={20} />

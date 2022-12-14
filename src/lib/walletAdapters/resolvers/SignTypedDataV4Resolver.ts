@@ -9,7 +9,8 @@ export class SignTypedDataV4Resolver implements IResolver {
     this.signer = signer
   }
 
-  async resolve(params: any[]) {
+  async resolve(params: string[]) {
+    // TODO: what is the type here?
     const { domain, message, types } = JSON.parse(params[1])
 
     // delete domain type

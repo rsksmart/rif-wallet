@@ -1,15 +1,15 @@
-import Clipboard from '@react-native-community/clipboard'
-import { isValidChecksumAddress } from '@rsksmart/rsk-utils'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Text, TextInput, View } from 'react-native'
+import Clipboard from '@react-native-community/clipboard'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { rnsResolver } from '../../core/setup'
-import { decodeString } from '../../lib/eip681/decodeString'
-import { colors, grid } from '../../styles'
-import { SecondaryButton2 } from '../button/SecondaryButton2'
-import { ContentPasteIcon, QRCodeIcon } from '../icons'
-import DeleteIcon from '../icons/DeleteIcon'
+import { isValidChecksumAddress } from '@rsksmart/rsk-utils'
+
+import { rnsResolver } from 'src/core/setup'
+import { decodeString } from 'src/lib/eip681/decodeString'
+import { colors, grid } from 'src/styles'
+import { SecondaryButton } from '../button/SecondaryButton'
+import { ContentPasteIcon, QRCodeIcon, DeleteIcon } from '../icons'
 import { QRCodeScanner } from '../QRCodeScanner'
 import {
   AddressValidationMessage,
@@ -18,7 +18,7 @@ import {
 } from './lib'
 import { sharedAddressStyles as styles } from './sharedAddressStyles'
 
-type AddressInputProps = {
+interface AddressInputProps {
   initialValue: string
   onChangeText: (newValue: string, isValid: boolean) => void
   testID?: string
@@ -26,13 +26,13 @@ type AddressInputProps = {
   backgroundColor?: string
 }
 
-export const AddressInput: React.FC<AddressInputProps> = ({
+export const AddressInput = ({
   initialValue,
   onChangeText,
   testID,
   chainId,
   backgroundColor = colors.darkPurple5,
-}) => {
+}: AddressInputProps) => {
   // the address of the recipient
   const [recipient, setRecipient] = useState<string>(initialValue)
   // hide or show the QR scanner
@@ -97,7 +97,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
                 AddressValidationMessage.VALID,
             )
           })
-          .catch((_e: any) =>
+          .catch(_e =>
             setStatus({
               type: 'ERROR',
               value: `Could not get address for ${inputText.toLowerCase()}`,
@@ -159,7 +159,9 @@ export const AddressInput: React.FC<AddressInputProps> = ({
             <Text style={styles.rnsDomainAddress}>{addressResolved}</Text>
           </View>
           <View style={styles.rnsDomainUnselect}>
-            <TouchableOpacity onPress={unselectDomain}>
+            <TouchableOpacity
+              onPress={unselectDomain}
+              accessibilityLabel="delete">
               <DeleteIcon color={'black'} width={20} height={20} />
             </TouchableOpacity>
           </View>
@@ -186,7 +188,8 @@ export const AddressInput: React.FC<AddressInputProps> = ({
                 <TouchableOpacity
                   style={styles.button}
                   onPress={handlePasteClick}
-                  testID="Address.PasteButton">
+                  testID="Address.PasteButton"
+                  accessibilityLabel="paste">
                   <ContentPasteIcon
                     color={colors.text.secondary}
                     height={22}
@@ -197,7 +200,8 @@ export const AddressInput: React.FC<AddressInputProps> = ({
                 <TouchableOpacity
                   style={styles.button}
                   onPress={() => setShowQRScanner(true)}
-                  testID="Address.QRCodeButton">
+                  testID="Address.QRCodeButton"
+                  accessibilityLabel="qr">
                   <QRCodeIcon color={colors.text.secondary} />
                 </TouchableOpacity>
               </>
@@ -205,7 +209,8 @@ export const AddressInput: React.FC<AddressInputProps> = ({
               <TouchableOpacity
                 style={styles.button}
                 onPress={() => handleChangeText('')}
-                testID="Address.ClearButton">
+                testID="Address.ClearButton"
+                accessibilityLabel="clear">
                 <View style={styles.clearButtonView}>
                   <Icon
                     name="close-outline"
@@ -226,8 +231,9 @@ export const AddressInput: React.FC<AddressInputProps> = ({
             {status.value}
           </Text>
           {status.type === 'CHECKSUM' && (
-            <SecondaryButton2
+            <SecondaryButton
               testID={`${testID}.Button.Checksum`}
+              accessibilityLabel="convert"
               title="Convert to correct checksum"
               onPress={() =>
                 handleChangeText(toChecksumAddress(recipient, chainId))

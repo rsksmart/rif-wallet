@@ -1,21 +1,29 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
 import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
-import { useSelectedWallet } from '../../Context'
-import { RootStackScreenProps } from 'navigation/rootNavigator/types'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
+import { WalletConnectContext } from './WalletConnectContext'
+import { useAppSelector } from 'store/storeUtils'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
-import { WalletConnectContext } from './WalletConnectContext'
 
-export const WalletConnectScreen: React.FC<{
-  navigation: RootStackScreenProps
-  route: any
-}> = ({ navigation, route }) => {
+type WalletConnectScreenProps =
+  RootStackScreenProps<rootStackRouteNames.WalletConnect>
+
+export const WalletConnectScreen = ({
+  navigation,
+  route,
+}: WalletConnectScreenProps) => {
+  const wcKey = route.params?.wcKey
   const { t } = useTranslation()
-  const { wallet } = useSelectedWallet()
+  const { wallet } = useAppSelector(selectActiveWallet)
   const { connections, handleApprove, handleReject } =
     useContext(WalletConnectContext)
 
@@ -23,12 +31,11 @@ export const WalletConnectScreen: React.FC<{
     ({ connector: c }) => c.connected,
   )
 
-  const wcKey = route.params?.wcKey
-  const pendingConnector = connections[wcKey]?.connector
+  const pendingConnector = wcKey ? connections[wcKey]?.connector : null
 
   if (pendingConnector?.connected) {
     // clear pendingConnector
-    navigation.navigate('WalletConnect' as never)
+    navigation.navigate(rootStackRouteNames.WalletConnect)
   }
 
   return (
@@ -83,6 +90,7 @@ export const WalletConnectScreen: React.FC<{
                   <Text style={styles.dappUrl}>{c.peerMeta?.url}</Text>
                 </View>
                 <TouchableOpacity
+                  accessibilityLabel="dapp"
                   style={styles.dappButtonView}
                   onPress={() => c.killSession()}>
                   <Image

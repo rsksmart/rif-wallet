@@ -1,11 +1,7 @@
-import React from 'react'
 import Svg, { Path, G, Circle } from 'react-native-svg'
+import { SVGIconInterface } from './index'
 
-export const DefiIcon: React.FC<SVGIconInterface> = ({
-  height,
-  width,
-  style,
-}) => (
+export const DefiIcon = ({ height, width, style }: SVGIconInterface) => (
   <Svg
     x="0px"
     y="0px"

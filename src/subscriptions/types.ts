@@ -1,12 +1,8 @@
-import React from 'react'
-import { IApiTransaction } from '../lib/rifWalletServices/RIFWalletServicesTypes'
-import { IRIFWalletServicesFetcher } from '../lib/rifWalletServices/RifWalletServicesFetcher'
-import { IAbiEnhancer, IEnhancedResult } from '../lib/abiEnhancer/AbiEnhancer'
-import { ITokenWithBalance } from '../lib/rifWalletServices/RIFWalletServicesTypes'
-import { IRifWalletServicesSocket } from '../lib/rifWalletServices/RifWalletServicesSocket'
-
-export interface IActivity
-  extends TransactionsServerResponseWithActivityTransactions {}
+import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { IRIFWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
+import { IAbiEnhancer, IEnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
+import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { RIFWallet } from 'lib/core'
 
 export interface IPrice {
   price: number
@@ -15,7 +11,7 @@ export interface IPrice {
 
 export interface NewTransactionsAction {
   type: 'newTransactions'
-  payload: IActivity
+  payload: TransactionsServerResponseWithActivityTransactions
 }
 
 export interface IEvent {
@@ -59,14 +55,6 @@ export interface ResetAction {
   type: 'reset'
 }
 
-export interface State {
-  transactions: TransactionsServerResponseWithActivityTransactions
-  balances: Record<string, ITokenWithBalance>
-  prices: Record<string, IPrice>
-  events: Array<IEvent>
-  isSetup: Boolean
-}
-
 export type Action =
   | NewTransactionsAction
   | NewBalanceAction
@@ -76,27 +64,12 @@ export type Action =
   | InitAction
   | ResetAction
 
-export type Dispatch = (action: Action) => void
-export type SubscriptionsProviderProps = {
-  children: React.ReactNode
-  rifServiceSocket?: IRifWalletServicesSocket
-  abiEnhancer: IAbiEnhancer
-  appActive: boolean
-}
-
 export interface IActivityTransaction {
   originTransaction: IApiTransaction
   enhancedTransaction?: IEnhancedResult
 }
 
 export type ActivityScreenProps = {
-  fetcher: IRIFWalletServicesFetcher
-  abiEnhancer: IAbiEnhancer
-}
-
-export interface FetchTransactionsOptions {
-  next: string | null
-  prev: string | null
   fetcher: IRIFWalletServicesFetcher
   abiEnhancer: IAbiEnhancer
 }
@@ -109,4 +82,9 @@ export interface TransactionsServerResponse {
 export interface TransactionsServerResponseWithActivityTransactions
   extends TransactionsServerResponse {
   activityTransactions: IActivityTransaction[]
+}
+
+export interface ISocketsChangeEmitted {
+  abiEnhancer: IAbiEnhancer
+  wallet: RIFWallet
 }

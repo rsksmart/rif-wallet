@@ -1,10 +1,10 @@
 import React from 'react'
-import { View, StyleSheet } from 'react-native'
-import { WhiteTransparentButton } from '../../components/button/ButtonVariations'
-import ExchangeIcon from '../../components/icons/ExchangeIcon'
-import ReceiveIcon from '../../components/icons/ReceiveIcon'
-import SendIcon from '../../components/icons/SendIcon'
-import { grid } from '../../styles/grid'
+import { StyleSheet, View } from 'react-native'
+import { WhiteTransparentButton } from 'src/components'
+import ExchangeIcon from 'src/components/icons/ExchangeIcon'
+import ReceiveIcon from 'src/components/icons/ReceiveIcon'
+import SendIcon from 'src/components/icons/SendIcon'
+import { grid } from 'src/styles/grid'
 
 interface Interface {
   color: string

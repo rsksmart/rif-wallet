@@ -16,12 +16,12 @@ describe('ERC20 token', () => {
     // using ERC677__factory that supports ERC20 to set totalSupply (just for testing purpose)
     const initialSupply = BigNumber.from(10).mul(tenPow(TEST_TOKEN_DECIMALS))
     const erc677Factory = new ERC677__factory(account)
-    const erc20 = (await erc677Factory.deploy(
+    const erc20 = await erc677Factory.deploy(
       accountAddress,
       initialSupply,
       'TEST_ERC20',
       'TEST_ERC20',
-    )) as any
+    )
 
     tokenAddress = erc20.address
 
@@ -29,33 +29,34 @@ describe('ERC20 token', () => {
   })
 
   test('get symbol', async () => {
-    const symbol = await erc20Token!.symbol
+    const symbol = erc20Token?.symbol
 
     expect(symbol).toBe('TEST_ERC20')
   })
 
   test('get logo', async () => {
-    const logo = erc20Token!.logo
+    const logo = erc20Token?.logo
 
     expect(logo).toBe('logo.jpg')
   })
 
   test('get decimals', async () => {
-    const decimals = await erc20Token!.decimals()
+    const decimals = await erc20Token?.decimals()
 
     expect(decimals).toBe(TEST_TOKEN_DECIMALS)
   })
 
   test('get type', async () => {
-    const type = erc20Token!.getType()
+    const type = erc20Token?.getType()
 
     expect(type).toBe('erc20')
   })
 
   test('get balance', async () => {
-    const result = await erc20Token!.balance()
-
-    expect(result.toString()).toBe('10000000000000000000')
+    const result = await erc20Token?.balance()
+    if (result) {
+      expect(result.toString()).toBe('10000000000000000000')
+    }
   })
 
   test('transfer', async () => {
@@ -72,9 +73,10 @@ describe('ERC20 token', () => {
 
     expect(balanceSender.gte(amountToTransfer)).toBe(true)
 
-    const transferTx = await erc20Token!.transfer(toAddress, amountToTransfer)
-
-    await transferTx.wait()
+    const transferTx = await erc20Token?.transfer(toAddress, amountToTransfer)
+    if (transferTx) {
+      await transferTx.wait()
+    }
 
     const recipient = ERC20__factory.connect(tokenAddress, to)
 

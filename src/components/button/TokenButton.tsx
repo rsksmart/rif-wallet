@@ -1,9 +1,11 @@
-import React from 'react'
+import { ReactNode } from 'react'
 import {
   GestureResponderEvent,
   TouchableOpacity,
   View,
   StyleSheet,
+  ViewStyle,
+  TextStyle,
 } from 'react-native'
 import { colors } from '../../styles'
 import { RegularText } from '../typography'
@@ -11,25 +13,26 @@ import { RegularText } from '../typography'
 interface Props {
   title: string
   balance: string
-  icon: React.ReactNode
-  onPress?: (event: GestureResponderEvent) => any
+  icon: ReactNode
+  onPress?: (event: GestureResponderEvent) => void
   testID?: string
-  style?: any
-  textStyle?: any
+  style?: ViewStyle
+  textStyle?: TextStyle
 }
 
-export const TokenButton: React.FC<Props> = ({
+export const TokenButton = ({
   title,
   balance,
   onPress,
   testID,
   style,
   icon,
-}) => (
+}: Props) => (
   <TouchableOpacity
     style={style ? { ...styles.button, ...style } : styles.button}
     onPress={onPress}
-    testID={testID}>
+    testID={testID}
+    accessibilityLabel={title}>
     <View style={styles.iconContainer}>
       <View style={styles.icon}>{icon}</View>
       <View>

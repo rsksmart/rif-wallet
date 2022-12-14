@@ -1,32 +1,40 @@
-import React from 'react'
 import { StyleSheet, View, Image, TouchableOpacity, Text } from 'react-native'
-import { CreateKeysScreenProps } from '../../navigation/createKeysNavigator/types'
+
+import {
+  createKeysRouteNames,
+  CreateKeysScreenProps,
+} from 'navigation/createKeysNavigator/types'
 import { colors } from '../../styles'
 
 import { grid } from '../../styles'
-import { Arrow } from '../../components/icons'
 
 import { WINDOW_HEIGHT } from '../../ux/slides/Dimensions'
-import {
-  BlueButton,
-  DarkBlueButton,
-} from '../../components/button/ButtonVariations'
-import { RIFWallet } from '../../lib/core'
+import { Arrow } from 'components/icons'
+import { PrimaryButton } from 'components/button/PrimaryButton'
+import { SecondaryButton } from 'components/button/SecondaryButton'
 import { saveKeyVerificationReminder } from '../../storage/MainStorage'
-type SecureYourWalletProps = {
-  mnemonic: string
-  createWallet: (mnemonic: string) => Promise<RIFWallet>
-}
-export const SecureYourWalletScreen: React.FC<
-  CreateKeysScreenProps<'SecureYourWallet'> & SecureYourWalletProps
-> = ({ navigation, createWallet, mnemonic }) => {
+import { useAppDispatch } from 'store/storeUtils'
+import { createWallet } from 'store/slices/settingsSlice'
+import { KeyManagementSystem } from 'lib/core'
+
+export const SecureYourWalletScreen = ({
+  navigation,
+}: CreateKeysScreenProps<createKeysRouteNames.SecureYourWallet>) => {
+  const dispatch = useAppDispatch()
+
   const secureLater = async () => {
     saveKeyVerificationReminder(true)
-    createWallet(mnemonic)
+    dispatch(
+      createWallet({
+        mnemonic: KeyManagementSystem.create().mnemonic,
+      }),
+    )
   }
   return (
     <View style={styles.parent}>
-      <TouchableOpacity onPress={() => navigation.navigate('CreateKeys')}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('CreateKeys')}
+        accessibilityLabel="back">
         <View style={styles.returnButtonView}>
           <Arrow color={colors.white} rotate={270} width={30} height={30} />
         </View>
@@ -54,17 +62,19 @@ export const SecureYourWalletScreen: React.FC<
       </View>
 
       <View style={{ ...grid.row, ...styles.section }}>
-        <BlueButton
+        <PrimaryButton
           onPress={() => navigation.navigate('SecurityExplanation')}
           accessibilityLabel="secureNow"
           title={'secure now'}
+          style={styles.button}
         />
       </View>
       <View style={{ ...grid.row, ...styles.section }}>
-        <DarkBlueButton
+        <SecondaryButton
           onPress={secureLater}
           accessibilityLabel="secureLater"
           title={'secure later'}
+          style={styles.button}
         />
       </View>
       {/*
@@ -125,5 +135,8 @@ const styles = StyleSheet.create({
   section: {
     alignSelf: 'center',
     marginVertical: 5,
+  },
+  button: {
+    width: 150,
   },
 })

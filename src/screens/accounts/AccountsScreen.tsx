@@ -1,37 +1,46 @@
-import React, { useContext } from 'react'
+import { useMemo } from 'react'
 import { StyleSheet, View, FlatList } from 'react-native'
-import { colors } from '../../styles'
-import { AppContext, useBitcoinCoreContext } from '../../Context'
-import { shortAddress } from '../../lib/utils'
-import AccountBox from '../../components/accounts/AccountBox'
-import { PublicKeyItemType } from './types'
 
-export type AccountsScreenType = {
-  switchActiveWallet?: any
-}
+import { shortAddress } from 'lib/utils'
 
-const AccountsScreen: React.FC<AccountsScreenType> = () => {
-  const { wallets } = useContext(AppContext)
-  const { networks } = useBitcoinCoreContext()
-  const publicKeys: PublicKeyItemType[] = React.useMemo(
+import AccountBox from 'components/accounts/AccountBox'
+import { colors } from 'src/styles'
+import { useAppSelector } from 'src/redux/storeUtils'
+import { selectWallets } from 'src/redux/slices/settingsSlice'
+import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
+
+export const AccountsScreen = () => {
+  const wallets = useAppSelector(selectWallets)
+  const bitcoinCore = useBitcoinContext()
+  const publicKeys = useMemo(
     () =>
-      networks.map(network => ({
-        publicKey: network.bips[0].accountPublicKey,
-        shortedPublicKey: shortAddress(network.bips[0].accountPublicKey, 8),
-        networkName: network.networkName,
-      })),
-    [networks],
+      bitcoinCore
+        ? bitcoinCore.networks.map(network => ({
+            publicKey: network.bips[0].accountPublicKey,
+            shortedPublicKey: shortAddress(network.bips[0].accountPublicKey, 8),
+            networkName: network.networkName,
+          }))
+        : [],
+    [bitcoinCore],
   )
-  const walletsArr = React.useMemo(() => {
-    return Object.keys(wallets).map((key, id) => ({
-      ...wallets[key],
-      address: key,
-      addressShort: shortAddress(key, 8),
-      smartWalletAddress: wallets[key].smartWalletAddress,
-      smartWalletAddressShort: shortAddress(wallets[key].smartWalletAddress, 8),
-      id,
-    }))
-  }, [wallets])
+  const walletsArr = useMemo(
+    () =>
+      wallets
+        ? Object.keys(wallets).map((key, id) => ({
+            ...wallets[key],
+            address: key,
+            addressShort: shortAddress(key, 8),
+            smartWalletAddress: wallets[key].smartWalletAddress,
+            smartWalletAddressShort: shortAddress(
+              wallets[key].smartWalletAddress,
+              8,
+            ),
+            id,
+          }))
+        : [],
+    [wallets],
+  )
+
   return (
     <FlatList
       data={walletsArr}
@@ -61,5 +70,3 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
 })
-
-export default AccountsScreen

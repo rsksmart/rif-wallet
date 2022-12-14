@@ -1,24 +1,28 @@
 import { View, StyleSheet } from 'react-native'
 import { RegularText } from '../../components'
 import { colors } from '../../styles'
-import ActiveButton from '../../components/button/ActiveButton'
+import { ActiveButton } from '../../components/button'
 
 export const ChangeLanguageScreen = () => {
   // @TODO logic to implement language change and mode change...
   return (
     <View style={styles.container}>
       <View>
-        <RegularText>Select language</RegularText>
+        <RegularText style={styles.label}>Select language</RegularText>
         <View style={styles.languageView}>
-          <ActiveButton text="ENG" />
-          <ActiveButton text="ESP" />
+          <ActiveButton isActive title="ENG" accessibilityLabel="English" />
+          <ActiveButton title="ESP" accessibilityLabel="Spanish" />
         </View>
       </View>
       <View style={styles.modeView}>
-        <RegularText>Mode</RegularText>
+        <RegularText style={styles.label}>Mode</RegularText>
         <View style={styles.languageView}>
-          <ActiveButton text="dark mode" />
-          <ActiveButton text="light mode" />
+          <ActiveButton
+            isActive
+            title="dark mode"
+            accessibilityLabel="dark mode"
+          />
+          <ActiveButton title="light mode" accessibilityLabel="light mode" />
         </View>
       </View>
     </View>
@@ -28,9 +32,12 @@ export const ChangeLanguageScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background.light,
+    backgroundColor: colors.background.darkBlue,
     paddingTop: 10,
     paddingHorizontal: 40,
+  },
+  label: {
+    color: colors.lightPurple,
   },
   languageView: {
     flexDirection: 'row',

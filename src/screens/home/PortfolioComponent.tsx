@@ -4,18 +4,18 @@ import {
   BalanceCardComponent,
   BitcoinCardComponent,
 } from './BalanceCardComponent'
-import { Paragraph } from '../../components'
-import { colors } from '../../styles/colors'
-import { grid } from '../../styles/grid'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import { Paragraph } from 'src/components'
+import { colors } from 'src/styles'
+import { grid } from 'src/styles'
 import { ScrollView } from 'react-native-gesture-handler'
-import { IPrice } from '../../subscriptions/types'
+import { IPrice } from 'src/subscriptions/types'
 import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
+import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 
 interface Interface {
   selectedAddress?: string
   setSelected: (token: string) => void
-  balances: Array<ITokenWithBalance | BitcoinNetwork>
+  balances: Array<ITokenWithoutLogo | BitcoinNetwork>
   prices: Record<string, IPrice>
 }
 
@@ -32,7 +32,7 @@ const PortfolioComponent: React.FC<Interface> = ({
       </View>
       <View style={styles.scrollView}>
         {balances.map(
-          (balance: ITokenWithBalance | BitcoinNetwork, i: number) => (
+          (balance: ITokenWithoutLogo | BitcoinNetwork, i: number) => (
             <View
               style={i % 2 ? styles.rightColumn : styles.leftColumn}
               key={i}>

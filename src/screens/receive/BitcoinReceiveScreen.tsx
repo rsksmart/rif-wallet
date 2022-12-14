@@ -1,22 +1,31 @@
-import React, { useState, useEffect } from 'react'
-import { Loading } from '../../components'
-import { useSelectedWallet } from '../../Context'
-import { getDomains } from '../../storage/DomainsStore'
-import { ReceiveScreen } from './ReceiveScreen'
-import { shortAddress } from '../../lib/utils'
+import { useState, useEffect, useMemo } from 'react'
 
-export const BitcoinReceiveScreen: React.FC<any> = ({
+import { shortAddress } from 'lib/utils'
+
+import { Loading } from 'components/index'
+import { getDomains } from 'storage/DomainsStore'
+import { ReceiveScreen } from './ReceiveScreen'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator'
+import { useAppSelector } from 'store/storeUtils'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
+
+export const BitcoinReceiveScreen = ({
   route: {
     params: { network },
   },
-}) => {
+}: RootStackScreenProps<rootStackRouteNames.ReceiveBitcoin>) => {
   const [address, setAddress] = useState<string | undefined>(undefined)
   const [registeredDomains, setRegisteredDomains] = useState<string[]>([])
 
-  const { wallet } = useSelectedWallet()
+  const { wallet } = useAppSelector(selectActiveWallet)
 
   useEffect(() => {
-    setRegisteredDomains(getDomains(wallet.smartWalletAddress))
+    if (wallet) {
+      setRegisteredDomains(getDomains(wallet.smartWalletAddress))
+    }
   }, [wallet])
 
   // In the future we must be able to select address type
@@ -26,10 +35,7 @@ export const BitcoinReceiveScreen: React.FC<any> = ({
       .then((addressBackend: string) => setAddress(addressBackend))
   }, [])
 
-  const shortedAddress = React.useMemo(
-    () => shortAddress(address, 8),
-    [address],
-  )
+  const shortedAddress = useMemo(() => shortAddress(address, 8), [address])
   return address ? (
     <ReceiveScreen
       registeredDomains={registeredDomains}

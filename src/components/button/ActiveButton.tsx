@@ -1,42 +1,25 @@
-import React from 'react'
-import PrimaryButton from './PrimaryButton'
-import SecondaryButton from './SecondaryButton'
-import { BaseButtonProps } from './BaseButton'
-import { MediumText } from '../typography'
-import { colors } from '../../styles'
+import { PrimaryButton } from './PrimaryButton'
+import { SecondaryButton } from './SecondaryButton'
+import { ButtonProps } from './types'
 
-type ActiveButtonType = {
+interface ActiveButtonType extends ButtonProps {
   isActive?: boolean
-  text: React.FC | string
-  TextComp?: React.FC | undefined
 }
-const ActiveButton: React.FC<ActiveButtonType & BaseButtonProps> = ({
-  isActive,
-  text,
-  TextComp = MediumText,
-  ...rest
-}) => {
-  // UX Fix for typography
-  const commonTextStyles = {
-    top: 0.3,
-  }
-  if (isActive) {
-    return (
-      <PrimaryButton {...rest}>
-        <TextComp style={{ color: colors.text.primary, ...commonTextStyles }}>
-          {text}
-        </TextComp>
-      </PrimaryButton>
-    )
+
+export const ActiveButton = ({
+  isActive = false,
+  style,
+  ...props
+}: ActiveButtonType) => {
+  const buttonStyles = {
+    ...style,
+    marginHorizontal: 10,
+    width: 150,
   }
 
-  return (
-    <SecondaryButton {...rest}>
-      <TextComp style={{ color: colors.darkPurple3, ...commonTextStyles }}>
-        {text}
-      </TextComp>
-    </SecondaryButton>
+  return isActive ? (
+    <PrimaryButton {...props} style={buttonStyles} />
+  ) : (
+    <SecondaryButton {...props} style={buttonStyles} />
   )
 }
-
-export default ActiveButton

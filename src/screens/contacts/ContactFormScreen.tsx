@@ -1,25 +1,35 @@
-import { useContext, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
-import { TextInput } from 'react-native-gesture-handler'
 import { CompositeScreenProps } from '@react-navigation/native'
-import Icon from 'react-native-vector-icons/Ionicons'
-import { AddressInput } from '../../components'
-import { BlueButton } from '../../components/button/ButtonVariations'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
-import { colors, grid } from '../../styles'
-import { fonts } from '../../styles/fonts'
-import { setOpacity } from '../home/tokenColor'
-import { ContactsContext, IContact } from './ContactsContext'
-import { useSelectedWallet } from 'src/Context'
+import { useState } from 'react'
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native'
+import { TextInput } from 'react-native-gesture-handler'
+import Icon from 'react-native-vector-icons/Ionicons'
+import { PrimaryButton } from 'components/button'
 import {
   contactsStackRouteNames,
   ContactsStackScreenProps,
-} from 'src/navigation/contactsNavigator'
+} from 'navigation/contactsNavigator'
+import { AddressInput } from 'components/address'
+import { colors, grid } from 'src/styles'
+import { fonts } from 'src/styles/fonts'
+import { setOpacity } from '../home/tokenColor'
+import { Contact } from 'store/slices/contactsSlice/types'
+import { useAppDispatch } from 'store/storeUtils'
+import { addContact, editContact } from 'store/slices/contactsSlice'
+import { useAppSelector } from 'store/storeUtils'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
 
-type ContactFormScreenProps = CompositeScreenProps<
+export type ContactFormScreenProps = CompositeScreenProps<
   ContactsStackScreenProps<contactsStackRouteNames.ContactForm>,
   RootStackScreenProps<rootStackRouteNames.Contacts>
 >
@@ -28,16 +38,15 @@ export const ContactFormScreen = ({
   navigation,
   route,
 }: ContactFormScreenProps) => {
-  const { chainId = 31 } = useSelectedWallet()
-  const initialValue: Partial<IContact> = route.params?.initialValue ?? {
+  const { chainId = 31 } = useAppSelector(selectActiveWallet)
+  const initialValue: Partial<Contact> = route.params?.initialValue ?? {
     name: '',
     address: '',
   }
-
-  const { addContact, editContact } = useContext(ContactsContext)
-  const [name, setName] = useState(initialValue.name)
+  const dispatch = useAppDispatch()
+  const [name, setName] = useState(initialValue.name || '')
   const [address, setAddress] = useState({
-    value: initialValue.address,
+    value: initialValue.address || '',
     isValid: !!initialValue.address,
   })
   const isValidContact = name && address.isValid
@@ -48,76 +57,94 @@ export const ContactFormScreen = ({
 
   const saveContact = () => {
     if (initialValue.id) {
-      const contact = {
+      const contact: Contact = {
         ...initialValue,
+        id: initialValue.id,
         name,
         address: address.value,
         displayAddress: address.value,
       }
-      editContact(contact)
+      dispatch(editContact(contact))
     } else {
-      addContact(name, address.value, address.value)
+      dispatch(
+        addContact({
+          name,
+          address: address.value,
+          displayAddress: address.value,
+        }),
+      )
     }
     navigation.navigate(contactsStackRouteNames.ContactsList)
   }
 
   return (
-    <View style={styles.parent}>
-      <View style={styles.header}>
-        <Icon.Button
-          accessibilityLabel="backButton"
-          name="arrow-back"
-          onPress={() =>
-            navigation.navigate(contactsStackRouteNames.ContactsList)
-          }
-          backgroundColor={colors.background.primary}
-          color={colors.lightPurple}
-          style={styles.backButton}
-          size={15}
-          borderRadius={20}
-        />
-        <Text style={styles.title}>
-          {initialValue.id ? 'Edit Contact' : 'Create Contact'}
-        </Text>
-      </View>
-      <View style={styles.body}>
-        <Text style={styles.label}>name</Text>
-        <TextInput
-          testID="nameInput"
-          accessibilityLabel="nameInput"
-          style={styles.input}
-          onChangeText={setName}
-          value={name}
-          placeholder="name your contact..."
-          placeholderTextColor={colors.text.secondary}
-        />
-        <View style={grid.row}>
-          {/* <Text style={styles.disabledLabel}>alias</Text> */}
-          <Text style={styles.label}>address</Text>
+    <KeyboardAvoidingView
+      style={styles.screen}
+      keyboardVerticalOffset={100}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <ScrollView>
+        <View style={styles.parent}>
+          <View style={styles.header}>
+            <Icon.Button
+              accessibilityLabel="backButton"
+              name="arrow-back"
+              onPress={() =>
+                navigation.navigate(contactsStackRouteNames.ContactsList)
+              }
+              backgroundColor={colors.background.primary}
+              color={colors.lightPurple}
+              style={styles.backButton}
+              size={15}
+              borderRadius={20}
+            />
+            <Text style={styles.title}>
+              {initialValue.id ? 'Edit Contact' : 'Create Contact'}
+            </Text>
+          </View>
+          <View style={styles.body}>
+            <Text style={styles.label}>name</Text>
+            <TextInput
+              testID="nameInput"
+              accessibilityLabel="nameInput"
+              style={styles.input}
+              onChangeText={setName}
+              value={name}
+              placeholder="name your contact..."
+              placeholderTextColor={colors.text.secondary}
+            />
+            <View style={grid.row}>
+              {/* <Text style={styles.disabledLabel}>alias</Text> */}
+              <Text style={styles.label}>address</Text>
+            </View>
+            <AddressInput
+              testID="addressInput"
+              initialValue={initialValue.address || ''}
+              onChangeText={handleAddressChange}
+              chainId={chainId}
+              backgroundColor={colors.darkPurple4}
+            />
+          </View>
+          <View style={styles.footer}>
+            <PrimaryButton
+              testID="saveButton"
+              accessibilityLabel="saveButton"
+              title="Save Contact"
+              onPress={saveContact}
+              style={styles.saveButton}
+              disabled={!isValidContact}
+            />
+          </View>
         </View>
-        <AddressInput
-          testID="addressInput"
-          initialValue={initialValue.address}
-          onChangeText={handleAddressChange}
-          chainId={chainId}
-          backgroundColor={colors.darkPurple4}
-        />
-      </View>
-      <View style={styles.footer}>
-        <BlueButton
-          testID="saveButton"
-          accessibilityLabel="saveButton"
-          title="Save Contact"
-          onPress={saveContact}
-          style={styles.saveButton}
-          disabled={!isValidContact}
-        />
-      </View>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   )
 }
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: colors.background.darkBlue,
+  },
   parent: {
     alignContent: 'space-around',
     height: '100%',
@@ -165,8 +192,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   footer: {
-    flex: 2,
-    justifyContent: 'flex-end',
+    marginTop: 25,
   },
   saveButton: {
     justifyContent: 'center',

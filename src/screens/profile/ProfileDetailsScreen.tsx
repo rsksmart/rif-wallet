@@ -1,37 +1,37 @@
-import React from 'react'
+import Clipboard from '@react-native-community/clipboard'
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
-import Clipboard from '@react-native-community/clipboard'
+import { AvatarIcon } from 'components/icons/AvatarIcon'
+import { MediumText } from 'components/index'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
+import { selectProfile } from 'src/redux/slices/profileSlice/selector'
+import { colors } from 'src/styles'
+import { useAppSelector } from 'src/redux/storeUtils'
 
-import { View, StyleSheet, TouchableOpacity, Image } from 'react-native'
-import { colors } from '../../styles'
-import { RootStackScreenProps } from 'navigation/rootNavigator/types'
-import { MediumText } from '../../components'
-import { IProfileStore } from '../../storage/MainStorage'
-import { AvatarIcon } from '../../components/icons/AvatarIcon'
-
-export type ProfileDetailsScreenProps = {
-  route: any
-  navigation: any
-  profile: IProfileStore
-}
-export const ProfileDetailsScreen: React.FC<
-  RootStackScreenProps<'ProfileDetailsScreen'> & ProfileDetailsScreenProps
-> = ({ navigation, profile }) => {
-  const fullAlias = `${profile.alias}.rsk`
+export const ProfileDetailsScreen = ({
+  navigation,
+}: RootStackScreenProps<rootStackRouteNames.ProfileDetailsScreen>) => {
+  const profile = useAppSelector(selectProfile)
+  const fullAlias = `${profile?.alias}.rsk`
   return (
     <View style={styles.staticBackground}>
       <View style={styles.profileHeader}>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity
+          accessibilityLabel="home"
+          onPress={() => navigation.navigate(rootStackRouteNames.Home)}>
           <View style={styles.backButton}>
             <MaterialIcon name="west" color="white" size={10} />
           </View>
         </TouchableOpacity>
         <MediumText style={styles.titleText}>profile</MediumText>
         <TouchableOpacity
+          accessibilityLabel="profile"
           onPress={() =>
-            navigation.navigate('ProfileCreateScreen', {
-              navigation,
+            navigation.navigate(rootStackRouteNames.ProfileCreateScreen, {
               editProfile: true,
             })
           }>
@@ -41,12 +41,12 @@ export const ProfileDetailsScreen: React.FC<
       <View style={styles.roundedContainer}>
         <View style={styles.topContainer}>
           <View style={styles.profileImageContainer}>
-            {profile.alias ? (
+            {profile?.alias ? (
               <AvatarIcon value={fullAlias} size={80} />
             ) : (
               <Image
                 style={styles.profileImage}
-                source={require('../../images/image_place_holder.jpeg')}
+                source={require('src/images/image_place_holder.jpeg')}
               />
             )}
           </View>
@@ -59,10 +59,11 @@ export const ProfileDetailsScreen: React.FC<
           <View style={styles.rowContainer}>
             <View style={styles.fieldContainer}>
               <MediumText style={[styles.masterText, styles.textLeftMargin]}>
-                {profile.alias}
+                {profile?.alias}
               </MediumText>
               <TouchableOpacity
-                onPress={() => Clipboard.setString(profile.alias || '')}>
+                accessibilityLabel="copy"
+                onPress={() => Clipboard.setString(profile?.alias || '')}>
                 <MaterialIcon
                   style={styles.copyIcon}
                   name="content-copy"
@@ -84,7 +85,7 @@ export const ProfileDetailsScreen: React.FC<
         <View style={styles.rowContainer}>
           <View style={styles.fieldContainer}>
             <MediumText style={[styles.masterText, styles.textLeftMargin]}>
-              {profile.phone}
+              {profile?.phone}
             </MediumText>
           </View>
         </View>
@@ -98,7 +99,7 @@ export const ProfileDetailsScreen: React.FC<
         <View style={styles.rowContainer}>
           <View style={styles.fieldContainer}>
             <MediumText style={[styles.masterText, styles.textLeftMargin]}>
-              {profile.email}
+              {profile?.email}
             </MediumText>
           </View>
         </View>

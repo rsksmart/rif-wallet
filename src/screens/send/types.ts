@@ -1,18 +1,27 @@
 import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { UnspentTransactionType } from '../../lib/bitcoin/types'
+import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { UnspentTransactionType } from 'lib/bitcoin/types'
+import { TransactionInformation } from './TransactionInfo'
+import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 
-export interface IAssetChooser {
-  selectedAsset: IAsset
-  assetList: Array<IAsset>
-  onAssetSelected: (selectedAsset: any) => void
+export type OnSetErrorFunction = (
+  error: string | null | { message: string },
+) => void
+
+export type OnSetCurrentTransactionFunction = (
+  object: TransactionInformation | null,
+) => void
+
+export interface IAssetChooser<T = unknown> {
+  selectedAsset: T & IAsset
+  assetList: Array<T & IAsset>
+  onAssetSelected: (selectedAsset: T) => void
 }
 
 export interface IAsset {
   symbol: string
   balance: string | number
   decimals: number
-  [key: string]: any
 }
 
 export interface ITransfer {
@@ -22,4 +31,4 @@ export interface ITransfer {
   utxos?: Array<UnspentTransactionType>
 }
 
-export type MixedTokenAndNetworkType = BitcoinNetwork | ITokenWithBalance
+export type MixedTokenAndNetworkType = BitcoinNetwork | ITokenWithoutLogo

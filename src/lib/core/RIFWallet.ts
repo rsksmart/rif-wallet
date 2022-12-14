@@ -151,7 +151,7 @@ export class RIFWallet extends Signer implements TypedDataSigner {
       ))
   }
 
-  connect = (provider: Provider): Signer => {
+  connect = (_: Provider): Signer => {
     throw new Error('Method not implemented')
   }
 }

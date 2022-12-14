@@ -11,6 +11,7 @@ export interface IRIFWalletServicesFetcher {
     address: string,
     prev?: string | null,
     next?: string | null,
+    blockNumber?: string | null,
   ): Promise<TransactionsServerResponse>
   fetchDapps(): Promise<IRegisteredDappsGroup[]>
 }
@@ -110,7 +111,7 @@ export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
   fetchXpubTransactions = (
     xpub: string,
     pageSize: number | undefined = undefined,
-    pageNumber: number = 1,
+    pageNumber = 1,
   ): Promise<BitcoinTransactionContainerType> =>
     fetch(
       `${this.uri}/bitcoin/getXpubTransactions/${xpub}?pageSize=${pageSize}&page=${pageNumber}`,

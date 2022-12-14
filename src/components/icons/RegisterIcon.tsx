@@ -1,8 +1,7 @@
-import React from 'react'
 import Svg, { Path, SvgProps } from 'react-native-svg'
-import { SVGIconInterface } from '.'
+import { SVGIconInterface } from './index'
 
-export const RegisterIcon: React.FC<SVGIconInterface> = (props: SvgProps) => {
+export const RegisterIcon = (props: SvgProps & SVGIconInterface) => {
   const { width, height, color } = props
   return (
     <Svg

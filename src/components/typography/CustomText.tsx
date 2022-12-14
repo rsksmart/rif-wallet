@@ -1,19 +1,19 @@
-import React from 'react'
-import { Text } from 'react-native'
+import { ReactNode } from 'react'
+import { Text, TextStyle } from 'react-native'
 
-type CustomTextType = {
+interface CustomTextType {
   font: string
 }
 
-export type TextType = {
-  children: React.ReactNode
-  [key: string]: any
+export interface TextType {
+  children: ReactNode
+  style?: TextStyle
 }
-const CustomText: React.FC<CustomTextType & TextType> = ({
+export const CustomText = ({
   font,
   children,
   ...props
-}) => {
+}: CustomTextType & TextType) => {
   const { style, ...rest } = props
   let styles = style
 
@@ -34,5 +34,3 @@ const CustomText: React.FC<CustomTextType & TextType> = ({
     </Text>
   )
 }
-
-export default CustomText
