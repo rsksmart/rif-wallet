@@ -103,6 +103,7 @@ export const usePaymentExecutor = () => {
           dispatch(addPendingTransaction(originTransaction))
           break
         case 'CONFIRMED':
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { txStatus, ...restOfTransaction } = transactionStatusChange
           const {
             blockHash,
