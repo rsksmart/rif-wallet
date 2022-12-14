@@ -20,7 +20,15 @@ export const createStore = (preloadedState = {}) =>
     middleware: getDefaultMiddlewares => {
       const middlewares = getDefaultMiddlewares({
         serializableCheck: {
-          ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+          ignoredActions: [
+            FLUSH,
+            REHYDRATE,
+            PAUSE,
+            PERSIST,
+            PURGE,
+            REGISTER,
+            'transactions/addNewTransactions',
+          ],
         },
       })
       if (__DEV__) {
