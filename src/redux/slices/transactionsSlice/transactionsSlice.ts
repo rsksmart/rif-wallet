@@ -1,5 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { ITransactionsState } from 'store/slices/transactionsSlice/types'
+import {
+  ITransactionsState,
+  ModifyTransactionAction,
+} from 'store/slices/transactionsSlice/types'
 import {
   filterEnhancedTransactions,
   sortEnhancedTransactions,
@@ -10,7 +13,7 @@ import {
   TransactionsServerResponseWithActivityTransactions,
 } from 'src/subscriptions/types'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
-import { PendingTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 
 const initialState: ITransactionsState = {
   next: '',
@@ -53,26 +56,10 @@ const transactionsSlice = createSlice({
     },
     addPendingTransaction: (
       state,
-      { payload }: PayloadAction<PendingTransaction>,
+      { payload }: PayloadAction<IApiTransaction>,
     ) => {
       const pendingTransaction = {
-        originTransaction: {
-          to: payload.to as string,
-          value: payload.valueConverted,
-          nonce: payload.nonce,
-          hash: payload.hash,
-          blockHash: '',
-          blockNumber: 0,
-          transactionIndex: 0,
-          from: payload.from,
-          gas: 0,
-          gasPrice: payload.gasPrice || '',
-          input: '',
-          timestamp: Date.now(),
-          txType: '',
-          txId: '',
-          data: payload.data,
-        },
+        originTransaction: payload,
         enhancedTransaction: undefined,
       }
       state.transactions.push(pendingTransaction)
@@ -80,15 +67,16 @@ const transactionsSlice = createSlice({
     },
     modifyTransaction: (
       state,
-      { payload }: PayloadAction<IActivityTransaction>,
+      { payload }: PayloadAction<ModifyTransactionAction>,
     ) => {
       const indexOfTransactionToModify = state.transactions.findIndex(
-        transaction =>
-          transaction.originTransaction.hash === payload.originTransaction.hash,
+        transaction => transaction.originTransaction.hash === payload.hash,
       )
-      state.transactions[indexOfTransactionToModify] = {
-        ...state.transactions[indexOfTransactionToModify],
-        ...payload,
+      if (indexOfTransactionToModify !== -1) {
+        state.transactions[indexOfTransactionToModify] = {
+          ...state.transactions[indexOfTransactionToModify],
+          ...payload,
+        }
       }
       state.transactions = deserializeTransactions(state.transactions || [])
       return state

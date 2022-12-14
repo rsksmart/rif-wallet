@@ -1,4 +1,5 @@
 import { IActivityTransaction, IEvent } from 'src/subscriptions/types'
+import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 
 export interface ITransactionsState {
   prev: string | null
@@ -6,3 +7,6 @@ export interface ITransactionsState {
   transactions: IActivityTransaction[]
   events: IEvent[]
 }
+
+export type ModifyTransactionAction = Partial<IApiTransaction> &
+  Pick<IApiTransaction, 'hash'>

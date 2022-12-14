@@ -5,9 +5,13 @@ import { transfer } from './transferTokens'
 import { UnspentTransactionType } from 'lib/bitcoin/types'
 import { BigNumber } from 'ethers'
 import { RIFWallet } from 'src/lib/core'
-import { MixedTokenAndNetworkType, OnSetPendingTransaction } from './types'
-import { useAppDispatch } from 'store/storeHooks'
-import { addPendingTransaction } from 'store/slices/transactionsSlice/transactionsSlice'
+import { MixedTokenAndNetworkType, OnSetTransactionStatusChange } from './types'
+import { useAppDispatch } from 'store/storeUtils'
+import {
+  addPendingTransaction,
+  modifyTransaction,
+} from 'store/slices/transactionsSlice/transactionsSlice'
+import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 
 interface IPaymentExecutorContext {
   setUtxosGlobal: (utxos: UnspentTransactionType[]) => void
@@ -29,8 +33,8 @@ export const usePaymentExecutor = () => {
   const [utxos, setUtxos] = useState<UnspentTransactionType[]>([])
   const [bitcoinBalance, setBitcoinBalance] = useState<number>(Number(0))
   const dispatch = useAppDispatch()
-  const [pendingTx, setPendingTx] = useState<
-    Parameters<OnSetPendingTransaction>[0] | null
+  const [transactionStatusChange, setTransactionStatusChange] = useState<
+    Parameters<OnSetTransactionStatusChange>[0] | null
   >(null)
   const executePayment = ({
     token,
@@ -66,7 +70,7 @@ export const usePaymentExecutor = () => {
           chainId,
           onSetCurrentTransaction: setCurrentTransaction,
           onSetError: setError,
-          onSetPendingTx: setPendingTx,
+          onSetTransactionStatusChange: setTransactionStatusChange,
         })
         break
     }
@@ -74,16 +78,54 @@ export const usePaymentExecutor = () => {
 
   // When a pending RIF transaction is sent - add it to redux
   useEffect(() => {
-    if (pendingTx !== null) {
-      dispatch(
-        addPendingTransaction({
-          ...pendingTx,
-          to: pendingTx.to as string,
-          gasPrice: pendingTx.gasPrice?._hex,
-        }),
-      )
+    if (transactionStatusChange !== null) {
+      console.log(transactionStatusChange)
+      switch (transactionStatusChange.txStatus) {
+        case 'PENDING':
+          const { to, hash, data, from, gasPrice, nonce, value, type } =
+            transactionStatusChange
+          const originTransaction: IApiTransaction = {
+            blockHash: '',
+            blockNumber: 0,
+            gas: 0,
+            input: '',
+            timestamp: Number(Date.now().toString().substring(0, 10)),
+            transactionIndex: 0,
+            txId: '',
+            to: to as string,
+            hash,
+            data,
+            from,
+            gasPrice: gasPrice?.toString() || '',
+            nonce,
+            value: value.toString(),
+            txType: type?.toString() || '',
+          }
+          dispatch(addPendingTransaction(originTransaction))
+          break
+        case 'CONFIRMED':
+          const { txStatus, ...restOfTransaction } = transactionStatusChange
+          const {
+            blockHash,
+            blockNumber,
+            gasUsed,
+            transactionHash,
+            transactionIndex,
+          } = restOfTransaction
+          const updatedOriginTransaction: Partial<IApiTransaction> &
+            Pick<IApiTransaction, 'hash'> = {
+            gas: gasUsed.toNumber(),
+            hash: transactionHash as string,
+            blockHash,
+            blockNumber,
+            transactionIndex: transactionIndex,
+            receipt: restOfTransaction,
+          }
+          dispatch(modifyTransaction(updatedOriginTransaction))
+          break
+      }
     }
-  }, [pendingTx])
+  }, [transactionStatusChange])
 
   return {
     currentTransaction,

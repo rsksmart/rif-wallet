@@ -6,7 +6,7 @@ import { RIFWallet } from 'lib/core'
 import {
   OnSetCurrentTransactionFunction,
   OnSetErrorFunction,
-  OnSetPendingTransaction,
+  OnSetTransactionStatusChange,
 } from './types'
 
 interface IRifTransfer {
@@ -17,7 +17,7 @@ interface IRifTransfer {
   chainId: number
   onSetError?: OnSetErrorFunction
   onSetCurrentTransaction?: OnSetCurrentTransactionFunction
-  onSetPendingTx?: OnSetPendingTransaction
+  onSetTransactionStatusChange?: OnSetTransactionStatusChange
 }
 
 export const transfer = ({
@@ -28,7 +28,7 @@ export const transfer = ({
   token,
   onSetError,
   onSetCurrentTransaction,
-  onSetPendingTx,
+  onSetTransactionStatusChange,
 }: IRifTransfer) => {
   if (onSetError) {
     onSetError(null)
@@ -52,8 +52,14 @@ export const transfer = ({
     transferMethod
       .transfer(to.toLowerCase(), tokenAmount)
       .then((txPending: ContractTransaction) => {
-        if (onSetPendingTx) {
-          onSetPendingTx({ ...txPending, valueConverted: amount })
+        const { wait: waitForTransactionToComplete, ...txPendingRest } =
+          txPending
+        if (onSetTransactionStatusChange) {
+          onSetTransactionStatusChange({
+            txStatus: 'PENDING',
+            ...txPendingRest,
+            value: tokenAmount,
+          })
         }
         const current: TransactionInformation = {
           to,
@@ -66,16 +72,27 @@ export const transfer = ({
           onSetCurrentTransaction(current)
         }
 
-        txPending
-          .wait()
-          .then(() => {
+        waitForTransactionToComplete()
+          .then(contractReceipt => {
             if (onSetCurrentTransaction) {
               onSetCurrentTransaction({ ...current, status: 'SUCCESS' })
+            }
+            if (onSetTransactionStatusChange) {
+              onSetTransactionStatusChange({
+                txStatus: 'CONFIRMED',
+                ...contractReceipt,
+              })
             }
           })
           .catch(() => {
             if (onSetCurrentTransaction) {
               onSetCurrentTransaction({ ...current, status: 'FAILED' })
+            }
+            if (onSetTransactionStatusChange) {
+              onSetTransactionStatusChange({
+                txStatus: 'FAILED',
+                ...txPendingRest,
+              })
             }
           })
       })
