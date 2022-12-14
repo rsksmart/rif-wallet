@@ -39,7 +39,7 @@ export const AliasBoughtScreen = ({
 
   useEffect(() => {
     if (profile) {
-      dispatch(setProfile({ ...profile, `${alias}.rsk` }))
+      dispatch(setProfile({ ...profile, alias: `${alias}.rsk` }))
     }
     const fetchData = async () => {
       await tx.wait()
