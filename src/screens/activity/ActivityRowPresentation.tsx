@@ -31,7 +31,10 @@ const ActivityRowPresentation: React.FC<ActivityRowPresentationType> = ({
   status,
   id,
 }) => (
-  <TouchableOpacity onPress={onPress} testID={`${id}.Button`}>
+  <TouchableOpacity
+    onPress={onPress}
+    testID={`${id}.Button`}
+    accessibilityLabel={`${id}.Button`}>
     <View style={styles.container}>
       <View style={styles.firstHalf}>
         <View style={styles.firstRow}>
