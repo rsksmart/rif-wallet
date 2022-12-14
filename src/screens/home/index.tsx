@@ -170,7 +170,7 @@ export const HomeScreen = ({
         ) : (
           <PortfolioComponent
             selectedAddress={selectedAddress}
-            setSelected={setSelectedAddress}
+            setSelectedAddress={setSelectedAddress}
             balances={balances}
             prices={prices}
           />

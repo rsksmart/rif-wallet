@@ -79,6 +79,7 @@
     "react-redux": "^8.0.5",
     "readable-stream": "1.0.33",
     "redux-persist": "^6.0.0",
+    "rn-placeholder": "^3.0.3",
     "socket.io-client": "^4.4.1",
     "stream-browserify": "^1.0.0",
     "url-parse": "^1.5.9",

@@ -109,7 +109,7 @@ export const Core = () => {
     }
   }, [selectedWallet, retrieveChainId, wallets])
 
-  if (settingsIsLoading || (!appIsSetup && unlocked)) {
+  if (settingsIsLoading && !unlocked) {
     return <LoadingScreen />
   }
 

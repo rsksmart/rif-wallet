@@ -1,5 +1,11 @@
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { StyleSheet, View, ViewStyle } from 'react-native'
+import {
+  Placeholder,
+  PlaceholderMedia,
+  PlaceholderLine,
+  Shine,
+} from 'rn-placeholder'
 
 import { TokenImage } from './TokenImage'
 import { RegularText } from 'components/index'
@@ -13,7 +19,7 @@ interface BalancePresentationComponentProps {
   usdAmount?: string
 }
 
-const BalanceCardPresentationComponent = ({
+export const BalanceCardPresentationComponent = ({
   handlePress,
   containerStyles,
   symbol,
@@ -24,23 +30,38 @@ const BalanceCardPresentationComponent = ({
     onPress={handlePress}
     style={containerStyles}
     accessibilityLabel={symbol}>
-    <View style={styles.icon}>
-      <TokenImage symbol={symbol} height={30} width={30} />
-    </View>
+    {!balance || !usdAmount ? (
+      <Placeholder
+        style={styles.placeholder}
+        Animation={props => <Shine {...props} reverse={true} />}>
+        <PlaceholderMedia style={styles.placeholderMedia} />
+        <PlaceholderLine />
+        <PlaceholderLine />
+        <PlaceholderLine />
+      </Placeholder>
+    ) : (
+      <>
+        <View style={styles.icon}>
+          <TokenImage symbol={symbol} height={30} width={30} />
+        </View>
 
-    <RegularText style={styles.text} accessibilityLabel="symbol">
-      {symbol}
-    </RegularText>
-    <RegularText style={styles.balanceText} accessibilityLabel="balance">
-      {balance}
-    </RegularText>
-    <RegularText style={styles.textUsd} accessibilityLabel="usd">
-      {usdAmount}
-    </RegularText>
+        <RegularText style={styles.text} accessibilityLabel="symbol">
+          {symbol}
+        </RegularText>
+        <RegularText style={styles.balanceText} accessibilityLabel="balance">
+          {balance}
+        </RegularText>
+        <RegularText style={styles.textUsd} accessibilityLabel="usd">
+          {usdAmount}
+        </RegularText>
+      </>
+    )}
   </TouchableOpacity>
 )
 
 const styles = StyleSheet.create({
+  placeholder: { width: '100%', height: '100%' },
+  placeholderMedia: { marginBottom: 25, borderRadius: 20, overflow: 'hidden' },
   icon: {
     backgroundColor: colors.white,
     height: 40,
@@ -65,5 +86,3 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 })
-
-export default BalanceCardPresentationComponent
