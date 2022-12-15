@@ -49,7 +49,11 @@ export class RifWalletServicesSocket
     this.rifWalletServicesUrl = rifWalletServicesUrl
   }
 
-  private async init(wallet: RIFWallet, encryptionKey: string, fetcher: RifWalletServicesFetcher) {
+  private async init(
+    wallet: RIFWallet,
+    encryptionKey: string,
+    fetcher: RifWalletServicesFetcher,
+  ) {
     const cache = new MMKVStorage('txs', encryptionKey)
     const blockNumber = cache.get('blockNumber') || '0'
     const catchedTxs = cache.get('cachedTxs') || []

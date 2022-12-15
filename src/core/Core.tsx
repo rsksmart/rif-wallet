@@ -58,6 +58,8 @@ export const Core = () => {
     }),
     [],
   )
+  const [fetcher, setFetcher] = useState<RifWalletServicesFetcher | undefined>(
+    undefined)
   const dispatch = useAppDispatch()
 
   const selectedWallet = useAppSelector(selectSelectedWallet)
@@ -99,6 +101,7 @@ export const Core = () => {
     appActive: active,
     wallet: wallets && wallets[selectedWallet],
     mnemonic: kms ? kms.mnemonic : null,
+    fetcher,
   })
 
   useEffect(() => {

@@ -6,6 +6,7 @@ import {
 import { RIFWallet } from 'lib/core'
 
 import { Action } from 'src/subscriptions/types'
+import { RifWalletServicesFetcher } from 'src/lib/rifWalletServices/RifWalletServicesFetcher'
 
 interface ConnectSocket {
   rifServiceSocket: IRifWalletServicesSocket
@@ -14,6 +15,7 @@ interface ConnectSocket {
   onError: () => void
   wallet: RIFWallet
   mnemonic: string
+  fetcher?: RifWalletServicesFetcher
 }
 
 export const connectSocket = ({
@@ -23,11 +25,12 @@ export const connectSocket = ({
   onError,
   wallet,
   mnemonic,
+  fetcher
 }: ConnectSocket) => {
   rifServiceSocket.on('init', onInit)
   rifServiceSocket.on(
     'change',
     onChange as (action: IServiceChangeEvent) => void,
   )
-  rifServiceSocket.connect(wallet, mnemonic).catch(onError)
+  rifServiceSocket.connect(wallet, mnemonic, fetcher).catch(onError)
 }

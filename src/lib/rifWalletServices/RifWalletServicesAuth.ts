@@ -4,7 +4,7 @@ import {
   getSignUP,
   hasSignUP,
   saveSignUp,
-} from '../../storage/SignupStore'
+} from '../../storage/MainStorage'
 import { RIFWallet } from '../core'
 import * as Keychain from 'react-native-keychain'
 import {
@@ -43,7 +43,7 @@ export class RifWalletServicesAuth {
         refreshToken,
       }),
     )
-    await saveSignUp({ signedup: true })
+    saveSignUp({ signup: true })
     return { accessToken, refreshToken }
   }
 
@@ -76,9 +76,9 @@ export class RifWalletServicesAuth {
   }
 
   login = async () => {
-    if (await hasSignUP()) {
-      const { signedup } = await getSignUP()
-      if (!signedup) {
+    if (hasSignUP()) {
+      const { signup } = getSignUP()
+      if (!signup) {
         return await this.signup()
       } else {
         return await this.authenticate()
@@ -111,6 +111,6 @@ export class RifWalletServicesAuth {
 
   deleteCredentials = async () => {
     await Keychain.resetInternetCredentials('jwt')
-    await deleteSignUp()
+    deleteSignUp()
   }
 }

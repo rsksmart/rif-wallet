@@ -48,8 +48,8 @@ const RESULTS_LIMIT = 10
 
 export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
   axiosInstance: AxiosInstance
-  accessToken: string = ''
-  refreshToken: string = ''
+  accessToken = ''
+  refreshToken = ''
 
   constructor(
     axiosInstance: AxiosInstance,

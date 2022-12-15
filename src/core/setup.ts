@@ -20,10 +20,6 @@ const smartWalletFactoryAddress = getWalletSetting(
 
 const jsonRpcProvider = new providers.JsonRpcProvider(rpcUrl)
 
-// export const rifWalletServicesFetcher = new RifWalletServicesFetcher(
-//   getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL),
-// )
-
 export const publicAxios = axios.create({
   baseURL: getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL),
 })

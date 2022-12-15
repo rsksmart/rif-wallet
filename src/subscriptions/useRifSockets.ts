@@ -9,16 +9,19 @@ import { useAppDispatch } from 'store/storeUtils'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { rifWalletServicesSocket, abiEnhancer } from 'core/setup'
 import { InitAction } from './types'
+import { RifWalletServicesFetcher } from 'src/lib/rifWalletServices/RifWalletServicesFetcher'
 
 interface IUseRifSockets {
   appActive: boolean
   wallet: RIFWallet | null
   mnemonic: string | null
+  fetcher?: RifWalletServicesFetcher
 }
 export const useRifSockets = ({
   appActive,
   wallet,
   mnemonic,
+  fetcher,
 }: IUseRifSockets) => {
   const dispatch = useAppDispatch()
   const setGlobalError = useSetGlobalError()

@@ -44,9 +44,10 @@ const sharedOptions = {
 
 interface Props {
   currentScreen: string
+  fetcher: RifWalletServicesFetcher
 }
 
-export const RootNavigationComponent = ({ currentScreen }: Props) => {
+export const RootNavigationComponent = ({ currentScreen, fetcher }: Props) => {
   const isDeviceRooted = JailMonkey.isJailBroken()
   const [isWarningVisible, setIsWarningVisible] = useState(isDeviceRooted)
   const unlocked = useAppSelector(selectIsUnlocked)
