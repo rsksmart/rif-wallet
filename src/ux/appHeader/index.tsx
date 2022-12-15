@@ -6,9 +6,10 @@ import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { navigationContainerRef } from '../../core/Core'
 import { ProfileHandler } from './ProfileHandler'
+import { getChainIdByType } from 'lib/utils'
 
 export const AppHeader = () => {
-  const { wallet, chainId } = useAppSelector(selectActiveWallet)
+  const { wallet, chainType } = useAppSelector(selectActiveWallet)
 
   const openMenu = () => {
     const navState = navigationContainerRef.getCurrentRoute()
@@ -32,7 +33,7 @@ export const AppHeader = () => {
         {wallet && (
           <AddressCopyComponent
             address={wallet.smartWalletAddress}
-            chainId={chainId || 31}
+            chainId={getChainIdByType(chainType) || 31}
           />
         )}
       </View>

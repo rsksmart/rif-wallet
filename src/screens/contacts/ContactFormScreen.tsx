@@ -28,6 +28,8 @@ import { useAppDispatch } from 'store/storeUtils'
 import { addContact, editContact } from 'store/slices/contactsSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
+import { getChainIdByType } from 'lib/utils'
 
 export type ContactFormScreenProps = CompositeScreenProps<
   ContactsStackScreenProps<contactsStackRouteNames.ContactForm>,
@@ -38,7 +40,8 @@ export const ContactFormScreen = ({
   navigation,
   route,
 }: ContactFormScreenProps) => {
-  const { chainId = 31 } = useAppSelector(selectActiveWallet)
+  const { chainType = ChainTypeEnum.TESTNET } =
+    useAppSelector(selectActiveWallet)
   const initialValue: Partial<Contact> = route.params?.initialValue ?? {
     name: '',
     address: '',
@@ -120,7 +123,7 @@ export const ContactFormScreen = ({
               testID="addressInput"
               initialValue={initialValue.address || ''}
               onChangeText={handleAddressChange}
-              chainId={chainId}
+              chainId={getChainIdByType(chainType)}
               backgroundColor={colors.darkPurple4}
             />
           </View>
