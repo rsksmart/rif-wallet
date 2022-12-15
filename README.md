@@ -44,6 +44,16 @@ ENVFILE=.env.custom react-native run-ios
 
 You do not need to run the server to run the RIF Wallet app.
 
+## Build:
+
+## Build APK for Android:
+
+```
+cd android
+./gradlew clean
+./gradlew app:assembleRelease
+```
+
 ## Folder Structure
 
 This is an ongoing process that will be documented when more are added. Below is a list of the current directories and what is expected inside.
