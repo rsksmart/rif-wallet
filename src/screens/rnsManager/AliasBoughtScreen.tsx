@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { Clipboard, Image, Linking, StyleSheet, View } from 'react-native'
 import { rnsManagerStyles } from './rnsManagerStyles'
+import { navigationContainerRef } from 'src/core/Core'
 
 import {
   rootStackRouteNames,
@@ -17,7 +18,6 @@ import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { ScreenWithWallet } from '../types'
 
 export const AliasBoughtScreen = ({
-  navigation,
   route,
 }: RootStackScreenProps<'AliasBought'> & ScreenWithWallet) => {
   const { alias, tx } = route.params
@@ -83,7 +83,9 @@ export const AliasBoughtScreen = ({
           </View>
           <SecondaryButton
             onPress={() =>
-              navigation.navigate(rootStackRouteNames.ProfileDetailsScreen)
+              navigationContainerRef.navigate(
+                rootStackRouteNames.ProfileDetailsScreen,
+              )
             }
             accessibilityLabel="close"
             title={'Close'}
