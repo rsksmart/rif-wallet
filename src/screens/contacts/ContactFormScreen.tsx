@@ -3,7 +3,7 @@ import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
-import { useState } from 'react'
+import { useMemo, useState, useCallback } from 'react'
 import {
   StyleSheet,
   Text,
@@ -39,10 +39,14 @@ export const ContactFormScreen = ({
   route,
 }: ContactFormScreenProps) => {
   const { chainId = 31 } = useAppSelector(selectActiveWallet)
-  const initialValue: Partial<Contact> = route.params?.initialValue ?? {
-    name: '',
-    address: '',
-  }
+  const initialValue: Partial<Contact> = useMemo(
+    () =>
+      route.params?.initialValue ?? {
+        name: '',
+        address: '',
+      },
+    [route.params],
+  )
   const dispatch = useAppDispatch()
   const [name, setName] = useState(initialValue.name || '')
   const [address, setAddress] = useState({
@@ -51,11 +55,11 @@ export const ContactFormScreen = ({
   })
   const isValidContact = name && address.isValid
 
-  const handleAddressChange = (value: string, isValid: boolean) => {
+  const handleAddressChange = useCallback((value: string, isValid: boolean) => {
     setAddress({ value, isValid })
-  }
+  }, [])
 
-  const saveContact = () => {
+  const saveContact = useCallback(() => {
     if (initialValue.id) {
       const contact: Contact = {
         ...initialValue,
@@ -75,7 +79,7 @@ export const ContactFormScreen = ({
       )
     }
     navigation.navigate(contactsStackRouteNames.ContactsList)
-  }
+  }, [dispatch, address, initialValue, navigation, name])
 
   return (
     <KeyboardAvoidingView

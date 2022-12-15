@@ -17,7 +17,7 @@ import { MediumText } from '../typography'
 import AccountField from './AccountField'
 import accountSharedStyles from './styles'
 
-type AccountBoxProps = {
+interface AccountBoxProps {
   address: string
   addressShort: string
   smartWalletAddress: string
@@ -66,13 +66,13 @@ const AccountBox: React.FC<AccountBoxProps> = ({
 
   useEffect(() => {
     smartWalletFactory.isDeployed().then(setIsDeployed)
-  })
+  }, [smartWalletFactory])
 
   useEffect(() => {
     if (accountName !== initialAccountName) {
       setAccountName(initialAccountName)
     }
-  }, [initialAccountName])
+  }, [initialAccountName, accountName])
 
   return (
     <View style={styles.accountsContainer}>

@@ -50,7 +50,7 @@ export const AliasBoughtScreen = ({
     fetchData()
       // make sure to catch any error
       .catch(console.error)
-  }, [alias, setProfile, profile, tx])
+  }, [alias, profile, tx, dispatch])
 
   return (
     <>

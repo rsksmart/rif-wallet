@@ -1,15 +1,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { IProfileStore } from './types'
+import { ProfileStore } from './types'
 
-const initialState = null as IProfileStore | null
+const initialState: ProfileStore = {
+  alias: '',
+  phone: '',
+  email: '',
+}
 
 const profileSlice = createSlice({
   name: 'profile',
   initialState,
   reducers: {
-    setProfile: (_state, action: PayloadAction<IProfileStore>) =>
-      action.payload,
-    deleteProfile: () => null,
+    setProfile: (_state, action: PayloadAction<ProfileStore>) => {
+      _state = action.payload
+    },
+    deleteProfile: () => initialState,
   },
 })
 
