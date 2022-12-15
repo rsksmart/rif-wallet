@@ -4,7 +4,7 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 platform :ios, '12.4'
 install! 'cocoapods', :deterministic_uuids => false
 
-target 'sWallet' do
+target 'rifWallet' do
   config = use_native_modules!
 
    # Flags change depending on the env values.
@@ -29,7 +29,7 @@ target 'sWallet' do
   pod 'react-native-config', :path => '../node_modules/react-native-config'
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
-  target 'sWalletTests' do
+  target 'rifWalletTests' do
     inherit! :complete
     # Pods for testing
   end
