@@ -1,17 +1,18 @@
 import { createContext, useContext, useState, useEffect } from 'react'
+import { BigNumber } from 'ethers'
+import { RIFWallet } from 'lib/core'
+import { UnspentTransactionType } from 'lib/bitcoin/types'
+import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+
 import { TransactionInformation } from './TransactionInfo'
 import { transferBitcoin } from './transferBitcoin'
 import { transfer } from './transferTokens'
-import { UnspentTransactionType } from 'lib/bitcoin/types'
-import { BigNumber } from 'ethers'
-import { RIFWallet } from 'src/lib/core'
 import { MixedTokenAndNetworkType, OnSetTransactionStatusChange } from './types'
 import { useAppDispatch } from 'store/storeUtils'
 import {
   addPendingTransaction,
   modifyTransaction,
 } from 'store/slices/transactionsSlice/transactionsSlice'
-import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { IApiTransactionWithExtras } from 'store/slices/transactionsSlice/types'
 
 interface IPaymentExecutorContext {
