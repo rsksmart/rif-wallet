@@ -36,7 +36,6 @@ import {
   selectWallets,
   setChainId,
 } from 'store/slices/settingsSlice'
-import { selectAppState } from 'store/slices/appStateSlice/selectors'
 import {
   hasKeys as hasKeysInStorage,
   hasPin as hasPinInStorage,
@@ -61,7 +60,6 @@ export const Core = () => {
   const kms = useAppSelector(selectKMS)
   const settingsIsLoading = useAppSelector(selectSettingsIsLoading)
   const requests = useAppSelector(selectRequests)
-  const { isSetup: appIsSetup } = useAppSelector(selectAppState)
 
   const insets = useSafeAreaInsets()
   const topColor = useAppSelector(selectTopColor)
