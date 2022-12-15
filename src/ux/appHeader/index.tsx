@@ -26,12 +26,7 @@ export const AppHeader = () => {
           ...styles.column,
           ...styles.walletInfo,
         }}>
-        <ProfileHandler
-          navigation={navigationContainerRef}
-          profile={profile}
-          profileCreated={profileCreated}
-          wallet={wallet}
-        />
+        {wallet && <ProfileHandler wallet={wallet} />}
       </View>
       <View style={styles.column}>
         {wallet && (
