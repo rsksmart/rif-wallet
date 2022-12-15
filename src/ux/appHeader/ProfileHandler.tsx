@@ -8,7 +8,6 @@ import { RegularText } from '../../components'
 import { AvatarIcon } from '../../components/icons/AvatarIcon'
 import { colors } from '../../styles'
 
-
 export const ProfileHandler = () => {
   const profile = useAppSelector(selectProfile)
   const profileCreated = !!profile

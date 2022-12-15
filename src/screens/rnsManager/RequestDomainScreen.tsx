@@ -1,4 +1,3 @@
-import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import { useEffect, useState } from 'react'
 import * as Progress from 'react-native-progress'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
@@ -23,14 +22,13 @@ import { useAliasRegistration } from '../../core/hooks/useAliasRegistration'
 type Props = RootStackScreenProps<rootStackRouteNames.RequestDomain> &
   ScreenWithWallet
 
-
 export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
   const {
-      registrationStarted,
-      readyToRegister,
-      getRegistrationData,
-      setRegistrationData,
-    } = useAliasRegistration(wallet)
+    registrationStarted,
+    readyToRegister,
+    getRegistrationData,
+    setRegistrationData,
+  } = useAliasRegistration(wallet)
   const { alias, duration } = route.params
   const fullAlias = alias + '.rsk'
 
