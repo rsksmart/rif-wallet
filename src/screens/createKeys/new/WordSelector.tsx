@@ -115,6 +115,7 @@ export const WordSelector = forwardRef<TextInput, Props>(
           {ref && (
             <TextInput
               ref={ref}
+              autoCorrect={false}
               testID={testIDs.wordInput}
               selectionColor={'#fff'}
               placeholderTextColor="#fff"
