@@ -59,6 +59,9 @@ export const transfer = ({
             txStatus: 'PENDING',
             ...txPendingRest,
             value: tokenAmount,
+            symbol: transferMethod.symbol,
+            finalAddress: to,
+            enhancedAmount: amount,
           })
         }
         const current: TransactionInformation = {

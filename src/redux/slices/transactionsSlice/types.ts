@@ -8,5 +8,12 @@ export interface ITransactionsState {
   events: IEvent[]
 }
 
+export interface TransactionExtras {
+  symbol?: string
+  finalAddress?: string
+  enhancedAmount?: string
+}
+
+export type IApiTransactionWithExtras = IApiTransaction & TransactionExtras
 export type ModifyTransactionAction = Partial<IApiTransaction> &
   Pick<IApiTransaction, 'hash'>

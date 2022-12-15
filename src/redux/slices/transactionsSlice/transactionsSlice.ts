@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import {
+  IApiTransactionWithExtras,
   ITransactionsState,
   ModifyTransactionAction,
 } from 'store/slices/transactionsSlice/types'
@@ -13,7 +14,6 @@ import {
   TransactionsServerResponseWithActivityTransactions,
 } from 'src/subscriptions/types'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
-import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 
 const initialState: ITransactionsState = {
   next: '',
@@ -56,11 +56,21 @@ const transactionsSlice = createSlice({
     },
     addPendingTransaction: (
       state,
-      { payload }: PayloadAction<IApiTransaction>,
+      { payload }: PayloadAction<IApiTransactionWithExtras>,
     ) => {
+      const { symbol, finalAddress, enhancedAmount, value, ...restPayload } =
+        payload
       const pendingTransaction = {
-        originTransaction: payload,
-        enhancedTransaction: undefined,
+        originTransaction: {
+          ...restPayload,
+          value: enhancedAmount || value,
+        },
+        enhancedTransaction: {
+          symbol,
+          from: restPayload.from,
+          to: finalAddress,
+          value: enhancedAmount,
+        },
       }
       state.transactions.push(pendingTransaction)
       return state

@@ -12,6 +12,7 @@ import {
   modifyTransaction,
 } from 'store/slices/transactionsSlice/transactionsSlice'
 import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { IApiTransactionWithExtras } from 'store/slices/transactionsSlice/types'
 
 interface IPaymentExecutorContext {
   setUtxosGlobal: (utxos: UnspentTransactionType[]) => void
@@ -81,9 +82,20 @@ export const usePaymentExecutor = () => {
     if (transactionStatusChange !== null) {
       switch (transactionStatusChange.txStatus) {
         case 'PENDING':
-          const { to, hash, data, from, gasPrice, nonce, value, type } =
-            transactionStatusChange
-          const originTransaction: IApiTransaction = {
+          const {
+            to,
+            hash,
+            data,
+            from,
+            gasPrice,
+            nonce,
+            value,
+            type,
+            symbol,
+            finalAddress,
+            enhancedAmount,
+          } = transactionStatusChange
+          const originTransaction: IApiTransactionWithExtras = {
             blockHash: '',
             blockNumber: 0,
             gas: 0,
@@ -99,6 +111,9 @@ export const usePaymentExecutor = () => {
             nonce,
             value: value.toString(),
             txType: type?.toString() || '',
+            symbol,
+            finalAddress,
+            enhancedAmount,
           }
           dispatch(addPendingTransaction(originTransaction))
           break

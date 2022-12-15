@@ -5,6 +5,7 @@ import { TransactionInformation } from './TransactionInfo'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { TransactionResponse } from '@ethersproject/abstract-provider'
 import { ContractReceipt } from 'ethers'
+import { TransactionExtras } from 'store/slices/transactionsSlice/types'
 
 export type OnSetErrorFunction = (
   error: string | null | { message: string },
@@ -47,7 +48,8 @@ type TransferTransactionStatus =
 
 type TransferTransactionStatusPending = {
   txStatus: 'PENDING'
-} & TransactionResponseWithoutWait
+} & TransactionExtras &
+  TransactionResponseWithoutWait
 
 type TransferTransactionStatusConfirmed = {
   txStatus: 'CONFIRMED'
