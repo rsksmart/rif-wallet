@@ -30,7 +30,10 @@ export const AliasBoughtScreen = ({
   const dispatch = useAppDispatch()
   const profile = useAppSelector(selectProfile)
 
-  const explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainId)
+  const explorerUrl = getWalletSetting(
+    SETTINGS.EXPLORER_ADDRESS_URL,
+    chainId ?? 31,
+  )
 
   const copyHashAndOpenExplorer = (hash: string) => {
     Clipboard.setString(hash)

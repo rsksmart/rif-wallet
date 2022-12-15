@@ -75,8 +75,6 @@ export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
           clearInterval(intervalId)
         }
       }, 1000)
-      await makeCommitmentTransaction.wait()
-      setCommitToRegisterInfo('Transaction confirmed. Please wait...')
     } catch (e: unknown) {
       setProcessing(false)
       setCommitToRegisterInfo(e?.message || '')

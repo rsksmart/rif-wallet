@@ -24,6 +24,8 @@ export function useAliasRegistration(wallet: RIFWallet) {
       const myAliasRegistration = getAliasRegistration()
       const hash = myAliasRegistration.commitToRegisterHash
       return !!hash
+    } else {
+      return false
     }
   }
   const readyToRegister = async (_hash?: string) => {
@@ -48,7 +50,7 @@ export function useAliasRegistration(wallet: RIFWallet) {
       wallet.smartWallet.address,
     )
 
-    await saveAliasRegistration({
+    saveAliasRegistration({
       alias: alias,
       duration: duration,
       commitToRegisterSecret: response.secret,
