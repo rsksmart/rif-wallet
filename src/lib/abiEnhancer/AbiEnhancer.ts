@@ -4,6 +4,11 @@ import { ERC20EnhanceStrategy } from './strategies/ERC20EnhanceStrategy'
 import { OtherEnhanceStrategy } from './strategies/OtherEnhanceStrategy'
 import { RBTCEnhanceStrategy } from './strategies/RBTCEnhanceStrategy'
 
+export interface FunctionParameter {
+  name: string
+  value: any
+}
+
 export interface EnhancedResult {
   from?: string
   to?: string
@@ -11,6 +16,8 @@ export interface EnhancedResult {
   balance?: string
   value?: string
   data?: string
+  functionName?: string
+  functionParameters?: FunctionParameter[]
 }
 
 export interface EnhanceStrategy {
