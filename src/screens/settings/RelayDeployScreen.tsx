@@ -39,8 +39,8 @@ export const RelayDeployScreen = ({
       .then((result: TransactionResponse) => {
         setSmartWalletDeployTx(result)
 
-        result.wait().then((reciept: TransactionReceipt) => {
-          if (reciept.status) {
+        result.wait().then((receipt: TransactionReceipt) => {
+          if (receipt.status) {
             dispatch(
               setWalletIsDeployed({
                 address: wallet.smartWallet.address,
