@@ -84,7 +84,6 @@ export const usePaymentExecutor = () => {
       switch (transactionStatusChange.txStatus) {
         case 'PENDING':
           const {
-            to,
             hash,
             data,
             from,
@@ -104,7 +103,7 @@ export const usePaymentExecutor = () => {
             timestamp: Number(Date.now().toString().substring(0, 10)),
             transactionIndex: 0,
             txId: '',
-            to: to as string,
+            to: finalAddress as string,
             hash,
             data,
             from,
