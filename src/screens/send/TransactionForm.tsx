@@ -14,7 +14,7 @@ import { SetAmountHOCComponent } from './SetAmountHOCComponent'
 import { MixedTokenAndNetworkType } from './types'
 import { useTokenSelectedTabs } from './useTokenSelectedTabs'
 
-interface Interface {
+interface Props {
   onConfirm: (
     selectedToken: MixedTokenAndNetworkType,
     amount: string,
@@ -37,7 +37,7 @@ interface txDetail {
   isValid: boolean
 }
 
-export const TransactionForm: React.FC<Interface> = ({
+export const TransactionForm = ({
   initialValues,
   tokenList,
   chainId,
@@ -45,7 +45,7 @@ export const TransactionForm: React.FC<Interface> = ({
   transactions,
   onConfirm,
   onTokenSelected,
-}) => {
+}: Props) => {
   const [selectedToken, setSelectedToken] = useState<MixedTokenAndNetworkType>(
     initialValues.asset || tokenList[0],
   )
@@ -69,10 +69,13 @@ export const TransactionForm: React.FC<Interface> = ({
 
   const tokenQuote = tokenPrices[selectedToken.contractAddress]?.price
 
-  const handleAmountChange = (newAmount: string, isValid: boolean) => {
-    setError(null)
-    setAmount({ value: newAmount, isValid })
-  }
+  const handleAmountChange = useCallback(
+    (newAmount: string, isValid: boolean) => {
+      setError(null)
+      setAmount({ value: newAmount, isValid })
+    },
+    [],
+  )
 
   const handleTargetAddressChange = (address: string, isValid: boolean) => {
     setError(null)
