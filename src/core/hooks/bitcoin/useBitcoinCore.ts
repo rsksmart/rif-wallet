@@ -3,7 +3,7 @@ import BIP39 from 'lib/bitcoin/BIP39'
 import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
 import { BitcoinNetworkWithBIPRequest } from 'lib/bitcoin/types'
 import { createAndInitializeBipWithRequest } from 'lib/bitcoin/utils'
-import { OnRequest } from 'lib/core'
+import { KeyManagementSystem } from 'lib/core'
 
 import {
   BitcoinNetworkStore,
@@ -11,6 +11,9 @@ import {
 } from 'storage/BitcoinNetworkStore'
 import { bitcoinTestnet } from 'shared/costants'
 import { useStoredBitcoinNetworks } from './useStoredBitcoinNetworks'
+import { getKeys } from 'storage/MainStorage'
+import { useAppDispatch } from 'src/redux/storeUtils'
+import { onRequest } from 'src/redux/slices/settingsSlice'
 
 export interface UseBitcoinCoreResult {
   networks: Array<BitcoinNetwork>
@@ -32,13 +35,14 @@ interface NetworksObject {
  * @param request
  */
 
-export const useBitcoinCore = (
-  mnemonic: string,
-  request: OnRequest,
-): UseBitcoinCoreResult => {
+const keys = getKeys()
+const { kms } = KeyManagementSystem.fromSerialized(keys)
+const BIP39Instance = new BIP39(kms.mnemonic)
+
+export const useBitcoinCore = (): UseBitcoinCoreResult => {
+  const dispatch = useAppDispatch()
   const [storedNetworks, refreshStoredNetworks] = useStoredBitcoinNetworks()
-  const BIP39Instance = useMemo(() => new BIP39(mnemonic), [mnemonic])
-  const networksObj = useRef<NetworksObject>({}).current
+  const networksObj = useRef<NetworksObject>({})
   const storedNetworksValues = useMemo(
     () => Object.values(storedNetworks),
     [storedNetworks],
@@ -51,18 +55,25 @@ export const useBitcoinCore = (
     networksObj: {},
   })
 
+  const onNoNetworksPresent = useCallback(() => {
+    BitcoinNetworkStore.addNewNetwork(bitcoinTestnet.name, bitcoinTestnet.bips)
+    refreshStoredNetworks()
+  }, [refreshStoredNetworks])
+
   const transformNetwork = useCallback(
-    (network: StoredBitcoinNetworkValue) => {
+    (network: StoredBitcoinNetworkValue, bip39: BIP39) => {
       const bitcoinNetwork = new BitcoinNetwork(
         network.name,
         network.bips,
-        BIP39Instance,
-        createAndInitializeBipWithRequest(request),
+        bip39,
+        createAndInitializeBipWithRequest(request =>
+          dispatch(onRequest({ request })),
+        ),
       ) as BitcoinNetworkWithBIPRequest
-      networksObj[network.name] = bitcoinNetwork
+      networksObj.current[network.name] = bitcoinNetwork
       return bitcoinNetwork
     },
-    [BIP39Instance],
+    [dispatch],
   )
 
   const transformStoredNetworks = useCallback(
@@ -71,20 +82,14 @@ export const useBitcoinCore = (
         onNoNetworksPresent()
         return null
       }
-      if (!mnemonic) {
-        return null
-      }
-      const networksArr = values.map(transformNetwork)
+      const networksArr = values.map(item =>
+        transformNetwork(item, BIP39Instance),
+      )
 
-      return { networksArr, networksObj }
+      return { networksArr, networksObj: networksObj.current }
     },
-    [mnemonic],
+    [transformNetwork, onNoNetworksPresent],
   )
-
-  const onNoNetworksPresent = useCallback(() => {
-    BitcoinNetworkStore.addNewNetwork(bitcoinTestnet.name, bitcoinTestnet.bips)
-    refreshStoredNetworks()
-  }, [])
 
   useEffect(() => {
     if (storedNetworksValues.length < 1) {
@@ -95,7 +100,7 @@ export const useBitcoinCore = (
     if (transformedNetworks) {
       setNetworks(transformedNetworks)
     }
-  }, [storedNetworks, mnemonic])
+  }, [storedNetworksValues, onNoNetworksPresent, transformStoredNetworks])
 
   return {
     networks: networks.networksArr,

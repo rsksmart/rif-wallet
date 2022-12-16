@@ -29,7 +29,6 @@ import { useStateSubscription } from './hooks/useStateSubscription'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import {
   closeRequest,
-  onRequest,
   removeKeysFromState,
   resetKeysAndPin,
   selectKMS,
@@ -59,9 +58,7 @@ export const Core = () => {
   const insets = useSafeAreaInsets()
   const topColor = useAppSelector(selectTopColor)
 
-  const BitcoinCore = useBitcoinCore(kms?.mnemonic || '', request =>
-    dispatch(onRequest({ request })),
-  )
+  const BitcoinCore = useBitcoinCore()
   const onScreenLock = () => dispatch(removeKeysFromState())
 
   const { unlocked, setUnlocked, active } = useStateSubscription(onScreenLock)
