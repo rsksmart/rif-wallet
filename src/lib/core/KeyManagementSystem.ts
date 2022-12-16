@@ -4,9 +4,9 @@ import { getDPathByChainId } from '@rsksmart/rlogin-dpath'
 
 type Mnemonic = string
 
-type DerivedPaths = { [derivatoinPath: string]: string }
+interface DerivedPaths { [derivatoinPath: string]: string }
 
-type LastDerivedAccountIndex = {
+interface LastDerivedAccountIndex {
   [chainId: number]: number
 }
 
