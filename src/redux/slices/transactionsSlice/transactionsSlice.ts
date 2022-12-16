@@ -1,5 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { ITransactionsState } from 'store/slices/transactionsSlice/types'
+import {
+  IApiTransactionWithExtras,
+  ITransactionsState,
+  ModifyTransactionAction,
+} from 'store/slices/transactionsSlice/types'
 import {
   filterEnhancedTransactions,
   sortEnhancedTransactions,
@@ -50,12 +54,54 @@ const transactionsSlice = createSlice({
       state.events.push(payload)
       return state
     },
+    addPendingTransaction: (
+      state,
+      { payload }: PayloadAction<IApiTransactionWithExtras>,
+    ) => {
+      const { symbol, finalAddress, enhancedAmount, value, ...restPayload } =
+        payload
+      const pendingTransaction = {
+        originTransaction: {
+          ...restPayload,
+          value: enhancedAmount || value,
+        },
+        enhancedTransaction: {
+          symbol,
+          from: restPayload.from,
+          to: finalAddress,
+          value: enhancedAmount,
+        },
+      }
+      state.transactions.push(pendingTransaction)
+      return state
+    },
+    modifyTransaction: (
+      state,
+      { payload }: PayloadAction<ModifyTransactionAction>,
+    ) => {
+      const indexOfTransactionToModify = state.transactions.findIndex(
+        transaction => transaction.originTransaction.hash === payload.hash,
+      )
+      if (indexOfTransactionToModify !== -1) {
+        state.transactions[indexOfTransactionToModify] = {
+          ...state.transactions[indexOfTransactionToModify],
+          ...payload,
+        }
+      }
+      state.transactions = deserializeTransactions(state.transactions || [])
+      return state
+    },
   },
   extraReducers: builder => {
     builder.addCase(resetSocketState, () => initialState)
   },
 })
 
-export const { addNewTransactions, addNewTransaction, addNewEvent } =
-  transactionsSlice.actions
+export const {
+  addNewTransactions,
+  addNewTransaction,
+  addNewEvent,
+  modifyTransaction,
+  addPendingTransaction,
+} = transactionsSlice.actions
 export const transactionsReducer = transactionsSlice.reducer

@@ -1,8 +1,12 @@
-import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
+import { TransactionResponse } from '@ethersproject/abstract-provider'
+import { ContractReceipt } from 'ethers'
+import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { UnspentTransactionType } from 'lib/bitcoin/types'
+
 import { TransactionInformation } from './TransactionInfo'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
+import { TransactionExtras } from 'store/slices/transactionsSlice/types'
 
 export type OnSetErrorFunction = (
   error: string | null | { message: string },
@@ -10,6 +14,11 @@ export type OnSetErrorFunction = (
 
 export type OnSetCurrentTransactionFunction = (
   object: TransactionInformation | null,
+) => void
+
+type TransactionResponseWithoutWait = Omit<TransactionResponse, 'wait'>
+export type OnSetTransactionStatusChange = (
+  transaction: TransferTransactionStatus,
 ) => void
 
 export interface IAssetChooser<T = unknown> {
@@ -32,3 +41,21 @@ export interface ITransfer {
 }
 
 export type MixedTokenAndNetworkType = BitcoinNetwork | ITokenWithoutLogo
+
+type TransferTransactionStatus =
+  | TransferTransactionStatusPending
+  | TransferTransactionStatusConfirmed
+  | TransferTransactionStatusFailed
+
+type TransferTransactionStatusPending = {
+  txStatus: 'PENDING'
+} & TransactionExtras &
+  TransactionResponseWithoutWait
+
+type TransferTransactionStatusConfirmed = {
+  txStatus: 'CONFIRMED'
+} & ContractReceipt
+
+type TransferTransactionStatusFailed = {
+  txStatus: 'FAILED'
+} & TransactionResponseWithoutWait
