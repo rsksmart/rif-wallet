@@ -7,22 +7,45 @@ import { useAppSelector } from 'src/redux/storeUtils'
 import { RegularText } from '../../components'
 import { AvatarIcon } from '../../components/icons/AvatarIcon'
 import { colors } from '../../styles'
-
-export const ProfileHandler = () => {
+import { useAliasRegistration } from 'core/hooks/useAliasRegistration'
+import { RIFWallet } from 'lib/core'
+import React from 'react'
+interface Props {
+  wallet: RIFWallet
+}
+export const ProfileHandler: React.FC<Props> = ({ wallet }) => {
   const profile = useAppSelector(selectProfile)
   const profileCreated = !!profile
+
+  const { registrationStarted, readyToRegister, getRegistrationData } =
+    useAliasRegistration(wallet)
+  const routeNextStep = async () => {
+    if (await readyToRegister()) {
+      const myAliasRegistration = await getRegistrationData()
+      navigationContainerRef.navigate(rootStackRouteNames.BuyDomain, {
+        alias: myAliasRegistration?.alias,
+        domainSecret: myAliasRegistration?.commitToRegisterSecret,
+        duration: myAliasRegistration?.duration,
+      })
+    } else if (await registrationStarted()) {
+      const myAliasRegistration = await getRegistrationData()
+      navigationContainerRef.navigate(rootStackRouteNames.RequestDomain, {
+        alias: myAliasRegistration?.alias,
+        duration: myAliasRegistration?.duration,
+      })
+    } else {
+      navigationContainerRef.navigate(
+        profileCreated
+          ? rootStackRouteNames.ProfileDetailsScreen
+          : rootStackRouteNames.ProfileCreateScreen,
+      )
+    }
+  }
   return (
     <TouchableOpacity
       style={styles.profileHandler}
       accessibilityLabel="profile"
-      onPress={() =>
-        navigationContainerRef.navigate(
-          profileCreated
-            ? rootStackRouteNames.ProfileDetailsScreen
-            : rootStackRouteNames.ProfileCreateScreen,
-          { editProfile: profileCreated },
-        )
-      }>
+      onPress={routeNextStep}>
       {profile?.alias ? (
         <>
           <AvatarIcon value={profile.alias + '.rsk'} size={30} />

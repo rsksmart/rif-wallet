@@ -1,4 +1,3 @@
-import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import { useEffect, useState } from 'react'
 import * as Progress from 'react-native-progress'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
@@ -16,44 +15,58 @@ import {
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
 import { ScreenWithWallet } from '../types'
-import addresses from './addresses.json'
 import TitleStatus from './TitleStatus'
+import { IProfileRegistrationStore } from '../../storage/AliasRegistrationStore'
+import { useAliasRegistration } from '../../core/hooks/useAliasRegistration'
 
 type Props = RootStackScreenProps<rootStackRouteNames.RequestDomain> &
   ScreenWithWallet
 
 export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
+  const {
+    registrationStarted,
+    readyToRegister,
+    getRegistrationData,
+    setRegistrationData,
+  } = useAliasRegistration(wallet)
   const { alias, duration } = route.params
   const fullAlias = alias + '.rsk'
 
-  const rskRegistrar = new RSKRegistrar(
-    addresses.rskOwnerAddress,
-    addresses.fifsAddrRegistrarAddress,
-    addresses.rifTokenAddress,
-    wallet,
-  )
   const [commitToRegisterInfo, setCommitToRegisterInfo] = useState('')
   const [commitToRegisterInfo2, setCommitToRegisterInfo2] = useState('')
   const [processing, setProcessing] = useState(false)
   const [progress, setProgress] = useState(0.0)
 
+  const getUpToDateRegistrationData = async () => {
+    if (await registrationStarted()) {
+      setCommitToRegisterInfo('loading registration process status')
+      setProgress(0.3)
+      return await getRegistrationData()
+    } else {
+      setCommitToRegisterInfo('committing to register...')
+      setProgress(0)
+      return await setRegistrationData(alias, parseInt(duration, 10))
+    }
+  }
+
   const commitToRegister = async () => {
     setProcessing(true)
     try {
-      const { makeCommitmentTransaction, secret, canReveal } =
-        await rskRegistrar.commitToRegister(alias, wallet.smartWallet.address)
-
+      const profileRegistrationStore: IProfileRegistrationStore =
+        await getUpToDateRegistrationData()
       setCommitToRegisterInfo('registering your alias...')
       setCommitToRegisterInfo2('estimated wait: 3 minutes')
-
       const intervalId = setInterval(async () => {
-        const ready = await canReveal()
         setProgress(prev => prev + 0.009)
+        const ready = await readyToRegister(
+          profileRegistrationStore.commitToRegisterHash,
+        )
         if (ready) {
+          setProgress(1)
           setProcessing(false)
           navigation.navigate(rootStackRouteNames.BuyDomain, {
             alias,
-            domainSecret: secret,
+            domainSecret: profileRegistrationStore.commitToRegisterSecret,
             duration,
           })
           setCommitToRegisterInfo(
@@ -62,8 +75,6 @@ export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
           clearInterval(intervalId)
         }
       }, 1000)
-      await makeCommitmentTransaction.wait()
-      setCommitToRegisterInfo('Transaction confirmed. Please wait...')
     } catch (e: unknown) {
       setProcessing(false)
       setCommitToRegisterInfo(e?.message || '')

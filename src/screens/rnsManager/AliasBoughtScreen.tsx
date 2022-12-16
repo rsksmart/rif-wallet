@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { Clipboard, Image, Linking, StyleSheet, View } from 'react-native'
 import { rnsManagerStyles } from './rnsManagerStyles'
+import { navigationContainerRef } from 'src/core/Core'
 
 import {
   rootStackRouteNames,
@@ -17,7 +18,6 @@ import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { ScreenWithWallet } from '../types'
 
 export const AliasBoughtScreen = ({
-  navigation,
   route,
 }: RootStackScreenProps<'AliasBought'> & ScreenWithWallet) => {
   const { alias, tx } = route.params
@@ -30,7 +30,10 @@ export const AliasBoughtScreen = ({
   const dispatch = useAppDispatch()
   const profile = useAppSelector(selectProfile)
 
-  const explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainId)
+  const explorerUrl = getWalletSetting(
+    SETTINGS.EXPLORER_ADDRESS_URL,
+    chainId ?? 31,
+  )
 
   const copyHashAndOpenExplorer = (hash: string) => {
     Clipboard.setString(hash)
@@ -39,9 +42,8 @@ export const AliasBoughtScreen = ({
 
   useEffect(() => {
     if (profile) {
-      dispatch(setProfile({ ...profile, alias }))
+      dispatch(setProfile({ ...profile, alias: `${alias}.rsk` }))
     }
-
     const fetchData = async () => {
       await tx.wait()
       setRegisterDomainInfo('Your alias has been registered successfully')
@@ -81,7 +83,9 @@ export const AliasBoughtScreen = ({
           </View>
           <SecondaryButton
             onPress={() =>
-              navigation.navigate(rootStackRouteNames.ProfileDetailsScreen)
+              navigationContainerRef.navigate(
+                rootStackRouteNames.ProfileDetailsScreen,
+              )
             }
             accessibilityLabel="close"
             title={'Close'}

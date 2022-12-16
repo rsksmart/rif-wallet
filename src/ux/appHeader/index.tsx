@@ -27,7 +27,7 @@ export const AppHeader = () => {
           ...styles.column,
           ...styles.walletInfo,
         }}>
-        <ProfileHandler />
+        {wallet && <ProfileHandler wallet={wallet} />}
       </View>
       <View style={styles.column}>
         {wallet && (
