@@ -1,18 +1,19 @@
-import { toChecksumAddress } from 'components/address/lib'
-import { LoadingScreen } from 'components/loading/LoadingScreen'
-import { balanceToDisplay, getChainIdByType } from 'lib/utils'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
 
+import { balanceToDisplay, getChainIdByType } from 'lib/utils'
 import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+
+import { toChecksumAddress } from 'components/address/lib'
+import { LoadingScreen } from 'components/loading/LoadingScreen'
 
 import { Paragraph } from 'components/index'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
-import { selectAccounts } from 'src/redux/slices/accountsSlice/selector'
+import { selectAccounts } from 'store/slices/accountsSlice/selector'
 import { colors } from 'src/styles'
 import { selectAppState } from 'store/slices/appStateSlice/selectors'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
@@ -69,44 +70,53 @@ export const HomeScreen = ({
         ? setSelectedAddress(balances[0].contractAddress)
         : undefined
     }
-  }, [balances])
+  }, [balances, selected])
+
+  const handleBitcoinSendReceive = useCallback(
+    (
+      screen: 'SEND' | 'RECEIVE' | 'FAUCET',
+      _selected: ITokenWithoutLogo & BitcoinNetwork,
+    ) => {
+      if (_selected instanceof BitcoinNetwork) {
+        switch (screen) {
+          case 'RECEIVE':
+            return navigation.navigate(rootStackRouteNames.ReceiveBitcoin, {
+              network: _selected,
+            })
+          case 'SEND':
+            return navigation.navigate(rootStackRouteNames.Send, {
+              token: _selected?.symbol,
+              contractAddress: _selected?.contractAddress,
+            })
+        }
+      }
+    },
+    [navigation],
+  )
 
   // interact with the navigation
-  const handleSendReceive = (screen: 'SEND' | 'RECEIVE' | 'FAUCET') => {
-    if (selected instanceof BitcoinNetwork) {
-      return handleBitcoinSendReceive(screen)
-    }
-    switch (screen) {
-      case 'SEND':
-        return navigation.navigate(rootStackRouteNames.Send, {
-          token: selected?.symbol,
-          contractAddress: selected?.contractAddress,
-        })
-      case 'RECEIVE':
-        return navigation.navigate(rootStackRouteNames.Receive)
-      case 'FAUCET':
-        const address = wallet?.smartWallet.smartWalletContract.address
-        address &&
-          addBalance(toChecksumAddress(address, getChainIdByType(chainType)))
-        return
-    }
-  }
-
-  const handleBitcoinSendReceive = (screen: 'SEND' | 'RECEIVE' | 'FAUCET') => {
-    if (selected instanceof BitcoinNetwork) {
+  const handleSendReceive = useCallback(
+    (screen: 'SEND' | 'RECEIVE' | 'FAUCET') => {
+      if (selected instanceof BitcoinNetwork) {
+        return handleBitcoinSendReceive(screen, selected)
+      }
       switch (screen) {
-        case 'RECEIVE':
-          return navigation.navigate(rootStackRouteNames.ReceiveBitcoin, {
-            network: selected,
-          })
         case 'SEND':
           return navigation.navigate(rootStackRouteNames.Send, {
             token: selected?.symbol,
             contractAddress: selected?.contractAddress,
           })
+        case 'RECEIVE':
+          return navigation.navigate(rootStackRouteNames.Receive)
+        case 'FAUCET':
+          const address = wallet?.smartWallet.smartWalletContract.address
+          address &&
+            addBalance(toChecksumAddress(address, getChainIdByType(chainType)))
+          return
       }
-    }
-  }
+    },
+    [navigation, wallet, selected, handleBitcoinSendReceive, chainType],
+  )
 
   const addBalance = (address: string) => {
     console.log('temporarly removed', address)
@@ -115,7 +125,7 @@ export const HomeScreen = ({
   // pass the new color to Core to update header:
   useEffect(() => {
     dispatch(changeTopColor(selectedColor))
-  }, [selectedColor])
+  }, [selectedColor, dispatch])
 
   const selectedTokenAmount = useMemo(() => {
     if (selected instanceof BitcoinNetwork) {
@@ -125,7 +135,8 @@ export const HomeScreen = ({
       return balanceToDisplay(selected.balance, selected.decimals, 5)
     }
     return '0'
-  }, [selected, balances])
+  }, [selected])
+
   // waiting for the balances to load:
   if (!isSetup) {
     return <LoadingScreen />

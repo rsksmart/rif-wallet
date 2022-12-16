@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { MixedTokenAndNetworkType } from './types'
 
 const normalTabs = ['address', 'recent', 'contact']
@@ -9,17 +9,18 @@ export const useTokenSelectedTabs = (
 ) => {
   const [tabs, setTabs] = useState<string[]>(normalTabs)
 
-  const onTokenChanged = () => {
+  const onTokenChanged = useCallback(() => {
     if ('isBitcoin' in tokenSelected) {
       setTabs([...bitcoinTabs])
       setCurrentTab('address')
     } else {
       setTabs([...normalTabs])
     }
-  }
+  }, [setCurrentTab, tokenSelected])
+
   useEffect(() => {
     onTokenChanged()
-  }, [tokenSelected])
+  }, [onTokenChanged])
   return {
     tabs,
   }

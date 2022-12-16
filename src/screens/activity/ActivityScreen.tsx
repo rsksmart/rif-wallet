@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { useEffect } from 'react'
+=======
+import { useState, useEffect, useCallback } from 'react'
+>>>>>>> e2a732e3 (fix: useEffect, useCallback, useMemo dependencies in most components)
 import { FlatList, StyleSheet, View, RefreshControl } from 'react-native'
 
 import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
@@ -41,7 +45,7 @@ export const ActivityScreen = ({
   // On load, fetch btc transactions
   useEffect(() => {
     btcTransactionFetcher.fetchTransactions()
-  }, [])
+  }, [btcTransactionFetcher])
 
   // On load, fetch both BTC and WALLET transactions
   useEffect(() => {
@@ -51,6 +55,7 @@ export const ActivityScreen = ({
   const onRefresh = () => {
     btcTransactionFetcher.fetchTransactions(undefined, 1)
   }
+
   return (
     <View style={styles.mainContainer}>
       <FlatList

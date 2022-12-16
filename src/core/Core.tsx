@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { StatusBar, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -88,10 +88,24 @@ export const Core = () => {
     }
   }
 
+<<<<<<< HEAD
   const retrieveChainId = async (wallet: RIFWallet) => {
     const chainId = await wallet.getChainId()
     dispatch(setChainId(chainId))
   }
+=======
+  const retrieveChainId = useCallback(
+    async (wallet: RIFWallet) => {
+      const chainId = await wallet.getChainId()
+      dispatch(
+        setChainType(
+          chainId === 31 ? ChainTypeEnum.TESTNET : ChainTypeEnum.MAINNET,
+        ),
+      )
+    },
+    [dispatch],
+  )
+>>>>>>> e2a732e3 (fix: useEffect, useCallback, useMemo dependencies in most components)
 
   useRifSockets({
     appActive: active,
@@ -111,7 +125,7 @@ export const Core = () => {
       const currentWallet = wallets[selectedWallet]
       retrieveChainId(currentWallet)
     }
-  }, [selectedWallet])
+  }, [selectedWallet, retrieveChainId, wallets])
 
   if (settingsIsLoading) {
     return <LoadingScreen />

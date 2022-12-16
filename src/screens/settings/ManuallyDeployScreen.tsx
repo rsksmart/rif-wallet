@@ -1,6 +1,6 @@
 import Clipboard from '@react-native-community/clipboard'
 import { BigNumber, Transaction } from 'ethers'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   Linking,
   StyleSheet,
@@ -9,6 +9,8 @@ import {
   View,
   ScrollView,
 } from 'react-native'
+
+import { RIFWallet } from 'lib/core'
 
 import { CopyIcon } from 'components/icons'
 import { PrimaryButton } from 'components/button/PrimaryButton'
@@ -31,12 +33,17 @@ export const ManuallyDeployScreen = ({
   const [smartWalletDeployTx, setSmartWalletDeployTx] =
     useState<null | Transaction>(null)
 
-  useEffect(() => {
-    getInfo()
-  }, [])
+  const getInfo = useCallback(
+    (_wallet: RIFWallet) =>
+      _wallet.smartWallet.signer.getBalance().then(setEoaBalance),
+    [],
+  )
 
-  const getInfo = () =>
-    wallet.smartWallet.signer.getBalance().then(setEoaBalance)
+  useEffect(() => {
+    if (wallet) {
+      getInfo(wallet)
+    }
+  }, [getInfo, wallet])
 
   const deploy = async () => {
     setDeployError(null)

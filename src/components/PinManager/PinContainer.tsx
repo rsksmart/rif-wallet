@@ -1,6 +1,8 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import PinScreen from './PinScreen'
 import { PinContainerType } from './PinScreen/PinScreen'
+
+const createPinArray = (length: number) => Array.from({ length }, () => '')
 
 export const PinContainer = ({
   pinLength = 4,
@@ -9,10 +11,6 @@ export const PinContainer = ({
   resetKeysAndPin,
   resetEnabled,
 }: PinContainerType) => {
-  const createPinArray = useCallback(
-    length => Array.from({ length }, () => ''),
-    [],
-  )
   const defaultPinArray = useMemo(() => createPinArray(pinLength), [pinLength])
   const [pin, setPin] = useState<Array<string>>(defaultPinArray)
   const [position, setPosition] = useState<number>(0)

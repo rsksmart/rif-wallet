@@ -1,30 +1,30 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import { getPin } from '../../storage/MainStorage'
 import { PinContainer } from '../../components/PinManager/PinContainer'
 import { useState } from 'react'
 import { pinLength } from '../../shared/costants'
 
-interface Interface {
+interface Props {
   unlock: () => void
   resetKeysAndPin: () => void
 }
 
-export const RequestPIN: React.FC<Interface> = ({
-  unlock,
-  resetKeysAndPin,
-}) => {
+export const RequestPIN = ({ unlock, resetKeysAndPin }: Props) => {
   const [resetEnabled, setResetEnabled] = useState<boolean>(false)
-  const checkPin = useCallback((enteredPin: string) => {
-    try {
-      const storedPin = getPin()
-      if (storedPin === enteredPin) {
-        unlock()
-      } else {
-        setResetEnabled(true)
-        throw new Error('Pin do not match.')
-      }
-    } catch (err) {}
-  }, [])
+  const checkPin = useCallback(
+    (enteredPin: string) => {
+      try {
+        const storedPin = getPin()
+        if (storedPin === enteredPin) {
+          unlock()
+        } else {
+          setResetEnabled(true)
+          throw new Error('Pin do not match.')
+        }
+      } catch (err) {}
+    },
+    [unlock],
+  )
 
   return (
     <PinContainer

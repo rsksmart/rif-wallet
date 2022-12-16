@@ -20,6 +20,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons'
 import { colors } from 'src/styles'
 import { runOnJS } from 'react-native-reanimated'
+
 interface QRCodeScannerProps {
   onClose: () => void
   onCodeRead: (data: string) => void
@@ -28,12 +29,14 @@ interface QRCodeScannerProps {
 export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
   const device = useCameraDevices('wide-angle-camera').back
   const [barcodes, setBarcodes] = useState<Barcode[]>([])
+
   // Do not use the hook that comes with the camera as it'll not work
   const frameProcessor = useFrameProcessor(frame => {
     'worklet'
     const detectedBarcodes = scanBarcodes(frame, [BarcodeFormat.QR_CODE])
     runOnJS(setBarcodes)(detectedBarcodes)
   }, [])
+
   const permissionHandler = useCallback(async () => {
     const cameraPermission = await Camera.getCameraPermissionStatus()
     if (cameraPermission === 'not-determined') {
@@ -45,13 +48,13 @@ export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
 
   useEffect(() => {
     permissionHandler()
-  }, [])
+  }, [permissionHandler])
 
   useEffect(() => {
     if (barcodes && barcodes[0] && barcodes[0].rawValue) {
       onCodeRead(barcodes[0].rawValue)
     }
-  }, [barcodes])
+  }, [barcodes, onCodeRead])
 
   if (device == null) {
     return <ActivityIndicator size={'large'} />
