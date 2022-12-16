@@ -62,27 +62,6 @@ export const useRifSockets = ({
     [dispatch, onSocketError, onSocketInit],
   )
 
-  // useEffect(() => {
-  //   if (wallet && rifServiceSocket && kms) {
-  //     // socket is connected to a different wallet
-
-  //     connectSocket({
-  //       rifServiceSocket,
-  //       wallet,
-  //       mnemonic: kms.mnemonic,
-  //       onInit: onSocketInit,
-  //       onError: onSocketError,
-  //       onChange: onSocketsChange,
-  //     })
-
-  //     return function cleanup() {
-  //       rifServiceSocket?.disconnect()
-  //     }
-  //   }
-
-  //   return () => rifServiceSocket?.disconnect()
-  // }, [])
-
   // Disconnect from the rifServiceSocket when the app goes to the background
   const onWalletAppActiveChange = useCallback(
     (_appActive: boolean, _mnemonic: string) => {
@@ -116,7 +95,6 @@ export const useRifSockets = ({
 
   useEffect(() => {
     if (wallet && mnemonic) {
-      console.log('CONNECT TO SOCKET', wallet, mnemonic)
       reconnectToSocket(wallet, mnemonic)
     }
     return () => rifWalletServicesSocket.disconnect()
