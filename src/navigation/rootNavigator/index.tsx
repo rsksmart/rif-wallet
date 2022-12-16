@@ -44,7 +44,7 @@ const sharedOptions = {
 
 interface Props {
   currentScreen: string
-  fetcher: RifWalletServicesFetcher
+  fetcher?: RifWalletServicesFetcher
 }
 
 export const RootNavigationComponent = ({ currentScreen, fetcher }: Props) => {

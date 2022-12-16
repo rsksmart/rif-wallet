@@ -17,7 +17,6 @@
 		6A14C5BD45F7464D88F260F8 /* Poppins-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4520576660AA42B39BBF42C4 /* Poppins-Medium.ttf */; };
 		7FD903F988688ED424D18CDF /* libPods-rifWallet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C69DEDE14EEC5337A0BF0552 /* libPods-rifWallet.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		D1C4D291B79C079D0D7090BA /* libPods-sWallet-sWalletTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58668F5953ADE5ED28C9EB76 /* libPods-sWallet-sWalletTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */

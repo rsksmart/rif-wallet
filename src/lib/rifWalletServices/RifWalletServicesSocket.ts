@@ -24,7 +24,7 @@ export interface IRifWalletServicesSocket extends EventEmitter {
   connect: (
     wallet: RIFWallet,
     encryptionKey: string,
-    fetcher: RifWalletServicesFetcher,
+    fetcher?: RifWalletServicesFetcher,
   ) => Promise<void>
 
   disconnect(): void
@@ -52,12 +52,12 @@ export class RifWalletServicesSocket
   private async init(
     wallet: RIFWallet,
     encryptionKey: string,
-    fetcher: RifWalletServicesFetcher,
+    fetcher?: RifWalletServicesFetcher,
   ) {
     const cache = new MMKVStorage('txs', encryptionKey)
     const blockNumber = cache.get('blockNumber') || '0'
     const catchedTxs = cache.get('cachedTxs') || []
-    const fetchedTransactions = await fetcher.fetchTransactionsByAddress(
+    const fetchedTransactions = await fetcher?.fetchTransactionsByAddress(
       wallet.smartWalletAddress,
       null,
       null,
@@ -114,7 +114,7 @@ export class RifWalletServicesSocket
   async connect(
     wallet: RIFWallet,
     encriptionKey: string,
-    fetcher: RifWalletServicesFetcher,
+    fetcher?: RifWalletServicesFetcher,
   ) {
     try {
       await this.init(wallet, encriptionKey, fetcher)
