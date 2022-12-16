@@ -4,9 +4,9 @@ import { getDPathByChainId } from '@rsksmart/rlogin-dpath'
 
 type Mnemonic = string
 
-type DerivedPaths = { [derivatoinPath: string]: boolean }
+interface DerivedPaths { [derivatoinPath: string]: string }
 
-type LastDerivedAccountIndex = {
+interface LastDerivedAccountIndex {
   [chainId: number]: number
 }
 
@@ -90,9 +90,18 @@ export class KeyManagementSystem implements IKeyManagementSystem {
     const { mnemonic, state }: KeyManagementSystemSerialization = JSON.parse(serialized)
 
     const kms = new KeyManagementSystem(mnemonic, state)
+
+    // try to create the wallet using the private key which is faster, if it fails, the fallback
+    // is to use the derivedPath and mnemonic to regenerate the private key and then wallet
     const wallets = Object.keys(state.derivedPaths)
-      .filter(derivedPath => state.derivedPaths[derivedPath])
-      .map(derivedPath => kms.deriveWallet(derivedPath))
+      .map((derivedPath: string) => {
+        try {
+          return new Wallet(state.derivedPaths[derivedPath])
+        } catch (_error) {
+          const { wallet } = kms.deriveWallet(derivedPath)
+          return wallet
+        }
+      })
 
     return {
       kms,
@@ -118,7 +127,7 @@ export class KeyManagementSystem implements IKeyManagementSystem {
     const seed = mnemonicToSeedSync(this.mnemonic)
     const hdKey = fromSeed(seed).derivePath(derivationPath)
     const privateKey = hdKey.privateKey!.toString('hex')
-    return new Wallet(privateKey)
+    return { wallet: new Wallet(privateKey), privateKey }
   }
 
   /**
@@ -139,33 +148,33 @@ export class KeyManagementSystem implements IKeyManagementSystem {
       derivationPath = getDPathByChainId(chainId, this.state.lastDerivedAccountIndex[chainId])
     }
 
-    const wallet = this.deriveWallet(derivationPath)
+    const { wallet, privateKey } = this.deriveWallet(derivationPath)
 
     return {
       derivationPath,
       wallet,
       save: () => {
-        this.state.derivedPaths[derivationPath] = true
+        this.state.derivedPaths[derivationPath] = privateKey
         this.state.lastDerivedAccountIndex[chainId] = this.state.lastDerivedAccountIndex[chainId] + 1
       }
     }
   }
 
   /**
-   * Get tehe account for an arbitrary derivation path
+   * Get the account for an arbitrary derivation path
    * @param derivationPath an arbitrary derivation path
    * @returns a savable wallet
    */
   addWallet (derivationPath: string): SaveableWallet {
     if (this.state.derivedPaths[derivationPath]) throw new Error('Existent wallet')
 
-    const wallet = this.deriveWallet(derivationPath)
+    const { wallet, privateKey } = this.deriveWallet(derivationPath)
 
     return {
       derivationPath,
       wallet,
       save: () => {
-        this.state.derivedPaths[derivationPath] = true
+        this.state.derivedPaths[derivationPath] = privateKey
       }
     }
   }
