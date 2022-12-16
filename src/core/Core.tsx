@@ -5,8 +5,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { RIFWallet } from 'lib/core'
 import { i18nInit } from 'lib/i18n'
 
-import { abiEnhancer, rifWalletServicesSocket } from './setup'
-
 import {
   RootNavigationComponent,
   RootStackParamList,
@@ -96,11 +94,9 @@ export const Core = () => {
   }
 
   useRifSockets({
-    rifServiceSocket: rifWalletServicesSocket,
-    abiEnhancer,
     appActive: active,
     wallet: wallets && wallets[selectedWallet],
-    mnemonic: kms?.mnemonic,
+    mnemonic: kms ? kms.mnemonic : null,
   })
 
   useEffect(() => {

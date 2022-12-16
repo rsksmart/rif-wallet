@@ -1,80 +1,126 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 
-import { IAbiEnhancer } from 'lib/abiEnhancer/AbiEnhancer'
-import { IRifWalletServicesSocket } from 'lib/rifWalletServices/RifWalletServicesSocket'
+import { RIFWallet } from 'lib/core'
 
 import { useSetGlobalError } from 'components/GlobalErrorHandler'
-import { useConnectSocket } from './useConnectSocket'
-import { useOnSocketChangeEmitted } from './useOnSocketChangeEmitted'
-import { useAppSelector, useAppDispatch } from 'store/storeUtils'
+import { connectSocket } from './connectSocket'
+import { onSocketChangeEmitted } from './onSocketChangeEmitted'
+import { useAppDispatch } from 'store/storeUtils'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
-import { selectActiveWallet, selectKMS } from 'store/slices/settingsSlice'
+import { rifWalletServicesSocket, abiEnhancer } from 'core/setup'
 import { InitAction } from './types'
 
 interface IUseRifSockets {
-  rifServiceSocket?: IRifWalletServicesSocket
-  abiEnhancer: IAbiEnhancer
   appActive: boolean
-  mnemonic?: string
+  wallet: RIFWallet | null
+  mnemonic: string | null
 }
 export const useRifSockets = ({
-  rifServiceSocket,
-  abiEnhancer,
   appActive,
+  wallet,
+  mnemonic,
 }: IUseRifSockets) => {
   const dispatch = useAppDispatch()
   const setGlobalError = useSetGlobalError()
-  const kms = useAppSelector(selectKMS)
-  const { wallet } = useAppSelector(selectActiveWallet)
 
-  const onSocketsChange = useOnSocketChangeEmitted({
-    abiEnhancer,
-    wallet,
-  })
+  const onSocketInit = useCallback(
+    (_wallet: RIFWallet) => {
+      const onChange = onSocketChangeEmitted({
+        dispatch,
+        abiEnhancer,
+        wallet: _wallet,
+      })
+      return (payload: InitAction['payload']) =>
+        onChange({ type: 'init', payload })
+    },
+    [dispatch],
+  )
+  const onSocketError = useCallback(
+    () => setGlobalError('Error connecting to the socket'),
+    [setGlobalError],
+  )
 
-  const onSocketInit = (payload: InitAction['payload']) => {
-    return onSocketsChange({ type: 'init', payload })
-  }
-  const onSocketError = () => setGlobalError('Error connecting to the socket')
-  const connect = useConnectSocket({
-    rifServiceSocket,
-    onError: onSocketError,
-    onChange: onSocketsChange,
-    onInit: onSocketInit,
-    mnemonic: kms?.mnemonic,
-    wallet,
-  })
-
-  useEffect(() => {
-    if (wallet && rifServiceSocket) {
-      // socket is connected to a different wallet
-      if (rifServiceSocket.isConnected()) {
-        rifServiceSocket.disconnect()
+  const reconnectToSocket = useCallback(
+    (_wallet: RIFWallet, _mnemonic: string) => {
+      if (rifWalletServicesSocket.isConnected()) {
+        rifWalletServicesSocket.disconnect()
         dispatch(resetSocketState())
       }
-      connect()
+      connectSocket({
+        rifServiceSocket: rifWalletServicesSocket,
+        wallet: _wallet,
+        mnemonic: _mnemonic,
+        onInit: onSocketInit(_wallet),
+        onError: onSocketError,
+        onChange: onSocketChangeEmitted({
+          dispatch,
+          abiEnhancer,
+          wallet: _wallet,
+        }),
+      })
+    },
+    [dispatch, onSocketError, onSocketInit],
+  )
 
-      return function cleanup() {
-        rifServiceSocket?.disconnect()
-      }
-    }
+  // useEffect(() => {
+  //   if (wallet && rifServiceSocket && kms) {
+  //     // socket is connected to a different wallet
 
-    return () => rifServiceSocket?.disconnect()
-  }, [wallet])
+  //     connectSocket({
+  //       rifServiceSocket,
+  //       wallet,
+  //       mnemonic: kms.mnemonic,
+  //       onInit: onSocketInit,
+  //       onError: onSocketError,
+  //       onChange: onSocketsChange,
+  //     })
+
+  //     return function cleanup() {
+  //       rifServiceSocket?.disconnect()
+  //     }
+  //   }
+
+  //   return () => rifServiceSocket?.disconnect()
+  // }, [])
 
   // Disconnect from the rifServiceSocket when the app goes to the background
-  const onWalletAppActiveChange = () => {
-    if (!appActive) {
-      return rifServiceSocket?.disconnect()
-    }
+  const onWalletAppActiveChange = useCallback(
+    (_appActive: boolean, _mnemonic: string) => {
+      if (!_appActive) {
+        return rifWalletServicesSocket.disconnect()
+      }
 
-    if (wallet && rifServiceSocket && !rifServiceSocket.isConnected()) {
-      connect()
-    }
-  }
+      if (
+        wallet &&
+        rifWalletServicesSocket &&
+        !rifWalletServicesSocket.isConnected()
+      ) {
+        connectSocket({
+          rifServiceSocket: rifWalletServicesSocket,
+          wallet,
+          mnemonic: _mnemonic,
+          onInit: onSocketInit(wallet),
+          onError: onSocketError,
+          onChange: onSocketChangeEmitted({ dispatch, abiEnhancer, wallet }),
+        })
+      }
+    },
+    [wallet, dispatch, onSocketInit, onSocketError],
+  )
+
   useEffect(() => {
-    onWalletAppActiveChange()
-  }, [appActive])
+    if (mnemonic) {
+      onWalletAppActiveChange(appActive, mnemonic)
+    }
+  }, [appActive, onWalletAppActiveChange, mnemonic])
+
+  useEffect(() => {
+    if (wallet && mnemonic) {
+      console.log('CONNECT TO SOCKET', wallet, mnemonic)
+      reconnectToSocket(wallet, mnemonic)
+    }
+    return () => rifWalletServicesSocket.disconnect()
+  }, [wallet, reconnectToSocket, mnemonic])
 
   return null
 }

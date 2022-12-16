@@ -17,7 +17,7 @@ module.exports = {
   rules: {
     semi: 'off',
     'eslint-comments/no-unlimited-disable': 'off',
-    'react-hooks/exhaustive-deps': 'off',
+    'react-hooks/exhaustive-deps': 'error',
     'no-undef': 'off',
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': ['error'],

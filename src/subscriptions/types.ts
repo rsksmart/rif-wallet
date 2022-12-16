@@ -84,7 +84,7 @@ export interface TransactionsServerResponseWithActivityTransactions
   activityTransactions: IActivityTransaction[]
 }
 
-export interface ISocketsChangeEmitted {
+export interface AbiWallet {
   abiEnhancer: IAbiEnhancer
   wallet: RIFWallet
 }
