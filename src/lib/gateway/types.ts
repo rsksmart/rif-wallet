@@ -30,6 +30,7 @@ export type IRGListing = {
   currencySymbol: string
   service: string
   balance?: BigNumber
+  validated: boolean
 }
 
 export type IRIFGateway = {

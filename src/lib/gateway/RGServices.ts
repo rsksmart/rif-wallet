@@ -1,5 +1,5 @@
 import { BigNumber, BigNumberish, Contract, ethers, Signer } from 'ethers'
-import { IServiceABI, LendingServiceABI } from './ABIs'
+import { IServiceABI, LendingServiceABI, BorrowServiceABI } from './ABIs'
 import { RGSigner } from './RGSigner'
 import { Token } from './Token'
 import { IRGService, IRGListing, RGSERVICE_TYPE } from './types'
@@ -63,6 +63,7 @@ class RGService implements IRGService {
       currencyName: tokenName,
       currencySymbol: tokenSymbol,
       service: this.address,
+      validated: false,
     } as IRGListing
   }
 
@@ -77,8 +78,8 @@ class RGService implements IRGService {
     return listings
   }
 
-  async getBalance(address: string): Promise<BigNumber> {
-    return await this.contract.functions['getBalance(address)'](address)
+  async getBalance(currency: string): Promise<BigNumber> {
+    return await this.contract.functions['getBalance(address)'](currency)
   }
 
   async getServiceProviderName(): Promise<string> {
@@ -160,7 +161,7 @@ class RGBorrowingService extends RGService {
   ) {
     super(address, provider)
 
-    this.contract = new ethers.Contract(address, LendingServiceABI.abi, signer)
+    this.contract = new ethers.Contract(address, BorrowServiceABI.abi, signer)
     this.signer = signer
     this.provider = provider
   }
@@ -170,7 +171,11 @@ class RGBorrowingService extends RGService {
     listingId: BigNumber,
     signFn: (domain: any, types: any, value: any) => Promise<any>,
     chainId: string,
-  ): Promise<void> {
+    amountToLend: BigNumber,
+  ): Promise<any> {
+    console.log('BORROW RGService');
+    // TODO: check for user balance on collateral balance
+
     return await RGSigner.executeTransaction(
       this.signer,
       this.provider,
@@ -180,7 +185,10 @@ class RGBorrowingService extends RGService {
       this.contract.functions[
         'borrow(bytes32,(address,uint256,address),bytes,uint256,uint256,uint256)'
       ],
-      [amount, ethers.constants.Zero, listingId],
+      [
+        amount, ethers.constants.Zero, listingId,
+        { value: amountToLend }
+      ],
     )
   }
 
@@ -189,7 +197,8 @@ class RGBorrowingService extends RGService {
     listingId: BigNumber,
     signFn: (domain: any, types: any, value: any) => Promise<any>,
     chainId: string,
-  ): Promise<void> {
+  ): Promise<any> {
+    console.log('paying signer', this.signer);
     return await RGSigner.executeTransaction(
       this.signer,
       this.provider,
@@ -207,7 +216,7 @@ class RGBorrowingService extends RGService {
     currencyAddress: string,
     signFn: (domain: any, types: any, value: any) => Promise<any>,
     chainId: string,
-  ): Promise<void> {
+  ): Promise<any> {
     return await RGSigner.executeTransaction(
       this.signer,
       this.provider,
@@ -219,6 +228,13 @@ class RGBorrowingService extends RGService {
       ],
       [currencyAddress],
     )
+  }
+
+  async calculateRequiredCollateral(
+    amount: BigNumber,
+    currency: string,
+  ): Promise<BigNumber> {
+    return await this.contract.functions['calculateRequiredCollateral(uint256,address)'](amount, currency);
   }
 }
 

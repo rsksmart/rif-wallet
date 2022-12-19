@@ -60,13 +60,11 @@ class RIFGateway implements IRIFGateway {
           listing =>
             listing.id.eq(listingId) && listing.service === serviceAddress,
         )
-        console.log(foundListing)
+        console.log('foundListing', foundListing)
         if (!foundListing) {
           const service = new RGService(serviceAddress, subscriber)
           const listing = await service.getListing(listingId)
-          listing.balance = await service.getBalance(
-            ethers.constants.AddressZero,
-          )
+          listing.balance = await service.getBalance(listing.currency)
           listings.push(listing)
         }
       } catch (ex) {
