@@ -4,7 +4,7 @@ export const selectRequests = ({ settings }: RootState) => settings.requests
 
 export const selectTopColor = ({ settings }: RootState) => settings.topColor
 
-export const selectChainId = ({ settings }: RootState) => settings.chainId
+export const selectChainType = ({ settings }: RootState) => settings.chainType
 
 export const selectKMS = ({ settings }: RootState) => settings.kms
 
@@ -27,7 +27,7 @@ export const selectActiveWallet = ({ settings }: RootState) => ({
     settings.selectedWallet && settings.walletsIsDeployed
       ? settings.walletsIsDeployed[settings.selectedWallet]
       : null,
-  chainId: settings.chainId,
+  chainType: settings.chainType,
   activeWalletIndex:
     settings.selectedWallet && settings.wallets
       ? Object.keys(settings.wallets).indexOf(settings.selectedWallet)

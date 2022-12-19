@@ -25,8 +25,8 @@ export default function ActivityDetailsContainer({
   transaction,
   onBackPress,
 }: ActivityDetailsContainer) {
-  const { chainId } = useAppSelector(selectActiveWallet)
-  const explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainId)
+  const { chainType } = useAppSelector(selectActiveWallet)
+  const explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainType)
   const onViewExplorerClick = () =>
     Linking.openURL(`${explorerUrl}/tx/${transaction.originTransaction.hash}`)
 

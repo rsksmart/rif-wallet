@@ -1,5 +1,9 @@
 import { CompositeScreenProps } from '@react-navigation/native'
-import { useContext, useState } from 'react'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
+import { useState } from 'react'
 import {
   StyleSheet,
   Text,
@@ -10,23 +14,22 @@ import {
 } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
-
-import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator/types'
-import { PrimaryButton } from 'components/button/PrimaryButton'
-import { AddressInput } from 'components/index'
-import { colors, grid } from '../../styles'
-import { fonts } from '../../styles/fonts'
-import { setOpacity } from '../home/tokenColor'
-import { ContactsContext, IContact } from './ContactsContext'
+import { PrimaryButton } from 'components/button'
 import {
   contactsStackRouteNames,
   ContactsStackScreenProps,
 } from 'navigation/contactsNavigator'
+import { AddressInput } from 'components/address'
+import { colors, grid } from 'src/styles'
+import { fonts } from 'src/styles/fonts'
+import { setOpacity } from '../home/tokenColor'
+import { Contact } from 'store/slices/contactsSlice/types'
+import { useAppDispatch } from 'store/storeUtils'
+import { addContact, editContact } from 'store/slices/contactsSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
+import { getChainIdByType } from 'lib/utils'
 
 export type ContactFormScreenProps = CompositeScreenProps<
   ContactsStackScreenProps<contactsStackRouteNames.ContactForm>,
@@ -37,13 +40,13 @@ export const ContactFormScreen = ({
   navigation,
   route,
 }: ContactFormScreenProps) => {
-  const { chainId = 31 } = useAppSelector(selectActiveWallet)
-  const initialValue: Partial<IContact> = route.params?.initialValue ?? {
+  const { chainType = ChainTypeEnum.TESTNET } =
+    useAppSelector(selectActiveWallet)
+  const initialValue: Partial<Contact> = route.params?.initialValue ?? {
     name: '',
     address: '',
   }
-
-  const { addContact, editContact } = useContext(ContactsContext)
+  const dispatch = useAppDispatch()
   const [name, setName] = useState(initialValue.name || '')
   const [address, setAddress] = useState({
     value: initialValue.address || '',
@@ -57,15 +60,22 @@ export const ContactFormScreen = ({
 
   const saveContact = () => {
     if (initialValue.id) {
-      const contact: IContact = {
+      const contact: Contact = {
         ...initialValue,
+        id: initialValue.id,
         name,
         address: address.value,
         displayAddress: address.value,
       }
-      editContact(contact)
+      dispatch(editContact(contact))
     } else {
-      addContact(name, address.value, address.value)
+      dispatch(
+        addContact({
+          name,
+          address: address.value,
+          displayAddress: address.value,
+        }),
+      )
     }
     navigation.navigate(contactsStackRouteNames.ContactsList)
   }
@@ -113,7 +123,7 @@ export const ContactFormScreen = ({
               testID="addressInput"
               initialValue={initialValue.address || ''}
               onChangeText={handleAddressChange}
-              chainId={chainId}
+              chainId={getChainIdByType(chainType)}
               backgroundColor={colors.darkPurple4}
             />
           </View>

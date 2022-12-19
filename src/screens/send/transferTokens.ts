@@ -1,12 +1,13 @@
-import {
-  convertToERC20Token,
-  makeRBTCToken,
-} from '../../lib/token/tokenMetadata'
+import { convertToERC20Token, makeRBTCToken } from 'lib/token/tokenMetadata'
 import { BigNumber, ContractTransaction, utils } from 'ethers'
 import { TransactionInformation } from './TransactionInfo'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { RIFWallet } from '../../lib/core'
-import { OnSetCurrentTransactionFunction, OnSetErrorFunction } from './types'
+import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { RIFWallet } from 'lib/core'
+import {
+  OnSetCurrentTransactionFunction,
+  OnSetErrorFunction,
+  OnSetTransactionStatusChange,
+} from './types'
 
 interface IRifTransfer {
   token: ITokenWithBalance
@@ -16,6 +17,7 @@ interface IRifTransfer {
   chainId: number
   onSetError?: OnSetErrorFunction
   onSetCurrentTransaction?: OnSetCurrentTransactionFunction
+  onSetTransactionStatusChange?: OnSetTransactionStatusChange
 }
 
 export const transfer = ({
@@ -26,6 +28,7 @@ export const transfer = ({
   token,
   onSetError,
   onSetCurrentTransaction,
+  onSetTransactionStatusChange,
 }: IRifTransfer) => {
   if (onSetError) {
     onSetError(null)
@@ -49,6 +52,18 @@ export const transfer = ({
     transferMethod
       .transfer(to.toLowerCase(), tokenAmount)
       .then((txPending: ContractTransaction) => {
+        const { wait: waitForTransactionToComplete, ...txPendingRest } =
+          txPending
+        if (onSetTransactionStatusChange) {
+          onSetTransactionStatusChange({
+            txStatus: 'PENDING',
+            ...txPendingRest,
+            value: tokenAmount,
+            symbol: transferMethod.symbol,
+            finalAddress: to,
+            enhancedAmount: amount,
+          })
+        }
         const current: TransactionInformation = {
           to,
           value: amount,
@@ -60,16 +75,27 @@ export const transfer = ({
           onSetCurrentTransaction(current)
         }
 
-        txPending
-          .wait()
-          .then(() => {
+        waitForTransactionToComplete()
+          .then(contractReceipt => {
             if (onSetCurrentTransaction) {
               onSetCurrentTransaction({ ...current, status: 'SUCCESS' })
+            }
+            if (onSetTransactionStatusChange) {
+              onSetTransactionStatusChange({
+                txStatus: 'CONFIRMED',
+                ...contractReceipt,
+              })
             }
           })
           .catch(() => {
             if (onSetCurrentTransaction) {
               onSetCurrentTransaction({ ...current, status: 'FAILED' })
+            }
+            if (onSetTransactionStatusChange) {
+              onSetTransactionStatusChange({
+                txStatus: 'FAILED',
+                ...txPendingRest,
+              })
             }
           })
       })

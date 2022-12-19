@@ -1,5 +1,5 @@
 import { StackScreenProps } from '@react-navigation/stack'
-import { IContact } from 'src/screens/contacts/ContactsContext'
+import { Contact } from 'store/slices/contactsSlice/types'
 
 export type ContactsStackScreenProps<T extends keyof ContactStackParamsList> =
   StackScreenProps<ContactStackParamsList, T>
@@ -11,5 +11,5 @@ export enum contactsStackRouteNames {
 
 export type ContactStackParamsList = {
   [contactsStackRouteNames.ContactsList]: undefined
-  [contactsStackRouteNames.ContactForm]: { initialValue: IContact } | undefined
+  [contactsStackRouteNames.ContactForm]: { initialValue: Contact } | undefined
 }

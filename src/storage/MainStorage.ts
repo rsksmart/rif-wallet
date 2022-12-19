@@ -1,4 +1,4 @@
-import { IContact } from 'src/screens/contacts/ContactsContext'
+import { Contact } from 'store/slices/contactsSlice/types'
 import { MMKVStorage } from './MMKVStorage'
 
 export const MainStorage = new MMKVStorage()
@@ -34,6 +34,6 @@ export const saveKeyVerificationReminder = (value: boolean) =>
 export const hasContacts = () => MainStorage.has(contacts)
 export const getContacts = () => MainStorage.get(contacts)
 // TODO define type for contacts
-export const saveContacts = (value: IContact[]) =>
+export const saveContacts = (value: Record<string, Contact>) =>
   MainStorage.set(contacts, value)
 export const deleteContacts = () => MainStorage.delete(contacts)

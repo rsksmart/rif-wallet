@@ -30,21 +30,22 @@ import { useBitcoinCore } from './hooks/bitcoin/useBitcoinCore'
 import { useStateSubscription } from './hooks/useStateSubscription'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import {
-  setChainId,
-  unlockApp,
+  closeRequest,
+  onRequest,
   removeKeysFromState,
   resetKeysAndPin,
-  selectTopColor,
   selectKMS,
-  selectSelectedWallet,
-  selectWallets,
-  selectSettingsIsLoading,
   selectRequests,
-  onRequest,
-  closeRequest,
+  selectSelectedWallet,
+  selectSettingsIsLoading,
+  selectTopColor,
+  selectWallets,
+  setChainType,
+  unlockApp,
 } from 'store/slices/settingsSlice'
 import { hasKeys, hasPin } from 'storage/MainStorage'
 import { BitcoinProvider } from 'core/hooks/bitcoin/BitcoinContext'
+import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 
 export const navigationContainerRef =
   createNavigationContainerRef<RootStackParamList>()
@@ -92,7 +93,11 @@ export const Core = () => {
 
   const retrieveChainId = async (wallet: RIFWallet) => {
     const chainId = await wallet.getChainId()
-    dispatch(setChainId(chainId))
+    dispatch(
+      setChainType(
+        chainId === 31 ? ChainTypeEnum.TESTNET : ChainTypeEnum.MAINNET,
+      ),
+    )
   }
 
   useRifSockets({

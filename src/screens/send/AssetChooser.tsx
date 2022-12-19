@@ -9,7 +9,7 @@ import { balanceToString } from '../balances/BalancesScreen'
 import { TokenButton } from 'components/button/TokenButton'
 import { getTokenColor } from '../home/tokenColor'
 
-export const AssetChooser = ({
+export const AssetChooser = <T,>({
   assetList,
   selectedAsset,
   onAssetSelected,

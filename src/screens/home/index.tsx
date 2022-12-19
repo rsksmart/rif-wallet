@@ -1,10 +1,10 @@
+import RampSdk from '@ramp-network/react-native-sdk'
 import { useEffect, useMemo, useState } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
-import RampSdk from '@ramp-network/react-native-sdk'
 
 import { toChecksumAddress } from 'components/address/lib'
 import { LoadingScreen } from 'components/loading/LoadingScreen'
-import { balanceToDisplay } from 'lib/utils'
+import { balanceToDisplay, getChainIdByType } from 'lib/utils'
 
 import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
@@ -38,7 +38,7 @@ export const HomeScreen = ({
   const accounts = useAppSelector(selectAccounts)
   const { isSetup } = useAppSelector(selectAppState)
   const bitcoinCore = useBitcoinContext()
-  const { activeWalletIndex, wallet, chainId } =
+  const { activeWalletIndex, wallet, chainType } =
     useAppSelector(selectActiveWallet)
 
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
@@ -88,7 +88,8 @@ export const HomeScreen = ({
         return navigation.navigate(rootStackRouteNames.Receive)
       case 'FAUCET':
         const address = wallet?.smartWallet.smartWalletContract.address
-        address && addBalance(toChecksumAddress(address, chainId))
+        address &&
+          addBalance(toChecksumAddress(address, getChainIdByType(chainType)))
         return
     }
   }

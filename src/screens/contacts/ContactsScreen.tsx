@@ -1,6 +1,5 @@
-import { useContext, useEffect, useState } from 'react'
+import { useMemo, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { CompositeScreenProps } from '@react-navigation/native'
 import {
   Image,
   ScrollView,
@@ -10,21 +9,26 @@ import {
   View,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-
 import { SearchIcon } from 'components/icons/SearchIcon'
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
-import { contactsStackRouteNames } from 'navigation/contactsNavigator'
-import { colors } from '../../styles'
-import { fonts } from '../../styles/fonts'
+import { colors } from 'src/styles'
+import { fonts } from 'src/styles/fonts'
 import { ContactRow } from './ContactRow'
-import { ContactsContext, IContact } from './ContactsContext'
-import { ContactsStackScreenProps } from '../index'
-import { selectBalances } from 'store/slices/balancesSlice/selectors'
-import { useAppSelector } from 'store/storeUtils'
+import { Contact } from 'store/slices/contactsSlice/types'
+import { CompositeScreenProps } from '@react-navigation/native'
+import { ContactsStackScreenProps } from '..'
+import { contactsStackRouteNames } from 'src/navigation/contactsNavigator'
+import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { getContactsAsArrayAndSelected } from 'store/slices/contactsSlice'
+import {
+  deleteContactById,
+  setSelectedContactById,
+} from 'store/slices/contactsSlice'
 
 export type ContactsListScreenProps = CompositeScreenProps<
   ContactsStackScreenProps<contactsStackRouteNames.ContactsList>,
@@ -33,54 +37,65 @@ export type ContactsListScreenProps = CompositeScreenProps<
 
 export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
   const { t } = useTranslation()
-  const { contacts, deleteContact } = useContext(ContactsContext)
-  const [filteredContacts, setFilteredContacts] = useState(contacts)
+  const { contacts, selectedContact } = useAppSelector(
+    getContactsAsArrayAndSelected,
+  )
+  const dispatch = useAppDispatch()
+
+  const [searchContactText, setSearchContactText] = useState('')
+
+  const contactsFiltered = useMemo(() => {
+    let filtered = contacts
+    if (searchContactText) {
+      filtered = contacts.filter(
+        contact =>
+          contact.name
+            .toLowerCase()
+            .includes(searchContactText.toLowerCase()) ||
+          contact.displayAddress
+            .toLowerCase()
+            .includes(searchContactText.toLowerCase()),
+      )
+    }
+    return filtered.sort(({ name: a }, { name: b }) => a.localeCompare(b))
+  }, [contacts, searchContactText])
+
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
-  const [isModalVisible, setIsModalVisible] = useState(false)
-  const [selectedContact, setSelectedContact] = useState<IContact | null>(null)
+
+  const [isDeleteContactModalVisible, setIsDeleteContactModalVisible] =
+    useState(false)
 
   const tokenBalances = useAppSelector(selectBalances)
   const shouldHideSendButton = Object.values(tokenBalances).length === 0
 
-  const showModal = (contact: IContact) => {
-    setIsModalVisible(true)
-    setSelectedContact(contact)
+  const showModal = (contact: Contact) => {
+    setIsDeleteContactModalVisible(true)
+    dispatch(setSelectedContactById(contact.id))
   }
 
   const hideModal = () => {
-    setIsModalVisible(false)
-    setSelectedContact(null)
+    setIsDeleteContactModalVisible(false)
+    dispatch(setSelectedContactById(null))
   }
 
-  const searchContact = (text: string) => {
-    let filtered = contacts
-    if (text) {
-      filtered = contacts.filter(
-        contact =>
-          contact.name.toLowerCase().includes(text.toLowerCase()) ||
-          contact.displayAddress.toLowerCase().includes(text.toLowerCase()),
-      )
-    }
-    setFilteredContacts(filtered)
-  }
-
-  const editContact = (contact: IContact) => {
+  const editContact = (contact: Contact) => {
     navigation.navigate(contactsStackRouteNames.ContactForm, {
       initialValue: contact,
     })
   }
 
-  const sendContact = (contact: IContact) => {
+  const sendContact = (contact: Contact) => {
     navigation.navigate(rootStackRouteNames.Send, { to: contact.address })
   }
 
-  const removeContact = (contact: IContact) => {
-    deleteContact(contact.id)
+  const removeContact = () => {
+    if (selectedContact) {
+      dispatch(deleteContactById(selectedContact.id))
+    }
     hideModal()
   }
-
+  // Everytime contact is reloaded, set index back to null
   useEffect(() => {
-    setFilteredContacts(contacts)
     setSelectedIndex(null)
   }, [contacts])
 
@@ -102,14 +117,14 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
       </View>
       {selectedContact && (
         <ConfirmationModal
-          isVisible={isModalVisible}
+          isVisible={isDeleteContactModalVisible}
           imgSrc={require('../../images/contact-trash.png')}
           title={`${t('Are you sure you want to delete')} ${
             selectedContact.name
           }?`}
           okText={t('Delete')}
           cancelText={t('Cancel')}
-          onOk={() => removeContact(selectedContact)}
+          onOk={removeContact}
           onCancel={hideModal}
         />
       )}
@@ -137,29 +152,25 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
               style={styles.searchInput}
               placeholder={t('type to find...')}
               placeholderTextColor={colors.purple}
-              onChangeText={searchContact}
+              onChangeText={setSearchContactText}
             />
             <SearchIcon color={colors.purple} width={40} height={40} />
           </View>
-          {filteredContacts
-            .sort((a, b) =>
-              a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1,
-            )
-            .map((contact, index) => (
-              <ContactRow
-                key={index}
-                index={index}
-                contact={contact}
-                selected={selectedIndex === index}
-                onSend={sendContact}
-                onDelete={showModal}
-                onEdit={editContact}
-                onPress={() =>
-                  setSelectedIndex(selectedIndex === index ? null : index)
-                }
-                hideSendButton={shouldHideSendButton}
-              />
-            ))}
+          {contactsFiltered.map((contact, index) => (
+            <ContactRow
+              key={index}
+              index={index}
+              contact={contact}
+              selected={selectedIndex === index}
+              onSend={sendContact}
+              onDelete={showModal}
+              onEdit={editContact}
+              onPress={() =>
+                setSelectedIndex(selectedIndex === index ? null : index)
+              }
+              hideSendButton={shouldHideSendButton}
+            />
+          ))}
         </ScrollView>
       )}
     </View>

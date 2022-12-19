@@ -1,7 +1,15 @@
+import { Provider, createStore } from 'store/index'
 import { ReactNode } from 'react'
-import { Provider } from 'react-redux'
-import { store } from 'store/store'
 
-export const ReduxWrapper = ({ children }: { children: ReactNode }) => (
-  <Provider store={store}>{children}</Provider>
-)
+export const createReduxWrapper = (preloadedState = {}) => {
+  const storeForTests = createStore(preloadedState)
+
+  const ReduxWrapper = ({
+    children,
+  }: {
+    store: ReturnType<typeof createStore>
+    children: ReactNode
+  }) => <Provider store={storeForTests}>{children}</Provider>
+
+  return { storeForTests, ReduxWrapper }
+}

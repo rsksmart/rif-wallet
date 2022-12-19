@@ -5,28 +5,28 @@ import { RifWalletServicesFetcher } from '../lib/rifWalletServices/RifWalletServ
 import { AbiEnhancer } from '../lib/abiEnhancer/AbiEnhancer'
 import { getWalletSetting, SETTINGS } from './config'
 import { RifWalletServicesSocket } from '../lib/rifWalletServices/RifWalletServicesSocket'
+import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 
-export const networkId = parseInt(
-  getWalletSetting(SETTINGS.DEFAULT_CHAIN_ID),
-  10,
-)
+export const networkType = getWalletSetting(
+  SETTINGS.DEFAULT_CHAIN_TYPE,
+) as ChainTypeEnum
 
-const rpcUrl = getWalletSetting(SETTINGS.RPC_URL, networkId)
+const rpcUrl = getWalletSetting(SETTINGS.RPC_URL, networkType)
 const smartWalletFactoryAddress = getWalletSetting(
   SETTINGS.SMART_WALLET_FACTORY_ADDRESS,
-  networkId,
+  networkType,
 )
 
 const jsonRpcProvider = new providers.JsonRpcProvider(rpcUrl)
 
 export const rifWalletServicesFetcher = new RifWalletServicesFetcher(
-  getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL, networkId),
+  getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL, networkType),
 )
 
 export const abiEnhancer = new AbiEnhancer()
 
 export const rifWalletServicesSocket = new RifWalletServicesSocket(
-  getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL, networkId),
+  getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL, networkType),
   rifWalletServicesFetcher,
   abiEnhancer,
 )
