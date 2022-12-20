@@ -1,15 +1,15 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
-import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { PrimaryButton } from 'components/button/PrimaryButton'
 import { colors } from 'src/styles'
 
 import { rnsManagerStyles } from './rnsManagerStyles'
 
 import { MediumText } from '../../components'
-import { AvatarIcon } from '../../components/icons/AvatarIcon'
-import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
+import { AvatarIcon } from 'components/icons/AvatarIcon'
+import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
@@ -18,15 +18,22 @@ import DomainLookUp from '../../screens/rnsManager/DomainLookUp'
 import { ScreenWithWallet } from '../types'
 import TitleStatus from './TitleStatus'
 
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { setProfile } from 'store/slices/profileSlice/profileSlice'
+import { selectProfile } from 'store/slices/profileSlice/selector'
+
 type Props = RootStackScreenProps<rootStackRouteNames.SearchDomain> &
   ScreenWithWallet
 
 export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const [domainToLookUp, setDomainToLookUp] = useState<string>('')
+  const [isDomainOwned, setIsDomainOwned] = useState<boolean>(false)
   const [validDomain, setValidDomain] = useState<boolean>(false)
   const [selectedYears, setSelectedYears] = useState<number>(2)
   const [selectedDomainPrice, setSelectedDomainPrice] = useState<string>('2')
   const [isModalVisible, setIsModalVisible] = useState<boolean>(true)
+  const dispatch = useAppDispatch()
+  const profile = useAppSelector(selectProfile)
 
   const calculatePrice = async (_: string, years: number) => {
     //TODO: re enable this later
@@ -52,11 +59,21 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
     setSelectedDomainPrice(price + '')
   }
 
+  const handleSetProfile = useCallback(() => {
+    dispatch(
+      setProfile({
+        ...(profile ? profile : { phone: '', email: '' }),
+        alias: domainToLookUp + '.rsk',
+      }),
+    )
+    navigation.navigate(rootStackRouteNames.ProfileDetailsScreen)
+  }, [dispatch, domainToLookUp, profile])
+
   return (
     <>
       <View style={rnsManagerStyles.profileHeader}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('Home')}
+          onPress={() => navigation.navigate(rootStackRouteNames.Home)}
           accessibilityLabel="home">
           <View style={rnsManagerStyles.backButton}>
             <MaterialIcon name="west" color={colors.lightPurple} size={10} />
@@ -95,6 +112,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
             onChangeText={setDomainToLookUp}
             wallet={wallet}
             onDomainAvailable={handleDomainAvailable}
+            onDomainOwned={setIsDomainOwned}
           />
         </View>
         <View style={styles.flexContainer}>
@@ -126,17 +144,27 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
         </View>
 
         <View style={rnsManagerStyles.bottomContainer}>
-          <PrimaryButton
-            disabled={!validDomain}
-            onPress={() =>
-              navigation.navigate(rootStackRouteNames.RequestDomain, {
-                alias: domainToLookUp.replace('.rsk', ''),
-                duration: selectedYears,
-              })
-            }
-            accessibilityLabel="request"
-            title={'request'}
-          />
+          {!isDomainOwned && (
+            <PrimaryButton
+              disabled={!validDomain}
+              onPress={() =>
+                navigation.navigate(rootStackRouteNames.RequestDomain, {
+                  alias: domainToLookUp.replace('.rsk', ''),
+                  duration: selectedYears,
+                })
+              }
+              accessibilityLabel="request"
+              title={'request'}
+            />
+          )}
+          {isDomainOwned && (
+            <PrimaryButton
+              disabled={!validDomain}
+              onPress={handleSetProfile}
+              accessibilityLabel="set alias"
+              title={'set alias'}
+            />
+          )}
         </View>
       </View>
       <ConfirmationModal
