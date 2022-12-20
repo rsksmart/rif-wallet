@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { View, StyleSheet, Alert } from 'react-native'
 import { useTranslation } from 'react-i18next'
 
-import { colors } from '../../styles'
+import { colors } from 'src/styles'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
@@ -18,6 +18,7 @@ import {
 } from 'storage/MainStorage'
 import { useAppDispatch } from 'store/storeUtils'
 import { resetKeysAndPin } from 'store/slices/settingsSlice'
+import { resetSocketState } from 'store/shared/actions/resetSocketState'
 
 export const SecurityConfigurationScreen = ({
   navigation,
@@ -44,6 +45,7 @@ export const SecurityConfigurationScreen = ({
           text: 'Delete',
           onPress: () => {
             dispatch(resetKeysAndPin())
+            dispatch(resetSocketState())
             saveKeyVerificationReminder(false)
             navigation.navigate(rootStackRouteNames.CreateKeysUX)
           },
