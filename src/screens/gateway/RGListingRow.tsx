@@ -7,11 +7,11 @@ import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
 
 interface IRGListingRowProps {
-  index: number
+  index: string
   listing: IRGListing
   selected: boolean
   consumed?: boolean
-  onPress: (listing: IRGListing, index: number) => void
+  onPress: (listing: IRGListing, index: string) => void
   onAction: (action: IRGListingAction, showsModal?: boolean) => void
 }
 
@@ -40,9 +40,9 @@ export const RGListingRow: React.FC<IRGListingRowProps> = ({
         }}
         style={styles.contactInfo}>
         <Text style={styles.contactName}>
-          { listing.validated && (
-            <CheckIcon width={20} height={20} color='#fff' />)
-          }
+          {listing.validated && (
+            <CheckIcon width={20} height={20} color="#fff" />
+          )}
           {listing.name}
         </Text>
         <Text style={styles.address}>{listing.currencySymbol}</Text>
@@ -73,9 +73,11 @@ export const RGListingRow: React.FC<IRGListingRowProps> = ({
                 accessibilityLabel={`sendButton-${index}`}
                 name="arrow-up-right"
                 onPress={() => {
-                  onAction(listing.type === RGSERVICE_TYPE.LENDING
-                    ? IRGListingAction.LEND
-                    : IRGListingAction.BORROW)
+                  onAction(
+                    listing.type === RGSERVICE_TYPE.LENDING
+                      ? IRGListingAction.LEND
+                      : IRGListingAction.BORROW,
+                  )
                 }}
                 backgroundColor={colors.purple}
                 iconStyle={styles.sendButton}
@@ -83,14 +85,18 @@ export const RGListingRow: React.FC<IRGListingRowProps> = ({
                 borderRadius={20}
               />
             )}
-            {consumed && (<Icon.Button
+            {consumed && (
+              <Icon.Button
                 testID={`sendButton-${index}`}
                 accessibilityLabel={`sendButton-${index}`}
                 name="arrow-down-left"
                 onPress={() => {
-                  onAction((listing.type === (RGSERVICE_TYPE.LENDING)
-                    ? IRGListingAction.WITHDRAW
-                    : IRGListingAction.PAY), false)
+                  onAction(
+                    listing.type === RGSERVICE_TYPE.LENDING
+                      ? IRGListingAction.WITHDRAW
+                      : IRGListingAction.PAY,
+                    false,
+                  )
                 }}
                 backgroundColor={colors.purple}
                 iconStyle={styles.sendButton}

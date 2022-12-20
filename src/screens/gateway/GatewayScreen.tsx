@@ -12,7 +12,10 @@ import { useSelectedWallet } from 'src/Context'
 import { ethers } from 'ethers'
 import { RGListingRow } from './RGListingRow'
 import { InputModal } from 'src/components/modal/InputModal'
-import { RGLendingService, RGBorrowingService } from 'src/lib/gateway/RGServices'
+import {
+  RGLendingService,
+  RGBorrowingService,
+} from 'src/lib/gateway/RGServices'
 import { Token } from 'src/lib/gateway/Token'
 import { RGSmartWalletFactory } from 'src/lib/gateway/RGSmartWalletFactory'
 import { LoadingScreen } from 'src/components/loading/LoadingScreen'
@@ -24,16 +27,12 @@ export const GatewayScreen = () => {
   const [subscriptions, setSubscriptions] = useState<IRGListing[]>([])
   // eslint-disable-next-line no-spaced-func
   const [selectedListing, setSelectedListing] = useState<
-    (IRGListing & { index: number }) | null
-  >(null)
-  // eslint-disable-next-line no-spaced-func
-  const [selectedSubscription, setSelectedSubscription] = useState<
-    (IRGListing & { index: number }) | null
+    (IRGListing & { index: string }) | null
   >(null)
   const [selectedAction, setSelectedAction] =
     useState<IRGListingAction | null>()
   const [showModal, setShowModal] = useState<boolean>(false)
-  const[loading, setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
     if (wallet) {
@@ -52,13 +51,9 @@ export const GatewayScreen = () => {
       .then(setSubscriptions)
   }
 
-  const onPressHandler = (
-    setterFn: Function,
-    listing: IRGListing,
-    index: number,
-  ) => {
-    console.log('setterFn, listing, index', setterFn, listing, index)
-    setterFn((state: { index: number }) =>
+  const onPressHandler = (listing: IRGListing, index: string) => {
+    console.log('change state to -> ', index)
+    setSelectedListing((state: (IRGListing & { index: string }) | null) =>
       state?.index === index ? null : { ...listing, index },
     )
   }
@@ -80,13 +75,7 @@ export const GatewayScreen = () => {
   }
 
   const onOkHandler = () => {
-    console.log('selectedAction', selectedAction);
-    console.log('msg.sender', wallet.smartWallet.signer);
-    console.log('selectedListing', selectedListing);
-    console.log('selectedSubscription', selectedSubscription);
-    console.log('wallet._signTypedData', wallet._signTypedData);
     if (selectedAction === IRGListingAction.LEND) {
-      console.log('LEND');
       const service = new RGLendingService(
         selectedListing!.service,
         wallet.smartWallet.signer,
@@ -103,19 +92,18 @@ export const GatewayScreen = () => {
           chainId?.toString() || '31',
         )
         .then((tx: { wait: Function }) => {
-          setLoading(true);
-          return tx.wait();
+          setLoading(true)
+          return tx.wait()
         })
         .then(() => {
-          setLoading(false);
-          fetchListings();
+          setLoading(false)
+          fetchListings()
         })
 
       setShowModal(false)
     } else if (selectedAction === IRGListingAction.WITHDRAW) {
-      console.log('WITHDRAW');
       const service = new RGLendingService(
-        selectedSubscription!.service,
+        selectedListing!.service,
         wallet.smartWallet.signer,
         wallet.provider as ethers.providers.Web3Provider,
       )
@@ -123,19 +111,18 @@ export const GatewayScreen = () => {
       service
         .withdraw(wallet._signTypedData, chainId?.toString() || '31')
         .then((tx: { wait: Function }) => {
-          setLoading(true);
-          return tx.wait();
+          setLoading(true)
+          return tx.wait()
         })
         .then(() => {
-          setLoading(false);
-          fetchListings();
+          setLoading(false)
+          fetchListings()
         })
         .catch(() => {
-          setLoading(false);
+          setLoading(false)
         })
     } else if (selectedAction === IRGListingAction.BORROW) {
-      console.log('BORROW');
-      if(amount === 0) return;
+      if (amount === 0) return
       const service = new RGBorrowingService(
         selectedListing!.service,
         wallet.smartWallet.signer,
@@ -145,117 +132,106 @@ export const GatewayScreen = () => {
       // TODO: check for user balance on collateral balance
 
       const borrowAmount = ethers.utils.parseEther(amount!.toString())
-      console.log('borrowAmount', borrowAmount)
 
       service
-        .calculateRequiredCollateral(
-          borrowAmount,
-          selectedListing!.currency,
-        )
-      .then((amountToLend) => {
-        // getting aninvalid BigNumber if passing just like that
-        console.log('amountToLend', +amountToLend / 1e18);
-        return service
-          .borrow(
+        .calculateRequiredCollateral(borrowAmount, selectedListing!.currency)
+        .then(amountToLend => {
+          // getting aninvalid BigNumber if passing just like that
+          console.log('amountToLend', +amountToLend / 1e18)
+          return service.borrow(
             borrowAmount,
             selectedListing!.id,
             wallet._signTypedData,
-            chainId?.toString() || "31",
-            ethers.utils.parseEther((+amountToLend / 1e18).toString()));
-      })
-      .then((tx: { wait: Function }) => {
-        setLoading(true);
-        console.log('Borrow tx', tx);
-        return tx.wait();
-      })
-      .then(() => {
-        setLoading(false);
-        fetchListings();
-      })
-      .catch(() => {
-        setLoading(false);
-      })
+            chainId?.toString() || '31',
+            ethers.utils.parseEther((+amountToLend / 1e18).toString()),
+          )
+        })
+        .then((tx: { wait: Function }) => {
+          setLoading(true)
+          console.log('Borrow tx', tx)
+          return tx.wait()
+        })
+        .then(() => {
+          setLoading(false)
+          fetchListings()
+        })
+        .catch(() => {
+          setLoading(false)
+        })
 
       setShowModal(false)
     } else if (selectedAction === IRGListingAction.PAY) {
-      console.log('PAY');
       const service = new RGBorrowingService(
-        selectedSubscription!.service,
+        selectedListing!.service,
         wallet.smartWallet.signer,
         wallet.provider as ethers.providers.Web3Provider,
       )
 
-      const SmartWalletFactoryAddress = Config.GATEWAY_SW_FACTORY || '';
+      const SmartWalletFactoryAddress = Config.GATEWAY_SW_FACTORY || ''
       const smartWallet = new RGSmartWalletFactory(
         SmartWalletFactoryAddress,
         wallet.provider as ethers.providers.Web3Provider,
-      );
+      )
 
       const token = new Token(
-        selectedSubscription!.currency,
-        wallet.smartWallet.signer
+        selectedListing!.currency,
+        wallet.smartWallet.signer,
       )
-      console.log('SWFactory address', SmartWalletFactoryAddress);
-      setLoading(true);
-      let approvedValue = ethers.utils.parseEther('0');
+      console.log('SWFactory address', SmartWalletFactoryAddress)
+      setLoading(true)
+      let approvedValue = ethers.utils.parseEther('0')
 
-      wallet.smartWallet.signer.getAddress()
-        .then((signerAddress) => {
-          console.log('signerAddress', signerAddress);
+      wallet.smartWallet.signer
+        .getAddress()
+        .then(signerAddress => {
+          console.log('signerAddress', signerAddress)
           return Promise.all([
             smartWallet.getSmartWalletAddress(signerAddress),
-            service.getBalance(selectedSubscription!.currency)
-          ]);
+            service.getBalance(selectedListing!.currency),
+          ])
         })
         .then(([smartWalletAddress, debt]) => {
-          console.log('debt', +debt / 1e18);
-          console.log('RG smartWalletAddress', smartWalletAddress[0]);
-          approvedValue = ethers
-            .utils
-            .parseEther(
-              ((+debt / 1e18) + 0.5).toString()
-            );
-          return token
-            .approve(
-              smartWalletAddress[0],
-              approvedValue
-            );
+          console.log('debt', +debt / 1e18)
+          console.log('RG smartWalletAddress', smartWalletAddress[0])
+          approvedValue = ethers.utils.parseEther(
+            (+debt / 1e18 + 0.5).toString(),
+          )
+          return token.approve(smartWalletAddress[0], approvedValue)
         })
         .then((tx: { wait: Function }) => {
-          console.log('Approve tx', tx);
-          return tx.wait();
+          console.log('Approve tx', tx)
+          return tx.wait()
         })
-        .then((res) => {
-          setLoading(false);
-          console.log('approve res', res);
-          console.log('approved value', +approvedValue / 1e18);
-          return service
-            .pay(
-              approvedValue,
-              selectedSubscription!.id,
-              wallet._signTypedData,
-              chainId?.toString() || "31"
-            );
+        .then(res => {
+          setLoading(false)
+          console.log('approve res', res)
+          console.log('approved value', +approvedValue / 1e18)
+          return service.pay(
+            approvedValue,
+            selectedListing!.id,
+            wallet._signTypedData,
+            chainId?.toString() || '31',
+          )
         })
         .then((tx: { wait: Function }) => {
-          setLoading(true);
-          console.log('Pay tx', tx);
-          return tx.wait();
+          setLoading(true)
+          console.log('Pay tx', tx)
+          return tx.wait()
         })
-        .then((res) => {
-          setLoading(false);
-          console.log('pay res', res);
-          fetchListings();
+        .then(res => {
+          setLoading(false)
+          console.log('pay res', res)
+          fetchListings()
         })
         .catch(() => {
-          setLoading(false);
+          setLoading(false)
         })
     }
   }
 
   return (
     <View style={styles.parent}>
-      { loading && !showModal && (<LoadingScreen />) }
+      {loading && !showModal && <LoadingScreen />}
       <View style={styles.header}>
         <Text style={styles.title}>Services</Text>
       </View>
@@ -266,10 +242,10 @@ export const GatewayScreen = () => {
         {subscriptions.map((listing, index) => (
           <RGListingRow
             key={listing.service + listing.id.toString()}
-            index={index}
+            index={'s-' + index}
             listing={listing}
-            selected={index === selectedSubscription?.index}
-            onPress={onPressHandler.bind(null, setSelectedSubscription)}
+            selected={!!(selectedListing?.index === 's-' + index)}
+            onPress={onPressHandler}
             onAction={onActionHandle}
             consumed={true}
           />
@@ -280,10 +256,10 @@ export const GatewayScreen = () => {
         {listings.map((listing, index) => (
           <RGListingRow
             key={listing.service + listing.id.toString()}
-            index={index}
+            index={'l-' + index}
             listing={listing}
-            selected={index === selectedListing?.index}
-            onPress={onPressHandler.bind(null, setSelectedListing)}
+            selected={!!(selectedListing?.index === 'l-' + index)}
+            onPress={onPressHandler}
             onAction={onActionHandle}
           />
         ))}
@@ -292,10 +268,7 @@ export const GatewayScreen = () => {
         <InputModal
           title="Enter amount"
           cancelText="Cancel"
-          placeholder={`0.000 ${selectedListing
-            ? selectedListing?.currencySymbol
-            : selectedSubscription?.currencySymbol
-          }`}
+          placeholder={`0.000 ${selectedListing?.currencySymbol}`}
           onCancel={onDismissModal}
           onOk={onOkHandler}
           onTextChange={(value: string) => {
