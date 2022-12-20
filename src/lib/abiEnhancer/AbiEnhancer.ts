@@ -8,6 +8,9 @@ export interface IEnhancedResult {
   from?: string
   to?: string
   symbol?: string
+  balance?: string
+  value?: string
+  data?: string
 }
 
 export interface IEnhanceStrategy {

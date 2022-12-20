@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { FlatList, StyleSheet, View, RefreshControl } from 'react-native'
-import { useTranslation } from 'react-i18next'
 
 import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { RIFWallet } from 'lib/core'
@@ -14,20 +13,16 @@ import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
-import { abiEnhancer, rifWalletServicesFetcher } from 'core/setup'
-import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { addNewTransactions } from 'store/slices/transactionsSlice/transactionsSlice'
+import { abiEnhancer } from 'core/setup'
+import { useAppSelector } from 'store/storeUtils'
 import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
 import { colors } from 'src/styles'
 import { ScreenWithWallet } from '../types'
-import { TransactionsServerResponseWithActivityTransactions } from './types'
 import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 
 export const ActivityScreen = ({
-  wallet,
   navigation,
 }: RootStackScreenProps<rootStackRouteNames.Activity> & ScreenWithWallet) => {
-  const [info, setInfo] = useState('')
   const bitcoinCore = useBitcoinContext()
   const btcTransactionFetcher = useBitcoinTransactionsHandler({
     bip:
@@ -37,66 +32,22 @@ export const ActivityScreen = ({
     shouldMergeTransactions: true,
   })
 
-  const { transactions, next: nextCurrent } = useAppSelector(selectTransactions)
-  const dispatch = useAppDispatch()
-  const { t } = useTranslation()
-
+  const { transactions } = useAppSelector(selectTransactions)
   const transactionsCombined = useTransactionsCombiner(
     transactions,
     btcTransactionFetcher.transactions,
   )
-
   // On load, fetch btc transactions
   useEffect(() => {
     btcTransactionFetcher.fetchTransactions()
   }, [])
 
-  const fetchTransactionsPage = async ({
-    prev,
-    next,
-  }: {
-    prev?: string | null
-    next?: string | null
-  } = {}) => {
-    /*i18n.changeLanguage('es')*/
-    try {
-      setInfo(t('Loading transactions. Please wait...'))
-
-      const fetchedTransactions: TransactionsServerResponseWithActivityTransactions =
-        await rifWalletServicesFetcher.fetchTransactionsByAddress(
-          wallet.smartWalletAddress.toLowerCase(),
-          prev,
-          next,
-        )
-
-      fetchedTransactions.activityTransactions = await Promise.all(
-        fetchedTransactions.data.map(async (tx: IApiTransaction) => {
-          const enhancedTransaction = await enhanceTransactionInput(tx, wallet)
-          return {
-            originTransaction: tx,
-            enhancedTransaction,
-            id: tx.hash,
-          }
-        }),
-      )
-      dispatch(addNewTransactions(fetchedTransactions))
-
-      setInfo('')
-    } catch (e) {
-      if (e instanceof Error) {
-        setInfo(t('Error reaching API: ') + e.message)
-      }
-    }
-  }
-
   // On load, fetch both BTC and WALLET transactions
   useEffect(() => {
     btcTransactionFetcher.fetchTransactions()
-    fetchTransactionsPage()
   }, [])
 
   const onRefresh = () => {
-    fetchTransactionsPage()
     btcTransactionFetcher.fetchTransactions(undefined, 1)
   }
   return (
@@ -106,18 +57,17 @@ export const ActivityScreen = ({
         initialNumToRender={10}
         keyExtractor={item => item.id}
         onEndReached={() => {
-          fetchTransactionsPage({ next: nextCurrent })
           btcTransactionFetcher.fetchNextTransactionPage()
         }}
         onEndReachedThreshold={0.2}
-        refreshing={!!info}
+        refreshing={btcTransactionFetcher.apiStatus === 'fetching'}
         renderItem={({ item }) => (
           <ActivityRow activityTransaction={item} navigation={navigation} />
         )}
         style={styles.parent}
         refreshControl={
           <RefreshControl
-            refreshing={!!info}
+            refreshing={btcTransactionFetcher.apiStatus === 'fetching'}
             tintColor="white"
             onRefresh={onRefresh}
           />

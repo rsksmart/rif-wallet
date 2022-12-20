@@ -1,7 +1,7 @@
-import BIP from '../../lib/bitcoin/BIP'
+import BIP from 'lib/bitcoin/BIP'
 import { useRef, useState } from 'react'
 import { IBitcoinTransaction } from './types'
-import { BitcoinTransactionType } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import { BitcoinTransactionType } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { BigNumber, utils } from 'ethers'
 
 function transformTransaction(bip: BIP) {
@@ -26,6 +26,8 @@ type useBitcoinTransactionsHandlerType = {
   shouldMergeTransactions?: boolean
 }
 
+type ApiStatuses = 'fetching' | 'success' | 'error' | 'idle'
+
 const useBitcoinTransactionsHandler = ({
   bip,
   pageSize = 10,
@@ -35,6 +37,7 @@ const useBitcoinTransactionsHandler = ({
   const [transactions, setTransactions] = useState<Array<IBitcoinTransaction>>(
     [],
   )
+  const [apiStatus, setApiStatus] = useState<ApiStatuses>('idle')
   const pageRef = useRef({
     pageSize,
     page,
@@ -44,22 +47,29 @@ const useBitcoinTransactionsHandler = ({
     pageSizeTransaction?: number,
     pageNumberTransaction?: number,
   ): Promise<BitcoinTransactionType[]> => {
-    pageRef.current.pageSize = pageSizeTransaction || pageRef.current.pageSize
-    pageRef.current.page = pageNumberTransaction || pageRef.current.page
-    const data = await bip.fetchTransactions(
-      pageRef.current.pageSize,
-      pageRef.current.page,
-    )
-    pageRef.current.totalPages = data.totalPages
-    const transactionsTransformed = data.transactions.map(
-      transformTransaction(bip),
-    )
-    if (shouldMergeTransactions && pageRef.current.page !== 1) {
-      setTransactions(cur => [...cur, ...transactionsTransformed])
-    } else {
-      setTransactions(transactionsTransformed)
+    setApiStatus('fetching')
+    try {
+      pageRef.current.pageSize = pageSizeTransaction || pageRef.current.pageSize
+      pageRef.current.page = pageNumberTransaction || pageRef.current.page
+      const data = await bip.fetchTransactions(
+        pageRef.current.pageSize,
+        pageRef.current.page,
+      )
+      pageRef.current.totalPages = data.totalPages
+      const transactionsTransformed = data.transactions.map(
+        transformTransaction(bip),
+      )
+      if (shouldMergeTransactions && pageRef.current.page !== 1) {
+        setTransactions(cur => [...cur, ...transactionsTransformed])
+      } else {
+        setTransactions(transactionsTransformed)
+      }
+      setApiStatus('success')
+      return data.transactions
+    } catch (error) {
+      setApiStatus('error')
+      return []
     }
-    return data.transactions
   }
 
   const fetchNextTransactionPage = () => {
@@ -70,7 +80,13 @@ const useBitcoinTransactionsHandler = ({
     }
     return fetchTransactions()
   }
-  return { fetchNextTransactionPage, fetchTransactions, transactions, pageRef }
+  return {
+    fetchNextTransactionPage,
+    fetchTransactions,
+    transactions,
+    pageRef,
+    apiStatus,
+  }
 }
 
 export default useBitcoinTransactionsHandler
