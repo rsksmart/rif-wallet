@@ -22,6 +22,64 @@ module.exports = {
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': ['error'],
     '@typescript-eslint/no-empty-function': 'off',
+    'import/order': [
+      'off',
+      {
+        groups: [
+          'external',
+          'builtin',
+          'internal',
+          ['sibling', 'parent'],
+          'index',
+        ],
+        pathGroups: [
+          {
+            pattern: 'lib/**',
+            group: 'internal',
+            position: 'before',
+          },
+          {
+            pattern: 'src/**',
+            group: 'internal',
+          },
+          {
+            pattern: 'components/**',
+            group: 'internal',
+          },
+          {
+            pattern: 'shared/**',
+            group: 'internal',
+          },
+          {
+            pattern: 'store/**',
+            group: 'internal',
+          },
+          {
+            pattern: 'storage/**',
+            group: 'internal',
+          },
+          {
+            pattern: 'navigation/**',
+            group: 'internal',
+          },
+          {
+            pattern: 'screens/**',
+            group: 'internal',
+          },
+          {
+            pattern: 'core/**',
+            group: 'internal',
+          },
+          {
+            pattern: 'testLib/**',
+            group: 'internal',
+          },
+        ],
+        'newlines-between': 'always',
+        warnOnUnassignedImports: true,
+        pathGroupsExcludedImportTypes: [],
+      },
+    ],
   },
   overrides: [
     {
