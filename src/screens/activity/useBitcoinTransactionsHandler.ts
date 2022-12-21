@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useCallback } from 'react'
 import { BigNumber, utils } from 'ethers'
 import BIP from 'lib/bitcoin/BIP'
 import { BitcoinTransactionType } from 'lib/rifWalletServices/RIFWalletServicesTypes'
@@ -43,43 +43,46 @@ const useBitcoinTransactionsHandler = ({
     page,
     totalPages: 1,
   })
-  const fetchTransactions = async (
-    pageSizeTransaction?: number,
-    pageNumberTransaction?: number,
-  ): Promise<BitcoinTransactionType[]> => {
-    setApiStatus('fetching')
-    try {
-      pageRef.current.pageSize = pageSizeTransaction || pageRef.current.pageSize
-      pageRef.current.page = pageNumberTransaction || pageRef.current.page
-      const data = await bip.fetchTransactions(
-        pageRef.current.pageSize,
-        pageRef.current.page,
-      )
-      pageRef.current.totalPages = data.totalPages
-      const transactionsTransformed = data.transactions.map(
-        transformTransaction(bip),
-      )
-      if (shouldMergeTransactions && pageRef.current.page !== 1) {
-        setTransactions(cur => [...cur, ...transactionsTransformed])
-      } else {
-        setTransactions(transactionsTransformed)
+  const fetchTransactions = useCallback(
+    async (
+      pageSizeTransaction?: number,
+      pageNumberTransaction?: number,
+    ): Promise<BitcoinTransactionType[]> => {
+      setApiStatus('fetching')
+      try {
+        pageRef.current.pageSize =
+          pageSizeTransaction || pageRef.current.pageSize
+        pageRef.current.page = pageNumberTransaction || pageRef.current.page
+        const data = await bip.fetchTransactions(
+          pageRef.current.pageSize,
+          pageRef.current.page,
+        )
+        pageRef.current.totalPages = data.totalPages
+        const transactionsTransformed = data.transactions.map(
+          transformTransaction(bip),
+        )
+        if (shouldMergeTransactions && pageRef.current.page !== 1) {
+          setTransactions(cur => [...cur, ...transactionsTransformed])
+        } else {
+          setTransactions(transactionsTransformed)
+        }
+        setApiStatus('success')
+        return data.transactions
+      } catch (error) {
+        setApiStatus('error')
+        return []
       }
-      setApiStatus('success')
-      return data.transactions
-    } catch (error) {
-      setApiStatus('error')
-      return []
-    }
-  }
-
-  const fetchNextTransactionPage = () => {
+    },
+    [bip, shouldMergeTransactions],
+  )
+  const fetchNextTransactionPage = useCallback(() => {
     pageRef.current.page = pageRef.current.page + 1
     // If the next page is greater than the total pages, don't do anything
     if (pageRef.current.page > pageRef.current.totalPages) {
       return
     }
     return fetchTransactions()
-  }
+  }, [fetchTransactions])
   return {
     fetchNextTransactionPage,
     fetchTransactions,
