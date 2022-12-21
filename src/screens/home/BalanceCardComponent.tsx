@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers'
-import { useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 
 import { balanceToUSD, balanceToDisplay } from 'lib/utils'
 
@@ -7,7 +7,7 @@ import { useContainerStyles } from './useContainerStyles'
 import { IPrice } from 'src/subscriptions/types'
 import { BalanceCardPresentationComponent } from './BalanceCardPresentationComponent'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
-import { IUsdPricesState } from 'store/slices/usdPricesSlice/types'
+import { UsdPricesState } from 'store/slices/usdPricesSlice/types'
 
 interface IBalanceCardComponentProps {
   token: ITokenWithoutLogo
@@ -23,17 +23,27 @@ export const BalanceCardComponent = ({
   price,
 }: IBalanceCardComponentProps) => {
   const containerStyles = useContainerStyles(selected, token.symbol)
+  const { tokenBalance, decimals, contactAddress } = useMemo(
+    () => ({
+      tokenBalance: token.balance,
+      decimals: token.decimals,
+      contactAddress: token.contractAddress,
+    }),
+    [token],
+  )
   const usdAmount = useMemo(
-    () =>
-      price ? balanceToUSD(token.balance, token.decimals, price?.price) : '',
-    [price, token.balance, token.decimals],
+    () => (price ? balanceToUSD(tokenBalance, decimals, price.price) : ''),
+    [price, tokenBalance, decimals],
   )
 
   const balance = useMemo(
-    () => balanceToDisplay(token.balance, token.decimals, 4),
-    [token.balance, token.decimals],
+    () => balanceToDisplay(tokenBalance, decimals, 4),
+    [tokenBalance, decimals],
   )
-  const handlePress = () => onPress(token.contractAddress)
+  const handlePress = useCallback(
+    () => onPress(contactAddress),
+    [contactAddress, onPress],
+  )
 
   return (
     <BalanceCardPresentationComponent
@@ -51,7 +61,7 @@ interface BitcoinCardComponentProps {
   balance: number
   isSelected: boolean
   contractAddress: string
-  prices: IUsdPricesState
+  prices: UsdPricesState
   onPress: (address: string) => void
 }
 
@@ -70,16 +80,24 @@ export const BitcoinCardComponent = ({
   )
   // Future TODO: should be set in the network constants if another coin is implemented
   const price = useMemo(() => {
-    return prices.BTC ? balanceToUSD(balanceBigNumber, 8, prices.BTC.price) : ''
-  }, [balanceBigNumber, prices.BTC])
+    return prices.BTC
+      ? balanceToUSD(balanceBigNumber, 8, prices.BTC.price)
+      : // TODO: fix this for bitcoin, prices don't have BTC field
+        '1'
+  }, [prices.BTC, balanceBigNumber])
 
   const balanceFormatted = useMemo(
     () => balanceToDisplay(balanceBigNumber.toString(), 8, 4),
     [balanceBigNumber],
   )
-  const handlePress = () => {
+  const handlePress = useCallback(() => {
     onPress(contractAddress)
-  }
+  }, [contractAddress, onPress])
+
+  useEffect(() => {
+    console.log('PRICE CHANGE', price)
+  }, [price])
+
   return (
     <BalanceCardPresentationComponent
       handlePress={handlePress}

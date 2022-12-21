@@ -3,15 +3,15 @@ import { ScrollView } from 'react-native-gesture-handler'
 
 import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
 
+import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
+import { Paragraph } from 'components/index'
+import { colors } from 'src/styles'
+import { grid } from 'src/styles'
+import { IPrice } from 'src/subscriptions/types'
 import {
   BalanceCardComponent,
   BitcoinCardComponent,
 } from './BalanceCardComponent'
-import { Paragraph } from 'src/components'
-import { colors } from 'src/styles'
-import { grid } from 'src/styles'
-import { IPrice } from 'src/subscriptions/types'
-import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 
 interface Props {
   selectedAddress?: string
