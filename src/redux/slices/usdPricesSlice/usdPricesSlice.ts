@@ -1,13 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { IUsdPricesState } from './types'
+import { UsdPricesState } from './types'
 
-const initialState: IUsdPricesState = {}
+const initialState: UsdPricesState = {}
 
 const usdPricesSlice = createSlice({
   name: 'usdPrices',
   initialState,
   reducers: {
-    setUsdPrices: (_state, action: PayloadAction<IUsdPricesState>) => ({
+    setUsdPrices: (_state, action: PayloadAction<UsdPricesState>) => ({
       ...action.payload,
     }),
   },
