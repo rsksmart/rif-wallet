@@ -16,7 +16,7 @@ import {
 } from 'navigation/rootNavigator/types'
 
 import ActivityRow from './ActivityRow'
-import useBitcoinTransactionsHandler from './useBitcoinTransactionsHandler'
+import { useBitcoinTransactionsHandler } from './useBitcoinTransactionsHandler'
 import useTransactionsCombiner from './useTransactionsCombiner'
 import { ScreenWithWallet } from '../types'
 

@@ -28,7 +28,7 @@ type useBitcoinTransactionsHandlerType = {
 
 type ApiStatuses = 'fetching' | 'success' | 'error' | 'idle'
 
-const useBitcoinTransactionsHandler = ({
+export const useBitcoinTransactionsHandler = ({
   bip,
   pageSize = 10,
   page = 1,
@@ -91,5 +91,3 @@ const useBitcoinTransactionsHandler = ({
     apiStatus,
   }
 }
-
-export default useBitcoinTransactionsHandler
