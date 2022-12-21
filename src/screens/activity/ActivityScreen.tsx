@@ -5,20 +5,20 @@ import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { RIFWallet } from 'lib/core'
 import BIP from 'lib/bitcoin/BIP'
 import { EnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
-
-import ActivityRow from './ActivityRow'
-import useBitcoinTransactionsHandler from './useBitcoinTransactionsHandler'
-import useTransactionsCombiner from './useTransactionsCombiner'
-import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator/types'
 import { abiEnhancer } from 'core/setup'
 import { useAppSelector } from 'store/storeUtils'
 import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
 import { colors } from 'src/styles'
-import { ScreenWithWallet } from '../types'
 import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
+
+import ActivityRow from './ActivityRow'
+import useBitcoinTransactionsHandler from './useBitcoinTransactionsHandler'
+import useTransactionsCombiner from './useTransactionsCombiner'
+import { ScreenWithWallet } from '../types'
 
 export const ActivityScreen = ({
   navigation,

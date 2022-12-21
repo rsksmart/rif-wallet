@@ -1,8 +1,8 @@
-import BIP from 'lib/bitcoin/BIP'
 import { useRef, useState } from 'react'
-import { IBitcoinTransaction } from './types'
-import { BitcoinTransactionType } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { BigNumber, utils } from 'ethers'
+import BIP from 'lib/bitcoin/BIP'
+import { BitcoinTransactionType } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { IBitcoinTransaction } from './types'
 
 function transformTransaction(bip: BIP) {
   return function (transaction: BitcoinTransactionType): IBitcoinTransaction {
