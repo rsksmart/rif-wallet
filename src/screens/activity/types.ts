@@ -1,8 +1,8 @@
 import {
   IApiTransaction,
   TransactionsServerResponse,
-} from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { IEnhancedResult } from '../../lib/abiEnhancer/AbiEnhancer'
+} from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { EnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
 
 export interface TransactionsServerResponseWithActivityTransactions
   extends TransactionsServerResponse {
@@ -11,7 +11,7 @@ export interface TransactionsServerResponseWithActivityTransactions
 
 export interface IActivityTransaction {
   originTransaction: IApiTransaction
-  enhancedTransaction?: IEnhancedResult
+  enhancedTransaction?: EnhancedResult
 }
 
 export interface IBitcoinTransaction {

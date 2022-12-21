@@ -1,17 +1,17 @@
-import { ERC20__factory } from '../../token/types'
+import { ERC20__factory } from 'lib/token/types'
 import { TransactionRequest } from '@ethersproject/abstract-provider'
-import { getAllTokens } from '../../token/tokenMetadata'
+import { getAllTokens } from 'lib/token/tokenMetadata'
 import { Signer } from '@ethersproject/abstract-signer'
 import { formatBigNumber } from '../formatBigNumber'
-import { IEnhancedResult, IEnhanceStrategy } from '../AbiEnhancer'
-import { ERC20Token } from '../../token/ERC20Token'
+import { EnhancedResult, IEnhanceStrategy } from '../AbiEnhancer'
+import { ERC20Token } from 'lib/token/ERC20Token'
 import { BigNumber } from '@ethersproject/bignumber'
 
 export class ERC20EnhanceStrategy implements IEnhanceStrategy {
   public async parse(
     signer: Signer,
     transactionRequest: TransactionRequest,
-  ): Promise<IEnhancedResult | null> {
+  ): Promise<EnhancedResult | null> {
     if (!transactionRequest.data) {
       return null
     }

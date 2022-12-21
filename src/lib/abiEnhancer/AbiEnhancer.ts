@@ -4,7 +4,7 @@ import { ERC20EnhanceStrategy } from './strategies/ERC20EnhanceStrategy'
 import { OtherEnhanceStrategy } from './strategies/OtherEnhanceStrategy'
 import { RBTCEnhanceStrategy } from './strategies/RBTCEnhanceStrategy'
 
-export interface IEnhancedResult {
+export interface EnhancedResult {
   from?: string
   to?: string
   symbol?: string
@@ -17,14 +17,14 @@ export interface IEnhanceStrategy {
   parse: (
     signer: Signer,
     transactionRequest: TransactionRequest,
-  ) => Promise<IEnhancedResult | null>
+  ) => Promise<EnhancedResult | null>
 }
 
 export interface IAbiEnhancer {
   enhance(
     signer: Signer,
     transactionRequest: TransactionRequest,
-  ): Promise<IEnhancedResult | null>
+  ): Promise<EnhancedResult | null>
 }
 
 export class AbiEnhancer implements IAbiEnhancer {
@@ -41,7 +41,7 @@ export class AbiEnhancer implements IAbiEnhancer {
   public async enhance(
     signer: Signer,
     transactionRequest: TransactionRequest,
-  ): Promise<IEnhancedResult | null> {
+  ): Promise<EnhancedResult | null> {
     for (const strategy of this.strategies) {
       const result = await strategy.parse(signer, transactionRequest)
 

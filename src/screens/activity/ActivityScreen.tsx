@@ -4,7 +4,7 @@ import { FlatList, StyleSheet, View, RefreshControl } from 'react-native'
 import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { RIFWallet } from 'lib/core'
 import BIP from 'lib/bitcoin/BIP'
-import { IEnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
+import { EnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
 
 import ActivityRow from './ActivityRow'
 import useBitcoinTransactionsHandler from './useBitcoinTransactionsHandler'
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
 export const enhanceTransactionInput = async (
   transaction: IApiTransaction,
   wallet: RIFWallet,
-): Promise<IEnhancedResult | null> => {
+): Promise<EnhancedResult | null> => {
   let tx
   try {
     tx = wallet.smartWallet.smartWalletContract.interface.decodeFunctionData(

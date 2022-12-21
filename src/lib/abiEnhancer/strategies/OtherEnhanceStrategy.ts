@@ -1,6 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { Signer } from '@ethersproject/abstract-signer'
-import { IEnhancedResult, IEnhanceStrategy } from '../AbiEnhancer'
+import { EnhancedResult, IEnhanceStrategy } from '../AbiEnhancer'
 import axios from 'axios'
 import { hexDataSlice } from '@ethersproject/bytes'
 import { utils } from 'ethers'
@@ -75,7 +75,7 @@ export class OtherEnhanceStrategy implements IEnhanceStrategy {
   public async parse(
     _: Signer,
     transactionRequest: TransactionRequest,
-  ): Promise<IEnhancedResult | null> {
+  ): Promise<EnhancedResult | null> {
     if (!transactionRequest.data) {
       return null
     }
@@ -112,7 +112,7 @@ export class OtherEnhanceStrategy implements IEnhanceStrategy {
       )
     }
 
-    const result: IEnhancedResult = {
+    const result: EnhancedResult = {
       ...transactionRequest,
       functionName,
       functionParameters: [],
