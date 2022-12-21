@@ -1,6 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { Signer } from '@ethersproject/abstract-signer'
-import { EnhancedResult, IEnhanceStrategy } from '../AbiEnhancer'
+import { EnhancedResult, EnhanceStrategy } from '../AbiEnhancer'
 import axios from 'axios'
 import { hexDataSlice } from '@ethersproject/bytes'
 import { utils } from 'ethers'
@@ -71,7 +71,7 @@ const parseSignatureWithParametersNames = (
   return parametersNames
 }
 
-export class OtherEnhanceStrategy implements IEnhanceStrategy {
+export class OtherEnhanceStrategy implements EnhanceStrategy {
   public async parse(
     _: Signer,
     transactionRequest: TransactionRequest,

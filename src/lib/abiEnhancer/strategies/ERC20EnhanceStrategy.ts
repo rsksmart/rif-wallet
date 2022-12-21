@@ -3,11 +3,11 @@ import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { getAllTokens } from 'lib/token/tokenMetadata'
 import { Signer } from '@ethersproject/abstract-signer'
 import { formatBigNumber } from '../formatBigNumber'
-import { EnhancedResult, IEnhanceStrategy } from '../AbiEnhancer'
+import { EnhancedResult, EnhanceStrategy } from '../AbiEnhancer'
 import { ERC20Token } from 'lib/token/ERC20Token'
 import { BigNumber } from '@ethersproject/bignumber'
 
-export class ERC20EnhanceStrategy implements IEnhanceStrategy {
+export class ERC20EnhanceStrategy implements EnhanceStrategy {
   public async parse(
     signer: Signer,
     transactionRequest: TransactionRequest,

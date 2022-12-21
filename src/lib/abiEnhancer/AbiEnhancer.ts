@@ -13,7 +13,7 @@ export interface EnhancedResult {
   data?: string
 }
 
-export interface IEnhanceStrategy {
+export interface EnhanceStrategy {
   parse: (
     signer: Signer,
     transactionRequest: TransactionRequest,
@@ -28,7 +28,7 @@ export interface IAbiEnhancer {
 }
 
 export class AbiEnhancer implements IAbiEnhancer {
-  public strategies: IEnhanceStrategy[]
+  public strategies: EnhanceStrategy[]
 
   constructor() {
     this.strategies = [
