@@ -14,6 +14,7 @@ import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
+
 import DomainLookUp from '../../screens/rnsManager/DomainLookUp'
 import { ScreenWithWallet } from '../types'
 import TitleStatus from './TitleStatus'
@@ -66,6 +67,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
         alias: domainToLookUp + '.rsk',
       }),
     )
+
     navigation.navigate(rootStackRouteNames.ProfileDetailsScreen)
   }, [dispatch, domainToLookUp, profile])
 
