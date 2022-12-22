@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { balanceToUSD, balanceToDisplay } from 'lib/utils'
 
@@ -32,7 +32,7 @@ export const BalanceCardComponent = ({
     [token],
   )
   const usdAmount = useMemo(
-    () => (price ? balanceToUSD(tokenBalance, decimals, price.price) : ''),
+    () => (price ? balanceToUSD(tokenBalance, decimals, price.price) : ' '),
     [price, tokenBalance, decimals],
   )
 
@@ -83,7 +83,7 @@ export const BitcoinCardComponent = ({
     return prices.BTC
       ? balanceToUSD(balanceBigNumber, 8, prices.BTC.price)
       : // TODO: fix this for bitcoin, prices don't have BTC field
-        '1'
+        ' '
   }, [prices.BTC, balanceBigNumber])
 
   const balanceFormatted = useMemo(
@@ -93,10 +93,6 @@ export const BitcoinCardComponent = ({
   const handlePress = useCallback(() => {
     onPress(contractAddress)
   }, [contractAddress, onPress])
-
-  useEffect(() => {
-    console.log('PRICE CHANGE', price)
-  }, [price])
 
   return (
     <BalanceCardPresentationComponent
