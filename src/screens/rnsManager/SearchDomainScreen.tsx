@@ -10,6 +10,7 @@ import { rnsManagerStyles } from './rnsManagerStyles'
 import { MediumText } from '../../components'
 import { AvatarIcon } from 'components/icons/AvatarIcon'
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
+
 import {
   rootStackRouteNames,
   RootStackScreenProps,
