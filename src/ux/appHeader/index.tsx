@@ -13,10 +13,10 @@ export const AppHeader = () => {
 
   const openMenu = () => {
     const navState = navigationContainerRef.getCurrentRoute()
-    if (navState && navState.name === rootStackRouteNames.Home) {
-      navigationContainerRef.navigate(rootStackRouteNames.Settings)
-    } else {
+    if (navState && navState.name === rootStackRouteNames.Settings) {
       navigationContainerRef.navigate(rootStackRouteNames.Home)
+    } else {
+      navigationContainerRef.navigate(rootStackRouteNames.Settings)
     }
   }
 
