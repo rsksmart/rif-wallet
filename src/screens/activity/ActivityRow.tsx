@@ -1,10 +1,11 @@
-import { ActivityMixedType } from './types'
-import ActivityRowPresentation from './ActivityRowPresentation'
-import useActivityDeserializer from './useActivityDeserializer'
 import {
   RootStackNavigationProp,
   rootStackRouteNames,
 } from 'navigation/rootNavigator/types'
+
+import { ActivityMixedType } from './types'
+import ActivityRowPresentation from './ActivityRowPresentation'
+import useActivityDeserializer from './useActivityDeserializer'
 
 interface Props {
   activityTransaction: ActivityMixedType

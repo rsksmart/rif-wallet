@@ -5,6 +5,7 @@ import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { RIFWallet } from 'lib/core'
 import BIP from 'lib/bitcoin/BIP'
 import { EnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
+
 import { abiEnhancer } from 'core/setup'
 import { useAppSelector } from 'store/storeUtils'
 import { selectTransactions } from 'store/slices/transactionsSlice/selectors'

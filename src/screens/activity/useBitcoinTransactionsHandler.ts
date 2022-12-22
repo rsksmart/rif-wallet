@@ -1,7 +1,9 @@
 import { useRef, useState, useCallback } from 'react'
 import { BigNumber, utils } from 'ethers'
+
 import BIP from 'lib/bitcoin/BIP'
 import { BitcoinTransactionType } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+
 import { IBitcoinTransaction } from './types'
 
 function transformTransaction(bip: BIP) {
