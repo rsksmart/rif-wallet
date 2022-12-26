@@ -17,7 +17,8 @@
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix --max-warnings=0",
     "postinstall": "rn-nodeify --install buffer,events,stream,crypto --hack --yarn && patch-package",
     "clean:android": "cd android && ./gradlew clean && ./gradlew cleanBuildCache && cd ..",
-    "clean:ios": "cd ios && xcodebuild clean && rm -rf ~/Library/Caches/CocoaPods && rm -rf Pods && rm -rf ~/Library/Developer/Xcode/DerivedData/* && pod cache clean --all && pod deintegrate && pod setup && pod install && cd .."
+    "clean:ios": "cd ios && xcodebuild clean && rm -rf ~/Library/Caches/CocoaPods && rm -rf Pods && rm -rf ~/Library/Developer/Xcode/DerivedData/* && pod cache clean --all && pod deintegrate && pod setup && pod install && cd ..",
+    "android-adb": "react-native run-android"
   },
   "dependencies": {
     "@ethersproject/shims": "^5.4.0",
@@ -66,7 +67,7 @@
     "react-native-modal": "^13.0.1",
     "react-native-progress": "^5.0.0",
     "react-native-randombytes": "^3.0.0",
-    "react-native-reanimated": "^2.12.0",
+    "react-native-reanimated": "2.10.0",
     "react-native-safe-area-context": "^4.4.1",
     "react-native-screens": "^3.18.2",
     "react-native-snap-carousel": "^3.9.1",
