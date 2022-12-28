@@ -4,18 +4,18 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { KeyManagementSystem, RIFWallet } from 'lib/core'
 import { i18nInit } from 'lib/i18n'
+import { RifWalletServicesAuth } from 'lib/rifWalletServices/RifWalletServicesAuth'
+import { RifWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
 
 import {
   RootNavigationComponent,
-  RootStackParamList,
-  rootStackRouteNames,
+  RootTabsParamsList,
 } from 'navigation/rootNavigator'
 import ModalComponent from '../ux/requestsModal/ModalComponent'
 
 import {
   createNavigationContainerRef,
   NavigationContainer,
-  NavigationState,
 } from '@react-navigation/native'
 
 import { WalletConnectProviderElement } from 'screens/walletConnect/WalletConnectContext'
@@ -37,12 +37,29 @@ import {
 } from 'store/slices/settingsSlice'
 import { getKeys, hasKeys, hasPin } from 'storage/MainStorage'
 import { BitcoinProvider } from 'core/hooks/bitcoin/BitcoinContext'
-import { RifWalletServicesAuth } from 'src/lib/rifWalletServices/RifWalletServicesAuth'
-import { RifWalletServicesFetcher } from 'src/lib/rifWalletServices/RifWalletServicesFetcher'
+import { InjectSelectedWallet } from 'src/Context'
+import * as Screens from 'screens/index'
 import { authAxios, publicAxios } from './setup'
 
+export const InjectedScreens = {
+  SendScreen: InjectSelectedWallet(Screens.SendScreen),
+  BalancesScreen: InjectSelectedWallet(Screens.BalancesScreen),
+  ActivityScreen: InjectSelectedWallet(Screens.ActivityScreen),
+  ActivityDetailsScreen: InjectSelectedWallet(Screens.ActivityDetailsScreen),
+  ManuallyDeployScreen: InjectSelectedWallet(Screens.ManuallyDeployScreen),
+  WalletConnectScreen: InjectSelectedWallet(Screens.WalletConnectScreen),
+  ScanQRScreen: InjectSelectedWallet(Screens.ScanQRScreen),
+  SearchDomainScreen: InjectSelectedWallet(Screens.SearchDomainScreen),
+  RequestDomainScreen: InjectSelectedWallet(Screens.RequestDomainScreen),
+  RegisterDomainScreen: InjectSelectedWallet(Screens.RegisterDomainScreen),
+  BuyDomainScreen: InjectSelectedWallet(Screens.BuyDomainScreen),
+  AliasBoughtScreen: InjectSelectedWallet(Screens.AliasBoughtScreen),
+  HomeScreen: InjectSelectedWallet(Screens.HomeScreen),
+  AccountsScreen: InjectSelectedWallet(Screens.AccountsScreen),
+}
+
 export const navigationContainerRef =
-  createNavigationContainerRef<RootStackParamList>()
+  createNavigationContainerRef<RootTabsParamsList>()
 
 export const Core = () => {
   const [fetcher, setFetcher] = useState<RifWalletServicesFetcher | undefined>(
@@ -62,20 +79,6 @@ export const Core = () => {
   const BitcoinCore = useBitcoinCore(mnemonic, fetcher)
 
   const { unlocked, active } = useStateSubscription()
-
-  const [currentScreen, setCurrentScreen] = useState<string>(
-    rootStackRouteNames.Home,
-  )
-  const handleScreenChange = useCallback(
-    (newState: NavigationState | undefined) => {
-      if (newState && newState.routes[newState.index]) {
-        setCurrentScreen(newState.routes[newState.index].name)
-      } else {
-        setCurrentScreen(rootStackRouteNames.Home)
-      }
-    },
-    [],
-  )
 
   const retrieveChainId = useCallback(
     async (wallet: RIFWallet) => {
@@ -154,12 +157,10 @@ export const Core = () => {
       <StatusBar backgroundColor={topColor} />
       {!active && <Cover />}
       <BitcoinProvider BitcoinCore={BitcoinCore}>
-        <NavigationContainer
-          onStateChange={handleScreenChange}
-          ref={navigationContainerRef}>
+        <NavigationContainer ref={navigationContainerRef}>
           <WalletConnectProviderElement>
             <>
-              <RootNavigationComponent currentScreen={currentScreen} />
+              <RootNavigationComponent />
 
               {requests.length !== 0 && (
                 <ModalComponent
