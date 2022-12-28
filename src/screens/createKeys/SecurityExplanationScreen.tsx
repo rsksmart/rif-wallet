@@ -27,7 +27,7 @@ import { CompositeScreenProps } from '@react-navigation/native'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
-} from 'src/navigation/rootNavigator'
+} from 'navigation/rootNavigator'
 
 const slidesIndexes = [0, 1, 2]
 
