@@ -1,206 +1,88 @@
-import { createStackNavigator } from '@react-navigation/stack'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import JailMonkey from 'jail-monkey'
 import { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 
-import { InjectSelectedWallet } from '../../Context'
-
-import * as Screens from '../../screens'
 import { CreateKeysNavigation } from 'navigation/createKeysNavigator'
-import { colors } from '../../styles'
 import { AppFooterMenu } from '../../ux/appFooter'
 import { AppHeader } from '../../ux/appHeader'
 
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
-import { RootStackParamList, rootStackRouteNames } from './types'
+import { rootTabsRouteNames } from './types'
 import { hasKeys, hasPin } from 'storage/MainStorage'
+import { HomeNavigator } from '../homeNavigator'
+import { InjectedScreens } from 'core/Core'
+import { ContactsNavigation } from '../contactsNavigator'
+import { SettingsNavigator } from '../settingsNavigator'
+import { ProfileNavigator } from '../profileNavigator'
 import { useAppSelector } from 'store/storeUtils'
 import { selectIsUnlocked } from 'store/slices/settingsSlice'
 
-const InjectedScreens = {
-  SendScreen: InjectSelectedWallet(Screens.SendScreen),
-  BalancesScreen: InjectSelectedWallet(Screens.BalancesScreen),
-  ActivityScreen: InjectSelectedWallet(Screens.ActivityScreen),
-  ActivityDetailsScreen: InjectSelectedWallet(Screens.ActivityDetailsScreen),
-  RelayDeployScreen: InjectSelectedWallet(Screens.RelayDeployScreen),
-  WalletConnectScreen: InjectSelectedWallet(Screens.WalletConnectScreen),
-  ScanQRScreen: InjectSelectedWallet(Screens.ScanQRScreen),
-  SearchDomainScreen: InjectSelectedWallet(Screens.SearchDomainScreen),
-  RequestDomainScreen: InjectSelectedWallet(Screens.RequestDomainScreen),
-  BuyDomainScreen: InjectSelectedWallet(Screens.BuyDomainScreen),
-  AliasBoughtScreen: InjectSelectedWallet(Screens.AliasBoughtScreen),
-  HomeScreen: InjectSelectedWallet(Screens.HomeScreen),
-  AccountsScreen: InjectSelectedWallet(Screens.AccountsScreen),
-}
+const RootTabs = createBottomTabNavigator()
 
-const RootStack = createStackNavigator<RootStackParamList>()
-
-const sharedOptions = {
-  headerShown: false,
-  cardStyle: {
-    backgroundColor: colors.blue,
-  },
-}
-
-interface Props {
-  currentScreen: string
-}
-
-export const RootNavigationComponent = ({ currentScreen }: Props) => {
+export const RootNavigationComponent = () => {
   const isDeviceRooted = JailMonkey.isJailBroken()
   const [isWarningVisible, setIsWarningVisible] = useState(isDeviceRooted)
   const unlocked = useAppSelector(selectIsUnlocked)
 
-  let initialRoute: rootStackRouteNames = rootStackRouteNames.CreateKeysUX
+  let initialRoute: rootTabsRouteNames = rootTabsRouteNames.CreateKeysUX
   if (hasPin()) {
-    initialRoute = rootStackRouteNames.Home
+    initialRoute = rootTabsRouteNames.Home
   } else if (hasKeys()) {
-    initialRoute = rootStackRouteNames.ChangePinScreen
+    initialRoute = rootTabsRouteNames.Settings
   }
-
-  const appIsSetup = hasKeys() && hasPin()
 
   return (
     <View style={styles.parent}>
-      {appIsSetup && <AppHeader />}
-      <RootStack.Navigator initialRouteName={initialRoute}>
+      <RootTabs.Navigator
+        initialRouteName={initialRoute}
+        tabBar={AppFooterMenu}
+        screenOptions={{
+          header: props => <AppHeader {...props} />,
+          tabBarHideOnKeyboard: true,
+        }}>
         {!unlocked ? (
-          <RootStack.Screen
-            name={rootStackRouteNames.CreateKeysUX}
+          <RootTabs.Screen
+            name={rootTabsRouteNames.CreateKeysUX}
             component={CreateKeysNavigation}
-            options={sharedOptions}
           />
         ) : (
-          <RootStack.Group>
-            <RootStack.Screen
-              name={rootStackRouteNames.Home}
-              component={InjectedScreens.HomeScreen}
-              options={sharedOptions}
+          <RootTabs.Group>
+            <RootTabs.Screen
+              name={rootTabsRouteNames.Home}
+              component={HomeNavigator}
             />
-            <RootStack.Screen
-              name={rootStackRouteNames.WalletConnect}
-              component={InjectedScreens.WalletConnectScreen}
-              options={sharedOptions}
-            />
-            <RootStack.Screen
-              name={rootStackRouteNames.ScanQR}
-              component={InjectedScreens.ScanQRScreen}
-              options={sharedOptions}
-            />
-
-            <RootStack.Screen
-              name={rootStackRouteNames.Settings}
-              component={Screens.SettingsScreen}
-              options={sharedOptions}
-            />
-
-            <RootStack.Screen
-              name={rootStackRouteNames.Receive}
-              component={Screens.ReceiveScreenHOC}
-              options={sharedOptions}
-            />
-            <RootStack.Screen
-              name={rootStackRouteNames.Send}
-              component={InjectedScreens.SendScreen}
-              options={sharedOptions}
-            />
-            <RootStack.Screen
-              name={rootStackRouteNames.ReceiveBitcoin}
-              component={Screens.BitcoinReceiveScreen}
-              options={sharedOptions}
-            />
-            <RootStack.Screen
-              name={rootStackRouteNames.Balances}
-              component={InjectedScreens.BalancesScreen}
-            />
-            <RootStack.Screen
-              name={rootStackRouteNames.Activity}
+            <RootTabs.Screen
+              name={rootTabsRouteNames.Activity}
               component={InjectedScreens.ActivityScreen}
-              options={sharedOptions}
             />
-            <RootStack.Screen
-              name={rootStackRouteNames.ActivityDetails}
+            <RootTabs.Screen
+              name={rootTabsRouteNames.ActivityDetails}
               component={InjectedScreens.ActivityDetailsScreen}
-              options={sharedOptions}
             />
-            <RootStack.Screen
-              name={rootStackRouteNames.RelayDeployScreen}
-              component={InjectedScreens.RelayDeployScreen}
-              options={sharedOptions}
+            <RootTabs.Screen
+              name={rootTabsRouteNames.ScanQR}
+              component={InjectedScreens.ScanQRScreen}
             />
-            <RootStack.Screen
-              name={rootStackRouteNames.AccountsScreen}
-              component={InjectedScreens.AccountsScreen}
-              options={sharedOptions}
+            <RootTabs.Screen
+              name={rootTabsRouteNames.Contacts}
+              component={ContactsNavigation}
             />
-            <RootStack.Screen
-              name={rootStackRouteNames.ShowMnemonicScreen}
-              component={Screens.ShowMnemonicScreen}
-              options={sharedOptions}
+            <RootTabs.Screen
+              name={rootTabsRouteNames.WalletConnect}
+              component={InjectedScreens.WalletConnectScreen}
             />
-
-            <RootStack.Screen
-              name={rootStackRouteNames.SearchDomain}
-              component={InjectedScreens.SearchDomainScreen}
-              options={sharedOptions}
+            <RootTabs.Screen
+              name={rootTabsRouteNames.Settings}
+              component={SettingsNavigator}
             />
-            <RootStack.Screen
-              name={rootStackRouteNames.RequestDomain}
-              options={sharedOptions}
-              component={InjectedScreens.RequestDomainScreen}
+            <RootTabs.Screen
+              name={rootTabsRouteNames.Profile}
+              component={ProfileNavigator}
             />
-
-            <RootStack.Screen
-              name={rootStackRouteNames.BuyDomain}
-              options={sharedOptions}
-              component={InjectedScreens.BuyDomainScreen}
-            />
-
-            <RootStack.Screen
-              name={rootStackRouteNames.AliasBought}
-              component={InjectedScreens.AliasBoughtScreen}
-              options={sharedOptions}
-            />
-            <RootStack.Screen
-              name={rootStackRouteNames.ChangeLanguage}
-              component={Screens.ChangeLanguageScreen}
-              options={sharedOptions}
-            />
-
-            <RootStack.Screen
-              name={rootStackRouteNames.ChangePinScreen}
-              options={sharedOptions}
-              component={Screens.ChangePinScreen}
-            />
-            <RootStack.Screen
-              name={rootStackRouteNames.Contacts}
-              options={sharedOptions}
-              component={Screens.ContactsNavigation}
-            />
-            <RootStack.Screen
-              name={rootStackRouteNames.SecurityConfigurationScreen}
-              component={Screens.SecurityConfigurationScreen}
-              options={sharedOptions}
-            />
-            <RootStack.Screen
-              name={rootStackRouteNames.ProfileCreateScreen}
-              component={Screens.ProfileCreateScreen}
-              options={sharedOptions}
-            />
-            <RootStack.Screen
-              name={rootStackRouteNames.ProfileDetailsScreen}
-              component={Screens.ProfileDetailsScreen}
-              options={sharedOptions}
-            />
-            <RootStack.Screen
-              name={rootStackRouteNames.FeedbackScreen}
-              component={Screens.FeedbackScreen}
-              options={sharedOptions}
-            />
-          </RootStack.Group>
+          </RootTabs.Group>
         )}
-      </RootStack.Navigator>
-      {appIsSetup && <AppFooterMenu currentScreen={currentScreen} />}
+      </RootTabs.Navigator>
       <ConfirmationModal
         isVisible={isWarningVisible}
         title="DEVICE SECURITY COMPROMISED"
