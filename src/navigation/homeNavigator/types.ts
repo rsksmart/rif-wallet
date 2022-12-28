@@ -15,7 +15,7 @@ import {
 export enum homeStackRouteNames {
   Main = 'Main',
   Send = 'Send',
-  ManuallyDeployScreen = 'ManuallyDeployScreen',
+  RelayDeployScreen = 'RelayDeployScreen',
   Receive = 'Receive',
   ReceiveBitcoin = 'ReceiveBitcoin',
   Balances = 'Balances',
@@ -37,7 +37,7 @@ export type HomeStackParamsList = {
     network: BitcoinNetwork
   }
   [homeStackRouteNames.Balances]: undefined
-  [homeStackRouteNames.ManuallyDeployScreen]: undefined
+  [homeStackRouteNames.RelayDeployScreen]: undefined
 }
 
 export type HomeStackNavigationProp = CompositeNavigationProp<

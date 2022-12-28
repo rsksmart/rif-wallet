@@ -18,8 +18,8 @@ export const HomeNavigator = () => {
         component={InjectedScreens.SendScreen}
       />
       <HomeStack.Screen
-        name={homeStackRouteNames.ManuallyDeployScreen}
-        component={InjectedScreens.ManuallyDeployScreen}
+        name={homeStackRouteNames.RelayDeployScreen}
+        component={InjectedScreens.RelayDeployScreen}
       />
       <HomeStack.Screen
         name={homeStackRouteNames.Receive}

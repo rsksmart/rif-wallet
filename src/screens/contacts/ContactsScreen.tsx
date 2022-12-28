@@ -6,12 +6,12 @@ import { CompositeScreenProps } from '@react-navigation/native'
 
 import { SearchIcon } from 'components/icons/SearchIcon'
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
-import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator/types'
-
 import { RegularText } from 'components/index'
+import {
+  rootTabsRouteNames,
+  RootTabsScreenProps,
+} from 'navigation/rootNavigator/types'
+import { homeStackRouteNames } from 'navigation/homeNavigator/types'
 import { contactsStackRouteNames } from 'navigation/contactsNavigator'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { colors } from 'src/styles'
@@ -28,7 +28,7 @@ import { ContactRow } from './ContactRow'
 
 export type ContactsListScreenProps = CompositeScreenProps<
   ContactsStackScreenProps<contactsStackRouteNames.ContactsList>,
-  RootStackScreenProps<rootStackRouteNames.Contacts>
+  RootTabsScreenProps<rootTabsRouteNames.Contacts>
 >
 
 export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
@@ -81,7 +81,10 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
   }
 
   const sendContact = (contact: Contact) => {
-    navigation.navigate(rootStackRouteNames.Send, { to: contact.address })
+    navigation.navigate(rootTabsRouteNames.Home, {
+      screen: homeStackRouteNames.Send,
+      params: { to: contact.address },
+    })
   }
 
   const removeContact = () => {

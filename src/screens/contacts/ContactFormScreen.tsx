@@ -1,16 +1,5 @@
-import { CompositeScreenProps } from '@react-navigation/native'
-import { AddressInput } from 'components/address'
-import { PrimaryButton } from 'components/button'
-import { getChainIdByType } from 'lib/utils'
-import {
-  contactsStackRouteNames,
-  ContactsStackScreenProps,
-} from 'navigation/contactsNavigator'
-import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator/types'
 import { useCallback, useState } from 'react'
+import { CompositeScreenProps } from '@react-navigation/native'
 import {
   KeyboardAvoidingView,
   Platform,
@@ -20,19 +9,32 @@ import {
 } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { RegularText } from 'src/components'
+
+import { getChainIdByType } from 'lib/utils'
+
+import {
+  contactsStackRouteNames,
+  ContactsStackScreenProps,
+} from 'navigation/contactsNavigator'
+import {
+  rootTabsRouteNames,
+  RootTabsScreenProps,
+} from 'navigation/rootNavigator/types'
+import { PrimaryButton } from 'components/button'
+import { AddressInput } from 'components/address'
+import { RegularText } from 'components/index'
 import { colors, grid } from 'src/styles'
 import { fonts } from 'src/styles/fonts'
-import { addContact, editContact } from 'store/slices/contactsSlice'
 import { Contact } from 'store/slices/contactsSlice/types'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { addContact, editContact } from 'store/slices/contactsSlice'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
-import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { setOpacity } from '../home/tokenColor'
 
 export type ContactFormScreenProps = CompositeScreenProps<
   ContactsStackScreenProps<contactsStackRouteNames.ContactForm>,
-  RootStackScreenProps<rootStackRouteNames.Contacts>
+  RootTabsScreenProps<rootTabsRouteNames.Contacts>
 >
 
 export const ContactFormScreen = ({

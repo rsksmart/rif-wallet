@@ -3,15 +3,15 @@ import { BigNumber, BigNumberish } from 'ethers'
 
 import { IRIFWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
 
-import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator/types'
 import { Address } from 'components/index'
 import { ScreenWithWallet } from '../types'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { useAppSelector } from 'store/storeUtils'
 import { BalancesRow } from './BalancesRow'
+import {
+  homeStackRouteNames,
+  HomeStackScreenProps,
+} from 'src/navigation/homeNavigator/types'
 
 export const balanceToString = (
   balance: string,
@@ -32,7 +32,7 @@ export const balanceToString = (
 
 export type BalancesScreenProps = { fetcher: IRIFWalletServicesFetcher }
 
-type Props = RootStackScreenProps<rootStackRouteNames.Balances> &
+type Props = HomeStackScreenProps<homeStackRouteNames.Balances> &
   ScreenWithWallet &
   BalancesScreenProps
 

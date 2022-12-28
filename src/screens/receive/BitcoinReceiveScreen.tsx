@@ -5,18 +5,18 @@ import { shortAddress } from 'lib/utils'
 import { Loading } from 'components/index'
 import { getDomains } from 'storage/DomainsStore'
 import { ReceiveScreen } from './ReceiveScreen'
-import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator'
 import { useAppSelector } from 'store/storeUtils'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
+import {
+  homeStackRouteNames,
+  HomeStackScreenProps,
+} from 'navigation/homeNavigator/types'
 
 export const BitcoinReceiveScreen = ({
   route: {
     params: { network },
   },
-}: RootStackScreenProps<rootStackRouteNames.ReceiveBitcoin>) => {
+}: HomeStackScreenProps<homeStackRouteNames.ReceiveBitcoin>) => {
   const [address, setAddress] = useState<string | undefined>(undefined)
   const [registeredDomains, setRegisteredDomains] = useState<string[]>([])
 

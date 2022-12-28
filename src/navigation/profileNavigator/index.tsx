@@ -43,10 +43,6 @@ export const ProfileNavigator = ({
         name={profileStackRouteNames.AliasBought}
         component={InjectedScreens.AliasBoughtScreen}
       />
-      <ProfileStack.Screen
-        name={profileStackRouteNames.RegisterDomain}
-        component={InjectedScreens.RegisterDomainScreen}
-      />
     </ProfileStack.Navigator>
   )
 }
