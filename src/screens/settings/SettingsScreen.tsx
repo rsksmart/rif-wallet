@@ -1,19 +1,25 @@
 import { useMemo } from 'react'
-import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5'
-import { version } from '../../../package.json'
+
+import { version } from 'package.json'
 import { getWalletSetting, SETTINGS } from '../../core/config'
 import { colors, spacing } from '../../styles'
-import { MediumText, RegularText, SemiBoldText } from '../../components'
-import DiscoverTuneIcon from '../../components/icons/DiscoverTuneIcon'
-import LockIcon from '../../components/icons/LockIcon'
-import AccountsIcon from '../../components/icons/AccountsIcon'
+import { MediumText, RegularText, SemiBoldText } from 'components/index'
+import DiscoverTuneIcon from 'components/icons/DiscoverTuneIcon'
+import LockIcon from 'components/icons/LockIcon'
+import AccountsIcon from 'components/icons/AccountsIcon'
+import { homeStackRouteNames } from 'navigation/homeNavigator/types'
+import {
+  SettingsScreenProps,
+  settingsStackRouteNames,
+} from 'navigation/settingsNavigator/types'
+import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 
 export const SettingsScreen = ({
   navigation,
-}: RootStackScreenProps<'Settings'>) => {
+}: SettingsScreenProps<settingsStackRouteNames.SettingsScreen>) => {
   const smartWalletFactoryAddress = useMemo(
     () => getWalletSetting(SETTINGS.SMART_WALLET_FACTORY_ADDRESS),
     [],
@@ -26,16 +32,22 @@ export const SettingsScreen = ({
     [],
   )
 
-  const goToChangeLanguage = () => navigation.navigate('ChangeLanguage')
+  const goToChangeLanguage = () =>
+    navigation.navigate(settingsStackRouteNames.ChangeLanguage)
 
-  const goToAccountsScreen = () => navigation.navigate('AccountsScreen')
+  const goToAccountsScreen = () =>
+    navigation.navigate(settingsStackRouteNames.AccountsScreen)
 
   const goToSecurityConfiguration = () =>
-    navigation.navigate('SecurityConfigurationScreen')
+    navigation.navigate(settingsStackRouteNames.SecurityConfigurationScreen)
 
-  const goToDeploy = () => navigation.navigate('ManuallyDeployScreen')
+  const goToDeploy = () =>
+    navigation.navigate(rootTabsRouteNames.Home, {
+      screen: homeStackRouteNames.ManuallyDeployScreen,
+    })
 
-  const goToFeedbackScreen = () => navigation.navigate('FeedbackScreen')
+  const goToFeedbackScreen = () =>
+    navigation.navigate(settingsStackRouteNames.FeedbackScreen)
 
   return (
     <ScrollView style={styles.container}>

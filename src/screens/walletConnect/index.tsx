@@ -5,8 +5,8 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
 import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
 import {
-  rootStackRouteNames,
-  RootStackScreenProps,
+  rootTabsRouteNames,
+  RootTabsScreenProps,
 } from 'navigation/rootNavigator/types'
 import { WalletConnectContext } from './WalletConnectContext'
 import { useAppSelector } from 'store/storeUtils'
@@ -14,13 +14,10 @@ import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
 
-type WalletConnectScreenProps =
-  RootStackScreenProps<rootStackRouteNames.WalletConnect>
-
 export const WalletConnectScreen = ({
   navigation,
   route,
-}: WalletConnectScreenProps) => {
+}: RootTabsScreenProps<rootTabsRouteNames.WalletConnect>) => {
   const wcKey = route.params?.wcKey
   const { t } = useTranslation()
   const { wallet } = useAppSelector(selectActiveWallet)
@@ -35,7 +32,7 @@ export const WalletConnectScreen = ({
 
   if (pendingConnector?.connected) {
     // clear pendingConnector
-    navigation.navigate(rootStackRouteNames.WalletConnect)
+    navigation.navigate(rootTabsRouteNames.WalletConnect)
   }
 
   return (

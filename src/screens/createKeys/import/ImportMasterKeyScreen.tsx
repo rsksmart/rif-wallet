@@ -18,8 +18,8 @@ import {
   CreateKeysScreenProps,
 } from 'navigation/createKeysNavigator/types'
 import {
-  rootStackRouteNames,
-  RootStackScreenProps,
+  rootTabsRouteNames,
+  RootTabsScreenProps,
 } from 'navigation/rootNavigator'
 import { useKeyboardIsVisible } from 'core/hooks/useKeyboardIsVisible'
 import { useAppDispatch } from 'store/storeUtils'
@@ -35,7 +35,7 @@ import { handleInputRefCreation } from 'src/shared/utils'
 
 type Props = CompositeScreenProps<
   CreateKeysScreenProps<createKeysRouteNames.ImportMasterKey>,
-  RootStackScreenProps<rootStackRouteNames.CreateKeysUX>
+  RootTabsScreenProps<rootTabsRouteNames.CreateKeysUX>
 >
 
 const slidesIndexes = [0, 1, 2, 3]
@@ -132,7 +132,7 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
       keyboardShouldPersistTaps={'always'}>
       <View style={sharedMnemonicStyles.topContent}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('CreateKeys')}
+          onPress={() => navigation.navigate(createKeysRouteNames.CreateKeys)}
           style={styles.returnButton}
           accessibilityLabel="back">
           <View style={styles.returnButtonView}>

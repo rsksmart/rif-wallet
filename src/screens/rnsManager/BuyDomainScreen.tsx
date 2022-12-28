@@ -1,29 +1,27 @@
 import { useState, useEffect } from 'react'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { BigNumber, utils } from 'ethers'
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import moment from 'moment'
 
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { colors } from 'src/styles'
 import { rnsManagerStyles } from './rnsManagerStyles'
-
-import { PrimaryButton } from 'src/components/button/PrimaryButton'
-
-import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator/types'
-import { ScreenWithWallet } from '../types'
-import { MediumText } from 'src/components'
+import { PrimaryButton } from 'components/button/PrimaryButton'
+import { MediumText } from 'components/index'
+import { AvatarIcon } from 'components/icons/AvatarIcon'
 import addresses from './addresses.json'
 import TitleStatus from './TitleStatus'
 import { TokenImage } from '../home/TokenImage'
-import { AvatarIcon } from '../../components/icons/AvatarIcon'
 import { errorHandler } from 'shared/utils'
-import { deleteAliasRegistration } from '../../storage/AliasRegistrationStore'
+import { deleteAliasRegistration } from 'storage/AliasRegistrationStore'
+import {
+  profileStackRouteNames,
+  ProfileStackScreenProps,
+} from 'navigation/profileNavigator/types'
+import { ScreenWithWallet } from '../types'
 
-type Props = RootStackScreenProps<rootStackRouteNames.BuyDomain> &
+type Props = ProfileStackScreenProps<profileStackRouteNames.BuyDomain> &
   ScreenWithWallet
 
 export const BuyDomainScreen = ({ wallet, navigation, route }: Props) => {
@@ -71,7 +69,7 @@ export const BuyDomainScreen = ({ wallet, navigation, route }: Props) => {
         setRegisterDomainInfo('Transaction sent. Please wait...')
         setRegisterInProcess(true)
 
-        navigation.navigate(rootStackRouteNames.AliasBought, {
+        navigation.navigate(profileStackRouteNames.AliasBought, {
           alias: alias,
           tx,
         })
@@ -86,7 +84,9 @@ export const BuyDomainScreen = ({ wallet, navigation, route }: Props) => {
     <>
       <View style={rnsManagerStyles.profileHeader}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('SearchDomain')}
+          onPress={() =>
+            navigation.navigate(profileStackRouteNames.SearchDomain)
+          }
           accessibilityLabel="search">
           <View style={rnsManagerStyles.backButton}>
             <MaterialIcon name="west" color="white" size={10} />

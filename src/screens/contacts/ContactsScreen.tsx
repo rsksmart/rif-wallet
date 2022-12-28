@@ -12,8 +12,8 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import { SearchIcon } from 'components/icons/SearchIcon'
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import {
-  rootStackRouteNames,
-  RootStackScreenProps,
+  rootTabsRouteNames,
+  RootTabsScreenProps,
 } from 'navigation/rootNavigator/types'
 import { colors } from 'src/styles'
 import { fonts } from 'src/styles/fonts'
@@ -29,10 +29,11 @@ import {
   deleteContactById,
   setSelectedContactById,
 } from 'store/slices/contactsSlice'
+import { homeStackRouteNames } from 'src/navigation/homeNavigator/types'
 
 export type ContactsListScreenProps = CompositeScreenProps<
   ContactsStackScreenProps<contactsStackRouteNames.ContactsList>,
-  RootStackScreenProps<rootStackRouteNames.Contacts>
+  RootTabsScreenProps<rootTabsRouteNames.Contacts>
 >
 
 export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
@@ -85,7 +86,10 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
   }
 
   const sendContact = (contact: Contact) => {
-    navigation.navigate(rootStackRouteNames.Send, { to: contact.address })
+    navigation.navigate(rootTabsRouteNames.Home, {
+      screen: homeStackRouteNames.Send,
+      params: { to: contact.address },
+    })
   }
 
   const removeContact = () => {

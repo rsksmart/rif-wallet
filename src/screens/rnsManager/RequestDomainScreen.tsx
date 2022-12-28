@@ -1,25 +1,23 @@
 import { useEffect, useState } from 'react'
+import { Dimensions, TouchableOpacity, View } from 'react-native'
 import * as Progress from 'react-native-progress'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
-import { Dimensions, TouchableOpacity, View } from 'react-native'
 import { colors } from 'src/styles'
 import { rnsManagerStyles } from './rnsManagerStyles'
-
-import { PrimaryButton } from 'src/components/button/PrimaryButton'
-
-import { MediumText } from '../../components'
-import { AvatarIcon } from '../../components/icons/AvatarIcon'
+import { PrimaryButton } from 'components/button/PrimaryButton'
+import { MediumText } from 'components/index'
+import { AvatarIcon } from 'components/icons/AvatarIcon'
+import { IProfileRegistrationStore } from 'storage/AliasRegistrationStore'
+import { useAliasRegistration } from 'core/hooks/useAliasRegistration'
 import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator/types'
-import { ScreenWithWallet } from '../types'
+  profileStackRouteNames,
+  ProfileStackScreenProps,
+} from 'navigation/profileNavigator/types'
 import TitleStatus from './TitleStatus'
-import { IProfileRegistrationStore } from '../../storage/AliasRegistrationStore'
-import { useAliasRegistration } from '../../core/hooks/useAliasRegistration'
+import { ScreenWithWallet } from '../types'
 
-type Props = RootStackScreenProps<rootStackRouteNames.RequestDomain> &
+type Props = ProfileStackScreenProps<profileStackRouteNames.RequestDomain> &
   ScreenWithWallet
 
 export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
@@ -64,7 +62,7 @@ export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
         if (ready) {
           setProgress(1)
           setProcessing(false)
-          navigation.navigate(rootStackRouteNames.BuyDomain, {
+          navigation.navigate(profileStackRouteNames.BuyDomain, {
             alias,
             domainSecret: profileRegistrationStore.commitToRegisterSecret,
             duration,
@@ -88,7 +86,9 @@ export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
     <>
       <View style={rnsManagerStyles.profileHeader}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('SearchDomain')}
+          onPress={() =>
+            navigation.navigate(profileStackRouteNames.SearchDomain)
+          }
           accessibilityLabel="back">
           <View style={rnsManagerStyles.backButton}>
             <MaterialIcon name="west" color="white" size={10} />
