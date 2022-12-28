@@ -1,33 +1,40 @@
+import { useCallback } from 'react'
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
 
-import { AddressCopyComponent } from 'components/copy/AddressCopyComponent'
-import { rootStackRouteNames } from 'src/navigation/rootNavigator'
-import { selectActiveWallet } from 'store/slices/settingsSlice'
-import { useAppSelector } from 'store/storeUtils'
-import { navigationContainerRef } from '../../core/Core'
-import { ProfileHandler } from './ProfileHandler'
 import { getChainIdByType } from 'lib/utils'
 
-export const AppHeader = () => {
+import { AddressCopyComponent } from 'components/copy/AddressCopyComponent'
+import { ChevronLeftIcon } from 'components/icons/ChevronLeftIcon'
+import { rootTabsRouteNames } from 'navigation/rootNavigator'
+import { selectActiveWallet, selectTopColor } from 'store/slices/settingsSlice'
+import { useAppSelector } from 'store/storeUtils'
+import { ProfileHandler } from './ProfileHandler'
+import { StackHeaderProps } from '@react-navigation/stack'
+
+type Props = BottomTabHeaderProps | StackHeaderProps
+
+export const AppHeader = ({ navigation, route }: Props) => {
+  const topColor = useAppSelector(selectTopColor)
   const { wallet, chainType } = useAppSelector(selectActiveWallet)
 
-  const openMenu = () => {
-    const navState = navigationContainerRef.getCurrentRoute()
-    if (navState && navState.name === rootStackRouteNames.Home) {
-      navigationContainerRef.navigate(rootStackRouteNames.Settings)
-    } else {
-      navigationContainerRef.navigate(rootStackRouteNames.Home)
+  const openMenu = useCallback(() => {
+    if (route && route.name === rootTabsRouteNames.Settings) {
+      navigation.navigate(rootTabsRouteNames.Home)
+      return
     }
-  }
+    navigation.navigate(rootTabsRouteNames.Settings)
+  }, [navigation])
 
   return (
-    <View style={styles.row}>
-      <View
-        style={{
-          ...styles.column,
-          ...styles.walletInfo,
-        }}>
-        {wallet && <ProfileHandler wallet={wallet} />}
+    <View style={[styles.row, { backgroundColor: topColor }]}>
+      {navigation.canGoBack() ? (
+        <TouchableOpacity onPress={navigation.goBack}>
+          <ChevronLeftIcon color={'white'} />
+        </TouchableOpacity>
+      ) : null}
+      <View style={[styles.column, styles.walletInfo]}>
+        {wallet && <ProfileHandler wallet={wallet} navigation={navigation} />}
       </View>
       <View style={styles.column}>
         {wallet && (
@@ -54,7 +61,6 @@ const styles = StyleSheet.create({
     alignItems: 'center', // vertical
     paddingVertical: 10,
     paddingHorizontal: 15,
-    marginBottom: 10,
     display: 'flex',
     flexDirection: 'row',
   },
