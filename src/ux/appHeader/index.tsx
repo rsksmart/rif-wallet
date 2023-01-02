@@ -5,7 +5,6 @@ import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
 import { getChainIdByType } from 'lib/utils'
 
 import { AddressCopyComponent } from 'components/copy/AddressCopyComponent'
-import { ChevronLeftIcon } from 'components/icons/ChevronLeftIcon'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { selectActiveWallet, selectTopColor } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
@@ -28,11 +27,6 @@ export const AppHeader = ({ navigation, route }: Props) => {
 
   return (
     <View style={[styles.row, { backgroundColor: topColor }]}>
-      {navigation.canGoBack() ? (
-        <TouchableOpacity onPress={navigation.goBack}>
-          <ChevronLeftIcon color={'white'} />
-        </TouchableOpacity>
-      ) : null}
       <View style={[styles.column, styles.walletInfo]}>
         {wallet && <ProfileHandler wallet={wallet} navigation={navigation} />}
       </View>
