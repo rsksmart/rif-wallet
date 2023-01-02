@@ -6,7 +6,12 @@ export const sortEnhancedTransactions = (
 ) => {
   return second.originTransaction.timestamp - first.originTransaction.timestamp
 }
-
+/**
+ * This function will filter out the transactions that are repeated
+ * @param transaction
+ * @param index
+ * @param self
+ */
 export const filterEnhancedTransactions = (
   transaction: IActivityTransaction,
   index: number,

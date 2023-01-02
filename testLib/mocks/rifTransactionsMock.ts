@@ -1,12 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
-import {
-  IAbiEnhancer,
-  IEnhancedResult,
-} from '../../src/lib/abiEnhancer/AbiEnhancer'
-import { IActivityTransaction } from '../../src/subscriptions/types'
+import { IAbiEnhancer, EnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
+import { IActivityTransaction } from 'src/subscriptions/types'
 
-export const enhancedTxTestCase: IEnhancedResult = {
+export const enhancedTxTestCase: EnhancedResult = {
   from: '0x6b4f72f48529d86a0f3ddf80f2c7291d16111850',
   to: '0xE85081d3cef23e0b1b664CE596D1BfA8D464e5f9',
   symbol: 'RIF',

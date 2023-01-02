@@ -1,6 +1,6 @@
 import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { IRIFWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
-import { IAbiEnhancer, IEnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
+import { IAbiEnhancer, EnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { RIFWallet } from 'lib/core'
 
@@ -66,7 +66,7 @@ export type Action =
 
 export interface IActivityTransaction {
   originTransaction: IApiTransaction
-  enhancedTransaction?: IEnhancedResult
+  enhancedTransaction?: EnhancedResult
 }
 
 export type ActivityScreenProps = {

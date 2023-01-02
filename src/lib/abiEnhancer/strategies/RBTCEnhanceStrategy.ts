@@ -1,14 +1,14 @@
 import { BigNumber, Signer } from 'ethers'
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { formatBigNumber } from '../formatBigNumber'
-import { IEnhancedResult, IEnhanceStrategy } from '../AbiEnhancer'
-import { makeRBTCToken } from '../../../lib/token/tokenMetadata'
+import { EnhancedResult, EnhanceStrategy } from '../AbiEnhancer'
+import { makeRBTCToken } from 'lib/token/tokenMetadata'
 
-export class RBTCEnhanceStrategy implements IEnhanceStrategy {
+export class RBTCEnhanceStrategy implements EnhanceStrategy {
   public async parse(
     signer: Signer,
     transactionRequest: TransactionRequest,
-  ): Promise<IEnhancedResult | null> {
+  ): Promise<EnhancedResult | null> {
     const chainId = await signer.getChainId()
 
     const rbtc = makeRBTCToken(signer, chainId)
