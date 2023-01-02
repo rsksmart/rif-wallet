@@ -8,12 +8,8 @@ import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { Paragraph } from 'components/index'
-import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator/types'
-import { selectAccounts } from 'src/redux/slices/accountsSlice/selector'
 import { colors } from 'src/styles'
+import { selectAccounts } from 'store/slices/accountsSlice/selector'
 import { selectAppState } from 'store/slices/appStateSlice/selectors'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
@@ -26,10 +22,14 @@ import { getTokenColor } from './tokenColor'
 import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 import { changeTopColor, selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import {
+  homeStackRouteNames,
+  HomeStackScreenProps,
+} from 'navigation/homeNavigator/types'
 
 export const HomeScreen = ({
   navigation,
-}: RootStackScreenProps<rootStackRouteNames.Home>) => {
+}: HomeStackScreenProps<homeStackRouteNames.Main>) => {
   const dispatch = useAppDispatch()
   const tokenBalances = useAppSelector(selectBalances)
   const prices = useAppSelector(selectUsdPrices)
@@ -78,12 +78,12 @@ export const HomeScreen = ({
     }
     switch (screen) {
       case 'SEND':
-        return navigation.navigate(rootStackRouteNames.Send, {
+        return navigation.navigate(homeStackRouteNames.Send, {
           token: selected?.symbol,
           contractAddress: selected?.contractAddress,
         })
       case 'RECEIVE':
-        return navigation.navigate(rootStackRouteNames.Receive)
+        return navigation.navigate(homeStackRouteNames.Receive)
       case 'FAUCET':
         const address = wallet?.smartWallet.smartWalletContract.address
         address &&
@@ -96,11 +96,11 @@ export const HomeScreen = ({
     if (selected instanceof BitcoinNetwork) {
       switch (screen) {
         case 'RECEIVE':
-          return navigation.navigate(rootStackRouteNames.ReceiveBitcoin, {
+          return navigation.navigate(homeStackRouteNames.ReceiveBitcoin, {
             network: selected,
           })
         case 'SEND':
-          return navigation.navigate(rootStackRouteNames.Send, {
+          return navigation.navigate(homeStackRouteNames.Send, {
             token: selected?.symbol,
             contractAddress: selected?.contractAddress,
           })
@@ -112,7 +112,6 @@ export const HomeScreen = ({
     console.log('temporarly removed', address)
   }
 
-  // pass the new color to Core to update header:
   useEffect(() => {
     dispatch(changeTopColor(selectedColor))
   }, [selectedColor])

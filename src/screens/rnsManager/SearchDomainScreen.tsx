@@ -1,24 +1,23 @@
 import { useState } from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
-import { PrimaryButton } from 'src/components/button/PrimaryButton'
+
 import { colors } from 'src/styles'
-
+import { PrimaryButton } from 'components/button/PrimaryButton'
+import { MediumText } from 'components/index'
+import { AvatarIcon } from 'components/icons/AvatarIcon'
+import { ConfirmationModal } from 'components/modal/ConfirmationModal'
+import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
+import DomainLookUp from 'screens/rnsManager/DomainLookUp'
 import { rnsManagerStyles } from './rnsManagerStyles'
-
-import { MediumText } from '../../components'
-import { AvatarIcon } from '../../components/icons/AvatarIcon'
-import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
-import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator/types'
-import DomainLookUp from '../../screens/rnsManager/DomainLookUp'
 import { ScreenWithWallet } from '../types'
 import TitleStatus from './TitleStatus'
+import {
+  profileStackRouteNames,
+  ProfileStackScreenProps,
+} from 'src/navigation/profileNavigator/types'
 
-type Props = RootStackScreenProps<rootStackRouteNames.SearchDomain> &
+type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
   ScreenWithWallet
 
 export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
@@ -56,7 +55,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
     <>
       <View style={rnsManagerStyles.profileHeader}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('Home')}
+          onPress={() => navigation.navigate(rootTabsRouteNames.Home)}
           accessibilityLabel="home">
           <View style={rnsManagerStyles.backButton}>
             <MaterialIcon name="west" color={colors.lightPurple} size={10} />
@@ -129,7 +128,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           <PrimaryButton
             disabled={!validDomain}
             onPress={() =>
-              navigation.navigate(rootStackRouteNames.RequestDomain, {
+              navigation.navigate(profileStackRouteNames.RequestDomain, {
                 alias: domainToLookUp.replace('.rsk', ''),
                 duration: selectedYears,
               })

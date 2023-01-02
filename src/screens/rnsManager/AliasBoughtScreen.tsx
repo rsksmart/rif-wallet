@@ -2,24 +2,25 @@ import { useEffect, useState } from 'react'
 
 import { Clipboard, Image, Linking, StyleSheet, View } from 'react-native'
 import { rnsManagerStyles } from './rnsManagerStyles'
-import { navigationContainerRef } from 'src/core/Core'
 
-import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator/types'
-import { MediumText, SecondaryButton } from 'src/components'
-import { PrimaryButton } from 'src/components/button/PrimaryButton'
+import { MediumText, SecondaryButton } from 'components/index'
+import { PrimaryButton } from 'components/button/PrimaryButton'
 import { getWalletSetting, SETTINGS } from 'src/core/config'
-import { setProfile } from 'src/redux/slices/profileSlice/profileSlice'
-import { selectProfile } from 'src/redux/slices/profileSlice/selector'
+import { setProfile } from 'store/slices/profileSlice/profileSlice'
+import { selectProfile } from 'store/slices/profileSlice/selector'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { ScreenWithWallet } from '../types'
+import {
+  profileStackRouteNames,
+  ProfileStackScreenProps,
+} from 'navigation/profileNavigator/types'
 
 export const AliasBoughtScreen = ({
+  navigation,
   route,
-}: RootStackScreenProps<'AliasBought'> & ScreenWithWallet) => {
+}: ProfileStackScreenProps<profileStackRouteNames.AliasBought> &
+  ScreenWithWallet) => {
   const { alias, tx } = route.params
 
   const [registerDomainInfo, setRegisterDomainInfo] = useState(
@@ -80,9 +81,7 @@ export const AliasBoughtScreen = ({
           </View>
           <SecondaryButton
             onPress={() =>
-              navigationContainerRef.navigate(
-                rootStackRouteNames.ProfileDetailsScreen,
-              )
+              navigation.navigate(profileStackRouteNames.ProfileDetailsScreen)
             }
             accessibilityLabel="close"
             title={'Close'}

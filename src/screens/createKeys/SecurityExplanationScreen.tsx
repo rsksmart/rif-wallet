@@ -7,11 +7,16 @@ import {
   ScrollView,
 } from 'react-native'
 import Carousel from 'react-native-snap-carousel'
+import { CompositeScreenProps } from '@react-navigation/native'
 
 import {
   createKeysRouteNames,
   CreateKeysScreenProps,
 } from 'navigation/createKeysNavigator/types'
+import {
+  rootTabsRouteNames,
+  RootTabsScreenProps,
+} from 'navigation/rootNavigator'
 import { SecuritySlide } from '../../ux/slides/SecuritySlide'
 import { PaginationNavigator } from 'components/button/PaginationNavigator'
 import { Arrow } from 'components/icons'
@@ -23,17 +28,12 @@ import {
 } from '../../ux/slides/Dimensions'
 import { colors } from '../../styles'
 import { sharedMnemonicStyles } from './new/styles'
-import { CompositeScreenProps } from '@react-navigation/native'
-import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'src/navigation/rootNavigator'
 
 const slidesIndexes = [0, 1, 2]
 
 type Props = CompositeScreenProps<
   CreateKeysScreenProps<createKeysRouteNames.SecurityExplanation>,
-  RootStackScreenProps<rootStackRouteNames.CreateKeysUX>
+  RootTabsScreenProps<rootTabsRouteNames.CreateKeysUX>
 >
 
 export const SecurityExplanationScreen = ({ navigation }: Props) => {

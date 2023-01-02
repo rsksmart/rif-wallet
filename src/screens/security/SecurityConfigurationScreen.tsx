@@ -3,11 +3,6 @@ import { View, StyleSheet, Alert } from 'react-native'
 import { useTranslation } from 'react-i18next'
 
 import { colors } from 'src/styles'
-import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator/types'
-import { createKeysRouteNames } from 'navigation/createKeysNavigator'
 import { MediumText } from 'components/index'
 import { PrimaryButton } from 'components/button/PrimaryButton'
 import { SecondaryButton } from 'components/button/SecondaryButton'
@@ -18,18 +13,25 @@ import {
 } from 'storage/MainStorage'
 import { useAppDispatch } from 'store/storeUtils'
 import { resetKeysAndPin } from 'store/slices/settingsSlice'
-import { resetSocketState } from 'store/shared/actions/resetSocketState'
+import { createKeysRouteNames } from 'navigation/createKeysNavigator'
+import {
+  SettingsScreenProps,
+  settingsStackRouteNames,
+} from 'navigation/settingsNavigator/types'
+import { rootTabsRouteNames } from 'navigation/rootNavigator'
+import { resetSocketState } from 'src/redux/shared/actions/resetSocketState'
 
 export const SecurityConfigurationScreen = ({
   navigation,
-}: RootStackScreenProps<rootStackRouteNames.SecurityConfigurationScreen>) => {
+}: SettingsScreenProps<settingsStackRouteNames.SecurityConfigurationScreen>) => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
 
   const revealMasterKey = () =>
-    navigation.navigate(rootStackRouteNames.ShowMnemonicScreen)
+    navigation.navigate(settingsStackRouteNames.ShowMnemonicScreen)
+
   const changePin = () =>
-    navigation.navigate(rootStackRouteNames.ChangePinScreen)
+    navigation.navigate(settingsStackRouteNames.ChangePinScreen)
   const [showReminder, setShowReminder] = useState<boolean>(false)
 
   const handleDeleteKeys = () => {
@@ -47,7 +49,7 @@ export const SecurityConfigurationScreen = ({
             dispatch(resetKeysAndPin())
             dispatch(resetSocketState())
             saveKeyVerificationReminder(false)
-            navigation.navigate(rootStackRouteNames.CreateKeysUX)
+            navigation.navigate(rootTabsRouteNames.CreateKeysUX)
           },
         },
       ],
@@ -83,7 +85,7 @@ export const SecurityConfigurationScreen = ({
             title="Confirm Master Key"
             accessibilityLabel="confirm"
             onPress={() =>
-              navigation.navigate(rootStackRouteNames.CreateKeysUX, {
+              navigation.navigate(rootTabsRouteNames.CreateKeysUX, {
                 screen: createKeysRouteNames.SecurityExplanation,
               })
             }

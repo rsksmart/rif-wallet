@@ -12,18 +12,18 @@ import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
 import { colors } from 'src/styles'
 import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 import {
-  rootStackRouteNames,
-  RootStackScreenProps,
+  rootTabsRouteNames,
+  RootTabsScreenProps,
 } from 'navigation/rootNavigator/types'
 
-import ActivityRow from './ActivityRow'
+import { ActivityRow } from './ActivityRow'
 import { useBitcoinTransactionsHandler } from './useBitcoinTransactionsHandler'
 import useTransactionsCombiner from './useTransactionsCombiner'
 import { ScreenWithWallet } from '../types'
 
 export const ActivityScreen = ({
   navigation,
-}: RootStackScreenProps<rootStackRouteNames.Activity> & ScreenWithWallet) => {
+}: RootTabsScreenProps<rootTabsRouteNames.Activity> & ScreenWithWallet) => {
   const bitcoinCore = useBitcoinContext()
   const btcTransactionFetcher = useBitcoinTransactionsHandler({
     bip:

@@ -2,10 +2,7 @@ import { useCallback, useState } from 'react'
 
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
-import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator/types'
+import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import {
   Image,
   StyleSheet,
@@ -16,24 +13,29 @@ import {
   Platform,
 } from 'react-native'
 
-import { AvatarIcon } from 'src/components/icons/AvatarIcon'
-import { MediumText } from 'src/components'
-import { PrimaryButton } from 'src/components/button/PrimaryButton'
-import { TextInputWithLabel } from 'src/components/input/TextInputWithLabel'
+import { AvatarIcon } from 'components/icons/AvatarIcon'
+import { MediumText } from 'components/index'
+import { PrimaryButton } from 'components/button/PrimaryButton'
+import { TextInputWithLabel } from 'components/input/TextInputWithLabel'
+import { RegularText } from 'components/typography'
 import { colors } from 'src/styles'
 import { fonts } from 'src/styles/fonts'
-import { RegularText } from 'src/components/typography'
-import { selectProfile } from 'src/redux/slices/profileSlice/selector'
+import { selectProfile } from 'store/slices/profileSlice/selector'
 import {
   deleteProfile,
   setProfile,
-} from 'src/redux/slices/profileSlice/profileSlice'
-import { IProfileStore } from 'src/redux/slices/profileSlice/types'
-import { useAppDispatch, useAppSelector } from 'src/redux/storeUtils'
+} from 'store/slices/profileSlice/profileSlice'
+import { IProfileStore } from 'store/slices/profileSlice/types'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import {
+  profileStackRouteNames,
+  ProfileStackScreenProps,
+} from 'navigation/profileNavigator/types'
 
-export const ProfileCreateScreen: React.FC<
-  RootStackScreenProps<'ProfileCreateScreen'>
-> = ({ route, navigation }) => {
+export const ProfileCreateScreen = ({
+  route,
+  navigation,
+}: ProfileStackScreenProps<profileStackRouteNames.ProfileCreateScreen>) => {
   const editProfile = route.params?.editProfile
   const dispatch = useAppDispatch()
   const profile = useAppSelector(selectProfile)
@@ -45,12 +47,12 @@ export const ProfileCreateScreen: React.FC<
 
   const createProfile = async () => {
     dispatch(setProfile({ ...localProfile, alias: profile?.alias || '' }))
-    navigation.navigate(rootStackRouteNames.Home)
+    navigation.navigate(rootTabsRouteNames.Home)
   }
 
   const deleteAlias = async () => {
     dispatch(deleteProfile())
-    navigation.navigate(rootStackRouteNames.Home)
+    navigation.navigate(rootTabsRouteNames.Home)
   }
 
   const onSetEmail = useCallback((email: string) => {
@@ -69,7 +71,7 @@ export const ProfileCreateScreen: React.FC<
       <ScrollView>
         <View style={styles.profileHeader}>
           <TouchableOpacity
-            onPress={() => navigation.navigate(rootStackRouteNames.Home)}
+            onPress={() => navigation.navigate(rootTabsRouteNames.Home)}
             accessibilityLabel="home">
             <View style={styles.backButton}>
               <MaterialIcon name="west" color="white" size={10} />
@@ -104,7 +106,9 @@ export const ProfileCreateScreen: React.FC<
             <>
               <View style={styles.rowContainer}>
                 <PrimaryButton
-                  onPress={() => navigation.navigate('SearchDomain')}
+                  onPress={() =>
+                    navigation.navigate(profileStackRouteNames.SearchDomain)
+                  }
                   accessibilityLabel="register new"
                   title={'register new'}
                 />

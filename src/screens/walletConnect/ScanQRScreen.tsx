@@ -5,13 +5,14 @@ import { WalletConnectContext } from './WalletConnectContext'
 import { useAppSelector } from 'src/redux/storeUtils'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import {
-  rootStackRouteNames,
-  RootStackScreenProps,
+  rootTabsRouteNames,
+  RootTabsScreenProps,
 } from 'navigation/rootNavigator'
+import { homeStackRouteNames } from 'src/navigation/homeNavigator/types'
 
 export const ScanQRScreen = ({
   navigation,
-}: RootStackScreenProps<rootStackRouteNames.ScanQR>) => {
+}: RootTabsScreenProps<rootTabsRouteNames.ScanQR>) => {
   const { wallet } = useAppSelector(selectActiveWallet)
 
   const { createSession } = useContext(WalletConnectContext)
@@ -26,7 +27,7 @@ export const ScanQRScreen = ({
     // wait for session request
     navigation.reset({
       index: 0,
-      routes: [{ name: rootStackRouteNames.WalletConnect }],
+      routes: [{ name: rootTabsRouteNames.WalletConnect }],
     })
   }
 
@@ -34,7 +35,9 @@ export const ScanQRScreen = ({
     if (navigation.canGoBack()) {
       navigation.goBack()
     } else {
-      navigation.navigate(rootStackRouteNames.Home)
+      navigation.navigate(rootTabsRouteNames.Home, {
+        screen: homeStackRouteNames.Main,
+      })
     }
   }
 
