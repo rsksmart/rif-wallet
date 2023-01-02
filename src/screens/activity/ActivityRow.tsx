@@ -1,10 +1,11 @@
-import { ActivityMixedType } from './types'
-import ActivityRowPresentation from './ActivityRowPresentation'
-import useActivityDeserializer from './useActivityDeserializer'
 import {
   rootTabsRouteNames,
   RootTabsScreenProps,
 } from 'navigation/rootNavigator/types'
+
+import { ActivityMixedType } from './types'
+import ActivityRowPresentation from './ActivityRowPresentation'
+import useActivityDeserializer from './useActivityDeserializer'
 
 interface Props extends RootTabsScreenProps<rootTabsRouteNames.Activity> {
   activityTransaction: ActivityMixedType

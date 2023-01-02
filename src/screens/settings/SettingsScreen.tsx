@@ -7,7 +7,6 @@ import { version } from 'package.json'
 import { getWalletSetting, SETTINGS } from '../../core/config'
 import { colors, spacing } from '../../styles'
 import { MediumText, RegularText, SemiBoldText } from 'components/index'
-import DiscoverTuneIcon from 'components/icons/DiscoverTuneIcon'
 import LockIcon from 'components/icons/LockIcon'
 import AccountsIcon from 'components/icons/AccountsIcon'
 import { homeStackRouteNames } from 'navigation/homeNavigator/types'
@@ -32,9 +31,6 @@ export const SettingsScreen = ({
     [],
   )
 
-  const goToChangeLanguage = () =>
-    navigation.navigate(settingsStackRouteNames.ChangeLanguage)
-
   const goToAccountsScreen = () =>
     navigation.navigate(settingsStackRouteNames.AccountsScreen)
 
@@ -52,15 +48,6 @@ export const SettingsScreen = ({
   return (
     <ScrollView style={styles.container}>
       <View style={styles.mainView}>
-        <TouchableOpacity
-          accessibilityLabel="language"
-          onPress={goToChangeLanguage}
-          style={styles.rowComponent}>
-          <DiscoverTuneIcon width={18} height={18} />
-          <SemiBoldText style={[styles.textColor, spacing.ml6]}>
-            General
-          </SemiBoldText>
-        </TouchableOpacity>
         {/* @TODO add link to go to the accounts screen */}
         <TouchableOpacity
           accessibilityLabel="account"

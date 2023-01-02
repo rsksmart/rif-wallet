@@ -19,6 +19,7 @@ import {
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
+import { resetSocketState } from 'src/redux/shared/actions/resetSocketState'
 
 export const SecurityConfigurationScreen = ({
   navigation,
@@ -46,6 +47,7 @@ export const SecurityConfigurationScreen = ({
           text: 'Delete',
           onPress: () => {
             dispatch(resetKeysAndPin())
+            dispatch(resetSocketState())
             saveKeyVerificationReminder(false)
             navigation.navigate(rootTabsRouteNames.CreateKeysUX)
           },

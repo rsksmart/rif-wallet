@@ -1,8 +1,10 @@
-import BIP from '../../lib/bitcoin/BIP'
-import { useRef, useState } from 'react'
-import { IBitcoinTransaction } from './types'
-import { BitcoinTransactionType } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import { useRef, useState, useCallback } from 'react'
 import { BigNumber, utils } from 'ethers'
+
+import BIP from 'lib/bitcoin/BIP'
+import { BitcoinTransactionType } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+
+import { IBitcoinTransaction } from './types'
 
 function transformTransaction(bip: BIP) {
   return function (transaction: BitcoinTransactionType): IBitcoinTransaction {
@@ -26,7 +28,9 @@ type useBitcoinTransactionsHandlerType = {
   shouldMergeTransactions?: boolean
 }
 
-const useBitcoinTransactionsHandler = ({
+type ApiStatuses = 'fetching' | 'success' | 'error' | 'idle'
+
+export const useBitcoinTransactionsHandler = ({
   bip,
   pageSize = 10,
   page = 1,
@@ -35,42 +39,57 @@ const useBitcoinTransactionsHandler = ({
   const [transactions, setTransactions] = useState<Array<IBitcoinTransaction>>(
     [],
   )
+  const [apiStatus, setApiStatus] = useState<ApiStatuses>('idle')
   const pageRef = useRef({
     pageSize,
     page,
     totalPages: 1,
   })
-  const fetchTransactions = async (
-    pageSizeTransaction?: number,
-    pageNumberTransaction?: number,
-  ): Promise<BitcoinTransactionType[]> => {
-    pageRef.current.pageSize = pageSizeTransaction || pageRef.current.pageSize
-    pageRef.current.page = pageNumberTransaction || pageRef.current.page
-    const data = await bip.fetchTransactions(
-      pageRef.current.pageSize,
-      pageRef.current.page,
-    )
-    pageRef.current.totalPages = data.totalPages
-    const transactionsTransformed = data.transactions.map(
-      transformTransaction(bip),
-    )
-    if (shouldMergeTransactions && pageRef.current.page !== 1) {
-      setTransactions(cur => [...cur, ...transactionsTransformed])
-    } else {
-      setTransactions(transactionsTransformed)
-    }
-    return data.transactions
-  }
-
-  const fetchNextTransactionPage = () => {
+  const fetchTransactions = useCallback(
+    async (
+      pageSizeTransaction?: number,
+      pageNumberTransaction?: number,
+    ): Promise<BitcoinTransactionType[]> => {
+      setApiStatus('fetching')
+      try {
+        pageRef.current.pageSize =
+          pageSizeTransaction || pageRef.current.pageSize
+        pageRef.current.page = pageNumberTransaction || pageRef.current.page
+        const data = await bip.fetchTransactions(
+          pageRef.current.pageSize,
+          pageRef.current.page,
+        )
+        pageRef.current.totalPages = data.totalPages
+        const transactionsTransformed = data.transactions.map(
+          transformTransaction(bip),
+        )
+        if (shouldMergeTransactions && pageRef.current.page !== 1) {
+          setTransactions(cur => [...cur, ...transactionsTransformed])
+        } else {
+          setTransactions(transactionsTransformed)
+        }
+        setApiStatus('success')
+        return data.transactions
+      } catch (error) {
+        setApiStatus('error')
+        return []
+      }
+    },
+    [bip, shouldMergeTransactions],
+  )
+  const fetchNextTransactionPage = useCallback(() => {
     pageRef.current.page = pageRef.current.page + 1
     // If the next page is greater than the total pages, don't do anything
     if (pageRef.current.page > pageRef.current.totalPages) {
       return
     }
     return fetchTransactions()
+  }, [fetchTransactions])
+  return {
+    fetchNextTransactionPage,
+    fetchTransactions,
+    transactions,
+    pageRef,
+    apiStatus,
   }
-  return { fetchNextTransactionPage, fetchTransactions, transactions, pageRef }
 }
-
-export default useBitcoinTransactionsHandler

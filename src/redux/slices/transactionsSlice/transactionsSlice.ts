@@ -83,8 +83,8 @@ const transactionsSlice = createSlice({
         transaction => transaction.originTransaction.hash === payload.hash,
       )
       if (indexOfTransactionToModify !== -1) {
-        state.transactions[indexOfTransactionToModify] = {
-          ...state.transactions[indexOfTransactionToModify],
+        state.transactions[indexOfTransactionToModify].originTransaction = {
+          ...state.transactions[indexOfTransactionToModify].originTransaction,
           ...payload,
         }
       }

@@ -27,14 +27,11 @@ export const AliasBoughtScreen = ({
     'Transaction for your alias is being processed',
   )
 
-  const { chainId } = useAppSelector(selectActiveWallet)
+  const { chainType } = useAppSelector(selectActiveWallet)
   const dispatch = useAppDispatch()
   const profile = useAppSelector(selectProfile)
 
-  const explorerUrl = getWalletSetting(
-    SETTINGS.EXPLORER_ADDRESS_URL,
-    chainId ?? 31,
-  )
+  const explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainType)
 
   const copyHashAndOpenExplorer = (hash: string) => {
     Clipboard.setString(hash)
