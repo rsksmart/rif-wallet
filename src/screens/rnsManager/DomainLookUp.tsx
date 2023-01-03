@@ -101,12 +101,12 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
       if (currentWallet === ownerAddress) {
         setDomainAvailability(DomainStatus.OWNED)
         onDomainOwned(true)
+      } else {
+        setDomainAvailability(DomainStatus.TAKEN)
       }
     } else {
       onDomainOwned(false)
-      setDomainAvailability(
-        available ? DomainStatus.AVAILABLE : DomainStatus.TAKEN,
-      )
+      setDomainAvailability(DomainStatus.AVAILABLE)
       onDomainAvailable(domainName, Boolean(available))
     }
   }
