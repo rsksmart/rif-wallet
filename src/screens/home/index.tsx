@@ -121,7 +121,7 @@ export const HomeScreen = ({
       userAddress: address,
 
       // for the dapp:
-      hostAppName: 'Ramp POC',
+      hostAppName: 'RIF Wallet',
       hostLogoUrl: 'https://rampnetwork.github.io/assets/misc/test-logo.png',
     })
 
