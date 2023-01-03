@@ -28,9 +28,5 @@ export const getWalletSetting = (
     return Config[`${setting}_${chainType}`]
   }
 
-  if (!Config[setting]) {
-    throw Error(`${setting} was undefined in core/config.ts`)
-  }
-
   return Config[setting]
 }
