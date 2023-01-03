@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { StatusBar, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -9,13 +9,15 @@ import { abiEnhancer, rifWalletServicesSocket } from './setup'
 
 import {
   RootNavigationComponent,
-  RootTabsParamsList,
+  RootStackParamList,
+  rootStackRouteNames,
 } from 'navigation/rootNavigator'
 import ModalComponent from '../ux/requestsModal/ModalComponent'
 
 import {
   createNavigationContainerRef,
   NavigationContainer,
+  NavigationState,
 } from '@react-navigation/native'
 
 import { WalletConnectProviderElement } from 'screens/walletConnect/WalletConnectContext'
@@ -44,28 +46,9 @@ import {
 import { hasKeys, hasPin } from 'storage/MainStorage'
 import { BitcoinProvider } from 'core/hooks/bitcoin/BitcoinContext'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
-import { InjectSelectedWallet } from 'src/Context'
-import * as Screens from 'screens/index'
-
-export const InjectedScreens = {
-  SendScreen: InjectSelectedWallet(Screens.SendScreen),
-  BalancesScreen: InjectSelectedWallet(Screens.BalancesScreen),
-  ActivityScreen: InjectSelectedWallet(Screens.ActivityScreen),
-  ActivityDetailsScreen: InjectSelectedWallet(Screens.ActivityDetailsScreen),
-  ManuallyDeployScreen: InjectSelectedWallet(Screens.ManuallyDeployScreen),
-  WalletConnectScreen: InjectSelectedWallet(Screens.WalletConnectScreen),
-  ScanQRScreen: InjectSelectedWallet(Screens.ScanQRScreen),
-  SearchDomainScreen: InjectSelectedWallet(Screens.SearchDomainScreen),
-  RequestDomainScreen: InjectSelectedWallet(Screens.RequestDomainScreen),
-  RegisterDomainScreen: InjectSelectedWallet(Screens.RegisterDomainScreen),
-  BuyDomainScreen: InjectSelectedWallet(Screens.BuyDomainScreen),
-  AliasBoughtScreen: InjectSelectedWallet(Screens.AliasBoughtScreen),
-  HomeScreen: InjectSelectedWallet(Screens.HomeScreen),
-  AccountsScreen: InjectSelectedWallet(Screens.AccountsScreen),
-}
 
 export const navigationContainerRef =
-  createNavigationContainerRef<RootTabsParamsList>()
+  createNavigationContainerRef<RootStackParamList>()
 
 export const Core = () => {
   const dispatch = useAppDispatch()
@@ -85,6 +68,17 @@ export const Core = () => {
   const onScreenLock = () => dispatch(removeKeysFromState())
 
   const { unlocked, setUnlocked, active } = useStateSubscription(onScreenLock)
+
+  const [currentScreen, setCurrentScreen] = useState<string>(
+    rootStackRouteNames.Home,
+  )
+  const handleScreenChange = (newState: NavigationState | undefined) => {
+    if (newState && newState.routes[newState.index]) {
+      setCurrentScreen(newState.routes[newState.index].name)
+    } else {
+      setCurrentScreen(rootStackRouteNames.Home)
+    }
+  }
 
   const setGlobalError = useSetGlobalError()
 
@@ -154,18 +148,18 @@ export const Core = () => {
       <StatusBar backgroundColor={topColor} />
       {!active && <Cover />}
       <BitcoinProvider BitcoinCore={BitcoinCore}>
-        <NavigationContainer ref={navigationContainerRef}>
+        <NavigationContainer
+          onStateChange={handleScreenChange}
+          ref={navigationContainerRef}>
           <WalletConnectProviderElement>
-            <>
-              <RootNavigationComponent />
+            <RootNavigationComponent currentScreen={currentScreen} />
 
-              {requests.length !== 0 && (
-                <ModalComponent
-                  closeModal={() => dispatch(closeRequest())}
-                  request={requests[0]}
-                />
-              )}
-            </>
+            {requests.length !== 0 && (
+              <ModalComponent
+                closeModal={() => dispatch(closeRequest())}
+                request={requests[0]}
+              />
+            )}
           </WalletConnectProviderElement>
         </NavigationContainer>
       </BitcoinProvider>

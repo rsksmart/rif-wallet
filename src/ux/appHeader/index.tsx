@@ -1,34 +1,33 @@
-import { useCallback } from 'react'
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
-import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
-
-import { getChainIdByType } from 'lib/utils'
 
 import { AddressCopyComponent } from 'components/copy/AddressCopyComponent'
-import { rootTabsRouteNames } from 'navigation/rootNavigator'
-import { selectActiveWallet, selectTopColor } from 'store/slices/settingsSlice'
+import { rootStackRouteNames } from 'src/navigation/rootNavigator'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
+import { navigationContainerRef } from '../../core/Core'
 import { ProfileHandler } from './ProfileHandler'
-import { StackHeaderProps } from '@react-navigation/stack'
+import { getChainIdByType } from 'lib/utils'
 
-type Props = BottomTabHeaderProps | StackHeaderProps
-
-export const AppHeader = ({ navigation, route }: Props) => {
-  const topColor = useAppSelector(selectTopColor)
+export const AppHeader = () => {
   const { wallet, chainType } = useAppSelector(selectActiveWallet)
 
-  const openMenu = useCallback(() => {
-    if (route && route.name === rootTabsRouteNames.Settings) {
-      navigation.navigate(rootTabsRouteNames.Home)
-      return
+  const openMenu = () => {
+    const navState = navigationContainerRef.getCurrentRoute()
+    if (navState && navState.name === rootStackRouteNames.Settings) {
+      navigationContainerRef.navigate(rootStackRouteNames.Home)
+    } else {
+      navigationContainerRef.navigate(rootStackRouteNames.Settings)
     }
-    navigation.navigate(rootTabsRouteNames.Settings)
-  }, [navigation])
+  }
 
   return (
-    <View style={[styles.row, { backgroundColor: topColor }]}>
-      <View style={[styles.column, styles.walletInfo]}>
-        {wallet && <ProfileHandler wallet={wallet} navigation={navigation} />}
+    <View style={styles.row}>
+      <View
+        style={{
+          ...styles.column,
+          ...styles.walletInfo,
+        }}>
+        {wallet && <ProfileHandler wallet={wallet} />}
       </View>
       <View style={styles.column}>
         {wallet && (
@@ -55,6 +54,7 @@ const styles = StyleSheet.create({
     alignItems: 'center', // vertical
     paddingVertical: 10,
     paddingHorizontal: 15,
+    marginBottom: 10,
     display: 'flex',
     flexDirection: 'row',
   },

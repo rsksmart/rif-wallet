@@ -1,32 +1,31 @@
 /* eslint-disable jest/no-disabled-tests */
-import { useNavigation } from '@react-navigation/native'
 import { render, act, waitFor, fireEvent } from '@testing-library/react-native'
 
-import { IRIFWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
+import { setupTest } from '../../../testLib/setup'
+import { getTextFromTextNode, Awaited } from '../../../testLib/utils'
 
-import { setupTest } from 'testLib/setup'
-import { getTextFromTextNode, Awaited } from 'testLib/utils'
 import {
   createMockFetcher,
   lastTxTextTestId,
   txTestCase,
-} from 'testLib/mocks/rifServicesMock'
+} from '../../../testLib/mocks/rifServicesMock'
 import {
   createMockAbiEnhancer,
   enhancedTxTestCase,
-} from 'testLib/mocks/rifTransactionsMock'
-
-import { ActivityScreen } from './ActivityScreen'
-import { getAddressDisplayText } from 'components/index'
+} from '../../../testLib/mocks/rifTransactionsMock'
+import { ActivityScreen, ActivityScreenProps } from './ActivityScreen'
+import { getAddressDisplayText } from '../../components'
+import { IRIFWalletServicesFetcher } from 'src/lib/rifWalletServices/RifWalletServicesFetcher'
 import {
-  rootTabsRouteNames,
-  RootTabsScreenProps,
-} from 'navigation/rootNavigator'
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'src/navigation/rootNavigator'
+import { useNavigation } from '@react-navigation/native'
 
 const createTestInstance = async (
   fetcher = createMockFetcher(),
   abiEnhancer = createMockAbiEnhancer(),
-  { navigation, route }: RootTabsScreenProps<rootTabsRouteNames.Activity>,
+  { navigation, route }: RootStackScreenProps<rootStackRouteNames.Activity>,
 ) => {
   const mock = await setupTest()
 
@@ -65,11 +64,7 @@ jest.mock('@react-navigation/native', () => ({
 describe('Activity Screen', function (this: {
   testInstance: Awaited<ReturnType<typeof createTestInstance>>
 }) {
-  const navigation =
-    useNavigation<
-      RootTabsScreenProps<rootTabsRouteNames.Activity>['navigation']
-    >()
-
+  const navigation = useNavigation<ActivityScreenProps>()
   beforeEach(async () => {
     act(async () => {
       this.testInstance = await createTestInstance(null, null, navigation)

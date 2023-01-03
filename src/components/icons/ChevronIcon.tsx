@@ -1,7 +1,7 @@
 import Svg, { SvgProps, Path } from 'react-native-svg'
 
-const ChevronIcon = ({ width = 24, height = 24, ...props }: SvgProps) => (
-  <Svg height={height} width={width} {...props}>
+const ChevronIcon = (props: SvgProps) => (
+  <Svg height={24} width={24} {...props}>
     <Path d="M0 0h24v24H0V0z" fill="none" />
     <Path
       fill={props.color}

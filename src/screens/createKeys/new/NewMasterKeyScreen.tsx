@@ -10,26 +10,25 @@ import Carousel from 'react-native-snap-carousel'
 import { Trans } from 'react-i18next'
 import { CompositeScreenProps } from '@react-navigation/native'
 
-import { KeyManagementSystem } from 'lib/core'
-
 import {
   createKeysRouteNames,
   CreateKeysScreenProps,
 } from 'navigation/createKeysNavigator/types'
-import { colors } from 'src/styles/colors'
+import { colors } from '../../../styles/colors'
 import { Arrow } from 'components/icons'
 import { PaginationNavigator } from 'components/button/PaginationNavigator'
-import { SLIDER_WIDTH, WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
+import { SLIDER_WIDTH, WINDOW_WIDTH } from '../../../ux/slides/Dimensions'
 import { WordView } from './WordView'
 import { sharedMnemonicStyles } from './styles'
 import {
-  rootTabsRouteNames,
-  RootTabsScreenProps,
-} from 'navigation/rootNavigator'
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'src/navigation/rootNavigator'
+import { KeyManagementSystem } from 'lib/core'
 
 type Props = CompositeScreenProps<
   CreateKeysScreenProps<createKeysRouteNames.NewMasterKey>,
-  RootTabsScreenProps<rootTabsRouteNames.CreateKeysUX>
+  RootStackScreenProps<rootStackRouteNames.CreateKeysUX>
 >
 
 export const NewMasterKeyScreen = ({ navigation }: Props) => {

@@ -1,28 +1,26 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { BigNumber } from 'ethers'
-import { StyleSheet, View, TextInput, Text } from 'react-native'
+import { StyleSheet, View, TextInput } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
-import { RSKRegistrar, AddrResolver } from '@rsksmart/rns-sdk'
-import { ScrollView } from 'react-native-gesture-handler'
-import { formatUnits } from 'ethers/lib/utils'
 
+import { Text } from 'react-native'
 import addresses from './addresses.json'
-import { ScreenWithWallet } from '../types'
-import { Button } from 'components/index'
-import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
-import {
-  profileStackRouteNames,
-  ProfileStackScreenProps,
-} from 'navigation/profileNavigator/types'
-import { addDomain } from 'storage/DomainsStore'
-import { getTokenColorWithOpacity } from '../home/tokenColor'
 
-export const RegisterDomainScreen = ({
-  wallet,
-  route,
-  navigation,
-}: ProfileStackScreenProps<profileStackRouteNames.RegisterDomain> &
-  ScreenWithWallet) => {
+import { ScreenWithWallet } from '../types'
+import { Button } from '../../components'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
+import { RSKRegistrar, AddrResolver } from '@rsksmart/rns-sdk'
+import { addDomain } from '../../storage/DomainsStore'
+import { getTokenColorWithOpacity } from '../home/tokenColor'
+import { formatUnits } from 'ethers/lib/utils'
+import { ScrollView } from 'react-native-gesture-handler'
+
+export const RegisterDomainScreen: React.FC<
+  RootStackScreenProps<'RegisterDomain'> & ScreenWithWallet
+> = ({ wallet, route, navigation }) => {
   const { selectedDomain, years } = route.params
 
   const [error, setError] = useState('')
@@ -178,7 +176,7 @@ export const RegisterDomainScreen = ({
             <Text>Address: {resolvingAddress}</Text>
             <Button
               onPress={() => {
-                navigation.navigate(rootTabsRouteNames.Home)
+                navigation.navigate(rootStackRouteNames.Home)
               }}
               title={'Home'}
             />

@@ -1,8 +1,10 @@
+import { useNavigation } from '@react-navigation/core'
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
-import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
 
-import { rootTabsRouteNames } from 'navigation/rootNavigator'
-import { homeStackRouteNames } from 'navigation/homeNavigator/types'
+import {
+  RootStackNavigationProp,
+  rootStackRouteNames,
+} from 'navigation/rootNavigator'
 import ActivityIcon from 'components/icons/ActivityIcon'
 import ActivitySelectedIcon from 'components/icons/ActivitySelectedIcon'
 import ContactIcon from 'components/icons/ContactIcon'
@@ -10,23 +12,25 @@ import ContactSelectedIcon from 'components/icons/ContactSelectedIcon'
 import DappsIcon from 'components/icons/DappsIcon'
 import DappsSelectedIcon from 'components/icons/DappsSelectedIcon'
 import QRCodeIconFooter from 'components/icons/QRCodeIconFooter'
-import { colors } from 'src/styles/colors'
+import { colors } from '../../styles/colors'
 
-export const AppFooterMenu = ({ navigation, state }: BottomTabBarProps) => {
+interface Props {
+  currentScreen: string
+}
+
+export const AppFooterMenu = ({ currentScreen }: Props) => {
+  const navigation = useNavigation<RootStackNavigationProp>()
+
   return (
     <View style={styles.row}>
       <TouchableOpacity
-        onPress={() =>
-          navigation.navigate(rootTabsRouteNames.Home, {
-            screen: homeStackRouteNames.Main,
-          })
-        }
+        onPress={() => navigation.navigate(rootStackRouteNames.Home)}
         style={styles.button}
         accessibilityLabel="home">
         <Image
           style={styles.walletIcon}
           source={
-            state.routes[state.index].name === rootTabsRouteNames.Home
+            currentScreen === 'Home'
               ? require('../../images/footer-menu/wallet.png')
               : require('../../images/footer-menu/wallet-o.png')
           }
@@ -34,10 +38,10 @@ export const AppFooterMenu = ({ navigation, state }: BottomTabBarProps) => {
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate(rootTabsRouteNames.Activity)}
+        onPress={() => navigation.navigate(rootStackRouteNames.Activity)}
         style={styles.button}
         accessibilityLabel="activity">
-        {state.routes[state.index].name === rootTabsRouteNames.Activity ? (
+        {currentScreen === 'Activity' ? (
           <ActivitySelectedIcon />
         ) : (
           <ActivityIcon />
@@ -45,17 +49,17 @@ export const AppFooterMenu = ({ navigation, state }: BottomTabBarProps) => {
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate(rootTabsRouteNames.ScanQR)}
+        onPress={() => navigation.navigate(rootStackRouteNames.ScanQR)}
         style={styles.button}
         accessibilityLabel="scan">
         <QRCodeIconFooter />
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate(rootTabsRouteNames.Contacts)}
+        onPress={() => navigation.navigate(rootStackRouteNames.Contacts)}
         style={styles.button}
         accessibilityLabel="contacts">
-        {state.routes[state.index].name === rootTabsRouteNames.Contacts ? (
+        {currentScreen === 'Contacts' ? (
           <ContactSelectedIcon />
         ) : (
           <ContactIcon />
@@ -63,10 +67,10 @@ export const AppFooterMenu = ({ navigation, state }: BottomTabBarProps) => {
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate(rootTabsRouteNames.WalletConnect)}
+        onPress={() => navigation.navigate(rootStackRouteNames.WalletConnect)}
         style={styles.button}
         accessibilityLabel="dapps">
-        {state.routes[state.index].name === rootTabsRouteNames.WalletConnect ? (
+        {currentScreen === 'WalletConnect' ? (
           <DappsSelectedIcon />
         ) : (
           <DappsIcon />

@@ -1,20 +1,24 @@
 import { BigNumberish } from 'ethers'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import { RegularText } from '../../components'
 
-import { RegularText } from 'components/index'
-import { HideShowIcon } from 'components/icons'
-import { colors } from 'src/styles'
-import { fonts } from 'src/styles/fonts'
+import { HideShowIcon } from '../../components/icons'
+import { colors } from '../../styles'
+import { fonts } from '../../styles/fonts'
 
-interface Props {
+interface Interface {
   accountName: string
   amount: BigNumberish
   change?: number
 }
 
-const SelectedTokenComponent = ({ accountName, amount, change }: Props) => {
+const SelectedTokenComponent: React.FC<Interface> = ({
+  accountName,
+  amount,
+  change,
+}) => {
   const [showBalances, setShowBalances] = useState<boolean>(true)
   const badgeColor = change && change >= 0 ? styles.greenBadge : styles.redBadge
   const onSetBalances = () => setShowBalances(!showBalances)
