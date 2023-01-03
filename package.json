@@ -17,8 +17,7 @@
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix --max-warnings=0",
     "postinstall": "rn-nodeify --install buffer,events,stream,crypto --hack --yarn && patch-package",
     "clean:android": "cd android && ./gradlew clean && ./gradlew cleanBuildCache && cd ..",
-    "clean:ios": "cd ios && xcodebuild clean && rm -rf ~/Library/Caches/CocoaPods && rm -rf Pods && rm -rf ~/Library/Developer/Xcode/DerivedData/* && pod cache clean --all && pod deintegrate && pod setup && pod install && cd ..",
-    "android-adb": "react-native run-android"
+    "clean:ios": "cd ios && xcodebuild clean && rm -rf ~/Library/Caches/CocoaPods && rm -rf Pods && rm -rf ~/Library/Developer/Xcode/DerivedData/* && pod cache clean --all && pod deintegrate && pod setup && pod install && cd .."
   },
   "dependencies": {
     "@ethersproject/shims": "^5.4.0",
