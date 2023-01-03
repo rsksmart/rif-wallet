@@ -10,6 +10,7 @@ import {
 
 import { QRCodeScanner } from 'components/QRCodeScanner'
 import { WalletConnectContext } from './WalletConnectContext'
+import { decodeString } from 'lib/eip681/decodeString'
 
 export const ScanQRScreen = ({
   navigation,
@@ -21,9 +22,14 @@ export const ScanQRScreen = ({
 
   const onCodeRead = (data: string) => {
     // Metamask QR
-    if (data.startsWith('ethereum:')) {
+    const decodedString = decodeString(data)
+    if (
+      decodedString.address !== undefined &&
+      decodedString.network !== undefined &&
+      decodedString.network === 'ethereum'
+    ) {
       navigation.navigate(rootStackRouteNames.Send, {
-        to: data.split('ethereum:')[1],
+        to: decodedString.address,
       })
     } else if (isBitcoinAddressValid(data)) {
       navigation.navigate(rootStackRouteNames.Send, {
