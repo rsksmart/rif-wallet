@@ -6,7 +6,7 @@ export enum SETTINGS {
   RIF_WALLET_SERVICE_URL = 'RIF_WALLET_SERVICE_URL',
   EXPLORER_ADDRESS_URL = 'EXPLORER_ADDRESS_URL',
   EXPLORER_ADDRESS_URL_BTC = 'EXPLORER_ADDRESS_URL_BTC',
-  RPC_URL = 'RPC_URL',
+  RPC_URL = 'NETWORK_RPC_URL',
   SMART_WALLET_FACTORY_ADDRESS = 'SMART_WALLET_FACTORY_ADDRESS',
   RIF_RELAY_SERVER = 'RIF_RELAY_SERVER',
   RELAY_VERIFIER_ADDRESS = 'RELAY_VERIFIER_ADDRESS',
@@ -23,4 +23,14 @@ export enum SETTINGS {
 export const getWalletSetting = (
   setting: SETTINGS,
   chainType: ChainTypeEnum = ChainTypeEnum.TESTNET,
-): string => Config[`${setting}_${chainType}`]
+): string => {
+  if (Config[`${setting}_${chainType}`]) {
+    return Config[`${setting}_${chainType}`]
+  }
+
+  if (!Config[setting]) {
+    throw Error(`${setting} was undefined in core/config.ts`)
+  }
+
+  return Config[setting]
+}

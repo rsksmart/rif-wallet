@@ -72,7 +72,7 @@ export const SendScreen = ({
   }
 
   const onDeployWalletNavigate = () =>
-    navigation.navigate(rootStackRouteNames.ManuallyDeployScreen)
+    navigation.navigate(rootStackRouteNames.RelayDeployScreen)
 
   return (
     <KeyboardAvoidingView
