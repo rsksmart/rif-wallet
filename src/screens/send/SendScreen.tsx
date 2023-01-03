@@ -6,36 +6,34 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native'
-
-import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
-import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
-
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
 import { ScreenWithWallet } from '../types'
 import { TransactionInfo } from './TransactionInfo'
 import { colors } from 'src/styles'
 import { TransactionForm } from './TransactionForm'
 import WalletNotDeployedView from './WalletNotDeployedModal'
+import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 import {
   usePaymentExecutor,
   PaymentExecutorContext,
 } from './usePaymentExecutor'
 import { useFetchBitcoinNetworksAndTokens } from './useFetchBitcoinNetworksAndTokens'
 import { MixedTokenAndNetworkType } from './types'
+import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppSelector } from 'store/storeUtils'
-import { selectBalances } from 'store/slices/balancesSlice/selectors'
+import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
 import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
-import {
-  homeStackRouteNames,
-  HomeStackScreenProps,
-} from 'navigation/homeNavigator/types'
 
 export const SendScreen = ({
   route,
   wallet,
   isWalletDeployed,
   navigation,
-}: HomeStackScreenProps<homeStackRouteNames.Send> & ScreenWithWallet) => {
+}: RootStackScreenProps<rootStackRouteNames.Send> & ScreenWithWallet) => {
   const assets =
     useFetchBitcoinNetworksAndTokens() as unknown as MixedTokenAndNetworkType[]
 
@@ -74,7 +72,7 @@ export const SendScreen = ({
   }
 
   const onDeployWalletNavigate = () =>
-    navigation.navigate(homeStackRouteNames.ManuallyDeployScreen)
+    navigation.navigate(rootStackRouteNames.ManuallyDeployScreen)
 
   return (
     <KeyboardAvoidingView

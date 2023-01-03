@@ -1,44 +1,112 @@
-import { BottomTabScreenProps } from '@react-navigation/bottom-tabs'
-import { NavigatorScreenParams } from '@react-navigation/native'
-
-import { ActivityMixedType } from 'screens/activity/types'
-import { ContactStackParamsList } from '../contactsNavigator'
+import { NavigationProp, NavigatorScreenParams } from '@react-navigation/native'
+import { StackScreenProps } from '@react-navigation/stack'
+import Resolver from '@rsksmart/rns-resolver.js'
+import { ContractTransaction } from 'ethers'
+import { ActivityMixedType } from 'src/screens/activity/types'
+import { IProfileStore } from 'src/redux/slices/profileSlice/types'
+import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 import { CreateKeysStackParamList } from '../createKeysNavigator'
-import { HomeStackParamsList } from '../homeNavigator/types'
-import { ProfileStackParamsList } from '../profileNavigator/types'
 
-export type RootTabsScreenProps<T extends keyof RootTabsParamsList> =
-  BottomTabScreenProps<RootTabsParamsList, T>
+export type RootStackScreenProps<T extends keyof RootStackParamList> =
+  StackScreenProps<RootStackParamList, T>
 
-export enum rootTabsRouteNames {
-  CreateKeysUX = 'CreateKeysUX',
+export type RootStackNavigationProp<T extends keyof RootStackParamList> =
+  NavigationProp<T>
+
+export enum rootStackRouteNames {
   Home = 'Home',
+  Send = 'Send',
+  Receive = 'Receive',
+  ReceiveBitcoin = 'ReceiveBitcoin',
+  Balances = 'Balances',
   Activity = 'Activity',
   ActivityDetails = 'ActivityDetails',
-  ScanQR = 'ScanQR',
-  Contacts = 'Contacts',
+  SignMessage = 'SignMessage',
+  SignTypedData = 'SignTypedData',
+  TransactionReceived = 'TransactionReceived',
+  ManuallyDeployScreen = 'ManuallyDeployScreen',
+  CreateKeysUX = 'CreateKeysUX',
+  ShowMnemonicScreen = 'ShowMnemonicScreen',
   WalletConnect = 'WalletConnect',
+  ScanQR = 'ScanQR',
+  ChangeLanguage = 'ChangeLanguage',
+  ManagePin = 'ManagePin',
+  CreatePin = 'CreatePin',
+  RNSManager = 'RNSManager',
+  SearchDomain = 'SearchDomain',
+  RequestDomain = 'RequestDomain',
+  BuyDomain = 'BuyDomain',
+  AliasBought = 'AliasBought',
+  RegisterDomain = 'RegisterDomain',
+  Contacts = 'Contacts',
   Settings = 'Settings',
-  Profile = 'Profile',
+  AccountsScreen = 'AccountsScreen',
+  SecurityConfigurationScreen = 'SecurityConfigurationScreen',
+  ProfileCreateScreen = 'ProfileCreateScreen',
+  ProfileDetailsScreen = 'ProfileDetailsScreen',
   ChangePinScreen = 'ChangePinScreen',
+  FeedbackScreen = 'FeedbackScreen',
 }
 
-export type RootTabsParamsList = {
-  [rootTabsRouteNames.CreateKeysUX]:
+export type RootStackParamList = {
+  [rootStackRouteNames.Home]: undefined
+  [rootStackRouteNames.Send]:
+    | undefined
+    | {
+        token?: string
+        to?: string
+        rnsResolver?: Resolver
+        displayTo?: string
+        contractAddress?: string
+      }
+  [rootStackRouteNames.Receive]: undefined
+  [rootStackRouteNames.ReceiveBitcoin]: {
+    network: BitcoinNetwork
+  }
+  [rootStackRouteNames.Balances]: undefined
+  [rootStackRouteNames.Activity]: undefined
+  [rootStackRouteNames.ActivityDetails]: ActivityMixedType
+  [rootStackRouteNames.SignMessage]: undefined
+  [rootStackRouteNames.SignTypedData]: undefined
+  [rootStackRouteNames.TransactionReceived]: undefined
+  [rootStackRouteNames.ManuallyDeployScreen]: undefined
+  [rootStackRouteNames.CreateKeysUX]:
     | NavigatorScreenParams<CreateKeysStackParamList>
     | undefined
-  [rootTabsRouteNames.Home]:
-    | NavigatorScreenParams<HomeStackParamsList>
-    | undefined
-  [rootTabsRouteNames.Activity]: undefined
-  [rootTabsRouteNames.ActivityDetails]: ActivityMixedType
-  [rootTabsRouteNames.ScanQR]: undefined
-  [rootTabsRouteNames.Contacts]:
-    | NavigatorScreenParams<ContactStackParamsList>
-    | undefined
-  [rootTabsRouteNames.WalletConnect]: undefined | { wcKey: string }
-  [rootTabsRouteNames.Settings]: undefined
-  [rootTabsRouteNames.Profile]:
-    | NavigatorScreenParams<ProfileStackParamsList>
-    | undefined
+  [rootStackRouteNames.ShowMnemonicScreen]: undefined
+  [rootStackRouteNames.WalletConnect]: undefined | { wcKey: string }
+  [rootStackRouteNames.ScanQR]: undefined
+  [rootStackRouteNames.ChangeLanguage]: undefined
+  [rootStackRouteNames.ManagePin]: undefined
+  [rootStackRouteNames.CreatePin]: undefined
+  [rootStackRouteNames.RNSManager]: undefined
+  [rootStackRouteNames.SearchDomain]: undefined
+  [rootStackRouteNames.RequestDomain]: {
+    alias: string
+    duration: number
+  }
+  [rootStackRouteNames.BuyDomain]: {
+    alias: string
+    domainSecret: string
+    duration: number
+  }
+  [rootStackRouteNames.AliasBought]: {
+    alias: string
+    tx: ContractTransaction
+  }
+  [rootStackRouteNames.RegisterDomain]: {
+    selectedDomain: string
+    years: number
+  }
+  [rootStackRouteNames.Contacts]: undefined
+  [rootStackRouteNames.Settings]: undefined
+  [rootStackRouteNames.AccountsScreen]: undefined
+  [rootStackRouteNames.SecurityConfigurationScreen]: undefined
+  [rootStackRouteNames.ProfileCreateScreen]: {
+    editProfile: boolean
+    profile?: IProfileStore
+  }
+  [rootStackRouteNames.ProfileDetailsScreen]: undefined
+  [rootStackRouteNames.ChangePinScreen]: undefined
+  [rootStackRouteNames.FeedbackScreen]: undefined
 }

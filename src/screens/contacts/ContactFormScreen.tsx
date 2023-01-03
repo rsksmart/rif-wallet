@@ -1,7 +1,7 @@
 import { CompositeScreenProps } from '@react-navigation/native'
 import {
-  rootTabsRouteNames,
-  RootTabsScreenProps,
+  rootStackRouteNames,
+  RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
 import { useState } from 'react'
 import {
@@ -14,9 +14,6 @@ import {
 } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
-
-import { getChainIdByType } from 'lib/utils'
-
 import { PrimaryButton } from 'components/button'
 import {
   contactsStackRouteNames,
@@ -25,17 +22,18 @@ import {
 import { AddressInput } from 'components/address'
 import { colors, grid } from 'src/styles'
 import { fonts } from 'src/styles/fonts'
+import { setOpacity } from '../home/tokenColor'
 import { Contact } from 'store/slices/contactsSlice/types'
 import { useAppDispatch } from 'store/storeUtils'
 import { addContact, editContact } from 'store/slices/contactsSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
-import { setOpacity } from '../home/tokenColor'
+import { getChainIdByType } from 'lib/utils'
 
 export type ContactFormScreenProps = CompositeScreenProps<
   ContactsStackScreenProps<contactsStackRouteNames.ContactForm>,
-  RootTabsScreenProps<rootTabsRouteNames.Contacts>
+  RootStackScreenProps<rootStackRouteNames.Contacts>
 >
 
 export const ContactFormScreen = ({

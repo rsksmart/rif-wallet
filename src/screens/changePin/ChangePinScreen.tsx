@@ -1,20 +1,19 @@
 import { useState, useRef } from 'react'
 import { TouchableOpacity, View, StyleSheet } from 'react-native'
 
-import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
+import {
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
 import { PinManager } from 'components/PinManager'
 import { Arrow } from 'components/icons'
 import { MediumText } from 'components/index'
 import { useAppDispatch } from 'store/storeUtils'
 import { setPinState } from 'store/slices/settingsSlice'
-import {
-  SettingsScreenProps,
-  settingsStackRouteNames,
-} from 'navigation/settingsNavigator/types'
 
 export const ChangePinScreen = ({
   navigation,
-}: SettingsScreenProps<settingsStackRouteNames.ChangePinScreen>) => {
+}: RootStackScreenProps<rootStackRouteNames.ChangePinScreen>) => {
   const dispatch = useAppDispatch()
   const [currentStep, setCurrentStep] = useState(1)
 
@@ -31,7 +30,7 @@ export const ChangePinScreen = ({
       isSubmitting.current = true
       try {
         dispatch(setPinState(pinSteps.current.pin))
-        navigation.navigate(rootTabsRouteNames.Home)
+        navigation.navigate(rootStackRouteNames.Home)
       } catch (error) {
         setPinError(
           'An error occurred while saving the new PIN. Please try again.',

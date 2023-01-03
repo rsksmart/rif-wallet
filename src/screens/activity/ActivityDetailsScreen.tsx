@@ -1,6 +1,6 @@
 import {
-  rootTabsRouteNames,
-  RootTabsScreenProps,
+  rootStackRouteNames,
+  RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
 import ActivityDetailsBitcoinContainer from './ActivityDetailsBitcoinContainer'
 import ActivityDetailsContainer from './ActivityDetailsContainer'
@@ -8,7 +8,7 @@ import ActivityDetailsContainer from './ActivityDetailsContainer'
 export const ActivityDetailsScreen = ({
   route,
   navigation,
-}: RootTabsScreenProps<rootTabsRouteNames.ActivityDetails>) => {
+}: RootStackScreenProps<rootStackRouteNames.ActivityDetails>) => {
   const transaction = route.params
   const onBackPress = (): void => {
     navigation.goBack()

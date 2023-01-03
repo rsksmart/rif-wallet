@@ -1,24 +1,18 @@
 import { useMemo } from 'react'
+import { RootStackScreenProps } from 'navigation/rootNavigator/types'
 import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5'
-
-import { version } from 'package.json'
+import { version } from '../../../package.json'
 import { getWalletSetting, SETTINGS } from '../../core/config'
 import { colors, spacing } from '../../styles'
-import { MediumText, RegularText, SemiBoldText } from 'components/index'
-import LockIcon from 'components/icons/LockIcon'
-import AccountsIcon from 'components/icons/AccountsIcon'
-import { homeStackRouteNames } from 'navigation/homeNavigator/types'
-import {
-  SettingsScreenProps,
-  settingsStackRouteNames,
-} from 'navigation/settingsNavigator/types'
-import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
+import { MediumText, RegularText, SemiBoldText } from '../../components'
+import LockIcon from '../../components/icons/LockIcon'
+import AccountsIcon from '../../components/icons/AccountsIcon'
 
 export const SettingsScreen = ({
   navigation,
-}: SettingsScreenProps<settingsStackRouteNames.SettingsScreen>) => {
+}: RootStackScreenProps<'Settings'>) => {
   const smartWalletFactoryAddress = useMemo(
     () => getWalletSetting(SETTINGS.SMART_WALLET_FACTORY_ADDRESS),
     [],
@@ -31,19 +25,14 @@ export const SettingsScreen = ({
     [],
   )
 
-  const goToAccountsScreen = () =>
-    navigation.navigate(settingsStackRouteNames.AccountsScreen)
+  const goToAccountsScreen = () => navigation.navigate('AccountsScreen')
 
   const goToSecurityConfiguration = () =>
-    navigation.navigate(settingsStackRouteNames.SecurityConfigurationScreen)
+    navigation.navigate('SecurityConfigurationScreen')
 
-  const goToDeploy = () =>
-    navigation.navigate(rootTabsRouteNames.Home, {
-      screen: homeStackRouteNames.ManuallyDeployScreen,
-    })
+  const goToDeploy = () => navigation.navigate('ManuallyDeployScreen')
 
-  const goToFeedbackScreen = () =>
-    navigation.navigate(settingsStackRouteNames.FeedbackScreen)
+  const goToFeedbackScreen = () => navigation.navigate('FeedbackScreen')
 
   return (
     <ScrollView style={styles.container}>

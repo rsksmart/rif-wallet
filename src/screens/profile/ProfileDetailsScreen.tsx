@@ -4,27 +4,25 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 import { AvatarIcon } from 'components/icons/AvatarIcon'
 import { MediumText } from 'components/index'
-import { useAppSelector } from 'store/storeUtils'
-import { selectProfile } from 'store/slices/profileSlice/selector'
-import { colors } from 'src/styles'
-import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import {
-  profileStackRouteNames,
-  ProfileStackScreenProps,
-} from 'navigation/profileNavigator/types'
+  rootStackRouteNames,
+  RootStackScreenProps,
+} from 'navigation/rootNavigator/types'
+import { selectProfile } from 'src/redux/slices/profileSlice/selector'
+import { colors } from 'src/styles'
+import { useAppSelector } from 'src/redux/storeUtils'
 
 export const ProfileDetailsScreen = ({
   navigation,
-}: ProfileStackScreenProps<profileStackRouteNames.ProfileDetailsScreen>) => {
+}: RootStackScreenProps<rootStackRouteNames.ProfileDetailsScreen>) => {
   const profile = useAppSelector(selectProfile)
   const fullAlias = `${profile?.alias}.rsk`
-
   return (
     <View style={styles.staticBackground}>
       <View style={styles.profileHeader}>
         <TouchableOpacity
           accessibilityLabel="home"
-          onPress={() => navigation.navigate(rootTabsRouteNames.Home)}>
+          onPress={() => navigation.navigate(rootStackRouteNames.Home)}>
           <View style={styles.backButton}>
             <MaterialIcon name="west" color="white" size={10} />
           </View>
@@ -33,7 +31,7 @@ export const ProfileDetailsScreen = ({
         <TouchableOpacity
           accessibilityLabel="profile"
           onPress={() =>
-            navigation.navigate(profileStackRouteNames.ProfileCreateScreen, {
+            navigation.navigate(rootStackRouteNames.ProfileCreateScreen, {
               editProfile: true,
             })
           }>
