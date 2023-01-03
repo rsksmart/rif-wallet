@@ -86,10 +86,7 @@ export const HomeScreen = ({
       case 'RECEIVE':
         return navigation.navigate(rootStackRouteNames.Receive)
       case 'FAUCET':
-        const address = wallet?.smartWallet.smartWalletContract.address
-        address &&
-          addBalance(toChecksumAddress(address, getChainIdByType(chainType)))
-        return
+        return addBalance()
     }
   }
 
@@ -109,23 +106,31 @@ export const HomeScreen = ({
     }
   }
 
-  const addBalance = (address: string) => {
-    const ramp = new RampSdk({
-      // for testnet:
-      // url: 'https://ri-widget-staging.firebaseapp.com/',
-      url: 'https://ri-widget-staging.web.app/',
+  const ramp = useMemo(
+    () =>
+      new RampSdk({
+        // for testnet:
+        url: 'https://ri-widget-staging.web.app/',
 
-      // for IOV:
-      swapAsset: 'RSK_RDOC',
-      // userAddress must be lowercase or checksummed correctly:
-      userAddress: address,
+        // for IOV:
+        swapAsset: 'RSK_RDOC',
+        // userAddress must be lowercase or checksummed correctly:
+        userAddress: wallet
+          ? toChecksumAddress(
+              wallet?.smartWalletAddress,
+              getChainIdByType(chainType),
+            )
+          : '',
 
-      // for the dapp:
-      hostAppName: 'RIF Wallet',
-      hostLogoUrl: 'https://rampnetwork.github.io/assets/misc/test-logo.png',
-    })
+        // for the dapp:
+        hostAppName: 'RIF Wallet',
+        hostLogoUrl: 'https://rampnetwork.github.io/assets/misc/test-logo.png',
+      }),
+    [wallet],
+  )
 
-    ramp.on('*', e => console.log(e))
+  const addBalance = () => {
+    ramp.on('*', console.log)
     ramp.show()
   }
 
