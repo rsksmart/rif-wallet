@@ -28,6 +28,7 @@ export const selectActiveWallet = ({ settings }: RootState) => ({
       ? settings.walletsIsDeployed[settings.selectedWallet]
       : null,
   chainType: settings.chainType,
+  chainId: settings.chainId,
   activeWalletIndex:
     settings.selectedWallet && settings.wallets
       ? Object.keys(settings.wallets).indexOf(settings.selectedWallet)

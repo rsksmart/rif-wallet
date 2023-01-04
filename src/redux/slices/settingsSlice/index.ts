@@ -134,8 +134,10 @@ const settingsSlice = createSlice({
     closeRequest: state => {
       state.requests = []
     },
-    setChainType: (state, { payload }: PayloadAction<ChainTypeEnum>) => {
-      state.chainType = payload
+    setChainId: (state, { payload }: PayloadAction<number>) => {
+      state.chainId = payload
+      state.chainType =
+        payload === 31 ? ChainTypeEnum.TESTNET : ChainTypeEnum.MAINNET
     },
     setPinState: (_, { payload }: PayloadAction<string>) => {
       savePin(payload)
@@ -223,7 +225,7 @@ export const {
   setKeysState,
   setPinState,
   setNewWallet,
-  setChainType,
+  setChainId,
   setWalletIsDeployed,
   removeKeysFromState,
   resetKeysAndPin,
