@@ -23,19 +23,8 @@ export const ScanQRScreen = ({
   const onCodeRead = (data: string) => {
     // Metamask QR
     const decodedString = decodeString(data)
-    if (
-      decodedString.address !== undefined &&
-      decodedString.network !== undefined &&
-      decodedString.network === 'ethereum'
-    ) {
-      navigation.navigate(rootStackRouteNames.Send, {
-        to: decodedString.address,
-      })
-    } else if (isBitcoinAddressValid(data)) {
-      navigation.navigate(rootStackRouteNames.Send, {
-        to: data,
-      })
-    } else if (data.startsWith('wc:')) {
+
+    if (data.startsWith('wc:')) {
       if (!isConnecting && wallet) {
         setIsConnecting(true)
         createSession(wallet, data)
@@ -45,6 +34,14 @@ export const ScanQRScreen = ({
           routes: [{ name: rootStackRouteNames.WalletConnect }],
         })
       }
+    } else if (decodedString.address !== undefined) {
+      navigation.navigate(rootStackRouteNames.Send, {
+        to: decodedString.address,
+      })
+    } else if (isBitcoinAddressValid(data)) {
+      navigation.navigate(rootStackRouteNames.Send, {
+        to: data,
+      })
     }
   }
 
