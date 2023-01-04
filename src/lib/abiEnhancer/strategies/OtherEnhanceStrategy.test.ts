@@ -39,7 +39,7 @@ describe('Other Enhance Strategy', () => {
       expect(result?.functionName).toBe('transfer')
       expect(result?.from).toBe(transactionRequest.from)
       expect(result?.to).toBe(testToken?.address)
-      expect(result?.functionParameters.length).toBeGreaterThan(0)
+      expect(result?.functionParameters?.length).toBeGreaterThan(0)
     }
   })
 
