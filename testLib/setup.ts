@@ -1,3 +1,4 @@
+import { rifRelayConfig } from 'src/core/setup'
 import { RIFWallet, OnRequest, Request } from '../src/lib/core'
 import { deploySmartWalletFactory } from './contracts'
 import { createNewTestWallet } from './utils'
@@ -9,13 +10,19 @@ export const setupTest = async (
   route: object
   rifWallet: RIFWallet
 }> => {
+  jest.mock('react-i18next', () => ({
+    useTranslation: () => ({ t: (key: string) => key }),
+  }))
+
   const smartWalletFactory = await deploySmartWalletFactory()
   const wallet = await createNewTestWallet(privateKey)
   const onRequest: OnRequest = (nextRequest: Request) => nextRequest.confirm()
+
   const rifWallet = await RIFWallet.create(
     wallet,
     smartWalletFactory.address,
     onRequest,
+    rifRelayConfig,
   )
 
   const deployTx = await rifWallet.smartWalletFactory.deploy()

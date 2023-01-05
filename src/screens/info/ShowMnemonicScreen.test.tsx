@@ -2,12 +2,10 @@ import { Provider } from 'react-redux'
 import { render } from '@testing-library/react-native'
 
 import { ShowMnemonicScreen, TestID } from './ShowMnemonicScreen'
-import { setupTest } from '../../../testLib/setup'
 import { Awaited, getTextFromTextNode } from '../../../testLib/utils'
 import { store } from 'store/index'
 
 const createTestInstance = async () => {
-  const { rifWallet } = await setupTest()
   const testMnemonic = 'MNEMONIC'
 
   const container = render(
@@ -16,7 +14,7 @@ const createTestInstance = async () => {
     </Provider>,
   )
 
-  return { container, rifWallet, testMnemonic }
+  return { container, testMnemonic }
 }
 
 // eslint-disable-next-line jest/no-disabled-tests

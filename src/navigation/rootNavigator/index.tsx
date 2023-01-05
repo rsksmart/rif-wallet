@@ -20,7 +20,7 @@ const InjectedScreens = {
   BalancesScreen: InjectSelectedWallet(Screens.BalancesScreen),
   ActivityScreen: InjectSelectedWallet(Screens.ActivityScreen),
   ActivityDetailsScreen: InjectSelectedWallet(Screens.ActivityDetailsScreen),
-  ManuallyDeployScreen: InjectSelectedWallet(Screens.ManuallyDeployScreen),
+  RelayDeployScreen: InjectSelectedWallet(Screens.RelayDeployScreen),
   WalletConnectScreen: InjectSelectedWallet(Screens.WalletConnectScreen),
   ScanQRScreen: InjectSelectedWallet(Screens.ScanQRScreen),
   SearchDomainScreen: InjectSelectedWallet(Screens.SearchDomainScreen),
@@ -118,8 +118,8 @@ export const RootNavigationComponent = ({ currentScreen }: Props) => {
           options={sharedOptions}
         />
         <RootStack.Screen
-          name={rootStackRouteNames.ManuallyDeployScreen}
-          component={InjectedScreens.ManuallyDeployScreen}
+          name={rootStackRouteNames.RelayDeployScreen}
+          component={InjectedScreens.RelayDeployScreen}
           options={sharedOptions}
         />
         <RootStack.Screen

@@ -6,6 +6,7 @@ import { AbiEnhancer } from '../lib/abiEnhancer/AbiEnhancer'
 import { getWalletSetting, SETTINGS } from './config'
 import { RifWalletServicesSocket } from '../lib/rifWalletServices/RifWalletServicesSocket'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
+import { RifRelayConfig } from 'src/lib/relay-sdk'
 
 export const networkType = getWalletSetting(
   SETTINGS.DEFAULT_CHAIN_TYPE,
@@ -33,10 +34,20 @@ export const rifWalletServicesSocket = new RifWalletServicesSocket(
 
 export const rnsResolver = Resolver.forRskTestnet({})
 
+export const rifRelayConfig: RifRelayConfig = {
+  relayVerifierAddress: getWalletSetting(SETTINGS.RELAY_VERIFIER_ADDRESS),
+  deployVerifierAddress: getWalletSetting(SETTINGS.DEPLOY_VERIFIER_ADDRESS),
+  relayServer: getWalletSetting(SETTINGS.RIF_RELAY_SERVER),
+  relayWorkerAddress: getWalletSetting(SETTINGS.RELAY_WORKER_ADDRESS),
+  relayHubAddress: getWalletSetting(SETTINGS.RELAY_HUB_ADDRESS),
+  feesReceiver: getWalletSetting(SETTINGS.FEES_RECEIVER),
+}
+
 export const createRIFWalletFactory =
   (onRequest: OnRequest) => (wallet: Wallet) =>
     RIFWallet.create(
       wallet.connect(jsonRpcProvider),
       smartWalletFactoryAddress,
       onRequest,
+      rifRelayConfig,
     ) // temp - using only testnet

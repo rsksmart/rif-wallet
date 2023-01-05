@@ -30,7 +30,7 @@ export const SettingsScreen = ({
   const goToSecurityConfiguration = () =>
     navigation.navigate('SecurityConfigurationScreen')
 
-  const goToDeploy = () => navigation.navigate('ManuallyDeployScreen')
+  const goToDeploy = () => navigation.navigate('RelayDeployScreen')
 
   const goToFeedbackScreen = () => navigation.navigate('FeedbackScreen')
 

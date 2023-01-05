@@ -8,6 +8,12 @@ export enum SETTINGS {
   EXPLORER_ADDRESS_URL_BTC = 'EXPLORER_ADDRESS_URL_BTC',
   RPC_URL = 'RPC_URL',
   SMART_WALLET_FACTORY_ADDRESS = 'SMART_WALLET_FACTORY_ADDRESS',
+  RIF_RELAY_SERVER = 'RIF_RELAY_SERVER',
+  RELAY_VERIFIER_ADDRESS = 'RELAY_VERIFIER_ADDRESS',
+  DEPLOY_VERIFIER_ADDRESS = 'DEPLOY_VERIFIER_ADDRESS',
+  RELAY_WORKER_ADDRESS = 'RELAY_WORKER_ADDRESS',
+  RELAY_HUB_ADDRESS = 'RELAY_HUB_ADDRESS',
+  FEES_RECEIVER = 'FEES_RECEIVER',
 }
 
 /**
@@ -18,26 +24,9 @@ export const getWalletSetting = (
   setting: SETTINGS,
   chainType: ChainTypeEnum = ChainTypeEnum.TESTNET,
 ): string => {
-  switch (setting) {
-    case SETTINGS.DEFAULT_CHAIN_TYPE:
-      return Config.DEFAULT_CHAIN_TYPE
-    case SETTINGS.RIF_WALLET_SERVICE_URL:
-      return Config.RIF_WALLET_SERVICE_URL
-    case SETTINGS.EXPLORER_ADDRESS_URL:
-      return chainType === ChainTypeEnum.TESTNET
-        ? Config.EXPLORER_ADDRESS_URL_TESTNET
-        : Config.EXPLORER_ADDRESS_URL_MAINNET
-    case SETTINGS.EXPLORER_ADDRESS_URL_BTC:
-      return chainType === ChainTypeEnum.TESTNET
-        ? Config.BTC_EXPLORER_ADDRESS_URL_TESTNET
-        : Config.BTC_EXPLORER_ADDRESS_URL_MAINNET
-    case SETTINGS.RPC_URL:
-      return chainType === ChainTypeEnum.TESTNET
-        ? Config.NETWORK_RPC_URL_TESTNET
-        : Config.NETWORK_RPC_URL_MAINNET
-    case SETTINGS.SMART_WALLET_FACTORY_ADDRESS:
-      return chainType === ChainTypeEnum.TESTNET
-        ? Config.NETWORK_SW_ADDRESS_TESTNET
-        : Config.NETWORK_SW_ADDRESS_MAINNET
+  if (Config[`${setting}_${chainType}`]) {
+    return Config[`${setting}_${chainType}`]
   }
+
+  return Config[setting]
 }
