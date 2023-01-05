@@ -48,5 +48,6 @@ export interface SettingsSlice {
   walletsIsDeployed: WalletsIsDeployed | null
   selectedWallet: string
   loading: boolean
+  chainId?: number
   chainType: ChainTypeEnum
 }

@@ -40,12 +40,11 @@ import {
   selectSettingsIsLoading,
   selectTopColor,
   selectWallets,
-  setChainType,
+  setChainId,
   unlockApp,
 } from 'store/slices/settingsSlice'
 import { hasKeys, hasPin } from 'storage/MainStorage'
 import { BitcoinProvider } from 'core/hooks/bitcoin/BitcoinContext'
-import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 
 export const navigationContainerRef =
   createNavigationContainerRef<RootStackParamList>()
@@ -93,11 +92,7 @@ export const Core = () => {
 
   const retrieveChainId = async (wallet: RIFWallet) => {
     const chainId = await wallet.getChainId()
-    dispatch(
-      setChainType(
-        chainId === 31 ? ChainTypeEnum.TESTNET : ChainTypeEnum.MAINNET,
-      ),
-    )
+    dispatch(setChainId(chainId))
   }
 
   useRifSockets({
