@@ -4,14 +4,16 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Clipboard from '@react-native-community/clipboard'
 
-import { QRCodeScanner } from '../QRCodeScanner'
-import { sharedAddressStyles as styles } from './sharedAddressStyles'
-import { colors } from 'src/styles'
-import { ContentPasteIcon, QRCodeIcon, DeleteIcon } from '../icons'
-import { isDomain } from './lib'
-import { rnsResolver } from 'core/setup'
 import { isBitcoinAddressValid } from 'lib/bitcoin/utils'
 import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
+
+import { colors } from 'src/styles'
+import { rnsResolver } from 'core/setup'
+
+import { QRCodeScanner } from '../QRCodeScanner'
+import { sharedAddressStyles as styles } from './sharedAddressStyles'
+import { ContentPasteIcon, QRCodeIcon, DeleteIcon } from '../icons'
+import { isDomain } from './lib'
 import { MediumText } from '../typography'
 
 interface AddressInputProps {

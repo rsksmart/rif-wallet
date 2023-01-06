@@ -1,18 +1,19 @@
 import { useContext, useState } from 'react'
 
 import { isBitcoinAddressValid } from 'lib/bitcoin/utils'
+import { decodeString } from 'lib/eip681/decodeString'
+
 import { useAppSelector } from 'src/redux/storeUtils'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator'
-
 import { QRCodeScanner } from 'components/QRCodeScanner'
-import { WalletConnectContext } from './WalletConnectContext'
-import { decodeString } from 'lib/eip681/decodeString'
 import { getWalletSetting, SETTINGS } from 'core/config'
 import { networkType } from 'core/setup'
+
+import { WalletConnectContext } from './WalletConnectContext'
 
 export const ScanQRScreen = ({
   navigation,
