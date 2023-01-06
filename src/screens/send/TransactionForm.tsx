@@ -11,7 +11,6 @@ import { RecentTransactions } from './RecentTransactions'
 import { SetAmountHOCComponent } from './SetAmountHOCComponent'
 import { MixedTokenAndNetworkType } from './types'
 import { useTokenSelectedTabs } from './useTokenSelectedTabs'
-import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 
 interface Interface {
   onConfirm: (
@@ -23,7 +22,7 @@ interface Interface {
   tokenPrices: Record<string, IPrice>
   chainId: number
   initialValues: {
-    asset?: ITokenWithoutLogo
+    asset?: MixedTokenAndNetworkType
     amount?: string
     recipient?: string
   }

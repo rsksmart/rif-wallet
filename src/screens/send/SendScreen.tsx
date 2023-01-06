@@ -98,7 +98,10 @@ export const SendScreen = ({
                 recipient: route.params?.to,
                 amount: '0',
                 asset: route.params?.contractAddress
-                  ? tokenBalances[route.params.contractAddress]
+                  ? assets.find(
+                      asset =>
+                        asset.contractAddress === route.params?.contractAddress,
+                    )
                   : tokenBalances[contractAddress],
               }}
               transactions={transactions}

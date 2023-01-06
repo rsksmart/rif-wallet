@@ -11,6 +11,8 @@ import {
 import { QRCodeScanner } from 'components/QRCodeScanner'
 import { WalletConnectContext } from './WalletConnectContext'
 import { decodeString } from 'lib/eip681/decodeString'
+import { getWalletSetting, SETTINGS } from 'core/config'
+import { networkType } from 'core/setup'
 
 export const ScanQRScreen = ({
   navigation,
@@ -39,8 +41,14 @@ export const ScanQRScreen = ({
         to: decodedString.address,
       })
     } else if (isBitcoinAddressValid(data)) {
+      // Default bitcoin token will be fetched from ENV
+      const defaultToken = getWalletSetting(
+        SETTINGS.QR_READER_BITCOIN_DEFAULT_NETWORK,
+        networkType,
+      )
       navigation.navigate(rootStackRouteNames.Send, {
         to: data,
+        contractAddress: defaultToken,
       })
     }
   }
