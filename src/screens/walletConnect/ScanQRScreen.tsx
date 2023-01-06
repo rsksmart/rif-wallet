@@ -37,7 +37,7 @@ export const ScanQRScreen = ({
         })
       }
     } else if (decodedString.address !== undefined) {
-      navigation.navigate(rootStackRouteNames.Send, {
+      navigation.replace(rootStackRouteNames.Send, {
         to: decodedString.address,
       })
     } else if (isBitcoinAddressValid(data)) {
@@ -46,7 +46,7 @@ export const ScanQRScreen = ({
         SETTINGS.QR_READER_BITCOIN_DEFAULT_NETWORK,
         networkType,
       )
-      navigation.navigate(rootStackRouteNames.Send, {
+      navigation.replace(rootStackRouteNames.Send, {
         to: data,
         contractAddress: defaultToken,
       })
