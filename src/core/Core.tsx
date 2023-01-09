@@ -41,7 +41,6 @@ import {
   hasPin as hasPinInStorage,
 } from 'storage/MainStorage'
 import { BitcoinProvider } from 'core/hooks/bitcoin/BitcoinContext'
-import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { getWalletSetting, SETTINGS } from './config'
 import axios from 'axios'
 import { RifWalletServicesAuth } from 'src/lib/rifWalletServices/RifWalletServicesAuth'
