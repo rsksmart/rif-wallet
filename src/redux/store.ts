@@ -29,6 +29,8 @@ export const createStore = (preloadedState = {}) =>
             REGISTER,
             'transactions/addNewTransactions',
           ],
+          ignoreState: true,
+          ignoreActions: true,
         },
       })
       if (__DEV__) {
