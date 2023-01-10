@@ -8,22 +8,22 @@ import { sharedColors } from 'shared/constants'
 
 interface AvatarIconBoxProps {
   text: string
-  ContainerViewProps?: ComponentProps<typeof View>
-  AvatarIconProps?: ComponentProps<typeof AvatarIcon>
-  TypographyProps?: ComponentProps<typeof Typography>
+  containerViewProps?: ComponentProps<typeof View>
+  avatarIconProps?: ComponentProps<typeof AvatarIcon>
+  typographyProps?: ComponentProps<typeof Typography>
 }
 export const AvatarIconBox = ({
   text,
-  ContainerViewProps,
-  AvatarIconProps,
-  TypographyProps,
+  containerViewProps,
+  avatarIconProps,
+  typographyProps,
 }: AvatarIconBoxProps) => (
-  <View style={styles.avatarBoxViewStyle} {...ContainerViewProps}>
-    <AvatarIcon value={text} size={80} {...AvatarIconProps} />
+  <View style={styles.avatarBoxViewStyle} {...containerViewProps}>
+    <AvatarIcon value={text} size={80} {...avatarIconProps} />
     <Typography
       type="h3"
       style={styles.domainTypographyTextStyle}
-      {...TypographyProps}>
+      {...typographyProps}>
       {text}
     </Typography>
   </View>

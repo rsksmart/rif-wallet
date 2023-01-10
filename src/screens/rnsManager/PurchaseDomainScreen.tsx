@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useCallback } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
@@ -58,7 +58,7 @@ export const PurchaseDomainScreen = ({
     })
   }, [navigation])
 
-  const registerDomain = async () => {
+  const registerDomain = useCallback(async () => {
     const domain = alias.split('.')[0]
     try {
       const response = await dispatch(
@@ -72,7 +72,7 @@ export const PurchaseDomainScreen = ({
     } catch (e) {
       // @todo error handling
     }
-  }
+  }, [alias, dispatch, rnsProcessor, navigation])
 
   return (
     <ScrollView style={rnsManagerStyles.scrollContainer}>

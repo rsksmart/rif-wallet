@@ -83,7 +83,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
 
   const rnsProcessor = useMemo(() => new RnsProcessor({ wallet }), [wallet])
 
-  const onSubmit = async () => {
+  const onSubmit = useCallback(async () => {
     setError('')
     setCurrentStatus('')
     try {
@@ -114,7 +114,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
     } finally {
       setCurrentStatus('')
     }
-  }
+  }, [dispatch, domainToLookUp, rnsProcessor, selectedYears, t])
 
   const handleDomainAvailable = useCallback(
     async (domain: string, valid: boolean) => {
