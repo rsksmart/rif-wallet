@@ -7,12 +7,6 @@ module.exports = {
   ],
   plugins: [
     [
-      'react-native-reanimated/plugin',
-      {
-        globals: ['__scanCodes'],
-      },
-    ],
-    [
       '@babel/plugin-transform-react-jsx',
       {
         runtime: 'automatic',
@@ -34,6 +28,12 @@ module.exports = {
           core: './src/core',
           testLib: './testLib',
         },
+      },
+    ],
+    [
+      'react-native-reanimated/plugin',
+      {
+        globals: ['__scanCodes'],
       },
     ],
   ],

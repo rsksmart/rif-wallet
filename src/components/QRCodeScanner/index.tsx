@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   ActivityIndicator,
   Linking,
@@ -7,11 +7,19 @@ import {
   View,
 } from 'react-native'
 import BarcodeMask from 'react-native-barcode-mask'
-import { Camera, useCameraDevices } from 'react-native-vision-camera'
-import { useScanBarcodes, BarcodeFormat } from 'vision-camera-code-scanner'
+import {
+  Camera,
+  useCameraDevices,
+  useFrameProcessor,
+} from 'react-native-vision-camera'
+import {
+  BarcodeFormat,
+  Barcode,
+  scanBarcodes,
+} from 'vision-camera-code-scanner'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { colors } from '../../styles'
-
+import { colors } from 'src/styles'
+import { runOnJS } from 'react-native-reanimated'
 interface QRCodeScannerProps {
   onClose: () => void
   onCodeRead: (data: string) => void
@@ -19,10 +27,13 @@ interface QRCodeScannerProps {
 
 export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
   const device = useCameraDevices('wide-angle-camera').back
-  const [frameProcessor, barcodes] = useScanBarcodes([BarcodeFormat.QR_CODE], {
-    checkInverted: true,
-  })
-
+  const [barcodes, setBarcodes] = useState<Barcode[]>([])
+  // Do not use the hook that comes with the camera as it'll not work
+  const frameProcessor = useFrameProcessor(frame => {
+    'worklet'
+    const detectedBarcodes = scanBarcodes(frame, [BarcodeFormat.QR_CODE])
+    runOnJS(setBarcodes)(detectedBarcodes)
+  }, [])
   const permissionHandler = useCallback(async () => {
     const cameraPermission = await Camera.getCameraPermissionStatus()
     if (cameraPermission === 'not-determined') {

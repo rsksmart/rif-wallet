@@ -1,17 +1,18 @@
 import { toChecksumAddress } from '@rsksmart/rsk-utils'
 import { useState, useCallback } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+
 import { Tabs } from 'src/components'
 import { AddressInputSelector } from 'components/address/AddressInputSelector'
 import { TransferButton } from 'components/button/TransferButton'
 import { colors, grid } from 'src/styles'
 import { IActivityTransaction, IPrice } from 'src/subscriptions/types'
+
 import { AssetChooser } from './AssetChooser'
 import { RecentTransactions } from './RecentTransactions'
 import { SetAmountHOCComponent } from './SetAmountHOCComponent'
 import { MixedTokenAndNetworkType } from './types'
 import { useTokenSelectedTabs } from './useTokenSelectedTabs'
-import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 
 interface Interface {
   onConfirm: (
@@ -23,7 +24,7 @@ interface Interface {
   tokenPrices: Record<string, IPrice>
   chainId: number
   initialValues: {
-    asset?: ITokenWithoutLogo
+    asset?: MixedTokenAndNetworkType
     amount?: string
     recipient?: string
   }
