@@ -39,7 +39,7 @@ export const transfer = ({
 
   // handle both ERC20 tokens and the native token (gas)
   const transferMethod =
-    token.symbol === 'TRBTC'
+    token.symbol === 'RBTC'
       ? makeRBTCToken(wallet, chainId)
       : convertToERC20Token(token, {
           signer: wallet,

@@ -27,6 +27,7 @@ import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
 import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
+import { BigNumber } from 'ethers'
 
 export const SendScreen = ({
   route,
@@ -59,7 +60,7 @@ export const SendScreen = ({
 
   const onExecuteTransfer = (
     token: ITokenWithBalance | BitcoinNetwork,
-    amount: string,
+    amount: BigNumber,
     to: string,
   ) => {
     executePayment({
