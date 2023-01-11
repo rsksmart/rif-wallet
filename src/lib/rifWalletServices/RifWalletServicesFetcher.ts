@@ -58,6 +58,7 @@ export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
     smartAddress: string,
     prev?: string | null,
     next?: string | null,
+    blockNumber?: string | null,
   ) => {
     let transactionsUrl = `${this.uri}/address/${smartAddress}/transactions?limit=${RESULTS_LIMIT}`
 
@@ -67,6 +68,9 @@ export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
       transactionsUrl = `${transactionsUrl}&next=${next}`
     }
 
+    if (blockNumber !== null) {
+      transactionsUrl = `${transactionsUrl}&blockNumber=${blockNumber}`
+    }
     return fetch(transactionsUrl).then(response => response.json())
   }
 
