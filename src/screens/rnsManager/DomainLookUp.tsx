@@ -97,7 +97,7 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
 
     if (!available) {
       const ownerAddress = await rskRegistrar.ownerOf(domainName)
-      const currentWallet = wallet.address
+      const currentWallet = wallet.smartWallet.smartWalletAddress
       if (currentWallet === ownerAddress) {
         setDomainAvailability(DomainStatus.OWNED)
         onDomainOwned(true)

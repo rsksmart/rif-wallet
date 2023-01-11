@@ -62,7 +62,7 @@ export const BuyDomainScreen = ({ wallet, navigation, route }: Props) => {
       if (domainPrice) {
         const tx = await rskRegistrar.register(
           domain,
-          wallet.smartWallet.address,
+          wallet.smartWallet.smartWalletAddress,
           domainSecret,
           durationToRegister,
           domainPrice,

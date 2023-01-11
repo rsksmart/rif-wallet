@@ -47,7 +47,7 @@ export function useAliasRegistration(wallet: RIFWallet) {
   ): Promise<IProfileRegistrationStore> => {
     const response = await rskRegistrar.commitToRegister(
       alias,
-      wallet.smartWallet.address,
+      wallet.smartWallet.smartWalletAddress,
     )
 
     saveAliasRegistration({
