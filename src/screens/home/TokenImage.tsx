@@ -36,6 +36,7 @@ export const TokenImage: React.FC<{
 
 const getIconSource = (symbol: string): ImageRequireSource | undefined => {
   switch (symbol.toUpperCase()) {
+    case 'RBTC':
     case 'TRBTC':
       return require('../../images/RBTC-logo.png')
     case 'RIF':
