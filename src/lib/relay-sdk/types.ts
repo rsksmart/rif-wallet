@@ -112,7 +112,22 @@ export interface RifRelayConfig {
   relayVerifierAddress: Address
   deployVerifierAddress: Address
   relayServer: string
+  // relayWorkerAddress: Address
+  // relayHubAddress: Address
+  // feesReceiver: Address
+}
+
+/**
+ * The response from the server when calling /getaddr
+ */
+export interface ServerConfig {
   relayWorkerAddress: Address
+  relayManagerAddress: Address
   relayHubAddress: Address
+  minGasPrice: string
+  chainId: string
+  networkId: string
+  ready: boolean
+  version: string
   feesReceiver: Address
 }
