@@ -28,7 +28,6 @@ import {
 import { SmartWalletFactory } from '../core/SmartWalletFactory'
 
 export class RIFRelaySDK {
-  chainId: number
   sdkConfig: RifRelayConfig
   serverConfig: ServerConfig | null
 
@@ -41,7 +40,6 @@ export class RIFRelaySDK {
   constructor(
     smartWallet: SmartWallet,
     smartWalletFactory: SmartWalletFactory,
-    chainId: number,
     eoaAddress: string,
     sdkConfig: RifRelayConfig,
   ) {
@@ -53,7 +51,6 @@ export class RIFRelaySDK {
     this.provider = smartWallet.signer.provider
     this.smartWallet = smartWallet
     this.smartWalletFactory = smartWalletFactory
-    this.chainId = chainId
     this.sdkConfig = sdkConfig
 
     this.smartWalletAddress = smartWallet.smartWalletAddress
@@ -68,12 +65,10 @@ export class RIFRelaySDK {
     rifRelayConfig: RifRelayConfig,
   ) {
     const eoaAddress = await smartWallet.signer.getAddress()
-    const chainId = await smartWallet.signer.getChainId()
 
     return new RIFRelaySDK(
       smartWallet,
       smartWalletFactory,
-      chainId,
       eoaAddress,
       rifRelayConfig,
     )
@@ -138,7 +133,7 @@ export class RIFRelaySDK {
       isDeployRequest
         ? this.smartWalletFactory.address
         : this.smartWalletAddress,
-      this.chainId,
+      parseInt(this.serverConfig!.chainId, 10),
     )
 
     const types = dataTypeFields(isDeployRequest)
@@ -216,7 +211,6 @@ export class RIFRelaySDK {
     }
 
     const deployRequest = await this.createDeployRequest(payment)
-
     const signature = await this.signRelayRequest(deployRequest, true)
 
     return this.sendRequestToRelay(deployRequest, signature).then(
