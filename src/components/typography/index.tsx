@@ -7,12 +7,6 @@ interface Props {
   style?: StyleProp<TextStyle>
 }
 
-export const Header2 = ({ children, testID }: Props) => (
-  <Text style={styles.header2} testID={testID}>
-    {children}
-  </Text>
-)
-
 export const Paragraph = ({ children, testID, style }: Props) => (
   <Text style={[styles.paragraph, style]} testID={testID}>
     {children}
@@ -24,10 +18,6 @@ export { default as MediumText } from './MediumText'
 export { default as SemiBoldText } from './SemiBoldText'
 
 const styles = StyleSheet.create({
-  header2: {
-    fontSize: 36,
-    marginBottom: 15,
-  },
   paragraph: {
     fontSize: 18,
     marginTop: 10,
