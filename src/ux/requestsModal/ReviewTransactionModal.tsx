@@ -76,6 +76,11 @@ const ReviewTransactionModal = ({
     closeModal()
   }
 
+  const feeEstimateReady = txCostInRif.toString() !== '0'
+  const rifFee = feeEstimateReady
+    ? `${balanceToDisplay(txCostInRif, 18, 0)} tRIF`
+    : 'estimating fee...'
+
   return isLoaded ? (
     <ScrollView>
       <View>
@@ -133,13 +138,7 @@ const ReviewTransactionModal = ({
         )}
       </View>
 
-      {txCostInRif && (
-        <ReadOnlyField
-          label="Fee in tRIF"
-          value={`${balanceToDisplay(txCostInRif, 18, 0)} tRIF`}
-          testID="tRIF.fee"
-        />
-      )}
+      <ReadOnlyField label="Fee in tRIF" value={rifFee} testID="tRIF.fee" />
 
       {error && (
         <View style={sharedStyles.row}>
@@ -159,7 +158,6 @@ const ReviewTransactionModal = ({
             title={t('reject')}
             testID="Cancel.Button"
             accessibilityLabel="cancel"
-            disabled={!isLoaded}
           />
         </View>
         <View style={sharedStyles.column}>
@@ -168,7 +166,7 @@ const ReviewTransactionModal = ({
             title={t('sign')}
             testID="Confirm.Button"
             accessibilityLabel="confirm"
-            disabled={!isLoaded}
+            disabled={!feeEstimateReady}
           />
         </View>
       </View>

@@ -271,7 +271,7 @@ export class RIFRelaySDK {
   estimateTransactionCost = async (
     tx: TransactionRequest,
     tokenContract: Address,
-  ) => {
+  ): Promise<BigNumber> => {
     if (Object.is(this.serverConfig, null)) {
       await this.getServerConfig()
     }
@@ -286,9 +286,8 @@ export class RIFRelaySDK {
 
     return await axios
       .post(`${this.sdkConfig.relayServer}/estimate`, request)
-      .then(
-        (response: AxiosResponse<ServerEstimate>) =>
-          response.data.requiredTokenAmount,
+      .then((response: AxiosResponse<ServerEstimate>) =>
+        BigNumber.from(response.data.requiredTokenAmount),
       )
   }
 

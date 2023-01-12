@@ -128,3 +128,11 @@ export interface ServerConfig {
   version: string
   feesReceiver: Address
 }
+
+export interface ServerEstimate {
+  estimation: IntString
+  exchangeRate: IntString
+  gasPrice: IntString
+  requiredNativeAmount: IntString
+  requiredTokenAmount: IntString
+}
