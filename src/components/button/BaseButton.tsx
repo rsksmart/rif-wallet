@@ -30,6 +30,7 @@ const BaseButton = ({
 
 const styles = StyleSheet.create({
   container: {
+    width: '100%',
     borderRadius: 25,
     paddingVertical: 15,
     paddingHorizontal: 20,
