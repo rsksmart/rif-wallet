@@ -36,7 +36,6 @@ const contactsSlice = createSlice({
     deleteContactById: (state, { payload }: PayloadAction<string>) => {
       delete state.contacts[payload]
       saveContacts(state.contacts)
-
       return state
     },
     deleteContacts: () => {
