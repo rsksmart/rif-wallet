@@ -46,8 +46,8 @@ const ReviewTransactionModal = ({
   const [txCostInRif, setTxCostInRif] = useState<BigNumber>(BigNumber.from(0))
 
   useEffect(() => {
-    wallet.rifRelaySdk.estimateTransactionCost().then(setTxCostInRif)
-  }, [wallet.rifRelaySdk])
+    wallet.rifRelaySdk.estimateTransactionCost(txRequest).then(setTxCostInRif)
+  }, [request, txRequest, wallet.rifRelaySdk])
 
   const confirmTransaction = async () => {
     const confirmObject: OverriddableTransactionOptions = {

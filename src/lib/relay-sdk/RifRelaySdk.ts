@@ -13,12 +13,15 @@ import {
   DeployRequest,
   RifRelayConfig,
   ServerConfig,
+  ServerEstimate,
+  Address,
 } from './types'
 import {
   dataTypeFields,
   getDomainSeparator,
   INTERNAL_TRANSACTION_ESTIMATE_CORRECTION,
   MAX_RELAY_NONCE_GAP,
+  RIF_TOKEN_ADDRESS_TESTNET,
   validUntilTime,
   ZERO_ADDRESS,
 } from './helpers'
@@ -119,7 +122,7 @@ export class RIFRelaySDK {
       },
       relayData: {
         gasPrice: gasPrice.toString(),
-        feesReceiver: this.serverConfig.feesReceiver,
+        feesReceiver: this.serverConfig!.feesReceiver,
         callForwarder: this.smartWalletAddress,
         callVerifier: this.sdkConfig.relayVerifierAddress,
       },
@@ -222,51 +225,78 @@ export class RIFRelaySDK {
     )
   }
 
+  private prepareDataForServer = (
+    request: RelayRequest | DeployRequest,
+    signature: string,
+  ) => {
+    console.log('preparing the request')
+    return this.provider
+      .getTransactionCount(this.serverConfig!.relayWorkerAddress)
+      .then((relayMaxNonce: number) => {
+        const metadata = {
+          relayHubAddress: this.serverConfig!.relayHubAddress,
+          relayMaxNonce: relayMaxNonce + MAX_RELAY_NONCE_GAP,
+          signature,
+        }
+
+        const relayRequest = {
+          ...request,
+          request: {
+            ...request.request,
+            validUntilTime: request.request.validUntilTime.toString(),
+          },
+        }
+
+        return { metadata, relayRequest }
+      })
+  }
+
   private sendRequestToRelay = (
     request: RelayRequest | DeployRequest,
     signature: string,
   ) =>
     new Promise<string>((resolve, reject) =>
-      this.provider
-        .getTransactionCount(this.serverConfig!.relayWorkerAddress)
-        .then((relayMaxNonce: number) => {
-          const metadata = {
-            relayHubAddress: this.serverConfig!.relayHubAddress,
-            relayMaxNonce: relayMaxNonce + MAX_RELAY_NONCE_GAP,
-            signature,
-          }
+      this.prepareDataForServer(request, signature).then(relayRequest =>
+        axios
+          .post(`${this.sdkConfig.relayServer}/relay`, relayRequest)
+          .then((response: AxiosResponse) => {
+            if (response.data.error) {
+              return reject(response.data.error)
+            }
 
-          const modifyType = {
-            ...request,
-            request: {
-              ...request.request,
-              validUntilTime: request.request.validUntilTime.toString(),
-            },
-          }
-
-          return axios
-            .post(`${this.sdkConfig.relayServer}/relay`, {
-              relayRequest: modifyType,
-              metadata,
-            })
-            .then((response: AxiosResponse) => {
-              if (response.data.error) {
-                return reject(response.data.error)
-              }
-
-              // if okay...
-              resolve(response.data.transactionHash)
-            })
-            .catch(reject)
-        }),
+            // if okay...
+            return resolve(response.data.transactionHash)
+          })
+          .catch(reject),
+      ),
     )
 
-  // @todo: We will get this value from the RIF relay server, but for now, we will overpay
-  // to ensure transaction goes through:
-  estimateTransactionCost = () => Promise.resolve(BigNumber.from(0))
+  estimateTransactionCost = async (tx: TransactionRequest) => {
+    if (Object.is(this.serverConfig, null)) {
+      await this.getServerConfig()
+    }
+
+    const mockPayment = {
+      tokenContract: RIF_TOKEN_ADDRESS_TESTNET,
+      tokenAmount: BigNumber.from(0),
+    }
+    const relayRequest = await this.createRelayRequest(tx, mockPayment)
+    const signature = await this.signRelayRequest(relayRequest, false)
+    const request = await this.prepareDataForServer(relayRequest, signature)
+
+    return await axios
+      .post(`${this.sdkConfig.relayServer}/estimate`, request)
+      .then(
+        (response: AxiosResponse<ServerEstimate>) =>
+          response.data.requiredTokenAmount,
+      )
+  }
 
   // the cost to send the token payment from the smartwallet to the fee collector:
-  estimateTokenTransferCost = (tokenAddress: string, feeAmount: BigNumber) => {
+  private estimateTokenTransferCost = async (
+    tokenAddress: string,
+    feeAmount: BigNumber,
+  ) => {
     const feesReceiver = this.serverConfig!.feesReceiver.replace('0x', '')
     const feeHex = feeAmount.toHexString().replace('0x', '')
     const amount = String(feeHex).padStart(64 - feeHex.length, '0')
