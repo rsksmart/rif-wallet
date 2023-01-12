@@ -45,16 +45,20 @@ const ReviewTransactionModal = ({
   const [error, setError] = useState<string | null>(null)
   const [txCostInRif, setTxCostInRif] = useState<BigNumber>(BigNumber.from(0))
 
+  const tokenContract = RIF_TOKEN_ADDRESS_TESTNET
+
   useEffect(() => {
-    wallet.rifRelaySdk.estimateTransactionCost(txRequest).then(setTxCostInRif)
-  }, [request, txRequest, wallet.rifRelaySdk])
+    wallet.rifRelaySdk
+      .estimateTransactionCost(txRequest, tokenContract)
+      .then(setTxCostInRif)
+  }, [request, txRequest, wallet.rifRelaySdk, tokenContract])
 
   const confirmTransaction = async () => {
     const confirmObject: OverriddableTransactionOptions = {
       gasPrice: BigNumber.from(enhancedTransactionRequest.gasPrice),
       gasLimit: BigNumber.from(enhancedTransactionRequest.gasLimit),
       tokenPayment: {
-        tokenContract: RIF_TOKEN_ADDRESS_TESTNET,
+        tokenContract,
         tokenAmount: txCostInRif,
       },
     }

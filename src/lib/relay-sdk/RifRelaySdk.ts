@@ -21,7 +21,6 @@ import {
   getDomainSeparator,
   INTERNAL_TRANSACTION_ESTIMATE_CORRECTION,
   MAX_RELAY_NONCE_GAP,
-  RIF_TOKEN_ADDRESS_TESTNET,
   validUntilTime,
   ZERO_ADDRESS,
 } from './helpers'
@@ -228,9 +227,8 @@ export class RIFRelaySDK {
   private prepareDataForServer = (
     request: RelayRequest | DeployRequest,
     signature: string,
-  ) => {
-    console.log('preparing the request')
-    return this.provider
+  ) =>
+    this.provider
       .getTransactionCount(this.serverConfig!.relayWorkerAddress)
       .then((relayMaxNonce: number) => {
         const metadata = {
@@ -249,7 +247,6 @@ export class RIFRelaySDK {
 
         return { metadata, relayRequest }
       })
-  }
 
   private sendRequestToRelay = (
     request: RelayRequest | DeployRequest,
@@ -271,16 +268,19 @@ export class RIFRelaySDK {
       ),
     )
 
-  estimateTransactionCost = async (tx: TransactionRequest) => {
+  estimateTransactionCost = async (
+    tx: TransactionRequest,
+    tokenContract: Address,
+  ) => {
     if (Object.is(this.serverConfig, null)) {
       await this.getServerConfig()
     }
 
-    const mockPayment = {
-      tokenContract: RIF_TOKEN_ADDRESS_TESTNET,
+    const payment = {
+      tokenContract,
       tokenAmount: BigNumber.from(0),
     }
-    const relayRequest = await this.createRelayRequest(tx, mockPayment)
+    const relayRequest = await this.createRelayRequest(tx, payment)
     const signature = await this.signRelayRequest(relayRequest, false)
     const request = await this.prepareDataForServer(relayRequest, signature)
 
