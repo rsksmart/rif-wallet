@@ -24,6 +24,7 @@ import {
   validUntilTime,
   ZERO_ADDRESS,
 } from './helpers'
+import ERC20Abi from './erc20abi.json'
 
 import { SmartWalletFactory } from '../core/SmartWalletFactory'
 
@@ -287,18 +288,17 @@ export class RIFRelaySDK {
 
   // the cost to send the token payment from the smartwallet to the fee collector:
   private estimateTokenTransferCost = async (
-    tokenAddress: string,
+    tokenAddress: Address,
     feeAmount: BigNumber,
-  ) => {
-    const feesReceiver = this.serverConfig!.feesReceiver.replace('0x', '')
-    const feeHex = feeAmount.toHexString().replace('0x', '')
-    const amount = String(feeHex).padStart(64 - feeHex.length, '0')
+  ): Promise<string> => {
+    const erc20 = new ethers.Contract(
+      tokenAddress,
+      ERC20Abi,
+      this.smartWallet.signer,
+    )
 
-    return this.smartWallet.signer
-      .estimateGas({
-        to: tokenAddress.toLowerCase(),
-        data: `0xa9059cbb000000000000000000000000${feesReceiver}${amount}`,
-      })
-      .then((estGas: BigNumber) => estGas.toString())
+    return erc20.estimateGas
+      .transfer(this.serverConfig!.feesReceiver, feeAmount)
+      .then((est: BigNumber) => est.toString())
   }
 }

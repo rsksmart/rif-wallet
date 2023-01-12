@@ -104,7 +104,7 @@ export interface DeployRequest {
 }
 
 export interface RelayPayment {
-  tokenContract: string
+  tokenContract: Address
   tokenAmount: BigNumber
 }
 
