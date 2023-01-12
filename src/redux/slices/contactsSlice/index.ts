@@ -34,6 +34,9 @@ const contactsSlice = createSlice({
       saveContacts(state.contacts)
       return state
     },
+    deleteContacts: () => {
+      return initialState
+    },
     setSelectedContactById: (
       state,
       { payload }: PayloadAction<string | null>,
@@ -54,6 +57,7 @@ export const {
   addContact,
   setSelectedContactById,
   deleteContactById,
+  deleteContacts,
   editContact,
 } = contactsSlice.actions
 
