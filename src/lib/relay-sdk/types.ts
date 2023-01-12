@@ -112,9 +112,6 @@ export interface RifRelayConfig {
   relayVerifierAddress: Address
   deployVerifierAddress: Address
   relayServer: string
-  // relayWorkerAddress: Address
-  // relayHubAddress: Address
-  // feesReceiver: Address
 }
 
 /**
