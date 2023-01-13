@@ -18,12 +18,14 @@ interface DomainLookUpProps {
   onChangeText: (newValue: string) => void
   wallet: RIFWallet
   onDomainAvailable: (domain: string, valid: boolean) => void
+  onDomainOwned: (owned: boolean) => void
 }
 
 enum DomainStatus {
   AVAILABLE = 'available',
   TAKEN = 'taken',
   NO_VALID = 'no valid',
+  OWNED = 'owned',
   NONE = '',
 }
 
@@ -43,6 +45,7 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
   onChangeText,
   wallet,
   onDomainAvailable,
+  onDomainOwned,
 }) => {
   const rskRegistrar = new RSKRegistrar(
     addresses.rskOwnerAddress,
@@ -92,10 +95,20 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
 
     const available = await rskRegistrar.available(domainName)
 
-    setDomainAvailability(
-      available ? DomainStatus.AVAILABLE : DomainStatus.TAKEN,
-    )
-    onDomainAvailable(domainName, Boolean(available))
+    if (!available) {
+      const ownerAddress = await rskRegistrar.ownerOf(domainName)
+      const currentWallet = wallet.smartWallet.smartWalletAddress
+      if (currentWallet === ownerAddress) {
+        setDomainAvailability(DomainStatus.OWNED)
+        onDomainOwned(true)
+      } else {
+        setDomainAvailability(DomainStatus.TAKEN)
+      }
+    } else {
+      onDomainOwned(false)
+      setDomainAvailability(DomainStatus.AVAILABLE)
+      onDomainAvailable(domainName, Boolean(available))
+    }
   }
 
   return (
@@ -110,7 +123,8 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
           suffix=".rsk"
           status={status}
         />
-        {domainAvailability === DomainStatus.AVAILABLE && (
+        {(domainAvailability === DomainStatus.AVAILABLE ||
+          domainAvailability === DomainStatus.OWNED) && (
           <MediumText style={styles.availableLabel}>
             {domainAvailability}
           </MediumText>

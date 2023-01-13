@@ -94,10 +94,6 @@ export type RootStackParamList = {
     alias: string
     tx: ContractTransaction
   }
-  [rootStackRouteNames.RegisterDomain]: {
-    selectedDomain: string
-    years: number
-  }
   [rootStackRouteNames.Contacts]: undefined
   [rootStackRouteNames.Settings]: undefined
   [rootStackRouteNames.AccountsScreen]: undefined
