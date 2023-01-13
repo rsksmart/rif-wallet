@@ -33,7 +33,7 @@ export const useOnSocketChangeEmitted = ({
           dispatch(setUsdPrices(payload))
           break
         case 'newTransaction':
-          onNewTransactionEventEmitted(payload.originTransaction)
+          onNewTransactionEventEmitted(payload)
           break
         case 'newTransactions':
           dispatch(addNewTransactions(payload))

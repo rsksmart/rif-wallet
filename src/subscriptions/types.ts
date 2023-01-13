@@ -36,7 +36,7 @@ export interface NewPriceAction {
 
 export interface NewTransactionAction {
   type: 'newTransaction'
-  payload: IActivityTransaction
+  payload: IApiTransaction
 }
 
 export interface NewTokenTransferAction {
