@@ -36,8 +36,14 @@ interface NetworksObject {
  */
 
 const keys = getKeys()
-const { kms } = KeyManagementSystem.fromSerialized(keys)
-const BIP39Instance = new BIP39(kms.mnemonic)
+let mnemonic: string | null = null
+
+if (keys) {
+  const { kms } = KeyManagementSystem.fromSerialized(keys)
+  mnemonic = kms.mnemonic
+}
+
+const BIP39Instance = mnemonic ? new BIP39(mnemonic) : null
 
 export const useBitcoinCore = (): UseBitcoinCoreResult => {
   const dispatch = useAppDispatch()
@@ -78,7 +84,7 @@ export const useBitcoinCore = (): UseBitcoinCoreResult => {
 
   const transformStoredNetworks = useCallback(
     (values: StoredBitcoinNetworkValue[]) => {
-      if (values.length < 1) {
+      if (values.length < 1 || !BIP39Instance) {
         onNoNetworksPresent()
         return null
       }
