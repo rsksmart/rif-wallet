@@ -8,7 +8,9 @@ interface CustomTextType {
 export interface TextType {
   children: ReactNode
   style?: TextStyle
+  accessibilityLabel?: string
 }
+
 export const CustomText = ({
   font,
   children,
