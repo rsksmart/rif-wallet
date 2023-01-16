@@ -1,6 +1,7 @@
 import { StyleSheet, View, ScrollView } from 'react-native'
-import { CopyComponent, Header2, Paragraph } from '../../components'
 import { Trans } from 'react-i18next'
+
+import { CopyComponent, MediumText, RegularText } from '../../components'
 import { useAppSelector } from 'store/storeUtils'
 import { selectKMS } from 'store/slices/settingsSlice'
 export enum TestID {
@@ -13,17 +14,17 @@ export const ShowMnemonicScreen = () => {
   return (
     <ScrollView>
       <View style={styles.sectionCentered}>
-        <Paragraph>
+        <RegularText>
           <Trans>
             With your master key (seed phrase) you are able to create as many
             wallets as you need.
           </Trans>
-        </Paragraph>
+        </RegularText>
       </View>
       <View style={styles.section}>
-        <Header2>
+        <MediumText>
           <Trans>Master key</Trans>
-        </Header2>
+        </MediumText>
         <CopyComponent testID={TestID.Mnemonic} value={kms?.mnemonic || ''} />
       </View>
     </ScrollView>
