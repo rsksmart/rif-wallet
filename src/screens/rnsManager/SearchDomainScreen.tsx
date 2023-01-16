@@ -1,13 +1,13 @@
 import { useState, useCallback } from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
-import { PrimaryButton } from 'components/button/PrimaryButton'
+
 import { colors } from 'src/styles'
 
 import { rnsManagerStyles } from './rnsManagerStyles'
 
-import { MediumText } from '../../components'
+import { PrimaryButton } from 'components/button/PrimaryButton'
+import { MediumText } from 'components/index'
 import { AvatarIcon } from 'components/icons/AvatarIcon'
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 
@@ -16,7 +16,7 @@ import {
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
 
-import DomainLookUp from '../../screens/rnsManager/DomainLookUp'
+import DomainLookUp from 'screens/rnsManager/DomainLookUp'
 import { ScreenWithWallet } from '../types'
 import TitleStatus from './TitleStatus'
 
@@ -70,7 +70,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
     )
 
     navigation.navigate(rootStackRouteNames.ProfileDetailsScreen)
-  }, [dispatch, domainToLookUp, profile])
+  }, [dispatch, domainToLookUp, profile, navigation])
 
   return (
     <>

@@ -1,23 +1,22 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
+import { Dimensions, TouchableOpacity, View } from 'react-native'
 import * as Progress from 'react-native-progress'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
-import { Dimensions, TouchableOpacity, View } from 'react-native'
 import { colors } from 'src/styles'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
-import { PrimaryButton } from 'src/components/button/PrimaryButton'
-
-import { MediumText } from '../../components'
-import { AvatarIcon } from '../../components/icons/AvatarIcon'
+import { PrimaryButton } from 'components/button/PrimaryButton'
+import { MediumText } from 'components/index'
+import { AvatarIcon } from 'components/icons/AvatarIcon'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
 import { ScreenWithWallet } from '../types'
 import TitleStatus from './TitleStatus'
-import { IProfileRegistrationStore } from '../../storage/AliasRegistrationStore'
-import { useAliasRegistration } from '../../core/hooks/useAliasRegistration'
+import { IProfileRegistrationStore } from 'storage/AliasRegistrationStore'
+import { useAliasRegistration } from 'core/hooks/useAliasRegistration'
 
 type Props = RootStackScreenProps<rootStackRouteNames.RequestDomain> &
   ScreenWithWallet
@@ -37,7 +36,7 @@ export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
   const [processing, setProcessing] = useState(false)
   const [progress, setProgress] = useState(0.0)
 
-  const getUpToDateRegistrationData = async () => {
+  const getUpToDateRegistrationData = useCallback(async () => {
     if (await registrationStarted()) {
       setCommitToRegisterInfo('loading registration process status')
       setProgress(0.3)
@@ -47,9 +46,15 @@ export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
       setProgress(0)
       return await setRegistrationData(alias, parseInt(duration, 10))
     }
-  }
+  }, [
+    alias,
+    duration,
+    getRegistrationData,
+    registrationStarted,
+    setRegistrationData,
+  ])
 
-  const commitToRegister = async () => {
+  const commitToRegister = useCallback(async () => {
     setProcessing(true)
     try {
       const profileRegistrationStore: IProfileRegistrationStore =
@@ -80,15 +85,23 @@ export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
       setCommitToRegisterInfo(e?.message || '')
       setCommitToRegisterInfo2('')
     }
-  }
+  }, [
+    alias,
+    navigation,
+    duration,
+    getUpToDateRegistrationData,
+    readyToRegister,
+  ])
+
   useEffect(() => {
     commitToRegister().then()
-  }, [])
+  }, [commitToRegister])
+
   return (
     <>
       <View style={rnsManagerStyles.profileHeader}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('SearchDomain')}
+          onPress={() => navigation.navigate(rootStackRouteNames.SearchDomain)}
           accessibilityLabel="back">
           <View style={rnsManagerStyles.backButton}>
             <MaterialIcon name="west" color="white" size={10} />

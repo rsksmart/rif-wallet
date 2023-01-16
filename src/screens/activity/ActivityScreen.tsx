@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useCallback } from 'react'
 import { FlatList, StyleSheet, View, RefreshControl } from 'react-native'
 
 import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
@@ -38,19 +38,19 @@ export const ActivityScreen = ({
     transactions,
     btcTransactionFetcher.transactions,
   )
-  // On load, fetch btc transactions
-  useEffect(() => {
-    btcTransactionFetcher.fetchTransactions()
-  }, [])
 
   // On load, fetch both BTC and WALLET transactions
   useEffect(() => {
+    // TODO: rethink btcTransactionFetcher, when adding as dependency
+    // the function gets executed a million times
     btcTransactionFetcher.fetchTransactions()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const onRefresh = () => {
+  const onRefresh = useCallback(() => {
     btcTransactionFetcher.fetchTransactions(undefined, 1)
-  }
+  }, [btcTransactionFetcher])
+
   return (
     <View style={styles.mainContainer}>
       <FlatList

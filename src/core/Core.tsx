@@ -1,11 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { StatusBar, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { RIFWallet } from 'lib/core'
 import { i18nInit } from 'lib/i18n'
-
-import { abiEnhancer, rifWalletServicesSocket } from './setup'
 
 import {
   RootNavigationComponent,
@@ -31,7 +29,6 @@ import { useStateSubscription } from './hooks/useStateSubscription'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import {
   closeRequest,
-  onRequest,
   removeKeysFromState,
   resetKeysAndPin,
   selectKMS,
@@ -61,9 +58,7 @@ export const Core = () => {
   const insets = useSafeAreaInsets()
   const topColor = useAppSelector(selectTopColor)
 
-  const BitcoinCore = useBitcoinCore(kms?.mnemonic || '', request =>
-    dispatch(onRequest({ request })),
-  )
+  const BitcoinCore = useBitcoinCore()
   const onScreenLock = () => dispatch(removeKeysFromState())
 
   const { unlocked, setUnlocked, active } = useStateSubscription(onScreenLock)
@@ -90,17 +85,18 @@ export const Core = () => {
     }
   }
 
-  const retrieveChainId = async (wallet: RIFWallet) => {
-    const chainId = await wallet.getChainId()
-    dispatch(setChainId(chainId))
-  }
+  const retrieveChainId = useCallback(
+    async (wallet: RIFWallet) => {
+      const chainId = await wallet.getChainId()
+      dispatch(setChainId(chainId))
+    },
+    [dispatch],
+  )
 
   useRifSockets({
-    rifServiceSocket: rifWalletServicesSocket,
-    abiEnhancer,
     appActive: active,
     wallet: wallets && wallets[selectedWallet],
-    mnemonic: kms?.mnemonic,
+    mnemonic: kms ? kms.mnemonic : null,
   })
 
   useEffect(() => {
@@ -115,7 +111,7 @@ export const Core = () => {
       const currentWallet = wallets[selectedWallet]
       retrieveChainId(currentWallet)
     }
-  }, [selectedWallet])
+  }, [selectedWallet, retrieveChainId, wallets])
 
   if (settingsIsLoading) {
     return <LoadingScreen />

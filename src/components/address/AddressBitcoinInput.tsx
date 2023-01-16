@@ -49,60 +49,77 @@ export const AddressBitcoinInput = ({
 
   const showQRScanner = useCallback(() => setShouldShowQRScanner(true), [])
 
-  const onQRRead = useCallback((qrText: string) => {
-    validateAddress(qrText)
-    hideQRScanner()
-  }, [])
-
   /* set  */
-  const handleChangeText = useCallback((text: string) => {
-    setTo({ ...to, value: text, type: TYPES.NORMAL })
-  }, [])
+  const handleChangeText = useCallback(
+    (text: string) => {
+      setTo({ ...to, value: text, type: TYPES.NORMAL })
+    },
+    [setTo, to],
+  )
 
-  const onBeforeChangeText = (address: string) => {
-    const isBtcAddressValid = isBitcoinAddressValid(address)
-    setIsAddressValid(isBtcAddressValid)
-    onChangeText(address, isBtcAddressValid)
-  }
+  const onBeforeChangeText = useCallback(
+    (address: string) => {
+      const isBtcAddressValid = isBitcoinAddressValid(address)
+      setIsAddressValid(isBtcAddressValid)
+      onChangeText(address, isBtcAddressValid)
+    },
+    [onChangeText],
+  )
+
+  /* Function to validate address and to set it */
+  const validateAddress = useCallback(
+    (text: string) => {
+      // If domain, fetch it
+      setIsValidating(true)
+      if (isDomain(text)) {
+        rnsResolver
+          .addr(text)
+          .then((address: string) => {
+            setTo({
+              value: address,
+              type: TYPES.DOMAIN,
+              addressResolved: text,
+            })
+            onBeforeChangeText(address)
+          })
+          .catch(_e => {})
+          .finally(() => setIsValidating(false))
+      } /* default to normal validation */ else {
+        onBeforeChangeText(text)
+        setTo({
+          value: text,
+          type: TYPES.NORMAL,
+          addressResolved: text,
+        })
+        setIsValidating(false)
+      }
+    },
+    [onBeforeChangeText],
+  )
+
+  const onQRRead = useCallback(
+    (qrText: string) => {
+      validateAddress(qrText)
+      hideQRScanner()
+    },
+    [hideQRScanner, validateAddress],
+  )
+
   const onBlurValidate = () => {
     handleUserIsWriting(false)
     validateAddress(to.value)
   }
-  /* Function to validate address and to set it */
-  const validateAddress = (text: string) => {
-    // If domain, fetch it
-    setIsValidating(true)
-    if (isDomain(text)) {
-      rnsResolver
-        .addr(text)
-        .then((address: string) => {
-          setTo({
-            value: address,
-            type: TYPES.DOMAIN,
-            addressResolved: text,
-          })
-          onBeforeChangeText(address)
-        })
-        .catch(_e => {})
-        .finally(() => setIsValidating(false))
-    } /* default to normal validation */ else {
-      onBeforeChangeText(text)
-      setTo({
-        value: text,
-        type: TYPES.NORMAL,
-        addressResolved: text,
-      })
-      setIsValidating(false)
-    }
-  }
 
   const handlePasteClick = () => Clipboard.getString().then(validateAddress)
 
-  const onClearText = useCallback(() => handleChangeText(''), [])
+  const onClearText = useCallback(
+    () => handleChangeText(''),
+    [handleChangeText],
+  )
 
   useEffect(() => {
     onBeforeChangeText(initialValue)
-  }, [initialValue])
+  }, [initialValue, onBeforeChangeText])
   return (
     <>
       {shouldShowQRScanner && (

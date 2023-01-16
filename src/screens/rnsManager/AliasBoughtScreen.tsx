@@ -19,7 +19,8 @@ import { ScreenWithWallet } from '../types'
 
 export const AliasBoughtScreen = ({
   route,
-}: RootStackScreenProps<'AliasBought'> & ScreenWithWallet) => {
+}: RootStackScreenProps<rootStackRouteNames.AliasBought> &
+  ScreenWithWallet) => {
   const { alias, tx } = route.params
 
   const [registerDomainInfo, setRegisterDomainInfo] = useState(
@@ -48,7 +49,7 @@ export const AliasBoughtScreen = ({
     fetchData()
       // make sure to catch any error
       .catch(console.error)
-  }, [])
+  }, [alias, dispatch, profile, tx])
 
   return (
     <>

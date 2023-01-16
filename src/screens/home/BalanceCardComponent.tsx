@@ -67,11 +67,11 @@ export const BitcoinCardComponent = ({
   // Future TODO: should be set in the network constants if another coin is implemented
   const price = useMemo(() => {
     return prices.BTC ? balanceToUSD(balanceBigNumber, 8, prices.BTC.price) : ''
-  }, [balance, prices.BTC])
+  }, [balanceBigNumber, prices.BTC])
 
   const balanceFormatted = useMemo(
     () => balanceToDisplay(balanceBigNumber.toString(), 8, 4),
-    [balance],
+    [balanceBigNumber],
   )
   const handlePress = () => {
     onPress(contractAddress)

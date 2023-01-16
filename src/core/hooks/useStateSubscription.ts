@@ -24,7 +24,7 @@ export const useStateSubscription = (onScreenLock?: () => void) => {
         clearTimeout(timerRef.current)
       }
     }
-  }, [unlocked, appState])
+  }, [unlocked, appState, onScreenLock])
 
   return {
     unlocked,
