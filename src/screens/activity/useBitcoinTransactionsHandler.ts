@@ -85,6 +85,7 @@ export const useBitcoinTransactionsHandler = ({
     }
     return fetchTransactions()
   }, [fetchTransactions])
+
   return {
     fetchNextTransactionPage,
     fetchTransactions,

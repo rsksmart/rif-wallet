@@ -38,15 +38,14 @@ export const ActivityScreen = ({
     transactions,
     btcTransactionFetcher.transactions,
   )
-  // On load, fetch btc transactions
-  useEffect(() => {
-    btcTransactionFetcher.fetchTransactions()
-  }, [btcTransactionFetcher])
 
   // On load, fetch both BTC and WALLET transactions
   useEffect(() => {
+    // TODO: rethink btcTransactionFetcher, when adding as dependency
+    // the function gets executed a million times
     btcTransactionFetcher.fetchTransactions()
-  }, [btcTransactionFetcher])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const onRefresh = useCallback(() => {
     btcTransactionFetcher.fetchTransactions(undefined, 1)
