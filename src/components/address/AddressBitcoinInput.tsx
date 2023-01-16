@@ -119,7 +119,7 @@ export const AddressBitcoinInput = ({
 
   useEffect(() => {
     onBeforeChangeText(initialValue)
-  }, [initialValue])
+  }, [initialValue, onBeforeChangeText])
   return (
     <>
       {shouldShowQRScanner && (

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   StyleSheet,
   ScrollView,
@@ -71,8 +71,10 @@ export const SendScreen = ({
     })
   }
 
-  const onDeployWalletNavigate = () =>
-    navigation.navigate(rootStackRouteNames.RelayDeployScreen)
+  const onDeployWalletNavigate = useCallback(
+    () => navigation.navigate(rootStackRouteNames.RelayDeployScreen),
+    [navigation],
+  )
 
   return (
     <KeyboardAvoidingView

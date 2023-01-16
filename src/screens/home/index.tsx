@@ -53,6 +53,7 @@ export const HomeScreen = ({
       return []
     }
   }, [tokenBalances, bitcoinCore])
+
   // token or undefined
   const selected: ITokenWithoutLogo | BitcoinNetwork | undefined =
     selectedAddress && bitcoinCore

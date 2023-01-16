@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { ScrollView, StyleSheet, View } from 'react-native'
 import { BigNumber } from 'ethers'
 import { useTranslation } from 'react-i18next'
@@ -6,34 +6,34 @@ import { useTranslation } from 'react-i18next'
 import {
   OverriddableTransactionOptions,
   SendTransactionRequest,
-} from '../../lib/core'
+} from 'lib/core'
+import { RIF_TOKEN_ADDRESS_TESTNET } from 'lib/relay-sdk/helpers'
+import { balanceToDisplay, shortAddress } from 'lib/utils'
 
-import { sharedStyles } from '../../shared/styles'
+import { sharedStyles } from 'shared/styles'
+import { errorHandler } from 'shared/utils'
 import {
   Loading,
   Paragraph,
   PrimaryButton,
   RegularText,
   SecondaryButton,
-} from '../../components'
-import { ScreenWithWallet } from '../../screens/types'
+} from 'components/index'
+import { ScreenWithWallet } from 'screens/types'
 import useEnhancedWithGas from './useEnhancedWithGas'
-import { balanceToDisplay, shortAddress } from '../../lib/utils'
 import { colors, grid } from '../../styles'
 import ReadOnlyField from './ReadOnlyField'
-import { RIF_TOKEN_ADDRESS_TESTNET } from '../../lib/relay-sdk/helpers'
-import { errorHandler } from 'src/shared/utils'
 
 interface Props {
   request: SendTransactionRequest
   closeModal: () => void
 }
 
-const ReviewTransactionModal: React.FC<ScreenWithWallet & Props> = ({
+const ReviewTransactionModal = ({
   request,
   closeModal,
   wallet,
-}) => {
+}: ScreenWithWallet & Props) => {
   const { t } = useTranslation()
 
   const txRequest = useMemo(() => request.payload[0], [request])
@@ -47,7 +47,7 @@ const ReviewTransactionModal: React.FC<ScreenWithWallet & Props> = ({
 
   useEffect(() => {
     wallet.rifRelaySdk.estimateTransactionCost().then(setTxCostInRif)
-  }, [request])
+  }, [wallet.rifRelaySdk])
 
   const confirmTransaction = async () => {
     const confirmObject: OverriddableTransactionOptions = {

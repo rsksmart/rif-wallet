@@ -77,18 +77,26 @@ export const TransactionForm = ({
     [],
   )
 
-  const handleTargetAddressChange = (address: string, isValid: boolean) => {
-    setError(null)
-    setTo({ value: address, isValid })
-  }
+  const handleTargetAddressChange = useCallback(
+    (address: string, isValid: boolean) => {
+      setError(null)
+      setTo({ value: address, isValid })
+    },
+    [],
+  )
 
-  const handleSelectRecentAddress = (address: string) => {
-    handleTargetAddressChange(toChecksumAddress(address, chainId), true)
-    setActiveTab('address')
-  }
+  const handleSelectRecentAddress = useCallback(
+    (address: string) => {
+      handleTargetAddressChange(toChecksumAddress(address, chainId), true)
+      setActiveTab('address')
+    },
+    [chainId, handleTargetAddressChange],
+  )
 
-  const handleConfirmClick = () =>
-    onConfirm(selectedToken, amount.value, to.value)
+  const handleConfirmClick = useCallback(
+    () => onConfirm(selectedToken, amount.value, to.value),
+    [amount.value, to.value, selectedToken, onConfirm],
+  )
 
   const onTokenSelect = useCallback(
     (token: MixedTokenAndNetworkType) => {
@@ -103,7 +111,7 @@ export const TransactionForm = ({
         onTokenSelected(token)
       }
     },
-    [onTokenSelected],
+    [onTokenSelected, handleTargetAddressChange],
   )
 
   return (
