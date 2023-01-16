@@ -20,9 +20,12 @@ export const useStateSubscription = () => {
   const { appState } = useAppState()
   const timerRef = useRef<NodeJS.Timeout>(timer)
 
-  const setUnlocked = useCallback((isUnlocked: boolean) => {
-    dispatch(setIsUnlocked(isUnlocked))
-  }, [])
+  const setUnlocked = useCallback(
+    (isUnlocked: boolean) => {
+      dispatch(setIsUnlocked(isUnlocked))
+    },
+    [dispatch],
+  )
 
   useEffect(() => {
     const isNowActive = appState === 'active'
@@ -38,7 +41,7 @@ export const useStateSubscription = () => {
         clearTimeout(timerRef.current)
       }
     }
-  }, [unlocked, appState, onScreenLock])
+  }, [unlocked, appState, dispatch, setUnlocked])
 
   return {
     unlocked,
