@@ -3,7 +3,7 @@ import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import {
   StyleSheet,
   Text,
@@ -54,9 +54,9 @@ export const ContactFormScreen = ({
   })
   const isValidContact = name && address.isValid
 
-  const handleAddressChange = (value: string, isValid: boolean) => {
+  const handleAddressChange = useCallback((value: string, isValid: boolean) => {
     setAddress({ value, isValid })
-  }
+  }, [])
 
   const saveContact = () => {
     if (initialValue.id) {
