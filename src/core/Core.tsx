@@ -71,13 +71,16 @@ export const Core = () => {
   const [currentScreen, setCurrentScreen] = useState<string>(
     rootStackRouteNames.Home,
   )
-  const handleScreenChange = (newState: NavigationState | undefined) => {
-    if (newState && newState.routes[newState.index]) {
-      setCurrentScreen(newState.routes[newState.index].name)
-    } else {
-      setCurrentScreen(rootStackRouteNames.Home)
-    }
-  }
+  const handleScreenChange = useCallback(
+    (newState: NavigationState | undefined) => {
+      if (newState && newState.routes[newState.index]) {
+        setCurrentScreen(newState.routes[newState.index].name)
+      } else {
+        setCurrentScreen(rootStackRouteNames.Home)
+      }
+    },
+    [],
+  )
 
   const retrieveChainId = useCallback(
     async (wallet: RIFWallet) => {

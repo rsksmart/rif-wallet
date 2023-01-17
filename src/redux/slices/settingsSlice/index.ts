@@ -54,6 +54,7 @@ export const createWallet = createAsyncThunk(
         walletsIsDeployed: rifWalletsIsDeployedDictionary,
       }),
     )
+    thunkAPI.dispatch(setUnlocked(true))
     return rifWallet
   },
 )
@@ -76,6 +77,8 @@ export const unlockApp = createAsyncThunk(
           walletsIsDeployed: rifWalletsIsDeployedDictionary,
         }),
       )
+
+      thunkAPI.dispatch(setUnlocked(true))
     } catch (err) {
       thunkAPI.rejectWithValue(err)
     }
