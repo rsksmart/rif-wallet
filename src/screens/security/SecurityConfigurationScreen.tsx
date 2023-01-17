@@ -17,9 +17,7 @@ import {
   saveKeyVerificationReminder,
 } from 'storage/MainStorage'
 import { useAppDispatch } from 'store/storeUtils'
-import { resetKeysAndPin } from 'store/slices/settingsSlice'
-import { deleteContacts } from 'store/slices/contactsSlice'
-import { resetSocketState } from 'store/shared/actions/resetSocketState'
+import { resetReduxStates } from 'src/redux'
 
 export const SecurityConfigurationScreen = ({
   navigation,
@@ -45,9 +43,7 @@ export const SecurityConfigurationScreen = ({
         {
           text: 'Delete',
           onPress: () => {
-            dispatch(resetKeysAndPin())
-            dispatch(resetSocketState())
-            dispatch(deleteContacts())
+            resetReduxStates(dispatch)
             saveKeyVerificationReminder(false)
           },
         },
