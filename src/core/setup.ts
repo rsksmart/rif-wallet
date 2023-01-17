@@ -37,6 +37,8 @@ export const rifWalletServicesSocket = new RifWalletServicesSocket(
 
 export const rnsResolver = Resolver.forRskTestnet({})
 
+export const authClient = getWalletSetting(SETTINGS.AUTH_CLIENT)
+
 export const rifRelayConfig: RifRelayConfig = {
   relayVerifierAddress: getWalletSetting(SETTINGS.RELAY_VERIFIER_ADDRESS),
   deployVerifierAddress: getWalletSetting(SETTINGS.DEPLOY_VERIFIER_ADDRESS),

@@ -11,6 +11,7 @@ import {
   AuthenticationChallengeType,
   AuthenticationTokensType,
 } from './RIFWalletServicesTypes'
+import { authClient } from 'src/core/setup'
 
 export class RifWalletServicesAuth {
   axiosInstance: AxiosInstance
@@ -62,7 +63,7 @@ export class RifWalletServicesAuth {
     const {
       data: { accessToken, refreshToken },
     } = await this.axiosInstance.post<AuthenticationTokensType>('/auth', {
-      response: { sig, did: this.did },
+      response: { sig, did: this.did, client: authClient },
     })
     await Keychain.setInternetCredentials(
       'jwt',
@@ -84,7 +85,7 @@ export class RifWalletServicesAuth {
         return await this.authenticate()
       }
     } else {
-      return await this.authenticate()
+      return await this.signup()
     }
   }
 
