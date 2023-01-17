@@ -47,7 +47,6 @@ export const SecurityConfigurationScreen = ({
             dispatch(resetKeysAndPin())
             dispatch(resetSocketState())
             saveKeyVerificationReminder(false)
-            navigation.navigate(rootStackRouteNames.CreateKeysUX)
           },
         },
       ],
