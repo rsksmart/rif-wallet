@@ -54,6 +54,7 @@ export const createWallet = createAsyncThunk(
         walletsIsDeployed: rifWalletsIsDeployedDictionary,
       }),
     )
+    thunkAPI.dispatch(setUnlocked(true))
     return rifWallet
   },
 )
@@ -76,6 +77,8 @@ export const unlockApp = createAsyncThunk(
           walletsIsDeployed: rifWalletsIsDeployedDictionary,
         }),
       )
+
+      thunkAPI.dispatch(setUnlocked(true))
     } catch (err) {
       thunkAPI.rejectWithValue(err)
     }
@@ -119,6 +122,8 @@ const initialState: SettingsSlice = {
   selectedWallet: '',
   loading: false,
   chainType: ChainTypeEnum.TESTNET,
+  appIsActive: false,
+  unlocked: false,
 }
 
 const settingsSlice = createSlice({
@@ -138,6 +143,12 @@ const settingsSlice = createSlice({
       state.chainId = payload
       state.chainType =
         payload === 31 ? ChainTypeEnum.TESTNET : ChainTypeEnum.MAINNET
+    },
+    setAppIsActive: (state, { payload }: PayloadAction<boolean>) => {
+      state.appIsActive = payload
+    },
+    setUnlocked: (state, { payload }: PayloadAction<boolean>) => {
+      state.unlocked = payload
     },
     setPinState: (_, { payload }: PayloadAction<string>) => {
       savePin(payload)
@@ -226,6 +237,8 @@ export const {
   setPinState,
   setNewWallet,
   setChainId,
+  setAppIsActive,
+  setUnlocked,
   setWalletIsDeployed,
   removeKeysFromState,
   resetKeysAndPin,

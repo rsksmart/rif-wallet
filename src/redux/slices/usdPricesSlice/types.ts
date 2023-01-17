@@ -1,7 +1,7 @@
-interface IUsdPrice {
+interface UsdPrice {
   lastUpdated: string
   price: number
 }
-export interface IUsdPricesState {
-  [id: string]: IUsdPrice
+export interface UsdPricesState {
+  [id: string]: UsdPrice
 }

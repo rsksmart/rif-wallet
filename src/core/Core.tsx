@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { StatusBar, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -21,7 +21,6 @@ import {
 import { WalletConnectProviderElement } from 'screens/walletConnect/WalletConnectContext'
 import { useRifSockets } from 'src/subscriptions/useRifSockets'
 import { LoadingScreen } from 'components/loading/LoadingScreen'
-import { useSetGlobalError } from 'components/GlobalErrorHandler'
 import { Cover } from './components/Cover'
 import { RequestPIN } from './components/RequestPIN'
 import { useBitcoinCore } from './hooks/bitcoin/useBitcoinCore'
@@ -29,8 +28,6 @@ import { useStateSubscription } from './hooks/useStateSubscription'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import {
   closeRequest,
-  removeKeysFromState,
-  resetKeysAndPin,
   selectKMS,
   selectRequests,
   selectSelectedWallet,
@@ -38,15 +35,24 @@ import {
   selectTopColor,
   selectWallets,
   setChainId,
-  unlockApp,
 } from 'store/slices/settingsSlice'
-import { hasKeys, hasPin } from 'storage/MainStorage'
+import {
+  hasKeys as hasKeysInStorage,
+  hasPin as hasPinInStorage,
+} from 'storage/MainStorage'
 import { BitcoinProvider } from 'core/hooks/bitcoin/BitcoinContext'
 
 export const navigationContainerRef =
   createNavigationContainerRef<RootStackParamList>()
 
 export const Core = () => {
+  const { hasKeys, hasPin } = useMemo(
+    () => ({
+      hasKeys: hasKeysInStorage(),
+      hasPin: hasPinInStorage(),
+    }),
+    [],
+  )
   const dispatch = useAppDispatch()
 
   const selectedWallet = useAppSelector(selectSelectedWallet)
@@ -59,31 +65,22 @@ export const Core = () => {
   const topColor = useAppSelector(selectTopColor)
 
   const BitcoinCore = useBitcoinCore()
-  const onScreenLock = () => dispatch(removeKeysFromState())
 
-  const { unlocked, setUnlocked, active } = useStateSubscription(onScreenLock)
+  const { unlocked, active } = useStateSubscription()
 
   const [currentScreen, setCurrentScreen] = useState<string>(
     rootStackRouteNames.Home,
   )
-  const handleScreenChange = (newState: NavigationState | undefined) => {
-    if (newState && newState.routes[newState.index]) {
-      setCurrentScreen(newState.routes[newState.index].name)
-    } else {
-      setCurrentScreen(rootStackRouteNames.Home)
-    }
-  }
-
-  const setGlobalError = useSetGlobalError()
-
-  const onScreenUnlock = async () => {
-    try {
-      await dispatch(unlockApp())
-      setUnlocked(true)
-    } catch (err) {
-      setGlobalError(err.toString())
-    }
-  }
+  const handleScreenChange = useCallback(
+    (newState: NavigationState | undefined) => {
+      if (newState && newState.routes[newState.index]) {
+        setCurrentScreen(newState.routes[newState.index].name)
+      } else {
+        setCurrentScreen(rootStackRouteNames.Home)
+      }
+    },
+    [],
+  )
 
   const retrieveChainId = useCallback(
     async (wallet: RIFWallet) => {
@@ -113,7 +110,7 @@ export const Core = () => {
     }
   }, [selectedWallet, retrieveChainId, wallets])
 
-  if (settingsIsLoading) {
+  if (settingsIsLoading && !unlocked) {
     return <LoadingScreen />
   }
 
@@ -125,13 +122,8 @@ export const Core = () => {
     },
   })
 
-  if (hasKeys() && hasPin() && !unlocked) {
-    return (
-      <RequestPIN
-        unlock={onScreenUnlock}
-        resetKeysAndPin={() => dispatch(resetKeysAndPin())}
-      />
-    )
+  if (hasKeys && hasPin && !unlocked) {
+    return <RequestPIN />
   }
 
   return (
@@ -143,14 +135,16 @@ export const Core = () => {
           onStateChange={handleScreenChange}
           ref={navigationContainerRef}>
           <WalletConnectProviderElement>
-            <RootNavigationComponent currentScreen={currentScreen} />
+            <>
+              <RootNavigationComponent currentScreen={currentScreen} />
 
-            {requests.length !== 0 && (
-              <ModalComponent
-                closeModal={() => dispatch(closeRequest())}
-                request={requests[0]}
-              />
-            )}
+              {requests.length !== 0 && (
+                <ModalComponent
+                  closeModal={() => dispatch(closeRequest())}
+                  request={requests[0]}
+                />
+              )}
+            </>
           </WalletConnectProviderElement>
         </NavigationContainer>
       </BitcoinProvider>

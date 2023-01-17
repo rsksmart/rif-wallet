@@ -1,11 +1,11 @@
 import { ReactNode } from 'react'
-import { Text, TextStyle } from 'react-native'
+import { Text, TextProps, TextStyle } from 'react-native'
 
 interface CustomTextType {
   font: string
 }
 
-export interface TextType {
+export interface TextType extends TextProps {
   children: ReactNode
   style?: TextStyle
   accessibilityLabel?: string

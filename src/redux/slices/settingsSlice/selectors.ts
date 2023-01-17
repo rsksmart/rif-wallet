@@ -34,3 +34,8 @@ export const selectActiveWallet = ({ settings }: RootState) => ({
       ? Object.keys(settings.wallets).indexOf(settings.selectedWallet)
       : undefined,
 })
+
+export const selectAppIsActive = ({ settings }: RootState) =>
+  settings.appIsActive
+
+export const selectIsUnlocked = ({ settings }: RootState) => settings.unlocked

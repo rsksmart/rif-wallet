@@ -1,9 +1,9 @@
-import React from 'react'
+import { useMemo } from 'react'
 import { StyleSheet } from 'react-native'
 import { getTokenColor } from './tokenColor'
 
-const useContainerStyles = (selected: boolean, symbol: string) => {
-  return React.useMemo(
+export const useContainerStyles = (selected: boolean, symbol: string) => {
+  return useMemo(
     () => ({
       ...styles.container,
       backgroundColor: selected
@@ -23,4 +23,3 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
 })
-export default useContainerStyles

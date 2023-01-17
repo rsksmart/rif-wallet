@@ -2,9 +2,11 @@ import { NavigationProp, NavigatorScreenParams } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import Resolver from '@rsksmart/rns-resolver.js'
 import { ContractTransaction } from 'ethers'
-import { ActivityMixedType } from 'src/screens/activity/types'
-import { IProfileStore } from 'src/redux/slices/profileSlice/types'
-import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
+
+import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
+
+import { ActivityMixedType } from 'screens/activity/types'
+import { IProfileStore } from 'store/slices/profileSlice/types'
 import { CreateKeysStackParamList } from '../createKeysNavigator'
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =
@@ -32,6 +34,7 @@ export enum rootStackRouteNames {
   ChangeLanguage = 'ChangeLanguage',
   ManagePin = 'ManagePin',
   CreatePin = 'CreatePin',
+  ChangePinScreen = 'ChangePinScreen',
   RNSManager = 'RNSManager',
   SearchDomain = 'SearchDomain',
   RequestDomain = 'RequestDomain',
@@ -44,7 +47,6 @@ export enum rootStackRouteNames {
   SecurityConfigurationScreen = 'SecurityConfigurationScreen',
   ProfileCreateScreen = 'ProfileCreateScreen',
   ProfileDetailsScreen = 'ProfileDetailsScreen',
-  ChangePinScreen = 'ChangePinScreen',
   FeedbackScreen = 'FeedbackScreen',
 }
 

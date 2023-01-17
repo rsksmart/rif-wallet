@@ -1,10 +1,8 @@
-import { fonts } from '../../styles/fonts'
+import { fonts } from 'src/styles/fonts'
 import { CustomText, TextType } from './CustomText'
 
-const RegularText = ({ children, ...props }: TextType) => (
+export const RegularText = ({ children, ...props }: TextType) => (
   <CustomText font={fonts.regular} {...props}>
     {children}
   </CustomText>
 )
-
-export default RegularText

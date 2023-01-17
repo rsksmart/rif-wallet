@@ -1,30 +1,31 @@
-import React from 'react'
 import { StyleSheet, View } from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler'
+
+import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
+
+import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
+import { Paragraph } from 'components/index'
+import { colors } from 'src/styles'
+import { grid } from 'src/styles'
+import { IPrice } from 'src/subscriptions/types'
 import {
   BalanceCardComponent,
   BitcoinCardComponent,
 } from './BalanceCardComponent'
-import { Paragraph } from 'src/components'
-import { colors } from 'src/styles'
-import { grid } from 'src/styles'
-import { ScrollView } from 'react-native-gesture-handler'
-import { IPrice } from 'src/subscriptions/types'
-import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
-import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 
-interface Interface {
+interface Props {
   selectedAddress?: string
-  setSelected: (token: string) => void
+  setSelectedAddress: (token: string) => void
   balances: Array<ITokenWithoutLogo | BitcoinNetwork>
   prices: Record<string, IPrice>
 }
 
-const PortfolioComponent: React.FC<Interface> = ({
+const PortfolioComponent = ({
   selectedAddress,
-  setSelected,
+  setSelectedAddress,
   balances,
   prices,
-}) => {
+}: Props) => {
   return (
     <ScrollView contentContainerStyle={styles.scrollView}>
       <View style={grid.row}>
@@ -40,12 +41,13 @@ const PortfolioComponent: React.FC<Interface> = ({
                 <BitcoinCardComponent
                   {...balance}
                   isSelected={selectedAddress === balance.contractAddress}
-                  onPress={setSelected}
+                  onPress={setSelectedAddress}
+                  prices={prices}
                 />
               ) : (
                 <BalanceCardComponent
                   token={balance}
-                  onPress={setSelected}
+                  onPress={setSelectedAddress}
                   selected={selectedAddress === balance.contractAddress}
                   price={prices[balance.contractAddress]}
                 />
