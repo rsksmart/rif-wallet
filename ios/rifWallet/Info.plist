@@ -39,6 +39,8 @@
 	<string>$PRODUCT_NAME will use the camera to operate with Wallet Connect</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>$PRODUCT_NAME will use your FACE ID to retrieve and store your secret</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Please give us access to your photo library to verify you.</string>
 	<key>UIAppFonts</key>
