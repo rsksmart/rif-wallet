@@ -25,7 +25,7 @@ export const connectSocket = ({
   onError,
   wallet,
   mnemonic,
-  fetcher
+  fetcher,
 }: ConnectSocket) => {
   rifServiceSocket.on('init', onInit)
   rifServiceSocket.on(

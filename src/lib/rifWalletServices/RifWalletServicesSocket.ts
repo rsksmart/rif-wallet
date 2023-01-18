@@ -101,7 +101,7 @@ export class RifWalletServicesSocket
       .filter(filterEnhancedTransactions)
     cache.set('cachedTxs', transactions)
     cache.set('blockNumber', lastBlockNumber.toString())
-    const fetchedTokens = await fetcher.fetchTokensByAddress(
+    const fetchedTokens = await fetcher?.fetchTokensByAddress(
       wallet.smartWalletAddress,
     )
 

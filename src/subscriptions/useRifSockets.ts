@@ -53,6 +53,7 @@ export const useRifSockets = ({
         rifServiceSocket: rifWalletServicesSocket,
         wallet: _wallet,
         mnemonic: _mnemonic,
+        fetcher: fetcher,
         onInit: onSocketInit(_wallet),
         onError: onSocketError,
         onChange: onSocketChangeEmitted({
@@ -62,7 +63,7 @@ export const useRifSockets = ({
         }),
       })
     },
-    [dispatch, onSocketError, onSocketInit],
+    [dispatch, onSocketError, onSocketInit, fetcher],
   )
 
   // Disconnect from the rifServiceSocket when the app goes to the background
@@ -75,19 +76,21 @@ export const useRifSockets = ({
       if (
         wallet &&
         rifWalletServicesSocket &&
+        fetcher &&
         !rifWalletServicesSocket.isConnected()
       ) {
         connectSocket({
           rifServiceSocket: rifWalletServicesSocket,
           wallet,
           mnemonic: _mnemonic,
+          fetcher,
           onInit: onSocketInit(wallet),
           onError: onSocketError,
           onChange: onSocketChangeEmitted({ dispatch, abiEnhancer, wallet }),
         })
       }
     },
-    [wallet, dispatch, onSocketInit, onSocketError],
+    [wallet, dispatch, onSocketInit, onSocketError, fetcher],
   )
 
   useEffect(() => {
@@ -97,11 +100,11 @@ export const useRifSockets = ({
   }, [appActive, onWalletAppActiveChange, mnemonic])
 
   useEffect(() => {
-    if (wallet && mnemonic) {
+    if (wallet && mnemonic && fetcher) {
       reconnectToSocket(wallet, mnemonic)
     }
     return () => rifWalletServicesSocket.disconnect()
-  }, [wallet, reconnectToSocket, mnemonic])
+  }, [wallet, reconnectToSocket, mnemonic, fetcher])
 
   return null
 }

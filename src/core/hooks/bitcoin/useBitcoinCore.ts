@@ -12,6 +12,7 @@ import { bitcoinTestnet } from 'shared/costants'
 import { useStoredBitcoinNetworks } from './useStoredBitcoinNetworks'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { onRequest, selectKMS } from 'store/slices/settingsSlice'
+import { RifWalletServicesFetcher } from 'src/lib/rifWalletServices/RifWalletServicesFetcher'
 
 export interface UseBitcoinCoreResult {
   networks: Array<BitcoinNetwork>
@@ -33,7 +34,9 @@ interface NetworksObject {
  * @param request
  */
 
-export const useBitcoinCore = (): UseBitcoinCoreResult => {
+export const useBitcoinCore = (
+  fetcher?: RifWalletServicesFetcher,
+): UseBitcoinCoreResult => {
   const dispatch = useAppDispatch()
   const kms = useAppSelector(selectKMS)
   const [storedNetworks, refreshStoredNetworks] = useStoredBitcoinNetworks()
@@ -68,11 +71,12 @@ export const useBitcoinCore = (): UseBitcoinCoreResult => {
         createAndInitializeBipWithRequest(request =>
           dispatch(onRequest({ request })),
         ),
+        fetcher,
       ) as BitcoinNetworkWithBIPRequest
       networksObj.current[network.name] = bitcoinNetwork
       return bitcoinNetwork
     },
-    [dispatch],
+    [dispatch, fetcher],
   )
 
   const transformStoredNetworks = useCallback(
@@ -98,6 +102,10 @@ export const useBitcoinCore = (): UseBitcoinCoreResult => {
       return
     }
 
+    if (!fetcher) {
+      return
+    }
+
     const transformedNetworks = transformStoredNetworks(
       storedNetworksValues,
       BIP39Instance,
@@ -110,6 +118,7 @@ export const useBitcoinCore = (): UseBitcoinCoreResult => {
     onNoNetworksPresent,
     transformStoredNetworks,
     BIP39Instance,
+    fetcher,
   ])
 
   return {
