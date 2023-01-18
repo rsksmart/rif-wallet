@@ -9,8 +9,9 @@ import { selectAccounts } from 'store/slices/accountsSlice/selector'
 import { AccountPayload } from 'store/slices/accountsSlice/types'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { PublicKeyItemType } from 'screens/accounts/types'
-import { colors } from '../../styles'
-import { fonts } from '../../styles/fonts'
+import { colors } from 'src/styles'
+import { fonts } from 'src/styles/fonts'
+
 import { EditMaterialIcon } from '../icons'
 import { CheckIcon } from '../icons/CheckIcon'
 import { MediumText } from '../typography'
@@ -141,6 +142,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 20,
+    color: colors.darkGray,
   },
   editIcon: {
     marginLeft: 10,
@@ -159,6 +161,7 @@ const styles = StyleSheet.create({
   },
   titleFontSize: {
     fontSize: 13,
+    color: colors.darkGray,
   },
 })
 
