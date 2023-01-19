@@ -8,6 +8,7 @@ import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
 import { ActivityMixedType } from 'screens/activity/types'
 import { IProfileStore } from 'store/slices/profileSlice/types'
 import { CreateKeysStackParamList } from '../createKeysNavigator'
+import { RifWalletServicesFetcher } from 'src/lib/rifWalletServices/RifWalletServicesFetcher'
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =
   StackScreenProps<RootStackParamList, T>
@@ -66,7 +67,9 @@ export type RootStackParamList = {
     network: BitcoinNetwork
   }
   [rootStackRouteNames.Balances]: undefined
-  [rootStackRouteNames.Activity]: undefined
+  [rootStackRouteNames.Activity]: {
+    fetcher?: RifWalletServicesFetcher
+  }
   [rootStackRouteNames.ActivityDetails]: ActivityMixedType
   [rootStackRouteNames.SignMessage]: undefined
   [rootStackRouteNames.SignTypedData]: undefined

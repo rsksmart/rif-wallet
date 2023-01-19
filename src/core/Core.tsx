@@ -41,6 +41,9 @@ import {
   hasPin as hasPinInStorage,
 } from 'storage/MainStorage'
 import { BitcoinProvider } from 'core/hooks/bitcoin/BitcoinContext'
+import { RifWalletServicesAuth } from 'src/lib/rifWalletServices/RifWalletServicesAuth'
+import { RifWalletServicesFetcher } from 'src/lib/rifWalletServices/RifWalletServicesFetcher'
+import { authAxios, publicAxios } from './setup'
 
 export const navigationContainerRef =
   createNavigationContainerRef<RootStackParamList>()
@@ -53,6 +56,9 @@ export const Core = () => {
     }),
     [],
   )
+  const [fetcher, setFetcher] = useState<RifWalletServicesFetcher | undefined>(
+    undefined,
+  )
   const dispatch = useAppDispatch()
 
   const selectedWallet = useAppSelector(selectSelectedWallet)
@@ -64,7 +70,7 @@ export const Core = () => {
   const insets = useSafeAreaInsets()
   const topColor = useAppSelector(selectTopColor)
 
-  const BitcoinCore = useBitcoinCore()
+  const BitcoinCore = useBitcoinCore(fetcher)
 
   const { unlocked, active } = useStateSubscription()
 
@@ -94,6 +100,7 @@ export const Core = () => {
     appActive: active,
     wallet: wallets && wallets[selectedWallet],
     mnemonic: kms ? kms.mnemonic : null,
+    fetcher,
   })
 
   useEffect(() => {
@@ -107,6 +114,18 @@ export const Core = () => {
     if (selectedWallet && wallets) {
       const currentWallet = wallets[selectedWallet]
       retrieveChainId(currentWallet)
+      const rifWalletAuth = new RifWalletServicesAuth(
+        publicAxios,
+        currentWallet,
+      )
+      rifWalletAuth.login().then(({ accessToken, refreshToken }) => {
+        const fetcherInstance = new RifWalletServicesFetcher(
+          authAxios,
+          accessToken,
+          refreshToken,
+        )
+        setFetcher(fetcherInstance)
+      })
     }
   }, [selectedWallet, retrieveChainId, wallets])
 

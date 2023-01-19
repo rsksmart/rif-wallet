@@ -3,6 +3,7 @@ import { IRIFWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServic
 import { IAbiEnhancer, EnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { RIFWallet } from 'lib/core'
+import { AppContextType } from 'src/Context'
 
 export interface IPrice {
   price: number
@@ -87,4 +88,9 @@ export interface TransactionsServerResponseWithActivityTransactions
 export interface AbiWallet {
   abiEnhancer: IAbiEnhancer
   wallet: RIFWallet
+}
+
+export type AppProviderProps = {
+  children: React.ReactNode
+  value: AppContextType
 }
