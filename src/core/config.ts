@@ -1,5 +1,9 @@
 import Config from 'react-native-config'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
+const defaultChainType =
+  Config.DEFAULT_CHAIN_TYPE === 'MAINNET'
+    ? ChainTypeEnum.MAINNET
+    : ChainTypeEnum.TESTNET
 
 export enum SETTINGS {
   DEFAULT_CHAIN_TYPE = 'DEFAULT_CHAIN_TYPE', //the chain id used by default when creating a new account
@@ -24,7 +28,7 @@ export enum SETTINGS {
  */
 export const getWalletSetting = (
   setting: SETTINGS,
-  chainType: ChainTypeEnum = ChainTypeEnum.TESTNET,
+  chainType: ChainTypeEnum = defaultChainType,
 ): string => {
   if (Config[`${setting}_${chainType}`]) {
     return Config[`${setting}_${chainType}`]
