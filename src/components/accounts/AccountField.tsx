@@ -1,7 +1,10 @@
 import React from 'react'
+import { StyleSheet, View } from 'react-native'
+
+import { colors } from 'src/styles'
+
 import { MediumText } from '../typography'
 import CopyField from '../activity/CopyField'
-import { StyleSheet, View } from 'react-native'
 import accountSharedStyles from './styles'
 
 const MediumTextStyleOverride: React.FC<{ children: React.ReactNode }> = ({
@@ -34,10 +37,12 @@ const styles = StyleSheet.create({
   addressText: {
     marginBottom: 3,
     fontSize: 13,
+    color: colors.darkGray,
   },
   mediumTextOverride: {
     fontSize: 13,
     flex: 90,
+    color: colors.darkGray,
   },
 })
 
