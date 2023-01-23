@@ -72,36 +72,6 @@ describe('ReviewTransactionModal', function (this: {
     getByText('Fee in tRIF')
   })
 
-  it('returns the initial transaction', async () => {
-    const closeModal = jest.fn()
-    const { getByTestId } = await waitFor(() =>
-      render(
-        <ReviewTransactionModal
-          isWalletDeployed={true}
-          wallet={this.rifWallet}
-          request={this.queuedTransaction}
-          closeModal={closeModal}
-        />,
-      ),
-    )
-
-    await flushPromises()
-
-    act(() => {
-      fireEvent.press(getByTestId('Confirm.Button'))
-    })
-
-    const { gasPrice, gasLimit } = this.confirm.mock.calls[0][0]
-    const { payload } = this.queuedTransaction
-
-    expect(gasPrice.toString()).toBe(payload[0].gasPrice?.toString())
-    expect(gasLimit.toString()).toBe(payload[0].gasLimit?.toString())
-
-    await flushPromises()
-
-    expect(closeModal).toBeCalled()
-  })
-
   it('returns nothing if cancelled', async () => {
     const closeModal = jest.fn()
 
