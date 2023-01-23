@@ -9,25 +9,30 @@ type CreateRIFWallet = (wallet: Wallet) => Promise<RIFWallet>
 export const loadExistingWallets =
   (createRIFWallet: CreateRIFWallet) => async () => {
     const serializedKeys = getKeys()
-    const { kms, wallets } = KeyManagementSystem.fromSerialized(serializedKeys)
+    if (serializedKeys) {
+      const { kms, wallets } =
+        KeyManagementSystem.fromSerialized(serializedKeys)
 
-    const rifWallets = await Promise.all(wallets.map(createRIFWallet))
-    const isDeployedWallets = await Promise.all(
-      rifWallets.map(w => w.smartWalletFactory.isDeployed()),
-    )
+      const rifWallets = await Promise.all(wallets.map(createRIFWallet))
+      const isDeployedWallets = await Promise.all(
+        rifWallets.map(w => w.smartWalletFactory.isDeployed()),
+      )
 
-    const rifWalletsDictionary = rifWallets.reduce(
-      (p: Wallets, c: RIFWallet) => Object.assign(p, { [c.address]: c }),
-      {},
-    )
+      const rifWalletsDictionary = rifWallets.reduce(
+        (p: Wallets, c: RIFWallet) => Object.assign(p, { [c.address]: c }),
+        {},
+      )
 
-    const rifWalletsIsDeployedDictionary = rifWallets.reduce(
-      (p: Wallets, c: RIFWallet, ci: number) =>
-        Object.assign(p, { [c.address]: isDeployedWallets[ci] }),
-      {},
-    )
+      const rifWalletsIsDeployedDictionary = rifWallets.reduce(
+        (p: Wallets, c: RIFWallet, ci: number) =>
+          Object.assign(p, { [c.address]: isDeployedWallets[ci] }),
+        {},
+      )
 
-    return { kms, rifWalletsDictionary, rifWalletsIsDeployedDictionary }
+      return { kms, rifWalletsDictionary, rifWalletsIsDeployedDictionary }
+    } else {
+      return null
+    }
   }
 
 export const createKMS =

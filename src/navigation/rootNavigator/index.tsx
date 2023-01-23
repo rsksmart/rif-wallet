@@ -168,11 +168,6 @@ export const RootNavigationComponent = ({ currentScreen }: Props) => {
             />
 
             <RootStack.Screen
-              name={rootStackRouteNames.CreatePin}
-              options={sharedOptions}
-              component={Screens.CreatePinScreen}
-            />
-            <RootStack.Screen
               name={rootStackRouteNames.ChangePinScreen}
               options={sharedOptions}
               component={Screens.ChangePinScreen}

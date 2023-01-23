@@ -83,7 +83,6 @@ export type RootStackParamList = {
   [rootStackRouteNames.ScanQR]: undefined
   [rootStackRouteNames.ChangeLanguage]: undefined
   [rootStackRouteNames.ManagePin]: undefined
-  [rootStackRouteNames.CreatePin]: undefined
   [rootStackRouteNames.RNSManager]: undefined
   [rootStackRouteNames.SearchDomain]: undefined
   [rootStackRouteNames.RequestDomain]: {

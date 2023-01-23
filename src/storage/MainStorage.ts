@@ -17,7 +17,7 @@ export const savePin = (pinValue: string) => MainStorage.set(pin, pinValue)
 
 //keys functions
 export const hasKeys = () => MainStorage.has(keyManagement)
-export const getKeys = () => MainStorage.get(keyManagement)
+export const getKeys = (): string | undefined => MainStorage.get(keyManagement)
 export const saveKeys = (keysValue: string) =>
   MainStorage.set(keyManagement, keysValue)
 export const deleteKeys = () => MainStorage.delete(keyManagement)

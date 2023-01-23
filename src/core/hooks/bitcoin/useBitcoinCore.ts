@@ -10,8 +10,8 @@ import {
 } from 'storage/BitcoinNetworkStore'
 import { bitcoinTestnet } from 'shared/costants'
 import { useStoredBitcoinNetworks } from './useStoredBitcoinNetworks'
-import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { onRequest, selectKMS } from 'store/slices/settingsSlice'
+import { useAppDispatch } from 'store/storeUtils'
+import { onRequest } from 'store/slices/settingsSlice'
 import { RifWalletServicesFetcher } from 'src/lib/rifWalletServices/RifWalletServicesFetcher'
 
 export interface UseBitcoinCoreResult {
@@ -35,14 +35,14 @@ interface NetworksObject {
  */
 
 export const useBitcoinCore = (
+  mnemonic: string | null,
   fetcher?: RifWalletServicesFetcher,
 ): UseBitcoinCoreResult => {
   const dispatch = useAppDispatch()
-  const kms = useAppSelector(selectKMS)
   const [storedNetworks, refreshStoredNetworks] = useStoredBitcoinNetworks()
   const BIP39Instance = useMemo(
-    () => (kms ? new BIP39(kms.mnemonic) : null),
-    [kms],
+    () => (mnemonic ? new BIP39(mnemonic) : null),
+    [mnemonic],
   )
   const networksObj = useRef<NetworksObject>({})
   const storedNetworksValues = useMemo(
@@ -63,7 +63,11 @@ export const useBitcoinCore = (
   }, [refreshStoredNetworks])
 
   const transformNetwork = useCallback(
-    (network: StoredBitcoinNetworkValue, bip39: BIP39) => {
+    (
+      network: StoredBitcoinNetworkValue,
+      bip39: BIP39,
+      rifFetcher: RifWalletServicesFetcher,
+    ) => {
       const bitcoinNetwork = new BitcoinNetwork(
         network.name,
         network.bips,
@@ -71,21 +75,27 @@ export const useBitcoinCore = (
         createAndInitializeBipWithRequest(request =>
           dispatch(onRequest({ request })),
         ),
-        fetcher,
+        rifFetcher,
       ) as BitcoinNetworkWithBIPRequest
       networksObj.current[network.name] = bitcoinNetwork
       return bitcoinNetwork
     },
-    [dispatch, fetcher],
+    [dispatch],
   )
 
   const transformStoredNetworks = useCallback(
-    (values: StoredBitcoinNetworkValue[], bip39: BIP39) => {
+    (
+      values: StoredBitcoinNetworkValue[],
+      bip39: BIP39,
+      rifFetcher: RifWalletServicesFetcher,
+    ) => {
       if (values.length < 1) {
         onNoNetworksPresent()
         return null
       }
-      const networksArr = values.map(item => transformNetwork(item, bip39))
+      const networksArr = values.map(item =>
+        transformNetwork(item, bip39, rifFetcher),
+      )
 
       return { networksArr, networksObj: networksObj.current }
     },
@@ -109,6 +119,7 @@ export const useBitcoinCore = (
     const transformedNetworks = transformStoredNetworks(
       storedNetworksValues,
       BIP39Instance,
+      fetcher,
     )
     if (transformedNetworks) {
       setNetworks(transformedNetworks)

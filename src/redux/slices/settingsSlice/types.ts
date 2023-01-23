@@ -1,4 +1,4 @@
-import { KeyManagementSystem, RIFWallet, Request } from 'lib/core'
+import { RIFWallet, Request } from 'lib/core'
 import { BitcoinRequest } from 'lib/bitcoin/types'
 
 import { Wallets, WalletsIsDeployed } from 'src/Context'
@@ -14,7 +14,6 @@ export interface AddNewWalletAction {
 }
 
 export interface SetKeysAction {
-  kms: KeyManagementSystem
   wallets: Wallets
   walletsIsDeployed: WalletsIsDeployed
 }
@@ -44,7 +43,6 @@ export enum ChainTypeEnum {
 export interface SettingsSlice {
   requests: Requests
   topColor: ColorValue
-  kms: KeyManagementSystem | null
   wallets: Wallets | null
   walletsIsDeployed: WalletsIsDeployed | null
   selectedWallet: string
