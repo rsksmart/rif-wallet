@@ -1,4 +1,4 @@
-import { KeyManagementSystem, RIFWallet, Request } from 'lib/core'
+import { RIFWallet, Request } from 'lib/core'
 import { BitcoinRequest } from 'lib/bitcoin/types'
 
 import { Wallets, WalletsIsDeployed } from 'src/Context'
