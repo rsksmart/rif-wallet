@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { StatusBar, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { RIFWallet } from 'lib/core'
+import { KeyManagementSystem, RIFWallet } from 'lib/core'
 import { i18nInit } from 'lib/i18n'
 
 import {
@@ -28,7 +28,6 @@ import { useStateSubscription } from './hooks/useStateSubscription'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import {
   closeRequest,
-  selectKMS,
   selectRequests,
   selectSelectedWallet,
   selectSettingsIsLoading,
@@ -36,10 +35,7 @@ import {
   selectWallets,
   setChainId,
 } from 'store/slices/settingsSlice'
-import {
-  hasKeys as hasKeysInStorage,
-  hasPin as hasPinInStorage,
-} from 'storage/MainStorage'
+import { getKeys, hasKeys, hasPin } from 'storage/MainStorage'
 import { BitcoinProvider } from 'core/hooks/bitcoin/BitcoinContext'
 import { RifWalletServicesAuth } from 'src/lib/rifWalletServices/RifWalletServicesAuth'
 import { RifWalletServicesFetcher } from 'src/lib/rifWalletServices/RifWalletServicesFetcher'
@@ -49,13 +45,6 @@ export const navigationContainerRef =
   createNavigationContainerRef<RootStackParamList>()
 
 export const Core = () => {
-  const { hasKeys, hasPin } = useMemo(
-    () => ({
-      hasKeys: hasKeysInStorage(),
-      hasPin: hasPinInStorage(),
-    }),
-    [],
-  )
   const [fetcher, setFetcher] = useState<RifWalletServicesFetcher | undefined>(
     undefined,
   )
@@ -63,14 +52,14 @@ export const Core = () => {
 
   const selectedWallet = useAppSelector(selectSelectedWallet)
   const wallets = useAppSelector(selectWallets)
-  const kms = useAppSelector(selectKMS)
   const settingsIsLoading = useAppSelector(selectSettingsIsLoading)
   const requests = useAppSelector(selectRequests)
+  const [mnemonic, setMnemonic] = useState<string | null>(null)
 
   const insets = useSafeAreaInsets()
   const topColor = useAppSelector(selectTopColor)
 
-  const BitcoinCore = useBitcoinCore(fetcher)
+  const BitcoinCore = useBitcoinCore(mnemonic, fetcher)
 
   const { unlocked, active } = useStateSubscription()
 
@@ -99,7 +88,7 @@ export const Core = () => {
   useRifSockets({
     appActive: active,
     wallet: wallets && wallets[selectedWallet],
-    mnemonic: kms ? kms.mnemonic : null,
+    mnemonic,
     fetcher,
   })
 
@@ -109,6 +98,21 @@ export const Core = () => {
     }
     fn()
   }, [])
+
+  useEffect(() => {
+    if (!wallets) {
+      return
+    }
+
+    const keys = getKeys()
+    if (!keys) {
+      throw new Error('Could not fetch keys')
+    }
+
+    const { kms } = KeyManagementSystem.fromSerialized(keys)
+
+    setMnemonic(kms.mnemonic)
+  }, [wallets])
 
   useEffect(() => {
     if (selectedWallet && wallets) {
@@ -141,7 +145,7 @@ export const Core = () => {
     },
   })
 
-  if (hasKeys && hasPin && !unlocked) {
+  if (hasKeys() && hasPin() && !unlocked) {
     return <RequestPIN />
   }
 

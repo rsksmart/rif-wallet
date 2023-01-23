@@ -2,12 +2,12 @@ import { configureStore } from '@reduxjs/toolkit'
 import createDebugger from 'redux-flipper'
 import {
   persistStore,
-  FLUSH,
-  REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
+  // FLUSH,
+  // REHYDRATE,
+  // PAUSE,
+  // PERSIST,
+  // PURGE,
+  // REGISTER,
 } from 'redux-persist'
 import { rootReducer } from './rootReducer'
 
@@ -19,17 +19,7 @@ export const createStore = (preloadedState = {}) =>
     preloadedState,
     middleware: getDefaultMiddlewares => {
       const middlewares = getDefaultMiddlewares({
-        serializableCheck: {
-          ignoredActions: [
-            FLUSH,
-            REHYDRATE,
-            PAUSE,
-            PERSIST,
-            PURGE,
-            REGISTER,
-            'transactions/addNewTransactions',
-          ],
-        },
+        serializableCheck: false,
       })
       if (__DEV__) {
         return middlewares.concat(createDebugger())

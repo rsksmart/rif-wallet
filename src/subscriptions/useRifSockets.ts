@@ -1,14 +1,13 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 
 import { RIFWallet } from 'lib/core'
 
 import { useSetGlobalError } from 'components/GlobalErrorHandler'
-import { connectSocket } from './connectSocket'
 import { onSocketChangeEmitted } from './onSocketChangeEmitted'
 import { useAppDispatch } from 'store/storeUtils'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { rifWalletServicesSocket, abiEnhancer } from 'core/setup'
-import { InitAction } from './types'
+import { Action, InitAction } from './types'
 import { RifWalletServicesFetcher } from 'src/lib/rifWalletServices/RifWalletServicesFetcher'
 
 interface IUseRifSockets {
@@ -25,86 +24,59 @@ export const useRifSockets = ({
 }: IUseRifSockets) => {
   const dispatch = useAppDispatch()
   const setGlobalError = useSetGlobalError()
+  const onChange = useMemo(
+    () =>
+      wallet
+        ? onSocketChangeEmitted({
+            dispatch,
+            abiEnhancer,
+            wallet,
+          })
+        : null,
+    [wallet, dispatch],
+  )
 
   const onSocketInit = useCallback(
-    (_wallet: RIFWallet) => {
-      const onChange = onSocketChangeEmitted({
-        dispatch,
-        abiEnhancer,
-        wallet: _wallet,
-      })
-      return (payload: InitAction['payload']) =>
-        onChange({ type: 'init', payload })
+    (payload: InitAction['payload'], cb: (action: Action) => void) => {
+      cb({ type: 'init', payload })
     },
-    [dispatch],
+    [],
   )
+
   const onSocketError = useCallback(
     () => setGlobalError('Error connecting to the socket'),
     [setGlobalError],
   )
 
-  const reconnectToSocket = useCallback(
-    (_wallet: RIFWallet, _mnemonic: string) => {
+  useEffect(() => {
+    if (!appActive) {
+      return rifWalletServicesSocket.disconnect()
+    }
+
+    if (wallet && onChange && mnemonic && fetcher) {
       if (rifWalletServicesSocket.isConnected()) {
         rifWalletServicesSocket.disconnect()
         dispatch(resetSocketState())
       }
-      connectSocket({
-        rifServiceSocket: rifWalletServicesSocket,
-        wallet: _wallet,
-        mnemonic: _mnemonic,
-        fetcher: fetcher,
-        onInit: onSocketInit(_wallet),
-        onError: onSocketError,
-        onChange: onSocketChangeEmitted({
-          dispatch,
-          abiEnhancer,
-          wallet: _wallet,
-        }),
-      })
-    },
-    [dispatch, onSocketError, onSocketInit, fetcher],
-  )
 
-  // Disconnect from the rifServiceSocket when the app goes to the background
-  const onWalletAppActiveChange = useCallback(
-    (_appActive: boolean, _mnemonic: string) => {
-      if (!_appActive) {
-        return rifWalletServicesSocket.disconnect()
-      }
-
-      if (
-        wallet &&
-        rifWalletServicesSocket &&
-        fetcher &&
-        !rifWalletServicesSocket.isConnected()
-      ) {
-        connectSocket({
-          rifServiceSocket: rifWalletServicesSocket,
-          wallet,
-          mnemonic: _mnemonic,
-          fetcher,
-          onInit: onSocketInit(wallet),
-          onError: onSocketError,
-          onChange: onSocketChangeEmitted({ dispatch, abiEnhancer, wallet }),
-        })
-      }
-    },
-    [wallet, dispatch, onSocketInit, onSocketError, fetcher],
-  )
-
-  useEffect(() => {
-    if (mnemonic) {
-      onWalletAppActiveChange(appActive, mnemonic)
+      rifWalletServicesSocket.on('init', payload =>
+        onSocketInit(payload, onChange),
+      )
+      rifWalletServicesSocket.on('change', onChange)
+      rifWalletServicesSocket
+        .connect(wallet, mnemonic, fetcher)
+        .catch(onSocketError)
     }
-  }, [appActive, onWalletAppActiveChange, mnemonic])
-
-  useEffect(() => {
-    if (wallet && mnemonic && fetcher) {
-      reconnectToSocket(wallet, mnemonic)
-    }
-    return () => rifWalletServicesSocket.disconnect()
-  }, [wallet, reconnectToSocket, mnemonic, fetcher])
+  }, [
+    appActive,
+    wallet,
+    mnemonic,
+    onChange,
+    fetcher,
+    onSocketError,
+    onSocketInit,
+    dispatch,
+  ])
 
   return null
 }

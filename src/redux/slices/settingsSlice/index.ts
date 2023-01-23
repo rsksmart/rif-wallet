@@ -37,19 +37,14 @@ export const createWallet = createAsyncThunk(
     const rifWalletFactory = createRIFWalletFactory(request =>
       thunkAPI.dispatch(onRequest({ request })),
     )
-    const {
-      kms,
-      rifWallet,
-      rifWalletsDictionary,
-      rifWalletsIsDeployedDictionary,
-    } = await createKMS(
-      rifWalletFactory,
-      networkId ? networkId : getChainIdByType(defaultNetworkType),
-    )(mnemonic)
+    const { rifWallet, rifWalletsDictionary, rifWalletsIsDeployedDictionary } =
+      await createKMS(
+        rifWalletFactory,
+        networkId ? networkId : getChainIdByType(defaultNetworkType),
+      )(mnemonic)
 
     thunkAPI.dispatch(
-      setKeysState({
-        kms,
+      setWallets({
         wallets: rifWalletsDictionary,
         walletsIsDeployed: rifWalletsIsDeployedDictionary,
       }),
@@ -63,24 +58,31 @@ export const unlockApp = createAsyncThunk(
   'settings/unlockApp',
   async (_, thunkAPI) => {
     try {
+      const existingWallets = await loadExistingWallets(
+        createRIFWalletFactory(request =>
+          thunkAPI.dispatch(onRequest({ request })),
+        ),
+      )()
+
+      if (!existingWallets) {
+        return thunkAPI.rejectWithValue('No Existing wallets')
+      }
+
       const { kms, rifWalletsDictionary, rifWalletsIsDeployedDictionary } =
-        await loadExistingWallets(
-          createRIFWalletFactory(request =>
-            thunkAPI.dispatch(onRequest({ request })),
-          ),
-        )()
+        existingWallets
 
       thunkAPI.dispatch(
-        setKeysState({
-          kms,
+        setWallets({
           wallets: rifWalletsDictionary,
           walletsIsDeployed: rifWalletsIsDeployedDictionary,
         }),
       )
 
       thunkAPI.dispatch(setUnlocked(true))
+
+      return kms
     } catch (err) {
-      thunkAPI.rejectWithValue(err)
+      return thunkAPI.rejectWithValue(err)
     }
   },
 )
@@ -116,7 +118,6 @@ export const addNewWallet = createAsyncThunk(
 const initialState: SettingsSlice = {
   topColor: colors.darkPurple3,
   requests: [],
-  kms: null,
   wallets: null,
   walletsIsDeployed: null,
   selectedWallet: '',
@@ -153,8 +154,7 @@ const settingsSlice = createSlice({
     setPinState: (_, { payload }: PayloadAction<string>) => {
       savePin(payload)
     },
-    setKeysState: (state, { payload }: PayloadAction<SetKeysAction>) => {
-      state.kms = payload.kms
+    setWallets: (state, { payload }: PayloadAction<SetKeysAction>) => {
       state.wallets = payload.wallets
       state.walletsIsDeployed = payload.walletsIsDeployed
       state.selectedWallet = state.wallets
@@ -233,7 +233,7 @@ export const {
   changeTopColor,
   onRequest,
   closeRequest,
-  setKeysState,
+  setWallets,
   setPinState,
   setNewWallet,
   setChainId,
