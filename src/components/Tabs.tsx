@@ -1,5 +1,6 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { colors } from '../styles'
+import { RegularText } from './typography'
 
 interface Props {
   title: string
@@ -12,7 +13,7 @@ export const Tabs = ({ title, tabs, selectedTab, onTabSelected }: Props) => {
   return (
     <View style={styles.container}>
       <View style={styles.tabTitleContainer}>
-        <Text style={styles.tabTitleText}>{title}</Text>
+        <RegularText style={styles.tabTitleText}>{title}</RegularText>
       </View>
       <View style={styles.tabsContainer}>
         {tabs.map(tab => {
@@ -25,7 +26,9 @@ export const Tabs = ({ title, tabs, selectedTab, onTabSelected }: Props) => {
               key={tab}
               onPress={() => onTabSelected(tab)}
               accessibilityLabel={tab}>
-              <Text style={[tabStyle, styles.tabText]}>{tab}</Text>
+              <RegularText style={[tabStyle, styles.tabText]}>
+                {tab}
+              </RegularText>
             </TouchableOpacity>
           )
         })}
@@ -57,10 +60,9 @@ const styles = StyleSheet.create({
   },
   tabText: {
     color: colors.white,
-    paddingLeft: 10,
-    paddingTop: 10,
-    paddingRight: 10,
-    paddingBottom: 5,
+    fontSize: 13,
+    padding: 5,
+    paddingBottom: 0,
   },
   tabTitleText: {
     color: colors.white,

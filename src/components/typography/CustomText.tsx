@@ -7,7 +7,7 @@ interface CustomTextType {
 
 export interface TextType extends TextProps {
   children: ReactNode
-  style?: TextStyle
+  style?: TextStyle | TextStyle[]
   accessibilityLabel?: string
 }
 

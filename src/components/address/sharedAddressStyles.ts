@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+import { fonts } from 'src/styles/fonts'
 import { colors } from '../../styles'
 
 export const sharedAddressStyles = StyleSheet.create({
@@ -38,6 +39,7 @@ export const sharedAddressStyles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '400',
     color: colors.white,
+    font: fonts.regular,
   },
   invalidAddressText: {
     marginTop: 10,
