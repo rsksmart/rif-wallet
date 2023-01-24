@@ -7,6 +7,7 @@ import * as Keychain from 'react-native-keychain'
 import axios, { AxiosInstance } from 'axios'
 import createAuthRefreshInterceptor from 'axios-auth-refresh'
 import { UnspentTransactionType } from '../bitcoin/types'
+import { defaultChainId } from 'core/config'
 
 export interface IRIFWalletServicesFetcher {
   fetchTokensByAddress(address: string): Promise<ITokenWithBalance[]>
@@ -64,6 +65,16 @@ export class RifWalletServicesFetcher implements IRIFWalletServicesFetcher {
         if (!config.headers?.Authorization) {
           config.headers!.Authorization = `DIDAuth ${this.getAccessToken()}`
         }
+        return config
+      },
+      error => {
+        return Promise.reject(error)
+      },
+    )
+
+    this.axiosInstance.interceptors.request.use(
+      config => {
+        config.params = { ...config.params, chainId: defaultChainId }
         return config
       },
       error => {

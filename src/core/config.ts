@@ -1,9 +1,12 @@
 import Config from 'react-native-config'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
-const defaultChainType =
+export const defaultChainType =
   Config.DEFAULT_CHAIN_TYPE === 'MAINNET'
     ? ChainTypeEnum.MAINNET
     : ChainTypeEnum.TESTNET
+
+export const defaultChainId =
+  defaultChainType === ChainTypeEnum.MAINNET ? '30' : '31'
 
 export enum SETTINGS {
   DEFAULT_CHAIN_TYPE = 'DEFAULT_CHAIN_TYPE', //the chain id used by default when creating a new account
