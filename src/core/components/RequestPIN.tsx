@@ -9,9 +9,6 @@ import { pinLength } from 'shared/costants'
 import { useAppDispatch } from 'store/storeUtils'
 import { unlockApp } from 'store/slices/settingsSlice'
 
-/*import { unlockApp } from 'store/slices/settingsSlice'
-import { useStateSubscription } from '../hooks/useStateSubscription'*/
-
 export const RequestPIN = () => {
   const storedPin = useMemo(() => getPin(), [])
   const { t } = useTranslation
