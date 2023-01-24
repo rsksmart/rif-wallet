@@ -1,9 +1,10 @@
+import Clipboard from '@react-native-community/clipboard'
 import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Share } from 'react-native'
-import { CopyIcon, ShareIcon } from './icons'
+import { Share, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { TestID } from '../screens/receive/ReceiveScreen'
 import { colors } from '../styles'
-import Clipboard from '@react-native-community/clipboard'
+import { CopyIcon, ShareIcon } from './icons'
+import { RegularText } from './typography'
 
 type Props = {
   text: string
@@ -20,9 +21,9 @@ export const ShareableText: React.FC<Props> = ({ text, valueToShare }) => {
   return (
     <View style={{ ...styles.addressContainer }}>
       <View>
-        <Text testID={TestID.AddressText} style={styles.smartAddress}>
+        <RegularText testID={TestID.AddressText} style={styles.smartAddress}>
           {text}
-        </Text>
+        </RegularText>
       </View>
       <View style={styles.actions}>
         <TouchableOpacity

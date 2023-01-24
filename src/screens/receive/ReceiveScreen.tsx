@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Dimensions, ScrollView, StyleSheet, View } from 'react-native'
 import QRCode from 'react-qr-code'
+import { RegularText } from 'src/components'
 import { ToggleButtons } from '../../components/button/ToggleButtons'
 import { ShareableText } from '../../components/ShareableText'
 import { colors } from '../../styles/colors'
@@ -40,7 +41,7 @@ export const ReceiveScreen: React.FC<ReceiveScreenProps> = ({
   return (
     <ScrollView style={styles.parent}>
       <View style={qrContainerStyle}>
-        <Text style={styles.title}>share QR Code</Text>
+        <RegularText style={styles.title}>share QR Code</RegularText>
       </View>
       <View
         style={{ ...styles.qrContainer, ...qrContainerStyle }}
@@ -72,7 +73,9 @@ export const ReceiveScreen: React.FC<ReceiveScreenProps> = ({
             <ShareableText key={index} text={domain} valueToShare={domain} />
           ))}
           {registeredDomains?.length === 0 && (
-            <Text style={styles.noDomainsText}>Domains not found</Text>
+            <RegularText style={styles.noDomainsText}>
+              Domains not found
+            </RegularText>
           )}
         </View>
       )}
