@@ -9,9 +9,9 @@ import { AppHeader } from '../../ux/appHeader'
 
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import { rootTabsRouteNames } from './types'
-import { hasKeys, hasPin } from 'storage/MainStorage'
-import { HomeNavigator } from '../homeNavigator'
+import { hasPin } from 'storage/MainStorage'
 import { InjectedScreens } from 'core/Core'
+import { HomeNavigator } from '../homeNavigator'
 import { ContactsNavigation } from '../contactsNavigator'
 import { SettingsNavigator } from '../settingsNavigator'
 import { ProfileNavigator } from '../profileNavigator'
@@ -25,17 +25,10 @@ export const RootNavigationComponent = () => {
   const [isWarningVisible, setIsWarningVisible] = useState(isDeviceRooted)
   const unlocked = useAppSelector(selectIsUnlocked)
 
-  let initialRoute: rootTabsRouteNames = rootTabsRouteNames.CreateKeysUX
-  if (hasPin()) {
-    initialRoute = rootTabsRouteNames.Home
-  } else if (hasKeys()) {
-    initialRoute = rootTabsRouteNames.Settings
-  }
-
   return (
     <View style={styles.parent}>
       <RootTabs.Navigator
-        initialRouteName={initialRoute}
+        initialRouteName={rootTabsRouteNames.CreateKeysUX}
         tabBar={props => (
           <AppFooterMenu isShown={unlocked && hasPin()} {...props} />
         )}

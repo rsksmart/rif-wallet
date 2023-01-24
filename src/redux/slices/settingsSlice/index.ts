@@ -1,5 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
+import { getChainIdByType } from 'lib/utils'
+import { KeyManagementSystem } from 'lib/core'
+
 import {
   addNextWallet,
   createKMS,
@@ -8,13 +11,8 @@ import {
 } from 'core/operations'
 import { deleteDomains } from 'storage/DomainsStore'
 import { deleteContacts as deleteContactsFromRedux } from 'store/slices/contactsSlice'
-import {
-  deleteContacts,
-  deleteKeys,
-  deletePin,
-  resetMainStorage,
-  savePin,
-} from 'storage/MainStorage'
+import { deletePin, resetMainStorage, savePin } from 'storage/MainStorage'
+import { deleteKeys, getKeys } from 'storage/SecureStorage'
 import { colors } from 'src/styles'
 import {
   AddNewWalletAction,
@@ -30,9 +28,7 @@ import {
   createRIFWalletFactory,
   networkType as defaultNetworkType,
 } from 'core/setup'
-import { getChainIdByType } from 'lib/utils'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
-// import { createAppAsyncThunk } from 'store/storeUtils'
 
 export const createWallet = createAsyncThunk(
   'settings/createWallet',
@@ -109,14 +105,16 @@ export const addNewWallet = createAsyncThunk(
   'settings/addNewWallet',
   async ({ networkId }: AddNewWalletAction, thunkAPI) => {
     try {
-      const { settings } = thunkAPI.getState()
-      if (!settings.kms) {
+      const keys = await getKeys()
+      console.log('ADDING NEW WALLET', keys)
+      if (!keys) {
         return thunkAPI.rejectWithValue(
           'Can not add new wallet because no KMS created.',
         )
       }
+      const { kms } = KeyManagementSystem.fromSerialized(keys.password)
       const { rifWallet, isDeloyed } = await addNextWallet(
-        settings.kms,
+        kms,
         createRIFWalletFactory(request =>
           thunkAPI.dispatch(onRequest({ request })),
         ),
@@ -134,6 +132,7 @@ export const addNewWallet = createAsyncThunk(
 )
 
 const initialState: SettingsSlice = {
+  isSetup: false,
   topColor: colors.darkPurple3,
   requests: [],
   wallets: null,
@@ -149,6 +148,10 @@ const settingsSlice = createSlice({
   name: 'settings',
   initialState,
   reducers: {
+    setIsSetup: (state, { payload }: { payload: boolean }) => {
+      state.isSetup = payload
+      return state
+    },
     changeTopColor: (state, action: PayloadAction<string>) => {
       state.topColor = action.payload
     },
@@ -248,6 +251,7 @@ const settingsSlice = createSlice({
 })
 
 export const {
+  setIsSetup,
   changeTopColor,
   onRequest,
   closeRequest,

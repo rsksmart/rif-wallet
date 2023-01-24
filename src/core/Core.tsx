@@ -22,7 +22,6 @@ import { WalletConnectProviderElement } from 'screens/walletConnect/WalletConnec
 import { useRifSockets } from 'src/subscriptions/useRifSockets'
 import { LoadingScreen } from 'components/loading/LoadingScreen'
 import { Cover } from './components/Cover'
-import { RequestPIN } from './components/RequestPIN'
 import { useBitcoinCore } from './hooks/bitcoin/useBitcoinCore'
 import { useStateSubscription } from './hooks/useStateSubscription'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
@@ -34,12 +33,13 @@ import {
   selectTopColor,
   selectWallets,
   setChainId,
+  unlockApp,
 } from 'store/slices/settingsSlice'
-import { getKeys, hasKeys, hasPin } from 'storage/MainStorage'
 import { BitcoinProvider } from 'core/hooks/bitcoin/BitcoinContext'
 import { InjectSelectedWallet } from 'src/Context'
 import * as Screens from 'screens/index'
 import { authAxios, publicAxios } from './setup'
+import { useSetGlobalError } from 'components/GlobalErrorHandler'
 
 export const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -61,6 +61,7 @@ export const navigationContainerRef =
   createNavigationContainerRef<RootTabsParamsList>()
 
 export const Core = () => {
+  const setError = useSetGlobalError()
   const [fetcher, setFetcher] = useState<RifWalletServicesFetcher | undefined>(
     undefined,
   )
@@ -101,20 +102,19 @@ export const Core = () => {
     fn()
   }, [])
 
+  const unlockAppSetMnemonic = useCallback(async () => {
+    try {
+      const kms = await dispatch(unlockApp()).unwrap()
+
+      setMnemonic(kms.mnemonic)
+    } catch (err) {
+      console.log('ERRR', err)
+    }
+  }, [dispatch])
+
   useEffect(() => {
-    if (!wallets) {
-      return
-    }
-
-    const keys = getKeys()
-    if (!keys) {
-      throw new Error('Could not fetch keys')
-    }
-
-    const { kms } = KeyManagementSystem.fromSerialized(keys)
-
-    setMnemonic(kms.mnemonic)
-  }, [wallets])
+    unlockAppSetMnemonic()
+  }, [unlockAppSetMnemonic])
 
   useEffect(() => {
     if (selectedWallet && wallets) {
@@ -146,10 +146,6 @@ export const Core = () => {
       backgroundColor: topColor,
     },
   })
-
-  if (hasKeys() && hasPin() && !unlocked) {
-    return <RequestPIN />
-  }
 
   return (
     <View style={styles.top}>

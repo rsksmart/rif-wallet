@@ -1,15 +1,30 @@
 import { StyleSheet, View, ScrollView } from 'react-native'
 import { Trans } from 'react-i18next'
 
-import { CopyComponent, MediumText, RegularText } from '../../components'
-import { useAppSelector } from 'store/storeUtils'
-import { selectKMS } from 'store/slices/settingsSlice'
+import { KeyManagementSystem } from 'lib/core'
+
+import { CopyComponent, MediumText, RegularText } from 'components/index'
+import { getKeys } from 'storage/SecureStorage'
+import { useEffect, useState } from 'react'
+
 export enum TestID {
   Mnemonic = 'Mnemonic.Text',
 }
 
 export const ShowMnemonicScreen = () => {
-  const kms = useAppSelector(selectKMS)
+  const [mnemonic, setMnemonic] = useState<string | null>()
+
+  useEffect(() => {
+    const fn = async () => {
+      const keys = await getKeys()
+      if (keys) {
+        const { kms } = KeyManagementSystem.fromSerialized(keys.password)
+        setMnemonic(kms.mnemonic)
+      }
+    }
+
+    fn()
+  }, [])
 
   return (
     <ScrollView>
@@ -25,7 +40,7 @@ export const ShowMnemonicScreen = () => {
         <MediumText>
           <Trans>Master key</Trans>
         </MediumText>
-        <CopyComponent testID={TestID.Mnemonic} value={kms?.mnemonic || ''} />
+        <CopyComponent testID={TestID.Mnemonic} value={mnemonic || ''} />
       </View>
     </ScrollView>
   )
