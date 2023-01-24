@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { StatusBar, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { KeyManagementSystem, RIFWallet } from 'lib/core'
+import { RIFWallet } from 'lib/core'
 import { i18nInit } from 'lib/i18n'
 import { RifWalletServicesAuth } from 'lib/rifWalletServices/RifWalletServicesAuth'
 import { RifWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
@@ -39,7 +39,6 @@ import { BitcoinProvider } from 'core/hooks/bitcoin/BitcoinContext'
 import { InjectSelectedWallet } from 'src/Context'
 import * as Screens from 'screens/index'
 import { authAxios, publicAxios } from './setup'
-import { useSetGlobalError } from 'components/GlobalErrorHandler'
 
 export const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -61,7 +60,6 @@ export const navigationContainerRef =
   createNavigationContainerRef<RootTabsParamsList>()
 
 export const Core = () => {
-  const setError = useSetGlobalError()
   const [fetcher, setFetcher] = useState<RifWalletServicesFetcher | undefined>(
     undefined,
   )
