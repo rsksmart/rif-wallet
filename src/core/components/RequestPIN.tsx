@@ -7,7 +7,10 @@ import { PinContainer } from 'components/PinManager/PinContainer'
 import { useSetGlobalError } from 'components/GlobalErrorHandler'
 import { pinLength } from 'shared/costants'
 import { useAppDispatch } from 'store/storeUtils'
-import { resetKeysAndPin, unlockApp } from 'store/slices/settingsSlice'
+import { unlockApp } from 'store/slices/settingsSlice'
+
+/*import { unlockApp } from 'store/slices/settingsSlice'
+import { useStateSubscription } from '../hooks/useStateSubscription'*/
 
 export const RequestPIN = () => {
   const storedPin = useMemo(() => getPin(), [])
