@@ -1,6 +1,8 @@
 import { BigNumber } from 'ethers'
-import BIPWithRequest from '../../lib/bitcoin/BIPWithRequest'
-import { UnspentTransactionType } from '../../lib/bitcoin/types'
+import {
+  BIPWithRequest,
+  UnspentTransactionType,
+} from '@rsksmart/rif-wallet-bitcoin'
 import { OnSetCurrentTransactionFunction, OnSetErrorFunction } from './types'
 
 interface ITransferBitcoin {

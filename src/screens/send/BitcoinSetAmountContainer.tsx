@@ -1,14 +1,14 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { BigNumber } from 'ethers'
 
-import { UnspentTransactionType } from 'lib/bitcoin/types'
 import {
   convertBtcToSatoshi,
   convertSatoshiToBtcHuman,
   validateAmount,
-} from 'lib/bitcoin/utils'
+  UnspentTransactionType,
+} from '@rsksmart/rif-wallet-bitcoin'
 import { sanitizeDecimalText, sanitizeMaxDecimalText } from 'lib/utils'
-import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
+import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 
 import { ISetAmountComponent } from './SetAmountComponent'
 import { BitcoinSetAmountPresentation } from './BitcoinSetAmountPresentation'

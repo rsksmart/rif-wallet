@@ -3,7 +3,7 @@ import { StackScreenProps } from '@react-navigation/stack'
 import Resolver from '@rsksmart/rns-resolver.js'
 import { ContractTransaction } from 'ethers'
 
-import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
+import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 
 import { ActivityMixedType } from 'screens/activity/types'
 import { IProfileStore } from 'store/slices/profileSlice/types'

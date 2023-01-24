@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { BigNumber } from 'ethers'
 import { RIFWallet } from 'lib/core'
-import { UnspentTransactionType } from 'lib/bitcoin/types'
+import { UnspentTransactionType } from '@rsksmart/rif-wallet-bitcoin'
 import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { TransactionInformation } from './TransactionInfo'

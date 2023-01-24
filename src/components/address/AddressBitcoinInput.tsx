@@ -4,8 +4,10 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Clipboard from '@react-native-community/clipboard'
 
-import { isBitcoinAddressValid } from 'lib/bitcoin/utils'
-import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
+import {
+  isBitcoinAddressValid,
+  BitcoinNetwork,
+} from '@rsksmart/rif-wallet-bitcoin'
 
 import { colors } from 'src/styles'
 import { rnsResolver } from 'core/setup'

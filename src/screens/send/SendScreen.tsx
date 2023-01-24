@@ -15,7 +15,7 @@ import { TransactionInfo } from './TransactionInfo'
 import { colors } from 'src/styles'
 import { TransactionForm } from './TransactionForm'
 import WalletNotDeployedView from './WalletNotDeployedModal'
-import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
+import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import {
   usePaymentExecutor,
   PaymentExecutorContext,

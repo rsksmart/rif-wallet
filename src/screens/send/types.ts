@@ -1,8 +1,10 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider'
 import { ContractReceipt } from 'ethers'
-import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
+import {
+  BitcoinNetwork,
+  UnspentTransactionType,
+} from '@rsksmart/rif-wallet-bitcoin'
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
-import { UnspentTransactionType } from 'lib/bitcoin/types'
 
 import { TransactionInformation } from './TransactionInfo'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'

@@ -1,10 +1,10 @@
 import { FC } from 'react'
 import { Paragraph } from './components'
-import { RIFWallet, Request } from './lib/core'
-import { ScreenWithWallet } from './screens/types'
-import { BitcoinRequest } from './lib/bitcoin/types'
+import { RIFWallet } from 'lib/core'
+import { ScreenWithWallet } from 'screens/types'
 import { useAppSelector } from 'store/storeUtils'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { RequestWithBitcoin } from 'shared/types'
 
 export interface Wallets {
   [id: string]: RIFWallet
@@ -12,8 +12,8 @@ export interface Wallets {
 export interface WalletsIsDeployed {
   [id: string]: boolean
 }
-type RequestMixed = Request & BitcoinRequest
-export type Requests = RequestMixed[]
+
+export type Requests = RequestWithBitcoin[]
 
 export function InjectSelectedWallet<T>(
   Component: FC<ScreenWithWallet & T>,

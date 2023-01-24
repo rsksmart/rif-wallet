@@ -2,11 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
 
 import { balanceToDisplay, getChainIdByType } from 'lib/utils'
-import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
+import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { toChecksumAddress } from 'components/address/lib'
-import { Paragraph } from 'components/index'
+import { Paragraph } from 'src/components'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
