@@ -18,8 +18,8 @@ export const getKeys = async () => {
 
     const keys = await getGenericPassword({
       accessible: ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
-      authenticationType: AUTHENTICATION_TYPE.BIOMETRICS,
-      accessControl: ACCESS_CONTROL.BIOMETRY_ANY,
+      authenticationType: AUTHENTICATION_TYPE.DEVICE_PASSCODE_OR_BIOMETRICS,
+      accessControl: ACCESS_CONTROL.BIOMETRY_ANY_OR_DEVICE_PASSCODE,
     })
     if (!keys) {
       return null
@@ -34,8 +34,8 @@ export const getKeys = async () => {
 export const saveKeys = async (keysValue: string) =>
   setGenericPassword(keyManagement, keysValue, {
     accessible: ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
-    authenticationType: AUTHENTICATION_TYPE.BIOMETRICS,
-    accessControl: ACCESS_CONTROL.BIOMETRY_ANY,
+    authenticationType: AUTHENTICATION_TYPE.DEVICE_PASSCODE_OR_BIOMETRICS,
+    accessControl: ACCESS_CONTROL.BIOMETRY_ANY_OR_DEVICE_PASSCODE,
   })
 
 export const deleteKeys = () => resetGenericPassword()
