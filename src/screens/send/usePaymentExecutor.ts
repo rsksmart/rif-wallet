@@ -17,6 +17,11 @@ import { transferBitcoin } from './transferBitcoin'
 import { transfer } from './transferTokens'
 import { MixedTokenAndNetworkType, OnSetTransactionStatusChange } from './types'
 
+import { TransactionInformation } from './TransactionInfo'
+import { transferBitcoin } from './transferBitcoin'
+import { transfer } from './transferTokens'
+import { MixedTokenAndNetworkType, OnSetTransactionStatusChange } from './types'
+
 interface IPaymentExecutorContext {
   setUtxosGlobal: (utxos: UnspentTransactionType[]) => void
   setBitcoinBalanceGlobal: (balance: number) => void
