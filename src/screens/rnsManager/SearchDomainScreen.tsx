@@ -21,7 +21,7 @@ import { ScreenWithWallet } from '../types'
 import TitleStatus from './TitleStatus'
 
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { setProfile } from 'store/slices/profileSlice/profileSlice'
+import { setProfile } from 'store/slices/profileSlice'
 import { selectProfile } from 'store/slices/profileSlice/selector'
 
 type Props = RootStackScreenProps<rootStackRouteNames.SearchDomain> &
