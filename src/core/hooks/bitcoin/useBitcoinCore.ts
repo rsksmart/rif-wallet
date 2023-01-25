@@ -79,6 +79,8 @@ export const useBitcoinCore = (
         )
         const result: BIPWithRequest = createAndInit(...args)
         result.fetcher = rifFetcher
+        result.paymentFacade.onSendTransaction =
+          rifFetcher.sendTransactionHexData
         return result
       }
       const bitcoinNetwork = new BitcoinNetwork(
