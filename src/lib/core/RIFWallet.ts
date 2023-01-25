@@ -3,10 +3,11 @@ import { TransactionRequest, Provider, TransactionResponse, BlockTag } from '@et
 import { TypedDataSigner } from '@ethersproject/abstract-signer'
 import { defineReadOnly } from '@ethersproject/properties'
 import { resolveProperties } from 'ethers/lib/utils'
-import { SmartWalletFactory } from './SmartWalletFactory'
-import { SmartWallet } from './SmartWallet'
+import { RIFRelaySDK, RelayPayment, RifRelayConfig, SmartWalletFactory, SmartWallet } from '@rsksmart/rif-relay-light-sdk'
+
+// import { SmartWalletFactory } from './SmartWalletFactory'
+// import { SmartWallet } from './SmartWallet'
 import { filterTxOptions } from './filterTxOptions'
-import { RIFRelaySDK, RelayPayment, RifRelayConfig } from '../relay-sdk'
 
 export type IRequest<Type, Payload, ReturnType, ConfirmArgs> = {
   type: Type,
@@ -87,11 +88,12 @@ export class RIFWallet extends Signer implements TypedDataSigner {
   }
 
   static async create (signer: Signer, smartWalletFactoryAddress: string, onRequest: OnRequest, rifRelayConfig: RifRelayConfig) {
+    // @jesse, remove these:
     const smartWalletFactory = await SmartWalletFactory.create(signer, smartWalletFactoryAddress)
     const smartWalletAddress = await smartWalletFactory.getSmartWalletAddress()
     const smartWallet = await SmartWallet.create(signer, smartWalletAddress)
 
-    const sdk = await RIFRelaySDK.create(smartWallet, smartWalletFactory, rifRelayConfig)
+    const sdk = await RIFRelaySDK.create(signer, rifRelayConfig)
 
     return new RIFWallet(smartWalletFactory, smartWallet, onRequest, sdk)
   }

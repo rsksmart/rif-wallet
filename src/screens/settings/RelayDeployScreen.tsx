@@ -6,10 +6,10 @@ import {
   TransactionResponse,
   TransactionReceipt,
 } from '@ethersproject/abstract-provider'
+import { RIF_TOKEN_ADDRESS_TESTNET } from '@rsksmart/rif-relay-light-sdk'
 
 import { ScreenWithWallet } from '../types'
 import { colors } from 'src/styles'
-import { RIF_TOKEN_ADDRESS } from 'src/lib/relay-sdk/helpers'
 import { MediumText, SecondaryButton, SemiBoldText } from 'src/components'
 import { setWalletIsDeployed } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'src/redux/storeUtils'
@@ -29,7 +29,7 @@ export const RelayDeployScreen = ({
     setDeployError(null)
     setIsDeploying(true)
     const freePayment = {
-      tokenContract: RIF_TOKEN_ADDRESS,
+      tokenContract: RIF_TOKEN_ADDRESS_TESTNET,
       tokenAmount: BigNumber.from(0),
     }
 

@@ -5,7 +5,7 @@ import { AbiEnhancer } from '../lib/abiEnhancer/AbiEnhancer'
 import { getWalletSetting, isDefaultChainTypeMainnet, SETTINGS } from './config'
 import { RifWalletServicesSocket } from '../lib/rifWalletServices/RifWalletServicesSocket'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
-import { RifRelayConfig } from 'src/lib/relay-sdk'
+import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
 import axios from 'axios'
 
 export const networkType = getWalletSetting(
@@ -42,12 +42,12 @@ export const rnsResolver = isDefaultChainTypeMainnet
 export const authClient = getWalletSetting(SETTINGS.AUTH_CLIENT)
 
 export const rifRelayConfig: RifRelayConfig = {
+  smartWalletFactoryAddress: getWalletSetting(
+    SETTINGS.SMART_WALLET_FACTORY_ADDRESS,
+  ),
   relayVerifierAddress: getWalletSetting(SETTINGS.RELAY_VERIFIER_ADDRESS),
   deployVerifierAddress: getWalletSetting(SETTINGS.DEPLOY_VERIFIER_ADDRESS),
   relayServer: getWalletSetting(SETTINGS.RIF_RELAY_SERVER),
-  relayWorkerAddress: getWalletSetting(SETTINGS.RELAY_WORKER_ADDRESS),
-  relayHubAddress: getWalletSetting(SETTINGS.RELAY_HUB_ADDRESS),
-  feesReceiver: getWalletSetting(SETTINGS.FEES_RECEIVER),
 }
 
 export const createRIFWalletFactory =
