@@ -6,7 +6,7 @@ import { balancesReducer } from './slices/balancesSlice'
 import { contactsReducer } from 'store/slices/contactsSlice'
 import { profileReducer } from './slices/profileSlice'
 import { settingsSliceReducer } from './slices/settingsSlice'
-import { transactionsReducer } from './slices/transactionsSlice/transactionsSlice'
+import { transactionsReducer } from './slices/transactionsSlice'
 import { usdPriceReducer } from './slices/usdPricesSlice/usdPricesSlice'
 
 const persistConfig = {

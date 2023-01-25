@@ -12,8 +12,8 @@ import { useAppDispatch } from 'store/storeUtils'
 import {
   addPendingTransaction,
   modifyTransaction,
-} from 'store/slices/transactionsSlice/transactionsSlice'
-import { IApiTransactionWithExtras } from 'store/slices/transactionsSlice/types'
+  IApiTransactionWithExtras,
+} from 'store/slices/transactionsSlice'
 
 interface IPaymentExecutorContext {
   setUtxosGlobal: (utxos: UnspentTransactionType[]) => void

@@ -10,7 +10,7 @@ import {
   addNewEvent,
   addNewTransaction,
   addNewTransactions,
-} from 'store/slices/transactionsSlice/transactionsSlice'
+} from 'store/slices/transactionsSlice'
 import { setUsdPrices } from 'store/slices/usdPricesSlice'
 import { AppDispatch } from 'store/index'
 import { AbiWallet, Action } from './types'
