@@ -106,7 +106,7 @@ export const addNewWallet = createAsyncThunk(
   async ({ networkId }: AddNewWalletAction, thunkAPI) => {
     try {
       const keys = await getKeys()
-      console.log('ADDING NEW WALLET', keys)
+
       if (!keys) {
         return thunkAPI.rejectWithValue(
           'Can not add new wallet because no KMS created.',

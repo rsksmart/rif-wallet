@@ -41,7 +41,6 @@ export const loadExistingWallets =
 export const createKMS =
   (createRIFWallet: CreateRIFWallet, networkId: number) =>
   async (mnemonic: string) => {
-    console.log('CREATING KMS', mnemonic)
     const kms = KeyManagementSystem.import(mnemonic)
     const { save, wallet } = kms.nextWallet(networkId)
 
