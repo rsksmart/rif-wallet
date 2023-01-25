@@ -5,6 +5,7 @@ import {
   RelayDataType,
   RelayRequestType,
 } from './types'
+import { getWalletSetting, SETTINGS } from 'core/config'
 
 export interface EIP712Domain {
   name?: string | undefined
@@ -37,7 +38,7 @@ export const validUntilTime = () =>
 export const MAX_RELAY_NONCE_GAP = 3
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const INTERNAL_TRANSACTION_ESTIMATE_CORRECTION = 20000
-export const RIF_TOKEN_ADDRESS_TESTNET =
-  '0x19F64674D8A5B4E652319F5e239eFd3bc969A1fE'
+export const RIF_TOKEN_ADDRESS = getWalletSetting(SETTINGS.RIF_CONTRACT_ADDRESS)
+
 export const TWO_RIF = BigNumber.from('2000000000000000000')
 export const TWO_DAYS = 172800

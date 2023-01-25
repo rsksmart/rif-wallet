@@ -7,7 +7,7 @@ import {
   OverriddableTransactionOptions,
   SendTransactionRequest,
 } from 'lib/core'
-import { RIF_TOKEN_ADDRESS_TESTNET } from 'lib/relay-sdk/helpers'
+import { RIF_TOKEN_ADDRESS } from 'lib/relay-sdk/helpers'
 import { balanceToDisplay, shortAddress } from 'lib/utils'
 
 import {
@@ -53,7 +53,7 @@ const ReviewTransactionModal = ({
       gasPrice: BigNumber.from(enhancedTransactionRequest.gasPrice),
       gasLimit: BigNumber.from(enhancedTransactionRequest.gasLimit),
       tokenPayment: {
-        tokenContract: RIF_TOKEN_ADDRESS_TESTNET,
+        tokenContract: RIF_TOKEN_ADDRESS,
         tokenAmount: txCostInRif,
       },
     }

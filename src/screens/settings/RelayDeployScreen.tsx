@@ -9,7 +9,7 @@ import {
 
 import { ScreenWithWallet } from '../types'
 import { colors } from 'src/styles'
-import { RIF_TOKEN_ADDRESS_TESTNET } from 'src/lib/relay-sdk/helpers'
+import { RIF_TOKEN_ADDRESS } from 'src/lib/relay-sdk/helpers'
 import { MediumText, SecondaryButton, SemiBoldText } from 'src/components'
 import { setWalletIsDeployed } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'src/redux/storeUtils'
@@ -28,9 +28,8 @@ export const RelayDeployScreen = ({
   const deploy = async () => {
     setDeployError(null)
     setIsDeploying(true)
-
     const freePayment = {
-      tokenContract: RIF_TOKEN_ADDRESS_TESTNET,
+      tokenContract: RIF_TOKEN_ADDRESS,
       tokenAmount: BigNumber.from(0),
     }
 
