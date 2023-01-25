@@ -5,7 +5,7 @@ import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import {
   addOrUpdateBalances,
   addOrUpdateNewBalance,
-} from 'store/slices/balancesSlice/balancesSlice'
+} from 'store/slices/balancesSlice'
 import {
   addNewEvent,
   addNewTransaction,
