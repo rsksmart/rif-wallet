@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
+import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 
 import { balanceToDisplay, getChainIdByType } from 'lib/utils'
-import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { toChecksumAddress } from 'components/address/lib'
-import { Paragraph } from 'src/components'
+import { Paragraph } from 'components/index'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
@@ -16,14 +16,14 @@ import { colors } from 'src/styles'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
+import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
+import { changeTopColor, selectActiveWallet } from 'store/slices/settingsSlice'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+
 import PortfolioComponent from './PortfolioComponent'
 import SelectedTokenComponent from './SelectedTokenComponent'
 import SendReceiveButtonComponent from './SendReceiveButtonComponent'
 import { getTokenColor } from './tokenColor'
-
-import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
-import { changeTopColor, selectActiveWallet } from 'store/slices/settingsSlice'
-import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 
 export const HomeScreen = ({
   navigation,

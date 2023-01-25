@@ -3,7 +3,6 @@ import { Text, TextInput, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Clipboard from '@react-native-community/clipboard'
-
 import {
   isBitcoinAddressValid,
   BitcoinNetwork,

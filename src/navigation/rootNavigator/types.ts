@@ -2,13 +2,13 @@ import { NavigationProp, NavigatorScreenParams } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import Resolver from '@rsksmart/rns-resolver.js'
 import { ContractTransaction } from 'ethers'
-
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 
 import { ActivityMixedType } from 'screens/activity/types'
 import { IProfileStore } from 'store/slices/profileSlice/types'
-import { CreateKeysStackParamList } from '../createKeysNavigator'
 import { RifWalletServicesFetcher } from 'src/lib/rifWalletServices/RifWalletServicesFetcher'
+
+import { CreateKeysStackParamList } from '../createKeysNavigator'
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =
   StackScreenProps<RootStackParamList, T>

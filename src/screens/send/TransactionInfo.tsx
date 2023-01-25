@@ -8,14 +8,17 @@ import {
 } from 'react-native'
 import { Network } from 'bitcoin-address-validation'
 import Clipboard from '@react-native-community/clipboard'
-import { colors, spacing } from '../../styles/'
-import { TokenImage } from '../home/TokenImage'
+import { isBitcoinAddressValid } from '@rsksmart/rif-wallet-bitcoin'
+
 import { SearchIcon } from 'components/icons/SearchIcon'
 import { StatusIcon } from 'components/statusIcons'
 import { getWalletSetting, SETTINGS } from 'src/core/config'
 import { useAppSelector } from 'store/storeUtils'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
-import { isBitcoinAddressValid } from '@rsksmart/rif-wallet-bitcoin'
+
+import { TokenImage } from '../home/TokenImage'
+import { colors, spacing } from '../../styles/'
+
 export interface TransactionInformation {
   status: 'USER_CONFIRM' | 'PENDING' | 'SUCCESS' | 'FAILED'
   to?: string

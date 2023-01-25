@@ -6,27 +6,30 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native'
+import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
+
+import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+
 import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
+import { colors } from 'src/styles'
+import { selectUsdPrices } from 'store/slices/usdPricesSlice'
+import { useAppSelector } from 'store/storeUtils'
+import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
+import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
+
 import { ScreenWithWallet } from '../types'
 import { TransactionInfo } from './TransactionInfo'
-import { colors } from 'src/styles'
 import { TransactionForm } from './TransactionForm'
 import WalletNotDeployedView from './WalletNotDeployedModal'
-import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import {
   usePaymentExecutor,
   PaymentExecutorContext,
 } from './usePaymentExecutor'
 import { useFetchBitcoinNetworksAndTokens } from './useFetchBitcoinNetworksAndTokens'
 import { MixedTokenAndNetworkType } from './types'
-import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
-import { selectUsdPrices } from 'store/slices/usdPricesSlice'
-import { useAppSelector } from 'store/storeUtils'
-import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
-import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
 
 export const SendScreen = ({
   route,

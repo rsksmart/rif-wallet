@@ -13,10 +13,11 @@ import {
   StoredBitcoinNetworkValue,
 } from 'storage/BitcoinNetworkStore'
 import { bitcoinTestnet } from 'shared/costants'
-import { useStoredBitcoinNetworks } from './useStoredBitcoinNetworks'
 import { useAppDispatch } from 'store/storeUtils'
 import { onRequest } from 'store/slices/settingsSlice'
 import { RifWalletServicesFetcher } from 'src/lib/rifWalletServices/RifWalletServicesFetcher'
+
+import { useStoredBitcoinNetworks } from './useStoredBitcoinNetworks'
 
 export interface UseBitcoinCoreResult {
   networks: Array<BitcoinNetwork>

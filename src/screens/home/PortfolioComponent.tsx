@@ -1,6 +1,5 @@
 import { StyleSheet, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
-
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
@@ -8,6 +7,7 @@ import { Paragraph } from 'src/components'
 import { colors } from 'src/styles'
 import { grid } from 'src/styles'
 import { IPrice } from 'src/subscriptions/types'
+
 import {
   BalanceCardComponent,
   BitcoinCardComponent,

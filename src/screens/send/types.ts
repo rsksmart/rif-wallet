@@ -4,11 +4,13 @@ import {
   BitcoinNetwork,
   UnspentTransactionType,
 } from '@rsksmart/rif-wallet-bitcoin'
+
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 
-import { TransactionInformation } from './TransactionInfo'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { TransactionExtras } from 'store/slices/transactionsSlice/types'
+
+import { TransactionInformation } from './TransactionInfo'
 
 export type OnSetErrorFunction = (
   error: string | null | { message: string },

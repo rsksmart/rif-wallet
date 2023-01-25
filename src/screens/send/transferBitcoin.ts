@@ -3,6 +3,7 @@ import {
   BIPWithRequest,
   UnspentTransactionType,
 } from '@rsksmart/rif-wallet-bitcoin'
+
 import { OnSetCurrentTransactionFunction, OnSetErrorFunction } from './types'
 
 interface ITransferBitcoin {
