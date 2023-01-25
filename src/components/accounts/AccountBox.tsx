@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 
 import { SmartWalletFactory } from 'lib/core/SmartWalletFactory'
 
-import { setAccount } from 'store/slices/accountsSlice/accountsSlice'
+import { setAccount } from 'store/slices/accountsSlice'
 import { selectAccounts } from 'store/slices/accountsSlice/selector'
 import { AccountPayload } from 'store/slices/accountsSlice/types'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
