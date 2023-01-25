@@ -44,16 +44,20 @@ const ReviewTransactionModal = ({
   const [error, setError] = useState<string | null>(null)
   const [txCostInRif, setTxCostInRif] = useState<BigNumber>(BigNumber.from(0))
 
+  const tokenContract = RIF_TOKEN_ADDRESS_TESTNET
+
   useEffect(() => {
-    wallet.rifRelaySdk.estimateTransactionCost().then(setTxCostInRif)
-  }, [wallet.rifRelaySdk])
+    wallet.rifRelaySdk
+      .estimateTransactionCost(txRequest, tokenContract)
+      .then(setTxCostInRif)
+  }, [request, txRequest, wallet.rifRelaySdk, tokenContract])
 
   const confirmTransaction = async () => {
     const confirmObject: OverriddableTransactionOptions = {
       gasPrice: BigNumber.from(enhancedTransactionRequest.gasPrice),
       gasLimit: BigNumber.from(enhancedTransactionRequest.gasLimit),
       tokenPayment: {
-        tokenContract: RIF_TOKEN_ADDRESS_TESTNET,
+        tokenContract,
         tokenAmount: txCostInRif,
       },
     }
@@ -70,6 +74,11 @@ const ReviewTransactionModal = ({
     request.reject('User rejects the transaction')
     closeModal()
   }
+
+  const feeEstimateReady = txCostInRif.toString() !== '0'
+  const rifFee = feeEstimateReady
+    ? `${balanceToDisplay(txCostInRif, 18, 0)} tRIF`
+    : 'estimating fee...'
 
   return isLoaded ? (
     <ScrollView>
@@ -128,13 +137,7 @@ const ReviewTransactionModal = ({
         )}
       </View>
 
-      {txCostInRif && (
-        <ReadOnlyField
-          label="Fee in tRIF"
-          value={`${balanceToDisplay(txCostInRif, 18, 0)} tRIF`}
-          testID="tRIF.fee"
-        />
-      )}
+      <ReadOnlyField label="Fee in tRIF" value={rifFee} testID="tRIF.fee" />
 
       {error && (
         <View style={sharedStyles.row}>
@@ -154,7 +157,6 @@ const ReviewTransactionModal = ({
             title={t('reject')}
             testID="Cancel.Button"
             accessibilityLabel="cancel"
-            disabled={!isLoaded}
           />
         </View>
         <View style={sharedStyles.column}>
@@ -163,7 +165,7 @@ const ReviewTransactionModal = ({
             title={t('sign')}
             testID="Confirm.Button"
             accessibilityLabel="confirm"
-            disabled={!isLoaded}
+            disabled={!feeEstimateReady}
           />
         </View>
       </View>
