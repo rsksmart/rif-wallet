@@ -1,4 +1,4 @@
-import { IEnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
+import { EnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
 import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
@@ -6,7 +6,6 @@ import {
   addOrUpdateBalances,
   addOrUpdateNewBalance,
 } from 'store/slices/balancesSlice/balancesSlice'
-import { setIsSetup } from 'store/slices/appStateSlice/appStateSlice'
 import {
   addNewEvent,
   addNewTransaction,
@@ -33,7 +32,7 @@ const onNewTransactionEventEmitted = async ({
 }: OnNewTransactionEventEmittedArgs) => {
   const payloadToUse: {
     originTransaction: IApiTransaction
-    enhancedTransaction?: IEnhancedResult
+    enhancedTransaction?: EnhancedResult
   } = {
     originTransaction: payload,
     enhancedTransaction: undefined,
@@ -89,7 +88,6 @@ export const onSocketChangeEmitted =
             }),
           )
           dispatch(addOrUpdateBalances(payload.balances))
-          dispatch(setIsSetup(true))
           break
         case 'newTokenTransfer':
           // This is not being used anywhere
