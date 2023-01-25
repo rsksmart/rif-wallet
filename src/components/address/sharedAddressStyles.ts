@@ -23,7 +23,6 @@ export const sharedAddressStyles = StyleSheet.create({
     margin: 3,
   },
   rnsDomainAddress: {
-    marginLeft: 4,
     fontSize: 11,
   },
   inputContainer: {
@@ -38,7 +37,7 @@ export const sharedAddressStyles = StyleSheet.create({
     flex: 5,
     fontSize: 16,
     fontWeight: '400',
-    color: colors.white,
+    color: colors.lightPurple,
     font: fonts.regular,
   },
   invalidAddressText: {

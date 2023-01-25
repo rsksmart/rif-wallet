@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
+import { RegularText } from '../typography'
 import BaseButton from './BaseButton'
 import { StyledButtonProps } from './types'
 
@@ -46,7 +47,11 @@ export const StyledButton = ({
       onHideUnderlay={() => setIsPressed(false)}>
       <View style={styles.contentWrapper}>
         {icon}
-        {title && <Text style={{ ...styles.text, ...textStyle }}>{title}</Text>}
+        {title && (
+          <RegularText style={{ ...styles.text, ...textStyle }}>
+            {title}
+          </RegularText>
+        )}
       </View>
     </BaseButton>
   )

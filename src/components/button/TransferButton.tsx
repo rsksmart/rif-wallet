@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { StyleSheet, Text } from 'react-native'
+import { StyleSheet } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import { colors } from 'src/styles'
+import { MediumText } from '../typography'
 import BaseButton from './BaseButton'
 import { ButtonProps } from './types'
 
@@ -30,7 +31,7 @@ export const TransferButton = ({
         disabled={disabled}
         onShowUnderlay={() => setIsPressed(true)}
         onHideUnderlay={() => setIsPressed(false)}>
-        <Text style={styles.text}>{title}</Text>
+        <MediumText style={styles.text}>{title}</MediumText>
       </BaseButton>
     </LinearGradient>
   )

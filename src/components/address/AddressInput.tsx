@@ -17,6 +17,7 @@ import {
   validateAddress,
 } from './lib'
 import { sharedAddressStyles as styles } from './sharedAddressStyles'
+import { RegularText } from '../typography'
 
 interface AddressInputProps {
   initialValue: string
@@ -144,7 +145,6 @@ export const AddressInput = ({
     handleChangeText('')
     setStatus({ type: 'READY', value: '' })
   }
-
   return showQRScanner ? (
     <QRCodeScanner
       onClose={() => setShowQRScanner(false)}
@@ -158,8 +158,12 @@ export const AddressInput = ({
       {!!domainFound && (
         <View style={styles.rnsDomainContainer}>
           <View>
-            <Text style={styles.rnsDomainName}> {domainFound}</Text>
-            <Text style={styles.rnsDomainAddress}>{addressResolved}</Text>
+            <RegularText style={styles.rnsDomainName}>
+              {domainFound}
+            </RegularText>
+            <RegularText style={styles.rnsDomainAddress}>
+              {addressResolved}
+            </RegularText>
           </View>
           <View style={styles.rnsDomainUnselect}>
             <TouchableOpacity

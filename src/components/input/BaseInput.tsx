@@ -3,7 +3,6 @@ import {
   ColorValue,
   StyleProp,
   StyleSheet,
-  Text,
   TextInputProps,
   TextStyle,
   View,
@@ -12,6 +11,7 @@ import { TextInput } from 'react-native-gesture-handler'
 import { colors } from '../../styles'
 import { fonts } from '../../styles/fonts'
 import { BaseInputStatus } from '../shared'
+import { RegularText } from '../typography'
 
 interface Props {
   inputStyle?: StyleProp<TextStyle>
@@ -66,7 +66,9 @@ export const BaseInput: React.FC<TextInputProps & Props> = ({
         {...params}
       />
       {suffix ? (
-        <Text style={{ ...styles.suffix, fontSize }}>{suffix}</Text>
+        <RegularText style={{ ...styles.suffix, fontSize }}>
+          {suffix}
+        </RegularText>
       ) : null}
     </View>
   )

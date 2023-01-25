@@ -1,35 +1,34 @@
 import { CompositeScreenProps } from '@react-navigation/native'
+import { AddressInput } from 'components/address'
+import { PrimaryButton } from 'components/button'
+import { getChainIdByType } from 'lib/utils'
+import {
+  contactsStackRouteNames,
+  ContactsStackScreenProps,
+} from 'navigation/contactsNavigator'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
 import { useCallback, useState } from 'react'
 import {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
+  StyleSheet,
+  View,
 } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { PrimaryButton } from 'components/button'
-import {
-  contactsStackRouteNames,
-  ContactsStackScreenProps,
-} from 'navigation/contactsNavigator'
-import { AddressInput } from 'components/address'
+import { RegularText } from 'src/components'
 import { colors, grid } from 'src/styles'
 import { fonts } from 'src/styles/fonts'
-import { setOpacity } from '../home/tokenColor'
-import { Contact } from 'store/slices/contactsSlice/types'
-import { useAppDispatch } from 'store/storeUtils'
 import { addContact, editContact } from 'store/slices/contactsSlice'
-import { useAppSelector } from 'store/storeUtils'
+import { Contact } from 'store/slices/contactsSlice/types'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
-import { getChainIdByType } from 'lib/utils'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { setOpacity } from '../home/tokenColor'
 
 export type ContactFormScreenProps = CompositeScreenProps<
   ContactsStackScreenProps<contactsStackRouteNames.ContactForm>,
@@ -100,12 +99,12 @@ export const ContactFormScreen = ({
               size={15}
               borderRadius={20}
             />
-            <Text style={styles.title}>
+            <RegularText style={styles.title}>
               {initialValue.id ? 'Edit Contact' : 'Create Contact'}
-            </Text>
+            </RegularText>
           </View>
           <View style={styles.body}>
-            <Text style={styles.label}>name</Text>
+            <RegularText style={styles.label}>name</RegularText>
             <TextInput
               testID="nameInput"
               accessibilityLabel="nameInput"
@@ -116,8 +115,8 @@ export const ContactFormScreen = ({
               placeholderTextColor={colors.text.secondary}
             />
             <View style={grid.row}>
-              {/* <Text style={styles.disabledLabel}>alias</Text> */}
-              <Text style={styles.label}>address</Text>
+              {/* <RegularText style={styles.disabledLabel}>alias</RegularText> */}
+              <RegularText style={styles.label}>address</RegularText>
             </View>
             <AddressInput
               testID="addressInput"

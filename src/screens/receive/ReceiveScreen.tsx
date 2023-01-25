@@ -38,6 +38,7 @@ export const ReceiveScreen: React.FC<ReceiveScreenProps> = ({
   const handleOptionSelected = (selectedTab: string) => {
     setActiveTab(selectedTab)
   }
+
   return (
     <ScrollView style={styles.parent}>
       <View style={qrContainerStyle}>
