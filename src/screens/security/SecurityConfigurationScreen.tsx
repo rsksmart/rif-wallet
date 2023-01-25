@@ -17,7 +17,7 @@ import {
   saveKeyVerificationReminder,
 } from 'storage/MainStorage'
 import { useAppDispatch } from 'store/storeUtils'
-import { resetReduxAndStoraState } from 'src/core/resetApp'
+import { resetReduxAndStorageState } from 'src/core/resetApp'
 
 export const SecurityConfigurationScreen = ({
   navigation,
@@ -43,7 +43,7 @@ export const SecurityConfigurationScreen = ({
         {
           text: 'Delete',
           onPress: () => {
-            resetReduxAndStoraState(dispatch)
+            resetReduxAndStorageState(dispatch)
             saveKeyVerificationReminder(false)
           },
         },
