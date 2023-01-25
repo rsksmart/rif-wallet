@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { resetReduxStates } from 'src/redux'
+import { resetReduxAndStoraState } from 'src/core/resetApp'
 
 import { getPin } from 'storage/MainStorage'
 import { PinContainer } from 'components/PinManager/PinContainer'
@@ -45,7 +45,7 @@ export const RequestPIN = () => {
       key={pinLength}
       onPinSubmit={checkPin}
       resetEnabled={resetEnabled}
-      resetKeysAndPin={() => resetReduxStates(dispatch)}
+      resetKeysAndPin={() => resetReduxAndStoraState(dispatch)}
     />
   )
 }
