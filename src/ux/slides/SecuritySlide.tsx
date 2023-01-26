@@ -1,7 +1,9 @@
-import { grid } from '../../styles/grid'
-import { StyleSheet, View, Text, Image } from 'react-native'
+import { Image, StyleSheet, View } from 'react-native'
+import { RegularText, SemiBoldText } from 'src/components'
 import { colors } from '../../styles/colors'
-import { SLIDER_WIDTH, SLIDER_HEIGHT } from './Dimensions'
+import { grid } from '../../styles/grid'
+import { SLIDER_HEIGHT, SLIDER_WIDTH } from './Dimensions'
+
 export const SecuritySlide = ({
   title,
   description,
@@ -15,14 +17,14 @@ export const SecuritySlide = ({
 }) => (
   <View style={styles.slideContainer}>
     <View style={styles.imageContainer}>{image}</View>
-    <View style={{ ...grid.row, ...styles.rowContainer }}>
-      <Text style={styles.title}>{title}</Text>
+    <View style={grid.row}>
+      <SemiBoldText style={styles.title}>{title}</SemiBoldText>
     </View>
-    <View style={{ ...grid.row, ...styles.rowContainer }}>
-      <Text style={styles.description}>{description}</Text>
+    <View style={grid.row}>
+      <RegularText style={styles.description}>{description}</RegularText>
     </View>
-    <View style={{ ...grid.row, ...styles.rowContainer }}>
-      <Text style={styles.description2}>{description2}</Text>
+    <View style={grid.row}>
+      <SemiBoldText style={styles.description2}>{description2}</SemiBoldText>
     </View>
   </View>
 )
@@ -30,18 +32,16 @@ const styles = StyleSheet.create({
   title: {
     color: colors.white,
     fontSize: 20,
-    fontWeight: 'bold',
     marginBottom: 15,
   },
   description: {
     color: colors.white,
-    fontSize: 16,
+    fontSize: 14,
     marginBottom: 15,
   },
   description2: {
     color: colors.white,
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 14,
   },
   slideContainer: {
     width: SLIDER_WIDTH,
@@ -53,5 +53,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
-  rowContainer: {},
 })
