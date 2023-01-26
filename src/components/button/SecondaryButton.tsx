@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: colors.lightPurple,
-    fontSize: 15,
+    fontSize: 14,
   },
   textDisabled: {
     color: colors.lightPurple,
