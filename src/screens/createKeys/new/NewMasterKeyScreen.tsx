@@ -1,30 +1,31 @@
+import { CompositeScreenProps } from '@react-navigation/native'
 import { useMemo, useState } from 'react'
+import { Trans } from 'react-i18next'
 import {
-  StyleSheet,
-  View,
   ScrollView,
+  StyleSheet,
   Text,
   TouchableOpacity,
+  View,
 } from 'react-native'
 import Carousel from 'react-native-snap-carousel'
-import { Trans } from 'react-i18next'
-import { CompositeScreenProps } from '@react-navigation/native'
 
+import { PaginationNavigator } from 'components/button/PaginationNavigator'
+import { Arrow } from 'components/icons'
+import { KeyManagementSystem } from 'lib/core'
 import {
   createKeysRouteNames,
   CreateKeysScreenProps,
 } from 'navigation/createKeysNavigator/types'
-import { colors } from '../../../styles/colors'
-import { Arrow } from 'components/icons'
-import { PaginationNavigator } from 'components/button/PaginationNavigator'
-import { SLIDER_WIDTH, WINDOW_WIDTH } from '../../../ux/slides/Dimensions'
-import { WordView } from './WordView'
-import { sharedMnemonicStyles } from './styles'
+import { RegularText, SemiBoldText } from 'src/components'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'src/navigation/rootNavigator'
-import { KeyManagementSystem } from 'lib/core'
+import { colors } from '../../../styles/colors'
+import { SLIDER_WIDTH, WINDOW_WIDTH } from '../../../ux/slides/Dimensions'
+import { sharedMnemonicStyles } from './styles'
+import { WordView } from './WordView'
 
 type Props = CompositeScreenProps<
   CreateKeysScreenProps<createKeysRouteNames.NewMasterKey>,
@@ -64,12 +65,10 @@ export const NewMasterKeyScreen = ({ navigation }: Props) => {
             <Arrow color={colors.white} rotate={270} width={30} height={30} />
           </View>
         </TouchableOpacity>
-        <Text style={styles.header}>
-          <Trans>Your Master Key</Trans>
-        </Text>
-        <Text style={styles.subHeader}>
-          <Trans>Swipe to reveal next part of the phrase</Trans>
-        </Text>
+        <SemiBoldText style={styles.header}>Your Master Key</SemiBoldText>
+        <RegularText style={styles.subHeader}>
+          Swipe to reveal next part of the phrase
+        </RegularText>
       </View>
 
       <View style={sharedMnemonicStyles.sliderContainer}>
@@ -119,16 +118,14 @@ const styles = StyleSheet.create({
 
   header: {
     color: colors.white,
-    fontSize: 20,
+    fontSize: 18,
     paddingVertical: 10,
     marginBottom: 5,
     marginLeft: 60,
     textAlign: 'left',
-    fontWeight: 'bold',
   },
   subHeader: {
     color: colors.white,
-    fontSize: 16,
     marginLeft: 60,
     marginBottom: 5,
     textAlign: 'left',

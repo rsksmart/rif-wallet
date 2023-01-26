@@ -21,7 +21,6 @@ export const sharedMnemonicStyles = StyleSheet.create({
     flexDirection: 'column',
     marginBottom: 50,
   },
-
   wordContainer: {
     marginTop: 10,
     borderRadius: 10,
@@ -44,17 +43,15 @@ export const sharedMnemonicStyles = StyleSheet.create({
     fontSize: 20,
     paddingTop: 7,
   },
-
   suggestionRow: {
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20,
     backgroundColor: colors.blue2,
   },
-
   // used for displaying the mnemonic and the suggestions
   wordText: {
     color: colors.white,
-    fontSize: 20,
+    fontSize: 18,
     marginLeft: 10,
     paddingTop: 5,
   },
