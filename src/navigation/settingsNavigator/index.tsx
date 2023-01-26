@@ -22,7 +22,7 @@ export const SettingsNavigator = ({
 }: RootTabsScreenProps<rootTabsRouteNames.Settings>) => {
   useEffect(() => {
     navigation.setOptions({ headerShown: false })
-  }, [])
+  }, [navigation])
 
   return (
     <SettingsStack.Navigator
@@ -32,7 +32,7 @@ export const SettingsNavigator = ({
           : settingsStackRouteNames.SettingsScreen
       }
       screenOptions={{
-        header: props => <AppHeader {...props} />,
+        header: props => <AppHeader isShown={hasPin()} {...props} />,
       }}>
       <SettingsStack.Screen
         name={settingsStackRouteNames.SettingsScreen}

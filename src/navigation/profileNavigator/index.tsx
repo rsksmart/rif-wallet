@@ -17,7 +17,9 @@ export const ProfileNavigator = ({
 
   return (
     <ProfileStack.Navigator
-      screenOptions={{ header: props => <AppHeader {...props} /> }}>
+      screenOptions={{
+        header: props => <AppHeader isShown={true} {...props} />,
+      }}>
       <ProfileStack.Screen
         name={profileStackRouteNames.ProfileCreateScreen}
         component={ProfileCreateScreen}

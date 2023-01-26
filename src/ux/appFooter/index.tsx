@@ -12,8 +12,12 @@ import DappsSelectedIcon from 'components/icons/DappsSelectedIcon'
 import QRCodeIconFooter from 'components/icons/QRCodeIconFooter'
 import { colors } from 'src/styles/colors'
 
-export const AppFooterMenu = ({ navigation, state }: BottomTabBarProps) => {
-  return (
+interface Props extends BottomTabBarProps {
+  isShown: boolean
+}
+
+export const AppFooterMenu = ({ navigation, state, isShown }: Props) => {
+  return !isShown ? null : (
     <View style={styles.row}>
       <TouchableOpacity
         onPress={() =>

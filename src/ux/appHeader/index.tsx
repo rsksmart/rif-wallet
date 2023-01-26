@@ -12,9 +12,17 @@ import { useAppSelector } from 'store/storeUtils'
 import { ProfileHandler } from './ProfileHandler'
 import { StackHeaderProps } from '@react-navigation/stack'
 
-type Props = BottomTabHeaderProps | StackHeaderProps
+type HeaderProps = BottomTabHeaderProps | StackHeaderProps
 
-export const AppHeader = ({ navigation, route }: Props) => {
+interface Props {
+  isShown: boolean
+}
+
+export const AppHeader = ({
+  navigation,
+  route,
+  isShown,
+}: Props & HeaderProps) => {
   const topColor = useAppSelector(selectTopColor)
   const { wallet, chainType } = useAppSelector(selectActiveWallet)
 
@@ -26,7 +34,7 @@ export const AppHeader = ({ navigation, route }: Props) => {
     navigation.navigate(rootTabsRouteNames.Settings)
   }, [navigation, route])
 
-  return (
+  return !isShown ? null : (
     <View style={[styles.row, { backgroundColor: topColor }]}>
       {navigation.canGoBack() ? (
         <TouchableOpacity onPress={navigation.goBack}>

@@ -31,6 +31,7 @@ export const ChangePinScreen = ({
       isSubmitting.current = true
       try {
         dispatch(setPinState(pinSteps.current.pin))
+        navigation.replace(settingsStackRouteNames.SettingsScreen)
         navigation.navigate(rootTabsRouteNames.Home)
       } catch (error) {
         setPinError(

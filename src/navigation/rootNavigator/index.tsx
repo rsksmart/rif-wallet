@@ -36,9 +36,13 @@ export const RootNavigationComponent = () => {
     <View style={styles.parent}>
       <RootTabs.Navigator
         initialRouteName={initialRoute}
-        tabBar={AppFooterMenu}
+        tabBar={props => (
+          <AppFooterMenu isShown={unlocked && hasPin()} {...props} />
+        )}
         screenOptions={{
-          header: props => <AppHeader {...props} />,
+          header: props => (
+            <AppHeader isShown={unlocked && hasPin()} {...props} />
+          ),
           tabBarHideOnKeyboard: true,
         }}>
         {!unlocked ? (
