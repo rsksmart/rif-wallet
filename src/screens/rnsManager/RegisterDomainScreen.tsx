@@ -1,22 +1,20 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import { ScrollView } from 'react-native'
-import { RSKRegistrar, AddrResolver } from '@rsksmart/rns-sdk'
+import { AddrResolver, RSKRegistrar } from '@rsksmart/rns-sdk'
 import { BigNumber } from 'ethers'
-import { StyleSheet, View, TextInput } from 'react-native'
+import React, { useEffect, useMemo, useState } from 'react'
+import { ScrollView, StyleSheet, TextInput, View } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 
-import { Text } from 'react-native'
 import addresses from './addresses.json'
 
-import { ScreenWithWallet } from '../types'
-import { Button } from 'components/index'
+import { Button, RegularText, SemiBoldText } from 'components/index'
+import { formatUnits } from 'ethers/lib/utils'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
 import { addDomain } from '../../storage/DomainsStore'
 import { getTokenColorWithOpacity } from '../home/tokenColor'
-import { formatUnits } from 'ethers/lib/utils'
+import { ScreenWithWallet } from '../types'
 
 export const RegisterDomainScreen: React.FC<
   RootStackScreenProps<rootStackRouteNames.RegisterDomain> & ScreenWithWallet
@@ -127,25 +125,29 @@ export const RegisterDomainScreen: React.FC<
       style={styles.parent}>
       <ScrollView>
         <View style={styles.sectionCentered}>
-          <Text style={styles.domainTitle}>{selectedDomain}.rsk</Text>
+          <SemiBoldText style={styles.domainTitle}>
+            {selectedDomain}.rsk
+          </SemiBoldText>
         </View>
         <View style={styles.sectionLeft}>
-          <Text>Registration process will require 3 steps:</Text>
-          <Text>1. First transaction: request to register the domain</Text>
-          <Text>
+          <RegularText>Registration process will require 3 steps:</RegularText>
+          <RegularText>
+            1. First transaction: request to register the domain
+          </RegularText>
+          <RegularText>
             2. Secure domain: wait for aprox. 2 minutes to secure your
             registration
-          </Text>
-          <Text>
+          </RegularText>
+          <RegularText>
             3. Second transaction: registration! after this tx is confirmed you
             will own your RNS domain
-          </Text>
+          </RegularText>
         </View>
 
-        {!!error && <Text style={styles.red}>{error}</Text>}
+        {!!error && <RegularText style={styles.red}>{error}</RegularText>}
 
         <View style={styles.sectionCentered}>
-          <Text>Year(s)</Text>
+          <RegularText>Year(s)</RegularText>
           <TextInput
             editable={commitToRegisterInfo === ''}
             style={styles.input}
@@ -153,7 +155,9 @@ export const RegisterDomainScreen: React.FC<
             value={duration}
             placeholder={''}
           />
-          <Text>Price: {domainPrice ? formatUnits(domainPrice) : '...'}</Text>
+          <RegularText>
+            Price: {domainPrice ? formatUnits(domainPrice) : '...'}
+          </RegularText>
         </View>
 
         <View style={styles.sectionCentered}>
@@ -163,7 +167,7 @@ export const RegisterDomainScreen: React.FC<
             title={'Request to register'}
           />
 
-          <Text>{commitToRegisterInfo}</Text>
+          <RegularText>{commitToRegisterInfo}</RegularText>
         </View>
         <View style={styles.sectionCentered}>
           <Button
@@ -172,12 +176,12 @@ export const RegisterDomainScreen: React.FC<
             title={'Register domain'}
           />
 
-          <Text>{registerDomainInfo}</Text>
+          <RegularText>{registerDomainInfo}</RegularText>
         </View>
         {registerReady && (
           <View style={styles.sectionCentered}>
-            <Text>You now own {selectedDomain}.rsk</Text>
-            <Text>Address: {resolvingAddress}</Text>
+            <RegularText>You now own {selectedDomain}.rsk</RegularText>
+            <RegularText>Address: {resolvingAddress}</RegularText>
             <Button
               onPress={() => {
                 navigation.navigate(rootStackRouteNames.Home)
@@ -212,8 +216,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   domainTitle: {
-    fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: 18,
   },
   sectionLeft: {
     alignItems: 'flex-start',
