@@ -6,7 +6,7 @@ import { PinContainer } from 'components/PinManager/PinContainer'
 import { useSetGlobalError } from 'components/GlobalErrorHandler'
 import { pinLength } from 'shared/costants'
 import { useAppDispatch } from 'store/storeUtils'
-import { resetKeysAndPin, unlockApp } from 'store/slices/settingsSlice'
+import { unlockApp, resetApp } from 'store/slices/settingsSlice'
 
 export const RequestPIN = () => {
   const storedPin = useMemo(() => getPin(), [])
@@ -44,7 +44,7 @@ export const RequestPIN = () => {
       key={pinLength}
       onPinSubmit={checkPin}
       resetEnabled={resetEnabled}
-      resetKeysAndPin={() => dispatch(resetKeysAndPin())}
+      resetKeysAndPin={() => dispatch(resetApp())}
     />
   )
 }

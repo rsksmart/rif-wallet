@@ -45,3 +45,6 @@ export const getSignUP = () => MainStorage.get(signup)
 export const saveSignUp = (value: { signup: boolean }) =>
   MainStorage.set(signup, value)
 export const deleteSignUp = () => MainStorage.delete(signup)
+
+// general function
+export const resetMainStorage = () => MainStorage.deleteAll()

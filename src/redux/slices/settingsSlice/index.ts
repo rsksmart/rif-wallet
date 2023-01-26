@@ -7,10 +7,12 @@ import {
   loadExistingWallets,
 } from 'core/operations'
 import { deleteDomains } from 'storage/DomainsStore'
+import { deleteContacts as deleteContactsFromRedux } from 'store/slices/contactsSlice'
 import {
   deleteContacts,
   deleteKeys,
   deletePin,
+  resetMainStorage,
   savePin,
 } from 'storage/MainStorage'
 import { colors } from 'src/styles'
@@ -29,6 +31,7 @@ import {
   networkType as defaultNetworkType,
 } from 'core/setup'
 import { getChainIdByType } from 'lib/utils'
+import { resetSocketState } from 'store/shared/actions/resetSocketState'
 // import { createAppAsyncThunk } from 'store/storeUtils'
 
 export const createWallet = createAsyncThunk(
@@ -81,6 +84,21 @@ export const unlockApp = createAsyncThunk(
       thunkAPI.dispatch(setUnlocked(true))
 
       return kms
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err)
+    }
+  },
+)
+
+export const resetApp = createAsyncThunk(
+  'settings/resetApp',
+  async (_, thunkAPI) => {
+    try {
+      thunkAPI.dispatch(deleteContactsFromRedux())
+      thunkAPI.dispatch(resetKeysAndPin())
+      thunkAPI.dispatch(resetSocketState())
+      resetMainStorage()
+      return 'deleted'
     } catch (err) {
       return thunkAPI.rejectWithValue(err)
     }
