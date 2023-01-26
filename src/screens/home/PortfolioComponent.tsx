@@ -5,6 +5,7 @@ import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import { RegularText } from 'components/index'
 import { colors, grid } from 'src/styles'
 import { IPrice } from 'src/subscriptions/types'
+import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 
 import {
   BalanceCardComponent,

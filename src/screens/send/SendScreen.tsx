@@ -6,10 +6,10 @@ import {
   Platform,
 } from 'react-native'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
-import { RegularText } from 'src/components'
 
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 
+import { RegularText } from 'src/components'
 import {
   rootStackRouteNames,
   RootStackScreenProps,

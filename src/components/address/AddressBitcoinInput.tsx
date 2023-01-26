@@ -3,10 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { TextInput, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
-import {
-  isBitcoinAddressValid,
-  BitcoinNetwork,
-} from '@rsksmart/rif-wallet-bitcoin'
+import { isBitcoinAddressValid } from '@rsksmart/rif-wallet-bitcoin'
 
 import { rnsResolver } from 'core/setup'
 import { colors } from 'src/styles'

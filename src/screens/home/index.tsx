@@ -74,18 +74,16 @@ export const HomeScreen = ({
       screen: 'SEND' | 'RECEIVE' | 'FAUCET',
       _selected: ITokenWithoutLogo & BitcoinNetwork,
     ) => {
-      if (_selected instanceof BitcoinNetwork) {
-        switch (screen) {
-          case 'RECEIVE':
-            return navigation.navigate(rootStackRouteNames.ReceiveBitcoin, {
-              network: _selected,
-            })
-          case 'SEND':
-            return navigation.navigate(rootStackRouteNames.Send, {
-              token: _selected?.symbol,
-              contractAddress: _selected?.contractAddress,
-            })
-        }
+      switch (screen) {
+        case 'RECEIVE':
+          return navigation.navigate(rootStackRouteNames.ReceiveBitcoin, {
+            network: _selected,
+          })
+        case 'SEND':
+          return navigation.navigate(rootStackRouteNames.Send, {
+            token: _selected?.symbol,
+            contractAddress: _selected?.contractAddress,
+          })
       }
     },
     [navigation],
