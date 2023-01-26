@@ -1,13 +1,7 @@
 import { CompositeScreenProps } from '@react-navigation/native'
 import { useMemo, useState } from 'react'
 import { Trans } from 'react-i18next'
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
 import Carousel from 'react-native-snap-carousel'
 
 import { PaginationNavigator } from 'components/button/PaginationNavigator'
@@ -65,9 +59,11 @@ export const NewMasterKeyScreen = ({ navigation }: Props) => {
             <Arrow color={colors.white} rotate={270} width={30} height={30} />
           </View>
         </TouchableOpacity>
-        <SemiBoldText style={styles.header}>Your Master Key</SemiBoldText>
+        <SemiBoldText style={styles.header}>
+          <Trans>Your Master Key</Trans>
+        </SemiBoldText>
         <RegularText style={styles.subHeader}>
-          Swipe to reveal next part of the phrase
+          <Trans>Swipe to reveal next part of the phrase</Trans>
         </RegularText>
       </View>
 

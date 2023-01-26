@@ -23,6 +23,7 @@ import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator'
+import { Trans } from 'react-i18next'
 import { handleInputRefCreation } from 'src/shared/utils'
 import { colors } from 'src/styles/colors'
 import { SLIDER_WIDTH, WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
@@ -138,11 +139,13 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
           </View>
         </TouchableOpacity>
         <SemiBoldText style={styles.header}>
-          Sign in with a Master Key
+          <Trans>Sign in with a Master Key</Trans>
         </SemiBoldText>
         <RegularText style={styles.subHeader}>
-          Input the words you were given when you created your wallet in correct
-          order
+          <Trans>
+            Input the words you were given when you created your wallet in
+            correct order
+          </Trans>
         </RegularText>
       </View>
 
