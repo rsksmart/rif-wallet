@@ -1,12 +1,12 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
+import { Button, RegularText } from 'src/components'
 import {
   RootStackNavigationProp,
   rootStackRouteNames,
 } from 'src/navigation/rootNavigator'
-import { balanceToString } from './BalancesScreen'
-import { Button } from 'src/components'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
+import { balanceToString } from './BalancesScreen'
 
 export const BalancesRow = ({
   token: { symbol, balance, decimals, contractAddress },
@@ -17,9 +17,9 @@ export const BalancesRow = ({
 }) => (
   <View style={styles.tokenRow} testID={`${contractAddress}.View`}>
     <View style={styles.tokenBalance}>
-      <Text testID={`${contractAddress}.Text`}>
+      <RegularText testID={`${contractAddress}.Text`}>
         {`${balanceToString(balance, decimals || 0)} ${symbol}`}
-      </Text>
+      </RegularText>
     </View>
     <View style={styles.button}>
       <Button
