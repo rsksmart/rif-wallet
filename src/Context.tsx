@@ -1,10 +1,10 @@
 import { FC } from 'react'
-import { Paragraph } from './components'
-import { RIFWallet, Request } from './lib/core'
-import { ScreenWithWallet } from './screens/types'
-import { BitcoinRequest } from './lib/bitcoin/types'
-import { useAppSelector } from 'store/storeUtils'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { useAppSelector } from 'store/storeUtils'
+import { RegularText } from './components'
+import { BitcoinRequest } from './lib/bitcoin/types'
+import { Request, RIFWallet } from './lib/core'
+import { ScreenWithWallet } from './screens/types'
 
 export interface Wallets {
   [id: string]: RIFWallet
@@ -22,7 +22,7 @@ export function InjectSelectedWallet<T>(
     const { wallet, isDeployed } = useAppSelector(selectActiveWallet)
 
     if (!wallet) {
-      return <Paragraph>No selected wallet</Paragraph>
+      return <RegularText>No selected wallet</RegularText>
     }
 
     return (

@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react'
-import { ScrollView, StyleSheet, View } from 'react-native'
 import { BigNumber } from 'ethers'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { ScrollView, StyleSheet, View } from 'react-native'
 
 import {
   OverriddableTransactionOptions,
@@ -10,19 +10,18 @@ import {
 import { RIF_TOKEN_ADDRESS_TESTNET } from 'lib/relay-sdk/helpers'
 import { balanceToDisplay, shortAddress } from 'lib/utils'
 
-import { sharedStyles } from 'shared/styles'
-import { errorHandler } from 'shared/utils'
 import {
   Loading,
-  Paragraph,
   PrimaryButton,
   RegularText,
   SecondaryButton,
 } from 'components/index'
 import { ScreenWithWallet } from 'screens/types'
-import useEnhancedWithGas from './useEnhancedWithGas'
+import { sharedStyles } from 'shared/styles'
+import { errorHandler } from 'shared/utils'
 import { colors, grid } from '../../styles'
 import ReadOnlyField from './ReadOnlyField'
+import useEnhancedWithGas from './useEnhancedWithGas'
 
 interface Props {
   request: SendTransactionRequest
@@ -140,10 +139,10 @@ const ReviewTransactionModal = ({
       {error && (
         <View style={sharedStyles.row}>
           <View style={sharedStyles.column}>
-            <Paragraph>Error:</Paragraph>
+            <RegularText>Error:</RegularText>
           </View>
           <View style={sharedStyles.column}>
-            <Paragraph>{error}</Paragraph>
+            <RegularText>{error}</RegularText>
           </View>
         </View>
       )}
