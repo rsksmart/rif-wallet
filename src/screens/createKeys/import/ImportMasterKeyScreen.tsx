@@ -1,18 +1,20 @@
+import { CompositeScreenProps } from '@react-navigation/native'
 import { useCallback, useState } from 'react'
 import {
-  StyleSheet,
-  View,
-  ScrollView,
-  Text,
-  TouchableOpacity,
   ListRenderItemInfo,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
 } from 'react-native'
 import Carousel from 'react-native-snap-carousel'
-import { Trans } from 'react-i18next'
-import { CompositeScreenProps } from '@react-navigation/native'
 
 import { validateMnemonic } from 'lib/bip39'
 
+import { PaginationNavigator } from 'components/button/PaginationNavigator'
+import { Arrow } from 'components/icons'
+import { RegularText, SemiBoldText } from 'components/index'
+import { useKeyboardIsVisible } from 'core/hooks/useKeyboardIsVisible'
 import {
   createKeysRouteNames,
   CreateKeysScreenProps,
@@ -21,17 +23,13 @@ import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator'
-import { useKeyboardIsVisible } from 'core/hooks/useKeyboardIsVisible'
-import { useAppDispatch } from 'store/storeUtils'
-import { createWallet } from 'store/slices/settingsSlice'
-import { Arrow } from 'components/icons'
-import { PaginationNavigator } from 'components/button/PaginationNavigator'
-import { Paragraph } from 'components/index'
-import { WordSelector } from '../new/WordSelector'
-import { sharedMnemonicStyles } from '../new/styles'
-import { SLIDER_WIDTH, WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
-import { colors } from 'src/styles/colors'
 import { handleInputRefCreation } from 'src/shared/utils'
+import { colors } from 'src/styles/colors'
+import { SLIDER_WIDTH, WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
+import { createWallet } from 'store/slices/settingsSlice'
+import { useAppDispatch } from 'store/storeUtils'
+import { sharedMnemonicStyles } from '../new/styles'
+import { WordSelector } from '../new/WordSelector'
 
 type Props = CompositeScreenProps<
   CreateKeysScreenProps<createKeysRouteNames.ImportMasterKey>,
@@ -139,15 +137,13 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
             <Arrow color={colors.white} rotate={270} width={30} height={30} />
           </View>
         </TouchableOpacity>
-        <Text style={styles.header}>
-          <Trans>Sign in with a Master Key</Trans>
-        </Text>
-        <Paragraph style={styles.subHeader}>
-          <Trans>
-            Input the words you were given when you created your wallet in
-            correct order
-          </Trans>
-        </Paragraph>
+        <SemiBoldText style={styles.header}>
+          Sign in with a Master Key
+        </SemiBoldText>
+        <RegularText style={styles.subHeader}>
+          Input the words you were given when you created your wallet in correct
+          order
+        </RegularText>
       </View>
 
       <View style={sharedMnemonicStyles.sliderContainer}>
@@ -170,7 +166,7 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
 
       {!!error && (
         <View style={styles.errorContainer}>
-          <Text accessibilityLabel="error-text">{error}</Text>
+          <RegularText accessibilityLabel="error-text">{error}</RegularText>
         </View>
       )}
 
@@ -210,17 +206,14 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginLeft: 60,
     textAlign: 'left',
-    fontWeight: 'bold',
   },
   subHeader: {
     color: colors.white,
-    fontSize: 16,
     marginLeft: 60,
     marginBottom: 40,
     textAlign: 'left',
     width: SLIDER_WIDTH,
   },
-
   errorContainer: {
     padding: 20,
     marginHorizontal: 60,
