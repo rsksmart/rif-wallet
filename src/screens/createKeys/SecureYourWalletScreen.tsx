@@ -1,4 +1,4 @@
-import { StyleSheet, View, Image, TouchableOpacity, Text } from 'react-native'
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 
 import {
   createKeysRouteNames,
@@ -8,14 +8,15 @@ import { colors } from '../../styles'
 
 import { grid } from '../../styles'
 
-import { WINDOW_HEIGHT } from '../../ux/slides/Dimensions'
-import { Arrow } from 'components/icons'
 import { PrimaryButton } from 'components/button/PrimaryButton'
 import { SecondaryButton } from 'components/button/SecondaryButton'
-import { saveKeyVerificationReminder } from '../../storage/MainStorage'
-import { useAppDispatch } from 'store/storeUtils'
-import { createWallet } from 'store/slices/settingsSlice'
+import { Arrow } from 'components/icons'
 import { KeyManagementSystem } from 'lib/core'
+import { RegularText, SemiBoldText } from 'src/components'
+import { createWallet } from 'store/slices/settingsSlice'
+import { useAppDispatch } from 'store/storeUtils'
+import { saveKeyVerificationReminder } from '../../storage/MainStorage'
+import { WINDOW_HEIGHT } from '../../ux/slides/Dimensions'
 
 export const SecureYourWalletScreen = ({
   navigation,
@@ -45,19 +46,20 @@ export const SecureYourWalletScreen = ({
           source={require('../../images/safe.png')}
         />
         <View style={{ ...grid.row, ...styles.section }}>
-          <Text style={styles.title}>Secure your wallet</Text>
+          <RegularText style={styles.title}>Secure your wallet</RegularText>
         </View>
         <View style={{ ...grid.row, ...styles.section }}>
-          <Text style={styles.subTitle}>
+          <RegularText style={styles.subTitle}>
             Before you create your wallet, we advise you to generate and store
-            your <Text style={styles.bold}>unique Master Key</Text>
-          </Text>
+            your
+            <SemiBoldText> unique Master Key.</SemiBoldText>
+          </RegularText>
         </View>
         <View style={{ ...grid.row, ...styles.section }}>
-          <Text style={styles.subTitle}>
+          <RegularText style={styles.subTitle}>
             This key will help you restore your wallet and access your funds on
             a new devise, in case the old one was lost or stolen
-          </Text>
+          </RegularText>
         </View>
       </View>
 
@@ -103,23 +105,17 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     backgroundColor: colors.blue,
   },
-
   title: {
     color: colors.black,
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
   },
-  bold: {
-    fontWeight: 'bold',
-  },
   subTitle: {
     color: colors.black,
-    fontSize: 16,
     marginHorizontal: 32,
     marginBottom: 5,
   },
-
   itemContainer: {
     alignItems: 'center',
     justifyContent: 'center',

@@ -1,32 +1,32 @@
-import { useCallback, useEffect, useState } from 'react'
-import {
-  StyleSheet,
-  ScrollView,
-  Text,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native'
+import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
-import { ScreenWithWallet } from '../types'
-import { TransactionInfo } from './TransactionInfo'
-import { colors } from 'src/styles'
-import { TransactionForm } from './TransactionForm'
-import WalletNotDeployedView from './WalletNotDeployedModal'
-import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
+import { useCallback, useEffect, useState } from 'react'
 import {
-  usePaymentExecutor,
-  PaymentExecutorContext,
-} from './usePaymentExecutor'
-import { useFetchBitcoinNetworksAndTokens } from './useFetchBitcoinNetworksAndTokens'
-import { MixedTokenAndNetworkType } from './types'
-import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+} from 'react-native'
+import { RegularText } from 'src/components'
+import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
+import { colors } from 'src/styles'
+import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppSelector } from 'store/storeUtils'
-import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
-import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
+import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
+import { ScreenWithWallet } from '../types'
+import { TransactionForm } from './TransactionForm'
+import { TransactionInfo } from './TransactionInfo'
+import { MixedTokenAndNetworkType } from './types'
+import { useFetchBitcoinNetworksAndTokens } from './useFetchBitcoinNetworksAndTokens'
+import {
+  PaymentExecutorContext,
+  usePaymentExecutor,
+} from './usePaymentExecutor'
+import WalletNotDeployedView from './WalletNotDeployedModal'
 
 export const SendScreen = ({
   route,
@@ -113,7 +113,9 @@ export const SendScreen = ({
           <TransactionInfo transaction={currentTransaction} />
         )}
 
-        {!!error && <Text style={styles.error}>{error.message}</Text>}
+        {!!error && (
+          <RegularText style={styles.error}>{error.message}</RegularText>
+        )}
       </ScrollView>
     </KeyboardAvoidingView>
   )

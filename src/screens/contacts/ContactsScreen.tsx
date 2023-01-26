@@ -1,34 +1,28 @@
-import { useMemo, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native'
-import Icon from 'react-native-vector-icons/FontAwesome5'
+import { CompositeScreenProps } from '@react-navigation/native'
 import { SearchIcon } from 'components/icons/SearchIcon'
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
-import { colors } from 'src/styles'
-import { fonts } from 'src/styles/fonts'
-import { ContactRow } from './ContactRow'
-import { Contact } from 'store/slices/contactsSlice/types'
-import { CompositeScreenProps } from '@react-navigation/native'
-import { ContactsStackScreenProps } from '..'
+import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Image, ScrollView, StyleSheet, TextInput, View } from 'react-native'
+import Icon from 'react-native-vector-icons/FontAwesome5'
+import { RegularText } from 'src/components'
 import { contactsStackRouteNames } from 'src/navigation/contactsNavigator'
 import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
-import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { getContactsAsArrayAndSelected } from 'store/slices/contactsSlice'
+import { colors } from 'src/styles'
+import { fonts } from 'src/styles/fonts'
 import {
   deleteContactById,
+  getContactsAsArrayAndSelected,
   setSelectedContactById,
 } from 'store/slices/contactsSlice'
+import { Contact } from 'store/slices/contactsSlice/types'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { ContactsStackScreenProps } from '..'
+import { ContactRow } from './ContactRow'
 
 export type ContactsListScreenProps = CompositeScreenProps<
   ContactsStackScreenProps<contactsStackRouteNames.ContactsList>,
@@ -102,7 +96,7 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
   return (
     <View style={styles.parent}>
       <View style={styles.header}>
-        <Text style={styles.title}>Contacts</Text>
+        <RegularText style={styles.title}>Contacts</RegularText>
         <Icon.Button
           accessibilityLabel="addContact"
           name="user-plus"
@@ -135,12 +129,12 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
             style={styles.noContactsImage}
           />
           <View style={styles.noContactsTextView} testID="emptyView">
-            <Text style={styles.noContactsText}>
+            <RegularText style={styles.noContactsText}>
               {t('Your contact list is empty.')}
-            </Text>
-            <Text style={styles.noContactsText}>
+            </RegularText>
+            <RegularText style={styles.noContactsText}>
               {t('Start by creating a new contact.')}
-            </Text>
+            </RegularText>
           </View>
         </>
       ) : (

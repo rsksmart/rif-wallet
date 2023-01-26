@@ -1,27 +1,24 @@
-import { useState, useCallback, useEffect } from 'react'
-import { Text, TextInput, View } from 'react-native'
+import Clipboard from '@react-native-community/clipboard'
+import { useCallback, useEffect, useState } from 'react'
+import { TextInput, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
-import Clipboard from '@react-native-community/clipboard'
 
 import { isBitcoinAddressValid } from 'lib/bitcoin/utils'
-import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
 
-import { colors } from 'src/styles'
 import { rnsResolver } from 'core/setup'
+import { colors } from 'src/styles'
 
+import { ContentPasteIcon, DeleteIcon, QRCodeIcon } from '../icons'
 import { QRCodeScanner } from '../QRCodeScanner'
-import { sharedAddressStyles as styles } from './sharedAddressStyles'
-import { ContentPasteIcon, QRCodeIcon, DeleteIcon } from '../icons'
+import { MediumText, RegularText } from '../typography'
 import { isDomain } from './lib'
-import { MediumText } from '../typography'
+import { sharedAddressStyles as styles } from './sharedAddressStyles'
 
 interface AddressInputProps {
   initialValue: string
   onChangeText: (newValue: string, isValid: boolean) => void
   testID?: string
-  backgroundColor?: string
-  token: BitcoinNetwork
 }
 
 const TYPES = {
@@ -120,6 +117,7 @@ export const AddressBitcoinInput = ({
   useEffect(() => {
     onBeforeChangeText(initialValue)
   }, [initialValue, onBeforeChangeText])
+
   return (
     <>
       {shouldShowQRScanner && (
@@ -128,8 +126,12 @@ export const AddressBitcoinInput = ({
       {to.type === TYPES.DOMAIN && (
         <View style={styles.rnsDomainContainer}>
           <View>
-            <Text style={styles.rnsDomainName}> {to.addressResolved}</Text>
-            <Text style={styles.rnsDomainAddress}>{to.value}</Text>
+            <RegularText style={styles.rnsDomainName}>
+              {to.addressResolved}
+            </RegularText>
+            <RegularText style={styles.rnsDomainAddress}>
+              {to.value}
+            </RegularText>
           </View>
           <View style={styles.rnsDomainUnselect}>
             <TouchableOpacity onPress={onClearText} accessibilityLabel="delete">

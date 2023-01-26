@@ -36,7 +36,6 @@ export const AddressInputSelector: React.FC<IAddressInputSelector> = ({
       <AddressBitcoinInput
         initialValue={initialValue}
         onChangeText={onChangeText}
-        token={token}
       />
     )
   } else {

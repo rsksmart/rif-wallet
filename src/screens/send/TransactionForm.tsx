@@ -1,10 +1,10 @@
 import { toChecksumAddress } from '@rsksmart/rsk-utils'
-import { useState, useCallback } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { useCallback, useState } from 'react'
+import { StyleSheet, View } from 'react-native'
 
-import { Tabs } from 'src/components'
 import { AddressInputSelector } from 'components/address/AddressInputSelector'
 import { TransferButton } from 'components/button/TransferButton'
+import { RegularText, Tabs } from 'src/components'
 import { colors, grid } from 'src/styles'
 import { IActivityTransaction, IPrice } from 'src/subscriptions/types'
 
@@ -118,7 +118,7 @@ export const TransactionForm = ({
     <View>
       <View style={{ ...grid.row, ...styles.section }}>
         <View style={grid.column12}>
-          <Text style={styles.label}>asset</Text>
+          <RegularText style={styles.label}>asset</RegularText>
           <AssetChooser
             selectedAsset={selectedToken}
             assetList={tokenList}
@@ -152,7 +152,7 @@ export const TransactionForm = ({
               token={selectedToken}
             />
             <View>
-              <Text>{error}</Text>
+              <RegularText>{error}</RegularText>
             </View>
 
             <View style={styles.centerRow}>
@@ -172,7 +172,7 @@ export const TransactionForm = ({
               onSelect={handleSelectRecentAddress}
             />
             <View>
-              <Text>{error}</Text>
+              <RegularText>{error}</RegularText>
             </View>
           </>
         )}

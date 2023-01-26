@@ -1,15 +1,10 @@
-import {
-  Image,
-  ImageSourcePropType,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
+import { Image, ImageSourcePropType, StyleSheet, View } from 'react-native'
 import { Modal } from 'src/components/modal/Modal'
 import { colors } from 'src/styles'
 import { fonts } from 'src/styles/fonts'
 import { PrimaryButton } from '../button/PrimaryButton'
 import { SecondaryButton } from '../button/SecondaryButton'
+import { RegularText } from '../typography'
 
 interface ConfirmationModalProps {
   isVisible?: boolean
@@ -40,8 +35,10 @@ export const ConfirmationModal = ({
             <Image source={imgSrc} style={styles.image} />
           </View>
         )}
-        <Text style={styles.title}>{title}</Text>
-        {description && <Text style={styles.description}>{description}</Text>}
+        <RegularText style={styles.title}>{title}</RegularText>
+        {description && (
+          <RegularText style={styles.description}>{description}</RegularText>
+        )}
       </Modal.Body>
       <Modal.Footer>
         <View>

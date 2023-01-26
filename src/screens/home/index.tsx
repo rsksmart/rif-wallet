@@ -1,18 +1,18 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
 
-import { balanceToDisplay, getChainIdByType } from 'lib/utils'
 import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { balanceToDisplay, getChainIdByType } from 'lib/utils'
 
 import { toChecksumAddress } from 'components/address/lib'
-import { Paragraph } from 'components/index'
+import { MediumText } from 'components/index'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
 } from 'navigation/rootNavigator/types'
-import { selectAccounts } from 'store/slices/accountsSlice/selector'
 import { colors } from 'src/styles'
+import { selectAccounts } from 'store/slices/accountsSlice/selector'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
@@ -163,9 +163,9 @@ export const HomeScreen = ({
               source={require('src/images/noBalance.png')}
               style={styles.noBalance}
             />
-            <Paragraph style={styles.text}>
+            <MediumText style={styles.text}>
               You don't have any balances, get some here!
-            </Paragraph>
+            </MediumText>
           </>
         ) : (
           <PortfolioComponent
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: 'center',
-    color: colors.white,
+    color: colors.lightPurple,
   },
   noBalance: {
     flex: 1,

@@ -60,7 +60,7 @@ export default function ActivityDetailsContainer({
             )}
             <View style={styles.amountContainer}>
               {/*  @TODO get cash amount for this text */}
-              {/*<Text style={{ fontWeight: 'bold' }}>Cash Amount</Text>*/}
+              {/*<RegularText style={{ fontWeight: 'bold' }}>Cash Amount</RegularText>*/}
 
               <SemiBoldText>
                 {transaction.enhancedTransaction?.value ||
