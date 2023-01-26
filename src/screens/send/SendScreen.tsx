@@ -9,8 +9,8 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  Text,
 } from 'react-native'
+import { RegularText } from 'src/components'
 import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
 import { colors } from 'src/styles'
 import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
@@ -113,7 +113,9 @@ export const SendScreen = ({
           <TransactionInfo transaction={currentTransaction} />
         )}
 
-        {!!error && <Text style={styles.error}>{error.message}</Text>}
+        {!!error && (
+          <RegularText style={styles.error}>{error.message}</RegularText>
+        )}
       </ScrollView>
     </KeyboardAvoidingView>
   )
