@@ -12,9 +12,8 @@ export const loadExistingWallets =
   (createRIFWallet: CreateRIFWallet) => async () => {
     const serializedKeys = await getKeys()
     if (serializedKeys) {
-      const { kms, wallets } = KeyManagementSystem.fromSerialized(
-        serializedKeys.password,
-      )
+      const { kms, wallets } =
+        KeyManagementSystem.fromSerialized(serializedKeys)
 
       const rifWallets = await Promise.all(wallets.map(createRIFWallet))
       const isDeployedWallets = await Promise.all(

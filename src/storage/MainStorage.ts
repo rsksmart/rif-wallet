@@ -5,8 +5,15 @@ export const MainStorage = new MMKVStorage()
 
 const pin = 'PIN'
 const keyVerificationReminder = 'KEY_VERIFICATION_REMINDER'
+const keyManagement = 'KEY_MANAGEMNT'
 const contacts = 'CONTACTS'
 const signup = 'SIGN_UP'
+
+//emulator keys functions
+export const getKeysFromMMKV = (): string | undefined =>
+  MainStorage.get(keyManagement)
+export const saveKeysInMMKV = (value: string) =>
+  MainStorage.set(keyManagement, value)
 
 // pin functions
 export const hasPin = () => MainStorage.has(pin)

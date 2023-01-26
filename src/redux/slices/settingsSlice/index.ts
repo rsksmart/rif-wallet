@@ -112,7 +112,7 @@ export const addNewWallet = createAsyncThunk(
           'Can not add new wallet because no KMS created.',
         )
       }
-      const { kms } = KeyManagementSystem.fromSerialized(keys.password)
+      const { kms } = KeyManagementSystem.fromSerialized(keys)
       const { rifWallet, isDeloyed } = await addNextWallet(
         kms,
         createRIFWalletFactory(request =>

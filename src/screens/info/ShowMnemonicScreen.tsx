@@ -18,7 +18,7 @@ export const ShowMnemonicScreen = () => {
     const fn = async () => {
       const keys = await getKeys()
       if (keys) {
-        const { kms } = KeyManagementSystem.fromSerialized(keys.password)
+        const { kms } = KeyManagementSystem.fromSerialized(keys)
         setMnemonic(kms.mnemonic)
       }
     }
