@@ -60,7 +60,6 @@ const styles = StyleSheet.create({
   },
   tabText: {
     color: colors.white,
-    fontSize: 13,
     padding: 5,
     paddingBottom: 0,
   },

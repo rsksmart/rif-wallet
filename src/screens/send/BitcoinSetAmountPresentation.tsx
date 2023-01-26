@@ -1,4 +1,5 @@
-import { Text, TextInput } from 'react-native'
+import { TextInput } from 'react-native'
+import { RegularText } from 'src/components'
 import { colors } from '../../styles'
 import { sharedStyles as styles } from './sharedStyles'
 
@@ -15,9 +16,9 @@ export const BitcoinSetAmountPresentation = ({
   available,
 }: IBitcoinSetAmountPresentation) => (
   <>
-    <Text style={styles.label}>
+    <RegularText style={styles.label}>
       amount {available && `(Available: ${available})`}
-    </Text>
+    </RegularText>
     <TextInput
       style={styles.textInputStyle}
       onChangeText={handleAmountChange}
@@ -27,6 +28,6 @@ export const BitcoinSetAmountPresentation = ({
       testID={'Amount.Input'}
       placeholderTextColor={colors.gray}
     />
-    {error !== '' && <Text style={styles.error}>{error}</Text>}
+    {error !== '' && <RegularText style={styles.error}>{error}</RegularText>}
   </>
 )
