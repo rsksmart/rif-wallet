@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
 import { RegularText } from '../../components/typography'
 import { sharedStyles } from '../../shared/styles'
@@ -17,7 +17,7 @@ const ReadOnlyField = ({ label, value, testID }: IRealOnlyField) => {
       </View>
       <View>
         <View style={sharedStyles.inputText} testID={testID}>
-          <Text>{value}</Text>
+          <RegularText>{value}</RegularText>
         </View>
       </View>
     </>

@@ -58,7 +58,7 @@ export default function ActivityDetailsBitcoinContainer({
             )}
             <View style={styles.amountContainer}>
               {/*  @TODO get cash amount for this text */}
-              {/*<Text style={{ fontWeight: 'bold' }}>Cash Amount</Text>*/}
+              {/*<SemiBoldText>Cash Amount</SemiBoldText>*/}
               <SemiBoldText>
                 {valueBtc} {symbol}
               </SemiBoldText>

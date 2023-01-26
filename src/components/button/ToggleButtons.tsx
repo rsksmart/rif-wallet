@@ -26,12 +26,11 @@ export const ToggleButtons: React.FC<Props> = ({
             ? { ...styles.option, ...styles.selectedOption }
             : styles.option
 
+        optionStyle.marginHorizontal = 5
         if (index === 0) {
-          optionStyle.marginRight = 5
+          optionStyle.marginLeft = 0
         } else if (index === options.length - 1) {
-          optionStyle.marginLeft = 5
-        } else {
-          optionStyle.marginHorizontal = 5
+          optionStyle.marginRight = 0
         }
 
         const optionTextStyle =

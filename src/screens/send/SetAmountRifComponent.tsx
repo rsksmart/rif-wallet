@@ -1,7 +1,7 @@
-import { Text } from 'react-native'
-import SetAmountComponent, { ISetAmountComponent } from './SetAmountComponent'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
 import React from 'react'
+import { RegularText } from 'src/components'
+import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import SetAmountComponent, { ISetAmountComponent } from './SetAmountComponent'
 import { sharedStyles as styles } from './sharedStyles'
 
 export const SetAmountRifComponent: React.FC<ISetAmountComponent> = ({
@@ -10,7 +10,7 @@ export const SetAmountRifComponent: React.FC<ISetAmountComponent> = ({
   usdAmount,
 }) => (
   <>
-    <Text style={styles.label}>amount</Text>
+    <RegularText style={styles.label}>amount</RegularText>
     <SetAmountComponent
       setAmount={setAmount}
       token={token as ITokenWithBalance}

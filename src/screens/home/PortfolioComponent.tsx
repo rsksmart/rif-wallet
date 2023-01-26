@@ -2,10 +2,8 @@ import { StyleSheet, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 
-import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
-import { Paragraph } from 'components/index'
-import { colors } from 'src/styles'
-import { grid } from 'src/styles'
+import { RegularText } from 'components/index'
+import { colors, grid } from 'src/styles'
 import { IPrice } from 'src/subscriptions/types'
 
 import {
@@ -29,7 +27,7 @@ const PortfolioComponent = ({
   return (
     <ScrollView contentContainerStyle={styles.scrollView}>
       <View style={grid.row}>
-        <Paragraph style={styles.heading}>portfolio</Paragraph>
+        <RegularText style={styles.heading}>portfolio</RegularText>
       </View>
       <View style={styles.scrollView}>
         {balances.map(
@@ -63,7 +61,9 @@ const PortfolioComponent = ({
 const styles = StyleSheet.create({
   heading: {
     ...grid.column12,
-    color: colors.white,
+    color: colors.lightPurple,
+    fontSize: 16,
+    margin: 5,
   },
   balances: {
     borderWidth: 1,

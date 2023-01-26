@@ -7,7 +7,7 @@ import { useAppSelector } from 'store/storeUtils'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { RequestWithBitcoin } from 'shared/types'
 
-import { Paragraph } from './components'
+import { RegularText } from './components'
 
 export interface Wallets {
   [id: string]: RIFWallet
@@ -25,7 +25,7 @@ export function InjectSelectedWallet<T>(
     const { wallet, isDeployed } = useAppSelector(selectActiveWallet)
 
     if (!wallet) {
-      return <Paragraph>No selected wallet</Paragraph>
+      return <RegularText>No selected wallet</RegularText>
     }
 
     return (

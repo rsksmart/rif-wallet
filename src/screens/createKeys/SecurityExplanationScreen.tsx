@@ -74,7 +74,7 @@ export const SecurityExplanationScreen = ({ navigation }: Props) => {
         return SecuritySlide({
           title: 'Lets get started!',
           description:
-            'Your Master Key will be generated in the next step as a 24-word phrase. We know it is a lot, but it is for your security!',
+            'Your Master Key will be generated in the next step as a 12-word phrase. We know it is a lot, but it is for your security!',
           description2:
             'Key will be revealed step by step. Write it down carefully.',
           image: (

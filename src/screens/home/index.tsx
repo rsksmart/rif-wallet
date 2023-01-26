@@ -6,7 +6,7 @@ import { balanceToDisplay, getChainIdByType } from 'lib/utils'
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { toChecksumAddress } from 'components/address/lib'
-import { Paragraph } from 'components/index'
+import { MediumText } from 'components/index'
 import {
   rootStackRouteNames,
   RootStackScreenProps,
@@ -163,9 +163,9 @@ export const HomeScreen = ({
               source={require('src/images/noBalance.png')}
               style={styles.noBalance}
             />
-            <Paragraph style={styles.text}>
+            <MediumText style={styles.text}>
               You don't have any balances, get some here!
-            </Paragraph>
+            </MediumText>
           </>
         ) : (
           <PortfolioComponent
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: 'center',
-    color: colors.white,
+    color: colors.lightPurple,
   },
   noBalance: {
     flex: 1,

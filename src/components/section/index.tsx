@@ -1,5 +1,6 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
+import { RegularText } from '../typography'
 
 type Props = {
   title: string
@@ -8,7 +9,7 @@ type Props = {
 export const Section: React.FC<Props> = ({ children, title }) => {
   return (
     <View testID={title} style={styles.root}>
-      <Text style={styles.title}>{title}</Text>
+      <RegularText style={styles.title}>{title}</RegularText>
       {children}
     </View>
   )

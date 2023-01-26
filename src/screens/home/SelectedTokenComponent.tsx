@@ -1,8 +1,8 @@
 import { BigNumberish } from 'ethers'
 import React, { useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { RegularText } from '../../components'
+import { RegularText, SemiBoldText } from '../../components'
 
 import { HideShowIcon } from '../../components/icons'
 import { colors } from '../../styles'
@@ -49,9 +49,9 @@ const SelectedTokenComponent: React.FC<Interface> = ({
         {showBalances ? (
           <RegularText style={styles.amount}>{amount}</RegularText>
         ) : (
-          <Text style={{ ...styles.amount, ...styles.amountHidden }}>
+          <SemiBoldText style={{ ...styles.amount, ...styles.amountHidden }}>
             {'\u25CF    \u25CF     \u25CF     \u25CF     \u25CF'}
-          </Text>
+          </SemiBoldText>
         )}
       </View>
       {!!change && (
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
   },
   amountHidden: {
     fontSize: 20,
-    paddingVertical: 18,
+    paddingVertical: 15,
   },
 })
 

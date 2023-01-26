@@ -2,11 +2,11 @@ import { useCallback, useEffect, useState } from 'react'
 import {
   StyleSheet,
   ScrollView,
-  Text,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
+import { RegularText } from 'src/components'
 
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 
@@ -116,7 +116,9 @@ export const SendScreen = ({
           <TransactionInfo transaction={currentTransaction} />
         )}
 
-        {!!error && <Text style={styles.error}>{error.message}</Text>}
+        {!!error && (
+          <RegularText style={styles.error}>{error.message}</RegularText>
+        )}
       </ScrollView>
     </KeyboardAvoidingView>
   )
