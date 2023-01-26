@@ -1,5 +1,6 @@
-import { StyleSheet, Text, View, ViewStyle } from 'react-native'
+import { StyleSheet, View, ViewStyle } from 'react-native'
 import RNModal from 'react-native-modal'
+import { RegularText } from '../typography'
 
 interface ModalProps {
   isVisible: boolean
@@ -33,7 +34,7 @@ const ModalContainer = ({ children, style = {} }: ModalChildrenProps) => (
 
 const ModalHeader = ({ title }: { title: string }) => (
   <View style={styles.header}>
-    <Text style={styles.text}>{title}</Text>
+    <RegularText style={styles.text}>{title}</RegularText>
   </View>
 )
 
