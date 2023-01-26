@@ -8,6 +8,8 @@ import {
   SecurityExplanationScreen,
   SecureYourWalletScreen,
 } from 'screens/createKeys'
+import { selectIsUnlocked } from 'src/redux/slices/settingsSlice'
+import { useAppSelector } from 'src/redux/storeUtils'
 import { CreateKeysStackParamList, createKeysRouteNames } from './types'
 
 const Stack = createStackNavigator<CreateKeysStackParamList>()
@@ -15,42 +17,42 @@ const Stack = createStackNavigator<CreateKeysStackParamList>()
 const screensOptions = { headerShown: false }
 
 export const CreateKeysNavigation = () => {
+  const unlocked = useAppSelector(selectIsUnlocked)
+
   return (
     <Stack.Navigator initialRouteName={createKeysRouteNames.CreateKeys}>
-      <Stack.Screen
-        name={createKeysRouteNames.CreateKeys}
-        component={CreateKeysScreen}
-        options={screensOptions}
-      />
-      <Stack.Group>
-        <Stack.Group>
-          <Stack.Screen
-            name={createKeysRouteNames.NewMasterKey}
-            component={NewMasterKeyScreen}
-            options={screensOptions}
-          />
-          <Stack.Screen
-            name={createKeysRouteNames.SecureYourWallet}
-            component={SecureYourWalletScreen}
-            options={screensOptions}
-          />
-          <Stack.Screen
-            name={createKeysRouteNames.SecurityExplanation}
-            component={SecurityExplanationScreen}
-            options={screensOptions}
-          />
-          <Stack.Screen
-            name={createKeysRouteNames.ConfirmNewMasterKey}
-            component={ConfirmNewMasterKeyScreen}
-            options={screensOptions}
-          />
-        </Stack.Group>
+      {!unlocked ? (
         <Stack.Screen
-          name={createKeysRouteNames.ImportMasterKey}
-          component={ImportMasterKeyScreen}
+          name={createKeysRouteNames.CreateKeys}
+          component={CreateKeysScreen}
           options={screensOptions}
         />
-      </Stack.Group>
+      ) : null}
+      <Stack.Screen
+        name={createKeysRouteNames.NewMasterKey}
+        component={NewMasterKeyScreen}
+        options={screensOptions}
+      />
+      <Stack.Screen
+        name={createKeysRouteNames.SecureYourWallet}
+        component={SecureYourWalletScreen}
+        options={screensOptions}
+      />
+      <Stack.Screen
+        name={createKeysRouteNames.SecurityExplanation}
+        component={SecurityExplanationScreen}
+        options={screensOptions}
+      />
+      <Stack.Screen
+        name={createKeysRouteNames.ConfirmNewMasterKey}
+        component={ConfirmNewMasterKeyScreen}
+        options={screensOptions}
+      />
+      <Stack.Screen
+        name={createKeysRouteNames.ImportMasterKey}
+        component={ImportMasterKeyScreen}
+        options={screensOptions}
+      />
     </Stack.Navigator>
   )
 }

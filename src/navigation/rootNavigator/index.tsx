@@ -77,6 +77,10 @@ export const RootNavigationComponent = () => {
               name={rootTabsRouteNames.Profile}
               component={ProfileNavigator}
             />
+            <RootTabs.Screen
+              name={rootTabsRouteNames.CreateKeysUX}
+              component={CreateKeysNavigation}
+            />
           </RootTabs.Group>
         )}
       </RootTabs.Navigator>

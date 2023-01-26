@@ -131,7 +131,7 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
       keyboardShouldPersistTaps={'always'}>
       <View style={sharedMnemonicStyles.topContent}>
         <TouchableOpacity
-          onPress={() => navigation.navigate(createKeysRouteNames.CreateKeys)}
+          onPress={() => navigation.goBack()}
           style={styles.returnButton}
           accessibilityLabel="back">
           <View style={styles.returnButtonView}>
