@@ -19,6 +19,7 @@ import { useAppDispatch } from 'store/storeUtils'
 import { setWalletIsDeployed } from 'store/slices/settingsSlice'
 import { ScreenWithWallet } from '../types'
 import { colors, grid } from '../../styles'
+import { MediumText, RegularText, SemiBoldText } from 'src/components'
 
 export const ManuallyDeployScreen = ({
   wallet,
@@ -73,32 +74,36 @@ export const ManuallyDeployScreen = ({
 
   return (
     <ScrollView style={styles.background}>
-      <Text style={styles.heading}>Deploy Smart Wallet</Text>
+      <SemiBoldText style={styles.heading}>Deploy Smart Wallet</SemiBoldText>
 
       {isDeployed && (
-        <Text style={styles.text}>Your smart wallet has been deployed!</Text>
+        <MediumText style={styles.text}>
+          Your smart wallet has been deployed!
+        </MediumText>
       )}
 
       {!isDeployed && (
         <View>
-          <Text style={styles.text}>
+          <MediumText style={styles.text}>
             This is a temporary step that is needed before RIF Relay Server is
             ready.
-          </Text>
-          <Text style={styles.heading}>Step 1: Fund your EOA account</Text>
+          </MediumText>
+          <MediumText style={styles.heading}>
+            Step 1: Fund your EOA account
+          </MediumText>
           <View>
-            <Text style={styles.text}>
+            <MediumText style={styles.text}>
               Fund your Externally Owned Account (EOA) with rBTC. Copy your
               address below and paste it in the rBTC Faucet.
-            </Text>
+            </MediumText>
 
             <View style={grid.row}>
               <View style={grid.column3}>
-                <Text style={styles.text}>Address:</Text>
+                <MediumText style={styles.text}>Address:</MediumText>
               </View>
 
               <View style={grid.column8}>
-                <Text style={styles.text}>{wallet.address}</Text>
+                <MediumText style={styles.text}>{wallet.address}</MediumText>
               </View>
               <View style={grid.column1}>
                 <TouchableOpacity
@@ -112,12 +117,12 @@ export const ManuallyDeployScreen = ({
 
             <View style={grid.row}>
               <View style={grid.column3}>
-                <Text style={styles.text}>Balance:</Text>
+                <MediumText style={styles.text}>Balance:</MediumText>
               </View>
               <View style={grid.column8}>
-                <Text style={styles.text}>
+                <MediumText style={styles.text}>
                   {eoaBalance ? eoaBalance.toString() : '0'}
-                </Text>
+                </MediumText>
               </View>
             </View>
 
@@ -131,7 +136,9 @@ export const ManuallyDeployScreen = ({
             )}
           </View>
 
-          <Text style={styles.heading}>Step 2: Deploy the wallet</Text>
+          <MediumText style={styles.heading}>
+            Step 2: Deploy the wallet
+          </MediumText>
           <PrimaryButton
             disabled={!hasBalance}
             onPress={deploy || isDeploying}
@@ -140,7 +147,9 @@ export const ManuallyDeployScreen = ({
             accessibilityLabel="deploy"
           />
 
-          {isDeploying && <Text style={styles.text}>Deploying...</Text>}
+          {isDeploying && (
+            <MediumText style={styles.text}>Deploying...</MediumText>
+          )}
 
           {smartWalletDeployTx && (
             <TouchableOpacity
@@ -148,13 +157,15 @@ export const ManuallyDeployScreen = ({
                 Clipboard.setString(smartWalletDeployTx.hash || '')
               }
               accessibilityLabel="explorer">
-              <Text style={styles.text}>
+              <MediumText style={styles.text}>
                 {smartWalletDeployTx.hash || ''}
                 <CopyIcon />
-              </Text>
+              </MediumText>
             </TouchableOpacity>
           )}
-          {deployError && <Text style={styles.text}>{deployError}</Text>}
+          {deployError && (
+            <MediumText style={styles.text}>{deployError}</MediumText>
+          )}
         </View>
       )}
     </ScrollView>
