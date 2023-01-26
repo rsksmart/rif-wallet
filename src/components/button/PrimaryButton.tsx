@@ -23,14 +23,16 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   text: {
-    color: colors.lightPurple,
     fontSize: 14,
+    color: colors.lightPurple,
   },
   textDisabled: {
+    fontSize: 14,
     color: colors.lightPurple,
     opacity: 0.5,
   },
   textPressed: {
+    fontSize: 14,
     color: colors.lightPurple,
   },
 })
