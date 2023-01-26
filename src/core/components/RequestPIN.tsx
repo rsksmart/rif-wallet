@@ -1,13 +1,12 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { resetReduxAndStorageState } from 'src/core/resetApp'
 
 import { getPin } from 'storage/MainStorage'
 import { PinContainer } from 'components/PinManager/PinContainer'
 import { useSetGlobalError } from 'components/GlobalErrorHandler'
 import { pinLength } from 'shared/costants'
 import { useAppDispatch } from 'store/storeUtils'
-import { unlockApp } from 'store/slices/settingsSlice'
+import { unlockApp, resetApp } from 'store/slices/settingsSlice'
 
 export const RequestPIN = () => {
   const storedPin = useMemo(() => getPin(), [])
@@ -45,7 +44,7 @@ export const RequestPIN = () => {
       key={pinLength}
       onPinSubmit={checkPin}
       resetEnabled={resetEnabled}
-      resetKeysAndPin={() => resetReduxAndStorageState(dispatch)}
+      resetKeysAndPin={() => dispatch(resetApp())}
     />
   )
 }

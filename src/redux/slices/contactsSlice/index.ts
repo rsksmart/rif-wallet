@@ -7,7 +7,7 @@ import {
   getContacts,
   saveContacts,
   deleteContacts as deleteContactsFromStorage,
-} from 'src/storage/MainStorage'
+} from 'storage/MainStorage'
 import { Contact } from 'store/slices/contactsSlice/types'
 import uuid from 'react-native-uuid'
 
