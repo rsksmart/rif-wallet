@@ -16,6 +16,7 @@ import { getWalletSetting, SETTINGS } from 'src/core/config'
 import { useAppSelector } from 'store/storeUtils'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { isBitcoinAddressValid } from 'lib/bitcoin/utils'
+import { RegularText, SemiBoldText } from 'src/components'
 export interface TransactionInformation {
   status: 'USER_CONFIRM' | 'PENDING' | 'SUCCESS' | 'FAILED'
   to?: string
@@ -54,7 +55,7 @@ export const TransactionInfo = ({ transaction }: Props) => {
           source={require('../../images/transferWait.png')}
           style={styles.loading}
         />
-        <Text style={styles.loadingLabel}>transferring ...</Text>
+        <RegularText style={styles.loadingLabel}>transferring...</RegularText>
       </View>
     )
   }
@@ -65,44 +66,39 @@ export const TransactionInfo = ({ transaction }: Props) => {
 
   return (
     <View style={styles.mainContainer}>
-      <Text style={styles.label}>you have just sent</Text>
+      <SemiBoldText style={styles.label}>you have just sent</SemiBoldText>
       <View style={styles.sentContainer}>
         {transaction.symbol && (
           <>
             <TokenImage symbol={transaction.symbol} height={17} width={17} />
-            <Text style={[styles.font16Bold, spacing.ml7]}>
+            <SemiBoldText style={spacing.ml7}>
               {transaction.symbol}
-            </Text>
+            </SemiBoldText>
           </>
         )}
-        <Text style={[spacing.ml3, styles.font16Bold]}>
-          {transaction.value}
-        </Text>
+        <SemiBoldText style={spacing.ml3}>{transaction.value}</SemiBoldText>
       </View>
-      <View style={[spacing.mb30, spacing.mt7]}>
+      <View style={[spacing.mb20, spacing.mt7]}>
         {/* @TODO get real amount */}
-        {/*<Text style={styles.font16}>$ 7439.55</Text>*/}
+        {/*<RegularText>$ 7439.55</RegularText>*/}
       </View>
-      <Text style={styles.label}>to a recipient</Text>
-      <View style={spacing.mb30}>
-        <Text style={styles.font16Bold}>{transaction.to}</Text>
-        <Text style={spacing.mt7}>{transaction.to}</Text>
+      <RegularText style={styles.label}>to a recipient</RegularText>
+      <View style={spacing.mb20}>
+        <SemiBoldText>{transaction.to}</SemiBoldText>
       </View>
-      <View style={spacing.mb30}>
-        <Text style={styles.label}>status</Text>
+      <View style={spacing.mb20}>
+        <RegularText style={styles.label}>status</RegularText>
         <View style={styles.sentContainer}>
-          <View>
-            <StatusIcon status={transaction.status} />
-          </View>
-          <Text style={styles.font16Bold}>
+          <StatusIcon status={transaction.status} />
+          <SemiBoldText style={spacing.ml3}>
             {transaction.status.toLowerCase()}
-          </Text>
+          </SemiBoldText>
         </View>
       </View>
-      <View style={spacing.mb30}>
+      <View style={spacing.mb20}>
         <TouchableOpacity onPress={onCopyHash} accessibilityLabel="copy">
-          <Text style={styles.label}>tx hash</Text>
-          <Text style={styles.font16Bold}>{transaction.hash}</Text>
+          <RegularText style={styles.label}>tx hash</RegularText>
+          <SemiBoldText>{transaction.hash}</SemiBoldText>
         </TouchableOpacity>
       </View>
       <View style={styles.buttonRow}>
@@ -112,7 +108,9 @@ export const TransactionInfo = ({ transaction }: Props) => {
           accessibilityLabel="explorer">
           <View style={styles.buttonContainer}>
             <SearchIcon color="white" height={25} width={25} />
-            <Text style={styles.buttonText}>view in explorer</Text>
+            <RegularText style={styles.buttonText}>
+              view in explorer
+            </RegularText>
           </View>
         </TouchableOpacity>
       </View>
@@ -126,24 +124,22 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background.light,
     padding: 50,
   },
-  flexDirRow: { flexDirection: 'row' },
+  flexDirRow: {
+    flexDirection: 'row',
+  },
   mainLoadingContainer: {
     paddingBottom: 50,
   },
   label: {
-    fontWeight: '600',
-    marginBottom: 10,
-    fontSize: 17,
+    fontSize: 16,
   },
   loadingLabel: {
     textAlign: 'center',
   },
-  font16: { fontSize: 16 },
-  font16Bold: {
-    fontSize: 16,
-    fontWeight: 'bold',
+  sentContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  sentContainer: { flexDirection: 'row', alignItems: 'center' },
   buttonRow: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -157,7 +153,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 40,
   },
-  buttonText: { color: 'white', marginLeft: 5 },
+  buttonText: {
+    color: 'white',
+    marginLeft: 5,
+  },
   loading: {
     alignSelf: 'center',
     marginBottom: 20,
