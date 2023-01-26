@@ -1,14 +1,13 @@
 import { combineReducers } from '@reduxjs/toolkit'
 import { persistReducer } from 'redux-persist'
 import { reduxStorage } from 'src/storage/ReduxStorage'
-import { accountsReducer } from './slices/accountsSlice/accountsSlice'
-import { appStateReducer } from './slices/appStateSlice/appStateSlice'
-import { balancesReducer } from './slices/balancesSlice/balancesSlice'
+import { accountsReducer } from './slices/accountsSlice'
+import { balancesReducer } from './slices/balancesSlice'
 import { contactsReducer } from 'store/slices/contactsSlice'
-import { profileReducer } from './slices/profileSlice/profileSlice'
+import { profileReducer } from './slices/profileSlice'
 import { settingsSliceReducer } from './slices/settingsSlice'
-import { transactionsReducer } from './slices/transactionsSlice/transactionsSlice'
-import { usdPriceReducer } from './slices/usdPricesSlice/usdPricesSlice'
+import { transactionsReducer } from './slices/transactionsSlice'
+import { usdPriceReducer } from './slices/usdPricesSlice'
 
 const persistConfig = {
   key: 'root',
@@ -19,7 +18,6 @@ const persistConfig = {
 const reducers = combineReducers({
   usdPrices: usdPriceReducer,
   balances: balancesReducer,
-  appState: appStateReducer,
   transactions: transactionsReducer,
   settings: settingsSliceReducer,
   profile: profileReducer,

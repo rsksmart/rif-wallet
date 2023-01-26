@@ -6,7 +6,7 @@ import {
 } from 'src/navigation/rootNavigator'
 import { balanceToString } from './BalancesScreen'
 import { Button } from 'src/components'
-import { ITokenWithoutLogo } from 'src/redux/slices/balancesSlice/types'
+import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 
 export const BalancesRow = ({
   token: { symbol, balance, decimals, contractAddress },

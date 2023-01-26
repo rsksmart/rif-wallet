@@ -24,16 +24,14 @@ import { colors } from 'src/styles'
 import { fonts } from 'src/styles/fonts'
 import { RegularText } from 'src/components/typography'
 import { selectProfile } from 'src/redux/slices/profileSlice/selector'
-import {
-  deleteProfile,
-  setProfile,
-} from 'src/redux/slices/profileSlice/profileSlice'
+import { deleteProfile, setProfile } from 'store/slices/profileSlice'
 import { IProfileStore } from 'src/redux/slices/profileSlice/types'
 import { useAppDispatch, useAppSelector } from 'src/redux/storeUtils'
 
-export const ProfileCreateScreen: React.FC<
-  RootStackScreenProps<'ProfileCreateScreen'>
-> = ({ route, navigation }) => {
+export const ProfileCreateScreen = ({
+  route,
+  navigation,
+}: RootStackScreenProps<rootStackRouteNames.ProfileCreateScreen>) => {
   const editProfile = route.params?.editProfile
   const dispatch = useAppDispatch()
   const profile = useAppSelector(selectProfile)
