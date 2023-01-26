@@ -4,7 +4,6 @@ import {
   ListRenderItemInfo,
   ScrollView,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native'

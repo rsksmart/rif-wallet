@@ -3,23 +3,22 @@ import { BigNumber, Transaction } from 'ethers'
 import { useCallback, useEffect, useState } from 'react'
 import {
   Linking,
+  ScrollView,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
-  ScrollView,
 } from 'react-native'
 
 import { RIFWallet } from 'lib/core'
 
-import { CopyIcon } from 'components/icons'
 import { PrimaryButton } from 'components/button/PrimaryButton'
 import { SecondaryButton } from 'components/button/SecondaryButton'
-import { useAppDispatch } from 'store/storeUtils'
+import { CopyIcon } from 'components/icons'
+import { MediumText, SemiBoldText } from 'src/components'
 import { setWalletIsDeployed } from 'store/slices/settingsSlice'
-import { ScreenWithWallet } from '../types'
+import { useAppDispatch } from 'store/storeUtils'
 import { colors, grid } from '../../styles'
-import { MediumText, RegularText, SemiBoldText } from 'src/components'
+import { ScreenWithWallet } from '../types'
 
 export const ManuallyDeployScreen = ({
   wallet,

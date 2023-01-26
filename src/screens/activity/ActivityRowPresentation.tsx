@@ -1,7 +1,7 @@
 import { StatusIcon } from 'components/statusIcons'
 import { shortAddress, trimValue } from 'lib/utils'
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { RegularText } from 'src/components'
 import { colors } from 'src/styles'

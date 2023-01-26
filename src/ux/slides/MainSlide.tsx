@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, View } from 'react-native'
 import { RegularText } from 'src/components'
 import { colors } from '../../styles/colors'
 import { grid } from '../../styles/grid'

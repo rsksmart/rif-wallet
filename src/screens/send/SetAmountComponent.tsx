@@ -4,7 +4,7 @@ import { StyleSheet, TextInput, View } from 'react-native'
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { convertTokenToUSD, sanitizeDecimalText } from 'lib/utils'
 
-import { RegularText, SemiBoldText } from 'src/components'
+import { RegularText } from 'src/components'
 import { colors } from '../../styles/colors'
 import { grid } from '../../styles/grid'
 import { balanceToString } from '../balances/BalancesScreen'
