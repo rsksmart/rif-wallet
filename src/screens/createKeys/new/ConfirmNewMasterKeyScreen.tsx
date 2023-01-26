@@ -1,27 +1,28 @@
-import { useState, useCallback } from 'react'
+import { useCallback, useState } from 'react'
+import { Trans } from 'react-i18next'
 import {
-  StyleSheet,
-  View,
+  ListRenderItemInfo,
   ScrollView,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  ListRenderItemInfo,
+  View,
 } from 'react-native'
 import Carousel from 'react-native-snap-carousel'
-import { Trans } from 'react-i18next'
 
+import { PaginationNavigator } from 'components/button/PaginationNavigator'
+import { Arrow } from 'components/icons'
+import { useKeyboardIsVisible } from 'core/hooks/useKeyboardIsVisible'
 import { CreateKeysScreenProps } from 'navigation/createKeysNavigator/types'
+import { handleInputRefCreation } from 'shared/utils'
+import { RegularText, SemiBoldText } from 'src/components'
+import { colors } from 'src/styles/colors'
+import { saveKeyVerificationReminder } from 'storage/MainStorage'
 import { createWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
-import { useKeyboardIsVisible } from 'core/hooks/useKeyboardIsVisible'
-import { Arrow } from 'components/icons'
-import { PaginationNavigator } from 'components/button/PaginationNavigator'
-import { WordSelector } from './WordSelector'
 import { SLIDER_WIDTH, WINDOW_WIDTH } from '../../../ux/slides/Dimensions'
-import { saveKeyVerificationReminder } from 'storage/MainStorage'
-import { handleInputRefCreation } from 'shared/utils'
-import { colors } from 'src/styles/colors'
 import { sharedMnemonicStyles } from './styles'
+import { WordSelector } from './WordSelector'
 
 export const ConfirmNewMasterKeyScreen = ({
   route,
@@ -120,12 +121,12 @@ export const ConfirmNewMasterKeyScreen = ({
             <Arrow color={colors.white} rotate={270} width={30} height={30} />
           </View>
         </TouchableOpacity>
-        <Text style={styles.header}>
+        <SemiBoldText style={styles.header}>
           <Trans>Your Master Key</Trans>
-        </Text>
-        <Text style={styles.subHeader}>
+        </SemiBoldText>
+        <RegularText style={styles.subHeader}>
           <Trans>Start typing the words in the correct order</Trans>
-        </Text>
+        </RegularText>
       </View>
 
       <View style={sharedMnemonicStyles.sliderContainer}>
@@ -148,7 +149,7 @@ export const ConfirmNewMasterKeyScreen = ({
 
       {error && (
         <View style={styles.errorContainer}>
-          <Text>The words are not correct.</Text>
+          <RegularText>The words are not correct.</RegularText>
         </View>
       )}
 
@@ -180,24 +181,21 @@ const styles = StyleSheet.create({
     margin: 15,
     backgroundColor: colors.purple,
   },
-
   header: {
     color: colors.white,
-    fontSize: 20,
+    fontSize: 18,
     paddingVertical: 10,
     marginBottom: 5,
     marginLeft: 60,
     textAlign: 'left',
-    fontWeight: 'bold',
   },
   subHeader: {
     color: colors.white,
-    fontSize: 16,
+    fontSize: 14,
     marginLeft: 60,
     marginBottom: 40,
     textAlign: 'left',
   },
-
   errorContainer: {
     padding: 20,
     marginHorizontal: 60,
