@@ -14,7 +14,7 @@ import {
   WINDOW_WIDTH,
 } from 'src/ux/slides/Dimensions'
 import { MainSlide } from 'src/ux/slides/MainSlide'
-import { SecondarySlide } from 'src/ux/slides/SeconderySlide'
+import { SecondarySlide } from 'src/ux/slides/SecondarySlide'
 
 const slidesIndexes = [0, 1, 2]
 export const CreateKeysScreen: React.FC<
