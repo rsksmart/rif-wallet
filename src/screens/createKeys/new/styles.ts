@@ -51,8 +51,8 @@ export const sharedMnemonicStyles = StyleSheet.create({
   // used for displaying the mnemonic and the suggestions
   wordText: {
     color: colors.white,
-    fontSize: 18,
+    fontSize: 17,
     marginLeft: 10,
-    paddingTop: 5,
+    paddingTop: 8,
   },
 })

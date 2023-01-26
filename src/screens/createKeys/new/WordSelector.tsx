@@ -1,19 +1,20 @@
+import { wordlists } from 'bip39'
 import { forwardRef, RefObject, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   StyleSheet,
-  View,
   Text,
   TextInput,
   TouchableOpacity,
+  View,
 } from 'react-native'
-import { wordlists } from 'bip39'
 
-import { CheckIcon } from 'components/icons/CheckIcon'
 import { DeleteIcon } from 'components/icons'
-import { sharedMnemonicStyles } from './styles'
-import { colors } from 'src/styles/colors'
+import { CheckIcon } from 'components/icons/CheckIcon'
 import { testIDs } from 'shared/constants'
+import { RegularText } from 'src/components'
+import { colors } from 'src/styles/colors'
+import { sharedMnemonicStyles } from './styles'
 
 interface Props {
   wordIndex: number
@@ -169,11 +170,11 @@ export const WordSelector = forwardRef<TextInput, Props>(
                     : styles.wordOptionContainer
                 }>
                 <View>
-                  <Text
+                  <RegularText
                     testID={`view.option.${index}`}
                     style={sharedMnemonicStyles.wordText}>
                     {item}
-                  </Text>
+                  </RegularText>
                 </View>
               </View>
             </TouchableOpacity>
