@@ -12,7 +12,7 @@ import { InjectSelectedWallet } from 'src/Context'
 import { colors } from 'src/styles'
 import { RequestWithBitcoin } from 'shared/types'
 
-import ReviewTransactionModal from './ReviewTransactionModal'
+import { ReviewTransactionContainer } from './ReviewRelayTransaction/ReviewTransactionContainer'
 import SignMessageModal from './SignMessageModal'
 import SignTypedDataModal from './SignTypedDataModal'
 import ConfirmBitcoinTransactionModal from './ConfirmBitcoinTransactionModal'
@@ -21,8 +21,6 @@ interface Props {
   request: RequestWithBitcoin
   closeModal: () => void
 }
-
-const ReviewTransactionInjected = InjectSelectedWallet(ReviewTransactionModal)
 
 const RequestTypeSwitch = (
   request: RequestWithBitcoin,
@@ -38,10 +36,7 @@ const RequestTypeSwitch = (
       )
     case 'sendTransaction':
       return (
-        <ReviewTransactionInjected
-          request={request as SendTransactionRequest}
-          closeModal={closeModal}
-        />
+        <ReviewTransactionContainer request={request} closeModal={closeModal} />
       )
     case 'signTypedData':
       return (

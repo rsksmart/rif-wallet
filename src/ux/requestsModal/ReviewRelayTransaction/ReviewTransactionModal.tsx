@@ -1,86 +1,39 @@
-import { BigNumber } from 'ethers'
-import { useEffect, useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleSheet, View } from 'react-native'
-import { RIF_TOKEN_ADDRESS_TESTNET } from '@rsksmart/rif-relay-light-sdk'
 
-import {
-  OverriddableTransactionOptions,
-  SendTransactionRequest,
-} from 'lib/core'
+import { SendTransactionRequest } from 'lib/core'
 import { balanceToDisplay, shortAddress } from 'lib/utils'
 
-import {
-  Loading,
-  PrimaryButton,
-  RegularText,
-  SecondaryButton,
-} from 'components/index'
-import { ScreenWithWallet } from 'screens/types'
+import { PrimaryButton, RegularText, SecondaryButton } from 'components/index'
+
 import { sharedStyles } from 'shared/styles'
-import { errorHandler } from 'shared/utils'
-import { colors, grid } from '../../styles'
-import ReadOnlyField from './ReadOnlyField'
-import useEnhancedWithGas from './useEnhancedWithGas'
+import { colors, grid } from '../../../styles'
+import ReadOnlyField from './../ReadOnlyField'
+import { EnhancedTransactionRequest } from '../useEnhancedWithGas'
+import { BigNumber } from 'ethers'
 
 interface Props {
-  request: SendTransactionRequest
-  closeModal: () => void
+  enhancedTransactionRequest: EnhancedTransactionRequest
+  txCostInRif: BigNumber
+  confirmTransaction: () => void
+  cancelTransaction: () => void
 }
 
 const ReviewTransactionModal = ({
-  request,
-  closeModal,
-  wallet,
-}: ScreenWithWallet & Props) => {
+  enhancedTransactionRequest,
+  txCostInRif,
+  confirmTransaction,
+  cancelTransaction,
+}: Props) => {
   const { t } = useTranslation()
-
-  const txRequest = useMemo(() => request.payload[0], [request])
-  const { enhancedTransactionRequest, isLoaded } = useEnhancedWithGas(
-    wallet,
-    txRequest,
-  )
-
-  const [error, setError] = useState<string | null>(null)
-  const [txCostInRif, setTxCostInRif] = useState<BigNumber>(BigNumber.from(0))
-
-  const tokenContract = RIF_TOKEN_ADDRESS_TESTNET
-
-  useEffect(() => {
-    wallet.rifRelaySdk
-      .estimateTransactionCost(txRequest, tokenContract)
-      .then(setTxCostInRif)
-  }, [request, txRequest, wallet.rifRelaySdk, tokenContract])
-
-  const confirmTransaction = async () => {
-    const confirmObject: OverriddableTransactionOptions = {
-      gasPrice: BigNumber.from(enhancedTransactionRequest.gasPrice),
-      gasLimit: BigNumber.from(enhancedTransactionRequest.gasLimit),
-      tokenPayment: {
-        tokenContract,
-        tokenAmount: txCostInRif,
-      },
-    }
-
-    try {
-      await request.confirm(confirmObject)
-      closeModal()
-    } catch (err) {
-      setError(errorHandler(err))
-    }
-  }
-
-  const cancelTransaction = () => {
-    request.reject('User rejects the transaction')
-    closeModal()
-  }
 
   const feeEstimateReady = txCostInRif.toString() !== '0'
   const rifFee = feeEstimateReady
     ? `${balanceToDisplay(txCostInRif, 18, 0)} tRIF`
     : 'estimating fee...'
 
-  return isLoaded ? (
+  return (
     <ScrollView>
       <View>
         {enhancedTransactionRequest && (
@@ -139,17 +92,6 @@ const ReviewTransactionModal = ({
 
       <ReadOnlyField label="Fee in tRIF" value={rifFee} testID="tRIF.fee" />
 
-      {error && (
-        <View style={sharedStyles.row}>
-          <View style={sharedStyles.column}>
-            <RegularText>Error:</RegularText>
-          </View>
-          <View style={sharedStyles.column}>
-            <RegularText>{error}</RegularText>
-          </View>
-        </View>
-      )}
-
       <View style={styles.buttonsSection}>
         <View style={sharedStyles.column}>
           <SecondaryButton
@@ -170,10 +112,6 @@ const ReviewTransactionModal = ({
         </View>
       </View>
     </ScrollView>
-  ) : (
-    <View style={styles.loadingContent}>
-      <Loading />
-    </View>
   )
 }
 

@@ -2,11 +2,11 @@ import { render, waitFor, fireEvent, act } from '@testing-library/react-native'
 import { cleanup } from '@testing-library/react-native'
 
 import ReviewTransactionModal from './ReviewTransactionModal'
-import { RIFWallet, SendTransactionRequest } from '../../lib/core/RIFWallet'
+import { RIFWallet, SendTransactionRequest } from '../../../lib/core/RIFWallet'
 import { BigNumber } from '@ethersproject/bignumber'
-import { setupTest } from '../../../testLib/setup'
-import * as tokenMetadata from '../../lib/token/tokenMetadata'
-import { deployTestTokens, getSigner } from '../../../testLib/utils'
+import { setupTest } from '../../../../testLib/setup'
+import * as tokenMetadata from '../../../lib/token/tokenMetadata'
+import { deployTestTokens, getSigner } from '../../../../testLib/utils'
 
 // allows to wait the resolution of a promise,
 // useful when you have a promise in a useEffect and it's triggered when the component loads for the first time.
