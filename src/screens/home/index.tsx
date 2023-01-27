@@ -35,7 +35,6 @@ export const HomeScreen = ({
   const bitcoinCore = useBitcoinContext()
   const { activeWalletIndex, wallet, chainType } =
     useAppSelector(selectActiveWallet)
-
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
     undefined,
   )
@@ -77,7 +76,7 @@ export const HomeScreen = ({
       switch (screen) {
         case 'RECEIVE':
           return navigation.navigate(homeStackRouteNames.ReceiveBitcoin, {
-            network: _selected,
+            networkId: _selected.networkId,
           })
         case 'SEND':
           return navigation.navigate(homeStackRouteNames.Send, {
