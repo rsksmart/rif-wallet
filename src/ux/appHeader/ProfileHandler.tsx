@@ -1,44 +1,57 @@
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import { navigationContainerRef } from 'src/core/Core'
-import { rootStackRouteNames } from 'src/navigation/rootNavigator'
-import { selectProfile } from 'src/redux/slices/profileSlice/selector'
-import { useAppSelector } from 'src/redux/storeUtils'
-import { RegularText } from '../../components'
-import { AvatarIcon } from '../../components/icons/AvatarIcon'
-import { colors } from '../../styles'
-import { useAliasRegistration } from 'core/hooks/useAliasRegistration'
+import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
+
 import { RIFWallet } from 'lib/core'
-import React from 'react'
+
+import { rootTabsRouteNames } from 'navigation/rootNavigator'
+import { profileStackRouteNames } from 'navigation/profileNavigator/types'
+import { selectProfile } from 'store/slices/profileSlice/selector'
+import { useAppSelector } from 'store/storeUtils'
+import { RegularText } from 'components/index'
+import { AvatarIcon } from 'components/icons/AvatarIcon'
+import { colors } from 'src/styles'
+import { useAliasRegistration } from 'core/hooks/useAliasRegistration'
+
 interface Props {
   wallet: RIFWallet
+  navigation: BottomTabHeaderProps['navigation']
 }
-export const ProfileHandler: React.FC<Props> = ({ wallet }) => {
+
+export const ProfileHandler = ({ wallet, navigation }: Props) => {
   const profile = useAppSelector(selectProfile)
   const profileCreated = !!profile
 
   const { registrationStarted, readyToRegister, getRegistrationData } =
     useAliasRegistration(wallet)
+
   const routeNextStep = async () => {
     if (await readyToRegister()) {
       const myAliasRegistration = await getRegistrationData()
-      navigationContainerRef.navigate(rootStackRouteNames.BuyDomain, {
-        alias: myAliasRegistration?.alias,
-        domainSecret: myAliasRegistration?.commitToRegisterSecret,
-        duration: myAliasRegistration?.duration,
+      navigation.navigate(rootTabsRouteNames.Profile, {
+        screen: profileStackRouteNames.BuyDomain,
+        params: {
+          alias: myAliasRegistration?.alias,
+          domainSecret: myAliasRegistration?.commitToRegisterSecret,
+          duration: myAliasRegistration?.duration,
+        },
       })
     } else if (await registrationStarted()) {
       const myAliasRegistration = await getRegistrationData()
-      navigationContainerRef.navigate(rootStackRouteNames.RequestDomain, {
-        alias: myAliasRegistration?.alias,
-        duration: myAliasRegistration?.duration,
+      navigation.navigate(rootTabsRouteNames.Profile, {
+        screen: profileStackRouteNames.RequestDomain,
+        params: {
+          alias: myAliasRegistration?.alias,
+          duration: myAliasRegistration?.duration,
+        },
       })
     } else {
-      navigationContainerRef.navigate(
-        profileCreated
-          ? rootStackRouteNames.ProfileDetailsScreen
-          : rootStackRouteNames.ProfileCreateScreen,
-      )
+      navigation.navigate(rootTabsRouteNames.Profile, {
+        screen: profileCreated
+          ? profileStackRouteNames.ProfileDetailsScreen
+          : profileStackRouteNames.ProfileCreateScreen,
+        params: profileCreated ? { editProfile: false } : undefined,
+      })
     }
   }
   return (

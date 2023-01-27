@@ -1,8 +1,3 @@
-import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
-import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator/types'
 import { useCallback, useEffect, useState } from 'react'
 import {
   KeyboardAvoidingView,
@@ -10,13 +5,16 @@ import {
   ScrollView,
   StyleSheet,
 } from 'react-native'
-import { RegularText } from 'src/components'
-import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
-import { colors } from 'src/styles'
+
+import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
+
+import { RegularText } from 'components/index'
+import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
+import { colors } from 'src/styles'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppSelector } from 'store/storeUtils'
-import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
 import { ScreenWithWallet } from '../types'
 import { TransactionForm } from './TransactionForm'
 import { TransactionInfo } from './TransactionInfo'
@@ -27,13 +25,17 @@ import {
   usePaymentExecutor,
 } from './usePaymentExecutor'
 import WalletNotDeployedView from './WalletNotDeployedModal'
+import {
+  homeStackRouteNames,
+  HomeStackScreenProps,
+} from 'navigation/homeNavigator/types'
 
 export const SendScreen = ({
   route,
   wallet,
   isWalletDeployed,
   navigation,
-}: RootStackScreenProps<rootStackRouteNames.Send> & ScreenWithWallet) => {
+}: HomeStackScreenProps<homeStackRouteNames.Send> & ScreenWithWallet) => {
   const assets =
     useFetchBitcoinNetworksAndTokens() as unknown as MixedTokenAndNetworkType[]
 
@@ -72,7 +74,7 @@ export const SendScreen = ({
   }
 
   const onDeployWalletNavigate = useCallback(
-    () => navigation.navigate(rootStackRouteNames.RelayDeployScreen),
+    () => navigation.navigate(homeStackRouteNames.RelayDeployScreen),
     [navigation],
   )
 

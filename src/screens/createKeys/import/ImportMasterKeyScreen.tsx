@@ -20,8 +20,8 @@ import {
   CreateKeysScreenProps,
 } from 'navigation/createKeysNavigator/types'
 import {
-  rootStackRouteNames,
-  RootStackScreenProps,
+  rootTabsRouteNames,
+  RootTabsScreenProps,
 } from 'navigation/rootNavigator'
 import { Trans } from 'react-i18next'
 import { handleInputRefCreation } from 'src/shared/utils'
@@ -34,7 +34,7 @@ import { WordSelector } from '../new/WordSelector'
 
 type Props = CompositeScreenProps<
   CreateKeysScreenProps<createKeysRouteNames.ImportMasterKey>,
-  RootStackScreenProps<rootStackRouteNames.CreateKeysUX>
+  RootTabsScreenProps<rootTabsRouteNames.CreateKeysUX>
 >
 
 const slidesIndexes = [0, 1, 2, 3]
@@ -131,7 +131,7 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
       keyboardShouldPersistTaps={'always'}>
       <View style={sharedMnemonicStyles.topContent}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('CreateKeys')}
+          onPress={() => navigation.navigate(createKeysRouteNames.CreateKeys)}
           style={styles.returnButton}
           accessibilityLabel="back">
           <View style={styles.returnButtonView}>

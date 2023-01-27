@@ -1,19 +1,19 @@
 import { StyleSheet, View } from 'react-native'
 
-import { Button, RegularText } from 'src/components'
-import {
-  RootStackNavigationProp,
-  rootStackRouteNames,
-} from 'src/navigation/rootNavigator'
-import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { balanceToString } from './BalancesScreen'
+import { Button, RegularText } from 'components/index' // TODO: this button seems like it doesn't exist
+import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
+import {
+  homeStackRouteNames,
+  HomeStackScreenProps,
+} from 'navigation/homeNavigator/types'
 
 export const BalancesRow = ({
   token: { symbol, balance, decimals, contractAddress },
   navigation,
 }: {
   token: ITokenWithoutLogo
-  navigation: RootStackNavigationProp
+  navigation: HomeStackScreenProps<homeStackRouteNames.Balances>['navigation']
 }) => (
   <View style={styles.tokenRow} testID={`${contractAddress}.View`}>
     <View style={styles.tokenBalance}>
@@ -24,7 +24,7 @@ export const BalancesRow = ({
     <View style={styles.button}>
       <Button
         onPress={() => {
-          navigation.navigate(rootStackRouteNames.Send, {
+          navigation.navigate(homeStackRouteNames.Send, {
             token: symbol,
           })
         }}
