@@ -29,6 +29,7 @@
     "@reduxjs/toolkit": "^1.9.0",
     "@rsksmart/rif-id-ethr-did": "^0.1.0",
     "@rsksmart/rif-id-mnemonic": "^0.1.1",
+    "@rsksmart/rif-wallet-bitcoin": "^1.0.0-beta.3",
     "@rsksmart/rlogin-dpath": "^1.0.1",
     "@rsksmart/rns-resolver.js": "^1.0.1",
     "@rsksmart/rns-sdk": "^1.0.0-beta.5",

@@ -1,12 +1,12 @@
 import { StyleSheet, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
-
-import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
+import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 
 import { RegularText } from 'components/index'
 import { colors, grid } from 'src/styles'
 import { IPrice } from 'src/subscriptions/types'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
+
 import {
   BalanceCardComponent,
   BitcoinCardComponent,

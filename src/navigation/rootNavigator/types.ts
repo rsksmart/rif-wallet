@@ -1,7 +1,8 @@
-import { BottomTabScreenProps } from '@react-navigation/bottom-tabs'
 import { NavigatorScreenParams } from '@react-navigation/native'
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs'
 
 import { ActivityMixedType } from 'screens/activity/types'
+
 import { ContactStackParamsList } from '../contactsNavigator'
 import { CreateKeysStackParamList } from '../createKeysNavigator'
 import { HomeStackParamsList } from '../homeNavigator/types'

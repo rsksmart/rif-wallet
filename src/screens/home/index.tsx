@@ -1,30 +1,29 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
+import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 
-import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
-import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { balanceToDisplay, getChainIdByType } from 'lib/utils'
+import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { toChecksumAddress } from 'components/address/lib'
 import { MediumText } from 'components/index'
-
-import { colors } from 'src/styles'
-import { selectAccounts } from 'store/slices/accountsSlice/selector'
-import { selectBalances } from 'store/slices/balancesSlice/selectors'
-import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
-import { selectUsdPrices } from 'store/slices/usdPricesSlice'
-import PortfolioComponent from './PortfolioComponent'
-import SelectedTokenComponent from './SelectedTokenComponent'
-import SendReceiveButtonComponent from './SendReceiveButtonComponent'
-import { getTokenColor } from './tokenColor'
-
-import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
-import { changeTopColor, selectActiveWallet } from 'store/slices/settingsSlice'
-import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import {
   homeStackRouteNames,
   HomeStackScreenProps,
 } from 'navigation/homeNavigator/types'
+import { selectAccounts } from 'store/slices/accountsSlice/selector'
+import { colors } from 'src/styles'
+import { selectBalances } from 'store/slices/balancesSlice/selectors'
+import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
+import { selectUsdPrices } from 'store/slices/usdPricesSlice'
+import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
+import { changeTopColor, selectActiveWallet } from 'store/slices/settingsSlice'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+
+import PortfolioComponent from './PortfolioComponent'
+import SelectedTokenComponent from './SelectedTokenComponent'
+import SendReceiveButtonComponent from './SendReceiveButtonComponent'
+import { getTokenColor } from './tokenColor'
 
 export const HomeScreen = ({
   navigation,
@@ -82,8 +81,8 @@ export const HomeScreen = ({
           })
         case 'SEND':
           return navigation.navigate(homeStackRouteNames.Send, {
-            token: _selected.symbol,
-            contractAddress: _selected.contractAddress,
+            token: _selected?.symbol,
+            contractAddress: _selected?.contractAddress,
           })
       }
     },

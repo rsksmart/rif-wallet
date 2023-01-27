@@ -1,21 +1,24 @@
-import Clipboard from '@react-native-community/clipboard'
-import { Network } from 'bitcoin-address-validation'
-import { isBitcoinAddressValid } from 'lib/bitcoin/utils'
 import {
   Image,
   Linking,
   StyleSheet,
-  TouchableOpacity,
   View,
+  TouchableOpacity,
 } from 'react-native'
+import { Network } from 'bitcoin-address-validation'
+import Clipboard from '@react-native-community/clipboard'
+import { isBitcoinAddressValid } from '@rsksmart/rif-wallet-bitcoin'
+
+import { SearchIcon } from 'components/icons/SearchIcon'
+import { StatusIcon } from 'components/statusIcons'
 import { RegularText, SemiBoldText } from 'src/components'
 import { getWalletSetting, SETTINGS } from 'src/core/config'
-import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
-import { SearchIcon } from '../../components/icons/SearchIcon'
-import { StatusIcon } from '../../components/statusIcons'
-import { colors, spacing } from '../../styles/'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
+
 import { TokenImage } from '../home/TokenImage'
+import { colors, spacing } from '../../styles/'
+
 export interface TransactionInformation {
   status: 'USER_CONFIRM' | 'PENDING' | 'SUCCESS' | 'FAILED'
   to?: string

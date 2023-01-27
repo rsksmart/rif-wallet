@@ -1,34 +1,35 @@
 import { useCallback, useEffect, useState } from 'react'
 import {
+  StyleSheet,
+  ScrollView,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
-  StyleSheet,
 } from 'react-native'
+import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
-import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
 
-import { RegularText } from 'components/index'
-import { selectBalances } from 'store/slices/balancesSlice/selectors'
-import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
-import { colors } from 'src/styles'
-import { selectUsdPrices } from 'store/slices/usdPricesSlice'
-import { useAppSelector } from 'store/storeUtils'
-import { ScreenWithWallet } from '../types'
-import { TransactionForm } from './TransactionForm'
-import { TransactionInfo } from './TransactionInfo'
-import { MixedTokenAndNetworkType } from './types'
-import { useFetchBitcoinNetworksAndTokens } from './useFetchBitcoinNetworksAndTokens'
-import {
-  PaymentExecutorContext,
-  usePaymentExecutor,
-} from './usePaymentExecutor'
-import WalletNotDeployedView from './WalletNotDeployedModal'
+import { RegularText } from 'src/components'
 import {
   homeStackRouteNames,
   HomeStackScreenProps,
 } from 'navigation/homeNavigator/types'
+import { colors } from 'src/styles'
+import { selectUsdPrices } from 'store/slices/usdPricesSlice'
+import { useAppSelector } from 'store/storeUtils'
+import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
+import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
+
+import { ScreenWithWallet } from '../types'
+import { TransactionInfo } from './TransactionInfo'
+import { TransactionForm } from './TransactionForm'
+import WalletNotDeployedView from './WalletNotDeployedModal'
+import {
+  usePaymentExecutor,
+  PaymentExecutorContext,
+} from './usePaymentExecutor'
+import { useFetchBitcoinNetworksAndTokens } from './useFetchBitcoinNetworksAndTokens'
+import { MixedTokenAndNetworkType } from './types'
 
 export const SendScreen = ({
   route,

@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
+import { isBitcoinAddressValid } from '@rsksmart/rif-wallet-bitcoin'
 
-import { isBitcoinAddressValid } from 'lib/bitcoin/utils'
 import { decodeString } from 'lib/eip681/decodeString'
 
 import { useAppSelector } from 'store/storeUtils'

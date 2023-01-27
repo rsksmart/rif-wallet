@@ -1,18 +1,23 @@
 import { useMemo, useEffect, useCallback, useState, useRef } from 'react'
-import BIP39 from 'lib/bitcoin/BIP39'
-import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
-import { BitcoinNetworkWithBIPRequest } from 'lib/bitcoin/types'
-import { createAndInitializeBipWithRequest } from 'lib/bitcoin/utils'
+import {
+  BitcoinNetwork,
+  BitcoinNetworkWithBIPRequest,
+  BIP39,
+  createAndInitializeBipWithRequest,
+  BIPWithRequest,
+  createBipFactoryType,
+} from '@rsksmart/rif-wallet-bitcoin'
 
 import {
   BitcoinNetworkStore,
   StoredBitcoinNetworkValue,
 } from 'storage/BitcoinNetworkStore'
 import { bitcoinTestnet } from 'shared/costants'
-import { useStoredBitcoinNetworks } from './useStoredBitcoinNetworks'
 import { useAppDispatch } from 'store/storeUtils'
 import { onRequest } from 'store/slices/settingsSlice'
 import { RifWalletServicesFetcher } from 'src/lib/rifWalletServices/RifWalletServicesFetcher'
+
+import { useStoredBitcoinNetworks } from './useStoredBitcoinNetworks'
 
 export interface UseBitcoinCoreResult {
   networks: Array<BitcoinNetwork>
@@ -31,7 +36,7 @@ interface NetworksObject {
  * This hook will also instantiate the bitcoin networks with a BIPWithRequest class that will handle the payments for the onRequest method
  * that is required in the wallet
  * @param mnemonic
- * @param request
+ * @param fetcher
  */
 
 export const useBitcoinCore = (
@@ -68,14 +73,21 @@ export const useBitcoinCore = (
       bip39: BIP39,
       rifFetcher: RifWalletServicesFetcher,
     ) => {
+      const createBipWithFetcher = (...args: createBipFactoryType) => {
+        const createAndInit = createAndInitializeBipWithRequest(request =>
+          dispatch(onRequest({ request })),
+        )
+        const result: BIPWithRequest = createAndInit(...args)
+        result.fetcher = rifFetcher
+        result.paymentFacade.onSendTransaction =
+          rifFetcher.sendTransactionHexData
+        return result
+      }
       const bitcoinNetwork = new BitcoinNetwork(
         network.name,
         network.bips,
         bip39,
-        createAndInitializeBipWithRequest(request =>
-          dispatch(onRequest({ request })),
-        ),
-        rifFetcher,
+        createBipWithFetcher,
       ) as BitcoinNetworkWithBIPRequest
       networksObj.current[network.name] = bitcoinNetwork
       return bitcoinNetwork
