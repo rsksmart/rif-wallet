@@ -5,7 +5,7 @@ import {
 } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import Resolver from '@rsksmart/rns-resolver.js'
-import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
+
 import {
   RootTabsParamsList,
   rootTabsRouteNames,
@@ -34,7 +34,7 @@ export type HomeStackParamsList = {
     | undefined
   [homeStackRouteNames.Receive]: undefined
   [homeStackRouteNames.ReceiveBitcoin]: {
-    network: BitcoinNetwork
+    networkId: string
   }
   [homeStackRouteNames.Balances]: undefined
   [homeStackRouteNames.RelayDeployScreen]: undefined
