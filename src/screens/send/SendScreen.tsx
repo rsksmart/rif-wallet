@@ -11,9 +11,9 @@ import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { RegularText } from 'src/components'
 import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator/types'
+  homeStackRouteNames,
+  HomeStackScreenProps,
+} from 'navigation/homeNavigator/types'
 import { colors } from 'src/styles'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppSelector } from 'store/storeUtils'
@@ -36,7 +36,7 @@ export const SendScreen = ({
   wallet,
   isWalletDeployed,
   navigation,
-}: RootStackScreenProps<rootStackRouteNames.Send> & ScreenWithWallet) => {
+}: HomeStackScreenProps<homeStackRouteNames.Send> & ScreenWithWallet) => {
   const assets =
     useFetchBitcoinNetworksAndTokens() as unknown as MixedTokenAndNetworkType[]
 
@@ -75,7 +75,7 @@ export const SendScreen = ({
   }
 
   const onDeployWalletNavigate = useCallback(
-    () => navigation.navigate(rootStackRouteNames.RelayDeployScreen),
+    () => navigation.navigate(homeStackRouteNames.RelayDeployScreen),
     [navigation],
   )
 

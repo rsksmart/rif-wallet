@@ -1,6 +1,6 @@
 import {
-  rootStackRouteNames,
-  RootStackScreenProps,
+  rootTabsRouteNames,
+  RootTabsScreenProps,
 } from 'navigation/rootNavigator/types'
 import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -14,13 +14,10 @@ import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
 import { colors } from '../../styles'
 import { WalletConnectContext } from './WalletConnectContext'
 
-type WalletConnectScreenProps =
-  RootStackScreenProps<rootStackRouteNames.WalletConnect>
-
 export const WalletConnectScreen = ({
   navigation,
   route,
-}: WalletConnectScreenProps) => {
+}: RootTabsScreenProps<rootTabsRouteNames.WalletConnect>) => {
   const wcKey = route.params?.wcKey
   const { t } = useTranslation()
   const { wallet } = useAppSelector(selectActiveWallet)
@@ -35,7 +32,7 @@ export const WalletConnectScreen = ({
 
   if (pendingConnector?.connected) {
     // clear pendingConnector
-    navigation.navigate(rootStackRouteNames.WalletConnect)
+    navigation.navigate(rootTabsRouteNames.WalletConnect)
   }
 
   return (

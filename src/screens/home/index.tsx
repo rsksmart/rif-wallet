@@ -8,9 +8,9 @@ import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { toChecksumAddress } from 'components/address/lib'
 import { MediumText } from 'components/index'
 import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator/types'
+  homeStackRouteNames,
+  HomeStackScreenProps,
+} from 'navigation/homeNavigator/types'
 import { selectAccounts } from 'store/slices/accountsSlice/selector'
 import { colors } from 'src/styles'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
@@ -27,7 +27,7 @@ import { getTokenColor } from './tokenColor'
 
 export const HomeScreen = ({
   navigation,
-}: RootStackScreenProps<rootStackRouteNames.Home>) => {
+}: HomeStackScreenProps<homeStackRouteNames.Main>) => {
   const dispatch = useAppDispatch()
   const tokenBalances = useAppSelector(selectBalances)
   const prices = useAppSelector(selectUsdPrices)
@@ -76,11 +76,11 @@ export const HomeScreen = ({
     ) => {
       switch (screen) {
         case 'RECEIVE':
-          return navigation.navigate(rootStackRouteNames.ReceiveBitcoin, {
+          return navigation.navigate(homeStackRouteNames.ReceiveBitcoin, {
             network: _selected,
           })
         case 'SEND':
-          return navigation.navigate(rootStackRouteNames.Send, {
+          return navigation.navigate(homeStackRouteNames.Send, {
             token: _selected?.symbol,
             contractAddress: _selected?.contractAddress,
           })
@@ -97,12 +97,12 @@ export const HomeScreen = ({
       }
       switch (screen) {
         case 'SEND':
-          return navigation.navigate(rootStackRouteNames.Send, {
+          return navigation.navigate(homeStackRouteNames.Send, {
             token: selected?.symbol,
             contractAddress: selected?.contractAddress,
           })
         case 'RECEIVE':
-          return navigation.navigate(rootStackRouteNames.Receive)
+          return navigation.navigate(homeStackRouteNames.Receive)
         case 'FAUCET':
           const address = wallet?.smartWallet.smartWalletContract.address
           address &&
@@ -110,14 +110,13 @@ export const HomeScreen = ({
           return
       }
     },
-    [navigation, wallet, selected, handleBitcoinSendReceive, chainType],
+    [chainType, handleBitcoinSendReceive, navigation, selected, wallet],
   )
 
   const addBalance = (address: string) => {
     console.log('temporarly removed', address)
   }
 
-  // pass the new color to Core to update header:
   useEffect(() => {
     dispatch(changeTopColor(selectedColor))
   }, [selectedColor, dispatch])

@@ -1,24 +1,29 @@
 import { AddrResolver, RSKRegistrar } from '@rsksmart/rns-sdk'
 import { BigNumber } from 'ethers'
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { ScrollView, StyleSheet, TextInput, View } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
+import { formatUnits } from 'ethers/lib/utils'
 
 import addresses from './addresses.json'
 
 import { Button, RegularText, SemiBoldText } from 'components/index'
-import { formatUnits } from 'ethers/lib/utils'
-import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator/types'
-import { addDomain } from '../../storage/DomainsStore'
+import { addDomain } from 'storage/DomainsStore'
 import { getTokenColorWithOpacity } from '../home/tokenColor'
 import { ScreenWithWallet } from '../types'
 
-export const RegisterDomainScreen: React.FC<
-  RootStackScreenProps<rootStackRouteNames.RegisterDomain> & ScreenWithWallet
-> = ({ wallet, route, navigation }) => {
+import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
+import {
+  profileStackRouteNames,
+  ProfileStackScreenProps,
+} from 'navigation/profileNavigator/types'
+
+export const RegisterDomainScreen = ({
+  wallet,
+  route,
+  navigation,
+}: ProfileStackScreenProps<profileStackRouteNames.RegisterDomain> &
+  ScreenWithWallet) => {
   const { selectedDomain, years } = route.params
   const rskRegistrar = useMemo(
     () =>
@@ -184,7 +189,7 @@ export const RegisterDomainScreen: React.FC<
             <RegularText>Address: {resolvingAddress}</RegularText>
             <Button
               onPress={() => {
-                navigation.navigate(rootStackRouteNames.Home)
+                navigation.navigate(rootTabsRouteNames.Home)
               }}
               title={'Home'}
             />
