@@ -7,7 +7,6 @@ import {
   setUnlocked as setIsUnlocked,
 } from 'store/slices/settingsSlice'
 
-import { Platform } from 'react-native'
 import BackgroundTimer from 'react-native-background-timer'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { useAppState } from './useAppState'
@@ -34,32 +33,15 @@ export const useStateSubscription = () => {
     dispatch(setAppIsActive(isNowActive))
 
     if (unlocked) {
-      console.log('useStateSubscription', 'app is unlocked')
-      if (!isNowActive) {
-        console.log('useStateSubscription', 'app is inactive, setting timer')
-        if (Platform.OS === 'android') {
-          timerRef.current = BackgroundTimer.setTimeout(() => {
-            console.log('useStateSubscription', 'timer expired, locking app')
-            setUnlocked(false)
-            dispatch(removeKeysFromState())
-          }, gracePeriod)
-        } else {
-          timerRef.current = setTimeout(() => {
-            console.log('useStateSubscription', 'timer expired, locking app')
-            setUnlocked(false)
-            dispatch(removeKeysFromState())
-          }, gracePeriod)
-        }
-      } else if (timerRef.current) {
-        console.log('useStateSubscription', 'app is active, clearing timer')
-        if (Platform.OS === 'android') {
-          BackgroundTimer.clearTimeout(timerRef.current)
-        } else {
-          clearTimeout(timerRef.current)
-        }
+      if (timerRef.current) {
+        BackgroundTimer.clearTimeout(timerRef.current)
       }
-    } else {
-      console.log('useStateSubscription', 'app is locked')
+      if (!isNowActive) {
+        timerRef.current = BackgroundTimer.setTimeout(() => {
+          setUnlocked(false)
+          dispatch(removeKeysFromState())
+        }, gracePeriod)
+      }
     }
   }, [unlocked, appState, dispatch, setUnlocked])
 
