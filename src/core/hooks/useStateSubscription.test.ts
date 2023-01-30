@@ -5,6 +5,11 @@ import { act } from 'react-test-renderer'
 import { createReduxWrapper } from 'testLib/ReduxWrapper'
 import { useStateSubscription } from './useStateSubscription'
 
+jest.mock('react-native-background-timer', () => ({
+  setTimeout: () => jest.fn().mockReturnValue(1),
+  clearTimeout: jest.fn(),
+}))
+
 describe('hook: useStateSubscription', () => {
   test('test some different scenarios', () => {
     const appStateSpy = jest.spyOn(AppState, 'addEventListener')

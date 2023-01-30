@@ -149,6 +149,9 @@
     "transformIgnorePatterns": [
       "node_modules/(?!react-native-linear-gradient)/",
       "jest-runner"
+    ],
+    "setupFiles": [
+      "./src/jest.setup.js"
     ]
   },
   "react-native": {
