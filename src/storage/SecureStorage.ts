@@ -5,7 +5,6 @@ import {
   resetGenericPassword,
   AUTHENTICATION_TYPE,
   ACCESSIBLE,
-  Result,
   getSupportedBiometryType,
   canImplyAuthentication,
 } from 'react-native-keychain'
@@ -20,14 +19,18 @@ export const getKeys = async () => {
 
     if (!isEmulator) {
       const supportedBiometry = await getSupportedBiometryType()
+      const biometry = await canImplyAuthentication({
+        accessControl: ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
+      })
       console.log('SUPPORTED BIOMETRY', supportedBiometry)
 
       const keys = await getGenericPassword({
         accessible: ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
         authenticationType: AUTHENTICATION_TYPE.DEVICE_PASSCODE_OR_BIOMETRICS,
-        accessControl: !supportedBiometry
-          ? ACCESS_CONTROL.DEVICE_PASSCODE
-          : ACCESS_CONTROL.BIOMETRY_ANY,
+        accessControl:
+          !supportedBiometry || !biometry
+            ? ACCESS_CONTROL.DEVICE_PASSCODE
+            : ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
       })
       if (!keys) {
         return null
@@ -54,7 +57,7 @@ export const saveKeys = async (keysValue: string) => {
     if (!isEmulator) {
       const supportedBiometry = await getSupportedBiometryType()
       const biometry = await canImplyAuthentication({
-        accessControl: ACCESS_CONTROL.BIOMETRY_ANY,
+        accessControl: ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
       })
       console.log('CAN IMPLY BIOMETRY', biometry)
       console.log('SUPPORTED BIOMETRY', supportedBiometry)
@@ -62,11 +65,10 @@ export const saveKeys = async (keysValue: string) => {
       return setGenericPassword(keyManagement, keysValue, {
         accessible: ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
         authenticationType: AUTHENTICATION_TYPE.DEVICE_PASSCODE_OR_BIOMETRICS,
-        accessControl: !supportedBiometry
-          ? ACCESS_CONTROL.DEVICE_PASSCODE
-          : !biometry
-          ? ACCESS_CONTROL.DEVICE_PASSCODE
-          : ACCESS_CONTROL.BIOMETRY_ANY,
+        accessControl:
+          !supportedBiometry || !biometry
+            ? ACCESS_CONTROL.DEVICE_PASSCODE
+            : ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
       })
     } else {
       saveKeysInMMKV(keysValue)
