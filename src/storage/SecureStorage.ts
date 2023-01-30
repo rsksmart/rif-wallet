@@ -6,6 +6,7 @@ import {
   AUTHENTICATION_TYPE,
   ACCESSIBLE,
   Result,
+  getSupportedBiometryType,
 } from 'react-native-keychain'
 import DeviceInfo from 'react-native-device-info'
 import { getKeysFromMMKV, saveKeysInMMKV } from './MainStorage'
@@ -17,12 +18,16 @@ export const getKeys = async () => {
     const isEmulator = await DeviceInfo.isEmulator()
 
     if (!isEmulator) {
+      const supportedBiometry = await getSupportedBiometryType()
+      console.log('SUPPORTED BIOMETRY', supportedBiometry)
+
       const keys = await getGenericPassword({
         accessible: ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
         authenticationType: AUTHENTICATION_TYPE.DEVICE_PASSCODE_OR_BIOMETRICS,
-        accessControl: ACCESS_CONTROL.BIOMETRY_CURRENT_SET_OR_DEVICE_PASSCODE,
+        accessControl: !supportedBiometry
+          ? ACCESS_CONTROL.DEVICE_PASSCODE
+          : ACCESS_CONTROL.BIOMETRY_ANY,
       })
-      console.log('GETTING KMS', keys)
       if (!keys) {
         return null
       }
@@ -36,25 +41,36 @@ export const getKeys = async () => {
       return keys
     }
   } catch (err) {
+    console.log('ERROR GETTING KEYS', err.message)
     throw new Error(err)
   }
 }
 
 export const saveKeys = async (keysValue: string) => {
-  const isEmulator = await DeviceInfo.isEmulator()
+  try {
+    const isEmulator = await DeviceInfo.isEmulator()
 
-  if (!isEmulator) {
-    return setGenericPassword(keyManagement, keysValue, {
-      accessible: ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
-      authenticationType: AUTHENTICATION_TYPE.DEVICE_PASSCODE_OR_BIOMETRICS,
-      accessControl: ACCESS_CONTROL.BIOMETRY_CURRENT_SET_OR_DEVICE_PASSCODE,
-    })
-  } else {
-    saveKeysInMMKV(keysValue)
-    return {
-      service: 'MMKV',
-      storage: 'MAIN_STORAGE',
+    if (!isEmulator) {
+      const supportedBiometry = await getSupportedBiometryType()
+      console.log('SUPPORTED BIOMETRY', supportedBiometry)
+
+      return setGenericPassword(keyManagement, keysValue, {
+        accessible: ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
+        authenticationType: AUTHENTICATION_TYPE.DEVICE_PASSCODE_OR_BIOMETRICS,
+        accessControl: !supportedBiometry
+          ? ACCESS_CONTROL.DEVICE_PASSCODE
+          : ACCESS_CONTROL.BIOMETRY_ANY,
+      })
+    } else {
+      saveKeysInMMKV(keysValue)
+      return {
+        service: 'MMKV',
+        storage: 'MAIN_STORAGE',
+      }
     }
+  } catch (err) {
+    console.log('ERROR GETTING KEYS', err.message)
+    throw new Error(err)
   }
 }
 
