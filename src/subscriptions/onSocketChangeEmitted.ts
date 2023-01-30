@@ -80,6 +80,7 @@ export const onSocketChangeEmitted =
           break
         case 'init':
           console.log('DISPATCH INIT TO SOCKET')
+
           dispatch(
             addNewTransactions({
               next: null,
