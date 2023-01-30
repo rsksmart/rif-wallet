@@ -13,6 +13,8 @@ import {
 } from 'store/slices/transactionsSlice'
 import { setUsdPrices } from 'store/slices/usdPricesSlice'
 import { AppDispatch } from 'store/index'
+import { TransactionsState } from 'store/slices/transactionsSlice/types'
+import { BalanceState } from 'store/slices/balancesSlice/types'
 import { AbiWallet, Action } from './types'
 
 interface OnNewTransactionEventEmittedArgs extends AbiWallet {
@@ -80,6 +82,7 @@ export const onSocketChangeEmitted =
           break
         case 'init':
           console.log('DISPATCH INIT TO SOCKET')
+
           dispatch(
             addNewTransactions({
               next: null,
