@@ -17,7 +17,7 @@ import { bitcoinMainnet, bitcoinTestnet } from 'shared/costants'
 import { useAppDispatch } from 'store/storeUtils'
 import { onRequest } from 'store/slices/settingsSlice'
 import { RifWalletServicesFetcher } from 'src/lib/rifWalletServices/RifWalletServicesFetcher'
-import { defaultChainType } from 'core/config'
+import { defaultChainType, isDefaultChainTypeMainnet } from 'core/config'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 
 import { useStoredBitcoinNetworks } from './useStoredBitcoinNetworks'
@@ -66,19 +66,11 @@ export const useBitcoinCore = (
   })
 
   const onNoNetworksPresent = useCallback(() => {
-    if (defaultChainType === ChainTypeEnum.MAINNET) {
-      BitcoinNetworkStore.addNewNetwork(
-        bitcoinMainnet.name,
-        bitcoinMainnet.bips,
-      )
-    } else if (defaultChainType === ChainTypeEnum.TESTNET) {
-      BitcoinNetworkStore.addNewNetwork(
-        bitcoinTestnet.name,
-        bitcoinTestnet.bips,
-      )
-    } else {
-      throw new Error('BTC Network not supported')
-    }
+    const bitcoinNetwork = isDefaultChainTypeMainnet
+      ? bitcoinMainnet
+      : bitcoinTestnet
+
+    BitcoinNetworkStore.addNewNetwork(bitcoinNetwork.name, bitcoinNetwork.bips)
 
     refreshStoredNetworks()
   }, [refreshStoredNetworks])
