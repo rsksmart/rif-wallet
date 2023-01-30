@@ -1,3 +1,4 @@
+import { Platform } from 'react-native'
 import {
   setGenericPassword,
   ACCESS_CONTROL,
@@ -22,7 +23,6 @@ export const getKeys = async () => {
       const biometry = await canImplyAuthentication({
         accessControl: ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
       })
-      console.log('SUPPORTED BIOMETRY', supportedBiometry)
 
       const keys = await getGenericPassword({
         accessible: ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
@@ -56,11 +56,12 @@ export const saveKeys = async (keysValue: string) => {
 
     if (!isEmulator) {
       const supportedBiometry = await getSupportedBiometryType()
-      const biometry = await canImplyAuthentication({
-        accessControl: ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
-      })
-      console.log('CAN IMPLY BIOMETRY', biometry)
-      console.log('SUPPORTED BIOMETRY', supportedBiometry)
+      const biometry =
+        Platform.OS === 'ios'
+          ? await canImplyAuthentication({
+              accessControl: ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
+            })
+          : Boolean(supportedBiometry)
 
       return setGenericPassword(keyManagement, keysValue, {
         accessible: ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,

@@ -213,7 +213,6 @@ const settingsSlice = createSlice({
     resetKeysAndPin: () => {
       deleteKeys()
       deletePin()
-      deleteContacts()
       deleteDomains()
       deleteCache()
       return initialState
