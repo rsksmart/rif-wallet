@@ -7,6 +7,7 @@ import {
   ACCESSIBLE,
   Result,
   getSupportedBiometryType,
+  canImplyAuthentication,
 } from 'react-native-keychain'
 import DeviceInfo from 'react-native-device-info'
 import { getKeysFromMMKV, saveKeysInMMKV } from './MainStorage'
@@ -52,12 +53,18 @@ export const saveKeys = async (keysValue: string) => {
 
     if (!isEmulator) {
       const supportedBiometry = await getSupportedBiometryType()
+      const biometry = await canImplyAuthentication({
+        accessControl: ACCESS_CONTROL.BIOMETRY_ANY,
+      })
+      console.log('CAN IMPLY BIOMETRY', biometry)
       console.log('SUPPORTED BIOMETRY', supportedBiometry)
 
       return setGenericPassword(keyManagement, keysValue, {
         accessible: ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
         authenticationType: AUTHENTICATION_TYPE.DEVICE_PASSCODE_OR_BIOMETRICS,
         accessControl: !supportedBiometry
+          ? ACCESS_CONTROL.DEVICE_PASSCODE
+          : !biometry
           ? ACCESS_CONTROL.DEVICE_PASSCODE
           : ACCESS_CONTROL.BIOMETRY_ANY,
       })
