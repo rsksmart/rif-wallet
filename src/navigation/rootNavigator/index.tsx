@@ -9,7 +9,6 @@ import { AppHeader } from '../../ux/appHeader'
 
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import { rootTabsRouteNames } from './types'
-import { hasPin } from 'storage/MainStorage'
 import { InjectedScreens } from 'core/Core'
 import { HomeNavigator } from '../homeNavigator'
 import { ContactsNavigation } from '../contactsNavigator'
@@ -28,13 +27,9 @@ export const RootNavigationComponent = () => {
   return (
     <View style={styles.parent}>
       <RootTabs.Navigator
-        tabBar={props => (
-          <AppFooterMenu isShown={unlocked && hasPin()} {...props} />
-        )}
+        tabBar={props => <AppFooterMenu isShown={unlocked} {...props} />}
         screenOptions={{
-          header: props => (
-            <AppHeader isShown={unlocked && hasPin()} {...props} />
-          ),
+          header: props => <AppHeader isShown={unlocked} {...props} />,
           tabBarHideOnKeyboard: true,
         }}>
         {!unlocked ? (
