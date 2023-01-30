@@ -69,7 +69,7 @@ export const saveKeys = async (keysValue: string) => {
       }
     }
   } catch (err) {
-    console.log('ERROR GETTING KEYS', err.message)
+    console.log('ERROR SAVING KEYS', err.message)
     throw new Error(err)
   }
 }
