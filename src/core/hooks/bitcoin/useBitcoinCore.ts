@@ -17,8 +17,7 @@ import { bitcoinMainnet, bitcoinTestnet } from 'shared/costants'
 import { useAppDispatch } from 'store/storeUtils'
 import { onRequest } from 'store/slices/settingsSlice'
 import { RifWalletServicesFetcher } from 'src/lib/rifWalletServices/RifWalletServicesFetcher'
-import { defaultChainType, isDefaultChainTypeMainnet } from 'core/config'
-import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
+import { isDefaultChainTypeMainnet } from 'core/config'
 
 import { useStoredBitcoinNetworks } from './useStoredBitcoinNetworks'
 
