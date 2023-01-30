@@ -28,7 +28,6 @@ export const RootNavigationComponent = () => {
   return (
     <View style={styles.parent}>
       <RootTabs.Navigator
-        initialRouteName={rootTabsRouteNames.CreateKeysUX}
         tabBar={props => (
           <AppFooterMenu isShown={unlocked && hasPin()} {...props} />
         )}
