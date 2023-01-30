@@ -5,20 +5,19 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 import { colors } from 'src/styles'
 import { rnsManagerStyles } from './rnsManagerStyles'
-
 import { PrimaryButton } from 'components/button/PrimaryButton'
 import { MediumText } from 'components/index'
 import { AvatarIcon } from 'components/icons/AvatarIcon'
-import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator/types'
-import { ScreenWithWallet } from '../types'
-import TitleStatus from './TitleStatus'
 import { IProfileRegistrationStore } from 'storage/AliasRegistrationStore'
 import { useAliasRegistration } from 'core/hooks/useAliasRegistration'
+import {
+  profileStackRouteNames,
+  ProfileStackScreenProps,
+} from 'navigation/profileNavigator/types'
+import TitleStatus from './TitleStatus'
+import { ScreenWithWallet } from '../types'
 
-type Props = RootStackScreenProps<rootStackRouteNames.RequestDomain> &
+type Props = ProfileStackScreenProps<profileStackRouteNames.RequestDomain> &
   ScreenWithWallet
 
 export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
@@ -69,7 +68,7 @@ export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
         if (ready) {
           setProgress(1)
           setProcessing(false)
-          navigation.navigate(rootStackRouteNames.BuyDomain, {
+          navigation.navigate(profileStackRouteNames.BuyDomain, {
             alias,
             domainSecret: profileRegistrationStore.commitToRegisterSecret,
             duration,
@@ -101,7 +100,9 @@ export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
     <>
       <View style={rnsManagerStyles.profileHeader}>
         <TouchableOpacity
-          onPress={() => navigation.navigate(rootStackRouteNames.SearchDomain)}
+          onPress={() =>
+            navigation.navigate(profileStackRouteNames.SearchDomain)
+          }
           accessibilityLabel="back">
           <View style={rnsManagerStyles.backButton}>
             <MaterialIcon name="west" color="white" size={10} />

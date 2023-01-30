@@ -1,19 +1,21 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { BigNumber } from 'ethers'
+import { UnspentTransactionType } from '@rsksmart/rif-wallet-bitcoin'
+
 import { RIFWallet } from 'lib/core'
-import { UnspentTransactionType } from 'lib/bitcoin/types'
 import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 
-import { TransactionInformation } from './TransactionInfo'
-import { transferBitcoin } from './transferBitcoin'
-import { transfer } from './transferTokens'
-import { MixedTokenAndNetworkType, OnSetTransactionStatusChange } from './types'
 import { useAppDispatch } from 'store/storeUtils'
 import {
   addPendingTransaction,
   modifyTransaction,
   IApiTransactionWithExtras,
 } from 'store/slices/transactionsSlice'
+
+import { TransactionInformation } from './TransactionInfo'
+import { transferBitcoin } from './transferBitcoin'
+import { transfer } from './transferTokens'
+import { MixedTokenAndNetworkType, OnSetTransactionStatusChange } from './types'
 
 interface IPaymentExecutorContext {
   setUtxosGlobal: (utxos: UnspentTransactionType[]) => void

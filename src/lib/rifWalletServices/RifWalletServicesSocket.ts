@@ -133,7 +133,10 @@ export class RifWalletServicesSocket
           this.emit('change', event)
         })
 
-        socket.emit('subscribe', { address: wallet.smartWalletAddress })
+        socket.emit('subscribe', {
+          address: wallet.smartWalletAddress,
+          accessToken: fetcher?.accessToken,
+        })
       })
 
       this.socket = socket

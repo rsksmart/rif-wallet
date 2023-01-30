@@ -7,23 +7,21 @@ import moment from 'moment'
 
 import { colors } from 'src/styles'
 import { rnsManagerStyles } from './rnsManagerStyles'
-
-import { PrimaryButton } from 'src/components/button/PrimaryButton'
-
-import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator/types'
-import { ScreenWithWallet } from '../types'
-import { AvatarIcon } from 'components/icons/AvatarIcon'
+import { PrimaryButton } from 'components/button/PrimaryButton'
 import { MediumText } from 'components/index'
+import { AvatarIcon } from 'components/icons/AvatarIcon'
+import addresses from './addresses.json'
+import TitleStatus from './TitleStatus'
 import { TokenImage } from '../home/TokenImage'
 import { errorHandler } from 'shared/utils'
-import TitleStatus from './TitleStatus'
-import addresses from './addresses.json'
 import { deleteAliasRegistration } from 'storage/AliasRegistrationStore'
+import {
+  profileStackRouteNames,
+  ProfileStackScreenProps,
+} from 'navigation/profileNavigator/types'
+import { ScreenWithWallet } from '../types'
 
-type Props = RootStackScreenProps<rootStackRouteNames.BuyDomain> &
+type Props = ProfileStackScreenProps<profileStackRouteNames.BuyDomain> &
   ScreenWithWallet
 
 export const BuyDomainScreen = ({ wallet, navigation, route }: Props) => {
@@ -74,7 +72,7 @@ export const BuyDomainScreen = ({ wallet, navigation, route }: Props) => {
         setRegisterDomainInfo('Transaction sent. Please wait...')
         setRegisterInProcess(true)
 
-        navigation.navigate(rootStackRouteNames.AliasBought, {
+        navigation.navigate(profileStackRouteNames.AliasBought, {
           alias: alias,
           tx,
         })
@@ -89,7 +87,9 @@ export const BuyDomainScreen = ({ wallet, navigation, route }: Props) => {
     <>
       <View style={rnsManagerStyles.profileHeader}>
         <TouchableOpacity
-          onPress={() => navigation.navigate(rootStackRouteNames.SearchDomain)}
+          onPress={() =>
+            navigation.navigate(profileStackRouteNames.SearchDomain)
+          }
           accessibilityLabel="search">
           <View style={rnsManagerStyles.backButton}>
             <MaterialIcon name="west" color="white" size={10} />

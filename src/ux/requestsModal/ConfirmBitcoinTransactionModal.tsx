@@ -1,17 +1,21 @@
 import React, { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
+import {
+  SendBitcoinRequest,
+  convertSatoshiToBtcHuman,
+} from '@rsksmart/rif-wallet-bitcoin'
+
 import { PrimaryButton } from 'src/components/button/PrimaryButton'
 import { SecondaryButton } from 'src/components/button/SecondaryButton'
 import { MediumText } from 'src/components'
-import { SendBitcoinRequestType } from 'src/lib/bitcoin/types'
-import { convertSatoshiToBtcHuman } from 'src/lib/bitcoin/utils'
 import { sharedStyles } from 'src/shared/styles'
+
 import InputField from './InpuField'
 import ReadOnlyField from './ReadOnlyField'
 
 interface ConfirmBitcoinTransactionModalType {
-  request: SendBitcoinRequestType
+  request: SendBitcoinRequest
   closeModal: () => void
 }
 

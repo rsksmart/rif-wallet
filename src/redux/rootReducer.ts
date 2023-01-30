@@ -12,7 +12,7 @@ import { usdPriceReducer } from './slices/usdPricesSlice'
 const persistConfig = {
   key: 'root',
   storage: reduxStorage,
-  whitelist: ['profile', 'accounts', 'contacts'],
+  whitelist: ['profile', 'accounts', 'contacts', 'balances', 'usdPrices'],
 }
 
 const reducers = combineReducers({

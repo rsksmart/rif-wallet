@@ -4,22 +4,24 @@ import { shortAddress } from 'lib/utils'
 
 import { Loading } from 'components/index'
 import { getDomains } from 'storage/DomainsStore'
-import { ReceiveScreen } from './ReceiveScreen'
-import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator'
+import { ReceiveScreen } from 'src/screens'
 import { useAppSelector } from 'store/storeUtils'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
+import {
+  homeStackRouteNames,
+  HomeStackScreenProps,
+} from 'navigation/homeNavigator/types'
+import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 
 export const BitcoinReceiveScreen = ({
   route: {
-    params: { network },
+    params: { networkId },
   },
-}: RootStackScreenProps<rootStackRouteNames.ReceiveBitcoin>) => {
+}: HomeStackScreenProps<homeStackRouteNames.ReceiveBitcoin>) => {
   const [address, setAddress] = useState<string | undefined>(undefined)
   const [registeredDomains, setRegisteredDomains] = useState<string[]>([])
-
+  const bitcoin = useBitcoinContext()
+  const network = bitcoin?.networksMap[networkId]
   const { wallet } = useAppSelector(selectActiveWallet)
 
   useEffect(() => {
@@ -30,10 +32,10 @@ export const BitcoinReceiveScreen = ({
 
   // In the future we must be able to select address type
   useEffect(() => {
-    network.bips[0]
+    network?.bips[0]
       .fetchExternalAvailableAddress()
       .then((addressBackend: string) => setAddress(addressBackend))
-  }, [network.bips])
+  }, [network?.bips])
 
   const shortedAddress = useMemo(() => shortAddress(address, 8), [address])
   return address ? (

@@ -1,26 +1,20 @@
 import {
-  RootStackNavigationProp,
-  rootStackRouteNames,
+  rootTabsRouteNames,
+  RootTabsScreenProps,
 } from 'navigation/rootNavigator/types'
 
 import { ActivityMixedType } from './types'
 import ActivityRowPresentation from './ActivityRowPresentation'
 import useActivityDeserializer from './useActivityDeserializer'
 
-interface Props {
+interface Props extends RootTabsScreenProps<rootTabsRouteNames.Activity> {
   activityTransaction: ActivityMixedType
-  navigation: RootStackNavigationProp
 }
 
-const ActivityRow = ({ activityTransaction, navigation }: Props) => {
+export const ActivityRow = ({ activityTransaction, navigation }: Props) => {
   const activityDetails = useActivityDeserializer(activityTransaction)
   const handlePress = () =>
-    navigation.navigate(
-      rootStackRouteNames.ActivityDetails,
-      activityTransaction,
-    )
+    navigation.navigate(rootTabsRouteNames.ActivityDetails, activityTransaction)
 
   return <ActivityRowPresentation {...activityDetails} onPress={handlePress} />
 }
-
-export default ActivityRow

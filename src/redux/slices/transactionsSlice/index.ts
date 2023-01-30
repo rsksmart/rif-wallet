@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import {
-  IApiTransactionWithExtras,
-  ITransactionsState,
+  ApiTransactionWithExtras,
+  TransactionsState,
   ModifyTransactionAction,
 } from 'store/slices/transactionsSlice/types'
 import {
@@ -15,7 +15,7 @@ import {
 } from 'src/subscriptions/types'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 
-const initialState: ITransactionsState = {
+const initialState: TransactionsState = {
   next: '',
   prev: '',
   transactions: [],
@@ -56,7 +56,7 @@ const transactionsSlice = createSlice({
     },
     addPendingTransaction: (
       state,
-      { payload }: PayloadAction<IApiTransactionWithExtras>,
+      { payload }: PayloadAction<ApiTransactionWithExtras>,
     ) => {
       const { symbol, finalAddress, enhancedAmount, value, ...restPayload } =
         payload
