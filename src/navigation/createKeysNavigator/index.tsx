@@ -8,8 +8,8 @@ import {
   SecurityExplanationScreen,
   SecureYourWalletScreen,
 } from 'screens/createKeys'
-import { selectIsUnlocked } from 'src/redux/slices/settingsSlice'
-import { useAppSelector } from 'src/redux/storeUtils'
+import { selectIsUnlocked } from 'store/slices/settingsSlice'
+import { useAppSelector } from 'store/storeUtils'
 import { CreateKeysStackParamList, createKeysRouteNames } from './types'
 
 const Stack = createStackNavigator<CreateKeysStackParamList>()
