@@ -36,32 +36,38 @@ export class RnsProcessor {
 
   public process = async (domain: string) => {
     try {
-      if (!this.index[domain]?.requested) {
+      if (!this.index[domain]?.commitmentRequested) {
         const { makeCommitmentTransaction, secret, hash } =
           await this.rskRegistrar.commitToRegister(
             domain,
             this.wallet.smartWallet.smartWalletAddress,
           )
+
         this.setIndex(domain, {
           domain,
           secret,
           hash,
-          requested: true,
-          committed: false,
-          registered: false,
+          commitmentRequested: true,
+          commitmentConfirmed: false,
+          registeringRequested: false,
+          registeringConfirmed: false,
         })
 
-        await makeCommitmentTransaction.wait()
-        this.setIndex(domain, { ...this.index[domain], committed: true })
-        console.log('commited')
-      } else if (!this.index[domain]?.committed) {
-        console.log('wait for request to finish')
-      } else if (!this.index[domain]?.registered) {
+        makeCommitmentTransaction.wait().then(() => {
+          this.setIndex(domain, {
+            ...this.index[domain],
+            commitmentConfirmed: true,
+          })
+          return DomainRegistrationEnum.COMMITMENT_CONFIRMED
+        })
+        return DomainRegistrationEnum.COMMITMENT_REQUESTED
+      } else if (!this.index[domain]?.commitmentConfirmed) {
+        return DomainRegistrationEnum.COMMITMENT_REQUESTED
+      } else if (!this.index[domain]?.registeringRequested) {
         const canReveal = await this.rskRegistrar.canReveal(
           this.index[domain].hash,
         )
         if (await canReveal()) {
-          console.log('can register')
           const duration = 1
           const price = await this.rskRegistrar.price(
             domain,
@@ -78,18 +84,31 @@ export class RnsProcessor {
             durationToRegister,
             priceToRegister,
           )
-          await tx.wait()
-          this.setIndex(domain, { ...this.index[domain], registered: true })
-          console.log('Registered')
+          this.setIndex(domain, {
+            ...this.index[domain],
+            registeringRequested: true,
+          })
+
+          tx.wait().then(() => {
+            this.setIndex(domain, {
+              ...this.index[domain],
+              registeringConfirmed: true,
+            })
+            return DomainRegistrationEnum.REGISTERING_CONFIRMED
+          })
+          return DomainRegistrationEnum.REGISTERING_REQUESTED
         } else {
-          console.log('keep waiting')
+          return DomainRegistrationEnum.WAITING_COMMITMENT
         }
-      } else if (this.index[domain]?.registered) {
-        console.log('Domain already Registered')
+      } else if (!this.index[domain]?.registeringConfirmed) {
+        return DomainRegistrationEnum.REGISTERING_REQUESTED
+      } else if (this.index[domain]?.registeringConfirmed) {
+        return DomainRegistrationEnum.REGISTERING_CONFIRMED
       }
     } catch (e: any) {
       throw new Error(e.message)
     }
+    return null
   }
 }
 
@@ -97,9 +116,17 @@ interface IDomainRegistrationProcess {
   domain: string
   secret: string
   hash: string
-  requested: boolean
-  committed: boolean
-  registered: boolean
+  commitmentRequested: boolean
+  commitmentConfirmed: boolean
+  registeringRequested: boolean
+  registeringConfirmed: boolean
+}
+export enum DomainRegistrationEnum {
+  COMMITMENT_REQUESTED = 'COMMITMENT_REQUESTED',
+  COMMITMENT_CONFIRMED = 'COMMITMENT_CONFIRMED',
+  WAITING_COMMITMENT = 'WAITING_COMMITMENT',
+  REGISTERING_REQUESTED = 'REGISTERING_REQUESTED',
+  REGISTERING_CONFIRMED = 'REGISTERING_CONFIRMED',
 }
 
 export interface IDomainRegistrationProcessIndex {
