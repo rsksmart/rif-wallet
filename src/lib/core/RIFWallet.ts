@@ -69,10 +69,10 @@ export class RIFWallet extends Signer implements TypedDataSigner {
   rifRelaySdk: RIFRelaySDK
   onRequest: OnRequest
 
-  private constructor (smartWalletFactory: SmartWalletFactory, smartWallet: SmartWallet, onRequest: OnRequest, sdk: RIFRelaySDK) {
+  private constructor (sdk: RIFRelaySDK, onRequest: OnRequest) {
     super()
-    this.smartWalletFactory = smartWalletFactory
-    this.smartWallet = smartWallet
+    this.smartWalletFactory = sdk.smartWalletFactory
+    this.smartWallet = sdk.smartWallet
     this.onRequest = onRequest
     this.rifRelaySdk = sdk
     
@@ -87,15 +87,10 @@ export class RIFWallet extends Signer implements TypedDataSigner {
     return this.smartWallet.smartWalletAddress
   }
 
-  static async create (signer: Signer, smartWalletFactoryAddress: string, onRequest: OnRequest, rifRelayConfig: RifRelayConfig) {
-    // @jesse, remove these:
-    const smartWalletFactory = await SmartWalletFactory.create(signer, smartWalletFactoryAddress)
-    const smartWalletAddress = await smartWalletFactory.getSmartWalletAddress()
-    const smartWallet = await SmartWallet.create(signer, smartWalletAddress)
-
+  static async create (signer: Signer, onRequest: OnRequest, rifRelayConfig: RifRelayConfig) {
     const sdk = await RIFRelaySDK.create(signer, rifRelayConfig)
 
-    return new RIFWallet(smartWalletFactory, smartWallet, onRequest, sdk)
+    return new RIFWallet(sdk, onRequest)
   }
 
   getAddress = (): Promise<string> => Promise.resolve(this.smartWallet.smartWalletAddress)
