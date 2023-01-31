@@ -4,7 +4,6 @@ import { RIFWallet } from 'lib/core'
 import { BigNumber } from 'ethers'
 
 import {
-  deleteRnsProcessor,
   getRnsProcessor,
   hasRnsProcessor,
   saveRnsProcessor,
