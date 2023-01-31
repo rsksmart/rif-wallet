@@ -66,6 +66,7 @@ export const DomainLookUp: React.FC<DomainLookUpProps> = ({
     onChangeText(inputText)
 
     if (!inputText) {
+      setDomainAvailability(DomainStatus.NONE)
       return
     }
     const newValidationMessage = validateAddress(inputText + '.rsk', -1)
