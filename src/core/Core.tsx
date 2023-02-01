@@ -21,7 +21,6 @@ import {
 import { WalletConnectProviderElement } from 'screens/walletConnect/WalletConnectContext'
 import {
   rifSockets,
-  SocketsControls,
   SocketsEvents,
   socketsEvents,
 } from 'src/subscriptions/rifSockets'
