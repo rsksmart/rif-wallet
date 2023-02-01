@@ -1,8 +1,8 @@
 import { useContext, useState } from 'react'
 import { isBitcoinAddressValid } from '@rsksmart/rif-wallet-bitcoin'
 
-import { decodeString } from 'lib/eip681/decodeString'
-
+// TODO: fix this
+import { decodeString } from '@rsksmart/rif-wallet-eip681/dist/decodeString'
 import { useAppSelector } from 'store/storeUtils'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import {
