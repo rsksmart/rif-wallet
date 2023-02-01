@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo } from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { BigNumber, utils } from 'ethers'
-import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import moment from 'moment'
 
 import { colors } from 'src/styles'
@@ -10,71 +9,57 @@ import { rnsManagerStyles } from './rnsManagerStyles'
 import { PrimaryButton } from 'components/button/PrimaryButton'
 import { MediumText } from 'components/index'
 import { AvatarIcon } from 'components/icons/AvatarIcon'
-import addresses from './addresses.json'
 import TitleStatus from './TitleStatus'
 import { TokenImage } from '../home/TokenImage'
 import { errorHandler } from 'shared/utils'
-import { deleteAliasRegistration } from 'storage/AliasRegistrationStore'
 import {
   profileStackRouteNames,
   ProfileStackScreenProps,
 } from 'navigation/profileNavigator/types'
 import { ScreenWithWallet } from '../types'
+import { DomainRegistrationEnum, RnsProcessor } from 'lib/rns/RnsProcessor'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.BuyDomain> &
   ScreenWithWallet
 
 export const BuyDomainScreen = ({ wallet, navigation, route }: Props) => {
-  const { alias, domainSecret, duration } = route.params
-  const fullAlias = alias + '.rsk'
-  const rskRegistrar = useMemo(
-    () =>
-      new RSKRegistrar(
-        addresses.rskOwnerAddress,
-        addresses.fifsAddrRegistrarAddress,
-        addresses.rifTokenAddress,
-        wallet,
-      ),
-    [wallet],
-  )
+  const rnsProcessor = useMemo(() => new RnsProcessor({ wallet }), [wallet])
 
-  const expiryDate = moment(moment(), 'MM-DD-YYYY').add(duration, 'years')
+  const { alias } = route.params
+  const process = rnsProcessor.getStatus(alias)
+  const fullAlias = alias + '.rsk'
+
+  const expiryDate = moment(moment(), 'MM-DD-YYYY').add(
+    process.duration,
+    'years',
+  )
 
   const [registerDomainInfo, setRegisterDomainInfo] = useState('')
   const [registerInProcess, setRegisterInProcess] = useState(false)
   const [domainPrice, setDomainPrice] = useState<BigNumber>()
-  const [domainFiatPrice, setDomainFiatPrice] = useState<number>(0.0)
+  const [domainFiatPrice, setDomainFiatPrice] = useState<number>()
 
   useEffect(() => {
-    setDomainPrice(undefined)
-    if (duration) {
-      rskRegistrar.price(alias, BigNumber.from(duration)).then(price => {
-        setDomainPrice(price)
-        const rifPrice: number = parseFloat(utils.formatUnits(price, 18))
-        const rifMockPrice = 0.05632
-        setDomainFiatPrice(rifMockPrice * rifPrice)
-      })
+    async function init() {
+      const price = await rnsProcessor.price(alias)
+      setDomainPrice(price)
+
+      const rifPrice: number = parseFloat(utils.formatUnits(price, 18))
+      const rifMockPrice = 0.05632
+      setDomainFiatPrice(rifMockPrice * rifPrice)
     }
-  }, [alias, duration, setDomainPrice, rskRegistrar])
+    init().then()
+  }, [alias, rnsProcessor])
 
   const registerDomain = async (domain: string) => {
     try {
-      const durationToRegister = BigNumber.from(2)
-      if (domainPrice) {
-        const tx = await rskRegistrar.register(
-          domain,
-          wallet.smartWallet.smartWalletAddress,
-          domainSecret,
-          durationToRegister,
-          domainPrice,
-        )
-        deleteAliasRegistration()
+      const response = await rnsProcessor.register(domain)
+      if (response === DomainRegistrationEnum.REGISTERING_REQUESTED) {
         setRegisterDomainInfo('Transaction sent. Please wait...')
         setRegisterInProcess(true)
 
         navigation.navigate(profileStackRouteNames.AliasBought, {
           alias: alias,
-          tx,
         })
       }
     } catch (e) {

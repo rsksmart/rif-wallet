@@ -6,7 +6,7 @@ import { rnsManagerStyles } from './rnsManagerStyles'
 import { MediumText, SecondaryButton } from 'components/index'
 import { PrimaryButton } from 'components/button'
 import { getWalletSetting, SETTINGS } from 'core/config'
-import { setProfile, selectProfile } from 'store/slices/profileSlice'
+import { setProfile } from 'store/slices/profileSlice'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { ScreenWithWallet } from '../types'
@@ -14,21 +14,24 @@ import {
   profileStackRouteNames,
   ProfileStackScreenProps,
 } from 'navigation/profileNavigator/types'
+import { RnsProcessor } from 'lib/rns/RnsProcessor'
 
 export const AliasBoughtScreen = ({
   navigation,
   route,
+  wallet,
 }: ProfileStackScreenProps<profileStackRouteNames.AliasBought> &
   ScreenWithWallet) => {
-  const { alias, tx } = route.params
+  const rnsProcessor = new RnsProcessor({ wallet })
 
-  const [registerDomainInfo, setRegisterDomainInfo] = useState(
+  const { alias } = route.params
+
+  const [registerDomainInfo] = useState(
     'Transaction for your alias is being processed',
   )
 
   const { chainType } = useAppSelector(selectActiveWallet)
   const dispatch = useAppDispatch()
-  const profile = useAppSelector(selectProfile)
 
   const explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainType)
 
@@ -38,17 +41,8 @@ export const AliasBoughtScreen = ({
   }
 
   useEffect(() => {
-    if (profile) {
-      dispatch(setProfile({ ...profile, alias: `${alias}.rsk` }))
-    }
-    const fetchData = async () => {
-      await tx.wait()
-      setRegisterDomainInfo('Your alias has been registered successfully')
-    }
-    fetchData()
-      // make sure to catch any error
-      .catch(console.error)
-  }, [alias, dispatch, profile, tx])
+    dispatch(setProfile({ phone: '', email: '', alias: `${alias}.rsk` }))
+  }, [alias, dispatch])
 
   return (
     <>
@@ -73,7 +67,11 @@ export const AliasBoughtScreen = ({
         <View style={rnsManagerStyles.bottomContainer}>
           <View style={styles.buttonContainer}>
             <PrimaryButton
-              onPress={() => copyHashAndOpenExplorer(tx.hash)}
+              onPress={() =>
+                copyHashAndOpenExplorer(
+                  rnsProcessor.getStatus(alias).registrationHash,
+                )
+              }
               accessibilityLabel="Copy Hash & Open Explorer"
               title={'Copy Hash & Open Explorer'}
             />
