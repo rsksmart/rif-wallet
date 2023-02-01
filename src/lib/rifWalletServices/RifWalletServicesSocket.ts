@@ -9,6 +9,7 @@ import { RIFWallet } from '../core'
 import { RifWalletServicesFetcher } from './RifWalletServicesFetcher'
 import { IApiTransaction, ITokenWithBalance } from './RIFWalletServicesTypes'
 import { filterEnhancedTransactions } from 'src/subscriptions/utils'
+import { getWalletSetting, SETTINGS } from 'src/core/config'
 
 export interface IServiceChangeEvent {
   type: string
@@ -23,7 +24,6 @@ export interface IServiceInitEvent {
 export interface IRifWalletServicesSocket extends EventEmitter {
   connect: (
     wallet: RIFWallet,
-    encryptionKey: string,
     fetcher?: RifWalletServicesFetcher,
   ) => Promise<void>
 
@@ -107,12 +107,11 @@ export class RifWalletServicesSocket
     })
   }
 
-  async connect(
-    wallet: RIFWallet,
-    encriptionKey: string,
-    fetcher?: RifWalletServicesFetcher,
-  ) {
+  async connect(wallet: RIFWallet, fetcher?: RifWalletServicesFetcher) {
     try {
+      const encriptionKey = await wallet.smartWallet.signer.signMessage(
+        getWalletSetting(SETTINGS.RIF_WALLET_KEY),
+      )
       await this.init(wallet, encriptionKey, fetcher)
 
       const socket = io(this.rifWalletServicesUrl, {

@@ -14,7 +14,6 @@ interface ConnectSocket {
   onChange: (action: Action) => void
   onError: () => void
   wallet: RIFWallet
-  mnemonic: string
   fetcher?: RifWalletServicesFetcher
 }
 
@@ -24,7 +23,6 @@ export const connectSocket = ({
   onChange,
   onError,
   wallet,
-  mnemonic,
   fetcher,
 }: ConnectSocket) => {
   rifServiceSocket.on('init', onInit)
@@ -32,5 +30,5 @@ export const connectSocket = ({
     'change',
     onChange as (action: IServiceChangeEvent) => void,
   )
-  rifServiceSocket.connect(wallet, mnemonic, fetcher).catch(onError)
+  rifServiceSocket.connect(wallet, fetcher).catch(onError)
 }
