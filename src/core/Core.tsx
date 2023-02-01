@@ -19,7 +19,12 @@ import {
 } from '@react-navigation/native'
 
 import { WalletConnectProviderElement } from 'screens/walletConnect/WalletConnectContext'
-import { useRifSockets } from 'src/subscriptions/useRifSockets'
+import {
+  rifSockets,
+  SocketsControls,
+  SocketsEvents,
+  socketsEvents,
+} from 'src/subscriptions/rifSockets'
 import { LoadingScreen } from 'components/loading/LoadingScreen'
 import { Cover } from './components/Cover'
 import { useBitcoinCore } from './hooks/bitcoin/useBitcoinCore'
@@ -39,6 +44,7 @@ import { BitcoinProvider } from 'core/hooks/bitcoin/BitcoinContext'
 import { InjectSelectedWallet } from 'src/Context'
 import * as Screens from 'screens/index'
 import { authAxios, publicAxios } from './setup'
+import { useSetGlobalError } from 'src/components/GlobalErrorHandler'
 
 export const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -70,6 +76,7 @@ export const Core = () => {
   const settingsIsLoading = useAppSelector(selectSettingsIsLoading)
   const requests = useAppSelector(selectRequests)
   const [mnemonic, setMnemonic] = useState<string | null>(null)
+  const setGlobalError = useSetGlobalError()
 
   const insets = useSafeAreaInsets()
   const topColor = useAppSelector(selectTopColor)
@@ -85,13 +92,6 @@ export const Core = () => {
     },
     [dispatch],
   )
-
-  useRifSockets({
-    appActive: active,
-    wallet: wallets && wallets[selectedWallet],
-    mnemonic,
-    fetcher,
-  })
 
   useEffect(() => {
     const fn = async () => {
@@ -132,6 +132,29 @@ export const Core = () => {
       })
     }
   }, [selectedWallet, retrieveChainId, wallets])
+
+  useEffect(() => {
+    if (selectedWallet && wallets && mnemonic && fetcher) {
+      console.log('USE EFFECT')
+      rifSockets({
+        wallet: wallets[selectedWallet],
+        mnemonic,
+        fetcher,
+        setGlobalError,
+        dispatch,
+      })
+      socketsEvents.emit(SocketsEvents.CONNECT)
+    }
+  }, [wallets, selectedWallet, mnemonic, fetcher, dispatch, setGlobalError])
+
+  useEffect(() => {
+    if (!active) {
+      socketsEvents.emit(SocketsEvents.DISCONNECT)
+    }
+    return () => {
+      socketsEvents.emit(SocketsEvents.DISCONNECT)
+    }
+  }, [active])
 
   if (settingsIsLoading && !unlocked) {
     return <LoadingScreen />
