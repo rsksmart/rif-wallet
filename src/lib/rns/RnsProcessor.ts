@@ -68,8 +68,8 @@ export class RnsProcessor {
       } else if (!this.index[domain]?.commitmentConfirmed) {
         return DomainRegistrationEnum.COMMITMENT_REQUESTED
       }
-    } catch (e: any) {
-      throw new Error(e.message)
+    } catch (err) {
+      throw new Error((err as Error).message)
     }
     return null
   }
@@ -88,8 +88,8 @@ export class RnsProcessor {
       } else {
         return DomainRegistrationEnum.WAITING_COMMITMENT
       }
-    } catch (e: any) {
-      throw new Error(e.message)
+    } catch (err) {
+      throw new Error((err as Error).message)
     }
   }
   public price = async (domain: string) => {
@@ -145,8 +145,8 @@ export class RnsProcessor {
       } else {
         return DomainRegistrationEnum.WAITING_COMMITMENT
       }
-    } catch (e: any) {
-      throw new Error(e.message)
+    } catch (err) {
+      throw new Error((err as Error).message)
     }
   }
   public getStatus = (domain: string): IDomainRegistrationProcess => {
