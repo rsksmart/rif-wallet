@@ -31,8 +31,6 @@ const onSocketInit = (
   cb({ type: 'init', payload })
 }
 
-const disconnectSocket = rifWalletServicesSocket.disconnect
-
 export const rifSockets = ({
   wallet,
   mnemonic,
@@ -68,6 +66,8 @@ export const rifSockets = ({
       }
     })
   }
+
+  const disconnectSocket = rifWalletServicesSocket.disconnect
 
   socketsEvents.removeAllListeners()
 
