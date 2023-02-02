@@ -7,18 +7,19 @@ import {
   setUnlocked as setIsUnlocked,
 } from 'store/slices/settingsSlice'
 
+import BackgroundTimer, { TimeoutId } from 'react-native-background-timer'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { useAppState } from './useAppState'
 
 const gracePeriod = 3000
-let timer: NodeJS.Timeout
+let timer: TimeoutId
 
 export const useStateSubscription = () => {
   const dispatch = useAppDispatch()
   const active = useAppSelector(selectAppIsActive)
   const unlocked = useAppSelector(selectIsUnlocked)
   const { appState } = useAppState()
-  const timerRef = useRef<NodeJS.Timeout>(timer)
+  const timerRef = useRef<TimeoutId>(timer)
 
   const setUnlocked = useCallback(
     (isUnlocked: boolean) => {
@@ -32,13 +33,14 @@ export const useStateSubscription = () => {
     dispatch(setAppIsActive(isNowActive))
 
     if (unlocked) {
+      if (timerRef.current) {
+        BackgroundTimer.clearTimeout(timerRef.current)
+      }
       if (!isNowActive) {
-        timerRef.current = setTimeout(() => {
+        timerRef.current = BackgroundTimer.setTimeout(() => {
           setUnlocked(false)
           dispatch(removeKeysFromState())
         }, gracePeriod)
-      } else if (timerRef.current) {
-        clearTimeout(timerRef.current)
       }
     }
   }, [unlocked, appState, dispatch, setUnlocked])

@@ -36,7 +36,6 @@
     "@rsksmart/rsk-contract-metadata": "^1.0.17",
     "@rsksmart/rsk-testnet-contract-metadata": "^1.0.11",
     "@rsksmart/rsk-utils": "^1.1.0",
-    "@types/react-native-snap-carousel": "^3.8.5",
     "@walletconnect/client": "^1.6.6",
     "axios": "^0.27.2",
     "axios-auth-refresh": "^3.3.4",
@@ -57,6 +56,7 @@
     "react": "18.1.0",
     "react-i18next": "^12.0.0",
     "react-native": "0.70.6",
+    "react-native-background-timer": "^2.4.1",
     "react-native-barcode-mask": "^1.2.4",
     "react-native-config": "^1.4.5",
     "react-native-crypto": "^2.1.0",
@@ -102,6 +102,8 @@
     "@types/jest": "^29.2.3",
     "@types/mocha": "^10.0.0",
     "@types/react-native": "^0.65.0",
+    "@types/react-native-background-timer": "^2.0.0",
+    "@types/react-native-snap-carousel": "^3.8.5",
     "@types/react-native-vector-icons": "^6.4.10",
     "@types/react-test-renderer": "^18.0.0",
     "@types/readable-stream": "^2.3.12",
@@ -147,6 +149,9 @@
     "transformIgnorePatterns": [
       "node_modules/(?!react-native-linear-gradient)/",
       "jest-runner"
+    ],
+    "setupFiles": [
+      "./src/jest.setup.js"
     ]
   },
   "react-native": {
