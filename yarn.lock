@@ -2069,10 +2069,10 @@
     "@rsksmart/rsk-contract-metadata" "^1.0.17"
     "@rsksmart/rsk-testnet-contract-metadata" "^1.0.11"
 
-"@rsksmart/rif-wallet-eip681@1.0.0":
-  version "1.0.0"
-  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-eip681/1.0.0/9523d03104921fc83aa4bd7c5900d3c8e2a88df5#9523d03104921fc83aa4bd7c5900d3c8e2a88df5"
-  integrity sha512-EhTe/djZkRwrR3bGxVrOygzdHlf4l+WT/b52Qx1aA1j20v7yFMt1BPMl6H7OKZPJVcuorR22YDqa4PgO3dBs5Q==
+"@rsksmart/rif-wallet-eip681@1.0.1":
+  version "1.0.1"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-eip681/1.0.1/8c1692e2a620b382a386b14fd63e720ab40a1caa#8c1692e2a620b382a386b14fd63e720ab40a1caa"
+  integrity sha512-jegJlcuexsNy18TXs12AKi1lMfZ5a6v+JEZONdO/jYE8ZrcOuyzQ+RFXZvH/uZKsUexZTfs+ty8yaFHWG2huvg==
   dependencies:
     "@rsksmart/rsk-utils" "^1.1.0"
 
