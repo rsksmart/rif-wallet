@@ -1,14 +1,16 @@
 import { Wallet } from '@ethersproject/wallet'
-import { KeyManagementSystem, RIFWallet } from '../lib/core'
-import { getKeys, saveKeys } from '../storage/MainStorage'
+
+import { KeyManagementSystem, RIFWallet } from 'lib/core'
+
 import { Wallets } from '../Context'
 import { MMKVStorage } from '../storage/MMKVStorage'
+import { getKeys, saveKeys } from 'storage/SecureStorage'
 
 type CreateRIFWallet = (wallet: Wallet) => Promise<RIFWallet>
 
 export const loadExistingWallets =
   (createRIFWallet: CreateRIFWallet) => async () => {
-    const serializedKeys = getKeys()
+    const serializedKeys = await getKeys()
     if (serializedKeys) {
       const { kms, wallets } =
         KeyManagementSystem.fromSerialized(serializedKeys)
@@ -45,8 +47,11 @@ export const createKMS =
     const rifWalletIsDeployed = await rifWallet.smartWalletFactory.isDeployed()
 
     save()
-    const serialized = kms.serialize()
-    saveKeys(serialized)
+    const result = await saveKeys(kms.serialize())
+
+    if (!result) {
+      throw new Error('Could not save keys')
+    }
 
     const rifWalletsDictionary = { [rifWallet.address]: rifWallet }
     const rifWalletsIsDeployedDictionary = {
@@ -71,7 +76,10 @@ export const addNextWallet = async (
   // save wallet in KSM
   save()
   // save serialized wallet in storage
-  saveKeys(kms.serialize())
+  const result = await saveKeys(kms.serialize())
+  if (!result) {
+    throw new Error('Could not save keys')
+  }
   const rifWallet = await createRIFWallet(wallet)
   const isDeloyed = await rifWallet.smartWalletFactory.isDeployed()
 

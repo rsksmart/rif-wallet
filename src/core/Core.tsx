@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { StatusBar, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { KeyManagementSystem, RIFWallet } from 'lib/core'
+import { RIFWallet } from 'lib/core'
 import { i18nInit } from 'lib/i18n'
 import { RifWalletServicesAuth } from 'lib/rifWalletServices/RifWalletServicesAuth'
 import { RifWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
@@ -22,7 +22,6 @@ import { WalletConnectProviderElement } from 'screens/walletConnect/WalletConnec
 import { useRifSockets } from 'src/subscriptions/useRifSockets'
 import { LoadingScreen } from 'components/loading/LoadingScreen'
 import { Cover } from './components/Cover'
-import { RequestPIN } from './components/RequestPIN'
 import { useBitcoinCore } from './hooks/bitcoin/useBitcoinCore'
 import { useStateSubscription } from './hooks/useStateSubscription'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
@@ -34,8 +33,8 @@ import {
   selectTopColor,
   selectWallets,
   setChainId,
+  unlockApp,
 } from 'store/slices/settingsSlice'
-import { getKeys, hasKeys, hasPin } from 'storage/MainStorage'
 import { BitcoinProvider } from 'core/hooks/bitcoin/BitcoinContext'
 import { InjectSelectedWallet } from 'src/Context'
 import * as Screens from 'screens/index'
@@ -101,20 +100,19 @@ export const Core = () => {
     fn()
   }, [])
 
+  const unlockAppSetMnemonic = useCallback(async () => {
+    try {
+      const kms = await dispatch(unlockApp()).unwrap()
+
+      setMnemonic(kms.mnemonic)
+    } catch (err) {
+      console.log('ERRR', err)
+    }
+  }, [dispatch])
+
   useEffect(() => {
-    if (!wallets) {
-      return
-    }
-
-    const keys = getKeys()
-    if (!keys) {
-      throw new Error('Could not fetch keys')
-    }
-
-    const { kms } = KeyManagementSystem.fromSerialized(keys)
-
-    setMnemonic(kms.mnemonic)
-  }, [wallets])
+    unlockAppSetMnemonic()
+  }, [unlockAppSetMnemonic])
 
   useEffect(() => {
     if (selectedWallet && wallets) {
@@ -146,10 +144,6 @@ export const Core = () => {
       backgroundColor: topColor,
     },
   })
-
-  if (hasKeys() && hasPin() && !unlocked) {
-    return <RequestPIN />
-  }
 
   return (
     <View style={styles.top}>

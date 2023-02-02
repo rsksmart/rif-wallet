@@ -93,7 +93,7 @@ export const SecurityExplanationScreen = ({ navigation }: Props) => {
     <ScrollView style={sharedMnemonicStyles.purpleParent}>
       <View style={sharedMnemonicStyles.topContent}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('CreateKeys')}
+          onPress={() => navigation.goBack()}
           style={styles.returnButton}
           accessibilityLabel="backButton">
           <View style={styles.returnButtonView}>

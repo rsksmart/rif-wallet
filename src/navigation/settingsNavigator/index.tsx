@@ -3,7 +3,6 @@ import { useEffect } from 'react'
 
 import {
   ChangeLanguageScreen,
-  ChangePinScreen,
   FeedbackScreen,
   SecurityConfigurationScreen,
   SettingsScreen,
@@ -13,7 +12,6 @@ import { InjectedScreens } from 'core/Core'
 import { AppHeader } from 'src/ux/appHeader'
 import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
 import { SettingsStackParamsList, settingsStackRouteNames } from './types'
-import { hasPin } from 'src/storage/MainStorage'
 
 const SettingsStack = createStackNavigator<SettingsStackParamsList>()
 
@@ -26,13 +24,8 @@ export const SettingsNavigator = ({
 
   return (
     <SettingsStack.Navigator
-      initialRouteName={
-        !hasPin()
-          ? settingsStackRouteNames.ChangePinScreen
-          : settingsStackRouteNames.SettingsScreen
-      }
       screenOptions={{
-        header: props => <AppHeader isShown={hasPin()} {...props} />,
+        header: props => <AppHeader isShown={true} {...props} />,
       }}>
       <SettingsStack.Screen
         name={settingsStackRouteNames.SettingsScreen}
@@ -57,10 +50,6 @@ export const SettingsNavigator = ({
       <SettingsStack.Screen
         name={settingsStackRouteNames.ShowMnemonicScreen}
         component={ShowMnemonicScreen}
-      />
-      <SettingsStack.Screen
-        name={settingsStackRouteNames.ChangePinScreen}
-        component={ChangePinScreen}
       />
     </SettingsStack.Navigator>
   )

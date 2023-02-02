@@ -29,8 +29,6 @@ export const SecurityConfigurationScreen = ({
   const revealMasterKey = () =>
     navigation.navigate(settingsStackRouteNames.ShowMnemonicScreen)
 
-  const changePin = () =>
-    navigation.navigate(settingsStackRouteNames.ChangePinScreen)
   const [showReminder, setShowReminder] = useState<boolean>(false)
 
   const handleDeleteKeys = () => {
@@ -93,17 +91,6 @@ export const SecurityConfigurationScreen = ({
           title="Delete Master Key"
           onPress={handleDeleteKeys}
           accessibilityLabel="delete"
-        />
-      </View>
-      <View style={styles.pinContainer}>
-        <MediumText style={[styles.pinText, styles.textLeftMargin]}>
-          Manage PIN
-        </MediumText>
-        <SecondaryButton
-          style={styles.buttonFirstStyle}
-          title="Change PIN"
-          accessibilityLabel="change"
-          onPress={changePin}
         />
       </View>
     </View>
