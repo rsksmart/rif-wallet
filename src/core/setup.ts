@@ -2,7 +2,7 @@ import { providers, Wallet } from 'ethers'
 import Resolver from '@rsksmart/rns-resolver.js'
 import { OnRequest, RIFWallet } from '../lib/core'
 import { AbiEnhancer } from '../lib/abiEnhancer/AbiEnhancer'
-import { getWalletSetting, SETTINGS } from './config'
+import { getWalletSetting, isDefaultChainTypeMainnet, SETTINGS } from './config'
 import { RifWalletServicesSocket } from '../lib/rifWalletServices/RifWalletServicesSocket'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { RifRelayConfig } from 'src/lib/relay-sdk'
@@ -35,7 +35,9 @@ export const rifWalletServicesSocket = new RifWalletServicesSocket(
   abiEnhancer,
 )
 
-export const rnsResolver = Resolver.forRskTestnet({})
+export const rnsResolver = isDefaultChainTypeMainnet
+  ? Resolver.forRskMainnet({})
+  : Resolver.forRskTestnet({})
 
 export const authClient = getWalletSetting(SETTINGS.AUTH_CLIENT)
 

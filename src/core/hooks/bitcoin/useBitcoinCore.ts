@@ -14,11 +14,13 @@ import {
   BitcoinNetworkStore,
   StoredBitcoinNetworkValue,
 } from 'storage/BitcoinNetworkStore'
-import { bitcoinTestnet } from 'shared/costants'
+
+import { bitcoinMainnet, bitcoinTestnet } from 'shared/costants'
 import { useAppDispatch } from 'store/storeUtils'
 import { onRequest } from 'store/slices/settingsSlice'
 
 import { useStoredBitcoinNetworks } from './useStoredBitcoinNetworks'
+import { isDefaultChainTypeMainnet } from 'core/config'
 
 export interface UseBitcoinCoreResult {
   networks: Array<BitcoinNetwork>
@@ -64,7 +66,12 @@ export const useBitcoinCore = (
   })
 
   const onNoNetworksPresent = useCallback(() => {
-    BitcoinNetworkStore.addNewNetwork(bitcoinTestnet.name, bitcoinTestnet.bips)
+    const bitcoinNetwork = isDefaultChainTypeMainnet
+      ? bitcoinMainnet
+      : bitcoinTestnet
+
+    BitcoinNetworkStore.addNewNetwork(bitcoinNetwork.name, bitcoinNetwork.bips)
+
     refreshStoredNetworks()
   }, [refreshStoredNetworks])
 
