@@ -53,7 +53,7 @@ export const NewMasterKeyScreen = ({ navigation }: Props) => {
     <ScrollView style={sharedMnemonicStyles.parent}>
       <View style={sharedMnemonicStyles.topContent}>
         <TouchableOpacity
-          onPress={() => navigation.navigate(createKeysRouteNames.CreateKeys)}
+          onPress={() => navigation.goBack()}
           style={styles.returnButton}
           accessibilityLabel="backButton">
           <View style={styles.returnButtonView}>

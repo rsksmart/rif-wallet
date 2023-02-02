@@ -8,6 +8,8 @@ import {
   createBipFactoryType,
 } from '@rsksmart/rif-wallet-bitcoin'
 
+import { RifWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
+
 import {
   BitcoinNetworkStore,
   StoredBitcoinNetworkValue,
@@ -16,10 +18,9 @@ import {
 import { bitcoinMainnet, bitcoinTestnet } from 'shared/costants'
 import { useAppDispatch } from 'store/storeUtils'
 import { onRequest } from 'store/slices/settingsSlice'
-import { RifWalletServicesFetcher } from 'src/lib/rifWalletServices/RifWalletServicesFetcher'
-import { isDefaultChainTypeMainnet } from 'core/config'
 
 import { useStoredBitcoinNetworks } from './useStoredBitcoinNetworks'
+import { isDefaultChainTypeMainnet } from 'core/config'
 
 export interface UseBitcoinCoreResult {
   networks: Array<BitcoinNetwork>
@@ -126,7 +127,6 @@ export const useBitcoinCore = (
       onNoNetworksPresent()
       return
     }
-
     if (!BIP39Instance) {
       return
     }

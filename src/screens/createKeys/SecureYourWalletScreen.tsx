@@ -34,7 +34,7 @@ export const SecureYourWalletScreen = ({
   return (
     <View style={styles.parent}>
       <TouchableOpacity
-        onPress={() => navigation.navigate('CreateKeys')}
+        onPress={() => navigation.goBack()}
         accessibilityLabel="back">
         <View style={styles.returnButtonView}>
           <Arrow color={colors.white} rotate={270} width={30} height={30} />
@@ -79,15 +79,6 @@ export const SecureYourWalletScreen = ({
           style={styles.button}
         />
       </View>
-      {/*
-        <View style={{ ...grid.row, ...styles.button2 }}>
-          <WhiteButton
-            onPress={() => console.log('TODO in different PR')}
-            testID="Address.ShareButton"
-            title={'secure later'}
-          />
-        </View>
-        */}
     </View>
   )
 }

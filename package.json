@@ -60,6 +60,7 @@
     "react-native-barcode-mask": "^1.2.4",
     "react-native-config": "^1.4.5",
     "react-native-crypto": "^2.1.0",
+    "react-native-device-info": "^10.3.0",
     "react-native-gesture-handler": "^2.8.0",
     "react-native-get-random-values": "^1.7.0",
     "react-native-jdenticon": "^0.0.3",

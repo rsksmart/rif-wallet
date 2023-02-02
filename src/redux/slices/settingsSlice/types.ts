@@ -43,6 +43,7 @@ export enum ChainTypeEnum {
 }
 
 export interface SettingsSlice {
+  isSetup: boolean
   requests: Requests
   topColor: ColorValue
   wallets: Wallets | null
