@@ -1,10 +1,9 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   removeKeysFromState,
-  selectAppIsActive,
   selectIsUnlocked,
-  setAppIsActive,
   setUnlocked as setIsUnlocked,
+  unlockApp,
 } from 'store/slices/settingsSlice'
 
 import BackgroundTimer, { TimeoutId } from 'react-native-background-timer'
@@ -16,9 +15,12 @@ let timer: TimeoutId
 
 export const useStateSubscription = () => {
   const dispatch = useAppDispatch()
-  const active = useAppSelector(selectAppIsActive)
+
+  const [active, setActive] = useState<boolean>(false)
+  const [previouslyActive, setPreviouslyActive] = useState<boolean>(false)
+
   const unlocked = useAppSelector(selectIsUnlocked)
-  const { appState } = useAppState()
+  const { appState, previousAppState } = useAppState()
   const timerRef = useRef<TimeoutId>(timer)
 
   const setUnlocked = useCallback(
@@ -29,25 +31,38 @@ export const useStateSubscription = () => {
   )
 
   useEffect(() => {
-    const isNowActive = appState === 'active'
-    dispatch(setAppIsActive(isNowActive))
-
     if (unlocked) {
       if (timerRef.current) {
         BackgroundTimer.clearTimeout(timerRef.current)
       }
-      if (!isNowActive) {
+      if (!active) {
         timerRef.current = BackgroundTimer.setTimeout(() => {
           setUnlocked(false)
           dispatch(removeKeysFromState())
         }, gracePeriod)
       }
+    } else if (
+      !unlocked &&
+      previousAppState.current === 'background' &&
+      active
+    ) {
+      dispatch(unlockApp())
     }
-  }, [unlocked, appState, dispatch, setUnlocked])
+  }, [unlocked, active, dispatch, setUnlocked, previousAppState])
+
+  useEffect(() => {
+    const isNowActive = appState === 'active' || appState === 'inactive'
+
+    setActive(prevActive => {
+      setPreviouslyActive(prevActive)
+      return isNowActive
+    })
+  }, [appState])
 
   return {
     unlocked,
     setUnlocked,
     active,
+    previouslyActive,
   }
 }
