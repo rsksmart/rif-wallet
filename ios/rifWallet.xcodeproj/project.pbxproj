@@ -11,9 +11,6 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		1689A9397C5A4AC4838E3AE4 /* Poppins-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 37F42164913948C288349D90 /* Poppins-Regular.ttf */; };
-		634BE18F01D64B5E8D838EFA /* Poppins-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C941A9FA180046BC9B3B9FB8 /* Poppins-SemiBold.ttf */; };
-		6A14C5BD45F7464D88F260F8 /* Poppins-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4520576660AA42B39BBF42C4 /* Poppins-Medium.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		A8D754422E82B92A38840AF6 /* libPods-rifWallet-rifWalletTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 16494BD9C7F22C45BC23729E /* libPods-rifWallet-rifWalletTests.a */; };
 		CA6B7D171774FE4C46BA9DE4 /* libPods-rifWallet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58AB5CCE76733AEAFD6ADA35 /* libPods-rifWallet.a */; };
@@ -55,14 +52,11 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = rifWallet/main.m; sourceTree = "<group>"; };
 		16494BD9C7F22C45BC23729E /* libPods-rifWallet-rifWalletTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-rifWallet-rifWalletTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2127846F5B20BDFE4DD486C4 /* Pods-rifWallet-rifWalletTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rifWallet-rifWalletTests.release.xcconfig"; path = "Target Support Files/Pods-rifWallet-rifWalletTests/Pods-rifWallet-rifWalletTests.release.xcconfig"; sourceTree = "<group>"; };
-		37F42164913948C288349D90 /* Poppins-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Regular.ttf"; path = "../assets/fonts/Poppins-Regular.ttf"; sourceTree = "<group>"; };
 		4369C18ED00DEB9B9A3F0C3A /* Pods-rifWallet-rifWalletTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rifWallet-rifWalletTests.debug.xcconfig"; path = "Target Support Files/Pods-rifWallet-rifWalletTests/Pods-rifWallet-rifWalletTests.debug.xcconfig"; sourceTree = "<group>"; };
-		4520576660AA42B39BBF42C4 /* Poppins-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Medium.ttf"; path = "../assets/fonts/Poppins-Medium.ttf"; sourceTree = "<group>"; };
 		58AB5CCE76733AEAFD6ADA35 /* libPods-rifWallet.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-rifWallet.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = rifWallet/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A481E4CEEFAE72943A44AA08 /* Pods-rifWallet.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rifWallet.debug.xcconfig"; path = "Target Support Files/Pods-rifWallet/Pods-rifWallet.debug.xcconfig"; sourceTree = "<group>"; };
 		B8F94D4AE4D39005FF641B34 /* Pods-rifWallet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rifWallet.release.xcconfig"; path = "Target Support Files/Pods-rifWallet/Pods-rifWallet.release.xcconfig"; sourceTree = "<group>"; };
-		C941A9FA180046BC9B3B9FB8 /* Poppins-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-SemiBold.ttf"; path = "../assets/fonts/Poppins-SemiBold.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		858C9D50CF544F058A9C3D79 /* IBMPlexSans-Bold.ttf */ = {isa = PBXFileReference; name = "IBMPlexSans-Bold.ttf"; path = "../assets/fonts/IBMPlexSans-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		A74FB902F8AE4B8898BE9321 /* IBMPlexSans-BoldItalic.ttf */ = {isa = PBXFileReference; name = "IBMPlexSans-BoldItalic.ttf"; path = "../assets/fonts/IBMPlexSans-BoldItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
@@ -143,9 +137,6 @@
 		769A66111850458ABA61A56A /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				4520576660AA42B39BBF42C4 /* Poppins-Medium.ttf */,
-				37F42164913948C288349D90 /* Poppins-Regular.ttf */,
-				C941A9FA180046BC9B3B9FB8 /* Poppins-SemiBold.ttf */,
 				858C9D50CF544F058A9C3D79 /* IBMPlexSans-Bold.ttf */,
 				A74FB902F8AE4B8898BE9321 /* IBMPlexSans-BoldItalic.ttf */,
 				67E86CE756EE478D8E07718A /* IBMPlexSans-ExtraLight.ttf */,
@@ -303,9 +294,6 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				6A14C5BD45F7464D88F260F8 /* Poppins-Medium.ttf in Resources */,
-				1689A9397C5A4AC4838E3AE4 /* Poppins-Regular.ttf in Resources */,
-				634BE18F01D64B5E8D838EFA /* Poppins-SemiBold.ttf in Resources */,
 				2685A36B701B42A4B6E211DC /* IBMPlexSans-Bold.ttf in Resources */,
 				B43067F2B1B74A0894A9F0A3 /* IBMPlexSans-BoldItalic.ttf in Resources */,
 				10448ED755A94E1AAA0BAC82 /* IBMPlexSans-ExtraLight.ttf in Resources */,

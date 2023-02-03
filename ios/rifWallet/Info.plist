@@ -45,9 +45,6 @@
 	<string>Please give us access to your photo library to verify you.</string>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Poppins-Medium.ttf</string>
-		<string>Poppins-Regular.ttf</string>
-		<string>Poppins-SemiBold.ttf</string>
 		<string>AntDesign.ttf</string>
 		<string>Entypo.ttf</string>
 		<string>EvilIcons.ttf</string>
