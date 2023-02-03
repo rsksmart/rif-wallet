@@ -6,7 +6,7 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5'
 import { version } from 'package.json'
 import { getWalletSetting, SETTINGS } from '../../core/config'
 import { colors, spacing } from '../../styles'
-import { MediumText, RegularText, SemiBoldText } from 'components/index'
+import { MediumText, RegularText, Typography } from 'components/index'
 import LockIcon from 'components/icons/LockIcon'
 import AccountsIcon from 'components/icons/AccountsIcon'
 import { homeStackRouteNames } from 'navigation/homeNavigator/types'
@@ -54,36 +54,36 @@ export const SettingsScreen = ({
           style={styles.rowComponent}
           onPress={goToAccountsScreen}>
           <AccountsIcon width={18} height={18} />
-          <SemiBoldText style={[styles.textColor, spacing.ml6]}>
-            Account
-          </SemiBoldText>
+          <Typography type={'body1'} style={spacing.ml6}>
+            {'Account'}
+          </Typography>
         </TouchableOpacity>
         <TouchableOpacity
           accessibilityLabel="security"
           style={styles.rowComponent}
           onPress={goToSecurityConfiguration}>
           <LockIcon />
-          <SemiBoldText style={[styles.textColor, spacing.ml6]}>
-            Security
-          </SemiBoldText>
+          <Typography type={'body1'} style={spacing.ml6}>
+            {'Security'}
+          </Typography>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.rowComponent}
           onPress={goToDeploy}
           accessibilityLabel="deploy">
           <Icon name="wallet-outline" color={colors.white} size={20} />
-          <SemiBoldText style={[styles.textColor, spacing.ml6]}>
-            Smart Wallet Deploy
-          </SemiBoldText>
+          <Typography type={'body1'} style={spacing.ml6}>
+            {'Smart Wallet Deploy'}
+          </Typography>
         </TouchableOpacity>
         <TouchableOpacity
           accessibilityLabel="feedback"
           style={styles.rowComponent}
           onPress={goToFeedbackScreen}>
           <FontAwesomeIcon name="comment" color={colors.white} size={20} />
-          <SemiBoldText style={[styles.textColor, spacing.ml6]}>
-            Feedback
-          </SemiBoldText>
+          <Typography type={'body1'} style={spacing.ml6}>
+            {' Feedback'}
+          </Typography>
         </TouchableOpacity>
       </View>
       <View style={styles.bottomView}>

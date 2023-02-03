@@ -1,5 +1,5 @@
 import { createRef } from 'react'
-import { TextInput } from 'react-native'
+import { ImageStyle, TextInput, TextStyle, ViewStyle } from 'react-native'
 
 import { ErrorWithMessage } from '../types'
 
@@ -22,4 +22,10 @@ export const handleInputRefCreation = () => {
     secondRef,
     thirdRef,
   }
+}
+
+export const castStyle = {
+  text: (style: TextStyle) => style,
+  view: (style: ViewStyle) => style,
+  image: (style: ImageStyle) => style,
 }

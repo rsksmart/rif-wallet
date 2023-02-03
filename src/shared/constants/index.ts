@@ -9,4 +9,5 @@ export const sharedColors = {
   success: '#79C600',
   warning: '#FF9100',
   danger: '#E94141',
+  white: '#FFFFFF',
 }

@@ -1,3 +1,112 @@
+import { StyleSheet, Text, TextProps } from 'react-native'
+
+import { sharedColors } from 'shared/constants'
+import { castStyle } from 'shared/utils'
+
 export { default as MediumText } from './MediumText'
 export { RegularText } from './RegularText'
 export { default as SemiBoldText } from './SemiBoldText'
+
+export const fonts = StyleSheet.create({
+  regular: castStyle.text({
+    fontFamily: 'IBMPlexSans-Regular',
+    fontWeight: '500',
+    color: sharedColors.white,
+  }),
+})
+
+const styles = StyleSheet.create({
+  h1: castStyle.text({
+    ...fonts.regular,
+    fontSize: 36,
+    lineHeight: 36,
+  }),
+  h2: castStyle.text({
+    ...fonts.regular,
+    fontSize: 24,
+    lineHeight: 28.8,
+  }),
+  h3: castStyle.text({
+    ...fonts.regular,
+    fontSize: 18,
+    lineHeight: 21.6,
+  }),
+  h4: castStyle.text({
+    ...fonts.regular,
+    fontSize: 14,
+    lineHeight: 16.8,
+  }),
+  h5: castStyle.text({
+    ...fonts.regular,
+    fontSize: 12,
+    lineHeight: 14.4,
+  }),
+  body1: castStyle.text({
+    ...fonts.regular,
+    fontSize: 16,
+    lineHeight: 22.4,
+    fontWeight: '400',
+  }),
+  body2: castStyle.text({
+    ...fonts.regular,
+    fontSize: 14,
+    lineHeight: 19.6,
+    fontWeight: '400',
+  }),
+  body3: castStyle.text({
+    ...fonts.regular,
+    fontSize: 12,
+    lineHeight: 16.8,
+    fontWeight: '400',
+  }),
+  label: castStyle.text({
+    ...fonts.regular,
+    fontSize: 11,
+    lineHeight: 11,
+  }),
+  button1: castStyle.text({
+    ...fonts.regular,
+    fontSize: 14,
+    lineHeight: 14,
+  }),
+  button2: castStyle.text({
+    ...fonts.regular,
+    fontSize: 12,
+    lineHeight: 12,
+  }),
+})
+
+type TypographyType =
+  | 'h1'
+  | 'h2'
+  | 'h3'
+  | 'h4'
+  | 'h5'
+  | 'body1'
+  | 'body2'
+  | 'body3'
+  | 'label'
+  | 'button1'
+  | 'button2'
+
+interface Props extends TextProps {
+  type: TypographyType
+}
+
+const typeStyleMap = new Map([
+  ['h1', styles.h1],
+  ['h2', styles.h2],
+  ['h3', styles.h3],
+  ['h4', styles.h4],
+  ['h5', styles.h5],
+  ['body1', styles.body1],
+  ['body2', styles.body2],
+  ['body3', styles.body3],
+  ['label', styles.label],
+  ['button1', styles.button1],
+  ['button2', styles.button2],
+])
+
+export const Typography = ({ style, type, children }: Props) => {
+  return <Text style={[typeStyleMap.get(type), style]}>{children}</Text>
+}
