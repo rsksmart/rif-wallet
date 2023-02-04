@@ -134,7 +134,6 @@ export const Core = () => {
 
   useEffect(() => {
     if (selectedWallet && wallets && mnemonic && fetcher) {
-      console.log('USE EFFECT')
       rifSockets({
         wallet: wallets[selectedWallet],
         mnemonic,

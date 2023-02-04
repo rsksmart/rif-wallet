@@ -38,8 +38,6 @@ export const rifSockets = ({
   dispatch,
   setGlobalError,
 }: RifSockets) => {
-  console.log('CALLING RIF SOCKETS')
-
   const onChange = onSocketChangeEmitted({
     dispatch,
     abiEnhancer,
