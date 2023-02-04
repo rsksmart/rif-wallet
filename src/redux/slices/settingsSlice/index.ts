@@ -205,7 +205,6 @@ const settingsSlice = createSlice({
       state.selectedWallet = payload
     },
     removeKeysFromState: state => {
-      state.kms = null
       state.wallets = null
       state.walletsIsDeployed = null
       state.selectedWallet = ''
