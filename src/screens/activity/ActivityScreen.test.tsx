@@ -72,7 +72,11 @@ describe('Activity Screen', function (this: {
 
   beforeEach(async () => {
     act(async () => {
-      this.testInstance = await createTestInstance(null, null, navigation)
+      this.testInstance = await createTestInstance(
+        undefined,
+        undefined,
+        navigation,
+      )
     })
   })
 

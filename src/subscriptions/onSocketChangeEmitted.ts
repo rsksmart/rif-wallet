@@ -79,8 +79,6 @@ export const onSocketChangeEmitted =
           dispatch(addOrUpdateNewBalance(payload))
           break
         case 'init':
-          console.log('DISPATCH INIT TO SOCKET')
-
           dispatch(
             addNewTransactions({
               next: null,

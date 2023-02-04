@@ -46,6 +46,7 @@
     "buffer": "^4.9.2",
     "deprecated-react-native-prop-types": "^2.3.0",
     "ethers": "^5.4.7",
+    "eventemitter3": "^5.0.0",
     "events": "^1.1.1",
     "i18next": "^21.4.1",
     "jail-monkey": "^2.7.0",
