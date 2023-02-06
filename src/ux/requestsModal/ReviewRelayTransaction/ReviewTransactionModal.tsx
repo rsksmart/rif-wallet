@@ -1,17 +1,16 @@
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleSheet, View } from 'react-native'
+import { BigNumber } from 'ethers'
 
-import { SendTransactionRequest } from 'lib/core'
 import { balanceToDisplay, shortAddress } from 'lib/utils'
 
 import { PrimaryButton, RegularText, SecondaryButton } from 'components/index'
-
 import { sharedStyles } from 'shared/styles'
-import { colors, grid } from '../../../styles'
+import { colors } from 'src/styles/colors'
+import { grid } from 'src/styles'
+
 import ReadOnlyField from './../ReadOnlyField'
 import { EnhancedTransactionRequest } from '../useEnhancedWithGas'
-import { BigNumber } from 'ethers'
 
 interface Props {
   enhancedTransactionRequest: EnhancedTransactionRequest

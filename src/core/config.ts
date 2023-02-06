@@ -1,4 +1,5 @@
 import Config from 'react-native-config'
+
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 export const defaultChainType = Config.DEFAULT_CHAIN_TYPE
 export const isDefaultChainTypeMainnet =
@@ -18,6 +19,7 @@ export enum SETTINGS {
   DEPLOY_VERIFIER_ADDRESS = 'DEPLOY_VERIFIER_ADDRESS',
   QR_READER_BITCOIN_DEFAULT_NETWORK = 'QR_READER_BITCOIN_DEFAULT_NETWORK',
   AUTH_CLIENT = 'AUTH_CLIENT',
+  RIF_CONTRACT_ADDRESS = 'RIF_CONTRACT_ADDRESS',
 }
 
 /**

@@ -1,18 +1,20 @@
-import { RIF_TOKEN_ADDRESS_TESTNET } from '@rsksmart/rif-relay-light-sdk'
 import { BigNumber } from 'ethers'
 import { useEffect, useMemo, useState } from 'react'
 import { View } from 'react-native'
-import { RegularText } from 'src/components'
+
 import {
   OverriddableTransactionOptions,
   SendTransactionRequest,
-} from 'src/lib/core'
+} from 'lib/core'
+
 import { selectActiveWallet } from 'src/redux/slices/settingsSlice'
 import { useAppSelector } from 'src/redux/storeUtils'
-import { sharedStyles } from 'src/shared/styles'
-import { errorHandler } from 'src/shared/utils'
-import useEnhancedWithGas from '../useEnhancedWithGas'
+import { RegularText } from 'src/components'
+import { getWalletSetting, SETTINGS } from 'core/config'
+import { sharedStyles } from 'shared/styles'
+import { errorHandler } from 'shared/utils'
 
+import useEnhancedWithGas from '../useEnhancedWithGas'
 import ReviewTransactionModal from './ReviewTransactionModal'
 
 interface Props {
@@ -39,7 +41,7 @@ export const ReviewTransactionContainer = ({ request, closeModal }: Props) => {
   )
 
   // estimate the tx cost in token:
-  const tokenContract = RIF_TOKEN_ADDRESS_TESTNET
+  const tokenContract = getWalletSetting(SETTINGS.RIF_CONTRACT_ADDRESS)
   useEffect(() => {
     wallet.rifRelaySdk
       .estimateTransactionCost(txRequest, tokenContract)

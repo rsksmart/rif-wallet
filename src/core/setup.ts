@@ -1,12 +1,14 @@
 import { providers, Wallet } from 'ethers'
 import Resolver from '@rsksmart/rns-resolver.js'
+import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
+import axios from 'axios'
+
+import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
+
 import { OnRequest, RIFWallet } from '../lib/core'
 import { AbiEnhancer } from '../lib/abiEnhancer/AbiEnhancer'
 import { getWalletSetting, isDefaultChainTypeMainnet, SETTINGS } from './config'
 import { RifWalletServicesSocket } from '../lib/rifWalletServices/RifWalletServicesSocket'
-import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
-import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
-import axios from 'axios'
 
 export const networkType = getWalletSetting(
   SETTINGS.DEFAULT_CHAIN_TYPE,
@@ -52,9 +54,4 @@ export const rifRelayConfig: RifRelayConfig = {
 
 export const createRIFWalletFactory =
   (onRequest: OnRequest) => (wallet: Wallet) =>
-    RIFWallet.create(
-      wallet.connect(jsonRpcProvider),
-      smartWalletFactoryAddress,
-      onRequest,
-      rifRelayConfig,
-    ) // temp - using only testnet
+    RIFWallet.create(wallet.connect(jsonRpcProvider), onRequest, rifRelayConfig)

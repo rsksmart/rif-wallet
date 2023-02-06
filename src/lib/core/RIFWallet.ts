@@ -1,12 +1,9 @@
-import { Signer, BigNumberish, BytesLike, constants, BigNumber } from 'ethers'
+import { Signer, BigNumberish, BytesLike, constants, BigNumber, Wallet } from 'ethers'
 import { TransactionRequest, Provider, TransactionResponse, BlockTag } from '@ethersproject/abstract-provider'
 import { TypedDataSigner } from '@ethersproject/abstract-signer'
 import { defineReadOnly } from '@ethersproject/properties'
 import { resolveProperties } from 'ethers/lib/utils'
 import { RIFRelaySDK, RelayPayment, RifRelayConfig, SmartWalletFactory, SmartWallet } from '@rsksmart/rif-relay-light-sdk'
-
-// import { SmartWalletFactory } from './SmartWalletFactory'
-// import { SmartWallet } from './SmartWallet'
 import { filterTxOptions } from './filterTxOptions'
 
 export type IRequest<Type, Payload, ReturnType, ConfirmArgs> = {
@@ -87,7 +84,7 @@ export class RIFWallet extends Signer implements TypedDataSigner {
     return this.smartWallet.smartWalletAddress
   }
 
-  static async create (signer: Signer, onRequest: OnRequest, rifRelayConfig: RifRelayConfig) {
+  static async create (signer: Wallet, onRequest: OnRequest, rifRelayConfig: RifRelayConfig) {
     const sdk = await RIFRelaySDK.create(signer, rifRelayConfig)
 
     return new RIFWallet(sdk, onRequest)
