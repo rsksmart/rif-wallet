@@ -95,6 +95,7 @@ const resources = {
       initial_screen_title: 'Wallet',
       initial_screen_button_create: 'Create a wallet',
       initial_screen_button_import: 'Import existing',
+      'No username':'No username'
     },
   },
   es: {

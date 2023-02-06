@@ -1,6 +1,7 @@
-import { StyleSheet, TouchableOpacity, View } from 'react-native'
-import Icon from 'react-native-vector-icons/FontAwesome5'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import FA5Icon from 'react-native-vector-icons/FontAwesome5'
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
+import { useTranslation } from 'react-i18next'
 
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { profileStackRouteNames } from 'navigation/profileNavigator/types'
@@ -9,7 +10,6 @@ import { useAppSelector } from 'store/storeUtils'
 import { RegularText } from 'components/index'
 import { colors } from 'src/styles'
 import { Avatar } from 'src/components/avatar'
-import { sharedColors } from 'src/shared/constants'
 
 interface Props {
   navigation: BottomTabHeaderProps['navigation']
@@ -17,6 +17,7 @@ interface Props {
 
 export const ProfileHandler = ({ navigation }: Props) => {
   const profile = useAppSelector(selectProfile)
+  const { t } = useTranslation()
   const profileCreated = !!profile
 
   const routeNextStep = async () => {
@@ -50,14 +51,14 @@ export const ProfileHandler = ({ navigation }: Props) => {
           </View>
         </>
       ) : (
-        <Avatar
-          size={32}
-          name={'person'}
-          style={styles.profileHandlerImage}
-          icon={
-            <Icon name={'user-circle'} size={20} color={sharedColors.primary} />
-          }
-        />
+        <>
+          <View style={styles.profileHandlerImage}>
+            <FA5Icon name="user-circle" color="white" size={30} />
+          </View>
+          <View>
+            <Text style={{fontSize: 14}} >{t('No username')}</Text>
+          </View>
+        </>
       )}
     </TouchableOpacity>
   )
@@ -72,7 +73,9 @@ const styles = StyleSheet.create({
     width: 30,
   },
   profileHandlerImage: {
-    backgroundColor: sharedColors.white,
+    // backgroundColor: colors.lightGray,
+    borderRadius: 15,
+    padding: 5,
   },
   profileAddImage: {
     backgroundColor: colors.darkPurple3,
