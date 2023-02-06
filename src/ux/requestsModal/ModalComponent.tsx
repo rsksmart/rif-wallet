@@ -1,14 +1,9 @@
 import { useState } from 'react'
 import { SendBitcoinRequest } from '@rsksmart/rif-wallet-bitcoin'
 
-import {
-  SignMessageRequest,
-  SendTransactionRequest,
-  SignTypedDataRequest,
-} from 'lib/core'
+import { SignMessageRequest, SignTypedDataRequest } from 'lib/core'
 
 import SlideUpModal from 'components/slideUpModal/SlideUpModal'
-import { InjectSelectedWallet } from 'src/Context'
 import { colors } from 'src/styles'
 import { RequestWithBitcoin } from 'shared/types'
 
