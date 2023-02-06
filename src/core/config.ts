@@ -1,7 +1,8 @@
 import Config from 'react-native-config'
 
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
-export const defaultChainType = Config.DEFAULT_CHAIN_TYPE
+export const defaultChainType =
+  (Config.DEFAULT_CHAIN_TYPE as ChainTypeEnum) || ChainTypeEnum.TESTNET
 export const isDefaultChainTypeMainnet =
   defaultChainType === ChainTypeEnum.MAINNET
 export const defaultChainId =
