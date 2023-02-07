@@ -6,7 +6,7 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5'
 import { version } from 'package.json'
 import { getWalletSetting, SETTINGS } from '../../core/config'
 import { colors, spacing } from '../../styles'
-import { MediumText, RegularText, Typography } from 'components/index'
+import { Input, MediumText, RegularText, Typography } from 'components/index'
 import LockIcon from 'components/icons/LockIcon'
 import AccountsIcon from 'components/icons/AccountsIcon'
 import { homeStackRouteNames } from 'navigation/homeNavigator/types'
@@ -15,10 +15,23 @@ import {
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
+import { useForm, FormProvider } from 'react-hook-form'
+import { WalletIcon } from 'components/icons'
 
 export const SettingsScreen = ({
   navigation,
 }: SettingsScreenProps<settingsStackRouteNames.SettingsScreen>) => {
+  const methods = useForm({
+    defaultValues: {
+      username: '',
+      phone: '',
+    },
+  })
+  const {
+    setValue: setValueInForm,
+    formState: { errors },
+  } = methods
+
   const smartWalletFactoryAddress = useMemo(
     () => getWalletSetting(SETTINGS.SMART_WALLET_FACTORY_ADDRESS),
     [],
@@ -49,6 +62,61 @@ export const SettingsScreen = ({
     <ScrollView style={styles.container}>
       <View style={styles.mainView}>
         {/* @TODO add link to go to the accounts screen */}
+        <FormProvider {...methods}>
+          <Input
+            inputName={'username'}
+            label={'username'}
+            placeholder={'Name your recipient'}
+            resetValue={() => setValueInForm('username', '')}
+            leftIcon={{ name: 'bolt', size: 24 }}
+            subtitle={'blablalbl'}
+            onLeftIconPress={() => ({})}
+            error={errors.username}
+          />
+          <Input
+            inputName={'phone'}
+            label={'phone'}
+            placeholder={'your phone number'}
+            resetValue={() => setValueInForm('phone', '')}
+            error={errors.username}
+          />
+          <Input
+            inputName={'something'}
+            label={'something'}
+            placeholder={'sfibasfnsaofka'}
+            isReadOnly={true}
+            error={errors.username}
+            leftIcon={{ name: 'copy', color: 'red' }}
+            onRightIconPress={() => ({})}
+          />
+          <Input
+            inputName={'something2'}
+            label={'something'}
+            placeholder={'sfibasfnsaofka'}
+            isReadOnly={true}
+            error={errors.username}
+            leftIcon={<WalletIcon />}
+            onRightIconPress={() => ({})}
+          />
+          <Input
+            inputName={'anything'}
+            label={'anything'}
+            placeholder={'mlm kbnk jhnhgjhbnjbnk'}
+            isReadOnly={true}
+            error={errors.username}
+            rightIcon={{ name: 'instagram' }}
+            onRightIconPress={() => ({})}
+          />
+          <Input
+            inputName={'anything2'}
+            label={'anything'}
+            placeholder={'mlm kbnk jhnhgjhbnjbnk'}
+            isReadOnly={true}
+            error={errors.username}
+            rightIcon={<AccountsIcon />}
+            onRightIconPress={() => ({})}
+          />
+        </FormProvider>
         <TouchableOpacity
           accessibilityLabel="account"
           style={styles.rowComponent}

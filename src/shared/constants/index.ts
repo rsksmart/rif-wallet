@@ -10,7 +10,11 @@ export const sharedColors = {
   warning: '#FF9100',
   danger: '#E94141',
   white: '#FFFFFF',
-  inputInactiveColor: '#252525',
-  inputActiveColor: '#3A3A3A',
+  inputInactive: '#252525',
+  inputActive: '#3A3A3A',
+  inputLabelColor: '#B8B8B8',
   borderColor: '#575757',
 }
+
+export const defaultIconSize = 16
+export const noop = () => ({})
