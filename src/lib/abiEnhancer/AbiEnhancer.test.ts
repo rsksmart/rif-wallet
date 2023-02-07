@@ -3,7 +3,7 @@ import { Signer } from '@ethersproject/abstract-signer'
 
 import { AbiEnhancer } from './AbiEnhancer'
 import { deployTestTokens, getSigner } from '../../../testLib/utils'
-import * as tokenMetadata from '../token/tokenMetadata'
+import * as tokenMetadata from '@rsksmart/rif-wallet-token'
 
 describe('Abi Enhancer', () => {
   let transactionRequest = {
