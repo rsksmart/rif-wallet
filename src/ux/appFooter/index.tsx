@@ -1,13 +1,13 @@
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
+import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import OIcon from 'react-native-vector-icons/Octicons'
 
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { homeStackRouteNames } from 'navigation/homeNavigator/types'
 import DappsIcon from 'components/icons/DappsIcon'
 import { colors } from 'src/styles/colors'
-import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import OIcon from 'react-native-vector-icons/Octicons'
-import { sharedColors } from 'src/shared/constants'
+import { sharedColors } from 'shared/constants'
 
 interface Props extends BottomTabBarProps {
   isShown: boolean
@@ -24,21 +24,19 @@ export const AppFooterMenu = ({ navigation, isShown }: Props) => {
         }
         style={styles.button}
         accessibilityLabel="home">
-        {<MCIcon name="home-outline" size={30} color={colors.white} />}
+        <MCIcon name="home-outline" size={30} color={colors.white} />
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={() => navigation.navigate(rootTabsRouteNames.Activity)}
         style={styles.button}
         accessibilityLabel="activity">
-        {
-          <OIcon
-            name="arrow-switch"
-            size={24}
-            color={colors.white}
-            style={{ transform: [{ rotate: '-45deg' }] }}
-          />
-        }
+        <OIcon
+          name="arrow-switch"
+          size={24}
+          color={colors.white}
+          style={styles.rotation}
+        />
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -52,20 +50,18 @@ export const AppFooterMenu = ({ navigation, isShown }: Props) => {
         onPress={() => navigation.navigate(rootTabsRouteNames.WalletConnect)}
         style={styles.button}
         accessibilityLabel="dapps">
-        {<DappsIcon />}
+        <DappsIcon />
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={() => navigation.navigate(rootTabsRouteNames.Contacts)}
         style={styles.button}
         accessibilityLabel="contacts">
-        {
-          <MCIcon
-            name="account-multiple-outline"
-            size={30}
-            color={colors.white}
-          />
-        }
+        <MCIcon
+          name="account-multiple-outline"
+          size={30}
+          color={colors.white}
+        />
       </TouchableOpacity>
     </View>
   )
@@ -96,5 +92,12 @@ const styles = StyleSheet.create({
   centralButton: {
     backgroundColor: sharedColors.primary,
     borderRadius: 25,
+  },
+  rotation: {
+    transform: [
+      {
+        rotate: '-45deg',
+      },
+    ],
   },
 })
