@@ -11,6 +11,9 @@ import { selectActiveWallet, selectTopColor } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { ProfileHandler } from './ProfileHandler'
 import { StackHeaderProps } from '@react-navigation/stack'
+import OIcon from 'react-native-vector-icons/Octicons'
+import { color } from 'react-native-reanimated'
+import { colors } from 'src/styles'
 
 type HeaderProps = BottomTabHeaderProps | StackHeaderProps
 
@@ -44,20 +47,9 @@ export const AppHeader = ({
       <View style={[styles.column, styles.walletInfo]}>
         {wallet && <ProfileHandler wallet={wallet} navigation={navigation} />}
       </View>
-      <View style={styles.column}>
-        {wallet && (
-          <AddressCopyComponent
-            address={wallet.smartWalletAddress}
-            chainId={getChainIdByType(chainType) || 31}
-          />
-        )}
-      </View>
       <View style={styles.columnMenu}>
         <TouchableOpacity onPress={openMenu} accessibilityLabel="settings">
-          <Image
-            source={require('../../images/settings-icon.png')}
-            style={styles.settingsIcon}
-          />
+          <OIcon name='gear' size={15} color={colors.white} />
         </TouchableOpacity>
       </View>
     </View>
@@ -67,7 +59,7 @@ export const AppHeader = ({
 const styles = StyleSheet.create({
   row: {
     alignItems: 'center', // vertical
-    paddingVertical: 10,
+    paddingVertical: 5,
     paddingHorizontal: 15,
     display: 'flex',
     flexDirection: 'row',

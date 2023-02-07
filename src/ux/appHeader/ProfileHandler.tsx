@@ -53,10 +53,10 @@ export const ProfileHandler = ({ navigation }: Props) => {
       ) : (
         <>
           <View style={styles.profileHandlerImage}>
-            <FA5Icon name="user-circle" color="white" size={30} />
+            <FA5Icon name="user-circle" color="white" size={15} />
           </View>
-          <View>
-            <Text style={{fontSize: 14}} >{t('No username')}</Text>
+          <View style={{justifyContent:'center'}}>
+            <Text style={[styles.profileName]} >{t('No username')}</Text>
           </View>
         </>
       )}
@@ -66,6 +66,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
 
 const styles = StyleSheet.create({
   profileHandler: {
+    display: 'flex',
     flexDirection: 'row',
   },
   profileAvatar: {
@@ -74,8 +75,8 @@ const styles = StyleSheet.create({
   },
   profileHandlerImage: {
     // backgroundColor: colors.lightGray,
-    borderRadius: 15,
-    padding: 5,
+    // padding: 5
+    justifyContent: 'center'
   },
   profileAddImage: {
     backgroundColor: colors.darkPurple3,
@@ -84,8 +85,10 @@ const styles = StyleSheet.create({
     right: 8,
   },
   profileName: {
-    paddingTop: 5,
-    paddingLeft: 5,
+    lineHeight: 18,
+    paddingLeft: 6,
+    fontSize: 14,
+    fontWeight: '500',
     color: colors.white,
   },
 })
