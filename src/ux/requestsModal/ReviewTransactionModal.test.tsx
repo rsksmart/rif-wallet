@@ -1,11 +1,11 @@
 import { render, waitFor, fireEvent, act } from '@testing-library/react-native'
 import { cleanup } from '@testing-library/react-native'
+import * as tokenMetadata from '@rsksmart/rif-wallet-token'
+import { BigNumber } from '@ethersproject/bignumber'
 
 import ReviewTransactionModal from './ReviewTransactionModal'
 import { RIFWallet, SendTransactionRequest } from '../../lib/core/RIFWallet'
-import { BigNumber } from '@ethersproject/bignumber'
 import { setupTest } from '../../../testLib/setup'
-import * as tokenMetadata from '../../lib/token/tokenMetadata'
 import { deployTestTokens, getSigner } from '../../../testLib/utils'
 
 // allows to wait the resolution of a promise,

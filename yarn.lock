@@ -1063,7 +1063,7 @@
   dependencies:
     "@ethersproject/bignumber" "^5.7.0"
 
-"@ethersproject/contracts@5.7.0":
+"@ethersproject/contracts@5.7.0", "@ethersproject/contracts@^5.7.0":
   version "5.7.0"
   resolved "https://registry.yarnpkg.com/@ethersproject/contracts/-/contracts-5.7.0.tgz#c305e775abd07e48aa590e1a877ed5c316f8bd1e"
   integrity sha512-5GJbzEU3X+d33CdfPhcyS+z8MzsTrBGk/sc+G+59+tPa9yFkl6HQ9D6L0QMgNTA9q8dT0XKxxkyp883XsQvbbg==
@@ -1166,7 +1166,7 @@
   dependencies:
     "@ethersproject/logger" "^5.7.0"
 
-"@ethersproject/providers@5.7.2":
+"@ethersproject/providers@5.7.2", "@ethersproject/providers@^5.7.2":
   version "5.7.2"
   resolved "https://registry.yarnpkg.com/@ethersproject/providers/-/providers-5.7.2.tgz#f8b1a4f275d7ce58cf0a2eec222269a08beb18cb"
   integrity sha512-g34EWZ1WWAVgr4aptGlVBF8mhl3VWjv+8hoAnzStu8Ah22VHBsuGzP17eb6xDVRzw895G4W7vvx60lFFur/1Rg==
@@ -2021,6 +2021,20 @@
     bip32 "^2.0.6"
     bitcoin-address-validation "^2.2.1"
     bitcoinjs-lib "^6.0.2"
+
+"@rsksmart/rif-wallet-token@^1.0.1":
+  version "1.0.1"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-token/1.0.1/e506cede6d8180da0d56e3f18af80511d4192b4d#e506cede6d8180da0d56e3f18af80511d4192b4d"
+  integrity sha512-XX5z+HctX9XkksMcScw26d9n2sFqbEF+ChNU0SBHsYMUo5HLBlO3d2H6uH04uMisfu4uKlyLX4N7lEYFoZ9w3g==
+  dependencies:
+    "@ethersproject/abi" "^5.7.0"
+    "@ethersproject/abstract-signer" "^5.7.0"
+    "@ethersproject/bignumber" "^5.7.0"
+    "@ethersproject/constants" "^5.7.0"
+    "@ethersproject/contracts" "^5.7.0"
+    "@ethersproject/providers" "^5.7.2"
+    "@rsksmart/rsk-contract-metadata" "^1.0.17"
+    "@rsksmart/rsk-testnet-contract-metadata" "^1.0.11"
 
 "@rsksmart/rlogin-dpath@^1.0.1":
   version "1.0.3"
