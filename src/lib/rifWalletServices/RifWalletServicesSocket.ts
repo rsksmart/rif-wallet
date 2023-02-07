@@ -24,7 +24,7 @@ export interface IServiceInitEvent {
 export interface IRifWalletServicesSocket extends EventEmitter {
   connect: (
     wallet: RIFWallet,
-    fetcher?: RifWalletServicesFetcher,
+    fetcher: RifWalletServicesFetcher,
   ) => Promise<void>
 
   disconnect(): void
@@ -107,7 +107,7 @@ export class RifWalletServicesSocket
     })
   }
 
-  async connect(wallet: RIFWallet, fetcher?: RifWalletServicesFetcher) {
+  async connect(wallet: RIFWallet, fetcher: RifWalletServicesFetcher) {
     try {
       const encriptionKey = await wallet.smartWallet.signer.signMessage(
         getWalletSetting(SETTINGS.RIF_WALLET_KEY),
