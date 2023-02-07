@@ -58,6 +58,7 @@
     "postinstall-postinstall": "^2.1.0",
     "process": "^0.11.10",
     "react": "18.1.0",
+    "react-hook-form": "^7.43.0",
     "react-i18next": "^12.0.0",
     "react-native": "0.70.6",
     "react-native-background-timer": "^2.4.1",
