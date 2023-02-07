@@ -38,7 +38,7 @@ export const ScanQRScreen = ({
         })
       }
     } else if (decodedString.address !== undefined) {
-      navigation.replace(rootTabsRouteNames.Home, {
+      navigation.navigate(rootTabsRouteNames.Home, {
         screen: homeStackRouteNames.Send,
         params: {
           to: decodedString.address,
@@ -50,7 +50,7 @@ export const ScanQRScreen = ({
         SETTINGS.QR_READER_BITCOIN_DEFAULT_NETWORK,
         networkType,
       )
-      navigation.replace(rootTabsRouteNames.Home, {
+      navigation.navigate(rootTabsRouteNames.Home, {
         screen: homeStackRouteNames.Send,
         params: {
           to: data,
