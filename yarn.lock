@@ -2010,6 +2010,28 @@
     lodash "^4.17.15"
     randombytes "^2.1.0"
 
+"@rsksmart/rif-relay-light-sdk@*":
+  version "1.0.1"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-relay-light-sdk/1.0.1/f3098e9665a101e8329548e2008493da590d5ee5#f3098e9665a101e8329548e2008493da590d5ee5"
+  integrity sha512-/evJEGi6upkJsBqtsarVCRucLoowhXOT2DjnJXPnRKTXHFQ0pVRUFAhYkih0MiQpJc/6IsTYV1G9JY0LUSmi6g==
+  dependencies:
+    "@ethersproject/abstract-provider" "^5.7.0"
+    axios "^1.2.3"
+    ethers "^5.7.2"
+
+"@rsksmart/rif-wallet-adapters@^1.0.0":
+  version "1.0.0"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-adapters/1.0.0/b5b23a5ee3b44e93a26d91385f0ab8deb8b07299#b5b23a5ee3b44e93a26d91385f0ab8deb8b07299"
+  integrity sha512-8PQm1JDYdJfyNCnTthJwOHS4zsvNAYKoOa/CbGm67XeQKiI9dYRU0cQz1TCEgW1lt7LWLi73Jv/5yVpyE/yung==
+  dependencies:
+    "@ethersproject/abstract-signer" "^5.7.0"
+    "@ethersproject/bignumber" "^5.7.0"
+    "@ethersproject/bytes" "^5.7.0"
+    "@ethersproject/providers" "^5.7.2"
+    "@ethersproject/strings" "^5.7.0"
+    "@ethersproject/units" "^5.7.0"
+    "@rsksmart/rif-wallet-core" "*"
+
 "@rsksmart/rif-wallet-bitcoin@^1.0.0-beta.3":
   version "1.0.0-beta.3"
   resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-bitcoin/1.0.0-beta.3/fb8c2b7ce7f84c96c6a2ff89720d5f179daa2664#fb8c2b7ce7f84c96c6a2ff89720d5f179daa2664"
@@ -2021,6 +2043,17 @@
     bip32 "^2.0.6"
     bitcoin-address-validation "^2.2.1"
     bitcoinjs-lib "^6.0.2"
+
+"@rsksmart/rif-wallet-core@*":
+  version "1.0.2"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-core/1.0.2/dc810acfc6f014cd59fdb3c4339f0d69ebf16954#dc810acfc6f014cd59fdb3c4339f0d69ebf16954"
+  integrity sha512-xIsDFZmTITLLv78aLaXNa+69pZE2vW4SUEGTs0ux6iwWj9OO+N3uaUcdmG0bug1pqXaPYK04S+3+SviEl5dT4Q==
+  dependencies:
+    "@ethersproject/abstract-provider" "^5.7.0"
+    "@ethersproject/abstract-signer" "^5.7.0"
+    "@ethersproject/bignumber" "^5.7.0"
+    "@ethersproject/bytes" "^5.7.0"
+    "@rsksmart/rif-relay-light-sdk" "*"
 
 "@rsksmart/rif-wallet-token@^1.0.1":
   version "1.0.1"
@@ -3050,6 +3083,15 @@ axios@^0.27.2:
   dependencies:
     follow-redirects "^1.14.9"
     form-data "^4.0.0"
+
+axios@^1.2.3:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.3.2.tgz#7ac517f0fa3ec46e0e636223fd973713a09c72b3"
+  integrity sha512-1M3O703bYqYuPhbHeya5bnhpYVsDDRyQSabNja04mZtboLNSuZ4YrltestrLXfHgmzua4TpUqRiVKbiQuo2epw==
+  dependencies:
+    follow-redirects "^1.15.0"
+    form-data "^4.0.0"
+    proxy-from-env "^1.1.0"
 
 babel-core@^7.0.0-bridge.0:
   version "7.0.0-bridge.0"
@@ -4834,7 +4876,7 @@ ethereumjs-util@6.2.1:
     ethjs-util "0.1.6"
     rlp "^2.2.3"
 
-ethers@^5.4.7, ethers@^5.5.1:
+ethers@^5.4.7, ethers@^5.5.1, ethers@^5.7.2:
   version "5.7.2"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.7.2.tgz#3a7deeabbb8c030d4126b24f84e525466145872e"
   integrity sha512-wswUsmWo1aOK8rR7DIKiWSw9DbLWe6x98Jrn8wcTflTVvaXhAMaB5zGAXy0GYQEQp9iO1iSHWVyARQm11zUtyg==
@@ -5277,7 +5319,7 @@ flow-parser@^0.121.0:
   resolved "https://registry.yarnpkg.com/flow-parser/-/flow-parser-0.121.0.tgz#9f9898eaec91a9f7c323e9e992d81ab5c58e618f"
   integrity sha512-1gIBiWJNR0tKUNv8gZuk7l9rVX06OuLzY9AoGio7y/JT4V1IZErEMEq2TJS+PFcw/y0RshZ1J/27VfK1UQzYVg==
 
-follow-redirects@^1.14.9:
+follow-redirects@^1.14.9, follow-redirects@^1.15.0:
   version "1.15.2"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.2.tgz#b460864144ba63f2681096f274c4e57026da2c13"
   integrity sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==
@@ -8258,6 +8300,11 @@ prop-types@*, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2, prop-t
     loose-envify "^1.4.0"
     object-assign "^4.1.1"
     react-is "^16.13.1"
+
+proxy-from-env@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/proxy-from-env/-/proxy-from-env-1.1.0.tgz#e102f16ca355424865755d2c9e8ea4f24d58c3e2"
+  integrity sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==
 
 public-encrypt@^4.0.0:
   version "4.0.3"

@@ -9,7 +9,7 @@ import {
 } from 'react'
 
 import { RIFWallet } from 'lib/core'
-import { WalletConnectAdapter } from 'lib/walletAdapters/WalletConnectAdapter'
+import { WalletConnectAdapter } from '@rsksmart/rif-wallet-adapters'
 import {
   deleteWCSession,
   getWCSession,
