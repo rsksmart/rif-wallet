@@ -2022,10 +2022,10 @@
     bitcoin-address-validation "^2.2.1"
     bitcoinjs-lib "^6.0.2"
 
-"@rsksmart/rif-wallet-token@^1.0.0":
-  version "1.0.0"
-  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-token/1.0.0/48725d0cff8811be401f02040999ee2dc01e8fb2#48725d0cff8811be401f02040999ee2dc01e8fb2"
-  integrity sha512-BlzPqXaQHxu5tePLjsW8+/CdVQPuK/XxY9ijL9v9u4wp4CwuyEGmbDWwJHs5lKJQulFRxi3ywUmiQs7+wDrfGg==
+"@rsksmart/rif-wallet-token@^1.0.1":
+  version "1.0.1"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-token/1.0.1/e506cede6d8180da0d56e3f18af80511d4192b4d#e506cede6d8180da0d56e3f18af80511d4192b4d"
+  integrity sha512-XX5z+HctX9XkksMcScw26d9n2sFqbEF+ChNU0SBHsYMUo5HLBlO3d2H6uH04uMisfu4uKlyLX4N7lEYFoZ9w3g==
   dependencies:
     "@ethersproject/abi" "^5.7.0"
     "@ethersproject/abstract-signer" "^5.7.0"
