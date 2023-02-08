@@ -49,9 +49,10 @@ IBalanceCardComponentProps) => {
     <PortfolioCard
       handlePress={handlePress}
       color={activeColor}
-      topText={token.symbol}
-      bottomText={balance}
+      primaryText={token.symbol}
+      secondaryText={balance}
       icon={token.symbol}
+      isSelected={selected}
     />
   )
 }
@@ -98,9 +99,10 @@ BitcoinCardComponentProps) => {
     <PortfolioCard
       handlePress={handlePress}
       color={activeColor}
-      topText={symbol}
-      bottomText={balanceFormatted}
+      primaryText={symbol}
+      secondaryText={balanceFormatted}
       icon={symbol}
+      isSelected={isSelected}
     />
   )
 }

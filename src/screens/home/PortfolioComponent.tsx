@@ -32,8 +32,9 @@ const PortfolioComponent = ({
         <PortfolioCard
           handlePress={() => {}}
           color={sharedColors.darkGray}
-          topText={'TOTAL'}
-          bottomText={'233.2'}
+          primaryText={'TOTAL'}
+          secondaryText={'233.2'}
+          isSelected={false}
         />
         {balances.map(
           (balance: ITokenWithoutLogo | BitcoinNetwork, i: number) => (
