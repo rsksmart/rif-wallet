@@ -1,13 +1,12 @@
 import { PropsWithChildren } from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import { Icon } from 'react-native-vector-icons/Icon'
 
 import { sharedColors } from 'shared/constants'
 
 interface BarButtonGroupIconProps {
   iconName: string
-  IconComponent: typeof MaterialIcon | typeof MaterialCommunityIcon
+  IconComponent: typeof Icon
   onPress: () => void
   size?: number
 }
