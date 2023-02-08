@@ -1,11 +1,11 @@
 import { BigNumber } from 'ethers'
 import { useCallback, useMemo } from 'react'
 
-import { balanceToUSD, balanceToDisplay } from 'lib/utils'
+import { balanceToDisplay } from 'lib/utils'
 
-import { useContainerStyles } from './useContainerStyles'
+import { useTokenColor } from './useTokenColor'
 import { IPrice } from 'src/subscriptions/types'
-import { BalanceCardPresentationComponent } from './BalanceCardPresentationComponent'
+import { PortfolioCard } from './PortfolioCard'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { UsdPricesState } from 'store/slices/usdPricesSlice/types'
 
@@ -20,9 +20,9 @@ export const BalanceCardComponent = ({
   selected,
   token,
   onPress,
-  price,
-}: IBalanceCardComponentProps) => {
-  const containerStyles = useContainerStyles(selected, token.symbol)
+}: /*price,*/
+IBalanceCardComponentProps) => {
+  const activeColor = useTokenColor(selected, token.symbol)
   const { tokenBalance, decimals, contactAddress } = useMemo(
     () => ({
       tokenBalance: token.balance,
@@ -31,10 +31,10 @@ export const BalanceCardComponent = ({
     }),
     [token],
   )
-  const usdAmount = useMemo(
+  /* const usdAmount = useMemo(
     () => (price ? balanceToUSD(tokenBalance, decimals, price.price) : ' '),
     [price, tokenBalance, decimals],
-  )
+  )*/
 
   const balance = useMemo(
     () => balanceToDisplay(tokenBalance, decimals, 4),
@@ -46,12 +46,12 @@ export const BalanceCardComponent = ({
   )
 
   return (
-    <BalanceCardPresentationComponent
+    <PortfolioCard
       handlePress={handlePress}
-      containerStyles={containerStyles}
-      symbol={token.symbol}
-      balance={balance}
-      usdAmount={usdAmount}
+      color={activeColor}
+      topText={token.symbol}
+      bottomText={balance}
+      icon={token.symbol}
     />
   )
 }
@@ -71,20 +71,20 @@ export const BitcoinCardComponent = ({
   isSelected,
   contractAddress,
   onPress,
-  prices,
-}: BitcoinCardComponentProps) => {
-  const containerStyles = useContainerStyles(isSelected, symbol)
+}: /*prices,*/
+BitcoinCardComponentProps) => {
+  const activeColor = useTokenColor(isSelected, symbol)
   const balanceBigNumber = useMemo(
     () => BigNumber.from(Math.round(balance * 10e8)),
     [balance],
   )
-  // Future TODO: should be set in the network constants if another coin is implemented
+  /* // Future TODO: should be set in the network constants if another coin is implemented
   const price = useMemo(() => {
     return prices.BTC
       ? balanceToUSD(balanceBigNumber, 8, prices.BTC.price)
       : // TODO: fix this for bitcoin, prices don't have BTC field
         ' '
-  }, [prices.BTC, balanceBigNumber])
+  }, [prices.BTC, balanceBigNumber])*/
 
   const balanceFormatted = useMemo(
     () => balanceToDisplay(balanceBigNumber.toString(), 8, 4),
@@ -95,12 +95,12 @@ export const BitcoinCardComponent = ({
   }, [contractAddress, onPress])
 
   return (
-    <BalanceCardPresentationComponent
+    <PortfolioCard
       handlePress={handlePress}
-      containerStyles={containerStyles}
-      symbol={symbol}
-      balance={balanceFormatted}
-      usdAmount={price}
+      color={activeColor}
+      topText={symbol}
+      bottomText={balanceFormatted}
+      icon={symbol}
     />
   )
 }

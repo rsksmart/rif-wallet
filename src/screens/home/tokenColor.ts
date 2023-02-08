@@ -1,6 +1,7 @@
 export const getTokenColor = (tokenSymbol?: string): string => {
   switch (tokenSymbol) {
     case 'TRBTC':
+    case 'RBTC':
       return '#3d8af7'
     case 'rDOC':
     case 'tRIF':

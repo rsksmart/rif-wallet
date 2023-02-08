@@ -2,8 +2,7 @@ import { StyleSheet, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 
-import { RegularText } from 'components/index'
-import { colors, grid } from 'src/styles'
+import { colors } from 'src/styles'
 import { IPrice } from 'src/subscriptions/types'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 
@@ -11,6 +10,8 @@ import {
   BalanceCardComponent,
   BitcoinCardComponent,
 } from './BalanceCardComponent'
+import { PortfolioCard } from 'screens/home/PortfolioCard'
+import { sharedColors } from 'shared/constants'
 
 interface Props {
   selectedAddress?: string
@@ -26,16 +27,17 @@ const PortfolioComponent = ({
   prices,
 }: Props) => {
   return (
-    <ScrollView contentContainerStyle={styles.scrollView}>
-      <View style={grid.row}>
-        <RegularText style={styles.heading}>portfolio</RegularText>
-      </View>
+    <ScrollView horizontal={true} contentContainerStyle={styles.scrollView}>
       <View style={styles.scrollView}>
+        <PortfolioCard
+          handlePress={() => {}}
+          color={sharedColors.darkGray}
+          topText={'TOTAL'}
+          bottomText={'233.2'}
+        />
         {balances.map(
           (balance: ITokenWithoutLogo | BitcoinNetwork, i: number) => (
-            <View
-              style={i % 2 ? styles.rightColumn : styles.leftColumn}
-              key={i}>
+            <View key={i}>
               {balance instanceof BitcoinNetwork ? (
                 <BitcoinCardComponent
                   {...balance}
@@ -61,35 +63,13 @@ const PortfolioComponent = ({
 
 const styles = StyleSheet.create({
   heading: {
-    ...grid.column12,
     color: colors.lightPurple,
     fontSize: 16,
     margin: 5,
   },
-  balances: {
-    borderWidth: 1,
-    borderColor: '#FFCC33',
-    display: 'flex',
-    flexDirection: 'row',
-    flexBasis: 500,
-  },
-  leftColumn: {
-    ...grid.column6,
-    paddingRight: 10,
-  },
-  rightColumn: {
-    ...grid.column6,
-    paddingLeft: 10,
-  },
-
   scrollView: {
-    ...grid.row,
-    flexWrap: 'wrap',
-    width: '100%',
-  },
-  container: {
-    borderWidth: 1,
-    borderColor: '#FFCC33',
+    flexDirection: 'row',
+    height: 110,
   },
   emptyState: {
     paddingBottom: 20,
