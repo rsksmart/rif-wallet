@@ -22,13 +22,13 @@ export const BarButtonGroupIcon = ({
   </TouchableOpacity>
 )
 
-interface BarButtonGroupProps {
+interface BarButtonGroupContainerProps {
   backgroundColor?: string
 }
 export const BarButtonGroupContainer = ({
   backgroundColor = sharedColors.primaryDark,
   children,
-}: PropsWithChildren<BarButtonGroupProps>) => {
+}: PropsWithChildren<BarButtonGroupContainerProps>) => {
   return <View style={[styles.view, { backgroundColor }]}>{children}</View>
 }
 
