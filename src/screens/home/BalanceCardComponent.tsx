@@ -32,7 +32,6 @@ IBalanceCardComponentProps) => {
     [token],
   )
 
-
   const balance = useMemo(
     () => balanceToDisplay(tokenBalance, decimals, 4),
     [tokenBalance, decimals],
@@ -76,7 +75,6 @@ BitcoinCardComponentProps) => {
     () => BigNumber.from(Math.round(balance * 10e8)),
     [balance],
   )
-
 
   const balanceFormatted = useMemo(
     () => balanceToDisplay(balanceBigNumber.toString(), 8, 4),
