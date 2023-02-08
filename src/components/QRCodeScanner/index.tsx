@@ -61,32 +61,38 @@ export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
   }
 
   return (
-    <Modal presentationStyle="overFullScreen" style={styles.modal}>
+    <Modal presentationStyle="overFullScreen" onRequestClose={onClose}>
       <Camera
         frameProcessor={frameProcessor}
         frameProcessorFps={5}
         device={device}
+        style={StyleSheet.absoluteFill}
         isActive={true}
-        style={styles.container}>
-        <BarcodeMask
-          showAnimatedLine={false}
-          outerMaskOpacity={0.5}
-          width={280}
-          height={280}
+        torch={'off'}
+      />
+      <BarcodeMask
+        showAnimatedLine={false}
+        outerMaskOpacity={0.5}
+        width={260}
+        height={260}
+        edgeColor={colors.white}
+        edgeBorderWidth={4}
+        edgeHeight={25}
+        edgeWidth={25}
+        edgeRadius={5}
+      />
+      <View style={styles.floatButton}>
+        <Icon.Button
+          accessibilityLabel="closeButton"
+          name="close-outline"
+          onPress={onClose}
+          backgroundColor={colors.lightBlue}
+          color={colors.lightPurple}
+          style={styles.closeButton}
+          size={35}
+          borderRadius={40}
         />
-        <View style={styles.floatButton}>
-          <Icon.Button
-            accessibilityLabel="closeButton"
-            name="close-outline"
-            onPress={onClose}
-            backgroundColor={colors.lightBlue}
-            color={colors.lightPurple}
-            style={styles.closeButton}
-            size={35}
-            borderRadius={40}
-          />
-        </View>
-      </Camera>
+      </View>
     </Modal>
   )
 }
@@ -97,10 +103,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     alignItems: 'center',
-  },
-  container: {
-    flex: 1,
-    paddingHorizontal: 16,
   },
   floatButton: {
     position: 'absolute',
