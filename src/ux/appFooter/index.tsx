@@ -6,7 +6,6 @@ import OIcon from 'react-native-vector-icons/Octicons'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { homeStackRouteNames } from 'navigation/homeNavigator/types'
 import DappsIcon from 'components/icons/DappsIcon'
-import { colors } from 'src/styles/colors'
 import { sharedColors } from 'shared/constants'
 
 interface Props extends BottomTabBarProps {
@@ -24,7 +23,7 @@ export const AppFooterMenu = ({ navigation, isShown }: Props) => {
         }
         style={styles.button}
         accessibilityLabel="home">
-        <MCIcon name="home-outline" size={30} color={colors.white} />
+        <MCIcon name="home-outline" size={30} color={sharedColors.white} />
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -34,7 +33,7 @@ export const AppFooterMenu = ({ navigation, isShown }: Props) => {
         <OIcon
           name="arrow-switch"
           size={24}
-          color={colors.white}
+          color={sharedColors.white}
           style={styles.rotation}
         />
       </TouchableOpacity>
@@ -43,7 +42,7 @@ export const AppFooterMenu = ({ navigation, isShown }: Props) => {
         onPress={() => navigation.navigate(rootTabsRouteNames.ScanQR)}
         style={[styles.button, styles.centralButton]}
         accessibilityLabel="scan">
-        <MCIcon name="line-scan" size={30} color={colors.white} />
+        <MCIcon name="line-scan" size={30} color={sharedColors.white} />
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -60,7 +59,7 @@ export const AppFooterMenu = ({ navigation, isShown }: Props) => {
         <MCIcon
           name="account-multiple-outline"
           size={30}
-          color={colors.white}
+          color={sharedColors.white}
         />
       </TouchableOpacity>
     </View>
