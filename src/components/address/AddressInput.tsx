@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import { isValidChecksumAddress } from '@rsksmart/rsk-utils'
 
 import { rnsResolver } from 'src/core/setup'
-import { decodeString } from 'src/lib/eip681/decodeString'
+import { decodeString } from '@rsksmart/rif-wallet-eip681'
 import { colors, grid } from 'src/styles'
 import { SecondaryButton } from '../button/SecondaryButton'
 import { ContentPasteIcon, QRCodeIcon, DeleteIcon } from '../icons'

@@ -1,8 +1,7 @@
 import { useContext, useState } from 'react'
 import { isBitcoinAddressValid } from '@rsksmart/rif-wallet-bitcoin'
 
-import { decodeString } from 'lib/eip681/decodeString'
-
+import { decodeString } from '@rsksmart/rif-wallet-eip681'
 import { useAppSelector } from 'store/storeUtils'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import {
@@ -39,7 +38,7 @@ export const ScanQRScreen = ({
         })
       }
     } else if (decodedString.address !== undefined) {
-      navigation.replace(rootTabsRouteNames.Home, {
+      navigation.navigate(rootTabsRouteNames.Home, {
         screen: homeStackRouteNames.Send,
         params: {
           to: decodedString.address,
@@ -51,7 +50,7 @@ export const ScanQRScreen = ({
         SETTINGS.QR_READER_BITCOIN_DEFAULT_NETWORK,
         networkType,
       )
-      navigation.replace(rootTabsRouteNames.Home, {
+      navigation.navigate(rootTabsRouteNames.Home, {
         screen: homeStackRouteNames.Send,
         params: {
           to: data,
