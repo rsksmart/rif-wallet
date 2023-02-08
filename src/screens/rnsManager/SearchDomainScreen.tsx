@@ -61,7 +61,15 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const handleSetProfile = useCallback(() => {
     dispatch(
       setProfile({
-        ...(profile ? profile : { phone: '', email: '' }),
+        ...(profile
+          ? profile
+          : {
+              phone: '',
+              email: '',
+              requested: false,
+              purchased: true,
+              processing: false,
+            }),
         alias: domainToLookUp + '.rsk',
       }),
     )

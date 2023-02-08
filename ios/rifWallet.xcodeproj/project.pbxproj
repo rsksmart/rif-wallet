@@ -16,6 +16,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2685A36B701B42A4B6E211DC /* IBMPlexSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 858C9D50CF544F058A9C3D79 /* IBMPlexSans-Bold.ttf */; };
 		2906C4DBE0E7490892256645 /* IBMPlexSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AD1CE7FBD7B64EE593FF3F4E /* IBMPlexSans-SemiBold.ttf */; };
+		3B6AD2C1010C6E437CC5C9B6 /* libPods-rifWallet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 719AD69031DE00A91D0FF711 /* libPods-rifWallet.a */; };
 		47FED0F96C7C45C8B391546E /* IBMPlexSans-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5607714FE6154C4E8BA37509 /* IBMPlexSans-Italic.ttf */; };
 		498595E9CE1B0DEC7CF88CED /* libPods-rifWallet-rifWalletTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F2D10993DEC3A23FEF818F8A /* libPods-rifWallet-rifWalletTests.a */; };
 		5CF1E9353F6040E7BCA45BF7 /* IBMPlexSans-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 71CCD072321F46CC90C79060 /* IBMPlexSans-MediumItalic.ttf */; };
@@ -23,6 +24,7 @@
 		74B21AE248424597824E261B /* IBMPlexSans-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 97B3827DDA374D6090CBBAED /* IBMPlexSans-SemiBoldItalic.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		89A1B0B0A124442780EB794F /* IBMPlexSans-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8637E27328E74D16B0FAB639 /* IBMPlexSans-ThinItalic.ttf */; };
+		94E792DB12EF2FC37355FE06 /* libPods-rifWallet-rifWalletTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 704E93B0F88D0242DED36B62 /* libPods-rifWallet-rifWalletTests.a */; };
 		953FE69E3AD744F79DEAA809 /* IBMPlexSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5115C7C71A6A42C99CEEA50D /* IBMPlexSans-Regular.ttf */; };
 		9ABD45B8AF444BF483393CEC /* IBMPlexSans-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6E85CEE930CF4BFF82111D46 /* IBMPlexSans-ExtraLightItalic.ttf */; };
 		B43067F2B1B74A0894A9F0A3 /* IBMPlexSans-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A74FB902F8AE4B8898BE9321 /* IBMPlexSans-BoldItalic.ttf */; };
@@ -58,6 +60,8 @@
 		5B117DE2EF4B49FD8A749CE4 /* IBMPlexSans-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "IBMPlexSans-Thin.ttf"; path = "../assets/fonts/IBMPlexSans-Thin.ttf"; sourceTree = "<group>"; };
 		67E86CE756EE478D8E07718A /* IBMPlexSans-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "IBMPlexSans-ExtraLight.ttf"; path = "../assets/fonts/IBMPlexSans-ExtraLight.ttf"; sourceTree = "<group>"; };
 		6E85CEE930CF4BFF82111D46 /* IBMPlexSans-ExtraLightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "IBMPlexSans-ExtraLightItalic.ttf"; path = "../assets/fonts/IBMPlexSans-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
+		704E93B0F88D0242DED36B62 /* libPods-rifWallet-rifWalletTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-rifWallet-rifWalletTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		719AD69031DE00A91D0FF711 /* libPods-rifWallet.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-rifWallet.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		71CCD072321F46CC90C79060 /* IBMPlexSans-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "IBMPlexSans-MediumItalic.ttf"; path = "../assets/fonts/IBMPlexSans-MediumItalic.ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = rifWallet/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8307E574460169F09A17187A /* Pods-rifWallet.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rifWallet.debug.xcconfig"; path = "Target Support Files/Pods-rifWallet/Pods-rifWallet.debug.xcconfig"; sourceTree = "<group>"; };
@@ -336,15 +340,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-rifWallet/Pods-rifWallet-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-rifWallet/Pods-rifWallet-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			name = "[CP] Copy Pods Resources";
+			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-rifWallet/Pods-rifWallet-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-rifWallet/Pods-rifWallet-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-rifWallet/Pods-rifWallet-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-rifWallet/Pods-rifWallet-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		6AA990C5459DB1C9BC1E8A32 /* [CP] Copy Pods Resources */ = {
@@ -476,6 +480,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "export RCT_METRO_PORT=\"${RCT_METRO_PORT:=8081}\"\necho \"export RCT_METRO_PORT=${RCT_METRO_PORT}\" > \"${SRCROOT}/../node_modules/react-native/scripts/.packager.env\"\nif [ -z \"${RCT_NO_LAUNCH_PACKAGER+xxx}\" ] ; then\n  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then\n    if ! curl -s \"http://localhost:${RCT_METRO_PORT}/status\" | grep -q \"packager-status:running\" ; then\n      echo \"Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly\"\n      exit 2\n    fi\n  else\n    open \"$SRCROOT/../node_modules/react-native/scripts/launchPackager.command\" || echo \"Can't start packager automatically\"\n  fi\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		FE99384ECFF325BFD7316AA5 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-rifWallet/Pods-rifWallet-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-rifWallet/Pods-rifWallet-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-rifWallet/Pods-rifWallet-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

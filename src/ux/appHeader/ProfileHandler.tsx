@@ -9,7 +9,10 @@ import { selectProfile } from 'store/slices/profileSlice/selector'
 import { useAppSelector } from 'store/storeUtils'
 import { RegularText } from 'components/index'
 import { colors } from 'src/styles'
-import { Avatar } from 'src/components/avatar'
+import ProgressStartIcon from 'components/icons/ProgressStartIcon'
+import ProgressEndIcon from 'components/icons/ProgressEndIcon'
+import { sharedColors } from 'shared/constants'
+import { AvatarIcon } from 'components/icons/AvatarIcon'
 
 interface Props {
   navigation: BottomTabHeaderProps['navigation']
@@ -33,30 +36,99 @@ export const ProfileHandler = ({ navigation }: Props) => {
       style={styles.profileHandler}
       accessibilityLabel="profile"
       onPress={routeNextStep}>
-      {profile?.alias ? (
-        <>
-          {/* <AvatarIcon value={profile.alias + '.rsk'} size={30} /> */}
-          <Avatar
-            size={30}
-            name={profile.alias + '.rsk'}
-            // icon={<Icon name={'cat'} size={100} />}
-            // imageSource={{
-            //   uri: 'https://image.freepik.com/free-vector/cute-dog-head-avatar_79416-67.jpg',
-            // }}
-          />
-          <View>
-            <RegularText style={styles.profileName}>
-              {profile.alias}
-            </RegularText>
-          </View>
-        </>
-      ) : (
+      {!profile?.requested && !profile?.processing && !profile?.purchased && (
+        // No username
         <>
           <View style={styles.profileHandlerImage}>
             <FA5Icon name="user-circle" color="white" size={15} />
           </View>
-          <View style={{justifyContent:'center'}}>
-            <Text style={[styles.profileName]} >{t('No username')}</Text>
+          <View style={styles.textAlignment}>
+            <Text style={[styles.profileName]}>{t('No username')}</Text>
+          </View>
+        </>
+      )}
+      {!profile?.requested && profile?.processing && !profile?.purchased && (
+        //Requesting username
+        <>
+          <View style={styles.textAlignment}>
+            <ProgressStartIcon
+              color={sharedColors.warning}
+              width={18}
+              height={7}
+            />
+          </View>
+          <View style={styles.textAlignment}>
+            <ProgressEndIcon
+              color={colors.progress.default}
+              width={18}
+              height={7}
+            />
+          </View>
+          <View style={styles.textAlignment}>
+            <Text style={[styles.requestingStatus, styles.textStatus]}>
+              {t('Requesting username')}
+            </Text>
+          </View>
+        </>
+      )}
+
+      {profile?.requested && !profile?.processing && !profile?.purchased && (
+        //Purchase username
+        <>
+          <View style={styles.textAlignment}>
+            <ProgressStartIcon
+              color={colors.progress.success}
+              width={18}
+              height={7}
+            />
+          </View>
+          <View style={styles.textAlignment}>
+            <ProgressEndIcon
+              color={colors.progress.default}
+              width={18}
+              height={7}
+            />
+          </View>
+          <View style={styles.textAlignment}>
+            <Text style={[styles.textStatus, styles.underline]}>
+              {t('Purchase username')}
+            </Text>
+          </View>
+        </>
+      )}
+
+      {profile?.requested && profile?.processing && !profile?.purchased && (
+        //Purchasing username
+        <>
+          <View style={styles.textAlignment}>
+            <ProgressStartIcon
+              color={colors.progress.success}
+              width={18}
+              height={7}
+            />
+          </View>
+          <View style={styles.textAlignment}>
+            <ProgressEndIcon
+              color={sharedColors.warning}
+              width={18}
+              height={7}
+            />
+          </View>
+          <View style={styles.textAlignment}>
+            <Text style={[styles.textStatus, styles.underline]}>
+              {t('Purchasing username')}
+            </Text>
+          </View>
+        </>
+      )}
+
+      {profile?.requested && !profile?.processing && profile?.purchased && (
+        <>
+          <AvatarIcon value={profile.alias + '.rsk'} size={20} />
+          <View style={styles.textAlignment}>
+            <RegularText style={styles.profileName}>
+              {profile.alias}
+            </RegularText>
           </View>
         </>
       )}
@@ -76,7 +148,7 @@ const styles = StyleSheet.create({
   profileHandlerImage: {
     // backgroundColor: colors.lightGray,
     // padding: 5
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   profileAddImage: {
     backgroundColor: colors.darkPurple3,
@@ -90,5 +162,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
     color: colors.white,
+  },
+  textAlignment: {
+    justifyContent: 'center',
+  },
+  textStatus: {
+    fontSize: 14,
+    color: colors.white,
+    paddingLeft: 6,
+  },
+  requestingStatus: {
+    opacity: 0.4,
+  },
+  underline: {
+    textDecorationColor: colors.white,
+    textDecorationLine: 'underline',
   },
 })

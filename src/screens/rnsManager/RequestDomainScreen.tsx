@@ -15,12 +15,15 @@ import {
 import TitleStatus from './TitleStatus'
 import { ScreenWithWallet } from '../types'
 import { DomainRegistrationEnum, RnsProcessor } from 'lib/rns/RnsProcessor'
+import { useAppDispatch } from 'src/redux/storeUtils'
+import { setProfile } from 'src/redux/slices/profileSlice'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.RequestDomain> &
   ScreenWithWallet
 
 export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
   const rnsProcessor = useMemo(() => new RnsProcessor({ wallet }), [wallet])
+  const dispatch = useAppDispatch()
 
   const { alias, duration } = route.params
   const fullAlias = alias + '.rsk'
@@ -33,6 +36,16 @@ export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
   const commitToRegister = useCallback(async () => {
     try {
       setProcessing(true)
+      dispatch(
+        setProfile({
+          phone: '',
+          email: '',
+          alias: `${alias}.rsk`,
+          requested: false,
+          purchased: false,
+          processing: true,
+        }),
+      )
       let indexStatus = await rnsProcessor.getStatus(alias)
       if (!indexStatus?.commitmentRequested) {
         await rnsProcessor.process(alias, duration)
@@ -45,6 +58,16 @@ export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
           if (canRevealResponse === DomainRegistrationEnum.COMMITMENT_READY) {
             setProgress(1)
             setProcessing(false)
+            dispatch(
+              setProfile({
+                phone: '',
+                email: '',
+                alias: `${alias}.rsk`,
+                requested: true,
+                purchased: false,
+                processing: false,
+              }),
+            )
             clearInterval(intervalId)
             navigation.navigate(profileStackRouteNames.BuyDomain, {
               alias,
@@ -59,10 +82,20 @@ export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
       }
     } catch (e: unknown) {
       setProcessing(false)
+      dispatch(
+        setProfile({
+          phone: '',
+          email: '',
+          alias: '',
+          requested: false,
+          purchased: false,
+          processing: false,
+        }),
+      )
       setCommitToRegisterInfo(e?.message || '')
       setCommitToRegisterInfo2('')
     }
-  }, [alias, duration, navigation, rnsProcessor])
+  }, [alias, duration, navigation, rnsProcessor, dispatch])
 
   useEffect(() => {
     const response = rnsProcessor.getStatus(alias)

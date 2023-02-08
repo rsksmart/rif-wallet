@@ -41,7 +41,16 @@ export const AliasBoughtScreen = ({
   }
 
   useEffect(() => {
-    dispatch(setProfile({ phone: '', email: '', alias: `${alias}.rsk` }))
+    dispatch(
+      setProfile({
+        phone: '',
+        email: '',
+        alias: `${alias}.rsk`,
+        requested: true,
+        purchased: true,
+        processing: false,
+      }),
+    )
   }, [alias, dispatch])
 
   return (

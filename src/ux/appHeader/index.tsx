@@ -1,18 +1,14 @@
 import { useCallback } from 'react'
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
+import { StackHeaderProps } from '@react-navigation/stack'
+import OIcon from 'react-native-vector-icons/Octicons'
 
-import { getChainIdByType } from 'lib/utils'
-
-import { AddressCopyComponent } from 'components/copy/AddressCopyComponent'
 import { ChevronLeftIcon } from 'components/icons/ChevronLeftIcon'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { selectActiveWallet, selectTopColor } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { ProfileHandler } from './ProfileHandler'
-import { StackHeaderProps } from '@react-navigation/stack'
-import OIcon from 'react-native-vector-icons/Octicons'
-import { color } from 'react-native-reanimated'
 import { colors } from 'src/styles'
 
 type HeaderProps = BottomTabHeaderProps | StackHeaderProps
@@ -27,7 +23,7 @@ export const AppHeader = ({
   isShown,
 }: Props & HeaderProps) => {
   const topColor = useAppSelector(selectTopColor)
-  const { wallet, chainType } = useAppSelector(selectActiveWallet)
+  const { wallet } = useAppSelector(selectActiveWallet)
 
   const openMenu = useCallback(() => {
     if (route && route.name === rootTabsRouteNames.Settings) {
@@ -49,7 +45,7 @@ export const AppHeader = ({
       </View>
       <View style={styles.columnMenu}>
         <TouchableOpacity onPress={openMenu} accessibilityLabel="settings">
-          <OIcon name='gear' size={15} color={colors.white} />
+          <OIcon name="gear" size={15} color={colors.white} />
         </TouchableOpacity>
       </View>
     </View>

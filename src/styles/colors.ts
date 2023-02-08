@@ -53,4 +53,8 @@ export const colors = {
     secondary: '#020034',
     secondaryPressed: '#DBE3FF',
   },
+  progress: {
+    default: '#3A3A3A',
+    success: '#02BF93',
+  },
 }
