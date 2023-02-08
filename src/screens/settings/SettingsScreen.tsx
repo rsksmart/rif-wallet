@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5'
@@ -15,10 +15,13 @@ import {
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
+import { AppTouchable } from 'src/components/appTouchable'
+import { Checkbox } from 'src/components/checkbox'
 
 export const SettingsScreen = ({
   navigation,
 }: SettingsScreenProps<settingsStackRouteNames.SettingsScreen>) => {
+  const [isEnabled, toggleEnabled] = useState(false)
   const smartWalletFactoryAddress = useMemo(
     () => getWalletSetting(SETTINGS.SMART_WALLET_FACTORY_ADDRESS),
     [],
@@ -49,6 +52,9 @@ export const SettingsScreen = ({
     <ScrollView style={styles.container}>
       <View style={styles.mainView}>
         {/* @TODO add link to go to the accounts screen */}
+        <AppTouchable onPress={() => toggleEnabled(prevState => !prevState)}>
+          <Checkbox isEnabled={isEnabled} />
+        </AppTouchable>
         <TouchableOpacity
           accessibilityLabel="account"
           style={styles.rowComponent}
