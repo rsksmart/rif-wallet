@@ -53,7 +53,12 @@ export const SettingsScreen = ({
       <View style={styles.mainView}>
         {/* @TODO add link to go to the accounts screen */}
         <AppTouchable onPress={() => toggleEnabled(prevState => !prevState)}>
-          <Checkbox isEnabled={isEnabled} />
+          <Checkbox
+            isEnabled={isEnabled}
+            size={50}
+            enabledColor={'red'}
+            iconColor={'blue'}
+          />
         </AppTouchable>
         <TouchableOpacity
           accessibilityLabel="account"

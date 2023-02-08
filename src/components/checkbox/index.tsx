@@ -1,4 +1,11 @@
-import { View, StyleSheet } from 'react-native'
+import {
+  View,
+  StyleSheet,
+  StyleProp,
+  ViewStyle,
+  TextStyle,
+  ColorValue,
+} from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
 import { castStyle } from 'shared/utils'
@@ -6,13 +13,40 @@ import { sharedColors } from 'src/shared/constants'
 
 interface Props {
   isEnabled: boolean
+  size?: number
+  containerStyle?: StyleProp<ViewStyle>
+  iconStyle?: StyleProp<TextStyle>
+  iconColor?: ColorValue
+  enabledColor?: ColorValue
 }
 
-export const Checkbox = ({ isEnabled }: Props) => {
+export const Checkbox = ({
+  isEnabled,
+  size,
+  containerStyle,
+  iconStyle,
+  iconColor,
+  enabledColor,
+}: Props) => {
   return (
-    <View style={[styles.checkbox, isEnabled ? styles.checkboxEnabled : null]}>
+    <View
+      style={[
+        styles.checkbox,
+        size ? { height: size, width: size } : null,
+        isEnabled
+          ? enabledColor
+            ? { backgroundColor: enabledColor }
+            : styles.checkboxEnabled
+          : null,
+        containerStyle,
+      ]}>
       {isEnabled ? (
-        <Icon name={'check'} color={sharedColors.white} size={9} />
+        <Icon
+          style={iconStyle}
+          name={'check'}
+          color={iconColor ? iconColor : sharedColors.white}
+          size={size ? size / 2 : 8}
+        />
       ) : null}
     </View>
   )
