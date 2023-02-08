@@ -1,10 +1,10 @@
 import { StyleSheet, View } from 'react-native'
 
-import ProgressStartIcon from 'src/components/icons/ProgressStartIcon'
+import ProgressStartIcon from 'components/icons/ProgressStartIcon'
 import { sharedColors } from 'shared/constants'
-import ProgressEndIcon from 'src/components/icons/ProgressEndIcon'
+import ProgressEndIcon from 'components/icons/ProgressEndIcon'
 import { colors } from 'src/styles'
-import { ProgressBarStatus } from 'src/navigation/profileNavigator/types'
+import { ProgressBarStatus } from 'navigation/profileNavigator/types'
 
 interface ProgressBarProps {
   width: number
@@ -22,9 +22,9 @@ export const ProgressComponent = ({
       case ProgressBarStatus.REQUESTING:
         return { start: sharedColors.warning, end: colors.progress.default }
       case ProgressBarStatus.PURCHASE:
-        return { start: colors.progress.success, end: colors.progress.default }
+        return { start: sharedColors.success, end: colors.progress.default }
       case ProgressBarStatus.PURCHASING:
-        return { start: colors.progress.success, end: sharedColors.warning }
+        return { start: sharedColors.success, end: sharedColors.warning }
     }
   }
   const { start, end } = getColors()

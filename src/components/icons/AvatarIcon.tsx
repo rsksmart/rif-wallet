@@ -1,8 +1,7 @@
 import { TextStyle } from 'react-native'
 import Jdenticon from 'react-native-jdenticon'
 
-import { colors } from '../../styles'
-
+import { sharedColors } from 'src/shared/constants'
 interface AvatarIconProps {
   value: string
   size?: number
@@ -23,7 +22,7 @@ export const AvatarIcon = ({ value, size = 40, style }: AvatarIconProps) => {
   }
   const iconStyle = {
     borderRadius: 50,
-    backgroundColor: colors.white,
+    backgroundColor: sharedColors.secondary,
     ...style,
   }
   return (

@@ -18,7 +18,7 @@ import {
 } from 'navigation/profileNavigator/types'
 import { ScreenWithWallet } from '../types'
 import { DomainRegistrationEnum, RnsProcessor } from 'lib/rns/RnsProcessor'
-import { useAppDispatch } from 'src/redux/storeUtils'
+import { useAppDispatch } from 'store/storeUtils'
 import { setProfile } from 'src/redux/slices/profileSlice'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.BuyDomain> &

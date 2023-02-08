@@ -1,5 +1,5 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import FA5Icon from 'react-native-vector-icons/FontAwesome5'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
+import Icon from 'react-native-vector-icons/FontAwesome5'
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
 import { useTranslation } from 'react-i18next'
 
@@ -10,10 +10,10 @@ import {
 } from 'navigation/profileNavigator/types'
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { useAppSelector } from 'store/storeUtils'
-import { RegularText } from 'components/index'
-import { colors } from 'src/styles'
-import { ProgressComponent } from './ProgressComponent'
+import { MediumText, RegularText } from 'components/index'
 import { AvatarIcon } from 'components/icons/AvatarIcon'
+import { ProgressComponent } from './ProgressComponent'
+import { sharedColors } from 'shared/constants'
 
 interface Props {
   navigation: BottomTabHeaderProps['navigation']
@@ -40,11 +40,13 @@ export const ProfileHandler = ({ navigation }: Props) => {
       {!profile?.requested && !profile?.processing && !profile?.purchased && (
         // No username
         <>
-          <View style={styles.profileHandlerImage}>
-            <FA5Icon name="user-circle" color="white" size={15} />
+          <View style={styles.textAlignment}>
+            <Icon name="user-circle" color={sharedColors.white} size={15} />
           </View>
           <View style={styles.textAlignment}>
-            <Text style={[styles.profileName]}>{t('No username')}</Text>
+            <MediumText style={[styles.profileName]}>
+              {t('No username')}
+            </MediumText>
           </View>
         </>
       )}
@@ -57,9 +59,9 @@ export const ProfileHandler = ({ navigation }: Props) => {
             status={ProgressBarStatus.REQUESTING}
           />
           <View style={styles.textAlignment}>
-            <Text style={[styles.requestingStatus, styles.textStatus]}>
+            <RegularText style={[styles.requestingStatus, styles.textStatus]}>
               {t('Requesting username')}
-            </Text>
+            </RegularText>
           </View>
         </>
       )}
@@ -73,9 +75,9 @@ export const ProfileHandler = ({ navigation }: Props) => {
             status={ProgressBarStatus.PURCHASE}
           />
           <View style={styles.textAlignment}>
-            <Text style={[styles.textStatus, styles.underline]}>
+            <RegularText style={[styles.textStatus, styles.underline]}>
               {t('Purchase username')}
-            </Text>
+            </RegularText>
           </View>
         </>
       )}
@@ -89,9 +91,9 @@ export const ProfileHandler = ({ navigation }: Props) => {
             status={ProgressBarStatus.PURCHASING}
           />
           <View style={styles.textAlignment}>
-            <Text style={[styles.textStatus, styles.requestingStatus]}>
+            <RegularText style={[styles.textStatus, styles.requestingStatus]}>
               {t('Purchasing username')}
-            </Text>
+            </RegularText>
           </View>
         </>
       )}
@@ -100,9 +102,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
         <>
           <AvatarIcon value={profile.alias + '.rsk'} size={20} />
           <View style={styles.textAlignment}>
-            <RegularText style={styles.profileName}>
-              {profile.alias}
-            </RegularText>
+            <MediumText style={styles.profileName}>{profile.alias}</MediumText>
           </View>
         </>
       )}
@@ -119,37 +119,26 @@ const styles = StyleSheet.create({
     height: 30,
     width: 30,
   },
-  profileHandlerImage: {
-    // backgroundColor: colors.lightGray,
-    // padding: 5
-    justifyContent: 'center',
-  },
-  profileAddImage: {
-    backgroundColor: colors.darkPurple3,
-    borderRadius: 20,
-    height: 15,
-    right: 8,
-  },
   profileName: {
     lineHeight: 18,
     paddingLeft: 6,
     fontSize: 14,
     fontWeight: '500',
-    color: colors.white,
+    color: sharedColors.white,
   },
   textAlignment: {
     justifyContent: 'center',
   },
   textStatus: {
-    fontSize: 14,
-    color: colors.white,
+    fontSize: 12,
+    color: sharedColors.white,
     paddingLeft: 6,
   },
   requestingStatus: {
     opacity: 0.4,
   },
   underline: {
-    textDecorationColor: colors.white,
+    textDecorationColor: sharedColors.white,
     textDecorationLine: 'underline',
   },
 })
