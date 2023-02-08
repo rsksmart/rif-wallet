@@ -31,10 +31,7 @@ IBalanceCardComponentProps) => {
     }),
     [token],
   )
-  /* const usdAmount = useMemo(
-    () => (price ? balanceToUSD(tokenBalance, decimals, price.price) : ' '),
-    [price, tokenBalance, decimals],
-  )*/
+
 
   const balance = useMemo(
     () => balanceToDisplay(tokenBalance, decimals, 4),
@@ -79,13 +76,7 @@ BitcoinCardComponentProps) => {
     () => BigNumber.from(Math.round(balance * 10e8)),
     [balance],
   )
-  /* // Future TODO: should be set in the network constants if another coin is implemented
-  const price = useMemo(() => {
-    return prices.BTC
-      ? balanceToUSD(balanceBigNumber, 8, prices.BTC.price)
-      : // TODO: fix this for bitcoin, prices don't have BTC field
-        ' '
-  }, [prices.BTC, balanceBigNumber])*/
+
 
   const balanceFormatted = useMemo(
     () => balanceToDisplay(balanceBigNumber.toString(), 8, 4),
