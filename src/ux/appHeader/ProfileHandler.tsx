@@ -4,14 +4,15 @@ import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
 import { useTranslation } from 'react-i18next'
 
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
-import { profileStackRouteNames } from 'navigation/profileNavigator/types'
+import {
+  profileStackRouteNames,
+  ProgressBarStatus,
+} from 'navigation/profileNavigator/types'
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { useAppSelector } from 'store/storeUtils'
 import { RegularText } from 'components/index'
 import { colors } from 'src/styles'
-import ProgressStartIcon from 'components/icons/ProgressStartIcon'
-import ProgressEndIcon from 'components/icons/ProgressEndIcon'
-import { sharedColors } from 'shared/constants'
+import { ProgressComponent } from './ProgressComponent'
 import { AvatarIcon } from 'components/icons/AvatarIcon'
 
 interface Props {
@@ -50,20 +51,11 @@ export const ProfileHandler = ({ navigation }: Props) => {
       {!profile?.requested && profile?.processing && !profile?.purchased && (
         //Requesting username
         <>
-          <View style={styles.textAlignment}>
-            <ProgressStartIcon
-              color={sharedColors.warning}
-              width={18}
-              height={7}
-            />
-          </View>
-          <View style={styles.textAlignment}>
-            <ProgressEndIcon
-              color={colors.progress.default}
-              width={18}
-              height={7}
-            />
-          </View>
+          <ProgressComponent
+            width={18}
+            height={7}
+            status={ProgressBarStatus.REQUESTING}
+          />
           <View style={styles.textAlignment}>
             <Text style={[styles.requestingStatus, styles.textStatus]}>
               {t('Requesting username')}
@@ -75,20 +67,11 @@ export const ProfileHandler = ({ navigation }: Props) => {
       {profile?.requested && !profile?.processing && !profile?.purchased && (
         //Purchase username
         <>
-          <View style={styles.textAlignment}>
-            <ProgressStartIcon
-              color={colors.progress.success}
-              width={18}
-              height={7}
-            />
-          </View>
-          <View style={styles.textAlignment}>
-            <ProgressEndIcon
-              color={colors.progress.default}
-              width={18}
-              height={7}
-            />
-          </View>
+          <ProgressComponent
+            width={18}
+            height={7}
+            status={ProgressBarStatus.PURCHASE}
+          />
           <View style={styles.textAlignment}>
             <Text style={[styles.textStatus, styles.underline]}>
               {t('Purchase username')}
@@ -100,22 +83,13 @@ export const ProfileHandler = ({ navigation }: Props) => {
       {profile?.requested && profile?.processing && !profile?.purchased && (
         //Purchasing username
         <>
+          <ProgressComponent
+            width={18}
+            height={7}
+            status={ProgressBarStatus.PURCHASING}
+          />
           <View style={styles.textAlignment}>
-            <ProgressStartIcon
-              color={colors.progress.success}
-              width={18}
-              height={7}
-            />
-          </View>
-          <View style={styles.textAlignment}>
-            <ProgressEndIcon
-              color={sharedColors.warning}
-              width={18}
-              height={7}
-            />
-          </View>
-          <View style={styles.textAlignment}>
-            <Text style={[styles.textStatus, styles.underline]}>
+            <Text style={[styles.textStatus, styles.requestingStatus]}>
               {t('Purchasing username')}
             </Text>
           </View>

@@ -56,7 +56,6 @@ export const BuyDomainScreen = ({ wallet, navigation, route }: Props) => {
 
   const registerDomain = async (domain: string) => {
     try {
-      const response = await rnsProcessor.register(domain)
       dispatch(
         setProfile({
           phone: '',
@@ -67,6 +66,7 @@ export const BuyDomainScreen = ({ wallet, navigation, route }: Props) => {
           processing: true,
         }),
       )
+      const response = await rnsProcessor.register(domain)
       if (response === DomainRegistrationEnum.REGISTERING_REQUESTED) {
         setRegisterDomainInfo('Transaction sent. Please wait...')
         setRegisterInProcess(true)

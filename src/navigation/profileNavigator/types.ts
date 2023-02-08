@@ -13,6 +13,12 @@ export enum profileStackRouteNames {
   RegisterDomain = 'RegisterDomain',
 }
 
+export enum ProgressBarStatus {
+  REQUESTING,
+  PURCHASE,
+  PURCHASING,
+}
+
 export type ProfileStackParamsList = {
   [profileStackRouteNames.ProfileCreateScreen]:
     | {
