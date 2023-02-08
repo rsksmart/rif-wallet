@@ -33,7 +33,6 @@ const onSocketInit = (
 
 export const rifSockets = ({
   wallet,
-  mnemonic,
   fetcher,
   dispatch,
   setGlobalError,
@@ -56,7 +55,7 @@ export const rifSockets = ({
       onSocketInit(payload, onChange),
     )
     rifWalletServicesSocket.on('change', onChange)
-    rifWalletServicesSocket.connect(wallet, mnemonic, fetcher).catch(err => {
+    rifWalletServicesSocket.connect(wallet, fetcher).catch(err => {
       if (err instanceof Error) {
         setGlobalError(err.message)
       } else {
