@@ -2032,10 +2032,10 @@
     "@ethersproject/units" "^5.7.0"
     "@rsksmart/rif-wallet-core" "*"
 
-"@rsksmart/rif-wallet-bitcoin@^1.0.0-beta.3":
-  version "1.0.0-beta.3"
-  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-bitcoin/1.0.0-beta.3/fb8c2b7ce7f84c96c6a2ff89720d5f179daa2664#fb8c2b7ce7f84c96c6a2ff89720d5f179daa2664"
-  integrity sha512-DPde8RLPBFmTLWMheL4ugh2Pm8cwnIxOF4WkfGyOGNmRgAHW8kqHtTYNXTk0qCx+Bzx18amhKR2vyuiqUcW4kA==
+"@rsksmart/rif-wallet-bitcoin@^1.0.1":
+  version "1.0.1"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-bitcoin/1.0.1/128269accae2370050d15e7920122683d2bcf9d4#128269accae2370050d15e7920122683d2bcf9d4"
+  integrity sha512-gFRTiEr8RFxDuR2xb0uBOrcrqMiEpMxXk4aHjx5vXBHATaStwSbffsqblJZK2bEcc66ieT5JwjOhUlqkZc/UZg==
   dependencies:
     "@ethersproject/bignumber" "^5.7.0"
     "@ethersproject/units" "^5.7.0"
