@@ -4,7 +4,7 @@ import {
 } from 'components/BarButtonGroup/BarButtonGroup'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-
+// @TODO add onPress event (navigate/share/etc)
 export const ProfileBarButtonGroup = () => (
   <BarButtonGroupContainer>
     <BarButtonGroupIcon
