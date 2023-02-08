@@ -2,6 +2,7 @@ import { PropsWithChildren } from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+
 import { sharedColors } from 'shared/constants'
 
 interface BarButtonGroupIconProps {
@@ -25,6 +26,7 @@ export const BarButtonGroupIcon = ({
 interface BarButtonGroupContainerProps {
   backgroundColor?: string
 }
+
 export const BarButtonGroupContainer = ({
   backgroundColor = sharedColors.primaryDark,
   children,

@@ -1,9 +1,10 @@
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+
 import {
   BarButtonGroupContainer,
   BarButtonGroupIcon,
 } from 'components/BarButtonGroup/BarButtonGroup'
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import Ionicons from 'react-native-vector-icons/Ionicons'
 import { sharedColors } from 'shared/constants'
 // @TODO add onPress event (navigate/share/etc)
 export const ContactsBarButtonGroup = () => (
