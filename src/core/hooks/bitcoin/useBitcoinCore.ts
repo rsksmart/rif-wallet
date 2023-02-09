@@ -2,7 +2,6 @@ import { useMemo, useEffect, useCallback, useState, useRef } from 'react'
 import {
   BitcoinNetwork,
   BitcoinNetworkWithBIPRequest,
-  BIP39,
   createAndInitializeBipWithRequest,
   BIPWithRequest,
   createBipFactoryType,
@@ -48,10 +47,6 @@ export const useBitcoinCore = (
 ): UseBitcoinCoreResult => {
   const dispatch = useAppDispatch()
   const [storedNetworks, refreshStoredNetworks] = useStoredBitcoinNetworks()
-  const BIP39Instance = useMemo(
-    () => (mnemonic ? new BIP39(mnemonic) : null),
-    [mnemonic],
-  )
   const networksObj = useRef<NetworksObject>({})
   const storedNetworksValues = useMemo(
     () => Object.values(storedNetworks),
@@ -78,7 +73,7 @@ export const useBitcoinCore = (
   const transformNetwork = useCallback(
     (
       network: StoredBitcoinNetworkValue,
-      bip39: BIP39,
+      mnemonicText: string,
       rifFetcher: RifWalletServicesFetcher,
     ) => {
       const createBipWithFetcher = (...args: createBipFactoryType) => {
@@ -94,7 +89,7 @@ export const useBitcoinCore = (
       const bitcoinNetwork = new BitcoinNetwork(
         network.name,
         network.bips,
-        bip39,
+        mnemonicText,
         createBipWithFetcher,
       ) as BitcoinNetworkWithBIPRequest
       networksObj.current[network.name] = bitcoinNetwork
@@ -106,7 +101,7 @@ export const useBitcoinCore = (
   const transformStoredNetworks = useCallback(
     (
       values: StoredBitcoinNetworkValue[],
-      bip39: BIP39,
+      mnemonicText: string,
       rifFetcher: RifWalletServicesFetcher,
     ) => {
       if (values.length < 1) {
@@ -114,7 +109,7 @@ export const useBitcoinCore = (
         return null
       }
       const networksArr = values.map(item =>
-        transformNetwork(item, bip39, rifFetcher),
+        transformNetwork(item, mnemonicText, rifFetcher),
       )
 
       return { networksArr, networksObj: networksObj.current }
@@ -127,7 +122,7 @@ export const useBitcoinCore = (
       onNoNetworksPresent()
       return
     }
-    if (!BIP39Instance) {
+    if (!mnemonic) {
       return
     }
 
@@ -137,7 +132,7 @@ export const useBitcoinCore = (
 
     const transformedNetworks = transformStoredNetworks(
       storedNetworksValues,
-      BIP39Instance,
+      mnemonic,
       fetcher,
     )
     if (transformedNetworks) {
@@ -147,8 +142,8 @@ export const useBitcoinCore = (
     storedNetworksValues,
     onNoNetworksPresent,
     transformStoredNetworks,
-    BIP39Instance,
     fetcher,
+    mnemonic,
   ])
 
   return {

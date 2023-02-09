@@ -1063,7 +1063,7 @@
   dependencies:
     "@ethersproject/bignumber" "^5.7.0"
 
-"@ethersproject/contracts@5.7.0":
+"@ethersproject/contracts@5.7.0", "@ethersproject/contracts@^5.7.0":
   version "5.7.0"
   resolved "https://registry.yarnpkg.com/@ethersproject/contracts/-/contracts-5.7.0.tgz#c305e775abd07e48aa590e1a877ed5c316f8bd1e"
   integrity sha512-5GJbzEU3X+d33CdfPhcyS+z8MzsTrBGk/sc+G+59+tPa9yFkl6HQ9D6L0QMgNTA9q8dT0XKxxkyp883XsQvbbg==
@@ -1166,7 +1166,7 @@
   dependencies:
     "@ethersproject/logger" "^5.7.0"
 
-"@ethersproject/providers@5.7.2":
+"@ethersproject/providers@5.7.2", "@ethersproject/providers@^5.7.2":
   version "5.7.2"
   resolved "https://registry.yarnpkg.com/@ethersproject/providers/-/providers-5.7.2.tgz#f8b1a4f275d7ce58cf0a2eec222269a08beb18cb"
   integrity sha512-g34EWZ1WWAVgr4aptGlVBF8mhl3VWjv+8hoAnzStu8Ah22VHBsuGzP17eb6xDVRzw895G4W7vvx60lFFur/1Rg==
@@ -2010,7 +2010,7 @@
     lodash "^4.17.15"
     randombytes "^2.1.0"
 
-"@rsksmart/rif-relay-light-sdk@^1.0.1":
+"@rsksmart/rif-relay-light-sdk@*", "@rsksmart/rif-relay-light-sdk@^1.0.1":
   version "1.0.1"
   resolved "https://npm.pkg.github.com/download/@rsksmart/rif-relay-light-sdk/1.0.1/f3098e9665a101e8329548e2008493da590d5ee5#f3098e9665a101e8329548e2008493da590d5ee5"
   integrity sha512-/evJEGi6upkJsBqtsarVCRucLoowhXOT2DjnJXPnRKTXHFQ0pVRUFAhYkih0MiQpJc/6IsTYV1G9JY0LUSmi6g==
@@ -2019,10 +2019,23 @@
     axios "^1.2.3"
     ethers "^5.7.2"
 
-"@rsksmart/rif-wallet-bitcoin@^1.0.0-beta.3":
-  version "1.0.0-beta.3"
-  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-bitcoin/1.0.0-beta.3/fb8c2b7ce7f84c96c6a2ff89720d5f179daa2664#fb8c2b7ce7f84c96c6a2ff89720d5f179daa2664"
-  integrity sha512-DPde8RLPBFmTLWMheL4ugh2Pm8cwnIxOF4WkfGyOGNmRgAHW8kqHtTYNXTk0qCx+Bzx18amhKR2vyuiqUcW4kA==
+"@rsksmart/rif-wallet-adapters@^1.0.0":
+  version "1.0.0"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-adapters/1.0.0/b5b23a5ee3b44e93a26d91385f0ab8deb8b07299#b5b23a5ee3b44e93a26d91385f0ab8deb8b07299"
+  integrity sha512-8PQm1JDYdJfyNCnTthJwOHS4zsvNAYKoOa/CbGm67XeQKiI9dYRU0cQz1TCEgW1lt7LWLi73Jv/5yVpyE/yung==
+  dependencies:
+    "@ethersproject/abstract-signer" "^5.7.0"
+    "@ethersproject/bignumber" "^5.7.0"
+    "@ethersproject/bytes" "^5.7.0"
+    "@ethersproject/providers" "^5.7.2"
+    "@ethersproject/strings" "^5.7.0"
+    "@ethersproject/units" "^5.7.0"
+    "@rsksmart/rif-wallet-core" "*"
+
+"@rsksmart/rif-wallet-bitcoin@^1.0.1":
+  version "1.0.1"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-bitcoin/1.0.1/128269accae2370050d15e7920122683d2bcf9d4#128269accae2370050d15e7920122683d2bcf9d4"
+  integrity sha512-gFRTiEr8RFxDuR2xb0uBOrcrqMiEpMxXk4aHjx5vXBHATaStwSbffsqblJZK2bEcc66ieT5JwjOhUlqkZc/UZg==
   dependencies:
     "@ethersproject/bignumber" "^5.7.0"
     "@ethersproject/units" "^5.7.0"
@@ -2030,6 +2043,38 @@
     bip32 "^2.0.6"
     bitcoin-address-validation "^2.2.1"
     bitcoinjs-lib "^6.0.2"
+
+"@rsksmart/rif-wallet-core@*":
+  version "1.0.2"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-core/1.0.2/dc810acfc6f014cd59fdb3c4339f0d69ebf16954#dc810acfc6f014cd59fdb3c4339f0d69ebf16954"
+  integrity sha512-xIsDFZmTITLLv78aLaXNa+69pZE2vW4SUEGTs0ux6iwWj9OO+N3uaUcdmG0bug1pqXaPYK04S+3+SviEl5dT4Q==
+  dependencies:
+    "@ethersproject/abstract-provider" "^5.7.0"
+    "@ethersproject/abstract-signer" "^5.7.0"
+    "@ethersproject/bignumber" "^5.7.0"
+    "@ethersproject/bytes" "^5.7.0"
+    "@rsksmart/rif-relay-light-sdk" "*"
+
+"@rsksmart/rif-wallet-eip681@1.0.1":
+  version "1.0.1"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-eip681/1.0.1/8c1692e2a620b382a386b14fd63e720ab40a1caa#8c1692e2a620b382a386b14fd63e720ab40a1caa"
+  integrity sha512-jegJlcuexsNy18TXs12AKi1lMfZ5a6v+JEZONdO/jYE8ZrcOuyzQ+RFXZvH/uZKsUexZTfs+ty8yaFHWG2huvg==
+  dependencies:
+    "@rsksmart/rsk-utils" "^1.1.0"
+
+"@rsksmart/rif-wallet-token@^1.0.1":
+  version "1.0.1"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-token/1.0.1/e506cede6d8180da0d56e3f18af80511d4192b4d#e506cede6d8180da0d56e3f18af80511d4192b4d"
+  integrity sha512-XX5z+HctX9XkksMcScw26d9n2sFqbEF+ChNU0SBHsYMUo5HLBlO3d2H6uH04uMisfu4uKlyLX4N7lEYFoZ9w3g==
+  dependencies:
+    "@ethersproject/abi" "^5.7.0"
+    "@ethersproject/abstract-signer" "^5.7.0"
+    "@ethersproject/bignumber" "^5.7.0"
+    "@ethersproject/constants" "^5.7.0"
+    "@ethersproject/contracts" "^5.7.0"
+    "@ethersproject/providers" "^5.7.2"
+    "@rsksmart/rsk-contract-metadata" "^1.0.17"
+    "@rsksmart/rsk-testnet-contract-metadata" "^1.0.11"
 
 "@rsksmart/rlogin-dpath@^1.0.1":
   version "1.0.3"
@@ -3047,9 +3092,9 @@ axios@^0.27.2:
     form-data "^4.0.0"
 
 axios@^1.2.3:
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-1.2.5.tgz#858c129d286e7ee3b1e970961cde410ba3ea3740"
-  integrity sha512-9pU/8mmjSSOb4CXVsvGIevN+MlO/t9OWtKadTaLuN85Gge3HGorUckgp8A/2FH4V4hJ7JuQ3LIeI7KAV9ITZrQ==
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.3.2.tgz#7ac517f0fa3ec46e0e636223fd973713a09c72b3"
+  integrity sha512-1M3O703bYqYuPhbHeya5bnhpYVsDDRyQSabNja04mZtboLNSuZ4YrltestrLXfHgmzua4TpUqRiVKbiQuo2epw==
   dependencies:
     follow-redirects "^1.15.0"
     form-data "^4.0.0"

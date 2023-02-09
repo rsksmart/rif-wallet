@@ -80,6 +80,7 @@ module.exports = {
         pathGroupsExcludedImportTypes: [],
       },
     ],
+    'prettier/prettier': ['error', { endOfLine: 'auto' }],
   },
   overrides: [
     {
