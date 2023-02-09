@@ -19,7 +19,7 @@ import {
 import { ScreenWithWallet } from '../types'
 import { DomainRegistrationEnum, RnsProcessor } from 'lib/rns/RnsProcessor'
 import { useAppDispatch } from 'store/storeUtils'
-import { setProfile } from 'src/redux/slices/profileSlice'
+import { purchaseUsername } from 'store/slices/profileSlice'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.BuyDomain> &
   ScreenWithWallet
@@ -56,17 +56,9 @@ export const BuyDomainScreen = ({ wallet, navigation, route }: Props) => {
 
   const registerDomain = async (domain: string) => {
     try {
-      dispatch(
-        setProfile({
-          phone: '',
-          email: '',
-          alias: `${alias}.rsk`,
-          requested: true,
-          purchased: false,
-          processing: true,
-        }),
-      )
-      const response = await rnsProcessor.register(domain)
+      const response = await dispatch(
+        purchaseUsername({ rnsProcessor, domain }),
+      ).unwrap()
       if (response === DomainRegistrationEnum.REGISTERING_REQUESTED) {
         setRegisterDomainInfo('Transaction sent. Please wait...')
         setRegisterInProcess(true)
@@ -77,16 +69,6 @@ export const BuyDomainScreen = ({ wallet, navigation, route }: Props) => {
       }
     } catch (e) {
       setRegisterInProcess(false)
-      dispatch(
-        setProfile({
-          phone: '',
-          email: '',
-          alias: `${alias}.rsk`,
-          requested: true,
-          purchased: false,
-          processing: false,
-        }),
-      )
       setRegisterDomainInfo(errorHandler(e))
     }
   }

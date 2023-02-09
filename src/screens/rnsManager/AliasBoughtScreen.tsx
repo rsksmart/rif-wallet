@@ -13,6 +13,7 @@ import { ScreenWithWallet } from '../types'
 import {
   profileStackRouteNames,
   ProfileStackScreenProps,
+  ProfileStatus,
 } from 'navigation/profileNavigator/types'
 import { RnsProcessor } from 'lib/rns/RnsProcessor'
 
@@ -46,9 +47,7 @@ export const AliasBoughtScreen = ({
         phone: '',
         email: '',
         alias: `${alias}.rsk`,
-        requested: true,
-        purchased: true,
-        processing: false,
+        status: ProfileStatus.USER,
       }),
     )
   }, [alias, dispatch])

@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import {
   profileStackRouteNames,
-  ProgressBarStatus,
+  ProfileStatus,
 } from 'navigation/profileNavigator/types'
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { useAppSelector } from 'store/storeUtils'
@@ -37,8 +37,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
       style={styles.profileHandler}
       accessibilityLabel="profile"
       onPress={routeNextStep}>
-      {!profile?.requested && !profile?.processing && !profile?.purchased && (
-        // No username
+      {profile?.status === ProfileStatus.NONE && (
         <>
           <View style={styles.textAlignment}>
             <Icon name="user-circle" color={sharedColors.white} size={15} />
@@ -50,13 +49,12 @@ export const ProfileHandler = ({ navigation }: Props) => {
           </View>
         </>
       )}
-      {!profile?.requested && profile?.processing && !profile?.purchased && (
-        //Requesting username
+      {profile?.status === ProfileStatus.REQUESTING && (
         <>
           <ProgressComponent
             width={18}
             height={7}
-            status={ProgressBarStatus.REQUESTING}
+            status={ProfileStatus.REQUESTING}
           />
           <View style={styles.textAlignment}>
             <RegularText style={[styles.requestingStatus, styles.textStatus]}>
@@ -66,13 +64,12 @@ export const ProfileHandler = ({ navigation }: Props) => {
         </>
       )}
 
-      {profile?.requested && !profile?.processing && !profile?.purchased && (
-        //Purchase username
+      {profile?.status === ProfileStatus.PURCHASE && (
         <>
           <ProgressComponent
             width={18}
             height={7}
-            status={ProgressBarStatus.PURCHASE}
+            status={ProfileStatus.PURCHASE}
           />
           <View style={styles.textAlignment}>
             <RegularText style={[styles.textStatus, styles.underline]}>
@@ -82,13 +79,12 @@ export const ProfileHandler = ({ navigation }: Props) => {
         </>
       )}
 
-      {profile?.requested && profile?.processing && !profile?.purchased && (
-        //Purchasing username
+      {profile?.status === ProfileStatus.PURCHASING && (
         <>
           <ProgressComponent
             width={18}
             height={7}
-            status={ProgressBarStatus.PURCHASING}
+            status={ProfileStatus.PURCHASING}
           />
           <View style={styles.textAlignment}>
             <RegularText style={[styles.textStatus, styles.requestingStatus]}>
@@ -98,7 +94,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
         </>
       )}
 
-      {profile?.requested && !profile?.processing && profile?.purchased && (
+      {profile?.status === ProfileStatus.USER && (
         <>
           <AvatarIcon value={profile.alias + '.rsk'} size={20} />
           <View style={styles.textAlignment}>

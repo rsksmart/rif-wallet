@@ -10,6 +10,7 @@ import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import {
   profileStackRouteNames,
   ProfileStackScreenProps,
+  ProfileStatus,
 } from 'navigation/profileNavigator/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import DomainLookUp from 'screens/rnsManager/DomainLookUp'
@@ -66,11 +67,9 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           : {
               phone: '',
               email: '',
-              requested: false,
-              purchased: true,
-              processing: false,
+              status: ProfileStatus.NONE,
             }),
-        alias: domainToLookUp + '.rsk',
+        ...{ alias: domainToLookUp + '.rsk', status: ProfileStatus.USER },
       }),
     )
 

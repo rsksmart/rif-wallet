@@ -14,9 +14,9 @@ import {
 } from 'navigation/profileNavigator/types'
 import TitleStatus from './TitleStatus'
 import { ScreenWithWallet } from '../types'
-import { DomainRegistrationEnum, RnsProcessor } from 'lib/rns/RnsProcessor'
+import { RnsProcessor } from 'lib/rns/RnsProcessor'
 import { useAppDispatch } from 'store/storeUtils'
-import { setProfile } from 'src/redux/slices/profileSlice'
+import { requestUsername } from 'store/slices/profileSlice'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.RequestDomain> &
   ScreenWithWallet
@@ -36,62 +36,26 @@ export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
   const commitToRegister = useCallback(async () => {
     try {
       setProcessing(true)
-      dispatch(
-        setProfile({
-          phone: '',
-          email: '',
-          alias: `${alias}.rsk`,
-          requested: false,
-          purchased: false,
-          processing: true,
-        }),
+      setCommitToRegisterInfo('registering your alias...')
+      setCommitToRegisterInfo2('estimated wait: 3 minutes')
+      const interval = setInterval(() => {
+        setProgress(prev => prev + 0.005)
+      }, 1000)
+      await dispatch(requestUsername({ rnsProcessor, alias, duration })).then(
+        () => {
+          setProgress(1)
+          clearInterval(interval)
+          setProcessing(false)
+          setCommitToRegisterInfo(
+            'Waiting period ended. You can now register your domain',
+          )
+          navigation.navigate(profileStackRouteNames.BuyDomain, {
+            alias,
+          })
+        },
       )
-      let indexStatus = await rnsProcessor.getStatus(alias)
-      if (!indexStatus?.commitmentRequested) {
-        await rnsProcessor.process(alias, duration)
-      }
-      indexStatus = await rnsProcessor.getStatus(alias)
-      if (indexStatus.commitmentRequested) {
-        const intervalId = setInterval(async () => {
-          setProgress(prev => prev + 0.005)
-          const canRevealResponse = await rnsProcessor.canReveal(alias)
-          if (canRevealResponse === DomainRegistrationEnum.COMMITMENT_READY) {
-            setProgress(1)
-            setProcessing(false)
-            dispatch(
-              setProfile({
-                phone: '',
-                email: '',
-                alias: `${alias}.rsk`,
-                requested: true,
-                purchased: false,
-                processing: false,
-              }),
-            )
-            clearInterval(intervalId)
-            navigation.navigate(profileStackRouteNames.BuyDomain, {
-              alias,
-            })
-            setCommitToRegisterInfo(
-              'Waiting period ended. You can now register your domain',
-            )
-          }
-          setCommitToRegisterInfo('registering your alias...')
-          setCommitToRegisterInfo2('estimated wait: 3 minutes')
-        }, 1000)
-      }
     } catch (e: unknown) {
       setProcessing(false)
-      dispatch(
-        setProfile({
-          phone: '',
-          email: '',
-          alias: '',
-          requested: false,
-          purchased: false,
-          processing: false,
-        }),
-      )
       setCommitToRegisterInfo(e?.message || '')
       setCommitToRegisterInfo2('')
     }

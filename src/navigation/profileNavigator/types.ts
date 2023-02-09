@@ -13,10 +13,12 @@ export enum profileStackRouteNames {
   RegisterDomain = 'RegisterDomain',
 }
 
-export enum ProgressBarStatus {
+export enum ProfileStatus {
+  NONE,
   REQUESTING,
   PURCHASE,
   PURCHASING,
+  USER,
 }
 
 export type ProfileStackParamsList = {

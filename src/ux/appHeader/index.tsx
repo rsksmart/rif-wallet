@@ -9,7 +9,7 @@ import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { selectActiveWallet, selectTopColor } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { ProfileHandler } from './ProfileHandler'
-import { colors } from 'src/styles'
+import { sharedColors } from 'shared/constants'
 
 type HeaderProps = BottomTabHeaderProps | StackHeaderProps
 
@@ -45,7 +45,7 @@ export const AppHeader = ({
       </View>
       <View style={styles.columnMenu}>
         <TouchableOpacity onPress={openMenu} accessibilityLabel="settings">
-          <OIcon name="gear" size={15} color={colors.white} />
+          <OIcon name="gear" size={15} color={sharedColors.white} />
         </TouchableOpacity>
       </View>
     </View>
