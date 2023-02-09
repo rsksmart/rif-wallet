@@ -47,7 +47,6 @@ export const Avatar = ({
             styles.letter,
             {
               fontSize: twoTimesLessThanSize,
-              lineHeight: twoTimesLessThanSize,
               color: letterColor ? letterColor : sharedColors.white,
             },
           ]}>
