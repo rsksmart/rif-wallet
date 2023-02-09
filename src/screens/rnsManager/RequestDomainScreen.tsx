@@ -46,32 +46,34 @@ export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
         setProgress(prev => prev + 0.005)
       }, 1000)
     }
-    if (status === ProfileStatus.PURCHASE) {
-      setProgress(1)
-      setProcessing(false)
-      setCommitToRegisterInfo(
-        'Waiting period ended. You can now register your domain',
-      )
-      navigation.navigate(profileStackRouteNames.BuyDomain, {
-        alias,
-      })
-    }
     return () => {
       if (interval) {
         clearInterval(interval)
       }
     }
-  }, [status, alias, navigation])
+  }, [status])
 
   const commitToRegister = useCallback(async () => {
     try {
-      await dispatch(requestUsername({ rnsProcessor, alias, duration }))
+      const response = await dispatch(
+        requestUsername({ rnsProcessor, alias, duration }),
+      ).unwrap()
+      if (response && response === ProfileStatus.PURCHASE) {
+        setProgress(1)
+        setProcessing(false)
+        setCommitToRegisterInfo(
+          'Waiting period ended. You can now register your domain',
+        )
+        navigation.navigate(profileStackRouteNames.BuyDomain, {
+          alias,
+        })
+      }
     } catch (e: unknown) {
       setProcessing(false)
       setCommitToRegisterInfo(e?.message || '')
       setCommitToRegisterInfo2('')
     }
-  }, [alias, duration, rnsProcessor, dispatch])
+  }, [alias, duration, rnsProcessor, dispatch, navigation])
 
   useEffect(() => {
     const response = rnsProcessor.getStatus(alias)

@@ -21,19 +21,19 @@ export const ProgressComponent = ({
       case ProfileStatus.REQUESTING:
         return {
           start: sharedColors.warning,
-          end: sharedColors.inactiveProgress,
+          end: sharedColors.inputActiveColor,
         }
       case ProfileStatus.PURCHASE:
         return {
           start: sharedColors.success,
-          end: sharedColors.inactiveProgress,
+          end: sharedColors.inputActiveColor,
         }
       case ProfileStatus.PURCHASING:
         return { start: sharedColors.success, end: sharedColors.warning }
     }
     return {
-      start: sharedColors.inactiveProgress,
-      end: sharedColors.inactiveProgress,
+      start: sharedColors.inputActiveColor,
+      end: sharedColors.inputActiveColor,
     }
   }
   const { start, end } = getColors()
