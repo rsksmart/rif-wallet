@@ -69,7 +69,7 @@ const PortfolioComponent = ({
       <View style={styles.scrollView}>
         <PortfolioCard
           handlePress={() => setSelectedAddress('')}
-          color={sharedColors.darkGray}
+          color={sharedColors.inputInactiveColor}
           primaryText={t('TOTAL')}
           secondaryText={`$${getTotalUsdBalance(balances, prices).toString()}`}
           isSelected={false}
