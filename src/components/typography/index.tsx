@@ -113,6 +113,7 @@ const typeStyleMap = new Map([
   ['label', styles.label],
   ['button1', styles.button1],
   ['button2', styles.button2],
+  ['labellight', styles.labellight],
 ])
 
 export const Typography = ({ style, type, children }: Props) => {
