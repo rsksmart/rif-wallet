@@ -74,6 +74,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 12,
   }),
+  labellight: castStyle.text({
+    ...fonts.regular,
+    fontSize: 14,
+    lineHeight: 19.6,
+    fontWeight: '400',
+    color: '#B8B8B8',
+  }),
 })
 
 type TypographyType =
@@ -88,6 +95,7 @@ type TypographyType =
   | 'label'
   | 'button1'
   | 'button2'
+  | 'labellight'
 
 interface Props extends TextProps {
   type: TypographyType
