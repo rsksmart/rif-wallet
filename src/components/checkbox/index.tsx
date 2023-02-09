@@ -32,7 +32,7 @@ export const Checkbox = ({
     <View
       style={[
         styles.checkbox,
-        size ? { height: size, width: size } : null,
+        size ? { height: size, width: size, borderRadius: size / 4 } : null,
         isEnabled
           ? enabledColor
             ? { backgroundColor: enabledColor }

@@ -15,13 +15,10 @@ import {
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
-import { AppTouchable } from 'src/components/appTouchable'
-import { Checkbox } from 'src/components/checkbox'
 
 export const SettingsScreen = ({
   navigation,
 }: SettingsScreenProps<settingsStackRouteNames.SettingsScreen>) => {
-  const [isEnabled, toggleEnabled] = useState(false)
   const smartWalletFactoryAddress = useMemo(
     () => getWalletSetting(SETTINGS.SMART_WALLET_FACTORY_ADDRESS),
     [],
@@ -52,14 +49,6 @@ export const SettingsScreen = ({
     <ScrollView style={styles.container}>
       <View style={styles.mainView}>
         {/* @TODO add link to go to the accounts screen */}
-        <AppTouchable onPress={() => toggleEnabled(prevState => !prevState)}>
-          <Checkbox
-            isEnabled={isEnabled}
-            size={50}
-            enabledColor={'red'}
-            iconColor={'blue'}
-          />
-        </AppTouchable>
         <TouchableOpacity
           accessibilityLabel="account"
           style={styles.rowComponent}
