@@ -10,12 +10,13 @@ import {
 import { selectActiveWallet } from 'src/redux/slices/settingsSlice'
 import { useAppSelector } from 'src/redux/storeUtils'
 import { RegularText } from 'src/components'
-import { getWalletSetting, SETTINGS } from 'core/config'
+import { defaultChainType, getTokenAddress } from 'core/config'
 import { sharedStyles } from 'shared/styles'
 import { errorHandler } from 'shared/utils'
 
 import useEnhancedWithGas from '../useEnhancedWithGas'
 import ReviewTransactionModal from './ReviewTransactionModal'
+import { ChainTypeEnum } from 'src/redux/slices/settingsSlice/types'
 
 interface Props {
   request: SendTransactionRequest
@@ -41,7 +42,11 @@ export const ReviewTransactionContainer = ({ request, closeModal }: Props) => {
   )
 
   // estimate the tx cost in token:
-  const tokenContract = getWalletSetting(SETTINGS.RIF_CONTRACT_ADDRESS)
+  const tokenContract = getTokenAddress(
+    defaultChainType === ChainTypeEnum.MAINNET ? 'RIF' : 'tRIF',
+    defaultChainType,
+  )
+
   useEffect(() => {
     wallet.rifRelaySdk
       .estimateTransactionCost(txRequest, tokenContract)

@@ -1,4 +1,6 @@
 import Config from 'react-native-config'
+import testnetContracts from '@rsksmart/rsk-testnet-contract-metadata'
+import mainnetContracts from '@rsksmart/rsk-contract-metadata'
 
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 export const defaultChainType =
@@ -20,7 +22,6 @@ export enum SETTINGS {
   DEPLOY_VERIFIER_ADDRESS = 'DEPLOY_VERIFIER_ADDRESS',
   QR_READER_BITCOIN_DEFAULT_NETWORK = 'QR_READER_BITCOIN_DEFAULT_NETWORK',
   AUTH_CLIENT = 'AUTH_CLIENT',
-  RIF_CONTRACT_ADDRESS = 'RIF_CONTRACT_ADDRESS',
   RIF_WALLET_KEY = 'RIF_WALLET_KEY',
 }
 
@@ -37,4 +38,20 @@ export const getWalletSetting = (
   }
 
   return Config[setting]
+}
+
+export const getTokenAddress = (symbol: string, chainType: ChainTypeEnum) => {
+  const contracts =
+    chainType === ChainTypeEnum.TESTNET ? testnetContracts : mainnetContracts
+
+  const results = Object.keys(contracts).filter((address: string) => {
+    return contracts[address].symbol === symbol
+  })
+
+  if (results.length === 0) {
+    throw new Error(
+      `Token with the symbol ${symbol} not found on ${chainType}. Did you forget a t?`,
+    )
+  }
+  return results[0].toLowerCase()
 }

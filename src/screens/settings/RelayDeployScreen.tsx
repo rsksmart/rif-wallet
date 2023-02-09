@@ -11,9 +11,10 @@ import { colors } from 'src/styles'
 import { MediumText, SecondaryButton, SemiBoldText } from 'src/components'
 import { setWalletIsDeployed } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'src/redux/storeUtils'
-import { getWalletSetting, SETTINGS } from 'core/config'
+import { defaultChainType, getTokenAddress } from 'core/config'
 
 import { ScreenWithWallet } from '../types'
+import { ChainTypeEnum } from 'src/redux/slices/settingsSlice/types'
 
 export const RelayDeployScreen = ({
   wallet,
@@ -30,7 +31,10 @@ export const RelayDeployScreen = ({
     setDeployError(null)
     setIsDeploying(true)
     const freePayment = {
-      tokenContract: getWalletSetting(SETTINGS.RIF_CONTRACT_ADDRESS),
+      tokenContract: getTokenAddress(
+        defaultChainType === ChainTypeEnum.MAINNET ? 'RIF' : 'tRIF',
+        defaultChainType,
+      ),
       tokenAmount: BigNumber.from(0),
     }
 
