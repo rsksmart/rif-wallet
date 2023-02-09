@@ -3,11 +3,12 @@ import { useCallback, useMemo } from 'react'
 
 import { balanceToDisplay } from 'lib/utils'
 
-import { useTokenColor } from './useTokenColor'
 import { IPrice } from 'src/subscriptions/types'
-import { PortfolioCard } from './PortfolioCard'
+import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { UsdPricesState } from 'store/slices/usdPricesSlice/types'
+import { getTokenColor } from 'screens/home/tokenColor'
+import { sharedColors } from 'shared/constants'
 
 interface IBalanceCardComponentProps {
   token: ITokenWithoutLogo
@@ -22,7 +23,9 @@ export const BalanceCardComponent = ({
   onPress,
 }: /*price,*/
 IBalanceCardComponentProps) => {
-  const activeColor = useTokenColor(selected, token.symbol)
+  const activeColor = selected
+    ? getTokenColor(token.symbol)
+    : sharedColors.darkGray
   const { tokenBalance, decimals, contactAddress } = useMemo(
     () => ({
       tokenBalance: token.balance,
@@ -70,7 +73,7 @@ export const BitcoinCardComponent = ({
   onPress,
 }: /*prices,*/
 BitcoinCardComponentProps) => {
-  const activeColor = useTokenColor(isSelected, symbol)
+  const activeColor = isSelected ? getTokenColor(symbol) : sharedColors.darkGray
   const balanceBigNumber = useMemo(
     () => BigNumber.from(Math.round(balance * 10e8)),
     [balance],

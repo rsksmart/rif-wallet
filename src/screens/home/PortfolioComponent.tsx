@@ -10,7 +10,7 @@ import {
   BalanceCardComponent,
   BitcoinCardComponent,
 } from './BalanceCardComponent'
-import { PortfolioCard } from 'screens/home/PortfolioCard'
+import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
 import { sharedColors } from 'shared/constants'
 
 interface Props {
