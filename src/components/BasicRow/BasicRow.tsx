@@ -55,7 +55,9 @@ export const BasicRow = ({
         />
       </View>
       <View style={styles.secondView}>
-        <Typography type={'h3'}>{labelSliced}</Typography>
+        <Typography type={'h3'} style={styles.h3Bold}>
+          {labelSliced}
+        </Typography>
         <Typography type={'labellight'}>
           {secondaryLabel} <StatusText status={status} />
         </Typography>
@@ -159,4 +161,5 @@ const styles = StyleSheet.create({
     maxHeight: 40,
     aspectRatio: 1,
   },
+  h3Bold: { fontWeight: 'bold' },
 })
