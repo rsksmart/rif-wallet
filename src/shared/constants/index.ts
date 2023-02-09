@@ -1,3 +1,6 @@
+import { StyleSheet } from 'react-native'
+import { castStyle } from '../utils'
+
 export const testIDs = {
   wordInput: 'input.wordInput',
   indexLabel: 'view.indexLabel',
@@ -18,3 +21,9 @@ export const sharedColors = {
 
 export const defaultIconSize = 16
 export const noop = () => ({})
+
+export const sharedStyles = StyleSheet.create({
+  flex: castStyle.view({
+    flex: 1,
+  }),
+})

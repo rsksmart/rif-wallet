@@ -13,7 +13,12 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import { IconProps } from 'react-native-vector-icons/Icon'
 import { Controller, useFormContext, FieldError } from 'react-hook-form'
 
-import { defaultIconSize, noop, sharedColors } from 'shared/constants'
+import {
+  defaultIconSize,
+  noop,
+  sharedColors,
+  sharedStyles,
+} from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { Typography } from '../typography'
 
@@ -78,7 +83,9 @@ export const Input = ({
             </Typography>
             <View style={styles.valueContainer}>
               {leftIcon && 'name' in leftIcon ? (
-                <Pressable onPress={onLeftIconPress ? onLeftIconPress : noop}>
+                <Pressable
+                  style={styles.leftIconContainer}
+                  onPress={onLeftIconPress ? onLeftIconPress : noop}>
                   <Icon
                     name={leftIcon.name}
                     size={leftIcon.size ? leftIcon.size : defaultIconSize}
@@ -88,7 +95,11 @@ export const Input = ({
               ) : (
                 leftIcon
               )}
-              <View style={[leftIcon ? styles.inputSubtitleContainer : null]}>
+              <View
+                style={[
+                  sharedStyles.flex,
+                  leftIcon ? styles.inputSubtitleContainer : null,
+                ]}>
                 <TextInput
                   style={[styles.input, inputStyle]}
                   onChangeText={onChange}
@@ -160,9 +171,12 @@ const styles = StyleSheet.create({
     color: sharedColors.inputLabelColor,
   }),
   valueContainer: castStyle.view({
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 18,
+  }),
+  leftIconContainer: castStyle.view({
+    paddingTop: 18,
   }),
   inputSubtitleContainer: castStyle.view({
     marginLeft: 12,
@@ -170,12 +184,17 @@ const styles = StyleSheet.create({
   subtitle: castStyle.text({
     color: sharedColors.inputLabelColor,
   }),
-  input: castStyle.text({}),
+  input: castStyle.text({
+    flex: 1,
+    paddingTop: 18,
+  }),
   rightIcon: castStyle.text({
+    flex: 1,
     marginRight: 24,
     color: sharedColors.white,
   }),
   placeholderText: castStyle.text({
+    flex: 1,
     color: sharedColors.inputLabelColor,
   }),
   valueText: castStyle.text({
