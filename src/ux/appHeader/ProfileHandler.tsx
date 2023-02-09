@@ -12,7 +12,7 @@ import { selectProfile } from 'store/slices/profileSlice/selector'
 import { useAppSelector } from 'store/storeUtils'
 import { Typography } from 'components/typography'
 import { AvatarIcon } from 'components/icons/AvatarIcon'
-import { ProgressComponent } from './ProgressComponent'
+import { ProgressComponent } from 'components/profile/ProgressComponent'
 import { sharedColors } from 'shared/constants'
 
 interface Props {
