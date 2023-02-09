@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native'
 
 import { sharedColors } from 'shared/constants'
 import { TokenImage } from 'screens/home/TokenImage'
-import { RegularText } from 'src/components'
+import { Typography } from 'src/components'
 import { colors } from 'src/styles'
 
 interface PortfolioCardProps {
@@ -29,11 +29,12 @@ const SelectedCard = ({
           <TokenImage symbol={icon} height={20} width={20} />
         </View>
       ) : null}
-      <RegularText
+      <Typography
+        type={'body1'}
         style={selectedCardStyles.primaryText}
         accessibilityLabel="symbol">
         {primaryText}
-      </RegularText>
+      </Typography>
     </View>
   </View>
 )
@@ -54,18 +55,20 @@ const NonSelectedCard = ({
           <TokenImage symbol={icon} height={18} width={18} />
         </View>
       ) : null}
-      <RegularText
+      <Typography
+        type={'body1'}
         style={nonSelectedCardStyles.primaryText}
         accessibilityLabel="symbol">
         {primaryText}
-      </RegularText>
+      </Typography>
     </View>
     <View style={nonSelectedCardStyles.secondaryTextContainer}>
-      <RegularText
+      <Typography
+        type={'body1'}
         style={nonSelectedCardStyles.secondaryText}
         accessibilityLabel="balance">
         {secondaryText}
-      </RegularText>
+      </Typography>
     </View>
   </View>
 )
@@ -119,7 +122,7 @@ const selectedCardStyles = StyleSheet.create({
   },
 
   icon: {
-    marginTop: 7,
+    marginTop: 0,
     marginRight: 3,
     backgroundColor: colors.white,
     height: 20,
