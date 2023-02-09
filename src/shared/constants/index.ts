@@ -10,4 +10,7 @@ export const sharedColors = {
   warning: '#FF9100',
   danger: '#E94141',
   white: '#FFFFFF',
+  inputInactiveColor: '#252525',
+  inputActiveColor: '#3A3A3A',
+  borderColor: '#575757',
 }
