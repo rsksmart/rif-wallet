@@ -2,7 +2,7 @@ import { StyleSheet, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import { BigNumber } from 'ethers'
-import { balanceToDisplay } from 'lib/utils'
+import { balanceToDisplay, convertBalance, convertTokenToUSD } from 'lib/utils'
 
 import { colors } from 'src/styles'
 import { IPrice } from 'src/subscriptions/types'
@@ -21,15 +21,37 @@ interface Props {
 const getBalance = (token: ITokenWithoutLogo | BitcoinNetwork) => {
   if (token instanceof BitcoinNetwork) {
     const bitcoinBalance: BitcoinNetwork = token as BitcoinNetwork
-    const balanceBigNumber =
-      token instanceof BitcoinNetwork
-        ? BigNumber.from(Math.round(token.balance * 10e8))
-        : bitcoinBalance.balance
+    const balanceBigNumber = BigNumber.from(
+      Math.round(bitcoinBalance.balance * 10e8),
+    )
+
     return balanceToDisplay(balanceBigNumber.toString(), 8, 4)
   } else {
     const tokenBalance: ITokenWithoutLogo = token as ITokenWithoutLogo
     return balanceToDisplay(tokenBalance.balance, tokenBalance.decimals, 4)
   }
+}
+
+const getTotalUsdBalance = (
+  tokens: (ITokenWithoutLogo | BitcoinNetwork)[],
+  prices: Record<string, IPrice>,
+) => {
+  const usdBalances = tokens.map(
+    (token: ITokenWithoutLogo | BitcoinNetwork) => {
+      if (token instanceof BitcoinNetwork) {
+        const bitcoinBalance: BitcoinNetwork = token as BitcoinNetwork
+        return prices.BTC
+          ? convertTokenToUSD(bitcoinBalance.balance, prices.BTC.price)
+          : 0
+      } else {
+        const tokenPrice = prices[token.contractAddress]
+        return tokenPrice
+          ? convertBalance(token.balance, token.decimals, tokenPrice.price)
+          : 0
+      }
+    },
+  )
+  return usdBalances.reduce((a, b) => a + b, 0)
 }
 
 const PortfolioComponent = ({
@@ -38,7 +60,6 @@ const PortfolioComponent = ({
   balances,
   prices,
 }: Props) => {
-  console.log({ prices })
   return (
     <ScrollView horizontal={true} contentContainerStyle={styles.scrollView}>
       <View style={styles.scrollView}>
@@ -46,7 +67,7 @@ const PortfolioComponent = ({
           handlePress={() => setSelectedAddress('')}
           color={sharedColors.darkGray}
           primaryText={'TOTAL'}
-          secondaryText={'233.2'}
+          secondaryText={`$${getTotalUsdBalance(balances, prices).toString()}`}
           isSelected={false}
         />
         {balances.map(
