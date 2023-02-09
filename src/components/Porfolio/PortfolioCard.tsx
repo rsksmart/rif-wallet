@@ -1,4 +1,5 @@
-import { StyleSheet, View, Pressable } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import { StyleSheet, View } from 'react-native'
 
 import { sharedColors } from 'shared/constants'
 import { TokenImage } from 'screens/home/TokenImage'
@@ -80,7 +81,7 @@ export const PortfolioCard = ({
   isSelected,
   icon,
 }: PortfolioCardProps) => (
-  <Pressable
+  <TouchableOpacity
     onPress={handlePress}
     style={{ ...styles.topContainer, backgroundColor: color }}
     accessibilityLabel={primaryText}>
@@ -94,7 +95,7 @@ export const PortfolioCard = ({
           secondaryText,
           icon,
         })}
-  </Pressable>
+  </TouchableOpacity>
 )
 
 const styles = StyleSheet.create({
