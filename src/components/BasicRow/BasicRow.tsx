@@ -94,7 +94,7 @@ export const BasicRow = ({
         </View>
         {usdAmount !== undefined && txType !== undefined && (
           <Typography type={'labellight'}>
-            {TX_TYPE_SIGNS[txType]} {usdAmount}
+            {TX_TYPE_SIGNS[txType]} ${usdAmount}
           </Typography>
         )}
       </View>
