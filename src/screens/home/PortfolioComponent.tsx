@@ -2,6 +2,8 @@ import { StyleSheet, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import { BigNumber } from 'ethers'
+import { useTranslation } from 'react-i18next'
+
 import { balanceToDisplay, convertBalance, convertTokenToUSD } from 'lib/utils'
 
 import { colors } from 'src/styles'
@@ -60,13 +62,15 @@ const PortfolioComponent = ({
   balances,
   prices,
 }: Props) => {
+  const { t } = useTranslation()
+
   return (
     <ScrollView horizontal={true} contentContainerStyle={styles.scrollView}>
       <View style={styles.scrollView}>
         <PortfolioCard
           handlePress={() => setSelectedAddress('')}
           color={sharedColors.darkGray}
-          primaryText={'TOTAL'}
+          primaryText={t('TOTAL')}
           secondaryText={`$${getTotalUsdBalance(balances, prices).toString()}`}
           isSelected={false}
         />

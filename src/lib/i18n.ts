@@ -90,6 +90,7 @@ const resources = {
       Reject: 'Reject',
       Delete: 'Delete',
       Cancel: 'Cancel',
+      TOTAL: 'TOTAL',
     },
   },
   es: {
