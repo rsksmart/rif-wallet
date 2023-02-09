@@ -22,7 +22,7 @@ import { colors } from 'src/styles'
 import { fonts } from 'src/styles/fonts'
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { deleteProfile, setProfile } from 'store/slices/profileSlice'
-import { IProfileStore } from 'store/slices/profileSlice/types'
+import { ProfileStore } from 'store/slices/profileSlice/types'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import {
   profileStackRouteNames,
@@ -37,7 +37,7 @@ export const ProfileCreateScreen = ({
   const dispatch = useAppDispatch()
   const profile = useAppSelector(selectProfile)
   const emptyProfile = { alias: '', email: '', phone: '' }
-  const [localProfile, setLocalProfile] = useState<IProfileStore>(
+  const [localProfile, setLocalProfile] = useState<ProfileStore>(
     profile || emptyProfile,
   )
   const fullAlias = profile ? `${profile.alias}.rsk` : ''

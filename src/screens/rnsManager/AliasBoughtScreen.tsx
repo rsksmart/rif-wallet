@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react'
 import { Clipboard, Image, Linking, StyleSheet, View } from 'react-native'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
+import { RnsProcessor } from 'lib/rns/RnsProcessor'
+
 import { MediumText, SecondaryButton } from 'components/index'
 import { PrimaryButton } from 'components/button'
 import { getWalletSetting, SETTINGS } from 'core/config'
@@ -15,7 +17,6 @@ import {
   ProfileStackScreenProps,
   ProfileStatus,
 } from 'navigation/profileNavigator/types'
-import { RnsProcessor } from 'lib/rns/RnsProcessor'
 
 export const AliasBoughtScreen = ({
   navigation,

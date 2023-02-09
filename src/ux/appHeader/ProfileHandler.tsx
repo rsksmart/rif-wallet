@@ -10,7 +10,7 @@ import {
 } from 'navigation/profileNavigator/types'
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { useAppSelector } from 'store/storeUtils'
-import { MediumText, RegularText } from 'components/index'
+import { Typography } from 'components/typography'
 import { AvatarIcon } from 'components/icons/AvatarIcon'
 import { ProgressComponent } from './ProgressComponent'
 import { sharedColors } from 'shared/constants'
@@ -37,15 +37,16 @@ export const ProfileHandler = ({ navigation }: Props) => {
       style={styles.profileHandler}
       accessibilityLabel="profile"
       onPress={routeNextStep}>
-      {profile?.status === ProfileStatus.NONE && (
+      {(Object.keys(profile).length === 0 ||
+        profile?.status === ProfileStatus.NONE) && (
         <>
           <View style={styles.textAlignment}>
             <Icon name="user-circle" color={sharedColors.white} size={15} />
           </View>
           <View style={styles.textAlignment}>
-            <MediumText style={[styles.profileName]}>
+            <Typography type="h4" style={[styles.profileName]}>
               {t('No username')}
-            </MediumText>
+            </Typography>
           </View>
         </>
       )}
@@ -57,9 +58,9 @@ export const ProfileHandler = ({ navigation }: Props) => {
             status={ProfileStatus.REQUESTING}
           />
           <View style={styles.textAlignment}>
-            <RegularText style={[styles.requestingStatus, styles.textStatus]}>
+            <Typography type="body3" style={styles.requestingStatus}>
               {t('Requesting username')}
-            </RegularText>
+            </Typography>
           </View>
         </>
       )}
@@ -72,9 +73,9 @@ export const ProfileHandler = ({ navigation }: Props) => {
             status={ProfileStatus.PURCHASE}
           />
           <View style={styles.textAlignment}>
-            <RegularText style={[styles.textStatus, styles.underline]}>
+            <Typography type="body3" style={styles.underline}>
               {t('Purchase username')}
-            </RegularText>
+            </Typography>
           </View>
         </>
       )}
@@ -87,9 +88,9 @@ export const ProfileHandler = ({ navigation }: Props) => {
             status={ProfileStatus.PURCHASING}
           />
           <View style={styles.textAlignment}>
-            <RegularText style={[styles.textStatus, styles.requestingStatus]}>
+            <Typography type="body3" style={styles.requestingStatus}>
               {t('Purchasing username')}
-            </RegularText>
+            </Typography>
           </View>
         </>
       )}
@@ -98,7 +99,9 @@ export const ProfileHandler = ({ navigation }: Props) => {
         <>
           <AvatarIcon value={profile.alias + '.rsk'} size={20} />
           <View style={styles.textAlignment}>
-            <MediumText style={styles.profileName}>{profile.alias}</MediumText>
+            <Typography type="h4" style={styles.profileName}>
+              {profile.alias}
+            </Typography>
           </View>
         </>
       )}
@@ -116,25 +119,18 @@ const styles = StyleSheet.create({
     width: 30,
   },
   profileName: {
-    lineHeight: 18,
     paddingLeft: 6,
-    fontSize: 14,
-    fontWeight: '500',
-    color: sharedColors.white,
   },
   textAlignment: {
     justifyContent: 'center',
   },
-  textStatus: {
-    fontSize: 12,
-    color: sharedColors.white,
-    paddingLeft: 6,
-  },
   requestingStatus: {
     opacity: 0.4,
+    paddingLeft: 6,
   },
   underline: {
     textDecorationColor: sharedColors.white,
     textDecorationLine: 'underline',
+    paddingLeft: 6,
   },
 })

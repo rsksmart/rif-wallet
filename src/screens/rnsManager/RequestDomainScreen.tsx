@@ -3,6 +3,8 @@ import { Dimensions, TouchableOpacity, View } from 'react-native'
 import * as Progress from 'react-native-progress'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
+import { RnsProcessor } from 'lib/rns/RnsProcessor'
+
 import { colors } from 'src/styles'
 import { rnsManagerStyles } from './rnsManagerStyles'
 import { PrimaryButton } from 'components/button/PrimaryButton'
@@ -11,12 +13,12 @@ import { AvatarIcon } from 'components/icons/AvatarIcon'
 import {
   profileStackRouteNames,
   ProfileStackScreenProps,
+  ProfileStatus,
 } from 'navigation/profileNavigator/types'
 import TitleStatus from './TitleStatus'
 import { ScreenWithWallet } from '../types'
-import { RnsProcessor } from 'lib/rns/RnsProcessor'
-import { useAppDispatch } from 'store/storeUtils'
-import { requestUsername } from 'store/slices/profileSlice'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { requestUsername, selectProfile } from 'store/slices/profileSlice'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.RequestDomain> &
   ScreenWithWallet
@@ -32,34 +34,44 @@ export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
   const [commitToRegisterInfo2, setCommitToRegisterInfo2] = useState('')
   const [processing, setProcessing] = useState(false)
   const [progress, setProgress] = useState(0.0)
+  const { status } = useAppSelector(selectProfile)
 
-  const commitToRegister = useCallback(async () => {
-    try {
+  useEffect(() => {
+    let interval: NodeJS.Timer
+    if (status === ProfileStatus.REQUESTING) {
       setProcessing(true)
       setCommitToRegisterInfo('registering your alias...')
       setCommitToRegisterInfo2('estimated wait: 3 minutes')
-      const interval = setInterval(() => {
+      interval = setInterval(() => {
         setProgress(prev => prev + 0.005)
       }, 1000)
-      await dispatch(requestUsername({ rnsProcessor, alias, duration })).then(
-        () => {
-          setProgress(1)
-          clearInterval(interval)
-          setProcessing(false)
-          setCommitToRegisterInfo(
-            'Waiting period ended. You can now register your domain',
-          )
-          navigation.navigate(profileStackRouteNames.BuyDomain, {
-            alias,
-          })
-        },
+    }
+    if (status === ProfileStatus.PURCHASE) {
+      setProgress(1)
+      setProcessing(false)
+      setCommitToRegisterInfo(
+        'Waiting period ended. You can now register your domain',
       )
+      navigation.navigate(profileStackRouteNames.BuyDomain, {
+        alias,
+      })
+    }
+    return () => {
+      if (interval) {
+        clearInterval(interval)
+      }
+    }
+  }, [status, alias, navigation])
+
+  const commitToRegister = useCallback(async () => {
+    try {
+      await dispatch(requestUsername({ rnsProcessor, alias, duration }))
     } catch (e: unknown) {
       setProcessing(false)
       setCommitToRegisterInfo(e?.message || '')
       setCommitToRegisterInfo2('')
     }
-  }, [alias, duration, navigation, rnsProcessor, dispatch])
+  }, [alias, duration, rnsProcessor, dispatch])
 
   useEffect(() => {
     const response = rnsProcessor.getStatus(alias)

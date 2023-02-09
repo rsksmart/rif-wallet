@@ -4,6 +4,8 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { BigNumber, utils } from 'ethers'
 import moment from 'moment'
 
+import { DomainRegistrationEnum, RnsProcessor } from 'lib/rns/RnsProcessor'
+
 import { colors } from 'src/styles'
 import { rnsManagerStyles } from './rnsManagerStyles'
 import { PrimaryButton } from 'components/button/PrimaryButton'
@@ -17,7 +19,6 @@ import {
   ProfileStackScreenProps,
 } from 'navigation/profileNavigator/types'
 import { ScreenWithWallet } from '../types'
-import { DomainRegistrationEnum, RnsProcessor } from 'lib/rns/RnsProcessor'
 import { useAppDispatch } from 'store/storeUtils'
 import { purchaseUsername } from 'store/slices/profileSlice'
 

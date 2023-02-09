@@ -1,6 +1,6 @@
 import { CompositeScreenProps } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
-import { IProfileStore } from 'store/slices/profileSlice/types'
+import { ProfileStore } from 'store/slices/profileSlice/types'
 import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
 
 export enum profileStackRouteNames {
@@ -25,7 +25,7 @@ export type ProfileStackParamsList = {
   [profileStackRouteNames.ProfileCreateScreen]:
     | {
         editProfile: boolean
-        profile?: IProfileStore
+        profile?: ProfileStore
       }
     | undefined
   [profileStackRouteNames.ProfileDetailsScreen]: undefined

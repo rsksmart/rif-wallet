@@ -1,6 +1,6 @@
 import { ProfileStatus } from 'navigation/profileNavigator/types'
 
-export interface IProfileStore {
+export interface ProfileStore {
   alias: string
   phone: string
   email: string
