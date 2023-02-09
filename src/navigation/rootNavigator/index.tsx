@@ -15,7 +15,7 @@ import { ContactsNavigation } from '../contactsNavigator'
 import { SettingsNavigator } from '../settingsNavigator'
 import { ProfileNavigator } from '../profileNavigator'
 import { useAppSelector } from 'store/storeUtils'
-import { selectIsUnlocked } from 'store/slices/settingsSlice'
+import { selectFullscreen, selectIsUnlocked } from 'store/slices/settingsSlice'
 
 const RootTabs = createBottomTabNavigator()
 
@@ -23,13 +23,15 @@ export const RootNavigationComponent = () => {
   const isDeviceRooted = JailMonkey.isJailBroken()
   const [isWarningVisible, setIsWarningVisible] = useState(isDeviceRooted)
   const unlocked = useAppSelector(selectIsUnlocked)
+  const fullscreen = useAppSelector(selectFullscreen)
+  const isShown = unlocked && !fullscreen
 
   return (
     <View style={styles.parent}>
       <RootTabs.Navigator
-        tabBar={props => <AppFooterMenu isShown={unlocked} {...props} />}
+        tabBar={props => <AppFooterMenu isShown={isShown} {...props} />}
         screenOptions={{
-          header: props => <AppHeader isShown={unlocked} {...props} />,
+          header: props => <AppHeader isShown={isShown} {...props} />,
           tabBarHideOnKeyboard: true,
         }}>
         {!unlocked ? (

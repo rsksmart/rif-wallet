@@ -61,7 +61,7 @@ export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
   }
 
   return (
-    <Modal presentationStyle="overFullScreen" onRequestClose={onClose}>
+    <View style={styles.container}>
       <Camera
         frameProcessor={frameProcessor}
         frameProcessorFps={5}
@@ -93,12 +93,12 @@ export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
           borderRadius={40}
         />
       </View>
-    </Modal>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  modal: {
+  container: {
     flex: 1,
     width: '100%',
     height: '100%',
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     top: 0,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: 40,
   },
   closeButton: {
     paddingRight: 0,
