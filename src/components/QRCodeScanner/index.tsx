@@ -1,11 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import {
-  ActivityIndicator,
-  Linking,
-  Modal,
-  StyleSheet,
-  View,
-} from 'react-native'
+import { ActivityIndicator, Linking, StyleSheet, View } from 'react-native'
 import BarcodeMask from 'react-native-barcode-mask'
 import {
   Camera,
