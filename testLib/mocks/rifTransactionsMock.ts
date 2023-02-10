@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
-import { IAbiEnhancer, EnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
+import { IAbiEnhancer, EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
 import { IActivityTransaction } from 'src/subscriptions/types'
 
 export const enhancedTxTestCase: EnhancedResult = {
