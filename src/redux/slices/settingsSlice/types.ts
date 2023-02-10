@@ -54,4 +54,5 @@ export interface SettingsSlice {
   chainType: ChainTypeEnum
   appIsActive: boolean
   unlocked: boolean
+  fullscreen: boolean
 }
