@@ -24,8 +24,7 @@ export const requestUsername = createAsyncThunk(
       }
       indexStatus = rnsProcessor.getStatus(alias)
       if (indexStatus.commitmentRequested) {
-        const status = await commitment(rnsProcessor, alias)
-        return status
+        return await commitment(rnsProcessor, alias)
       }
     } catch (err) {
       return thunkAPI.rejectWithValue(err)
@@ -48,13 +47,18 @@ export const purchaseUsername = createAsyncThunk(
   },
 )
 
-const initialState = {} as ProfileStore
+const initialState: ProfileStore = {
+  alias: '',
+  phone: '',
+  email: '',
+  status: ProfileStatus.NONE,
+}
 
 const profileSlice = createSlice({
   name: 'profile',
   initialState,
   reducers: {
-    setProfile: (_state, action: PayloadAction<ProfileStore>) => action.payload,
+    setProfile: (_, action: PayloadAction<ProfileStore>) => action.payload,
     setAlias: (state, { payload }: PayloadAction<string>) => {
       state.alias = payload
     },
@@ -75,7 +79,7 @@ const profileSlice = createSlice({
       state.status = ProfileStatus.PURCHASE
     })
     builder.addCase(requestUsername.pending, state => {
-      state.status = ProfileStatus.NONE
+      state.status = ProfileStatus.REQUESTING
     })
     builder.addCase(requestUsername.rejected, state => {
       state.status = ProfileStatus.NONE
@@ -92,13 +96,16 @@ const profileSlice = createSlice({
   },
 })
 
-const commitment = (rnsProcessor: RnsProcessor, alias: string) => {
-  return new Promise<ProfileStatus>(resolve => {
+const commitment = async (
+  rnsProcessor: RnsProcessor,
+  alias: string,
+): Promise<ProfileStatus> => {
+  return new Promise(resolve => {
     const intervalId = setInterval(async () => {
       const canRevealResponse = await rnsProcessor.canReveal(alias)
       if (canRevealResponse === DomainRegistrationEnum.COMMITMENT_READY) {
         clearInterval(intervalId)
-        return resolve(ProfileStatus.PURCHASE)
+        resolve(ProfileStatus.PURCHASE)
       }
     }, 1000)
   })

@@ -11,9 +11,9 @@ import {
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { useAppSelector } from 'store/storeUtils'
 import { Typography } from 'components/typography'
-import { AvatarIcon } from 'components/icons/AvatarIcon'
-import { ProgressComponent } from 'components/profile/ProgressComponent'
+import { ProgressComponent } from 'components/profile'
 import { sharedColors } from 'shared/constants'
+import { Avatar } from 'components/avatar'
 
 interface Props {
   navigation: BottomTabHeaderProps['navigation']
@@ -37,12 +37,20 @@ export const ProfileHandler = ({ navigation }: Props) => {
       style={styles.profileHandler}
       accessibilityLabel="profile"
       onPress={routeNextStep}>
-      {(Object.keys(profile).length === 0 ||
-        profile?.status === ProfileStatus.NONE) && (
+      {profile?.status === ProfileStatus.NONE && (
         <>
-          <View style={styles.textAlignment}>
-            <Icon name="user-circle" color={sharedColors.white} size={15} />
-          </View>
+          <Avatar
+            size={20}
+            name={'person'}
+            style={styles.profileHandlerImage}
+            icon={
+              <Icon
+                name={'user-circle'}
+                size={15}
+                color={sharedColors.primary}
+              />
+            }
+          />
           <View style={styles.textAlignment}>
             <Typography type="h4" style={[styles.profileName]}>
               {t('No username')}
@@ -97,7 +105,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
 
       {profile?.status === ProfileStatus.USER && (
         <>
-          <AvatarIcon value={profile.alias + '.rsk'} size={20} />
+          <Avatar size={30} name={profile.alias + '.rsk'} />
           <View style={styles.textAlignment}>
             <Typography type="h4" style={styles.profileName}>
               {profile.alias}
@@ -111,12 +119,14 @@ export const ProfileHandler = ({ navigation }: Props) => {
 
 const styles = StyleSheet.create({
   profileHandler: {
-    display: 'flex',
     flexDirection: 'row',
   },
   profileAvatar: {
     height: 30,
     width: 30,
+  },
+  profileHandlerImage: {
+    backgroundColor: sharedColors.white,
   },
   profileName: {
     paddingLeft: 6,

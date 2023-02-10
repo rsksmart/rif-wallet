@@ -2,6 +2,7 @@ import { TextStyle } from 'react-native'
 import Jdenticon from 'react-native-jdenticon'
 
 import { sharedColors } from 'shared/constants'
+
 interface AvatarIconProps {
   value: string
   size?: number

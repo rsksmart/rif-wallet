@@ -18,7 +18,7 @@ import {
 import TitleStatus from './TitleStatus'
 import { ScreenWithWallet } from '../types'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { requestUsername, selectProfile } from 'store/slices/profileSlice'
+import { requestUsername, selectProfileStatus } from 'store/slices/profileSlice'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.RequestDomain> &
   ScreenWithWallet
@@ -34,12 +34,13 @@ export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
   const [commitToRegisterInfo2, setCommitToRegisterInfo2] = useState('')
   const [processing, setProcessing] = useState(false)
   const [progress, setProgress] = useState(0.0)
-  const { status } = useAppSelector(selectProfile)
+  const status = useAppSelector(selectProfileStatus)
 
   useEffect(() => {
     let interval: NodeJS.Timer
     if (status === ProfileStatus.REQUESTING) {
       setProcessing(true)
+      setProgress(0)
       setCommitToRegisterInfo('registering your alias...')
       setCommitToRegisterInfo2('estimated wait: 3 minutes')
       interval = setInterval(() => {
@@ -70,7 +71,9 @@ export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
       }
     } catch (e: unknown) {
       setProcessing(false)
-      setCommitToRegisterInfo(e?.message || '')
+      if (e instanceof Error) {
+        setCommitToRegisterInfo(e?.message || '')
+      }
       setCommitToRegisterInfo2('')
     }
   }, [alias, duration, rnsProcessor, dispatch, navigation])
