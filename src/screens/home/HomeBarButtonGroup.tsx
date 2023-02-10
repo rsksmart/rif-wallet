@@ -5,23 +5,34 @@ import {
   BarButtonGroupContainer,
   BarButtonGroupIcon,
 } from 'components/BarButtonGroup/BarButtonGroup'
-// @TODO add onPress event (navigate/share/etc)
-export const HomeBarButtonGroup = () => (
+
+interface HomeBarButtonGroupProps {
+  onPress: (decision: 'SEND' | 'RECEIVE' | 'FAUCET') => void
+  isSendDisabled: boolean
+}
+export const HomeBarButtonGroup = ({
+  onPress,
+  isSendDisabled,
+}: HomeBarButtonGroupProps) => (
   <BarButtonGroupContainer>
     <BarButtonGroupIcon
       iconName="south-west"
       IconComponent={MaterialIcon}
-      onPress={() => {}}
+      onPress={() => onPress('RECEIVE')}
     />
     <BarButtonGroupIcon
       iconName="north-east"
       IconComponent={MaterialIcon}
-      onPress={() => {}}
+      onPress={() => {
+        if (!isSendDisabled) {
+          onPress('SEND')
+        }
+      }}
     />
     <BarButtonGroupIcon
       iconName="plus"
       IconComponent={MaterialCommunityIcon}
-      onPress={() => {}}
+      onPress={() => onPress('FAUCET')}
     />
   </BarButtonGroupContainer>
 )

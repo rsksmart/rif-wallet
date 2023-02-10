@@ -1,8 +1,9 @@
 import { PropsWithChildren } from 'react'
-import { StyleSheet, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { Icon } from 'react-native-vector-icons/Icon'
 
 import { sharedColors } from 'shared/constants'
+import { AppTouchable } from 'components/appTouchable'
 
 interface BarButtonGroupIconProps {
   iconName: string
@@ -17,9 +18,9 @@ export const BarButtonGroupIcon = ({
   IconComponent,
   onPress,
 }: BarButtonGroupIconProps) => (
-  <TouchableOpacity onPress={onPress} style={styles.iconContainerStyle}>
+  <AppTouchable width={25} onPress={onPress} style={styles.iconContainerStyle}>
     <IconComponent name={iconName} color="white" size={size} />
-  </TouchableOpacity>
+  </AppTouchable>
 )
 
 interface BarButtonGroupContainerProps {
