@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 12,
   }),
-  labellight: castStyle.text({
+  labelLight: castStyle.text({
     ...fonts.regular,
     fontSize: 14,
     lineHeight: 19.6,
@@ -94,7 +94,7 @@ type TypographyType =
   | 'label'
   | 'button1'
   | 'button2'
-  | 'labellight'
+  | 'labelLight'
 
 interface Props extends TextProps {
   type: TypographyType
@@ -112,9 +112,13 @@ const typeStyleMap = new Map([
   ['label', styles.label],
   ['button1', styles.button1],
   ['button2', styles.button2],
-  ['labellight', styles.labellight],
+  ['labelLight', styles.labelLight],
 ])
 
-export const Typography = ({ style, type, children }: Props) => {
-  return <Text style={[typeStyleMap.get(type), style]}>{children}</Text>
+export const Typography = ({ style, type, children, ...rest }: Props) => {
+  return (
+    <Text style={[typeStyleMap.get(type), style]} {...rest}>
+      {children}
+    </Text>
+  )
 }
