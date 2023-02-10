@@ -3,9 +3,8 @@ import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5'
 
-import { version } from 'package.json'
-import { getWalletSetting, SETTINGS } from '../../core/config'
-import { colors, spacing } from '../../styles'
+import { getWalletSetting, SETTINGS } from 'core/config'
+import { colors, spacing } from 'src/styles'
 import { MediumText, RegularText, Typography } from 'components/index'
 import LockIcon from 'components/icons/LockIcon'
 import AccountsIcon from 'components/icons/AccountsIcon'
@@ -15,6 +14,7 @@ import {
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
+import { version } from 'package.json'
 
 export const SettingsScreen = ({
   navigation,
