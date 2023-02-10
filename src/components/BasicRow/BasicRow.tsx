@@ -173,6 +173,7 @@ const styles = StyleSheet.create({
   usdText: {
     textAlign: 'right',
     flex: 1,
+    color: sharedColors.labelLight,
   },
   horizontalPadding: {
     paddingRight: 1,
