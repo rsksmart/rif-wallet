@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { View, StyleSheet, Image, ImageSourcePropType } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
@@ -48,78 +47,84 @@ export const BasicRow = ({
   amount,
   txType,
   usdAmount,
-}: BasicRowProps) => {
-  const labelSliced = useMemo(() => {
-    if (label.length >= 23) {
-      return label.slice(0, 21) + '...'
-    }
-    return label
-  }, [label])
-  return (
-    <View style={styles.container}>
-      <View style={styles.firstView}>
-        <Image
-          style={styles.imageStyle}
-          source={imageSource}
-          resizeMode="contain"
-        />
-      </View>
-      <View style={styles.secondView}>
-        <Typography type={'h3'} style={styles.h3Bold}>
-          {labelSliced}
+}: BasicRowProps) => (
+  <View style={styles.container}>
+    <View style={styles.firstView}>
+      <Image
+        style={styles.imageStyle}
+        source={imageSource}
+        resizeMode="contain"
+      />
+    </View>
+    <View style={styles.secondView}>
+      <Typography
+        type="h3"
+        style={styles.h3Bold}
+        numberOfLines={1}
+        ellipsizeMode="tail">
+        {label}
+      </Typography>
+      <Typography type="labelLight">
+        {secondaryLabel} <StatusText status={status} />
+      </Typography>
+      {error !== undefined && (
+        <Typography
+          type="h4"
+          style={[styles.errorTextStyle, { color: COLORS_FOR_STATUS.FAILED }]}>
+          {error}
         </Typography>
-        <Typography type={'labellight'}>
-          {secondaryLabel} <StatusText status={status} />
-        </Typography>
-        {error !== undefined && (
-          <Typography
-            type={'h4'}
-            style={[
-              styles.errorTextStyle,
-              { color: COLORS_FOR_STATUS.FAILED },
-            ]}>
-            {error}
-          </Typography>
-        )}
-      </View>
-      <View style={styles.thirdView}>
-        <View style={styles.amountView}>
+      )}
+    </View>
+    <View style={styles.thirdView}>
+      <View style={styles.amountView}>
+        <View style={styles.flexGrowZero}>
           {txType !== undefined && (
-            <Typography type={'h3'} style={styles.horizontalPadding}>
+            <Typography type="h3" style={styles.horizontalPadding}>
               {TX_TYPE_SIGNS[txType]}
             </Typography>
           )}
+        </View>
+        <View style={styles.flexGrowZero}>
           <MaterialIcon
             name={'north-east'}
             size={17}
             style={styles.horizontalPadding}
           />
-          <Typography
-            type={'h3'}
-            style={{
-              ...(status === 'FAILED' && {
-                textDecorationLine: 'line-through',
-              }),
-            }}>
-            {amount}
-          </Typography>
         </View>
+        <Typography
+          type="h3"
+          style={{
+            ...styles.flexShrinkOne,
+            ...(status === 'FAILED' && {
+              textDecorationLine: 'line-through',
+            }),
+          }}
+          numberOfLines={1}
+          ellipsizeMode="tail">
+          {amount}
+        </Typography>
+      </View>
+      <View style={styles.usdAmountView}>
         {usdAmount !== undefined && txType !== undefined && (
-          <Typography type={'labellight'}>
+          <Typography
+            type="labelLight"
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={styles.usdText}>
             {TX_TYPE_SIGNS[txType]} ${usdAmount}
           </Typography>
         )}
       </View>
     </View>
-  )
-}
+  </View>
+)
 
 const StatusText = ({ status }: StatusTextProps) => {
   switch (status) {
     case StatusEnum.PENDING:
       return (
         <Typography
-          type="labellight"
+          type="labelLight"
           style={{ color: COLORS_FOR_STATUS[status] }}>
           • Pending
         </Typography>
@@ -127,7 +132,7 @@ const StatusText = ({ status }: StatusTextProps) => {
     case StatusEnum.FAILED:
       return (
         <Typography
-          type="labellight"
+          type="labelLight"
           style={{ color: COLORS_FOR_STATUS[status] }}>
           • Failed
         </Typography>
@@ -151,16 +156,26 @@ const styles = StyleSheet.create({
   secondView: {
     flex: 3,
     flexDirection: 'column',
+    flexGrow: 1,
   },
   thirdView: {
-    flex: 1,
-    alignItems: 'flex-end',
+    flexBasis: '27%',
   },
   amountView: {
+    width: '100%',
     flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  usdAmountView: {
+    flexDirection: 'row',
+    flex: 1,
+  },
+  usdText: {
+    textAlign: 'right',
+    flex: 1,
   },
   horizontalPadding: {
-    paddingRight: 2,
+    paddingRight: 1,
   },
   errorTextStyle: {
     marginTop: 6,
@@ -172,4 +187,10 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
   },
   h3Bold: { fontWeight: 'bold' },
+  flexGrowZero: {
+    flexGrow: 0,
+  },
+  flexShrinkOne: {
+    flexShrink: 1,
+  },
 })
