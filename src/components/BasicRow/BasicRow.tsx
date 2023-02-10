@@ -2,21 +2,31 @@ import { useMemo } from 'react'
 import { View, StyleSheet, Image, ImageSourcePropType } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
-import { Typography } from 'src/components'
+import { Typography } from 'components/index'
 import { sharedColors } from 'shared/constants'
 
+export enum StatusEnum {
+  PENDING = 'PENDING',
+  FAILED = 'FAILED',
+}
+
+export enum TransactionTypeEnum {
+  SENT = 'SENT',
+  RECEIVED = 'RECEIVED',
+}
+
 const COLORS_FOR_STATUS = {
-  PENDING: sharedColors.warning,
-  FAILED: sharedColors.danger,
+  [StatusEnum.PENDING]: sharedColors.warning,
+  [StatusEnum.FAILED]: sharedColors.danger,
 }
 
 const TX_TYPE_SIGNS = {
-  SENT: '-',
-  RECEIVED: '+',
+  [TransactionTypeEnum.SENT]: '-',
+  [TransactionTypeEnum.RECEIVED]: '+',
 }
 
 interface StatusTextProps {
-  status: 'PENDING' | 'FAILED' | undefined
+  status: StatusEnum | undefined
 }
 
 interface BasicRowProps {
@@ -26,7 +36,7 @@ interface BasicRowProps {
   error?: string
   imageSource: ImageSourcePropType
   amount: string
-  txType?: 'SENT' | 'RECEIVED'
+  txType?: TransactionTypeEnum
   usdAmount?: string
 }
 export const BasicRow = ({
@@ -106,7 +116,7 @@ export const BasicRow = ({
 
 const StatusText = ({ status }: StatusTextProps) => {
   switch (status) {
-    case 'PENDING':
+    case StatusEnum.PENDING:
       return (
         <Typography
           type="labellight"
@@ -114,7 +124,7 @@ const StatusText = ({ status }: StatusTextProps) => {
           • Pending
         </Typography>
       )
-    case 'FAILED':
+    case StatusEnum.FAILED:
       return (
         <Typography
           type="labellight"
