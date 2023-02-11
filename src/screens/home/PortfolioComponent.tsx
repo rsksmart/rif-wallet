@@ -69,7 +69,7 @@ const PortfolioComponent = ({
       <View style={styles.scrollView}>
         <PortfolioCard
           handlePress={() => setSelectedAddress('')}
-          color={sharedColors.inputInactiveColor}
+          color={sharedColors.inputInactive}
           primaryText={t('TOTAL')}
           secondaryText={`$${getTotalUsdBalance(balances, prices).toString()}`}
           isSelected={false}
@@ -79,7 +79,7 @@ const PortfolioComponent = ({
             const isSelected = selectedAddress === balance.contractAddress
             const color = isSelected
               ? getTokenColor(balance.symbol)
-              : sharedColors.darkGray
+              : sharedColors.inputInactive
             const balanceToShow = getBalance(balance)
             return (
               <View key={i}>

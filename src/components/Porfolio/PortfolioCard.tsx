@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 5,
     padding: 12,
-    backgroundColor: sharedColors.inputInactiveColor,
+    backgroundColor: sharedColors.inputInactive,
   },
 })
 
