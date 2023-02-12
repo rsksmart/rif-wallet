@@ -1,15 +1,21 @@
+import { tokenColors } from 'shared/constants'
+
 export const getTokenColor = (tokenSymbol?: string): string => {
   switch (tokenSymbol) {
     case 'TRBTC':
     case 'RBTC':
-      return '#3d8af7'
+      return tokenColors.rbtc
     case 'rDOC':
-    case 'tRIF':
-      return '#019cd8'
     case 'DOC':
-      return '#00a845'
+      return tokenColors.rdoc
+    case 'tRIF':
+    case 'RIF':
+      return tokenColors.rif
+    case 'BTC':
+    case 'BTCT':
+      return tokenColors.btc
     default:
-      return '#535D92'
+      return tokenColors.generic
   }
 }
 
