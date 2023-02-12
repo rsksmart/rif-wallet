@@ -1,8 +1,9 @@
-import { View, StyleSheet, Image, ImageSourcePropType } from 'react-native'
+import { View, StyleSheet, ImageSourcePropType } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 import { Typography } from 'components/index'
 import { sharedColors } from 'shared/constants'
+import { Avatar } from 'components/avatar'
 
 export enum StatusEnum {
   PENDING = 'PENDING',
@@ -37,6 +38,7 @@ interface BasicRowProps {
   amount: string
   txType?: TransactionTypeEnum
   usdAmount?: string
+  avatarName: string
 }
 export const BasicRow = ({
   label,
@@ -47,13 +49,15 @@ export const BasicRow = ({
   amount,
   txType,
   usdAmount,
+  avatarName,
 }: BasicRowProps) => (
   <View style={styles.container}>
     <View style={styles.firstView}>
-      <Image
+      <Avatar
         style={styles.imageStyle}
-        source={imageSource}
-        resizeMode="contain"
+        imageSource={imageSource}
+        size={32}
+        name={avatarName}
       />
     </View>
     <View style={styles.secondView}>
