@@ -5,7 +5,12 @@ import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import { BigNumber } from 'ethers'
 import { useTranslation } from 'react-i18next'
 
-import { balanceToDisplay, convertBalance, convertTokenToUSD } from 'lib/utils'
+import {
+  balanceToDisplay,
+  convertBalance,
+  convertTokenToUSD,
+  roundBalance,
+} from 'lib/utils'
 
 import { IPrice } from 'src/subscriptions/types'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
@@ -46,7 +51,10 @@ const getTotalUsdBalance = (
       }
     },
   )
-  return usdBalances.reduce((a, b) => a + b, 0)
+  return roundBalance(
+    usdBalances.reduce((a, b) => a + b, 0),
+    2,
+  )
 }
 
 interface Props {
