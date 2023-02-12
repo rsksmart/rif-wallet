@@ -1,4 +1,5 @@
 import { StyleSheet, View } from 'react-native'
+import { useCallback } from 'react'
 import { ScrollView } from 'react-native-gesture-handler'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import { BigNumber } from 'ethers'
@@ -13,12 +14,6 @@ import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
 import { sharedColors } from 'shared/constants'
 import { getTokenColor } from 'screens/home/tokenColor'
 
-interface Props {
-  selectedAddress?: string
-  setSelectedAddress: (token: string) => void
-  balances: Array<ITokenWithoutLogo | BitcoinNetwork>
-  prices: Record<string, IPrice>
-}
 const getBalance = (token: ITokenWithoutLogo | BitcoinNetwork) => {
   if (token instanceof BitcoinNetwork) {
     const bitcoinBalance: BitcoinNetwork = token as BitcoinNetwork
@@ -54,6 +49,12 @@ const getTotalUsdBalance = (
   return usdBalances.reduce((a, b) => a + b, 0)
 }
 
+interface Props {
+  selectedAddress?: string
+  setSelectedAddress: (token: string) => void
+  balances: Array<ITokenWithoutLogo | BitcoinNetwork>
+  prices: Record<string, IPrice>
+}
 const PortfolioComponent = ({
   selectedAddress,
   setSelectedAddress,
@@ -61,7 +62,10 @@ const PortfolioComponent = ({
   prices,
 }: Props) => {
   const { t } = useTranslation()
-
+  const handleSelectedAddress = useCallback(
+    contractAddress => setSelectedAddress(contractAddress),
+    [setSelectedAddress],
+  )
   return (
     <ScrollView horizontal={true} contentContainerStyle={styles.scrollView}>
       <View style={styles.scrollView}>
@@ -82,7 +86,7 @@ const PortfolioComponent = ({
             return (
               <View key={i}>
                 <PortfolioCard
-                  onPress={() => setSelectedAddress(balance.contractAddress)}
+                  onPress={() => handleSelectedAddress(balance.contractAddress)}
                   color={color}
                   primaryText={balance.symbol}
                   secondaryText={balanceToShow}

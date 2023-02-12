@@ -112,7 +112,6 @@ const styles = StyleSheet.create({
 
 const selectedCardStyles = StyleSheet.create({
   selectedCardContainer: {
-    flexDirection: 'column',
     justifyContent: 'center',
     height: '100%',
   },
@@ -138,7 +137,6 @@ const selectedCardStyles = StyleSheet.create({
 
 const nonSelectedCardStyles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
     justifyContent: 'space-between',
     height: '100%',
   },
