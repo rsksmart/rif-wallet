@@ -1,13 +1,13 @@
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import { StyleSheet, View } from 'react-native'
 
 import { sharedColors } from 'shared/constants'
 import { TokenImage } from 'screens/home/TokenImage'
 import { Typography } from 'src/components'
 import { colors } from 'src/styles'
+import { AppTouchable } from 'components/appTouchable'
 
 interface PortfolioCardProps {
-  handlePress: () => void
+  onPress: () => void
   color: string
   primaryText: string
   secondaryText: string
@@ -74,16 +74,17 @@ const NonSelectedCard = ({
 )
 
 export const PortfolioCard = ({
-  handlePress,
+  onPress,
   color,
   primaryText,
   secondaryText,
   isSelected,
   icon,
 }: PortfolioCardProps) => (
-  <TouchableOpacity
-    onPress={handlePress}
-    style={{ ...styles.topContainer, backgroundColor: color }}
+  <AppTouchable
+    width={100}
+    onPress={onPress}
+    style={[styles.topContainer, { backgroundColor: color }]}
     accessibilityLabel={primaryText}>
     {isSelected
       ? SelectedCard({
@@ -95,7 +96,7 @@ export const PortfolioCard = ({
           secondaryText,
           icon,
         })}
-  </TouchableOpacity>
+  </AppTouchable>
 )
 
 const styles = StyleSheet.create({

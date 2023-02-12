@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 
 import { balanceToDisplay, convertBalance, convertTokenToUSD } from 'lib/utils'
 
-import { colors } from 'src/styles'
 import { IPrice } from 'src/subscriptions/types'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 
@@ -41,9 +40,8 @@ const getTotalUsdBalance = (
   const usdBalances = tokens.map(
     (token: ITokenWithoutLogo | BitcoinNetwork) => {
       if (token instanceof BitcoinNetwork) {
-        const bitcoinBalance: BitcoinNetwork = token as BitcoinNetwork
         return prices.BTC
-          ? convertTokenToUSD(bitcoinBalance.balance, prices.BTC.price)
+          ? convertTokenToUSD(token.balance, prices.BTC.price)
           : 0
       } else {
         const tokenPrice = prices[token.contractAddress]
@@ -68,7 +66,7 @@ const PortfolioComponent = ({
     <ScrollView horizontal={true} contentContainerStyle={styles.scrollView}>
       <View style={styles.scrollView}>
         <PortfolioCard
-          handlePress={() => setSelectedAddress('')}
+          onPress={() => setSelectedAddress('')}
           color={sharedColors.inputInactive}
           primaryText={t('TOTAL')}
           secondaryText={`$${getTotalUsdBalance(balances, prices).toString()}`}
@@ -84,9 +82,7 @@ const PortfolioComponent = ({
             return (
               <View key={i}>
                 <PortfolioCard
-                  handlePress={() =>
-                    setSelectedAddress(balance.contractAddress)
-                  }
+                  onPress={() => setSelectedAddress(balance.contractAddress)}
                   color={color}
                   primaryText={balance.symbol}
                   secondaryText={balanceToShow}
@@ -103,17 +99,9 @@ const PortfolioComponent = ({
 }
 
 const styles = StyleSheet.create({
-  heading: {
-    color: colors.lightPurple,
-    fontSize: 16,
-    margin: 5,
-  },
   scrollView: {
     flexDirection: 'row',
     height: 110,
-  },
-  emptyState: {
-    paddingBottom: 20,
   },
 })
 
