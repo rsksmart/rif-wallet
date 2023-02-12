@@ -3,7 +3,7 @@ import { BigNumber } from 'ethers'
 import { UnspentTransactionType } from '@rsksmart/rif-wallet-bitcoin'
 
 import { RIFWallet } from 'lib/core'
-import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { IApiTransaction } from '@rsksmart/rif-wallet-services'
 
 import { useAppDispatch } from 'store/storeUtils'
 import {

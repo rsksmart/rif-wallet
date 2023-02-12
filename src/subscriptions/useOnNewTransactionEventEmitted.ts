@@ -1,4 +1,4 @@
-import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { IApiTransaction } from '@rsksmart/rif-wallet-services'
 import { EnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
 
 import { addNewTransaction } from 'store/slices/transactionsSlice'

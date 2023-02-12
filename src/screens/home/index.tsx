@@ -3,7 +3,7 @@ import { Image, StyleSheet, View } from 'react-native'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 
 import { balanceToDisplay, getChainIdByType } from 'lib/utils'
-import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 
 import { toChecksumAddress } from 'components/address/lib'
 import { MediumText } from 'components/index'

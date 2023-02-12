@@ -1,7 +1,7 @@
 import { convertToERC20Token, makeRBTCToken } from '@rsksmart/rif-wallet-token'
 import { BigNumber, ContractTransaction, utils } from 'ethers'
 import { TransactionInformation } from './TransactionInfo'
-import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 import { RIFWallet } from 'lib/core'
 import {
   OnSetCurrentTransactionFunction,

@@ -2,7 +2,7 @@ import { useEffect, useCallback } from 'react'
 import { FlatList, StyleSheet, View, RefreshControl } from 'react-native'
 import { BIP } from '@rsksmart/rif-wallet-bitcoin'
 
-import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { IApiTransaction } from '@rsksmart/rif-wallet-services'
 import { RIFWallet } from 'lib/core'
 import { EnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
 

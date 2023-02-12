@@ -1,6 +1,6 @@
 import React from 'react'
 import { RegularText } from 'src/components'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 import SetAmountComponent, { ISetAmountComponent } from './SetAmountComponent'
 import { sharedStyles as styles } from './sharedStyles'
 

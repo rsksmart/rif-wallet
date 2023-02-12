@@ -1,4 +1,4 @@
-import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 
 export type BalanceState = Record<string, ITokenWithoutLogo>
 

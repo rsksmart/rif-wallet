@@ -3,10 +3,13 @@ import Resolver from '@rsksmart/rns-resolver.js'
 import { OnRequest, RIFWallet } from '../lib/core'
 import { AbiEnhancer } from '../lib/abiEnhancer/AbiEnhancer'
 import { getWalletSetting, isDefaultChainTypeMainnet, SETTINGS } from './config'
-import { RifWalletServicesSocket } from '../lib/rifWalletServices/RifWalletServicesSocket'
+import { RifWalletServicesSocket } from '@rsksmart/rif-wallet-services'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { RifRelayConfig } from 'src/lib/relay-sdk'
 import axios from 'axios'
+import { MMKVStorage } from 'storage/MMKVStorage'
+import { enhanceTransactionInput } from 'screens/activity/ActivityScreen'
+import { filterEnhancedTransactions } from 'src/subscriptions/utils'
 
 export const networkType = getWalletSetting(
   SETTINGS.DEFAULT_CHAIN_TYPE,
@@ -33,6 +36,15 @@ export const abiEnhancer = new AbiEnhancer()
 export const rifWalletServicesSocket = new RifWalletServicesSocket(
   getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL, networkType),
   abiEnhancer,
+  {
+    cache: new MMKVStorage('temp'),
+    encryptionKeyMessageToSign: getWalletSetting(SETTINGS.RIF_WALLET_KEY),
+    onEnhanceTransaction: enhanceTransactionInput,
+    onFilterOutRepeatedTransactions: filterEnhancedTransactions,
+    onBeforeInit: (encryptionKey, currentInstance) => {
+      currentInstance.cache = new MMKVStorage('txs', encryptionKey)
+    },
+  },
 )
 
 export const rnsResolver = isDefaultChainTypeMainnet
