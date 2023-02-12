@@ -18,6 +18,7 @@ export const sharedColors = {
   inputLabelColor: '#B8B8B8',
   borderColor: '#575757',
   primaryDark: '#4250CC',
+  subAmount: '#fbfbfbb3',
 }
 
 export const tokenColors = {
