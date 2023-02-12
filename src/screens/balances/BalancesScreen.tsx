@@ -1,7 +1,7 @@
 import { View, ScrollView } from 'react-native'
 import { BigNumber, BigNumberish } from 'ethers'
 
-import { IRIFWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
+import { RIFWalletServicesFetcherInterface } from '@rsksmart/rif-wallet-services'
 
 import { Address } from 'components/index'
 import { ScreenWithWallet } from '../types'
@@ -30,7 +30,7 @@ export const balanceToString = (
   return `${parts.integerPart}.${parts.decimalPart}`
 }
 
-export type BalancesScreenProps = { fetcher: IRIFWalletServicesFetcher }
+export type BalancesScreenProps = { fetcher: RIFWalletServicesFetcherInterface }
 
 type Props = HomeStackScreenProps<homeStackRouteNames.Balances> &
   ScreenWithWallet &

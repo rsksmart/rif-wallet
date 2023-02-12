@@ -1,4 +1,4 @@
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 import { BitcoinSetAmountContainer } from './BitcoinSetAmountContainer'
 import { ISetAmountComponent } from './SetAmountComponent'
 import { SetAmountRifComponent } from './SetAmountRifComponent'

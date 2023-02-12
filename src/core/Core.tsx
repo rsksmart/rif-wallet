@@ -4,8 +4,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
 import { i18nInit } from 'lib/i18n'
-import { RifWalletServicesAuth } from 'lib/rifWalletServices/RifWalletServicesAuth'
-import { RifWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
+import { defaultChainId } from 'core/config'
+
+import {
+  RifWalletServicesAuth,
+  RifWalletServicesFetcher,
+} from '@rsksmart/rif-wallet-services'
 
 import {
   RootNavigationComponent,
@@ -44,6 +48,14 @@ import { InjectSelectedWallet } from 'src/Context'
 import * as Screens from 'screens/index'
 import { authAxios, publicAxios } from './setup'
 import { useSetGlobalError } from 'src/components/GlobalErrorHandler'
+import { authClient } from 'src/core/setup'
+import * as Keychain from 'react-native-keychain'
+import {
+  deleteSignUp,
+  getSignUP,
+  hasSignUP,
+  saveSignUp,
+} from 'storage/MainStorage'
 
 export const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -117,15 +129,32 @@ export const Core = () => {
     if (selectedWallet && wallets) {
       const currentWallet = wallets[selectedWallet]
       retrieveChainId(currentWallet)
+
       const rifWalletAuth = new RifWalletServicesAuth(
         publicAxios,
-        currentWallet,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        currentWallet, // @TODO consume RIFWallet from rif-wallet-libs (RIFWallet.ts is different from the lib that we're using)
+        {
+          authClient,
+          onGetSignUp: getSignUP,
+          onHasSignUp: hasSignUP,
+          onDeleteSignUp: deleteSignUp,
+          onSaveSignUp: saveSignUp,
+          onSetInternetCredentials: Keychain.setInternetCredentials,
+          onResetInternetCredentials: Keychain.resetInternetCredentials,
+        },
       )
       rifWalletAuth.login().then(({ accessToken, refreshToken }) => {
         const fetcherInstance = new RifWalletServicesFetcher(
           authAxios,
           accessToken,
           refreshToken,
+          {
+            defaultChainId,
+            onSetInternetCredentials: Keychain.setInternetCredentials, // @TODO verify how to create a function that will receive any
+            resultsLimit: 10,
+          },
         )
         setFetcher(fetcherInstance)
       })

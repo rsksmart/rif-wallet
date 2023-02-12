@@ -5,7 +5,7 @@ import {
   UnspentTransactionType,
 } from '@rsksmart/rif-wallet-bitcoin'
 
-import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { TransactionExtras } from 'store/slices/transactionsSlice/types'

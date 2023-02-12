@@ -7,7 +7,7 @@ import {
   createBipFactoryType,
 } from '@rsksmart/rif-wallet-bitcoin'
 
-import { RifWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
+import { RifWalletServicesFetcher } from '@rsksmart/rif-wallet-services'
 
 import {
   BitcoinNetworkStore,
