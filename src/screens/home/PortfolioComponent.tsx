@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { ScrollView } from 'react-native-gesture-handler'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import { BigNumber } from 'ethers'
@@ -63,22 +63,29 @@ const PortfolioComponent = ({
 }: Props) => {
   const { t } = useTranslation()
   const handleSelectedAddress = useCallback(
-    contractAddress => setSelectedAddress(contractAddress),
+    contractAddress => {
+      setIsTotalCardSelected(false)
+      setSelectedAddress(contractAddress)
+    },
     [setSelectedAddress],
   )
+  const [isTotalCardSelected, setIsTotalCardSelected] = useState<boolean>(true)
+
   return (
     <ScrollView horizontal={true} contentContainerStyle={styles.scrollView}>
       <View style={styles.scrollView}>
         <PortfolioCard
-          onPress={() => setSelectedAddress('')}
+          onPress={() => setIsTotalCardSelected(true)}
           color={sharedColors.inputInactive}
           primaryText={t('TOTAL')}
           secondaryText={`$${getTotalUsdBalance(balances, prices).toString()}`}
-          isSelected={false}
+          isSelected={isTotalCardSelected}
         />
         {balances.map(
           (balance: ITokenWithoutLogo | BitcoinNetwork, i: number) => {
-            const isSelected = selectedAddress === balance.contractAddress
+            const isSelected =
+              selectedAddress === balance.contractAddress &&
+              !isTotalCardSelected
             const color = isSelected
               ? getTokenColor(balance.symbol)
               : sharedColors.inputInactive
