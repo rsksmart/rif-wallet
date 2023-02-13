@@ -76,7 +76,7 @@ const profileSlice = createSlice({
   },
   extraReducers(builder) {
     builder.addCase(requestUsername.fulfilled, state => {
-      state.status = ProfileStatus.PURCHASE
+      state.status = ProfileStatus.READY_TO_PURCHASE
     })
     builder.addCase(requestUsername.pending, state => {
       state.status = ProfileStatus.REQUESTING
@@ -91,7 +91,7 @@ const profileSlice = createSlice({
       state.status = ProfileStatus.PURCHASING
     })
     builder.addCase(purchaseUsername.rejected, state => {
-      state.status = ProfileStatus.PURCHASE
+      state.status = ProfileStatus.READY_TO_PURCHASE
     })
   },
 })
@@ -105,7 +105,7 @@ const commitment = async (
       const canRevealResponse = await rnsProcessor.canReveal(alias)
       if (canRevealResponse === DomainRegistrationEnum.COMMITMENT_READY) {
         clearInterval(intervalId)
-        resolve(ProfileStatus.PURCHASE)
+        resolve(ProfileStatus.READY_TO_PURCHASE)
       }
     }, 1000)
   })

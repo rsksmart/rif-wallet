@@ -45,7 +45,7 @@ export const AppHeader = ({
       </View>
       <View style={styles.columnMenu}>
         <TouchableOpacity onPress={openMenu} accessibilityLabel="settings">
-          <OIcon name="gear" size={15} color={sharedColors.white} />
+          <OIcon name="gear" size={16} color={sharedColors.white} />
         </TouchableOpacity>
       </View>
     </View>

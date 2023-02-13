@@ -4,10 +4,11 @@ import ProgressStartIcon from 'components/icons/ProgressStartIcon'
 import { sharedColors } from 'shared/constants'
 import ProgressEndIcon from 'components/icons/ProgressEndIcon'
 import { ProfileStatus } from 'navigation/profileNavigator/types'
+import { useCallback } from 'react'
 
 interface ProgressBarProps {
-  width: number
-  height: number
+  width?: number
+  height?: number
   status: ProfileStatus
 }
 
@@ -16,14 +17,14 @@ export const ProgressComponent = ({
   height = 7,
   status,
 }: ProgressBarProps) => {
-  const getColors = () => {
+  const getColors = useCallback(() => {
     switch (status) {
       case ProfileStatus.REQUESTING:
         return {
           start: sharedColors.warning,
           end: sharedColors.inputActiveColor,
         }
-      case ProfileStatus.PURCHASE:
+      case ProfileStatus.READY_TO_PURCHASE:
         return {
           start: sharedColors.success,
           end: sharedColors.inputActiveColor,
@@ -35,7 +36,7 @@ export const ProgressComponent = ({
       start: sharedColors.inputActiveColor,
       end: sharedColors.inputActiveColor,
     }
-  }
+  }, [status])
   const { start, end } = getColors()
 
   return (

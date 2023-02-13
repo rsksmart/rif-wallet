@@ -16,7 +16,7 @@ export enum profileStackRouteNames {
 export enum ProfileStatus {
   NONE,
   REQUESTING,
-  PURCHASE,
+  READY_TO_PURCHASE,
   PURCHASING,
   USER,
 }

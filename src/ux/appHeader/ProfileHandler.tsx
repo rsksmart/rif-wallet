@@ -37,7 +37,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
       style={styles.profileHandler}
       accessibilityLabel="profile"
       onPress={routeNextStep}>
-      {profile?.status === ProfileStatus.NONE && (
+      {profile.status === ProfileStatus.NONE && (
         <>
           <Avatar
             size={20}
@@ -52,62 +52,50 @@ export const ProfileHandler = ({ navigation }: Props) => {
             }
           />
           <View style={styles.textAlignment}>
-            <Typography type="h4" style={[styles.profileName]}>
+            <Typography type={'h4'} style={[styles.profileName]}>
               {t('No username')}
             </Typography>
           </View>
         </>
       )}
-      {profile?.status === ProfileStatus.REQUESTING && (
+      {profile.status === ProfileStatus.REQUESTING && (
         <>
-          <ProgressComponent
-            width={18}
-            height={7}
-            status={ProfileStatus.REQUESTING}
-          />
+          <ProgressComponent status={ProfileStatus.REQUESTING} />
           <View style={styles.textAlignment}>
-            <Typography type="body3" style={styles.requestingStatus}>
+            <Typography type={'body3'} style={styles.requestingStatus}>
               {t('Requesting username')}
             </Typography>
           </View>
         </>
       )}
 
-      {profile?.status === ProfileStatus.PURCHASE && (
+      {profile.status === ProfileStatus.READY_TO_PURCHASE && (
         <>
-          <ProgressComponent
-            width={18}
-            height={7}
-            status={ProfileStatus.PURCHASE}
-          />
+          <ProgressComponent status={ProfileStatus.READY_TO_PURCHASE} />
           <View style={styles.textAlignment}>
-            <Typography type="body3" style={styles.underline}>
+            <Typography type={'body3'} style={styles.underline}>
               {t('Purchase username')}
             </Typography>
           </View>
         </>
       )}
 
-      {profile?.status === ProfileStatus.PURCHASING && (
+      {profile.status === ProfileStatus.PURCHASING && (
         <>
-          <ProgressComponent
-            width={18}
-            height={7}
-            status={ProfileStatus.PURCHASING}
-          />
+          <ProgressComponent status={ProfileStatus.PURCHASING} />
           <View style={styles.textAlignment}>
-            <Typography type="body3" style={styles.requestingStatus}>
+            <Typography type={'body3'} style={styles.requestingStatus}>
               {t('Purchasing username')}
             </Typography>
           </View>
         </>
       )}
 
-      {profile?.status === ProfileStatus.USER && (
+      {profile.status === ProfileStatus.USER && (
         <>
           <Avatar size={30} name={profile.alias + '.rsk'} />
           <View style={styles.textAlignment}>
-            <Typography type="h4" style={styles.profileName}>
+            <Typography type={'h4'} style={styles.profileName}>
               {profile.alias}
             </Typography>
           </View>

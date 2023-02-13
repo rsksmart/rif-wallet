@@ -59,7 +59,7 @@ export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
       const response = await dispatch(
         requestUsername({ rnsProcessor, alias, duration }),
       ).unwrap()
-      if (response && response === ProfileStatus.PURCHASE) {
+      if (response && response === ProfileStatus.READY_TO_PURCHASE) {
         setProgress(1)
         setProcessing(false)
         setCommitToRegisterInfo(
