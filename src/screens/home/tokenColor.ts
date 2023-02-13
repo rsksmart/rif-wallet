@@ -1,4 +1,4 @@
-import { tokenColors } from 'shared/constants'
+import { sharedColors, tokenColors } from 'shared/constants'
 
 export const getTokenColor = (tokenSymbol?: string): string => {
   switch (tokenSymbol) {
@@ -15,7 +15,7 @@ export const getTokenColor = (tokenSymbol?: string): string => {
     case 'BTCT':
       return tokenColors.btc
     default:
-      return tokenColors.generic
+      return sharedColors.inputActive
   }
 }
 

@@ -21,14 +21,14 @@ import { getTokenColor } from 'screens/home/tokenColor'
 
 const getBalance = (token: ITokenWithoutLogo | BitcoinNetwork) => {
   if (token instanceof BitcoinNetwork) {
-    const bitcoinBalance: BitcoinNetwork = token as BitcoinNetwork
+    const bitcoinBalance: BitcoinNetwork = token
     const balanceBigNumber = BigNumber.from(
       Math.round(bitcoinBalance.balance * 10e8),
     )
 
     return balanceToDisplay(balanceBigNumber.toString(), 8, 4)
   } else {
-    const tokenBalance: ITokenWithoutLogo = token as ITokenWithoutLogo
+    const tokenBalance: ITokenWithoutLogo = token
     return balanceToDisplay(tokenBalance.balance, tokenBalance.decimals, 4)
   }
 }
@@ -58,10 +58,10 @@ const getTotalUsdBalance = (
 }
 
 interface Props {
-  selectedAddress?: string
   setSelectedAddress: (token: string) => void
   balances: Array<ITokenWithoutLogo | BitcoinNetwork>
   prices: Record<string, IPrice>
+  selectedAddress?: string
 }
 const PortfolioComponent = ({
   selectedAddress,
@@ -99,16 +99,15 @@ const PortfolioComponent = ({
               : sharedColors.inputInactive
             const balanceToShow = getBalance(balance)
             return (
-              <View key={i}>
-                <PortfolioCard
-                  onPress={() => handleSelectedAddress(balance.contractAddress)}
-                  color={color}
-                  primaryText={balance.symbol}
-                  secondaryText={balanceToShow}
-                  isSelected={isSelected}
-                  icon={balance.symbol}
-                />
-              </View>
+              <PortfolioCard
+                key={i}
+                onPress={() => handleSelectedAddress(balance.contractAddress)}
+                color={color}
+                primaryText={balance.symbol}
+                secondaryText={balanceToShow}
+                isSelected={isSelected}
+                icon={balance.symbol}
+              />
             )
           },
         )}
