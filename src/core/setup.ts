@@ -6,7 +6,7 @@ import axios from 'axios'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 
 import { OnRequest, RIFWallet } from '../lib/core'
-import { AbiEnhancer } from '../lib/abiEnhancer/AbiEnhancer'
+import { AbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
 import { getWalletSetting, isDefaultChainTypeMainnet, SETTINGS } from './config'
 import { RifWalletServicesSocket } from '../lib/rifWalletServices/RifWalletServicesSocket'
 

@@ -1,27 +1,33 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
+import { useIsFocused } from '@react-navigation/native'
 import { isBitcoinAddressValid } from '@rsksmart/rif-wallet-bitcoin'
-
 import { decodeString } from '@rsksmart/rif-wallet-eip681'
-import { useAppSelector } from 'store/storeUtils'
-import { selectActiveWallet } from 'store/slices/settingsSlice'
+
+import { QRCodeScanner } from 'components/QRCodeScanner'
+import { getWalletSetting, SETTINGS } from 'core/config'
+import { networkType } from 'core/setup'
 import {
   rootTabsRouteNames,
   RootTabsScreenProps,
 } from 'navigation/rootNavigator'
-import { QRCodeScanner } from 'components/QRCodeScanner'
-import { getWalletSetting, SETTINGS } from 'core/config'
-import { networkType } from 'core/setup'
-
-import { WalletConnectContext } from './WalletConnectContext'
+import { selectActiveWallet, setFullscreen } from 'store/slices/settingsSlice'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { homeStackRouteNames } from 'navigation/homeNavigator/types'
+import { WalletConnectContext } from './WalletConnectContext'
 
 export const ScanQRScreen = ({
   navigation,
 }: RootTabsScreenProps<rootTabsRouteNames.ScanQR>) => {
+  const dispatch = useAppDispatch()
   const { wallet } = useAppSelector(selectActiveWallet)
 
   const { createSession } = useContext(WalletConnectContext)
   const [isConnecting, setIsConnecting] = useState(false)
+  const isFocused = useIsFocused()
+
+  useEffect(() => {
+    dispatch(setFullscreen(isFocused))
+  }, [dispatch, isFocused])
 
   const onCodeRead = (data: string) => {
     // Metamask QR

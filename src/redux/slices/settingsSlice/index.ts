@@ -142,6 +142,7 @@ const initialState: SettingsSlice = {
   chainType: ChainTypeEnum.TESTNET,
   appIsActive: false,
   unlocked: false,
+  fullscreen: false,
 }
 
 const settingsSlice = createSlice({
@@ -216,6 +217,9 @@ const settingsSlice = createSlice({
       deleteCache()
       return initialState
     },
+    setFullscreen: (state, { payload }: PayloadAction<boolean>) => {
+      state.fullscreen = payload
+    },
   },
   extraReducers(builder) {
     builder.addCase(createWallet.pending, state => {
@@ -263,6 +267,7 @@ export const {
   removeKeysFromState,
   resetKeysAndPin,
   switchSelectedWallet,
+  setFullscreen,
 } = settingsSlice.actions
 
 export const settingsSliceReducer = settingsSlice.reducer

@@ -1,5 +1,5 @@
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import Icon from 'react-native-vector-icons/FontAwesome5'
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
 
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
@@ -7,8 +7,9 @@ import { profileStackRouteNames } from 'navigation/profileNavigator/types'
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { useAppSelector } from 'store/storeUtils'
 import { RegularText } from 'components/index'
-import { AvatarIcon } from 'components/icons/AvatarIcon'
 import { colors } from 'src/styles'
+import { Avatar } from 'src/components/avatar'
+import { sharedColors } from 'src/shared/constants'
 
 interface Props {
   navigation: BottomTabHeaderProps['navigation']
@@ -33,7 +34,15 @@ export const ProfileHandler = ({ navigation }: Props) => {
       onPress={routeNextStep}>
       {profile?.alias ? (
         <>
-          <AvatarIcon value={profile.alias + '.rsk'} size={30} />
+          {/* <AvatarIcon value={profile.alias + '.rsk'} size={30} /> */}
+          <Avatar
+            size={30}
+            name={profile.alias + '.rsk'}
+            // icon={<Icon name={'cat'} size={100} />}
+            // imageSource={{
+            //   uri: 'https://image.freepik.com/free-vector/cute-dog-head-avatar_79416-67.jpg',
+            // }}
+          />
           <View>
             <RegularText style={styles.profileName}>
               {profile.alias}
@@ -41,14 +50,14 @@ export const ProfileHandler = ({ navigation }: Props) => {
           </View>
         </>
       ) : (
-        <>
-          <View style={styles.profileHandlerImage}>
-            <MaterialIcon name="person" color="gray" size={20} />
-          </View>
-          <View style={styles.profileAddImage}>
-            <MaterialIcon name="add" color="gray" size={15} />
-          </View>
-        </>
+        <Avatar
+          size={32}
+          name={'person'}
+          style={styles.profileHandlerImage}
+          icon={
+            <Icon name={'user-circle'} size={20} color={sharedColors.primary} />
+          }
+        />
       )}
     </TouchableOpacity>
   )
@@ -63,9 +72,7 @@ const styles = StyleSheet.create({
     width: 30,
   },
   profileHandlerImage: {
-    backgroundColor: colors.lightGray,
-    borderRadius: 15,
-    padding: 5,
+    backgroundColor: sharedColors.white,
   },
   profileAddImage: {
     backgroundColor: colors.darkPurple3,

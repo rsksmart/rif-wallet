@@ -2019,6 +2019,19 @@
     axios "^1.2.3"
     ethers "^5.7.2"
 
+"@rsksmart/rif-wallet-abi-enhancer@^1.0.0":
+  version "1.0.0"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-abi-enhancer/1.0.0/6f6838ac92fb4be65a225dca5f8c9ccfaa137a84#6f6838ac92fb4be65a225dca5f8c9ccfaa137a84"
+  integrity sha512-7epvf5fjV5/f4uJ8HCllvgdc4Nw0HP0BaSgZr+XhlsYDcN5ikdil7EwP6wFVYGY8qKAPY1HIXgqVZ+qyUK3NpA==
+  dependencies:
+    "@ethersproject/abi" "^5.7.0"
+    "@ethersproject/abstract-provider" "^5.7.0"
+    "@ethersproject/abstract-signer" "^5.7.0"
+    "@ethersproject/bignumber" "^5.7.0"
+    "@ethersproject/bytes" "^5.7.0"
+    "@rsksmart/rif-wallet-token" "*"
+    axios "^0.27.2"
+
 "@rsksmart/rif-wallet-adapters@^1.0.0":
   version "1.0.0"
   resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-adapters/1.0.0/b5b23a5ee3b44e93a26d91385f0ab8deb8b07299#b5b23a5ee3b44e93a26d91385f0ab8deb8b07299"
@@ -2062,7 +2075,7 @@
   dependencies:
     "@rsksmart/rsk-utils" "^1.1.0"
 
-"@rsksmart/rif-wallet-token@^1.0.1":
+"@rsksmart/rif-wallet-token@*", "@rsksmart/rif-wallet-token@^1.0.1":
   version "1.0.1"
   resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-token/1.0.1/e506cede6d8180da0d56e3f18af80511d4192b4d#e506cede6d8180da0d56e3f18af80511d4192b4d"
   integrity sha512-XX5z+HctX9XkksMcScw26d9n2sFqbEF+ChNU0SBHsYMUo5HLBlO3d2H6uH04uMisfu4uKlyLX4N7lEYFoZ9w3g==
@@ -8424,6 +8437,11 @@ react-freeze@^1.0.0:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/react-freeze/-/react-freeze-1.0.3.tgz#5e3ca90e682fed1d73a7cb50c2c7402b3e85618d"
   integrity sha512-ZnXwLQnGzrDpHBHiC56TXFXvmolPeMjTn1UOm610M4EXGzbEDR7oOIyS2ZiItgbs6eZc4oU/a0hpk8PrcKvv5g==
+
+react-hook-form@^7.43.0:
+  version "7.43.0"
+  resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-7.43.0.tgz#d0c19b5c4ec561fbf8d652869ccb513c11c772e7"
+  integrity sha512-/rVEz7T0gLdSFwPqutJ1kn2e0sQNyb9ci/hmwEYr2YG0KF/LSuRLvNrf9QWJM+gj88CjDpDW5Bh/1AD7B2+z9Q==
 
 react-i18next@^12.0.0:
   version "12.0.0"

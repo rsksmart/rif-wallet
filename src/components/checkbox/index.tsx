@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     height: 16,
     width: 16,
     borderRadius: 4,
-    backgroundColor: sharedColors.inputInactiveColor,
+    backgroundColor: sharedColors.inputInactive,
     overflow: 'hidden',
   }),
   checkboxEnabled: castStyle.view({
