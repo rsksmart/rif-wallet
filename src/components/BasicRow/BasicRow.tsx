@@ -32,13 +32,13 @@ interface StatusTextProps {
 interface BasicRowProps {
   label: string
   secondaryLabel: string
+  amount: string
+  imageSource: ImageSourcePropType
+  avatarName: string
   status?: StatusTextProps['status']
   error?: string
-  imageSource: ImageSourcePropType
-  amount: string
   txType?: TransactionTypeEnum
   usdAmount?: string
-  avatarName: string
 }
 export const BasicRow = ({
   label,
