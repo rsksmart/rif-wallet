@@ -115,9 +115,9 @@ const typeStyleMap = new Map([
   ['labelLight', styles.labelLight],
 ])
 
-export const Typography = ({ style, type, children, ...rest }: Props) => {
+export const Typography = ({ style, type, children, ...props }: Props) => {
   return (
-    <Text style={[typeStyleMap.get(type), style]} {...rest}>
+    <Text style={[typeStyleMap.get(type), style]} {...props}>
       {children}
     </Text>
   )
