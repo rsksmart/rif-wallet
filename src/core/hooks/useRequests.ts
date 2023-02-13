@@ -1,6 +1,7 @@
 import { useState } from 'react'
+import { OnRequest } from '@rsksmart/rif-wallet-core'
+
 import { Requests } from '../../Context'
-import { OnRequest } from '../../lib/core'
 
 export const useRequests = () => {
   const [requests, setRequests] = useState<Requests>([])

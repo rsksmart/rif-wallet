@@ -1,7 +1,6 @@
 import React from 'react'
 import { ScrollView, StyleSheet, View } from 'react-native'
-
-import { SignTypedDataRequest } from 'src/lib/core'
+import { SignTypedDataRequest } from '@rsksmart/rif-wallet-core'
 
 import { AnyObject } from 'immer/dist/internal'
 import { useTranslation } from 'react-i18next'

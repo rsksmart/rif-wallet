@@ -1,7 +1,6 @@
 import { SendBitcoinRequest } from '@rsksmart/rif-wallet-bitcoin'
 import { ColorValue } from 'react-native'
-
-import { RIFWallet, Request } from 'lib/core'
+import { RIFWallet, Request } from '@rsksmart/rif-wallet-core'
 
 import { Wallets, WalletsIsDeployed } from 'src/Context'
 import { RequestWithBitcoin } from 'shared/types'

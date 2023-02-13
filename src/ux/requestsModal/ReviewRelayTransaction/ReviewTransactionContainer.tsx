@@ -1,11 +1,10 @@
 import { BigNumber } from 'ethers'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { View } from 'react-native'
-
 import {
   OverriddableTransactionOptions,
   SendTransactionRequest,
-} from 'lib/core'
+} from '@rsksmart/rif-wallet-core'
 
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'

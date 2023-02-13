@@ -1,15 +1,15 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { BigNumber } from 'ethers'
 import { UnspentTransactionType } from '@rsksmart/rif-wallet-bitcoin'
+import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
-import { RIFWallet } from 'lib/core'
 import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { useAppDispatch } from 'store/storeUtils'
 import {
   addPendingTransaction,
   modifyTransaction,
-  IApiTransactionWithExtras,
+  ApiTransactionWithExtras,
 } from 'store/slices/transactionsSlice'
 
 import { TransactionInformation } from './TransactionInfo'
@@ -97,7 +97,7 @@ export const usePaymentExecutor = () => {
             finalAddress,
             enhancedAmount,
           } = transactionStatusChange
-          const originTransaction: IApiTransactionWithExtras = {
+          const originTransaction: ApiTransactionWithExtras = {
             blockHash: '',
             blockNumber: 0,
             gas: 0,
