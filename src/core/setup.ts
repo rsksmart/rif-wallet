@@ -1,12 +1,11 @@
 import { providers, Wallet } from 'ethers'
 import Resolver from '@rsksmart/rns-resolver.js'
 import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
+import { OnRequest, RIFWallet } from '@rsksmart/rif-wallet-core'
 import axios from 'axios'
+import { AbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
 
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
-
-import { OnRequest, RIFWallet } from '../lib/core'
-import { AbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
 import { getWalletSetting, isDefaultChainTypeMainnet, SETTINGS } from './config'
 import { RifWalletServicesSocket } from '@rsksmart/rif-wallet-services'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'

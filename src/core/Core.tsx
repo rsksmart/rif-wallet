@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { StatusBar, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
 import { defaultChainId } from 'core/config'
 

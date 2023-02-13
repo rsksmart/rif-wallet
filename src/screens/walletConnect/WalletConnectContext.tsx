@@ -7,9 +7,9 @@ import {
   ReactElement,
   useCallback,
 } from 'react'
-
-import { RIFWallet } from 'lib/core'
+import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { WalletConnectAdapter } from '@rsksmart/rif-wallet-adapters'
+
 import {
   deleteWCSession,
   getWCSession,

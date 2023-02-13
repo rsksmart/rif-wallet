@@ -3,7 +3,7 @@ import { FlatList, StyleSheet, View, RefreshControl } from 'react-native'
 import { BIP } from '@rsksmart/rif-wallet-bitcoin'
 
 import { IApiTransaction } from '@rsksmart/rif-wallet-services'
-import { RIFWallet } from 'lib/core'
+import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
 
 import { abiEnhancer } from 'core/setup'

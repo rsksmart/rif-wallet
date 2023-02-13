@@ -1,5 +1,5 @@
 import { rifRelayConfig } from 'core/setup'
-import { RIFWallet, OnRequest, Request } from 'src/lib/core'
+import { RIFWallet, OnRequest, Request } from '@rsksmart/rif-wallet-core'
 
 import { createNewTestWallet } from './utils'
 

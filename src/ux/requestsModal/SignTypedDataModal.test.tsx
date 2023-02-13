@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react-native'
+import { SignTypedDataRequest } from '@rsksmart/rif-wallet-core'
 import SignTypedDataModal from './SignTypedDataModal'
-import { SignTypedDataRequest } from '../../lib/core'
 
 describe('SignTypedData', function (this: {
   confirm: ReturnType<typeof jest.fn>

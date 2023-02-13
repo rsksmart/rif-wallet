@@ -4,7 +4,9 @@ import {
   ITokenWithBalance,
 } from '@rsksmart/rif-wallet-services'
 import { IAbiEnhancer, EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
-import { RIFWallet } from 'lib/core'
+import { RIFWallet } from '@rsksmart/rif-wallet-core'
+
+import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { AppContextType } from 'src/Context'
 
 export interface IPrice {

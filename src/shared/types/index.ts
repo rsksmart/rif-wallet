@@ -1,6 +1,5 @@
 import { SendBitcoinRequest } from '@rsksmart/rif-wallet-bitcoin'
-
-import { Request } from 'lib/core'
+import { Request } from '@rsksmart/rif-wallet-core'
 
 export interface ErrorWithMessage {
   message: string
