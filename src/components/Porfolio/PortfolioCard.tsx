@@ -2,7 +2,7 @@ import { StyleSheet, View } from 'react-native'
 
 import { sharedColors } from 'shared/constants'
 import { TokenImage } from 'screens/home/TokenImage'
-import { Typography } from 'src/components'
+import { Typography } from 'components/typography'
 import { colors } from 'src/styles'
 import { AppTouchable } from 'components/appTouchable'
 
