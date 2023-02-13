@@ -17,6 +17,7 @@ export const sharedColors = {
   inputActive: '#3A3A3A',
   inputLabelColor: '#B8B8B8',
   borderColor: '#575757',
+  primaryDark: '#4250CC',
 }
 
 export const defaultIconSize = 16

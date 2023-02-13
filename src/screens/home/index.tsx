@@ -19,10 +19,10 @@ import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 import { changeTopColor, selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { HomeBarButtonGroup } from 'screens/home/HomeBarButtonGroup'
 
 import PortfolioComponent from './PortfolioComponent'
 import SelectedTokenComponent from './SelectedTokenComponent'
-import SendReceiveButtonComponent from './SendReceiveButtonComponent'
 import { getTokenColor } from './tokenColor'
 
 export const HomeScreen = ({
@@ -146,13 +146,10 @@ export const HomeScreen = ({
           amount={selectedTokenAmount}
           change={0}
         />
-
-        <SendReceiveButtonComponent
-          color={selectedColor}
+        <HomeBarButtonGroup
           onPress={handleSendReceive}
-          sendDisabled={balances.length === 0}
+          isSendDisabled={balances.length === 0}
         />
-
         {balances.length === 0 ? (
           <>
             <Image
