@@ -19,6 +19,7 @@ export const sharedColors = {
   borderColor: '#575757',
   primaryDark: '#4250CC',
   subAmount: '#fbfbfbb3',
+  tokenBackground: '#1E1E1E',
 }
 
 export const tokenColors = {

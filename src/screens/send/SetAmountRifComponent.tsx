@@ -1,5 +1,6 @@
 import React from 'react'
 import { TokenBalance } from 'src/components/token'
+import { sharedColors } from 'src/shared/constants'
 import { ISetAmountComponent } from './SetAmountComponent'
 
 export const SetAmountRifComponent: React.FC<ISetAmountComponent> = ({
@@ -9,7 +10,7 @@ export const SetAmountRifComponent: React.FC<ISetAmountComponent> = ({
 }) => (
   <>
     <TokenBalance
-      color={'#1E1E1E'}
+      color={sharedColors.tokenBackground}
       token={{ ...token, ...{ price: usdAmount || 0 } }}
       editable={true}
       setAmount={setAmount}

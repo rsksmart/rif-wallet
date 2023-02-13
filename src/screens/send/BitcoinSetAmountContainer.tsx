@@ -8,7 +8,12 @@ import {
 } from '@rsksmart/rif-wallet-bitcoin'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 
-import { sanitizeDecimalText, sanitizeMaxDecimalText } from 'lib/utils'
+import {
+  convertTokenToUSD,
+  convertUSDtoToken,
+  sanitizeDecimalText,
+  sanitizeMaxDecimalText,
+} from 'lib/utils'
 
 import { ISetAmountComponent } from './SetAmountComponent'
 import { BitcoinSetAmountPresentation } from './BitcoinSetAmountPresentation'
@@ -17,9 +22,10 @@ import { usePaymentExecutorContext } from './usePaymentExecutor'
 interface BitcoinSetAmountContainerProps {
   setAmount: ISetAmountComponent['setAmount']
   token: BitcoinNetwork
+  usdAmount: number | undefined
   BitcoinSetAmountComponent?: React.FunctionComponent<{
     amountToPay: string
-    handleAmountChange: (value: string) => void
+    handleAmountChange: (value: string, swap: boolean) => void
     utxos?: UnspentTransactionType[]
   }>
 }
@@ -27,10 +33,12 @@ interface BitcoinSetAmountContainerProps {
 export const BitcoinSetAmountContainer = ({
   setAmount,
   token,
+  usdAmount,
   BitcoinSetAmountComponent = BitcoinSetAmountPresentation,
 }: BitcoinSetAmountContainerProps) => {
   const [utxos, setUtxos] = useState<Array<UnspentTransactionType>>([])
-  const [amountToPay, setAmountToPay] = useState<string>('')
+  const [btcToPay, setAmountToPay] = useState<string>('')
+  const [usdToPay, setUsdToPay] = useState<string>('')
   const [error, setError] = useState<string>('')
   const { setUtxosGlobal, setBitcoinBalanceGlobal } =
     usePaymentExecutorContext()
@@ -43,10 +51,7 @@ export const BitcoinSetAmountContainer = ({
     })
   }, [setUtxosGlobal, token.bips])
 
-  const satoshisToPay = useMemo(
-    () => convertBtcToSatoshi(amountToPay),
-    [amountToPay],
-  )
+  const satoshisToPay = useMemo(() => convertBtcToSatoshi(btcToPay), [btcToPay])
 
   const balanceAvailable = useMemo(
     () =>
@@ -66,22 +71,40 @@ export const BitcoinSetAmountContainer = ({
   }, [fetchUtxo])
 
   const handleAmountChange = useCallback(
-    (amount: string) => {
+    (amount: string, swap: boolean) => {
       setError('')
       const amountSanitized = sanitizeMaxDecimalText(
         sanitizeDecimalText(amount),
       )
 
+      let amountToTransfer = 0
+      if (swap) {
+        setUsdToPay(amountSanitized)
+        const tokenConversion =
+          '' + convertUSDtoToken(Number(amountSanitized), usdAmount || 0, true)
+        setAmountToPay(tokenConversion)
+        amountToTransfer = Number(tokenConversion)
+      } else {
+        setUsdToPay(
+          '' +
+            convertTokenToUSD(
+              Number(amountSanitized) || 0,
+              usdAmount || 0,
+              true,
+            ),
+        )
+        amountToTransfer = Number(amountSanitized)
+      }
+
       const { message } = validateAmount(
-        convertBtcToSatoshi(amountSanitized),
+        convertBtcToSatoshi('' + amountToTransfer),
         balanceAvailable,
       )
-      setAmountToPay(amountSanitized)
       if (message) {
         setError(message)
       }
     },
-    [balanceAvailable],
+    [balanceAvailable, usdAmount],
   )
 
   // When amount to pay changes - update setAmount
@@ -90,7 +113,7 @@ export const BitcoinSetAmountContainer = ({
       satoshisToPay.toString(),
       validateAmount(satoshisToPay, balanceAvailable).isValid,
     )
-  }, [amountToPay, satoshisToPay, balanceAvailable, setAmount])
+  }, [btcToPay, satoshisToPay, balanceAvailable, setAmount])
 
   const balanceAvailableString = useMemo(
     () => convertSatoshiToBtcHuman(balanceAvailable),
@@ -100,8 +123,11 @@ export const BitcoinSetAmountContainer = ({
   return (
     <BitcoinSetAmountComponent
       utxos={utxos}
-      amountToPay={amountToPay}
+      amountToPay={btcToPay}
+      usdToPay={usdToPay}
+      usdAmount={usdAmount}
       handleAmountChange={handleAmountChange}
+      symbol={token.symbol}
       error={error}
       available={balanceAvailableString}
     />
