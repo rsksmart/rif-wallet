@@ -1,23 +1,13 @@
-import { useState } from 'react'
 import { StyleSheet, TextInput, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { useTranslation } from 'react-i18next'
 
-import {
-  balanceToDisplay,
-  balanceToUSD,
-  convertTokenToUSD,
-  convertUSDtoToken,
-  sanitizeDecimalText,
-} from 'lib/utils'
-
 import { RegularText, Typography } from 'components/index'
 import { HideShowIcon } from 'components/icons'
 import { sharedColors } from 'shared/constants'
-import { TokenImage } from '../../screens/home/TokenImage'
+import { TokenImage } from 'screens/home/TokenImage'
 import { Avatar } from 'components/avatar'
-import { ITokenWithoutLogo } from 'src/redux/slices/balancesSlice/types'
 
 interface Address {
   address: string
@@ -25,153 +15,94 @@ interface Address {
   contactName: string
 }
 
-interface ITokenWithPrice extends ITokenWithoutLogo {
-  price: number
+export interface CurrencyValue {
+  symbol: string
+  symbolType: string
+  balance: string
 }
 
 interface Props {
-  token: ITokenWithPrice
-  change?: number
+  firstVal: CurrencyValue
+  secondVal: CurrencyValue
   color: string
+  hide?: boolean
+  onSwap?: () => void
+  onHide?: () => void
   editable?: boolean
-  setAmount?: (amount: string, isValid: boolean) => void
   hideable?: boolean
+  change?: number
+  handleAmountChange?: (text: string) => void
   to?: Address
 }
 
 export const TokenBalance = ({
-  token: { decimals, price, symbol, balance },
+  firstVal,
+  secondVal,
   change,
   color,
+  hide = false,
   editable = false,
+  onSwap,
   hideable = false,
+  onHide,
+  handleAmountChange,
   to,
-  setAmount,
 }: Props) => {
-  const [showBalances, setShowBalances] = useState<boolean>(true)
-  const [swap, setSwap] = useState<boolean>(false)
-  const [tokenAmount, setTokenAmount] = useState<string>('')
-  const [usdAmount, setUsdAmount] = useState<string>('')
   const badgeColor = change && change >= 0 ? styles.greenBadge : styles.redBadge
-  const onSetBalances = () => setShowBalances(!showBalances)
-  const onSwap = () => setSwap(!swap)
   const { t } = useTranslation()
-
-  const handleAmountChange = (text: string) => {
-    const amountText = sanitizeDecimalText(text)
-    let amountToTransfer = 0
-    if (swap) {
-      setUsdAmount(amountText)
-      const tokenConversion =
-        '' + convertUSDtoToken(Number(amountText), price, true)
-      setTokenAmount(tokenConversion)
-      amountToTransfer = Number(tokenConversion)
-    } else {
-      setTokenAmount(amountText)
-      setUsdAmount('' + convertTokenToUSD(Number(amountText) || 0, price, true))
-      amountToTransfer = Number(amountText)
-    }
-
-    const availableBalance = Number(balanceToDisplay(balance, decimals || 0))
-    if (setAmount) {
-      setAmount(
-        amountToTransfer.toString(),
-        amountToTransfer !== 0 && amountToTransfer <= availableBalance,
-      )
-
-      if (amountToTransfer > availableBalance) {
-        // setError('Insuficient funds')
-      }
-    }
-  }
 
   return (
     <View style={[styles.balanceCard, { backgroundColor: color }]}>
       <View style={styles.container}>
         <View style={styles.grow}>
           <View style={styles.container}>
-            {editable &&
-              (!swap ? (
-                <>
-                  <View style={[styles.tokenIcon, styles.center]}>
-                    <TokenImage symbol={symbol} height={24} width={24} />
-                  </View>
-                  <TextInput
-                    onChangeText={handleAmountChange}
-                    value={tokenAmount}
-                    placeholder="0.00"
-                    keyboardType="numeric"
-                    testID={'Amount.Input'}
-                    placeholderTextColor={sharedColors.white}
-                    style={styles.input}
-                  />
-                </>
-              ) : (
-                <>
-                  <View style={styles.center}>
-                    <Typography type="h1" style={{ color: sharedColors.white }}>
-                      ${' '}
-                    </Typography>
-                  </View>
-                  <TextInput
-                    onChangeText={handleAmountChange}
-                    value={usdAmount}
-                    placeholder="0.00"
-                    keyboardType="numeric"
-                    testID={'Amount.Input'}
-                    placeholderTextColor={sharedColors.white}
-                    style={styles.input}
-                  />
-                </>
-              ))}
-            {!editable && (
-              <>
-                <View style={styles.tokenIcon}>
-                  <TokenImage symbol={symbol} height={24} width={24} />
-                </View>
-                <Typography type="h1">
-                  {showBalances
-                    ? balanceToDisplay(balance || 0, decimals, 5)
-                    : '\u002A\u002A\u002A\u002A'}
-                </Typography>
-              </>
+            {firstVal.symbolType === 'icon' && (
+              <View style={[styles.tokenIcon, styles.center]}>
+                <TokenImage symbol={firstVal.symbol} height={24} width={24} />
+              </View>
             )}
+            {firstVal.symbolType === 'text' && (
+              <View style={styles.center}>
+                <Typography type="h1" style={{ color: sharedColors.white }}>
+                  {firstVal.symbol}{' '}
+                </Typography>
+              </View>
+            )}
+
+            <TextInput
+              onChangeText={(text: string) => {
+                if (handleAmountChange) {
+                  handleAmountChange(text)
+                }
+              }}
+              value={hide ? '\u002A\u002A\u002A\u002A' : firstVal.balance}
+              placeholder="0.00"
+              keyboardType="numeric"
+              testID={'Amount.Input'}
+              placeholderTextColor={sharedColors.white}
+              style={styles.input}
+              editable={editable}
+            />
           </View>
-          <View style={styles.container}>
-            {editable &&
-              (!swap ? (
-                <>
-                  <Typography type="h3" style={styles.subTitle}>
-                    ${' '}
-                  </Typography>
-                  <Typography type="h3" style={styles.subTitle}>
-                    {tokenAmount === ''
-                      ? '0.00'
-                      : '' +
-                        convertTokenToUSD(
-                          Number(tokenAmount) || 0,
-                          price,
-                          true,
-                        )}
-                  </Typography>
-                </>
-              ) : (
-                <>
-                  <View style={styles.tokenSubIcon}>
-                    <TokenImage symbol={symbol} height={16} width={16} />
-                  </View>
-                  <Typography type="h3" style={styles.subTitle}>
-                    {tokenAmount === '' ? '0.00' : tokenAmount}
-                  </Typography>
-                </>
-              ))}
-            {!editable && (
-              <Typography style={[styles.ident, styles.subTitle]} type="h3">
-                {showBalances
-                  ? balanceToUSD(balance || 0, decimals, price)
-                  : '\u002A\u002A\u002A\u002A\u002A\u002A'}
+          <View
+            style={
+              editable ? [styles.container] : [styles.ident, styles.container]
+            }>
+            {secondVal.symbolType === 'icon' && (
+              <View style={styles.tokenSubIcon}>
+                <TokenImage symbol={secondVal.symbol} height={16} width={16} />
+              </View>
+            )}
+            {secondVal.symbolType === 'text' && (
+              <Typography type="h3" style={styles.subTitle}>
+                {secondVal.symbol}{' '}
               </Typography>
             )}
+            <Typography type="h3" style={styles.subTitle}>
+              {hide
+                ? '\u002A\u002A\u002A\u002A\u002A\u002A'
+                : secondVal.balance}
+            </Typography>
           </View>
           <View>
             {to && (
@@ -196,14 +127,18 @@ export const TokenBalance = ({
           {hideable && (
             <View style={styles.center}>
               <TouchableOpacity
-                onPress={onSetBalances}
+                onPress={() => {
+                  if (onHide) {
+                    onHide()
+                  }
+                }}
                 accessibilityLabel="hide">
                 <View style={styles.badge}>
                   <HideShowIcon
                     color={sharedColors.white}
                     height={20}
                     width={30}
-                    isHidden={showBalances}
+                    isHidden={hide}
                   />
                 </View>
               </TouchableOpacity>
@@ -211,7 +146,13 @@ export const TokenBalance = ({
           )}
           {editable && (
             <View style={styles.center}>
-              <TouchableOpacity onPress={onSwap} accessibilityLabel="swap">
+              <TouchableOpacity
+                onPress={() => {
+                  if (onSwap) {
+                    onSwap()
+                  }
+                }}
+                accessibilityLabel="swap">
                 <View style={styles.badge}>
                   <Icon
                     name="ios-swap-vertical"
@@ -302,5 +243,3 @@ const styles = StyleSheet.create({
     fontSize: 36,
   },
 })
-
-export default TokenBalance

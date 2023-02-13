@@ -2,7 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 
-import { getChainIdByType } from 'lib/utils'
+import {
+  balanceToDisplay,
+  balanceToUSDNumber,
+  getChainIdByType,
+} from 'lib/utils'
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { toChecksumAddress } from 'components/address/lib'
@@ -21,7 +25,7 @@ import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { HomeBarButtonGroup } from 'screens/home/HomeBarButtonGroup'
 
 import PortfolioComponent from './PortfolioComponent'
-import TokenBalance from 'src/components/token/TokenBalance'
+import { CurrencyValue, TokenBalance } from 'components/token/TokenBalance'
 import SendReceiveButtonComponent from './SendReceiveButtonComponent'
 import { getTokenColor } from './tokenColor'
 
@@ -36,6 +40,17 @@ export const HomeScreen = ({
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
     undefined,
   )
+  const [firstVal, setFirstVal] = useState<CurrencyValue>({
+    balance: '0.00',
+    symbol: '',
+    symbolType: 'text',
+  })
+  const [secondVal, setSecondVal] = useState<CurrencyValue>({
+    balance: '0.00',
+    symbol: '',
+    symbolType: 'text',
+  })
+  const [hide, setHide] = useState<boolean>(false)
   const balances: Array<ITokenWithBalance | BitcoinNetwork> = useMemo(() => {
     if (bitcoinCore) {
       return [
@@ -120,16 +135,14 @@ export const HomeScreen = ({
 
   const selectedToken = useMemo(() => {
     if (selected instanceof BitcoinNetwork) {
-      const { name, decimals, symbol, contractAddress, balance } = selected
       return {
-        ...{ name, decimals, symbol, contractAddress, balance },
+        ...selected,
         ...{ price: prices ? prices.BTC?.price : 0 },
       }
     }
     if (selected) {
-      const { name, decimals, symbol, contractAddress, balance } = selected
       return {
-        ...{ name, decimals, symbol, contractAddress, balance },
+        ...selected,
         ...{ price: prices ? prices[selected.contractAddress]?.price : 0 },
       }
     }
@@ -139,16 +152,42 @@ export const HomeScreen = ({
       symbol: '',
       price: 0,
       contractAddress: '',
-      balance: '',
+      balance: '0',
     }
   }, [selected, prices])
+
+  useEffect(() => {
+    const { symbol, balance, decimals, price } = selectedToken
+    setFirstVal({
+      symbolType: 'icon',
+      symbol,
+      balance: balanceToDisplay(balance, decimals, 5),
+    })
+    setSecondVal({
+      symbolType: 'text',
+      symbol: '$',
+      balance: balanceToUSDNumber(balance, decimals, price),
+    })
+  }, [
+    selectedToken,
+    selectedToken.balance,
+    selectedToken.decimals,
+    selectedToken.price,
+  ])
+
+  const onHide = useCallback(() => {
+    setHide(!hide)
+  }, [hide])
 
   return (
     <View style={styles.container}>
       <View style={styles.parent}>
         <TokenBalance
-          token={selectedToken}
+          firstVal={firstVal}
+          secondVal={secondVal}
           hideable={true}
+          hide={hide}
+          onHide={onHide}
           change={0}
           color={backGroundColor.backgroundColor}
         />

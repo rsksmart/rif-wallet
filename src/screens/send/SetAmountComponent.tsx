@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { StyleSheet, TextInput, View } from 'react-native'
 
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
@@ -15,11 +15,11 @@ export interface ISetAmountComponent {
   usdAmount: number | undefined
 }
 
-const SetAmountComponent: React.FC<ISetAmountComponent> = ({
+const SetAmountComponent = ({
   setAmount,
   token,
   usdAmount,
-}) => {
+}: ISetAmountComponent) => {
   const [error, setError] = useState<string | null>(null)
   const [input, setInput] = useState<string>('')
 

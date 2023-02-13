@@ -5,7 +5,7 @@ interface HideShowInterface extends SvgProps {
 }
 
 export const HideShowIcon = (props: HideShowInterface) => (
-  <Svg {...props} viewBox="0 0 30 20" fill={'none'}>
+  <Svg viewBox="0 0 30 20" fill={'none'} {...props}>
     <G id="Group_1204" transform="translate(0)">
       <Path
         fill={props.color || '#171530'}
@@ -21,7 +21,7 @@ export const HideShowIcon = (props: HideShowInterface) => (
         10C13.4896 10 15 8.70536 15 7.14286C15 6.91964 14.9479 6.65179 14.8958 6.42857C14.9479 6.42857 14.9479
         6.42857 15 6.42857C17.2917 6.42857 19.1667 8.03571 19.1667 10C19.1667 11.9643 17.2917 13.5714 15 13.5714Z"
       />
-      {!props.isHidden && (
+      {props.isHidden && (
         <Line
           stroke={props.color || '#171530'}
           strokeWidth={2.5}
