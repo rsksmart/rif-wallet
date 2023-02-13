@@ -97,12 +97,10 @@ export const BasicRow = ({
         </View>
         <Typography
           type="h3"
-          style={{
-            ...styles.flexShrinkOne,
-            ...(status === 'FAILED' && {
-              textDecorationLine: 'line-through',
-            }),
-          }}
+          style={[
+            styles.flexShrinkOne,
+            status === 'FAILED' ? styles.failedTransaction : {},
+          ]}
           numberOfLines={1}
           ellipsizeMode="tail">
           {amount}
@@ -197,5 +195,8 @@ const styles = StyleSheet.create({
   },
   flexShrinkOne: {
     flexShrink: 1,
+  },
+  failedTransaction: {
+    textDecorationLine: 'line-through',
   },
 })
