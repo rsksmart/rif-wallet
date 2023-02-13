@@ -15,6 +15,11 @@ import {
 } from 'navigation/settingsNavigator/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import { version } from 'package.json'
+import AppButton, {
+  AppButtonBackgroundVarietyEnum,
+  AppButtonCornerVarietyEnum,
+  AppButtonWidthVarietyEnum,
+} from 'components/button/AppButton'
 
 export const SettingsScreen = ({
   navigation,
@@ -111,6 +116,68 @@ export const SettingsScreen = ({
           <RegularText style={[styles.secondaryTextStyles]}>
             {walletServiceUrl}
           </RegularText>
+        </View>
+        <View style={styles.secondaryTextView}>
+          <AppButton // simplest button
+            title={'Simple Button'}
+            onPress={() => console.log('Simple Button')}
+          />
+        </View>
+        <View style={styles.secondaryTextView}>
+          <AppButton // simplest button
+            title={'Icon Button'}
+            onPress={() => console.log('Icon Button')}
+            rightIcon={'arrow-right'}
+          />
+        </View>
+        <View style={styles.secondaryTextView}>
+          <AppButton // simplest button
+            title={'Inline Icon Button'}
+            onPress={() => console.log('Icon Button')}
+            rightIcon={'arrow-right'}
+            widthVariety={AppButtonWidthVarietyEnum.INLINE}
+            width={200}
+          />
+        </View>
+
+        <View style={styles.secondaryTextView}>
+          <AppButton
+            cornerVariety={AppButtonCornerVarietyEnum.SQUARE}
+            widthVariety={AppButtonWidthVarietyEnum.FULL}
+            disabled={false}
+            accessibilityLabel={'Square Button'}
+            title={'Square Button'}
+            onPress={() => console.log('hola casa')}
+            leftIcon={'arrow-left'}
+          />
+        </View>
+        <View style={styles.secondaryTextView}>
+          <AppButton
+            color={'white'}
+            backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
+            cornerVariety={AppButtonCornerVarietyEnum.ROUND}
+            widthVariety={AppButtonWidthVarietyEnum.FULL}
+            disabled={false}
+            accessibilityLabel={'Weird Button'}
+            title={'two icons outline button'}
+            onPress={() => console.log('hola casa')}
+            leftIcon={'arrow-left'}
+            rightIcon={'arrow-right'}
+          />
+        </View>
+        <View style={styles.secondaryTextView}>
+          <AppButton
+            color={'green'}
+            textColor={'red'}
+            backgroundVariety={AppButtonBackgroundVarietyEnum.DEFAULT}
+            cornerVariety={AppButtonCornerVarietyEnum.ROUND}
+            widthVariety={AppButtonWidthVarietyEnum.FULL}
+            disabled={false}
+            accessibilityLabel={'Simple Button'}
+            title={'crazy color button'}
+            onPress={() => console.log('hola casa')}
+            rightIcon={'arrow-right'}
+          />
         </View>
       </View>
     </ScrollView>
