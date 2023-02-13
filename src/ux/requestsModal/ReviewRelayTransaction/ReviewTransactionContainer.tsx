@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { View } from 'react-native'
 
 import {
@@ -7,16 +7,16 @@ import {
   SendTransactionRequest,
 } from 'lib/core'
 
-import { selectActiveWallet } from 'src/redux/slices/settingsSlice'
-import { useAppSelector } from 'src/redux/storeUtils'
-import { RegularText } from 'src/components'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { useAppSelector } from 'store/storeUtils'
+import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
+import { RegularText } from 'components/index'
 import { defaultChainType, getTokenAddress } from 'core/config'
 import { sharedStyles } from 'shared/styles'
 import { errorHandler } from 'shared/utils'
 
 import useEnhancedWithGas from '../useEnhancedWithGas'
 import ReviewTransactionModal from './ReviewTransactionModal'
-import { ChainTypeEnum } from 'src/redux/slices/settingsSlice/types'
 
 interface Props {
   request: SendTransactionRequest
@@ -29,7 +29,7 @@ export const ReviewTransactionContainer = ({ request, closeModal }: Props) => {
 
   const { wallet } = useAppSelector(selectActiveWallet)
 
-  // this is for typescript, and will never happen as the transaction was created by the wallet instance.
+  // this is for typescript, and should not happen as the transaction was created by the wallet instance.
   if (!wallet) {
     throw new Error('no wallet')
   }
@@ -42,9 +42,13 @@ export const ReviewTransactionContainer = ({ request, closeModal }: Props) => {
   )
 
   // estimate the tx cost in token:
-  const tokenContract = getTokenAddress(
-    defaultChainType === ChainTypeEnum.MAINNET ? 'RIF' : 'tRIF',
-    defaultChainType,
+  const tokenContract = useMemo(
+    () =>
+      getTokenAddress(
+        defaultChainType === ChainTypeEnum.MAINNET ? 'RIF' : 'tRIF',
+        defaultChainType,
+      ),
+    [],
   )
 
   useEffect(() => {
@@ -53,7 +57,7 @@ export const ReviewTransactionContainer = ({ request, closeModal }: Props) => {
       .then(setTxCostInRif)
   }, [request, txRequest, wallet.rifRelaySdk, tokenContract])
 
-  const confirmTransaction = () => {
+  const confirmTransaction = useCallback(() => {
     if (!txCostInRif) {
       throw new Error('token cost has not been estimated')
     }
@@ -73,12 +77,18 @@ export const ReviewTransactionContainer = ({ request, closeModal }: Props) => {
     } catch (err: unknown) {
       setError(errorHandler(err))
     }
-  }
+  }, [
+    closeModal,
+    enhancedTransactionRequest,
+    request,
+    tokenContract,
+    txCostInRif,
+  ])
 
-  const cancelTransaction = () => {
+  const cancelTransaction = useCallback(() => {
     request.reject('User rejects the transaction')
     closeModal()
-  }
+  }, [closeModal, request])
 
   if (!isLoaded || !txCostInRif) {
     return (
