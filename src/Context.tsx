@@ -1,6 +1,5 @@
 import { FC } from 'react'
-
-import { RIFWallet } from 'lib/core'
+import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
 import { ScreenWithWallet } from 'screens/types'
 import { useAppSelector } from 'store/storeUtils'

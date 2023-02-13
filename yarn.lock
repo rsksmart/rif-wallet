@@ -2057,7 +2057,7 @@
     bitcoin-address-validation "^2.2.1"
     bitcoinjs-lib "^6.0.2"
 
-"@rsksmart/rif-wallet-core@*":
+"@rsksmart/rif-wallet-core@*", "@rsksmart/rif-wallet-core@^1.0.2":
   version "1.0.2"
   resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-core/1.0.2/dc810acfc6f014cd59fdb3c4339f0d69ebf16954#dc810acfc6f014cd59fdb3c4339f0d69ebf16954"
   integrity sha512-xIsDFZmTITLLv78aLaXNa+69pZE2vW4SUEGTs0ux6iwWj9OO+N3uaUcdmG0bug1pqXaPYK04S+3+SviEl5dT4Q==

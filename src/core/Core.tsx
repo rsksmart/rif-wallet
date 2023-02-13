@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { StatusBar, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
-import { RIFWallet } from 'lib/core'
 import { i18nInit } from 'lib/i18n'
 import { RifWalletServicesAuth } from 'lib/rifWalletServices/RifWalletServicesAuth'
 import { RifWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'

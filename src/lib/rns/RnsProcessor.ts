@@ -1,6 +1,6 @@
 import addresses from 'screens/rnsManager/addresses.json'
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
-import { RIFWallet } from 'lib/core'
+import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { BigNumber } from 'ethers'
 
 import {

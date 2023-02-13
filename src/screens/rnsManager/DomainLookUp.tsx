@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react'
 
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
+import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { StyleSheet, View } from 'react-native'
 import {
   AddressValidationMessage,
@@ -11,7 +12,6 @@ import { BaseInputStatus } from '../../components/shared'
 import { MediumText } from '../../components/typography'
 import { colors } from '../../styles'
 import addresses from './addresses.json'
-import { RIFWallet } from 'lib/core'
 
 interface DomainLookUpProps {
   initialValue: string

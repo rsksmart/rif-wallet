@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { StyleSheet, TextInput, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
-import { SmartWalletFactory } from 'lib/core/SmartWalletFactory'
+import { SmartWalletFactory } from '@rsksmart/rif-relay-light-sdk'
 
 import { setAccount } from 'store/slices/accountsSlice'
 import { selectAccounts } from 'store/slices/accountsSlice/selector'

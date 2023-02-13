@@ -8,8 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
-
-import { RIFWallet } from 'lib/core'
+import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
 import { PrimaryButton } from 'components/button/PrimaryButton'
 import { SecondaryButton } from 'components/button/SecondaryButton'

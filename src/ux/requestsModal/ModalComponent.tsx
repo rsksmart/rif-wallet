@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { SendBitcoinRequest } from '@rsksmart/rif-wallet-bitcoin'
-
-import { SignMessageRequest, SignTypedDataRequest } from 'lib/core'
+import {
+  SignMessageRequest,
+  SignTypedDataRequest,
+} from '@rsksmart/rif-wallet-core'
 
 import SlideUpModal from 'components/slideUpModal/SlideUpModal'
 import { colors } from 'src/styles'

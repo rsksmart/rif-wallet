@@ -1,6 +1,7 @@
 import { Wallet } from '@ethersproject/wallet'
+import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
-import { KeyManagementSystem, RIFWallet } from 'lib/core'
+import { KeyManagementSystem } from 'lib/core'
 
 import { Wallets } from '../Context'
 import { MMKVStorage } from '../storage/MMKVStorage'

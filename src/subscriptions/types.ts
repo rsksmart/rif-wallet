@@ -1,8 +1,9 @@
 import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { IRIFWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
 import { IAbiEnhancer, EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
+import { RIFWallet } from '@rsksmart/rif-wallet-core'
+
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
-import { RIFWallet } from 'lib/core'
 import { AppContextType } from 'src/Context'
 
 export interface IPrice {

@@ -1,6 +1,6 @@
 import EventEmitter from 'eventemitter3'
+import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
-import { RIFWallet } from 'lib/core'
 import { RifWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
 
 import { onSocketChangeEmitted } from './onSocketChangeEmitted'
