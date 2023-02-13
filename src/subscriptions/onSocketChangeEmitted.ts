@@ -1,4 +1,4 @@
-import { EnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
+import { EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
 import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { resetSocketState } from 'store/shared/actions/resetSocketState'

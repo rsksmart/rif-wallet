@@ -4,7 +4,7 @@ import { BIP } from '@rsksmart/rif-wallet-bitcoin'
 
 import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { RIFWallet } from 'lib/core'
-import { EnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
+import { EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
 
 import { abiEnhancer } from 'core/setup'
 import { useAppSelector } from 'store/storeUtils'
