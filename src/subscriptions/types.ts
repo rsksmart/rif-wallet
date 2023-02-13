@@ -3,7 +3,7 @@ import {
   IApiTransaction,
   ITokenWithBalance,
 } from '@rsksmart/rif-wallet-services'
-import { IAbiEnhancer, EnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
+import { IAbiEnhancer, EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
 import { RIFWallet } from 'lib/core'
 import { AppContextType } from 'src/Context'
 

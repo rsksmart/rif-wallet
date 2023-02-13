@@ -1,5 +1,5 @@
 import { IApiTransaction } from '@rsksmart/rif-wallet-services'
-import { EnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
+import { EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
 
 import { addNewTransaction } from 'store/slices/transactionsSlice'
 import { useAppDispatch } from 'store/storeUtils'
