@@ -1,77 +1,38 @@
-import { BigNumber } from 'ethers'
-import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleSheet, View } from 'react-native'
+import { BigNumber } from 'ethers'
 
-import {
-  OverriddableTransactionOptions,
-  SendTransactionRequest,
-} from 'lib/core'
-import { RIF_TOKEN_ADDRESS } from 'lib/relay-sdk/helpers'
 import { balanceToDisplay, shortAddress } from 'lib/utils'
 
-import {
-  Loading,
-  PrimaryButton,
-  RegularText,
-  SecondaryButton,
-} from 'components/index'
-import { ScreenWithWallet } from 'screens/types'
+import { PrimaryButton, RegularText, SecondaryButton } from 'components/index'
 import { sharedStyles } from 'shared/styles'
-import { errorHandler } from 'shared/utils'
-import { colors, grid } from '../../styles'
-import ReadOnlyField from './ReadOnlyField'
-import useEnhancedWithGas from './useEnhancedWithGas'
+import { colors } from 'src/styles/colors'
+import { grid } from 'src/styles'
+
+import ReadOnlyField from './../ReadOnlyField'
+import { EnhancedTransactionRequest } from '../useEnhancedWithGas'
 
 interface Props {
-  request: SendTransactionRequest
-  closeModal: () => void
+  enhancedTransactionRequest: EnhancedTransactionRequest
+  txCostInRif: BigNumber
+  confirmTransaction: () => void
+  cancelTransaction: () => void
 }
 
 const ReviewTransactionModal = ({
-  request,
-  closeModal,
-  wallet,
-}: ScreenWithWallet & Props) => {
+  enhancedTransactionRequest,
+  txCostInRif,
+  confirmTransaction,
+  cancelTransaction,
+}: Props) => {
   const { t } = useTranslation()
 
-  const txRequest = useMemo(() => request.payload[0], [request])
-  const { enhancedTransactionRequest, isLoaded } = useEnhancedWithGas(
-    wallet,
-    txRequest,
-  )
+  const feeEstimateReady = txCostInRif.toString() !== '0'
+  const rifFee = feeEstimateReady
+    ? `${balanceToDisplay(txCostInRif, 18, 0)} tRIF`
+    : 'estimating fee...'
 
-  const [error, setError] = useState<string | null>(null)
-  const [txCostInRif, setTxCostInRif] = useState<BigNumber>(BigNumber.from(0))
-
-  useEffect(() => {
-    wallet.rifRelaySdk.estimateTransactionCost().then(setTxCostInRif)
-  }, [wallet.rifRelaySdk])
-
-  const confirmTransaction = async () => {
-    const confirmObject: OverriddableTransactionOptions = {
-      gasPrice: BigNumber.from(enhancedTransactionRequest.gasPrice),
-      gasLimit: BigNumber.from(enhancedTransactionRequest.gasLimit),
-      tokenPayment: {
-        tokenContract: RIF_TOKEN_ADDRESS,
-        tokenAmount: txCostInRif,
-      },
-    }
-
-    try {
-      await request.confirm(confirmObject)
-      closeModal()
-    } catch (err) {
-      setError(errorHandler(err))
-    }
-  }
-
-  const cancelTransaction = () => {
-    request.reject('User rejects the transaction')
-    closeModal()
-  }
-
-  return isLoaded ? (
+  return (
     <ScrollView>
       <View>
         {enhancedTransactionRequest && (
@@ -128,24 +89,7 @@ const ReviewTransactionModal = ({
         )}
       </View>
 
-      {txCostInRif && (
-        <ReadOnlyField
-          label="Fee in tRIF"
-          value={`${balanceToDisplay(txCostInRif, 18, 0)} tRIF`}
-          testID="tRIF.fee"
-        />
-      )}
-
-      {error && (
-        <View style={sharedStyles.row}>
-          <View style={sharedStyles.column}>
-            <RegularText>Error:</RegularText>
-          </View>
-          <View style={sharedStyles.column}>
-            <RegularText>{error}</RegularText>
-          </View>
-        </View>
-      )}
+      <ReadOnlyField label="Fee in tRIF" value={rifFee} testID="tRIF.fee" />
 
       <View style={styles.buttonsSection}>
         <View style={sharedStyles.column}>
@@ -154,7 +98,6 @@ const ReviewTransactionModal = ({
             title={t('reject')}
             testID="Cancel.Button"
             accessibilityLabel="cancel"
-            disabled={!isLoaded}
           />
         </View>
         <View style={sharedStyles.column}>
@@ -163,15 +106,11 @@ const ReviewTransactionModal = ({
             title={t('sign')}
             testID="Confirm.Button"
             accessibilityLabel="confirm"
-            disabled={!isLoaded}
+            disabled={!feeEstimateReady}
           />
         </View>
       </View>
     </ScrollView>
-  ) : (
-    <View style={styles.loadingContent}>
-      <Loading />
-    </View>
   )
 }
 

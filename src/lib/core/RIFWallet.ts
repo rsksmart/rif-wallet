@@ -1,12 +1,10 @@
-import { Signer, BigNumberish, BytesLike, constants, BigNumber } from 'ethers'
+import { Signer, BigNumberish, BytesLike, constants, BigNumber, Wallet } from 'ethers'
 import { TransactionRequest, Provider, TransactionResponse, BlockTag } from '@ethersproject/abstract-provider'
 import { TypedDataSigner } from '@ethersproject/abstract-signer'
 import { defineReadOnly } from '@ethersproject/properties'
 import { resolveProperties } from 'ethers/lib/utils'
-import { SmartWalletFactory } from './SmartWalletFactory'
-import { SmartWallet } from './SmartWallet'
+import { RIFRelaySDK, RelayPayment, RifRelayConfig, SmartWalletFactory, SmartWallet } from '@rsksmart/rif-relay-light-sdk'
 import { filterTxOptions } from './filterTxOptions'
-import { RIFRelaySDK, RelayPayment, RifRelayConfig } from '../relay-sdk'
 
 export type IRequest<Type, Payload, ReturnType, ConfirmArgs> = {
   type: Type,
@@ -68,10 +66,10 @@ export class RIFWallet extends Signer implements TypedDataSigner {
   rifRelaySdk: RIFRelaySDK
   onRequest: OnRequest
 
-  private constructor (smartWalletFactory: SmartWalletFactory, smartWallet: SmartWallet, onRequest: OnRequest, sdk: RIFRelaySDK) {
+  private constructor (sdk: RIFRelaySDK, onRequest: OnRequest) {
     super()
-    this.smartWalletFactory = smartWalletFactory
-    this.smartWallet = smartWallet
+    this.smartWalletFactory = sdk.smartWalletFactory
+    this.smartWallet = sdk.smartWallet
     this.onRequest = onRequest
     this.rifRelaySdk = sdk
     
@@ -86,14 +84,10 @@ export class RIFWallet extends Signer implements TypedDataSigner {
     return this.smartWallet.smartWalletAddress
   }
 
-  static async create (signer: Signer, smartWalletFactoryAddress: string, onRequest: OnRequest, rifRelayConfig: RifRelayConfig) {
-    const smartWalletFactory = await SmartWalletFactory.create(signer, smartWalletFactoryAddress)
-    const smartWalletAddress = await smartWalletFactory.getSmartWalletAddress()
-    const smartWallet = await SmartWallet.create(signer, smartWalletAddress)
+  static async create (signer: Wallet, onRequest: OnRequest, rifRelayConfig: RifRelayConfig) {
+    const sdk = await RIFRelaySDK.create(signer, rifRelayConfig)
 
-    const sdk = await RIFRelaySDK.create(smartWallet, smartWalletFactory, rifRelayConfig)
-
-    return new RIFWallet(smartWalletFactory, smartWallet, onRequest, sdk)
+    return new RIFWallet(sdk, onRequest)
   }
 
   getAddress = (): Promise<string> => Promise.resolve(this.smartWallet.smartWalletAddress)
