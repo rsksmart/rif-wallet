@@ -90,7 +90,7 @@ export const BasicRow = ({
         </View>
         <View style={styles.flexGrowZero}>
           <MaterialIcon
-            name={'north-east'}
+            name="north-east"
             size={17}
             style={styles.horizontalPadding}
           />
