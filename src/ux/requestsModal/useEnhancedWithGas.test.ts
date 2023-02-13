@@ -1,18 +1,16 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { renderHook, act } from '@testing-library/react-hooks'
-import { BigNumber } from 'ethers'
-import { setupTest } from '../../../testLib/setup'
-import { RIFWallet } from '../../lib/core'
+import { BigNumber, Wallet, providers } from 'ethers'
 
 import useEnhancedWithGas from './useEnhancedWithGas'
 
 describe('hook: useEnhancedWithGas', function (this: {
   tx: TransactionRequest
-  rifWallet: RIFWallet
+  rifWallet: Wallet
 }) {
   beforeEach(async () => {
-    const mock = await setupTest()
-    this.rifWallet = mock.rifWallet
+    const provider = new providers.JsonRpcProvider('http://127.0.0.1:8545')
+    this.rifWallet = Wallet.createRandom().connect(provider)
 
     this.tx = {
       to: '0x123',
@@ -21,7 +19,7 @@ describe('hook: useEnhancedWithGas', function (this: {
     }
 
     jest
-      .spyOn(this.rifWallet.smartWallet, 'estimateDirectExecute')
+      .spyOn(this.rifWallet, 'estimateGas')
       .mockResolvedValue(BigNumber.from(600))
 
     if (this.rifWallet.provider) {

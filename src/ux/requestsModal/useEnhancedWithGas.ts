@@ -1,8 +1,7 @@
-import { TransactionRequest } from '@ethersproject/providers'
-import { BigNumber } from 'ethers'
 import { useEffect, useState } from 'react'
+import { TransactionRequest } from '@ethersproject/providers'
+import { BigNumber, Wallet } from 'ethers'
 import { AbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
-import { RIFWallet } from '../../lib/core'
 
 const abiEnhancer = new AbiEnhancer()
 
@@ -26,7 +25,7 @@ export interface EnhancedTransactionRequest extends TransactionRequest {
   functionParameters?: string[]
 }
 
-const useEnhancedWithGas = (wallet: RIFWallet, tx: TransactionRequest) => {
+const useEnhancedWithGas = (wallet: Wallet, tx: TransactionRequest) => {
   const [enhancedTransactionRequest, setEnhancedTransactionRequest] =
     useState<EnhancedTransactionRequest>({
       gasPrice: '0',
@@ -35,8 +34,8 @@ const useEnhancedWithGas = (wallet: RIFWallet, tx: TransactionRequest) => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
 
   useEffect(() => {
-    const gasLimitEstimate = wallet.smartWallet
-      .estimateDirectExecute(tx.to || '0x', tx.data || '0x')
+    const gasLimitEstimate = wallet
+      .estimateGas({ to: tx.to || '0x', data: tx.data || '0x' })
       .then((estimate: BigNumber) => {
         if (tx.gasLimit && estimate.lt(tx.gasLimit)) {
           return tx.gasLimit

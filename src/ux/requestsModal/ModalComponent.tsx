@@ -1,18 +1,13 @@
 import { useState } from 'react'
 import { SendBitcoinRequest } from '@rsksmart/rif-wallet-bitcoin'
 
-import {
-  SignMessageRequest,
-  SendTransactionRequest,
-  SignTypedDataRequest,
-} from 'lib/core'
+import { SignMessageRequest, SignTypedDataRequest } from 'lib/core'
 
 import SlideUpModal from 'components/slideUpModal/SlideUpModal'
-import { InjectSelectedWallet } from 'src/Context'
 import { colors } from 'src/styles'
 import { RequestWithBitcoin } from 'shared/types'
 
-import ReviewTransactionModal from './ReviewTransactionModal'
+import { ReviewTransactionContainer } from './ReviewRelayTransaction/ReviewTransactionContainer'
 import SignMessageModal from './SignMessageModal'
 import SignTypedDataModal from './SignTypedDataModal'
 import ConfirmBitcoinTransactionModal from './ConfirmBitcoinTransactionModal'
@@ -21,8 +16,6 @@ interface Props {
   request: RequestWithBitcoin
   closeModal: () => void
 }
-
-const ReviewTransactionInjected = InjectSelectedWallet(ReviewTransactionModal)
 
 const RequestTypeSwitch = (
   request: RequestWithBitcoin,
@@ -38,10 +31,7 @@ const RequestTypeSwitch = (
       )
     case 'sendTransaction':
       return (
-        <ReviewTransactionInjected
-          request={request as SendTransactionRequest}
-          closeModal={closeModal}
-        />
+        <ReviewTransactionContainer request={request} closeModal={closeModal} />
       )
     case 'signTypedData':
       return (
