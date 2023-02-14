@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo, useCallback } from 'react'
 import { BigNumber } from 'ethers'
 import {
   convertBtcToSatoshi,
-  convertSatoshiToBtcHuman,
   validateAmount,
   UnspentTransactionType,
 } from '@rsksmart/rif-wallet-bitcoin'
@@ -16,29 +15,35 @@ import {
 } from 'lib/utils'
 
 import { ISetAmountComponent } from './SetAmountComponent'
-import { BitcoinSetAmountPresentation } from './BitcoinSetAmountPresentation'
 import { usePaymentExecutorContext } from './usePaymentExecutor'
+import { TokenBalance } from 'components/token'
+import { sharedColors } from 'shared/constants'
+import { CurrencyValue } from 'components/token/TokenBalance'
+import { Typography } from 'components/index'
 
 interface BitcoinSetAmountContainerProps {
   setAmount: ISetAmountComponent['setAmount']
   token: BitcoinNetwork
   usdAmount: number | undefined
-  BitcoinSetAmountComponent?: React.FunctionComponent<{
-    amountToPay: string
-    handleAmountChange: (value: string, swap: boolean) => void
-    utxos?: UnspentTransactionType[]
-  }>
 }
 
 export const BitcoinSetAmountContainer = ({
   setAmount,
   token,
   usdAmount,
-  BitcoinSetAmountComponent = BitcoinSetAmountPresentation,
 }: BitcoinSetAmountContainerProps) => {
   const [utxos, setUtxos] = useState<Array<UnspentTransactionType>>([])
-  const [btcToPay, setAmountToPay] = useState<string>('')
-  const [usdToPay, setUsdToPay] = useState<string>('')
+  const [firstVal, setFirstVal] = useState<CurrencyValue>({
+    symbolType: 'icon',
+    symbol: token.symbol,
+    balance: '',
+  })
+  const [secondVal, setSecondVal] = useState<CurrencyValue>({
+    symbolType: 'text',
+    symbol: '$',
+    balance: '0.00',
+  })
+  const [amountToPay, setAmountToPay] = useState<string>('')
   const [error, setError] = useState<string>('')
   const { setUtxosGlobal, setBitcoinBalanceGlobal } =
     usePaymentExecutorContext()
@@ -51,7 +56,10 @@ export const BitcoinSetAmountContainer = ({
     })
   }, [setUtxosGlobal, token.bips])
 
-  const satoshisToPay = useMemo(() => convertBtcToSatoshi(btcToPay), [btcToPay])
+  const satoshisToPay = useMemo(
+    () => convertBtcToSatoshi(amountToPay),
+    [amountToPay],
+  )
 
   const balanceAvailable = useMemo(
     () =>
@@ -71,31 +79,35 @@ export const BitcoinSetAmountContainer = ({
   }, [fetchUtxo])
 
   const handleAmountChange = useCallback(
-    (amount: string, swap: boolean) => {
+    (amount: string) => {
       setError('')
+
       const amountSanitized = sanitizeMaxDecimalText(
         sanitizeDecimalText(amount),
       )
+      setFirstVal({ ...firstVal, ...{ balance: amountSanitized } })
 
       let amountToTransfer = 0
-      if (swap) {
-        setUsdToPay(amountSanitized)
-        const tokenConversion =
-          '' + convertUSDtoToken(Number(amountSanitized), usdAmount || 0, true)
-        setAmountToPay(tokenConversion)
-        amountToTransfer = Number(tokenConversion)
-      } else {
-        setUsdToPay(
-          '' +
-            convertTokenToUSD(
-              Number(amountSanitized) || 0,
-              usdAmount || 0,
-              true,
-            ),
-        )
+      if (firstVal.symbol === token.symbol) {
         amountToTransfer = Number(amountSanitized)
+        setAmountToPay(amountSanitized)
+        setSecondVal({
+          ...secondVal,
+          ...{
+            balance:
+              '' + convertTokenToUSD(amountToTransfer, usdAmount || 0, true),
+          },
+        })
+      } else {
+        amountToTransfer = Number(amountSanitized)
+        const newBalance = convertUSDtoToken(
+          amountToTransfer,
+          usdAmount || 0,
+          true,
+        )
+        setAmountToPay('' + newBalance)
+        setSecondVal({ ...secondVal, ...{ balance: '' + newBalance } })
       }
-
       const { message } = validateAmount(
         convertBtcToSatoshi('' + amountToTransfer),
         balanceAvailable,
@@ -104,7 +116,7 @@ export const BitcoinSetAmountContainer = ({
         setError(message)
       }
     },
-    [balanceAvailable, usdAmount],
+    [balanceAvailable, usdAmount, firstVal, secondVal, token.symbol],
   )
 
   // When amount to pay changes - update setAmount
@@ -113,23 +125,34 @@ export const BitcoinSetAmountContainer = ({
       satoshisToPay.toString(),
       validateAmount(satoshisToPay, balanceAvailable).isValid,
     )
-  }, [btcToPay, satoshisToPay, balanceAvailable, setAmount])
+  }, [amountToPay, satoshisToPay, balanceAvailable, setAmount])
 
-  const balanceAvailableString = useMemo(
-    () => convertSatoshiToBtcHuman(balanceAvailable),
-    [balanceAvailable],
-  )
+  const onSwap = () => {
+    const swap = { ...firstVal }
+    if (firstVal.balance === '') {
+      setFirstVal({ ...secondVal, ...{ balance: '' } })
+      setSecondVal({ ...swap, ...{ balance: '0.00' } })
+    } else {
+      setFirstVal(secondVal)
+      setSecondVal(swap)
+    }
+  }
 
   return (
-    <BitcoinSetAmountComponent
-      utxos={utxos}
-      amountToPay={btcToPay}
-      usdToPay={usdToPay}
-      usdAmount={usdAmount}
-      handleAmountChange={handleAmountChange}
-      symbol={token.symbol}
-      error={error}
-      available={balanceAvailableString}
-    />
+    <>
+      <TokenBalance
+        firstVal={firstVal}
+        secondVal={secondVal}
+        editable={true}
+        onSwap={onSwap}
+        color={sharedColors.tokenBackground}
+        handleAmountChange={handleAmountChange}
+      />
+      {error !== '' && (
+        <Typography type={'label'} style={{ color: sharedColors.danger }}>
+          {error}
+        </Typography>
+      )}
+    </>
   )
 }

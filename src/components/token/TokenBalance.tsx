@@ -63,7 +63,7 @@ export const TokenBalance = ({
             )}
             {firstVal.symbolType === 'text' && (
               <View style={styles.center}>
-                <Typography type="h1" style={{ color: sharedColors.white }}>
+                <Typography type={'h1'} style={{ color: sharedColors.white }}>
                   {firstVal.symbol}{' '}
                 </Typography>
               </View>
@@ -94,11 +94,11 @@ export const TokenBalance = ({
               </View>
             )}
             {secondVal.symbolType === 'text' && (
-              <Typography type="h3" style={styles.subTitle}>
+              <Typography type={'h3'} style={styles.subTitle}>
                 {secondVal.symbol}{' '}
               </Typography>
             )}
-            <Typography type="h3" style={styles.subTitle}>
+            <Typography type={'h3'} style={styles.subTitle}>
               {hide
                 ? '\u002A\u002A\u002A\u002A\u002A\u002A'
                 : secondVal.balance}
@@ -107,8 +107,8 @@ export const TokenBalance = ({
           <View>
             {to && (
               <View style={styles.container}>
-                <Typography type="h3">{t('To')} </Typography>
-                <Typography type="h3" style={{ color: sharedColors.primary }}>
+                <Typography type={'h3'}>{t('To')} </Typography>
+                <Typography type={'h3'} style={{ color: sharedColors.primary }}>
                   {to.name ? to.name : to.address}
                 </Typography>
               </View>
@@ -121,7 +121,7 @@ export const TokenBalance = ({
               <View style={styles.center}>
                 <Avatar size={30} name={to.name ? to.name : to.contactName} />
               </View>
-              <Typography type="h5">{to.contactName}</Typography>
+              <Typography type={'h5'}>{to.contactName}</Typography>
             </View>
           )}
           {hideable && (

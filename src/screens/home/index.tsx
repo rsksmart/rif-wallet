@@ -1,3 +1,4 @@
+import { BigNumber } from 'ethers'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
@@ -26,7 +27,6 @@ import { HomeBarButtonGroup } from 'screens/home/HomeBarButtonGroup'
 
 import PortfolioComponent from './PortfolioComponent'
 import { CurrencyValue, TokenBalance } from 'components/token/TokenBalance'
-import SendReceiveButtonComponent from './SendReceiveButtonComponent'
 import { getTokenColor } from './tokenColor'
 
 export const HomeScreen = ({
@@ -161,14 +161,25 @@ export const HomeScreen = ({
     setFirstVal({
       symbolType: 'icon',
       symbol,
-      balance: balanceToDisplay(balance, decimals, 5),
+      balance:
+        selected instanceof BitcoinNetwork
+          ? balance
+          : balanceToDisplay(balance, decimals, 5),
     })
     setSecondVal({
       symbolType: 'text',
       symbol: '$',
-      balance: balanceToUSDNumber(balance, decimals, price),
+      balance:
+        selected instanceof BitcoinNetwork
+          ? balanceToUSDNumber(
+              BigNumber.from(Math.round(Number(balance) * 10e8)),
+              8,
+              price,
+            )
+          : balanceToUSDNumber(balance, decimals, price),
     })
   }, [
+    selected,
     selectedToken,
     selectedToken.balance,
     selectedToken.decimals,
