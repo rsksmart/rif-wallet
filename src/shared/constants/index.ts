@@ -20,6 +20,14 @@ export const sharedColors = {
   primaryDark: '#4250CC',
 }
 
+export const tokenColors = {
+  rbtc: '#71BD35',
+  btc: '#FF9100',
+  rif: '#4B5CF0',
+  rdoc: '#11B55C',
+  generic: '#252525',
+}
+
 export const defaultIconSize = 16
 export const noop = () => ({})
 
