@@ -1,8 +1,13 @@
 import { StyleSheet, View, ButtonProps, ColorValue } from 'react-native'
+import { IconProps } from 'react-native-vector-icons/Icon'
 import { AppTouchable } from 'components/appTouchable'
 import { ViewStyle } from 'react-native'
 import { Typography } from 'src/components'
-import { sharedColors } from 'shared/constants'
+import {
+  defaultFontSize,
+  defaultIconSize,
+  sharedColors,
+} from 'shared/constants'
 import Icon from 'react-native-vector-icons/FontAwesome'
 
 const getBackgroundVariety = (
@@ -60,8 +65,8 @@ interface AppButtonProps extends ButtonProps {
   widthVariety?: AppButtonWidthVarietyEnum
   cornerVariety?: AppButtonCornerVarietyEnum
   width?: number
-  leftIcon?: string
-  rightIcon?: string
+  leftIcon?: IconProps
+  rightIcon?: IconProps
   style?: ViewStyle
   disabled?: boolean
 }
@@ -100,7 +105,11 @@ export const AppButton = ({
       <View style={[styles.content, getJustifyContent() as ViewStyle]}>
         {leftIcon ? (
           <View style={styles.iconContainer}>
-            <Icon name={leftIcon} size={16} color={textColor} />
+            <Icon
+              name={leftIcon.name}
+              size={leftIcon.size ? leftIcon.size : defaultIconSize}
+              color={leftIcon.color ? leftIcon.color : textColor}
+            />
           </View>
         ) : null}
         <View style={styles.textContainer}>
@@ -113,7 +122,11 @@ export const AppButton = ({
         </View>
         {rightIcon ? (
           <View style={styles.iconContainer}>
-            <Icon name={rightIcon} size={16} color={textColor} />
+            <Icon
+              name={rightIcon.name}
+              size={rightIcon.size ? rightIcon.size : defaultIconSize}
+              color={rightIcon.color ? rightIcon.color : textColor}
+            />
           </View>
         ) : null}
       </View>
@@ -140,6 +153,6 @@ const styles = StyleSheet.create({
   },
   text: {
     paddingTop: 4,
-    fontSize: 16,
+    fontSize: defaultFontSize,
   },
 })
