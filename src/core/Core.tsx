@@ -132,8 +132,6 @@ export const Core = () => {
 
       const rifWalletAuth = new RifWalletServicesAuth(
         publicAxios,
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         currentWallet, // @TODO consume RIFWallet from rif-wallet-libs (RIFWallet.ts is different from the lib that we're using)
         {
           authClient,

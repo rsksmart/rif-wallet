@@ -2019,7 +2019,7 @@
     axios "^1.2.3"
     ethers "^5.7.2"
 
-"@rsksmart/rif-wallet-abi-enhancer@^1.0.0":
+"@rsksmart/rif-wallet-abi-enhancer@*", "@rsksmart/rif-wallet-abi-enhancer@^1.0.0":
   version "1.0.0"
   resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-abi-enhancer/1.0.0/6f6838ac92fb4be65a225dca5f8c9ccfaa137a84#6f6838ac92fb4be65a225dca5f8c9ccfaa137a84"
   integrity sha512-7epvf5fjV5/f4uJ8HCllvgdc4Nw0HP0BaSgZr+XhlsYDcN5ikdil7EwP6wFVYGY8qKAPY1HIXgqVZ+qyUK3NpA==
@@ -2045,7 +2045,7 @@
     "@ethersproject/units" "^5.7.0"
     "@rsksmart/rif-wallet-core" "*"
 
-"@rsksmart/rif-wallet-bitcoin@^1.0.1":
+"@rsksmart/rif-wallet-bitcoin@*", "@rsksmart/rif-wallet-bitcoin@^1.0.1":
   version "1.0.1"
   resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-bitcoin/1.0.1/128269accae2370050d15e7920122683d2bcf9d4#128269accae2370050d15e7920122683d2bcf9d4"
   integrity sha512-gFRTiEr8RFxDuR2xb0uBOrcrqMiEpMxXk4aHjx5vXBHATaStwSbffsqblJZK2bEcc66ieT5JwjOhUlqkZc/UZg==
@@ -2074,6 +2074,20 @@
   integrity sha512-jegJlcuexsNy18TXs12AKi1lMfZ5a6v+JEZONdO/jYE8ZrcOuyzQ+RFXZvH/uZKsUexZTfs+ty8yaFHWG2huvg==
   dependencies:
     "@rsksmart/rsk-utils" "^1.1.0"
+
+"@rsksmart/rif-wallet-services@^1.0.0":
+  version "1.0.0"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-services/1.0.0/9fff3ddb852fd52471bb0433f80e351423d5e86f#9fff3ddb852fd52471bb0433f80e351423d5e86f"
+  integrity sha512-F1r8Rr7/jbaWQbLbFbV4CIjNkhBe+fg62J4J3iKnLMzjvgM+x7H9s8rLUNsm3lIY2w4kl21ocBBCPW/IdlnyLQ==
+  dependencies:
+    "@ethersproject/contracts" "^5.7.0"
+    "@rsksmart/rif-wallet-abi-enhancer" "*"
+    "@rsksmart/rif-wallet-bitcoin" "*"
+    "@rsksmart/rif-wallet-core" "*"
+    axios "^0.27.2"
+    axios-auth-refresh "^3.3.4"
+    events "^1.1.1"
+    socket.io-client "^4.4.1"
 
 "@rsksmart/rif-wallet-token@*", "@rsksmart/rif-wallet-token@^1.0.1":
   version "1.0.1"
