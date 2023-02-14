@@ -1,10 +1,45 @@
-import { StyleSheet, View, ButtonProps } from 'react-native'
-import { useCallback } from 'react'
+import { StyleSheet, View, ButtonProps, ColorValue } from 'react-native'
 import { AppTouchable } from 'components/appTouchable'
 import { ViewStyle } from 'react-native'
 import { Typography } from 'src/components'
 import { sharedColors } from 'shared/constants'
 import Icon from 'react-native-vector-icons/FontAwesome'
+
+const getBackgroundVariety = (
+  backgroundVariety: AppButtonBackgroundVarietyEnum,
+  color: ColorValue,
+): ViewStyle => {
+  switch (backgroundVariety) {
+    case AppButtonBackgroundVarietyEnum.OUTLINED:
+      return { borderColor: color, borderWidth: 1 }
+    case AppButtonBackgroundVarietyEnum.GHOST:
+      return { borderColor: color }
+    default:
+      return { backgroundColor: color }
+  }
+}
+
+const getWidthVariety = (
+  widthVariety: AppButtonWidthVarietyEnum,
+): ViewStyle => {
+  switch (widthVariety) {
+    case AppButtonWidthVarietyEnum.FULL:
+      return { width: '100%' }
+    default:
+      return {}
+  }
+}
+
+const getCornerVariety = (
+  cornerVariety: AppButtonCornerVarietyEnum,
+): ViewStyle => {
+  switch (cornerVariety) {
+    case AppButtonCornerVarietyEnum.SQUARE:
+      return { borderRadius: 10 }
+    default:
+      return { borderRadius: 25 }
+  }
+}
 
 export enum AppButtonBackgroundVarietyEnum {
   DEFAULT = 'DEFAULT',
@@ -29,7 +64,6 @@ interface AppButtonProps extends ButtonProps {
   rightIcon?: string
   style?: ViewStyle
 }
-
 const AppButton = ({
   title,
   disabled,
@@ -45,35 +79,6 @@ const AppButton = ({
   rightIcon,
   style,
 }: AppButtonProps) => {
-  const getBackgroundVariety = useCallback(() => {
-    switch (backgroundVariety) {
-      case AppButtonBackgroundVarietyEnum.OUTLINED:
-        return { borderColor: color, borderWidth: 1 }
-      case AppButtonBackgroundVarietyEnum.GHOST:
-        return { borderColor: color }
-      default:
-        return { backgroundColor: color }
-    }
-  }, [backgroundVariety, color])
-
-  const getWidthVariety = useCallback(() => {
-    switch (widthVariety) {
-      case AppButtonWidthVarietyEnum.FULL:
-        return { width: '100%' }
-      default:
-        return {}
-    }
-  }, [widthVariety])
-
-  const getCornerVariety = useCallback(() => {
-    switch (cornerVariety) {
-      case AppButtonCornerVarietyEnum.SQUARE:
-        return { borderRadius: 10 }
-      default:
-        return { borderRadius: 25 }
-    }
-  }, [cornerVariety])
-
   const getJustifyContent = () =>
     leftIcon || rightIcon
       ? { justifyContent: 'space-between' }
@@ -83,9 +88,9 @@ const AppButton = ({
     <AppTouchable
       width={width}
       style={[
-        getBackgroundVariety(),
-        getCornerVariety(),
-        getWidthVariety(),
+        getBackgroundVariety(backgroundVariety, color),
+        getWidthVariety(widthVariety),
+        getCornerVariety(cornerVariety),
         style,
       ]}
       onPress={disabled ? undefined : onPress}
