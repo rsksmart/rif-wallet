@@ -46,6 +46,17 @@ const getCornerVariety = (
   }
 }
 
+const getJustifyContent = ({
+  leftIcon,
+  rightIcon,
+}: {
+  leftIcon?: IconProps
+  rightIcon?: IconProps
+}): ViewStyle =>
+  leftIcon || rightIcon
+    ? { justifyContent: 'space-between' }
+    : { justifyContent: 'center' }
+
 export enum AppButtonBackgroundVarietyEnum {
   DEFAULT = 'DEFAULT',
   OUTLINED = 'OUTLINED',
@@ -85,11 +96,6 @@ export const AppButton = ({
   rightIcon,
   style,
 }: AppButtonProps) => {
-  const getJustifyContent = () =>
-    leftIcon || rightIcon
-      ? { justifyContent: 'space-between' }
-      : { justifyContent: 'center' }
-
   return (
     <AppTouchable
       width={width}
@@ -102,7 +108,8 @@ export const AppButton = ({
       onPress={onPress}
       disabled={disabled}
       accessibilityLabel={accessibilityLabel}>
-      <View style={[styles.content, getJustifyContent() as ViewStyle]}>
+      <View
+        style={[styles.content, getJustifyContent({ leftIcon, rightIcon })]}>
         {leftIcon ? (
           <View style={styles.iconContainer}>
             <Icon
