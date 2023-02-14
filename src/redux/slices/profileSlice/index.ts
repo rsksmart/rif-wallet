@@ -96,17 +96,18 @@ const profileSlice = createSlice({
   },
 })
 
-const commitment = async (
+const commitment = (
   rnsProcessor: RnsProcessor,
   alias: string,
 ): Promise<ProfileStatus> => {
   return new Promise(resolve => {
-    const intervalId = setInterval(async () => {
-      const canRevealResponse = await rnsProcessor.canReveal(alias)
-      if (canRevealResponse === DomainRegistrationEnum.COMMITMENT_READY) {
-        clearInterval(intervalId)
-        resolve(ProfileStatus.READY_TO_PURCHASE)
-      }
+    const intervalId = setInterval(() => {
+      rnsProcessor.canReveal(alias).then(canRevealResponse => {
+        if (canRevealResponse === DomainRegistrationEnum.COMMITMENT_READY) {
+          clearInterval(intervalId)
+          resolve(ProfileStatus.READY_TO_PURCHASE)
+        }
+      })
     }, 1000)
   })
 }
