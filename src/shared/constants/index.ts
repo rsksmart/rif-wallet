@@ -27,7 +27,7 @@ export const tokenColors = {
   rdoc: '#11B55C',
   generic: '#252525',
 }
-
+export const defaultFontSize = 16
 export const defaultIconSize = 16
 export const noop = () => ({})
 
