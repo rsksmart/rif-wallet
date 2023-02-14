@@ -40,12 +40,12 @@ export const HomeScreen = ({
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
     undefined,
   )
-  const [firstVal, setFirstVal] = useState<CurrencyValue>({
+  const [firstValue, setFirstValue] = useState<CurrencyValue>({
     balance: '0.00',
     symbol: '',
     symbolType: 'text',
   })
-  const [secondVal, setSecondVal] = useState<CurrencyValue>({
+  const [secondValue, setSecondValue] = useState<CurrencyValue>({
     balance: '0.00',
     symbol: '',
     symbolType: 'text',
@@ -158,7 +158,7 @@ export const HomeScreen = ({
 
   useEffect(() => {
     const { symbol, balance, decimals, price } = selectedToken
-    setFirstVal({
+    setFirstValue({
       symbolType: 'icon',
       symbol,
       balance:
@@ -166,7 +166,7 @@ export const HomeScreen = ({
           ? balance
           : balanceToDisplay(balance, decimals, 5),
     })
-    setSecondVal({
+    setSecondValue({
       symbolType: 'text',
       symbol: '$',
       balance:
@@ -194,8 +194,8 @@ export const HomeScreen = ({
     <View style={styles.container}>
       <View style={styles.parent}>
         <TokenBalance
-          firstVal={firstVal}
-          secondVal={secondVal}
+          firstValue={firstValue}
+          secondValue={secondValue}
           hideable={true}
           hide={hide}
           onHide={onHide}

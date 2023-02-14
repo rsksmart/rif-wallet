@@ -14,12 +14,12 @@ export const SetAmountRifComponent = ({
   token,
   usdAmount,
 }: ISetAmountComponent) => {
-  const [firstVal, setFirstVal] = useState<CurrencyValue>({
+  const [firstValue, setFirstValue] = useState<CurrencyValue>({
     balance: '',
     symbol: token.symbol,
     symbolType: 'icon',
   })
-  const [secondVal, setSecondVal] = useState<CurrencyValue>({
+  const [secondValue, setSecondValue] = useState<CurrencyValue>({
     balance: '0.00',
     symbol: '$',
     symbolType: 'text',
@@ -28,7 +28,7 @@ export const SetAmountRifComponent = ({
   useEffect(() => {
     const icon = { symbol: token.symbol, symbolType: 'icon' }
     const text = { symbol: '$', symbolType: 'text' }
-    setFirstVal(fv => {
+    setFirstValue(fv => {
       if (fv.symbolType === 'icon') {
         return { ...icon, ...{ balance: '' } }
       } else {
@@ -36,7 +36,7 @@ export const SetAmountRifComponent = ({
       }
     })
 
-    setSecondVal(sv => {
+    setSecondValue(sv => {
       if (sv.symbolType === 'text') {
         return { ...text, ...{ balance: '0.00' } }
       } else {
@@ -46,24 +46,24 @@ export const SetAmountRifComponent = ({
   }, [token.symbol])
 
   const onSwap = () => {
-    const swap = { ...firstVal }
-    if (firstVal.balance === '') {
-      setFirstVal({ ...secondVal, ...{ balance: '' } })
-      setSecondVal({ ...swap, ...{ balance: '0.00' } })
+    const swap = { ...firstValue }
+    if (firstValue.balance === '') {
+      setFirstValue({ ...secondValue, ...{ balance: '' } })
+      setSecondValue({ ...swap, ...{ balance: '0.00' } })
     } else {
-      setFirstVal(secondVal)
-      setSecondVal(swap)
+      setFirstValue(secondValue)
+      setSecondValue(swap)
     }
   }
   const handleAmountChange = useCallback(
     (text: string) => {
       const amountText = sanitizeDecimalText(text)
       const amountToTransfer = Number(amountText)
-      setFirstVal({ ...firstVal, ...{ balance: amountText } })
-      if (firstVal.symbol === token.symbol) {
+      setFirstValue({ ...firstValue, ...{ balance: amountText } })
+      if (firstValue.symbol === token.symbol) {
         setAmount(amountText, true)
-        setSecondVal({
-          ...secondVal,
+        setSecondValue({
+          ...secondValue,
           ...{
             balance:
               '' + convertTokenToUSD(amountToTransfer, usdAmount || 0, true),
@@ -75,17 +75,17 @@ export const SetAmountRifComponent = ({
           usdAmount || 0,
           true,
         )
-        setSecondVal({ ...secondVal, ...{ balance: '' + newBalance } })
+        setSecondValue({ ...secondValue, ...{ balance: '' + newBalance } })
         setAmount('' + newBalance, true)
       }
     },
-    [firstVal, secondVal, setAmount, token.symbol, usdAmount],
+    [firstValue, secondValue, setAmount, token.symbol, usdAmount],
   )
   return (
     <>
       <TokenBalance
-        firstVal={firstVal}
-        secondVal={secondVal}
+        firstValue={firstValue}
+        secondValue={secondValue}
         editable={true}
         onSwap={onSwap}
         color={sharedColors.tokenBackground}

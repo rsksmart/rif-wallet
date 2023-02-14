@@ -1,13 +1,13 @@
 import { StyleSheet, TextInput, View } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { useTranslation } from 'react-i18next'
 
-import { RegularText, Typography } from 'components/index'
+import { Typography } from 'components/index'
 import { HideShowIcon } from 'components/icons'
-import { sharedColors } from 'shared/constants'
+import { noop, sharedColors } from 'shared/constants'
 import { TokenImage } from 'screens/home/TokenImage'
 import { Avatar } from 'components/avatar'
+import { AppTouchable } from 'components/appTouchable'
 
 interface Address {
   address: string
@@ -22,8 +22,8 @@ export interface CurrencyValue {
 }
 
 interface Props {
-  firstVal: CurrencyValue
-  secondVal: CurrencyValue
+  firstValue: CurrencyValue
+  secondValue: CurrencyValue
   color: string
   hide?: boolean
   onSwap?: () => void
@@ -36,16 +36,16 @@ interface Props {
 }
 
 export const TokenBalance = ({
-  firstVal,
-  secondVal,
+  firstValue,
+  secondValue,
   change,
   color,
   hide = false,
   editable = false,
-  onSwap,
+  onSwap = noop,
   hideable = false,
-  onHide,
-  handleAmountChange,
+  onHide = noop,
+  handleAmountChange = noop,
   to,
 }: Props) => {
   const badgeColor = change && change >= 0 ? styles.greenBadge : styles.redBadge
@@ -56,26 +56,22 @@ export const TokenBalance = ({
       <View style={styles.container}>
         <View style={styles.grow}>
           <View style={styles.container}>
-            {firstVal.symbolType === 'icon' && (
+            {firstValue.symbolType === 'icon' && (
               <View style={[styles.tokenIcon, styles.center]}>
-                <TokenImage symbol={firstVal.symbol} height={24} width={24} />
+                <TokenImage symbol={firstValue.symbol} height={24} width={24} />
               </View>
             )}
-            {firstVal.symbolType === 'text' && (
+            {firstValue.symbolType === 'text' && (
               <View style={styles.center}>
                 <Typography type={'h1'} style={{ color: sharedColors.white }}>
-                  {firstVal.symbol}{' '}
+                  {firstValue.symbol}{' '}
                 </Typography>
               </View>
             )}
 
             <TextInput
-              onChangeText={(text: string) => {
-                if (handleAmountChange) {
-                  handleAmountChange(text)
-                }
-              }}
-              value={hide ? '\u002A\u002A\u002A\u002A' : firstVal.balance}
+              onChangeText={handleAmountChange}
+              value={hide ? '\u002A\u002A\u002A\u002A' : firstValue.balance}
               placeholder="0.00"
               keyboardType="numeric"
               testID={'Amount.Input'}
@@ -88,20 +84,24 @@ export const TokenBalance = ({
             style={
               editable ? [styles.container] : [styles.ident, styles.container]
             }>
-            {secondVal.symbolType === 'icon' && (
+            {secondValue.symbolType === 'icon' && (
               <View style={styles.tokenSubIcon}>
-                <TokenImage symbol={secondVal.symbol} height={16} width={16} />
+                <TokenImage
+                  symbol={secondValue.symbol}
+                  height={16}
+                  width={16}
+                />
               </View>
             )}
-            {secondVal.symbolType === 'text' && (
+            {secondValue.symbolType === 'text' && (
               <Typography type={'h3'} style={styles.subTitle}>
-                {secondVal.symbol}{' '}
+                {hide ? '' : secondValue.symbol}
               </Typography>
             )}
             <Typography type={'h3'} style={styles.subTitle}>
               {hide
                 ? '\u002A\u002A\u002A\u002A\u002A\u002A'
-                : secondVal.balance}
+                : secondValue.balance}
             </Typography>
           </View>
           <View>
@@ -116,22 +116,19 @@ export const TokenBalance = ({
           </View>
         </View>
         <View>
-          {to && (
+          {to ? (
             <View style={styles.contactCard}>
               <View style={styles.center}>
                 <Avatar size={30} name={to.name ? to.name : to.contactName} />
               </View>
               <Typography type={'h5'}>{to.contactName}</Typography>
             </View>
-          )}
+          ) : null}
           {hideable && (
             <View style={styles.center}>
-              <TouchableOpacity
-                onPress={() => {
-                  if (onHide) {
-                    onHide()
-                  }
-                }}
+              <AppTouchable
+                width={46}
+                onPress={onHide}
                 accessibilityLabel="hide">
                 <View style={styles.badge}>
                   <HideShowIcon
@@ -141,17 +138,14 @@ export const TokenBalance = ({
                     isHidden={hide}
                   />
                 </View>
-              </TouchableOpacity>
+              </AppTouchable>
             </View>
           )}
           {editable && (
             <View style={styles.center}>
-              <TouchableOpacity
-                onPress={() => {
-                  if (onSwap) {
-                    onSwap()
-                  }
-                }}
+              <AppTouchable
+                width={41}
+                onPress={onSwap}
                 accessibilityLabel="swap">
                 <View style={styles.badge}>
                   <Icon
@@ -160,7 +154,7 @@ export const TokenBalance = ({
                     size={25}
                   />
                 </View>
-              </TouchableOpacity>
+              </AppTouchable>
             </View>
           )}
         </View>
@@ -168,9 +162,9 @@ export const TokenBalance = ({
       {!!change && (
         <View style={styles.changeRow}>
           <View style={{ ...styles.badge, ...badgeColor }}>
-            <RegularText style={styles.badgeText}>
+            <Typography type={'h5'} style={styles.badgeText}>
               {`${change > 0 ? '+' : ''}${change}%`}
-            </RegularText>
+            </Typography>
           </View>
         </View>
       )}

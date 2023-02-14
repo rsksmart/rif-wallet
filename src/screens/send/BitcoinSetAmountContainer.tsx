@@ -33,12 +33,12 @@ export const BitcoinSetAmountContainer = ({
   usdAmount,
 }: BitcoinSetAmountContainerProps) => {
   const [utxos, setUtxos] = useState<Array<UnspentTransactionType>>([])
-  const [firstVal, setFirstVal] = useState<CurrencyValue>({
+  const [firstValue, setFirstValue] = useState<CurrencyValue>({
     symbolType: 'icon',
     symbol: token.symbol,
     balance: '',
   })
-  const [secondVal, setSecondVal] = useState<CurrencyValue>({
+  const [secondValue, setSecondValue] = useState<CurrencyValue>({
     symbolType: 'text',
     symbol: '$',
     balance: '0.00',
@@ -85,14 +85,14 @@ export const BitcoinSetAmountContainer = ({
       const amountSanitized = sanitizeMaxDecimalText(
         sanitizeDecimalText(amount),
       )
-      setFirstVal({ ...firstVal, ...{ balance: amountSanitized } })
+      setFirstValue({ ...firstValue, ...{ balance: amountSanitized } })
 
       let amountToTransfer = 0
-      if (firstVal.symbol === token.symbol) {
+      if (firstValue.symbol === token.symbol) {
         amountToTransfer = Number(amountSanitized)
         setAmountToPay(amountSanitized)
-        setSecondVal({
-          ...secondVal,
+        setSecondValue({
+          ...secondValue,
           ...{
             balance:
               '' + convertTokenToUSD(amountToTransfer, usdAmount || 0, true),
@@ -106,7 +106,7 @@ export const BitcoinSetAmountContainer = ({
           true,
         )
         setAmountToPay('' + newBalance)
-        setSecondVal({ ...secondVal, ...{ balance: '' + newBalance } })
+        setSecondValue({ ...secondValue, ...{ balance: '' + newBalance } })
       }
       const { message } = validateAmount(
         convertBtcToSatoshi('' + amountToTransfer),
@@ -116,7 +116,7 @@ export const BitcoinSetAmountContainer = ({
         setError(message)
       }
     },
-    [balanceAvailable, usdAmount, firstVal, secondVal, token.symbol],
+    [balanceAvailable, usdAmount, firstValue, secondValue, token.symbol],
   )
 
   // When amount to pay changes - update setAmount
@@ -128,21 +128,21 @@ export const BitcoinSetAmountContainer = ({
   }, [amountToPay, satoshisToPay, balanceAvailable, setAmount])
 
   const onSwap = () => {
-    const swap = { ...firstVal }
-    if (firstVal.balance === '') {
-      setFirstVal({ ...secondVal, ...{ balance: '' } })
-      setSecondVal({ ...swap, ...{ balance: '0.00' } })
+    const swap = { ...firstValue }
+    if (firstValue.balance === '') {
+      setFirstValue({ ...secondValue, ...{ balance: '' } })
+      setSecondValue({ ...swap, ...{ balance: '0.00' } })
     } else {
-      setFirstVal(secondVal)
-      setSecondVal(swap)
+      setFirstValue(secondValue)
+      setSecondValue(swap)
     }
   }
 
   return (
     <>
       <TokenBalance
-        firstVal={firstVal}
-        secondVal={secondVal}
+        firstValue={firstValue}
+        secondValue={secondValue}
         editable={true}
         onSwap={onSwap}
         color={sharedColors.tokenBackground}
