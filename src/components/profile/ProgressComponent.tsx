@@ -7,34 +7,34 @@ import { ProfileStatus } from 'navigation/profileNavigator/types'
 import { useCallback } from 'react'
 
 interface ProgressBarProps {
+  status: ProfileStatus
   width?: number
   height?: number
-  status: ProfileStatus
 }
 
 export const ProgressComponent = ({
+  status,
   width = 18,
   height = 7,
-  status,
 }: ProgressBarProps) => {
   const getColors = useCallback(() => {
     switch (status) {
       case ProfileStatus.REQUESTING:
         return {
           start: sharedColors.warning,
-          end: sharedColors.inputActiveColor,
+          end: sharedColors.inputActive,
         }
       case ProfileStatus.READY_TO_PURCHASE:
         return {
           start: sharedColors.success,
-          end: sharedColors.inputActiveColor,
+          end: sharedColors.inputActive,
         }
       case ProfileStatus.PURCHASING:
         return { start: sharedColors.success, end: sharedColors.warning }
     }
     return {
-      start: sharedColors.inputActiveColor,
-      end: sharedColors.inputActiveColor,
+      start: sharedColors.inputActive,
+      end: sharedColors.inputActive,
     }
   }, [status])
   const { start, end } = getColors()

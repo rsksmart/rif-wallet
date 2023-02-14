@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { StyleSheet, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
 import { StackHeaderProps } from '@react-navigation/stack'
 import OIcon from 'react-native-vector-icons/Octicons'
@@ -10,6 +10,7 @@ import { selectActiveWallet, selectTopColor } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { ProfileHandler } from './ProfileHandler'
 import { sharedColors } from 'shared/constants'
+import { AppTouchable } from 'components/appTouchable'
 
 type HeaderProps = BottomTabHeaderProps | StackHeaderProps
 
@@ -36,17 +37,20 @@ export const AppHeader = ({
   return !isShown ? null : (
     <View style={[styles.row, { backgroundColor: topColor }]}>
       {navigation.canGoBack() ? (
-        <TouchableOpacity onPress={navigation.goBack}>
+        <AppTouchable width={24} onPress={navigation.goBack}>
           <ChevronLeftIcon color={'white'} />
-        </TouchableOpacity>
+        </AppTouchable>
       ) : null}
       <View style={[styles.column, styles.walletInfo]}>
         {wallet && <ProfileHandler wallet={wallet} navigation={navigation} />}
       </View>
       <View style={styles.columnMenu}>
-        <TouchableOpacity onPress={openMenu} accessibilityLabel="settings">
+        <AppTouchable
+          width={16}
+          onPress={openMenu}
+          accessibilityLabel="settings">
           <OIcon name="gear" size={16} color={sharedColors.white} />
-        </TouchableOpacity>
+        </AppTouchable>
       </View>
     </View>
   )
