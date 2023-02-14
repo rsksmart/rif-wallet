@@ -56,7 +56,6 @@ export const Avatar = ({
       {icon && !imageSource ? icon : null}
       {!icon && imageSource ? (
         <Image
-          style={StyleSheet.absoluteFill}
           source={imageSource}
           resizeMethod={'resize'}
           resizeMode={'center'}
