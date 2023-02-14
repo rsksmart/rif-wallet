@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Image, ScrollView, StyleSheet, TextInput, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { CompositeScreenProps } from '@react-navigation/native'
+import { FormProvider, useForm } from 'react-hook-form'
 
 import { SearchIcon } from 'components/icons/SearchIcon'
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
@@ -25,6 +26,7 @@ import { Contact } from 'store/slices/contactsSlice/types'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { ContactsStackScreenProps } from '../index'
 import { ContactRow } from './ContactRow'
+import { Search } from 'components/input/search'
 
 export type ContactsListScreenProps = CompositeScreenProps<
   ContactsStackScreenProps<contactsStackRouteNames.ContactsList>,
@@ -32,6 +34,13 @@ export type ContactsListScreenProps = CompositeScreenProps<
 >
 
 export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
+  const methods = useForm({
+    mode: 'onChange',
+    defaultValues: {
+      search: '',
+    },
+  })
+  const { resetField } = methods
   const { t } = useTranslation()
   const { contacts, selectedContact } = useAppSelector(
     getContactsAsArrayAndSelected,
@@ -114,6 +123,13 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
           borderRadius={20}
         />
       </View>
+      <FormProvider {...methods}>
+        <Search
+          inputName={'search'}
+          resetValue={() => resetField('search')}
+          placeholder={t('search_placeholder')}
+        />
+      </FormProvider>
       {selectedContact && (
         <ConfirmationModal
           isVisible={isDeleteContactModalVisible}

@@ -91,6 +91,7 @@ const resources = {
       Delete: 'Delete',
       Cancel: 'Cancel',
       TOTAL: 'TOTAL',
+      search_placeholder: 'Search by username or email',
     },
   },
   es: {

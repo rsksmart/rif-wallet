@@ -24,9 +24,9 @@ import { Typography } from '../typography'
 
 export { CustomInput } from './CustomInput'
 
-interface Props extends TextInputProps {
-  label: string
+export interface InputProps extends TextInputProps {
   inputName: string
+  label?: string
   resetValue?: () => void
   onLeftIconPress?: () => void
   onRightIconPress?: () => void
@@ -54,7 +54,7 @@ export const Input = ({
   containerStyle,
   inputStyle,
   labelStyle,
-}: Props) => {
+}: InputProps) => {
   const { control } = useFormContext()
   const [focused, setFocused] = useState<boolean>(false)
 
@@ -78,9 +78,11 @@ export const Input = ({
             containerStyle,
           ]}>
           <View style={styles.contentContainer}>
-            <Typography style={[styles.label, labelStyle]} type={'body3'}>
-              {focused || !!value || isReadOnly ? label : ''}
-            </Typography>
+            {label ? (
+              <Typography style={[styles.label, labelStyle]} type={'body3'}>
+                {focused || !!value || isReadOnly ? label : ''}
+              </Typography>
+            ) : null}
             <View style={styles.valueContainer}>
               {leftIcon && 'name' in leftIcon ? (
                 <Pressable
@@ -158,13 +160,14 @@ const styles = StyleSheet.create({
     paddingRight: 24,
     marginTop: 12,
     borderRadius: 10,
+    minHeight: 54,
   }),
   containerActive: castStyle.view({
     backgroundColor: sharedColors.inputActive,
   }),
   contentContainer: castStyle.view({
     flex: 1,
-    paddingBottom: 14,
+    paddingBottom: 18,
   }),
   label: castStyle.text({
     marginTop: 10,
