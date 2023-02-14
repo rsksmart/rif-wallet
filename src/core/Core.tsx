@@ -9,6 +9,8 @@ import { defaultChainId } from 'core/config'
 import {
   RifWalletServicesAuth,
   RifWalletServicesFetcher,
+  onSetInternetCredentials,
+  onResetInternetCredentials,
 } from '@rsksmart/rif-wallet-services'
 
 import {
@@ -139,8 +141,10 @@ export const Core = () => {
           onHasSignUp: hasSignUP,
           onDeleteSignUp: deleteSignUp,
           onSaveSignUp: saveSignUp,
-          onSetInternetCredentials: Keychain.setInternetCredentials,
-          onResetInternetCredentials: Keychain.resetInternetCredentials,
+          onSetInternetCredentials:
+            Keychain.setInternetCredentials as unknown as onSetInternetCredentials,
+          onResetInternetCredentials:
+            Keychain.resetInternetCredentials as unknown as onResetInternetCredentials,
         },
       )
       rifWalletAuth.login().then(({ accessToken, refreshToken }) => {
@@ -150,7 +154,8 @@ export const Core = () => {
           refreshToken,
           {
             defaultChainId,
-            onSetInternetCredentials: Keychain.setInternetCredentials, // @TODO verify how to create a function that will receive any
+            onSetInternetCredentials:
+              Keychain.setInternetCredentials as unknown as onSetInternetCredentials,
             resultsLimit: 10,
           },
         )
