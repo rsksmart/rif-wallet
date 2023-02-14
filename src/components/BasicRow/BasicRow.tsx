@@ -33,8 +33,8 @@ interface BasicRowProps {
   label: string
   secondaryLabel: string
   amount: string
-  imageSource: ImageSourcePropType
   avatarName: string
+  imageSource?: ImageSourcePropType
   status?: StatusTextProps['status']
   error?: string
   txType?: TransactionTypeEnum
@@ -45,7 +45,7 @@ export const BasicRow = ({
   secondaryLabel,
   status,
   error,
-  imageSource = require('@rsksmart/rsk-contract-metadata/images/rif.png'),
+  imageSource,
   amount,
   txType,
   usdAmount,
@@ -56,7 +56,7 @@ export const BasicRow = ({
       <Avatar
         style={styles.imageStyle}
         imageSource={imageSource}
-        size={32}
+        size={40}
         name={avatarName}
       />
     </View>
