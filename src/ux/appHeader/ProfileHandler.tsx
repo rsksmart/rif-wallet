@@ -22,7 +22,7 @@ interface Props {
 export const ProfileHandler = ({ navigation }: Props) => {
   const profile = useAppSelector(selectProfile)
   const { t } = useTranslation()
-  const profileCreated = !!profile
+  const profileCreated = profile.status === ProfileStatus.USER
 
   const routeNextStep = async () => {
     navigation.navigate(rootTabsRouteNames.Profile, {
