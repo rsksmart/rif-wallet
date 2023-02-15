@@ -4,6 +4,8 @@ import { castStyle } from '../utils'
 export const testIDs = {
   wordInput: 'input.wordInput',
   indexLabel: 'view.indexLabel',
+  hide: 'hide',
+  swap: 'swap',
 }
 
 export const sharedColors = {
@@ -19,6 +21,8 @@ export const sharedColors = {
   borderColor: '#575757',
   primaryDark: '#4250CC',
   labelLight: '#B8B8B8',
+  subTitle: '#FBFBFB',
+  tokenBackground: '#1E1E1E',
 }
 
 export const tokenColors = {
@@ -28,7 +32,7 @@ export const tokenColors = {
   rdoc: '#11B55C',
   generic: '#252525',
 }
-
+export const defaultFontSize = 16
 export const defaultIconSize = 16
 export const noop = () => ({})
 
