@@ -67,7 +67,9 @@ export const TransactionForm = ({
 
   const isValidTransaction = amount.isValid && to.isValid
 
-  const tokenQuote = tokenPrices[selectedToken.contractAddress]?.price
+  const tokenQuote = selectedToken.contractAddress.startsWith('BITCOIN')
+    ? tokenPrices.BTC.price
+    : tokenPrices[selectedToken.contractAddress]?.price
 
   const handleAmountChange = useCallback(
     (newAmount: string, isValid: boolean) => {

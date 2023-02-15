@@ -1,8 +1,9 @@
+import { BigNumber } from 'ethers'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 
-import { balanceToDisplay, getChainIdByType } from 'lib/utils'
+import { balanceToDisplay, convertBalance, getChainIdByType } from 'lib/utils'
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { toChecksumAddress } from 'components/address/lib'
@@ -11,7 +12,6 @@ import {
   homeStackRouteNames,
   HomeStackScreenProps,
 } from 'navigation/homeNavigator/types'
-import { selectAccounts } from 'store/slices/accountsSlice/selector'
 import { colors } from 'src/styles'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
@@ -22,7 +22,7 @@ import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { HomeBarButtonGroup } from 'screens/home/HomeBarButtonGroup'
 
 import PortfolioComponent from './PortfolioComponent'
-import SelectedTokenComponent from './SelectedTokenComponent'
+import { CurrencyValue, TokenBalance } from 'components/token'
 import { getTokenColor } from './tokenColor'
 
 export const HomeScreen = ({
@@ -31,13 +31,22 @@ export const HomeScreen = ({
   const dispatch = useAppDispatch()
   const tokenBalances = useAppSelector(selectBalances)
   const prices = useAppSelector(selectUsdPrices)
-  const accounts = useAppSelector(selectAccounts)
   const bitcoinCore = useBitcoinContext()
-  const { activeWalletIndex, wallet, chainType } =
-    useAppSelector(selectActiveWallet)
+  const { wallet, chainType } = useAppSelector(selectActiveWallet)
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
     undefined,
   )
+  const [firstValue, setFirstValue] = useState<CurrencyValue>({
+    balance: '0.00',
+    symbol: '',
+    symbolType: 'text',
+  })
+  const [secondValue, setSecondValue] = useState<CurrencyValue>({
+    balance: '0.00',
+    symbol: '',
+    symbolType: 'text',
+  })
+  const [hide, setHide] = useState<boolean>(false)
   const balances: Array<ITokenWithBalance | BitcoinNetwork> = useMemo(() => {
     if (bitcoinCore) {
       return [
@@ -120,31 +129,74 @@ export const HomeScreen = ({
     dispatch(changeTopColor(selectedColor))
   }, [selectedColor, dispatch])
 
-  const selectedTokenAmount = useMemo(() => {
+  const selectedToken = useMemo(() => {
     if (selected instanceof BitcoinNetwork) {
-      return selected.balance
+      return {
+        ...selected,
+        ...{ price: prices ? prices.BTC?.price : 0 },
+      }
     }
     if (selected) {
-      return balanceToDisplay(selected.balance, selected.decimals, 5)
+      return {
+        ...selected,
+        ...{ price: prices ? prices[selected.contractAddress]?.price : 0 },
+      }
     }
-    return '0'
-  }, [selected])
+    return {
+      name: '',
+      decimals: 0,
+      symbol: '',
+      price: 0,
+      contractAddress: '',
+      balance: '0',
+    }
+  }, [selected, prices])
 
-  let accountName = 'account 1'
-  if (typeof activeWalletIndex === 'number') {
-    accountName =
-      accounts[activeWalletIndex]?.name || `account ${activeWalletIndex + 1}`
-  }
+  useEffect(() => {
+    const { symbol, balance, decimals, price } = selectedToken
+    setFirstValue({
+      symbolType: 'icon',
+      symbol,
+      balance:
+        selected instanceof BitcoinNetwork
+          ? balance
+          : balanceToDisplay(balance, decimals, 5),
+    })
+    setSecondValue({
+      symbolType: 'text',
+      symbol: '$',
+      balance:
+        selected instanceof BitcoinNetwork
+          ? '' +
+            convertBalance(
+              BigNumber.from(Math.round(Number(balance) * 10e8)),
+              8,
+              price,
+            )
+          : '' + convertBalance(balance, decimals, price),
+    })
+  }, [
+    selected,
+    selectedToken,
+    selectedToken.balance,
+    selectedToken.decimals,
+    selectedToken.price,
+  ])
+
+  const onHide = useCallback(() => {
+    setHide(!hide)
+  }, [hide])
+
   return (
     <View style={styles.container}>
-      <View style={{ ...styles.topColor, ...backGroundColor }} />
-      <View style={styles.bottomColor} />
-
       <View style={styles.parent}>
-        <SelectedTokenComponent
-          accountName={accountName}
-          amount={selectedTokenAmount}
-          change={0}
+        <TokenBalance
+          firstValue={firstValue}
+          secondValue={secondValue}
+          hideable={true}
+          hide={hide}
+          onHide={onHide}
+          color={backGroundColor.backgroundColor}
         />
         <HomeBarButtonGroup
           onPress={handleSendReceive}
@@ -195,7 +247,6 @@ const styles = StyleSheet.create({
 
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
-    paddingHorizontal: 30,
   },
   text: {
     textAlign: 'center',

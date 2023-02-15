@@ -13,7 +13,13 @@ export const SetAmountHOCComponent = ({
   usdAmount,
 }: SetAmountHOCComponenProps) => {
   if ('isBitcoin' in token) {
-    return <BitcoinSetAmountContainer setAmount={setAmount} token={token} />
+    return (
+      <BitcoinSetAmountContainer
+        setAmount={setAmount}
+        token={token}
+        usdAmount={usdAmount}
+      />
+    )
   }
   return (
     <SetAmountRifComponent
