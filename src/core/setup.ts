@@ -11,6 +11,7 @@ import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { MMKVStorage } from 'storage/MMKVStorage'
 import { enhanceTransactionInput } from 'screens/activity/ActivityScreen'
 import { filterEnhancedTransactions } from 'src/subscriptions/utils'
+import { Options, setInternetCredentials } from 'react-native-keychain'
 
 export const networkType = getWalletSetting(
   SETTINGS.DEFAULT_CHAIN_TYPE,
@@ -30,19 +31,18 @@ export const authAxios = axios.create({
 
 export const abiEnhancer = new AbiEnhancer()
 
-export const rifWalletServicesSocket = new RifWalletServicesSocket(
-  getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL, networkType),
-  abiEnhancer,
-  {
-    cache: new MMKVStorage('temp'),
-    encryptionKeyMessageToSign: getWalletSetting(SETTINGS.RIF_WALLET_KEY),
-    onEnhanceTransaction: enhanceTransactionInput,
-    onFilterOutRepeatedTransactions: filterEnhancedTransactions,
-    onBeforeInit: (encryptionKey, currentInstance) => {
-      currentInstance.cache = new MMKVStorage('txs', encryptionKey)
-    },
+export const rifWalletServicesSocket = new RifWalletServicesSocket<
+  Options,
+  ReturnType<typeof setInternetCredentials>
+>(getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL, networkType), abiEnhancer, {
+  cache: new MMKVStorage('temp'),
+  encryptionKeyMessageToSign: getWalletSetting(SETTINGS.RIF_WALLET_KEY),
+  onEnhanceTransaction: enhanceTransactionInput,
+  onFilterOutRepeatedTransactions: filterEnhancedTransactions,
+  onBeforeInit: (encryptionKey, currentInstance) => {
+    currentInstance.cache = new MMKVStorage('txs', encryptionKey)
   },
-)
+})
 
 export const rnsResolver = isDefaultChainTypeMainnet
   ? Resolver.forRskMainnet({})

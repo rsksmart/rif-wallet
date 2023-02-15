@@ -20,6 +20,7 @@ import { onRequest } from 'store/slices/settingsSlice'
 
 import { useStoredBitcoinNetworks } from './useStoredBitcoinNetworks'
 import { isDefaultChainTypeMainnet } from 'core/config'
+import Keychain from 'react-native-keychain'
 
 export interface UseBitcoinCoreResult {
   networks: Array<BitcoinNetwork>
@@ -43,7 +44,10 @@ interface NetworksObject {
 
 export const useBitcoinCore = (
   mnemonic: string | null,
-  fetcher?: RifWalletServicesFetcher,
+  fetcher?: RifWalletServicesFetcher<
+    Keychain.Options,
+    ReturnType<typeof Keychain.setInternetCredentials>
+  >,
 ): UseBitcoinCoreResult => {
   const dispatch = useAppDispatch()
   const [storedNetworks, refreshStoredNetworks] = useStoredBitcoinNetworks()
@@ -74,7 +78,10 @@ export const useBitcoinCore = (
     (
       network: StoredBitcoinNetworkValue,
       mnemonicText: string,
-      rifFetcher: RifWalletServicesFetcher,
+      rifFetcher: RifWalletServicesFetcher<
+        Keychain.Options,
+        ReturnType<typeof Keychain.setInternetCredentials>
+      >,
     ) => {
       const createBipWithFetcher = (...args: createBipFactoryType) => {
         const createAndInit = createAndInitializeBipWithRequest(request =>
@@ -102,7 +109,10 @@ export const useBitcoinCore = (
     (
       values: StoredBitcoinNetworkValue[],
       mnemonicText: string,
-      rifFetcher: RifWalletServicesFetcher,
+      rifFetcher: RifWalletServicesFetcher<
+        Keychain.Options,
+        ReturnType<typeof Keychain.setInternetCredentials>
+      >,
     ) => {
       if (values.length < 1) {
         onNoNetworksPresent()

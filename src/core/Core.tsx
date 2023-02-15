@@ -9,8 +9,6 @@ import { defaultChainId } from 'core/config'
 import {
   RifWalletServicesAuth,
   RifWalletServicesFetcher,
-  onSetInternetCredentials,
-  onResetInternetCredentials,
 } from '@rsksmart/rif-wallet-services'
 
 import {
@@ -79,9 +77,13 @@ export const navigationContainerRef =
   createNavigationContainerRef<RootTabsParamsList>()
 
 export const Core = () => {
-  const [fetcher, setFetcher] = useState<RifWalletServicesFetcher | undefined>(
-    undefined,
-  )
+  const [fetcher, setFetcher] = useState<
+    | RifWalletServicesFetcher<
+        Keychain.Options,
+        ReturnType<typeof Keychain.setInternetCredentials>
+      >
+    | undefined
+  >(undefined)
   const dispatch = useAppDispatch()
 
   const selectedWallet = useAppSelector(selectSelectedWallet)
@@ -132,7 +134,11 @@ export const Core = () => {
       const currentWallet = wallets[selectedWallet]
       retrieveChainId(currentWallet)
 
-      const rifWalletAuth = new RifWalletServicesAuth(
+      const rifWalletAuth = new RifWalletServicesAuth<
+        Keychain.Options,
+        ReturnType<typeof Keychain.setInternetCredentials>,
+        ReturnType<typeof Keychain.resetInternetCredentials>
+      >(
         publicAxios,
         currentWallet, // @TODO consume RIFWallet from rif-wallet-libs (RIFWallet.ts is different from the lib that we're using)
         {
@@ -141,24 +147,19 @@ export const Core = () => {
           onHasSignUp: hasSignUP,
           onDeleteSignUp: deleteSignUp,
           onSaveSignUp: saveSignUp,
-          onSetInternetCredentials:
-            Keychain.setInternetCredentials as unknown as onSetInternetCredentials,
-          onResetInternetCredentials:
-            Keychain.resetInternetCredentials as unknown as onResetInternetCredentials,
+          onSetInternetCredentials: Keychain.setInternetCredentials,
+          onResetInternetCredentials: Keychain.resetInternetCredentials,
         },
       )
       rifWalletAuth.login().then(({ accessToken, refreshToken }) => {
-        const fetcherInstance = new RifWalletServicesFetcher(
-          authAxios,
-          accessToken,
-          refreshToken,
-          {
-            defaultChainId,
-            onSetInternetCredentials:
-              Keychain.setInternetCredentials as unknown as onSetInternetCredentials,
-            resultsLimit: 10,
-          },
-        )
+        const fetcherInstance = new RifWalletServicesFetcher<
+          Keychain.Options,
+          ReturnType<typeof Keychain.setInternetCredentials>
+        >(authAxios, accessToken, refreshToken, {
+          defaultChainId,
+          onSetInternetCredentials: Keychain.setInternetCredentials,
+          resultsLimit: 10,
+        })
         setFetcher(fetcherInstance)
       })
     }
