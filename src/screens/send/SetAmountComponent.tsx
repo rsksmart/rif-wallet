@@ -15,7 +15,7 @@ export interface ISetAmountComponent {
   usdAmount: number | undefined
 }
 
-const SetAmountComponent = ({
+export const SetAmountComponent = ({
   setAmount,
   token,
   usdAmount,

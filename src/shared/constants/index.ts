@@ -4,6 +4,8 @@ import { castStyle } from '../utils'
 export const testIDs = {
   wordInput: 'input.wordInput',
   indexLabel: 'view.indexLabel',
+  hide: 'hide',
+  swap: 'swap',
 }
 
 export const sharedColors = {
@@ -18,7 +20,7 @@ export const sharedColors = {
   inputLabelColor: '#B8B8B8',
   borderColor: '#575757',
   primaryDark: '#4250CC',
-  subAmount: '#fbfbfbb3',
+  subTitle: '#FBFBFB',
   tokenBackground: '#1E1E1E',
 }
 

@@ -3,11 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 
-import {
-  balanceToDisplay,
-  balanceToUSDNumber,
-  getChainIdByType,
-} from 'lib/utils'
+import { balanceToDisplay, convertBalance, getChainIdByType } from 'lib/utils'
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { toChecksumAddress } from 'components/address/lib'
@@ -26,7 +22,7 @@ import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { HomeBarButtonGroup } from 'screens/home/HomeBarButtonGroup'
 
 import PortfolioComponent from './PortfolioComponent'
-import { CurrencyValue, TokenBalance } from 'components/token/TokenBalance'
+import { CurrencyValue, TokenBalance } from 'components/token'
 import { getTokenColor } from './tokenColor'
 
 export const HomeScreen = ({
@@ -171,12 +167,13 @@ export const HomeScreen = ({
       symbol: '$',
       balance:
         selected instanceof BitcoinNetwork
-          ? balanceToUSDNumber(
+          ? '' +
+            convertBalance(
               BigNumber.from(Math.round(Number(balance) * 10e8)),
               8,
               price,
             )
-          : balanceToUSDNumber(balance, decimals, price),
+          : '' + convertBalance(balance, decimals, price),
     })
   }, [
     selected,
@@ -199,7 +196,6 @@ export const HomeScreen = ({
           hideable={true}
           hide={hide}
           onHide={onHide}
-          change={0}
           color={backGroundColor.backgroundColor}
         />
         <HomeBarButtonGroup

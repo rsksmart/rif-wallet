@@ -18,7 +18,7 @@ import { ISetAmountComponent } from './SetAmountComponent'
 import { usePaymentExecutorContext } from './usePaymentExecutor'
 import { TokenBalance } from 'components/token'
 import { sharedColors } from 'shared/constants'
-import { CurrencyValue } from 'components/token/TokenBalance'
+import { CurrencyValue } from 'components/token'
 import { Typography } from 'components/index'
 
 interface BitcoinSetAmountContainerProps {

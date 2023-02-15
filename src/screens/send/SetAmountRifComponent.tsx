@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
-import { TokenBalance } from 'src/components/token'
-import { CurrencyValue } from 'src/components/token/TokenBalance'
+
 import {
   convertTokenToUSD,
   convertUSDtoToken,
   sanitizeDecimalText,
 } from 'src/lib/utils'
-import { sharedColors } from 'src/shared/constants'
+
+import { CurrencyValue, TokenBalance } from 'components/token'
+import { sharedColors } from 'shared/constants'
 import { ISetAmountComponent } from './SetAmountComponent'
 
 export const SetAmountRifComponent = ({
