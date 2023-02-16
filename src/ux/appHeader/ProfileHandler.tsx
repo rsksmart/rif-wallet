@@ -101,6 +101,17 @@ export const ProfileHandler = ({ navigation }: Props) => {
           </View>
         </>
       )}
+
+      {profile.status === ProfileStatus.ERROR && (
+        <>
+          <ProgressComponent status={ProfileStatus.ERROR} />
+          <View style={styles.textAlignment}>
+            <Typography type={'body3'} style={styles.requestingStatus}>
+              {t('Error Requesting username')}
+            </Typography>
+          </View>
+        </>
+      )}
     </TouchableOpacity>
   )
 }

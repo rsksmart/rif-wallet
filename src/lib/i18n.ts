@@ -99,6 +99,7 @@ const resources = {
       'Requesting username': 'Requesting username...',
       'Purchase username': 'Purchase username',
       'Purchasing username': 'Purchasing username...',
+      'Error Requesting username': 'Error Requesting username',
     },
   },
   es: {

@@ -1,10 +1,10 @@
+import { useCallback } from 'react'
 import { StyleSheet, View } from 'react-native'
 
 import ProgressStartIcon from 'components/icons/ProgressStartIcon'
 import { sharedColors } from 'shared/constants'
 import ProgressEndIcon from 'components/icons/ProgressEndIcon'
 import { ProfileStatus } from 'navigation/profileNavigator/types'
-import { useCallback } from 'react'
 
 interface ProgressBarProps {
   status: ProfileStatus
@@ -31,6 +31,8 @@ export const ProgressComponent = ({
         }
       case ProfileStatus.PURCHASING:
         return { start: sharedColors.success, end: sharedColors.warning }
+      case ProfileStatus.ERROR:
+        return { start: sharedColors.danger, end: sharedColors.inputActive }
     }
     return {
       start: sharedColors.inputActive,

@@ -19,6 +19,7 @@ export enum ProfileStatus {
   READY_TO_PURCHASE,
   PURCHASING,
   USER,
+  ERROR,
 }
 
 export type ProfileStackParamsList = {
