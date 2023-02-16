@@ -138,19 +138,15 @@ export const Core = () => {
         Keychain.Options,
         ReturnType<typeof Keychain.setInternetCredentials>,
         ReturnType<typeof Keychain.resetInternetCredentials>
-      >(
-        publicAxios,
-        currentWallet, // @TODO consume RIFWallet from rif-wallet-libs (RIFWallet.ts is different from the lib that we're using)
-        {
-          authClient,
-          onGetSignUp: getSignUP,
-          onHasSignUp: hasSignUP,
-          onDeleteSignUp: deleteSignUp,
-          onSaveSignUp: saveSignUp,
-          onSetInternetCredentials: Keychain.setInternetCredentials,
-          onResetInternetCredentials: Keychain.resetInternetCredentials,
-        },
-      )
+      >(publicAxios, currentWallet, {
+        authClient,
+        onGetSignUp: getSignUP,
+        onHasSignUp: hasSignUP,
+        onDeleteSignUp: deleteSignUp,
+        onSaveSignUp: saveSignUp,
+        onSetInternetCredentials: Keychain.setInternetCredentials,
+        onResetInternetCredentials: Keychain.resetInternetCredentials,
+      })
       rifWalletAuth.login().then(({ accessToken, refreshToken }) => {
         const fetcherInstance = new RifWalletServicesFetcher<
           Keychain.Options,
