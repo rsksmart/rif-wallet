@@ -1,5 +1,5 @@
 import { combineReducers, Reducer } from '@reduxjs/toolkit'
-import { persistReducer, createMigrate } from 'redux-persist'
+import { persistReducer, createMigrate, MigrationManifest } from 'redux-persist'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 
 import { reduxStorage } from 'storage/ReduxStorage'
@@ -11,10 +11,10 @@ import { settingsSliceReducer } from './slices/settingsSlice'
 import { transactionsReducer } from './slices/transactionsSlice'
 import { usdPriceReducer } from './slices/usdPricesSlice'
 import { ProfileStatus } from 'navigation/profileNavigator/types'
+import { RootState } from '.'
 
-const migrations = {
-  // eslint-disable-next-line
-  0: (state: any) => ({
+const migrations: MigrationManifest = {
+  0: (state: RootState) => ({
     ...state,
     profile: {
       alias: '',

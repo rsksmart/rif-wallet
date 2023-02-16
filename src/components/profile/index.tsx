@@ -1,1 +1,1 @@
-export { ProgressComponent } from './ProgressComponent'
+export { StepperComponent } from './StepperComponent'

@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
@@ -11,7 +12,7 @@ import {
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { useAppSelector } from 'store/storeUtils'
 import { Typography } from 'components/typography'
-import { ProgressComponent } from 'components/profile'
+import { StepperComponent } from 'components/profile'
 import { sharedColors } from 'shared/constants'
 import { Avatar } from 'components/avatar'
 
@@ -23,6 +24,30 @@ export const ProfileHandler = ({ navigation }: Props) => {
   const profile = useAppSelector(selectProfile)
   const { t } = useTranslation()
   const profileCreated = profile.status === ProfileStatus.USER
+
+  const getColors = useCallback((status: ProfileStatus) => {
+    switch (status) {
+      case ProfileStatus.REQUESTING:
+        return {
+          start: sharedColors.warning,
+          end: sharedColors.inputActive,
+        }
+      case ProfileStatus.READY_TO_PURCHASE:
+        return {
+          start: sharedColors.success,
+          end: sharedColors.inputActive,
+        }
+      case ProfileStatus.PURCHASING:
+        return { start: sharedColors.success, end: sharedColors.warning }
+      case ProfileStatus.ERROR:
+        return { start: sharedColors.danger, end: sharedColors.inputActive }
+    }
+    return {
+      start: sharedColors.inputActive,
+      end: sharedColors.inputActive,
+    }
+  }, [])
+  const { start, end } = getColors(profile.status)
 
   const routeNextStep = async () => {
     navigation.navigate(rootTabsRouteNames.Profile, {
@@ -60,7 +85,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
       )}
       {profile.status === ProfileStatus.REQUESTING && (
         <>
-          <ProgressComponent status={ProfileStatus.REQUESTING} />
+          <StepperComponent start={start} end={end} />
           <View style={styles.textAlignment}>
             <Typography type={'body3'} style={styles.requestingStatus}>
               {t('Requesting username')}
@@ -71,7 +96,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
 
       {profile.status === ProfileStatus.READY_TO_PURCHASE && (
         <>
-          <ProgressComponent status={ProfileStatus.READY_TO_PURCHASE} />
+          <StepperComponent start={start} end={end} />
           <View style={styles.textAlignment}>
             <Typography type={'body3'} style={styles.underline}>
               {t('Purchase username')}
@@ -82,7 +107,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
 
       {profile.status === ProfileStatus.PURCHASING && (
         <>
-          <ProgressComponent status={ProfileStatus.PURCHASING} />
+          <StepperComponent start={start} end={end} />
           <View style={styles.textAlignment}>
             <Typography type={'body3'} style={styles.requestingStatus}>
               {t('Purchasing username')}
@@ -104,7 +129,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
 
       {profile.status === ProfileStatus.ERROR && (
         <>
-          <ProgressComponent status={ProfileStatus.ERROR} />
+          <StepperComponent start={start} end={end} />
           <View style={styles.textAlignment}>
             <Typography type={'body3'} style={styles.requestingStatus}>
               {t('Error Requesting username')}
