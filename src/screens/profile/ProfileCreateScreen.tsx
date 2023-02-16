@@ -1,8 +1,4 @@
 import { useCallback, useState } from 'react'
-
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-
-import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import {
   Image,
   StyleSheet,
@@ -12,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 import { AvatarIcon } from 'components/icons/AvatarIcon'
 import { MediumText } from 'components/index'
@@ -24,6 +21,7 @@ import { selectProfile } from 'store/slices/profileSlice/selector'
 import { deleteProfile, setProfile } from 'store/slices/profileSlice'
 import { ProfileStore } from 'store/slices/profileSlice/types'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import {
   profileStackRouteNames,
   ProfileStackScreenProps,
@@ -37,15 +35,7 @@ export const ProfileCreateScreen = ({
   const editProfile = route.params?.editProfile
   const dispatch = useAppDispatch()
   const profile = useAppSelector(selectProfile)
-  const emptyProfile = {
-    alias: '',
-    email: '',
-    phone: '',
-    status: ProfileStatus.NONE,
-  }
-  const [localProfile, setLocalProfile] = useState<ProfileStore>(
-    profile || emptyProfile,
-  )
+  const [localProfile, setLocalProfile] = useState<ProfileStore>(profile)
   const fullAlias = profile ? `${profile.alias}.rsk` : ''
 
   const createProfile = async () => {

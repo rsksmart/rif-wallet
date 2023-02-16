@@ -19,7 +19,7 @@ const migrations: MigrationManifest = {
     profile: {
       alias: '',
       phone: '',
-      emails: '',
+      email: '',
       status: ProfileStatus.NONE,
     },
   }),
