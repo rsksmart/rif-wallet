@@ -207,15 +207,15 @@ export const HomeScreen = ({
     transactions,
     btcTransactionFetcher.transactions,
   )
-  /*
+
+  // this code is copied from the activity screen
   // On load, fetch both BTC and WALLET transactions
   useEffect(() => {
     // TODO: rethink btcTransactionFetcher, when adding as dependency
     // the function gets executed a million times
     btcTransactionFetcher.fetchTransactions()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []*/
-
+  }, [])
   return (
     <View style={styles.container}>
       <View style={styles.parent}>
