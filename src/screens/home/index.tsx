@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Image, StyleSheet, View } from 'react-native'
+import { Image, StyleSheet, View, ScrollView } from 'react-native'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 
 import { balanceToDisplay, convertBalance, getChainIdByType } from 'lib/utils'
@@ -24,6 +24,8 @@ import { HomeBarButtonGroup } from 'screens/home/HomeBarButtonGroup'
 import PortfolioComponent from './PortfolioComponent'
 import { CurrencyValue, TokenBalance } from 'components/token'
 import { getTokenColor } from './tokenColor'
+import { BasicRow } from 'components/BasicRow/BasicRow'
+import { selectTransactions } from 'store/slices/transactionsSlice'
 
 export const HomeScreen = ({
   navigation,
@@ -186,6 +188,7 @@ export const HomeScreen = ({
   const onHide = useCallback(() => {
     setHide(!hide)
   }, [hide])
+  const { transactions } = useAppSelector(selectTransactions)
 
   return (
     <View style={styles.container}>
@@ -220,19 +223,33 @@ export const HomeScreen = ({
             prices={prices}
           />
         )}
+        <ScrollView style={styles.activity}>
+          {transactions.map(tx => {
+            console.log({ tx })
+            return (
+              <BasicRow
+                label={`Received from ${tx.enhancedTransaction?.to}`}
+                secondaryLabel={'aa'}
+                amount={'2'}
+                avatarName={'comment'}
+              />
+            )
+          })}
+        </ScrollView>
       </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  activity: {
+    backgroundColor: 'red',
+  },
   container: {
-    flex: 1,
     flexDirection: 'column',
     backgroundColor: colors.darkPurple3,
   },
   topColor: {
-    flex: 1,
     borderBottomRightRadius: 40,
     borderBottomLeftRadius: 40,
   },
@@ -241,21 +258,15 @@ const styles = StyleSheet.create({
   },
 
   parent: {
-    position: 'absolute',
     width: '100%',
-    height: '100%',
-
-    borderTopLeftRadius: 40,
-    borderTopRightRadius: 40,
+    backgroundColor: 'green',
   },
   text: {
     textAlign: 'center',
     color: colors.lightPurple,
   },
   noBalance: {
-    flex: 1,
     width: '100%',
-    height: '100%',
     resizeMode: 'contain',
   },
 })
