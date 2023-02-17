@@ -4,7 +4,7 @@ import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 
 import { colors } from 'src/styles'
 import { PrimaryButton } from 'components/button/PrimaryButton'
-import { MediumText } from 'components/index'
+import { Input, MediumText } from 'components/index'
 import { AvatarIcon } from 'components/icons/AvatarIcon'
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import {
@@ -20,6 +20,7 @@ import TitleStatus from './TitleStatus'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { setProfile } from 'store/slices/profileSlice'
 import { selectProfile } from 'store/slices/profileSlice/selector'
+import { FormProvider, useForm } from 'react-hook-form'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
   ScreenWithWallet
@@ -33,6 +34,8 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(true)
   const dispatch = useAppDispatch()
   const profile = useAppSelector(selectProfile)
+
+  const methods = useForm()
 
   const calculatePrice = async (_: string, years: number) => {
     //TODO: re enable this later
@@ -115,34 +118,36 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
             onDomainOwned={setIsDomainOwned}
           />
         </View>
-        <View style={styles.flexContainer}>
-          <MediumText style={styles.priceText}>
-            {`${selectedYears} years ${selectedDomainPrice} rif`}
-          </MediumText>
-          {selectedYears > 1 && (
-            <TouchableOpacity
-              accessibilityLabel="decreases"
-              onPress={() => handleYearsChange(selectedYears - 1)}
-              style={styles.minusIcon}>
-              <MaterialIcon
-                name="remove"
-                color={colors.background.darkBlue}
-                size={20}
-              />
-            </TouchableOpacity>
-          )}
-          <TouchableOpacity
-            accessibilityLabel="increase"
-            onPress={() => handleYearsChange(selectedYears + 1)}
-            style={styles.addIcon}>
-            <MaterialIcon
-              name="add"
-              color={colors.background.darkBlue}
-              size={20}
-            />
-          </TouchableOpacity>
-        </View>
-
+        <FormProvider {...methods}>
+          <Input
+            inputName="years"
+            value={selectedYears + ''}
+            isReadOnly={true}
+            label="Length of registration"
+            placeholder={`${selectedYears} years ${selectedDomainPrice} rif`}
+            subtitle="0.2 RIF ($0.45)"
+            containerStyle={styles.yearsContainer}
+            subtitleStyle={styles.yearsSubtitle}
+            rightIcon={
+              <View style={styles.yearsButtons}>
+                {selectedYears > 1 && (
+                  <TouchableOpacity
+                    accessibilityLabel="decreases"
+                    onPress={() => handleYearsChange(selectedYears - 1)}
+                    style={styles.minusIcon}>
+                    <MaterialIcon name="remove" size={20} />
+                  </TouchableOpacity>
+                )}
+                <TouchableOpacity
+                  accessibilityLabel="increase"
+                  onPress={() => handleYearsChange(selectedYears + 1)}
+                  style={styles.addIcon}>
+                  <MaterialIcon name="add" size={20} />
+                </TouchableOpacity>
+              </View>
+            }
+          />
+        </FormProvider>
         <View style={rnsManagerStyles.bottomContainer}>
           {!isDomainOwned && (
             <PrimaryButton
@@ -180,10 +185,16 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
 }
 
 const styles = StyleSheet.create({
-  flexContainer: {
+  yearsContainer: {
+    height: 90,
+  },
+  yearsSubtitle: {
+    marginTop: 12,
+  },
+  yearsButtons: {
     flexDirection: 'row',
-    backgroundColor: colors.background.secondary,
-    borderWidth: 1,
+    // backgroundColor: colors.background.secondary,
+    // borderWidth: 1,
     borderRadius: 15,
     paddingVertical: 12,
     alignItems: 'center',
