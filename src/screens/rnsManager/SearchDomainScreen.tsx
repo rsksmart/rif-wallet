@@ -23,6 +23,8 @@ import { selectProfile } from 'store/slices/profileSlice/selector'
 import { FormProvider, useForm } from 'react-hook-form'
 import PlusIcon from 'src/components/icons/PlusIcon'
 import MinusIcon from 'src/components/icons/MinusIcon'
+import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
+import { selectUsdPrices } from 'src/redux/slices/usdPricesSlice'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
   ScreenWithWallet
@@ -36,8 +38,19 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(true)
   const dispatch = useAppDispatch()
   const profile = useAppSelector(selectProfile)
-
+  const tokenBalances = useAppSelector(selectBalances)
+  const prices = useAppSelector(selectUsdPrices)
   const methods = useForm()
+
+  // calculate price of domain in USD
+  const rifToken = Object.values(tokenBalances).find(
+    t => t.symbol === 'RIF' || t.symbol === 'tRIF',
+  )
+  const rifTokenAddress = rifToken?.contractAddress || ''
+  const rifTokenPrice = prices[rifTokenAddress]?.price
+  const selectedDomainPriceInUsd = (
+    rifTokenPrice * Number(selectedDomainPrice)
+  ).toFixed(2)
 
   const calculatePrice = async (_: string, years: number) => {
     //TODO: re enable this later
@@ -126,8 +139,8 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
             value={selectedYears + ''}
             isReadOnly={true}
             label="Length of registration"
-            placeholder={`${selectedYears} years ${selectedDomainPrice} rif`}
-            subtitle="0.2 RIF ($0.45)"
+            placeholder={`${selectedYears} years`}
+            subtitle={`${selectedDomainPrice} RIF ($ ${selectedDomainPriceInUsd})`}
             containerStyle={styles.yearsContainer}
             subtitleStyle={styles.yearsSubtitle}
             rightIcon={
