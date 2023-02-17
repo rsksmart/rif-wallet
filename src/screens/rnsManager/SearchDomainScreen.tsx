@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { FormProvider, useForm } from 'react-hook-form'
 
 import { colors } from 'src/styles'
 import { PrimaryButton } from 'components/button/PrimaryButton'
@@ -20,11 +21,11 @@ import TitleStatus from './TitleStatus'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { setProfile } from 'store/slices/profileSlice'
 import { selectProfile } from 'store/slices/profileSlice/selector'
-import { FormProvider, useForm } from 'react-hook-form'
 import PlusIcon from 'components/icons/PlusIcon'
 import MinusIcon from 'components/icons/MinusIcon'
 import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
 import { selectUsdPrices } from 'src/redux/slices/usdPricesSlice'
+import { castStyle } from 'src/shared/utils'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
   ScreenWithWallet
@@ -211,24 +212,24 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
 }
 
 const styles = StyleSheet.create({
-  yearsContainer: {
+  yearsContainer: castStyle.view({
     height: 90,
     paddingRight: 10,
-  },
-  yearsSubtitle: {
+  }),
+  yearsSubtitle: castStyle.view({
     marginTop: 12,
-  },
-  yearsButtons: {
+  }),
+  yearsButtons: castStyle.view({
     flexDirection: 'row',
-  },
-  priceText: {
+  }),
+  priceText: castStyle.text({
     flex: 1,
     width: '100%',
     color: colors.lightPurple,
     marginLeft: 15,
-  },
-  icon: {
+  }),
+  icon: castStyle.view({
     alignSelf: 'center',
     padding: 10,
-  },
+  }),
 })
