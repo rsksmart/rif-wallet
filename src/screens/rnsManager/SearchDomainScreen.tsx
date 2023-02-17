@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { FormProvider, useForm } from 'react-hook-form'
+import Icon from 'react-native-vector-icons/AntDesign'
 
 import { colors } from 'src/styles'
 import { PrimaryButton } from 'components/button/PrimaryButton'
@@ -21,8 +22,6 @@ import TitleStatus from './TitleStatus'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { setProfile } from 'store/slices/profileSlice'
 import { selectProfile } from 'store/slices/profileSlice/selector'
-import PlusIcon from 'components/icons/PlusIcon'
-import MinusIcon from 'components/icons/MinusIcon'
 import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
 import { selectUsdPrices } from 'src/redux/slices/usdPricesSlice'
 import { castStyle } from 'src/shared/utils'
@@ -162,14 +161,14 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
                     accessibilityLabel="decrease"
                     onPress={() => handleYearsChange(selectedYears - 1)}
                     style={styles.icon}>
-                    <MinusIcon />
+                    <Icon name="minus" size={16} color={colors.white} />
                   </TouchableOpacity>
                 )}
                 <TouchableOpacity
                   accessibilityLabel="increase"
                   onPress={() => handleYearsChange(selectedYears + 1)}
                   style={styles.icon}>
-                  <PlusIcon />
+                  <Icon name="plus" size={16} color={colors.white} />
                 </TouchableOpacity>
               </View>
             }
