@@ -4,7 +4,6 @@ import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { FormProvider, useForm } from 'react-hook-form'
 import Icon from 'react-native-vector-icons/AntDesign'
 
-import { colors } from 'src/styles'
 import { PrimaryButton } from 'components/button/PrimaryButton'
 import { Input, MediumText } from 'components/index'
 import { AvatarIcon } from 'components/icons/AvatarIcon'
@@ -24,7 +23,8 @@ import { setProfile } from 'store/slices/profileSlice'
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
 import { selectUsdPrices } from 'src/redux/slices/usdPricesSlice'
-import { castStyle } from 'src/shared/utils'
+import { colors } from 'src/styles'
+import { castStyle } from 'shared/utils'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
   ScreenWithWallet
