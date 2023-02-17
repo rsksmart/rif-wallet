@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 
@@ -34,7 +34,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const [isDomainOwned, setIsDomainOwned] = useState<boolean>(false)
   const [validDomain, setValidDomain] = useState<boolean>(false)
   const [selectedYears, setSelectedYears] = useState<number>(2)
-  const [selectedDomainPrice, setSelectedDomainPrice] = useState<string>('2')
+  const [selectedDomainPrice, setSelectedDomainPrice] = useState<number>(2)
   const [isModalVisible, setIsModalVisible] = useState<boolean>(true)
   const dispatch = useAppDispatch()
   const profile = useAppSelector(selectProfile)
@@ -49,8 +49,12 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const rifTokenAddress = rifToken?.contractAddress || ''
   const rifTokenPrice = prices[rifTokenAddress]?.price
   const selectedDomainPriceInUsd = (
-    rifTokenPrice * Number(selectedDomainPrice)
+    rifTokenPrice * selectedDomainPrice
   ).toFixed(2)
+
+  useEffect(() => {
+    calculatePrice(domainToLookUp, selectedYears).then(setSelectedDomainPrice)
+  }, [domainToLookUp, selectedYears])
 
   const calculatePrice = async (_: string, years: number) => {
     //TODO: re enable this later
@@ -67,13 +71,13 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
     setValidDomain(valid)
     if (valid) {
       const price = await calculatePrice(domain, selectedYears)
-      setSelectedDomainPrice(price + '')
+      setSelectedDomainPrice(price)
     }
   }
   const handleYearsChange = async (years: number) => {
     setSelectedYears(years)
     const price = await calculatePrice(domainToLookUp, years)
-    setSelectedDomainPrice(price + '')
+    setSelectedDomainPrice(price)
   }
 
   const handleSetProfile = useCallback(() => {
