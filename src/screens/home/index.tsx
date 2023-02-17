@@ -24,14 +24,10 @@ import { HomeBarButtonGroup } from 'screens/home/HomeBarButtonGroup'
 import PortfolioComponent from './PortfolioComponent'
 import { CurrencyValue, TokenBalance } from 'components/token'
 import { getTokenColor } from './tokenColor'
-import { FeedbackModal } from 'src/components/feedbackModal'
-import { AppSpinner } from '../spinner'
-import { sharedColors } from 'src/shared/constants'
 
 export const HomeScreen = ({
   navigation,
 }: HomeStackScreenProps<homeStackRouteNames.Main>) => {
-  const [isFeedbackModalVisible, setIsFeedbackModalVisible] = useState(true)
   const dispatch = useAppDispatch()
   const tokenBalances = useAppSelector(selectBalances)
   const prices = useAppSelector(selectUsdPrices)
@@ -195,31 +191,6 @@ export const HomeScreen = ({
     <View style={styles.container}>
       <View style={{ ...styles.topColor, ...backGroundColor }} />
       <View style={styles.bottomColor} />
-
-      <FeedbackModal
-        visible={isFeedbackModalVisible}
-        title={'Congratulations! '}
-        subtitle={'Your have send 355.0 RIF to Maria.'}
-        footerText={'Your transaction is being processed.'}
-        feedbackComponent={
-          <AppSpinner size={174} style={{ marginBottom: 128 }} />
-        }
-        buttons={[
-          {
-            title: 'Close',
-            onPress: () => setIsFeedbackModalVisible(false),
-            color: sharedColors.white,
-            textColor: sharedColors.inputInactive,
-          },
-          {
-            title: 'Keep going',
-            onPress: () => Alert.alert("Let's keep going"),
-            color: sharedColors.white,
-            backgroundVariety: AppButtonBackgroundVarietyEnum.OUTLINED,
-          },
-        ]}
-      />
-
       <View style={styles.parent}>
         <TokenBalance
           firstValue={firstValue}
