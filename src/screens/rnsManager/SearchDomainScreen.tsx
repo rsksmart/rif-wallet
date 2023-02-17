@@ -21,8 +21,8 @@ import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { setProfile } from 'store/slices/profileSlice'
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { FormProvider, useForm } from 'react-hook-form'
-import PlusIcon from 'src/components/icons/PlusIcon'
-import MinusIcon from 'src/components/icons/MinusIcon'
+import PlusIcon from 'components/icons/PlusIcon'
+import MinusIcon from 'components/icons/MinusIcon'
 import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
 import { selectUsdPrices } from 'src/redux/slices/usdPricesSlice'
 
@@ -52,11 +52,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
     rifTokenPrice * selectedDomainPrice
   ).toFixed(2)
 
-  useEffect(() => {
-    calculatePrice(domainToLookUp, selectedYears).then(setSelectedDomainPrice)
-  }, [domainToLookUp, selectedYears])
-
-  const calculatePrice = async (_: string, years: number) => {
+  const calculatePrice = useCallback(async (_: string, years: number) => {
     //TODO: re enable this later
     /*const price = await rskRegistrar.price(domain, BigNumber.from(years))
     return utils.formatUnits(price, 18)*/
@@ -65,20 +61,27 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
     } else {
       return 4 + (years - 2)
     }
-  }
+  }, [])
 
-  const handleDomainAvailable = async (domain: string, valid: boolean) => {
-    setValidDomain(valid)
-    if (valid) {
-      const price = await calculatePrice(domain, selectedYears)
+  const handleDomainAvailable = useCallback(
+    async (domain: string, valid: boolean) => {
+      setValidDomain(valid)
+      if (valid) {
+        const price = await calculatePrice(domain, selectedYears)
+        setSelectedDomainPrice(price)
+      }
+    },
+    [calculatePrice, selectedYears],
+  )
+
+  const handleYearsChange = useCallback(
+    async (years: number) => {
+      setSelectedYears(years)
+      const price = await calculatePrice(domainToLookUp, years)
       setSelectedDomainPrice(price)
-    }
-  }
-  const handleYearsChange = async (years: number) => {
-    setSelectedYears(years)
-    const price = await calculatePrice(domainToLookUp, years)
-    setSelectedDomainPrice(price)
-  }
+    },
+    [calculatePrice, domainToLookUp],
+  )
 
   const handleSetProfile = useCallback(() => {
     dispatch(
@@ -90,6 +93,10 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
 
     navigation.navigate(profileStackRouteNames.ProfileDetailsScreen)
   }, [dispatch, domainToLookUp, profile, navigation])
+
+  useEffect(() => {
+    calculatePrice(domainToLookUp, selectedYears).then(setSelectedDomainPrice)
+  }, [domainToLookUp, selectedYears, calculatePrice])
 
   return (
     <>
