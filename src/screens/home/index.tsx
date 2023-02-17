@@ -2,12 +2,13 @@ import { BigNumber } from 'ethers'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Image, StyleSheet, View, ScrollView } from 'react-native'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
+import { BIP } from '@rsksmart/rif-wallet-bitcoin'
 
 import { balanceToDisplay, convertBalance, getChainIdByType } from 'lib/utils'
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 
 import { toChecksumAddress } from 'components/address/lib'
-import { MediumText } from 'components/index'
+import { MediumText, Typography } from 'components/index'
 import {
   homeStackRouteNames,
   HomeStackScreenProps,
@@ -24,8 +25,11 @@ import { HomeBarButtonGroup } from 'screens/home/HomeBarButtonGroup'
 import PortfolioComponent from './PortfolioComponent'
 import { CurrencyValue, TokenBalance } from 'components/token'
 import { getTokenColor } from './tokenColor'
-import { BasicRow } from 'components/BasicRow/BasicRow'
 import { selectTransactions } from 'store/slices/transactionsSlice'
+import { sharedColors } from 'shared/constants'
+import { useBitcoinTransactionsHandler } from 'screens/activity/useBitcoinTransactionsHandler'
+import useTransactionsCombiner from 'screens/activity/useTransactionsCombiner'
+import { ActivityBasicRow } from 'screens/activity/ActivityRow'
 
 export const HomeScreen = ({
   navigation,
@@ -48,6 +52,7 @@ export const HomeScreen = ({
     symbol: '',
     symbolType: 'text',
   })
+
   const [hide, setHide] = useState<boolean>(false)
   const balances: Array<ITokenWithBalance | BitcoinNetwork> = useMemo(() => {
     if (bitcoinCore) {
@@ -190,6 +195,27 @@ export const HomeScreen = ({
   }, [hide])
   const { transactions } = useAppSelector(selectTransactions)
 
+  const btcTransactionFetcher = useBitcoinTransactionsHandler({
+    bip:
+      bitcoinCore && bitcoinCore.networks[0]
+        ? bitcoinCore.networks[0].bips[0]
+        : ({} as BIP),
+    shouldMergeTransactions: true,
+  })
+
+  const transactionsCombined = useTransactionsCombiner(
+    transactions,
+    btcTransactionFetcher.transactions,
+  )
+  /*
+  // On load, fetch both BTC and WALLET transactions
+  useEffect(() => {
+    // TODO: rethink btcTransactionFetcher, when adding as dependency
+    // the function gets executed a million times
+    btcTransactionFetcher.fetchTransactions()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []*/
+
   return (
     <View style={styles.container}>
       <View style={styles.parent}>
@@ -205,6 +231,10 @@ export const HomeScreen = ({
           onPress={handleSendReceive}
           isSendDisabled={balances.length === 0}
         />
+        <Typography style={styles.portfolioLabel} type={'h3'}>
+          Portfolio
+        </Typography>
+
         {balances.length === 0 ? (
           <>
             <Image
@@ -223,18 +253,13 @@ export const HomeScreen = ({
             prices={prices}
           />
         )}
-        <ScrollView style={styles.activity}>
-          {transactions.map(tx => {
-            console.log({ tx })
-            return (
-              <BasicRow
-                label={`Received from ${tx.enhancedTransaction?.to}`}
-                secondaryLabel={'aa'}
-                amount={'2'}
-                avatarName={'comment'}
-              />
-            )
-          })}
+        <Typography style={styles.transactionsLabel} type={'h3'}>
+          Transactions
+        </Typography>
+        <ScrollView>
+          {transactionsCombined.map(tx => (
+            <ActivityBasicRow activityTransaction={tx} />
+          ))}
         </ScrollView>
       </View>
     </View>
@@ -242,24 +267,29 @@ export const HomeScreen = ({
 }
 
 const styles = StyleSheet.create({
+  portfolioLabel: {
+    padding: 6,
+    paddingTop: 10,
+    color: sharedColors.inputLabelColor,
+  },
+  transactionsLabel: {
+    padding: 6,
+    color: sharedColors.inputLabelColor,
+  },
   activity: {
     backgroundColor: 'red',
   },
   container: {
     flexDirection: 'column',
-    backgroundColor: colors.darkPurple3,
+    backgroundColor: sharedColors.secondary,
   },
   topColor: {
     borderBottomRightRadius: 40,
     borderBottomLeftRadius: 40,
   },
-  bottomColor: {
-    flex: 6,
-  },
 
   parent: {
     width: '100%',
-    backgroundColor: 'green',
   },
   text: {
     textAlign: 'center',

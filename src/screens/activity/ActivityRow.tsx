@@ -6,6 +6,7 @@ import {
 import { ActivityMixedType } from './types'
 import ActivityRowPresentation from './ActivityRowPresentation'
 import useActivityDeserializer from './useActivityDeserializer'
+import { BasicRow, StatusEnum } from 'components/BasicRow/BasicRow'
 
 interface Props extends RootTabsScreenProps<rootTabsRouteNames.Activity> {
   activityTransaction: ActivityMixedType
@@ -17,4 +18,31 @@ export const ActivityRow = ({ activityTransaction, navigation }: Props) => {
     navigation.navigate(rootTabsRouteNames.ActivityDetails, activityTransaction)
 
   return <ActivityRowPresentation {...activityDetails} onPress={handlePress} />
+}
+const getStatus = (status: string) => {
+  switch (status) {
+    case 'pending':
+      return StatusEnum.PENDING
+    case 'failed':
+      return StatusEnum.PENDING
+    default:
+      return undefined
+  }
+}
+export const ActivityBasicRow = ({
+  activityTransaction,
+}: {
+  activityTransaction: ActivityMixedType
+}) => {
+  const activityDetails = useActivityDeserializer(activityTransaction)
+
+  return (
+    <BasicRow
+      label={activityDetails.to}
+      amount={activityDetails.value}
+      status={getStatus(activityDetails.status)}
+      avatarName={'A'}
+      secondaryLabel={activityDetails.timeHumanFormatted}
+    />
+  )
 }
