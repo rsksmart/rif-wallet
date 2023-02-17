@@ -1,11 +1,10 @@
 import Svg, { SvgProps, Path } from 'react-native-svg'
 
 const PlusIcon = (props: SvgProps) => (
-  <Svg height={24} width={24} {...props}>
-    <Path d="M0 0h24v24H0V0z" fill="none" />
+  <Svg width={14} height={15} fill="none" {...props}>
     <Path
-      fill={props.color}
-      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"
+      d="M13.5 7.51c0 .442-.334.797-.75.797h-5v5.313c0 .44-.336.797-.75.797s-.75-.356-.75-.797V8.307h-5c-.414 0-.75-.356-.75-.796 0-.439.336-.798.75-.798h5V1.401c0-.44.336-.797.75-.797s.75.357.75.797v5.312h5c.416 0 .75.359.75.797Z"
+      fill={props.color || '#FBFBFB'}
     />
   </Svg>
 )

@@ -21,6 +21,8 @@ import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { setProfile } from 'store/slices/profileSlice'
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { FormProvider, useForm } from 'react-hook-form'
+import PlusIcon from 'src/components/icons/PlusIcon'
+import MinusIcon from 'src/components/icons/MinusIcon'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
   ScreenWithWallet
@@ -132,17 +134,17 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
               <View style={styles.yearsButtons}>
                 {selectedYears > 1 && (
                   <TouchableOpacity
-                    accessibilityLabel="decreases"
+                    accessibilityLabel="decrease"
                     onPress={() => handleYearsChange(selectedYears - 1)}
-                    style={styles.minusIcon}>
-                    <MaterialIcon name="remove" size={20} />
+                    style={styles.icon}>
+                    <MinusIcon />
                   </TouchableOpacity>
                 )}
                 <TouchableOpacity
                   accessibilityLabel="increase"
                   onPress={() => handleYearsChange(selectedYears + 1)}
-                  style={styles.addIcon}>
-                  <MaterialIcon name="add" size={20} />
+                  style={styles.icon}>
+                  <PlusIcon />
                 </TouchableOpacity>
               </View>
             }
@@ -187,17 +189,13 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
 const styles = StyleSheet.create({
   yearsContainer: {
     height: 90,
+    paddingRight: 10,
   },
   yearsSubtitle: {
     marginTop: 12,
   },
   yearsButtons: {
     flexDirection: 'row',
-    // backgroundColor: colors.background.secondary,
-    // borderWidth: 1,
-    borderRadius: 15,
-    paddingVertical: 12,
-    alignItems: 'center',
   },
   priceText: {
     flex: 1,
@@ -205,15 +203,8 @@ const styles = StyleSheet.create({
     color: colors.lightPurple,
     marginLeft: 15,
   },
-  minusIcon: {
-    backgroundColor: 'gray',
-    borderRadius: 20,
-    margin: 5,
-  },
-  addIcon: {
-    backgroundColor: 'gray',
-    borderRadius: 20,
-    margin: 5,
-    marginRight: 10,
+  icon: {
+    alignSelf: 'center',
+    padding: 10,
   },
 })
