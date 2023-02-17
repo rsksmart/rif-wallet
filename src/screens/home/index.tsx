@@ -1,13 +1,13 @@
 import { BigNumber } from 'ethers'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Alert, Image, StyleSheet, View } from 'react-native'
+import { Image, StyleSheet, View } from 'react-native'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 
 import { balanceToDisplay, convertBalance, getChainIdByType } from 'lib/utils'
 import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 
 import { toChecksumAddress } from 'components/address/lib'
-import { AppButtonBackgroundVarietyEnum, MediumText } from 'components/index'
+import { MediumText } from 'components/index'
 import {
   homeStackRouteNames,
   HomeStackScreenProps,
