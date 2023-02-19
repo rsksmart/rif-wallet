@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-
 import { Clipboard, Image, Linking, StyleSheet, View } from 'react-native'
 
 import { RnsProcessor } from 'lib/rns/RnsProcessor'
@@ -17,6 +16,7 @@ import {
   ProfileStackScreenProps,
   ProfileStatus,
 } from 'navigation/profileNavigator/types'
+import { castStyle } from 'shared/utils'
 
 export const AliasBoughtScreen = ({
   navigation,
@@ -99,16 +99,16 @@ export const AliasBoughtScreen = ({
 }
 
 const styles = StyleSheet.create({
-  imageContainer: {
+  imageContainer: castStyle.view({
     alignItems: 'center',
     paddingTop: 50,
     paddingBottom: 10,
-  },
-  image: {
+  }),
+  image: castStyle.image({
     paddingTop: 50,
     paddingBottom: 10,
-  },
-  buttonContainer: {
+  }),
+  buttonContainer: castStyle.view({
     marginBottom: 15,
-  },
+  }),
 })

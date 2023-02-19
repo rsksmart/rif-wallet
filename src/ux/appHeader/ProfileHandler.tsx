@@ -15,6 +15,7 @@ import { Typography } from 'components/typography'
 import { StepperComponent } from 'components/profile'
 import { sharedColors } from 'shared/constants'
 import { Avatar } from 'components/avatar'
+import { castStyle } from 'shared/utils'
 
 interface Props {
   navigation: BottomTabHeaderProps['navigation']
@@ -29,25 +30,31 @@ export const ProfileHandler = ({ navigation }: Props) => {
     switch (status) {
       case ProfileStatus.REQUESTING:
         return {
-          start: sharedColors.warning,
-          end: sharedColors.inputActive,
+          startColor: sharedColors.warning,
+          endColor: sharedColors.inputActive,
         }
       case ProfileStatus.READY_TO_PURCHASE:
         return {
-          start: sharedColors.success,
-          end: sharedColors.inputActive,
+          startColor: sharedColors.success,
+          endColor: sharedColors.inputActive,
         }
       case ProfileStatus.PURCHASING:
-        return { start: sharedColors.success, end: sharedColors.warning }
+        return {
+          startColor: sharedColors.success,
+          endColor: sharedColors.warning,
+        }
       case ProfileStatus.ERROR:
-        return { start: sharedColors.danger, end: sharedColors.inputActive }
+        return {
+          startColor: sharedColors.danger,
+          endColor: sharedColors.inputActive,
+        }
     }
     return {
-      start: sharedColors.inputActive,
-      end: sharedColors.inputActive,
+      startColor: sharedColors.inputActive,
+      endColor: sharedColors.inputActive,
     }
   }, [])
-  const { start, end } = getColors(profile.status)
+  const { startColor, endColor } = getColors(profile.status)
 
   const routeNextStep = async () => {
     navigation.navigate(rootTabsRouteNames.Profile, {
@@ -85,7 +92,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
       )}
       {profile.status === ProfileStatus.REQUESTING && (
         <>
-          <StepperComponent start={start} end={end} />
+          <StepperComponent startColor={startColor} endColor={endColor} />
           <View style={styles.textAlignment}>
             <Typography type={'body3'} style={styles.requestingStatus}>
               {t('Requesting username')}
@@ -96,7 +103,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
 
       {profile.status === ProfileStatus.READY_TO_PURCHASE && (
         <>
-          <StepperComponent start={start} end={end} />
+          <StepperComponent startColor={startColor} endColor={endColor} />
           <View style={styles.textAlignment}>
             <Typography type={'body3'} style={styles.underline}>
               {t('Purchase username')}
@@ -107,7 +114,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
 
       {profile.status === ProfileStatus.PURCHASING && (
         <>
-          <StepperComponent start={start} end={end} />
+          <StepperComponent startColor={startColor} endColor={endColor} />
           <View style={styles.textAlignment}>
             <Typography type={'body3'} style={styles.requestingStatus}>
               {t('Purchasing username')}
@@ -129,7 +136,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
 
       {profile.status === ProfileStatus.ERROR && (
         <>
-          <StepperComponent start={start} end={end} />
+          <StepperComponent startColor={startColor} endColor={endColor} />
           <View style={styles.textAlignment}>
             <Typography type={'body3'} style={styles.requestingStatus}>
               {t('Error Requesting username')}
@@ -142,29 +149,25 @@ export const ProfileHandler = ({ navigation }: Props) => {
 }
 
 const styles = StyleSheet.create({
-  profileHandler: {
+  profileHandler: castStyle.view({
     flexDirection: 'row',
-  },
-  profileAvatar: {
-    height: 30,
-    width: 30,
-  },
-  profileHandlerImage: {
+  }),
+  profileHandlerImage: castStyle.image({
     backgroundColor: sharedColors.white,
-  },
-  profileName: {
+  }),
+  profileName: castStyle.text({
     paddingLeft: 6,
-  },
-  textAlignment: {
+  }),
+  textAlignment: castStyle.text({
     justifyContent: 'center',
-  },
-  requestingStatus: {
+  }),
+  requestingStatus: castStyle.text({
     opacity: 0.4,
     paddingLeft: 6,
-  },
-  underline: {
+  }),
+  underline: castStyle.text({
     textDecorationColor: sharedColors.white,
     textDecorationLine: 'underline',
     paddingLeft: 6,
-  },
+  }),
 })

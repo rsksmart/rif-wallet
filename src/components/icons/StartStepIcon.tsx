@@ -1,7 +1,7 @@
 import Svg, { Path } from 'react-native-svg'
 import { SVGIconInterface } from '.'
 
-const ProgressStartIcon = ({
+const StartStepIcon = ({
   width,
   height,
   color = 'white',
@@ -14,4 +14,4 @@ const ProgressStartIcon = ({
   </Svg>
 )
 
-export default ProgressStartIcon
+export default StartStepIcon

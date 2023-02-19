@@ -1,41 +1,42 @@
 import { StyleSheet, View } from 'react-native'
 
-import ProgressStartIcon from 'components/icons/ProgressStartIcon'
+import StartStepIcon from 'components/icons/StartStepIcon'
 import { sharedColors } from 'shared/constants'
-import ProgressEndIcon from 'components/icons/ProgressEndIcon'
+import EndStepIcon from 'components/icons/EndStepIcon'
+import { castStyle } from 'shared/utils'
 
 interface ProgressBarProps {
-  start: string
-  end: string
+  startColor: string
+  endColor: string
   width?: number
   height?: number
 }
 
 export const StepperComponent = ({
-  start,
-  end,
+  startColor,
+  endColor,
   width = 18,
   height = 7,
 }: ProgressBarProps) => {
   return (
     <>
       <View style={styles.textAlignment}>
-        <ProgressStartIcon color={start} width={width} height={height} />
+        <StartStepIcon color={startColor} width={width} height={height} />
       </View>
       <View style={styles.textAlignment}>
-        <ProgressEndIcon color={end} width={width} height={height} />
+        <EndStepIcon color={endColor} width={width} height={height} />
       </View>
     </>
   )
 }
 
 const styles = StyleSheet.create({
-  textAlignment: {
+  textAlignment: castStyle.text({
     justifyContent: 'center',
-  },
-  textStatus: {
+  }),
+  textStatus: castStyle.text({
     fontSize: 14,
     color: sharedColors.white,
     paddingLeft: 6,
-  },
+  }),
 })

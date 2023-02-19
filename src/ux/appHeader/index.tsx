@@ -11,6 +11,7 @@ import { useAppSelector } from 'store/storeUtils'
 import { ProfileHandler } from './ProfileHandler'
 import { sharedColors } from 'shared/constants'
 import { AppTouchable } from 'components/appTouchable'
+import { castStyle } from 'shared/utils'
 
 type HeaderProps = BottomTabHeaderProps | StackHeaderProps
 
@@ -57,32 +58,22 @@ export const AppHeader = ({
 }
 
 const styles = StyleSheet.create({
-  row: {
+  row: castStyle.view({
     alignItems: 'center', // vertical
     paddingVertical: 5,
     paddingHorizontal: 15,
     display: 'flex',
     flexDirection: 'row',
-  },
-  column: {
+  }),
+  column: castStyle.view({
     flex: 5,
-  },
-  columnMenu: {
+  }),
+  columnMenu: castStyle.view({
     flex: 1,
     alignItems: 'flex-end',
-  },
-  logo: {
-    height: 25,
-    width: 18,
-    marginRight: 5,
-  },
-
-  walletInfo: {
+  }),
+  walletInfo: castStyle.view({
     alignItems: 'center',
     flexDirection: 'row',
-  },
-  settingsIcon: {
-    height: 18,
-    width: 18,
-  },
+  }),
 })
