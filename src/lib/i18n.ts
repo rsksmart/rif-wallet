@@ -92,8 +92,8 @@ const resources = {
       Cancel: 'Cancel',
       TOTAL: 'TOTAL',
       search_placeholder: 'Search by username or email',
-      'Username & Icon': 'Username & Icon',
-      'Register your username to allow others to send you funds more easily. In case you do not have any RIF funds you can ask a friend to send you some RIF.':
+      username_icon: 'Username & Icon',
+      register_your_username_to_allow_others_to_send_you_funds_more_easily_in_case_you_do_not_have_any_rif_funds_you_can_ask_a_friend_to_send_you_some_rif:
         'Register your username to allow others to send you funds more easily. In case you do not have any RIF funds you can ask a friend to send you some RIF.',
       close: 'close',
     },

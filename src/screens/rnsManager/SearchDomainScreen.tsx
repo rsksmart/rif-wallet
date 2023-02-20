@@ -95,7 +95,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           avatar={
             domainToLookUp !== '' ? domainToLookUp + '.rsk' : 'alias name'
           }
-          title={t('Username & Icon')}
+          title={t('username_icon')}
           description={t(
             'Register your username to allow others to send you funds more easily. In case you do not have any RIF funds you can ask a friend to send you some RIF.',
           )}
