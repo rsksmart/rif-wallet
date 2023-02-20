@@ -45,6 +45,14 @@ export const ReceiveScreen = ({
   return (
     <ScrollView style={styles.parent}>
       <FormProvider {...methods}>
+        {/* Receive and go back button */}
+        <View style={styles.headerStyle}>
+          <Ionicons name="chevron-back" size={20} />
+          <View>
+            <Typography type={'h4'}>{t('RECEIVE')}</Typography>
+          </View>
+          <View />
+        </View>
         {/* Change Asset Component */}
         <Typography type="h4">{t('CHANGE_ASSET')}</Typography>
         <View style={{ flexDirection: 'row' }}>
@@ -105,5 +113,11 @@ const styles = StyleSheet.create({
     backgroundColor: sharedColors.inputInactive,
     paddingVertical: 84,
     borderRadius: 20,
+  },
+  headerStyle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginVertical: 22.5,
   },
 })
