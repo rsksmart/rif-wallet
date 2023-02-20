@@ -52,22 +52,24 @@ export const ReceiveScreen = ({
             onPress={() => console.log('test')}
             color={sharedColors.inputInactive}
             primaryText="tRIF"
-            secondaryText={'$21,000.00'}
+            secondaryText={'100'}
             isSelected={false}
+            icon="ARROW_NORTH_EAST"
           />
           <PortfolioCard
             onPress={() => console.log('test')}
             color={sharedColors.inputInactive}
             primaryText="BTCT"
-            secondaryText={'$21,000.00'}
+            secondaryText={'1'}
             isSelected={false}
+            icon="ARROW_NORTH_EAST"
           />
         </View>
         {/* QR Component */}
         <View style={styles.qrView}>
           <QRGenerator
             value={addressToUse}
-            imageSource={require('../../images/arrow-up-icon.png')}
+            imageSource={require('../../images/arrow-north-east-icon.png')}
             logoBackgroundColor={sharedColors.secondary}
           />
         </View>

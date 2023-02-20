@@ -146,6 +146,8 @@ const getIconSource = (symbol: string): ImageRequireSource | undefined => {
       return require('@rsksmart/rsk-contract-metadata/images/xusd.png')
     case 'FISH':
       return require('@rsksmart/rsk-contract-metadata/images/fish.png')
+    case 'ARROW_NORTH_EAST':
+      return require('../../images/arrow-north-east-icon.png')
     default:
       return undefined
   }
