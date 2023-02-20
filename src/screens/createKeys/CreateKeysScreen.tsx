@@ -5,8 +5,8 @@ import {
   AppButton,
   AppButtonBackgroundVarietyEnum,
   Typography,
-} from 'src/components'
-import { RifLogo } from 'src/components/icons/RifLogo'
+} from 'components/index'
+import { RifLogo } from 'components/icons/RifLogo'
 import {
   createKeysRouteNames,
   CreateKeysScreenProps,
