@@ -1,6 +1,7 @@
 import { ReactElement, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
+import { useTranslation } from 'react-i18next'
 
 import { sharedColors } from 'shared/constants'
 import { Typography } from 'src/components'
@@ -28,6 +29,7 @@ export const HomeInformationBar = ({
     caoursel?.snapToNext()
     setSelectedSlide(caoursel?.currentIndex || 0)
   }
+  const { t } = useTranslation()
 
   return (
     <View style={styles.m20}>
@@ -78,7 +80,7 @@ export const HomeInformationBar = ({
           <View style={styles.mr10}>
             <AppTouchable onPress={onNextItem} width={36}>
               <Typography type={'h4'}>
-                {selectedSlide === lastIndex ? 'Close' : 'Next'}
+                {selectedSlide === lastIndex ? t('Close') : t('Next')}
               </Typography>
             </AppTouchable>
           </View>
