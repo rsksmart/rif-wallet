@@ -52,7 +52,7 @@ export const ReceiveScreen = ({
       <FormProvider {...methods}>
         {/* Receive and go back button */}
         <View style={styles.headerStyle}>
-          <Ionicons name="chevron-back" size={20} />
+          <Ionicons name="chevron-back" size={20} color="white" />
           <View>
             <Typography type={'h4'}>{t('RECEIVE')}</Typography>
           </View>
@@ -90,7 +90,7 @@ export const ReceiveScreen = ({
         <Input
           label="Username"
           inputName="username"
-          rightIcon={<Ionicons name="share-outline" size={20} />}
+          rightIcon={<Ionicons name="share-outline" size={20} color="white" />}
           placeholder={username}
           isReadOnly
           onRightIconPress={onCopyUsername}
@@ -99,7 +99,7 @@ export const ReceiveScreen = ({
         <Input
           label="Address"
           inputName="address"
-          rightIcon={<Ionicons name="share-outline" size={20} />}
+          rightIcon={<Ionicons name="share-outline" size={20} color="white" />}
           placeholder={displayAddress}
           isReadOnly
           onRightIconPress={onCopyAddress}
