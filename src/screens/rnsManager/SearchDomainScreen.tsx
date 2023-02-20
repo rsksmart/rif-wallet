@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { colors } from 'src/styles'
 import { PrimaryButton } from 'components/button/PrimaryButton'
 import { MediumText } from 'components/index'
-import { IconInformationalBox } from 'components/IconInformationalBox'
+import { InfoBox } from 'components/InfoBox'
 
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import {
@@ -91,7 +91,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           progressText={'1/4'}
         />
 
-        <IconInformationalBox
+        <InfoBox
           avatar={
             domainToLookUp !== '' ? domainToLookUp + '.rsk' : 'alias name'
           }

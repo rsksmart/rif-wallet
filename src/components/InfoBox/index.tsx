@@ -5,7 +5,7 @@ import { Typography } from 'src/components'
 import { sharedColors } from 'shared/constants'
 import { AppTouchable } from 'components/appTouchable'
 
-interface IIconInformationalBox {
+interface InfoBoxProps {
   avatar?: string
   title?: string
   description?: string
@@ -14,14 +14,14 @@ interface IIconInformationalBox {
   backgroundColor?: string
 }
 
-export const IconInformationalBox = ({
+export const InfoBox = ({
   avatar,
   title,
   description,
   buttonText,
   onPress,
   backgroundColor = sharedColors.inputInactive,
-}: IIconInformationalBox) => {
+}: InfoBoxProps) => {
   return (
     <View style={[styles.container, { backgroundColor }]}>
       {avatar ? (
