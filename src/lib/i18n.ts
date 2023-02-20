@@ -92,6 +92,9 @@ const resources = {
       Cancel: 'Cancel',
       TOTAL: 'TOTAL',
       search_placeholder: 'Search by username or email',
+      initial_screen_title: 'Wallet',
+      initial_screen_button_create: 'Create a wallet',
+      initial_screen_button_import: 'Import existing',
     },
   },
   es: {
