@@ -1,13 +1,13 @@
 import { useMemo } from 'react'
 import { ScrollView, StyleSheet, View } from 'react-native'
-import {Input, Typography} from 'src/components'
+import { Input, Typography } from 'src/components'
 import { sharedColors } from 'shared/constants'
 import { FormProvider, useForm } from 'react-hook-form'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { QRGenerator } from 'components/QRGenerator/QRGenerator'
 import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
-import {useTranslation} from "react-i18next";
+import { useTranslation } from 'react-i18next'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
@@ -27,7 +27,7 @@ export const ReceiveScreen = ({
   addressToCopy,
   displayAddress,
 }: ReceiveScreenProps) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   const methods = useForm({
     mode: 'onChange',
     defaultValues: {
@@ -64,11 +64,11 @@ export const ReceiveScreen = ({
           />
         </View>
         {/* QR Component */}
-        <View
-          style={styles.qrView}>
-          <QRGenerator 
+        <View style={styles.qrView}>
+          <QRGenerator
             value={addressToUse}
             imageSource={require('../../images/arrow-up-icon.png')}
+            logoBackgroundColor={sharedColors.secondary}
           />
         </View>
         {/* Username Component */}
