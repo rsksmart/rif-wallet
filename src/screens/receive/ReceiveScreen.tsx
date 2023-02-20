@@ -78,7 +78,7 @@ export const ReceiveScreen = ({
           <QRGenerator
             value={addressToUse}
             imageSource={require('../../images/arrow-north-east-icon.png')}
-            logoBackgroundColor={sharedColors.secondary}
+            logoBackgroundColor={sharedColors.inputInactive}
           />
         </View>
         {/* Username Component */}
