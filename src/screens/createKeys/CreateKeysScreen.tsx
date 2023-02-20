@@ -10,7 +10,7 @@ import { RifLogo } from 'components/icons/RifLogo'
 import {
   createKeysRouteNames,
   CreateKeysScreenProps,
-} from 'src/navigation/createKeysNavigator'
+} from 'navigation/createKeysNavigator'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 
