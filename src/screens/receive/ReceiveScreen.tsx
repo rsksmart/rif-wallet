@@ -113,6 +113,7 @@ const styles = StyleSheet.create({
     backgroundColor: sharedColors.inputInactive,
     paddingVertical: 84,
     borderRadius: 20,
+    marginTop: 5,
   },
   headerStyle: {
     flexDirection: 'row',
