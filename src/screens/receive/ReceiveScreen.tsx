@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   qrView: {
-    paddingHorizontal: 45,
+    paddingHorizontal: 35,
     backgroundColor: sharedColors.inputInactive,
     paddingVertical: 84,
     borderRadius: 20,
