@@ -1,10 +1,13 @@
-import React, { useState } from 'react'
-import { Dimensions, ScrollView, StyleSheet, View } from 'react-native'
-import QRCode from 'react-qr-code'
-import { RegularText } from 'src/components'
-import { ToggleButtons } from '../../components/button/ToggleButtons'
-import { ShareableText } from '../../components/ShareableText'
-import { colors } from '../../styles/colors'
+import { useMemo } from 'react'
+import { ScrollView, StyleSheet, View } from 'react-native'
+import {Input, Typography} from 'src/components'
+import { sharedColors } from 'shared/constants'
+import { FormProvider, useForm } from 'react-hook-form'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import { QRGenerator } from 'components/QRGenerator/QRGenerator'
+import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
+import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
+import {useTranslation} from "react-i18next";
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
@@ -14,96 +17,91 @@ export enum TestID {
 }
 
 export type ReceiveScreenProps = {
-  registeredDomains: string[]
-  address: string
+  username: string
   displayAddress: string
+  addressToCopy?: string
 }
 
-export const ReceiveScreen: React.FC<ReceiveScreenProps> = ({
-  registeredDomains,
-  address,
+export const ReceiveScreen = ({
+  username = 'user345crypto.rsk',
+  addressToCopy,
   displayAddress,
-}) => {
-  const [activeTab, setActiveTab] = useState('address')
+}: ReceiveScreenProps) => {
+  const { t } = useTranslation();
+  const methods = useForm({
+    mode: 'onChange',
+    defaultValues: {
+      search: '',
+    },
+  })
 
-  const windowWidth = Dimensions.get('window').width
-  const qrCodeSize = windowWidth * 0.5
+  const bitcoinCore = useBitcoinContext()
 
-  const qrContainerStyle = {
-    marginHorizontal: (windowWidth - (qrCodeSize + 60)) / 2,
-    width: qrCodeSize + 60,
-    marginTop: 10,
-  }
-
-  const handleOptionSelected = (selectedTab: string) => {
-    setActiveTab(selectedTab)
-  }
+  const addressToUse = useMemo(
+    () => addressToCopy || displayAddress,
+    [addressToCopy, displayAddress],
+  )
 
   return (
     <ScrollView style={styles.parent}>
-      <View style={qrContainerStyle}>
-        <RegularText style={styles.title}>share QR Code</RegularText>
-      </View>
-      <View
-        style={{ ...styles.qrContainer, ...qrContainerStyle }}
-        testID={TestID.QRCodeDisplay}>
-        <QRCode
-          bgColor="#dbe3ff"
-          color="#707070"
-          value={address}
-          size={qrCodeSize}
-        />
-      </View>
-      <View style={qrContainerStyle}>
-        <ToggleButtons
-          label={'share details'}
-          options={['address', 'domains']}
-          selectedOption={activeTab}
-          onOptionSelected={handleOptionSelected}
-        />
-      </View>
-      {activeTab === 'address' && (
-        <View style={qrContainerStyle}>
-          <ShareableText text={displayAddress} valueToShare={address} />
+      <FormProvider {...methods}>
+        {/* Change Asset Component */}
+        <Typography type="h4">{t('CHANGE_ASSET')}</Typography>
+        <View style={{ flexDirection: 'row' }}>
+          <PortfolioCard
+            onPress={() => console.log('test')}
+            color={sharedColors.inputInactive}
+            primaryText="tRIF"
+            secondaryText={'$21,000.00'}
+            isSelected={false}
+          />
+          <PortfolioCard
+            onPress={() => console.log('test')}
+            color={sharedColors.inputInactive}
+            primaryText="BTCT"
+            secondaryText={'$21,000.00'}
+            isSelected={false}
+          />
         </View>
-      )}
-
-      {activeTab === 'domains' && (
-        <View style={qrContainerStyle}>
-          {registeredDomains.map((domain, index) => (
-            <ShareableText key={index} text={domain} valueToShare={domain} />
-          ))}
-          {registeredDomains?.length === 0 && (
-            <RegularText style={styles.noDomainsText}>
-              Domains not found
-            </RegularText>
-          )}
+        {/* QR Component */}
+        <View
+          style={styles.qrView}>
+          <QRGenerator 
+            value={addressToUse}
+            imageSource={require('../../images/arrow-up-icon.png')}
+          />
         </View>
-      )}
+        {/* Username Component */}
+        <Input
+          label="Username"
+          inputName="username"
+          rightIcon={<Ionicons name="share-outline" size={20} />}
+          placeholder={username}
+          isReadOnly
+        />
+        {/* Address Component */}
+        <Input
+          label="Address"
+          inputName="address"
+          rightIcon={<Ionicons name="share-outline" size={20} />}
+          placeholder={displayAddress}
+          isReadOnly
+        />
+      </FormProvider>
     </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
   parent: {
-    borderTopLeftRadius: 50,
-    borderTopRightRadius: 50,
-    backgroundColor: '#050134',
-    height: '100%',
-    opacity: 0.9,
-    paddingTop: 40,
+    backgroundColor: sharedColors.secondary,
+    minHeight: '100%',
+    paddingHorizontal: 24,
   },
-  title: {
-    color: colors.white,
-  },
-  qrContainer: {
-    backgroundColor: '#dbe3ff',
-    marginVertical: 20,
-    padding: 30,
+  qrView: {
+    paddingHorizontal: 45,
+    backgroundColor: sharedColors.inputInactive,
+    paddingVertical: 84,
     borderRadius: 20,
-  },
-  noDomainsText: {
-    alignSelf: 'center',
-    color: colors.white,
   },
 })

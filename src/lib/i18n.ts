@@ -113,6 +113,7 @@ const resources = {
         'We strongly recommend you to write the phrase also on a piece of paper.',
       new_master_key_title: 'Save your phrase',
       new_master_key_button_title: 'Phrase secured, Continue',
+      CHANGE_ASSET: 'Change asset',
     },
   },
   es: {
