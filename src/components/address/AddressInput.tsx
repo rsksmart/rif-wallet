@@ -1,49 +1,87 @@
-import { useCallback, useEffect, useState } from 'react'
-import { Text, TextInput, View } from 'react-native'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import Clipboard from '@react-native-community/clipboard'
-import { TouchableOpacity } from 'react-native-gesture-handler'
-import Icon from 'react-native-vector-icons/Ionicons'
 import { isValidChecksumAddress } from '@rsksmart/rsk-utils'
+import { decodeString } from '@rsksmart/rif-wallet-eip681'
+import { useTranslation } from 'react-i18next'
 
 import { rnsResolver } from 'src/core/setup'
-import { decodeString } from '@rsksmart/rif-wallet-eip681'
-import { colors, grid } from 'src/styles'
+import { colors } from 'src/styles'
 import { SecondaryButton } from '../button/SecondaryButton'
-import { ContentPasteIcon, QRCodeIcon, DeleteIcon } from '../icons'
 import { QRCodeScanner } from '../QRCodeScanner'
 import {
   AddressValidationMessage,
   toChecksumAddress,
   validateAddress,
 } from './lib'
-import { sharedAddressStyles as styles } from './sharedAddressStyles'
-import { RegularText } from '../typography'
+import { Input, InputProps } from '../input'
+import { Avatar } from '../avatar'
+import { sharedColors } from 'src/shared/constants'
+import { TextStyle } from 'react-native'
 
-interface AddressInputProps {
+export interface AddressInputProps extends InputProps {
   initialValue: string
-  onChangeText: (newValue: string, isValid: boolean) => void
-  testID?: string
+  onChangeAddress: (newValue: string, isValid: boolean) => void
   chainId: number
-  backgroundColor?: string
 }
 
+enum Status {
+  READY = 'READY',
+  INFO = 'INFO',
+  SUCCESS = 'SUCCESS',
+  ERROR = 'ERROR',
+  CHECKSUM = 'CHECKSUM',
+}
+
+const typeColorMap = new Map([
+  [Status.ERROR, sharedColors.danger],
+  [Status.SUCCESS, sharedColors.success],
+  [Status.INFO, sharedColors.inputLabelColor],
+])
+
+const defaultStatus = { type: Status.READY, value: '' }
+
 export const AddressInput = ({
+  label,
+  placeholder,
   initialValue,
-  onChangeText,
+  inputName,
+  onChangeAddress,
   testID,
   chainId,
-  backgroundColor = colors.darkPurple5,
+  resetValue,
 }: AddressInputProps) => {
+  const { t } = useTranslation()
   // the address of the recipient
   const [recipient, setRecipient] = useState<string>(initialValue)
   // hide or show the QR scanner
   const [showQRScanner, setShowQRScanner] = useState<boolean>(false)
-  const [domainFound, setDomainFound] = useState<string>('')
+  const [domainFound, setDomainFound] = useState<boolean>(false)
   const [addressResolved, setAddressResolved] = useState<string>('')
+  // status
+  const [status, setStatus] = useState<{
+    type: Status
+    value?: string
+  }>({ type: Status.READY })
+
+  const labelColor = useMemo<TextStyle>(() => {
+    return typeColorMap.get(status.type)
+      ? { color: typeColorMap.get(status.type) }
+      : { color: typeColorMap.get(Status.INFO) }
+  }, [status.type])
+
+  const resetState = useCallback(() => {
+    setDomainFound(false)
+    onChangeAddress('', false)
+    setStatus(defaultStatus)
+  }, [onChangeAddress])
 
   const handleChangeText = useCallback(
     (inputText: string) => {
-      setStatus({ type: 'READY', value: '' })
+      if (inputText.length === 0) {
+        resetState()
+      }
+
+      setStatus(defaultStatus)
 
       const parsedString = decodeString(inputText)
       const userInput = parsedString.address ? parsedString.address : inputText
@@ -51,7 +89,7 @@ export const AddressInput = ({
       setRecipient(userInput)
       const newValidationMessage = validateAddress(userInput, chainId)
 
-      onChangeText(
+      onChangeAddress(
         userInput,
         newValidationMessage === AddressValidationMessage.VALID,
       )
@@ -63,88 +101,95 @@ export const AddressInput = ({
       switch (newValidationMessage) {
         case AddressValidationMessage.DOMAIN:
           setStatus({
-            type: 'INFO',
-            value: 'Getting address for domain...',
+            type: Status.INFO,
+            value: t('contact_form_getting_info'),
           })
 
           rnsResolver
             .addr(userInput)
             .then((address: string) => {
-              setDomainFound(userInput)
+              setDomainFound(true)
               setAddressResolved(address)
               setStatus({
-                type: 'INFO',
-                value: 'RNS domain associated with this address',
+                type: Status.SUCCESS,
+                value: t('contact_form_user_found'),
               })
 
               // call parent with the resolved address
-              onChangeText(
-                address,
+              onChangeAddress(
+                userInput,
                 validateAddress(address, chainId) ===
                   AddressValidationMessage.VALID,
               )
             })
             .catch(_e =>
               setStatus({
-                type: 'ERROR',
-                value: `Could not get address for ${inputText.toLowerCase()}`,
+                type: Status.ERROR,
+                value: `${t(
+                  'contact_form_address_not_found',
+                )} ${inputText.toLowerCase()}`,
               }),
             )
           break
         case AddressValidationMessage.INVALID_CHECKSUM:
           setStatus({
-            type: 'CHECKSUM',
-            value: 'The checksum is invalid.',
+            type: Status.CHECKSUM,
+            value: t('contact_form_checksum_invalid'),
           })
           break
         case AddressValidationMessage.INVALID_ADDRESS:
           setStatus({
-            type: 'ERROR',
-            value: 'Invalid address',
+            type: Status.ERROR,
+            value: t('contact_form_address_invalid'),
           })
-          onChangeText(userInput, false)
+          onChangeAddress(userInput, false)
           break
       }
     },
-    [chainId, onChangeText],
+    [chainId, onChangeAddress, resetState, t],
   )
+
+  const unselectDomain = useCallback(() => {
+    resetState()
+    handleChangeText('')
+  }, [handleChangeText, resetState])
 
   useEffect(() => {
     setRecipient(initialValue)
     if (initialValue) {
       handleChangeText(initialValue)
     } else {
-      onChangeText(initialValue, isValidChecksumAddress(initialValue, chainId))
+      onChangeAddress(
+        initialValue,
+        isValidChecksumAddress(initialValue, chainId),
+      )
     }
-  }, [chainId, handleChangeText, initialValue, onChangeText])
+  }, [chainId, handleChangeText, onChangeAddress, initialValue])
 
-  // status
-  const [status, setStatus] = useState<{
-    type: 'READY' | 'INFO' | 'ERROR' | 'CHECKSUM'
-    value?: string
-  }>({ type: 'READY' })
+  const handlePasteClick = useCallback(async () => {
+    const value = await Clipboard.getString()
+    handleChangeText(value)
+  }, [handleChangeText])
 
-  const handlePasteClick = () =>
-    Clipboard.getString().then((value: string) => {
-      setStatus({ type: 'READY' })
-      handleChangeText(value)
-    })
+  // onBlur check the address is valid
+  const validateCurrentInput = useCallback(
+    (input: string) => {
+      if (validateAddress(input) === AddressValidationMessage.INVALID_ADDRESS) {
+        setStatus({
+          type: Status.ERROR,
+          value: t('contact_form_address_invalid'),
+        })
+      }
+    },
+    [t],
+  )
 
-  // onUnFocus check the address is valid
-  const validateCurrentInput = (input: string) => {
-    if (validateAddress(input) === AddressValidationMessage.INVALID_ADDRESS) {
-      setStatus({
-        type: 'ERROR',
-        value: 'The address is invalid',
-      })
-    }
-  }
-
-  const unselectDomain = () => {
-    setDomainFound('')
+  const resetAddressValue = useCallback(() => {
     handleChangeText('')
-    setStatus({ type: 'READY', value: '' })
-  }
+    unselectDomain()
+    resetValue && resetValue()
+  }, [resetValue, handleChangeText, unselectDomain])
+
   return showQRScanner ? (
     <QRCodeScanner
       onClose={() => setShowQRScanner(false)}
@@ -154,104 +199,42 @@ export const AddressInput = ({
       }}
     />
   ) : (
-    <View style={styles.parent}>
-      {!!domainFound && (
-        <View style={styles.rnsDomainContainer}>
-          <View>
-            <RegularText style={styles.rnsDomainName}>
-              {domainFound}
-            </RegularText>
-            <RegularText style={styles.rnsDomainAddress}>
-              {addressResolved}
-            </RegularText>
-          </View>
-          <View style={styles.rnsDomainUnselect}>
-            <TouchableOpacity
-              onPress={unselectDomain}
-              accessibilityLabel="delete">
-              <DeleteIcon color={'black'} width={20} height={20} />
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
-      {!domainFound && (
-        <View style={grid.row}>
-          <View style={{ ...styles.inputContainer, backgroundColor }}>
-            <TextInput
-              style={styles.input}
-              onChangeText={handleChangeText}
-              onBlur={() => validateCurrentInput(recipient)}
-              autoCapitalize="none"
-              autoCorrect={false}
-              value={recipient}
-              placeholder="address or rns domain"
-              testID={testID}
-              editable={true}
-              placeholderTextColor={colors.text.secondary}
-            />
-
-            {!recipient ? (
-              <>
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={handlePasteClick}
-                  testID="Address.PasteButton"
-                  accessibilityLabel="paste">
-                  <ContentPasteIcon
-                    color={colors.text.secondary}
-                    height={22}
-                    width={22}
-                  />
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={() => setShowQRScanner(true)}
-                  testID="Address.QRCodeButton"
-                  accessibilityLabel="qr">
-                  <QRCodeIcon color={colors.text.secondary} />
-                </TouchableOpacity>
-              </>
-            ) : (
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => handleChangeText('')}
-                testID="Address.ClearButton"
-                accessibilityLabel="clear">
-                <View style={styles.clearButtonView}>
-                  <Icon
-                    name="close-outline"
-                    style={styles.clearButton}
-                    size={15}
-                  />
-                </View>
-              </TouchableOpacity>
-            )}
-          </View>
-        </View>
-      )}
-      {!!status.value && (
+    <>
+      <Input
+        testID={testID}
+        label={status.value ? status.value : label}
+        labelStyle={labelColor}
+        subtitle={addressResolved && recipient ? addressResolved : undefined}
+        inputName={inputName}
+        onChangeText={handleChangeText}
+        onBlur={() => validateCurrentInput(recipient)}
+        resetValue={resetAddressValue}
+        autoCorrect={false}
+        autoCapitalize={'none'}
+        placeholder={placeholder}
+        placeholderTextColor={colors.text.secondary}
+        rightIcon={!recipient ? { name: 'copy', size: 16 } : undefined}
+        onRightIconPress={handlePasteClick}
+        leftIcon={
+          recipient && domainFound ? (
+            <Avatar name={recipient} size={28} />
+          ) : undefined
+        }
+      />
+      {status.value ? (
         <>
-          <Text
-            style={status.type === 'INFO' ? styles.info : styles.error}
-            testID={testID + '.InputInfo'}>
-            {status.value}
-          </Text>
-          {status.type === 'CHECKSUM' && (
+          {status.type === Status.CHECKSUM && (
             <SecondaryButton
               testID={`${testID}.Button.Checksum`}
               accessibilityLabel="convert"
-              title="Convert to correct checksum"
+              title={t('contact_form_button_checksum')}
               onPress={() =>
                 handleChangeText(toChecksumAddress(recipient, chainId))
               }
             />
           )}
         </>
-      )}
-      <View style={grid.row}>
-        <View style={{ ...grid.column2, ...styles.iconColumn }} />
-      </View>
-    </View>
+      ) : null}
+    </>
   )
 }

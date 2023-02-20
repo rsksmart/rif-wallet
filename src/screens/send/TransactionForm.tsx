@@ -1,10 +1,12 @@
 import { toChecksumAddress } from '@rsksmart/rsk-utils'
 import { useCallback, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
+import { useTranslation } from 'react-i18next'
+import { FormProvider, useForm } from 'react-hook-form'
 
 import { AddressInputSelector } from 'components/address/AddressInputSelector'
 import { TransferButton } from 'components/button/TransferButton'
-import { RegularText, Tabs } from 'src/components'
+import { RegularText, Tabs } from 'components/index'
 import { colors, grid } from 'src/styles'
 import { IActivityTransaction, IPrice } from 'src/subscriptions/types'
 
@@ -32,9 +34,11 @@ interface Props {
   onTokenSelected?: (tokenSelected: MixedTokenAndNetworkType) => void
 }
 
-interface txDetail {
-  value: string
-  isValid: boolean
+interface FormValues {
+  amount: string
+  to: string
+  isToValid: boolean
+  isAmountValid: boolean
 }
 
 export const TransactionForm = ({
@@ -46,6 +50,16 @@ export const TransactionForm = ({
   onConfirm,
   onTokenSelected,
 }: Props) => {
+  const { t } = useTranslation()
+  const methods = useForm<FormValues>({
+    defaultValues: {
+      amount: initialValues.amount || '0',
+      to: initialValues.recipient || '',
+      isAmountValid: false,
+      isToValid: false,
+    },
+  })
+  const { getValues, setValue, handleSubmit, resetField } = methods
   const [selectedToken, setSelectedToken] = useState<MixedTokenAndNetworkType>(
     initialValues.asset || tokenList[0],
   )
@@ -53,19 +67,10 @@ export const TransactionForm = ({
   const [activeTab, setActiveTab] = useState('address')
   const { tabs } = useTokenSelectedTabs(selectedToken, setActiveTab)
 
-  const [amount, setAmount] = useState<txDetail>({
-    value: initialValues.amount || '0',
-    isValid: false,
-  })
-
-  const [to, setTo] = useState<txDetail>({
-    value: initialValues.recipient || '',
-    isValid: false,
-  })
-
   const [error, setError] = useState<string | null>(null)
 
-  const isValidTransaction = amount.isValid && to.isValid
+  const isValidTransaction =
+    getValues('isAmountValid') && getValues('isToValid')
 
   const tokenQuote = selectedToken.contractAddress.startsWith('BITCOIN')
     ? tokenPrices.BTC.price
@@ -74,17 +79,19 @@ export const TransactionForm = ({
   const handleAmountChange = useCallback(
     (newAmount: string, isValid: boolean) => {
       setError(null)
-      setAmount({ value: newAmount, isValid })
+      setValue('amount', newAmount)
+      setValue('isAmountValid', isValid)
     },
-    [],
+    [setValue],
   )
 
   const handleTargetAddressChange = useCallback(
     (address: string, isValid: boolean) => {
       setError(null)
-      setTo({ value: address, isValid })
+      setValue('to', address)
+      setValue('isToValid', isValid)
     },
-    [],
+    [setValue],
   )
 
   const handleSelectRecentAddress = useCallback(
@@ -96,8 +103,8 @@ export const TransactionForm = ({
   )
 
   const handleConfirmClick = useCallback(
-    () => onConfirm(selectedToken, amount.value, to.value),
-    [amount.value, to.value, selectedToken, onConfirm],
+    (values: FormValues) => onConfirm(selectedToken, values.amount, values.to),
+    [selectedToken, onConfirm],
   )
 
   const onTokenSelect = useCallback(
@@ -128,7 +135,7 @@ export const TransactionForm = ({
           />
         </View>
       </View>
-      <View style={{ ...grid.row, ...styles.section }}>
+      <View style={[grid.row, styles.section]}>
         <View style={grid.column12}>
           <SetAmountHOCComponent
             setAmount={handleAmountChange}
@@ -146,13 +153,22 @@ export const TransactionForm = ({
         />
         {activeTab === 'address' && (
           <>
-            <AddressInputSelector
-              initialValue={to.value}
-              onChangeText={handleTargetAddressChange}
-              testID={'To.Input'}
-              chainId={chainId}
-              token={selectedToken}
-            />
+            <FormProvider {...methods}>
+              <AddressInputSelector
+                label={t('address_rns_placeholder')}
+                placeholder={t('address_rns_placeholder')}
+                initialValue={getValues('to')}
+                inputName={'to'}
+                onChangeAddress={handleTargetAddressChange}
+                resetValue={() => {
+                  resetField('to')
+                  resetField('isToValid')
+                }}
+                testID={'To.Input'}
+                chainId={chainId}
+                token={selectedToken}
+              />
+            </FormProvider>
             <View>
               <RegularText>{error}</RegularText>
             </View>
@@ -160,9 +176,9 @@ export const TransactionForm = ({
             <View style={styles.centerRow}>
               <TransferButton
                 style={styles.button}
-                onPress={handleConfirmClick}
+                onPress={handleSubmit(handleConfirmClick)}
                 disabled={!isValidTransaction}
-                accessibilityLabel="transfer"
+                accessibilityLabel={'transfer'}
               />
             </View>
           </>

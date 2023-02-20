@@ -1,9 +1,7 @@
 import { StyleSheet } from 'react-native'
-import { fonts } from 'src/styles/fonts'
 import { colors } from '../../styles'
 
 export const sharedAddressStyles = StyleSheet.create({
-  parent: {},
   iconColumn: {
     alignItems: 'flex-end',
   },
@@ -32,13 +30,6 @@ export const sharedAddressStyles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     padding: 20,
-  },
-  input: {
-    flex: 5,
-    fontSize: 16,
-    fontWeight: '400',
-    color: colors.lightPurple,
-    font: fonts.regular,
   },
   invalidAddressText: {
     marginTop: 10,

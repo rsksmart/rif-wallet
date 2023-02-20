@@ -1,35 +1,40 @@
 import Clipboard from '@react-native-community/clipboard'
 import { useCallback, useEffect, useState } from 'react'
-import { TextInput, View } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
-import Icon from 'react-native-vector-icons/Ionicons'
+import { View } from 'react-native'
+import Icon from 'react-native-vector-icons/FontAwesome5'
 import { isBitcoinAddressValid } from '@rsksmart/rif-wallet-bitcoin'
 
 import { rnsResolver } from 'core/setup'
-import { colors } from 'src/styles'
-
-import { ContentPasteIcon, DeleteIcon, QRCodeIcon } from '../icons'
 import { QRCodeScanner } from '../QRCodeScanner'
 import { MediumText, RegularText } from '../typography'
 import { isDomain } from './lib'
 import { sharedAddressStyles as styles } from './sharedAddressStyles'
+import { Input } from '../input'
+import { AppTouchable } from '../appTouchable'
+import { AddressInputProps } from './AddressInput'
+import { sharedColors } from 'shared/constants'
 
-interface AddressInputProps {
-  initialValue: string
-  onChangeText: (newValue: string, isValid: boolean) => void
-  testID?: string
+enum TYPES {
+  NORMAL = 'NORMAL',
+  DOMAIN = 'DOMAIN',
 }
 
-const TYPES = {
-  NORMAL: 'NORMAL',
-  DOMAIN: 'DOMAIN',
+interface TO {
+  value: string
+  type: TYPES
+  addressResolved: string
 }
 
 export const AddressBitcoinInput = ({
+  label,
+  placeholder,
+  inputName,
+  testID,
   initialValue = '',
-  onChangeText,
+  onChangeAddress,
+  resetValue,
 }: AddressInputProps) => {
-  const [to, setTo] = useState({
+  const [to, setTo] = useState<TO>({
     value: initialValue,
     type: TYPES.NORMAL,
     addressResolved: '',
@@ -38,6 +43,7 @@ export const AddressBitcoinInput = ({
   const [isAddressValid, setIsAddressValid] = useState(false)
   const [isUserWriting, setIsUserWriting] = useState(false)
   const [isValidating, setIsValidating] = useState(false)
+
   const handleUserIsWriting = useCallback((isWriting = true) => {
     setIsUserWriting(isWriting)
   }, [])
@@ -45,21 +51,22 @@ export const AddressBitcoinInput = ({
 
   const showQRScanner = useCallback(() => setShouldShowQRScanner(true), [])
 
-  /* set  */
-  const handleChangeText = useCallback(
-    (text: string) => {
-      setTo({ ...to, value: text, type: TYPES.NORMAL })
-    },
-    [setTo, to],
-  )
-
   const onBeforeChangeText = useCallback(
     (address: string) => {
       const isBtcAddressValid = isBitcoinAddressValid(address)
       setIsAddressValid(isBtcAddressValid)
-      onChangeText(address, isBtcAddressValid)
+      onChangeAddress(address, isBtcAddressValid)
     },
-    [onChangeText],
+    [onChangeAddress],
+  )
+
+  /* set  */
+  const handleChangeText = useCallback(
+    (text: string) => {
+      onBeforeChangeText(text)
+      setTo({ ...to, value: text, type: TYPES.NORMAL })
+    },
+    [setTo, to, onBeforeChangeText],
   )
 
   /* Function to validate address and to set it */
@@ -101,17 +108,20 @@ export const AddressBitcoinInput = ({
     [hideQRScanner, validateAddress],
   )
 
-  const onBlurValidate = () => {
+  const onBlurValidate = useCallback(() => {
     handleUserIsWriting(false)
     validateAddress(to.value)
-  }
+  }, [to.value, validateAddress, handleUserIsWriting])
 
-  const handlePasteClick = () => Clipboard.getString().then(validateAddress)
-
-  const onClearText = useCallback(
-    () => handleChangeText(''),
-    [handleChangeText],
+  const handlePasteClick = useCallback(
+    () => Clipboard.getString().then(validateAddress),
+    [validateAddress],
   )
+
+  const onClearText = useCallback(() => {
+    handleChangeText('')
+    resetValue && resetValue()
+  }, [handleChangeText, resetValue])
 
   useEffect(() => {
     onBeforeChangeText(initialValue)
@@ -133,64 +143,31 @@ export const AddressBitcoinInput = ({
             </RegularText>
           </View>
           <View style={styles.rnsDomainUnselect}>
-            <TouchableOpacity onPress={onClearText} accessibilityLabel="delete">
-              <DeleteIcon color={'black'} width={20} height={20} />
-            </TouchableOpacity>
+            <AppTouchable
+              width={20}
+              onPress={onClearText}
+              accessibilityLabel="delete">
+              <Icon name={'trash-alt'} size={20} color={sharedColors.white} />
+            </AppTouchable>
           </View>
         </View>
       )}
-      {to.type !== TYPES.DOMAIN && (
-        <View style={styles.inputContainer}>
-          {to.type === TYPES.NORMAL && (
-            <TextInput
-              style={styles.input}
-              onChangeText={handleChangeText}
-              onBlur={onBlurValidate}
-              onFocus={handleUserIsWriting}
-              autoCapitalize="none"
-              autoCorrect={false}
-              value={to.value}
-              placeholder="address or rns domain"
-              testID={'AddressBitcoinInput.Text'}
-              editable={true}
-              placeholderTextColor={colors.text.secondary}
-            />
-          )}
-          {to.value === '' && to.type !== TYPES.DOMAIN && (
-            <>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={handlePasteClick}
-                testID="Address.PasteButton">
-                <ContentPasteIcon
-                  color={colors.text.secondary}
-                  height={22}
-                  width={22}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={showQRScanner}
-                testID="Address.QRCodeButton">
-                <QRCodeIcon color={colors.text.secondary} />
-              </TouchableOpacity>
-            </>
-          )}
-          {to.value !== '' && to.type !== TYPES.DOMAIN && (
-            <TouchableOpacity
-              style={styles.button}
-              onPress={onClearText}
-              testID="Address.ClearButton">
-              <View style={styles.clearButtonView}>
-                <Icon
-                  name="close-outline"
-                  style={styles.clearButton}
-                  size={15}
-                />
-              </View>
-            </TouchableOpacity>
-          )}
-        </View>
+      {to.type === TYPES.NORMAL && (
+        <Input
+          label={label}
+          inputName={inputName}
+          resetValue={onClearText}
+          onChangeText={handleChangeText}
+          onBlur={onBlurValidate}
+          onFocus={handleUserIsWriting}
+          autoCorrect={false}
+          placeholder={placeholder}
+          testID={testID}
+          editable={true}
+          autoCapitalize={'none'}
+          rightIcon={to.value === '' ? { name: 'copy', size: 22 } : undefined}
+          onRightIconPress={handlePasteClick}
+        />
       )}
       {to.value !== '' &&
         !isUserWriting &&
