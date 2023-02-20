@@ -8,6 +8,7 @@ import { QRGenerator } from 'components/QRGenerator/QRGenerator'
 import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
 import { useTranslation } from 'react-i18next'
+import Clipboard from '@react-native-community/clipboard'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
@@ -37,11 +38,15 @@ export const ReceiveScreen = ({
 
   const bitcoinCore = useBitcoinContext()
 
+  /* Address that will be used to generate QR and to copy to clipboard */
   const addressToUse = useMemo(
     () => addressToCopy || displayAddress,
     [addressToCopy, displayAddress],
   )
 
+  const onCopyUsername = () => Clipboard.setString(username)
+
+  const onCopyAddress = () => Clipboard.setString(addressToUse)
   return (
     <ScrollView style={styles.parent}>
       <FormProvider {...methods}>
@@ -55,7 +60,7 @@ export const ReceiveScreen = ({
         </View>
         {/* Change Asset Component */}
         <Typography type="h4">{t('CHANGE_ASSET')}</Typography>
-        <View style={{ flexDirection: 'row' }}>
+        <View style={styles.flexRow}>
           <PortfolioCard
             onPress={() => console.log('test')}
             color={sharedColors.inputInactive}
@@ -88,6 +93,7 @@ export const ReceiveScreen = ({
           rightIcon={<Ionicons name="share-outline" size={20} />}
           placeholder={username}
           isReadOnly
+          onRightIconPress={onCopyUsername}
         />
         {/* Address Component */}
         <Input
@@ -96,8 +102,10 @@ export const ReceiveScreen = ({
           rightIcon={<Ionicons name="share-outline" size={20} />}
           placeholder={displayAddress}
           isReadOnly
+          onRightIconPress={onCopyAddress}
         />
       </FormProvider>
+      <View style={styles.emptyPadding} />
     </ScrollView>
   )
 }
@@ -121,4 +129,6 @@ const styles = StyleSheet.create({
     width: '100%',
     marginVertical: 22.5,
   },
+  emptyPadding: { paddingVertical: 15 },
+  flexRow: { flexDirection: 'row' },
 })
