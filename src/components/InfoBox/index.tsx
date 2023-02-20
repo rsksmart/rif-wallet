@@ -4,6 +4,7 @@ import { AvatarIcon } from 'components/icons/AvatarIcon'
 import { Typography } from 'src/components'
 import { sharedColors } from 'shared/constants'
 import { AppTouchable } from 'components/appTouchable'
+import { castStyle } from 'shared/utils'
 
 interface InfoBoxProps {
   avatar?: string
@@ -37,33 +38,31 @@ export const InfoBox = ({
         <Typography type={'body3'}>{description}</Typography>
       ) : null}
       {buttonText ? (
-        <View style={styles.button}>
-          <AppTouchable style={styles.button} onPress={onPress} width={50}>
-            <Typography style={styles.buttonText} type={'body1'}>
-              {buttonText}
-            </Typography>
-          </AppTouchable>
-        </View>
+        <AppTouchable style={styles.button} onPress={onPress} width={50}>
+          <Typography style={styles.buttonText} type={'body1'}>
+            {buttonText}
+          </Typography>
+        </AppTouchable>
       ) : null}
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
+  container: castStyle.view({
     alignItems: 'center',
     borderRadius: 10,
     padding: 20,
-  },
-  button: {
+  }),
+  button: castStyle.view({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'flex-end',
-  },
-  buttonText: {
+  }),
+  buttonText: castStyle.text({
     textDecorationLine: 'underline',
-  },
-  marginBottom: {
+  }),
+  marginBottom: castStyle.view({
     marginBottom: 10,
-  },
+  }),
 })
