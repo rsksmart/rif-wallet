@@ -4,7 +4,7 @@ import { Image, StyleSheet, View } from 'react-native'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 
 import { balanceToDisplay, convertBalance, getChainIdByType } from 'lib/utils'
-import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 
 import { toChecksumAddress } from 'components/address/lib'
 import { MediumText } from 'components/index'
@@ -189,6 +189,8 @@ export const HomeScreen = ({
 
   return (
     <View style={styles.container}>
+      <View style={{ ...styles.topColor, ...backGroundColor }} />
+      <View style={styles.bottomColor} />
       <View style={styles.parent}>
         <TokenBalance
           firstValue={firstValue}

@@ -1,13 +1,14 @@
 import EventEmitter from 'eventemitter3'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
-import { RifWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
+import { RifWalletServicesFetcher } from '@rsksmart/rif-wallet-services'
 
 import { onSocketChangeEmitted } from './onSocketChangeEmitted'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { AppDispatch } from 'store/index'
 import { rifWalletServicesSocket, abiEnhancer } from 'core/setup'
 import { Action, InitAction } from './types'
+import { Options, setInternetCredentials } from 'react-native-keychain'
 
 export const socketsEvents = new EventEmitter()
 
@@ -21,7 +22,10 @@ interface RifSockets {
   mnemonic: string
   setGlobalError: (err: string) => void
   dispatch: AppDispatch
-  fetcher: RifWalletServicesFetcher
+  fetcher: RifWalletServicesFetcher<
+    Options,
+    ReturnType<typeof setInternetCredentials>
+  >
 }
 
 const onSocketInit = (

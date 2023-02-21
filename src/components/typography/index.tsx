@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextProps } from 'react-native'
+import { ColorValue, StyleSheet, Text, TextProps } from 'react-native'
 
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
@@ -98,6 +98,7 @@ type TypographyType =
 
 interface Props extends TextProps {
   type: TypographyType
+  color?: ColorValue
 }
 
 const typeStyleMap = new Map([
@@ -115,9 +116,17 @@ const typeStyleMap = new Map([
   ['labelLight', styles.labelLight],
 ])
 
-export const Typography = ({ style, type, children, ...props }: Props) => {
+export const Typography = ({
+  style,
+  color,
+  type,
+  children,
+  ...props
+}: Props) => {
   return (
-    <Text style={[typeStyleMap.get(type), style]} {...props}>
+    <Text
+      style={[typeStyleMap.get(type), color ? { color } : null, style]}
+      {...props}>
       {children}
     </Text>
   )

@@ -7,7 +7,7 @@ import {
 } from 'react-native'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 
-import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 
 import { RegularText } from 'src/components'
 import {
