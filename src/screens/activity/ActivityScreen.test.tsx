@@ -2,7 +2,7 @@
 import { useNavigation } from '@react-navigation/native'
 import { render, act, waitFor, fireEvent } from '@testing-library/react-native'
 
-import { IRIFWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
+import { RIFWalletServicesFetcherInterface } from '@rsksmart/rif-wallet-services'
 
 import { setupTest } from 'testLib/setup'
 import { getTextFromTextNode, Awaited } from 'testLib/utils'
@@ -16,7 +16,7 @@ import {
   enhancedTxTestCase,
 } from 'testLib/mocks/rifTransactionsMock'
 
-import { ActivityScreen } from './ActivityScreen'
+import { ActivityScreen } from 'src/screens'
 import { getAddressDisplayText } from 'components/index'
 import {
   rootTabsRouteNames,
@@ -33,8 +33,6 @@ const createTestInstance = async (
   const container = render(
     <ActivityScreen
       wallet={mock.rifWallet}
-      fetcher={fetcher}
-      abiEnhancer={abiEnhancer}
       navigation={navigation}
       route={route}
       isWalletDeployed
@@ -145,7 +143,7 @@ describe('Activity Screen', function (this: {
 
 describe('Activity Screen with Error in Fetcher', function (this: {
   testInstance: Awaited<ReturnType<typeof createTestInstance>>
-  fetcher: IRIFWalletServicesFetcher
+  fetcher: RIFWalletServicesFetcherInterface
 }) {
   beforeEach(async () => {
     this.fetcher = {

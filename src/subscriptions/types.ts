@@ -1,9 +1,10 @@
-import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
-import { IRIFWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
+import {
+  RIFWalletServicesFetcherInterface,
+  IApiTransaction,
+  ITokenWithBalance,
+} from '@rsksmart/rif-wallet-services'
 import { IAbiEnhancer, EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
-
-import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
 import { AppContextType } from 'src/Context'
 
 export interface IPrice {
@@ -72,7 +73,7 @@ export interface IActivityTransaction {
 }
 
 export type ActivityScreenProps = {
-  fetcher: IRIFWalletServicesFetcher
+  fetcher: RIFWalletServicesFetcherInterface
   abiEnhancer: IAbiEnhancer
 }
 

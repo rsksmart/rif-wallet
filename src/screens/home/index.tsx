@@ -6,7 +6,7 @@ import { BIP } from '@rsksmart/rif-wallet-bitcoin'
 import { useTranslation } from 'react-i18next'
 
 import { balanceToDisplay, convertBalance, getChainIdByType } from 'lib/utils'
-import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 
 import { toChecksumAddress } from 'components/address/lib'
 import { MediumText, Typography } from 'components/index'
@@ -222,6 +222,8 @@ export const HomeScreen = ({
 
   return (
     <View style={styles.container}>
+      <View style={{ ...styles.topColor, ...backGroundColor }} />
+      <View style={styles.bottomColor} />
       <View style={styles.parent}>
         <TokenBalance
           firstValue={firstValue}

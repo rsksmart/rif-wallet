@@ -94,6 +94,9 @@ const resources = {
       search_placeholder: 'Search by username or email',
       home_screen_portfolio: 'Portfolio',
       home_screen_transactions: 'Transactions',
+      initial_screen_title: 'Wallet',
+      initial_screen_button_create: 'Create a wallet',
+      initial_screen_button_import: 'Import existing',
     },
   },
   es: {
