@@ -23,6 +23,7 @@ export const sharedColors = {
   labelLight: '#B8B8B8',
   subTitle: '#FBFBFB',
   tokenBackground: '#1E1E1E',
+  black: '#000000',
 }
 
 export const tokenColors = {
