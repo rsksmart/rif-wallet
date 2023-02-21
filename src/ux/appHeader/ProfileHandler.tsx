@@ -26,8 +26,8 @@ export const ProfileHandler = ({ navigation }: Props) => {
   const { t } = useTranslation()
   const profileCreated = profile.status === ProfileStatus.USER
 
-  const getColors = useCallback((status: ProfileStatus) => {
-    switch (status) {
+  const getColors = useCallback(() => {
+    switch (profile.status) {
       case ProfileStatus.REQUESTING:
         return {
           startColor: sharedColors.warning,
@@ -53,9 +53,8 @@ export const ProfileHandler = ({ navigation }: Props) => {
       startColor: sharedColors.inputActive,
       endColor: sharedColors.inputActive,
     }
-  }, [])
-  const { startColor, endColor } = getColors(profile.status)
-
+  }, [profile.status])
+  const { startColor, endColor } = getColors()
   const routeNextStep = async () => {
     navigation.navigate(rootTabsRouteNames.Profile, {
       screen: profileCreated
@@ -90,9 +89,12 @@ export const ProfileHandler = ({ navigation }: Props) => {
           </View>
         </>
       )}
+      {profile.status !== ProfileStatus.USER &&
+        profile.status !== ProfileStatus.NONE && (
+          <StepperComponent colors={[startColor, endColor]} />
+        )}
       {profile.status === ProfileStatus.REQUESTING && (
         <>
-          <StepperComponent startColor={startColor} endColor={endColor} />
           <View style={styles.textAlignment}>
             <Typography type={'body3'} style={styles.requestingStatus}>
               {t('Requesting username')}
@@ -103,7 +105,6 @@ export const ProfileHandler = ({ navigation }: Props) => {
 
       {profile.status === ProfileStatus.READY_TO_PURCHASE && (
         <>
-          <StepperComponent startColor={startColor} endColor={endColor} />
           <View style={styles.textAlignment}>
             <Typography type={'body3'} style={styles.underline}>
               {t('Purchase username')}
@@ -114,7 +115,6 @@ export const ProfileHandler = ({ navigation }: Props) => {
 
       {profile.status === ProfileStatus.PURCHASING && (
         <>
-          <StepperComponent startColor={startColor} endColor={endColor} />
           <View style={styles.textAlignment}>
             <Typography type={'body3'} style={styles.requestingStatus}>
               {t('Purchasing username')}
@@ -136,7 +136,6 @@ export const ProfileHandler = ({ navigation }: Props) => {
 
       {profile.status === ProfileStatus.ERROR && (
         <>
-          <StepperComponent startColor={startColor} endColor={endColor} />
           <View style={styles.textAlignment}>
             <Typography type={'body3'} style={styles.requestingStatus}>
               {t('Error Requesting username')}
