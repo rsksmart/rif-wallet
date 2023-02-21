@@ -22,6 +22,7 @@ export enum rootTabsRouteNames {
   Settings = 'Settings',
   Profile = 'Profile',
   ChangePinScreen = 'ChangePinScreen',
+  ReceiveScreen = 'ReceiveScreen',
 }
 
 export type RootTabsParamsList = {
@@ -42,4 +43,5 @@ export type RootTabsParamsList = {
   [rootTabsRouteNames.Profile]:
     | NavigatorScreenParams<ProfileStackParamsList>
     | undefined
+  [rootTabsRouteNames.ReceiveScreen]: NavigatorScreenParams<HomeStackParamsList>
 }

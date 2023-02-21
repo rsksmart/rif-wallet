@@ -8,6 +8,10 @@ import { QRGenerator } from 'components/QRGenerator/QRGenerator'
 import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
 import { useTranslation } from 'react-i18next'
+import {
+  rootTabsRouteNames,
+  RootTabsScreenProps,
+} from 'navigation/rootNavigator'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
@@ -26,7 +30,9 @@ export const ReceiveScreen = ({
   username = 'user345crypto.rsk',
   addressToCopy,
   displayAddress,
-}: ReceiveScreenProps) => {
+  navigation,
+}: ReceiveScreenProps &
+  RootTabsScreenProps<rootTabsRouteNames.ReceiveScreen>) => {
   const { t } = useTranslation()
   const methods = useForm({
     mode: 'onChange',
@@ -55,12 +61,19 @@ export const ReceiveScreen = ({
     })
   }, [addressToUse])
 
+  const onBackPress = () => navigation.goBack()
+
   return (
     <ScrollView style={styles.parent}>
       <FormProvider {...methods}>
         {/* Receive and go back button */}
         <View style={styles.headerStyle}>
-          <Ionicons name="chevron-back" size={20} color="white" />
+          <Ionicons.Button
+            name="chevron-back"
+            size={20}
+            color="white"
+            onPress={onBackPress}
+          />
           <View>
             <Typography type={'h4'}>{t('RECEIVE')}</Typography>
           </View>
