@@ -27,7 +27,11 @@ export const InfoBox = ({
   return (
     <View style={[styles.container, { backgroundColor }]}>
       {avatar ? (
-        <AvatarIcon style={sharedStyles.marginBottom} value={avatar} size={80} />
+        <AvatarIcon
+          style={sharedStyles.marginBottom}
+          value={avatar}
+          size={80}
+        />
       ) : null}
 
       {title ? (
@@ -62,5 +66,5 @@ const styles = StyleSheet.create({
   }),
   buttonText: castStyle.text({
     textDecorationLine: 'underline',
-  })
+  }),
 })
