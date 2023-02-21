@@ -1,9 +1,11 @@
 import { useCallback, useState, ReactFragment } from 'react'
 import {
+  NativeSyntheticEvent,
   Pressable,
   StyleProp,
   StyleSheet,
   TextInput,
+  TextInputFocusEventData,
   TextInputProps,
   TextStyle,
   View,
@@ -59,18 +61,27 @@ export const Input = ({
   subtitleStyle,
   onBlur: onBlurProp,
   onChangeText,
+  onFocus: onFocusProp,
   ...props
 }: InputProps) => {
   const { control } = useFormContext()
   const [focused, setFocused] = useState<boolean>(false)
 
-  const onFocus = useCallback(() => {
-    setFocused(true)
-  }, [])
+  const onFocus = useCallback(
+    (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+      onFocusProp && onFocusProp(e)
+      setFocused(true)
+    },
+    [onFocusProp],
+  )
 
-  const onBlur = useCallback(() => {
-    setFocused(false)
-  }, [])
+  const onBlur = useCallback(
+    (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+      onBlurProp && onBlurProp(e)
+      setFocused(false)
+    },
+    [onBlurProp],
+  )
 
   return (
     <Controller
@@ -114,10 +125,7 @@ export const Input = ({
                     onChangeText && onChangeText(text)
                     onChange(text)
                   }}
-                  onBlur={e => {
-                    onBlurProp && onBlurProp(e)
-                    onBlur()
-                  }}
+                  onBlur={onBlur}
                   onFocus={onFocus}
                   editable={!isReadOnly}
                   {...props}>

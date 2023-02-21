@@ -147,7 +147,7 @@ export const AddressBitcoinInput = ({
             <AppTouchable
               width={20}
               onPress={onClearText}
-              accessibilityLabel="delete">
+              accessibilityLabel={'delete'}>
               <Icon name={'trash-alt'} size={20} color={sharedColors.white} />
             </AppTouchable>
           </View>
@@ -157,16 +157,16 @@ export const AddressBitcoinInput = ({
         <Input
           label={label}
           inputName={inputName}
+          placeholder={placeholder}
+          testID={testID}
+          autoCorrect={false}
+          editable={true}
+          autoCapitalize={'none'}
+          rightIcon={to.value === '' ? { name: 'copy', size: 22 } : undefined}
           resetValue={onClearText}
           onChangeText={handleChangeText}
           onBlur={onBlurValidate}
           onFocus={handleUserIsWriting}
-          autoCorrect={false}
-          placeholder={placeholder}
-          testID={testID}
-          editable={true}
-          autoCapitalize={'none'}
-          rightIcon={to.value === '' ? { name: 'copy', size: 22 } : undefined}
           onRightIconPress={handlePasteClick}
         />
       )}
