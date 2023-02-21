@@ -189,6 +189,8 @@ export const HomeScreen = ({
 
   return (
     <View style={styles.container}>
+      <View style={{ ...styles.topColor, ...backGroundColor }} />
+      <View style={styles.bottomColor} />
       <View style={styles.parent}>
         <TokenBalance
           firstValue={firstValue}

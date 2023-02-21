@@ -1,14 +1,21 @@
-import { StyleSheet, View, ButtonProps, ColorValue } from 'react-native'
+import {
+  StyleSheet,
+  View,
+  ViewStyle,
+  ButtonProps,
+  ColorValue,
+  StyleProp,
+} from 'react-native'
 import { IconProps } from 'react-native-vector-icons/Icon'
+import Icon from 'react-native-vector-icons/FontAwesome'
+
 import { AppTouchable } from 'components/appTouchable'
-import { ViewStyle } from 'react-native'
-import { Typography } from 'src/components'
+import { Typography } from 'components/typography'
 import {
   defaultFontSize,
   defaultIconSize,
   sharedColors,
 } from 'shared/constants'
-import Icon from 'react-native-vector-icons/FontAwesome'
 
 const getBackgroundVariety = (
   backgroundVariety: AppButtonBackgroundVarietyEnum,
@@ -62,15 +69,18 @@ export enum AppButtonBackgroundVarietyEnum {
   OUTLINED = 'OUTLINED',
   GHOST = 'GHOST',
 }
+
 export enum AppButtonWidthVarietyEnum {
   FULL = 'FULL',
   INLINE = 'INLINE',
 }
+
 export enum AppButtonCornerVarietyEnum {
   ROUND = 'ROUND',
   SQUARE = 'SQUARE',
 }
-interface AppButtonProps extends ButtonProps {
+
+export interface AppButtonProps extends ButtonProps {
   textColor?: string
   backgroundVariety?: AppButtonBackgroundVarietyEnum
   widthVariety?: AppButtonWidthVarietyEnum
@@ -78,7 +88,7 @@ interface AppButtonProps extends ButtonProps {
   width?: number
   leftIcon?: IconProps
   rightIcon?: IconProps
-  style?: ViewStyle
+  style?: StyleProp<ViewStyle>
   disabled?: boolean
 }
 export const AppButton = ({
