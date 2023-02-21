@@ -251,12 +251,14 @@ export const HomeScreen = ({
             </MediumText>
           </>
         ) : (
-          <PortfolioComponent
-            selectedAddress={selectedAddress}
-            setSelectedAddress={setSelectedAddress}
-            balances={balances}
-            prices={prices}
-          />
+          <View>
+            <PortfolioComponent
+              selectedAddress={selectedAddress}
+              setSelectedAddress={setSelectedAddress}
+              balances={balances}
+              prices={prices}
+            />
+          </View>
         )}
         <Typography style={styles.transactionsLabel} type={'h3'}>
           {t('home_screen_transactions')}
@@ -288,6 +290,7 @@ const styles = StyleSheet.create({
 
   parent: castStyle.view({
     width: '100%',
+    height: '100%',
   }),
   text: castStyle.text({
     textAlign: 'center',
