@@ -1,5 +1,5 @@
-import { useMemo } from 'react'
-import { ScrollView, StyleSheet, View } from 'react-native'
+import { useCallback, useMemo } from 'react'
+import { ScrollView, StyleSheet, View, Share } from 'react-native'
 import { Input, Typography } from 'src/components'
 import { sharedColors } from 'shared/constants'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -8,7 +8,6 @@ import { QRGenerator } from 'components/QRGenerator/QRGenerator'
 import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
 import { useTranslation } from 'react-i18next'
-import Clipboard from '@react-native-community/clipboard'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
@@ -44,9 +43,18 @@ export const ReceiveScreen = ({
     [addressToCopy, displayAddress],
   )
 
-  const onCopyUsername = () => Clipboard.setString(username)
+  const onShareUsername = useCallback(() => {
+    Share.share({
+      message: username,
+    })
+  }, [username])
 
-  const onCopyAddress = () => Clipboard.setString(addressToUse)
+  const onShareAddress = useCallback(() => {
+    Share.share({
+      message: addressToUse,
+    })
+  }, [addressToUse])
+
   return (
     <ScrollView style={styles.parent}>
       <FormProvider {...methods}>
@@ -93,7 +101,7 @@ export const ReceiveScreen = ({
           rightIcon={<Ionicons name="share-outline" size={20} color="white" />}
           placeholder={username}
           isReadOnly
-          onRightIconPress={onCopyUsername}
+          onRightIconPress={onShareUsername}
         />
         {/* Address Component */}
         <Input
@@ -102,7 +110,7 @@ export const ReceiveScreen = ({
           rightIcon={<Ionicons name="share-outline" size={20} color="white" />}
           placeholder={displayAddress}
           isReadOnly
-          onRightIconPress={onCopyAddress}
+          onRightIconPress={onShareAddress}
         />
       </FormProvider>
       <View style={styles.emptyPadding} />
