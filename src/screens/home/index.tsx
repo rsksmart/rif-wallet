@@ -23,6 +23,7 @@ import { changeTopColor, selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { HomeBarButtonGroup } from 'screens/home/HomeBarButtonGroup'
 import { CurrencyValue, TokenBalance } from 'components/token'
+import { getClose, hasClose, saveClose } from 'storage/MainStorage'
 
 import PortfolioComponent from './PortfolioComponent'
 import { getTokenColor } from './tokenColor'
@@ -56,6 +57,7 @@ export const HomeScreen = ({
       symbol: '',
       symbolType: 'text',
     })
+  const [showInfoBar, setShowInfoBar] = useState<boolean>(true)
 
   const [hide, setHide] = useState<boolean>(false)
   const balances: Array<ITokenWithBalance | BitcoinNetwork> = useMemo(() => {
@@ -194,6 +196,18 @@ export const HomeScreen = ({
     selectedToken.decimals,
     selectedToken.price,
   ])
+  const closed = useMemo(() => {
+    if (hasClose()) {
+      const { close } = getClose()
+      return close
+    }
+    return false
+  }, [])
+
+  const onClose = useCallback(() => {
+    saveClose({ close: true })
+    setShowInfoBar(false)
+  }, [])
 
   const onHide = useCallback(() => {
     setHide(!hide)

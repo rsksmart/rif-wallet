@@ -3,16 +3,17 @@ import { StyleSheet, View } from 'react-native'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import { useTranslation } from 'react-i18next'
 
-import { sharedColors } from 'shared/constants'
-import { Typography } from 'src/components'
+import { noop, sharedColors } from 'shared/constants'
+import { Typography } from 'components/typography'
 import { AppTouchable } from 'components/appTouchable'
 import { WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
 import { castStyle } from 'shared/utils'
 
-type HomeInformationBarProps = {
+interface HomeInformationBarProps {
   slidesIndexes: number[]
   indicatorPos: number[]
   items: ReactElement[]
+  onClose?: () => void
   color?: string
 }
 
@@ -20,6 +21,7 @@ export const HomeInformationBar = ({
   slidesIndexes,
   indicatorPos,
   items,
+  onClose = noop,
   color = sharedColors.primary,
 }: HomeInformationBarProps) => {
   const lastIndex = slidesIndexes[slidesIndexes.length - 1]
@@ -32,7 +34,7 @@ export const HomeInformationBar = ({
   const { t } = useTranslation()
 
   return (
-    <View style={styles.m20}>
+    <View style={styles.container}>
       {selectedSlide !== lastIndex ? (
         <View
           style={[
@@ -44,7 +46,7 @@ export const HomeInformationBar = ({
           ]}
         />
       ) : (
-        <View style={styles.mt10} />
+        <View style={styles.space} />
       )}
       <View
         style={[
@@ -53,7 +55,7 @@ export const HomeInformationBar = ({
             backgroundColor: color,
           },
         ]}>
-        <View style={styles.pv20}>
+        <View style={styles.carouselContainer}>
           <Carousel
             inactiveSlideOpacity={0}
             ref={c => setCarousel(c)}
@@ -65,25 +67,26 @@ export const HomeInformationBar = ({
             inactiveSlideShift={0}
           />
         </View>
-        <View style={[styles.options, styles.pb10, styles.pl10]}>
-          <View style={{}}>
-            <Pagination
-              dotsLength={slidesIndexes.length}
-              activeDotIndex={selectedSlide}
-              containerStyle={[styles.pv5, styles.ph0]}
-              dotStyle={styles.dot}
-              inactiveDotOpacity={0.4}
-              inactiveDotScale={0.6}
-              tappableDots={true}
-            />
-          </View>
-          <View style={styles.mr10}>
-            <AppTouchable onPress={onNextItem} width={36}>
-              <Typography type={'h4'}>
-                {selectedSlide === lastIndex ? t('Close') : t('Next')}
-              </Typography>
-            </AppTouchable>
-          </View>
+        <View style={styles.options}>
+          <Pagination
+            dotsLength={slidesIndexes.length}
+            activeDotIndex={selectedSlide}
+            containerStyle={styles.pagination}
+            dotStyle={styles.dot}
+            inactiveDotOpacity={0.4}
+            inactiveDotScale={0.6}
+            tappableDots={true}
+          />
+          <AppTouchable
+            style={styles.option}
+            onPress={
+              selectedSlide === lastIndex ? () => onClose() : () => onNextItem()
+            }
+            width={36}>
+            <Typography type={'h4'}>
+              {selectedSlide === lastIndex ? t('close') : t('next')}
+            </Typography>
+          </AppTouchable>
         </View>
       </View>
     </View>
@@ -105,6 +108,8 @@ const styles = StyleSheet.create({
   options: castStyle.view({
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingBottom: 10,
+    paddingLeft: 10,
   }),
   rounded: castStyle.view({
     borderRadius: 10,
@@ -116,28 +121,20 @@ const styles = StyleSheet.create({
     marginHorizontal: 0,
     backgroundColor: 'rgba(255, 255, 255, 0.92)',
   }),
-  m20: castStyle.view({
+  container: castStyle.view({
     margin: 20,
   }),
-  mt10: castStyle.view({
+  space: castStyle.view({
     marginTop: 10,
   }),
-  pv20: castStyle.view({
+  carouselContainer: castStyle.view({
     paddingVertical: 20,
   }),
-  pb10: castStyle.view({
-    paddingBottom: 10,
-  }),
-  pl10: castStyle.view({
-    paddingLeft: 10,
-  }),
-  pv5: castStyle.view({
+  pagination: castStyle.view({
     paddingVertical: 5,
-  }),
-  ph0: castStyle.view({
     paddingHorizontal: 0,
   }),
-  mr10: castStyle.view({
+  option: castStyle.view({
     marginRight: 10,
   }),
 })

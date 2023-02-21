@@ -8,6 +8,7 @@ const keyVerificationReminder = 'KEY_VERIFICATION_REMINDER'
 const keyManagement = 'KEY_MANAGEMNT'
 const contacts = 'CONTACTS'
 const signup = 'SIGN_UP'
+const closeStart = 'CLOSE_GETTING_STARTED'
 
 //emulator keys functions
 export const getKeysFromMMKV = (): string | undefined =>
@@ -44,6 +45,13 @@ export const getSignUP = () => MainStorage.get(signup)
 export const saveSignUp = (value: { signup: boolean }) =>
   MainStorage.set(signup, value)
 export const deleteSignUp = () => MainStorage.delete(signup)
+
+// close get started function
+export const hasClose = () => MainStorage.has(closeStart)
+export const getClose = () => MainStorage.get(closeStart)
+export const saveClose = (value: { close: boolean }) =>
+  MainStorage.set(closeStart, value)
+export const deleteClose = () => MainStorage.delete(closeStart)
 
 // general function
 export const resetMainStorage = () => MainStorage.deleteAll()

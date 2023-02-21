@@ -1,13 +1,16 @@
 import { ReactElement } from 'react'
 import { StyleSheet, View } from 'react-native'
+import { IconProps } from 'react-native-vector-icons/Icon'
+import Icon from 'react-native-vector-icons/FontAwesome5'
 
-import { Typography } from 'src/components'
+import { Typography } from 'components/typography'
 import { castStyle } from 'shared/utils'
+import { defaultIconSize, sharedColors } from 'shared/constants'
 
-type HomeInformationItemProps = {
+interface HomeInformationItemProps {
   title: string
   subTitle: string
-  icon?: ReactElement
+  icon?: IconProps | ReactElement
 }
 
 export const HomeInformationItem = ({
@@ -17,13 +20,23 @@ export const HomeInformationItem = ({
 }: HomeInformationItemProps) => {
   return (
     <View style={styles.container}>
-      <View style={styles.ph10}>
-        <Typography type={'h3'} style={styles.pb10}>
+      <View style={styles.textContainer}>
+        <Typography type={'h3'} style={styles.title}>
           {title}
         </Typography>
         <Typography type={'body3'}>{subTitle}</Typography>
       </View>
-      <View style={styles.pr10}>{icon ? icon : null}</View>
+      <View style={styles.icon}>
+        {icon && 'name' in icon ? (
+          <Icon
+            name={icon.name}
+            size={icon.size ? icon.size : defaultIconSize}
+            color={icon.color ? icon.color : sharedColors.white}
+          />
+        ) : (
+          icon
+        )}
+      </View>
     </View>
   )
 }
@@ -33,13 +46,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   }),
-  ph10: castStyle.text({
+  textContainer: castStyle.text({
     paddingHorizontal: 10,
   }),
-  pb10: castStyle.text({
+  title: castStyle.text({
     paddingBottom: 10,
   }),
-  pr10: castStyle.text({
+  icon: castStyle.text({
     paddingRight: 10,
   }),
 })
