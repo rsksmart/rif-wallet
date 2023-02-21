@@ -5,6 +5,7 @@ import { Typography } from 'components/typography'
 import { sharedColors } from 'shared/constants'
 import { AppTouchable } from 'components/appTouchable'
 import { castStyle } from 'shared/utils'
+import { sharedStyles } from 'shared/styles'
 
 interface InfoBoxProps {
   avatar?: string
@@ -26,11 +27,11 @@ export const InfoBox = ({
   return (
     <View style={[styles.container, { backgroundColor }]}>
       {avatar ? (
-        <AvatarIcon style={styles.infoBoxItem} value={avatar} size={80} />
+        <AvatarIcon style={sharedStyles.marginBottom} value={avatar} size={80} />
       ) : null}
 
       {title ? (
-        <Typography style={styles.infoBoxItem} type={'h3'}>
+        <Typography style={sharedStyles.marginBottom} type={'h3'}>
           {title}
         </Typography>
       ) : null}
@@ -61,8 +62,5 @@ const styles = StyleSheet.create({
   }),
   buttonText: castStyle.text({
     textDecorationLine: 'underline',
-  }),
-  infoBoxItem: castStyle.view({
-    marginBottom: 10,
-  }),
+  })
 })
