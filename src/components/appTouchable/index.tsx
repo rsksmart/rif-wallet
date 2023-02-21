@@ -1,5 +1,6 @@
 import { ReactElement, useMemo } from 'react'
 import {
+  FlexStyle,
   Platform,
   Pressable,
   PressableProps,
@@ -14,7 +15,7 @@ import { castStyle } from 'shared/utils'
 interface Props extends PressableProps {
   // a necessary value for android ripple effect
   // to work correctly
-  width: number
+  width: FlexStyle['width']
   children: ReactElement
   style?: StyleProp<ViewStyle>
 }
