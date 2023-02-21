@@ -71,6 +71,7 @@ export const AddressInput = ({
 
   const resetState = useCallback(() => {
     setDomainFound(false)
+    setAddressResolved('')
     onChangeAddress('', false)
     setStatus(defaultStatus)
   }, [onChangeAddress])
@@ -185,10 +186,9 @@ export const AddressInput = ({
   )
 
   const resetAddressValue = useCallback(() => {
-    handleChangeText('')
     unselectDomain()
     resetValue && resetValue()
-  }, [resetValue, handleChangeText, unselectDomain])
+  }, [resetValue, unselectDomain])
 
   return showQRScanner ? (
     <QRCodeScanner
