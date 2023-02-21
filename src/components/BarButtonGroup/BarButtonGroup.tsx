@@ -10,6 +10,7 @@ interface BarButtonGroupIconProps {
   IconComponent: typeof Icon
   onPress: () => void
   size?: number
+
 }
 
 export const BarButtonGroupIcon = ({
@@ -38,6 +39,7 @@ const styles = StyleSheet.create({
   view: {
     height: 64,
     flexDirection: 'row',
+    opacity: 0.85,
   },
   iconContainerStyle: {
     flex: 1,

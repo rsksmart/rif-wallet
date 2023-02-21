@@ -230,6 +230,7 @@ export const HomeScreen = ({
         <HomeBarButtonGroup
           onPress={handleSendReceive}
           isSendDisabled={balances.length === 0}
+          color={backGroundColor.backgroundColor}
         />
         <Typography style={styles.portfolioLabel} type={'h3'}>
           Portfolio
