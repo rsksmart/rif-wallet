@@ -25,6 +25,8 @@ export const AppTouchable = ({ children, style, width, ...props }: Props) => {
     () =>
       ({
         width,
+        justifyContent: 'center',
+        alignItems: 'center',
       } as ViewStyle),
     [width],
   )
