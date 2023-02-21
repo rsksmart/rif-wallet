@@ -10,7 +10,6 @@ interface BarButtonGroupIconProps {
   IconComponent: typeof Icon
   onPress: () => void
   size?: number
-
 }
 
 export const BarButtonGroupIcon = ({
