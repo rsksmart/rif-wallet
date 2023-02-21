@@ -6,7 +6,7 @@ import {
 import { ActivityMixedType } from './types'
 import ActivityRowPresentation from './ActivityRowPresentation'
 import useActivityDeserializer from './useActivityDeserializer'
-import { BasicRow, StatusEnum } from 'components/BasicRow/BasicRow'
+import { BasicRow, StatusEnum } from 'components/BasicRow'
 
 interface Props extends RootTabsScreenProps<rootTabsRouteNames.Activity> {
   activityTransaction: ActivityMixedType
@@ -29,11 +29,13 @@ const getStatus = (status: string) => {
       return undefined
   }
 }
+
+interface ActivityBasicRowProps {
+  activityTransaction: ActivityMixedType
+}
 export const ActivityBasicRow = ({
   activityTransaction,
-}: {
-  activityTransaction: ActivityMixedType
-}) => {
+}: ActivityBasicRowProps) => {
   const activityDetails = useActivityDeserializer(activityTransaction)
 
   return (

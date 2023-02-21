@@ -92,6 +92,8 @@ const resources = {
       Cancel: 'Cancel',
       TOTAL: 'TOTAL',
       search_placeholder: 'Search by username or email',
+      home_screen_portfolio: 'Portfolio',
+      home_screen_transactions: 'Transactions',
     },
   },
   es: {

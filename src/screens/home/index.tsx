@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Image, StyleSheet, View, ScrollView } from 'react-native'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import { BIP } from '@rsksmart/rif-wallet-bitcoin'
+import { useTranslation } from 'react-i18next'
 
 import { balanceToDisplay, convertBalance, getChainIdByType } from 'lib/utils'
 import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
@@ -30,6 +31,7 @@ import { sharedColors } from 'shared/constants'
 import { useBitcoinTransactionsHandler } from 'screens/activity/useBitcoinTransactionsHandler'
 import useTransactionsCombiner from 'screens/activity/useTransactionsCombiner'
 import { ActivityBasicRow } from 'screens/activity/ActivityRow'
+import { castStyle } from 'shared/utils'
 
 export const HomeScreen = ({
   navigation,
@@ -216,6 +218,8 @@ export const HomeScreen = ({
     btcTransactionFetcher.fetchTransactions()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+  const { t } = useTranslation()
+
   return (
     <View style={styles.container}>
       <View style={styles.parent}>
@@ -233,7 +237,7 @@ export const HomeScreen = ({
           color={backGroundColor.backgroundColor}
         />
         <Typography style={styles.portfolioLabel} type={'h3'}>
-          Portfolio
+          {t('home_screen_portfolio')}
         </Typography>
 
         {balances.length === 0 ? (
@@ -255,7 +259,7 @@ export const HomeScreen = ({
           />
         )}
         <Typography style={styles.transactionsLabel} type={'h3'}>
-          Transactions
+          {t('home_screen_transactions')}
         </Typography>
         <ScrollView>
           {transactionsCombined.map(tx => (
@@ -268,36 +272,29 @@ export const HomeScreen = ({
 }
 
 const styles = StyleSheet.create({
-  portfolioLabel: {
+  portfolioLabel: castStyle.text({
     padding: 6,
     paddingTop: 10,
     color: sharedColors.inputLabelColor,
-  },
-  transactionsLabel: {
+  }),
+  transactionsLabel: castStyle.text({
     padding: 6,
     color: sharedColors.inputLabelColor,
-  },
-  activity: {
-    backgroundColor: 'red',
-  },
-  container: {
+  }),
+  container: castStyle.view({
     flexDirection: 'column',
     backgroundColor: sharedColors.secondary,
-  },
-  topColor: {
-    borderBottomRightRadius: 40,
-    borderBottomLeftRadius: 40,
-  },
+  }),
 
-  parent: {
+  parent: castStyle.view({
     width: '100%',
-  },
-  text: {
+  }),
+  text: castStyle.text({
     textAlign: 'center',
     color: colors.lightPurple,
-  },
-  noBalance: {
+  }),
+  noBalance: castStyle.image({
     width: '100%',
     resizeMode: 'contain',
-  },
+  }),
 })
