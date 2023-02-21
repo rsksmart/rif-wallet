@@ -191,8 +191,6 @@ export const Core = () => {
   const styles = StyleSheet.create({
     top: {
       backgroundColor: topColor,
-      // TODO: think about how to handle it better
-      // this does not looks good on CreateKeysScreen
       paddingTop: insets.top,
       flex: 1,
     },
