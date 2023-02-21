@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+
 import { castStyle } from '../utils'
 
 export const testIDs = {
@@ -24,6 +25,7 @@ export const sharedColors = {
   subTitle: '#FBFBFB',
   tokenBackground: '#1E1E1E',
   black: '#000000',
+  qrColor: '#DBE3FF',
 }
 
 export const tokenColors = {
