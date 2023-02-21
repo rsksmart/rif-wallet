@@ -1,21 +1,20 @@
 import {
   StyleSheet,
   View,
-  ViewStyle,
   ButtonProps,
   ColorValue,
+  ViewStyle,
   StyleProp,
+  TextStyle,
+  FlexStyle,
 } from 'react-native'
 import { IconProps } from 'react-native-vector-icons/Icon'
 import Icon from 'react-native-vector-icons/FontAwesome'
 
 import { AppTouchable } from 'components/appTouchable'
-import { Typography } from 'components/typography'
-import {
-  defaultFontSize,
-  defaultIconSize,
-  sharedColors,
-} from 'shared/constants'
+import { Typography, TypographyType } from 'components/typography'
+import { defaultIconSize, sharedColors } from 'shared/constants'
+import { castStyle } from 'shared/utils'
 
 const getBackgroundVariety = (
   backgroundVariety: AppButtonBackgroundVarietyEnum,
@@ -79,16 +78,17 @@ export enum AppButtonCornerVarietyEnum {
   ROUND = 'ROUND',
   SQUARE = 'SQUARE',
 }
-
-export interface AppButtonProps extends ButtonProps {
-  textColor?: string
+interface AppButtonProps extends ButtonProps {
   backgroundVariety?: AppButtonBackgroundVarietyEnum
   widthVariety?: AppButtonWidthVarietyEnum
   cornerVariety?: AppButtonCornerVarietyEnum
-  width?: number
+  width?: FlexStyle['width']
   leftIcon?: IconProps
   rightIcon?: IconProps
-  style?: StyleProp<ViewStyle>
+  style?: ViewStyle
+  textStyle?: StyleProp<TextStyle>
+  textType?: TypographyType
+  textColor?: string
   disabled?: boolean
 }
 export const AppButton = ({
@@ -98,6 +98,7 @@ export const AppButton = ({
   onPress,
   color = sharedColors.inputInactive,
   textColor = sharedColors.white,
+  textType = 'button1',
   backgroundVariety = AppButtonBackgroundVarietyEnum.DEFAULT,
   widthVariety = AppButtonWidthVarietyEnum.FULL,
   cornerVariety = AppButtonCornerVarietyEnum.ROUND,
@@ -105,21 +106,23 @@ export const AppButton = ({
   leftIcon,
   rightIcon,
   style,
+  textStyle,
 }: AppButtonProps) => {
   return (
     <AppTouchable
       width={width}
       style={[
+        styles.content,
         getBackgroundVariety(backgroundVariety, color),
         getWidthVariety(widthVariety),
         getCornerVariety(cornerVariety),
+        getJustifyContent({ leftIcon, rightIcon }),
         style,
       ]}
       onPress={onPress}
       disabled={disabled}
       accessibilityLabel={accessibilityLabel}>
-      <View
-        style={[styles.content, getJustifyContent({ leftIcon, rightIcon })]}>
+      <>
         {leftIcon ? (
           <View style={styles.iconContainer}>
             <Icon
@@ -129,14 +132,12 @@ export const AppButton = ({
             />
           </View>
         ) : null}
-        <View style={styles.textContainer}>
-          <Typography
-            type={'button1'}
-            accessibilityLabel={accessibilityLabel}
-            style={[styles.text, { color: textColor }]}>
-            {title}
-          </Typography>
-        </View>
+        <Typography
+          type={textType}
+          accessibilityLabel={accessibilityLabel}
+          style={[{ color: textColor }, textStyle]}>
+          {title}
+        </Typography>
         {rightIcon ? (
           <View style={styles.iconContainer}>
             <Icon
@@ -146,32 +147,28 @@ export const AppButton = ({
             />
           </View>
         ) : null}
-      </View>
+      </>
     </AppTouchable>
   )
 }
 
 const styles = StyleSheet.create({
-  content: {
+  content: castStyle.view({
     borderRadius: 25,
     flexDirection: 'row',
     paddingTop: 14,
     paddingBottom: 14,
     paddingLeft: 20,
     paddingRight: 20,
-  },
-  textContainer: {
+  }),
+  textContainer: castStyle.view({
     flexDirection: 'row',
     justifyContent: 'center',
-  },
-  iconContainer: {
+  }),
+  iconContainer: castStyle.view({
     flexDirection: 'row',
     justifyContent: 'center',
-  },
-  text: {
-    paddingTop: 4,
-    fontSize: defaultFontSize,
-  },
+  }),
 })
 
 // Legacy buttons to remove
