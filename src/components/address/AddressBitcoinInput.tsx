@@ -17,6 +17,7 @@ import { sharedColors } from 'shared/constants'
 enum TYPES {
   NORMAL = 'NORMAL',
   DOMAIN = 'DOMAIN',
+  ADDRESS = 'ADDRESS',
 }
 
 interface TO {
