@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native'
 
 import { AvatarIcon } from 'components/icons/AvatarIcon'
-import { Typography } from 'src/components'
+import { Typography } from 'components/typography'
 import { sharedColors } from 'shared/constants'
 import { AppTouchable } from 'components/appTouchable'
 import { castStyle } from 'shared/utils'
@@ -26,11 +26,11 @@ export const InfoBox = ({
   return (
     <View style={[styles.container, { backgroundColor }]}>
       {avatar ? (
-        <AvatarIcon style={styles.marginBottom} value={avatar} size={80} />
+        <AvatarIcon style={styles.infoBoxItem} value={avatar} size={80} />
       ) : null}
 
       {title ? (
-        <Typography style={styles.marginBottom} type={'h3'}>
+        <Typography style={styles.infoBoxItem} type={'h3'}>
           {title}
         </Typography>
       ) : null}
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   buttonText: castStyle.text({
     textDecorationLine: 'underline',
   }),
-  marginBottom: castStyle.view({
+  infoBoxItem: castStyle.view({
     marginBottom: 10,
   }),
 })
