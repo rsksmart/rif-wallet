@@ -90,10 +90,12 @@ interface AppButtonProps extends ButtonProps {
   textType?: TypographyType
   textColor?: string
   disabled?: boolean
+  disabledStyle?: StyleProp<ViewStyle>
 }
 export const AppButton = ({
   title,
   disabled,
+  disabledStyle,
   accessibilityLabel = '',
   onPress,
   color = sharedColors.inputInactive,
@@ -118,6 +120,8 @@ export const AppButton = ({
         getCornerVariety(cornerVariety),
         getJustifyContent({ leftIcon, rightIcon }),
         style,
+        disabled ? styles.disabledButton : null,
+        disabledStyle,
       ]}
       onPress={onPress}
       disabled={disabled}
@@ -169,6 +173,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   }),
+  disabledButton: castStyle.view({ opacity: 0.6 }),
 })
 
 // Legacy buttons to remove
