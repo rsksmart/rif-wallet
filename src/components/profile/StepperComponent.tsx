@@ -19,15 +19,15 @@ export const StepperComponent = ({
     <>
       {colors.map((color, index) =>
         index === 0 ? (
-          <View style={styles.textAlignment}>
+          <View key={index} style={styles.textAlignment}>
             <StartStepIcon color={color} width={width} height={height} />
           </View>
         ) : index === colors.length - 1 ? (
-          <View style={styles.textAlignment}>
+          <View key={index} style={styles.textAlignment}>
             <EndStepIcon color={color} width={width} height={height} />
           </View>
         ) : (
-          <View style={styles.textAlignment}>
+          <View key={index} style={styles.textAlignment}>
             <MiddleStepIcon color={color} width={width} height={height} />
           </View>
         ),

@@ -4,7 +4,6 @@ import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
 import { StackHeaderProps } from '@react-navigation/stack'
 import OIcon from 'react-native-vector-icons/Octicons'
 
-import { ChevronLeftIcon } from 'components/icons/ChevronLeftIcon'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { selectActiveWallet, selectTopColor } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
@@ -37,11 +36,6 @@ export const AppHeader = ({
 
   return !isShown ? null : (
     <View style={[styles.row, { backgroundColor: topColor }]}>
-      {navigation.canGoBack() ? (
-        <AppTouchable width={24} onPress={navigation.goBack}>
-          <ChevronLeftIcon color={'white'} />
-        </AppTouchable>
-      ) : null}
       <View style={[styles.column, styles.walletInfo]}>
         {wallet && <ProfileHandler wallet={wallet} navigation={navigation} />}
       </View>

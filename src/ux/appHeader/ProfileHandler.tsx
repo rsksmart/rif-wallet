@@ -84,7 +84,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
           />
           <View style={styles.textAlignment}>
             <Typography type={'h4'} style={[styles.profileName]}>
-              {t('No username')}
+              {t('header_no_username')}
             </Typography>
           </View>
         </>
@@ -97,7 +97,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
         <>
           <View style={styles.textAlignment}>
             <Typography type={'body3'} style={styles.requestingStatus}>
-              {t('Requesting username')}
+              {t('header_requesting')}
             </Typography>
           </View>
         </>
@@ -107,7 +107,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
         <>
           <View style={styles.textAlignment}>
             <Typography type={'body3'} style={styles.underline}>
-              {t('Purchase username')}
+              {t('header_purchase')}
             </Typography>
           </View>
         </>
@@ -117,7 +117,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
         <>
           <View style={styles.textAlignment}>
             <Typography type={'body3'} style={styles.requestingStatus}>
-              {t('Purchasing username')}
+              {t('header_purchasing')}
             </Typography>
           </View>
         </>
@@ -138,7 +138,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
         <>
           <View style={styles.textAlignment}>
             <Typography type={'body3'} style={styles.requestingStatus}>
-              {t('Error Requesting username')}
+              {t('header_error')}
             </Typography>
           </View>
         </>
