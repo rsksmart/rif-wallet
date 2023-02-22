@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { StyleSheet, View } from 'react-native'
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import Clipboard from '@react-native-community/clipboard'
 
@@ -15,6 +15,8 @@ const iconSize = 28
 
 interface Props {
   words: string[]
+  onToggleMnemonic?: (visible: boolean) => void
+  style?: StyleProp<ViewStyle>
 }
 
 interface MnemonicHiddenProps {
@@ -42,9 +44,13 @@ const MnemonicHiddenComponent = ({
   )
 }
 
-export const MnemonicComponent = ({ words }: Props) => {
+export const MnemonicComponent = ({
+  words,
+  onToggleMnemonic,
+  style,
+}: Props) => {
+  const [isMnemonicVisible, setIsMnemonicVisible] = useState(false)
   const { t } = useTranslation()
-  const [isMnemonicVisile, setIsMnemonicVisile] = useState(false)
   const [title, setTitle] = useState(t('mnemonic_title'))
   const [body, setBody] = useState(t('mnemonic_body'))
 
@@ -55,9 +61,16 @@ export const MnemonicComponent = ({ words }: Props) => {
     setBody(t('mnemonic_body_copy'))
   }, [words, t])
 
+  const onEyeIconPress = useCallback(() => {
+    setIsMnemonicVisible(prev => {
+      onToggleMnemonic && onToggleMnemonic(!prev)
+      return !prev
+    })
+  }, [onToggleMnemonic])
+
   return (
-    <View style={styles.mainContainer}>
-      {!isMnemonicVisile ? (
+    <View style={[styles.mainContainer, style]}>
+      {!isMnemonicVisible ? (
         <MnemonicHiddenComponent titleText={title} bodyText={body} />
       ) : (
         <View style={styles.pillContainer}>
@@ -76,10 +89,8 @@ export const MnemonicComponent = ({ words }: Props) => {
         </View>
       )}
       <View style={styles.buttonContainer}>
-        <AppTouchable
-          width={iconSize + 8}
-          onPress={() => setIsMnemonicVisile(prev => !prev)}>
-          <EyeIcon isHidden={!isMnemonicVisile} size={iconSize} />
+        <AppTouchable width={iconSize + 8} onPress={onEyeIconPress}>
+          <EyeIcon isHidden={!isMnemonicVisible} size={iconSize} />
         </AppTouchable>
         <AppTouchable width={iconSize} onPress={onCopy}>
           <Icon name={'copy'} size={iconSize} color={sharedColors.white} />
