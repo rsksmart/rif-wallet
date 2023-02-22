@@ -253,14 +253,12 @@ export const HomeScreen = ({
             </MediumText>
           </>
         ) : (
-          <View>
-            <PortfolioComponent
-              selectedAddress={selectedAddress}
-              setSelectedAddress={setSelectedAddress}
-              balances={balances}
-              prices={prices}
-            />
-          </View>
+          <PortfolioComponent
+            selectedAddress={selectedAddress}
+            setSelectedAddress={setSelectedAddress}
+            balances={balances}
+            prices={prices}
+          />
         )}
         <Typography style={styles.transactionsLabel} type={'h3'}>
           {t('home_screen_transactions')}

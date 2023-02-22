@@ -80,39 +80,44 @@ const PortfolioComponent = ({
   const [isTotalCardSelected, setIsTotalCardSelected] = useState<boolean>(true)
 
   return (
-    <ScrollView horizontal={true} contentContainerStyle={styles.scrollView}>
-      <View style={styles.scrollView}>
-        <PortfolioCard
-          onPress={() => setIsTotalCardSelected(true)}
-          color={sharedColors.inputInactive}
-          primaryText={t('TOTAL')}
-          secondaryText={`$${getTotalUsdBalance(balances, prices).toString()}`}
-          isSelected={isTotalCardSelected}
-        />
-        {balances.map(
-          (balance: ITokenWithoutLogo | BitcoinNetwork, i: number) => {
-            const isSelected =
-              selectedAddress === balance.contractAddress &&
-              !isTotalCardSelected
-            const color = isSelected
-              ? getTokenColor(balance.symbol)
-              : sharedColors.inputInactive
-            const balanceToShow = getBalance(balance)
-            return (
-              <PortfolioCard
-                key={i}
-                onPress={() => handleSelectedAddress(balance.contractAddress)}
-                color={color}
-                primaryText={balance.symbol}
-                secondaryText={balanceToShow}
-                isSelected={isSelected}
-                icon={balance.symbol}
-              />
-            )
-          },
-        )}
-      </View>
-    </ScrollView>
+    <View>
+      <ScrollView horizontal={true} contentContainerStyle={styles.scrollView}>
+        <View style={styles.scrollView}>
+          <PortfolioCard
+            onPress={() => setIsTotalCardSelected(true)}
+            color={sharedColors.inputInactive}
+            primaryText={t('TOTAL')}
+            secondaryText={`$${getTotalUsdBalance(
+              balances,
+              prices,
+            ).toString()}`}
+            isSelected={isTotalCardSelected}
+          />
+          {balances.map(
+            (balance: ITokenWithoutLogo | BitcoinNetwork, i: number) => {
+              const isSelected =
+                selectedAddress === balance.contractAddress &&
+                !isTotalCardSelected
+              const color = isSelected
+                ? getTokenColor(balance.symbol)
+                : sharedColors.inputInactive
+              const balanceToShow = getBalance(balance)
+              return (
+                <PortfolioCard
+                  key={i}
+                  onPress={() => handleSelectedAddress(balance.contractAddress)}
+                  color={color}
+                  primaryText={balance.symbol}
+                  secondaryText={balanceToShow}
+                  isSelected={isSelected}
+                  icon={balance.symbol}
+                />
+              )
+            },
+          )}
+        </View>
+      </ScrollView>
+    </View>
   )
 }
 
