@@ -104,6 +104,13 @@ const resources = {
       header_purchase: 'Purchase username',
       header_purchasing: 'Purchasing username...',
       header_error: 'Error Requesting username',
+      mnemonic_title: 'Security advice',
+      mnemonic_title_copy: 'Copied to clipboard!',
+      mnemonic_body: `Please make sure that you are located 
+      in a safe environment with no one being
+      able to see your phone screen before you decide to reveal your phrase. `,
+      mnemonic_body_copy:
+        'We strongly recommend you to write the phrase also on a piece of paper.',
     },
   },
   es: {

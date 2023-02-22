@@ -1,11 +1,13 @@
-import { StyleSheet, View, ScrollView } from 'react-native'
+import { useEffect, useState } from 'react'
+import { StyleSheet, View } from 'react-native'
 import { Trans } from 'react-i18next'
 
 import { KeyManagementSystem } from 'lib/core'
 
-import { CopyComponent, MediumText, RegularText } from 'components/index'
+import { MediumText, RegularText } from 'components/index'
+import { MnemonicComponent } from 'components/mnemonic'
 import { getKeys } from 'storage/SecureStorage'
-import { useEffect, useState } from 'react'
+import { castStyle } from 'shared/utils'
 
 export enum TestID {
   Mnemonic = 'Mnemonic.Text',
@@ -27,7 +29,7 @@ export const ShowMnemonicScreen = () => {
   }, [])
 
   return (
-    <ScrollView>
+    <View style={styles.screen}>
       <View style={styles.sectionCentered}>
         <RegularText>
           <Trans>
@@ -36,17 +38,18 @@ export const ShowMnemonicScreen = () => {
           </Trans>
         </RegularText>
       </View>
-      <View style={styles.section}>
-        <MediumText>
-          <Trans>Master key</Trans>
-        </MediumText>
-        <CopyComponent testID={TestID.Mnemonic} value={mnemonic || ''} />
-      </View>
-    </ScrollView>
+      <MediumText>
+        <Trans>Master key</Trans>
+      </MediumText>
+      {mnemonic ? <MnemonicComponent words={mnemonic.split(' ')} /> : null}
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
+  screen: castStyle.view({
+    paddingHorizontal: 24,
+  }),
   section: {
     paddingTop: 15,
     paddingBottom: 15,
