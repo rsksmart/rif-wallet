@@ -41,7 +41,7 @@ interface QRGeneratorProps {
  */
 export const QRGenerator = ({
   value,
-  qrWidth = 100,
+  qrWidth,
   iconProps,
   imageSource,
   qrBackgroundColor = sharedColors.inputInactive,
@@ -50,7 +50,7 @@ export const QRGenerator = ({
   containerViewStyle,
   logoBackgroundColor,
 }: QRGeneratorProps) => {
-  const [width, setWidth] = useState(qrWidth)
+  const [width, setWidth] = useState(qrWidth || 100)
   const [iconSource, setIconSource] = useState(imageSource)
 
   const onWidthChange = useCallback(

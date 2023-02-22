@@ -110,7 +110,9 @@ export const HomeScreen = ({
             contractAddress: selected?.contractAddress,
           })
         case 'RECEIVE':
-          return navigation.navigate(homeStackRouteNames.Receive)
+          return navigation.navigate(homeStackRouteNames.Receive, {
+            token: selected,
+          })
         case 'FAUCET':
           const address = wallet?.smartWallet.smartWalletContract.address
           address &&

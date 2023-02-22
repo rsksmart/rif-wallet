@@ -1,6 +1,6 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ScrollView, StyleSheet, View, Share } from 'react-native'
-import { Input, Typography } from 'src/components'
+import { getAddressDisplayText, Input, Typography } from 'src/components'
 import { sharedColors } from 'shared/constants'
 import { FormProvider, useForm } from 'react-hook-form'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -12,6 +12,11 @@ import {
   rootTabsRouteNames,
   RootTabsScreenProps,
 } from 'navigation/rootNavigator'
+import { useAppSelector } from 'store/storeUtils'
+import { selectBalances } from 'store/slices/balancesSlice/selectors'
+import { MixedTokenAndNetworkType } from 'screens/send/types'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
@@ -22,32 +27,42 @@ export enum TestID {
 
 export type ReceiveScreenProps = {
   username: string
-  displayAddress: string
-  addressToCopy?: string
+  token?: MixedTokenAndNetworkType
 }
 
 export const ReceiveScreen = ({
   username = 'user345crypto.rsk',
-  addressToCopy,
-  displayAddress,
+  route,
   navigation,
 }: ReceiveScreenProps &
   RootTabsScreenProps<rootTabsRouteNames.ReceiveScreen>) => {
   const { t } = useTranslation()
-  const methods = useForm({
-    mode: 'onChange',
-    defaultValues: {
-      search: '',
-    },
-  })
-
+  const methods = useForm()
+  const { token } = route.params
+  const [selectedAsset, setSelectedAsset] = useState<
+    MixedTokenAndNetworkType | undefined
+  >(token)
+  const [address, setAddress] = useState<string>('')
+  const [isLoadingAddress, setIsLoadingAddress] = useState(false)
   const bitcoinCore = useBitcoinContext()
+  const tokenBalances = useAppSelector(selectBalances)
+  const { wallet, chainType } = useAppSelector(selectActiveWallet)
 
-  /* Address that will be used to generate QR and to copy to clipboard */
-  const addressToUse = useMemo(
-    () => addressToCopy || displayAddress,
-    [addressToCopy, displayAddress],
-  )
+  const rskAddress = useMemo(() => {
+    if (wallet && chainType) {
+      return getAddressDisplayText(wallet.smartWalletAddress, chainType)
+    }
+    return null
+  }, [wallet, chainType])
+
+  const assets = useMemo(() => {
+    const newAssets = []
+    if (bitcoinCore?.networks) {
+      newAssets.push(...bitcoinCore?.networks)
+    }
+    newAssets.push(...Object.values(tokenBalances))
+    return newAssets
+  }, [bitcoinCore?.networks, tokenBalances])
 
   const onShareUsername = useCallback(() => {
     Share.share({
@@ -57,73 +72,112 @@ export const ReceiveScreen = ({
 
   const onShareAddress = useCallback(() => {
     Share.share({
-      message: addressToUse,
+      message: address,
     })
-  }, [addressToUse])
+  }, [address])
 
   const onBackPress = () => navigation.goBack()
+
+  // Function to get the address
+  const onGetAddress = useCallback(
+    (asset: MixedTokenAndNetworkType) => {
+      if (asset) {
+        setIsLoadingAddress(true)
+        if (asset instanceof BitcoinNetwork) {
+          asset.bips[0]
+            .fetchExternalAvailableAddress()
+            .then(addressReturned => setAddress(addressReturned))
+            .finally(() => setIsLoadingAddress(false))
+        } else {
+          setAddress(rskAddress?.displayAddress || '')
+          setIsLoadingAddress(false)
+        }
+      }
+    },
+    [rskAddress?.displayAddress],
+  )
+
+  const onChangeSelectedAsset = useCallback(
+    asset => () => setSelectedAsset(asset),
+    [],
+  )
+
+  useEffect(() => {
+    if (selectedAsset) {
+      onGetAddress(selectedAsset)
+    }
+  }, [onGetAddress, selectedAsset])
 
   return (
     <ScrollView style={styles.parent}>
       <FormProvider {...methods}>
         {/* Receive and go back button */}
         <View style={styles.headerStyle}>
-          <Ionicons.Button
+          <Ionicons
             name="chevron-back"
             size={20}
             color="white"
             onPress={onBackPress}
           />
           <View>
-            <Typography type={'h4'}>{t('RECEIVE')}</Typography>
+            <Typography type={'h4'}>{t('Receive')}</Typography>
           </View>
           <View />
         </View>
         {/* Change Asset Component */}
         <Typography type="h4">{t('CHANGE_ASSET')}</Typography>
         <View style={styles.flexRow}>
-          <PortfolioCard
-            onPress={() => console.log('test')}
-            color={sharedColors.inputInactive}
-            primaryText="tRIF"
-            secondaryText={'100'}
-            isSelected={false}
-            icon="ARROW_NORTH_EAST"
-          />
-          <PortfolioCard
-            onPress={() => console.log('test')}
-            color={sharedColors.inputInactive}
-            primaryText="BTCT"
-            secondaryText={'1'}
-            isSelected={false}
-            icon="ARROW_NORTH_EAST"
-          />
+          <ScrollView horizontal>
+            {assets.map(asset => (
+              <PortfolioCard
+                onPress={onChangeSelectedAsset(asset)}
+                color={sharedColors.inputInactive}
+                primaryText={asset.symbol}
+                secondaryText={'123'}
+                isSelected={selectedAsset === asset}
+              />
+            ))}
+          </ScrollView>
         </View>
         {/* QR Component */}
         <View style={styles.qrView}>
-          <QRGenerator
-            value={addressToUse}
-            imageSource={require('../../images/arrow-north-east-icon.png')}
-            logoBackgroundColor={sharedColors.inputInactive}
-          />
+          {address !== '' && (
+            <QRGenerator
+              value={address}
+              imageSource={require('../../images/arrow-north-east-icon.png')}
+              logoBackgroundColor={sharedColors.inputInactive}
+            />
+          )}
         </View>
         {/* Username Component */}
         <Input
           label="Username"
           inputName="username"
-          rightIcon={<Ionicons name="share-outline" size={20} color="white" />}
+          rightIcon={
+            <Ionicons
+              name="share-outline"
+              size={20}
+              color="white"
+              onPress={onShareUsername}
+            />
+          }
           placeholder={username}
           isReadOnly
-          onRightIconPress={onShareUsername}
         />
         {/* Address Component */}
         <Input
           label="Address"
           inputName="address"
-          rightIcon={<Ionicons name="share-outline" size={20} color="white" />}
-          placeholder={displayAddress}
+          rightIcon={
+            <Ionicons
+              name="share-outline"
+              size={20}
+              color="white"
+              onPress={onShareAddress}
+            />
+          }
+          placeholder={address}
           isReadOnly
-          onRightIconPress={onShareAddress}
         />
       </FormProvider>
       <View style={styles.emptyPadding} />

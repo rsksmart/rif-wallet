@@ -32,7 +32,9 @@ export type HomeStackParamsList = {
         contractAddress?: string
       }
     | undefined
-  [homeStackRouteNames.Receive]: undefined
+  [homeStackRouteNames.Receive]: {
+    token: any
+  }
   [homeStackRouteNames.ReceiveBitcoin]: {
     networkId: string
   }
