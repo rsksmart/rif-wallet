@@ -1,8 +1,9 @@
 import { useState, useCallback, useEffect } from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Image, StyleSheet, View } from 'react-native'
 import { FormProvider, useForm } from 'react-hook-form'
 import Icon from 'react-native-vector-icons/AntDesign'
+import { AppTouchable } from 'src/components/appTouchable'
 
 import { PrimaryButton } from 'components/button/PrimaryButton'
 import { Input, MediumText } from 'components/index'
@@ -101,13 +102,14 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   return (
     <>
       <View style={rnsManagerStyles.profileHeader}>
-        <TouchableOpacity
+        <AppTouchable
+          width={30}
           onPress={() => navigation.navigate(rootTabsRouteNames.Home)}
           accessibilityLabel="home">
           <View style={rnsManagerStyles.backButton}>
             <MaterialIcon name="west" color={colors.lightPurple} size={10} />
           </View>
-        </TouchableOpacity>
+        </AppTouchable>
       </View>
       <View style={rnsManagerStyles.container}>
         <TitleStatus
@@ -157,19 +159,21 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
             rightIcon={
               <View style={styles.yearsButtons}>
                 {selectedYears > 1 && (
-                  <TouchableOpacity
+                  <AppTouchable
+                    width={40}
                     accessibilityLabel="decrease"
                     onPress={() => handleYearsChange(selectedYears - 1)}
                     style={styles.icon}>
                     <Icon name="minus" size={16} color={colors.white} />
-                  </TouchableOpacity>
+                  </AppTouchable>
                 )}
-                <TouchableOpacity
+                <AppTouchable
+                  width={40}
                   accessibilityLabel="increase"
                   onPress={() => handleYearsChange(selectedYears + 1)}
                   style={styles.icon}>
                   <Icon name="plus" size={16} color={colors.white} />
-                </TouchableOpacity>
+                </AppTouchable>
               </View>
             }
           />
