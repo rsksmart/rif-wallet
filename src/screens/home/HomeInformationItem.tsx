@@ -26,17 +26,15 @@ export const HomeInformationItem = ({
         </Typography>
         <Typography type={'body3'}>{subTitle}</Typography>
       </View>
-      <View style={styles.icon}>
-        {icon && 'name' in icon ? (
-          <Icon
-            name={icon.name}
-            size={icon.size ? icon.size : defaultIconSize}
-            color={icon.color ? icon.color : sharedColors.white}
-          />
-        ) : (
-          icon
-        )}
-      </View>
+      {icon && 'name' in icon ? (
+        <Icon
+          name={icon.name}
+          size={icon.size ? icon.size : defaultIconSize}
+          color={icon.color ? icon.color : sharedColors.white}
+        />
+      ) : (
+        icon
+      )}
     </View>
   )
 }
@@ -46,13 +44,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   }),
-  textContainer: castStyle.text({
-    paddingHorizontal: 10,
+  textContainer: castStyle.view({
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 'auto',
   }),
   title: castStyle.text({
     paddingBottom: 10,
-  }),
-  icon: castStyle.text({
-    paddingRight: 10,
+    fontSize: 16,
   }),
 })

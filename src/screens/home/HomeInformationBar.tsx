@@ -61,8 +61,8 @@ export const HomeInformationBar = ({
             onSnapToItem={index => setSelectedSlide(index)}
             data={slidesIndexes}
             renderItem={({ item }) => items[item]}
-            width={WINDOW_WIDTH - 40}
-            height={60}
+            width={WINDOW_WIDTH - 88}
+            height={72}
             loop={false}
             scrollAnimationDuration={250}
           />
@@ -75,17 +75,14 @@ export const HomeInformationBar = ({
                   key={i}
                   style={[
                     styles.dot,
-                    selectedSlide >= i ? {} : styles.dotInactive,
+                    selectedSlide >= i ? null : styles.dotInactive,
                   ]}
                 />
               )
             })}
           </View>
           <AppTouchable
-            style={styles.option}
-            onPress={
-              selectedSlide === lastIndex ? () => onClose() : () => onNextItem()
-            }
+            onPress={selectedSlide === lastIndex ? onClose : onNextItem}
             width={36}>
             <Typography type={'h4'}>
               {selectedSlide === lastIndex ? t('close') : t('next')}
@@ -112,8 +109,8 @@ const styles = StyleSheet.create({
   options: castStyle.view({
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingBottom: 10,
-    paddingLeft: 10,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
   }),
   rounded: castStyle.view({
     borderRadius: 10,
@@ -132,19 +129,17 @@ const styles = StyleSheet.create({
     opacity: 0.3,
   }),
   container: castStyle.view({
-    margin: 20,
+    margin: 24,
   }),
   space: castStyle.view({
     marginTop: 10,
   }),
   carouselContainer: castStyle.view({
     paddingVertical: 20,
+    paddingHorizontal: 20,
   }),
   pagination: castStyle.view({
     paddingVertical: 5,
     paddingHorizontal: 0,
-  }),
-  option: castStyle.view({
-    marginRight: 10,
   }),
 })

@@ -47,11 +47,11 @@ export const saveSignUp = (value: { signup: boolean }) =>
 export const deleteSignUp = () => MainStorage.delete(signup)
 
 // close get started function
-export const hasClose = () => MainStorage.has(closeStart)
-export const getClose = () => MainStorage.get(closeStart)
-export const saveClose = (value: { close: boolean }) =>
+export const hasIsGettingStartedClosed = () => MainStorage.has(closeStart)
+export const getIsGettingStartedClosed = () => MainStorage.get(closeStart)
+export const saveIsGettingStartedClosed = (value: { close: boolean }) =>
   MainStorage.set(closeStart, value)
-export const deleteClose = () => MainStorage.delete(closeStart)
+export const deleteIsGettingStartedClosed = () => MainStorage.delete(closeStart)
 
 // general function
 export const resetMainStorage = () => MainStorage.deleteAll()

@@ -23,7 +23,11 @@ import { changeTopColor, selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { HomeBarButtonGroup } from 'screens/home/HomeBarButtonGroup'
 import { CurrencyValue, TokenBalance } from 'components/token'
-import { getClose, hasClose, saveClose } from 'storage/MainStorage'
+import {
+  getIsGettingStartedClosed,
+  hasIsGettingStartedClosed,
+  saveIsGettingStartedClosed,
+} from 'storage/MainStorage'
 
 import PortfolioComponent from './PortfolioComponent'
 import { getTokenColor } from './tokenColor'
@@ -197,15 +201,15 @@ export const HomeScreen = ({
     selectedToken.price,
   ])
   const closed = useMemo(() => {
-    if (hasClose()) {
-      const { close } = getClose()
+    if (hasIsGettingStartedClosed()) {
+      const { close } = getIsGettingStartedClosed()
       return close
     }
     return false
   }, [])
 
   const onClose = useCallback(() => {
-    saveClose({ close: true })
+    saveIsGettingStartedClosed({ close: true })
     setShowInfoBar(false)
   }, [])
 
