@@ -7,6 +7,7 @@ export const getTokenColor = (tokenSymbol?: string): string => {
       return tokenColors.rbtc
     case 'rDOC':
     case 'DOC':
+    case 'RDOC':
       return tokenColors.rdoc
     case 'tRIF':
     case 'RIF':
