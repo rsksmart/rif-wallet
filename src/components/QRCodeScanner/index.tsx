@@ -12,11 +12,12 @@ import {
   scanBarcodes,
 } from 'vision-camera-code-scanner'
 import Icon from 'react-native-vector-icons/Ionicons'
+import { useIsFocused } from '@react-navigation/native'
+
 import { colors } from 'src/styles'
 import { runOnJS } from 'react-native-reanimated'
-import { useAppDispatch } from 'src/redux/storeUtils'
-import { useIsFocused } from '@react-navigation/native'
-import { setFullscreen } from 'src/redux/slices/settingsSlice'
+import { useAppDispatch } from 'store/storeUtils'
+import { setFullscreen } from 'store/slices/settingsSlice'
 
 interface QRCodeScannerProps {
   onClose: () => void
