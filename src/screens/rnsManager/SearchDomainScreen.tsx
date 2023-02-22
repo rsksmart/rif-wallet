@@ -19,13 +19,12 @@ import { rnsManagerStyles } from './rnsManagerStyles'
 import { ScreenWithWallet } from '../types'
 import TitleStatus from './TitleStatus'
 
-import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { setProfile } from 'store/slices/profileSlice'
-import { selectProfile } from 'store/slices/profileSlice/selector'
-import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
-import { selectUsdPrices } from 'src/redux/slices/usdPricesSlice'
 import { colors } from 'src/styles'
 import { castStyle } from 'shared/utils'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { selectProfile, setProfile } from 'store/slices/profileSlice'
+import { selectBalances } from 'store/slices/balancesSlice'
+import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
   ScreenWithWallet
