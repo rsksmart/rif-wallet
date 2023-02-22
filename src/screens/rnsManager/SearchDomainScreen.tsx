@@ -3,7 +3,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { Image, StyleSheet, View } from 'react-native'
 import { FormProvider, useForm } from 'react-hook-form'
 import Icon from 'react-native-vector-icons/AntDesign'
-import { AppTouchable } from 'src/components/appTouchable'
+import { useTranslation } from 'react-i18next'
 
 import { PrimaryButton } from 'components/button/PrimaryButton'
 import { Input, MediumText } from 'components/index'
@@ -18,6 +18,7 @@ import DomainLookUp from 'screens/rnsManager/DomainLookUp'
 import { rnsManagerStyles } from './rnsManagerStyles'
 import { ScreenWithWallet } from '../types'
 import TitleStatus from './TitleStatus'
+import { AppTouchable } from 'components/appTouchable'
 
 import { colors } from 'src/styles'
 import { castStyle } from 'shared/utils'
@@ -41,10 +42,11 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const tokenBalances = useAppSelector(selectBalances)
   const prices = useAppSelector(selectUsdPrices)
   const methods = useForm()
+  const { t } = useTranslation()
 
   // calculate price of domain in USD
   const rifToken = Object.values(tokenBalances).find(
-    t => t.symbol === 'RIF' || t.symbol === 'tRIF',
+    token => token.symbol === 'RIF' || token.symbol === 'tRIF',
   )
   const rifTokenAddress = rifToken?.contractAddress || ''
   const rifTokenPrice = prices[rifTokenAddress]?.price
@@ -150,9 +152,9 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
             inputName="years"
             value={selectedYears + ''}
             isReadOnly={true}
-            label="Length of registration"
-            placeholder={`${selectedYears} ${
-              selectedYears > 1 ? 'years' : 'year'
+            label={t('length_of_registration')}
+            placeholder={`${selectedYears} ${t('year')}${
+              selectedYears > 1 ? 's' : ''
             }`}
             subtitle={`${selectedDomainPrice} RIF ($ ${selectedDomainPriceInUsd})`}
             containerStyle={styles.yearsContainer}
