@@ -50,4 +50,5 @@ export const sharedStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   }),
+  marginLeft24: castStyle.view({ marginLeft: 24 }),
 })
