@@ -1,7 +1,7 @@
-import { ReactElement, useState } from 'react'
+import { ReactElement, useRef, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import Carousel, { Pagination } from 'react-native-snap-carousel'
 import { useTranslation } from 'react-i18next'
+import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel'
 
 import { noop, sharedColors } from 'shared/constants'
 import { Typography } from 'components/typography'
@@ -26,11 +26,11 @@ export const HomeInformationBar = ({
 }: HomeInformationBarProps) => {
   const lastIndex = slidesIndexes[slidesIndexes.length - 1]
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
-  const [caoursel, setCarousel] = useState<Carousel<number> | null>(null)
+  const carousel = useRef<ICarouselInstance>(null)
   const onNextItem = () => {
-    caoursel?.snapToNext()
-    setSelectedSlide(caoursel?.currentIndex || 0)
+    carousel?.current?.scrollTo({ count: 1, animated: true })
   }
+
   const { t } = useTranslation()
 
   return (
@@ -57,26 +57,30 @@ export const HomeInformationBar = ({
         ]}>
         <View style={styles.carouselContainer}>
           <Carousel
-            inactiveSlideOpacity={0}
-            ref={c => setCarousel(c)}
+            ref={carousel}
             onSnapToItem={index => setSelectedSlide(index)}
             data={slidesIndexes}
             renderItem={({ item }) => items[item]}
-            sliderWidth={WINDOW_WIDTH - 40}
-            itemWidth={WINDOW_WIDTH - 40}
-            inactiveSlideShift={0}
+            width={WINDOW_WIDTH - 40}
+            height={60}
+            loop={false}
+            scrollAnimationDuration={250}
           />
         </View>
         <View style={styles.options}>
-          <Pagination
-            dotsLength={slidesIndexes.length}
-            activeDotIndex={selectedSlide}
-            containerStyle={styles.pagination}
-            dotStyle={styles.dot}
-            inactiveDotOpacity={0.4}
-            inactiveDotScale={0.6}
-            tappableDots={true}
-          />
+          <View style={styles.dotContainer}>
+            {slidesIndexes.map((_, i) => {
+              return (
+                <View
+                  key={i}
+                  style={[
+                    styles.dot,
+                    selectedSlide >= i ? {} : styles.dotInactive,
+                  ]}
+                />
+              )
+            })}
+          </View>
           <AppTouchable
             style={styles.option}
             onPress={
@@ -114,12 +118,18 @@ const styles = StyleSheet.create({
   rounded: castStyle.view({
     borderRadius: 10,
   }),
+  dotContainer: castStyle.view({
+    flexDirection: 'row',
+  }),
   dot: castStyle.view({
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    marginHorizontal: 0,
-    backgroundColor: 'rgba(255, 255, 255, 0.92)',
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 4,
+    backgroundColor: sharedColors.white,
+  }),
+  dotInactive: castStyle.view({
+    opacity: 0.3,
   }),
   container: castStyle.view({
     margin: 20,
