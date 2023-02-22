@@ -1,9 +1,9 @@
 import { StyleSheet, View } from 'react-native'
 
-import { AvatarIcon } from 'components/icons/AvatarIcon'
 import { Typography } from 'components/typography'
-import { sharedColors } from 'shared/constants'
 import { AppTouchable } from 'components/appTouchable'
+import { Avatar } from 'components/avatar'
+import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { sharedStyles } from 'shared/styles'
 
@@ -27,11 +27,7 @@ export const InfoBox = ({
   return (
     <View style={[styles.container, { backgroundColor }]}>
       {avatar ? (
-        <AvatarIcon
-          style={sharedStyles.marginBottom}
-          value={avatar}
-          size={80}
-        />
+        <Avatar style={sharedStyles.marginBottom} name={avatar} size={80} />
       ) : null}
 
       {title ? (
