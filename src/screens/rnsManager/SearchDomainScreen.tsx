@@ -2,8 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
-import Icon from 'react-native-vector-icons/AntDesign'
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import Icon from 'react-native-vector-icons/Entypo'
 
 import { PrimaryButton } from 'components/button/PrimaryButton'
 import { Input } from 'components/index'
@@ -23,6 +22,7 @@ import { rnsManagerStyles } from './rnsManagerStyles'
 import TitleStatus from './TitleStatus'
 
 import { castStyle } from 'shared/utils'
+import { sharedColors } from 'src/shared/constants'
 import { colors } from 'src/styles'
 import { selectBalances } from 'store/slices/balancesSlice'
 import { recoverAlias } from 'store/slices/profileSlice'
@@ -108,9 +108,11 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           width={30}
           onPress={() => navigation.navigate(rootTabsRouteNames.Home)}
           accessibilityLabel="home">
-          <View style={rnsManagerStyles.backButton}>
-            <MaterialIcon name="west" color={colors.lightPurple} size={10} />
-          </View>
+          <Icon
+            name="chevron-thin-left"
+            color={sharedColors.subTitle}
+            size={16}
+          />
         </AppTouchable>
       </View>
       <View style={rnsManagerStyles.container}>
