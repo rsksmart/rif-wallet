@@ -63,8 +63,8 @@ export const createRIFWalletFactory =
   (onRequest: OnRequest) => (wallet: Wallet) =>
     RIFWallet.create(wallet.connect(jsonRpcProvider), onRequest, rifRelayConfig)
 
-const defaultMainnetTokens = {
-  '0x2aCc95758f8b5F583470bA265Eb685a8f45fC9D5': {
+const defaultMainnetTokens = [
+  {
     balance: '0x00',
     contractAddress: '0x2aCc95758f8b5F583470bA265Eb685a8f45fC9D5',
     decimals: 18,
@@ -72,32 +72,31 @@ const defaultMainnetTokens = {
     symbol: 'RIF',
   },
 
-  '0x2d919f19D4892381d58EdEbEcA66D5642ceF1A1F': {
+  {
     balance: '0x00',
     contractAddress: '0x2d919f19D4892381d58EdEbEcA66D5642ceF1A1F',
     decimals: 18,
     name: 'Rif Dollar on Chain',
     symbol: 'RDOC',
   },
-}
+]
 
-const defaultTestnetTokens = {
-  '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe': {
+const defaultTestnetTokens = [
+  {
     balance: '0x00',
     contractAddress: '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
     decimals: 18,
     name: 'tRIF Token',
     symbol: 'tRIF',
   },
-
-  '0xc3de9f38581f83e281f260d0ddbaac0e102ff9f8': {
+  {
     balance: '0x00',
     contractAddress: '0xc3de9f38581f83e281f260d0ddbaac0e102ff9f8',
     decimals: 18,
     name: 'Rif Dollar on Chain',
     symbol: 'RDOC',
   },
-}
+]
 export const defaultTokens = isDefaultChainTypeMainnet
   ? defaultMainnetTokens
   : defaultTestnetTokens
