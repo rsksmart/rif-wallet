@@ -17,7 +17,6 @@ import {
   ProfileStatus,
 } from 'navigation/profileNavigator/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
-import DomainLookUp from 'screens/rnsManager/DomainLookUp'
 import { ScreenWithWallet } from '../types'
 import { BackButton } from './BackButton'
 import { rnsManagerStyles } from './rnsManagerStyles'
@@ -33,17 +32,22 @@ type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
   ScreenWithWallet
 
 export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
-  const [domainToLookUp, setDomainToLookUp] = useState<string>('')
   const [isDomainOwned, setIsDomainOwned] = useState<boolean>(false)
   const [validDomain, setValidDomain] = useState<boolean>(false)
-  const [selectedYears, setSelectedYears] = useState<number>(2)
   const [selectedDomainPrice, setSelectedDomainPrice] = useState<number>(2)
   const [isModalVisible, setIsModalVisible] = useState<boolean>(true)
   const dispatch = useAppDispatch()
   const tokenBalances = useAppSelector(selectBalances)
   const prices = useAppSelector(selectUsdPrices)
-  const methods = useForm()
   const { t } = useTranslation()
+  const methods = useForm({
+    defaultValues: {
+      domain: '',
+      duration: 2,
+    },
+  })
+
+  const { register, setValue, handleSubmit } = methods
 
   // calculate price of domain in USD
   const rifToken = Object.values(tokenBalances).find(
@@ -54,6 +58,18 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const selectedDomainPriceInUsd = (
     rifTokenPrice * selectedDomainPrice
   ).toFixed(2)
+
+  const selectedYears = methods.getValues('duration')
+  const domainToLookUp = methods.getValues('domain')
+
+  const onSubmit = (data: any) => {
+    console.log(data)
+    // () =>
+    // navigation.navigate(profileStackRouteNames.RequestDomain, {
+    //   alias: domainToLookUp.replace('.rsk', ''),
+    //   duration: selectedYears,
+    // })
+  }
 
   const calculatePrice = useCallback(async (_: string, years: number) => {
     //TODO: re enable this later
@@ -79,11 +95,11 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
 
   const handleYearsChange = useCallback(
     async (years: number) => {
-      setSelectedYears(years)
+      setValue('duration', years)
       const price = await calculatePrice(domainToLookUp, years)
       setSelectedDomainPrice(price)
     },
-    [calculatePrice, domainToLookUp],
+    [calculatePrice, domainToLookUp, setValue],
   )
 
   const handleSetProfile = useCallback(() => {
@@ -114,31 +130,42 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
         <View />
       </View>
       <View style={rnsManagerStyles.container}>
-        <MediumText style={rnsManagerStyles.subtitle}>
-          {t('request_username_title')}
-        </MediumText>
-
-        <InfoBox
-          avatar={
-            domainToLookUp !== '' ? domainToLookUp + '.rsk' : 'alias name'
-          }
-          title={t('info_box_title_search_domain')}
-          description={t('info_box_description_search_domain')}
-          buttonText={t('info_box_close_button')}
-        />
-
-        <View style={rnsManagerStyles.marginTop}>
-          <DomainLookUp
-            initialValue={domainToLookUp}
-            onChangeText={setDomainToLookUp}
-            wallet={wallet}
-            onDomainAvailable={handleDomainAvailable}
-            onDomainOwned={setIsDomainOwned}
-          />
-        </View>
         <FormProvider {...methods}>
+          <MediumText style={rnsManagerStyles.subtitle}>
+            {t('request_username_title')}
+          </MediumText>
+
+          <InfoBox
+            avatar={
+              domainToLookUp !== '' ? domainToLookUp + '.rsk' : 'alias name'
+            }
+            title={t('info_box_title_search_domain')}
+            description={t('info_box_description_search_domain')}
+            buttonText={t('info_box_close_button')}
+          />
+
+          <View style={rnsManagerStyles.marginTop}>
+            <Input
+              inputName="domain"
+              label={t('username')}
+              placeholder={t('username')}
+              containerStyle={styles.domainContainer}
+              labelStyle={styles.domainLabel}
+              inputStyle={styles.domainInput}
+              onChangeText={text => setValue('domain', text)}
+              resetValue={() => setValue('domain', '')}
+              {...register('domain')}
+            />
+            {/* <DomainLookUp
+              initialValue={domainToLookUp}
+              onChangeText={setDomainToLookUp}
+              wallet={wallet}
+              onDomainAvailable={handleDomainAvailable}
+              onDomainOwned={setIsDomainOwned}
+            /> */}
+          </View>
           <Input
-            inputName="years"
+            inputName="duration"
             value={selectedYears + ''}
             isReadOnly={true}
             label={t('request_username_label')}
@@ -168,31 +195,27 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
                 </AppTouchable>
               </View>
             }
+            // {...register('duration')}
           />
+          <View style={rnsManagerStyles.bottomContainer}>
+            {!isDomainOwned && (
+              <PrimaryButton
+                // disabled={!validDomain}
+                onPress={handleSubmit(onSubmit)}
+                accessibilityLabel="request"
+                title={'request'}
+              />
+            )}
+            {isDomainOwned && (
+              <PrimaryButton
+                disabled={!validDomain}
+                onPress={handleSetProfile}
+                accessibilityLabel="set alias"
+                title={'set alias'}
+              />
+            )}
+          </View>
         </FormProvider>
-        <View style={rnsManagerStyles.bottomContainer}>
-          {!isDomainOwned && (
-            <PrimaryButton
-              disabled={!validDomain}
-              onPress={() =>
-                navigation.navigate(profileStackRouteNames.RequestDomain, {
-                  alias: domainToLookUp.replace('.rsk', ''),
-                  duration: selectedYears,
-                })
-              }
-              accessibilityLabel="request"
-              title={'request'}
-            />
-          )}
-          {isDomainOwned && (
-            <PrimaryButton
-              disabled={!validDomain}
-              onPress={handleSetProfile}
-              accessibilityLabel="set alias"
-              title={'set alias'}
-            />
-          )}
-        </View>
       </View>
       <ConfirmationModal
         isVisible={isModalVisible}
@@ -207,6 +230,25 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
 }
 
 const styles = StyleSheet.create({
+  domainContainer: castStyle.view({
+    height: 90,
+    // justifyContent: 'center',
+    // backgroundColor: colors.green,
+    // padding: 0,
+    // margin: 0,
+  }),
+  domainLabel: castStyle.text({
+    // fontSize: 16,
+    // backgroundColor: 'red',
+    // padding: 0,
+    // margin: 0,
+  }),
+  domainInput: castStyle.text({
+    fontSize: 16,
+    // backgroundColor: 'blue',
+    // padding: 0,
+    // margin: 0,
+  }),
   yearsContainer: castStyle.view({
     height: 90,
     paddingRight: 10,

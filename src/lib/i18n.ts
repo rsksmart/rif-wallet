@@ -108,6 +108,7 @@ const resources = {
       request_username_title: 'Request a username',
       request_username_label: 'Length of registration',
       request_username_placeholder: 'year',
+      username: 'Username',
     },
   },
   es: {
