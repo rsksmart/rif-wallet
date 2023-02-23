@@ -6,7 +6,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 
 import { AddressInputSelector } from 'components/address/AddressInputSelector'
 import { TransferButton } from 'components/button/TransferButton'
-import { RegularText, Tabs } from 'components/index'
+import { Tabs, Typography } from 'components/index'
 import { colors, grid } from 'src/styles'
 import { IActivityTransaction, IPrice } from 'src/subscriptions/types'
 
@@ -125,9 +125,11 @@ export const TransactionForm = ({
 
   return (
     <View>
-      <View style={{ ...grid.row, ...styles.section }}>
+      <View style={[grid.row, styles.section]}>
         <View style={grid.column12}>
-          <RegularText style={styles.label}>asset</RegularText>
+          <Typography type={'body3'} style={styles.label}>
+            {t('transaction_form_label_asset')}
+          </Typography>
           <AssetChooser
             selectedAsset={selectedToken}
             assetList={tokenList}
@@ -170,7 +172,7 @@ export const TransactionForm = ({
               />
             </FormProvider>
             <View>
-              <RegularText>{error}</RegularText>
+              <Typography type={'body3'}>{error}</Typography>
             </View>
 
             <View style={styles.centerRow}>
@@ -190,7 +192,7 @@ export const TransactionForm = ({
               onSelect={handleSelectRecentAddress}
             />
             <View>
-              <RegularText>{error}</RegularText>
+              <Typography type={'body3'}>{error}</Typography>
             </View>
           </>
         )}

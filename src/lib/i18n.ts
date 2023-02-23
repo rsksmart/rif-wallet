@@ -141,6 +141,7 @@ const resources = {
       contact_form_checksum_invalid: 'The checksum is invalid.',
       contact_form_button_save: 'Save Contact',
       contact_form_button_convert_checksum: 'Convert to correct checksum',
+      transaction_form_label_asset: 'asset',
     },
   },
   es: {
