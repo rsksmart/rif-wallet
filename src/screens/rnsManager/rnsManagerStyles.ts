@@ -7,8 +7,12 @@ export const rnsManagerStyles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    color: '#fbfbfb',
+    color: '#FBFBFB',
     fontSize: 18,
+  },
+  subtitle: {
+    color: '#FBFBFB',
+    fontSize: 22,
   },
   profileHeader: {
     flexDirection: 'row',
@@ -46,8 +50,8 @@ export const rnsManagerStyles = StyleSheet.create({
     alignSelf: 'center',
     padding: 5,
   },
-  marginBottom: {
-    marginBottom: 10,
+  marginTop: {
+    marginTop: 10,
   },
   bottomContainer: {
     flex: 1,

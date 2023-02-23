@@ -104,6 +104,8 @@ const resources = {
       header_purchase: 'Purchase username',
       header_purchasing: 'Purchasing username...',
       header_error: 'Error Requesting username',
+      username_registration_title: 'Username Registration',
+      request_username_title: 'Request a username',
       request_username_label: 'Length of registration',
       request_username_placeholder: 'year',
     },

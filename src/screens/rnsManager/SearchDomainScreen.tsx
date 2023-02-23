@@ -4,11 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/Entypo'
 
+import { AppTouchable } from 'components/appTouchable'
 import { PrimaryButton } from 'components/button/PrimaryButton'
 import { Input } from 'components/index'
 import { InfoBox } from 'components/InfoBox'
 
-import { AppTouchable } from 'components/appTouchable'
+import { MediumText } from 'components/index'
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import {
   profileStackRouteNames,
@@ -18,8 +19,8 @@ import {
 import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import DomainLookUp from 'screens/rnsManager/DomainLookUp'
 import { ScreenWithWallet } from '../types'
+import { BackButton } from './BackButton'
 import { rnsManagerStyles } from './rnsManagerStyles'
-import TitleStatus from './TitleStatus'
 
 import { castStyle } from 'shared/utils'
 import { colors } from 'src/styles'
@@ -27,7 +28,6 @@ import { selectBalances } from 'store/slices/balancesSlice'
 import { recoverAlias } from 'store/slices/profileSlice'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { BackButton } from './BackButton'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
   ScreenWithWallet
@@ -109,17 +109,14 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           accessibilityLabel="home"
         />
         <MediumText style={rnsManagerStyles.title}>
-          Username Registration
+          {t('username_registration_title')}
         </MediumText>
         <View />
       </View>
       <View style={rnsManagerStyles.container}>
-        <TitleStatus
-          title={'Choose alias'}
-          subTitle={'next: Request process'}
-          progress={0.25}
-          progressText={'1/4'}
-        />
+        <MediumText style={rnsManagerStyles.subtitle}>
+          {t('request_username_title')}
+        </MediumText>
 
         <InfoBox
           avatar={
@@ -130,7 +127,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           buttonText={t('info_box_close_button')}
         />
 
-        <View style={rnsManagerStyles.marginBottom}>
+        <View style={rnsManagerStyles.marginTop}>
           <DomainLookUp
             initialValue={domainToLookUp}
             onChangeText={setDomainToLookUp}
