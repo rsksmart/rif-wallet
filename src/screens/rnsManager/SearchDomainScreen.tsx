@@ -152,10 +152,10 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
             inputName="years"
             value={selectedYears + ''}
             isReadOnly={true}
-            label={t('length_of_registration')}
-            placeholder={`${selectedYears} ${t('year')}${
-              selectedYears > 1 ? 's' : ''
-            }`}
+            label={t('request_username_label')}
+            placeholder={`${selectedYears} ${t(
+              'request_username_placeholder',
+            )}${selectedYears > 1 ? 's' : ''}`}
             subtitle={`${selectedDomainPrice} RIF ($ ${selectedDomainPriceInUsd})`}
             containerStyle={styles.yearsContainer}
             subtitleStyle={styles.yearsSubtitle}

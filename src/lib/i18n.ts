@@ -95,8 +95,8 @@ const resources = {
       initial_screen_title: 'Wallet',
       initial_screen_button_create: 'Create a wallet',
       initial_screen_button_import: 'Import existing',
-      length_of_registration: 'Length of registration',
-      year: 'year',
+      request_username_label: 'Length of registration',
+      request_username_placeholder: 'year',
     },
   },
   es: {
