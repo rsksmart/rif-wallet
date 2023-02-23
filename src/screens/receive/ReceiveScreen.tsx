@@ -30,8 +30,9 @@ import {
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
   AddressText = 'Address.AddressText',
-  ShareButton = 'Address.ShareButton',
-  CopyButton = 'Address.CopyButton',
+  UsernameText = 'Address.UsernameText',
+  ShareAddressButton = 'Address.ShareButton',
+  ShareUsernameButton = 'Username.ShareButton',
 }
 
 export const ReceiveScreen = ({
@@ -177,10 +178,12 @@ export const ReceiveScreen = ({
               size={20}
               color="white"
               onPress={onShareUsername}
+              testID={TestID.ShareUsernameButton}
             />
           }
           placeholder={username}
           isReadOnly
+          testID={TestID.UsernameText}
         />
         {/* Address Component */}
         {isAddressLoading && (
@@ -201,10 +204,12 @@ export const ReceiveScreen = ({
                 size={20}
                 color="white"
                 onPress={onShareAddress}
+                testID={TestID.ShareAddressButton}
               />
             }
             placeholder={shortAddress(address)}
             isReadOnly
+            testID={TestID.AddressText}
           />
         )}
       </FormProvider>
