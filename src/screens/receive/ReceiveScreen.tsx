@@ -13,7 +13,7 @@ import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 
 import { shortAddress } from 'lib/utils'
 
-import { getAddressDisplayText, Input, Typography } from 'src/components'
+import { getAddressDisplayText, Input, Typography } from 'components/index'
 import { sharedColors } from 'shared/constants'
 import { QRGenerator } from 'components/QRGenerator/QRGenerator'
 import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
@@ -27,6 +27,8 @@ import {
   HomeStackScreenProps,
 } from 'navigation/homeNavigator/types'
 import { getTokenColor } from 'screens/home/tokenColor'
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
+import { castStyle } from 'shared/utils'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
@@ -127,9 +129,9 @@ export const ReceiveScreen = ({
       <FormProvider {...methods}>
         {/* Receive and go back button */}
         <View style={styles.headerStyle}>
-          <Ionicons
-            name="chevron-back"
-            size={20}
+          <FontAwesome5Icon
+            name="chevron-left"
+            size={14}
             color="white"
             onPress={onBackPress}
           />
@@ -141,9 +143,9 @@ export const ReceiveScreen = ({
         {/* Change Asset Component */}
         <View style={styles.flexRow}>
           <Typography type="h4">{t('change_asset')}</Typography>
-          <Ionicons
+          <FontAwesome5Icon
             name={shouldShowAssets ? 'chevron-up' : 'chevron-down'}
-            size={20}
+            size={14}
             color="white"
             onPress={onChevronAssetShowTap}
           />
@@ -209,11 +211,11 @@ export const ReceiveScreen = ({
         />
         {/* Address Component */}
         {isAddressLoading && (
-          <View style={styles.addressLoadingView}>
+          <View style={[styles.addressLoadingView, styles.marginTopView]}>
             <Typography type="h4" style={styles.loadingTypographyStyle}>
               {t('loading_address')}...
             </Typography>
-            <ActivityIndicator size={'large'} />
+            <ActivityIndicator size="large" />
           </View>
         )}
         {!isAddressLoading && (
@@ -241,33 +243,40 @@ export const ReceiveScreen = ({
 }
 
 const styles = StyleSheet.create({
-  parent: {
+  parent: castStyle.view({
     backgroundColor: sharedColors.secondary,
     minHeight: '100%',
     paddingHorizontal: 24,
-  },
-  qrView: {
+  }),
+  qrView: castStyle.view({
     paddingHorizontal: 35,
     backgroundColor: sharedColors.inputInactive,
     paddingVertical: 84,
     borderRadius: 20,
     marginTop: 5,
-  },
-  headerStyle: {
+  }),
+  headerStyle: castStyle.view({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
     marginVertical: 22.5,
-  },
-  emptyPadding: { paddingVertical: 15 },
-  flexRow: {
+  }),
+  emptyPadding: castStyle.view({
+    paddingVertical: 15,
+  }),
+  flexRow: castStyle.view({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingBottom: 10,
-  },
-  loadingTypographyStyle: {
+  }),
+  loadingTypographyStyle: castStyle.text({
     textAlign: 'center',
     marginBottom: 10,
-  },
-  addressLoadingView: { justifyContent: 'center' },
+  }),
+  addressLoadingView: castStyle.view({
+    justifyContent: 'center',
+  }),
+  marginTopView: castStyle.view({
+    marginTop: 20,
+  }),
 })
