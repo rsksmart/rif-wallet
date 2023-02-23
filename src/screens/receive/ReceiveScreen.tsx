@@ -140,7 +140,7 @@ export const ReceiveScreen = ({
         </View>
         {/* Change Asset Component */}
         <View style={styles.flexRow}>
-          <Typography type="h4">{t('CHANGE_ASSET')}</Typography>
+          <Typography type="h4">{t('change_asset')}</Typography>
           <Ionicons
             name={shouldShowAssets ? 'chevron-up' : 'chevron-down'}
             size={20}
