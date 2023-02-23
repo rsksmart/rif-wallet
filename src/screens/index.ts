@@ -1,5 +1,5 @@
 export { SendScreen } from './send/SendScreen'
-export { ReceiveScreen, ReceiveScreenProps } from './receive/ReceiveScreen'
+export { ReceiveScreen } from './receive/ReceiveScreen'
 export { ReceiveScreenHOC } from './receive/ReceiveScreenHOC'
 export { BalancesScreen } from './balances/BalancesScreen'
 export { ActivityScreen } from './activity/ActivityScreen'

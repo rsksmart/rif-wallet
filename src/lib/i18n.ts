@@ -114,6 +114,8 @@ const resources = {
       new_master_key_title: 'Save your phrase',
       new_master_key_button_title: 'Phrase secured, Continue',
       CHANGE_ASSET: 'Change asset',
+      loading_qr: 'Loading QR',
+      loading_address: 'Loading Address',
     },
   },
   es: {

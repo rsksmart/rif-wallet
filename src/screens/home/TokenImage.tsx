@@ -7,7 +7,8 @@ import {
   View,
   ViewStyle,
 } from 'react-native'
-import { FrownFaceIcon } from '../../components/icons'
+
+import { FrownFaceIcon } from 'components/icons'
 
 export const TokenImage: React.FC<{
   symbol: string
@@ -147,7 +148,7 @@ const getIconSource = (symbol: string): ImageRequireSource | undefined => {
     case 'FISH':
       return require('@rsksmart/rsk-contract-metadata/images/fish.png')
     case 'ARROW_NORTH_EAST':
-      return require('../../images/arrow-north-east-icon.png')
+      return require('../../images/rif.png')
     default:
       return undefined
   }

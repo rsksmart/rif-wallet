@@ -2,9 +2,9 @@ import { BigNumber } from 'ethers'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
+import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 
 import { balanceToDisplay, convertBalance, getChainIdByType } from 'lib/utils'
-import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 
 import { toChecksumAddress } from 'components/address/lib'
 import { MediumText } from 'components/index'
@@ -20,9 +20,9 @@ import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 import { changeTopColor, selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { HomeBarButtonGroup } from 'screens/home/HomeBarButtonGroup'
+import { CurrencyValue, TokenBalance } from 'components/token'
 
 import PortfolioComponent from './PortfolioComponent'
-import { CurrencyValue, TokenBalance } from 'components/token'
 import { getTokenColor } from './tokenColor'
 
 export const HomeScreen = ({
@@ -84,7 +84,7 @@ export const HomeScreen = ({
     ) => {
       switch (screen) {
         case 'RECEIVE':
-          return navigation.navigate(homeStackRouteNames.ReceiveBitcoin, {
+          return navigation.navigate(homeStackRouteNames.Receive, {
             networkId: _selected.networkId,
           })
         case 'SEND':

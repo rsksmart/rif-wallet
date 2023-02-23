@@ -1,22 +1,31 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { ScrollView, StyleSheet, View, Share } from 'react-native'
-import { getAddressDisplayText, Input, Typography } from 'src/components'
-import { sharedColors } from 'shared/constants'
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  Share,
+  ActivityIndicator,
+} from 'react-native'
 import { FormProvider, useForm } from 'react-hook-form'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import { useTranslation } from 'react-i18next'
+import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
+
+import { shortAddress } from 'lib/utils'
+
+import { getAddressDisplayText, Input, Typography } from 'src/components'
+import { sharedColors } from 'shared/constants'
 import { QRGenerator } from 'components/QRGenerator/QRGenerator'
 import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
-import { useTranslation } from 'react-i18next'
-import {
-  rootTabsRouteNames,
-  RootTabsScreenProps,
-} from 'navigation/rootNavigator'
 import { useAppSelector } from 'store/storeUtils'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { MixedTokenAndNetworkType } from 'screens/send/types'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
-import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
+import {
+  homeStackRouteNames,
+  HomeStackScreenProps,
+} from 'navigation/homeNavigator/types'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
@@ -25,26 +34,22 @@ export enum TestID {
   CopyButton = 'Address.CopyButton',
 }
 
-export type ReceiveScreenProps = {
-  username: string
-  token?: MixedTokenAndNetworkType
-}
-
 export const ReceiveScreen = ({
-  username = 'user345crypto.rsk',
   route,
   navigation,
-}: ReceiveScreenProps &
-  RootTabsScreenProps<rootTabsRouteNames.ReceiveScreen>) => {
+}: HomeStackScreenProps<homeStackRouteNames.Receive>) => {
+  const username = 'user345crypto.rsk' // @TODO find where this is coming from
   const { t } = useTranslation()
   const methods = useForm()
-  const { token } = route.params
+  const bitcoinCore = useBitcoinContext()
+
+  const { token, networkId } = route.params
   const [selectedAsset, setSelectedAsset] = useState<
     MixedTokenAndNetworkType | undefined
-  >(token)
+  >((networkId && bitcoinCore?.networksMap[networkId]) || token)
   const [address, setAddress] = useState<string>('')
-  const [isLoadingAddress, setIsLoadingAddress] = useState(false)
-  const bitcoinCore = useBitcoinContext()
+  const [isAddressLoading, setIsAddressLoading] = useState(false)
+
   const tokenBalances = useAppSelector(selectBalances)
   const { wallet, chainType } = useAppSelector(selectActiveWallet)
 
@@ -82,15 +87,15 @@ export const ReceiveScreen = ({
   const onGetAddress = useCallback(
     (asset: MixedTokenAndNetworkType) => {
       if (asset) {
-        setIsLoadingAddress(true)
+        setIsAddressLoading(true)
         if (asset instanceof BitcoinNetwork) {
           asset.bips[0]
             .fetchExternalAvailableAddress()
             .then(addressReturned => setAddress(addressReturned))
-            .finally(() => setIsLoadingAddress(false))
+            .finally(() => setIsAddressLoading(false))
         } else {
           setAddress(rskAddress?.displayAddress || '')
-          setIsLoadingAddress(false)
+          setIsAddressLoading(false)
         }
       }
     },
@@ -130,23 +135,35 @@ export const ReceiveScreen = ({
           <ScrollView horizontal>
             {assets.map(asset => (
               <PortfolioCard
+                key={asset.symbol}
                 onPress={onChangeSelectedAsset(asset)}
                 color={sharedColors.inputInactive}
                 primaryText={asset.symbol}
                 secondaryText={'123'}
-                isSelected={selectedAsset === asset}
+                isSelected={
+                  selectedAsset !== undefined &&
+                  selectedAsset.symbol === asset.symbol
+                }
               />
             ))}
           </ScrollView>
         </View>
         {/* QR Component */}
         <View style={styles.qrView}>
-          {address !== '' && (
+          {address !== '' && !isAddressLoading && (
             <QRGenerator
               value={address}
-              imageSource={require('../../images/arrow-north-east-icon.png')}
+              imageSource={require('../../images/rif.png')}
               logoBackgroundColor={sharedColors.inputInactive}
             />
+          )}
+          {isAddressLoading && (
+            <View style={styles.addressLoadingView}>
+              <Typography type="h4" style={styles.loadingTypographyStyle}>
+                {t('loading_qr')}...
+              </Typography>
+              <ActivityIndicator size={'large'} />
+            </View>
           )}
         </View>
         {/* Username Component */}
@@ -165,20 +182,30 @@ export const ReceiveScreen = ({
           isReadOnly
         />
         {/* Address Component */}
-        <Input
-          label="Address"
-          inputName="address"
-          rightIcon={
-            <Ionicons
-              name="share-outline"
-              size={20}
-              color="white"
-              onPress={onShareAddress}
-            />
-          }
-          placeholder={address}
-          isReadOnly
-        />
+        {isAddressLoading && (
+          <View style={styles.addressLoadingView}>
+            <Typography type="h4" style={styles.loadingTypographyStyle}>
+              {t('loading_address')}...
+            </Typography>
+            <ActivityIndicator size={'large'} />
+          </View>
+        )}
+        {!isAddressLoading && (
+          <Input
+            label="Address"
+            inputName="address"
+            rightIcon={
+              <Ionicons
+                name="share-outline"
+                size={20}
+                color="white"
+                onPress={onShareAddress}
+              />
+            }
+            placeholder={shortAddress(address)}
+            isReadOnly
+          />
+        )}
       </FormProvider>
       <View style={styles.emptyPadding} />
     </ScrollView>
@@ -206,4 +233,9 @@ const styles = StyleSheet.create({
   },
   emptyPadding: { paddingVertical: 15 },
   flexRow: { flexDirection: 'row' },
+  loadingTypographyStyle: {
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  addressLoadingView: { justifyContent: 'center' },
 })
