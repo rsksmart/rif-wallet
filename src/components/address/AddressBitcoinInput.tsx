@@ -50,7 +50,7 @@ export const AddressBitcoinInput = ({
   }, [])
   const hideQRScanner = useCallback(() => setShouldShowQRScanner(false), [])
 
-  const showQRScanner = useCallback(() => setShouldShowQRScanner(true), [])
+  // const showQRScanner = useCallback(() => setShouldShowQRScanner(true), [])
 
   const onBeforeChangeText = useCallback(
     (address: string) => {
