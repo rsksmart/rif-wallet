@@ -10,6 +10,7 @@ import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import {
   profileStackRouteNames,
   ProfileStackScreenProps,
+  ProfileStatus,
 } from 'navigation/profileNavigator/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import DomainLookUp from 'screens/rnsManager/DomainLookUp'
@@ -17,9 +18,8 @@ import { rnsManagerStyles } from './rnsManagerStyles'
 import { ScreenWithWallet } from '../types'
 import TitleStatus from './TitleStatus'
 
-import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { setProfile } from 'store/slices/profileSlice'
-import { selectProfile } from 'store/slices/profileSlice/selector'
+import { useAppDispatch } from 'store/storeUtils'
+import { recoverAlias } from 'store/slices/profileSlice'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
   ScreenWithWallet
@@ -32,7 +32,6 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const [selectedDomainPrice, setSelectedDomainPrice] = useState<string>('2')
   const [isModalVisible, setIsModalVisible] = useState<boolean>(true)
   const dispatch = useAppDispatch()
-  const profile = useAppSelector(selectProfile)
 
   const calculatePrice = async (_: string, years: number) => {
     //TODO: re enable this later
@@ -60,14 +59,14 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
 
   const handleSetProfile = useCallback(() => {
     dispatch(
-      setProfile({
-        ...(profile ? profile : { phone: '', email: '' }),
+      recoverAlias({
         alias: domainToLookUp + '.rsk',
+        status: ProfileStatus.USER,
       }),
     )
 
     navigation.navigate(profileStackRouteNames.ProfileDetailsScreen)
-  }, [dispatch, domainToLookUp, profile, navigation])
+  }, [dispatch, domainToLookUp, navigation])
 
   return (
     <>

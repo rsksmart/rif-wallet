@@ -3,6 +3,8 @@ import { Dimensions, TouchableOpacity, View } from 'react-native'
 import * as Progress from 'react-native-progress'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
+import { RnsProcessor } from 'lib/rns/RnsProcessor'
+
 import { colors } from 'src/styles'
 import { rnsManagerStyles } from './rnsManagerStyles'
 import { PrimaryButton } from 'components/button/PrimaryButton'
@@ -11,16 +13,19 @@ import { AvatarIcon } from 'components/icons/AvatarIcon'
 import {
   profileStackRouteNames,
   ProfileStackScreenProps,
+  ProfileStatus,
 } from 'navigation/profileNavigator/types'
 import TitleStatus from './TitleStatus'
 import { ScreenWithWallet } from '../types'
-import { DomainRegistrationEnum, RnsProcessor } from 'lib/rns/RnsProcessor'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { requestUsername, selectProfileStatus } from 'store/slices/profileSlice'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.RequestDomain> &
   ScreenWithWallet
 
 export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
   const rnsProcessor = useMemo(() => new RnsProcessor({ wallet }), [wallet])
+  const dispatch = useAppDispatch()
 
   const { alias, duration } = route.params
   const fullAlias = alias + '.rsk'
@@ -29,40 +34,49 @@ export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
   const [commitToRegisterInfo2, setCommitToRegisterInfo2] = useState('')
   const [processing, setProcessing] = useState(false)
   const [progress, setProgress] = useState(0.0)
+  const status = useAppSelector(selectProfileStatus)
+
+  useEffect(() => {
+    let interval: NodeJS.Timer
+    if (status === ProfileStatus.REQUESTING) {
+      setProcessing(true)
+      setProgress(0)
+      setCommitToRegisterInfo('registering your alias...')
+      setCommitToRegisterInfo2('estimated wait: 3 minutes')
+      interval = setInterval(() => {
+        setProgress(prev => prev + 0.005)
+      }, 1000)
+    }
+    return () => {
+      if (interval) {
+        clearInterval(interval)
+      }
+    }
+  }, [status])
 
   const commitToRegister = useCallback(async () => {
     try {
-      setProcessing(true)
-      let indexStatus = await rnsProcessor.getStatus(alias)
-      if (!indexStatus?.commitmentRequested) {
-        await rnsProcessor.process(alias, duration)
-      }
-      indexStatus = await rnsProcessor.getStatus(alias)
-      if (indexStatus.commitmentRequested) {
-        const intervalId = setInterval(async () => {
-          setProgress(prev => prev + 0.005)
-          const canRevealResponse = await rnsProcessor.canReveal(alias)
-          if (canRevealResponse === DomainRegistrationEnum.COMMITMENT_READY) {
-            setProgress(1)
-            setProcessing(false)
-            clearInterval(intervalId)
-            navigation.navigate(profileStackRouteNames.BuyDomain, {
-              alias,
-            })
-            setCommitToRegisterInfo(
-              'Waiting period ended. You can now register your domain',
-            )
-          }
-          setCommitToRegisterInfo('registering your alias...')
-          setCommitToRegisterInfo2('estimated wait: 3 minutes')
-        }, 1000)
+      const response = await dispatch(
+        requestUsername({ rnsProcessor, alias, duration }),
+      ).unwrap()
+      if (response && response === ProfileStatus.READY_TO_PURCHASE) {
+        setProgress(1)
+        setProcessing(false)
+        setCommitToRegisterInfo(
+          'Waiting period ended. You can now register your domain',
+        )
+        navigation.navigate(profileStackRouteNames.BuyDomain, {
+          alias,
+        })
       }
     } catch (e: unknown) {
       setProcessing(false)
-      setCommitToRegisterInfo(e?.message || '')
+      if (e instanceof Error) {
+        setCommitToRegisterInfo(e?.message || '')
+      }
       setCommitToRegisterInfo2('')
     }
-  }, [alias, duration, navigation, rnsProcessor])
+  }, [alias, duration, rnsProcessor, dispatch, navigation])
 
   useEffect(() => {
     const response = rnsProcessor.getStatus(alias)
