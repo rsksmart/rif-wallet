@@ -22,12 +22,12 @@ import { rnsManagerStyles } from './rnsManagerStyles'
 import TitleStatus from './TitleStatus'
 
 import { castStyle } from 'shared/utils'
-import { sharedColors } from 'src/shared/constants'
 import { colors } from 'src/styles'
 import { selectBalances } from 'store/slices/balancesSlice'
 import { recoverAlias } from 'store/slices/profileSlice'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { BackButton } from './BackButton'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
   ScreenWithWallet
@@ -104,16 +104,17 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   return (
     <>
       <View style={rnsManagerStyles.profileHeader}>
-        <AppTouchable
-          width={30}
+        <BackButton
           onPress={() => navigation.navigate(rootTabsRouteNames.Home)}
-          accessibilityLabel="home">
-          <Icon
-            name="chevron-thin-left"
-            color={sharedColors.subTitle}
-            size={16}
-          />
-        </AppTouchable>
+          accessibilityLabel="home"
+        />
+        <TitleStatus
+          title="Username Registration"
+          subTitle=""
+          progress={0.25}
+          progressText={'1/4'}
+        />
+        <View />
       </View>
       <View style={rnsManagerStyles.container}>
         <TitleStatus
