@@ -4,6 +4,8 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { BigNumber, utils } from 'ethers'
 import moment from 'moment'
 
+import { DomainRegistrationEnum, RnsProcessor } from 'lib/rns/RnsProcessor'
+
 import { colors } from 'src/styles'
 import { rnsManagerStyles } from './rnsManagerStyles'
 import { PrimaryButton } from 'components/button/PrimaryButton'
@@ -17,7 +19,8 @@ import {
   ProfileStackScreenProps,
 } from 'navigation/profileNavigator/types'
 import { ScreenWithWallet } from '../types'
-import { DomainRegistrationEnum, RnsProcessor } from 'lib/rns/RnsProcessor'
+import { useAppDispatch } from 'store/storeUtils'
+import { purchaseUsername } from 'store/slices/profileSlice'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.BuyDomain> &
   ScreenWithWallet
@@ -28,6 +31,7 @@ export const BuyDomainScreen = ({ wallet, navigation, route }: Props) => {
   const { alias } = route.params
   const process = rnsProcessor.getStatus(alias)
   const fullAlias = alias + '.rsk'
+  const dispatch = useAppDispatch()
 
   const expiryDate = moment(moment(), 'MM-DD-YYYY').add(
     process.duration,
@@ -53,7 +57,9 @@ export const BuyDomainScreen = ({ wallet, navigation, route }: Props) => {
 
   const registerDomain = async (domain: string) => {
     try {
-      const response = await rnsProcessor.register(domain)
+      const response = await dispatch(
+        purchaseUsername({ rnsProcessor, domain }),
+      ).unwrap()
       if (response === DomainRegistrationEnum.REGISTERING_REQUESTED) {
         setRegisterDomainInfo('Transaction sent. Please wait...')
         setRegisterInProcess(true)

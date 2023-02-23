@@ -1,31 +1,33 @@
-import { useState, useCallback, useEffect } from 'react'
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import { Image, StyleSheet, View } from 'react-native'
+import { useCallback, useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import Icon from 'react-native-vector-icons/AntDesign'
 import { useTranslation } from 'react-i18next'
+import { StyleSheet, View } from 'react-native'
+import Icon from 'react-native-vector-icons/AntDesign'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 import { PrimaryButton } from 'components/button/PrimaryButton'
-import { Input, MediumText } from 'components/index'
-import { AvatarIcon } from 'components/icons/AvatarIcon'
+import { Input } from 'components/index'
+import { InfoBox } from 'components/InfoBox'
+
+import { AppTouchable } from 'components/appTouchable'
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import {
   profileStackRouteNames,
   ProfileStackScreenProps,
+  ProfileStatus,
 } from 'navigation/profileNavigator/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import DomainLookUp from 'screens/rnsManager/DomainLookUp'
-import { rnsManagerStyles } from './rnsManagerStyles'
 import { ScreenWithWallet } from '../types'
+import { rnsManagerStyles } from './rnsManagerStyles'
 import TitleStatus from './TitleStatus'
-import { AppTouchable } from 'components/appTouchable'
 
-import { colors } from 'src/styles'
 import { castStyle } from 'shared/utils'
-import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { selectProfile, setProfile } from 'store/slices/profileSlice'
+import { colors } from 'src/styles'
 import { selectBalances } from 'store/slices/balancesSlice'
+import { recoverAlias } from 'store/slices/profileSlice'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
   ScreenWithWallet
@@ -38,7 +40,6 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const [selectedDomainPrice, setSelectedDomainPrice] = useState<number>(2)
   const [isModalVisible, setIsModalVisible] = useState<boolean>(true)
   const dispatch = useAppDispatch()
-  const profile = useAppSelector(selectProfile)
   const tokenBalances = useAppSelector(selectBalances)
   const prices = useAppSelector(selectUsdPrices)
   const methods = useForm()
@@ -87,14 +88,14 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
 
   const handleSetProfile = useCallback(() => {
     dispatch(
-      setProfile({
-        ...(profile ? profile : { phone: '', email: '' }),
+      recoverAlias({
         alias: domainToLookUp + '.rsk',
+        status: ProfileStatus.USER,
       }),
     )
 
     navigation.navigate(profileStackRouteNames.ProfileDetailsScreen)
-  }, [dispatch, domainToLookUp, profile, navigation])
+  }, [dispatch, domainToLookUp, navigation])
 
   useEffect(() => {
     calculatePrice(domainToLookUp, selectedYears).then(setSelectedDomainPrice)
@@ -120,23 +121,14 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           progressText={'1/4'}
         />
 
-        <View style={rnsManagerStyles.marginBottom}>
-          <View style={rnsManagerStyles.profileImageContainer}>
-            {domainToLookUp.length >= 5 ? (
-              <AvatarIcon value={domainToLookUp + '.rsk'} size={80} />
-            ) : (
-              <Image
-                style={rnsManagerStyles.profileImage}
-                source={require('../../images/image_place_holder.jpeg')}
-              />
-            )}
-            <View>
-              <MediumText style={rnsManagerStyles.profileDisplayAlias}>
-                {domainToLookUp !== '' ? domainToLookUp + '.rsk' : 'alias name'}
-              </MediumText>
-            </View>
-          </View>
-        </View>
+        <InfoBox
+          avatar={
+            domainToLookUp !== '' ? domainToLookUp + '.rsk' : 'alias name'
+          }
+          title={t('info_box_title_search_domain')}
+          description={t('info_box_description_search_domain')}
+          buttonText={t('info_box_close_button')}
+        />
 
         <View style={rnsManagerStyles.marginBottom}>
           <DomainLookUp
