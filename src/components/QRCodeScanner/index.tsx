@@ -12,8 +12,12 @@ import {
   scanBarcodes,
 } from 'vision-camera-code-scanner'
 import Icon from 'react-native-vector-icons/Ionicons'
+import { useIsFocused } from '@react-navigation/native'
+
 import { colors } from 'src/styles'
 import { runOnJS } from 'react-native-reanimated'
+import { useAppDispatch } from 'store/storeUtils'
+import { setFullscreen } from 'store/slices/settingsSlice'
 
 interface QRCodeScannerProps {
   onClose: () => void
@@ -23,6 +27,8 @@ interface QRCodeScannerProps {
 export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
   const device = useCameraDevices('wide-angle-camera').back
   const [barcodes, setBarcodes] = useState<Barcode[]>([])
+  const dispatch = useAppDispatch()
+  const isFocused = useIsFocused()
 
   // Do not use the hook that comes with the camera as it'll not work
   const frameProcessor = useFrameProcessor(frame => {
@@ -49,6 +55,10 @@ export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
       onCodeRead(barcodes[0].rawValue)
     }
   }, [barcodes, onCodeRead])
+
+  useEffect(() => {
+    dispatch(setFullscreen(!!device && isFocused))
+  }, [dispatch, device, isFocused])
 
   if (device == null) {
     return <ActivityIndicator size={'large'} />
