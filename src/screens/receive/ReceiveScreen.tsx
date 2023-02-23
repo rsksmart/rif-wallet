@@ -52,6 +52,8 @@ export const ReceiveScreen = ({
   const [address, setAddress] = useState<string>('')
   const [isAddressLoading, setIsAddressLoading] = useState(false)
 
+  const [shouldShowAssets, setShouldShowAssets] = useState(false)
+
   const tokenBalances = useAppSelector(selectBalances)
   const { wallet, chainType } = useAppSelector(selectActiveWallet)
 
@@ -83,7 +85,12 @@ export const ReceiveScreen = ({
     })
   }, [address])
 
-  const onBackPress = () => navigation.goBack()
+  const onBackPress = useCallback(() => navigation.goBack(), [navigation])
+
+  const onChevronAssetShowTap = useCallback(
+    () => setShouldShowAssets(curr => !curr),
+    [],
+  )
 
   // Function to get the address
   const onGetAddress = useCallback(
@@ -132,8 +139,16 @@ export const ReceiveScreen = ({
           <View />
         </View>
         {/* Change Asset Component */}
-        <Typography type="h4">{t('CHANGE_ASSET')}</Typography>
         <View style={styles.flexRow}>
+          <Typography type="h4">{t('CHANGE_ASSET')}</Typography>
+          <Ionicons
+            name={shouldShowAssets ? 'chevron-up' : 'chevron-down'}
+            size={20}
+            color="white"
+            onPress={onChevronAssetShowTap}
+          />
+        </View>
+        {shouldShowAssets && (
           <ScrollView horizontal>
             {assets.map(asset => {
               const isSelected =
@@ -155,7 +170,7 @@ export const ReceiveScreen = ({
               )
             })}
           </ScrollView>
-        </View>
+        )}
         {/* QR Component */}
         <View style={styles.qrView}>
           {address !== '' && !isAddressLoading && (
@@ -245,7 +260,11 @@ const styles = StyleSheet.create({
     marginVertical: 22.5,
   },
   emptyPadding: { paddingVertical: 15 },
-  flexRow: { flexDirection: 'row' },
+  flexRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingBottom: 10,
+  },
   loadingTypographyStyle: {
     textAlign: 'center',
     marginBottom: 10,
