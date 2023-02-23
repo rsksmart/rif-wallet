@@ -25,6 +25,8 @@ interface QRGeneratorProps {
   qrMargin?: number
   logoBackgroundColor?: string
   containerViewStyle?: ViewStyle
+  testID?: string
+  accessibilityLabel?: string
 }
 
 /**
@@ -38,6 +40,8 @@ interface QRGeneratorProps {
  * @param qrMargin
  * @param containerViewStyle
  * @param logoBackgroundColor
+ * @param testID
+ * @param accessibilityLabel
  */
 export const QRGenerator = ({
   value,
@@ -49,6 +53,8 @@ export const QRGenerator = ({
   qrMargin = 10,
   containerViewStyle,
   logoBackgroundColor,
+  testID,
+  accessibilityLabel,
 }: QRGeneratorProps) => {
   const [width, setWidth] = useState(qrWidth || 100)
   const [iconSource, setIconSource] = useState(imageSource)
@@ -84,7 +90,11 @@ export const QRGenerator = ({
   }, [iconProps, logoSize])
 
   return (
-    <View style={[viewWidth, containerViewStyle]} onLayout={onWidthChange}>
+    <View
+      style={[viewWidth, containerViewStyle]}
+      onLayout={onWidthChange}
+      testID={testID}
+      accessibilityLabel={accessibilityLabel}>
       <QRCode
         key={width}
         value={value}

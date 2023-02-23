@@ -155,6 +155,7 @@ export const ReceiveScreen = ({
               value={address}
               imageSource={require('../../images/rif.png')}
               logoBackgroundColor={sharedColors.inputInactive}
+              testID={TestID.QRCodeDisplay}
             />
           )}
           {isAddressLoading && (
