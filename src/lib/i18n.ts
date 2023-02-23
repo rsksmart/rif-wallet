@@ -133,6 +133,8 @@ const resources = {
       home_information_bar_desc3:
         'Register your username and receive your icon.',
       address_rns_placeholder: 'Username or address',
+      contact_form_title_edit: 'Edit Contact',
+      contact_form_title_create: 'Create Contact',
       contact_form_name: 'Name',
       contact_form_getting_info: 'Getting address for domain...',
       contact_form_user_found: 'User found!',

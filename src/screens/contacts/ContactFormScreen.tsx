@@ -23,7 +23,7 @@ import {
 } from 'navigation/rootNavigator/types'
 import { AppButton, AppButtonWidthVarietyEnum } from 'components/button'
 import { AddressInput } from 'components/address'
-import { Input, RegularText } from 'components/index'
+import { Input, RegularText, Typography } from 'components/index'
 import { colors } from 'src/styles'
 import { fonts } from 'src/styles/fonts'
 import { Contact } from 'store/slices/contactsSlice/types'
@@ -124,9 +124,11 @@ export const ContactFormScreen = ({
             size={15}
             borderRadius={20}
           />
-          <RegularText style={styles.title}>
-            {initialValue.id ? 'Edit Contact' : 'Create Contact'}
-          </RegularText>
+          <Typography type={'body1'} style={styles.title}>
+            {initialValue.id
+              ? t('contact_form_title_edit')
+              : t('contact_form_title_create')}
+          </Typography>
         </View>
         <FormProvider {...methods}>
           <AddressInput
@@ -188,7 +190,6 @@ const styles = StyleSheet.create({
   title: {
     flex: 2,
     fontFamily: fonts.regular,
-    fontSize: 16,
     color: colors.text.primary,
     textAlign: 'center',
     alignSelf: 'center',
