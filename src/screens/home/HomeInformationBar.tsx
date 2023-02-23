@@ -1,4 +1,4 @@
-import { ReactElement, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel'
@@ -8,22 +8,19 @@ import { Typography } from 'components/typography'
 import { AppTouchable } from 'components/appTouchable'
 import { WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
 import { castStyle } from 'shared/utils'
+import { HomeInformationItem } from './HomeInformationItem'
 
 interface HomeInformationBarProps {
-  slidesIndexes: number[]
-  indicatorPos: number[]
-  items: ReactElement[]
   onClose?: () => void
   color?: string
 }
 
 export const HomeInformationBar = ({
-  slidesIndexes,
-  indicatorPos,
-  items,
   onClose = noop,
   color = sharedColors.primary,
 }: HomeInformationBarProps) => {
+  const slidesIndexes = [0, 1, 2]
+  const indicatorPos = [23 / 24, 1 / 2, 0]
   const lastIndex = slidesIndexes[slidesIndexes.length - 1]
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
   const carousel = useRef<ICarouselInstance>(null)
@@ -32,6 +29,21 @@ export const HomeInformationBar = ({
   }
 
   const { t } = useTranslation()
+  const items = [
+    <HomeInformationItem
+      title={t('home_information_bar_title')}
+      subTitle={t('home_information_bar_desc1')}
+    />,
+    <HomeInformationItem
+      title={t('home_information_bar_title')}
+      subTitle={t('home_information_bar_desc2')}
+    />,
+    <HomeInformationItem
+      title={t('home_information_bar_title')}
+      subTitle={t('home_information_bar_desc3')}
+      icon={{ name: 'user-circle', size: 60 }}
+    />,
+  ]
 
   return (
     <View style={styles.container}>
@@ -40,7 +52,7 @@ export const HomeInformationBar = ({
           style={[
             styles.triangle,
             {
-              marginLeft: indicatorPos[selectedSlide] * WINDOW_WIDTH,
+              marginLeft: indicatorPos[selectedSlide] * (WINDOW_WIDTH - 88),
               borderBottomColor: color,
             },
           ]}

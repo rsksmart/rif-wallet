@@ -37,6 +37,7 @@ import { useBitcoinTransactionsHandler } from 'screens/activity/useBitcoinTransa
 import useTransactionsCombiner from 'screens/activity/useTransactionsCombiner'
 import { ActivityBasicRow } from 'screens/activity/ActivityRow'
 import { castStyle } from 'shared/utils'
+import { HomeInformationBar } from './HomeInformationBar'
 
 export const HomeScreen = ({
   navigation,
@@ -256,6 +257,9 @@ export const HomeScreen = ({
         isSendDisabled={balances.length === 0}
         color={backGroundColor.backgroundColor}
       />
+
+      {showInfoBar && !closed && <HomeInformationBar onClose={onClose} />}
+      
       <Typography style={styles.portfolioLabel} type={'h3'}>
         {t('home_screen_portfolio')}
       </Typography>

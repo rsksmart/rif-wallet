@@ -129,7 +129,7 @@ const resources = {
       home_information_bar_desc1:
         'We recommend you to start by funding your wallet.',
       home_information_bar_desc2:
-        'Send or receive funds from your family or friends.',
+        'Deploy your wallet and send funds to your family and friends. ',
       home_information_bar_desc3:
         'Register your username and receive your icon.',
     },
