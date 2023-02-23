@@ -41,7 +41,8 @@ const getIconSource = (symbol: string): ImageRequireSource | undefined => {
       return require('../../images/RBTC-logo.png')
     case 'RIF':
     case 'TRIF':
-      return require('@rsksmart/rsk-contract-metadata/images/rif.png')
+      // return require('@rsksmart/rsk-contract-metadata/images/rif.png')
+      return require('./../../images/rif.png')
     case 'DOC':
       return require('@rsksmart/rsk-contract-metadata/images/doc.png')
     case 'RDOC':
@@ -147,8 +148,6 @@ const getIconSource = (symbol: string): ImageRequireSource | undefined => {
       return require('@rsksmart/rsk-contract-metadata/images/xusd.png')
     case 'FISH':
       return require('@rsksmart/rsk-contract-metadata/images/fish.png')
-    case 'ARROW_NORTH_EAST':
-      return require('../../images/rif.png')
     default:
       return undefined
   }
