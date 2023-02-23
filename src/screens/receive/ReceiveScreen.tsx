@@ -171,6 +171,7 @@ export const ReceiveScreen = ({
                   primaryText={asset.symbol}
                   secondaryText={balance}
                   isSelected={isSelected}
+                  disabled={isAddressLoading}
                 />
               )
             })}

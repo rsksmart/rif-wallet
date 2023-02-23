@@ -13,6 +13,7 @@ interface PortfolioCardProps {
   secondaryText: string
   isSelected: boolean
   icon?: string
+  disabled?: boolean
 }
 
 const SelectedCard = ({
@@ -80,10 +81,12 @@ export const PortfolioCard = ({
   secondaryText,
   isSelected,
   icon,
+  disabled,
 }: PortfolioCardProps) => (
   <AppTouchable
     width={100}
     onPress={onPress}
+    disabled={disabled}
     style={[styles.topContainer, { backgroundColor: color }]}
     accessibilityLabel={primaryText}>
     {isSelected
