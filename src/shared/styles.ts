@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+import { castStyle } from 'shared/utils'
 
 export const sharedStyles = StyleSheet.create({
   coverAllScreen: {
@@ -73,4 +74,7 @@ export const sharedStyles = StyleSheet.create({
     letterSpacing: 0.24,
     color: '#373f48',
   },
+  marginBottom: castStyle.view({
+    marginBottom: 10,
+  }),
 })

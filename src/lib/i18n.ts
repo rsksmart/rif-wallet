@@ -92,6 +92,10 @@ const resources = {
       Cancel: 'Cancel',
       TOTAL: 'TOTAL',
       search_placeholder: 'Search by username or email',
+      info_box_title_search_domain: 'Username & Icon',
+      info_box_description_search_domain:
+        'Register your username to allow others to send you funds more easily. In case you do not have any RIF funds you can ask a friend to send you some RIF.',
+      info_box_close_button: 'close',
       initial_screen_title: 'Wallet',
       initial_screen_button_create: 'Create a wallet',
       initial_screen_button_import: 'Import existing',

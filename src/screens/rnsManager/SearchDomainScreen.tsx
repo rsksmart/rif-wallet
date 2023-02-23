@@ -1,11 +1,13 @@
 import { useState, useCallback } from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
+import { useTranslation } from 'react-i18next'
 
 import { colors } from 'src/styles'
 import { PrimaryButton } from 'components/button/PrimaryButton'
 import { MediumText } from 'components/index'
-import { AvatarIcon } from 'components/icons/AvatarIcon'
+import { InfoBox } from 'components/InfoBox'
+
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import {
   profileStackRouteNames,
@@ -68,6 +70,8 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
     navigation.navigate(profileStackRouteNames.ProfileDetailsScreen)
   }, [dispatch, domainToLookUp, navigation])
 
+  const { t } = useTranslation()
+
   return (
     <>
       <View style={rnsManagerStyles.profileHeader}>
@@ -87,23 +91,14 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           progressText={'1/4'}
         />
 
-        <View style={rnsManagerStyles.marginBottom}>
-          <View style={rnsManagerStyles.profileImageContainer}>
-            {domainToLookUp.length >= 5 ? (
-              <AvatarIcon value={domainToLookUp + '.rsk'} size={80} />
-            ) : (
-              <Image
-                style={rnsManagerStyles.profileImage}
-                source={require('../../images/image_place_holder.jpeg')}
-              />
-            )}
-            <View>
-              <MediumText style={rnsManagerStyles.profileDisplayAlias}>
-                {domainToLookUp !== '' ? domainToLookUp + '.rsk' : 'alias name'}
-              </MediumText>
-            </View>
-          </View>
-        </View>
+        <InfoBox
+          avatar={
+            domainToLookUp !== '' ? domainToLookUp + '.rsk' : 'alias name'
+          }
+          title={t('info_box_title_search_domain')}
+          description={t('info_box_description_search_domain')}
+          buttonText={t('info_box_close_button')}
+        />
 
         <View style={rnsManagerStyles.marginBottom}>
           <DomainLookUp
