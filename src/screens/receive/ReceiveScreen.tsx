@@ -130,16 +130,19 @@ export const ReceiveScreen = ({
       <FormProvider {...methods}>
         {/* Receive and go back button */}
         <View style={styles.headerStyle}>
-          <FontAwesome5Icon
-            name="chevron-left"
-            size={14}
-            color="white"
-            onPress={onBackPress}
-          />
-          <View>
+          <View style={styles.flexView}>
+            <FontAwesome5Icon
+              name="chevron-left"
+              size={14}
+              color="white"
+              onPress={onBackPress}
+              style={styles.width50View}
+            />
+          </View>
+          <View style={[styles.flexView, styles.flexCenter]}>
             <Typography type="h4">{t('Receive')}</Typography>
           </View>
-          <View />
+          <View style={styles.flexView} />
         </View>
         {/* Change Asset Component */}
         <View style={styles.flexRow}>
@@ -149,6 +152,7 @@ export const ReceiveScreen = ({
             size={14}
             color="white"
             onPress={onChevronAssetShowTap}
+            style={styles.assetsChevronText}
           />
         </View>
         {shouldShowAssets && (
@@ -282,5 +286,18 @@ const styles = StyleSheet.create({
   }),
   marginTopView: castStyle.view({
     marginTop: 20,
+  }),
+  flexView: castStyle.view({
+    flex: 1,
+  }),
+  flexCenter: castStyle.view({
+    alignItems: 'center',
+  }),
+  width50View: castStyle.view({
+    width: '50%',
+  }),
+  assetsChevronText: castStyle.text({
+    width: '25%',
+    textAlign: 'right',
   }),
 })
