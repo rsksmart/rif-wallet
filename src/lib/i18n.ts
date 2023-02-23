@@ -140,7 +140,7 @@ const resources = {
       contact_form_address_invalid: 'Invalid address',
       contact_form_checksum_invalid: 'The checksum is invalid.',
       contact_form_button_save: 'Save Contact',
-      contact_form_button_checksum: 'Convert to correct checksum',
+      contact_form_button_convert_checksum: 'Convert to correct checksum',
     },
   },
   es: {
