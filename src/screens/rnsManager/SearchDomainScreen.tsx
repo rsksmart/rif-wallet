@@ -108,12 +108,9 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           onPress={() => navigation.navigate(rootTabsRouteNames.Home)}
           accessibilityLabel="home"
         />
-        <TitleStatus
-          title="Username Registration"
-          subTitle=""
-          progress={0.25}
-          progressText={'1/4'}
-        />
+        <MediumText style={rnsManagerStyles.title}>
+          Username Registration
+        </MediumText>
         <View />
       </View>
       <View style={rnsManagerStyles.container}>
@@ -222,12 +219,6 @@ const styles = StyleSheet.create({
   }),
   yearsButtons: castStyle.view({
     flexDirection: 'row',
-  }),
-  priceText: castStyle.text({
-    flex: 1,
-    width: '100%',
-    color: colors.lightPurple,
-    marginLeft: 15,
   }),
   icon: castStyle.view({
     alignSelf: 'center',

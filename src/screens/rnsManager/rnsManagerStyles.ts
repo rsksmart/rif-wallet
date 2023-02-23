@@ -4,20 +4,17 @@ export const rnsManagerStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background.darkBlue,
-    paddingHorizontal: 40,
+    padding: 20,
+  },
+  title: {
+    color: '#fbfbfb',
+    fontSize: 18,
   },
   profileHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 20,
     backgroundColor: colors.background.darkBlue,
-  },
-  backButton: {
-    color: colors.lightPurple,
-    backgroundColor: colors.blue2,
-    borderRadius: 20,
-    padding: 10,
-    bottom: 3,
   },
   profileImageContainer: {
     alignItems: 'center',
