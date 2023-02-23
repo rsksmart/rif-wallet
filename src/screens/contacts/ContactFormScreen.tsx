@@ -83,8 +83,6 @@ export const ContactFormScreen = ({
 
   const saveContact = useCallback(
     ({ name, address, id }: FormValues) => {
-      console.log('FORM VALUES', name, address, id)
-
       if (initialValue.id) {
         const contact: Contact = {
           id,
