@@ -30,6 +30,7 @@ import {
 import { getTokenColor } from 'screens/home/tokenColor'
 import { castStyle } from 'shared/utils'
 import { getBalance } from 'screens/home/PortfolioComponent'
+import { selectProfile } from 'store/slices/profileSlice'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
@@ -59,6 +60,7 @@ export const ReceiveScreen = ({
 
   const tokenBalances = useAppSelector(selectBalances)
   const { wallet, chainType } = useAppSelector(selectActiveWallet)
+  const profile = useAppSelector(selectProfile)
 
   const rskAddress = useMemo(() => {
     if (wallet && chainType) {
@@ -201,22 +203,24 @@ export const ReceiveScreen = ({
           )}
         </View>
         {/* Username Component */}
-        <Input
-          label="Username"
-          inputName="username"
-          rightIcon={
-            <Ionicons
-              name="share-outline"
-              size={20}
-              color="white"
-              onPress={onShareUsername}
-              testID={TestID.ShareUsernameButton}
-            />
-          }
-          placeholder={username}
-          isReadOnly
-          testID={TestID.UsernameText}
-        />
+        {profile && profile.alias && (
+          <Input
+            label="Username"
+            inputName="username"
+            rightIcon={
+              <Ionicons
+                name="share-outline"
+                size={20}
+                color="white"
+                onPress={onShareUsername}
+                testID={TestID.ShareUsernameButton}
+              />
+            }
+            placeholder={username}
+            isReadOnly
+            testID={TestID.UsernameText}
+          />
+        )}
         {/* Address Component */}
         {isAddressLoading && (
           <View style={[styles.addressLoadingView, styles.marginTopView]}>
