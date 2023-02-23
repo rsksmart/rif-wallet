@@ -79,6 +79,8 @@ export const PortfolioComponent = ({
   const [isTotalCardSelected, setIsTotalCardSelected] = useState<boolean>(true)
 
   return (
+    // TODO: find out why ScrollView needs to be wrapped in a View
+    // to style appropriately
     <View>
       <ScrollView horizontal={true}>
         <PortfolioCard
