@@ -80,7 +80,7 @@ const PortfolioComponent = ({
 
   return (
     <View>
-      {/*This View above is a fix to keep the ScrollView height*/}
+      {/*TODO: This View above is a temporal fix to keep the ScrollView height*/}
       <ScrollView horizontal={true}>
         <PortfolioCard
           onPress={() => setIsTotalCardSelected(true)}
