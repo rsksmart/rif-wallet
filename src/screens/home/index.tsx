@@ -222,8 +222,6 @@ export const HomeScreen = ({
 
   return (
     <View style={styles.container}>
-      <View style={{ ...styles.topColor, ...backGroundColor }} />
-      <View style={styles.bottomColor} />
       <View style={styles.parent}>
         <TokenBalance
           firstValue={firstValue}
@@ -284,7 +282,7 @@ const styles = StyleSheet.create({
     color: sharedColors.inputLabelColor,
   }),
   container: castStyle.view({
-    flexDirection: 'column',
+    flex: 1,
     backgroundColor: sharedColors.secondary,
   }),
 

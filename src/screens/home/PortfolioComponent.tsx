@@ -1,6 +1,5 @@
-import { StyleSheet, View } from 'react-native'
+import { View, ScrollView } from 'react-native'
 import { useCallback, useState } from 'react'
-import { ScrollView } from 'react-native-gesture-handler'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import { BigNumber } from 'ethers'
 import { useTranslation } from 'react-i18next'
@@ -81,51 +80,40 @@ const PortfolioComponent = ({
 
   return (
     <View>
-      <ScrollView horizontal={true} contentContainerStyle={styles.scrollView}>
-        <View style={styles.scrollView}>
-          <PortfolioCard
-            onPress={() => setIsTotalCardSelected(true)}
-            color={sharedColors.inputInactive}
-            primaryText={t('TOTAL')}
-            secondaryText={`$${getTotalUsdBalance(
-              balances,
-              prices,
-            ).toString()}`}
-            isSelected={isTotalCardSelected}
-          />
-          {balances.map(
-            (balance: ITokenWithoutLogo | BitcoinNetwork, i: number) => {
-              const isSelected =
-                selectedAddress === balance.contractAddress &&
-                !isTotalCardSelected
-              const color = isSelected
-                ? getTokenColor(balance.symbol)
-                : sharedColors.inputInactive
-              const balanceToShow = getBalance(balance)
-              return (
-                <PortfolioCard
-                  key={i}
-                  onPress={() => handleSelectedAddress(balance.contractAddress)}
-                  color={color}
-                  primaryText={balance.symbol}
-                  secondaryText={balanceToShow}
-                  isSelected={isSelected}
-                  icon={balance.symbol}
-                />
-              )
-            },
-          )}
-        </View>
+      {/*This View above is fix to keep the ScrollView height*/}
+      <ScrollView horizontal={true}>
+        <PortfolioCard
+          onPress={() => setIsTotalCardSelected(true)}
+          color={sharedColors.inputInactive}
+          primaryText={t('TOTAL')}
+          secondaryText={`$${getTotalUsdBalance(balances, prices).toString()}`}
+          isSelected={isTotalCardSelected}
+        />
+        {balances.map(
+          (balance: ITokenWithoutLogo | BitcoinNetwork, i: number) => {
+            const isSelected =
+              selectedAddress === balance.contractAddress &&
+              !isTotalCardSelected
+            const color = isSelected
+              ? getTokenColor(balance.symbol)
+              : sharedColors.inputInactive
+            const balanceToShow = getBalance(balance)
+            return (
+              <PortfolioCard
+                key={i}
+                onPress={() => handleSelectedAddress(balance.contractAddress)}
+                color={color}
+                primaryText={balance.symbol}
+                secondaryText={balanceToShow}
+                isSelected={isSelected}
+                icon={balance.symbol}
+              />
+            )
+          },
+        )}
       </ScrollView>
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  scrollView: {
-    flexDirection: 'row',
-    height: 110,
-  },
-})
 
 export default PortfolioComponent
