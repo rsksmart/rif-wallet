@@ -26,6 +26,7 @@ import {
   homeStackRouteNames,
   HomeStackScreenProps,
 } from 'navigation/homeNavigator/types'
+import { getTokenColor } from 'screens/home/tokenColor'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
@@ -134,19 +135,25 @@ export const ReceiveScreen = ({
         <Typography type="h4">{t('CHANGE_ASSET')}</Typography>
         <View style={styles.flexRow}>
           <ScrollView horizontal>
-            {assets.map(asset => (
-              <PortfolioCard
-                key={asset.symbol}
-                onPress={onChangeSelectedAsset(asset)}
-                color={sharedColors.inputInactive}
-                primaryText={asset.symbol}
-                secondaryText={'123'}
-                isSelected={
-                  selectedAsset !== undefined &&
-                  selectedAsset.symbol === asset.symbol
-                }
-              />
-            ))}
+            {assets.map(asset => {
+              const isSelected =
+                selectedAsset !== undefined &&
+                selectedAsset.symbol === asset.symbol
+
+              const color = isSelected
+                ? getTokenColor(asset.symbol)
+                : sharedColors.inputInactive
+              return (
+                <PortfolioCard
+                  key={asset.symbol}
+                  onPress={onChangeSelectedAsset(asset)}
+                  color={color}
+                  primaryText={asset.symbol}
+                  secondaryText={''}
+                  isSelected={isSelected}
+                />
+              )
+            })}
           </ScrollView>
         </View>
         {/* QR Component */}
