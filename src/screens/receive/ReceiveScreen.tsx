@@ -10,6 +10,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useTranslation } from 'react-i18next'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
 
 import { shortAddress } from 'lib/utils'
 
@@ -27,8 +28,8 @@ import {
   HomeStackScreenProps,
 } from 'navigation/homeNavigator/types'
 import { getTokenColor } from 'screens/home/tokenColor'
-import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
 import { castStyle } from 'shared/utils'
+import { getBalance } from 'screens/home/PortfolioComponent'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
@@ -136,7 +137,7 @@ export const ReceiveScreen = ({
             onPress={onBackPress}
           />
           <View>
-            <Typography type={'h4'}>{t('Receive')}</Typography>
+            <Typography type="h4">{t('Receive')}</Typography>
           </View>
           <View />
         </View>
@@ -160,13 +161,15 @@ export const ReceiveScreen = ({
               const color = isSelected
                 ? getTokenColor(asset.symbol)
                 : sharedColors.inputInactive
+
+              const balance = getBalance(asset)
               return (
                 <PortfolioCard
                   key={asset.symbol}
                   onPress={onChangeSelectedAsset(asset)}
                   color={color}
                   primaryText={asset.symbol}
-                  secondaryText={''}
+                  secondaryText={balance}
                   isSelected={isSelected}
                 />
               )
