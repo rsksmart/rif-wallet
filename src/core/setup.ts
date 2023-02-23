@@ -4,6 +4,8 @@ import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
 import { OnRequest, RIFWallet } from '@rsksmart/rif-wallet-core'
 import axios from 'axios'
 import { AbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
+import mainnetContracts from '@rsksmart/rsk-contract-metadata'
+import testnetContracts from '@rsksmart/rsk-testnet-contract-metadata'
 
 import { getWalletSetting, isDefaultChainTypeMainnet, SETTINGS } from './config'
 import { RifWalletServicesSocket } from '@rsksmart/rif-wallet-services'
@@ -63,40 +65,32 @@ export const createRIFWalletFactory =
   (onRequest: OnRequest) => (wallet: Wallet) =>
     RIFWallet.create(wallet.connect(jsonRpcProvider), onRequest, rifRelayConfig)
 
-const defaultMainnetTokens = [
-  {
-    balance: '0x00',
-    contractAddress: '0x2aCc95758f8b5F583470bA265Eb685a8f45fC9D5',
-    decimals: 18,
-    name: 'RIF',
-    symbol: 'RIF',
-  },
-
-  {
-    balance: '0x00',
-    contractAddress: '0x2d919f19D4892381d58EdEbEcA66D5642ceF1A1F',
-    decimals: 18,
-    name: 'Rif Dollar on Chain',
-    symbol: 'RDOC',
-  },
-]
-
-const defaultTestnetTokens = [
-  {
-    balance: '0x00',
-    contractAddress: '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe',
-    decimals: 18,
-    name: 'tRIF Token',
-    symbol: 'tRIF',
-  },
-  {
-    balance: '0x00',
-    contractAddress: '0xc3de9f38581f83e281f260d0ddbaac0e102ff9f8',
-    decimals: 18,
-    name: 'Rif Dollar on Chain',
-    symbol: 'RDOC',
-  },
-]
+const defaultMainnetTokens = Object.keys(mainnetContracts)
+  .filter(address => ['RDOC', 'RIF'].includes(mainnetContracts[address].symbol))
+  .map(address => {
+    const { decimals, name, symbol } = mainnetContracts[address]
+    return {
+      decimals,
+      name,
+      symbol,
+      contractAddress: address.toLowerCase(),
+      balance: '0x00',
+    }
+  })
+const defaultTestnetTokens = Object.keys(testnetContracts)
+  .filter(address =>
+    ['RDOC', 'tRIF'].includes(testnetContracts[address].symbol),
+  )
+  .map(address => {
+    const { decimals, name, symbol } = testnetContracts[address]
+    return {
+      decimals,
+      name,
+      symbol,
+      contractAddress: address.toLowerCase(),
+      balance: '0x00',
+    }
+  })
 export const defaultTokens = isDefaultChainTypeMainnet
   ? defaultMainnetTokens
   : defaultTestnetTokens

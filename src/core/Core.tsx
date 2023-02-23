@@ -47,7 +47,7 @@ import { BitcoinProvider } from 'core/hooks/bitcoin/BitcoinContext'
 import { InjectSelectedWallet } from 'src/Context'
 import * as Screens from 'screens/index'
 import { authAxios, defaultTokens, publicAxios } from './setup'
-import { useSetGlobalError } from 'src/components/GlobalErrorHandler'
+import { useSetGlobalError } from 'components/GlobalErrorHandler'
 import { authClient } from 'src/core/setup'
 import * as Keychain from 'react-native-keychain'
 import {
@@ -56,7 +56,7 @@ import {
   hasSignUP,
   saveSignUp,
 } from 'storage/MainStorage'
-import { addOrUpdateBalances } from 'src/redux/slices/balancesSlice'
+import { addOrUpdateBalances } from 'store/slices/balancesSlice'
 
 export const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -118,7 +118,6 @@ export const Core = () => {
 
   const unlockAppSetMnemonic = useCallback(async () => {
     try {
-      console.log('Mnemonic')
       const kms = await dispatch(unlockApp()).unwrap()
 
       setMnemonic(kms.mnemonic)
