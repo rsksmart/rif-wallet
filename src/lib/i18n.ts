@@ -99,6 +99,11 @@ const resources = {
       initial_screen_title: 'Wallet',
       initial_screen_button_create: 'Create a wallet',
       initial_screen_button_import: 'Import existing',
+      header_no_username: 'No username',
+      header_requesting: 'Requesting username...',
+      header_purchase: 'Purchase username',
+      header_purchasing: 'Purchasing username...',
+      header_error: 'Error Requesting username',
     },
   },
   es: {
