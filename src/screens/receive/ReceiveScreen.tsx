@@ -108,12 +108,12 @@ export const ReceiveScreen = ({
             .then(addressReturned => setAddress(addressReturned))
             .finally(() => setIsAddressLoading(false))
         } else {
-          setAddress(rskAddress?.displayAddress || '')
+          setAddress(rskAddress?.checksumAddress || '')
           setIsAddressLoading(false)
         }
       }
     },
-    [rskAddress?.displayAddress],
+    [rskAddress?.checksumAddress],
   )
 
   const onChangeSelectedAsset = useCallback(
