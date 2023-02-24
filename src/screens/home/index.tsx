@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Image, StyleSheet, View, ScrollView } from 'react-native'
+import { StyleSheet, View, ScrollView } from 'react-native'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import { BIP } from '@rsksmart/rif-wallet-bitcoin'
 import { useTranslation } from 'react-i18next'
@@ -9,7 +9,7 @@ import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 import { balanceToDisplay, convertBalance, getChainIdByType } from 'lib/utils'
 
 import { toChecksumAddress } from 'components/address/lib'
-import { MediumText, Typography } from 'components/index'
+import { Typography } from 'src/components'
 import {
   homeStackRouteNames,
   HomeStackScreenProps,
@@ -241,37 +241,41 @@ export const HomeScreen = ({
         {t('home_screen_portfolio')}
       </Typography>
 
-      {balances.length === 0 ? (
-        <>
-          <Image
-            source={require('src/images/noBalance.png')}
-            style={styles.noBalance}
-          />
-          <MediumText style={styles.text}>
-            You don't have any balances, get some here!
-          </MediumText>
-        </>
-      ) : (
-        <PortfolioComponent
-          selectedAddress={selectedAddress}
-          setSelectedAddress={setSelectedAddress}
-          balances={balances}
-          prices={prices}
-        />
-      )}
+      <PortfolioComponent
+        selectedAddress={selectedAddress}
+        setSelectedAddress={setSelectedAddress}
+        balances={balances}
+        prices={prices}
+      />
+
       <Typography style={styles.transactionsLabel} type={'h3'}>
         {t('home_screen_transactions')}
       </Typography>
-      <ScrollView>
-        {transactionsCombined.map(tx => (
-          <ActivityBasicRow activityTransaction={tx} />
-        ))}
-      </ScrollView>
+      {balances.length === 0 ? (
+        <ScrollView>
+          {transactionsCombined.map(tx => (
+            <ActivityBasicRow activityTransaction={tx} />
+          ))}
+        </ScrollView>
+      ) : (
+        <>
+          <Typography style={styles.emptyTransactionsLabel} type={'h3'}>
+            {t('home_screen_empty_transactions')}
+          </Typography>
+          <Typography style={styles.emptyTransactionsLabel} type={'h4'}>
+            {t('home_screen_no_transactions_created')}
+          </Typography>
+        </>
+      )}
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  emptyTransactionsLabel: castStyle.text({
+    padding: 6,
+    paddingTop: 10,
+  }),
   portfolioLabel: castStyle.text({
     padding: 6,
     paddingTop: 10,
