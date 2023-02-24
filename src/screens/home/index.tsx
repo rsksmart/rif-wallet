@@ -9,7 +9,7 @@ import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 import { balanceToDisplay, convertBalance, getChainIdByType } from 'lib/utils'
 
 import { toChecksumAddress } from 'components/address/lib'
-import { Typography } from 'src/components'
+import { Typography } from 'components/typography'
 import {
   homeStackRouteNames,
   HomeStackScreenProps,
