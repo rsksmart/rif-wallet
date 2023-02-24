@@ -64,7 +64,7 @@ export const HomeScreen = ({
       ? tokenBalances[selectedAddress] ||
         bitcoinCore.networksMap[selectedAddress]
       : undefined
-  const selectedColor = getTokenColor(selected ? selected.symbol : undefined)
+  const selectedColor = getTokenColor(selected ? selected.symbol : '')
   const backGroundColor = {
     backgroundColor: selectedAddress ? selectedColor : getTokenColor('DEFAULT'),
   }

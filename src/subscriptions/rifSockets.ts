@@ -6,9 +6,10 @@ import { RifWalletServicesFetcher } from '@rsksmart/rif-wallet-services'
 import { onSocketChangeEmitted } from './onSocketChangeEmitted'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { AppDispatch } from 'store/index'
-import { rifWalletServicesSocket, abiEnhancer } from 'core/setup'
+import { rifWalletServicesSocket, abiEnhancer, defaultTokens } from 'core/setup'
 import { Action, InitAction } from './types'
 import { Options, setInternetCredentials } from 'react-native-keychain'
+import { addOrUpdateBalances } from 'store/slices/balancesSlice'
 
 export const socketsEvents = new EventEmitter()
 
@@ -51,6 +52,7 @@ export const rifSockets = ({
     if (rifWalletServicesSocket.isConnected()) {
       rifWalletServicesSocket.disconnect()
       dispatch(resetSocketState())
+      dispatch(addOrUpdateBalances(defaultTokens))
     }
 
     rifWalletServicesSocket.removeAllListeners()

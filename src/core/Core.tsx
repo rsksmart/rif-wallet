@@ -46,7 +46,7 @@ import {
 import { BitcoinProvider } from 'core/hooks/bitcoin/BitcoinContext'
 import { InjectSelectedWallet } from 'src/Context'
 import * as Screens from 'screens/index'
-import { authAxios, defaultTokens, publicAxios } from './setup'
+import { authAxios, publicAxios } from './setup'
 import { useSetGlobalError } from 'components/GlobalErrorHandler'
 import { authClient } from 'src/core/setup'
 import * as Keychain from 'react-native-keychain'
@@ -56,7 +56,6 @@ import {
   hasSignUP,
   saveSignUp,
 } from 'storage/MainStorage'
-import { addOrUpdateBalances } from 'store/slices/balancesSlice'
 
 export const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -164,7 +163,6 @@ export const Core = () => {
 
   useEffect(() => {
     if (selectedWallet && wallets && mnemonic && fetcher) {
-      dispatch(addOrUpdateBalances(defaultTokens))
       rifSockets({
         wallet: wallets[selectedWallet],
         mnemonic,

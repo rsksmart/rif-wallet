@@ -14,6 +14,7 @@ import { MMKVStorage } from 'storage/MMKVStorage'
 import { enhanceTransactionInput } from 'screens/activity/ActivityScreen'
 import { filterEnhancedTransactions } from 'src/subscriptions/utils'
 import { Options, setInternetCredentials } from 'react-native-keychain'
+import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 
 export const networkType = getWalletSetting(
   SETTINGS.DEFAULT_CHAIN_TYPE,
@@ -65,7 +66,7 @@ export const createRIFWalletFactory =
   (onRequest: OnRequest) => (wallet: Wallet) =>
     RIFWallet.create(wallet.connect(jsonRpcProvider), onRequest, rifRelayConfig)
 
-const defaultMainnetTokens = Object.keys(mainnetContracts)
+const defaultMainnetTokens: ITokenWithoutLogo[] = Object.keys(mainnetContracts)
   .filter(address => ['RDOC', 'RIF'].includes(mainnetContracts[address].symbol))
   .map(address => {
     const { decimals, name, symbol } = mainnetContracts[address]
@@ -77,7 +78,7 @@ const defaultMainnetTokens = Object.keys(mainnetContracts)
       balance: '0x00',
     }
   })
-const defaultTestnetTokens = Object.keys(testnetContracts)
+const defaultTestnetTokens: ITokenWithoutLogo[] = Object.keys(testnetContracts)
   .filter(address =>
     ['RDOC', 'tRIF'].includes(testnetContracts[address].symbol),
   )
