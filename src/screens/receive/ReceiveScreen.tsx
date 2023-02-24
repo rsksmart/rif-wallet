@@ -44,7 +44,6 @@ export const ReceiveScreen = ({
   route,
   navigation,
 }: HomeStackScreenProps<homeStackRouteNames.Receive>) => {
-  const username = 'user345crypto.rsk' // @TODO find where this is coming from
   const { t } = useTranslation()
   const methods = useForm()
   const bitcoinCore = useBitcoinContext()
@@ -80,9 +79,9 @@ export const ReceiveScreen = ({
 
   const onShareUsername = useCallback(() => {
     Share.share({
-      message: username,
+      message: profile?.alias || '',
     })
-  }, [username])
+  }, [profile?.alias])
 
   const onShareAddress = useCallback(() => {
     Share.share({
@@ -216,7 +215,7 @@ export const ReceiveScreen = ({
                 testID={TestID.ShareUsernameButton}
               />
             }
-            placeholder={username}
+            placeholder={profile.alias}
             isReadOnly
             testID={TestID.UsernameText}
           />
