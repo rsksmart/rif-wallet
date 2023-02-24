@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-
 import { Clipboard, Image, Linking, StyleSheet, View } from 'react-native'
-import { rnsManagerStyles } from './rnsManagerStyles'
 
+import { RnsProcessor } from 'lib/rns/RnsProcessor'
+
+import { rnsManagerStyles } from './rnsManagerStyles'
 import { MediumText, SecondaryButton } from 'components/index'
 import { PrimaryButton } from 'components/button'
 import { getWalletSetting, SETTINGS } from 'core/config'
@@ -13,8 +14,9 @@ import { ScreenWithWallet } from '../types'
 import {
   profileStackRouteNames,
   ProfileStackScreenProps,
+  ProfileStatus,
 } from 'navigation/profileNavigator/types'
-import { RnsProcessor } from 'lib/rns/RnsProcessor'
+import { castStyle } from 'shared/utils'
 
 export const AliasBoughtScreen = ({
   navigation,
@@ -41,7 +43,14 @@ export const AliasBoughtScreen = ({
   }
 
   useEffect(() => {
-    dispatch(setProfile({ phone: '', email: '', alias: `${alias}.rsk` }))
+    dispatch(
+      setProfile({
+        phone: '',
+        email: '',
+        alias: `${alias}.rsk`,
+        status: ProfileStatus.USER,
+      }),
+    )
   }, [alias, dispatch])
 
   return (
@@ -90,16 +99,16 @@ export const AliasBoughtScreen = ({
 }
 
 const styles = StyleSheet.create({
-  imageContainer: {
+  imageContainer: castStyle.view({
     alignItems: 'center',
     paddingTop: 50,
     paddingBottom: 10,
-  },
-  image: {
+  }),
+  image: castStyle.image({
     paddingTop: 50,
     paddingBottom: 10,
-  },
-  buttonContainer: {
+  }),
+  buttonContainer: castStyle.view({
     marginBottom: 15,
-  },
+  }),
 })

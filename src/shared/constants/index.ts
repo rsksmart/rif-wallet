@@ -43,4 +43,12 @@ export const sharedStyles = StyleSheet.create({
   flex: castStyle.view({
     flex: 1,
   }),
+  textCenter: castStyle.text({
+    textAlign: 'center',
+  }),
+  contentCenter: castStyle.view({
+    justifyContent: 'center',
+    alignItems: 'center',
+  }),
+  marginLeft24: castStyle.view({ marginLeft: 24 }),
 })

@@ -1,15 +1,21 @@
+import { useCallback } from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
+import { useTranslation } from 'react-i18next'
 
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
-import { profileStackRouteNames } from 'navigation/profileNavigator/types'
+import {
+  profileStackRouteNames,
+  ProfileStatus,
+} from 'navigation/profileNavigator/types'
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { useAppSelector } from 'store/storeUtils'
-import { RegularText } from 'components/index'
-import { colors } from 'src/styles'
-import { Avatar } from 'src/components/avatar'
-import { sharedColors } from 'src/shared/constants'
+import { Typography } from 'components/typography'
+import { StepperComponent } from 'components/profile'
+import { sharedColors } from 'shared/constants'
+import { Avatar } from 'components/avatar'
+import { castStyle } from 'shared/utils'
 
 interface Props {
   navigation: BottomTabHeaderProps['navigation']
@@ -17,8 +23,38 @@ interface Props {
 
 export const ProfileHandler = ({ navigation }: Props) => {
   const profile = useAppSelector(selectProfile)
-  const profileCreated = !!profile
+  const { t } = useTranslation()
+  const profileCreated = profile.status === ProfileStatus.USER
 
+  const getColors = useCallback(() => {
+    switch (profile.status) {
+      case ProfileStatus.REQUESTING:
+        return {
+          startColor: sharedColors.warning,
+          endColor: sharedColors.inputActive,
+        }
+      case ProfileStatus.READY_TO_PURCHASE:
+        return {
+          startColor: sharedColors.success,
+          endColor: sharedColors.inputActive,
+        }
+      case ProfileStatus.PURCHASING:
+        return {
+          startColor: sharedColors.success,
+          endColor: sharedColors.warning,
+        }
+      case ProfileStatus.ERROR:
+        return {
+          startColor: sharedColors.danger,
+          endColor: sharedColors.inputActive,
+        }
+    }
+    return {
+      startColor: sharedColors.inputActive,
+      endColor: sharedColors.inputActive,
+    }
+  }, [profile.status])
+  const { startColor, endColor } = getColors()
   const routeNextStep = async () => {
     navigation.navigate(rootTabsRouteNames.Profile, {
       screen: profileCreated
@@ -32,57 +68,105 @@ export const ProfileHandler = ({ navigation }: Props) => {
       style={styles.profileHandler}
       accessibilityLabel="profile"
       onPress={routeNextStep}>
-      {profile?.alias ? (
+      {profile.status === ProfileStatus.NONE && (
         <>
-          {/* <AvatarIcon value={profile.alias + '.rsk'} size={30} /> */}
           <Avatar
-            size={30}
-            name={profile.alias + '.rsk'}
-            // icon={<Icon name={'cat'} size={100} />}
-            // imageSource={{
-            //   uri: 'https://image.freepik.com/free-vector/cute-dog-head-avatar_79416-67.jpg',
-            // }}
+            size={20}
+            name={'person'}
+            style={styles.profileHandlerImage}
+            icon={
+              <Icon
+                name={'user-circle'}
+                size={15}
+                color={sharedColors.primary}
+              />
+            }
           />
-          <View>
-            <RegularText style={styles.profileName}>
-              {profile.alias}
-            </RegularText>
+          <View style={styles.textAlignment}>
+            <Typography type={'h4'} style={[styles.profileName]}>
+              {t('header_no_username')}
+            </Typography>
           </View>
         </>
-      ) : (
-        <Avatar
-          size={32}
-          name={'person'}
-          style={styles.profileHandlerImage}
-          icon={
-            <Icon name={'user-circle'} size={20} color={sharedColors.primary} />
-          }
-        />
+      )}
+      {profile.status !== ProfileStatus.USER &&
+        profile.status !== ProfileStatus.NONE && (
+          <StepperComponent colors={[startColor, endColor]} />
+        )}
+      {profile.status === ProfileStatus.REQUESTING && (
+        <>
+          <View style={styles.textAlignment}>
+            <Typography type={'body3'} style={styles.requestingStatus}>
+              {t('header_requesting')}
+            </Typography>
+          </View>
+        </>
+      )}
+
+      {profile.status === ProfileStatus.READY_TO_PURCHASE && (
+        <>
+          <View style={styles.textAlignment}>
+            <Typography type={'body3'} style={styles.underline}>
+              {t('header_purchase')}
+            </Typography>
+          </View>
+        </>
+      )}
+
+      {profile.status === ProfileStatus.PURCHASING && (
+        <>
+          <View style={styles.textAlignment}>
+            <Typography type={'body3'} style={styles.requestingStatus}>
+              {t('header_purchasing')}
+            </Typography>
+          </View>
+        </>
+      )}
+
+      {profile.status === ProfileStatus.USER && (
+        <>
+          <Avatar size={30} name={profile.alias + '.rsk'} />
+          <View style={styles.textAlignment}>
+            <Typography type={'h4'} style={styles.profileName}>
+              {profile.alias}
+            </Typography>
+          </View>
+        </>
+      )}
+
+      {profile.status === ProfileStatus.ERROR && (
+        <>
+          <View style={styles.textAlignment}>
+            <Typography type={'body3'} style={styles.requestingStatus}>
+              {t('header_error')}
+            </Typography>
+          </View>
+        </>
       )}
     </TouchableOpacity>
   )
 }
 
 const styles = StyleSheet.create({
-  profileHandler: {
+  profileHandler: castStyle.view({
     flexDirection: 'row',
-  },
-  profileAvatar: {
-    height: 30,
-    width: 30,
-  },
-  profileHandlerImage: {
+  }),
+  profileHandlerImage: castStyle.image({
     backgroundColor: sharedColors.white,
-  },
-  profileAddImage: {
-    backgroundColor: colors.darkPurple3,
-    borderRadius: 20,
-    height: 15,
-    right: 8,
-  },
-  profileName: {
-    paddingTop: 5,
-    paddingLeft: 5,
-    color: colors.white,
-  },
+  }),
+  profileName: castStyle.text({
+    paddingLeft: 6,
+  }),
+  textAlignment: castStyle.text({
+    justifyContent: 'center',
+  }),
+  requestingStatus: castStyle.text({
+    opacity: 0.4,
+    paddingLeft: 6,
+  }),
+  underline: castStyle.text({
+    textDecorationColor: sharedColors.white,
+    textDecorationLine: 'underline',
+    paddingLeft: 6,
+  }),
 })

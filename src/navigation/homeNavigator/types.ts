@@ -6,6 +6,8 @@ import {
 import { StackScreenProps } from '@react-navigation/stack'
 import Resolver from '@rsksmart/rns-resolver.js'
 
+import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
+
 import {
   RootTabsParamsList,
   rootTabsRouteNames,
@@ -17,7 +19,6 @@ export enum homeStackRouteNames {
   Send = 'Send',
   RelayDeployScreen = 'RelayDeployScreen',
   Receive = 'Receive',
-  ReceiveBitcoin = 'ReceiveBitcoin',
   Balances = 'Balances',
 }
 
@@ -32,9 +33,9 @@ export type HomeStackParamsList = {
         contractAddress?: string
       }
     | undefined
-  [homeStackRouteNames.Receive]: undefined
-  [homeStackRouteNames.ReceiveBitcoin]: {
-    networkId: string
+  [homeStackRouteNames.Receive]: {
+    token?: ITokenWithoutLogo
+    networkId?: string
   }
   [homeStackRouteNames.Balances]: undefined
   [homeStackRouteNames.RelayDeployScreen]: undefined

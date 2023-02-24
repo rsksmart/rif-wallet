@@ -4,6 +4,8 @@ import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
 import { OnRequest, RIFWallet } from '@rsksmart/rif-wallet-core'
 import axios from 'axios'
 import { AbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
+import mainnetContracts from '@rsksmart/rsk-contract-metadata'
+import testnetContracts from '@rsksmart/rsk-testnet-contract-metadata'
 
 import { getWalletSetting, isDefaultChainTypeMainnet, SETTINGS } from './config'
 import { RifWalletServicesSocket } from '@rsksmart/rif-wallet-services'
@@ -12,6 +14,7 @@ import { MMKVStorage } from 'storage/MMKVStorage'
 import { enhanceTransactionInput } from 'screens/activity/ActivityScreen'
 import { filterEnhancedTransactions } from 'src/subscriptions/utils'
 import { Options, setInternetCredentials } from 'react-native-keychain'
+import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 
 export const networkType = getWalletSetting(
   SETTINGS.DEFAULT_CHAIN_TYPE,
@@ -62,3 +65,33 @@ export const rifRelayConfig: RifRelayConfig = {
 export const createRIFWalletFactory =
   (onRequest: OnRequest) => (wallet: Wallet) =>
     RIFWallet.create(wallet.connect(jsonRpcProvider), onRequest, rifRelayConfig)
+
+const defaultMainnetTokens: ITokenWithoutLogo[] = Object.keys(mainnetContracts)
+  .filter(address => ['RDOC', 'RIF'].includes(mainnetContracts[address].symbol))
+  .map(address => {
+    const { decimals, name, symbol } = mainnetContracts[address]
+    return {
+      decimals,
+      name,
+      symbol,
+      contractAddress: address.toLowerCase(),
+      balance: '0x00',
+    }
+  })
+const defaultTestnetTokens: ITokenWithoutLogo[] = Object.keys(testnetContracts)
+  .filter(address =>
+    ['RDOC', 'tRIF'].includes(testnetContracts[address].symbol),
+  )
+  .map(address => {
+    const { decimals, name, symbol } = testnetContracts[address]
+    return {
+      decimals,
+      name,
+      symbol,
+      contractAddress: address.toLowerCase(),
+      balance: '0x00',
+    }
+  })
+export const defaultTokens = isDefaultChainTypeMainnet
+  ? defaultMainnetTokens
+  : defaultTestnetTokens

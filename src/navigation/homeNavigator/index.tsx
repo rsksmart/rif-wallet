@@ -2,7 +2,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 
 import { InjectedScreens } from 'core/Core'
 import { HomeStackParamsList, homeStackRouteNames } from './types'
-import { BitcoinReceiveScreen, ReceiveScreenHOC } from 'screens/index'
+import { ReceiveScreen } from 'screens/index'
 
 const HomeStack = createStackNavigator<HomeStackParamsList>()
 
@@ -23,11 +23,7 @@ export const HomeNavigator = () => {
       />
       <HomeStack.Screen
         name={homeStackRouteNames.Receive}
-        component={ReceiveScreenHOC}
-      />
-      <HomeStack.Screen
-        name={homeStackRouteNames.ReceiveBitcoin}
-        component={BitcoinReceiveScreen}
+        component={ReceiveScreen}
       />
       <HomeStack.Screen
         name={homeStackRouteNames.Balances}

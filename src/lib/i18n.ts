@@ -1,5 +1,4 @@
 import i18n from 'i18next'
-
 import { initReactI18next } from 'react-i18next'
 
 // the translations
@@ -94,9 +93,30 @@ const resources = {
       search_placeholder: 'Search by username or email',
       home_screen_portfolio: 'Portfolio',
       home_screen_transactions: 'Transactions',
+      info_box_title_search_domain: 'Username & Icon',
+      info_box_description_search_domain:
+        'Register your username to allow others to send you funds more easily. In case you do not have any RIF funds you can ask a friend to send you some RIF.',
+      info_box_close_button: 'close',
       initial_screen_title: 'Wallet',
       initial_screen_button_create: 'Create a wallet',
       initial_screen_button_import: 'Import existing',
+      header_no_username: 'No username',
+      header_requesting: 'Requesting username...',
+      header_purchase: 'Purchase username',
+      header_purchasing: 'Purchasing username...',
+      header_error: 'Error Requesting username',
+      mnemonic_title: 'Security advice',
+      mnemonic_title_copy: 'Copied to clipboard!',
+      mnemonic_body: `Please make sure that you are located 
+      in a safe environment with no one being
+      able to see your phone screen before you decide to reveal your phrase. `,
+      mnemonic_body_copy:
+        'We strongly recommend you to write the phrase also on a piece of paper.',
+      new_master_key_title: 'Save your phrase',
+      new_master_key_button_title: 'Phrase secured, Continue',
+      change_asset: 'Change asset',
+      loading_qr: 'Loading QR',
+      loading_address: 'Loading Address',
     },
   },
   es: {

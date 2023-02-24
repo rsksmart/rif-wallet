@@ -1,16 +1,16 @@
 import { useCallback } from 'react'
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
+import { StackHeaderProps } from '@react-navigation/stack'
+import OIcon from 'react-native-vector-icons/Octicons'
 
-import { getChainIdByType } from 'lib/utils'
-
-import { AddressCopyComponent } from 'components/copy/AddressCopyComponent'
-import { ChevronLeftIcon } from 'components/icons/ChevronLeftIcon'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { selectActiveWallet, selectTopColor } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { ProfileHandler } from './ProfileHandler'
-import { StackHeaderProps } from '@react-navigation/stack'
+import { sharedColors } from 'shared/constants'
+import { AppTouchable } from 'components/appTouchable'
+import { castStyle } from 'shared/utils'
 
 type HeaderProps = BottomTabHeaderProps | StackHeaderProps
 
@@ -24,7 +24,7 @@ export const AppHeader = ({
   isShown,
 }: Props & HeaderProps) => {
   const topColor = useAppSelector(selectTopColor)
-  const { wallet, chainType } = useAppSelector(selectActiveWallet)
+  const { wallet } = useAppSelector(selectActiveWallet)
 
   const openMenu = useCallback(() => {
     if (route && route.name === rootTabsRouteNames.Settings) {
@@ -36,61 +36,38 @@ export const AppHeader = ({
 
   return !isShown ? null : (
     <View style={[styles.row, { backgroundColor: topColor }]}>
-      {navigation.canGoBack() ? (
-        <TouchableOpacity onPress={navigation.goBack}>
-          <ChevronLeftIcon color={'white'} />
-        </TouchableOpacity>
-      ) : null}
       <View style={[styles.column, styles.walletInfo]}>
         {wallet && <ProfileHandler wallet={wallet} navigation={navigation} />}
       </View>
-      <View style={styles.column}>
-        {wallet && (
-          <AddressCopyComponent
-            address={wallet.smartWalletAddress}
-            chainId={getChainIdByType(chainType) || 31}
-          />
-        )}
-      </View>
       <View style={styles.columnMenu}>
-        <TouchableOpacity onPress={openMenu} accessibilityLabel="settings">
-          <Image
-            source={require('../../images/settings-icon.png')}
-            style={styles.settingsIcon}
-          />
-        </TouchableOpacity>
+        <AppTouchable
+          width={16}
+          onPress={openMenu}
+          accessibilityLabel="settings">
+          <OIcon name="gear" size={16} color={sharedColors.white} />
+        </AppTouchable>
       </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  row: {
+  row: castStyle.view({
     alignItems: 'center', // vertical
-    paddingVertical: 10,
+    paddingVertical: 5,
     paddingHorizontal: 15,
     display: 'flex',
     flexDirection: 'row',
-  },
-  column: {
+  }),
+  column: castStyle.view({
     flex: 5,
-  },
-  columnMenu: {
+  }),
+  columnMenu: castStyle.view({
     flex: 1,
     alignItems: 'flex-end',
-  },
-  logo: {
-    height: 25,
-    width: 18,
-    marginRight: 5,
-  },
-
-  walletInfo: {
+  }),
+  walletInfo: castStyle.view({
     alignItems: 'center',
     flexDirection: 'row',
-  },
-  settingsIcon: {
-    height: 18,
-    width: 18,
-  },
+  }),
 })

@@ -1,15 +1,18 @@
 import { useState, useCallback } from 'react'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
+import { useTranslation } from 'react-i18next'
 
 import { colors } from 'src/styles'
 import { PrimaryButton } from 'components/button/PrimaryButton'
 import { MediumText } from 'components/index'
-import { AvatarIcon } from 'components/icons/AvatarIcon'
+import { InfoBox } from 'components/InfoBox'
+
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import {
   profileStackRouteNames,
   ProfileStackScreenProps,
+  ProfileStatus,
 } from 'navigation/profileNavigator/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import DomainLookUp from 'screens/rnsManager/DomainLookUp'
@@ -17,9 +20,8 @@ import { rnsManagerStyles } from './rnsManagerStyles'
 import { ScreenWithWallet } from '../types'
 import TitleStatus from './TitleStatus'
 
-import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { setProfile } from 'store/slices/profileSlice'
-import { selectProfile } from 'store/slices/profileSlice/selector'
+import { useAppDispatch } from 'store/storeUtils'
+import { recoverAlias } from 'store/slices/profileSlice'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
   ScreenWithWallet
@@ -32,7 +34,6 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const [selectedDomainPrice, setSelectedDomainPrice] = useState<string>('2')
   const [isModalVisible, setIsModalVisible] = useState<boolean>(true)
   const dispatch = useAppDispatch()
-  const profile = useAppSelector(selectProfile)
 
   const calculatePrice = async (_: string, years: number) => {
     //TODO: re enable this later
@@ -60,14 +61,16 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
 
   const handleSetProfile = useCallback(() => {
     dispatch(
-      setProfile({
-        ...(profile ? profile : { phone: '', email: '' }),
+      recoverAlias({
         alias: domainToLookUp + '.rsk',
+        status: ProfileStatus.USER,
       }),
     )
 
     navigation.navigate(profileStackRouteNames.ProfileDetailsScreen)
-  }, [dispatch, domainToLookUp, profile, navigation])
+  }, [dispatch, domainToLookUp, navigation])
+
+  const { t } = useTranslation()
 
   return (
     <>
@@ -88,23 +91,14 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           progressText={'1/4'}
         />
 
-        <View style={rnsManagerStyles.marginBottom}>
-          <View style={rnsManagerStyles.profileImageContainer}>
-            {domainToLookUp.length >= 5 ? (
-              <AvatarIcon value={domainToLookUp + '.rsk'} size={80} />
-            ) : (
-              <Image
-                style={rnsManagerStyles.profileImage}
-                source={require('../../images/image_place_holder.jpeg')}
-              />
-            )}
-            <View>
-              <MediumText style={rnsManagerStyles.profileDisplayAlias}>
-                {domainToLookUp !== '' ? domainToLookUp + '.rsk' : 'alias name'}
-              </MediumText>
-            </View>
-          </View>
-        </View>
+        <InfoBox
+          avatar={
+            domainToLookUp !== '' ? domainToLookUp + '.rsk' : 'alias name'
+          }
+          title={t('info_box_title_search_domain')}
+          description={t('info_box_description_search_domain')}
+          buttonText={t('info_box_close_button')}
+        />
 
         <View style={rnsManagerStyles.marginBottom}>
           <DomainLookUp

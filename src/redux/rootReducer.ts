@@ -1,6 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit'
-import { persistReducer } from 'redux-persist'
-import { reduxStorage } from 'src/storage/ReduxStorage'
+import { persistReducer, createMigrate } from 'redux-persist'
+
+import { reduxStorage } from 'storage/ReduxStorage'
 import { accountsReducer } from './slices/accountsSlice'
 import { balancesReducer } from './slices/balancesSlice'
 import { contactsReducer } from 'store/slices/contactsSlice'
@@ -8,10 +9,28 @@ import { profileReducer } from './slices/profileSlice'
 import { settingsSliceReducer } from './slices/settingsSlice'
 import { transactionsReducer } from './slices/transactionsSlice'
 import { usdPriceReducer } from './slices/usdPricesSlice'
+import { ProfileStatus } from 'navigation/profileNavigator/types'
+
+const migrations = {
+  // It's on purpose due to state type from redux-persist is PersistedStated.
+  // Also, to don't add complexity to typing. More about this issue in https://github.com/rt2zz/redux-persist/issues/1140
+  // eslint-disable-next-line
+  0: (state: any) => ({
+    ...state,
+    profile: {
+      alias: '',
+      phone: '',
+      email: '',
+      status: ProfileStatus.NONE,
+    },
+  }),
+}
 
 const persistConfig = {
   key: 'root',
   storage: reduxStorage,
+  version: 0,
+  migrate: createMigrate(migrations),
   whitelist: ['profile', 'accounts', 'contacts', 'balances', 'usdPrices'],
 }
 

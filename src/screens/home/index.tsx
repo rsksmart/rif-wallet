@@ -4,9 +4,9 @@ import { Image, StyleSheet, View, ScrollView } from 'react-native'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import { BIP } from '@rsksmart/rif-wallet-bitcoin'
 import { useTranslation } from 'react-i18next'
+import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 
 import { balanceToDisplay, convertBalance, getChainIdByType } from 'lib/utils'
-import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 
 import { toChecksumAddress } from 'components/address/lib'
 import { MediumText, Typography } from 'components/index'
@@ -22,9 +22,9 @@ import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 import { changeTopColor, selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { HomeBarButtonGroup } from 'screens/home/HomeBarButtonGroup'
+import { CurrencyValue, TokenBalance } from 'components/token'
 
 import PortfolioComponent from './PortfolioComponent'
-import { CurrencyValue, TokenBalance } from 'components/token'
 import { getTokenColor } from './tokenColor'
 import { selectTransactions } from 'store/slices/transactionsSlice'
 import { sharedColors } from 'shared/constants'
@@ -73,7 +73,7 @@ export const HomeScreen = ({
       ? tokenBalances[selectedAddress] ||
         bitcoinCore.networksMap[selectedAddress]
       : undefined
-  const selectedColor = getTokenColor(selected ? selected.symbol : undefined)
+  const selectedColor = getTokenColor(selected ? selected.symbol : '')
   const backGroundColor = {
     backgroundColor: selectedAddress ? selectedColor : getTokenColor('DEFAULT'),
   }
@@ -93,7 +93,7 @@ export const HomeScreen = ({
     ) => {
       switch (screen) {
         case 'RECEIVE':
-          return navigation.navigate(homeStackRouteNames.ReceiveBitcoin, {
+          return navigation.navigate(homeStackRouteNames.Receive, {
             networkId: _selected.networkId,
           })
         case 'SEND':
@@ -119,7 +119,9 @@ export const HomeScreen = ({
             contractAddress: selected?.contractAddress,
           })
         case 'RECEIVE':
-          return navigation.navigate(homeStackRouteNames.Receive)
+          return navigation.navigate(homeStackRouteNames.Receive, {
+            token: selected,
+          })
         case 'FAUCET':
           const address = wallet?.smartWallet.smartWalletContract.address
           address &&

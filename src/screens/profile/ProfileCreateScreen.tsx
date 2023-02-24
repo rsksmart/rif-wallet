@@ -1,8 +1,4 @@
 import { useCallback, useState } from 'react'
-
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-
-import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import {
   Image,
   StyleSheet,
@@ -12,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 import { AvatarIcon } from 'components/icons/AvatarIcon'
 import { MediumText } from 'components/index'
@@ -22,11 +19,13 @@ import { colors } from 'src/styles'
 import { fonts } from 'src/styles/fonts'
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { deleteProfile, setProfile } from 'store/slices/profileSlice'
-import { IProfileStore } from 'store/slices/profileSlice/types'
+import { ProfileStore } from 'store/slices/profileSlice/types'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import {
   profileStackRouteNames,
   ProfileStackScreenProps,
+  ProfileStatus,
 } from 'navigation/profileNavigator/types'
 
 export const ProfileCreateScreen = ({
@@ -36,10 +35,7 @@ export const ProfileCreateScreen = ({
   const editProfile = route.params?.editProfile
   const dispatch = useAppDispatch()
   const profile = useAppSelector(selectProfile)
-  const emptyProfile = { alias: '', email: '', phone: '' }
-  const [localProfile, setLocalProfile] = useState<IProfileStore>(
-    profile || emptyProfile,
-  )
+  const [localProfile, setLocalProfile] = useState<ProfileStore>(profile)
   const fullAlias = profile ? `${profile.alias}.rsk` : ''
 
   const createProfile = async () => {
@@ -59,7 +55,6 @@ export const ProfileCreateScreen = ({
   const onSetPhone = useCallback((phone: string) => {
     setLocalProfile(prev => ({ ...prev, phone }))
   }, [])
-
   return (
     <KeyboardAvoidingView
       style={styles.screen}
@@ -85,7 +80,7 @@ export const ProfileCreateScreen = ({
         </View>
         <View style={styles.bodyContainer}>
           <View style={styles.profileImageContainer}>
-            {profile?.alias ? (
+            {profile.status === ProfileStatus.USER ? (
               <AvatarIcon value={fullAlias} size={80} />
             ) : (
               <Image
@@ -99,7 +94,7 @@ export const ProfileCreateScreen = ({
               alias
             </MediumText>
           </View>
-          {!profile?.alias && (
+          {profile.status !== ProfileStatus.USER && (
             <>
               <View style={styles.rowContainer}>
                 <PrimaryButton
@@ -113,7 +108,7 @@ export const ProfileCreateScreen = ({
             </>
           )}
 
-          {!!profile?.alias && (
+          {profile.status === ProfileStatus.USER && (
             <View style={styles.rowContainer}>
               <View style={styles.aliasContainer}>
                 <View>
@@ -124,7 +119,7 @@ export const ProfileCreateScreen = ({
                 <View>
                   <TouchableOpacity
                     accessibilityLabel="close"
-                    onPress={() => setProfile({ ...profile, alias: '' })}>
+                    onPress={() => deleteAlias()}>
                     <MaterialIcon name="close" color={colors.white} size={20} />
                   </TouchableOpacity>
                 </View>
@@ -156,7 +151,7 @@ export const ProfileCreateScreen = ({
               onPress={createProfile}
               accessibilityLabel="create"
               title={editProfile ? 'save' : 'create'}
-              disabled={!profile}
+              disabled={profile.status !== ProfileStatus.USER}
             />
           </View>
         </View>
