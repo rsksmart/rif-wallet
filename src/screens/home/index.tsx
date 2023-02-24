@@ -222,51 +222,49 @@ export const HomeScreen = ({
 
   return (
     <View style={styles.container}>
-      <View style={styles.parent}>
-        <TokenBalance
-          firstValue={firstValue}
-          secondValue={secondValue}
-          hideable={true}
-          hide={hide}
-          onHide={onHide}
-          color={backGroundColor.backgroundColor}
-        />
-        <HomeBarButtonGroup
-          onPress={handleSendReceive}
-          isSendDisabled={balances.length === 0}
-          color={backGroundColor.backgroundColor}
-        />
-        <Typography style={styles.portfolioLabel} type={'h3'}>
-          {t('home_screen_portfolio')}
-        </Typography>
+      <TokenBalance
+        firstValue={firstValue}
+        secondValue={secondValue}
+        hideable={true}
+        hide={hide}
+        onHide={onHide}
+        color={backGroundColor.backgroundColor}
+      />
+      <HomeBarButtonGroup
+        onPress={handleSendReceive}
+        isSendDisabled={balances.length === 0}
+        color={backGroundColor.backgroundColor}
+      />
+      <Typography style={styles.portfolioLabel} type={'h3'}>
+        {t('home_screen_portfolio')}
+      </Typography>
 
-        {balances.length === 0 ? (
-          <>
-            <Image
-              source={require('src/images/noBalance.png')}
-              style={styles.noBalance}
-            />
-            <MediumText style={styles.text}>
-              You don't have any balances, get some here!
-            </MediumText>
-          </>
-        ) : (
-          <PortfolioComponent
-            selectedAddress={selectedAddress}
-            setSelectedAddress={setSelectedAddress}
-            balances={balances}
-            prices={prices}
+      {balances.length === 0 ? (
+        <>
+          <Image
+            source={require('src/images/noBalance.png')}
+            style={styles.noBalance}
           />
-        )}
-        <Typography style={styles.transactionsLabel} type={'h3'}>
-          {t('home_screen_transactions')}
-        </Typography>
-        <ScrollView>
-          {transactionsCombined.map(tx => (
-            <ActivityBasicRow activityTransaction={tx} />
-          ))}
-        </ScrollView>
-      </View>
+          <MediumText style={styles.text}>
+            You don't have any balances, get some here!
+          </MediumText>
+        </>
+      ) : (
+        <PortfolioComponent
+          selectedAddress={selectedAddress}
+          setSelectedAddress={setSelectedAddress}
+          balances={balances}
+          prices={prices}
+        />
+      )}
+      <Typography style={styles.transactionsLabel} type={'h3'}>
+        {t('home_screen_transactions')}
+      </Typography>
+      <ScrollView>
+        {transactionsCombined.map(tx => (
+          <ActivityBasicRow activityTransaction={tx} />
+        ))}
+      </ScrollView>
     </View>
   )
 }
@@ -286,10 +284,6 @@ const styles = StyleSheet.create({
     backgroundColor: sharedColors.secondary,
   }),
 
-  parent: castStyle.view({
-    width: '100%',
-    height: '100%',
-  }),
   text: castStyle.text({
     textAlign: 'center',
     color: colors.lightPurple,
