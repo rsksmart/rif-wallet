@@ -31,6 +31,7 @@ import { getTokenColor } from 'screens/home/tokenColor'
 import { castStyle } from 'shared/utils'
 import { getBalance } from 'screens/home/PortfolioComponent'
 import { selectProfile } from 'store/slices/profileSlice'
+import { getIconSource } from 'screens/home/TokenImage'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
@@ -186,8 +187,9 @@ export const ReceiveScreen = ({
         <View style={styles.qrView}>
           {address !== '' && !isAddressLoading && (
             <QRGenerator
+              key={address}
               value={address}
-              imageSource={require('../../images/rif.png')}
+              imageSource={getIconSource(selectedAsset?.symbol || '')}
               logoBackgroundColor={sharedColors.inputInactive}
               testID={TestID.QRCodeDisplay}
             />
