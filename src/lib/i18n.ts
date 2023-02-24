@@ -1,5 +1,4 @@
 import i18n from 'i18next'
-
 import { initReactI18next } from 'react-i18next'
 
 // the translations
@@ -113,6 +112,9 @@ const resources = {
         'We strongly recommend you to write the phrase also on a piece of paper.',
       new_master_key_title: 'Save your phrase',
       new_master_key_button_title: 'Phrase secured, Continue',
+      change_asset: 'Change asset',
+      loading_qr: 'Loading QR',
+      loading_address: 'Loading Address',
     },
   },
   es: {

@@ -19,7 +19,7 @@ import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
 import { sharedColors } from 'shared/constants'
 import { getTokenColor } from 'screens/home/tokenColor'
 
-const getBalance = (token: ITokenWithoutLogo | BitcoinNetwork) => {
+export const getBalance = (token: ITokenWithoutLogo | BitcoinNetwork) => {
   if (token instanceof BitcoinNetwork) {
     const bitcoinBalance: BitcoinNetwork = token
     const balanceBigNumber = BigNumber.from(
