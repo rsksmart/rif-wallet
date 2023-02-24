@@ -28,6 +28,7 @@ import {
   hasIsGettingStartedClosed,
   saveIsGettingStartedClosed,
 } from 'storage/MainStorage'
+import { castStyle } from 'shared/utils'
 
 import PortfolioComponent from './PortfolioComponent'
 import { getTokenColor } from './tokenColor'
@@ -36,7 +37,6 @@ import { sharedColors } from 'shared/constants'
 import { useBitcoinTransactionsHandler } from 'screens/activity/useBitcoinTransactionsHandler'
 import useTransactionsCombiner from 'screens/activity/useTransactionsCombiner'
 import { ActivityBasicRow } from 'screens/activity/ActivityRow'
-import { castStyle } from 'shared/utils'
 import { HomeInformationBar } from './HomeInformationBar'
 
 export const HomeScreen = ({
@@ -259,7 +259,7 @@ export const HomeScreen = ({
       />
 
       {showInfoBar && !closed && <HomeInformationBar onClose={onClose} />}
-      
+
       <Typography style={styles.portfolioLabel} type={'h3'}>
         {t('home_screen_portfolio')}
       </Typography>
@@ -316,7 +316,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: sharedColors.secondary,
   }),
-
   text: castStyle.text({
     textAlign: 'center',
     color: colors.lightPurple,

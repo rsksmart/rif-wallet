@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel'
@@ -24,61 +24,59 @@ export const HomeInformationBar = ({
   const lastIndex = slidesIndexes[slidesIndexes.length - 1]
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
   const carousel = useRef<ICarouselInstance>(null)
-  const onNextItem = () => {
-    carousel?.current?.scrollTo({ count: 1, animated: true })
-  }
+
+  const onNextItem = useCallback(() => {
+    carousel.current?.scrollTo({ count: 1, animated: true })
+  }, [])
 
   const { t } = useTranslation()
-  const items = [
-    <HomeInformationItem
-      title={t('home_information_bar_title')}
-      subTitle={t('home_information_bar_desc1')}
-    />,
-    <HomeInformationItem
-      title={t('home_information_bar_title')}
-      subTitle={t('home_information_bar_desc2')}
-    />,
-    <HomeInformationItem
-      title={t('home_information_bar_title')}
-      subTitle={t('home_information_bar_desc3')}
-      icon={{ name: 'user-circle', size: 60 }}
-    />,
-  ]
+  const items = useMemo(
+    () => [
+      <HomeInformationItem
+        title={t('home_information_bar_title')}
+        subTitle={t('home_information_bar_desc1')}
+      />,
+      <HomeInformationItem
+        title={t('home_information_bar_title')}
+        subTitle={t('home_information_bar_desc2')}
+      />,
+      <HomeInformationItem
+        title={t('home_information_bar_title')}
+        subTitle={t('home_information_bar_desc3')}
+        icon={{ name: 'user-circle', size: 60 }}
+      />,
+    ],
+    [t],
+  )
 
   return (
     <View style={styles.container}>
-      {selectedSlide !== lastIndex ? (
-        <View
-          style={[
-            styles.triangle,
-            {
-              marginLeft: indicatorPos[selectedSlide] * (WINDOW_WIDTH - 88),
-              borderBottomColor: color,
-            },
-          ]}
-        />
-      ) : (
-        <View style={styles.space} />
-      )}
       <View
         style={[
-          styles.rounded,
+          {
+            marginLeft: indicatorPos[selectedSlide] * (WINDOW_WIDTH - 88),
+            borderBottomColor: color,
+          },
+          selectedSlide === lastIndex ? styles.space : styles.triangle,
+        ]}
+      />
+      <View
+        style={[
+          styles.carouselContainer,
           {
             backgroundColor: color,
           },
         ]}>
-        <View style={styles.carouselContainer}>
-          <Carousel
-            ref={carousel}
-            onSnapToItem={index => setSelectedSlide(index)}
-            data={slidesIndexes}
-            renderItem={({ item }) => items[item]}
-            width={WINDOW_WIDTH - 88}
-            height={72}
-            loop={false}
-            scrollAnimationDuration={250}
-          />
-        </View>
+        <Carousel
+          ref={carousel}
+          onSnapToItem={index => setSelectedSlide(index)}
+          data={slidesIndexes}
+          renderItem={({ item }) => items[item]}
+          width={WINDOW_WIDTH - 88}
+          height={72}
+          loop={false}
+          scrollAnimationDuration={250}
+        />
         <View style={styles.options}>
           <View style={styles.dotContainer}>
             {slidesIndexes.map((_, i) => {
@@ -121,11 +119,7 @@ const styles = StyleSheet.create({
   options: castStyle.view({
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingBottom: 20,
-    paddingHorizontal: 20,
-  }),
-  rounded: castStyle.view({
-    borderRadius: 10,
+    paddingTop: 20,
   }),
   dotContainer: castStyle.view({
     flexDirection: 'row',
@@ -149,6 +143,7 @@ const styles = StyleSheet.create({
   carouselContainer: castStyle.view({
     paddingVertical: 20,
     paddingHorizontal: 20,
+    borderRadius: 10,
   }),
   pagination: castStyle.view({
     paddingVertical: 5,
