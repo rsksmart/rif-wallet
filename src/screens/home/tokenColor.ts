@@ -1,14 +1,14 @@
 import { sharedColors, tokenColors } from 'shared/constants'
 
-export const getTokenColor = (tokenSymbol?: string): string => {
-  switch (tokenSymbol) {
+export const getTokenColor = (tokenSymbol: string): string => {
+  switch (tokenSymbol.toUpperCase()) {
     case 'TRBTC':
     case 'RBTC':
       return tokenColors.rbtc
-    case 'rDOC':
+    case 'RDOC':
     case 'DOC':
       return tokenColors.rdoc
-    case 'tRIF':
+    case 'TRIF':
     case 'RIF':
       return tokenColors.rif
     case 'BTC':

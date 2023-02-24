@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   }),
 })
 
-type TypographyType =
+export type TypographyType =
   | 'h1'
   | 'h2'
   | 'h3'
