@@ -1,6 +1,5 @@
-import { combineReducers, Reducer } from '@reduxjs/toolkit'
-import { persistReducer, createMigrate, MigrationManifest } from 'redux-persist'
-import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
+import { combineReducers } from '@reduxjs/toolkit'
+import { persistReducer, createMigrate } from 'redux-persist'
 
 import { reduxStorage } from 'storage/ReduxStorage'
 import { accountsReducer } from './slices/accountsSlice'
@@ -11,10 +10,12 @@ import { settingsSliceReducer } from './slices/settingsSlice'
 import { transactionsReducer } from './slices/transactionsSlice'
 import { usdPriceReducer } from './slices/usdPricesSlice'
 import { ProfileStatus } from 'navigation/profileNavigator/types'
-import { RootState } from '.'
 
-const migrations: MigrationManifest = {
-  0: (state: RootState) => ({
+const migrations = {
+  // It's on purpose due to state type from redux-persist is PersistedStated.
+  // Also, to don't add complexity to typing. More about this issue in https://github.com/rt2zz/redux-persist/issues/1140
+  // eslint-disable-next-line
+  0: (state: any) => ({
     ...state,
     profile: {
       alias: '',
@@ -29,12 +30,11 @@ const persistConfig = {
   key: 'root',
   storage: reduxStorage,
   version: 0,
-  stateReconciler: autoMergeLevel2,
   migrate: createMigrate(migrations),
   whitelist: ['profile', 'accounts', 'contacts', 'balances', 'usdPrices'],
 }
 
-const reducers: Reducer = combineReducers({
+const reducers = combineReducers({
   usdPrices: usdPriceReducer,
   balances: balancesReducer,
   transactions: transactionsReducer,
