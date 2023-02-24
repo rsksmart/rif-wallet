@@ -251,7 +251,7 @@ export const HomeScreen = ({
       <Typography style={styles.transactionsLabel} type={'h3'}>
         {t('home_screen_transactions')}
       </Typography>
-      {balances.length === 0 ? (
+      {transactionsCombined.length > 1 ? (
         <ScrollView>
           {transactionsCombined.map(tx => (
             <ActivityBasicRow activityTransaction={tx} />
