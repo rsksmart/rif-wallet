@@ -187,7 +187,7 @@ export const ReceiveScreen = ({
         <View style={styles.qrView}>
           {address !== '' && !isAddressLoading && (
             <QRGenerator
-              key={address}
+              key={selectedAsset?.symbol}
               value={address}
               imageSource={getIconSource(selectedAsset?.symbol || '')}
               logoBackgroundColor={sharedColors.inputInactive}
