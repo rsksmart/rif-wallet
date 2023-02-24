@@ -23,7 +23,7 @@ import {
 } from 'navigation/rootNavigator/types'
 import { AppButton, AppButtonWidthVarietyEnum } from 'components/button'
 import { AddressInput } from 'components/address'
-import { Input, RegularText, Typography } from 'components/index'
+import { Input, Typography } from 'components/index'
 import { colors } from 'src/styles'
 import { fonts } from 'src/styles/fonts'
 import { Contact } from 'store/slices/contactsSlice/types'
