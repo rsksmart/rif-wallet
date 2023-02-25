@@ -39,6 +39,7 @@ export interface InputProps extends TextInputProps {
   inputStyle?: StyleProp<TextStyle>
   labelStyle?: StyleProp<TextStyle>
   subtitleStyle?: StyleProp<TextStyle>
+  suffix?: ReactFragment
 }
 
 export const Input = ({
@@ -56,6 +57,7 @@ export const Input = ({
   inputStyle,
   labelStyle,
   subtitleStyle,
+  suffix,
   ...textInputProps
 }: InputProps) => {
   const { control } = useFormContext()
@@ -131,6 +133,7 @@ export const Input = ({
               </View>
             </View>
           </View>
+          {suffix}
           {!rightIcon && !!value ? (
             <Pressable onPress={resetValue ? resetValue : noop}>
               <Icon

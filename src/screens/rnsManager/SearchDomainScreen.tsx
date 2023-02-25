@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import Icon from 'react-native-vector-icons/Entypo'
 
 import { AppTouchable } from 'components/appTouchable'
@@ -149,8 +149,8 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
               containerStyle={styles.domainContainer}
               labelStyle={styles.domainLabel}
               inputStyle={styles.domainInput}
-              onChangeText={text => setValue('domain', text)}
               resetValue={() => setValue('domain', '')}
+              suffix={<Text style={styles.domainSuffix}>.rsk</Text>}
               autoCapitalize="none"
               autoCorrect={false}
               {...register('domain')}
@@ -234,6 +234,11 @@ const styles = StyleSheet.create({
   domainInput: castStyle.text({
     fontSize: 16,
     paddingTop: 0,
+    color: sharedColors.placeholder,
+  }),
+  domainSuffix: castStyle.text({
+    paddingTop: 14,
+    paddingRight: 10,
     color: sharedColors.placeholder,
   }),
   yearsContainer: castStyle.view({
