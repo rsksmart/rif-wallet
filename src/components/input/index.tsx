@@ -56,6 +56,7 @@ export const Input = ({
   inputStyle,
   labelStyle,
   subtitleStyle,
+  ...textInputProps
 }: InputProps) => {
   const { control } = useFormContext()
   const [focused, setFocused] = useState<boolean>(false)
@@ -109,7 +110,8 @@ export const Input = ({
                   onChangeText={onChange}
                   onBlur={onBlur}
                   onFocus={onFocus}
-                  editable={!isReadOnly}>
+                  editable={!isReadOnly}
+                  {...textInputProps}>
                   <Typography
                     style={[
                       styles.placeholderText,

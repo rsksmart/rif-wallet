@@ -149,6 +149,8 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
               inputStyle={styles.domainInput}
               onChangeText={text => setValue('domain', text)}
               resetValue={() => setValue('domain', '')}
+              autoCapitalize="none"
+              autoCorrect={false}
               {...register('domain')}
             />
             {/* <DomainLookUp
@@ -161,7 +163,6 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           </View>
           <Input
             inputName="duration"
-            value={selectedYears + ''}
             isReadOnly={true}
             label={t('request_username_label')}
             placeholder={`${selectedYears} ${t(
