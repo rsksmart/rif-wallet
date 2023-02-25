@@ -126,7 +126,8 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
       </View>
       <View style={rnsManagerStyles.container}>
         <FormProvider {...methods}>
-          <MediumText style={rnsManagerStyles.subtitle}>
+          <MediumText
+            style={[rnsManagerStyles.subtitle, rnsManagerStyles.marginBottom]}>
             {t('request_username_title')}
           </MediumText>
 
