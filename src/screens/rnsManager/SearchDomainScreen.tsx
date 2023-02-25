@@ -27,6 +27,7 @@ import { selectBalances } from 'store/slices/balancesSlice'
 import { recoverAlias } from 'store/slices/profileSlice'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { sharedColors } from 'src/shared/constants'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
   ScreenWithWallet
@@ -192,7 +193,6 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
                 </AppTouchable>
               </View>
             }
-            // {...register('duration')}
           />
           <View style={rnsManagerStyles.bottomContainer}>
             {!isDomainOwned && (
@@ -228,23 +228,13 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
 
 const styles = StyleSheet.create({
   domainContainer: castStyle.view({
-    height: 90,
-    // justifyContent: 'center',
-    // backgroundColor: colors.green,
-    // padding: 0,
-    // margin: 0,
+    height: 80,
   }),
-  domainLabel: castStyle.text({
-    // fontSize: 16,
-    // backgroundColor: 'red',
-    // padding: 0,
-    // margin: 0,
-  }),
+  domainLabel: castStyle.text({}),
   domainInput: castStyle.text({
     fontSize: 16,
-    // backgroundColor: 'blue',
-    // padding: 0,
-    // margin: 0,
+    paddingTop: 0,
+    color: sharedColors.placeholder,
   }),
   yearsContainer: castStyle.view({
     height: 90,

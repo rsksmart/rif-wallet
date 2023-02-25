@@ -106,12 +106,12 @@ export const Input = ({
                   leftIcon ? styles.inputSubtitleContainer : null,
                 ]}>
                 <TextInput
-                  style={[styles.input, inputStyle]}
+                  {...textInputProps}
                   onChangeText={onChange}
                   onBlur={onBlur}
                   onFocus={onFocus}
                   editable={!isReadOnly}
-                  {...textInputProps}>
+                  style={[styles.input, inputStyle]}>
                   <Typography
                     style={[
                       styles.placeholderText,
