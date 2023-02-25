@@ -34,18 +34,14 @@ type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
 export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const [isDomainOwned, setIsDomainOwned] = useState<boolean>(false)
   const [validDomain, setValidDomain] = useState<boolean>(false)
+  const [selectedYears, setSelectedYears] = useState<number>(2)
   const [selectedDomainPrice, setSelectedDomainPrice] = useState<number>(2)
   const [isModalVisible, setIsModalVisible] = useState<boolean>(true)
   const dispatch = useAppDispatch()
   const tokenBalances = useAppSelector(selectBalances)
   const prices = useAppSelector(selectUsdPrices)
   const { t } = useTranslation()
-  const methods = useForm({
-    defaultValues: {
-      domain: '',
-      duration: 2,
-    },
-  })
+  const methods = useForm()
 
   const { register, setValue, handleSubmit } = methods
 
@@ -59,7 +55,6 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
     rifTokenPrice * selectedDomainPrice
   ).toFixed(2)
 
-  const selectedYears = methods.getValues('duration')
   const domainToLookUp = methods.getValues('domain')
 
   const onSubmit = (data: any) => {
@@ -95,11 +90,11 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
 
   const handleYearsChange = useCallback(
     async (years: number) => {
-      setValue('duration', years)
+      setSelectedYears(years)
       const price = await calculatePrice(domainToLookUp, years)
       setSelectedDomainPrice(price)
     },
-    [calculatePrice, domainToLookUp, setValue],
+    [calculatePrice, domainToLookUp, setSelectedYears],
   )
 
   const handleSetProfile = useCallback(() => {
