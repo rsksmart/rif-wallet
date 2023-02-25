@@ -44,16 +44,18 @@ export const HomeScreen = ({
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
     undefined,
   )
-  const [firstValue, setFirstValue] = useState<CurrencyValue>({
-    balance: '0.00',
-    symbol: '',
-    symbolType: 'text',
-  })
-  const [secondValue, setSecondValue] = useState<CurrencyValue>({
-    balance: '0.00',
-    symbol: '',
-    symbolType: 'text',
-  })
+  const [selectedTokenBalance, setSelectedTokenBalance] =
+    useState<CurrencyValue>({
+      balance: '0.00',
+      symbol: '',
+      symbolType: 'text',
+    })
+  const [selectedTokenBalanceUsd, setSelectedTokenBalanceUsd] =
+    useState<CurrencyValue>({
+      balance: '0.00',
+      symbol: '',
+      symbolType: 'text',
+    })
 
   const [hide, setHide] = useState<boolean>(false)
   const balances: Array<ITokenWithBalance | BitcoinNetwork> = useMemo(() => {
@@ -66,7 +68,6 @@ export const HomeScreen = ({
       return []
     }
   }, [tokenBalances, bitcoinCore])
-
   // token or undefined
   const selected: ITokenWithoutLogo | BitcoinNetwork | undefined =
     selectedAddress && bitcoinCore
@@ -165,7 +166,7 @@ export const HomeScreen = ({
 
   useEffect(() => {
     const { symbol, balance, decimals, price } = selectedToken
-    setFirstValue({
+    setSelectedTokenBalance({
       symbolType: 'icon',
       symbol,
       balance:
@@ -173,7 +174,7 @@ export const HomeScreen = ({
           ? balance
           : balanceToDisplay(balance, decimals, 5),
     })
-    setSecondValue({
+    setSelectedTokenBalanceUsd({
       symbolType: 'text',
       symbol: '$',
       balance:
@@ -225,8 +226,8 @@ export const HomeScreen = ({
   return (
     <View style={styles.container}>
       <TokenBalance
-        firstValue={firstValue}
-        secondValue={secondValue}
+        firstValue={selectedTokenBalance}
+        secondValue={selectedTokenBalanceUsd}
         hideable={true}
         hide={hide}
         onHide={onHide}
