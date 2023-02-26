@@ -119,8 +119,7 @@ export const Input = ({
                   <Typography
                     style={[
                       styles.placeholderText,
-                      value || isReadOnly ? styles.valueText : null,
-                      placeholderStyle,
+                      value || isReadOnly ? styles.valueText : placeholderStyle,
                     ]}
                     type={!value ? (isReadOnly ? 'body2' : 'body3') : 'body2'}>
                     {placeholder && !focused && !value ? placeholder : value}
