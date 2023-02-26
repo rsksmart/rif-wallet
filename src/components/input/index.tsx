@@ -38,6 +38,7 @@ export interface InputProps extends TextInputProps {
   containerStyle?: StyleProp<ViewStyle>
   inputStyle?: StyleProp<TextStyle>
   labelStyle?: StyleProp<TextStyle>
+  placeholderStyle?: StyleProp<TextStyle>
   subtitleStyle?: StyleProp<TextStyle>
   suffix?: ReactFragment
 }
@@ -56,6 +57,7 @@ export const Input = ({
   containerStyle,
   inputStyle,
   labelStyle,
+  placeholderStyle,
   subtitleStyle,
   suffix,
   ...textInputProps
@@ -118,6 +120,7 @@ export const Input = ({
                     style={[
                       styles.placeholderText,
                       value || isReadOnly ? styles.valueText : null,
+                      placeholderStyle,
                     ]}
                     type={!value ? (isReadOnly ? 'body2' : 'body3') : 'body2'}>
                     {placeholder && !focused && !value ? placeholder : value}

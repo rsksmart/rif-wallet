@@ -149,6 +149,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
               containerStyle={styles.domainContainer}
               labelStyle={styles.domainLabel}
               inputStyle={styles.domainInput}
+              placeholderStyle={styles.domainPlaceholder}
               resetValue={() => setValue('domain', '')}
               suffix={<Text style={styles.domainSuffix}>.rsk</Text>}
               autoCapitalize="none"
@@ -232,12 +233,14 @@ const styles = StyleSheet.create({
   }),
   domainLabel: castStyle.text({}),
   domainInput: castStyle.text({
-    fontSize: 16,
     paddingTop: 0,
+  }),
+  domainPlaceholder: castStyle.text({
+    fontSize: 16,
     color: sharedColors.subTitle,
   }),
   domainSuffix: castStyle.text({
-    paddingTop: 14,
+    paddingTop: 10,
     paddingRight: 10,
     color: sharedColors.subTitle,
   }),
