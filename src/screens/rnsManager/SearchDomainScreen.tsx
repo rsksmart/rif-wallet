@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/Entypo'
 
 import { AppTouchable } from 'components/appTouchable'
@@ -27,7 +27,7 @@ import { selectBalances } from 'store/slices/balancesSlice'
 import { recoverAlias } from 'store/slices/profileSlice'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { sharedColors } from 'src/shared/constants'
+import { DomainInput } from './DomainInput'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
   ScreenWithWallet
@@ -58,8 +58,11 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
 
   const domainToLookUp = methods.getValues('domain')
 
-  const onSubmit = (data: any) => {
-    console.log(data)
+  const onSubmit = (data: FieldValues) => {
+    console.log({
+      alias: data.domain,
+      duration: selectedYears,
+    })
     // () =>
     // navigation.navigate(profileStackRouteNames.RequestDomain, {
     //   alias: domainToLookUp.replace('.rsk', ''),
@@ -142,20 +145,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           />
 
           <View style={rnsManagerStyles.marginTop}>
-            <Input
-              inputName="domain"
-              label={t('username')}
-              placeholder={t('username')}
-              containerStyle={styles.domainContainer}
-              labelStyle={styles.domainLabel}
-              inputStyle={styles.domainInput}
-              placeholderStyle={styles.domainPlaceholder}
-              resetValue={() => setValue('domain', '')}
-              suffix={<Text style={styles.domainSuffix}>.rsk</Text>}
-              autoCapitalize="none"
-              autoCorrect={false}
-              {...register('domain')}
-            />
+            <DomainInput wallet={wallet} />
             {/* <DomainLookUp
               initialValue={domainToLookUp}
               onChangeText={setDomainToLookUp}
@@ -228,23 +218,6 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
 }
 
 const styles = StyleSheet.create({
-  domainContainer: castStyle.view({
-    height: 80,
-  }),
-  domainLabel: castStyle.text({}),
-  domainInput: castStyle.text({
-    paddingTop: 0,
-    paddingLeft: 0,
-    paddingBottom: 10,
-  }),
-  domainPlaceholder: castStyle.text({
-    fontSize: 16,
-    color: sharedColors.subTitle,
-  }),
-  domainSuffix: castStyle.text({
-    paddingRight: 10,
-    color: sharedColors.subTitle,
-  }),
   yearsContainer: castStyle.view({
     height: 90,
     paddingRight: 10,
