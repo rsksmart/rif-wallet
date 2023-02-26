@@ -234,12 +234,12 @@ const styles = StyleSheet.create({
   domainInput: castStyle.text({
     fontSize: 16,
     paddingTop: 0,
-    color: sharedColors.placeholder,
+    color: sharedColors.subTitle,
   }),
   domainSuffix: castStyle.text({
     paddingTop: 14,
     paddingRight: 10,
-    color: sharedColors.placeholder,
+    color: sharedColors.subTitle,
   }),
   yearsContainer: castStyle.view({
     height: 90,

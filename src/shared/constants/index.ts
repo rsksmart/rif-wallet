@@ -23,7 +23,6 @@ export const sharedColors = {
   primaryDark: '#4250CC',
   labelLight: '#B8B8B8',
   subTitle: '#FBFBFB',
-  placeholder: '#FFFFFF',
   tokenBackground: '#1E1E1E',
   black: '#000000',
   qrColor: '#DBE3FF',
