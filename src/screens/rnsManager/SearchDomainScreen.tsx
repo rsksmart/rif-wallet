@@ -234,13 +234,14 @@ const styles = StyleSheet.create({
   domainLabel: castStyle.text({}),
   domainInput: castStyle.text({
     paddingTop: 0,
+    paddingLeft: 0,
+    paddingBottom: 10,
   }),
   domainPlaceholder: castStyle.text({
     fontSize: 16,
     color: sharedColors.subTitle,
   }),
   domainSuffix: castStyle.text({
-    paddingTop: 10,
     paddingRight: 10,
     color: sharedColors.subTitle,
   }),
