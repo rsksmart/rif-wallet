@@ -173,7 +173,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
             )}${selectedYears > 1 ? 's' : ''}`}
             subtitle={`${selectedDomainPrice} RIF ($ ${selectedDomainPriceInUsd})`}
             containerStyle={styles.yearsContainer}
-            subtitleStyle={styles.yearsSubtitle}
+            inputStyle={styles.yearsInput}
             rightIcon={
               <View style={styles.yearsButtons}>
                 {selectedYears > 1 && (
@@ -249,8 +249,10 @@ const styles = StyleSheet.create({
     height: 90,
     paddingRight: 10,
   }),
-  yearsSubtitle: castStyle.view({
-    marginTop: 12,
+  yearsInput: castStyle.text({
+    paddingLeft: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
   }),
   yearsButtons: castStyle.view({
     flexDirection: 'row',
