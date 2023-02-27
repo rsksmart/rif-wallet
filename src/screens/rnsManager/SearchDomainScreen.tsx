@@ -76,15 +76,10 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const domainToLookUp = methods.getValues('domain')
 
   const onSubmit = (data: FieldValues) => {
-    console.log({
+    navigation.navigate(profileStackRouteNames.RequestDomain, {
       alias: data.domain,
       duration: selectedYears,
     })
-    // () =>
-    // navigation.navigate(profileStackRouteNames.RequestDomain, {
-    //   alias: domainToLookUp.replace('.rsk', ''),
-    //   duration: selectedYears,
-    // })
   }
 
   const calculatePrice = useCallback(async (_: string, years: number) => {
