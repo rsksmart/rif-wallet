@@ -4,7 +4,7 @@ export const rnsManagerStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background.darkBlue,
-    padding: 20,
+    paddingHorizontal: 20,
   },
   title: {
     color: '#FBFBFB',

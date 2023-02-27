@@ -38,12 +38,8 @@ const schema = yup.object({
   domain: yup
     .string()
     .required('Username is required')
-    .matches(
-      /^[a-z0-9]+$/,
-      'Username can only contain lowercase letters and numbers',
-    )
-    .min(4, 'Username must be at least 4 characters long')
-    .max(12, 'Username must be at most 12 characters long'),
+    .matches(/^[a-z0-9]+$/, 'Only lower cases and numbers are allowed')
+    .min(5, ''),
 })
 
 export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
@@ -57,6 +53,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const prices = useAppSelector(selectUsdPrices)
   const { t } = useTranslation()
   const methods = useForm({
+    mode: 'onChange',
     resolver: yupResolver(schema),
   })
 

@@ -109,6 +109,9 @@ const resources = {
       request_username_label: 'Length of registration',
       request_username_placeholder: 'year',
       username: 'Username',
+      username_available: 'Username available',
+      username_unavailable: 'Username unavailable',
+      username_owned: 'Username owned',
     },
   },
   es: {
