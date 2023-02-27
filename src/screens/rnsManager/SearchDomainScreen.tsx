@@ -3,6 +3,8 @@ import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/Entypo'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
 
 import { AppTouchable } from 'components/appTouchable'
 import { PrimaryButton } from 'components/button/PrimaryButton'
@@ -32,6 +34,18 @@ import { DomainInput } from './DomainInput'
 type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
   ScreenWithWallet
 
+const schema = yup.object({
+  domain: yup
+    .string()
+    .required('Username is required')
+    .matches(
+      /^[a-z0-9]+$/,
+      'Username can only contain lowercase letters and numbers',
+    )
+    .min(4, 'Username must be at least 4 characters long')
+    .max(12, 'Username must be at most 12 characters long'),
+})
+
 export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const [isDomainOwned, setIsDomainOwned] = useState<boolean>(false)
   const [validDomain, setValidDomain] = useState<boolean>(false)
@@ -42,9 +56,15 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const tokenBalances = useAppSelector(selectBalances)
   const prices = useAppSelector(selectUsdPrices)
   const { t } = useTranslation()
-  const methods = useForm()
+  const methods = useForm({
+    resolver: yupResolver(schema),
+  })
 
-  const { register, setValue, handleSubmit } = methods
+  const {
+    handleSubmit,
+    formState: { errors },
+  } = methods
+  const hasErrors = Object.keys(errors).length > 0
 
   // calculate price of domain in USD
   const rifToken = Object.values(tokenBalances).find(
@@ -188,7 +208,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           <View style={rnsManagerStyles.bottomContainer}>
             {!isDomainOwned && (
               <PrimaryButton
-                // disabled={!validDomain}
+                disabled={hasErrors}
                 onPress={handleSubmit(onSubmit)}
                 accessibilityLabel="request"
                 title={'request'}
@@ -196,7 +216,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
             )}
             {isDomainOwned && (
               <PrimaryButton
-                disabled={!validDomain}
+                disabled={hasErrors}
                 onPress={handleSetProfile}
                 accessibilityLabel="set alias"
                 title={'set alias'}

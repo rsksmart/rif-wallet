@@ -137,7 +137,7 @@ export const Input = ({
           </View>
           {suffix}
           {!rightIcon && !!value ? (
-            <Pressable onPress={resetValue ? resetValue : noop}>
+            <Pressable onPress={resetValue || noop}>
               <Icon
                 name={'close'}
                 size={defaultIconSize}
@@ -145,7 +145,7 @@ export const Input = ({
               />
             </Pressable>
           ) : rightIcon && 'name' in rightIcon ? (
-            <Pressable onPress={onRightIconPress ? onRightIconPress : noop}>
+            <Pressable onPress={onRightIconPress || noop}>
               <Icon
                 name={rightIcon.name}
                 size={rightIcon.size ? rightIcon.size : defaultIconSize}

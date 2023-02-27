@@ -1,12 +1,13 @@
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { StyleSheet, Text } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 
-import { Input } from 'components/index'
+import { Input, MediumText } from 'components/index'
 import { useFormContext } from 'react-hook-form'
-import { sharedColors } from 'src/shared/constants'
-import { castStyle } from 'src/shared/utils'
+import { sharedColors } from 'shared/constants'
+import { castStyle } from 'shared/utils'
+import { colors } from 'src/styles'
 
 interface Props {
   wallet: RIFWallet
@@ -14,23 +15,31 @@ interface Props {
 
 export const DomainInput: React.FC<Props> = ({ wallet }: Props) => {
   const { t } = useTranslation()
-  const { register, setValue } = useFormContext()
+  const {
+    setValue,
+    formState: { errors },
+  } = useFormContext()
+  const error = errors.domain?.message || ''
 
   return (
-    <Input
-      inputName="domain"
-      label={t('username')}
-      placeholder={t('username')}
-      containerStyle={styles.domainContainer}
-      labelStyle={styles.domainLabel}
-      inputStyle={styles.domainInput}
-      placeholderStyle={styles.domainPlaceholder}
-      resetValue={() => setValue('domain', '')}
-      suffix={<Text style={styles.domainSuffix}>.rsk</Text>}
-      autoCapitalize="none"
-      autoCorrect={false}
-      {...register('domain')}
-    />
+    <>
+      <Input
+        inputName="domain"
+        label={t('username')}
+        placeholder={t('username')}
+        containerStyle={styles.domainContainer}
+        labelStyle={styles.domainLabel}
+        inputStyle={styles.domainInput}
+        placeholderStyle={styles.domainPlaceholder}
+        resetValue={() => setValue('domain', '')}
+        suffix={<Text style={styles.domainSuffix}>.rsk</Text>}
+        autoCapitalize="none"
+        autoCorrect={false}
+      />
+      <View>
+        {error && <MediumText style={styles.infoLabel}>{error}</MediumText>}
+      </View>
+    </>
   )
 }
 
@@ -51,5 +60,9 @@ const styles = StyleSheet.create({
   domainSuffix: castStyle.text({
     paddingRight: 10,
     color: sharedColors.subTitle,
+  }),
+  infoLabel: castStyle.text({
+    color: colors.lightPurple,
+    paddingLeft: 5,
   }),
 })
