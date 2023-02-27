@@ -22,7 +22,7 @@ import {
   getContactsAsArrayAndSelected,
   setSelectedContactById,
 } from 'store/slices/contactsSlice'
-import { Contact } from 'store/slices/contactsSlice/types'
+import { Contact } from 'shared/types'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { ContactsStackScreenProps } from '../index'
 import { ContactRow } from './ContactRow'

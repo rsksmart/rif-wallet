@@ -6,7 +6,7 @@ import { RegularText } from 'src/components'
 import { DeleteIcon, EditMaterialIcon } from 'src/components/icons'
 import { colors } from 'src/styles'
 import { fonts } from 'src/styles/fonts'
-import { Contact } from 'store/slices/contactsSlice/types'
+import { Contact } from 'shared/types'
 
 interface IContactRowProps {
   index: number

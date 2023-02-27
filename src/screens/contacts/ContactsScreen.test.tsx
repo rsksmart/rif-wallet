@@ -1,6 +1,6 @@
 import { fireEvent, render } from '@testing-library/react-native'
 import { act } from 'react-test-renderer'
-import { Contact } from 'store/slices/contactsSlice/types'
+import { Contact } from 'shared/types'
 import { ContactsListScreenProps, ContactsScreen } from './ContactsScreen'
 import { createReduxWrapper } from '../../../testLib/ReduxWrapper'
 
