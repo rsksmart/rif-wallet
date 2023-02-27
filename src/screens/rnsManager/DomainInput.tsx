@@ -1,5 +1,6 @@
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
-import React from 'react'
+import debounce from 'lodash.debounce'
+import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, View } from 'react-native'
 
@@ -21,6 +22,13 @@ export const DomainInput: React.FC<Props> = ({ wallet }: Props) => {
   } = useFormContext()
   const error = errors.domain?.message || ''
 
+  const handleChangeText = useCallback(
+    debounce((v: string) => {
+      console.log('v', v)
+    }, 500),
+    [],
+  )
+
   return (
     <>
       <Input
@@ -32,6 +40,7 @@ export const DomainInput: React.FC<Props> = ({ wallet }: Props) => {
         inputStyle={styles.domainInput}
         placeholderStyle={styles.domainPlaceholder}
         resetValue={() => setValue('domain', '')}
+        onChangeText={handleChangeText}
         suffix={<Text style={styles.domainSuffix}>.rsk</Text>}
         autoCapitalize="none"
         autoCorrect={false}

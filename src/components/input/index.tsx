@@ -60,6 +60,7 @@ export const Input = ({
   placeholderStyle,
   subtitleStyle,
   suffix,
+  onChangeText,
   ...textInputProps
 }: InputProps) => {
   const { control } = useFormContext()
@@ -111,7 +112,10 @@ export const Input = ({
                 ]}>
                 <TextInput
                   {...textInputProps}
-                  onChangeText={onChange}
+                  onChangeText={text => {
+                    onChange(text)
+                    onChangeText?.(text)
+                  }}
                   onBlur={onBlur}
                   onFocus={onFocus}
                   editable={!isReadOnly}
