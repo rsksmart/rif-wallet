@@ -18,6 +18,8 @@ import addresses from './addresses.json'
 
 interface Props {
   wallet: RIFWallet
+  onDomainAvailable: (domain: string, valid: boolean) => void
+  onDomainOwned: (owned: boolean) => void
 }
 
 enum DomainStatus {
@@ -28,7 +30,11 @@ enum DomainStatus {
   NONE = '',
 }
 
-export const DomainInput: React.FC<Props> = ({ wallet }: Props) => {
+export const DomainInput: React.FC<Props> = ({
+  wallet,
+  onDomainAvailable,
+  onDomainOwned,
+}: Props) => {
   const [error, setError] = useState('')
   const [username, setUsername] = useState('')
   const [domainAvailability, setDomainAvailability] = useState<DomainStatus>(
@@ -54,13 +60,13 @@ export const DomainInput: React.FC<Props> = ({ wallet }: Props) => {
       if (!/^[a-z0-9]+$/.test(domain)) {
         setError('Only lower cases and numbers are allowed')
         setDomainAvailability(DomainStatus.NO_VALID)
-        // onDomainAvailable(domainName, false)
+        onDomainAvailable(domain, false)
         return
       }
 
       if (domain.length < 5) {
         setDomainAvailability(DomainStatus.NONE)
-        // onDomainAvailable(domainName, false)
+        onDomainAvailable(domain, false)
         return
       }
 
@@ -71,17 +77,17 @@ export const DomainInput: React.FC<Props> = ({ wallet }: Props) => {
         const currentWallet = wallet.smartWallet.smartWalletAddress
         if (currentWallet === ownerAddress) {
           setDomainAvailability(DomainStatus.OWNED)
-          // onDomainOwned(true)
+          onDomainOwned(true)
         } else {
           setDomainAvailability(DomainStatus.TAKEN)
         }
       } else {
-        // onDomainOwned(false)
+        onDomainOwned(false)
         setDomainAvailability(DomainStatus.AVAILABLE)
-        // onDomainAvailable(domainName, Boolean(available))
+        onDomainAvailable(domain, Boolean(available))
       }
     },
-    [rskRegistrar, wallet],
+    [rskRegistrar, wallet, onDomainAvailable, onDomainOwned],
   )
 
   const doHandleChangeText = useCallback(

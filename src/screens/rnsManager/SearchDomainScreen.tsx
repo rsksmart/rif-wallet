@@ -162,14 +162,11 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           />
 
           <View style={rnsManagerStyles.marginTop}>
-            <DomainInput wallet={wallet} />
-            {/* <DomainLookUp
-              initialValue={domainToLookUp}
-              onChangeText={setDomainToLookUp}
+            <DomainInput
               wallet={wallet}
-              onDomainAvailable={handleDomainAvailable}
               onDomainOwned={setIsDomainOwned}
-            /> */}
+              onDomainAvailable={handleDomainAvailable}
+            />
           </View>
           <Input
             inputName="duration"
