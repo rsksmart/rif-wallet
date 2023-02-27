@@ -101,9 +101,9 @@ export const TokenBalance = ({
         ) : null}
       </View>
       <View>
-        {to ? (
+        {to && to.name ? (
           <View style={styles.contactCard}>
-            <Avatar size={40} name={to.name ? to.name : to.address} />
+            <Avatar size={40} name={to.name} />
             <Typography type={'body1'} style={styles.toNameContactText}>
               {to.name}
             </Typography>
