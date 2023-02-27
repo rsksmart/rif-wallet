@@ -1,4 +1,3 @@
-import React from 'react'
 import {
   Image,
   ImageRequireSource,
@@ -10,11 +9,13 @@ import {
 
 import { FrownFaceIcon } from 'components/icons'
 
-export const TokenImage: React.FC<{
+interface Props {
   symbol: string
   height?: number
   width?: number
-}> = ({ symbol, height = 20, width = 20 }) => {
+}
+
+export const TokenImage = ({ symbol, height = 20, width = 20 }: Props) => {
   const viewStyle: StyleProp<ViewStyle> = {
     aspectRatio: 1,
     justifyContent: 'center',
