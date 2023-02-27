@@ -205,15 +205,15 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
                 disabled={hasErrors || !validDomain}
                 onPress={handleSubmit(onSubmit)}
                 accessibilityLabel="request"
-                title={'request'}
+                title="request"
               />
             )}
             {isDomainOwned && (
               <PrimaryButton
                 disabled={(hasErrors || !validDomain) && !isDomainOwned}
                 onPress={handleSetProfile}
-                accessibilityLabel="set alias"
-                title={'set alias'}
+                accessibilityLabel="set username"
+                title="set username"
               />
             )}
           </View>
