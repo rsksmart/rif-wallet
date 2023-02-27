@@ -146,8 +146,9 @@ export const DomainInput: React.FC<Props> = ({
   })
 
   useEffect(() => {
+    onDomainAvailable(username, false)
     handleChangeUsername(username)
-  }, [username, handleChangeUsername])
+  }, [username, onDomainAvailable, handleChangeUsername])
 
   return (
     <>

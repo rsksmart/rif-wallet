@@ -202,7 +202,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           <View style={rnsManagerStyles.bottomContainer}>
             {!isDomainOwned && (
               <PrimaryButton
-                disabled={hasErrors}
+                disabled={hasErrors || !validDomain}
                 onPress={handleSubmit(onSubmit)}
                 accessibilityLabel="request"
                 title={'request'}
@@ -210,7 +210,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
             )}
             {isDomainOwned && (
               <PrimaryButton
-                disabled={hasErrors}
+                disabled={(hasErrors || !validDomain) && !isDomainOwned}
                 onPress={handleSetProfile}
                 accessibilityLabel="set alias"
                 title={'set alias'}
