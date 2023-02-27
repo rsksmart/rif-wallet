@@ -37,7 +37,7 @@ type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
 const schema = yup.object({
   domain: yup
     .string()
-    .required('Username is required')
+    .required()
     .matches(/^[a-z0-9]+$/, 'Only lower cases and numbers are allowed')
     .min(5, ''),
 })

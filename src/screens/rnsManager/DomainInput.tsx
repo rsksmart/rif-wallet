@@ -1,6 +1,6 @@
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import debounce from 'lodash.debounce'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, View } from 'react-native'
 
@@ -29,102 +29,81 @@ enum DomainStatus {
 }
 
 export const DomainInput: React.FC<Props> = ({ wallet }: Props) => {
-  const { t } = useTranslation()
-  const {
-    setValue,
-    getValues,
-    formState: { errors },
-  } = useFormContext()
-  const rskRegistrar = new RSKRegistrar(
-    addresses.rskOwnerAddress,
-    addresses.fifsAddrRegistrarAddress,
-    addresses.rifTokenAddress,
-    wallet,
-  )
+  const [error, setError] = useState('')
+  const [username, setUsername] = useState('')
   const [domainAvailability, setDomainAvailability] = useState<DomainStatus>(
     DomainStatus.NONE,
   )
-  const fieldError = errors.domain
-  const error = errors.domain?.message || ''
+  const { setValue } = useFormContext()
+  const { t } = useTranslation()
 
-  const domain = getValues('domain')
+  const rskRegistrar = useMemo(
+    () =>
+      new RSKRegistrar(
+        addresses.rskOwnerAddress,
+        addresses.fifsAddrRegistrarAddress,
+        addresses.rifTokenAddress,
+        wallet,
+      ),
+    [wallet],
+  )
+  const searchDomain = useCallback(
+    async (domain: string) => {
+      setError('')
 
-  const doHandleChangeText = async (inputText: string) => {
-    if (!inputText) {
-      setDomainAvailability(DomainStatus.NONE)
-    } else {
-      const newValidationMessage = validateAddress(inputText + '.rsk', -1)
-      if (newValidationMessage === AddressValidationMessage.DOMAIN) {
-        await searchDomain(inputText)
-      } else {
+      if (!/^[a-z0-9]+$/.test(domain)) {
+        setError('Only lower cases and numbers are allowed')
+        setDomainAvailability(DomainStatus.NO_VALID)
+        // onDomainAvailable(domainName, false)
+        return
+      }
+
+      if (domain.length < 5) {
         setDomainAvailability(DomainStatus.NONE)
+        // onDomainAvailable(domainName, false)
+        return
       }
-    }
-  }
 
-  const searchDomain = async (domainName: string) => {
-    // setError('')
+      const available = await rskRegistrar.available(domain)
 
-    // if (!/^[a-z0-9]*$/.test(domainName)) {
-    //   console.log('Only lower cases and numbers are allowed')
-    //   setError('Only lower cases and numbers are allowed')
-    //   setDomainAvailability(DomainStatus.NO_VALID)
-    //   // onDomainAvailable(domainName, false)
-    //   return
-    // }
-
-    // if (domainName.length < 5) {
-    //   setDomainAvailability(DomainStatus.NONE)
-    //   // onDomainAvailable(domainName, false)
-    //   return
-    // }
-
-    if (fieldError?.type === 'min') {
-      setDomainAvailability(DomainStatus.NONE)
-      //   // onDomainAvailable(domainName, false)
-      return
-    }
-
-    if (fieldError?.type === 'matches') {
-      // console.log('Only lower cases and numbers are allowed')
-      // setError('Only lower cases and numbers are allowed')
-      setDomainAvailability(DomainStatus.NO_VALID)
-      // onDomainAvailable(domainName, false)
-      return
-    }
-
-    if (error) {
-      // console.log(error)
-      // setError(errorMessage as string)
-      setDomainAvailability(DomainStatus.NO_VALID)
-      // onDomainAvailable(domainName, false)
-      return
-    }
-
-    const available = await rskRegistrar.available(domainName)
-
-    if (!available) {
-      const ownerAddress = await rskRegistrar.ownerOf(domainName)
-      const currentWallet = wallet.smartWallet.smartWalletAddress
-      if (currentWallet === ownerAddress) {
-        setDomainAvailability(DomainStatus.OWNED)
-        // onDomainOwned(true)
+      if (!available) {
+        const ownerAddress = await rskRegistrar.ownerOf(domain)
+        const currentWallet = wallet.smartWallet.smartWalletAddress
+        if (currentWallet === ownerAddress) {
+          setDomainAvailability(DomainStatus.OWNED)
+          // onDomainOwned(true)
+        } else {
+          setDomainAvailability(DomainStatus.TAKEN)
+        }
       } else {
-        setDomainAvailability(DomainStatus.TAKEN)
+        // onDomainOwned(false)
+        setDomainAvailability(DomainStatus.AVAILABLE)
+        // onDomainAvailable(domainName, Boolean(available))
       }
-    } else {
-      // onDomainOwned(false)
-      setDomainAvailability(DomainStatus.AVAILABLE)
-      // onDomainAvailable(domainName, Boolean(available))
-    }
-  }
+    },
+    [rskRegistrar, wallet],
+  )
 
-  useEffect(() => {
-    console.log('domain', domain)
-  }, [domain])
+  const doHandleChangeText = useCallback(
+    async (inputText: string) => {
+      if (!inputText) {
+        setDomainAvailability(DomainStatus.NONE)
+      } else {
+        const newValidationMessage = validateAddress(inputText + '.rsk', -1)
+        if (newValidationMessage === AddressValidationMessage.DOMAIN) {
+          await searchDomain(inputText)
+        } else {
+          setDomainAvailability(DomainStatus.NONE)
+        }
+      }
+    },
+    [setDomainAvailability, searchDomain],
+  )
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const handleChangeText = useCallback(debounce(doHandleChangeText, 300), [])
+  const handleChangeUsername = useMemo(
+    () => debounce(doHandleChangeText, 300),
+    [doHandleChangeText],
+  )
 
   const getLabelColor = useMemo(() => {
     switch (domainAvailability) {
@@ -141,10 +120,6 @@ export const DomainInput: React.FC<Props> = ({ wallet }: Props) => {
     }
   }, [domainAvailability])
 
-  const labelStyle = castStyle.text({
-    color: getLabelColor,
-  })
-
   const label = useMemo(() => {
     switch (domainAvailability) {
       case DomainStatus.AVAILABLE:
@@ -160,9 +135,18 @@ export const DomainInput: React.FC<Props> = ({ wallet }: Props) => {
     }
   }, [domainAvailability, t])
 
+  const labelStyle = castStyle.text({
+    color: getLabelColor,
+  })
+
+  useEffect(() => {
+    handleChangeUsername(username)
+  }, [username, handleChangeUsername])
+
   return (
     <>
       <Input
+        accessibilityLabel={'Alias.Input'}
         inputName="domain"
         label={label}
         placeholder={t('username')}
@@ -174,13 +158,13 @@ export const DomainInput: React.FC<Props> = ({ wallet }: Props) => {
           setValue('domain', '')
           setDomainAvailability(DomainStatus.NONE)
         }}
-        onChangeText={handleChangeText}
+        onChangeText={setUsername}
         suffix={<Text style={styles.domainSuffix}>.rsk</Text>}
         autoCapitalize="none"
         autoCorrect={false}
       />
       <View>
-        {error && <MediumText style={styles.errorLabel}>{error}</MediumText>}
+        {error && <MediumText style={styles.errorText}>{error}</MediumText>}
       </View>
     </>
   )
@@ -203,7 +187,8 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     color: sharedColors.subTitle,
   }),
-  errorLabel: castStyle.text({
+  errorText: castStyle.text({
+    fontSize: 12,
     color: colors.red,
     paddingLeft: 5,
   }),
