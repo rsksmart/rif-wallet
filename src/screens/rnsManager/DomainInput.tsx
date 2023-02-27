@@ -1,6 +1,7 @@
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
+import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import debounce from 'lodash.debounce'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, View } from 'react-native'
 
@@ -13,7 +14,6 @@ import { useFormContext } from 'react-hook-form'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { colors } from 'src/styles'
-import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import addresses from './addresses.json'
 
 interface Props {
