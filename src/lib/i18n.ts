@@ -132,6 +132,7 @@ const resources = {
         'Deploy your wallet and send funds to your family and friends. ',
       home_information_bar_desc3:
         'Register your username and receive your icon.',
+      address_validating: 'Validating...',
       address_rns_placeholder: 'Username or address',
       contact_form_title_edit: 'Edit Contact',
       contact_form_title_create: 'Create Contact',

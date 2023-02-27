@@ -1,18 +1,20 @@
 import Clipboard from '@react-native-community/clipboard'
-import { useCallback, useEffect, useState } from 'react'
-import { View } from 'react-native'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { isBitcoinAddressValid } from '@rsksmart/rif-wallet-bitcoin'
+import { useTranslation } from 'react-i18next'
 
 import { rnsResolver } from 'core/setup'
 import { QRCodeScanner } from '../QRCodeScanner'
-import { MediumText, RegularText } from '../typography'
+import { RegularText } from '../typography'
 import { isDomain } from './lib'
-import { sharedAddressStyles as styles } from './sharedAddressStyles'
+import { sharedAddressStyles } from './sharedAddressStyles'
 import { Input } from '../input'
 import { AppTouchable } from '../appTouchable'
 import { AddressInputProps } from './AddressInput'
 import { sharedColors } from 'shared/constants'
+import { castStyle } from 'shared/utils'
 
 enum TYPES {
   NORMAL = 'NORMAL',
@@ -35,6 +37,7 @@ export const AddressBitcoinInput = ({
   onChangeAddress,
   resetValue,
 }: AddressInputProps) => {
+  const { t } = useTranslation()
   const [to, setTo] = useState<TO>({
     value: initialValue,
     type: TYPES.NORMAL,
@@ -44,6 +47,11 @@ export const AddressBitcoinInput = ({
   const [isAddressValid, setIsAddressValid] = useState(false)
   const [isUserWriting, setIsUserWriting] = useState(false)
   const [isValidating, setIsValidating] = useState(false)
+
+  const invalidAddressCondition = useMemo(
+    () => to.value !== '' && !isUserWriting && !isAddressValid && !isValidating,
+    [isUserWriting, isAddressValid, isValidating, to.value],
+  )
 
   const handleUserIsWriting = useCallback((isWriting = true) => {
     setIsUserWriting(isWriting)
@@ -134,16 +142,16 @@ export const AddressBitcoinInput = ({
         <QRCodeScanner onClose={hideQRScanner} onCodeRead={onQRRead} />
       )}
       {to.type === TYPES.DOMAIN && (
-        <View style={styles.rnsDomainContainer}>
+        <View style={sharedAddressStyles.rnsDomainContainer}>
           <View>
-            <RegularText style={styles.rnsDomainName}>
+            <RegularText style={sharedAddressStyles.rnsDomainName}>
               {to.addressResolved}
             </RegularText>
-            <RegularText style={styles.rnsDomainAddress}>
+            <RegularText style={sharedAddressStyles.rnsDomainAddress}>
               {to.value}
             </RegularText>
           </View>
-          <View style={styles.rnsDomainUnselect}>
+          <View style={sharedAddressStyles.rnsDomainUnselect}>
             <AppTouchable
               width={20}
               onPress={onClearText}
@@ -155,7 +163,16 @@ export const AddressBitcoinInput = ({
       )}
       {to.type === TYPES.NORMAL && (
         <Input
-          label={label}
+          label={
+            invalidAddressCondition
+              ? t('contact_form_address_invalid')
+              : isValidating
+              ? t('address_validating')
+              : label
+          }
+          labelStyle={
+            invalidAddressCondition ? styles.labelDanger : styles.label
+          }
           inputName={inputName}
           placeholder={placeholder}
           testID={testID}
@@ -170,17 +187,13 @@ export const AddressBitcoinInput = ({
           onRightIconPress={handlePasteClick}
         />
       )}
-      {to.value !== '' &&
-        !isUserWriting &&
-        !isAddressValid &&
-        !isValidating && (
-          <MediumText style={styles.invalidAddressText}>
-            Address is not valid
-          </MediumText>
-        )}
-      {isValidating && (
-        <MediumText style={styles.invalidAddressText}>Validating...</MediumText>
-      )}
     </>
   )
 }
+
+const styles = StyleSheet.create({
+  labelDanger: castStyle.text({ color: sharedColors.danger }),
+  label: castStyle.text({
+    color: sharedColors.inputLabelColor,
+  }),
+})
