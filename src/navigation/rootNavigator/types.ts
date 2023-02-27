@@ -7,6 +7,7 @@ import { ContactStackParamsList } from '../contactsNavigator'
 import { CreateKeysStackParamList } from '../createKeysNavigator'
 import { HomeStackParamsList } from '../homeNavigator/types'
 import { ProfileStackParamsList } from '../profileNavigator/types'
+import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 
 export type RootTabsScreenProps<T extends keyof RootTabsParamsList> =
   BottomTabScreenProps<RootTabsParamsList, T>
@@ -22,9 +23,11 @@ export enum rootTabsRouteNames {
   Settings = 'Settings',
   Profile = 'Profile',
   ChangePinScreen = 'ChangePinScreen',
+  TransactionSummary = 'TransactionSummary',
 }
 
 export type RootTabsParamsList = {
+  [rootTabsRouteNames.TransactionSummary]: TransactionSummaryScreenProps
   [rootTabsRouteNames.CreateKeysUX]:
     | NavigatorScreenParams<CreateKeysStackParamList>
     | undefined

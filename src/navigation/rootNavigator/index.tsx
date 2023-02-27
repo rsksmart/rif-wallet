@@ -16,6 +16,9 @@ import { SettingsNavigator } from '../settingsNavigator'
 import { ProfileNavigator } from '../profileNavigator'
 import { useAppSelector } from 'store/storeUtils'
 import { selectFullscreen, selectIsUnlocked } from 'store/slices/settingsSlice'
+import { TransactionsSummary } from 'screens/transactionSummary'
+import { sharedColors } from 'shared/constants'
+import { AppButtonBackgroundVarietyEnum } from 'components/button'
 
 const RootTabs = createBottomTabNavigator()
 
@@ -41,6 +44,43 @@ export const RootNavigationComponent = () => {
           />
         ) : (
           <RootTabs.Group>
+            <RootTabs.Screen
+              name={rootTabsRouteNames.TransactionSummary}
+              component={TransactionsSummary}
+              initialParams={{
+                transaction: {
+                  tokenValue: {
+                    balance: '349484.00',
+                    symbol: 'RIF',
+                    symbolType: 'icon',
+                  },
+                  usdValue: {
+                    balance: '3300',
+                    symbol: '$',
+                    symbolType: 'text',
+                  },
+                  // status: 'confirmed',
+                },
+                contact: {
+                  // name: 'Andrea',
+                  address: '0x048474864048973434xi393',
+                  // id: 0,
+                  // displayAddress: 'Andreacrypto.rsk',
+                },
+                buttons: [
+                  {
+                    title: 'Confirm',
+                    color: sharedColors.white,
+                    textColor: sharedColors.black,
+                  },
+                  {
+                    style: { marginTop: 10 },
+                    title: 'Cancel',
+                    backgroundVariety: AppButtonBackgroundVarietyEnum.OUTLINED,
+                  },
+                ],
+              }}
+            />
             <RootTabs.Screen
               name={rootTabsRouteNames.Home}
               component={HomeNavigator}

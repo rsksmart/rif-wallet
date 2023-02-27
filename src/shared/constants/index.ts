@@ -13,6 +13,7 @@ export const sharedColors = {
   primary: '#4B5CF0',
   secondary: '#121212',
   success: '#79C600',
+  successLight: '#59FF9C',
   warning: '#FF9100',
   danger: '#E94141',
   white: '#FFFFFF',
@@ -43,8 +44,17 @@ export const sharedStyles = StyleSheet.create({
   flex: castStyle.view({
     flex: 1,
   }),
+  row: castStyle.view({
+    flexDirection: 'row',
+  }),
   textCenter: castStyle.text({
     textAlign: 'center',
+  }),
+  textLeft: castStyle.text({
+    textAlign: 'left',
+  }),
+  textRight: castStyle.text({
+    textAlign: 'right',
   }),
   contentCenter: castStyle.view({
     justifyContent: 'center',
