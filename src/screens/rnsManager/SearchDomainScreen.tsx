@@ -1,17 +1,14 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useCallback, useEffect, useState } from 'react'
 import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/Entypo'
-import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 
 import { AppTouchable } from 'components/appTouchable'
-import { PrimaryButton } from 'components/button/PrimaryButton'
-import { Input } from 'components/index'
+import { AppButton, Input, MediumText } from 'components/index'
 import { InfoBox } from 'components/InfoBox'
-
-import { MediumText } from 'components/index'
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import {
   profileStackRouteNames,
@@ -19,6 +16,7 @@ import {
   ProfileStatus,
 } from 'navigation/profileNavigator/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
+import { sharedColors } from 'shared/constants'
 import { ScreenWithWallet } from '../types'
 import { BackButton } from './BackButton'
 import { rnsManagerStyles } from './rnsManagerStyles'
@@ -73,6 +71,8 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   ).toFixed(2)
 
   const domainToLookUp = methods.getValues('domain')
+  const isRequestButtonDisabled = hasErrors || !validDomain
+  const isSaveButtonDisabled = (hasErrors || !validDomain) && !isDomainOwned
 
   const onSubmit = (data: FieldValues) => {
     navigation.navigate(profileStackRouteNames.RequestDomain, {
@@ -195,19 +195,41 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           />
           <View style={rnsManagerStyles.bottomContainer}>
             {!isDomainOwned && (
-              <PrimaryButton
-                disabled={hasErrors || !validDomain}
+              <AppButton
+                disabled={isRequestButtonDisabled}
                 onPress={handleSubmit(onSubmit)}
-                accessibilityLabel="request"
-                title="request"
+                accessibilityLabel={t('request_username_button')}
+                title={t('request_username_button')}
+                color={
+                  !isRequestButtonDisabled
+                    ? sharedColors.white
+                    : sharedColors.borderColor
+                }
+                textColor={
+                  !isRequestButtonDisabled
+                    ? sharedColors.black
+                    : sharedColors.labelLight
+                }
+                disabledStyle={rnsManagerStyles.disabledButton}
               />
             )}
             {isDomainOwned && (
-              <PrimaryButton
-                disabled={(hasErrors || !validDomain) && !isDomainOwned}
+              <AppButton
+                disabled={isSaveButtonDisabled}
                 onPress={handleSetProfile}
-                accessibilityLabel="set username"
-                title="set username"
+                accessibilityLabel={t('save_username_button')}
+                title={t('save_username_button')}
+                color={
+                  !isSaveButtonDisabled
+                    ? sharedColors.white
+                    : sharedColors.borderColor
+                }
+                textColor={
+                  !isSaveButtonDisabled
+                    ? sharedColors.black
+                    : sharedColors.labelLight
+                }
+                disabledStyle={rnsManagerStyles.disabledButton}
               />
             )}
           </View>

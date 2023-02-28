@@ -1,5 +1,5 @@
-import { colors } from '../../styles'
 import { StyleSheet } from 'react-native'
+import { colors } from '../../styles'
 export const rnsManagerStyles = StyleSheet.create({
   container: {
     flex: 1,
@@ -60,5 +60,8 @@ export const rnsManagerStyles = StyleSheet.create({
   bottomContainer: {
     flex: 1,
     justifyContent: 'center',
+  },
+  disabledButton: {
+    opacity: 0.4,
   },
 })

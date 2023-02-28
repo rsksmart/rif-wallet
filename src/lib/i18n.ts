@@ -123,6 +123,8 @@ const resources = {
       username_available: 'Username available',
       username_unavailable: 'Username unavailable',
       username_owned: 'Username owned',
+      request_username_button: 'Request',
+      save_username_button: 'Save',
     },
   },
   es: {

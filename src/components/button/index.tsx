@@ -120,8 +120,7 @@ export const AppButton = ({
         getCornerVariety(cornerVariety),
         getJustifyContent({ leftIcon, rightIcon }),
         style,
-        disabled ? styles.disabledButton : null,
-        disabledStyle,
+        disabled ? [styles.disabledButton, disabledStyle] : null,
       ]}
       onPress={onPress}
       disabled={disabled}
