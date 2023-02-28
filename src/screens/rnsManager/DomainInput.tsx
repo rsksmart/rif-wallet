@@ -1,7 +1,7 @@
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import debounce from 'lodash.debounce'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, View } from 'react-native'
@@ -30,7 +30,7 @@ enum DomainStatus {
   NONE = '',
 }
 
-export const DomainInput: React.FC<Props> = ({
+export const DomainInput = ({
   wallet,
   onDomainAvailable,
   onDomainOwned,
