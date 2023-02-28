@@ -92,6 +92,11 @@ const resources = {
       Cancel: 'Cancel',
       TOTAL: 'TOTAL',
       search_placeholder: 'Search by username or email',
+      home_screen_portfolio: 'Portfolio',
+      home_screen_transactions: 'Transactions',
+      home_screen_empty_transactions: 'Transaction list is empty',
+      home_screen_no_transactions_created:
+        'You have not created any transactions yet',
       info_box_title_search_domain: 'Username & Icon',
       info_box_description_search_domain:
         'Register your username to allow others to send you funds more easily. In case you do not have any RIF funds you can ask a friend to send you some RIF.',
