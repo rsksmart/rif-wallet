@@ -24,7 +24,6 @@ interface Props {
 export const ProfileHandler = ({ navigation }: Props) => {
   const profile = useAppSelector(selectProfile)
   const { t } = useTranslation()
-  const profileCreated = profile.status === ProfileStatus.USER
 
   const getColors = useCallback(() => {
     switch (profile.status) {
@@ -57,10 +56,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
   const { startColor, endColor } = getColors()
   const routeNextStep = async () => {
     navigation.navigate(rootTabsRouteNames.Profile, {
-      screen: profileCreated
-        ? profileStackRouteNames.ProfileDetailsScreen
-        : profileStackRouteNames.ProfileCreateScreen,
-      params: profileCreated ? { editProfile: false } : undefined,
+      screen: profileStackRouteNames.ProfileCreateScreen,
     })
   }
   return (

@@ -1,227 +1,253 @@
-import { useCallback, useState } from 'react'
-import {
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native'
+import { useState, useCallback, useEffect } from 'react'
+import { StyleSheet, View, ScrollView, Share, Clipboard } from 'react-native'
+import { FormProvider, useForm } from 'react-hook-form'
+import Icon from 'react-native-vector-icons/FontAwesome'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import { useTranslation } from 'react-i18next'
+import { shortAddress } from 'lib/utils'
 
-import { AvatarIcon } from 'components/icons/AvatarIcon'
-import { MediumText } from 'components/index'
-import { PrimaryButton } from 'components/button/PrimaryButton'
-import { TextInputWithLabel } from 'components/input/TextInputWithLabel'
-import { RegularText } from 'components/typography' // TOOD: fix inconsistency of imports
-import { colors } from 'src/styles'
-import { fonts } from 'src/styles/fonts'
-import { selectProfile } from 'store/slices/profileSlice/selector'
-import { deleteProfile, setProfile } from 'store/slices/profileSlice'
-import { ProfileStore } from 'store/slices/profileSlice/types'
+import { castStyle } from 'shared/utils'
+import { defaultIconSize, sharedColors } from 'shared/constants'
+import { sharedStyles } from 'shared/styles'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
+import { selectProfile } from 'store/slices/profileSlice/selector'
+import { setProfile } from 'store/slices/profileSlice'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
+import {
+  AppButton,
+  Avatar,
+  getAddressDisplayText,
+  Input,
+  Typography,
+} from 'components/index'
+import {
+  BarButtonGroupContainer,
+  BarButtonGroupIcon,
+} from 'components/BarButtonGroup/BarButtonGroup'
+import { InfoBox } from 'components/InfoBox'
 import {
   profileStackRouteNames,
   ProfileStackScreenProps,
-  ProfileStatus,
 } from 'navigation/profileNavigator/types'
+import { BackButton } from 'screens/rnsManager/BackButton'
 
 export const ProfileCreateScreen = ({
-  route,
   navigation,
 }: ProfileStackScreenProps<profileStackRouteNames.ProfileCreateScreen>) => {
-  const editProfile = route.params?.editProfile
   const dispatch = useAppDispatch()
   const profile = useAppSelector(selectProfile)
-  const [localProfile, setLocalProfile] = useState<ProfileStore>(profile)
-  const fullAlias = profile ? `${profile.alias}.rsk` : ''
+  const [infoBoxClosed, setInfoBoxClosed] = useState<boolean>(
+    profile.infoBoxClosed ?? false,
+  )
 
-  const createProfile = async () => {
-    dispatch(setProfile({ ...localProfile, alias: profile?.alias || '' }))
-    navigation.navigate(rootTabsRouteNames.Home)
-  }
+  const [username, setUsername] = useState<string>('no_username')
+  const methods = useForm()
+  const { resetField, setValue } = methods
 
-  const deleteAlias = async () => {
-    dispatch(deleteProfile())
-    navigation.navigate(rootTabsRouteNames.Home)
-  }
+  useEffect(() => {
+    setUsername(profile.alias ? profile.alias : 'no_username')
+  }, [profile.alias])
 
-  const onSetEmail = useCallback((email: string) => {
-    setLocalProfile(prev => ({ ...prev, email }))
-  }, [])
+  const onSetEmail = useCallback(
+    (_email: string) => {
+      dispatch(setProfile({ ...profile, email: _email }))
+    },
+    [dispatch, profile],
+  )
 
-  const onSetPhone = useCallback((phone: string) => {
-    setLocalProfile(prev => ({ ...prev, phone }))
-  }, [])
+  const onSetPhone = useCallback(
+    (_phone: string) => {
+      dispatch(setProfile({ ...profile, phone: _phone }))
+    },
+    [dispatch, profile],
+  )
+
+  const resetPhone = useCallback(() => {
+    resetField('phone')
+    dispatch(setProfile({ ...profile, phone: '' }))
+  }, [dispatch, profile, resetField])
+
+  const resetEmail = useCallback(() => {
+    resetField('email')
+    dispatch(setProfile({ ...profile, email: '' }))
+  }, [dispatch, profile, resetField])
+
+  const { wallet, chainType } = useAppSelector(selectActiveWallet)
+  const { displayAddress } = getAddressDisplayText(
+    wallet?.smartWallet.smartWalletAddress ?? '',
+    chainType,
+  )
+  const onBackPress = useCallback(() => navigation.goBack(), [navigation])
+
+  const onShareUsername = useCallback(() => {
+    Share.share({
+      message: username,
+    })
+  }, [username])
+
+  const closeInfoBox = useCallback(() => {
+    setInfoBoxClosed(true)
+    dispatch(setProfile({ ...profile, infoBoxClosed: true }))
+  }, [dispatch, profile])
+
+  useEffect(() => {
+    setValue('email', profile.email)
+    setValue('phone', profile.phone)
+  }, [profile.email, profile.phone, setValue])
+
+  const { t } = useTranslation()
+
   return (
-    <KeyboardAvoidingView
-      style={styles.screen}
-      keyboardVerticalOffset={100}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScrollView>
-        <View style={styles.profileHeader}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate(rootTabsRouteNames.Home)}
-            accessibilityLabel="home">
-            <View style={styles.backButton}>
-              <MaterialIcon name="west" color="white" size={10} />
-            </View>
-          </TouchableOpacity>
-          <MediumText style={styles.titleText}>
-            {editProfile ? 'edit profile' : 'create profile'}
-          </MediumText>
-          {editProfile && (
-            <TouchableOpacity onPress={deleteAlias} accessibilityLabel="delete">
-              <MaterialIcon name="delete" color="white" size={20} />
-            </TouchableOpacity>
-          )}
+    <ScrollView style={{ backgroundColor: sharedColors.secondary }}>
+      <View style={styles.headerStyle}>
+        <BackButton onPress={onBackPress} accessibilityLabel="profile" />
+
+        <Typography style={styles.headerTittle} type="h3">
+          {'Profile'}
+        </Typography>
+
+        <View />
+      </View>
+      <View style={styles.usernameContainer}>
+        <Avatar
+          size={50}
+          name={username}
+          style={styles.avatarBackground}
+          letterColor={sharedColors.labelLight}
+        />
+        <View style={styles.username}>
+          <Typography type={'h3'} color={sharedColors.labelLight}>
+            {t(username)}
+          </Typography>
+          <Typography type={'h4'} color={sharedColors.labelLight}>
+            {displayAddress}
+          </Typography>
         </View>
-        <View style={styles.bodyContainer}>
-          <View style={styles.profileImageContainer}>
-            {profile.status === ProfileStatus.USER ? (
-              <AvatarIcon value={fullAlias} size={80} />
-            ) : (
-              <Image
-                style={styles.profileImage}
-                source={require('../../images/image_place_holder.jpeg')}
+      </View>
+      <BarButtonGroupContainer backgroundColor={sharedColors.primaryDark}>
+        <BarButtonGroupIcon
+          iconName="qr-code"
+          IconComponent={MaterialIcon}
+          onPress={() =>
+            navigation.navigate(profileStackRouteNames.ShareProfileScreen)
+          }
+        />
+        <BarButtonGroupIcon
+          iconName="share"
+          IconComponent={MaterialIcon}
+          onPress={onShareUsername}
+        />
+      </BarButtonGroupContainer>
+
+      <View style={styles.bodyContainer}>
+        {!infoBoxClosed ? (
+          <InfoBox
+            avatar={username}
+            title={t('info_box_title_search_domain')}
+            description={t('info_box_description_search_domain')}
+            buttonText={t('info_box_close_button')}
+            backgroundColor={sharedColors.primary}
+            avatarBackgroundColor={sharedColors.secondary}
+            onPress={closeInfoBox}
+          />
+        ) : null}
+        <FormProvider {...methods}>
+          <Input
+            style={sharedStyles.marginTop}
+            label={t('profile_address_label')}
+            inputName="address"
+            rightIcon={
+              <Icon
+                name={'copy'}
+                color={sharedColors.white}
+                size={defaultIconSize}
+                onPress={() =>
+                  Clipboard.setString(
+                    wallet?.smartWallet.smartWalletAddress || '',
+                  )
+                }
               />
-            )}
-          </View>
-          <View>
-            <MediumText style={[styles.masterText, styles.textLeftMargin]}>
-              alias
-            </MediumText>
-          </View>
-          {profile.status !== ProfileStatus.USER && (
-            <>
-              <View style={styles.rowContainer}>
-                <PrimaryButton
-                  onPress={() =>
-                    navigation.navigate(profileStackRouteNames.SearchDomain)
-                  }
-                  accessibilityLabel="register new"
-                  title={'register new'}
-                />
-              </View>
-            </>
-          )}
+            }
+            placeholder={shortAddress(wallet?.smartWallet.smartWalletAddress)}
+            isReadOnly
+            testID={'TestID.AddressText'}
+          />
+          <Typography
+            type={'h3'}
+            color={sharedColors.labelLight}
+            style={sharedStyles.marginTop}>
+            {t('profile_contact_details_subtitle')}
+          </Typography>
+          <Input
+            onChangeText={onSetPhone}
+            label={t('profile_phone_label')}
+            inputName="phone"
+            placeholder={t('profile_phone_label')}
+            testID={'TestID.PhoneText'}
+            resetValue={resetPhone}
+            autoCorrect={false}
+            autoCapitalize={'none'}
+          />
 
-          {profile.status === ProfileStatus.USER && (
-            <View style={styles.rowContainer}>
-              <View style={styles.aliasContainer}>
-                <View>
-                  <RegularText style={styles.aliasText}>
-                    {profile?.alias}
-                  </RegularText>
-                </View>
-                <View>
-                  <TouchableOpacity
-                    accessibilityLabel="close"
-                    onPress={() => deleteAlias()}>
-                    <MaterialIcon name="close" color={colors.white} size={20} />
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-          )}
-
-          <View style={styles.rowContainer}>
-            <TextInputWithLabel
-              label="phone"
-              value={localProfile?.phone}
-              setValue={onSetPhone}
-              placeholder="your phone number"
-              keyboardType="phone-pad"
-              optional={true}
-            />
-          </View>
-          <View style={styles.rowContainer}>
-            <TextInputWithLabel
-              label="email"
-              value={localProfile?.email}
-              setValue={onSetEmail}
-              placeholder="your email"
-              optional={true}
-            />
-          </View>
-          <View style={styles.rowContainer}>
-            <PrimaryButton
-              onPress={createProfile}
-              accessibilityLabel="create"
-              title={editProfile ? 'save' : 'create'}
-              disabled={profile.status !== ProfileStatus.USER}
-            />
-          </View>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+          <Input
+            onChangeText={onSetEmail}
+            label={t('profile_email_label')}
+            inputName="email"
+            placeholder={t('profile_email_label')}
+            testID={'TestID.EmailText'}
+            resetValue={resetEmail}
+            autoCorrect={false}
+            autoCapitalize={'none'}
+          />
+          <AppButton
+            style={sharedStyles.marginTop}
+            title={t('profile_register_your_username_button_text')}
+            color={sharedColors.white}
+            textColor={sharedColors.black}
+            disabled={!(username === 'no_username')}
+            onPress={() =>
+              navigation.navigate(profileStackRouteNames.SearchDomain)
+            }
+          />
+        </FormProvider>
+      </View>
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
-  screen: {
+  bodyContainer: castStyle.view({
     flex: 1,
-    backgroundColor: colors.background.darkBlue,
-  },
-  bodyContainer: {
-    flex: 1,
-    backgroundColor: colors.background.darkBlue,
+    paddingTop: 20,
+    paddingHorizontal: 20,
+  }),
+
+  headerStyle: castStyle.view({
+    padding: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    backgroundColor: sharedColors.primary,
+  }),
+
+  headerTittle: castStyle.view({
+    paddingRight: 30,
+  }),
+
+  usernameContainer: castStyle.view({
+    flexDirection: 'row',
+    paddingLeft: 40,
     paddingTop: 10,
-    paddingHorizontal: 40,
-  },
-  profileHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 20,
-    backgroundColor: colors.background.darkBlue,
-  },
-  titleText: {
-    color: colors.lightPurple,
-  },
-  backButton: {
-    color: colors.lightPurple,
-    backgroundColor: colors.blue2,
-    borderRadius: 20,
-    padding: 10,
-    bottom: 3,
-  },
-  profileImageContainer: {
+    paddingBottom: 30,
+    backgroundColor: sharedColors.primary,
+  }),
+  username: castStyle.view({
+    justifyContent: 'center',
+    paddingLeft: 10,
+  }),
+  avatarBackground: castStyle.view({ backgroundColor: 'white' }),
+
+  flexCenter: castStyle.view({
     alignItems: 'center',
-  },
-  profileImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 100,
-  },
-  textLeftMargin: {
-    marginLeft: 10,
-  },
-  masterText: {
-    marginBottom: 0,
-    color: colors.lightPurple,
-  },
-  rowContainer: {
-    margin: 5,
-  },
-  buttonFirstStyle: {
-    width: undefined,
-    marginHorizontal: undefined,
-    marginBottom: 20,
-    backgroundColor: colors.blue,
-  },
-  aliasContainer: {
-    color: colors.text.primary,
-    fontFamily: fonts.regular,
-    backgroundColor: colors.darkPurple4,
-    borderRadius: 15,
-    padding: 20,
-    marginBottom: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  aliasText: {
-    color: colors.lightPurple,
-  },
+  }),
 })

@@ -87,7 +87,7 @@ export const AliasBoughtScreen = ({
           </View>
           <SecondaryButton
             onPress={() =>
-              navigation.navigate(profileStackRouteNames.ProfileDetailsScreen)
+              navigation.navigate(profileStackRouteNames.ProfileCreateScreen)
             }
             accessibilityLabel="close"
             title={'Close'}

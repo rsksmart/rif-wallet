@@ -5,7 +5,7 @@ import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
 
 export enum profileStackRouteNames {
   ProfileCreateScreen = 'ProfileCreateScreen',
-  ProfileDetailsScreen = 'ProfileDetailsScreen',
+  ShareProfileScreen = 'ShareProfileScreen',
   SearchDomain = 'SearchDomain',
   RequestDomain = 'RequestDomain',
   BuyDomain = 'BuyDomain',
@@ -29,7 +29,7 @@ export type ProfileStackParamsList = {
         profile?: ProfileStore
       }
     | undefined
-  [profileStackRouteNames.ProfileDetailsScreen]: undefined
+  [profileStackRouteNames.ShareProfileScreen]: undefined
   [profileStackRouteNames.SearchDomain]: undefined
   [profileStackRouteNames.RequestDomain]: {
     alias: string

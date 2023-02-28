@@ -121,7 +121,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
       }),
     )
 
-    navigation.navigate(profileStackRouteNames.ProfileDetailsScreen)
+    navigation.navigate(profileStackRouteNames.ProfileCreateScreen)
   }, [dispatch, domainToLookUp, navigation])
 
   useEffect(() => {
