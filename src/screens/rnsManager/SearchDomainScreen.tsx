@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/Entypo'
 import * as yup from 'yup'
 
 import { AppTouchable } from 'components/appTouchable'
-import { AppButton, Input, MediumText, Typography } from 'components/index'
+import { AppButton, Input, Typography } from 'components/index'
 import { InfoBox } from 'components/InfoBox'
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import {

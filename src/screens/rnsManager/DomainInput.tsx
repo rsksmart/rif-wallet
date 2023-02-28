@@ -2,6 +2,7 @@ import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import debounce from 'lodash.debounce'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, View } from 'react-native'
 
@@ -9,8 +10,7 @@ import {
   AddressValidationMessage,
   validateAddress,
 } from 'components/address/lib'
-import { Input, MediumText, Typography } from 'components/index'
-import { useFormContext } from 'react-hook-form'
+import { Input, Typography } from 'components/index'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { colors } from 'src/styles'
