@@ -120,33 +120,25 @@ export const DomainInput = ({
   }, [setValue, onDomainAvailable, onDomainOwned])
 
   const getLabelColor = useMemo(() => {
-    switch (domainAvailability) {
-      case DomainStatus.AVAILABLE:
-        return colors.green
-      case DomainStatus.TAKEN:
-        return colors.red
-      case DomainStatus.OWNED:
-        return colors.green
-      case DomainStatus.NO_VALID:
-        return sharedColors.subTitle
-      default:
-        return sharedColors.subTitle
+    const labelMap = {
+      [DomainStatus.AVAILABLE]: colors.green,
+      [DomainStatus.TAKEN]: colors.red,
+      [DomainStatus.OWNED]: colors.green,
+      [DomainStatus.NO_VALID]: sharedColors.subTitle,
+      [DomainStatus.NONE]: sharedColors.subTitle,
     }
+    return labelMap[domainAvailability]
   }, [domainAvailability])
 
   const label = useMemo(() => {
-    switch (domainAvailability) {
-      case DomainStatus.AVAILABLE:
-        return t('username_available')
-      case DomainStatus.TAKEN:
-        return t('username_unavailable')
-      case DomainStatus.OWNED:
-        return t('username_owned')
-      case DomainStatus.NO_VALID:
-        return t('username')
-      default:
-        return t('username')
+    const labelMap = {
+      [DomainStatus.AVAILABLE]: t('username_available'),
+      [DomainStatus.TAKEN]: t('username_unavailable'),
+      [DomainStatus.OWNED]: t('username_owned'),
+      [DomainStatus.NO_VALID]: t('username'),
+      [DomainStatus.NONE]: t('username'),
     }
+    return labelMap[domainAvailability]
   }, [domainAvailability, t])
 
   const labelStyle = castStyle.text({
