@@ -1,4 +1,5 @@
 import i18n from 'i18next'
+
 import { initReactI18next } from 'react-i18next'
 
 // the translations
@@ -91,6 +92,11 @@ const resources = {
       Cancel: 'Cancel',
       TOTAL: 'TOTAL',
       search_placeholder: 'Search by username or email',
+      home_screen_portfolio: 'Portfolio',
+      home_screen_transactions: 'Transactions',
+      home_screen_empty_transactions: 'Transaction list is empty',
+      home_screen_no_transactions_created:
+        'You have not created any transactions yet',
       info_box_title_search_domain: 'Username & Icon',
       info_box_description_search_domain:
         'Register your username to allow others to send you funds more easily. In case you do not have any RIF funds you can ask a friend to send you some RIF.',
@@ -115,6 +121,15 @@ const resources = {
       change_asset: 'Change asset',
       loading_qr: 'Loading QR',
       loading_address: 'Loading Address',
+      close: 'Close',
+      next: 'Next',
+      home_information_bar_title: 'Get Started',
+      home_information_bar_desc1:
+        'We recommend you to start by funding your wallet.',
+      home_information_bar_desc2:
+        'Deploy your wallet and send funds to your family and friends. ',
+      home_information_bar_desc3:
+        'Register your username and receive your icon.',
       username_registration_title: 'Username Registration',
       request_username_title: 'Request a username',
       request_username_label: 'Length of registration',

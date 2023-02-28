@@ -1,6 +1,5 @@
-import { StyleSheet, View } from 'react-native'
+import { View, ScrollView } from 'react-native'
 import { useCallback, useState } from 'react'
-import { ScrollView } from 'react-native-gesture-handler'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import { BigNumber } from 'ethers'
 import { useTranslation } from 'react-i18next'
@@ -80,8 +79,9 @@ const PortfolioComponent = ({
   const [isTotalCardSelected, setIsTotalCardSelected] = useState<boolean>(true)
 
   return (
-    <ScrollView horizontal={true} contentContainerStyle={styles.scrollView}>
-      <View style={styles.scrollView}>
+    <View>
+      {/*TODO: This View above is a temporal fix to keep the ScrollView height*/}
+      <ScrollView horizontal={true}>
         <PortfolioCard
           onPress={() => setIsTotalCardSelected(true)}
           color={sharedColors.inputInactive}
@@ -111,16 +111,9 @@ const PortfolioComponent = ({
             )
           },
         )}
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   )
 }
-
-const styles = StyleSheet.create({
-  scrollView: {
-    flexDirection: 'row',
-    height: 110,
-  },
-})
 
 export default PortfolioComponent
