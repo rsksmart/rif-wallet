@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native'
 export const rnsManagerStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background.darkBlue,
+    backgroundColor: colors.background.black,
     paddingHorizontal: 20,
   },
   title: {
@@ -17,8 +17,9 @@ export const rnsManagerStyles = StyleSheet.create({
   profileHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 20,
-    backgroundColor: colors.background.darkBlue,
+    paddingVertical: 20,
+    paddingLeft: 10,
+    backgroundColor: colors.background.black,
   },
   profileImageContainer: {
     alignItems: 'center',
