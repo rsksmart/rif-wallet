@@ -2,11 +2,15 @@ import {
   rootTabsRouteNames,
   RootTabsScreenProps,
 } from 'navigation/rootNavigator/types'
-
 import { ActivityMixedType } from './types'
 import ActivityRowPresentation from './ActivityRowPresentation'
 import useActivityDeserializer from './useActivityDeserializer'
 import { BasicRow, StatusEnum } from 'components/BasicRow'
+import { AppTouchable } from 'src/components'
+import {
+  homeStackRouteNames,
+  HomeStackScreenProps,
+} from 'navigation/homeNavigator/types'
 
 interface Props extends RootTabsScreenProps<rootTabsRouteNames.Activity> {
   activityTransaction: ActivityMixedType
@@ -32,19 +36,24 @@ const getStatus = (status: string) => {
 
 interface ActivityBasicRowProps {
   activityTransaction: ActivityMixedType
+  navigation: HomeStackScreenProps<homeStackRouteNames.Main>['navigation']
 }
 export const ActivityBasicRow = ({
   activityTransaction,
+  navigation,
 }: ActivityBasicRowProps) => {
   const activityDetails = useActivityDeserializer(activityTransaction)
-
+  const handlePress = () =>
+    navigation.navigate(rootTabsRouteNames.ActivityDetails, activityTransaction)
   return (
-    <BasicRow
-      label={activityDetails.to}
-      amount={activityDetails.value}
-      status={getStatus(activityDetails.status)}
-      avatarName={'A'}
-      secondaryLabel={activityDetails.timeHumanFormatted}
-    />
+    <AppTouchable width={'100%'} onPress={handlePress}>
+      <BasicRow
+        label={activityDetails.to}
+        amount={activityDetails.value}
+        status={getStatus(activityDetails.status)}
+        avatarName={'A'}
+        secondaryLabel={activityDetails.timeHumanFormatted}
+      />
+    </AppTouchable>
   )
 }
