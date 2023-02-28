@@ -19,7 +19,7 @@ export const rnsManagerStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: 20,
-    paddingLeft: 10,
+    paddingHorizontal: 10,
     backgroundColor: colors.background.black,
   },
   profileImageContainer: {
