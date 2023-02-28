@@ -38,3 +38,5 @@ export const balancesSlice = createSlice({
 export const { addOrUpdateNewBalance, addOrUpdateBalances } =
   balancesSlice.actions
 export const balancesReducer = balancesSlice.reducer
+
+export * from './selectors'

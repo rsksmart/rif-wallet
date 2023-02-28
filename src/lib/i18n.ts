@@ -1,4 +1,5 @@
 import i18n from 'i18next'
+
 import { initReactI18next } from 'react-i18next'
 
 // the translations
@@ -103,18 +104,8 @@ const resources = {
       header_purchase: 'Purchase username',
       header_purchasing: 'Purchasing username...',
       header_error: 'Error Requesting username',
-      mnemonic_title: 'Security advice',
-      mnemonic_title_copy: 'Copied to clipboard!',
-      mnemonic_body: `Please make sure that you are located 
-      in a safe environment with no one being
-      able to see your phone screen before you decide to reveal your phrase. `,
-      mnemonic_body_copy:
-        'We strongly recommend you to write the phrase also on a piece of paper.',
-      new_master_key_title: 'Save your phrase',
-      new_master_key_button_title: 'Phrase secured, Continue',
-      change_asset: 'Change asset',
-      loading_qr: 'Loading QR',
-      loading_address: 'Loading Address',
+      request_username_label: 'Length of registration',
+      request_username_placeholder: 'year',
     },
   },
   es: {
