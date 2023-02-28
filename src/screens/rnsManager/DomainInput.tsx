@@ -111,6 +111,14 @@ export const DomainInput: React.FC<Props> = ({
     [doHandleChangeText],
   )
 
+  const resetField = useCallback(() => {
+    setValue('domain', '')
+    setUsername('')
+    setDomainAvailability(DomainStatus.NONE)
+    onDomainAvailable('', false)
+    onDomainOwned(false)
+  }, [setValue, onDomainAvailable, onDomainOwned])
+
   const getLabelColor = useMemo(() => {
     switch (domainAvailability) {
       case DomainStatus.AVAILABLE:
@@ -162,10 +170,7 @@ export const DomainInput: React.FC<Props> = ({
         labelStyle={labelStyle}
         inputStyle={styles.domainInput}
         placeholderStyle={styles.domainPlaceholder}
-        resetValue={() => {
-          setValue('domain', '')
-          setDomainAvailability(DomainStatus.NONE)
-        }}
+        resetValue={resetField}
         onChangeText={setUsername}
         suffix={<Text style={styles.domainSuffix}>.rsk</Text>}
         autoCapitalize="none"
