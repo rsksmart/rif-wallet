@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/Entypo'
 import * as yup from 'yup'
 
 import { AppTouchable } from 'components/appTouchable'
-import { AppButton, Input, MediumText } from 'components/index'
+import { AppButton, Input, MediumText, Typography } from 'components/index'
 import { InfoBox } from 'components/InfoBox'
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import {
@@ -134,17 +134,18 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           onPress={() => navigation.navigate(rootTabsRouteNames.Home)}
           accessibilityLabel="home"
         />
-        <MediumText style={rnsManagerStyles.title}>
+        <Typography type="h3" style={rnsManagerStyles.title}>
           {t('username_registration_title')}
-        </MediumText>
+        </Typography>
         <View />
       </View>
       <View style={rnsManagerStyles.container}>
         <FormProvider {...methods}>
-          <MediumText
+          <Typography
+            type="h2"
             style={[rnsManagerStyles.subtitle, rnsManagerStyles.marginBottom]}>
             {t('request_username_title')}
-          </MediumText>
+          </Typography>
 
           <InfoBox
             avatar={

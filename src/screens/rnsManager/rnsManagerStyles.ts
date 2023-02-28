@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+import { sharedColors } from 'shared/constants'
 import { colors } from 'src/styles'
 
 export const rnsManagerStyles = StyleSheet.create({
@@ -8,12 +9,10 @@ export const rnsManagerStyles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   title: {
-    color: '#FBFBFB',
-    fontSize: 18,
+    color: sharedColors.subTitle,
   },
   subtitle: {
-    color: '#FBFBFB',
-    fontSize: 22,
+    color: sharedColors.subTitle,
   },
   profileHeader: {
     flexDirection: 'row',

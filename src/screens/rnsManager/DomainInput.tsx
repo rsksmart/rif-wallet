@@ -9,7 +9,7 @@ import {
   AddressValidationMessage,
   validateAddress,
 } from 'components/address/lib'
-import { Input, MediumText } from 'components/index'
+import { Input, MediumText, Typography } from 'components/index'
 import { useFormContext } from 'react-hook-form'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
@@ -177,7 +177,11 @@ export const DomainInput: React.FC<Props> = ({
         autoCorrect={false}
       />
       <View>
-        {error && <MediumText style={styles.errorText}>{error}</MediumText>}
+        {error && (
+          <Typography type="body3" style={styles.errorText}>
+            {error}
+          </Typography>
+        )}
       </View>
     </>
   )
@@ -201,7 +205,6 @@ const styles = StyleSheet.create({
     color: sharedColors.subTitle,
   }),
   errorText: castStyle.text({
-    fontSize: 12,
     color: colors.red,
     paddingLeft: 5,
   }),
