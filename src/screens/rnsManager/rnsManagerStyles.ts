@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native'
-import { colors } from '../../styles'
+import { colors } from 'src/styles'
+
 export const rnsManagerStyles = StyleSheet.create({
   container: {
     flex: 1,
