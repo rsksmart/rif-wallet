@@ -9,12 +9,14 @@ import {
 interface HomeBarButtonGroupProps {
   onPress: (decision: 'SEND' | 'RECEIVE' | 'FAUCET') => void
   isSendDisabled: boolean
+  color?: string
 }
 export const HomeBarButtonGroup = ({
   onPress,
   isSendDisabled,
+  color,
 }: HomeBarButtonGroupProps) => (
-  <BarButtonGroupContainer>
+  <BarButtonGroupContainer backgroundColor={color}>
     <BarButtonGroupIcon
       iconName="south-west"
       IconComponent={MaterialIcon}
