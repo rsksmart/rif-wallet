@@ -38,6 +38,7 @@ export interface InputProps extends TextInputProps {
   containerStyle?: StyleProp<ViewStyle>
   inputStyle?: StyleProp<TextStyle>
   labelStyle?: StyleProp<TextStyle>
+  subtitleStyle?: StyleProp<TextStyle>
 }
 
 export const Input = ({
@@ -54,6 +55,7 @@ export const Input = ({
   containerStyle,
   inputStyle,
   labelStyle,
+  subtitleStyle,
 }: InputProps) => {
   const { control } = useFormContext()
   const [focused, setFocused] = useState<boolean>(false)
@@ -118,7 +120,9 @@ export const Input = ({
                   </Typography>
                 </TextInput>
                 {subtitle ? (
-                  <Typography style={styles.subtitle} type={'body3'}>
+                  <Typography
+                    style={[styles.subtitle, subtitleStyle]}
+                    type={'body3'}>
                     {subtitle}
                   </Typography>
                 ) : null}

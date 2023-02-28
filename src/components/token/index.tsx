@@ -93,7 +93,7 @@ export const TokenBalance = ({
             )}
             {secondValue.symbolType === 'text' && (
               <Typography type={'h3'} style={styles.subTitle}>
-                {hide ? '' : secondValue.symbol}
+                {hide ? '' : secondValue.symbol + ' '}
               </Typography>
             )}
             <Typography type={'h3'} style={styles.subTitle}>
