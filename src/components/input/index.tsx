@@ -1,9 +1,11 @@
 import { useCallback, useState, ReactFragment } from 'react'
 import {
+  NativeSyntheticEvent,
   Pressable,
   StyleProp,
   StyleSheet,
   TextInput,
+  TextInputFocusEventData,
   TextInputProps,
   TextStyle,
   View,
@@ -21,6 +23,7 @@ import {
 } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { Typography } from '../typography'
+import { AppTouchable } from '../appTouchable'
 
 export { CustomInput } from './CustomInput'
 
@@ -56,17 +59,29 @@ export const Input = ({
   inputStyle,
   labelStyle,
   subtitleStyle,
+  onBlur: onBlurProp,
+  onChangeText,
+  onFocus: onFocusProp,
+  ...props
 }: InputProps) => {
   const { control } = useFormContext()
   const [focused, setFocused] = useState<boolean>(false)
 
-  const onFocus = useCallback(() => {
-    setFocused(true)
-  }, [])
+  const onFocus = useCallback(
+    (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+      onFocusProp && onFocusProp(e)
+      setFocused(true)
+    },
+    [onFocusProp],
+  )
 
-  const onBlur = useCallback(() => {
-    setFocused(false)
-  }, [])
+  const onBlur = useCallback(
+    (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+      onBlurProp && onBlurProp(e)
+      setFocused(false)
+    },
+    [onBlurProp],
+  )
 
   return (
     <Controller
@@ -87,15 +102,15 @@ export const Input = ({
             ) : null}
             <View style={styles.valueContainer}>
               {leftIcon && 'name' in leftIcon ? (
-                <Pressable
-                  style={styles.leftIconContainer}
+                <AppTouchable
+                  width={leftIcon.size ? leftIcon.size : defaultIconSize}
                   onPress={onLeftIconPress ? onLeftIconPress : noop}>
                   <Icon
                     name={leftIcon.name}
                     size={leftIcon.size ? leftIcon.size : defaultIconSize}
                     color={leftIcon.color ? leftIcon.color : sharedColors.white}
                   />
-                </Pressable>
+                </AppTouchable>
               ) : (
                 leftIcon
               )}
@@ -105,11 +120,15 @@ export const Input = ({
                   leftIcon ? styles.inputSubtitleContainer : null,
                 ]}>
                 <TextInput
-                  style={[styles.input, inputStyle]}
-                  onChangeText={onChange}
+                  style={[sharedStyles.flex, inputStyle]}
+                  onChangeText={text => {
+                    onChangeText && onChangeText(text)
+                    onChange(text)
+                  }}
                   onBlur={onBlur}
                   onFocus={onFocus}
-                  editable={!isReadOnly}>
+                  editable={!isReadOnly}
+                  {...props}>
                   <Typography
                     style={[
                       styles.placeholderText,
@@ -122,7 +141,8 @@ export const Input = ({
                 {subtitle ? (
                   <Typography
                     style={[styles.subtitle, subtitleStyle]}
-                    type={'body3'}>
+                    type={'body3'}
+                    numberOfLines={1}>
                     {subtitle}
                   </Typography>
                 ) : null}
@@ -130,13 +150,15 @@ export const Input = ({
             </View>
           </View>
           {!rightIcon && !!value ? (
-            <Pressable onPress={resetValue ? resetValue : noop}>
+            <AppTouchable
+              width={defaultIconSize}
+              onPress={resetValue ? resetValue : noop}>
               <Icon
                 name={'close'}
                 size={defaultIconSize}
                 color={sharedColors.white}
               />
-            </Pressable>
+            </AppTouchable>
           ) : rightIcon && 'name' in rightIcon ? (
             <Pressable onPress={onRightIconPress ? onRightIconPress : noop}>
               <Icon
@@ -181,8 +203,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-  }),
-  leftIconContainer: castStyle.view({
     paddingTop: 18,
   }),
   inputSubtitleContainer: castStyle.view({
@@ -190,10 +210,6 @@ const styles = StyleSheet.create({
   }),
   subtitle: castStyle.text({
     color: sharedColors.inputLabelColor,
-  }),
-  input: castStyle.text({
-    flex: 1,
-    paddingTop: 18,
   }),
   rightIcon: castStyle.text({
     flex: 1,

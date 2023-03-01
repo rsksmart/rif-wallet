@@ -1,16 +1,11 @@
-import { colors } from '../../styles'
-import { AddressInput } from './AddressInput'
-import React from 'react'
+import { MixedTokenAndNetworkType } from 'screens/send/types'
+import { AddressInput, AddressInputProps } from './AddressInput'
 import { AddressBitcoinInput } from './AddressBitcoinInput'
-import { MixedTokenAndNetworkType } from '../../screens/send/types'
 
-interface IAddressInputSelector {
+interface AddressInputSelectorProps extends AddressInputProps {
   token: MixedTokenAndNetworkType
-  initialValue: string
-  onChangeText: (newValue: string, isValid: boolean) => void
-  testID?: string
   chainId: number
-  backgroundColor?: string
+  onChangeAddress: (newValue: string, isValid: boolean) => void
 }
 
 /**
@@ -23,29 +18,41 @@ interface IAddressInputSelector {
  * @param backgroundColor
  * @constructor
  */
-export const AddressInputSelector: React.FC<IAddressInputSelector> = ({
-  token = {},
+export const AddressInputSelector = ({
+  token = {} as MixedTokenAndNetworkType,
+  label,
+  placeholder,
   initialValue,
-  onChangeText,
+  inputName,
+  onChangeAddress,
+  resetValue,
   testID,
   chainId,
-  backgroundColor = colors.darkPurple5,
-}) => {
+}: AddressInputSelectorProps) => {
   if ('isBitcoin' in token) {
     return (
       <AddressBitcoinInput
+        label={label}
+        placeholder={placeholder}
+        inputName={inputName}
         initialValue={initialValue}
-        onChangeText={onChangeText}
+        onChangeAddress={onChangeAddress}
+        resetValue={resetValue}
+        testID={'AddressBitcoinInput.Text'}
+        chainId={chainId}
       />
     )
   } else {
     return (
       <AddressInput
+        label={label}
+        placeholder={placeholder}
+        inputName={inputName}
         initialValue={initialValue}
-        onChangeText={onChangeText}
+        onChangeAddress={onChangeAddress}
+        resetValue={resetValue}
         chainId={chainId}
         testID={testID}
-        backgroundColor={backgroundColor}
       />
     )
   }
