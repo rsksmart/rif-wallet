@@ -30,6 +30,14 @@ enum DomainStatus {
   NONE = '',
 }
 
+const labelColorMap = new Map([
+  [DomainStatus.AVAILABLE, colors.green],
+  [DomainStatus.TAKEN, colors.red],
+  [DomainStatus.OWNED, colors.green],
+  [DomainStatus.NO_VALID, sharedColors.subTitle],
+  [DomainStatus.NONE, sharedColors.subTitle],
+])
+
 export const DomainInput = ({
   wallet,
   onDomainAvailable,
@@ -119,30 +127,20 @@ export const DomainInput = ({
     onDomainOwned(false)
   }, [setValue, onDomainAvailable, onDomainOwned])
 
-  const getLabelColor = useMemo(() => {
-    const labelMap = {
-      [DomainStatus.AVAILABLE]: colors.green,
-      [DomainStatus.TAKEN]: colors.red,
-      [DomainStatus.OWNED]: colors.green,
-      [DomainStatus.NO_VALID]: sharedColors.subTitle,
-      [DomainStatus.NONE]: sharedColors.subTitle,
-    }
-    return labelMap[domainAvailability]
-  }, [domainAvailability])
-
-  const label = useMemo(() => {
-    const labelMap = {
-      [DomainStatus.AVAILABLE]: t('username_available'),
-      [DomainStatus.TAKEN]: t('username_unavailable'),
-      [DomainStatus.OWNED]: t('username_owned'),
-      [DomainStatus.NO_VALID]: t('username'),
-      [DomainStatus.NONE]: t('username'),
-    }
-    return labelMap[domainAvailability]
-  }, [domainAvailability, t])
+  const labelTextMap = useMemo(
+    () =>
+      new Map([
+        [DomainStatus.AVAILABLE, t('username_available')],
+        [DomainStatus.TAKEN, t('username_unavailable')],
+        [DomainStatus.OWNED, t('username_owned')],
+        [DomainStatus.NO_VALID, t('username')],
+        [DomainStatus.NONE, t('username')],
+      ]),
+    [t],
+  )
 
   const labelStyle = castStyle.text({
-    color: getLabelColor,
+    color: labelColorMap.get(domainAvailability),
   })
 
   useEffect(() => {
@@ -156,7 +154,7 @@ export const DomainInput = ({
       <Input
         accessibilityLabel={'Alias.Input'}
         inputName="domain"
-        label={label}
+        label={labelTextMap.get(domainAvailability)}
         placeholder={t('username')}
         containerStyle={styles.domainContainer}
         labelStyle={labelStyle}
