@@ -51,6 +51,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const prices = useAppSelector(selectUsdPrices)
   const { t } = useTranslation()
   const methods = useForm({
+    mode: 'onChange',
     resolver: yupResolver(schema),
   })
 

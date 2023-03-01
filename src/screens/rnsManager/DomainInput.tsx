@@ -43,13 +43,17 @@ export const DomainInput = ({
   onDomainAvailable,
   onDomainOwned,
 }: Props) => {
-  const [error, setError] = useState('')
   const [username, setUsername] = useState('')
   const [domainAvailability, setDomainAvailability] = useState<DomainStatus>(
     DomainStatus.NONE,
   )
-  const { setValue } = useFormContext()
   const { t } = useTranslation()
+  const {
+    setValue,
+    formState: { errors },
+  } = useFormContext()
+
+  const error = errors.domain?.message
 
   const rskRegistrar = useMemo(
     () =>
@@ -62,50 +66,45 @@ export const DomainInput = ({
     [wallet],
   )
   const searchDomain = useCallback(
-    async (domain: string) => {
-      setError('')
-
-      if (!/^[a-z0-9]+$/.test(domain)) {
-        setError('Only lower cases and numbers are allowed')
+    async (domain: string, errorType?: string) => {
+      console.log('errorType', errorType)
+      if (errorType === 'matches') {
         setDomainAvailability(DomainStatus.NO_VALID)
         onDomainAvailable(domain, false)
-        return
-      }
-
-      if (domain.length < 5) {
+      } else if (errorType === 'min') {
         setDomainAvailability(DomainStatus.NONE)
         onDomainAvailable(domain, false)
-        return
-      }
-
-      const available = await rskRegistrar.available(domain)
-
-      if (!available) {
-        const ownerAddress = await rskRegistrar.ownerOf(domain)
-        const currentWallet = wallet.smartWallet.smartWalletAddress
-        if (currentWallet === ownerAddress) {
-          setDomainAvailability(DomainStatus.OWNED)
-          onDomainOwned(true)
-        } else {
-          setDomainAvailability(DomainStatus.TAKEN)
-        }
       } else {
-        onDomainOwned(false)
-        setDomainAvailability(DomainStatus.AVAILABLE)
-        onDomainAvailable(domain, Boolean(available))
+        const available = await rskRegistrar.available(domain)
+
+        if (!available) {
+          const ownerAddress = await rskRegistrar.ownerOf(domain)
+          const currentWallet = wallet.smartWallet.smartWalletAddress
+
+          if (currentWallet === ownerAddress) {
+            setDomainAvailability(DomainStatus.OWNED)
+            onDomainOwned(true)
+          } else {
+            setDomainAvailability(DomainStatus.TAKEN)
+          }
+        } else {
+          onDomainOwned(false)
+          setDomainAvailability(DomainStatus.AVAILABLE)
+          onDomainAvailable(domain, Boolean(available))
+        }
       }
     },
     [rskRegistrar, wallet, onDomainAvailable, onDomainOwned],
   )
 
   const doHandleChangeText = useCallback(
-    async (inputText: string) => {
+    async (inputText: string, errorType?: string) => {
       if (!inputText) {
         setDomainAvailability(DomainStatus.NONE)
       } else {
         const newValidationMessage = validateAddress(inputText + '.rsk', -1)
         if (newValidationMessage === AddressValidationMessage.DOMAIN) {
-          await searchDomain(inputText)
+          await searchDomain(inputText, errorType)
         } else {
           setDomainAvailability(DomainStatus.NONE)
         }
@@ -115,8 +114,12 @@ export const DomainInput = ({
   )
 
   const handleChangeUsername = useMemo(
-    () => debounce(doHandleChangeText, 300),
-    [doHandleChangeText],
+    () =>
+      debounce(
+        text => doHandleChangeText(text, errors.domain?.type as string),
+        300,
+      ),
+    [doHandleChangeText, errors],
   )
 
   const resetField = useCallback(() => {
