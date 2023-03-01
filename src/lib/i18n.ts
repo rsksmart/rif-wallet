@@ -1,5 +1,4 @@
 import i18n from 'i18next'
-
 import { initReactI18next } from 'react-i18next'
 
 // the translations
@@ -173,6 +172,11 @@ const resources = {
       profile_address_label: 'Address',
       profile_register_your_username_button_text: 'Register your username',
       no_username: 'No username',
+      confirm_key_title: 'Verify your phrase',
+      confirm_key_error: 'Wrong words! Try again...',
+      confirm_key_input_error: "Words don't match",
+      confirm_key_success: 'Phrase verified! ',
+      confirm_key_button: 'OK',
     },
   },
   es: {

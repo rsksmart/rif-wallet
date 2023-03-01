@@ -1,208 +1,229 @@
-import { useCallback, useState } from 'react'
-import { Trans } from 'react-i18next'
-import {
-  ListRenderItemInfo,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native'
-import Carousel from 'react-native-snap-carousel'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { ScrollView, StyleSheet, View } from 'react-native'
+import { FormProvider, useForm } from 'react-hook-form'
+import Icon from 'react-native-vector-icons/FontAwesome5'
+import { useTranslation } from 'react-i18next'
 
-import { PaginationNavigator } from 'components/button/PaginationNavigator'
-import { Arrow } from 'components/icons'
-import { useKeyboardIsVisible } from 'core/hooks/useKeyboardIsVisible'
 import { CreateKeysScreenProps } from 'navigation/createKeysNavigator/types'
-import { handleInputRefCreation } from 'shared/utils'
-import { RegularText, SemiBoldText } from 'src/components'
-import { colors } from 'src/styles/colors'
-import { saveKeyVerificationReminder } from 'storage/MainStorage'
+import { castStyle, getRandomNumber } from 'shared/utils'
+import { AppButton, Input, Typography } from 'components/index'
 import { createWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
-import { SLIDER_WIDTH, WINDOW_WIDTH } from '../../../ux/slides/Dimensions'
-import { sharedMnemonicStyles } from './styles'
-import { WordSelector } from './WordSelector'
+import { sharedColors } from 'shared/constants'
+
+type MnemonicWordNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
+
+const wordNumberMap = new Map<MnemonicWordNumber, string>([
+  [1, 'st'],
+  [2, 'nd'],
+  [3, 'rd'],
+  [4, 'th'],
+  [5, 'th'],
+  [6, 'th'],
+  [7, 'th'],
+  [8, 'th'],
+  [9, 'th'],
+  [10, 'th'],
+  [11, 'th'],
+  [12, 'th'],
+])
+
+interface RandomWord {
+  word: string
+  orderNumber: MnemonicWordNumber
+}
+
+interface FormValues {
+  firstWord: string
+  secondWord: string
+}
+
+const onRandomWordChoice = (_mnemonicWords: string[]) => {
+  const max = _mnemonicWords.length - 1
+  const min = 0
+
+  const firstWordIndex = getRandomNumber(max, min)
+  const secondWordIndex = getRandomNumber(max, min)
+
+  if (firstWordIndex !== secondWordIndex) {
+    const firstWord: RandomWord = {
+      word: _mnemonicWords[firstWordIndex],
+      orderNumber: (firstWordIndex + 1) as MnemonicWordNumber,
+    }
+    const secondWord: RandomWord = {
+      word: _mnemonicWords[secondWordIndex],
+      orderNumber: (secondWordIndex + 1) as MnemonicWordNumber,
+    }
+
+    const randomWordsTuple = [firstWord, secondWord]
+    if (firstWordIndex > secondWordIndex) {
+      randomWordsTuple.reverse()
+    }
+
+    return randomWordsTuple
+  } else {
+    onRandomWordChoice(_mnemonicWords)
+    return
+  }
+}
 
 export const ConfirmNewMasterKeyScreen = ({
   route,
-  navigation,
 }: CreateKeysScreenProps<'ConfirmNewMasterKey'>) => {
-  const dispatch = useAppDispatch()
-  const isKeyboardVisible = useKeyboardIsVisible()
-  const mnemonic = route.params.mnemonic
-  const slidesIndexes = Array.from(
-    { length: Math.ceil(mnemonic.split(' ').length / 3) },
-    (_, i) => i,
+  const { t } = useTranslation()
+  const methods = useForm<FormValues>({
+    mode: 'onSubmit',
+    defaultValues: {
+      firstWord: '',
+      secondWord: '',
+    },
+  })
+  const {
+    handleSubmit,
+    setError,
+    resetField,
+    reset,
+    formState: { errors },
+  } = methods
+  const formIsValid = useMemo(
+    () => !errors.firstWord && !errors.secondWord,
+    [errors.firstWord, errors.secondWord],
   )
-  const mnemonicWords = mnemonic.split(' ')
-
-  const [selectedSlide, setSelectedSlide] = useState<number>(0)
-  const [selectedWords, setSelectedWords] = useState<string[]>([])
-  const [carousel, setCarousel] = useState<Carousel<number>>()
-  const [error, setError] = useState<boolean>(false)
-
-  const handleConfirmMnemonic = async () => {
-    if (selectedWords.join() !== mnemonicWords.join()) {
-      return setError(true)
-    }
-    setError(false)
-    saveKeyVerificationReminder(false)
-    await dispatch(createWallet({ mnemonic }))
-  }
-
-  const handleWordSelected = (wordSelected: string, index: number) => {
-    const newSelectedWords = [...selectedWords]
-    newSelectedWords[index] = wordSelected
-    setSelectedWords(newSelectedWords)
-  }
-
-  const handleSlideChange = (index: number) => {
-    setSelectedSlide(index)
-    setError(false)
-  }
+  const dispatch = useAppDispatch()
+  const mnemonic = route.params.mnemonic
+  const mnemonicWords = useMemo(() => mnemonic.split(' '), [mnemonic])
+  const randomWords = useMemo(
+    () => onRandomWordChoice(mnemonicWords),
+    [mnemonicWords],
+  )
+  const firstWordLabel = useMemo(
+    () =>
+      randomWords
+        ? `${randomWords[0].orderNumber}${wordNumberMap.get(
+            randomWords[0].orderNumber,
+          )} word`
+        : '',
+    [randomWords],
+  )
+  const secondWordLabel = useMemo(
+    () =>
+      randomWords
+        ? `${randomWords[1].orderNumber}${wordNumberMap.get(
+            randomWords[0].orderNumber,
+          )} word`
+        : '',
+    [randomWords],
+  )
+  const [hasFormSuccess, setHasFormSuccess] = useState<boolean>(false)
 
   const onSubmitEditing = useCallback(
-    (index: number) => {
-      carousel?.snapToNext()
-      handleSlideChange(index)
+    async (values: FormValues) => {
+      const firstWord = mnemonicWords.find(w => w === values.firstWord)
+      const secondWord = mnemonicWords.find(w => w === values.secondWord)
+
+      if (!firstWord) {
+        setError('firstWord', { message: t('confirm_key_input_error') })
+        return
+      }
+      if (!secondWord) {
+        setError('secondWord', { message: t('confirm_key_input_error') })
+        return
+      }
+
+      setHasFormSuccess(true)
     },
-    [carousel],
+    [mnemonicWords, setError, t],
   )
 
-  const renderItem =
-    (
-      onWordSelected: (word: string, index: number) => void,
-      onSubmitEditingFn: (index: number) => void,
-    ) =>
-    ({ item }: ListRenderItemInfo<number>) => {
-      const groupIndex = 3 * item
-
-      const { firstRef, secondRef, thirdRef } = handleInputRefCreation()
-
-      return (
-        <View>
-          <WordSelector
-            ref={firstRef}
-            nextTextInputRef={secondRef}
-            wordIndex={groupIndex}
-            expectedWord={mnemonicWords[groupIndex]}
-            onWordSelected={onWordSelected}
-          />
-          <WordSelector
-            ref={secondRef}
-            nextTextInputRef={thirdRef}
-            wordIndex={1 + groupIndex}
-            expectedWord={mnemonicWords[groupIndex + 1]}
-            onWordSelected={handleWordSelected}
-          />
-          <WordSelector
-            ref={thirdRef}
-            itemIndex={item}
-            wordIndex={2 + groupIndex}
-            expectedWord={mnemonicWords[groupIndex + 2]}
-            onWordSelected={onWordSelected}
-            onSubmitEditing={onSubmitEditingFn}
-          />
-        </View>
-      )
+  useEffect(() => {
+    if (!formIsValid) {
+      setTimeout(() => {
+        reset()
+      }, 1000)
     }
+  }, [formIsValid, reset])
+
+  useEffect(() => {
+    if (hasFormSuccess) {
+      setTimeout(() => {
+        dispatch(createWallet({ mnemonic }))
+      }, 1000)
+    }
+  }, [hasFormSuccess, dispatch, mnemonic])
 
   return (
-    <ScrollView
-      style={sharedMnemonicStyles.parent}
-      keyboardShouldPersistTaps="always">
-      <View style={sharedMnemonicStyles.topContent}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('NewMasterKey')}
-          style={styles.returnButton}
-          accessibilityLabel="back">
-          <View style={styles.returnButtonView}>
-            <Arrow color={colors.white} rotate={270} width={30} height={30} />
-          </View>
-        </TouchableOpacity>
-        <SemiBoldText style={styles.header}>
-          <Trans>Your Master Key</Trans>
-        </SemiBoldText>
-        <RegularText style={styles.subHeader}>
-          <Trans>Start typing the words in the correct order</Trans>
-        </RegularText>
-      </View>
+    <View style={styles.screen}>
+      <ScrollView keyboardShouldPersistTaps={'handled'}>
+        <Typography type={'h2'} style={styles.titleText}>
+          {t('confirm_key_title')}
+        </Typography>
+        <FormProvider {...methods}>
+          <Input
+            containerStyle={styles.firstInputContainer}
+            label={firstWordLabel}
+            placeholder={firstWordLabel}
+            inputName={'firstWord'}
+            resetValue={() => resetField('firstWord')}
+            autoCapitalize={'none'}
+          />
 
-      <View style={sharedMnemonicStyles.sliderContainer}>
-        <Carousel
-          inactiveSlideOpacity={0}
-          removeClippedSubviews={false} //https://github.com/meliorence/react-native-snap-carousel/issues/238
-          ref={c => c && setCarousel(c)}
-          data={slidesIndexes}
-          renderItem={renderItem(handleWordSelected, onSubmitEditing)}
-          sliderWidth={WINDOW_WIDTH}
-          // sliderHeight={200}
-          itemWidth={SLIDER_WIDTH}
-          inactiveSlideShift={0}
-          onSnapToItem={handleSlideChange}
-          useScrollView={false}
-          keyboardShouldPersistTaps="always"
-          pagingEnabled={false}
-        />
-      </View>
-
-      {error && (
-        <View style={styles.errorContainer}>
-          <RegularText>The words are not correct.</RegularText>
-        </View>
-      )}
-
-      {!isKeyboardVisible && (
-        <View style={sharedMnemonicStyles.pagnationContainer}>
-          <PaginationNavigator
-            onPrevious={() => carousel?.snapToPrev()}
-            onNext={() => carousel?.snapToNext()}
-            onComplete={handleConfirmMnemonic}
-            title="confirm"
-            currentIndex={selectedSlide}
-            slidesAmount={slidesIndexes.length}
-            containerBackgroundColor={colors.darkBlue}
+          <Input
+            label={secondWordLabel}
+            placeholder={secondWordLabel}
+            inputName={'secondWord'}
+            resetValue={() => resetField('secondWord')}
+            autoCapitalize={'none'}
+          />
+        </FormProvider>
+      </ScrollView>
+      <AppButton
+        style={styles.button}
+        title={t('confirm_key_button')}
+        onPress={handleSubmit(onSubmitEditing)}
+        color={sharedColors.white}
+        textColor={sharedColors.black}
+      />
+      {!formIsValid || hasFormSuccess ? (
+        <View style={StyleSheet.absoluteFill}>
+          <View style={[StyleSheet.absoluteFill, styles.backgroundOverlay]} />
+          <Typography
+            style={styles.feedbackText}
+            type={'h2'}
+            color={sharedColors.white}>
+            {hasFormSuccess ? t('confirm_key_success') : t('confirm_key_error')}
+          </Typography>
+          <Icon
+            solid
+            name={hasFormSuccess ? 'check-circle' : 'times-circle'}
+            size={106}
+            color={
+              hasFormSuccess ? sharedColors.successLight : sharedColors.danger
+            }
+            style={styles.feedbackIcon}
           />
         </View>
-      )}
-    </ScrollView>
+      ) : null}
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  returnButton: {
-    zIndex: 1,
-  },
-  returnButtonView: {
-    width: 30,
-    height: 30,
-    borderRadius: 30,
-    margin: 15,
-    backgroundColor: colors.purple,
-  },
-  header: {
-    color: colors.white,
-    fontSize: 18,
-    paddingVertical: 10,
-    marginBottom: 5,
-    marginLeft: 60,
-    textAlign: 'left',
-  },
-  subHeader: {
-    color: colors.white,
-    fontSize: 14,
-    marginLeft: 60,
-    marginBottom: 40,
-    textAlign: 'left',
-  },
-  errorContainer: {
-    padding: 20,
-    marginHorizontal: 60,
-    marginBottom: 10,
-    borderRadius: 20,
-    backgroundColor: colors.red,
-  },
-  errorText: {
-    color: colors.white,
-  },
+  screen: castStyle.view({
+    flex: 1,
+    backgroundColor: sharedColors.black,
+    paddingHorizontal: 24,
+  }),
+  titleText: castStyle.text({ marginTop: 58, letterSpacing: -0.3 }),
+  backgroundOverlay: castStyle.view({
+    backgroundColor: sharedColors.black,
+  }),
+  firstInputContainer: castStyle.view({ marginTop: 32 }),
+  button: castStyle.view({
+    position: 'absolute',
+    bottom: 30,
+    left: 24,
+    right: 24,
+  }),
+  feedbackText: castStyle.text({ marginTop: 58, marginLeft: 24 }),
+  feedbackIcon: castStyle.text({ alignSelf: 'center', marginTop: 58 }),
 })

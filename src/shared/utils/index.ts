@@ -29,3 +29,9 @@ export const castStyle = {
   view: (style: ViewStyle) => style,
   image: (style: ImageStyle) => style,
 }
+
+export const getRandomNumber = (max: number, min: number) => {
+  min = Math.ceil(min)
+  max = Math.floor(max)
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
