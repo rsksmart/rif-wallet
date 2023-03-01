@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import { shortAddress } from 'lib/utils'
 
-import { TokenImage } from 'screens/home/TokenImage'
+import { TokenImage, TokenSymbol } from 'screens/home/TokenImage'
 import { Typography } from 'components/index'
 import { HideShowIcon } from 'components/icons'
 import { AppTouchable } from 'components/appTouchable'
@@ -14,7 +14,7 @@ import { castStyle } from 'shared/utils'
 import { ContactWithAddressRequired } from 'shared/types'
 
 export interface CurrencyValue {
-  symbol: string
+  symbol: TokenSymbol | string
   symbolType: string
   balance: string
 }
