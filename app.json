@@ -1,20 +1,4 @@
 {
   "name": "rifWallet",
-  "displayName": "rifWallet",
-  "QR_READER_BITCOIN_DEFAULT_NETWORK_MAINNET": "BITCOIN",
-  "QR_READER_BITCOIN_DEFAULT_NETWORK_TESTNET": "BITCOIN_TESTNET",
-  "RIF_RELAY_SERVER_MAINNET":"https://relay.rif-wallet-services.mainnet.rifcomputing.net",
-  "RIF_RELAY_SERVER_TESTNET":"https://relay.rif-wallet-services.testnet.rifcomputing.net",
-  "SMART_WALLET_FACTORY_ADDRESS_MAINNET":"0x9eebec6c5157bee13b451b1dfe1ee2cb40846323",
-  "SMART_WALLET_FACTORY_ADDRESS_TESTNET":"0xCBc3BC24da96Ef5606d3801E13E1DC6E98C5c877",
-  "RELAY_VERIFIER_ADDRESS_MAINNET":"0x5C9c7d96E6C59E55dA4dCf7F791AE58dAF8DBc86",
-  "RELAY_VERIFIER_ADDRESS_TESTNET":"0xB86c972Ff212838C4c396199B27a0DBe45560df8",
-  "DEPLOY_VERIFIER_ADDRESS_MAINET":"0x2fd633e358bc50ccf6bf926d621e8612b55264c9",
-  "DEPLOY_VERIFIER_ADDRESS_TESTNET":"0xc67f193Bb1D64F13FD49E2da6586a2F417e56b16",
-  "BTC_EXPLORER_ADDRESS_URL_MAINNET":"https://explorer.btc.com/btc/transaction",
-  "BTC_EXPLORER_ADDRESS_URL_TESTNET":"https://live.blockcypher.com/btc-testnet/tx",
-  "RPC_URL_MAINNET":"https://public-node.rsk.co",
-  "RPC_URL_TESTNET":"https://public-node.testnet.rsk.co",
-  "EXPLORER_ADDRESS_URL_MAINNET":"https://explorer.rsk.co",
-  "EXPLORER_ADDRESS_URL_TESTNET":"https://explorer.testnet.rsk.co"
+  "displayName": "rifWallet"
 }
