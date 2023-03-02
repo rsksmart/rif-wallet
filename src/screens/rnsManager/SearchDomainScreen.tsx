@@ -1,15 +1,14 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useCallback, useEffect, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
-import Icon from 'react-native-vector-icons/AntDesign'
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-
-import { PrimaryButton } from 'components/button/PrimaryButton'
-import { Input } from 'components/index'
-import { InfoBox } from 'components/InfoBox'
+import Icon from 'react-native-vector-icons/Entypo'
+import * as yup from 'yup'
 
 import { AppTouchable } from 'components/appTouchable'
+import { AppButton, Input, Typography } from 'components/index'
+import { InfoBox } from 'components/InfoBox'
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import {
   profileStackRouteNames,
@@ -17,10 +16,10 @@ import {
   ProfileStatus,
 } from 'navigation/profileNavigator/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
-import DomainLookUp from 'screens/rnsManager/DomainLookUp'
+import { sharedColors } from 'shared/constants'
 import { ScreenWithWallet } from '../types'
+import { BackButton } from './BackButton'
 import { rnsManagerStyles } from './rnsManagerStyles'
-import TitleStatus from './TitleStatus'
 
 import { castStyle } from 'shared/utils'
 import { colors } from 'src/styles'
@@ -28,12 +27,20 @@ import { selectBalances } from 'store/slices/balancesSlice'
 import { recoverAlias } from 'store/slices/profileSlice'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { DomainInput } from './DomainInput'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
   ScreenWithWallet
 
+const schema = yup.object({
+  domain: yup
+    .string()
+    .required()
+    .matches(/^[a-z0-9]+$/, 'Only lower cases and numbers are allowed')
+    .min(5, ''),
+})
+
 export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
-  const [domainToLookUp, setDomainToLookUp] = useState<string>('')
   const [isDomainOwned, setIsDomainOwned] = useState<boolean>(false)
   const [validDomain, setValidDomain] = useState<boolean>(false)
   const [selectedYears, setSelectedYears] = useState<number>(2)
@@ -42,8 +49,17 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const dispatch = useAppDispatch()
   const tokenBalances = useAppSelector(selectBalances)
   const prices = useAppSelector(selectUsdPrices)
-  const methods = useForm()
   const { t } = useTranslation()
+  const methods = useForm({
+    mode: 'onChange',
+    resolver: yupResolver(schema),
+  })
+
+  const {
+    handleSubmit,
+    formState: { errors },
+  } = methods
+  const hasErrors = Object.keys(errors).length > 0
 
   // calculate price of domain in USD
   const rifToken = Object.values(tokenBalances).find(
@@ -54,6 +70,17 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const selectedDomainPriceInUsd = (
     rifTokenPrice * selectedDomainPrice
   ).toFixed(2)
+
+  const domainToLookUp = methods.getValues('domain')
+  const isRequestButtonDisabled = hasErrors || !validDomain
+  const isSaveButtonDisabled = (hasErrors || !validDomain) && !isDomainOwned
+
+  const onSubmit = (data: FieldValues) => {
+    navigation.navigate(profileStackRouteNames.RequestDomain, {
+      alias: data.domain,
+      duration: selectedYears,
+    })
+  }
 
   const calculatePrice = useCallback(async (_: string, years: number) => {
     //TODO: re enable this later
@@ -83,7 +110,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
       const price = await calculatePrice(domainToLookUp, years)
       setSelectedDomainPrice(price)
     },
-    [calculatePrice, domainToLookUp],
+    [calculatePrice, domainToLookUp, setSelectedYears],
   )
 
   const handleSetProfile = useCallback(() => {
@@ -104,45 +131,41 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   return (
     <>
       <View style={rnsManagerStyles.profileHeader}>
-        <AppTouchable
-          width={30}
+        <BackButton
           onPress={() => navigation.navigate(rootTabsRouteNames.Home)}
-          accessibilityLabel="home">
-          <View style={rnsManagerStyles.backButton}>
-            <MaterialIcon name="west" color={colors.lightPurple} size={10} />
-          </View>
-        </AppTouchable>
+          accessibilityLabel="home"
+        />
+        <Typography type="h3" style={rnsManagerStyles.title}>
+          {t('username_registration_title')}
+        </Typography>
+        <View />
       </View>
       <View style={rnsManagerStyles.container}>
-        <TitleStatus
-          title={'Choose alias'}
-          subTitle={'next: Request process'}
-          progress={0.25}
-          progressText={'1/4'}
-        />
-
-        <InfoBox
-          avatar={
-            domainToLookUp !== '' ? domainToLookUp + '.rsk' : 'alias name'
-          }
-          title={t('info_box_title_search_domain')}
-          description={t('info_box_description_search_domain')}
-          buttonText={t('info_box_close_button')}
-        />
-
-        <View style={rnsManagerStyles.marginBottom}>
-          <DomainLookUp
-            initialValue={domainToLookUp}
-            onChangeText={setDomainToLookUp}
-            wallet={wallet}
-            onDomainAvailable={handleDomainAvailable}
-            onDomainOwned={setIsDomainOwned}
-          />
-        </View>
         <FormProvider {...methods}>
+          <Typography
+            type="h2"
+            style={[rnsManagerStyles.subtitle, rnsManagerStyles.marginBottom]}>
+            {t('request_username_title')}
+          </Typography>
+
+          <InfoBox
+            avatar={
+              domainToLookUp !== '' ? domainToLookUp + '.rsk' : 'alias name'
+            }
+            title={t('info_box_title_search_domain')}
+            description={t('info_box_description_search_domain')}
+            buttonText={t('info_box_close_button')}
+          />
+
+          <View style={rnsManagerStyles.marginTop}>
+            <DomainInput
+              wallet={wallet}
+              onDomainOwned={setIsDomainOwned}
+              onDomainAvailable={handleDomainAvailable}
+            />
+          </View>
           <Input
-            inputName="years"
-            value={selectedYears + ''}
+            inputName="duration"
             isReadOnly={true}
             label={t('request_username_label')}
             placeholder={`${selectedYears} ${t(
@@ -150,7 +173,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
             )}${selectedYears > 1 ? 's' : ''}`}
             subtitle={`${selectedDomainPrice} RIF ($ ${selectedDomainPriceInUsd})`}
             containerStyle={styles.yearsContainer}
-            subtitleStyle={styles.yearsSubtitle}
+            inputStyle={styles.yearsInput}
             rightIcon={
               <View style={styles.yearsButtons}>
                 {selectedYears > 1 && (
@@ -172,30 +195,47 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
               </View>
             }
           />
+          <View style={rnsManagerStyles.bottomContainer}>
+            {!isDomainOwned && (
+              <AppButton
+                disabled={isRequestButtonDisabled}
+                onPress={handleSubmit(onSubmit)}
+                accessibilityLabel={t('request_username_button')}
+                title={t('request_username_button')}
+                color={
+                  !isRequestButtonDisabled
+                    ? sharedColors.white
+                    : sharedColors.borderColor
+                }
+                textColor={
+                  !isRequestButtonDisabled
+                    ? sharedColors.black
+                    : sharedColors.labelLight
+                }
+                disabledStyle={rnsManagerStyles.disabledButton}
+              />
+            )}
+            {isDomainOwned && (
+              <AppButton
+                disabled={isSaveButtonDisabled}
+                onPress={handleSetProfile}
+                accessibilityLabel={t('save_username_button')}
+                title={t('save_username_button')}
+                color={
+                  !isSaveButtonDisabled
+                    ? sharedColors.white
+                    : sharedColors.borderColor
+                }
+                textColor={
+                  !isSaveButtonDisabled
+                    ? sharedColors.black
+                    : sharedColors.labelLight
+                }
+                disabledStyle={rnsManagerStyles.disabledButton}
+              />
+            )}
+          </View>
         </FormProvider>
-        <View style={rnsManagerStyles.bottomContainer}>
-          {!isDomainOwned && (
-            <PrimaryButton
-              disabled={!validDomain}
-              onPress={() =>
-                navigation.navigate(profileStackRouteNames.RequestDomain, {
-                  alias: domainToLookUp.replace('.rsk', ''),
-                  duration: selectedYears,
-                })
-              }
-              accessibilityLabel="request"
-              title={'request'}
-            />
-          )}
-          {isDomainOwned && (
-            <PrimaryButton
-              disabled={!validDomain}
-              onPress={handleSetProfile}
-              accessibilityLabel="set alias"
-              title={'set alias'}
-            />
-          )}
-        </View>
       </View>
       <ConfirmationModal
         isVisible={isModalVisible}
@@ -214,17 +254,13 @@ const styles = StyleSheet.create({
     height: 90,
     paddingRight: 10,
   }),
-  yearsSubtitle: castStyle.view({
-    marginTop: 12,
+  yearsInput: castStyle.text({
+    paddingLeft: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
   }),
   yearsButtons: castStyle.view({
     flexDirection: 'row',
-  }),
-  priceText: castStyle.text({
-    flex: 1,
-    width: '100%',
-    color: colors.lightPurple,
-    marginLeft: 15,
   }),
   icon: castStyle.view({
     alignSelf: 'center',
