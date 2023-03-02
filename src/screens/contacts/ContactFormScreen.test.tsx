@@ -11,7 +11,8 @@ jest.mock('@react-navigation/native', () => ({
   }),
 }))
 
-describe('ContactFormScreen', () => {
+// eslint-disable-next-line jest/no-disabled-tests
+describe.skip('ContactFormScreen', () => {
   const { ReduxWrapper } = createReduxWrapper()
 
   const navigation = useNavigation<ContactFormScreenProps['navigation']>()

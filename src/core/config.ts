@@ -3,6 +3,7 @@ import testnetContracts from '@rsksmart/rsk-testnet-contract-metadata'
 import mainnetContracts from '@rsksmart/rsk-contract-metadata'
 
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
+import config from 'config.json'
 export const defaultChainType =
   (Config.DEFAULT_CHAIN_TYPE as ChainTypeEnum) ?? ChainTypeEnum.TESTNET
 export const isDefaultChainTypeMainnet =
@@ -33,11 +34,16 @@ export const getWalletSetting = (
   setting: SETTINGS,
   chainType: ChainTypeEnum = defaultChainType,
 ): string => {
-  if (Config[`${setting}_${chainType}`]) {
-    return Config[`${setting}_${chainType}`]
+  const key = `${setting}_${chainType}`
+  if (key in config) {
+    return config[key as keyof typeof config]
   }
 
-  return Config[setting]
+  if (Config[key]) {
+    return Config[key] || ''
+  }
+
+  return Config[setting] || ''
 }
 
 export const getTokenAddress = (symbol: string, chainType: ChainTypeEnum) => {
