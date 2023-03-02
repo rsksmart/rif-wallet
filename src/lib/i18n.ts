@@ -109,11 +109,9 @@ const resources = {
       header_purchase: 'Purchase username',
       header_purchasing: 'Purchasing username...',
       header_error: 'Error Requesting username',
-      request_username_label: 'Length of registration',
-      request_username_placeholder: 'year',
       mnemonic_title: 'Security advice',
       mnemonic_title_copy: 'Copied to clipboard!',
-      mnemonic_body: `Please make sure that you are located 
+      mnemonic_body: `Please make sure that you are located
       in a safe environment with no one being
       able to see your phone screen before you decide to reveal your phrase. `,
       mnemonic_body_copy:
@@ -132,6 +130,16 @@ const resources = {
         'Deploy your wallet and send funds to your family and friends. ',
       home_information_bar_desc3:
         'Register your username and receive your icon.',
+      username_registration_title: 'Username Registration',
+      request_username_title: 'Request a username',
+      request_username_label: 'Length of registration',
+      request_username_placeholder: 'year',
+      username: 'Username',
+      username_available: 'Username available',
+      username_unavailable: 'Username unavailable',
+      username_owned: 'Username owned',
+      request_username_button: 'Request',
+      save_username_button: 'Save',
       address_validating: 'Validating...',
       address_rns_placeholder: 'Username or address',
       contact_form_title_edit: 'Edit Contact',

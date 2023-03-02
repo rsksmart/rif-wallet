@@ -40,7 +40,7 @@ export const InfoBox = ({
       ) : null}
       {buttonText ? (
         <AppTouchable style={styles.button} onPress={onPress} width={50}>
-          <Typography style={styles.buttonText} type={'body1'}>
+          <Typography style={styles.buttonText} type={'body2'}>
             {buttonText}
           </Typography>
         </AppTouchable>

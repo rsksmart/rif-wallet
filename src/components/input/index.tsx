@@ -41,7 +41,9 @@ export interface InputProps extends TextInputProps {
   containerStyle?: StyleProp<ViewStyle>
   inputStyle?: StyleProp<TextStyle>
   labelStyle?: StyleProp<TextStyle>
+  placeholderStyle?: StyleProp<TextStyle>
   subtitleStyle?: StyleProp<TextStyle>
+  suffix?: ReactFragment
 }
 
 export const Input = ({
@@ -58,11 +60,13 @@ export const Input = ({
   containerStyle,
   inputStyle,
   labelStyle,
+  placeholderStyle,
   subtitleStyle,
   onBlur: onBlurProp,
   onChangeText,
   onFocus: onFocusProp,
-  ...props
+  suffix,
+  ...textInputProps
 }: InputProps) => {
   const { control } = useFormContext()
   const [focused, setFocused] = useState<boolean>(false)
@@ -103,12 +107,12 @@ export const Input = ({
             <View style={styles.valueContainer}>
               {leftIcon && 'name' in leftIcon ? (
                 <AppTouchable
-                  width={leftIcon.size ? leftIcon.size : defaultIconSize}
-                  onPress={onLeftIconPress ? onLeftIconPress : noop}>
+                  width={leftIcon.size || defaultIconSize}
+                  onPress={onLeftIconPress || noop}>
                   <Icon
                     name={leftIcon.name}
-                    size={leftIcon.size ? leftIcon.size : defaultIconSize}
-                    color={leftIcon.color ? leftIcon.color : sharedColors.white}
+                    size={leftIcon.size || defaultIconSize}
+                    color={leftIcon.color || sharedColors.white}
                   />
                 </AppTouchable>
               ) : (
@@ -122,17 +126,17 @@ export const Input = ({
                 <TextInput
                   style={[sharedStyles.flex, inputStyle]}
                   onChangeText={text => {
-                    onChangeText && onChangeText(text)
                     onChange(text)
+                    onChangeText?.(text)
                   }}
                   onBlur={onBlur}
                   onFocus={onFocus}
                   editable={!isReadOnly}
-                  {...props}>
+                  {...textInputProps}>
                   <Typography
                     style={[
                       styles.placeholderText,
-                      value || isReadOnly ? styles.valueText : null,
+                      value || isReadOnly ? styles.valueText : placeholderStyle,
                     ]}
                     type={!value ? (isReadOnly ? 'body2' : 'body3') : 'body2'}>
                     {placeholder && !focused && !value ? placeholder : value}
@@ -149,10 +153,9 @@ export const Input = ({
               </View>
             </View>
           </View>
+          {suffix}
           {!rightIcon && !!value ? (
-            <AppTouchable
-              width={defaultIconSize}
-              onPress={resetValue ? resetValue : noop}>
+            <AppTouchable width={defaultIconSize} onPress={resetValue || noop}>
               <Icon
                 name={'close'}
                 size={defaultIconSize}
@@ -160,11 +163,11 @@ export const Input = ({
               />
             </AppTouchable>
           ) : rightIcon && 'name' in rightIcon ? (
-            <Pressable onPress={onRightIconPress ? onRightIconPress : noop}>
+            <Pressable onPress={onRightIconPress || noop}>
               <Icon
                 name={rightIcon.name}
-                size={rightIcon.size ? rightIcon.size : defaultIconSize}
-                color={rightIcon.color ? rightIcon.color : sharedColors.white}
+                size={rightIcon.size || defaultIconSize}
+                color={rightIcon.color || sharedColors.white}
               />
             </Pressable>
           ) : (
