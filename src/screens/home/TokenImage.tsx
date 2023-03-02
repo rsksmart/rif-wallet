@@ -1,4 +1,3 @@
-import React from 'react'
 import {
   Image,
   ImageRequireSource,
@@ -10,11 +9,13 @@ import {
 
 import { FrownFaceIcon } from 'components/icons'
 
-export const TokenImage: React.FC<{
+interface Props {
   symbol: string
   height?: number
   width?: number
-}> = ({ symbol, height = 20, width = 20 }) => {
+}
+
+export const TokenImage = ({ symbol, height = 20, width = 20 }: Props) => {
   const viewStyle: StyleProp<ViewStyle> = {
     aspectRatio: 1,
     justifyContent: 'center',
@@ -33,6 +34,70 @@ export const TokenImage: React.FC<{
       )}
     </View>
   )
+}
+
+export enum TokenSymbol {
+  TRBTC = 'TRBTC',
+  RIF = 'RIF',
+  TRIF = 'TRIF',
+  DOC = 'DOC',
+  RDOC = 'RDOC',
+  RIFP = 'RIFP',
+  BPRO = 'BPRO',
+  RNS = 'RNS',
+  TRNS = 'TRNS',
+  INV = 'INV',
+  RDAI = 'RDAI',
+  RKOVDAI = 'RKOVDAI',
+  WRBTC = 'WRBTC',
+  RBTC_RIF = '🦄RBTC:RIF',
+  RBTC_TRIF = '🦄RBTC:TRIF',
+  RIF_DOC = '🦄RIF:DOC',
+  TRIF_DOC = '🦄TRIF:DOC',
+  BPRO_DOC = '🦄BPRO:DOC',
+  RDOC_DOC = '🦄RDOC:DOC',
+  DAI_DOC = '🦄DAI:DOC',
+  RDAI_RBTC = '🦄RDAI:RBTC',
+  RIF_RDAI = '🦄RIF:RDAI',
+  RFLIXX = 'RFLIXX',
+  RLINK = 'RLINK',
+  RKOVLINK = 'RKOVLINK',
+  RUSDC = 'RUSDC',
+  RKOVUSDC = 'RKOVUSDC',
+  RUSDT = 'RUSDT',
+  RKOVUSDT = 'RKOVUSDT',
+  RRFOX = 'RRFOX',
+  CRUSDT = 'CRUSDT',
+  CRIF = 'CRIF',
+  CRBTC = 'CRBTC',
+  RBUND = 'RBUND',
+  RKOVBUND = 'RKOVBUND',
+  RAMLT = 'RAMLT',
+  SOV = 'SOV',
+  MOC = 'MOC',
+  RUBI = 'RUBI',
+  RKOVUBI = 'RKOVUBI',
+  ARSCB = 'ARSCB',
+  USDCB = 'USDCB',
+  VESCB = 'VESCB',
+  COPCB = 'COPCB',
+  BRLCB = 'BRLCB',
+  EURCB = 'EURCB',
+  PABCB = 'PABCB',
+  PYGCB = 'PYGCB',
+  PENCB = 'PENCB',
+  CNYCB = 'CNYCB',
+  MXNCB = 'MXNCB',
+  BOBCB = 'BOBCB',
+  IDRCB = 'IDRCB',
+  UYUCB = 'UYUCB',
+  BTCCB = 'BTCCB',
+  BTCT = 'BTCT',
+  BTC = 'BTC',
+  ETHCB = 'ETHCB',
+  BRZ = 'BRZ',
+  XUSD = 'XUSD',
+  FISH = 'FISH',
 }
 
 export const getIconSource = (

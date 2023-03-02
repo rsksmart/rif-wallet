@@ -78,7 +78,7 @@ export enum AppButtonCornerVarietyEnum {
   ROUND = 'ROUND',
   SQUARE = 'SQUARE',
 }
-interface AppButtonProps extends ButtonProps {
+export interface AppButtonProps extends ButtonProps {
   backgroundVariety?: AppButtonBackgroundVarietyEnum
   widthVariety?: AppButtonWidthVarietyEnum
   cornerVariety?: AppButtonCornerVarietyEnum

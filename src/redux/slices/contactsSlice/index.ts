@@ -8,7 +8,7 @@ import {
   saveContacts,
   deleteContacts as deleteContactsFromStorage,
 } from 'storage/MainStorage'
-import { Contact } from 'store/slices/contactsSlice/types'
+import { Contact } from 'shared/types'
 import uuid from 'react-native-uuid'
 
 const initialState: ContactsState = {

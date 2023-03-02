@@ -15,7 +15,7 @@ import {
   RootNavigationComponent,
   RootTabsParamsList,
 } from 'navigation/rootNavigator'
-import ModalComponent from '../ux/requestsModal/ModalComponent'
+import { ModalComponent } from 'src/ux/requestsModal/ModalComponent'
 
 import {
   createNavigationContainerRef,
