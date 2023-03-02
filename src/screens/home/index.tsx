@@ -28,7 +28,6 @@ import {
   hasIsGettingStartedClosed,
   saveIsGettingStartedClosed,
 } from 'storage/MainStorage'
-import { castStyle } from 'shared/utils'
 
 import PortfolioComponent from './PortfolioComponent'
 import { getTokenColor } from './tokenColor'
@@ -38,6 +37,7 @@ import { useBitcoinTransactionsHandler } from 'screens/activity/useBitcoinTransa
 import useTransactionsCombiner from 'screens/activity/useTransactionsCombiner'
 import { ActivityBasicRow } from 'screens/activity/ActivityRow'
 import { HomeInformationBar } from './HomeInformationBar'
+import { castStyle } from 'shared/utils'
 
 export const HomeScreen = ({
   navigation,

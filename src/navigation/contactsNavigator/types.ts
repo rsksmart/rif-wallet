@@ -1,5 +1,6 @@
 import { StackScreenProps } from '@react-navigation/stack'
-import { Contact } from 'store/slices/contactsSlice/types'
+
+import { Contact } from 'shared/types'
 
 export type ContactsStackScreenProps<T extends keyof ContactStackParamsList> =
   StackScreenProps<ContactStackParamsList, T>

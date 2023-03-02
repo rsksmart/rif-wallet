@@ -1,23 +1,20 @@
-import { StyleSheet, TextInput, View } from 'react-native'
+import { StyleProp, StyleSheet, TextInput, View, ViewStyle } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { useTranslation } from 'react-i18next'
 
+import { shortAddress } from 'lib/utils'
+
+import { TokenImage, TokenSymbol } from 'screens/home/TokenImage'
 import { Typography } from 'components/index'
 import { HideShowIcon } from 'components/icons'
-import { noop, sharedColors, testIDs } from 'shared/constants'
-import { TokenImage } from 'screens/home/TokenImage'
-import { Avatar } from 'components/avatar'
 import { AppTouchable } from 'components/appTouchable'
+import { Avatar } from 'components/avatar'
+import { noop, sharedColors, testIDs } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-
-interface Address {
-  address: string
-  name: string
-  contactName: string
-}
+import { ContactWithAddressRequired } from 'shared/types'
 
 export interface CurrencyValue {
-  symbol: string
+  symbol: TokenSymbol | string
   symbolType: string
   balance: string
 }
@@ -25,20 +22,21 @@ export interface CurrencyValue {
 interface Props {
   firstValue: CurrencyValue
   secondValue: CurrencyValue
-  color: string
+  color?: string
   hide?: boolean
   onSwap?: () => void
   onHide?: () => void
   editable?: boolean
   hideable?: boolean
   handleAmountChange?: (text: string) => void
-  to?: Address
+  to?: ContactWithAddressRequired
+  style?: StyleProp<ViewStyle>
 }
 
 export const TokenBalance = ({
   firstValue,
   secondValue,
-  color,
+  color = sharedColors.black,
   hide = false,
   editable = false,
   onSwap = noop,
@@ -46,116 +44,106 @@ export const TokenBalance = ({
   onHide = noop,
   handleAmountChange = noop,
   to,
+  style,
 }: Props) => {
   const { t } = useTranslation()
 
   return (
-    <View style={[styles.balanceCard, { backgroundColor: color }]}>
-      <View style={styles.container}>
-        <View style={styles.grow}>
-          <View style={styles.container}>
-            {firstValue.symbolType === 'icon' && (
-              <View style={[styles.tokenIcon, styles.center]}>
-                <TokenImage symbol={firstValue.symbol} height={24} width={24} />
-              </View>
-            )}
-            {firstValue.symbolType === 'text' && (
-              <View style={styles.center}>
-                <Typography type={'h1'} style={{ color: sharedColors.white }}>
-                  {firstValue.symbol}{' '}
-                </Typography>
-              </View>
-            )}
-
-            <TextInput
-              onChangeText={handleAmountChange}
-              value={hide ? '\u002A\u002A\u002A\u002A' : firstValue.balance}
-              placeholder="0.00"
-              keyboardType="numeric"
-              testID={'Amount.Input'}
-              placeholderTextColor={sharedColors.white}
-              style={styles.input}
-              editable={editable}
-            />
-          </View>
-          <View
-            style={
-              editable ? [styles.container] : [styles.ident, styles.container]
-            }>
-            {secondValue.symbolType === 'icon' && (
-              <View style={styles.tokenSubIcon}>
-                <TokenImage
-                  symbol={secondValue.symbol}
-                  height={16}
-                  width={16}
-                />
-              </View>
-            )}
-            {secondValue.symbolType === 'text' && (
-              <Typography type={'h3'} style={styles.subTitle}>
-                {hide ? '' : secondValue.symbol + ' '}
+    <View style={[styles.balanceCard, { backgroundColor: color }, style]}>
+      <View style={styles.grow}>
+        <View style={styles.container}>
+          {firstValue.symbolType === 'icon' && (
+            <View style={[styles.tokenIcon, styles.center]}>
+              <TokenImage symbol={firstValue.symbol} height={24} width={24} />
+            </View>
+          )}
+          {firstValue.symbolType === 'text' && (
+            <View style={styles.center}>
+              <Typography type={'h1'} style={{ color: sharedColors.white }}>
+                {firstValue.symbol}
               </Typography>
-            )}
+            </View>
+          )}
+
+          <TextInput
+            onChangeText={handleAmountChange}
+            value={hide ? '\u002A\u002A\u002A\u002A' : firstValue.balance}
+            placeholder="0.00"
+            keyboardType="numeric"
+            testID={'Amount.Input'}
+            placeholderTextColor={sharedColors.white}
+            style={styles.input}
+            editable={editable}
+          />
+        </View>
+        <View style={[styles.container, styles.ident]}>
+          {secondValue.symbolType === 'icon' && (
+            <View style={styles.tokenSubIcon}>
+              <TokenImage symbol={secondValue.symbol} height={16} width={16} />
+            </View>
+          )}
+          {secondValue.symbolType === 'text' && (
             <Typography type={'h3'} style={styles.subTitle}>
-              {hide
-                ? '\u002A\u002A\u002A\u002A\u002A\u002A'
-                : secondValue.balance}
+              {hide ? '' : secondValue.symbol}
+            </Typography>
+          )}
+          <Typography type={'h3'} style={styles.subTitle}>
+            {hide
+              ? '\u002A\u002A\u002A\u002A\u002A\u002A'
+              : secondValue.balance}
+          </Typography>
+        </View>
+        {to ? (
+          <View style={[styles.container, styles.toAddressContainer]}>
+            <Typography type={'h3'}>{t('To')} </Typography>
+            <Typography type={'h3'} style={{ color: sharedColors.primary }}>
+              {to.displayAddress ? to.displayAddress : shortAddress(to.address)}
             </Typography>
           </View>
-          <View>
-            {to && (
-              <View style={styles.container}>
-                <Typography type={'h3'}>{t('To')} </Typography>
-                <Typography type={'h3'} style={{ color: sharedColors.primary }}>
-                  {to.name ? to.name : to.address}
-                </Typography>
-              </View>
-            )}
+        ) : null}
+      </View>
+      <View>
+        {to && to.name ? (
+          <View style={styles.contactCard}>
+            <Avatar size={40} name={to.name} />
+            <Typography type={'body1'} style={styles.toNameContactText}>
+              {to.name}
+            </Typography>
           </View>
-        </View>
-        <View>
-          {to ? (
-            <View style={styles.contactCard}>
-              <View style={styles.center}>
-                <Avatar size={30} name={to.name ? to.name : to.contactName} />
+        ) : null}
+        {hideable && !editable && (
+          <View style={styles.center}>
+            <AppTouchable
+              width={46}
+              onPress={onHide}
+              accessibilityLabel={testIDs.hide}>
+              <View style={styles.badge}>
+                <HideShowIcon
+                  color={sharedColors.white}
+                  height={20}
+                  width={30}
+                  isHidden={hide}
+                />
               </View>
-              <Typography type={'h5'}>{to.contactName}</Typography>
-            </View>
-          ) : null}
-          {hideable && (
-            <View style={styles.center}>
-              <AppTouchable
-                width={46}
-                onPress={onHide}
-                accessibilityLabel={testIDs.hide}>
-                <View style={styles.badge}>
-                  <HideShowIcon
-                    color={sharedColors.white}
-                    height={20}
-                    width={30}
-                    isHidden={hide}
-                  />
-                </View>
-              </AppTouchable>
-            </View>
-          )}
-          {editable && (
-            <View style={styles.center}>
-              <AppTouchable
-                width={41}
-                onPress={onSwap}
-                accessibilityLabel={testIDs.swap}>
-                <View style={styles.badge}>
-                  <Icon
-                    name="ios-swap-vertical"
-                    color={sharedColors.white}
-                    size={25}
-                  />
-                </View>
-              </AppTouchable>
-            </View>
-          )}
-        </View>
+            </AppTouchable>
+          </View>
+        )}
+        {editable && !hideable && (
+          <View style={styles.center}>
+            <AppTouchable
+              width={41}
+              onPress={onSwap}
+              accessibilityLabel={testIDs.swap}>
+              <View style={styles.badge}>
+                <Icon
+                  name={'ios-swap-vertical'}
+                  color={sharedColors.white}
+                  size={25}
+                />
+              </View>
+            </AppTouchable>
+          </View>
+        )}
       </View>
     </View>
   )
@@ -173,9 +161,9 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   }),
   balanceCard: castStyle.view({
-    paddingHorizontal: 25,
-    paddingVertical: 25,
-    borderRadius: 0,
+    height: 100,
+    flexDirection: 'row',
+    alignItems: 'center',
   }),
   tokenIcon: castStyle.view({
     marginRight: 10,
@@ -200,8 +188,11 @@ const styles = StyleSheet.create({
   }),
   contactCard: castStyle.view({
     backgroundColor: sharedColors.inputInactive,
-    padding: 20,
+    paddingVertical: 13.5,
     borderRadius: 10,
+    alignItems: 'center',
+    width: 100,
+    height: '100%',
   }),
   badge: castStyle.view({
     padding: 8,
@@ -213,4 +204,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontSize: 36,
   }),
+  toAddressContainer: castStyle.view({ marginTop: 12 }),
+  toNameContactText: castStyle.view({ marginTop: 10 }),
 })

@@ -8,7 +8,7 @@ import { AppFooterMenu } from '../../ux/appFooter'
 import { AppHeader } from '../../ux/appHeader'
 
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
-import { rootTabsRouteNames } from './types'
+import { RootTabsParamsList, rootTabsRouteNames } from './types'
 import { InjectedScreens } from 'core/Core'
 import { HomeNavigator } from '../homeNavigator'
 import { ContactsNavigation } from '../contactsNavigator'
@@ -16,8 +16,9 @@ import { SettingsNavigator } from '../settingsNavigator'
 import { ProfileNavigator } from '../profileNavigator'
 import { useAppSelector } from 'store/storeUtils'
 import { selectFullscreen, selectIsUnlocked } from 'store/slices/settingsSlice'
+import { TransactionsSummary } from 'screens/transactionSummary'
 
-const RootTabs = createBottomTabNavigator()
+const RootTabs = createBottomTabNavigator<RootTabsParamsList>()
 
 export const RootNavigationComponent = () => {
   const isDeviceRooted = JailMonkey.isJailBroken()
@@ -76,6 +77,10 @@ export const RootNavigationComponent = () => {
             <RootTabs.Screen
               name={rootTabsRouteNames.CreateKeysUX}
               component={CreateKeysNavigation}
+            />
+            <RootTabs.Screen
+              name={rootTabsRouteNames.TransactionSummary}
+              component={TransactionsSummary}
             />
           </RootTabs.Group>
         )}

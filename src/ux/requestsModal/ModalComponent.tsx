@@ -52,7 +52,7 @@ const RequestTypeSwitch = (
   }
 }
 
-const ModalComponent = ({ request, closeModal }: Props) => {
+export const ModalComponent = ({ request, closeModal }: Props) => {
   const [showSelector, setShowSelector] = useState<boolean>(true)
   const [animateModal, setAnimateModal] = useState(false)
 
@@ -90,5 +90,3 @@ const ModalComponent = ({ request, closeModal }: Props) => {
     </SlideUpModal>
   )
 }
-
-export default ModalComponent
