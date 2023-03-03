@@ -7,9 +7,14 @@ import Icon from 'react-native-vector-icons/Entypo'
 import * as yup from 'yup'
 
 import { AppTouchable } from 'components/appTouchable'
-import { AppButton, Input, Typography } from 'components/index'
+import {
+  AppButton,
+  Input,
+  PrimaryButton,
+  SecondaryButton,
+  Typography,
+} from 'components/index'
 import { InfoBox } from 'components/InfoBox'
-import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import {
   profileStackRouteNames,
   ProfileStackScreenProps,
@@ -22,6 +27,7 @@ import { BackButton } from './BackButton'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
 import { castStyle } from 'shared/utils'
+import { SlidePopup } from 'src/components/slidePopup'
 import { colors } from 'src/styles'
 import { selectBalances } from 'store/slices/balancesSlice'
 import { recoverAlias } from 'store/slices/profileSlice'
@@ -127,6 +133,8 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   useEffect(() => {
     calculatePrice(domainToLookUp, selectedYears).then(setSelectedDomainPrice)
   }, [domainToLookUp, selectedYears, calculatePrice])
+
+  const [animateModal, setAnimateModal] = useState(false)
 
   return (
     <>
@@ -237,14 +245,77 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           </View>
         </FormProvider>
       </View>
-      <ConfirmationModal
+      {/* <ConfirmationModal
         isVisible={isModalVisible}
         title="2 step process"
         description={`Registering a username requires you to make two transactions in RIF. First transaction is requesting the username. Second transaction is the actual purchase of the username.
           \nWe are working hard on improving this experience for you!`}
         okText="Ok, thank you!"
         onOk={() => setIsModalVisible(false)}
-      />
+      /> */}
+      <SlidePopup
+        // title="2 step process"
+        showSelector={isModalVisible}
+        animateModal={animateModal}
+        onModalClosed={() => {
+          setIsModalVisible(false)
+          setAnimateModal(false)
+        }}
+        onAnimateModal={() => setAnimateModal(true)}
+        backgroundColor={colors.background.blue2}
+        headerFontColor={colors.white}
+        showHideButton={false}
+        // children={`Registering a username requires you to make two transactions in RIF. First transaction is requesting the username. Second transaction is the actual purchase of the username.
+        //   \nWe are working hard on improving this experience for you!`}>
+      >
+        <View>
+          <Typography
+            type="h2"
+            style={{
+              color: colors.white,
+              textAlign: 'center',
+              marginBottom: 20,
+            }}>
+            2 step process
+          </Typography>
+
+          <Typography
+            type="h3"
+            style={{
+              color: colors.white,
+              textAlign: 'center',
+              marginBottom: 20,
+            }}>
+            Registering a username requires you to make two transactions in RIF.
+            First transaction is requesting the username. Second transaction is
+            the actual purchase of the username.
+          </Typography>
+
+          <PrimaryButton
+            style={{
+              borderColor: colors.background.light,
+              borderWidth: 1,
+              marginBottom: 10,
+              paddingVertical: 10,
+              paddingHorizontal: 50,
+            }}
+            title={'OK'}
+            onPress={() => setIsModalVisible(false)}
+            accessibilityLabel="okText"
+          />
+
+          <SecondaryButton
+            style={{
+              marginBottom: 10,
+              paddingVertical: 10,
+              paddingHorizontal: 50,
+            }}
+            title={'CANCEL'}
+            onPress={() => setIsModalVisible(false)}
+            accessibilityLabel="cancelText"
+          />
+        </View>
+      </SlidePopup>
     </>
   )
 }
