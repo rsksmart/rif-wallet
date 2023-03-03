@@ -84,7 +84,7 @@ export const PortfolioCard = ({
   disabled,
 }: PortfolioCardProps) => (
   <AppTouchable
-    width={100}
+    width={990}
     onPress={onPress}
     disabled={disabled}
     style={[styles.topContainer, { backgroundColor: color }]}
@@ -150,6 +150,7 @@ const nonSelectedCardStyles = StyleSheet.create({
   secondaryTextContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    width: '100%',
   },
   icon: {
     marginTop: 3,

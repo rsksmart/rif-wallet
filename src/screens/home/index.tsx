@@ -282,45 +282,47 @@ export const HomeScreen = ({
 
       {showInfoBar && !closed && <HomeInformationBar onClose={onClose} />}
 
-      <Typography style={styles.portfolioLabel} type={'h3'}>
-        {t('home_screen_portfolio')}
-      </Typography>
+      <View style={styles.bodyContainer}>
+        <Typography style={styles.portfolioLabel} type={'h3'}>
+          {t('home_screen_portfolio')}
+        </Typography>
+        <PortfolioComponent
+          selectedAddress={selectedAddress}
+          setSelectedAddress={setSelectedAddress}
+          balances={balances}
+          prices={prices}
+        />
 
-      <PortfolioComponent
-        selectedAddress={selectedAddress}
-        setSelectedAddress={setSelectedAddress}
-        balances={balances}
-        prices={prices}
-      />
-
-      <Typography style={styles.transactionsLabel} type={'h3'}>
-        {t('home_screen_transactions')}
-      </Typography>
-      {transactionsCombined.length > 1 ? (
-        <ScrollView>
-          {transactionsCombined.map(tx => (
-            <ActivityBasicRow
-              key={tx.id}
-              activityTransaction={tx}
-              navigation={navigation}
-            />
-          ))}
-        </ScrollView>
-      ) : (
-        <>
-          <Typography style={styles.emptyTransactionsLabel} type={'h3'}>
-            {t('home_screen_empty_transactions')}
-          </Typography>
-          <Typography style={styles.emptyTransactionsLabel} type={'h4'}>
-            {t('home_screen_no_transactions_created')}
-          </Typography>
-        </>
-      )}
+        <Typography style={styles.transactionsLabel} type={'h3'}>
+          {t('home_screen_transactions')}
+        </Typography>
+        {transactionsCombined.length > 1 ? (
+          <ScrollView>
+            {transactionsCombined.map(tx => (
+              <ActivityBasicRow
+                key={tx.id}
+                activityTransaction={tx}
+                navigation={navigation}
+              />
+            ))}
+          </ScrollView>
+        ) : (
+          <>
+            <Typography style={styles.emptyTransactionsLabel} type={'h3'}>
+              {t('home_screen_empty_transactions')}
+            </Typography>
+            <Typography style={styles.emptyTransactionsLabel} type={'h4'}>
+              {t('home_screen_no_transactions_created')}
+            </Typography>
+          </>
+        )}
+      </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  bodyContainer: castStyle.view({ padding: 12 }),
   emptyTransactionsLabel: castStyle.text({
     padding: 6,
     paddingTop: 10,
