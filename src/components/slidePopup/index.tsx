@@ -8,13 +8,11 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  TouchableOpacity,
   View,
 } from 'react-native'
 
-import { RegularText } from 'components/typography'
 import { sharedColors } from 'src/shared/constants'
-import { colors } from 'src/styles'
+import { castStyle } from 'src/shared/utils'
 
 interface Props {
   children: React.ReactNode
@@ -37,10 +35,7 @@ export const SlidePopup = ({
   isVisible,
   onModalClosed,
   animateModal,
-  onAnimateModal,
   backgroundColor,
-  headerFontColor,
-  showHideButton = true,
   height = DEVICE_HEIGHT / 2,
   duration = 450,
 }: Props) => {
@@ -66,21 +61,7 @@ export const SlidePopup = ({
       PressToanimate={animateModal}
       HeaderContent={
         <View style={{ ...styles.containerHeader, backgroundColor }}>
-          <View style={styles.handlerContainer}>
-            <View style={styles.handler} />
-          </View>
-          <View style={styles.actionsContainer}>
-            {showHideButton && (
-              <TouchableOpacity
-                accessibilityLabel="hide"
-                onPress={onAnimateModal}>
-                <RegularText
-                  style={{ ...styles.action, color: headerFontColor }}>
-                  hide
-                </RegularText>
-              </TouchableOpacity>
-            )}
-          </View>
+          <View style={styles.swapper} />
         </View>
       }
       HeaderStyle={{ marginTop: headerMarginTop }}
@@ -105,43 +86,28 @@ export const SlidePopup = ({
 }
 
 const styles = StyleSheet.create({
-  containerContent: {
+  containerContent: castStyle.view({
     marginHorizontal: 40,
-  },
-  containerHeader: {
-    borderTopRightRadius: 40,
-    borderTopLeftRadius: 40,
+  }),
+  containerHeader: castStyle.view({
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
+    marginHorizontal: 20,
     height: HEADER_HEIGHT,
-  },
-  actionsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  handlerContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-  },
-  handler: {
+  }),
+  swapper: castStyle.view({
     width: 64,
     height: 5,
     borderRadius: 5,
     marginTop: 24,
     backgroundColor: sharedColors.white,
     opacity: 0.3,
-  },
-  action: {
-    marginLeft: 40,
-    marginRight: 40,
-    marginTop: 10,
-    color: 'white',
-  },
-  swapper: {
-    borderColor: colors.darkBlue,
-    borderTopColor: colors.white,
-    borderWidth: 2,
-  },
+  }),
   content: {
-    borderBottomRightRadius: 40,
-    borderBottomLeftRadius: 40,
+    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 20,
+    marginHorizontal: 20,
   },
 })
