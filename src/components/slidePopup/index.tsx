@@ -17,14 +17,11 @@ import { castStyle } from 'src/shared/utils'
 interface Props {
   children: React.ReactNode
   isVisible: boolean
-  onModalClosed: () => void
   animateModal: boolean
-  onAnimateModal: () => void
   backgroundColor: string
-  headerFontColor: string
-  showHideButton?: boolean
   height?: number
   duration?: number
+  onClose: () => void
 }
 
 const DEVICE_HEIGHT = Dimensions.get('window').height
@@ -33,11 +30,11 @@ const HEADER_HEIGHT = 50
 export const SlidePopup = ({
   children,
   isVisible,
-  onModalClosed,
   animateModal,
   backgroundColor,
   height = DEVICE_HEIGHT / 2,
   duration = 450,
+  onClose,
 }: Props) => {
   const keyboard = useKeyboard()
 
@@ -80,7 +77,7 @@ export const SlidePopup = ({
         backgroundColor,
         marginTop: contentMarginTop,
       }}
-      onClose={onModalClosed}
+      onClose={onClose}
     />
   )
 }

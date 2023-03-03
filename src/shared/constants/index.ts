@@ -16,6 +16,7 @@ export const sharedColors = {
   successLight: '#59FF9C',
   warning: '#FF9100',
   danger: '#E94141',
+  dangerLight: '#ED6060',
   white: '#FFFFFF',
   inputInactive: '#252525',
   inputActive: '#3A3A3A',
