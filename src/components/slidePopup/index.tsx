@@ -26,9 +26,11 @@ interface Props {
   headerFontColor: string
   showHideButton?: boolean
   height?: number
+  duration?: number
 }
 
-const deviceHeight = Dimensions.get('window').height
+const DEVICE_HEIGHT = Dimensions.get('window').height
+const HEADER_HEIGHT = 63
 
 export const SlidePopup = ({
   children,
@@ -39,7 +41,8 @@ export const SlidePopup = ({
   backgroundColor,
   headerFontColor,
   showHideButton = true,
-  height = deviceHeight / 2,
+  height = DEVICE_HEIGHT / 2,
+  duration = 450,
 }: Props) => {
   const keyboard = useKeyboard()
 
@@ -52,13 +55,14 @@ export const SlidePopup = ({
     : 0
 
   // calculate marginTop for header and content based on given height
-  const commonMarginTop = deviceHeight - height
+  const commonMarginTop = DEVICE_HEIGHT - height
   const headerMarginTop = commonMarginTop
-  const contentMarginTop = 70 + commonMarginTop
+  const contentMarginTop = 63 + commonMarginTop
 
   return (
     <SwipeUpDownModal
       modalVisible={isVisible}
+      duration={duration}
       PressToanimate={animateModal}
       HeaderContent={
         <View style={{ ...styles.containerHeader, backgroundColor }}>
@@ -69,9 +73,7 @@ export const SlidePopup = ({
             {showHideButton && (
               <TouchableOpacity
                 accessibilityLabel="hide"
-                onPress={() => {
-                  onAnimateModal()
-                }}>
+                onPress={onAnimateModal}>
                 <RegularText
                   style={{ ...styles.action, color: headerFontColor }}>
                   hide
@@ -93,7 +95,7 @@ export const SlidePopup = ({
         </KeyboardAvoidingView>
       }
       ContentModalStyle={{
-        ...styles.Modal,
+        ...styles.content,
         backgroundColor,
         marginTop: contentMarginTop,
       }}
@@ -109,7 +111,7 @@ const styles = StyleSheet.create({
   containerHeader: {
     borderTopRightRadius: 40,
     borderTopLeftRadius: 40,
-    height: 70,
+    height: HEADER_HEIGHT,
   },
   actionsContainer: {
     flexDirection: 'row',
@@ -120,9 +122,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   handler: {
+    width: 64,
     height: 5,
     borderRadius: 5,
-    width: 64,
     marginTop: 24,
     backgroundColor: sharedColors.white,
     opacity: 0.3,
@@ -138,7 +140,7 @@ const styles = StyleSheet.create({
     borderTopColor: colors.white,
     borderWidth: 2,
   },
-  Modal: {
+  content: {
     borderBottomRightRadius: 40,
     borderBottomLeftRadius: 40,
   },

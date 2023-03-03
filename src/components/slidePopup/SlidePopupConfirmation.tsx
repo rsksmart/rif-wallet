@@ -8,6 +8,8 @@ import { SlidePopup } from './index'
 import { PrimaryButton, SecondaryButton } from '../button'
 import { castStyle } from 'src/shared/utils'
 
+const ANIMATION_DURATION = 250
+
 interface Props {
   isVisible?: boolean
   title: string
@@ -32,9 +34,13 @@ export const SlidePopupConfirmation = ({
   return (
     <SlidePopup
       isVisible={isVisible}
+      duration={ANIMATION_DURATION}
       animateModal={animateModal}
       onAnimateModal={() => setAnimateModal(true)}
-      onModalClosed={() => setAnimateModal(false)}
+      onModalClosed={() => {
+        setAnimateModal(false)
+        onOk()
+      }}
       backgroundColor={sharedColors.primary}
       headerFontColor={sharedColors.inputLabelColor}
       showHideButton={false}>
@@ -50,7 +56,13 @@ export const SlidePopupConfirmation = ({
         <PrimaryButton
           style={styles.okButton}
           title={okText}
-          onPress={onOk}
+          onPress={() => {
+            setAnimateModal(true)
+            setInterval(() => {
+              setAnimateModal(false)
+              onOk()
+            }, ANIMATION_DURATION)
+          }}
           accessibilityLabel="okText"
         />
 
@@ -58,7 +70,13 @@ export const SlidePopupConfirmation = ({
           <SecondaryButton
             style={styles.cancelButton}
             title={'CANCEL'}
-            onPress={onCancel}
+            onPress={() => {
+              setAnimateModal(true)
+              setInterval(() => {
+                setAnimateModal(false)
+                onCancel?.()
+              }, ANIMATION_DURATION)
+            }}
             accessibilityLabel="cancelText"
           />
         )}
