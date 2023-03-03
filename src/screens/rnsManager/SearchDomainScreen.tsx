@@ -239,9 +239,8 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
       </View>
       <SlidePopupConfirmation
         isVisible={isModalVisible}
-        title="It' a 2-step process"
-        description={`Registering a username requires you to make two transactions in RIF. First transaction is requesting the username. Second transaction is the actual purchase of a username.
-        \nWe are working hard on improving this experience for you!`}
+        title="It's a 2-step process"
+        description={`Registering a username requires you to make two transactions in RIF. First transaction is requesting the username. Second transaction is the actual purchase of a username.\nWe are working hard on improving this experience for you!`}
         okText="Ok, thank you"
         onOk={() => setIsModalVisible(false)}
       />

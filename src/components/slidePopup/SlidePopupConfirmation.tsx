@@ -35,6 +35,7 @@ export const SlidePopupConfirmation = ({
     <SlidePopup
       isVisible={isVisible}
       duration={ANIMATION_DURATION}
+      height={400}
       animateModal={animateModal}
       onAnimateModal={() => setAnimateModal(true)}
       onModalClosed={() => {
@@ -87,12 +88,14 @@ export const SlidePopupConfirmation = ({
 
 const styles = StyleSheet.create({
   title: castStyle.text({
-    color: colors.white,
+    fontSize: 20,
+    color: sharedColors.subTitle,
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 12,
   }),
   description: castStyle.text({
-    color: colors.white,
+    fontSize: 15,
+    color: sharedColors.labelLight,
     textAlign: 'center',
     marginBottom: 20,
   }),

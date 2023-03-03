@@ -28,7 +28,7 @@ interface Props {
 }
 
 const DEVICE_HEIGHT = Dimensions.get('window').height
-const HEADER_HEIGHT = 63
+const HEADER_HEIGHT = 60
 
 export const SlidePopup = ({
   children,
@@ -52,7 +52,7 @@ export const SlidePopup = ({
   // calculate marginTop for header and content based on given height
   const commonMarginTop = DEVICE_HEIGHT - height
   const headerMarginTop = commonMarginTop
-  const contentMarginTop = 63 + commonMarginTop
+  const contentMarginTop = HEADER_HEIGHT + commonMarginTop
 
   return (
     <SwipeUpDownModal
@@ -87,7 +87,7 @@ export const SlidePopup = ({
 
 const styles = StyleSheet.create({
   containerContent: castStyle.view({
-    marginHorizontal: 40,
+    marginHorizontal: 28,
   }),
   containerHeader: castStyle.view({
     borderTopRightRadius: 20,
