@@ -17,7 +17,7 @@ import { RegularText } from 'components/typography'
 interface Props {
   title?: string
   children: React.ReactNode
-  showSelector: boolean
+  isVisible: boolean
   onModalClosed: () => void
   animateModal: boolean
   onAnimateModal: () => void
@@ -29,7 +29,7 @@ interface Props {
 export const SlidePopup = ({
   title,
   children,
-  showSelector,
+  isVisible,
   onModalClosed,
   animateModal,
   onAnimateModal,
@@ -48,7 +48,7 @@ export const SlidePopup = ({
     : 0
   return (
     <SwipeUpDownModal
-      modalVisible={showSelector}
+      modalVisible={isVisible}
       PressToanimate={animateModal}
       //if you don't pass HeaderContent you should pass marginTop in view of ContentModel to Make modal swipeable
       ContentModal={
