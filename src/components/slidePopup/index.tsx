@@ -1,21 +1,22 @@
+import { useKeyboard } from '@react-native-community/hooks'
 import React from 'react'
 import SwipeUpDownModal from 'react-native-swipe-modal-up-down'
-import { useKeyboard } from '@react-native-community/hooks'
 
 import {
-  ScrollView,
-  View,
-  StyleSheet,
-  TouchableOpacity,
+  Dimensions,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
 } from 'react-native'
 
-import { colors } from 'src/styles'
 import { RegularText } from 'components/typography'
+import { sharedColors } from 'src/shared/constants'
+import { colors } from 'src/styles'
 
 interface Props {
-  title?: string
   children: React.ReactNode
   isVisible: boolean
   onModalClosed: () => void
@@ -24,10 +25,12 @@ interface Props {
   backgroundColor: string
   headerFontColor: string
   showHideButton?: boolean
+  height?: number
 }
 
+const deviceHeight = Dimensions.get('window').height
+
 export const SlidePopup = ({
-  title,
   children,
   isVisible,
   onModalClosed,
@@ -36,6 +39,7 @@ export const SlidePopup = ({
   backgroundColor,
   headerFontColor,
   showHideButton = true,
+  height = deviceHeight / 2,
 }: Props) => {
   const keyboard = useKeyboard()
 
@@ -46,36 +50,22 @@ export const SlidePopup = ({
   const initialYScroll = keyboard.keyboardShown
     ? keyboard.keyboardHeight - 50
     : 0
+
+  // calculate marginTop for header and content based on given height
+  const commonMarginTop = deviceHeight - height
+  const headerMarginTop = commonMarginTop
+  const contentMarginTop = 70 + commonMarginTop
+
   return (
     <SwipeUpDownModal
       modalVisible={isVisible}
       PressToanimate={animateModal}
-      //if you don't pass HeaderContent you should pass marginTop in view of ContentModel to Make modal swipeable
-      ContentModal={
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-          <View style={containerStyle}>
-            <ScrollView contentOffset={{ x: 0, y: initialYScroll }}>
-              {children}
-            </ScrollView>
-          </View>
-        </KeyboardAvoidingView>
-      }
-      HeaderStyle={styles.headerContent}
-      ContentModalStyle={{ ...styles.Modal, backgroundColor }}
       HeaderContent={
         <View style={{ ...styles.containerHeader, backgroundColor }}>
           <View style={styles.handlerContainer}>
-            <View
-              style={{ ...styles.handler, backgroundColor: headerFontColor }}
-            />
+            <View style={styles.handler} />
           </View>
           <View style={styles.actionsContainer}>
-            <View>
-              <RegularText style={{ ...styles.action, color: headerFontColor }}>
-                {title}
-              </RegularText>
-            </View>
             {showHideButton && (
               <TouchableOpacity
                 accessibilityLabel="hide"
@@ -91,6 +81,22 @@ export const SlidePopup = ({
           </View>
         </View>
       }
+      HeaderStyle={{ marginTop: headerMarginTop }}
+      ContentModal={
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+          <View style={containerStyle}>
+            <ScrollView contentOffset={{ x: 0, y: initialYScroll }}>
+              {children}
+            </ScrollView>
+          </View>
+        </KeyboardAvoidingView>
+      }
+      ContentModalStyle={{
+        ...styles.Modal,
+        backgroundColor,
+        marginTop: contentMarginTop,
+      }}
       onClose={onModalClosed}
     />
   )
@@ -114,10 +120,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   handler: {
-    height: 4,
+    height: 5,
     borderRadius: 5,
-    width: 50,
-    marginTop: 15,
+    width: 64,
+    marginTop: 24,
+    backgroundColor: sharedColors.white,
+    opacity: 0.3,
   },
   action: {
     marginLeft: 40,
@@ -130,11 +138,7 @@ const styles = StyleSheet.create({
     borderTopColor: colors.white,
     borderWidth: 2,
   },
-  headerContent: {
-    marginTop: 100 + 300,
-  },
   Modal: {
-    marginTop: 170 + 300,
     borderBottomRightRadius: 40,
     borderBottomLeftRadius: 40,
   },

@@ -1,10 +1,12 @@
-import { Typography } from 'components/typography'
 import { useState } from 'react'
-import { View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
+
 import { sharedColors } from 'src/shared/constants'
+import { Typography } from 'components/typography'
 import { colors } from 'src/styles'
 import { SlidePopup } from './index'
 import { PrimaryButton, SecondaryButton } from '../button'
+import { castStyle } from 'src/shared/utils'
 
 interface Props {
   isVisible?: boolean
@@ -34,37 +36,19 @@ export const SlidePopupConfirmation = ({
       onAnimateModal={() => setAnimateModal(true)}
       onModalClosed={() => setAnimateModal(false)}
       backgroundColor={sharedColors.primary}
-      headerFontColor={colors.white}
+      headerFontColor={sharedColors.inputLabelColor}
       showHideButton={false}>
       <View>
-        <Typography
-          type="h2"
-          style={{
-            color: colors.white,
-            textAlign: 'center',
-            marginBottom: 20,
-          }}>
+        <Typography type="h2" style={styles.title}>
           {title}
         </Typography>
 
-        <Typography
-          type="h3"
-          style={{
-            color: colors.white,
-            textAlign: 'center',
-            marginBottom: 20,
-          }}>
+        <Typography type="h3" style={styles.description}>
           {description}
         </Typography>
 
         <PrimaryButton
-          style={{
-            borderColor: colors.background.light,
-            borderWidth: 1,
-            marginBottom: 10,
-            paddingVertical: 10,
-            paddingHorizontal: 50,
-          }}
+          style={styles.okButton}
           title={okText}
           onPress={onOk}
           accessibilityLabel="okText"
@@ -72,13 +56,9 @@ export const SlidePopupConfirmation = ({
 
         {cancelText && (
           <SecondaryButton
-            style={{
-              marginBottom: 10,
-              paddingVertical: 10,
-              paddingHorizontal: 50,
-            }}
+            style={styles.cancelButton}
             title={'CANCEL'}
-            onPress={onOk}
+            onPress={onCancel}
             accessibilityLabel="cancelText"
           />
         )}
@@ -86,3 +66,28 @@ export const SlidePopupConfirmation = ({
     </SlidePopup>
   )
 }
+
+const styles = StyleSheet.create({
+  title: castStyle.text({
+    color: colors.white,
+    textAlign: 'center',
+    marginBottom: 20,
+  }),
+  description: castStyle.text({
+    color: colors.white,
+    textAlign: 'center',
+    marginBottom: 20,
+  }),
+  okButton: castStyle.view({
+    borderColor: colors.background.light,
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 50,
+  }),
+  cancelButton: castStyle.view({
+    marginBottom: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 50,
+  }),
+})
