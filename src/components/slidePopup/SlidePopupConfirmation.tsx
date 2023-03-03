@@ -1,12 +1,16 @@
 import { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 
-import { sharedColors } from 'src/shared/constants'
+import {
+  AppButton,
+  AppButtonBackgroundVarietyEnum,
+  SecondaryButton,
+} from 'components/button'
 import { Typography } from 'components/typography'
+import { sharedColors } from 'src/shared/constants'
+import { castStyle } from 'src/shared/utils'
 import { colors } from 'src/styles'
 import { SlidePopup } from './index'
-import { PrimaryButton, SecondaryButton } from '../button'
-import { castStyle } from 'src/shared/utils'
 
 const ANIMATION_DURATION = 250
 
@@ -35,7 +39,7 @@ export const SlidePopupConfirmation = ({
     <SlidePopup
       isVisible={isVisible}
       duration={ANIMATION_DURATION}
-      height={400}
+      height={340}
       animateModal={animateModal}
       onAnimateModal={() => setAnimateModal(true)}
       onModalClosed={() => {
@@ -54,8 +58,9 @@ export const SlidePopupConfirmation = ({
           {description}
         </Typography>
 
-        <PrimaryButton
+        <AppButton
           style={styles.okButton}
+          backgroundVariety={AppButtonBackgroundVarietyEnum.GHOST}
           title={okText}
           onPress={() => {
             setAnimateModal(true)

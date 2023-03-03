@@ -28,7 +28,7 @@ interface Props {
 }
 
 const DEVICE_HEIGHT = Dimensions.get('window').height
-const HEADER_HEIGHT = 60
+const HEADER_HEIGHT = 50
 
 export const SlidePopup = ({
   children,
