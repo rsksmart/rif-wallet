@@ -21,10 +21,7 @@ import { BackButton } from './BackButton'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
 import { castStyle } from 'shared/utils'
-import {
-  SlidePopupConfirmation,
-  SlidePopupConfirmationType,
-} from 'src/components/slidePopup/SlidePopupConfirmation'
+import { SlidePopupConfirmationInfo } from 'src/components/slidePopup/SlidePopupConfirmationInfo'
 import { colors } from 'src/styles'
 import { selectBalances } from 'store/slices/balancesSlice'
 import { recoverAlias } from 'store/slices/profileSlice'
@@ -240,26 +237,14 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           </View>
         </FormProvider>
       </View>
-      <SlidePopupConfirmation
+      <SlidePopupConfirmationInfo
         isVisible={isModalVisible}
         height={340}
         title={t('request_username_popup_title')}
         description={t('request_username_popup_description')}
         confirmText="Ok, thank you"
         onConfirm={() => setIsModalVisible(false)}
-        onClose={() => setIsModalVisible(false)}
       />
-      {/* <SlidePopupConfirmation
-        isVisible={isModalVisible}
-        type={SlidePopupConfirmationType.DANGER}
-        height={400}
-        title={t('request_username_popup_title')}
-        description={t('request_username_popup_description')}
-        confirmText="Delete"
-        cancelText="Cancel"
-        onConfirm={() => setIsModalVisible(false)}
-        onCancel={() => setIsModalVisible(false)}
-      /> */}
     </>
   )
 }

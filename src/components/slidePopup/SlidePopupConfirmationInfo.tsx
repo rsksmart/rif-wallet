@@ -1,11 +1,7 @@
 import { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 
-import {
-  AppButton,
-  AppButtonBackgroundVarietyEnum,
-  SecondaryButton,
-} from 'components/button'
+import { AppButton, AppButtonBackgroundVarietyEnum } from 'components/button'
 import { Typography } from 'components/typography'
 import { sharedColors } from 'src/shared/constants'
 import { castStyle } from 'src/shared/utils'
@@ -14,50 +10,24 @@ import { SlidePopup } from './index'
 
 const ANIMATION_DURATION = 250
 
-export enum SlidePopupConfirmationType {
-  INFO,
-  DANGER,
-}
-
 interface Props {
   title: string
   description: string
-  type?: SlidePopupConfirmationType
+  confirmText: string
   isVisible?: boolean
   height?: number
-  confirmText?: string
-  cancelText?: string
   onConfirm: () => void
-  onCancel?: () => void
-  onClose: () => void
 }
 
-export const SlidePopupConfirmation = ({
+export const SlidePopupConfirmationInfo = ({
   title,
   description,
-  type = SlidePopupConfirmationType.INFO,
+  confirmText,
   isVisible = true,
   height,
-  confirmText = 'OK',
-  cancelText,
   onConfirm,
-  onCancel,
-  onClose,
 }: Props) => {
   const [animateModal, setAnimateModal] = useState(false)
-
-  let headerColor = sharedColors.subTitle
-  let backgroundColor = sharedColors.primary
-  let descriptionColor = sharedColors.labelLight
-  let confirmButtonVariety = AppButtonBackgroundVarietyEnum.GHOST
-  const confirmButtonColor = 'black'
-
-  if (type === SlidePopupConfirmationType.DANGER) {
-    headerColor = sharedColors.black
-    descriptionColor = sharedColors.black
-    backgroundColor = sharedColors.dangerLight
-    confirmButtonVariety = AppButtonBackgroundVarietyEnum.DEFAULT
-  }
 
   return (
     <SlidePopup
@@ -67,24 +37,22 @@ export const SlidePopupConfirmation = ({
       animateModal={animateModal}
       onClose={() => {
         setAnimateModal(false)
-        onClose()
+        onConfirm()
       }}
-      backgroundColor={backgroundColor}>
+      backgroundColor={sharedColors.primary}>
       <View>
-        <Typography type="h2" style={{ ...styles.title, color: headerColor }}>
+        <Typography type="h2" style={styles.title}>
           {title}
         </Typography>
 
-        <Typography
-          type="h3"
-          style={{ ...styles.description, color: descriptionColor }}>
+        <Typography type="h3" style={styles.description}>
           {description}
         </Typography>
 
         <AppButton
+          accessibilityLabel="confirmButton"
           style={styles.okButton}
-          backgroundVariety={confirmButtonVariety}
-          color={confirmButtonColor}
+          backgroundVariety={AppButtonBackgroundVarietyEnum.GHOST}
           title={confirmText}
           onPress={() => {
             setAnimateModal(true)
@@ -93,23 +61,7 @@ export const SlidePopupConfirmation = ({
               onConfirm()
             }, ANIMATION_DURATION)
           }}
-          accessibilityLabel="confirmButton"
         />
-
-        {cancelText && (
-          <AppButton
-            style={styles.cancelButton}
-            title={'CANCEL'}
-            onPress={() => {
-              setAnimateModal(true)
-              setInterval(() => {
-                setAnimateModal(false)
-                onCancel?.()
-              }, ANIMATION_DURATION)
-            }}
-            accessibilityLabel="cancelButton"
-          />
-        )}
       </View>
     </SlidePopup>
   )
@@ -120,11 +72,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     marginBottom: 12,
+    color: sharedColors.subTitle,
   }),
   description: castStyle.text({
     fontSize: 15,
     textAlign: 'center',
     marginBottom: 20,
+    color: sharedColors.labelLight,
   }),
   okButton: castStyle.view({
     borderColor: colors.background.light,
