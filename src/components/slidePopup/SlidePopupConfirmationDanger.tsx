@@ -3,8 +3,8 @@ import { StyleSheet, View } from 'react-native'
 
 import { AppButton, AppButtonBackgroundVarietyEnum } from 'components/button'
 import { Typography } from 'components/typography'
-import { sharedColors } from 'src/shared/constants'
-import { castStyle } from 'src/shared/utils'
+import { sharedColors } from 'shared/constants'
+import { castStyle } from 'shared/utils'
 import { SlidePopup } from './index'
 
 const ANIMATION_DURATION = 250
@@ -61,7 +61,7 @@ export const SlidePopupConfirmationDanger = ({
           title={confirmText}
           onPress={() => {
             setAnimateModal(true)
-            setInterval(() => {
+            setTimeout(() => {
               setAnimateModal(false)
               onConfirm()
             }, ANIMATION_DURATION)
@@ -76,7 +76,7 @@ export const SlidePopupConfirmationDanger = ({
           title={cancelText}
           onPress={() => {
             setAnimateModal(true)
-            setInterval(() => {
+            setTimeout(() => {
               setAnimateModal(false)
               onCancel()
             }, ANIMATION_DURATION)
