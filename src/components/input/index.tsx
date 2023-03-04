@@ -206,7 +206,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: 18,
   }),
   inputSubtitleContainer: castStyle.view({
     marginLeft: 12,
