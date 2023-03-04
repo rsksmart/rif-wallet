@@ -137,6 +137,7 @@ const resources = {
       request_username_popup_title: "It's a 2-step process",
       request_username_popup_description:
         'Registering a username requires you to make two transactions in RIF. First transaction is requesting the username. Second transaction is the actual purchase of the username.\nWe are working hard on improving this experience for you!',
+      request_username_popup_confirm: 'Ok, thank you',
       username: 'Username',
       username_available: 'Username available',
       username_unavailable: 'Username unavailable',

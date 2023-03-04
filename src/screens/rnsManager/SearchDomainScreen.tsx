@@ -242,7 +242,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
         height={340}
         title={t('request_username_popup_title')}
         description={t('request_username_popup_description')}
-        confirmText="Ok, thank you"
+        confirmText={t('request_username_popup_confirm')}
         onConfirm={() => setIsModalVisible(false)}
       />
     </>
