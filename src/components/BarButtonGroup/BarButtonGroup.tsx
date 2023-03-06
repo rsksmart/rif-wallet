@@ -18,7 +18,11 @@ export const BarButtonGroupIcon = ({
   IconComponent,
   onPress,
 }: BarButtonGroupIconProps) => (
-  <AppTouchable width={25} onPress={onPress} style={styles.iconContainerStyle}>
+  <AppTouchable
+    width={25}
+    onPress={onPress}
+    style={styles.iconContainerStyle}
+    accessibilityLabel={iconName}>
     <IconComponent name={iconName} color="white" size={size} />
   </AppTouchable>
 )
