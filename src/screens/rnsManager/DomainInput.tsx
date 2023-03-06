@@ -160,7 +160,7 @@ export const DomainInput = ({
         placeholder={t('username')}
         containerStyle={styles.domainContainer}
         labelStyle={labelStyle}
-        inputStyle={styles.domainInput}
+        inputStyle={username ? styles.domainInput : null}
         placeholderStyle={styles.domainPlaceholder}
         resetValue={resetField}
         onChangeText={setUsername}
@@ -184,9 +184,7 @@ const styles = StyleSheet.create({
     height: 80,
   }),
   domainInput: castStyle.text({
-    paddingTop: 0,
-    paddingLeft: 0,
-    paddingBottom: 10,
+    paddingBottom: 13,
   }),
   domainPlaceholder: castStyle.text({
     fontSize: 14,
