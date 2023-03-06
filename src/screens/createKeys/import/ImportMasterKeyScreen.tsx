@@ -69,7 +69,6 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
   const handleImportMnemonic = useCallback(async () => {
     if (status === StatusActions.ERROR) {
       setStatus(StatusActions.INITIAL)
-      console.log(words.current)
       return
     }
     const mnemonicError = validateMnemonic(words.current.join(' '))
