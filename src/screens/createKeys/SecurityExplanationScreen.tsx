@@ -119,7 +119,9 @@ export const SecurityExplanationScreen = ({ navigation }: Props) => {
         <PaginationNavigator
           onPrevious={() => carousel?.snapToPrev()}
           onNext={() => carousel?.snapToNext()}
-          onComplete={() => navigation.navigate('NewMasterKey')}
+          onComplete={() =>
+            navigation.navigate(createKeysRouteNames.NewMasterKey)
+          }
           title="confirm"
           currentIndex={selectedSlide}
           slidesAmount={slidesIndexes.length}

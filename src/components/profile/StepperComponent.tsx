@@ -1,48 +1,65 @@
-import { StyleSheet, View } from 'react-native'
+import { useCallback } from 'react'
+import {
+  ColorValue,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from 'react-native'
 
-import { sharedColors } from 'shared/constants'
+import { sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { EndStepIcon, MiddleStepIcon, StartStepIcon } from 'components/icons'
 
 interface ProgressBarProps {
-  colors: string[]
-  width?: number
-  height?: number
+  colors: ColorValue[]
+  stepWidth?: number
+  stepHeight?: number
+  style?: StyleProp<ViewStyle>
 }
 
 export const StepperComponent = ({
   colors,
-  width = 18,
-  height = 7,
+  stepWidth = 18,
+  stepHeight = 7,
+  style,
 }: ProgressBarProps) => {
+  const getStep = useCallback(
+    (color: ColorValue): ViewStyle => ({
+      width: stepWidth,
+      height: stepHeight,
+      backgroundColor: color,
+    }),
+    [stepWidth, stepHeight],
+  )
+
   return (
-    <>
+    <View style={[sharedStyles.row, style]}>
       {colors.map((color, index) =>
         index === 0 ? (
-          <View key={index} style={styles.textAlignment}>
-            <StartStepIcon color={color} width={width} height={height} />
-          </View>
+          <View key={index} style={[styles.startStep, getStep(color)]} />
         ) : index === colors.length - 1 ? (
-          <View key={index} style={styles.textAlignment}>
-            <EndStepIcon color={color} width={width} height={height} />
-          </View>
+          <View
+            key={index}
+            style={[styles.endStep, styles.separator, getStep(color)]}
+          />
         ) : (
-          <View key={index} style={styles.textAlignment}>
-            <MiddleStepIcon color={color} width={width} height={height} />
-          </View>
+          <View key={index} style={[styles.separator, getStep(color)]} />
         ),
       )}
-    </>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  textAlignment: castStyle.text({
-    justifyContent: 'center',
+  startStep: castStyle.view({
+    borderTopLeftRadius: 45,
+    borderBottomLeftRadius: 45,
   }),
-  textStatus: castStyle.text({
-    fontSize: 14,
-    color: sharedColors.white,
-    paddingLeft: 6,
+  endStep: castStyle.view({
+    borderTopRightRadius: 45,
+    borderBottomRightRadius: 45,
+  }),
+  separator: castStyle.view({
+    marginLeft: 2,
   }),
 })

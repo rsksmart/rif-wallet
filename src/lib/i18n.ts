@@ -177,6 +177,7 @@ const resources = {
       confirm_key_input_error: "Words don't match",
       confirm_key_success: 'Phrase verified! ',
       confirm_key_button: 'OK',
+      confirm_key_screen_title: 'Wallet backup',
     },
   },
   es: {

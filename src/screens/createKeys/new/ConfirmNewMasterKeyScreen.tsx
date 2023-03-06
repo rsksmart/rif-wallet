@@ -4,12 +4,16 @@ import { FormProvider, useForm } from 'react-hook-form'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useTranslation } from 'react-i18next'
 
-import { CreateKeysScreenProps } from 'navigation/createKeysNavigator/types'
+import {
+  createKeysRouteNames,
+  CreateKeysScreenProps,
+} from 'navigation/createKeysNavigator/types'
 import { castStyle, getRandomNumber } from 'shared/utils'
 import { AppButton, Input, Typography } from 'components/index'
 import { createWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
-import { sharedColors } from 'shared/constants'
+import { sharedColors, sharedStyles } from 'shared/constants'
+import { StepperComponent } from 'src/components/profile'
 
 type MnemonicWordNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
 
@@ -69,7 +73,7 @@ const onRandomWordChoice = (_mnemonicWords: string[]) => {
 
 export const ConfirmNewMasterKeyScreen = ({
   route,
-}: CreateKeysScreenProps<'ConfirmNewMasterKey'>) => {
+}: CreateKeysScreenProps<createKeysRouteNames.ConfirmNewMasterKey>) => {
   const { t } = useTranslation()
   const methods = useForm<FormValues>({
     mode: 'onSubmit',
@@ -153,6 +157,11 @@ export const ConfirmNewMasterKeyScreen = ({
 
   return (
     <View style={styles.screen}>
+      <StepperComponent
+        stepWidth={40}
+        colors={[sharedColors.primary, sharedColors.primary]}
+        style={sharedStyles.selfCenter}
+      />
       <ScrollView keyboardShouldPersistTaps={'handled'}>
         <Typography type={'h2'} style={styles.titleText}>
           {t('confirm_key_title')}
