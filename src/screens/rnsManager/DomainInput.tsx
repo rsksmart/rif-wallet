@@ -67,7 +67,6 @@ export const DomainInput = ({
   )
   const searchDomain = useCallback(
     async (domain: string, errorType?: string) => {
-      console.log('errorType', errorType)
       if (errorType === 'matches') {
         setDomainAvailability(DomainStatus.NO_VALID)
         onDomainAvailable(domain, false)
@@ -190,7 +189,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   }),
   domainPlaceholder: castStyle.text({
-    fontSize: 16,
+    fontSize: 14,
     color: sharedColors.subTitle,
   }),
   domainSuffix: castStyle.text({
