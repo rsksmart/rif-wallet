@@ -5,6 +5,7 @@ import { sharedColors, sharedStyles } from 'shared/constants'
 import { FormProvider, useForm } from 'react-hook-form'
 import { EyeIcon } from 'src/components/icons/EyeIcon'
 import { Avatar } from 'src/components'
+import { castStyle } from 'src/shared/utils'
 
 export const ExampleScreen = () => {
   const methods = useForm({
@@ -23,7 +24,7 @@ export const ExampleScreen = () => {
     <View style={sharedStyles.screen}>
       <FormProvider {...methods}>
         <ScrollView
-          contentContainerStyle={{ paddingBottom: 100 }}
+          contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps={'handled'}>
           <Input
             inputName={'ex1'}
@@ -84,4 +85,6 @@ export const ExampleScreen = () => {
   )
 }
 
-export const styles = StyleSheet.create({})
+export const styles = StyleSheet.create({
+  scrollContent: castStyle.view({ paddingBottom: 100 }),
+})
