@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5'
@@ -45,6 +45,10 @@ export const SettingsScreen = ({
   const goToFeedbackScreen = () =>
     navigation.navigate(settingsStackRouteNames.FeedbackScreen)
 
+  const goToExampleScreen = useCallback(() => {
+    navigation.navigate(settingsStackRouteNames.ExampleScreen)
+  }, [navigation])
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.mainView}>
@@ -83,6 +87,14 @@ export const SettingsScreen = ({
           <FontAwesomeIcon name="comment" color={colors.white} size={20} />
           <Typography type={'body1'} style={spacing.ml6}>
             {' Feedback'}
+          </Typography>
+        </TouchableOpacity>
+        <TouchableOpacity
+          accessibilityLabel={'example'}
+          style={styles.rowComponent}
+          onPress={goToExampleScreen}>
+          <Typography type={'body1'} style={spacing.ml6}>
+            {' Example Screen'}
           </Typography>
         </TouchableOpacity>
       </View>
