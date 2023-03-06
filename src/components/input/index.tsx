@@ -111,11 +111,7 @@ export const Input = ({
                 {label}
               </Typography>
             ) : null}
-            <View
-              style={[
-                styles.valueContainer,
-                focused || value || leftIcon ? styles.valuePadding : null,
-              ]}>
+            <View style={styles.valueContainer}>
               {leftIcon && 'name' in leftIcon ? (
                 <AppTouchable
                   width={leftIcon.size || defaultIconSize}
@@ -223,7 +219,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   }),
-  valuePadding: castStyle.view({ paddingTop: 10 }),
   inputSubtitleContainer: castStyle.view({
     marginLeft: 12,
   }),
