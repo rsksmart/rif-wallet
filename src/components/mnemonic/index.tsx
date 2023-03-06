@@ -84,15 +84,22 @@ export const MnemonicComponent = ({
               title={`${index + 1}.${word}`}
               color={sharedColors.primary}
               widthVariety={AppButtonWidthVarietyEnum.INLINE}
+              accessibilityLabel={`word${index}`}
             />
           ))}
         </View>
       )}
       <View style={styles.buttonContainer}>
-        <AppTouchable width={iconSize + 8} onPress={onEyeIconPress}>
+        <AppTouchable
+          width={iconSize + 8}
+          onPress={onEyeIconPress}
+          accessibilityLabel="toggleVisibleButton">
           <EyeIcon isHidden={!isMnemonicVisible} size={iconSize} />
         </AppTouchable>
-        <AppTouchable width={iconSize} onPress={onCopy}>
+        <AppTouchable
+          width={iconSize}
+          onPress={onCopy}
+          accessibilityLabel="copyButton">
           <Icon name={'copy'} size={iconSize} color={sharedColors.white} />
         </AppTouchable>
       </View>
