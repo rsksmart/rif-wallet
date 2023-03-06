@@ -134,6 +134,9 @@ export const Input = ({
                   style={[
                     sharedStyles.flex,
                     sharedStyles.noPadding,
+                    focused && !subtitle && (rightIcon || suffix || resetValue)
+                      ? styles.paddingBottom
+                      : null,
                     inputStyle,
                   ]}
                   onChangeText={text => {
@@ -218,6 +221,9 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+  }),
+  paddingBottom: castStyle.view({
+    paddingBottom: 10,
   }),
   inputSubtitleContainer: castStyle.view({
     marginLeft: 12,

@@ -165,7 +165,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           </View>
           <Input
             inputName="duration"
-            isReadOnly={true}
+            isReadOnly
             label={t('request_username_label')}
             placeholder={`${selectedYears} ${t(
               'request_username_placeholder',

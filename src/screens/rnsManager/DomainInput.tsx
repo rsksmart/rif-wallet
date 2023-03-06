@@ -44,7 +44,6 @@ export const DomainInput = ({
   onDomainOwned,
 }: Props) => {
   const [username, setUsername] = useState('')
-  const [isFocused, setIsFocused] = useState(false)
   const [domainAvailability, setDomainAvailability] = useState<DomainStatus>(
     DomainStatus.NONE,
   )
@@ -161,15 +160,12 @@ export const DomainInput = ({
         placeholder={t('username')}
         containerStyle={styles.domainContainer}
         labelStyle={labelStyle}
-        inputStyle={isFocused ? styles.domainInput : null}
         placeholderStyle={styles.domainPlaceholder}
         resetValue={resetField}
         onChangeText={setUsername}
         suffix={<Text style={styles.domainSuffix}>.rsk</Text>}
         autoCapitalize="none"
         autoCorrect={false}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
       />
       <View>
         {error && (
@@ -185,9 +181,6 @@ export const DomainInput = ({
 const styles = StyleSheet.create({
   domainContainer: castStyle.view({
     height: 80,
-  }),
-  domainInput: castStyle.text({
-    paddingBottom: 10,
   }),
   domainPlaceholder: castStyle.text({
     fontSize: 14,
