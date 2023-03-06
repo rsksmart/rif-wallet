@@ -61,4 +61,10 @@ export const sharedStyles = StyleSheet.create({
     alignItems: 'center',
   }),
   marginLeft24: castStyle.view({ marginLeft: 24 }),
+  screen: castStyle.view({
+    flex: 1,
+    backgroundColor: sharedColors.black,
+    paddingHorizontal: 24,
+  }),
+  noPadding: castStyle.view({ padding: 0 }),
 })

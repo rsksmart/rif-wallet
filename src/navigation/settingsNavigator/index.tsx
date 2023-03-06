@@ -12,6 +12,7 @@ import { InjectedScreens } from 'core/Core'
 import { AppHeader } from 'src/ux/appHeader'
 import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
 import { SettingsStackParamsList, settingsStackRouteNames } from './types'
+import { ExampleScreen } from 'screens/example'
 
 const SettingsStack = createStackNavigator<SettingsStackParamsList>()
 
@@ -50,6 +51,10 @@ export const SettingsNavigator = ({
       <SettingsStack.Screen
         name={settingsStackRouteNames.ShowMnemonicScreen}
         component={ShowMnemonicScreen}
+      />
+      <SettingsStack.Screen
+        name={settingsStackRouteNames.ExampleScreen}
+        component={ExampleScreen}
       />
     </SettingsStack.Navigator>
   )

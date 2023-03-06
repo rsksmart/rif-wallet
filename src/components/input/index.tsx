@@ -98,13 +98,21 @@ export const Input = ({
             focused || !!value ? styles.containerActive : null,
             containerStyle,
           ]}>
-          <View style={styles.contentContainer}>
-            {label ? (
+          <View
+            style={[
+              sharedStyles.flex,
+              focused || value || isReadOnly ? styles.contentPadding : null,
+            ]}>
+            {label && (focused || !!value || isReadOnly) ? (
               <Typography style={[styles.label, labelStyle]} type={'body3'}>
-                {focused || !!value || isReadOnly ? label : ''}
+                {label}
               </Typography>
             ) : null}
-            <View style={styles.valueContainer}>
+            <View
+              style={[
+                styles.valueContainer,
+                focused || value || leftIcon ? styles.valuePadding : null,
+              ]}>
               {leftIcon && 'name' in leftIcon ? (
                 <AppTouchable
                   width={leftIcon.size || defaultIconSize}
@@ -124,7 +132,11 @@ export const Input = ({
                   leftIcon ? styles.inputSubtitleContainer : null,
                 ]}>
                 <TextInput
-                  style={[sharedStyles.flex, inputStyle]}
+                  style={[
+                    sharedStyles.flex,
+                    sharedStyles.noPadding,
+                    inputStyle,
+                  ]}
                   onChangeText={text => {
                     onChange(text)
                     onChangeText?.(text)
@@ -136,13 +148,14 @@ export const Input = ({
                   <Typography
                     style={[
                       styles.placeholderText,
-                      value || isReadOnly ? styles.valueText : placeholderStyle,
+                      value || isReadOnly ? styles.valueText : null,
+                      placeholderStyle,
                     ]}
                     type={!value ? (isReadOnly ? 'body2' : 'body3') : 'body2'}>
                     {placeholder && !focused && !value ? placeholder : value}
                   </Typography>
                 </TextInput>
-                {subtitle ? (
+                {subtitle && (!!value || isReadOnly) ? (
                   <Typography
                     style={[styles.subtitle, subtitleStyle]}
                     type={'body3'}
@@ -154,8 +167,8 @@ export const Input = ({
             </View>
           </View>
           {suffix}
-          {!rightIcon && !!value ? (
-            <AppTouchable width={defaultIconSize} onPress={resetValue || noop}>
+          {!rightIcon && !!value && resetValue ? (
+            <AppTouchable width={defaultIconSize} onPress={resetValue}>
               <Icon
                 name={'close'}
                 size={defaultIconSize}
@@ -189,13 +202,12 @@ const styles = StyleSheet.create({
     paddingRight: 24,
     marginTop: 12,
     borderRadius: 10,
-    minHeight: 54,
+    minHeight: 80,
   }),
   containerActive: castStyle.view({
     backgroundColor: sharedColors.inputActive,
   }),
-  contentContainer: castStyle.view({
-    flex: 1,
+  contentPadding: castStyle.view({
     paddingBottom: 18,
   }),
   label: castStyle.text({
@@ -206,8 +218,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: 18,
   }),
+  valuePadding: castStyle.view({ paddingTop: 10 }),
   inputSubtitleContainer: castStyle.view({
     marginLeft: 12,
   }),
@@ -224,6 +236,7 @@ const styles = StyleSheet.create({
     color: sharedColors.inputLabelColor,
   }),
   valueText: castStyle.text({
+    marginTop: 14,
     color: sharedColors.white,
   }),
 })
