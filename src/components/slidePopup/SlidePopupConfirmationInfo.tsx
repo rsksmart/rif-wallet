@@ -1,14 +1,13 @@
-import { useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet } from 'react-native'
 
-import { AppButton, AppButtonBackgroundVarietyEnum } from 'components/button'
-import { Typography } from 'components/typography'
+import {
+  AppButtonBackgroundVarietyEnum,
+  AppButtonProps,
+} from 'components/button'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { colors } from 'src/styles'
-import { SlidePopup } from './index'
-
-const ANIMATION_DURATION = 250
+import { SlidePopupConfirmation } from './SlidePopupConfirmation'
 
 interface Props {
   title: string
@@ -27,67 +26,38 @@ export const SlidePopupConfirmationInfo = ({
   height,
   onConfirm,
 }: Props) => {
-  const [animateModal, setAnimateModal] = useState(false)
-
+  const confirmButton: AppButtonProps = {
+    accessibilityLabel: 'confirmButton',
+    style: styles.okButton,
+    backgroundVariety: AppButtonBackgroundVarietyEnum.GHOST,
+    title: confirmText,
+    onPress: onConfirm,
+  }
   return (
-    <SlidePopup
+    <SlidePopupConfirmation
+      title={title}
+      description={description}
+      titleStyle={styles.title}
+      descriptionStyle={styles.description}
       isVisible={isVisible}
-      duration={ANIMATION_DURATION}
       height={height}
-      animateModal={animateModal}
-      onClose={() => {
-        setAnimateModal(false)
-        onConfirm()
-      }}
-      backgroundColor={sharedColors.primary}>
-      <View>
-        <Typography type="h2" style={styles.title}>
-          {title}
-        </Typography>
-
-        <Typography type="h3" style={styles.description}>
-          {description}
-        </Typography>
-
-        <AppButton
-          accessibilityLabel="confirmButton"
-          style={styles.okButton}
-          backgroundVariety={AppButtonBackgroundVarietyEnum.GHOST}
-          title={confirmText}
-          onPress={() => {
-            setAnimateModal(true)
-            setTimeout(() => {
-              setAnimateModal(false)
-              onConfirm()
-            }, ANIMATION_DURATION)
-          }}
-        />
-      </View>
-    </SlidePopup>
+      backgroundColor={sharedColors.primary}
+      buttons={[confirmButton]}
+      onClose={onConfirm}
+    />
   )
 }
 
 const styles = StyleSheet.create({
   title: castStyle.text({
-    fontSize: 20,
-    textAlign: 'center',
-    marginBottom: 12,
     color: sharedColors.subTitle,
   }),
   description: castStyle.text({
-    fontSize: 15,
-    textAlign: 'center',
-    marginBottom: 20,
     color: sharedColors.labelLight,
   }),
   okButton: castStyle.view({
     borderColor: colors.background.light,
     borderWidth: 1,
-    marginBottom: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 50,
-  }),
-  cancelButton: castStyle.view({
     marginBottom: 10,
     paddingVertical: 10,
     paddingHorizontal: 50,

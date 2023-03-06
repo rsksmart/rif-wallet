@@ -21,7 +21,7 @@ interface Props {
   backgroundColor: string
   height?: number
   duration?: number
-  showSwapper?: boolean
+  showSlider?: boolean
   onClose: () => void
 }
 
@@ -35,7 +35,7 @@ export const SlidePopup = ({
   backgroundColor,
   height = DEVICE_HEIGHT / 2,
   duration = 450,
-  showSwapper = true,
+  showSlider = true,
   onClose,
 }: Props) => {
   const keyboard = useKeyboard()
@@ -60,7 +60,7 @@ export const SlidePopup = ({
       PressToanimate={animateModal}
       HeaderContent={
         <View style={{ ...styles.containerHeader, backgroundColor }}>
-          {showSwapper && <View style={styles.swapper} />}
+          {showSlider && <View style={styles.swapper} />}
         </View>
       }
       HeaderStyle={{ marginTop: headerMarginTop }}
