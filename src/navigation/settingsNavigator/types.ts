@@ -10,6 +10,7 @@ export enum settingsStackRouteNames {
   FeedbackScreen = 'FeedbackScreen',
   ShowMnemonicScreen = 'ShowMnemonicScreen',
   ChangePinScreen = 'ChangePinScreen',
+  ExampleScreen = 'ExampleScreen',
 }
 
 export type SettingsStackParamsList = {
@@ -20,6 +21,7 @@ export type SettingsStackParamsList = {
   [settingsStackRouteNames.FeedbackScreen]: undefined
   [settingsStackRouteNames.ShowMnemonicScreen]: undefined
   [settingsStackRouteNames.ChangePinScreen]: undefined
+  [settingsStackRouteNames.ExampleScreen]: undefined
 }
 
 export type SettingsScreenProps<T extends keyof SettingsStackParamsList> =
