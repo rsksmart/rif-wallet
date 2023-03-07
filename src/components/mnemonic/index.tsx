@@ -84,7 +84,7 @@ export const MnemonicComponent = ({
               title={`${index + 1}.${word}`}
               color={sharedColors.primary}
               widthVariety={AppButtonWidthVarietyEnum.INLINE}
-              accessibilityLabel={`word${index}`}
+              accessibilityLabel={word}
             />
           ))}
         </View>
