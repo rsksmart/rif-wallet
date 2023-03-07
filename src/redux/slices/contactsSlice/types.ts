@@ -1,9 +1,4 @@
-export interface Contact {
-  id: string
-  name: string
-  address: string
-  displayAddress: string
-}
+import { Contact } from 'shared/types'
 
 export interface ContactsState {
   contacts: Record<string, Contact>

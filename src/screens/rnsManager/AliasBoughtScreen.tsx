@@ -1,34 +1,39 @@
 import { useEffect, useState } from 'react'
-
 import { Clipboard, Image, Linking, StyleSheet, View } from 'react-native'
-import { rnsManagerStyles } from './rnsManagerStyles'
-import { navigationContainerRef } from 'src/core/Core'
 
-import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator/types'
-import { MediumText, SecondaryButton } from 'src/components'
-import { PrimaryButton } from 'src/components/button/PrimaryButton'
-import { getWalletSetting, SETTINGS } from 'src/core/config'
-import { setProfile } from 'src/redux/slices/profileSlice/profileSlice'
-import { selectProfile } from 'src/redux/slices/profileSlice/selector'
+import { RnsProcessor } from 'lib/rns/RnsProcessor'
+
+import { rnsManagerStyles } from './rnsManagerStyles'
+import { MediumText, SecondaryButton } from 'components/index'
+import { PrimaryButton } from 'components/button'
+import { getWalletSetting, SETTINGS } from 'core/config'
+import { setProfile } from 'store/slices/profileSlice'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { ScreenWithWallet } from '../types'
+import {
+  profileStackRouteNames,
+  ProfileStackScreenProps,
+  ProfileStatus,
+} from 'navigation/profileNavigator/types'
+import { castStyle } from 'shared/utils'
 
 export const AliasBoughtScreen = ({
+  navigation,
   route,
-}: RootStackScreenProps<'AliasBought'> & ScreenWithWallet) => {
-  const { alias, tx } = route.params
+  wallet,
+}: ProfileStackScreenProps<profileStackRouteNames.AliasBought> &
+  ScreenWithWallet) => {
+  const rnsProcessor = new RnsProcessor({ wallet })
 
-  const [registerDomainInfo, setRegisterDomainInfo] = useState(
+  const { alias } = route.params
+
+  const [registerDomainInfo] = useState(
     'Transaction for your alias is being processed',
   )
 
   const { chainType } = useAppSelector(selectActiveWallet)
   const dispatch = useAppDispatch()
-  const profile = useAppSelector(selectProfile)
 
   const explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainType)
 
@@ -38,17 +43,15 @@ export const AliasBoughtScreen = ({
   }
 
   useEffect(() => {
-    if (profile) {
-      dispatch(setProfile({ ...profile, alias: `${alias}.rsk` }))
-    }
-    const fetchData = async () => {
-      await tx.wait()
-      setRegisterDomainInfo('Your alias has been registered successfully')
-    }
-    fetchData()
-      // make sure to catch any error
-      .catch(console.error)
-  }, [])
+    dispatch(
+      setProfile({
+        phone: '',
+        email: '',
+        alias: `${alias}.rsk`,
+        status: ProfileStatus.USER,
+      }),
+    )
+  }, [alias, dispatch])
 
   return (
     <>
@@ -73,16 +76,18 @@ export const AliasBoughtScreen = ({
         <View style={rnsManagerStyles.bottomContainer}>
           <View style={styles.buttonContainer}>
             <PrimaryButton
-              onPress={() => copyHashAndOpenExplorer(tx.hash)}
+              onPress={() =>
+                copyHashAndOpenExplorer(
+                  rnsProcessor.getStatus(alias).registrationHash,
+                )
+              }
               accessibilityLabel="Copy Hash & Open Explorer"
               title={'Copy Hash & Open Explorer'}
             />
           </View>
           <SecondaryButton
             onPress={() =>
-              navigationContainerRef.navigate(
-                rootStackRouteNames.ProfileDetailsScreen,
-              )
+              navigation.navigate(profileStackRouteNames.ProfileDetailsScreen)
             }
             accessibilityLabel="close"
             title={'Close'}
@@ -94,16 +99,16 @@ export const AliasBoughtScreen = ({
 }
 
 const styles = StyleSheet.create({
-  imageContainer: {
+  imageContainer: castStyle.view({
     alignItems: 'center',
     paddingTop: 50,
     paddingBottom: 10,
-  },
-  image: {
+  }),
+  image: castStyle.image({
     paddingTop: 50,
     paddingBottom: 10,
-  },
-  buttonContainer: {
+  }),
+  buttonContainer: castStyle.view({
     marginBottom: 15,
-  },
+  }),
 })

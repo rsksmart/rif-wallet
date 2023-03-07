@@ -7,7 +7,7 @@ import CopyField from 'src/components/activity/CopyField'
 import { Arrow, RefreshIcon } from 'src/components/icons'
 import { SearchIcon } from 'src/components/icons/SearchIcon'
 import { StatusIcon } from 'src/components/statusIcons'
-import { BitcoinTransactionType } from 'src/lib/rifWalletServices/RIFWalletServicesTypes'
+import { BitcoinTransactionType } from '@rsksmart/rif-wallet-bitcoin'
 import { formatTimestamp } from 'src/lib/utils'
 import { spacing } from 'src/styles'
 import { TokenImage } from '../home/TokenImage'
@@ -58,7 +58,7 @@ export default function ActivityDetailsBitcoinContainer({
             )}
             <View style={styles.amountContainer}>
               {/*  @TODO get cash amount for this text */}
-              {/*<Text style={{ fontWeight: 'bold' }}>Cash Amount</Text>*/}
+              {/*<SemiBoldText>Cash Amount</SemiBoldText>*/}
               <SemiBoldText>
                 {valueBtc} {symbol}
               </SemiBoldText>

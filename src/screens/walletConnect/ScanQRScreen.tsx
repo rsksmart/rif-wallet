@@ -1,23 +1,22 @@
+import { isBitcoinAddressValid } from '@rsksmart/rif-wallet-bitcoin'
+import { decodeString } from '@rsksmart/rif-wallet-eip681'
 import { useContext, useState } from 'react'
 
-import { isBitcoinAddressValid } from 'lib/bitcoin/utils'
-import { decodeString } from 'lib/eip681/decodeString'
-
-import { useAppSelector } from 'src/redux/storeUtils'
-import { selectActiveWallet } from 'store/slices/settingsSlice'
-import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator'
 import { QRCodeScanner } from 'components/QRCodeScanner'
 import { getWalletSetting, SETTINGS } from 'core/config'
 import { networkType } from 'core/setup'
-
+import { homeStackRouteNames } from 'navigation/homeNavigator/types'
+import {
+  rootTabsRouteNames,
+  RootTabsScreenProps,
+} from 'navigation/rootNavigator'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { useAppSelector } from 'store/storeUtils'
 import { WalletConnectContext } from './WalletConnectContext'
 
 export const ScanQRScreen = ({
   navigation,
-}: RootStackScreenProps<rootStackRouteNames.ScanQR>) => {
+}: RootTabsScreenProps<rootTabsRouteNames.ScanQR>) => {
   const { wallet } = useAppSelector(selectActiveWallet)
 
   const { createSession } = useContext(WalletConnectContext)
@@ -34,12 +33,15 @@ export const ScanQRScreen = ({
         // wait for session request
         navigation.reset({
           index: 0,
-          routes: [{ name: rootStackRouteNames.WalletConnect }],
+          routes: [{ name: rootTabsRouteNames.WalletConnect }],
         })
       }
     } else if (decodedString.address !== undefined) {
-      navigation.replace(rootStackRouteNames.Send, {
-        to: decodedString.address,
+      navigation.navigate(rootTabsRouteNames.Home, {
+        screen: homeStackRouteNames.Send,
+        params: {
+          to: decodedString.address,
+        },
       })
     } else if (isBitcoinAddressValid(data)) {
       // Default bitcoin token will be fetched from ENV
@@ -47,9 +49,12 @@ export const ScanQRScreen = ({
         SETTINGS.QR_READER_BITCOIN_DEFAULT_NETWORK,
         networkType,
       )
-      navigation.replace(rootStackRouteNames.Send, {
-        to: data,
-        contractAddress: defaultToken,
+      navigation.navigate(rootTabsRouteNames.Home, {
+        screen: homeStackRouteNames.Send,
+        params: {
+          to: data,
+          contractAddress: defaultToken,
+        },
       })
     }
   }
@@ -58,7 +63,9 @@ export const ScanQRScreen = ({
     if (navigation.canGoBack()) {
       navigation.goBack()
     } else {
-      navigation.navigate(rootStackRouteNames.Home)
+      navigation.navigate(rootTabsRouteNames.Home, {
+        screen: homeStackRouteNames.Main,
+      })
     }
   }
 

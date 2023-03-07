@@ -1,41 +1,46 @@
-import { useMemo, useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native'
+import { Image, ScrollView, StyleSheet, TextInput, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import { CompositeScreenProps } from '@react-navigation/native'
+import { FormProvider, useForm } from 'react-hook-form'
+
 import { SearchIcon } from 'components/icons/SearchIcon'
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
+import { RegularText } from 'components/index'
 import {
-  rootStackRouteNames,
-  RootStackScreenProps,
+  rootTabsRouteNames,
+  RootTabsScreenProps,
 } from 'navigation/rootNavigator/types'
+import { homeStackRouteNames } from 'navigation/homeNavigator/types'
+import { contactsStackRouteNames } from 'navigation/contactsNavigator'
+import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { colors } from 'src/styles'
 import { fonts } from 'src/styles/fonts'
-import { ContactRow } from './ContactRow'
-import { Contact } from 'store/slices/contactsSlice/types'
-import { CompositeScreenProps } from '@react-navigation/native'
-import { ContactsStackScreenProps } from '..'
-import { contactsStackRouteNames } from 'src/navigation/contactsNavigator'
-import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
-import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { getContactsAsArrayAndSelected } from 'store/slices/contactsSlice'
 import {
   deleteContactById,
+  getContactsAsArrayAndSelected,
   setSelectedContactById,
 } from 'store/slices/contactsSlice'
+import { Contact } from 'shared/types'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { ContactsStackScreenProps } from '../index'
+import { ContactRow } from './ContactRow'
+import { Search } from 'components/input/search'
 
 export type ContactsListScreenProps = CompositeScreenProps<
   ContactsStackScreenProps<contactsStackRouteNames.ContactsList>,
-  RootStackScreenProps<rootStackRouteNames.Contacts>
+  RootTabsScreenProps<rootTabsRouteNames.Contacts>
 >
 
 export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
+  const methods = useForm({
+    mode: 'onChange',
+    defaultValues: {
+      search: '',
+    },
+  })
+  const { resetField } = methods
   const { t } = useTranslation()
   const { contacts, selectedContact } = useAppSelector(
     getContactsAsArrayAndSelected,
@@ -85,7 +90,10 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
   }
 
   const sendContact = (contact: Contact) => {
-    navigation.navigate(rootStackRouteNames.Send, { to: contact.address })
+    navigation.navigate(rootTabsRouteNames.Home, {
+      screen: homeStackRouteNames.Send,
+      params: { to: contact.address },
+    })
   }
 
   const removeContact = () => {
@@ -102,7 +110,7 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
   return (
     <View style={styles.parent}>
       <View style={styles.header}>
-        <Text style={styles.title}>Contacts</Text>
+        <RegularText style={styles.title}>Contacts</RegularText>
         <Icon.Button
           accessibilityLabel="addContact"
           name="user-plus"
@@ -115,6 +123,13 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
           borderRadius={20}
         />
       </View>
+      <FormProvider {...methods}>
+        <Search
+          inputName={'search'}
+          resetValue={() => resetField('search')}
+          placeholder={t('search_placeholder')}
+        />
+      </FormProvider>
       {selectedContact && (
         <ConfirmationModal
           isVisible={isDeleteContactModalVisible}
@@ -135,12 +150,12 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
             style={styles.noContactsImage}
           />
           <View style={styles.noContactsTextView} testID="emptyView">
-            <Text style={styles.noContactsText}>
+            <RegularText style={styles.noContactsText}>
               {t('Your contact list is empty.')}
-            </Text>
-            <Text style={styles.noContactsText}>
+            </RegularText>
+            <RegularText style={styles.noContactsText}>
               {t('Start by creating a new contact.')}
-            </Text>
+            </RegularText>
           </View>
         </>
       ) : (

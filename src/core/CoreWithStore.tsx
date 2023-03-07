@@ -1,7 +1,7 @@
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
-import { persistor } from 'src/redux/store'
-import { store } from 'store/store'
+
+import { store, persistor } from 'store/store'
 import { Core } from './Core'
 
 export const CoreWithStore = () => (

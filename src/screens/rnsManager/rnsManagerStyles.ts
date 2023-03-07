@@ -1,23 +1,25 @@
-import { colors } from '../../styles'
 import { StyleSheet } from 'react-native'
+import { sharedColors } from 'shared/constants'
+import { colors } from 'src/styles'
+
 export const rnsManagerStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background.darkBlue,
-    paddingHorizontal: 40,
+    backgroundColor: colors.background.black,
+    paddingHorizontal: 20,
+  },
+  title: {
+    color: sharedColors.subTitle,
+  },
+  subtitle: {
+    color: sharedColors.subTitle,
   },
   profileHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 20,
-    backgroundColor: colors.background.darkBlue,
-  },
-  backButton: {
-    color: colors.lightPurple,
-    backgroundColor: colors.blue2,
-    borderRadius: 20,
-    padding: 10,
-    bottom: 3,
+    paddingVertical: 20,
+    paddingHorizontal: 10,
+    backgroundColor: colors.background.black,
   },
   profileImageContainer: {
     alignItems: 'center',
@@ -49,12 +51,17 @@ export const rnsManagerStyles = StyleSheet.create({
     alignSelf: 'center',
     padding: 5,
   },
+  marginTop: {
+    marginTop: 10,
+  },
   marginBottom: {
     marginBottom: 10,
   },
   bottomContainer: {
     flex: 1,
-    justifyContent: 'flex-end',
-    marginTop: 10,
+    justifyContent: 'center',
+  },
+  disabledButton: {
+    opacity: 0.4,
   },
 })

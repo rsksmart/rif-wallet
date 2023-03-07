@@ -2,7 +2,6 @@ import { StyleSheet } from 'react-native'
 import { colors } from '../../styles'
 
 export const sharedAddressStyles = StyleSheet.create({
-  parent: {},
   iconColumn: {
     alignItems: 'flex-end',
   },
@@ -22,7 +21,6 @@ export const sharedAddressStyles = StyleSheet.create({
     margin: 3,
   },
   rnsDomainAddress: {
-    marginLeft: 4,
     fontSize: 11,
   },
   inputContainer: {
@@ -32,12 +30,6 @@ export const sharedAddressStyles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     padding: 20,
-  },
-  input: {
-    flex: 5,
-    fontSize: 16,
-    fontWeight: '400',
-    color: colors.white,
   },
   invalidAddressText: {
     marginTop: 10,

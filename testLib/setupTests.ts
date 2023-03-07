@@ -1,6 +1,7 @@
+import mockRNDeviceInfo from 'react-native-device-info/jest/react-native-device-info-mock'
+
 jest.mock('@rsksmart/rns-resolver.js')
 // include this line for mocking react-native-gesture-handler
 import 'react-native-gesture-handler/jestSetup'
 
-// mock NativeEventEmitter for the RAMP SDK
-jest.mock('react-native/Libraries/EventEmitter/NativeEventEmitter')
+jest.mock('react-native-device-info', () => mockRNDeviceInfo)

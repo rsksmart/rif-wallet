@@ -1,29 +1,28 @@
 import { useState } from 'react'
-
+import { SendBitcoinRequest } from '@rsksmart/rif-wallet-bitcoin'
 import {
-  Request,
   SignMessageRequest,
-  SendTransactionRequest,
   SignTypedDataRequest,
-} from 'lib/core'
-import { SendBitcoinRequestType } from 'lib/bitcoin/types'
+} from '@rsksmart/rif-wallet-core'
 
 import SlideUpModal from 'components/slideUpModal/SlideUpModal'
-import ReviewTransactionModal from './ReviewTransactionModal'
+import { colors } from 'src/styles'
+import { RequestWithBitcoin } from 'shared/types'
+
+import { ReviewTransactionContainer } from './ReviewRelayTransaction/ReviewTransactionContainer'
 import SignMessageModal from './SignMessageModal'
 import SignTypedDataModal from './SignTypedDataModal'
-import { InjectSelectedWallet } from '../../Context'
-import { colors } from '../../styles'
 import ConfirmBitcoinTransactionModal from './ConfirmBitcoinTransactionModal'
 
 interface Props {
-  request: Request
+  request: RequestWithBitcoin
   closeModal: () => void
 }
 
-const ReviewTransactionInjected = InjectSelectedWallet(ReviewTransactionModal)
-
-const RequestTypeSwitch = (request: Request, closeModal: () => void) => {
+const RequestTypeSwitch = (
+  request: RequestWithBitcoin,
+  closeModal: () => void,
+) => {
   switch (request.type) {
     case 'signMessage':
       return (
@@ -34,10 +33,7 @@ const RequestTypeSwitch = (request: Request, closeModal: () => void) => {
       )
     case 'sendTransaction':
       return (
-        <ReviewTransactionInjected
-          request={request as SendTransactionRequest}
-          closeModal={closeModal}
-        />
+        <ReviewTransactionContainer request={request} closeModal={closeModal} />
       )
     case 'signTypedData':
       return (
@@ -49,14 +45,14 @@ const RequestTypeSwitch = (request: Request, closeModal: () => void) => {
     case 'SEND_BITCOIN':
       return (
         <ConfirmBitcoinTransactionModal
-          request={request as SendBitcoinRequestType}
+          request={request as SendBitcoinRequest}
           closeModal={closeModal}
         />
       )
   }
 }
 
-const ModalComponent = ({ request, closeModal }: Props) => {
+export const ModalComponent = ({ request, closeModal }: Props) => {
   const [showSelector, setShowSelector] = useState<boolean>(true)
   const [animateModal, setAnimateModal] = useState(false)
 
@@ -94,5 +90,3 @@ const ModalComponent = ({ request, closeModal }: Props) => {
     </SlideUpModal>
   )
 }
-
-export default ModalComponent

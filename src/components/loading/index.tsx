@@ -1,10 +1,10 @@
 import React from 'react'
-import { Paragraph } from '../typography'
+import { MediumText } from '../typography'
 
 interface Interface {
   reason?: string
 }
 
 export const Loading: React.FC<Interface> = ({ reason }) => (
-  <Paragraph>Loading{reason && `: ${reason}`}</Paragraph>
+  <MediumText>Loading{reason && `: ${reason}`}</MediumText>
 )

@@ -1,54 +1,67 @@
-import React, { useState } from 'react'
-import { UnspentTransactionType } from '../../lib/bitcoin/types'
+import { useState, useEffect, useMemo, useCallback } from 'react'
+import { BigNumber } from 'ethers'
 import {
   convertBtcToSatoshi,
-  convertSatoshiToBtcHuman,
   validateAmount,
-} from '../../lib/bitcoin/utils'
-import { BigNumber } from 'ethers'
-import { sanitizeDecimalText, sanitizeMaxDecimalText } from '../../lib/utils'
-import { ISetAmountComponent } from './SetAmountComponent'
-import BitcoinNetwork from '../../lib/bitcoin/BitcoinNetwork'
-import { BitcoinSetAmountPresentation } from './BitcoinSetAmountPresentation'
-import { usePaymentExecutorContext } from './usePaymentExecutor'
+  UnspentTransactionType,
+} from '@rsksmart/rif-wallet-bitcoin'
+import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 
-interface IBitcoinSetAmountContainer {
+import {
+  convertTokenToUSD,
+  convertUSDtoToken,
+  sanitizeDecimalText,
+  sanitizeMaxDecimalText,
+} from 'lib/utils'
+
+import { ISetAmountComponent } from './SetAmountComponent'
+import { usePaymentExecutorContext } from './usePaymentExecutor'
+import { TokenBalance } from 'components/token'
+import { sharedColors } from 'shared/constants'
+import { CurrencyValue } from 'components/token'
+import { Typography } from 'components/index'
+
+interface BitcoinSetAmountContainerProps {
   setAmount: ISetAmountComponent['setAmount']
   token: BitcoinNetwork
-  BitcoinSetAmountComponent?: React.FunctionComponent<{
-    amountToPay: string
-    handleAmountChange: (value: string) => void
-    utxos?: UnspentTransactionType[]
-  }>
+  usdAmount: number | undefined
 }
 
-export const BitcoinSetAmountContainer: React.FC<
-  IBitcoinSetAmountContainer
-> = ({
+export const BitcoinSetAmountContainer = ({
   setAmount,
   token,
-  BitcoinSetAmountComponent = BitcoinSetAmountPresentation,
-}) => {
+  usdAmount,
+}: BitcoinSetAmountContainerProps) => {
   const [utxos, setUtxos] = useState<Array<UnspentTransactionType>>([])
+  const [firstValue, setFirstValue] = useState<CurrencyValue>({
+    symbolType: 'icon',
+    symbol: token.symbol,
+    balance: '',
+  })
+  const [secondValue, setSecondValue] = useState<CurrencyValue>({
+    symbolType: 'text',
+    symbol: '$',
+    balance: '0.00',
+  })
   const [amountToPay, setAmountToPay] = useState<string>('')
   const [error, setError] = useState<string>('')
   const { setUtxosGlobal, setBitcoinBalanceGlobal } =
     usePaymentExecutorContext()
 
-  const fetchUtxo = async () => {
+  const fetchUtxo = useCallback(async () => {
     token.bips[0].fetchUtxos().then((data: Array<UnspentTransactionType>) => {
       const filtered = data.filter(tx => tx.confirmations > 0)
       setUtxos(filtered)
       setUtxosGlobal(filtered)
     })
-  }
+  }, [setUtxosGlobal, token.bips])
 
-  const satoshisToPay = React.useMemo(
+  const satoshisToPay = useMemo(
     () => convertBtcToSatoshi(amountToPay),
     [amountToPay],
   )
 
-  const balanceAvailable = React.useMemo(
+  const balanceAvailable = useMemo(
     () =>
       utxos.reduce((prev, utxo) => {
         prev = prev.add(BigNumber.from(utxo.value))
@@ -57,51 +70,89 @@ export const BitcoinSetAmountContainer: React.FC<
     [utxos],
   )
 
-  React.useEffect(() => {
+  useEffect(() => {
     setBitcoinBalanceGlobal(balanceAvailable.toNumber())
-  }, [balanceAvailable])
-  React.useEffect(() => {
+  }, [balanceAvailable, setBitcoinBalanceGlobal])
+
+  useEffect(() => {
     fetchUtxo()
-  }, [])
-  const handleAmountChange = React.useCallback(
+  }, [fetchUtxo])
+
+  const handleAmountChange = useCallback(
     (amount: string) => {
       setError('')
+
       const amountSanitized = sanitizeMaxDecimalText(
         sanitizeDecimalText(amount),
       )
+      setFirstValue({ ...firstValue, ...{ balance: amountSanitized } })
 
+      let amountToTransfer = 0
+      if (firstValue.symbol === token.symbol) {
+        amountToTransfer = Number(amountSanitized)
+        setAmountToPay(amountSanitized)
+        setSecondValue({
+          ...secondValue,
+          ...{
+            balance:
+              '' + convertTokenToUSD(amountToTransfer, usdAmount || 0, true),
+          },
+        })
+      } else {
+        amountToTransfer = Number(amountSanitized)
+        const newBalance = convertUSDtoToken(
+          amountToTransfer,
+          usdAmount || 0,
+          true,
+        )
+        setAmountToPay('' + newBalance)
+        setSecondValue({ ...secondValue, ...{ balance: '' + newBalance } })
+      }
       const { message } = validateAmount(
-        convertBtcToSatoshi(amountSanitized),
+        convertBtcToSatoshi('' + amountToTransfer),
         balanceAvailable,
       )
-      setAmountToPay(amountSanitized)
       if (message) {
         setError(message)
       }
     },
-    [balanceAvailable],
+    [balanceAvailable, usdAmount, firstValue, secondValue, token.symbol],
   )
 
   // When amount to pay changes - update setAmount
-  React.useEffect(() => {
+  useEffect(() => {
     setAmount(
       satoshisToPay.toString(),
       validateAmount(satoshisToPay, balanceAvailable).isValid,
     )
-  }, [amountToPay])
+  }, [amountToPay, satoshisToPay, balanceAvailable, setAmount])
 
-  const balanceAvailableString = React.useMemo(
-    () => convertSatoshiToBtcHuman(balanceAvailable),
-    [balanceAvailable],
-  )
+  const onSwap = () => {
+    const swap = { ...firstValue }
+    if (firstValue.balance === '') {
+      setFirstValue({ ...secondValue, ...{ balance: '' } })
+      setSecondValue({ ...swap, ...{ balance: '0.00' } })
+    } else {
+      setFirstValue(secondValue)
+      setSecondValue(swap)
+    }
+  }
 
   return (
-    <BitcoinSetAmountComponent
-      utxos={utxos}
-      amountToPay={amountToPay}
-      handleAmountChange={handleAmountChange}
-      error={error}
-      available={balanceAvailableString}
-    />
+    <>
+      <TokenBalance
+        firstValue={firstValue}
+        secondValue={secondValue}
+        editable={true}
+        onSwap={onSwap}
+        color={sharedColors.tokenBackground}
+        handleAmountChange={handleAmountChange}
+      />
+      {error !== '' && (
+        <Typography type={'label'} style={{ color: sharedColors.danger }}>
+          {error}
+        </Typography>
+      )}
+    </>
   )
 }

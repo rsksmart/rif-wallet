@@ -1,12 +1,16 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider'
 import { ContractReceipt } from 'ethers'
-import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
-import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
-import { UnspentTransactionType } from 'lib/bitcoin/types'
+import {
+  BitcoinNetwork,
+  UnspentTransactionType,
+} from '@rsksmart/rif-wallet-bitcoin'
 
-import { TransactionInformation } from './TransactionInfo'
+import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
+
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { TransactionExtras } from 'store/slices/transactionsSlice/types'
+
+import { TransactionInformation } from './TransactionInfo'
 
 export type OnSetErrorFunction = (
   error: string | null | { message: string },

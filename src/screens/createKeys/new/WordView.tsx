@@ -1,6 +1,7 @@
 import React from 'react'
 
-import { View, Text } from 'react-native'
+import { View } from 'react-native'
+import { RegularText } from 'src/components'
 import { sharedMnemonicStyles } from './styles'
 
 interface WordInterface {
@@ -13,15 +14,17 @@ export const WordView: React.FC<WordInterface> = ({ number, text }) => (
     <View style={sharedMnemonicStyles.wordRow}>
       <View>
         <View style={sharedMnemonicStyles.wordNumberBadge}>
-          <Text style={sharedMnemonicStyles.wordNumberBadgeText}>{number}</Text>
+          <RegularText style={sharedMnemonicStyles.wordNumberBadgeText}>
+            {number}
+          </RegularText>
         </View>
       </View>
       <View>
-        <Text
+        <RegularText
           style={sharedMnemonicStyles.wordText}
           accessibilityLabel={`word${number} ${text}`}>
           {text}
-        </Text>
+        </RegularText>
       </View>
     </View>
   </View>

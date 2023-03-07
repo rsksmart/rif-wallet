@@ -1,13 +1,13 @@
-import React from 'react'
-import { Linking, Text } from 'react-native'
 import Clipboard from '@react-native-community/clipboard'
-import { getChainIdByType, shortAddress } from '../../lib/utils'
-import { Paragraph } from '../typography'
-import { toChecksumAddress } from './lib'
-import { CompassIcon, CopyIcon } from '../icons'
+import React from 'react'
+import { Linking, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { getWalletSetting, SETTINGS } from 'src/core/config'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
+import { getChainIdByType, shortAddress } from '../../lib/utils'
+import { CompassIcon, CopyIcon } from '../icons'
+import { RegularText } from '../typography'
+import { toChecksumAddress } from './lib'
 
 export const getAddressDisplayText = (
   inputAddress: string,
@@ -39,8 +39,8 @@ export const Address: React.FC<{
   const explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainType)
 
   return (
-    <Paragraph>
-      <Text testID={testID}>{displayAddress} </Text>
+    <View>
+      <RegularText testID={testID}>{displayAddress}</RegularText>
       <TouchableOpacity
         onPress={() => Clipboard.setString(checksumAddress)}
         accessibilityLabel="copy">
@@ -53,6 +53,6 @@ export const Address: React.FC<{
         }}>
         <CompassIcon width={20} height={20} />
       </TouchableOpacity>
-    </Paragraph>
+    </View>
   )
 }

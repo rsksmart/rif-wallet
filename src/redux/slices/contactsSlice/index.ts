@@ -3,8 +3,12 @@ import {
   ContactsState,
   SaveContactPayload,
 } from 'store/slices/contactsSlice/types'
-import { getContacts, saveContacts } from 'src/storage/MainStorage'
-import { Contact } from 'store/slices/contactsSlice/types'
+import {
+  getContacts,
+  saveContacts,
+  deleteContacts as deleteContactsFromStorage,
+} from 'storage/MainStorage'
+import { Contact } from 'shared/types'
 import uuid from 'react-native-uuid'
 
 const initialState: ContactsState = {
@@ -34,6 +38,10 @@ const contactsSlice = createSlice({
       saveContacts(state.contacts)
       return state
     },
+    deleteContacts: () => {
+      deleteContactsFromStorage()
+      return initialState
+    },
     setSelectedContactById: (
       state,
       { payload }: PayloadAction<string | null>,
@@ -54,6 +62,7 @@ export const {
   addContact,
   setSelectedContactById,
   deleteContactById,
+  deleteContacts,
   editContact,
 } = contactsSlice.actions
 

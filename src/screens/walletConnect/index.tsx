@@ -1,26 +1,23 @@
+import {
+  rootTabsRouteNames,
+  RootTabsScreenProps,
+} from 'navigation/rootNavigator/types'
 import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Image, ScrollView, StyleSheet, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
-import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
-import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator/types'
-import { WalletConnectContext } from './WalletConnectContext'
-import { useAppSelector } from 'store/storeUtils'
+import { RegularText, SemiBoldText } from 'src/components'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { useAppSelector } from 'store/storeUtils'
+import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
 import { colors } from '../../styles'
-import { fonts } from '../../styles/fonts'
-
-type WalletConnectScreenProps =
-  RootStackScreenProps<rootStackRouteNames.WalletConnect>
+import { WalletConnectContext } from './WalletConnectContext'
 
 export const WalletConnectScreen = ({
   navigation,
   route,
-}: WalletConnectScreenProps) => {
+}: RootTabsScreenProps<rootTabsRouteNames.WalletConnect>) => {
   const wcKey = route.params?.wcKey
   const { t } = useTranslation()
   const { wallet } = useAppSelector(selectActiveWallet)
@@ -35,17 +32,17 @@ export const WalletConnectScreen = ({
 
   if (pendingConnector?.connected) {
     // clear pendingConnector
-    navigation.navigate(rootStackRouteNames.WalletConnect)
+    navigation.navigate(rootTabsRouteNames.WalletConnect)
   }
 
   return (
     <View style={styles.parent}>
       <View style={styles.header}>
         <View style={styles.innerHeader1}>
-          <Text style={styles.title}>{t('Connected Dapps')}</Text>
-          <Text style={styles.subtitle}>
+          <RegularText style={styles.title}>{t('Connected Dapps')}</RegularText>
+          <RegularText style={styles.subtitle}>
             {t('Connect new Dapp by scanning a QR code.')}
-          </Text>
+          </RegularText>
         </View>
         <View style={styles.innerHeader2} />
       </View>
@@ -67,10 +64,12 @@ export const WalletConnectScreen = ({
             style={styles.noDappsImage}
           />
           <View style={styles.noDappsTextView} testID="emptyView">
-            <Text style={styles.noDappsText}>{t('You are currently not')}</Text>
-            <Text style={styles.noDappsText}>
+            <RegularText style={styles.noDappsText}>
+              {t('You are currently not')}
+            </RegularText>
+            <RegularText style={styles.noDappsText}>
               {t('connected to any Dapp.')}
-            </Text>
+            </RegularText>
           </View>
         </>
       ) : (
@@ -86,8 +85,12 @@ export const WalletConnectScreen = ({
                   style={styles.dappIcon}
                 />
                 <View style={styles.dappNameView}>
-                  <Text style={styles.dappName}>{c.peerMeta?.name}</Text>
-                  <Text style={styles.dappUrl}>{c.peerMeta?.url}</Text>
+                  <SemiBoldText style={styles.dappName}>
+                    {c.peerMeta?.name}
+                  </SemiBoldText>
+                  <RegularText style={styles.dappUrl}>
+                    {c.peerMeta?.url}
+                  </RegularText>
                 </View>
                 <TouchableOpacity
                   accessibilityLabel="dapp"
@@ -124,12 +127,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontFamily: fonts.regular,
     fontSize: 22,
     color: colors.text.primary,
   },
   subtitle: {
-    fontFamily: fonts.regular,
     fontSize: 13,
     color: colors.text.primary,
     marginTop: 10,
@@ -146,7 +147,6 @@ const styles = StyleSheet.create({
   },
   noDappsText: {
     color: colors.text.primary,
-    fontFamily: fonts.regular,
     fontSize: 14,
     textAlign: 'center',
   },
@@ -173,7 +173,6 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   dappName: {
-    fontFamily: fonts.semibold,
     fontSize: 16,
     color: colors.text.primary,
   },
@@ -187,7 +186,6 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   dappUrl: {
-    fontFamily: fonts.regular,
     fontSize: 12,
     color: colors.text.secondary,
   },

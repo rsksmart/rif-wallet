@@ -13,6 +13,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 16.x
+    - name: Set up NPM authentication
+      run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_PACKAGES_KEY }}" >> ~/.npmrc
     - run: yarn
     - run: yarn ganache &
     - run: yarn test

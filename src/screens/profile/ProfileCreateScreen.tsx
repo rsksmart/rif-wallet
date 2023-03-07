@@ -1,11 +1,4 @@
 import { useCallback, useState } from 'react'
-
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-
-import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator/types'
 import {
   Image,
   StyleSheet,
@@ -15,42 +8,44 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
-import { AvatarIcon } from 'src/components/icons/AvatarIcon'
-import { MediumText } from 'src/components'
-import { PrimaryButton } from 'src/components/button/PrimaryButton'
-import { TextInputWithLabel } from 'src/components/input/TextInputWithLabel'
+import { AvatarIcon } from 'components/icons/AvatarIcon'
+import { MediumText } from 'components/index'
+import { PrimaryButton } from 'components/button/PrimaryButton'
+import { TextInputWithLabel } from 'components/input/TextInputWithLabel'
+import { RegularText } from 'components/typography' // TOOD: fix inconsistency of imports
 import { colors } from 'src/styles'
 import { fonts } from 'src/styles/fonts'
-import { RegularText } from 'src/components/typography'
-import { selectProfile } from 'src/redux/slices/profileSlice/selector'
+import { selectProfile } from 'store/slices/profileSlice/selector'
+import { deleteProfile, setProfile } from 'store/slices/profileSlice'
+import { ProfileStore } from 'store/slices/profileSlice/types'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import {
-  deleteProfile,
-  setProfile,
-} from 'src/redux/slices/profileSlice/profileSlice'
-import { IProfileStore } from 'src/redux/slices/profileSlice/types'
-import { useAppDispatch, useAppSelector } from 'src/redux/storeUtils'
+  profileStackRouteNames,
+  ProfileStackScreenProps,
+  ProfileStatus,
+} from 'navigation/profileNavigator/types'
 
-export const ProfileCreateScreen: React.FC<
-  RootStackScreenProps<'ProfileCreateScreen'>
-> = ({ route, navigation }) => {
+export const ProfileCreateScreen = ({
+  route,
+  navigation,
+}: ProfileStackScreenProps<profileStackRouteNames.ProfileCreateScreen>) => {
   const editProfile = route.params?.editProfile
   const dispatch = useAppDispatch()
   const profile = useAppSelector(selectProfile)
-  const emptyProfile = { alias: '', email: '', phone: '' }
-  const [localProfile, setLocalProfile] = useState<IProfileStore>(
-    profile || emptyProfile,
-  )
+  const [localProfile, setLocalProfile] = useState<ProfileStore>(profile)
   const fullAlias = profile ? `${profile.alias}.rsk` : ''
 
   const createProfile = async () => {
     dispatch(setProfile({ ...localProfile, alias: profile?.alias || '' }))
-    navigation.navigate(rootStackRouteNames.Home)
+    navigation.navigate(rootTabsRouteNames.Home)
   }
 
   const deleteAlias = async () => {
     dispatch(deleteProfile())
-    navigation.navigate(rootStackRouteNames.Home)
+    navigation.navigate(rootTabsRouteNames.Home)
   }
 
   const onSetEmail = useCallback((email: string) => {
@@ -60,7 +55,6 @@ export const ProfileCreateScreen: React.FC<
   const onSetPhone = useCallback((phone: string) => {
     setLocalProfile(prev => ({ ...prev, phone }))
   }, [])
-
   return (
     <KeyboardAvoidingView
       style={styles.screen}
@@ -69,7 +63,7 @@ export const ProfileCreateScreen: React.FC<
       <ScrollView>
         <View style={styles.profileHeader}>
           <TouchableOpacity
-            onPress={() => navigation.navigate(rootStackRouteNames.Home)}
+            onPress={() => navigation.navigate(rootTabsRouteNames.Home)}
             accessibilityLabel="home">
             <View style={styles.backButton}>
               <MaterialIcon name="west" color="white" size={10} />
@@ -86,7 +80,7 @@ export const ProfileCreateScreen: React.FC<
         </View>
         <View style={styles.bodyContainer}>
           <View style={styles.profileImageContainer}>
-            {profile?.alias ? (
+            {profile.status === ProfileStatus.USER ? (
               <AvatarIcon value={fullAlias} size={80} />
             ) : (
               <Image
@@ -100,11 +94,13 @@ export const ProfileCreateScreen: React.FC<
               alias
             </MediumText>
           </View>
-          {!profile?.alias && (
+          {profile.status !== ProfileStatus.USER && (
             <>
               <View style={styles.rowContainer}>
                 <PrimaryButton
-                  onPress={() => navigation.navigate('SearchDomain')}
+                  onPress={() =>
+                    navigation.navigate(profileStackRouteNames.SearchDomain)
+                  }
                   accessibilityLabel="register new"
                   title={'register new'}
                 />
@@ -112,7 +108,7 @@ export const ProfileCreateScreen: React.FC<
             </>
           )}
 
-          {!!profile?.alias && (
+          {profile.status === ProfileStatus.USER && (
             <View style={styles.rowContainer}>
               <View style={styles.aliasContainer}>
                 <View>
@@ -123,7 +119,7 @@ export const ProfileCreateScreen: React.FC<
                 <View>
                   <TouchableOpacity
                     accessibilityLabel="close"
-                    onPress={() => setProfile({ ...profile, alias: '' })}>
+                    onPress={() => deleteAlias()}>
                     <MaterialIcon name="close" color={colors.white} size={20} />
                   </TouchableOpacity>
                 </View>
@@ -155,7 +151,7 @@ export const ProfileCreateScreen: React.FC<
               onPress={createProfile}
               accessibilityLabel="create"
               title={editProfile ? 'save' : 'create'}
-              disabled={!profile}
+              disabled={profile.status !== ProfileStatus.USER}
             />
           </View>
         </View>

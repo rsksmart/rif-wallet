@@ -126,6 +126,19 @@ export const balanceToUSD = (
     : `$${Math.round(numberAmount * 100) / 100}`
 }
 
+export const convertBalance = (
+  tokenBalance: BigNumberish,
+  tokenDecimals: number,
+  quote: number,
+): number => {
+  const pot = BigNumber.from(10).pow(BigNumber.from(tokenDecimals))
+  const fixedNumber = FixedNumber.from(BigNumber.from(tokenBalance))
+  const fixed = fixedNumber.divUnsafe(FixedNumber.from(pot))
+
+  // switch to numbers:
+  return Math.round(parseFloat(fixed.toString()) * quote * 100) / 100
+}
+
 export const trimValue = (value: string) => {
   if (value.length > 6) {
     return `${value.substr(0, 6)}...`

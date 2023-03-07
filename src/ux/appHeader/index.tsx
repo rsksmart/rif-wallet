@@ -1,82 +1,73 @@
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { useCallback } from 'react'
+import { StyleSheet, View } from 'react-native'
+import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
+import { StackHeaderProps } from '@react-navigation/stack'
+import OIcon from 'react-native-vector-icons/Octicons'
 
-import { AddressCopyComponent } from 'components/copy/AddressCopyComponent'
-import { rootStackRouteNames } from 'src/navigation/rootNavigator'
-import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { rootTabsRouteNames } from 'navigation/rootNavigator'
+import { selectActiveWallet, selectTopColor } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
-import { navigationContainerRef } from '../../core/Core'
 import { ProfileHandler } from './ProfileHandler'
-import { getChainIdByType } from 'lib/utils'
+import { sharedColors } from 'shared/constants'
+import { AppTouchable } from 'components/appTouchable'
+import { castStyle } from 'shared/utils'
 
-export const AppHeader = () => {
-  const { wallet, chainType } = useAppSelector(selectActiveWallet)
+type HeaderProps = BottomTabHeaderProps | StackHeaderProps
 
-  const openMenu = () => {
-    const navState = navigationContainerRef.getCurrentRoute()
-    if (navState && navState.name === rootStackRouteNames.Settings) {
-      navigationContainerRef.navigate(rootStackRouteNames.Home)
-    } else {
-      navigationContainerRef.navigate(rootStackRouteNames.Settings)
+interface Props {
+  isShown: boolean
+}
+
+export const AppHeader = ({
+  navigation,
+  route,
+  isShown,
+}: Props & HeaderProps) => {
+  const topColor = useAppSelector(selectTopColor)
+  const { wallet } = useAppSelector(selectActiveWallet)
+
+  const openMenu = useCallback(() => {
+    if (route && route.name === rootTabsRouteNames.Settings) {
+      navigation.navigate(rootTabsRouteNames.Home)
+      return
     }
-  }
+    navigation.navigate(rootTabsRouteNames.Settings)
+  }, [navigation, route])
 
-  return (
-    <View style={styles.row}>
-      <View
-        style={{
-          ...styles.column,
-          ...styles.walletInfo,
-        }}>
-        {wallet && <ProfileHandler wallet={wallet} />}
-      </View>
-      <View style={styles.column}>
-        {wallet && (
-          <AddressCopyComponent
-            address={wallet.smartWalletAddress}
-            chainId={getChainIdByType(chainType) || 31}
-          />
-        )}
+  return !isShown ? null : (
+    <View style={[styles.row, { backgroundColor: topColor }]}>
+      <View style={[styles.column, styles.walletInfo]}>
+        {wallet && <ProfileHandler wallet={wallet} navigation={navigation} />}
       </View>
       <View style={styles.columnMenu}>
-        <TouchableOpacity onPress={openMenu} accessibilityLabel="settings">
-          <Image
-            source={require('../../images/settings-icon.png')}
-            style={styles.settingsIcon}
-          />
-        </TouchableOpacity>
+        <AppTouchable
+          width={16}
+          onPress={openMenu}
+          accessibilityLabel="settings">
+          <OIcon name="gear" size={16} color={sharedColors.white} />
+        </AppTouchable>
       </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  row: {
+  row: castStyle.view({
     alignItems: 'center', // vertical
-    paddingVertical: 10,
+    paddingVertical: 5,
     paddingHorizontal: 15,
-    marginBottom: 10,
     display: 'flex',
     flexDirection: 'row',
-  },
-  column: {
+  }),
+  column: castStyle.view({
     flex: 5,
-  },
-  columnMenu: {
+  }),
+  columnMenu: castStyle.view({
     flex: 1,
     alignItems: 'flex-end',
-  },
-  logo: {
-    height: 25,
-    width: 18,
-    marginRight: 5,
-  },
-
-  walletInfo: {
+  }),
+  walletInfo: castStyle.view({
     alignItems: 'center',
     flexDirection: 'row',
-  },
-  settingsIcon: {
-    height: 18,
-    width: 18,
-  },
+  }),
 })

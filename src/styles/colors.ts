@@ -42,6 +42,7 @@ export const colors = {
     blue2: '#3F06D3',
     purple: '#624FE9',
     bustyBlue: '#4200D8',
+    black: '#121212',
   },
   border: {
     green: '#00d8a6',

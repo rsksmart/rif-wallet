@@ -1,67 +1,145 @@
+import { useCallback } from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import { navigationContainerRef } from 'src/core/Core'
-import { rootStackRouteNames } from 'src/navigation/rootNavigator'
-import { selectProfile } from 'src/redux/slices/profileSlice/selector'
-import { useAppSelector } from 'src/redux/storeUtils'
-import { RegularText } from '../../components'
-import { AvatarIcon } from '../../components/icons/AvatarIcon'
-import { colors } from '../../styles'
-import { useAliasRegistration } from 'core/hooks/useAliasRegistration'
-import { RIFWallet } from 'lib/core'
-import React from 'react'
-interface Props {
-  wallet: RIFWallet
-}
-export const ProfileHandler: React.FC<Props> = ({ wallet }) => {
-  const profile = useAppSelector(selectProfile)
-  const profileCreated = !!profile
+import Icon from 'react-native-vector-icons/FontAwesome5'
+import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
+import { useTranslation } from 'react-i18next'
 
-  const { registrationStarted, readyToRegister, getRegistrationData } =
-    useAliasRegistration(wallet)
-  const routeNextStep = async () => {
-    if (await readyToRegister()) {
-      const myAliasRegistration = await getRegistrationData()
-      navigationContainerRef.navigate(rootStackRouteNames.BuyDomain, {
-        alias: myAliasRegistration?.alias,
-        domainSecret: myAliasRegistration?.commitToRegisterSecret,
-        duration: myAliasRegistration?.duration,
-      })
-    } else if (await registrationStarted()) {
-      const myAliasRegistration = await getRegistrationData()
-      navigationContainerRef.navigate(rootStackRouteNames.RequestDomain, {
-        alias: myAliasRegistration?.alias,
-        duration: myAliasRegistration?.duration,
-      })
-    } else {
-      navigationContainerRef.navigate(
-        profileCreated
-          ? rootStackRouteNames.ProfileDetailsScreen
-          : rootStackRouteNames.ProfileCreateScreen,
-      )
+import { rootTabsRouteNames } from 'navigation/rootNavigator'
+import {
+  profileStackRouteNames,
+  ProfileStatus,
+} from 'navigation/profileNavigator/types'
+import { selectProfile } from 'store/slices/profileSlice/selector'
+import { useAppSelector } from 'store/storeUtils'
+import { Typography } from 'components/typography'
+import { StepperComponent } from 'components/profile'
+import { sharedColors } from 'shared/constants'
+import { Avatar } from 'components/avatar'
+import { castStyle } from 'shared/utils'
+
+interface Props {
+  navigation: BottomTabHeaderProps['navigation']
+}
+
+export const ProfileHandler = ({ navigation }: Props) => {
+  const profile = useAppSelector(selectProfile)
+  const { t } = useTranslation()
+  const profileCreated = profile.status === ProfileStatus.USER
+
+  const getColors = useCallback(() => {
+    switch (profile.status) {
+      case ProfileStatus.REQUESTING:
+        return {
+          startColor: sharedColors.warning,
+          endColor: sharedColors.inputActive,
+        }
+      case ProfileStatus.READY_TO_PURCHASE:
+        return {
+          startColor: sharedColors.success,
+          endColor: sharedColors.inputActive,
+        }
+      case ProfileStatus.PURCHASING:
+        return {
+          startColor: sharedColors.success,
+          endColor: sharedColors.warning,
+        }
+      case ProfileStatus.ERROR:
+        return {
+          startColor: sharedColors.danger,
+          endColor: sharedColors.inputActive,
+        }
     }
+    return {
+      startColor: sharedColors.inputActive,
+      endColor: sharedColors.inputActive,
+    }
+  }, [profile.status])
+  const { startColor, endColor } = getColors()
+  const routeNextStep = async () => {
+    navigation.navigate(rootTabsRouteNames.Profile, {
+      screen: profileCreated
+        ? profileStackRouteNames.ProfileDetailsScreen
+        : profileStackRouteNames.ProfileCreateScreen,
+      params: profileCreated ? { editProfile: false } : undefined,
+    })
   }
   return (
     <TouchableOpacity
       style={styles.profileHandler}
       accessibilityLabel="profile"
       onPress={routeNextStep}>
-      {profile?.alias ? (
+      {profile.status === ProfileStatus.NONE && (
         <>
-          <AvatarIcon value={profile.alias + '.rsk'} size={30} />
-          <View>
-            <RegularText style={styles.profileName}>
-              {profile.alias}
-            </RegularText>
+          <Avatar
+            size={20}
+            name={'person'}
+            style={styles.profileHandlerImage}
+            icon={
+              <Icon
+                name={'user-circle'}
+                size={15}
+                color={sharedColors.primary}
+              />
+            }
+          />
+          <View style={styles.textAlignment}>
+            <Typography type={'h4'} style={[styles.profileName]}>
+              {t('header_no_username')}
+            </Typography>
           </View>
         </>
-      ) : (
+      )}
+      {profile.status !== ProfileStatus.USER &&
+        profile.status !== ProfileStatus.NONE && (
+          <StepperComponent colors={[startColor, endColor]} />
+        )}
+      {profile.status === ProfileStatus.REQUESTING && (
         <>
-          <View style={styles.profileHandlerImage}>
-            <MaterialIcon name="person" color="gray" size={20} />
+          <View style={styles.textAlignment}>
+            <Typography type={'body3'} style={styles.requestingStatus}>
+              {t('header_requesting')}
+            </Typography>
           </View>
-          <View style={styles.profileAddImage}>
-            <MaterialIcon name="add" color="gray" size={15} />
+        </>
+      )}
+
+      {profile.status === ProfileStatus.READY_TO_PURCHASE && (
+        <>
+          <View style={styles.textAlignment}>
+            <Typography type={'body3'} style={styles.underline}>
+              {t('header_purchase')}
+            </Typography>
+          </View>
+        </>
+      )}
+
+      {profile.status === ProfileStatus.PURCHASING && (
+        <>
+          <View style={styles.textAlignment}>
+            <Typography type={'body3'} style={styles.requestingStatus}>
+              {t('header_purchasing')}
+            </Typography>
+          </View>
+        </>
+      )}
+
+      {profile.status === ProfileStatus.USER && (
+        <>
+          <Avatar size={30} name={profile.alias + '.rsk'} />
+          <View style={styles.textAlignment}>
+            <Typography type={'h4'} style={styles.profileName}>
+              {profile.alias}
+            </Typography>
+          </View>
+        </>
+      )}
+
+      {profile.status === ProfileStatus.ERROR && (
+        <>
+          <View style={styles.textAlignment}>
+            <Typography type={'body3'} style={styles.requestingStatus}>
+              {t('header_error')}
+            </Typography>
           </View>
         </>
       )}
@@ -70,27 +148,25 @@ export const ProfileHandler: React.FC<Props> = ({ wallet }) => {
 }
 
 const styles = StyleSheet.create({
-  profileHandler: {
+  profileHandler: castStyle.view({
     flexDirection: 'row',
-  },
-  profileAvatar: {
-    height: 30,
-    width: 30,
-  },
-  profileHandlerImage: {
-    backgroundColor: colors.lightGray,
-    borderRadius: 15,
-    padding: 5,
-  },
-  profileAddImage: {
-    backgroundColor: colors.darkPurple3,
-    borderRadius: 20,
-    height: 15,
-    right: 8,
-  },
-  profileName: {
-    paddingTop: 5,
-    paddingLeft: 5,
-    color: colors.white,
-  },
+  }),
+  profileHandlerImage: castStyle.image({
+    backgroundColor: sharedColors.white,
+  }),
+  profileName: castStyle.text({
+    paddingLeft: 6,
+  }),
+  textAlignment: castStyle.text({
+    justifyContent: 'center',
+  }),
+  requestingStatus: castStyle.text({
+    opacity: 0.4,
+    paddingLeft: 6,
+  }),
+  underline: castStyle.text({
+    textDecorationColor: sharedColors.white,
+    textDecorationLine: 'underline',
+    paddingLeft: 6,
+  }),
 })

@@ -16,6 +16,10 @@
 - [Setup your enviornment using the official instructions](https://reactnative.dev/docs/environment-setup)
   - Use the 'React Native CLI Quickstart' tabs not the 'Expo' tabs.
   - Follow the instructions explicitly as a small deviation can cause it to fail.
+- **Log on to Github Packages**
+  - This is a temporary step until the libraries are published to NPM
+  - [Create a Github access token](https://github.com/settings/tokens) with `read:packages` permissions.
+  - Log on to Github packages with: `npm login --scope=@owner --registry=https://npm.pkg.github.com` where _owner_ is your Github username. When asked for a password, use the access token.
 - Install the dependecies using yarn. This will also run the postinstall script that shims the missing packages: `yarn`
   - The postinstall script runs the `rn-nodeify` package which adds packages that are native to the browser but not to react native.
   - For **iOS** you need to run the additional installation steps: `cd ios` and then `pod install`
@@ -43,6 +47,13 @@ ENVFILE=.env.custom react-native run-ios
 ```
 
 You do not need to run the server to run the RIF Wallet app.
+
+
+## MAINNET
+
+To run with mainnet change the environment variable `DEFAULT_CHAIN_TYPE` to MAINNET [here](https://github.com/rsksmart/swallet/blob/3335ab050b0cb04b901cae42e30745dd2c6ad3f6/.env#L10)
+
+
 
 ## Build:
 

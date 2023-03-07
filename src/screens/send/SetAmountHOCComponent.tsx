@@ -1,27 +1,31 @@
-import React from 'react'
-import { ISetAmountComponent } from './SetAmountComponent'
-import { MixedTokenAndNetworkType } from './types'
+import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 import { BitcoinSetAmountContainer } from './BitcoinSetAmountContainer'
+import { ISetAmountComponent } from './SetAmountComponent'
 import { SetAmountRifComponent } from './SetAmountRifComponent'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
+import { MixedTokenAndNetworkType } from './types'
 
-type ISetAmountHOCComponent = Omit<ISetAmountComponent, 'token'> & {
+type SetAmountHOCComponenProps = Omit<ISetAmountComponent, 'token'> & {
   token: MixedTokenAndNetworkType
 }
-export const SetAmountHOCComponent: React.FC<ISetAmountHOCComponent> = ({
+export const SetAmountHOCComponent = ({
   setAmount,
   token,
   usdAmount,
-}) => {
+}: SetAmountHOCComponenProps) => {
   if ('isBitcoin' in token) {
-    return <BitcoinSetAmountContainer setAmount={setAmount} token={token} />
-  } else {
     return (
-      <SetAmountRifComponent
+      <BitcoinSetAmountContainer
         setAmount={setAmount}
-        token={token as ITokenWithBalance}
+        token={token}
         usdAmount={usdAmount}
       />
     )
   }
+  return (
+    <SetAmountRifComponent
+      setAmount={setAmount}
+      token={token as ITokenWithBalance}
+      usdAmount={usdAmount}
+    />
+  )
 }

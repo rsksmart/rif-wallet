@@ -1,11 +1,12 @@
-import { StyleSheet, View, Text } from 'react-native'
+import { StyleSheet, View } from 'react-native'
+import { RegularText } from '../typography'
 
 const TwoColorBackground = () => (
   <View style={styles.container}>
     <View style={styles.leftContainer} />
     <View style={styles.rightContainer} />
     <View style={styles.buttonContainer}>
-      <Text style={styles.text}>Hello World</Text>
+      <RegularText style={styles.text}>Hello World</RegularText>
     </View>
   </View>
 )

@@ -1,30 +1,42 @@
-import React, { useCallback } from 'react'
-import { getPin } from '../../storage/MainStorage'
-import { PinContainer } from '../../components/PinManager/PinContainer'
-import { useState } from 'react'
-import { pinLength } from '../../shared/costants'
+import { useCallback, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
-interface Interface {
-  unlock: () => void
-  resetKeysAndPin: () => void
-}
+import { getPin } from 'storage/MainStorage'
+import { PinContainer } from 'components/PinManager/PinContainer'
+import { useSetGlobalError } from 'components/GlobalErrorHandler'
+import { pinLength } from 'shared/costants'
+import { useAppDispatch } from 'store/storeUtils'
+import { unlockApp, resetApp } from 'store/slices/settingsSlice'
 
-export const RequestPIN: React.FC<Interface> = ({
-  unlock,
-  resetKeysAndPin,
-}) => {
+export const RequestPIN = () => {
+  const storedPin = useMemo(() => getPin(), [])
+  const { t } = useTranslation
+  const dispatch = useAppDispatch()
   const [resetEnabled, setResetEnabled] = useState<boolean>(false)
-  const checkPin = useCallback((enteredPin: string) => {
+
+  const setGlobalError = useSetGlobalError()
+
+  const onScreenUnlock = useCallback(async () => {
     try {
-      const storedPin = getPin()
-      if (storedPin === enteredPin) {
-        unlock()
-      } else {
-        setResetEnabled(true)
-        throw new Error('Pin do not match.')
-      }
-    } catch (err) {}
-  }, [])
+      await dispatch(unlockApp())
+    } catch (err) {
+      setGlobalError(err instanceof Error ? err.toString() : t('err_unknown'))
+    }
+  }, [dispatch, setGlobalError, t])
+
+  const checkPin = useCallback(
+    (enteredPin: string) => {
+      try {
+        if (storedPin === enteredPin) {
+          onScreenUnlock()
+        } else {
+          setResetEnabled(true)
+          throw new Error('Pin do not match.')
+        }
+      } catch (err) {}
+    },
+    [onScreenUnlock, storedPin],
+  )
 
   return (
     <PinContainer
@@ -32,7 +44,7 @@ export const RequestPIN: React.FC<Interface> = ({
       key={pinLength}
       onPinSubmit={checkPin}
       resetEnabled={resetEnabled}
-      resetKeysAndPin={resetKeysAndPin}
+      resetKeysAndPin={() => dispatch(resetApp())}
     />
   )
 }

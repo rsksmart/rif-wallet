@@ -1,36 +1,55 @@
-import { StyleSheet, View, ScrollView } from 'react-native'
-import { CopyComponent, Header2, Paragraph } from '../../components'
+import { useEffect, useState } from 'react'
+import { StyleSheet, View } from 'react-native'
 import { Trans } from 'react-i18next'
-import { useAppSelector } from 'store/storeUtils'
-import { selectKMS } from 'store/slices/settingsSlice'
+
+import { KeyManagementSystem } from 'lib/core'
+
+import { MediumText, RegularText } from 'components/index'
+import { MnemonicComponent } from 'components/mnemonic'
+import { getKeys } from 'storage/SecureStorage'
+import { castStyle } from 'shared/utils'
+
 export enum TestID {
   Mnemonic = 'Mnemonic.Text',
 }
 
 export const ShowMnemonicScreen = () => {
-  const kms = useAppSelector(selectKMS)
+  const [mnemonic, setMnemonic] = useState<string | null>()
+
+  useEffect(() => {
+    const fn = async () => {
+      const keys = await getKeys()
+      if (keys) {
+        const { kms } = KeyManagementSystem.fromSerialized(keys)
+        setMnemonic(kms.mnemonic)
+      }
+    }
+
+    fn()
+  }, [])
 
   return (
-    <ScrollView>
+    <View style={styles.screen}>
       <View style={styles.sectionCentered}>
-        <Paragraph>
+        <RegularText>
           <Trans>
             With your master key (seed phrase) you are able to create as many
             wallets as you need.
           </Trans>
-        </Paragraph>
+        </RegularText>
       </View>
-      <View style={styles.section}>
-        <Header2>
-          <Trans>Master key</Trans>
-        </Header2>
-        <CopyComponent testID={TestID.Mnemonic} value={kms?.mnemonic || ''} />
-      </View>
-    </ScrollView>
+      <MediumText>
+        <Trans>Master key</Trans>
+      </MediumText>
+      {mnemonic ? <MnemonicComponent words={mnemonic.split(' ')} /> : null}
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
+  screen: castStyle.view({
+    paddingHorizontal: 24,
+  }),
   section: {
     paddingTop: 15,
     paddingBottom: 15,

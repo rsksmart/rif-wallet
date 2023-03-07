@@ -1,39 +1,44 @@
-import { useState, useCallback, useEffect } from 'react'
-import { Text, TextInput, View } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
-import Icon from 'react-native-vector-icons/Ionicons'
 import Clipboard from '@react-native-community/clipboard'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { StyleSheet, View } from 'react-native'
+import Icon from 'react-native-vector-icons/FontAwesome5'
+import { isBitcoinAddressValid } from '@rsksmart/rif-wallet-bitcoin'
+import { useTranslation } from 'react-i18next'
 
-import { isBitcoinAddressValid } from 'lib/bitcoin/utils'
-import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
-
-import { colors } from 'src/styles'
 import { rnsResolver } from 'core/setup'
-
 import { QRCodeScanner } from '../QRCodeScanner'
-import { sharedAddressStyles as styles } from './sharedAddressStyles'
-import { ContentPasteIcon, QRCodeIcon, DeleteIcon } from '../icons'
+import { RegularText } from '../typography'
 import { isDomain } from './lib'
-import { MediumText } from '../typography'
+import { sharedAddressStyles } from './sharedAddressStyles'
+import { Input } from '../input'
+import { AppTouchable } from '../appTouchable'
+import { AddressInputProps } from './AddressInput'
+import { sharedColors } from 'shared/constants'
+import { castStyle } from 'shared/utils'
 
-interface AddressInputProps {
-  initialValue: string
-  onChangeText: (newValue: string, isValid: boolean) => void
-  testID?: string
-  backgroundColor?: string
-  token: BitcoinNetwork
+enum TYPES {
+  NORMAL = 'NORMAL',
+  DOMAIN = 'DOMAIN',
+  ADDRESS = 'ADDRESS',
 }
 
-const TYPES = {
-  NORMAL: 'NORMAL',
-  DOMAIN: 'DOMAIN',
+interface TO {
+  value: string
+  type: TYPES
+  addressResolved: string
 }
 
 export const AddressBitcoinInput = ({
+  label,
+  placeholder,
+  inputName,
+  testID,
   initialValue = '',
-  onChangeText,
+  onChangeAddress,
+  resetValue,
 }: AddressInputProps) => {
-  const [to, setTo] = useState({
+  const { t } = useTranslation()
+  const [to, setTo] = useState<TO>({
     value: initialValue,
     type: TYPES.NORMAL,
     addressResolved: '',
@@ -42,149 +47,153 @@ export const AddressBitcoinInput = ({
   const [isAddressValid, setIsAddressValid] = useState(false)
   const [isUserWriting, setIsUserWriting] = useState(false)
   const [isValidating, setIsValidating] = useState(false)
+
+  const invalidAddressCondition = useMemo(
+    () => to.value !== '' && !isUserWriting && !isAddressValid && !isValidating,
+    [isUserWriting, isAddressValid, isValidating, to.value],
+  )
+
   const handleUserIsWriting = useCallback((isWriting = true) => {
     setIsUserWriting(isWriting)
   }, [])
   const hideQRScanner = useCallback(() => setShouldShowQRScanner(false), [])
 
-  const showQRScanner = useCallback(() => setShouldShowQRScanner(true), [])
+  // const showQRScanner = useCallback(() => setShouldShowQRScanner(true), [])
 
-  const onQRRead = useCallback((qrText: string) => {
-    validateAddress(qrText)
-    hideQRScanner()
-  }, [])
+  const onBeforeChangeText = useCallback(
+    (address: string) => {
+      const isBtcAddressValid = isBitcoinAddressValid(address)
+      setIsAddressValid(isBtcAddressValid)
+      onChangeAddress(address, isBtcAddressValid)
+    },
+    [onChangeAddress],
+  )
 
   /* set  */
-  const handleChangeText = useCallback((text: string) => {
-    setTo({ ...to, value: text, type: TYPES.NORMAL })
-  }, [])
+  const handleChangeText = useCallback(
+    (text: string) => {
+      onBeforeChangeText(text)
+      setTo({ ...to, value: text, type: TYPES.NORMAL })
+    },
+    [setTo, to, onBeforeChangeText],
+  )
 
-  const onBeforeChangeText = (address: string) => {
-    const isBtcAddressValid = isBitcoinAddressValid(address)
-    setIsAddressValid(isBtcAddressValid)
-    onChangeText(address, isBtcAddressValid)
-  }
-  const onBlurValidate = () => {
+  /* Function to validate address and to set it */
+  const validateAddress = useCallback(
+    (text: string) => {
+      // If domain, fetch it
+      setIsValidating(true)
+      if (isDomain(text)) {
+        rnsResolver
+          .addr(text)
+          .then((address: string) => {
+            setTo({
+              value: address,
+              type: TYPES.DOMAIN,
+              addressResolved: text,
+            })
+            onBeforeChangeText(address)
+          })
+          .catch(_e => {})
+          .finally(() => setIsValidating(false))
+      } /* default to normal validation */ else {
+        onBeforeChangeText(text)
+        setTo({
+          value: text,
+          type: TYPES.NORMAL,
+          addressResolved: text,
+        })
+        setIsValidating(false)
+      }
+    },
+    [onBeforeChangeText],
+  )
+
+  const onQRRead = useCallback(
+    (qrText: string) => {
+      validateAddress(qrText)
+      hideQRScanner()
+    },
+    [hideQRScanner, validateAddress],
+  )
+
+  const onBlurValidate = useCallback(() => {
     handleUserIsWriting(false)
     validateAddress(to.value)
-  }
-  /* Function to validate address and to set it */
-  const validateAddress = (text: string) => {
-    // If domain, fetch it
-    setIsValidating(true)
-    if (isDomain(text)) {
-      rnsResolver
-        .addr(text)
-        .then((address: string) => {
-          setTo({
-            value: address,
-            type: TYPES.DOMAIN,
-            addressResolved: text,
-          })
-          onBeforeChangeText(address)
-        })
-        .catch(_e => {})
-        .finally(() => setIsValidating(false))
-    } /* default to normal validation */ else {
-      onBeforeChangeText(text)
-      setTo({
-        value: text,
-        type: TYPES.NORMAL,
-        addressResolved: text,
-      })
-      setIsValidating(false)
-    }
-  }
+  }, [to.value, validateAddress, handleUserIsWriting])
 
-  const handlePasteClick = () => Clipboard.getString().then(validateAddress)
+  const handlePasteClick = useCallback(
+    () => Clipboard.getString().then(validateAddress),
+    [validateAddress],
+  )
 
-  const onClearText = useCallback(() => handleChangeText(''), [])
+  const onClearText = useCallback(() => {
+    handleChangeText('')
+    resetValue && resetValue()
+  }, [handleChangeText, resetValue])
 
   useEffect(() => {
     onBeforeChangeText(initialValue)
-  }, [initialValue])
+  }, [initialValue, onBeforeChangeText])
+
   return (
     <>
       {shouldShowQRScanner && (
         <QRCodeScanner onClose={hideQRScanner} onCodeRead={onQRRead} />
       )}
       {to.type === TYPES.DOMAIN && (
-        <View style={styles.rnsDomainContainer}>
+        <View style={sharedAddressStyles.rnsDomainContainer}>
           <View>
-            <Text style={styles.rnsDomainName}> {to.addressResolved}</Text>
-            <Text style={styles.rnsDomainAddress}>{to.value}</Text>
+            <RegularText style={sharedAddressStyles.rnsDomainName}>
+              {to.addressResolved}
+            </RegularText>
+            <RegularText style={sharedAddressStyles.rnsDomainAddress}>
+              {to.value}
+            </RegularText>
           </View>
-          <View style={styles.rnsDomainUnselect}>
-            <TouchableOpacity onPress={onClearText} accessibilityLabel="delete">
-              <DeleteIcon color={'black'} width={20} height={20} />
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
-      {to.type !== TYPES.DOMAIN && (
-        <View style={styles.inputContainer}>
-          {to.type === TYPES.NORMAL && (
-            <TextInput
-              style={styles.input}
-              onChangeText={handleChangeText}
-              onBlur={onBlurValidate}
-              onFocus={handleUserIsWriting}
-              autoCapitalize="none"
-              autoCorrect={false}
-              value={to.value}
-              placeholder="address or rns domain"
-              testID={'AddressBitcoinInput.Text'}
-              editable={true}
-              placeholderTextColor={colors.text.secondary}
-            />
-          )}
-          {to.value === '' && to.type !== TYPES.DOMAIN && (
-            <>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={handlePasteClick}
-                testID="Address.PasteButton">
-                <ContentPasteIcon
-                  color={colors.text.secondary}
-                  height={22}
-                  width={22}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={showQRScanner}
-                testID="Address.QRCodeButton">
-                <QRCodeIcon color={colors.text.secondary} />
-              </TouchableOpacity>
-            </>
-          )}
-          {to.value !== '' && to.type !== TYPES.DOMAIN && (
-            <TouchableOpacity
-              style={styles.button}
+          <View style={sharedAddressStyles.rnsDomainUnselect}>
+            <AppTouchable
+              width={20}
               onPress={onClearText}
-              testID="Address.ClearButton">
-              <View style={styles.clearButtonView}>
-                <Icon
-                  name="close-outline"
-                  style={styles.clearButton}
-                  size={15}
-                />
-              </View>
-            </TouchableOpacity>
-          )}
+              accessibilityLabel={'delete'}>
+              <Icon name={'trash-alt'} size={20} color={sharedColors.white} />
+            </AppTouchable>
+          </View>
         </View>
       )}
-      {to.value !== '' &&
-        !isUserWriting &&
-        !isAddressValid &&
-        !isValidating && (
-          <MediumText style={styles.invalidAddressText}>
-            Address is not valid
-          </MediumText>
-        )}
-      {isValidating && (
-        <MediumText style={styles.invalidAddressText}>Validating...</MediumText>
+      {to.type === TYPES.NORMAL && (
+        <Input
+          label={
+            invalidAddressCondition
+              ? t('contact_form_address_invalid')
+              : isValidating
+              ? t('address_validating')
+              : label
+          }
+          labelStyle={
+            invalidAddressCondition ? styles.labelDanger : styles.label
+          }
+          inputName={inputName}
+          placeholder={placeholder}
+          testID={testID}
+          autoCorrect={false}
+          editable={true}
+          autoCapitalize={'none'}
+          rightIcon={to.value === '' ? { name: 'copy', size: 22 } : undefined}
+          resetValue={onClearText}
+          onChangeText={handleChangeText}
+          onBlur={onBlurValidate}
+          onFocus={handleUserIsWriting}
+          onRightIconPress={handlePasteClick}
+        />
       )}
     </>
   )
 }
+
+const styles = StyleSheet.create({
+  labelDanger: castStyle.text({ color: sharedColors.danger }),
+  label: castStyle.text({
+    color: sharedColors.inputLabelColor,
+  }),
+})

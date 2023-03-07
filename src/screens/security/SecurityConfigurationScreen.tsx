@@ -1,13 +1,8 @@
 import { useEffect, useState } from 'react'
-import { View, StyleSheet, Alert } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import { useTranslation } from 'react-i18next'
 
 import { colors } from 'src/styles'
-import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator/types'
-import { createKeysRouteNames } from 'navigation/createKeysNavigator'
 import { MediumText } from 'components/index'
 import { PrimaryButton } from 'components/button/PrimaryButton'
 import { SecondaryButton } from 'components/button/SecondaryButton'
@@ -17,42 +12,26 @@ import {
   saveKeyVerificationReminder,
 } from 'storage/MainStorage'
 import { useAppDispatch } from 'store/storeUtils'
-import { resetKeysAndPin } from 'store/slices/settingsSlice'
-import { resetSocketState } from 'store/shared/actions/resetSocketState'
+import { resetApp } from 'store/slices/settingsSlice'
+import { createKeysRouteNames } from 'navigation/createKeysNavigator'
+import {
+  SettingsScreenProps,
+  settingsStackRouteNames,
+} from 'navigation/settingsNavigator/types'
+import { rootTabsRouteNames } from 'navigation/rootNavigator'
+import { SlidePopupConfirmationDanger } from 'src/components/slidePopup/SlidePopupConfirmationDanger'
 
 export const SecurityConfigurationScreen = ({
   navigation,
-}: RootStackScreenProps<rootStackRouteNames.SecurityConfigurationScreen>) => {
+}: SettingsScreenProps<settingsStackRouteNames.SecurityConfigurationScreen>) => {
+  const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] =
+    useState<boolean>(false)
+  const [showReminder, setShowReminder] = useState<boolean>(false)
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
 
   const revealMasterKey = () =>
-    navigation.navigate(rootStackRouteNames.ShowMnemonicScreen)
-  const changePin = () =>
-    navigation.navigate(rootStackRouteNames.ChangePinScreen)
-  const [showReminder, setShowReminder] = useState<boolean>(false)
-
-  const handleDeleteKeys = () => {
-    Alert.alert(
-      'Reset App',
-      'Confirm you want to reset the app. This will delete your master key, pin, saved domains and contacts',
-      [
-        {
-          text: t('Cancel'),
-          onPress: () => undefined,
-        },
-        {
-          text: 'Delete',
-          onPress: () => {
-            dispatch(resetKeysAndPin())
-            dispatch(resetSocketState())
-            saveKeyVerificationReminder(false)
-            navigation.navigate(rootStackRouteNames.CreateKeysUX)
-          },
-        },
-      ],
-    )
-  }
+    navigation.navigate(settingsStackRouteNames.ShowMnemonicScreen)
 
   async function checkReminder() {
     const reminderIsSet = hasKeyVerificationReminder()
@@ -83,7 +62,7 @@ export const SecurityConfigurationScreen = ({
             title="Confirm Master Key"
             accessibilityLabel="confirm"
             onPress={() =>
-              navigation.navigate(rootStackRouteNames.CreateKeysUX, {
+              navigation.navigate(rootTabsRouteNames.CreateKeysUX, {
                 screen: createKeysRouteNames.SecurityExplanation,
               })
             }
@@ -92,21 +71,24 @@ export const SecurityConfigurationScreen = ({
         <SecondaryButton
           style={styles.buttonFirstStyle}
           title="Delete Master Key"
-          onPress={handleDeleteKeys}
+          onPress={() => setIsDeleteConfirmationVisible(true)}
           accessibilityLabel="delete"
         />
       </View>
-      <View style={styles.pinContainer}>
-        <MediumText style={[styles.pinText, styles.textLeftMargin]}>
-          Manage PIN
-        </MediumText>
-        <SecondaryButton
-          style={styles.buttonFirstStyle}
-          title="Change PIN"
-          accessibilityLabel="change"
-          onPress={changePin}
-        />
-      </View>
+      <SlidePopupConfirmationDanger
+        isVisible={isDeleteConfirmationVisible}
+        height={320}
+        title="Reset App"
+        description="Confirm you want to reset the app. This will delete your master key, pin, saved domains and contacts"
+        confirmText={t('Delete')}
+        cancelText={t('Cancel')}
+        onConfirm={() => {
+          dispatch(resetApp())
+          saveKeyVerificationReminder(false)
+          setIsDeleteConfirmationVisible(false)
+        }}
+        onCancel={() => setIsDeleteConfirmationVisible(false)}
+      />
     </View>
   )
 }

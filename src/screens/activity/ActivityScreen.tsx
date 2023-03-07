@@ -1,29 +1,28 @@
-import { useEffect } from 'react'
+import { useEffect, useCallback } from 'react'
 import { FlatList, StyleSheet, View, RefreshControl } from 'react-native'
+import { BIP } from '@rsksmart/rif-wallet-bitcoin'
+import { RIFWallet } from '@rsksmart/rif-wallet-core'
+import { EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
 
-import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
-import { RIFWallet } from 'lib/core'
-import BIP from 'lib/bitcoin/BIP'
-import { EnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
-
+import { IApiTransaction } from '@rsksmart/rif-wallet-services'
 import { abiEnhancer } from 'core/setup'
 import { useAppSelector } from 'store/storeUtils'
 import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
 import { colors } from 'src/styles'
 import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 import {
-  rootStackRouteNames,
-  RootStackScreenProps,
+  rootTabsRouteNames,
+  RootTabsScreenProps,
 } from 'navigation/rootNavigator/types'
 
-import ActivityRow from './ActivityRow'
+import { ActivityRow } from './ActivityRow'
 import { useBitcoinTransactionsHandler } from './useBitcoinTransactionsHandler'
 import useTransactionsCombiner from './useTransactionsCombiner'
 import { ScreenWithWallet } from '../types'
 
 export const ActivityScreen = ({
   navigation,
-}: RootStackScreenProps<rootStackRouteNames.Activity> & ScreenWithWallet) => {
+}: RootTabsScreenProps<rootTabsRouteNames.Activity> & ScreenWithWallet) => {
   const bitcoinCore = useBitcoinContext()
   const btcTransactionFetcher = useBitcoinTransactionsHandler({
     bip:
@@ -38,19 +37,19 @@ export const ActivityScreen = ({
     transactions,
     btcTransactionFetcher.transactions,
   )
-  // On load, fetch btc transactions
-  useEffect(() => {
-    btcTransactionFetcher.fetchTransactions()
-  }, [])
 
   // On load, fetch both BTC and WALLET transactions
   useEffect(() => {
+    // TODO: rethink btcTransactionFetcher, when adding as dependency
+    // the function gets executed a million times
     btcTransactionFetcher.fetchTransactions()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const onRefresh = () => {
+  const onRefresh = useCallback(() => {
     btcTransactionFetcher.fetchTransactions(undefined, 1)
-  }
+  }, [btcTransactionFetcher])
+
   return (
     <View style={styles.mainContainer}>
       <FlatList

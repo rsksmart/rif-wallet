@@ -7,12 +7,16 @@ import {
   ScrollView,
 } from 'react-native'
 import Carousel from 'react-native-snap-carousel'
+import { CompositeScreenProps } from '@react-navigation/native'
 
 import {
   createKeysRouteNames,
   CreateKeysScreenProps,
 } from 'navigation/createKeysNavigator/types'
-import { SecuritySlide } from '../../ux/slides/SecuritySlide'
+import {
+  rootTabsRouteNames,
+  RootTabsScreenProps,
+} from 'navigation/rootNavigator'
 import { PaginationNavigator } from 'components/button/PaginationNavigator'
 import { Arrow } from 'components/icons'
 import {
@@ -20,20 +24,16 @@ import {
   WINDOW_HEIGHT,
   SLIDER_WIDTH,
   SLIDER_HEIGHT,
-} from '../../ux/slides/Dimensions'
-import { colors } from '../../styles'
+} from 'src/ux/slides/Dimensions'
+import { SecuritySlide } from 'src/ux/slides/SecuritySlide'
+import { colors } from 'src/styles'
 import { sharedMnemonicStyles } from './new/styles'
-import { CompositeScreenProps } from '@react-navigation/native'
-import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'src/navigation/rootNavigator'
 
 const slidesIndexes = [0, 1, 2]
 
 type Props = CompositeScreenProps<
   CreateKeysScreenProps<createKeysRouteNames.SecurityExplanation>,
-  RootStackScreenProps<rootStackRouteNames.CreateKeysUX>
+  RootTabsScreenProps<rootTabsRouteNames.CreateKeysUX>
 >
 
 export const SecurityExplanationScreen = ({ navigation }: Props) => {
@@ -74,7 +74,7 @@ export const SecurityExplanationScreen = ({ navigation }: Props) => {
         return SecuritySlide({
           title: 'Lets get started!',
           description:
-            'Your Master Key will be generated in the next step as a 24-word phrase. We know it is a lot, but it is for your security!',
+            'Your Master Key will be generated in the next step as a 12-word phrase. We know it is a lot, but it is for your security!',
           description2:
             'Key will be revealed step by step. Write it down carefully.',
           image: (
@@ -93,7 +93,7 @@ export const SecurityExplanationScreen = ({ navigation }: Props) => {
     <ScrollView style={sharedMnemonicStyles.purpleParent}>
       <View style={sharedMnemonicStyles.topContent}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('CreateKeys')}
+          onPress={() => navigation.goBack()}
           style={styles.returnButton}
           accessibilityLabel="backButton">
           <View style={styles.returnButtonView}>

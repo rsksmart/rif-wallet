@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
-import { IRIFWalletServicesFetcher } from '../../src/lib/rifWalletServices/RifWalletServicesFetcher'
+import { RIFWalletServicesFetcherInterface } from '@rsksmart/rif-wallet-services'
 import {
   TransactionsServerResponse,
   ITokenWithBalance,
-} from '../../src/lib/rifWalletServices/RIFWalletServicesTypes'
+} from '@rsksmart/rif-wallet-services'
 
 export const testCase: ITokenWithBalance[] = [
   {
@@ -426,7 +426,7 @@ export const txTestCase: TransactionsServerResponse = {
   next: null,
 }
 
-export const createMockFetcher = (): IRIFWalletServicesFetcher => ({
+export const createMockFetcher = (): RIFWalletServicesFetcherInterface => ({
   fetchTokensByAddress: jest.fn(() => Promise.resolve([...testCase])),
   fetchTransactionsByAddress: jest.fn(() => Promise.resolve(txTestCase)),
   fetchDapps: jest.fn(),

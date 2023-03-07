@@ -6,8 +6,6 @@ export const selectTopColor = ({ settings }: RootState) => settings.topColor
 
 export const selectChainType = ({ settings }: RootState) => settings.chainType
 
-export const selectKMS = ({ settings }: RootState) => settings.kms
-
 export const selectSelectedWallet = ({ settings }: RootState) =>
   settings.selectedWallet
 
@@ -34,3 +32,12 @@ export const selectActiveWallet = ({ settings }: RootState) => ({
       ? Object.keys(settings.wallets).indexOf(settings.selectedWallet)
       : undefined,
 })
+
+export const selectAppIsActive = ({ settings }: RootState) =>
+  settings.appIsActive
+
+export const selectIsUnlocked = ({ settings }: RootState) => settings.unlocked
+
+export const selectIsSetup = ({ settings }: RootState) => settings.isSetup
+
+export const selectFullscreen = ({ settings }: RootState) => settings.fullscreen

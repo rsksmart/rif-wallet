@@ -1,13 +1,13 @@
+import { TokenButton } from 'components/button/TokenButton'
 import { useState } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import { colors } from 'src/styles'
-import { grid } from 'src/styles'
-import { IAssetChooser } from './types'
-import { TokenImage } from '../home/TokenImage'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
+import { MediumText, RegularText } from 'src/components'
+import { colors, grid } from 'src/styles'
 import SlideUpModal from '../../components/slideUpModal/SlideUpModal'
 import { balanceToString } from '../balances/BalancesScreen'
-import { TokenButton } from 'components/button/TokenButton'
 import { getTokenColor } from '../home/tokenColor'
+import { TokenImage } from '../home/TokenImage'
+import { IAssetChooser } from './types'
 
 export const AssetChooser = <T,>({
   assetList,
@@ -40,9 +40,11 @@ export const AssetChooser = <T,>({
           <View style={styles.assetIcon}>
             <TokenImage symbol={selectedAsset.symbol} height={19} width={19} />
           </View>
-          <Text style={styles.assetTitle}>{selectedAsset.symbol}</Text>
+          <MediumText style={styles.assetTitle}>
+            {selectedAsset.symbol}
+          </MediumText>
         </View>
-        <Text style={styles.selectLabel}>select</Text>
+        <RegularText style={styles.selectLabel}>select</RegularText>
       </View>
       <SlideUpModal
         title={'select asset'}
@@ -99,6 +101,7 @@ const styles = StyleSheet.create({
   },
   selectLabel: {
     margin: 25,
+    marginBottom: 20,
     color: colors.white,
   },
 })

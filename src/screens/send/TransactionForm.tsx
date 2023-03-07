@@ -1,10 +1,12 @@
 import { toChecksumAddress } from '@rsksmart/rsk-utils'
-import { useState, useCallback } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { useCallback, useState } from 'react'
+import { StyleSheet, View } from 'react-native'
+import { useTranslation } from 'react-i18next'
+import { FormProvider, useForm } from 'react-hook-form'
 
-import { Tabs } from 'src/components'
 import { AddressInputSelector } from 'components/address/AddressInputSelector'
 import { TransferButton } from 'components/button/TransferButton'
+import { Tabs, Typography } from 'components/index'
 import { colors, grid } from 'src/styles'
 import { IActivityTransaction, IPrice } from 'src/subscriptions/types'
 
@@ -14,7 +16,7 @@ import { SetAmountHOCComponent } from './SetAmountHOCComponent'
 import { MixedTokenAndNetworkType } from './types'
 import { useTokenSelectedTabs } from './useTokenSelectedTabs'
 
-interface Interface {
+interface Props {
   onConfirm: (
     selectedToken: MixedTokenAndNetworkType,
     amount: string,
@@ -32,12 +34,14 @@ interface Interface {
   onTokenSelected?: (tokenSelected: MixedTokenAndNetworkType) => void
 }
 
-interface txDetail {
-  value: string
-  isValid: boolean
+interface FormValues {
+  amount: string
+  to: string
+  isToValid: boolean
+  isAmountValid: boolean
 }
 
-export const TransactionForm: React.FC<Interface> = ({
+export const TransactionForm = ({
   initialValues,
   tokenList,
   chainId,
@@ -45,7 +49,17 @@ export const TransactionForm: React.FC<Interface> = ({
   transactions,
   onConfirm,
   onTokenSelected,
-}) => {
+}: Props) => {
+  const { t } = useTranslation()
+  const methods = useForm<FormValues>({
+    defaultValues: {
+      amount: initialValues.amount || '0',
+      to: initialValues.recipient || '',
+      isAmountValid: false,
+      isToValid: false,
+    },
+  })
+  const { getValues, setValue, handleSubmit, resetField } = methods
   const [selectedToken, setSelectedToken] = useState<MixedTokenAndNetworkType>(
     initialValues.asset || tokenList[0],
   )
@@ -53,57 +67,69 @@ export const TransactionForm: React.FC<Interface> = ({
   const [activeTab, setActiveTab] = useState('address')
   const { tabs } = useTokenSelectedTabs(selectedToken, setActiveTab)
 
-  const [amount, setAmount] = useState<txDetail>({
-    value: initialValues.amount || '0',
-    isValid: false,
-  })
-
-  const [to, setTo] = useState<txDetail>({
-    value: initialValues.recipient || '',
-    isValid: false,
-  })
-
   const [error, setError] = useState<string | null>(null)
 
-  const isValidTransaction = amount.isValid && to.isValid
+  const isValidTransaction =
+    getValues('isAmountValid') && getValues('isToValid')
 
-  const tokenQuote = tokenPrices[selectedToken.contractAddress]?.price
+  const tokenQuote = selectedToken.contractAddress.startsWith('BITCOIN')
+    ? tokenPrices.BTC.price
+    : tokenPrices[selectedToken.contractAddress]?.price
 
-  const handleAmountChange = (newAmount: string, isValid: boolean) => {
-    setError(null)
-    setAmount({ value: newAmount, isValid })
-  }
+  const handleAmountChange = useCallback(
+    (newAmount: string, isValid: boolean) => {
+      setError(null)
+      setValue('amount', newAmount)
+      setValue('isAmountValid', isValid)
+    },
+    [setValue],
+  )
 
-  const handleTargetAddressChange = (address: string, isValid: boolean) => {
-    setError(null)
-    setTo({ value: address, isValid })
-  }
+  const handleTargetAddressChange = useCallback(
+    (address: string, isValid: boolean) => {
+      setError(null)
+      setValue('to', address)
+      setValue('isToValid', isValid)
+    },
+    [setValue],
+  )
 
-  const handleSelectRecentAddress = (address: string) => {
-    handleTargetAddressChange(toChecksumAddress(address, chainId), true)
-    setActiveTab('address')
-  }
+  const handleSelectRecentAddress = useCallback(
+    (address: string) => {
+      handleTargetAddressChange(toChecksumAddress(address, chainId), true)
+      setActiveTab('address')
+    },
+    [chainId, handleTargetAddressChange],
+  )
 
-  const handleConfirmClick = () =>
-    onConfirm(selectedToken, amount.value, to.value)
+  const handleConfirmClick = useCallback(
+    (values: FormValues) => onConfirm(selectedToken, values.amount, values.to),
+    [selectedToken, onConfirm],
+  )
 
-  const onTokenSelect = useCallback((token: MixedTokenAndNetworkType) => {
-    setSelectedToken(oldToken => {
-      // Reset address when token type is changed
-      if ('isBitcoin' in oldToken === !('isBitcoin' in token)) {
-        handleTargetAddressChange('', false)
+  const onTokenSelect = useCallback(
+    (token: MixedTokenAndNetworkType) => {
+      setSelectedToken(oldToken => {
+        // Reset address when token type is changed
+        if ('isBitcoin' in oldToken === !('isBitcoin' in token)) {
+          handleTargetAddressChange('', false)
+        }
+        return token
+      })
+      if (onTokenSelected) {
+        onTokenSelected(token)
       }
-      return token
-    })
-    if (onTokenSelected) {
-      onTokenSelected(token)
-    }
-  }, [])
+    },
+    [onTokenSelected, handleTargetAddressChange],
+  )
+
   return (
     <View>
-      <View style={{ ...grid.row, ...styles.section }}>
+      <View style={[grid.row, styles.section]}>
         <View style={grid.column12}>
-          <Text style={styles.label}>asset</Text>
+          <Typography type={'body3'} style={styles.label}>
+            {t('transaction_form_label_asset')}
+          </Typography>
           <AssetChooser
             selectedAsset={selectedToken}
             assetList={tokenList}
@@ -111,7 +137,7 @@ export const TransactionForm: React.FC<Interface> = ({
           />
         </View>
       </View>
-      <View style={{ ...grid.row, ...styles.section }}>
+      <View style={[grid.row, styles.section]}>
         <View style={grid.column12}>
           <SetAmountHOCComponent
             setAmount={handleAmountChange}
@@ -129,23 +155,32 @@ export const TransactionForm: React.FC<Interface> = ({
         />
         {activeTab === 'address' && (
           <>
-            <AddressInputSelector
-              initialValue={to.value}
-              onChangeText={handleTargetAddressChange}
-              testID={'To.Input'}
-              chainId={chainId}
-              token={selectedToken}
-            />
+            <FormProvider {...methods}>
+              <AddressInputSelector
+                label={t('address_rns_placeholder')}
+                placeholder={t('address_rns_placeholder')}
+                initialValue={getValues('to')}
+                inputName={'to'}
+                onChangeAddress={handleTargetAddressChange}
+                resetValue={() => {
+                  resetField('to')
+                  resetField('isToValid')
+                }}
+                testID={'To.Input'}
+                chainId={chainId}
+                token={selectedToken}
+              />
+            </FormProvider>
             <View>
-              <Text>{error}</Text>
+              <Typography type={'body3'}>{error}</Typography>
             </View>
 
             <View style={styles.centerRow}>
               <TransferButton
                 style={styles.button}
-                onPress={handleConfirmClick}
+                onPress={handleSubmit(handleConfirmClick)}
                 disabled={!isValidTransaction}
-                accessibilityLabel="transfer"
+                accessibilityLabel={'transfer'}
               />
             </View>
           </>
@@ -157,7 +192,7 @@ export const TransactionForm: React.FC<Interface> = ({
               onSelect={handleSelectRecentAddress}
             />
             <View>
-              <Text>{error}</Text>
+              <Typography type={'body3'}>{error}</Typography>
             </View>
           </>
         )}

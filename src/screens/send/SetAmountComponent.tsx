@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, TextInput, View } from 'react-native'
-import { ITokenWithBalance } from '../../lib/rifWalletServices/RIFWalletServicesTypes'
-import { convertTokenToUSD, sanitizeDecimalText } from '../../lib/utils'
+import { useEffect, useState } from 'react'
+import { StyleSheet, TextInput, View } from 'react-native'
+
+import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
+import { convertTokenToUSD, sanitizeDecimalText } from 'lib/utils'
+
+import { RegularText } from 'src/components'
 import { colors } from '../../styles/colors'
 import { grid } from '../../styles/grid'
 import { balanceToString } from '../balances/BalancesScreen'
@@ -12,11 +15,11 @@ export interface ISetAmountComponent {
   usdAmount: number | undefined
 }
 
-const SetAmountComponent: React.FC<ISetAmountComponent> = ({
+export const SetAmountComponent = ({
   setAmount,
   token,
   usdAmount,
-}) => {
+}: ISetAmountComponent) => {
   const [error, setError] = useState<string | null>(null)
   const [input, setInput] = useState<string>('')
 
@@ -52,7 +55,7 @@ const SetAmountComponent: React.FC<ISetAmountComponent> = ({
     setError(null)
     setInput('')
     setAmount('0', false)
-  }, [token])
+  }, [setAmount])
 
   return (
     <View>
@@ -69,11 +72,12 @@ const SetAmountComponent: React.FC<ISetAmountComponent> = ({
           />
         </View>
       </View>
-      {error && <Text style={styles.error}>{error}</Text>}
+      {error && <RegularText style={styles.error}>{error}error</RegularText>}
       <View style={grid.row}>
         <View style={grid.column12}>
           {!!usdConversion && (
-            <Text style={styles.text}>{`${usdConversion} USD`}</Text>
+            <RegularText
+              style={styles.text}>{`${usdConversion} USD`}</RegularText>
           )}
         </View>
       </View>
@@ -97,13 +101,14 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     paddingVertical: 3,
     textAlign: 'left',
-    marginRight: 5,
+    marginLeft: 5,
   },
   usdAmount: {
     textAlign: 'right',
   },
   error: {
     color: colors.orange,
+    marginLeft: 5,
   },
 })
 

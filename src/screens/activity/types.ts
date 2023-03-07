@@ -1,8 +1,8 @@
 import {
   IApiTransaction,
   TransactionsServerResponse,
-} from 'lib/rifWalletServices/RIFWalletServicesTypes'
-import { EnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
+} from '@rsksmart/rif-wallet-services'
+import { EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
 
 export interface TransactionsServerResponseWithActivityTransactions
   extends TransactionsServerResponse {

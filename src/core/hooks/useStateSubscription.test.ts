@@ -1,13 +1,21 @@
 import { renderHook } from '@testing-library/react-hooks'
 import { AppState } from 'react-native'
 import { act } from 'react-test-renderer'
+
+import { createReduxWrapper } from 'testLib/ReduxWrapper'
 import { useStateSubscription } from './useStateSubscription'
 
+jest.mock('react-native-background-timer', () => ({
+  setTimeout: () => jest.fn().mockReturnValue(1),
+  clearTimeout: jest.fn(),
+}))
+
 describe('hook: useStateSubscription', () => {
-  // in order to test the hook, we should test all the different scenarios in a single test
   test('test some different scenarios', () => {
-    const { result } = renderHook(() => useStateSubscription())
     const appStateSpy = jest.spyOn(AppState, 'addEventListener')
+    const { result } = renderHook(() => useStateSubscription(), {
+      wrapper: createReduxWrapper().ReduxWrapper,
+    })
 
     // 1. initial state
     act(() => {

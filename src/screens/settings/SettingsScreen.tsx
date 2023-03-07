@@ -1,18 +1,24 @@
-import { useMemo } from 'react'
-import { RootStackScreenProps } from 'navigation/rootNavigator/types'
+import { useCallback, useMemo } from 'react'
 import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5'
-import { version } from '../../../package.json'
-import { getWalletSetting, SETTINGS } from '../../core/config'
-import { colors, spacing } from '../../styles'
-import { MediumText, RegularText, SemiBoldText } from '../../components'
-import LockIcon from '../../components/icons/LockIcon'
-import AccountsIcon from '../../components/icons/AccountsIcon'
+
+import { getWalletSetting, SETTINGS } from 'core/config'
+import { colors, spacing } from 'src/styles'
+import { MediumText, RegularText, Typography } from 'components/index'
+import LockIcon from 'components/icons/LockIcon'
+import AccountsIcon from 'components/icons/AccountsIcon'
+import { homeStackRouteNames } from 'navigation/homeNavigator/types'
+import {
+  SettingsScreenProps,
+  settingsStackRouteNames,
+} from 'navigation/settingsNavigator/types'
+import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
+import { version } from 'package.json'
 
 export const SettingsScreen = ({
   navigation,
-}: RootStackScreenProps<'Settings'>) => {
+}: SettingsScreenProps<settingsStackRouteNames.SettingsScreen>) => {
   const smartWalletFactoryAddress = useMemo(
     () => getWalletSetting(SETTINGS.SMART_WALLET_FACTORY_ADDRESS),
     [],
@@ -25,14 +31,23 @@ export const SettingsScreen = ({
     [],
   )
 
-  const goToAccountsScreen = () => navigation.navigate('AccountsScreen')
+  const goToAccountsScreen = () =>
+    navigation.navigate(settingsStackRouteNames.AccountsScreen)
 
   const goToSecurityConfiguration = () =>
-    navigation.navigate('SecurityConfigurationScreen')
+    navigation.navigate(settingsStackRouteNames.SecurityConfigurationScreen)
 
-  const goToDeploy = () => navigation.navigate('RelayDeployScreen')
+  const goToDeploy = () =>
+    navigation.navigate(rootTabsRouteNames.Home, {
+      screen: homeStackRouteNames.RelayDeployScreen,
+    })
 
-  const goToFeedbackScreen = () => navigation.navigate('FeedbackScreen')
+  const goToFeedbackScreen = () =>
+    navigation.navigate(settingsStackRouteNames.FeedbackScreen)
+
+  const goToExampleScreen = useCallback(() => {
+    navigation.navigate(settingsStackRouteNames.ExampleScreen)
+  }, [navigation])
 
   return (
     <ScrollView style={styles.container}>
@@ -43,36 +58,44 @@ export const SettingsScreen = ({
           style={styles.rowComponent}
           onPress={goToAccountsScreen}>
           <AccountsIcon width={18} height={18} />
-          <SemiBoldText style={[styles.textColor, spacing.ml6]}>
-            Account
-          </SemiBoldText>
+          <Typography type={'body1'} style={spacing.ml6}>
+            {'Account'}
+          </Typography>
         </TouchableOpacity>
         <TouchableOpacity
           accessibilityLabel="security"
           style={styles.rowComponent}
           onPress={goToSecurityConfiguration}>
           <LockIcon />
-          <SemiBoldText style={[styles.textColor, spacing.ml6]}>
-            Security
-          </SemiBoldText>
+          <Typography type={'body1'} style={spacing.ml6}>
+            {'Security'}
+          </Typography>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.rowComponent}
           onPress={goToDeploy}
           accessibilityLabel="deploy">
           <Icon name="wallet-outline" color={colors.white} size={20} />
-          <SemiBoldText style={[styles.textColor, spacing.ml6]}>
-            Smart Wallet Deploy
-          </SemiBoldText>
+          <Typography type={'body1'} style={spacing.ml6}>
+            {'Smart Wallet Deploy'}
+          </Typography>
         </TouchableOpacity>
         <TouchableOpacity
           accessibilityLabel="feedback"
           style={styles.rowComponent}
           onPress={goToFeedbackScreen}>
           <FontAwesomeIcon name="comment" color={colors.white} size={20} />
-          <SemiBoldText style={[styles.textColor, spacing.ml6]}>
-            Feedback
-          </SemiBoldText>
+          <Typography type={'body1'} style={spacing.ml6}>
+            {' Feedback'}
+          </Typography>
+        </TouchableOpacity>
+        <TouchableOpacity
+          accessibilityLabel={'example'}
+          style={styles.rowComponent}
+          onPress={goToExampleScreen}>
+          <Typography type={'body1'} style={spacing.ml6}>
+            {' Example Screen'}
+          </Typography>
         </TouchableOpacity>
       </View>
       <View style={styles.bottomView}>

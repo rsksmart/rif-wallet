@@ -1,8 +1,11 @@
-import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
-import { IRIFWalletServicesFetcher } from 'lib/rifWalletServices/RifWalletServicesFetcher'
-import { IAbiEnhancer, EnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
-import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
-import { RIFWallet } from 'lib/core'
+import {
+  RIFWalletServicesFetcherInterface,
+  IApiTransaction,
+  ITokenWithBalance,
+} from '@rsksmart/rif-wallet-services'
+import { IAbiEnhancer, EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
+import { RIFWallet } from '@rsksmart/rif-wallet-core'
+import { AppContextType } from 'src/Context'
 
 export interface IPrice {
   price: number
@@ -36,7 +39,7 @@ export interface NewPriceAction {
 
 export interface NewTransactionAction {
   type: 'newTransaction'
-  payload: IActivityTransaction
+  payload: IApiTransaction
 }
 
 export interface NewTokenTransferAction {
@@ -70,7 +73,7 @@ export interface IActivityTransaction {
 }
 
 export type ActivityScreenProps = {
-  fetcher: IRIFWalletServicesFetcher
+  fetcher: RIFWalletServicesFetcherInterface
   abiEnhancer: IAbiEnhancer
 }
 
@@ -84,7 +87,12 @@ export interface TransactionsServerResponseWithActivityTransactions
   activityTransactions: IActivityTransaction[]
 }
 
-export interface ISocketsChangeEmitted {
+export interface AbiWallet {
   abiEnhancer: IAbiEnhancer
   wallet: RIFWallet
+}
+
+export type AppProviderProps = {
+  children: React.ReactNode
+  value: AppContextType
 }

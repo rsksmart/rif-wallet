@@ -1,11 +1,12 @@
 import { shortAddress } from 'lib/utils'
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/Feather'
+import { RegularText } from 'src/components'
 import { DeleteIcon, EditMaterialIcon } from 'src/components/icons'
 import { colors } from 'src/styles'
 import { fonts } from 'src/styles/fonts'
-import { Contact } from 'store/slices/contactsSlice/types'
+import { Contact } from 'shared/types'
 
 interface IContactRowProps {
   index: number
@@ -42,10 +43,10 @@ export const ContactRow: React.FC<IContactRowProps> = ({
         key={index}
         onPress={onPress}
         style={styles.contactInfo}>
-        <Text style={styles.contactName}>{contact.name}</Text>
-        <Text style={styles.address}>
+        <RegularText style={styles.contactName}>{contact.name}</RegularText>
+        <RegularText style={styles.address}>
           {shortAddress(contact.displayAddress, 8)}
-        </Text>
+        </RegularText>
       </TouchableOpacity>
       {selected && (
         <View style={styles.actions}>

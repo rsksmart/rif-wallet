@@ -1,8 +1,8 @@
 import { useRef, useState, useCallback } from 'react'
 import { BigNumber, utils } from 'ethers'
+import { BIP } from '@rsksmart/rif-wallet-bitcoin'
 
-import BIP from 'lib/bitcoin/BIP'
-import { BitcoinTransactionType } from 'lib/rifWalletServices/RIFWalletServicesTypes'
+import { BitcoinTransactionType } from '@rsksmart/rif-wallet-bitcoin'
 
 import { IBitcoinTransaction } from './types'
 
@@ -85,6 +85,7 @@ export const useBitcoinTransactionsHandler = ({
     }
     return fetchTransactions()
   }, [fetchTransactions])
+
   return {
     fetchNextTransactionPage,
     fetchTransactions,

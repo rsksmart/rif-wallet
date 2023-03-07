@@ -1,105 +1,308 @@
-import React, { useState } from 'react'
-import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native'
-import QRCode from 'react-qr-code'
-import { ToggleButtons } from '../../components/button/ToggleButtons'
-import { ShareableText } from '../../components/ShareableText'
-import { colors } from '../../styles/colors'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  Share,
+  ActivityIndicator,
+} from 'react-native'
+import { FormProvider, useForm } from 'react-hook-form'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import { useTranslation } from 'react-i18next'
+import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
+
+import { shortAddress } from 'lib/utils'
+
+import { getAddressDisplayText, Input, Typography } from 'components/index'
+import { sharedColors } from 'shared/constants'
+import { QRGenerator } from 'components/QRGenerator/QRGenerator'
+import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
+import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
+import { useAppSelector } from 'store/storeUtils'
+import { selectBalances } from 'store/slices/balancesSlice/selectors'
+import { MixedTokenAndNetworkType } from 'screens/send/types'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
+import {
+  homeStackRouteNames,
+  HomeStackScreenProps,
+} from 'navigation/homeNavigator/types'
+import { getTokenColor } from 'screens/home/tokenColor'
+import { castStyle } from 'shared/utils'
+import { getBalance } from 'screens/home/PortfolioComponent'
+import { selectProfile } from 'store/slices/profileSlice'
+import { getIconSource } from 'screens/home/TokenImage'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
   AddressText = 'Address.AddressText',
-  ShareButton = 'Address.ShareButton',
-  CopyButton = 'Address.CopyButton',
+  UsernameText = 'Address.UsernameText',
+  ShareAddressButton = 'Address.ShareButton',
+  ShareUsernameButton = 'Username.ShareButton',
 }
 
-export type ReceiveScreenProps = {
-  registeredDomains: string[]
-  address: string
-  displayAddress: string
-}
+export const ReceiveScreen = ({
+  route,
+  navigation,
+}: HomeStackScreenProps<homeStackRouteNames.Receive>) => {
+  const { t } = useTranslation()
+  const methods = useForm()
+  const bitcoinCore = useBitcoinContext()
 
-export const ReceiveScreen: React.FC<ReceiveScreenProps> = ({
-  registeredDomains,
-  address,
-  displayAddress,
-}) => {
-  const [activeTab, setActiveTab] = useState('address')
+  const { token, networkId } = route.params
+  const [selectedAsset, setSelectedAsset] = useState<
+    MixedTokenAndNetworkType | undefined
+  >((networkId && bitcoinCore?.networksMap[networkId]) || token)
+  const [address, setAddress] = useState<string>('')
+  const [isAddressLoading, setIsAddressLoading] = useState(false)
 
-  const windowWidth = Dimensions.get('window').width
-  const qrCodeSize = windowWidth * 0.5
+  const [shouldShowAssets, setShouldShowAssets] = useState(false)
 
-  const qrContainerStyle = {
-    marginHorizontal: (windowWidth - (qrCodeSize + 60)) / 2,
-    width: qrCodeSize + 60,
-    marginTop: 10,
-  }
+  const tokenBalances = useAppSelector(selectBalances)
+  const { wallet, chainType } = useAppSelector(selectActiveWallet)
+  const profile = useAppSelector(selectProfile)
 
-  const handleOptionSelected = (selectedTab: string) => {
-    setActiveTab(selectedTab)
-  }
+  const rskAddress = useMemo(() => {
+    if (wallet && chainType) {
+      return getAddressDisplayText(wallet.smartWalletAddress, chainType)
+    }
+    return null
+  }, [wallet, chainType])
+
+  const assets = useMemo(() => {
+    const newAssets = []
+    if (bitcoinCore?.networks) {
+      newAssets.push(...bitcoinCore?.networks)
+    }
+    newAssets.push(...Object.values(tokenBalances))
+    return newAssets
+  }, [bitcoinCore?.networks, tokenBalances])
+
+  const onShareUsername = useCallback(() => {
+    Share.share({
+      message: profile?.alias || '',
+    })
+  }, [profile?.alias])
+
+  const onShareAddress = useCallback(() => {
+    Share.share({
+      message: address,
+    })
+  }, [address])
+
+  const onBackPress = useCallback(() => navigation.goBack(), [navigation])
+
+  const onChevronAssetShowTap = useCallback(
+    () => setShouldShowAssets(curr => !curr),
+    [],
+  )
+
+  // Function to get the address
+  const onGetAddress = useCallback(
+    (asset: MixedTokenAndNetworkType) => {
+      if (asset) {
+        setIsAddressLoading(true)
+        if (asset instanceof BitcoinNetwork) {
+          asset.bips[0]
+            .fetchExternalAvailableAddress()
+            .then(addressReturned => setAddress(addressReturned))
+            .finally(() => setIsAddressLoading(false))
+        } else {
+          setAddress(rskAddress?.checksumAddress || '')
+          setIsAddressLoading(false)
+        }
+      }
+    },
+    [rskAddress?.checksumAddress],
+  )
+
+  const onChangeSelectedAsset = useCallback(
+    asset => () => setSelectedAsset(asset),
+    [],
+  )
+
+  useEffect(() => {
+    if (selectedAsset) {
+      onGetAddress(selectedAsset)
+    }
+  }, [onGetAddress, selectedAsset])
+
   return (
     <ScrollView style={styles.parent}>
-      <View style={qrContainerStyle}>
-        <Text style={styles.title}>share QR Code</Text>
-      </View>
-      <View
-        style={{ ...styles.qrContainer, ...qrContainerStyle }}
-        testID={TestID.QRCodeDisplay}>
-        <QRCode
-          bgColor="#dbe3ff"
-          color="#707070"
-          value={address}
-          size={qrCodeSize}
-        />
-      </View>
-      <View style={qrContainerStyle}>
-        <ToggleButtons
-          label={'share details'}
-          options={['address', 'domains']}
-          selectedOption={activeTab}
-          onOptionSelected={handleOptionSelected}
-        />
-      </View>
-      {activeTab === 'address' && (
-        <View style={qrContainerStyle}>
-          <ShareableText text={displayAddress} valueToShare={address} />
+      <FormProvider {...methods}>
+        {/* Receive and go back button */}
+        <View style={styles.headerStyle}>
+          <View style={styles.flexView}>
+            <FontAwesome5Icon
+              name="chevron-left"
+              size={14}
+              color="white"
+              onPress={onBackPress}
+              style={styles.width50View}
+            />
+          </View>
+          <View style={[styles.flexView, styles.flexCenter]}>
+            <Typography type="h4">{t('Receive')}</Typography>
+          </View>
+          <View style={styles.flexView} />
         </View>
-      )}
+        {/* Change Asset Component */}
+        <View style={styles.flexRow}>
+          <Typography type="h4">{t('change_asset')}</Typography>
+          <FontAwesome5Icon
+            name={shouldShowAssets ? 'chevron-up' : 'chevron-down'}
+            size={14}
+            color="white"
+            onPress={onChevronAssetShowTap}
+            style={styles.assetsChevronText}
+          />
+        </View>
+        {shouldShowAssets && (
+          <ScrollView horizontal>
+            {assets.map(asset => {
+              const isSelected =
+                selectedAsset !== undefined &&
+                selectedAsset.symbol === asset.symbol
 
-      {activeTab === 'domains' && (
-        <View style={qrContainerStyle}>
-          {registeredDomains.map((domain, index) => (
-            <ShareableText key={index} text={domain} valueToShare={domain} />
-          ))}
-          {registeredDomains?.length === 0 && (
-            <Text style={styles.noDomainsText}>Domains not found</Text>
+              const color = isSelected
+                ? getTokenColor(asset.symbol)
+                : sharedColors.inputInactive
+
+              const balance = getBalance(asset)
+              return (
+                <PortfolioCard
+                  key={asset.symbol}
+                  onPress={onChangeSelectedAsset(asset)}
+                  color={color}
+                  primaryText={asset.symbol}
+                  secondaryText={balance}
+                  isSelected={isSelected}
+                  disabled={isAddressLoading}
+                />
+              )
+            })}
+          </ScrollView>
+        )}
+        {/* QR Component */}
+        <View style={styles.qrView}>
+          {address !== '' && !isAddressLoading && (
+            <QRGenerator
+              key={selectedAsset?.symbol}
+              value={address}
+              imageSource={getIconSource(selectedAsset?.symbol || '')}
+              logoBackgroundColor={sharedColors.inputInactive}
+              testID={TestID.QRCodeDisplay}
+            />
+          )}
+          {isAddressLoading && (
+            <View style={styles.addressLoadingView}>
+              <Typography type="h4" style={styles.loadingTypographyStyle}>
+                {t('loading_qr')}...
+              </Typography>
+              <ActivityIndicator size={'large'} />
+            </View>
           )}
         </View>
-      )}
+        {/* Username Component */}
+        {profile && profile.alias && (
+          <Input
+            label="Username"
+            inputName="username"
+            rightIcon={
+              <Ionicons
+                name="share-outline"
+                size={20}
+                color="white"
+                onPress={onShareUsername}
+                testID={TestID.ShareUsernameButton}
+              />
+            }
+            placeholder={profile.alias}
+            isReadOnly
+            testID={TestID.UsernameText}
+          />
+        )}
+        {/* Address Component */}
+        {isAddressLoading && (
+          <View style={[styles.addressLoadingView, styles.marginTopView]}>
+            <Typography type="h4" style={styles.loadingTypographyStyle}>
+              {t('loading_address')}...
+            </Typography>
+            <ActivityIndicator size="large" />
+          </View>
+        )}
+        {!isAddressLoading && (
+          <Input
+            label="Address"
+            inputName="address"
+            rightIcon={
+              <Ionicons
+                name="share-outline"
+                size={20}
+                color="white"
+                onPress={onShareAddress}
+                testID={TestID.ShareAddressButton}
+              />
+            }
+            placeholder={shortAddress(address)}
+            isReadOnly
+            testID={TestID.AddressText}
+          />
+        )}
+      </FormProvider>
+      <View style={styles.emptyPadding} />
     </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
-  parent: {
-    borderTopLeftRadius: 50,
-    borderTopRightRadius: 50,
-    backgroundColor: '#050134',
-    height: '100%',
-    opacity: 0.9,
-    paddingTop: 40,
-  },
-  title: {
-    color: colors.white,
-  },
-  qrContainer: {
-    backgroundColor: '#dbe3ff',
-    marginVertical: 20,
-    padding: 30,
+  parent: castStyle.view({
+    backgroundColor: sharedColors.secondary,
+    minHeight: '100%',
+    paddingHorizontal: 24,
+  }),
+  qrView: castStyle.view({
+    paddingHorizontal: 35,
+    backgroundColor: sharedColors.inputInactive,
+    paddingVertical: 84,
     borderRadius: 20,
-  },
-  noDomainsText: {
-    alignSelf: 'center',
-    color: colors.white,
-  },
+    marginTop: 5,
+  }),
+  headerStyle: castStyle.view({
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginVertical: 22.5,
+  }),
+  emptyPadding: castStyle.view({
+    paddingVertical: 15,
+  }),
+  flexRow: castStyle.view({
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingBottom: 10,
+  }),
+  loadingTypographyStyle: castStyle.text({
+    textAlign: 'center',
+    marginBottom: 10,
+  }),
+  addressLoadingView: castStyle.view({
+    justifyContent: 'center',
+  }),
+  marginTopView: castStyle.view({
+    marginTop: 20,
+  }),
+  flexView: castStyle.view({
+    flex: 1,
+  }),
+  flexCenter: castStyle.view({
+    alignItems: 'center',
+  }),
+  width50View: castStyle.view({
+    width: '50%',
+  }),
+  assetsChevronText: castStyle.text({
+    width: '25%',
+    textAlign: 'right',
+  }),
 })

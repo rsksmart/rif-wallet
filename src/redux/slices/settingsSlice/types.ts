@@ -1,8 +1,9 @@
-import { KeyManagementSystem, RIFWallet, Request } from 'lib/core'
-import { BitcoinRequest } from 'lib/bitcoin/types'
+import { SendBitcoinRequest } from '@rsksmart/rif-wallet-bitcoin'
+import { ColorValue } from 'react-native'
+import { RIFWallet, Request } from '@rsksmart/rif-wallet-core'
 
 import { Wallets, WalletsIsDeployed } from 'src/Context'
-import { ColorValue } from 'react-native'
+import { RequestWithBitcoin } from 'shared/types'
 
 export interface CreateFirstWalletAction {
   mnemonic: string
@@ -14,13 +15,12 @@ export interface AddNewWalletAction {
 }
 
 export interface SetKeysAction {
-  kms: KeyManagementSystem
   wallets: Wallets
   walletsIsDeployed: WalletsIsDeployed
 }
 
 export interface OnRequestAction {
-  request: Request
+  request: RequestWithBitcoin
 }
 
 export interface SetWalletIsDeployedAction {
@@ -33,21 +33,25 @@ export interface SetNewWalletAction {
   isDeployed: boolean
 }
 
-type RequestMixed = Request & BitcoinRequest
+type RequestMixed = Request & SendBitcoinRequest
 export type Requests = RequestMixed[]
 
 export enum ChainTypeEnum {
   TESTNET = 'TESTNET',
   MAINNET = 'MAINNET',
 }
+
 export interface SettingsSlice {
+  isSetup: boolean
   requests: Requests
   topColor: ColorValue
-  kms: KeyManagementSystem | null
   wallets: Wallets | null
   walletsIsDeployed: WalletsIsDeployed | null
   selectedWallet: string
   loading: boolean
   chainId?: number
   chainType: ChainTypeEnum
+  appIsActive: boolean
+  unlocked: boolean
+  fullscreen: boolean
 }

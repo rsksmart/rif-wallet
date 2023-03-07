@@ -1,16 +1,15 @@
 import React from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, View } from 'react-native'
+import { SignTypedDataRequest } from '@rsksmart/rif-wallet-core'
 
-import { SignTypedDataRequest } from 'src/lib/core'
-
+import { AnyObject } from 'immer/dist/internal'
 import { useTranslation } from 'react-i18next'
+import { RegularText, SemiBoldText } from 'src/components'
 import { PrimaryButton } from 'src/components/button/PrimaryButton'
 import { SecondaryButton } from 'src/components/button/SecondaryButton'
-import { RegularText } from 'src/components'
 import { sharedStyles } from 'src/shared/styles'
 import { colors } from 'src/styles'
 import ReadOnlyField from './ReadOnlyField'
-import { AnyObject } from 'immer/dist/internal'
 
 interface Interface {
   request: SignTypedDataRequest
@@ -20,13 +19,13 @@ interface Interface {
 const formatter = (data: AnyObject) =>
   Object.keys(data).map((key: string) => (
     <View key={key} style={styles.nested} testID="Formatter.Row">
-      <Text style={styles.heading} testID="Text.Heading">
+      <SemiBoldText style={styles.heading} testID="Text.Heading">
         {key}
-      </Text>
+      </SemiBoldText>
       {typeof data[key] !== 'object' ? (
-        <Text style={styles.value} testID="Text.Value">
+        <RegularText style={styles.value} testID="Text.Value">
           {data[key].toString()}
-        </Text>
+        </RegularText>
       ) : (
         formatter(data[key])
       )}
@@ -126,7 +125,6 @@ export const styles = StyleSheet.create({
     marginTop: 5,
   },
   heading: {
-    fontWeight: 'bold',
     width: '100%',
   },
   value: {

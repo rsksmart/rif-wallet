@@ -1,5 +1,15 @@
 import Config from 'react-native-config'
+import testnetContracts from '@rsksmart/rsk-testnet-contract-metadata'
+import mainnetContracts from '@rsksmart/rsk-contract-metadata'
+
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
+import config from 'config.json'
+export const defaultChainType =
+  (Config.DEFAULT_CHAIN_TYPE as ChainTypeEnum) ?? ChainTypeEnum.TESTNET
+export const isDefaultChainTypeMainnet =
+  defaultChainType === ChainTypeEnum.MAINNET
+export const defaultChainId =
+  defaultChainType === ChainTypeEnum.MAINNET ? '30' : '31'
 
 export enum SETTINGS {
   DEFAULT_CHAIN_TYPE = 'DEFAULT_CHAIN_TYPE', //the chain id used by default when creating a new account
@@ -11,10 +21,9 @@ export enum SETTINGS {
   RIF_RELAY_SERVER = 'RIF_RELAY_SERVER',
   RELAY_VERIFIER_ADDRESS = 'RELAY_VERIFIER_ADDRESS',
   DEPLOY_VERIFIER_ADDRESS = 'DEPLOY_VERIFIER_ADDRESS',
-  RELAY_WORKER_ADDRESS = 'RELAY_WORKER_ADDRESS',
-  RELAY_HUB_ADDRESS = 'RELAY_HUB_ADDRESS',
-  FEES_RECEIVER = 'FEES_RECEIVER',
   QR_READER_BITCOIN_DEFAULT_NETWORK = 'QR_READER_BITCOIN_DEFAULT_NETWORK',
+  AUTH_CLIENT = 'AUTH_CLIENT',
+  RIF_WALLET_KEY = 'RIF_WALLET_KEY',
 }
 
 /**
@@ -23,11 +32,32 @@ export enum SETTINGS {
  */
 export const getWalletSetting = (
   setting: SETTINGS,
-  chainType: ChainTypeEnum = ChainTypeEnum.TESTNET,
+  chainType: ChainTypeEnum = defaultChainType,
 ): string => {
-  if (Config[`${setting}_${chainType}`]) {
-    return Config[`${setting}_${chainType}`]
+  const key = `${setting}_${chainType}`
+  if (key in config) {
+    return config[key as keyof typeof config]
   }
 
-  return Config[setting]
+  if (Config[key]) {
+    return Config[key] || ''
+  }
+
+  return Config[setting] || ''
+}
+
+export const getTokenAddress = (symbol: string, chainType: ChainTypeEnum) => {
+  const contracts =
+    chainType === ChainTypeEnum.TESTNET ? testnetContracts : mainnetContracts
+
+  const results = Object.keys(contracts).filter((address: string) => {
+    return contracts[address].symbol === symbol
+  })
+
+  if (results.length === 0) {
+    throw new Error(
+      `Token with the symbol ${symbol} not found on ${chainType}. Did you forget a t?`,
+    )
+  }
+  return results[0].toLowerCase()
 }

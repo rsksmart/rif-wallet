@@ -1,5 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
+import { getChainIdByType } from 'lib/utils'
+import { KeyManagementSystem } from 'lib/core'
+
 import {
   addNextWallet,
   createKMS,
@@ -7,12 +10,9 @@ import {
   loadExistingWallets,
 } from 'core/operations'
 import { deleteDomains } from 'storage/DomainsStore'
-import {
-  deleteContacts,
-  deleteKeys,
-  deletePin,
-  savePin,
-} from 'storage/MainStorage'
+import { deleteContacts as deleteContactsFromRedux } from 'store/slices/contactsSlice'
+import { deletePin, resetMainStorage, savePin } from 'storage/MainStorage'
+import { deleteKeys, getKeys } from 'storage/SecureStorage'
 import { colors } from 'src/styles'
 import {
   AddNewWalletAction,
@@ -28,8 +28,7 @@ import {
   createRIFWalletFactory,
   networkType as defaultNetworkType,
 } from 'core/setup'
-import { getChainIdByType } from 'lib/utils'
-// import { createAppAsyncThunk } from 'store/storeUtils'
+import { resetSocketState } from 'store/shared/actions/resetSocketState'
 
 export const createWallet = createAsyncThunk(
   'settings/createWallet',
@@ -37,23 +36,19 @@ export const createWallet = createAsyncThunk(
     const rifWalletFactory = createRIFWalletFactory(request =>
       thunkAPI.dispatch(onRequest({ request })),
     )
-    const {
-      kms,
-      rifWallet,
-      rifWalletsDictionary,
-      rifWalletsIsDeployedDictionary,
-    } = await createKMS(
-      rifWalletFactory,
-      networkId ? networkId : getChainIdByType(defaultNetworkType),
-    )(mnemonic)
+    const { rifWallet, rifWalletsDictionary, rifWalletsIsDeployedDictionary } =
+      await createKMS(
+        rifWalletFactory,
+        networkId ? networkId : getChainIdByType(defaultNetworkType),
+      )(mnemonic)
 
     thunkAPI.dispatch(
-      setKeysState({
-        kms,
+      setWallets({
         wallets: rifWalletsDictionary,
         walletsIsDeployed: rifWalletsIsDeployedDictionary,
       }),
     )
+    thunkAPI.dispatch(setUnlocked(true))
     return rifWallet
   },
 )
@@ -62,22 +57,46 @@ export const unlockApp = createAsyncThunk(
   'settings/unlockApp',
   async (_, thunkAPI) => {
     try {
+      const existingWallets = await loadExistingWallets(
+        createRIFWalletFactory(request =>
+          thunkAPI.dispatch(onRequest({ request })),
+        ),
+      )()
+
+      if (!existingWallets) {
+        return thunkAPI.rejectWithValue('No Existing wallets')
+      }
+
       const { kms, rifWalletsDictionary, rifWalletsIsDeployedDictionary } =
-        await loadExistingWallets(
-          createRIFWalletFactory(request =>
-            thunkAPI.dispatch(onRequest({ request })),
-          ),
-        )()
+        existingWallets
 
       thunkAPI.dispatch(
-        setKeysState({
-          kms,
+        setWallets({
           wallets: rifWalletsDictionary,
           walletsIsDeployed: rifWalletsIsDeployedDictionary,
         }),
       )
+
+      thunkAPI.dispatch(setUnlocked(true))
+
+      return kms
     } catch (err) {
-      thunkAPI.rejectWithValue(err)
+      return thunkAPI.rejectWithValue(err)
+    }
+  },
+)
+
+export const resetApp = createAsyncThunk(
+  'settings/resetApp',
+  async (_, thunkAPI) => {
+    try {
+      thunkAPI.dispatch(deleteContactsFromRedux())
+      thunkAPI.dispatch(resetKeysAndPin())
+      thunkAPI.dispatch(resetSocketState())
+      resetMainStorage()
+      return 'deleted'
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err)
     }
   },
 )
@@ -86,14 +105,16 @@ export const addNewWallet = createAsyncThunk(
   'settings/addNewWallet',
   async ({ networkId }: AddNewWalletAction, thunkAPI) => {
     try {
-      const { settings } = thunkAPI.getState()
-      if (!settings.kms) {
+      const keys = await getKeys()
+
+      if (!keys) {
         return thunkAPI.rejectWithValue(
           'Can not add new wallet because no KMS created.',
         )
       }
+      const { kms } = KeyManagementSystem.fromSerialized(keys)
       const { rifWallet, isDeloyed } = await addNextWallet(
-        settings.kms,
+        kms,
         createRIFWalletFactory(request =>
           thunkAPI.dispatch(onRequest({ request })),
         ),
@@ -111,20 +132,27 @@ export const addNewWallet = createAsyncThunk(
 )
 
 const initialState: SettingsSlice = {
+  isSetup: false,
   topColor: colors.darkPurple3,
   requests: [],
-  kms: null,
   wallets: null,
   walletsIsDeployed: null,
   selectedWallet: '',
   loading: false,
   chainType: ChainTypeEnum.TESTNET,
+  appIsActive: false,
+  unlocked: false,
+  fullscreen: false,
 }
 
 const settingsSlice = createSlice({
   name: 'settings',
   initialState,
   reducers: {
+    setIsSetup: (state, { payload }: { payload: boolean }) => {
+      state.isSetup = payload
+      return state
+    },
     changeTopColor: (state, action: PayloadAction<string>) => {
       state.topColor = action.payload
     },
@@ -139,11 +167,16 @@ const settingsSlice = createSlice({
       state.chainType =
         payload === 31 ? ChainTypeEnum.TESTNET : ChainTypeEnum.MAINNET
     },
+    setAppIsActive: (state, { payload }: PayloadAction<boolean>) => {
+      state.appIsActive = payload
+    },
+    setUnlocked: (state, { payload }: PayloadAction<boolean>) => {
+      state.unlocked = payload
+    },
     setPinState: (_, { payload }: PayloadAction<string>) => {
       savePin(payload)
     },
-    setKeysState: (state, { payload }: PayloadAction<SetKeysAction>) => {
-      state.kms = payload.kms
+    setWallets: (state, { payload }: PayloadAction<SetKeysAction>) => {
       state.wallets = payload.wallets
       state.walletsIsDeployed = payload.walletsIsDeployed
       state.selectedWallet = state.wallets
@@ -173,7 +206,6 @@ const settingsSlice = createSlice({
       state.selectedWallet = payload
     },
     removeKeysFromState: state => {
-      state.kms = null
       state.wallets = null
       state.walletsIsDeployed = null
       state.selectedWallet = ''
@@ -181,10 +213,12 @@ const settingsSlice = createSlice({
     resetKeysAndPin: () => {
       deleteKeys()
       deletePin()
-      deleteContacts()
       deleteDomains()
       deleteCache()
       return initialState
+    },
+    setFullscreen: (state, { payload }: PayloadAction<boolean>) => {
+      state.fullscreen = payload
     },
   },
   extraReducers(builder) {
@@ -219,17 +253,21 @@ const settingsSlice = createSlice({
 })
 
 export const {
+  setIsSetup,
   changeTopColor,
   onRequest,
   closeRequest,
-  setKeysState,
+  setWallets,
   setPinState,
   setNewWallet,
   setChainId,
+  setAppIsActive,
+  setUnlocked,
   setWalletIsDeployed,
   removeKeysFromState,
   resetKeysAndPin,
   switchSelectedWallet,
+  setFullscreen,
 } = settingsSlice.actions
 
 export const settingsSliceReducer = settingsSlice.reducer

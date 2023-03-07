@@ -7,11 +7,14 @@ import {
   Wallet,
 } from 'ethers'
 import { ReactTestInstance } from 'react-test-renderer'
+import {
+  tenPow,
+  ERC20Token,
+  RBTCToken,
+  ERC677__factory,
+} from '@rsksmart/rif-wallet-token'
+
 import { getWalletSetting, SETTINGS } from '../src/core/config'
-import { tenPow } from '../src/lib/token/BaseToken'
-import { ERC20Token } from '../src/lib/token/ERC20Token'
-import { RBTCToken } from '../src/lib/token/RBTCToken'
-import { ERC677__factory } from '../src/lib/token/types'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 
 const nodeUrl = getWalletSetting(SETTINGS.RPC_URL, ChainTypeEnum.TESTNET)

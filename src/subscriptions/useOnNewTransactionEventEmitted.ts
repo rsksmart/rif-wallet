@@ -1,8 +1,9 @@
+import { IApiTransaction } from '@rsksmart/rif-wallet-services'
+import { EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
+
+import { addNewTransaction } from 'store/slices/transactionsSlice'
+import { useAppDispatch } from 'store/storeUtils'
 import { ISocketsChangeEmitted } from './types'
-import { IApiTransaction } from 'lib/rifWalletServices/RIFWalletServicesTypes'
-import { addNewTransaction } from 'store/slices/transactionsSlice/transactionsSlice'
-import { EnhancedResult } from 'lib/abiEnhancer/AbiEnhancer'
-import { useAppDispatch } from 'src/redux/storeUtils'
 
 export const useOnNewTransactionEventEmitted = ({
   abiEnhancer,

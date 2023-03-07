@@ -1,48 +1,71 @@
 import RampSdk from '@ramp-network/react-native-sdk'
+import { BigNumber } from 'ethers'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { StyleSheet, View, ScrollView } from 'react-native'
+import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
+import { BIP } from '@rsksmart/rif-wallet-bitcoin'
+import { useTranslation } from 'react-i18next'
+import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
+
+import { balanceToDisplay, convertBalance, getChainIdByType } from 'lib/utils'
+
 import { toChecksumAddress } from 'components/address/lib'
-import { LoadingScreen } from 'components/loading/LoadingScreen'
-import { balanceToDisplay, getChainIdByType } from 'lib/utils'
-import { useEffect, useMemo, useState } from 'react'
-import { Image, StyleSheet, View } from 'react-native'
-
-import BitcoinNetwork from 'lib/bitcoin/BitcoinNetwork'
-import { ITokenWithBalance } from 'lib/rifWalletServices/RIFWalletServicesTypes'
-
-import { Paragraph } from 'components/index'
+import { Typography } from 'components/typography'
 import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator/types'
-import { selectAccounts } from 'src/redux/slices/accountsSlice/selector'
+  homeStackRouteNames,
+  HomeStackScreenProps,
+} from 'navigation/homeNavigator/types'
 import { colors } from 'src/styles'
-import { selectAppState } from 'store/slices/appStateSlice/selectors'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
-import PortfolioComponent from './PortfolioComponent'
-import SelectedTokenComponent from './SelectedTokenComponent'
-import SendReceiveButtonComponent from './SendReceiveButtonComponent'
-import { getTokenColor } from './tokenColor'
-
 import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 import { changeTopColor, selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { HomeBarButtonGroup } from 'screens/home/HomeBarButtonGroup'
+import { CurrencyValue, TokenBalance } from 'components/token'
+import {
+  getIsGettingStartedClosed,
+  hasIsGettingStartedClosed,
+  saveIsGettingStartedClosed,
+} from 'storage/MainStorage'
+
+import PortfolioComponent from './PortfolioComponent'
+import { getTokenColor } from './tokenColor'
+import { selectTransactions } from 'store/slices/transactionsSlice'
+import { sharedColors } from 'shared/constants'
+import { useBitcoinTransactionsHandler } from 'screens/activity/useBitcoinTransactionsHandler'
+import useTransactionsCombiner from 'screens/activity/useTransactionsCombiner'
+import { ActivityBasicRow } from 'screens/activity/ActivityRow'
+import { HomeInformationBar } from './HomeInformationBar'
+import { castStyle } from 'shared/utils'
 
 export const HomeScreen = ({
   navigation,
-}: RootStackScreenProps<rootStackRouteNames.Home>) => {
+}: HomeStackScreenProps<homeStackRouteNames.Main>) => {
   const dispatch = useAppDispatch()
   const tokenBalances = useAppSelector(selectBalances)
   const prices = useAppSelector(selectUsdPrices)
-  const accounts = useAppSelector(selectAccounts)
-  const { isSetup } = useAppSelector(selectAppState)
   const bitcoinCore = useBitcoinContext()
-  const { activeWalletIndex, wallet, chainType } =
-    useAppSelector(selectActiveWallet)
-
+  const { wallet, chainType } = useAppSelector(selectActiveWallet)
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
     undefined,
   )
+  const [selectedTokenBalance, setSelectedTokenBalance] =
+    useState<CurrencyValue>({
+      balance: '0.00',
+      symbol: '',
+      symbolType: 'text',
+    })
+  const [selectedTokenBalanceUsd, setSelectedTokenBalanceUsd] =
+    useState<CurrencyValue>({
+      balance: '0.00',
+      symbol: '',
+      symbolType: 'text',
+    })
+  const [showInfoBar, setShowInfoBar] = useState<boolean>(true)
+
+  const [hide, setHide] = useState<boolean>(false)
   const balances: Array<ITokenWithBalance | BitcoinNetwork> = useMemo(() => {
     if (bitcoinCore) {
       return [
@@ -59,7 +82,7 @@ export const HomeScreen = ({
       ? tokenBalances[selectedAddress] ||
         bitcoinCore.networksMap[selectedAddress]
       : undefined
-  const selectedColor = getTokenColor(selected ? selected.symbol : undefined)
+  const selectedColor = getTokenColor(selected ? selected.symbol : '')
   const backGroundColor = {
     backgroundColor: selectedAddress ? selectedColor : getTokenColor('DEFAULT'),
   }
@@ -70,41 +93,7 @@ export const HomeScreen = ({
         ? setSelectedAddress(balances[0].contractAddress)
         : undefined
     }
-  }, [balances])
-
-  // interact with the navigation
-  const handleSendReceive = (screen: 'SEND' | 'RECEIVE' | 'FAUCET') => {
-    if (selected instanceof BitcoinNetwork && screen !== 'FAUCET') {
-      return handleBitcoinSendReceive(screen)
-    }
-    switch (screen) {
-      case 'SEND':
-        return navigation.navigate(rootStackRouteNames.Send, {
-          token: selected?.symbol,
-          contractAddress: selected?.contractAddress,
-        })
-      case 'RECEIVE':
-        return navigation.navigate(rootStackRouteNames.Receive)
-      case 'FAUCET':
-        return addBalance()
-    }
-  }
-
-  const handleBitcoinSendReceive = (screen: 'SEND' | 'RECEIVE' | 'FAUCET') => {
-    if (selected instanceof BitcoinNetwork) {
-      switch (screen) {
-        case 'RECEIVE':
-          return navigation.navigate(rootStackRouteNames.ReceiveBitcoin, {
-            network: selected,
-          })
-        case 'SEND':
-          return navigation.navigate(rootStackRouteNames.Send, {
-            token: selected?.symbol,
-            contractAddress: selected?.contractAddress,
-          })
-      }
-    }
-  }
+  }, [balances, selected])
 
   const ramp = useMemo(
     () =>
@@ -126,111 +115,235 @@ export const HomeScreen = ({
         hostAppName: 'RIF Wallet',
         hostLogoUrl: 'https://rampnetwork.github.io/assets/misc/test-logo.png',
       }),
-    [wallet],
+    [wallet, chainType],
   )
 
-  const addBalance = () => {
+  const addBalance = useCallback(() => {
     ramp.on('*', console.log)
     ramp.show()
-  }
+  }, [ramp])
 
-  // pass the new color to Core to update header:
+  const handleBitcoinSendReceive = useCallback(
+    (
+      screen: 'SEND' | 'RECEIVE' | 'FAUCET',
+      _selected: ITokenWithoutLogo & BitcoinNetwork,
+    ) => {
+      switch (screen) {
+        case 'RECEIVE':
+          return navigation.navigate(homeStackRouteNames.Receive, {
+            networkId: _selected.networkId,
+          })
+        case 'SEND':
+          return navigation.navigate(homeStackRouteNames.Send, {
+            token: _selected?.symbol,
+            contractAddress: _selected?.contractAddress,
+          })
+      }
+    },
+    [navigation],
+  )
+
+  // interact with the navigation
+  const handleSendReceive = useCallback(
+    (screen: 'SEND' | 'RECEIVE' | 'FAUCET') => {
+      if (selected instanceof BitcoinNetwork) {
+        return handleBitcoinSendReceive(screen, selected)
+      }
+      switch (screen) {
+        case 'SEND':
+          return navigation.navigate(homeStackRouteNames.Send, {
+            token: selected?.symbol,
+            contractAddress: selected?.contractAddress,
+          })
+        case 'RECEIVE':
+          return navigation.navigate(homeStackRouteNames.Receive, {
+            token: selected,
+          })
+        case 'FAUCET':
+          return addBalance()
+      }
+    },
+    [handleBitcoinSendReceive, navigation, selected, addBalance],
+  )
+
   useEffect(() => {
     dispatch(changeTopColor(selectedColor))
-  }, [selectedColor])
+  }, [selectedColor, dispatch])
 
-  const selectedTokenAmount = useMemo(() => {
+  const selectedToken = useMemo(() => {
     if (selected instanceof BitcoinNetwork) {
-      return selected.balance
+      return {
+        ...selected,
+        ...{ price: prices ? prices.BTC?.price : 0 },
+      }
     }
     if (selected) {
-      return balanceToDisplay(selected.balance, selected.decimals, 5)
+      return {
+        ...selected,
+        ...{ price: prices ? prices[selected.contractAddress]?.price : 0 },
+      }
     }
-    return '0'
-  }, [selected, balances])
-  // waiting for the balances to load:
-  if (!isSetup) {
-    return <LoadingScreen />
-  }
+    return {
+      name: '',
+      decimals: 0,
+      symbol: '',
+      price: 0,
+      contractAddress: '',
+      balance: '0',
+    }
+  }, [selected, prices])
 
-  let accountName = 'account 1'
-  if (typeof activeWalletIndex === 'number') {
-    accountName =
-      accounts[activeWalletIndex]?.name || `account ${activeWalletIndex + 1}`
-  }
+  useEffect(() => {
+    const { symbol, balance, decimals, price } = selectedToken
+    setSelectedTokenBalance({
+      symbolType: 'icon',
+      symbol,
+      balance:
+        selected instanceof BitcoinNetwork
+          ? balance
+          : balanceToDisplay(balance, decimals, 5),
+    })
+    setSelectedTokenBalanceUsd({
+      symbolType: 'text',
+      symbol: '$',
+      balance:
+        selected instanceof BitcoinNetwork
+          ? '' +
+            convertBalance(
+              BigNumber.from(Math.round(Number(balance) * 10e8)),
+              8,
+              price,
+            )
+          : '' + convertBalance(balance, decimals, price),
+    })
+  }, [
+    selected,
+    selectedToken,
+    selectedToken.balance,
+    selectedToken.decimals,
+    selectedToken.price,
+  ])
+  const closed = useMemo(() => {
+    if (hasIsGettingStartedClosed()) {
+      const { close } = getIsGettingStartedClosed()
+      return close
+    }
+    return false
+  }, [])
+
+  const onClose = useCallback(() => {
+    saveIsGettingStartedClosed({ close: true })
+    setShowInfoBar(false)
+  }, [])
+
+  const onHide = useCallback(() => {
+    setHide(!hide)
+  }, [hide])
+  const { transactions } = useAppSelector(selectTransactions)
+
+  const btcTransactionFetcher = useBitcoinTransactionsHandler({
+    bip:
+      bitcoinCore && bitcoinCore.networks[0]
+        ? bitcoinCore.networks[0].bips[0]
+        : ({} as BIP),
+    shouldMergeTransactions: true,
+  })
+
+  const transactionsCombined = useTransactionsCombiner(
+    transactions,
+    btcTransactionFetcher.transactions,
+  )
+
+  // this code is copied from the activity screen
+  // On load, fetch both BTC and WALLET transactions
+  useEffect(() => {
+    // TODO: rethink btcTransactionFetcher, when adding as dependency
+    // the function gets executed a million times
+    btcTransactionFetcher.fetchTransactions()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  const { t } = useTranslation()
+
   return (
     <View style={styles.container}>
-      <View style={{ ...styles.topColor, ...backGroundColor }} />
-      <View style={styles.bottomColor} />
+      <TokenBalance
+        firstValue={selectedTokenBalance}
+        secondValue={selectedTokenBalanceUsd}
+        hideable={true}
+        hide={hide}
+        onHide={onHide}
+        color={backGroundColor.backgroundColor}
+      />
+      <HomeBarButtonGroup
+        onPress={handleSendReceive}
+        isSendDisabled={balances.length === 0}
+        color={backGroundColor.backgroundColor}
+      />
 
-      <View style={styles.parent}>
-        <SelectedTokenComponent
-          accountName={accountName}
-          amount={selectedTokenAmount}
-          change={0}
-        />
+      {showInfoBar && !closed && <HomeInformationBar onClose={onClose} />}
 
-        <SendReceiveButtonComponent
-          color={selectedColor}
-          onPress={handleSendReceive}
-          sendDisabled={balances.length === 0}
-        />
+      <Typography style={styles.portfolioLabel} type={'h3'}>
+        {t('home_screen_portfolio')}
+      </Typography>
 
-        {balances.length === 0 ? (
-          <>
-            <Image
-              source={require('src/images/noBalance.png')}
-              style={styles.noBalance}
+      <PortfolioComponent
+        selectedAddress={selectedAddress}
+        setSelectedAddress={setSelectedAddress}
+        balances={balances}
+        prices={prices}
+      />
+
+      <Typography style={styles.transactionsLabel} type={'h3'}>
+        {t('home_screen_transactions')}
+      </Typography>
+      {transactionsCombined.length > 1 ? (
+        <ScrollView>
+          {transactionsCombined.map(tx => (
+            <ActivityBasicRow
+              key={tx.id}
+              activityTransaction={tx}
+              navigation={navigation}
             />
-            <Paragraph style={styles.text}>
-              You don't have any balances, get some here!
-            </Paragraph>
-          </>
-        ) : (
-          <PortfolioComponent
-            selectedAddress={selectedAddress}
-            setSelected={setSelectedAddress}
-            balances={balances}
-            prices={prices}
-          />
-        )}
-      </View>
+          ))}
+        </ScrollView>
+      ) : (
+        <>
+          <Typography style={styles.emptyTransactionsLabel} type={'h3'}>
+            {t('home_screen_empty_transactions')}
+          </Typography>
+          <Typography style={styles.emptyTransactionsLabel} type={'h4'}>
+            {t('home_screen_no_transactions_created')}
+          </Typography>
+        </>
+      )}
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
+  emptyTransactionsLabel: castStyle.text({
+    padding: 6,
+    paddingTop: 10,
+  }),
+  portfolioLabel: castStyle.text({
+    padding: 6,
+    paddingTop: 10,
+    color: sharedColors.inputLabelColor,
+  }),
+  transactionsLabel: castStyle.text({
+    padding: 6,
+    color: sharedColors.inputLabelColor,
+  }),
+  container: castStyle.view({
     flex: 1,
-    flexDirection: 'column',
-    backgroundColor: colors.darkPurple3,
-  },
-  topColor: {
-    flex: 1,
-    borderBottomRightRadius: 40,
-    borderBottomLeftRadius: 40,
-  },
-  bottomColor: {
-    flex: 6,
-  },
-
-  parent: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-
-    borderTopLeftRadius: 40,
-    borderTopRightRadius: 40,
-    paddingHorizontal: 30,
-  },
-  text: {
+    backgroundColor: sharedColors.secondary,
+  }),
+  text: castStyle.text({
     textAlign: 'center',
-    color: colors.white,
-  },
-  noBalance: {
-    flex: 1,
+    color: colors.lightPurple,
+  }),
+  noBalance: castStyle.image({
     width: '100%',
-    height: '100%',
     resizeMode: 'contain',
-  },
+  }),
 })

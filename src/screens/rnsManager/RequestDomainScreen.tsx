@@ -1,34 +1,32 @@
-import { useEffect, useState } from 'react'
+import { useState, useCallback, useEffect, useMemo } from 'react'
+import { Dimensions, TouchableOpacity, View } from 'react-native'
 import * as Progress from 'react-native-progress'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
-import { Dimensions, TouchableOpacity, View } from 'react-native'
+import { RnsProcessor } from 'lib/rns/RnsProcessor'
+
 import { colors } from 'src/styles'
 import { rnsManagerStyles } from './rnsManagerStyles'
-
-import { PrimaryButton } from 'src/components/button/PrimaryButton'
-
-import { MediumText } from '../../components'
-import { AvatarIcon } from '../../components/icons/AvatarIcon'
+import { PrimaryButton } from 'components/button/PrimaryButton'
+import { MediumText } from 'components/index'
+import { AvatarIcon } from 'components/icons/AvatarIcon'
 import {
-  rootStackRouteNames,
-  RootStackScreenProps,
-} from 'navigation/rootNavigator/types'
-import { ScreenWithWallet } from '../types'
+  profileStackRouteNames,
+  ProfileStackScreenProps,
+  ProfileStatus,
+} from 'navigation/profileNavigator/types'
 import TitleStatus from './TitleStatus'
-import { IProfileRegistrationStore } from '../../storage/AliasRegistrationStore'
-import { useAliasRegistration } from '../../core/hooks/useAliasRegistration'
+import { ScreenWithWallet } from '../types'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { requestUsername, selectProfileStatus } from 'store/slices/profileSlice'
 
-type Props = RootStackScreenProps<rootStackRouteNames.RequestDomain> &
+type Props = ProfileStackScreenProps<profileStackRouteNames.RequestDomain> &
   ScreenWithWallet
 
 export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
-  const {
-    registrationStarted,
-    readyToRegister,
-    getRegistrationData,
-    setRegistrationData,
-  } = useAliasRegistration(wallet)
+  const rnsProcessor = useMemo(() => new RnsProcessor({ wallet }), [wallet])
+  const dispatch = useAppDispatch()
+
   const { alias, duration } = route.params
   const fullAlias = alias + '.rsk'
 
@@ -36,59 +34,63 @@ export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
   const [commitToRegisterInfo2, setCommitToRegisterInfo2] = useState('')
   const [processing, setProcessing] = useState(false)
   const [progress, setProgress] = useState(0.0)
+  const status = useAppSelector(selectProfileStatus)
 
-  const getUpToDateRegistrationData = async () => {
-    if (await registrationStarted()) {
-      setCommitToRegisterInfo('loading registration process status')
-      setProgress(0.3)
-      return await getRegistrationData()
-    } else {
-      setCommitToRegisterInfo('committing to register...')
+  useEffect(() => {
+    let interval: NodeJS.Timer
+    if (status === ProfileStatus.REQUESTING) {
+      setProcessing(true)
       setProgress(0)
-      return await setRegistrationData(alias, parseInt(duration, 10))
-    }
-  }
-
-  const commitToRegister = async () => {
-    setProcessing(true)
-    try {
-      const profileRegistrationStore: IProfileRegistrationStore =
-        await getUpToDateRegistrationData()
       setCommitToRegisterInfo('registering your alias...')
       setCommitToRegisterInfo2('estimated wait: 3 minutes')
-      const intervalId = setInterval(async () => {
-        setProgress(prev => prev + 0.009)
-        const ready = await readyToRegister(
-          profileRegistrationStore.commitToRegisterHash,
-        )
-        if (ready) {
-          setProgress(1)
-          setProcessing(false)
-          navigation.navigate(rootStackRouteNames.BuyDomain, {
-            alias,
-            domainSecret: profileRegistrationStore.commitToRegisterSecret,
-            duration,
-          })
-          setCommitToRegisterInfo(
-            'Waiting period ended. You can now register your domain',
-          )
-          clearInterval(intervalId)
-        }
+      interval = setInterval(() => {
+        setProgress(prev => prev + 0.005)
       }, 1000)
+    }
+    return () => {
+      if (interval) {
+        clearInterval(interval)
+      }
+    }
+  }, [status])
+
+  const commitToRegister = useCallback(async () => {
+    try {
+      const response = await dispatch(
+        requestUsername({ rnsProcessor, alias, duration }),
+      ).unwrap()
+      if (response && response === ProfileStatus.READY_TO_PURCHASE) {
+        setProgress(1)
+        setProcessing(false)
+        setCommitToRegisterInfo(
+          'Waiting period ended. You can now register your domain',
+        )
+        navigation.navigate(profileStackRouteNames.BuyDomain, {
+          alias,
+        })
+      }
     } catch (e: unknown) {
       setProcessing(false)
-      setCommitToRegisterInfo(e?.message || '')
+      if (e instanceof Error) {
+        setCommitToRegisterInfo(e?.message || '')
+      }
       setCommitToRegisterInfo2('')
     }
-  }
+  }, [alias, duration, rnsProcessor, dispatch, navigation])
+
   useEffect(() => {
-    commitToRegister().then()
-  }, [])
+    const response = rnsProcessor.getStatus(alias)
+    if (response?.commitmentRequested) {
+      commitToRegister().then()
+    }
+  }, [alias, commitToRegister, rnsProcessor])
   return (
     <>
       <View style={rnsManagerStyles.profileHeader}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('SearchDomain')}
+          onPress={() =>
+            navigation.navigate(profileStackRouteNames.SearchDomain)
+          }
           accessibilityLabel="back">
           <View style={rnsManagerStyles.backButton}>
             <MaterialIcon name="west" color="white" size={10} />
@@ -110,13 +112,15 @@ export const RequestDomainScreen = ({ wallet, navigation, route }: Props) => {
               <MediumText style={rnsManagerStyles.profileDisplayAlias}>
                 {fullAlias}
               </MediumText>
-              <Progress.Bar
-                progress={progress}
-                width={Dimensions.get('window').width * 0.6}
-                color={colors.green}
-                borderColor={colors.background.secondary}
-                unfilledColor={colors.gray}
-              />
+              {processing && (
+                <Progress.Bar
+                  progress={progress}
+                  width={Dimensions.get('window').width * 0.6}
+                  color={colors.green}
+                  borderColor={colors.background.secondary}
+                  unfilledColor={colors.gray}
+                />
+              )}
               <MediumText style={rnsManagerStyles.aliasRequestInfo}>
                 {commitToRegisterInfo}
               </MediumText>

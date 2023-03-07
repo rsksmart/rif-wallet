@@ -1,9 +1,10 @@
 import Clipboard from '@react-native-community/clipboard'
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { colors } from '../../styles/colors'
 import { getAddressDisplayText } from '../address'
 import { CopyIcon } from '../icons/CopyIcon'
+import { RegularText } from '../typography'
 
 interface Interface {
   address: string
@@ -26,7 +27,7 @@ export const AddressCopyComponent: React.FC<Interface> = ({
         <CopyIcon color={colors.white} />
       </View>
       <View style={styles.textColumn}>
-        <Text style={styles.address}>{displayAddress}</Text>
+        <RegularText style={styles.address}>{displayAddress}</RegularText>
       </View>
     </TouchableOpacity>
   )

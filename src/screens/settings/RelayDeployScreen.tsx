@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { BigNumber, Transaction } from 'ethers'
@@ -7,12 +7,14 @@ import {
   TransactionReceipt,
 } from '@ethersproject/abstract-provider'
 
-import { ScreenWithWallet } from '../types'
 import { colors } from 'src/styles'
-import { RIF_TOKEN_ADDRESS_TESTNET } from 'src/lib/relay-sdk/helpers'
 import { MediumText, SecondaryButton, SemiBoldText } from 'src/components'
 import { setWalletIsDeployed } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'src/redux/storeUtils'
+import { defaultChainType, getTokenAddress } from 'core/config'
+
+import { ScreenWithWallet } from '../types'
+import { ChainTypeEnum } from 'src/redux/slices/settingsSlice/types'
 
 export const RelayDeployScreen = ({
   wallet,
@@ -25,12 +27,18 @@ export const RelayDeployScreen = ({
   const [smartWalletDeployTx, setSmartWalletDeployTx] =
     useState<null | Transaction>(null)
 
-  const deploy = async () => {
-    setDeployError(null)
-    setIsDeploying(true)
+  const updateErrorState = useCallback((error: string | null) => {
+    setDeployError(error)
+  }, [])
 
+  const deploy = async () => {
+    updateErrorState(null)
+    setIsDeploying(true)
     const freePayment = {
-      tokenContract: RIF_TOKEN_ADDRESS_TESTNET,
+      tokenContract: getTokenAddress(
+        defaultChainType === ChainTypeEnum.MAINNET ? 'RIF' : 'tRIF',
+        defaultChainType,
+      ),
       tokenAmount: BigNumber.from(0),
     }
 
@@ -48,13 +56,13 @@ export const RelayDeployScreen = ({
               }),
             )
           } else {
-            setDeployError('Tx failed, could not deploy smart wallet')
+            updateErrorState('Tx failed, could not deploy smart wallet')
           }
           setIsDeploying(false)
         })
       })
       .catch((error: Error) => {
-        setDeployError(error.toString())
+        updateErrorState(error.toString())
         setIsDeploying(false)
       })
   }

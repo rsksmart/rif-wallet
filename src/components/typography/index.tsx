@@ -1,102 +1,133 @@
-import React from 'react'
-import { StyleProp, StyleSheet, Text, TextStyle, View } from 'react-native'
-import { ModalIcon } from '../icons/ModalIcon'
+import { ColorValue, StyleSheet, Text, TextProps } from 'react-native'
 
-interface Props {
-  children: React.ReactNode
-  testID?: string
-  style?: StyleProp<TextStyle>
-}
+import { sharedColors } from 'shared/constants'
+import { castStyle } from 'shared/utils'
 
-export const Header1 = ({ children, testID }: Props) => (
-  <Text style={styles.header1} testID={testID}>
-    {children}
-  </Text>
-)
-
-export const Header2 = ({ children, testID }: Props) => (
-  <Text style={styles.header2} testID={testID}>
-    {children}
-  </Text>
-)
-
-export const ModalHeader = ({ children, testID }: Props) => (
-  <View style={styles.modalHeaderWrapper}>
-    <ModalIcon color={'#313c3c'} />
-    <Text style={styles.modalHeader} testID={testID}>
-      {children}
-    </Text>
-  </View>
-)
-
-export const Header3 = ({ children, testID }: Props) => (
-  <Text style={styles.header3} testID={testID}>
-    {children}
-  </Text>
-)
-
-export const Paragraph = ({ children, testID, style }: Props) => (
-  <Text style={[styles.paragraph, style]} testID={testID}>
-    {children}
-  </Text>
-)
-
-export const ParagraphSoft = ({ children, testID }: Props) => (
-  <Text style={styles.paragraphSoft} testID={testID}>
-    {children}
-  </Text>
-)
-
-export const CompactParagraph = ({ children, testID }: Props) => (
-  <Text style={styles.compactParagraph} testID={testID}>
-    {children}
-  </Text>
-)
-
-export { default as RegularText } from './RegularText'
 export { default as MediumText } from './MediumText'
+export { RegularText } from './RegularText'
 export { default as SemiBoldText } from './SemiBoldText'
 
-const styles = StyleSheet.create({
-  header1: {
-    fontSize: 42,
-    marginBottom: 15,
-  },
-  header2: {
-    fontSize: 36,
-    marginBottom: 15,
-  },
-  header3: {
-    fontSize: 26,
-    marginBottom: 15,
-  },
-  modalHeader: {
-    marginLeft: 5,
-    marginBottom: 3,
-    fontSize: 18,
-    color: '#313c3c',
-  },
-  modalHeaderWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 15,
-  },
-  paragraph: {
-    fontSize: 18,
-    marginTop: 10,
-    marginBottom: 10,
-  },
-  paragraphSoft: {
-    fontSize: 14,
-    marginTop: 10,
-    marginBottom: 10,
-    textAlign: 'center',
-    color: 'rgba(55, 63, 72, 0.34)',
-  },
-  compactParagraph: {
-    fontSize: 18,
-    marginTop: 0,
-    marginBottom: 2,
-  },
+export const fonts = StyleSheet.create({
+  regular: castStyle.text({
+    fontFamily: 'IBMPlexSans-Regular',
+    fontWeight: '500',
+    color: sharedColors.white,
+  }),
 })
+
+const styles = StyleSheet.create({
+  h1: castStyle.text({
+    ...fonts.regular,
+    fontSize: 36,
+    lineHeight: 36,
+  }),
+  h2: castStyle.text({
+    ...fonts.regular,
+    fontSize: 24,
+    lineHeight: 28.8,
+  }),
+  h3: castStyle.text({
+    ...fonts.regular,
+    fontSize: 18,
+    lineHeight: 21.6,
+  }),
+  h4: castStyle.text({
+    ...fonts.regular,
+    fontSize: 14,
+    lineHeight: 16.8,
+  }),
+  h5: castStyle.text({
+    ...fonts.regular,
+    fontSize: 12,
+    lineHeight: 14.4,
+  }),
+  body1: castStyle.text({
+    ...fonts.regular,
+    fontSize: 16,
+    lineHeight: 22.4,
+    fontWeight: '400',
+  }),
+  body2: castStyle.text({
+    ...fonts.regular,
+    fontSize: 14,
+    lineHeight: 19.6,
+    fontWeight: '400',
+  }),
+  body3: castStyle.text({
+    ...fonts.regular,
+    fontSize: 12,
+    lineHeight: 16.8,
+    fontWeight: '400',
+  }),
+  label: castStyle.text({
+    ...fonts.regular,
+    fontSize: 11,
+    lineHeight: 11,
+  }),
+  button1: castStyle.text({
+    ...fonts.regular,
+    fontSize: 14,
+    lineHeight: 14,
+  }),
+  button2: castStyle.text({
+    ...fonts.regular,
+    fontSize: 12,
+    lineHeight: 12,
+  }),
+  labelLight: castStyle.text({
+    ...fonts.regular,
+    fontSize: 14,
+    lineHeight: 19.6,
+    fontWeight: '400',
+  }),
+})
+
+export type TypographyType =
+  | 'h1'
+  | 'h2'
+  | 'h3'
+  | 'h4'
+  | 'h5'
+  | 'body1'
+  | 'body2'
+  | 'body3'
+  | 'label'
+  | 'button1'
+  | 'button2'
+  | 'labelLight'
+
+interface Props extends TextProps {
+  type: TypographyType
+  color?: ColorValue
+}
+
+const typeStyleMap = new Map([
+  ['h1', styles.h1],
+  ['h2', styles.h2],
+  ['h3', styles.h3],
+  ['h4', styles.h4],
+  ['h5', styles.h5],
+  ['body1', styles.body1],
+  ['body2', styles.body2],
+  ['body3', styles.body3],
+  ['label', styles.label],
+  ['button1', styles.button1],
+  ['button2', styles.button2],
+  ['labelLight', styles.labelLight],
+])
+
+export const Typography = ({
+  style,
+  color,
+  type,
+  children,
+  ...props
+}: Props) => {
+  return (
+    <Text
+      style={[typeStyleMap.get(type), color ? { color } : null, style]}
+      {...props}>
+      {children}
+    </Text>
+  )
+}

@@ -1,21 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, TextInput, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { setAccount } from 'src/redux/slices/accountsSlice/accountsSlice'
-import { selectAccounts } from 'src/redux/slices/accountsSlice/selector'
-import { AccountPayload } from 'src/redux/slices/accountsSlice/types'
-import { useAppDispatch, useAppSelector } from 'src/redux/storeUtils'
-import { SmartWalletFactory } from '../../lib/core/SmartWalletFactory'
-import { PublicKeyItemType } from '../../screens/accounts/types'
-import { colors } from '../../styles'
-import { fonts } from '../../styles/fonts'
+
+import { SmartWalletFactory } from '@rsksmart/rif-relay-light-sdk'
+
+import { setAccount } from 'store/slices/accountsSlice'
+import { selectAccounts } from 'store/slices/accountsSlice/selector'
+import { AccountPayload } from 'store/slices/accountsSlice/types'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { PublicKeyItemType } from 'screens/accounts/types'
+import { colors } from 'src/styles'
+import { fonts } from 'src/styles/fonts'
+
 import { EditMaterialIcon } from '../icons'
 import { CheckIcon } from '../icons/CheckIcon'
 import { MediumText } from '../typography'
 import AccountField from './AccountField'
 import accountSharedStyles from './styles'
 
-type AccountBoxProps = {
+interface AccountBoxProps {
   address: string
   addressShort: string
   smartWalletAddress: string
@@ -64,13 +67,13 @@ const AccountBox: React.FC<AccountBoxProps> = ({
 
   useEffect(() => {
     smartWalletFactory.isDeployed().then(setIsDeployed)
-  })
+  }, [smartWalletFactory])
 
   useEffect(() => {
     if (accountName !== initialAccountName) {
       setAccountName(initialAccountName)
     }
-  }, [initialAccountName])
+  }, [initialAccountName, accountName])
 
   return (
     <View style={styles.accountsContainer}>
@@ -139,6 +142,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 20,
+    color: colors.darkGray,
   },
   editIcon: {
     marginLeft: 10,
@@ -157,6 +161,7 @@ const styles = StyleSheet.create({
   },
   titleFontSize: {
     fontSize: 13,
+    color: colors.darkGray,
   },
 })
 

@@ -1,8 +1,8 @@
+import Clipboard from '@react-native-community/clipboard'
 import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import Clipboard from '@react-native-community/clipboard'
 
-import { Paragraph } from '../typography'
+import { RegularText } from '../typography'
 
 interface Interface {
   prefix?: string
@@ -19,10 +19,10 @@ export const CopyComponent: React.FC<Interface> = ({
     <TouchableOpacity onPress={() => Clipboard.setString(value)}>
       <View style={styles.row}>
         <View style={styles.textColumn}>
-          <Paragraph testID={testID}>
+          <RegularText testID={testID}>
             {prefix}
             {value}
-          </Paragraph>
+          </RegularText>
         </View>
         <View style={styles.iconColumn}>
           <Text>copy</Text>

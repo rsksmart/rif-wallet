@@ -1,10 +1,11 @@
-import React from 'react'
-import { TouchableOpacity } from 'react-native-gesture-handler'
-import { StyleSheet, Text, View } from 'react-native'
-import { TokenImage } from '../home/TokenImage'
-import { shortAddress, trimValue } from 'lib/utils'
 import { StatusIcon } from 'components/statusIcons'
+import { shortAddress, trimValue } from 'lib/utils'
+import React from 'react'
+import { StyleSheet, View } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import { RegularText } from 'src/components'
 import { colors } from 'src/styles'
+import { TokenImage } from '../home/TokenImage'
 import { ActivityRowPresentationType } from './types'
 
 const StatusBackgroundColorMap = {
@@ -41,17 +42,21 @@ const ActivityRowPresentation: React.FC<ActivityRowPresentationType> = ({
           <TokenImage symbol={symbol || ''} width={30} height={32} />
         </View>
         <View style={styles.secondRow}>
-          <Text style={styles.mainText}>To: {shortAddress(to, 3)}</Text>
-          <Text style={styles.secondaryText}>{timeHumanFormatted}</Text>
+          <RegularText style={styles.mainText}>
+            To: {shortAddress(to, 3)}
+          </RegularText>
+          <RegularText style={styles.secondaryText}>
+            {timeHumanFormatted}
+          </RegularText>
         </View>
       </View>
       <View style={styles.secondHalf}>
         <View style={styles.alignSelfCenter}>
-          <Text style={[styles.mainText, styles.alignSelfEnd]}>
+          <RegularText style={[styles.mainText, styles.alignSelfEnd]}>
             {trimValue(value)}
-          </Text>
+          </RegularText>
           {/* @TODO get value of transaction $$ for example $ 731.03*/}
-          {/* <Text style={[styles.secondaryText]}></Text> */}
+          {/* <RegularText style={[styles.secondaryText]}></RegularText> */}
         </View>
         <View style={[styles.mr3, styles.ml10, styles.alignSelfCenter]}>
           <View
@@ -92,6 +97,7 @@ const styles = StyleSheet.create({
   },
   secondaryText: {
     color: colors.text.secondary,
+    fontSize: 12,
   },
   firstHalf: {
     flexGrow: 50,

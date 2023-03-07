@@ -1,7 +1,8 @@
-import { grid } from '../../styles/grid'
-import { StyleSheet, View, Text, Image } from 'react-native'
+import { Image, StyleSheet, View } from 'react-native'
+import { RegularText } from 'src/components'
 import { colors } from '../../styles/colors'
-import { WINDOW_HEIGHT, SLIDER_WIDTH } from './Dimensions'
+import { grid } from '../../styles/grid'
+import { SLIDER_WIDTH, WINDOW_HEIGHT } from './Dimensions'
 
 const SLIDER_HEIGHT = Math.round(WINDOW_HEIGHT * 0.5)
 export const MainSlide = ({
@@ -16,10 +17,10 @@ export const MainSlide = ({
   <View style={styles.itemContainer}>
     {image}
     <View style={{ ...grid.row, ...styles.center }}>
-      <Text style={styles.title}>{title}</Text>
+      <RegularText style={styles.title}>{title}</RegularText>
     </View>
     <View style={{ ...grid.row, ...styles.center }}>
-      <Text style={styles.subTitle}>{subTitle}</Text>
+      <RegularText style={styles.subTitle}>{subTitle}</RegularText>
     </View>
   </View>
 )
@@ -33,11 +34,9 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: 40,
   },
-
   center: {
     alignSelf: 'center',
   },
-
   itemContainer: {
     width: SLIDER_WIDTH,
     height: SLIDER_HEIGHT,
