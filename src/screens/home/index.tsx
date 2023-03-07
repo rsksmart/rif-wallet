@@ -99,7 +99,7 @@ export const HomeScreen = ({
     () =>
       new RampSdk({
         // for testnet:
-        url: 'https://ri-widget-staging.web.app/',
+        url: 'https://app.demo.ramp.network',
 
         // for IOV:
         swapAsset: 'RSK_RDOC',
