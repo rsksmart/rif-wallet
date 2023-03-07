@@ -17,7 +17,6 @@ export const ExampleScreen = () => {
       ex5: '',
       ex6: '',
       ex7: '',
-      ex8: '',
     },
   })
   const { resetField } = methods
@@ -79,12 +78,6 @@ export const ExampleScreen = () => {
             resetValue={() => resetField('ex7')}
             subtitle={'dshduhsbdjsnjn'}
             isReadOnly
-          />
-          <Input
-            inputName={'ex8'}
-            placeholder={'Example 8'}
-            label={'Example 8'}
-            resetValue={() => resetField('ex8')}
           />
         </ScrollView>
       </FormProvider>

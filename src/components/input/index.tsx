@@ -135,7 +135,7 @@ export const Input = ({
                     sharedStyles.flex,
                     sharedStyles.noPadding,
                     focused && !subtitle && (rightIcon || suffix || resetValue)
-                      ? styles.paddingBottom
+                      ? styles.inputPadding
                       : null,
                     inputStyle,
                   ]}
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   }),
-  paddingBottom: castStyle.view({
+  inputPadding: castStyle.view({
     paddingBottom: 10,
   }),
   inputSubtitleContainer: castStyle.view({
