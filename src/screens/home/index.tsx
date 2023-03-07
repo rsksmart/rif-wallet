@@ -1,3 +1,4 @@
+import RampSdk from '@ramp-network/react-native-sdk'
 import { BigNumber } from 'ethers'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
@@ -94,6 +95,34 @@ export const HomeScreen = ({
     }
   }, [balances, selected])
 
+  const ramp = useMemo(
+    () =>
+      new RampSdk({
+        // for testnet:
+        url: 'https://app.demo.ramp.network',
+
+        // for IOV:
+        swapAsset: 'RSK_RDOC',
+        // userAddress must be lowercase or checksummed correctly:
+        userAddress: wallet
+          ? toChecksumAddress(
+              wallet?.smartWalletAddress,
+              getChainIdByType(chainType),
+            )
+          : '',
+
+        // for the dapp:
+        hostAppName: 'RIF Wallet',
+        hostLogoUrl: 'https://rampnetwork.github.io/assets/misc/test-logo.png',
+      }),
+    [wallet, chainType],
+  )
+
+  const addBalance = useCallback(() => {
+    ramp.on('*', console.log)
+    ramp.show()
+  }, [ramp])
+
   const handleBitcoinSendReceive = useCallback(
     (
       screen: 'SEND' | 'RECEIVE' | 'FAUCET',
@@ -131,18 +160,11 @@ export const HomeScreen = ({
             token: selected,
           })
         case 'FAUCET':
-          const address = wallet?.smartWallet.smartWalletContract.address
-          address &&
-            addBalance(toChecksumAddress(address, getChainIdByType(chainType)))
-          return
+          return addBalance()
       }
     },
-    [chainType, handleBitcoinSendReceive, navigation, selected, wallet],
+    [handleBitcoinSendReceive, navigation, selected, addBalance],
   )
-
-  const addBalance = (address: string) => {
-    console.log('temporarly removed', address)
-  }
 
   useEffect(() => {
     dispatch(changeTopColor(selectedColor))
