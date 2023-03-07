@@ -5,5 +5,5 @@ export interface ProfileStore {
   phone: string
   email: string
   status: ProfileStatus
-  infoBoxClosed?: boolean
+  infoBoxClosed: boolean
 }
