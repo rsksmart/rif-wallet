@@ -77,4 +77,9 @@ export const sharedStyles = StyleSheet.create({
   marginBottom: castStyle.view({
     marginBottom: 10,
   }),
+  marginTop: castStyle.view({
+    marginBottom: 10,
+  }),
+
+
 })
