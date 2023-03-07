@@ -103,7 +103,7 @@ export const ProfileCreateScreen = ({
         <BackButton onPress={onBackPress} accessibilityLabel="profile" />
 
         <Typography style={styles.headerTittle} type="h3">
-          {'Profile'}
+          {t('profile_screen_title')}
         </Typography>
 
         <View />
