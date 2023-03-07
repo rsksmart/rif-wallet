@@ -1,8 +1,6 @@
 import { StyleSheet, View } from 'react-native'
 
-import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { EndStepIcon, MiddleStepIcon, StartStepIcon } from 'components/icons'
 
 interface ProgressBarProps {
   colors: string[]
@@ -17,32 +15,33 @@ export const StepperComponent = ({
 }: ProgressBarProps) => {
   return (
     <>
-      {colors.map((color, index) =>
-        index === 0 ? (
-          <View key={index} style={styles.textAlignment}>
-            <StartStepIcon color={color} width={width} height={height} />
-          </View>
-        ) : index === colors.length - 1 ? (
-          <View key={index} style={styles.textAlignment}>
-            <EndStepIcon color={color} width={width} height={height} />
-          </View>
-        ) : (
-          <View key={index} style={styles.textAlignment}>
-            <MiddleStepIcon color={color} width={width} height={height} />
-          </View>
-        ),
-      )}
+      {colors.map((color, index) => {
+        let style = castStyle.view({ width, height, backgroundColor: color })
+        if (index === 0) {
+          style = { ...style, ...styles.start }
+        } else if (index === colors.length - 1) {
+          style = { ...style, ...styles.end }
+        } else {
+          style = { ...style, ...styles.middle }
+        }
+        return <View key={index} style={style} />
+      })}
     </>
   )
 }
 
 const styles = StyleSheet.create({
-  textAlignment: castStyle.text({
-    justifyContent: 'center',
+  start: castStyle.view({
+    marginRight: 0.5,
+    borderTopLeftRadius: 3.5,
+    borderBottomLeftRadius: 3.5,
   }),
-  textStatus: castStyle.text({
-    fontSize: 14,
-    color: sharedColors.white,
-    paddingLeft: 6,
+  end: castStyle.view({
+    marginLeft: 0.5,
+    borderTopRightRadius: 3.5,
+    borderBottomRightRadius: 3.5,
+  }),
+  middle: castStyle.view({
+    marginHorizontal: 0.5,
   }),
 })
