@@ -215,6 +215,7 @@ const styles = StyleSheet.create({
   }),
   label: castStyle.text({
     marginTop: 10,
+    marginBottom: 4,
     color: sharedColors.inputLabelColor,
   }),
   valueContainer: castStyle.view({
