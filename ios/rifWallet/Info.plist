@@ -60,20 +60,14 @@
 		<string>SimpleLineIcons.ttf</string>
 		<string>Octicons.ttf</string>
 		<string>Zocial.ttf</string>
-		<string>IBMPlexSans-Bold.ttf</string>
-		<string>IBMPlexSans-BoldItalic.ttf</string>
-		<string>IBMPlexSans-ExtraLight.ttf</string>
-		<string>IBMPlexSans-ExtraLightItalic.ttf</string>
-		<string>IBMPlexSans-Italic.ttf</string>
-		<string>IBMPlexSans-Light.ttf</string>
-		<string>IBMPlexSans-LightItalic.ttf</string>
-		<string>IBMPlexSans-Medium.ttf</string>
-		<string>IBMPlexSans-MediumItalic.ttf</string>
-		<string>IBMPlexSans-Regular.ttf</string>
-		<string>IBMPlexSans-SemiBold.ttf</string>
-		<string>IBMPlexSans-SemiBoldItalic.ttf</string>
-		<string>IBMPlexSans-Thin.ttf</string>
-		<string>IBMPlexSans-ThinItalic.ttf</string>
+		<string>Sora-Bold.ttf</string>
+		<string>Sora-ExtraBold.ttf</string>
+		<string>Sora-ExtraLight.ttf</string>
+		<string>Sora-Light.ttf</string>
+		<string>Sora-Medium.ttf</string>
+		<string>Sora-Regular.ttf</string>
+		<string>Sora-SemiBold.ttf</string>
+		<string>Sora-Thin.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

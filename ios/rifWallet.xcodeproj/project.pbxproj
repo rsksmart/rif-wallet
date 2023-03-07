@@ -8,26 +8,20 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* rifWalletTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* rifWalletTests.m */; };
-		01710FD6A2854C568AF15BF7 /* IBMPlexSans-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5B117DE2EF4B49FD8A749CE4 /* IBMPlexSans-Thin.ttf */; };
-		10448ED755A94E1AAA0BAC82 /* IBMPlexSans-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 67E86CE756EE478D8E07718A /* IBMPlexSans-ExtraLight.ttf */; };
-		138ACEE23FD1B52C63D1FC22 /* libPods-rifWallet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BB425EB51C81C76BBDDE54D3 /* libPods-rifWallet.a */; };
+		0D2C3B2EC6DE47ACB1FA6809 /* Sora-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8AF1BF407BF94E96888272E7 /* Sora-ExtraBold.ttf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		2685A36B701B42A4B6E211DC /* IBMPlexSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 858C9D50CF544F058A9C3D79 /* IBMPlexSans-Bold.ttf */; };
-		2906C4DBE0E7490892256645 /* IBMPlexSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AD1CE7FBD7B64EE593FF3F4E /* IBMPlexSans-SemiBold.ttf */; };
-		47FED0F96C7C45C8B391546E /* IBMPlexSans-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5607714FE6154C4E8BA37509 /* IBMPlexSans-Italic.ttf */; };
-		5CF1E9353F6040E7BCA45BF7 /* IBMPlexSans-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 71CCD072321F46CC90C79060 /* IBMPlexSans-MediumItalic.ttf */; };
-		5E4A27C901C2428F968AAC3A /* IBMPlexSans-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 39DF36F467374AA5A5AA591E /* IBMPlexSans-LightItalic.ttf */; };
-		74B21AE248424597824E261B /* IBMPlexSans-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 97B3827DDA374D6090CBBAED /* IBMPlexSans-SemiBoldItalic.ttf */; };
+		2F50CBCF7F3D494A82656E51 /* Sora-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 290EEC2A901E42CF9EEF32D3 /* Sora-SemiBold.ttf */; };
+		43F40F69A998ADE948DB3F1E /* libPods-rifWallet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2567D2AAF15A0D69747B07B8 /* libPods-rifWallet.a */; };
+		63066051E7454497968F6DE8 /* Sora-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0BF6B8C2EF5D4A14AAB2AB74 /* Sora-Medium.ttf */; };
+		7C78E83D897F45A39A9BD139 /* Sora-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EC5B831E2A3C49908B522226 /* Sora-Regular.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		89A1B0B0A124442780EB794F /* IBMPlexSans-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8637E27328E74D16B0FAB639 /* IBMPlexSans-ThinItalic.ttf */; };
-		953FE69E3AD744F79DEAA809 /* IBMPlexSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5115C7C71A6A42C99CEEA50D /* IBMPlexSans-Regular.ttf */; };
-		9ABD45B8AF444BF483393CEC /* IBMPlexSans-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6E85CEE930CF4BFF82111D46 /* IBMPlexSans-ExtraLightItalic.ttf */; };
-		B43067F2B1B74A0894A9F0A3 /* IBMPlexSans-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A74FB902F8AE4B8898BE9321 /* IBMPlexSans-BoldItalic.ttf */; };
-		D1A40B7666C8441F8304EDCF /* IBMPlexSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C07AF9315F1847EABBAD8820 /* IBMPlexSans-Medium.ttf */; };
-		D412436E91EC42EC8A7C42A5 /* IBMPlexSans-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DD9C3EFB11D145DBA529C706 /* IBMPlexSans-Light.ttf */; };
-		DEA0168D641A0B8FD0508789 /* libPods-rifWallet-rifWalletTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E8067FF1585402EBFF9D5C2F /* libPods-rifWallet-rifWalletTests.a */; };
+		BC2F68C16B654C7EBF5C6552 /* Sora-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E151209A1B2749808290F5E0 /* Sora-ExtraLight.ttf */; };
+		D64B802F90C641848F6C3103 /* Sora-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 57BC3071F1A940B2ACFF9D01 /* Sora-Light.ttf */; };
+		D75BF2C8FDB849E4A6E57B77 /* Sora-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A24BB72EFB90449A8A3BDDE2 /* Sora-Thin.ttf */; };
+		F6CBEFFD63754FC0B8C46E9B /* Sora-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7C2FF27884044CE0987DFE88 /* Sora-Bold.ttf */; };
+		F6DF0AFED368E5C484EA5FDE /* libPods-rifWallet-rifWalletTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 122FA21597B242025B333D12 /* libPods-rifWallet-rifWalletTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,34 +38,28 @@
 		00E356EE1AD99517003FC87E /* rifWalletTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = rifWalletTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* rifWalletTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = rifWalletTests.m; sourceTree = "<group>"; };
-		013B416270ED35C6421A634F /* Pods-rifWallet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rifWallet.release.xcconfig"; path = "Target Support Files/Pods-rifWallet/Pods-rifWallet.release.xcconfig"; sourceTree = "<group>"; };
+		0BF6B8C2EF5D4A14AAB2AB74 /* Sora-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Sora-Medium.ttf"; path = "../assets/fonts/Sora-Medium.ttf"; sourceTree = "<group>"; };
+		122FA21597B242025B333D12 /* libPods-rifWallet-rifWalletTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-rifWallet-rifWalletTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07F961A680F5B00A75B9A /* rifWallet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = rifWallet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = rifWallet/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.mm; path = rifWallet/AppDelegate.mm; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = rifWallet/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = rifWallet/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = rifWallet/main.m; sourceTree = "<group>"; };
-		39DF36F467374AA5A5AA591E /* IBMPlexSans-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "IBMPlexSans-LightItalic.ttf"; path = "../assets/fonts/IBMPlexSans-LightItalic.ttf"; sourceTree = "<group>"; };
-		5115C7C71A6A42C99CEEA50D /* IBMPlexSans-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "IBMPlexSans-Regular.ttf"; path = "../assets/fonts/IBMPlexSans-Regular.ttf"; sourceTree = "<group>"; };
-		5607714FE6154C4E8BA37509 /* IBMPlexSans-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "IBMPlexSans-Italic.ttf"; path = "../assets/fonts/IBMPlexSans-Italic.ttf"; sourceTree = "<group>"; };
-		5B117DE2EF4B49FD8A749CE4 /* IBMPlexSans-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "IBMPlexSans-Thin.ttf"; path = "../assets/fonts/IBMPlexSans-Thin.ttf"; sourceTree = "<group>"; };
-		67E86CE756EE478D8E07718A /* IBMPlexSans-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "IBMPlexSans-ExtraLight.ttf"; path = "../assets/fonts/IBMPlexSans-ExtraLight.ttf"; sourceTree = "<group>"; };
-		6E85CEE930CF4BFF82111D46 /* IBMPlexSans-ExtraLightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "IBMPlexSans-ExtraLightItalic.ttf"; path = "../assets/fonts/IBMPlexSans-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
-		71CCD072321F46CC90C79060 /* IBMPlexSans-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "IBMPlexSans-MediumItalic.ttf"; path = "../assets/fonts/IBMPlexSans-MediumItalic.ttf"; sourceTree = "<group>"; };
+		2567D2AAF15A0D69747B07B8 /* libPods-rifWallet.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-rifWallet.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		28C6207DE133FE6FDD955927 /* Pods-rifWallet.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rifWallet.debug.xcconfig"; path = "Target Support Files/Pods-rifWallet/Pods-rifWallet.debug.xcconfig"; sourceTree = "<group>"; };
+		290EEC2A901E42CF9EEF32D3 /* Sora-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Sora-SemiBold.ttf"; path = "../assets/fonts/Sora-SemiBold.ttf"; sourceTree = "<group>"; };
+		518544879EEB54F8B3057B14 /* Pods-rifWallet-rifWalletTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rifWallet-rifWalletTests.release.xcconfig"; path = "Target Support Files/Pods-rifWallet-rifWalletTests/Pods-rifWallet-rifWalletTests.release.xcconfig"; sourceTree = "<group>"; };
+		57BC3071F1A940B2ACFF9D01 /* Sora-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Sora-Light.ttf"; path = "../assets/fonts/Sora-Light.ttf"; sourceTree = "<group>"; };
+		7C2FF27884044CE0987DFE88 /* Sora-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Sora-Bold.ttf"; path = "../assets/fonts/Sora-Bold.ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = rifWallet/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		8307E574460169F09A17187A /* Pods-rifWallet.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rifWallet.debug.xcconfig"; path = "Target Support Files/Pods-rifWallet/Pods-rifWallet.debug.xcconfig"; sourceTree = "<group>"; };
-		858C9D50CF544F058A9C3D79 /* IBMPlexSans-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "IBMPlexSans-Bold.ttf"; path = "../assets/fonts/IBMPlexSans-Bold.ttf"; sourceTree = "<group>"; };
-		8637E27328E74D16B0FAB639 /* IBMPlexSans-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "IBMPlexSans-ThinItalic.ttf"; path = "../assets/fonts/IBMPlexSans-ThinItalic.ttf"; sourceTree = "<group>"; };
-		97B3827DDA374D6090CBBAED /* IBMPlexSans-SemiBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "IBMPlexSans-SemiBoldItalic.ttf"; path = "../assets/fonts/IBMPlexSans-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
-		A74FB902F8AE4B8898BE9321 /* IBMPlexSans-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "IBMPlexSans-BoldItalic.ttf"; path = "../assets/fonts/IBMPlexSans-BoldItalic.ttf"; sourceTree = "<group>"; };
-		AD1CE7FBD7B64EE593FF3F4E /* IBMPlexSans-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "IBMPlexSans-SemiBold.ttf"; path = "../assets/fonts/IBMPlexSans-SemiBold.ttf"; sourceTree = "<group>"; };
-		BB425EB51C81C76BBDDE54D3 /* libPods-rifWallet.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-rifWallet.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		C07AF9315F1847EABBAD8820 /* IBMPlexSans-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "IBMPlexSans-Medium.ttf"; path = "../assets/fonts/IBMPlexSans-Medium.ttf"; sourceTree = "<group>"; };
-		D89A38E01FC4DD107C3E759B /* Pods-rifWallet-rifWalletTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rifWallet-rifWalletTests.debug.xcconfig"; path = "Target Support Files/Pods-rifWallet-rifWalletTests/Pods-rifWallet-rifWalletTests.debug.xcconfig"; sourceTree = "<group>"; };
-		DD9C3EFB11D145DBA529C706 /* IBMPlexSans-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "IBMPlexSans-Light.ttf"; path = "../assets/fonts/IBMPlexSans-Light.ttf"; sourceTree = "<group>"; };
-		E8067FF1585402EBFF9D5C2F /* libPods-rifWallet-rifWalletTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-rifWallet-rifWalletTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8AF1BF407BF94E96888272E7 /* Sora-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Sora-ExtraBold.ttf"; path = "../assets/fonts/Sora-ExtraBold.ttf"; sourceTree = "<group>"; };
+		989E22D7EB6CDF518E6A8238 /* Pods-rifWallet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rifWallet.release.xcconfig"; path = "Target Support Files/Pods-rifWallet/Pods-rifWallet.release.xcconfig"; sourceTree = "<group>"; };
+		A24BB72EFB90449A8A3BDDE2 /* Sora-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Sora-Thin.ttf"; path = "../assets/fonts/Sora-Thin.ttf"; sourceTree = "<group>"; };
+		D36B0041EDEA8F8F7493396C /* Pods-rifWallet-rifWalletTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rifWallet-rifWalletTests.debug.xcconfig"; path = "Target Support Files/Pods-rifWallet-rifWalletTests/Pods-rifWallet-rifWalletTests.debug.xcconfig"; sourceTree = "<group>"; };
+		E151209A1B2749808290F5E0 /* Sora-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Sora-ExtraLight.ttf"; path = "../assets/fonts/Sora-ExtraLight.ttf"; sourceTree = "<group>"; };
+		EC5B831E2A3C49908B522226 /* Sora-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Sora-Regular.ttf"; path = "../assets/fonts/Sora-Regular.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		EF38CF0D264E54A1EAF5B5E1 /* Pods-rifWallet-rifWalletTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rifWallet-rifWalletTests.release.xcconfig"; path = "Target Support Files/Pods-rifWallet-rifWalletTests/Pods-rifWallet-rifWalletTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,7 +67,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DEA0168D641A0B8FD0508789 /* libPods-rifWallet-rifWalletTests.a in Frameworks */,
+				F6DF0AFED368E5C484EA5FDE /* libPods-rifWallet-rifWalletTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -87,7 +75,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				138ACEE23FD1B52C63D1FC22 /* libPods-rifWallet.a in Frameworks */,
+				43F40F69A998ADE948DB3F1E /* libPods-rifWallet.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -128,8 +116,8 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				BB425EB51C81C76BBDDE54D3 /* libPods-rifWallet.a */,
-				E8067FF1585402EBFF9D5C2F /* libPods-rifWallet-rifWalletTests.a */,
+				2567D2AAF15A0D69747B07B8 /* libPods-rifWallet.a */,
+				122FA21597B242025B333D12 /* libPods-rifWallet-rifWalletTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -137,20 +125,14 @@
 		769A66111850458ABA61A56A /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				858C9D50CF544F058A9C3D79 /* IBMPlexSans-Bold.ttf */,
-				A74FB902F8AE4B8898BE9321 /* IBMPlexSans-BoldItalic.ttf */,
-				67E86CE756EE478D8E07718A /* IBMPlexSans-ExtraLight.ttf */,
-				6E85CEE930CF4BFF82111D46 /* IBMPlexSans-ExtraLightItalic.ttf */,
-				5607714FE6154C4E8BA37509 /* IBMPlexSans-Italic.ttf */,
-				DD9C3EFB11D145DBA529C706 /* IBMPlexSans-Light.ttf */,
-				39DF36F467374AA5A5AA591E /* IBMPlexSans-LightItalic.ttf */,
-				C07AF9315F1847EABBAD8820 /* IBMPlexSans-Medium.ttf */,
-				71CCD072321F46CC90C79060 /* IBMPlexSans-MediumItalic.ttf */,
-				5115C7C71A6A42C99CEEA50D /* IBMPlexSans-Regular.ttf */,
-				AD1CE7FBD7B64EE593FF3F4E /* IBMPlexSans-SemiBold.ttf */,
-				97B3827DDA374D6090CBBAED /* IBMPlexSans-SemiBoldItalic.ttf */,
-				5B117DE2EF4B49FD8A749CE4 /* IBMPlexSans-Thin.ttf */,
-				8637E27328E74D16B0FAB639 /* IBMPlexSans-ThinItalic.ttf */,
+				7C2FF27884044CE0987DFE88 /* Sora-Bold.ttf */,
+				8AF1BF407BF94E96888272E7 /* Sora-ExtraBold.ttf */,
+				E151209A1B2749808290F5E0 /* Sora-ExtraLight.ttf */,
+				57BC3071F1A940B2ACFF9D01 /* Sora-Light.ttf */,
+				0BF6B8C2EF5D4A14AAB2AB74 /* Sora-Medium.ttf */,
+				EC5B831E2A3C49908B522226 /* Sora-Regular.ttf */,
+				290EEC2A901E42CF9EEF32D3 /* Sora-SemiBold.ttf */,
+				A24BB72EFB90449A8A3BDDE2 /* Sora-Thin.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -190,10 +172,10 @@
 		B0306462322B40F15E31C629 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				8307E574460169F09A17187A /* Pods-rifWallet.debug.xcconfig */,
-				013B416270ED35C6421A634F /* Pods-rifWallet.release.xcconfig */,
-				D89A38E01FC4DD107C3E759B /* Pods-rifWallet-rifWalletTests.debug.xcconfig */,
-				EF38CF0D264E54A1EAF5B5E1 /* Pods-rifWallet-rifWalletTests.release.xcconfig */,
+				28C6207DE133FE6FDD955927 /* Pods-rifWallet.debug.xcconfig */,
+				989E22D7EB6CDF518E6A8238 /* Pods-rifWallet.release.xcconfig */,
+				D36B0041EDEA8F8F7493396C /* Pods-rifWallet-rifWalletTests.debug.xcconfig */,
+				518544879EEB54F8B3057B14 /* Pods-rifWallet-rifWalletTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -205,12 +187,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "rifWalletTests" */;
 			buildPhases = (
-				F77CCB1A6191B9B4A63174E5 /* [CP] Check Pods Manifest.lock */,
+				B7EA4766D28BE3083E13E2EB /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				FA5A6AA49740C858FA67F534 /* [CP] Embed Pods Frameworks */,
-				6AA990C5459DB1C9BC1E8A32 /* [CP] Copy Pods Resources */,
+				8208219BF4391435CD3A7BDE /* [CP] Embed Pods Frameworks */,
+				213894CB1F5044000026F860 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -226,14 +208,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "rifWallet" */;
 			buildPhases = (
-				E61E25F253724919546853B0 /* [CP] Check Pods Manifest.lock */,
+				C8697EFDBE1A9CE8170D0A9B /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				F73EF152ECF383F6E0BB7D73 /* [CP] Embed Pods Frameworks */,
-				2080C13EB4296980161FF3E8 /* [CP] Copy Pods Resources */,
+				04B6E8706A24722D1FAC4947 /* [CP] Embed Pods Frameworks */,
+				46C837B94CDA9E83F973D53A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -294,20 +276,14 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				2685A36B701B42A4B6E211DC /* IBMPlexSans-Bold.ttf in Resources */,
-				B43067F2B1B74A0894A9F0A3 /* IBMPlexSans-BoldItalic.ttf in Resources */,
-				10448ED755A94E1AAA0BAC82 /* IBMPlexSans-ExtraLight.ttf in Resources */,
-				9ABD45B8AF444BF483393CEC /* IBMPlexSans-ExtraLightItalic.ttf in Resources */,
-				47FED0F96C7C45C8B391546E /* IBMPlexSans-Italic.ttf in Resources */,
-				D412436E91EC42EC8A7C42A5 /* IBMPlexSans-Light.ttf in Resources */,
-				5E4A27C901C2428F968AAC3A /* IBMPlexSans-LightItalic.ttf in Resources */,
-				D1A40B7666C8441F8304EDCF /* IBMPlexSans-Medium.ttf in Resources */,
-				5CF1E9353F6040E7BCA45BF7 /* IBMPlexSans-MediumItalic.ttf in Resources */,
-				953FE69E3AD744F79DEAA809 /* IBMPlexSans-Regular.ttf in Resources */,
-				2906C4DBE0E7490892256645 /* IBMPlexSans-SemiBold.ttf in Resources */,
-				74B21AE248424597824E261B /* IBMPlexSans-SemiBoldItalic.ttf in Resources */,
-				01710FD6A2854C568AF15BF7 /* IBMPlexSans-Thin.ttf in Resources */,
-				89A1B0B0A124442780EB794F /* IBMPlexSans-ThinItalic.ttf in Resources */,
+				F6CBEFFD63754FC0B8C46E9B /* Sora-Bold.ttf in Resources */,
+				0D2C3B2EC6DE47ACB1FA6809 /* Sora-ExtraBold.ttf in Resources */,
+				BC2F68C16B654C7EBF5C6552 /* Sora-ExtraLight.ttf in Resources */,
+				D64B802F90C641848F6C3103 /* Sora-Light.ttf in Resources */,
+				63066051E7454497968F6DE8 /* Sora-Medium.ttf in Resources */,
+				7C78E83D897F45A39A9BD139 /* Sora-Regular.ttf in Resources */,
+				2F50CBCF7F3D494A82656E51 /* Sora-SemiBold.ttf in Resources */,
+				D75BF2C8FDB849E4A6E57B77 /* Sora-Thin.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -328,63 +304,7 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nexport NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
-		2080C13EB4296980161FF3E8 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-rifWallet/Pods-rifWallet-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-rifWallet/Pods-rifWallet-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-rifWallet/Pods-rifWallet-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		6AA990C5459DB1C9BC1E8A32 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-rifWallet-rifWalletTests/Pods-rifWallet-rifWalletTests-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-rifWallet-rifWalletTests/Pods-rifWallet-rifWalletTests-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-rifWallet-rifWalletTests/Pods-rifWallet-rifWalletTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		E61E25F253724919546853B0 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-rifWallet-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F73EF152ECF383F6E0BB7D73 /* [CP] Embed Pods Frameworks */ = {
+		04B6E8706A24722D1FAC4947 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -401,7 +321,58 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-rifWallet/Pods-rifWallet-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F77CCB1A6191B9B4A63174E5 /* [CP] Check Pods Manifest.lock */ = {
+		213894CB1F5044000026F860 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-rifWallet-rifWalletTests/Pods-rifWallet-rifWalletTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-rifWallet-rifWalletTests/Pods-rifWallet-rifWalletTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-rifWallet-rifWalletTests/Pods-rifWallet-rifWalletTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		46C837B94CDA9E83F973D53A /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-rifWallet/Pods-rifWallet-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-rifWallet/Pods-rifWallet-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-rifWallet/Pods-rifWallet-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8208219BF4391435CD3A7BDE /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-rifWallet-rifWalletTests/Pods-rifWallet-rifWalletTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-rifWallet-rifWalletTests/Pods-rifWallet-rifWalletTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-rifWallet-rifWalletTests/Pods-rifWallet-rifWalletTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B7EA4766D28BE3083E13E2EB /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -423,21 +394,26 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		FA5A6AA49740C858FA67F534 /* [CP] Embed Pods Frameworks */ = {
+		C8697EFDBE1A9CE8170D0A9B /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-rifWallet-rifWalletTests/Pods-rifWallet-rifWalletTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			name = "[CP] Embed Pods Frameworks";
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-rifWallet-rifWalletTests/Pods-rifWallet-rifWalletTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-rifWallet-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-rifWallet-rifWalletTests/Pods-rifWallet-rifWalletTests-frameworks.sh\"\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -492,7 +468,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D89A38E01FC4DD107C3E759B /* Pods-rifWallet-rifWalletTests.debug.xcconfig */;
+			baseConfigurationReference = D36B0041EDEA8F8F7493396C /* Pods-rifWallet-rifWalletTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -520,7 +496,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EF38CF0D264E54A1EAF5B5E1 /* Pods-rifWallet-rifWalletTests.release.xcconfig */;
+			baseConfigurationReference = 518544879EEB54F8B3057B14 /* Pods-rifWallet-rifWalletTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -545,7 +521,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8307E574460169F09A17187A /* Pods-rifWallet.debug.xcconfig */;
+			baseConfigurationReference = 28C6207DE133FE6FDD955927 /* Pods-rifWallet.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -576,7 +552,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 013B416270ED35C6421A634F /* Pods-rifWallet.release.xcconfig */;
+			baseConfigurationReference = 989E22D7EB6CDF518E6A8238 /* Pods-rifWallet.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
