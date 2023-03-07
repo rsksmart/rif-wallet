@@ -5,36 +5,44 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useTranslation } from 'react-i18next'
 
+import { StyleSheet } from 'react-native'
 import { useEffect } from 'react'
 import { InjectedScreens } from 'src/core/Core'
 import { ProfileCreateScreen, ShareProfileScreen } from 'screens/index'
-import { AppHeader } from 'src/ux/appHeader'
 import { sharedColors, sharedStyles } from 'shared/constants'
 
 import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
 import { Typography, AppTouchable } from 'components/index'
 
 import { ProfileStackParamsList, profileStackRouteNames } from './types'
-/*import { screenOptionsWithHeader } from 'navigation/createKeysNavigator'*/
+import { castStyle } from 'shared/utils'
 
 const ProfileStack = createStackNavigator<ProfileStackParamsList>()
 
-const screenOptionsWithHeader = (title?: string): StackNavigationOptions => ({
+export const headerLeftOption = (onBackPress: () => void) => (
+  <AppTouchable
+    width={20}
+    onPress={onBackPress}
+    style={sharedStyles.marginLeft24}>
+    <Icon
+      name={'chevron-left'}
+      size={20}
+      color={sharedColors.white}
+      style={styles.headerPosition}
+    />
+  </AppTouchable>
+)
+
+const screenOptionsWithHeader = (title: string): StackNavigationOptions => ({
   headerShown: true,
-  headerLeft: props => (
-    <AppTouchable
-      width={20}
-      onPress={props.onPress}
-      style={sharedStyles.marginLeft24}>
-      <Icon name={'chevron-left'} size={20} color={sharedColors.white} />
-    </AppTouchable>
-  ),
   headerTitle: props => (
-    <Typography type={'h3'}>{title ?? props.children}</Typography>
+    <Typography type={'h3'} style={styles.headerPosition}>
+      {title ?? props.children}
+    </Typography>
   ),
   headerStyle: {
-    height: 64,
-    backgroundColor: sharedColors.black,
+    backgroundColor: sharedColors.primary,
+    height: 45,
   },
   headerShadowVisible: false,
 })
@@ -43,15 +51,14 @@ export const ProfileNavigator = ({
   navigation,
 }: RootTabsScreenProps<rootTabsRouteNames.Profile>) => {
   useEffect(() => {
-    navigation.setOptions({ headerShown: false })
+    navigation.setOptions({
+      headerShown: false,
+    })
   }, [navigation])
   const { t } = useTranslation()
 
   return (
-    <ProfileStack.Navigator
-      screenOptions={{
-        header: props => <AppHeader isShown={true} {...props} />,
-      }}>
+    <ProfileStack.Navigator>
       <ProfileStack.Screen
         name={profileStackRouteNames.ProfileCreateScreen}
         component={ProfileCreateScreen}
@@ -82,3 +89,9 @@ export const ProfileNavigator = ({
     </ProfileStack.Navigator>
   )
 }
+
+const styles = StyleSheet.create({
+  headerPosition: castStyle.view({
+    marginTop: -50,
+  }),
+})

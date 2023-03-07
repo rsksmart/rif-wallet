@@ -29,7 +29,7 @@ import {
   profileStackRouteNames,
   ProfileStackScreenProps,
 } from 'navigation/profileNavigator/types'
-import { BackButton } from 'screens/rnsManager/BackButton'
+import { headerLeftOption } from 'navigation/profileNavigator'
 
 export const ProfileCreateScreen = ({
   navigation,
@@ -77,7 +77,6 @@ export const ProfileCreateScreen = ({
     wallet?.smartWallet.smartWalletAddress ?? '',
     chainType,
   )
-  const onBackPress = useCallback(() => navigation.goBack(), [navigation])
 
   const onShareUsername = useCallback(() => {
     Share.share({
@@ -94,20 +93,17 @@ export const ProfileCreateScreen = ({
     setValue('email', profile.email)
     setValue('phone', profile.phone)
   }, [profile.email, profile.phone, setValue])
+  const onBackPress = useCallback(() => navigation.goBack(), [navigation])
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => headerLeftOption(onBackPress),
+    })
+  }, [navigation, onBackPress])
   const { t } = useTranslation()
 
   return (
     <ScrollView style={{ backgroundColor: sharedColors.secondary }}>
-      <View style={styles.headerStyle}>
-        <BackButton onPress={onBackPress} accessibilityLabel="profile" />
-
-        <Typography style={styles.headerTittle} type="h3">
-          {t('profile_screen_title')}
-        </Typography>
-
-        <View />
-      </View>
       <View style={styles.usernameContainer}>
         <Avatar
           size={50}

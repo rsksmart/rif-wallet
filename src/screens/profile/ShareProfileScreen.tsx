@@ -1,11 +1,9 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useEffect } from 'react'
 import { StyleSheet, View, Share } from 'react-native'
-import { useTranslation } from 'react-i18next'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
-import { Typography } from 'components/typography'
 import { sharedColors } from 'shared/constants'
-import { QRGenerator } from 'components/QRGenerator/QRGenerator'
+
 import { useAppSelector } from 'store/storeUtils'
 
 import { castStyle } from 'shared/utils'
@@ -14,11 +12,12 @@ import {
   BarButtonGroupContainer,
   BarButtonGroupIcon,
 } from 'components/BarButtonGroup/BarButtonGroup'
+import { QRGenerator } from 'components/QRGenerator/QRGenerator'
 import {
   profileStackRouteNames,
   ProfileStackScreenProps,
 } from 'navigation/profileNavigator/types'
-import { BackButton } from 'screens/rnsManager/BackButton'
+import { headerLeftOption } from 'navigation/profileNavigator'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
@@ -28,8 +27,6 @@ export enum TestID {
 export const ShareProfileScreen = ({
   navigation,
 }: ProfileStackScreenProps<profileStackRouteNames.ShareProfileScreen>) => {
-  const { t } = useTranslation()
-
   const profile = useAppSelector(selectProfile)
   const [username] = useState<string>(
     profile?.alias !== '' ? profile.alias : 'No username',
@@ -42,17 +39,14 @@ export const ShareProfileScreen = ({
   }, [username])
   const onBackPress = useCallback(() => navigation.goBack(), [navigation])
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => headerLeftOption(onBackPress),
+    })
+  }, [navigation, onBackPress])
+
   return (
     <View style={styles.parent}>
-      <View style={styles.headerStyle}>
-        <BackButton onPress={onBackPress} accessibilityLabel="profile" />
-
-        <Typography style={styles.headerTittle} type="h3">
-          {t('Profile')}
-        </Typography>
-
-        <View />
-      </View>
       <View style={styles.qrView}>
         <QRGenerator
           key={username}
@@ -97,5 +91,8 @@ const styles = StyleSheet.create({
     paddingVertical: 84,
     borderRadius: 20,
     marginTop: 5,
+  }),
+  headerPosition: castStyle.view({
+    marginTop: -50,
   }),
 })

@@ -17,6 +17,7 @@ import { ProfileNavigator } from '../profileNavigator'
 import { useAppSelector } from 'store/storeUtils'
 import { selectFullscreen, selectIsUnlocked } from 'store/slices/settingsSlice'
 import { TransactionsSummary } from 'screens/transactionSummary'
+import { sharedColors } from 'shared/constants'
 
 const RootTabs = createBottomTabNavigator<RootTabsParamsList>()
 
@@ -73,6 +74,12 @@ export const RootNavigationComponent = () => {
             <RootTabs.Screen
               name={rootTabsRouteNames.Profile}
               component={ProfileNavigator}
+              options={{
+                headerShown: false,
+                headerStyle: {
+                  backgroundColor: sharedColors.white,
+                },
+              }}
             />
             <RootTabs.Screen
               name={rootTabsRouteNames.CreateKeysUX}
