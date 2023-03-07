@@ -153,7 +153,7 @@ export const ProfileCreateScreen = ({
         ) : null}
         <FormProvider {...methods}>
           <Input
-            style={sharedStyles.marginTop}
+            style={sharedStyles.marginTop20}
             label={t('profile_address_label')}
             inputName="address"
             rightIcon={
