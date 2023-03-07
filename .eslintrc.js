@@ -23,7 +23,7 @@ module.exports = {
     '@typescript-eslint/no-shadow': ['error'],
     '@typescript-eslint/no-empty-function': 'off',
     'import/order': [
-      'off',
+      'warn',
       {
         groups: [
           'external',
