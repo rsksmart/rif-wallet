@@ -1,7 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack'
 import { useEffect } from 'react'
 import { InjectedScreens } from 'src/core/Core'
-import { ProfileCreateScreen, ProfileDetailsScreen } from 'src/screens'
+import { ProfileCreateScreen, ShareProfileScreen } from 'screens/index'
 import { AppHeader } from 'src/ux/appHeader'
 import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
 import { ProfileStackParamsList, profileStackRouteNames } from './types'
@@ -25,8 +25,8 @@ export const ProfileNavigator = ({
         component={ProfileCreateScreen}
       />
       <ProfileStack.Screen
-        name={profileStackRouteNames.ProfileDetailsScreen}
-        component={ProfileDetailsScreen}
+        name={profileStackRouteNames.ShareProfileScreen}
+        component={ShareProfileScreen}
       />
       <ProfileStack.Screen
         name={profileStackRouteNames.SearchDomain}

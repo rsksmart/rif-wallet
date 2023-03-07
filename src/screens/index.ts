@@ -24,5 +24,5 @@ export { SecurityConfigurationScreen } from './security/SecurityConfigurationScr
 export { ChangePinScreen } from './changePin/ChangePinScreen'
 export { AccountsScreen } from './accounts/AccountsScreen'
 export { ProfileCreateScreen } from './profile/ProfileCreateScreen'
-export { ProfileDetailsScreen } from './profile/ProfileDetailsScreen'
+export { ShareProfileScreen } from './profile/ShareProfileScreen'
 export { FeedbackScreen } from './feedback/FeedbackScreen'
