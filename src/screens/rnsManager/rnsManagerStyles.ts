@@ -12,13 +12,20 @@ export const rnsManagerStyles = StyleSheet.create({
   title: {
     color: sharedColors.subTitle,
   },
+  stepper: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingBottom: 30,
+    backgroundColor: colors.background.black,
+  },
   subtitle: {
     color: sharedColors.subTitle,
   },
   profileHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 20,
+    paddingTop: 20,
+    paddingBottom: 10,
     paddingHorizontal: 10,
     backgroundColor: colors.background.black,
   },

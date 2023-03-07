@@ -18,6 +18,7 @@ import { sharedColors } from 'shared/constants'
 import { ScreenWithWallet } from '../types'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
+import { StepperComponent } from 'components/profile'
 import { castStyle } from 'shared/utils'
 import { SlidePopupConfirmationInfo } from 'src/components/slidePopup/SlidePopupConfirmationInfo'
 import { colors } from 'src/styles'
