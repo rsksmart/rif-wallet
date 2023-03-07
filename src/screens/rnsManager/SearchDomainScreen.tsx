@@ -9,7 +9,6 @@ import * as yup from 'yup'
 import { AppTouchable } from 'components/appTouchable'
 import { AppButton, Input, Typography } from 'components/index'
 import { InfoBox } from 'components/InfoBox'
-import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import {
   profileStackRouteNames,
   ProfileStackScreenProps,
@@ -22,6 +21,7 @@ import { BackButton } from './BackButton'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
 import { castStyle } from 'shared/utils'
+import { SlidePopupConfirmationInfo } from 'src/components/slidePopup/SlidePopupConfirmationInfo'
 import { colors } from 'src/styles'
 import { selectBalances } from 'store/slices/balancesSlice'
 import { recoverAlias } from 'store/slices/profileSlice'
@@ -237,13 +237,13 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           </View>
         </FormProvider>
       </View>
-      <ConfirmationModal
+      <SlidePopupConfirmationInfo
         isVisible={isModalVisible}
-        title="2 step process"
-        description={`Registering a username requires you to make two transactions in RIF. First transaction is requesting the username. Second transaction is the actual purchase of the username.
-          \nWe are working hard on improving this experience for you!`}
-        okText="Ok, thank you!"
-        onOk={() => setIsModalVisible(false)}
+        height={340}
+        title={t('request_username_popup_title')}
+        description={t('request_username_popup_description')}
+        confirmText={t('request_username_popup_confirm')}
+        onConfirm={() => setIsModalVisible(false)}
       />
     </>
   )
