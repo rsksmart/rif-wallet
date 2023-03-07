@@ -26,7 +26,7 @@ import { castStyle } from 'shared/utils'
 import { WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
 import { createWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
-import { sharedColors, sharedStyles } from 'shared/constants'
+import { defaultIconSize, sharedColors, sharedStyles } from 'shared/constants'
 
 type Props = CompositeScreenProps<
   CreateKeysScreenProps<createKeysRouteNames.ImportMasterKey>,
@@ -179,7 +179,7 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
           <View style={sharedStyles.flex}>
             <FontAwesome5Icon
               name="chevron-left"
-              size={16}
+              size={defaultIconSize}
               color="white"
               onPress={onBackPress}
               style={sharedStyles.widthHalfWidth}
@@ -236,7 +236,7 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
           color="white"
           textColor="black"
           textType="body2"
-          textStyle={styles.textStyleText}
+          textStyle={sharedStyles.fontBoldText}
           onPress={handleImportMnemonic}
         />
       </ScrollView>
@@ -296,8 +296,5 @@ const styles = StyleSheet.create({
     height: 6,
     borderRadius: 5,
     backgroundColor: 'rgba(255, 255, 255, 0.92)',
-  }),
-  textStyleText: castStyle.text({
-    fontWeight: 'bold',
   }),
 })

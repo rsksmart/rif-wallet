@@ -77,4 +77,7 @@ export const sharedStyles = StyleSheet.create({
   widthFullWidth: castStyle.view({
     width: '100%',
   }),
+  fontBoldText: castStyle.text({
+    fontWeight: 'bold',
+  }),
 })
