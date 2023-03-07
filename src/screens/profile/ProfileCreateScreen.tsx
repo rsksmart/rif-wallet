@@ -175,7 +175,7 @@ export const ProfileCreateScreen = ({
           <Typography
             type={'h3'}
             color={sharedColors.labelLight}
-            style={sharedStyles.marginTop}>
+            style={sharedStyles.marginTop20}>
             {t('profile_contact_details_subtitle')}
           </Typography>
           <Input
@@ -200,7 +200,7 @@ export const ProfileCreateScreen = ({
             autoCapitalize={'none'}
           />
           <AppButton
-            style={sharedStyles.marginTop}
+            style={sharedStyles.marginTop20}
             title={t('profile_register_your_username_button_text')}
             color={sharedColors.white}
             textColor={sharedColors.black}
