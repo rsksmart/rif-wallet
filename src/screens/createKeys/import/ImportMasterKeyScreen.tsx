@@ -22,11 +22,11 @@ import {
   rootTabsRouteNames,
   RootTabsScreenProps,
 } from 'navigation/rootNavigator'
-import { castStyle } from 'src/shared/utils'
+import { castStyle } from 'shared/utils'
 import { WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
 import { createWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
-import { sharedColors } from 'shared/constants'
+import { sharedColors, sharedStyles } from 'shared/constants'
 
 type Props = CompositeScreenProps<
   CreateKeysScreenProps<createKeysRouteNames.ImportMasterKey>,
@@ -36,9 +36,9 @@ type Props = CompositeScreenProps<
 const slidesIndexes = [0, 1, 2, 3]
 
 enum StatusActions {
-  'SUCCESS' = 'SUCCESS',
-  'ERROR' = 'ERROR',
-  'INITIAL' = 'INITIAL',
+  SUCCESS = 'SUCCESS',
+  ERROR = 'ERROR',
+  INITIAL = 'INITIAL',
 }
 
 const initialWords = Array.from({ length: slidesIndexes.length * 3 }).reduce<
@@ -176,19 +176,19 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
     <FormProvider {...form}>
       <ScrollView style={styles.parent} keyboardShouldPersistTaps={'always'}>
         <View style={styles.headerStyle}>
-          <View style={styles.flexView}>
+          <View style={sharedStyles.flex}>
             <FontAwesome5Icon
               name="chevron-left"
-              size={14}
+              size={16}
               color="white"
               onPress={onBackPress}
-              style={styles.width50View}
+              style={sharedStyles.widthHalfWidth}
             />
           </View>
-          <View style={[styles.flexView, styles.flexCenter]}>
+          <View style={[sharedStyles.flex, styles.flexCenter]}>
             <Typography type="h4">{t('header_import_wallet')}</Typography>
           </View>
-          <View style={styles.flexView} />
+          <View style={sharedStyles.flex} />
         </View>
         <View style={styles.phraseView}>
           {status === StatusActions.INITIAL && (
@@ -212,7 +212,7 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
               vertical={false}
               width={SLIDER_WIDTH}
               loop={false}
-              style={styles.width100View}
+              style={sharedStyles.widthFullWidth}
               onScrollEnd={handleSlideChange}
               snapEnabled={false}
               height={SLIDER_WIDTH}
@@ -223,17 +223,14 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
         <View style={styles.flexCenter}>
           <StatusIcon status={status} />
         </View>
-
-        <View>
-          <Pagination
-            dotsLength={4}
-            activeDotIndex={selectedSlide}
-            dotStyle={styles.dotStyleView}
-            inactiveDotStyle={{}}
-            inactiveDotOpacity={0.4}
-            inactiveDotScale={0.6}
-          />
-        </View>
+        <Pagination
+          dotsLength={4}
+          activeDotIndex={selectedSlide}
+          dotStyle={styles.dotStyleView}
+          inactiveDotStyle={{}}
+          inactiveDotOpacity={0.4}
+          inactiveDotScale={0.6}
+        />
         <AppButton
           title="OK"
           color="white"
@@ -249,11 +246,11 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
 
 const StatusIcon = ({ status }: { status: StatusActions }) => {
   const iconStyle = {
-    backgroundColor: status === 'SUCCESS' ? '#59FF9C' : '#FF3559',
+    backgroundColor: status === StatusActions.SUCCESS ? '#59FF9C' : '#FF3559',
     borderRadius: 50,
   }
   switch (status) {
-    case 'SUCCESS':
+    case StatusActions.SUCCESS:
       return (
         <AntDesign
           name="checkcircleo"
@@ -262,7 +259,7 @@ const StatusIcon = ({ status }: { status: StatusActions }) => {
           color="black"
         />
       )
-    case 'ERROR':
+    case StatusActions.ERROR:
       return <Feather name="x" size={100} style={iconStyle} color="black" />
     default:
       return null
@@ -282,26 +279,17 @@ const styles = StyleSheet.create({
     marginTop: 22,
     marginBottom: 40,
   }),
-  flexView: castStyle.view({
-    flex: 1,
-  }),
   flexCenter: castStyle.view({
     alignItems: 'center',
   }),
-  width50View: castStyle.view({
-    width: '50%',
-  }),
-  phraseView: {
+  phraseView: castStyle.view({
     marginBottom: 20,
-  },
+  }),
   hideCarouselView: castStyle.view({
     display: 'none',
   }),
   inputMarginView: castStyle.view({
     marginLeft: '4%',
-  }),
-  width100View: castStyle.view({
-    width: '100%',
   }),
   dotStyleView: castStyle.view({
     width: 6,

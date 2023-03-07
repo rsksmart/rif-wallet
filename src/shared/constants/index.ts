@@ -71,4 +71,10 @@ export const sharedStyles = StyleSheet.create({
   selfCenter: castStyle.view({
     alignSelf: 'center',
   }),
+  widthHalfWidth: castStyle.view({
+    width: '50%',
+  }),
+  widthFullWidth: castStyle.view({
+    width: '100%',
+  }),
 })
