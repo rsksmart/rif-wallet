@@ -162,6 +162,7 @@ const resources = {
       transaction_summary_arrives_text: 'Arrives in: ',
       transaction_summary_address_text: 'Address',
       transaction_summary_default_button_text: 'Close',
+      profile_screen_title: 'Profile',
       profile_contact_details_subtitle: 'Contact Details',
       profile_phone_label: 'Phone Number',
       profile_email_label: 'Email',
