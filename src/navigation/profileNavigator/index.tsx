@@ -29,7 +29,9 @@ export const headerLeftOption = (goBack: () => void) => (
   </AppTouchable>
 )
 
-const screenOptionsWithHeader = (title: string): StackNavigationOptions => ({
+export const screenOptionsWithHeader = (
+  title: string,
+): StackNavigationOptions => ({
   headerShown: true,
   headerTitle: props => (
     <Typography type={'h3'} style={headerStyles.headerPosition}>

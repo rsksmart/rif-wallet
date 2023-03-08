@@ -4,6 +4,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { useTranslation } from 'react-i18next'
+
 import { shortAddress } from 'lib/utils'
 
 import { castStyle } from 'shared/utils'
