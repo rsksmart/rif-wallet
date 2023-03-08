@@ -123,7 +123,7 @@ export const balanceToUSD = (
 
   return numberAmount < 0.01
     ? '< $0.01'
-    : `$${Math.round(numberAmount * 100) / 100}`
+    : `$ ${(Math.round(numberAmount * 100) / 100).toFixed(2)}`
 }
 
 export const convertBalance = (

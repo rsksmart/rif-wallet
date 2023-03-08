@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
@@ -18,16 +18,18 @@ import { sharedColors } from 'shared/constants'
 import { ScreenWithWallet } from '../types'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
-import { StepperComponent } from 'components/profile'
+import { SlidePopupConfirmationInfo } from 'components/slidePopup/SlidePopupConfirmationInfo'
+import { headerLeftOption, headerStyles } from 'navigation/profileNavigator'
 import { castStyle } from 'shared/utils'
-import { SlidePopupConfirmationInfo } from 'src/components/slidePopup/SlidePopupConfirmationInfo'
+import { balanceToDisplay, balanceToUSD } from 'src/lib/utils'
+import { rootTabsRouteNames } from 'src/navigation/rootNavigator'
 import { colors } from 'src/styles'
 import { selectBalances } from 'store/slices/balancesSlice'
+import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { recoverAlias } from 'store/slices/profileSlice'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { DomainInput } from './DomainInput'
-import { headerLeftOption, headerStyles } from 'navigation/profileNavigator'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
   ScreenWithWallet
@@ -61,24 +63,51 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   } = methods
   const hasErrors = Object.keys(errors).length > 0
 
-  // calculate price of domain in USD
-  const rifToken = Object.values(tokenBalances).find(
-    token => token.symbol === 'RIF' || token.symbol === 'tRIF',
+  // get RIF token
+  const rifToken = useMemo(
+    () =>
+      Object.values(tokenBalances).find(
+        token => token.symbol === 'RIF' || token.symbol === 'tRIF',
+      ) || ({} as ITokenWithoutLogo),
+    [tokenBalances],
   )
-  const rifTokenAddress = rifToken?.contractAddress || ''
-  const rifTokenPrice = prices[rifTokenAddress]?.price
-  const selectedDomainPriceInUsd = (
-    rifTokenPrice * selectedDomainPrice
-  ).toFixed(2)
+
+  const rifTokenPrice = useMemo(() => {
+    const rifTokenAddress = rifToken.contractAddress || ''
+    return prices[rifTokenAddress]?.price
+  }, [prices, rifToken])
+
+  const rifTokenBalanceInUsd = useMemo(() => {
+    return balanceToUSD(rifToken.balance, rifToken.decimals, rifTokenPrice)
+  }, [rifToken, rifTokenPrice])
+
+  const selectedDomainPriceInUsd = useMemo(() => {
+    return balanceToUSD(selectedDomainPrice, rifToken.decimals, rifTokenPrice)
+  }, [rifToken, rifTokenPrice, selectedDomainPrice])
 
   const domainToLookUp = methods.getValues('domain')
   const isRequestButtonDisabled = hasErrors || !validDomain
   const isSaveButtonDisabled = (hasErrors || !validDomain) && !isDomainOwned
 
   const onSubmit = (data: FieldValues) => {
-    navigation.navigate(profileStackRouteNames.RequestDomain, {
-      alias: data.domain,
-      duration: selectedYears,
+    navigation.navigate(rootTabsRouteNames.TransactionSummary, {
+      title: t('request_username_summary_title'),
+      transaction: {
+        tokenValue: {
+          symbol: rifToken.symbol,
+          symbolType: 'icon',
+          balance: balanceToDisplay(rifToken.balance, rifToken.decimals),
+        },
+        usdValue: {
+          symbol: '',
+          symbolType: 'text',
+          balance: rifTokenBalanceInUsd,
+        },
+      },
+      contact: {
+        address: '0x8C7820B97BFDe7140c676227b3e5e814F2E67afB',
+        displayAddress: 'RNS Manager',
+      },
     })
   }
 
@@ -171,7 +200,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
             placeholder={`${selectedYears} ${t(
               'request_username_placeholder',
             )}${selectedYears > 1 ? 's' : ''}`}
-            subtitle={`${selectedDomainPrice} RIF ($ ${selectedDomainPriceInUsd})`}
+            subtitle={`${selectedDomainPrice} RIF (${selectedDomainPriceInUsd})`}
             containerStyle={styles.yearsContainer}
             inputStyle={styles.yearsInput}
             rightIcon={
