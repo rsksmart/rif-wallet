@@ -9,7 +9,7 @@ export { default as SemiBoldText } from './SemiBoldText'
 
 export const fonts = StyleSheet.create({
   regular: castStyle.text({
-    fontFamily: 'IBMPlexSans-Regular',
+    fontFamily: 'Sora-Regular',
     fontWeight: '500',
     color: sharedColors.white,
   }),

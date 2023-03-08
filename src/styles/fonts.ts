@@ -1,5 +1,5 @@
 export const fonts = {
-  regular: 'IBMPlexSans-Regular',
-  medium: 'IBMPlexSans-Medium',
-  semibold: 'IBMPlexSans-SemiBold',
+  regular: 'Sora-Regular',
+  medium: 'Sora-Medium',
+  semibold: 'Sora-SemiBold',
 }
