@@ -76,18 +76,18 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
     [tokenBalances],
   )
 
-  const rifTokenPrice = useMemo(() => {
-    const rifTokenAddress = rifToken.contractAddress || ''
-    return prices[rifTokenAddress]?.price
-  }, [prices, rifToken])
+  const rifTokenAddress = rifToken.contractAddress || ''
+  const rifTokenPrice = prices[rifTokenAddress]?.price
 
-  const rifTokenBalanceInUsd = useMemo(() => {
-    return balanceToUSD(rifToken.balance, rifToken.decimals, rifTokenPrice)
-  }, [rifToken, rifTokenPrice])
+  const rifTokenBalanceInUsd = balanceToUSD(
+    rifToken.balance,
+    rifToken.decimals,
+    rifTokenPrice,
+  )
 
-  const selectedDomainPriceInUsd = useMemo(() => {
-    return balanceToUSD(selectedDomainPrice, rifToken.decimals, rifTokenPrice)
-  }, [rifToken, rifTokenPrice, selectedDomainPrice])
+  const selectedDomainPriceInUsd = (
+    selectedDomainPrice * rifTokenPrice
+  ).toFixed(2)
 
   const domainToLookUp = methods.getValues('domain')
   const isRequestButtonDisabled = hasErrors || !validDomain
@@ -222,7 +222,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
             placeholder={`${selectedYears} ${t(
               'request_username_placeholder',
             )}${selectedYears > 1 ? 's' : ''}`}
-            subtitle={`${selectedDomainPrice} RIF (${selectedDomainPriceInUsd})`}
+            subtitle={`${selectedDomainPrice} RIF ($ ${selectedDomainPriceInUsd})`}
             containerStyle={styles.yearsContainer}
             rightIcon={
               <View style={styles.yearsButtons}>
