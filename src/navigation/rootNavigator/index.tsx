@@ -74,12 +74,6 @@ export const RootNavigationComponent = () => {
             <RootTabs.Screen
               name={rootTabsRouteNames.Profile}
               component={ProfileNavigator}
-              options={{
-                headerShown: false,
-                headerStyle: {
-                  backgroundColor: sharedColors.white,
-                },
-              }}
             />
             <RootTabs.Screen
               name={rootTabsRouteNames.CreateKeysUX}
