@@ -14,6 +14,7 @@ interface InfoBoxProps {
   buttonText?: string
   onPress?: () => void
   backgroundColor?: string
+  avatarBackgroundColor?: string
 }
 
 export const InfoBox = ({
@@ -23,11 +24,19 @@ export const InfoBox = ({
   buttonText,
   onPress,
   backgroundColor = sharedColors.inputInactive,
+  avatarBackgroundColor = sharedColors.qrColor,
 }: InfoBoxProps) => {
   return (
     <View style={[styles.container, { backgroundColor }]}>
       {avatar ? (
-        <Avatar style={sharedStyles.marginBottom} name={avatar} size={80} />
+        <Avatar
+          style={[
+            sharedStyles.marginBottom,
+            { backgroundColor: avatarBackgroundColor },
+          ]}
+          name={avatar}
+          size={80}
+        />
       ) : null}
 
       {title ? (

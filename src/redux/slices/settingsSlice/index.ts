@@ -29,6 +29,7 @@ import {
   networkType as defaultNetworkType,
 } from 'core/setup'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
+import { deleteProfile } from 'store/slices/profileSlice'
 
 export const createWallet = createAsyncThunk(
   'settings/createWallet',
@@ -93,6 +94,7 @@ export const resetApp = createAsyncThunk(
       thunkAPI.dispatch(deleteContactsFromRedux())
       thunkAPI.dispatch(resetKeysAndPin())
       thunkAPI.dispatch(resetSocketState())
+      thunkAPI.dispatch(deleteProfile())
       resetMainStorage()
       return 'deleted'
     } catch (err) {

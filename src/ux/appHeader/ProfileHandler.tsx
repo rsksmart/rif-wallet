@@ -5,10 +5,7 @@ import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
 import { useTranslation } from 'react-i18next'
 
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
-import {
-  profileStackRouteNames,
-  ProfileStatus,
-} from 'navigation/profileNavigator/types'
+import { ProfileStatus } from 'navigation/profileNavigator/types'
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { useAppSelector } from 'store/storeUtils'
 import { Typography } from 'components/typography'
@@ -24,7 +21,6 @@ interface Props {
 export const ProfileHandler = ({ navigation }: Props) => {
   const profile = useAppSelector(selectProfile)
   const { t } = useTranslation()
-  const profileCreated = profile.status === ProfileStatus.USER
 
   const getColors = useCallback(() => {
     switch (profile.status) {
@@ -56,12 +52,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
   }, [profile.status])
   const { startColor, endColor } = getColors()
   const routeNextStep = async () => {
-    navigation.navigate(rootTabsRouteNames.Profile, {
-      screen: profileCreated
-        ? profileStackRouteNames.ProfileDetailsScreen
-        : profileStackRouteNames.ProfileCreateScreen,
-      params: profileCreated ? { editProfile: false } : undefined,
-    })
+    navigation.navigate(rootTabsRouteNames.Profile)
   }
   return (
     <TouchableOpacity

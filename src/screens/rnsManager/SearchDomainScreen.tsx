@@ -14,10 +14,8 @@ import {
   ProfileStackScreenProps,
   ProfileStatus,
 } from 'navigation/profileNavigator/types'
-import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import { sharedColors } from 'shared/constants'
 import { ScreenWithWallet } from '../types'
-import { BackButton } from './BackButton'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
 import { castStyle } from 'shared/utils'
@@ -28,6 +26,7 @@ import { recoverAlias } from 'store/slices/profileSlice'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { DomainInput } from './DomainInput'
+import { headerLeftOption, headerStyles } from 'navigation/profileNavigator'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
   ScreenWithWallet
@@ -121,25 +120,25 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
       }),
     )
 
-    navigation.navigate(profileStackRouteNames.ProfileDetailsScreen)
+    navigation.navigate(profileStackRouteNames.ProfileCreateScreen)
   }, [dispatch, domainToLookUp, navigation])
 
   useEffect(() => {
     calculatePrice(domainToLookUp, selectedYears).then(setSelectedDomainPrice)
   }, [domainToLookUp, selectedYears, calculatePrice])
+  const onBackPress = useCallback(() => navigation.goBack(), [navigation])
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => headerLeftOption(onBackPress),
+      headerStyle: [
+        headerStyles.headerStyle,
+        { backgroundColor: sharedColors.secondary },
+      ],
+    })
+  }, [navigation, onBackPress])
   return (
     <>
-      <View style={rnsManagerStyles.profileHeader}>
-        <BackButton
-          onPress={() => navigation.navigate(rootTabsRouteNames.Home)}
-          accessibilityLabel="home"
-        />
-        <Typography type="h3" style={rnsManagerStyles.title}>
-          {t('username_registration_title')}
-        </Typography>
-        <View />
-      </View>
       <View style={rnsManagerStyles.container}>
         <FormProvider {...methods}>
           <Typography
