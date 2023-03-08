@@ -72,6 +72,7 @@ export const ProfileNavigator = ({
       <ProfileStack.Screen
         name={profileStackRouteNames.SearchDomain}
         component={InjectedScreens.SearchDomainScreen}
+        options={screenOptionsWithHeader(t('username_registration_title'))}
       />
       <ProfileStack.Screen
         name={profileStackRouteNames.RequestDomain}

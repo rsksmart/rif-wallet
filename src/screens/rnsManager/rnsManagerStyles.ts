@@ -6,6 +6,7 @@ export const rnsManagerStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background.black,
+    paddingTop: 10,
     paddingHorizontal: 20,
   },
   title: {
