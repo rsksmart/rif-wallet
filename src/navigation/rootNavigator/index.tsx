@@ -17,7 +17,6 @@ import { ProfileNavigator } from '../profileNavigator'
 import { useAppSelector } from 'store/storeUtils'
 import { selectFullscreen, selectIsUnlocked } from 'store/slices/settingsSlice'
 import { TransactionsSummary } from 'screens/transactionSummary'
-import { sharedColors } from 'shared/constants'
 
 const RootTabs = createBottomTabNavigator<RootTabsParamsList>()
 
