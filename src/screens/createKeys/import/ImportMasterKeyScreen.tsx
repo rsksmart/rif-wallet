@@ -221,7 +221,9 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
           </GestureHandlerRootView>
         </View>
         <View style={styles.flexCenter}>
-          <StatusIcon status={status} />
+          <View style={styles.iconBorderFixView}>
+            <StatusIcon status={status} />
+          </View>
         </View>
         <Pagination
           dotsLength={4}
@@ -297,4 +299,5 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: 'rgba(255, 255, 255, 0.92)',
   }),
+  iconBorderFixView: castStyle.view({ overflow: 'hidden', borderRadius: 50 }),
 })
