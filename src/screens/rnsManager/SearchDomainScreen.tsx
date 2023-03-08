@@ -1,13 +1,18 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { FieldValues, FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/Entypo'
 import * as yup from 'yup'
 
 import { AppTouchable } from 'components/appTouchable'
-import { AppButton, Input, Typography } from 'components/index'
+import {
+  AppButton,
+  AppButtonBackgroundVarietyEnum,
+  Input,
+  Typography,
+} from 'components/index'
 import { InfoBox } from 'components/InfoBox'
 import {
   profileStackRouteNames,
@@ -23,7 +28,6 @@ import { headerLeftOption, headerStyles } from 'navigation/profileNavigator'
 import { castStyle } from 'shared/utils'
 import { balanceToDisplay, balanceToUSD } from 'src/lib/utils'
 import { rootTabsRouteNames } from 'src/navigation/rootNavigator'
-import { colors } from 'src/styles'
 import { selectBalances } from 'store/slices/balancesSlice'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { recoverAlias } from 'store/slices/profileSlice'
@@ -89,7 +93,24 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const isRequestButtonDisabled = hasErrors || !validDomain
   const isSaveButtonDisabled = (hasErrors || !validDomain) && !isDomainOwned
 
-  const onSubmit = (data: FieldValues) => {
+  const onSubmit = () => {
+    const confirmButton = {
+      title: t('Confirm'),
+      color: sharedColors.white,
+      textColor: sharedColors.black,
+      onPress: () => {
+        console.log('confirm')
+      },
+    }
+    const cancelButton = {
+      title: t('Cancel'),
+      color: sharedColors.white,
+      textColor: sharedColors.white,
+      backgroundVariety: AppButtonBackgroundVarietyEnum.OUTLINED,
+      onPress: () => {
+        navigation.goBack()
+      },
+    }
     navigation.navigate(rootTabsRouteNames.TransactionSummary, {
       title: t('request_username_summary_title'),
       transaction: {
@@ -108,6 +129,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
         address: '0x8C7820B97BFDe7140c676227b3e5e814F2E67afB',
         displayAddress: 'RNS Manager',
       },
+      buttons: [confirmButton, cancelButton],
     })
   }
 
@@ -209,14 +231,14 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
                     width={40}
                     accessibilityLabel="decrease"
                     onPress={() => handleYearsChange(selectedYears - 1)}>
-                    <Icon name="minus" size={16} color={colors.white} />
+                    <Icon name="minus" size={16} color={sharedColors.white} />
                   </AppTouchable>
                 )}
                 <AppTouchable
                   width={40}
                   accessibilityLabel="increase"
                   onPress={() => handleYearsChange(selectedYears + 1)}>
-                  <Icon name="plus" size={16} color={colors.white} />
+                  <Icon name="plus" size={16} color={sharedColors.white} />
                 </AppTouchable>
               </View>
             }

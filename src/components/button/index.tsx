@@ -85,7 +85,7 @@ export interface AppButtonProps extends ButtonProps {
   width?: FlexStyle['width']
   leftIcon?: IconProps
   rightIcon?: IconProps
-  style?: ViewStyle
+  style?: StyleProp<ViewStyle>
   textStyle?: StyleProp<TextStyle>
   textType?: TypographyType
   textColor?: string

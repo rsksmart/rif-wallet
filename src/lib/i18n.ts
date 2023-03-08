@@ -85,6 +85,7 @@ const resources = {
       'You are currently not': 'You are currently not',
       'connected to any Dapp.': 'connected to any Dapp.',
       'Connect to': 'Connect to',
+      Confirm: 'Confirm',
       Connect: 'Connect',
       Reject: 'Reject',
       Delete: 'Delete',
