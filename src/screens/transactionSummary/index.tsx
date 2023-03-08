@@ -158,13 +158,14 @@ export const TransactionsSummary = ({
       </View>
       <View style={styles.buttons}>
         {buttons ? (
-          buttons.map(b => (
+          buttons.map((b, index) => (
             <AppButton
-              key={b.title}
+              key={index}
               onPress={b.onPress}
               title={b.title}
               color={b.color}
               textColor={b.textColor}
+              style={[styles.buttonMargin, b.style]}
               backgroundVariety={b.backgroundVariety}
             />
           ))
@@ -219,6 +220,7 @@ const styles = StyleSheet.create({
     left: 22,
     right: 22,
   }),
+  buttonMargin: castStyle.view({ marginVertical: 5 }),
   statusIcon: castStyle.text({ marginLeft: 10 }),
   nextButton: castStyle.view({ marginTop: 10 }),
 })
