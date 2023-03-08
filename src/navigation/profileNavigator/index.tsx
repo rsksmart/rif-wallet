@@ -4,18 +4,17 @@ import {
 } from '@react-navigation/stack'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useTranslation } from 'react-i18next'
-
 import { StyleSheet, Platform } from 'react-native'
 import { useEffect } from 'react'
+
 import { InjectedScreens } from 'src/core/Core'
 import { ProfileCreateScreen, ShareProfileScreen } from 'screens/index'
 import { sharedColors, sharedStyles } from 'shared/constants'
+import { Typography, AppTouchable } from 'components/index'
+import { castStyle } from 'shared/utils'
 
 import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
-import { Typography, AppTouchable } from 'components/index'
-
 import { ProfileStackParamsList, profileStackRouteNames } from './types'
-import { castStyle } from 'shared/utils'
 
 const ProfileStack = createStackNavigator<ProfileStackParamsList>()
 
@@ -33,7 +32,9 @@ export const headerLeftOption = (onBackPress: () => void) => (
   </AppTouchable>
 )
 
-const screenOptionsWithHeader = (title: string): StackNavigationOptions => ({
+export const screenOptionsWithHeader = (
+  title: string,
+): StackNavigationOptions => ({
   headerShown: true,
   headerTitle: props => (
     <Typography type={'h3'} style={headerStyles.headerPosition}>
