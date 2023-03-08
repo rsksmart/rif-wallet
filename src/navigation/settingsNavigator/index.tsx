@@ -1,5 +1,6 @@
 import { createStackNavigator } from '@react-navigation/stack'
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import {
   ChangeLanguageScreen,
@@ -9,10 +10,11 @@ import {
   ShowMnemonicScreen,
 } from 'screens/index'
 import { InjectedScreens } from 'core/Core'
-import { AppHeader } from 'src/ux/appHeader'
+import { ExampleScreen } from 'screens/example'
+import { screenOptionsWithHeader } from 'navigation/profileNavigator'
+
 import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
 import { SettingsStackParamsList, settingsStackRouteNames } from './types'
-import { ExampleScreen } from 'screens/example'
 
 const SettingsStack = createStackNavigator<SettingsStackParamsList>()
 
@@ -22,15 +24,14 @@ export const SettingsNavigator = ({
   useEffect(() => {
     navigation.setOptions({ headerShown: false })
   }, [navigation])
+  const { t } = useTranslation()
 
   return (
-    <SettingsStack.Navigator
-      screenOptions={{
-        header: props => <AppHeader isShown={true} {...props} />,
-      }}>
+    <SettingsStack.Navigator>
       <SettingsStack.Screen
         name={settingsStackRouteNames.SettingsScreen}
         component={SettingsScreen}
+        options={screenOptionsWithHeader(t('settings_screen_title'))}
       />
       <SettingsStack.Screen
         name={settingsStackRouteNames.AccountsScreen}

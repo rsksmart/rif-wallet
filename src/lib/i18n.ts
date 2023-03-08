@@ -182,6 +182,7 @@ const resources = {
       confirm_key_success: 'Phrase verified! ',
       confirm_key_button: 'OK',
       confirm_key_screen_title: 'Wallet backup',
+      settings_screen_title: 'Settings',
     },
   },
   es: {
