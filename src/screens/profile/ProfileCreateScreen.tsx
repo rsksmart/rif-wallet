@@ -93,13 +93,12 @@ export const ProfileCreateScreen = ({
     setValue('email', profile.email)
     setValue('phone', profile.phone)
   }, [profile.email, profile.phone, setValue])
-  const onBackPress = useCallback(() => navigation.goBack(), [navigation])
 
   useEffect(() => {
     navigation.setOptions({
-      headerLeft: () => headerLeftOption(onBackPress),
+      headerLeft: () => headerLeftOption(() => navigation.goBack()),
     })
-  }, [navigation, onBackPress])
+  }, [navigation])
   const { t } = useTranslation()
 
   return (
