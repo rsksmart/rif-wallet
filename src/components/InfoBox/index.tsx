@@ -24,7 +24,7 @@ export const InfoBox = ({
   buttonText,
   onPress,
   backgroundColor = sharedColors.inputInactive,
-  avatarBackgroundColor = sharedColors.white,
+  avatarBackgroundColor = sharedColors.qrColor,
 }: InfoBoxProps) => {
   return (
     <View style={[styles.container, { backgroundColor }]}>
