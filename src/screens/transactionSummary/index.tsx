@@ -1,21 +1,21 @@
+import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
-import { sharedColors, sharedStyles } from 'shared/constants'
-import { castStyle } from 'shared/utils'
-import { ContactWithAddressRequired } from 'shared/types'
-import { TokenBalance, CurrencyValue } from 'components/token'
-import { Typography } from 'components/typography'
-import {
-  rootTabsRouteNames,
-  RootTabsScreenProps,
-} from 'navigation/rootNavigator'
 import {
   AppButton,
   AppButtonProps,
   AppButtonWidthVarietyEnum,
 } from 'components/button'
-import { useTranslation } from 'react-i18next'
+import { CurrencyValue, TokenBalance } from 'components/token'
+import { Typography } from 'components/typography'
+import {
+  rootTabsRouteNames,
+  RootTabsScreenProps,
+} from 'navigation/rootNavigator'
+import { sharedColors, sharedStyles } from 'shared/constants'
+import { ContactWithAddressRequired } from 'shared/types'
+import { castStyle } from 'shared/utils'
 import { shortAddress } from 'src/lib/utils'
 
 enum TransactionStatus {
@@ -38,6 +38,10 @@ export interface TransactionSummaryScreenProps {
     tokenValue: CurrencyValue
     usdValue: CurrencyValue
     status?: TransactionStatus
+    receiveValue: string
+    sendValue: string
+    feeValue: string
+    arrivesValue?: string
   }
   contact: ContactWithAddressRequired
   title?: string
@@ -115,33 +119,37 @@ export const TransactionsSummary = ({
             style={[styles.summaryText, sharedStyles.textLeft]}>
             {t('transaction_summary_fee_text')}
           </Typography>
-          <Typography
-            type={'h4'}
-            style={[styles.summaryText, sharedStyles.textLeft]}>
-            {t('transaction_summary_arrives_text')}
-          </Typography>
+          {transaction.arrivesValue && (
+            <Typography
+              type={'h4'}
+              style={[styles.summaryText, sharedStyles.textLeft]}>
+              {t('transaction_summary_arrives_text')}
+            </Typography>
+          )}
         </View>
         <View>
           <Typography
             type={'h4'}
             style={[styles.summaryText, sharedStyles.textRight]}>
-            {'43.20'}
+            {transaction.receiveValue} {transaction.tokenValue.symbol}
           </Typography>
           <Typography
             type={'h4'}
             style={[styles.summaryText, sharedStyles.textRight]}>
-            {'43.20'}
+            {transaction.sendValue} {transaction.tokenValue.symbol}
           </Typography>
           <Typography
             type={'h4'}
             style={[styles.summaryText, sharedStyles.textRight]}>
-            {'0.20'}
+            {transaction.feeValue} {transaction.tokenValue.symbol}
           </Typography>
-          <Typography
-            type={'h4'}
-            style={[styles.summaryText, sharedStyles.textRight]}>
-            {'approx. 1 min'}
-          </Typography>
+          {transaction.arrivesValue && (
+            <Typography
+              type={'h4'}
+              style={[styles.summaryText, sharedStyles.textRight]}>
+              {transaction.arrivesValue}
+            </Typography>
+          )}
         </View>
       </View>
       <View style={styles.summaryAlignment}>
@@ -153,7 +161,7 @@ export const TransactionsSummary = ({
         <Typography
           type={'h4'}
           style={[styles.summaryText, sharedStyles.textRight]}>
-          {shortAddress(contact.address, 10)}
+          {shortAddress(contact.address, 14)}
         </Typography>
       </View>
       <View style={styles.buttons}>

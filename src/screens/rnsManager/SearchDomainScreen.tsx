@@ -14,26 +14,26 @@ import {
   Typography,
 } from 'components/index'
 import { InfoBox } from 'components/InfoBox'
+import { SlidePopupConfirmationInfo } from 'components/slidePopup/SlidePopupConfirmationInfo'
+import { headerLeftOption, headerStyles } from 'navigation/profileNavigator'
 import {
   profileStackRouteNames,
   ProfileStackScreenProps,
   ProfileStatus,
 } from 'navigation/profileNavigator/types'
+import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { sharedColors } from 'shared/constants'
-import { ScreenWithWallet } from '../types'
-import { rnsManagerStyles } from './rnsManagerStyles'
-
-import { SlidePopupConfirmationInfo } from 'components/slidePopup/SlidePopupConfirmationInfo'
-import { headerLeftOption, headerStyles } from 'navigation/profileNavigator'
 import { castStyle } from 'shared/utils'
 import { balanceToDisplay, balanceToUSD } from 'src/lib/utils'
-import { rootTabsRouteNames } from 'src/navigation/rootNavigator'
 import { selectBalances } from 'store/slices/balancesSlice'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { recoverAlias } from 'store/slices/profileSlice'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+
+import { ScreenWithWallet } from '../types'
 import { DomainInput } from './DomainInput'
+import { rnsManagerStyles } from './rnsManagerStyles'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
   ScreenWithWallet
@@ -124,6 +124,9 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           symbolType: 'text',
           balance: rifTokenBalanceInUsd,
         },
+        receiveValue: `${selectedDomainPrice}`,
+        sendValue: `${selectedDomainPrice}`,
+        feeValue: '0',
       },
       contact: {
         address: '0x8C7820B97BFDe7140c676227b3e5e814F2E67afB',
