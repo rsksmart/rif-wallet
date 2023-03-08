@@ -16,6 +16,7 @@ import {
   AppButtonWidthVarietyEnum,
 } from 'components/button'
 import { useTranslation } from 'react-i18next'
+import { shortAddress } from 'src/lib/utils'
 
 enum TransactionStatus {
   CONFIRMED = 'confirmed',
@@ -39,6 +40,7 @@ export interface TransactionSummaryScreenProps {
     status?: TransactionStatus
   }
   contact: ContactWithAddressRequired
+  title?: string
   buttons?: AppButtonProps[]
 }
 
@@ -47,9 +49,7 @@ export const TransactionsSummary = ({
   navigation,
 }: RootTabsScreenProps<rootTabsRouteNames.TransactionSummary>) => {
   const { t } = useTranslation()
-  const transaction = route.params.transaction
-  const contact = route.params.contact
-  const buttons = route.params.buttons
+  const { transaction, contact, title, buttons } = route.params
 
   const iconObject = transactionStatusToIconPropsMap.get(transaction.status)
 
@@ -59,7 +59,7 @@ export const TransactionsSummary = ({
         style={styles.sendText}
         type={'h4'}
         color={sharedColors.inputLabelColor}>
-        {t('transaction_summary_title')}
+        {title || t('transaction_summary_title')}
       </Typography>
       <TokenBalance
         style={styles.tokenBalance}
@@ -153,7 +153,7 @@ export const TransactionsSummary = ({
         <Typography
           type={'h4'}
           style={[styles.summaryText, sharedStyles.textRight]}>
-          {contact.address}
+          {shortAddress(contact.address, 10)}
         </Typography>
       </View>
       <View style={styles.buttons}>
