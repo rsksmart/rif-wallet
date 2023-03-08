@@ -26,7 +26,7 @@ import { recoverAlias } from 'store/slices/profileSlice'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { DomainInput } from './DomainInput'
-import { headerLeftOption } from 'navigation/profileNavigator'
+import { headerLeftOption, headerStyles } from 'navigation/profileNavigator'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
   ScreenWithWallet
@@ -131,10 +131,10 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   useEffect(() => {
     navigation.setOptions({
       headerLeft: () => headerLeftOption(onBackPress),
-      headerStyle: {
-        backgroundColor: sharedColors.secondary,
-        height: 45,
-      },
+      headerStyle: [
+        headerStyles.headerStyle,
+        { backgroundColor: sharedColors.secondary },
+      ],
     })
   }, [navigation, onBackPress])
   return (

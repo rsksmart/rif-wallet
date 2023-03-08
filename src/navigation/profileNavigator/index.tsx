@@ -28,7 +28,7 @@ export const headerLeftOption = (onBackPress: () => void) => (
       name={'chevron-left'}
       size={20}
       color={sharedColors.white}
-      style={styles.headerPosition}
+      style={headerStyles.headerPosition}
     />
   </AppTouchable>
 )
@@ -36,14 +36,11 @@ export const headerLeftOption = (onBackPress: () => void) => (
 const screenOptionsWithHeader = (title: string): StackNavigationOptions => ({
   headerShown: true,
   headerTitle: props => (
-    <Typography type={'h3'} style={styles.headerPosition}>
+    <Typography type={'h3'} style={headerStyles.headerPosition}>
       {title ?? props.children}
     </Typography>
   ),
-  headerStyle: {
-    backgroundColor: sharedColors.primary,
-    height: 45,
-  },
+  headerStyle: headerStyles.headerStyle,
   headerShadowVisible: false,
 })
 
@@ -91,8 +88,12 @@ export const ProfileNavigator = ({
   )
 }
 
-const styles = StyleSheet.create({
+export const headerStyles = StyleSheet.create({
   headerPosition: castStyle.view({
-    marginTop: -50,
+    marginTop: -45,
+  }),
+  headerStyle: castStyle.view({
+    backgroundColor: sharedColors.primary,
+    height: 55,
   }),
 })
