@@ -8,18 +8,18 @@ import {
   View,
   ViewStyle,
 } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { castStyle } from 'shared/utils'
-import { sharedColors } from 'shared/constants'
 import { Typography } from 'components/typography'
+import { sharedColors } from 'shared/constants'
+import { castStyle } from 'src/shared/utils'
+
 import { AppButton, AppButtonProps } from '../button'
 
 interface Props extends ModalProps {
   title: string
   feedbackComponent: ReactElement
   subtitle?: string
-  footerText?: string
+  description?: string
   style?: StyleProp<ViewStyle>
   backgroundColor?: ColorValue
   buttons?: AppButtonProps[]
@@ -29,43 +29,43 @@ export const FeedbackModal = ({
   feedbackComponent,
   title,
   subtitle,
-  footerText,
+  description,
   visible,
   animationType,
-  buttons,
+  buttons = [],
   style,
-  backgroundColor,
+  backgroundColor = sharedColors.primary,
 }: Props) => {
-  const { top } = useSafeAreaInsets()
   return (
     <Modal animationType={animationType} visible={visible}>
-      <View
-        style={[
-          styles.screen,
-          { paddingTop: 248 - top },
-          backgroundColor ? { backgroundColor } : null,
-          style,
-        ]}>
-        {feedbackComponent}
-        <Typography style={styles.title} type={'h1'}>
-          {title}
-        </Typography>
-        {subtitle ? (
-          <Typography style={styles.subtitle} type={'h3'}>
+      <View style={[styles.container, { backgroundColor }, style]}>
+        <View style={styles.header}>{feedbackComponent}</View>
+        <View style={styles.content}>
+          <Typography type="h2" color={sharedColors.white}>
+            {title}
+          </Typography>
+          <Typography
+            type="h3"
+            color={sharedColors.white}
+            style={styles.subtitle}>
             {subtitle}
           </Typography>
-        ) : null}
-        {footerText ? (
-          <Typography style={styles.footerText} type={'body3'}>
-            {footerText}
+          <Typography
+            type="h4"
+            color={sharedColors.white}
+            style={styles.description}>
+            {description}
           </Typography>
-        ) : null}
-        <View style={styles.buttonsContainer}>
-          {buttons
-            ? buttons.map((button, index) => (
-                <AppButton key={index} {...button} style={styles.button} />
-              ))
-            : null}
+        </View>
+        <View style={styles.footer}>
+          {buttons.map((button, index) => (
+            <AppButton
+              key={index}
+              {...button}
+              style={[styles.button, button.style]}
+              textStyle={[styles.buttonText, button.textStyle]}
+            />
+          ))}
         </View>
       </View>
     </Modal>
@@ -73,35 +73,37 @@ export const FeedbackModal = ({
 }
 
 const styles = StyleSheet.create({
-  screen: castStyle.view({
+  container: castStyle.view({
     flex: 1,
-    backgroundColor: sharedColors.primary,
     alignItems: 'center',
+    justifyContent: 'center',
   }),
-  title: castStyle.text({
-    letterSpacing: -3,
+  header: castStyle.view({
+    flex: 3,
+    justifyContent: 'flex-end',
+  }),
+  content: castStyle.view({
+    flex: 2,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   }),
   subtitle: castStyle.text({
-    marginTop: 9,
+    marginTop: 10,
     color: sharedColors.labelLight,
   }),
-  footerText: castStyle.text({
+  description: castStyle.text({
     marginTop: 30,
   }),
-  primaryButton: castStyle.view({
-    position: 'absolute',
-    bottom: 30,
-    left: 22,
-    right: 22,
-    backgroundColor: sharedColors.white,
-  }),
-  buttonsContainer: castStyle.view({
-    position: 'absolute',
-    bottom: 30,
-    left: 20,
-    right: 20,
+  footer: castStyle.view({
+    flex: 2,
+    justifyContent: 'center',
   }),
   button: castStyle.view({
+    width: '75%',
     marginTop: 8,
+  }),
+  buttonText: castStyle.text({
+    flex: 1,
+    textAlign: 'center',
   }),
 })

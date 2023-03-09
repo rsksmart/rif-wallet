@@ -2,7 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { StyleSheet, View } from 'react-native'
+import { ActivityIndicator, StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/Entypo'
 import * as yup from 'yup'
 
@@ -24,6 +24,7 @@ import {
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
+import { FeedbackModal } from 'src/components/feedbackModal'
 import { balanceToDisplay, balanceToUSD } from 'src/lib/utils'
 import { selectBalances } from 'store/slices/balancesSlice'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
@@ -52,6 +53,9 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const [selectedYears, setSelectedYears] = useState<number>(2)
   const [selectedDomainPrice, setSelectedDomainPrice] = useState<number>(2)
   const [isModalVisible, setIsModalVisible] = useState<boolean>(true)
+  const [isSuccessModalVisible, setIsSuccessModalVisible] =
+    useState<boolean>(false)
+
   const dispatch = useAppDispatch()
   const tokenBalances = useAppSelector(selectBalances)
   const prices = useAppSelector(selectUsdPrices)
@@ -99,7 +103,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
       color: sharedColors.white,
       textColor: sharedColors.black,
       onPress: () => {
-        console.log('confirm')
+        setIsSuccessModalVisible(true)
       },
     }
     const cancelButton = {
@@ -295,6 +299,30 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
         description={t('request_username_popup_description')}
         confirmText={t('request_username_popup_confirm')}
         onConfirm={() => setIsModalVisible(false)}
+      />
+      <FeedbackModal
+        visible={isSuccessModalVisible}
+        title={t('request_username_congrats_title')}
+        subtitle={t('request_username_congrats_subtitle')}
+        description={t('request_username_congrats_description')}
+        buttons={[
+          {
+            title: t('close'),
+            color: sharedColors.white,
+            textColor: sharedColors.black,
+            onPress: () => {
+              setIsSuccessModalVisible(false)
+              navigation.navigate(profileStackRouteNames.ProfileCreateScreen)
+            },
+          },
+        ]}
+        feedbackComponent={
+          <ActivityIndicator
+            color={sharedColors.white}
+            size={174}
+            animating={true}
+          />
+        }
       />
     </>
   )
