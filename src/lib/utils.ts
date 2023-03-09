@@ -1,5 +1,6 @@
 import { BigNumber, BigNumberish, FixedNumber } from 'ethers'
 import moment from 'moment'
+
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 
 export function shortAddress(address?: string, trimAmount?: number): string {
@@ -123,7 +124,7 @@ export const balanceToUSD = (
 
   return numberAmount < 0.01
     ? '< $0.01'
-    : `$ ${(Math.round(numberAmount * 100) / 100).toFixed(2)}`
+    : `$${(Math.round(numberAmount * 100) / 100).toFixed(2)}`
 }
 
 export const convertBalance = (
