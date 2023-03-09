@@ -15,6 +15,7 @@ import { AppTouchable } from 'components/appTouchable'
 import { Typography, TypographyType } from 'components/typography'
 import { defaultIconSize, sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
+import { AccessibilityLabelStandards } from '../shared'
 
 const getBackgroundVariety = (
   backgroundVariety: AppButtonBackgroundVarietyEnum,
@@ -124,7 +125,7 @@ export const AppButton = ({
       ]}
       onPress={onPress}
       disabled={disabled}
-      accessibilityLabel={accessibilityLabel}>
+      accessibilityLabel={`${accessibilityLabel}.${AccessibilityLabelStandards.BUTTON}`}>
       <>
         {leftIcon ? (
           <View style={styles.iconContainer}>
@@ -137,7 +138,7 @@ export const AppButton = ({
         ) : null}
         <Typography
           type={textType}
-          accessibilityLabel={accessibilityLabel}
+          accessibilityLabel={`${accessibilityLabel}.${AccessibilityLabelStandards.TEXT}`}
           style={[{ color: textColor }, textStyle]}>
           {title}
         </Typography>

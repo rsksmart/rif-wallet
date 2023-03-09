@@ -4,3 +4,8 @@ export enum BaseInputStatus {
   NEUTRAL,
   NONE,
 }
+
+export enum AccessibilityLabelStandards {
+  BUTTON,
+  TEXT,
+}
