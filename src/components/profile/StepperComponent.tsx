@@ -19,9 +19,20 @@ export const StepperComponent = ({
         const commonStyle = castStyle.view({ width, height, backgroundColor })
         const style = [commonStyle]
         if (index === 0) {
-          style.push(styles.start)
+          style.push(
+            castStyle.view({
+              borderTopLeftRadius: height / 2,
+              borderBottomLeftRadius: height / 2,
+            }),
+          )
         } else if (index === colors.length - 1) {
-          style.push(styles.end)
+          style.push(
+            castStyle.view({
+              marginLeft: 1,
+              borderTopRightRadius: height / 2,
+              borderBottomRightRadius: height / 2,
+            }),
+          )
         } else {
           style.push(styles.middle)
         }
@@ -32,15 +43,6 @@ export const StepperComponent = ({
 }
 
 const styles = StyleSheet.create({
-  start: castStyle.view({
-    borderTopLeftRadius: 3.5,
-    borderBottomLeftRadius: 3.5,
-  }),
-  end: castStyle.view({
-    marginLeft: 1,
-    borderTopRightRadius: 3.5,
-    borderBottomRightRadius: 3.5,
-  }),
   middle: castStyle.view({
     marginLeft: 1,
   }),
