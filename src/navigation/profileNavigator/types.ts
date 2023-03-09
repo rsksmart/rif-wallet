@@ -1,5 +1,6 @@
 import { CompositeScreenProps } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
+
 import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
 
 export enum profileStackRouteNames {
@@ -10,6 +11,7 @@ export enum profileStackRouteNames {
   BuyDomain = 'BuyDomain',
   AliasBought = 'AliasBought',
   RegisterDomain = 'RegisterDomain',
+  CongratulationsScreen = 'CongratulationsScreen',
 }
 
 export enum ProfileStatus {
@@ -39,6 +41,7 @@ export type ProfileStackParamsList = {
     selectedDomain: string
     years: number
   }
+  [profileStackRouteNames.CongratulationsScreen]: undefined
 }
 
 export type ProfileStackScreenProps<T extends keyof ProfileStackParamsList> =

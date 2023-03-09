@@ -1,38 +1,43 @@
+import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { useCallback, useEffect, useState } from 'react'
 import { StatusBar, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { RIFWallet } from '@rsksmart/rif-wallet-core'
-
-import { i18nInit } from 'lib/i18n'
-import { defaultChainId } from 'core/config'
-
 import {
   RifWalletServicesAuth,
   RifWalletServicesFetcher,
 } from '@rsksmart/rif-wallet-services'
+import {
+  createNavigationContainerRef,
+  NavigationContainer,
+} from '@react-navigation/native'
+import * as Keychain from 'react-native-keychain'
 
+import { i18nInit } from 'lib/i18n'
+
+import { defaultChainId } from 'core/config'
 import {
   RootNavigationComponent,
   RootTabsParamsList,
 } from 'navigation/rootNavigator'
 import { ModalComponent } from 'src/ux/requestsModal/ModalComponent'
-
-import {
-  createNavigationContainerRef,
-  NavigationContainer,
-} from '@react-navigation/native'
-
+import { useSetGlobalError } from 'components/GlobalErrorHandler'
+import { LoadingScreen } from 'components/loading/LoadingScreen'
+import { BitcoinProvider } from 'core/hooks/bitcoin/BitcoinContext'
+import * as Screens from 'screens/index'
 import { WalletConnectProviderElement } from 'screens/walletConnect/WalletConnectContext'
+import { InjectSelectedWallet } from 'src/Context'
+import { authClient } from 'src/core/setup'
 import {
   rifSockets,
   SocketsEvents,
   socketsEvents,
 } from 'src/subscriptions/rifSockets'
-import { LoadingScreen } from 'components/loading/LoadingScreen'
-import { Cover } from './components/Cover'
-import { useBitcoinCore } from './hooks/bitcoin/useBitcoinCore'
-import { useStateSubscription } from './hooks/useStateSubscription'
-import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import {
+  deleteSignUp,
+  getSignUP,
+  hasSignUP,
+  saveSignUp,
+} from 'storage/MainStorage'
 import {
   closeRequest,
   selectRequests,
@@ -43,19 +48,12 @@ import {
   setChainId,
   unlockApp,
 } from 'store/slices/settingsSlice'
-import { BitcoinProvider } from 'core/hooks/bitcoin/BitcoinContext'
-import { InjectSelectedWallet } from 'src/Context'
-import * as Screens from 'screens/index'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+
+import { Cover } from './components/Cover'
+import { useBitcoinCore } from './hooks/bitcoin/useBitcoinCore'
+import { useStateSubscription } from './hooks/useStateSubscription'
 import { authAxios, publicAxios } from './setup'
-import { useSetGlobalError } from 'components/GlobalErrorHandler'
-import { authClient } from 'src/core/setup'
-import * as Keychain from 'react-native-keychain'
-import {
-  deleteSignUp,
-  getSignUP,
-  hasSignUP,
-  saveSignUp,
-} from 'storage/MainStorage'
 
 export const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -69,6 +67,7 @@ export const InjectedScreens = {
   RequestDomainScreen: InjectSelectedWallet(Screens.RequestDomainScreen),
   BuyDomainScreen: InjectSelectedWallet(Screens.BuyDomainScreen),
   AliasBoughtScreen: InjectSelectedWallet(Screens.AliasBoughtScreen),
+  CongratulationsScreen: InjectSelectedWallet(Screens.CongratulationsScreen),
   HomeScreen: InjectSelectedWallet(Screens.HomeScreen),
   AccountsScreen: InjectSelectedWallet(Screens.AccountsScreen),
 }

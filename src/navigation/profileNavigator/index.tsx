@@ -2,20 +2,19 @@ import {
   createStackNavigator,
   StackNavigationOptions,
 } from '@react-navigation/stack'
-import Icon from 'react-native-vector-icons/FontAwesome5'
-import { useTranslation } from 'react-i18next'
-
-import { StyleSheet } from 'react-native'
 import { useEffect } from 'react'
-import { InjectedScreens } from 'src/core/Core'
+import { useTranslation } from 'react-i18next'
+import { StyleSheet } from 'react-native'
+import Icon from 'react-native-vector-icons/FontAwesome5'
+
+import { AppTouchable, Typography } from 'components/index'
 import { ProfileCreateScreen, ShareProfileScreen } from 'screens/index'
 import { sharedColors, sharedStyles } from 'shared/constants'
+import { castStyle } from 'shared/utils'
+import { InjectedScreens } from 'src/core/Core'
 
 import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
-import { Typography, AppTouchable } from 'components/index'
-
 import { ProfileStackParamsList, profileStackRouteNames } from './types'
-import { castStyle } from 'shared/utils'
 
 const ProfileStack = createStackNavigator<ProfileStackParamsList>()
 
@@ -43,6 +42,10 @@ const screenOptionsWithHeader = (title: string): StackNavigationOptions => ({
   headerStyle: headerStyles.headerStyle,
   headerShadowVisible: false,
 })
+
+const noHeader: StackNavigationOptions = {
+  headerShown: false,
+}
 
 export const ProfileNavigator = ({
   navigation,
@@ -83,6 +86,11 @@ export const ProfileNavigator = ({
       <ProfileStack.Screen
         name={profileStackRouteNames.AliasBought}
         component={InjectedScreens.AliasBoughtScreen}
+      />
+      <ProfileStack.Screen
+        name={profileStackRouteNames.CongratulationsScreen}
+        component={InjectedScreens.CongratulationsScreen}
+        options={noHeader}
       />
     </ProfileStack.Navigator>
   )

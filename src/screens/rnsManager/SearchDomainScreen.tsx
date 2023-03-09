@@ -67,7 +67,6 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   } = methods
   const hasErrors = Object.keys(errors).length > 0
 
-  // get RIF token
   const rifToken = useMemo(
     () =>
       Object.values(tokenBalances).find(
@@ -98,9 +97,8 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
       title: t('Confirm'),
       color: sharedColors.white,
       textColor: sharedColors.black,
-      onPress: () => {
-        console.log('confirm')
-      },
+      onPress: () =>
+        navigation.navigate(profileStackRouteNames.CongratulationsScreen),
     }
     const cancelButton = {
       title: t('Cancel'),
