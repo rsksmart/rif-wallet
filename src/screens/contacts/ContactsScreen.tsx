@@ -18,15 +18,16 @@ import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { colors } from 'src/styles'
 import { fonts } from 'src/styles/fonts'
 import {
-  deleteContactById,
+  deleteContactByAddress,
   getContactsAsArrayAndSelected,
-  setSelectedContactById,
+  setSelectedContactByAddress,
 } from 'store/slices/contactsSlice'
 import { Contact } from 'shared/types'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { Search } from 'components/input/search'
+
 import { ContactsStackScreenProps } from '../index'
 import { ContactRow } from './ContactRow'
-import { Search } from 'components/input/search'
 
 export type ContactsListScreenProps = CompositeScreenProps<
   ContactsStackScreenProps<contactsStackRouteNames.ContactsList>,
@@ -75,12 +76,12 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
 
   const showModal = (contact: Contact) => {
     setIsDeleteContactModalVisible(true)
-    dispatch(setSelectedContactById(contact.id))
+    dispatch(setSelectedContactByAddress(contact.address))
   }
 
   const hideModal = () => {
     setIsDeleteContactModalVisible(false)
-    dispatch(setSelectedContactById(null))
+    dispatch(setSelectedContactByAddress(null))
   }
 
   const editContact = (contact: Contact) => {
@@ -98,7 +99,7 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
 
   const removeContact = () => {
     if (selectedContact) {
-      dispatch(deleteContactById(selectedContact.id))
+      dispatch(deleteContactByAddress(selectedContact.address))
     }
     hideModal()
   }
