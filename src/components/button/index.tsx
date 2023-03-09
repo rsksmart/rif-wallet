@@ -130,8 +130,8 @@ export const AppButton = ({
           <View style={styles.iconContainer}>
             <Icon
               name={leftIcon.name}
-              size={leftIcon.size ? leftIcon.size : defaultIconSize}
-              color={leftIcon.color ? leftIcon.color : textColor}
+              size={leftIcon.size || defaultIconSize}
+              color={leftIcon.color || textColor}
             />
           </View>
         ) : null}
@@ -145,8 +145,8 @@ export const AppButton = ({
           <View style={styles.iconContainer}>
             <Icon
               name={rightIcon.name}
-              size={rightIcon.size ? rightIcon.size : defaultIconSize}
-              color={rightIcon.color ? rightIcon.color : textColor}
+              size={rightIcon.size || defaultIconSize}
+              color={rightIcon.color || textColor}
             />
           </View>
         ) : null}
