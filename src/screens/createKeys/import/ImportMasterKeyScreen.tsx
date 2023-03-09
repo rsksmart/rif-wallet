@@ -112,7 +112,7 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
       const isLastIndex = slidesIndexes[slidesIndexes.length - 1] === item.index
 
       const onChangeText = (index: number) => (value: string) => {
-        words.current[index - 1] = value
+        words.current[index - 1] = value.trim()
       }
 
       const onSetRef = (index: number) => (ref: TextInput) => {
