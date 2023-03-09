@@ -37,9 +37,9 @@ import {
   closeRequest,
   selectRequests,
   selectSelectedWallet,
-  selectSettingsIsLoading,
   selectTopColor,
   selectWallets,
+  selectWholeSettingsState,
   setChainId,
   unlockApp,
 } from 'store/slices/settingsSlice'
@@ -88,7 +88,7 @@ export const Core = () => {
 
   const selectedWallet = useAppSelector(selectSelectedWallet)
   const wallets = useAppSelector(selectWallets)
-  const settingsIsLoading = useAppSelector(selectSettingsIsLoading)
+  const settings = useAppSelector(selectWholeSettingsState)
   const requests = useAppSelector(selectRequests)
   const [mnemonic, setMnemonic] = useState<string | null>(null)
   const setGlobalError = useSetGlobalError()
@@ -183,7 +183,7 @@ export const Core = () => {
     }
   }, [active])
 
-  if (settingsIsLoading && !unlocked) {
+  if (settings.loading && !unlocked) {
     return <LoadingScreen />
   }
 
