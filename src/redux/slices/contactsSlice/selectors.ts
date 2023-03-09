@@ -1,5 +1,6 @@
-import { RootState } from 'src/redux'
 import { createSelector } from '@reduxjs/toolkit'
+
+import { RootState } from 'src/redux'
 
 export const getContactsState = (state: RootState) => state.contacts
 
@@ -20,3 +21,9 @@ export const getContactsAsArrayAndSelected = createSelector(
     selectedContact,
   }),
 )
+
+export const getContactByAddress = (address: string) =>
+  createSelector(
+    [getContactsState],
+    contactsState => contactsState.contacts[address],
+  )
