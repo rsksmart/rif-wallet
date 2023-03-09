@@ -2,7 +2,8 @@ import {
   rootTabsRouteNames,
   RootTabsScreenProps,
 } from 'navigation/rootNavigator/types'
-import { StatusEnum, BasicRowWithContact } from 'components/BasicRow'
+import { StatusEnum } from 'components/BasicRow'
+import { BasicRowWithContact } from 'components/BasicRow/BasicRowWithContact'
 import { AppTouchable } from 'src/components'
 import {
   homeStackRouteNames,

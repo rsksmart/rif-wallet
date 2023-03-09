@@ -200,5 +200,3 @@ const styles = StyleSheet.create({
     textDecorationLine: 'line-through',
   },
 })
-
-export * from './BasicRowWithContact'
