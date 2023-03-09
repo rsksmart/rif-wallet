@@ -15,14 +15,15 @@ export const StepperComponent = ({
 }: ProgressBarProps) => {
   return (
     <>
-      {colors.map((color, index) => {
-        let style = castStyle.view({ width, height, backgroundColor: color })
+      {colors.map((backgroundColor, index) => {
+        const commonStyle = castStyle.view({ width, height, backgroundColor })
+        const style = [commonStyle]
         if (index === 0) {
-          style = { ...style, ...styles.start }
+          style.push(styles.start)
         } else if (index === colors.length - 1) {
-          style = { ...style, ...styles.end }
+          style.push(styles.end)
         } else {
-          style = { ...style, ...styles.middle }
+          style.push(styles.middle)
         }
         return <View key={index} style={style} />
       })}
