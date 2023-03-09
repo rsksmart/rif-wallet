@@ -139,6 +139,7 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
             inputRef={onSetRef(firstItemId)}
             onSubmitEditing={onInputSubmitEditing(firstItemId)}
             autoCapitalize="none"
+            blurOnSubmit={false}
           />
           <Input
             label={`Word ${secondItemId}`}
@@ -149,6 +150,7 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
             inputRef={onSetRef(secondItemId)}
             onSubmitEditing={onInputSubmitEditing(secondItemId)}
             autoCapitalize="none"
+            blurOnSubmit={false}
           />
           <Input
             label={`Word ${thirdItemId}`}
@@ -163,6 +165,7 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
                 : handleImportMnemonic
             }
             autoCapitalize="none"
+            blurOnSubmit={isLastIndex}
           />
         </View>
       )
