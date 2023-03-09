@@ -6,6 +6,6 @@ export enum BaseInputStatus {
 }
 
 export enum AccessibilityLabelStandards {
-  BUTTON,
-  TEXT,
+  BUTTON = 'BUTTON',
+  TEXT = 'TEXT',
 }
