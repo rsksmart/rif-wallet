@@ -33,16 +33,15 @@ export const StepperComponent = ({
 
 const styles = StyleSheet.create({
   start: castStyle.view({
-    marginRight: 0.5,
     borderTopLeftRadius: 3.5,
     borderBottomLeftRadius: 3.5,
   }),
   end: castStyle.view({
-    marginLeft: 0.5,
+    marginLeft: 1,
     borderTopRightRadius: 3.5,
     borderBottomRightRadius: 3.5,
   }),
   middle: castStyle.view({
-    marginHorizontal: 0.5,
+    marginLeft: 1,
   }),
 })
