@@ -13,7 +13,7 @@ import {
   SettingsScreenProps,
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
-import {castStyle} from "shared/utils";
+import { castStyle } from 'shared/utils'
 
 export const SettingsScreen = ({
   navigation,
