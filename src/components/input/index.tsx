@@ -22,6 +22,7 @@ import {
   sharedStyles,
 } from 'shared/constants'
 import { castStyle } from 'shared/utils'
+
 import { Typography } from '../typography'
 import { AppTouchable } from '../appTouchable'
 
@@ -44,6 +45,7 @@ export interface InputProps extends TextInputProps {
   placeholderStyle?: StyleProp<TextStyle>
   subtitleStyle?: StyleProp<TextStyle>
   suffix?: ReactFragment
+  inputRef?: (ref: TextInput) => void
 }
 
 export const Input = ({
@@ -66,6 +68,7 @@ export const Input = ({
   onChangeText,
   onFocus: onFocusProp,
   suffix,
+  inputRef,
   ...textInputProps
 }: InputProps) => {
   const { control } = useFormContext()
@@ -144,6 +147,7 @@ export const Input = ({
                   onBlur={onBlur}
                   onFocus={onFocus}
                   editable={!isReadOnly}
+                  ref={inputRef}
                   {...textInputProps}>
                   <Typography
                     style={[

@@ -28,6 +28,7 @@ export const sharedColors = {
   tokenBackground: '#1E1E1E',
   black: '#000000',
   qrColor: '#DBE3FF',
+  errorBackground: '#FF3559',
 }
 
 export const tokenColors = {
@@ -70,5 +71,14 @@ export const sharedStyles = StyleSheet.create({
   noPadding: castStyle.view({ padding: 0 }),
   selfCenter: castStyle.view({
     alignSelf: 'center',
+  }),
+  widthHalfWidth: castStyle.view({
+    width: '50%',
+  }),
+  widthFullWidth: castStyle.view({
+    width: '100%',
+  }),
+  fontBoldText: castStyle.text({
+    fontWeight: 'bold',
   }),
 })
