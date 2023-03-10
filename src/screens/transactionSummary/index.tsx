@@ -1,3 +1,5 @@
+import { useIsFocused } from '@react-navigation/native'
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
@@ -17,6 +19,8 @@ import { sharedColors, sharedStyles } from 'shared/constants'
 import { ContactWithAddressRequired } from 'shared/types'
 import { castStyle } from 'shared/utils'
 import { shortAddress } from 'src/lib/utils'
+import { setFullscreen } from 'src/redux/slices/settingsSlice'
+import { useAppDispatch } from 'src/redux/storeUtils'
 
 enum TransactionStatus {
   CONFIRMED = 'confirmed',
@@ -52,10 +56,16 @@ export const TransactionsSummary = ({
   route,
   navigation,
 }: RootTabsScreenProps<rootTabsRouteNames.TransactionSummary>) => {
+  const dispatch = useAppDispatch()
+  const isFocused = useIsFocused()
   const { t } = useTranslation()
   const { transaction, contact, title, buttons } = route.params
 
   const iconObject = transactionStatusToIconPropsMap.get(transaction.status)
+
+  useEffect(() => {
+    dispatch(setFullscreen(isFocused))
+  }, [dispatch, isFocused])
 
   return (
     <View style={styles.screen}>
