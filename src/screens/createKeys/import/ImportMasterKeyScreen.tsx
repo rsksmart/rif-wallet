@@ -238,6 +238,7 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
           textType="body2"
           textStyle={sharedStyles.fontBoldText}
           onPress={handleImportMnemonic}
+          style={styles.appButtonStyleView}
         />
       </ScrollView>
     </FormProvider>
@@ -311,5 +312,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 0,
+  },
+  appButtonStyleView: {
+    marginTop: 20,
   },
 })
