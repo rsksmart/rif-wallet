@@ -1,12 +1,10 @@
 import { useCallback, useMemo, useEffect } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { version } from 'package.json'
+import { useTranslation } from 'react-i18next'
 
 import { getWalletSetting, SETTINGS } from 'core/config'
-import {
-  AppTouchable,
-  Typography,
-} from 'components/index'
+import { AppTouchable, Typography } from 'components/index'
 import { homeStackRouteNames } from 'navigation/homeNavigator/types'
 import {
   SettingsScreenProps,
@@ -58,6 +56,7 @@ export const SettingsScreen = ({
       ],
     })
   }, [navigation])
+  const { t } = useTranslation()
 
   return (
     <View style={styles.container}>
@@ -68,35 +67,48 @@ export const SettingsScreen = ({
           accessibilityLabel="account"
           style={styles.settingsItem}
           onPress={goToAccountsScreen}>
-          <Typography type={'h3'}>{'Account'}</Typography>
+          <Typography type={'h3'}>{t('settings_screen_account')}</Typography>
         </AppTouchable>
         <AppTouchable
           width={'100%'}
-          accessibilityLabel="security"
+          accessibilityLabel="Wallet Backup"
           style={styles.settingsItem}
           onPress={goToSecurityConfiguration}>
-          <Typography type={'h3'}>{'Security'}</Typography>
+          <Typography type={'h3'}>
+            {t('settings_screen_wallet_backup')}
+          </Typography>
         </AppTouchable>
         <AppTouchable
           width={'100%'}
+          accessibilityLabel="Change PIN"
           style={styles.settingsItem}
-          onPress={goToDeploy}
-          accessibilityLabel="deploy">
-          <Typography type={'h3'}>{'Smart Wallet Deploy'}</Typography>
+          onPress={goToSecurityConfiguration}>
+          <Typography type={'h3'}>{t('settings_screen_change_pin')}</Typography>
         </AppTouchable>
         <AppTouchable
           width={'100%'}
           accessibilityLabel="feedback"
           style={styles.settingsItem}
           onPress={goToFeedbackScreen}>
-          <Typography type={'h3'}>{'Provide feedback'}</Typography>
+          <Typography type={'h3'}>
+            {t('settings_screen_provide_feedback')}
+          </Typography>
+        </AppTouchable>
+        <AppTouchable
+          width={'100%'}
+          style={styles.settingsItem}
+          onPress={goToDeploy}
+          accessibilityLabel="Deploy Wallet">
+          <Typography type={'h3'}>
+            {t('settings_screen_deploy_wallet')}
+          </Typography>
         </AppTouchable>
         <AppTouchable
           width={'100%'}
           accessibilityLabel={'example'}
           style={styles.settingsItem}
           onPress={goToExampleScreen}>
-          <Typography type={'h3'}>{'Example Screen'}</Typography>
+          <Typography type={'h3'}>{'Examples Screens'}</Typography>
         </AppTouchable>
       </View>
       <View style={styles.bottomView}>
@@ -106,7 +118,7 @@ export const SettingsScreen = ({
           style={styles.footerItem}
           onPress={goToSecurityConfiguration}>
           <Typography type={'body1'} color={sharedColors.labelLight}>
-            {'Version'} {version}
+            {t('settings_screen_version')} {version}
           </Typography>
         </AppTouchable>
 
@@ -117,7 +129,7 @@ export const SettingsScreen = ({
           onPress={goToSecurityConfiguration}>
           <>
             <Typography type={'h4'} color={sharedColors.labelLight}>
-              {'Smart Wallet Factory'}
+              {t('settings_screen_smart_wallet_factory')}
             </Typography>
             <Typography type={'h5'} color={sharedColors.labelLight}>
               {smartWalletFactoryAddress}
@@ -132,7 +144,7 @@ export const SettingsScreen = ({
           onPress={goToSecurityConfiguration}>
           <>
             <Typography type={'h4'} color={sharedColors.labelLight}>
-              {'RPC URL'}
+              {t('settings_screen_rpc_url')}
             </Typography>
             <Typography type={'h5'} color={sharedColors.labelLight}>
               {rpcUrl}
@@ -147,7 +159,7 @@ export const SettingsScreen = ({
           onPress={goToSecurityConfiguration}>
           <>
             <Typography type={'h4'} color={sharedColors.labelLight}>
-              {'Backend URL'}
+              {'settings_screen_backend_url'}
             </Typography>
             <Typography type={'h5'} color={sharedColors.labelLight}>
               {walletServiceUrl}
