@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 import { getWalletSetting, SETTINGS } from 'core/config'
 import { sharedColors } from 'shared/constants'
+import { castStyle } from 'shared/utils'
 import { AppTouchable, Typography } from 'components/index'
 import { homeStackRouteNames } from 'navigation/homeNavigator/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
@@ -13,7 +14,6 @@ import {
   SettingsScreenProps,
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
-import { castStyle } from 'shared/utils'
 
 export const SettingsScreen = ({
   navigation,
