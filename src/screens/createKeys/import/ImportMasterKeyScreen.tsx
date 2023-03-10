@@ -50,6 +50,12 @@ const initialWords = Array.from({ length: slidesIndexes.length * 3 }).reduce<
 
 const SLIDER_WIDTH = WINDOW_WIDTH * 0.8
 
+const headerTextMap = new Map([
+  [StatusActions.ERROR, 'header_phrase_not_correct'],
+  [StatusActions.INITIAL, 'header_enter_your_phrase'],
+  [StatusActions.SUCCESS, 'header_phrase_correct'],
+])
+
 export const ImportMasterKeyScreen = ({ navigation }: Props) => {
   const { t } = useTranslation()
 
@@ -191,15 +197,7 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
           </Typography>
         </View>
         <View style={styles.phraseView}>
-          {status === StatusActions.INITIAL && (
-            <Typography type="h3">{t('header_enter_your_phrase')}</Typography>
-          )}
-          {status === StatusActions.SUCCESS && (
-            <Typography type="h3">{t('header_phrase_correct')}</Typography>
-          )}
-          {status === StatusActions.ERROR && (
-            <Typography type="h3">{t('header_phrase_not_correct')}</Typography>
-          )}
+          <Typography type="h3">{headerTextMap.get(status)}</Typography>
         </View>
         <View
           style={
