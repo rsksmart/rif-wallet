@@ -4,7 +4,7 @@ import {
 } from 'navigation/rootNavigator/types'
 import { StatusEnum } from 'components/BasicRow'
 import { BasicRowWithContact } from 'components/BasicRow/BasicRowWithContact'
-import { AppTouchable } from 'src/components'
+import { AppTouchable } from 'components/appTouchable'
 import {
   homeStackRouteNames,
   HomeStackScreenProps,

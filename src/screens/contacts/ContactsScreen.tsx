@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image, ScrollView, StyleSheet, TextInput, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
@@ -74,35 +74,43 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
   const tokenBalances = useAppSelector(selectBalances)
   const shouldHideSendButton = Object.values(tokenBalances).length === 0
 
-  const showModal = (contact: Contact) => {
-    setIsDeleteContactModalVisible(true)
-    dispatch(setSelectedContactByAddress(contact.address))
-  }
+  const showModal = useCallback(
+    (contact: Contact) => {
+      setIsDeleteContactModalVisible(true)
+      dispatch(setSelectedContactByAddress(contact.address))
+    },
+    [setIsDeleteContactModalVisible, dispatch],
+  )
 
-  const hideModal = () => {
+  const hideModal = useCallback(() => {
     setIsDeleteContactModalVisible(false)
     dispatch(setSelectedContactByAddress(null))
-  }
+  }, [setIsDeleteContactModalVisible, dispatch])
 
-  const editContact = (contact: Contact) => {
-    navigation.navigate(contactsStackRouteNames.ContactForm, {
-      initialValue: contact,
-    })
-  }
-
-  const sendContact = (contact: Contact) => {
-    navigation.navigate(rootTabsRouteNames.Home, {
-      screen: homeStackRouteNames.Send,
-      params: { to: contact.address },
-    })
-  }
-
-  const removeContact = () => {
+  const editContact = useCallback(
+    (contact: Contact) => {
+      navigation.navigate(contactsStackRouteNames.ContactForm, {
+        initialValue: contact,
+      })
+    },
+    [navigation],
+  )
+  const sendContact = useCallback(
+    (contact: Contact) => {
+      navigation.navigate(rootTabsRouteNames.Home, {
+        screen: homeStackRouteNames.Send,
+        params: { to: contact.address },
+      })
+    },
+    [navigation],
+  )
+  const removeContact = useCallback(() => {
     if (selectedContact) {
       dispatch(deleteContactByAddress(selectedContact.address))
     }
     hideModal()
-  }
+  }, [selectedContact, dispatch, hideModal])
+
   // Everytime contact is reloaded, set index back to null
   useEffect(() => {
     setSelectedIndex(null)
