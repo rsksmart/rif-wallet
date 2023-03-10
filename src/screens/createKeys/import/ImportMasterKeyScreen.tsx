@@ -179,19 +179,16 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
     <FormProvider {...form}>
       <ScrollView style={styles.parent} keyboardShouldPersistTaps={'always'}>
         <View style={styles.headerStyle}>
-          <View style={sharedStyles.flex}>
-            <FontAwesome5Icon
-              name="chevron-left"
-              size={defaultIconSize}
-              color="white"
-              onPress={onBackPress}
-              style={sharedStyles.widthHalfWidth}
-            />
-          </View>
-          <View style={[sharedStyles.flex, styles.flexCenter]}>
-            <Typography type="h4">{t('header_import_wallet')}</Typography>
-          </View>
-          <View style={sharedStyles.flex} />
+          <FontAwesome5Icon
+            name="chevron-left"
+            size={defaultIconSize}
+            color="white"
+            onPress={onBackPress}
+            style={[sharedStyles.widthHalfWidth, styles.backIconStyleView]}
+          />
+          <Typography style={[sharedStyles.flex, styles.flexCenter]} type="h4">
+            {t('header_import_wallet')}
+          </Typography>
         </View>
         <View style={styles.phraseView}>
           {status === StatusActions.INITIAL && (
@@ -251,7 +248,10 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
 
 const StatusIcon = ({ status }: { status: StatusActions }) => {
   const iconStyle = {
-    backgroundColor: status === StatusActions.SUCCESS ? '#59FF9C' : '#FF3559',
+    backgroundColor:
+      status === StatusActions.SUCCESS
+        ? sharedColors.successLight
+        : sharedColors.errorBackground,
     borderRadius: 50,
   }
   switch (status) {
@@ -261,11 +261,18 @@ const StatusIcon = ({ status }: { status: StatusActions }) => {
           name="checkcircleo"
           size={100}
           style={iconStyle}
-          color="black"
+          color={sharedColors.black}
         />
       )
     case StatusActions.ERROR:
-      return <Feather name="x" size={100} style={iconStyle} color="black" />
+      return (
+        <Feather
+          name="x"
+          size={100}
+          style={iconStyle}
+          color={sharedColors.black}
+        />
+      )
     default:
       return null
   }
@@ -278,11 +285,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   }),
   headerStyle: castStyle.view({
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     width: '100%',
     marginTop: 22,
     marginBottom: 40,
+    alignItems: 'center',
   }),
   flexCenter: castStyle.view({
     alignItems: 'center',
@@ -303,4 +309,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.92)',
   }),
   iconBorderFixView: castStyle.view({ overflow: 'hidden', borderRadius: 50 }),
+  backIconStyleView: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
 })

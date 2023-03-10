@@ -28,6 +28,7 @@ export const sharedColors = {
   tokenBackground: '#1E1E1E',
   black: '#000000',
   qrColor: '#DBE3FF',
+  errorBackground: '#FF3559',
 }
 
 export const tokenColors = {
