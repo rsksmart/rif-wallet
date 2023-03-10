@@ -4,15 +4,16 @@ import { version } from 'package.json'
 import { useTranslation } from 'react-i18next'
 
 import { getWalletSetting, SETTINGS } from 'core/config'
+import { sharedColors } from 'shared/constants'
 import { AppTouchable, Typography } from 'components/index'
 import { homeStackRouteNames } from 'navigation/homeNavigator/types'
+import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
+import { headerLeftOption, headerStyles } from 'navigation/profileNavigator'
 import {
   SettingsScreenProps,
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
-import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
-import { sharedColors } from 'shared/constants'
-import { headerLeftOption, headerStyles } from 'navigation/profileNavigator'
+import {castStyle} from "shared/utils";
 
 export const SettingsScreen = ({
   navigation,
@@ -172,25 +173,25 @@ export const SettingsScreen = ({
 }
 
 const styles = StyleSheet.create({
-  container: {
+  container: castStyle.view({
     height: '100%',
     backgroundColor: sharedColors.tokenBackground,
     justifyContent: 'space-between',
     paddingHorizontal: 24,
-  },
-  mainView: {
+  }),
+  mainView: castStyle.view({
     marginTop: 40,
     alignContent: 'flex-start',
-  },
-  bottomView: {
+  }),
+  bottomView: castStyle.view({
     marginBottom: 30,
-  },
-  settingsItem: {
+  }),
+  settingsItem: castStyle.view({
     marginBottom: 20,
     alignItems: 'flex-start',
-  },
-  footerItem: {
+  }),
+  footerItem: castStyle.view({
     marginBottom: 15,
     alignItems: 'flex-start',
-  },
+  }),
 })
