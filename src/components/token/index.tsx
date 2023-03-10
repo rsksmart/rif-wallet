@@ -1,17 +1,17 @@
+import { useTranslation } from 'react-i18next'
 import { StyleProp, StyleSheet, TextInput, View, ViewStyle } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { useTranslation } from 'react-i18next'
 
 import { shortAddress } from 'lib/utils'
 
-import { TokenImage, TokenSymbol } from 'screens/home/TokenImage'
-import { Typography } from 'components/index'
-import { HideShowIcon } from 'components/icons'
 import { AppTouchable } from 'components/appTouchable'
 import { Avatar } from 'components/avatar'
+import { HideShowIcon } from 'components/icons'
+import { Typography } from 'components/index'
+import { TokenImage, TokenSymbol } from 'screens/home/TokenImage'
 import { noop, sharedColors, testIDs } from 'shared/constants'
+import { ContactWithOptionalProps } from 'shared/types'
 import { castStyle } from 'shared/utils'
-import { ContactWithAddressRequired } from 'shared/types'
 
 export interface CurrencyValue {
   symbol: TokenSymbol | string
@@ -29,7 +29,7 @@ interface Props {
   editable?: boolean
   hideable?: boolean
   handleAmountChange?: (text: string) => void
-  to?: ContactWithAddressRequired
+  to?: ContactWithOptionalProps
   style?: StyleProp<ViewStyle>
 }
 

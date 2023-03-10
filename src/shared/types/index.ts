@@ -14,6 +14,4 @@ export interface Contact {
   displayAddress: string
 }
 
-export type ContactWithAddressRequired = Partial<Omit<Contact, 'address'>> & {
-  address: string
-}
+export type ContactWithOptionalProps = Partial<Contact>

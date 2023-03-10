@@ -1,18 +1,16 @@
-import { useState, useCallback, useEffect } from 'react'
-import { StyleSheet, View, ScrollView, Share, Clipboard } from 'react-native'
+import { useCallback, useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { Clipboard, ScrollView, Share, StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import { useTranslation } from 'react-i18next'
+
 import { shortAddress } from 'lib/utils'
 
-import { castStyle } from 'shared/utils'
-import { defaultIconSize, sharedColors } from 'shared/constants'
-import { sharedStyles } from 'shared/styles'
-import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { selectProfile } from 'store/slices/profileSlice/selector'
-import { setProfile } from 'store/slices/profileSlice'
-import { selectActiveWallet } from 'store/slices/settingsSlice'
+import {
+  BarButtonGroupContainer,
+  BarButtonGroupIcon,
+} from 'components/BarButtonGroup/BarButtonGroup'
 import {
   AppButton,
   Avatar,
@@ -20,16 +18,19 @@ import {
   Input,
   Typography,
 } from 'components/index'
-import {
-  BarButtonGroupContainer,
-  BarButtonGroupIcon,
-} from 'components/BarButtonGroup/BarButtonGroup'
 import { InfoBox } from 'components/InfoBox'
+import { headerLeftOption } from 'navigation/profileNavigator'
 import {
   profileStackRouteNames,
   ProfileStackScreenProps,
 } from 'navigation/profileNavigator/types'
-import { headerLeftOption } from 'navigation/profileNavigator'
+import { defaultIconSize, sharedColors } from 'shared/constants'
+import { sharedStyles } from 'shared/styles'
+import { castStyle } from 'shared/utils'
+import { setProfile } from 'store/slices/profileSlice'
+import { selectProfile } from 'store/slices/profileSlice/selector'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 
 export const ProfileCreateScreen = ({
   navigation,
@@ -113,7 +114,7 @@ export const ProfileCreateScreen = ({
         />
         <View style={styles.username}>
           <Typography type={'h3'} color={sharedColors.labelLight}>
-            {t(username)}
+            {username}
           </Typography>
           <Typography type={'h4'} color={sharedColors.labelLight}>
             {displayAddress}

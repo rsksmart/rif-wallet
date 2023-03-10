@@ -25,10 +25,11 @@ import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { FeedbackModal } from 'src/components/feedbackModal'
+import { RnsProcessor } from 'src/lib/rns/RnsProcessor'
 import { balanceToDisplay, balanceToUSD } from 'src/lib/utils'
 import { selectBalances } from 'store/slices/balancesSlice'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
-import { recoverAlias } from 'store/slices/profileSlice'
+import { recoverAlias, requestUsername } from 'store/slices/profileSlice'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 
@@ -71,7 +72,8 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   } = methods
   const hasErrors = Object.keys(errors).length > 0
 
-  // get RIF token
+  const rnsProcessor = useMemo(() => new RnsProcessor({ wallet }), [wallet])
+
   const rifToken = useMemo(
     () =>
       Object.values(tokenBalances).find(
@@ -97,14 +99,19 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const isRequestButtonDisabled = hasErrors || !validDomain
   const isSaveButtonDisabled = (hasErrors || !validDomain) && !isDomainOwned
 
+  const requestRegistration = useCallback(() => {
+    const alias = domainToLookUp
+    const duration = selectedYears
+    dispatch(requestUsername({ rnsProcessor, alias, duration })).unwrap()
+    // setIsSuccessModalVisible(true)
+  }, [dispatch, domainToLookUp, rnsProcessor, selectedYears])
+
   const onSubmit = () => {
     const confirmButton = {
       title: t('Confirm'),
       color: sharedColors.white,
       textColor: sharedColors.black,
-      onPress: () => {
-        setIsSuccessModalVisible(true)
-      },
+      onPress: requestRegistration,
     }
     const cancelButton = {
       title: t('Cancel'),
@@ -133,7 +140,6 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
         feeValue: '0',
       },
       contact: {
-        address: '0x8C7820B97BFDe7140c676227b3e5e814F2E67afB',
         displayAddress: 'RNS Manager',
       },
       buttons: [confirmButton, cancelButton],

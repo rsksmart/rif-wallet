@@ -16,7 +16,7 @@ import {
   RootTabsScreenProps,
 } from 'navigation/rootNavigator'
 import { sharedColors, sharedStyles } from 'shared/constants'
-import { ContactWithAddressRequired } from 'shared/types'
+import { ContactWithOptionalProps } from 'shared/types'
 import { castStyle } from 'shared/utils'
 import { shortAddress } from 'src/lib/utils'
 import { setFullscreen } from 'src/redux/slices/settingsSlice'
@@ -47,7 +47,7 @@ export interface TransactionSummaryScreenProps {
     feeValue: string
     arrivesValue?: string
   }
-  contact: ContactWithAddressRequired
+  contact: ContactWithOptionalProps
   title?: string
   buttons?: AppButtonProps[]
 }
@@ -162,18 +162,20 @@ export const TransactionsSummary = ({
           )}
         </View>
       </View>
-      <View style={styles.summaryAlignment}>
-        <Typography
-          type={'h4'}
-          style={[styles.summaryText, sharedStyles.textLeft]}>
-          {t('transaction_summary_address_text')}
-        </Typography>
-        <Typography
-          type={'h4'}
-          style={[styles.summaryText, sharedStyles.textRight]}>
-          {shortAddress(contact.address, 14)}
-        </Typography>
-      </View>
+      {contact.address && (
+        <View style={styles.summaryAlignment}>
+          <Typography
+            type={'h4'}
+            style={[styles.summaryText, sharedStyles.textLeft]}>
+            {t('transaction_summary_address_text')}
+          </Typography>
+          <Typography
+            type={'h4'}
+            style={[styles.summaryText, sharedStyles.textRight]}>
+            {shortAddress(contact.address, 14)}
+          </Typography>
+        </View>
+      )}
       <View style={styles.buttons}>
         {buttons ? (
           buttons.map((b, index) => (
