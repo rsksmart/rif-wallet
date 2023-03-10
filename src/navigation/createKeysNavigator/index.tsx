@@ -17,12 +17,13 @@ import { sharedColors, sharedStyles } from 'shared/constants'
 import { selectIsUnlocked } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { CreateKeysStackParamList, createKeysRouteNames } from './types'
+import { useTranslation } from 'react-i18next'
 
 const Stack = createStackNavigator<CreateKeysStackParamList>()
 
 const screensOptions = { headerShown: false }
 
-const screenOptionsWithHeader: StackNavigationOptions = {
+const screenOptionsWithHeader = (title?: string): StackNavigationOptions => ({
   headerShown: true,
   headerLeft: props => (
     <AppTouchable
@@ -32,15 +33,18 @@ const screenOptionsWithHeader: StackNavigationOptions = {
       <Icon name={'chevron-left'} size={20} color={sharedColors.white} />
     </AppTouchable>
   ),
-  headerTitle: () => <Typography type={'h3'}>{'Wallet backup'}</Typography>,
+  headerTitle: props => (
+    <Typography type={'h3'}>{title ?? props.children}</Typography>
+  ),
   headerStyle: {
     height: 64,
     backgroundColor: sharedColors.black,
   },
   headerShadowVisible: false,
-}
+})
 
 export const CreateKeysNavigation = () => {
+  const { t } = useTranslation()
   const unlocked = useAppSelector(selectIsUnlocked)
 
   return (
@@ -55,7 +59,7 @@ export const CreateKeysNavigation = () => {
       <Stack.Screen
         name={createKeysRouteNames.NewMasterKey}
         component={NewMasterKeyScreen}
-        options={screenOptionsWithHeader}
+        options={screenOptionsWithHeader(t('confirm_key_screen_title'))}
       />
       <Stack.Screen
         name={createKeysRouteNames.SecureYourWallet}
@@ -70,7 +74,7 @@ export const CreateKeysNavigation = () => {
       <Stack.Screen
         name={createKeysRouteNames.ConfirmNewMasterKey}
         component={ConfirmNewMasterKeyScreen}
-        options={screensOptions}
+        options={screenOptionsWithHeader(t('confirm_key_screen_title'))}
       />
       <Stack.Screen
         name={createKeysRouteNames.ImportMasterKey}

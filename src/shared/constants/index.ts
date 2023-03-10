@@ -68,4 +68,7 @@ export const sharedStyles = StyleSheet.create({
     paddingHorizontal: 24,
   }),
   noPadding: castStyle.view({ padding: 0 }),
+  selfCenter: castStyle.view({
+    alignSelf: 'center',
+  }),
 })

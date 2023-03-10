@@ -11,13 +11,13 @@ export enum createKeysRouteNames {
 }
 
 export type CreateKeysStackParamList = {
-  CreateKeys: undefined
-  NewMasterKey: undefined
-  SecurityExplanation: undefined
-  SecureYourWallet: undefined
-  ConfirmNewMasterKey: { mnemonic: string }
-  ImportMasterKey: undefined
-  RevealMasterKey: undefined
+  [createKeysRouteNames.CreateKeys]: undefined
+  [createKeysRouteNames.NewMasterKey]: undefined
+  [createKeysRouteNames.SecurityExplanation]: undefined
+  [createKeysRouteNames.SecureYourWallet]: undefined
+  [createKeysRouteNames.ConfirmNewMasterKey]: { mnemonic: string }
+  [createKeysRouteNames.ImportMasterKey]: undefined
+  [createKeysRouteNames.RevealMasterKey]: undefined
 }
 
 export type CreateKeysScreenProps<T extends keyof CreateKeysStackParamList> =
