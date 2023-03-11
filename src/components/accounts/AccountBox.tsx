@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, TextInput, View } from 'react-native'
+import { StyleSheet, TextInput, View, Clipboard } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-
 import { SmartWalletFactory } from '@rsksmart/rif-relay-light-sdk'
+import { useTranslation } from 'react-i18next'
+import Icon from 'react-native-vector-icons/FontAwesome'
+import { FormProvider, useForm } from 'react-hook-form'
 
 import { setAccount } from 'store/slices/accountsSlice'
 import { selectAccounts } from 'store/slices/accountsSlice/selector'
@@ -11,18 +13,19 @@ import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { PublicKeyItemType } from 'screens/accounts/types'
 import { colors } from 'src/styles'
 import { fonts } from 'src/styles/fonts'
+import { sharedStyles } from 'shared/styles'
+import { defaultIconSize, sharedColors } from 'shared/constants'
+import { getAddressDisplayText, Input } from 'src/components'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
 
 import { EditMaterialIcon } from '../icons'
 import { CheckIcon } from '../icons/CheckIcon'
 import { MediumText } from '../typography'
-import AccountField from './AccountField'
 import accountSharedStyles from './styles'
 
 interface AccountBoxProps {
   address: string
-  addressShort: string
   smartWalletAddress: string
-  smartWalletAddressShort: string
   smartWalletFactory: SmartWalletFactory
   id?: number
   publicKeys: PublicKeyItemType[]
@@ -30,9 +33,7 @@ interface AccountBoxProps {
 
 const AccountBox: React.FC<AccountBoxProps> = ({
   address,
-  addressShort,
   smartWalletAddress,
-  smartWalletAddressShort,
   smartWalletFactory,
   publicKeys = [],
   id = 0,
@@ -43,7 +44,13 @@ const AccountBox: React.FC<AccountBoxProps> = ({
   const [accountName, setAccountName] = useState<string>(initialAccountName)
   const [isDeployed, setIsDeployed] = useState(false)
   const [showAccountNameInput, setShowAccountInput] = useState<boolean>(false)
+  const { chainType } = useAppSelector(selectActiveWallet)
 
+  const eoaAddressObject = getAddressDisplayText(address ?? '', chainType)
+  const smartWalletAddressObject = getAddressDisplayText(
+    smartWalletAddress ?? '',
+    chainType,
+  )
   const onEdit = () => setShowAccountInput(true)
 
   const onChangeAccountName = (text: string) => {
@@ -69,14 +76,17 @@ const AccountBox: React.FC<AccountBoxProps> = ({
     smartWalletFactory.isDeployed().then(setIsDeployed)
   }, [smartWalletFactory])
 
+  const methods = useForm()
+
   useEffect(() => {
     if (accountName !== initialAccountName) {
       setAccountName(initialAccountName)
     }
   }, [initialAccountName, accountName])
+  const { t } = useTranslation()
 
   return (
-    <View style={styles.accountsContainer}>
+    <FormProvider {...methods}>
       <View style={styles.textContainer}>
         {!showAccountNameInput ? (
           <>
@@ -106,35 +116,71 @@ const AccountBox: React.FC<AccountBoxProps> = ({
           {isDeployed ? 'Deployed' : 'Not Deployed'}
         </MediumText>
       </View>
-      <AccountField
-        label="EOA Address"
-        value={addressShort}
-        valueToCopy={address}
+      <Input
+        style={sharedStyles.marginTop20}
+        label={t('EOA Address')}
+        inputName="EOA Address"
+        rightIcon={
+          <Icon
+            name={'copy'}
+            color={sharedColors.white}
+            size={defaultIconSize}
+            onPress={() =>
+              Clipboard.setString(eoaAddressObject.checksumAddress || '')
+            }
+          />
+        }
+        placeholder={eoaAddressObject.displayAddress}
+        isReadOnly
+        testID={'TestID.AddressText'}
       />
-      <AccountField
-        label="Smart Wallet Address"
-        value={smartWalletAddressShort}
-        valueToCopy={smartWalletAddress}
+      <Input
+        style={sharedStyles.marginTop20}
+        label={t('Smart Wallet Address')}
+        inputName="Smart Wallet Address"
+        rightIcon={
+          <Icon
+            name={'copy'}
+            color={sharedColors.white}
+            size={defaultIconSize}
+            onPress={() =>
+              Clipboard.setString(
+                smartWalletAddressObject.checksumAddress || '',
+              )
+            }
+          />
+        }
+        placeholder={smartWalletAddressObject.displayAddress}
+        isReadOnly
+        testID={'TestID.AddressText'}
       />
+
       {publicKeys.map(publicKey => (
-        <AccountField
-          label={publicKey.networkName + ' Public Key'}
-          value={publicKey.shortedPublicKey}
-          valueToCopy={publicKey.publicKey}
+        <Input
           key={publicKey.publicKey}
+          style={sharedStyles.marginTop20}
+          label={t(publicKey.networkName + ' Public Key')}
+          inputName={publicKey.networkName + ' Public Key'}
+          rightIcon={
+            <Icon
+              name={'copy'}
+              color={sharedColors.white}
+              size={defaultIconSize}
+              onPress={() => Clipboard.setString(publicKey.publicKey || '')}
+            />
+          }
+          placeholder={publicKey.shortedPublicKey}
+          isReadOnly
+          testID={'TestID.AddressText'}
         />
       ))}
-    </View>
+
+
+    </FormProvider>
   )
 }
 
 const styles = StyleSheet.create({
-  accountsContainer: {
-    backgroundColor: colors.background.light,
-    paddingHorizontal: 24,
-    paddingVertical: 38,
-    borderRadius: 30,
-  },
   textContainer: {
     justifyContent: 'flex-end',
     alignItems: 'center',
