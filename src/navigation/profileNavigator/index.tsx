@@ -13,7 +13,6 @@ import { sharedColors, sharedStyles } from 'shared/constants'
 import { Typography, AppTouchable } from 'components/index'
 import { castStyle } from 'shared/utils'
 
-
 import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
 import { ProfileStackParamsList, profileStackRouteNames } from './types'
 
@@ -30,9 +29,7 @@ export const headerLeftOption = (goBack: () => void) => (
   </AppTouchable>
 )
 
-const screenOptionsWithHeader = (
-  title: string,
-): StackNavigationOptions => ({
+const screenOptionsWithHeader = (title: string): StackNavigationOptions => ({
   headerShown: true,
   headerTitle: props => (
     <Typography type={'h3'} style={headerStyles.headerPosition}>
