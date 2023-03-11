@@ -1,5 +1,6 @@
 import { CompositeScreenProps } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
+
 import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
 
 export enum profileStackRouteNames {
