@@ -20,6 +20,7 @@ import {
 } from 'navigation/settingsNavigator/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { SlidePopupConfirmationDanger } from 'src/components/slidePopup/SlidePopupConfirmationDanger'
+import { headerLeftOption } from 'navigation/profileNavigator'
 
 export const SecurityConfigurationScreen = ({
   navigation,
@@ -40,6 +41,11 @@ export const SecurityConfigurationScreen = ({
       setShowReminder(keyVerificationReminder)
     }
   }
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => headerLeftOption(navigation.goBack),
+    })
+  }, [navigation])
   useEffect(() => {
     checkReminder()
   }, [])

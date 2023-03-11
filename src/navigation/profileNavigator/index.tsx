@@ -13,16 +13,14 @@ import { sharedColors, sharedStyles } from 'shared/constants'
 import { Typography, AppTouchable } from 'components/index'
 import { castStyle } from 'shared/utils'
 
+
 import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
 import { ProfileStackParamsList, profileStackRouteNames } from './types'
 
 const ProfileStack = createStackNavigator<ProfileStackParamsList>()
 
-export const headerLeftOption = (onBackPress: () => void) => (
-  <AppTouchable
-    width={20}
-    onPress={onBackPress}
-    style={sharedStyles.marginLeft24}>
+export const headerLeftOption = (goBack: () => void) => (
+  <AppTouchable width={20} onPress={goBack} style={sharedStyles.marginLeft24}>
     <Icon
       name={'chevron-left'}
       size={20}
@@ -32,7 +30,7 @@ export const headerLeftOption = (onBackPress: () => void) => (
   </AppTouchable>
 )
 
-export const screenOptionsWithHeader = (
+const screenOptionsWithHeader = (
   title: string,
 ): StackNavigationOptions => ({
   headerShown: true,

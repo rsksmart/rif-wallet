@@ -1,19 +1,34 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { StyleSheet, View } from 'react-native'
+
 import { RegularText } from 'src/components'
 import { PrimaryButton } from 'src/components/button/PrimaryButton'
 import { TextInputWithLabel } from 'src/components/input/TextInputWithLabel'
 import { colors } from 'src/styles'
+import { headerLeftOption } from 'navigation/profileNavigator'
+import {
+  SettingsScreenProps,
+  settingsStackRouteNames,
+} from 'navigation/settingsNavigator/types'
+
 import { sendFeedbackToGithub } from './operations'
 import { ThankYouComponent } from './ThankYouComponent'
 
-export const FeedbackScreen = () => {
+export const FeedbackScreen = ({
+  navigation,
+}: SettingsScreenProps<settingsStackRouteNames.FeedbackScreen>) => {
   const [isSent, setIsSent] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const [name, setName] = useState<string>('')
   const [email, setEmail] = useState<string>('')
   const [feedback, setFeedback] = useState<string>('')
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => headerLeftOption(navigation.goBack),
+    })
+  }, [navigation])
 
   const submitFeedback = () => {
     setIsLoading(true)
