@@ -4,7 +4,6 @@ import { StyleSheet, View, FlatList } from 'react-native'
 import { shortAddress } from 'lib/utils'
 
 import AccountBox from 'components/accounts/AccountBox'
-import { colors } from 'src/styles'
 import { useAppSelector } from 'src/redux/storeUtils'
 import { selectWallets } from 'src/redux/slices/settingsSlice'
 import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
@@ -13,6 +12,7 @@ import {
   SettingsScreenProps,
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
+import { sharedColors } from 'shared/constants'
 
 export const AccountsScreen = ({
   navigation,
@@ -71,9 +71,8 @@ export const AccountsScreen = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.background.blue,
-    paddingHorizontal: 40,
-    paddingTop: '8%',
+    backgroundColor: sharedColors.tokenBackground,
+    paddingHorizontal: 24,
   },
   viewBottomFix: {
     marginTop: 40,
