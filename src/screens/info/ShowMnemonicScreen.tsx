@@ -8,14 +8,25 @@ import { MediumText, RegularText } from 'components/index'
 import { MnemonicComponent } from 'components/mnemonic'
 import { getKeys } from 'storage/SecureStorage'
 import { castStyle } from 'shared/utils'
+import {
+  SettingsScreenProps,
+  settingsStackRouteNames,
+} from 'navigation/settingsNavigator/types'
+import { headerLeftOption } from 'navigation/profileNavigator'
 
 export enum TestID {
   Mnemonic = 'Mnemonic.Text',
 }
 
-export const ShowMnemonicScreen = () => {
+export const ShowMnemonicScreen = ({
+  navigation,
+}: SettingsScreenProps<settingsStackRouteNames.ShowMnemonicScreen>) => {
   const [mnemonic, setMnemonic] = useState<string | null>()
-
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => headerLeftOption(navigation.goBack),
+    })
+  }, [navigation])
   useEffect(() => {
     const fn = async () => {
       const keys = await getKeys()
