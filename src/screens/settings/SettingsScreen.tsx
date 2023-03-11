@@ -50,7 +50,7 @@ export const SettingsScreen = ({
 
   useEffect(() => {
     navigation.setOptions({
-      headerLeft: () => headerLeftOption(navigation.goBack)
+      headerLeft: () => headerLeftOption(navigation.goBack),
     })
   }, [navigation])
   const { t } = useTranslation()
@@ -105,7 +105,7 @@ export const SettingsScreen = ({
           accessibilityLabel={'example'}
           style={styles.settingsItem}
           onPress={goToExampleScreen}>
-          <Typography type={'h3'}>{'Examples Screens'}</Typography>
+          <Typography type={'h3'}>{'Examples Screen'}</Typography>
         </AppTouchable>
       </View>
       <View style={styles.bottomView}>
