@@ -1,13 +1,21 @@
+import { useEffect } from 'react'
 import { ScrollView, StyleSheet, View } from 'react-native'
+import { FormProvider, useForm } from 'react-hook-form'
 
 import { Input } from 'components/input'
 import { sharedColors, sharedStyles } from 'shared/constants'
-import { FormProvider, useForm } from 'react-hook-form'
 import { EyeIcon } from 'src/components/icons/EyeIcon'
 import { Avatar } from 'src/components'
 import { castStyle } from 'src/shared/utils'
+import {
+  SettingsScreenProps,
+  settingsStackRouteNames,
+} from 'navigation/settingsNavigator/types'
+import { headerLeftOption } from 'navigation/profileNavigator'
 
-export const ExampleScreen = () => {
+export const ExampleScreen = ({
+  navigation,
+}: SettingsScreenProps<settingsStackRouteNames.ExampleScreen>) => {
   const methods = useForm({
     defaultValues: {
       ex1: '',
@@ -20,6 +28,11 @@ export const ExampleScreen = () => {
     },
   })
   const { resetField } = methods
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => headerLeftOption(navigation.goBack),
+    })
+  }, [navigation])
   return (
     <View style={sharedStyles.screen}>
       <FormProvider {...methods}>

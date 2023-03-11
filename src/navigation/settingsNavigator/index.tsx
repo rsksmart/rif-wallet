@@ -80,6 +80,7 @@ export const SettingsNavigator = ({
       <SettingsStack.Screen
         name={settingsStackRouteNames.ExampleScreen}
         component={ExampleScreen}
+        options={settingsNavigatorOptions(t('Example Screen'))}
       />
     </SettingsStack.Navigator>
   )
