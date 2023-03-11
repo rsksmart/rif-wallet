@@ -172,7 +172,6 @@ const styles = StyleSheet.create({
   container: castStyle.view({
     height: '100%',
     backgroundColor: sharedColors.tokenBackground,
-    /*justifyContent: 'space-between',*/
     paddingHorizontal: 24,
   }),
   mainView: castStyle.view({
