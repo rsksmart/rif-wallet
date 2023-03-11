@@ -9,7 +9,7 @@ import { castStyle } from 'shared/utils'
 import { AppTouchable, Typography } from 'components/index'
 import { homeStackRouteNames } from 'navigation/homeNavigator/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
-import { headerLeftOption, headerStyles } from 'navigation/profileNavigator'
+import { headerLeftOption } from 'navigation/profileNavigator'
 import {
   SettingsScreenProps,
   settingsStackRouteNames,
@@ -50,11 +50,7 @@ export const SettingsScreen = ({
 
   useEffect(() => {
     navigation.setOptions({
-      headerLeft: () => headerLeftOption(() => navigation.goBack()),
-      headerStyle: [
-        headerStyles.headerStyle,
-        { backgroundColor: sharedColors.tokenBackground },
-      ],
+      headerLeft: () => headerLeftOption(navigation.goBack)
     })
   }, [navigation])
   const { t } = useTranslation()
@@ -83,7 +79,7 @@ export const SettingsScreen = ({
           width={'100%'}
           accessibilityLabel="Change PIN"
           style={styles.settingsItem}
-          onPress={goToSecurityConfiguration}>
+          onPress={() => {}}>
           <Typography type={'h3'}>{t('settings_screen_change_pin')}</Typography>
         </AppTouchable>
         <AppTouchable

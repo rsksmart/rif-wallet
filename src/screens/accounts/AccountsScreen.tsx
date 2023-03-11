@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
 import { StyleSheet, View, FlatList } from 'react-native'
 
 import { shortAddress } from 'lib/utils'
@@ -8,8 +8,15 @@ import { colors } from 'src/styles'
 import { useAppSelector } from 'src/redux/storeUtils'
 import { selectWallets } from 'src/redux/slices/settingsSlice'
 import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
+import { headerLeftOption } from 'navigation/profileNavigator'
+import {
+  SettingsScreenProps,
+  settingsStackRouteNames,
+} from 'navigation/settingsNavigator/types'
 
-export const AccountsScreen = () => {
+export const AccountsScreen = ({
+  navigation,
+}: SettingsScreenProps<settingsStackRouteNames.AccountsScreen>) => {
   const wallets = useAppSelector(selectWallets)
   const bitcoinCore = useBitcoinContext()
   const publicKeys = useMemo(
@@ -40,6 +47,12 @@ export const AccountsScreen = () => {
         : [],
     [wallets],
   )
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => headerLeftOption(navigation.goBack),
+    })
+  }, [navigation])
 
   return (
     <FlatList

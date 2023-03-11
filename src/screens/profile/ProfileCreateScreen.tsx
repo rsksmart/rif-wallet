@@ -96,7 +96,7 @@ export const ProfileCreateScreen = ({
 
   useEffect(() => {
     navigation.setOptions({
-      headerLeft: () => headerLeftOption(() => navigation.goBack()),
+      headerLeft: () => headerLeftOption(navigation.goBack),
     })
   }, [navigation])
   const { t } = useTranslation()

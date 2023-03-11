@@ -126,17 +126,16 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   useEffect(() => {
     calculatePrice(domainToLookUp, selectedYears).then(setSelectedDomainPrice)
   }, [domainToLookUp, selectedYears, calculatePrice])
-  const onBackPress = useCallback(() => navigation.goBack(), [navigation])
 
   useEffect(() => {
     navigation.setOptions({
-      headerLeft: () => headerLeftOption(onBackPress),
+      headerLeft: () => headerLeftOption(navigation.goBack),
       headerStyle: [
         headerStyles.headerStyle,
         { backgroundColor: sharedColors.secondary },
       ],
     })
-  }, [navigation, onBackPress])
+  }, [navigation])
   return (
     <ScrollView style={rnsManagerStyles.container}>
       <FormProvider {...methods}>
