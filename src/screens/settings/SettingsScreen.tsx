@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useEffect } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, ScrollView } from 'react-native'
 import { version } from 'package.json'
 import { useTranslation } from 'react-i18next'
 
@@ -56,7 +56,7 @@ export const SettingsScreen = ({
   const { t } = useTranslation()
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.mainView}>
         {/* @TODO add link to go to the accounts screen */}
         <AppTouchable
@@ -164,7 +164,7 @@ export const SettingsScreen = ({
           </>
         </AppTouchable>
       </View>
-    </View>
+    </ScrollView>
   )
 }
 
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
   container: castStyle.view({
     height: '100%',
     backgroundColor: sharedColors.tokenBackground,
-    justifyContent: 'space-between',
+    /*justifyContent: 'space-between',*/
     paddingHorizontal: 24,
   }),
   mainView: castStyle.view({
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     alignContent: 'flex-start',
   }),
   bottomView: castStyle.view({
-    marginBottom: 30,
+    marginTop: 130,
   }),
   settingsItem: castStyle.view({
     marginBottom: 20,
