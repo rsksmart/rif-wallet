@@ -12,7 +12,6 @@ import { AccountPayload } from 'store/slices/accountsSlice/types'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { PublicKeyItemType } from 'screens/accounts/types'
 import { colors } from 'src/styles'
-import { fonts } from 'src/styles/fonts'
 import { sharedStyles } from 'shared/styles'
 import { defaultIconSize, sharedColors } from 'shared/constants'
 import {
@@ -24,7 +23,6 @@ import {
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { castStyle } from 'shared/utils'
 
-import { EditMaterialIcon } from '../icons'
 import { CheckIcon } from '../icons/CheckIcon'
 
 interface AccountBoxProps {
@@ -82,31 +80,18 @@ const AccountBox: React.FC<AccountBoxProps> = ({
 
   const methods = useForm()
 
-  useEffect(() => {
-    if (accountName !== initialAccountName) {
-      setAccountName(initialAccountName)
-    }
-  }, [initialAccountName, accountName])
   const { t } = useTranslation()
 
   return (
     <FormProvider {...methods}>
-      <View style={styles.textContainer}>
+      <View style={styles.accountTextContainer}>
         {!showAccountNameInput ? (
-          <View
-            style={{
-              flexDirection: 'row',
-              width: '100%',
-              justifyContent: 'space-between',
-            }}>
-            <Typography type={'h2'}>{accountName}</Typography>
-            <AppTouchable width={150} onPress={onEdit}>
-              <Typography
-                type={'h4'}
-                style={{
-                  alignSelf: 'flex-end',
-                  textDecorationLine: 'underline',
-                }}>
+          <View style={styles.accountLabel}>
+            <Typography type={'h3'} style={styles.accountText}>
+              {accountName}
+            </Typography>
+            <AppTouchable width={110} onPress={onEdit}>
+              <Typography type={'h4'} style={styles.accountEditButton}>
                 {'Edit name'}
               </Typography>
             </AppTouchable>
@@ -119,6 +104,7 @@ const AccountBox: React.FC<AccountBoxProps> = ({
               value={accountName}
               onChangeText={onChangeAccountName}
               onSubmitEditing={onSubmit}
+              autoCorrect={false}
             />
             <TouchableOpacity onPress={onSubmit}>
               <CheckIcon color={colors.darkPurple2} width={35} height={35} />
@@ -126,10 +112,10 @@ const AccountBox: React.FC<AccountBoxProps> = ({
           </>
         )}
       </View>
-      <View style={styles.container}>
+      <View style={styles.statusContainer}>
         <Typography type={'h4'}>{'Status'}</Typography>
-        <View style={{ flexDirection: 'row' }}>
-          <Typography type={'h4'} style={{ marginRight: 5, marginTop: 3 }}>
+        <View style={styles.status}>
+          <Typography type={'h4'} style={styles.statusText}>
             {isDeployed ? 'Deployed' : 'Not Deployed'}
           </Typography>
           {isDeployed ? (
@@ -210,7 +196,7 @@ const AccountBox: React.FC<AccountBoxProps> = ({
 }
 
 const styles = StyleSheet.create({
-  container: castStyle.view({
+  statusContainer: castStyle.view({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -221,10 +207,24 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     minHeight: 80,
   }),
-  textContainer: {
+  status: { flexDirection: 'row' },
+  statusText: { marginRight: 5, marginTop: 3 },
+  accountTextContainer: {
     marginTop: 30,
     alignItems: 'center',
     flexDirection: 'row',
+  },
+  accountLabel: {
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-between',
+  },
+  accountText: {
+    maxWidth: 240,
+  },
+  accountEditButton: {
+    alignSelf: 'flex-end',
+    textDecorationLine: 'underline',
   },
   editIcon: {
     marginLeft: 10,
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
   },
   accountInput: {
     color: colors.darkGray,
-    fontFamily: fonts.medium,
+    fontSize: 22,
     borderWidth: 1,
     borderColor: colors.darkPurple,
     borderRadius: 5,
