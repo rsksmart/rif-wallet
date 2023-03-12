@@ -84,7 +84,7 @@ export const PortfolioCard = ({
   disabled,
 }: PortfolioCardProps) => (
   <AppTouchable
-    width={990}
+    width={100}
     onPress={onPress}
     disabled={disabled}
     style={[styles.topContainer, { backgroundColor: color }]}
