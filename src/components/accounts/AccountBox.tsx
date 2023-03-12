@@ -11,9 +11,9 @@ import { selectAccounts } from 'store/slices/accountsSlice/selector'
 import { AccountPayload } from 'store/slices/accountsSlice/types'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { PublicKeyItemType } from 'screens/accounts/types'
-import { colors } from 'src/styles'
 import { sharedStyles } from 'shared/styles'
 import { defaultIconSize, sharedColors } from 'shared/constants'
+import { castStyle } from 'shared/utils'
 import {
   AppTouchable,
   getAddressDisplayText,
@@ -21,7 +21,6 @@ import {
   Typography,
 } from 'src/components'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
-import { castStyle } from 'shared/utils'
 
 import { CheckIcon } from '../icons/CheckIcon'
 
@@ -107,16 +106,22 @@ const AccountBox: React.FC<AccountBoxProps> = ({
               autoCorrect={false}
             />
             <TouchableOpacity onPress={onSubmit}>
-              <CheckIcon color={colors.darkPurple2} width={35} height={35} />
+              <CheckIcon
+                color={sharedColors.labelLight}
+                width={35}
+                height={35}
+              />
             </TouchableOpacity>
           </>
         )}
       </View>
       <View style={styles.statusContainer}>
-        <Typography type={'h4'}>{'Status'}</Typography>
+        <Typography type={'h4'}>{t('settings_screen_status_label')}</Typography>
         <View style={styles.status}>
           <Typography type={'h4'} style={styles.statusText}>
-            {isDeployed ? 'Deployed' : 'Not Deployed'}
+            {isDeployed
+              ? t('settings_screen_deployed_label')
+              : t('settings_screen_not_deployed_label')}
           </Typography>
           {isDeployed ? (
             <Icon
@@ -135,7 +140,7 @@ const AccountBox: React.FC<AccountBoxProps> = ({
       </View>
       <Input
         style={sharedStyles.marginTop20}
-        label={t('EOA Address')}
+        label={t('settings_screen_eoa_account_label')}
         inputName="EOA Address"
         rightIcon={
           <Icon
@@ -149,11 +154,11 @@ const AccountBox: React.FC<AccountBoxProps> = ({
         }
         placeholder={eoaAddressObject.displayAddress}
         isReadOnly
-        testID={'TestID.AddressText'}
+        testID={'TestID.eoaAddress'}
       />
       <Input
         style={sharedStyles.marginTop20}
-        label={t('Smart Wallet Address')}
+        label={t('settings_screen_smart_wallet_address_label')}
         inputName="Smart Wallet Address"
         rightIcon={
           <Icon
@@ -169,15 +174,19 @@ const AccountBox: React.FC<AccountBoxProps> = ({
         }
         placeholder={smartWalletAddressObject.displayAddress}
         isReadOnly
-        testID={'TestID.AddressText'}
+        testID={'TestID.smartWalletAddress'}
       />
 
       {publicKeys.map(publicKey => (
         <Input
           key={publicKey.publicKey}
           style={sharedStyles.marginTop20}
-          label={t(publicKey.networkName + ' Public Key')}
-          inputName={publicKey.networkName + ' Public Key'}
+          label={t(
+            publicKey.networkName + ' ' + t('settings_screen_public_key_label'),
+          )}
+          inputName={
+            publicKey.networkName + ' ' + t('settings_screen_public_key_label')
+          }
           rightIcon={
             <Icon
               name={'copy'}
@@ -188,7 +197,7 @@ const AccountBox: React.FC<AccountBoxProps> = ({
           }
           placeholder={publicKey.shortedPublicKey}
           isReadOnly
-          testID={'TestID.AddressText'}
+          testID={'TestID.publicKey'}
         />
       ))}
     </FormProvider>
@@ -207,40 +216,36 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     minHeight: 80,
   }),
-  status: { flexDirection: 'row' },
-  statusText: { marginRight: 5, marginTop: 3 },
-  accountTextContainer: {
+  status: castStyle.view({ flexDirection: 'row' }),
+  statusText: castStyle.view({ marginRight: 5, marginTop: 3 }),
+  accountTextContainer: castStyle.view({
     marginTop: 30,
     alignItems: 'center',
     flexDirection: 'row',
-  },
-  accountLabel: {
+  }),
+  accountLabel: castStyle.view({
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'space-between',
-  },
-  accountText: {
+  }),
+  accountText: castStyle.view({
     maxWidth: 240,
-  },
-  accountEditButton: {
+  }),
+  accountEditButton: castStyle.text({
     alignSelf: 'flex-end',
     textDecorationLine: 'underline',
-  },
-  editIcon: {
-    marginLeft: 10,
-    color: colors.darkPurple2,
-    paddingBottom: 5,
-  },
-  accountInput: {
-    color: colors.darkGray,
+  }),
+
+  accountInput: castStyle.text({
+    color: sharedColors.labelLight,
     fontSize: 22,
     borderWidth: 1,
-    borderColor: colors.darkPurple,
+    borderColor: sharedColors.labelLight,
     borderRadius: 5,
     paddingHorizontal: 5,
     paddingTop: 0,
     paddingBottom: 0,
-  },
+  }),
 })
 
 export default AccountBox
