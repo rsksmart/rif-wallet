@@ -15,13 +15,17 @@ import { colors } from 'src/styles'
 import { fonts } from 'src/styles/fonts'
 import { sharedStyles } from 'shared/styles'
 import { defaultIconSize, sharedColors } from 'shared/constants'
-import { getAddressDisplayText, Input } from 'src/components'
+import {
+  AppTouchable,
+  getAddressDisplayText,
+  Input,
+  Typography,
+} from 'src/components'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { castStyle } from 'shared/utils'
 
 import { EditMaterialIcon } from '../icons'
 import { CheckIcon } from '../icons/CheckIcon'
-import { MediumText } from '../typography'
-import accountSharedStyles from './styles'
 
 interface AccountBoxProps {
   address: string
@@ -89,12 +93,24 @@ const AccountBox: React.FC<AccountBoxProps> = ({
     <FormProvider {...methods}>
       <View style={styles.textContainer}>
         {!showAccountNameInput ? (
-          <>
-            <MediumText style={styles.text}>{accountName}</MediumText>
-            <TouchableOpacity onPress={onEdit}>
-              <EditMaterialIcon style={styles.editIcon} size={18} />
-            </TouchableOpacity>
-          </>
+          <View
+            style={{
+              flexDirection: 'row',
+              width: '100%',
+              justifyContent: 'space-between',
+            }}>
+            <Typography type={'h2'}>{accountName}</Typography>
+            <AppTouchable width={150} onPress={onEdit}>
+              <Typography
+                type={'h4'}
+                style={{
+                  alignSelf: 'flex-end',
+                  textDecorationLine: 'underline',
+                }}>
+                {'Edit name'}
+              </Typography>
+            </AppTouchable>
+          </View>
         ) : (
           <>
             <TextInput
@@ -110,11 +126,26 @@ const AccountBox: React.FC<AccountBoxProps> = ({
           </>
         )}
       </View>
-      <View style={accountSharedStyles.infoSection}>
-        <MediumText style={styles.titleFontSize}>Status</MediumText>
-        <MediumText style={styles.titleFontSize}>
-          {isDeployed ? 'Deployed' : 'Not Deployed'}
-        </MediumText>
+      <View style={styles.container}>
+        <Typography type={'h4'}>{'Status'}</Typography>
+        <View style={{ flexDirection: 'row' }}>
+          <Typography type={'h4'} style={{ marginRight: 5, marginTop: 3 }}>
+            {isDeployed ? 'Deployed' : 'Not Deployed'}
+          </Typography>
+          {isDeployed ? (
+            <Icon
+              name={'check-circle'}
+              size={24 || defaultIconSize}
+              color={sharedColors.successLight}
+            />
+          ) : (
+            <Icon
+              name={'exclamation-circle'}
+              size={24 || defaultIconSize}
+              color={sharedColors.dangerLight}
+            />
+          )}
+        </View>
       </View>
       <Input
         style={sharedStyles.marginTop20}
@@ -174,21 +205,26 @@ const AccountBox: React.FC<AccountBoxProps> = ({
           testID={'TestID.AddressText'}
         />
       ))}
-
-
     </FormProvider>
   )
 }
 
 const styles = StyleSheet.create({
+  container: castStyle.view({
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: sharedColors.inputInactive,
+    paddingLeft: 16,
+    paddingRight: 24,
+    marginTop: 12,
+    borderRadius: 10,
+    minHeight: 80,
+  }),
   textContainer: {
-    justifyContent: 'flex-end',
+    marginTop: 30,
     alignItems: 'center',
     flexDirection: 'row',
-  },
-  text: {
-    fontSize: 20,
-    color: colors.darkGray,
   },
   editIcon: {
     marginLeft: 10,
@@ -204,10 +240,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     paddingTop: 0,
     paddingBottom: 0,
-  },
-  titleFontSize: {
-    fontSize: 13,
-    color: colors.darkGray,
   },
 })
 
