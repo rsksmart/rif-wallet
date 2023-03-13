@@ -5,7 +5,7 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useTranslation } from 'react-i18next'
 
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
 import { useEffect } from 'react'
 import { InjectedScreens } from 'src/core/Core'
 import { ProfileCreateScreen, ShareProfileScreen } from 'screens/index'
@@ -41,6 +41,7 @@ const screenOptionsWithHeader = (title: string): StackNavigationOptions => ({
     </Typography>
   ),
   headerStyle: headerStyles.headerStyle,
+  headerTitleAlign: 'center',
   headerShadowVisible: false,
 })
 
@@ -90,7 +91,7 @@ export const ProfileNavigator = ({
 
 export const headerStyles = StyleSheet.create({
   headerPosition: castStyle.view({
-    marginTop: -45,
+    marginTop: Platform.OS === 'ios' ? -45 : 0,
   }),
   headerStyle: castStyle.view({
     backgroundColor: sharedColors.primary,
