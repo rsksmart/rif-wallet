@@ -17,7 +17,7 @@ import {
 } from 'components/button'
 import { useTranslation } from 'react-i18next'
 
-enum TransactionStatus {
+export enum TransactionStatus {
   CONFIRMED = 'confirmed',
 }
 

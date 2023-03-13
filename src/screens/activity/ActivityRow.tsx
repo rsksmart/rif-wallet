@@ -9,6 +9,10 @@ import {
   homeStackRouteNames,
   HomeStackScreenProps,
 } from 'navigation/homeNavigator/types'
+import { TransactionStatus, TransactionSummaryScreenProps } from 'src/screens/transactionSummary'
+import { useAppSelector } from 'src/redux/storeUtils'
+import { selectUsdPrices } from 'src/redux/slices/usdPricesSlice'
+
 
 import useActivityDeserializer from './useActivityDeserializer'
 import ActivityRowPresentation from './ActivityRowPresentation'
@@ -19,9 +23,29 @@ interface Props extends RootTabsScreenProps<rootTabsRouteNames.Activity> {
 }
 
 export const ActivityRow = ({ activityTransaction, navigation }: Props) => {
-  const activityDetails = useActivityDeserializer(activityTransaction)
+  const prices = useAppSelector(selectUsdPrices)
+  const activityDetails = useActivityDeserializer(activityTransaction, prices)
+  const txSummary: TransactionSummaryScreenProps = {
+    transaction: {
+      tokenValue: {
+        symbol: activityDetails.symbol,
+        symbolType: 'icon',
+        balance: activityDetails.value
+      },
+      usdValue: {
+        symbol: '$',
+        symbolType: 'text',
+        balance: '' + activityDetails.price
+      },
+      status: (activityDetails.status === 'success' ? TransactionStatus.CONFIRMED : undefined)
+    },
+    contact:{
+      address: activityDetails.to
+    }
+  }
   const handlePress = () =>
-    navigation.navigate(rootTabsRouteNames.ActivityDetails, activityTransaction)
+    // navigation.navigate(rootTabsRouteNames.ActivityDetails, activityTransaction)
+    navigation.navigate(rootTabsRouteNames.TransactionSummary, txSummary)
 
   return <ActivityRowPresentation {...activityDetails} onPress={handlePress} />
 }
@@ -44,9 +68,28 @@ export const ActivityBasicRow = ({
   activityTransaction,
   navigation,
 }: ActivityBasicRowProps) => {
-  const activityDetails = useActivityDeserializer(activityTransaction)
+  const prices = useAppSelector(selectUsdPrices)
+  const activityDetails = useActivityDeserializer(activityTransaction, prices)
+  const txSummary: TransactionSummaryScreenProps = {
+    transaction: {
+      tokenValue: {
+        symbol: activityDetails.symbol,
+        symbolType: 'icon',
+        balance: activityDetails.value
+      },
+      usdValue: {
+        symbol: '$',
+        symbolType: 'text',
+        balance: '' + activityDetails.price
+      },
+      status: (activityDetails.status === 'success' ? TransactionStatus.CONFIRMED : undefined)
+    },
+    contact:{
+      address: activityDetails.to
+    }
+  }
   const handlePress = () =>
-    navigation.navigate(rootTabsRouteNames.ActivityDetails, activityTransaction)
+    navigation.navigate(rootTabsRouteNames.TransactionSummary, txSummary)
   return (
     <AppTouchable width={'100%'} onPress={handlePress}>
       <BasicRowWithContact
