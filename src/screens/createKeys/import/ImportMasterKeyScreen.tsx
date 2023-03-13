@@ -197,7 +197,7 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
           </Typography>
         </View>
         <View style={styles.phraseView}>
-          <Typography type="h3">{headerTextMap.get(status)}</Typography>
+          <Typography type="h3">{t(headerTextMap.get(status))}</Typography>
         </View>
         <View
           style={
