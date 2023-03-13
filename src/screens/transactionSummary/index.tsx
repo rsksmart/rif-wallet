@@ -1,5 +1,6 @@
 import { StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import { useTranslation } from 'react-i18next'
 
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
@@ -15,7 +16,6 @@ import {
   AppButtonProps,
   AppButtonWidthVarietyEnum,
 } from 'components/button'
-import { useTranslation } from 'react-i18next'
 
 export enum TransactionStatus {
   CONFIRMED = 'confirmed',

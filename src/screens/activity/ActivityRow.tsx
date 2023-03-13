@@ -9,10 +9,12 @@ import {
   homeStackRouteNames,
   HomeStackScreenProps,
 } from 'navigation/homeNavigator/types'
-import { TransactionStatus, TransactionSummaryScreenProps } from 'src/screens/transactionSummary'
-import { useAppSelector } from 'src/redux/storeUtils'
-import { selectUsdPrices } from 'src/redux/slices/usdPricesSlice'
-
+import {
+  TransactionStatus,
+  TransactionSummaryScreenProps,
+} from 'screens/transactionSummary'
+import { useAppSelector } from 'store/storeUtils'
+import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 
 import useActivityDeserializer from './useActivityDeserializer'
 import ActivityRowPresentation from './ActivityRowPresentation'
@@ -30,18 +32,21 @@ export const ActivityRow = ({ activityTransaction, navigation }: Props) => {
       tokenValue: {
         symbol: activityDetails.symbol,
         symbolType: 'icon',
-        balance: activityDetails.value
+        balance: activityDetails.value,
       },
       usdValue: {
         symbol: '$',
         symbolType: 'text',
-        balance: '' + activityDetails.price
+        balance: '' + activityDetails.price,
       },
-      status: (activityDetails.status === 'success' ? TransactionStatus.CONFIRMED : undefined)
+      status:
+        activityDetails.status === 'success'
+          ? TransactionStatus.CONFIRMED
+          : undefined,
     },
-    contact:{
-      address: activityDetails.to
-    }
+    contact: {
+      address: activityDetails.to,
+    },
   }
   const handlePress = () =>
     // navigation.navigate(rootTabsRouteNames.ActivityDetails, activityTransaction)
@@ -75,18 +80,21 @@ export const ActivityBasicRow = ({
       tokenValue: {
         symbol: activityDetails.symbol,
         symbolType: 'icon',
-        balance: activityDetails.value
+        balance: activityDetails.value,
       },
       usdValue: {
         symbol: '$',
         symbolType: 'text',
-        balance: '' + activityDetails.price
+        balance: '' + activityDetails.price,
       },
-      status: (activityDetails.status === 'success' ? TransactionStatus.CONFIRMED : undefined)
+      status:
+        activityDetails.status === 'success'
+          ? TransactionStatus.CONFIRMED
+          : undefined,
     },
-    contact:{
-      address: activityDetails.to
-    }
+    contact: {
+      address: activityDetails.to,
+    },
   }
   const handlePress = () =>
     navigation.navigate(rootTabsRouteNames.TransactionSummary, txSummary)

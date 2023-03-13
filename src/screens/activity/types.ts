@@ -33,7 +33,7 @@ export type ActivityRowPresentationObjectType = {
   timeHumanFormatted: string
   value: string
   status: 'success' | 'pending'
-  id: string,
+  id: string
   price: number
 }
 
