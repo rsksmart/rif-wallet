@@ -111,11 +111,7 @@ export const Input = ({
                 {label}
               </Typography>
             ) : null}
-            <View
-              style={[
-                styles.valueContainer,
-                focused || value || leftIcon ? styles.valuePadding : null,
-              ]}>
+            <View style={styles.valueContainer}>
               {leftIcon && 'name' in leftIcon ? (
                 <AppTouchable
                   width={leftIcon.size || defaultIconSize}
@@ -138,6 +134,9 @@ export const Input = ({
                   style={[
                     sharedStyles.flex,
                     sharedStyles.noPadding,
+                    focused && !subtitle && (rightIcon || suffix || resetValue)
+                      ? styles.inputPadding
+                      : null,
                     inputStyle,
                   ]}
                   onChangeText={text => {
@@ -216,6 +215,7 @@ const styles = StyleSheet.create({
   }),
   label: castStyle.text({
     marginTop: 10,
+    marginBottom: 4,
     color: sharedColors.inputLabelColor,
   }),
   valueContainer: castStyle.view({
@@ -223,7 +223,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   }),
-  valuePadding: castStyle.view({ paddingTop: 10 }),
+  inputPadding: castStyle.view({
+    paddingBottom: 10,
+  }),
   inputSubtitleContainer: castStyle.view({
     marginLeft: 12,
   }),

@@ -165,30 +165,27 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           </View>
           <Input
             inputName="duration"
-            isReadOnly={true}
+            isReadOnly
             label={t('request_username_label')}
             placeholder={`${selectedYears} ${t(
               'request_username_placeholder',
             )}${selectedYears > 1 ? 's' : ''}`}
             subtitle={`${selectedDomainPrice} RIF ($ ${selectedDomainPriceInUsd})`}
             containerStyle={styles.yearsContainer}
-            inputStyle={styles.yearsInput}
             rightIcon={
               <View style={styles.yearsButtons}>
                 {selectedYears > 1 && (
                   <AppTouchable
                     width={40}
                     accessibilityLabel="decrease"
-                    onPress={() => handleYearsChange(selectedYears - 1)}
-                    style={styles.icon}>
+                    onPress={() => handleYearsChange(selectedYears - 1)}>
                     <Icon name="minus" size={16} color={colors.white} />
                   </AppTouchable>
                 )}
                 <AppTouchable
                   width={40}
                   accessibilityLabel="increase"
-                  onPress={() => handleYearsChange(selectedYears + 1)}
-                  style={styles.icon}>
+                  onPress={() => handleYearsChange(selectedYears + 1)}>
                   <Icon name="plus" size={16} color={colors.white} />
                 </AppTouchable>
               </View>
@@ -253,16 +250,7 @@ const styles = StyleSheet.create({
     height: 90,
     paddingRight: 10,
   }),
-  yearsInput: castStyle.text({
-    paddingLeft: 0,
-    paddingTop: 0,
-    paddingBottom: 0,
-  }),
   yearsButtons: castStyle.view({
     flexDirection: 'row',
-  }),
-  icon: castStyle.view({
-    alignSelf: 'center',
-    padding: 10,
   }),
 })
