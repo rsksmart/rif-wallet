@@ -13,6 +13,7 @@ import {
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
 import { sharedColors } from 'shared/constants'
+import { castStyle } from 'shared/utils'
 
 export const AccountsScreen = ({
   navigation,
@@ -70,15 +71,15 @@ export const AccountsScreen = ({
 }
 
 const styles = StyleSheet.create({
-  container: {
+  container: castStyle.view({
     backgroundColor: sharedColors.tokenBackground,
     paddingHorizontal: 24,
-  },
-  viewBottomFix: {
+  }),
+  viewBottomFix: castStyle.view({
     marginTop: 40,
     marginBottom: 150,
-  },
-  walletView: {
+  }),
+  walletView: castStyle.view({
     marginBottom: 40,
-  },
+  }),
 })
