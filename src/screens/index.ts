@@ -13,6 +13,7 @@ export { SearchDomainScreen } from './rnsManager/SearchDomainScreen'
 export { RequestDomainScreen } from './rnsManager/RequestDomainScreen'
 export { BuyDomainScreen } from './rnsManager/BuyDomainScreen'
 export { AliasBoughtScreen } from './rnsManager/AliasBoughtScreen'
+export { PurchaseDomainScreen } from './rnsManager/PurchaseDomainScreen'
 
 export { HomeScreen } from './home/index'
 export {
