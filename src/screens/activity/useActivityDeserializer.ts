@@ -2,7 +2,6 @@ import testnetContracts from '@rsksmart/rsk-testnet-contract-metadata'
 import mainnetContracts from '@rsksmart/rsk-contract-metadata'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { BigNumber } from 'ethers'
-import { t } from 'i18next'
 
 import {
   balanceToDisplay,
@@ -11,7 +10,7 @@ import {
 } from 'lib/utils'
 
 import { UsdPricesState } from 'store/slices/usdPricesSlice'
-import { isDefaultChainTypeMainnet } from 'src/core/config'
+import { isDefaultChainTypeMainnet } from 'core/config'
 
 import { ActivityRowPresentationObjectType, ActivityMixedType } from './types'
 
@@ -35,12 +34,19 @@ const useActivityDeserializer: (
       status: activityTransaction.status,
       id: activityTransaction.txid,
       price: convertBalance(
-        BigNumber.from(Math.round(Number(activityTransaction.valueBtc) * 10e8)),
+        BigNumber.from(
+          Math.round(Number(activityTransaction.valueBtc) * Math.pow(10, 8)),
+        ),
         8,
         prices.BTC?.price || 0,
       ),
-      fee: 0,
-      total: activityTransaction.valueBtc,
+      fee: activityTransaction.fees + ' satoshi',
+      total: balanceToDisplay(
+        BigNumber.from(
+          Math.round(Number(activityTransaction.valueBtc) * Math.pow(10, 8)),
+        ).add(BigNumber.from(Math.round(Number(activityTransaction.fees)))),
+        8,
+      ),
     }
   } else {
     const tx = activityTransaction.originTransaction
@@ -50,11 +56,11 @@ const useActivityDeserializer: (
     const { address: tokenAddress, data: balance } =
       tx.txType === 'contract call'
         ? tx.receipt?.logs.filter(log =>
-            log.topics.find(topic => {
-              return topic
+            log.topics.find(topic =>
+              topic
                 .toLowerCase()
-                .includes(wallet.smartWalletAddress.substring(2).toLowerCase())
-            }),
+                .includes(wallet.smartWalletAddress.substring(2).toLowerCase()),
+            ),
           )[0] || { address: '', data: '0x0' }
         : { address: rbtcAddress, data: tx.value }
     if (!tokenAddress || tokenAddress === rbtcAddress) {
@@ -90,6 +96,17 @@ const useActivityDeserializer: (
       address => address.toLowerCase() === tokenAddress.toLowerCase(),
     )
     const token = key ? contracts[key] : { decimals: 18, symbol: '' }
+    const { data: fee } = tx.receipt?.logs
+      .filter(log => log.address.toLowerCase() === tokenAddress)
+      .filter(log =>
+        log.topics.every(
+          topic =>
+            !topic
+              .toLowerCase()
+              .includes(wallet.smartWalletAddress.substring(2).toLowerCase()),
+        ),
+      )[0] || { data: '' }
+    const feeRbtc = BigNumber.from(tx.gasPrice).mul(BigNumber.from(tx.gas))
     return {
       symbol:
         (activityTransaction?.enhancedTransaction?.symbol as string) ||
@@ -102,10 +119,17 @@ const useActivityDeserializer: (
       price: convertBalance(
         balance,
         token.decimals,
-        tokenAddress ? prices[tokenAddress].price : 0,
+        prices[tokenAddress] ? prices[tokenAddress].price : 0,
       ),
-      fee: balanceToDisplay(tx.gas, 18),
-      total: balanceToDisplay(balance, token.decimals),
+      fee: fee
+        ? balanceToDisplay(fee, token.decimals)
+        : balanceToDisplay(feeRbtc, token.decimals) + ' RBTC',
+      total: fee
+        ? balanceToDisplay(
+            BigNumber.from(fee).add(BigNumber.from(balance)),
+            token.decimals,
+          )
+        : balanceToDisplay(balance, token.decimals),
     }
   }
 }

@@ -1,10 +1,12 @@
+import { t } from 'i18next'
+
 import {
   rootTabsRouteNames,
   RootTabsScreenProps,
 } from 'navigation/rootNavigator/types'
 import { StatusEnum } from 'components/BasicRow'
 import { BasicRowWithContact } from 'components/BasicRow/BasicRowWithContact'
-import { AppTouchable } from 'components/appTouchable'
+import { AppButtonBackgroundVarietyEnum, AppTouchable } from 'src/components'
 import {
   homeStackRouteNames,
   HomeStackScreenProps,
@@ -15,10 +17,8 @@ import {
 } from 'screens/transactionSummary'
 import { useAppSelector } from 'store/storeUtils'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
-import {
-  selectSelectedWallet,
-  selectWallets,
-} from 'src/redux/slices/settingsSlice'
+import { selectSelectedWallet, selectWallets } from 'store/slices/settingsSlice'
+import { sharedColors } from 'shared/constants'
 
 import useActivityDeserializer from './useActivityDeserializer'
 import ActivityRowPresentation from './ActivityRowPresentation'
@@ -60,11 +60,22 @@ export const ActivityRow = ({ activityTransaction, navigation }: Props) => {
     contact: {
       address: activityDetails.to,
     },
+    title: 'Sent',
+    buttons: [
+      {
+        title: t('transaction_summary_default_button_text'),
+        color: sharedColors.white,
+        textColor: sharedColors.black,
+        backgroundVariety: AppButtonBackgroundVarietyEnum.DEFAULT,
+        onPress: () => {
+          navigation.navigate(rootTabsRouteNames.Activity)
+        },
+      },
+    ],
   }
-  const handlePress = () =>
-    // navigation.navigate(rootTabsRouteNames.ActivityDetails, activityTransaction)
+  const handlePress = () => {
     navigation.navigate(rootTabsRouteNames.TransactionSummary, txSummary)
-
+  }
   return <ActivityRowPresentation {...activityDetails} onPress={handlePress} />
 }
 const getStatus = (status: string) => {
@@ -110,10 +121,14 @@ export const ActivityBasicRow = ({
         activityDetails.status === 'success'
           ? TransactionStatus.CONFIRMED
           : undefined,
+      feeValue: activityDetails.fee,
+      total: activityDetails.total,
+      time: activityDetails.timeHumanFormatted,
     },
     contact: {
       address: activityDetails.to,
     },
+    title: 'Sent',
   }
   const handlePress = () =>
     navigation.navigate(rootTabsRouteNames.TransactionSummary, txSummary)
