@@ -37,6 +37,9 @@ export interface TransactionSummaryScreenProps {
     tokenValue: CurrencyValue
     usdValue: CurrencyValue
     status?: TransactionStatus
+    feeValue: number
+    total: number
+    time: string
   }
   contact: ContactWithAddressRequired
   buttons?: AppButtonProps[]
@@ -125,22 +128,22 @@ export const TransactionsSummary = ({
           <Typography
             type={'h4'}
             style={[styles.summaryText, sharedStyles.textRight]}>
-            {'43.20'}
+            {transaction.tokenValue.balance}
           </Typography>
           <Typography
             type={'h4'}
             style={[styles.summaryText, sharedStyles.textRight]}>
-            {'43.20'}
+            {transaction.total}
           </Typography>
           <Typography
             type={'h4'}
             style={[styles.summaryText, sharedStyles.textRight]}>
-            {'0.20'}
+            {transaction.feeValue}
           </Typography>
           <Typography
             type={'h4'}
             style={[styles.summaryText, sharedStyles.textRight]}>
-            {'approx. 1 min'}
+            {transaction.time}
           </Typography>
         </View>
       </View>

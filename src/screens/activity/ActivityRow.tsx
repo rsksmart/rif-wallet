@@ -53,6 +53,9 @@ export const ActivityRow = ({ activityTransaction, navigation }: Props) => {
         activityDetails.status === 'success'
           ? TransactionStatus.CONFIRMED
           : undefined,
+      feeValue: activityDetails.fee,
+      total: activityDetails.total,
+      time: activityDetails.timeHumanFormatted,
     },
     contact: {
       address: activityDetails.to,

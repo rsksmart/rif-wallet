@@ -2,6 +2,7 @@ import testnetContracts from '@rsksmart/rsk-testnet-contract-metadata'
 import mainnetContracts from '@rsksmart/rsk-contract-metadata'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { BigNumber } from 'ethers'
+import { t } from 'i18next'
 
 import {
   balanceToDisplay,
@@ -38,6 +39,8 @@ const useActivityDeserializer: (
         8,
         prices.BTC?.price || 0,
       ),
+      fee: 0,
+      total: activityTransaction.valueBtc,
     }
   } else {
     const tx = activityTransaction.originTransaction
@@ -73,6 +76,11 @@ const useActivityDeserializer: (
               tokenAddress ? prices[tokenAddress].price : 0,
             )
           : 0,
+        fee: balanceToDisplay(tx.gas, 18),
+        total: balanceToDisplay(
+          BigNumber.from(tx.gas).add(BigNumber.from(tx.value)),
+          18,
+        ),
       }
     }
     const contracts = isDefaultChainTypeMainnet
@@ -96,6 +104,8 @@ const useActivityDeserializer: (
         token.decimals,
         tokenAddress ? prices[tokenAddress].price : 0,
       ),
+      fee: balanceToDisplay(tx.gas, 18),
+      total: balanceToDisplay(balance, token.decimals),
     }
   }
 }

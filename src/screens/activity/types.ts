@@ -35,6 +35,8 @@ export type ActivityRowPresentationObjectType = {
   status: 'success' | 'pending'
   id: string
   price: number
+  fee: number
+  total: number
 }
 
 export type ActivityRowPresentationType = ActivityRowPresentationObjectType & {
