@@ -192,7 +192,7 @@ const resources = {
       settings_screen_version: 'Version',
       settings_screen_smart_wallet_factory: 'Smart Wallet Factory',
       settings_screen_rpc_url: 'RPC URL',
-      settings_screen_backend_url: 'Backed URL',
+      settings_screen_backend_url: 'Backend URL',
     },
   },
   es: {
