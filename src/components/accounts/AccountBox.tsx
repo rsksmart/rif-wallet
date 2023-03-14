@@ -32,7 +32,7 @@ interface AccountBoxProps {
   publicKeys: PublicKeyItemType[]
 }
 
-const AccountBox = ({
+export const AccountBox = ({
   address,
   smartWalletAddress,
   smartWalletFactory,
@@ -247,5 +247,3 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
   }),
 })
-
-export default AccountBox

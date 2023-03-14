@@ -3,7 +3,7 @@ import { StyleSheet, View, FlatList } from 'react-native'
 
 import { shortAddress } from 'lib/utils'
 
-import AccountBox from 'components/accounts/AccountBox'
+import { AccountBox } from 'components/accounts/AccountBox'
 import { useAppSelector } from 'store/storeUtils'
 import { selectWallets } from 'store/slices/settingsSlice'
 import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
