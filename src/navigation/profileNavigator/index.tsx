@@ -9,11 +9,15 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 
 import { AppTouchable, Typography } from 'components/index'
 import { InjectedScreens } from 'core/Core'
-import { ProfileCreateScreen, ShareProfileScreen } from 'screens/index'
+import {
+  ProfileCreateScreen,
+  PurchaseDomainScreen,
+  ShareProfileScreen,
+} from 'screens/index'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { selectProfile } from 'src/redux/slices/profileSlice'
-import { useAppSelector } from 'src/redux/storeUtils'
+import { useAppSelector } from 'store/storeUtils'
+import { selectProfileStatus } from 'store/slices/profileSlice'
 
 import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
 import {
@@ -58,11 +62,13 @@ export const ProfileNavigator = ({
     })
   }, [navigation])
   const { t } = useTranslation()
-  const profile = useAppSelector(selectProfile)
+  const status = useAppSelector(selectProfileStatus)
+
+  console.log('status', status)
 
   return (
     <ProfileStack.Navigator>
-      {profile.status !== ProfileStatus.READY_TO_PURCHASE && (
+      {status !== ProfileStatus.READY_TO_PURCHASE && (
         <ProfileStack.Screen
           name={profileStackRouteNames.ProfileCreateScreen}
           component={ProfileCreateScreen}
@@ -70,8 +76,8 @@ export const ProfileNavigator = ({
         />
       )}
 
-      {(profile.status === ProfileStatus.NONE ||
-        profile.status === ProfileStatus.REQUESTING_ERROR) && (
+      {(status === ProfileStatus.NONE ||
+        status === ProfileStatus.REQUESTING_ERROR) && (
         <ProfileStack.Screen
           name={profileStackRouteNames.SearchDomain}
           component={InjectedScreens.SearchDomainScreen}
@@ -79,18 +85,18 @@ export const ProfileNavigator = ({
         />
       )}
 
-      {profile.status === ProfileStatus.REQUESTING && (
+      {status === ProfileStatus.READY_TO_PURCHASE && (
         <ProfileStack.Screen
-          name={profileStackRouteNames.BuyDomain}
-          component={InjectedScreens.BuyDomainScreen}
-          initialParams={{ alias: profile.alias }}
+          name={profileStackRouteNames.PurchaseDomain}
+          component={PurchaseDomainScreen}
+          options={screenOptionsWithHeader(t('username_registration_title'))}
         />
       )}
 
-      <ProfileStack.Screen
+      {/* <ProfileStack.Screen
         name={profileStackRouteNames.AliasBought}
         component={InjectedScreens.AliasBoughtScreen}
-      />
+      /> */}
 
       <ProfileStack.Screen
         name={profileStackRouteNames.ShareProfileScreen}

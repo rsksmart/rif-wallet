@@ -11,6 +11,7 @@ export enum profileStackRouteNames {
   BuyDomain = 'BuyDomain',
   AliasBought = 'AliasBought',
   RegisterDomain = 'RegisterDomain',
+  PurchaseDomain = 'PurchaseDomain',
 }
 
 export enum ProfileStatus {
@@ -41,6 +42,7 @@ export type ProfileStackParamsList = {
     selectedDomain: string
     years: number
   }
+  [profileStackRouteNames.PurchaseDomain]: undefined
 }
 
 export type ProfileStackScreenProps<T extends keyof ProfileStackParamsList> =
