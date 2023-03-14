@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { StyleSheet, TextInput, View, Clipboard } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { SmartWalletFactory } from '@rsksmart/rif-relay-light-sdk'
@@ -32,13 +32,13 @@ interface AccountBoxProps {
   publicKeys: PublicKeyItemType[]
 }
 
-const AccountBox: React.FC<AccountBoxProps> = ({
+const AccountBox = ({
   address,
   smartWalletAddress,
   smartWalletFactory,
   publicKeys = [],
   id = 0,
-}) => {
+}: AccountBoxProps) => {
   const dispatch = useAppDispatch()
   const accounts = useAppSelector(selectAccounts)
   const initialAccountName = accounts[id]?.name || `account ${id + 1}`
