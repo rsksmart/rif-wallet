@@ -193,6 +193,12 @@ const resources = {
       settings_screen_smart_wallet_factory: 'Smart Wallet Factory',
       settings_screen_rpc_url: 'RPC URL',
       settings_screen_backend_url: 'Backend URL',
+      settings_screen_status_label: 'Status',
+      settings_screen_deployed_label: 'Deployed',
+      settings_screen_not_deployed_label: 'Not Deployed',
+      settings_screen_eoa_account_label: 'EOA Address',
+      settings_screen_smart_wallet_address_label: 'Smart Wallet Address',
+      settings_screen_public_key_label: 'Public Key',
     },
   },
   es: {
