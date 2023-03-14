@@ -15,7 +15,7 @@ import {
 import { InjectedScreens } from 'core/Core'
 import { ExampleScreen } from 'screens/example'
 import { headerStyles } from 'navigation/profileNavigator'
-import { Typography } from 'src/components'
+import { Typography } from 'components/typography'
 import { sharedColors } from 'shared/constants'
 
 import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
@@ -36,6 +36,7 @@ const settingsNavigatorOptions = (title: string): StackNavigationOptions => ({
   ],
   headerShadowVisible: false,
 })
+
 export const SettingsNavigator = ({
   navigation,
 }: RootTabsScreenProps<rootTabsRouteNames.Settings>) => {
