@@ -1,10 +1,29 @@
 import { Contact } from 'shared/types'
+import addresses from 'screens/rnsManager/addresses.json'
 
 export const defaultContacts: Record<string, Contact> = {
-  '0x90734bd6bf96250a7b262e2bc34284b0d47c1e8d': {
-    address: '0x90734bd6bf96250a7b262e2bc34284b0d47c1e8d',
+  [addresses.fifsAddrRegistrarAddress]: {
+    address: addresses.fifsAddrRegistrarAddress,
     name: 'RNS Manager',
-    displayAddress: '0x90734bd6bf96250a7b262e2bc34284b0d47c1e8d',
+    displayAddress: addresses.fifsAddrRegistrarAddress,
+    isEditable: false,
+  },
+  [addresses.rifTokenAddress]: {
+    address: addresses.rifTokenAddress,
+    name: 'RIF Token',
+    displayAddress: addresses.rifTokenAddress,
+    isEditable: false,
+  },
+  [addresses.rnsRegistryAddress]: {
+    address: addresses.rnsRegistryAddress,
+    name: 'RNS Registry',
+    displayAddress: addresses.rnsRegistryAddress,
+    isEditable: false,
+  },
+  [addresses.rskOwnerAddress]: {
+    address: addresses.rskOwnerAddress,
+    name: 'RSK Owner',
+    displayAddress: addresses.rskOwnerAddress,
     isEditable: false,
   },
 }
