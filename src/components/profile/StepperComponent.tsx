@@ -26,22 +26,22 @@ export const StepperComponent = ({
     <View style={[sharedStyles.row, style]}>
       {colors.map((backgroundColor, index) => {
         const commonStyle = castStyle.view({ width, height, backgroundColor })
-        const stepperStyle = [commonStyle]
+        const stepStyle = [commonStyle]
         if (index === 0) {
-          stepperStyle.push({
+          stepStyle.push({
             borderTopLeftRadius: height / 2,
             borderBottomLeftRadius: height / 2,
           })
         } else if (index === colors.length - 1) {
-          stepperStyle.push(styles.separator)
-          stepperStyle.push({
+          stepStyle.push(styles.separator)
+          stepStyle.push({
             borderTopRightRadius: height / 2,
             borderBottomRightRadius: height / 2,
           })
         } else {
-          stepperStyle.push(styles.separator)
+          stepStyle.push(styles.separator)
         }
-        return <View key={index} style={[stepperStyle, style]} />
+        return <View key={index} style={stepStyle} />
       })}
     </View>
   )
