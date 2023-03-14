@@ -150,6 +150,7 @@ const nonSelectedCardStyles = StyleSheet.create({
   secondaryTextContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    width: '100%',
   },
   icon: {
     marginTop: 3,

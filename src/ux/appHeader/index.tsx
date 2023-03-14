@@ -7,10 +7,11 @@ import OIcon from 'react-native-vector-icons/Octicons'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { selectActiveWallet, selectTopColor } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
-import { ProfileHandler } from './ProfileHandler'
 import { sharedColors } from 'shared/constants'
 import { AppTouchable } from 'components/appTouchable'
 import { castStyle } from 'shared/utils'
+
+import { ProfileHandler } from './ProfileHandler'
 
 type HeaderProps = BottomTabHeaderProps | StackHeaderProps
 
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
   row: castStyle.view({
     alignItems: 'center', // vertical
     paddingVertical: 5,
-    paddingHorizontal: 15,
+    paddingHorizontal: 24,
     display: 'flex',
     flexDirection: 'row',
   }),
