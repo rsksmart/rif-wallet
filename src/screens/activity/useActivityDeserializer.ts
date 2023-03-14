@@ -1,19 +1,28 @@
 import testnetContracts from '@rsksmart/rsk-testnet-contract-metadata'
+import mainnetContracts from '@rsksmart/rsk-contract-metadata'
+import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { BigNumber } from 'ethers'
 
-import { UsdPricesState } from 'src/redux/slices/usdPricesSlice'
-
-import { ActivityRowPresentationObjectType, ActivityMixedType } from './types'
 import {
   balanceToDisplay,
   convertBalance,
   convertUnixTimeToFromNowFormat,
-} from '../../lib/utils'
+} from 'lib/utils'
+
+import { UsdPricesState } from 'store/slices/usdPricesSlice'
+import { isDefaultChainTypeMainnet } from 'src/core/config'
+
+import { ActivityRowPresentationObjectType, ActivityMixedType } from './types'
 
 const useActivityDeserializer: (
   activityTransaction: ActivityMixedType,
   prices: UsdPricesState,
-) => ActivityRowPresentationObjectType = (activityTransaction, prices) => {
+  wallet: RIFWallet,
+) => ActivityRowPresentationObjectType = (
+  activityTransaction,
+  prices,
+  wallet,
+) => {
   if ('isBitcoin' in activityTransaction) {
     return {
       symbol: activityTransaction.symbol,
@@ -31,48 +40,48 @@ const useActivityDeserializer: (
       ),
     }
   } else {
-    const status = activityTransaction.originTransaction.receipt
-      ? 'success'
-      : 'pending'
-    const timeFormatted = convertUnixTimeToFromNowFormat(
-      activityTransaction.originTransaction.timestamp,
-    )
     const tx = activityTransaction.originTransaction
-    const tokenAdress =
-      tx.receipt && tx.receipt.logs.length
-        ? tx.receipt.logs[0].address
-        : '0x0000000000000000000000000000000000000000'
-    const token = testnetContracts[
-      Object.keys(testnetContracts).find(
-        address => address.toLowerCase() === tokenAdress,
-      ) || ''
-    ] || { decimals: 18, symbol: 'RBTC' }
-    const balance =
-      activityTransaction.originTransaction.receipt &&
-      activityTransaction.originTransaction.receipt.logs.length
-        ? activityTransaction.originTransaction.receipt.logs[0].args[2]
-        : activityTransaction.originTransaction.value
-    const valueConverted = () => {
-      if (
-        activityTransaction.originTransaction.receipt &&
-        activityTransaction.originTransaction.receipt.logs.length
-      ) {
-        return balanceToDisplay(
-          activityTransaction.originTransaction.receipt.logs[0].args[2],
-          token.decimals,
-        )
+    const rbtcAddress = '0x0000000000000000000000000000000000000000'
+    const status = tx.receipt ? 'success' : 'pending'
+    const timeFormatted = convertUnixTimeToFromNowFormat(tx.timestamp)
+    const { address: tokenAddress, data: balance } =
+      tx.txType === 'contract call'
+        ? tx.receipt?.logs.filter(log =>
+            log.topics.find(topic => {
+              return topic
+                .toLowerCase()
+                .includes(wallet.smartWalletAddress.substring(2).toLowerCase())
+            }),
+          )[0] || { address: '', data: '0x0' }
+        : { address: rbtcAddress, data: tx.value }
+    if (!tokenAddress || tokenAddress === rbtcAddress) {
+      return {
+        symbol: tokenAddress
+          ? 'RBTC'
+          : (activityTransaction?.enhancedTransaction?.symbol as string) || '',
+        to: tx.to,
+        timeHumanFormatted: timeFormatted,
+        status,
+        value:
+          activityTransaction.enhancedTransaction?.value ||
+          balanceToDisplay(tx.value, 18),
+        id: tx.hash,
+        price: tokenAddress
+          ? convertBalance(
+              tx.value,
+              18,
+              tokenAddress ? prices[tokenAddress].price : 0,
+            )
+          : 0,
       }
-      if (activityTransaction.enhancedTransaction?.value) {
-        return balanceToDisplay(
-          activityTransaction.enhancedTransaction.value,
-          token.decimals,
-        )
-      }
-      return balanceToDisplay(
-        activityTransaction.originTransaction.value,
-        token.decimals,
-      )
     }
+    const contracts = isDefaultChainTypeMainnet
+      ? mainnetContracts
+      : testnetContracts
+    const key = Object.keys(contracts).find(
+      address => address.toLowerCase() === tokenAddress.toLowerCase(),
+    )
+    const token = key ? contracts[key] : { decimals: 18, symbol: '' }
     return {
       symbol:
         (activityTransaction?.enhancedTransaction?.symbol as string) ||
@@ -80,9 +89,13 @@ const useActivityDeserializer: (
       to: activityTransaction.originTransaction.to,
       timeHumanFormatted: timeFormatted,
       status,
-      value: valueConverted(),
+      value: balanceToDisplay(balance, token.decimals),
       id: activityTransaction.originTransaction.hash,
-      price: convertBalance(balance, token.decimals, prices[tokenAdress].price),
+      price: convertBalance(
+        balance,
+        token.decimals,
+        tokenAddress ? prices[tokenAddress].price : 0,
+      ),
     }
   }
 }

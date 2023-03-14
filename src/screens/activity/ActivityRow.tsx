@@ -15,6 +15,10 @@ import {
 } from 'screens/transactionSummary'
 import { useAppSelector } from 'store/storeUtils'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
+import {
+  selectSelectedWallet,
+  selectWallets,
+} from 'src/redux/slices/settingsSlice'
 
 import useActivityDeserializer from './useActivityDeserializer'
 import ActivityRowPresentation from './ActivityRowPresentation'
@@ -26,7 +30,13 @@ interface Props extends RootTabsScreenProps<rootTabsRouteNames.Activity> {
 
 export const ActivityRow = ({ activityTransaction, navigation }: Props) => {
   const prices = useAppSelector(selectUsdPrices)
-  const activityDetails = useActivityDeserializer(activityTransaction, prices)
+  const selectedWallet = useAppSelector(selectSelectedWallet)
+  const wallets = useAppSelector(selectWallets)
+  const activityDetails = useActivityDeserializer(
+    activityTransaction,
+    prices,
+    wallets[selectedWallet],
+  )
   const txSummary: TransactionSummaryScreenProps = {
     transaction: {
       tokenValue: {
@@ -74,7 +84,13 @@ export const ActivityBasicRow = ({
   navigation,
 }: ActivityBasicRowProps) => {
   const prices = useAppSelector(selectUsdPrices)
-  const activityDetails = useActivityDeserializer(activityTransaction, prices)
+  const selectedWallet = useAppSelector(selectSelectedWallet)
+  const wallets = useAppSelector(selectWallets)
+  const activityDetails = useActivityDeserializer(
+    activityTransaction,
+    prices,
+    wallets[selectedWallet],
+  )
   const txSummary: TransactionSummaryScreenProps = {
     transaction: {
       tokenValue: {
