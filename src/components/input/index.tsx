@@ -22,6 +22,7 @@ import {
   sharedStyles,
 } from 'shared/constants'
 import { castStyle } from 'shared/utils'
+
 import { Typography } from '../typography'
 import { AppTouchable } from '../appTouchable'
 
@@ -44,6 +45,7 @@ export interface InputProps extends TextInputProps {
   placeholderStyle?: StyleProp<TextStyle>
   subtitleStyle?: StyleProp<TextStyle>
   suffix?: ReactFragment
+  inputRef?: (ref: TextInput) => void
 }
 
 export const Input = ({
@@ -66,6 +68,7 @@ export const Input = ({
   onChangeText,
   onFocus: onFocusProp,
   suffix,
+  inputRef,
   ...textInputProps
 }: InputProps) => {
   const { control } = useFormContext()
@@ -108,11 +111,7 @@ export const Input = ({
                 {label}
               </Typography>
             ) : null}
-            <View
-              style={[
-                styles.valueContainer,
-                focused || value || leftIcon ? styles.valuePadding : null,
-              ]}>
+            <View style={styles.valueContainer}>
               {leftIcon && 'name' in leftIcon ? (
                 <AppTouchable
                   width={leftIcon.size || defaultIconSize}
@@ -135,6 +134,9 @@ export const Input = ({
                   style={[
                     sharedStyles.flex,
                     sharedStyles.noPadding,
+                    focused && !subtitle && (rightIcon || suffix || resetValue)
+                      ? styles.inputPadding
+                      : null,
                     inputStyle,
                   ]}
                   onChangeText={text => {
@@ -144,6 +146,7 @@ export const Input = ({
                   onBlur={onBlur}
                   onFocus={onFocus}
                   editable={!isReadOnly}
+                  ref={inputRef}
                   {...textInputProps}>
                   <Typography
                     style={[
@@ -212,6 +215,7 @@ const styles = StyleSheet.create({
   }),
   label: castStyle.text({
     marginTop: 10,
+    marginBottom: 4,
     color: sharedColors.inputLabelColor,
   }),
   valueContainer: castStyle.view({
@@ -219,7 +223,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   }),
-  valuePadding: castStyle.view({ paddingTop: 10 }),
+  inputPadding: castStyle.view({
+    paddingBottom: 10,
+  }),
   inputSubtitleContainer: castStyle.view({
     marginLeft: 12,
   }),

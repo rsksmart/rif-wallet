@@ -1,5 +1,4 @@
 import i18n from 'i18next'
-
 import { initReactI18next } from 'react-i18next'
 
 // the translations
@@ -104,6 +103,10 @@ const resources = {
       initial_screen_title: 'Wallet',
       initial_screen_button_create: 'Create a wallet',
       initial_screen_button_import: 'Import existing',
+      header_import_wallet: 'Import wallet',
+      header_enter_your_phrase: 'Enter your phrase',
+      header_phrase_correct: 'Phrase is correct!',
+      header_phrase_not_correct: 'Phrase is not correct!',
       header_no_username: 'No username',
       header_requesting: 'Requesting username...',
       header_purchase: 'Purchase username',
@@ -173,6 +176,12 @@ const resources = {
       profile_address_label: 'Address',
       profile_register_your_username_button_text: 'Register your username',
       no_username: 'No username',
+      confirm_key_title: 'Verify your phrase',
+      confirm_key_error: 'Wrong words! Try again...',
+      confirm_key_input_error: "Words don't match",
+      confirm_key_success: 'Phrase verified! ',
+      confirm_key_button: 'OK',
+      confirm_key_screen_title: 'Wallet backup',
     },
   },
   es: {

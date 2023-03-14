@@ -67,7 +67,6 @@ export const DomainInput = ({
   )
   const searchDomain = useCallback(
     async (domain: string, errorType?: string) => {
-      console.log('errorType', errorType)
       if (errorType === 'matches') {
         setDomainAvailability(DomainStatus.NO_VALID)
         onDomainAvailable(domain, false)
@@ -161,7 +160,6 @@ export const DomainInput = ({
         placeholder={t('username')}
         containerStyle={styles.domainContainer}
         labelStyle={labelStyle}
-        inputStyle={styles.domainInput}
         placeholderStyle={styles.domainPlaceholder}
         resetValue={resetField}
         onChangeText={setUsername}
@@ -184,13 +182,8 @@ const styles = StyleSheet.create({
   domainContainer: castStyle.view({
     height: 80,
   }),
-  domainInput: castStyle.text({
-    paddingTop: 0,
-    paddingLeft: 0,
-    paddingBottom: 10,
-  }),
   domainPlaceholder: castStyle.text({
-    fontSize: 16,
+    fontSize: 14,
     color: sharedColors.subTitle,
   }),
   domainSuffix: castStyle.text({

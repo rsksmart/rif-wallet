@@ -1,20 +1,19 @@
 import { CompositeScreenProps } from '@react-navigation/native'
-import { useCallback, useState } from 'react'
-import {
-  ListRenderItemInfo,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native'
-import Carousel from 'react-native-snap-carousel'
+import { useCallback, useState, useRef } from 'react'
+import { ScrollView, StyleSheet, TextInput, View } from 'react-native'
+import { Pagination } from 'react-native-snap-carousel'
+import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel'
+import { useTranslation } from 'react-i18next'
+import AntDesign from 'react-native-vector-icons/AntDesign'
+import Feather from 'react-native-vector-icons/Feather'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { FormProvider, useForm } from 'react-hook-form'
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
+import { CarouselRenderItemInfo } from 'react-native-reanimated-carousel/lib/typescript/types'
 
 import { validateMnemonic } from 'lib/bip39'
 
-import { PaginationNavigator } from 'components/button/PaginationNavigator'
-import { Arrow } from 'components/icons'
-import { RegularText, SemiBoldText } from 'components/index'
-import { useKeyboardIsVisible } from 'core/hooks/useKeyboardIsVisible'
+import { AppButton, Input, Typography } from 'components/index'
 import {
   createKeysRouteNames,
   CreateKeysScreenProps,
@@ -23,14 +22,11 @@ import {
   rootTabsRouteNames,
   RootTabsScreenProps,
 } from 'navigation/rootNavigator'
-import { Trans } from 'react-i18next'
-import { handleInputRefCreation } from 'src/shared/utils'
-import { colors } from 'src/styles/colors'
-import { SLIDER_WIDTH, WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
+import { castStyle } from 'shared/utils'
+import { WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
 import { createWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
-import { sharedMnemonicStyles } from '../new/styles'
-import { WordSelector } from '../new/WordSelector'
+import { defaultIconSize, sharedColors, sharedStyles } from 'shared/constants'
 
 type Props = CompositeScreenProps<
   CreateKeysScreenProps<createKeysRouteNames.ImportMasterKey>,
@@ -39,192 +35,285 @@ type Props = CompositeScreenProps<
 
 const slidesIndexes = [0, 1, 2, 3]
 
+enum StatusActions {
+  SUCCESS = 'SUCCESS',
+  ERROR = 'ERROR',
+  INITIAL = 'INITIAL',
+}
+
+const initialWords = Array.from({ length: slidesIndexes.length * 3 }).reduce<
+  string[]
+>((prev, _next, index) => {
+  prev[index] = ''
+  return prev
+}, [])
+
+const SLIDER_WIDTH = WINDOW_WIDTH * 0.8
+
+const headerTextMap = new Map([
+  [StatusActions.ERROR, 'header_phrase_not_correct'],
+  [StatusActions.INITIAL, 'header_enter_your_phrase'],
+  [StatusActions.SUCCESS, 'header_phrase_correct'],
+])
+
 export const ImportMasterKeyScreen = ({ navigation }: Props) => {
+  const { t } = useTranslation()
+
   const dispatch = useAppDispatch()
+  const words = useRef<string[]>([...initialWords])
+  const inputsRef = useRef<Record<string, TextInput>>({})
+  const carouselRef = useRef<ICarouselInstance>(null)
 
-  const isKeyboardVisible = useKeyboardIsVisible()
+  const form = useForm({
+    defaultValues: {
+      ...words.current,
+    },
+  })
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
-  const [selectedWords, setSelectedWords] = useState<string[]>([])
-  const [carousel, setCarousel] = useState<Carousel<number>>()
-  const [error, setError] = useState<string | null>(null)
+  const [status, setStatus] = useState<StatusActions>(StatusActions.INITIAL)
 
-  const handleImportMnemonic = async () => {
-    const mnemonicError = validateMnemonic(selectedWords.join(' '))
-    if (!mnemonicError) {
-      try {
-        await dispatch(
-          createWallet({
-            mnemonic: selectedWords.join(' '),
-          }),
-        )
-      } catch (err) {
-        console.error(err)
-        setError(
-          'error trying to import your master key, please check it and try it again',
-        )
+  const handleImportMnemonic = useCallback(async () => {
+    if (status === StatusActions.ERROR) {
+      setStatus(StatusActions.INITIAL)
+      return
+    }
+    const mnemonicError = validateMnemonic(words.current.join(' '))
+    if (mnemonicError) {
+      setStatus(StatusActions.ERROR)
+      return
+    }
+
+    try {
+      await dispatch(
+        createWallet({
+          mnemonic: words.current.join(' '),
+        }),
+      )
+    } catch (err) {
+      if (err instanceof Error) {
+        throw new Error(err.toString())
       }
     }
-    setError(mnemonicError)
-  }
-
-  const handleWordSelected = useCallback(
-    (wordSelected: string, index: number) => {
-      const newSelectedWords = [...selectedWords]
-      newSelectedWords[index] = wordSelected
-      setSelectedWords(newSelectedWords)
-    },
-    [selectedWords],
-  )
+  }, [dispatch, status])
 
   const handleSlideChange = useCallback((index: number) => {
     setSelectedSlide(index)
-    setError('')
+    setStatus(StatusActions.INITIAL)
   }, [])
 
   const onSubmitEditing = useCallback(
-    (index: number) => {
-      carousel?.snapToNext()
-      handleSlideChange(index)
+    (index: number, shouldSnapToNext = false) => {
+      if (shouldSnapToNext && carouselRef.current) {
+        carouselRef.current.next()
+      }
+      inputsRef.current[index + 1].focus()
     },
-    [carousel, handleSlideChange],
-  )
-
-  const renderItem = useCallback(
-    (
-        onWordSelected: (word: string, index: number) => void,
-        onSubmitEditingFn: (index: number) => void,
-      ) =>
-      ({ item }: ListRenderItemInfo<number>) => {
-        const groupIndex = 3 * item
-        const { firstRef, secondRef, thirdRef } = handleInputRefCreation()
-
-        return (
-          <>
-            <WordSelector
-              ref={firstRef}
-              wordIndex={groupIndex}
-              nextTextInputRef={secondRef}
-              onWordSelected={onWordSelected}
-            />
-            <WordSelector
-              ref={secondRef}
-              nextTextInputRef={thirdRef}
-              wordIndex={1 + groupIndex}
-              onWordSelected={onWordSelected}
-            />
-            <WordSelector
-              ref={thirdRef}
-              itemIndex={item}
-              wordIndex={2 + groupIndex}
-              onWordSelected={onWordSelected}
-              onSubmitEditing={onSubmitEditingFn}
-            />
-          </>
-        )
-      },
     [],
   )
 
-  return (
-    <ScrollView
-      style={sharedMnemonicStyles.parent}
-      keyboardShouldPersistTaps={'always'}>
-      <View style={sharedMnemonicStyles.topContent}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.returnButton}
-          accessibilityLabel="back">
-          <View style={styles.returnButtonView}>
-            <Arrow color={colors.white} rotate={270} width={30} height={30} />
-          </View>
-        </TouchableOpacity>
-        <SemiBoldText style={styles.header}>
-          <Trans>Sign in with a Master Key</Trans>
-        </SemiBoldText>
-        <RegularText style={styles.subHeader}>
-          <Trans>
-            Input the words you were given when you created your wallet in
-            correct order
-          </Trans>
-        </RegularText>
-      </View>
+  const renderItem = useCallback(
+    (item: CarouselRenderItemInfo<number>) => {
+      const groupIndex = 3 * item.index
 
-      <View style={sharedMnemonicStyles.sliderContainer}>
-        <Carousel
-          inactiveSlideOpacity={0}
-          removeClippedSubviews={false} //https://github.com/meliorence/react-native-snap-carousel/issues/238
-          ref={c => c && setCarousel(c)}
-          data={slidesIndexes}
-          renderItem={renderItem(handleWordSelected, onSubmitEditing)}
-          sliderWidth={WINDOW_WIDTH}
-          // sliderHeight={200}
-          itemWidth={SLIDER_WIDTH}
-          inactiveSlideShift={0}
-          onSnapToItem={handleSlideChange}
-          useScrollView={false}
-          keyboardShouldPersistTaps={'always'}
-          pagingEnabled={false}
-        />
-      </View>
+      const isLastIndex = slidesIndexes[slidesIndexes.length - 1] === item.index
 
-      {!!error && (
-        <View style={styles.errorContainer}>
-          <RegularText accessibilityLabel="error-text">{error}</RegularText>
-        </View>
-      )}
+      const onChangeText = (index: number) => (value: string) => {
+        words.current[index - 1] = value.trim()
+      }
 
-      {!isKeyboardVisible && (
-        <View style={sharedMnemonicStyles.pagnationContainer}>
-          <PaginationNavigator
-            onPrevious={() => carousel?.snapToPrev()}
-            onNext={() => carousel?.snapToNext()}
-            onComplete={handleImportMnemonic}
-            title={'confirm'}
-            currentIndex={selectedSlide}
-            slidesAmount={slidesIndexes.length}
-            containerBackgroundColor={colors.darkBlue}
+      const onSetRef = (index: number) => (ref: TextInput) => {
+        inputsRef.current[index] = ref
+      }
+
+      const onInputSubmitEditing =
+        (index: number, shouldSnapToNext = false) =>
+        () =>
+          onSubmitEditing(index, shouldSnapToNext)
+
+      const firstItemId = groupIndex + 1
+      const secondItemId = groupIndex + 2
+      const thirdItemId = groupIndex + 3
+
+      return (
+        <View style={styles.inputMarginView}>
+          <Input
+            label={`Word ${firstItemId}`}
+            inputName={`${firstItemId}`}
+            placeholder={`Word ${firstItemId}`}
+            rightIcon={<></>}
+            onChangeText={onChangeText(firstItemId)}
+            inputRef={onSetRef(firstItemId)}
+            onSubmitEditing={onInputSubmitEditing(firstItemId)}
+            autoCapitalize="none"
+            blurOnSubmit={false}
+          />
+          <Input
+            label={`Word ${secondItemId}`}
+            inputName={`${secondItemId}`}
+            placeholder={`Word ${secondItemId}`}
+            rightIcon={<></>}
+            onChangeText={onChangeText(secondItemId)}
+            inputRef={onSetRef(secondItemId)}
+            onSubmitEditing={onInputSubmitEditing(secondItemId)}
+            autoCapitalize="none"
+            blurOnSubmit={false}
+          />
+          <Input
+            label={`Word ${thirdItemId}`}
+            inputName={`${thirdItemId}`}
+            placeholder={`Word ${thirdItemId}`}
+            rightIcon={<></>}
+            onChangeText={onChangeText(thirdItemId)}
+            inputRef={onSetRef(thirdItemId)}
+            onSubmitEditing={
+              !isLastIndex
+                ? onInputSubmitEditing(thirdItemId, true)
+                : handleImportMnemonic
+            }
+            autoCapitalize="none"
+            blurOnSubmit={isLastIndex}
           />
         </View>
-      )}
-    </ScrollView>
+      )
+    },
+    [handleImportMnemonic, onSubmitEditing],
+  )
+
+  const onBackPress = useCallback(() => navigation.goBack(), [navigation])
+
+  return (
+    <FormProvider {...form}>
+      <ScrollView style={styles.parent} keyboardShouldPersistTaps={'always'}>
+        <View style={styles.headerStyle}>
+          <FontAwesome5Icon
+            name="chevron-left"
+            size={defaultIconSize}
+            color="white"
+            onPress={onBackPress}
+            style={[sharedStyles.widthHalfWidth, styles.backIconStyleView]}
+          />
+          <Typography style={[sharedStyles.flex, styles.flexCenter]} type="h4">
+            {t('header_import_wallet')}
+          </Typography>
+        </View>
+        <View style={styles.phraseView}>
+          <Typography type="h3">{t(headerTextMap.get(status))}</Typography>
+        </View>
+        <View
+          style={
+            status !== StatusActions.INITIAL ? styles.hideCarouselView : null
+          }>
+          <GestureHandlerRootView>
+            <Carousel
+              data={slidesIndexes}
+              renderItem={renderItem}
+              vertical={false}
+              width={SLIDER_WIDTH}
+              loop={false}
+              style={sharedStyles.widthFullWidth}
+              onScrollEnd={handleSlideChange}
+              snapEnabled={false}
+              height={SLIDER_WIDTH}
+              ref={carouselRef}
+            />
+          </GestureHandlerRootView>
+        </View>
+        <View style={styles.flexCenter}>
+          <View style={styles.iconBorderFixView}>
+            <StatusIcon status={status} />
+          </View>
+        </View>
+        <Pagination
+          dotsLength={4}
+          activeDotIndex={selectedSlide}
+          dotStyle={styles.dotStyleView}
+          inactiveDotStyle={{}}
+          inactiveDotOpacity={0.4}
+          inactiveDotScale={0.6}
+        />
+        <AppButton
+          title="OK"
+          color="white"
+          textColor="black"
+          textType="body2"
+          textStyle={sharedStyles.fontBoldText}
+          onPress={handleImportMnemonic}
+          style={styles.appButtonStyleView}
+        />
+      </ScrollView>
+    </FormProvider>
   )
 }
 
-const styles = StyleSheet.create({
-  returnButton: {
-    zIndex: 1,
-  },
-  returnButtonView: {
-    width: 30,
-    height: 30,
-    borderRadius: 30,
-    margin: 15,
-    backgroundColor: colors.purple,
-  },
+const StatusIcon = ({ status }: { status: StatusActions }) => {
+  const iconStyle = {
+    backgroundColor:
+      status === StatusActions.SUCCESS
+        ? sharedColors.successLight
+        : sharedColors.errorBackground,
+    borderRadius: 50,
+  }
+  switch (status) {
+    case StatusActions.SUCCESS:
+      return (
+        <AntDesign
+          name="checkcircleo"
+          size={100}
+          style={iconStyle}
+          color={sharedColors.black}
+        />
+      )
+    case StatusActions.ERROR:
+      return (
+        <Feather
+          name="x"
+          size={100}
+          style={iconStyle}
+          color={sharedColors.black}
+        />
+      )
+    default:
+      return null
+  }
+}
 
-  header: {
-    color: colors.white,
-    fontSize: 20,
-    paddingVertical: 10,
-    marginBottom: 5,
-    marginLeft: 60,
-    textAlign: 'left',
-  },
-  subHeader: {
-    color: colors.white,
-    marginLeft: 60,
+const styles = StyleSheet.create({
+  parent: castStyle.view({
+    backgroundColor: sharedColors.secondary,
+    minHeight: '100%',
+    paddingHorizontal: 24,
+  }),
+  headerStyle: castStyle.view({
+    width: '100%',
+    marginTop: 22,
     marginBottom: 40,
-    textAlign: 'left',
-    width: SLIDER_WIDTH,
+    alignItems: 'center',
+  }),
+  flexCenter: castStyle.view({
+    alignItems: 'center',
+  }),
+  phraseView: castStyle.view({
+    marginBottom: 20,
+  }),
+  hideCarouselView: castStyle.view({
+    display: 'none',
+  }),
+  inputMarginView: castStyle.view({
+    marginLeft: '4%',
+  }),
+  dotStyleView: castStyle.view({
+    width: 6,
+    height: 6,
+    borderRadius: 5,
+    backgroundColor: 'rgba(255, 255, 255, 0.92)',
+  }),
+  iconBorderFixView: castStyle.view({ overflow: 'hidden', borderRadius: 50 }),
+  backIconStyleView: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
   },
-  errorContainer: {
-    padding: 20,
-    marginHorizontal: 60,
-    marginBottom: 10,
-    borderRadius: 20,
-    backgroundColor: colors.red,
-  },
-  errorText: {
-    color: colors.white,
+  appButtonStyleView: {
+    marginTop: 20,
   },
 })

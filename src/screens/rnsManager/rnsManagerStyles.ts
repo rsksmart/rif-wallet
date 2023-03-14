@@ -59,8 +59,7 @@ export const rnsManagerStyles = StyleSheet.create({
     marginBottom: 10,
   },
   bottomContainer: {
-    flex: 1,
-    justifyContent: 'center',
+    marginVertical: 20,
   },
   disabledButton: {
     opacity: 0.4,

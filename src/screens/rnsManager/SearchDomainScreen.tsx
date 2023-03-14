@@ -2,7 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useCallback, useEffect, useState } from 'react'
 import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { StyleSheet, View } from 'react-native'
+import { ScrollView, StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/Entypo'
 import * as yup from 'yup'
 
@@ -138,104 +138,99 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
     })
   }, [navigation, onBackPress])
   return (
-    <>
-      <View style={rnsManagerStyles.container}>
-        <FormProvider {...methods}>
-          <Typography
-            type="h2"
-            style={[rnsManagerStyles.subtitle, rnsManagerStyles.marginBottom]}>
-            {t('request_username_title')}
-          </Typography>
+    <ScrollView style={rnsManagerStyles.container}>
+      <FormProvider {...methods}>
+        <Typography
+          type="h2"
+          style={[rnsManagerStyles.subtitle, rnsManagerStyles.marginBottom]}>
+          {t('request_username_title')}
+        </Typography>
 
-          <InfoBox
-            avatar={
-              domainToLookUp !== '' ? domainToLookUp + '.rsk' : 'alias name'
-            }
-            title={t('info_box_title_search_domain')}
-            description={t('info_box_description_search_domain')}
-            buttonText={t('info_box_close_button')}
+        <InfoBox
+          avatar={
+            domainToLookUp !== '' ? domainToLookUp + '.rsk' : 'alias name'
+          }
+          title={t('info_box_title_search_domain')}
+          description={t('info_box_description_search_domain')}
+          buttonText={t('info_box_close_button')}
+        />
+
+        <View style={rnsManagerStyles.marginTop}>
+          <DomainInput
+            wallet={wallet}
+            onDomainOwned={setIsDomainOwned}
+            onDomainAvailable={handleDomainAvailable}
           />
-
-          <View style={rnsManagerStyles.marginTop}>
-            <DomainInput
-              wallet={wallet}
-              onDomainOwned={setIsDomainOwned}
-              onDomainAvailable={handleDomainAvailable}
-            />
-          </View>
-          <Input
-            inputName="duration"
-            isReadOnly={true}
-            label={t('request_username_label')}
-            placeholder={`${selectedYears} ${t(
-              'request_username_placeholder',
-            )}${selectedYears > 1 ? 's' : ''}`}
-            subtitle={`${selectedDomainPrice} RIF ($ ${selectedDomainPriceInUsd})`}
-            containerStyle={styles.yearsContainer}
-            inputStyle={styles.yearsInput}
-            rightIcon={
-              <View style={styles.yearsButtons}>
-                {selectedYears > 1 && (
-                  <AppTouchable
-                    width={40}
-                    accessibilityLabel="decrease"
-                    onPress={() => handleYearsChange(selectedYears - 1)}
-                    style={styles.icon}>
-                    <Icon name="minus" size={16} color={colors.white} />
-                  </AppTouchable>
-                )}
+        </View>
+        <Input
+          inputName="duration"
+          isReadOnly
+          label={t('request_username_label')}
+          placeholder={`${selectedYears} ${t('request_username_placeholder')}${
+            selectedYears > 1 ? 's' : ''
+          }`}
+          subtitle={`${selectedDomainPrice} RIF ($ ${selectedDomainPriceInUsd})`}
+          containerStyle={styles.yearsContainer}
+          rightIcon={
+            <View style={styles.yearsButtons}>
+              {selectedYears > 1 && (
                 <AppTouchable
                   width={40}
-                  accessibilityLabel="increase"
-                  onPress={() => handleYearsChange(selectedYears + 1)}
-                  style={styles.icon}>
-                  <Icon name="plus" size={16} color={colors.white} />
+                  accessibilityLabel="decrease"
+                  onPress={() => handleYearsChange(selectedYears - 1)}>
+                  <Icon name="minus" size={16} color={colors.white} />
                 </AppTouchable>
-              </View>
-            }
-          />
-          <View style={rnsManagerStyles.bottomContainer}>
-            {!isDomainOwned && (
-              <AppButton
-                disabled={isRequestButtonDisabled}
-                onPress={handleSubmit(onSubmit)}
-                accessibilityLabel={t('request_username_button')}
-                title={t('request_username_button')}
-                color={
-                  !isRequestButtonDisabled
-                    ? sharedColors.white
-                    : sharedColors.borderColor
-                }
-                textColor={
-                  !isRequestButtonDisabled
-                    ? sharedColors.black
-                    : sharedColors.labelLight
-                }
-                disabledStyle={rnsManagerStyles.disabledButton}
-              />
-            )}
-            {isDomainOwned && (
-              <AppButton
-                disabled={isSaveButtonDisabled}
-                onPress={handleSetProfile}
-                accessibilityLabel={t('save_username_button')}
-                title={t('save_username_button')}
-                color={
-                  !isSaveButtonDisabled
-                    ? sharedColors.white
-                    : sharedColors.borderColor
-                }
-                textColor={
-                  !isSaveButtonDisabled
-                    ? sharedColors.black
-                    : sharedColors.labelLight
-                }
-                disabledStyle={rnsManagerStyles.disabledButton}
-              />
-            )}
-          </View>
-        </FormProvider>
-      </View>
+              )}
+              <AppTouchable
+                width={40}
+                accessibilityLabel="increase"
+                onPress={() => handleYearsChange(selectedYears + 1)}>
+                <Icon name="plus" size={16} color={colors.white} />
+              </AppTouchable>
+            </View>
+          }
+        />
+        <View style={rnsManagerStyles.bottomContainer}>
+          {!isDomainOwned && (
+            <AppButton
+              disabled={isRequestButtonDisabled}
+              onPress={handleSubmit(onSubmit)}
+              accessibilityLabel={t('request_username_button')}
+              title={t('request_username_button')}
+              color={
+                !isRequestButtonDisabled
+                  ? sharedColors.white
+                  : sharedColors.borderColor
+              }
+              textColor={
+                !isRequestButtonDisabled
+                  ? sharedColors.black
+                  : sharedColors.labelLight
+              }
+              disabledStyle={rnsManagerStyles.disabledButton}
+            />
+          )}
+          {isDomainOwned && (
+            <AppButton
+              disabled={isSaveButtonDisabled}
+              onPress={handleSetProfile}
+              accessibilityLabel={t('save_username_button')}
+              title={t('save_username_button')}
+              color={
+                !isSaveButtonDisabled
+                  ? sharedColors.white
+                  : sharedColors.borderColor
+              }
+              textColor={
+                !isSaveButtonDisabled
+                  ? sharedColors.black
+                  : sharedColors.labelLight
+              }
+              disabledStyle={rnsManagerStyles.disabledButton}
+            />
+          )}
+        </View>
+      </FormProvider>
       <SlidePopupConfirmationInfo
         isVisible={isModalVisible}
         height={340}
@@ -244,7 +239,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
         confirmText={t('request_username_popup_confirm')}
         onConfirm={() => setIsModalVisible(false)}
       />
-    </>
+    </ScrollView>
   )
 }
 
@@ -253,16 +248,7 @@ const styles = StyleSheet.create({
     height: 90,
     paddingRight: 10,
   }),
-  yearsInput: castStyle.text({
-    paddingLeft: 0,
-    paddingTop: 0,
-    paddingBottom: 0,
-  }),
   yearsButtons: castStyle.view({
     flexDirection: 'row',
-  }),
-  icon: castStyle.view({
-    alignSelf: 'center',
-    padding: 10,
   }),
 })

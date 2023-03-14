@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { KeyManagementSystem } from 'lib/core'
 
 import { AppButton, Typography, MnemonicComponent } from 'components/index'
+import { StepperComponent } from 'components/profile'
 import {
   createKeysRouteNames,
   CreateKeysScreenProps,
@@ -14,7 +15,7 @@ import {
   rootTabsRouteNames,
   RootTabsScreenProps,
 } from 'navigation/rootNavigator'
-import { sharedColors } from 'shared/constants'
+import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 
 type Props = CompositeScreenProps<
@@ -30,6 +31,11 @@ export const NewMasterKeyScreen = ({ navigation }: Props) => {
 
   return (
     <View style={styles.screen}>
+      <StepperComponent
+        style={sharedStyles.selfCenter}
+        width={40}
+        colors={[sharedColors.primary, sharedColors.inputInactive]}
+      />
       <Typography style={styles.titleText} type={'h2'}>
         {t('new_master_key_title')}
       </Typography>
