@@ -104,7 +104,7 @@ export const SettingsScreen = ({
           accessibilityLabel={'example'}
           style={styles.settingsItem}
           onPress={goToExampleScreen}>
-          <Typography type={'h3'}>{'Examples Screen'}</Typography>
+          <Typography type={'h3'}>{t('settings_screen_examples')}</Typography>
         </AppTouchable>
       </View>
       <View style={styles.bottomView}>

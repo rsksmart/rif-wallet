@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { StyleSheet, Platform } from 'react-native'
 import { useEffect } from 'react'
 
-import { InjectedScreens } from 'src/core/Core'
+import { InjectedScreens } from 'core/Core'
 import { ProfileCreateScreen, ShareProfileScreen } from 'screens/index'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { Typography, AppTouchable } from 'components/index'

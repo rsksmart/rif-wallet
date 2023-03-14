@@ -189,6 +189,7 @@ const resources = {
       settings_screen_change_pin: 'Change PIN',
       settings_screen_provide_feedback: 'Provide Feedback',
       settings_screen_deploy_wallet: 'Deploy Wallet',
+      settings_screen_examples: 'Examples Screen',
       settings_screen_version: 'Version',
       settings_screen_smart_wallet_factory: 'Smart Wallet Factory',
       settings_screen_rpc_url: 'RPC URL',
@@ -199,6 +200,7 @@ const resources = {
       settings_screen_eoa_account_label: 'EOA Address',
       settings_screen_smart_wallet_address_label: 'Smart Wallet Address',
       settings_screen_public_key_label: 'Public Key',
+      settings_screen_edit_name_label: 'Edit name',
     },
   },
   es: {

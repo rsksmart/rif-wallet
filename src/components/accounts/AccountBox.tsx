@@ -19,7 +19,7 @@ import {
   getAddressDisplayText,
   Input,
   Typography,
-} from 'src/components'
+} from 'components/index'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 
 import { CheckIcon } from '../icons/CheckIcon'
@@ -91,7 +91,7 @@ const AccountBox = ({
             </Typography>
             <AppTouchable width={110} onPress={onEdit}>
               <Typography type={'h4'} style={styles.accountEditButton}>
-                {'Edit name'}
+                {t('settings_screen_edit_name_label')}
               </Typography>
             </AppTouchable>
           </View>
