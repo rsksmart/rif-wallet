@@ -29,7 +29,7 @@ interface StatusTextProps {
   status: StatusEnum | undefined
 }
 
-interface BasicRowProps {
+export interface BasicRowProps {
   label: string
   secondaryLabel: string
   amount: string

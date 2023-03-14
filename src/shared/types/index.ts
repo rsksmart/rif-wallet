@@ -8,7 +8,6 @@ export interface ErrorWithMessage {
 export type RequestWithBitcoin = Request | SendBitcoinRequest
 
 export interface Contact {
-  id: string
   name: string
   address: string
   displayAddress: string

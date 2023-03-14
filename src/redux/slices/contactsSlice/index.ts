@@ -1,4 +1,5 @@
 import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit'
+
 import {
   ContactsState,
   SaveContactPayload,
@@ -9,7 +10,6 @@ import {
   deleteContacts as deleteContactsFromStorage,
 } from 'storage/MainStorage'
 import { Contact } from 'shared/types'
-import uuid from 'react-native-uuid'
 
 const initialState: ContactsState = {
   contacts: {},
@@ -23,17 +23,16 @@ const contactsSlice = createSlice({
   initialState,
   reducers: {
     addContact: (state, { payload }: PayloadAction<SaveContactPayload>) => {
-      const id = uuid.v4() as string
-      state.contacts[id] = { id, ...payload }
+      state.contacts[payload.address] = { ...payload }
       saveContacts(state.contacts)
       return state
     },
     editContact: (state, { payload }: PayloadAction<Contact>) => {
-      state.contacts[payload.id] = { ...payload }
+      state.contacts[payload.address] = { ...payload }
       saveContacts(state.contacts)
       return state
     },
-    deleteContactById: (state, { payload }: PayloadAction<string>) => {
+    deleteContactByAddress: (state, { payload }: PayloadAction<string>) => {
       delete state.contacts[payload]
       saveContacts(state.contacts)
       return state
@@ -42,7 +41,7 @@ const contactsSlice = createSlice({
       deleteContactsFromStorage()
       return initialState
     },
-    setSelectedContactById: (
+    setSelectedContactByAddress: (
       state,
       { payload }: PayloadAction<string | null>,
     ) => {
@@ -60,8 +59,8 @@ const contactsSlice = createSlice({
 
 export const {
   addContact,
-  setSelectedContactById,
-  deleteContactById,
+  setSelectedContactByAddress,
+  deleteContactByAddress,
   deleteContacts,
   editContact,
 } = contactsSlice.actions
