@@ -33,7 +33,7 @@ export const NewMasterKeyScreen = ({ navigation }: Props) => {
     <View style={styles.screen}>
       <StepperComponent
         style={sharedStyles.selfCenter}
-        stepWidth={40}
+        width={40}
         colors={[sharedColors.primary, sharedColors.inputInactive]}
       />
       <Typography style={styles.titleText} type={'h2'}>

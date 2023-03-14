@@ -158,7 +158,7 @@ export const ConfirmNewMasterKeyScreen = ({
   return (
     <View style={styles.screen}>
       <StepperComponent
-        stepWidth={40}
+        width={40}
         colors={[sharedColors.primary, sharedColors.primary]}
         style={sharedStyles.selfCenter}
       />
