@@ -1,18 +1,18 @@
+import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
 import { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
-import { useTranslation } from 'react-i18next'
 
-import { rootTabsRouteNames } from 'navigation/rootNavigator'
+import { Avatar } from 'components/avatar'
+import { StepperComponent } from 'components/profile'
+import { Typography } from 'components/typography'
 import { ProfileStatus } from 'navigation/profileNavigator/types'
+import { rootTabsRouteNames } from 'navigation/rootNavigator'
+import { sharedColors } from 'shared/constants'
+import { castStyle } from 'shared/utils'
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { useAppSelector } from 'store/storeUtils'
-import { Typography } from 'components/typography'
-import { StepperComponent } from 'components/profile'
-import { sharedColors } from 'shared/constants'
-import { Avatar } from 'components/avatar'
-import { castStyle } from 'shared/utils'
 
 interface Props {
   navigation: BottomTabHeaderProps['navigation']
@@ -39,7 +39,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
           startColor: sharedColors.success,
           endColor: sharedColors.warning,
         }
-      case ProfileStatus.ERROR:
+      case ProfileStatus.REQUESTING_ERROR:
         return {
           startColor: sharedColors.danger,
           endColor: sharedColors.inputActive,
@@ -50,10 +50,12 @@ export const ProfileHandler = ({ navigation }: Props) => {
       endColor: sharedColors.inputActive,
     }
   }, [profile.status])
+
   const { startColor, endColor } = getColors()
   const routeNextStep = async () => {
     navigation.navigate(rootTabsRouteNames.Profile)
   }
+
   return (
     <TouchableOpacity
       style={styles.profileHandler}
@@ -74,7 +76,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
             }
           />
           <View style={styles.textAlignment}>
-            <Typography type={'h4'} style={[styles.profileName]}>
+            <Typography type={'h4'} style={styles.profileName}>
               {t('header_no_username')}
             </Typography>
           </View>
@@ -125,7 +127,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
         </>
       )}
 
-      {profile.status === ProfileStatus.ERROR && (
+      {profile.status === ProfileStatus.REQUESTING_ERROR && (
         <>
           <View style={styles.textAlignment}>
             <Typography type={'body3'} style={styles.requestingStatus}>

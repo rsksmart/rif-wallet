@@ -46,7 +46,7 @@ export const ProfileCreateScreen = ({
   const { resetField, setValue } = methods
 
   useEffect(() => {
-    setUsername(profile.alias ? profile.alias : 'no_username')
+    setUsername(profile.alias || 'no_username')
   }, [profile.alias])
 
   const onSetEmail = useCallback(
@@ -200,7 +200,7 @@ export const ProfileCreateScreen = ({
             title={t('profile_register_your_username_button_text')}
             color={sharedColors.white}
             textColor={sharedColors.black}
-            disabled={!(username === 'no_username')}
+            disabled={username !== 'no_username'}
             onPress={() =>
               navigation.navigate(profileStackRouteNames.SearchDomain)
             }

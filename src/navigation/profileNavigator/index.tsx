@@ -2,19 +2,25 @@ import {
   createStackNavigator,
   StackNavigationOptions,
 } from '@react-navigation/stack'
-import Icon from 'react-native-vector-icons/FontAwesome5'
-import { useTranslation } from 'react-i18next'
-import { StyleSheet, Platform } from 'react-native'
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Platform, StyleSheet } from 'react-native'
+import Icon from 'react-native-vector-icons/FontAwesome5'
 
+import { AppTouchable, Typography } from 'components/index'
 import { InjectedScreens } from 'core/Core'
 import { ProfileCreateScreen, ShareProfileScreen } from 'screens/index'
 import { sharedColors, sharedStyles } from 'shared/constants'
-import { Typography, AppTouchable } from 'components/index'
 import { castStyle } from 'shared/utils'
+import { selectProfile } from 'src/redux/slices/profileSlice'
+import { useAppSelector } from 'src/redux/storeUtils'
 
 import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
-import { ProfileStackParamsList, profileStackRouteNames } from './types'
+import {
+  ProfileStackParamsList,
+  profileStackRouteNames,
+  ProfileStatus,
+} from './types'
 
 const ProfileStack = createStackNavigator<ProfileStackParamsList>()
 
@@ -52,36 +58,44 @@ export const ProfileNavigator = ({
     })
   }, [navigation])
   const { t } = useTranslation()
+  const profile = useAppSelector(selectProfile)
 
   return (
     <ProfileStack.Navigator>
+      {profile.status !== ProfileStatus.READY_TO_PURCHASE && (
+        <ProfileStack.Screen
+          name={profileStackRouteNames.ProfileCreateScreen}
+          component={ProfileCreateScreen}
+          options={screenOptionsWithHeader(t('profile_screen_title'))}
+        />
+      )}
+
+      {(profile.status === ProfileStatus.NONE ||
+        profile.status === ProfileStatus.REQUESTING_ERROR) && (
+        <ProfileStack.Screen
+          name={profileStackRouteNames.SearchDomain}
+          component={InjectedScreens.SearchDomainScreen}
+          options={screenOptionsWithHeader(t('username_registration_title'))}
+        />
+      )}
+
+      {profile.status === ProfileStatus.REQUESTING && (
+        <ProfileStack.Screen
+          name={profileStackRouteNames.BuyDomain}
+          component={InjectedScreens.BuyDomainScreen}
+          initialParams={{ alias: profile.alias }}
+        />
+      )}
+
       <ProfileStack.Screen
-        name={profileStackRouteNames.ProfileCreateScreen}
-        component={ProfileCreateScreen}
-        options={screenOptionsWithHeader(t('profile_screen_title'))}
+        name={profileStackRouteNames.AliasBought}
+        component={InjectedScreens.AliasBoughtScreen}
       />
+
       <ProfileStack.Screen
         name={profileStackRouteNames.ShareProfileScreen}
         component={ShareProfileScreen}
         options={screenOptionsWithHeader(t('profile_screen_title'))}
-      />
-      <ProfileStack.Screen
-        name={profileStackRouteNames.SearchDomain}
-        component={InjectedScreens.SearchDomainScreen}
-        options={screenOptionsWithHeader(t('username_registration_title'))}
-      />
-      <ProfileStack.Screen
-        name={profileStackRouteNames.RequestDomain}
-        component={InjectedScreens.RequestDomainScreen}
-      />
-
-      <ProfileStack.Screen
-        name={profileStackRouteNames.BuyDomain}
-        component={InjectedScreens.BuyDomainScreen}
-      />
-      <ProfileStack.Screen
-        name={profileStackRouteNames.AliasBought}
-        component={InjectedScreens.AliasBoughtScreen}
       />
     </ProfileStack.Navigator>
   )
