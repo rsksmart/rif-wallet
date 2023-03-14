@@ -164,6 +164,8 @@ const styles = StyleSheet.create({
     height: 100,
     flexDirection: 'row',
     alignItems: 'center',
+    paddingLeft: 24,
+    paddingRight: 18,
   }),
   tokenIcon: castStyle.view({
     marginRight: 10,
