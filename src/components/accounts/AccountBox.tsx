@@ -1,49 +1,57 @@
-import React, { useEffect, useState } from 'react'
-import { StyleSheet, TextInput, View } from 'react-native'
+import { useEffect, useState } from 'react'
+import { StyleSheet, TextInput, View, Clipboard } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-
 import { SmartWalletFactory } from '@rsksmart/rif-relay-light-sdk'
+import { useTranslation } from 'react-i18next'
+import Icon from 'react-native-vector-icons/FontAwesome'
+import { FormProvider, useForm } from 'react-hook-form'
 
 import { setAccount } from 'store/slices/accountsSlice'
 import { selectAccounts } from 'store/slices/accountsSlice/selector'
 import { AccountPayload } from 'store/slices/accountsSlice/types'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { PublicKeyItemType } from 'screens/accounts/types'
-import { colors } from 'src/styles'
-import { fonts } from 'src/styles/fonts'
+import { sharedStyles } from 'shared/styles'
+import { defaultIconSize, sharedColors } from 'shared/constants'
+import { castStyle } from 'shared/utils'
+import {
+  AppTouchable,
+  getAddressDisplayText,
+  Input,
+  Typography,
+} from 'src/components'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
 
-import { EditMaterialIcon } from '../icons'
 import { CheckIcon } from '../icons/CheckIcon'
-import { MediumText } from '../typography'
-import AccountField from './AccountField'
-import accountSharedStyles from './styles'
 
 interface AccountBoxProps {
   address: string
-  addressShort: string
   smartWalletAddress: string
-  smartWalletAddressShort: string
   smartWalletFactory: SmartWalletFactory
   id?: number
   publicKeys: PublicKeyItemType[]
 }
 
-const AccountBox: React.FC<AccountBoxProps> = ({
+const AccountBox = ({
   address,
-  addressShort,
   smartWalletAddress,
-  smartWalletAddressShort,
   smartWalletFactory,
   publicKeys = [],
   id = 0,
-}) => {
+}: AccountBoxProps) => {
   const dispatch = useAppDispatch()
   const accounts = useAppSelector(selectAccounts)
   const initialAccountName = accounts[id]?.name || `account ${id + 1}`
   const [accountName, setAccountName] = useState<string>(initialAccountName)
   const [isDeployed, setIsDeployed] = useState(false)
   const [showAccountNameInput, setShowAccountInput] = useState<boolean>(false)
+  const { chainType } = useAppSelector(selectActiveWallet)
 
+  const eoaAddressObject = getAddressDisplayText(address ?? '', chainType)
+  const smartWalletAddressObject = getAddressDisplayText(
+    smartWalletAddress ?? '',
+    chainType,
+  )
   const onEdit = () => setShowAccountInput(true)
 
   const onChangeAccountName = (text: string) => {
@@ -69,22 +77,24 @@ const AccountBox: React.FC<AccountBoxProps> = ({
     smartWalletFactory.isDeployed().then(setIsDeployed)
   }, [smartWalletFactory])
 
-  useEffect(() => {
-    if (accountName !== initialAccountName) {
-      setAccountName(initialAccountName)
-    }
-  }, [initialAccountName, accountName])
+  const methods = useForm()
+
+  const { t } = useTranslation()
 
   return (
-    <View style={styles.accountsContainer}>
-      <View style={styles.textContainer}>
+    <FormProvider {...methods}>
+      <View style={styles.accountTextContainer}>
         {!showAccountNameInput ? (
-          <>
-            <MediumText style={styles.text}>{accountName}</MediumText>
-            <TouchableOpacity onPress={onEdit}>
-              <EditMaterialIcon style={styles.editIcon} size={18} />
-            </TouchableOpacity>
-          </>
+          <View style={styles.accountLabel}>
+            <Typography type={'h3'} style={styles.accountText}>
+              {accountName}
+            </Typography>
+            <AppTouchable width={110} onPress={onEdit}>
+              <Typography type={'h4'} style={styles.accountEditButton}>
+                {'Edit name'}
+              </Typography>
+            </AppTouchable>
+          </View>
         ) : (
           <>
             <TextInput
@@ -93,76 +103,149 @@ const AccountBox: React.FC<AccountBoxProps> = ({
               value={accountName}
               onChangeText={onChangeAccountName}
               onSubmitEditing={onSubmit}
+              autoCorrect={false}
             />
             <TouchableOpacity onPress={onSubmit}>
-              <CheckIcon color={colors.darkPurple2} width={35} height={35} />
+              <CheckIcon
+                color={sharedColors.labelLight}
+                width={35}
+                height={35}
+              />
             </TouchableOpacity>
           </>
         )}
       </View>
-      <View style={accountSharedStyles.infoSection}>
-        <MediumText style={styles.titleFontSize}>Status</MediumText>
-        <MediumText style={styles.titleFontSize}>
-          {isDeployed ? 'Deployed' : 'Not Deployed'}
-        </MediumText>
+      <View style={styles.statusContainer}>
+        <Typography type={'h4'}>{t('settings_screen_status_label')}</Typography>
+        <View style={styles.status}>
+          <Typography type={'h4'} style={styles.statusText}>
+            {isDeployed
+              ? t('settings_screen_deployed_label')
+              : t('settings_screen_not_deployed_label')}
+          </Typography>
+          {isDeployed ? (
+            <Icon
+              name={'check-circle'}
+              size={24 || defaultIconSize}
+              color={sharedColors.successLight}
+            />
+          ) : (
+            <Icon
+              name={'exclamation-circle'}
+              size={24 || defaultIconSize}
+              color={sharedColors.dangerLight}
+            />
+          )}
+        </View>
       </View>
-      <AccountField
-        label="EOA Address"
-        value={addressShort}
-        valueToCopy={address}
+      <Input
+        style={sharedStyles.marginTop20}
+        label={t('settings_screen_eoa_account_label')}
+        inputName="EOA Address"
+        rightIcon={
+          <Icon
+            name={'copy'}
+            color={sharedColors.white}
+            size={defaultIconSize}
+            onPress={() =>
+              Clipboard.setString(eoaAddressObject.checksumAddress || '')
+            }
+          />
+        }
+        placeholder={eoaAddressObject.displayAddress}
+        isReadOnly
+        testID={'TestID.eoaAddress'}
       />
-      <AccountField
-        label="Smart Wallet Address"
-        value={smartWalletAddressShort}
-        valueToCopy={smartWalletAddress}
+      <Input
+        style={sharedStyles.marginTop20}
+        label={t('settings_screen_smart_wallet_address_label')}
+        inputName="Smart Wallet Address"
+        rightIcon={
+          <Icon
+            name={'copy'}
+            color={sharedColors.white}
+            size={defaultIconSize}
+            onPress={() =>
+              Clipboard.setString(
+                smartWalletAddressObject.checksumAddress || '',
+              )
+            }
+          />
+        }
+        placeholder={smartWalletAddressObject.displayAddress}
+        isReadOnly
+        testID={'TestID.smartWalletAddress'}
       />
+
       {publicKeys.map(publicKey => (
-        <AccountField
-          label={publicKey.networkName + ' Public Key'}
-          value={publicKey.shortedPublicKey}
-          valueToCopy={publicKey.publicKey}
+        <Input
           key={publicKey.publicKey}
+          style={sharedStyles.marginTop20}
+          label={t(
+            publicKey.networkName + ' ' + t('settings_screen_public_key_label'),
+          )}
+          inputName={
+            publicKey.networkName + ' ' + t('settings_screen_public_key_label')
+          }
+          rightIcon={
+            <Icon
+              name={'copy'}
+              color={sharedColors.white}
+              size={defaultIconSize}
+              onPress={() => Clipboard.setString(publicKey.publicKey || '')}
+            />
+          }
+          placeholder={publicKey.shortedPublicKey}
+          isReadOnly
+          testID={'TestID.publicKey'}
         />
       ))}
-    </View>
+    </FormProvider>
   )
 }
 
 const styles = StyleSheet.create({
-  accountsContainer: {
-    backgroundColor: colors.background.light,
-    paddingHorizontal: 24,
-    paddingVertical: 38,
-    borderRadius: 30,
-  },
-  textContainer: {
-    justifyContent: 'flex-end',
+  statusContainer: castStyle.view({
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: sharedColors.inputInactive,
+    paddingLeft: 16,
+    paddingRight: 24,
+    marginTop: 12,
+    borderRadius: 10,
+    minHeight: 80,
+  }),
+  status: castStyle.view({ flexDirection: 'row' }),
+  statusText: castStyle.view({ marginRight: 5, marginTop: 3 }),
+  accountTextContainer: castStyle.view({
+    marginTop: 30,
     alignItems: 'center',
     flexDirection: 'row',
-  },
-  text: {
-    fontSize: 20,
-    color: colors.darkGray,
-  },
-  editIcon: {
-    marginLeft: 10,
-    color: colors.darkPurple2,
-    paddingBottom: 5,
-  },
-  accountInput: {
-    color: colors.darkGray,
-    fontFamily: fonts.medium,
+  }),
+  accountLabel: castStyle.view({
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-between',
+  }),
+  accountText: castStyle.view({
+    maxWidth: 240,
+  }),
+  accountEditButton: castStyle.text({
+    alignSelf: 'flex-end',
+    textDecorationLine: 'underline',
+  }),
+
+  accountInput: castStyle.text({
+    color: sharedColors.labelLight,
+    fontSize: 22,
     borderWidth: 1,
-    borderColor: colors.darkPurple,
+    borderColor: sharedColors.labelLight,
     borderRadius: 5,
     paddingHorizontal: 5,
     paddingTop: 0,
     paddingBottom: 0,
-  },
-  titleFontSize: {
-    fontSize: 13,
-    color: colors.darkGray,
-  },
+  }),
 })
 
 export default AccountBox
