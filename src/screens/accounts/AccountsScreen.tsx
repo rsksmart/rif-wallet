@@ -1,15 +1,23 @@
-import { useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
 import { StyleSheet, View, FlatList } from 'react-native'
 
 import { shortAddress } from 'lib/utils'
 
-import AccountBox from 'components/accounts/AccountBox'
-import { colors } from 'src/styles'
-import { useAppSelector } from 'src/redux/storeUtils'
-import { selectWallets } from 'src/redux/slices/settingsSlice'
+import { AccountBox } from 'components/accounts/AccountBox'
+import { useAppSelector } from 'store/storeUtils'
+import { selectWallets } from 'store/slices/settingsSlice'
 import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
+import { headerLeftOption } from 'navigation/profileNavigator'
+import {
+  SettingsScreenProps,
+  settingsStackRouteNames,
+} from 'navigation/settingsNavigator/types'
+import { sharedColors } from 'shared/constants'
+import { castStyle } from 'shared/utils'
 
-export const AccountsScreen = () => {
+export const AccountsScreen = ({
+  navigation,
+}: SettingsScreenProps<settingsStackRouteNames.AccountsScreen>) => {
   const wallets = useAppSelector(selectWallets)
   const bitcoinCore = useBitcoinContext()
   const publicKeys = useMemo(
@@ -41,6 +49,12 @@ export const AccountsScreen = () => {
     [wallets],
   )
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => headerLeftOption(navigation.goBack),
+    })
+  }, [navigation])
+
   return (
     <FlatList
       data={walletsArr}
@@ -57,16 +71,15 @@ export const AccountsScreen = () => {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.background.blue,
-    paddingHorizontal: 40,
-    paddingTop: '8%',
-  },
-  viewBottomFix: {
+  container: castStyle.view({
+    backgroundColor: sharedColors.tokenBackground,
+    paddingHorizontal: 24,
+  }),
+  viewBottomFix: castStyle.view({
     marginTop: 40,
     marginBottom: 150,
-  },
-  walletView: {
+  }),
+  walletView: castStyle.view({
     marginBottom: 40,
-  },
+  }),
 })

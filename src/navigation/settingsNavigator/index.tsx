@@ -1,5 +1,9 @@
-import { createStackNavigator } from '@react-navigation/stack'
+import {
+  createStackNavigator,
+  StackNavigationOptions,
+} from '@react-navigation/stack'
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import {
   ChangeLanguageScreen,
@@ -9,12 +13,29 @@ import {
   ShowMnemonicScreen,
 } from 'screens/index'
 import { InjectedScreens } from 'core/Core'
-import { AppHeader } from 'src/ux/appHeader'
+import { ExampleScreen } from 'screens/example'
+import { headerStyles } from 'navigation/profileNavigator'
+import { Typography } from 'components/typography'
+import { sharedColors } from 'shared/constants'
+
 import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
 import { SettingsStackParamsList, settingsStackRouteNames } from './types'
-import { ExampleScreen } from 'screens/example'
 
 const SettingsStack = createStackNavigator<SettingsStackParamsList>()
+
+const settingsNavigatorOptions = (title: string): StackNavigationOptions => ({
+  headerShown: true,
+  headerTitle: props => (
+    <Typography type={'h3'} style={headerStyles.headerPosition}>
+      {title ?? props.children}
+    </Typography>
+  ),
+  headerStyle: [
+    headerStyles.headerStyle,
+    { backgroundColor: sharedColors.tokenBackground },
+  ],
+  headerShadowVisible: false,
+})
 
 export const SettingsNavigator = ({
   navigation,
@@ -22,27 +43,31 @@ export const SettingsNavigator = ({
   useEffect(() => {
     navigation.setOptions({ headerShown: false })
   }, [navigation])
+  const { t } = useTranslation()
 
   return (
-    <SettingsStack.Navigator
-      screenOptions={{
-        header: props => <AppHeader isShown={true} {...props} />,
-      }}>
+    <SettingsStack.Navigator>
       <SettingsStack.Screen
         name={settingsStackRouteNames.SettingsScreen}
         component={SettingsScreen}
+        options={settingsNavigatorOptions(t('settings_screen_title'))}
       />
       <SettingsStack.Screen
         name={settingsStackRouteNames.AccountsScreen}
         component={InjectedScreens.AccountsScreen}
+        options={settingsNavigatorOptions(t('settings_screen_accounts'))}
       />
       <SettingsStack.Screen
         name={settingsStackRouteNames.FeedbackScreen}
         component={FeedbackScreen}
+        options={settingsNavigatorOptions(
+          t('settings_screen_provide_feedback'),
+        )}
       />
       <SettingsStack.Screen
         name={settingsStackRouteNames.SecurityConfigurationScreen}
         component={SecurityConfigurationScreen}
+        options={settingsNavigatorOptions(t('settings_screen_wallet_backup'))}
       />
       <SettingsStack.Screen
         name={settingsStackRouteNames.ChangeLanguage}
@@ -51,10 +76,12 @@ export const SettingsNavigator = ({
       <SettingsStack.Screen
         name={settingsStackRouteNames.ShowMnemonicScreen}
         component={ShowMnemonicScreen}
+        options={settingsNavigatorOptions(t('settings_screen_wallet_backup'))}
       />
       <SettingsStack.Screen
         name={settingsStackRouteNames.ExampleScreen}
         component={ExampleScreen}
+        options={settingsNavigatorOptions(t('Example Screen'))}
       />
     </SettingsStack.Navigator>
   )

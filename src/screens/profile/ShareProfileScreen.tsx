@@ -37,13 +37,12 @@ export const ShareProfileScreen = ({
       message: username,
     })
   }, [username])
-  const onBackPress = useCallback(() => navigation.goBack(), [navigation])
 
   useEffect(() => {
     navigation.setOptions({
-      headerLeft: () => headerLeftOption(onBackPress),
+      headerLeft: () => headerLeftOption(navigation.goBack),
     })
-  }, [navigation, onBackPress])
+  }, [navigation])
 
   return (
     <View style={styles.parent}>

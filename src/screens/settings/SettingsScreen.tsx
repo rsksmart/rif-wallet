@@ -1,20 +1,19 @@
-import { useCallback, useMemo } from 'react'
-import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native'
-import Icon from 'react-native-vector-icons/Ionicons'
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5'
+import { useCallback, useMemo, useEffect } from 'react'
+import { StyleSheet, View, ScrollView } from 'react-native'
+import { version } from 'package.json'
+import { useTranslation } from 'react-i18next'
 
 import { getWalletSetting, SETTINGS } from 'core/config'
-import { colors, spacing } from 'src/styles'
-import { MediumText, RegularText, Typography } from 'components/index'
-import LockIcon from 'components/icons/LockIcon'
-import AccountsIcon from 'components/icons/AccountsIcon'
+import { sharedColors } from 'shared/constants'
+import { castStyle } from 'shared/utils'
+import { AppTouchable, Typography } from 'components/index'
 import { homeStackRouteNames } from 'navigation/homeNavigator/types'
+import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
+import { headerLeftOption } from 'navigation/profileNavigator'
 import {
   SettingsScreenProps,
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
-import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
-import { version } from 'package.json'
 
 export const SettingsScreen = ({
   navigation,
@@ -49,120 +48,144 @@ export const SettingsScreen = ({
     navigation.navigate(settingsStackRouteNames.ExampleScreen)
   }, [navigation])
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => headerLeftOption(navigation.goBack),
+    })
+  }, [navigation])
+  const { t } = useTranslation()
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.mainView}>
-        {/* @TODO add link to go to the accounts screen */}
-        <TouchableOpacity
+        <AppTouchable
+          width={'100%'}
           accessibilityLabel="account"
-          style={styles.rowComponent}
+          style={styles.settingsItem}
           onPress={goToAccountsScreen}>
-          <AccountsIcon width={18} height={18} />
-          <Typography type={'body1'} style={spacing.ml6}>
-            {'Account'}
-          </Typography>
-        </TouchableOpacity>
-        <TouchableOpacity
-          accessibilityLabel="security"
-          style={styles.rowComponent}
+          <Typography type={'h3'}>{t('settings_screen_account')}</Typography>
+        </AppTouchable>
+        <AppTouchable
+          width={'100%'}
+          accessibilityLabel="Wallet Backup"
+          style={styles.settingsItem}
           onPress={goToSecurityConfiguration}>
-          <LockIcon />
-          <Typography type={'body1'} style={spacing.ml6}>
-            {'Security'}
+          <Typography type={'h3'}>
+            {t('settings_screen_wallet_backup')}
           </Typography>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.rowComponent}
-          onPress={goToDeploy}
-          accessibilityLabel="deploy">
-          <Icon name="wallet-outline" color={colors.white} size={20} />
-          <Typography type={'body1'} style={spacing.ml6}>
-            {'Smart Wallet Deploy'}
-          </Typography>
-        </TouchableOpacity>
-        <TouchableOpacity
+        </AppTouchable>
+        <AppTouchable
+          width={'100%'}
+          accessibilityLabel="Change PIN"
+          style={styles.settingsItem}
+          onPress={() => {}}>
+          <Typography type={'h3'}>{t('settings_screen_change_pin')}</Typography>
+        </AppTouchable>
+        <AppTouchable
+          width={'100%'}
           accessibilityLabel="feedback"
-          style={styles.rowComponent}
+          style={styles.settingsItem}
           onPress={goToFeedbackScreen}>
-          <FontAwesomeIcon name="comment" color={colors.white} size={20} />
-          <Typography type={'body1'} style={spacing.ml6}>
-            {' Feedback'}
+          <Typography type={'h3'}>
+            {t('settings_screen_provide_feedback')}
           </Typography>
-        </TouchableOpacity>
-        <TouchableOpacity
+        </AppTouchable>
+        <AppTouchable
+          width={'100%'}
+          style={styles.settingsItem}
+          onPress={goToDeploy}
+          accessibilityLabel="Deploy Wallet">
+          <Typography type={'h3'}>
+            {t('settings_screen_deploy_wallet')}
+          </Typography>
+        </AppTouchable>
+        <AppTouchable
+          width={'100%'}
           accessibilityLabel={'example'}
-          style={styles.rowComponent}
+          style={styles.settingsItem}
           onPress={goToExampleScreen}>
-          <Typography type={'body1'} style={spacing.ml6}>
-            {' Example Screen'}
-          </Typography>
-        </TouchableOpacity>
+          <Typography type={'h3'}>{t('settings_screen_examples')}</Typography>
+        </AppTouchable>
       </View>
       <View style={styles.bottomView}>
-        <View style={styles.versionComp}>
-          <MediumText style={[styles.textColor]}>Version {version}</MediumText>
-        </View>
-        <View style={styles.secondaryTextView}>
-          <MediumText style={[styles.primaryTextStyles]}>
-            Smart Wallet Factory
-          </MediumText>
-          <RegularText style={[styles.secondaryTextStyles]}>
-            {smartWalletFactoryAddress}
-          </RegularText>
-        </View>
-        <View style={styles.secondaryTextView}>
-          <MediumText style={[styles.primaryTextStyles]}>RPC URL</MediumText>
-          <RegularText style={[styles.secondaryTextStyles]}>
-            {rpcUrl}
-          </RegularText>
-        </View>
-        <View style={styles.secondaryTextView}>
-          <MediumText style={[styles.primaryTextStyles]}>
-            Backend URL
-          </MediumText>
-          <RegularText style={[styles.secondaryTextStyles]}>
-            {walletServiceUrl}
-          </RegularText>
-        </View>
+        <AppTouchable
+          width={'100%'}
+          accessibilityLabel="version"
+          style={styles.footerItem}
+          onPress={goToSecurityConfiguration}>
+          <Typography type={'body1'} color={sharedColors.labelLight}>
+            {t('settings_screen_version')} {version}
+          </Typography>
+        </AppTouchable>
+
+        <AppTouchable
+          width={'100%'}
+          accessibilityLabel="Smart Wallet Factory"
+          style={styles.footerItem}
+          onPress={goToSecurityConfiguration}>
+          <>
+            <Typography type={'h4'} color={sharedColors.labelLight}>
+              {t('settings_screen_smart_wallet_factory')}
+            </Typography>
+            <Typography type={'h5'} color={sharedColors.labelLight}>
+              {smartWalletFactoryAddress}
+            </Typography>
+          </>
+        </AppTouchable>
+
+        <AppTouchable
+          width={'100%'}
+          accessibilityLabel="security"
+          style={styles.footerItem}
+          onPress={goToSecurityConfiguration}>
+          <>
+            <Typography type={'h4'} color={sharedColors.labelLight}>
+              {t('settings_screen_rpc_url')}
+            </Typography>
+            <Typography type={'h5'} color={sharedColors.labelLight}>
+              {rpcUrl}
+            </Typography>
+          </>
+        </AppTouchable>
+
+        <AppTouchable
+          width={'100%'}
+          accessibilityLabel="Backend URL"
+          style={styles.footerItem}
+          onPress={goToSecurityConfiguration}>
+          <>
+            <Typography type={'h4'} color={sharedColors.labelLight}>
+              {t('settings_screen_backend_url')}
+            </Typography>
+            <Typography type={'h5'} color={sharedColors.labelLight}>
+              {walletServiceUrl}
+            </Typography>
+          </>
+        </AppTouchable>
       </View>
     </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.background.darkBlue,
-    flex: 1,
-  },
-  mainView: {
-    paddingHorizontal: 50,
-    marginTop: 80,
-    flex: 3,
-  },
-  bottomView: {
-    flex: 2,
-    paddingHorizontal: 50,
-  },
-  rowComponent: {
-    marginBottom: 40,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  versionComp: {
-    marginBottom: 10,
-  },
-  secondaryTextView: {
-    marginBottom: 10,
-  },
-  textColor: {
-    color: colors.text.primary,
-  },
-  primaryTextStyles: {
-    color: colors.text.primary,
-    fontSize: 11,
-  },
-  secondaryTextStyles: {
-    color: colors.text.secondary,
-    fontSize: 10,
-  },
+  container: castStyle.view({
+    height: '100%',
+    backgroundColor: sharedColors.tokenBackground,
+    paddingHorizontal: 24,
+  }),
+  mainView: castStyle.view({
+    marginTop: 40,
+    alignContent: 'flex-start',
+  }),
+  bottomView: castStyle.view({
+    marginTop: 130,
+  }),
+  settingsItem: castStyle.view({
+    marginBottom: 20,
+    alignItems: 'flex-start',
+  }),
+  footerItem: castStyle.view({
+    marginBottom: 15,
+    alignItems: 'flex-start',
+  }),
 })

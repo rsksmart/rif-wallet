@@ -4,6 +4,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { useTranslation } from 'react-i18next'
+
 import { shortAddress } from 'lib/utils'
 
 import { castStyle } from 'shared/utils'
@@ -93,13 +94,12 @@ export const ProfileCreateScreen = ({
     setValue('email', profile.email)
     setValue('phone', profile.phone)
   }, [profile.email, profile.phone, setValue])
-  const onBackPress = useCallback(() => navigation.goBack(), [navigation])
 
   useEffect(() => {
     navigation.setOptions({
-      headerLeft: () => headerLeftOption(onBackPress),
+      headerLeft: () => headerLeftOption(navigation.goBack),
     })
-  }, [navigation, onBackPress])
+  }, [navigation])
   const { t } = useTranslation()
 
   return (
