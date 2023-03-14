@@ -58,7 +58,6 @@ export const SettingsScreen = ({
   return (
     <ScrollView style={styles.container}>
       <View style={styles.mainView}>
-        {/* @TODO add link to go to the accounts screen */}
         <AppTouchable
           width={'100%'}
           accessibilityLabel="account"
@@ -156,7 +155,7 @@ export const SettingsScreen = ({
           onPress={goToSecurityConfiguration}>
           <>
             <Typography type={'h4'} color={sharedColors.labelLight}>
-              {'settings_screen_backend_url'}
+              {t('settings_screen_backend_url')}
             </Typography>
             <Typography type={'h5'} color={sharedColors.labelLight}>
               {walletServiceUrl}
