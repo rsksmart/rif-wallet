@@ -49,6 +49,6 @@ export const StepperComponent = ({
 
 const styles = StyleSheet.create({
   separator: castStyle.view({
-    marginLeft: 1,
+    marginLeft: 2,
   }),
 })
