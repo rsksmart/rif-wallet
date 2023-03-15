@@ -17,6 +17,7 @@ import { useAppSelector } from 'store/storeUtils'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { selectSelectedWallet, selectWallets } from 'store/slices/settingsSlice'
 import { sharedColors } from 'shared/constants'
+import { ActivityMainScreenProps } from 'shared/types'
 
 import useActivityDeserializer from './useActivityDeserializer'
 import ActivityRowPresentation from './ActivityRowPresentation'
@@ -91,7 +92,7 @@ const getStatus = (status: string) => {
 
 interface ActivityBasicRowProps {
   activityTransaction: ActivityMixedType
-  navigation: HomeStackScreenProps<homeStackRouteNames.Main>['navigation']
+  navigation: ActivityMainScreenProps['navigation']
 }
 export const ActivityBasicRow = ({
   activityTransaction,
