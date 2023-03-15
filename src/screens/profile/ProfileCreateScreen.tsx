@@ -115,7 +115,7 @@ export const ProfileCreateScreen = ({
         />
         <View style={styles.username}>
           <Typography type={'h3'} color={sharedColors.labelLight}>
-            {username}
+            {t(username)}
           </Typography>
           <Typography type={'h4'} color={sharedColors.labelLight}>
             {displayAddress}
