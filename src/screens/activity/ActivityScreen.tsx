@@ -121,10 +121,6 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     borderBottomColor: '#CCCCCC',
   }),
-  header: {
-    fontSize: 26,
-    textAlign: 'center',
-  },
   transactionsViewStyle: castStyle.view({
     marginTop: 40,
     marginBottom: 20,
