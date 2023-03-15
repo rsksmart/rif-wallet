@@ -44,10 +44,7 @@ export const ProfileCreateScreen = ({
   const [username, setUsername] = useState<string>('no_username')
   const methods = useForm()
   const { resetField, setValue } = methods
-
-  useEffect(() => {
-    setUsername(profile.alias || 'no_username')
-  }, [profile.alias])
+  const { t } = useTranslation()
 
   const onSetEmail = useCallback(
     (_email: string) => {
@@ -91,16 +88,21 @@ export const ProfileCreateScreen = ({
   }, [dispatch, profile])
 
   useEffect(() => {
+    setUsername(profile.alias || 'no_username')
+  }, [profile.alias])
+
+  useEffect(() => {
     setValue('email', profile.email)
     setValue('phone', profile.phone)
   }, [profile.email, profile.phone, setValue])
+
+  const onBackPress = useCallback(() => navigation.goBack(), [navigation])
 
   useEffect(() => {
     navigation.setOptions({
       headerLeft: () => headerLeftOption(navigation.goBack),
     })
-  }, [navigation])
-  const { t } = useTranslation()
+  }, [navigation, onBackPress])
 
   return (
     <ScrollView style={{ backgroundColor: sharedColors.secondary }}>
@@ -200,9 +202,18 @@ export const ProfileCreateScreen = ({
             title={t('profile_register_your_username_button_text')}
             color={sharedColors.white}
             textColor={sharedColors.black}
-            disabled={username !== 'no_username'}
+            // disabled={username !== 'no_username'}
             onPress={() =>
               navigation.navigate(profileStackRouteNames.SearchDomain)
+            }
+          />
+          <AppButton
+            style={sharedStyles.marginTop20}
+            title="Purchase username"
+            color={sharedColors.white}
+            textColor={sharedColors.black}
+            onPress={() =>
+              navigation.navigate(profileStackRouteNames.PurchaseDomain)
             }
           />
         </FormProvider>
