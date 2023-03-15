@@ -1,7 +1,8 @@
 import { useCallback, useEffect } from 'react'
-import { StyleSheet, View } from 'react-native'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { StyleSheet, View } from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler'
 
 import { AvatarIcon } from 'components/icons/AvatarIcon'
 import { AppButton, Input, Typography } from 'components/index'
@@ -10,10 +11,10 @@ import {
   profileStackRouteNames,
   ProfileStackScreenProps,
 } from 'navigation/profileNavigator/types'
+import { sharedColors } from 'shared/constants'
+import { castStyle } from 'shared/utils'
 import { selectProfile } from 'store/slices/profileSlice'
 import { useAppSelector } from 'store/storeUtils'
-import { castStyle } from 'shared/utils'
-import { sharedColors, sharedStyles } from 'shared/constants'
 
 import { rnsManagerStyles } from './rnsManagerStyles'
 
@@ -33,8 +34,8 @@ export const PurchaseDomainScreen = ({ navigation }: Props) => {
   }, [navigation, onBackPress])
 
   return (
-    <View style={[rnsManagerStyles.container, styles.container]}>
-      <View style={sharedStyles.flex}>
+    <ScrollView style={rnsManagerStyles.scrollContainer}>
+      <View style={rnsManagerStyles.container}>
         <Typography
           type="h2"
           style={[rnsManagerStyles.subtitle, rnsManagerStyles.marginBottom]}>
@@ -64,9 +65,8 @@ export const PurchaseDomainScreen = ({ navigation }: Props) => {
             isReadOnly
           />
         </FormProvider>
-      </View>
-      <View style={rnsManagerStyles.bottomContainer}>
         <AppButton
+          style={rnsManagerStyles.button}
           onPress={() => console.log('purchase username')}
           accessibilityLabel={t('purchase_username_button')}
           title={t('purchase_username_button')}
@@ -74,7 +74,7 @@ export const PurchaseDomainScreen = ({ navigation }: Props) => {
           textColor={sharedColors.black}
         />
       </View>
-    </View>
+    </ScrollView>
   )
 }
 

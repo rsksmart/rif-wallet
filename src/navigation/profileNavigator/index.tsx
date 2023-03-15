@@ -8,15 +8,11 @@ import { Platform, StyleProp, StyleSheet, ViewStyle } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
 import { AppTouchable, Typography } from 'components/index'
+import { StepperComponent } from 'components/profile'
 import { InjectedScreens } from 'core/Core'
-import {
-  ProfileCreateScreen,
-  PurchaseDomainScreen,
-  ShareProfileScreen,
-} from 'screens/index'
+import { ProfileCreateScreen, PurchaseDomainScreen, ShareProfileScreen } from 'screens/index'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { StepperComponent } from 'components/profile'
 import { selectProfileStatus } from 'store/slices/profileSlice'
 import { useAppSelector } from 'store/storeUtils'
 
