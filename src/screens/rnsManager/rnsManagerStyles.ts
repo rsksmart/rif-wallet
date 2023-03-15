@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+
 import { sharedColors } from 'shared/constants'
 import { colors } from 'src/styles'
 
@@ -56,7 +57,8 @@ export const rnsManagerStyles = StyleSheet.create({
     marginBottom: 10,
   },
   bottomContainer: {
-    marginVertical: 20,
+    flex: 1,
+    justifyContent: 'flex-end',
   },
   disabledButton: {
     opacity: 0.4,
