@@ -10,9 +10,12 @@ import {
   deleteContacts as deleteContactsFromStorage,
 } from 'storage/MainStorage'
 import { Contact } from 'shared/types'
+import { defaultContacts } from 'store/slices/contactsSlice/constants'
 
 const initialState: ContactsState = {
-  contacts: {},
+  contacts: {
+    ...defaultContacts,
+  },
   selectedContact: null,
 }
 
@@ -23,12 +26,12 @@ const contactsSlice = createSlice({
   initialState,
   reducers: {
     addContact: (state, { payload }: PayloadAction<SaveContactPayload>) => {
-      state.contacts[payload.address] = { ...payload }
+      state.contacts[payload.address] = { ...payload, isEditable: true }
       saveContacts(state.contacts)
       return state
     },
     editContact: (state, { payload }: PayloadAction<Contact>) => {
-      state.contacts[payload.address] = { ...payload }
+      state.contacts[payload.address] = { ...payload, isEditable: true }
       saveContacts(state.contacts)
       return state
     },
