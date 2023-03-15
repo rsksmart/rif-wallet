@@ -1,243 +1,425 @@
-import { toChecksumAddress } from '@rsksmart/rsk-utils'
-import { useCallback, useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { ScrollView, StyleSheet, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { FormProvider, useForm } from 'react-hook-form'
+import Icon from 'react-native-vector-icons/FontAwesome5'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+
+import {
+  balanceToDisplay,
+  convertTokenToUSD,
+  convertUSDtoToken,
+  sanitizeDecimalText,
+  sanitizeMaxDecimalText,
+} from 'lib/utils'
 
 import { AddressInputSelector } from 'components/address/AddressInputSelector'
-import { TransferButton } from 'components/button/TransferButton'
-import { Tabs, Typography } from 'components/index'
-import { colors, grid } from 'src/styles'
-import { IActivityTransaction, IPrice } from 'src/subscriptions/types'
+import {
+  AppButton,
+  AppButtonBackgroundVarietyEnum,
+  AppTouchable,
+  Input,
+  Typography,
+} from 'components/index'
+import { IPrice } from 'src/subscriptions/types'
+import { sharedColors, sharedStyles } from 'shared/constants'
+import { castStyle } from 'shared/utils'
+import { CurrencyValue, TokenBalance } from 'src/components/token'
+import { useAppDispatch } from 'store/storeUtils'
 
-import { AssetChooser } from './AssetChooser'
-import { RecentTransactions } from './RecentTransactions'
-import { SetAmountHOCComponent } from './SetAmountHOCComponent'
 import { MixedTokenAndNetworkType } from './types'
-import { useTokenSelectedTabs } from './useTokenSelectedTabs'
+import { PortfolioComponent } from '../home/PortfolioComponent'
+import { TokenImage, TokenSymbol } from '../home/TokenImage'
 
 interface Props {
   onConfirm: (
     selectedToken: MixedTokenAndNetworkType,
-    amount: string,
+    amount: number,
     to: string,
   ) => void
+  onCancel: () => void
   tokenList: MixedTokenAndNetworkType[]
   tokenPrices: Record<string, IPrice>
   chainId: number
   initialValues: {
     asset?: MixedTokenAndNetworkType
-    amount?: string
+    amount?: number
     recipient?: string
   }
-  transactions: IActivityTransaction[]
-  onTokenSelected?: (tokenSelected: MixedTokenAndNetworkType) => void
 }
 
 interface FormValues {
-  amount: string
+  amount: number
   to: string
+  balance: number
   isToValid: boolean
-  isAmountValid: boolean
 }
+
+const transactionFeeMap = new Map([
+  [TokenSymbol.RIF, true],
+  [TokenSymbol.TRIF, true],
+  [TokenSymbol.RDOC, true],
+])
+
+const transactionSchema = yup.object().shape({
+  amount: yup.number().min(0.00001),
+  to: yup.string().required(),
+  balance: yup.number(),
+  isToValid: yup.boolean().isTrue(),
+})
 
 export const TransactionForm = ({
   initialValues,
   tokenList,
   chainId,
   tokenPrices,
-  transactions,
   onConfirm,
-  onTokenSelected,
+  onCancel,
 }: Props) => {
   const { t } = useTranslation()
-  const methods = useForm<FormValues>({
-    defaultValues: {
-      amount: initialValues.amount || '0',
-      to: initialValues.recipient || '',
-      isAmountValid: false,
-      isToValid: false,
-    },
-  })
-  const { getValues, setValue, handleSubmit, resetField } = methods
+  const [showTxSelector, setShowTxSelector] = useState(false)
+  const [showTxFeeSelector, setShowTxFeeSelector] = useState(false)
+  const [selectedTokenAddress, setSelectedTokenAddress] = useState<string>('')
   const [selectedToken, setSelectedToken] = useState<MixedTokenAndNetworkType>(
     initialValues.asset || tokenList[0],
   )
+  const [selectedFeeToken, setSelectedFeeToken] =
+    useState<MixedTokenAndNetworkType>(selectedToken)
 
-  const [activeTab, setActiveTab] = useState('address')
-  const { tabs } = useTokenSelectedTabs(selectedToken, setActiveTab)
+  const tokenFeeList = useMemo(() => {
+    if (selectedToken.symbol !== TokenSymbol.BTCT) {
+      return tokenList.filter(tok =>
+        transactionFeeMap.get(tok.symbol as TokenSymbol),
+      )
+    }
 
-  const [error, setError] = useState<string | null>(null)
-
-  const isValidTransaction =
-    getValues('isAmountValid') && getValues('isToValid')
+    return [selectedToken]
+  }, [tokenList, selectedToken])
 
   const tokenQuote = selectedToken.contractAddress.startsWith('BITCOIN')
     ? tokenPrices.BTC.price
     : tokenPrices[selectedToken.contractAddress]?.price
 
-  const handleAmountChange = useCallback(
-    (newAmount: string, isValid: boolean) => {
-      setError(null)
-      setValue('amount', newAmount)
-      setValue('isAmountValid', isValid)
+  const methods = useForm<FormValues>({
+    mode: 'onSubmit',
+    defaultValues: {
+      amount: initialValues.amount || 0,
+      to: initialValues.recipient || '',
+      balance: Number(selectedToken.balance),
+      isToValid: false,
     },
-    [setValue],
+    resolver: yupResolver(transactionSchema),
+  })
+  const {
+    setValue,
+    handleSubmit,
+    resetField,
+    watch,
+    formState: { errors },
+  } = methods
+  const amount = watch('amount')
+  const to = watch('to')
+  const balance = watch('balance')
+
+  const [firstBalance, setFirstBalance] = useState<CurrencyValue>({
+    balance: '0',
+    symbolType: 'icon',
+    symbol: selectedToken.symbol,
+  })
+  const [secondBalance, setSecondBalance] = useState<CurrencyValue>({
+    balance: '0',
+    symbolType: 'text',
+    symbol: '$',
+  })
+  const [balanceInverted, setBalanceInverted] = useState(false)
+
+  const handleAmountChange = useCallback(
+    (newAmount: string, _balanceInverted: boolean) => {
+      const text = sanitizeMaxDecimalText(sanitizeDecimalText(newAmount))
+      const numberAmount = Number(text)
+      setFirstBalance(prev => ({
+        ...prev,
+        balance: text,
+      }))
+      if (_balanceInverted) {
+        const balanceToSet = convertUSDtoToken(numberAmount, tokenQuote)
+        setValue('amount', balanceToSet)
+
+        setSecondBalance(prev => ({
+          ...prev,
+          balance: balanceToSet.toString(),
+        }))
+      } else {
+        setValue('amount', numberAmount)
+        setSecondBalance(prev => ({
+          ...prev,
+          balance: convertTokenToUSD(numberAmount, tokenQuote).toString(),
+        }))
+      }
+    },
+    [setValue, tokenQuote],
   )
 
   const handleTargetAddressChange = useCallback(
     (address: string, isValid: boolean) => {
-      setError(null)
       setValue('to', address)
       setValue('isToValid', isValid)
     },
     [setValue],
   )
 
-  const handleSelectRecentAddress = useCallback(
-    (address: string) => {
-      handleTargetAddressChange(toChecksumAddress(address, chainId), true)
-      setActiveTab('address')
-    },
-    [chainId, handleTargetAddressChange],
-  )
-
   const handleConfirmClick = useCallback(
-    (values: FormValues) => onConfirm(selectedToken, values.amount, values.to),
+    (values: FormValues) => {
+      console.log('VALUES', values, selectedToken)
+      // onConfirm(selectedToken, values.amount, values.to)
+    },
     [selectedToken, onConfirm],
   )
 
-  const onTokenSelect = useCallback(
-    (token: MixedTokenAndNetworkType) => {
-      setSelectedToken(oldToken => {
-        // Reset address when token type is changed
-        if ('isBitcoin' in oldToken === !('isBitcoin' in token)) {
-          handleTargetAddressChange('', false)
+  const onChangeSelectedTokenAddress = useCallback(
+    (address: string) => {
+      if (address !== selectedTokenAddress) {
+        const token = tokenList.filter(
+          value => value.contractAddress === address,
+        )[0]
+        setSelectedTokenAddress(address)
+        setSelectedToken(oldToken => {
+          // Reset address when token type is changed
+          if ('isBitcoin' in oldToken === !('isBitcoin' in token)) {
+            handleTargetAddressChange('', false)
+          }
+          return token
+        })
+        const tokenObject: CurrencyValue = {
+          balance: '0',
+          symbol: token.symbol,
+          symbolType: 'icon',
         }
-        return token
-      })
-      if (onTokenSelected) {
-        onTokenSelected(token)
+
+        setFirstBalance(prevFirstBalance => {
+          if (!balanceInverted) {
+            return tokenObject
+          } else {
+            return prevFirstBalance
+          }
+        })
+        setSecondBalance(prevSecondBalance => {
+          if (!balanceInverted) {
+            return prevSecondBalance
+          } else {
+            return tokenObject
+          }
+        })
+        setValue('balance', Number(token.balance))
+        setSelectedFeeToken(token)
+        handleAmountChange('0', balanceInverted)
       }
     },
-    [onTokenSelected, handleTargetAddressChange],
+    [
+      selectedTokenAddress,
+      handleTargetAddressChange,
+      tokenList,
+      balanceInverted,
+      handleAmountChange,
+      setValue,
+    ],
   )
 
-  return (
-    <View>
-      <View style={[grid.row, styles.section]}>
-        <View style={grid.column12}>
-          <Typography type={'body3'} style={styles.label}>
-            {t('transaction_form_label_asset')}
-          </Typography>
-          <AssetChooser
-            selectedAsset={selectedToken}
-            assetList={tokenList}
-            onAssetSelected={onTokenSelect}
-          />
-        </View>
-      </View>
-      <View style={[grid.row, styles.section]}>
-        <View style={grid.column12}>
-          <SetAmountHOCComponent
-            setAmount={handleAmountChange}
-            token={selectedToken}
-            usdAmount={tokenQuote}
-          />
-        </View>
-      </View>
-      <View>
-        <Tabs
-          title={'recipient'}
-          tabs={tabs}
-          selectedTab={activeTab}
-          onTabSelected={setActiveTab}
-        />
-        {activeTab === 'address' && (
-          <>
-            <FormProvider {...methods}>
-              <AddressInputSelector
-                label={t('address_rns_placeholder')}
-                placeholder={t('address_rns_placeholder')}
-                initialValue={getValues('to')}
-                inputName={'to'}
-                onChangeAddress={handleTargetAddressChange}
-                resetValue={() => {
-                  resetField('to')
-                  resetField('isToValid')
-                }}
-                testID={'To.Input'}
-                chainId={chainId}
-                token={selectedToken}
-              />
-            </FormProvider>
-            <View>
-              <Typography type={'body3'}>{error}</Typography>
-            </View>
+  const onSwapBalance = useCallback(() => {
+    setBalanceInverted(prevInverted => {
+      setFirstBalance(prevFirstBalance => {
+        setSecondBalance(prevFirstBalance)
+        handleAmountChange(prevFirstBalance.balance, !prevInverted)
+        return secondBalance
+      })
+      return !prevInverted
+    })
+  }, [secondBalance, handleAmountChange])
 
-            <View style={styles.centerRow}>
-              <TransferButton
-                style={styles.button}
-                onPress={handleSubmit(handleConfirmClick)}
-                disabled={!isValidTransaction}
-                accessibilityLabel={'transfer'}
+  const toggleShowTx = useCallback(() => {
+    setShowTxSelector(prev => !prev)
+  }, [])
+
+  const toggleShowTxFee = useCallback(() => {
+    setShowTxFeeSelector(prev => !prev)
+  }, [])
+
+  const onChangeSelectedFee = useCallback(
+    (fee: string) => {
+      setSelectedFeeToken(
+        tokenList.filter(value => value.contractAddress === fee)[0],
+      )
+    },
+    [tokenList],
+  )
+
+  useEffect(() => {
+    console.log('FIRST BALANCE', firstBalance)
+    console.log('SECOND BALANCE', secondBalance)
+    console.log('ERRORS', errors)
+  }, [firstBalance, secondBalance, errors])
+
+  return (
+    <>
+      <ScrollView
+        style={styles.transactionForm}
+        contentContainerStyle={styles.transactionScrollContainer}>
+        <FormProvider {...methods}>
+          <AddressInputSelector
+            label={t('transaction_form_recepient_label')}
+            placeholder={t('transaction_form_recepient_label')}
+            initialValue={initialValues.recipient ?? ''}
+            inputName={'to'}
+            onChangeAddress={handleTargetAddressChange}
+            resetValue={() => {
+              resetField('to')
+              resetField('isToValid')
+            }}
+            testID={'To.Input'}
+            chainId={chainId}
+            token={selectedToken}
+          />
+          <TokenBalance
+            style={sharedStyles.marginTop40}
+            firstValue={firstBalance}
+            secondValue={secondBalance}
+            color={sharedColors.black}
+            onSwap={onSwapBalance}
+            editable
+            handleAmountChange={value =>
+              handleAmountChange(value, balanceInverted)
+            }
+          />
+          <Input
+            containerStyle={sharedStyles.marginTop40}
+            inputName={'balance'}
+            label={`${selectedToken.symbol} ${t(
+              'transaction_form_balance_label',
+            )}`}
+            placeholder={`${balanceToDisplay(
+              balance,
+              selectedToken.decimals,
+              5,
+            )} ${selectedToken.symbol}`}
+            isReadOnly
+          />
+          <AppTouchable
+            width={'100%'}
+            onPress={toggleShowTx}
+            style={styles.assetToggleRow}>
+            <>
+              <Typography type={'h3'}>
+                {t('transaction_form_tx_dropdown')}
+              </Typography>
+              <Icon
+                name={showTxSelector ? 'chevron-up' : 'chevron-down'}
+                size={20}
+                color={sharedColors.white}
               />
-            </View>
-          </>
-        )}
-        {activeTab === 'recent' && (
-          <>
-            <RecentTransactions
-              transactions={transactions}
-              onSelect={handleSelectRecentAddress}
+            </>
+          </AppTouchable>
+          {showTxSelector ? (
+            <PortfolioComponent
+              style={styles.txSelector}
+              setSelectedAddress={onChangeSelectedTokenAddress}
+              selectedAddress={selectedTokenAddress}
+              balances={tokenList}
+              prices={tokenPrices}
             />
-            <View>
-              <Typography type={'body3'}>{error}</Typography>
-            </View>
-          </>
-        )}
+          ) : null}
+          {firstBalance.balance ? (
+            <Input
+              inputName={'fee'}
+              label={t('transaction_form_fee_input_label')}
+              placeholder={`${selectedFeeToken.symbol}`}
+              leftIcon={
+                <TokenImage
+                  symbol={selectedFeeToken.symbol}
+                  height={32}
+                  width={32}
+                />
+              }
+              isReadOnly
+            />
+          ) : null}
+          {firstBalance.balance ? (
+            <AppTouchable
+              width={'100%'}
+              onPress={toggleShowTxFee}
+              style={styles.assetToggleRow}>
+              <>
+                <Typography type={'h3'}>
+                  {t('transaction_form_fee_dropdown')}
+                </Typography>
+                <Icon
+                  name={showTxFeeSelector ? 'chevron-up' : 'chevron-down'}
+                  size={20}
+                  color={sharedColors.white}
+                />
+              </>
+            </AppTouchable>
+          ) : null}
+          {showTxFeeSelector ? (
+            <PortfolioComponent
+              style={styles.txSelector}
+              setSelectedAddress={onChangeSelectedFee}
+              selectedAddress={selectedFeeToken.contractAddress}
+              balances={tokenFeeList}
+              prices={tokenPrices}
+            />
+          ) : null}
+        </FormProvider>
+      </ScrollView>
+      <View style={styles.buttons}>
+        <AppButton
+          style={styles.button}
+          title={`${t('transaction_form_button_send')} ${amount} ${
+            selectedToken.symbol
+          }`}
+          onPress={handleSubmit(handleConfirmClick)}
+          disabled={
+            // balance === 0 ||
+            to.length === 0 || amount === 0
+          }
+          color={sharedColors.white}
+          textColor={sharedColors.black}
+        />
+        <AppButton
+          style={[styles.button, styles.buttonCancel]}
+          title={t('transaction_form_button_cancel')}
+          onPress={onCancel}
+          backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
+        />
       </View>
-    </View>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
-  label: {
-    color: colors.white,
-    padding: 10,
-  },
-  section: {
-    marginBottom: 30,
-  },
-  chooseAsset: {
+  transactionForm: castStyle.view({
+    paddingTop: 24,
+    height: '100%',
     width: '100%',
-    backgroundColor: '#fff',
-    borderRadius: 15,
-    alignItems: 'center',
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 2,
-    justifyContent: 'center',
-  },
-  button: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  centerRow: {
-    marginTop: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  icon: {
-    marginTop: 14,
-    paddingLeft: 5,
-  },
-  input: {
-    backgroundColor: '#ffffff',
-    borderRadius: 10,
-    display: 'flex',
-    height: 50,
+  }),
+  transactionScrollContainer: castStyle.view({ paddingBottom: 200 }),
+  buttons: castStyle.view({
+    position: 'absolute',
+    bottom: 30,
+    left: 24,
+    right: 24,
+  }),
+  button: castStyle.view({
+    height: 54,
+  }),
+  buttonCancel: castStyle.view({
     marginTop: 10,
-    margin: 10,
-  },
+    backgroundColor: sharedColors.black,
+  }),
+  assetToggleRow: castStyle.view({
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 16,
+  }),
+  txSelector: castStyle.view({ marginTop: 22 }),
 })

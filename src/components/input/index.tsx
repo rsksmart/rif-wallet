@@ -69,6 +69,7 @@ export const Input = ({
   onFocus: onFocusProp,
   suffix,
   inputRef,
+  value: propValue,
   ...textInputProps
 }: InputProps) => {
   const { control } = useFormContext()
@@ -155,7 +156,9 @@ export const Input = ({
                       placeholderStyle,
                     ]}
                     type={!value ? (isReadOnly ? 'body2' : 'body3') : 'body2'}>
-                    {placeholder && !focused && !value ? placeholder : value}
+                    {placeholder && !focused && !value
+                      ? placeholder
+                      : propValue ?? value}
                   </Typography>
                 </TextInput>
                 {subtitle && (!!value || isReadOnly) ? (

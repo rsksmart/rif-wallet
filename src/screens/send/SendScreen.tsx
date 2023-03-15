@@ -1,15 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
-import {
-  StyleSheet,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native'
+import { StyleSheet, KeyboardAvoidingView, Platform } from 'react-native'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
-
 import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 
-import { RegularText } from 'src/components'
 import {
   homeStackRouteNames,
   HomeStackScreenProps,
@@ -19,6 +12,8 @@ import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
 import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
+import { castStyle } from 'shared/utils'
+import { sharedStyles } from 'shared/constants'
 
 import { ScreenWithWallet } from '../types'
 import { TransactionInfo } from './TransactionInfo'
@@ -81,57 +76,46 @@ export const SendScreen = ({
 
   return (
     <KeyboardAvoidingView
-      style={styles.screen}
+      style={sharedStyles.screen}
       keyboardVerticalOffset={100}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScrollView style={styles.parent}>
-        {!isWalletDeployed && (
-          <WalletNotDeployedView onDeployWalletPress={onDeployWalletNavigate} />
-        )}
-        {!currentTransaction ? (
-          <PaymentExecutorContext.Provider
-            value={{
-              setUtxosGlobal: setUtxos,
-              setBitcoinBalanceGlobal: setBitcoinBalance,
-            }}>
-            <TransactionForm
-              onConfirm={onExecuteTransfer}
-              tokenList={assets}
-              tokenPrices={prices}
-              chainId={chainId}
-              initialValues={{
-                recipient: route.params?.to,
-                amount: '0',
-                asset: route.params?.contractAddress
-                  ? assets.find(
-                      asset =>
-                        asset.contractAddress === route.params?.contractAddress,
-                    )
-                  : tokenBalances[contractAddress],
-              }}
-              transactions={transactions}
-            />
-          </PaymentExecutorContext.Provider>
-        ) : (
-          <TransactionInfo transaction={currentTransaction} />
-        )}
-
-        {!!error && (
-          <RegularText style={styles.error}>{error.message}</RegularText>
-        )}
-      </ScrollView>
+      {!isWalletDeployed && (
+        <WalletNotDeployedView onDeployWalletPress={onDeployWalletNavigate} />
+      )}
+      {!currentTransaction ? (
+        <PaymentExecutorContext.Provider
+          value={{
+            setUtxosGlobal: setUtxos,
+            setBitcoinBalanceGlobal: setBitcoinBalance,
+          }}>
+          <TransactionForm
+            onConfirm={onExecuteTransfer}
+            onCancel={() => navigation.goBack()}
+            tokenList={assets}
+            tokenPrices={prices}
+            chainId={chainId}
+            initialValues={{
+              recipient: route.params?.to,
+              amount: 0,
+              asset: route.params?.contractAddress
+                ? assets.find(
+                    asset =>
+                      asset.contractAddress === route.params?.contractAddress,
+                  )
+                : tokenBalances[contractAddress],
+            }}
+            transactions={transactions}
+          />
+        </PaymentExecutorContext.Provider>
+      ) : (
+        <TransactionInfo transaction={currentTransaction} />
+      )}
     </KeyboardAvoidingView>
   )
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: colors.background.darkBlue,
-  },
   parent: {
-    height: '100%',
-    backgroundColor: colors.darkPurple3,
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
     paddingTop: 40,

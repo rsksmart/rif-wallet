@@ -1,4 +1,4 @@
-import { View, ScrollView } from 'react-native'
+import { View, ScrollView, StyleProp, ViewStyle } from 'react-native'
 import { useCallback, useState } from 'react'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import { BigNumber } from 'ethers'
@@ -61,16 +61,18 @@ interface Props {
   balances: Array<ITokenWithoutLogo | BitcoinNetwork>
   prices: Record<string, IPrice>
   selectedAddress?: string
+  style?: StyleProp<ViewStyle>
 }
-const PortfolioComponent = ({
+export const PortfolioComponent = ({
   selectedAddress,
   setSelectedAddress,
   balances,
   prices,
+  style,
 }: Props) => {
   const { t } = useTranslation()
   const handleSelectedAddress = useCallback(
-    contractAddress => {
+    (contractAddress: string) => {
       setIsTotalCardSelected(false)
       setSelectedAddress(contractAddress)
     },
@@ -79,7 +81,7 @@ const PortfolioComponent = ({
   const [isTotalCardSelected, setIsTotalCardSelected] = useState<boolean>(true)
 
   return (
-    <View>
+    <View style={style}>
       {/*TODO: This View above is a temporal fix to keep the ScrollView height*/}
       <ScrollView horizontal={true}>
         <PortfolioCard
@@ -115,5 +117,3 @@ const PortfolioComponent = ({
     </View>
   )
 }
-
-export default PortfolioComponent

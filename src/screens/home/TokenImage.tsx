@@ -39,7 +39,7 @@ export const TokenImage = ({ symbol, height = 20, width = 20 }: Props) => {
 export enum TokenSymbol {
   TRBTC = 'TRBTC',
   RIF = 'RIF',
-  TRIF = 'TRIF',
+  TRIF = 'tRIF',
   DOC = 'DOC',
   RDOC = 'RDOC',
   RIFP = 'RIFP',
@@ -98,6 +98,7 @@ export enum TokenSymbol {
   BRZ = 'BRZ',
   XUSD = 'XUSD',
   FISH = 'FISH',
+  RBTC = 'RBTC',
 }
 
 export const getIconSource = (
@@ -107,7 +108,7 @@ export const getIconSource = (
     case 'TRBTC':
       return require('../../images/RBTC-logo.png')
     case 'RIF':
-    case 'TRIF':
+    case 'tRIF':
       return require('./../../images/rif.png')
     case 'DOC':
       return require('@rsksmart/rsk-contract-metadata/images/doc.png')

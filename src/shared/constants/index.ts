@@ -64,6 +64,7 @@ export const sharedStyles = StyleSheet.create({
     alignItems: 'center',
   }),
   marginLeft24: castStyle.view({ marginLeft: 24 }),
+  marginTop40: castStyle.view({ marginTop: 40 }),
   screen: castStyle.view({
     flex: 1,
     backgroundColor: sharedColors.black,
