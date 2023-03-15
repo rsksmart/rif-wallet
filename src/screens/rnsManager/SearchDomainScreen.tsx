@@ -15,9 +15,7 @@ import {
   ProfileStatus,
 } from 'navigation/profileNavigator/types'
 import { sharedColors } from 'shared/constants'
-import { ScreenWithWallet } from '../types'
-import { rnsManagerStyles } from './rnsManagerStyles'
-
+import { headerLeftOption } from 'navigation/profileNavigator'
 import { castStyle } from 'shared/utils'
 import { SlidePopupConfirmationInfo } from 'src/components/slidePopup/SlidePopupConfirmationInfo'
 import { colors } from 'src/styles'
@@ -25,8 +23,10 @@ import { selectBalances } from 'store/slices/balancesSlice'
 import { recoverAlias } from 'store/slices/profileSlice'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+
+import { rnsManagerStyles } from './rnsManagerStyles'
+import { ScreenWithWallet } from '../types'
 import { DomainInput } from './DomainInput'
-import { headerLeftOption, headerStyles } from 'navigation/profileNavigator'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
   ScreenWithWallet
@@ -123,19 +123,18 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
     navigation.navigate(profileStackRouteNames.ProfileCreateScreen)
   }, [dispatch, domainToLookUp, navigation])
 
+  const onBackPress = useCallback(() => navigation.goBack(), [navigation])
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => headerLeftOption(onBackPress),
+    })
+  }, [navigation, onBackPress])
+
   useEffect(() => {
     calculatePrice(domainToLookUp, selectedYears).then(setSelectedDomainPrice)
   }, [domainToLookUp, selectedYears, calculatePrice])
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => headerLeftOption(navigation.goBack),
-      headerStyle: [
-        headerStyles.headerStyle,
-        { backgroundColor: sharedColors.secondary },
-      ],
-    })
-  }, [navigation])
   return (
     <ScrollView style={rnsManagerStyles.container}>
       <FormProvider {...methods}>

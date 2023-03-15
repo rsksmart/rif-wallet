@@ -4,7 +4,7 @@ import {
 } from '@react-navigation/stack'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Platform, StyleSheet } from 'react-native'
+import { Platform, StyleProp, StyleSheet, ViewStyle } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
 import { AppTouchable, Typography } from 'components/index'
@@ -16,8 +16,8 @@ import {
 } from 'screens/index'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { useAppSelector } from 'store/storeUtils'
 import { selectProfileStatus } from 'store/slices/profileSlice'
+import { useAppSelector } from 'store/storeUtils'
 
 import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
 import {
@@ -39,8 +39,9 @@ export const headerLeftOption = (goBack: () => void) => (
   </AppTouchable>
 )
 
-export const screenOptionsWithHeader = (
+const screenOptionsWithHeader = (
   title: string,
+  style?: StyleProp<ViewStyle>,
 ): StackNavigationOptions => ({
   headerShown: true,
   headerTitle: props => (
@@ -48,7 +49,11 @@ export const screenOptionsWithHeader = (
       {title ?? props.children}
     </Typography>
   ),
-  headerStyle: headerStyles.headerStyle,
+  headerStyle: [
+    headerStyles.headerStyle,
+    { backgroundColor: sharedColors.secondary },
+    style,
+  ],
   headerTitleAlign: 'center',
   headerShadowVisible: false,
 })
@@ -57,33 +62,26 @@ export const ProfileNavigator = ({
   navigation,
 }: RootTabsScreenProps<rootTabsRouteNames.Profile>) => {
   useEffect(() => {
-    navigation.setOptions({
-      headerShown: false,
-    })
+    navigation.setOptions({ headerShown: false })
   }, [navigation])
   const { t } = useTranslation()
   const status = useAppSelector(selectProfileStatus)
 
-  console.log('status', status)
-
   return (
     <ProfileStack.Navigator>
-      {status !== ProfileStatus.READY_TO_PURCHASE && (
-        <ProfileStack.Screen
-          name={profileStackRouteNames.ProfileCreateScreen}
-          component={ProfileCreateScreen}
-          options={screenOptionsWithHeader(t('profile_screen_title'))}
-        />
-      )}
+      <ProfileStack.Screen
+        name={profileStackRouteNames.ProfileCreateScreen}
+        component={ProfileCreateScreen}
+        options={screenOptionsWithHeader(t('profile_screen_title'), {
+          backgroundColor: sharedColors.primary,
+        })}
+      />
 
-      {(status === ProfileStatus.NONE ||
-        status === ProfileStatus.REQUESTING_ERROR) && (
-        <ProfileStack.Screen
-          name={profileStackRouteNames.SearchDomain}
-          component={InjectedScreens.SearchDomainScreen}
-          options={screenOptionsWithHeader(t('username_registration_title'))}
-        />
-      )}
+      <ProfileStack.Screen
+        name={profileStackRouteNames.SearchDomain}
+        component={InjectedScreens.SearchDomainScreen}
+        options={screenOptionsWithHeader(t('username_registration_title'))}
+      />
 
       {status === ProfileStatus.READY_TO_PURCHASE && (
         <ProfileStack.Screen
