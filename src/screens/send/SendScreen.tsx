@@ -12,7 +12,6 @@ import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
 import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
-import { castStyle } from 'shared/utils'
 import { sharedStyles } from 'shared/constants'
 
 import { ScreenWithWallet } from '../types'

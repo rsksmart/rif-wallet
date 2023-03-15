@@ -171,8 +171,7 @@ export const TransactionForm = ({
 
   const handleConfirmClick = useCallback(
     (values: FormValues) => {
-      console.log('VALUES', values, selectedToken)
-      // onConfirm(selectedToken, values.amount, values.to)
+      onConfirm(selectedToken, values.amount, values.to)
     },
     [selectedToken, onConfirm],
   )
