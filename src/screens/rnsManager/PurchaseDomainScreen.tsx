@@ -1,15 +1,15 @@
-import { View } from 'react-native'
 import { useCallback, useEffect } from 'react'
+import { View } from 'react-native'
 
 import { AvatarIcon } from 'components/icons/AvatarIcon'
-import { MediumText } from 'components/index'
-import { selectProfile } from 'store/slices/profileSlice'
-import { useAppSelector } from 'store/storeUtils'
+import { Typography } from 'components/index'
 import { headerLeftOption } from 'navigation/profileNavigator'
 import {
   profileStackRouteNames,
   ProfileStackScreenProps,
 } from 'navigation/profileNavigator/types'
+import { selectProfile } from 'store/slices/profileSlice'
+import { useAppSelector } from 'store/storeUtils'
 
 import { rnsManagerStyles } from './rnsManagerStyles'
 
@@ -29,13 +29,11 @@ export const PurchaseDomainScreen = ({ navigation }: Props) => {
   return (
     <View style={rnsManagerStyles.container}>
       <View style={rnsManagerStyles.profileImageContainer}>
-        <AvatarIcon value={alias} size={80} />
+        <AvatarIcon value={alias} size={100} />
 
-        <View>
-          <MediumText style={rnsManagerStyles.profileDisplayAlias}>
-            {alias}
-          </MediumText>
-        </View>
+        <Typography type="h3" style={rnsManagerStyles.profileDisplayAlias}>
+          {alias}
+        </Typography>
       </View>
     </View>
   )

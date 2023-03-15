@@ -24,10 +24,9 @@ export const rnsManagerStyles = StyleSheet.create({
   },
   profileImageContainer: {
     alignItems: 'center',
-    backgroundColor: colors.background.secondary,
-    borderRadius: 20,
-    paddingTop: 20,
-    paddingBottom: 10,
+    backgroundColor: sharedColors.inputInactive,
+    borderRadius: 10,
+    paddingVertical: 20,
   },
   profileImage: {
     width: 80,
@@ -35,11 +34,9 @@ export const rnsManagerStyles = StyleSheet.create({
     borderRadius: 100,
   },
   profileDisplayAlias: {
-    color: colors.lightPurple,
+    alignSelf: 'center',
     padding: 10,
     paddingBottom: 0,
-    alignSelf: 'center',
-    fontSize: 18,
   },
   aliasRequestInfo: {
     color: colors.lightPurple,
