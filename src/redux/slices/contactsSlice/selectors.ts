@@ -13,9 +13,15 @@ export const getContactsAsArray = createSelector(
   [getContactsAsObject],
   contacts => Object.values(contacts),
 )
-
+/**
+ * To fetch only contacts that can be edited
+ */
+export const filteredContactsByEditable = createSelector(
+  getContactsAsArray,
+  contacts => contacts.filter(contact => contact.isEditable),
+)
 export const getContactsAsArrayAndSelected = createSelector(
-  [getContactsAsArray, getContactsState],
+  [filteredContactsByEditable, getContactsState],
   (contacts, { selectedContact }) => ({
     contacts,
     selectedContact,
