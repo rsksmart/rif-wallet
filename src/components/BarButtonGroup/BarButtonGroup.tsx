@@ -4,6 +4,7 @@ import { Icon } from 'react-native-vector-icons/Icon'
 
 import { sharedColors } from 'shared/constants'
 import { AppTouchable } from 'components/appTouchable'
+import { castStyle } from 'shared/utils'
 
 interface BarButtonGroupIconProps {
   iconName: string
@@ -39,14 +40,14 @@ export const BarButtonGroupContainer = ({
 }
 
 const styles = StyleSheet.create({
-  view: {
+  view: castStyle.view({
     height: 64,
     flexDirection: 'row',
     opacity: 0.85,
-  },
-  iconContainerStyle: {
+  }),
+  iconContainerStyle: castStyle.view({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
+  }),
 })

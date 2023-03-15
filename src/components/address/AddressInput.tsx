@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { TextStyle } from 'react-native'
 import Clipboard from '@react-native-community/clipboard'
 import { isValidChecksumAddress } from '@rsksmart/rsk-utils'
 import { decodeString } from '@rsksmart/rif-wallet-eip681'
 import { useTranslation } from 'react-i18next'
-import { TextStyle } from 'react-native'
 
 import { rnsResolver } from 'core/setup'
-import { colors } from 'src/styles'
 import { sharedColors } from 'shared/constants'
 
 import { SecondaryButton } from '../button/SecondaryButton'
@@ -214,7 +213,7 @@ export const AddressInput = ({
         autoCorrect={false}
         autoCapitalize={'none'}
         placeholder={placeholder}
-        placeholderTextColor={colors.text.secondary}
+        placeholderTextColor={sharedColors.inputLabelColor}
         rightIcon={!recipient ? { name: 'copy', size: 16 } : undefined}
         onRightIconPress={handlePasteClick}
         leftIcon={

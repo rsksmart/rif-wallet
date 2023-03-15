@@ -1,25 +1,23 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image, ScrollView, StyleSheet, View } from 'react-native'
 import { CompositeScreenProps, useIsFocused } from '@react-navigation/native'
 import { FormProvider, useForm } from 'react-hook-form'
 
-// import { ConfirmationModal } from 'components/modal/ConfirmationModal'
-import { AppButton, Typography } from 'components/index'
+import { AppButton, AppTouchable, Typography } from 'components/index'
 import {
   rootTabsRouteNames,
   RootTabsScreenProps,
 } from 'navigation/rootNavigator/types'
-// import { homeStackRouteNames } from 'navigation/homeNavigator/types'
 import { contactsStackRouteNames } from 'navigation/contactsNavigator'
-// import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { getContactsAsArrayAndSelected } from 'store/slices/contactsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { changeTopColor } from 'store/slices/settingsSlice'
 import { Search } from 'components/input/search'
 import { BasicRow } from 'components/BasicRow'
 import { sharedColors, sharedStyles, testIDs } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { changeTopColor } from 'src/redux/slices/settingsSlice'
+import { shortAddress } from 'src/lib/utils'
 
 import { ContactsStackScreenProps } from '../index'
 
@@ -41,21 +39,23 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
   const { t } = useTranslation()
   const { contacts } = useAppSelector(getContactsAsArrayAndSelected)
 
-  const searchString = watch('search')
+  const searchContactText = watch('search')
 
   const contactsFiltered = useMemo(() => {
     let filtered = contacts
-    if (searchString) {
+    if (searchContactText) {
       filtered = contacts.filter(
         contact =>
-          contact.name.toLowerCase().includes(searchString.toLowerCase()) ||
+          contact.name
+            .toLowerCase()
+            .includes(searchContactText.toLowerCase()) ||
           contact.displayAddress
             .toLowerCase()
-            .includes(searchString.toLowerCase()),
+            .includes(searchContactText.toLowerCase()),
       )
     }
     return filtered.sort(({ name: a }, { name: b }) => a.localeCompare(b))
-  }, [contacts, searchString])
+  }, [contacts, searchContactText])
 
   const onSearchReset = useCallback(() => {
     resetField('search')
@@ -100,13 +100,24 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
             />
             <ScrollView style={styles.contactsList}>
               {contactsFiltered.map((contact, index) => (
-                <BasicRow
+                <AppTouchable
                   key={index + contact.name}
-                  style={{ backgroundColor: sharedColors.black }}
-                  avatar={{ name: contact.name }}
-                  label={contact.name}
-                  secondaryLabel={contact.displayAddress}
-                />
+                  width={'100%'}
+                  onPress={() =>
+                    navigation.navigate(
+                      contactsStackRouteNames.ContactDetails,
+                      {
+                        contact,
+                      },
+                    )
+                  }>
+                  <BasicRow
+                    style={{ backgroundColor: sharedColors.black }}
+                    avatar={{ name: contact.name }}
+                    label={contact.name}
+                    secondaryLabel={shortAddress(contact.displayAddress)}
+                  />
+                </AppTouchable>
               ))}
             </ScrollView>
           </>
@@ -151,3 +162,5 @@ const styles = StyleSheet.create({
     backgroundColor: sharedColors.white,
   }),
 })
+
+export * from './ContactDetails'

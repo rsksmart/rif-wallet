@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next'
 
 import { Typography, Avatar } from 'components/index'
 import { sharedColors } from 'shared/constants'
-import { castStyle } from 'src/shared/utils'
+import { castStyle } from 'shared/utils'
 
 export enum StatusEnum {
   PENDING = 'PENDING',

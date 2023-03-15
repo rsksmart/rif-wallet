@@ -12,6 +12,7 @@ import {
 
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
+
 import { fonts } from '../typography'
 
 interface Props {
@@ -32,7 +33,13 @@ export const Avatar = ({
   letterColor,
 }: Props) => {
   const twoTimesLessThanSize = useMemo(() => size / 2, [size])
-  const firstCapital = useMemo(() => name.split('')[0].toUpperCase(), [name])
+  const firstCapital = useMemo(() => {
+    const letter = name.split('')[0]
+    if (letter) {
+      return letter.toUpperCase()
+    }
+    return ''
+  }, [name])
 
   return (
     <View

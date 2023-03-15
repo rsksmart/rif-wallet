@@ -8,6 +8,7 @@ export const testIDs = {
   hide: 'hide',
   swap: 'swap',
   searchInput: 'searchInput',
+  saveButton: 'saveButton',
 }
 
 export const sharedColors = {
@@ -65,6 +66,7 @@ export const sharedStyles = StyleSheet.create({
   }),
   marginLeft24: castStyle.view({ marginLeft: 24 }),
   marginTop40: castStyle.view({ marginTop: 40 }),
+  marginRight24: castStyle.view({ marginRight: 24 }),
   screen: castStyle.view({
     flex: 1,
     backgroundColor: sharedColors.black,
@@ -82,5 +84,13 @@ export const sharedStyles = StyleSheet.create({
   }),
   fontBoldText: castStyle.text({
     fontWeight: 'bold',
+  }),
+  appButtonBottom: castStyle.view({
+    height: 54,
+    backgroundColor: sharedColors.white,
+    position: 'absolute',
+    bottom: 30,
+    left: 24,
+    right: 24,
   }),
 })

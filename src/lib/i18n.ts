@@ -7,6 +7,8 @@ import { initReactI18next } from 'react-i18next'
 const resources = {
   en: {
     translation: {
+      message_copied_to_clipboard: 'Copied to Clipboard',
+      ok: 'OK',
       basic_row_pending: '• Pending',
       basic_row_failed: '• Failed',
       type_placeholder: 'type...',
@@ -218,6 +220,10 @@ const resources = {
       transaction_pending_status: 'pending',
       transaction_summary_sent_title: 'Sent',
       activity_list_empty: 'Your list of transactions is currently empty.',
+      contacts_username_input_label: 'username',
+      contacts_address_input_label: 'address',
+      contacts_details_transactions: 'Transactions',
+      contacts_details_edit_contact: 'Edit contact',
     },
   },
   es: {
