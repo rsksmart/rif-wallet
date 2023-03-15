@@ -82,6 +82,7 @@ export const ProfileNavigator = ({
 
   const screenOptionsWithHeader = (
     title: string,
+    showStepper = true,
     style?: StyleProp<ViewStyle>,
   ): StackNavigationOptions => ({
     headerShown: true,
@@ -90,11 +91,13 @@ export const ProfileNavigator = ({
         <Typography type={'h3'} style={headerStyles.headerPosition}>
           {title ?? props.children}
         </Typography>
-        <StepperComponent
-          colors={[startColor, endColor]}
-          width={40}
-          style={headerStyles.stepper}
-        />
+        {showStepper && (
+          <StepperComponent
+            colors={[startColor, endColor]}
+            width={40}
+            style={headerStyles.stepper}
+          />
+        )}
       </>
     ),
     headerStyle: [
@@ -119,7 +122,7 @@ export const ProfileNavigator = ({
       <ProfileStack.Screen
         name={profileStackRouteNames.ProfileCreateScreen}
         component={ProfileCreateScreen}
-        options={screenOptionsWithHeader(t('profile_screen_title'), {
+        options={screenOptionsWithHeader(t('profile_screen_title'), false, {
           backgroundColor: sharedColors.primary,
         })}
       />
