@@ -3,26 +3,29 @@ import { FlatList, StyleSheet, View, RefreshControl } from 'react-native'
 import { BIP } from '@rsksmart/rif-wallet-bitcoin'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
-
 import { IApiTransaction } from '@rsksmart/rif-wallet-services'
+import { useTranslation } from 'react-i18next'
+
 import { abiEnhancer } from 'core/setup'
 import { useAppSelector } from 'store/storeUtils'
 import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
-import { colors } from 'src/styles'
 import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
-import {
-  rootTabsRouteNames,
-  RootTabsScreenProps,
-} from 'navigation/rootNavigator/types'
+import { sharedColors } from 'shared/constants'
+import { Typography } from 'src/components'
+import { castStyle } from 'shared/utils'
+import { ActivityMainScreenProps } from 'shared/types'
 
-import { ActivityRow } from './ActivityRow'
+import { ActivityBasicRow } from './ActivityRow'
 import { useBitcoinTransactionsHandler } from './useBitcoinTransactionsHandler'
 import useTransactionsCombiner from './useTransactionsCombiner'
 import { ScreenWithWallet } from '../types'
 
 export const ActivityScreen = ({
   navigation,
-}: RootTabsScreenProps<rootTabsRouteNames.Activity> & ScreenWithWallet) => {
+}: {
+  navigation: ActivityMainScreenProps['navigation']
+} & ScreenWithWallet) => {
+  const { t } = useTranslation()
   const bitcoinCore = useBitcoinContext()
   const btcTransactionFetcher = useBitcoinTransactionsHandler({
     bip:
@@ -52,6 +55,9 @@ export const ActivityScreen = ({
 
   return (
     <View style={styles.mainContainer}>
+      <Typography type="h2" style={styles.transactionsTextStyle}>
+        {t('home_screen_transactions')}
+      </Typography>
       <FlatList
         data={transactionsCombined}
         initialNumToRender={10}
@@ -62,9 +68,12 @@ export const ActivityScreen = ({
         onEndReachedThreshold={0.2}
         refreshing={btcTransactionFetcher.apiStatus === 'fetching'}
         renderItem={({ item }) => (
-          <ActivityRow activityTransaction={item} navigation={navigation} />
+          <ActivityBasicRow
+            activityTransaction={item}
+            navigation={navigation}
+          />
         )}
-        style={styles.parent}
+        style={styles.flatlistViewStyle}
         refreshControl={
           <RefreshControl
             refreshing={btcTransactionFetcher.apiStatus === 'fetching'}
@@ -78,30 +87,31 @@ export const ActivityScreen = ({
 }
 
 const styles = StyleSheet.create({
-  mainContainer: {
-    backgroundColor: colors.background.darkBlue,
+  mainContainer: castStyle.view({
+    backgroundColor: sharedColors.secondary,
     minHeight: '100%',
     marginBottom: 200,
     position: 'relative',
-  },
-  parent: {
+  }),
+  flatlistViewStyle: castStyle.view({
     paddingBottom: 30,
     paddingHorizontal: 15,
-    backgroundColor: colors.background.darkBlue,
     minHeight: '100%',
-  },
-  refreshButtonView: {
+  }),
+  refreshButtonView: castStyle.view({
     paddingVertical: 15,
     alignContent: 'center',
     borderBottomColor: '#CCCCCC',
-  },
-  column: {
-    alignItems: 'center',
-  },
+  }),
   header: {
     fontSize: 26,
     textAlign: 'center',
   },
+  transactionsTextStyle: castStyle.text({
+    marginTop: 40,
+    marginBottom: 20,
+    paddingLeft: 15,
+  }),
 })
 
 export const enhanceTransactionInput = async (
