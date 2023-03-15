@@ -2,7 +2,7 @@ import {
   createStackNavigator,
   StackNavigationOptions,
 } from '@react-navigation/stack'
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Platform, StyleProp, StyleSheet, ViewStyle } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
@@ -16,6 +16,7 @@ import {
 } from 'screens/index'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
+import { StepperComponent } from 'components/profile'
 import { selectProfileStatus } from 'store/slices/profileSlice'
 import { useAppSelector } from 'store/storeUtils'
 
@@ -39,25 +40,6 @@ export const headerLeftOption = (goBack: () => void) => (
   </AppTouchable>
 )
 
-const screenOptionsWithHeader = (
-  title: string,
-  style?: StyleProp<ViewStyle>,
-): StackNavigationOptions => ({
-  headerShown: true,
-  headerTitle: props => (
-    <Typography type={'h3'} style={headerStyles.headerPosition}>
-      {title ?? props.children}
-    </Typography>
-  ),
-  headerStyle: [
-    headerStyles.headerStyle,
-    { backgroundColor: sharedColors.secondary },
-    style,
-  ],
-  headerTitleAlign: 'center',
-  headerShadowVisible: false,
-})
-
 export const ProfileNavigator = ({
   navigation,
 }: RootTabsScreenProps<rootTabsRouteNames.Profile>) => {
@@ -66,6 +48,63 @@ export const ProfileNavigator = ({
   }, [navigation])
   const { t } = useTranslation()
   const status = useAppSelector(selectProfileStatus)
+
+  const getColors = useCallback(() => {
+    switch (status) {
+      case ProfileStatus.REQUESTING:
+        return {
+          startColor: sharedColors.warning,
+          endColor: sharedColors.inputActive,
+        }
+      case ProfileStatus.READY_TO_PURCHASE:
+        return {
+          startColor: sharedColors.successLight,
+          endColor: sharedColors.inputActive,
+        }
+      case ProfileStatus.PURCHASING:
+        return {
+          startColor: sharedColors.successLight,
+          endColor: sharedColors.warning,
+        }
+      case ProfileStatus.REQUESTING_ERROR:
+        return {
+          startColor: sharedColors.danger,
+          endColor: sharedColors.inputActive,
+        }
+    }
+    return {
+      startColor: sharedColors.inputActive,
+      endColor: sharedColors.inputActive,
+    }
+  }, [status])
+
+  const { startColor, endColor } = getColors()
+
+  const screenOptionsWithHeader = (
+    title: string,
+    style?: StyleProp<ViewStyle>,
+  ): StackNavigationOptions => ({
+    headerShown: true,
+    headerTitle: props => (
+      <>
+        <Typography type={'h3'} style={headerStyles.headerPosition}>
+          {title ?? props.children}
+        </Typography>
+        <StepperComponent
+          colors={[startColor, endColor]}
+          width={40}
+          style={headerStyles.stepper}
+        />
+      </>
+    ),
+    headerStyle: [
+      headerStyles.headerStyle,
+      { backgroundColor: sharedColors.secondary },
+      style,
+    ],
+    headerTitleAlign: 'center',
+    headerShadowVisible: false,
+  })
 
   return (
     <ProfileStack.Navigator>
@@ -111,5 +150,9 @@ export const headerStyles = StyleSheet.create({
   }),
   headerStyle: castStyle.view({
     backgroundColor: sharedColors.primary,
+  }),
+  stepper: castStyle.view({
+    marginTop: 10,
+    alignSelf: 'center',
   }),
 })
