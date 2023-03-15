@@ -1,5 +1,5 @@
 import { useEffect, useCallback } from 'react'
-import { FlatList, StyleSheet, View, RefreshControl } from 'react-native'
+import { FlatList, StyleSheet, View, RefreshControl, Image } from 'react-native'
 import { BIP } from '@rsksmart/rif-wallet-bitcoin'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
@@ -10,7 +10,7 @@ import { abiEnhancer } from 'core/setup'
 import { useAppSelector } from 'store/storeUtils'
 import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
 import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
-import { sharedColors } from 'shared/constants'
+import { sharedColors, sharedStyles } from 'shared/constants'
 import { Typography } from 'src/components'
 import { castStyle } from 'shared/utils'
 import { ActivityMainScreenProps } from 'shared/types'
@@ -55,9 +55,15 @@ export const ActivityScreen = ({
 
   return (
     <View style={styles.mainContainer}>
-      <Typography type="h2" style={styles.transactionsTextStyle}>
-        {t('home_screen_transactions')}
-      </Typography>
+      <View style={styles.transactionsViewStyle}>
+        <Typography type="h2">{t('home_screen_transactions')}</Typography>
+        {transactionsCombined.length === 0 &&
+          btcTransactionFetcher.apiStatus !== 'fetching' && (
+            <Typography type="h4" style={styles.listEmptyTextStyle}>
+              {t('activity_list_empty')}
+            </Typography>
+          )}
+      </View>
       <FlatList
         data={transactionsCombined}
         initialNumToRender={10}
@@ -81,6 +87,17 @@ export const ActivityScreen = ({
             onRefresh={onRefresh}
           />
         }
+        ListEmptyComponent={
+          <>
+            {btcTransactionFetcher.apiStatus !== 'fetching' && (
+              <View style={[sharedStyles.flex, sharedStyles.contentCenter]}>
+                <Image
+                  source={require('./../../../assets/images/no-transactions.png')}
+                />
+              </View>
+            )}
+          </>
+        }
       />
     </View>
   )
@@ -95,6 +112,7 @@ const styles = StyleSheet.create({
   }),
   flatlistViewStyle: castStyle.view({
     paddingBottom: 30,
+    marginBottom: 300,
     paddingHorizontal: 15,
     minHeight: '100%',
   }),
@@ -107,10 +125,13 @@ const styles = StyleSheet.create({
     fontSize: 26,
     textAlign: 'center',
   },
-  transactionsTextStyle: castStyle.text({
+  transactionsViewStyle: castStyle.view({
     marginTop: 40,
     marginBottom: 20,
     paddingLeft: 15,
+  }),
+  listEmptyTextStyle: castStyle.text({
+    marginTop: 10,
   }),
 })
 

@@ -217,6 +217,7 @@ const resources = {
       transaction_confirmed_status: 'confirmed',
       transaction_pending_status: 'pending',
       transaction_summary_sent_title: 'Sent',
+      activity_list_empty: 'Your list of transactions is currently empty.',
     },
   },
   es: {
