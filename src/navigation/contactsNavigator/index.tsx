@@ -1,13 +1,25 @@
 import { createStackNavigator } from '@react-navigation/stack'
-import { ContactFormScreen } from 'screens/contacts/ContactFormScreen'
-import { ContactsScreen } from 'screens/contacts/ContactsScreen'
-import { contactsStackRouteNames } from './types'
+import { useEffect } from 'react'
 
-const Stack = createStackNavigator()
+import { useAppDispatch } from 'store/storeUtils'
+import { changeTopColor } from 'store/slices/settingsSlice'
+import { ContactsScreen } from 'screens/contacts'
+import { ContactFormScreen } from 'screens/contacts/ContactFormScreen'
+import { sharedColors } from 'shared/constants'
+
+import { contactsStackRouteNames, ContactStackParamsList } from './types'
+
+const Stack = createStackNavigator<ContactStackParamsList>()
 
 const screensOptions = { headerShown: false }
 
 export const ContactsNavigation = () => {
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    dispatch(changeTopColor(sharedColors.black))
+  }, [dispatch])
+
   return (
     <Stack.Navigator>
       <Stack.Screen

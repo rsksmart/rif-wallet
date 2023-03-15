@@ -7,6 +7,8 @@ import { initReactI18next } from 'react-i18next'
 const resources = {
   en: {
     translation: {
+      basic_row_pending: '• Pending',
+      basic_row_failed: '• Failed',
       type_placeholder: 'type...',
       err_unknown: 'Unknown error occurred',
       'Create master key': 'Create master key',
@@ -75,8 +77,6 @@ const resources = {
       'Delete your Pin': 'Delete your Pin',
       'Set your pin': 'Set your pin',
       Save: 'Save',
-      'Your contact list is empty.': 'Your contact list is empty.',
-      'Start by creating a new contact.': 'Start by creating a new contact.',
       'type to find...': 'type to find...',
       'Are you sure you want to delete': 'Are you sure you want to delete',
       'Connected Dapps': 'Connected Dapps',
@@ -201,14 +201,18 @@ const resources = {
       settings_screen_smart_wallet_address_label: 'Smart Wallet Address',
       settings_screen_public_key_label: 'Public Key',
       settings_screen_edit_name_label: 'Edit name',
+      contacts_screen_title: 'Contacts',
+      contacts_empty_list: 'Your contact list is empty.',
+      contacts_empty_start: 'Start by creating a new contact.',
+      contacts_browse: 'Browse',
+      contacts_new_contact_button_label: 'New Contact',
+      contacts_search_label: 'Browse Contacts',
     },
   },
   es: {
     translation: {
       'Please select your language': 'Por favor seleccionar su idioma',
       Refresh: 'Refrescar',
-      'Your contact list is empty.': 'Su lista de contactos está vacía.',
-      'Start by creating a new contact.': 'Comience creando un nuevo contacto.',
       'type to find...': 'escriba para buscar...',
       'Are you sure you want to delete': '¿Está seguro de que desea eliminar',
       'Connected Dapps': 'Dapps conectadas',
@@ -221,6 +225,8 @@ const resources = {
       Reject: 'Rechazar',
       Delete: 'Eliminar',
       Cancel: 'Cancelar',
+      contacts_empty_list: 'Su lista de contactos está vacía.',
+      contacts_empty_start: 'Comience creando un nuevo contacto.',
     },
   },
 }

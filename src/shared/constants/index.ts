@@ -7,6 +7,7 @@ export const testIDs = {
   indexLabel: 'view.indexLabel',
   hide: 'hide',
   swap: 'swap',
+  searchInput: 'searchInput',
 }
 
 export const sharedColors = {

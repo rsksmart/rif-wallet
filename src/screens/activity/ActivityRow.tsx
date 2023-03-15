@@ -53,7 +53,9 @@ export const ActivityBasicRow = ({
         label={activityDetails.to}
         amount={activityDetails.value}
         status={getStatus(activityDetails.status)}
-        avatarName={'A'}
+        avatar={{
+          name: 'A',
+        }}
         secondaryLabel={activityDetails.timeHumanFormatted}
         addressToSearch={activityDetails.to}
       />
