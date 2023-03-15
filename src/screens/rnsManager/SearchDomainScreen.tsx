@@ -9,24 +9,24 @@ import * as yup from 'yup'
 import { AppTouchable } from 'components/appTouchable'
 import { AppButton, Input, Typography } from 'components/index'
 import { InfoBox } from 'components/InfoBox'
+import { SlidePopupConfirmationInfo } from 'components/slidePopup/SlidePopupConfirmationInfo'
+import { headerLeftOption } from 'navigation/profileNavigator'
 import {
   profileStackRouteNames,
   ProfileStackScreenProps,
   ProfileStatus,
 } from 'navigation/profileNavigator/types'
 import { sharedColors } from 'shared/constants'
-import { headerLeftOption } from 'navigation/profileNavigator'
 import { castStyle } from 'shared/utils'
-import { SlidePopupConfirmationInfo } from 'src/components/slidePopup/SlidePopupConfirmationInfo'
 import { colors } from 'src/styles'
 import { selectBalances } from 'store/slices/balancesSlice'
 import { recoverAlias } from 'store/slices/profileSlice'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 
-import { rnsManagerStyles } from './rnsManagerStyles'
 import { ScreenWithWallet } from '../types'
 import { DomainInput } from './DomainInput'
+import { rnsManagerStyles } from './rnsManagerStyles'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
   ScreenWithWallet
@@ -136,8 +136,8 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   }, [domainToLookUp, selectedYears, calculatePrice])
 
   return (
-    <ScrollView style={rnsManagerStyles.container}>
-      <FormProvider {...methods}>
+    <ScrollView style={rnsManagerStyles.scrollContainer}>
+      <View style={rnsManagerStyles.container}>
         <Typography
           type="h2"
           style={[rnsManagerStyles.subtitle, rnsManagerStyles.marginBottom]}>
@@ -153,82 +153,85 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           buttonText={t('info_box_close_button')}
         />
 
-        <View style={rnsManagerStyles.marginTop}>
-          <DomainInput
-            wallet={wallet}
-            onDomainOwned={setIsDomainOwned}
-            onDomainAvailable={handleDomainAvailable}
-          />
-        </View>
-        <Input
-          inputName="duration"
-          isReadOnly
-          label={t('request_username_label')}
-          placeholder={`${selectedYears} ${t('request_username_placeholder')}${
-            selectedYears > 1 ? 's' : ''
-          }`}
-          subtitle={`${selectedDomainPrice} RIF ($ ${selectedDomainPriceInUsd})`}
-          containerStyle={styles.yearsContainer}
-          rightIcon={
-            <View style={styles.yearsButtons}>
-              {selectedYears > 1 && (
+        <FormProvider {...methods}>
+          <View style={rnsManagerStyles.marginTop}>
+            <DomainInput
+              wallet={wallet}
+              onDomainOwned={setIsDomainOwned}
+              onDomainAvailable={handleDomainAvailable}
+            />
+          </View>
+          <Input
+            inputName="duration"
+            isReadOnly
+            label={t('request_username_label')}
+            placeholder={`${selectedYears} ${t(
+              'request_username_placeholder',
+            )}${selectedYears > 1 ? 's' : ''}`}
+            subtitle={`${selectedDomainPrice} RIF ($ ${selectedDomainPriceInUsd})`}
+            containerStyle={styles.yearsContainer}
+            rightIcon={
+              <View style={styles.yearsButtons}>
+                {selectedYears > 1 && (
+                  <AppTouchable
+                    width={40}
+                    accessibilityLabel="decrease"
+                    onPress={() => handleYearsChange(selectedYears - 1)}>
+                    <Icon name="minus" size={16} color={colors.white} />
+                  </AppTouchable>
+                )}
                 <AppTouchable
                   width={40}
-                  accessibilityLabel="decrease"
-                  onPress={() => handleYearsChange(selectedYears - 1)}>
-                  <Icon name="minus" size={16} color={colors.white} />
+                  accessibilityLabel="increase"
+                  onPress={() => handleYearsChange(selectedYears + 1)}>
+                  <Icon name="plus" size={16} color={colors.white} />
                 </AppTouchable>
-              )}
-              <AppTouchable
-                width={40}
-                accessibilityLabel="increase"
-                onPress={() => handleYearsChange(selectedYears + 1)}>
-                <Icon name="plus" size={16} color={colors.white} />
-              </AppTouchable>
-            </View>
-          }
-        />
-        <View style={rnsManagerStyles.bottomContainer}>
-          {!isDomainOwned && (
-            <AppButton
-              disabled={isRequestButtonDisabled}
-              onPress={handleSubmit(onSubmit)}
-              accessibilityLabel={t('request_username_button')}
-              title={t('request_username_button')}
-              color={
-                !isRequestButtonDisabled
-                  ? sharedColors.white
-                  : sharedColors.borderColor
-              }
-              textColor={
-                !isRequestButtonDisabled
-                  ? sharedColors.black
-                  : sharedColors.labelLight
-              }
-              disabledStyle={rnsManagerStyles.disabledButton}
-            />
-          )}
-          {isDomainOwned && (
-            <AppButton
-              disabled={isSaveButtonDisabled}
-              onPress={handleSetProfile}
-              accessibilityLabel={t('save_username_button')}
-              title={t('save_username_button')}
-              color={
-                !isSaveButtonDisabled
-                  ? sharedColors.white
-                  : sharedColors.borderColor
-              }
-              textColor={
-                !isSaveButtonDisabled
-                  ? sharedColors.black
-                  : sharedColors.labelLight
-              }
-              disabledStyle={rnsManagerStyles.disabledButton}
-            />
-          )}
-        </View>
-      </FormProvider>
+              </View>
+            }
+          />
+        </FormProvider>
+
+        {!isDomainOwned ? (
+          <AppButton
+            style={rnsManagerStyles.button}
+            disabled={isRequestButtonDisabled}
+            onPress={handleSubmit(onSubmit)}
+            accessibilityLabel={t('request_username_button')}
+            title={t('request_username_button')}
+            color={
+              !isRequestButtonDisabled
+                ? sharedColors.white
+                : sharedColors.borderColor
+            }
+            textColor={
+              !isRequestButtonDisabled
+                ? sharedColors.black
+                : sharedColors.labelLight
+            }
+            disabledStyle={rnsManagerStyles.disabledButton}
+          />
+        ) : (
+          <AppButton
+            style={rnsManagerStyles.button}
+            disabled={isSaveButtonDisabled}
+            onPress={handleSetProfile}
+            accessibilityLabel={t('save_username_button')}
+            title={t('save_username_button')}
+            color={
+              !isSaveButtonDisabled
+                ? sharedColors.white
+                : sharedColors.borderColor
+            }
+            textColor={
+              !isSaveButtonDisabled
+                ? sharedColors.black
+                : sharedColors.labelLight
+            }
+            disabledStyle={rnsManagerStyles.disabledButton}
+          />
+        )}
+      </View>
+
       <SlidePopupConfirmationInfo
         isVisible={isModalVisible}
         height={340}

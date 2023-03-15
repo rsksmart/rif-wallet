@@ -4,11 +4,13 @@ import { sharedColors } from 'shared/constants'
 import { colors } from 'src/styles'
 
 export const rnsManagerStyles = StyleSheet.create({
+  scrollContainer: {
+    backgroundColor: colors.background.black,
+  },
   container: {
     flex: 1,
     backgroundColor: colors.background.black,
-    paddingTop: 10,
-    paddingHorizontal: 20,
+    padding: 20,
   },
   title: {
     color: sharedColors.subTitle,
@@ -21,7 +23,7 @@ export const rnsManagerStyles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 20,
     paddingHorizontal: 10,
-    backgroundColor: colors.background.black,
+    backgroundColor: sharedColors.secondary,
   },
   profileImageContainer: {
     alignItems: 'center',
@@ -59,6 +61,9 @@ export const rnsManagerStyles = StyleSheet.create({
   bottomContainer: {
     flex: 1,
     justifyContent: 'flex-end',
+  },
+  button: {
+    marginTop: 20,
   },
   disabledButton: {
     opacity: 0.4,
