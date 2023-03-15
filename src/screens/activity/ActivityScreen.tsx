@@ -55,15 +55,6 @@ export const ActivityScreen = ({
 
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.transactionsViewStyle}>
-        <Typography type="h2">{t('home_screen_transactions')}</Typography>
-        {transactionsCombined.length === 0 &&
-          btcTransactionFetcher.apiStatus !== 'fetching' && (
-            <Typography type="h4" style={styles.listEmptyTextStyle}>
-              {t('activity_list_empty')}
-            </Typography>
-          )}
-      </View>
       <FlatList
         data={transactionsCombined}
         initialNumToRender={10}
@@ -86,6 +77,19 @@ export const ActivityScreen = ({
             tintColor="white"
             onRefresh={onRefresh}
           />
+        }
+        ListHeaderComponent={
+          <>
+            <View style={styles.transactionsViewStyle}>
+              <Typography type="h2">{t('home_screen_transactions')}</Typography>
+              {transactionsCombined.length === 0 &&
+                btcTransactionFetcher.apiStatus !== 'fetching' && (
+                  <Typography type="h4" style={styles.listEmptyTextStyle}>
+                    {t('activity_list_empty')}
+                  </Typography>
+                )}
+            </View>
+          </>
         }
         ListEmptyComponent={
           <>
