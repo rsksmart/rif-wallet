@@ -1,8 +1,11 @@
 import { fireEvent, render } from '@testing-library/react-native'
 import { act } from 'react-test-renderer'
+
+import { createReduxWrapper } from 'testLib/ReduxWrapper'
 import { Contact } from 'shared/types'
-import { ContactsListScreenProps, ContactsScreen } from './ContactsScreen'
-import { createReduxWrapper } from '../../../testLib/ReduxWrapper'
+import { testIDs } from 'shared/constants'
+
+import { ContactsListScreenProps, ContactsScreen } from './index'
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
@@ -64,7 +67,7 @@ describe('ContactsScreen', () => {
         { wrapper: wrapperWithContacts },
       )
 
-      expect(getByTestId('searchInput')).toBeTruthy()
+      expect(getByTestId(testIDs.searchInput)).toBeTruthy()
       expect(getByText('Alice')).toBeTruthy()
       expect(getByText('Bob')).toBeTruthy()
       expect(getByText('Charlie')).toBeTruthy()
@@ -79,7 +82,7 @@ describe('ContactsScreen', () => {
         { wrapper: wrapperWithContacts },
       )
 
-      const searchInput = getByTestId('searchInput')
+      const searchInput = getByTestId(testIDs.searchInput)
       act(() => {
         fireEvent.changeText(searchInput, 'alic')
       })
@@ -98,7 +101,7 @@ describe('ContactsScreen', () => {
         { wrapper: wrapperWithContacts },
       )
 
-      const searchInput = getByTestId('searchInput')
+      const searchInput = getByTestId(testIDs.searchInput)
       act(() => {
         fireEvent.changeText(searchInput, '0x123a')
       })

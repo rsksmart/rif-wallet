@@ -1,9 +1,17 @@
-import { View, StyleSheet, ImageSourcePropType } from 'react-native'
+import { ReactElement } from 'react'
+import {
+  View,
+  StyleSheet,
+  ImageSourcePropType,
+  StyleProp,
+  ViewStyle,
+} from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import { useTranslation } from 'react-i18next'
 
-import { Typography } from 'components/index'
+import { Typography, Avatar } from 'components/index'
 import { sharedColors } from 'shared/constants'
-import { Avatar } from 'components/avatar'
+import { castStyle } from 'src/shared/utils'
 
 export enum StatusEnum {
   PENDING = 'PENDING',
@@ -32,32 +40,37 @@ interface StatusTextProps {
 export interface BasicRowProps {
   label: string
   secondaryLabel: string
-  amount: string
-  avatarName: string
-  imageSource?: ImageSourcePropType
+  avatar: {
+    name: string
+    imageSource?: ImageSourcePropType
+    icon?: ReactElement
+  }
+  amount?: string
   status?: StatusTextProps['status']
   error?: string
   txType?: TransactionTypeEnum
   usdAmount?: string
+  style?: StyleProp<ViewStyle>
 }
 export const BasicRow = ({
   label,
   secondaryLabel,
   status,
   error,
-  imageSource,
   amount,
   txType,
   usdAmount,
-  avatarName,
+  style,
+  avatar,
 }: BasicRowProps) => (
-  <View style={styles.container}>
+  <View style={[styles.container, style]}>
     <View style={styles.firstView}>
       <Avatar
         style={styles.imageStyle}
-        imageSource={imageSource}
+        imageSource={avatar.imageSource}
+        icon={avatar.icon}
         size={40}
-        name={avatarName}
+        name={avatar.name}
       />
     </View>
     <View style={styles.secondView}>
@@ -95,16 +108,18 @@ export const BasicRow = ({
             style={styles.horizontalPadding}
           />
         </View>
-        <Typography
-          type="h3"
-          style={[
-            styles.flexShrinkOne,
-            status === 'FAILED' ? styles.failedTransaction : {},
-          ]}
-          numberOfLines={1}
-          ellipsizeMode="tail">
-          {amount}
-        </Typography>
+        {amount ? (
+          <Typography
+            type="h3"
+            style={[
+              styles.flexShrinkOne,
+              status === StatusEnum.FAILED ? styles.failedTransaction : {},
+            ]}
+            numberOfLines={1}
+            ellipsizeMode="tail">
+            {amount}
+          </Typography>
+        ) : null}
       </View>
       <View style={styles.usdAmountView}>
         {usdAmount !== undefined && txType !== undefined && (
@@ -122,13 +137,15 @@ export const BasicRow = ({
 )
 
 const StatusText = ({ status }: StatusTextProps) => {
+  const { t } = useTranslation()
+
   switch (status) {
     case StatusEnum.PENDING:
       return (
         <Typography
           type="labelLight"
           style={{ color: COLORS_FOR_STATUS[status] }}>
-          • Pending
+          {t('basic_row_pending')}
         </Typography>
       )
     case StatusEnum.FAILED:
@@ -136,7 +153,7 @@ const StatusText = ({ status }: StatusTextProps) => {
         <Typography
           type="labelLight"
           style={{ color: COLORS_FOR_STATUS[status] }}>
-          • Failed
+          {t('basic_row_failed')}
         </Typography>
       )
     default:
@@ -144,14 +161,13 @@ const StatusText = ({ status }: StatusTextProps) => {
   }
 }
 const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 15,
+  container: castStyle.view({
+    marginTop: 10,
     paddingVertical: 10,
-    marginBottom: 10,
     backgroundColor: sharedColors.secondary,
     height: 'auto',
     flexDirection: 'row',
-  },
+  }),
   firstView: {
     paddingRight: 10,
   },

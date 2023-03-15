@@ -1,12 +1,10 @@
-import { StyleSheet } from 'react-native'
-import { sharedColors } from 'src/shared/constants'
-import { castStyle } from 'src/shared/utils'
+import { sharedColors } from 'shared/constants'
+
 import { Input, InputProps } from './index'
 
 export const Search = (props: InputProps) => {
   return (
     <Input
-      containerStyle={styles.search}
       leftIcon={{
         name: 'search',
         size: 16,
@@ -16,9 +14,3 @@ export const Search = (props: InputProps) => {
     />
   )
 }
-
-const styles = StyleSheet.create({
-  search: castStyle.view({
-    paddingLeft: 20,
-  }),
-})
