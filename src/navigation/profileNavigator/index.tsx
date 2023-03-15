@@ -69,6 +69,14 @@ export const ProfileNavigator = ({
 
   return (
     <ProfileStack.Navigator>
+      {status === ProfileStatus.READY_TO_PURCHASE && (
+        <ProfileStack.Screen
+          name={profileStackRouteNames.PurchaseDomain}
+          component={PurchaseDomainScreen}
+          options={screenOptionsWithHeader(t('username_registration_title'))}
+        />
+      )}
+
       <ProfileStack.Screen
         name={profileStackRouteNames.ProfileCreateScreen}
         component={ProfileCreateScreen}
@@ -82,14 +90,6 @@ export const ProfileNavigator = ({
         component={InjectedScreens.SearchDomainScreen}
         options={screenOptionsWithHeader(t('username_registration_title'))}
       />
-
-      {status === ProfileStatus.READY_TO_PURCHASE && (
-        <ProfileStack.Screen
-          name={profileStackRouteNames.PurchaseDomain}
-          component={PurchaseDomainScreen}
-          options={screenOptionsWithHeader(t('username_registration_title'))}
-        />
-      )}
 
       {/* <ProfileStack.Screen
         name={profileStackRouteNames.AliasBought}

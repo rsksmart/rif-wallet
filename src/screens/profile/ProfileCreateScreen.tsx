@@ -202,18 +202,9 @@ export const ProfileCreateScreen = ({
             title={t('profile_register_your_username_button_text')}
             color={sharedColors.white}
             textColor={sharedColors.black}
-            // disabled={username !== 'no_username'}
+            disabled={username !== 'no_username'}
             onPress={() =>
               navigation.navigate(profileStackRouteNames.SearchDomain)
-            }
-          />
-          <AppButton
-            style={sharedStyles.marginTop20}
-            title="Purchase username"
-            color={sharedColors.white}
-            textColor={sharedColors.black}
-            onPress={() =>
-              navigation.navigate(profileStackRouteNames.PurchaseDomain)
             }
           />
         </FormProvider>
