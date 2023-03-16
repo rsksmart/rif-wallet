@@ -7,7 +7,8 @@ import { useTranslation } from 'react-i18next'
 import { Image, ScrollView, StyleSheet, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
-import { RegularText, SemiBoldText } from 'src/components'
+import { RegularText, SemiBoldText, Typography } from 'src/components'
+import { sharedColors } from 'src/shared/constants'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
@@ -39,10 +40,10 @@ export const WalletConnectScreen = ({
     <View style={styles.parent}>
       <View style={styles.header}>
         <View style={styles.innerHeader1}>
-          <RegularText style={styles.title}>{t('Connected Dapps')}</RegularText>
-          <RegularText style={styles.subtitle}>
-            {t('Connect new Dapp by scanning a QR code.')}
-          </RegularText>
+          <Typography type="h2">{t('dapps_title')}</Typography>
+          <Typography type="h5" style={styles.subtitle}>
+            {t('dapps_instructions')}
+          </Typography>
         </View>
         <View style={styles.innerHeader2} />
       </View>
@@ -63,14 +64,6 @@ export const WalletConnectScreen = ({
             source={require('../../images/empty-dapps.png')}
             style={styles.noDappsImage}
           />
-          <View style={styles.noDappsTextView} testID="emptyView">
-            <RegularText style={styles.noDappsText}>
-              {t('You are currently not')}
-            </RegularText>
-            <RegularText style={styles.noDappsText}>
-              {t('connected to any Dapp.')}
-            </RegularText>
-          </View>
         </>
       ) : (
         <ScrollView style={styles.dappsList}>
@@ -113,7 +106,7 @@ export const WalletConnectScreen = ({
 const styles = StyleSheet.create({
   parent: {
     height: '100%',
-    backgroundColor: colors.background.darkBlue,
+    backgroundColor: sharedColors.secondary,
     padding: 20,
   },
   header: {
@@ -121,24 +114,18 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   innerHeader1: {
-    flex: 2,
+    flex: 3,
   },
   innerHeader2: {
     flex: 1,
   },
-  title: {
-    fontSize: 22,
-    color: colors.text.primary,
-  },
   subtitle: {
-    fontSize: 13,
-    color: colors.text.primary,
     marginTop: 10,
   },
   noDappsImage: {
     flex: 4,
     alignSelf: 'center',
-    width: '90%',
+    width: '80%',
     resizeMode: 'contain',
   },
   noDappsTextView: {

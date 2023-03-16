@@ -81,11 +81,6 @@ const resources = {
       Save: 'Save',
       'type to find...': 'type to find...',
       'Are you sure you want to delete': 'Are you sure you want to delete',
-      'Connected Dapps': 'Connected Dapps',
-      'Connect new Dapp by scanning a QR code.':
-        'Connect new Dapp by scanning a QR code.',
-      'You are currently not': 'You are currently not',
-      'connected to any Dapp.': 'connected to any Dapp.',
       'Connect to': 'Connect to',
       Connect: 'Connect',
       Reject: 'Reject',
@@ -239,6 +234,9 @@ const resources = {
       wallet_backup_definitive_delete_confirmation_title: 'Are you sure?',
       wallet_backup_definitive_delete_confirmation_description:
         'Do you really want to erase the wallet with all the funds and information saved in it?',
+      dapps_title: 'Dapps',
+      dapps_instructions:
+        'Scan & connect to your favorite desktop app. Connections will appear here.',
     },
   },
   es: {
@@ -247,11 +245,6 @@ const resources = {
       Refresh: 'Refrescar',
       'type to find...': 'escriba para buscar...',
       'Are you sure you want to delete': '¿Está seguro de que desea eliminar',
-      'Connected Dapps': 'Dapps conectadas',
-      'Connect new Dapp by scanning a QR code.':
-        'Conecte una nueva Dapp escaneando un código QR.',
-      'You are currently not': 'Actualmente no',
-      'connected to any Dapp.': 'conectado a ninguna Dapp.',
       'Connect to': 'Conectar a',
       Connect: 'Conectar',
       Reject: 'Rechazar',
