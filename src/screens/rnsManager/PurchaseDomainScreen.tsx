@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 
+import { useRifToken, useRnsDomainPriceInRif as calculatePrice } from 'lib/rns'
+
 import { AvatarIcon } from 'components/icons/AvatarIcon'
 import { AppButton, Input, Typography } from 'components/index'
 import { headerLeftOption } from 'navigation/profileNavigator'
@@ -13,8 +15,6 @@ import {
 } from 'navigation/profileNavigator/types'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { selectBalances } from 'src/redux/slices/balancesSlice'
-import { selectUsdPrices } from 'src/redux/slices/usdPricesSlice'
 import { selectProfile } from 'store/slices/profileSlice'
 import { useAppSelector } from 'store/storeUtils'
 
@@ -24,38 +24,19 @@ type Props = ProfileStackScreenProps<profileStackRouteNames.PurchaseDomain>
 
 export const PurchaseDomainScreen = ({ navigation }: Props) => {
   const { alias, duration = 1 } = useAppSelector(selectProfile)
-  const tokenBalances = useAppSelector(selectBalances)
-  const prices = useAppSelector(selectUsdPrices)
+  const rifToken = useRifToken()
 
   const methods = useForm()
   const { t } = useTranslation()
   const [selectedDomainPrice, setSelectedDomainPrice] = useState<number>(2)
 
-  // calculate price of domain in USD
-  const rifToken = Object.values(tokenBalances).find(
-    token => token.symbol === 'RIF' || token.symbol === 'tRIF',
-  )
-  const rifTokenAddress = rifToken?.contractAddress || ''
-  const rifTokenPrice = prices[rifTokenAddress]?.price
   const selectedDomainPriceInUsd = (
-    rifTokenPrice * selectedDomainPrice
+    rifToken.price * selectedDomainPrice
   ).toFixed(2)
-
-  // TODO: move this to a hook
-  const calculatePrice = useCallback(async (_: string, years: number) => {
-    //TODO: re enable this later
-    /*const price = await rskRegistrar.price(domain, BigNumber.from(years))
-    return utils.formatUnits(price, 18)*/
-    if (years < 3) {
-      return years * 2
-    } else {
-      return 4 + (years - 2)
-    }
-  }, [])
 
   useEffect(() => {
     calculatePrice(alias, duration).then(setSelectedDomainPrice)
-  }, [alias, duration, calculatePrice])
+  }, [alias, duration])
 
   const onBackPress = useCallback(() => navigation.goBack(), [navigation])
 

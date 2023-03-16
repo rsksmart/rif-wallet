@@ -1,5 +1,6 @@
+import { IDomainRegistrationProcessIndex } from 'lib/rns'
+
 import { MainStorage } from './MainStorage'
-import { IDomainRegistrationProcessIndex } from 'lib/rns/RnsProcessor'
 
 const key = 'RNS_PROCESSING_STATE'
 

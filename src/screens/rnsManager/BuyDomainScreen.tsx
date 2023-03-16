@@ -4,7 +4,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { BigNumber, utils } from 'ethers'
 import moment from 'moment'
 
-import { DomainRegistrationEnum, RnsProcessor } from 'lib/rns/RnsProcessor'
+import { DomainRegistrationEnum, RnsProcessor } from 'lib/rns'
 
 import { colors } from 'src/styles'
 import { rnsManagerStyles } from './rnsManagerStyles'
