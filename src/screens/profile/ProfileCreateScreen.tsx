@@ -80,9 +80,7 @@ export const ProfileCreateScreen = ({
   )
 
   const onShareUsername = useCallback(() => {
-    Share.share({
-      message: username,
-    })
+    Share.share({ message: username })
   }, [username])
 
   const closeInfoBox = useCallback(() => {
@@ -91,8 +89,9 @@ export const ProfileCreateScreen = ({
   }, [dispatch, profile])
 
   useEffect(() => {
-    setUsername(profile.alias || 'no_username')
-  }, [profile.alias])
+    const hasAlias = profile.status !== ProfileStatus.NONE && !!profile.alias
+    setUsername(hasAlias ? profile.alias : 'no_username')
+  }, [profile.alias, profile.status])
 
   useEffect(() => {
     setValue('email', profile.email)
