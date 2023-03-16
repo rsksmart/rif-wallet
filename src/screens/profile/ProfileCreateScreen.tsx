@@ -23,11 +23,12 @@ import { headerLeftOption } from 'navigation/profileNavigator'
 import {
   profileStackRouteNames,
   ProfileStackScreenProps,
+  ProfileStatus,
 } from 'navigation/profileNavigator/types'
 import { defaultIconSize, sharedColors } from 'shared/constants'
 import { sharedStyles } from 'shared/styles'
 import { castStyle } from 'shared/utils'
-import { deleteProfile, setProfile } from 'store/slices/profileSlice'
+import { setProfile } from 'store/slices/profileSlice'
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
@@ -205,7 +206,10 @@ export const ProfileCreateScreen = ({
             title={t('profile_register_your_username_button_text')}
             color={sharedColors.white}
             textColor={sharedColors.black}
-            disabled={username !== 'no_username'}
+            disabled={
+              username !== 'no_username' &&
+              profile.status === ProfileStatus.REQUESTING
+            }
             onPress={() =>
               navigation.navigate(profileStackRouteNames.SearchDomain)
             }

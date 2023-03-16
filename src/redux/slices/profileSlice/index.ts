@@ -17,12 +17,12 @@ export const requestUsername = createAsyncThunk(
     thunkAPI,
   ) => {
     try {
+      thunkAPI.dispatch(setAlias(`${alias}.rsk`))
+      thunkAPI.dispatch(setDuration(duration))
       let indexStatus = rnsProcessor.getStatus(alias)
       if (!indexStatus?.commitmentRequested) {
         await rnsProcessor.process(alias, duration)
         thunkAPI.dispatch(setStatus(ProfileStatus.REQUESTING))
-        thunkAPI.dispatch(setAlias(`${alias}.rsk`))
-        thunkAPI.dispatch(setDuration(duration))
       }
       indexStatus = rnsProcessor.getStatus(alias)
       if (indexStatus.commitmentRequested) {
