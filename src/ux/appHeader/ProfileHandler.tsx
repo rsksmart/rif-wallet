@@ -1,5 +1,4 @@
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
-import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
@@ -11,6 +10,7 @@ import { ProfileStatus } from 'navigation/profileNavigator/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
+import { useStatusColors } from 'src/lib/rns/useStatusColors'
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { useAppSelector } from 'store/storeUtils'
 
@@ -21,37 +21,8 @@ interface Props {
 export const ProfileHandler = ({ navigation }: Props) => {
   const profile = useAppSelector(selectProfile)
   const { t } = useTranslation()
+  const { startColor, endColor } = useStatusColors()
 
-  const getColors = useCallback(() => {
-    switch (profile.status) {
-      case ProfileStatus.REQUESTING:
-        return {
-          startColor: sharedColors.warning,
-          endColor: sharedColors.inputActive,
-        }
-      case ProfileStatus.READY_TO_PURCHASE:
-        return {
-          startColor: sharedColors.success,
-          endColor: sharedColors.inputActive,
-        }
-      case ProfileStatus.PURCHASING:
-        return {
-          startColor: sharedColors.success,
-          endColor: sharedColors.warning,
-        }
-      case ProfileStatus.REQUESTING_ERROR:
-        return {
-          startColor: sharedColors.danger,
-          endColor: sharedColors.inputActive,
-        }
-    }
-    return {
-      startColor: sharedColors.inputActive,
-      endColor: sharedColors.inputActive,
-    }
-  }, [profile.status])
-
-  const { startColor, endColor } = getColors()
   const routeNextStep = async () => {
     navigation.navigate(rootTabsRouteNames.Profile)
   }

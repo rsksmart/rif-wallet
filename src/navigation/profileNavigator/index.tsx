@@ -7,6 +7,8 @@ import { useTranslation } from 'react-i18next'
 import { Platform, StyleProp, StyleSheet, ViewStyle } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
+import { useStatusColors } from 'lib/rns'
+
 import { AppTouchable, Typography } from 'components/index'
 import { StepperComponent } from 'components/profile'
 import { InjectedScreens } from 'core/Core'
@@ -48,37 +50,7 @@ export const ProfileNavigator = ({
   }, [navigation])
   const { t } = useTranslation()
   const status = useAppSelector(selectProfileStatus)
-
-  const getColors = useCallback(() => {
-    switch (status) {
-      case ProfileStatus.REQUESTING:
-        return {
-          startColor: sharedColors.warning,
-          endColor: sharedColors.inputActive,
-        }
-      case ProfileStatus.READY_TO_PURCHASE:
-        return {
-          startColor: sharedColors.successLight,
-          endColor: sharedColors.inputActive,
-        }
-      case ProfileStatus.PURCHASING:
-        return {
-          startColor: sharedColors.successLight,
-          endColor: sharedColors.warning,
-        }
-      case ProfileStatus.REQUESTING_ERROR:
-        return {
-          startColor: sharedColors.danger,
-          endColor: sharedColors.inputActive,
-        }
-    }
-    return {
-      startColor: sharedColors.inputActive,
-      endColor: sharedColors.inputActive,
-    }
-  }, [status])
-
-  const { startColor, endColor } = getColors()
+  const { startColor, endColor } = useStatusColors()
 
   const screenOptionsWithHeader = (
     title: string,
