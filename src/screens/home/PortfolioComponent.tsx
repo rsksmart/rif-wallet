@@ -13,7 +13,6 @@ import {
 
 import { IPrice } from 'src/subscriptions/types'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
-
 import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
 import { sharedColors } from 'shared/constants'
 import { getTokenColor } from 'screens/home/tokenColor'

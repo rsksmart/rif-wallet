@@ -1,11 +1,20 @@
 import { useTranslation } from 'react-i18next'
 import { FormProvider, useForm } from 'react-hook-form'
-import { Alert, StyleSheet, View, Share } from 'react-native'
-import { useCallback, useEffect, useState } from 'react'
+import {
+  Alert,
+  StyleSheet,
+  View,
+  Share,
+  FlatList,
+  ScrollView,
+} from 'react-native'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useIsFocused } from '@react-navigation/native'
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import Clipboard from '@react-native-community/clipboard'
+
+import { shortAddress } from 'lib/utils'
 
 import { noop, sharedColors, sharedStyles } from 'shared/constants'
 import {
@@ -21,7 +30,7 @@ import {
 } from 'navigation/contactsNavigator'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { homeStackRouteNames } from 'navigation/homeNavigator/types'
-import { useAppDispatch } from 'store/storeUtils'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { changeTopColor } from 'store/slices/settingsSlice'
 import { castStyle } from 'shared/utils'
 import {
@@ -29,7 +38,9 @@ import {
   BarButtonGroupIcon,
 } from 'components/BarButtonGroup/BarButtonGroup'
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
+import { BasicRow } from 'components/BasicRow'
 import { deleteContactByAddress } from 'store/slices/contactsSlice'
+import { selectTransactions } from 'store/slices/transactionsSlice'
 
 const copyButtonConfig = { name: 'copy', size: 18, color: sharedColors.white }
 
@@ -39,15 +50,22 @@ export const ContactDetails = ({
     params: { contact },
   },
 }: ContactsStackScreenProps<contactsStackRouteNames.ContactDetails>) => {
+  const { transactions } = useAppSelector(selectTransactions)
   const dispatch = useAppDispatch()
   const [isDeleteContactModalVisible, setIsDeleteContactModalVisible] =
     useState(false)
   const isFocused = useIsFocused()
 
+  const transactionFiltered = useMemo(
+    () =>
+      transactions.filter(tx => tx.originTransaction.to === contact.address),
+    [transactions, contact],
+  )
+
   const methods = useForm({
     defaultValues: {
       username: contact.name,
-      address: contact.address,
+      address: shortAddress(contact.address),
     },
   })
   const { getValues } = methods
@@ -115,7 +133,7 @@ export const ContactDetails = ({
   )
 
   return (
-    <>
+    <View style={styles.screen}>
       <ConfirmationModal
         isVisible={isDeleteContactModalVisible}
         imgSrc={require('../../images/contact-trash.png')}
@@ -125,76 +143,95 @@ export const ContactDetails = ({
         onOk={onConfirmDeleteContact}
         onCancel={onHideConfirmDeleteModal}
       />
-
-      <View style={styles.contactDetailsView}>
-        <Avatar name={contact.name} size={52} />
-        <View style={styles.nameAddressView}>
-          <Typography type={'h2'} color={sharedColors.white}>
-            {contact.name}
-          </Typography>
-          <Typography type={'h4'} color={sharedColors.labelLight}>
-            {contact.address}
-          </Typography>
+      <ScrollView contentContainerStyle={styles.scrollviewContainer}>
+        <View style={styles.contactDetailsView}>
+          <Avatar name={contact.name} size={52} />
+          <View style={styles.nameAddressView}>
+            <Typography type={'h2'} color={sharedColors.white}>
+              {contact.name}
+            </Typography>
+            <Typography type={'h4'} color={sharedColors.labelLight}>
+              {contact.address}
+            </Typography>
+          </View>
         </View>
-      </View>
-      <BarButtonGroupContainer backgroundColor={sharedColors.secondary}>
-        <BarButtonGroupIcon
-          onPress={onSendToContact}
-          iconName={'north-east'}
-          IconComponent={MaterialIcon}
-        />
-        <BarButtonGroupIcon
-          onPress={onShareContact}
-          iconName={'share-alt'}
-          IconComponent={FontAwesome5Icon}
-        />
-      </BarButtonGroupContainer>
-      <View style={sharedStyles.screen}>
-        <FormProvider {...methods}>
-          <Input
-            containerStyle={styles.usernameInputContainer}
-            label={t('contacts_username_input_label')}
-            inputName={'username'}
-            rightIcon={copyButtonConfig}
-            isReadOnly
-            onRightIconPress={onCopyValue(getValues('username'))}
+        <BarButtonGroupContainer backgroundColor={sharedColors.secondary}>
+          <BarButtonGroupIcon
+            onPress={onSendToContact}
+            iconName={'north-east'}
+            IconComponent={MaterialIcon}
           />
-          <Input
-            containerStyle={styles.addressInputContainer}
-            label={t('contacts_address_input_label')}
-            inputName={'address'}
-            rightIcon={copyButtonConfig}
-            isReadOnly
-            onRightIconPress={onCopyValue(getValues('address'))}
+          <BarButtonGroupIcon
+            onPress={onShareContact}
+            iconName={'share-alt'}
+            IconComponent={FontAwesome5Icon}
           />
-        </FormProvider>
-        <Typography
-          type={'h3'}
-          color={sharedColors.labelLight}
-          style={styles.transactionsLabel}>
-          {t('contacts_details_transactions')}
-        </Typography>
-        {/* will be available once we connect transactions with contacts */}
-        {/* <ScrollView>
-          {contact.transactions.map(c, index) => <ActivityBasicRow />}
-        </ScrollView> */}
-        <AppButton
-          style={styles.editContactButton}
-          title={t('contacts_details_edit_contact')}
-          onPress={() =>
-            navigation.navigate(contactsStackRouteNames.ContactForm, {
-              initialValue: contact,
-            })
-          }
-          color={sharedColors.white}
-          textColor={sharedColors.black}
-        />
-      </View>
-    </>
+        </BarButtonGroupContainer>
+        <View style={sharedStyles.screen}>
+          <FormProvider {...methods}>
+            <Input
+              containerStyle={styles.usernameInputContainer}
+              label={t('contacts_username_input_label')}
+              inputName={'username'}
+              rightIcon={copyButtonConfig}
+              isReadOnly
+              onRightIconPress={onCopyValue(getValues('username'))}
+            />
+            <Input
+              containerStyle={styles.addressInputContainer}
+              label={t('contacts_address_input_label')}
+              inputName={'address'}
+              rightIcon={copyButtonConfig}
+              isReadOnly
+              onRightIconPress={onCopyValue(getValues('address'))}
+            />
+          </FormProvider>
+          <Typography
+            type={'h3'}
+            color={sharedColors.labelLight}
+            style={styles.transactionsLabel}>
+            {t('contacts_details_transactions')}
+          </Typography>
+          {transactionFiltered.length !== 0 ? (
+            <FlatList
+              data={transactionFiltered}
+              initialNumToRender={10}
+              onEndReachedThreshold={0.2}
+              renderItem={({ item }) => (
+                <BasicRow
+                  label={contact.name}
+                  avatar={{ name: contact.name }}
+                  secondaryLabel={item.originTransaction.to}
+                />
+              )}
+              style={styles.transactionList}
+            />
+          ) : null}
+        </View>
+      </ScrollView>
+      <AppButton
+        style={styles.editContactButton}
+        title={t('contacts_details_edit_contact')}
+        onPress={() =>
+          navigation.navigate(contactsStackRouteNames.ContactForm, {
+            initialValue: contact,
+          })
+        }
+        color={sharedColors.white}
+        textColor={sharedColors.black}
+      />
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
+  screen: castStyle.view({
+    flex: 1,
+    backgroundColor: sharedColors.black,
+  }),
+  scrollviewContainer: castStyle.view({
+    paddingBottom: 144,
+  }),
   contactDetailsView: castStyle.view({
     backgroundColor: sharedColors.inputInactive,
     justifyContent: 'center',
@@ -206,12 +243,13 @@ const styles = StyleSheet.create({
   nameAddressView: castStyle.view({ flex: 1, marginLeft: 18 }),
   usernameInputContainer: castStyle.view({ marginTop: 25 }),
   addressInputContainer: castStyle.view({ marginTop: 10 }),
+  transactionList: castStyle.view({ height: 300 }),
   transactionsLabel: castStyle.text({ marginTop: 34 }),
   editContactButton: castStyle.view({
     height: 54,
+    width: '90%',
     position: 'absolute',
+    alignSelf: 'center',
     bottom: 30,
-    left: 24,
-    right: 24,
   }),
 })

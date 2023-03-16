@@ -16,7 +16,7 @@ export const BasicRowWithContact = ({
   return (
     <BasicRow
       {...props}
-      avatarName={contact?.name || 'A'}
+      avatar={{ name: contact?.name || 'A' }}
       label={contact?.name || props.label}
     />
   )
