@@ -3,14 +3,16 @@ import { useTranslation } from 'react-i18next'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
+import { useStatusColors } from 'lib/rns'
+
 import { Avatar } from 'components/avatar'
 import { StepperComponent } from 'components/profile'
 import { Typography } from 'components/typography'
 import { ProfileStatus } from 'navigation/profileNavigator/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { sharedColors } from 'shared/constants'
+import { sharedStyles } from 'shared/styles'
 import { castStyle } from 'shared/utils'
-import { useStatusColors } from 'src/lib/rns/useStatusColors'
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { useAppSelector } from 'store/storeUtils'
 
@@ -53,60 +55,67 @@ export const ProfileHandler = ({ navigation }: Props) => {
           </View>
         </>
       )}
-      {profile.status !== ProfileStatus.USER &&
-        profile.status !== ProfileStatus.NONE && (
-          <StepperComponent colors={[startColor, endColor]} />
+
+      <View style={sharedStyles.row}>
+        {profile.status !== ProfileStatus.USER &&
+          profile.status !== ProfileStatus.NONE && (
+            <StepperComponent
+              colors={[startColor, endColor]}
+              style={styles.stepper}
+            />
+          )}
+
+        {profile.status === ProfileStatus.REQUESTING && (
+          <>
+            <View style={styles.textAlignment}>
+              <Typography type={'body3'} style={styles.requestingStatus}>
+                {t('header_requesting')}
+              </Typography>
+            </View>
+          </>
         )}
-      {profile.status === ProfileStatus.REQUESTING && (
-        <>
-          <View style={styles.textAlignment}>
-            <Typography type={'body3'} style={styles.requestingStatus}>
-              {t('header_requesting')}
-            </Typography>
-          </View>
-        </>
-      )}
 
-      {profile.status === ProfileStatus.READY_TO_PURCHASE && (
-        <>
-          <View style={styles.textAlignment}>
-            <Typography type={'body3'} style={styles.underline}>
-              {t('header_purchase')}
-            </Typography>
-          </View>
-        </>
-      )}
+        {profile.status === ProfileStatus.READY_TO_PURCHASE && (
+          <>
+            <View style={styles.textAlignment}>
+              <Typography type={'body3'} style={styles.underline}>
+                {t('header_purchase')}
+              </Typography>
+            </View>
+          </>
+        )}
 
-      {profile.status === ProfileStatus.PURCHASING && (
-        <>
-          <View style={styles.textAlignment}>
-            <Typography type={'body3'} style={styles.requestingStatus}>
-              {t('header_purchasing')}
-            </Typography>
-          </View>
-        </>
-      )}
+        {profile.status === ProfileStatus.PURCHASING && (
+          <>
+            <View style={styles.textAlignment}>
+              <Typography type={'body3'} style={styles.requestingStatus}>
+                {t('header_purchasing')}
+              </Typography>
+            </View>
+          </>
+        )}
 
-      {profile.status === ProfileStatus.USER && (
-        <>
-          <Avatar size={30} name={profile.alias + '.rsk'} />
-          <View style={styles.textAlignment}>
-            <Typography type={'h4'} style={styles.profileName}>
-              {profile.alias}
-            </Typography>
-          </View>
-        </>
-      )}
+        {profile.status === ProfileStatus.USER && (
+          <>
+            <Avatar size={30} name={profile.alias + '.rsk'} />
+            <View style={styles.textAlignment}>
+              <Typography type={'h4'} style={styles.profileName}>
+                {profile.alias}
+              </Typography>
+            </View>
+          </>
+        )}
 
-      {profile.status === ProfileStatus.REQUESTING_ERROR && (
-        <>
-          <View style={styles.textAlignment}>
-            <Typography type={'body3'} style={styles.requestingStatus}>
-              {t('header_error')}
-            </Typography>
-          </View>
-        </>
-      )}
+        {profile.status === ProfileStatus.REQUESTING_ERROR && (
+          <>
+            <View style={styles.textAlignment}>
+              <Typography type={'body3'} style={styles.requestingStatus}>
+                {t('header_error')}
+              </Typography>
+            </View>
+          </>
+        )}
+      </View>
     </TouchableOpacity>
   )
 }
@@ -132,5 +141,8 @@ const styles = StyleSheet.create({
     textDecorationColor: sharedColors.white,
     textDecorationLine: 'underline',
     paddingLeft: 6,
+  }),
+  stepper: castStyle.view({
+    alignSelf: 'center',
   }),
 })
