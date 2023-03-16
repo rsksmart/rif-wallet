@@ -28,7 +28,12 @@ import {
 import { defaultIconSize, sharedColors } from 'shared/constants'
 import { sharedStyles } from 'shared/styles'
 import { castStyle } from 'shared/utils'
-import { setProfile } from 'store/slices/profileSlice'
+import {
+  setAlias,
+  setDuration,
+  setProfile,
+  setStatus,
+} from 'store/slices/profileSlice'
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
@@ -87,6 +92,15 @@ export const ProfileCreateScreen = ({
     setInfoBoxClosed(true)
     dispatch(setProfile({ ...profile, infoBoxClosed: true }))
   }, [dispatch, profile])
+
+  useEffect(() => {
+    if (profile.status === ProfileStatus.READY_TO_PURCHASE) {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: profileStackRouteNames.PurchaseDomain }],
+      })
+    }
+  }, [navigation, profile.status])
 
   useEffect(() => {
     const hasAlias = profile.status !== ProfileStatus.NONE && !!profile.alias
