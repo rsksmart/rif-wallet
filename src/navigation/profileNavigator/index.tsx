@@ -10,7 +10,11 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import { AppTouchable, Typography } from 'components/index'
 import { StepperComponent } from 'components/profile'
 import { InjectedScreens } from 'core/Core'
-import { ProfileCreateScreen, PurchaseDomainScreen, ShareProfileScreen } from 'screens/index'
+import {
+  ProfileCreateScreen,
+  PurchaseDomainScreen,
+  ShareProfileScreen,
+} from 'screens/index'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { selectProfileStatus } from 'store/slices/profileSlice'
@@ -129,10 +133,15 @@ export const ProfileNavigator = ({
         options={screenOptionsWithHeader(t('username_registration_title'))}
       />
 
-      {/* <ProfileStack.Screen
+      <ProfileStack.Screen
+        name={profileStackRouteNames.RequestDomain}
+        component={InjectedScreens.RequestDomainScreen}
+      />
+
+      <ProfileStack.Screen
         name={profileStackRouteNames.AliasBought}
         component={InjectedScreens.AliasBoughtScreen}
-      /> */}
+      />
 
       <ProfileStack.Screen
         name={profileStackRouteNames.ShareProfileScreen}
