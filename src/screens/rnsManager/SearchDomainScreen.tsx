@@ -6,6 +6,8 @@ import { ScrollView, StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/Entypo'
 import * as yup from 'yup'
 
+import { useRifToken, useRnsDomainPriceInRif as calculatePrice } from 'lib/rns'
+
 import { AppTouchable } from 'components/appTouchable'
 import { AppButton, Input, Typography } from 'components/index'
 import { InfoBox } from 'components/InfoBox'
@@ -19,10 +21,8 @@ import {
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { colors } from 'src/styles'
-import { selectBalances } from 'store/slices/balancesSlice'
 import { recoverAlias } from 'store/slices/profileSlice'
-import { selectUsdPrices } from 'store/slices/usdPricesSlice'
-import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { useAppDispatch } from 'store/storeUtils'
 
 import { ScreenWithWallet } from '../types'
 import { DomainInput } from './DomainInput'
@@ -45,9 +45,10 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const [selectedYears, setSelectedYears] = useState<number>(2)
   const [selectedDomainPrice, setSelectedDomainPrice] = useState<number>(2)
   const [isModalVisible, setIsModalVisible] = useState<boolean>(true)
+
   const dispatch = useAppDispatch()
-  const tokenBalances = useAppSelector(selectBalances)
-  const prices = useAppSelector(selectUsdPrices)
+  const rifToken = useRifToken()
+
   const { t } = useTranslation()
   const methods = useForm({
     mode: 'onChange',
@@ -60,14 +61,8 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   } = methods
   const hasErrors = Object.keys(errors).length > 0
 
-  // calculate price of domain in USD
-  const rifToken = Object.values(tokenBalances).find(
-    token => token.symbol === 'RIF' || token.symbol === 'tRIF',
-  )
-  const rifTokenAddress = rifToken?.contractAddress || ''
-  const rifTokenPrice = prices[rifTokenAddress]?.price
   const selectedDomainPriceInUsd = (
-    rifTokenPrice * selectedDomainPrice
+    rifToken.price * selectedDomainPrice
   ).toFixed(2)
 
   const domainToLookUp = methods.getValues('domain')
@@ -81,17 +76,6 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
     })
   }
 
-  const calculatePrice = useCallback(async (_: string, years: number) => {
-    //TODO: re enable this later
-    /*const price = await rskRegistrar.price(domain, BigNumber.from(years))
-    return utils.formatUnits(price, 18)*/
-    if (years < 3) {
-      return years * 2
-    } else {
-      return 4 + (years - 2)
-    }
-  }, [])
-
   const handleDomainAvailable = useCallback(
     async (domain: string, valid: boolean) => {
       setValidDomain(valid)
@@ -100,7 +84,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
         setSelectedDomainPrice(price)
       }
     },
-    [calculatePrice, selectedYears],
+    [selectedYears],
   )
 
   const handleYearsChange = useCallback(
@@ -109,7 +93,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
       const price = await calculatePrice(domainToLookUp, years)
       setSelectedDomainPrice(price)
     },
-    [calculatePrice, domainToLookUp, setSelectedYears],
+    [domainToLookUp, setSelectedYears],
   )
 
   const handleSetProfile = useCallback(() => {
@@ -133,7 +117,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
 
   useEffect(() => {
     calculatePrice(domainToLookUp, selectedYears).then(setSelectedDomainPrice)
-  }, [domainToLookUp, selectedYears, calculatePrice])
+  }, [domainToLookUp, selectedYears])
 
   return (
     <ScrollView style={rnsManagerStyles.scrollContainer}>
@@ -168,7 +152,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
             placeholder={`${selectedYears} ${t(
               'request_username_placeholder',
             )}${selectedYears > 1 ? 's' : ''}`}
-            subtitle={`${selectedDomainPrice} ${rifToken?.symbol} ($ ${selectedDomainPriceInUsd})`}
+            subtitle={`${selectedDomainPrice} ${rifToken.symbol} ($ ${selectedDomainPriceInUsd})`}
             containerStyle={styles.yearsContainer}
             rightIcon={
               <View style={styles.yearsButtons}>

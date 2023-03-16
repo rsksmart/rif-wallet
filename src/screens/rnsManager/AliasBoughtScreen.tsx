@@ -1,22 +1,23 @@
 import { useEffect, useState } from 'react'
 import { Clipboard, Image, Linking, StyleSheet, View } from 'react-native'
 
-import { RnsProcessor } from 'lib/rns/RnsProcessor'
+import { RnsProcessor } from 'lib/rns'
 
-import { rnsManagerStyles } from './rnsManagerStyles'
 import { MediumText, SecondaryButton } from 'components/index'
 import { PrimaryButton } from 'components/button'
 import { getWalletSetting, SETTINGS } from 'core/config'
 import { setProfile } from 'store/slices/profileSlice'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { ScreenWithWallet } from '../types'
 import {
   profileStackRouteNames,
   ProfileStackScreenProps,
   ProfileStatus,
 } from 'navigation/profileNavigator/types'
 import { castStyle } from 'shared/utils'
+
+import { ScreenWithWallet } from '../types'
+import { rnsManagerStyles } from './rnsManagerStyles'
 
 export const AliasBoughtScreen = ({
   navigation,

@@ -3,7 +3,7 @@ import { Dimensions, TouchableOpacity, View } from 'react-native'
 import * as Progress from 'react-native-progress'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
-import { RnsProcessor } from 'lib/rns/RnsProcessor'
+import { RnsProcessor } from 'lib/rns'
 
 import { colors } from 'src/styles'
 import { rnsManagerStyles } from './rnsManagerStyles'

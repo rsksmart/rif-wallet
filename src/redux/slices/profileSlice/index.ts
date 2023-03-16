@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import { DomainRegistrationEnum, RnsProcessor } from 'lib/rns/RnsProcessor'
+import { DomainRegistrationEnum, RnsProcessor } from 'lib/rns'
 
 import { ProfileStatus } from 'navigation/profileNavigator/types'
 
