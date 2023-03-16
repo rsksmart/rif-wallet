@@ -1,4 +1,5 @@
 import { t } from 'i18next'
+import { useCallback, useMemo } from 'react'
 
 import {
   rootTabsRouteNames,
@@ -6,15 +7,12 @@ import {
 } from 'navigation/rootNavigator/types'
 import { StatusEnum } from 'components/BasicRow'
 import { BasicRowWithContact } from 'components/BasicRow/BasicRowWithContact'
-import { AppButtonBackgroundVarietyEnum, AppTouchable } from 'src/components'
+import { AppButtonBackgroundVarietyEnum, AppTouchable } from 'components/index'
 import {
   homeStackRouteNames,
   HomeStackScreenProps,
 } from 'navigation/homeNavigator/types'
-import {
-  TransactionStatus,
-  TransactionSummaryScreenProps,
-} from 'screens/transactionSummary'
+import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 import { useAppSelector } from 'store/storeUtils'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { selectSelectedWallet, selectWallets } from 'store/slices/settingsSlice'
@@ -37,45 +35,47 @@ export const ActivityRow = ({ activityTransaction, navigation }: Props) => {
     prices,
     wallets[selectedWallet],
   )
-  const txSummary: TransactionSummaryScreenProps = {
-    transaction: {
-      tokenValue: {
-        symbol: activityDetails.symbol,
-        symbolType: 'icon',
-        balance: activityDetails.value,
-      },
-      usdValue: {
-        symbol: '$',
-        symbolType: 'text',
-        balance: '' + activityDetails.price,
-      },
-      status:
-        activityDetails.status === 'success'
-          ? TransactionStatus.CONFIRMED
-          : undefined,
-      feeValue: activityDetails.fee,
-      total: activityDetails.total,
-      time: activityDetails.timeHumanFormatted,
-    },
-    contact: {
-      address: activityDetails.to,
-    },
-    title: 'Sent',
-    buttons: [
-      {
-        title: t('transaction_summary_default_button_text'),
-        color: sharedColors.white,
-        textColor: sharedColors.black,
-        backgroundVariety: AppButtonBackgroundVarietyEnum.DEFAULT,
-        onPress: () => {
-          navigation.navigate(rootTabsRouteNames.Activity)
+
+  const txSummary = useMemo(
+    () => ({
+      transaction: {
+        tokenValue: {
+          symbol: activityDetails.symbol,
+          symbolType: 'icon',
+          balance: activityDetails.value,
         },
+        usdValue: {
+          symbol: '$',
+          symbolType: 'text',
+          balance: '' + activityDetails.price,
+        },
+        status: activityDetails.status,
+        feeValue: activityDetails.fee,
+        total: activityDetails.total,
+        time: activityDetails.timeHumanFormatted,
       },
-    ],
-  }
-  const handlePress = () => {
+      contact: {
+        address: activityDetails.to,
+      },
+      title: 'Sent',
+      buttons: [
+        {
+          title: t('transaction_summary_default_button_text'),
+          color: sharedColors.white,
+          textColor: sharedColors.black,
+          backgroundVariety: AppButtonBackgroundVarietyEnum.DEFAULT,
+          onPress: () => {
+            navigation.navigate(rootTabsRouteNames.Activity)
+          },
+        },
+      ],
+    }),
+    [activityDetails, navigation],
+  )
+
+  const handlePress = useCallback(() => {
     navigation.navigate(rootTabsRouteNames.TransactionSummary, txSummary)
-  }
+  }, [navigation, txSummary])
   return <ActivityRowPresentation {...activityDetails} onPress={handlePress} />
 }
 const getStatus = (status: string) => {
@@ -105,33 +105,35 @@ export const ActivityBasicRow = ({
     prices,
     wallets[selectedWallet],
   )
-  const txSummary: TransactionSummaryScreenProps = {
-    transaction: {
-      tokenValue: {
-        symbol: activityDetails.symbol,
-        symbolType: 'icon',
-        balance: activityDetails.value,
+  const txSummary: TransactionSummaryScreenProps = useMemo(
+    () => ({
+      transaction: {
+        tokenValue: {
+          symbol: activityDetails.symbol,
+          symbolType: 'icon',
+          balance: activityDetails.value,
+        },
+        usdValue: {
+          symbol: '$',
+          symbolType: 'text',
+          balance: '' + activityDetails.price,
+        },
+        status: activityDetails.status,
+        feeValue: activityDetails.fee,
+        total: activityDetails.total,
+        time: activityDetails.timeHumanFormatted,
       },
-      usdValue: {
-        symbol: '$',
-        symbolType: 'text',
-        balance: '' + activityDetails.price,
+      contact: {
+        address: activityDetails.to,
       },
-      status:
-        activityDetails.status === 'success'
-          ? TransactionStatus.CONFIRMED
-          : undefined,
-      feeValue: activityDetails.fee,
-      total: activityDetails.total,
-      time: activityDetails.timeHumanFormatted,
-    },
-    contact: {
-      address: activityDetails.to,
-    },
-    title: 'Sent',
-  }
-  const handlePress = () =>
-    navigation.navigate(rootTabsRouteNames.TransactionSummary, txSummary)
+      title: 'Sent',
+    }),
+    [activityDetails],
+  )
+  const handlePress = useCallback(
+    () => navigation.navigate(rootTabsRouteNames.TransactionSummary, txSummary),
+    [navigation, txSummary],
+  )
   return (
     <AppTouchable width={'100%'} onPress={handlePress}>
       <BasicRowWithContact

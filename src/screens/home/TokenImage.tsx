@@ -105,10 +105,11 @@ export const getIconSource = (
   symbol: string,
 ): ImageRequireSource | undefined => {
   switch (symbol.toUpperCase()) {
+    case 'RBTC':
     case 'TRBTC':
       return require('../../images/RBTC-logo.png')
     case 'RIF':
-    case 'tRIF':
+    case 'TRIF':
       return require('./../../images/rif.png')
     case 'DOC':
       return require('@rsksmart/rsk-contract-metadata/images/doc.png')

@@ -22,18 +22,25 @@ import { useAppDispatch } from 'store/storeUtils'
 import { setFullscreen } from 'store/slices/settingsSlice'
 
 export enum TransactionStatus {
-  CONFIRMED = 'confirmed',
+  SUCCESS = 'success',
+  PENDING = 'pending',
 }
 
 const transactionStatusToIconPropsMap = new Map([
   [
-    TransactionStatus.CONFIRMED,
+    TransactionStatus.SUCCESS,
     {
       iconName: 'check-circle',
       iconColor: sharedColors.successLight,
+      displayText: 'confirmed',
     },
   ],
   [undefined, null],
+])
+const transactionStatusDisplayText = new Map([
+  [TransactionStatus.SUCCESS, { displayText: 'transaction_confirmed_status' }],
+  [TransactionStatus.PENDING, { displayText: 'transaction_pending_status' }],
+  [undefined, { displayText: '' }],
 ])
 
 export interface TransactionSummaryScreenProps {
@@ -60,6 +67,9 @@ export const TransactionsSummary = ({
   const { transaction, contact, title, buttons } = route.params
 
   const iconObject = transactionStatusToIconPropsMap.get(transaction.status)
+  const transactionStatusText = transactionStatusDisplayText.get(
+    transaction.status,
+  )
 
   useEffect(() => {
     dispatch(setFullscreen(isFocused))
@@ -92,7 +102,9 @@ export const TransactionsSummary = ({
         </Typography>
         <View style={sharedStyles.row}>
           <Typography type={'h4'}>
-            {transaction.status ? transaction.status : ''}
+            {transactionStatusText?.displayText
+              ? t(transactionStatusText?.displayText)
+              : ''}
           </Typography>
           {iconObject ? (
             <Icon

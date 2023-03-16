@@ -11,8 +11,15 @@ import {
 
 import { UsdPricesState } from 'store/slices/usdPricesSlice'
 import { isDefaultChainTypeMainnet } from 'core/config'
+import { TransactionStatus } from 'src/screens/transactionSummary'
+import { TokenSymbol } from 'src/screens/home/TokenImage'
 
 import { ActivityRowPresentationObjectType, ActivityMixedType } from './types'
+
+enum TxType {
+  NORMAL = 'normal',
+  CONTRACT_CALL = 'contract call',
+}
 
 const useActivityDeserializer: (
   activityTransaction: ActivityMixedType,
@@ -40,7 +47,7 @@ const useActivityDeserializer: (
         8,
         prices.BTC?.price || 0,
       ),
-      fee: activityTransaction.fees + ' satoshi',
+      fee: `${activityTransaction.fees} satoshi`,
       total: balanceToDisplay(
         BigNumber.from(
           Math.round(Number(activityTransaction.valueBtc) * Math.pow(10, 8)),
@@ -51,10 +58,15 @@ const useActivityDeserializer: (
   } else {
     const tx = activityTransaction.originTransaction
     const rbtcAddress = '0x0000000000000000000000000000000000000000'
-    const status = tx.receipt ? 'success' : 'pending'
+    const rbtcSymbol = isDefaultChainTypeMainnet
+      ? TokenSymbol.RBTC
+      : TokenSymbol.TRBTC
+    const status = tx.receipt
+      ? TransactionStatus.SUCCESS
+      : TransactionStatus.PENDING
     const timeFormatted = convertUnixTimeToFromNowFormat(tx.timestamp)
     const { address: tokenAddress, data: balance } =
-      tx.txType === 'contract call'
+      tx.txType === TxType.CONTRACT_CALL
         ? tx.receipt?.logs.filter(log =>
             log.topics.find(topic =>
               topic
@@ -66,7 +78,7 @@ const useActivityDeserializer: (
     if (!tokenAddress || tokenAddress === rbtcAddress) {
       return {
         symbol: tokenAddress
-          ? 'RBTC'
+          ? rbtcSymbol
           : (activityTransaction?.enhancedTransaction?.symbol as string) || '',
         to: tx.to,
         timeHumanFormatted: timeFormatted,
@@ -123,7 +135,7 @@ const useActivityDeserializer: (
       ),
       fee: fee
         ? balanceToDisplay(fee, token.decimals)
-        : balanceToDisplay(feeRbtc, token.decimals) + ' RBTC',
+        : `${balanceToDisplay(feeRbtc, token.decimals)} ${rbtcSymbol}`,
       total: fee
         ? balanceToDisplay(
             BigNumber.from(fee).add(BigNumber.from(balance)),
