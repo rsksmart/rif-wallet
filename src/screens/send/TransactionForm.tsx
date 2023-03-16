@@ -5,6 +5,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { BigNumber } from 'ethers'
 
 import {
   balanceToDisplay,
@@ -22,11 +23,10 @@ import {
   Input,
   Typography,
 } from 'components/index'
+import { CurrencyValue, TokenBalance } from 'components/token'
 import { IPrice } from 'src/subscriptions/types'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { CurrencyValue, TokenBalance } from 'src/components/token'
-import { useAppDispatch } from 'store/storeUtils'
 
 import { MixedTokenAndNetworkType } from './types'
 import { PortfolioComponent } from '../home/PortfolioComponent'
@@ -52,7 +52,6 @@ interface Props {
 interface FormValues {
   amount: number
   to: string
-  balance: number
   isToValid: boolean
 }
 
@@ -65,7 +64,7 @@ const transactionFeeMap = new Map([
 const transactionSchema = yup.object().shape({
   amount: yup.number().min(0.00001),
   to: yup.string().required(),
-  balance: yup.number(),
+  balance: yup.string(),
   isToValid: yup.boolean().isTrue(),
 })
 
@@ -106,7 +105,6 @@ export const TransactionForm = ({
     defaultValues: {
       amount: initialValues.amount || 0,
       to: initialValues.recipient || '',
-      balance: Number(selectedToken.balance),
       isToValid: false,
     },
     resolver: yupResolver(transactionSchema),
@@ -120,7 +118,6 @@ export const TransactionForm = ({
   } = methods
   const amount = watch('amount')
   const to = watch('to')
-  const balance = watch('balance')
 
   const [firstBalance, setFirstBalance] = useState<CurrencyValue>({
     balance: '0',
@@ -210,7 +207,6 @@ export const TransactionForm = ({
             return tokenObject
           }
         })
-        setValue('balance', Number(token.balance))
         setSelectedFeeToken(token)
         handleAmountChange('0', balanceInverted)
       }
@@ -221,7 +217,6 @@ export const TransactionForm = ({
       tokenList,
       balanceInverted,
       handleAmountChange,
-      setValue,
     ],
   )
 
@@ -297,7 +292,7 @@ export const TransactionForm = ({
               'transaction_form_balance_label',
             )}`}
             placeholder={`${balanceToDisplay(
-              balance,
+              selectedToken.balance,
               selectedToken.decimals,
               5,
             )} ${selectedToken.symbol}`}
@@ -378,8 +373,9 @@ export const TransactionForm = ({
           }`}
           onPress={handleSubmit(handleConfirmClick)}
           disabled={
-            // balance === 0 ||
-            to.length === 0 || amount === 0
+            BigNumber.from(selectedToken.balance).isZero() ||
+            to.length === 0 ||
+            amount === 0
           }
           color={sharedColors.white}
           textColor={sharedColors.black}
