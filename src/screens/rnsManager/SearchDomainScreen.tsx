@@ -168,7 +168,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
             placeholder={`${selectedYears} ${t(
               'request_username_placeholder',
             )}${selectedYears > 1 ? 's' : ''}`}
-            subtitle={`${selectedDomainPrice} RIF ($ ${selectedDomainPriceInUsd})`}
+            subtitle={`${selectedDomainPrice} ${rifToken?.symbol} ($ ${selectedDomainPriceInUsd})`}
             containerStyle={styles.yearsContainer}
             rightIcon={
               <View style={styles.yearsButtons}>

@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { DomainRegistrationEnum, RnsProcessor } from 'lib/rns/RnsProcessor'
 
 import { ProfileStatus } from 'navigation/profileNavigator/types'
+
 import { ProfileStore } from './types'
 
 export const requestUsername = createAsyncThunk(
@@ -16,16 +17,18 @@ export const requestUsername = createAsyncThunk(
     thunkAPI,
   ) => {
     try {
-      thunkAPI.dispatch(setAlias(`${alias}.rsk`))
       let indexStatus = rnsProcessor.getStatus(alias)
       if (!indexStatus?.commitmentRequested) {
         await rnsProcessor.process(alias, duration)
         thunkAPI.dispatch(setStatus(ProfileStatus.REQUESTING))
+        thunkAPI.dispatch(setAlias(`${alias}.rsk`))
+        thunkAPI.dispatch(setDuration(duration))
       }
       indexStatus = rnsProcessor.getStatus(alias)
       if (indexStatus.commitmentRequested) {
         return await commitment(rnsProcessor, alias)
       }
+      return null
     } catch (err) {
       return thunkAPI.rejectWithValue(err)
     }
@@ -73,6 +76,9 @@ const profileSlice = createSlice({
       state.alias = payload.alias || ''
       state.status = payload.status || ProfileStatus.NONE
     },
+    setDuration: (state, { payload }: PayloadAction<number>) => {
+      state.duration = payload
+    },
     deleteProfile: () => initialState,
   },
   extraReducers(builder) {
@@ -113,8 +119,14 @@ const commitment = (
   })
 }
 
-export const { setProfile, setStatus, setAlias, deleteProfile, recoverAlias } =
-  profileSlice.actions
+export const {
+  setProfile,
+  setStatus,
+  setAlias,
+  deleteProfile,
+  recoverAlias,
+  setDuration,
+} = profileSlice.actions
 
 export const profileReducer = profileSlice.reducer
 
