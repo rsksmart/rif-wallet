@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { StyleSheet, TextInput, View, Clipboard } from 'react-native'
+import { StyleSheet, TextInput, View } from 'react-native'
+import Clipboard from '@react-native-community/clipboard'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { SmartWalletFactory } from '@rsksmart/rif-relay-light-sdk'
 import { useTranslation } from 'react-i18next'

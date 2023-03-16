@@ -29,16 +29,16 @@ import {
   hasIsGettingStartedClosed,
   saveIsGettingStartedClosed,
 } from 'storage/MainStorage'
-
-import PortfolioComponent from './PortfolioComponent'
-import { getTokenColor } from './tokenColor'
 import { selectTransactions } from 'store/slices/transactionsSlice'
 import { sharedColors } from 'shared/constants'
+import { castStyle } from 'shared/utils'
 import { useBitcoinTransactionsHandler } from 'screens/activity/useBitcoinTransactionsHandler'
 import useTransactionsCombiner from 'screens/activity/useTransactionsCombiner'
 import { ActivityBasicRow } from 'screens/activity/ActivityRow'
+
 import { HomeInformationBar } from './HomeInformationBar'
-import { castStyle } from 'shared/utils'
+import { getTokenColor } from './tokenColor'
+import { PortfolioComponent } from './PortfolioComponent'
 
 export const HomeScreen = ({
   navigation,

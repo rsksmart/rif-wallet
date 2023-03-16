@@ -6,16 +6,17 @@ import { shortAddress } from 'lib/utils'
 
 import { TokenImage, TokenSymbol } from 'screens/home/TokenImage'
 import { Typography } from 'components/index'
-import { HideShowIcon } from 'components/icons'
 import { AppTouchable } from 'components/appTouchable'
 import { Avatar } from 'components/avatar'
+import { ContactWithAddressRequired } from 'shared/types'
 import { noop, sharedColors, testIDs } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { ContactWithAddressRequired } from 'shared/types'
+
+import { EyeIcon } from '../icons/EyeIcon'
 
 export interface CurrencyValue {
   symbol: TokenSymbol | string
-  symbolType: string
+  symbolType: 'text' | 'icon'
   balance: string
 }
 
@@ -39,7 +40,7 @@ export const TokenBalance = ({
   color = sharedColors.black,
   hide = false,
   editable = false,
-  onSwap = noop,
+  onSwap,
   hideable = false,
   onHide = noop,
   handleAmountChange = noop,
@@ -118,17 +119,12 @@ export const TokenBalance = ({
               onPress={onHide}
               accessibilityLabel={testIDs.hide}>
               <View style={styles.badge}>
-                <HideShowIcon
-                  color={sharedColors.white}
-                  height={20}
-                  width={30}
-                  isHidden={hide}
-                />
+                <EyeIcon color={sharedColors.white} size={20} isHidden={hide} />
               </View>
             </AppTouchable>
           </View>
         )}
-        {editable && !hideable && (
+        {onSwap && (
           <View style={styles.center}>
             <AppTouchable
               width={41}
@@ -136,7 +132,7 @@ export const TokenBalance = ({
               accessibilityLabel={testIDs.swap}>
               <View style={styles.badge}>
                 <Icon
-                  name={'ios-swap-vertical'}
+                  name="ios-swap-vertical"
                   color={sharedColors.white}
                   size={25}
                 />

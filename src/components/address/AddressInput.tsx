@@ -3,9 +3,12 @@ import Clipboard from '@react-native-community/clipboard'
 import { isValidChecksumAddress } from '@rsksmart/rsk-utils'
 import { decodeString } from '@rsksmart/rif-wallet-eip681'
 import { useTranslation } from 'react-i18next'
+import { TextStyle } from 'react-native'
 
-import { rnsResolver } from 'src/core/setup'
+import { rnsResolver } from 'core/setup'
 import { colors } from 'src/styles'
+import { sharedColors } from 'shared/constants'
+
 import { SecondaryButton } from '../button/SecondaryButton'
 import { QRCodeScanner } from '../QRCodeScanner'
 import {
@@ -15,8 +18,6 @@ import {
 } from './lib'
 import { Input, InputProps } from '../input'
 import { Avatar } from '../avatar'
-import { sharedColors } from 'src/shared/constants'
-import { TextStyle } from 'react-native'
 
 export interface AddressInputProps extends InputProps {
   initialValue: string
@@ -118,7 +119,7 @@ export const AddressInput = ({
 
               // call parent with the resolved address
               onChangeAddress(
-                userInput,
+                address,
                 validateAddress(address, chainId) ===
                   AddressValidationMessage.VALID,
               )
@@ -204,6 +205,7 @@ export const AddressInput = ({
         testID={testID}
         label={status.value ? status.value : label}
         labelStyle={labelColor}
+        value={recipient}
         subtitle={addressResolved && recipient ? addressResolved : undefined}
         inputName={inputName}
         onChangeText={handleChangeText}

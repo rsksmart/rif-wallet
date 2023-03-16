@@ -132,13 +132,6 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
           borderRadius={20}
         />
       </View>
-      <FormProvider {...methods}>
-        <Search
-          inputName={'search'}
-          resetValue={() => resetField('search')}
-          placeholder={t('search_placeholder')}
-        />
-      </FormProvider>
       {selectedContact && (
         <ConfirmationModal
           isVisible={isDeleteContactModalVisible}
@@ -168,34 +161,35 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
           </View>
         </>
       ) : (
-        <ScrollView style={styles.contactsList}>
-          <View style={styles.searchView}>
-            <TextInput
-              testID="searchInput"
-              accessibilityLabel="searchInput"
-              style={styles.searchInput}
-              placeholder={t('type to find...')}
-              placeholderTextColor={colors.purple}
+        <>
+          <FormProvider {...methods}>
+            <Search
+              inputName={'search'}
+              testID={'searchInput'}
+              accessibilityLabel={'searchInput'}
+              resetValue={() => resetField('search')}
+              placeholder={t('search_placeholder')}
               onChangeText={setSearchContactText}
             />
-            <SearchIcon color={colors.purple} width={40} height={40} />
-          </View>
-          {contactsFiltered.map((contact, index) => (
-            <ContactRow
-              key={index}
-              index={index}
-              contact={contact}
-              selected={selectedIndex === index}
-              onSend={sendContact}
-              onDelete={showModal}
-              onEdit={editContact}
-              onPress={() =>
-                setSelectedIndex(selectedIndex === index ? null : index)
-              }
-              hideSendButton={shouldHideSendButton}
-            />
-          ))}
-        </ScrollView>
+          </FormProvider>
+          <ScrollView style={styles.contactsList}>
+            {contactsFiltered.map((contact, index) => (
+              <ContactRow
+                key={index}
+                index={index}
+                contact={contact}
+                selected={selectedIndex === index}
+                onSend={sendContact}
+                onDelete={showModal}
+                onEdit={editContact}
+                onPress={() =>
+                  setSelectedIndex(selectedIndex === index ? null : index)
+                }
+                hideSendButton={shouldHideSendButton}
+              />
+            ))}
+          </ScrollView>
+        </>
       )}
     </View>
   )

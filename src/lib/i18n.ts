@@ -207,6 +207,13 @@ const resources = {
       contacts_browse: 'Browse',
       contacts_new_contact_button_label: 'New Contact',
       contacts_search_label: 'Browse Contacts',
+      transaction_form_recepient_label: 'Send to',
+      transaction_form_balance_label: 'Balance',
+      transaction_form_button_send: 'Send',
+      transaction_form_button_cancel: 'Cancel',
+      transaction_form_tx_dropdown: 'Change tx asset',
+      transaction_form_fee_dropdown: 'Change fee asset',
+      transaction_form_fee_input_label: 'Pay transaction fee in ',
     },
   },
   es: {
