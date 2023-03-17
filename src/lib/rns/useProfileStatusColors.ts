@@ -3,7 +3,7 @@ import { sharedColors } from 'src/shared/constants'
 import { selectProfileStatus } from 'store/slices/profileSlice'
 import { useAppSelector } from 'store/storeUtils'
 
-export const useStatusColors = () => {
+export const useProfileStatusColors = () => {
   const status = useAppSelector(selectProfileStatus)
   switch (status) {
     case ProfileStatus.REQUESTING:
