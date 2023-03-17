@@ -22,9 +22,7 @@ import { ScreenWithWallet } from '../types'
 
 export const ActivityScreen = ({
   navigation,
-}: {
-  navigation: ActivityMainScreenProps['navigation']
-} & ScreenWithWallet) => {
+}: ActivityMainScreenProps & ScreenWithWallet) => {
   const { t } = useTranslation()
   const bitcoinCore = useBitcoinContext()
   const btcTransactionFetcher = useBitcoinTransactionsHandler({
