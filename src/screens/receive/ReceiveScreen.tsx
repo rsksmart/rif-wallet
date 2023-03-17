@@ -90,8 +90,6 @@ export const ReceiveScreen = ({
     })
   }, [address])
 
-  const onBackPress = useCallback(() => navigation.goBack(), [navigation])
-
   const onChevronAssetShowTap = useCallback(
     () => setShouldShowAssets(curr => !curr),
     [],
@@ -137,7 +135,7 @@ export const ReceiveScreen = ({
               name="chevron-left"
               size={14}
               color="white"
-              onPress={onBackPress}
+              onPress={navigation.goBack}
               style={styles.width50View}
             />
           </View>
