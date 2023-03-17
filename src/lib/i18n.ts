@@ -237,6 +237,10 @@ const resources = {
       dapps_title: 'Dapps',
       dapps_instructions:
         'Scan & connect to your favorite desktop app. Connections will appear here.',
+      dapps_confirmation_title: 'Connect?',
+      dapps_confirmation_description: 'Do you want to connect to the Dapp',
+      dapps_confirmation_button_connect: 'Connect',
+      dapps_confirmation_button_cancel: 'Reject',
     },
   },
   es: {
