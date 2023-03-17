@@ -11,7 +11,7 @@ import { useAppSelector } from 'store/storeUtils'
 import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
 import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 import { sharedColors, sharedStyles } from 'shared/constants'
-import { Typography } from 'src/components'
+import { Typography } from 'components/typography'
 import { castStyle } from 'shared/utils'
 import { ActivityMainScreenProps } from 'shared/types'
 
