@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   }),
   avatarBackground: castStyle.view({
-    backgroundColor: 'white',
+    backgroundColor: sharedColors.white,
   }),
   flexCenter: castStyle.view({
     alignItems: 'center',
