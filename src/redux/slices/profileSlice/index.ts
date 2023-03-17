@@ -56,6 +56,7 @@ const initialState: ProfileStore = {
   email: '',
   status: ProfileStatus.NONE,
   infoBoxClosed: false,
+  duration: null,
 }
 
 const profileSlice = createSlice({

@@ -6,5 +6,5 @@ export interface ProfileStore {
   email: string
   status: ProfileStatus
   infoBoxClosed: boolean
-  duration?: number
+  duration: number | null
 }
