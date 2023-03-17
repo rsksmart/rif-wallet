@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
-import { useStatusColors } from 'lib/rns'
+import { useProfileStatusColors } from 'lib/rns'
 
 import { Avatar } from 'components/avatar'
 import { StepperComponent } from 'components/profile'
@@ -23,7 +23,7 @@ interface Props {
 export const ProfileHandler = ({ navigation }: Props) => {
   const profile = useAppSelector(selectProfile)
   const { t } = useTranslation()
-  const { startColor, endColor } = useStatusColors()
+  const { startColor, endColor } = useProfileStatusColors()
 
   const routeNextStep = async () => {
     navigation.navigate(rootTabsRouteNames.Profile)

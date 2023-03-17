@@ -2,12 +2,12 @@ import {
   createStackNavigator,
   StackNavigationOptions,
 } from '@react-navigation/stack'
-import { useCallback, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Platform, StyleProp, StyleSheet, ViewStyle } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
-import { useStatusColors } from 'lib/rns'
+import { useProfileStatusColors } from 'lib/rns'
 
 import { AppTouchable, Typography } from 'components/index'
 import { StepperComponent } from 'components/profile'
@@ -45,12 +45,9 @@ export const headerLeftOption = (goBack: () => void) => (
 export const ProfileNavigator = ({
   navigation,
 }: RootTabsScreenProps<rootTabsRouteNames.Profile>) => {
-  useEffect(() => {
-    navigation.setOptions({ headerShown: false })
-  }, [navigation])
   const { t } = useTranslation()
   const status = useAppSelector(selectProfileStatus)
-  const { startColor, endColor } = useStatusColors()
+  const { startColor, endColor } = useProfileStatusColors()
 
   const screenOptionsWithHeader = (
     title: string,
@@ -80,6 +77,10 @@ export const ProfileNavigator = ({
     headerTitleAlign: 'center',
     headerShadowVisible: false,
   })
+
+  useEffect(() => {
+    navigation.setOptions({ headerShown: false })
+  }, [navigation])
 
   return (
     <ProfileStack.Navigator>
