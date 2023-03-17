@@ -112,13 +112,11 @@ export const ProfileCreateScreen = ({
     setValue('phone', profile.phone)
   }, [profile.email, profile.phone, setValue])
 
-  const onBackPress = useCallback(() => navigation.goBack(), [navigation])
-
   useEffect(() => {
     navigation.setOptions({
       headerLeft: () => headerLeftOption(navigation.goBack),
     })
-  }, [navigation, onBackPress])
+  }, [navigation])
 
   return (
     <ScrollView style={rnsManagerStyles.scrollContainer}>

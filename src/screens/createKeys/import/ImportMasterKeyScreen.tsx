@@ -179,8 +179,6 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
     [handleImportMnemonic, onSubmitEditing],
   )
 
-  const onBackPress = useCallback(() => navigation.goBack(), [navigation])
-
   return (
     <FormProvider {...form}>
       <ScrollView style={styles.parent} keyboardShouldPersistTaps={'always'}>
@@ -189,7 +187,7 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
             name="chevron-left"
             size={defaultIconSize}
             color="white"
-            onPress={onBackPress}
+            onPress={navigation.goBack}
             style={[sharedStyles.widthHalfWidth, styles.backIconStyleView]}
           />
           <Typography style={[sharedStyles.flex, styles.flexCenter]} type="h4">

@@ -23,8 +23,10 @@ import { rnsManagerStyles } from './rnsManagerStyles'
 type Props = ProfileStackScreenProps<profileStackRouteNames.PurchaseDomain>
 
 export const PurchaseDomainScreen = ({ navigation }: Props) => {
-  const { alias, duration = 1 } = useAppSelector(selectProfile)
   const rifToken = useRifToken()
+  const profile = useAppSelector(selectProfile)
+  const alias = profile.alias
+  const duration = profile.duration || 1
 
   const methods = useForm()
   const { t } = useTranslation()
@@ -38,13 +40,11 @@ export const PurchaseDomainScreen = ({ navigation }: Props) => {
     calculatePrice(alias, duration).then(setSelectedDomainPrice)
   }, [alias, duration])
 
-  const onBackPress = useCallback(() => navigation.goBack(), [navigation])
-
   useEffect(() => {
     navigation.setOptions({
-      headerLeft: () => headerLeftOption(onBackPress),
+      headerLeft: () => headerLeftOption(navigation.goBack),
     })
-  }, [navigation, onBackPress])
+  }, [navigation])
 
   return (
     <ScrollView style={rnsManagerStyles.scrollContainer}>

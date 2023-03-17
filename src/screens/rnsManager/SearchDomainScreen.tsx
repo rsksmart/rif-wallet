@@ -107,13 +107,11 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
     navigation.navigate(profileStackRouteNames.ProfileCreateScreen)
   }, [dispatch, domainToLookUp, navigation])
 
-  const onBackPress = useCallback(() => navigation.goBack(), [navigation])
-
   useEffect(() => {
     navigation.setOptions({
-      headerLeft: () => headerLeftOption(onBackPress),
+      headerLeft: () => headerLeftOption(navigation.goBack),
     })
-  }, [navigation, onBackPress])
+  }, [navigation])
 
   useEffect(() => {
     calculatePrice(domainToLookUp, selectedYears).then(setSelectedDomainPrice)
