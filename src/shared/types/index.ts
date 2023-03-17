@@ -29,6 +29,6 @@ export type ContactWithAddressRequired = Partial<Omit<Contact, 'address'>> & {
 }
 
 export type ActivityMainScreenProps = CompositeScreenProps<
-  RootTabsScreenProps<rootTabsRouteNames.Activity>,
-  HomeStackScreenProps<homeStackRouteNames.Main>
+  HomeStackScreenProps<homeStackRouteNames.Main>,
+  RootTabsScreenProps<rootTabsRouteNames.Activity>
 >
