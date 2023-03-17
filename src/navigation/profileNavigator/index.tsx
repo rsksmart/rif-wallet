@@ -93,6 +93,5 @@ export const headerStyles = StyleSheet.create({
   }),
   headerStyle: castStyle.view({
     backgroundColor: sharedColors.primary,
-    height: 55,
   }),
 })

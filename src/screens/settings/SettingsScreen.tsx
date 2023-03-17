@@ -4,7 +4,7 @@ import { version } from 'package.json'
 import { useTranslation } from 'react-i18next'
 
 import { getWalletSetting, SETTINGS } from 'core/config'
-import { sharedColors } from 'shared/constants'
+import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { AppTouchable, Typography } from 'components/index'
 import { homeStackRouteNames } from 'navigation/homeNavigator/types'
@@ -61,7 +61,7 @@ export const SettingsScreen = ({
         <AppTouchable
           width={'100%'}
           accessibilityLabel="account"
-          style={styles.settingsItem}
+          style={[styles.settingsItem, sharedStyles.marginTop40]}
           onPress={goToAccountsScreen}>
           <Typography type={'h3'}>{t('settings_screen_account')}</Typography>
         </AppTouchable>
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     marginTop: 130,
   }),
   settingsItem: castStyle.view({
-    marginBottom: 20,
+    marginTop: 20,
     alignItems: 'flex-start',
   }),
   footerItem: castStyle.view({

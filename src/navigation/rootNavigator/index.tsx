@@ -4,19 +4,19 @@ import { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 
 import { CreateKeysNavigation } from 'navigation/createKeysNavigator'
+import { ConfirmationModal } from 'components/modal/ConfirmationModal'
+import { InjectedScreens } from 'core/Core'
+import { useAppSelector } from 'store/storeUtils'
+import { selectFullscreen, selectIsUnlocked } from 'store/slices/settingsSlice'
+import { TransactionsSummary } from 'screens/transactionSummary'
+
 import { AppFooterMenu } from '../../ux/appFooter'
 import { AppHeader } from '../../ux/appHeader'
-
-import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import { RootTabsParamsList, rootTabsRouteNames } from './types'
-import { InjectedScreens } from 'core/Core'
 import { HomeNavigator } from '../homeNavigator'
 import { ContactsNavigation } from '../contactsNavigator'
 import { SettingsNavigator } from '../settingsNavigator'
 import { ProfileNavigator } from '../profileNavigator'
-import { useAppSelector } from 'store/storeUtils'
-import { selectFullscreen, selectIsUnlocked } from 'store/slices/settingsSlice'
-import { TransactionsSummary } from 'screens/transactionSummary'
 
 const RootTabs = createBottomTabNavigator<RootTabsParamsList>()
 
