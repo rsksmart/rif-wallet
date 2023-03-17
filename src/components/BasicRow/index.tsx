@@ -106,7 +106,7 @@ export const BasicRow = ({
             name="north-east"
             size={17}
             style={styles.horizontalPadding}
-            color="white"
+            color={sharedColors.white}
           />
         </View>
         {amount ? (
