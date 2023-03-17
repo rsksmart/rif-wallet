@@ -1,12 +1,13 @@
 import { StyleSheet, View } from 'react-native'
 
-import { balanceToString } from './BalancesScreen'
 import { Button, RegularText } from 'components/index' // TODO: this button seems like it doesn't exist
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import {
   homeStackRouteNames,
   HomeStackScreenProps,
 } from 'navigation/homeNavigator/types'
+
+import { balanceToString } from './BalancesScreen'
 
 export const BalancesRow = ({
   token: { symbol, balance, decimals, contractAddress },
@@ -25,6 +26,7 @@ export const BalancesRow = ({
       <Button
         onPress={() => {
           navigation.navigate(homeStackRouteNames.Send, {
+            backAction: navigation.goBack,
             token: symbol,
           })
         }}

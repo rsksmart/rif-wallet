@@ -95,7 +95,11 @@ export const ContactDetails = ({
   const onSendToContact = useCallback(() => {
     navigation.navigate(rootTabsRouteNames.Home, {
       screen: homeStackRouteNames.Send,
-      params: { to: contact.address },
+      params: {
+        backAction: () =>
+          navigation.navigate(contactsStackRouteNames.ContactsList),
+        to: contact.address,
+      },
     })
   }, [navigation, contact])
 
