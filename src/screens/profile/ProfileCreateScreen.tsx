@@ -44,7 +44,7 @@ export const ProfileCreateScreen = ({
     profile.infoBoxClosed ?? false,
   )
 
-  const [username, setUsername] = useState<string>('no_username')
+  const [username, setUsername] = useState<string>('')
   const methods = useForm()
   const { resetField, setValue } = methods
   const { t } = useTranslation()
@@ -99,7 +99,7 @@ export const ProfileCreateScreen = ({
 
   useEffect(() => {
     const hasAlias = profile.status !== ProfileStatus.NONE && !!profile.alias
-    setUsername(hasAlias ? profile.alias : 'no_username')
+    setUsername(hasAlias ? profile.alias : '')
   }, [profile.alias, profile.status])
 
   useEffect(() => {
@@ -124,7 +124,7 @@ export const ProfileCreateScreen = ({
         />
         <View style={styles.username}>
           <Typography type={'h3'} color={sharedColors.labelLight}>
-            {t(username)}
+            {username || t('no_username')}
           </Typography>
           <Typography type={'h4'} color={sharedColors.labelLight}>
             {displayAddress}
@@ -212,10 +212,7 @@ export const ProfileCreateScreen = ({
             title={t('profile_register_your_username_button_text')}
             color={sharedColors.white}
             textColor={sharedColors.black}
-            disabled={
-              username !== 'no_username' &&
-              profile.status === ProfileStatus.REQUESTING
-            }
+            disabled={!!username && profile.status === ProfileStatus.REQUESTING}
             onPress={() =>
               navigation.navigate(profileStackRouteNames.SearchDomain)
             }
