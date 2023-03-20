@@ -34,11 +34,11 @@ export const Avatar = ({
 }: Props) => {
   const twoTimesLessThanSize = useMemo(() => size / 2, [size])
   const firstCapital = useMemo(() => {
-    const letter = name.split('')[0]
-    if (letter) {
-      return letter.toUpperCase()
+    const letters = name.split('')
+    if (letters.length === 0) {
+      return 'U'
     }
-    return ''
+    return letters[0].toUpperCase()
   }, [name])
 
   return (
