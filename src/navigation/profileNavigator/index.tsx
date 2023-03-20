@@ -4,7 +4,8 @@ import {
 } from '@react-navigation/stack'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Platform, StyleProp, StyleSheet, ViewStyle } from 'react-native'
+import { StyleProp, StyleSheet, ViewStyle } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
 import { useProfileStatusColors } from 'lib/rns'
@@ -33,12 +34,7 @@ const ProfileStack = createStackNavigator<ProfileStackParamsList>()
 
 export const headerLeftOption = (goBack: () => void) => (
   <AppTouchable width={20} onPress={goBack} style={sharedStyles.marginLeft24}>
-    <Icon
-      name={'chevron-left'}
-      size={20}
-      color={sharedColors.white}
-      style={headerStyles.headerPosition}
-    />
+    <Icon name={'chevron-left'} size={20} color={sharedColors.white} />
   </AppTouchable>
 )
 
@@ -48,6 +44,7 @@ export const ProfileNavigator = ({
   const { t } = useTranslation()
   const status = useAppSelector(selectProfileStatus)
   const { startColor, endColor } = useProfileStatusColors()
+  const insets = useSafeAreaInsets()
 
   const screenOptionsWithHeader = (
     title: string,
@@ -57,7 +54,7 @@ export const ProfileNavigator = ({
     headerShown: true,
     headerTitle: props => (
       <>
-        <Typography type={'h3'} style={headerStyles.headerPosition}>
+        <Typography type="h3" style={{ marginTop: insets.top * -1 }}>
           {title ?? props.children}
         </Typography>
         {showStepper && (
@@ -74,6 +71,9 @@ export const ProfileNavigator = ({
       { backgroundColor: sharedColors.secondary },
       style,
     ],
+    headerLeftContainerStyle: {
+      marginTop: insets.top * -1,
+    },
     headerTitleAlign: 'center',
     headerShadowVisible: false,
   })
@@ -126,9 +126,6 @@ export const ProfileNavigator = ({
 }
 
 export const headerStyles = StyleSheet.create({
-  headerPosition: castStyle.view({
-    marginTop: Platform.OS === 'ios' ? -45 : 0,
-  }),
   headerStyle: castStyle.view({
     backgroundColor: sharedColors.primary,
   }),
