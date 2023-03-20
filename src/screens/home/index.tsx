@@ -104,7 +104,7 @@ export const HomeScreen = ({
       : undefined
   const selectedColor = getTokenColor(selected ? selected.symbol : '')
   const backGroundColor = {
-    backgroundColor: selectedAddress ? selectedColor : getTokenColor('DEFAULT'),
+    backgroundColor: selectedAddress ? selectedColor : sharedColors.borderColor,
   }
 
   const ramp = useMemo(

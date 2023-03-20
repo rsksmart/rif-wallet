@@ -87,7 +87,11 @@ export const PortfolioComponent = ({
       <ScrollView horizontal={true}>
         <PortfolioCard
           onPress={onTotalTap}
-          color={sharedColors.inputInactive}
+          color={
+            isTotalCardSelected
+              ? sharedColors.borderColor
+              : sharedColors.inputInactive
+          }
           primaryText={t('TOTAL')}
           secondaryText={`$${getTotalUsdBalance(balances, prices).toString()}`}
           isSelected={isTotalCardSelected}
