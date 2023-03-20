@@ -38,6 +38,9 @@ export const selectAppIsActive = ({ settings }: RootState) =>
 
 export const selectIsUnlocked = ({ settings }: RootState) => settings.unlocked
 
+export const selectPreviouslyUnlocked = ({ settings }: RootState) =>
+  settings.previouslyUnlocked
+
 export const selectIsSetup = ({ settings }: RootState) => settings.isSetup
 
 export const selectFullscreen = ({ settings }: RootState) => settings.fullscreen

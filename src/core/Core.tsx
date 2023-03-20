@@ -55,6 +55,10 @@ import { authAxios, publicAxios } from './setup'
 import { useStateSubscription } from './hooks/useStateSubscription'
 import { useBitcoinCore } from './hooks/bitcoin/useBitcoinCore'
 import { Cover } from './components/Cover'
+import { authAxios, publicAxios } from './setup'
+import { useStateSubscription } from './hooks/useStateSubscription'
+import { useBitcoinCore } from './hooks/bitcoin/useBitcoinCore'
+import { Cover } from './components/Cover'
 
 export const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -185,10 +189,6 @@ export const Core = () => {
     }
   }, [active])
 
-  if (settings.loading && !unlocked) {
-    return <LoadingScreen />
-  }
-
   return (
     <SafeAreaProvider>
       <View style={sharedStyles.flex}>
@@ -197,16 +197,20 @@ export const Core = () => {
         <BitcoinProvider BitcoinCore={BitcoinCore}>
           <NavigationContainer ref={navigationContainerRef}>
             <WalletConnectProviderElement>
-              <>
-                <RootNavigationComponent />
+              {settings.loading && !unlocked ? (
+                <LoadingScreen />
+              ) : (
+                <>
+                  <RootNavigationComponent />
 
-                {requests.length !== 0 && (
-                  <ModalComponent
-                    closeModal={() => dispatch(closeRequest())}
-                    request={requests[0]}
-                  />
-                )}
-              </>
+                  {requests.length !== 0 && (
+                    <ModalComponent
+                      closeModal={() => dispatch(closeRequest())}
+                      request={requests[0]}
+                    />
+                  )}
+                </>
+              )}
             </WalletConnectProviderElement>
           </NavigationContainer>
         </BitcoinProvider>

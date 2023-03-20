@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import JailMonkey from 'jail-monkey'
 import { useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { View } from 'react-native'
 
 import { CreateKeysNavigation } from 'navigation/createKeysNavigator'
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
@@ -9,6 +9,7 @@ import { InjectedScreens } from 'core/Core'
 import { useAppSelector } from 'store/storeUtils'
 import { selectFullscreen, selectIsUnlocked } from 'store/slices/settingsSlice'
 import { TransactionsSummary } from 'screens/transactionSummary'
+import { sharedStyles } from 'shared/constants'
 import { AppFooterMenu } from 'src/ux/appFooter'
 import { AppHeader } from 'src/ux/appHeader'
 
@@ -28,7 +29,7 @@ export const RootNavigationComponent = () => {
   const isShown = unlocked && !fullscreen
 
   return (
-    <View style={styles.parent}>
+    <View style={sharedStyles.flex}>
       <RootTabs.Navigator
         tabBar={props => <AppFooterMenu isShown={isShown} {...props} />}
         screenOptions={{
@@ -95,11 +96,5 @@ export const RootNavigationComponent = () => {
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  parent: {
-    flex: 1,
-  },
-})
 
 export * from './types'

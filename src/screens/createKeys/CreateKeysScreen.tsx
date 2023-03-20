@@ -16,7 +16,7 @@ import { castStyle } from 'shared/utils'
 
 export const CreateKeysScreen = ({
   navigation,
-}: CreateKeysScreenProps<'CreateKeys'>) => {
+}: CreateKeysScreenProps<createKeysRouteNames.CreateKeys>) => {
   const { t } = useTranslation()
 
   return (
