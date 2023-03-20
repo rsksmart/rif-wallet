@@ -1,5 +1,6 @@
 import { BigNumber, BigNumberish, FixedNumber } from 'ethers'
 import moment from 'moment'
+
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 
 export function shortAddress(address?: string, trimAmount?: number): string {
@@ -12,6 +13,10 @@ export function shortAddress(address?: string, trimAmount?: number): string {
     address.length - amount,
     address.length,
   )}`
+}
+
+export const truncate = (str: string, n: number) => {
+  return str?.length > n ? str.substr(0, n - 1) + '...' : str
 }
 
 export const roundBalance = (num: number, decimalPlaces?: number) => {

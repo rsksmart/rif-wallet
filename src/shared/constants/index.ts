@@ -16,6 +16,7 @@ export const sharedColors = {
   secondary: '#121212',
   success: '#79C600',
   successLight: '#59FF9C',
+  connected: '#01CB9F',
   warning: '#FF9100',
   danger: '#E94141',
   dangerLight: '#ED6060',

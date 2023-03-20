@@ -241,6 +241,7 @@ const resources = {
       dapps_confirmation_description: 'Do you want to connect to the Dapp',
       dapps_confirmation_button_connect: 'Connect',
       dapps_confirmation_button_cancel: 'Reject',
+      dapps_connected: 'Connected',
     },
   },
   es: {

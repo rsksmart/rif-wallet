@@ -13,9 +13,10 @@ import { sharedColors } from 'shared/constants'
 import { colors } from 'src/styles'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
-
 import { SlidePopupConfirmationInfo } from 'src/components/slidePopup/SlidePopupConfirmationInfo'
+
 import { WalletConnectContext } from './WalletConnectContext'
+import { DappItem } from './DappItem'
 
 type Props = RootTabsScreenProps<rootTabsRouteNames.WalletConnect>
 
@@ -49,6 +50,7 @@ export const WalletConnectScreen = ({ navigation, route }: Props) => {
         </View>
         <View style={styles.innerHeader2} />
       </View>
+
       {pendingConnector && !pendingConnector.connected && (
         <SlidePopupConfirmationInfo
           title={t('dapps_confirmation_title')}
@@ -66,41 +68,14 @@ export const WalletConnectScreen = ({ navigation, route }: Props) => {
       {openedConnections.length === 0 ? (
         <>
           <Image
-            source={require('../../images/empty-dapps.png')}
+            source={require('src/images/empty-dapps.png')}
             style={styles.noDappsImage}
           />
         </>
       ) : (
         <ScrollView style={styles.dappsList}>
           {openedConnections.map(({ connector: c }) => (
-            <LinearGradient
-              key={c.key}
-              colors={[colors.background.secondary, colors.background.primary]}
-              style={styles.dapp}>
-              <View style={styles.dappInner}>
-                <Image
-                  source={require('../../images/dapp-icon.png')}
-                  style={styles.dappIcon}
-                />
-                <View style={styles.dappNameView}>
-                  <SemiBoldText style={styles.dappName}>
-                    {c.peerMeta?.name}
-                  </SemiBoldText>
-                  <RegularText style={styles.dappUrl}>
-                    {c.peerMeta?.url}
-                  </RegularText>
-                </View>
-                <TouchableOpacity
-                  accessibilityLabel="dapp"
-                  style={styles.dappButtonView}
-                  onPress={() => c.killSession()}>
-                  <Image
-                    source={require('../../images/disconnect-dapp.png')}
-                    style={styles.dappButton}
-                  />
-                </TouchableOpacity>
-              </View>
-            </LinearGradient>
+            <DappItem key={c.key} connector={c} />
           ))}
         </ScrollView>
       )}
@@ -173,8 +148,8 @@ const styles = StyleSheet.create({
   },
   dappButton: {
     flex: 1,
-    width: 50,
-    height: 50,
+    width: 20,
+    height: 20,
     resizeMode: 'contain',
   },
   dappUrl: {

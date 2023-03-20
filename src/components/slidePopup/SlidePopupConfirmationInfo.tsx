@@ -6,7 +6,7 @@ import {
 } from 'components/button'
 import { noop, sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { colors } from 'src/styles'
+
 import { SlidePopupConfirmation } from './SlidePopupConfirmation'
 
 interface Props {
