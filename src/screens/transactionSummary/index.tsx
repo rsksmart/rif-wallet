@@ -1,5 +1,8 @@
 import { StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import { useTranslation } from 'react-i18next'
+import { useEffect } from 'react'
+import { useIsFocused } from '@react-navigation/native'
 
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
@@ -15,31 +18,43 @@ import {
   AppButtonProps,
   AppButtonWidthVarietyEnum,
 } from 'components/button'
-import { useTranslation } from 'react-i18next'
+import { useAppDispatch } from 'store/storeUtils'
+import { setFullscreen } from 'store/slices/settingsSlice'
 
-enum TransactionStatus {
-  CONFIRMED = 'confirmed',
+export enum TransactionStatus {
+  SUCCESS = 'success',
+  PENDING = 'pending',
 }
 
 const transactionStatusToIconPropsMap = new Map([
   [
-    TransactionStatus.CONFIRMED,
+    TransactionStatus.SUCCESS,
     {
       iconName: 'check-circle',
       iconColor: sharedColors.successLight,
+      displayText: 'confirmed',
     },
   ],
   [undefined, null],
+])
+const transactionStatusDisplayText = new Map([
+  [TransactionStatus.SUCCESS, { displayText: 'transaction_confirmed_status' }],
+  [TransactionStatus.PENDING, { displayText: 'transaction_pending_status' }],
+  [undefined, { displayText: '' }],
 ])
 
 export interface TransactionSummaryScreenProps {
   transaction: {
     tokenValue: CurrencyValue
     usdValue: CurrencyValue
+    feeValue: string
+    total: string
+    time: string
     status?: TransactionStatus
   }
   contact: ContactWithAddressRequired
   buttons?: AppButtonProps[]
+  title?: string
 }
 
 export const TransactionsSummary = ({
@@ -47,11 +62,18 @@ export const TransactionsSummary = ({
   navigation,
 }: RootTabsScreenProps<rootTabsRouteNames.TransactionSummary>) => {
   const { t } = useTranslation()
-  const transaction = route.params.transaction
-  const contact = route.params.contact
-  const buttons = route.params.buttons
+  const dispatch = useAppDispatch()
+  const isFocused = useIsFocused()
+  const { transaction, contact, title, buttons } = route.params
 
   const iconObject = transactionStatusToIconPropsMap.get(transaction.status)
+  const transactionStatusText = transactionStatusDisplayText.get(
+    transaction.status,
+  )
+
+  useEffect(() => {
+    dispatch(setFullscreen(isFocused))
+  }, [dispatch, isFocused])
 
   return (
     <View style={styles.screen}>
@@ -59,7 +81,7 @@ export const TransactionsSummary = ({
         style={styles.sendText}
         type={'h4'}
         color={sharedColors.inputLabelColor}>
-        {t('transaction_summary_title')}
+        {title || t('transaction_summary_title')}
       </Typography>
       <TokenBalance
         style={styles.tokenBalance}
@@ -80,7 +102,9 @@ export const TransactionsSummary = ({
         </Typography>
         <View style={sharedStyles.row}>
           <Typography type={'h4'}>
-            {transaction.status ? transaction.status : ''}
+            {transactionStatusText?.displayText
+              ? t(transactionStatusText?.displayText)
+              : ''}
           </Typography>
           {iconObject ? (
             <Icon
@@ -125,22 +149,22 @@ export const TransactionsSummary = ({
           <Typography
             type={'h4'}
             style={[styles.summaryText, sharedStyles.textRight]}>
-            {'43.20'}
+            {transaction.tokenValue.balance}
           </Typography>
           <Typography
             type={'h4'}
             style={[styles.summaryText, sharedStyles.textRight]}>
-            {'43.20'}
+            {transaction.total}
           </Typography>
           <Typography
             type={'h4'}
             style={[styles.summaryText, sharedStyles.textRight]}>
-            {'0.20'}
+            {transaction.feeValue}
           </Typography>
           <Typography
             type={'h4'}
             style={[styles.summaryText, sharedStyles.textRight]}>
-            {'approx. 1 min'}
+            {transaction.time}
           </Typography>
         </View>
       </View>

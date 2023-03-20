@@ -1,10 +1,13 @@
-import { StatusIcon } from 'components/statusIcons'
-import { shortAddress, trimValue } from 'lib/utils'
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+
+import { shortAddress, trimValue } from 'lib/utils'
+
+import { StatusIcon } from 'components/statusIcons'
 import { RegularText } from 'src/components'
 import { colors } from 'src/styles'
+
 import { TokenImage } from '../home/TokenImage'
 import { ActivityRowPresentationType } from './types'
 

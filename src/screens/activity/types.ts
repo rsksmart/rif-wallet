@@ -4,6 +4,8 @@ import {
 } from '@rsksmart/rif-wallet-services'
 import { EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
 
+import { TransactionStatus } from 'screens/transactionSummary'
+
 export interface TransactionsServerResponseWithActivityTransactions
   extends TransactionsServerResponse {
   activityTransactions?: IActivityTransaction[]
@@ -32,8 +34,11 @@ export type ActivityRowPresentationObjectType = {
   to: string
   timeHumanFormatted: string
   value: string
-  status: 'success' | 'pending'
+  status: TransactionStatus
   id: string
+  price: number
+  fee: string
+  total: string
 }
 
 export type ActivityRowPresentationType = ActivityRowPresentationObjectType & {
