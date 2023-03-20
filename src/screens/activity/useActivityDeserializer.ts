@@ -11,8 +11,8 @@ import {
 
 import { UsdPricesState } from 'store/slices/usdPricesSlice'
 import { isDefaultChainTypeMainnet } from 'core/config'
-import { TransactionStatus } from 'src/screens/transactionSummary'
-import { TokenSymbol } from 'src/screens/home/TokenImage'
+import { TransactionStatus } from 'screens/transactionSummary'
+import { TokenSymbol } from 'screens/home/TokenImage'
 
 import { ActivityRowPresentationObjectType, ActivityMixedType } from './types'
 

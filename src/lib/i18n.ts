@@ -216,6 +216,7 @@ const resources = {
       transaction_form_fee_input_label: 'Pay transaction fee in ',
       transaction_confirmed_status: 'confirmed',
       transaction_pending_status: 'pending',
+      transaction_summary_sent_title: 'Sent',
     },
   },
   es: {

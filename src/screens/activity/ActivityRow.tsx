@@ -57,7 +57,7 @@ export const ActivityRow = ({ activityTransaction, navigation }: Props) => {
       contact: {
         address: activityDetails.to,
       },
-      title: 'Sent',
+      title: t('transaction_summary_sent_title'),
       buttons: [
         {
           title: t('transaction_summary_default_button_text'),
@@ -126,7 +126,7 @@ export const ActivityBasicRow = ({
       contact: {
         address: activityDetails.to,
       },
-      title: 'Sent',
+      title: t('transaction_summary_sent_title'),
     }),
     [activityDetails],
   )

@@ -4,7 +4,7 @@ import {
 } from '@rsksmart/rif-wallet-services'
 import { EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
 
-import { TransactionStatus } from 'src/screens/transactionSummary'
+import { TransactionStatus } from 'screens/transactionSummary'
 
 export interface TransactionsServerResponseWithActivityTransactions
   extends TransactionsServerResponse {
