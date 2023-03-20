@@ -76,6 +76,26 @@ export const HomeScreen = ({
       return []
     }
   }, [tokenBalances, bitcoinCore])
+
+  const totalUsdBalance = useMemo(
+    () =>
+      balances
+        .reduce((previousValue, token) => {
+          if ('satoshis' in token) {
+            previousValue += token.balance * prices.BTC.price
+          } else {
+            previousValue += convertBalance(
+              token.balance,
+              token.decimals,
+              prices[token.contractAddress].price,
+            )
+          }
+          return previousValue
+        }, 0)
+        .toFixed(2),
+    [balances, prices],
+  )
+
   // token or undefined
   const selected: ITokenWithoutLogo | BitcoinNetwork | undefined =
     selectedAddress && bitcoinCore
@@ -86,14 +106,6 @@ export const HomeScreen = ({
   const backGroundColor = {
     backgroundColor: selectedAddress ? selectedColor : getTokenColor('DEFAULT'),
   }
-
-  useEffect(() => {
-    if (!selected) {
-      balances.length !== 0
-        ? setSelectedAddress(balances[0].contractAddress)
-        : undefined
-    }
-  }, [balances, selected])
 
   const ramp = useMemo(
     () =>
@@ -264,11 +276,22 @@ export const HomeScreen = ({
   }, [])
   const { t } = useTranslation()
 
+  const overrideFirstValue: CurrencyValue = {
+    balance: '$' + totalUsdBalance.toString(),
+    symbol: '',
+    symbolType: 'text',
+  }
   return (
     <View style={styles.container}>
       <TokenBalance
-        firstValue={selectedTokenBalance}
-        secondValue={selectedTokenBalanceUsd}
+        firstValue={
+          selectedAddress === undefined
+            ? overrideFirstValue
+            : selectedTokenBalance
+        }
+        secondValue={
+          selectedAddress === undefined ? undefined : selectedTokenBalanceUsd
+        }
         hideable={true}
         hide={hide}
         onHide={onHide}

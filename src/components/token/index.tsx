@@ -22,7 +22,7 @@ export interface CurrencyValue {
 
 interface Props {
   firstValue: CurrencyValue
-  secondValue: CurrencyValue
+  secondValue?: CurrencyValue
   color?: string
   hide?: boolean
   onSwap?: () => void
@@ -78,12 +78,12 @@ export const TokenBalance = ({
           />
         </View>
         <View style={[styles.container, styles.ident]}>
-          {secondValue.symbolType === 'icon' && (
+          {secondValue?.symbolType === 'icon' && (
             <View style={styles.tokenSubIcon}>
               <TokenImage symbol={secondValue.symbol} height={16} width={16} />
             </View>
           )}
-          {secondValue.symbolType === 'text' && (
+          {secondValue?.symbolType === 'text' && (
             <Typography type={'h3'} style={styles.subTitle}>
               {hide ? '' : secondValue.symbol}
             </Typography>
@@ -91,7 +91,7 @@ export const TokenBalance = ({
           <Typography type={'h3'} style={styles.subTitle}>
             {hide
               ? '\u002A\u002A\u002A\u002A\u002A\u002A'
-              : secondValue.balance}
+              : secondValue?.balance}
           </Typography>
         </View>
         {to ? (

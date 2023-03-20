@@ -13,17 +13,13 @@ import {
 
 import { IPrice } from 'src/subscriptions/types'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
-
 import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
 import { sharedColors } from 'shared/constants'
 import { getTokenColor } from 'screens/home/tokenColor'
 
 export const getBalance = (token: ITokenWithoutLogo | BitcoinNetwork) => {
   if (token instanceof BitcoinNetwork) {
-    const bitcoinBalance: BitcoinNetwork = token
-    const balanceBigNumber = BigNumber.from(
-      Math.round(bitcoinBalance.balance * 10e8),
-    )
+    const balanceBigNumber = BigNumber.from(Math.round(token.balance * 10e8))
 
     return balanceToDisplay(balanceBigNumber.toString(), 8, 4)
   } else {
@@ -57,7 +53,7 @@ const getTotalUsdBalance = (
 }
 
 interface Props {
-  setSelectedAddress: (token: string) => void
+  setSelectedAddress: (token: string | undefined) => void
   balances: Array<ITokenWithoutLogo | BitcoinNetwork>
   prices: Record<string, IPrice>
   selectedAddress?: string
@@ -80,12 +76,17 @@ export const PortfolioComponent = ({
   )
   const [isTotalCardSelected, setIsTotalCardSelected] = useState<boolean>(true)
 
+  const onTotalTap = useCallback(() => {
+    setIsTotalCardSelected(true)
+    setSelectedAddress(undefined)
+  }, [setSelectedAddress])
+
   return (
     <View style={style}>
       {/*TODO: This View above is a temporal fix to keep the ScrollView height*/}
       <ScrollView horizontal={true}>
         <PortfolioCard
-          onPress={() => setIsTotalCardSelected(true)}
+          onPress={onTotalTap}
           color={sharedColors.inputInactive}
           primaryText={t('TOTAL')}
           secondaryText={`$${getTotalUsdBalance(balances, prices).toString()}`}
