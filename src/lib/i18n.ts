@@ -242,6 +242,12 @@ const resources = {
       dapps_confirmation_button_connect: 'Connect',
       dapps_confirmation_button_cancel: 'Reject',
       dapps_connected: 'Connected',
+      dapps_disconnecting: 'Disconnecting',
+      dapps_confirm_disconnection_title: 'Disconnect?',
+      dapps_confirm_disconnection_description:
+        'Do you want to disconnect from the Dapp',
+      dapps_confirm_disconnection_confirm: 'Disconnect',
+      dapps_confirm_disconnection_cancel: 'Reject',
     },
   },
   es: {

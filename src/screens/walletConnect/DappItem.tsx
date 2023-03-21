@@ -4,22 +4,38 @@ import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 
 import { truncate } from 'lib/utils'
 
+import { Typography } from 'components/index'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { Typography } from 'src/components'
 
-export const DappItem = ({ connector: c }: { connector: WalletConnect }) => {
+type Props = {
+  connector: WalletConnect
+  isDisconnecting: boolean
+  onDisconnect: () => void
+}
+
+export const DappItem = ({
+  connector: c,
+  isDisconnecting,
+  onDisconnect,
+}: Props) => {
   const { t } = useTranslation()
+
   return (
     <View style={styles.container}>
       <View style={styles.dappIcon} />
       <View style={styles.content}>
         <View style={styles.dappNameView}>
           <Typography type="body2">
-            {truncate(c.peerMeta?.name || '', 20)}
+            {truncate(c.peerMeta?.name || '', isDisconnecting ? 18 : 20)}
           </Typography>
-          <Typography type="body3" style={styles.dappConnected}>
-            {t('dapps_connected')}
+          <Typography
+            type="body3"
+            style={[
+              styles.dappStatus,
+              isDisconnecting ? styles.dappDisconnecting : styles.dappConnected,
+            ]}>
+            {isDisconnecting ? t('dapps_disconnecting') : t('dapps_connected')}
           </Typography>
         </View>
         <Typography type="body3" style={styles.dappUrl}>
@@ -27,9 +43,9 @@ export const DappItem = ({ connector: c }: { connector: WalletConnect }) => {
         </Typography>
       </View>
       <TouchableOpacity
-        accessibilityLabel="dapp"
+        accessibilityLabel="disconnectDapp"
         style={sharedStyles.flex}
-        onPress={() => c.killSession()}>
+        onPress={onDisconnect}>
         <Image
           source={require('src/images/disconnect-dapp.png')}
           style={styles.dappButton}
@@ -64,14 +80,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
   }),
-  dappConnected: castStyle.text({
-    backgroundColor: sharedColors.connected,
+  dappStatus: castStyle.text({
     color: sharedColors.black,
     fontSize: 10,
     paddingHorizontal: 5,
     paddingBottom: 1,
     borderRadius: 10,
     marginLeft: 10,
+  }),
+  dappConnected: castStyle.text({
+    backgroundColor: sharedColors.connected,
+  }),
+  dappDisconnecting: castStyle.text({
+    backgroundColor: sharedColors.warning,
   }),
   dappUrl: castStyle.text({
     color: sharedColors.qrColor,

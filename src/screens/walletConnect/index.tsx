@@ -1,43 +1,118 @@
-import { useContext } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image, ScrollView, StyleSheet, View } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
-import LinearGradient from 'react-native-linear-gradient'
+import WalletConnect from '@walletconnect/client'
 
-import { RegularText, SemiBoldText, Typography } from 'components/index'
+import { Typography } from 'components/index'
 import {
   rootTabsRouteNames,
   RootTabsScreenProps,
 } from 'navigation/rootNavigator/types'
 import { sharedColors } from 'shared/constants'
+import { SlidePopupConfirmationInfo } from 'src/components/slidePopup/SlidePopupConfirmationInfo'
 import { colors } from 'src/styles'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
-import { SlidePopupConfirmationInfo } from 'src/components/slidePopup/SlidePopupConfirmationInfo'
 
-import { WalletConnectContext } from './WalletConnectContext'
+import { DAppDisconnectConfirmation } from './DappDisconnectConfirmation'
 import { DappItem } from './DappItem'
+import { WalletConnectContext } from './WalletConnectContext'
 
 type Props = RootTabsScreenProps<rootTabsRouteNames.WalletConnect>
 
 export const WalletConnectScreen = ({ navigation, route }: Props) => {
   const wcKey = route.params?.wcKey
+
   const { t } = useTranslation()
   const { wallet } = useAppSelector(selectActiveWallet)
   const { connections, handleApprove, handleReject } =
     useContext(WalletConnectContext)
+  const [disconnectingWC, setDisconnectingWC] = useState<WalletConnect | null>(
+    null,
+  )
 
   const openedConnections = Object.values(connections).filter(
     ({ connector: c }) => c.connected,
   )
 
+  // const openedConnections = [
+  //   {
+  //     connector: {
+  //       key: '1',
+  //       connected: true,
+  //       peerMeta: {
+  //         name: 'RNS Manager',
+  //         url: 'www.rnsmanager.orf',
+  //       },
+  //       killSession: () => {
+  //         console.log('killSession')
+  //       },
+  //     },
+  //   },
+  //   {
+  //     connector: {
+  //       key: '2',
+  //       connected: true,
+  //       peerMeta: {
+  //         name: 'Very long name of the dapp',
+  //         url: 'https://dapp2.com',
+  //       },
+  //       killSession: () => {
+  //         console.log('killSession')
+  //       },
+  //     },
+  //   },
+  //   {
+  //     connector: {
+  //       key: '3',
+  //       connected: true,
+  //       peerMeta: {
+  //         name: 'Dapp 3',
+  //         url: 'https://dapp3.com',
+  //       },
+  //       killSession: () => {
+  //         console.log('killSession')
+  //       },
+  //     },
+  //   },
+  //   {
+  //     connector: {
+  //       key: '4',
+  //       connected: true,
+  //       peerMeta: {
+  //         name: 'Dapp 4',
+  //         url: 'https://dapp4.com',
+  //       },
+  //       killSession: () => {
+  //         console.log('killSession')
+  //       },
+  //     },
+  //   },
+  // ]
+
   const pendingConnector = wcKey ? connections[wcKey]?.connector : null
-  const dappName = pendingConnector?.peerMeta?.name || ''
+  const pendingDappName = pendingConnector?.peerMeta?.name || ''
 
   if (pendingConnector?.connected) {
     // clear pendingConnector
     navigation.navigate(rootTabsRouteNames.WalletConnect)
   }
+
+  const disconnectingDapps = useMemo(
+    () =>
+      ({} as {
+        [key: string]: WalletConnect | null
+      }),
+    [],
+  )
+
+  const handleDisconnect = useCallback(
+    (c: WalletConnect) => {
+      disconnectingDapps[c.key] = c
+      setDisconnectingWC(disconnectingDapps[c.key])
+    },
+    [disconnectingDapps],
+  )
 
   return (
     <View style={styles.parent}>
@@ -55,7 +130,7 @@ export const WalletConnectScreen = ({ navigation, route }: Props) => {
         <SlidePopupConfirmationInfo
           title={t('dapps_confirmation_title')}
           description={`${t('dapps_confirmation_description')}${
-            dappName ? ` ${dappName}` : ''
+            pendingDappName ? ` ${pendingDappName}` : ''
           }?`}
           confirmText={t('dapps_confirmation_button_connect')}
           cancelText={t('dapps_confirmation_button_cancel')}
@@ -75,9 +150,25 @@ export const WalletConnectScreen = ({ navigation, route }: Props) => {
       ) : (
         <ScrollView style={styles.dappsList}>
           {openedConnections.map(({ connector: c }) => (
-            <DappItem key={c.key} connector={c} />
+            <DappItem
+              key={c.key}
+              connector={c}
+              isDisconnecting={!!disconnectingDapps[c.key]}
+              onDisconnect={() => handleDisconnect(c)}
+            />
           ))}
         </ScrollView>
+      )}
+
+      {disconnectingWC && (
+        <DAppDisconnectConfirmation
+          dappName={disconnectingWC.peerMeta?.name}
+          onConfirm={() => disconnectingWC.killSession()}
+          onCancel={() => {
+            disconnectingDapps[disconnectingWC.key] = null
+            setDisconnectingWC(null)
+          }}
+        />
       )}
     </View>
   )

@@ -18,6 +18,7 @@ interface Props {
   height?: number
   onConfirm: () => void
   onCancel?: () => void
+  onClose?: () => void
 }
 
 export const SlidePopupConfirmationInfo = ({
@@ -28,7 +29,8 @@ export const SlidePopupConfirmationInfo = ({
   isVisible = true,
   height,
   onConfirm,
-  onCancel = noop,
+  onCancel,
+  onClose = onCancel || onConfirm,
 }: Props) => {
   const confirmButton: AppButtonProps = {
     accessibilityLabel: 'confirmButton',
@@ -63,7 +65,7 @@ export const SlidePopupConfirmationInfo = ({
       height={height}
       backgroundColor={sharedColors.primary}
       buttons={buttons}
-      onClose={onConfirm}
+      onClose={onClose}
     />
   )
 }

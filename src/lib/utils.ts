@@ -16,7 +16,10 @@ export function shortAddress(address?: string, trimAmount?: number): string {
 }
 
 export const truncate = (str: string, n: number) => {
-  return str?.length > n ? str.substr(0, n - 1) + '...' : str
+  if (!str) {
+    return ''
+  }
+  return str.length > n ? str.substr(0, n - 1) + '...' : str
 }
 
 export const roundBalance = (num: number, decimalPlaces?: number) => {

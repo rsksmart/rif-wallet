@@ -107,7 +107,7 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
         }
 
         unsubscribeToEvents(wc)
-        await deleteWCSession(wc.uri)
+        deleteWCSession(wc.uri)
         setConnections(prev => {
           const result = { ...prev }
           delete result[wc.key]
