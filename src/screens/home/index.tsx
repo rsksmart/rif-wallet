@@ -87,7 +87,7 @@ export const HomeScreen = ({
             previousValue += convertBalance(
               token.balance,
               token.decimals,
-              prices[token.contractAddress]?.price || 1,
+              prices[token.contractAddress]?.price || 0,
             )
           }
           return previousValue
@@ -192,7 +192,7 @@ export const HomeScreen = ({
     if (selected) {
       return {
         ...selected,
-        ...{ price: prices ? prices[selected.contractAddress]?.price : 0 },
+        ...{ price: prices ? prices[selected.contractAddress]?.price || 0 : 0 },
       }
     }
     return {
