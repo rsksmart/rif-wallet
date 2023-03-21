@@ -94,9 +94,9 @@ export const PurchaseDomainScreen = ({ navigation }: Props) => {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  container: castStyle.view({
     justifyContent: 'space-between',
-  },
+  }),
   priceContainer: castStyle.view({
     height: 90,
   }),
