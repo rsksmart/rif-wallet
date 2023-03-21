@@ -27,64 +27,9 @@ export const WalletConnectScreen = ({ navigation, route }: Props) => {
     null,
   )
 
-  // const openedConnections = Object.values(connections).filter(
-  //   ({ connector: c }) => c.connected,
-  // )
-
-  const openedConnections = [
-    {
-      connector: {
-        key: '1',
-        connected: true,
-        peerMeta: {
-          name: 'RNS Manager',
-          url: 'www.rnsmanager.orf',
-        },
-        killSession: () => {
-          console.log('killSession')
-        },
-      },
-    },
-    {
-      connector: {
-        key: '2',
-        connected: true,
-        peerMeta: {
-          name: 'Very long name of the dapp',
-          url: 'https://dapp2.com',
-        },
-        killSession: () => {
-          console.log('killSession')
-        },
-      },
-    },
-    {
-      connector: {
-        key: '3',
-        connected: true,
-        peerMeta: {
-          name: 'Dapp 3',
-          url: 'https://dapp3.com',
-        },
-        killSession: () => {
-          console.log('killSession')
-        },
-      },
-    },
-    {
-      connector: {
-        key: '4',
-        connected: true,
-        peerMeta: {
-          name: 'Dapp 4',
-          url: 'https://dapp4.com',
-        },
-        killSession: () => {
-          console.log('killSession')
-        },
-      },
-    },
-  ]
+  const openedConnections = Object.values(connections).filter(
+    ({ connector: c }) => c.connected,
+  )
 
   const pendingConnector = wcKey ? connections[wcKey]?.connector : null
 
