@@ -73,7 +73,9 @@ export const MnemonicComponent = ({
       {!isMnemonicVisible ? (
         <MnemonicHiddenComponent titleText={title} bodyText={body} />
       ) : (
-        <View style={styles.pillContainer}>
+        <View
+          style={styles.pillContainer}
+          accessibilityLabel="mnemonic container">
           {words.map((word, index) => (
             <AppButton
               key={`${word + index}`}
@@ -84,7 +86,7 @@ export const MnemonicComponent = ({
               title={`${index + 1}.${word}`}
               color={sharedColors.primary}
               widthVariety={AppButtonWidthVarietyEnum.INLINE}
-              accessibilityLabel={`word${index}`}
+              accessibilityLabel={`${index}.${word}`}
             />
           ))}
         </View>
