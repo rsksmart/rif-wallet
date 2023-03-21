@@ -117,6 +117,12 @@ export const Core = () => {
 
       setMnemonic(kms.mnemonic)
     } catch (err) {
+      if (typeof err === 'string') {
+        // If no wallets - reset mnemonic...
+        if (err.includes('No Existing wallets')) {
+          setMnemonic(null)
+        }
+      }
       console.log('ERRR', err)
     }
   }, [dispatch])
