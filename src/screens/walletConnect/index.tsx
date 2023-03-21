@@ -1,7 +1,7 @@
+import WalletConnect from '@walletconnect/client'
 import { useCallback, useContext, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image, ScrollView, StyleSheet, View } from 'react-native'
-import WalletConnect from '@walletconnect/client'
 
 import { Typography } from 'components/index'
 import {
@@ -9,14 +9,12 @@ import {
   RootTabsScreenProps,
 } from 'navigation/rootNavigator/types'
 import { sharedColors } from 'shared/constants'
-import { SlidePopupConfirmationInfo } from 'src/components/slidePopup/SlidePopupConfirmationInfo'
 import { colors } from 'src/styles'
-import { selectActiveWallet } from 'store/slices/settingsSlice'
-import { useAppSelector } from 'store/storeUtils'
 
 import { DAppDisconnectConfirmation } from './DappDisconnectConfirmation'
 import { DappItem } from './DappItem'
 import { WalletConnectContext } from './WalletConnectContext'
+import { DAppConnectConfirmation } from './DappConnectConfirmation'
 
 type Props = RootTabsScreenProps<rootTabsRouteNames.WalletConnect>
 
@@ -24,9 +22,7 @@ export const WalletConnectScreen = ({ navigation, route }: Props) => {
   const wcKey = route.params?.wcKey
 
   const { t } = useTranslation()
-  const { wallet } = useAppSelector(selectActiveWallet)
-  const { connections, handleApprove, handleReject } =
-    useContext(WalletConnectContext)
+  const { connections } = useContext(WalletConnectContext)
   const [disconnectingWC, setDisconnectingWC] = useState<WalletConnect | null>(
     null,
   )
@@ -91,7 +87,6 @@ export const WalletConnectScreen = ({ navigation, route }: Props) => {
   // ]
 
   const pendingConnector = wcKey ? connections[wcKey]?.connector : null
-  const pendingDappName = pendingConnector?.peerMeta?.name || ''
 
   if (pendingConnector?.connected) {
     // clear pendingConnector
@@ -127,17 +122,7 @@ export const WalletConnectScreen = ({ navigation, route }: Props) => {
       </View>
 
       {pendingConnector && !pendingConnector.connected && (
-        <SlidePopupConfirmationInfo
-          title={t('dapps_confirmation_title')}
-          description={`${t('dapps_confirmation_description')}${
-            pendingDappName ? ` ${pendingDappName}` : ''
-          }?`}
-          confirmText={t('dapps_confirmation_button_connect')}
-          cancelText={t('dapps_confirmation_button_cancel')}
-          onConfirm={() => handleApprove(pendingConnector, wallet)}
-          onCancel={() => handleReject(pendingConnector)}
-          height={300}
-        />
+        <DAppConnectConfirmation connector={pendingConnector} />
       )}
 
       {openedConnections.length === 0 ? (
