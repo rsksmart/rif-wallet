@@ -1,27 +1,28 @@
 import { useCallback, useEffect, useState } from 'react'
-import { StatusBar, StyleSheet, View } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { StatusBar, View } from 'react-native'
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
-
-import { i18nInit } from 'lib/i18n'
-import { defaultChainId } from 'core/config'
-
 import {
   RifWalletServicesAuth,
   RifWalletServicesFetcher,
 } from '@rsksmart/rif-wallet-services'
+import {
+  createNavigationContainerRef,
+  NavigationContainer,
+} from '@react-navigation/native'
+import * as Keychain from 'react-native-keychain'
 
+import { i18nInit } from 'lib/i18n'
+
+import { defaultChainId } from 'core/config'
 import {
   RootNavigationComponent,
   RootTabsParamsList,
 } from 'navigation/rootNavigator'
 import { ModalComponent } from 'src/ux/requestsModal/ModalComponent'
-
-import {
-  createNavigationContainerRef,
-  NavigationContainer,
-} from '@react-navigation/native'
-
 import { WalletConnectProviderElement } from 'screens/walletConnect/WalletConnectContext'
 import {
   rifSockets,
@@ -29,9 +30,6 @@ import {
   socketsEvents,
 } from 'src/subscriptions/rifSockets'
 import { LoadingScreen } from 'components/loading/LoadingScreen'
-import { Cover } from './components/Cover'
-import { useBitcoinCore } from './hooks/bitcoin/useBitcoinCore'
-import { useStateSubscription } from './hooks/useStateSubscription'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import {
   closeRequest,
@@ -46,16 +44,20 @@ import {
 import { BitcoinProvider } from 'core/hooks/bitcoin/BitcoinContext'
 import { InjectSelectedWallet } from 'src/Context'
 import * as Screens from 'screens/index'
-import { authAxios, publicAxios } from './setup'
 import { useSetGlobalError } from 'components/GlobalErrorHandler'
 import { authClient } from 'src/core/setup'
-import * as Keychain from 'react-native-keychain'
 import {
   deleteSignUp,
   getSignUP,
   hasSignUP,
   saveSignUp,
 } from 'storage/MainStorage'
+import { sharedStyles } from 'src/shared/constants'
+
+import { authAxios, publicAxios } from './setup'
+import { useStateSubscription } from './hooks/useStateSubscription'
+import { useBitcoinCore } from './hooks/bitcoin/useBitcoinCore'
+import { Cover } from './components/Cover'
 
 export const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
@@ -92,8 +94,6 @@ export const Core = () => {
   const requests = useAppSelector(selectRequests)
   const [mnemonic, setMnemonic] = useState<string | null>(null)
   const setGlobalError = useSetGlobalError()
-
-  const insets = useSafeAreaInsets()
   const topColor = useAppSelector(selectTopColor)
 
   const BitcoinCore = useBitcoinCore(mnemonic, fetcher)
@@ -187,38 +187,28 @@ export const Core = () => {
     return <LoadingScreen />
   }
 
-  // handles the top color behind the clock
-  const styles = StyleSheet.create({
-    top: {
-      backgroundColor: topColor,
-      paddingTop: insets.top,
-      flex: 1,
-    },
-    body: {
-      backgroundColor: topColor,
-    },
-  })
-
   return (
-    <View style={styles.top}>
-      <StatusBar backgroundColor={topColor} />
-      {!active && <Cover />}
-      <BitcoinProvider BitcoinCore={BitcoinCore}>
-        <NavigationContainer ref={navigationContainerRef}>
-          <WalletConnectProviderElement>
-            <>
-              <RootNavigationComponent />
+    <SafeAreaProvider>
+      <View style={sharedStyles.flex}>
+        <StatusBar backgroundColor={topColor} />
+        {!active && <Cover />}
+        <BitcoinProvider BitcoinCore={BitcoinCore}>
+          <NavigationContainer ref={navigationContainerRef}>
+            <WalletConnectProviderElement>
+              <>
+                <RootNavigationComponent />
 
-              {requests.length !== 0 && (
-                <ModalComponent
-                  closeModal={() => dispatch(closeRequest())}
-                  request={requests[0]}
-                />
-              )}
-            </>
-          </WalletConnectProviderElement>
-        </NavigationContainer>
-      </BitcoinProvider>
-    </View>
+                {requests.length !== 0 && (
+                  <ModalComponent
+                    closeModal={() => dispatch(closeRequest())}
+                    request={requests[0]}
+                  />
+                )}
+              </>
+            </WalletConnectProviderElement>
+          </NavigationContainer>
+        </BitcoinProvider>
+      </View>
+    </SafeAreaProvider>
   )
 }

@@ -6,6 +6,7 @@ import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import { BIP } from '@rsksmart/rif-wallet-bitcoin'
 import { useTranslation } from 'react-i18next'
 import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
+import { useIsFocused } from '@react-navigation/native'
 
 import { balanceToDisplay, convertBalance, getChainIdByType } from 'lib/utils'
 
@@ -43,6 +44,8 @@ import { PortfolioComponent } from './PortfolioComponent'
 export const HomeScreen = ({
   navigation,
 }: HomeStackScreenProps<homeStackRouteNames.Main>) => {
+  const { t } = useTranslation()
+  const isFocused = useIsFocused()
   const dispatch = useAppDispatch()
   const tokenBalances = useAppSelector(selectBalances)
   const prices = useAppSelector(selectUsdPrices)
@@ -152,6 +155,7 @@ export const HomeScreen = ({
       switch (screen) {
         case 'SEND':
           return navigation.navigate(homeStackRouteNames.Send, {
+            backAction: navigation.goBack,
             token: selected?.symbol,
             contractAddress: selected?.contractAddress,
           })
@@ -167,8 +171,10 @@ export const HomeScreen = ({
   )
 
   useEffect(() => {
-    dispatch(changeTopColor(selectedColor))
-  }, [selectedColor, dispatch])
+    if (isFocused) {
+      dispatch(changeTopColor(selectedColor))
+    }
+  }, [selectedColor, dispatch, isFocused])
 
   const selectedToken = useMemo(() => {
     if (selected instanceof BitcoinNetwork) {
@@ -262,7 +268,6 @@ export const HomeScreen = ({
     btcTransactionFetcher.fetchTransactions()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  const { t } = useTranslation()
 
   return (
     <View style={styles.container}>

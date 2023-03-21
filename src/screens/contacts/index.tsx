@@ -1,7 +1,7 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image, ScrollView, StyleSheet, View } from 'react-native'
-import { CompositeScreenProps } from '@react-navigation/native'
+import { CompositeScreenProps, useIsFocused } from '@react-navigation/native'
 import { FormProvider, useForm } from 'react-hook-form'
 
 // import { ConfirmationModal } from 'components/modal/ConfirmationModal'
@@ -14,11 +14,12 @@ import {
 import { contactsStackRouteNames } from 'navigation/contactsNavigator'
 // import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { getContactsAsArrayAndSelected } from 'store/slices/contactsSlice'
-import { useAppSelector } from 'store/storeUtils'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { Search } from 'components/input/search'
 import { BasicRow } from 'components/BasicRow'
 import { sharedColors, sharedStyles, testIDs } from 'shared/constants'
 import { castStyle } from 'shared/utils'
+import { changeTopColor } from 'src/redux/slices/settingsSlice'
 
 import { ContactsStackScreenProps } from '../index'
 
@@ -28,6 +29,8 @@ export type ContactsListScreenProps = CompositeScreenProps<
 >
 
 export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
+  const dispatch = useAppDispatch()
+  const isFocused = useIsFocused()
   const methods = useForm({
     mode: 'onChange',
     defaultValues: {
@@ -37,7 +40,6 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
   const { resetField, watch } = methods
   const { t } = useTranslation()
   const { contacts } = useAppSelector(getContactsAsArrayAndSelected)
-  // const dispatch = useAppDispatch()
 
   const searchString = watch('search')
 
@@ -59,48 +61,11 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
     resetField('search')
   }, [resetField])
 
-  // const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
-
-  // const [isDeleteContactModalVisible, setIsDeleteContactModalVisible] =
-  //   useState(false)
-
-  // const tokenBalances = useAppSelector(selectBalances)
-
-  // const hideModal = useCallback(() => {
-  //   setIsDeleteContactModalVisible(false)
-  //   dispatch(setSelectedContactById(null))
-  // }, [dispatch])
-
-  // const editContact = useCallback(
-  //   (contact: Contact) => {
-  //     navigation.navigate(contactsStackRouteNames.ContactForm, {
-  //       initialValue: contact,
-  //     })
-  //   },
-  //   [navigation],
-  // )
-
-  // const sendContact = useCallback(
-  //   (contact: Contact) => {
-  //     navigation.navigate(rootTabsRouteNames.Home, {
-  //       screen: homeStackRouteNames.Send,
-  //       params: { to: contact.address },
-  //     })
-  //   },
-  //   [navigation],
-  // )
-
-  // const removeContact = useCallback(() => {
-  //   if (selectedContact) {
-  //     dispatch(deleteContactById(selectedContact.id))
-  //   }
-  //   hideModal()
-  // }, [dispatch, hideModal, selectedContact])
-
-  // Everytime contact is reloaded, set index back to null
-  // useEffect(() => {
-  //   setSelectedIndex(null)
-  // }, [contacts])
+  useEffect(() => {
+    if (isFocused) {
+      dispatch(changeTopColor(sharedColors.black))
+    }
+  }, [dispatch, isFocused])
 
   return (
     <View style={sharedStyles.screen}>
@@ -118,19 +83,6 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
         )}
       </View>
       <FormProvider {...methods}>
-        {/* {selectedContact && (
-          <ConfirmationModal
-            isVisible={isDeleteContactModalVisible}
-            imgSrc={require('../../images/contact-trash.png')}
-            title={`${t('Are you sure you want to delete')} ${
-              selectedContact.name
-            }?`}
-            okText={t('Delete')}
-            cancelText={t('Cancel')}
-            onOk={removeContact}
-            onCancel={hideModal}
-          />
-        )} */}
         {contacts.length === 0 ? (
           <Image
             source={require('assets/images/contacts_empty.png')}

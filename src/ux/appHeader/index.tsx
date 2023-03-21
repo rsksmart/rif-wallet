@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native'
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
 import { StackHeaderProps } from '@react-navigation/stack'
 import OIcon from 'react-native-vector-icons/Octicons'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { selectActiveWallet, selectTopColor } from 'store/slices/settingsSlice'
@@ -24,6 +25,7 @@ export const AppHeader = ({
   route,
   isShown,
 }: Props & HeaderProps) => {
+  const insets = useSafeAreaInsets()
   const topColor = useAppSelector(selectTopColor)
   const { wallet } = useAppSelector(selectActiveWallet)
 
@@ -36,7 +38,11 @@ export const AppHeader = ({
   }, [navigation, route])
 
   return !isShown ? null : (
-    <View style={[styles.row, { backgroundColor: topColor }]}>
+    <View
+      style={[
+        styles.row,
+        { backgroundColor: topColor, paddingTop: insets.top },
+      ]}>
       <View style={[styles.column, styles.walletInfo]}>
         {wallet && <ProfileHandler wallet={wallet} navigation={navigation} />}
       </View>

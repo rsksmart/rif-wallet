@@ -2,10 +2,10 @@ import { useEffect } from 'react'
 import { ScrollView, StyleSheet, View } from 'react-native'
 import { FormProvider, useForm } from 'react-hook-form'
 
+import { Avatar } from 'components/index'
 import { Input } from 'components/input'
 import { sharedColors, sharedStyles } from 'shared/constants'
-import { EyeIcon } from 'src/components/icons/EyeIcon'
-import { Avatar } from 'src/components'
+import { EyeIcon } from 'components/icons/EyeIcon'
 import { castStyle } from 'src/shared/utils'
 import {
   SettingsScreenProps,
@@ -31,8 +31,12 @@ export const ExampleScreen = ({
   useEffect(() => {
     navigation.setOptions({
       headerLeft: () => headerLeftOption(navigation.goBack),
+      headerStyle: {
+        backgroundColor: sharedColors.black,
+      },
     })
   }, [navigation])
+
   return (
     <View style={sharedStyles.screen}>
       <FormProvider {...methods}>
