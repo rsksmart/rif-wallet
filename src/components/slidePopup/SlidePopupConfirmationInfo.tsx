@@ -4,7 +4,7 @@ import {
   AppButtonBackgroundVarietyEnum,
   AppButtonProps,
 } from 'components/button'
-import { noop, sharedColors } from 'shared/constants'
+import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 
 import { SlidePopupConfirmation } from './SlidePopupConfirmation'

@@ -11,8 +11,8 @@ import {
 import { sharedColors } from 'shared/constants'
 import { colors } from 'src/styles'
 
-import { DAppConnectConfirmation } from './DappConnectConfirmation'
-import { DAppDisconnectConfirmation } from './DappDisconnectConfirmation'
+import { DappConnectConfirmation } from './DappConnectConfirmation'
+import { DappDisconnectConfirmation } from './DappDisconnectConfirmation'
 import { DappItem } from './DappItem'
 import { WalletConnectContext } from './WalletConnectContext'
 
@@ -71,11 +71,11 @@ export const WalletConnectScreen = ({ navigation, route }: Props) => {
       )}
 
       {pendingConnector && !pendingConnector.connected && (
-        <DAppConnectConfirmation connector={pendingConnector} />
+        <DappConnectConfirmation connector={pendingConnector} />
       )}
 
       {disconnectingWC && (
-        <DAppDisconnectConfirmation
+        <DappDisconnectConfirmation
           dappName={disconnectingWC.peerMeta?.name}
           onConfirm={() => disconnectingWC.killSession()}
           onCancel={() => setDisconnectingWC(null)}

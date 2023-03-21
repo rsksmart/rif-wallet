@@ -8,7 +8,7 @@ type Props = {
   onCancel: () => void
 }
 
-export const DAppDisconnectConfirmation = ({
+export const DappDisconnectConfirmation = ({
   dappName = '',
   onConfirm,
   onCancel,

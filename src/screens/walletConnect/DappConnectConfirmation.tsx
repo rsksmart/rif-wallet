@@ -12,10 +12,12 @@ type Props = {
   connector: WalletConnect
 }
 
-export const DAppConnectConfirmation = ({ connector: c }: Props) => {
+export const DappConnectConfirmation = ({ connector: c }: Props) => {
   const { handleApprove, handleReject } = useContext(WalletConnectContext)
   const { wallet } = useAppSelector(selectActiveWallet)
+
   const dappName = c.peerMeta?.name
+
   return (
     <SlidePopupConfirmationInfo
       title={t('dapps_confirmation_title')}
