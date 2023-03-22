@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import { StyleSheet, View } from 'react-native'
-import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
 
 import { AppButton, Input } from 'components/index'
 import { headerLeftOption } from 'navigation/profileNavigator'
@@ -10,8 +10,7 @@ import {
   SettingsScreenProps,
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
-import { sharedColors } from 'shared/constants'
-import { sharedStyles } from 'shared/styles'
+import { sharedColors, sharedStyles } from 'shared/constants'
 
 import { sendFeedbackToGithub } from './operations'
 import { ThankYouComponent } from './ThankYouComponent'
@@ -32,6 +31,7 @@ export const FeedbackScreen = ({
     mode: 'onChange',
     resolver: yupResolver(schema),
   })
+
   const {
     resetField,
     handleSubmit,
@@ -63,7 +63,7 @@ export const FeedbackScreen = ({
 
   return (
     <View style={styles.container}>
-      <View style={styles.content}>
+      <View style={sharedStyles.flex}>
         <FormProvider {...methods}>
           <Input
             accessibilityLabel="feedbackName"
@@ -101,7 +101,7 @@ export const FeedbackScreen = ({
       </View>
       <AppButton
         accessibilityLabel="sendFeedbackButton"
-        style={sharedStyles.marginTop20}
+        style={styles.submitButton}
         title="Send feedback"
         color={sharedColors.white}
         textColor={sharedColors.black}
@@ -127,5 +127,8 @@ const styles = StyleSheet.create({
   },
   feedback: {
     height: 150,
+  },
+  submitButton: {
+    marginTop: 20,
   },
 })
