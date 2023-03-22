@@ -5,7 +5,6 @@ import {
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleProp, StyleSheet, ViewStyle } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
 import { useProfileStatusColors } from 'lib/rns'
@@ -44,7 +43,6 @@ export const ProfileNavigator = ({
   const { t } = useTranslation()
   const status = useAppSelector(selectProfileStatus)
   const { startColor, endColor } = useProfileStatusColors()
-  const insets = useSafeAreaInsets()
 
   const screenOptionsWithHeader = (
     title: string,
@@ -54,9 +52,7 @@ export const ProfileNavigator = ({
     headerShown: true,
     headerTitle: props => (
       <>
-        <Typography type="h3" style={{ marginTop: insets.top * -1 }}>
-          {title ?? props.children}
-        </Typography>
+        <Typography type="h3">{title ?? props.children}</Typography>
         {showStepper && (
           <StepperComponent
             colors={[startColor, endColor]}
@@ -71,9 +67,6 @@ export const ProfileNavigator = ({
       { backgroundColor: sharedColors.secondary },
       style,
     ],
-    headerLeftContainerStyle: {
-      marginTop: insets.top * -1,
-    },
     headerTitleAlign: 'center',
     headerShadowVisible: false,
   })
