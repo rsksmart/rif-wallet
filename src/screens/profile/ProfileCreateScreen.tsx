@@ -118,7 +118,7 @@ export const ProfileCreateScreen = ({
       <View style={styles.usernameContainer}>
         <Avatar
           size={50}
-          name={username}
+          name={username || 'username'}
           style={styles.avatarBackground}
           letterColor={sharedColors.labelLight}
         />

@@ -35,10 +35,10 @@ export const Avatar = ({
   const twoTimesLessThanSize = useMemo(() => size / 2, [size])
   const firstCapital = useMemo(() => {
     const letters = name.split('')
-    if (letters.length === 0) {
-      return 'U'
+    if (letters.length) {
+      return letters[0].toUpperCase()
     }
-    return letters[0].toUpperCase()
+    return ''
   }, [name])
 
   return (
