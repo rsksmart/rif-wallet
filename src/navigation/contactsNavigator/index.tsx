@@ -1,36 +1,42 @@
 import { createStackNavigator } from '@react-navigation/stack'
 import { useEffect } from 'react'
 
-import { useAppDispatch } from 'store/storeUtils'
-import { changeTopColor } from 'store/slices/settingsSlice'
-import { ContactsScreen } from 'screens/contacts'
+import { ContactsScreen, ContactDetails } from 'screens/contacts'
 import { ContactFormScreen } from 'screens/contacts/ContactFormScreen'
 import { sharedColors } from 'shared/constants'
+import { AppHeader } from 'src/ux/appHeader'
 
 import { contactsStackRouteNames, ContactStackParamsList } from './types'
+import { screenOptionsWithHeader } from '..'
+import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
 
 const Stack = createStackNavigator<ContactStackParamsList>()
 
-const screensOptions = { headerShown: false }
-
-export const ContactsNavigation = () => {
-  const dispatch = useAppDispatch()
-
+export const ContactsNavigation = ({
+  navigation,
+}: RootTabsScreenProps<rootTabsRouteNames.Contacts>) => {
   useEffect(() => {
-    dispatch(changeTopColor(sharedColors.black))
-  }, [dispatch])
+    navigation.setOptions({
+      headerShown: false,
+    })
+  }, [navigation])
 
   return (
     <Stack.Navigator>
       <Stack.Screen
         name={contactsStackRouteNames.ContactsList}
         component={ContactsScreen}
-        options={screensOptions}
+        options={{ header: props => <AppHeader isShown={true} {...props} /> }}
       />
       <Stack.Screen
         name={contactsStackRouteNames.ContactForm}
         component={ContactFormScreen}
-        options={screensOptions}
+        options={screenOptionsWithHeader(undefined, sharedColors.black)}
+      />
+      <Stack.Screen
+        name={contactsStackRouteNames.ContactDetails}
+        component={ContactDetails}
+        options={screenOptionsWithHeader(undefined, sharedColors.inputInactive)}
       />
     </Stack.Navigator>
   )

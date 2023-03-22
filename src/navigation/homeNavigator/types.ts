@@ -24,15 +24,14 @@ export enum homeStackRouteNames {
 
 export type HomeStackParamsList = {
   [homeStackRouteNames.Main]: undefined
-  [homeStackRouteNames.Send]:
-    | {
-        token?: string
-        to?: string
-        rnsResolver?: Resolver
-        displayTo?: string
-        contractAddress?: string
-      }
-    | undefined
+  [homeStackRouteNames.Send]: {
+    backAction: () => void
+    token?: string
+    to?: string
+    rnsResolver?: Resolver
+    displayTo?: string
+    contractAddress?: string
+  }
   [homeStackRouteNames.Receive]: {
     token?: ITokenWithoutLogo
     networkId?: string

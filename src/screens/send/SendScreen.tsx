@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { StyleSheet, KeyboardAvoidingView, Platform } from 'react-native'
+import { KeyboardAvoidingView, Platform } from 'react-native'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 
@@ -7,7 +7,6 @@ import {
   homeStackRouteNames,
   HomeStackScreenProps,
 } from 'navigation/homeNavigator/types'
-import { colors } from 'src/styles'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
@@ -37,18 +36,14 @@ export const SendScreen = ({
   const { transactions } = useAppSelector(selectTransactions)
   const tokenBalances = useAppSelector(selectBalances)
   const prices = useAppSelector(selectUsdPrices)
+  const backAction = route.params.backAction
   const contractAddress =
     route.params?.contractAddress || Object.keys(tokenBalances)[0]
 
   const [chainId, setChainId] = useState<number>(31)
 
-  const {
-    currentTransaction,
-    error,
-    executePayment,
-    setUtxos,
-    setBitcoinBalance,
-  } = usePaymentExecutor()
+  const { currentTransaction, executePayment, setUtxos, setBitcoinBalance } =
+    usePaymentExecutor()
 
   useEffect(() => {
     wallet.getChainId().then(setChainId)
@@ -59,6 +54,7 @@ export const SendScreen = ({
     amount: string,
     to: string,
   ) => {
+    backAction()
     executePayment({
       token,
       amount,
@@ -89,7 +85,7 @@ export const SendScreen = ({
           }}>
           <TransactionForm
             onConfirm={onExecuteTransfer}
-            onCancel={() => navigation.goBack()}
+            onCancel={backAction}
             tokenList={assets}
             tokenPrices={prices}
             chainId={chainId}
@@ -112,17 +108,3 @@ export const SendScreen = ({
     </KeyboardAvoidingView>
   )
 }
-
-const styles = StyleSheet.create({
-  parent: {
-    borderTopLeftRadius: 40,
-    borderTopRightRadius: 40,
-    paddingTop: 40,
-    paddingHorizontal: 20,
-  },
-  error: {
-    marginTop: 10,
-    color: colors.orange,
-    textAlign: 'center',
-  },
-})

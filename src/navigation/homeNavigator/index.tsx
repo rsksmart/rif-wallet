@@ -1,8 +1,9 @@
 import { createStackNavigator } from '@react-navigation/stack'
 
 import { InjectedScreens } from 'core/Core'
-import { HomeStackParamsList, homeStackRouteNames } from './types'
 import { ReceiveScreen } from 'screens/index'
+
+import { HomeStackParamsList, homeStackRouteNames } from './types'
 
 const HomeStack = createStackNavigator<HomeStackParamsList>()
 

@@ -12,6 +12,7 @@ import {
 } from 'navigation/rootNavigator'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
+
 import { WalletConnectContext } from './WalletConnectContext'
 
 export const ScanQRScreen = ({
@@ -40,6 +41,7 @@ export const ScanQRScreen = ({
       navigation.navigate(rootTabsRouteNames.Home, {
         screen: homeStackRouteNames.Send,
         params: {
+          backAction: navigation.goBack,
           to: decodedString.address,
         },
       })
@@ -52,6 +54,7 @@ export const ScanQRScreen = ({
       navigation.navigate(rootTabsRouteNames.Home, {
         screen: homeStackRouteNames.Send,
         params: {
+          backAction: navigation.goBack,
           to: data,
           contractAddress: defaultToken,
         },

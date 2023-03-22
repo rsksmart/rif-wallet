@@ -1,16 +1,26 @@
+import { CompositeScreenProps } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 
 import { Contact } from 'shared/types'
 
+import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
+
 export type ContactsStackScreenProps<T extends keyof ContactStackParamsList> =
-  StackScreenProps<ContactStackParamsList, T>
+  CompositeScreenProps<
+    StackScreenProps<ContactStackParamsList, T>,
+    RootTabsScreenProps<rootTabsRouteNames.Contacts>
+  >
 
 export enum contactsStackRouteNames {
   ContactsList = 'ContactsList',
   ContactForm = 'ContactForm',
+  ContactDetails = 'Contact details',
 }
 
 export type ContactStackParamsList = {
   [contactsStackRouteNames.ContactsList]: undefined
   [contactsStackRouteNames.ContactForm]: { initialValue: Contact } | undefined
+  [contactsStackRouteNames.ContactDetails]: {
+    contact: Contact
+  }
 }
