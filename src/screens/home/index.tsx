@@ -79,6 +79,26 @@ export const HomeScreen = ({
       return []
     }
   }, [tokenBalances, bitcoinCore])
+
+  const totalUsdBalance = useMemo(
+    () =>
+      balances
+        .reduce((previousValue, token) => {
+          if ('satoshis' in token) {
+            previousValue += token.balance * prices.BTC.price
+          } else {
+            previousValue += convertBalance(
+              token.balance,
+              token.decimals,
+              prices[token.contractAddress]?.price || 0,
+            )
+          }
+          return previousValue
+        }, 0)
+        .toFixed(2),
+    [balances, prices],
+  )
+
   // token or undefined
   const selected: ITokenWithoutLogo | BitcoinNetwork | undefined =
     selectedAddress && bitcoinCore
@@ -87,16 +107,8 @@ export const HomeScreen = ({
       : undefined
   const selectedColor = getTokenColor(selected ? selected.symbol : '')
   const backGroundColor = {
-    backgroundColor: selectedAddress ? selectedColor : getTokenColor('DEFAULT'),
+    backgroundColor: selectedAddress ? selectedColor : sharedColors.borderColor,
   }
-
-  useEffect(() => {
-    if (!selected) {
-      balances.length !== 0
-        ? setSelectedAddress(balances[0].contractAddress)
-        : undefined
-    }
-  }, [balances, selected])
 
   const ramp = useMemo(
     () =>
@@ -186,7 +198,7 @@ export const HomeScreen = ({
     if (selected) {
       return {
         ...selected,
-        ...{ price: prices ? prices[selected.contractAddress]?.price : 0 },
+        ...{ price: prices ? prices[selected.contractAddress]?.price || 0 : 0 },
       }
     }
     return {
@@ -269,11 +281,22 @@ export const HomeScreen = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const overrideFirstValue: CurrencyValue = {
+    balance: '$' + totalUsdBalance.toString(),
+    symbol: '',
+    symbolType: 'text',
+  }
   return (
     <View style={styles.container}>
       <TokenBalance
-        firstValue={selectedTokenBalance}
-        secondValue={selectedTokenBalanceUsd}
+        firstValue={
+          selectedAddress === undefined
+            ? overrideFirstValue
+            : selectedTokenBalance
+        }
+        secondValue={
+          selectedAddress === undefined ? undefined : selectedTokenBalanceUsd
+        }
         hideable={true}
         hide={hide}
         onHide={onHide}
