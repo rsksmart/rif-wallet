@@ -1,18 +1,26 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import { StyleSheet, View } from 'react-native'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 
-import { RegularText } from 'src/components'
-import { PrimaryButton } from 'src/components/button/PrimaryButton'
-import { TextInputWithLabel } from 'src/components/input/TextInputWithLabel'
-import { colors } from 'src/styles'
+import { AppButton, Input } from 'components/index'
 import { headerLeftOption } from 'navigation/profileNavigator'
 import {
   SettingsScreenProps,
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
+import { sharedColors } from 'shared/constants'
+import { sharedStyles } from 'shared/styles'
 
 import { sendFeedbackToGithub } from './operations'
 import { ThankYouComponent } from './ThankYouComponent'
+
+const schema = yup.object().shape({
+  name: yup.string(),
+  email: yup.string().email().required('Email is required'),
+  message: yup.string().required('Message is required'),
+})
 
 export const FeedbackScreen = ({
   navigation,
@@ -20,20 +28,21 @@ export const FeedbackScreen = ({
   const [isSent, setIsSent] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  const [name, setName] = useState<string>('')
-  const [email, setEmail] = useState<string>('')
-  const [feedback, setFeedback] = useState<string>('')
+  const methods = useForm({
+    mode: 'onChange',
+    resolver: yupResolver(schema),
+  })
+  const {
+    resetField,
+    handleSubmit,
+    formState: { errors },
+  } = methods
+  const hasErrors = Object.keys(errors).length > 0
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => headerLeftOption(navigation.goBack),
-    })
-  }, [navigation])
-
-  const submitFeedback = () => {
-    setIsLoading(true)
-    if (feedback !== '') {
-      sendFeedbackToGithub(name, email, feedback)
+  const onSubmit = (data: FieldValues) => {
+    if (!hasErrors) {
+      const { name, email, message } = data
+      sendFeedbackToGithub(name, email, message)
         .then(() => setIsSent(true))
         .catch(error => {
           console.log({ error })
@@ -42,46 +51,62 @@ export const FeedbackScreen = ({
     }
   }
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => headerLeftOption(navigation.goBack),
+    })
+  }, [navigation])
+
   if (isSent) {
     return <ThankYouComponent />
   }
 
   return (
     <View style={styles.container}>
-      <RegularText style={styles.heading}>Feedback form</RegularText>
+      <View style={styles.content}>
+        <FormProvider {...methods}>
+          <Input
+            accessibilityLabel="feedbackName"
+            inputName="name"
+            label={'Your name (voluntary)'}
+            placeholder={'Your name (voluntary)'}
+            resetValue={() => resetField('name')}
+            containerStyle={styles.input}
+          />
 
-      <TextInputWithLabel
-        label="name"
-        placeholder="your name"
-        value={name}
-        setValue={setName}
-        style={styles.input}
-      />
+          <Input
+            accessibilityLabel="feedbackEmail"
+            inputName="email"
+            label={'Your email'}
+            placeholder={'Your email'}
+            resetValue={() => resetField('email')}
+            subtitle={errors.email?.message as string}
+            subtitleStyle={{ color: sharedColors.dangerLight }}
+            containerStyle={styles.input}
+          />
 
-      <TextInputWithLabel
-        label="email"
-        placeholder="your email"
-        value={email}
-        setValue={setEmail}
-        style={styles.input}
-      />
-
-      <TextInputWithLabel
-        label="comments"
-        placeholder="your feedback"
-        value={feedback}
-        setValue={setFeedback}
-        multiline={true}
-        inputStyle={styles.feedback}
-        style={styles.input}
-        textAlignVertical="top"
-      />
-
-      <PrimaryButton
-        title="Submit"
-        accessibilityLabel="submit"
-        onPress={submitFeedback}
-        disabled={isLoading}
+          <Input
+            accessibilityLabel="feedbackMessage"
+            inputName="message"
+            label={'Message'}
+            placeholder={'Message'}
+            resetValue={() => resetField('message')}
+            subtitle={errors.message?.message as string}
+            subtitleStyle={{ color: sharedColors.dangerLight }}
+            multiline={true}
+            containerStyle={styles.feedback}
+            textAlignVertical="top"
+          />
+        </FormProvider>
+      </View>
+      <AppButton
+        accessibilityLabel="sendFeedbackButton"
+        style={sharedStyles.marginTop20}
+        title="Send feedback"
+        color={sharedColors.white}
+        textColor={sharedColors.black}
+        disabled={hasErrors || isLoading}
+        onPress={handleSubmit(onSubmit)}
       />
     </View>
   )
@@ -89,21 +114,18 @@ export const FeedbackScreen = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.darkPurple3,
+    backgroundColor: sharedColors.secondary,
     paddingHorizontal: 20,
     height: '100%',
+    justifyContent: 'space-between',
   },
-  heading: {
-    color: colors.white,
-    textAlign: 'center',
-    fontSize: 16,
-    marginVertical: 20,
+  content: {
+    flex: 1,
   },
   input: {
-    marginBottom: 10,
+    height: 90,
   },
   feedback: {
-    paddingTop: 20,
     height: 150,
   },
 })
