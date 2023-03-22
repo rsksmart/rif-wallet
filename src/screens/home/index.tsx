@@ -287,7 +287,7 @@ export const HomeScreen = ({
     symbolType: 'text',
   }
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <TokenBalance
         firstValue={
           selectedAddress === undefined
@@ -345,7 +345,7 @@ export const HomeScreen = ({
           </>
         )}
       </View>
-    </View>
+    </ScrollView>
   )
 }
 
