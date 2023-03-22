@@ -48,7 +48,6 @@ ENVFILE=.env.custom react-native run-ios
 
 You do not need to run the server to run the RIF Wallet app.
 
-
 ## MAINNET
 
 To run with mainnet change the environment variable `DEFAULT_CHAIN_TYPE` to MAINNET [here](https://github.com/rsksmart/swallet/blob/3335ab050b0cb04b901cae42e30745dd2c6ad3f6/.env#L10)
