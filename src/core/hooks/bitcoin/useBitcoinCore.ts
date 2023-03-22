@@ -6,21 +6,19 @@ import {
   BIPWithRequest,
   createBipFactoryType,
 } from '@rsksmart/rif-wallet-bitcoin'
-
 import { RifWalletServicesFetcher } from '@rsksmart/rif-wallet-services'
+import Keychain from 'react-native-keychain'
 
 import {
   BitcoinNetworkStore,
   StoredBitcoinNetworkValue,
 } from 'storage/BitcoinNetworkStore'
-
 import { bitcoinMainnet, bitcoinTestnet } from 'shared/costants'
 import { useAppDispatch } from 'store/storeUtils'
 import { onRequest } from 'store/slices/settingsSlice'
+import { isDefaultChainTypeMainnet } from 'core/config'
 
 import { useStoredBitcoinNetworks } from './useStoredBitcoinNetworks'
-import { isDefaultChainTypeMainnet } from 'core/config'
-import Keychain from 'react-native-keychain'
 
 export interface UseBitcoinCoreResult {
   networks: Array<BitcoinNetwork>
@@ -32,6 +30,11 @@ export interface UseBitcoinCoreResult {
 
 interface NetworksObject {
   [key: string]: BitcoinNetworkWithBIPRequest
+}
+
+const NETWORKS_INITIAL_STATE = {
+  networksArr: [],
+  networksObj: {},
 }
 
 /**
@@ -59,10 +62,7 @@ export const useBitcoinCore = (
   const [networks, setNetworks] = useState<{
     networksArr: BitcoinNetworkWithBIPRequest[]
     networksObj: NetworksObject
-  }>({
-    networksArr: [],
-    networksObj: {},
-  })
+  }>({ ...NETWORKS_INITIAL_STATE })
 
   const onNoNetworksPresent = useCallback(() => {
     const bitcoinNetwork = isDefaultChainTypeMainnet
@@ -133,6 +133,7 @@ export const useBitcoinCore = (
       return
     }
     if (!mnemonic) {
+      setNetworks({ ...NETWORKS_INITIAL_STATE })
       return
     }
 

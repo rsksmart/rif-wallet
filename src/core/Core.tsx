@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { StatusBar, View } from 'react-native'
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import {
   RifWalletServicesAuth,
@@ -96,8 +93,7 @@ export const Core = () => {
   const setGlobalError = useSetGlobalError()
   const topColor = useAppSelector(selectTopColor)
 
-  const BitcoinCore = useBitcoinCore(mnemonic, fetcher)
-
+  const BitcoinCore = useBitcoinCore(selectedWallet ? mnemonic : '', fetcher)
   const { unlocked, active } = useStateSubscription()
 
   const retrieveChainId = useCallback(
@@ -121,13 +117,19 @@ export const Core = () => {
 
       setMnemonic(kms.mnemonic)
     } catch (err) {
+      if (typeof err === 'string') {
+        // If no wallets - reset mnemonic...
+        if (err.includes('No Existing wallets')) {
+          setMnemonic(null)
+        }
+      }
       console.log('ERRR', err)
     }
   }, [dispatch])
 
   useEffect(() => {
     unlockAppSetMnemonic()
-  }, [unlockAppSetMnemonic])
+  }, [unlockAppSetMnemonic, selectedWallet])
 
   useEffect(() => {
     if (selectedWallet && wallets) {

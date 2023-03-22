@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+
 import {
   ApiTransactionWithExtras,
   TransactionsState,
@@ -46,7 +47,9 @@ const transactionsSlice = createSlice({
       state,
       { payload }: PayloadAction<IActivityTransaction>,
     ) => {
-      state.transactions.push(payload)
+      if (payload.originTransaction !== undefined) {
+        state.transactions.push(payload)
+      }
       state.transactions = deserializeTransactions(state.transactions || [])
       return state
     },
