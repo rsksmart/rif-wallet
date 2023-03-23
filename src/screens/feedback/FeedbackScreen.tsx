@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import { StyleSheet, View } from 'react-native'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -39,17 +39,20 @@ export const FeedbackScreen = ({
   } = methods
   const hasErrors = Object.keys(errors).length > 0
 
-  const onSubmit = (data: FieldValues) => {
-    if (!hasErrors) {
-      const { name, email, message } = data
-      sendFeedbackToGithub(name, email, message)
-        .then(() => setIsSent(true))
-        .catch(error => {
-          console.log({ error })
-          setIsLoading(false)
-        })
-    }
-  }
+  const onSubmit = useCallback(
+    (data: FieldValues) => {
+      if (!hasErrors) {
+        const { name, email, message } = data
+        sendFeedbackToGithub(name, email, message)
+          .then(() => setIsSent(true))
+          .catch(error => {
+            console.log({ error })
+            setIsLoading(false)
+          })
+      }
+    },
+    [hasErrors],
+  )
 
   useEffect(() => {
     navigation.setOptions({
