@@ -85,7 +85,7 @@ export const HomeScreen = ({
       balances
         .reduce((previousValue, token) => {
           if ('satoshis' in token) {
-            previousValue += token.balance * prices.BTC.price
+            previousValue += token.balance * (prices.BTC?.price || 0)
           } else {
             previousValue += convertBalance(
               token.balance,
