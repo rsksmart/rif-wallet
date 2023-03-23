@@ -84,7 +84,7 @@ export const FeedbackScreen = ({
             placeholder={'Your email'}
             resetValue={() => resetField('email')}
             subtitle={errors.email?.message as string}
-            subtitleStyle={{ color: sharedColors.dangerLight }}
+            subtitleStyle={styles.fieldError}
             containerStyle={styles.input}
           />
 
@@ -95,7 +95,7 @@ export const FeedbackScreen = ({
             placeholder={'Message'}
             resetValue={() => resetField('message')}
             subtitle={errors.message?.message as string}
-            subtitleStyle={{ color: sharedColors.dangerLight }}
+            subtitleStyle={styles.fieldError}
             multiline={true}
             containerStyle={styles.feedback}
             textAlignVertical="top"
@@ -133,5 +133,8 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     marginTop: 20,
+  },
+  fieldError: {
+    color: sharedColors.dangerLight,
   },
 })
