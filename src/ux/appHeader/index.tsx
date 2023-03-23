@@ -30,11 +30,14 @@ export const AppHeader = ({
   const { wallet } = useAppSelector(selectActiveWallet)
 
   const openMenu = useCallback(() => {
-    if (route && route.name === rootTabsRouteNames.Settings) {
+    if (route?.name === rootTabsRouteNames.Settings) {
       navigation.navigate(rootTabsRouteNames.Home)
-      return
+    } else {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: rootTabsRouteNames.Settings }],
+      })
     }
-    navigation.navigate(rootTabsRouteNames.Settings)
   }, [navigation, route])
 
   return !isShown ? null : (
