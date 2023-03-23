@@ -13,9 +13,9 @@ import {
 } from 'vision-camera-code-scanner'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { useIsFocused } from '@react-navigation/native'
+import { runOnJS } from 'react-native-reanimated'
 
 import { colors } from 'src/styles'
-import { runOnJS } from 'react-native-reanimated'
 import { useAppDispatch } from 'store/storeUtils'
 import { setFullscreen } from 'store/slices/settingsSlice'
 
@@ -72,7 +72,7 @@ export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
         device={device}
         style={StyleSheet.absoluteFill}
         isActive={true}
-        torch={'off'}
+        torch="off"
       />
       <BarcodeMask
         showAnimatedLine={false}
