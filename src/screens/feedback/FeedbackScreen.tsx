@@ -1,8 +1,9 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useCallback, useEffect, useState } from 'react'
 import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import { StyleSheet, View } from 'react-native'
-import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
+import { useTranslation } from 'react-i18next'
 
 import { AppButton, Input } from 'components/index'
 import { headerLeftOption } from 'navigation/profileNavigator'
@@ -11,10 +12,10 @@ import {
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
 import { sharedColors, sharedStyles } from 'shared/constants'
+import { castStyle } from 'shared/utils'
 
 import { sendFeedbackToGithub } from './operations'
 import { ThankYouComponent } from './ThankYouComponent'
-import { castStyle } from 'src/shared/utils'
 
 const schema = yup.object().shape({
   name: yup.string(),
@@ -27,6 +28,7 @@ export const FeedbackScreen = ({
 }: SettingsScreenProps<settingsStackRouteNames.FeedbackScreen>) => {
   const [isSent, setIsSent] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const { t } = useTranslation()
 
   const methods = useForm({
     mode: 'onChange',
@@ -72,8 +74,8 @@ export const FeedbackScreen = ({
           <Input
             accessibilityLabel="feedbackName"
             inputName="name"
-            label={'Your name (voluntary)'}
-            placeholder={'Your name (voluntary)'}
+            label={t('feedback_form_name')}
+            placeholder={t('feedback_form_name')}
             resetValue={() => resetField('name')}
             containerStyle={styles.input}
           />
@@ -81,8 +83,8 @@ export const FeedbackScreen = ({
           <Input
             accessibilityLabel="feedbackEmail"
             inputName="email"
-            label={'Your email'}
-            placeholder={'Your email'}
+            label={t('feedback_form_email')}
+            placeholder={t('feedback_form_email')}
             resetValue={() => resetField('email')}
             subtitle={errors.email?.message?.toString()}
             subtitleStyle={styles.fieldError}
@@ -92,8 +94,8 @@ export const FeedbackScreen = ({
           <Input
             accessibilityLabel="feedbackMessage"
             inputName="message"
-            label={'Message'}
-            placeholder={'Message'}
+            label={t('feedback_form_message')}
+            placeholder={t('feedback_form_message')}
             resetValue={() => resetField('message')}
             subtitle={errors.message?.message?.toString()}
             subtitleStyle={styles.fieldError}
@@ -106,7 +108,7 @@ export const FeedbackScreen = ({
       <AppButton
         accessibilityLabel="sendFeedbackButton"
         style={styles.submitButton}
-        title="Send feedback"
+        title={t('feedback_form_button_send')}
         color={sharedColors.white}
         textColor={sharedColors.black}
         disabled={hasErrors || isLoading}
