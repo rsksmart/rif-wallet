@@ -134,6 +134,7 @@ const styles = StyleSheet.create({
   pillContainer: castStyle.view({
     flexDirection: 'row',
     flexWrap: 'wrap',
+    justifyContent: 'space-around',
   }),
   wordPill: castStyle.view({
     marginTop: 12,
