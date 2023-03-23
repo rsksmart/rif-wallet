@@ -136,6 +136,7 @@ const styles = StyleSheet.create({
   }),
   submitButton: castStyle.view({
     marginTop: 20,
+    height: 50,
   }),
   fieldError: castStyle.text({
     color: sharedColors.dangerLight,
