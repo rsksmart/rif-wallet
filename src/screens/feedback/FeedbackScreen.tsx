@@ -121,6 +121,7 @@ export const FeedbackScreen = ({
 const styles = StyleSheet.create({
   container: castStyle.view({
     backgroundColor: sharedColors.secondary,
+    paddingTop: 30,
     paddingHorizontal: 20,
     height: '100%',
     justifyContent: 'space-between',
