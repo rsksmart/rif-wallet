@@ -14,6 +14,7 @@ import { sharedColors, sharedStyles } from 'shared/constants'
 
 import { sendFeedbackToGithub } from './operations'
 import { ThankYouComponent } from './ThankYouComponent'
+import { castStyle } from 'src/shared/utils'
 
 const schema = yup.object().shape({
   name: yup.string(),
@@ -116,25 +117,25 @@ export const FeedbackScreen = ({
 }
 
 const styles = StyleSheet.create({
-  container: {
+  container: castStyle.view({
     backgroundColor: sharedColors.secondary,
     paddingHorizontal: 20,
     height: '100%',
     justifyContent: 'space-between',
-  },
-  content: {
+  }),
+  content: castStyle.view({
     flex: 1,
-  },
-  input: {
+  }),
+  input: castStyle.view({
     height: 90,
-  },
-  feedback: {
+  }),
+  feedback: castStyle.view({
     height: 150,
-  },
-  submitButton: {
+  }),
+  submitButton: castStyle.view({
     marginTop: 20,
-  },
-  fieldError: {
+  }),
+  fieldError: castStyle.text({
     color: sharedColors.dangerLight,
-  },
+  }),
 })
