@@ -99,8 +99,9 @@ export const FeedbackScreen = ({
             resetValue={() => resetField('message')}
             subtitle={errors.message?.message?.toString()}
             subtitleStyle={styles.fieldError}
+            inputStyle={styles.feedbackInput}
             multiline={true}
-            containerStyle={styles.feedback}
+            containerStyle={styles.feedbackLabel}
             textAlignVertical="top"
           />
         </FormProvider>
@@ -132,8 +133,11 @@ const styles = StyleSheet.create({
   input: castStyle.view({
     height: 90,
   }),
-  feedback: castStyle.view({
+  feedbackLabel: castStyle.view({
     height: 150,
+  }),
+  feedbackInput: castStyle.text({
+    paddingTop: 10,
   }),
   submitButton: castStyle.view({
     marginTop: 20,
