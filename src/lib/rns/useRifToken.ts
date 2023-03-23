@@ -7,9 +7,13 @@ export const useRifToken = () => {
   const tokenBalances = useAppSelector(selectBalances)
   const prices = useAppSelector(selectUsdPrices)
 
+  const rifSymbols = [TokenSymbol.RIF, TokenSymbol.TRIF].map(symbol =>
+    symbol.toUpperCase(),
+  )
+
   const rifToken = Object.values(tokenBalances).find(({ symbol }) => {
     symbol = symbol.toUpperCase()
-    return symbol === TokenSymbol.RIF || symbol === TokenSymbol.TRIF
+    return rifSymbols.includes(symbol)
   })
 
   const rifTokenAddress = rifToken?.contractAddress || ''
