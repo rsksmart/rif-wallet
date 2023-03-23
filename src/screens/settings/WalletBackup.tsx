@@ -47,7 +47,7 @@ export const WalletBackup = ({ navigation }: Props) => {
         <Typography type="h2" style={styles.title}>
           View your phrase
         </Typography>
-        <MnemonicComponent words={mnemonicArray} />
+        <MnemonicComponent words={mnemonicArray} showAdvice={false} />
       </View>
       <AppButton
         title="Delete Wallet"

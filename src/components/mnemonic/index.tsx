@@ -1,11 +1,12 @@
+import Clipboard from '@react-native-community/clipboard'
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import Clipboard from '@react-native-community/clipboard'
 
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
+
 import { AppTouchable } from '../appTouchable'
 import { AppButton, AppButtonWidthVarietyEnum } from '../button'
 import { EyeIcon } from '../icons/EyeIcon'
@@ -15,6 +16,7 @@ const iconSize = 28
 
 interface Props {
   words: string[]
+  showAdvice?: boolean
   onToggleMnemonic?: (visible: boolean) => void
   style?: StyleProp<ViewStyle>
 }
@@ -24,7 +26,7 @@ interface MnemonicHiddenProps {
   bodyText: string
 }
 
-const MnemonicHiddenComponent = ({
+const MnemonicAdviceComponent = ({
   titleText,
   bodyText,
 }: MnemonicHiddenProps) => {
@@ -46,6 +48,7 @@ const MnemonicHiddenComponent = ({
 
 export const MnemonicComponent = ({
   words,
+  showAdvice = true,
   onToggleMnemonic,
   style,
 }: Props) => {
@@ -70,25 +73,34 @@ export const MnemonicComponent = ({
 
   return (
     <View style={[styles.mainContainer, style]}>
-      {!isMnemonicVisible ? (
-        <MnemonicHiddenComponent titleText={title} bodyText={body} />
+      {!isMnemonicVisible && showAdvice ? (
+        <MnemonicAdviceComponent titleText={title} bodyText={body} />
       ) : (
         <View
           style={styles.pillContainer}
           accessibilityLabel="mnemonic container">
-          {words.map((word, index) => (
-            <AppButton
-              key={`${word + index}`}
-              width={'auto'}
-              style={styles.wordPill}
-              textStyle={styles.wordPillText}
-              textType={'body3'}
-              title={`${index + 1}.${word}`}
-              color={sharedColors.primary}
-              widthVariety={AppButtonWidthVarietyEnum.INLINE}
-              accessibilityLabel={`${index}.${word}`}
-            />
-          ))}
+          {words.map((word, index) => {
+            const pillText = `${index + 1}.${word}`
+            return (
+              <AppButton
+                key={`${word + index}`}
+                width={'auto'}
+                style={styles.wordPill}
+                textStyle={styles.wordPillText}
+                textType={'body3'}
+                title={
+                  isMnemonicVisible ? pillText : pillText.replaceAll(/./g, ' ')
+                }
+                color={
+                  isMnemonicVisible
+                    ? sharedColors.primary
+                    : sharedColors.inputActive
+                }
+                widthVariety={AppButtonWidthVarietyEnum.INLINE}
+                accessibilityLabel={`${index}.${word}`}
+              />
+            )
+          })}
         </View>
       )}
       <View style={styles.buttonContainer}>
