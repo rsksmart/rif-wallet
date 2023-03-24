@@ -1,11 +1,11 @@
 import WalletConnect from '@walletconnect/client'
 import { useTranslation } from 'react-i18next'
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Image, StyleSheet, View } from 'react-native'
 
 import { truncate } from 'lib/utils'
 
-import { Typography } from 'components/index'
-import { sharedColors, sharedStyles } from 'shared/constants'
+import { AppTouchable, Typography } from 'components/index'
+import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 
 type Props = {
@@ -42,15 +42,15 @@ export const DappItem = ({
           {c.peerMeta?.url}
         </Typography>
       </View>
-      <TouchableOpacity
+      <AppTouchable
         accessibilityLabel="disconnectDapp"
-        style={sharedStyles.flex}
+        width={20}
         onPress={onDisconnect}>
         <Image
           source={require('src/images/disconnect-dapp.png')}
           style={styles.dappButton}
         />
-      </TouchableOpacity>
+      </AppTouchable>
     </View>
   )
 }
