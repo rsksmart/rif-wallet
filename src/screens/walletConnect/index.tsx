@@ -1,5 +1,5 @@
 import WalletConnect from '@walletconnect/client'
-import { useCallback, useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image, ScrollView, StyleSheet, View } from 'react-native'
 
@@ -9,7 +9,7 @@ import {
   RootTabsScreenProps,
 } from 'navigation/rootNavigator/types'
 import { sharedColors } from 'shared/constants'
-import { colors } from 'src/styles'
+import { castStyle } from 'shared/utils'
 
 import { DappConnectConfirmation } from './DappConnectConfirmation'
 import { DappDisconnectConfirmation } from './DappDisconnectConfirmation'
@@ -86,76 +86,32 @@ export const WalletConnectScreen = ({ navigation, route }: Props) => {
 }
 
 const styles = StyleSheet.create({
-  parent: {
+  parent: castStyle.view({
     height: '100%',
     backgroundColor: sharedColors.secondary,
     padding: 20,
-  },
-  header: {
+  }),
+  header: castStyle.view({
     flexDirection: 'row',
     padding: 10,
-  },
-  innerHeader1: {
+  }),
+  innerHeader1: castStyle.view({
     flex: 3,
-  },
-  innerHeader2: {
+  }),
+  innerHeader2: castStyle.view({
     flex: 1,
-  },
-  subtitle: {
+  }),
+  subtitle: castStyle.view({
     marginTop: 10,
-  },
-  noDappsImage: {
+  }),
+  noDappsImage: castStyle.image({
     flex: 4,
     alignSelf: 'center',
     width: '80%',
     resizeMode: 'contain',
-  },
-  noDappsTextView: {
-    flex: 1,
-    alignSelf: 'center',
-  },
-  noDappsText: {
-    color: colors.text.primary,
-    fontSize: 14,
-    textAlign: 'center',
-  },
-  dappsList: {
+  }),
+  dappsList: castStyle.view({
     flex: 1,
     marginTop: 20,
-  },
-  dapp: {
-    borderRadius: 10,
-    padding: 20,
-    marginBottom: 20,
-  },
-  dappInner: {
-    flexDirection: 'row',
-  },
-  dappIcon: {
-    width: 30,
-    height: 30,
-    resizeMode: 'contain',
-    alignSelf: 'center',
-  },
-  dappNameView: {
-    flex: 3,
-    marginLeft: 20,
-  },
-  dappName: {
-    fontSize: 16,
-    color: colors.text.primary,
-  },
-  dappButtonView: {
-    flex: 1,
-  },
-  dappButton: {
-    flex: 1,
-    width: 20,
-    height: 20,
-    resizeMode: 'contain',
-  },
-  dappUrl: {
-    fontSize: 12,
-    color: colors.text.secondary,
-  },
+  }),
 })
