@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Image, ScrollView, StyleSheet, TextInput, View } from 'react-native'
+import { Image, ScrollView, StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { CompositeScreenProps } from '@react-navigation/native'
 import { FormProvider, useForm } from 'react-hook-form'
 
-import { SearchIcon } from 'components/icons/SearchIcon'
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import { RegularText } from 'components/index'
 import {

@@ -55,10 +55,6 @@ import { authAxios, publicAxios } from './setup'
 import { useStateSubscription } from './hooks/useStateSubscription'
 import { useBitcoinCore } from './hooks/bitcoin/useBitcoinCore'
 import { Cover } from './components/Cover'
-import { authAxios, publicAxios } from './setup'
-import { useStateSubscription } from './hooks/useStateSubscription'
-import { useBitcoinCore } from './hooks/bitcoin/useBitcoinCore'
-import { Cover } from './components/Cover'
 
 export const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
