@@ -8,7 +8,7 @@ import { AppTouchable, Typography } from 'components/index'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 
-type Props = {
+interface Props {
   connector: WalletConnect
   isDisconnecting: boolean
   onDisconnect: () => void
