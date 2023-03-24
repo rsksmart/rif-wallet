@@ -27,20 +27,20 @@ export const InfoBox = ({
   backgroundColor = sharedColors.inputInactive,
   avatarBackgroundColor = sharedColors.qrColor,
 }: InfoBoxProps) => {
-  const [isHidden, setIsHidden] = useState(false)
+  const [shouldHide, setShouldHide] = useState(false)
   const handleOnPress = useCallback(() => {
     // If onPress exists run it, else hide
     if (onPress) {
       onPress()
       return
     }
-    setIsHidden(true)
+    setShouldHide(true)
     return
   }, [onPress])
 
-  const shouldHide = isHidden ? styles.shouldHide : {}
+  const isInfoboxHidden = shouldHide ? styles.shouldHide : {}
   return (
-    <View style={[styles.container, { backgroundColor }, shouldHide]}>
+    <View style={[styles.container, { backgroundColor }, isInfoboxHidden]}>
       {avatar ? (
         <Avatar
           style={[
