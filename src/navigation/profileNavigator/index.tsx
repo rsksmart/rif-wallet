@@ -52,7 +52,9 @@ export const ProfileNavigator = ({
     headerShown: true,
     headerTitle: props => (
       <>
-        <Typography type="h3">{title ?? props.children}</Typography>
+        <Typography type="h3" style={headerStyles.title}>
+          {title ?? props.children}
+        </Typography>
         {showStepper && (
           <StepperComponent
             colors={[startColor, endColor]}
@@ -121,6 +123,10 @@ export const ProfileNavigator = ({
 export const headerStyles = StyleSheet.create({
   headerStyle: castStyle.view({
     backgroundColor: sharedColors.primary,
+    height: 100,
+  }),
+  title: castStyle.text({
+    marginTop: 20,
   }),
   stepper: castStyle.view({
     marginTop: 10,

@@ -12,6 +12,7 @@ export const rnsManagerStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background.black,
     padding: 20,
+    paddingTop: 50,
   }),
   title: castStyle.text({
     color: sharedColors.subTitle,
