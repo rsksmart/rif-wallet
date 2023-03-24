@@ -65,6 +65,7 @@ export const rnsManagerStyles = StyleSheet.create({
   }),
   button: castStyle.view({
     marginTop: 20,
+    height: 50,
   }),
   disabledButton: castStyle.view({
     opacity: 0.4,
