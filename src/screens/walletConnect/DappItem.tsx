@@ -100,7 +100,6 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   }),
   dappButton: castStyle.image({
-    flex: 1,
     width: 20,
     height: 20,
     resizeMode: 'contain',
