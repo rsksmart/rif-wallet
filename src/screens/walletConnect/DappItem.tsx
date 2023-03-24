@@ -1,8 +1,7 @@
 import WalletConnect from '@walletconnect/client'
+import * as _ from 'lodash'
 import { useTranslation } from 'react-i18next'
 import { Image, StyleSheet, View } from 'react-native'
-
-import { truncate } from 'lib/utils'
 
 import { AppTouchable, Typography } from 'components/index'
 import { sharedColors } from 'shared/constants'
@@ -27,7 +26,9 @@ export const DappItem = ({
       <View style={styles.content}>
         <View style={styles.dappNameView}>
           <Typography type="body2">
-            {truncate(c.peerMeta?.name || '', isDisconnecting ? 18 : 20)}
+            {_.truncate(c.peerMeta?.name || '', {
+              length: isDisconnecting ? 18 : 20,
+            })}
           </Typography>
           <Typography
             type="body3"
