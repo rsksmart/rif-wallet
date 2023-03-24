@@ -1,5 +1,6 @@
 import { createStackNavigator } from '@react-navigation/stack'
 import { useTranslation } from 'react-i18next'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import {
   CreateKeysScreen,
@@ -12,14 +13,15 @@ import {
 import { selectIsUnlocked } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
 
-import { screenOptionsWithHeader } from '../index'
 import { CreateKeysStackParamList, createKeysRouteNames } from './types'
+import { screenOptionsWithHeader } from '..'
 
 const Stack = createStackNavigator<CreateKeysStackParamList>()
 
 const screensOptions = { headerShown: false }
 
 export const CreateKeysNavigation = () => {
+  const { top } = useSafeAreaInsets()
   const { t } = useTranslation()
   const unlocked = useAppSelector(selectIsUnlocked)
 
@@ -35,7 +37,7 @@ export const CreateKeysNavigation = () => {
       <Stack.Screen
         name={createKeysRouteNames.NewMasterKey}
         component={NewMasterKeyScreen}
-        options={screenOptionsWithHeader(t('confirm_key_screen_title'))}
+        options={screenOptionsWithHeader(top, t('confirm_key_screen_title'))}
       />
       <Stack.Screen
         name={createKeysRouteNames.SecureYourWallet}
@@ -50,7 +52,7 @@ export const CreateKeysNavigation = () => {
       <Stack.Screen
         name={createKeysRouteNames.ConfirmNewMasterKey}
         component={ConfirmNewMasterKeyScreen}
-        options={screenOptionsWithHeader(t('confirm_key_screen_title'))}
+        options={screenOptionsWithHeader(top, t('confirm_key_screen_title'))}
       />
       <Stack.Screen
         name={createKeysRouteNames.ImportMasterKey}

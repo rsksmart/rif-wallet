@@ -162,10 +162,10 @@ const settingsSlice = createSlice({
       state.topColor = action.payload
     },
     onRequest: (state, { payload }: PayloadAction<OnRequestAction>) => {
-      state.requests = [payload.request]
+      state.requests.unshift(payload.request)
     },
     closeRequest: state => {
-      state.requests = []
+      state.requests.pop()
     },
     setChainId: (state, { payload }: PayloadAction<number>) => {
       state.chainId = payload

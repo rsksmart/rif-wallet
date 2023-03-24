@@ -128,22 +128,6 @@ export const ReceiveScreen = ({
   return (
     <ScrollView style={styles.parent}>
       <FormProvider {...methods}>
-        {/* Receive and go back button */}
-        <View style={styles.headerStyle}>
-          <View style={styles.flexView}>
-            <FontAwesome5Icon
-              name="chevron-left"
-              size={14}
-              color="white"
-              onPress={navigation.goBack}
-              style={styles.width50View}
-            />
-          </View>
-          <View style={[styles.flexView, styles.flexCenter]}>
-            <Typography type="h4">{t('Receive')}</Typography>
-          </View>
-          <View style={styles.flexView} />
-        </View>
         {/* Change Asset Component */}
         <View style={styles.flexRow}>
           <Typography type="h4">{t('change_asset')}</Typography>
