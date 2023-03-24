@@ -114,7 +114,11 @@ export const ProfileCreateScreen = ({
   }, [navigation])
 
   return (
-    <ScrollView style={rnsManagerStyles.scrollContainer}>
+    <ScrollView 
+      style={rnsManagerStyles.scrollContainer}
+      automaticallyAdjustContentInsets
+      automaticallyAdjustKeyboardInsets
+    >
       <View style={styles.usernameContainer}>
         <Avatar
           size={50}
