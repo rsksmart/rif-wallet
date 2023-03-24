@@ -108,19 +108,38 @@ export const enhanceTransactionInput = async (
   transaction: IApiTransaction,
   wallet: RIFWallet,
 ): Promise<EnhancedResult | null> => {
+  console.log(transaction.internalTransactions)
+  const itxs = transaction.internalTransactions
   let tx
   try {
+    console.log('SigHash', wallet.smartWallet.smartWalletContract.interface.getSighash('execute'))
+    console.log('SigHash', wallet.smartWallet.smartWalletContract.interface.getSighash('directExecute'))
+    itxs.forEach(itx => {
+      try{
+        // const data = wallet.smartWallet.smartWalletContract.interface.decodeFunctionData(
+        //   'execute',
+        //   itx.action.input,
+        // )
+        const data = wallet.smartWallet.smartWalletContract.interface.parseTransaction({data: itx.action.input})
+        console.log('Data from itx', data);
+      } catch(er) {
+        console.log(er)
+      }
+    })
     tx = wallet.smartWallet.smartWalletContract.interface.decodeFunctionData(
-      'directExecute',
-      transaction.input,
+      'execute',
+      itxs[0].action.input,
     )
-    return await abiEnhancer.enhance(wallet, {
-      from: wallet.smartWalletAddress,
-      to: tx.to.toLowerCase(),
+    const enhancedTx = await abiEnhancer.enhance(wallet, {
+      from: transaction.from.toLowerCase(),
+      to: transaction.to.toLowerCase(),
       data: tx.data,
       value: transaction.value,
     })
-  } catch {
+    console.log(enhancedTx)
+    return enhancedTx
+  } catch(e) {
+    console.log('Error Tx', e)
     return null
   }
 }
