@@ -16,6 +16,7 @@ import { errorHandler } from 'shared/utils'
 
 import useEnhancedWithGas from '../useEnhancedWithGas'
 import ReviewTransactionModal from './ReviewTransactionModal'
+import { TWO_RIF } from '@rsksmart/rif-relay-light-sdk'
 
 interface Props {
   request: SendTransactionRequest
@@ -23,7 +24,8 @@ interface Props {
 }
 
 export const ReviewTransactionContainer = ({ request, closeModal }: Props) => {
-  const [txCostInRif, setTxCostInRif] = useState<BigNumber | null>(null)
+  // const [txCostInRif, setTxCostInRif] = useState<BigNumber | null>(0)
+  const txCostInRif = TWO_RIF
   const [error, setError] = useState<string | null>(null)
 
   const { wallet } = useAppSelector(selectActiveWallet)
@@ -50,11 +52,13 @@ export const ReviewTransactionContainer = ({ request, closeModal }: Props) => {
     [],
   )
 
+  /*
   useEffect(() => {
     wallet.rifRelaySdk
       .estimateTransactionCost(txRequest, tokenContract)
       .then(setTxCostInRif)
   }, [request, txRequest, wallet.rifRelaySdk, tokenContract])
+  */
 
   const confirmTransaction = useCallback(() => {
     if (!txCostInRif) {
