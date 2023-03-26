@@ -1,10 +1,11 @@
 import { BigNumber } from 'ethers'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { View } from 'react-native'
 import {
   OverriddableTransactionOptions,
   SendTransactionRequest,
 } from '@rsksmart/rif-wallet-core'
+import { TWO_RIF } from '@rsksmart/rif-relay-light-sdk'
 
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
@@ -23,7 +24,8 @@ interface Props {
 }
 
 export const ReviewTransactionContainer = ({ request, closeModal }: Props) => {
-  const [txCostInRif, setTxCostInRif] = useState<BigNumber | null>(null)
+  // const [txCostInRif, setTxCostInRif] = useState<BigNumber | null>(0)
+  const txCostInRif = TWO_RIF
   const [error, setError] = useState<string | null>(null)
 
   const { wallet } = useAppSelector(selectActiveWallet)
@@ -50,11 +52,13 @@ export const ReviewTransactionContainer = ({ request, closeModal }: Props) => {
     [],
   )
 
+  /*
   useEffect(() => {
     wallet.rifRelaySdk
       .estimateTransactionCost(txRequest, tokenContract)
       .then(setTxCostInRif)
   }, [request, txRequest, wallet.rifRelaySdk, tokenContract])
+  */
 
   const confirmTransaction = useCallback(() => {
     if (!txCostInRif) {
