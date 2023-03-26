@@ -1,20 +1,20 @@
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 
+import { KeyManagementSystem } from 'lib/core'
+
+import { SecondaryButton } from 'components/button/SecondaryButton'
+import { Arrow } from 'components/icons'
+import { PrimaryButton } from 'components/button/PrimaryButton'
 import {
   createKeysRouteNames,
   CreateKeysScreenProps,
 } from 'navigation/createKeysNavigator/types'
-import { colors } from '../../styles'
-
-import { grid } from '../../styles'
-
-import { PrimaryButton } from 'components/button/PrimaryButton'
-import { SecondaryButton } from 'components/button/SecondaryButton'
-import { Arrow } from 'components/icons'
-import { KeyManagementSystem } from 'lib/core'
 import { RegularText, SemiBoldText } from 'src/components'
 import { createWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
+
+import { grid } from '../../styles'
+import { colors } from '../../styles'
 import { saveKeyVerificationReminder } from '../../storage/MainStorage'
 import { WINDOW_HEIGHT } from '../../ux/slides/Dimensions'
 
@@ -65,13 +65,15 @@ export const SecureYourWalletScreen = ({
 
       <View style={{ ...grid.row, ...styles.section }}>
         <PrimaryButton
-          onPress={() => navigation.navigate('SecurityExplanation')}
+          onPress={() =>
+            navigation.navigate(createKeysRouteNames.SecurityExplanation)
+          }
           accessibilityLabel="secureNow"
           title={'secure now'}
           style={styles.button}
         />
       </View>
-      <View style={{ ...grid.row, ...styles.section }}>
+      <View style={[grid.row, styles.section]}>
         <SecondaryButton
           onPress={secureLater}
           accessibilityLabel="secureLater"

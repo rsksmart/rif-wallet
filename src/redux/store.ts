@@ -9,6 +9,7 @@ import {
   // PURGE,
   // REGISTER,
 } from 'redux-persist'
+
 import { rootReducer } from './rootReducer'
 
 // Must use redux-debugger plugin in flipper for the redux debugger to work

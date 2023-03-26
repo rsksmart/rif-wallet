@@ -15,6 +15,13 @@ import { deletePin, resetMainStorage, savePin } from 'storage/MainStorage'
 import { deleteKeys, getKeys } from 'storage/SecureStorage'
 import { colors } from 'src/styles'
 import {
+  createRIFWalletFactory,
+  networkType as defaultNetworkType,
+} from 'core/setup'
+import { resetSocketState } from 'store/shared/actions/resetSocketState'
+import { deleteProfile } from 'store/slices/profileSlice'
+
+import {
   AddNewWalletAction,
   ChainTypeEnum,
   CreateFirstWalletAction,
@@ -24,12 +31,6 @@ import {
   SettingsSlice,
   SetWalletIsDeployedAction,
 } from './types'
-import {
-  createRIFWalletFactory,
-  networkType as defaultNetworkType,
-} from 'core/setup'
-import { resetSocketState } from 'store/shared/actions/resetSocketState'
-import { deleteProfile } from 'store/slices/profileSlice'
 
 export const createWallet = createAsyncThunk(
   'settings/createWallet',
@@ -95,6 +96,7 @@ export const resetApp = createAsyncThunk(
       thunkAPI.dispatch(resetKeysAndPin())
       thunkAPI.dispatch(resetSocketState())
       thunkAPI.dispatch(deleteProfile())
+      thunkAPI.dispatch(setPreviouslyUnlocked(false))
       resetMainStorage()
       return 'deleted'
     } catch (err) {
@@ -144,6 +146,7 @@ const initialState: SettingsSlice = {
   chainType: ChainTypeEnum.TESTNET,
   appIsActive: false,
   unlocked: false,
+  previouslyUnlocked: true,
   fullscreen: false,
 }
 
@@ -174,6 +177,9 @@ const settingsSlice = createSlice({
     },
     setUnlocked: (state, { payload }: PayloadAction<boolean>) => {
       state.unlocked = payload
+    },
+    setPreviouslyUnlocked: (state, { payload }: PayloadAction<boolean>) => {
+      state.previouslyUnlocked = payload
     },
     setPinState: (_, { payload }: PayloadAction<string>) => {
       savePin(payload)
@@ -265,6 +271,7 @@ export const {
   setChainId,
   setAppIsActive,
   setUnlocked,
+  setPreviouslyUnlocked,
   setWalletIsDeployed,
   removeKeysFromState,
   resetKeysAndPin,

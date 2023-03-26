@@ -1,11 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { CompositeScreenProps } from '@react-navigation/native'
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-} from 'react-native'
+import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
