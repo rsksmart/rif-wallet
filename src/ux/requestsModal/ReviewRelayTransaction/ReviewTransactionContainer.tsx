@@ -1,10 +1,11 @@
 import { BigNumber } from 'ethers'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { View } from 'react-native'
 import {
   OverriddableTransactionOptions,
   SendTransactionRequest,
 } from '@rsksmart/rif-wallet-core'
+import { TWO_RIF } from '@rsksmart/rif-relay-light-sdk'
 
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
@@ -16,7 +17,6 @@ import { errorHandler } from 'shared/utils'
 
 import useEnhancedWithGas from '../useEnhancedWithGas'
 import ReviewTransactionModal from './ReviewTransactionModal'
-import { TWO_RIF } from '@rsksmart/rif-relay-light-sdk'
 
 interface Props {
   request: SendTransactionRequest
