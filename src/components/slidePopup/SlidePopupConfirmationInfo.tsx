@@ -13,10 +13,10 @@ interface Props {
   title: string
   description: string
   confirmText: string
+  onConfirm: () => void
   cancelText?: string
   isVisible?: boolean
   height?: number
-  onConfirm: () => void
   onCancel?: () => void
   onClose?: () => void
 }
