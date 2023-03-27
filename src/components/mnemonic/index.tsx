@@ -88,8 +88,11 @@ export const MnemonicComponent = ({
                 style={styles.wordPill}
                 textStyle={styles.wordPillText}
                 textType={'body3'}
-                title={
-                  isMnemonicVisible ? pillText : pillText.replaceAll(/./g, ' ')
+                title={pillText}
+                textColor={
+                  isMnemonicVisible
+                    ? sharedColors.white
+                    : sharedColors.inputActive
                 }
                 color={
                   isMnemonicVisible
