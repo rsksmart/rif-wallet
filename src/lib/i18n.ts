@@ -236,6 +236,9 @@ const resources = {
       wallet_backup_delete_confirmation_title: 'Delete Wallet?',
       wallet_backup_delete_confirmation_description:
         'Proceeding with deleting your wallet will result in loss of funds and all the information saved.',
+      wallet_backup_definitive_delete_confirmation_title: 'Are you sure?',
+      wallet_backup_definitive_delete_confirmation_description:
+        'Do you really want to erase the wallet with all the funds and information saved in it?',
     },
   },
   es: {

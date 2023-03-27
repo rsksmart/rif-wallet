@@ -27,6 +27,10 @@ type Props =
 export const WalletBackup = ({ navigation }: Props) => {
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] =
     useState<boolean>(false)
+  const [
+    isDefinitiveDeleteConfirmationVisible,
+    setIsDefinitiveDeleteConfirmationVisible,
+  ] = useState<boolean>(false)
   const [mnemonic, setMnemonic] = useState<string | null>()
   const mnemonicArray = mnemonic ? mnemonic.split(' ') : []
 
@@ -36,7 +40,7 @@ export const WalletBackup = ({ navigation }: Props) => {
   const deleteWallet = () => {
     dispatch(resetApp())
     saveKeyVerificationReminder(false)
-    setIsDeleteConfirmationVisible(false)
+    setIsDefinitiveDeleteConfirmationVisible(false)
   }
 
   useEffect(() => {
@@ -78,8 +82,23 @@ export const WalletBackup = ({ navigation }: Props) => {
         description={t('wallet_backup_delete_confirmation_description')}
         confirmText={t('Delete')}
         cancelText={t('Cancel')}
-        onConfirm={deleteWallet}
+        onConfirm={() => {
+          setIsDeleteConfirmationVisible(false)
+          setIsDefinitiveDeleteConfirmationVisible(true)
+        }}
         onCancel={() => setIsDeleteConfirmationVisible(false)}
+      />
+      <SlidePopupConfirmationDanger
+        isVisible={isDefinitiveDeleteConfirmationVisible}
+        height={320}
+        title={t('wallet_backup_definitive_delete_confirmation_title')}
+        description={t(
+          'wallet_backup_definitive_delete_confirmation_description',
+        )}
+        confirmText={t('Delete')}
+        cancelText={t('Cancel')}
+        onConfirm={deleteWallet}
+        onCancel={() => setIsDefinitiveDeleteConfirmationVisible(false)}
       />
     </View>
   )
