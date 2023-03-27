@@ -6,6 +6,7 @@ import {
 } from 'components/button'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
+
 import { SlidePopupConfirmation } from './SlidePopupConfirmation'
 
 interface Props {
@@ -69,17 +70,14 @@ const styles = StyleSheet.create({
   }),
   description: castStyle.text({
     color: sharedColors.black,
+    opacity: 0.7,
   }),
   okButton: castStyle.view({
     marginBottom: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 50,
   }),
   cancelButton: castStyle.view({
+    marginBottom: 10,
     borderColor: sharedColors.black,
     borderWidth: 1,
-    marginBottom: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 50,
   }),
 })

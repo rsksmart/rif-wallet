@@ -11,6 +11,7 @@ import { AppButton, AppButtonProps } from 'components/button'
 import { Typography } from 'components/typography'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
+
 import { SlidePopup } from './index'
 
 const ANIMATION_DURATION = 250
@@ -78,7 +79,7 @@ export const SlidePopupConfirmation = ({
           <AppButton
             key={index}
             accessibilityLabel={button.accessibilityLabel}
-            style={button.style}
+            style={[styles.button, button.style]}
             backgroundVariety={button.backgroundVariety}
             color={button.color}
             textColor={button.textColor}
@@ -103,5 +104,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
     color: sharedColors.black,
+  }),
+  button: castStyle.view({
+    height: 50,
   }),
 })

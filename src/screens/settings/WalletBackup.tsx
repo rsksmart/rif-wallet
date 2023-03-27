@@ -7,21 +7,35 @@ import {
   MnemonicComponent,
   Typography,
 } from 'src/components'
+import { SlidePopupConfirmationDanger } from 'src/components/slidePopup/SlidePopupConfirmationDanger'
 import { KeyManagementSystem } from 'src/lib/core'
 import { headerLeftOption } from 'src/navigation/profileNavigator'
 import {
   SettingsScreenProps,
   settingsStackRouteNames,
 } from 'src/navigation/settingsNavigator/types'
+import { resetApp } from 'src/redux/slices/settingsSlice'
+import { useAppDispatch } from 'src/redux/storeUtils'
 import { castStyle } from 'src/shared/utils'
+import { saveKeyVerificationReminder } from 'src/storage/MainStorage'
 import { getKeys } from 'src/storage/SecureStorage'
 
 type Props =
   SettingsScreenProps<settingsStackRouteNames.SecurityConfigurationScreen>
 
 export const WalletBackup = ({ navigation }: Props) => {
+  const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] =
+    useState<boolean>(false)
   const [mnemonic, setMnemonic] = useState<string | null>()
   const mnemonicArray = mnemonic ? mnemonic.split(' ') : []
+
+  const dispatch = useAppDispatch()
+
+  const deleteWallet = () => {
+    dispatch(resetApp())
+    saveKeyVerificationReminder(false)
+    setIsDeleteConfirmationVisible(false)
+  }
 
   useEffect(() => {
     const fn = async () => {
@@ -51,9 +65,20 @@ export const WalletBackup = ({ navigation }: Props) => {
       </View>
       <AppButton
         title="Delete Wallet"
-        onPress={() => {}}
+        style={styles.button}
+        onPress={() => setIsDeleteConfirmationVisible(true)}
         backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
         color={sharedColors.white}
+      />
+      <SlidePopupConfirmationDanger
+        isVisible={isDeleteConfirmationVisible}
+        height={320}
+        onConfirm={deleteWallet}
+        onCancel={() => setIsDeleteConfirmationVisible(false)}
+        confirmText="Delete"
+        cancelText="Cancel"
+        title="Delete Wallet?"
+        description="Proceeding with deleting your wallet will result in loss of funds and all the information saved."
       />
     </View>
   )
@@ -71,5 +96,8 @@ const styles = StyleSheet.create({
   }),
   title: castStyle.text({
     marginVertical: 24,
+  }),
+  button: castStyle.view({
+    height: 50,
   }),
 })
