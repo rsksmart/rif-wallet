@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { StyleSheet, View } from 'react-native'
+import { ScrollView, StyleSheet, View } from 'react-native'
+
 import { sharedColors } from 'shared/constants'
 import {
   AppButton,
@@ -60,7 +61,7 @@ export const WalletBackup = ({ navigation }: Props) => {
   }, [navigation])
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.content}>
         <Typography type="h2" style={styles.title}>
           {t('wallet_backup_subtitle')}
@@ -72,10 +73,11 @@ export const WalletBackup = ({ navigation }: Props) => {
         onPress={() => setIsDeleteConfirmationVisible(true)}
         backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
         color={sharedColors.white}
+        style={styles.deleteButton}
       />
       <SlidePopupConfirmationDanger
         isVisible={isDeleteConfirmationVisible}
-        height={340}
+        height={350}
         title={t('wallet_backup_delete_confirmation_title')}
         description={t('wallet_backup_delete_confirmation_description')}
         confirmText={t('Delete')}
@@ -98,21 +100,22 @@ export const WalletBackup = ({ navigation }: Props) => {
         onConfirm={deleteWallet}
         onCancel={() => setIsDefinitiveDeleteConfirmationVisible(false)}
       />
-    </View>
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
   container: castStyle.view({
-    flex: 1,
     backgroundColor: sharedColors.secondary,
     paddingHorizontal: 24,
-    justifyContent: 'space-between',
   }),
   content: castStyle.view({
     marginTop: 24,
   }),
   title: castStyle.text({
     marginVertical: 24,
+  }),
+  deleteButton: castStyle.view({
+    marginTop: 24,
   }),
 })
