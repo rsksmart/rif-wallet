@@ -235,7 +235,7 @@ const resources = {
       wallet_backup_delete_button: 'Delete Wallet',
       wallet_backup_delete_confirmation_title: 'Delete Wallet?',
       wallet_backup_delete_confirmation_description:
-        'Proceeding with deleting your wallet will result in loss of funds and all the information saved.',
+        'Make sure that you have saved your seed phrase. Without the seed phrase, recovery of your funds will not be possible in a new wallet.',
       wallet_backup_definitive_delete_confirmation_title: 'Are you sure?',
       wallet_backup_definitive_delete_confirmation_description:
         'Do you really want to erase the wallet with all the funds and information saved in it?',
