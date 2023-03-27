@@ -9,7 +9,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import {
   ChangeLanguageScreen,
   FeedbackScreen,
-  SecurityConfigurationScreen,
   SettingsScreen,
   ShowMnemonicScreen,
 } from 'screens/index'
@@ -79,7 +78,7 @@ export const SettingsNavigator = ({
         )}
       />
       <SettingsStack.Screen
-        name={settingsStackRouteNames.SecurityConfigurationScreen}
+        name={settingsStackRouteNames.WalletBackup}
         component={WalletBackup}
         options={settingsNavigatorOptions(
           t('settings_screen_wallet_backup'),

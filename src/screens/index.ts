@@ -21,7 +21,7 @@ export {
   ContactsStackScreenProps,
 } from '../navigation/contactsNavigator/index'
 export { SettingsScreen } from './settings/SettingsScreen'
-export { SecurityConfigurationScreen } from './security/SecurityConfigurationScreen'
+export { WalletBackup } from './settings/WalletBackup'
 export { ChangePinScreen } from './changePin/ChangePinScreen'
 export { AccountsScreen } from './accounts/AccountsScreen'
 export { ProfileCreateScreen } from './profile/ProfileCreateScreen'

@@ -21,8 +21,7 @@ import { castStyle } from 'src/shared/utils'
 import { saveKeyVerificationReminder } from 'src/storage/MainStorage'
 import { getKeys } from 'src/storage/SecureStorage'
 
-type Props =
-  SettingsScreenProps<settingsStackRouteNames.SecurityConfigurationScreen>
+type Props = SettingsScreenProps<settingsStackRouteNames.WalletBackup>
 
 export const WalletBackup = ({ navigation }: Props) => {
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] =
