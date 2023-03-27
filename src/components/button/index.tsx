@@ -15,6 +15,7 @@ import { AppTouchable } from 'components/appTouchable'
 import { Typography, TypographyType } from 'components/typography'
 import { defaultIconSize, sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
+
 import { AccessibilityLabelStandards } from '../shared'
 
 const getBackgroundVariety = (
@@ -158,6 +159,7 @@ export const AppButton = ({
 
 const styles = StyleSheet.create({
   content: castStyle.view({
+    height: 50,
     borderRadius: 25,
     flexDirection: 'row',
     paddingTop: 14,

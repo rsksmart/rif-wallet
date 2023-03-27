@@ -79,7 +79,7 @@ export const SlidePopupConfirmation = ({
           <AppButton
             key={index}
             accessibilityLabel={button.accessibilityLabel}
-            style={[styles.button, button.style]}
+            style={button.style}
             backgroundVariety={button.backgroundVariety}
             color={button.color}
             textColor={button.textColor}
@@ -104,8 +104,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
     color: sharedColors.black,
-  }),
-  button: castStyle.view({
-    height: 50,
   }),
 })

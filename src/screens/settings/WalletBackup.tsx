@@ -70,7 +70,6 @@ export const WalletBackup = ({ navigation }: Props) => {
       </View>
       <AppButton
         title={t('wallet_backup_delete_button')}
-        style={styles.button}
         onPress={() => setIsDeleteConfirmationVisible(true)}
         backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
         color={sharedColors.white}
@@ -116,8 +115,5 @@ const styles = StyleSheet.create({
   }),
   title: castStyle.text({
     marginVertical: 24,
-  }),
-  button: castStyle.view({
-    height: 50,
   }),
 })
