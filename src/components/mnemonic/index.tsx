@@ -81,6 +81,9 @@ export const MnemonicComponent = ({
           accessibilityLabel="mnemonic container">
           {words.map((word, index) => {
             const pillText = `${index + 1}.${word}`
+            if (!isMnemonicVisible && index >= 12) {
+              return null
+            }
             return (
               <AppButton
                 key={`${word + index}`}
