@@ -231,6 +231,11 @@ const resources = {
       feedback_form_email: 'Your email',
       feedback_form_message: 'Message',
       feedback_form_button_send: 'Send feedback',
+      wallet_backup_subtitle: 'View your phrase',
+      wallet_backup_delete_button: 'Delete Wallet',
+      wallet_backup_delete_confirmation_title: 'Delete Wallet?',
+      wallet_backup_delete_confirmation_description:
+        'Proceeding with deleting your wallet will result in loss of funds and all the information saved.',
     },
   },
   es: {

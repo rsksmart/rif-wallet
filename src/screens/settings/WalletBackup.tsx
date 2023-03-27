@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
 import { sharedColors } from 'shared/constants'
 import {
@@ -30,6 +31,7 @@ export const WalletBackup = ({ navigation }: Props) => {
   const mnemonicArray = mnemonic ? mnemonic.split(' ') : []
 
   const dispatch = useAppDispatch()
+  const { t } = useTranslation()
 
   const deleteWallet = () => {
     dispatch(resetApp())
@@ -45,7 +47,6 @@ export const WalletBackup = ({ navigation }: Props) => {
         setMnemonic(kms.mnemonic)
       }
     }
-
     fn()
   }, [])
 
@@ -59,12 +60,12 @@ export const WalletBackup = ({ navigation }: Props) => {
     <View style={styles.container}>
       <View style={styles.content}>
         <Typography type="h2" style={styles.title}>
-          View your phrase
+          {t('wallet_backup_subtitle')}
         </Typography>
         <MnemonicComponent words={mnemonicArray} showAdvice={false} />
       </View>
       <AppButton
-        title="Delete Wallet"
+        title={t('wallet_backup_delete_button')}
         style={styles.button}
         onPress={() => setIsDeleteConfirmationVisible(true)}
         backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
@@ -73,12 +74,12 @@ export const WalletBackup = ({ navigation }: Props) => {
       <SlidePopupConfirmationDanger
         isVisible={isDeleteConfirmationVisible}
         height={320}
+        title={t('wallet_backup_delete_confirmation_title')}
+        description={t('wallet_backup_delete_confirmation_description')}
+        confirmText={t('Delete')}
+        cancelText={t('Cancel')}
         onConfirm={deleteWallet}
         onCancel={() => setIsDeleteConfirmationVisible(false)}
-        confirmText="Delete"
-        cancelText="Cancel"
-        title="Delete Wallet?"
-        description="Proceeding with deleting your wallet will result in loss of funds and all the information saved."
       />
     </View>
   )
