@@ -69,7 +69,7 @@ export const onSocketChangeEmitted =
             abiEnhancer,
             wallet,
             dispatch,
-            payload: payload.originTransaction,
+            payload: payload,
           })
           break
         case 'newTransactions':
