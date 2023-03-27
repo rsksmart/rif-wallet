@@ -33,17 +33,15 @@ export const TokenImage = ({
 
   const iconStyle: StyleProp<ImageStyle> = { height, width }
 
-  const src = transparent
-    ? getTransparentIconSource(symbol)
-      ? getTransparentIconSource(symbol)
-      : getIconSource(symbol)
+  const imageSource = transparent
+    ? getTransparentIconSource(symbol) || getIconSource(symbol)
     : getIconSource(symbol)
   return (
     <View style={viewStyle}>
-      {src ? (
+      {imageSource ? (
         <Image
-          source={src}
-          style={[iconStyle, transparent ? { backgroundColor: color } : {}]}
+          source={imageSource}
+          style={[iconStyle, transparent ? { backgroundColor: color } : null]}
           resizeMode="contain"
         />
       ) : (
