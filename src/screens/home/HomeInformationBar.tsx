@@ -8,6 +8,7 @@ import { Typography } from 'components/typography'
 import { AppTouchable } from 'components/appTouchable'
 import { WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
 import { castStyle } from 'shared/utils'
+
 import { HomeInformationItem } from './HomeInformationItem'
 
 interface HomeInformationBarProps {
@@ -94,7 +95,7 @@ export const HomeInformationBar = ({
           <AppTouchable
             onPress={selectedSlide === lastIndex ? onClose : onNextItem}
             width={36}>
-            <Typography type={'h4'}>
+            <Typography type={'body3'}>
               {selectedSlide === lastIndex ? t('close') : t('next')}
             </Typography>
           </AppTouchable>

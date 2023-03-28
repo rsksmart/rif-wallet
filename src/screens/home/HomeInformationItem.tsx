@@ -21,7 +21,7 @@ export const HomeInformationItem = ({
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Typography type={'h3'} style={styles.title}>
+        <Typography type={'h4'} style={styles.title}>
           {title}
         </Typography>
         <Typography type={'body3'}>{subTitle}</Typography>
