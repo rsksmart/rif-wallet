@@ -1,21 +1,35 @@
-import { StyleSheet, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import OIcon from 'react-native-vector-icons/Octicons'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { homeStackRouteNames } from 'navigation/homeNavigator/types'
-import DappsIcon from 'components/icons/DappsIcon'
-import { sharedColors } from 'shared/constants'
+import { DappsIcon } from 'components/icons/DappsIcon'
+import { sharedColors, sharedStyles } from 'shared/constants'
+import { castStyle } from 'shared/utils'
+import { AppTouchable } from 'components/appTouchable'
+import { ScanIcon } from 'components/icons/ScanIcon'
 
 interface Props extends BottomTabBarProps {
   isShown: boolean
 }
 
+const buttonWidth = 52
+
 export const AppFooterMenu = ({ navigation, isShown }: Props) => {
+  const { bottom } = useSafeAreaInsets()
+
   return !isShown ? null : (
-    <View style={styles.row}>
-      <TouchableOpacity
+    <View
+      style={[
+        styles.container,
+        sharedStyles.paddingHorizontal24,
+        { paddingBottom: bottom },
+      ]}>
+      <AppTouchable
+        width={buttonWidth}
         onPress={() =>
           navigation.navigate(rootTabsRouteNames.Home, {
             screen: homeStackRouteNames.Main,
@@ -24,9 +38,10 @@ export const AppFooterMenu = ({ navigation, isShown }: Props) => {
         style={styles.button}
         accessibilityLabel="home">
         <MCIcon name="home-outline" size={30} color={sharedColors.white} />
-      </TouchableOpacity>
+      </AppTouchable>
 
-      <TouchableOpacity
+      <AppTouchable
+        width={buttonWidth}
         onPress={() => navigation.navigate(rootTabsRouteNames.Activity)}
         style={styles.button}
         accessibilityLabel="activity">
@@ -36,23 +51,26 @@ export const AppFooterMenu = ({ navigation, isShown }: Props) => {
           color={sharedColors.white}
           style={styles.rotation}
         />
-      </TouchableOpacity>
+      </AppTouchable>
 
-      <TouchableOpacity
+      <AppTouchable
+        width={buttonWidth}
         onPress={() => navigation.navigate(rootTabsRouteNames.ScanQR)}
         style={[styles.button, styles.centralButton]}
         accessibilityLabel="scan">
-        <MCIcon name="line-scan" size={30} color={sharedColors.white} />
-      </TouchableOpacity>
+        <ScanIcon />
+      </AppTouchable>
 
-      <TouchableOpacity
+      <AppTouchable
+        width={buttonWidth}
         onPress={() => navigation.navigate(rootTabsRouteNames.WalletConnect)}
         style={styles.button}
         accessibilityLabel="dapps">
         <DappsIcon />
-      </TouchableOpacity>
+      </AppTouchable>
 
-      <TouchableOpacity
+      <AppTouchable
+        width={buttonWidth}
         onPress={() => navigation.navigate(rootTabsRouteNames.Contacts)}
         style={styles.button}
         accessibilityLabel="contacts">
@@ -61,37 +79,33 @@ export const AppFooterMenu = ({ navigation, isShown }: Props) => {
           size={30}
           color={sharedColors.white}
         />
-      </TouchableOpacity>
+      </AppTouchable>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  row: {
+  container: castStyle.view({
     padding: 10,
-    paddingBottom: 30,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: '10%',
-    backgroundColor: sharedColors.secondary,
-  },
-  button: {
+    backgroundColor: sharedColors.black,
+  }),
+  button: castStyle.view({
     alignSelf: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 10,
-    display: 'flex',
     alignItems: 'center',
-    width: 50,
-  },
+    width: buttonWidth,
+    height: buttonWidth,
+  }),
   walletIcon: {
     height: 20,
     resizeMode: 'contain',
   },
-  centralButton: {
+  centralButton: castStyle.view({
     backgroundColor: sharedColors.primary,
-    borderRadius: 25,
-  },
+    borderRadius: 26,
+  }),
   rotation: {
     transform: [
       {
