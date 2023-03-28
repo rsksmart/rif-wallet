@@ -118,11 +118,10 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   }, [domainToLookUp, selectedYears])
 
   return (
-    <ScrollView 
+    <ScrollView
       style={rnsManagerStyles.scrollContainer}
       automaticallyAdjustContentInsets
-      automaticallyAdjustKeyboardInsets
-    >
+      automaticallyAdjustKeyboardInsets>
       <View style={rnsManagerStyles.container}>
         <Typography
           type="h2"
