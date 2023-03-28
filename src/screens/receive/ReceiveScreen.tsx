@@ -76,7 +76,7 @@ export const ReceiveScreen = ({
     }
     newAssets.push(...Object.values(tokenBalances))
     return newAssets
-  }, [bitcoinCore?.networks, tokenBalances])
+  }, [bitcoinCore, tokenBalances])
 
   const onShareUsername = useCallback(() => {
     Share.share({

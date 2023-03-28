@@ -23,7 +23,7 @@ export enum rootTabsRouteNames {
   Settings = 'Settings',
   Profile = 'Profile',
   ChangePinScreen = 'ChangePinScreen',
-  TransactionSummary = 'TransactionSummary',
+  TransactionSummary = 'Transaction Summary',
 }
 
 export type RootTabsParamsList = {

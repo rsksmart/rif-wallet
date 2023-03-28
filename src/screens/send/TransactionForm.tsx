@@ -62,7 +62,7 @@ const transactionFeeMap = new Map([
 ])
 
 const transactionSchema = yup.object().shape({
-  amount: yup.number().min(0.00001),
+  amount: yup.number().min(0.000000001),
   to: yup.string().required(),
   balance: yup.string(),
   isToValid: yup.boolean().isTrue(),

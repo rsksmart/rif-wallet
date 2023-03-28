@@ -63,6 +63,7 @@ export const TransactionSummary = ({
   route,
   navigation,
 }: RootTabsScreenProps<rootTabsRouteNames.TransactionSummary>) => {
+  const [usdButtonActive, setUsdButtonActive] = useState(false)
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const isFocused = useIsFocused()
@@ -79,6 +80,10 @@ export const TransactionSummary = ({
     }
     return navigation.goBack
   }, [backScreen, navigation])
+
+  const onToggleUSD = useCallback(() => {
+    setUsdButtonActive(prev => !prev)
+  }, [])
 
   useEffect(() => {
     dispatch(setFullscreen(isFocused))
@@ -150,6 +155,9 @@ export const TransactionSummary = ({
         title={t('transaction_summary_button_usd')}
         style={styles.usdButton}
         widthVariety={AppButtonWidthVarietyEnum.INLINE}
+        color={usdButtonActive ? sharedColors.white : undefined}
+        textColor={usdButtonActive ? sharedColors.black : undefined}
+        onPress={onToggleUSD}
       />
       <View style={[styles.summaryAlignment, styles.summaryWrapper]}>
         <View>
@@ -178,12 +186,16 @@ export const TransactionSummary = ({
           <Typography
             type={'h4'}
             style={[styles.summaryText, sharedStyles.textRight]}>
-            {transaction.tokenValue.balance}
+            {usdButtonActive
+              ? `${transaction.usdValue.symbol} ${transaction.usdValue.balance}`
+              : `${transaction.tokenValue.symbol} ${transaction.tokenValue.balance}`}
           </Typography>
           <Typography
             type={'h4'}
             style={[styles.summaryText, sharedStyles.textRight]}>
-            {transaction.total}
+            {usdButtonActive
+              ? `${transaction.usdValue.symbol} ${transaction.usdValue.balance}`
+              : `${transaction.tokenValue.symbol} ${transaction.total}`}
           </Typography>
           <Typography
             type={'h4'}
