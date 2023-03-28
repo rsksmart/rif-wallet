@@ -1,15 +1,10 @@
 import { SendBitcoinRequest } from '@rsksmart/rif-wallet-bitcoin'
 import { Request } from '@rsksmart/rif-wallet-core'
-import { CompositeScreenProps } from '@react-navigation/native'
 
 import {
   rootTabsRouteNames,
   RootTabsScreenProps,
 } from 'navigation/rootNavigator'
-import {
-  homeStackRouteNames,
-  HomeStackScreenProps,
-} from 'navigation/homeNavigator/types'
 
 export interface ErrorWithMessage {
   message: string
@@ -28,7 +23,5 @@ export type ContactWithAddressRequired = Partial<Omit<Contact, 'address'>> & {
   address: string
 }
 
-export type ActivityMainScreenProps = CompositeScreenProps<
-  HomeStackScreenProps<homeStackRouteNames.Main>,
+export type ActivityMainScreenProps =
   RootTabsScreenProps<rootTabsRouteNames.Activity>
->

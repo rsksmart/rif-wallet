@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import JailMonkey from 'jail-monkey'
 import { useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { CreateKeysNavigation } from 'navigation/createKeysNavigator'
@@ -11,6 +11,7 @@ import { useAppSelector } from 'store/storeUtils'
 import { selectFullscreen, selectIsUnlocked } from 'store/slices/settingsSlice'
 import { TransactionSummary } from 'screens/transactionSummary'
 import { AppFooterMenu } from 'src/ux/appFooter'
+import { sharedStyles } from 'shared/constants'
 
 import { RootTabsParamsList, rootTabsRouteNames } from './types'
 import { HomeNavigator } from '../homeNavigator'
