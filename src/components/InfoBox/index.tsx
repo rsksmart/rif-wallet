@@ -38,9 +38,9 @@ export const InfoBox = ({
     return
   }, [onPress])
 
-  const isInfoboxHidden = shouldHide ? styles.shouldHide : {}
+  const infoboxHiddenStyle = shouldHide ? styles.shouldHide : null
   return (
-    <View style={[styles.container, { backgroundColor }, isInfoboxHidden]}>
+    <View style={[styles.container, { backgroundColor }, infoboxHiddenStyle]}>
       {avatar ? (
         <Avatar
           style={[
