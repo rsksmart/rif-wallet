@@ -118,15 +118,16 @@ export const useBitcoinCore = (
         onNoNetworksPresent()
         return null
       }
+      // Reset this ref before assigning it
+      networksObj.current = {}
       const networksArr = values.map(item =>
         transformNetwork(item, mnemonicText, rifFetcher),
       )
-
       return { networksArr, networksObj: networksObj.current }
     },
     [transformNetwork, onNoNetworksPresent],
   )
-
+  const previousMnemonic = useRef<string | undefined>()
   useEffect(() => {
     if (storedNetworksValues.length < 1) {
       onNoNetworksPresent()
@@ -140,14 +141,17 @@ export const useBitcoinCore = (
     if (!fetcher) {
       return
     }
-
-    const transformedNetworks = transformStoredNetworks(
-      storedNetworksValues,
-      mnemonic,
-      fetcher,
-    )
-    if (transformedNetworks) {
-      setNetworks(transformedNetworks)
+    // Should only recreate network if mnemonic is different...
+    if (mnemonic !== previousMnemonic.current) {
+      previousMnemonic.current = mnemonic
+      const transformedNetworks = transformStoredNetworks(
+        storedNetworksValues,
+        mnemonic,
+        fetcher,
+      )
+      if (transformedNetworks) {
+        setNetworks(transformedNetworks)
+      }
     }
   }, [
     storedNetworksValues,

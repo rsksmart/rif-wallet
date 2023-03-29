@@ -13,6 +13,7 @@ import {
 } from 'store/slices/transactionsSlice'
 import { setUsdPrices } from 'store/slices/usdPricesSlice'
 import { AppDispatch } from 'store/index'
+
 import { AbiWallet, Action } from './types'
 
 interface OnNewTransactionEventEmittedArgs extends AbiWallet {

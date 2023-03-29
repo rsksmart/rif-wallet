@@ -1,4 +1,5 @@
 import { StyleSheet, View } from 'react-native'
+import { useCallback, useState } from 'react'
 
 import { Typography } from 'components/typography'
 import { AppTouchable } from 'components/appTouchable'
@@ -26,8 +27,20 @@ export const InfoBox = ({
   backgroundColor = sharedColors.inputInactive,
   avatarBackgroundColor = sharedColors.qrColor,
 }: InfoBoxProps) => {
+  const [shouldHide, setShouldHide] = useState(false)
+  const handleOnPress = useCallback(() => {
+    // If onPress exists run it, else hide
+    if (onPress) {
+      onPress()
+      return
+    }
+    setShouldHide(true)
+    return
+  }, [onPress])
+
+  const infoboxHiddenStyle = shouldHide ? styles.shouldHide : null
   return (
-    <View style={[styles.container, { backgroundColor }]}>
+    <View style={[styles.container, { backgroundColor }, infoboxHiddenStyle]}>
       {avatar ? (
         <Avatar
           style={[
@@ -48,7 +61,7 @@ export const InfoBox = ({
         <Typography type={'body3'}>{description}</Typography>
       ) : null}
       {buttonText ? (
-        <AppTouchable style={styles.button} onPress={onPress} width={50}>
+        <AppTouchable style={styles.button} onPress={handleOnPress} width={50}>
           <Typography style={styles.buttonText} type={'body2'}>
             {buttonText}
           </Typography>
@@ -71,5 +84,8 @@ const styles = StyleSheet.create({
   }),
   buttonText: castStyle.text({
     textDecorationLine: 'underline',
+  }),
+  shouldHide: castStyle.view({
+    display: 'none',
   }),
 })

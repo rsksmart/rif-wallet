@@ -85,7 +85,7 @@ export const HomeScreen = ({
       balances
         .reduce((previousValue, token) => {
           if ('satoshis' in token) {
-            previousValue += token.balance * prices.BTC.price
+            previousValue += token.balance * (prices.BTC?.price || 0)
           } else {
             previousValue += convertBalance(
               token.balance,
@@ -287,7 +287,7 @@ export const HomeScreen = ({
     symbolType: 'text',
   }
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <TokenBalance
         firstValue={
           selectedAddress === undefined
@@ -345,7 +345,7 @@ export const HomeScreen = ({
           </>
         )}
       </View>
-    </View>
+    </ScrollView>
   )
 }
 
