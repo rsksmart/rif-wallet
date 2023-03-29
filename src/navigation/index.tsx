@@ -48,12 +48,6 @@ export const screenOptionsWithHeader = (
       height: 64 + topInset,
       backgroundColor: color ?? sharedColors.black,
     },
-    headerLeftContainerStyle: {
-      paddingTop: topInset,
-    },
-    headerRightContainerStyle: {
-      paddingTop: topInset,
-    },
     headerShadowVisible: false,
   }
 }

@@ -18,7 +18,11 @@ import { selectProfileStatus } from 'store/slices/profileSlice'
 import { useAppSelector } from 'store/storeUtils'
 
 import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
-import { ProfileStackParamsList, profileStackRouteNames } from './types'
+import {
+  ProfileStackParamsList,
+  profileStackRouteNames,
+  ProfileStatus,
+} from './types'
 import { screenOptionsWithHeader } from '..'
 
 const ProfileStack = createStackNavigator<ProfileStackParamsList>()
@@ -68,10 +72,6 @@ export const ProfileNavigator = ({
           top,
           t('profile_screen_title'),
           sharedColors.primary,
-          {
-            startColor,
-            endColor,
-          },
         )}
       />
       <ProfileStack.Screen
@@ -104,17 +104,6 @@ export const ProfileNavigator = ({
       <ProfileStack.Screen
         name={profileStackRouteNames.AliasBought}
         component={InjectedScreens.AliasBoughtScreen}
-      />
-
-      <ProfileStack.Screen
-        name={profileStackRouteNames.ShareProfileScreen}
-        component={ShareProfileScreen}
-        options={screenOptionsWithHeader(
-          top,
-          t('profile_screen_title'),
-          undefined,
-          { startColor, endColor },
-        )}
       />
     </ProfileStack.Navigator>
   )
