@@ -36,7 +36,7 @@ const settingsNavigatorOptions = (
   ),
   headerStyle: [
     headerStyles.headerStyle,
-    { backgroundColor: sharedColors.tokenBackground, height: 54 + topInset },
+    { backgroundColor: sharedColors.secondary, height: 54 + topInset },
   ],
   headerTitleContainerStyle: {
     paddingTop: topInset,

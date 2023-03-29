@@ -227,6 +227,10 @@ const resources = {
       contacts_address_input_label: 'address',
       contacts_details_transactions: 'Transactions',
       contacts_details_edit_contact: 'Edit contact',
+      feedback_form_name: 'Your name (voluntary)',
+      feedback_form_email: 'Your email',
+      feedback_form_message: 'Message',
+      feedback_form_button_send: 'Send feedback',
     },
   },
   es: {

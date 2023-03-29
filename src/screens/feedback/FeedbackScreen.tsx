@@ -1,28 +1,61 @@
-import { useState, useEffect } from 'react'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useCallback, useEffect, useState } from 'react'
+import { FieldValues, FormProvider, useForm } from 'react-hook-form'
 import { StyleSheet, View } from 'react-native'
+import * as yup from 'yup'
+import { useTranslation } from 'react-i18next'
 
-import { RegularText } from 'src/components'
-import { PrimaryButton } from 'src/components/button/PrimaryButton'
-import { TextInputWithLabel } from 'src/components/input/TextInputWithLabel'
-import { colors } from 'src/styles'
+import { AppButton, Input } from 'components/index'
 import { headerLeftOption } from 'navigation/profileNavigator'
 import {
   SettingsScreenProps,
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
+import { sharedColors, sharedStyles } from 'shared/constants'
+import { castStyle } from 'shared/utils'
 
 import { sendFeedbackToGithub } from './operations'
 import { ThankYouComponent } from './ThankYouComponent'
+
+const schema = yup.object().shape({
+  name: yup.string(),
+  email: yup.string().email().required('Email is required'),
+  message: yup.string().required('Message is required'),
+})
 
 export const FeedbackScreen = ({
   navigation,
 }: SettingsScreenProps<settingsStackRouteNames.FeedbackScreen>) => {
   const [isSent, setIsSent] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const { t } = useTranslation()
 
-  const [name, setName] = useState<string>('')
-  const [email, setEmail] = useState<string>('')
-  const [feedback, setFeedback] = useState<string>('')
+  const methods = useForm({
+    mode: 'onChange',
+    resolver: yupResolver(schema),
+  })
+
+  const {
+    resetField,
+    handleSubmit,
+    formState: { errors },
+  } = methods
+  const hasErrors = Object.keys(errors).length > 0
+
+  const onSubmit = useCallback(
+    (data: FieldValues) => {
+      if (!hasErrors) {
+        const { name, email, message } = data
+        sendFeedbackToGithub(name, email, message)
+          .then(() => setIsSent(true))
+          .catch(error => {
+            console.log({ error })
+            setIsLoading(false)
+          })
+      }
+    },
+    [hasErrors],
+  )
 
   useEffect(() => {
     navigation.setOptions({
@@ -30,80 +63,87 @@ export const FeedbackScreen = ({
     })
   }, [navigation])
 
-  const submitFeedback = () => {
-    setIsLoading(true)
-    if (feedback !== '') {
-      sendFeedbackToGithub(name, email, feedback)
-        .then(() => setIsSent(true))
-        .catch(error => {
-          console.log({ error })
-          setIsLoading(false)
-        })
-    }
-  }
-
   if (isSent) {
     return <ThankYouComponent />
   }
 
   return (
     <View style={styles.container}>
-      <RegularText style={styles.heading}>Feedback form</RegularText>
+      <View style={sharedStyles.flex}>
+        <FormProvider {...methods}>
+          <Input
+            accessibilityLabel="feedbackName"
+            inputName="name"
+            label={t('feedback_form_name')}
+            placeholder={t('feedback_form_name')}
+            resetValue={() => resetField('name')}
+            containerStyle={styles.input}
+          />
 
-      <TextInputWithLabel
-        label="name"
-        placeholder="your name"
-        value={name}
-        setValue={setName}
-        style={styles.input}
-      />
+          <Input
+            accessibilityLabel="feedbackEmail"
+            inputName="email"
+            label={t('feedback_form_email')}
+            placeholder={t('feedback_form_email')}
+            resetValue={() => resetField('email')}
+            subtitle={errors.email?.message?.toString()}
+            subtitleStyle={styles.fieldError}
+            containerStyle={styles.input}
+          />
 
-      <TextInputWithLabel
-        label="email"
-        placeholder="your email"
-        value={email}
-        setValue={setEmail}
-        style={styles.input}
-      />
-
-      <TextInputWithLabel
-        label="comments"
-        placeholder="your feedback"
-        value={feedback}
-        setValue={setFeedback}
-        multiline={true}
-        inputStyle={styles.feedback}
-        style={styles.input}
-        textAlignVertical="top"
-      />
-
-      <PrimaryButton
-        title="Submit"
-        accessibilityLabel="submit"
-        onPress={submitFeedback}
-        disabled={isLoading}
+          <Input
+            accessibilityLabel="feedbackMessage"
+            inputName="message"
+            label={t('feedback_form_message')}
+            placeholder={t('feedback_form_message')}
+            resetValue={() => resetField('message')}
+            subtitle={errors.message?.message?.toString()}
+            subtitleStyle={styles.fieldError}
+            inputStyle={styles.feedbackInput}
+            multiline={true}
+            containerStyle={styles.feedbackLabel}
+            textAlignVertical="top"
+          />
+        </FormProvider>
+      </View>
+      <AppButton
+        accessibilityLabel="sendFeedbackButton"
+        style={styles.submitButton}
+        title={t('feedback_form_button_send')}
+        color={sharedColors.white}
+        textColor={sharedColors.black}
+        disabled={hasErrors || isLoading}
+        onPress={handleSubmit(onSubmit)}
       />
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.darkPurple3,
+  container: castStyle.view({
+    backgroundColor: sharedColors.secondary,
+    paddingTop: 30,
     paddingHorizontal: 20,
     height: '100%',
-  },
-  heading: {
-    color: colors.white,
-    textAlign: 'center',
-    fontSize: 16,
-    marginVertical: 20,
-  },
-  input: {
-    marginBottom: 10,
-  },
-  feedback: {
-    paddingTop: 20,
+    justifyContent: 'space-between',
+  }),
+  content: castStyle.view({
+    flex: 1,
+  }),
+  input: castStyle.view({
+    height: 90,
+  }),
+  feedbackLabel: castStyle.view({
     height: 150,
-  },
+  }),
+  feedbackInput: castStyle.text({
+    paddingTop: 10,
+  }),
+  submitButton: castStyle.view({
+    marginTop: 20,
+    height: 50,
+  }),
+  fieldError: castStyle.text({
+    color: sharedColors.dangerLight,
+  }),
 })
