@@ -37,7 +37,7 @@ interface FormValues {
   addressIsValid: boolean
 }
 
-const contactFromValidation = yup.object({
+const schema = yup.object({
   name: yup.string().required().trim(),
   address: yup.string().required(),
   addressIsValid: yup.boolean().isTrue(),
@@ -58,11 +58,13 @@ export const ContactFormScreen = ({
     [route.params],
   )
   const methods = useForm<FormValues>({
+    mode: 'all',
     defaultValues: {
-      ...initialValue,
+      name: initialValue.name,
+      address: initialValue.address,
       addressIsValid: false,
     },
-    resolver: yupResolver(contactFromValidation),
+    resolver: yupResolver(schema),
   })
   const {
     resetField,
@@ -136,6 +138,7 @@ export const ContactFormScreen = ({
             testID={'nameInput'}
             accessibilityLabel={'nameInput'}
             placeholder={t('contact_form_name')}
+            resetValue={() => resetField('name')}
           />
         </FormProvider>
       </ScrollView>
