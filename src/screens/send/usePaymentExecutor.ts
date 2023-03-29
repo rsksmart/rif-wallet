@@ -1,8 +1,10 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { BigNumber } from 'ethers'
-import { UnspentTransactionType } from '@rsksmart/rif-wallet-bitcoin'
+import {
+  BitcoinNetwork,
+  UnspentTransactionType,
+} from '@rsksmart/rif-wallet-bitcoin'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
-
 import { IApiTransaction } from '@rsksmart/rif-wallet-services'
 
 import { useAppDispatch } from 'store/storeUtils'
@@ -11,6 +13,7 @@ import {
   modifyTransaction,
   ApiTransactionWithExtras,
 } from 'store/slices/transactionsSlice'
+import { useBitcoinFetchUtxoBalance } from 'screens/send/useBitcoinFetchUtxoBalance'
 
 import { TransactionInformation } from './TransactionInfo'
 import { transferBitcoin } from './transferBitcoin'
@@ -30,16 +33,22 @@ export const usePaymentExecutorContext = () => {
   return useContext(PaymentExecutorContext)
 }
 
-export const usePaymentExecutor = () => {
+export const usePaymentExecutor = (
+  bitcoinNetwork: BitcoinNetwork | undefined,
+) => {
   const [currentTransaction, setCurrentTransaction] =
     useState<TransactionInformation | null>(null)
   const [error, setError] = useState<string | null | { message: string }>()
-  const [utxos, setUtxos] = useState<UnspentTransactionType[]>([])
-  const [bitcoinBalance, setBitcoinBalance] = useState<number>(Number(0))
+
+  const { utxos, balanceAvailable: bitcoinBalance } =
+    useBitcoinFetchUtxoBalance(bitcoinNetwork)
+
   const dispatch = useAppDispatch()
+
   const [transactionStatusChange, setTransactionStatusChange] = useState<
     Parameters<OnSetTransactionStatusChange>[0] | null
   >(null)
+
   const executePayment = ({
     token,
     amount,
@@ -148,7 +157,5 @@ export const usePaymentExecutor = () => {
     currentTransaction,
     error,
     executePayment,
-    setUtxos,
-    setBitcoinBalance,
   }
 }

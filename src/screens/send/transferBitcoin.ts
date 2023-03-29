@@ -1,6 +1,7 @@
 import { BigNumber } from 'ethers'
 import {
   BIPWithRequest,
+  convertBtcToSatoshi,
   UnspentTransactionType,
 } from '@rsksmart/rif-wallet-bitcoin'
 
@@ -33,7 +34,7 @@ export const transferBitcoin = ({
 
   bip.requestPayment
     .onRequestPayment({
-      amountToPay: Number(satoshisToPay),
+      amountToPay: convertBtcToSatoshi(satoshisToPay.toString()).toNumber(),
       addressToPay: to,
       unspentTransactions: utxos,
       miningFee: Number(MINIMUM_FEE),

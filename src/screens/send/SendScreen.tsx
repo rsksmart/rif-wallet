@@ -17,10 +17,7 @@ import { ScreenWithWallet } from '../types'
 import { TransactionInfo } from './TransactionInfo'
 import { TransactionForm } from './TransactionForm'
 import WalletNotDeployedView from './WalletNotDeployedModal'
-import {
-  usePaymentExecutor,
-  PaymentExecutorContext,
-} from './usePaymentExecutor'
+import { usePaymentExecutor } from './usePaymentExecutor'
 import { useFetchBitcoinNetworksAndTokens } from './useFetchBitcoinNetworksAndTokens'
 import { MixedTokenAndNetworkType } from './types'
 
@@ -41,9 +38,10 @@ export const SendScreen = ({
     route.params?.contractAddress || Object.keys(tokenBalances)[0]
 
   const [chainId, setChainId] = useState<number>(31)
-
-  const { currentTransaction, executePayment, setUtxos, setBitcoinBalance } =
-    usePaymentExecutor()
+  // We assume only one bitcoinNetwork instance exists
+  const { currentTransaction, executePayment } = usePaymentExecutor(
+    assets.find(asset => 'isBitcoin' in asset) as BitcoinNetwork,
+  )
 
   useEffect(() => {
     wallet.getChainId().then(setChainId)
@@ -78,30 +76,24 @@ export const SendScreen = ({
         <WalletNotDeployedView onDeployWalletPress={onDeployWalletNavigate} />
       )}
       {!currentTransaction ? (
-        <PaymentExecutorContext.Provider
-          value={{
-            setUtxosGlobal: setUtxos,
-            setBitcoinBalanceGlobal: setBitcoinBalance,
-          }}>
-          <TransactionForm
-            onConfirm={onExecuteTransfer}
-            onCancel={backAction}
-            tokenList={assets}
-            tokenPrices={prices}
-            chainId={chainId}
-            initialValues={{
-              recipient: route.params?.to,
-              amount: 0,
-              asset: route.params?.contractAddress
-                ? assets.find(
-                    asset =>
-                      asset.contractAddress === route.params?.contractAddress,
-                  )
-                : tokenBalances[contractAddress],
-            }}
-            transactions={transactions}
-          />
-        </PaymentExecutorContext.Provider>
+        <TransactionForm
+          onConfirm={onExecuteTransfer}
+          onCancel={backAction}
+          tokenList={assets}
+          tokenPrices={prices}
+          chainId={chainId}
+          initialValues={{
+            recipient: route.params?.to,
+            amount: 0,
+            asset: route.params?.contractAddress
+              ? assets.find(
+                  asset =>
+                    asset.contractAddress === route.params?.contractAddress,
+                )
+              : tokenBalances[contractAddress],
+          }}
+          transactions={transactions}
+        />
       ) : (
         <TransactionInfo transaction={currentTransaction} />
       )}
