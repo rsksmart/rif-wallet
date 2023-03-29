@@ -19,15 +19,23 @@ interface PortfolioCardProps {
 const SelectedCard = ({
   primaryText,
   icon,
+  color,
 }: {
   primaryText: string
   icon?: string
+  color?: string
 }) => (
   <View style={selectedCardStyles.selectedCardContainer}>
     <View style={selectedCardStyles.primaryTextContainer}>
       {icon ? (
         <View style={selectedCardStyles.icon}>
-          <TokenImage symbol={icon} height={20} width={20} />
+          <TokenImage
+            symbol={icon}
+            height={20}
+            width={20}
+            transparent={true}
+            color={color}
+          />
         </View>
       ) : null}
       <Typography
@@ -93,6 +101,7 @@ export const PortfolioCard = ({
       ? SelectedCard({
           primaryText,
           icon,
+          color,
         })
       : NonSelectedCard({
           primaryText,
@@ -121,7 +130,7 @@ const selectedCardStyles = StyleSheet.create({
 
   primaryTextContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
   },
 
   icon: {

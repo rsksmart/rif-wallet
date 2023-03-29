@@ -8,14 +8,23 @@ import {
 } from 'react-native'
 
 import { FrownFaceIcon } from 'components/icons'
+import { sharedColors } from 'shared/constants'
 
 interface Props {
   symbol: string
+  transparent?: boolean
+  color?: string
   height?: number
   width?: number
 }
 
-export const TokenImage = ({ symbol, height = 20, width = 20 }: Props) => {
+export const TokenImage = ({
+  symbol,
+  height = 20,
+  width = 20,
+  transparent = false,
+  color = sharedColors.white,
+}: Props) => {
   const viewStyle: StyleProp<ViewStyle> = {
     aspectRatio: 1,
     justifyContent: 'center',
@@ -24,11 +33,17 @@ export const TokenImage = ({ symbol, height = 20, width = 20 }: Props) => {
 
   const iconStyle: StyleProp<ImageStyle> = { height, width }
 
-  const src = getIconSource(symbol)
+  const imageSource = transparent
+    ? getTransparentIconSource(symbol) || getIconSource(symbol)
+    : getIconSource(symbol)
   return (
     <View style={viewStyle}>
-      {src ? (
-        <Image source={src} style={iconStyle} resizeMode="contain" />
+      {imageSource ? (
+        <Image
+          source={imageSource}
+          style={[iconStyle, transparent ? { backgroundColor: color } : null]}
+          resizeMode="contain"
+        />
       ) : (
         <FrownFaceIcon height={height} width={width} />
       )}
@@ -101,20 +116,41 @@ export enum TokenSymbol {
   RBTC = 'RBTC',
 }
 
+export const getTransparentIconSource = (
+  symbol: string,
+): ImageRequireSource | undefined => {
+  switch (symbol.toUpperCase()) {
+    case 'RBTC':
+    case 'TRBTC':
+      return require('../../images/rbtc-transparent.png')
+    case 'RIF':
+    case 'TRIF':
+      return require('../../images/rif-transparent.png')
+    case 'RDOC':
+      return require('./../../images/rdoc-transparent.png')
+    case 'BTCCB':
+    case 'BTCT':
+    case 'BTC':
+      return require('./../../images/btc-transparent.png')
+    default:
+      return undefined
+  }
+}
+
 export const getIconSource = (
   symbol: string,
 ): ImageRequireSource | undefined => {
   switch (symbol.toUpperCase()) {
     case 'RBTC':
     case 'TRBTC':
-      return require('../../images/RBTC-logo.png')
+      return require('../../images/rbtc.png')
     case 'RIF':
     case 'TRIF':
       return require('./../../images/rif.png')
     case 'DOC':
       return require('@rsksmart/rsk-contract-metadata/images/doc.png')
     case 'RDOC':
-      return require('@rsksmart/rsk-contract-metadata/images/rdoc.png')
+      return require('./../../images/rdoc.png')
     case 'RIFP':
       return require('@rsksmart/rsk-contract-metadata/images/rifpro.png')
     case 'BPRO':
@@ -207,7 +243,7 @@ export const getIconSource = (
     case 'BTCCB':
     case 'BTCT':
     case 'BTC':
-      return require('@rsksmart/rsk-contract-metadata/images/btccb.png')
+      return require('./../../images/btc.png')
     case 'ETHCB':
       return require('@rsksmart/rsk-contract-metadata/images/ethcb.png')
     case 'BRZ':
