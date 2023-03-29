@@ -231,6 +231,14 @@ const resources = {
       feedback_form_email: 'Your email',
       feedback_form_message: 'Message',
       feedback_form_button_send: 'Send feedback',
+      wallet_backup_subtitle: 'View your phrase',
+      wallet_backup_delete_button: 'Delete Wallet',
+      wallet_backup_delete_confirmation_title: 'Delete Wallet?',
+      wallet_backup_delete_confirmation_description:
+        'Make sure that you have saved your seed phrase. Without the seed phrase, recovery of your funds will not be possible in a new wallet.',
+      wallet_backup_definitive_delete_confirmation_title: 'Are you sure?',
+      wallet_backup_definitive_delete_confirmation_description:
+        'Do you really want to erase the wallet with all the funds and information saved in it?',
     },
   },
   es: {

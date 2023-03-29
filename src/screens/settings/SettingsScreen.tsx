@@ -33,8 +33,8 @@ export const SettingsScreen = ({
   const goToAccountsScreen = () =>
     navigation.navigate(settingsStackRouteNames.AccountsScreen)
 
-  const goToSecurityConfiguration = () =>
-    navigation.navigate(settingsStackRouteNames.SecurityConfigurationScreen)
+  const goToWalletBackup = () =>
+    navigation.navigate(settingsStackRouteNames.WalletBackup)
 
   const goToDeploy = () =>
     navigation.navigate(rootTabsRouteNames.Home, {
@@ -69,7 +69,7 @@ export const SettingsScreen = ({
           width={'100%'}
           accessibilityLabel="Wallet Backup"
           style={styles.settingsItem}
-          onPress={goToSecurityConfiguration}>
+          onPress={goToWalletBackup}>
           <Typography type={'h3'}>
             {t('settings_screen_wallet_backup')}
           </Typography>
@@ -112,7 +112,7 @@ export const SettingsScreen = ({
           width={'100%'}
           accessibilityLabel="version"
           style={styles.footerItem}
-          onPress={goToSecurityConfiguration}>
+          onPress={goToWalletBackup}>
           <Typography type={'body1'} color={sharedColors.labelLight}>
             {t('settings_screen_version')} {version}
           </Typography>
@@ -122,7 +122,7 @@ export const SettingsScreen = ({
           width={'100%'}
           accessibilityLabel="Smart Wallet Factory"
           style={styles.footerItem}
-          onPress={goToSecurityConfiguration}>
+          onPress={goToWalletBackup}>
           <>
             <Typography type={'h4'} color={sharedColors.labelLight}>
               {t('settings_screen_smart_wallet_factory')}
@@ -137,7 +137,7 @@ export const SettingsScreen = ({
           width={'100%'}
           accessibilityLabel="security"
           style={styles.footerItem}
-          onPress={goToSecurityConfiguration}>
+          onPress={goToWalletBackup}>
           <>
             <Typography type={'h4'} color={sharedColors.labelLight}>
               {t('settings_screen_rpc_url')}
@@ -152,7 +152,7 @@ export const SettingsScreen = ({
           width={'100%'}
           accessibilityLabel="Backend URL"
           style={styles.footerItem}
-          onPress={goToSecurityConfiguration}>
+          onPress={goToWalletBackup}>
           <>
             <Typography type={'h4'} color={sharedColors.labelLight}>
               {t('settings_screen_backend_url')}

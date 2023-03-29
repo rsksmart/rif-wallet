@@ -11,6 +11,7 @@ import { AppButton, AppButtonProps } from 'components/button'
 import { Typography } from 'components/typography'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
+
 import { SlidePopup } from './index'
 
 const ANIMATION_DURATION = 250

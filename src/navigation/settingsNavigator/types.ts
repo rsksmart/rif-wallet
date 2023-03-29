@@ -1,12 +1,13 @@
 import { CompositeScreenProps } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
+
 import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
 
 export enum settingsStackRouteNames {
   SettingsScreen = 'SettingsScreen',
   ChangeLanguage = 'ChangeLanguage',
   AccountsScreen = 'AccountsScreen',
-  SecurityConfigurationScreen = 'SecurityConfigurationScreen',
+  WalletBackup = 'WalletBackup',
   FeedbackScreen = 'FeedbackScreen',
   ShowMnemonicScreen = 'ShowMnemonicScreen',
   ChangePinScreen = 'ChangePinScreen',
@@ -17,7 +18,7 @@ export type SettingsStackParamsList = {
   [settingsStackRouteNames.SettingsScreen]: undefined
   [settingsStackRouteNames.ChangeLanguage]: undefined
   [settingsStackRouteNames.AccountsScreen]: undefined
-  [settingsStackRouteNames.SecurityConfigurationScreen]: undefined
+  [settingsStackRouteNames.WalletBackup]: undefined
   [settingsStackRouteNames.FeedbackScreen]: undefined
   [settingsStackRouteNames.ShowMnemonicScreen]: undefined
   [settingsStackRouteNames.ChangePinScreen]: undefined
