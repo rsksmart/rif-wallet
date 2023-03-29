@@ -3,6 +3,8 @@ import { CompositeScreenProps } from '@react-navigation/native'
 import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 import { getChainIdByType } from 'lib/utils'
 
@@ -29,9 +31,17 @@ export type ContactFormScreenProps = CompositeScreenProps<
   RootTabsScreenProps<rootTabsRouteNames.Contacts>
 >
 
-interface FormValues extends Contact {
+interface FormValues {
+  name: string
+  address: string
   addressIsValid: boolean
 }
+
+const schema = yup.object({
+  name: yup.string().required().trim(),
+  address: yup.string().required(),
+  addressIsValid: yup.boolean().isTrue(),
+})
 
 export const ContactFormScreen = ({
   navigation,
@@ -48,10 +58,13 @@ export const ContactFormScreen = ({
     [route.params],
   )
   const methods = useForm<FormValues>({
+    mode: 'all',
     defaultValues: {
-      ...initialValue,
+      name: initialValue.name,
+      address: initialValue.address,
       addressIsValid: false,
     },
+    resolver: yupResolver(schema),
   })
   const {
     resetField,
@@ -125,6 +138,7 @@ export const ContactFormScreen = ({
             testID={'nameInput'}
             accessibilityLabel={'nameInput'}
             placeholder={t('contact_form_name')}
+            resetValue={() => resetField('name')}
           />
         </FormProvider>
       </ScrollView>
