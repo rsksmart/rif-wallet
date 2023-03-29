@@ -1,5 +1,5 @@
 import WalletConnect from '@walletconnect/client'
-import { useContext, useState } from 'react'
+import { useContext, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image, ScrollView, StyleSheet, View } from 'react-native'
 
@@ -27,8 +27,9 @@ export const WalletConnectScreen = ({ navigation, route }: Props) => {
     null,
   )
 
-  const openedConnections = Object.values(connections).filter(
-    ({ connector: c }) => c.connected,
+  const openedConnections = useMemo(
+    () => Object.values(connections).filter(({ connector: c }) => c.connected),
+    [connections],
   )
 
   const pendingConnector = wcKey ? connections[wcKey]?.connector : null
