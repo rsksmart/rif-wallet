@@ -1,25 +1,25 @@
+import { useIsFocused } from '@react-navigation/native'
+import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import { useTranslation } from 'react-i18next'
-import { useEffect } from 'react'
-import { useIsFocused } from '@react-navigation/native'
 
-import { sharedColors, sharedStyles } from 'shared/constants'
-import { castStyle } from 'shared/utils'
-import { ContactWithAddressRequired } from 'shared/types'
-import { TokenBalance, CurrencyValue } from 'components/token'
-import { Typography } from 'components/typography'
-import {
-  rootTabsRouteNames,
-  RootTabsScreenProps,
-} from 'navigation/rootNavigator'
 import {
   AppButton,
   AppButtonProps,
   AppButtonWidthVarietyEnum,
 } from 'components/button'
-import { useAppDispatch } from 'store/storeUtils'
+import { CurrencyValue, TokenBalance } from 'components/token'
+import { Typography } from 'components/typography'
+import {
+  rootTabsRouteNames,
+  RootTabsScreenProps,
+} from 'navigation/rootNavigator'
+import { sharedColors, sharedStyles } from 'shared/constants'
+import { ContactWithAddressRequired } from 'shared/types'
+import { castStyle } from 'shared/utils'
 import { setFullscreen } from 'store/slices/settingsSlice'
+import { useAppDispatch } from 'store/storeUtils'
 
 export enum TransactionStatus {
   SUCCESS = 'success',
@@ -55,6 +55,7 @@ export interface TransactionSummaryScreenProps {
   contact: ContactWithAddressRequired
   buttons?: AppButtonProps[]
   title?: string
+  backScreen?: rootTabsRouteNames
 }
 
 export const TransactionSummary = ({
@@ -64,7 +65,7 @@ export const TransactionSummary = ({
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const isFocused = useIsFocused()
-  const { transaction, contact, title, buttons } = route.params
+  const { transaction, contact, title, buttons, backScreen } = route.params
 
   const iconObject = transactionStatusToIconPropsMap.get(transaction.status)
   const transactionStatusText = transactionStatusDisplayText.get(
@@ -194,7 +195,13 @@ export const TransactionSummary = ({
           ))
         ) : (
           <AppButton
-            onPress={() => navigation.goBack()}
+            onPress={() => {
+              if (backScreen) {
+                navigation.navigate(backScreen)
+              } else {
+                navigation.goBack()
+              }
+            }}
             title={t('transaction_summary_default_button_text')}
             color={sharedColors.white}
             textColor={sharedColors.black}

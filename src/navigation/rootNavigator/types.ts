@@ -2,12 +2,12 @@ import { NavigatorScreenParams } from '@react-navigation/native'
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs'
 
 import { ActivityMixedType } from 'screens/activity/types'
+import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 
 import { ContactStackParamsList } from '../contactsNavigator'
 import { CreateKeysStackParamList } from '../createKeysNavigator'
 import { HomeStackParamsList } from '../homeNavigator/types'
 import { ProfileStackParamsList } from '../profileNavigator/types'
-import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 
 export type RootTabsScreenProps<T extends keyof RootTabsParamsList> =
   BottomTabScreenProps<RootTabsParamsList, T>

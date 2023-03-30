@@ -27,14 +27,17 @@ const getStatus = (status: string) => {
   }
 }
 
-interface ActivityBasicRowProps {
+interface Props {
   activityTransaction: ActivityMixedType
   navigation: ActivityMainScreenProps['navigation']
+  backScreen?: rootTabsRouteNames
 }
+
 export const ActivityBasicRow = ({
   activityTransaction,
   navigation,
-}: ActivityBasicRowProps) => {
+  backScreen,
+}: Props) => {
   const prices = useAppSelector(selectUsdPrices)
   const selectedWallet = useAppSelector(selectSelectedWallet)
   const wallets = useAppSelector(selectWallets)
@@ -69,8 +72,12 @@ export const ActivityBasicRow = ({
     [activityDetails],
   )
   const handlePress = useCallback(
-    () => navigation.navigate(rootTabsRouteNames.TransactionSummary, txSummary),
-    [navigation, txSummary],
+    () =>
+      navigation.navigate(rootTabsRouteNames.TransactionSummary, {
+        ...txSummary,
+        backScreen,
+      }),
+    [navigation, txSummary, backScreen],
   )
 
   return (
