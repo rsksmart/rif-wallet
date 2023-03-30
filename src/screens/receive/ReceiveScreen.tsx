@@ -43,7 +43,6 @@ export enum TestID {
 
 export const ReceiveScreen = ({
   route,
-  navigation,
 }: HomeStackScreenProps<homeStackRouteNames.Receive>) => {
   const { t } = useTranslation()
   const methods = useForm()
@@ -239,8 +238,8 @@ export const ReceiveScreen = ({
 
 const styles = StyleSheet.create({
   parent: castStyle.view({
-    backgroundColor: sharedColors.secondary,
-    minHeight: '100%',
+    backgroundColor: sharedColors.black,
+    flex: 1,
     paddingHorizontal: 24,
   }),
   qrView: castStyle.view({
@@ -260,6 +259,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   }),
   flexRow: castStyle.view({
+    paddingTop: 18,
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingBottom: 10,
