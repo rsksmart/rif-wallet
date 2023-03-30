@@ -52,7 +52,6 @@ export const SendScreen = ({
     amount: string,
     to: string,
   ) => {
-    backAction()
     executePayment({
       token,
       amount,
