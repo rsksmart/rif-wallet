@@ -12,8 +12,8 @@ import {
 import { CurrencyValue, TokenBalance } from 'components/token'
 import { Typography } from 'components/typography'
 import {
-  rootTabsRouteNames,
   RootTabsScreenProps,
+  rootTabsRouteNames,
 } from 'navigation/rootNavigator'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { ContactWithAddressRequired } from 'shared/types'
