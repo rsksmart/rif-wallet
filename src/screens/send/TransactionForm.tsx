@@ -367,7 +367,6 @@ export const TransactionForm = ({
       </ScrollView>
       <View style={styles.buttons}>
         <AppButton
-          style={styles.button}
           title={`${t('transaction_form_button_send')} ${amount} ${
             selectedToken.symbol
           }`}
@@ -381,7 +380,7 @@ export const TransactionForm = ({
           textColor={sharedColors.black}
         />
         <AppButton
-          style={[styles.button, styles.buttonCancel]}
+          style={styles.buttonCancel}
           title={t('transaction_form_button_cancel')}
           onPress={onCancel}
           backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
@@ -403,9 +402,6 @@ const styles = StyleSheet.create({
     bottom: 30,
     left: 24,
     right: 24,
-  }),
-  button: castStyle.view({
-    height: 54,
   }),
   buttonCancel: castStyle.view({
     marginTop: 10,

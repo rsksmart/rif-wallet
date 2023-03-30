@@ -250,7 +250,6 @@ const styles = StyleSheet.create({
   transactionList: castStyle.view({ height: 300 }),
   transactionsLabel: castStyle.text({ marginTop: 34 }),
   editContactButton: castStyle.view({
-    height: 54,
     width: '90%',
     position: 'absolute',
     alignSelf: 'center',
