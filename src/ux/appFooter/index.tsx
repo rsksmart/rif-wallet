@@ -26,7 +26,7 @@ export const AppFooterMenu = ({ navigation, isShown }: Props) => {
       style={[
         styles.container,
         sharedStyles.paddingHorizontal24,
-        { paddingBottom: bottom },
+        { paddingBottom: bottom + 4 },
       ]}>
       <AppTouchable
         width={buttonWidth}
