@@ -1,5 +1,5 @@
 import WalletConnect from '@walletconnect/client'
-import * as _ from 'lodash'
+import lodash from 'lodash'
 import { useTranslation } from 'react-i18next'
 import { Image, StyleSheet, View } from 'react-native'
 
@@ -26,7 +26,7 @@ export const DappItem = ({
       <View style={styles.content}>
         <View style={styles.dappNameView}>
           <Typography type="body2">
-            {_.truncate(c.peerMeta?.name || '', {
+            {lodash.truncate(c.peerMeta?.name || '', {
               length: isDisconnecting ? 18 : 20,
             })}
           </Typography>
