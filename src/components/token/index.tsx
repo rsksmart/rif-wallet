@@ -98,7 +98,7 @@ export const TokenBalance = ({
           <View style={[styles.container, styles.toAddressContainer]}>
             <Typography type={'h3'}>{t('To')} </Typography>
             <Typography type={'h3'} style={{ color: sharedColors.primary }}>
-              {to.displayAddress ? to.displayAddress : shortAddress(to.address)}
+              {to.displayAddress || shortAddress(to.address, 10)}
             </Typography>
           </View>
         ) : null}

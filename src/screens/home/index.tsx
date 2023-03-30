@@ -105,9 +105,9 @@ export const HomeScreen = ({
       ? tokenBalances[selectedAddress] ||
         bitcoinCore.networksMap[selectedAddress]
       : undefined
-  const selectedColor = getTokenColor(selected ? selected.symbol : '')
-  const backGroundColor = {
-    backgroundColor: selectedAddress ? selectedColor : sharedColors.borderColor,
+  const selectedColor = getTokenColor(selected?.symbol || '')
+  const backgroundColor = {
+    backgroundColor: selectedAddress || sharedColors.borderColor,
   }
 
   const ramp = useMemo(
@@ -121,7 +121,7 @@ export const HomeScreen = ({
         // userAddress must be lowercase or checksummed correctly:
         userAddress: wallet
           ? toChecksumAddress(
-              wallet?.smartWalletAddress,
+              wallet.smartWalletAddress,
               getChainIdByType(chainType),
             )
           : '',
@@ -192,13 +192,13 @@ export const HomeScreen = ({
     if (selected instanceof BitcoinNetwork) {
       return {
         ...selected,
-        ...{ price: prices ? prices.BTC?.price : 0 },
+        price: prices?.BTC?.price || 0,
       }
     }
     if (selected) {
       return {
         ...selected,
-        ...{ price: prices ? prices[selected.contractAddress]?.price || 0 : 0 },
+        price: prices?.[selected.contractAddress]?.price || 0,
       }
     }
     return {
@@ -300,12 +300,12 @@ export const HomeScreen = ({
         hideable={true}
         hide={hide}
         onHide={onHide}
-        color={backGroundColor.backgroundColor}
+        color={backgroundColor.backgroundColor}
       />
       <HomeBarButtonGroup
         onPress={handleSendReceive}
         isSendDisabled={balances.length === 0}
-        color={backGroundColor.backgroundColor}
+        color={backgroundColor.backgroundColor}
       />
 
       {showInfoBar && !closed && <HomeInformationBar onClose={onClose} />}

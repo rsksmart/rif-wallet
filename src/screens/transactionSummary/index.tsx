@@ -175,7 +175,7 @@ export const TransactionSummary = ({
           {t('transaction_summary_address_text')}
         </Typography>
         <Typography
-          type={'h4'}
+          type={'h5'}
           style={[styles.summaryText, sharedStyles.textRight]}>
           {contact.address}
         </Typography>
@@ -228,6 +228,7 @@ const styles = StyleSheet.create({
   summaryAlignment: castStyle.view({
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'flex-end',
   }),
   summaryWrapper: castStyle.view({
     borderBottomWidth: StyleSheet.hairlineWidth,

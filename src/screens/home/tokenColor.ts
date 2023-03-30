@@ -15,7 +15,7 @@ export const getTokenColor = (tokenSymbol: string): string => {
     case 'BTCT':
       return tokenColors.btc
     default:
-      return sharedColors.inputActive
+      return sharedColors.borderColor
   }
 }
 

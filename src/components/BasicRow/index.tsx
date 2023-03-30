@@ -75,8 +75,8 @@ export const BasicRow = ({
     </View>
     <View style={styles.secondView}>
       <Typography
-        type="h3"
-        style={styles.h3Bold}
+        type="body1"
+        style={styles.bold}
         numberOfLines={1}
         ellipsizeMode="tail">
         {label}
@@ -84,7 +84,7 @@ export const BasicRow = ({
       <Typography type="labelLight">
         {secondaryLabel} <StatusText status={status} />
       </Typography>
-      {error !== undefined && (
+      {error && (
         <Typography
           type="h4"
           style={[styles.errorTextStyle, { color: COLORS_FOR_STATUS.FAILED }]}>
@@ -95,23 +95,23 @@ export const BasicRow = ({
     <View style={styles.thirdView}>
       <View style={styles.amountView}>
         <View style={styles.flexGrowZero}>
-          {txType !== undefined && (
-            <Typography type="h3" style={styles.horizontalPadding}>
+          {txType && (
+            <Typography type="body1" style={styles.horizontalPadding}>
               {TX_TYPE_SIGNS[txType]}
             </Typography>
           )}
         </View>
-        <View style={styles.flexGrowZero}>
+        <View style={[styles.flexGrowZero, styles.center]}>
           <MaterialIcon
             name="north-east"
-            size={17}
+            size={16}
             style={styles.horizontalPadding}
             color={sharedColors.white}
           />
         </View>
         {amount ? (
           <Typography
-            type="h3"
+            type="body1"
             style={[
               styles.flexShrinkOne,
               status === StatusEnum.FAILED ? styles.failedTransaction : {},
@@ -123,7 +123,7 @@ export const BasicRow = ({
         ) : null}
       </View>
       <View style={styles.usdAmountView}>
-        {usdAmount !== undefined && txType !== undefined && (
+        {usdAmount && txType && (
           <Typography
             type="labelLight"
             numberOfLines={1}
@@ -206,7 +206,9 @@ const styles = StyleSheet.create({
     maxHeight: 40,
     aspectRatio: 1,
   },
-  h3Bold: { fontWeight: 'bold' },
+  bold: {
+    fontWeight: 'bold',
+  },
   flexGrowZero: {
     flexGrow: 0,
   },
@@ -215,5 +217,8 @@ const styles = StyleSheet.create({
   },
   failedTransaction: {
     textDecorationLine: 'line-through',
+  },
+  center: {
+    alignSelf: 'center',
   },
 })

@@ -1,6 +1,8 @@
 import { t } from 'i18next'
 import { useCallback, useMemo } from 'react'
 
+import { shortAddress } from 'lib/utils'
+
 import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import { StatusEnum } from 'components/BasicRow'
 import { BasicRowWithContact } from 'components/BasicRow/BasicRowWithContact'
@@ -70,15 +72,14 @@ export const ActivityBasicRow = ({
     () => navigation.navigate(rootTabsRouteNames.TransactionSummary, txSummary),
     [navigation, txSummary],
   )
+
   return (
     <AppTouchable width={'100%'} onPress={handlePress}>
       <BasicRowWithContact
-        label={activityDetails.to}
+        label={shortAddress(activityDetails.to, 8)}
         amount={activityDetails.value}
         status={getStatus(activityDetails.status)}
-        avatar={{
-          name: 'A',
-        }}
+        avatar={{ name: 'A' }}
         secondaryLabel={activityDetails.timeHumanFormatted}
         addressToSearch={activityDetails.to}
       />
