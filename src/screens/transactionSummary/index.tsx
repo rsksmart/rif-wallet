@@ -1,7 +1,7 @@
-import { useIsFocused } from '@react-navigation/native'
-import { useEffect, useMemo } from 'react'
+import { useFocusEffect, useIsFocused } from '@react-navigation/native'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { StyleSheet, View } from 'react-native'
+import { BackHandler, StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
 import {
@@ -83,6 +83,21 @@ export const TransactionSummary = ({
   useEffect(() => {
     dispatch(setFullscreen(isFocused))
   }, [dispatch, isFocused])
+
+  /* override hard back button */
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        console.log('back pressed')
+        goBack()
+        return true
+      }
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress)
+      return () =>
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress)
+    }, [goBack]),
+  )
 
   useEffect(() => {
     navigation.setOptions({
