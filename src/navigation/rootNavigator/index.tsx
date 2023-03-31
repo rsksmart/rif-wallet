@@ -3,6 +3,7 @@ import JailMonkey from 'jail-monkey'
 import { useState } from 'react'
 import { View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useTranslation } from 'react-i18next'
 
 import { CreateKeysNavigation } from 'navigation/createKeysNavigator'
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
@@ -24,6 +25,7 @@ const RootTabs = createBottomTabNavigator<RootTabsParamsList>()
 
 export const RootNavigationComponent = () => {
   const { top } = useSafeAreaInsets()
+  const { t } = useTranslation()
   const isDeviceRooted = JailMonkey.isJailBroken()
   const [isWarningVisible, setIsWarningVisible] = useState(isDeviceRooted)
   const unlocked = useAppSelector(selectIsUnlocked)
@@ -80,7 +82,11 @@ export const RootNavigationComponent = () => {
                 component={CreateKeysNavigation}
               />
             </RootTabs.Group>
-            <RootTabs.Group screenOptions={screenOptionsWithHeader(top)}>
+            <RootTabs.Group
+              screenOptions={screenOptionsWithHeader(
+                top,
+                t('transaction_summary_screen_title'),
+              )}>
               <RootTabs.Screen
                 name={rootTabsRouteNames.TransactionSummary}
                 component={TransactionSummary}
