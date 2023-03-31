@@ -111,6 +111,7 @@ export const FeedbackScreen = ({
             containerStyle={styles.feedbackLabel}
             textAlignVertical="top"
             forceShowSubtitle
+            maxLength={120}
           />
         </FormProvider>
       </View>
