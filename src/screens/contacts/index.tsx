@@ -158,7 +158,6 @@ const styles = StyleSheet.create({
     bottom: 30,
     left: 24,
     right: 24,
-    height: 52,
     backgroundColor: sharedColors.white,
   }),
 })

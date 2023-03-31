@@ -86,7 +86,6 @@ export const sharedStyles = StyleSheet.create({
     fontWeight: 'bold',
   }),
   appButtonBottom: castStyle.view({
-    height: 54,
     backgroundColor: sharedColors.white,
     position: 'absolute',
     bottom: 30,

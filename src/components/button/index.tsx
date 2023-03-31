@@ -159,7 +159,7 @@ export const AppButton = ({
 
 const styles = StyleSheet.create({
   content: castStyle.view({
-    height: 50,
+    minHeight: 52,
     borderRadius: 25,
     flexDirection: 'row',
     paddingTop: 14,
