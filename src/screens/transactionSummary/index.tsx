@@ -1,5 +1,5 @@
 import { useIsFocused } from '@react-navigation/native'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
@@ -18,6 +18,7 @@ import {
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { ContactWithAddressRequired } from 'shared/types'
 import { castStyle } from 'shared/utils'
+import { headerLeftOption } from 'src/navigation/profileNavigator'
 import { setFullscreen } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
 
@@ -72,9 +73,22 @@ export const TransactionSummary = ({
     transaction.status,
   )
 
+  const goBack = useMemo(() => {
+    if (backScreen) {
+      return () => navigation.navigate(backScreen)
+    }
+    return navigation.goBack
+  }, [backScreen, navigation])
+
   useEffect(() => {
     dispatch(setFullscreen(isFocused))
   }, [dispatch, isFocused])
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => headerLeftOption(goBack),
+    })
+  }, [navigation, goBack])
 
   return (
     <View style={styles.screen}>
@@ -195,13 +209,7 @@ export const TransactionSummary = ({
           ))
         ) : (
           <AppButton
-            onPress={() => {
-              if (backScreen) {
-                navigation.navigate(backScreen)
-              } else {
-                navigation.goBack()
-              }
-            }}
+            onPress={goBack}
             title={t('transaction_summary_default_button_text')}
             color={sharedColors.white}
             textColor={sharedColors.black}
