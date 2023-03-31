@@ -190,7 +190,7 @@ export const TransactionSummary = ({
           {t('transaction_summary_address_text')}
         </Typography>
         <Typography
-          type={'h5'}
+          type={'label'}
           style={[styles.summaryText, sharedStyles.textRight]}>
           {contact.address}
         </Typography>
@@ -244,6 +244,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
+    marginBottom: -10,
   }),
   summaryWrapper: castStyle.view({
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -252,6 +253,7 @@ const styles = StyleSheet.create({
   }),
   summaryText: castStyle.text({
     marginTop: 12,
+    lineHeight: 17,
   }),
   buttons: castStyle.view({
     position: 'absolute',
