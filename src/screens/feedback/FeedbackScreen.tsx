@@ -1,11 +1,11 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useCallback, useEffect, useState } from 'react'
 import { FieldValues, FormProvider, useForm } from 'react-hook-form'
-import { StyleSheet, View } from 'react-native'
+import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native'
 import * as yup from 'yup'
 import { useTranslation } from 'react-i18next'
 
-import { AppButton, Input } from 'components/index'
+import { AppButton, Input, Typography } from 'components/index'
 import { headerLeftOption } from 'navigation/profileNavigator'
 import {
   SettingsScreenProps,
@@ -28,6 +28,7 @@ export const FeedbackScreen = ({
 }: SettingsScreenProps<settingsStackRouteNames.FeedbackScreen>) => {
   const [isSent, setIsSent] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [axiosMessage, setAxiosMessage] = useState<string>('')
   const { t } = useTranslation()
 
   const methods = useForm({
@@ -46,12 +47,17 @@ export const FeedbackScreen = ({
     (data: FieldValues) => {
       if (!hasErrors) {
         const { name, email, message } = data
+        setIsLoading(true)
+        setAxiosMessage('')
         sendFeedbackToGithub(name, email, message)
           .then(() => setIsSent(true))
           .catch(error => {
-            console.log({ error })
             setIsLoading(false)
+            if (error instanceof Error) {
+              setAxiosMessage(error.toString())
+            }
           })
+          .finally(() => setIsLoading(false))
       }
     },
     [hasErrors],
@@ -68,7 +74,7 @@ export const FeedbackScreen = ({
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <View style={sharedStyles.flex}>
         <FormProvider {...methods}>
           <Input
@@ -89,6 +95,7 @@ export const FeedbackScreen = ({
             subtitle={errors.email?.message?.toString()}
             subtitleStyle={styles.fieldError}
             containerStyle={styles.input}
+            forceShowSubtitle
           />
 
           <Input
@@ -103,19 +110,26 @@ export const FeedbackScreen = ({
             multiline={true}
             containerStyle={styles.feedbackLabel}
             textAlignVertical="top"
+            forceShowSubtitle
           />
         </FormProvider>
       </View>
+      {isLoading && <ActivityIndicator size="large" />}
+      {axiosMessage !== '' && (
+        <Typography type="h4" color="white">
+          {axiosMessage}
+        </Typography>
+      )}
       <AppButton
         accessibilityLabel="sendFeedbackButton"
         style={styles.submitButton}
         title={t('feedback_form_button_send')}
         color={sharedColors.white}
         textColor={sharedColors.black}
-        disabled={hasErrors || isLoading}
+        disabled={isLoading || isSent}
         onPress={handleSubmit(onSubmit)}
       />
-    </View>
+    </ScrollView>
   )
 }
 
@@ -145,5 +159,6 @@ const styles = StyleSheet.create({
   }),
   fieldError: castStyle.text({
     color: sharedColors.dangerLight,
+    bottom: '10%',
   }),
 })
