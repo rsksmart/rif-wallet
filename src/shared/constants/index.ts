@@ -67,6 +67,9 @@ export const sharedStyles = StyleSheet.create({
   marginLeft24: castStyle.view({ marginLeft: 24 }),
   marginTop40: castStyle.view({ marginTop: 40 }),
   marginRight24: castStyle.view({ marginRight: 24 }),
+  paddingHorizontal24: castStyle.view({
+    paddingHorizontal: 24,
+  }),
   screen: castStyle.view({
     flex: 1,
     backgroundColor: sharedColors.black,
