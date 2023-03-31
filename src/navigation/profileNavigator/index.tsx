@@ -1,16 +1,12 @@
-import {
-  createStackNavigator,
-  StackNavigationOptions,
-} from '@react-navigation/stack'
-import { useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
-import { StyleProp, StyleSheet, ViewStyle } from 'react-native'
+import { createStackNavigator } from '@react-navigation/stack'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import { useTranslation } from 'react-i18next'
+import { useEffect } from 'react'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { useProfileStatusColors } from 'lib/rns'
 
-import { AppTouchable, Typography } from 'components/index'
-import { StepperComponent } from 'components/profile'
+import { AppTouchable } from 'components/index'
 import { InjectedScreens } from 'core/Core'
 import {
   ProfileCreateScreen,
@@ -18,7 +14,6 @@ import {
   ShareProfileScreen,
 } from 'screens/index'
 import { sharedColors, sharedStyles } from 'shared/constants'
-import { castStyle } from 'shared/utils'
 import { selectProfileStatus } from 'store/slices/profileSlice'
 import { useAppSelector } from 'store/storeUtils'
 
@@ -28,6 +23,7 @@ import {
   profileStackRouteNames,
   ProfileStatus,
 } from './types'
+import { screenOptionsWithHeader } from '..'
 
 const ProfileStack = createStackNavigator<ProfileStackParamsList>()
 
@@ -40,38 +36,15 @@ export const headerLeftOption = (goBack: () => void) => (
 export const ProfileNavigator = ({
   navigation,
 }: RootTabsScreenProps<rootTabsRouteNames.Profile>) => {
+  const { top } = useSafeAreaInsets()
+  useEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    })
+  }, [navigation])
   const { t } = useTranslation()
   const status = useAppSelector(selectProfileStatus)
   const { startColor, endColor } = useProfileStatusColors()
-
-  const screenOptionsWithHeader = (
-    title: string,
-    showStepper = true,
-    style?: StyleProp<ViewStyle>,
-  ): StackNavigationOptions => ({
-    headerShown: true,
-    headerTitle: props => (
-      <>
-        <Typography type="h3" style={headerStyles.title}>
-          {title ?? props.children}
-        </Typography>
-        {showStepper && (
-          <StepperComponent
-            colors={[startColor, endColor]}
-            width={40}
-            style={headerStyles.stepper}
-          />
-        )}
-      </>
-    ),
-    headerStyle: [
-      headerStyles.headerStyle,
-      { backgroundColor: sharedColors.secondary },
-      style,
-    ],
-    headerTitleAlign: 'center',
-    headerShadowVisible: false,
-  })
 
   useEffect(() => {
     navigation.setOptions({ headerShown: false })
@@ -83,22 +56,44 @@ export const ProfileNavigator = ({
         <ProfileStack.Screen
           name={profileStackRouteNames.PurchaseDomain}
           component={PurchaseDomainScreen}
-          options={screenOptionsWithHeader(t('username_registration_title'))}
+          options={screenOptionsWithHeader(
+            top,
+            t('username_registration_title'),
+            undefined,
+            { startColor, endColor },
+          )}
         />
       )}
 
       <ProfileStack.Screen
         name={profileStackRouteNames.ProfileCreateScreen}
         component={ProfileCreateScreen}
-        options={screenOptionsWithHeader(t('profile_screen_title'), false, {
-          backgroundColor: sharedColors.primary,
-        })}
+        options={screenOptionsWithHeader(
+          top,
+          t('profile_screen_title'),
+          sharedColors.primary,
+        )}
+      />
+      <ProfileStack.Screen
+        name={profileStackRouteNames.ShareProfileScreen}
+        component={ShareProfileScreen}
+        options={screenOptionsWithHeader(
+          top,
+          t('profile_screen_title'),
+          undefined,
+          { startColor, endColor },
+        )}
       />
 
       <ProfileStack.Screen
         name={profileStackRouteNames.SearchDomain}
         component={InjectedScreens.SearchDomainScreen}
-        options={screenOptionsWithHeader(t('username_registration_title'))}
+        options={screenOptionsWithHeader(
+          top,
+          t('username_registration_title'),
+          undefined,
+          { startColor, endColor },
+        )}
       />
 
       <ProfileStack.Screen
@@ -110,26 +105,6 @@ export const ProfileNavigator = ({
         name={profileStackRouteNames.AliasBought}
         component={InjectedScreens.AliasBoughtScreen}
       />
-
-      <ProfileStack.Screen
-        name={profileStackRouteNames.ShareProfileScreen}
-        component={ShareProfileScreen}
-        options={screenOptionsWithHeader(t('profile_screen_title'))}
-      />
     </ProfileStack.Navigator>
   )
 }
-
-export const headerStyles = StyleSheet.create({
-  headerStyle: castStyle.view({
-    backgroundColor: sharedColors.primary,
-    height: 100,
-  }),
-  title: castStyle.text({
-    marginTop: 20,
-  }),
-  stepper: castStyle.view({
-    marginTop: 10,
-    alignSelf: 'center',
-  }),
-})

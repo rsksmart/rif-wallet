@@ -1,5 +1,6 @@
 import { createStackNavigator } from '@react-navigation/stack'
 import { useEffect } from 'react'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { ContactsScreen, ContactDetails } from 'screens/contacts'
 import { ContactFormScreen } from 'screens/contacts/ContactFormScreen'
@@ -15,6 +16,8 @@ const Stack = createStackNavigator<ContactStackParamsList>()
 export const ContactsNavigation = ({
   navigation,
 }: RootTabsScreenProps<rootTabsRouteNames.Contacts>) => {
+  const { top } = useSafeAreaInsets()
+
   useEffect(() => {
     navigation.setOptions({
       headerShown: false,
@@ -26,17 +29,21 @@ export const ContactsNavigation = ({
       <Stack.Screen
         name={contactsStackRouteNames.ContactsList}
         component={ContactsScreen}
-        options={{ header: props => <AppHeader isShown={true} {...props} /> }}
+        options={{ header: props => <AppHeader {...props} /> }}
       />
       <Stack.Screen
         name={contactsStackRouteNames.ContactForm}
         component={ContactFormScreen}
-        options={screenOptionsWithHeader(undefined, sharedColors.black)}
+        options={screenOptionsWithHeader(top, undefined, sharedColors.black)}
       />
       <Stack.Screen
         name={contactsStackRouteNames.ContactDetails}
         component={ContactDetails}
-        options={screenOptionsWithHeader(undefined, sharedColors.inputInactive)}
+        options={screenOptionsWithHeader(
+          top,
+          undefined,
+          sharedColors.inputInactive,
+        )}
       />
     </Stack.Navigator>
   )

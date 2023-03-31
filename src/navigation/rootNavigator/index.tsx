@@ -2,26 +2,28 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import JailMonkey from 'jail-monkey'
 import { useState } from 'react'
 import { View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { CreateKeysNavigation } from 'navigation/createKeysNavigator'
 import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import { InjectedScreens } from 'core/Core'
 import { useAppSelector } from 'store/storeUtils'
 import { selectFullscreen, selectIsUnlocked } from 'store/slices/settingsSlice'
-import { TransactionsSummary } from 'screens/transactionSummary'
-import { sharedStyles } from 'shared/constants'
+import { TransactionSummary } from 'screens/transactionSummary'
 import { AppFooterMenu } from 'src/ux/appFooter'
-import { AppHeader } from 'src/ux/appHeader'
+import { sharedStyles } from 'shared/constants'
 
 import { RootTabsParamsList, rootTabsRouteNames } from './types'
 import { HomeNavigator } from '../homeNavigator'
 import { ContactsNavigation } from '../contactsNavigator'
 import { SettingsNavigator } from '../settingsNavigator'
 import { ProfileNavigator } from '../profileNavigator'
+import { screenOptionsWithAppHeader, screenOptionsWithHeader } from '..'
 
 const RootTabs = createBottomTabNavigator<RootTabsParamsList>()
 
 export const RootNavigationComponent = () => {
+  const { top } = useSafeAreaInsets()
   const isDeviceRooted = JailMonkey.isJailBroken()
   const [isWarningVisible, setIsWarningVisible] = useState(isDeviceRooted)
   const unlocked = useAppSelector(selectIsUnlocked)
@@ -31,58 +33,59 @@ export const RootNavigationComponent = () => {
   return (
     <View style={sharedStyles.flex}>
       <RootTabs.Navigator
-        tabBar={props => <AppFooterMenu isShown={isShown} {...props} />}
-        screenOptions={{
-          header: props => <AppHeader isShown={isShown} {...props} />,
-          tabBarHideOnKeyboard: true,
-        }}>
+        tabBar={props => <AppFooterMenu isShown={isShown} {...props} />}>
         {!unlocked ? (
           <RootTabs.Screen
             name={rootTabsRouteNames.CreateKeysUX}
             component={CreateKeysNavigation}
+            options={{ headerShown: false }}
           />
         ) : (
           <RootTabs.Group>
-            <RootTabs.Screen
-              name={rootTabsRouteNames.Home}
-              component={HomeNavigator}
-            />
-            <RootTabs.Screen
-              name={rootTabsRouteNames.Activity}
-              component={InjectedScreens.ActivityScreen}
-            />
-            <RootTabs.Screen
-              name={rootTabsRouteNames.ActivityDetails}
-              component={InjectedScreens.ActivityDetailsScreen}
-            />
-            <RootTabs.Screen
-              name={rootTabsRouteNames.ScanQR}
-              component={InjectedScreens.ScanQRScreen}
-            />
-            <RootTabs.Screen
-              name={rootTabsRouteNames.Contacts}
-              component={ContactsNavigation}
-            />
-            <RootTabs.Screen
-              name={rootTabsRouteNames.WalletConnect}
-              component={InjectedScreens.WalletConnectScreen}
-            />
-            <RootTabs.Screen
-              name={rootTabsRouteNames.Settings}
-              component={SettingsNavigator}
-            />
-            <RootTabs.Screen
-              name={rootTabsRouteNames.Profile}
-              component={ProfileNavigator}
-            />
-            <RootTabs.Screen
-              name={rootTabsRouteNames.CreateKeysUX}
-              component={CreateKeysNavigation}
-            />
-            <RootTabs.Screen
-              name={rootTabsRouteNames.TransactionSummary}
-              component={TransactionsSummary}
-            />
+            <RootTabs.Group screenOptions={screenOptionsWithAppHeader}>
+              <RootTabs.Screen
+                name={rootTabsRouteNames.Home}
+                component={HomeNavigator}
+              />
+              <RootTabs.Screen
+                name={rootTabsRouteNames.Activity}
+                component={InjectedScreens.ActivityScreen}
+              />
+              <RootTabs.Screen
+                name={rootTabsRouteNames.ActivityDetails}
+                component={InjectedScreens.ActivityDetailsScreen}
+              />
+              <RootTabs.Screen
+                name={rootTabsRouteNames.ScanQR}
+                component={InjectedScreens.ScanQRScreen}
+              />
+              <RootTabs.Screen
+                name={rootTabsRouteNames.Contacts}
+                component={ContactsNavigation}
+              />
+              <RootTabs.Screen
+                name={rootTabsRouteNames.WalletConnect}
+                component={InjectedScreens.WalletConnectScreen}
+              />
+              <RootTabs.Screen
+                name={rootTabsRouteNames.Settings}
+                component={SettingsNavigator}
+              />
+              <RootTabs.Screen
+                name={rootTabsRouteNames.Profile}
+                component={ProfileNavigator}
+              />
+              <RootTabs.Screen
+                name={rootTabsRouteNames.CreateKeysUX}
+                component={CreateKeysNavigation}
+              />
+            </RootTabs.Group>
+            <RootTabs.Group screenOptions={screenOptionsWithHeader(top)}>
+              <RootTabs.Screen
+                name={rootTabsRouteNames.TransactionSummary}
+                component={TransactionSummary}
+              />
+            </RootTabs.Group>
           </RootTabs.Group>
         )}
       </RootTabs.Navigator>

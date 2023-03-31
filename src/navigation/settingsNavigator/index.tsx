@@ -1,7 +1,4 @@
-import {
-  createStackNavigator,
-  StackNavigationOptions,
-} from '@react-navigation/stack'
+import { createStackNavigator } from '@react-navigation/stack'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -14,75 +11,50 @@ import {
 } from 'screens/index'
 import { InjectedScreens } from 'core/Core'
 import { ExampleScreen } from 'screens/example'
-import { headerStyles } from 'navigation/profileNavigator'
-import { Typography } from 'components/typography'
-import { sharedColors } from 'shared/constants'
+import { WalletBackup } from 'src/screens/settings/WalletBackup'
 
 import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
 import { SettingsStackParamsList, settingsStackRouteNames } from './types'
-import { WalletBackup } from 'src/screens/settings/WalletBackup'
+import { screenOptionsWithHeader } from '..'
 
 const SettingsStack = createStackNavigator<SettingsStackParamsList>()
-
-const settingsNavigatorOptions = (
-  title: string,
-  topInset: number,
-): StackNavigationOptions => ({
-  headerShown: true,
-  headerTitle: props => (
-    <Typography type={'h3'} style={headerStyles.headerPosition}>
-      {title ?? props.children}
-    </Typography>
-  ),
-  headerStyle: [
-    headerStyles.headerStyle,
-    { backgroundColor: sharedColors.secondary, height: 54 + topInset },
-  ],
-  headerTitleContainerStyle: {
-    paddingTop: topInset,
-  },
-  headerLeftContainerStyle: {
-    paddingTop: topInset,
-  },
-  headerShadowVisible: false,
-})
 
 export const SettingsNavigator = ({
   navigation,
 }: RootTabsScreenProps<rootTabsRouteNames.Settings>) => {
+  const { t } = useTranslation()
   const { top } = useSafeAreaInsets()
 
   useEffect(() => {
     navigation.setOptions({ headerShown: false })
   }, [navigation])
-  const { t } = useTranslation()
 
   return (
     <SettingsStack.Navigator>
       <SettingsStack.Screen
         name={settingsStackRouteNames.SettingsScreen}
         component={SettingsScreen}
-        options={settingsNavigatorOptions(t('settings_screen_title'), top)}
+        options={screenOptionsWithHeader(top, t('settings_screen_title'))}
       />
       <SettingsStack.Screen
         name={settingsStackRouteNames.AccountsScreen}
         component={InjectedScreens.AccountsScreen}
-        options={settingsNavigatorOptions(t('settings_screen_accounts'), top)}
+        options={screenOptionsWithHeader(top, t('settings_screen_accounts'))}
       />
       <SettingsStack.Screen
         name={settingsStackRouteNames.FeedbackScreen}
         component={FeedbackScreen}
-        options={settingsNavigatorOptions(
-          t('settings_screen_provide_feedback'),
+        options={screenOptionsWithHeader(
           top,
+          t('settings_screen_provide_feedback'),
         )}
       />
       <SettingsStack.Screen
         name={settingsStackRouteNames.WalletBackup}
         component={WalletBackup}
-        options={settingsNavigatorOptions(
-          t('settings_screen_wallet_backup'),
+        options={screenOptionsWithHeader(
           top,
+          t('settings_screen_wallet_backup'),
         )}
       />
       <SettingsStack.Screen
@@ -92,15 +64,15 @@ export const SettingsNavigator = ({
       <SettingsStack.Screen
         name={settingsStackRouteNames.ShowMnemonicScreen}
         component={ShowMnemonicScreen}
-        options={settingsNavigatorOptions(
-          t('settings_screen_wallet_backup'),
+        options={screenOptionsWithHeader(
           top,
+          t('settings_screen_wallet_backup'),
         )}
       />
       <SettingsStack.Screen
         name={settingsStackRouteNames.ExampleScreen}
         component={ExampleScreen}
-        options={settingsNavigatorOptions(t('Example Screen'), top)}
+        options={screenOptionsWithHeader(top, t('Example Screen'))}
       />
     </SettingsStack.Navigator>
   )

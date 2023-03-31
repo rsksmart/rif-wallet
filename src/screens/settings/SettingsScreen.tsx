@@ -170,7 +170,7 @@ export const SettingsScreen = ({
 const styles = StyleSheet.create({
   container: castStyle.view({
     height: '100%',
-    backgroundColor: sharedColors.tokenBackground,
+    backgroundColor: sharedColors.black,
     paddingHorizontal: 24,
   }),
   mainView: castStyle.view({

@@ -57,7 +57,7 @@ export interface TransactionSummaryScreenProps {
   title?: string
 }
 
-export const TransactionsSummary = ({
+export const TransactionSummary = ({
   route,
   navigation,
 }: RootTabsScreenProps<rootTabsRouteNames.TransactionSummary>) => {

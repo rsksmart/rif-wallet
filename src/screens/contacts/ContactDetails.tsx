@@ -123,6 +123,12 @@ export const ContactDetails = ({
           />
         </AppTouchable>
       ),
+      headerRightContainerStyle: {
+        paddingTop: 0,
+      },
+      headerLeftContainerStyle: {
+        paddingTop: 0,
+      },
     })
   }, [navigation, onDeleteContact])
 

@@ -112,6 +112,12 @@ export const ContactFormScreen = ({
         ? t('contact_form_title_edit')
         : t('contact_form_title_create'),
       headerTintColor: sharedColors.white,
+      headerRightContainerStyle: {
+        paddingTop: 0,
+      },
+      headerLeftContainerStyle: {
+        paddingTop: 0,
+      },
     })
   }, [navigation, initialValue, t])
 

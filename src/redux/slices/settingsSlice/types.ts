@@ -33,9 +33,6 @@ export interface SetNewWalletAction {
   isDeployed: boolean
 }
 
-type RequestMixed = Request & SendBitcoinRequest
-export type Requests = RequestMixed[]
-
 export enum ChainTypeEnum {
   TESTNET = 'TESTNET',
   MAINNET = 'MAINNET',
@@ -43,7 +40,7 @@ export enum ChainTypeEnum {
 
 export interface SettingsSlice {
   isSetup: boolean
-  requests: Requests
+  requests: RequestWithBitcoin[]
   topColor: ColorValue
   wallets: Wallets | null
   walletsIsDeployed: WalletsIsDeployed | null

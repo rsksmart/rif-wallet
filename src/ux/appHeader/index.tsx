@@ -16,15 +16,7 @@ import { ProfileHandler } from './ProfileHandler'
 
 type HeaderProps = BottomTabHeaderProps | StackHeaderProps
 
-interface Props {
-  isShown: boolean
-}
-
-export const AppHeader = ({
-  navigation,
-  route,
-  isShown,
-}: Props & HeaderProps) => {
+export const AppHeader = ({ navigation, route }: HeaderProps) => {
   const insets = useSafeAreaInsets()
   const topColor = useAppSelector(selectTopColor)
   const { wallet } = useAppSelector(selectActiveWallet)
@@ -40,7 +32,7 @@ export const AppHeader = ({
     }
   }, [navigation, route])
 
-  return !isShown ? null : (
+  return (
     <View
       style={[
         styles.row,
