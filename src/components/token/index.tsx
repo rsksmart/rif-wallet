@@ -89,7 +89,7 @@ export const TokenBalance = ({
             </Typography>
           )}
           <Typography type={'h3'} style={styles.subTitle}>
-            {hide
+            {hide && secondValue?.balance
               ? '\u002A\u002A\u002A\u002A\u002A\u002A'
               : secondValue?.balance}
           </Typography>
