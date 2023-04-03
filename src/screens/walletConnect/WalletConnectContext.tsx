@@ -22,7 +22,7 @@ import { selectWallets } from 'store/slices/settingsSlice'
 export interface WalletConnectContextInterface {
   connections: IWalletConnectConnections
   createSession: (wallet: RIFWallet, uri: string, session?: IWCSession) => void
-  handleApprove: (wc: WalletConnect, wallet: RIFWallet) => Promise<void>
+  handleApprove: (wc: WalletConnect, wallet: RIFWallet | null) => Promise<void>
   handleReject: (wc: WalletConnect) => void
 }
 
@@ -107,7 +107,7 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
         }
 
         unsubscribeToEvents(wc)
-        await deleteWCSession(wc.uri)
+        deleteWCSession(wc.uri)
         setConnections(prev => {
           const result = { ...prev }
           delete result[wc.key]
@@ -118,8 +118,8 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
     [navigation],
   )
 
-  const handleApprove = async (wc: WalletConnect, wallet: RIFWallet) => {
-    if (wc) {
+  const handleApprove = async (wc: WalletConnect, wallet: RIFWallet | null) => {
+    if (wc && wallet) {
       wc.approveSession({
         accounts: [wallet.smartWalletAddress],
         chainId: await wallet.getChainId(),

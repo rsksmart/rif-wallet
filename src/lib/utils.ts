@@ -1,5 +1,6 @@
 import { BigNumber, BigNumberish, FixedNumber } from 'ethers'
 import moment from 'moment'
+
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 
 export function shortAddress(address?: string, trimAmount?: number): string {

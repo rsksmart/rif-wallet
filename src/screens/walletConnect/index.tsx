@@ -1,31 +1,35 @@
+import WalletConnect from '@walletconnect/client'
+import { useContext, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Image, ScrollView, StyleSheet, View } from 'react-native'
+
+import { Typography } from 'components/index'
 import {
   rootTabsRouteNames,
   RootTabsScreenProps,
 } from 'navigation/rootNavigator/types'
-import { useContext } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Image, ScrollView, StyleSheet, View } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
-import LinearGradient from 'react-native-linear-gradient'
-import { RegularText, SemiBoldText } from 'src/components'
-import { selectActiveWallet } from 'store/slices/settingsSlice'
-import { useAppSelector } from 'store/storeUtils'
-import { ConfirmationModal } from '../../components/modal/ConfirmationModal'
-import { colors } from '../../styles'
+import { sharedColors } from 'shared/constants'
+import { castStyle } from 'shared/utils'
+
+import { DappConnectConfirmation } from './DappConnectConfirmation'
+import { DappDisconnectConfirmation } from './DappDisconnectConfirmation'
+import { DappItem } from './DappItem'
 import { WalletConnectContext } from './WalletConnectContext'
 
-export const WalletConnectScreen = ({
-  navigation,
-  route,
-}: RootTabsScreenProps<rootTabsRouteNames.WalletConnect>) => {
-  const wcKey = route.params?.wcKey
-  const { t } = useTranslation()
-  const { wallet } = useAppSelector(selectActiveWallet)
-  const { connections, handleApprove, handleReject } =
-    useContext(WalletConnectContext)
+type Props = RootTabsScreenProps<rootTabsRouteNames.WalletConnect>
 
-  const openedConnections = Object.values(connections).filter(
-    ({ connector: c }) => c.connected,
+export const WalletConnectScreen = ({ navigation, route }: Props) => {
+  const wcKey = route.params?.wcKey
+
+  const { t } = useTranslation()
+  const { connections } = useContext(WalletConnectContext)
+  const [disconnectingWC, setDisconnectingWC] = useState<WalletConnect | null>(
+    null,
+  )
+
+  const openedConnections = useMemo(
+    () => Object.values(connections).filter(({ connector: c }) => c.connected),
+    [connections],
   )
 
   const pendingConnector = wcKey ? connections[wcKey]?.connector : null
@@ -39,154 +43,76 @@ export const WalletConnectScreen = ({
     <View style={styles.parent}>
       <View style={styles.header}>
         <View style={styles.innerHeader1}>
-          <RegularText style={styles.title}>{t('Connected Dapps')}</RegularText>
-          <RegularText style={styles.subtitle}>
-            {t('Connect new Dapp by scanning a QR code.')}
-          </RegularText>
+          <Typography type="h2">{t('dapps_title')}</Typography>
+          <Typography type="h5" style={styles.subtitle}>
+            {t('dapps_instructions')}
+          </Typography>
         </View>
         <View style={styles.innerHeader2} />
       </View>
-      {pendingConnector && !pendingConnector.connected && (
-        <ConfirmationModal
-          title={`${t('Connect to')} ${
-            pendingConnector?.peerMeta?.name || 'Dapp'
-          }?`}
-          okText={t('Connect')}
-          cancelText={t('Reject')}
-          onOk={() => handleApprove(pendingConnector, wallet)}
-          onCancel={() => handleReject(pendingConnector)}
-        />
-      )}
+
       {openedConnections.length === 0 ? (
         <>
           <Image
-            source={require('../../images/empty-dapps.png')}
+            source={require('src/images/empty-dapps.png')}
             style={styles.noDappsImage}
           />
-          <View style={styles.noDappsTextView} testID="emptyView">
-            <RegularText style={styles.noDappsText}>
-              {t('You are currently not')}
-            </RegularText>
-            <RegularText style={styles.noDappsText}>
-              {t('connected to any Dapp.')}
-            </RegularText>
-          </View>
         </>
       ) : (
         <ScrollView style={styles.dappsList}>
           {openedConnections.map(({ connector: c }) => (
-            <LinearGradient
+            <DappItem
               key={c.key}
-              colors={[colors.background.secondary, colors.background.primary]}
-              style={styles.dapp}>
-              <View style={styles.dappInner}>
-                <Image
-                  source={require('../../images/dapp-icon.png')}
-                  style={styles.dappIcon}
-                />
-                <View style={styles.dappNameView}>
-                  <SemiBoldText style={styles.dappName}>
-                    {c.peerMeta?.name}
-                  </SemiBoldText>
-                  <RegularText style={styles.dappUrl}>
-                    {c.peerMeta?.url}
-                  </RegularText>
-                </View>
-                <TouchableOpacity
-                  accessibilityLabel="dapp"
-                  style={styles.dappButtonView}
-                  onPress={() => c.killSession()}>
-                  <Image
-                    source={require('../../images/disconnect-dapp.png')}
-                    style={styles.dappButton}
-                  />
-                </TouchableOpacity>
-              </View>
-            </LinearGradient>
+              connector={c}
+              isDisconnecting={c.key === disconnectingWC?.key}
+              onDisconnect={() => setDisconnectingWC(c)}
+            />
           ))}
         </ScrollView>
+      )}
+
+      {pendingConnector && !pendingConnector.connected && (
+        <DappConnectConfirmation connector={pendingConnector} />
+      )}
+
+      {disconnectingWC && (
+        <DappDisconnectConfirmation
+          dappName={disconnectingWC.peerMeta?.name}
+          onConfirm={() => disconnectingWC.killSession()}
+          onCancel={() => setDisconnectingWC(null)}
+        />
       )}
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  parent: {
+  parent: castStyle.view({
     height: '100%',
-    backgroundColor: colors.background.darkBlue,
+    backgroundColor: sharedColors.secondary,
     padding: 20,
-  },
-  header: {
+  }),
+  header: castStyle.view({
     flexDirection: 'row',
     padding: 10,
-  },
-  innerHeader1: {
-    flex: 2,
-  },
-  innerHeader2: {
+  }),
+  innerHeader1: castStyle.view({
+    flex: 3,
+  }),
+  innerHeader2: castStyle.view({
     flex: 1,
-  },
-  title: {
-    fontSize: 22,
-    color: colors.text.primary,
-  },
-  subtitle: {
-    fontSize: 13,
-    color: colors.text.primary,
+  }),
+  subtitle: castStyle.view({
     marginTop: 10,
-  },
-  noDappsImage: {
+  }),
+  noDappsImage: castStyle.image({
     flex: 4,
     alignSelf: 'center',
-    width: '90%',
+    width: '80%',
     resizeMode: 'contain',
-  },
-  noDappsTextView: {
-    flex: 1,
-    alignSelf: 'center',
-  },
-  noDappsText: {
-    color: colors.text.primary,
-    fontSize: 14,
-    textAlign: 'center',
-  },
-  dappsList: {
+  }),
+  dappsList: castStyle.view({
     flex: 1,
     marginTop: 20,
-  },
-  dapp: {
-    borderRadius: 10,
-    padding: 20,
-    marginBottom: 20,
-  },
-  dappInner: {
-    flexDirection: 'row',
-  },
-  dappIcon: {
-    width: 30,
-    height: 30,
-    resizeMode: 'contain',
-    alignSelf: 'center',
-  },
-  dappNameView: {
-    flex: 3,
-    marginLeft: 20,
-  },
-  dappName: {
-    fontSize: 16,
-    color: colors.text.primary,
-  },
-  dappButtonView: {
-    flex: 1,
-  },
-  dappButton: {
-    flex: 1,
-    width: 50,
-    height: 50,
-    resizeMode: 'contain',
-  },
-  dappUrl: {
-    fontSize: 12,
-    color: colors.text.secondary,
-  },
+  }),
 })
