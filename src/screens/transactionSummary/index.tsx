@@ -240,8 +240,12 @@ const styles = StyleSheet.create({
     backgroundColor: sharedColors.black,
     paddingHorizontal: 22,
   }),
-  sendText: castStyle.text({ marginTop: 22 }),
-  tokenBalance: castStyle.view({ marginTop: 9 }),
+  sendText: castStyle.text({
+    marginTop: 22,
+  }),
+  tokenBalance: castStyle.view({
+    marginTop: 9,
+  }),
   statusContainer: castStyle.view({
     height: 54,
     marginTop: 28,

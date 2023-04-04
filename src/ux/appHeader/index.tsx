@@ -36,7 +36,7 @@ export const AppHeader = ({ navigation, route }: HeaderProps) => {
     <View
       style={[
         styles.row,
-        { backgroundColor: topColor, paddingTop: insets.top },
+        { backgroundColor: topColor, paddingTop: insets.top + 5 },
       ]}>
       <View style={[styles.column, styles.walletInfo]}>
         {wallet && <ProfileHandler wallet={wallet} navigation={navigation} />}

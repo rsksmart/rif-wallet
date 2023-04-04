@@ -289,6 +289,7 @@ export const HomeScreen = ({
   return (
     <ScrollView style={styles.container}>
       <TokenBalance
+        style={styles.tokenBalance}
         firstValue={
           selectedAddress === undefined
             ? overrideFirstValue
@@ -350,7 +351,13 @@ export const HomeScreen = ({
 }
 
 const styles = StyleSheet.create({
-  bodyContainer: castStyle.view({ padding: 12 }),
+  bodyContainer: castStyle.view({
+    padding: 12,
+  }),
+  tokenBalance: castStyle.view({
+    paddingLeft: 24,
+    paddingRight: 18,
+  }),
   emptyTransactionsLabel: castStyle.text({
     padding: 6,
     paddingTop: 10,
