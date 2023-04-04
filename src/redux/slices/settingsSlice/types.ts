@@ -52,4 +52,5 @@ export interface SettingsSlice {
   unlocked: boolean
   previouslyUnlocked: boolean
   fullscreen: boolean
+  hideBalance: boolean
 }

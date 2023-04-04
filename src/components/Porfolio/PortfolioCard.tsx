@@ -5,6 +5,8 @@ import { TokenImage } from 'screens/home/TokenImage'
 import { Typography } from 'components/typography'
 import { colors } from 'src/styles'
 import { AppTouchable } from 'components/appTouchable'
+import { useAppSelector } from 'src/redux/storeUtils'
+import { selectHideBalance } from 'src/redux/slices/settingsSlice'
 
 interface PortfolioCardProps {
   onPress: () => void
@@ -52,10 +54,12 @@ const NonSelectedCard = ({
   primaryText,
   secondaryText,
   icon,
+  hideBalance = false,
 }: {
   primaryText: string
   secondaryText: string
   icon?: string
+  hideBalance?: boolean
 }) => (
   <View style={nonSelectedCardStyles.container}>
     <View style={nonSelectedCardStyles.primaryTextContainer}>
@@ -76,7 +80,7 @@ const NonSelectedCard = ({
         type={'body1'}
         style={nonSelectedCardStyles.secondaryText}
         accessibilityLabel="balance">
-        {secondaryText}
+        {hideBalance ? '\u002A\u002A\u002A\u002A' : secondaryText}
       </Typography>
     </View>
   </View>
@@ -90,26 +94,30 @@ export const PortfolioCard = ({
   isSelected,
   icon,
   disabled,
-}: PortfolioCardProps) => (
-  <AppTouchable
-    width={100}
-    onPress={onPress}
-    disabled={disabled}
-    style={[styles.topContainer, { backgroundColor: color }]}
-    accessibilityLabel={primaryText}>
-    {isSelected
-      ? SelectedCard({
-          primaryText,
-          icon,
-          color,
-        })
-      : NonSelectedCard({
-          primaryText,
-          secondaryText,
-          icon,
-        })}
-  </AppTouchable>
-)
+}: PortfolioCardProps) => {
+  const hideBalance = useAppSelector(selectHideBalance)
+  return (
+    <AppTouchable
+      width={100}
+      onPress={onPress}
+      disabled={disabled}
+      style={[styles.topContainer, { backgroundColor: color }]}
+      accessibilityLabel={primaryText}>
+      {isSelected
+        ? SelectedCard({
+            primaryText,
+            icon,
+            color,
+          })
+        : NonSelectedCard({
+            primaryText,
+            secondaryText,
+            icon,
+            hideBalance,
+          })}
+    </AppTouchable>
+  )
+}
 
 const styles = StyleSheet.create({
   topContainer: {

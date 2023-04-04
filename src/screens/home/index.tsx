@@ -21,7 +21,12 @@ import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
-import { changeTopColor, selectActiveWallet } from 'store/slices/settingsSlice'
+import {
+  changeTopColor,
+  selectActiveWallet,
+  selectHideBalance,
+  setHideBalance,
+} from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { HomeBarButtonGroup } from 'screens/home/HomeBarButtonGroup'
 import { CurrencyValue, TokenBalance } from 'components/token'
@@ -51,6 +56,7 @@ export const HomeScreen = ({
   const prices = useAppSelector(selectUsdPrices)
   const bitcoinCore = useBitcoinContext()
   const { wallet, chainType } = useAppSelector(selectActiveWallet)
+  const hideBalance = useAppSelector(selectHideBalance)
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
     undefined,
   )
@@ -68,7 +74,6 @@ export const HomeScreen = ({
     })
   const [showInfoBar, setShowInfoBar] = useState<boolean>(true)
 
-  const [hide, setHide] = useState<boolean>(false)
   const balances: Array<ITokenWithBalance | BitcoinNetwork> = useMemo(() => {
     if (bitcoinCore) {
       return [
@@ -254,9 +259,6 @@ export const HomeScreen = ({
     setShowInfoBar(false)
   }, [])
 
-  const onHide = useCallback(() => {
-    setHide(!hide)
-  }, [hide])
   const { transactions } = useAppSelector(selectTransactions)
 
   const btcTransactionFetcher = useBitcoinTransactionsHandler({
@@ -299,8 +301,8 @@ export const HomeScreen = ({
           selectedAddress === undefined ? undefined : selectedTokenBalanceUsd
         }
         hideable={true}
-        hide={hide}
-        onHide={onHide}
+        hide={hideBalance}
+        onHide={() => dispatch(setHideBalance(!hideBalance))}
         color={backgroundColor.backgroundColor}
       />
       <HomeBarButtonGroup

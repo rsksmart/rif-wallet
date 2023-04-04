@@ -44,3 +44,6 @@ export const selectPreviouslyUnlocked = ({ settings }: RootState) =>
 export const selectIsSetup = ({ settings }: RootState) => settings.isSetup
 
 export const selectFullscreen = ({ settings }: RootState) => settings.fullscreen
+
+export const selectHideBalance = ({ settings }: RootState) =>
+  settings.hideBalance
