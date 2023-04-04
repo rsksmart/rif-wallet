@@ -54,8 +54,12 @@ export const TokenBalance = ({
       <View style={[styles.row, styles.margin]}>
         <View style={[styles.row, styles.balance]}>
           {firstValue.symbolType === 'icon' && (
-            <View style={[styles.tokenIcon]}>
-              <TokenImage symbol={firstValue.symbol} height={24} width={24} />
+            <View
+              style={[
+                styles.tokenIcon,
+                !firstValue.symbol ? styles.tokenBackground : null,
+              ]}>
+              <TokenImage symbol={firstValue.symbol} height={30} width={30} />
             </View>
           )}
           {firstValue.symbolType === 'text' && (
@@ -166,10 +170,12 @@ const styles = StyleSheet.create({
   }),
   tokenIcon: castStyle.view({
     marginRight: 10,
-    backgroundColor: sharedColors.white,
-    borderRadius: 15,
     width: 30,
     height: 30,
+  }),
+  tokenBackground: castStyle.view({
+    borderRadius: 15,
+    backgroundColor: sharedColors.white,
   }),
   tokenSubIcon: castStyle.view({
     marginRight: 5,

@@ -25,9 +25,9 @@ const SelectedCard = ({
   icon?: string
   color?: string
 }) => (
-  <View style={selectedCardStyles.selectedCardContainer}>
+  <View style={selectedCardStyles.container}>
     <View style={selectedCardStyles.primaryTextContainer}>
-      {icon ? (
+      {icon && (
         <View style={selectedCardStyles.icon}>
           <TokenImage
             symbol={icon}
@@ -37,7 +37,7 @@ const SelectedCard = ({
             color={color}
           />
         </View>
-      ) : null}
+      )}
       <Typography
         type={'body1'}
         style={selectedCardStyles.primaryText}
@@ -59,11 +59,11 @@ const NonSelectedCard = ({
 }) => (
   <View style={nonSelectedCardStyles.container}>
     <View style={nonSelectedCardStyles.primaryTextContainer}>
-      {icon ? (
+      {icon && (
         <View style={nonSelectedCardStyles.icon}>
           <TokenImage symbol={icon} height={18} width={18} />
         </View>
-      ) : null}
+      )}
       <Typography
         type={'body1'}
         style={nonSelectedCardStyles.primaryText}
@@ -123,23 +123,18 @@ const styles = StyleSheet.create({
 })
 
 const selectedCardStyles = StyleSheet.create({
-  selectedCardContainer: {
+  container: {
     justifyContent: 'center',
     height: '100%',
   },
-
   primaryTextContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
   },
-
   icon: {
-    marginTop: 0,
+    marginTop: -3,
     marginRight: 3,
-    backgroundColor: colors.white,
     height: 20,
     width: 20,
-    borderRadius: 20,
   },
   primaryText: {
     color: colors.white,
@@ -154,20 +149,15 @@ const nonSelectedCardStyles = StyleSheet.create({
   },
   primaryTextContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
-
   secondaryTextContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
     width: '100%',
   },
   icon: {
-    marginTop: 3,
     marginRight: 3,
-    backgroundColor: colors.white,
-    height: 18,
-    width: 18,
-    borderRadius: 20,
   },
   primaryText: {
     color: colors.white,

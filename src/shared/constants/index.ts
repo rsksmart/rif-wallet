@@ -36,8 +36,8 @@ export const sharedColors = {
 
 export const tokenColors = {
   rbtc: '#71BD35',
-  btc: '#FF9100',
-  rif: '#4B5CF0',
+  btc: '#EB7D00',
+  rif: '#4152E6',
   rdoc: '#11B55C',
   generic: '#252525',
 }
