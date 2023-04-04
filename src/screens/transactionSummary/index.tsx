@@ -88,7 +88,6 @@ export const TransactionSummary = ({
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => {
-        console.log('back pressed')
         goBack()
         return true
       }
