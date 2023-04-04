@@ -160,6 +160,7 @@ const resources = {
       contact_form_button_save: 'Save Contact',
       contact_form_button_convert_checksum: 'Convert to correct checksum',
       transaction_form_label_asset: 'asset',
+      transaction_summary_screen_title: 'Transaction Summary',
       transaction_summary_title: 'Send',
       transaction_summary_status: 'Status: ',
       transaction_summary_button_usd: 'USD',

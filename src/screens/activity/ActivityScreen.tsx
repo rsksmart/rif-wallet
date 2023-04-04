@@ -19,6 +19,7 @@ import { ActivityBasicRow } from './ActivityRow'
 import { useBitcoinTransactionsHandler } from './useBitcoinTransactionsHandler'
 import useTransactionsCombiner from './useTransactionsCombiner'
 import { ScreenWithWallet } from '../types'
+import { rootTabsRouteNames } from 'src/navigation/rootNavigator'
 
 export const ActivityScreen = ({
   navigation,
@@ -66,6 +67,7 @@ export const ActivityScreen = ({
           <ActivityBasicRow
             activityTransaction={item}
             navigation={navigation}
+            backScreen={rootTabsRouteNames.Activity}
           />
         )}
         style={styles.flatlistViewStyle}

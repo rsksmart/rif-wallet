@@ -1,6 +1,8 @@
 import { t } from 'i18next'
 import { useCallback, useMemo } from 'react'
 
+import { shortAddress } from 'lib/utils'
+
 import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import { StatusEnum } from 'components/BasicRow'
 import { BasicRowWithContact } from 'components/BasicRow/BasicRowWithContact'
@@ -25,14 +27,17 @@ const getStatus = (status: string) => {
   }
 }
 
-interface ActivityBasicRowProps {
+interface Props {
   activityTransaction: ActivityMixedType
   navigation: ActivityMainScreenProps['navigation']
+  backScreen?: rootTabsRouteNames
 }
+
 export const ActivityBasicRow = ({
   activityTransaction,
   navigation,
-}: ActivityBasicRowProps) => {
+  backScreen,
+}: Props) => {
   const prices = useAppSelector(selectUsdPrices)
   const selectedWallet = useAppSelector(selectSelectedWallet)
   const wallets = useAppSelector(selectWallets)
@@ -67,18 +72,21 @@ export const ActivityBasicRow = ({
     [activityDetails],
   )
   const handlePress = useCallback(
-    () => navigation.navigate(rootTabsRouteNames.TransactionSummary, txSummary),
-    [navigation, txSummary],
+    () =>
+      navigation.navigate(rootTabsRouteNames.TransactionSummary, {
+        ...txSummary,
+        backScreen,
+      }),
+    [navigation, txSummary, backScreen],
   )
+
   return (
     <AppTouchable width={'100%'} onPress={handlePress}>
       <BasicRowWithContact
-        label={activityDetails.to}
+        label={shortAddress(activityDetails.to, 8)}
         amount={activityDetails.value}
         status={getStatus(activityDetails.status)}
-        avatar={{
-          name: 'A',
-        }}
+        avatar={{ name: 'A' }}
         secondaryLabel={activityDetails.timeHumanFormatted}
         addressToSearch={activityDetails.to}
       />

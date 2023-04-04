@@ -1,25 +1,26 @@
-import { StyleSheet, View } from 'react-native'
-import Icon from 'react-native-vector-icons/FontAwesome5'
+import { useFocusEffect, useIsFocused } from '@react-navigation/native'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useEffect } from 'react'
-import { useIsFocused } from '@react-navigation/native'
+import { BackHandler, StyleSheet, View } from 'react-native'
+import Icon from 'react-native-vector-icons/FontAwesome5'
 
-import { sharedColors, sharedStyles } from 'shared/constants'
-import { castStyle } from 'shared/utils'
-import { ContactWithAddressRequired } from 'shared/types'
-import { TokenBalance, CurrencyValue } from 'components/token'
-import { Typography } from 'components/typography'
-import {
-  rootTabsRouteNames,
-  RootTabsScreenProps,
-} from 'navigation/rootNavigator'
 import {
   AppButton,
   AppButtonProps,
   AppButtonWidthVarietyEnum,
 } from 'components/button'
-import { useAppDispatch } from 'store/storeUtils'
+import { CurrencyValue, TokenBalance } from 'components/token'
+import { Typography } from 'components/typography'
+import {
+  rootTabsRouteNames,
+  RootTabsScreenProps,
+} from 'navigation/rootNavigator'
+import { sharedColors, sharedStyles } from 'shared/constants'
+import { ContactWithAddressRequired } from 'shared/types'
+import { castStyle } from 'shared/utils'
+import { headerLeftOption } from 'src/navigation/profileNavigator'
 import { setFullscreen } from 'store/slices/settingsSlice'
+import { useAppDispatch } from 'store/storeUtils'
 
 export enum TransactionStatus {
   SUCCESS = 'success',
@@ -55,6 +56,7 @@ export interface TransactionSummaryScreenProps {
   contact: ContactWithAddressRequired
   buttons?: AppButtonProps[]
   title?: string
+  backScreen?: rootTabsRouteNames
 }
 
 export const TransactionSummary = ({
@@ -64,16 +66,43 @@ export const TransactionSummary = ({
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const isFocused = useIsFocused()
-  const { transaction, contact, title, buttons } = route.params
+  const { transaction, contact, title, buttons, backScreen } = route.params
 
   const iconObject = transactionStatusToIconPropsMap.get(transaction.status)
   const transactionStatusText = transactionStatusDisplayText.get(
     transaction.status,
   )
 
+  const goBack = useMemo(() => {
+    if (backScreen) {
+      return () => navigation.navigate(backScreen)
+    }
+    return navigation.goBack
+  }, [backScreen, navigation])
+
   useEffect(() => {
     dispatch(setFullscreen(isFocused))
   }, [dispatch, isFocused])
+
+  /* override hard back button */
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        goBack()
+        return true
+      }
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress)
+      return () =>
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress)
+    }, [goBack]),
+  )
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => headerLeftOption(goBack),
+    })
+  }, [navigation, goBack])
 
   return (
     <View style={styles.screen}>
@@ -175,7 +204,7 @@ export const TransactionSummary = ({
           {t('transaction_summary_address_text')}
         </Typography>
         <Typography
-          type={'h4'}
+          type={'label'}
           style={[styles.summaryText, sharedStyles.textRight]}>
           {contact.address}
         </Typography>
@@ -194,7 +223,7 @@ export const TransactionSummary = ({
           ))
         ) : (
           <AppButton
-            onPress={() => navigation.goBack()}
+            onPress={goBack}
             title={t('transaction_summary_default_button_text')}
             color={sharedColors.white}
             textColor={sharedColors.black}
@@ -228,6 +257,8 @@ const styles = StyleSheet.create({
   summaryAlignment: castStyle.view({
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    marginBottom: -10,
   }),
   summaryWrapper: castStyle.view({
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -236,6 +267,7 @@ const styles = StyleSheet.create({
   }),
   summaryText: castStyle.text({
     marginTop: 12,
+    lineHeight: 17,
   }),
   buttons: castStyle.view({
     position: 'absolute',
