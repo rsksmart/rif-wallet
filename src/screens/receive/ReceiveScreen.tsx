@@ -32,6 +32,7 @@ import { castStyle } from 'shared/utils'
 import { getBalance } from 'screens/home/PortfolioComponent'
 import { selectProfile } from 'store/slices/profileSlice'
 import { getIconSource } from 'screens/home/TokenImage'
+import { ProfileStatus } from 'navigation/profileNavigator/types'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
@@ -123,7 +124,6 @@ export const ReceiveScreen = ({
       onGetAddress(selectedAsset)
     }
   }, [onGetAddress, selectedAsset])
-
   return (
     <ScrollView style={styles.parent}>
       <FormProvider {...methods}>
@@ -185,24 +185,23 @@ export const ReceiveScreen = ({
           )}
         </View>
         {/* Username Component */}
-        {profile && profile.alias && (
-          <Input
-            label="Username"
-            inputName="username"
-            rightIcon={
-              <Ionicons
-                name="share-outline"
-                size={20}
-                color="white"
-                onPress={onShareUsername}
-                testID={TestID.ShareUsernameButton}
-              />
-            }
-            placeholder={profile.alias}
-            isReadOnly
-            testID={TestID.UsernameText}
-          />
-        )}
+        <Input
+          label="Username"
+          inputName="username"
+          rightIcon={
+            <Ionicons
+              name="share-outline"
+              size={20}
+              color="white"
+              onPress={onShareUsername}
+              testID={TestID.ShareUsernameButton}
+              disabled={profile.status !== ProfileStatus.USER}
+            />
+          }
+          placeholder={profile.alias}
+          isReadOnly
+          testID={TestID.UsernameText}
+        />
         {/* Address Component */}
         {isAddressLoading && (
           <View style={[styles.addressLoadingView, styles.marginTopView]}>
