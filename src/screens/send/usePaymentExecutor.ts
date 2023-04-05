@@ -2,10 +2,14 @@ import { createContext, useContext, useState, useEffect } from 'react'
 import { BigNumber } from 'ethers'
 import {
   BitcoinNetwork,
+  BitcoinNetworkWithBIPRequest,
   UnspentTransactionType,
 } from '@rsksmart/rif-wallet-bitcoin'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
-import { IApiTransaction } from '@rsksmart/rif-wallet-services'
+import {
+  IApiTransaction,
+  ITokenWithBalance,
+} from '@rsksmart/rif-wallet-services'
 
 import { useAppDispatch } from 'store/storeUtils'
 import {
@@ -13,7 +17,7 @@ import {
   modifyTransaction,
   ApiTransactionWithExtras,
 } from 'store/slices/transactionsSlice'
-import { useBitcoinFetchUtxoBalance } from 'screens/send/useBitcoinFetchUtxoBalance'
+import { fetchUtxo } from 'screens/send/bitcoinUtils'
 
 import { TransactionInformation } from './TransactionInfo'
 import { transferBitcoin } from './transferBitcoin'
@@ -39,9 +43,8 @@ export const usePaymentExecutor = (
   const [currentTransaction, setCurrentTransaction] =
     useState<TransactionInformation | null>(null)
   const [error, setError] = useState<string | null | { message: string }>()
-
-  const { utxos, balanceAvailable: bitcoinBalance } =
-    useBitcoinFetchUtxoBalance(bitcoinNetwork)
+  const [utxos, setUtxos] = useState<UnspentTransactionType[]>([])
+  const [bitcoinBalance, setBalanceAvailable] = useState<number>(0)
 
   const dispatch = useAppDispatch()
 
@@ -68,7 +71,7 @@ export const usePaymentExecutor = (
           satoshisToPay: amount,
           onSetCurrentTransaction: setCurrentTransaction,
           onSetError: setError,
-          bip: token.bips[0],
+          bip: (token as BitcoinNetworkWithBIPRequest).bips[0],
           to,
           utxos,
           balance: bitcoinBalance,
@@ -76,7 +79,7 @@ export const usePaymentExecutor = (
         break
       default:
         transfer({
-          token,
+          token: token as ITokenWithBalance,
           amount: amount.toString(),
           to,
           wallet,
@@ -88,6 +91,16 @@ export const usePaymentExecutor = (
         break
     }
   }
+  // When bitcoin network changes - fetch utxos
+  useEffect(() => {
+    if (bitcoinNetwork) {
+      fetchUtxo({
+        token: bitcoinNetwork,
+        onSetUtxos: setUtxos,
+        onSetBalance: balance => setBalanceAvailable(balance.toNumber),
+      })
+    }
+  }, [bitcoinNetwork])
 
   // When a pending RIF transaction is sent - add it to redux
   useEffect(() => {
