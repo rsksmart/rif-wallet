@@ -32,7 +32,7 @@ import { castStyle } from 'shared/utils'
 import { getBalance } from 'screens/home/PortfolioComponent'
 import { selectProfile } from 'store/slices/profileSlice'
 import { getIconSource } from 'screens/home/TokenImage'
-import { ProfileStatus } from 'src/navigation/profileNavigator/types'
+import { ProfileStatus } from 'navigation/profileNavigator/types'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
