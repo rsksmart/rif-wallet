@@ -1,12 +1,12 @@
 import { StyleSheet, View } from 'react-native'
 
-import { sharedColors } from 'shared/constants'
-import { TokenImage } from 'screens/home/TokenImage'
-import { Typography } from 'components/typography'
-import { colors } from 'src/styles'
 import { AppTouchable } from 'components/appTouchable'
-import { useAppSelector } from 'src/redux/storeUtils'
-import { selectHideBalance } from 'src/redux/slices/settingsSlice'
+import { Typography } from 'components/typography'
+import { TokenImage } from 'screens/home/TokenImage'
+import { sharedColors } from 'shared/constants'
+import { castStyle } from 'src/shared/utils'
+import { selectHideBalance } from 'store/slices/settingsSlice'
+import { useAppSelector } from 'store/storeUtils'
 
 interface PortfolioCardProps {
   onPress: () => void
@@ -29,7 +29,7 @@ const SelectedCard = ({
 }) => (
   <View style={selectedCardStyles.container}>
     <View style={selectedCardStyles.primaryTextContainer}>
-      {icon && (
+      {icon ? (
         <View style={selectedCardStyles.icon}>
           <TokenImage
             symbol={icon}
@@ -39,7 +39,7 @@ const SelectedCard = ({
             color={color}
           />
         </View>
-      )}
+      ) : null}
       <Typography
         type={'body1'}
         style={selectedCardStyles.primaryText}
@@ -63,11 +63,11 @@ const NonSelectedCard = ({
 }) => (
   <View style={nonSelectedCardStyles.container}>
     <View style={nonSelectedCardStyles.primaryTextContainer}>
-      {icon && (
+      {icon ? (
         <View style={nonSelectedCardStyles.icon}>
           <TokenImage symbol={icon} height={18} width={18} />
         </View>
-      )}
+      ) : null}
       <Typography
         type={'body1'}
         style={nonSelectedCardStyles.primaryText}
@@ -145,35 +145,35 @@ const selectedCardStyles = StyleSheet.create({
     width: 20,
   },
   primaryText: {
-    color: colors.white,
+    color: sharedColors.white,
     fontSize: 22,
   },
 })
 
 const nonSelectedCardStyles = StyleSheet.create({
-  container: {
+  container: castStyle.view({
     justifyContent: 'space-between',
     height: '100%',
-  },
-  primaryTextContainer: {
+  }),
+  primaryTextContainer: castStyle.view({
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  secondaryTextContainer: {
+  }),
+  secondaryTextContainer: castStyle.view({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     width: '100%',
-  },
-  icon: {
+  }),
+  icon: castStyle.view({
     marginRight: 3,
-  },
-  primaryText: {
-    color: colors.white,
+  }),
+  primaryText: castStyle.text({
+    color: sharedColors.white,
     fontSize: 16,
-  },
-  secondaryText: {
-    color: colors.white,
+  }),
+  secondaryText: castStyle.text({
+    color: sharedColors.white,
     fontSize: 16,
     right: 0,
-  },
+  }),
 })

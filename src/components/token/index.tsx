@@ -67,20 +67,17 @@ export const TokenBalance = ({
               {firstValue.symbol}
             </Typography>
           )}
-          <View style={styles.inputContainer}>
-            <TextInput
-              onChangeText={handleAmountChange}
-              value={
-                hide ? '\u002A\u002A\u002A\u002A' : firstValue.balance || '0.00'
-              }
-              placeholder="0.00"
-              keyboardType="numeric"
-              testID={'Amount.Input'}
-              placeholderTextColor={sharedColors.white}
-              style={styles.input}
-              editable={editable}
-            />
-          </View>
+          <TextInput
+            onChangeText={handleAmountChange}
+            value={
+              hide ? '\u002A\u002A\u002A\u002A' : firstValue.balance.toString()
+            }
+            keyboardType="numeric"
+            testID={'Amount.Input'}
+            placeholderTextColor={sharedColors.white}
+            style={styles.input}
+            editable={editable}
+          />
         </View>
         <View style={styles.rightIconContainer}>
           {to && to.name ? (
@@ -203,10 +200,6 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 25,
     flexDirection: 'row',
-  }),
-  inputContainer: castStyle.view({
-    flexDirection: 'column',
-    alignContent: 'flex-end',
   }),
   input: castStyle.text({
     color: sharedColors.white,
