@@ -90,13 +90,11 @@ export const ActivityScreen = ({
         ListEmptyComponent={
           <>
             {btcTransactionFetcher.apiStatus !== 'fetching' && (
-              <View style={styles.emptyViewStyle}>
-                <Image
-                  source={require('./../../../assets/images/no-transactions.png')}
-                  resizeMode="contain"
-                  style={styles.imageStyle}
-                />
-              </View>
+              <Image
+                source={require('./../../../assets/images/no-transactions.png')}
+                resizeMode="contain"
+                style={styles.imageStyle}
+              />
             )}
           </>
         }
@@ -131,13 +129,10 @@ const styles = StyleSheet.create({
   listEmptyTextStyle: castStyle.text({
     marginTop: 10,
   }),
-  emptyViewStyle: castStyle.view({
-    height: 500,
-    alignItems: 'center',
-  }),
   imageStyle: castStyle.image({
+    alignSelf: 'center',
     width: '80%',
-    height: '100%',
+    height: 500,
   }),
 })
 
