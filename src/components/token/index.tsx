@@ -9,7 +9,7 @@ import { Typography } from 'components/index'
 import { AppTouchable } from 'components/appTouchable'
 import { Avatar } from 'components/avatar'
 import { ContactWithAddressRequired } from 'shared/types'
-import { noop, sharedColors, testIDs } from 'shared/constants'
+import { noop, sharedColors, sharedStyles, testIDs } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 
 import { EyeIcon } from '../icons/EyeIcon'
@@ -75,7 +75,7 @@ export const TokenBalance = ({
             keyboardType="numeric"
             testID={'Amount.Input'}
             placeholderTextColor={sharedColors.white}
-            style={styles.input}
+            style={[styles.input, [sharedStyles.flex]]}
             editable={editable}
             multiline={false}
           />
