@@ -97,7 +97,7 @@ export const usePaymentExecutor = (
       fetchUtxo({
         token: bitcoinNetwork,
         onSetUtxos: setUtxos,
-        onSetBalance: balance => setBalanceAvailable(balance.toNumber),
+        onSetBalance: balance => setBalanceAvailable(balance.toNumber()),
       })
     }
   }, [bitcoinNetwork])
