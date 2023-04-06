@@ -1,7 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { BigNumber } from 'ethers'
 import {
-  BitcoinNetwork,
   BitcoinNetworkWithBIPRequest,
   UnspentTransactionType,
 } from '@rsksmart/rif-wallet-bitcoin'
@@ -22,7 +20,10 @@ import { fetchUtxo } from 'screens/send/bitcoinUtils'
 import { TransactionInformation } from './TransactionInfo'
 import { transferBitcoin } from './transferBitcoin'
 import { transfer } from './transferTokens'
-import { MixedTokenAndNetworkType, OnSetTransactionStatusChange } from './types'
+import {
+  ITokenOrBitcoinWithBIPRequest,
+  OnSetTransactionStatusChange,
+} from './types'
 
 interface IPaymentExecutorContext {
   setUtxosGlobal: (utxos: UnspentTransactionType[]) => void
@@ -38,7 +39,7 @@ export const usePaymentExecutorContext = () => {
 }
 
 export const usePaymentExecutor = (
-  bitcoinNetwork: BitcoinNetwork | undefined,
+  bitcoinNetwork: BitcoinNetworkWithBIPRequest | undefined,
 ) => {
   const [currentTransaction, setCurrentTransaction] =
     useState<TransactionInformation | null>(null)
@@ -59,36 +60,33 @@ export const usePaymentExecutor = (
     wallet,
     chainId,
   }: {
-    token: MixedTokenAndNetworkType
-    amount: BigNumber
+    token: ITokenOrBitcoinWithBIPRequest
+    amount: number
     to: string
     wallet: RIFWallet
     chainId: number
   }) => {
-    switch (true) {
-      case 'isBitcoin' in token:
-        transferBitcoin({
-          satoshisToPay: amount,
-          onSetCurrentTransaction: setCurrentTransaction,
-          onSetError: setError,
-          bip: (token as BitcoinNetworkWithBIPRequest).bips[0],
-          to,
-          utxos,
-          balance: bitcoinBalance,
-        })
-        break
-      default:
-        transfer({
-          token: token as ITokenWithBalance,
-          amount: amount.toString(),
-          to,
-          wallet,
-          chainId,
-          onSetCurrentTransaction: setCurrentTransaction,
-          onSetError: setError,
-          onSetTransactionStatusChange: setTransactionStatusChange,
-        })
-        break
+    if ('bips' in token) {
+      transferBitcoin({
+        btcToPay: amount,
+        onSetCurrentTransaction: setCurrentTransaction,
+        onSetError: setError,
+        bip: token.bips[0],
+        to,
+        utxos,
+        balance: bitcoinBalance,
+      })
+    } else {
+      transfer({
+        token: token as ITokenWithBalance,
+        amount: amount.toString(),
+        to,
+        wallet,
+        chainId,
+        onSetCurrentTransaction: setCurrentTransaction,
+        onSetError: setError,
+        onSetTransactionStatusChange: setTransactionStatusChange,
+      })
     }
   }
   // When bitcoin network changes - fetch utxos

@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { KeyboardAvoidingView, Platform } from 'react-native'
-import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
-import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
+import { BitcoinNetworkWithBIPRequest } from '@rsksmart/rif-wallet-bitcoin'
 
 import {
   homeStackRouteNames,
@@ -10,8 +9,8 @@ import {
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
-import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
 import { sharedStyles } from 'shared/constants'
+import { ITokenOrBitcoinWithBIPRequest } from 'screens/send/types'
 
 import { ScreenWithWallet } from '../types'
 import { TransactionInfo } from './TransactionInfo'
@@ -19,7 +18,6 @@ import { TransactionForm } from './TransactionForm'
 import WalletNotDeployedView from './WalletNotDeployedModal'
 import { usePaymentExecutor } from './usePaymentExecutor'
 import { useFetchBitcoinNetworksAndTokens } from './useFetchBitcoinNetworksAndTokens'
-import { MixedTokenAndNetworkType } from './types'
 
 export const SendScreen = ({
   route,
@@ -27,10 +25,8 @@ export const SendScreen = ({
   isWalletDeployed,
   navigation,
 }: HomeStackScreenProps<homeStackRouteNames.Send> & ScreenWithWallet) => {
-  const assets =
-    useFetchBitcoinNetworksAndTokens() as unknown as MixedTokenAndNetworkType[]
+  const assets = useFetchBitcoinNetworksAndTokens()
 
-  const { transactions } = useAppSelector(selectTransactions)
   const tokenBalances = useAppSelector(selectBalances)
   const prices = useAppSelector(selectUsdPrices)
   const backAction = route.params.backAction
@@ -40,7 +36,7 @@ export const SendScreen = ({
   const [chainId, setChainId] = useState<number>(31)
   // We assume only one bitcoinNetwork instance exists
   const { currentTransaction, executePayment } = usePaymentExecutor(
-    assets.find(asset => 'isBitcoin' in asset) as BitcoinNetwork,
+    assets.find(asset => 'bips' in asset) as BitcoinNetworkWithBIPRequest,
   )
 
   useEffect(() => {
@@ -48,8 +44,8 @@ export const SendScreen = ({
   }, [wallet])
 
   const onExecuteTransfer = (
-    token: ITokenWithBalance | BitcoinNetwork,
-    amount: string,
+    token: ITokenOrBitcoinWithBIPRequest,
+    amount: number,
     to: string,
   ) => {
     executePayment({
@@ -91,7 +87,6 @@ export const SendScreen = ({
                 )
               : tokenBalances[contractAddress],
           }}
-          transactions={transactions}
         />
       ) : (
         <TransactionInfo transaction={currentTransaction} />

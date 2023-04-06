@@ -20,10 +20,10 @@ import { isDefaultChainTypeMainnet } from 'core/config'
 
 import { useStoredBitcoinNetworks } from './useStoredBitcoinNetworks'
 
-export interface UseBitcoinCoreResult {
-  networks: Array<BitcoinNetwork>
+export interface UseBitcoinCoreResult<T> {
+  networks: T[] | BitcoinNetwork[]
   networksMap: {
-    [key: string]: BitcoinNetwork
+    [key: string]: T | BitcoinNetwork
   }
   refreshStoredNetworks: () => void
 }
@@ -51,7 +51,7 @@ export const useBitcoinCore = (
     Keychain.Options,
     ReturnType<typeof Keychain.setInternetCredentials>
   >,
-): UseBitcoinCoreResult => {
+): UseBitcoinCoreResult<BitcoinNetworkWithBIPRequest> => {
   const dispatch = useAppDispatch()
   const [storedNetworks, refreshStoredNetworks] = useStoredBitcoinNetworks()
   const networksObj = useRef<NetworksObject>({})
