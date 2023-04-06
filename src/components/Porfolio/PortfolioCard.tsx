@@ -131,23 +131,23 @@ const styles = StyleSheet.create({
 })
 
 const selectedCardStyles = StyleSheet.create({
-  container: {
+  container: castStyle.view({
     justifyContent: 'center',
     height: '100%',
-  },
-  primaryTextContainer: {
+  }),
+  primaryTextContainer: castStyle.view({
     flexDirection: 'row',
-  },
-  icon: {
+  }),
+  icon: castStyle.view({
     marginTop: -3,
     marginRight: 3,
     height: 20,
     width: 20,
-  },
-  primaryText: {
+  }),
+  primaryText: castStyle.text({
     color: sharedColors.white,
     fontSize: 22,
-  },
+  }),
 })
 
 const nonSelectedCardStyles = StyleSheet.create({
