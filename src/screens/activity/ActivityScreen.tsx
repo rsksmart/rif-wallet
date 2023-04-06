@@ -10,7 +10,7 @@ import { abiEnhancer } from 'core/setup'
 import { useAppSelector } from 'store/storeUtils'
 import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
 import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
-import { sharedColors, sharedStyles } from 'shared/constants'
+import { sharedColors } from 'shared/constants'
 import { Typography } from 'components/typography'
 import { castStyle } from 'shared/utils'
 import { ActivityMainScreenProps } from 'shared/types'
@@ -92,11 +92,11 @@ export const ActivityScreen = ({
         ListEmptyComponent={
           <>
             {btcTransactionFetcher.apiStatus !== 'fetching' && (
-              <View style={[sharedStyles.flex, sharedStyles.contentCenter]}>
-                <Image
-                  source={require('./../../../assets/images/no-transactions.png')}
-                />
-              </View>
+              <Image
+                source={require('./../../../assets/images/no-transactions.png')}
+                resizeMode="contain"
+                style={styles.imageStyle}
+              />
             )}
           </>
         }
@@ -130,6 +130,11 @@ const styles = StyleSheet.create({
   }),
   listEmptyTextStyle: castStyle.text({
     marginTop: 10,
+  }),
+  imageStyle: castStyle.image({
+    alignSelf: 'center',
+    width: '80%',
+    height: 500,
   }),
 })
 
