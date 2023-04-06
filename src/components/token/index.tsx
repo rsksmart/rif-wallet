@@ -8,7 +8,7 @@ import { AppTouchable } from 'components/appTouchable'
 import { Avatar } from 'components/avatar'
 import { Typography } from 'components/index'
 import { TokenImage, TokenSymbol } from 'screens/home/TokenImage'
-import { noop, sharedColors, testIDs } from 'shared/constants'
+import { noop, sharedColors, sharedStyles, testIDs } from 'shared/constants'
 import { ContactWithAddressRequired } from 'shared/types'
 import { castStyle } from 'shared/utils'
 
@@ -75,8 +75,9 @@ export const TokenBalance = ({
             keyboardType="numeric"
             testID={'Amount.Input'}
             placeholderTextColor={sharedColors.white}
-            style={styles.input}
+            style={[styles.input, [sharedStyles.flex]]}
             editable={editable}
+            multiline={false}
           />
         </View>
         <View style={styles.rightIconContainer}>
