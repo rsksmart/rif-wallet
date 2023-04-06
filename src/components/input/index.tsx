@@ -46,6 +46,7 @@ export interface InputProps extends TextInputProps {
   subtitleStyle?: StyleProp<TextStyle>
   suffix?: ReactFragment
   inputRef?: (ref: TextInput) => void
+  forceShowSubtitle?: boolean
 }
 
 export const Input = ({
@@ -70,6 +71,7 @@ export const Input = ({
   suffix,
   inputRef,
   value: propValue,
+  forceShowSubtitle = false,
   ...textInputProps
 }: InputProps) => {
   const { control } = useFormContext()
@@ -161,7 +163,7 @@ export const Input = ({
                       : propValue ?? value}
                   </Typography>
                 </TextInput>
-                {subtitle && (!!value || isReadOnly) ? (
+                {subtitle && (!!value || isReadOnly || forceShowSubtitle) ? (
                   <Typography
                     style={[styles.subtitle, subtitleStyle]}
                     type={'body3'}
