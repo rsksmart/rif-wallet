@@ -14,6 +14,12 @@ export interface AddNewWalletAction {
   networkId: number
 }
 
+export type UnlockAppAction =
+  | {
+      pinUnlocked: boolean
+    }
+  | undefined
+
 export interface SetKeysAction {
   wallets: Wallets
   walletsIsDeployed: WalletsIsDeployed
@@ -53,4 +59,5 @@ export interface SettingsSlice {
   previouslyUnlocked: boolean
   fullscreen: boolean
   hideBalance: boolean
+  pin: string | null
 }

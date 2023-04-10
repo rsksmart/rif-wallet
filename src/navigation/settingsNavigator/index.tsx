@@ -12,6 +12,7 @@ import {
 import { InjectedScreens } from 'core/Core'
 import { ExampleScreen } from 'screens/example'
 import { WalletBackup } from 'screens/settings/WalletBackup'
+import { PinScreen } from 'src/screens/pinScreen'
 
 import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
 import { SettingsStackParamsList, settingsStackRouteNames } from './types'
@@ -73,6 +74,12 @@ export const SettingsNavigator = ({
         name={settingsStackRouteNames.ExampleScreen}
         component={ExampleScreen}
         options={screenOptionsWithHeader(top, t('Example Screen'))}
+      />
+
+      <SettingsStack.Screen
+        name={settingsStackRouteNames.ChangePinScreen}
+        component={PinScreen}
+        options={screenOptionsWithHeader(top, t('pin_screen_header_title'))}
       />
     </SettingsStack.Navigator>
   )

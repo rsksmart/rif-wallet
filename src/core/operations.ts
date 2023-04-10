@@ -3,39 +3,34 @@ import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
 import { KeyManagementSystem } from 'lib/core'
 
+import { saveKeys } from 'storage/SecureStorage'
+
 import { Wallets } from '../Context'
 import { MMKVStorage } from '../storage/MMKVStorage'
-import { getKeys, saveKeys } from 'storage/SecureStorage'
 
 type CreateRIFWallet = (wallet: Wallet) => Promise<RIFWallet>
 
 export const loadExistingWallets =
-  (createRIFWallet: CreateRIFWallet) => async () => {
-    const serializedKeys = await getKeys()
-    if (serializedKeys) {
-      const { kms, wallets } =
-        KeyManagementSystem.fromSerialized(serializedKeys)
+  (createRIFWallet: CreateRIFWallet) => async (serializedKeys: string) => {
+    const { kms, wallets } = KeyManagementSystem.fromSerialized(serializedKeys)
 
-      const rifWallets = await Promise.all(wallets.map(createRIFWallet))
-      const isDeployedWallets = await Promise.all(
-        rifWallets.map(w => w.smartWalletFactory.isDeployed()),
-      )
+    const rifWallets = await Promise.all(wallets.map(createRIFWallet))
+    const isDeployedWallets = await Promise.all(
+      rifWallets.map(w => w.smartWalletFactory.isDeployed()),
+    )
 
-      const rifWalletsDictionary = rifWallets.reduce(
-        (p: Wallets, c: RIFWallet) => Object.assign(p, { [c.address]: c }),
-        {},
-      )
+    const rifWalletsDictionary = rifWallets.reduce(
+      (p: Wallets, c: RIFWallet) => Object.assign(p, { [c.address]: c }),
+      {},
+    )
 
-      const rifWalletsIsDeployedDictionary = rifWallets.reduce(
-        (p: Wallets, c: RIFWallet, ci: number) =>
-          Object.assign(p, { [c.address]: isDeployedWallets[ci] }),
-        {},
-      )
+    const rifWalletsIsDeployedDictionary = rifWallets.reduce(
+      (p: Wallets, c: RIFWallet, ci: number) =>
+        Object.assign(p, { [c.address]: isDeployedWallets[ci] }),
+      {},
+    )
 
-      return { kms, rifWalletsDictionary, rifWalletsIsDeployedDictionary }
-    } else {
-      return null
-    }
+    return { kms, rifWalletsDictionary, rifWalletsIsDeployedDictionary }
   }
 
 export const createKMS =

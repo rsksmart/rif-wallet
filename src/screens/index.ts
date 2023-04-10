@@ -20,7 +20,6 @@ export {
 } from '../navigation/contactsNavigator/index'
 export { SettingsScreen } from './settings/SettingsScreen'
 export { WalletBackup } from './settings/WalletBackup'
-export { ChangePinScreen } from './changePin/ChangePinScreen'
 export { AccountsScreen } from './accounts/AccountsScreen'
 export { ProfileCreateScreen } from './profile/ProfileCreateScreen'
 export { ShareProfileScreen } from './profile/ShareProfileScreen'

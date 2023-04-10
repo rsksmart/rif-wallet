@@ -2,14 +2,15 @@ import { combineReducers } from '@reduxjs/toolkit'
 import { persistReducer, createMigrate } from 'redux-persist'
 
 import { reduxStorage } from 'storage/ReduxStorage'
+import { contactsReducer } from 'store/slices/contactsSlice'
+import { ProfileStatus } from 'navigation/profileNavigator/types'
+
 import { accountsReducer } from './slices/accountsSlice'
 import { balancesReducer } from './slices/balancesSlice'
-import { contactsReducer } from 'store/slices/contactsSlice'
 import { profileReducer } from './slices/profileSlice'
-import { settingsSliceReducer } from './slices/settingsSlice'
+import { settingsPersist, settingsSliceReducer } from './slices/settingsSlice'
 import { transactionsReducer } from './slices/transactionsSlice'
 import { usdPriceReducer } from './slices/usdPricesSlice'
-import { ProfileStatus } from 'navigation/profileNavigator/types'
 
 const migrations = {
   // It's on purpose due to state type from redux-persist is PersistedStated.
@@ -38,7 +39,7 @@ const reducers = combineReducers({
   usdPrices: usdPriceReducer,
   balances: balancesReducer,
   transactions: transactionsReducer,
-  settings: settingsSliceReducer,
+  settings: persistReducer(settingsPersist, settingsSliceReducer),
   profile: profileReducer,
   accounts: accountsReducer,
   contacts: contactsReducer,

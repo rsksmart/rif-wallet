@@ -12,6 +12,7 @@ import {
 } from 'screens/createKeys'
 import { selectIsUnlocked } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
+import { PinScreen } from 'screens/pinScreen'
 
 import { CreateKeysStackParamList, createKeysRouteNames } from './types'
 import { screenOptionsWithHeader } from '..'
@@ -57,6 +58,11 @@ export const CreateKeysNavigation = () => {
       <Stack.Screen
         name={createKeysRouteNames.ImportMasterKey}
         component={ImportMasterKeyScreen}
+        options={screensOptions}
+      />
+      <Stack.Screen
+        name={createKeysRouteNames.CreatePIN}
+        component={PinScreen}
         options={screensOptions}
       />
     </Stack.Navigator>

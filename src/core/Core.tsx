@@ -128,7 +128,7 @@ export const Core = () => {
 
   useEffect(() => {
     unlockAppSetMnemonic()
-  }, [unlockAppSetMnemonic, selectedWallet])
+  }, [unlockAppSetMnemonic])
 
   useEffect(() => {
     if (selectedWallet && wallets) {
