@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
   }),
   textAlignment: castStyle.text({
     justifyContent: 'center',
+    paddingBottom: 1,
   }),
   requestingStatus: castStyle.text({
     opacity: 0.4,

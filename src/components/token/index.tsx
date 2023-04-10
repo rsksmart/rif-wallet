@@ -1,15 +1,15 @@
+import { useTranslation } from 'react-i18next'
 import { StyleProp, StyleSheet, TextInput, View, ViewStyle } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { useTranslation } from 'react-i18next'
 
 import { shortAddress } from 'lib/utils'
 
-import { TokenImage, TokenSymbol } from 'screens/home/TokenImage'
-import { Typography } from 'components/index'
 import { AppTouchable } from 'components/appTouchable'
 import { Avatar } from 'components/avatar'
-import { ContactWithAddressRequired } from 'shared/types'
+import { Typography } from 'components/index'
+import { TokenImage, TokenSymbol } from 'screens/home/TokenImage'
 import { noop, sharedColors, sharedStyles, testIDs } from 'shared/constants'
+import { ContactWithAddressRequired } from 'shared/types'
 import { castStyle } from 'shared/utils'
 
 import { EyeIcon } from '../icons/EyeIcon'
@@ -51,27 +51,27 @@ export const TokenBalance = ({
 
   return (
     <View style={[styles.balanceCard, { backgroundColor: color }, style]}>
-      <View style={styles.grow}>
-        <View style={styles.container}>
+      <View style={[styles.row, styles.margin]}>
+        <View style={[styles.row, styles.balance]}>
           {firstValue.symbolType === 'icon' && (
-            <View style={[styles.tokenIcon, styles.center]}>
-              <TokenImage symbol={firstValue.symbol} height={24} width={24} />
+            <View
+              style={[
+                styles.tokenIcon,
+                !firstValue.symbol ? styles.tokenBackground : null,
+              ]}>
+              <TokenImage symbol={firstValue.symbol} height={30} width={30} />
             </View>
           )}
           {firstValue.symbolType === 'text' && (
-            <View style={styles.center}>
-              <Typography type={'h1'} style={{ color: sharedColors.white }}>
-                {firstValue.symbol}
-              </Typography>
-            </View>
+            <Typography type={'h1'} style={{ color: sharedColors.white }}>
+              {firstValue.symbol}
+            </Typography>
           )}
-
           <TextInput
             onChangeText={handleAmountChange}
             value={
               hide ? '\u002A\u002A\u002A\u002A' : firstValue.balance.toString()
             }
-            placeholder="0.00"
             keyboardType="numeric"
             testID={'Amount.Input'}
             placeholderTextColor={sharedColors.white}
@@ -80,55 +80,26 @@ export const TokenBalance = ({
             multiline={false}
           />
         </View>
-        <View style={[styles.container, styles.ident]}>
-          {secondValue?.symbolType === 'icon' && (
-            <View style={styles.tokenSubIcon}>
-              <TokenImage symbol={secondValue.symbol} height={16} width={16} />
+        <View style={styles.rightIconContainer}>
+          {to && to.name ? (
+            <View style={styles.contactCard}>
+              <Avatar size={40} name={to.name} />
+              <Typography type={'body1'} style={styles.toNameContactText}>
+                {to.name}
+              </Typography>
             </View>
-          )}
-          {secondValue?.symbolType === 'text' && (
-            <Typography type={'h3'} style={styles.subTitle}>
-              {hide ? '' : secondValue.symbol}
-            </Typography>
-          )}
-          <Typography type={'h3'} style={styles.subTitle}>
-            {hide && secondValue?.balance
-              ? '\u002A\u002A\u002A\u002A\u002A\u002A'
-              : secondValue?.balance}
-          </Typography>
-        </View>
-        {to ? (
-          <View style={[styles.container, styles.toAddressContainer]}>
-            <Typography type={'h3'}>{t('To')} </Typography>
-            <Typography type={'h3'} style={{ color: sharedColors.primary }}>
-              {to.displayAddress || shortAddress(to.address, 10)}
-            </Typography>
-          </View>
-        ) : null}
-      </View>
-      <View>
-        {to && to.name ? (
-          <View style={styles.contactCard}>
-            <Avatar size={40} name={to.name} />
-            <Typography type={'body1'} style={styles.toNameContactText}>
-              {to.name}
-            </Typography>
-          </View>
-        ) : null}
-        {hideable && !editable && (
-          <View style={styles.center}>
+          ) : null}
+          {hideable && !editable && (
             <AppTouchable
               width={46}
               onPress={onHide}
               accessibilityLabel={testIDs.hide}>
               <View style={styles.badge}>
-                <EyeIcon color={sharedColors.white} size={20} isHidden={hide} />
+                <EyeIcon color={sharedColors.white} size={25} isHidden={hide} />
               </View>
             </AppTouchable>
-          </View>
-        )}
-        {onSwap && (
-          <View style={styles.center}>
+          )}
+          {onSwap && (
             <AppTouchable
               width={41}
               onPress={onSwap}
@@ -141,37 +112,68 @@ export const TokenBalance = ({
                 />
               </View>
             </AppTouchable>
-          </View>
-        )}
+          )}
+        </View>
       </View>
+      <View>
+        <View style={[styles.row, styles.ident]}>
+          {secondValue?.symbolType === 'icon' && (
+            <View style={styles.tokenSubIcon}>
+              <TokenImage symbol={secondValue.symbol} height={16} width={16} />
+            </View>
+          )}
+          {secondValue?.symbolType === 'text' && (
+            <Typography type={'h3'} style={styles.subTitle}>
+              {hide ? '' : secondValue.symbol}
+            </Typography>
+          )}
+          {!isNaN(Number(secondValue?.balance)) && (
+            <Typography type={'h3'} style={styles.subTitle}>
+              {hide
+                ? '\u002A\u002A\u002A\u002A\u002A\u002A'
+                : Math.round(Number(secondValue?.balance) * 100) / 100}
+            </Typography>
+          )}
+        </View>
+      </View>
+      {to ? (
+        <View style={[styles.row, styles.toAddressContainer]}>
+          <Typography type={'h3'}>{t('To')} </Typography>
+          <Typography type={'h3'} style={{ color: sharedColors.primary }}>
+            {to.displayAddress || shortAddress(to.address, 10)}
+          </Typography>
+        </View>
+      ) : null}
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  container: castStyle.view({
+  row: castStyle.view({
     flexDirection: 'row',
   }),
-  center: castStyle.view({
-    alignSelf: 'center',
+  margin: castStyle.view({
+    marginTop: 15,
   }),
-  grow: castStyle.view({
-    flexDirection: 'column',
-    flexGrow: 1,
+  balance: castStyle.view({
+    flex: 1,
+    alignItems: 'center',
+  }),
+  rightIconContainer: castStyle.view({
+    alignItems: 'flex-end',
+    justifyContent: 'center',
   }),
   balanceCard: castStyle.view({
     height: 100,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingLeft: 24,
-    paddingRight: 18,
   }),
   tokenIcon: castStyle.view({
     marginRight: 10,
-    backgroundColor: sharedColors.white,
-    borderRadius: 15,
     width: 30,
     height: 30,
+  }),
+  tokenBackground: castStyle.view({
+    borderRadius: 15,
+    backgroundColor: sharedColors.white,
   }),
   tokenSubIcon: castStyle.view({
     marginRight: 5,
@@ -204,6 +206,7 @@ const styles = StyleSheet.create({
     color: sharedColors.white,
     fontWeight: '500',
     fontSize: 36,
+    padding: 0,
   }),
   toAddressContainer: castStyle.view({ marginTop: 12 }),
   toNameContactText: castStyle.view({ marginTop: 10 }),

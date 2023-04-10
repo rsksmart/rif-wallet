@@ -148,6 +148,7 @@ const initialState: SettingsSlice = {
   unlocked: false,
   previouslyUnlocked: true,
   fullscreen: false,
+  hideBalance: false,
 }
 
 const settingsSlice = createSlice({
@@ -228,6 +229,9 @@ const settingsSlice = createSlice({
     setFullscreen: (state, { payload }: PayloadAction<boolean>) => {
       state.fullscreen = payload
     },
+    setHideBalance: (state, { payload }: PayloadAction<boolean>) => {
+      state.hideBalance = payload
+    },
   },
   extraReducers(builder) {
     builder.addCase(createWallet.pending, state => {
@@ -277,6 +281,7 @@ export const {
   resetKeysAndPin,
   switchSelectedWallet,
   setFullscreen,
+  setHideBalance,
 } = settingsSlice.actions
 
 export const settingsSliceReducer = settingsSlice.reducer

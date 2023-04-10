@@ -12,8 +12,8 @@ import {
 import { CurrencyValue, TokenBalance } from 'components/token'
 import { Typography } from 'components/typography'
 import {
-  rootTabsRouteNames,
   RootTabsScreenProps,
+  rootTabsRouteNames,
 } from 'navigation/rootNavigator'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { ContactWithAddressRequired } from 'shared/types'
@@ -240,8 +240,12 @@ const styles = StyleSheet.create({
     backgroundColor: sharedColors.black,
     paddingHorizontal: 22,
   }),
-  sendText: castStyle.text({ marginTop: 22 }),
-  tokenBalance: castStyle.view({ marginTop: 9 }),
+  sendText: castStyle.text({
+    marginTop: 22,
+  }),
+  tokenBalance: castStyle.view({
+    marginTop: 9,
+  }),
   statusContainer: castStyle.view({
     height: 54,
     marginTop: 28,

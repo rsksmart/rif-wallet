@@ -21,7 +21,12 @@ import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
-import { changeTopColor, selectActiveWallet } from 'store/slices/settingsSlice'
+import {
+  changeTopColor,
+  selectActiveWallet,
+  selectHideBalance,
+  setHideBalance,
+} from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { HomeBarButtonGroup } from 'screens/home/HomeBarButtonGroup'
 import { CurrencyValue, TokenBalance } from 'components/token'
@@ -51,6 +56,7 @@ export const HomeScreen = ({
   const prices = useAppSelector(selectUsdPrices)
   const bitcoinCore = useBitcoinContext()
   const { wallet, chainType } = useAppSelector(selectActiveWallet)
+  const hideBalance = useAppSelector(selectHideBalance)
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
     undefined,
   )
@@ -68,7 +74,6 @@ export const HomeScreen = ({
     })
   const [showInfoBar, setShowInfoBar] = useState<boolean>(true)
 
-  const [hide, setHide] = useState<boolean>(false)
   const balances: Array<ITokenWithBalance | BitcoinNetwork> = useMemo(() => {
     if (bitcoinCore) {
       return [
@@ -254,9 +259,6 @@ export const HomeScreen = ({
     setShowInfoBar(false)
   }, [])
 
-  const onHide = useCallback(() => {
-    setHide(!hide)
-  }, [hide])
   const { transactions } = useAppSelector(selectTransactions)
 
   const btcTransactionFetcher = useBitcoinTransactionsHandler({
@@ -289,6 +291,7 @@ export const HomeScreen = ({
   return (
     <ScrollView style={styles.container}>
       <TokenBalance
+        style={styles.tokenBalance}
         firstValue={
           selectedAddress === undefined
             ? overrideFirstValue
@@ -298,8 +301,8 @@ export const HomeScreen = ({
           selectedAddress === undefined ? undefined : selectedTokenBalanceUsd
         }
         hideable={true}
-        hide={hide}
-        onHide={onHide}
+        hide={hideBalance}
+        onHide={() => dispatch(setHideBalance(!hideBalance))}
         color={backgroundColor.backgroundColor}
       />
       <HomeBarButtonGroup
@@ -327,11 +330,13 @@ export const HomeScreen = ({
         {transactionsCombined.length > 1 ? (
           <ScrollView>
             {transactionsCombined.map(tx => (
-              <ActivityBasicRow
-                key={tx.id}
-                activityTransaction={tx}
-                navigation={navigation}
-              />
+              <View style={styles.transactionItem}>
+                <ActivityBasicRow
+                  key={tx.id}
+                  activityTransaction={tx}
+                  navigation={navigation}
+                />
+              </View>
             ))}
           </ScrollView>
         ) : (
@@ -350,7 +355,13 @@ export const HomeScreen = ({
 }
 
 const styles = StyleSheet.create({
-  bodyContainer: castStyle.view({ padding: 12 }),
+  bodyContainer: castStyle.view({
+    padding: 12,
+  }),
+  tokenBalance: castStyle.view({
+    paddingLeft: 24,
+    paddingRight: 18,
+  }),
   emptyTransactionsLabel: castStyle.text({
     padding: 6,
     paddingTop: 10,
@@ -359,6 +370,9 @@ const styles = StyleSheet.create({
     padding: 6,
     paddingTop: 10,
     color: sharedColors.inputLabelColor,
+  }),
+  transactionItem: castStyle.view({
+    paddingHorizontal: 6,
   }),
   transactionsLabel: castStyle.text({
     padding: 6,

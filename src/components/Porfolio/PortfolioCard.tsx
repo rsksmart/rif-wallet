@@ -1,10 +1,12 @@
 import { StyleSheet, View } from 'react-native'
 
-import { sharedColors } from 'shared/constants'
-import { TokenImage } from 'screens/home/TokenImage'
-import { Typography } from 'components/typography'
-import { colors } from 'src/styles'
 import { AppTouchable } from 'components/appTouchable'
+import { Typography } from 'components/typography'
+import { TokenImage } from 'screens/home/TokenImage'
+import { sharedColors } from 'shared/constants'
+import { castStyle } from 'src/shared/utils'
+import { selectHideBalance } from 'store/slices/settingsSlice'
+import { useAppSelector } from 'store/storeUtils'
 
 interface PortfolioCardProps {
   onPress: () => void
@@ -25,7 +27,7 @@ const SelectedCard = ({
   icon?: string
   color?: string
 }) => (
-  <View style={selectedCardStyles.selectedCardContainer}>
+  <View style={selectedCardStyles.container}>
     <View style={selectedCardStyles.primaryTextContainer}>
       {icon ? (
         <View style={selectedCardStyles.icon}>
@@ -52,10 +54,12 @@ const NonSelectedCard = ({
   primaryText,
   secondaryText,
   icon,
+  hideBalance = false,
 }: {
   primaryText: string
   secondaryText: string
   icon?: string
+  hideBalance?: boolean
 }) => (
   <View style={nonSelectedCardStyles.container}>
     <View style={nonSelectedCardStyles.primaryTextContainer}>
@@ -76,7 +80,7 @@ const NonSelectedCard = ({
         type={'body1'}
         style={nonSelectedCardStyles.secondaryText}
         accessibilityLabel="balance">
-        {secondaryText}
+        {hideBalance ? '\u002A\u002A\u002A\u002A' : secondaryText}
       </Typography>
     </View>
   </View>
@@ -90,26 +94,30 @@ export const PortfolioCard = ({
   isSelected,
   icon,
   disabled,
-}: PortfolioCardProps) => (
-  <AppTouchable
-    width={100}
-    onPress={onPress}
-    disabled={disabled}
-    style={[styles.topContainer, { backgroundColor: color }]}
-    accessibilityLabel={primaryText}>
-    {isSelected
-      ? SelectedCard({
-          primaryText,
-          icon,
-          color,
-        })
-      : NonSelectedCard({
-          primaryText,
-          secondaryText,
-          icon,
-        })}
-  </AppTouchable>
-)
+}: PortfolioCardProps) => {
+  const hideBalance = useAppSelector(selectHideBalance)
+  return (
+    <AppTouchable
+      width={100}
+      onPress={onPress}
+      disabled={disabled}
+      style={[styles.topContainer, { backgroundColor: color }]}
+      accessibilityLabel={primaryText}>
+      {isSelected
+        ? SelectedCard({
+            primaryText,
+            icon,
+            color,
+          })
+        : NonSelectedCard({
+            primaryText,
+            secondaryText,
+            icon,
+            hideBalance,
+          })}
+    </AppTouchable>
+  )
+}
 
 const styles = StyleSheet.create({
   topContainer: {
@@ -123,59 +131,49 @@ const styles = StyleSheet.create({
 })
 
 const selectedCardStyles = StyleSheet.create({
-  selectedCardContainer: {
+  container: castStyle.view({
     justifyContent: 'center',
     height: '100%',
-  },
-
-  primaryTextContainer: {
+  }),
+  primaryTextContainer: castStyle.view({
     flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-
-  icon: {
-    marginTop: 0,
+  }),
+  icon: castStyle.view({
+    marginTop: -3,
     marginRight: 3,
-    backgroundColor: colors.white,
     height: 20,
     width: 20,
-    borderRadius: 20,
-  },
-  primaryText: {
-    color: colors.white,
+  }),
+  primaryText: castStyle.text({
+    color: sharedColors.white,
     fontSize: 22,
-  },
+  }),
 })
 
 const nonSelectedCardStyles = StyleSheet.create({
-  container: {
+  container: castStyle.view({
     justifyContent: 'space-between',
     height: '100%',
-  },
-  primaryTextContainer: {
+  }),
+  primaryTextContainer: castStyle.view({
     flexDirection: 'row',
-  },
-
-  secondaryTextContainer: {
+    alignItems: 'center',
+  }),
+  secondaryTextContainer: castStyle.view({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     width: '100%',
-  },
-  icon: {
-    marginTop: 3,
+  }),
+  icon: castStyle.view({
     marginRight: 3,
-    backgroundColor: colors.white,
-    height: 18,
-    width: 18,
-    borderRadius: 20,
-  },
-  primaryText: {
-    color: colors.white,
+  }),
+  primaryText: castStyle.text({
+    color: sharedColors.white,
     fontSize: 16,
-  },
-  secondaryText: {
-    color: colors.white,
+  }),
+  secondaryText: castStyle.text({
+    color: sharedColors.white,
     fontSize: 16,
     right: 0,
-  },
+  }),
 })
