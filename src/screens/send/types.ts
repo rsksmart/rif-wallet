@@ -2,9 +2,9 @@ import { TransactionResponse } from '@ethersproject/abstract-provider'
 import { ContractReceipt } from 'ethers'
 import {
   BitcoinNetwork,
+  BitcoinNetworkWithBIPRequest,
   UnspentTransactionType,
 } from '@rsksmart/rif-wallet-bitcoin'
-
 import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
@@ -45,6 +45,10 @@ export interface ITransfer {
 }
 
 export type MixedTokenAndNetworkType = BitcoinNetwork | ITokenWithoutLogo
+
+export type ITokenOrBitcoinWithBIPRequest =
+  | BitcoinNetworkWithBIPRequest
+  | ITokenWithoutLogo
 
 type TransferTransactionStatus =
   | TransferTransactionStatusPending

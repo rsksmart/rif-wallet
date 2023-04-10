@@ -1,6 +1,6 @@
-import { BigNumber } from 'ethers'
 import {
   BIPWithRequest,
+  convertBtcToSatoshi,
   UnspentTransactionType,
 } from '@rsksmart/rif-wallet-bitcoin'
 
@@ -8,7 +8,7 @@ import { OnSetCurrentTransactionFunction, OnSetErrorFunction } from './types'
 
 interface ITransferBitcoin {
   bip: BIPWithRequest
-  satoshisToPay: BigNumber
+  btcToPay: number
   to: string
   utxos: Array<UnspentTransactionType>
   onSetError?: OnSetErrorFunction
@@ -19,7 +19,7 @@ interface ITransferBitcoin {
 const MINIMUM_FEE = 141 // should be removed when estimate fee is up...
 
 export const transferBitcoin = ({
-  satoshisToPay,
+  btcToPay,
   onSetError,
   onSetCurrentTransaction,
   bip,
@@ -30,10 +30,10 @@ export const transferBitcoin = ({
   if (onSetError) {
     onSetError(null)
   }
-
+  const satoshisToPay = convertBtcToSatoshi(btcToPay.toString()).toNumber()
   bip.requestPayment
     .onRequestPayment({
-      amountToPay: Number(satoshisToPay),
+      amountToPay: satoshisToPay,
       addressToPay: to,
       unspentTransactions: utxos,
       miningFee: Number(MINIMUM_FEE),

@@ -1,9 +1,13 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { BigNumber } from 'ethers'
-import { UnspentTransactionType } from '@rsksmart/rif-wallet-bitcoin'
+import {
+  BitcoinNetworkWithBIPRequest,
+  UnspentTransactionType,
+} from '@rsksmart/rif-wallet-bitcoin'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
-
-import { IApiTransaction } from '@rsksmart/rif-wallet-services'
+import {
+  IApiTransaction,
+  ITokenWithBalance,
+} from '@rsksmart/rif-wallet-services'
 
 import { useAppDispatch } from 'store/storeUtils'
 import {
@@ -11,11 +15,15 @@ import {
   modifyTransaction,
   ApiTransactionWithExtras,
 } from 'store/slices/transactionsSlice'
+import { fetchUtxo } from 'screens/send/bitcoinUtils'
 
 import { TransactionInformation } from './TransactionInfo'
 import { transferBitcoin } from './transferBitcoin'
 import { transfer } from './transferTokens'
-import { MixedTokenAndNetworkType, OnSetTransactionStatusChange } from './types'
+import {
+  ITokenOrBitcoinWithBIPRequest,
+  OnSetTransactionStatusChange,
+} from './types'
 
 interface IPaymentExecutorContext {
   setUtxosGlobal: (utxos: UnspentTransactionType[]) => void
@@ -30,16 +38,21 @@ export const usePaymentExecutorContext = () => {
   return useContext(PaymentExecutorContext)
 }
 
-export const usePaymentExecutor = () => {
+export const usePaymentExecutor = (
+  bitcoinNetwork: BitcoinNetworkWithBIPRequest | undefined,
+) => {
   const [currentTransaction, setCurrentTransaction] =
     useState<TransactionInformation | null>(null)
   const [error, setError] = useState<string | null | { message: string }>()
   const [utxos, setUtxos] = useState<UnspentTransactionType[]>([])
-  const [bitcoinBalance, setBitcoinBalance] = useState<number>(Number(0))
+  const [bitcoinBalance, setBalanceAvailable] = useState<number>(0)
+
   const dispatch = useAppDispatch()
+
   const [transactionStatusChange, setTransactionStatusChange] = useState<
     Parameters<OnSetTransactionStatusChange>[0] | null
   >(null)
+
   const executePayment = ({
     token,
     amount,
@@ -47,38 +60,45 @@ export const usePaymentExecutor = () => {
     wallet,
     chainId,
   }: {
-    token: MixedTokenAndNetworkType
-    amount: BigNumber
+    token: ITokenOrBitcoinWithBIPRequest
+    amount: number
     to: string
     wallet: RIFWallet
     chainId: number
   }) => {
-    switch (true) {
-      case 'isBitcoin' in token:
-        transferBitcoin({
-          satoshisToPay: amount,
-          onSetCurrentTransaction: setCurrentTransaction,
-          onSetError: setError,
-          bip: token.bips[0],
-          to,
-          utxos,
-          balance: bitcoinBalance,
-        })
-        break
-      default:
-        transfer({
-          token,
-          amount: amount.toString(),
-          to,
-          wallet,
-          chainId,
-          onSetCurrentTransaction: setCurrentTransaction,
-          onSetError: setError,
-          onSetTransactionStatusChange: setTransactionStatusChange,
-        })
-        break
+    if ('bips' in token) {
+      transferBitcoin({
+        btcToPay: amount,
+        onSetCurrentTransaction: setCurrentTransaction,
+        onSetError: setError,
+        bip: token.bips[0],
+        to,
+        utxos,
+        balance: bitcoinBalance,
+      })
+    } else {
+      transfer({
+        token: token as ITokenWithBalance,
+        amount: amount.toString(),
+        to,
+        wallet,
+        chainId,
+        onSetCurrentTransaction: setCurrentTransaction,
+        onSetError: setError,
+        onSetTransactionStatusChange: setTransactionStatusChange,
+      })
     }
   }
+  // When bitcoin network changes - fetch utxos
+  useEffect(() => {
+    if (bitcoinNetwork) {
+      fetchUtxo({
+        token: bitcoinNetwork,
+        onSetUtxos: setUtxos,
+        onSetBalance: balance => setBalanceAvailable(balance.toNumber()),
+      })
+    }
+  }, [bitcoinNetwork])
 
   // When a pending RIF transaction is sent - add it to redux
   useEffect(() => {
@@ -148,7 +168,5 @@ export const usePaymentExecutor = () => {
     currentTransaction,
     error,
     executePayment,
-    setUtxos,
-    setBitcoinBalance,
   }
 }

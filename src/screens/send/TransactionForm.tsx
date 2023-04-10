@@ -28,22 +28,22 @@ import { IPrice } from 'src/subscriptions/types'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 
-import { MixedTokenAndNetworkType } from './types'
+import { ITokenOrBitcoinWithBIPRequest } from './types'
 import { PortfolioComponent } from '../home/PortfolioComponent'
 import { TokenImage, TokenSymbol } from '../home/TokenImage'
 
 interface Props {
   onConfirm: (
-    selectedToken: MixedTokenAndNetworkType,
+    selectedToken: ITokenOrBitcoinWithBIPRequest,
     amount: number,
     to: string,
   ) => void
   onCancel: () => void
-  tokenList: MixedTokenAndNetworkType[]
+  tokenList: ITokenOrBitcoinWithBIPRequest[]
   tokenPrices: Record<string, IPrice>
   chainId: number
   initialValues: {
-    asset?: MixedTokenAndNetworkType
+    asset?: ITokenOrBitcoinWithBIPRequest
     amount?: number
     recipient?: string
   }
@@ -80,11 +80,10 @@ export const TransactionForm = ({
   const [showTxSelector, setShowTxSelector] = useState(false)
   const [showTxFeeSelector, setShowTxFeeSelector] = useState(false)
   const [selectedTokenAddress, setSelectedTokenAddress] = useState<string>('')
-  const [selectedToken, setSelectedToken] = useState<MixedTokenAndNetworkType>(
-    initialValues.asset || tokenList[0],
-  )
+  const [selectedToken, setSelectedToken] =
+    useState<ITokenOrBitcoinWithBIPRequest>(initialValues.asset || tokenList[0])
   const [selectedFeeToken, setSelectedFeeToken] =
-    useState<MixedTokenAndNetworkType>(selectedToken)
+    useState<ITokenOrBitcoinWithBIPRequest>(selectedToken)
 
   const tokenFeeList = useMemo(() => {
     if (selectedToken.symbol !== TokenSymbol.BTCT) {

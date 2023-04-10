@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 
 import { useAppSelector } from 'store/storeUtils'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
-import { IAsset } from './types'
 import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
+import { ITokenOrBitcoinWithBIPRequest } from 'screens/send/types'
 
 export const useFetchBitcoinNetworksAndTokens = () => {
   const tokenBalances = useAppSelector(selectBalances)
@@ -25,6 +25,6 @@ export const useFetchBitcoinNetworksAndTokens = () => {
   return useMemo(() => {
     return [...networksSer, ...tokens].sort((a, b) =>
       a.symbol.localeCompare(b.symbol),
-    ) as IAsset[]
-  }, [tokens, networksSer])
+    )
+  }, [tokens, networksSer]) as ITokenOrBitcoinWithBIPRequest[]
 }
