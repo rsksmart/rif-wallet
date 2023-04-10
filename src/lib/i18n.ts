@@ -271,6 +271,7 @@ const resources = {
       pin_screen_new_pin_title: 'New PIN',
       pin_screen_confirm_pin_title: 'Confirm PIN',
       pin_screen_header_title: 'PIN',
+      pin_screen_wrong_pin: 'Wrong PIN',
     },
   },
   es: {

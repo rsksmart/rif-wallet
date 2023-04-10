@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { View, StyleSheet, TextInput, Alert, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
+import Icon from 'react-native-vector-icons/FontAwesome5'
 
 import {
   rootTabsRouteNames,
@@ -41,6 +42,9 @@ export const PinScreen = ({ navigation, route }: Props) => {
   const [isPinEqual, setIsPinEqual] = useState(false)
   const [isNewPinSet, setIsNewPinSet] = useState(false)
 
+  // pin error handling
+  const [hasError, setHasError] = useState(false)
+
   const [title, setTitle] = useState<string>(
     !statePIN ? t('pin_screen_new_pin_title') : t('pin_screen_default_title'),
   )
@@ -53,7 +57,7 @@ export const PinScreen = ({ navigation, route }: Props) => {
         setTitle(t('pin_screen_confirm_pin_title'))
         return
       } else {
-        return setIsPinEqual(curPin === confirmPin)
+        curPin === confirmPin ? setIsPinEqual(true) : setHasError(true)
       }
     },
     [t],
@@ -67,18 +71,25 @@ export const PinScreen = ({ navigation, route }: Props) => {
       confirmPin: string | null,
     ) => {
       if (!changeRequested) {
-        return setIsPinEqual(value === statePin)
+        value === statePin ? setIsPinEqual(true) : setHasError(true)
+        return
       }
 
       if (value === statePin) {
         setTitle(t('pin_screen_new_pin_title'))
         setIsNewPinSet(true)
       } else if (confirmPin) {
-        setIsPinEqual(value === confirmPin)
-        setIsNewPinSet(false)
+        value === confirmPin
+          ? (() => {
+              setIsPinEqual(true)
+              setIsNewPinSet(false)
+            })()
+          : setHasError(true)
       } else if (isNewPinSet) {
         setTitle(t('pin_screen_confirm_pin_title'))
         setConfirmPin(value)
+      } else {
+        setHasError(true)
       }
     },
     [t, isNewPinSet],
@@ -151,35 +162,54 @@ export const PinScreen = ({ navigation, route }: Props) => {
     }
   }, [isChangeRequested, isPinEqual, dispatch, PIN, navigation])
 
+  const errorTimeout = useCallback(() => {
+    setTimeout(() => {
+      setHasError(false)
+    }, 1000)
+    return null
+  }, [])
+
   return (
     <View style={sharedStyles.screen}>
+      {hasError && errorTimeout()}
       <Typography style={styles.title} type="h2">
-        {title}
+        {hasError ? t('pin_screen_wrong_pin') : title}
       </Typography>
-      <View style={styles.dotWrapper}>
-        {PIN.map((n, index) => (
-          <View
-            key={index}
-            style={[
-              n && Number(n) >= 0 ? styles.dotActive : styles.dotInactive,
-              styles.dot,
-            ]}
+      {hasError ? (
+        <View style={{ marginTop: 82, alignSelf: 'center' }}>
+          <Icon
+            name={'times-circle'}
+            color={sharedColors.danger}
+            size={105}
+            solid
           />
-        ))}
-        <TextInput
-          ref={textInputRef}
-          style={[
-            sharedStyles.none,
-            Platform.OS === 'android' && styles.androidInputWorkaround,
-          ]}
-          onChangeText={onPinInput}
-          onKeyPress={onKeyPress}
-          keyboardType={'number-pad'}
-          autoCorrect={false}
-          autoFocus
-          value={PIN.join('')}
-        />
-      </View>
+        </View>
+      ) : (
+        <View style={styles.dotWrapper}>
+          {PIN.map((n, index) => (
+            <View
+              key={index}
+              style={[
+                n && Number(n) >= 0 ? styles.dotActive : styles.dotInactive,
+                styles.dot,
+              ]}
+            />
+          ))}
+          <TextInput
+            ref={textInputRef}
+            style={[
+              sharedStyles.none,
+              Platform.OS === 'android' && styles.androidInputWorkaround,
+            ]}
+            onChangeText={onPinInput}
+            onKeyPress={onKeyPress}
+            keyboardType={'number-pad'}
+            autoCorrect={false}
+            autoFocus
+            value={PIN.join('')}
+          />
+        </View>
+      )}
     </View>
   )
 }
