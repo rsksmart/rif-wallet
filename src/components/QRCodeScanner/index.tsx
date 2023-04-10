@@ -11,13 +11,17 @@ import {
   Barcode,
   scanBarcodes,
 } from 'vision-camera-code-scanner'
-import Icon from 'react-native-vector-icons/Ionicons'
+import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useIsFocused } from '@react-navigation/native'
 import { runOnJS } from 'react-native-reanimated'
 
 import { colors } from 'src/styles'
 import { useAppDispatch } from 'store/storeUtils'
 import { setFullscreen } from 'store/slices/settingsSlice'
+import { sharedColors } from 'src/shared/constants'
+import { castStyle } from 'src/shared/utils'
+
+import { AppTouchable } from '../appTouchable'
 
 interface QRCodeScannerProps {
   onClose: () => void
@@ -85,40 +89,31 @@ export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
         edgeWidth={25}
         edgeRadius={5}
       />
-      <View style={styles.floatButton}>
-        <Icon.Button
+      <AppTouchable width={48} onPress={onClose} style={styles.floatButton}>
+        <Icon
           accessibilityLabel="closeButton"
-          name="close-outline"
-          onPress={onClose}
-          backgroundColor={colors.lightBlue}
-          color={colors.lightPurple}
-          style={styles.closeButton}
-          size={35}
-          borderRadius={40}
+          name={'times'}
+          size={24}
+          color={sharedColors.white}
         />
-      </View>
+      </AppTouchable>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
+  container: castStyle.view({
     flex: 1,
-    width: '100%',
-    height: '100%',
     alignItems: 'center',
-  },
-  floatButton: {
+  }),
+  floatButton: castStyle.view({
     position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    top: 0,
-    justifyContent: 'flex-end',
+    bottom: 40,
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 40,
-  },
-  closeButton: {
-    paddingRight: 0,
-  },
+    backgroundColor: sharedColors.primary,
+    height: 52,
+    width: 52,
+    borderRadius: 26,
+  }),
 })
