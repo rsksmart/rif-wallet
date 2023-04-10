@@ -330,11 +330,13 @@ export const HomeScreen = ({
         {transactionsCombined.length > 1 ? (
           <ScrollView>
             {transactionsCombined.map(tx => (
-              <ActivityBasicRow
-                key={tx.id}
-                activityTransaction={tx}
-                navigation={navigation}
-              />
+              <View style={styles.transactionItem}>
+                <ActivityBasicRow
+                  key={tx.id}
+                  activityTransaction={tx}
+                  navigation={navigation}
+                />
+              </View>
             ))}
           </ScrollView>
         ) : (
@@ -368,6 +370,9 @@ const styles = StyleSheet.create({
     padding: 6,
     paddingTop: 10,
     color: sharedColors.inputLabelColor,
+  }),
+  transactionItem: castStyle.view({
+    paddingHorizontal: 6,
   }),
   transactionsLabel: castStyle.text({
     padding: 6,
