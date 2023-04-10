@@ -5,6 +5,7 @@ import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
 import { IApiTransaction } from '@rsksmart/rif-wallet-services'
 import { useTranslation } from 'react-i18next'
+import { ethers } from 'ethers'
 
 import { abiEnhancer } from 'core/setup'
 import { useAppSelector } from 'store/storeUtils'
@@ -174,38 +175,15 @@ export const enhanceTransactionInput = async (
   transaction: IApiTransaction,
   wallet: RIFWallet,
 ): Promise<EnhancedResult | null> => {
-  console.log(transaction.internalTransactions)
-  const itxs = transaction.internalTransactions
-  let tx
   try {
-    console.log('SigHash', wallet.smartWallet.smartWalletContract.interface.getSighash('execute'))
-    console.log('SigHash', wallet.smartWallet.smartWalletContract.interface.getSighash('directExecute'))
-    itxs.forEach(itx => {
-      try{
-        // const data = wallet.smartWallet.smartWalletContract.interface.decodeFunctionData(
-        //   'execute',
-        //   itx.action.input,
-        // )
-        const data = wallet.smartWallet.smartWalletContract.interface.parseTransaction({data: itx.action.input})
-        console.log('Data from itx', data);
-      } catch(er) {
-        console.log(er)
-      }
-    })
-    tx = wallet.smartWallet.smartWalletContract.interface.decodeFunctionData(
-      'execute',
-      itxs[0].action.input,
-    )
     const enhancedTx = await abiEnhancer.enhance(wallet, {
       from: transaction.from.toLowerCase(),
       to: transaction.to.toLowerCase(),
-      data: tx.data,
+      data: ethers.utils.arrayify(transaction.input),
       value: transaction.value,
     })
-    console.log(enhancedTx)
     return enhancedTx
-  } catch(e) {
-    console.log('Error Tx', e)
+  } catch (e) {
     return null
   }
 }
