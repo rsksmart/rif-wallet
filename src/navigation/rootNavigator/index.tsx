@@ -31,7 +31,6 @@ const RootTabs = createBottomTabNavigator<RootTabsParamsList>()
 export const RootNavigationComponent = () => {
   const { t } = useTranslation()
   const { top } = useSafeAreaInsets()
-  const { t } = useTranslation()
   const isDeviceRooted = JailMonkey.isJailBroken()
   const [isWarningVisible, setIsWarningVisible] = useState(isDeviceRooted)
   const unlocked = useAppSelector(selectIsUnlocked)
