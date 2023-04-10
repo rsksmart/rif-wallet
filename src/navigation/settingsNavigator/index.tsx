@@ -81,6 +81,12 @@ export const SettingsNavigator = ({
         component={PinScreen}
         options={screenOptionsWithHeader(top, t('pin_screen_header_title'))}
       />
+
+      <SettingsStack.Screen
+        name={settingsStackRouteNames.RelayDeployScreen}
+        component={InjectedScreens.RelayDeployScreen}
+        options={screenOptionsWithHeader(top, '')}
+      />
     </SettingsStack.Navigator>
   )
 }

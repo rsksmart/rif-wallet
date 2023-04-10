@@ -52,6 +52,9 @@ export const sharedStyles = StyleSheet.create({
   flex: castStyle.view({
     flex: 1,
   }),
+  flexGrow: castStyle.view({
+    flexGrow: 1,
+  }),
   row: castStyle.view({
     flexDirection: 'row',
   }),

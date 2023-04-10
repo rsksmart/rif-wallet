@@ -6,9 +6,11 @@ import {
   homeStackRouteNames,
   HomeStackScreenProps,
 } from 'navigation/homeNavigator/types'
+import { rootTabsRouteNames } from 'navigation/rootNavigator'
+import { settingsStackRouteNames } from 'navigation/settingsNavigator/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppSelector } from 'store/storeUtils'
-import { selectBalances } from 'src/redux/slices/balancesSlice/selectors'
+import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { sharedStyles } from 'shared/constants'
 import { ITokenOrBitcoinWithBIPRequest } from 'screens/send/types'
 
@@ -58,7 +60,10 @@ export const SendScreen = ({
   }
 
   const onDeployWalletNavigate = useCallback(
-    () => navigation.navigate(homeStackRouteNames.RelayDeployScreen),
+    () =>
+      navigation.navigate(rootTabsRouteNames.Settings, {
+        screen: settingsStackRouteNames.RelayDeployScreen,
+      }),
     [navigation],
   )
 

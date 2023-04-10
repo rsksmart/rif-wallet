@@ -41,9 +41,7 @@ export const SettingsScreen = ({
     navigation.navigate(settingsStackRouteNames.WalletBackup)
 
   const goToDeploy = () =>
-    navigation.navigate(rootTabsRouteNames.Home, {
-      screen: homeStackRouteNames.RelayDeployScreen,
-    })
+    navigation.navigate(settingsStackRouteNames.RelayDeployScreen)
 
   const goToFeedbackScreen = () =>
     navigation.navigate(settingsStackRouteNames.FeedbackScreen)

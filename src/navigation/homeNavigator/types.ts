@@ -37,7 +37,6 @@ export type HomeStackParamsList = {
     networkId?: string
   }
   [homeStackRouteNames.Balances]: undefined
-  [homeStackRouteNames.RelayDeployScreen]: undefined
 }
 
 export type HomeStackNavigationProp = CompositeNavigationProp<

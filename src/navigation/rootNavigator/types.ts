@@ -8,6 +8,7 @@ import { ContactStackParamsList } from '../contactsNavigator'
 import { CreateKeysStackParamList } from '../createKeysNavigator'
 import { HomeStackParamsList } from '../homeNavigator/types'
 import { ProfileStackParamsList } from '../profileNavigator/types'
+import { SettingsStackParamsList } from '../settingsNavigator/types'
 
 export type RootTabsScreenProps<T extends keyof RootTabsParamsList> =
   BottomTabScreenProps<RootTabsParamsList, T>
@@ -41,7 +42,9 @@ export type RootTabsParamsList = {
     | NavigatorScreenParams<ContactStackParamsList>
     | undefined
   [rootTabsRouteNames.WalletConnect]: undefined | { wcKey: string }
-  [rootTabsRouteNames.Settings]: undefined
+  [rootTabsRouteNames.Settings]:
+    | undefined
+    | NavigatorScreenParams<SettingsStackParamsList>
   [rootTabsRouteNames.Profile]:
     | NavigatorScreenParams<ProfileStackParamsList>
     | undefined

@@ -35,10 +35,6 @@ export const HomeNavigator = ({
         options={screenOptionsWithHeader(top)}
       />
       <HomeStack.Screen
-        name={homeStackRouteNames.RelayDeployScreen}
-        component={InjectedScreens.RelayDeployScreen}
-      />
-      <HomeStack.Screen
         name={homeStackRouteNames.Receive}
         component={ReceiveScreen}
         options={screenOptionsWithHeader(top)}
