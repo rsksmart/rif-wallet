@@ -198,7 +198,7 @@ export const PinScreen = ({ navigation, route }: Props) => {
           <TextInput
             ref={textInputRef}
             style={[
-              sharedStyles.none,
+              sharedStyles.displayNone,
               Platform.OS === 'android' && styles.androidInputWorkaround,
             ]}
             onChangeText={onPinInput}
