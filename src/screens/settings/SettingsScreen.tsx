@@ -1,23 +1,27 @@
-import { useCallback, useMemo, useEffect } from 'react'
-import { StyleSheet, View, ScrollView } from 'react-native'
 import { version } from 'package.json'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { ScrollView, StyleSheet, View } from 'react-native'
 
-import { getWalletSetting, SETTINGS } from 'core/config'
-import { sharedColors, sharedStyles } from 'shared/constants'
-import { castStyle } from 'shared/utils'
 import { AppTouchable, Typography } from 'components/index'
+import { SETTINGS, getWalletSetting } from 'core/config'
 import { homeStackRouteNames } from 'navigation/homeNavigator/types'
-import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import { headerLeftOption } from 'navigation/profileNavigator'
+import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import {
   SettingsScreenProps,
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
+import { sharedColors, sharedStyles } from 'shared/constants'
+import { castStyle } from 'shared/utils'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { useAppSelector } from 'store/storeUtils'
 
 export const SettingsScreen = ({
   navigation,
 }: SettingsScreenProps<settingsStackRouteNames.SettingsScreen>) => {
+  const { isDeployed } = useAppSelector(selectActiveWallet)
+
   const smartWalletFactoryAddress = useMemo(
     () => getWalletSetting(SETTINGS.SMART_WALLET_FACTORY_ADDRESS),
     [],
@@ -90,15 +94,17 @@ export const SettingsScreen = ({
             {t('settings_screen_provide_feedback')}
           </Typography>
         </AppTouchable>
-        <AppTouchable
-          width={'100%'}
-          style={styles.settingsItem}
-          onPress={goToDeploy}
-          accessibilityLabel="Deploy Wallet">
-          <Typography type={'h3'}>
-            {t('settings_screen_deploy_wallet')}
-          </Typography>
-        </AppTouchable>
+        {!isDeployed && (
+          <AppTouchable
+            width={'100%'}
+            style={styles.settingsItem}
+            onPress={goToDeploy}
+            accessibilityLabel="Deploy Wallet">
+            <Typography type={'h3'}>
+              {t('settings_screen_deploy_wallet')}
+            </Typography>
+          </AppTouchable>
+        )}
         <AppTouchable
           width={'100%'}
           accessibilityLabel={'example'}
