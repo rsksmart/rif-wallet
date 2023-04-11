@@ -19,10 +19,7 @@ import { castStyle } from 'shared/utils'
 import { setAccount } from 'store/slices/accountsSlice'
 import { selectAccounts } from 'store/slices/accountsSlice/selector'
 import { AccountPayload } from 'store/slices/accountsSlice/types'
-import {
-  selectActiveWallet,
-  selectWalletIsDeployed,
-} from 'store/slices/settingsSlice'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 
 import { CheckIcon } from '../icons/CheckIcon'
@@ -42,7 +39,7 @@ export const AccountBox = ({
 }: AccountBoxProps) => {
   const dispatch = useAppDispatch()
   const accounts = useAppSelector(selectAccounts)
-  const isDeployed = useAppSelector(selectWalletIsDeployed)
+  const { isDeployed } = useAppSelector(selectActiveWallet)
   const initialAccountName = accounts[id]?.name || `account ${id + 1}`
   const [accountName, setAccountName] = useState<string>(initialAccountName)
   const [showAccountNameInput, setShowAccountInput] = useState<boolean>(false)
