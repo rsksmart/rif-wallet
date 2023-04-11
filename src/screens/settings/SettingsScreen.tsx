@@ -14,10 +14,14 @@ import {
   SettingsScreenProps,
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
+import { useAppSelector } from 'src/redux/storeUtils'
+import { selectWalletIsDeployed } from 'src/redux/slices/settingsSlice'
 
 export const SettingsScreen = ({
   navigation,
 }: SettingsScreenProps<settingsStackRouteNames.SettingsScreen>) => {
+  const isDeployed = useAppSelector(selectWalletIsDeployed)
+
   const smartWalletFactoryAddress = useMemo(
     () => getWalletSetting(SETTINGS.SMART_WALLET_FACTORY_ADDRESS),
     [],
@@ -90,15 +94,17 @@ export const SettingsScreen = ({
             {t('settings_screen_provide_feedback')}
           </Typography>
         </AppTouchable>
-        <AppTouchable
-          width={'100%'}
-          style={styles.settingsItem}
-          onPress={goToDeploy}
-          accessibilityLabel="Deploy Wallet">
-          <Typography type={'h3'}>
-            {t('settings_screen_deploy_wallet')}
-          </Typography>
-        </AppTouchable>
+        {!isDeployed && (
+          <AppTouchable
+            width={'100%'}
+            style={styles.settingsItem}
+            onPress={goToDeploy}
+            accessibilityLabel="Deploy Wallet">
+            <Typography type={'h3'}>
+              {t('settings_screen_deploy_wallet')}
+            </Typography>
+          </AppTouchable>
+        )}
         <AppTouchable
           width={'100%'}
           accessibilityLabel={'example'}
