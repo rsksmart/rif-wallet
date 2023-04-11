@@ -1,34 +1,35 @@
-import { useEffect, useState } from 'react'
-import { StyleSheet, TextInput, View } from 'react-native'
 import Clipboard from '@react-native-community/clipboard'
-import { TouchableOpacity } from 'react-native-gesture-handler'
-import { SmartWalletFactory } from '@rsksmart/rif-relay-light-sdk'
-import { useTranslation } from 'react-i18next'
-import Icon from 'react-native-vector-icons/FontAwesome'
+import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { StyleSheet, TextInput, View } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import Icon from 'react-native-vector-icons/FontAwesome'
 
+import {
+  AppTouchable,
+  Input,
+  Typography,
+  getAddressDisplayText,
+} from 'components/index'
+import { PublicKeyItemType } from 'screens/accounts/types'
+import { defaultIconSize, sharedColors } from 'shared/constants'
+import { sharedStyles } from 'shared/styles'
+import { castStyle } from 'shared/utils'
 import { setAccount } from 'store/slices/accountsSlice'
 import { selectAccounts } from 'store/slices/accountsSlice/selector'
 import { AccountPayload } from 'store/slices/accountsSlice/types'
-import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { PublicKeyItemType } from 'screens/accounts/types'
-import { sharedStyles } from 'shared/styles'
-import { defaultIconSize, sharedColors } from 'shared/constants'
-import { castStyle } from 'shared/utils'
 import {
-  AppTouchable,
-  getAddressDisplayText,
-  Input,
-  Typography,
-} from 'components/index'
-import { selectActiveWallet } from 'store/slices/settingsSlice'
+  selectActiveWallet,
+  selectWalletIsDeployed,
+} from 'store/slices/settingsSlice'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 
 import { CheckIcon } from '../icons/CheckIcon'
 
 interface AccountBoxProps {
   address: string
   smartWalletAddress: string
-  smartWalletFactory: SmartWalletFactory
   id?: number
   publicKeys: PublicKeyItemType[]
 }
@@ -36,15 +37,14 @@ interface AccountBoxProps {
 export const AccountBox = ({
   address,
   smartWalletAddress,
-  smartWalletFactory,
   publicKeys = [],
   id = 0,
 }: AccountBoxProps) => {
   const dispatch = useAppDispatch()
   const accounts = useAppSelector(selectAccounts)
+  const isDeployed = useAppSelector(selectWalletIsDeployed)
   const initialAccountName = accounts[id]?.name || `account ${id + 1}`
   const [accountName, setAccountName] = useState<string>(initialAccountName)
-  const [isDeployed, setIsDeployed] = useState(false)
   const [showAccountNameInput, setShowAccountInput] = useState<boolean>(false)
   const { chainType } = useAppSelector(selectActiveWallet)
 
@@ -73,10 +73,6 @@ export const AccountBox = ({
       dispatch(setAccount(accountPayload))
     }
   }
-
-  useEffect(() => {
-    smartWalletFactory.isDeployed().then(setIsDeployed)
-  }, [smartWalletFactory])
 
   const methods = useForm()
 
