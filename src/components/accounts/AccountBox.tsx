@@ -175,12 +175,12 @@ export const AccountBox = ({
         <Input
           key={publicKey.publicKey}
           style={sharedStyles.marginTop20}
-          label={t(
-            publicKey.networkName + ' ' + t('settings_screen_public_key_label'),
-          )}
-          inputName={
-            publicKey.networkName + ' ' + t('settings_screen_public_key_label')
-          }
+          label={`${publicKey.networkName} ${t(
+            'settings_screen_public_key_label',
+          )}`}
+          inputName={`${publicKey.networkName} ${t(
+            'settings_screen_public_key_label',
+          )}`}
           rightIcon={
             <Icon
               name={'copy'}
