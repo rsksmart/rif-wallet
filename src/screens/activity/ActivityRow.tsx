@@ -39,7 +39,7 @@ export const ActivityBasicRow = ({
   activityTransaction,
   navigation,
   backScreen,
-  style
+  style,
 }: Props) => {
   const prices = useAppSelector(selectUsdPrices)
   const selectedWallet = useAppSelector(selectSelectedWallet)
