@@ -70,6 +70,7 @@ export const InjectedScreens = {
   AliasBoughtScreen: InjectSelectedWallet(Screens.AliasBoughtScreen),
   HomeScreen: InjectSelectedWallet(Screens.HomeScreen),
   AccountsScreen: InjectSelectedWallet(Screens.AccountsScreen),
+  PurchaseDomainScreen: InjectSelectedWallet(Screens.PurchaseDomainScreen),
 }
 
 export const navigationContainerRef =

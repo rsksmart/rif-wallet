@@ -1,12 +1,16 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useCallback, useEffect, useState } from 'react'
-import { FieldValues, FormProvider, useForm } from 'react-hook-form'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/Entypo'
 import * as yup from 'yup'
 
-import { useRifToken, useRnsDomainPriceInRif as calculatePrice } from 'lib/rns'
+import {
+  RnsProcessor,
+  useRifToken,
+  useRnsDomainPriceInRif as calculatePrice,
+} from 'lib/rns'
 
 import { AppTouchable } from 'components/appTouchable'
 import { AppButton, Input, Typography } from 'components/index'
@@ -21,8 +25,9 @@ import {
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { colors } from 'src/styles'
-import { recoverAlias } from 'store/slices/profileSlice'
+import { recoverAlias, requestUsername } from 'store/slices/profileSlice'
 import { useAppDispatch } from 'store/storeUtils'
+import { AvatarIconBox } from 'screens/rnsManager/AvatarIconBox'
 
 import { ScreenWithWallet } from '../types'
 import { DomainInput } from './DomainInput'
@@ -69,11 +74,21 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const isRequestButtonDisabled = hasErrors || !validDomain
   const isSaveButtonDisabled = (hasErrors || !validDomain) && !isDomainOwned
 
-  const onSubmit = (data: FieldValues) => {
-    navigation.navigate(profileStackRouteNames.RequestDomain, {
-      alias: data.domain,
-      duration: selectedYears,
-    })
+  const rnsProcessor = useMemo(() => new RnsProcessor({ wallet }), [wallet])
+
+  const onSubmit = async () => {
+    const response = await dispatch(
+      requestUsername({
+        rnsProcessor,
+        alias: domainToLookUp,
+        duration: selectedYears,
+      }),
+    ).unwrap()
+    console.log(response)
+    // navigation.navigate(profileStackRouteNames.RequestDomain, {
+    //   alias: data.domain,
+    //   duration: selectedYears,
+    // })
   }
 
   const handleDomainAvailable = useCallback(
@@ -137,7 +152,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           description={t('info_box_description_search_domain')}
           buttonText={t('info_box_close_button')}
         />
-
+        <AvatarIconBox text={domainToLookUp + '.rsk'} />
         <FormProvider {...methods}>
           <View style={rnsManagerStyles.marginTop}>
             <DomainInput
