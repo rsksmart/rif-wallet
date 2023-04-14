@@ -2,15 +2,15 @@ import { TextStyle } from 'react-native'
 import Jdenticon from 'react-native-jdenticon'
 
 import { sharedColors } from 'shared/constants'
-import { castStyle } from 'src/shared/utils'
+import { castStyle } from 'shared/utils'
 
-interface AvatarIconProps {
+interface Props {
   value: string
   size?: number
   style?: TextStyle
 }
 
-export const AvatarIcon = ({ value, size = 40, style }: AvatarIconProps) => {
+export const AvatarIcon = ({ value, size = 40, style }: Props) => {
   const config = {
     lightness: {
       color: [0.4, 0.8],

@@ -32,7 +32,7 @@ export const Avatar = ({
   name,
   letterColor,
 }: Props) => {
-  const twoTimesLessThanSize = useMemo(() => size / 2, [size])
+  const halfSize = useMemo(() => size / 2, [size])
   const firstCapital = useMemo(() => {
     const letters = name.split('')
     if (letters.length) {
@@ -45,7 +45,7 @@ export const Avatar = ({
     <View
       style={[
         styles.mainContainer,
-        { height: size, width: size, borderRadius: twoTimesLessThanSize },
+        { height: size, width: size, borderRadius: halfSize },
         style,
       ]}>
       {(!icon && !imageSource) || (icon && imageSource) ? (
@@ -53,7 +53,7 @@ export const Avatar = ({
           style={[
             styles.letter,
             {
-              fontSize: twoTimesLessThanSize,
+              fontSize: halfSize,
               color: letterColor ? letterColor : sharedColors.white,
             },
           ]}>

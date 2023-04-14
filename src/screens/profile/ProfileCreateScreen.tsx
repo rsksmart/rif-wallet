@@ -37,6 +37,7 @@ import { selectProfile } from 'store/slices/profileSlice/selector'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { AppSpinner } from 'screens/spinner'
+import { AvatarIcon } from 'components/icons/AvatarIcon'
 
 import { rnsManagerStyles } from '../rnsManager/rnsManagerStyles'
 
@@ -53,6 +54,12 @@ export const ProfileCreateScreen = ({
   const methods = useForm()
   const { resetField, setValue } = methods
   const { t } = useTranslation()
+
+  const { wallet, chainType } = useAppSelector(selectActiveWallet)
+  const { displayAddress } = getAddressDisplayText(
+    wallet?.smartWallet.smartWalletAddress ?? '',
+    chainType,
+  )
 
   const onSetEmail = useCallback(
     (_email: string) => {
@@ -77,12 +84,6 @@ export const ProfileCreateScreen = ({
     resetField('email')
     dispatch(setProfile({ ...profile, email: '' }))
   }, [dispatch, profile, resetField])
-
-  const { wallet, chainType } = useAppSelector(selectActiveWallet)
-  const { displayAddress } = getAddressDisplayText(
-    wallet?.smartWallet.smartWalletAddress ?? '',
-    chainType,
-  )
 
   const onShareUsername = useCallback(() => {
     Share.share({ message: username })
@@ -124,14 +125,13 @@ export const ProfileCreateScreen = ({
       automaticallyAdjustContentInsets
       automaticallyAdjustKeyboardInsets>
       <View style={styles.usernameContainer}>
-        <Avatar
-          size={50}
-          name={username || 'username'}
-          style={styles.avatarBackground}
-          letterColor={sharedColors.labelLight}
-        />
+        {username ? (
+          <AvatarIcon size={50} value={username} />
+        ) : (
+          <Avatar size={50} name="username" style={styles.avatarBackground} />
+        )}
         <View style={styles.username}>
-          <Typography type={'h3'} color={sharedColors.labelLight}>
+          <Typography type={'h3'} color={sharedColors.white}>
             {username || t('no_username')}
           </Typography>
           <Typography type={'h4'} color={sharedColors.labelLight}>
