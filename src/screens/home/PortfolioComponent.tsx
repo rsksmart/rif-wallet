@@ -1,8 +1,8 @@
-import { View, ScrollView, StyleProp, ViewStyle } from 'react-native'
-import { useCallback, useState } from 'react'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import { BigNumber } from 'ethers'
+import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { ScrollView, StyleProp, View, ViewStyle } from 'react-native'
 
 import {
   balanceToDisplay,
@@ -11,11 +11,11 @@ import {
   roundBalance,
 } from 'lib/utils'
 
+import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
+import { getTokenColor } from 'screens/home/tokenColor'
+import { sharedColors } from 'shared/constants'
 import { IPrice } from 'src/subscriptions/types'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
-import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
-import { sharedColors } from 'shared/constants'
-import { getTokenColor } from 'screens/home/tokenColor'
 
 export const getBalance = (token: ITokenWithoutLogo | BitcoinNetwork) => {
   if (token instanceof BitcoinNetwork) {
@@ -84,7 +84,7 @@ export const PortfolioComponent = ({
   return (
     <View style={style}>
       {/*TODO: This View above is a temporal fix to keep the ScrollView height*/}
-      <ScrollView horizontal={true}>
+      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
         <PortfolioCard
           onPress={onTotalTap}
           color={

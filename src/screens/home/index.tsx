@@ -330,13 +330,12 @@ export const HomeScreen = ({
         {transactionsCombined.length > 1 ? (
           <ScrollView>
             {transactionsCombined.map(tx => (
-              <View style={styles.transactionItem}>
-                <ActivityBasicRow
-                  key={tx.id}
-                  activityTransaction={tx}
-                  navigation={navigation}
-                />
-              </View>
+              <ActivityBasicRow
+                key={tx.id}
+                activityTransaction={tx}
+                navigation={navigation}
+                style={styles.transactionItem}
+              />
             ))}
           </ScrollView>
         ) : (

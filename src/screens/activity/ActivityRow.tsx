@@ -15,6 +15,7 @@ import { ActivityMainScreenProps } from 'shared/types'
 
 import useActivityDeserializer from './useActivityDeserializer'
 import { ActivityMixedType } from './types'
+import { StyleProp, ViewStyle } from 'react-native'
 
 const getStatus = (status: string) => {
   switch (status) {
@@ -31,12 +32,14 @@ interface Props {
   activityTransaction: ActivityMixedType
   navigation: ActivityMainScreenProps['navigation']
   backScreen?: rootTabsRouteNames
+  style?: StyleProp<ViewStyle>
 }
 
 export const ActivityBasicRow = ({
   activityTransaction,
   navigation,
   backScreen,
+  style,
 }: Props) => {
   const prices = useAppSelector(selectUsdPrices)
   const selectedWallet = useAppSelector(selectSelectedWallet)
@@ -81,7 +84,7 @@ export const ActivityBasicRow = ({
   )
 
   return (
-    <AppTouchable width={'100%'} onPress={handlePress}>
+    <AppTouchable width={'100%'} onPress={handlePress} style={style}>
       <BasicRowWithContact
         label={shortAddress(activityDetails.to, 8)}
         amount={activityDetails.value}
