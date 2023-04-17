@@ -249,6 +249,10 @@ const resources = {
         'Do you want to disconnect from the Dapp',
       dapps_confirm_disconnection_confirm: 'Disconnect',
       dapps_confirm_disconnection_cancel: 'Reject',
+      alias_bought_congratulations: 'Congratulations!',
+      alias_bought_you_requested_domain: 'You have requested your domain.',
+      alias_bought_transaction_processing:
+        'Your transactions is being processed.',
     },
   },
   es: {
