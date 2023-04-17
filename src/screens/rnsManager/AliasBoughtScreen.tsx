@@ -37,7 +37,7 @@ export const AliasBoughtScreen = ({
         email: '',
         alias: `${alias}`,
         status: ProfileStatus.USER,
-        infoBoxClosed: false,
+        infoBoxClosed: true,
         duration: null,
       }),
     )
