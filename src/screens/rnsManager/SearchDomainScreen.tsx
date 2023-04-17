@@ -21,12 +21,17 @@ import {
   ProfileStackScreenProps,
   ProfileStatus,
 } from 'navigation/profileNavigator/types'
-import { sharedColors } from 'shared/constants'
+import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { colors } from 'src/styles'
-import { recoverAlias, requestUsername } from 'store/slices/profileSlice'
-import { useAppDispatch } from 'store/storeUtils'
+import {
+  recoverAlias,
+  requestUsername,
+  selectProfileStatus,
+} from 'store/slices/profileSlice'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { AvatarIconBox } from 'screens/rnsManager/AvatarIconBox'
+import { AppSpinner } from 'screens/spinner'
 
 import { ScreenWithWallet } from '../types'
 import { DomainInput } from './DomainInput'
@@ -50,6 +55,8 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const [selectedDomainPrice, setSelectedDomainPrice] = useState<number>(2)
   const [isModalVisible, setIsModalVisible] = useState<boolean>(true)
   const [error, setError] = useState<string>('')
+  const [currentStatus, setCurrentStatus] = useState<string>('')
+  const profileStatus = useAppSelector(selectProfileStatus)
 
   const dispatch = useAppDispatch()
   const rifToken = useRifToken()
@@ -78,15 +85,18 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
 
   const onSubmit = async () => {
     setError('')
+    setCurrentStatus('')
     try {
-      const response = await dispatch(
+      setCurrentStatus('loading')
+      await dispatch(
         requestUsername({
           rnsProcessor,
           alias: domainToLookUp,
           duration: selectedYears,
         }),
       ).unwrap()
-      console.log(response)
+      // A side effect is thrown when the commitment is completed
+      // which will redirect the user to the PurchaseScreen
     } catch (requestUsernameError) {
       if (
         requestUsernameError instanceof Error ||
@@ -101,6 +111,8 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           setError(t('search_domain_random_error'))
         }
       }
+    } finally {
+      setCurrentStatus('')
     }
   }
 
@@ -197,6 +209,17 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
             <Typography type="body1" style={styles.errorTypography}>
               {error}
             </Typography>
+          )}
+          {(profileStatus === ProfileStatus.REQUESTING ||
+            currentStatus === 'loading') && (
+            <>
+              <View style={[sharedStyles.contentCenter]}>
+                <AppSpinner size={64} thickness={10} />
+              </View>
+              <Typography type="body1">
+                Your profile commitment is being processed. Please wait.
+              </Typography>
+            </>
           )}
         </FormProvider>
         {!isDomainOwned ? (

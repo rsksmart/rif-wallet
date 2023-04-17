@@ -215,7 +215,7 @@ export const ProfileCreateScreen = ({
             title={t('profile_register_your_username_button_text')}
             color={sharedColors.white}
             textColor={sharedColors.black}
-            disabled={!!username && profile.status === ProfileStatus.REQUESTING}
+            disabled={!!username}
             onPress={() =>
               navigation.navigate(profileStackRouteNames.SearchDomain)
             }
