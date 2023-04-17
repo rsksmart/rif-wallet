@@ -212,6 +212,7 @@ export const ContactDetails = ({
                   label={contact.name}
                   avatar={{ name: contact.name }}
                   secondaryLabel={item.originTransaction.to}
+                  symbol={item.enhancedTransaction?.symbol}
                 />
               )}
               style={styles.transactionList}
