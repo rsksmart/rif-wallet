@@ -19,7 +19,7 @@ import {
   ProfileStackScreenProps,
 } from 'navigation/profileNavigator/types'
 import { sharedColors } from 'shared/constants'
-import { castStyle, errorHandler } from 'shared/utils'
+import { castStyle } from 'shared/utils'
 import { purchaseUsername, selectProfile } from 'store/slices/profileSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { ScreenWithWallet } from 'screens/types'
@@ -65,17 +65,12 @@ export const PurchaseDomainScreen = ({
         purchaseUsername({ rnsProcessor, domain }),
       ).unwrap()
       if (response === DomainRegistrationEnum.REGISTERING_REQUESTED) {
-        // setRegisterDomainInfo('Transaction sent. Please wait...')
-        console.log('Register in process true')
-
         navigation.navigate(profileStackRouteNames.AliasBought, {
           alias: alias,
         })
       }
     } catch (e) {
-      console.log('Register in process false')
-      console.log(errorHandler(e))
-      // setRegisterDomainInfo(errorHandler(e))
+      // @todo error handling
     }
   }
 
