@@ -93,13 +93,9 @@ export const ProfileNavigator = ({
       />
 
       <ProfileStack.Screen
-        name={profileStackRouteNames.RequestDomain}
-        component={InjectedScreens.RequestDomainScreen}
-      />
-
-      <ProfileStack.Screen
         name={profileStackRouteNames.AliasBought}
         component={InjectedScreens.AliasBoughtScreen}
+        options={{ headerShown: false }}
       />
     </ProfileStack.Navigator>
   )
