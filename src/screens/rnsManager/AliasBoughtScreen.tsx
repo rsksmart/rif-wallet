@@ -13,7 +13,6 @@ import {
 import { castStyle } from 'shared/utils'
 import { AppSpinner } from 'screens/spinner'
 import { sharedColors, sharedStyles } from 'shared/constants'
-import { rootTabsRouteNames } from 'navigation/rootNavigator'
 
 import { ScreenWithWallet } from '../types'
 
@@ -28,7 +27,7 @@ export const AliasBoughtScreen = ({
   const dispatch = useAppDispatch()
 
   const onCloseButtonPressed = () => {
-    navigation.navigate(rootTabsRouteNames.Home)
+    navigation.navigate(profileStackRouteNames.ProfileCreateScreen)
   }
 
   useEffect(() => {
