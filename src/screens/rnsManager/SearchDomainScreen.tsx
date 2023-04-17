@@ -225,7 +225,11 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
         {!isDomainOwned ? (
           <AppButton
             style={rnsManagerStyles.button}
-            disabled={isRequestButtonDisabled}
+            disabled={
+              isRequestButtonDisabled ||
+              currentStatus === 'loading' ||
+              profileStatus === ProfileStatus.REQUESTING
+            }
             onPress={handleSubmit(onSubmit)}
             accessibilityLabel={t('request_username_button')}
             title={t('request_username_button')}
