@@ -272,7 +272,7 @@ export const TransactionForm = ({
             token={selectedToken}
           />
           <TokenBalance
-            style={sharedStyles.marginTop40}
+            style={styles.marginTop10}
             firstValue={firstBalance}
             secondValue={secondBalance}
             color={sharedColors.black}
@@ -283,7 +283,7 @@ export const TransactionForm = ({
             }
           />
           <Input
-            containerStyle={sharedStyles.marginTop40}
+            containerStyle={styles.marginTop10}
             inputName={'balance'}
             label={`${selectedToken.symbol} ${t(
               'transaction_form_balance_label',
@@ -362,7 +362,7 @@ export const TransactionForm = ({
           ) : null}
         </FormProvider>
       </ScrollView>
-      <View style={styles.buttons}>
+      <View style={styles.marginTop10}>
         <AppButton
           title={`${t('transaction_form_button_send')} ${amount} ${
             selectedToken.symbol
@@ -388,7 +388,7 @@ export const TransactionForm = ({
 }
 
 const styles = StyleSheet.create({
-  buttons: castStyle.view({
+  marginTop10: castStyle.view({
     marginTop: 10,
   }),
   buttonCancel: castStyle.view({
