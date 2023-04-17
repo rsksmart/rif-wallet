@@ -1,8 +1,8 @@
-import addresses from 'screens/rnsManager/addresses.json'
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { BigNumber } from 'ethers'
 
+import addresses from 'screens/rnsManager/addresses.json'
 import {
   getRnsProcessor,
   hasRnsProcessor,
@@ -69,7 +69,9 @@ export class RnsProcessor {
         return DomainRegistrationEnum.COMMITMENT_REQUESTED
       }
     } catch (err) {
-      throw new Error((err as Error).message)
+      if (err instanceof Error || typeof err === 'string') {
+        throw new Error(err.toString())
+      }
     }
     return null
   }

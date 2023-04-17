@@ -49,6 +49,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const [selectedYears, setSelectedYears] = useState<number>(2)
   const [selectedDomainPrice, setSelectedDomainPrice] = useState<number>(2)
   const [isModalVisible, setIsModalVisible] = useState<boolean>(true)
+  const [error, setError] = useState<string>('')
 
   const dispatch = useAppDispatch()
   const rifToken = useRifToken()
@@ -76,18 +77,31 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const rnsProcessor = useMemo(() => new RnsProcessor({ wallet }), [wallet])
 
   const onSubmit = async () => {
-    const response = await dispatch(
-      requestUsername({
-        rnsProcessor,
-        alias: domainToLookUp,
-        duration: selectedYears,
-      }),
-    ).unwrap()
-    console.log(response)
-    // navigation.navigate(profileStackRouteNames.RequestDomain, {
-    //   alias: data.domain,
-    //   duration: selectedYears,
-    // })
+    setError('')
+    try {
+      const response = await dispatch(
+        requestUsername({
+          rnsProcessor,
+          alias: domainToLookUp,
+          duration: selectedYears,
+        }),
+      ).unwrap()
+      console.log(response)
+    } catch (requestUsernameError) {
+      if (
+        requestUsernameError instanceof Error ||
+        typeof requestUsernameError === 'string'
+      ) {
+        const message = requestUsernameError.toString()
+        if (message.includes('User rejects')) {
+          setError(t('search_domain_error_request_rejected'))
+        } else if (message.includes('balance too low')) {
+          setError(t('search_domain_error_funds_low'))
+        } else {
+          setError(t('search_domain_random_error'))
+        }
+      }
+    }
   }
 
   const handleDomainAvailable = useCallback(
@@ -179,8 +193,12 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
               </View>
             }
           />
+          {error !== '' && (
+            <Typography type="body1" style={styles.errorTypography}>
+              {error}
+            </Typography>
+          )}
         </FormProvider>
-
         {!isDomainOwned ? (
           <AppButton
             style={rnsManagerStyles.button}
@@ -241,5 +259,9 @@ const styles = StyleSheet.create({
   }),
   yearsButtons: castStyle.view({
     flexDirection: 'row',
+  }),
+  errorTypography: castStyle.text({
+    paddingHorizontal: 5,
+    marginTop: 10,
   }),
 })

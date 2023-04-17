@@ -253,6 +253,11 @@ const resources = {
       alias_bought_you_requested_domain: 'You have requested your domain.',
       alias_bought_transaction_processing:
         'Your transactions is being processed.',
+      search_domain_error_request_rejected: 'The request was rejected.',
+      search_domain_error_funds_low:
+        'Your balance is too low to request an username.',
+      search_domain_random_error:
+        'There was an error with the request. Please try again later.',
     },
   },
   es: {
