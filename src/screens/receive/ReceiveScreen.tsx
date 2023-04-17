@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   ScrollView,
   StyleSheet,
@@ -53,6 +53,7 @@ export const ReceiveScreen = ({
   const [selectedAsset, setSelectedAsset] = useState<
     MixedTokenAndNetworkType | undefined
   >((networkId && bitcoinCore?.networksMap[networkId]) || token)
+  const isFirstTimeRender = useRef<boolean>(true)
   const [address, setAddress] = useState<string>('')
   const [isAddressLoading, setIsAddressLoading] = useState(false)
 
@@ -124,6 +125,14 @@ export const ReceiveScreen = ({
       onGetAddress(selectedAsset)
     }
   }, [onGetAddress, selectedAsset])
+
+  useEffect(() => {
+    if (selectedAsset === undefined && isFirstTimeRender.current) {
+      setSelectedAsset(assets[0])
+      isFirstTimeRender.current = false
+    }
+  }, [assets, selectedAsset])
+
   return (
     <ScrollView style={styles.parent}>
       <FormProvider {...methods}>
