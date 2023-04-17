@@ -1,46 +1,34 @@
-import { useEffect, useState } from 'react'
-import { Clipboard, Image, Linking, StyleSheet, View } from 'react-native'
+import { useEffect } from 'react'
+import { ScrollView, StyleSheet, View } from 'react-native'
+import { useTranslation } from 'react-i18next'
 
-import { RnsProcessor } from 'lib/rns'
-
-import { MediumText, SecondaryButton } from 'components/index'
-import { PrimaryButton } from 'components/button'
-import { getWalletSetting, SETTINGS } from 'core/config'
+import { AppButton, Typography } from 'components/index'
 import { setProfile } from 'store/slices/profileSlice'
-import { selectActiveWallet } from 'store/slices/settingsSlice'
-import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { useAppDispatch } from 'store/storeUtils'
 import {
   profileStackRouteNames,
   ProfileStackScreenProps,
   ProfileStatus,
 } from 'navigation/profileNavigator/types'
 import { castStyle } from 'shared/utils'
+import { AppSpinner } from 'screens/spinner'
+import { sharedColors, sharedStyles } from 'shared/constants'
+import { rootTabsRouteNames } from 'navigation/rootNavigator'
 
 import { ScreenWithWallet } from '../types'
-import { rnsManagerStyles } from './rnsManagerStyles'
 
 export const AliasBoughtScreen = ({
   navigation,
   route,
-  wallet,
 }: ProfileStackScreenProps<profileStackRouteNames.AliasBought> &
   ScreenWithWallet) => {
-  const rnsProcessor = new RnsProcessor({ wallet })
-
+  const { t } = useTranslation()
   const { alias } = route.params
 
-  const [registerDomainInfo] = useState(
-    'Transaction for your alias is being processed',
-  )
-
-  const { chainType } = useAppSelector(selectActiveWallet)
   const dispatch = useAppDispatch()
 
-  const explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainType)
-
-  const copyHashAndOpenExplorer = (hash: string) => {
-    Clipboard.setString(hash)
-    Linking.openURL(`${explorerUrl}/tx/${hash}`)
+  const onCloseButtonPressed = () => {
+    navigation.navigate(rootTabsRouteNames.Home)
   }
 
   useEffect(() => {
@@ -50,66 +38,53 @@ export const AliasBoughtScreen = ({
         email: '',
         alias: `${alias}.rsk`,
         status: ProfileStatus.USER,
+        infoBoxClosed: false,
+        duration: null,
       }),
     )
   }, [alias, dispatch])
 
   return (
-    <>
-      <View style={rnsManagerStyles.container}>
-        <View style={rnsManagerStyles.marginBottom}>
-          <View style={styles.imageContainer}>
-            <Image
-              style={styles.image}
-              source={require('../../images/AliasBought.png')}
-            />
-            <View>
-              <MediumText style={rnsManagerStyles.aliasRequestInfo}>
-                Congratulations
-              </MediumText>
-              <MediumText style={rnsManagerStyles.aliasRequestInfo}>
-                {registerDomainInfo}
-              </MediumText>
-            </View>
-          </View>
-        </View>
-
-        <View style={rnsManagerStyles.bottomContainer}>
-          <View style={styles.buttonContainer}>
-            <PrimaryButton
-              onPress={() =>
-                copyHashAndOpenExplorer(
-                  rnsProcessor.getStatus(alias).registrationHash,
-                )
-              }
-              accessibilityLabel="Copy Hash & Open Explorer"
-              title={'Copy Hash & Open Explorer'}
-            />
-          </View>
-          <SecondaryButton
-            onPress={() =>
-              navigation.navigate(profileStackRouteNames.ProfileCreateScreen)
-            }
-            accessibilityLabel="close"
-            title={'Close'}
-          />
-        </View>
+    <ScrollView contentContainerStyle={[sharedStyles.flex, styles.container]}>
+      <View style={styles.spinner}>
+        <AppSpinner size={190} />
       </View>
-    </>
+      <View style={styles.textContainer}>
+        <Typography type="h3">{t('alias_bought_congratulations')}</Typography>
+        <Typography type="h4" style={styles.secondTypographyStyle}>
+          {t('alias_bought_you_requested_domain')}
+        </Typography>
+        <Typography type="h5">
+          {t('alias_bought_transaction_processing')}
+        </Typography>
+      </View>
+      <AppButton
+        title="Close"
+        color={sharedColors.white}
+        textColor={sharedColors.black}
+        onPress={onCloseButtonPressed}
+      />
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
-  imageContainer: castStyle.view({
+  container: castStyle.view({
+    backgroundColor: sharedColors.primary,
+    paddingHorizontal: 22.35,
+  }),
+  spinner: castStyle.view({
+    flexBasis: '50%',
+    justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingTop: 50,
-    paddingBottom: 10,
   }),
-  image: castStyle.image({
-    paddingTop: 50,
-    paddingBottom: 10,
+  textContainer: castStyle.view({
+    flexBasis: '40%',
+    alignItems: 'center',
+    justifyContent: 'center',
   }),
-  buttonContainer: castStyle.view({
-    marginBottom: 15,
+  secondTypographyStyle: castStyle.text({
+    marginTop: 9.05,
+    marginBottom: 30.84,
   }),
 })
