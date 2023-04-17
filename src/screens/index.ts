@@ -10,8 +10,6 @@ export { ScanQRScreen } from './walletConnect/ScanQRScreen'
 export { ChangeLanguageScreen } from './settings/ChangeLanguageScreen'
 export { CreatePinScreen } from './createPin/CreatePinScreen'
 export { SearchDomainScreen } from './rnsManager/SearchDomainScreen'
-export { RequestDomainScreen } from './rnsManager/RequestDomainScreen'
-export { BuyDomainScreen } from './rnsManager/BuyDomainScreen'
 export { AliasBoughtScreen } from './rnsManager/AliasBoughtScreen'
 export { PurchaseDomainScreen } from './rnsManager/PurchaseDomainScreen'
 

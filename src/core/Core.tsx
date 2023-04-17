@@ -65,8 +65,6 @@ export const InjectedScreens = {
   WalletConnectScreen: InjectSelectedWallet(Screens.WalletConnectScreen),
   ScanQRScreen: InjectSelectedWallet(Screens.ScanQRScreen),
   SearchDomainScreen: InjectSelectedWallet(Screens.SearchDomainScreen),
-  RequestDomainScreen: InjectSelectedWallet(Screens.RequestDomainScreen),
-  BuyDomainScreen: InjectSelectedWallet(Screens.BuyDomainScreen),
   AliasBoughtScreen: InjectSelectedWallet(Screens.AliasBoughtScreen),
   HomeScreen: InjectSelectedWallet(Screens.HomeScreen),
   AccountsScreen: InjectSelectedWallet(Screens.AccountsScreen),
