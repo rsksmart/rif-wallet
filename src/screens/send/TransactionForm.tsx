@@ -255,9 +255,7 @@ export const TransactionForm = ({
 
   return (
     <>
-      <ScrollView
-        style={styles.transactionForm}
-        contentContainerStyle={styles.transactionScrollContainer}>
+      <ScrollView>
         <FormProvider {...methods}>
           <AddressInputSelector
             label={t('transaction_form_recepient_label')}
@@ -390,17 +388,8 @@ export const TransactionForm = ({
 }
 
 const styles = StyleSheet.create({
-  transactionForm: castStyle.view({
-    paddingTop: 24,
-    height: '100%',
-    width: '100%',
-  }),
-  transactionScrollContainer: castStyle.view({ paddingBottom: 200 }),
   buttons: castStyle.view({
-    position: 'absolute',
-    bottom: 30,
-    left: 24,
-    right: 24,
+    marginTop: 10,
   }),
   buttonCancel: castStyle.view({
     marginTop: 10,
