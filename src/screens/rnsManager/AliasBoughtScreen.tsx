@@ -35,7 +35,7 @@ export const AliasBoughtScreen = ({
       setProfile({
         phone: '',
         email: '',
-        alias: `${alias}.rsk`,
+        alias: `${alias}`,
         status: ProfileStatus.USER,
         infoBoxClosed: false,
         duration: null,
