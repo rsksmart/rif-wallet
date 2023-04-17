@@ -28,7 +28,7 @@ import {
 import { defaultIconSize, sharedColors } from 'shared/constants'
 import { sharedStyles } from 'shared/styles'
 import { castStyle } from 'shared/utils'
-import { setProfile } from 'store/slices/profileSlice'
+import { setProfile, setStatus } from 'store/slices/profileSlice'
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
@@ -215,10 +215,22 @@ export const ProfileCreateScreen = ({
             title={t('profile_register_your_username_button_text')}
             color={sharedColors.white}
             textColor={sharedColors.black}
-            disabled={!!username}
-            onPress={() =>
-              navigation.navigate(profileStackRouteNames.SearchDomain)
+            disabled={
+              [ProfileStatus.REQUESTING, ProfileStatus.PURCHASING].includes(
+                profile.status,
+              )
+                ? false
+                : !!username
             }
+            onPress={() => {
+              if (profile.status === ProfileStatus.PURCHASING) {
+                // For some reason the user got stuck in PURCHASING - set it back one step
+                // The PurchaseScreen will render automatically
+                dispatch(setStatus(ProfileStatus.READY_TO_PURCHASE))
+              } else {
+                navigation.navigate(profileStackRouteNames.SearchDomain)
+              }
+            }}
           />
         </FormProvider>
       </View>
