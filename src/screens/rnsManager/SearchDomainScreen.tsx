@@ -14,7 +14,6 @@ import {
 
 import { AppTouchable } from 'components/appTouchable'
 import { AppButton, Input, Typography } from 'components/index'
-import { InfoBox } from 'components/InfoBox'
 import { SlidePopupConfirmationInfo } from 'components/slidePopup/SlidePopupConfirmationInfo'
 import { headerLeftOption } from 'navigation/profileNavigator'
 import {
@@ -143,16 +142,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           style={[rnsManagerStyles.subtitle, rnsManagerStyles.marginBottom]}>
           {t('request_username_title')}
         </Typography>
-
-        <InfoBox
-          avatar={
-            domainToLookUp !== '' ? domainToLookUp + '.rsk' : 'alias name'
-          }
-          title={t('info_box_title_search_domain')}
-          description={t('info_box_description_search_domain')}
-          buttonText={t('info_box_close_button')}
-        />
-        <AvatarIconBox text={domainToLookUp + '.rsk'} />
+        <AvatarIconBox text={(domainToLookUp || '') + '.rsk'} />
         <FormProvider {...methods}>
           <View style={rnsManagerStyles.marginTop}>
             <DomainInput
