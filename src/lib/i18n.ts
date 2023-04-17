@@ -258,6 +258,8 @@ const resources = {
         'Your balance is too low to request an username.',
       search_domain_random_error:
         'There was an error with the request. Please try again later.',
+      search_domain_processing_commitment:
+        'Your profile commitment is being processed. Please wait.',
     },
   },
   es: {

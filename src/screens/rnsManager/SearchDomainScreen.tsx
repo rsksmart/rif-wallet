@@ -217,7 +217,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
                 <AppSpinner size={64} thickness={10} />
               </View>
               <Typography type="body1">
-                Your profile commitment is being processed. Please wait.
+                {t('search_domain_processing_commitment')}
               </Typography>
             </>
           )}
