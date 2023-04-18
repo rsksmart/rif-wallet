@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
-import { View, StyleSheet, TextInput, Alert, Platform } from 'react-native'
+import { View, StyleSheet, TextInput, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
@@ -176,14 +176,13 @@ export const PinScreen = ({ navigation, route }: Props) => {
         {hasError ? t('pin_screen_wrong_pin') : title}
       </Typography>
       {hasError ? (
-        <View style={{ marginTop: 82, alignSelf: 'center' }}>
-          <Icon
-            name={'times-circle'}
-            color={sharedColors.danger}
-            size={105}
-            solid
-          />
-        </View>
+        <Icon
+          style={styles.errorIcon}
+          name={'times-circle'}
+          color={sharedColors.danger}
+          size={105}
+          solid
+        />
       ) : (
         <View style={styles.dotWrapper}>
           {PIN.map((n, index) => (
@@ -238,4 +237,5 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: -1000,
   }),
+  errorIcon: castStyle.text({ marginTop: 82, alignSelf: 'center' }),
 })
