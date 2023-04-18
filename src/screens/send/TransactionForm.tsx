@@ -240,9 +240,11 @@ export const TransactionForm = ({
 
   const onChangeSelectedFee = useCallback(
     (fee: string) => {
-      setSelectedFeeToken(
-        tokenList.filter(value => value.contractAddress === fee)[0],
-      )
+      if (fee) {
+        setSelectedFeeToken(
+          tokenList.filter(value => value.contractAddress === fee)[0],
+        )
+      }
     },
     [tokenList],
   )
