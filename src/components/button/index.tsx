@@ -175,7 +175,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   }),
-  disabledButton: castStyle.view({ opacity: 0.6 }),
+  disabledButton: castStyle.view({
+    backgroundColor: sharedColors.inputActive,
+  }),
 })
 
 // Legacy buttons to remove
