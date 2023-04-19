@@ -25,13 +25,18 @@ import {
   ProfileStackScreenProps,
   ProfileStatus,
 } from 'navigation/profileNavigator/types'
-import { defaultIconSize, sharedColors } from 'shared/constants'
+import {
+  defaultIconSize,
+  sharedColors,
+  sharedStyles as sharedStylesConstants,
+} from 'shared/constants'
 import { sharedStyles } from 'shared/styles'
 import { castStyle } from 'shared/utils'
-import { setProfile } from 'store/slices/profileSlice'
+import { setProfile, setStatus } from 'store/slices/profileSlice'
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { AppSpinner } from 'screens/spinner'
 
 import { rnsManagerStyles } from '../rnsManager/rnsManagerStyles'
 
@@ -210,15 +215,33 @@ export const ProfileCreateScreen = ({
             autoCorrect={false}
             autoCapitalize={'none'}
           />
+          {profile.status === ProfileStatus.REQUESTING && (
+            <>
+              <View style={[sharedStylesConstants.contentCenter]}>
+                <AppSpinner size={64} thickness={10} />
+              </View>
+              <Typography type="body1">
+                {t('search_domain_processing_commitment')}
+              </Typography>
+            </>
+          )}
           <AppButton
             style={rnsManagerStyles.button}
             title={t('profile_register_your_username_button_text')}
             color={sharedColors.white}
             textColor={sharedColors.black}
-            disabled={!!username && profile.status === ProfileStatus.REQUESTING}
-            onPress={() =>
-              navigation.navigate(profileStackRouteNames.SearchDomain)
+            disabled={
+              profile.status === ProfileStatus.PURCHASING ? false : !!username
             }
+            onPress={() => {
+              if (profile.status === ProfileStatus.PURCHASING) {
+                // For some reason the user got stuck in PURCHASING - set it back one step
+                // The PurchaseScreen will render automatically
+                dispatch(setStatus(ProfileStatus.READY_TO_PURCHASE))
+              } else {
+                navigation.navigate(profileStackRouteNames.SearchDomain)
+              }
+            }}
           />
         </FormProvider>
       </View>

@@ -8,11 +8,7 @@ import { useProfileStatusColors } from 'lib/rns'
 
 import { AppTouchable } from 'components/index'
 import { InjectedScreens } from 'core/Core'
-import {
-  ProfileCreateScreen,
-  PurchaseDomainScreen,
-  ShareProfileScreen,
-} from 'screens/index'
+import { ProfileCreateScreen, ShareProfileScreen } from 'screens/index'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { selectProfileStatus } from 'store/slices/profileSlice'
 import { useAppSelector } from 'store/storeUtils'
@@ -55,7 +51,7 @@ export const ProfileNavigator = ({
       {status === ProfileStatus.READY_TO_PURCHASE && (
         <ProfileStack.Screen
           name={profileStackRouteNames.PurchaseDomain}
-          component={PurchaseDomainScreen}
+          component={InjectedScreens.PurchaseDomainScreen}
           options={screenOptionsWithHeader(
             top,
             t('username_registration_title'),
@@ -97,13 +93,9 @@ export const ProfileNavigator = ({
       />
 
       <ProfileStack.Screen
-        name={profileStackRouteNames.RequestDomain}
-        component={InjectedScreens.RequestDomainScreen}
-      />
-
-      <ProfileStack.Screen
         name={profileStackRouteNames.AliasBought}
         component={InjectedScreens.AliasBoughtScreen}
+        options={{ headerShown: false }}
       />
     </ProfileStack.Navigator>
   )

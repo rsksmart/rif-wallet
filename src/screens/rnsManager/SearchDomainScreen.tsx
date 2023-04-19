@@ -1,16 +1,19 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useCallback, useEffect, useState } from 'react'
-import { FieldValues, FormProvider, useForm } from 'react-hook-form'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/Entypo'
 import * as yup from 'yup'
 
-import { useRifToken, useRnsDomainPriceInRif as calculatePrice } from 'lib/rns'
+import {
+  RnsProcessor,
+  useRifToken,
+  useRnsDomainPriceInRif as calculatePrice,
+} from 'lib/rns'
 
 import { AppTouchable } from 'components/appTouchable'
 import { AppButton, Input, Typography } from 'components/index'
-import { InfoBox } from 'components/InfoBox'
 import { SlidePopupConfirmationInfo } from 'components/slidePopup/SlidePopupConfirmationInfo'
 import { headerLeftOption } from 'navigation/profileNavigator'
 import {
@@ -18,11 +21,17 @@ import {
   ProfileStackScreenProps,
   ProfileStatus,
 } from 'navigation/profileNavigator/types'
-import { sharedColors } from 'shared/constants'
+import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { colors } from 'src/styles'
-import { recoverAlias } from 'store/slices/profileSlice'
-import { useAppDispatch } from 'store/storeUtils'
+import {
+  recoverAlias,
+  requestUsername,
+  selectProfileStatus,
+} from 'store/slices/profileSlice'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { AvatarIconBox } from 'screens/rnsManager/AvatarIconBox'
+import { AppSpinner } from 'screens/spinner'
 
 import { ScreenWithWallet } from '../types'
 import { DomainInput } from './DomainInput'
@@ -45,6 +54,9 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const [selectedYears, setSelectedYears] = useState<number>(2)
   const [selectedDomainPrice, setSelectedDomainPrice] = useState<number>(2)
   const [isModalVisible, setIsModalVisible] = useState<boolean>(true)
+  const [error, setError] = useState<string>('')
+  const [currentStatus, setCurrentStatus] = useState<string>('')
+  const profileStatus = useAppSelector(selectProfileStatus)
 
   const dispatch = useAppDispatch()
   const rifToken = useRifToken()
@@ -69,12 +81,40 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
   const isRequestButtonDisabled = hasErrors || !validDomain
   const isSaveButtonDisabled = (hasErrors || !validDomain) && !isDomainOwned
 
-  const onSubmit = (data: FieldValues) => {
-    navigation.navigate(profileStackRouteNames.RequestDomain, {
-      alias: data.domain,
-      duration: selectedYears,
-    })
-  }
+  const rnsProcessor = useMemo(() => new RnsProcessor({ wallet }), [wallet])
+
+  const onSubmit = useCallback(async () => {
+    setError('')
+    setCurrentStatus('')
+    try {
+      setCurrentStatus('loading')
+      await dispatch(
+        requestUsername({
+          rnsProcessor,
+          alias: domainToLookUp,
+          duration: selectedYears,
+        }),
+      ).unwrap()
+      // A side effect is thrown when the commitment is completed
+      // which will redirect the user to the PurchaseScreen
+    } catch (requestUsernameError) {
+      if (
+        requestUsernameError instanceof Error ||
+        typeof requestUsernameError === 'string'
+      ) {
+        const message = requestUsernameError.toString()
+        if (message.includes('User rejects')) {
+          setError(t('search_domain_error_request_rejected'))
+        } else if (message.includes('balance too low')) {
+          setError(t('search_domain_error_funds_low'))
+        } else {
+          setError(t('search_domain_random_error'))
+        }
+      }
+    } finally {
+      setCurrentStatus('')
+    }
+  }, [dispatch, domainToLookUp, rnsProcessor, selectedYears, t])
 
   const handleDomainAvailable = useCallback(
     async (domain: string, valid: boolean) => {
@@ -128,16 +168,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           style={[rnsManagerStyles.subtitle, rnsManagerStyles.marginBottom]}>
           {t('request_username_title')}
         </Typography>
-
-        <InfoBox
-          avatar={
-            domainToLookUp !== '' ? domainToLookUp + '.rsk' : 'alias name'
-          }
-          title={t('info_box_title_search_domain')}
-          description={t('info_box_description_search_domain')}
-          buttonText={t('info_box_close_button')}
-        />
-
+        <AvatarIconBox text={(domainToLookUp || '') + '.rsk'} />
         <FormProvider {...methods}>
           <View style={rnsManagerStyles.marginTop}>
             <DomainInput
@@ -174,12 +205,31 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
               </View>
             }
           />
+          {error !== '' && (
+            <Typography type="body1" style={styles.errorTypography}>
+              {error}
+            </Typography>
+          )}
+          {(profileStatus === ProfileStatus.REQUESTING ||
+            currentStatus === 'loading') && (
+            <>
+              <View style={[sharedStyles.contentCenter]}>
+                <AppSpinner size={64} thickness={10} />
+              </View>
+              <Typography type="body1">
+                {t('search_domain_processing_commitment')}
+              </Typography>
+            </>
+          )}
         </FormProvider>
-
         {!isDomainOwned ? (
           <AppButton
             style={rnsManagerStyles.button}
-            disabled={isRequestButtonDisabled}
+            disabled={
+              isRequestButtonDisabled ||
+              currentStatus === 'loading' ||
+              profileStatus === ProfileStatus.REQUESTING
+            }
             onPress={handleSubmit(onSubmit)}
             accessibilityLabel={t('request_username_button')}
             title={t('request_username_button')}
@@ -236,5 +286,9 @@ const styles = StyleSheet.create({
   }),
   yearsButtons: castStyle.view({
     flexDirection: 'row',
+  }),
+  errorTypography: castStyle.text({
+    paddingHorizontal: 5,
+    marginTop: 10,
   }),
 })
