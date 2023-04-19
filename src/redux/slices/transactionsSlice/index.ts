@@ -66,7 +66,7 @@ const transactionsSlice = createSlice({
       const pendingTransaction = {
         originTransaction: {
           ...restPayload,
-          value: enhancedAmount || value,
+          value: value,
         },
         enhancedTransaction: {
           symbol,
