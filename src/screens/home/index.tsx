@@ -39,12 +39,14 @@ import { selectTransactions } from 'store/slices/transactionsSlice'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { useBitcoinTransactionsHandler } from 'screens/activity/useBitcoinTransactionsHandler'
-import useTransactionsCombiner from 'screens/activity/useTransactionsCombiner'
+import { combineTransactions } from 'src/screens/activity/combineTransactions'
 import { ActivityBasicRow } from 'screens/activity/ActivityRow'
 
 import { HomeInformationBar } from './HomeInformationBar'
 import { getTokenColor } from './tokenColor'
 import { PortfolioComponent } from './PortfolioComponent'
+import { ActivityRowPresentationObjectType } from '../activity/types'
+import { activityDeserializer } from '../activity/activityDeserializer'
 
 export const HomeScreen = ({
   navigation,
@@ -73,6 +75,10 @@ export const HomeScreen = ({
       symbolType: 'text',
     })
   const [showInfoBar, setShowInfoBar] = useState<boolean>(true)
+
+  const [deserializedTransactions, setDeserializedTransactions] = useState<
+    ActivityRowPresentationObjectType[]
+  >([])
 
   const balances: Array<ITokenWithBalance | BitcoinNetwork> = useMemo(() => {
     if (bitcoinCore) {
@@ -269,10 +275,19 @@ export const HomeScreen = ({
     shouldMergeTransactions: true,
   })
 
-  const transactionsCombined = useTransactionsCombiner(
-    transactions,
-    btcTransactionFetcher.transactions,
-  )
+  useEffect(() => {
+    if (wallet && transactions && btcTransactionFetcher.transactions) {
+      const transactionsCombined = combineTransactions(
+        transactions,
+        btcTransactionFetcher.transactions,
+      )
+      setDeserializedTransactions(
+        transactionsCombined.map(tx =>
+          activityDeserializer(tx, prices, wallet),
+        ),
+      )
+    }
+  }, [wallet, prices, transactions, btcTransactionFetcher.transactions])
 
   // this code is copied from the activity screen
   // On load, fetch both BTC and WALLET transactions
@@ -327,14 +342,13 @@ export const HomeScreen = ({
         <Typography style={styles.transactionsLabel} type={'h3'}>
           {t('home_screen_transactions')}
         </Typography>
-        {transactionsCombined.length > 1 ? (
+        {deserializedTransactions.length > 1 ? (
           <ScrollView>
-            {transactionsCombined.map(tx => (
+            {deserializedTransactions.map((tx, index) => (
               <ActivityBasicRow
-                key={tx.id}
-                activityTransaction={tx}
+                key={tx.id + '   ' + index}
+                activityDetails={tx}
                 navigation={navigation}
-                style={styles.transactionItem}
               />
             ))}
           </ScrollView>

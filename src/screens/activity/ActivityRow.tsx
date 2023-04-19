@@ -1,6 +1,6 @@
 import { t } from 'i18next'
 import { useCallback, useMemo } from 'react'
-import { StyleProp, ViewStyle } from 'react-native'
+import { StyleProp, StyleSheet, ViewStyle } from 'react-native'
 
 import { shortAddress } from 'lib/utils'
 
@@ -9,13 +9,10 @@ import { StatusEnum } from 'components/BasicRow'
 import { BasicRowWithContact } from 'components/BasicRow/BasicRowWithContact'
 import { AppTouchable } from 'components/index'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
-import { useAppSelector } from 'store/storeUtils'
-import { selectUsdPrices } from 'store/slices/usdPricesSlice'
-import { selectSelectedWallet, selectWallets } from 'store/slices/settingsSlice'
 import { ActivityMainScreenProps } from 'shared/types'
+import { castStyle } from 'shared/utils'
 
-import useActivityDeserializer from './useActivityDeserializer'
-import { ActivityMixedType } from './types'
+import { ActivityRowPresentationObjectType } from './types'
 
 const getStatus = (status: string) => {
   switch (status) {
@@ -29,28 +26,20 @@ const getStatus = (status: string) => {
 }
 
 interface Props {
-  activityTransaction: ActivityMixedType
+  activityDetails: ActivityRowPresentationObjectType
   navigation: ActivityMainScreenProps['navigation']
   backScreen?: rootTabsRouteNames
   style?: StyleProp<ViewStyle>
 }
 
 export const ActivityBasicRow = ({
-  activityTransaction,
   navigation,
+  activityDetails,
   backScreen,
   style,
 }: Props) => {
-  const prices = useAppSelector(selectUsdPrices)
-  const selectedWallet = useAppSelector(selectSelectedWallet)
-  const wallets = useAppSelector(selectWallets)
-  const activityDetails = useActivityDeserializer(
-    activityTransaction,
-    prices,
-    wallets[selectedWallet],
-  )
-  const txSummary: TransactionSummaryScreenProps = useMemo(
-    () => ({
+  const txSummary: TransactionSummaryScreenProps = useMemo(() => {
+    return {
       transaction: {
         tokenValue: {
           symbol: activityDetails.symbol,
@@ -71,20 +60,23 @@ export const ActivityBasicRow = ({
         address: activityDetails.to,
       },
       title: t('transaction_summary_sent_title'),
-    }),
-    [activityDetails],
-  )
-  const handlePress = useCallback(
-    () =>
+    }
+  }, [activityDetails])
+
+  const handlePress = useCallback(() => {
+    if (txSummary) {
       navigation.navigate(rootTabsRouteNames.TransactionSummary, {
         ...txSummary,
         backScreen,
-      }),
-    [navigation, txSummary, backScreen],
-  )
+      })
+    }
+  }, [navigation, txSummary, backScreen])
 
   return (
-    <AppTouchable width={'100%'} onPress={handlePress} style={style}>
+    <AppTouchable
+      width={'100%'}
+      onPress={handlePress}
+      style={[styles.component, style]}>
       <BasicRowWithContact
         label={shortAddress(activityDetails.to, 8)}
         amount={activityDetails.value}
@@ -97,3 +89,9 @@ export const ActivityBasicRow = ({
     </AppTouchable>
   )
 }
+
+const styles = StyleSheet.create({
+  component: castStyle.view({
+    paddingHorizontal: 6,
+  }),
+})

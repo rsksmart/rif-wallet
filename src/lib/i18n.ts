@@ -266,6 +266,7 @@ const resources = {
         'There was an error with the request. Please try again later.',
       search_domain_processing_commitment:
         'Your profile commitment is being processed. Please wait.',
+      transaction_pending: 'Your transaction is being processed.',
     },
   },
   es: {

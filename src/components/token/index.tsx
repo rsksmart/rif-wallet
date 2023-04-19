@@ -131,7 +131,7 @@ export const TokenBalance = ({
             <Typography type={'h3'} style={styles.subTitle}>
               {hide
                 ? '\u002A\u002A\u002A\u002A\u002A\u002A'
-                : Math.round(Number(secondValue?.balance) * 100) / 100}
+                : secondValue?.balance}
             </Typography>
           )}
         </View>
@@ -140,7 +140,7 @@ export const TokenBalance = ({
         <View style={[styles.row, styles.toAddressContainer]}>
           <Typography type={'h3'}>{t('To')} </Typography>
           <Typography type={'h3'} style={{ color: sharedColors.primary }}>
-            {to.displayAddress || shortAddress(to.address, 10)}
+            {to.displayAddress || to.address}
           </Typography>
         </View>
       ) : null}

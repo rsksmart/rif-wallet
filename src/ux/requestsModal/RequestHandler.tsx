@@ -6,6 +6,7 @@ import { useCallback, useState } from 'react'
 // } from '@rsksmart/rif-wallet-core'
 import { useTranslation } from 'react-i18next'
 import { BigNumberish } from 'ethers'
+import { convertSatoshiToBtcHuman } from '@rsksmart/rif-wallet-bitcoin'
 
 import { convertTokenToUSD } from 'lib/utils'
 
@@ -13,13 +14,14 @@ import { RequestWithBitcoin } from 'shared/types'
 import { navigationContainerRef } from 'core/Core'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 // import { useFetchBitcoinNetworksAndTokens } from 'screens/send/useFetchBitcoinNetworksAndTokens'
-import { TokenSymbol } from 'src/screens/home/TokenImage'
-import { sharedColors } from 'src/shared/constants'
+import { TokenSymbol } from 'screens/home/TokenImage'
+import { AppSpinner } from 'screens/spinner'
+import { sharedColors } from 'shared/constants'
 import { AppButtonBackgroundVarietyEnum } from 'src/components'
-import { useAppSelector } from 'src/redux/storeUtils'
-import { selectUsdPrices } from 'src/redux/slices/usdPricesSlice'
-import { FeedbackModal } from 'src/components/feedbackModal'
-import { AppSpinner } from 'src/screens/spinner'
+import { useAppSelector } from 'store/storeUtils'
+import { selectUsdPrices } from 'store/slices/usdPricesSlice'
+import { FeedbackModal } from 'components/feedbackModal'
+import { homeStackRouteNames } from 'navigation/homeNavigator/types'
 
 import { ReviewTransactionContainer } from './ReviewRelayTransaction/ReviewTransactionContainer'
 // import SignMessageModal from './SignMessageModal'
@@ -65,22 +67,22 @@ const RequestTypeSwitch = ({
       navigationContainerRef.navigate(rootTabsRouteNames.TransactionSummary, {
         transaction: {
           tokenValue: {
-            balance: amountToPay.toString(),
+            balance: convertSatoshiToBtcHuman(amountToPay),
             symbolType: 'icon',
             symbol: TokenSymbol.BTC,
           },
           usdValue: {
             balance: convertTokenToUSD(
-              amountToPay,
+              Number(convertSatoshiToBtcHuman(amountToPay)),
               tokenPrices.BTC.price,
               true,
             ).toString(),
             symbolType: 'text',
             symbol: '$',
           },
-          feeValue: miningFee.toString(),
+          feeValue: convertSatoshiToBtcHuman(miningFee),
           time: 'approx 1 min',
-          total: amountToPay.toString(),
+          total: convertSatoshiToBtcHuman(amountToPay),
         },
         contact: {
           address: addressToPay,
@@ -88,13 +90,16 @@ const RequestTypeSwitch = ({
         buttons: [
           {
             title: t('transaction_summary_title_confirm_button_title'),
-            onPress: request.confirm,
+            onPress: () => {
+              request.confirm()
+              onConfirm(convertSatoshiToBtcHuman(amountToPay), TokenSymbol.BTC)
+            },
             color: sharedColors.white,
             textColor: sharedColors.black,
           },
           {
             title: t('transaction_summary_title_cancel_button_title'),
-            onPress: request.reject,
+            onPress: onCancel,
             backgroundVariety: AppButtonBackgroundVarietyEnum.OUTLINED,
           },
         ],
@@ -111,32 +116,46 @@ export const RequestHandler = ({ request, closeRequest }: Props) => {
   const [amount, setAmount] = useState<BigNumberish>('')
   const [tokenSymbol, setTokenSymbol] = useState<string>('')
 
-  const onConfirm = useCallback(
-    (amountSent: BigNumberish, token: string) => {
-      closeRequest()
-      setTokenSymbol(token)
-      setAmount(amountSent)
-      setRequestSuccess(true)
-    },
-    [closeRequest],
-  )
+  const onConfirm = useCallback((amountSent: BigNumberish, token: string) => {
+    setTokenSymbol(token)
+    setAmount(amountSent)
+    setRequestSuccess(true)
+  }, [])
 
   const onCancel = useCallback(() => {
     navigationContainerRef.goBack()
     closeRequest()
   }, [closeRequest])
 
-  if (requestSuccess) {
-    return (
-      <FeedbackModal
-        title={t('transaction_summary_congrats')}
-        subtitle={`${t(
-          'transaction_summary_you_sent',
-        )} ${amount} ${tokenSymbol}`}
-        feedbackComponent={<AppSpinner size={174} />}
-      />
-    )
-  }
+  const backToHome = useCallback(() => {
+    closeRequest()
+    navigationContainerRef.navigate(rootTabsRouteNames.Home, {
+      screen: homeStackRouteNames.Main,
+    })
+  }, [closeRequest])
 
-  return RequestTypeSwitch({ request, onCancel, onConfirm })
+  return (
+    <>
+      {RequestTypeSwitch({ request, onCancel, onConfirm })}
+      {requestSuccess && (
+        <FeedbackModal
+          visible={true}
+          title={t('transaction_summary_congrats')}
+          subtitle={`${t(
+            'transaction_summary_you_sent',
+          )} ${amount} ${tokenSymbol}`}
+          footerText={t('transaction_pending')}
+          feedbackComponent={<AppSpinner size={174} />}
+          buttons={[
+            {
+              title: t('close'),
+              onPress: backToHome,
+              color: sharedColors.white,
+              textColor: sharedColors.black,
+            },
+          ]}
+        />
+      )}
+    </>
+  )
 }

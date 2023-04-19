@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useState } from 'react'
 import { FlatList, StyleSheet, View, RefreshControl, Image } from 'react-native'
 import { BIP } from '@rsksmart/rif-wallet-bitcoin'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
@@ -14,12 +14,13 @@ import { sharedColors } from 'shared/constants'
 import { Typography } from 'components/typography'
 import { castStyle } from 'shared/utils'
 import { ActivityMainScreenProps } from 'shared/types'
+import { rootTabsRouteNames } from 'navigation/rootNavigator'
 
 import { ActivityBasicRow } from './ActivityRow'
 import { useBitcoinTransactionsHandler } from './useBitcoinTransactionsHandler'
-import useTransactionsCombiner from './useTransactionsCombiner'
+import { combineTransactions } from './combineTransactions'
 import { ScreenWithWallet } from '../types'
-import { rootTabsRouteNames } from 'src/navigation/rootNavigator'
+import { ActivityMixedType } from './types'
 
 export const ActivityScreen = ({
   navigation,
@@ -33,12 +34,11 @@ export const ActivityScreen = ({
         : ({} as BIP),
     shouldMergeTransactions: true,
   })
+  const [transactionsCombined, setTransactionsCombined] = useState<
+    ActivityMixedType[]
+  >([])
 
   const { transactions } = useAppSelector(selectTransactions)
-  const transactionsCombined = useTransactionsCombiner(
-    transactions,
-    btcTransactionFetcher.transactions,
-  )
 
   // On load, fetch both BTC and WALLET transactions
   useEffect(() => {
@@ -47,6 +47,14 @@ export const ActivityScreen = ({
     btcTransactionFetcher.fetchTransactions()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    if (transactions && btcTransactionFetcher.transactions) {
+      setTransactionsCombined(
+        combineTransactions(transactions, btcTransactionFetcher.transactions),
+      )
+    }
+  }, [transactions, btcTransactionFetcher.transactions])
 
   const onRefresh = useCallback(() => {
     btcTransactionFetcher.fetchTransactions(undefined, 1)

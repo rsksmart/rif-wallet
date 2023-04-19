@@ -1,8 +1,9 @@
 import { useFocusEffect, useIsFocused } from '@react-navigation/native'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { BackHandler, StyleSheet, View } from 'react-native'
+import { BackHandler, ScrollView, StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import {
   AppButton,
@@ -18,7 +19,6 @@ import {
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { ContactWithAddressRequired } from 'shared/types'
 import { castStyle } from 'shared/utils'
-import { headerLeftOption } from 'src/navigation/profileNavigator'
 import { setFullscreen } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
 
@@ -63,6 +63,7 @@ export const TransactionSummary = ({
   route,
   navigation,
 }: RootTabsScreenProps<rootTabsRouteNames.TransactionSummary>) => {
+  const { bottom } = useSafeAreaInsets()
   const [usdButtonActive, setUsdButtonActive] = useState(false)
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -103,124 +104,122 @@ export const TransactionSummary = ({
     }, [goBack]),
   )
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => headerLeftOption(goBack),
-    })
-  }, [navigation, goBack])
-
   return (
-    <View style={styles.screen}>
-      <Typography
-        style={styles.sendText}
-        type={'h4'}
-        color={sharedColors.inputLabelColor}>
-        {title || t('transaction_summary_title')}
-      </Typography>
-      <TokenBalance
-        style={styles.tokenBalance}
-        firstValue={transaction.tokenValue}
-        secondValue={transaction.usdValue}
-        to={contact}
-      />
-      <View
-        style={[
-          styles.summaryAlignment,
-          styles.statusContainer,
-          transaction.status
-            ? { backgroundColor: sharedColors.inputInactive }
-            : null,
-        ]}>
-        <Typography type={'h4'}>
-          {transaction.status ? t('transaction_summary_status') : ''}
-        </Typography>
-        <View style={sharedStyles.row}>
-          <Typography type={'h4'}>
-            {transactionStatusText?.displayText
-              ? t(transactionStatusText?.displayText)
-              : ''}
-          </Typography>
-          {iconObject ? (
-            <Icon
-              style={styles.statusIcon}
-              solid
-              size={18}
-              name={iconObject.iconName}
-              color={iconObject.iconColor}
-            />
-          ) : null}
-        </View>
-      </View>
-      <AppButton
-        title={t('transaction_summary_button_usd')}
-        style={styles.usdButton}
-        widthVariety={AppButtonWidthVarietyEnum.INLINE}
-        color={usdButtonActive ? sharedColors.white : undefined}
-        textColor={usdButtonActive ? sharedColors.black : undefined}
-        onPress={onToggleUSD}
-      />
-      <View style={[styles.summaryAlignment, styles.summaryWrapper]}>
-        <View>
-          <Typography
-            type={'h4'}
-            style={[styles.summaryText, sharedStyles.textLeft]}>
-            {t('transaction_summary_receive_text')}
-          </Typography>
-          <Typography
-            type={'h4'}
-            style={[styles.summaryText, sharedStyles.textLeft]}>
-            {t('transaction_summary_send_text')}
-          </Typography>
-          <Typography
-            type={'h4'}
-            style={[styles.summaryText, sharedStyles.textLeft]}>
-            {t('transaction_summary_fee_text')}
-          </Typography>
-          <Typography
-            type={'h4'}
-            style={[styles.summaryText, sharedStyles.textLeft]}>
-            {t('transaction_summary_arrives_text')}
-          </Typography>
-        </View>
-        <View>
-          <Typography
-            type={'h4'}
-            style={[styles.summaryText, sharedStyles.textRight]}>
-            {usdButtonActive
-              ? `${transaction.usdValue.symbol} ${transaction.usdValue.balance}`
-              : `${transaction.tokenValue.symbol} ${transaction.tokenValue.balance}`}
-          </Typography>
-          <Typography
-            type={'h4'}
-            style={[styles.summaryText, sharedStyles.textRight]}>
-            {usdButtonActive
-              ? `${transaction.usdValue.symbol} ${transaction.usdValue.balance}`
-              : `${transaction.tokenValue.symbol} ${transaction.total}`}
-          </Typography>
-          <Typography
-            type={'h4'}
-            style={[styles.summaryText, sharedStyles.textRight]}>
-            {transaction.feeValue}
-          </Typography>
-          <Typography
-            type={'h4'}
-            style={[styles.summaryText, sharedStyles.textRight]}>
-            {transaction.time}
-          </Typography>
-        </View>
-      </View>
-      <View style={styles.summaryAlignment}>
+    <View style={[styles.screen, { paddingBottom: bottom }]}>
+      <ScrollView
+        style={sharedStyles.flex}
+        contentContainerStyle={styles.contentPadding}>
         <Typography
+          style={styles.sendText}
           type={'h4'}
-          style={[styles.summaryText, sharedStyles.textLeft]}>
-          {t('transaction_summary_address_text')}
+          color={sharedColors.inputLabelColor}>
+          {title || t('transaction_summary_title')}
         </Typography>
-        <Typography
-          type={'label'}
-          style={[styles.summaryText, sharedStyles.textRight]}>
-          {contact.address}
-        </Typography>
-      </View>
+        <TokenBalance
+          style={styles.tokenBalance}
+          firstValue={transaction.tokenValue}
+          secondValue={transaction.usdValue}
+          to={contact}
+        />
+        <View
+          style={[
+            styles.summaryAlignment,
+            styles.statusContainer,
+            transaction.status
+              ? { backgroundColor: sharedColors.inputInactive }
+              : null,
+          ]}>
+          <Typography type={'h4'}>
+            {transaction.status ? t('transaction_summary_status') : ''}
+          </Typography>
+          <View style={sharedStyles.row}>
+            <Typography type={'h4'}>
+              {transactionStatusText?.displayText
+                ? t(transactionStatusText?.displayText)
+                : ''}
+            </Typography>
+            {iconObject ? (
+              <Icon
+                style={styles.statusIcon}
+                solid
+                size={18}
+                name={iconObject.iconName}
+                color={iconObject.iconColor}
+              />
+            ) : null}
+          </View>
+        </View>
+        <AppButton
+          title={t('transaction_summary_button_usd')}
+          style={styles.usdButton}
+          widthVariety={AppButtonWidthVarietyEnum.INLINE}
+          color={usdButtonActive ? sharedColors.white : undefined}
+          textColor={usdButtonActive ? sharedColors.black : undefined}
+          onPress={onToggleUSD}
+        />
+        <View style={[styles.summaryAlignment, styles.summaryWrapper]}>
+          <View>
+            <Typography
+              type={'h4'}
+              style={[styles.summaryText, sharedStyles.textLeft]}>
+              {t('transaction_summary_receive_text')}
+            </Typography>
+            <Typography
+              type={'h4'}
+              style={[styles.summaryText, sharedStyles.textLeft]}>
+              {t('transaction_summary_send_text')}
+            </Typography>
+            <Typography
+              type={'h4'}
+              style={[styles.summaryText, sharedStyles.textLeft]}>
+              {t('transaction_summary_fee_text')}
+            </Typography>
+            <Typography
+              type={'h4'}
+              style={[styles.summaryText, sharedStyles.textLeft]}>
+              {t('transaction_summary_arrives_text')}
+            </Typography>
+          </View>
+          <View>
+            <Typography
+              type={'h4'}
+              style={[styles.summaryText, sharedStyles.textRight]}>
+              {usdButtonActive
+                ? `${transaction.usdValue.symbol} ${transaction.usdValue.balance}`
+                : `${transaction.tokenValue.symbol} ${transaction.tokenValue.balance}`}
+            </Typography>
+            <Typography
+              type={'h4'}
+              style={[styles.summaryText, sharedStyles.textRight]}>
+              {usdButtonActive
+                ? `${transaction.usdValue.symbol} ${transaction.usdValue.balance}`
+                : `${transaction.tokenValue.symbol} ${transaction.total}`}
+            </Typography>
+            <Typography
+              type={'h4'}
+              style={[styles.summaryText, sharedStyles.textRight]}>
+              {transaction.feeValue}
+            </Typography>
+            <Typography
+              type={'h4'}
+              style={[styles.summaryText, sharedStyles.textRight]}>
+              {transaction.time}
+            </Typography>
+          </View>
+        </View>
+        <View style={styles.summaryAlignment}>
+          <Typography
+            type={'h4'}
+            style={[styles.summaryText, sharedStyles.textLeft]}>
+            {t('transaction_summary_address_text')}
+          </Typography>
+          <Typography
+            type={'label'}
+            style={[styles.summaryText, sharedStyles.textRight]}>
+            {contact.address}
+          </Typography>
+        </View>
+      </ScrollView>
       <View style={styles.buttons}>
         {buttons ? (
           buttons.map(b => (
@@ -252,6 +251,7 @@ const styles = StyleSheet.create({
     backgroundColor: sharedColors.black,
     paddingHorizontal: 22,
   }),
+  contentPadding: castStyle.view({ paddingBottom: 114 }),
   sendText: castStyle.text({
     marginTop: 22,
   }),
@@ -286,10 +286,8 @@ const styles = StyleSheet.create({
     lineHeight: 17,
   }),
   buttons: castStyle.view({
-    position: 'absolute',
-    bottom: 30,
-    left: 22,
-    right: 22,
+    justifyContent: 'space-between',
+    minHeight: 114,
   }),
   statusIcon: castStyle.text({ marginLeft: 10 }),
   nextButton: castStyle.view({ marginTop: 10 }),
