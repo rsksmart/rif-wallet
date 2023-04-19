@@ -1,5 +1,6 @@
 import { t } from 'i18next'
 import { useCallback, useMemo } from 'react'
+import { StyleProp, ViewStyle } from 'react-native'
 
 import { shortAddress } from 'lib/utils'
 
@@ -15,7 +16,6 @@ import { ActivityMainScreenProps } from 'shared/types'
 
 import useActivityDeserializer from './useActivityDeserializer'
 import { ActivityMixedType } from './types'
-import { StyleProp, ViewStyle } from 'react-native'
 
 const getStatus = (status: string) => {
   switch (status) {
@@ -92,6 +92,7 @@ export const ActivityBasicRow = ({
         avatar={{ name: 'A' }}
         secondaryLabel={activityDetails.timeHumanFormatted}
         addressToSearch={activityDetails.to}
+        symbol={activityDetails.symbol}
       />
     </AppTouchable>
   )

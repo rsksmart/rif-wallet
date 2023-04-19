@@ -6,12 +6,12 @@ import {
   StyleProp,
   ViewStyle,
 } from 'react-native'
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { useTranslation } from 'react-i18next'
 
 import { Typography, Avatar } from 'components/index'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
+import { TokenImage } from 'screens/home/TokenImage'
 
 export enum StatusEnum {
   PENDING = 'PENDING',
@@ -51,6 +51,7 @@ export interface BasicRowProps {
   txType?: TransactionTypeEnum
   usdAmount?: string
   style?: StyleProp<ViewStyle>
+  symbol?: string
 }
 export const BasicRow = ({
   label,
@@ -62,6 +63,7 @@ export const BasicRow = ({
   usdAmount,
   style,
   avatar,
+  symbol,
 }: BasicRowProps) => (
   <View style={[styles.container, style]}>
     <View style={styles.firstView}>
@@ -101,14 +103,11 @@ export const BasicRow = ({
             </Typography>
           )}
         </View>
-        <View style={[styles.flexGrowZero, styles.center]}>
-          <MaterialIcon
-            name="north-east"
-            size={16}
-            style={styles.horizontalPadding}
-            color={sharedColors.white}
-          />
-        </View>
+        {symbol && (
+          <View style={[styles.flexGrowZero, styles.symbolViewStyle]}>
+            <TokenImage symbol={symbol} transparent color={''} />
+          </View>
+        )}
         {amount ? (
           <Typography
             type="body1"
@@ -218,7 +217,8 @@ const styles = StyleSheet.create({
   failedTransaction: {
     textDecorationLine: 'line-through',
   },
-  center: {
+  symbolViewStyle: castStyle.view({
+    marginRight: 2,
     alignSelf: 'center',
-  },
+  }),
 })
