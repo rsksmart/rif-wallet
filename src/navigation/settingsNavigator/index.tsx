@@ -11,7 +11,7 @@ import {
 } from 'screens/index'
 import { InjectedScreens } from 'core/Core'
 import { ExampleScreen } from 'screens/example'
-import { WalletBackup } from 'src/screens/settings/WalletBackup'
+import { WalletBackup } from 'screens/settings/WalletBackup'
 
 import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
 import { SettingsStackParamsList, settingsStackRouteNames } from './types'

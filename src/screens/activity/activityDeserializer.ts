@@ -21,7 +21,7 @@ enum TxType {
   CONTRACT_CALL = 'contract call',
 }
 
-const useActivityDeserializer: (
+export const activityDeserializer: (
   activityTransaction: ActivityMixedType,
   prices: UsdPricesState,
   wallet: RIFWallet,
@@ -41,9 +41,8 @@ const useActivityDeserializer: (
       status: activityTransaction.status,
       id: activityTransaction.txid,
       price: convertBalance(
-        BigNumber.from(
-          Math.round(Number(activityTransaction.valueBtc) * Math.pow(10, 8)),
-        ),
+        Math.round(Number(activityTransaction.valueBtc) * Math.pow(10, 8)),
+
         8,
         prices.BTC?.price || 0,
       ),
@@ -88,11 +87,13 @@ const useActivityDeserializer: (
           balanceToDisplay(tx.value, 18),
         id: tx.hash,
         price: tokenAddress
-          ? convertBalance(
-              tx.value,
-              18,
-              tokenAddress ? prices[tokenAddress].price : 0,
-            )
+          ? (() => {
+              convertBalance(
+                tx.value,
+                18,
+                tokenAddress ? prices[tokenAddress].price : 0,
+              )
+            })()
           : 0,
         fee: balanceToDisplay(tx.gas, 18),
         total: balanceToDisplay(
@@ -119,6 +120,7 @@ const useActivityDeserializer: (
         ),
       )[0] || { data: '' }
     const feeRbtc = BigNumber.from(tx.gasPrice).mul(BigNumber.from(tx.gas))
+
     return {
       symbol:
         (activityTransaction?.enhancedTransaction?.symbol as string) ||
@@ -128,6 +130,7 @@ const useActivityDeserializer: (
       status,
       value: balanceToDisplay(balance, token.decimals),
       id: activityTransaction.originTransaction.hash,
+
       price: convertBalance(
         balance,
         token.decimals,
@@ -145,5 +148,3 @@ const useActivityDeserializer: (
     }
   }
 }
-
-export default useActivityDeserializer

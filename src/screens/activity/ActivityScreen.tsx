@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useState } from 'react'
 import { FlatList, StyleSheet, View, RefreshControl, Image } from 'react-native'
 import { BIP } from '@rsksmart/rif-wallet-bitcoin'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
@@ -14,16 +14,23 @@ import { sharedColors } from 'shared/constants'
 import { Typography } from 'components/typography'
 import { castStyle } from 'shared/utils'
 import { ActivityMainScreenProps } from 'shared/types'
+import { rootTabsRouteNames } from 'navigation/rootNavigator'
+import { selectSelectedWallet, selectWallets } from 'store/slices/settingsSlice'
+import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 
 import { ActivityBasicRow } from './ActivityRow'
 import { useBitcoinTransactionsHandler } from './useBitcoinTransactionsHandler'
-import useTransactionsCombiner from './useTransactionsCombiner'
+import { combineTransactions } from './combineTransactions'
 import { ScreenWithWallet } from '../types'
-import { rootTabsRouteNames } from 'src/navigation/rootNavigator'
+import { ActivityRowPresentationObjectType } from './types'
+import { activityDeserializer } from './activityDeserializer'
 
 export const ActivityScreen = ({
   navigation,
 }: ActivityMainScreenProps & ScreenWithWallet) => {
+  const wallets = useAppSelector(selectWallets)
+  const selectedWallet = useAppSelector(selectSelectedWallet)
+  const prices = useAppSelector(selectUsdPrices)
   const { t } = useTranslation()
   const bitcoinCore = useBitcoinContext()
   const btcTransactionFetcher = useBitcoinTransactionsHandler({
@@ -33,12 +40,11 @@ export const ActivityScreen = ({
         : ({} as BIP),
     shouldMergeTransactions: true,
   })
+  const [deserializedTransactions, setDeserializedTransactions] = useState<
+    ActivityRowPresentationObjectType[]
+  >([])
 
   const { transactions } = useAppSelector(selectTransactions)
-  const transactionsCombined = useTransactionsCombiner(
-    transactions,
-    btcTransactionFetcher.transactions,
-  )
 
   // On load, fetch both BTC and WALLET transactions
   useEffect(() => {
@@ -48,6 +54,32 @@ export const ActivityScreen = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  useEffect(() => {
+    if (
+      transactions &&
+      btcTransactionFetcher.transactions &&
+      wallets &&
+      selectedWallet &&
+      prices
+    ) {
+      const transactionsCombined = combineTransactions(
+        transactions,
+        btcTransactionFetcher.transactions,
+      )
+      setDeserializedTransactions(
+        transactionsCombined.map(tx =>
+          activityDeserializer(tx, prices, wallets[selectedWallet]),
+        ),
+      )
+    }
+  }, [
+    transactions,
+    btcTransactionFetcher.transactions,
+    wallets,
+    selectedWallet,
+    prices,
+  ])
+
   const onRefresh = useCallback(() => {
     btcTransactionFetcher.fetchTransactions(undefined, 1)
   }, [btcTransactionFetcher])
@@ -55,7 +87,7 @@ export const ActivityScreen = ({
   return (
     <View style={styles.mainContainer}>
       <FlatList
-        data={transactionsCombined}
+        data={deserializedTransactions}
         initialNumToRender={10}
         keyExtractor={item => item.id}
         onEndReached={() => {
@@ -65,7 +97,7 @@ export const ActivityScreen = ({
         refreshing={btcTransactionFetcher.apiStatus === 'fetching'}
         renderItem={({ item }) => (
           <ActivityBasicRow
-            activityTransaction={item}
+            activityDetails={item}
             navigation={navigation}
             backScreen={rootTabsRouteNames.Activity}
           />
@@ -81,7 +113,7 @@ export const ActivityScreen = ({
         ListHeaderComponent={
           <View style={styles.transactionsViewStyle}>
             <Typography type="h2">{t('home_screen_transactions')}</Typography>
-            {transactionsCombined.length === 0 &&
+            {deserializedTransactions.length === 0 &&
               btcTransactionFetcher.apiStatus !== 'fetching' && (
                 <Typography type="h4" style={styles.listEmptyTextStyle}>
                   {t('activity_list_empty')}
@@ -93,7 +125,7 @@ export const ActivityScreen = ({
           <>
             {btcTransactionFetcher.apiStatus !== 'fetching' && (
               <Image
-                source={require('./../../../assets/images/no-transactions.png')}
+                source={require('/assets/images/no-transactions.png')}
                 resizeMode="contain"
                 style={styles.imageStyle}
               />

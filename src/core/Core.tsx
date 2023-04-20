@@ -19,7 +19,7 @@ import {
   RootNavigationComponent,
   RootTabsParamsList,
 } from 'navigation/rootNavigator'
-import { ModalComponent } from 'src/ux/requestsModal/ModalComponent'
+import { RequestHandler } from 'src/ux/requestsModal/RequestHandler'
 import { WalletConnectProviderElement } from 'screens/walletConnect/WalletConnectContext'
 import {
   rifSockets,
@@ -197,11 +197,10 @@ export const Core = () => {
               ) : (
                 <>
                   <RootNavigationComponent />
-
                   {requests.length !== 0 && (
-                    <ModalComponent
-                      closeModal={() => dispatch(closeRequest())}
+                    <RequestHandler
                       request={requests[0]}
+                      closeRequest={() => dispatch(closeRequest())}
                     />
                   )}
                 </>

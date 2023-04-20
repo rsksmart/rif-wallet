@@ -13,6 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { castStyle } from 'shared/utils'
 import { sharedColors } from 'shared/constants'
 import { Typography } from 'components/typography'
+
 import { AppButton, AppButtonProps } from '../button'
 
 interface Props extends ModalProps {
@@ -47,11 +48,11 @@ export const FeedbackModal = ({
           style,
         ]}>
         {feedbackComponent}
-        <Typography style={styles.title} type={'h1'}>
+        <Typography style={styles.title} type={'h2'}>
           {title}
         </Typography>
         {subtitle ? (
-          <Typography style={styles.subtitle} type={'h3'}>
+          <Typography style={styles.subtitle} type={'h4'}>
             {subtitle}
           </Typography>
         ) : null}
@@ -79,7 +80,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   }),
   title: castStyle.text({
-    letterSpacing: -3,
+    letterSpacing: -1,
+    marginTop: 158,
   }),
   subtitle: castStyle.text({
     marginTop: 9,
@@ -87,6 +89,7 @@ const styles = StyleSheet.create({
   }),
   footerText: castStyle.text({
     marginTop: 30,
+    color: sharedColors.labelLight,
   }),
   primaryButton: castStyle.view({
     position: 'absolute',

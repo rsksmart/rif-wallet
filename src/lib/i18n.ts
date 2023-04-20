@@ -170,6 +170,11 @@ const resources = {
       transaction_summary_arrives_text: 'Arrives in: ',
       transaction_summary_address_text: 'Address',
       transaction_summary_default_button_text: 'Close',
+      transaction_summary_congrats: 'Congratulations!',
+      transaction_summary_you_sent: 'Your have sent ',
+      transaction_summary_to: 'to',
+      transaction_summary_title_confirm_button_title: 'Confirm',
+      transaction_summary_title_cancel_button_title: 'Cancel',
       profile_screen_title: 'Profile',
       profile_contact_details_subtitle: 'Contact Details',
       profile_phone_label: 'Phone Number',
@@ -261,6 +266,7 @@ const resources = {
         'There was an error with the request. Please try again later.',
       search_domain_processing_commitment:
         'Your profile commitment is being processed. Please wait.',
+      transaction_pending: 'Your transaction is being processed.',
     },
   },
   es: {
