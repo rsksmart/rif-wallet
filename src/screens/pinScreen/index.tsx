@@ -57,7 +57,12 @@ export const PinScreen = ({ navigation, route }: Props) => {
         setTitle(t('pin_screen_confirm_pin_title'))
         return
       } else {
-        curPin === confirmPin ? setIsPinEqual(true) : setHasError(true)
+        curPin === confirmPin
+          ? (() => {
+              setIsPinEqual(true)
+              setPinState(curPin)
+            })()
+          : setHasError(true)
       }
     },
     [t],

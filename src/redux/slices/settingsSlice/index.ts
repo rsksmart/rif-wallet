@@ -138,7 +138,7 @@ export const resetApp = createAsyncThunk(
       thunkAPI.dispatch(resetSocketState())
       thunkAPI.dispatch(deleteProfile())
       thunkAPI.dispatch(setPreviouslyUnlocked(false))
-      thunkAPI.dispatch(setPinState(null))
+      thunkAPI.dispatch(setPinState(''))
       resetMainStorage()
       return 'deleted'
     } catch (err) {
