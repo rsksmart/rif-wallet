@@ -20,6 +20,7 @@ import {
   createKeysRouteNames,
   CreateKeysScreenProps,
 } from 'navigation/createKeysNavigator'
+import { useKeyboardIsVisible } from 'core/hooks/useKeyboardIsVisible'
 
 type PIN = Array<string | null>
 const defaultPin = [null, null, null, null]
@@ -30,6 +31,7 @@ type Props =
   | CreateKeysScreenProps<createKeysRouteNames.CreatePIN>
 
 export const PinScreen = ({ navigation, route }: Props) => {
+  const isVisible = useKeyboardIsVisible()
   const { t } = useTranslation()
   const isChangeRequested = route.params?.isChangeRequested
   const dispatch = useAppDispatch()
@@ -166,6 +168,14 @@ export const PinScreen = ({ navigation, route }: Props) => {
       setPIN(defaultPin)
     }
   }, [isChangeRequested, isPinEqual, dispatch, PIN, navigation])
+
+  // workaround for android devices which do not open keyboard
+  // on autoFocus
+  useEffect(() => {
+    if (!isVisible) {
+      textInputRef.current?.focus()
+    }
+  }, [isVisible])
 
   const errorTimeout = useCallback(() => {
     setTimeout(() => {
