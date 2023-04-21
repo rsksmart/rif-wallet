@@ -1,8 +1,10 @@
 import { useNavigation } from '@react-navigation/native'
 import { render, fireEvent } from '@testing-library/react-native'
-import { ContactFormScreen, ContactFormScreenProps } from './ContactFormScreen'
+
 import { createReduxWrapper } from 'testLib/ReduxWrapper'
 import { contactsStackRouteNames } from 'src/navigation/contactsNavigator'
+
+import { ContactFormScreen, ContactFormScreenProps } from './ContactFormScreen'
 
 jest.mock('@react-navigation/native', () => ({
   ...jest.requireActual('@react-navigation/native'),

@@ -3,6 +3,7 @@ import { AppState } from 'react-native'
 import { act } from 'react-test-renderer'
 
 import { createReduxWrapper } from 'testLib/ReduxWrapper'
+
 import { useStateSubscription } from './useStateSubscription'
 
 jest.mock('react-native-background-timer', () => ({

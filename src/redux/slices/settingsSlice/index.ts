@@ -194,12 +194,6 @@ const initialState: SettingsSlice = {
   pin: null,
 }
 
-export const settingsPersist: PersistConfig<SettingsSlice> = {
-  key: 'settings',
-  whitelist: ['pin'],
-  storage: reduxStorage,
-}
-
 const settingsSlice = createSlice({
   name: 'settings',
   initialState,
