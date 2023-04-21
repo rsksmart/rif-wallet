@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { getSupportedBiometryType } from 'react-native-keychain'
-import { PersistConfig } from 'redux-persist'
 import { Platform } from 'react-native'
 
 import { getChainIdByType } from 'lib/utils'
@@ -16,8 +15,7 @@ import { deleteDomains } from 'storage/DomainsStore'
 import { deleteContacts as deleteContactsFromRedux } from 'store/slices/contactsSlice'
 import { deletePin, resetMainStorage } from 'storage/MainStorage'
 import { deleteKeys, getKeys } from 'storage/SecureStorage'
-import { reduxStorage } from 'storage/ReduxStorage'
-import { colors } from 'src/styles'
+import { sharedColors } from 'shared/constants'
 import {
   createRIFWalletFactory,
   networkType as defaultNetworkType,
@@ -26,7 +24,8 @@ import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { deleteProfile } from 'store/slices/profileSlice'
 import { navigationContainerRef } from 'src/core/Core'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
-import { createKeysRouteNames } from 'src/navigation/createKeysNavigator'
+import { createKeysRouteNames } from 'navigation/createKeysNavigator'
+import { AsyncThunkWithTypes } from 'store/store'
 
 import {
   AddNewWalletAction,
@@ -83,51 +82,59 @@ export const createWallet = createAsyncThunk(
   },
 )
 
-export const unlockApp = createAsyncThunk(
-  'settings/unlockApp',
-  async (payload: UnlockAppAction, thunkAPI) => {
-    try {
-      const supportedBiometry = await getSupportedBiometryType()
+export const unlockApp = createAsyncThunk<
+  KeyManagementSystem,
+  UnlockAppAction,
+  AsyncThunkWithTypes
+>('settings/unlockApp', async (payload: UnlockAppAction, thunkAPI) => {
+  try {
+    const supportedBiometry = await getSupportedBiometryType()
 
-      const serializedKeys = await getKeys()
+    const serializedKeys = await getKeys()
 
-      if (!serializedKeys) {
-        return thunkAPI.rejectWithValue('No Existing Keys')
-      }
-
-      const pinUnlocked = payload?.pinUnlocked
-
-      if (Platform.OS === 'android' && !supportedBiometry && !pinUnlocked) {
-        setTimeout(() => {
-          navigationContainerRef.navigate(rootTabsRouteNames.InitialPinScreen)
-        }, 100)
-        return thunkAPI.rejectWithValue('Move to unlock with PIN')
-      }
-
-      const existingWallets = await loadExistingWallets(
-        createRIFWalletFactory(request =>
-          thunkAPI.dispatch(onRequest({ request })),
-        ),
-      )(serializedKeys)
-
-      const { kms, rifWalletsDictionary, rifWalletsIsDeployedDictionary } =
-        existingWallets
-
-      thunkAPI.dispatch(
-        setWallets({
-          wallets: rifWalletsDictionary,
-          walletsIsDeployed: rifWalletsIsDeployedDictionary,
-        }),
-      )
-
-      thunkAPI.dispatch(setUnlocked(true))
-
-      return kms
-    } catch (err) {
-      return thunkAPI.rejectWithValue(err)
+    if (!serializedKeys) {
+      return thunkAPI.rejectWithValue('No Existing Keys')
     }
-  },
-)
+
+    const pinUnlocked = payload?.pinUnlocked
+
+    if (Platform.OS === 'android' && !supportedBiometry && !pinUnlocked) {
+      const {
+        settings: { pin },
+      } = thunkAPI.getState()
+
+      // if there's no pin yet and biometrics removed
+      !pin && thunkAPI.dispatch(resetApp())
+
+      setTimeout(() => {
+        navigationContainerRef.navigate(rootTabsRouteNames.InitialPinScreen)
+      }, 100)
+      return thunkAPI.rejectWithValue('Move to unlock with PIN')
+    }
+
+    const existingWallets = await loadExistingWallets(
+      createRIFWalletFactory(request =>
+        thunkAPI.dispatch(onRequest({ request })),
+      ),
+    )(serializedKeys)
+
+    const { kms, rifWalletsDictionary, rifWalletsIsDeployedDictionary } =
+      existingWallets
+
+    thunkAPI.dispatch(
+      setWallets({
+        wallets: rifWalletsDictionary,
+        walletsIsDeployed: rifWalletsIsDeployedDictionary,
+      }),
+    )
+
+    thunkAPI.dispatch(setUnlocked(true))
+
+    return kms
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err)
+  }
+})
 
 export const resetApp = createAsyncThunk(
   'settings/resetApp',
@@ -179,7 +186,7 @@ export const addNewWallet = createAsyncThunk(
 
 const initialState: SettingsSlice = {
   isSetup: false,
-  topColor: colors.darkPurple3,
+  topColor: sharedColors.primary,
   requests: [],
   wallets: null,
   walletsIsDeployed: null,
