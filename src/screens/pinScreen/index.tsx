@@ -62,12 +62,12 @@ export const PinScreen = ({ navigation, route }: Props) => {
         curPin === confirmPin
           ? (() => {
               setIsPinEqual(true)
-              setPinState(curPin)
+              dispatch(setPinState(curPin))
             })()
           : setHasError(true)
       }
     },
-    [t],
+    [t, dispatch],
   )
 
   const handleStatePinCase = useCallback(
