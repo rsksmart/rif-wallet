@@ -298,6 +298,11 @@ const resources = {
       wallet_deploy_deploying_alert_body:
         'You need to wait until this process is finished before making transactions',
       receive_screen_username_label: 'Username',
+      camera_alert_title: 'For this feature we need your camera',
+      camera_alert_body:
+        'You denied permissions to use the camera, please allow to continue',
+      camera_alert_button_open_settings: 'Open Settings',
+      camera_alert_button_cancel: 'Cancel',
     },
   },
   es: {
