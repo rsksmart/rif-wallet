@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   ScrollView,
   StyleSheet,
@@ -49,17 +49,26 @@ export const ReceiveScreen = ({
   const methods = useForm()
   const bitcoinCore = useBitcoinContext()
 
+  const tokenBalances = useAppSelector(selectBalances)
+
+  const assets = useMemo(() => {
+    const newAssets = []
+    if (bitcoinCore?.networks) {
+      newAssets.push(...bitcoinCore?.networks)
+    }
+    newAssets.push(...Object.values(tokenBalances))
+    return newAssets
+  }, [bitcoinCore?.networks, tokenBalances])
+
   const { token, networkId } = route.params
   const [selectedAsset, setSelectedAsset] = useState<
     MixedTokenAndNetworkType | undefined
-  >((networkId && bitcoinCore?.networksMap[networkId]) || token)
-  const isFirstTimeRender = useRef<boolean>(true)
+  >((networkId && bitcoinCore?.networksMap[networkId]) || token || assets[0])
   const [address, setAddress] = useState<string>('')
   const [isAddressLoading, setIsAddressLoading] = useState(false)
 
   const [shouldShowAssets, setShouldShowAssets] = useState(false)
 
-  const tokenBalances = useAppSelector(selectBalances)
   const { wallet, chainType } = useAppSelector(selectActiveWallet)
   const profile = useAppSelector(selectProfile)
 
@@ -69,15 +78,6 @@ export const ReceiveScreen = ({
     }
     return null
   }, [wallet, chainType])
-
-  const assets = useMemo(() => {
-    const newAssets = []
-    if (bitcoinCore?.networks) {
-      newAssets.push(...bitcoinCore?.networks)
-    }
-    newAssets.push(...Object.values(tokenBalances))
-    return newAssets
-  }, [bitcoinCore, tokenBalances])
 
   const onShareUsername = useCallback(() => {
     Share.share({
@@ -125,13 +125,6 @@ export const ReceiveScreen = ({
       onGetAddress(selectedAsset)
     }
   }, [onGetAddress, selectedAsset])
-
-  useEffect(() => {
-    if (selectedAsset === undefined && isFirstTimeRender.current) {
-      setSelectedAsset(assets[0])
-      isFirstTimeRender.current = false
-    }
-  }, [assets, selectedAsset])
 
   return (
     <ScrollView style={styles.parent}>
