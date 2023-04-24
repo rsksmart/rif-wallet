@@ -140,7 +140,7 @@ export const AppButton = ({
         <Typography
           type={textType}
           accessibilityLabel={`${accessibilityLabel}.${AccessibilityLabelStandards.TEXT}`}
-          style={[{ color: textColor }, textStyle]}>
+          style={[styles.text, { color: textColor }, textStyle]}>
           {title}
         </Typography>
         {rightIcon ? (
@@ -167,13 +167,12 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
   }),
-  textContainer: castStyle.view({
-    flexDirection: 'row',
-    justifyContent: 'center',
-  }),
   iconContainer: castStyle.view({
     flexDirection: 'row',
     justifyContent: 'center',
+  }),
+  text: castStyle.text({
+    paddingTop: 2,
   }),
   disabledButton: castStyle.view({
     backgroundColor: sharedColors.inputActive,
