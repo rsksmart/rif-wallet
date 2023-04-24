@@ -52,6 +52,12 @@ export const SettingsScreen = ({
     navigation.navigate(settingsStackRouteNames.ExampleScreen)
   }, [navigation])
 
+  const goToPinScreen = useCallback(() => {
+    navigation.navigate(settingsStackRouteNames.ChangePinScreen, {
+      isChangeRequested: true,
+    })
+  }, [navigation])
+
   useEffect(() => {
     navigation.setOptions({
       headerLeft: () => headerLeftOption(navigation.goBack),
@@ -82,7 +88,7 @@ export const SettingsScreen = ({
           width={'100%'}
           accessibilityLabel="Change PIN"
           style={styles.settingsItem}
-          onPress={() => {}}>
+          onPress={goToPinScreen}>
           <Typography type={'h3'}>{t('settings_screen_change_pin')}</Typography>
         </AppTouchable>
         <AppTouchable

@@ -22,8 +22,8 @@ export enum rootTabsRouteNames {
   WalletConnect = 'WalletConnect',
   Settings = 'Settings',
   Profile = 'Profile',
-  ChangePinScreen = 'ChangePinScreen',
-  TransactionSummary = 'Transaction Summary',
+  TransactionSummary = 'TransactionSummary',
+  InitialPinScreen = 'InitialPinScreen',
 }
 
 export type RootTabsParamsList = {
@@ -45,4 +45,5 @@ export type RootTabsParamsList = {
   [rootTabsRouteNames.Profile]:
     | NavigatorScreenParams<ProfileStackParamsList>
     | undefined
+  [rootTabsRouteNames.InitialPinScreen]: undefined
 }

@@ -13,19 +13,24 @@ import { selectFullscreen, selectIsUnlocked } from 'store/slices/settingsSlice'
 import { TransactionSummary } from 'screens/transactionSummary'
 import { AppFooterMenu } from 'src/ux/appFooter'
 import { sharedStyles } from 'shared/constants'
+import { PinScreen } from 'src/screens/pinScreen'
 
 import { RootTabsParamsList, rootTabsRouteNames } from './types'
 import { HomeNavigator } from '../homeNavigator'
 import { ContactsNavigation } from '../contactsNavigator'
 import { SettingsNavigator } from '../settingsNavigator'
 import { ProfileNavigator } from '../profileNavigator'
-import { screenOptionsWithAppHeader, screenOptionsWithHeader } from '..'
+import {
+  screenOptionsNoHeader,
+  screenOptionsWithAppHeader,
+  screenOptionsWithHeader,
+} from '..'
 
 const RootTabs = createBottomTabNavigator<RootTabsParamsList>()
 
 export const RootNavigationComponent = () => {
-  const { top } = useSafeAreaInsets()
   const { t } = useTranslation()
+  const { top } = useSafeAreaInsets()
   const isDeviceRooted = JailMonkey.isJailBroken()
   const [isWarningVisible, setIsWarningVisible] = useState(isDeviceRooted)
   const unlocked = useAppSelector(selectIsUnlocked)
@@ -37,11 +42,24 @@ export const RootNavigationComponent = () => {
       <RootTabs.Navigator
         tabBar={props => <AppFooterMenu isShown={isShown} {...props} />}>
         {!unlocked ? (
-          <RootTabs.Screen
-            name={rootTabsRouteNames.CreateKeysUX}
-            component={CreateKeysNavigation}
-            options={{ headerShown: false }}
-          />
+          <>
+            <RootTabs.Screen
+              name={rootTabsRouteNames.CreateKeysUX}
+              component={CreateKeysNavigation}
+              options={screenOptionsNoHeader}
+            />
+            <RootTabs.Screen
+              name={rootTabsRouteNames.InitialPinScreen}
+              component={PinScreen}
+              options={screenOptionsWithHeader(
+                top,
+                t('pin_screen_header_title'),
+                undefined,
+                undefined,
+                true,
+              )}
+            />
+          </>
         ) : (
           <RootTabs.Group>
             <RootTabs.Group screenOptions={screenOptionsWithAppHeader}>

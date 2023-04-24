@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next'
 import { rnsResolver } from 'core/setup'
 import { sharedColors } from 'shared/constants'
 
-import { SecondaryButton } from '../button/SecondaryButton'
 import { QRCodeScanner } from '../QRCodeScanner'
 import {
   AddressValidationMessage,
@@ -17,6 +16,7 @@ import {
 } from './lib'
 import { Input, InputProps } from '../input'
 import { Avatar } from '../avatar'
+import { AppButton } from '../button'
 
 export interface AddressInputProps extends InputProps {
   initialValue: string
@@ -225,7 +225,7 @@ export const AddressInput = ({
       {status.value ? (
         <>
           {status.type === Status.CHECKSUM && (
-            <SecondaryButton
+            <AppButton
               testID={`${testID}.Button.Checksum`}
               accessibilityLabel="convert"
               title={t('contact_form_button_convert_checksum')}

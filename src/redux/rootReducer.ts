@@ -1,15 +1,17 @@
 import { combineReducers } from '@reduxjs/toolkit'
-import { persistReducer, createMigrate } from 'redux-persist'
+import { persistReducer, createMigrate, PersistConfig } from 'redux-persist'
 
 import { reduxStorage } from 'storage/ReduxStorage'
+import { contactsReducer } from 'store/slices/contactsSlice'
+import { ProfileStatus } from 'navigation/profileNavigator/types'
+
 import { accountsReducer } from './slices/accountsSlice'
 import { balancesReducer } from './slices/balancesSlice'
-import { contactsReducer } from 'store/slices/contactsSlice'
 import { profileReducer } from './slices/profileSlice'
 import { settingsSliceReducer } from './slices/settingsSlice'
 import { transactionsReducer } from './slices/transactionsSlice'
 import { usdPriceReducer } from './slices/usdPricesSlice'
-import { ProfileStatus } from 'navigation/profileNavigator/types'
+import { SettingsSlice } from './slices/settingsSlice/types'
 
 const migrations = {
   // It's on purpose due to state type from redux-persist is PersistedStated.
@@ -26,7 +28,13 @@ const migrations = {
   }),
 }
 
-const persistConfig = {
+const settingsPersistConfig: PersistConfig<SettingsSlice> = {
+  key: 'settings',
+  whitelist: ['pin'],
+  storage: reduxStorage,
+}
+
+const rootPersistConfig = {
   key: 'root',
   storage: reduxStorage,
   version: 0,
@@ -38,10 +46,10 @@ const reducers = combineReducers({
   usdPrices: usdPriceReducer,
   balances: balancesReducer,
   transactions: transactionsReducer,
-  settings: settingsSliceReducer,
+  settings: persistReducer(settingsPersistConfig, settingsSliceReducer),
   profile: profileReducer,
   accounts: accountsReducer,
   contacts: contactsReducer,
 })
 
-export const rootReducer = persistReducer(persistConfig, reducers)
+export const rootReducer = persistReducer(rootPersistConfig, reducers)

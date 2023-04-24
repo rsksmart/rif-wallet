@@ -6,22 +6,24 @@ import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
 export enum settingsStackRouteNames {
   SettingsScreen = 'SettingsScreen',
   ChangeLanguage = 'ChangeLanguage',
+  ChangePinScreen = 'ChangePinScreen',
   AccountsScreen = 'AccountsScreen',
   WalletBackup = 'WalletBackup',
   FeedbackScreen = 'FeedbackScreen',
   ShowMnemonicScreen = 'ShowMnemonicScreen',
-  ChangePinScreen = 'ChangePinScreen',
   ExampleScreen = 'ExampleScreen',
 }
 
 export type SettingsStackParamsList = {
   [settingsStackRouteNames.SettingsScreen]: undefined
   [settingsStackRouteNames.ChangeLanguage]: undefined
+  [settingsStackRouteNames.ChangePinScreen]: {
+    isChangeRequested: boolean
+  }
   [settingsStackRouteNames.AccountsScreen]: undefined
   [settingsStackRouteNames.WalletBackup]: undefined
   [settingsStackRouteNames.FeedbackScreen]: undefined
   [settingsStackRouteNames.ShowMnemonicScreen]: undefined
-  [settingsStackRouteNames.ChangePinScreen]: undefined
   [settingsStackRouteNames.ExampleScreen]: undefined
 }
 

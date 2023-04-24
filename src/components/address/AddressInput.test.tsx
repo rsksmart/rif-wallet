@@ -1,9 +1,10 @@
 /* eslint-disable jest/no-disabled-tests */
 import { useState } from 'react'
 import { render, fireEvent } from '@testing-library/react-native'
+import { act } from 'react-test-renderer'
+
 import { AddressInput } from './AddressInput'
 import { testnetCase } from './testCase'
-import { act } from 'react-test-renderer'
 
 const testId = 'Input.Address'
 

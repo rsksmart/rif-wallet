@@ -1,4 +1,7 @@
+import { CompositeScreenProps } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
+
+import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
 
 export enum createKeysRouteNames {
   CreateKeys = 'CreateKeys',
@@ -8,6 +11,7 @@ export enum createKeysRouteNames {
   ConfirmNewMasterKey = 'ConfirmNewMasterKey',
   ImportMasterKey = 'ImportMasterKey',
   RevealMasterKey = 'RevealMasterKey',
+  CreatePIN = 'CreatePIN',
 }
 
 export type CreateKeysStackParamList = {
@@ -18,7 +22,13 @@ export type CreateKeysStackParamList = {
   [createKeysRouteNames.ConfirmNewMasterKey]: { mnemonic: string }
   [createKeysRouteNames.ImportMasterKey]: undefined
   [createKeysRouteNames.RevealMasterKey]: undefined
+  [createKeysRouteNames.CreatePIN]: {
+    isChangeRequested: true
+  }
 }
 
 export type CreateKeysScreenProps<T extends keyof CreateKeysStackParamList> =
-  StackScreenProps<CreateKeysStackParamList, T>
+  CompositeScreenProps<
+    StackScreenProps<CreateKeysStackParamList, T>,
+    RootTabsScreenProps<rootTabsRouteNames.CreateKeysUX>
+  >

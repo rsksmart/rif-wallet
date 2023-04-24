@@ -1,5 +1,6 @@
-import { Provider, createStore } from 'store/index'
 import { ReactNode } from 'react'
+
+import { Provider, createStore } from 'store/index'
 
 export const createReduxWrapper = (preloadedState = {}) => {
   const storeForTests = createStore(preloadedState)

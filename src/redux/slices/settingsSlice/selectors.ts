@@ -47,3 +47,4 @@ export const selectFullscreen = ({ settings }: RootState) => settings.fullscreen
 
 export const selectHideBalance = ({ settings }: RootState) =>
   settings.hideBalance
+export const selectPin = ({ settings }: RootState) => settings.pin

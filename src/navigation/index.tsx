@@ -11,6 +11,8 @@ import { castStyle } from 'shared/utils'
 
 type HeaderProps = BottomTabNavigationOptions & StackNavigationOptions
 
+export const screenOptionsNoHeader: HeaderProps = { headerShown: false }
+
 export const screenOptionsWithHeader = (
   topInset: number,
   title?: string,
@@ -19,17 +21,19 @@ export const screenOptionsWithHeader = (
     startColor: ColorValue
     endColor: ColorValue
   },
+  backButtonDisabled?: boolean,
 ): HeaderProps => {
   return {
     headerShown: true,
-    headerLeft: props => (
-      <AppTouchable
-        width={20}
-        onPress={props.onPress}
-        style={sharedStyles.marginLeft24}>
-        <Icon name={'chevron-left'} size={20} color={sharedColors.white} />
-      </AppTouchable>
-    ),
+    headerLeft: props =>
+      backButtonDisabled ? null : (
+        <AppTouchable
+          width={20}
+          onPress={props.onPress}
+          style={sharedStyles.marginLeft24}>
+          <Icon name={'chevron-left'} size={20} color={sharedColors.white} />
+        </AppTouchable>
+      ),
     headerTitle: props => (
       <>
         <Typography type={'h3'} style={props.style}>

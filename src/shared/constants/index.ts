@@ -46,6 +46,9 @@ export const defaultIconSize = 16
 export const noop = () => ({})
 
 export const sharedStyles = StyleSheet.create({
+  displayNone: castStyle.view({
+    display: 'none',
+  }),
   flex: castStyle.view({
     flex: 1,
   }),
