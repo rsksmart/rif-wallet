@@ -33,6 +33,7 @@ import { getBalance } from 'screens/home/PortfolioComponent'
 import { selectProfile } from 'store/slices/profileSlice'
 import { getIconSource } from 'screens/home/TokenImage'
 import { ProfileStatus } from 'navigation/profileNavigator/types'
+import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
@@ -52,11 +53,13 @@ export const ReceiveScreen = ({
   const tokenBalances = useAppSelector(selectBalances)
 
   const assets = useMemo(() => {
-    const newAssets = []
+    const newAssets: Array<BitcoinNetwork | ITokenWithoutLogo> = [
+      ...Object.values(tokenBalances),
+    ]
     if (bitcoinCore?.networks) {
-      newAssets.push(...bitcoinCore?.networks)
+      newAssets.push(...bitcoinCore.networks)
     }
-    newAssets.push(...Object.values(tokenBalances))
+
     return newAssets
   }, [bitcoinCore?.networks, tokenBalances])
 
