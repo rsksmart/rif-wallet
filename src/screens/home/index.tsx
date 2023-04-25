@@ -282,9 +282,7 @@ export const HomeScreen = ({
         btcTransactionFetcher.transactions,
       )
       setDeserializedTransactions(
-        transactionsCombined.map(tx =>
-          activityDeserializer(tx, prices),
-        ),
+        transactionsCombined.map(tx => activityDeserializer(tx, prices)),
       )
     }
   }, [wallet, prices, transactions, btcTransactionFetcher.transactions])

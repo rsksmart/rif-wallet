@@ -68,9 +68,7 @@ export const ActivityScreen = ({
         btcTransactionFetcher.transactions,
       )
       setDeserializedTransactions(
-        transactionsCombined.map(tx =>
-          activityDeserializer(tx, prices),
-        ),
+        transactionsCombined.map(tx => activityDeserializer(tx, prices)),
       )
     }
   }, [

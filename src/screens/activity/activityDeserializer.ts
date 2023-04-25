@@ -86,9 +86,10 @@ export const activityDeserializer: (
       value,
       fee,
       total,
-      price: tokenAddress
-        ? Number(total) * prices[tokenAddress.toLowerCase()].price
-        : 0,
+      price:
+        tokenAddress && tokenAddress.toLowerCase() in prices
+          ? Number(total) * prices[tokenAddress.toLowerCase()].price
+          : 0,
     }
   }
 }
