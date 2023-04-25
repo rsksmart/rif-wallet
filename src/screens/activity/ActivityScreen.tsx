@@ -69,7 +69,7 @@ export const ActivityScreen = ({
       )
       setDeserializedTransactions(
         transactionsCombined.map(tx =>
-          activityDeserializer(tx, prices, wallets[selectedWallet]),
+          activityDeserializer(tx, prices),
         ),
       )
     }

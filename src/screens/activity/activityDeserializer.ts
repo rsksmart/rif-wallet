@@ -17,7 +17,7 @@ import { TokenSymbol } from 'screens/home/TokenImage'
 
 import { ActivityRowPresentationObjectType, ActivityMixedType } from './types'
 
-const useActivityDeserializer: (
+export const activityDeserializer: (
   activityTransaction: ActivityMixedType,
   prices: UsdPricesState,
 ) => ActivityRowPresentationObjectType = (activityTransaction, prices) => {

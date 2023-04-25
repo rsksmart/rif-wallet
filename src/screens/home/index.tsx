@@ -283,7 +283,7 @@ export const HomeScreen = ({
       )
       setDeserializedTransactions(
         transactionsCombined.map(tx =>
-          activityDeserializer(tx, prices, wallet),
+          activityDeserializer(tx, prices),
         ),
       )
     }
