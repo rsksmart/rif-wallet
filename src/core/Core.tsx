@@ -189,7 +189,7 @@ export const Core = () => {
       <View style={sharedStyles.flex}>
         <StatusBar backgroundColor={topColor} />
         {!active && <Cover />}
-        <BitcoinProvider BitcoinCore={BitcoinCore}>
+        <BitcoinProvider BitcoinCore={BitcoinCore} onSetMnemonic={setMnemonic}>
           <NavigationContainer ref={navigationContainerRef}>
             <WalletConnectProviderElement>
               {settings.loading && !unlocked ? (

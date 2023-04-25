@@ -26,6 +26,7 @@ export interface UseBitcoinCoreResult<T> {
     [key: string]: T | BitcoinNetwork
   }
   refreshStoredNetworks: () => void
+  onSetMnemonic?: (mnemonic: string) => void
 }
 
 interface NetworksObject {

@@ -12,22 +12,23 @@ import {
 import { RegularText, SemiBoldText } from 'src/components'
 import { createWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
-
-import { grid } from '../../styles'
-import { colors } from '../../styles'
-import { saveKeyVerificationReminder } from '../../storage/MainStorage'
-import { WINDOW_HEIGHT } from '../../ux/slides/Dimensions'
+import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
+import { grid } from 'src/styles'
+import { colors } from 'src/styles'
+import { saveKeyVerificationReminder } from 'storage/MainStorage'
+import { WINDOW_HEIGHT } from 'src/ux/slides/Dimensions'
 
 export const SecureYourWalletScreen = ({
   navigation,
 }: CreateKeysScreenProps<createKeysRouteNames.SecureYourWallet>) => {
   const dispatch = useAppDispatch()
-
+  const bitcoinCore = useBitcoinContext() // Required to update mnemonic when wallet is created
   const secureLater = async () => {
     saveKeyVerificationReminder(true)
     dispatch(
       createWallet({
         mnemonic: KeyManagementSystem.create().mnemonic,
+        onSetMnemonic: bitcoinCore?.onSetMnemonic,
       }),
     )
   }

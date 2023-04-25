@@ -14,6 +14,7 @@ import { createWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { StepperComponent } from 'src/components/profile'
+import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 
 type MnemonicWordNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
 
@@ -94,6 +95,7 @@ export const ConfirmNewMasterKeyScreen = ({
     [errors.firstWord, errors.secondWord],
   )
   const dispatch = useAppDispatch()
+  const bitcoinCore = useBitcoinContext() // Required to update mnemonic when wallet is created
   const mnemonic = route.params.mnemonic
   const mnemonicWords = useMemo(() => mnemonic.split(' '), [mnemonic])
   const randomWords = useMemo(
@@ -150,10 +152,12 @@ export const ConfirmNewMasterKeyScreen = ({
   useEffect(() => {
     if (hasFormSuccess) {
       setTimeout(() => {
-        dispatch(createWallet({ mnemonic }))
+        dispatch(
+          createWallet({ mnemonic, onSetMnemonic: bitcoinCore?.onSetMnemonic }),
+        )
       }, 1000)
     }
-  }, [hasFormSuccess, dispatch, mnemonic])
+  }, [hasFormSuccess, dispatch, mnemonic, bitcoinCore?.onSetMnemonic])
 
   return (
     <View style={styles.screen}>

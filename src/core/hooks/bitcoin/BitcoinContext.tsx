@@ -9,11 +9,13 @@ const BitcoinContext =
 export const BitcoinProvider = ({
   BitcoinCore,
   children,
+  onSetMnemonic,
 }: {
   BitcoinCore: UseBitcoinCoreResult<BitcoinNetworkWithBIPRequest>
   children: ReactChild
+  onSetMnemonic?: (mnemonic: string) => void
 }) => (
-  <BitcoinContext.Provider value={BitcoinCore}>
+  <BitcoinContext.Provider value={{ ...BitcoinCore, onSetMnemonic }}>
     {children}
   </BitcoinContext.Provider>
 )
