@@ -1,3 +1,8 @@
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
-export type ScreenWithWallet = { wallet: RIFWallet; isWalletDeployed: boolean }
+import { WalletsIsDeployed } from 'src/Context'
+
+export type ScreenWithWallet = {
+  wallet: RIFWallet
+  walletDeployed: WalletsIsDeployed[string] | null
+}

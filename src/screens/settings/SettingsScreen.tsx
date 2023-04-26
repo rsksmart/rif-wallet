@@ -5,9 +5,7 @@ import { ScrollView, StyleSheet, View } from 'react-native'
 
 import { AppTouchable, Typography } from 'components/index'
 import { SETTINGS, getWalletSetting } from 'core/config'
-import { homeStackRouteNames } from 'navigation/homeNavigator/types'
 import { headerLeftOption } from 'navigation/profileNavigator'
-import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import {
   SettingsScreenProps,
   settingsStackRouteNames,
@@ -20,7 +18,7 @@ import { useAppSelector } from 'store/storeUtils'
 export const SettingsScreen = ({
   navigation,
 }: SettingsScreenProps<settingsStackRouteNames.SettingsScreen>) => {
-  const { isDeployed } = useAppSelector(selectActiveWallet)
+  const { walletIsDeployed } = useAppSelector(selectActiveWallet)
 
   const smartWalletFactoryAddress = useMemo(
     () => getWalletSetting(SETTINGS.SMART_WALLET_FACTORY_ADDRESS),
@@ -98,7 +96,7 @@ export const SettingsScreen = ({
             {t('settings_screen_provide_feedback')}
           </Typography>
         </AppTouchable>
-        {!isDeployed && (
+        {!walletIsDeployed?.isDeployed && (
           <AppTouchable
             width={'100%'}
             style={styles.settingsItem}

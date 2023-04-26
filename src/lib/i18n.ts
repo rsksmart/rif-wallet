@@ -281,6 +281,7 @@ const resources = {
       wallet_deploy_wallet_deployed: 'Your smart wallet has been deployed!',
       wallet_deploy_wallet_deploying: 'Deploying wallet...',
       wallet_deploy_button_title: 'Deploy wallet',
+      wallet_deploy_error: 'Tx failed, could not deploy smart wallet',
     },
   },
   es: {

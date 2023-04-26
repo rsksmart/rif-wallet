@@ -11,7 +11,7 @@ import {
   ProfileStatus,
 } from 'navigation/profileNavigator/types'
 import { castStyle } from 'shared/utils'
-import { AppSpinner } from 'screens/spinner'
+import { AppSpinner } from 'components/index'
 import { sharedColors, sharedStyles } from 'shared/constants'
 
 import { ScreenWithWallet } from '../types'

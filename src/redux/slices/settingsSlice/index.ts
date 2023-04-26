@@ -26,6 +26,7 @@ import { navigationContainerRef } from 'src/core/Core'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { createKeysRouteNames } from 'navigation/createKeysNavigator'
 import { AsyncThunkWithTypes } from 'store/store'
+import { WalletsIsDeployed } from 'src/Context'
 
 import {
   AddNewWalletAction,
@@ -67,11 +68,20 @@ export const createWallet = createAsyncThunk(
           })
         }, 100)
       }
+      const walletsIsDeployed: WalletsIsDeployed = {}
+
+      for (const key in rifWalletsIsDeployedDictionary) {
+        walletsIsDeployed[key] = {
+          loading: false,
+          isDeployed: rifWalletsIsDeployedDictionary[key],
+          txHash: null,
+        }
+      }
 
       thunkAPI.dispatch(
         setWallets({
           wallets: rifWalletsDictionary,
-          walletsIsDeployed: rifWalletsIsDeployedDictionary,
+          walletsIsDeployed,
         }),
       )
       thunkAPI.dispatch(setUnlocked(true))
@@ -121,10 +131,20 @@ export const unlockApp = createAsyncThunk<
     const { kms, rifWalletsDictionary, rifWalletsIsDeployedDictionary } =
       existingWallets
 
+    const walletsIsDeployed: WalletsIsDeployed = {}
+
+    for (const key in rifWalletsIsDeployedDictionary) {
+      walletsIsDeployed[key] = {
+        loading: false,
+        isDeployed: rifWalletsIsDeployedDictionary[key],
+        txHash: null,
+      }
+    }
+
     thunkAPI.dispatch(
       setWallets({
         wallets: rifWalletsDictionary,
-        walletsIsDeployed: rifWalletsIsDeployedDictionary,
+        walletsIsDeployed,
       }),
     )
 
@@ -256,9 +276,34 @@ const settingsSlice = createSlice({
       state,
       { payload }: PayloadAction<SetWalletIsDeployedAction>,
     ) => {
-      state.walletsIsDeployed = {
-        ...state.walletsIsDeployed,
-        [payload.address]: payload.value ? payload.value : true,
+      if (state.walletsIsDeployed) {
+        state.walletsIsDeployed[payload.address] = {
+          ...state.walletsIsDeployed[payload.address],
+          loading: false,
+          isDeployed: payload.value ? payload.value : true,
+        }
+      }
+    },
+    setSmartWalletDeployTx: (
+      state,
+      { payload }: PayloadAction<{ address: string; txHash: string }>,
+    ) => {
+      if (state.walletsIsDeployed) {
+        state.walletsIsDeployed[payload.address] = {
+          ...state.walletsIsDeployed?.[payload.address],
+          txHash: payload.txHash,
+        }
+      }
+    },
+    setIsDeploying: (
+      state,
+      { payload }: PayloadAction<{ address: string; isDeploying: boolean }>,
+    ) => {
+      if (state.walletsIsDeployed) {
+        state.walletsIsDeployed[payload.address] = {
+          ...state.walletsIsDeployed?.[payload.address],
+          loading: payload.isDeploying,
+        }
       }
     },
     switchSelectedWallet: (state, { payload }: PayloadAction<string>) => {
@@ -327,6 +372,8 @@ export const {
   setUnlocked,
   setPreviouslyUnlocked,
   setWalletIsDeployed,
+  setSmartWalletDeployTx,
+  setIsDeploying,
   removeKeysFromState,
   resetKeysAndPin,
   switchSelectedWallet,
