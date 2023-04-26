@@ -2037,16 +2037,16 @@
     lodash "^4.17.15"
     randombytes "^2.1.0"
 
-"@rsksmart/rif-relay-light-sdk@*", "@rsksmart/rif-relay-light-sdk@^1.0.1":
-  version "1.0.1"
-  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-relay-light-sdk/1.0.1/f3098e9665a101e8329548e2008493da590d5ee5#f3098e9665a101e8329548e2008493da590d5ee5"
-  integrity sha512-/evJEGi6upkJsBqtsarVCRucLoowhXOT2DjnJXPnRKTXHFQ0pVRUFAhYkih0MiQpJc/6IsTYV1G9JY0LUSmi6g==
+"@rsksmart/rif-relay-light-sdk@*", "@rsksmart/rif-relay-light-sdk@^1.0.3":
+  version "1.0.3"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-relay-light-sdk/1.0.3/2dfc039b136c83259f5337886df2187e424b7e09#2dfc039b136c83259f5337886df2187e424b7e09"
+  integrity sha512-qUxgnN0h1hS6k2qqtSjJMU6oZo5AiLDFDe4mw/E+nNKeWqs7bWCCHou72XBqRKrFDTG/ZuGeVZeu1s5sM7ibhg==
   dependencies:
     "@ethersproject/abstract-provider" "^5.7.0"
     axios "^1.2.3"
     ethers "^5.7.2"
 
-"@rsksmart/rif-wallet-abi-enhancer@*", "@rsksmart/rif-wallet-abi-enhancer@^1.0.0":
+"@rsksmart/rif-wallet-abi-enhancer@*":
   version "1.0.0"
   resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-abi-enhancer/1.0.0/6f6838ac92fb4be65a225dca5f8c9ccfaa137a84#6f6838ac92fb4be65a225dca5f8c9ccfaa137a84"
   integrity sha512-7epvf5fjV5/f4uJ8HCllvgdc4Nw0HP0BaSgZr+XhlsYDcN5ikdil7EwP6wFVYGY8qKAPY1HIXgqVZ+qyUK3NpA==
@@ -2056,6 +2056,20 @@
     "@ethersproject/abstract-signer" "^5.7.0"
     "@ethersproject/bignumber" "^5.7.0"
     "@ethersproject/bytes" "^5.7.0"
+    "@rsksmart/rif-wallet-token" "*"
+    axios "^0.27.2"
+
+"@rsksmart/rif-wallet-abi-enhancer@^1.0.1":
+  version "1.0.1"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-abi-enhancer/1.0.1/ea0e101ae75a27c7f14cc6ae17c0cd0b15d3e0cd#ea0e101ae75a27c7f14cc6ae17c0cd0b15d3e0cd"
+  integrity sha512-Xiu8DbYZaz9hGL/zBE7EoaXDF0FwSvwVxakYDbrAnUVNAHOfF0X8KKvt44ay02Tw9gaLqW4CrXMQJEgsII+oxQ==
+  dependencies:
+    "@ethersproject/abi" "^5.7.0"
+    "@ethersproject/abstract-provider" "^5.7.0"
+    "@ethersproject/abstract-signer" "^5.7.0"
+    "@ethersproject/bignumber" "^5.7.0"
+    "@ethersproject/bytes" "^5.7.0"
+    "@rsksmart/rif-relay-light-sdk" "*"
     "@rsksmart/rif-wallet-token" "*"
     axios "^0.27.2"
 

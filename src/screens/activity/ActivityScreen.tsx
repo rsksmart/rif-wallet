@@ -5,6 +5,7 @@ import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
 import { IApiTransaction } from '@rsksmart/rif-wallet-services'
 import { useTranslation } from 'react-i18next'
+import { ethers } from 'ethers'
 
 import { abiEnhancer } from 'core/setup'
 import { useAppSelector } from 'store/storeUtils'
@@ -67,9 +68,7 @@ export const ActivityScreen = ({
         btcTransactionFetcher.transactions,
       )
       setDeserializedTransactions(
-        transactionsCombined.map(tx =>
-          activityDeserializer(tx, prices, wallets[selectedWallet]),
-        ),
+        transactionsCombined.map(tx => activityDeserializer(tx, prices)),
       )
     }
   }, [
@@ -174,19 +173,15 @@ export const enhanceTransactionInput = async (
   transaction: IApiTransaction,
   wallet: RIFWallet,
 ): Promise<EnhancedResult | null> => {
-  let tx
   try {
-    tx = wallet.smartWallet.smartWalletContract.interface.decodeFunctionData(
-      'directExecute',
-      transaction.input,
-    )
-    return await abiEnhancer.enhance(wallet, {
-      from: wallet.smartWalletAddress,
-      to: tx.to.toLowerCase(),
-      data: tx.data,
+    const enhancedTx = await abiEnhancer.enhance(wallet, {
+      from: transaction.from.toLowerCase(),
+      to: transaction.to.toLowerCase(),
+      data: ethers.utils.arrayify(transaction.input),
       value: transaction.value,
     })
-  } catch {
+    return enhancedTx
+  } catch (e) {
     return null
   }
 }
