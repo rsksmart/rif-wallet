@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useProfileStatusColors } from 'lib/rns'
 
 import { Avatar } from 'components/avatar'
+import { AvatarIcon } from 'components/icons/AvatarIcon'
 import { StepperComponent } from 'components/profile'
 import { Typography } from 'components/typography'
 import { ProfileStatus } from 'navigation/profileNavigator/types'
@@ -25,15 +26,11 @@ export const ProfileHandler = ({ navigation }: Props) => {
   const { t } = useTranslation()
   const { startColor, endColor } = useProfileStatusColors()
 
-  const routeNextStep = async () => {
-    navigation.navigate(rootTabsRouteNames.Profile)
-  }
-
   return (
     <TouchableOpacity
       style={styles.profileHandler}
       accessibilityLabel="profile"
-      onPress={routeNextStep}>
+      onPress={() => navigation.navigate(rootTabsRouteNames.Profile)}>
       {profile.status === ProfileStatus.NONE && (
         <>
           <Avatar
@@ -97,7 +94,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
 
         {profile.status === ProfileStatus.USER && (
           <>
-            <Avatar size={30} name={profile.alias + '.rsk'} />
+            <AvatarIcon size={30} value={profile.alias} />
             <View style={styles.textAlignment}>
               <Typography type={'h4'} style={styles.profileName}>
                 {profile.alias}
