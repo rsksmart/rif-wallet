@@ -108,13 +108,7 @@ export const TransactionForm = ({
     },
     resolver: yupResolver(transactionSchema),
   })
-  const {
-    setValue,
-    handleSubmit,
-    resetField,
-    watch,
-    formState: { errors },
-  } = methods
+  const { setValue, handleSubmit, resetField, watch } = methods
   const amount = watch('amount')
   const to = watch('to')
 
@@ -249,12 +243,6 @@ export const TransactionForm = ({
     [tokenList],
   )
 
-  useEffect(() => {
-    console.log('FIRST BALANCE', firstBalance)
-    console.log('SECOND BALANCE', secondBalance)
-    console.log('ERRORS', errors)
-  }, [firstBalance, secondBalance, errors])
-
   return (
     <>
       <ScrollView>
@@ -336,7 +324,7 @@ export const TransactionForm = ({
               isReadOnly
             />
           ) : null}
-          {firstBalance.balance ? (
+          {firstBalance.balance && tokenFeeList.length > 1 ? (
             <AppTouchable
               width={'100%'}
               onPress={toggleShowTxFee}

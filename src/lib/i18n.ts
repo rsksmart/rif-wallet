@@ -7,6 +7,7 @@ import { initReactI18next } from 'react-i18next'
 const resources = {
   en: {
     translation: {
+      no_selected_wallet: 'No selected wallet',
       message_copied_to_clipboard: 'Copied to Clipboard',
       ok: 'OK',
       basic_row_pending: '• Pending',

@@ -1,12 +1,13 @@
 import { FC } from 'react'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
+import { useTranslation } from 'react-i18next'
 
 import { ScreenWithWallet } from 'screens/types'
 import { useAppSelector } from 'store/storeUtils'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { RequestWithBitcoin } from 'shared/types'
-
-import { RegularText } from './components'
+import { sharedColors } from 'shared/constants'
+import { Typography } from 'components/index'
 
 export interface Wallets {
   [id: string]: RIFWallet
@@ -21,10 +22,15 @@ export function InjectSelectedWallet<T>(
   Component: FC<ScreenWithWallet & T>,
 ): FC<T> {
   return function InjectedComponent(props) {
+    const { t } = useTranslation()
     const { wallet, isDeployed } = useAppSelector(selectActiveWallet)
 
     if (!wallet) {
-      return <RegularText>No selected wallet</RegularText>
+      return (
+        <Typography type="h1" color={sharedColors.black}>
+          {t('no_selected_wallet')}
+        </Typography>
+      )
     }
 
     return (
