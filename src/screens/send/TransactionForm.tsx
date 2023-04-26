@@ -239,10 +239,12 @@ export const TransactionForm = ({
   }, [])
 
   const onChangeSelectedFee = useCallback(
-    (fee: string) => {
-      setSelectedFeeToken(
-        tokenList.filter(value => value.contractAddress === fee)[0],
-      )
+    (fee: string | undefined) => {
+      if (fee) {
+        setSelectedFeeToken(
+          tokenList.filter(value => value.contractAddress === fee)[0],
+        )
+      }
     },
     [tokenList],
   )
@@ -255,9 +257,7 @@ export const TransactionForm = ({
 
   return (
     <>
-      <ScrollView
-        style={styles.transactionForm}
-        contentContainerStyle={styles.transactionScrollContainer}>
+      <ScrollView>
         <FormProvider {...methods}>
           <AddressInputSelector
             label={t('transaction_form_recepient_label')}
@@ -274,7 +274,7 @@ export const TransactionForm = ({
             token={selectedToken}
           />
           <TokenBalance
-            style={sharedStyles.marginTop40}
+            style={styles.marginTop10}
             firstValue={firstBalance}
             secondValue={secondBalance}
             color={sharedColors.black}
@@ -285,7 +285,7 @@ export const TransactionForm = ({
             }
           />
           <Input
-            containerStyle={sharedStyles.marginTop40}
+            containerStyle={styles.marginTop10}
             inputName={'balance'}
             label={`${selectedToken.symbol} ${t(
               'transaction_form_balance_label',
@@ -364,7 +364,7 @@ export const TransactionForm = ({
           ) : null}
         </FormProvider>
       </ScrollView>
-      <View style={styles.buttons}>
+      <View style={styles.marginTop10}>
         <AppButton
           title={`${t('transaction_form_button_send')} ${amount} ${
             selectedToken.symbol
@@ -390,17 +390,8 @@ export const TransactionForm = ({
 }
 
 const styles = StyleSheet.create({
-  transactionForm: castStyle.view({
-    paddingTop: 24,
-    height: '100%',
-    width: '100%',
-  }),
-  transactionScrollContainer: castStyle.view({ paddingBottom: 200 }),
-  buttons: castStyle.view({
-    position: 'absolute',
-    bottom: 30,
-    left: 24,
-    right: 24,
+  marginTop10: castStyle.view({
+    marginTop: 10,
   }),
   buttonCancel: castStyle.view({
     marginTop: 10,
