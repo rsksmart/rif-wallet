@@ -33,6 +33,7 @@ import { getBalance } from 'screens/home/PortfolioComponent'
 import { selectProfile } from 'store/slices/profileSlice'
 import { getIconSource } from 'screens/home/TokenImage'
 import { ProfileStatus } from 'navigation/profileNavigator/types'
+import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
@@ -49,16 +50,28 @@ export const ReceiveScreen = ({
   const methods = useForm()
   const bitcoinCore = useBitcoinContext()
 
+  const tokenBalances = useAppSelector(selectBalances)
+
+  const assets = useMemo(() => {
+    const newAssets: Array<BitcoinNetwork | ITokenWithoutLogo> = [
+      ...Object.values(tokenBalances),
+    ]
+    if (bitcoinCore?.networks) {
+      newAssets.push(...bitcoinCore.networks)
+    }
+
+    return newAssets
+  }, [bitcoinCore?.networks, tokenBalances])
+
   const { token, networkId } = route.params
   const [selectedAsset, setSelectedAsset] = useState<
     MixedTokenAndNetworkType | undefined
-  >((networkId && bitcoinCore?.networksMap[networkId]) || token)
+  >((networkId && bitcoinCore?.networksMap[networkId]) || token || assets[0])
   const [address, setAddress] = useState<string>('')
   const [isAddressLoading, setIsAddressLoading] = useState(false)
 
   const [shouldShowAssets, setShouldShowAssets] = useState(false)
 
-  const tokenBalances = useAppSelector(selectBalances)
   const { wallet, chainType } = useAppSelector(selectActiveWallet)
   const profile = useAppSelector(selectProfile)
 
@@ -68,15 +81,6 @@ export const ReceiveScreen = ({
     }
     return null
   }, [wallet, chainType])
-
-  const assets = useMemo(() => {
-    const newAssets = []
-    if (bitcoinCore?.networks) {
-      newAssets.push(...bitcoinCore?.networks)
-    }
-    newAssets.push(...Object.values(tokenBalances))
-    return newAssets
-  }, [bitcoinCore, tokenBalances])
 
   const onShareUsername = useCallback(() => {
     Share.share({
@@ -124,6 +128,7 @@ export const ReceiveScreen = ({
       onGetAddress(selectedAsset)
     }
   }, [onGetAddress, selectedAsset])
+
   return (
     <ScrollView style={styles.parent}>
       <FormProvider {...methods}>
