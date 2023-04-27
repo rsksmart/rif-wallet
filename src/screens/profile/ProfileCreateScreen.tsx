@@ -37,6 +37,7 @@ import { selectProfile } from 'store/slices/profileSlice/selector'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { AppSpinner } from 'components/index'
+import { AvatarIcon } from 'components/icons/AvatarIcon'
 
 import { rnsManagerStyles } from '../rnsManager/rnsManagerStyles'
 
