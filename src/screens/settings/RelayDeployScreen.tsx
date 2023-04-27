@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { BigNumber } from 'ethers'
@@ -7,8 +7,14 @@ import {
   TransactionReceipt,
 } from '@ethersproject/abstract-provider'
 import { useTranslation } from 'react-i18next'
+import Icon from 'react-native-vector-icons/FontAwesome5'
 
-import { AppButton, Typography, AppSpinner } from 'components/index'
+import {
+  AppButton,
+  Typography,
+  AppSpinner,
+  AppTouchable,
+} from 'components/index'
 import {
   setIsDeploying,
   setSmartWalletDeployTx,
@@ -27,10 +33,13 @@ import {
 import { ScreenWithWallet } from '../types'
 
 export const RelayDeployScreen = ({
+  route,
+  navigation,
   wallet,
   walletDeployed,
 }: SettingsScreenProps<settingsStackRouteNames.RelayDeployScreen> &
   ScreenWithWallet) => {
+  const backScreen = route.params?.goBackScreen
   const { loading, isDeployed, txHash } = walletDeployed
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -84,6 +93,32 @@ export const RelayDeployScreen = ({
         )
       })
   }, [dispatch, updateErrorState, wallet, t])
+
+  useEffect(() => {
+    if (backScreen) {
+      const { child, parent } = backScreen
+      // TODO: fix this typescript error
+      navigation.setOptions({
+        headerLeft: () => (
+          <AppTouchable
+            width={20}
+            onPress={() =>
+              navigation.navigate(
+                parent,
+                child
+                  ? {
+                      screen: child,
+                    }
+                  : undefined,
+              )
+            }
+            style={sharedStyles.marginLeft24}>
+            <Icon name={'chevron-left'} size={20} color={sharedColors.white} />
+          </AppTouchable>
+        ),
+      })
+    }
+  }, [backScreen, navigation])
 
   return (
     <ScrollView

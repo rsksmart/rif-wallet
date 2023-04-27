@@ -17,7 +17,6 @@ import {
 export enum homeStackRouteNames {
   Main = 'Main',
   Send = 'Send',
-  RelayDeployScreen = 'RelayDeployScreen',
   Receive = 'Receive',
   Balances = 'Balances',
 }

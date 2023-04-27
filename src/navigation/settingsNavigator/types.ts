@@ -1,6 +1,7 @@
 import { CompositeScreenProps } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 
+import { homeStackRouteNames } from '../homeNavigator/types'
 import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
 
 export enum settingsStackRouteNames {
@@ -26,7 +27,14 @@ export type SettingsStackParamsList = {
   [settingsStackRouteNames.FeedbackScreen]: undefined
   [settingsStackRouteNames.ShowMnemonicScreen]: undefined
   [settingsStackRouteNames.ExampleScreen]: undefined
-  [settingsStackRouteNames.RelayDeployScreen]: undefined
+  [settingsStackRouteNames.RelayDeployScreen]:
+    | {
+        goBackScreen: {
+          parent: rootTabsRouteNames
+          child?: homeStackRouteNames
+        }
+      }
+    | undefined
 }
 
 export type SettingsScreenProps<T extends keyof SettingsStackParamsList> =

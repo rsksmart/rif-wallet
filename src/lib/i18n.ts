@@ -282,6 +282,9 @@ const resources = {
       wallet_deploy_wallet_deploying: 'Deploying wallet...',
       wallet_deploy_button_title: 'Deploy wallet',
       wallet_deploy_error: 'Tx failed, could not deploy smart wallet',
+      wallet_deploy_deploying_alert_title: 'Wallet deployment is in progress',
+      wallet_deploy_deploying_alert_body:
+        'You need to wait until this process is finished before making transactions',
     },
   },
   es: {

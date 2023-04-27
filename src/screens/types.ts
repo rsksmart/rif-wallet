@@ -4,5 +4,5 @@ import { WalletsIsDeployed } from 'src/Context'
 
 export type ScreenWithWallet = {
   wallet: RIFWallet
-  walletDeployed: WalletsIsDeployed[string] | null
+  walletDeployed: WalletsIsDeployed[string]
 }
