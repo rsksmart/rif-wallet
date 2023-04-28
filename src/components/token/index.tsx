@@ -59,7 +59,13 @@ export const TokenBalance = ({
                 styles.tokenIcon,
                 !firstValue.symbol ? styles.tokenBackground : null,
               ]}>
-              <TokenImage symbol={firstValue.symbol} height={30} width={30} />
+              <TokenImage
+                symbol={firstValue.symbol}
+                height={30}
+                width={30}
+                transparent={true}
+                color={color}
+              />
             </View>
           )}
           {firstValue.symbolType === 'text' && (
