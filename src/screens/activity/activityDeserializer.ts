@@ -64,7 +64,7 @@ export const activityDeserializer: (
           : getTokenAddress(etx?.symbol || '', defaultChainType)
     } catch {}
     const feeRbtc = BigNumber.from(tx.gasPrice).mul(
-      BigNumber.from(tx.receipt?.gasUsed),
+      BigNumber.from(tx.receipt?.gasUsed || 1),
     )
     const totalToken =
       etx?.feeSymbol === etx?.symbol
