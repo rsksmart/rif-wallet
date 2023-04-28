@@ -177,6 +177,7 @@ export const Core = () => {
 
   useEffect(() => {
     if (!active) {
+      setFetcher(undefined)
       socketsEvents.emit(SocketsEvents.DISCONNECT)
     }
     return () => {
