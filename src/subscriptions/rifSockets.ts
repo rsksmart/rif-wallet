@@ -52,8 +52,8 @@ export const rifSockets = ({
     if (rifWalletServicesSocket.isConnected()) {
       rifWalletServicesSocket.disconnect()
       dispatch(resetSocketState())
-      dispatch(addOrUpdateBalances(defaultTokens))
     }
+    dispatch(addOrUpdateBalances(defaultTokens))
 
     rifWalletServicesSocket.removeAllListeners()
 
