@@ -269,7 +269,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
 
       <SlidePopupConfirmationInfo
         isVisible={isModalVisible}
-        height={340}
+        height={350}
         title={t('request_username_popup_title')}
         description={t('request_username_popup_description')}
         confirmText={t('request_username_popup_confirm')}
