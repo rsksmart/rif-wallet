@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { getSupportedBiometryType } from 'react-native-keychain'
 import { Platform } from 'react-native'
+import { getSupportedBiometryType } from 'react-native-keychain'
 
-import { getChainIdByType } from 'lib/utils'
 import { KeyManagementSystem } from 'lib/core'
+import { getChainIdByType } from 'lib/utils'
 
 import {
   addNextWallet,
@@ -11,20 +11,20 @@ import {
   deleteCache,
   loadExistingWallets,
 } from 'core/operations'
-import { deleteDomains } from 'storage/DomainsStore'
-import { deleteContacts as deleteContactsFromRedux } from 'store/slices/contactsSlice'
-import { deletePin, resetMainStorage } from 'storage/MainStorage'
-import { deleteKeys, getKeys } from 'storage/SecureStorage'
-import { sharedColors } from 'shared/constants'
 import {
   createRIFWalletFactory,
   networkType as defaultNetworkType,
 } from 'core/setup'
-import { resetSocketState } from 'store/shared/actions/resetSocketState'
-import { deleteProfile } from 'store/slices/profileSlice'
-import { navigationContainerRef } from 'src/core/Core'
-import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { createKeysRouteNames } from 'navigation/createKeysNavigator'
+import { rootTabsRouteNames } from 'navigation/rootNavigator'
+import { sharedColors } from 'shared/constants'
+import { navigationContainerRef } from 'src/core/Core'
+import { deleteDomains } from 'storage/DomainsStore'
+import { deletePin, resetMainStorage } from 'storage/MainStorage'
+import { deleteKeys, getKeys } from 'storage/SecureStorage'
+import { resetSocketState } from 'store/shared/actions/resetSocketState'
+import { deleteContacts as deleteContactsFromRedux } from 'store/slices/contactsSlice'
+import { deleteProfile } from 'store/slices/profileSlice'
 import { AsyncThunkWithTypes } from 'store/store'
 import { WalletsIsDeployed } from 'src/Context'
 
@@ -107,12 +107,16 @@ export const unlockApp = createAsyncThunk<
     }
 
     const pinUnlocked = payload?.pinUnlocked
+    const {
+      settings: { pin, unlocked },
+    } = thunkAPI.getState()
 
-    if (Platform.OS === 'android' && !supportedBiometry && !pinUnlocked) {
-      const {
-        settings: { pin },
-      } = thunkAPI.getState()
-
+    if (
+      Platform.OS === 'android' &&
+      !supportedBiometry &&
+      !pinUnlocked &&
+      !unlocked
+    ) {
       // if there's no pin yet and biometrics removed
       !pin && thunkAPI.dispatch(resetApp())
 
