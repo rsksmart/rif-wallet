@@ -90,7 +90,7 @@ export const WalletBackup = ({ navigation }: Props) => {
       />
       <SlidePopupConfirmationDanger
         isVisible={isDefinitiveDeleteConfirmationVisible}
-        height={300}
+        height={310}
         title={t('wallet_backup_definitive_delete_confirmation_title')}
         description={t(
           'wallet_backup_definitive_delete_confirmation_description',
