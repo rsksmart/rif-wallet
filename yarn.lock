@@ -2086,10 +2086,22 @@
     "@ethersproject/units" "^5.7.0"
     "@rsksmart/rif-wallet-core" "*"
 
-"@rsksmart/rif-wallet-bitcoin@*", "@rsksmart/rif-wallet-bitcoin@^1.0.1":
+"@rsksmart/rif-wallet-bitcoin@*":
   version "1.0.1"
   resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-bitcoin/1.0.1/128269accae2370050d15e7920122683d2bcf9d4#128269accae2370050d15e7920122683d2bcf9d4"
   integrity sha512-gFRTiEr8RFxDuR2xb0uBOrcrqMiEpMxXk4aHjx5vXBHATaStwSbffsqblJZK2bEcc66ieT5JwjOhUlqkZc/UZg==
+  dependencies:
+    "@ethersproject/bignumber" "^5.7.0"
+    "@ethersproject/units" "^5.7.0"
+    "@rsksmart/rif-id-mnemonic" "^0.1.1"
+    bip32 "^2.0.6"
+    bitcoin-address-validation "^2.2.1"
+    bitcoinjs-lib "^6.0.2"
+
+"@rsksmart/rif-wallet-bitcoin@^1.1.0":
+  version "1.1.0"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-bitcoin/1.1.0/42a8730086f472152406d32ff9dd5518857448ca#42a8730086f472152406d32ff9dd5518857448ca"
+  integrity sha512-mGtZNHin6SY5T5PQrXao/2Vu3qb5uugU6tk2+zTOvdnX9D/cPuj95nBIBw+utxqzYoRqIv2/hBVf2QfjMtRkZg==
   dependencies:
     "@ethersproject/bignumber" "^5.7.0"
     "@ethersproject/units" "^5.7.0"

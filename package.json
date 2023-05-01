@@ -21,8 +21,8 @@
   },
   "dependencies": {
     "@ethersproject/shims": "^5.4.0",
-    "@ramp-network/react-native-sdk": "^0.3.1",
     "@hookform/resolvers": "^2.9.11",
+    "@ramp-network/react-native-sdk": "^0.3.1",
     "@react-native-community/clipboard": "^1.5.1",
     "@react-native-community/hooks": "^2.8.1",
     "@react-navigation/bottom-tabs": "^6.5.2",
@@ -34,7 +34,7 @@
     "@rsksmart/rif-relay-light-sdk": "^1.0.3",
     "@rsksmart/rif-wallet-abi-enhancer": "^1.0.1",
     "@rsksmart/rif-wallet-adapters": "^1.0.0",
-    "@rsksmart/rif-wallet-bitcoin": "^1.0.1",
+    "@rsksmart/rif-wallet-bitcoin": "^1.1.0",
     "@rsksmart/rif-wallet-core": "^1.0.2",
     "@rsksmart/rif-wallet-eip681": "1.0.1",
     "@rsksmart/rif-wallet-services": "^1.0.1",
@@ -146,7 +146,7 @@
   },
   "resolutions": {
     "@types/react": "^17",
-    "@rsksmart/rif-relay-light-sdk":"^1.0.3"
+    "@rsksmart/rif-relay-light-sdk": "^1.0.3"
   },
   "jest": {
     "preset": "react-native",

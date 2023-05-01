@@ -101,16 +101,6 @@ export const Core = () => {
     unlockAppSetMnemonic()
   }, [unlockAppSetMnemonic])
 
-  useEffect(() => {
-    if (!active) {
-      setFetcher(undefined)
-      socketsEvents.emit(SocketsEvents.DISCONNECT)
-    }
-    return () => {
-      socketsEvents.emit(SocketsEvents.DISCONNECT)
-    }
-  }, [active])
-
   return (
     <SafeAreaProvider>
       <View style={sharedStyles.flex}>

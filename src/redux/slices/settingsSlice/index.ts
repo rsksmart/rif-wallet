@@ -33,7 +33,11 @@ import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { createKeysRouteNames } from 'navigation/createKeysNavigator'
 import { AsyncThunkWithTypes } from 'store/store'
 import { WalletsIsDeployed } from 'src/Context'
-import { rifSockets } from 'src/subscriptions/rifSockets'
+import {
+  rifSockets,
+  SocketsEvents,
+  socketsEvents,
+} from 'src/subscriptions/rifSockets'
 import { authAxios, publicAxios, authClient } from 'core/setup'
 import { defaultChainId } from 'core/config'
 import {
@@ -152,6 +156,8 @@ export const createWallet = createAsyncThunk<
       setGlobalError: thunkAPI.rejectWithValue,
     })
 
+    socketsEvents.emit(SocketsEvents.CONNECT)
+
     return rifWallet
   } catch (err) {
     return thunkAPI.rejectWithValue(err)
@@ -266,6 +272,8 @@ export const unlockApp = createAsyncThunk<
       dispatch: thunkAPI.dispatch,
       setGlobalError: thunkAPI.rejectWithValue,
     })
+
+    socketsEvents.emit(SocketsEvents.CONNECT)
 
     return kms
   } catch (err) {
