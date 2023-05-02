@@ -113,7 +113,7 @@ export const ConfirmNewMasterKeyScreen = ({
     () =>
       randomWords
         ? `${randomWords[1].orderNumber}${wordNumberMap.get(
-            randomWords[0].orderNumber,
+            randomWords[1].orderNumber,
           )} word`
         : '',
     [randomWords],
