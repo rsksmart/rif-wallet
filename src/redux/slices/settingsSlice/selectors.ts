@@ -19,17 +19,19 @@ export const selectSettingsIsLoading = ({ settings }: RootState) =>
 
 export const selectWholeSettingsState = ({ settings }: RootState) => settings
 
-export const selectActiveWallet = ({ settings }: RootState) => ({
-  wallet: settings.wallets?.[settings.selectedWallet] || null,
-  isDeployed:
-    settings.selectedWallet && settings.walletsIsDeployed
-      ? settings.walletsIsDeployed[settings.selectedWallet]
+export const selectActiveWallet = ({
+  settings: { selectedWallet, wallets, walletsIsDeployed, chainType, chainId },
+}: RootState) => ({
+  wallet: wallets?.[selectedWallet] || null,
+  walletIsDeployed:
+    selectedWallet && walletsIsDeployed
+      ? walletsIsDeployed[selectedWallet]
       : null,
-  chainType: settings.chainType,
-  chainId: settings.chainId,
+  chainType: chainType,
+  chainId: chainId,
   activeWalletIndex:
-    settings.selectedWallet && settings.wallets
-      ? Object.keys(settings.wallets).indexOf(settings.selectedWallet)
+    selectedWallet && wallets
+      ? Object.keys(wallets).indexOf(selectedWallet)
       : undefined,
 })
 

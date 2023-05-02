@@ -273,6 +273,18 @@ const resources = {
       pin_screen_confirm_pin_title: 'Confirm PIN',
       pin_screen_header_title: 'PIN',
       pin_screen_wrong_pin: 'Wrong PIN',
+      wallet_deploy_title: 'Deploy RIF wallet',
+      wallet_deploy_desc1:
+        'RIF wallet is a smart contract and because of this, it needs to be deployed in the blockchain.',
+      wallet_deploy_desc2:
+        'This deployment makes it possible for you to transfer funds and interact with any web3 dApp.',
+      wallet_deploy_wallet_deployed: 'Your smart wallet has been deployed!',
+      wallet_deploy_wallet_deploying: 'Deploying wallet...',
+      wallet_deploy_button_title: 'Deploy wallet',
+      wallet_deploy_error: 'Tx failed, could not deploy smart wallet',
+      wallet_deploy_deploying_alert_title: 'Wallet deployment is in progress',
+      wallet_deploy_deploying_alert_body:
+        'You need to wait until this process is finished before making transactions',
     },
   },
   es: {

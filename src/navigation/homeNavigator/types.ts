@@ -17,7 +17,6 @@ import {
 export enum homeStackRouteNames {
   Main = 'Main',
   Send = 'Send',
-  RelayDeployScreen = 'RelayDeployScreen',
   Receive = 'Receive',
   Balances = 'Balances',
 }
@@ -37,7 +36,6 @@ export type HomeStackParamsList = {
     networkId?: string
   }
   [homeStackRouteNames.Balances]: undefined
-  [homeStackRouteNames.RelayDeployScreen]: undefined
 }
 
 export type HomeStackNavigationProp = CompositeNavigationProp<

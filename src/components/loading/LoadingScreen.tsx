@@ -2,7 +2,7 @@ import { Modal, StyleSheet, View } from 'react-native'
 
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { AppSpinner } from 'screens/spinner'
+import { AppSpinner } from 'components/index'
 
 export const LoadingScreen = () => {
   return (

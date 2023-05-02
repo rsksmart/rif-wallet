@@ -31,7 +31,7 @@ import {
 } from 'store/slices/profileSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { AvatarIconBox } from 'screens/rnsManager/AvatarIconBox'
-import { AppSpinner } from 'screens/spinner'
+import { AppSpinner } from 'components/index'
 
 import { ScreenWithWallet } from '../types'
 import { DomainInput } from './DomainInput'

@@ -25,7 +25,7 @@ import {
 } from 'components/index'
 import { CurrencyValue, TokenBalance } from 'components/token'
 import { IPrice } from 'src/subscriptions/types'
-import { sharedColors, sharedStyles } from 'shared/constants'
+import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 
 import { ITokenOrBitcoinWithBIPRequest } from './types'
@@ -39,6 +39,7 @@ interface Props {
     to: string,
   ) => void
   onCancel: () => void
+  isWalletDeployed: boolean
   tokenList: ITokenOrBitcoinWithBIPRequest[]
   tokenPrices: Record<string, IPrice>
   chainId: number
@@ -73,6 +74,7 @@ export const TransactionForm = ({
   tokenList,
   chainId,
   tokenPrices,
+  isWalletDeployed,
   onConfirm,
   onCancel,
 }: Props) => {
@@ -359,6 +361,7 @@ export const TransactionForm = ({
           }`}
           onPress={handleSubmit(handleConfirmClick)}
           disabled={
+            !isWalletDeployed ||
             BigNumber.from(selectedToken.balance).isZero() ||
             to.length === 0 ||
             amount === 0

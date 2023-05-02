@@ -13,7 +13,11 @@ export interface Wallets {
   [id: string]: RIFWallet
 }
 export interface WalletsIsDeployed {
-  [id: string]: boolean
+  [id: string]: {
+    loading: boolean
+    txHash: string | null
+    isDeployed: boolean
+  }
 }
 
 export type Requests = RequestWithBitcoin[]
@@ -23,7 +27,7 @@ export function InjectSelectedWallet<T>(
 ): FC<T> {
   return function InjectedComponent(props) {
     const { t } = useTranslation()
-    const { wallet, isDeployed } = useAppSelector(selectActiveWallet)
+    const { wallet, walletIsDeployed } = useAppSelector(selectActiveWallet)
 
     if (!wallet) {
       return (
@@ -34,11 +38,7 @@ export function InjectSelectedWallet<T>(
     }
 
     return (
-      <Component
-        wallet={wallet}
-        isWalletDeployed={Boolean(isDeployed)}
-        {...props}
-      />
+      <Component wallet={wallet} walletDeployed={walletIsDeployed} {...props} />
     )
   }
 }

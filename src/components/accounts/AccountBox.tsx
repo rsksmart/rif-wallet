@@ -39,7 +39,7 @@ export const AccountBox = ({
 }: AccountBoxProps) => {
   const dispatch = useAppDispatch()
   const accounts = useAppSelector(selectAccounts)
-  const { isDeployed } = useAppSelector(selectActiveWallet)
+  const { walletIsDeployed } = useAppSelector(selectActiveWallet)
   const initialAccountName = accounts[id]?.name || `account ${id + 1}`
   const [accountName, setAccountName] = useState<string>(initialAccountName)
   const [showAccountNameInput, setShowAccountInput] = useState<boolean>(false)
@@ -113,11 +113,11 @@ export const AccountBox = ({
         <Typography type={'h4'}>{t('settings_screen_status_label')}</Typography>
         <View style={styles.status}>
           <Typography type={'h4'} style={styles.statusText}>
-            {isDeployed
+            {walletIsDeployed?.isDeployed
               ? t('settings_screen_deployed_label')
               : t('settings_screen_not_deployed_label')}
           </Typography>
-          {isDeployed ? (
+          {walletIsDeployed?.isDeployed ? (
             <Icon
               name={'check-circle'}
               size={24 || defaultIconSize}
