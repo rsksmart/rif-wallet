@@ -17,12 +17,11 @@ import { shortAddress } from 'lib/utils'
 import { getAddressDisplayText, Input, Typography } from 'components/index'
 import { sharedColors } from 'shared/constants'
 import { QRGenerator } from 'components/QRGenerator/QRGenerator'
-import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
 import { useAppSelector } from 'store/storeUtils'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { MixedTokenAndNetworkType } from 'screens/send/types'
-import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { selectActiveWallet, selectBitcoin } from 'store/slices/settingsSlice'
 import {
   homeStackRouteNames,
   HomeStackScreenProps,
@@ -48,7 +47,7 @@ export const ReceiveScreen = ({
 }: HomeStackScreenProps<homeStackRouteNames.Receive>) => {
   const { t } = useTranslation()
   const methods = useForm()
-  const bitcoinCore = useBitcoinContext()
+  const bitcoinCore = useAppSelector(selectBitcoin)
 
   const tokenBalances = useAppSelector(selectBalances)
 
@@ -56,12 +55,12 @@ export const ReceiveScreen = ({
     const newAssets: Array<BitcoinNetwork | ITokenWithoutLogo> = [
       ...Object.values(tokenBalances),
     ]
-    if (bitcoinCore?.networks) {
-      newAssets.push(...bitcoinCore.networks)
+    if (bitcoinCore?.networksArr) {
+      newAssets.push(...bitcoinCore.networksArr)
     }
 
     return newAssets
-  }, [bitcoinCore?.networks, tokenBalances])
+  }, [bitcoinCore?.networksArr, tokenBalances])
 
   const { token, networkId } = route.params
   const [selectedAsset, setSelectedAsset] = useState<

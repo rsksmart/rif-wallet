@@ -2,18 +2,18 @@ import { useMemo } from 'react'
 
 import { useAppSelector } from 'store/storeUtils'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
-import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 import { ITokenOrBitcoinWithBIPRequest } from 'screens/send/types'
+import { selectBitcoin } from 'src/redux/slices/settingsSlice'
 
 export const useFetchBitcoinNetworksAndTokens = () => {
   const tokenBalances = useAppSelector(selectBalances)
-  const bitcoinCore = useBitcoinContext()
+  const bitcoinCore = useAppSelector(selectBitcoin)
 
   const tokens = useMemo(() => Object.values(tokenBalances), [tokenBalances])
   const networksSer = useMemo(
     () =>
       bitcoinCore
-        ? bitcoinCore.networks.map(network => ({
+        ? bitcoinCore.networksArr.map(network => ({
             ...network,
             balance: network.satoshis,
             isBitcoin: true,

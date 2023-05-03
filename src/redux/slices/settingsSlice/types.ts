@@ -1,3 +1,4 @@
+import { BitcoinNetworkWithBIPRequest } from '@rsksmart/rif-wallet-bitcoin'
 import { ColorValue } from 'react-native'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
@@ -44,6 +45,15 @@ export enum ChainTypeEnum {
   MAINNET = 'MAINNET',
 }
 
+export interface NetworksObject {
+  [key: string]: BitcoinNetworkWithBIPRequest
+}
+
+export interface Bitcoin {
+  networksArr: BitcoinNetworkWithBIPRequest[]
+  networksMap: NetworksObject
+}
+
 export interface SettingsSlice {
   isSetup: boolean
   requests: RequestWithBitcoin[]
@@ -60,4 +70,5 @@ export interface SettingsSlice {
   fullscreen: boolean
   hideBalance: boolean
   pin: string | null
+  bitcoin: Bitcoin | null
 }

@@ -20,10 +20,10 @@ import { colors } from 'src/styles'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
-import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 import {
   changeTopColor,
   selectActiveWallet,
+  selectBitcoin,
   selectHideBalance,
   setHideBalance,
 } from 'store/slices/settingsSlice'
@@ -56,7 +56,7 @@ export const HomeScreen = ({
   const dispatch = useAppDispatch()
   const tokenBalances = useAppSelector(selectBalances)
   const prices = useAppSelector(selectUsdPrices)
-  const bitcoinCore = useBitcoinContext()
+  const bitcoinCore = useAppSelector(selectBitcoin)
   const { wallet, chainType } = useAppSelector(selectActiveWallet)
   const hideBalance = useAppSelector(selectHideBalance)
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
@@ -269,8 +269,8 @@ export const HomeScreen = ({
 
   const btcTransactionFetcher = useBitcoinTransactionsHandler({
     bip:
-      bitcoinCore && bitcoinCore.networks[0]
-        ? bitcoinCore.networks[0].bips[0]
+      bitcoinCore && bitcoinCore.networksArr[0]
+        ? bitcoinCore.networksArr[0].bips[0]
         : ({} as BIP),
     shouldMergeTransactions: true,
   })

@@ -46,9 +46,11 @@ import {
   hasSignUP,
   saveSignUp,
 } from 'storage/MainStorage'
+import { initializeBitcoin } from 'src/core/hooks/bitcoin/initializeBitcoin'
 
 import {
   AddNewWalletAction,
+  Bitcoin,
   ChainTypeEnum,
   CreateFirstWalletAction,
   OnRequestAction,
@@ -104,16 +106,12 @@ export const createWallet = createAsyncThunk<
       }),
     )
 
-    console.log('WALLETS SET')
-
     // unclock the app
     thunkAPI.dispatch(setUnlocked(true))
 
     // create fetcher
     const currentWallet =
       rifWalletsDictionary[Object.keys(rifWalletsDictionary)[0]]
-
-    console.log('CURRENT WALLET', currentWallet)
 
     const chainId = await currentWallet.getChainId()
 
@@ -133,8 +131,6 @@ export const createWallet = createAsyncThunk<
       onResetInternetCredentials: Keychain.resetInternetCredentials,
     })
 
-    console.log('rifWalletAuth', rifWalletAuth)
-
     const { accessToken, refreshToken } = await rifWalletAuth.login()
 
     const fetcherInstance = new RifWalletServicesFetcher<
@@ -146,8 +142,6 @@ export const createWallet = createAsyncThunk<
       resultsLimit: 10,
     })
 
-    console.log('fetcherInstance', fetcherInstance)
-
     // connect to sockets
     rifSockets({
       wallet: currentWallet,
@@ -157,6 +151,15 @@ export const createWallet = createAsyncThunk<
     })
 
     socketsEvents.emit(SocketsEvents.CONNECT)
+
+    // initialize bitcoin
+    const bitcoin = initializeBitcoin(
+      mnemonic,
+      thunkAPI.dispatch,
+      fetcherInstance,
+    )
+
+    thunkAPI.dispatch(setBitcoinState(bitcoin))
 
     return rifWallet
   } catch (err) {
@@ -171,7 +174,6 @@ export const unlockApp = createAsyncThunk<
 >('settings/unlockApp', async (payload: UnlockAppAction, thunkAPI) => {
   try {
     const supportedBiometry = await getSupportedBiometryType()
-
     const serializedKeys = await getKeys()
 
     if (!serializedKeys) {
@@ -195,7 +197,6 @@ export const unlockApp = createAsyncThunk<
     }
 
     // set wallets in the store
-
     const existingWallets = await loadExistingWallets(
       createRIFWalletFactory(request =>
         thunkAPI.dispatch(onRequest({ request })),
@@ -222,20 +223,16 @@ export const unlockApp = createAsyncThunk<
       }),
     )
 
-    console.log('WALLETS SET')
-
     thunkAPI.dispatch(setUnlocked(true))
 
-    // create fetcher
     const currentWallet =
       rifWalletsDictionary[Object.keys(rifWalletsDictionary)[0]]
-
-    console.log('CURRENT WALLET', currentWallet)
 
     const chainId = await currentWallet.getChainId()
 
     thunkAPI.dispatch(setChainId(chainId))
 
+    // create fetcher
     const rifWalletAuth = new RifWalletServicesAuth<
       Keychain.Options,
       ReturnType<typeof Keychain.setInternetCredentials>,
@@ -250,8 +247,6 @@ export const unlockApp = createAsyncThunk<
       onResetInternetCredentials: Keychain.resetInternetCredentials,
     })
 
-    console.log('rifWalletAuth', rifWalletAuth)
-
     const { accessToken, refreshToken } = await rifWalletAuth.login()
 
     const fetcherInstance = new RifWalletServicesFetcher<
@@ -263,8 +258,6 @@ export const unlockApp = createAsyncThunk<
       resultsLimit: 10,
     })
 
-    console.log('fetcherInstance', fetcherInstance)
-
     // connect to sockets
     rifSockets({
       wallet: currentWallet,
@@ -275,6 +268,14 @@ export const unlockApp = createAsyncThunk<
 
     socketsEvents.emit(SocketsEvents.CONNECT)
 
+    // initialize bitcoin
+    const bitcoin = initializeBitcoin(
+      kms.mnemonic,
+      thunkAPI.dispatch,
+      fetcherInstance,
+    )
+
+    thunkAPI.dispatch(setBitcoinState(bitcoin))
     return kms
   } catch (err) {
     return thunkAPI.rejectWithValue(err)
@@ -344,6 +345,7 @@ const initialState: SettingsSlice = {
   fullscreen: false,
   hideBalance: false,
   pin: null,
+  bitcoin: null,
 }
 
 const settingsSlice = createSlice({
@@ -452,6 +454,9 @@ const settingsSlice = createSlice({
     setHideBalance: (state, { payload }: PayloadAction<boolean>) => {
       state.hideBalance = payload
     },
+    setBitcoinState: (state, { payload }: PayloadAction<Bitcoin>) => {
+      state.bitcoin = payload
+    },
   },
   extraReducers(builder) {
     builder.addCase(createWallet.pending, state => {
@@ -504,6 +509,7 @@ export const {
   switchSelectedWallet,
   setFullscreen,
   setHideBalance,
+  setBitcoinState,
 } = settingsSlice.actions
 
 export const settingsSliceReducer = settingsSlice.reducer
