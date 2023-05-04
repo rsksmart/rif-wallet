@@ -2,8 +2,10 @@ import { useFocusEffect, useIsFocused } from '@react-navigation/native'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { BackHandler, ScrollView, StyleSheet, View } from 'react-native'
-import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import Icon from 'react-native-vector-icons/FontAwesome5'
+
+import { roundBalance } from 'lib/utils'
 
 import {
   AppButton,
@@ -184,14 +186,20 @@ export const TransactionSummary = ({
               type={'h4'}
               style={[styles.summaryText, sharedStyles.textRight]}>
               {usdButtonActive
-                ? `${transaction.usdValue.symbol} ${transaction.usdValue.balance}`
+                ? `${transaction.usdValue.symbol}${roundBalance(
+                    +transaction.usdValue.balance,
+                    2,
+                  )}`
                 : `${transaction.tokenValue.symbol} ${transaction.tokenValue.balance}`}
             </Typography>
             <Typography
               type={'h4'}
               style={[styles.summaryText, sharedStyles.textRight]}>
               {usdButtonActive
-                ? `${transaction.usdValue.symbol} ${transaction.usdValue.balance}`
+                ? `${transaction.usdValue.symbol}${roundBalance(
+                    +transaction.usdValue.balance,
+                    2,
+                  )}`
                 : `${transaction.tokenValue.symbol} ${transaction.total}`}
             </Typography>
             <Typography
