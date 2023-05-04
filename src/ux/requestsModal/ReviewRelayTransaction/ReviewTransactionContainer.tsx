@@ -155,7 +155,7 @@ export const ReviewTransactionContainer = ({
             total: value?.toString(),
           },
           contact: {
-            address: shortAddress(to),
+            address: to,
           },
           buttons: [
             {

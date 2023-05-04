@@ -144,7 +144,7 @@ export const TokenBalance = ({
             {t('To')}
             <Typography type="h4" style={{ color: sharedColors.primary }}>
               {' '}
-              {to.displayAddress || to.address}
+              {to.displayAddress || shortAddress(to.address)}
             </Typography>
           </Typography>
         </View>
