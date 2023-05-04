@@ -28,11 +28,9 @@ import {
 } from 'navigation/homeNavigator/types'
 import { getTokenColor } from 'screens/home/tokenColor'
 import { castStyle } from 'shared/utils'
-import { getBalance } from 'screens/home/PortfolioComponent'
 import { selectProfile } from 'store/slices/profileSlice'
 import { getIconSource } from 'screens/home/TokenImage'
 import { ProfileStatus } from 'navigation/profileNavigator/types'
-import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
@@ -51,21 +49,14 @@ export const ReceiveScreen = ({
 
   const tokenBalances = useAppSelector(selectBalances)
 
-  const assets = useMemo(() => {
-    const newAssets: Array<BitcoinNetwork | ITokenWithoutLogo> = [
-      ...Object.values(tokenBalances),
-    ]
-    if (bitcoinCore?.networksArr) {
-      newAssets.push(...bitcoinCore.networksArr)
-    }
-
-    return newAssets
-  }, [bitcoinCore?.networksArr, tokenBalances])
-
   const { token, networkId } = route.params
   const [selectedAsset, setSelectedAsset] = useState<
     MixedTokenAndNetworkType | undefined
-  >((networkId && bitcoinCore?.networksMap[networkId]) || token || assets[0])
+  >(
+    (networkId && bitcoinCore?.networksMap[networkId]) ||
+      token ||
+      Object.values(tokenBalances)[0],
+  )
   const [address, setAddress] = useState<string>('')
   const [isAddressLoading, setIsAddressLoading] = useState(false)
 
@@ -144,7 +135,7 @@ export const ReceiveScreen = ({
         </View>
         {shouldShowAssets && (
           <ScrollView horizontal>
-            {assets.map(asset => {
+            {Object.values(tokenBalances).map(asset => {
               const isSelected =
                 selectedAsset !== undefined &&
                 selectedAsset.symbol === asset.symbol
@@ -153,14 +144,13 @@ export const ReceiveScreen = ({
                 ? getTokenColor(asset.symbol)
                 : sharedColors.inputInactive
 
-              const balance = getBalance(asset)
               return (
                 <PortfolioCard
                   key={asset.symbol}
                   onPress={onChangeSelectedAsset(asset)}
                   color={color}
                   primaryText={asset.symbol}
-                  secondaryText={balance}
+                  secondaryText={asset.balance}
                   isSelected={isSelected}
                   disabled={isAddressLoading}
                 />

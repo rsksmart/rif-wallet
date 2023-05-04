@@ -1,61 +1,17 @@
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
-import { BigNumber } from 'ethers'
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleProp, View, ViewStyle } from 'react-native'
 
-import {
-  balanceToDisplay,
-  convertBalance,
-  convertTokenToUSD,
-  roundBalance,
-} from 'lib/utils'
-
 import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
 import { getTokenColor } from 'screens/home/tokenColor'
 import { sharedColors } from 'shared/constants'
-import { IPrice } from 'src/subscriptions/types'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
-
-export const getBalance = (token: ITokenWithoutLogo | BitcoinNetwork) => {
-  if (token instanceof BitcoinNetwork) {
-    const balanceBigNumber = BigNumber.from(Math.round(token.balance * 10e8))
-
-    return balanceToDisplay(balanceBigNumber.toString(), 8, 4)
-  } else {
-    const tokenBalance: ITokenWithoutLogo = token
-    return balanceToDisplay(tokenBalance.balance, tokenBalance.decimals, 4)
-  }
-}
-
-const getTotalUsdBalance = (
-  tokens: (ITokenWithoutLogo | BitcoinNetwork)[],
-  prices: Record<string, IPrice>,
-) => {
-  const usdBalances = tokens.map(
-    (token: ITokenWithoutLogo | BitcoinNetwork) => {
-      if (token instanceof BitcoinNetwork) {
-        return prices.BTC
-          ? convertTokenToUSD(token.balance, prices.BTC.price)
-          : 0
-      } else {
-        const tokenPrice = prices[token.contractAddress]
-        return tokenPrice
-          ? convertBalance(token.balance, token.decimals, tokenPrice.price)
-          : 0
-      }
-    },
-  )
-  return roundBalance(
-    usdBalances.reduce((a, b) => a + b, 0),
-    2,
-  )
-}
 
 interface Props {
   setSelectedAddress: (token: string | undefined) => void
   balances: Array<ITokenWithoutLogo | BitcoinNetwork>
-  prices: Record<string, IPrice>
+  totalUsdBalance: string
   selectedAddress?: string
   style?: StyleProp<ViewStyle>
 }
@@ -63,7 +19,7 @@ export const PortfolioComponent = ({
   selectedAddress,
   setSelectedAddress,
   balances,
-  prices,
+  totalUsdBalance,
   style,
 }: Props) => {
   const { t } = useTranslation()
@@ -93,27 +49,32 @@ export const PortfolioComponent = ({
               : sharedColors.inputInactive
           }
           primaryText={t('TOTAL')}
-          secondaryText={`$${getTotalUsdBalance(balances, prices).toString()}`}
+          secondaryText={totalUsdBalance}
           isSelected={isTotalCardSelected}
         />
         {balances.map(
-          (balance: ITokenWithoutLogo | BitcoinNetwork, i: number) => {
+          (
+            {
+              contractAddress,
+              symbol,
+              balance,
+            }: ITokenWithoutLogo | BitcoinNetwork,
+            i: number,
+          ) => {
             const isSelected =
-              selectedAddress === balance.contractAddress &&
-              !isTotalCardSelected
+              selectedAddress === contractAddress && !isTotalCardSelected
             const color = isSelected
-              ? getTokenColor(balance.symbol)
+              ? getTokenColor(symbol)
               : sharedColors.inputInactive
-            const balanceToShow = getBalance(balance)
             return (
               <PortfolioCard
                 key={i}
-                onPress={() => handleSelectedAddress(balance.contractAddress)}
+                onPress={() => handleSelectedAddress(contractAddress)}
                 color={color}
-                primaryText={balance.symbol}
-                secondaryText={balanceToShow}
+                primaryText={symbol}
+                secondaryText={balance.toString()}
                 isSelected={isSelected}
-                icon={balance.symbol}
+                icon={symbol}
               />
             )
           },

@@ -1,8 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import {
-  BitcoinNetworkWithBIPRequest,
-  UnspentTransactionType,
-} from '@rsksmart/rif-wallet-bitcoin'
+import { UnspentTransactionType } from '@rsksmart/rif-wallet-bitcoin'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import {
   IApiTransaction,
@@ -16,7 +13,8 @@ import {
   ApiTransactionWithExtras,
 } from 'store/slices/transactionsSlice'
 import { fetchUtxo } from 'screens/send/bitcoinUtils'
-import { AppDispatch } from 'src/redux'
+import { AppDispatch } from 'store/index'
+import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
 
 import { TransactionInformation } from './TransactionInfo'
 import { transferBitcoin } from './transferBitcoin'
@@ -109,7 +107,7 @@ const handleReduxTransactionStatusChange =
   }
 
 export const usePaymentExecutor = (
-  bitcoinNetwork: BitcoinNetworkWithBIPRequest | undefined,
+  bitcoinNetwork: TokenBalanceObject | undefined,
 ) => {
   const [currentTransaction, setCurrentTransaction] =
     useState<TransactionInformation | null>(null)
@@ -158,7 +156,7 @@ export const usePaymentExecutor = (
   }
   // When bitcoin network changes - fetch utxos
   useEffect(() => {
-    if (bitcoinNetwork) {
+    if (bitcoinNetwork && 'satoshis' in bitcoinNetwork) {
       fetchUtxo({
         token: bitcoinNetwork,
         onSetUtxos: setUtxos,

@@ -159,6 +159,7 @@ export const createWallet = createAsyncThunk<
       fetcherInstance,
     )
 
+    // set bitcoin in redux
     thunkAPI.dispatch(setBitcoinState(bitcoin))
 
     return rifWallet
@@ -171,7 +172,7 @@ export const unlockApp = createAsyncThunk<
   KeyManagementSystem,
   UnlockAppAction,
   AsyncThunkWithTypes
->('settings/unlockApp', async (payload: UnlockAppAction, thunkAPI) => {
+>('settings/unlockApp', async (payload, thunkAPI) => {
   try {
     const supportedBiometry = await getSupportedBiometryType()
     const serializedKeys = await getKeys()
@@ -275,6 +276,7 @@ export const unlockApp = createAsyncThunk<
       fetcherInstance,
     )
 
+    // set bitcoin in redux
     thunkAPI.dispatch(setBitcoinState(bitcoin))
     return kms
   } catch (err) {

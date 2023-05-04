@@ -118,8 +118,5 @@ export const initializeBitcoin = (
   networksObj.networksArr = transformedNetworks
   networksObj.networksMap = networksMap
 
-  console.log('NETWORKS ARRAY', networksObj.networksArr)
-  console.log('NETWORKS MAP', networksObj.networksMap)
-
   return networksObj
 }

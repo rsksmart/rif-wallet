@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { ScrollView, StyleSheet, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -8,7 +8,6 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { BigNumber } from 'ethers'
 
 import {
-  balanceToDisplay,
   convertTokenToUSD,
   convertUSDtoToken,
   sanitizeDecimalText,
@@ -43,6 +42,7 @@ interface Props {
   tokenList: ITokenOrBitcoinWithBIPRequest[]
   tokenPrices: Record<string, IPrice>
   chainId: number
+  totalUsdBalance: string
   initialValues: {
     asset?: ITokenOrBitcoinWithBIPRequest
     amount?: number
@@ -77,11 +77,14 @@ export const TransactionForm = ({
   isWalletDeployed,
   onConfirm,
   onCancel,
+  totalUsdBalance,
 }: Props) => {
   const { t } = useTranslation()
   const [showTxSelector, setShowTxSelector] = useState(false)
   const [showTxFeeSelector, setShowTxFeeSelector] = useState(false)
-  const [selectedTokenAddress, setSelectedTokenAddress] = useState<string>('')
+  const [selectedTokenAddress, setSelectedTokenAddress] = useState<
+    string | undefined
+  >(undefined)
   const [selectedToken, setSelectedToken] =
     useState<ITokenOrBitcoinWithBIPRequest>(initialValues.asset || tokenList[0])
   const [selectedFeeToken, setSelectedFeeToken] =
@@ -169,7 +172,7 @@ export const TransactionForm = ({
   )
 
   const onChangeSelectedTokenAddress = useCallback(
-    (address: string) => {
+    (address: string | undefined) => {
       if (address !== selectedTokenAddress) {
         const token = tokenList.filter(
           value => value.contractAddress === address,
@@ -280,11 +283,7 @@ export const TransactionForm = ({
             label={`${selectedToken.symbol} ${t(
               'transaction_form_balance_label',
             )}`}
-            placeholder={`${balanceToDisplay(
-              selectedToken.balance,
-              selectedToken.decimals,
-              5,
-            )} ${selectedToken.symbol}`}
+            placeholder={`${selectedToken.balance} ${selectedToken.symbol}`}
             isReadOnly
           />
           <AppTouchable
@@ -308,7 +307,7 @@ export const TransactionForm = ({
               setSelectedAddress={onChangeSelectedTokenAddress}
               selectedAddress={selectedTokenAddress}
               balances={tokenList}
-              prices={tokenPrices}
+              totalUsdBalance={totalUsdBalance}
             />
           ) : null}
           {firstBalance.balance ? (
@@ -349,7 +348,7 @@ export const TransactionForm = ({
               setSelectedAddress={onChangeSelectedFee}
               selectedAddress={selectedFeeToken.contractAddress}
               balances={tokenFeeList}
-              prices={tokenPrices}
+              totalUsdBalance={totalUsdBalance}
             />
           ) : null}
         </FormProvider>
@@ -361,6 +360,7 @@ export const TransactionForm = ({
           }`}
           onPress={handleSubmit(handleConfirmClick)}
           disabled={
+            !selectedTokenAddress ||
             !isWalletDeployed ||
             BigNumber.from(selectedToken.balance).isZero() ||
             to.length === 0 ||

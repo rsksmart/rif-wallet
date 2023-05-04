@@ -5,10 +5,9 @@ import { StyleSheet, View, ScrollView } from 'react-native'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import { BIP } from '@rsksmart/rif-wallet-bitcoin'
 import { useTranslation } from 'react-i18next'
-import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 import { useIsFocused } from '@react-navigation/native'
 
-import { balanceToDisplay, convertBalance, getChainIdByType } from 'lib/utils'
+import { convertBalance, getChainIdByType } from 'lib/utils'
 
 import { toChecksumAddress } from 'components/address/lib'
 import { Typography } from 'components/typography'
@@ -17,7 +16,10 @@ import {
   HomeStackScreenProps,
 } from 'navigation/homeNavigator/types'
 import { colors } from 'src/styles'
-import { selectBalances } from 'store/slices/balancesSlice/selectors'
+import {
+  selectBalances,
+  selectTotalUsdValue,
+} from 'store/slices/balancesSlice/selectors'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import {
@@ -55,6 +57,11 @@ export const HomeScreen = ({
   const isFocused = useIsFocused()
   const dispatch = useAppDispatch()
   const tokenBalances = useAppSelector(selectBalances)
+  const balancesArray = useMemo(
+    () => Object.values(tokenBalances),
+    [tokenBalances],
+  )
+  const totalUsdBalance = useAppSelector(selectTotalUsdValue)
   const prices = useAppSelector(selectUsdPrices)
   const bitcoinCore = useAppSelector(selectBitcoin)
   const { wallet, chainType } = useAppSelector(selectActiveWallet)
@@ -80,42 +87,9 @@ export const HomeScreen = ({
     ActivityRowPresentationObjectType[]
   >([])
 
-  const balances: Array<ITokenWithBalance | BitcoinNetwork> = useMemo(() => {
-    if (bitcoinCore) {
-      return [
-        ...Object.values(tokenBalances),
-        ...Object.values(bitcoinCore.networksMap),
-      ]
-    } else {
-      return []
-    }
-  }, [tokenBalances, bitcoinCore])
-
-  const totalUsdBalance = useMemo(
-    () =>
-      balances
-        .reduce((previousValue, token) => {
-          if ('satoshis' in token) {
-            previousValue += token.balance * (prices.BTC?.price || 0)
-          } else {
-            previousValue += convertBalance(
-              token.balance,
-              token.decimals,
-              prices[token.contractAddress]?.price || 0,
-            )
-          }
-          return previousValue
-        }, 0)
-        .toFixed(2),
-    [balances, prices],
-  )
-
   // token or undefined
   const selected: ITokenWithoutLogo | BitcoinNetwork | undefined =
-    selectedAddress && bitcoinCore
-      ? tokenBalances[selectedAddress] ||
-        bitcoinCore.networksMap[selectedAddress]
-      : undefined
+    selectedAddress ? tokenBalances[selectedAddress] : undefined
   const selectedColor = getTokenColor(selected?.symbol || '')
   const backgroundColor = {
     backgroundColor: selectedAddress ? selectedColor : sharedColors.borderColor,
@@ -200,13 +174,14 @@ export const HomeScreen = ({
   }, [selectedColor, dispatch, isFocused])
 
   const selectedToken = useMemo(() => {
-    if (selected instanceof BitcoinNetwork) {
-      return {
-        ...selected,
-        price: prices?.BTC?.price || 0,
-      }
-    }
     if (selected) {
+      if ('satoshis' in selected) {
+        return {
+          ...selected,
+          price: prices.BTC?.price || 0,
+        }
+      }
+
       return {
         ...selected,
         price: prices?.[selected.contractAddress]?.price || 0,
@@ -227,16 +202,13 @@ export const HomeScreen = ({
     setSelectedTokenBalance({
       symbolType: 'icon',
       symbol,
-      balance:
-        selected instanceof BitcoinNetwork
-          ? balance
-          : balanceToDisplay(balance, decimals, 5),
+      balance: balance.toString(),
     })
     setSelectedTokenBalanceUsd({
       symbolType: 'text',
       symbol: '$',
       balance:
-        selected instanceof BitcoinNetwork
+        'satoshis' in selectedToken
           ? '' +
             convertBalance(
               BigNumber.from(Math.round(Number(balance) * 10e8)),
@@ -246,7 +218,6 @@ export const HomeScreen = ({
           : '' + convertBalance(balance, decimals, price),
     })
   }, [
-    selected,
     selectedToken,
     selectedToken.balance,
     selectedToken.decimals,
@@ -320,7 +291,7 @@ export const HomeScreen = ({
       />
       <HomeBarButtonGroup
         onPress={handleSendReceive}
-        isSendDisabled={balances.length === 0}
+        isSendDisabled={balancesArray.length === 0}
         color={backgroundColor.backgroundColor}
       />
 
@@ -333,8 +304,8 @@ export const HomeScreen = ({
         <PortfolioComponent
           selectedAddress={selectedAddress}
           setSelectedAddress={setSelectedAddress}
-          balances={balances}
-          prices={prices}
+          balances={balancesArray}
+          totalUsdBalance={totalUsdBalance}
         />
 
         <Typography style={styles.transactionsLabel} type={'h3'}>

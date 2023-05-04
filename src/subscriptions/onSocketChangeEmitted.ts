@@ -2,10 +2,7 @@ import { IApiTransaction } from '@rsksmart/rif-wallet-services'
 import { EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
 
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
-import {
-  addOrUpdateBalances,
-  addOrUpdateNewBalance,
-} from 'store/slices/balancesSlice'
+import { addOrUpdateBalances } from 'store/slices/balancesSlice'
 import {
   addNewEvent,
   addNewTransaction,
@@ -77,7 +74,7 @@ export const onSocketChangeEmitted =
           dispatch(addNewTransactions(payload))
           break
         case 'newBalance':
-          dispatch(addOrUpdateNewBalance(payload))
+          dispatch(addOrUpdateBalances([payload]))
           break
         case 'init':
           dispatch(

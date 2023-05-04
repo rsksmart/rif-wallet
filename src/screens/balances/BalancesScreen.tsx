@@ -1,17 +1,17 @@
 import { View, ScrollView } from 'react-native'
 import { BigNumber, BigNumberish } from 'ethers'
-
 import { RIFWalletServicesFetcherInterface } from '@rsksmart/rif-wallet-services'
 
 import { Address } from 'components/index'
-import { ScreenWithWallet } from '../types'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { useAppSelector } from 'store/storeUtils'
-import { BalancesRow } from './BalancesRow'
 import {
   homeStackRouteNames,
   HomeStackScreenProps,
 } from 'src/navigation/homeNavigator/types'
+
+import { BalancesRow } from './BalancesRow'
+import { ScreenWithWallet } from '../types'
 
 export const balanceToString = (
   balance: string,
