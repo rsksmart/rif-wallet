@@ -41,9 +41,9 @@ const transactionStatusToIconPropsMap = new Map([
   [undefined, null],
 ])
 const transactionStatusDisplayText = new Map([
-  [TransactionStatus.SUCCESS, { displayText: 'transaction_confirmed_status' }],
-  [TransactionStatus.PENDING, { displayText: 'transaction_pending_status' }],
-  [undefined, { displayText: '' }],
+  [TransactionStatus.SUCCESS, 'transaction_confirmed_status'],
+  [TransactionStatus.PENDING, 'transaction_pending_status'],
+  [undefined, ''],
 ])
 
 export interface TransactionSummaryScreenProps {
@@ -122,34 +122,34 @@ export const TransactionSummary = ({
           secondValue={transaction.usdValue}
           to={contact}
         />
-        <View
-          style={[
-            styles.summaryAlignment,
-            styles.statusContainer,
-            transaction.status
-              ? { backgroundColor: sharedColors.inputInactive }
-              : null,
-          ]}>
-          <Typography type={'h4'}>
-            {transaction.status ? t('transaction_summary_status') : ''}
-          </Typography>
-          <View style={sharedStyles.row}>
+        {transactionStatusText || transaction.status ? (
+          <View
+            style={[
+              styles.summaryAlignment,
+              styles.statusContainer,
+              transaction.status
+                ? { backgroundColor: sharedColors.inputInactive }
+                : null,
+            ]}>
             <Typography type={'h4'}>
-              {transactionStatusText?.displayText
-                ? t(transactionStatusText?.displayText)
-                : ''}
+              {transaction.status ? t('transaction_summary_status') : ''}
             </Typography>
-            {iconObject ? (
-              <Icon
-                style={styles.statusIcon}
-                solid
-                size={18}
-                name={iconObject.iconName}
-                color={iconObject.iconColor}
-              />
-            ) : null}
+            <View style={sharedStyles.row}>
+              <Typography type={'h4'}>
+                {transactionStatusText ? t(transactionStatusText) : ''}
+              </Typography>
+              {iconObject ? (
+                <Icon
+                  style={styles.statusIcon}
+                  solid
+                  size={18}
+                  name={iconObject.iconName}
+                  color={iconObject.iconColor}
+                />
+              ) : null}
+            </View>
           </View>
-        </View>
+        ) : null}
         <AppButton
           title={t('transaction_summary_button_usd')}
           style={styles.usdButton}
