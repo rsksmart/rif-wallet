@@ -42,7 +42,10 @@ import {
 
 export const createWallet = createAsyncThunk(
   'settings/createWallet',
-  async ({ mnemonic, networkId }: CreateFirstWalletAction, thunkAPI) => {
+  async (
+    { mnemonic, networkId, onSetMnemonic }: CreateFirstWalletAction,
+    thunkAPI,
+  ) => {
     try {
       const rifWalletFactory = createRIFWalletFactory(request =>
         thunkAPI.dispatch(onRequest({ request })),
@@ -85,6 +88,10 @@ export const createWallet = createAsyncThunk(
         }),
       )
       thunkAPI.dispatch(setUnlocked(true))
+
+      if (onSetMnemonic) {
+        onSetMnemonic(mnemonic)
+      }
       return rifWallet
     } catch (err) {
       return thunkAPI.rejectWithValue(err)

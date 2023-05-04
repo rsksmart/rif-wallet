@@ -1,6 +1,5 @@
-import { SendBitcoinRequest } from '@rsksmart/rif-wallet-bitcoin'
 import { ColorValue } from 'react-native'
-import { RIFWallet, Request } from '@rsksmart/rif-wallet-core'
+import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
 import { Wallets, WalletsIsDeployed } from 'src/Context'
 import { RequestWithBitcoin } from 'shared/types'
@@ -8,6 +7,7 @@ import { RequestWithBitcoin } from 'shared/types'
 export interface CreateFirstWalletAction {
   mnemonic: string
   networkId?: number
+  onSetMnemonic?: (mnemonic: string) => void
 }
 
 export interface AddNewWalletAction {
