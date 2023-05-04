@@ -39,10 +39,6 @@ export const HomeNavigator = ({
         component={ReceiveScreen}
         options={screenOptionsWithHeader(top)}
       />
-      <HomeStack.Screen
-        name={homeStackRouteNames.Balances}
-        component={InjectedScreens.BalancesScreen}
-      />
     </HomeStack.Navigator>
   )
 }
