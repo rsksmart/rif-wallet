@@ -116,7 +116,6 @@ export const TransactionSummary = ({
           {title || t('transaction_summary_title')}
         </Typography>
         <TokenBalance
-          style={styles.tokenBalance}
           firstValue={transaction.tokenValue}
           secondValue={transaction.usdValue}
           to={contact}
@@ -255,12 +254,9 @@ const styles = StyleSheet.create({
   sendText: castStyle.text({
     marginTop: 22,
   }),
-  tokenBalance: castStyle.view({
-    marginTop: 9,
-  }),
   statusContainer: castStyle.view({
     height: 54,
-    marginTop: 28,
+    marginTop: 27,
     borderRadius: 10,
     alignItems: 'center',
     paddingHorizontal: 18,
