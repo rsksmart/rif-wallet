@@ -1,5 +1,4 @@
 import RampSdk from '@ramp-network/react-native-sdk'
-import { BigNumber } from 'ethers'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
@@ -7,7 +6,7 @@ import { BIP } from '@rsksmart/rif-wallet-bitcoin'
 import { useTranslation } from 'react-i18next'
 import { useIsFocused } from '@react-navigation/native'
 
-import { convertBalance, getChainIdByType } from 'lib/utils'
+import { getChainIdByType } from 'lib/utils'
 
 import { toChecksumAddress } from 'components/address/lib'
 import { Typography } from 'components/typography'
@@ -86,10 +85,8 @@ export const HomeScreen = ({
   const [deserializedTransactions, setDeserializedTransactions] = useState<
     ActivityRowPresentationObjectType[]
   >([])
-
   // token or undefined
-  const selected: ITokenWithoutLogo | BitcoinNetwork | undefined =
-    selectedAddress ? tokenBalances[selectedAddress] : undefined
+  const selected = selectedAddress ? tokenBalances[selectedAddress] : undefined
   const selectedColor = getTokenColor(selected?.symbol || '')
   const backgroundColor = {
     backgroundColor: selectedAddress ? selectedColor : sharedColors.borderColor,
@@ -187,42 +184,24 @@ export const HomeScreen = ({
         price: prices?.[selected.contractAddress]?.price || 0,
       }
     }
-    return {
-      name: '',
-      decimals: 0,
-      symbol: '',
-      price: 0,
-      contractAddress: '',
-      balance: '0',
-    }
+    return undefined
   }, [selected, prices])
 
   useEffect(() => {
-    const { symbol, balance, decimals, price } = selectedToken
-    setSelectedTokenBalance({
-      symbolType: 'icon',
-      symbol,
-      balance: balance.toString(),
-    })
-    setSelectedTokenBalanceUsd({
-      symbolType: 'text',
-      symbol: '$',
-      balance:
-        'satoshis' in selectedToken
-          ? '' +
-            convertBalance(
-              BigNumber.from(Math.round(Number(balance) * 10e8)),
-              8,
-              price,
-            )
-          : '' + convertBalance(balance, decimals, price),
-    })
-  }, [
-    selectedToken,
-    selectedToken.balance,
-    selectedToken.decimals,
-    selectedToken.price,
-  ])
+    if (selectedToken) {
+      const { symbol, balance, usdBalance } = selectedToken
+      setSelectedTokenBalance({
+        symbolType: 'icon',
+        symbol,
+        balance: balance.toString(),
+      })
+      setSelectedTokenBalanceUsd({
+        symbolType: 'text',
+        symbol: '$',
+        balance: usdBalance,
+      })
+    }
+  }, [selectedToken])
   const closed = useMemo(() => {
     if (hasIsGettingStartedClosed()) {
       const { close } = getIsGettingStartedClosed()
