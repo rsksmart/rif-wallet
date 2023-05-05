@@ -2,7 +2,7 @@ import { t } from 'i18next'
 import { useCallback, useMemo } from 'react'
 import { StyleProp, StyleSheet, ViewStyle } from 'react-native'
 
-import { shortAddress } from 'lib/utils'
+import { roundBalance, shortAddress } from 'lib/utils'
 
 import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import { StatusEnum } from 'components/BasicRow'
@@ -49,7 +49,7 @@ export const ActivityBasicRow = ({
         usdValue: {
           symbol: '$',
           symbolType: 'text',
-          balance: '' + activityDetails.price,
+          balance: '' + roundBalance(activityDetails.price, 2),
         },
         status: activityDetails.status,
         feeValue: activityDetails.fee,
