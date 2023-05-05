@@ -21,8 +21,9 @@ import {
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { ContactWithAddressRequired } from 'shared/types'
 import { castStyle } from 'shared/utils'
-import { setFullscreen } from 'store/slices/settingsSlice'
-import { useAppDispatch } from 'store/storeUtils'
+import { getAddressDisplayText } from 'src/components'
+import { selectActiveWallet, setFullscreen } from 'store/slices/settingsSlice'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 
 export enum TransactionStatus {
   SUCCESS = 'success',
@@ -70,12 +71,25 @@ export const TransactionSummary = ({
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const isFocused = useIsFocused()
+  const { wallet, chainType } = useAppSelector(selectActiveWallet)
   const { transaction, contact, title, buttons, backScreen } = route.params
 
   const iconObject = transactionStatusToIconPropsMap.get(transaction.status)
   const transactionStatusText = transactionStatusDisplayText.get(
     transaction.status,
   )
+
+  const amIReceiver = useMemo(() => {
+    if (wallet && chainType) {
+      const myAddress = getAddressDisplayText(
+        wallet.smartWalletAddress,
+        chainType,
+      ).checksumAddress
+
+      return myAddress.toLowerCase() === contact.address.toLowerCase()
+    }
+    return false
+  }, [wallet, chainType, contact.address])
 
   const goBack = useMemo(() => {
     if (backScreen) {
@@ -163,12 +177,16 @@ export const TransactionSummary = ({
             <Typography
               type={'h4'}
               style={[styles.summaryText, sharedStyles.textLeft]}>
-              {t('transaction_summary_receive_text')}
+              {amIReceiver
+                ? t('transaction_summary_i_receive_text')
+                : t('transaction_summary_they_receive_text')}
             </Typography>
             <Typography
               type={'h4'}
               style={[styles.summaryText, sharedStyles.textLeft]}>
-              {t('transaction_summary_send_text')}
+              {amIReceiver
+                ? t('transaction_summary_they_sent_text')
+                : t('transaction_summary_you_sent_text')}
             </Typography>
             <Typography
               type={'h4'}
