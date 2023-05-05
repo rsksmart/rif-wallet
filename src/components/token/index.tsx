@@ -50,74 +50,76 @@ export const TokenBalance = ({
   const { t } = useTranslation()
 
   return (
-    <View style={[{ backgroundColor: color }, style]}>
-      <View style={[styles.row, styles.balance]}>
-        {firstValue.symbolType === 'icon' && (
-          <View
-            style={[
-              styles.tokenIcon,
-              !firstValue.symbol ? styles.tokenBackground : null,
-            ]}>
-            <TokenImage
-              symbol={firstValue.symbol}
-              height={30}
-              width={30}
-              transparent={true}
-              color={color}
-            />
-          </View>
-        )}
-        {firstValue.symbolType === 'text' && (
-          <Typography type={'h1'} style={{ color: sharedColors.white }}>
-            {firstValue.symbol}
-          </Typography>
-        )}
-        <TextInput
-          onChangeText={handleAmountChange}
-          value={
-            hide ? '\u002A\u002A\u002A\u002A' : firstValue.balance.toString()
-          }
-          keyboardType="numeric"
-          testID={'Amount.Input'}
-          placeholderTextColor={sharedColors.white}
-          style={[styles.input, [sharedStyles.flex]]}
-          editable={editable}
-          multiline={false}
-        />
-      </View>
-      <View style={styles.rightIconContainer}>
-        {to && to.name ? (
-          <View style={styles.contactCard}>
-            <Avatar size={40} name={to.name} />
-            <Typography type={'body1'} style={styles.toNameContactText}>
-              {to.name}
-            </Typography>
-          </View>
-        ) : null}
-        {hideable && !editable && (
-          <AppTouchable
-            width={46}
-            onPress={onHide}
-            accessibilityLabel={testIDs.hide}>
-            <View style={styles.badge}>
-              <EyeIcon color={sharedColors.white} size={25} isHidden={hide} />
-            </View>
-          </AppTouchable>
-        )}
-        {onSwap && (
-          <AppTouchable
-            width={41}
-            onPress={onSwap}
-            accessibilityLabel={testIDs.swap}>
-            <View style={styles.badge}>
-              <Icon
-                name="ios-swap-vertical"
-                color={sharedColors.white}
-                size={25}
+    <View style={[styles.balanceCard, { backgroundColor: color }, style]}>
+      <View style={[styles.row, styles.margin]}>
+        <View style={[styles.row, styles.balance]}>
+          {firstValue.symbolType === 'icon' && (
+            <View
+              style={[
+                styles.tokenIcon,
+                !firstValue.symbol ? styles.tokenBackground : null,
+              ]}>
+              <TokenImage
+                symbol={firstValue.symbol}
+                height={30}
+                width={30}
+                transparent={true}
+                color={color}
               />
             </View>
-          </AppTouchable>
-        )}
+          )}
+          {firstValue.symbolType === 'text' && (
+            <Typography type={'h1'} style={{ color: sharedColors.white }}>
+              {firstValue.symbol}
+            </Typography>
+          )}
+          <TextInput
+            onChangeText={handleAmountChange}
+            value={
+              hide ? '\u002A\u002A\u002A\u002A' : firstValue.balance.toString()
+            }
+            keyboardType="numeric"
+            testID={'Amount.Input'}
+            placeholderTextColor={sharedColors.white}
+            style={[styles.input, [sharedStyles.flex]]}
+            editable={editable}
+            multiline={false}
+          />
+        </View>
+        <View style={styles.rightIconContainer}>
+          {to && to.name ? (
+            <View style={styles.contactCard}>
+              <Avatar size={40} name={to.name} />
+              <Typography type={'body1'} style={styles.toNameContactText}>
+                {to.name}
+              </Typography>
+            </View>
+          ) : null}
+          {hideable && !editable && (
+            <AppTouchable
+              width={46}
+              onPress={onHide}
+              accessibilityLabel={testIDs.hide}>
+              <View style={styles.badge}>
+                <EyeIcon color={sharedColors.white} size={25} isHidden={hide} />
+              </View>
+            </AppTouchable>
+          )}
+          {onSwap && (
+            <AppTouchable
+              width={41}
+              onPress={onSwap}
+              accessibilityLabel={testIDs.swap}>
+              <View style={styles.badge}>
+                <Icon
+                  name="ios-swap-vertical"
+                  color={sharedColors.white}
+                  size={25}
+                />
+              </View>
+            </AppTouchable>
+          )}
+        </View>
       </View>
       <View style={[styles.row, styles.ident]}>
         {secondValue?.symbolType === 'icon' && (
@@ -157,6 +159,9 @@ const styles = StyleSheet.create({
   row: castStyle.view({
     flexDirection: 'row',
   }),
+  margin: castStyle.view({
+    marginTop: 15,
+  }),
   balance: castStyle.view({
     flex: 1,
     alignItems: 'center',
@@ -164,6 +169,9 @@ const styles = StyleSheet.create({
   rightIconContainer: castStyle.view({
     alignItems: 'flex-end',
     justifyContent: 'center',
+  }),
+  balanceCard: castStyle.view({
+    height: 100,
   }),
   tokenIcon: castStyle.view({
     marginRight: 10,
@@ -207,8 +215,6 @@ const styles = StyleSheet.create({
     fontSize: 36,
     padding: 0,
   }),
-  toAddressContainer: castStyle.view({
-    marginTop: 12,
-  }),
+  toAddressContainer: castStyle.view({ marginTop: 12 }),
   toNameContactText: castStyle.view({ marginTop: 10 }),
 })
