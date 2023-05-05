@@ -12,7 +12,7 @@ import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { selectTotalUsdValue } from 'store/slices/balancesSlice/selectors'
 import { sharedStyles } from 'shared/constants'
-import { ITokenOrBitcoinWithBIPRequest } from 'screens/send/types'
+import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
 
 import { ScreenWithWallet } from '../types'
 import { TransactionInfo } from './TransactionInfo'
@@ -46,7 +46,7 @@ export const SendScreen = ({
   }, [wallet])
 
   const onExecuteTransfer = useCallback(
-    (token: ITokenOrBitcoinWithBIPRequest, amount: number, to: string) => {
+    (token: TokenBalanceObject, amount: number, to: string) => {
       executePayment({
         token,
         amount,

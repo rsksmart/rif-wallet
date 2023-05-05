@@ -19,10 +19,7 @@ import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
 import { TransactionInformation } from './TransactionInfo'
 import { transferBitcoin } from './transferBitcoin'
 import { transfer } from './transferTokens'
-import {
-  ITokenOrBitcoinWithBIPRequest,
-  OnSetTransactionStatusChange,
-} from './types'
+import { OnSetTransactionStatusChange } from './types'
 
 interface IPaymentExecutorContext {
   setUtxosGlobal: (utxos: UnspentTransactionType[]) => void
@@ -124,7 +121,7 @@ export const usePaymentExecutor = (
     wallet,
     chainId,
   }: {
-    token: ITokenOrBitcoinWithBIPRequest
+    token: TokenBalanceObject
     amount: number
     to: string
     wallet: RIFWallet
@@ -142,7 +139,7 @@ export const usePaymentExecutor = (
       })
     } else {
       transfer({
-        token: token as ITokenWithBalance,
+        token: token as unknown as ITokenWithBalance,
         amount: amount.toString(),
         to,
         wallet,

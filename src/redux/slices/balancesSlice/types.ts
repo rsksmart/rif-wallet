@@ -1,4 +1,4 @@
-import { BIP } from '@rsksmart/rif-wallet-bitcoin'
+import { BIPWithRequest } from '@rsksmart/rif-wallet-bitcoin'
 import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 
 export interface ITokenWithoutLogo extends Omit<ITokenWithBalance, 'logo'> {
@@ -7,7 +7,7 @@ export interface ITokenWithoutLogo extends Omit<ITokenWithBalance, 'logo'> {
 
 export interface BitcoinTokenBalanceObject extends ITokenWithoutLogo {
   satoshis: number
-  bips: Array<BIP>
+  bips: Array<BIPWithRequest>
 }
 
 export type TokenBalanceObject = ITokenWithoutLogo | BitcoinTokenBalanceObject

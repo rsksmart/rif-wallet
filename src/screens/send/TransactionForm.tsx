@@ -26,25 +26,25 @@ import { CurrencyValue, TokenBalance } from 'components/token'
 import { IPrice } from 'src/subscriptions/types'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
+import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
 
-import { ITokenOrBitcoinWithBIPRequest } from './types'
 import { PortfolioComponent } from '../home/PortfolioComponent'
 import { TokenImage, TokenSymbol } from '../home/TokenImage'
 
 interface Props {
   onConfirm: (
-    selectedToken: ITokenOrBitcoinWithBIPRequest,
+    selectedToken: TokenBalanceObject,
     amount: number,
     to: string,
   ) => void
   onCancel: () => void
   isWalletDeployed: boolean
-  tokenList: ITokenOrBitcoinWithBIPRequest[]
+  tokenList: TokenBalanceObject[]
   tokenPrices: Record<string, IPrice>
   chainId: number
   totalUsdBalance: string
   initialValues: {
-    asset?: ITokenOrBitcoinWithBIPRequest
+    asset?: TokenBalanceObject
     amount?: number
     recipient?: string
   }
@@ -85,10 +85,11 @@ export const TransactionForm = ({
   const [selectedTokenAddress, setSelectedTokenAddress] = useState<
     string | undefined
   >(undefined)
-  const [selectedToken, setSelectedToken] =
-    useState<ITokenOrBitcoinWithBIPRequest>(initialValues.asset || tokenList[0])
+  const [selectedToken, setSelectedToken] = useState<TokenBalanceObject>(
+    initialValues.asset || tokenList[0],
+  )
   const [selectedFeeToken, setSelectedFeeToken] =
-    useState<ITokenOrBitcoinWithBIPRequest>(selectedToken)
+    useState<TokenBalanceObject>(selectedToken)
 
   const tokenFeeList = useMemo(() => {
     if (selectedToken.symbol !== TokenSymbol.BTCT) {
@@ -362,7 +363,7 @@ export const TransactionForm = ({
           disabled={
             !selectedTokenAddress ||
             !isWalletDeployed ||
-            BigNumber.from(selectedToken.balance).isZero() ||
+            Number(selectedToken.balance) <= 0 ||
             to.length === 0 ||
             amount === 0
           }
