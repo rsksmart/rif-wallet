@@ -178,7 +178,9 @@ export const TransactionSummary = ({
             <Typography
               type={'h4'}
               style={[styles.summaryText, sharedStyles.textLeft]}>
-              {t('transaction_summary_arrives_text')}
+              {transaction.status === TransactionStatus.SUCCESS
+                ? t('transaction_summary_arrived_text')
+                : t('transaction_summary_arrives_in_text')}
             </Typography>
           </View>
           <View>

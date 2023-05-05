@@ -38,8 +38,8 @@ export const ActivityBasicRow = ({
   backScreen,
   style,
 }: Props) => {
-  const txSummary: TransactionSummaryScreenProps = useMemo(() => {
-    return {
+  const txSummary: TransactionSummaryScreenProps = useMemo(
+    () => ({
       transaction: {
         tokenValue: {
           symbol: activityDetails.symbol,
@@ -60,8 +60,9 @@ export const ActivityBasicRow = ({
         address: activityDetails.to,
       },
       title: t('transaction_summary_sent_title'),
-    }
-  }, [activityDetails])
+    }),
+    [activityDetails],
+  )
 
   const handlePress = useCallback(() => {
     if (txSummary) {
