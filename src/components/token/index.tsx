@@ -121,32 +121,33 @@ export const TokenBalance = ({
           )}
         </View>
       </View>
-      <View>
-        <View style={[styles.row, styles.ident]}>
-          {secondValue?.symbolType === 'icon' && (
-            <View style={styles.tokenSubIcon}>
-              <TokenImage symbol={secondValue.symbol} height={16} width={16} />
-            </View>
-          )}
-          {secondValue?.symbolType === 'text' && (
-            <Typography type={'h3'} style={styles.subTitle}>
-              {hide ? '' : secondValue.symbol}
-            </Typography>
-          )}
-          {!isNaN(Number(secondValue?.balance)) && (
-            <Typography type={'h3'} style={styles.subTitle}>
-              {hide
-                ? '\u002A\u002A\u002A\u002A\u002A\u002A'
-                : secondValue?.balance}
-            </Typography>
-          )}
-        </View>
+      <View style={[styles.row, styles.ident]}>
+        {secondValue?.symbolType === 'icon' && (
+          <View style={styles.tokenSubIcon}>
+            <TokenImage symbol={secondValue.symbol} height={16} width={16} />
+          </View>
+        )}
+        {secondValue?.symbolType === 'text' && (
+          <Typography type={'h3'} style={styles.subTitle}>
+            {hide ? '' : secondValue.symbol}
+          </Typography>
+        )}
+        {!isNaN(Number(secondValue?.balance)) && (
+          <Typography type={'h3'} style={styles.subTitle}>
+            {hide
+              ? '\u002A\u002A\u002A\u002A\u002A\u002A'
+              : secondValue?.balance}
+          </Typography>
+        )}
       </View>
       {to ? (
-        <View style={[styles.row, styles.toAddressContainer]}>
-          <Typography type={'h3'}>{t('To')} </Typography>
-          <Typography type={'h3'} style={{ color: sharedColors.primary }}>
-            {to.displayAddress || to.address}
+        <View style={[styles.toAddressContainer]}>
+          <Typography type="h4">
+            {t('To')}
+            <Typography type="h4" style={{ color: sharedColors.primary }}>
+              {' '}
+              {to.displayAddress || shortAddress(to.address)}
+            </Typography>
           </Typography>
         </View>
       ) : null}

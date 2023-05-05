@@ -229,7 +229,7 @@ export const ReceiveScreen = ({
                 testID={TestID.ShareAddressButton}
               />
             }
-            placeholder={shortAddress(address)}
+            placeholder={shortAddress(address, 10)}
             isReadOnly
             testID={TestID.AddressText}
           />
