@@ -297,7 +297,7 @@ export const HomeScreen = ({
   }, [])
 
   const overrideFirstValue: CurrencyValue = {
-    balance: '$' + totalUsdBalance.toString(),
+    balance: '$' + totalUsdBalance,
     symbol: '',
     symbolType: 'text',
   }
