@@ -12,8 +12,10 @@ import {
   AppButtonProps,
   AppButtonWidthVarietyEnum,
 } from 'components/button'
+import { getAddressDisplayText } from 'components/index'
 import { CurrencyValue, TokenBalance } from 'components/token'
 import { Typography } from 'components/typography'
+import { sharedHeaderLeftOptions } from 'navigation/index'
 import {
   RootTabsScreenProps,
   rootTabsRouteNames,
@@ -21,7 +23,6 @@ import {
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { ContactWithAddressRequired } from 'shared/types'
 import { castStyle } from 'shared/utils'
-import { getAddressDisplayText } from 'src/components'
 import { selectActiveWallet, setFullscreen } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 
@@ -119,6 +120,12 @@ export const TransactionSummary = ({
         BackHandler.removeEventListener('hardwareBackPress', onBackPress)
     }, [goBack]),
   )
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => sharedHeaderLeftOptions(goBack),
+    })
+  }, [goBack, navigation])
 
   return (
     <View style={[styles.screen, { paddingBottom: bottom }]}>

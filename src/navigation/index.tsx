@@ -13,6 +13,12 @@ type HeaderProps = BottomTabNavigationOptions & StackNavigationOptions
 
 export const screenOptionsNoHeader: HeaderProps = { headerShown: false }
 
+export const sharedHeaderLeftOptions = (goBack = () => {}) => (
+  <AppTouchable width={20} onPress={goBack} style={sharedStyles.marginLeft24}>
+    <Icon name={'chevron-left'} size={20} color={sharedColors.white} />
+  </AppTouchable>
+)
+
 export const screenOptionsWithHeader = (
   topInset: number,
   title?: string,
@@ -25,15 +31,7 @@ export const screenOptionsWithHeader = (
 ): HeaderProps => {
   return {
     headerShown: true,
-    headerLeft: props =>
-      backButtonDisabled ? null : (
-        <AppTouchable
-          width={20}
-          onPress={props.onPress}
-          style={sharedStyles.marginLeft24}>
-          <Icon name={'chevron-left'} size={20} color={sharedColors.white} />
-        </AppTouchable>
-      ),
+    headerLeft: () => (backButtonDisabled ? null : sharedHeaderLeftOptions()),
     headerTitle: props => (
       <>
         <Typography type={'h3'} style={props.style}>
