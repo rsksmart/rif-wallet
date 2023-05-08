@@ -82,12 +82,13 @@ export const TransactionForm = ({
   const { t } = useTranslation()
   const [showTxSelector, setShowTxSelector] = useState(false)
   const [showTxFeeSelector, setShowTxFeeSelector] = useState(false)
-  const [selectedTokenAddress, setSelectedTokenAddress] = useState<
-    string | undefined
-  >(undefined)
   const [selectedToken, setSelectedToken] = useState<TokenBalanceObject>(
     initialValues.asset || tokenList[0],
   )
+  const [selectedTokenAddress, setSelectedTokenAddress] = useState<
+    string | undefined
+  >(selectedToken.contractAddress)
+
   const [selectedFeeToken, setSelectedFeeToken] =
     useState<TokenBalanceObject>(selectedToken)
 

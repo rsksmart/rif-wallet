@@ -57,11 +57,15 @@ export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
   useEffect(() => {
     if (barcodes && barcodes[0] && barcodes[0].rawValue) {
       onCodeRead(barcodes[0].rawValue)
+      dispatch(setFullscreen(false))
     }
-  }, [barcodes, onCodeRead])
+  }, [barcodes, onCodeRead, dispatch])
 
   useEffect(() => {
     dispatch(setFullscreen(!!device && isFocused))
+    return () => {
+      setFullscreen(false)
+    }
   }, [dispatch, device, isFocused])
 
   if (device == null) {
