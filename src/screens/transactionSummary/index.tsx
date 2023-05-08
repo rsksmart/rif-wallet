@@ -178,15 +178,23 @@ export const TransactionSummary = ({
               type={'h4'}
               style={[styles.summaryText, sharedStyles.textLeft]}>
               {amIReceiver
-                ? t('transaction_summary_i_receive_text')
+                ? transaction.status === TransactionStatus.SUCCESS
+                  ? t('transaction_summary_i_received_text')
+                  : t('transaction_summary_i_receive_text')
+                : transaction.status === TransactionStatus.SUCCESS
+                ? t('transaction_summary_they_received_text')
                 : t('transaction_summary_they_receive_text')}
             </Typography>
             <Typography
               type={'h4'}
               style={[styles.summaryText, sharedStyles.textLeft]}>
               {amIReceiver
-                ? t('transaction_summary_they_sent_text')
-                : t('transaction_summary_you_sent_text')}
+                ? transaction.status === TransactionStatus.SUCCESS
+                  ? t('transaction_summary_they_sent_text')
+                  : t('transaction_summary_they_send_text')
+                : transaction.status === TransactionStatus.SUCCESS
+                ? t('transaction_summary_you_sent_text')
+                : t('transaction_summary_you_send_text')}
             </Typography>
             <Typography
               type={'h4'}
