@@ -21,6 +21,8 @@ import { ScreenWithWallet } from '../types'
 import { TransactionInfo } from './TransactionInfo'
 import { TransactionForm } from './TransactionForm'
 import { usePaymentExecutor } from './usePaymentExecutor'
+import { useFetchBitcoinNetworksAndTokens } from './useFetchBitcoinNetworksAndTokens'
+import { CongratulationsComponent } from './CongratulationsComponent'
 
 export const SendScreen = ({
   route,
@@ -39,13 +41,21 @@ export const SendScreen = ({
 
   const [chainId, setChainId] = useState<number>(31)
   // We assume only one bitcoinNetwork instance exists
-  const { currentTransaction, executePayment } = usePaymentExecutor(
+  const { currentTransaction, executePayment, error } = usePaymentExecutor(
     assets.find(asset => 'bips' in asset),
   )
 
   useEffect(() => {
     wallet.getChainId().then(setChainId)
   }, [wallet])
+
+  const onGoToHome = useCallback(
+    () =>
+      navigation.navigate(rootTabsRouteNames.Home, {
+        screen: homeStackRouteNames.Main,
+      }),
+    [navigation],
+  )
 
   const onExecuteTransfer = useCallback(
     (token: TokenBalanceObject, amount: number, to: string) => {
@@ -83,31 +93,54 @@ export const SendScreen = ({
     }
   }, [loading, t])
 
+  // Status to let the user know about his current process
+  let status
+  if (error) {
+    status = error.toString()
+  } else if (
+    currentTransaction?.status &&
+    currentTransaction.status === 'USER_CONFIRM'
+  ) {
+    status = 'Sending transaction...'
+  }
+
+  // When a transaction goes through, show congratulations component
+  if (
+    currentTransaction?.status === 'PENDING' &&
+    currentTransaction.value &&
+    currentTransaction.symbol
+  ) {
+    return (
+      <CongratulationsComponent
+        amount={currentTransaction.value}
+        tokenSymbol={currentTransaction.symbol}
+        onCloseTap={onGoToHome}
+      />
+    )
+  }
+
   return (
     <KeyboardAvoidingView
       style={sharedStyles.screen}
       keyboardVerticalOffset={100}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      {!currentTransaction ? (
-        <TransactionForm
-          onConfirm={onExecuteTransfer}
-          onCancel={backAction}
-          tokenList={assets}
-          totalUsdBalance={totalUsdBalance}
-          tokenPrices={prices}
-          chainId={chainId}
-          isWalletDeployed={walletDeployed.isDeployed}
-          initialValues={{
-            recipient: route.params?.to,
-            amount: 0,
-            asset: assets.find(
-              asset => asset.contractAddress === contractAddress,
-            ),
-          }}
-        />
-      ) : (
-        <TransactionInfo transaction={currentTransaction} />
-      )}
+      <TransactionForm
+        onConfirm={onExecuteTransfer}
+        onCancel={backAction}
+        tokenList={assets}
+        totalUsdBalance={totalUsdBalance}
+        tokenPrices={prices}
+        chainId={chainId}
+        isWalletDeployed={walletDeployed.isDeployed}
+        initialValues={{
+          recipient: route.params?.to,
+          amount: 0,
+          asset: assets.find(
+            asset => asset.contractAddress === contractAddress,
+          ),
+        }}
+        status={status}
+      />
     </KeyboardAvoidingView>
   )
 }

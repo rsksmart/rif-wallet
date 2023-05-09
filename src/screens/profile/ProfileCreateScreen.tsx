@@ -38,6 +38,7 @@ import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { AppSpinner } from 'components/index'
 import { AvatarIcon } from 'components/icons/AvatarIcon'
+import { rootTabsRouteNames } from 'navigation/rootNavigator'
 
 import { rnsManagerStyles } from '../rnsManager/rnsManagerStyles'
 
@@ -115,7 +116,8 @@ export const ProfileCreateScreen = ({
 
   useEffect(() => {
     navigation.setOptions({
-      headerLeft: () => headerLeftOption(navigation.goBack),
+      headerLeft: () =>
+        headerLeftOption(() => navigation.navigate(rootTabsRouteNames.Home)),
     })
   }, [navigation])
 

@@ -153,7 +153,12 @@ export class RnsProcessor {
         return DomainRegistrationEnum.WAITING_COMMITMENT
       }
     } catch (err) {
-      throw new Error((err as Error).message)
+      if (err instanceof Error || typeof err === 'string') {
+        throw new Error(err.toString())
+      }
+      if (err && 'message' in err) {
+        throw new Error((err as { message: string }).message)
+      }
     }
   }
   public getStatus = (domain: string): IDomainRegistrationProcess => {

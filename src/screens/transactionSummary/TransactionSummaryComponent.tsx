@@ -1,33 +1,36 @@
-import { useFocusEffect, useIsFocused } from '@react-navigation/native'
-import { useCallback, useEffect, useMemo } from 'react'
-import { BackHandler } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useCallback, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { ScrollView, StyleSheet, View } from 'react-native'
+import Icon from 'react-native-vector-icons/FontAwesome5'
 
 import { roundBalance } from 'lib/utils'
 
+import { WINDOW_WIDTH, WINDOW_HEIGHT } from 'src/ux/slides/Dimensions'
+import { useAppSelector } from 'store/storeUtils'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
 import {
   AppButton,
   AppButtonProps,
   AppButtonWidthVarietyEnum,
-} from 'components/button'
-import { getAddressDisplayText } from 'components/index'
-import { CurrencyValue, TokenBalance } from 'components/token'
-import { Typography } from 'components/typography'
-import { sharedHeaderLeftOptions } from 'navigation/index'
-import { AppButtonProps } from 'components/button'
-import { CurrencyValue } from 'components/token'
+  AppSpinner,
+  getAddressDisplayText,
+  Typography,
+} from 'src/components'
 import {
-  RootTabsScreenProps,
-  rootTabsRouteNames,
-} from 'navigation/rootNavigator'
+  sharedColors,
+  sharedStyles as sharedStylesConstants,
+  sharedStyles,
+} from 'shared/constants'
+import { CurrencyValue, TokenBalance } from 'components/token'
 import { ContactWithAddressRequired } from 'shared/types'
 import { castStyle } from 'shared/utils'
-import { selectActiveWallet, setFullscreen } from 'store/slices/settingsSlice'
-import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { setFullscreen } from 'store/slices/settingsSlice'
-import { useAppDispatch } from 'store/storeUtils'
-import { TransactionSummaryComponent } from 'screens/transactionSummary/TransactionSummaryComponent'
 
-import { TransactionStatus } from './transactionSummaryUtils'
+import {
+  TransactionStatus,
+  transactionStatusDisplayText,
+  transactionStatusToIconPropsMap,
+} from './transactionSummaryUtils'
 
 export interface TransactionSummaryScreenProps {
   transaction: {
@@ -40,18 +43,25 @@ export interface TransactionSummaryScreenProps {
   }
   contact: ContactWithAddressRequired
   buttons?: AppButtonProps[]
-  backScreen?: rootTabsRouteNames
+  title?: string
   functionName?: string
+  goBack?: () => void
+  isLoaded?: boolean
 }
 
-export const TransactionSummary = ({
-  route,
-  navigation,
-}: RootTabsScreenProps<rootTabsRouteNames.TransactionSummary>) => {
-  const dispatch = useAppDispatch()
-  const isFocused = useIsFocused()
+export const TransactionSummaryComponent = ({
+  transaction,
+  contact,
+  title,
+  buttons,
+  functionName,
+  goBack,
+  isLoaded,
+}: TransactionSummaryScreenProps) => {
+  const { bottom } = useSafeAreaInsets()
+  const [usdButtonActive, setUsdButtonActive] = useState(false)
+  const { t } = useTranslation()
   const { wallet, chainType } = useAppSelector(selectActiveWallet)
-  const { transaction, contact, title, buttons, backScreen, functionName } = route.params
 
   const iconObject = transactionStatusToIconPropsMap.get(transaction.status)
   const transactionStatusText = transactionStatusDisplayText.get(
@@ -70,70 +80,39 @@ export const TransactionSummary = ({
     return false
   }, [wallet, chainType, contact.address])
 
-  const title = useMemo(() => {
-    if (amIReceiver) {
-      if (transaction.status === TransactionStatus.SUCCESS) {
-        return t('transaction_summary_received_title_success')
-      } else if (transaction.status === TransactionStatus.PENDING) {
-        return t('transaction_summary_received_title_pending')
-      }
-      return t('transaction_summary_receive_title')
-    }
-    if (transaction.status === TransactionStatus.SUCCESS) {
-      return t('transaction_summary_sent_title_success')
-    } else if (transaction.status === TransactionStatus.PENDING) {
-      return t('transaction_summary_sent_title_pending')
-    }
-    return t('transaction_summary_send_title')
-  }, [amIReceiver, t, transaction.status])
-
-  const goBack = useMemo(() => {
-    if (backScreen) {
-      return () => navigation.navigate(backScreen)
-    }
-    return navigation.goBack
-  }, [backScreen, navigation])
-
-  useEffect(() => {
-    dispatch(setFullscreen(isFocused))
-  }, [dispatch, isFocused])
-
-  /* override hard back button */
-  useFocusEffect(
-    useCallback(() => {
-      const onBackPress = () => {
-        goBack()
-        return true
-      }
-
-      BackHandler.addEventListener('hardwareBackPress', onBackPress)
-      return () =>
-        BackHandler.removeEventListener('hardwareBackPress', onBackPress)
-    }, [goBack]),
-  )
-
-  useEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => sharedHeaderLeftOptions(goBack),
-    })
-  }, [goBack, navigation])
+  const onToggleUSD = useCallback(() => {
+    setUsdButtonActive(prev => !prev)
+  }, [])
 
   return (
     <View style={[styles.screen, { paddingBottom: bottom }]}>
+      {isLoaded === false && (
+        <View style={[sharedStylesConstants.contentCenter, styles.spinnerView]}>
+          <AppSpinner size={64} thickness={10} />
+        </View>
+      )}
       <ScrollView
         style={sharedStyles.flex}
         contentContainerStyle={styles.contentPadding}>
         <Typography
-          style={styles.title}
+          style={styles.sendText}
           type={'h4'}
           color={sharedColors.inputLabelColor}>
-          {title}
+          {title || t('transaction_summary_title')}
         </Typography>
         <TokenBalance
           firstValue={transaction.tokenValue}
           secondValue={transaction.usdValue}
           to={contact}
         />
+        {functionName && (
+          <Typography
+            style={styles.sendText}
+            type={'body1'}
+            color={sharedColors.inputLabelColor}>
+            {t('transaction_summary_function_type')}: {functionName}
+          </Typography>
+        )}
         {transactionStatusText || transaction.status ? (
           <View
             style={[
@@ -176,23 +155,15 @@ export const TransactionSummary = ({
               type={'h4'}
               style={[styles.summaryText, sharedStyles.textLeft]}>
               {amIReceiver
-                ? transaction.status === TransactionStatus.SUCCESS
-                  ? t('transaction_summary_i_received_text')
-                  : t('transaction_summary_i_receive_text')
-                : transaction.status === TransactionStatus.SUCCESS
-                ? t('transaction_summary_they_received_text')
+                ? t('transaction_summary_i_receive_text')
                 : t('transaction_summary_they_receive_text')}
             </Typography>
             <Typography
               type={'h4'}
               style={[styles.summaryText, sharedStyles.textLeft]}>
               {amIReceiver
-                ? transaction.status === TransactionStatus.SUCCESS
-                  ? t('transaction_summary_they_sent_text')
-                  : t('transaction_summary_they_send_text')
-                : transaction.status === TransactionStatus.SUCCESS
-                ? t('transaction_summary_you_sent_text')
-                : t('transaction_summary_you_send_text')}
+                ? t('transaction_summary_they_sent_text')
+                : t('transaction_summary_you_sent_text')}
             </Typography>
             <Typography
               type={'h4'}
@@ -212,14 +183,20 @@ export const TransactionSummary = ({
               type={'h4'}
               style={[styles.summaryText, sharedStyles.textRight]}>
               {usdButtonActive
-                ? `${transaction.usdValue.symbol}${transaction.usdValue.balance}`
+                ? `${transaction.usdValue.symbol}${roundBalance(
+                    +transaction.usdValue.balance,
+                    2,
+                  )}`
                 : `${transaction.tokenValue.symbol} ${transaction.tokenValue.balance}`}
             </Typography>
             <Typography
               type={'h4'}
               style={[styles.summaryText, sharedStyles.textRight]}>
               {usdButtonActive
-                ? `${transaction.usdValue.symbol}${transaction.usdValue.balance}`
+                ? `${transaction.usdValue.symbol}${roundBalance(
+                    +transaction.usdValue.balance,
+                    2,
+                  )}`
                 : `${transaction.tokenValue.symbol} ${transaction.total}`}
             </Typography>
             <Typography
@@ -269,14 +246,6 @@ export const TransactionSummary = ({
         )}
       </View>
     </View>
-    <TransactionSummaryComponent
-      transaction={transaction}
-      contact={contact}
-      goBack={goBack}
-      title={title}
-      buttons={buttons}
-      functionName={functionName}
-    />
   )
 }
 
@@ -287,7 +256,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 22,
   }),
   contentPadding: castStyle.view({ paddingBottom: 114 }),
-  title: castStyle.text({
+  sendText: castStyle.text({
     marginTop: 22,
   }),
   statusContainer: castStyle.view({
@@ -323,4 +292,11 @@ const styles = StyleSheet.create({
   }),
   statusIcon: castStyle.text({ marginLeft: 10 }),
   nextButton: castStyle.view({ marginTop: 10 }),
+  spinnerView: castStyle.view({
+    zIndex: 10,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    position: 'absolute',
+    width: WINDOW_WIDTH,
+    height: WINDOW_HEIGHT,
+  }),
 })

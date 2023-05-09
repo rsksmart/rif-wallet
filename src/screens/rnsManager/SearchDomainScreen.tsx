@@ -95,15 +95,14 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
           duration: selectedYears,
         }),
       ).unwrap()
-      // A side effect is thrown when the commitment is completed
-      // which will redirect the user to the PurchaseScreen
+      navigation.navigate(profileStackRouteNames.PurchaseDomain)
     } catch (requestUsernameError) {
       if (
         requestUsernameError instanceof Error ||
         typeof requestUsernameError === 'string'
       ) {
         const message = requestUsernameError.toString()
-        if (message.includes('User rejects')) {
+        if (message.includes('Transaction rejected')) {
           setError(t('search_domain_error_request_rejected'))
         } else if (message.includes('balance too low')) {
           setError(t('search_domain_error_funds_low'))
@@ -114,7 +113,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
     } finally {
       setCurrentStatus('')
     }
-  }, [dispatch, domainToLookUp, rnsProcessor, selectedYears, t])
+  }, [dispatch, domainToLookUp, rnsProcessor, selectedYears, t, navigation])
 
   const handleDomainAvailable = useCallback(
     async (domain: string, valid: boolean) => {

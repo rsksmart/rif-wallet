@@ -22,16 +22,19 @@ import { headerLeftOption } from 'navigation/profileNavigator'
 import {
   profileStackRouteNames,
   ProfileStackScreenProps,
+  ProfileStatus,
 } from 'navigation/profileNavigator/types'
-import { sharedColors } from 'shared/constants'
+import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import {
-  deleteProfile,
   purchaseUsername,
   selectProfile,
+  selectProfileStatus,
+  deleteProfile,
 } from 'store/slices/profileSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { ScreenWithWallet } from 'screens/types'
+import { rootTabsRouteNames } from 'navigation/rootNavigator'
 
 import { rnsManagerStyles } from './rnsManagerStyles'
 
@@ -50,7 +53,8 @@ export const PurchaseDomainScreen = ({
   const profile = useAppSelector(selectProfile)
   const alias = profile.alias
   const duration = profile.duration || 1
-
+  const profileStatus = useAppSelector(selectProfileStatus)
+  const [error, setError] = useState('')
   const rnsProcessor = useMemo(() => new RnsProcessor({ wallet }), [wallet])
 
   const methods = useForm()
@@ -67,12 +71,14 @@ export const PurchaseDomainScreen = ({
 
   useEffect(() => {
     navigation.setOptions({
-      headerLeft: () => headerLeftOption(navigation.goBack),
+      headerLeft: () =>
+        headerLeftOption(() => navigation.navigate(rootTabsRouteNames.Home)),
     })
   }, [navigation])
 
   const registerDomain = useCallback(async () => {
     const domain = alias.split('.')[0]
+    setError('')
     try {
       const response = await dispatch(
         purchaseUsername({ rnsProcessor, domain }),
@@ -83,7 +89,9 @@ export const PurchaseDomainScreen = ({
         })
       }
     } catch (e) {
-      // @todo error handling
+      if (typeof e === 'string' || e instanceof Error) {
+        setError(e.toString())
+      }
     }
   }, [alias, dispatch, rnsProcessor, navigation])
 
@@ -127,23 +135,42 @@ export const PurchaseDomainScreen = ({
             isReadOnly
           />
         </FormProvider>
-        <AppButton
-          style={rnsManagerStyles.button}
-          onPress={registerDomain}
-          accessibilityLabel={TestID.PurchaseDomainButton}
-          title={t('purchase_username_button')}
-          color={sharedColors.white}
-          textColor={sharedColors.black}
-        />
-        <AppButton
-          style={rnsManagerStyles.button}
-          onPress={onCancelDomainTap}
-          accessibilityLabel={TestID.CancelRegistrationButton}
-          title={t('cancel_username_button')}
-          color={sharedColors.white}
-          textColor={sharedColors.white}
-          backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
-        />
+        {profileStatus === ProfileStatus.READY_TO_PURCHASE && (
+          <>
+            <AppButton
+              style={rnsManagerStyles.button}
+              onPress={registerDomain}
+              accessibilityLabel={TestID.PurchaseDomainButton}
+              title={t('purchase_username_button')}
+              color={sharedColors.white}
+              textColor={sharedColors.black}
+            />
+            <AppButton
+              style={rnsManagerStyles.button}
+              onPress={onCancelDomainTap}
+              accessibilityLabel={TestID.CancelRegistrationButton}
+              title={t('cancel_username_button')}
+              color={sharedColors.white}
+              textColor={sharedColors.white}
+              backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
+            />
+          </>
+        )}
+        {profileStatus === ProfileStatus.PURCHASING && (
+          <>
+            <View style={[sharedStyles.contentCenter]}>
+              <AppSpinner size={64} thickness={10} />
+            </View>
+            <Typography type="body1">
+              {t('purchase_username_loading')}
+            </Typography>
+          </>
+        )}
+        {error !== '' && (
+          <Typography type="body1" style={styles.errorTypography}>
+            {error}
+          </Typography>
+        )}
       </View>
     </ScrollView>
   )
@@ -155,5 +182,9 @@ const styles = StyleSheet.create({
   }),
   priceContainer: castStyle.view({
     height: 90,
+  }),
+  errorTypography: castStyle.text({
+    paddingHorizontal: 5,
+    marginTop: 10,
   }),
 })
