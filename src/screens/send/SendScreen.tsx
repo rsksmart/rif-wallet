@@ -10,7 +10,10 @@ import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { settingsStackRouteNames } from 'navigation/settingsNavigator/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppSelector } from 'store/storeUtils'
-import { selectTotalUsdValue } from 'store/slices/balancesSlice/selectors'
+import {
+  selectBalances,
+  selectTotalUsdValue,
+} from 'store/slices/balancesSlice/selectors'
 import { sharedStyles } from 'shared/constants'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
 
@@ -18,7 +21,6 @@ import { ScreenWithWallet } from '../types'
 import { TransactionInfo } from './TransactionInfo'
 import { TransactionForm } from './TransactionForm'
 import { usePaymentExecutor } from './usePaymentExecutor'
-import { useFetchBitcoinNetworksAndTokens } from './useFetchBitcoinNetworksAndTokens'
 
 export const SendScreen = ({
   route,
@@ -28,7 +30,7 @@ export const SendScreen = ({
 }: HomeStackScreenProps<homeStackRouteNames.Send> & ScreenWithWallet) => {
   const { t } = useTranslation()
   const { loading, isDeployed } = walletDeployed
-  const assets = useFetchBitcoinNetworksAndTokens()
+  const assets = Object.values(useAppSelector(selectBalances))
 
   const totalUsdBalance = useAppSelector(selectTotalUsdValue)
   const prices = useAppSelector(selectUsdPrices)

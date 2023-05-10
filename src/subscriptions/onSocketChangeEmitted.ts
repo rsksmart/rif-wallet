@@ -4,11 +4,15 @@ import { EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { addOrUpdateBalances } from 'store/slices/balancesSlice'
 import {
+  activityDeserializer,
   addNewEvent,
   addNewTransaction,
   addNewTransactions,
+  combineTransactions,
+  deserializeTransactions,
+  fetchBitcoinTransactions,
 } from 'store/slices/transactionsSlice'
-import { setUsdPrices } from 'store/slices/usdPricesSlice'
+import { UsdPricesState, setUsdPrices } from 'store/slices/usdPricesSlice'
 import { AppDispatch } from 'store/index'
 
 import { AbiWallet, Action } from './types'
@@ -20,6 +24,7 @@ interface OnNewTransactionEventEmittedArgs extends AbiWallet {
 
 interface OnSocketChangeEmittedArgs extends AbiWallet {
   dispatch: AppDispatch
+  usdPrices: UsdPricesState
 }
 
 const onNewTransactionEventEmitted = async ({
@@ -52,7 +57,7 @@ const onNewTransactionEventEmitted = async ({
 }
 
 export const onSocketChangeEmitted =
-  ({ dispatch, abiEnhancer, wallet }: OnSocketChangeEmittedArgs) =>
+  ({ dispatch, abiEnhancer, wallet, usdPrices }: OnSocketChangeEmittedArgs) =>
   (action: Action) => {
     if (action.type === 'reset') {
       dispatch(resetSocketState())
@@ -71,19 +76,36 @@ export const onSocketChangeEmitted =
           })
           break
         case 'newTransactions':
-          dispatch(addNewTransactions(payload))
+          let deserializedRifTransactions = deserializeTransactions(
+            payload.activityTransactions,
+          )
+          let combinedTransactions = combineTransactions(
+            deserializedRifTransactions,
+            [],
+          )
+
+          let deserializedTransactions = combinedTransactions.map(tx =>
+            activityDeserializer(tx, usdPrices),
+          )
+          dispatch(addNewTransactions(deserializedTransactions))
           break
         case 'newBalance':
           dispatch(addOrUpdateBalances([payload]))
           break
         case 'init':
-          dispatch(
-            addNewTransactions({
-              next: null,
-              prev: null,
-              activityTransactions: payload.transactions,
-            }),
+          deserializedRifTransactions = deserializeTransactions(
+            payload.transactions,
           )
+          combinedTransactions = combineTransactions(
+            deserializedRifTransactions,
+            [],
+          )
+
+          deserializedTransactions = combinedTransactions.map(tx =>
+            activityDeserializer(tx, usdPrices),
+          )
+          dispatch(fetchBitcoinTransactions({}))
+          dispatch(addNewTransactions(deserializedTransactions))
           dispatch(addOrUpdateBalances(payload.balances))
           break
         case 'newTokenTransfer':

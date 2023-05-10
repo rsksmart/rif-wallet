@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { UnspentTransactionType } from '@rsksmart/rif-wallet-bitcoin'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import {
@@ -20,19 +20,6 @@ import { TransactionInformation } from './TransactionInfo'
 import { transferBitcoin } from './transferBitcoin'
 import { transfer } from './transferTokens'
 import { OnSetTransactionStatusChange } from './types'
-
-interface IPaymentExecutorContext {
-  setUtxosGlobal: (utxos: UnspentTransactionType[]) => void
-  setBitcoinBalanceGlobal: (balance: number) => void
-}
-export const PaymentExecutorContext = createContext<IPaymentExecutorContext>({
-  setUtxosGlobal: () => {},
-  setBitcoinBalanceGlobal: () => {},
-})
-
-export const usePaymentExecutorContext = () => {
-  return useContext(PaymentExecutorContext)
-}
 
 // Update transaction based on status
 // Pending will add a pendingTransaction
