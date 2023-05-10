@@ -1,6 +1,5 @@
-import { useEffect, useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import { FlatList, StyleSheet, View, RefreshControl, Image } from 'react-native'
-import { BIP } from '@rsksmart/rif-wallet-bitcoin'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
 import { IApiTransaction } from '@rsksmart/rif-wallet-services'
@@ -8,95 +7,41 @@ import { useTranslation } from 'react-i18next'
 import { ethers } from 'ethers'
 
 import { abiEnhancer } from 'core/setup'
-import { useAppSelector } from 'store/storeUtils'
-import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import {
+  selectTransactions,
+  selectTransactionsLoading,
+} from 'store/slices/transactionsSlice/selectors'
 import { sharedColors } from 'shared/constants'
 import { Typography } from 'components/typography'
 import { castStyle } from 'shared/utils'
 import { ActivityMainScreenProps } from 'shared/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
-import {
-  selectBitcoin,
-  selectSelectedWallet,
-  selectWallets,
-} from 'store/slices/settingsSlice'
-import { selectUsdPrices } from 'store/slices/usdPricesSlice'
+import { fetchBitcoinTransactions } from 'src/redux/slices/transactionsSlice'
 
 import { ActivityBasicRow } from './ActivityRow'
-import { useBitcoinTransactionsHandler } from './useBitcoinTransactionsHandler'
-import { combineTransactions } from './combineTransactions'
 import { ScreenWithWallet } from '../types'
-import { ActivityRowPresentationObjectType } from './types'
-import { activityDeserializer } from './activityDeserializer'
 
 export const ActivityScreen = ({
   navigation,
 }: ActivityMainScreenProps & ScreenWithWallet) => {
-  const wallets = useAppSelector(selectWallets)
-  const selectedWallet = useAppSelector(selectSelectedWallet)
-  const prices = useAppSelector(selectUsdPrices)
+  const dispatch = useAppDispatch()
   const { t } = useTranslation()
-  const bitcoin = useAppSelector(selectBitcoin)
-  const btcTransactionFetcher = useBitcoinTransactionsHandler({
-    bip:
-      bitcoin && bitcoin.networksArr[0]
-        ? bitcoin.networksArr[0].bips[0]
-        : ({} as BIP),
-    shouldMergeTransactions: true,
-  })
-  const [deserializedTransactions, setDeserializedTransactions] = useState<
-    ActivityRowPresentationObjectType[]
-  >([])
-
-  const { transactions } = useAppSelector(selectTransactions)
-
-  // On load, fetch both BTC and WALLET transactions
-  useEffect(() => {
-    // TODO: rethink btcTransactionFetcher, when adding as dependency
-    // the function gets executed a million times
-    btcTransactionFetcher.fetchTransactions()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    if (
-      transactions &&
-      btcTransactionFetcher.transactions &&
-      wallets &&
-      selectedWallet &&
-      prices
-    ) {
-      const transactionsCombined = combineTransactions(
-        transactions,
-        btcTransactionFetcher.transactions,
-      )
-      setDeserializedTransactions(
-        transactionsCombined.map(tx => activityDeserializer(tx, prices)),
-      )
-    }
-  }, [
-    transactions,
-    btcTransactionFetcher.transactions,
-    wallets,
-    selectedWallet,
-    prices,
-  ])
+  const transactions = useAppSelector(selectTransactions)
+  const loading = useAppSelector(selectTransactionsLoading)
 
   const onRefresh = useCallback(() => {
-    btcTransactionFetcher.fetchTransactions(undefined, 1)
-  }, [btcTransactionFetcher])
+    dispatch(fetchBitcoinTransactions({}))
+  }, [dispatch])
 
   return (
     <View style={styles.mainContainer}>
       <FlatList
-        data={deserializedTransactions}
+        data={transactions}
         initialNumToRender={10}
         keyExtractor={item => item.id}
-        onEndReached={() => {
-          btcTransactionFetcher.fetchNextTransactionPage()
-        }}
         onEndReachedThreshold={0.2}
-        refreshing={btcTransactionFetcher.apiStatus === 'fetching'}
+        refreshing={loading}
         renderItem={({ item }) => (
           <ActivityBasicRow
             activityDetails={item}
@@ -107,7 +52,7 @@ export const ActivityScreen = ({
         style={styles.flatlistViewStyle}
         refreshControl={
           <RefreshControl
-            refreshing={btcTransactionFetcher.apiStatus === 'fetching'}
+            refreshing={loading}
             tintColor="white"
             onRefresh={onRefresh}
           />
@@ -115,17 +60,16 @@ export const ActivityScreen = ({
         ListHeaderComponent={
           <View style={styles.transactionsViewStyle}>
             <Typography type="h2">{t('home_screen_transactions')}</Typography>
-            {deserializedTransactions.length === 0 &&
-              btcTransactionFetcher.apiStatus !== 'fetching' && (
-                <Typography type="h4" style={styles.listEmptyTextStyle}>
-                  {t('activity_list_empty')}
-                </Typography>
-              )}
+            {transactions.length === 0 && !loading && (
+              <Typography type="h4" style={styles.listEmptyTextStyle}>
+                {t('activity_list_empty')}
+              </Typography>
+            )}
           </View>
         }
         ListEmptyComponent={
           <>
-            {btcTransactionFetcher.apiStatus !== 'fetching' && (
+            {!loading && (
               <Image
                 source={require('/assets/images/no-transactions.png')}
                 resizeMode="contain"
@@ -142,9 +86,7 @@ export const ActivityScreen = ({
 const styles = StyleSheet.create({
   mainContainer: castStyle.view({
     backgroundColor: sharedColors.secondary,
-    minHeight: '100%',
-    marginBottom: 200,
-    position: 'relative',
+    flex: 1,
   }),
   flatlistViewStyle: castStyle.view({
     paddingBottom: 30,

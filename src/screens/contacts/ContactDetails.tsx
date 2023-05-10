@@ -50,7 +50,7 @@ export const ContactDetails = ({
     params: { contact },
   },
 }: ContactsStackScreenProps<contactsStackRouteNames.ContactDetails>) => {
-  const { transactions } = useAppSelector(selectTransactions)
+  const transactions = useAppSelector(selectTransactions)
   const dispatch = useAppDispatch()
   const [isDeleteContactModalVisible, setIsDeleteContactModalVisible] =
     useState(false)
