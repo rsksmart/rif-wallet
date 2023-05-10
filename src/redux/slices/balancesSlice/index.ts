@@ -18,22 +18,18 @@ export const getBalance = (
   price: number,
 ) => {
   if ('satoshis' in token) {
-    const balanceCalculated = Math.round(
-      BigNumber.from(token.balance).mul(10e8).toNumber(),
+    const balanceBigNumber = BigNumber.from(
+      Math.round(Number(token.balance) * 10e8),
     )
 
     return {
-      balance: balanceToDisplay(balanceCalculated.toString(), 8, 4),
-      usdBalance: convertBalance(balanceCalculated, 8, price).toString(),
+      balance: balanceToDisplay(balanceBigNumber.toString(), 8, 4),
+      usdBalance: convertBalance(balanceBigNumber, 8, price),
     }
   } else {
     return {
       balance: balanceToDisplay(token.balance, token.decimals, 4),
-      usdBalance: convertBalance(
-        token.balance,
-        token.decimals,
-        price,
-      ).toString(),
+      usdBalance: convertBalance(token.balance, token.decimals, price),
     }
   }
 }
@@ -77,15 +73,8 @@ export const addOrUpdateBalances = createAsyncThunk<
 
     const totalUsdValue = balances
       .reduce((previousValue, token) => {
-        if ('satoshis' in token) {
-          previousValue += Number(token.balance) * usdPrices.BTC.price
-        } else {
-          previousValue += convertBalance(
-            token.balance,
-            token.decimals,
-            usdPrices[token.contractAddress].price,
-          )
-        }
+        previousValue += token.usdBalance
+
         return previousValue
       }, 0)
       .toFixed(2)

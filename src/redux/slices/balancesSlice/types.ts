@@ -2,7 +2,7 @@ import { BIPWithRequest } from '@rsksmart/rif-wallet-bitcoin'
 import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 
 export interface ITokenWithoutLogo extends Omit<ITokenWithBalance, 'logo'> {
-  usdBalance: string
+  usdBalance: number
 }
 
 export interface BitcoinTokenBalanceObject extends ITokenWithoutLogo {
