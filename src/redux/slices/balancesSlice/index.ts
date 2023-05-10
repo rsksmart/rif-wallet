@@ -18,13 +18,13 @@ export const getBalance = (
   price: number,
 ) => {
   if ('satoshis' in token) {
-    const balanceBigNumber = BigNumber.from(
-      Math.round(Number(token.balance) * 10e8),
+    const balanceCalculated = Math.round(
+      BigNumber.from(token.balance).mul(10e8).toNumber(),
     )
 
     return {
-      balance: balanceToDisplay(balanceBigNumber.toString(), 8, 4),
-      usdBalance: convertBalance(balanceBigNumber, 8, price).toString(),
+      balance: balanceToDisplay(balanceCalculated.toString(), 8, 4),
+      usdBalance: convertBalance(balanceCalculated, 8, price).toString(),
     }
   } else {
     return {
