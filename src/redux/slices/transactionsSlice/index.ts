@@ -16,6 +16,7 @@ import {
   ActivityRowPresentationObject,
   IBitcoinTransaction,
   TransactionStatus,
+  ModifyTransaction,
 } from 'store/slices/transactionsSlice/types'
 import {
   filterEnhancedTransactions,
@@ -29,7 +30,7 @@ import {
   isDefaultChainTypeMainnet,
 } from 'core/config'
 import { TokenSymbol } from 'screens/home/TokenImage'
-import { AsyncThunkWithTypes } from 'src/redux/store'
+import { AsyncThunkWithTypes } from 'store/store'
 
 export const activityDeserializer: (
   activityTransaction: ActivityMixedType,
@@ -177,7 +178,61 @@ export const fetchBitcoinTransactions = createAsyncThunk<
       activityDeserializer(tx, usdPrices),
     )
 
-    thunkAPI.dispatch(addNewTransactions(deserializedTransactions))
+    thunkAPI.dispatch(addBitcoinTransactions(deserializedTransactions))
+  }
+})
+
+export const addPendingTransaction = createAsyncThunk<
+  void,
+  ApiTransactionWithExtras,
+  AsyncThunkWithTypes
+>('transactions/addPendingTransaction', async (payload, thunkAPI) => {
+  const { usdPrices } = thunkAPI.getState()
+
+  const { symbol, finalAddress, enhancedAmount, value, ...restPayload } =
+    payload
+  const pendingTransaction = {
+    originTransaction: {
+      ...restPayload,
+      value: value,
+    },
+    enhancedTransaction: {
+      symbol,
+      from: restPayload.from,
+      to: finalAddress,
+      value: enhancedAmount,
+    },
+  }
+
+  const deserializedTransaction = activityDeserializer(
+    pendingTransaction,
+    usdPrices,
+  )
+
+  thunkAPI.dispatch(addPendingTransactionState(deserializedTransaction))
+})
+
+export const modifyTransaction = createAsyncThunk<
+  void,
+  ModifyTransaction,
+  AsyncThunkWithTypes
+>('transactions/modifyTransaction', async (payload, thunkAPI) => {
+  try {
+    const {
+      transactions: { transactions },
+    } = thunkAPI.getState()
+
+    const transaction = transactions.find(tx => tx.id === payload.hash)
+    if (transaction) {
+      const modifiedTransaction: ActivityRowPresentationObject = {
+        ...transaction,
+        status: TransactionStatus.SUCCESS,
+      }
+
+      thunkAPI.dispatch(modifyTransactionState(modifiedTransaction))
+    }
+  } catch (err) {
+    thunkAPI.rejectWithValue(err)
   }
 })
 
@@ -189,42 +244,38 @@ const transactionsSlice = createSlice({
       state,
       { payload }: PayloadAction<ActivityRowPresentationObject[]>,
     ) => {
-      state.transactions.push(...payload)
+      state.transactions = payload
       return state
+    },
+    addBitcoinTransactions: (
+      state,
+      { payload }: PayloadAction<ActivityRowPresentationObject[]>,
+    ) => {
+      state.transactions.push(...payload)
     },
     addNewTransaction: (
       state,
       { payload }: PayloadAction<ActivityRowPresentationObject>,
     ) => {
-      state.transactions.push(payload)
-      return state
+      const transactionIndex = state.transactions.findIndex(
+        tx => tx.id === payload.id,
+      )
+      if (transactionIndex === -1) {
+        state.transactions.push(payload)
+      }
     },
     addNewEvent: (state, { payload }: PayloadAction<IEvent>) => {
       state.events.push(payload)
       return state
     },
-    addPendingTransaction: (
+    addPendingTransactionState: (
       state,
-      { payload }: PayloadAction<ApiTransactionWithExtras>,
+      { payload }: PayloadAction<ActivityRowPresentationObject>,
     ) => {
-      const { symbol, finalAddress, enhancedAmount, value, ...restPayload } =
-        payload
-      const pendingTransaction = {
-        originTransaction: {
-          ...restPayload,
-          value: value,
-        },
-        enhancedTransaction: {
-          symbol,
-          from: restPayload.from,
-          to: finalAddress,
-          value: enhancedAmount,
-        },
-      }
-      state.transactions.push(pendingTransaction)
+      state.transactions.splice(0, 0, payload)
       return state
     },
-    modifyTransaction: (
+    modifyTransactionState: (
       state,
       { payload }: PayloadAction<ActivityRowPresentationObject>,
     ) => {
@@ -256,10 +307,11 @@ const transactionsSlice = createSlice({
 
 export const {
   addNewTransactions,
+  addBitcoinTransactions,
   addNewTransaction,
   addNewEvent,
-  modifyTransaction,
-  addPendingTransaction,
+  modifyTransactionState,
+  addPendingTransactionState,
 } = transactionsSlice.actions
 export const transactionsReducer = transactionsSlice.reducer
 

@@ -20,6 +20,7 @@ import { AbiWallet, Action } from './types'
 interface OnNewTransactionEventEmittedArgs extends AbiWallet {
   dispatch: AppDispatch
   payload: IApiTransaction
+  usdPrices: UsdPricesState
 }
 
 interface OnSocketChangeEmittedArgs extends AbiWallet {
@@ -32,6 +33,7 @@ const onNewTransactionEventEmitted = async ({
   wallet,
   dispatch,
   payload,
+  usdPrices,
 }: OnNewTransactionEventEmittedArgs) => {
   const payloadToUse: {
     originTransaction: IApiTransaction
@@ -52,7 +54,11 @@ const onNewTransactionEventEmitted = async ({
     }
   } catch (err) {
   } finally {
-    dispatch(addNewTransaction(payloadToUse))
+    const deserializedTransaction = activityDeserializer(
+      payloadToUse,
+      usdPrices,
+    )
+    dispatch(addNewTransaction(deserializedTransaction))
   }
 }
 
@@ -73,6 +79,7 @@ export const onSocketChangeEmitted =
             wallet,
             dispatch,
             payload: payload,
+            usdPrices,
           })
           break
         case 'newTransactions':

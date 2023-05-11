@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { TransactionRequest } from '@ethersproject/providers'
-import { BigNumber, Wallet } from 'ethers'
+import { BigNumber } from 'ethers'
 import { AbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
+import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
 const abiEnhancer = new AbiEnhancer()
 
@@ -25,7 +26,7 @@ export interface EnhancedTransactionRequest extends TransactionRequest {
   functionParameters?: string[]
 }
 
-const useEnhancedWithGas = (wallet: Wallet, tx: TransactionRequest) => {
+const useEnhancedWithGas = (wallet: RIFWallet, tx: TransactionRequest) => {
   const [enhancedTransactionRequest, setEnhancedTransactionRequest] =
     useState<EnhancedTransactionRequest>({
       gasPrice: '0',

@@ -39,7 +39,14 @@ const rootPersistConfig = {
   storage: reduxStorage,
   version: 0,
   migrate: createMigrate(migrations),
-  whitelist: ['profile', 'accounts', 'contacts', 'balances', 'usdPrices'],
+  whitelist: [
+    'profile',
+    'accounts',
+    'contacts',
+    'balances',
+    'usdPrices',
+    'transactions',
+  ],
 }
 
 const reducers = combineReducers({
