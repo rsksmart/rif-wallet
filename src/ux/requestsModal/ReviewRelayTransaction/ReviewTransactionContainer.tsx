@@ -7,7 +7,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { TWO_RIF } from '@rsksmart/rif-relay-light-sdk'
 
-import { balanceToDisplay, convertTokenToUSD, shortAddress } from 'lib/utils'
+import { balanceToDisplay, convertTokenToUSD } from 'lib/utils'
 
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
@@ -35,6 +35,17 @@ export const ReviewTransactionContainer = ({
   onConfirm,
 }: Props) => {
   const tokenPrices = useAppSelector(selectUsdPrices)
+  // enhance the transaction to understand what it is:
+  const txRequest = useMemo(() => request.payload[0], [request])
+  const { wallet } = useAppSelector(selectActiveWallet)
+  // this is for typescript, and should not happen as the transaction was created by the wallet instance.
+  if (!wallet) {
+    throw new Error('no wallet')
+  }
+  const { enhancedTransactionRequest, isLoaded } = useEnhancedWithGas(
+    wallet,
+    txRequest,
+  )
   const tokenContract = useMemo(
     () =>
       getTokenAddress(
@@ -57,20 +68,6 @@ export const ReviewTransactionContainer = ({
       : 'estimating fee...'
 
   const [error, setError] = useState<string | null>(null)
-
-  const { wallet } = useAppSelector(selectActiveWallet)
-
-  // this is for typescript, and should not happen as the transaction was created by the wallet instance.
-  if (!wallet) {
-    throw new Error('no wallet')
-  }
-
-  // enhance the transaction to understand what it is:
-  const txRequest = useMemo(() => request.payload[0], [request])
-  const { enhancedTransactionRequest, isLoaded } = useEnhancedWithGas(
-    wallet,
-    txRequest,
-  )
 
   /*
   useEffect(() => {
@@ -117,22 +114,6 @@ export const ReviewTransactionContainer = ({
     onCancel()
   }, [onCancel, request])
 
-  // if (!isLoaded || !txCostInRif) {
-  //   return (
-  //     <View style={sharedStyles.row}>
-  //       <RegularText>Loading transaction</RegularText>
-  //     </View>
-  //   )
-  // }
-
-  // if (error) {
-  //   return (
-  //     <View style={sharedStyles.row}>
-  //       <RegularText>{error}</RegularText>
-  //     </View>
-  //   )
-  // }
-
   useEffect(() => {
     if (enhancedTransactionRequest && txCostInRif) {
       const { to, symbol, value } = enhancedTransactionRequest
@@ -146,7 +127,7 @@ export const ReviewTransactionContainer = ({
               symbol: symbol ?? TokenSymbol.RIF,
             },
             usdValue: {
-              balance: convertTokenToUSD(value, tokenQuote, true).toString(),
+              balance: convertTokenToUSD(value, tokenQuote).toString(),
               symbolType: 'text',
               symbol: '$',
             },
