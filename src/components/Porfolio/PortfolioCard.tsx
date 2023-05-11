@@ -26,29 +26,33 @@ const SelectedCard = ({
   primaryText: string
   icon?: string
   color?: string
-}) => (
-  <View style={selectedCardStyles.container}>
-    <View style={selectedCardStyles.primaryTextContainer}>
-      {icon ? (
-        <View style={selectedCardStyles.icon}>
-          <TokenImage
-            symbol={icon}
-            height={20}
-            width={20}
-            transparent={true}
-            color={color}
-          />
-        </View>
-      ) : null}
-      <Typography
-        type={'body1'}
-        style={selectedCardStyles.primaryText}
-        accessibilityLabel="symbol">
-        {primaryText}
-      </Typography>
+}) => {
+  const isRifToken =
+    icon?.toUpperCase() === 'RIF' || icon?.toUpperCase() === 'TRIF'
+  return (
+    <View style={selectedCardStyles.container}>
+      <View style={selectedCardStyles.primaryTextContainer}>
+        {icon ? (
+          <View style={selectedCardStyles.icon}>
+            <TokenImage
+              symbol={isRifToken ? icon + 'white' : icon}
+              height={20}
+              width={20}
+              transparent
+              color={color}
+            />
+          </View>
+        ) : null}
+        <Typography
+          type={'body1'}
+          style={selectedCardStyles.primaryText}
+          accessibilityLabel="symbol">
+          {primaryText}
+        </Typography>
+      </View>
     </View>
-  </View>
-)
+  )
+}
 
 const NonSelectedCard = ({
   primaryText,
