@@ -128,7 +128,7 @@ export const HomeScreen = ({
       switch (screen) {
         case 'RECEIVE':
           return navigation.navigate(homeStackRouteNames.Receive, {
-            networkId: _selected.networkId,
+            networkId: _selected.contractAddress,
           })
         case 'SEND':
           return navigation.navigate(homeStackRouteNames.Send, {
@@ -143,7 +143,10 @@ export const HomeScreen = ({
   // interact with the navigation
   const handleSendReceive = useCallback(
     (screen: 'SEND' | 'RECEIVE' | 'FAUCET') => {
-      if (selected instanceof BitcoinNetwork) {
+      if (!selected) {
+        return
+      }
+      if ('bips' in selected) {
         return handleBitcoinSendReceive(screen, selected)
       }
       switch (screen) {

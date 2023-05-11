@@ -9,7 +9,6 @@ import {
 import { FormProvider, useForm } from 'react-hook-form'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useTranslation } from 'react-i18next'
-import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
 
 import { shortAddress } from 'lib/utils'
@@ -94,7 +93,7 @@ export const ReceiveScreen = ({
     (asset: MixedTokenAndNetworkType) => {
       if (asset) {
         setIsAddressLoading(true)
-        if (asset instanceof BitcoinNetwork) {
+        if ('bips' in asset) {
           asset.bips[0]
             .fetchExternalAvailableAddress()
             .then(addressReturned => setAddress(addressReturned))
