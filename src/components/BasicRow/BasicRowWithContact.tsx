@@ -16,7 +16,10 @@ export const BasicRowWithContact = ({
   return (
     <BasicRow
       {...props}
-      avatar={{ name: contact?.name || 'A' }}
+      avatar={{
+        name: contact?.name,
+        imageSource: contact ? undefined : require('src/images/user.png'),
+      }}
       label={contact?.name || props.label}
     />
   )
