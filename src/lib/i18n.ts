@@ -288,6 +288,7 @@ const resources = {
       wallet_deploy_deploying_alert_title: 'Wallet deployment is in progress',
       wallet_deploy_deploying_alert_body:
         'You need to wait until this process is finished before making transactions',
+      receive_screen_username_label: 'Username',
     },
   },
   es: {

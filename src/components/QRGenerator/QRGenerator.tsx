@@ -8,7 +8,7 @@ import {
 import QRCode from 'react-native-qrcode-svg'
 import { Icon } from 'react-native-vector-icons/Icon'
 
-import { sharedColors } from 'shared/constants'
+import { sharedColors, sharedStyles } from 'shared/constants'
 
 interface QRIconProps {
   name: string
@@ -45,18 +45,18 @@ interface QRGeneratorProps {
  */
 export const QRGenerator = ({
   value,
-  qrWidth,
+  qrWidth = 248,
   iconProps,
   imageSource,
-  qrBackgroundColor = sharedColors.inputInactive,
-  qrColor = sharedColors.qrColor,
+  qrBackgroundColor = sharedColors.black,
+  qrColor = sharedColors.white,
   qrMargin = 10,
   containerViewStyle,
   logoBackgroundColor,
   testID,
   accessibilityLabel,
 }: QRGeneratorProps) => {
-  const [width, setWidth] = useState(qrWidth || 100)
+  const [width, setWidth] = useState(qrWidth)
   const [iconSource, setIconSource] = useState(imageSource)
 
   const onWidthChange = useCallback(
@@ -91,7 +91,7 @@ export const QRGenerator = ({
 
   return (
     <View
-      style={[viewWidth, containerViewStyle]}
+      style={[sharedStyles.selfCenter, viewWidth, containerViewStyle]}
       onLayout={onWidthChange}
       testID={testID}
       accessibilityLabel={accessibilityLabel}>
