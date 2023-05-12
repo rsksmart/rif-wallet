@@ -34,6 +34,11 @@ export class RnsProcessor {
     saveRnsProcessor(this.index)
   }
 
+  public deleteRnsProcess = (domain: string) => {
+    delete this.index[domain]
+    saveRnsProcessor(this.index)
+  }
+
   public process = async (domain: string, duration: number) => {
     try {
       if (!this.index[domain]?.commitmentRequested) {

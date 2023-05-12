@@ -142,6 +142,7 @@ const resources = {
       purchase_username_duration_label: 'Length of ownership',
       purchase_username_price_label: 'Price',
       purchase_username_button: 'Purchase',
+      cancel_username_button: 'Cancel Registration',
       username: 'Username',
       username_available: 'Username available',
       username_unavailable: 'Username unavailable',
