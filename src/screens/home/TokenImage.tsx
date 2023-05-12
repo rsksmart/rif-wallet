@@ -126,6 +126,9 @@ export const getTransparentIconSource = (
     case 'RIF':
     case 'TRIF':
       return require('../../images/rif-transparent.png')
+    case 'RIFWHITE':
+    case 'TRIFWHITE':
+      return require('../../images/rif-white.png')
     case 'RDOC':
       return require('./../../images/rdoc-transparent.png')
     case 'BTCCB':
