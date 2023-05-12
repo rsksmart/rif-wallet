@@ -12,7 +12,6 @@ import {
 import { RegularText, SemiBoldText } from 'src/components'
 import { createWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
-import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { saveKeyVerificationReminder } from 'storage/MainStorage'
 import { WINDOW_HEIGHT } from 'src/ux/slides/Dimensions'
@@ -21,13 +20,11 @@ export const SecureYourWalletScreen = ({
   navigation,
 }: CreateKeysScreenProps<createKeysRouteNames.SecureYourWallet>) => {
   const dispatch = useAppDispatch()
-  const bitcoinCore = useBitcoinContext() // Required to update mnemonic when wallet is created
   const secureLater = async () => {
     saveKeyVerificationReminder(true)
     dispatch(
       createWallet({
         mnemonic: KeyManagementSystem.create().mnemonic,
-        onSetMnemonic: bitcoinCore?.onSetMnemonic,
       }),
     )
   }

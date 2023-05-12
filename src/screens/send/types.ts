@@ -46,10 +46,6 @@ export interface ITransfer {
 
 export type MixedTokenAndNetworkType = BitcoinNetwork | ITokenWithoutLogo
 
-export type ITokenOrBitcoinWithBIPRequest =
-  | BitcoinNetworkWithBIPRequest
-  | ITokenWithoutLogo
-
 type TransferTransactionStatus =
   | TransferTransactionStatusPending
   | TransferTransactionStatusConfirmed

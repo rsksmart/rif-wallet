@@ -5,8 +5,7 @@ import { shortAddress } from 'lib/utils'
 
 import { AccountBox } from 'components/accounts/AccountBox'
 import { useAppSelector } from 'store/storeUtils'
-import { selectWallets } from 'store/slices/settingsSlice'
-import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
+import { selectBitcoin, selectWallets } from 'store/slices/settingsSlice'
 import { headerLeftOption } from 'navigation/profileNavigator'
 import {
   SettingsScreenProps,
@@ -19,11 +18,11 @@ export const AccountsScreen = ({
   navigation,
 }: SettingsScreenProps<settingsStackRouteNames.AccountsScreen>) => {
   const wallets = useAppSelector(selectWallets)
-  const bitcoinCore = useBitcoinContext()
+  const bitcoinCore = useAppSelector(selectBitcoin)
   const publicKeys = useMemo(
     () =>
       bitcoinCore
-        ? bitcoinCore.networks.map(network => ({
+        ? bitcoinCore.networksArr.map(network => ({
             publicKey: network.bips[0].accountPublicKey,
             shortedPublicKey: shortAddress(network.bips[0].accountPublicKey, 8),
             networkName: network.networkName,

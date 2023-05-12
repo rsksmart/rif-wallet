@@ -27,12 +27,6 @@ import { WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
 import { createWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
 import { defaultIconSize, sharedColors, sharedStyles } from 'shared/constants'
-import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
-
-type Props = CompositeScreenProps<
-  CreateKeysScreenProps<createKeysRouteNames.ImportMasterKey>,
-  RootTabsScreenProps<rootTabsRouteNames.CreateKeysUX>
->
 
 const slidesIndexes = [0, 1, 2, 3]
 
@@ -57,11 +51,12 @@ const headerTextMap = new Map([
   [StatusActions.SUCCESS, 'header_phrase_correct'],
 ])
 
-export const ImportMasterKeyScreen = ({ navigation }: Props) => {
+export const ImportMasterKeyScreen = ({
+  navigation,
+}: CreateKeysScreenProps<createKeysRouteNames.ImportMasterKey>) => {
   const { t } = useTranslation()
 
   const dispatch = useAppDispatch()
-  const bitcoinCore = useBitcoinContext() // Required to update mnemonic when wallet is created
   const words = useRef<string[]>([...initialWords])
   const inputsRef = useRef<Record<string, TextInput>>({})
   const carouselRef = useRef<ICarouselInstance>(null)
@@ -89,7 +84,6 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
       await dispatch(
         createWallet({
           mnemonic: words.current.join(' '),
-          onSetMnemonic: bitcoinCore?.onSetMnemonic,
         }),
       )
     } catch (err) {
@@ -97,7 +91,7 @@ export const ImportMasterKeyScreen = ({ navigation }: Props) => {
         throw new Error(err.toString())
       }
     }
-  }, [dispatch, status, bitcoinCore?.onSetMnemonic])
+  }, [dispatch, status])
 
   const handleSlideChange = useCallback((index: number) => {
     setSelectedSlide(index)

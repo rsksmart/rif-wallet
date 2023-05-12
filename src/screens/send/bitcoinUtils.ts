@@ -1,11 +1,10 @@
-import {
-  BitcoinNetwork,
-  UnspentTransactionType,
-} from '@rsksmart/rif-wallet-bitcoin'
+import { UnspentTransactionType } from '@rsksmart/rif-wallet-bitcoin'
 import { BigNumber } from 'ethers'
 
+import { BitcoinTokenBalanceObject } from 'store/slices/balancesSlice/types'
+
 interface FetchUtxoFunction {
-  token: BitcoinNetwork
+  token: BitcoinTokenBalanceObject
   onSetUtxos?: (data: UnspentTransactionType[]) => void
   onSetBalance?: (balance: BigNumber) => void
 }

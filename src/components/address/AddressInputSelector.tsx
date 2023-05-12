@@ -1,9 +1,10 @@
-import { MixedTokenAndNetworkType } from 'screens/send/types'
+import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
+
 import { AddressInput, AddressInputProps } from './AddressInput'
 import { AddressBitcoinInput } from './AddressBitcoinInput'
 
 interface AddressInputSelectorProps extends AddressInputProps {
-  token: MixedTokenAndNetworkType
+  token: TokenBalanceObject
   chainId: number
   onChangeAddress: (newValue: string, isValid: boolean) => void
 }
@@ -19,7 +20,7 @@ interface AddressInputSelectorProps extends AddressInputProps {
  * @constructor
  */
 export const AddressInputSelector = ({
-  token = {} as MixedTokenAndNetworkType,
+  token = {} as TokenBalanceObject,
   label,
   placeholder,
   initialValue,
@@ -29,7 +30,7 @@ export const AddressInputSelector = ({
   testID,
   chainId,
 }: AddressInputSelectorProps) => {
-  if ('isBitcoin' in token) {
+  if ('satoshis' in token) {
     return (
       <AddressBitcoinInput
         label={label}

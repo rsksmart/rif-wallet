@@ -9,7 +9,6 @@ import {
 import { FormProvider, useForm } from 'react-hook-form'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useTranslation } from 'react-i18next'
-import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
 
 import { shortAddress } from 'lib/utils'
@@ -17,23 +16,20 @@ import { shortAddress } from 'lib/utils'
 import { getAddressDisplayText, Input, Typography } from 'components/index'
 import { sharedColors } from 'shared/constants'
 import { QRGenerator } from 'components/QRGenerator/QRGenerator'
-import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
 import { useAppSelector } from 'store/storeUtils'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { MixedTokenAndNetworkType } from 'screens/send/types'
-import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { selectActiveWallet, selectBitcoin } from 'store/slices/settingsSlice'
 import {
   homeStackRouteNames,
   HomeStackScreenProps,
 } from 'navigation/homeNavigator/types'
 import { getTokenColor } from 'screens/home/tokenColor'
 import { castStyle } from 'shared/utils'
-import { getBalance } from 'screens/home/PortfolioComponent'
 import { selectProfile } from 'store/slices/profileSlice'
 import { getIconSource } from 'screens/home/TokenImage'
 import { ProfileStatus } from 'navigation/profileNavigator/types'
-import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
@@ -48,25 +44,18 @@ export const ReceiveScreen = ({
 }: HomeStackScreenProps<homeStackRouteNames.Receive>) => {
   const { t } = useTranslation()
   const methods = useForm()
-  const bitcoinCore = useBitcoinContext()
+  const bitcoinCore = useAppSelector(selectBitcoin)
 
   const tokenBalances = useAppSelector(selectBalances)
-
-  const assets = useMemo(() => {
-    const newAssets: Array<BitcoinNetwork | ITokenWithoutLogo> = [
-      ...Object.values(tokenBalances),
-    ]
-    if (bitcoinCore?.networks) {
-      newAssets.push(...bitcoinCore.networks)
-    }
-
-    return newAssets
-  }, [bitcoinCore?.networks, tokenBalances])
 
   const { token, networkId } = route.params
   const [selectedAsset, setSelectedAsset] = useState<
     MixedTokenAndNetworkType | undefined
-  >((networkId && bitcoinCore?.networksMap[networkId]) || token || assets[0])
+  >(
+    (networkId && bitcoinCore?.networksMap[networkId]) ||
+      token ||
+      Object.values(tokenBalances)[0],
+  )
   const [address, setAddress] = useState<string>('')
   const [isAddressLoading, setIsAddressLoading] = useState(false)
 
@@ -104,7 +93,7 @@ export const ReceiveScreen = ({
     (asset: MixedTokenAndNetworkType) => {
       if (asset) {
         setIsAddressLoading(true)
-        if (asset instanceof BitcoinNetwork) {
+        if ('bips' in asset) {
           asset.bips[0]
             .fetchExternalAvailableAddress()
             .then(addressReturned => setAddress(addressReturned))
@@ -145,7 +134,7 @@ export const ReceiveScreen = ({
         </View>
         {shouldShowAssets && (
           <ScrollView horizontal>
-            {assets.map(asset => {
+            {Object.values(tokenBalances).map(asset => {
               const isSelected =
                 selectedAsset !== undefined &&
                 selectedAsset.symbol === asset.symbol
@@ -154,14 +143,13 @@ export const ReceiveScreen = ({
                 ? getTokenColor(asset.symbol)
                 : sharedColors.inputInactive
 
-              const balance = getBalance(asset)
               return (
                 <PortfolioCard
                   key={asset.symbol}
                   onPress={onChangeSelectedAsset(asset)}
                   color={color}
                   primaryText={asset.symbol}
-                  secondaryText={balance}
+                  secondaryText={asset.balance}
                   isSelected={isSelected}
                   disabled={isAddressLoading}
                 />

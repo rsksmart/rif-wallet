@@ -1,5 +1,6 @@
-import { IActivityTransaction, IEvent } from 'src/subscriptions/types'
 import { IApiTransaction } from '@rsksmart/rif-wallet-services'
+
+import { IActivityTransaction, IEvent } from 'src/subscriptions/types'
 
 export interface TransactionsState {
   prev: string | null

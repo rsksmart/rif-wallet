@@ -10,13 +10,16 @@ import { ethers } from 'ethers'
 import { abiEnhancer } from 'core/setup'
 import { useAppSelector } from 'store/storeUtils'
 import { selectTransactions } from 'store/slices/transactionsSlice/selectors'
-import { useBitcoinContext } from 'core/hooks/bitcoin/BitcoinContext'
 import { sharedColors } from 'shared/constants'
 import { Typography } from 'components/typography'
 import { castStyle } from 'shared/utils'
 import { ActivityMainScreenProps } from 'shared/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
-import { selectSelectedWallet, selectWallets } from 'store/slices/settingsSlice'
+import {
+  selectBitcoin,
+  selectSelectedWallet,
+  selectWallets,
+} from 'store/slices/settingsSlice'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 
 import { ActivityBasicRow } from './ActivityRow'
@@ -33,11 +36,11 @@ export const ActivityScreen = ({
   const selectedWallet = useAppSelector(selectSelectedWallet)
   const prices = useAppSelector(selectUsdPrices)
   const { t } = useTranslation()
-  const bitcoinCore = useBitcoinContext()
+  const bitcoin = useAppSelector(selectBitcoin)
   const btcTransactionFetcher = useBitcoinTransactionsHandler({
     bip:
-      bitcoinCore && bitcoinCore.networks[0]
-        ? bitcoinCore.networks[0].bips[0]
+      bitcoin && bitcoin.networksArr[0]
+        ? bitcoin.networksArr[0].bips[0]
         : ({} as BIP),
     shouldMergeTransactions: true,
   })

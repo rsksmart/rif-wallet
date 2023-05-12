@@ -10,6 +10,7 @@ import {
   unlockApp,
 } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { SocketsEvents, socketsEvents } from 'src/subscriptions/rifSockets'
 
 import { useAppState } from './useAppState'
 
@@ -40,6 +41,8 @@ export const useStateSubscription = () => {
       }
       if (!active) {
         timerRef.current = BackgroundTimer.setTimeout(() => {
+          socketsEvents.emit(SocketsEvents.DISCONNECT)
+
           setUnlocked(false)
           dispatch(setPreviouslyUnlocked(true))
           dispatch(removeKeysFromState())
@@ -52,6 +55,9 @@ export const useStateSubscription = () => {
       active
     ) {
       dispatch(unlockApp())
+    }
+    return () => {
+      socketsEvents.emit(SocketsEvents.DISCONNECT)
     }
   }, [
     unlocked,

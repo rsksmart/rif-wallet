@@ -1,6 +1,5 @@
 export { SendScreen } from './send/SendScreen'
 export { ReceiveScreen } from './receive/ReceiveScreen'
-export { BalancesScreen } from './balances/BalancesScreen'
 export { ActivityScreen } from './activity/ActivityScreen'
 export { ActivityDetailsScreen } from './activity/ActivityDetailsScreen'
 export { ShowMnemonicScreen } from './info/ShowMnemonicScreen'

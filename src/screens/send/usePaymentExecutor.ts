@@ -1,8 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import {
-  BitcoinNetworkWithBIPRequest,
-  UnspentTransactionType,
-} from '@rsksmart/rif-wallet-bitcoin'
+import { UnspentTransactionType } from '@rsksmart/rif-wallet-bitcoin'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import {
   IApiTransaction,
@@ -16,15 +13,13 @@ import {
   ApiTransactionWithExtras,
 } from 'store/slices/transactionsSlice'
 import { fetchUtxo } from 'screens/send/bitcoinUtils'
-import { AppDispatch } from 'src/redux'
+import { AppDispatch } from 'store/index'
+import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
 
 import { TransactionInformation } from './TransactionInfo'
 import { transferBitcoin } from './transferBitcoin'
 import { transfer } from './transferTokens'
-import {
-  ITokenOrBitcoinWithBIPRequest,
-  OnSetTransactionStatusChange,
-} from './types'
+import { OnSetTransactionStatusChange } from './types'
 
 interface IPaymentExecutorContext {
   setUtxosGlobal: (utxos: UnspentTransactionType[]) => void
@@ -109,7 +104,7 @@ const handleReduxTransactionStatusChange =
   }
 
 export const usePaymentExecutor = (
-  bitcoinNetwork: BitcoinNetworkWithBIPRequest | undefined,
+  bitcoinNetwork: TokenBalanceObject | undefined,
 ) => {
   const [currentTransaction, setCurrentTransaction] =
     useState<TransactionInformation | null>(null)
@@ -126,7 +121,7 @@ export const usePaymentExecutor = (
     wallet,
     chainId,
   }: {
-    token: ITokenOrBitcoinWithBIPRequest
+    token: TokenBalanceObject
     amount: number
     to: string
     wallet: RIFWallet
@@ -144,7 +139,7 @@ export const usePaymentExecutor = (
       })
     } else {
       transfer({
-        token: token as ITokenWithBalance,
+        token: token as unknown as ITokenWithBalance,
         amount: amount.toString(),
         to,
         wallet,
@@ -158,7 +153,7 @@ export const usePaymentExecutor = (
   }
   // When bitcoin network changes - fetch utxos
   useEffect(() => {
-    if (bitcoinNetwork) {
+    if (bitcoinNetwork && 'satoshis' in bitcoinNetwork) {
       fetchUtxo({
         token: bitcoinNetwork,
         onSetUtxos: setUtxos,
