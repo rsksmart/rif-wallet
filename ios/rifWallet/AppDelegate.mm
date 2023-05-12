@@ -29,6 +29,29 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 
 @implementation AppDelegate
 
+// https://dev.to/kpiteng/securing-react-native-application-b9c
+- (void)applicationWillResignActive:(UIApplication *)application {
+    UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+    UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    [blurEffectView setFrame:self.window.bounds];
+    blurEffectView.tag = 1234;
+    blurEffectView.alpha = 0;
+    [self.window addSubview:blurEffectView];
+    [self.window bringSubviewToFront:blurEffectView];
+    [UIView animateWithDuration:0.2 animations:^{
+        blurEffectView.alpha = 1;
+    }];
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    UIVisualEffectView *blurEffectView = [self.window viewWithTag:1234];
+    [UIView animateWithDuration:0.2 animations:^{
+      blurEffectView.alpha = 0;
+    } completion:^(BOOL finished) {
+        [blurEffectView removeFromSuperview];
+    }];
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   RCTAppSetupPrepareApp(application);
