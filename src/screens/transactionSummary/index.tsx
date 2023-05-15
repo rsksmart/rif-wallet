@@ -12,8 +12,10 @@ import {
   AppButtonProps,
   AppButtonWidthVarietyEnum,
 } from 'components/button'
+import { getAddressDisplayText } from 'components/index'
 import { CurrencyValue, TokenBalance } from 'components/token'
 import { Typography } from 'components/typography'
+import { sharedHeaderLeftOptions } from 'navigation/index'
 import {
   RootTabsScreenProps,
   rootTabsRouteNames,
@@ -21,7 +23,6 @@ import {
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { ContactWithAddressRequired } from 'shared/types'
 import { castStyle } from 'shared/utils'
-import { getAddressDisplayText } from 'src/components'
 import { selectActiveWallet, setFullscreen } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 
@@ -58,7 +59,6 @@ export interface TransactionSummaryScreenProps {
   }
   contact: ContactWithAddressRequired
   buttons?: AppButtonProps[]
-  title?: string
   backScreen?: rootTabsRouteNames
 }
 
@@ -72,7 +72,7 @@ export const TransactionSummary = ({
   const dispatch = useAppDispatch()
   const isFocused = useIsFocused()
   const { wallet, chainType } = useAppSelector(selectActiveWallet)
-  const { transaction, contact, title, buttons, backScreen } = route.params
+  const { transaction, contact, buttons, backScreen } = route.params
 
   const iconObject = transactionStatusToIconPropsMap.get(transaction.status)
   const transactionStatusText = transactionStatusDisplayText.get(
@@ -90,6 +90,23 @@ export const TransactionSummary = ({
     }
     return false
   }, [wallet, chainType, contact.address])
+
+  const title = useMemo(() => {
+    if (amIReceiver) {
+      if (transaction.status === TransactionStatus.SUCCESS) {
+        return t('transaction_summary_received_title_success')
+      } else if (transaction.status === TransactionStatus.PENDING) {
+        return t('transaction_summary_received_title_pending')
+      }
+      return t('transaction_summary_receive_title')
+    }
+    if (transaction.status === TransactionStatus.SUCCESS) {
+      return t('transaction_summary_sent_title_success')
+    } else if (transaction.status === TransactionStatus.PENDING) {
+      return t('transaction_summary_sent_title_pending')
+    }
+    return t('transaction_summary_send_title')
+  }, [amIReceiver, t, transaction.status])
 
   const goBack = useMemo(() => {
     if (backScreen) {
@@ -120,16 +137,22 @@ export const TransactionSummary = ({
     }, [goBack]),
   )
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => sharedHeaderLeftOptions(goBack),
+    })
+  }, [goBack, navigation])
+
   return (
     <View style={[styles.screen, { paddingBottom: bottom }]}>
       <ScrollView
         style={sharedStyles.flex}
         contentContainerStyle={styles.contentPadding}>
         <Typography
-          style={styles.sendText}
+          style={styles.title}
           type={'h4'}
           color={sharedColors.inputLabelColor}>
-          {title || t('transaction_summary_title')}
+          {title}
         </Typography>
         <TokenBalance
           firstValue={transaction.tokenValue}
@@ -178,15 +201,23 @@ export const TransactionSummary = ({
               type={'h4'}
               style={[styles.summaryText, sharedStyles.textLeft]}>
               {amIReceiver
-                ? t('transaction_summary_i_receive_text')
+                ? transaction.status === TransactionStatus.SUCCESS
+                  ? t('transaction_summary_i_received_text')
+                  : t('transaction_summary_i_receive_text')
+                : transaction.status === TransactionStatus.SUCCESS
+                ? t('transaction_summary_they_received_text')
                 : t('transaction_summary_they_receive_text')}
             </Typography>
             <Typography
               type={'h4'}
               style={[styles.summaryText, sharedStyles.textLeft]}>
               {amIReceiver
-                ? t('transaction_summary_they_sent_text')
-                : t('transaction_summary_you_sent_text')}
+                ? transaction.status === TransactionStatus.SUCCESS
+                  ? t('transaction_summary_they_sent_text')
+                  : t('transaction_summary_they_send_text')
+                : transaction.status === TransactionStatus.SUCCESS
+                ? t('transaction_summary_you_sent_text')
+                : t('transaction_summary_you_send_text')}
             </Typography>
             <Typography
               type={'h4'}
@@ -279,7 +310,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 22,
   }),
   contentPadding: castStyle.view({ paddingBottom: 114 }),
-  sendText: castStyle.text({
+  title: castStyle.text({
     marginTop: 22,
   }),
   statusContainer: castStyle.view({
