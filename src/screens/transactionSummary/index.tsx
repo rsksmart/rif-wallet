@@ -59,7 +59,6 @@ export interface TransactionSummaryScreenProps {
   }
   contact: ContactWithAddressRequired
   buttons?: AppButtonProps[]
-  title?: string
   backScreen?: rootTabsRouteNames
 }
 
@@ -73,7 +72,7 @@ export const TransactionSummary = ({
   const dispatch = useAppDispatch()
   const isFocused = useIsFocused()
   const { wallet, chainType } = useAppSelector(selectActiveWallet)
-  const { transaction, contact, title, buttons, backScreen } = route.params
+  const { transaction, contact, buttons, backScreen } = route.params
 
   const iconObject = transactionStatusToIconPropsMap.get(transaction.status)
   const transactionStatusText = transactionStatusDisplayText.get(
@@ -91,6 +90,23 @@ export const TransactionSummary = ({
     }
     return false
   }, [wallet, chainType, contact.address])
+
+  const title = useMemo(() => {
+    if (amIReceiver) {
+      if (transaction.status === TransactionStatus.SUCCESS) {
+        return t('transaction_summary_received_title_success')
+      } else if (transaction.status === TransactionStatus.PENDING) {
+        return t('transaction_summary_received_title_pending')
+      }
+      return t('transaction_summary_receive_title')
+    }
+    if (transaction.status === TransactionStatus.SUCCESS) {
+      return t('transaction_summary_sent_title_success')
+    } else if (transaction.status === TransactionStatus.PENDING) {
+      return t('transaction_summary_sent_title_pending')
+    }
+    return t('transaction_summary_send_title')
+  }, [amIReceiver, t, transaction.status])
 
   const goBack = useMemo(() => {
     if (backScreen) {
@@ -133,10 +149,10 @@ export const TransactionSummary = ({
         style={sharedStyles.flex}
         contentContainerStyle={styles.contentPadding}>
         <Typography
-          style={styles.sendText}
+          style={styles.title}
           type={'h4'}
           color={sharedColors.inputLabelColor}>
-          {title || t('transaction_summary_title')}
+          {title}
         </Typography>
         <TokenBalance
           firstValue={transaction.tokenValue}
@@ -294,7 +310,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 22,
   }),
   contentPadding: castStyle.view({ paddingBottom: 114 }),
-  sendText: castStyle.text({
+  title: castStyle.text({
     marginTop: 22,
   }),
   statusContainer: castStyle.view({

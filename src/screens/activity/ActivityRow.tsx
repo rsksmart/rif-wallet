@@ -59,7 +59,6 @@ export const ActivityBasicRow = ({
       contact: {
         address: activityDetails.to,
       },
-      title: t('transaction_summary_sent_title'),
     }),
     [activityDetails],
   )
