@@ -252,7 +252,7 @@ export const TransactionForm = ({
 
   return (
     <>
-      <ScrollView>
+      <ScrollView scrollIndicatorInsets={{ right: -8 }}>
         <FormProvider {...methods}>
           <AddressInputSelector
             label={t('transaction_form_recepient_label')}
