@@ -158,34 +158,34 @@ export const ReceiveScreen = ({
           </ScrollView>
         )}
         {/* QR Component */}
-        <View style={styles.qrView}>
-          {address !== '' && !isAddressLoading && (
-            <QRGenerator
-              key={selectedAsset?.symbol}
-              value={address}
-              imageSource={getIconSource(selectedAsset?.symbol || '')}
-              logoBackgroundColor={sharedColors.inputInactive}
-              testID={TestID.QRCodeDisplay}
-            />
-          )}
-          {isAddressLoading && (
-            <View style={styles.addressLoadingView}>
-              <Typography type="h4" style={styles.loadingTypographyStyle}>
-                {t('loading_qr')}...
-              </Typography>
-              <ActivityIndicator size={'large'} />
-            </View>
-          )}
-        </View>
+        {address !== '' && !isAddressLoading && (
+          <QRGenerator
+            key={selectedAsset?.symbol}
+            value={address}
+            imageSource={getIconSource(selectedAsset?.symbol || '')}
+            logoBackgroundColor={sharedColors.black}
+            testID={TestID.QRCodeDisplay}
+          />
+        )}
+        {isAddressLoading && (
+          <View style={styles.addressLoadingView}>
+            <Typography type="h4" style={styles.loadingTypographyStyle}>
+              {t('loading_qr')}...
+            </Typography>
+            <ActivityIndicator size={'large'} />
+          </View>
+        )}
+
         {/* Username Component */}
         <Input
-          label="Username"
+          containerStyle={styles.usernameInput}
+          label={t('receive_screen_username_label')}
           inputName="username"
           rightIcon={
             <Ionicons
               name="share-outline"
               size={20}
-              color="white"
+              color={sharedColors.white}
               onPress={onShareUsername}
               testID={TestID.ShareUsernameButton}
               disabled={profile.status !== ProfileStatus.USER}
@@ -236,7 +236,6 @@ const styles = StyleSheet.create({
   }),
   qrView: castStyle.view({
     paddingHorizontal: 35,
-    backgroundColor: sharedColors.inputInactive,
     paddingVertical: 84,
     borderRadius: 20,
     marginTop: 5,
@@ -279,4 +278,5 @@ const styles = StyleSheet.create({
     width: '25%',
     textAlign: 'right',
   }),
+  usernameInput: castStyle.view({ marginTop: 30 }),
 })
