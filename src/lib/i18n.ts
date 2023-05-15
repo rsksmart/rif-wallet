@@ -171,7 +171,7 @@ const resources = {
       transaction_summary_i_received_text: 'I received:',
       transaction_summary_you_send_text: 'You send:',
       transaction_summary_you_sent_text: 'You sent:',
-      transaction_summary_they_send_text: 'They sent:',
+      transaction_summary_they_send_text: 'They send:',
       transaction_summary_they_sent_text: 'They sent:',
       transaction_summary_fee_text: 'Fee:',
       transaction_summary_arrives_in_text: 'Arrives in:',
