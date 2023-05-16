@@ -11,8 +11,7 @@ import { AppTouchable } from 'components/index'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 import { ActivityMainScreenProps } from 'shared/types'
 import { castStyle } from 'shared/utils'
-
-import { ActivityRowPresentationObjectType } from './types'
+import { ActivityRowPresentationObject } from 'store/slices/transactionsSlice'
 
 const getStatus = (status: string) => {
   switch (status) {
@@ -26,7 +25,7 @@ const getStatus = (status: string) => {
 }
 
 interface Props {
-  activityDetails: ActivityRowPresentationObjectType
+  activityDetails: ActivityRowPresentationObject
   navigation: ActivityMainScreenProps['navigation']
   backScreen?: rootTabsRouteNames
   style?: StyleProp<ViewStyle>

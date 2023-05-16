@@ -1,16 +1,14 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { UnspentTransactionType } from '@rsksmart/rif-wallet-bitcoin'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
-import {
-  IApiTransaction,
-  ITokenWithBalance,
-} from '@rsksmart/rif-wallet-services'
+import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 
 import { useAppDispatch } from 'store/storeUtils'
 import {
   addPendingTransaction,
   modifyTransaction,
   ApiTransactionWithExtras,
+  ModifyTransaction,
 } from 'store/slices/transactionsSlice'
 import { fetchUtxo } from 'screens/send/bitcoinUtils'
 import { AppDispatch } from 'store/index'
@@ -20,19 +18,6 @@ import { TransactionInformation } from './TransactionInfo'
 import { transferBitcoin } from './transferBitcoin'
 import { transfer } from './transferTokens'
 import { OnSetTransactionStatusChange } from './types'
-
-interface IPaymentExecutorContext {
-  setUtxosGlobal: (utxos: UnspentTransactionType[]) => void
-  setBitcoinBalanceGlobal: (balance: number) => void
-}
-export const PaymentExecutorContext = createContext<IPaymentExecutorContext>({
-  setUtxosGlobal: () => {},
-  setBitcoinBalanceGlobal: () => {},
-})
-
-export const usePaymentExecutorContext = () => {
-  return useContext(PaymentExecutorContext)
-}
 
 // Update transaction based on status
 // Pending will add a pendingTransaction
@@ -79,7 +64,6 @@ const handleReduxTransactionStatusChange =
           dispatch(addPendingTransaction(originTransaction))
           break
         case 'CONFIRMED':
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { txStatus, ...restOfTransaction } = transactionStatusChange
           const {
             blockHash,
@@ -88,10 +72,9 @@ const handleReduxTransactionStatusChange =
             transactionHash,
             transactionIndex,
           } = restOfTransaction
-          const updatedOriginTransaction: Partial<IApiTransaction> &
-            Pick<IApiTransaction, 'hash'> = {
+          const updatedOriginTransaction: ModifyTransaction = {
             gas: gasUsed.toNumber(),
-            hash: transactionHash as string,
+            hash: transactionHash,
             blockHash,
             blockNumber,
             transactionIndex: transactionIndex,

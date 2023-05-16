@@ -22,14 +22,16 @@ export const fetchUtxo = ({
   onSetUtxos,
   onSetBalance,
 }: FetchUtxoFunction) => {
-  token.bips[0].fetchUtxos().then((data: UnspentTransactionType[]) => {
-    const filtered = data.filter(tx => tx.confirmations > 0) // Only confirmed unspent transactions
-    if (onSetUtxos) {
-      onSetUtxos(filtered)
-    }
-    // If onSetBalance calculate it and send it in the function
-    if (onSetBalance) {
-      onSetBalance(calculateBalanceFromUtxos(filtered))
-    }
-  })
+  if (token.bips[0].fetchUtxos) {
+    token.bips[0].fetchUtxos().then((data: UnspentTransactionType[]) => {
+      const filtered = data.filter(tx => tx.confirmations > 0) // Only confirmed unspent transactions
+      if (onSetUtxos) {
+        onSetUtxos(filtered)
+      }
+      // If onSetBalance calculate it and send it in the function
+      if (onSetBalance) {
+        onSetBalance(calculateBalanceFromUtxos(filtered))
+      }
+    })
+  }
 }

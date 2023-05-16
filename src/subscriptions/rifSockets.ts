@@ -7,6 +7,7 @@ import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { AppDispatch } from 'store/index'
 import { rifWalletServicesSocket, abiEnhancer, defaultTokens } from 'core/setup'
 import { addOrUpdateBalances } from 'store/slices/balancesSlice'
+import { UsdPricesState } from 'store/slices/usdPricesSlice'
 
 import { Action, InitAction } from './types'
 import { onSocketChangeEmitted } from './onSocketChangeEmitted'
@@ -22,6 +23,7 @@ interface RifSockets {
   wallet: RIFWallet
   setGlobalError: (err: string) => void
   dispatch: AppDispatch
+  usdPrices: UsdPricesState
   fetcher: RifWalletServicesFetcher<
     Options,
     ReturnType<typeof setInternetCredentials>
@@ -40,11 +42,13 @@ export const rifSockets = ({
   fetcher,
   dispatch,
   setGlobalError,
+  usdPrices,
 }: RifSockets) => {
   const onChange = onSocketChangeEmitted({
     dispatch,
     abiEnhancer,
     wallet,
+    usdPrices,
   })
 
   const connectSocket = () => {

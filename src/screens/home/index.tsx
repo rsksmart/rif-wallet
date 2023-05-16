@@ -2,7 +2,6 @@ import RampSdk from '@ramp-network/react-native-sdk'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
-import { BIP } from '@rsksmart/rif-wallet-bitcoin'
 import { useTranslation } from 'react-i18next'
 import { useIsFocused } from '@react-navigation/native'
 
@@ -39,15 +38,11 @@ import {
 import { selectTransactions } from 'store/slices/transactionsSlice'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { useBitcoinTransactionsHandler } from 'screens/activity/useBitcoinTransactionsHandler'
-import { combineTransactions } from 'src/screens/activity/combineTransactions'
 import { ActivityBasicRow } from 'screens/activity/ActivityRow'
 
 import { HomeInformationBar } from './HomeInformationBar'
 import { getTokenColor } from './tokenColor'
 import { PortfolioComponent } from './PortfolioComponent'
-import { ActivityRowPresentationObjectType } from '../activity/types'
-import { activityDeserializer } from '../activity/activityDeserializer'
 
 export const HomeScreen = ({
   navigation,
@@ -56,13 +51,13 @@ export const HomeScreen = ({
   const isFocused = useIsFocused()
   const dispatch = useAppDispatch()
   const tokenBalances = useAppSelector(selectBalances)
+  const transactions = useAppSelector(selectTransactions)
   const balancesArray = useMemo(
     () => Object.values(tokenBalances),
     [tokenBalances],
   )
   const totalUsdBalance = useAppSelector(selectTotalUsdValue)
   const prices = useAppSelector(selectUsdPrices)
-  const bitcoinCore = useAppSelector(selectBitcoin)
   const { wallet, chainType } = useAppSelector(selectActiveWallet)
   const hideBalance = useAppSelector(selectHideBalance)
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
@@ -82,9 +77,6 @@ export const HomeScreen = ({
     })
   const [showInfoBar, setShowInfoBar] = useState<boolean>(true)
 
-  const [deserializedTransactions, setDeserializedTransactions] = useState<
-    ActivityRowPresentationObjectType[]
-  >([])
   // token or undefined
   const selected = selectedAddress ? tokenBalances[selectedAddress] : undefined
   const selectedColor = getTokenColor(selected?.symbol || '')
@@ -218,42 +210,12 @@ export const HomeScreen = ({
     setShowInfoBar(false)
   }, [])
 
-  const { transactions } = useAppSelector(selectTransactions)
-
-  const btcTransactionFetcher = useBitcoinTransactionsHandler({
-    bip:
-      bitcoinCore && bitcoinCore.networksArr[0]
-        ? bitcoinCore.networksArr[0].bips[0]
-        : ({} as BIP),
-    shouldMergeTransactions: true,
-  })
-
-  useEffect(() => {
-    if (wallet && transactions && btcTransactionFetcher.transactions) {
-      const transactionsCombined = combineTransactions(
-        transactions,
-        btcTransactionFetcher.transactions,
-      )
-      setDeserializedTransactions(
-        transactionsCombined.map(tx => activityDeserializer(tx, prices)),
-      )
-    }
-  }, [wallet, prices, transactions, btcTransactionFetcher.transactions])
-
-  // this code is copied from the activity screen
-  // On load, fetch both BTC and WALLET transactions
-  useEffect(() => {
-    // TODO: rethink btcTransactionFetcher, when adding as dependency
-    // the function gets executed a million times
-    btcTransactionFetcher.fetchTransactions()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   const overrideFirstValue: CurrencyValue = {
     balance: '$' + totalUsdBalance,
     symbol: '',
     symbolType: 'text',
   }
+
   return (
     <ScrollView style={styles.container}>
       <TokenBalance
@@ -293,9 +255,9 @@ export const HomeScreen = ({
         <Typography style={styles.transactionsLabel} type={'h3'}>
           {t('home_screen_transactions')}
         </Typography>
-        {deserializedTransactions.length > 1 ? (
+        {transactions.length > 0 ? (
           <ScrollView>
-            {deserializedTransactions.map((tx, index) => (
+            {transactions.map((tx, index) => (
               <ActivityBasicRow
                 key={tx.id + '   ' + index}
                 activityDetails={tx}
