@@ -64,8 +64,8 @@ Modal.Footer = ModalFooter
 
 interface ConfirmationModalProps {
   title: string
-  imgSource?: ImageSourcePropType
   onOk: () => void
+  imgSource?: ImageSourcePropType
   onCancel?: () => void
   isVisible?: boolean
   description?: string
