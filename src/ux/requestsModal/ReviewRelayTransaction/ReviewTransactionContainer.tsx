@@ -1,5 +1,5 @@
 import { BigNumber, BigNumberish } from 'ethers'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import {
   OverriddableTransactionOptions,
   SendTransactionRequest,
@@ -114,58 +114,8 @@ export const ReviewTransactionContainer = ({
     onCancel()
   }, [onCancel, request])
 
-  useEffect(() => {
-    if (enhancedTransactionRequest && txCostInRif) {
-      const { to, symbol, value } = enhancedTransactionRequest
-      value &&
-        to &&
-        navigationContainerRef.navigate(rootTabsRouteNames.TransactionSummary, {
-          transaction: {
-            tokenValue: {
-              balance: value.toString(),
-              symbolType: 'icon',
-              symbol: symbol ?? TokenSymbol.RIF,
-            },
-            usdValue: {
-              balance: convertTokenToUSD(value, tokenQuote).toString(),
-              symbolType: 'text',
-              symbol: '$',
-            },
-            feeValue: rifFee,
-            time: 'approx 1 min',
-            total: value?.toString(),
-          },
-          contact: {
-            address: to,
-          },
-          buttons: [
-            {
-              title: t('transaction_summary_title_confirm_button_title'),
-              onPress: confirmTransaction,
-              color: sharedColors.white,
-              textColor: sharedColors.black,
-            },
-            {
-              style: { marginTop: 10 },
-              title: t('transaction_summary_title_cancel_button_title'),
-              onPress: cancelTransaction,
-              backgroundVariety: AppButtonBackgroundVarietyEnum.OUTLINED,
-            },
-          ],
-        })
-    }
-  }, [
-    t,
-    tokenQuote,
-    cancelTransaction,
-    confirmTransaction,
-    txCostInRif,
-    enhancedTransactionRequest,
-    rifFee,
-  ])
-
   const {
-    to,
+    to = '',
     symbol,
     value = '0',
     functionName = '',
@@ -204,7 +154,7 @@ export const ReviewTransactionContainer = ({
     ],
     functionName,
   }
-  
+
   return (
     <View style={styles.container}>
       <TransactionSummaryComponent {...data} isLoaded={isLoaded} />
