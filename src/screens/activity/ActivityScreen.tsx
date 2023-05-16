@@ -28,7 +28,7 @@ export const ActivityScreen = ({
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const transactions = useAppSelector(selectTransactions)
-  const loading = useAppSelector(selectTransactionsLoading)
+  const areTransasctionsLoading = useAppSelector(selectTransactionsLoading)
 
   const onRefresh = useCallback(() => {
     dispatch(fetchBitcoinTransactions({}))
@@ -41,7 +41,7 @@ export const ActivityScreen = ({
         initialNumToRender={10}
         keyExtractor={item => item.id}
         onEndReachedThreshold={0.2}
-        refreshing={loading}
+        refreshing={areTransasctionsLoading}
         renderItem={({ item }) => (
           <ActivityBasicRow
             activityDetails={item}
@@ -52,7 +52,7 @@ export const ActivityScreen = ({
         style={styles.flatlistViewStyle}
         refreshControl={
           <RefreshControl
-            refreshing={loading}
+            refreshing={areTransasctionsLoading}
             tintColor="white"
             onRefresh={onRefresh}
           />
@@ -60,7 +60,7 @@ export const ActivityScreen = ({
         ListHeaderComponent={
           <View style={styles.transactionsViewStyle}>
             <Typography type="h2">{t('home_screen_transactions')}</Typography>
-            {transactions.length === 0 && !loading && (
+            {transactions.length === 0 && !areTransasctionsLoading && (
               <Typography type="h4" style={styles.listEmptyTextStyle}>
                 {t('activity_list_empty')}
               </Typography>
@@ -69,7 +69,7 @@ export const ActivityScreen = ({
         }
         ListEmptyComponent={
           <>
-            {!loading && (
+            {!areTransasctionsLoading && (
               <Image
                 source={require('/assets/images/no-transactions.png')}
                 resizeMode="contain"
