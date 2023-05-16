@@ -37,7 +37,7 @@ import {
   BarButtonGroupContainer,
   BarButtonGroupIcon,
 } from 'components/BarButtonGroup/BarButtonGroup'
-import { ConfirmationModal } from 'components/modal/ConfirmationModal'
+import { ConfirmationModal } from 'components/modal'
 import { BasicRow } from 'components/BasicRow'
 import { deleteContactByAddress } from 'store/slices/contactsSlice'
 import { selectTransactions } from 'store/slices/transactionsSlice'
@@ -146,9 +146,11 @@ export const ContactDetails = ({
     <View style={styles.screen}>
       <ConfirmationModal
         isVisible={isDeleteContactModalVisible}
-        imgSrc={require('../../images/contact-trash.png')}
-        title={`${t('Are you sure you want to delete')} ${contact.name}?`}
-        okText={t('Delete')}
+        title={t('contacts_delete_contact_title')}
+        description={`${t('contacts_delete_contact_description')}${
+          contact.name
+        }?`}
+        okText={t('contacts_delete_contact_button_delete')}
         cancelText={t('Cancel')}
         onOk={onConfirmDeleteContact}
         onCancel={onHideConfirmDeleteModal}
