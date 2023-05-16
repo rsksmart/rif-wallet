@@ -4,8 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
-import { roundBalance } from 'lib/utils'
-
 import { WINDOW_WIDTH, WINDOW_HEIGHT } from 'src/ux/slides/Dimensions'
 import { useAppSelector } from 'store/storeUtils'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
@@ -43,7 +41,6 @@ export interface TransactionSummaryScreenProps {
   }
   contact: ContactWithAddressRequired
   buttons?: AppButtonProps[]
-  title?: string
   functionName?: string
   goBack?: () => void
   isLoaded?: boolean
@@ -52,7 +49,6 @@ export interface TransactionSummaryScreenProps {
 export const TransactionSummaryComponent = ({
   transaction,
   contact,
-  title,
   buttons,
   functionName,
   goBack,
@@ -84,6 +80,23 @@ export const TransactionSummaryComponent = ({
     setUsdButtonActive(prev => !prev)
   }, [])
 
+  const title = useMemo(() => {
+    if (amIReceiver) {
+      if (transaction.status === TransactionStatus.SUCCESS) {
+        return t('transaction_summary_received_title_success')
+      } else if (transaction.status === TransactionStatus.PENDING) {
+        return t('transaction_summary_received_title_pending')
+      }
+      return t('transaction_summary_receive_title')
+    }
+    if (transaction.status === TransactionStatus.SUCCESS) {
+      return t('transaction_summary_sent_title_success')
+    } else if (transaction.status === TransactionStatus.PENDING) {
+      return t('transaction_summary_sent_title_pending')
+    }
+    return t('transaction_summary_send_title')
+  }, [amIReceiver, t, transaction.status])
+
   return (
     <View style={[styles.screen, { paddingBottom: bottom }]}>
       {isLoaded === false && (
@@ -95,10 +108,10 @@ export const TransactionSummaryComponent = ({
         style={sharedStyles.flex}
         contentContainerStyle={styles.contentPadding}>
         <Typography
-          style={styles.sendText}
+          style={styles.title}
           type={'h4'}
           color={sharedColors.inputLabelColor}>
-          {title || t('transaction_summary_title')}
+          {title}
         </Typography>
         <TokenBalance
           firstValue={transaction.tokenValue}
@@ -107,7 +120,7 @@ export const TransactionSummaryComponent = ({
         />
         {functionName && (
           <Typography
-            style={styles.sendText}
+            style={styles.title}
             type={'body1'}
             color={sharedColors.inputLabelColor}>
             {t('transaction_summary_function_type')}: {functionName}
@@ -155,15 +168,23 @@ export const TransactionSummaryComponent = ({
               type={'h4'}
               style={[styles.summaryText, sharedStyles.textLeft]}>
               {amIReceiver
-                ? t('transaction_summary_i_receive_text')
+                ? transaction.status === TransactionStatus.SUCCESS
+                  ? t('transaction_summary_i_received_text')
+                  : t('transaction_summary_i_receive_text')
+                : transaction.status === TransactionStatus.SUCCESS
+                ? t('transaction_summary_they_received_text')
                 : t('transaction_summary_they_receive_text')}
             </Typography>
             <Typography
               type={'h4'}
               style={[styles.summaryText, sharedStyles.textLeft]}>
               {amIReceiver
-                ? t('transaction_summary_they_sent_text')
-                : t('transaction_summary_you_sent_text')}
+                ? transaction.status === TransactionStatus.SUCCESS
+                  ? t('transaction_summary_they_sent_text')
+                  : t('transaction_summary_they_send_text')
+                : transaction.status === TransactionStatus.SUCCESS
+                ? t('transaction_summary_you_sent_text')
+                : t('transaction_summary_you_send_text')}
             </Typography>
             <Typography
               type={'h4'}
@@ -183,20 +204,14 @@ export const TransactionSummaryComponent = ({
               type={'h4'}
               style={[styles.summaryText, sharedStyles.textRight]}>
               {usdButtonActive
-                ? `${transaction.usdValue.symbol}${roundBalance(
-                    +transaction.usdValue.balance,
-                    2,
-                  )}`
+                ? `${transaction.usdValue.symbol}${transaction.usdValue.balance}`
                 : `${transaction.tokenValue.symbol} ${transaction.tokenValue.balance}`}
             </Typography>
             <Typography
               type={'h4'}
               style={[styles.summaryText, sharedStyles.textRight]}>
               {usdButtonActive
-                ? `${transaction.usdValue.symbol}${roundBalance(
-                    +transaction.usdValue.balance,
-                    2,
-                  )}`
+                ? `${transaction.usdValue.symbol}${transaction.usdValue.balance}`
                 : `${transaction.tokenValue.symbol} ${transaction.total}`}
             </Typography>
             <Typography
@@ -256,7 +271,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 22,
   }),
   contentPadding: castStyle.view({ paddingBottom: 114 }),
-  sendText: castStyle.text({
+  title: castStyle.text({
     marginTop: 22,
   }),
   statusContainer: castStyle.view({
