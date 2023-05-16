@@ -7,10 +7,8 @@ import {
 } from 'react-native'
 import RNModal from 'react-native-modal'
 
-import { colors } from 'src/styles'
-import { fonts } from 'src/styles/fonts'
-import { sharedColors, sharedStyles } from 'src/shared/constants'
-import { castStyle } from 'src/shared/utils'
+import { sharedColors, sharedStyles } from 'shared/constants'
+import { castStyle } from 'shared/utils'
 
 import { Typography } from '../typography'
 import { AppButton, AppButtonBackgroundVarietyEnum } from '../button'
@@ -173,18 +171,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 24,
   }),
-  image: {
+  image: castStyle.image({
     width: '70%',
     height: '100%',
     alignSelf: 'center',
-  },
-  title: castStyle.text({
-    fontFamily: fonts.regular,
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    paddingHorizontal: 60,
-    color: colors.text.primary,
   }),
   description: castStyle.text({
     marginTop: 12,
