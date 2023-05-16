@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next'
 import { Typography, Avatar } from 'components/index'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { TokenImage } from 'screens/home/TokenImage'
+import { roundBalance } from 'src/lib/utils'
 
 export enum StatusEnum {
   PENDING = 'PENDING',
@@ -28,11 +28,6 @@ const COLORS_FOR_STATUS = {
   [StatusEnum.FAILED]: sharedColors.danger,
 }
 
-const TX_TYPE_SIGNS = {
-  [TransactionTypeEnum.SENT]: '-',
-  [TransactionTypeEnum.RECEIVED]: '+',
-}
-
 interface StatusTextProps {
   status: StatusEnum | undefined
 }
@@ -45,10 +40,9 @@ export interface BasicRowProps {
     imageSource?: ImageSourcePropType
     icon?: ReactElement
   }
-  amount?: string
+  amount?: number
   status?: StatusTextProps['status']
   error?: string
-  txType?: TransactionTypeEnum
   usdAmount?: string
   style?: StyleProp<ViewStyle>
   symbol?: string
@@ -59,7 +53,6 @@ export const BasicRow = ({
   status,
   error,
   amount,
-  txType,
   usdAmount,
   style,
   avatar,
@@ -77,7 +70,7 @@ export const BasicRow = ({
     </View>
     <View style={styles.secondView}>
       <Typography
-        type="body1"
+        type="body2"
         style={styles.bold}
         numberOfLines={1}
         ellipsizeMode="tail">
@@ -96,39 +89,28 @@ export const BasicRow = ({
     </View>
     <View style={styles.thirdView}>
       <View style={styles.amountView}>
-        <View style={styles.flexGrowZero}>
-          {txType && (
-            <Typography type="body1" style={styles.horizontalPadding}>
-              {TX_TYPE_SIGNS[txType]}
-            </Typography>
-          )}
-        </View>
-        {symbol && (
-          <View style={[styles.flexGrowZero, styles.symbolViewStyle]}>
-            <TokenImage symbol={symbol} transparent color={''} />
-          </View>
-        )}
-        {amount ? (
+        {amount && (
           <Typography
-            type="body1"
+            type="body2"
             style={[
               styles.flexShrinkOne,
               status === StatusEnum.FAILED ? styles.failedTransaction : {},
             ]}
             numberOfLines={1}
-            ellipsizeMode="tail">
-            {amount}
+            ellipsizeMode="tail"
+            adjustsFontSizeToFit>
+            {roundBalance(amount, 4)} {symbol}
           </Typography>
-        ) : null}
+        )}
       </View>
       <View style={styles.usdAmountView}>
-        {usdAmount && txType && (
+        {usdAmount && (
           <Typography
             type="labelLight"
             numberOfLines={1}
             ellipsizeMode="tail"
             style={styles.usdText}>
-            {TX_TYPE_SIGNS[txType]} ${usdAmount}
+            ${usdAmount}
           </Typography>
         )}
       </View>
@@ -217,8 +199,4 @@ const styles = StyleSheet.create({
   failedTransaction: {
     textDecorationLine: 'line-through',
   },
-  symbolViewStyle: castStyle.view({
-    marginRight: 2,
-    alignSelf: 'center',
-  }),
 })

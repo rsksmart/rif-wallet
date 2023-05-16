@@ -7,12 +7,12 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 
 import { roundBalance } from 'lib/utils'
 
+import { useIsMyAddress } from 'components/address/useIsMyAddress'
 import {
   AppButton,
   AppButtonProps,
   AppButtonWidthVarietyEnum,
 } from 'components/button'
-import { getAddressDisplayText } from 'components/index'
 import { CurrencyValue, TokenBalance } from 'components/token'
 import { Typography } from 'components/typography'
 import { sharedHeaderLeftOptions } from 'navigation/index'
@@ -23,8 +23,8 @@ import {
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { ContactWithAddressRequired } from 'shared/types'
 import { castStyle } from 'shared/utils'
-import { selectActiveWallet, setFullscreen } from 'store/slices/settingsSlice'
-import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { setFullscreen } from 'store/slices/settingsSlice'
+import { useAppDispatch } from 'store/storeUtils'
 
 export enum TransactionStatus {
   SUCCESS = 'success',
@@ -71,25 +71,13 @@ export const TransactionSummary = ({
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const isFocused = useIsFocused()
-  const { wallet, chainType } = useAppSelector(selectActiveWallet)
   const { transaction, contact, buttons, backScreen } = route.params
+  const amIReceiver = useIsMyAddress(contact.address)
 
   const iconObject = transactionStatusToIconPropsMap.get(transaction.status)
   const transactionStatusText = transactionStatusDisplayText.get(
     transaction.status,
   )
-
-  const amIReceiver = useMemo(() => {
-    if (wallet && chainType) {
-      const myAddress = getAddressDisplayText(
-        wallet.smartWalletAddress,
-        chainType,
-      ).checksumAddress
-
-      return myAddress.toLowerCase() === contact.address.toLowerCase()
-    }
-    return false
-  }, [wallet, chainType, contact.address])
 
   const title = useMemo(() => {
     if (amIReceiver) {
@@ -237,15 +225,21 @@ export const TransactionSummary = ({
               type={'h4'}
               style={[styles.summaryText, sharedStyles.textRight]}>
               {usdButtonActive
-                ? `${transaction.usdValue.symbol}${transaction.usdValue.balance}`
-                : `${transaction.tokenValue.symbol} ${transaction.tokenValue.balance}`}
+                ? `${transaction.usdValue.symbol}${roundBalance(
+                    +transaction.usdValue.balance,
+                    2,
+                  )}`
+                : `${transaction.tokenValue.balance} ${transaction.tokenValue.symbol}`}
             </Typography>
             <Typography
               type={'h4'}
               style={[styles.summaryText, sharedStyles.textRight]}>
               {usdButtonActive
-                ? `${transaction.usdValue.symbol}${transaction.usdValue.balance}`
-                : `${transaction.tokenValue.symbol} ${transaction.total}`}
+                ? `${transaction.usdValue.symbol}${roundBalance(
+                    +transaction.usdValue.balance,
+                    2,
+                  )}`
+                : `${transaction.total} ${transaction.tokenValue.symbol}`}
             </Typography>
             <Typography
               type={'h4'}
