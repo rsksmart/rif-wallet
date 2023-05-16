@@ -18,10 +18,8 @@ import { sharedStyles } from 'shared/constants'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
 
 import { ScreenWithWallet } from '../types'
-import { TransactionInfo } from './TransactionInfo'
 import { TransactionForm } from './TransactionForm'
 import { usePaymentExecutor } from './usePaymentExecutor'
-import { useFetchBitcoinNetworksAndTokens } from './useFetchBitcoinNetworksAndTokens'
 import { CongratulationsComponent } from './CongratulationsComponent'
 
 export const SendScreen = ({
