@@ -31,7 +31,12 @@ export const screenOptionsWithHeader = (
 ): HeaderProps => {
   return {
     headerShown: true,
-    headerLeft: () => (backButtonDisabled ? null : sharedHeaderLeftOptions()),
+    headerLeft: props =>
+      backButtonDisabled
+        ? null
+        : sharedHeaderLeftOptions(
+            'onPress' in props ? props.onPress : () => {},
+          ),
     headerTitle: props => (
       <>
         <Typography type={'h3'} style={props.style}>
