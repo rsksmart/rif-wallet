@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { StyleProp, StyleSheet, ViewStyle } from 'react-native'
+import { useTranslation } from 'react-i18next'
 
 import { roundBalance, shortAddress } from 'lib/utils'
 
@@ -37,13 +38,16 @@ export const ActivityBasicRow = ({
   backScreen,
   style,
 }: Props) => {
+  const { t } = useTranslation()
   const amIReceiver = useIsMyAddress(activityDetails.to)
 
   const label = useMemo(() => {
-    return `${amIReceiver ? 'Received from' : 'Sent to'} ${shortAddress(
-      activityDetails.to,
-    )}`
-  }, [activityDetails.to, amIReceiver])
+    return (
+      (amIReceiver ? t('received_from') : t('sent_to')) +
+      ' ' +
+      shortAddress(activityDetails.to)
+    )
+  }, [activityDetails.to, amIReceiver, t])
 
   const txSummary: TransactionSummaryScreenProps = useMemo(
     () => ({
