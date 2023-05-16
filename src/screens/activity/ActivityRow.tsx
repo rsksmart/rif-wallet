@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
-import { StyleProp, StyleSheet, ViewStyle } from 'react-native'
 import { useTranslation } from 'react-i18next'
+import { StyleProp, StyleSheet, ViewStyle } from 'react-native'
 
 import { roundBalance, shortAddress } from 'lib/utils'
 
@@ -11,8 +11,10 @@ import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 import { ActivityMainScreenProps } from 'shared/types'
 import { castStyle } from 'shared/utils'
+import { isMyAddress } from 'src/components/address/lib'
+import { selectActiveWallet } from 'src/redux/slices/settingsSlice'
+import { useAppSelector } from 'src/redux/storeUtils'
 import { ActivityRowPresentationObject } from 'store/slices/transactionsSlice'
-import { useIsMyAddress } from 'src/components/address/useIsMyAddress'
 
 const getStatus = (status: string) => {
   switch (status) {
@@ -39,8 +41,12 @@ export const ActivityBasicRow = ({
   style,
 }: Props) => {
   const { t } = useTranslation()
-  const amIReceiver = useIsMyAddress(activityDetails.to)
+  const { wallet } = useAppSelector(selectActiveWallet)
 
+  const amIReceiver = useMemo(
+    () => isMyAddress(wallet, activityDetails.to),
+    [wallet, activityDetails],
+  )
   const label = useMemo(() => {
     return (
       (amIReceiver ? t('received_from') : t('sent_to')) +

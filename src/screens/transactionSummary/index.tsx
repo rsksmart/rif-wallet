@@ -7,7 +7,6 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 
 import { roundBalance } from 'lib/utils'
 
-import { useIsMyAddress } from 'components/address/useIsMyAddress'
 import {
   AppButton,
   AppButtonProps,
@@ -23,8 +22,9 @@ import {
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { ContactWithAddressRequired } from 'shared/types'
 import { castStyle } from 'shared/utils'
-import { setFullscreen } from 'store/slices/settingsSlice'
-import { useAppDispatch } from 'store/storeUtils'
+import { selectActiveWallet, setFullscreen } from 'store/slices/settingsSlice'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { isMyAddress } from 'src/components/address/lib'
 
 export enum TransactionStatus {
   SUCCESS = 'success',
@@ -71,8 +71,13 @@ export const TransactionSummary = ({
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const isFocused = useIsFocused()
+  const { wallet } = useAppSelector(selectActiveWallet)
   const { transaction, contact, buttons, backScreen } = route.params
-  const amIReceiver = useIsMyAddress(contact.address)
+
+  const amIReceiver = useMemo(
+    () => isMyAddress(wallet, contact.address),
+    [wallet, contact.address],
+  )
 
   const iconObject = transactionStatusToIconPropsMap.get(transaction.status)
   const transactionStatusText = transactionStatusDisplayText.get(

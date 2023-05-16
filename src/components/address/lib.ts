@@ -16,7 +16,7 @@ export enum AddressValidationMessage {
  * This will validate if the text is a valid RNS Domain (matches *.rsk)
  * @param text
  */
-export const isDomain = (text: string) => {
+export const isDomain = (text: string): boolean => {
   const re = /\.rsk$/ // match *.rsk domains
   return re.test(String(text).toLowerCase())
 }
@@ -27,7 +27,7 @@ export const isDomain = (text: string) => {
  * @param {number} chainId defined in erip-155
  * @returns {string} null if it's valid and an error message if it is not
  */
-export const validateAddress = (address: string, chainId = 31) => {
+export const validateAddress = (address: string, chainId = 31): string => {
   if (isDomain(address)) {
     return AddressValidationMessage.DOMAIN
   }
@@ -47,6 +47,18 @@ export const validateAddress = (address: string, chainId = 31) => {
   }
 
   return AddressValidationMessage.VALID
+}
+
+export const isMyAddress = (
+  wallet: { smartWalletAddress: string } | null,
+  address: string,
+): boolean => {
+  if (wallet) {
+    const myAddress = toChecksumAddress(wallet.smartWalletAddress)
+    return myAddress.toLowerCase() === address.toLowerCase()
+  }
+
+  return false
 }
 
 export { toChecksumAddress }
