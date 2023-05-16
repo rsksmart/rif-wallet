@@ -37,6 +37,10 @@ import { rnsManagerStyles } from './rnsManagerStyles'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.PurchaseDomain>
 
+export enum TestID {
+  CancelRegistrationButton = 'PurchaseDomainScreen.CancelRegistrationButton',
+  PurchaseDomainButton = 'PurchaseDomainScreen.PurchaseDomainButton',
+}
 export const PurchaseDomainScreen = ({
   navigation,
   wallet,
@@ -126,7 +130,7 @@ export const PurchaseDomainScreen = ({
         <AppButton
           style={rnsManagerStyles.button}
           onPress={registerDomain}
-          accessibilityLabel={t('purchase_username_button')}
+          accessibilityLabel={TestID.PurchaseDomainButton}
           title={t('purchase_username_button')}
           color={sharedColors.white}
           textColor={sharedColors.black}
@@ -134,7 +138,7 @@ export const PurchaseDomainScreen = ({
         <AppButton
           style={rnsManagerStyles.button}
           onPress={onCancelDomainTap}
-          accessibilityLabel={t('cancel_username_button')}
+          accessibilityLabel={TestID.CancelRegistrationButton}
           title={t('cancel_username_button')}
           color={sharedColors.white}
           textColor={sharedColors.white}
