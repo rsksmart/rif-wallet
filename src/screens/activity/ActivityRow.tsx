@@ -19,7 +19,7 @@ const getStatus = (status: string) => {
     case 'pending':
       return StatusEnum.PENDING
     case 'failed':
-      return StatusEnum.PENDING
+      return StatusEnum.FAILED
     default:
       return undefined
   }

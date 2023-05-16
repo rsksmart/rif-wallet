@@ -8,10 +8,11 @@ import {
 } from 'react-native'
 import { useTranslation } from 'react-i18next'
 
+import { roundBalance } from 'lib/utils'
+
 import { Typography, Avatar } from 'components/index'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { roundBalance } from 'src/lib/utils'
 
 export enum StatusEnum {
   PENDING = 'PENDING',
