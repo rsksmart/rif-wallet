@@ -98,6 +98,11 @@ export const ActivityBasicRow = ({
     }
   }, [navigation, txSummary, backScreen])
 
+  const usdAmount = useMemo(
+    () => roundBalance(activityDetails.price, 2).toFixed(2),
+    [activityDetails.price],
+  )
+
   return (
     <AppTouchable
       width={'100%'}
@@ -111,6 +116,7 @@ export const ActivityBasicRow = ({
         avatar={{ name: 'A' }}
         secondaryLabel={activityDetails.timeHumanFormatted}
         addressToSearch={activityDetails.to}
+        usdAmount={usdAmount}
       />
     </AppTouchable>
   )

@@ -4,6 +4,8 @@ import { ScrollView, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
+import { roundBalance } from 'lib/utils'
+
 import { CurrencyValue, TokenBalance } from 'components/token'
 import {
   sharedColors,
@@ -197,14 +199,20 @@ export const TransactionSummaryComponent = ({
               type={'h4'}
               style={[styles.summaryText, sharedStyles.textRight]}>
               {usdButtonActive
-                ? `${transaction.usdValue.symbol}${transaction.usdValue.balance}`
+                ? `${transaction.usdValue.symbol}${roundBalance(
+                    +transaction.usdValue.balance,
+                    2,
+                  ).toFixed(2)}`
                 : `${transaction.tokenValue.balance} ${transaction.tokenValue.symbol}`}
             </Typography>
             <Typography
               type={'h4'}
               style={[styles.summaryText, sharedStyles.textRight]}>
               {usdButtonActive
-                ? `${transaction.usdValue.symbol}${transaction.usdValue.balance}`
+                ? `${transaction.usdValue.symbol}${roundBalance(
+                    +transaction.usdValue.balance,
+                    2,
+                  ).toFixed(2)}`
                 : `${transaction.total} ${transaction.tokenValue.symbol}`}
             </Typography>
             <Typography
