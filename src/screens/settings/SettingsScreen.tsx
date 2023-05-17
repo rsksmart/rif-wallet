@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next'
 import { Platform, ScrollView, StyleSheet, View } from 'react-native'
 
 import { AppTouchable, Typography } from 'components/index'
-import { SETTINGS, getWalletSetting } from 'core/config'
+import { getWalletSetting } from 'core/config'
+import { SETTINGS } from 'core/types'
 import { headerLeftOption } from 'navigation/profileNavigator'
 import {
   SettingsScreenProps,

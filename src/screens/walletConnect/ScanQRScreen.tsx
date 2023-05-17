@@ -3,7 +3,8 @@ import { decodeString } from '@rsksmart/rif-wallet-eip681'
 import { useContext, useState } from 'react'
 
 import { QRCodeScanner } from 'components/QRCodeScanner'
-import { getWalletSetting, SETTINGS } from 'core/config'
+import { getWalletSetting } from 'core/config'
+import { SETTINGS } from 'core/types'
 import { networkType } from 'core/setup'
 import { homeStackRouteNames } from 'navigation/homeNavigator/types'
 import {
