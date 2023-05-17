@@ -12,7 +12,12 @@ import {
 } from 'lib/rns'
 
 import { AvatarIcon } from 'components/icons/AvatarIcon'
-import { AppButton, Input, Typography } from 'components/index'
+import {
+  AppButton,
+  AppButtonBackgroundVarietyEnum,
+  Input,
+  Typography,
+} from 'components/index'
 import { headerLeftOption } from 'navigation/profileNavigator'
 import {
   profileStackRouteNames,
@@ -20,7 +25,11 @@ import {
 } from 'navigation/profileNavigator/types'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { purchaseUsername, selectProfile } from 'store/slices/profileSlice'
+import {
+  deleteProfile,
+  purchaseUsername,
+  selectProfile,
+} from 'store/slices/profileSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { ScreenWithWallet } from 'screens/types'
 
@@ -28,6 +37,10 @@ import { rnsManagerStyles } from './rnsManagerStyles'
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.PurchaseDomain>
 
+export enum TestID {
+  CancelRegistrationButton = 'PurchaseDomainScreen.CancelRegistrationButton',
+  PurchaseDomainButton = 'PurchaseDomainScreen.PurchaseDomainButton',
+}
 export const PurchaseDomainScreen = ({
   navigation,
   wallet,
@@ -74,6 +87,12 @@ export const PurchaseDomainScreen = ({
     }
   }, [alias, dispatch, rnsProcessor, navigation])
 
+  const onCancelDomainTap = useCallback(async () => {
+    const domain = alias.split('.')[0]
+    rnsProcessor.deleteRnsProcess(domain)
+    dispatch(deleteProfile())
+  }, [alias, dispatch, rnsProcessor])
+
   return (
     <ScrollView style={rnsManagerStyles.scrollContainer}>
       <View style={rnsManagerStyles.container}>
@@ -111,10 +130,19 @@ export const PurchaseDomainScreen = ({
         <AppButton
           style={rnsManagerStyles.button}
           onPress={registerDomain}
-          accessibilityLabel={t('purchase_username_button')}
+          accessibilityLabel={TestID.PurchaseDomainButton}
           title={t('purchase_username_button')}
           color={sharedColors.white}
           textColor={sharedColors.black}
+        />
+        <AppButton
+          style={rnsManagerStyles.button}
+          onPress={onCancelDomainTap}
+          accessibilityLabel={TestID.CancelRegistrationButton}
+          title={t('cancel_username_button')}
+          color={sharedColors.white}
+          textColor={sharedColors.white}
+          backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
         />
       </View>
     </ScrollView>
