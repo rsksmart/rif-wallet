@@ -235,7 +235,8 @@ export const TransactionSummaryComponent = ({
           </Typography>
           <Typography
             type={'label'}
-            style={[styles.summaryText, sharedStyles.textRight]}>
+            style={[styles.summaryText, sharedStyles.textRight]}
+            adjustsFontSizeToFit>
             {contact.address}
           </Typography>
         </View>
