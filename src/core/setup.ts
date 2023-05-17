@@ -21,7 +21,7 @@ export const networkType = getWalletSetting(
   SETTINGS.DEFAULT_CHAIN_TYPE,
 ) as ChainTypeEnum
 
-const rpcUrl = getWalletSetting(SETTINGS.RPC_URL, networkType)
+const rpcUrl = getWalletSetting(SETTINGS.RPC_URL)
 
 const jsonRpcProvider = new providers.JsonRpcProvider(rpcUrl)
 
