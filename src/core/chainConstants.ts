@@ -12,8 +12,8 @@ export const chainTypes = {
 }
 
 export const chainTypesById = {
-  30: [ChainTypeEnum.MAINNET],
-  31: [ChainTypeEnum.TESTNET],
+  30: ChainTypeEnum.MAINNET,
+  31: ChainTypeEnum.TESTNET,
 }
 
 /**
