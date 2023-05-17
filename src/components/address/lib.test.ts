@@ -29,8 +29,8 @@ describe('validate address', () => {
       smartWalletAddress: testnetCase.lower,
     }
     test('same address', () =>
-      expect(isMyAddress(testnetCase.checksummed, wallet)).toBeTruthy())
+      expect(isMyAddress(wallet, testnetCase.checksummed)).toBeTruthy())
     test('different address', () =>
-      expect(isMyAddress('0x1234567890', wallet)).toBeFalsy())
+      expect(isMyAddress(wallet, '0x1234567890')).toBeFalsy())
   })
 })
