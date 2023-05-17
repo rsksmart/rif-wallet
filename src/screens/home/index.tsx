@@ -257,7 +257,7 @@ export const HomeScreen = ({
         </Typography>
         {transactions.length > 0 ? (
           <ScrollView>
-            {transactions.map((tx, index) => (
+            {transactions.slice(0, 5).map((tx, index) => (
               <ActivityBasicRow
                 key={tx.id + '   ' + index}
                 activityDetails={tx}
