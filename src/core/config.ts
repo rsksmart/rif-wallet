@@ -1,30 +1,14 @@
-import Config from 'react-native-config'
 import testnetContracts from '@rsksmart/rsk-testnet-contract-metadata'
 import mainnetContracts from '@rsksmart/rsk-contract-metadata'
-
-import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import config from 'config.json'
-export const defaultChainType =
-  (Config.DEFAULT_CHAIN_TYPE as ChainTypeEnum) ?? ChainTypeEnum.TESTNET
-export const isDefaultChainTypeMainnet =
-  defaultChainType === ChainTypeEnum.MAINNET
-export const defaultChainId =
-  defaultChainType === ChainTypeEnum.MAINNET ? '30' : '31'
+import ReactNativeConfig from 'react-native-config'
 
-export enum SETTINGS {
-  DEFAULT_CHAIN_TYPE = 'DEFAULT_CHAIN_TYPE', //the chain id used by default when creating a new account
-  RIF_WALLET_SERVICE_URL = 'RIF_WALLET_SERVICE_URL',
-  EXPLORER_ADDRESS_URL = 'EXPLORER_ADDRESS_URL',
-  EXPLORER_ADDRESS_URL_BTC = 'EXPLORER_ADDRESS_URL_BTC',
-  RPC_URL = 'RPC_URL',
-  SMART_WALLET_FACTORY_ADDRESS = 'SMART_WALLET_FACTORY_ADDRESS',
-  RIF_RELAY_SERVER = 'RIF_RELAY_SERVER',
-  RELAY_VERIFIER_ADDRESS = 'RELAY_VERIFIER_ADDRESS',
-  DEPLOY_VERIFIER_ADDRESS = 'DEPLOY_VERIFIER_ADDRESS',
-  QR_READER_BITCOIN_DEFAULT_NETWORK = 'QR_READER_BITCOIN_DEFAULT_NETWORK',
-  AUTH_CLIENT = 'AUTH_CLIENT',
-  RIF_WALLET_KEY = 'RIF_WALLET_KEY',
-}
+import { ChainTypeEnum, chainTypesById } from 'core/chainConstants'
+import { ChainIdStore } from 'storage/ChainStorage'
+import { SETTINGS } from 'core/types'
+
+export const isDefaultChainTypeMainnet =
+  chainTypesById[ChainIdStore.getChainId()] === ChainTypeEnum.MAINNET
 
 /**
  * RSK Mainnet: 30
@@ -32,18 +16,19 @@ export enum SETTINGS {
  */
 export const getWalletSetting = (
   setting: SETTINGS,
-  chainType: ChainTypeEnum = defaultChainType,
+  chainType?: ChainTypeEnum,
 ): string => {
-  const key = `${setting}_${chainType}`
+  const chainTypeToUse = chainType ?? chainTypesById[ChainIdStore.getChainId()]
+  const key = `${setting}_${chainTypeToUse}`
   if (key in config) {
     return config[key as keyof typeof config]
   }
 
-  if (Config[key]) {
-    return Config[key] || ''
+  if (ReactNativeConfig[key]) {
+    return ReactNativeConfig[key] || ''
   }
 
-  return Config[setting] || ''
+  return ReactNativeConfig[setting] || ''
 }
 
 export const getTokenAddress = (symbol: string, chainType: ChainTypeEnum) => {

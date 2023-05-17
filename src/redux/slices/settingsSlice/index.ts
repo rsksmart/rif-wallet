@@ -60,6 +60,7 @@ import {
   SetWalletIsDeployedAction,
   UnlockAppAction,
 } from './types'
+import { ChainIdStore } from "storage/ChainStorage";
 
 export const createWallet = createAsyncThunk<
   RIFWallet,
@@ -355,6 +356,7 @@ const initialState: SettingsSlice = {
   hideBalance: false,
   pin: null,
   bitcoin: null,
+  chainId: ChainIdStore.getChainId(),
 }
 
 const settingsSlice = createSlice({
@@ -376,6 +378,7 @@ const settingsSlice = createSlice({
     },
     setChainId: (state, { payload }: PayloadAction<number>) => {
       state.chainId = payload
+      ChainIdStore.setChainId(payload)
       state.chainType =
         payload === 31 ? ChainTypeEnum.TESTNET : ChainTypeEnum.MAINNET
     },

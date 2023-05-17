@@ -7,7 +7,7 @@ import { AbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
 import mainnetContracts from '@rsksmart/rsk-contract-metadata'
 import testnetContracts from '@rsksmart/rsk-testnet-contract-metadata'
 
-import { getWalletSetting, isDefaultChainTypeMainnet, SETTINGS } from './config'
+import { getWalletSetting, isDefaultChainTypeMainnet } from './config'
 import { RifWalletServicesSocket } from '@rsksmart/rif-wallet-services'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { MMKVStorage } from 'storage/MMKVStorage'
@@ -15,6 +15,7 @@ import { enhanceTransactionInput } from 'screens/activity/ActivityScreen'
 import { filterEnhancedTransactions } from 'src/subscriptions/utils'
 import { Options, setInternetCredentials } from 'react-native-keychain'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
+import { SETTINGS } from 'core/types';
 
 export const networkType = getWalletSetting(
   SETTINGS.DEFAULT_CHAIN_TYPE,
