@@ -41,7 +41,7 @@ export interface BasicRowProps {
     imageSource?: ImageSourcePropType
     icon?: ReactElement
   }
-  amount?: number
+  amount?: string
   status?: StatusTextProps['status']
   error?: string
   usdAmount?: string
@@ -100,7 +100,7 @@ export const BasicRow = ({
             numberOfLines={1}
             ellipsizeMode="tail"
             adjustsFontSizeToFit>
-            {roundBalance(amount, 4)} {symbol}
+            {roundBalance(+amount, 4)} {symbol}
           </Typography>
         )}
       </View>

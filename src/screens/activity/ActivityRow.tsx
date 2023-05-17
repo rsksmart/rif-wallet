@@ -96,7 +96,7 @@ export const ActivityBasicRow = ({
       style={[styles.component, style]}>
       <BasicRowWithContact
         label={label}
-        amount={+activityDetails.value}
+        amount={activityDetails.value}
         symbol={activityDetails.symbol}
         status={getStatus(activityDetails.status)}
         avatar={{ name: 'A' }}
