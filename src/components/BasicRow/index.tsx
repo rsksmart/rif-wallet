@@ -1,16 +1,14 @@
 import { ReactElement } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
-  View,
-  StyleSheet,
   ImageSourcePropType,
   StyleProp,
+  StyleSheet,
+  View,
   ViewStyle,
 } from 'react-native'
-import { useTranslation } from 'react-i18next'
 
-import { roundBalance } from 'lib/utils'
-
-import { Typography, Avatar } from 'components/index'
+import { Avatar, Typography } from 'components/index'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 
