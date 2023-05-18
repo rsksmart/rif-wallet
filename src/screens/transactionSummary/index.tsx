@@ -31,7 +31,7 @@ export interface TransactionSummaryScreenProps {
   functionName?: string
 }
 
-export const TransactionSummary = ({
+export const TransactionSummaryScreen = ({
   route,
   navigation,
 }: RootTabsScreenProps<rootTabsRouteNames.TransactionSummary>) => {
