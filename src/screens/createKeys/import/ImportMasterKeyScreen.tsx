@@ -45,9 +45,9 @@ const headerTextMap = new Map([
   [StatusActions.SUCCESS, 'header_phrase_correct'],
 ])
 
-export const ImportMasterKeyScreen = ({
-  navigation,
-}: CreateKeysScreenProps<createKeysRouteNames.ImportMasterKey>) => {
+export const ImportMasterKeyScreen = (
+  _: CreateKeysScreenProps<createKeysRouteNames.ImportMasterKey>,
+) => {
   const { t } = useTranslation()
 
   const dispatch = useAppDispatch()
@@ -180,7 +180,7 @@ export const ImportMasterKeyScreen = ({
           style={
             status !== StatusActions.INITIAL ? styles.hideCarouselView : null
           }>
-          <GestureHandlerRootView>
+          <GestureHandlerRootView style={styles.wordsContainer}>
             <Carousel
               data={slidesIndexes}
               renderItem={renderItem}
@@ -259,6 +259,9 @@ const styles = StyleSheet.create({
     backgroundColor: sharedColors.black,
     flex: 1,
     paddingHorizontal: 24,
+  }),
+  wordsContainer: castStyle.view({
+    marginTop: 20,
   }),
   headerStyle: castStyle.view({
     width: '100%',
