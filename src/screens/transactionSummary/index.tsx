@@ -230,20 +230,14 @@ export const TransactionSummary = ({
               type={'h4'}
               style={[styles.summaryText, sharedStyles.textRight]}>
               {usdButtonActive
-                ? `${transaction.usdValue.symbol}${roundBalance(
-                    +transaction.usdValue.balance,
-                    2,
-                  )}`
+                ? `${transaction.usdValue.symbol}${transaction.usdValue.balance}`
                 : `${transaction.tokenValue.balance} ${transaction.tokenValue.symbol}`}
             </Typography>
             <Typography
               type={'h4'}
               style={[styles.summaryText, sharedStyles.textRight]}>
               {usdButtonActive
-                ? `${transaction.usdValue.symbol}${roundBalance(
-                    +transaction.usdValue.balance,
-                    2,
-                  )}`
+                ? `${transaction.usdValue.symbol}${transaction.usdValue.balance}`
                 : `${transaction.total} ${transaction.tokenValue.symbol}`}
             </Typography>
             <Typography
