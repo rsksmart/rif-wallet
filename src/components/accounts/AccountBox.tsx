@@ -138,8 +138,8 @@ export const AccountBox = ({
         inputName="EOA Address"
         rightIcon={
           <Icon
-            style={styles.copyIcon}
             name={'copy'}
+            style={styles.copyIcon}
             color={sharedColors.white}
             size={defaultIconSize}
             onPress={() =>

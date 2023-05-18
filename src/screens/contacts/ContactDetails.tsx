@@ -66,6 +66,7 @@ export const ContactDetails = ({
     defaultValues: {
       username: contact.name,
       address: shortAddress(contact.address),
+      fullAddress: contact.address,
     },
   })
   const { getValues } = methods
@@ -193,7 +194,7 @@ export const ContactDetails = ({
               inputName={'address'}
               rightIcon={copyButtonConfig}
               isReadOnly
-              onRightIconPress={onCopyValue(getValues('address'))}
+              onRightIconPress={onCopyValue(getValues('fullAddress'))}
             />
           </FormProvider>
           <Typography

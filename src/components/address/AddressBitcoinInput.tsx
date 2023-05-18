@@ -179,7 +179,7 @@ export const AddressBitcoinInput = ({
           autoCorrect={false}
           editable={true}
           autoCapitalize={'none'}
-          rightIcon={to.value === '' ? { name: 'copy', size: 22 } : undefined}
+          rightIcon={to.value === '' ? { name: 'copy', size: 16 } : undefined}
           resetValue={onClearText}
           onChangeText={handleChangeText}
           onBlur={onBlurValidate}
