@@ -10,7 +10,7 @@ import { ConfirmationModal } from 'components/modal/ConfirmationModal'
 import { InjectedScreens } from 'core/Core'
 import { useAppSelector } from 'store/storeUtils'
 import { selectFullscreen, selectIsUnlocked } from 'store/slices/settingsSlice'
-import { TransactionSummary } from 'screens/transactionSummary'
+import { TransactionSummaryScreen } from 'screens/transactionSummary'
 import { AppFooterMenu } from 'src/ux/appFooter'
 import { sharedStyles } from 'shared/constants'
 import { PinScreen } from 'src/screens/pinScreen'
@@ -107,7 +107,7 @@ export const RootNavigationComponent = () => {
               )}>
               <RootTabs.Screen
                 name={rootTabsRouteNames.TransactionSummary}
-                component={TransactionSummary}
+                component={TransactionSummaryScreen}
               />
             </RootTabs.Group>
           </RootTabs.Group>

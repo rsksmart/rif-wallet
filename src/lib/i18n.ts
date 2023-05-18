@@ -143,6 +143,7 @@ const resources = {
       purchase_username_price_label: 'Price',
       purchase_username_button: 'Purchase',
       cancel_username_button: 'Cancel Registration',
+      purchase_username_loading: 'Your domain purchase is being requested...',
       username: 'Username',
       username_available: 'Username available',
       username_unavailable: 'Username unavailable',
@@ -189,6 +190,7 @@ const resources = {
       transaction_summary_to: 'to',
       transaction_summary_title_confirm_button_title: 'Confirm',
       transaction_summary_title_cancel_button_title: 'Cancel',
+      transaction_summary_function_type: 'type',
       profile_screen_title: 'Profile',
       profile_contact_details_subtitle: 'Contact Details',
       profile_phone_label: 'Phone Number',
@@ -301,6 +303,11 @@ const resources = {
       receive_screen_username_label: 'Username',
       received_from: 'Received from',
       sent_to: 'Sent to',
+      camera_alert_title: 'For this feature we need your camera',
+      camera_alert_body:
+        'You denied permissions to use the camera, please allow to continue',
+      camera_alert_button_open_settings: 'Open Settings',
+      camera_alert_button_cancel: 'Cancel',
     },
   },
   es: {

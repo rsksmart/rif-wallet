@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 // import { SendBitcoinRequest } from '@rsksmart/rif-wallet-bitcoin'
 // import {
 //   SignMessageRequest,
@@ -15,13 +15,10 @@ import { navigationContainerRef } from 'core/Core'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 // import { useFetchBitcoinNetworksAndTokens } from 'screens/send/useFetchBitcoinNetworksAndTokens'
 import { TokenSymbol } from 'screens/home/TokenImage'
-import { AppSpinner } from 'components/index'
 import { sharedColors } from 'shared/constants'
 import { AppButtonBackgroundVarietyEnum } from 'src/components'
 import { useAppSelector } from 'store/storeUtils'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
-import { FeedbackModal } from 'components/feedbackModal'
-import { homeStackRouteNames } from 'navigation/homeNavigator/types'
 
 import { ReviewTransactionContainer } from './ReviewRelayTransaction/ReviewTransactionContainer'
 // import SignMessageModal from './SignMessageModal'
@@ -111,51 +108,13 @@ const RequestTypeSwitch = ({
 }
 
 export const RequestHandler = ({ request, closeRequest }: Props) => {
-  const { t } = useTranslation()
-  const [requestSuccess, setRequestSuccess] = useState(false)
-  const [amount, setAmount] = useState<BigNumberish>('')
-  const [tokenSymbol, setTokenSymbol] = useState<string>('')
-
-  const onConfirm = useCallback((amountSent: BigNumberish, token: string) => {
-    setTokenSymbol(token)
-    setAmount(amountSent)
-    setRequestSuccess(true)
-  }, [])
+  const onConfirm = useCallback(() => {
+    closeRequest()
+  }, [closeRequest])
 
   const onCancel = useCallback(() => {
-    navigationContainerRef.goBack()
     closeRequest()
   }, [closeRequest])
 
-  const backToHome = useCallback(() => {
-    closeRequest()
-    navigationContainerRef.navigate(rootTabsRouteNames.Home, {
-      screen: homeStackRouteNames.Main,
-    })
-  }, [closeRequest])
-
-  return (
-    <>
-      {RequestTypeSwitch({ request, onCancel, onConfirm })}
-      {requestSuccess && (
-        <FeedbackModal
-          visible={true}
-          title={t('transaction_summary_congrats')}
-          subtitle={`${t(
-            'transaction_summary_you_sent',
-          )} ${amount} ${tokenSymbol}`}
-          footerText={t('transaction_pending')}
-          feedbackComponent={<AppSpinner size={174} />}
-          buttons={[
-            {
-              title: t('close'),
-              onPress: backToHome,
-              color: sharedColors.white,
-              textColor: sharedColors.black,
-            },
-          ]}
-        />
-      )}
-    </>
-  )
+  return RequestTypeSwitch({ request, onCancel, onConfirm })
 }
