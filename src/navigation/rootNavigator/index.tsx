@@ -95,10 +95,6 @@ export const RootNavigationComponent = () => {
                 name={rootTabsRouteNames.Profile}
                 component={ProfileNavigator}
               />
-              <RootTabs.Screen
-                name={rootTabsRouteNames.CreateKeysUX}
-                component={CreateKeysNavigation}
-              />
             </RootTabs.Group>
             <RootTabs.Group
               screenOptions={screenOptionsWithHeader(
@@ -110,6 +106,11 @@ export const RootNavigationComponent = () => {
                 component={TransactionSummary}
               />
             </RootTabs.Group>
+            <RootTabs.Screen
+              name={rootTabsRouteNames.CreateKeysUX}
+              component={CreateKeysNavigation}
+              options={screenOptionsNoHeader}
+            />
           </RootTabs.Group>
         )}
       </RootTabs.Navigator>

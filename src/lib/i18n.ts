@@ -281,7 +281,10 @@ const resources = {
       search_domain_processing_commitment:
         'Your profile commitment is being processed. Please wait.',
       transaction_pending: 'Your transaction is being processed.',
+      pin_screen_pin_setup: 'PIN setup',
+      pin_screen_change_pin: 'Change PIN',
       pin_screen_default_title: 'Enter PIN',
+      pin_screen_old_pin_title: 'Enter old PIN',
       pin_screen_new_pin_title: 'New PIN',
       pin_screen_confirm_pin_title: 'Confirm PIN',
       pin_screen_header_title: 'PIN',
