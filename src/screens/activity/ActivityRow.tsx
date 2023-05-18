@@ -55,8 +55,9 @@ export const ActivityBasicRow = ({
     )
   }, [activityDetails.to, amIReceiver, t])
 
-  const txSummary: TransactionSummaryScreenProps = useMemo(
-    () => ({
+  const txSummary: TransactionSummaryScreenProps = useMemo(() => {
+    const usdBalance = roundBalance(activityDetails.price, 2)
+    return {
       transaction: {
         tokenValue: {
           symbol: activityDetails.symbol,
@@ -64,9 +65,9 @@ export const ActivityBasicRow = ({
           balance: activityDetails.value,
         },
         usdValue: {
-          symbol: '$',
+          symbol: usdBalance ? '$' : '< $',
           symbolType: 'text',
-          balance: '' + roundBalance(activityDetails.price, 2),
+          balance: usdBalance ? usdBalance.toFixed(2) : '0.01',
         },
         status: activityDetails.status,
         feeValue: activityDetails.fee,
@@ -76,9 +77,8 @@ export const ActivityBasicRow = ({
       contact: {
         address: activityDetails.to,
       },
-    }),
-    [activityDetails],
-  )
+    }
+  }, [activityDetails])
 
   const amount = useMemo(() => {
     const value = +activityDetails.value
