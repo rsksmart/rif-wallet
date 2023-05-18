@@ -39,7 +39,6 @@ import {
   socketsEvents,
 } from 'src/subscriptions/rifSockets'
 import { authAxios, publicAxios, authClient } from 'core/setup'
-import { defaultChainId } from 'core/config'
 import {
   deleteSignUp,
   getSignUP,
@@ -47,6 +46,7 @@ import {
   saveSignUp,
 } from 'storage/MainStorage'
 import { initializeBitcoin } from 'src/core/hooks/bitcoin/initializeBitcoin'
+import { ChainIdStore } from 'storage/ChainStorage'
 
 import {
   AddNewWalletAction,
@@ -60,7 +60,6 @@ import {
   SetWalletIsDeployedAction,
   UnlockAppAction,
 } from './types'
-import { ChainIdStore } from "storage/ChainStorage";
 
 export const createWallet = createAsyncThunk<
   RIFWallet,
@@ -139,7 +138,7 @@ export const createWallet = createAsyncThunk<
       Keychain.Options,
       ReturnType<typeof Keychain.setInternetCredentials>
     >(authAxios, accessToken, refreshToken, {
-      defaultChainId,
+      defaultChainId: chainId.toString(),
       onSetInternetCredentials: Keychain.setInternetCredentials,
       resultsLimit: 10,
     })
@@ -259,7 +258,7 @@ export const unlockApp = createAsyncThunk<
       Keychain.Options,
       ReturnType<typeof Keychain.setInternetCredentials>
     >(authAxios, accessToken, refreshToken, {
-      defaultChainId,
+      defaultChainId: chainId.toString(),
       onSetInternetCredentials: Keychain.setInternetCredentials,
       resultsLimit: 10,
     })

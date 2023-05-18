@@ -2,10 +2,13 @@ import Clipboard from '@react-native-community/clipboard'
 import React from 'react'
 import { Linking, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+
+import { getChainIdByType, shortAddress } from 'lib/utils'
+
 import { getWalletSetting } from 'src/core/config'
 import { SETTINGS } from 'core/types'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
-import { getChainIdByType, shortAddress } from '../../lib/utils'
+
 import { CompassIcon, CopyIcon } from '../icons'
 import { RegularText } from '../typography'
 import { toChecksumAddress } from './lib'
