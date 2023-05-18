@@ -7,10 +7,7 @@ export enum profileStackRouteNames {
   ProfileCreateScreen = 'ProfileCreateScreen',
   ShareProfileScreen = 'ShareProfileScreen',
   SearchDomain = 'SearchDomain',
-  RequestDomain = 'RequestDomain',
-  BuyDomain = 'BuyDomain',
   AliasBought = 'AliasBought',
-  RegisterDomain = 'RegisterDomain',
   PurchaseDomain = 'PurchaseDomain',
 }
 
@@ -28,19 +25,8 @@ export type ProfileStackParamsList = {
   [profileStackRouteNames.ProfileCreateScreen]: undefined
   [profileStackRouteNames.ShareProfileScreen]: undefined
   [profileStackRouteNames.SearchDomain]: undefined
-  [profileStackRouteNames.RequestDomain]: {
-    alias: string
-    duration: number
-  }
-  [profileStackRouteNames.BuyDomain]: {
-    alias: string
-  }
   [profileStackRouteNames.AliasBought]: {
     alias: string
-  }
-  [profileStackRouteNames.RegisterDomain]: {
-    selectedDomain: string
-    years: number
   }
   [profileStackRouteNames.PurchaseDomain]: undefined
 }

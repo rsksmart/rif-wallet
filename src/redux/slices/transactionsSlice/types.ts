@@ -6,10 +6,7 @@ import {
 
 import { IEvent } from 'src/subscriptions/types'
 
-export enum TransactionStatus {
-  SUCCESS = 'success',
-  PENDING = 'pending',
-}
+import { TransactionStatus } from 'screens/transactionSummary/transactionSummaryUtils'
 
 export interface TransactionsServerResponseWithActivityTransactions
   extends TransactionsServerResponse {

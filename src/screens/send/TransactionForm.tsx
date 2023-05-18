@@ -48,6 +48,7 @@ interface Props {
     amount?: number
     recipient?: string
   }
+  status?: string
 }
 
 interface FormValues {
@@ -78,6 +79,7 @@ export const TransactionForm = ({
   onConfirm,
   onCancel,
   totalUsdBalance,
+  status,
 }: Props) => {
   const { t } = useTranslation()
   const [showTxSelector, setShowTxSelector] = useState(false)
@@ -356,6 +358,11 @@ export const TransactionForm = ({
         </FormProvider>
       </ScrollView>
       <View style={styles.marginTop10}>
+        {status && (
+          <Typography style={styles.statusText} type="h4">
+            {status}
+          </Typography>
+        )}
         <AppButton
           title={`${t('transaction_form_button_send')} ${amount} ${
             selectedToken.symbol
@@ -396,4 +403,8 @@ const styles = StyleSheet.create({
     marginTop: 16,
   }),
   txSelector: castStyle.view({ marginTop: 22 }),
+  statusText: castStyle.text({
+    marginBottom: 10,
+    textAlign: 'center',
+  }),
 })

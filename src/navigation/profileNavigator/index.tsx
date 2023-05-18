@@ -48,19 +48,6 @@ export const ProfileNavigator = ({
 
   return (
     <ProfileStack.Navigator>
-      {status === ProfileStatus.READY_TO_PURCHASE && (
-        <ProfileStack.Screen
-          name={profileStackRouteNames.PurchaseDomain}
-          component={InjectedScreens.PurchaseDomainScreen}
-          options={screenOptionsWithHeader(
-            top,
-            t('username_registration_title'),
-            undefined,
-            { startColor, endColor },
-          )}
-        />
-      )}
-
       <ProfileStack.Screen
         name={profileStackRouteNames.ProfileCreateScreen}
         component={ProfileCreateScreen}
@@ -81,16 +68,31 @@ export const ProfileNavigator = ({
         )}
       />
 
-      <ProfileStack.Screen
-        name={profileStackRouteNames.SearchDomain}
-        component={InjectedScreens.SearchDomainScreen}
-        options={screenOptionsWithHeader(
-          top,
-          t('username_registration_title'),
-          undefined,
-          { startColor, endColor },
-        )}
-      />
+      {status < ProfileStatus.READY_TO_PURCHASE && (
+        <ProfileStack.Screen
+          name={profileStackRouteNames.SearchDomain}
+          component={InjectedScreens.SearchDomainScreen}
+          options={screenOptionsWithHeader(
+            top,
+            t('username_registration_title'),
+            undefined,
+            { startColor, endColor },
+          )}
+        />
+      )}
+
+      {status >= ProfileStatus.READY_TO_PURCHASE && (
+        <ProfileStack.Screen
+          name={profileStackRouteNames.PurchaseDomain}
+          component={InjectedScreens.PurchaseDomainScreen}
+          options={screenOptionsWithHeader(
+            top,
+            t('username_registration_title'),
+            undefined,
+            { startColor, endColor },
+          )}
+        />
+      )}
 
       <ProfileStack.Screen
         name={profileStackRouteNames.AliasBought}

@@ -15,9 +15,9 @@ import {
   ActivityMixedType,
   ActivityRowPresentationObject,
   IBitcoinTransaction,
-  TransactionStatus,
   ModifyTransaction,
 } from 'store/slices/transactionsSlice/types'
+import { TransactionStatus } from 'screens/transactionSummary/transactionSummaryUtils'
 import {
   filterEnhancedTransactions,
   sortEnhancedTransactions,
