@@ -100,7 +100,7 @@ export const BasicRow = ({
             numberOfLines={1}
             ellipsizeMode="tail"
             adjustsFontSizeToFit>
-            {roundBalance(+amount, 4)} {symbol}
+            {amount} {symbol}
           </Typography>
         )}
       </View>

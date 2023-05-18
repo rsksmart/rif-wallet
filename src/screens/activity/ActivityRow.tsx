@@ -80,6 +80,15 @@ export const ActivityBasicRow = ({
     [activityDetails],
   )
 
+  const amount = useMemo(() => {
+    const value = +activityDetails.value
+    let rounded = roundBalance(value, 4)
+    if (!rounded) {
+      rounded = roundBalance(value, 8)
+    }
+    return rounded.toString()
+  }, [activityDetails.value])
+
   const handlePress = useCallback(() => {
     if (txSummary) {
       navigation.navigate(rootTabsRouteNames.TransactionSummary, {
@@ -96,7 +105,7 @@ export const ActivityBasicRow = ({
       style={[styles.component, style]}>
       <BasicRowWithContact
         label={label}
-        amount={activityDetails.value}
+        amount={amount}
         symbol={activityDetails.symbol}
         status={getStatus(activityDetails.status)}
         avatar={{ name: 'A' }}
