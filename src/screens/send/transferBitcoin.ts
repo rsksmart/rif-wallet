@@ -4,6 +4,8 @@ import {
   UnspentTransactionType,
 } from '@rsksmart/rif-wallet-bitcoin'
 
+import { TokenSymbol } from 'screens/home/TokenImage'
+
 import { OnSetCurrentTransactionFunction, OnSetErrorFunction } from './types'
 
 interface ITransferBitcoin {
@@ -30,7 +32,11 @@ export const transferBitcoin = ({
   if (onSetError) {
     onSetError(null)
   }
+  if (onSetCurrentTransaction) {
+    onSetCurrentTransaction({ status: 'USER_CONFIRM' })
+  }
   const satoshisToPay = convertBtcToSatoshi(btcToPay.toString()).toNumber()
+
   bip.requestPayment
     .onRequestPayment({
       amountToPay: satoshisToPay,
@@ -40,17 +46,15 @@ export const transferBitcoin = ({
       balance,
     })
     .then(async txIdJson => {
-      if (onSetCurrentTransaction) {
-        onSetCurrentTransaction({ status: 'PENDING' })
-      }
       if (txIdJson.result) {
         // success
         if (onSetCurrentTransaction) {
           onSetCurrentTransaction({
-            status: 'SUCCESS',
+            status: 'PENDING',
             to,
             value: satoshisToPay.toString(),
             hash: txIdJson.result,
+            symbol: TokenSymbol.BTC, // @TODO should use bitcoin symbol of current transaction
           })
         }
         // fetchUtxo() we should refresh Utxo
@@ -69,9 +73,10 @@ export const transferBitcoin = ({
     })
     .catch(err => {
       if (onSetError) {
-        onSetError({
-          message: `Transaction cancelled: ${err.toString()}`,
-        })
+        onSetError(err.toString())
+      }
+      if (onSetCurrentTransaction) {
+        onSetCurrentTransaction(null)
       }
     })
 }
