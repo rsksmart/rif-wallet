@@ -178,6 +178,7 @@ export const Input = ({
           {!rightIcon && !!value && resetValue ? (
             <AppTouchable width={defaultIconSize} onPress={resetValue}>
               <Icon
+                style={styles.rightIcon}
                 name={'close'}
                 size={defaultIconSize}
                 color={sharedColors.white}
@@ -186,6 +187,7 @@ export const Input = ({
           ) : rightIcon && 'name' in rightIcon ? (
             <Pressable onPress={onRightIconPress || noop}>
               <Icon
+                style={styles.rightIcon}
                 name={rightIcon.name}
                 size={rightIcon.size || defaultIconSize}
                 color={rightIcon.color || sharedColors.white}
@@ -207,7 +209,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: sharedColors.inputInactive,
     paddingLeft: 16,
-    paddingRight: 24,
+    paddingRight: 16,
     marginTop: 12,
     borderRadius: 10,
     minHeight: 80,
@@ -238,9 +240,7 @@ const styles = StyleSheet.create({
     color: sharedColors.inputLabelColor,
   }),
   rightIcon: castStyle.text({
-    flex: 1,
-    marginRight: 24,
-    color: sharedColors.white,
+    padding: defaultIconSize,
   }),
   placeholderText: castStyle.text({
     flex: 1,

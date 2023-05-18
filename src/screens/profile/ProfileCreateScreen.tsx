@@ -175,6 +175,7 @@ export const ProfileCreateScreen = ({
             rightIcon={
               <Icon
                 name={'copy'}
+                style={styles.copyIcon}
                 color={sharedColors.white}
                 size={defaultIconSize}
                 onPress={() =>
@@ -276,5 +277,8 @@ const styles = StyleSheet.create({
   }),
   flexCenter: castStyle.view({
     alignItems: 'center',
+  }),
+  copyIcon: castStyle.image({
+    padding: defaultIconSize,
   }),
 })
