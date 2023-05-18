@@ -103,10 +103,10 @@ export const PortfolioCard = ({
   return (
     <AppTouchable
       width={100}
-      onPress={onPress}
       disabled={disabled}
       style={[styles.topContainer, { backgroundColor: color }]}
-      accessibilityLabel={primaryText}>
+      accessibilityLabel={primaryText}
+      onPressIn={onPress}>
       {isSelected
         ? SelectedCard({
             primaryText,
