@@ -7,14 +7,8 @@ import {
   TransactionReceipt,
 } from '@ethersproject/abstract-provider'
 import { useTranslation } from 'react-i18next'
-import Icon from 'react-native-vector-icons/FontAwesome5'
 
-import {
-  AppButton,
-  Typography,
-  AppSpinner,
-  AppTouchable,
-} from 'components/index'
+import { AppButton, Typography, AppSpinner } from 'components/index'
 import {
   setIsDeploying,
   setSmartWalletDeployTx,
@@ -29,6 +23,9 @@ import {
   SettingsScreenProps,
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
+import { sharedHeaderLeftOptions } from 'navigation/index'
+import { rootTabsRouteNames } from 'navigation/rootNavigator'
+import { homeStackRouteNames } from 'navigation/homeNavigator/types'
 
 import { ScreenWithWallet } from '../types'
 
@@ -98,27 +95,26 @@ export const RelayDeployScreen = ({
     if (backScreen) {
       const { child, parent } = backScreen
       // TODO: fix this typescript error
+      // if wallet is not deployed go Home
       navigation.setOptions({
-        headerLeft: () => (
-          <AppTouchable
-            width={20}
-            onPress={() =>
-              navigation.navigate(
-                parent,
-                child
-                  ? {
-                      screen: child,
-                    }
-                  : undefined,
-              )
-            }
-            style={sharedStyles.marginLeft24}>
-            <Icon name={'chevron-left'} size={20} color={sharedColors.white} />
-          </AppTouchable>
-        ),
+        headerLeft: () =>
+          sharedHeaderLeftOptions(() =>
+            !isDeployed
+              ? navigation.navigate(rootTabsRouteNames.Home, {
+                  screen: homeStackRouteNames.Main,
+                })
+              : navigation.navigate(
+                  parent,
+                  child
+                    ? {
+                        screen: child,
+                      }
+                    : undefined,
+                ),
+          ),
       })
     }
-  }, [backScreen, navigation])
+  }, [backScreen, navigation, isDeployed])
 
   return (
     <ScrollView
