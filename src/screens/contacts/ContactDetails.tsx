@@ -57,8 +57,7 @@ export const ContactDetails = ({
   const isFocused = useIsFocused()
 
   const transactionFiltered = useMemo(
-    () =>
-      transactions.filter(tx => tx.originTransaction.to === contact.address),
+    () => transactions.filter(tx => tx.to === contact.address),
     [transactions, contact],
   )
 
