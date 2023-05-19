@@ -1,28 +1,28 @@
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleSheet, View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
-import { WINDOW_WIDTH, WINDOW_HEIGHT } from 'src/ux/slides/Dimensions'
-import { useAppSelector } from 'store/storeUtils'
-import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { CurrencyValue, TokenBalance } from 'components/token'
+import {
+  sharedColors,
+  sharedStyles,
+  sharedStyles as sharedStylesConstants,
+} from 'shared/constants'
+import { ContactWithAddressRequired } from 'shared/types'
+import { castStyle } from 'shared/utils'
 import {
   AppButton,
   AppButtonProps,
   AppButtonWidthVarietyEnum,
   AppSpinner,
-  getAddressDisplayText,
   Typography,
 } from 'src/components'
-import {
-  sharedColors,
-  sharedStyles as sharedStylesConstants,
-  sharedStyles,
-} from 'shared/constants'
-import { CurrencyValue, TokenBalance } from 'components/token'
-import { ContactWithAddressRequired } from 'shared/types'
-import { castStyle } from 'shared/utils'
+import { WINDOW_HEIGHT, WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { useAppSelector } from 'store/storeUtils'
+import { isMyAddress } from 'components/address/lib'
 
 import {
   TransactionStatus,
@@ -57,24 +57,17 @@ export const TransactionSummaryComponent = ({
   const { bottom } = useSafeAreaInsets()
   const [usdButtonActive, setUsdButtonActive] = useState(false)
   const { t } = useTranslation()
-  const { wallet, chainType } = useAppSelector(selectActiveWallet)
+  const { wallet } = useAppSelector(selectActiveWallet)
 
   const iconObject = transactionStatusToIconPropsMap.get(transaction.status)
   const transactionStatusText = transactionStatusDisplayText.get(
     transaction.status,
   )
 
-  const amIReceiver = useMemo(() => {
-    if (wallet && chainType) {
-      const myAddress = getAddressDisplayText(
-        wallet.smartWalletAddress,
-        chainType,
-      ).checksumAddress
-
-      return myAddress.toLowerCase() === contact.address.toLowerCase()
-    }
-    return false
-  }, [wallet, chainType, contact.address])
+  const amIReceiver = useMemo(
+    () => isMyAddress(wallet, contact.address),
+    [wallet, contact.address],
+  )
 
   const onToggleUSD = useCallback(() => {
     setUsdButtonActive(prev => !prev)
@@ -205,14 +198,14 @@ export const TransactionSummaryComponent = ({
               style={[styles.summaryText, sharedStyles.textRight]}>
               {usdButtonActive
                 ? `${transaction.usdValue.symbol}${transaction.usdValue.balance}`
-                : `${transaction.tokenValue.symbol} ${transaction.tokenValue.balance}`}
+                : `${transaction.tokenValue.balance} ${transaction.tokenValue.symbol}`}
             </Typography>
             <Typography
               type={'h4'}
               style={[styles.summaryText, sharedStyles.textRight]}>
               {usdButtonActive
                 ? `${transaction.usdValue.symbol}${transaction.usdValue.balance}`
-                : `${transaction.tokenValue.symbol} ${transaction.total}`}
+                : `${transaction.total} ${transaction.tokenValue.symbol}`}
             </Typography>
             <Typography
               type={'h4'}

@@ -1,16 +1,19 @@
-import { t } from 'i18next'
 import { useCallback, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { StyleProp, StyleSheet, ViewStyle } from 'react-native'
 
 import { roundBalance, shortAddress } from 'lib/utils'
 
-import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import { StatusEnum } from 'components/BasicRow'
 import { BasicRowWithContact } from 'components/BasicRow/BasicRowWithContact'
 import { AppTouchable } from 'components/index'
+import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 import { ActivityMainScreenProps } from 'shared/types'
 import { castStyle } from 'shared/utils'
+import { isMyAddress } from 'src/components/address/lib'
+import { selectActiveWallet } from 'src/redux/slices/settingsSlice'
+import { useAppSelector } from 'src/redux/storeUtils'
 import { ActivityRowPresentationObject } from 'store/slices/transactionsSlice'
 
 const getStatus = (status: string) => {
@@ -18,7 +21,7 @@ const getStatus = (status: string) => {
     case 'pending':
       return StatusEnum.PENDING
     case 'failed':
-      return StatusEnum.PENDING
+      return StatusEnum.FAILED
     default:
       return undefined
   }
@@ -37,6 +40,21 @@ export const ActivityBasicRow = ({
   backScreen,
   style,
 }: Props) => {
+  const { t } = useTranslation()
+  const { wallet } = useAppSelector(selectActiveWallet)
+
+  const amIReceiver = useMemo(
+    () => isMyAddress(wallet, activityDetails.to),
+    [wallet, activityDetails],
+  )
+  const label = useMemo(() => {
+    return (
+      (amIReceiver ? t('received_from') : t('sent_to')) +
+      ' ' +
+      shortAddress(activityDetails.to)
+    )
+  }, [activityDetails.to, amIReceiver, t])
+
   const txSummary: TransactionSummaryScreenProps = useMemo(
     () => ({
       transaction: {
@@ -62,6 +80,15 @@ export const ActivityBasicRow = ({
     [activityDetails],
   )
 
+  const amount = useMemo(() => {
+    const value = +activityDetails.value
+    let rounded = roundBalance(value, 4)
+    if (!rounded) {
+      rounded = roundBalance(value, 8)
+    }
+    return rounded.toString()
+  }, [activityDetails.value])
+
   const handlePress = useCallback(() => {
     if (txSummary) {
       navigation.navigate(rootTabsRouteNames.TransactionSummary, {
@@ -77,13 +104,13 @@ export const ActivityBasicRow = ({
       onPress={handlePress}
       style={[styles.component, style]}>
       <BasicRowWithContact
-        label={shortAddress(activityDetails.to, 8)}
-        amount={activityDetails.value}
+        label={label}
+        amount={amount}
+        symbol={activityDetails.symbol}
         status={getStatus(activityDetails.status)}
         avatar={{ name: 'A' }}
         secondaryLabel={activityDetails.timeHumanFormatted}
         addressToSearch={activityDetails.to}
-        symbol={activityDetails.symbol}
       />
     </AppTouchable>
   )
