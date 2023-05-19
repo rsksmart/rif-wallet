@@ -43,7 +43,7 @@ export const FeedbackModal = ({
       <View
         style={[
           styles.screen,
-          { paddingTop: 248 - top },
+          { paddingTop: top },
           backgroundColor ? { backgroundColor } : null,
           style,
         ]}>

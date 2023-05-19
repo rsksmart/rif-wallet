@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
 
 import { CreateKeysNavigation } from 'navigation/createKeysNavigator'
-import { ConfirmationModal } from 'components/modal/ConfirmationModal'
+import { ConfirmationModal } from 'components/modal'
 import { InjectedScreens } from 'core/Core'
 import { useAppSelector } from 'store/storeUtils'
 import { selectFullscreen, selectIsUnlocked } from 'store/slices/settingsSlice'
@@ -115,9 +115,9 @@ export const RootNavigationComponent = () => {
       </RootTabs.Navigator>
       <ConfirmationModal
         isVisible={isWarningVisible}
-        title="DEVICE SECURITY COMPROMISED"
-        description='Any "rooted" app can access your private keys and steal your funds. Wipe this wallet immediately and restore it on a secure device.'
-        okText="OK"
+        title={t('device_compromised')}
+        description={t('device_compomised_description')}
+        okText={t('ok')}
         onOk={() => setIsWarningVisible(false)}
       />
     </View>
