@@ -43,21 +43,25 @@ export const ActivityBasicRow = ({
   const { t } = useTranslation()
   const { wallet } = useAppSelector(selectActiveWallet)
 
+  const usdBalance = useMemo(
+    () => roundBalance(activityDetails.price, 2),
+    [activityDetails.price],
+  )
+
   const amIReceiver = useMemo(
     () => isMyAddress(wallet, activityDetails.to),
     [wallet, activityDetails],
   )
-  const label = useMemo(() => {
-    return (
+  const label = useMemo(
+    () =>
       (amIReceiver ? t('received_from') : t('sent_to')) +
       ' ' +
-      shortAddress(activityDetails.to)
-    )
-  }, [activityDetails.to, amIReceiver, t])
+      shortAddress(activityDetails.to),
+    [activityDetails.to, amIReceiver, t],
+  )
 
-  const txSummary: TransactionSummaryScreenProps = useMemo(() => {
-    const usdBalance = roundBalance(activityDetails.price, 2)
-    return {
+  const txSummary: TransactionSummaryScreenProps = useMemo(
+    () => ({
       transaction: {
         tokenValue: {
           symbol: activityDetails.symbol,
@@ -77,8 +81,9 @@ export const ActivityBasicRow = ({
       contact: {
         address: activityDetails.to,
       },
-    }
-  }, [activityDetails])
+    }),
+    [activityDetails, usdBalance],
+  )
 
   const amount = useMemo(() => {
     const value = +activityDetails.value
@@ -98,11 +103,6 @@ export const ActivityBasicRow = ({
     }
   }, [navigation, txSummary, backScreen])
 
-  const usdAmount = useMemo(
-    () => roundBalance(activityDetails.price, 2).toFixed(2),
-    [activityDetails.price],
-  )
-
   return (
     <AppTouchable
       width={'100%'}
@@ -116,7 +116,7 @@ export const ActivityBasicRow = ({
         avatar={{ name: 'A' }}
         secondaryLabel={activityDetails.timeHumanFormatted}
         addressToSearch={activityDetails.to}
-        usdAmount={usdAmount}
+        usdAmount={usdBalance.toFixed(2)}
       />
     </AppTouchable>
   )
