@@ -7,6 +7,9 @@ import { initReactI18next } from 'react-i18next'
 const resources = {
   en: {
     translation: {
+      device_compromised: 'DEVICE SECURITY COMPROMISED',
+      device_compomised_description:
+        'Any "rooted" app can access your private keys and steal your funds. Wipe this wallet immediately and restore it on a secure device.',
       no_selected_wallet: 'No selected wallet',
       message_copied_to_clipboard: 'Copied to Clipboard',
       ok: 'OK',
@@ -244,6 +247,11 @@ const resources = {
       contacts_address_input_label: 'address',
       contacts_details_transactions: 'Transactions',
       contacts_details_edit_contact: 'Edit contact',
+      contacts_delete_contact_title: 'Delete contact',
+      contacts_delete_contact_button_delete: 'Yes, delete',
+
+      contacts_delete_contact_description:
+        'Do you really wish to delete your contact ',
       feedback_form_name: 'Your name (voluntary)',
       feedback_form_email: 'Your email',
       feedback_form_message: 'Message',
