@@ -1,7 +1,7 @@
 import { version } from 'package.json'
 import { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, StyleSheet, View } from 'react-native'
+import { Platform, ScrollView, StyleSheet, View } from 'react-native'
 
 import { AppTouchable, Typography } from 'components/index'
 import { SETTINGS, getWalletSetting } from 'core/config'
@@ -12,12 +12,13 @@ import {
 } from 'navigation/settingsNavigator/types'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { selectActiveWallet, selectPin } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
 
 export const SettingsScreen = ({
   navigation,
 }: SettingsScreenProps<settingsStackRouteNames.SettingsScreen>) => {
+  const statePIN = useAppSelector(selectPin)
   const { walletIsDeployed } = useAppSelector(selectActiveWallet)
 
   const smartWalletFactoryAddress = useMemo(
@@ -80,13 +81,17 @@ export const SettingsScreen = ({
             {t('settings_screen_wallet_backup')}
           </Typography>
         </AppTouchable>
-        <AppTouchable
-          width={'100%'}
-          accessibilityLabel="Change PIN"
-          style={styles.settingsItem}
-          onPress={goToPinScreen}>
-          <Typography type={'h3'}>{t('settings_screen_change_pin')}</Typography>
-        </AppTouchable>
+        {Platform.OS === 'android' && statePIN && (
+          <AppTouchable
+            width={'100%'}
+            accessibilityLabel="Change PIN"
+            style={styles.settingsItem}
+            onPress={goToPinScreen}>
+            <Typography type={'h3'}>
+              {t('settings_screen_change_pin')}
+            </Typography>
+          </AppTouchable>
+        )}
         <AppTouchable
           width={'100%'}
           accessibilityLabel="feedback"
