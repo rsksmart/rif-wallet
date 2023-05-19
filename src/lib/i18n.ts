@@ -303,6 +303,8 @@ const resources = {
       wallet_deploy_deploying_alert_body:
         'You need to wait until this process is finished before making transactions',
       receive_screen_username_label: 'Username',
+      received_from: 'Received from',
+      sent_to: 'Sent to',
       camera_alert_title: 'For this feature we need your camera',
       camera_alert_body:
         'You denied permissions to use the camera, please allow to continue',

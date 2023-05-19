@@ -1,4 +1,4 @@
-import { AddressValidationMessage, validateAddress } from './lib'
+import { AddressValidationMessage, validateAddress, isMyAddress } from './lib'
 import { testnetCase } from './testCase'
 
 describe('validate address', () => {
@@ -23,5 +23,14 @@ describe('validate address', () => {
       expect(validateAddress('', 31)).toEqual(
         AddressValidationMessage.INVALID_ADDRESS,
       ))
+  })
+  describe('isMyAddress', () => {
+    const wallet = {
+      smartWalletAddress: testnetCase.lower,
+    }
+    test('same address', () =>
+      expect(isMyAddress(wallet, testnetCase.checksummed)).toBeTruthy())
+    test('different address', () =>
+      expect(isMyAddress(wallet, '0x1234567890')).toBeFalsy())
   })
 })
