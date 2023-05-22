@@ -63,7 +63,7 @@ describe('utils', () => {
     })
   })
 
-  describe.only('sanitizeDecimalText', () => {
+  describe('sanitizeDecimalText', () => {
     it('empty value', () => {
       expect(sanitizeDecimalText('')).toEqual('')
     })
