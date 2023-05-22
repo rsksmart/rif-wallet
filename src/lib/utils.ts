@@ -158,8 +158,11 @@ export const sanitizeDecimalText = (text: string) => {
     newText = newText.slice(0, -1)
   }
 
-  // remove leading zeros
-  return removeLeadingZeros(newText)
+  if (newText.length > 1 && newText[0] === '0' && newText[1] !== '.') {
+    newText = removeLeadingZeros(newText)
+  }
+
+  return newText
 }
 
 export const sanitizeMaxDecimalText = (text: string, maxDecimal = 8) => {

@@ -63,7 +63,7 @@ describe('utils', () => {
     })
   })
 
-  describe.only('sanitizeDecimalText', () => {
+  describe('sanitizeDecimalText', () => {
     it('empty value', () => {
       expect(sanitizeDecimalText('')).toEqual('')
     })
@@ -87,6 +87,15 @@ describe('utils', () => {
     })
     it('should remove leading zeros', () => {
       expect(sanitizeDecimalText('000123.456')).toEqual('123.456')
+    })
+    it('should allow 0', () => {
+      expect(sanitizeDecimalText('0')).toEqual('0')
+    })
+    it('should allow 0.0', () => {
+      expect(sanitizeDecimalText('0.0')).toEqual('0.0')
+    })
+    it('should allow 0.00', () => {
+      expect(sanitizeDecimalText('0.00')).toEqual('0.00')
     })
   })
 
