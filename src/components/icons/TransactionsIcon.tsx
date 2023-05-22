@@ -2,7 +2,10 @@ import Svg, { Path, Rect } from 'react-native-svg'
 
 import { FooterIconInterface } from '.'
 
-const TransactionsIcon = ({ active = false, ...props }: FooterIconInterface) => (
+const TransactionsIcon = ({
+  active = false,
+  ...props
+}: FooterIconInterface) => (
   <Svg width={52} height={52} fill="none" {...props}>
     {active && <Rect width={52} height={52} fill="#4B5CF0" rx={26} />}
     <Path
