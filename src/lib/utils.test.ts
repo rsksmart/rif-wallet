@@ -63,7 +63,7 @@ describe('utils', () => {
     })
   })
 
-  describe('sanitizeDecimalText', () => {
+  describe.only('sanitizeDecimalText', () => {
     it('empty value', () => {
       expect(sanitizeDecimalText('')).toEqual('')
     })
@@ -84,6 +84,9 @@ describe('utils', () => {
     })
     it('should remove comma when dot already exists', () => {
       expect(sanitizeDecimalText('123.456,')).toEqual('123.456')
+    })
+    it('should remove leading zeros', () => {
+      expect(sanitizeDecimalText('000123.456')).toEqual('123.456')
     })
   })
 

@@ -157,7 +157,9 @@ export const sanitizeDecimalText = (text: string) => {
     // or if the dot is the first character
     newText = newText.slice(0, -1)
   }
-  return newText
+
+  // remove leading zeros
+  return removeLeadingZeros(newText)
 }
 
 export const sanitizeMaxDecimalText = (text: string, maxDecimal = 8) => {
@@ -167,5 +169,10 @@ export const sanitizeMaxDecimalText = (text: string, maxDecimal = 8) => {
   }
   return text
 }
+
 export const convertUnixTimeToFromNowFormat = (unixTime: number): string =>
   moment.unix(Number(unixTime)).fromNow()
+
+export const removeLeadingZeros = (value: string) => {
+  return value.replace(/^0+/, '')
+}
