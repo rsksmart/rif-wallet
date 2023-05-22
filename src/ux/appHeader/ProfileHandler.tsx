@@ -1,7 +1,6 @@
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
-import Icon from 'react-native-vector-icons/FontAwesome5'
 
 import { useProfileStatusColors } from 'lib/rns'
 
@@ -35,16 +34,9 @@ export const ProfileHandler = ({ navigation }: Props) => {
         <>
           <Avatar
             size={20}
-            name={'person'}
-            style={styles.profileHandlerImage}
-            icon={
-              <Icon
-                name={'user-circle'}
-                size={15}
-                color={sharedColors.primary}
-              />
-            }
+            imageSource={require('src/images/user-transparent.png')}
           />
+
           <View style={styles.textAlignment}>
             <Typography type={'h4'} style={styles.profileName}>
               {t('header_no_username')}
@@ -120,9 +112,6 @@ export const ProfileHandler = ({ navigation }: Props) => {
 const styles = StyleSheet.create({
   profileHandler: castStyle.view({
     flexDirection: 'row',
-  }),
-  profileHandlerImage: castStyle.image({
-    backgroundColor: sharedColors.white,
   }),
   profileName: castStyle.text({
     paddingLeft: 6,
