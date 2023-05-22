@@ -1,4 +1,9 @@
-import { balanceToDisplay, balanceToUSD, sanitizeDecimalText } from './utils'
+import {
+  balanceToDisplay,
+  balanceToUSD,
+  sanitizeDecimalText,
+  sanitizeMaxDecimalText,
+} from './utils'
 
 describe('utils', () => {
   describe('balanceToNumber', () => {
@@ -79,6 +84,24 @@ describe('utils', () => {
     })
     it('should remove comma when dot already exists', () => {
       expect(sanitizeDecimalText('123.456,')).toEqual('123.456')
+    })
+  })
+
+  describe('sanitizeMaxDecimalText', () => {
+    it('empty value', () => {
+      expect(sanitizeMaxDecimalText('')).toEqual('')
+    })
+    it('value with no decimal', () => {
+      expect(sanitizeMaxDecimalText('123')).toEqual('123')
+    })
+    it('value with decimal', () => {
+      expect(sanitizeMaxDecimalText('123.456')).toEqual('123.456')
+    })
+    it('should remove trailing decimals (max 8 decimals)', () => {
+      expect(sanitizeMaxDecimalText('123.123456789012')).toEqual('123.12345678')
+    })
+    it('should remove trailing decimals (max 4 decimals)', () => {
+      expect(sanitizeMaxDecimalText('123.12345678', 4)).toEqual('123.1234')
     })
   })
 })
