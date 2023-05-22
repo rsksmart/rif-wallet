@@ -77,12 +77,11 @@ export const TokenBalance = ({
           )}
           <TextInput
             onChangeText={handleAmountChange}
-            value={
-              hide ? '\u002A\u002A\u002A\u002A' : firstValue.balance.toString()
-            }
+            value={hide ? '\u002A\u002A\u002A\u002A' : firstValue.balance}
             keyboardType="numeric"
             testID={'Amount.Input'}
-            placeholderTextColor={sharedColors.white}
+            placeholder="0"
+            placeholderTextColor={sharedColors.inputLabelColor}
             style={[styles.input, [sharedStyles.flex]]}
             editable={editable}
             multiline={false}

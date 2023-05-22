@@ -121,7 +121,7 @@ export const TransactionForm = ({
   const to = watch('to')
 
   const [firstBalance, setFirstBalance] = useState<CurrencyValue>({
-    balance: '0',
+    balance: '',
     symbolType: 'icon',
     symbol: selectedToken.symbol,
   })
