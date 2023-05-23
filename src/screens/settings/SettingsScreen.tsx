@@ -112,13 +112,15 @@ export const SettingsScreen = ({
             </Typography>
           </AppTouchable>
         )}
-        <AppTouchable
-          width={'100%'}
-          accessibilityLabel={'example'}
-          style={styles.settingsItem}
-          onPress={goToExampleScreen}>
-          <Typography type={'h3'}>{t('settings_screen_examples')}</Typography>
-        </AppTouchable>
+        {__DEV__ && (
+          <AppTouchable
+            width={'100%'}
+            accessibilityLabel={'example'}
+            style={styles.settingsItem}
+            onPress={goToExampleScreen}>
+            <Typography type={'h3'}>{t('settings_screen_examples')}</Typography>
+          </AppTouchable>
+        )}
       </View>
       <View style={styles.bottomView}>
         <AppTouchable
