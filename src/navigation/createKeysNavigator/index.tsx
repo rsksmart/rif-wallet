@@ -58,7 +58,7 @@ export const CreateKeysNavigation = () => {
       <Stack.Screen
         name={createKeysRouteNames.ImportMasterKey}
         component={ImportMasterKeyScreen}
-        options={screensOptions}
+        options={screenOptionsWithHeader(top, t('header_import_wallet'))}
       />
       <Stack.Screen
         name={createKeysRouteNames.CreatePIN}

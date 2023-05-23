@@ -1,4 +1,3 @@
-import { CompositeScreenProps } from '@react-navigation/native'
 import { useCallback, useState, useRef } from 'react'
 import { ScrollView, StyleSheet, TextInput, View } from 'react-native'
 import { Pagination } from 'react-native-snap-carousel'
@@ -8,7 +7,6 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import Feather from 'react-native-vector-icons/Feather'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { FormProvider, useForm } from 'react-hook-form'
-import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
 import { CarouselRenderItemInfo } from 'react-native-reanimated-carousel/lib/typescript/types'
 
 import { validateMnemonic } from 'lib/bip39'
@@ -18,15 +16,11 @@ import {
   createKeysRouteNames,
   CreateKeysScreenProps,
 } from 'navigation/createKeysNavigator/types'
-import {
-  rootTabsRouteNames,
-  RootTabsScreenProps,
-} from 'navigation/rootNavigator'
 import { castStyle } from 'shared/utils'
 import { WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
 import { createWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
-import { defaultIconSize, sharedColors, sharedStyles } from 'shared/constants'
+import { sharedColors, sharedStyles } from 'shared/constants'
 
 const slidesIndexes = [0, 1, 2, 3]
 
@@ -51,9 +45,9 @@ const headerTextMap = new Map([
   [StatusActions.SUCCESS, 'header_phrase_correct'],
 ])
 
-export const ImportMasterKeyScreen = ({
-  navigation,
-}: CreateKeysScreenProps<createKeysRouteNames.ImportMasterKey>) => {
+export const ImportMasterKeyScreen = (
+  _: CreateKeysScreenProps<createKeysRouteNames.ImportMasterKey>,
+) => {
   const { t } = useTranslation()
 
   const dispatch = useAppDispatch()
@@ -179,26 +173,14 @@ export const ImportMasterKeyScreen = ({
   return (
     <FormProvider {...form}>
       <ScrollView style={styles.parent} keyboardShouldPersistTaps={'always'}>
-        <View style={styles.headerStyle}>
-          <FontAwesome5Icon
-            name="chevron-left"
-            size={defaultIconSize}
-            color="white"
-            onPress={navigation.goBack}
-            style={[sharedStyles.widthHalfWidth, styles.backIconStyleView]}
-          />
-          <Typography style={[sharedStyles.flex, styles.flexCenter]} type="h4">
-            {t('header_import_wallet')}
-          </Typography>
-        </View>
-        <View style={styles.phraseView}>
-          <Typography type="h3">{t(headerTextMap.get(status))}</Typography>
-        </View>
+        <Typography style={styles.titleText} type="h3">
+          {t(headerTextMap.get(status))}
+        </Typography>
         <View
           style={
             status !== StatusActions.INITIAL ? styles.hideCarouselView : null
           }>
-          <GestureHandlerRootView>
+          <GestureHandlerRootView style={styles.wordsContainer}>
             <Carousel
               data={slidesIndexes}
               renderItem={renderItem}
@@ -274,9 +256,12 @@ const StatusIcon = ({ status }: { status: StatusActions }) => {
 
 const styles = StyleSheet.create({
   parent: castStyle.view({
-    backgroundColor: sharedColors.secondary,
-    minHeight: '100%',
+    backgroundColor: sharedColors.black,
+    flex: 1,
     paddingHorizontal: 24,
+  }),
+  wordsContainer: castStyle.view({
+    marginTop: 20,
   }),
   headerStyle: castStyle.view({
     width: '100%',
@@ -287,8 +272,8 @@ const styles = StyleSheet.create({
   flexCenter: castStyle.view({
     alignItems: 'center',
   }),
-  phraseView: castStyle.view({
-    marginBottom: 20,
+  titleText: castStyle.text({
+    marginTop: 42,
   }),
   hideCarouselView: castStyle.view({
     display: 'none',
