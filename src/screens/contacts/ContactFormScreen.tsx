@@ -18,7 +18,7 @@ import {
 } from 'navigation/rootNavigator/types'
 import { AppButton } from 'components/button'
 import { AddressInput } from 'components/address'
-import { Input } from 'components/index'
+import { ContactInput } from 'components/contact/ContactInput'
 import { Contact } from 'shared/types'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { addContact, editContact } from 'store/slices/contactsSlice'
@@ -38,7 +38,7 @@ interface FormValues {
 }
 
 const schema = yup.object({
-  name: yup.string().required().trim(),
+  name: yup.string().required().min(5).max(50).trim(),
   address: yup.string().required(),
   addressIsValid: yup.boolean().isTrue(),
 })
@@ -79,6 +79,13 @@ export const ContactFormScreen = ({
     (value: string, isValid: boolean) => {
       setValue('address', value)
       setValue('addressIsValid', isValid)
+    },
+    [setValue],
+  )
+
+  const handleNameChange = useCallback(
+    (value: string) => {
+      setValue('name', value)
     },
     [setValue],
   )
@@ -138,10 +145,13 @@ export const ContactFormScreen = ({
             onChangeAddress={handleAddressChange}
             chainId={getChainIdByType(chainType)}
           />
-          <Input
+          <ContactInput
             label={t('contact_form_name')}
             inputName={'name'}
+            min={5}
+            max={50}
             testID={'nameInput'}
+            onChangeName={handleNameChange}
             accessibilityLabel={'nameInput'}
             placeholder={t('contact_form_name')}
             resetValue={() => resetField('name')}
