@@ -2,7 +2,6 @@ import { TransactionResponse } from '@ethersproject/abstract-provider'
 import { ContractReceipt } from 'ethers'
 import {
   BitcoinNetwork,
-  BitcoinNetworkWithBIPRequest,
   UnspentTransactionType,
 } from '@rsksmart/rif-wallet-bitcoin'
 import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
@@ -10,7 +9,13 @@ import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { TransactionExtras } from 'store/slices/transactionsSlice/types'
 
-import { TransactionInformation } from './TransactionInfo'
+export interface TransactionInformation {
+  status: 'USER_CONFIRM' | 'PENDING' | 'SUCCESS' | 'FAILED'
+  to?: string
+  value?: string
+  symbol?: string
+  hash?: string
+}
 
 export type OnSetErrorFunction = (
   error: string | null | { message: string },

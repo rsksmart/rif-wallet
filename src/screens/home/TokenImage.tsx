@@ -12,30 +12,36 @@ import { sharedColors } from 'shared/constants'
 
 interface Props {
   symbol: string
+  white?: boolean
   transparent?: boolean
   color?: string
-  height?: number
-  width?: number
+  size?: number
 }
 
 export const TokenImage = ({
   symbol,
-  height = 20,
-  width = 20,
+  size = 20,
   transparent = false,
-  color = sharedColors.white,
+  color = sharedColors.black,
+  white,
 }: Props) => {
+  let finalSymbol = symbol
+
+  if (white) {
+    finalSymbol = finalSymbol + 'white'
+  }
+
   const viewStyle: StyleProp<ViewStyle> = {
     aspectRatio: 1,
     justifyContent: 'center',
     alignItems: 'center',
   }
 
-  const iconStyle: StyleProp<ImageStyle> = { height, width }
+  const iconStyle: StyleProp<ImageStyle> = { height: size, width: size }
 
   const imageSource = transparent
-    ? getTransparentIconSource(symbol) || getIconSource(symbol)
-    : getIconSource(symbol)
+    ? getTransparentIconSource(finalSymbol) || getIconSource(finalSymbol)
+    : getIconSource(finalSymbol)
   return (
     <View style={viewStyle}>
       {imageSource ? (
@@ -45,7 +51,7 @@ export const TokenImage = ({
           resizeMode="contain"
         />
       ) : (
-        <FrownFaceIcon height={height} width={width} />
+        <FrownFaceIcon height={size} width={size} />
       )}
     </View>
   )

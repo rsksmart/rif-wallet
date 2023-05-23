@@ -35,9 +35,8 @@ const SelectedCard = ({
         {icon ? (
           <View style={selectedCardStyles.icon}>
             <TokenImage
-              symbol={isRifToken ? icon + 'white' : icon}
-              height={20}
-              width={20}
+              symbol={icon}
+              white={isRifToken}
               transparent
               color={color}
             />

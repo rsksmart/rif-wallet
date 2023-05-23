@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   }),
   body2: castStyle.text({
     ...fonts.regular,
-    fontSize: 15,
+    fontSize: 14,
     lineHeight: 19.6,
     fontWeight: '400',
   }),

@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { BigNumberish } from 'ethers'
 import {
   convertSatoshiToBtcHuman,
@@ -6,6 +7,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
 import { useCallback } from 'react'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { convertTokenToUSD } from 'lib/utils'
 
@@ -14,7 +16,8 @@ import { TokenSymbol } from 'screens/home/TokenImage'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { sharedColors } from 'shared/constants'
-import { AppButtonBackgroundVarietyEnum } from 'src/components'
+import { AppButtonBackgroundVarietyEnum } from 'components/index'
+import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 
 interface ReviewBitcoinTransactionContainerProps {
   request: SendBitcoinRequest
@@ -27,17 +30,27 @@ export const ReviewBitcoinTransactionContainer = ({
   onConfirm,
   onCancel,
 }: ReviewBitcoinTransactionContainerProps) => {
+  const insets = useSafeAreaInsets()
   const { t } = useTranslation()
   const tokenPrices = useAppSelector(selectUsdPrices)
   const {
-    payload: { amountToPay, addressToPay, miningFee },
+    payload: { addressToPay, ...payload },
   } = request
+
+  const miningFee = useMemo(
+    () => convertSatoshiToBtcHuman(payload.miningFee),
+    [payload],
+  )
+  const amountToPay = useMemo(
+    () => convertSatoshiToBtcHuman(payload.amountToPay),
+    [payload],
+  )
 
   const onConfirmTransaction = useCallback(async () => {
     request.confirm().catch(err => {
       request.reject(err)
     })
-    onConfirm(convertSatoshiToBtcHuman(amountToPay), TokenSymbol.BTC)
+    onConfirm(amountToPay, TokenSymbol.BTC)
   }, [request, onConfirm, amountToPay])
 
   const onCancelTransaction = useCallback(() => {
@@ -45,45 +58,68 @@ export const ReviewBitcoinTransactionContainer = ({
     onCancel()
   }, [onCancel, request])
 
-  const data = {
-    transaction: {
-      tokenValue: {
-        balance: convertSatoshiToBtcHuman(amountToPay),
-        symbolType: 'icon' as const,
-        symbol: TokenSymbol.BTC,
+  const data: TransactionSummaryScreenProps = useMemo(
+    () => ({
+      transaction: {
+        tokenValue: {
+          balance: amountToPay,
+          symbolType: 'icon',
+          symbol: TokenSymbol.BTC,
+        },
+        usdValue: {
+          balance: convertTokenToUSD(
+            Number(amountToPay),
+            tokenPrices.BTC.price,
+            true,
+          ).toString(),
+          symbolType: 'text',
+          symbol: '$',
+        },
+        fee: {
+          tokenValue: miningFee,
+          usdValue: convertTokenToUSD(
+            Number(miningFee),
+            tokenPrices.BTC.price,
+          ).toString(),
+        },
+        time: 'approx 1 min',
+        total: {
+          tokenValue: amountToPay,
+          usdValue: convertTokenToUSD(
+            Number(amountToPay) + Number(miningFee),
+            tokenPrices.BTC.price,
+          ).toString(),
+        },
       },
-      usdValue: {
-        balance: convertTokenToUSD(
-          Number(convertSatoshiToBtcHuman(amountToPay)),
-          tokenPrices.BTC.price,
-          true,
-        ).toString(),
-        symbolType: 'text' as const,
-        symbol: '$',
+      contact: {
+        address: addressToPay,
       },
-      feeValue: convertSatoshiToBtcHuman(miningFee),
-      time: 'approx 1 min',
-      total: convertSatoshiToBtcHuman(amountToPay),
-    },
-    contact: {
-      address: addressToPay,
-    },
-    buttons: [
-      {
-        title: t('transaction_summary_title_confirm_button_title'),
-        onPress: onConfirmTransaction,
-        color: sharedColors.white,
-        textColor: sharedColors.black,
-      },
-      {
-        title: t('transaction_summary_title_cancel_button_title'),
-        onPress: onCancelTransaction,
-        backgroundVariety: AppButtonBackgroundVarietyEnum.OUTLINED,
-      },
+      buttons: [
+        {
+          title: t('transaction_summary_title_confirm_button_title'),
+          onPress: onConfirmTransaction,
+          color: sharedColors.white,
+          textColor: sharedColors.black,
+        },
+        {
+          title: t('transaction_summary_title_cancel_button_title'),
+          onPress: onCancelTransaction,
+          backgroundVariety: AppButtonBackgroundVarietyEnum.OUTLINED,
+        },
+      ],
+    }),
+    [
+      addressToPay,
+      amountToPay,
+      miningFee,
+      onCancelTransaction,
+      t,
+      onConfirmTransaction,
+      tokenPrices,
     ],
-  }
+  )
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <TransactionSummaryComponent {...data} />
     </View>
   )

@@ -59,15 +59,12 @@ export const TokenBalance = ({
                 styles.tokenIcon,
                 !firstValue.symbol ? styles.tokenBackground : null,
               ]}>
-              {firstValue.symbol && (
-                <TokenImage
-                  symbol={firstValue.symbol}
-                  height={30}
-                  width={30}
-                  transparent={true}
-                  color={color}
-                />
-              )}
+              <TokenImage
+                symbol={firstValue.symbol}
+                size={30}
+                transparent={true}
+                color={color}
+              />
             </View>
           )}
           {firstValue.symbolType === 'text' && (
@@ -85,6 +82,7 @@ export const TokenBalance = ({
             style={[styles.input, [sharedStyles.flex]]}
             editable={editable}
             multiline={false}
+            clearTextOnFocus
           />
         </View>
         <View style={styles.rightIconContainer}>

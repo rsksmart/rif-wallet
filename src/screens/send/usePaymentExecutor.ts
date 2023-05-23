@@ -14,10 +14,9 @@ import { fetchUtxo } from 'screens/send/bitcoinUtils'
 import { AppDispatch } from 'store/index'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
 
-import { TransactionInformation } from './TransactionInfo'
 import { transferBitcoin } from './transferBitcoin'
 import { transfer } from './transferTokens'
-import { OnSetTransactionStatusChange } from './types'
+import { OnSetTransactionStatusChange, TransactionInformation } from './types'
 
 // Update transaction based on status
 // Pending will add a pendingTransaction

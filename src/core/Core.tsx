@@ -33,7 +33,6 @@ import { Cover } from './components/Cover'
 export const InjectedScreens = {
   SendScreen: InjectSelectedWallet(Screens.SendScreen),
   ActivityScreen: InjectSelectedWallet(Screens.ActivityScreen),
-  ActivityDetailsScreen: InjectSelectedWallet(Screens.ActivityDetailsScreen),
   RelayDeployScreen: InjectSelectedWallet(Screens.RelayDeployScreen),
   WalletConnectScreen: InjectSelectedWallet(Screens.WalletConnectScreen),
   ScanQRScreen: InjectSelectedWallet(Screens.ScanQRScreen),

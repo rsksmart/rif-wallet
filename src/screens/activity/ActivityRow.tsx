@@ -74,7 +74,7 @@ export const ActivityBasicRow = ({
           balance: usdBalance ? usdBalance.toFixed(2) : '0.01',
         },
         status: activityDetails.status,
-        feeValue: activityDetails.fee,
+        fee: activityDetails.fee,
         total: activityDetails.total,
         time: activityDetails.timeHumanFormatted,
       },

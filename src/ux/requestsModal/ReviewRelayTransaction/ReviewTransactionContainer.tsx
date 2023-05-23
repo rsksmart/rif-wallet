@@ -7,6 +7,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { TWO_RIF } from '@rsksmart/rif-relay-light-sdk'
 import { View, StyleSheet } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { balanceToDisplay, convertTokenToUSD } from 'lib/utils'
 
@@ -21,6 +22,7 @@ import { sharedColors } from 'shared/constants'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { getContactsAsObject } from 'store/slices/contactsSlice'
 import { TransactionSummaryComponent } from 'screens/transactionSummary/TransactionSummaryComponent'
+import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 
 import useEnhancedWithGas from '../useEnhancedWithGas'
 
@@ -35,6 +37,7 @@ export const ReviewTransactionContainer = ({
   onCancel,
   onConfirm,
 }: Props) => {
+  const insets = useSafeAreaInsets()
   const tokenPrices = useAppSelector(selectUsdPrices)
   // enhance the transaction to understand what it is:
   const txRequest = useMemo(() => request.payload[0], [request])
@@ -66,8 +69,8 @@ export const ReviewTransactionContainer = ({
 
   const rifFee =
     feeEstimateReady && txCostInRif
-      ? `${balanceToDisplay(txCostInRif, 18, 0)} tRIF`
-      : 'estimating fee...'
+      ? `${balanceToDisplay(txCostInRif, 18, 0)}`
+      : '0'
 
   const [error, setError] = useState<string | null>(null)
 
@@ -121,42 +124,69 @@ export const ReviewTransactionContainer = ({
     functionName = '',
   } = enhancedTransactionRequest
 
-  const data = {
-    transaction: {
-      tokenValue: {
-        balance: value.toString(),
-        symbolType: 'icon',
-        symbol: symbol ?? TokenSymbol.RIF,
+  const totalTokenValue = Number(value) + Number(rifFee)
+
+  const data: TransactionSummaryScreenProps = useMemo(
+    () => ({
+      transaction: {
+        tokenValue: {
+          balance: value.toString(),
+          symbolType: 'icon',
+          symbol: symbol ?? TokenSymbol.RIF,
+        },
+        usdValue: {
+          balance: convertTokenToUSD(
+            Number(value),
+            tokenQuote,
+            true,
+          ).toString(),
+          symbolType: 'text',
+          symbol: '$',
+        },
+        fee: {
+          tokenValue: rifFee,
+          usdValue: convertTokenToUSD(Number(rifFee), tokenQuote).toString(),
+        },
+        time: 'approx 1 min',
+        total: {
+          tokenValue: totalTokenValue.toString(),
+          usdValue: convertTokenToUSD(totalTokenValue, tokenQuote).toString(),
+        },
       },
-      usdValue: {
-        balance: convertTokenToUSD(value, tokenQuote, true).toString(),
-        symbolType: 'text',
-        symbol: '$',
-      },
-      feeValue: rifFee,
-      time: 'approx 1 min',
-      total: value?.toString(),
-    },
-    contact: contacts[to] || { address: to || '' },
-    buttons: [
-      {
-        title: t('transaction_summary_title_confirm_button_title'),
-        onPress: confirmTransaction,
-        color: sharedColors.white,
-        textColor: sharedColors.black,
-      },
-      {
-        style: { marginTop: 10 },
-        title: t('transaction_summary_title_cancel_button_title'),
-        onPress: cancelTransaction,
-        backgroundVariety: AppButtonBackgroundVarietyEnum.OUTLINED,
-      },
+      contact: contacts[to] || { address: to || '' },
+      buttons: [
+        {
+          title: t('transaction_summary_title_confirm_button_title'),
+          onPress: confirmTransaction,
+          color: sharedColors.white,
+          textColor: sharedColors.black,
+        },
+        {
+          style: { marginTop: 10 },
+          title: t('transaction_summary_title_cancel_button_title'),
+          onPress: cancelTransaction,
+          backgroundVariety: AppButtonBackgroundVarietyEnum.OUTLINED,
+        },
+      ],
+      functionName,
+    }),
+    [
+      cancelTransaction,
+      confirmTransaction,
+      contacts,
+      rifFee,
+      t,
+      symbol,
+      functionName,
+      to,
+      tokenQuote,
+      totalTokenValue,
+      value,
     ],
-    functionName,
-  }
+  )
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <TransactionSummaryComponent {...data} isLoaded={isLoaded} />
     </View>
   )

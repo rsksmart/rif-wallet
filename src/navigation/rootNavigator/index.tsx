@@ -72,10 +72,6 @@ export const RootNavigationComponent = () => {
                 component={InjectedScreens.ActivityScreen}
               />
               <RootTabs.Screen
-                name={rootTabsRouteNames.ActivityDetails}
-                component={InjectedScreens.ActivityDetailsScreen}
-              />
-              <RootTabs.Screen
                 name={rootTabsRouteNames.ScanQR}
                 component={InjectedScreens.ScanQRScreen}
               />
