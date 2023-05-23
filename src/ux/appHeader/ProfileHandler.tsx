@@ -1,10 +1,10 @@
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
+import Icon from 'react-native-vector-icons/Ionicons'
 
 import { useProfileStatusColors } from 'lib/rns'
 
-import { Avatar } from 'components/avatar'
 import { AvatarIcon } from 'components/icons/AvatarIcon'
 import { StepperComponent } from 'components/profile'
 import { Typography } from 'components/typography'
@@ -32,9 +32,10 @@ export const ProfileHandler = ({ navigation }: Props) => {
       onPress={() => navigation.navigate(rootTabsRouteNames.Profile)}>
       {profile.status === ProfileStatus.NONE && (
         <>
-          <Avatar
+          <Icon
+            name="person-circle-sharp"
             size={20}
-            imageSource={require('src/images/user-transparent.png')}
+            color={sharedColors.white}
           />
 
           <View style={styles.textAlignment}>
@@ -118,7 +119,6 @@ const styles = StyleSheet.create({
   }),
   textAlignment: castStyle.text({
     justifyContent: 'center',
-    paddingBottom: 1,
   }),
   requestingStatus: castStyle.text({
     opacity: 0.4,
