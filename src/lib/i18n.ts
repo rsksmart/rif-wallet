@@ -158,8 +158,6 @@ const resources = {
       contact_form_title_edit: 'Edit Contact',
       contact_form_title_create: 'Create Contact',
       contact_form_name: 'Name',
-      contact_form_invalid_short_name: 'Contact Name is too short',
-      contact_form_invalid_long_name: 'Contact Name is too long',
       contact_form_getting_info: 'Getting address for domain...',
       contact_form_user_found: 'User found!',
       contact_form_address_not_found: 'Could not get address for',

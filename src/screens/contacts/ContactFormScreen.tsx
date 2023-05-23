@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { CompositeScreenProps } from '@react-navigation/native'
-import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+} from 'react-native'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as yup from 'yup'
@@ -18,13 +23,14 @@ import {
 } from 'navigation/rootNavigator/types'
 import { AppButton } from 'components/button'
 import { AddressInput } from 'components/address'
-import { ContactInput } from 'components/contact/ContactInput'
+import { Input } from 'components/index'
 import { Contact } from 'shared/types'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { addContact, editContact } from 'store/slices/contactsSlice'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { sharedColors, sharedStyles, testIDs } from 'shared/constants'
+import { castStyle } from 'shared/utils'
 
 export type ContactFormScreenProps = CompositeScreenProps<
   ContactsStackScreenProps<contactsStackRouteNames.ContactForm>,
@@ -38,7 +44,12 @@ interface FormValues {
 }
 
 const schema = yup.object({
-  name: yup.string().required().min(5).max(50).trim(),
+  name: yup
+    .string()
+    .required()
+    .min(5, 'Contact Name is too short')
+    .max(50, 'Contact Name is too long')
+    .trim(),
   address: yup.string().required(),
   addressIsValid: yup.boolean().isTrue(),
 })
@@ -70,7 +81,7 @@ export const ContactFormScreen = ({
     resetField,
     handleSubmit,
     setValue,
-    formState: { isValid: formIsValid },
+    formState: { isValid: formIsValid, errors },
   } = methods
   const { chainType = ChainTypeEnum.TESTNET } =
     useAppSelector(selectActiveWallet)
@@ -79,13 +90,6 @@ export const ContactFormScreen = ({
     (value: string, isValid: boolean) => {
       setValue('address', value)
       setValue('addressIsValid', isValid)
-    },
-    [setValue],
-  )
-
-  const handleNameChange = useCallback(
-    (value: string) => {
-      setValue('name', value)
     },
     [setValue],
   )
@@ -145,13 +149,12 @@ export const ContactFormScreen = ({
             onChangeAddress={handleAddressChange}
             chainId={getChainIdByType(chainType)}
           />
-          <ContactInput
+          <Input
             label={t('contact_form_name')}
             inputName={'name'}
-            min={5}
-            max={50}
             testID={'nameInput'}
-            onChangeName={handleNameChange}
+            subtitle={errors.name?.message?.toString()}
+            subtitleStyle={styles.fieldError}
             accessibilityLabel={'nameInput'}
             placeholder={t('contact_form_name')}
             resetValue={() => resetField('name')}
@@ -170,3 +173,10 @@ export const ContactFormScreen = ({
     </KeyboardAvoidingView>
   )
 }
+
+const styles = StyleSheet.create({
+  fieldError: castStyle.text({
+    color: sharedColors.dangerLight,
+    bottom: '10%',
+  }),
+})
