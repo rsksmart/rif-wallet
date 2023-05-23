@@ -4,6 +4,7 @@ import { ScrollView, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
+import { isMyAddress } from 'components/address/lib'
 import { CurrencyValue, TokenBalance } from 'components/token'
 import {
   sharedColors,
@@ -22,7 +23,6 @@ import {
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
-import { isMyAddress } from 'components/address/lib'
 
 import {
   TransactionStatus,
@@ -227,7 +227,8 @@ export const TransactionSummaryComponent = ({
           </Typography>
           <Typography
             type={'label'}
-            style={[styles.summaryText, sharedStyles.textRight]}>
+            style={[styles.summaryText, sharedStyles.textRight]}
+            adjustsFontSizeToFit>
             {contact.address}
           </Typography>
         </View>

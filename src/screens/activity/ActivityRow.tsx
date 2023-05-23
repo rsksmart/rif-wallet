@@ -43,17 +43,22 @@ export const ActivityBasicRow = ({
   const { t } = useTranslation()
   const { wallet } = useAppSelector(selectActiveWallet)
 
+  const usdBalance = useMemo(
+    () => roundBalance(activityDetails.price, 2),
+    [activityDetails.price],
+  )
+
   const amIReceiver = useMemo(
     () => isMyAddress(wallet, activityDetails.to),
     [wallet, activityDetails],
   )
-  const label = useMemo(() => {
-    return (
+  const label = useMemo(
+    () =>
       (amIReceiver ? t('received_from') : t('sent_to')) +
       ' ' +
-      shortAddress(activityDetails.to)
-    )
-  }, [activityDetails.to, amIReceiver, t])
+      shortAddress(activityDetails.to),
+    [activityDetails.to, amIReceiver, t],
+  )
 
   const txSummary: TransactionSummaryScreenProps = useMemo(
     () => ({
@@ -64,9 +69,9 @@ export const ActivityBasicRow = ({
           balance: activityDetails.value,
         },
         usdValue: {
-          symbol: '$',
+          symbol: usdBalance ? '$' : '< $',
           symbolType: 'text',
-          balance: '' + roundBalance(activityDetails.price, 2),
+          balance: usdBalance ? usdBalance.toFixed(2) : '0.01',
         },
         status: activityDetails.status,
         feeValue: activityDetails.fee,
@@ -77,7 +82,7 @@ export const ActivityBasicRow = ({
         address: activityDetails.to,
       },
     }),
-    [activityDetails],
+    [activityDetails, usdBalance],
   )
 
   const amount = useMemo(() => {
@@ -111,6 +116,7 @@ export const ActivityBasicRow = ({
         avatar={{ name: 'A' }}
         secondaryLabel={activityDetails.timeHumanFormatted}
         addressToSearch={activityDetails.to}
+        usdAmount={usdBalance.toFixed(2)}
       />
     </AppTouchable>
   )
