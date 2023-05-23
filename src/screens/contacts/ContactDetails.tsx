@@ -64,7 +64,8 @@ export const ContactDetails = ({
   const methods = useForm({
     defaultValues: {
       username: contact.name,
-      address: shortAddress(contact.address),
+      address: contact.address,
+      shortAddress: shortAddress(contact.address),
     },
   })
   const { getValues } = methods
@@ -191,7 +192,7 @@ export const ContactDetails = ({
             <Input
               containerStyle={styles.addressInputContainer}
               label={t('contacts_address_input_label')}
-              inputName={'address'}
+              inputName={'shortAddress'}
               rightIcon={copyButtonConfig}
               isReadOnly
               onRightIconPress={onCopyValue(getValues('address'))}

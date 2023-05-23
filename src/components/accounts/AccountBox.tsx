@@ -139,6 +139,7 @@ export const AccountBox = ({
         rightIcon={
           <Icon
             name={'copy'}
+            style={styles.copyIcon}
             color={sharedColors.white}
             size={defaultIconSize}
             onPress={() =>
@@ -157,6 +158,7 @@ export const AccountBox = ({
         rightIcon={
           <Icon
             name={'copy'}
+            style={styles.copyIcon}
             color={sharedColors.white}
             size={defaultIconSize}
             onPress={() =>
@@ -184,6 +186,7 @@ export const AccountBox = ({
           rightIcon={
             <Icon
               name={'copy'}
+              style={styles.copyIcon}
               color={sharedColors.white}
               size={defaultIconSize}
               onPress={() => Clipboard.setString(publicKey.publicKey || '')}
@@ -239,5 +242,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     paddingTop: 0,
     paddingBottom: 0,
+  }),
+  copyIcon: castStyle.image({
+    padding: defaultIconSize,
   }),
 })
