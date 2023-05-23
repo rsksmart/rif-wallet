@@ -1,4 +1,4 @@
-import { ColorValue, StyleSheet } from 'react-native'
+import { ColorValue, StyleSheet, View } from 'react-native'
 import { StackNavigationOptions } from '@react-navigation/stack'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { BottomTabNavigationOptions } from '@react-navigation/bottom-tabs'
@@ -13,7 +13,7 @@ type HeaderProps = BottomTabNavigationOptions & StackNavigationOptions
 
 export const screenOptionsNoHeader: HeaderProps = { headerShown: false }
 
-export const sharedHeaderLeftOptions = (goBack = () => {}) => (
+export const sharedHeaderLeftOptions = (goBack?: () => void) => (
   <AppTouchable width={20} onPress={goBack} style={sharedStyles.marginLeft24}>
     <Icon name={'chevron-left'} size={20} color={sharedColors.white} />
   </AppTouchable>
@@ -23,11 +23,9 @@ export const screenOptionsWithHeader = (
   topInset: number,
   title?: string,
   color?: ColorValue,
-  stepper?: {
-    startColor: ColorValue
-    endColor: ColorValue
-  },
+  stepper?: ColorValue[],
   backButtonDisabled?: boolean,
+  goBack?: () => void,
 ): HeaderProps => {
   return {
     headerShown: true,
@@ -35,21 +33,21 @@ export const screenOptionsWithHeader = (
       backButtonDisabled
         ? null
         : sharedHeaderLeftOptions(
-            'onPress' in props ? props.onPress : () => {},
+            goBack ?? ('onPress' in props ? props.onPress : undefined),
           ),
     headerTitle: props => (
-      <>
+      <View style={sharedStyles.contentCenter}>
         <Typography type={'h3'} style={props.style}>
           {title ?? props.children}
         </Typography>
         {stepper && (
           <StepperComponent
-            colors={[stepper.startColor, stepper.endColor]}
+            colors={stepper}
             width={40}
             style={headerStyles.stepper}
           />
         )}
-      </>
+      </View>
     ),
     headerStyle: {
       height: 64 + topInset,

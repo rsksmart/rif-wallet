@@ -84,6 +84,7 @@ export const createWallet = createAsyncThunk<
           screen: createKeysRouteNames.CreatePIN,
           params: {
             isChangeRequested: true,
+            backScreen: rootTabsRouteNames.Home,
           },
         })
       }, 100)
