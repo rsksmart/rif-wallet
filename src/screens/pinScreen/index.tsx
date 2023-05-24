@@ -254,8 +254,13 @@ export const PinScreen = ({ navigation, route }: Props) => {
     if (hasLastDigit) {
       if (!isChangeRequested && isPinEqual) {
         // if pin exists unlocks the app
-        dispatch(unlockApp({ pinUnlocked: true }))
-      } else if (isChangeRequested && isPinEqual) {
+        setTimeout(() => {
+          dispatch(unlockApp({ pinUnlocked: true }))
+        }, 100)
+        return
+      }
+
+      if (isChangeRequested && isPinEqual) {
         // if pin change requested set new pin
         setTimeout(() => {
           dispatch(setPinState(PIN.join('')))
