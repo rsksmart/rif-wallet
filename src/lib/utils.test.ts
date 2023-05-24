@@ -109,8 +109,8 @@ describe('utils', () => {
     it('value with decimal', () => {
       expect(sanitizeMaxDecimalText('123.456')).toEqual('123.456')
     })
-    it('should remove trailing decimals (max 8 decimals)', () => {
-      expect(sanitizeMaxDecimalText('123.123456789012')).toEqual('123.12345678')
+    it('should remove trailing decimals (max 6 decimals)', () => {
+      expect(sanitizeMaxDecimalText('123.123456789012')).toEqual('123.123456')
     })
     it('should remove trailing decimals (max 4 decimals)', () => {
       expect(sanitizeMaxDecimalText('123.12345678', 4)).toEqual('123.1234')
