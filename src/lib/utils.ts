@@ -165,7 +165,7 @@ export const sanitizeDecimalText = (text: string) => {
   return newText
 }
 
-export const sanitizeMaxDecimalText = (text: string, maxDecimal = 8) => {
+export const sanitizeMaxDecimalText = (text: string, maxDecimal = 6) => {
   const textSplitted = text.split('.')
   if (textSplitted[1] && textSplitted[1].length > maxDecimal) {
     return `${textSplitted[0]}.${textSplitted[1].slice(0, maxDecimal)}`
