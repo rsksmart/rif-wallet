@@ -2,27 +2,38 @@ name: Android Build SDK
 
 on:
   release:
+    types: [released]
 
 jobs:
   install-and-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Set up NPM authentication
+        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_PACKAGES_KEY }}" >> ~/.npmrc
+
       - name: Install dependencies
         run: |
           yarn
+
+      - name: Test and Lint
+        run: |
+          yarn ganache &
+          yarn test
+          yarn lint
 
   build-android:
     needs: install-and-test
     runs-on: ubuntu-latest
     steps: 
       - uses: actions/checkout@v3
+      - name: Set up NPM authentication
+        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_PACKAGES_KEY }}" >> ~/.npmrc
+
       - name: Install dependencies
         run: |
           yarn
-          yarn ganache &
-          yarn test
-          yarn lint
 
       - name: Build Android Release
         run: |
