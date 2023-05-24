@@ -6,7 +6,11 @@ import { AddressBitcoinInput } from './AddressBitcoinInput'
 interface AddressInputSelectorProps extends AddressInputProps {
   token: TokenBalanceObject
   chainId: number
-  onChangeAddress: (newValue: string, isValid: boolean) => void
+  onChangeAddress: (
+    newValue: string,
+    newDisplayValue: string,
+    isValid: boolean,
+  ) => void
 }
 
 /**
@@ -23,7 +27,7 @@ export const AddressInputSelector = ({
   token = {} as TokenBalanceObject,
   label,
   placeholder,
-  initialValue,
+  value,
   inputName,
   onChangeAddress,
   resetValue,
@@ -36,7 +40,7 @@ export const AddressInputSelector = ({
         label={label}
         placeholder={placeholder}
         inputName={inputName}
-        initialValue={initialValue}
+        initialValue={value.address}
         onChangeAddress={onChangeAddress}
         resetValue={resetValue}
         testID={'AddressBitcoinInput.Text'}
@@ -49,7 +53,7 @@ export const AddressInputSelector = ({
         label={label}
         placeholder={placeholder}
         inputName={inputName}
-        initialValue={initialValue}
+        value={value}
         onChangeAddress={onChangeAddress}
         resetValue={resetValue}
         chainId={chainId}

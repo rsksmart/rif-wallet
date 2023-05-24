@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 import {
   convertTokenToUSD,
@@ -18,6 +19,7 @@ import {
   AppButton,
   AppButtonBackgroundVarietyEnum,
   AppTouchable,
+  Avatar,
   Input,
   Typography,
 } from 'components/index'
@@ -26,6 +28,7 @@ import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { IPrice } from 'src/subscriptions/types'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
+import { ContactWithAddressRequired } from 'src/shared/types'
 
 import { PortfolioComponent } from '../home/PortfolioComponent'
 import { TokenImage, TokenSymbol } from '../home/TokenImage'
@@ -45,15 +48,19 @@ interface Props {
   initialValues: {
     asset?: TokenBalanceObject
     amount?: number
-    recipient?: string
+    recipient?: ContactWithAddressRequired
   }
   status?: string
 }
 
 interface FormValues {
   amount: number
-  to: string
+  to: {
+    address: string
+    displayAddress: string
+  }
   isToValid: boolean
+  name: string | null
 }
 
 const transactionFeeMap = new Map([
@@ -63,8 +70,11 @@ const transactionFeeMap = new Map([
 ])
 
 const transactionSchema = yup.object().shape({
-  amount: yup.number().min(0.000001),
-  to: yup.string().required(),
+  amount: yup.number().min(0.000000001),
+  to: yup.object({
+    address: yup.string().required(),
+    displayAddress: yup.string().notRequired(),
+  }),
   balance: yup.string(),
   isToValid: yup.boolean().isTrue(),
 })
@@ -80,11 +90,12 @@ export const TransactionForm = ({
   totalUsdBalance,
   status,
 }: Props) => {
+  const { recipient, asset, amount: initialAmount } = initialValues
   const { t } = useTranslation()
   const [showTxSelector, setShowTxSelector] = useState(false)
   const [showTxFeeSelector, setShowTxFeeSelector] = useState(false)
   const [selectedToken, setSelectedToken] = useState<TokenBalanceObject>(
-    initialValues.asset || tokenList[0],
+    asset || tokenList[0],
   )
   const [selectedTokenAddress, setSelectedTokenAddress] = useState<
     string | undefined
@@ -110,13 +121,25 @@ export const TransactionForm = ({
   const methods = useForm<FormValues>({
     mode: 'onSubmit',
     defaultValues: {
-      amount: initialValues.amount || 0,
-      to: initialValues.recipient || '',
-      isToValid: false,
+      amount: initialAmount || 0,
+      to: {
+        address: recipient?.address ?? '',
+        displayAddress: recipient?.displayAddress ?? '',
+      },
+      name: recipient?.name ?? null,
+      isToValid: recipient?.name ? true : false,
     },
     resolver: yupResolver(transactionSchema),
   })
-  const { setValue, handleSubmit, resetField, watch } = methods
+  const {
+    setValue,
+    handleSubmit,
+    resetField,
+    watch,
+    formState: { errors },
+  } = methods
+
+  // watch change in form values
   const amount = watch('amount')
   const to = watch('to')
 
@@ -160,8 +183,8 @@ export const TransactionForm = ({
   )
 
   const handleTargetAddressChange = useCallback(
-    (address: string, isValid: boolean) => {
-      setValue('to', address)
+    (address: string, displayAddress: string, isValid: boolean) => {
+      setValue('to', { address, displayAddress })
       setValue('isToValid', isValid)
     },
     [setValue],
@@ -169,7 +192,7 @@ export const TransactionForm = ({
 
   const handleConfirmClick = useCallback(
     (values: FormValues) => {
-      onConfirm(selectedToken, values.amount, values.to)
+      onConfirm(selectedToken, values.amount, values.to.address)
     },
     [selectedToken, onConfirm],
   )
@@ -184,7 +207,7 @@ export const TransactionForm = ({
         setSelectedToken(oldToken => {
           // Reset address when token type is changed
           if ('isBitcoin' in oldToken === !('isBitcoin' in token)) {
-            handleTargetAddressChange('', false)
+            handleTargetAddressChange('', '', false)
           }
           return token
         })
@@ -255,20 +278,31 @@ export const TransactionForm = ({
     <>
       <ScrollView scrollIndicatorInsets={{ right: -8 }}>
         <FormProvider {...methods}>
-          <AddressInputSelector
-            label={t('transaction_form_recepient_label')}
-            placeholder={t('transaction_form_recepient_label')}
-            initialValue={initialValues.recipient ?? ''}
-            inputName={'to'}
-            onChangeAddress={handleTargetAddressChange}
-            resetValue={() => {
-              resetField('to')
-              resetField('isToValid')
-            }}
-            testID={'To.Input'}
-            chainId={chainId}
-            token={selectedToken}
-          />
+          {recipient?.name ? (
+            <Input
+              isReadOnly
+              label={t('transaction_form_recepient_label')}
+              value={recipient.name}
+              subtitle={recipient.displayAddress}
+              inputName={'to'}
+              leftIcon={<Avatar name={recipient.name} size={32} />}
+            />
+          ) : (
+            <AddressInputSelector
+              label={t('transaction_form_recepient_label')}
+              placeholder={t('transaction_form_recepient_label')}
+              value={to}
+              inputName={'to'}
+              onChangeAddress={handleTargetAddressChange}
+              resetValue={() => {
+                resetField('to')
+                resetField('isToValid')
+              }}
+              testID={'To.Input'}
+              chainId={chainId}
+              token={selectedToken}
+            />
+          )}
           <TokenBalance
             style={styles.marginTop10}
             firstValue={firstBalance}
@@ -371,7 +405,7 @@ export const TransactionForm = ({
             !selectedTokenAddress ||
             !isWalletDeployed ||
             Number(selectedToken.balance) <= 0 ||
-            to.length === 0 ||
+            to.address.length === 0 ||
             amount === 0
           }
           color={sharedColors.white}

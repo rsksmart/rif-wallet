@@ -34,7 +34,7 @@ export const SendScreen = ({
 
   const totalUsdBalance = useAppSelector(selectTotalUsdValue)
   const prices = useAppSelector(selectUsdPrices)
-  const backAction = route.params?.backAction
+  const backScreen = route.params?.backScreen
   const contractAddress = route.params?.contractAddress || assets[0]
 
   const [chainId, setChainId] = useState<number>(31)
@@ -67,6 +67,14 @@ export const SendScreen = ({
     },
     [chainId, executePayment, wallet],
   )
+
+  const onCancel = useCallback(() => {
+    if (backScreen) {
+      return navigation.navigate(backScreen)
+    }
+
+    return navigation.goBack()
+  }, [backScreen, navigation])
 
   useEffect(() => {
     if (!isDeployed && !loading) {
@@ -125,15 +133,14 @@ export const SendScreen = ({
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <TransactionForm
         onConfirm={onExecuteTransfer}
-        onCancel={backAction}
+        onCancel={onCancel}
         tokenList={assets}
         totalUsdBalance={totalUsdBalance}
         tokenPrices={prices}
         chainId={chainId}
         isWalletDeployed={walletDeployed.isDeployed}
         initialValues={{
-          recipient: route.params?.to,
-          amount: 0,
+          recipient: route.params?.contact,
           asset: assets.find(
             asset => asset.contractAddress === contractAddress,
           ),

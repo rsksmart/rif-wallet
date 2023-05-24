@@ -4,15 +4,16 @@ import {
   NavigationProp,
 } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
-import Resolver from '@rsksmart/rns-resolver.js'
 
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
+import { ContactWithAddressRequired } from 'src/shared/types'
 
 import {
   RootTabsParamsList,
   rootTabsRouteNames,
   RootTabsScreenProps,
 } from '../rootNavigator'
+import { contactsStackRouteNames } from '../contactsNavigator'
 
 export enum homeStackRouteNames {
   Main = 'Main',
@@ -24,11 +25,9 @@ export enum homeStackRouteNames {
 export type HomeStackParamsList = {
   [homeStackRouteNames.Main]: undefined
   [homeStackRouteNames.Send]: {
-    backAction: () => void
+    backScreen?: rootTabsRouteNames | contactsStackRouteNames
     token?: string
-    to?: string
-    rnsResolver?: Resolver
-    displayTo?: string
+    contact?: ContactWithAddressRequired
     contractAddress?: string
   }
   [homeStackRouteNames.Receive]: {

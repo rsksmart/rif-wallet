@@ -96,9 +96,8 @@ export const ContactDetails = ({
     navigation.navigate(rootTabsRouteNames.Home, {
       screen: homeStackRouteNames.Send,
       params: {
-        backAction: () =>
-          navigation.navigate(contactsStackRouteNames.ContactsList),
-        to: contact.address,
+        backScreen: contactsStackRouteNames.ContactsList,
+        contact,
       },
     })
   }, [navigation, contact])
@@ -213,8 +212,8 @@ export const ContactDetails = ({
                 <BasicRow
                   label={contact.name}
                   avatar={{ name: contact.name }}
-                  secondaryLabel={item.originTransaction.to}
-                  symbol={item.enhancedTransaction?.symbol}
+                  secondaryLabel={item.to}
+                  symbol={item?.symbol}
                 />
               )}
               style={styles.transactionList}
