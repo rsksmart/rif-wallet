@@ -5,6 +5,7 @@
   "scripts": {
     "android": "ENVFILE=.env react-native run-android",
     "android:local": "ENVFILE=.env.local.android react-native run-android",
+    "android:build": "ENVFILE=.env cd android && ./gradlew app:assembleRelease",
     "ios": "ENVFILE=.env react-native run-ios",
     "ios:local": "ENVFILE=.env.local react-native run-ios",
     "ios:small": "ENVFILE=.env npx react-native run-ios --simulator=\"iPhone 8\"",
