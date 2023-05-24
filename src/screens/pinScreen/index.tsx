@@ -213,6 +213,10 @@ export const PinScreen = ({ navigation, route }: Props) => {
   const onPinInput = useCallback(
     (value: string) => {
       const length = value.length
+      // only digits
+      if (isNaN(Number(value))) {
+        return
+      }
 
       if (length > defaultPin.length) {
         return
