@@ -43,7 +43,7 @@ const schema = yup.object({
   name: yup
     .string()
     .required()
-    .min(5, 'Contact Name is too short')
+    .min(3, 'Contact Name is too short')
     .max(50, 'Contact Name is too long')
     .trim(),
   address: yup.string().required(),
