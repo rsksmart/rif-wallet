@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   h1: castStyle.text({
     ...fonts.regular,
     fontSize: 36,
-    lineHeight: 36,
+    lineHeight: 39,
   }),
   h2: castStyle.text({
     ...fonts.regular,
