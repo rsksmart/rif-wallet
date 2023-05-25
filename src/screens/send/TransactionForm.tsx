@@ -131,13 +131,7 @@ export const TransactionForm = ({
     },
     resolver: yupResolver(transactionSchema),
   })
-  const {
-    setValue,
-    handleSubmit,
-    resetField,
-    watch,
-    formState: { errors },
-  } = methods
+  const { setValue, handleSubmit, resetField, watch } = methods
 
   // watch change in form values
   const amount = watch('amount')
@@ -233,6 +227,7 @@ export const TransactionForm = ({
         })
         setSelectedFeeToken(token)
         handleAmountChange('0', balanceInverted)
+        setShowTxSelector(false)
       }
     },
     [
@@ -269,6 +264,7 @@ export const TransactionForm = ({
         setSelectedFeeToken(
           tokenList.filter(value => value.contractAddress === fee)[0],
         )
+        setShowTxFeeSelector(false)
       }
     },
     [tokenList],
