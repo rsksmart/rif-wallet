@@ -1,11 +1,10 @@
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
-import Icon from 'react-native-vector-icons/FontAwesome5'
+import Icon from 'react-native-vector-icons/Ionicons'
 
 import { useProfileStatusColors } from 'lib/rns'
 
-import { Avatar } from 'components/avatar'
 import { AvatarIcon } from 'components/icons/AvatarIcon'
 import { StepperComponent } from 'components/profile'
 import { Typography } from 'components/typography'
@@ -33,18 +32,12 @@ export const ProfileHandler = ({ navigation }: Props) => {
       onPress={() => navigation.navigate(rootTabsRouteNames.Profile)}>
       {profile.status === ProfileStatus.NONE && (
         <>
-          <Avatar
+          <Icon
+            name="person-circle-sharp"
             size={20}
-            name={'person'}
-            style={styles.profileHandlerImage}
-            icon={
-              <Icon
-                name={'user-circle'}
-                size={15}
-                color={sharedColors.primary}
-              />
-            }
+            color={sharedColors.white}
           />
+
           <View style={styles.textAlignment}>
             <Typography type={'h4'} style={styles.profileName}>
               {t('header_no_username')}
@@ -121,15 +114,11 @@ const styles = StyleSheet.create({
   profileHandler: castStyle.view({
     flexDirection: 'row',
   }),
-  profileHandlerImage: castStyle.image({
-    backgroundColor: sharedColors.white,
-  }),
   profileName: castStyle.text({
     paddingLeft: 6,
   }),
   textAlignment: castStyle.text({
     justifyContent: 'center',
-    paddingBottom: 1,
   }),
   requestingStatus: castStyle.text({
     opacity: 0.4,
