@@ -87,9 +87,10 @@ export const SendScreen = ({
       Alert.alert(
         t('wallet_deploy_deploying_alert_title'),
         t('wallet_deploy_deploying_alert_body'),
+        [{ onPress: navigation.goBack, text: t('ok') }],
       )
     }
-  }, [loading, t])
+  }, [loading, t, navigation])
 
   // Status to let the user know about his current process
   let status
