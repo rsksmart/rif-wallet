@@ -1,27 +1,27 @@
-import { StyleSheet, View } from 'react-native'
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
-import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import OIcon from 'react-native-vector-icons/Octicons'
+import { StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { rootTabsRouteNames } from 'navigation/rootNavigator'
+import { AppTouchable } from 'components/appTouchable'
 import { homeStackRouteNames } from 'navigation/homeNavigator/types'
-import { DappsIcon } from 'components/icons/DappsIcon'
+import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { AppTouchable } from 'components/appTouchable'
-import { ScanIcon } from 'components/icons/ScanIcon'
-
-interface Props extends BottomTabBarProps {
-  isShown: boolean
-}
+import HomeIcon from 'src/components/icons/HomeIcon'
+import NetworkIcon from 'src/components/icons/NetworkIcon'
+import { ScanIcon } from 'src/components/icons/ScanIcon'
+import TransactionsIcon from 'src/components/icons/TransactionsIcon'
+import UsersIcon from 'src/components/icons/UsersIcon'
 
 const buttonWidth = 52
 
-export const AppFooterMenu = ({ navigation, isShown }: Props) => {
+export const AppFooterMenu = ({ navigation }: BottomTabBarProps) => {
   const { bottom } = useSafeAreaInsets()
 
-  return !isShown ? null : (
+  const { routeNames, index } = navigation.getState()
+  const currentRouteName = routeNames[index]
+
+  return (
     <View
       style={[
         styles.container,
@@ -35,20 +35,16 @@ export const AppFooterMenu = ({ navigation, isShown }: Props) => {
             screen: homeStackRouteNames.Main,
           })
         }
-        style={styles.button}
         accessibilityLabel="home">
-        <MCIcon name="home-outline" size={30} color={sharedColors.white} />
+        <HomeIcon active={currentRouteName === rootTabsRouteNames.Home} />
       </AppTouchable>
 
       <AppTouchable
         width={buttonWidth}
         onPress={() => navigation.navigate(rootTabsRouteNames.Activity)}
-        style={styles.button}
         accessibilityLabel="activity">
-        <OIcon
-          name="arrow-switch"
-          size={24}
-          color={sharedColors.white}
+        <TransactionsIcon
+          active={currentRouteName === rootTabsRouteNames.Activity}
           style={styles.rotation}
         />
       </AppTouchable>
@@ -56,29 +52,24 @@ export const AppFooterMenu = ({ navigation, isShown }: Props) => {
       <AppTouchable
         width={buttonWidth}
         onPress={() => navigation.navigate(rootTabsRouteNames.ScanQR)}
-        style={[styles.button, styles.centralButton]}
         accessibilityLabel="scan">
-        <ScanIcon />
+        <ScanIcon active={currentRouteName === rootTabsRouteNames.ScanQR} />
       </AppTouchable>
 
       <AppTouchable
         width={buttonWidth}
         onPress={() => navigation.navigate(rootTabsRouteNames.WalletConnect)}
-        style={styles.button}
         accessibilityLabel="dapps">
-        <DappsIcon />
+        <NetworkIcon
+          active={currentRouteName === rootTabsRouteNames.WalletConnect}
+        />
       </AppTouchable>
 
       <AppTouchable
         width={buttonWidth}
         onPress={() => navigation.navigate(rootTabsRouteNames.Contacts)}
-        style={styles.button}
         accessibilityLabel="contacts">
-        <MCIcon
-          name="account-multiple-outline"
-          size={30}
-          color={sharedColors.white}
-        />
+        <UsersIcon active={currentRouteName === rootTabsRouteNames.Contacts} />
       </AppTouchable>
     </View>
   )
@@ -91,12 +82,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: sharedColors.black,
-  }),
-  button: castStyle.view({
-    alignSelf: 'center',
-    alignItems: 'center',
-    width: buttonWidth,
-    height: buttonWidth,
   }),
   walletIcon: {
     height: 20,

@@ -1,4 +1,5 @@
 import { StyleProp, TextProps, TextStyle } from 'react-native'
+import { SvgProps } from 'react-native-svg'
 
 export interface SVGIconInterface {
   width?: number
@@ -10,6 +11,10 @@ export interface SVGIconInterface {
 export interface MaterialIconInterface extends TextProps {
   color?: string
   size?: number
+}
+
+export interface FooterIconInterface extends SvgProps {
+  active?: boolean
 }
 
 export { Arrow } from './Arrow'
