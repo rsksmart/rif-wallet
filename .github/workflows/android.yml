@@ -1,38 +1,46 @@
 name: Android Build SDK
 
 on:
-  push:
-    branches:
-      - main
-      - develop
+  release:
+    types: [released]
 
 jobs:
   install-and-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
+      - name: Set up NPM authentication
+        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_PACKAGES_KEY }}" >> ~/.npmrc
+
       - name: Install dependencies
         run: |
           yarn
+
+      - name: Test and Lint
+        run: |
+          yarn ganache &
+          yarn test
+          yarn lint
 
   build-android:
     needs: install-and-test
     runs-on: ubuntu-latest
     steps: 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - name: Set up NPM authentication
+        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_PACKAGES_KEY }}" >> ~/.npmrc
+
       - name: Install dependencies
         run: |
           yarn
-          yarn ganache &
-          yarn test
-          yarn lint
 
       - name: Build Android Release
         run: |
-          cd android && ./gradlew assembleRelease
+          cd android && ./gradlew app:assembleRelease
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: app-release.apk
           path: android/app/build/outputs/apk/release/
