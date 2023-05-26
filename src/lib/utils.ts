@@ -157,15 +157,25 @@ export const sanitizeDecimalText = (text: string) => {
     // or if the dot is the first character
     newText = newText.slice(0, -1)
   }
+
+  if (newText.length > 1 && newText[0] === '0' && newText[1] !== '.') {
+    newText = removeLeadingZeros(newText)
+  }
+
   return newText
 }
 
-export const sanitizeMaxDecimalText = (text: string, maxDecimal = 8) => {
+export const sanitizeMaxDecimalText = (text: string, maxDecimal = 6) => {
   const textSplitted = text.split('.')
   if (textSplitted[1] && textSplitted[1].length > maxDecimal) {
-    return `${textSplitted[0]}.${textSplitted[1].slice(0, 8)}`
+    return `${textSplitted[0]}.${textSplitted[1].slice(0, maxDecimal)}`
   }
   return text
 }
+
 export const convertUnixTimeToFromNowFormat = (unixTime: number): string =>
   moment.unix(Number(unixTime)).fromNow()
+
+export const removeLeadingZeros = (value: string) => {
+  return value.replace(/^0+/, '')
+}

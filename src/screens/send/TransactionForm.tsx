@@ -1,11 +1,10 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useCallback, useMemo, useState } from 'react'
-import { ScrollView, StyleSheet, View } from 'react-native'
-import { useTranslation } from 'react-i18next'
 import { FormProvider, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { ScrollView, StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { BigNumber } from 'ethers'
 
 import {
   convertTokenToUSD,
@@ -23,9 +22,9 @@ import {
   Typography,
 } from 'components/index'
 import { CurrencyValue, TokenBalance } from 'components/token'
-import { IPrice } from 'src/subscriptions/types'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
+import { IPrice } from 'src/subscriptions/types'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
 
 import { PortfolioComponent } from '../home/PortfolioComponent'
@@ -64,7 +63,7 @@ const transactionFeeMap = new Map([
 ])
 
 const transactionSchema = yup.object().shape({
-  amount: yup.number().min(0.000000001),
+  amount: yup.number().min(0.000001),
   to: yup.string().required(),
   balance: yup.string(),
   isToValid: yup.boolean().isTrue(),
@@ -122,7 +121,7 @@ export const TransactionForm = ({
   const to = watch('to')
 
   const [firstBalance, setFirstBalance] = useState<CurrencyValue>({
-    balance: '0',
+    balance: '',
     symbolType: 'icon',
     symbol: selectedToken.symbol,
   })
