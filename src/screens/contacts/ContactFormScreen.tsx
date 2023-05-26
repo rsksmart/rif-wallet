@@ -39,23 +39,22 @@ interface FormValues {
   addressIsValid: boolean
 }
 
-const schema = yup.object({
-  name: yup
-    .string()
-    .required()
-    .min(3, 'Contact Name is too short')
-    .max(50, 'Contact Name is too long')
-    .trim(),
-  address: yup.string().required(),
-  addressIsValid: yup.boolean().isTrue(),
-})
-
 export const ContactFormScreen = ({
   navigation,
   route,
 }: ContactFormScreenProps) => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const schema = yup.object({
+    name: yup
+      .string()
+      .required()
+      .min(3, t('contact_form_name_too_short'))
+      .max(50, t('contact_form_name_too_long'))
+      .trim(),
+    address: yup.string().required(),
+    addressIsValid: yup.boolean().isTrue(),
+  })
   const initialValue: Partial<Contact> = useMemo(
     () =>
       route.params?.initialValue ?? {
@@ -149,7 +148,7 @@ export const ContactFormScreen = ({
             label={t('contact_form_name')}
             inputName={'name'}
             testID={'nameInput'}
-            subtitle={errors.name?.message?.toString()}
+            subtitle={errors.name?.message}
             subtitleStyle={styles.fieldError}
             accessibilityLabel={'nameInput'}
             placeholder={t('contact_form_name')}
