@@ -5,6 +5,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { StyleSheet } from 'react-native'
 
 import { getChainIdByType } from 'lib/utils'
 
@@ -25,6 +26,7 @@ import { addContact, editContact } from 'store/slices/contactsSlice'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { sharedColors, sharedStyles, testIDs } from 'shared/constants'
+import { castStyle } from 'shared/utils'
 
 export type ContactFormScreenProps = CompositeScreenProps<
   ContactsStackScreenProps<contactsStackRouteNames.ContactForm>,
@@ -37,18 +39,22 @@ interface FormValues {
   addressIsValid: boolean
 }
 
-const schema = yup.object({
-  name: yup.string().required().trim(),
-  address: yup.string().required(),
-  addressIsValid: yup.boolean().isTrue(),
-})
-
 export const ContactFormScreen = ({
   navigation,
   route,
 }: ContactFormScreenProps) => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const schema = yup.object({
+    name: yup
+      .string()
+      .required()
+      .min(3, t('contact_form_name_too_short'))
+      .max(50, t('contact_form_name_too_long'))
+      .trim(),
+    address: yup.string().required(),
+    addressIsValid: yup.boolean().isTrue(),
+  })
   const initialValue: Partial<Contact> = useMemo(
     () =>
       route.params?.initialValue ?? {
@@ -70,7 +76,7 @@ export const ContactFormScreen = ({
     resetField,
     handleSubmit,
     setValue,
-    formState: { isValid: formIsValid },
+    formState: { isValid: formIsValid, errors },
   } = methods
   const { chainType = ChainTypeEnum.TESTNET } =
     useAppSelector(selectActiveWallet)
@@ -142,6 +148,8 @@ export const ContactFormScreen = ({
             label={t('contact_form_name')}
             inputName={'name'}
             testID={'nameInput'}
+            subtitle={errors.name?.message}
+            subtitleStyle={styles.fieldError}
             accessibilityLabel={'nameInput'}
             placeholder={t('contact_form_name')}
             resetValue={() => resetField('name')}
@@ -160,3 +168,10 @@ export const ContactFormScreen = ({
     </KeyboardAvoidingView>
   )
 }
+
+const styles = StyleSheet.create({
+  fieldError: castStyle.text({
+    color: sharedColors.dangerLight,
+    bottom: '10%',
+  }),
+})
