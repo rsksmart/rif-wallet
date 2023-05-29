@@ -13,6 +13,7 @@ import { ContactWithAddressRequired } from 'shared/types'
 import { setFullscreen } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
 import { TransactionSummaryComponent } from 'screens/transactionSummary/TransactionSummaryComponent'
+import { TokenFeeValueObject } from 'store/slices/transactionsSlice'
 
 import { TransactionStatus } from './transactionSummaryUtils'
 
@@ -20,15 +21,16 @@ export interface TransactionSummaryScreenProps {
   transaction: {
     tokenValue: CurrencyValue
     usdValue: CurrencyValue
-    feeValue: string
-    total: string
+    fee: TokenFeeValueObject
+    total: TokenFeeValueObject
     time: string
     status?: TransactionStatus
   }
   contact: ContactWithAddressRequired
   buttons?: AppButtonProps[]
-  backScreen?: rootTabsRouteNames
   functionName?: string
+  backScreen?: rootTabsRouteNames
+  isLoaded?: boolean
 }
 
 export const TransactionSummaryScreen = ({

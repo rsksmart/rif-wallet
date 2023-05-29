@@ -37,6 +37,11 @@ export const activityDeserializer: (
   prices: UsdPricesState,
 ) => ActivityRowPresentationObject = (activityTransaction, prices) => {
   if ('isBitcoin' in activityTransaction) {
+    const fee = activityTransaction.fees
+    const totalCalculated = BigNumber.from(
+      Math.round(Number(activityTransaction.valueBtc) * Math.pow(10, 8)),
+    ).add(BigNumber.from(Math.round(Number(activityTransaction.fees))))
+
     return {
       symbol: activityTransaction.symbol,
       to: activityTransaction.to,
@@ -48,17 +53,18 @@ export const activityDeserializer: (
       id: activityTransaction.txid,
       price: convertBalance(
         Math.round(Number(activityTransaction.valueBtc) * Math.pow(10, 8)),
-
         8,
         prices.BTC?.price,
       ),
-      fee: `${activityTransaction.fees} satoshi`,
-      total: balanceToDisplay(
-        BigNumber.from(
-          Math.round(Number(activityTransaction.valueBtc) * Math.pow(10, 8)),
-        ).add(BigNumber.from(Math.round(Number(activityTransaction.fees)))),
-        8,
-      ),
+      fee: {
+        tokenValue: `${fee} satoshi`,
+        usdValue: convertBalance(BigNumber.from(fee), 8, prices.BTC?.price),
+      },
+      total: {
+        tokenValue: balanceToDisplay(totalCalculated, 8),
+        usdValue:
+          Number(balanceToDisplay(totalCalculated, 8)) * prices.BTC?.price,
+      },
     }
   } else {
     const tx = activityTransaction.originTransaction
@@ -92,6 +98,11 @@ export const activityDeserializer: (
     const total = etx?.feeValue
       ? totalToken
       : etx?.value || balanceToDisplay(tx.value, 18)
+
+    const price =
+      tokenAddress && tokenAddress.toLowerCase() in prices
+        ? Number(total) * prices[tokenAddress.toLowerCase()].price
+        : 0
     return {
       symbol: etx?.symbol,
       to: etx?.to,
@@ -99,12 +110,15 @@ export const activityDeserializer: (
       status,
       id: tx.hash,
       value,
-      fee,
-      total,
-      price:
-        tokenAddress && tokenAddress.toLowerCase() in prices
-          ? Number(total) * prices[tokenAddress.toLowerCase()].price
-          : 0,
+      fee: {
+        tokenValue: fee,
+        usdValue: Number(fee) * price,
+      },
+      total: {
+        tokenValue: total,
+        usdValue: Number(total) * price,
+      },
+      price,
     }
   }
 }

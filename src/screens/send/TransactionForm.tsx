@@ -319,11 +319,7 @@ export const TransactionForm = ({
               label={t('transaction_form_fee_input_label')}
               placeholder={`${selectedFeeToken.symbol}`}
               leftIcon={
-                <TokenImage
-                  symbol={selectedFeeToken.symbol}
-                  height={32}
-                  width={32}
-                />
+                <TokenImage symbol={selectedFeeToken.symbol} size={32} />
               }
               isReadOnly
             />

@@ -1,50 +1,37 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
-import { isMyAddress } from 'components/address/lib'
-import { CurrencyValue, TokenBalance } from 'components/token'
+import { shortAddress } from 'lib/utils'
+
+import { TokenBalance } from 'components/token'
 import {
   sharedColors,
   sharedStyles,
   sharedStyles as sharedStylesConstants,
 } from 'shared/constants'
-import { ContactWithAddressRequired } from 'shared/types'
 import { castStyle } from 'shared/utils'
-import {
-  AppButton,
-  AppButtonProps,
-  AppButtonWidthVarietyEnum,
-  AppSpinner,
-  Typography,
-} from 'src/components'
+import { AppButton, AppSpinner, Typography } from 'components/index'
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
+import { isMyAddress } from 'components/address/lib'
 
 import {
   TransactionStatus,
   transactionStatusDisplayText,
   transactionStatusToIconPropsMap,
 } from './transactionSummaryUtils'
+import { TokenImage } from '../home/TokenImage'
 
-export interface TransactionSummaryScreenProps {
-  transaction: {
-    tokenValue: CurrencyValue
-    usdValue: CurrencyValue
-    feeValue: string
-    total: string
-    time: string
-    status?: TransactionStatus
-  }
-  contact: ContactWithAddressRequired
-  buttons?: AppButtonProps[]
-  functionName?: string
-  goBack?: () => void
-  isLoaded?: boolean
-}
+import { TransactionSummaryScreenProps } from '.'
+
+type TransactionSummaryComponentProps = Omit<
+  TransactionSummaryScreenProps,
+  'backScreen'
+> & { goBack?: () => void }
 
 export const TransactionSummaryComponent = ({
   transaction,
@@ -53,9 +40,8 @@ export const TransactionSummaryComponent = ({
   functionName,
   goBack,
   isLoaded,
-}: TransactionSummaryScreenProps) => {
+}: TransactionSummaryComponentProps) => {
   const { bottom } = useSafeAreaInsets()
-  const [usdButtonActive, setUsdButtonActive] = useState(false)
   const { t } = useTranslation()
   const { wallet } = useAppSelector(selectActiveWallet)
 
@@ -68,10 +54,6 @@ export const TransactionSummaryComponent = ({
     () => isMyAddress(wallet, contact.address),
     [wallet, contact.address],
   )
-
-  const onToggleUSD = useCallback(() => {
-    setUsdButtonActive(prev => !prev)
-  }, [])
 
   const title = useMemo(() => {
     if (amIReceiver) {
@@ -119,6 +101,7 @@ export const TransactionSummaryComponent = ({
             {t('transaction_summary_function_type')}: {functionName}
           </Typography>
         )}
+        <View />
         {transactionStatusText || transaction.status ? (
           <View
             style={[
@@ -147,90 +130,105 @@ export const TransactionSummaryComponent = ({
             </View>
           </View>
         ) : null}
-        <AppButton
-          title={t('transaction_summary_button_usd')}
-          style={styles.usdButton}
-          widthVariety={AppButtonWidthVarietyEnum.INLINE}
-          color={usdButtonActive ? sharedColors.white : undefined}
-          textColor={usdButtonActive ? sharedColors.black : undefined}
-          onPress={onToggleUSD}
-        />
-        <View style={[styles.summaryAlignment, styles.summaryWrapper]}>
-          <View>
+        <View style={styles.summaryView}>
+          {/* fee values */}
+          <View style={styles.summaryAlignment}>
             <Typography
-              type={'h4'}
+              type={'body2'}
+              style={[styles.summaryText, sharedStyles.textLeft]}>
+              {t('transaction_summary_fees')}
+            </Typography>
+
+            <View style={sharedStyles.row}>
+              <TokenImage
+                symbol={transaction.tokenValue.symbol}
+                transparent
+                size={12}
+              />
+              <Typography
+                type={'body2'}
+                style={[styles.summaryText, sharedStyles.textCenter]}>
+                {`${transaction.fee.tokenValue}`}
+              </Typography>
+            </View>
+          </View>
+
+          <Typography
+            type={'body2'}
+            style={[
+              styles.summaryText,
+              sharedStyles.textRight,
+              { color: sharedColors.labelLight },
+            ]}>
+            {`$ ${transaction.fee.usdValue}`}
+          </Typography>
+          {/* Total values */}
+          <View style={[styles.summaryAlignment]}>
+            <Typography
+              type={'body2'}
               style={[styles.summaryText, sharedStyles.textLeft]}>
               {amIReceiver
                 ? transaction.status === TransactionStatus.SUCCESS
                   ? t('transaction_summary_i_received_text')
                   : t('transaction_summary_i_receive_text')
                 : transaction.status === TransactionStatus.SUCCESS
-                ? t('transaction_summary_they_received_text')
-                : t('transaction_summary_they_receive_text')}
+                ? t('transaction_summary_total_sent')
+                : t('transaction_summary_total_send')}
             </Typography>
+
+            <View style={sharedStyles.row}>
+              <TokenImage
+                symbol={transaction.tokenValue.symbol}
+                transparent
+                size={12}
+              />
+              <Typography
+                type={'body2'}
+                style={[styles.summaryText, sharedStyles.textCenter]}>
+                {`${transaction.total.tokenValue}`}
+              </Typography>
+            </View>
+          </View>
+          <Typography
+            type={'body2'}
+            style={[
+              styles.summaryText,
+              sharedStyles.textRight,
+              { color: sharedColors.labelLight },
+            ]}>
+            {`$ ${transaction.total.usdValue}`}
+          </Typography>
+          {/* arrive value */}
+          <View style={[styles.summaryAlignment]}>
             <Typography
-              type={'h4'}
-              style={[styles.summaryText, sharedStyles.textLeft]}>
-              {amIReceiver
-                ? transaction.status === TransactionStatus.SUCCESS
-                  ? t('transaction_summary_they_sent_text')
-                  : t('transaction_summary_they_send_text')
-                : transaction.status === TransactionStatus.SUCCESS
-                ? t('transaction_summary_you_sent_text')
-                : t('transaction_summary_you_send_text')}
-            </Typography>
-            <Typography
-              type={'h4'}
-              style={[styles.summaryText, sharedStyles.textLeft]}>
-              {t('transaction_summary_fee_text')}
-            </Typography>
-            <Typography
-              type={'h4'}
+              type={'body2'}
               style={[styles.summaryText, sharedStyles.textLeft]}>
               {transaction.status === TransactionStatus.SUCCESS
                 ? t('transaction_summary_arrived_text')
                 : t('transaction_summary_arrives_in_text')}
             </Typography>
-          </View>
-          <View>
+
             <Typography
-              type={'h4'}
-              style={[styles.summaryText, sharedStyles.textRight]}>
-              {usdButtonActive
-                ? `${transaction.usdValue.symbol}${transaction.usdValue.balance}`
-                : `${transaction.tokenValue.balance} ${transaction.tokenValue.symbol}`}
-            </Typography>
-            <Typography
-              type={'h4'}
-              style={[styles.summaryText, sharedStyles.textRight]}>
-              {usdButtonActive
-                ? `${transaction.usdValue.symbol}${transaction.usdValue.balance}`
-                : `${transaction.total} ${transaction.tokenValue.symbol}`}
-            </Typography>
-            <Typography
-              type={'h4'}
-              style={[styles.summaryText, sharedStyles.textRight]}>
-              {transaction.feeValue}
-            </Typography>
-            <Typography
-              type={'h4'}
+              type={'body2'}
               style={[styles.summaryText, sharedStyles.textRight]}>
               {transaction.time}
             </Typography>
           </View>
-        </View>
-        <View style={styles.summaryAlignment}>
-          <Typography
-            type={'h4'}
-            style={[styles.summaryText, sharedStyles.textLeft]}>
-            {t('transaction_summary_address_text')}
-          </Typography>
-          <Typography
-            type={'label'}
-            style={[styles.summaryText, sharedStyles.textRight]}
-            adjustsFontSizeToFit>
-            {contact.address}
-          </Typography>
+          {/* separator */}
+          <View style={styles.separator} />
+          {/* address value */}
+          <View style={[styles.summaryAlignment]}>
+            <Typography
+              type={'body2'}
+              style={[styles.summaryText, sharedStyles.textLeft]}>
+              {t('transaction_summary_address_text')}
+            </Typography>
+            <Typography
+              type={'label'}
+              style={[styles.summaryText, sharedStyles.textRight]}>
+              {shortAddress(contact.address)}
+            </Typography>
+          </View>
         </View>
       </ScrollView>
       <View style={styles.buttons}>
@@ -275,16 +273,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 18,
   }),
-  usdButton: castStyle.view({
-    marginTop: 40,
-    marginBottom: 5,
-    alignSelf: 'center',
-  }),
+  summaryView: castStyle.view({ marginTop: 100 }),
   summaryAlignment: castStyle.view({
+    marginTop: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    marginBottom: -10,
   }),
   summaryWrapper: castStyle.view({
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -292,8 +285,15 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   }),
   summaryText: castStyle.text({
-    marginTop: 12,
-    lineHeight: 17,
+    marginTop: 2,
+    marginLeft: 2,
+  }),
+  separator: castStyle.view({
+    marginTop: 16,
+    height: 1,
+    width: '100%',
+    backgroundColor: sharedColors.white,
+    opacity: 0.4,
   }),
   buttons: castStyle.view({
     justifyContent: 'space-between',

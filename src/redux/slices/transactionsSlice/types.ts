@@ -5,7 +5,6 @@ import {
 } from '@rsksmart/rif-wallet-services'
 
 import { IEvent } from 'src/subscriptions/types'
-
 import { TransactionStatus } from 'screens/transactionSummary/transactionSummaryUtils'
 
 export interface TransactionsServerResponseWithActivityTransactions
@@ -31,6 +30,11 @@ export interface IBitcoinTransaction {
   sortTime: number
 }
 
+export interface TokenFeeValueObject {
+  tokenValue: string
+  usdValue: string
+}
+
 export interface ActivityRowPresentationObject {
   symbol: string
   to: string
@@ -39,8 +43,8 @@ export interface ActivityRowPresentationObject {
   status: TransactionStatus
   id: string
   price: number
-  fee: string
-  total: string
+  fee: TokenFeeValueObject
+  total: TokenFeeValueObject
 }
 
 export type ActivityRowPresentationType = ActivityRowPresentationObject & {
