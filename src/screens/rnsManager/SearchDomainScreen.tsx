@@ -2,7 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, StyleSheet, View } from 'react-native'
+import { Alert, ScrollView, StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/Entypo'
 import * as yup from 'yup'
 
@@ -32,6 +32,8 @@ import {
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { AvatarIconBox } from 'screens/rnsManager/AvatarIconBox'
 import { AppSpinner } from 'components/index'
+import { rootTabsRouteNames } from 'src/navigation/rootNavigator'
+import { settingsStackRouteNames } from 'src/navigation/settingsNavigator/types'
 
 import { ScreenWithWallet } from '../types'
 import { DomainInput } from './DomainInput'
@@ -54,7 +56,12 @@ const schema = yup.object<FormValues>({
   years: yup.number().required(),
 })
 
-export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
+export const SearchDomainScreen = ({
+  wallet,
+  navigation,
+  walletDeployed,
+}: Props) => {
+  const { isDeployed, loading } = walletDeployed
   const [isDomainOwned, setIsDomainOwned] = useState<boolean>(false)
   const [validDomain, setValidDomain] = useState<boolean>(false)
   const [selectedDomainPrice, setSelectedDomainPrice] = useState<number>(2)
@@ -173,6 +180,31 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
     calculatePrice(domain, years).then(setSelectedDomainPrice)
   }, [domain, years])
 
+  useEffect(() => {
+    if (!isDeployed && !loading) {
+      navigation.goBack()
+      navigation.navigate(rootTabsRouteNames.Settings, {
+        screen: settingsStackRouteNames.RelayDeployScreen,
+        params: {
+          goBackScreen: {
+            parent: rootTabsRouteNames.Profile,
+            child: profileStackRouteNames.ProfileCreateScreen,
+          },
+        },
+      })
+    }
+  }, [isDeployed, loading, navigation])
+
+  useEffect(() => {
+    if (loading) {
+      Alert.alert(
+        t('wallet_deploy_deploying_alert_title'),
+        t('wallet_deploy_deploying_alert_body'),
+        [{ onPress: navigation.goBack, text: t('ok') }],
+      )
+    }
+  }, [loading, t, navigation])
+
   return (
     <ScrollView
       style={rnsManagerStyles.scrollContainer}
@@ -290,7 +322,7 @@ export const SearchDomainScreen = ({ wallet, navigation }: Props) => {
       </View>
 
       <SlidePopupConfirmationInfo
-        isVisible={isModalVisible}
+        isVisible={isModalVisible && isDeployed}
         height={350}
         title={t('request_username_popup_title')}
         description={t('request_username_popup_description')}
