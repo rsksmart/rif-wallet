@@ -64,7 +64,7 @@ export const ProfileNavigator = ({
           top,
           t('profile_screen_title'),
           undefined,
-          { startColor, endColor },
+          [startColor, endColor],
         )}
       />
 
@@ -76,7 +76,7 @@ export const ProfileNavigator = ({
             top,
             t('username_registration_title'),
             undefined,
-            { startColor, endColor },
+            [startColor, endColor],
           )}
         />
       )}
@@ -89,7 +89,7 @@ export const ProfileNavigator = ({
             top,
             t('username_registration_title'),
             undefined,
-            { startColor, endColor },
+            [startColor, endColor],
           )}
         />
       )}
