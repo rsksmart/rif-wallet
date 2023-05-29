@@ -115,7 +115,11 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
                     style={{ backgroundColor: sharedColors.black }}
                     avatar={{ name: contact.name }}
                     label={contact.name}
-                    secondaryLabel={shortAddress(contact.displayAddress)}
+                    secondaryLabel={
+                      contact.displayAddress.length > 0
+                        ? contact.displayAddress
+                        : shortAddress(contact.address)
+                    }
                   />
                 </AppTouchable>
               ))}

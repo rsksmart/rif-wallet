@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { TextStyle } from 'react-native'
 import Clipboard from '@react-native-community/clipboard'
 import { decodeString } from '@rsksmart/rif-wallet-eip681'
@@ -88,8 +88,8 @@ export const AddressInput = ({
       const newValidationMessage = validateAddress(userInput, chainId)
 
       onChangeAddress(
-        '',
         userInput,
+        '',
         newValidationMessage === AddressValidationMessage.VALID,
       )
 
@@ -190,8 +190,8 @@ export const AddressInput = ({
         testID={testID}
         label={status.value ? status.value : label}
         labelStyle={labelColor}
-        value={value.displayAddress}
-        subtitle={value.address}
+        value={!value.displayAddress ? value.address : value.displayAddress}
+        subtitle={!value.displayAddress ? undefined : value.address}
         inputName={inputName}
         onChangeText={handleChangeText}
         onBlur={() => validateCurrentInput(value.address)}

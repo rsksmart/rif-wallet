@@ -1,4 +1,3 @@
-import { yupResolver } from '@hookform/resolvers/yup'
 import { useCallback, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -12,6 +11,7 @@ import {
   convertUSDtoToken,
   sanitizeDecimalText,
   sanitizeMaxDecimalText,
+  shortAddress,
 } from 'lib/utils'
 
 import { AddressInputSelector } from 'components/address/AddressInputSelector'
@@ -279,7 +279,11 @@ export const TransactionForm = ({
               isReadOnly
               label={t('transaction_form_recepient_label')}
               value={recipient.name}
-              subtitle={recipient.displayAddress}
+              subtitle={
+                !recipient.displayAddress
+                  ? shortAddress(recipient.address)
+                  : recipient.displayAddress
+              }
               inputName={'to'}
               leftIcon={<Avatar name={recipient.name} size={32} />}
             />

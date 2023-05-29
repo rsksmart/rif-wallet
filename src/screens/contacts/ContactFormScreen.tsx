@@ -20,7 +20,7 @@ import {
 import { AppButton } from 'components/button'
 import { AddressInput } from 'components/address'
 import { Input } from 'components/index'
-import { Contact, ContactWithAddressRequired } from 'shared/types'
+import { Contact } from 'shared/types'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { addContact, editContact } from 'store/slices/contactsSlice'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
@@ -61,7 +61,7 @@ export const ContactFormScreen = ({
           .trim(),
         address: yup.object({
           address: yup.string().required(),
-          displayAddress: yup.string().required(),
+          displayAddress: yup.string().notRequired(),
         }),
         addressIsValid: yup.boolean().isTrue(),
       }),
@@ -94,10 +94,18 @@ export const ContactFormScreen = ({
     handleSubmit,
     setValue,
     watch,
-    formState: { isValid: formIsValid, errors },
+    formState: { errors },
   } = methods
 
   const addressObj = watch('address')
+  const nameValue = watch('name')
+  const hasErrors =
+    addressObj.address.length === 0 ||
+    nameValue.length === 0 ||
+    Boolean(errors.address?.address) ||
+    Boolean(errors.addressIsValid) ||
+    Boolean(errors.name)
+
   const { chainType = ChainTypeEnum.TESTNET } =
     useAppSelector(selectActiveWallet)
 
@@ -183,7 +191,7 @@ export const ContactFormScreen = ({
         onPress={handleSubmit(saveContact)}
         style={sharedStyles.appButtonBottom}
         textColor={sharedColors.inputInactive}
-        disabled={!formIsValid}
+        disabled={hasErrors}
       />
     </KeyboardAvoidingView>
   )
