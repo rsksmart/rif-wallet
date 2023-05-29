@@ -6,6 +6,9 @@ import { isBitcoinAddressValid } from '@rsksmart/rif-wallet-bitcoin'
 import { useTranslation } from 'react-i18next'
 
 import { rnsResolver } from 'core/setup'
+import { sharedColors } from 'shared/constants'
+import { castStyle } from 'shared/utils'
+
 import { QRCodeScanner } from '../QRCodeScanner'
 import { RegularText } from '../typography'
 import { isDomain } from './lib'
@@ -13,8 +16,6 @@ import { sharedAddressStyles } from './sharedAddressStyles'
 import { Input } from '../input'
 import { AppTouchable } from '../appTouchable'
 import { AddressInputProps } from './AddressInput'
-import { sharedColors } from 'shared/constants'
-import { castStyle } from 'shared/utils'
 
 enum TYPES {
   NORMAL = 'NORMAL',
@@ -28,6 +29,10 @@ interface TO {
   addressResolved: string
 }
 
+interface AddressBitcoinInputProps extends Omit<AddressInputProps, 'value'> {
+  initialValue: string
+}
+
 export const AddressBitcoinInput = ({
   label,
   placeholder,
@@ -36,7 +41,7 @@ export const AddressBitcoinInput = ({
   initialValue = '',
   onChangeAddress,
   resetValue,
-}: AddressInputProps) => {
+}: AddressBitcoinInputProps) => {
   const { t } = useTranslation()
   const [to, setTo] = useState<TO>({
     value: initialValue,
@@ -64,7 +69,7 @@ export const AddressBitcoinInput = ({
     (address: string) => {
       const isBtcAddressValid = isBitcoinAddressValid(address)
       setIsAddressValid(isBtcAddressValid)
-      onChangeAddress(address, isBtcAddressValid)
+      onChangeAddress(address, '', isBtcAddressValid)
     },
     [onChangeAddress],
   )
@@ -173,6 +178,7 @@ export const AddressBitcoinInput = ({
           labelStyle={
             invalidAddressCondition ? styles.labelDanger : styles.label
           }
+          value={to.value}
           inputName={inputName}
           placeholder={placeholder}
           testID={testID}

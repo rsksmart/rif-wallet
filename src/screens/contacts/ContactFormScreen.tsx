@@ -35,7 +35,11 @@ export type ContactFormScreenProps = CompositeScreenProps<
 
 interface FormValues {
   name: string
-  address: string
+  address: {
+    address: string
+    displayAddress: string
+  }
+  displayAddress: string
   addressIsValid: boolean
 }
 
@@ -45,21 +49,31 @@ export const ContactFormScreen = ({
 }: ContactFormScreenProps) => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const schema = yup.object({
-    name: yup
-      .string()
-      .required()
-      .min(3, t('contact_form_name_too_short'))
-      .max(50, t('contact_form_name_too_long'))
-      .trim(),
-    address: yup.string().required(),
-    addressIsValid: yup.boolean().isTrue(),
-  })
+
+  const schema = useMemo(
+    () =>
+      yup.object({
+        name: yup
+          .string()
+          .required()
+          .min(3, t('contact_form_name_too_short'))
+          .max(50, t('contact_form_name_too_long'))
+          .trim(),
+        address: yup.object({
+          address: yup.string().required(),
+          displayAddress: yup.string().notRequired(),
+        }),
+        addressIsValid: yup.boolean().isTrue(),
+      }),
+    [t],
+  )
+
   const initialValue: Partial<Contact> = useMemo(
     () =>
       route.params?.initialValue ?? {
         name: '',
         address: '',
+        displayAddress: '',
       },
     [route.params],
   )
@@ -67,7 +81,10 @@ export const ContactFormScreen = ({
     mode: 'all',
     defaultValues: {
       name: initialValue.name,
-      address: initialValue.address,
+      address: {
+        address: initialValue.address,
+        displayAddress: initialValue.displayAddress,
+      },
       addressIsValid: false,
     },
     resolver: yupResolver(schema),
@@ -76,26 +93,37 @@ export const ContactFormScreen = ({
     resetField,
     handleSubmit,
     setValue,
-    formState: { isValid: formIsValid, errors },
+    watch,
+    formState: { errors },
   } = methods
+
+  const addressObj = watch('address')
+  const nameValue = watch('name')
+  const hasErrors =
+    addressObj.address.length === 0 ||
+    nameValue.length === 0 ||
+    Boolean(errors.address?.address) ||
+    Boolean(errors.addressIsValid) ||
+    Boolean(errors.name)
+
   const { chainType = ChainTypeEnum.TESTNET } =
     useAppSelector(selectActiveWallet)
 
   const handleAddressChange = useCallback(
-    (value: string, isValid: boolean) => {
-      setValue('address', value)
+    (address: string, displayAddress: string, isValid: boolean) => {
+      setValue('address', { address, displayAddress })
       setValue('addressIsValid', isValid)
     },
     [setValue],
   )
 
   const saveContact = useCallback(
-    ({ name, address }: FormValues) => {
+    ({ name, address: { address, displayAddress } }: FormValues) => {
       if (initialValue.address) {
         const contact: Contact = {
           name,
           address,
-          displayAddress: address,
+          displayAddress: displayAddress,
         }
         dispatch(editContact(contact))
       } else {
@@ -103,7 +131,7 @@ export const ContactFormScreen = ({
           addContact({
             name,
             address,
-            displayAddress: address,
+            displayAddress,
           }),
         )
       }
@@ -139,7 +167,7 @@ export const ContactFormScreen = ({
             placeholder={t('address_rns_placeholder')}
             inputName={'address'}
             testID={'addressInput'}
-            initialValue={initialValue.address || ''}
+            value={addressObj}
             resetValue={() => resetField('address')}
             onChangeAddress={handleAddressChange}
             chainId={getChainIdByType(chainType)}
@@ -163,7 +191,7 @@ export const ContactFormScreen = ({
         onPress={handleSubmit(saveContact)}
         style={sharedStyles.appButtonBottom}
         textColor={sharedColors.inputInactive}
-        disabled={!formIsValid}
+        disabled={hasErrors}
       />
     </KeyboardAvoidingView>
   )

@@ -68,7 +68,7 @@ export const TokenBalance = ({
             </View>
           )}
           {firstValue.symbolType === 'text' && (
-            <Typography type={'h1'} style={{ color: sharedColors.white }}>
+            <Typography type={'h1'} style={styles.textSymbol}>
               {firstValue.symbol}
             </Typography>
           )}
@@ -120,19 +120,19 @@ export const TokenBalance = ({
           )}
         </View>
       </View>
-      <View style={[styles.row, styles.ident]}>
+      <View style={styles.row}>
         {secondValue?.symbolType === 'icon' && (
           <View style={styles.tokenSubIcon}>
             <TokenImage symbol={secondValue.symbol} height={16} width={16} />
           </View>
         )}
         {secondValue?.symbolType === 'text' && (
-          <Typography type={'h3'} style={styles.subTitle}>
+          <Typography type={'body1'} style={styles.subTitle}>
             {hide ? '' : secondValue.symbol}
           </Typography>
         )}
         {!isNaN(Number(secondValue?.balance)) && (
-          <Typography type={'h3'} style={styles.subTitle}>
+          <Typography type={'body1'} style={styles.subTitle}>
             {hide
               ? '\u002A\u002A\u002A\u002A\u002A\u002A'
               : secondValue?.balance}
@@ -144,7 +144,6 @@ export const TokenBalance = ({
           <Typography type="h4">
             {t('To')}
             <Typography type="h4" style={{ color: sharedColors.primary }}>
-              {' '}
               {to.displayAddress || shortAddress(to.address)}
             </Typography>
           </Typography>
@@ -173,7 +172,6 @@ const styles = StyleSheet.create({
     height: 100,
   }),
   tokenIcon: castStyle.view({
-    marginRight: 10,
     width: 30,
     height: 30,
   }),
@@ -182,16 +180,13 @@ const styles = StyleSheet.create({
     backgroundColor: sharedColors.white,
   }),
   tokenSubIcon: castStyle.view({
-    marginRight: 5,
     backgroundColor: sharedColors.white,
     borderRadius: 10,
     width: 20,
     height: 20,
   }),
-  ident: {
-    paddingLeft: 42,
-  },
   subTitle: castStyle.text({
+    marginLeft: 4,
     color: sharedColors.subTitle,
     opacity: 0.7,
   }),
@@ -213,7 +208,9 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontSize: 36,
     padding: 0,
+    paddingLeft: 6,
   }),
   toAddressContainer: castStyle.view({ marginTop: 12 }),
   toNameContactText: castStyle.view({ marginTop: 10 }),
+  textSymbol: castStyle.text({ color: sharedColors.white, paddingTop: 3 }),
 })

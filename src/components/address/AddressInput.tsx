@@ -1,12 +1,12 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { TextStyle } from 'react-native'
 import Clipboard from '@react-native-community/clipboard'
-import { isValidChecksumAddress } from '@rsksmart/rsk-utils'
 import { decodeString } from '@rsksmart/rif-wallet-eip681'
 import { useTranslation } from 'react-i18next'
 
 import { rnsResolver } from 'core/setup'
 import { sharedColors } from 'shared/constants'
+import { ContactWithAddressRequired } from 'shared/types'
 
 import { QRCodeScanner } from '../QRCodeScanner'
 import {
@@ -18,9 +18,13 @@ import { Input, InputProps } from '../input'
 import { Avatar } from '../avatar'
 import { AppButton } from '../button'
 
-export interface AddressInputProps extends InputProps {
-  initialValue: string
-  onChangeAddress: (newValue: string, isValid: boolean) => void
+export interface AddressInputProps extends Omit<InputProps, 'value'> {
+  value: ContactWithAddressRequired
+  onChangeAddress: (
+    newValue: string,
+    newDisplayValue: string,
+    isValid: boolean,
+  ) => void
   chainId: number
 }
 
@@ -43,7 +47,7 @@ const defaultStatus = { type: Status.READY, value: '' }
 export const AddressInput = ({
   label,
   placeholder,
-  initialValue,
+  value,
   inputName,
   onChangeAddress,
   testID,
@@ -51,12 +55,8 @@ export const AddressInput = ({
   resetValue,
 }: AddressInputProps) => {
   const { t } = useTranslation()
-  // the address of the recipient
-  const [recipient, setRecipient] = useState<string>(initialValue)
-  // hide or show the QR scanner
   const [showQRScanner, setShowQRScanner] = useState<boolean>(false)
   const [domainFound, setDomainFound] = useState<boolean>(false)
-  const [addressResolved, setAddressResolved] = useState<string>('')
   // status
   const [status, setStatus] = useState<{
     type: Status
@@ -71,8 +71,7 @@ export const AddressInput = ({
 
   const resetState = useCallback(() => {
     setDomainFound(false)
-    setAddressResolved('')
-    onChangeAddress('', false)
+    onChangeAddress('', '', false)
     setStatus(defaultStatus)
   }, [onChangeAddress])
 
@@ -86,12 +85,11 @@ export const AddressInput = ({
 
       const parsedString = decodeString(inputText)
       const userInput = parsedString.address ? parsedString.address : inputText
-
-      setRecipient(userInput)
       const newValidationMessage = validateAddress(userInput, chainId)
 
       onChangeAddress(
         userInput,
+        '',
         newValidationMessage === AddressValidationMessage.VALID,
       )
 
@@ -108,9 +106,8 @@ export const AddressInput = ({
 
           rnsResolver
             .addr(userInput)
-            .then((address: string) => {
+            .then((resolvedAddress: string) => {
               setDomainFound(true)
-              setAddressResolved(address)
               setStatus({
                 type: Status.SUCCESS,
                 value: t('contact_form_user_found'),
@@ -118,8 +115,9 @@ export const AddressInput = ({
 
               // call parent with the resolved address
               onChangeAddress(
-                address,
-                validateAddress(address, chainId) ===
+                resolvedAddress,
+                userInput,
+                validateAddress(resolvedAddress, chainId) ===
                   AddressValidationMessage.VALID,
               )
             })
@@ -143,7 +141,7 @@ export const AddressInput = ({
             type: Status.ERROR,
             value: t('contact_form_address_invalid'),
           })
-          onChangeAddress(userInput, false)
+          onChangeAddress('', userInput, false)
           break
       }
     },
@@ -155,21 +153,9 @@ export const AddressInput = ({
     handleChangeText('')
   }, [handleChangeText, resetState])
 
-  useEffect(() => {
-    setRecipient(initialValue)
-    if (initialValue) {
-      handleChangeText(initialValue)
-    } else {
-      onChangeAddress(
-        initialValue,
-        isValidChecksumAddress(initialValue, chainId),
-      )
-    }
-  }, [chainId, handleChangeText, onChangeAddress, initialValue])
-
   const handlePasteClick = useCallback(async () => {
-    const value = await Clipboard.getString()
-    handleChangeText(value)
+    const copyValue = await Clipboard.getString()
+    handleChangeText(copyValue)
   }, [handleChangeText])
 
   // onBlur check the address is valid
@@ -204,21 +190,21 @@ export const AddressInput = ({
         testID={testID}
         label={status.value ? status.value : label}
         labelStyle={labelColor}
-        value={recipient}
-        subtitle={addressResolved && recipient ? addressResolved : undefined}
+        value={!value.displayAddress ? value.address : value.displayAddress}
+        subtitle={!value.displayAddress ? undefined : value.address}
         inputName={inputName}
         onChangeText={handleChangeText}
-        onBlur={() => validateCurrentInput(recipient)}
+        onBlur={() => validateCurrentInput(value.address)}
         resetValue={resetAddressValue}
         autoCorrect={false}
         autoCapitalize={'none'}
         placeholder={placeholder}
         placeholderTextColor={sharedColors.inputLabelColor}
-        rightIcon={!recipient ? { name: 'copy', size: 16 } : undefined}
+        rightIcon={!value.address ? { name: 'copy', size: 16 } : undefined}
         onRightIconPress={handlePasteClick}
         leftIcon={
-          recipient && domainFound ? (
-            <Avatar name={recipient} size={28} />
+          value.displayAddress && domainFound ? (
+            <Avatar name={value.displayAddress} size={28} />
           ) : undefined
         }
       />
@@ -230,7 +216,7 @@ export const AddressInput = ({
               accessibilityLabel="convert"
               title={t('contact_form_button_convert_checksum')}
               onPress={() =>
-                handleChangeText(toChecksumAddress(recipient, chainId))
+                handleChangeText(toChecksumAddress(value.address, chainId))
               }
             />
           )}
