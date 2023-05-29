@@ -213,6 +213,10 @@ export const PinScreen = ({ navigation, route }: Props) => {
   const onPinInput = useCallback(
     (value: string) => {
       const length = value.length
+      // only digits
+      if (isNaN(Number(value))) {
+        return
+      }
 
       if (length > defaultPin.length) {
         return
@@ -226,7 +230,7 @@ export const PinScreen = ({ navigation, route }: Props) => {
       currentPinLength.current = length
 
       if (length === defaultPin.length) {
-        onPinTyped(value)
+        setTimeout(() => onPinTyped(value), 100)
       }
     },
     [PIN, onPinTyped],
@@ -244,23 +248,27 @@ export const PinScreen = ({ navigation, route }: Props) => {
     [PIN],
   )
 
+  const handleLastDigit = useCallback(() => {
+    if (!isChangeRequested && isPinEqual) {
+      // if pin exists unlocks the app
+      dispatch(unlockApp({ pinUnlocked: true }))
+    } else if (isChangeRequested && isPinEqual) {
+      // if pin change requested set new pin
+      setTimeout(() => {
+        dispatch(setPinState(PIN.join('')))
+        navigation.goBack()
+      }, 1000)
+    }
+    setPIN(defaultPin)
+  }, [PIN, isChangeRequested, isPinEqual, dispatch, navigation])
+
   useEffect(() => {
     const hasLastDigit = PIN[PIN.length - 1]
 
     if (hasLastDigit) {
-      if (!isChangeRequested && isPinEqual) {
-        // if pin exists unlocks the app
-        dispatch(unlockApp({ pinUnlocked: true }))
-      } else if (isChangeRequested && isPinEqual) {
-        // if pin change requested set new pin
-        setTimeout(() => {
-          dispatch(setPinState(PIN.join('')))
-          navigation.goBack()
-        }, 1000)
-      }
-      setPIN(defaultPin)
+      setTimeout(handleLastDigit, 100)
     }
-  }, [isChangeRequested, isPinEqual, dispatch, PIN, navigation])
+  }, [PIN, handleLastDigit])
 
   // workaround for android devices which do not open keyboard
   // on autoFocus
