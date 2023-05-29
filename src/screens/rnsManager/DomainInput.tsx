@@ -1,10 +1,10 @@
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import debounce from 'lodash.debounce'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useFormContext } from 'react-hook-form'
+import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text } from 'react-native'
+import { FieldError } from 'react-hook-form'
 
 import {
   AddressValidationMessage,
@@ -14,12 +14,16 @@ import { Input, Typography } from 'components/index'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { colors } from 'src/styles'
+
 import addresses from './addresses.json'
 
 interface Props {
   wallet: RIFWallet
+  inputName: string
+  error: FieldError | undefined
   onDomainAvailable: (domain: string, valid: boolean) => void
   onDomainOwned: (owned: boolean) => void
+  onResetValue: () => void
 }
 
 enum DomainStatus {
@@ -40,20 +44,16 @@ const labelColorMap = new Map([
 
 export const DomainInput = ({
   wallet,
+  inputName,
   onDomainAvailable,
   onDomainOwned,
+  onResetValue,
+  error,
 }: Props) => {
-  const [username, setUsername] = useState('')
   const [domainAvailability, setDomainAvailability] = useState<DomainStatus>(
     DomainStatus.NONE,
   )
   const { t } = useTranslation()
-  const {
-    setValue,
-    formState: { errors },
-  } = useFormContext()
-
-  const error = errors.domain?.message
 
   const rskRegistrar = useMemo(
     () =>
@@ -96,38 +96,39 @@ export const DomainInput = ({
     [rskRegistrar, wallet, onDomainAvailable, onDomainOwned],
   )
 
-  const doHandleChangeText = useCallback(
+  const onChangeText = useCallback(
     async (inputText: string, errorType?: string) => {
+      onDomainAvailable(inputText, false)
+      onDomainOwned(false)
       if (!inputText) {
         setDomainAvailability(DomainStatus.NONE)
       } else {
         const newValidationMessage = validateAddress(inputText + '.rsk', -1)
         if (newValidationMessage === AddressValidationMessage.DOMAIN) {
-          await searchDomain(inputText, errorType)
+          try {
+            await searchDomain(inputText, errorType)
+          } catch (err) {
+            console.log('SEARCH DOMAIN ERR', err)
+          }
         } else {
           setDomainAvailability(DomainStatus.NONE)
         }
       }
     },
-    [setDomainAvailability, searchDomain],
+    [setDomainAvailability, searchDomain, onDomainAvailable, onDomainOwned],
   )
 
   const handleChangeUsername = useMemo(
-    () =>
-      debounce(
-        text => doHandleChangeText(text, errors.domain?.type as string),
-        300,
-      ),
-    [doHandleChangeText, errors],
+    () => debounce((text: string) => onChangeText(text, error?.type), 500),
+    [onChangeText, error],
   )
 
   const resetField = useCallback(() => {
-    setValue('domain', '')
-    setUsername('')
+    onResetValue()
     setDomainAvailability(DomainStatus.NONE)
     onDomainAvailable('', false)
     onDomainOwned(false)
-  }, [setValue, onDomainAvailable, onDomainOwned])
+  }, [onResetValue, onDomainAvailable, onDomainOwned])
 
   const labelTextMap = useMemo(
     () =>
@@ -145,35 +146,27 @@ export const DomainInput = ({
     color: labelColorMap.get(domainAvailability),
   })
 
-  useEffect(() => {
-    onDomainAvailable(username, false)
-    onDomainOwned(false)
-    handleChangeUsername(username)
-  }, [username, onDomainAvailable, onDomainOwned, handleChangeUsername])
-
   return (
     <>
       <Input
         accessibilityLabel={'Alias.Input'}
-        inputName="domain"
+        inputName={inputName}
         label={labelTextMap.get(domainAvailability)}
         placeholder={t('username')}
         containerStyle={styles.domainContainer}
         labelStyle={labelStyle}
         placeholderStyle={styles.domainPlaceholder}
         resetValue={resetField}
-        onChangeText={setUsername}
+        onChangeText={handleChangeUsername}
         suffix={<Text style={styles.domainSuffix}>.rsk</Text>}
         autoCapitalize="none"
         autoCorrect={false}
       />
-      <View>
-        {error && (
-          <Typography type="body3" style={styles.errorText}>
-            {error}
-          </Typography>
-        )}
-      </View>
+      {error && error.message && (
+        <Typography type="body3" style={styles.errorText}>
+          {error.message}
+        </Typography>
+      )}
     </>
   )
 }
