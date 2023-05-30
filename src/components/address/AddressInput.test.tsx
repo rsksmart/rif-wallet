@@ -21,7 +21,7 @@ const WrappedAddressInput = ({
 }) => {
   const [address, setAddress] = useState('')
 
-  const onChangeText = (newAddress: string, isValid: boolean) => {
+  const onChangeText = (newAddress: string, _: string, isValid: boolean) => {
     handleChange(newAddress, isValid)
     setAddress(newAddress)
   }
@@ -29,7 +29,8 @@ const WrappedAddressInput = ({
   return (
     <AddressInput
       testID={testId}
-      initialValue={address}
+      inputName="address"
+      value={{ address }}
       onChangeAddress={onChangeText}
       chainId={31}
     />
