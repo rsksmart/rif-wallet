@@ -2,6 +2,7 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel'
+import Icon from 'react-native-vector-icons/Ionicons'
 
 import { noop, sharedColors } from 'shared/constants'
 import { Typography } from 'components/typography'
@@ -44,7 +45,13 @@ export const HomeInformationBar = ({
       <HomeInformationItem
         title={t('home_information_bar_title')}
         subTitle={t('home_information_bar_desc3')}
-        icon={{ name: 'user-circle', size: 60 }}
+        icon={
+          <Icon
+            name="person-circle-sharp"
+            size={60}
+            color={sharedColors.white}
+          />
+        }
       />,
     ],
     [t],
