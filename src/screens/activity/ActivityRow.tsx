@@ -50,9 +50,7 @@ export const ActivityBasicRow = ({
 
   const amIReceiver = useMemo(
     () =>
-      activityDetails.amIReceiver !== undefined
-        ? activityDetails.amIReceiver
-        : isMyAddress(wallet, activityDetails.to),
+      activityDetails.amIReceiver ?? isMyAddress(wallet, activityDetails.to),
     [wallet, activityDetails],
   )
   const label = useMemo(
