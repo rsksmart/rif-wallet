@@ -1,16 +1,13 @@
 import { ReactElement } from 'react'
 import { StyleSheet, View } from 'react-native'
-import { IconProps } from 'react-native-vector-icons/Icon'
-import Icon from 'react-native-vector-icons/FontAwesome5'
 
 import { Typography } from 'components/typography'
 import { castStyle } from 'shared/utils'
-import { defaultIconSize, sharedColors } from 'shared/constants'
 
 interface HomeInformationItemProps {
   title: string
   subTitle: string
-  icon?: IconProps | ReactElement
+  icon?: ReactElement
 }
 
 export const HomeInformationItem = ({
@@ -26,15 +23,7 @@ export const HomeInformationItem = ({
         </Typography>
         <Typography type={'body3'}>{subTitle}</Typography>
       </View>
-      {icon && 'name' in icon ? (
-        <Icon
-          name={icon.name}
-          size={icon.size ? icon.size : defaultIconSize}
-          color={icon.color ? icon.color : sharedColors.white}
-        />
-      ) : (
-        icon
-      )}
+      {icon}
     </View>
   )
 }
