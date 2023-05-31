@@ -51,8 +51,8 @@ export const TransactionSummaryComponent = ({
   )
 
   const amIReceiver = useMemo(
-    () => isMyAddress(wallet, contact.address),
-    [wallet, contact.address],
+    () => transaction.amIReceiver ?? isMyAddress(wallet, contact.address),
+    [wallet, contact.address, transaction.amIReceiver],
   )
 
   const title = useMemo(() => {

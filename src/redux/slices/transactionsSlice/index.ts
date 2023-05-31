@@ -65,6 +65,7 @@ export const activityDeserializer: (
         usdValue:
           Number(balanceToDisplay(totalCalculated, 8)) * prices.BTC?.price,
       },
+      amIReceiver: activityTransaction.amIReceiver,
     }
   } else {
     const tx = activityTransaction.originTransaction
@@ -164,6 +165,9 @@ const transformTransaction = (
     valueBtc: utils.formatUnits(BigNumber.from(transaction.value), 8),
     id: transaction.txid,
     sortTime: transaction.blockTime,
+    amIReceiver: !transaction.vin.some(
+      tx => 'isOwn' in tx && tx.isOwn === true,
+    ),
   }
 }
 
@@ -309,13 +313,13 @@ const transactionsSlice = createSlice({
     builder.addCase(resetSocketState, () => initialState)
     builder.addCase(fetchBitcoinTransactions.pending, state => {
       state.loading = true
-    }),
-      builder.addCase(fetchBitcoinTransactions.rejected, state => {
-        state.loading = false
-      }),
-      builder.addCase(fetchBitcoinTransactions.fulfilled, state => {
-        state.loading = false
-      })
+    })
+    builder.addCase(fetchBitcoinTransactions.rejected, state => {
+      state.loading = false
+    })
+    builder.addCase(fetchBitcoinTransactions.fulfilled, state => {
+      state.loading = false
+    })
   },
 })
 

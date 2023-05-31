@@ -49,7 +49,8 @@ export const ActivityBasicRow = ({
   )
 
   const amIReceiver = useMemo(
-    () => isMyAddress(wallet, activityDetails.to),
+    () =>
+      activityDetails.amIReceiver ?? isMyAddress(wallet, activityDetails.to),
     [wallet, activityDetails],
   )
   const label = useMemo(
@@ -77,6 +78,7 @@ export const ActivityBasicRow = ({
         fee: activityDetails.fee,
         total: activityDetails.total,
         time: activityDetails.timeHumanFormatted,
+        amIReceiver: activityDetails.amIReceiver,
       },
       contact: {
         address: activityDetails.to,

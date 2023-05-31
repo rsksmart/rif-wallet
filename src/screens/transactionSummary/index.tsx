@@ -25,6 +25,7 @@ export interface TransactionSummaryScreenProps {
     total: TokenFeeValueObject
     time: string
     status?: TransactionStatus
+    amIReceiver?: boolean
   }
   contact: ContactWithAddressRequired
   buttons?: AppButtonProps[]
