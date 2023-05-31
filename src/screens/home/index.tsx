@@ -67,13 +67,13 @@ export const HomeScreen = ({
     useState<CurrencyValue>({
       balance: '0.00',
       symbol: '',
-      symbolType: 'text',
+      symbolType: 'icon',
     })
   const [selectedTokenBalanceUsd, setSelectedTokenBalanceUsd] =
     useState<CurrencyValue>({
       balance: '0.00',
       symbol: '',
-      symbolType: 'text',
+      symbolType: 'usd',
     })
   const [showInfoBar, setShowInfoBar] = useState<boolean>(true)
 
@@ -191,9 +191,9 @@ export const HomeScreen = ({
         balance: balance.toString(),
       })
       setSelectedTokenBalanceUsd({
-        symbolType: 'text',
-        symbol: '$',
-        balance: usdBalance,
+        symbolType: 'usd',
+        symbol,
+        balance: usdBalance.toString(),
       })
     }
   }, [selectedToken])
@@ -211,9 +211,9 @@ export const HomeScreen = ({
   }, [])
 
   const overrideFirstValue: CurrencyValue = {
-    balance: '$' + totalUsdBalance,
+    balance: totalUsdBalance,
     symbol: '',
-    symbolType: 'text',
+    symbolType: 'usd',
   }
 
   return (

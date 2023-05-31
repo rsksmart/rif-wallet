@@ -140,7 +140,7 @@ export const ReviewTransactionContainer = ({
             tokenQuote,
             true,
           ).toString(),
-          symbolType: 'text',
+          symbolType: 'usd',
           symbol: '$',
         },
         fee: {

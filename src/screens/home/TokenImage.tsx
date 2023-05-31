@@ -58,6 +58,7 @@ export const TokenImage = ({
 }
 
 export enum TokenSymbol {
+  USD = 'USD',
   TRBTC = 'TRBTC',
   RIF = 'RIF',
   TRIF = 'tRIF',

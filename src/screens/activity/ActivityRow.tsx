@@ -70,7 +70,7 @@ export const ActivityBasicRow = ({
         },
         usdValue: {
           symbol: usdBalance ? '$' : '< $',
-          symbolType: 'text',
+          symbolType: 'usd',
           balance: usdBalance ? usdBalance.toFixed(2) : '0.01',
         },
         status: activityDetails.status,

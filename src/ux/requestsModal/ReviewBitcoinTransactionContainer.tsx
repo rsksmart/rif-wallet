@@ -72,7 +72,7 @@ export const ReviewBitcoinTransactionContainer = ({
             tokenPrices.BTC.price,
             true,
           ).toString(),
-          symbolType: 'text',
+          symbolType: 'usd',
           symbol: '$',
         },
         fee: {

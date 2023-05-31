@@ -13,10 +13,11 @@ import { ContactWithAddressRequired } from 'shared/types'
 import { castStyle } from 'shared/utils'
 
 import { EyeIcon } from '../icons/EyeIcon'
+import { DollarIcon } from '../icons/DollarIcon'
 
 export interface CurrencyValue {
   symbol: TokenSymbol | string
-  symbolType: 'text' | 'icon'
+  symbolType: 'usd' | 'icon'
   balance: string
 }
 
@@ -67,10 +68,8 @@ export const TokenBalance = ({
               />
             </View>
           )}
-          {firstValue.symbolType === 'text' && (
-            <Typography type={'h1'} style={styles.textSymbol}>
-              {firstValue.symbol}
-            </Typography>
+          {firstValue.symbolType === 'usd' && (
+            <DollarIcon size={30} color={sharedColors.white} />
           )}
           <TextInput
             onChangeText={handleAmountChange}
@@ -120,16 +119,14 @@ export const TokenBalance = ({
           )}
         </View>
       </View>
-      <View style={styles.row}>
+      <View style={[styles.row, sharedStyles.alignCenter]}>
         {secondValue?.symbolType === 'icon' && (
           <View style={styles.tokenSubIcon}>
-            <TokenImage symbol={secondValue.symbol} height={16} width={16} />
+            <TokenImage symbol={secondValue.symbol} size={16} />
           </View>
         )}
-        {secondValue?.symbolType === 'text' && (
-          <Typography type={'body1'} style={styles.subTitle}>
-            {hide ? '' : secondValue.symbol}
-          </Typography>
+        {secondValue?.symbolType === 'usd' && (
+          <DollarIcon size={16} color={sharedColors.subTitle} />
         )}
         {!isNaN(Number(secondValue?.balance)) && (
           <Typography type={'body1'} style={styles.subTitle}>
