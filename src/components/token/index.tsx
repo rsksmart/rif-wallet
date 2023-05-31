@@ -146,9 +146,11 @@ export const TokenBalance = ({
       {to ? (
         <View style={[styles.toAddressContainer]}>
           <Typography type="h4">
-            {t('To')}
+            {t('To') + ' '}
             <Typography type="h4" style={{ color: sharedColors.primary }}>
-              {to.displayAddress || shortAddress(to.address)}
+              {to.displayAddress && to.displayAddress.length < 20
+                ? to.displayAddress
+                : shortAddress(to.address)}
             </Typography>
           </Typography>
         </View>
