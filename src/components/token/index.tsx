@@ -88,9 +88,16 @@ export const TokenBalance = ({
           {to && to.name ? (
             <View style={styles.contactCard}>
               <Avatar size={40} name={to.name} />
-              <Typography type={'body1'} style={styles.toNameContactText}>
-                {to.name}
-              </Typography>
+              <View style={styles.contactName}>
+                <Typography
+                  type="h4"
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                  adjustsFontSizeToFit
+                  minimumFontScale={0.85}>
+                  {to.name}
+                </Typography>
+              </View>
             </View>
           ) : null}
           {hideable && !editable && (
@@ -208,6 +215,10 @@ const styles = StyleSheet.create({
     paddingLeft: 6,
   }),
   toAddressContainer: castStyle.view({ marginTop: 12 }),
-  toNameContactText: castStyle.view({ marginTop: 10 }),
+  contactName: castStyle.text({
+    width: '90%',
+    alignItems: 'center',
+    marginTop: 7,
+  }),
   textSymbol: castStyle.text({ color: sharedColors.white, paddingTop: 3 }),
 })
