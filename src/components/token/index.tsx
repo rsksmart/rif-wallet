@@ -133,7 +133,7 @@ export const TokenBalance = ({
       <View style={[styles.row, sharedStyles.alignCenter]}>
         {secondValue?.symbolType === 'icon' && (
           <View style={styles.tokenSubIcon}>
-            <TokenImage symbol={secondValue.symbol} size={16} />
+            <TokenImage symbol={secondValue.symbol} />
           </View>
         )}
         {secondValue?.symbolType === 'usd' && (

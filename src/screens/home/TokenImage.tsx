@@ -20,7 +20,7 @@ interface Props {
 
 export const TokenImage = ({
   symbol,
-  size = 20,
+  size = 18,
   transparent = false,
   color = sharedColors.black,
   white,
