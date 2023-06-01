@@ -65,7 +65,10 @@ export const ReviewTransactionContainer = ({
   const { t } = useTranslation()
   const [txCostInRif, setTxCostInRif] = useState<BigNumber>()
 
-  const rifFee = txCostInRif ? `${balanceToDisplay(txCostInRif, 18, 0)}` : '0'
+  const rifFee = useMemo(
+    () => (txCostInRif ? `${balanceToDisplay(txCostInRif, 18, 0)}` : '0'),
+    [txCostInRif],
+  )
 
   const [error, setError] = useState<string | null>(null)
 
