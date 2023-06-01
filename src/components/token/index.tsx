@@ -54,8 +54,8 @@ export const TokenBalance = ({
     firstValue.symbol?.toUpperCase() === 'TRIF'
 
   return (
-    <View style={[styles.balanceCard, { backgroundColor: color }, style]}>
-      <View style={[styles.row, styles.margin]}>
+    <View style={[{ backgroundColor: color }, style, styles.container]}>
+      <View style={styles.leftColumn}>
         <View style={[styles.row, styles.balance]}>
           {firstValue.symbolType === 'icon' && (
             <View
@@ -88,98 +88,104 @@ export const TokenBalance = ({
             clearTextOnFocus
           />
         </View>
-        <View style={styles.rightIconContainer}>
-          {to && to.name ? (
-            <View style={styles.contactCard}>
-              <Avatar size={40} name={to.name} />
-              <View style={styles.contactName}>
-                <Typography
-                  type="h4"
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                  adjustsFontSizeToFit
-                  minimumFontScale={0.85}>
-                  {to.name}
-                </Typography>
-              </View>
+        <View style={[styles.row, sharedStyles.alignCenter]}>
+          {secondValue?.symbolType === 'icon' && (
+            <View style={styles.tokenSubIcon}>
+              <TokenImage symbol={secondValue.symbol} />
             </View>
-          ) : null}
-          {hideable && !editable && (
-            <AppTouchable
-              width={46}
-              onPress={onHide}
-              accessibilityLabel={testIDs.hide}>
-              <View style={styles.badge}>
-                <EyeIcon color={sharedColors.white} size={25} isHidden={hide} />
-              </View>
-            </AppTouchable>
           )}
-          {onSwap && (
-            <AppTouchable
-              width={41}
-              onPress={onSwap}
-              accessibilityLabel={testIDs.swap}>
-              <View style={styles.badge}>
-                <Icon
-                  name="ios-swap-vertical"
-                  color={sharedColors.white}
-                  size={25}
-                />
-              </View>
-            </AppTouchable>
+          {secondValue?.symbolType === 'usd' && (
+            <DollarIcon size={16} color={sharedColors.subTitle} />
+          )}
+          {!isNaN(Number(secondValue?.balance)) && (
+            <Typography type={'body1'} style={styles.subTitle}>
+              {hide
+                ? '\u002A\u002A\u002A\u002A\u002A\u002A'
+                : secondValue?.balance}
+            </Typography>
           )}
         </View>
-      </View>
-      <View style={[styles.row, sharedStyles.alignCenter]}>
-        {secondValue?.symbolType === 'icon' && (
-          <View style={styles.tokenSubIcon}>
-            <TokenImage symbol={secondValue.symbol} />
+
+        {to && (
+          <View style={[styles.toAddressContainer]}>
+            <Typography type="h4">
+              {t('To') + ' '}
+              <Typography type="h4" style={{ color: sharedColors.primary }}>
+                {to.displayAddress && to.displayAddress.length < 20
+                  ? to.displayAddress
+                  : shortAddress(to.address)}
+              </Typography>
+            </Typography>
           </View>
         )}
-        {secondValue?.symbolType === 'usd' && (
-          <DollarIcon size={16} color={sharedColors.subTitle} />
+      </View>
+      <View style={styles.rightColumn}>
+        {to && to.name ? (
+          <View style={styles.contactCard}>
+            <Avatar size={40} name={to.name} />
+            <View style={styles.contactName}>
+              <Typography
+                type="h4"
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                adjustsFontSizeToFit
+                minimumFontScale={0.85}>
+                {to.name}
+              </Typography>
+            </View>
+          </View>
+        ) : null}
+        {hideable && !editable && (
+          <AppTouchable
+            width={46}
+            onPress={onHide}
+            accessibilityLabel={testIDs.hide}>
+            <View style={styles.badge}>
+              <EyeIcon color={sharedColors.white} size={25} isHidden={hide} />
+            </View>
+          </AppTouchable>
         )}
-        {!isNaN(Number(secondValue?.balance)) && (
-          <Typography type={'body1'} style={styles.subTitle}>
-            {hide
-              ? '\u002A\u002A\u002A\u002A\u002A\u002A'
-              : secondValue?.balance}
-          </Typography>
+        {onSwap && (
+          <AppTouchable
+            width={41}
+            onPress={onSwap}
+            accessibilityLabel={testIDs.swap}>
+            <View style={styles.badge}>
+              <Icon
+                name="ios-swap-vertical"
+                color={sharedColors.white}
+                size={25}
+              />
+            </View>
+          </AppTouchable>
         )}
       </View>
-      {to ? (
-        <View style={[styles.toAddressContainer]}>
-          <Typography type="h4">
-            {t('To') + ' '}
-            <Typography type="h4" style={{ color: sharedColors.primary }}>
-              {to.displayAddress && to.displayAddress.length < 20
-                ? to.displayAddress
-                : shortAddress(to.address)}
-            </Typography>
-          </Typography>
-        </View>
-      ) : null}
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  container: castStyle.view({
+    height: 90,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+  }),
+  leftColumn: castStyle.view({
+    flex: 1,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+  }),
+  rightColumn: castStyle.view({
+    // flex: 1,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-end',
+  }),
   row: castStyle.view({
     flexDirection: 'row',
   }),
-  margin: castStyle.view({
-    marginTop: 15,
-  }),
   balance: castStyle.view({
-    flex: 1,
     alignItems: 'center',
-  }),
-  rightIconContainer: castStyle.view({
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-  }),
-  balanceCard: castStyle.view({
-    height: 100,
   }),
   tokenIcon: castStyle.view({
     width: 30,
@@ -206,7 +212,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     width: 100,
-    height: '100%',
+    height: 100,
   }),
   badge: castStyle.view({
     padding: 8,
