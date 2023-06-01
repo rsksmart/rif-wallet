@@ -105,7 +105,6 @@ export const TokenBalance = ({
             </Typography>
           )}
         </View>
-
         {to && (
           <View style={[styles.toAddressContainer]}>
             <Typography type="h4">
@@ -122,12 +121,11 @@ export const TokenBalance = ({
       <View style={styles.rightColumn}>
         {to && to.name ? (
           <View style={styles.contactCard}>
-            <Avatar size={40} name={to.name} />
+            <Avatar size={46} name={to.name} />
             <View style={styles.contactName}>
               <Typography
                 type="h4"
                 numberOfLines={1}
-                ellipsizeMode="tail"
                 adjustsFontSizeToFit
                 minimumFontScale={0.85}>
                 {to.name}
@@ -210,6 +208,7 @@ const styles = StyleSheet.create({
     paddingVertical: 13.5,
     borderRadius: 10,
     alignItems: 'center',
+    justifyContent: 'space-between',
     width: 100,
     height: 100,
   }),
@@ -229,7 +228,6 @@ const styles = StyleSheet.create({
   contactName: castStyle.text({
     width: '90%',
     alignItems: 'center',
-    marginTop: 7,
   }),
   textSymbol: castStyle.text({ color: sharedColors.white, paddingTop: 3 }),
 })
