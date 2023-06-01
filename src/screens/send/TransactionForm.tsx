@@ -144,8 +144,8 @@ export const TransactionForm = ({
   })
   const [secondBalance, setSecondBalance] = useState<CurrencyValue>({
     balance: '0',
-    symbolType: 'text',
-    symbol: '$',
+    symbolType: 'usd',
+    symbol: '',
   })
   const [balanceInverted, setBalanceInverted] = useState(false)
 

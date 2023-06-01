@@ -18,6 +18,7 @@ import { WINDOW_HEIGHT, WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { isMyAddress } from 'components/address/lib'
+import { DollarIcon } from 'components/icons/DollarIcon'
 
 import {
   TransactionStatus,
@@ -148,20 +149,22 @@ export const TransactionSummaryComponent = ({
               <Typography
                 type={'body2'}
                 style={[styles.summaryText, sharedStyles.textCenter]}>
-                {`${transaction.fee.tokenValue}`}
+                {transaction.fee.tokenValue}
               </Typography>
             </View>
           </View>
-
-          <Typography
-            type={'body2'}
-            style={[
-              styles.summaryText,
-              sharedStyles.textRight,
-              { color: sharedColors.labelLight },
-            ]}>
-            {`$ ${transaction.fee.usdValue}`}
-          </Typography>
+          <View style={styles.dollarAmountWrapper}>
+            <DollarIcon size={14} color={sharedColors.labelLight} />
+            <Typography
+              type={'body2'}
+              style={[
+                styles.summaryText,
+                sharedStyles.textRight,
+                { color: sharedColors.labelLight },
+              ]}>
+              {transaction.fee.usdValue}
+            </Typography>
+          </View>
           {/* Total values */}
           <View style={[styles.summaryAlignment]}>
             <Typography
@@ -189,15 +192,18 @@ export const TransactionSummaryComponent = ({
               </Typography>
             </View>
           </View>
-          <Typography
-            type={'body2'}
-            style={[
-              styles.summaryText,
-              sharedStyles.textRight,
-              { color: sharedColors.labelLight },
-            ]}>
-            {`$ ${transaction.total.usdValue}`}
-          </Typography>
+          <View style={styles.dollarAmountWrapper}>
+            <DollarIcon size={14} color={sharedColors.labelLight} />
+            <Typography
+              type={'body2'}
+              style={[
+                styles.summaryText,
+                sharedStyles.textRight,
+                { color: sharedColors.labelLight },
+              ]}>
+              {transaction.total.usdValue}
+            </Typography>
+          </View>
           {/* arrive value */}
           <View style={[styles.summaryAlignment]}>
             <Typography
@@ -307,5 +313,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: WINDOW_WIDTH,
     height: WINDOW_HEIGHT,
+  }),
+  dollarAmountWrapper: castStyle.view({
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
+    alignItems: 'center',
   }),
 })

@@ -68,7 +68,7 @@ const NonSelectedCard = ({
     <View style={nonSelectedCardStyles.primaryTextContainer}>
       {icon ? (
         <View style={nonSelectedCardStyles.icon}>
-          <TokenImage symbol={icon} height={18} width={18} />
+          <TokenImage symbol={icon} size={18} />
         </View>
       ) : null}
       <Typography

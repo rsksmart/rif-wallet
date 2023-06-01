@@ -57,6 +57,9 @@ export const sharedStyles = StyleSheet.create({
   flexGrow: castStyle.view({
     flexGrow: 1,
   }),
+  flexAlignEnd: castStyle.view({
+    alignSelf: 'flex-end',
+  }),
   row: castStyle.view({
     flexDirection: 'row',
   }),
@@ -71,6 +74,9 @@ export const sharedStyles = StyleSheet.create({
   }),
   contentCenter: castStyle.view({
     justifyContent: 'center',
+    alignItems: 'center',
+  }),
+  alignCenter: castStyle.view({
     alignItems: 'center',
   }),
   marginLeft24: castStyle.view({ marginLeft: 24 }),
