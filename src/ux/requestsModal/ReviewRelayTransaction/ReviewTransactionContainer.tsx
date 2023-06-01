@@ -64,12 +64,8 @@ export const ReviewTransactionContainer = ({
 
   const { t } = useTranslation()
   const [txCostInRif, setTxCostInRif] = useState<BigNumber>()
-  const feeEstimateReady = txCostInRif?.toString() !== '0'
 
-  const rifFee =
-    feeEstimateReady && txCostInRif
-      ? `${balanceToDisplay(txCostInRif, 18, 0)}`
-      : '0'
+  const rifFee = txCostInRif ? `${balanceToDisplay(txCostInRif, 18, 0)}` : '0'
 
   const [error, setError] = useState<string | null>(null)
 
@@ -78,7 +74,7 @@ export const ReviewTransactionContainer = ({
       .estimateTransactionCost(txRequest, tokenContract)
       .then(setTxCostInRif)
       .catch(err => setError(errorHandler(err)))
-  }, [request, txRequest, wallet.rifRelaySdk, tokenContract])
+  }, [txRequest, wallet.rifRelaySdk, tokenContract])
 
   const confirmTransaction = useCallback(async () => {
     if (!txCostInRif) {
@@ -184,7 +180,10 @@ export const ReviewTransactionContainer = ({
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <TransactionSummaryComponent {...data} isLoaded={isLoaded} />
+      <TransactionSummaryComponent
+        {...data}
+        isLoaded={isLoaded && txCostInRif !== undefined}
+      />
     </View>
   )
 }
