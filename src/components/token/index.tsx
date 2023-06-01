@@ -49,6 +49,9 @@ export const TokenBalance = ({
   style,
 }: Props) => {
   const { t } = useTranslation()
+  const isRifToken =
+    firstValue.symbol?.toUpperCase() === 'RIF' ||
+    firstValue.symbol?.toUpperCase() === 'TRIF'
 
   return (
     <View style={[styles.balanceCard, { backgroundColor: color }, style]}>
@@ -63,7 +66,8 @@ export const TokenBalance = ({
               <TokenImage
                 symbol={firstValue.symbol}
                 size={30}
-                transparent={true}
+                transparent
+                white={isRifToken}
                 color={color}
               />
             </View>
