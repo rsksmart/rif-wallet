@@ -1,11 +1,10 @@
 import { BigNumber, BigNumberish } from 'ethers'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   OverriddableTransactionOptions,
   SendTransactionRequest,
 } from '@rsksmart/rif-wallet-core'
 import { useTranslation } from 'react-i18next'
-import { TWO_RIF } from '@rsksmart/rif-relay-light-sdk'
 import { View, StyleSheet } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -64,7 +63,7 @@ export const ReviewTransactionContainer = ({
   }, [tokenContract, tokenPrices])
 
   const { t } = useTranslation()
-  const txCostInRif = TWO_RIF
+  const [txCostInRif, setTxCostInRif] = useState<BigNumber>()
   const feeEstimateReady = txCostInRif?.toString() !== '0'
 
   const rifFee =
@@ -74,14 +73,12 @@ export const ReviewTransactionContainer = ({
 
   const [error, setError] = useState<string | null>(null)
 
-  /*
   useEffect(() => {
     wallet.rifRelaySdk
       .estimateTransactionCost(txRequest, tokenContract)
       .then(setTxCostInRif)
       .catch(err => setError(errorHandler(err)))
   }, [request, txRequest, wallet.rifRelaySdk, tokenContract])
-  */
 
   const confirmTransaction = useCallback(async () => {
     if (!txCostInRif) {
