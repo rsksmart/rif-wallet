@@ -336,6 +336,7 @@ const resources = {
       Cancel: 'Cancelar',
       contacts_empty_list: 'Su lista de contactos está vacía.',
       contacts_empty_start: 'Comience creando un nuevo contacto.',
+      mining_fee: 'Mining Fee',
     },
   },
 }

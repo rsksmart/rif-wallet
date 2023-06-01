@@ -162,6 +162,7 @@ const MiningFeeInput = ({
   onChange,
   defaultMiningFee,
 }: MiningFeeInputProps) => {
+  const { t } = useTranslation()
   const methods = useForm({
     defaultValues: {
       miningFee: defaultMiningFee || 141,
@@ -173,7 +174,7 @@ const MiningFeeInput = ({
   return (
     <FormProvider {...methods}>
       <Input
-        label="Mining Fee"
+        label={t('mining_fee')}
         inputName="miningFee"
         onChangeText={handleFeeChange}
       />
