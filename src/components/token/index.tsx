@@ -176,7 +176,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   }),
   rightColumn: castStyle.view({
-    // flex: 1,
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'flex-end',

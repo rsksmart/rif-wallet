@@ -228,13 +228,23 @@ export const TransactionSummaryComponent = ({
           <View style={[styles.summaryAlignment]}>
             <Typography
               type={'body2'}
-              style={[styles.summaryText, sharedStyles.textLeft]}>
+              style={[
+                styles.summaryText,
+                sharedStyles.textLeft,
+                styles.addressLabel,
+              ]}>
               {t('transaction_summary_address_text')}
             </Typography>
             <Typography
-              type={'label'}
-              style={[styles.summaryText, sharedStyles.textRight]}>
-              {shortAddress(contact.address)}
+              type={'h5'}
+              style={[
+                styles.summaryText,
+                sharedStyles.textRight,
+                styles.addressValue,
+              ]}
+              numberOfLines={1}
+              ellipsizeMode={'middle'}>
+              {contact.address}
             </Typography>
           </View>
         </View>
@@ -302,6 +312,13 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: sharedColors.white,
     opacity: 0.4,
+  }),
+  addressLabel: castStyle.view({
+    flex: 1,
+  }),
+  addressValue: castStyle.view({
+    flex: 3,
+    alignSelf: 'flex-end',
   }),
   buttons: castStyle.view({
     justifyContent: 'space-between',
