@@ -321,6 +321,7 @@ const resources = {
         'You denied permissions to use the camera, please allow to continue',
       camera_alert_button_open_settings: 'Open Settings',
       camera_alert_button_cancel: 'Cancel',
+      mining_fee: 'Mining Fee',
     },
   },
   es: {
@@ -336,7 +337,6 @@ const resources = {
       Cancel: 'Cancelar',
       contacts_empty_list: 'Su lista de contactos está vacía.',
       contacts_empty_start: 'Comience creando un nuevo contacto.',
-      mining_fee: 'Mining Fee',
     },
   },
 }
