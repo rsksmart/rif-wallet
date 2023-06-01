@@ -1,5 +1,5 @@
 import { useFocusEffect, useIsFocused } from '@react-navigation/native'
-import { useCallback, useEffect, useMemo } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo } from 'react'
 import { BackHandler } from 'react-native'
 
 import { AppButtonProps } from 'components/button'
@@ -32,6 +32,7 @@ export interface TransactionSummaryScreenProps {
   functionName?: string
   backScreen?: rootTabsRouteNames
   isLoaded?: boolean
+  FeeComponent?: ReactNode
 }
 
 export const TransactionSummaryScreen = ({

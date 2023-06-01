@@ -41,6 +41,7 @@ export const TransactionSummaryComponent = ({
   functionName,
   goBack,
   isLoaded,
+  FeeComponent,
 }: TransactionSummaryComponentProps) => {
   const { bottom } = useSafeAreaInsets()
   const { t } = useTranslation()
@@ -165,6 +166,7 @@ export const TransactionSummaryComponent = ({
               {transaction.fee.usdValue}
             </Typography>
           </View>
+          {FeeComponent}
           {/* Total values */}
           <View style={[styles.summaryAlignment]}>
             <Typography

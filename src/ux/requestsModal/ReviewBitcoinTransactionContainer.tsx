@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { BigNumberish } from 'ethers'
 import {
   convertSatoshiToBtcHuman,
@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
 import { useCallback } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { FormProvider, useForm } from 'react-hook-form'
 
 import { convertTokenToUSD } from 'lib/utils'
 
@@ -16,7 +17,7 @@ import { TokenSymbol } from 'screens/home/TokenImage'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { sharedColors } from 'shared/constants'
-import { AppButtonBackgroundVarietyEnum } from 'components/index'
+import { AppButtonBackgroundVarietyEnum, Input } from 'components/index'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 
 interface ReviewBitcoinTransactionContainerProps {
@@ -34,12 +35,23 @@ export const ReviewBitcoinTransactionContainer = ({
   const { t } = useTranslation()
   const tokenPrices = useAppSelector(selectUsdPrices)
   const {
-    payload: { addressToPay, ...payload },
+    payload: { addressToPay, payment, ...payload },
   } = request
 
+  const [miningFeeState, setMiningFeeState] = useState(payload.miningFee)
+
+  const onMiningFeeChange = useCallback(
+    (miningFee: string) => {
+      const miningFeeParsed = parseInt(miningFee, 10) || 0
+      setMiningFeeState(miningFeeParsed)
+      payment.setMiningFee(miningFeeParsed)
+    },
+    [payment],
+  )
+
   const miningFee = useMemo(
-    () => convertSatoshiToBtcHuman(payload.miningFee),
-    [payload],
+    () => convertSatoshiToBtcHuman(miningFeeState),
+    [miningFeeState],
   )
   const amountToPay = useMemo(
     () => convertSatoshiToBtcHuman(payload.amountToPay),
@@ -107,6 +119,12 @@ export const ReviewBitcoinTransactionContainer = ({
           backgroundVariety: AppButtonBackgroundVarietyEnum.OUTLINED,
         },
       ],
+      FeeComponent: (
+        <MiningFeeInput
+          onChange={onMiningFeeChange}
+          defaultMiningFee={payload.miningFee}
+        />
+      ),
     }),
     [
       addressToPay,
@@ -116,6 +134,8 @@ export const ReviewBitcoinTransactionContainer = ({
       t,
       onConfirmTransaction,
       tokenPrices,
+      payload.miningFee,
+      onMiningFeeChange,
     ],
   )
   return (
@@ -133,3 +153,30 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
 })
+
+interface MiningFeeInputProps {
+  onChange: (text: string) => void
+  defaultMiningFee?: number
+}
+const MiningFeeInput = ({
+  onChange,
+  defaultMiningFee,
+}: MiningFeeInputProps) => {
+  const methods = useForm({
+    defaultValues: {
+      miningFee: defaultMiningFee || 141,
+    },
+  })
+
+  const handleFeeChange = (text: string) => onChange(text)
+
+  return (
+    <FormProvider {...methods}>
+      <Input
+        label="Mining Fee"
+        inputName="miningFee"
+        onChangeText={handleFeeChange}
+      />
+    </FormProvider>
+  )
+}
