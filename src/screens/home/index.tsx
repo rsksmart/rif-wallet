@@ -135,10 +135,7 @@ export const HomeScreen = ({
   // interact with the navigation
   const handleSendReceive = useCallback(
     (screen: 'SEND' | 'RECEIVE' | 'FAUCET') => {
-      if (!selected) {
-        return
-      }
-      if ('bips' in selected) {
+      if (!!selected && 'bips' in selected) {
         return handleBitcoinSendReceive(screen, selected)
       }
       switch (screen) {
