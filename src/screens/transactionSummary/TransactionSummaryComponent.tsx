@@ -98,7 +98,7 @@ export const TransactionSummaryComponent = ({
         {functionName && (
           <Typography
             style={styles.title}
-            type={'h4'}
+            type={'body1'}
             color={sharedColors.inputLabelColor}>
             {t('transaction_summary_function_type')}: {functionName}
           </Typography>
@@ -231,7 +231,7 @@ export const TransactionSummaryComponent = ({
               style={[
                 styles.summaryText,
                 sharedStyles.textLeft,
-                styles.addressLabel,
+                sharedStyles.flex,
               ]}>
               {t('transaction_summary_address_text')}
             </Typography>
@@ -303,7 +303,6 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   }),
   summaryText: castStyle.text({
-    marginTop: 2,
     marginLeft: 2,
   }),
   separator: castStyle.view({
@@ -312,9 +311,6 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: sharedColors.white,
     opacity: 0.4,
-  }),
-  addressLabel: castStyle.view({
-    flex: 1,
   }),
   addressValue: castStyle.view({
     flex: 3,

@@ -56,7 +56,7 @@ export const TokenBalance = ({
   return (
     <View style={[{ backgroundColor: color }, style, styles.container]}>
       <View style={styles.leftColumn}>
-        <View style={[styles.row, styles.balance]}>
+        <View style={[sharedStyles.row, styles.balance]}>
           {firstValue.symbolType === 'icon' && (
             <View
               style={[
@@ -88,7 +88,7 @@ export const TokenBalance = ({
             clearTextOnFocus
           />
         </View>
-        <View style={[styles.row, sharedStyles.alignCenter]}>
+        <View style={[sharedStyles.row, sharedStyles.alignCenter]}>
           {secondValue?.symbolType === 'icon' && (
             <View style={styles.tokenSubIcon}>
               <TokenImage symbol={secondValue.symbol} />
@@ -107,9 +107,9 @@ export const TokenBalance = ({
         </View>
         {to && (
           <View style={[styles.toAddressContainer]}>
-            <Typography type="h4">
+            <Typography type="body1">
               {t('To') + ' '}
-              <Typography type="h4" style={{ color: sharedColors.primary }}>
+              <Typography type="body1" style={{ color: sharedColors.primary }}>
                 {to.displayAddress && to.displayAddress.length < 20
                   ? to.displayAddress
                   : shortAddress(to.address)}
@@ -177,9 +177,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'flex-end',
-  }),
-  row: castStyle.view({
-    flexDirection: 'row',
   }),
   balance: castStyle.view({
     alignItems: 'center',
