@@ -1,11 +1,10 @@
 import { BigNumber, BigNumberish } from 'ethers'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   OverriddableTransactionOptions,
   SendTransactionRequest,
 } from '@rsksmart/rif-wallet-core'
 import { useTranslation } from 'react-i18next'
-import { TWO_RIF } from '@rsksmart/rif-relay-light-sdk'
 import { View, StyleSheet } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -64,24 +63,21 @@ export const ReviewTransactionContainer = ({
   }, [tokenContract, tokenPrices])
 
   const { t } = useTranslation()
-  const txCostInRif = TWO_RIF
-  const feeEstimateReady = txCostInRif?.toString() !== '0'
+  const [txCostInRif, setTxCostInRif] = useState<BigNumber>()
 
-  const rifFee =
-    feeEstimateReady && txCostInRif
-      ? `${balanceToDisplay(txCostInRif, 18, 0)}`
-      : '0'
+  const rifFee = useMemo(
+    () => (txCostInRif ? `${balanceToDisplay(txCostInRif, 18, 0)}` : '0'),
+    [txCostInRif],
+  )
 
   const [error, setError] = useState<string | null>(null)
 
-  /*
   useEffect(() => {
     wallet.rifRelaySdk
       .estimateTransactionCost(txRequest, tokenContract)
       .then(setTxCostInRif)
       .catch(err => setError(errorHandler(err)))
-  }, [request, txRequest, wallet.rifRelaySdk, tokenContract])
-  */
+  }, [txRequest, wallet.rifRelaySdk, tokenContract])
 
   const confirmTransaction = useCallback(async () => {
     if (!txCostInRif) {
@@ -187,7 +183,10 @@ export const ReviewTransactionContainer = ({
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <TransactionSummaryComponent {...data} isLoaded={isLoaded} />
+      <TransactionSummaryComponent
+        {...data}
+        isLoaded={isLoaded && txCostInRif !== undefined}
+      />
     </View>
   )
 }
