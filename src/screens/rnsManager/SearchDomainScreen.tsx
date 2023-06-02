@@ -39,6 +39,8 @@ import { ScreenWithWallet } from '../types'
 import { DomainInput } from './DomainInput'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
+export const minDomainLength = 3
+
 type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
   ScreenWithWallet
 
@@ -71,7 +73,7 @@ export const SearchDomainScreen = ({
         domain: yup
           .string()
           .required()
-          .min(3, t('search_domain_min_error'))
+          .min(minDomainLength, t('search_domain_min_error'))
           .matches(/^[a-z0-9]+$/, t('search_domain_lowercase_error')),
         years: yup.number().required(),
       }),

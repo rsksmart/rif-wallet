@@ -16,6 +16,7 @@ import { castStyle } from 'shared/utils'
 import { colors } from 'src/styles'
 
 import addresses from './addresses.json'
+import { minDomainLength } from './SearchDomainScreen'
 
 interface Props {
   wallet: RIFWallet
@@ -101,7 +102,7 @@ export const DomainInput = ({
       onDomainAvailable(inputText, false)
       onDomainOwned(false)
       setDomainAvailability(DomainStatus.NONE)
-      if (inputText.length >= 3) {
+      if (inputText.length >= minDomainLength) {
         if (!inputText) {
           return
         } else {
