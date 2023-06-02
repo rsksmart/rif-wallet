@@ -240,7 +240,7 @@ export const TransactionSummaryComponent = ({
               style={[
                 styles.summaryText,
                 sharedStyles.textRight,
-                styles.addressValue,
+                styles.contactAddress,
               ]}
               numberOfLines={1}
               ellipsizeMode={'middle'}>
@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
     backgroundColor: sharedColors.white,
     opacity: 0.4,
   }),
-  addressValue: castStyle.view({
+  contactAddress: castStyle.view({
     flex: 3,
     alignSelf: 'flex-end',
   }),
