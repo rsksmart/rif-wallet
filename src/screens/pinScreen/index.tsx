@@ -137,14 +137,17 @@ export const PinScreen = ({ navigation, route }: Props) => {
 
   const [title, setTitle] = useState<string>(initialPinTitle)
 
+  const resetPin = useCallback(() => {
+    setTimeout(() => setPIN(defaultPin), 100)
+  }, [])
+
   const handleNoPinStateCase = useCallback(
     (confirmPin: string | null, curPin: string) => {
       if (!confirmPin) {
         setSteps(noPinExistFirstStep)
-        setPIN(defaultPin)
         setConfirmPin(curPin)
         setTitle(t('pin_screen_confirm_pin_title'))
-        return
+        resetPin()
       } else {
         curPin === confirmPin
           ? (() => {
@@ -155,7 +158,7 @@ export const PinScreen = ({ navigation, route }: Props) => {
           : setHasError(true)
       }
     },
-    [t, dispatch],
+    [t, resetPin, dispatch],
   )
 
   const handleStatePinCase = useCallback(
@@ -259,8 +262,9 @@ export const PinScreen = ({ navigation, route }: Props) => {
         navigation.goBack()
       }, 1000)
     }
-    setPIN(defaultPin)
-  }, [PIN, isChangeRequested, isPinEqual, dispatch, navigation])
+
+    resetPin()
+  }, [isChangeRequested, isPinEqual, resetPin, dispatch, PIN, navigation])
 
   useEffect(() => {
     const hasLastDigit = PIN[PIN.length - 1]
