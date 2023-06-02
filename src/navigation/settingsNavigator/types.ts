@@ -3,6 +3,7 @@ import { StackScreenProps } from '@react-navigation/stack'
 
 import { homeStackRouteNames } from '../homeNavigator/types'
 import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
+import { profileStackRouteNames } from '../profileNavigator/types'
 
 export enum settingsStackRouteNames {
   SettingsScreen = 'SettingsScreen',
@@ -32,7 +33,7 @@ export type SettingsStackParamsList = {
     | {
         goBackScreen: {
           parent: rootTabsRouteNames
-          child?: homeStackRouteNames
+          child?: homeStackRouteNames | profileStackRouteNames
         }
       }
     | undefined

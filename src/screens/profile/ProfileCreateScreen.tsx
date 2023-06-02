@@ -125,6 +125,7 @@ export const ProfileCreateScreen = ({
     <ScrollView
       style={rnsManagerStyles.scrollContainer}
       automaticallyAdjustContentInsets
+      // it exists for ios but shows error https://reactnative.dev/docs/scrollview#automaticallyadjustkeyboardinsets-ios
       automaticallyAdjustKeyboardInsets>
       <View style={styles.usernameContainer}>
         {username ? (
