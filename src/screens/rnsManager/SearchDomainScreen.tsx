@@ -47,15 +47,6 @@ interface FormValues {
   years: number
 }
 
-const schema = yup.object<FormValues>({
-  domain: yup
-    .string()
-    .required()
-    .min(3, '')
-    .matches(/^[a-z0-9]+$/, 'Only lower cases and numbers are allowed'),
-  years: yup.number().required(),
-})
-
 export const SearchDomainScreen = ({
   wallet,
   navigation,
@@ -74,6 +65,18 @@ export const SearchDomainScreen = ({
   const rifToken = useRifToken()
 
   const { t } = useTranslation()
+  const schema = useMemo(
+    () =>
+      yup.object<FormValues>({
+        domain: yup
+          .string()
+          .required()
+          .min(3, t('search_domain_min_error'))
+          .matches(/^[a-z0-9]+$/, t('search_domain_lowercase_error')),
+        years: yup.number().required(),
+      }),
+    [t],
+  )
   const methods = useForm({
     mode: 'onChange',
     defaultValues: {

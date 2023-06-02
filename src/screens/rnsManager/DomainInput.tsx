@@ -66,11 +66,11 @@ export const DomainInput = ({
     [wallet],
   )
   const searchDomain = useCallback(
-    async (domain: string, errorType?: string) => {
-      if (errorType === 'matches') {
+    async (domain: string, errorType?: string, errorMessage?: string) => {
+      if (errorType === 'matches' && errorMessage) {
         setDomainAvailability(DomainStatus.NO_VALID)
         onDomainAvailable(domain, false)
-      } else if (errorType === 'min') {
+      } else if (errorType === 'min' && errorMessage) {
         setDomainAvailability(DomainStatus.NONE)
         onDomainAvailable(domain, false)
       } else {
@@ -97,21 +97,24 @@ export const DomainInput = ({
   )
 
   const onChangeText = useCallback(
-    async (inputText: string, errorType?: string) => {
+    async (inputText: string, errorType?: string, errorMessage?: string) => {
       onDomainAvailable(inputText, false)
       onDomainOwned(false)
-      if (!inputText) {
-        setDomainAvailability(DomainStatus.NONE)
-      } else {
-        const newValidationMessage = validateAddress(inputText + '.rsk', -1)
-        if (newValidationMessage === AddressValidationMessage.DOMAIN) {
-          try {
-            await searchDomain(inputText, errorType)
-          } catch (err) {
-            console.log('SEARCH DOMAIN ERR', err)
-          }
+      setDomainAvailability(DomainStatus.NONE)
+      if (inputText.length >= 3) {
+        if (!inputText) {
+          return
         } else {
-          setDomainAvailability(DomainStatus.NONE)
+          const newValidationMessage = validateAddress(inputText + '.rsk', -1)
+          if (newValidationMessage === AddressValidationMessage.DOMAIN) {
+            try {
+              await searchDomain(inputText, errorType, errorMessage)
+            } catch (err) {
+              console.log('SEARCH DOMAIN ERR', err)
+            }
+          } else {
+            setDomainAvailability(DomainStatus.NONE)
+          }
         }
       }
     },
@@ -119,7 +122,11 @@ export const DomainInput = ({
   )
 
   const handleChangeUsername = useMemo(
-    () => debounce((text: string) => onChangeText(text, error?.type), 500),
+    () =>
+      debounce(
+        (text: string) => onChangeText(text, error?.type, error?.message),
+        500,
+      ),
     [onChangeText, error],
   )
 
