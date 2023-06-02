@@ -98,7 +98,7 @@ export const TransactionSummaryComponent = ({
         {functionName && (
           <Typography
             style={styles.title}
-            type={'body1'}
+            type={'h4'}
             color={sharedColors.inputLabelColor}>
             {t('transaction_summary_function_type')}: {functionName}
           </Typography>
