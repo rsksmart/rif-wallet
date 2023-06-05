@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react'
-import { UnspentTransactionType } from '@rsksmart/rif-wallet-bitcoin'
+import {
+  convertBtcToSatoshi,
+  UnspentTransactionType,
+} from '@rsksmart/rif-wallet-bitcoin'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 
@@ -84,6 +87,30 @@ const handleReduxTransactionStatusChange =
       }
     }
   }
+/**
+ * This function will make sure that the user has enough inputs (balance) to send a payment
+ */
+const checkBitcoinPaymentForErrors = (
+  utxos: UnspentTransactionType[],
+  amountToSend: number,
+): string | void => {
+  // Check if user has inputs
+  if (utxos.length === 0) {
+    return 'Not enough transaction inputs to complete this payment.'
+  }
+  // Compare current amountToSent versus current input values
+  let currentAmount = convertBtcToSatoshi(amountToSend.toString())
+  for (const utxo of utxos) {
+    currentAmount = currentAmount.sub(utxo.value)
+    if (currentAmount.isNegative()) {
+      break
+    }
+  }
+  // If amount is not negative, user is trying to send more balance than he has available
+  if (!currentAmount.isNegative()) {
+    return 'There are not enough transaction inputs to complete this payment.'
+  }
+}
 
 export const usePaymentExecutor = (
   bitcoinNetwork: TokenBalanceObject | undefined,
@@ -110,6 +137,11 @@ export const usePaymentExecutor = (
     chainId: number
   }) => {
     if ('bips' in token) {
+      const hasError = checkBitcoinPaymentForErrors(utxos, amount)
+      if (hasError) {
+        setError(hasError)
+        return
+      }
       transferBitcoin({
         btcToPay: amount,
         onSetCurrentTransaction: setCurrentTransaction,
