@@ -177,24 +177,27 @@ export const ReceiveScreen = ({
         )}
 
         {/* Username Component */}
-        <Input
-          containerStyle={styles.usernameInput}
-          label={t('receive_screen_username_label')}
-          inputName="username"
-          rightIcon={
-            <Ionicons
-              name="share-outline"
-              size={20}
-              color={sharedColors.white}
-              onPress={onShareUsername}
-              testID={TestID.ShareUsernameButton}
-              disabled={profile.status !== ProfileStatus.USER}
-            />
-          }
-          placeholder={profile.alias}
-          isReadOnly
-          testID={TestID.UsernameText}
-        />
+        {profile.status === ProfileStatus.USER && (
+          <Input
+            containerStyle={styles.usernameInput}
+            label={t('receive_screen_username_label')}
+            inputName="username"
+            rightIcon={
+              <Ionicons
+                name="share-outline"
+                size={20}
+                color={sharedColors.white}
+                onPress={onShareUsername}
+                testID={TestID.ShareUsernameButton}
+                disabled
+              />
+            }
+            placeholder={profile.alias}
+            isReadOnly
+            testID={TestID.UsernameText}
+          />
+        )}
+
         {/* Address Component */}
         {isAddressLoading && (
           <View style={[styles.addressLoadingView, styles.marginTopView]}>
