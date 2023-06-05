@@ -68,7 +68,7 @@ const NonSelectedCard = ({
     <View style={nonSelectedCardStyles.primaryTextContainer}>
       {icon ? (
         <View style={nonSelectedCardStyles.icon}>
-          <TokenImage symbol={icon} size={18} />
+          <TokenImage symbol={icon} />
         </View>
       ) : null}
       <Typography
@@ -142,7 +142,6 @@ const selectedCardStyles = StyleSheet.create({
     flexDirection: 'row',
   }),
   icon: castStyle.view({
-    marginTop: -3,
     marginRight: 3,
     height: 20,
     width: 20,
@@ -150,6 +149,7 @@ const selectedCardStyles = StyleSheet.create({
   primaryText: castStyle.text({
     color: sharedColors.white,
     fontSize: 22,
+    paddingTop: 3,
   }),
 })
 
