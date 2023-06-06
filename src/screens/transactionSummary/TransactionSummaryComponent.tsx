@@ -4,6 +4,8 @@ import { ScrollView, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
+import { shortAddress } from 'lib/utils'
+
 import { TokenBalance } from 'components/token'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
