@@ -345,6 +345,7 @@ export const TransactionForm = ({
               selectedAddress={selectedTokenAddress}
               balances={tokenList}
               totalUsdBalance={totalUsdBalance}
+              showTotalCard={false}
             />
           ) : null}
           {firstBalance.balance ? (
@@ -382,6 +383,7 @@ export const TransactionForm = ({
               selectedAddress={selectedFeeToken.contractAddress}
               balances={tokenFeeList}
               totalUsdBalance={totalUsdBalance}
+              showTotalCard={false}
             />
           ) : null}
         </FormProvider>
