@@ -94,11 +94,10 @@ const handleReduxTransactionStatusChange =
 const checkBitcoinPaymentForErrors = (
   utxos: UnspentTransactionType[],
   amountToSend: number,
-  translation: (text: string) => string,
 ): string | void => {
   // Check if user has inputs
   if (utxos.length === 0) {
-    return translation('bitcoin_validation_zero_inputs')
+    return 'bitcoin_validation_zero_inputs'
   }
   // Compare current amountToSent versus current input values
   let currentAmount = convertBtcToSatoshi(amountToSend.toString())
@@ -110,7 +109,7 @@ const checkBitcoinPaymentForErrors = (
   }
   // If amount is not negative, user is trying to send more balance than he has available
   if (!currentAmount.isNegative()) {
-    return translation('bitcoin_validation_inputs_not_enough')
+    return 'bitcoin_validation_inputs_not_enough'
   }
 }
 
@@ -139,9 +138,9 @@ export const usePaymentExecutor = (
     chainId: number
   }) => {
     if ('bips' in token) {
-      const hasError = checkBitcoinPaymentForErrors(utxos, amount, t)
+      const hasError = checkBitcoinPaymentForErrors(utxos, amount)
       if (hasError) {
-        setError(hasError)
+        setError(t(hasError))
         return
       }
       transferBitcoin({
