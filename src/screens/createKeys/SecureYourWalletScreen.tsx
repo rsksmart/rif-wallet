@@ -1,4 +1,5 @@
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { KeyManagementSystem } from 'lib/core'
 
@@ -19,6 +20,7 @@ import { WINDOW_HEIGHT } from 'src/ux/slides/Dimensions'
 export const SecureYourWalletScreen = ({
   navigation,
 }: CreateKeysScreenProps<createKeysRouteNames.SecureYourWallet>) => {
+  const { top } = useSafeAreaInsets()
   const dispatch = useAppDispatch()
   const secureLater = async () => {
     saveKeyVerificationReminder(true)
@@ -29,7 +31,7 @@ export const SecureYourWalletScreen = ({
     )
   }
   return (
-    <View style={styles.parent}>
+    <View style={[styles.parent, { paddingTop: top }]}>
       <TouchableOpacity
         onPress={() => navigation.goBack()}
         accessibilityLabel="back">
