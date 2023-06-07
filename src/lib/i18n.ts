@@ -328,6 +328,7 @@ const resources = {
         "You don't have transaction inputs to complete this payment.",
       bitcoin_validation_inputs_not_enough:
         'There are not enough transaction inputs to complete this payment.',
+      send_screen_sending_transaction: 'Sending transaction...',
     },
   },
   es: {

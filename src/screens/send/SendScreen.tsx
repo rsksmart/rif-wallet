@@ -16,6 +16,7 @@ import {
 } from 'store/slices/balancesSlice/selectors'
 import { sharedStyles } from 'shared/constants'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
+import { FullScreenSpinner } from 'components/fullScreenSpinner'
 
 import { ScreenWithWallet } from '../types'
 import { TransactionForm } from './TransactionForm'
@@ -101,6 +102,19 @@ export const SendScreen = ({
     }
   }, [loading, t, navigation])
 
+  // Hide header when transaction is loading
+  useEffect(() => {
+    if (currentTransaction?.status === 'USER_CONFIRM') {
+      navigation.setOptions({
+        headerShown: false,
+      })
+    } else {
+      navigation.setOptions({
+        headerShown: true,
+      })
+    }
+  }, [currentTransaction?.status, navigation])
+
   // Status to let the user know about his current process
   let status
   if (error) {
@@ -109,7 +123,7 @@ export const SendScreen = ({
     currentTransaction?.status &&
     currentTransaction.status === 'USER_CONFIRM'
   ) {
-    status = 'Sending transaction...'
+    status = t('send_screen_sending_transaction')
   }
 
   // When a transaction goes through, show congratulations component
@@ -148,6 +162,9 @@ export const SendScreen = ({
         }}
         status={status}
       />
+      {currentTransaction?.status === 'USER_CONFIRM' && (
+        <FullScreenSpinner message={{ text: status }} />
+      )}
     </KeyboardAvoidingView>
   )
 }
