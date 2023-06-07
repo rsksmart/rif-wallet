@@ -1,6 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { BigNumber } from 'ethers'
-import { BitcoinNetworkWithBIPRequest } from '@rsksmart/rif-wallet-bitcoin'
+import {
+  BitcoinNetworkWithBIPRequest,
+  convertBtcToSatoshi,
+} from '@rsksmart/rif-wallet-bitcoin'
 import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 
 import { balanceToDisplay, convertBalance } from 'lib/utils'
@@ -18,10 +20,7 @@ export const getBalance = (
   price: number,
 ) => {
   if ('satoshis' in token) {
-    const balanceBigNumber = BigNumber.from(
-      Math.round(Number(token.balance) * 10e8),
-    )
-
+    const balanceBigNumber = convertBtcToSatoshi(token.balance.toString())
     return {
       balance: balanceToDisplay(balanceBigNumber.toString(), 8, 4),
       usdBalance: convertBalance(balanceBigNumber, 8, price),
