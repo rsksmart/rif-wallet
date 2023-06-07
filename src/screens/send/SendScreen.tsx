@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Alert, KeyboardAvoidingView, Platform } from 'react-native'
+import { Alert, Keyboard, KeyboardAvoidingView, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
 
 import {
@@ -57,6 +57,7 @@ export const SendScreen = ({
 
   const onExecuteTransfer = useCallback(
     (token: TokenBalanceObject, amount: number, to: string) => {
+      Keyboard.dismiss()
       executePayment({
         token,
         amount,
