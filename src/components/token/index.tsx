@@ -49,11 +49,14 @@ export const TokenBalance = ({
   style,
 }: Props) => {
   const { t } = useTranslation()
+  const isRifToken =
+    firstValue.symbol?.toUpperCase() === 'RIF' ||
+    firstValue.symbol?.toUpperCase() === 'TRIF'
 
   return (
-    <View style={[styles.balanceCard, { backgroundColor: color }, style]}>
-      <View style={[styles.row, styles.margin]}>
-        <View style={[styles.row, styles.balance]}>
+    <View style={[{ backgroundColor: color }, style, styles.container]}>
+      <View style={styles.leftColumn}>
+        <View style={[sharedStyles.row, styles.balance]}>
           {firstValue.symbolType === 'icon' && (
             <View
               style={[
@@ -63,7 +66,8 @@ export const TokenBalance = ({
               <TokenImage
                 symbol={firstValue.symbol}
                 size={30}
-                transparent={true}
+                transparent
+                white={isRifToken}
                 color={color}
               />
             </View>
@@ -84,89 +88,98 @@ export const TokenBalance = ({
             clearTextOnFocus
           />
         </View>
-        <View style={styles.rightIconContainer}>
-          {to && to.name ? (
-            <View style={styles.contactCard}>
-              <Avatar size={40} name={to.name} />
-              <Typography type={'body1'} style={styles.toNameContactText}>
+        <View style={[sharedStyles.row, sharedStyles.alignCenter]}>
+          {secondValue?.symbolType === 'icon' && (
+            <View style={styles.tokenSubIcon}>
+              <TokenImage symbol={secondValue.symbol} />
+            </View>
+          )}
+          {secondValue?.symbolType === 'usd' && (
+            <DollarIcon size={16} color={sharedColors.subTitle} />
+          )}
+          {!isNaN(Number(secondValue?.balance)) && (
+            <Typography type={'body1'} style={styles.subTitle}>
+              {hide
+                ? '\u002A\u002A\u002A\u002A\u002A\u002A'
+                : secondValue?.balance}
+            </Typography>
+          )}
+        </View>
+        {to && (
+          <View style={[styles.toAddressContainer]}>
+            <Typography type="body1">
+              {t('To') + ' '}
+              <Typography type="body1" style={{ color: sharedColors.primary }}>
+                {to.displayAddress && to.displayAddress.length < 20
+                  ? to.displayAddress
+                  : shortAddress(to.address)}
+              </Typography>
+            </Typography>
+          </View>
+        )}
+      </View>
+      <View style={styles.rightColumn}>
+        {to && to.name ? (
+          <View style={styles.contactCard}>
+            <Avatar size={46} name={to.name} />
+            <View style={styles.contactName}>
+              <Typography
+                type="h4"
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                minimumFontScale={0.85}>
                 {to.name}
               </Typography>
             </View>
-          ) : null}
-          {hideable && !editable && (
-            <AppTouchable
-              width={46}
-              onPress={onHide}
-              accessibilityLabel={testIDs.hide}>
-              <View style={styles.badge}>
-                <EyeIcon color={sharedColors.white} size={25} isHidden={hide} />
-              </View>
-            </AppTouchable>
-          )}
-          {onSwap && (
-            <AppTouchable
-              width={41}
-              onPress={onSwap}
-              accessibilityLabel={testIDs.swap}>
-              <View style={styles.badge}>
-                <Icon
-                  name="ios-swap-vertical"
-                  color={sharedColors.white}
-                  size={25}
-                />
-              </View>
-            </AppTouchable>
-          )}
-        </View>
-      </View>
-      <View style={[styles.row, sharedStyles.alignCenter]}>
-        {secondValue?.symbolType === 'icon' && (
-          <View style={styles.tokenSubIcon}>
-            <TokenImage symbol={secondValue.symbol} size={16} />
           </View>
+        ) : null}
+        {hideable && !editable && (
+          <AppTouchable
+            width={46}
+            onPress={onHide}
+            accessibilityLabel={testIDs.hide}>
+            <View style={styles.badge}>
+              <EyeIcon color={sharedColors.white} size={25} isHidden={hide} />
+            </View>
+          </AppTouchable>
         )}
-        {secondValue?.symbolType === 'usd' && (
-          <DollarIcon size={16} color={sharedColors.subTitle} />
-        )}
-        {!isNaN(Number(secondValue?.balance)) && (
-          <Typography type={'body1'} style={styles.subTitle}>
-            {hide
-              ? '\u002A\u002A\u002A\u002A\u002A\u002A'
-              : secondValue?.balance}
-          </Typography>
+        {onSwap && (
+          <AppTouchable
+            width={41}
+            onPress={onSwap}
+            accessibilityLabel={testIDs.swap}>
+            <View style={styles.badge}>
+              <Icon
+                name="ios-swap-vertical"
+                color={sharedColors.white}
+                size={25}
+              />
+            </View>
+          </AppTouchable>
         )}
       </View>
-      {to ? (
-        <View style={[styles.toAddressContainer]}>
-          <Typography type="h4">
-            {t('To')}
-            <Typography type="h4" style={{ color: sharedColors.primary }}>
-              {to.displayAddress || shortAddress(to.address)}
-            </Typography>
-          </Typography>
-        </View>
-      ) : null}
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  row: castStyle.view({
+  container: castStyle.view({
+    height: 90,
+    justifyContent: 'space-between',
     flexDirection: 'row',
   }),
-  margin: castStyle.view({
-    marginTop: 15,
+  leftColumn: castStyle.view({
+    flex: 1,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+  }),
+  rightColumn: castStyle.view({
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-end',
   }),
   balance: castStyle.view({
-    flex: 1,
     alignItems: 'center',
-  }),
-  rightIconContainer: castStyle.view({
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-  }),
-  balanceCard: castStyle.view({
-    height: 100,
   }),
   tokenIcon: castStyle.view({
     width: 30,
@@ -192,8 +205,9 @@ const styles = StyleSheet.create({
     paddingVertical: 13.5,
     borderRadius: 10,
     alignItems: 'center',
+    justifyContent: 'space-between',
     width: 100,
-    height: '100%',
+    height: 100,
   }),
   badge: castStyle.view({
     padding: 8,
@@ -208,6 +222,9 @@ const styles = StyleSheet.create({
     paddingLeft: 6,
   }),
   toAddressContainer: castStyle.view({ marginTop: 12 }),
-  toNameContactText: castStyle.view({ marginTop: 10 }),
+  contactName: castStyle.text({
+    width: '90%',
+    alignItems: 'center',
+  }),
   textSymbol: castStyle.text({ color: sharedColors.white, paddingTop: 3 }),
 })

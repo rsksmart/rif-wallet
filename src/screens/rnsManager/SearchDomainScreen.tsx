@@ -105,7 +105,7 @@ export const SearchDomainScreen = ({
   ).toFixed(2)
 
   const isRequestButtonDisabled = hasErrors || !validDomain
-  const isSaveButtonDisabled = (hasErrors || !validDomain) && !isDomainOwned
+  const isSaveButtonDisabled = isRequestButtonDisabled && !isDomainOwned
 
   const rnsProcessor = useMemo(() => new RnsProcessor({ wallet }), [wallet])
 
@@ -122,7 +122,6 @@ export const SearchDomainScreen = ({
             duration: values.years,
           }),
         ).unwrap()
-        navigation.navigate(profileStackRouteNames.PurchaseDomain)
       } catch (requestUsernameError) {
         if (
           requestUsernameError instanceof Error ||
@@ -141,7 +140,7 @@ export const SearchDomainScreen = ({
         setCurrentStatus('')
       }
     },
-    [dispatch, rnsProcessor, t, navigation],
+    [dispatch, rnsProcessor, t],
   )
 
   const handleDomainAvailable = useCallback(
