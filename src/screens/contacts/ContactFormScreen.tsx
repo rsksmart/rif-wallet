@@ -199,7 +199,6 @@ export const ContactFormScreen = ({
 
 const styles = StyleSheet.create({
   fieldError: castStyle.text({
-    color: sharedColors.dangerLight,
-    bottom: '10%',
+    color: sharedColors.danger,
   }),
 })
