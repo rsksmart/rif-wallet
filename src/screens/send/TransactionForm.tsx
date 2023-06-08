@@ -226,7 +226,7 @@ export const TransactionForm = ({
           }
         })
         setSelectedFeeToken(token)
-        handleAmountChange('0', balanceInverted)
+        handleAmountChange('', balanceInverted)
         setShowTxSelector(false)
       }
     },
