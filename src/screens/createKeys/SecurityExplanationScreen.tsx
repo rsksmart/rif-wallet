@@ -8,6 +8,7 @@ import {
 } from 'react-native'
 import Carousel from 'react-native-snap-carousel'
 import { CompositeScreenProps } from '@react-navigation/native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import {
   createKeysRouteNames,
@@ -27,6 +28,7 @@ import {
 } from 'src/ux/slides/Dimensions'
 import { SecuritySlide } from 'src/ux/slides/SecuritySlide'
 import { colors } from 'src/styles'
+
 import { sharedMnemonicStyles } from './new/styles'
 
 const slidesIndexes = [0, 1, 2]
@@ -37,6 +39,7 @@ type Props = CompositeScreenProps<
 >
 
 export const SecurityExplanationScreen = ({ navigation }: Props) => {
+  const { top } = useSafeAreaInsets()
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
   const [carousel, setCarousel] = useState<Carousel<number>>()
 
@@ -90,7 +93,8 @@ export const SecurityExplanationScreen = ({ navigation }: Props) => {
   }
 
   return (
-    <ScrollView style={sharedMnemonicStyles.purpleParent}>
+    <ScrollView
+      style={[sharedMnemonicStyles.purpleParent, { paddingTop: top }]}>
       <View style={sharedMnemonicStyles.topContent}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
