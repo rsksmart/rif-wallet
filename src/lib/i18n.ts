@@ -324,6 +324,10 @@ const resources = {
       camera_alert_button_open_settings: 'Open Settings',
       camera_alert_button_cancel: 'Cancel',
       mining_fee: 'Mining Fee',
+      bitcoin_validation_zero_inputs:
+        "You don't have transaction inputs to complete this payment.",
+      bitcoin_validation_inputs_not_enough:
+        'There are not enough transaction inputs to complete this payment.',
     },
   },
   es: {

@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react'
-import { UnspentTransactionType } from '@rsksmart/rif-wallet-bitcoin'
+import {
+  convertBtcToSatoshi,
+  UnspentTransactionType,
+} from '@rsksmart/rif-wallet-bitcoin'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
+import { useTranslation } from 'react-i18next'
 
 import { useAppDispatch } from 'store/storeUtils'
 import {
@@ -84,6 +88,30 @@ const handleReduxTransactionStatusChange =
       }
     }
   }
+/**
+ * This function will make sure that the user has enough inputs (balance) to send a payment
+ */
+const checkBitcoinPaymentForErrors = (
+  utxos: UnspentTransactionType[],
+  amountToSend: number,
+): string | void => {
+  // Check if user has inputs
+  if (utxos.length === 0) {
+    return 'bitcoin_validation_zero_inputs'
+  }
+  // Compare current amountToSent versus current input values
+  let currentAmount = convertBtcToSatoshi(amountToSend.toString())
+  for (const utxo of utxos) {
+    currentAmount = currentAmount.sub(utxo.value)
+    if (currentAmount.isNegative()) {
+      break
+    }
+  }
+  // If amount is not negative, user is trying to send more balance than he has available
+  if (!currentAmount.isNegative()) {
+    return 'bitcoin_validation_inputs_not_enough'
+  }
+}
 
 export const usePaymentExecutor = (
   bitcoinNetwork: TokenBalanceObject | undefined,
@@ -93,7 +121,7 @@ export const usePaymentExecutor = (
   const [error, setError] = useState<string | null | { message: string }>()
   const [utxos, setUtxos] = useState<UnspentTransactionType[]>([])
   const [bitcoinBalance, setBalanceAvailable] = useState<number>(0)
-
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
 
   const executePayment = ({
@@ -110,6 +138,11 @@ export const usePaymentExecutor = (
     chainId: number
   }) => {
     if ('bips' in token) {
+      const hasError = checkBitcoinPaymentForErrors(utxos, amount)
+      if (hasError) {
+        setError(t(hasError))
+        return
+      }
       transferBitcoin({
         btcToPay: amount,
         onSetCurrentTransaction: setCurrentTransaction,
