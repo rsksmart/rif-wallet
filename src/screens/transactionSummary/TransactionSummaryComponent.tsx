@@ -4,21 +4,16 @@ import { ScrollView, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
-import { shortAddress } from 'lib/utils'
-
 import { TokenBalance } from 'components/token'
-import {
-  sharedColors,
-  sharedStyles,
-  sharedStyles as sharedStylesConstants,
-} from 'shared/constants'
+import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { AppButton, AppSpinner, Typography } from 'components/index'
+import { AppButton, Typography } from 'components/index'
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { isMyAddress } from 'components/address/lib'
 import { DollarIcon } from 'components/icons/DollarIcon'
+import { FullScreenSpinner } from 'components/fullScreenSpinner'
 
 import {
   TransactionStatus,
@@ -76,11 +71,7 @@ export const TransactionSummaryComponent = ({
 
   return (
     <View style={[styles.screen, { paddingBottom: bottom }]}>
-      {isLoaded === false && (
-        <View style={[sharedStylesConstants.contentCenter, styles.spinnerView]}>
-          <AppSpinner size={64} thickness={10} />
-        </View>
-      )}
+      {isLoaded === false && <FullScreenSpinner />}
       <ScrollView
         style={sharedStyles.flex}
         contentContainerStyle={styles.contentPadding}>
