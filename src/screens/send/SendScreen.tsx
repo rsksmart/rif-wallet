@@ -35,7 +35,7 @@ export const SendScreen = ({
 
   const totalUsdBalance = useAppSelector(selectTotalUsdValue)
   const prices = useAppSelector(selectUsdPrices)
-  const backScreen = route.params?.backScreen
+  const { backScreen, contact } = route.params
   const contractAddress = route.params?.contractAddress || assets[0]
 
   const [chainId, setChainId] = useState<number>(31)
@@ -149,7 +149,7 @@ export const SendScreen = ({
         chainId={chainId}
         isWalletDeployed={walletDeployed.isDeployed}
         initialValues={{
-          recipient: route.params?.contact,
+          recipient: contact,
           asset: assets.find(
             asset => asset.contractAddress === contractAddress,
           ),

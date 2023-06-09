@@ -149,7 +149,7 @@ export const ReviewTransactionContainer = ({
           usdValue: convertTokenToUSD(totalTokenValue, tokenQuote).toString(),
         },
       },
-      contact: contacts[to] || { address: to || '' },
+      contact: contacts[to.toLowerCase()] || { address: to || '' },
       buttons: [
         {
           title: t('transaction_summary_title_confirm_button_title'),
@@ -167,17 +167,17 @@ export const ReviewTransactionContainer = ({
       functionName,
     }),
     [
-      cancelTransaction,
-      confirmTransaction,
       contacts,
-      rifFee,
-      t,
-      symbol,
-      functionName,
       to,
-      tokenQuote,
-      totalTokenValue,
       value,
+      symbol,
+      tokenQuote,
+      rifFee,
+      totalTokenValue,
+      t,
+      confirmTransaction,
+      cancelTransaction,
+      functionName,
     ],
   )
 

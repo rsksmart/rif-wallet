@@ -119,21 +119,15 @@ export const ContactFormScreen = ({
 
   const saveContact = useCallback(
     ({ name, address: { address, displayAddress } }: FormValues) => {
+      const contact: Contact = {
+        name,
+        address: address.toLowerCase(),
+        displayAddress,
+      }
       if (initialValue.address) {
-        const contact: Contact = {
-          name,
-          address,
-          displayAddress: displayAddress,
-        }
         dispatch(editContact(contact))
       } else {
-        dispatch(
-          addContact({
-            name,
-            address,
-            displayAddress,
-          }),
-        )
+        dispatch(addContact(contact))
       }
       navigation.navigate(contactsStackRouteNames.ContactsList)
     },
