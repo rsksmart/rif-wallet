@@ -122,13 +122,8 @@ export const ReviewTransactionContainer = ({
 
   const totalTokenValue = Number(value) + Number(rifFee)
 
-  const data: TransactionSummaryScreenProps = useMemo(() => {
-    // search for contact by case insensitive
-    const idx = Object.keys(contacts).find(
-      key => key.toLowerCase() === to.toLowerCase(),
-    )
-    const contact = idx ? contacts[idx] : { address: to || '' }
-    return {
+  const data: TransactionSummaryScreenProps = useMemo(
+    () => ({
       transaction: {
         tokenValue: {
           balance: value.toString(),
@@ -154,7 +149,7 @@ export const ReviewTransactionContainer = ({
           usdValue: convertTokenToUSD(totalTokenValue, tokenQuote).toString(),
         },
       },
-      contact,
+      contact: contacts[to.toLowerCase()] || { address: to || '' },
       buttons: [
         {
           title: t('transaction_summary_title_confirm_button_title'),
@@ -170,20 +165,21 @@ export const ReviewTransactionContainer = ({
         },
       ],
       functionName,
-    }
-  }, [
-    contacts,
-    to,
-    value,
-    symbol,
-    tokenQuote,
-    rifFee,
-    totalTokenValue,
-    t,
-    confirmTransaction,
-    cancelTransaction,
-    functionName,
-  ])
+    }),
+    [
+      contacts,
+      to,
+      value,
+      symbol,
+      tokenQuote,
+      rifFee,
+      totalTokenValue,
+      t,
+      confirmTransaction,
+      cancelTransaction,
+      functionName,
+    ],
+  )
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
