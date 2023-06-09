@@ -104,15 +104,9 @@ export const SendScreen = ({
 
   // Hide header when transaction is loading
   useEffect(() => {
-    if (currentTransaction?.status === 'USER_CONFIRM') {
-      navigation.setOptions({
-        headerShown: false,
-      })
-    } else {
-      navigation.setOptions({
-        headerShown: true,
-      })
-    }
+    navigation.setOptions({
+      headerShown: !(currentTransaction?.status === 'USER_CONFIRM'),
+    })
   }, [currentTransaction?.status, navigation])
 
   // Status to let the user know about his current process
