@@ -42,7 +42,7 @@ export const ScanQRScreen = ({
         screen: homeStackRouteNames.Send,
         params: {
           backAction: navigation.goBack,
-          to: decodedString.address,
+          contact: { address: decodedString.address },
         },
       })
     } else if (isBitcoinAddressValid(data)) {

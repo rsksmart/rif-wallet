@@ -74,6 +74,7 @@ export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
   useEffect(() => {
     if (barcode && barcode.rawValue) {
       onCodeRead(barcode.rawValue)
+      setBarcode(undefined)
     }
   }, [barcode, onCodeRead])
 
@@ -86,7 +87,7 @@ export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
 
   return (
     <View style={styles.container}>
-      {device === undefined ? (
+      {!device ? (
         <View>
           <AppSpinner size={174} />
         </View>
