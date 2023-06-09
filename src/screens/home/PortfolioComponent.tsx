@@ -13,6 +13,7 @@ interface Props {
   balances: Array<ITokenWithoutLogo | BitcoinNetwork>
   totalUsdBalance: string
   selectedAddress?: string
+  showTotalCard?: boolean
   style?: StyleProp<ViewStyle>
 }
 export const PortfolioComponent = ({
@@ -20,9 +21,14 @@ export const PortfolioComponent = ({
   setSelectedAddress,
   balances,
   totalUsdBalance,
+  showTotalCard = true,
   style,
 }: Props) => {
   const { t } = useTranslation()
+  const [isTotalCardSelected, setIsTotalCardSelected] = useState<boolean>(
+    showTotalCard && !selectedAddress,
+  )
+
   const handleSelectedAddress = useCallback(
     (contractAddress: string) => {
       setIsTotalCardSelected(false)
@@ -30,7 +36,6 @@ export const PortfolioComponent = ({
     },
     [setSelectedAddress],
   )
-  const [isTotalCardSelected, setIsTotalCardSelected] = useState<boolean>(true)
 
   const onTotalTap = useCallback(() => {
     setIsTotalCardSelected(true)
@@ -41,17 +46,19 @@ export const PortfolioComponent = ({
     <View style={style}>
       {/*TODO: This View above is a temporal fix to keep the ScrollView height*/}
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-        <PortfolioCard
-          onPress={onTotalTap}
-          color={
-            isTotalCardSelected
-              ? sharedColors.borderColor
-              : sharedColors.inputInactive
-          }
-          primaryText={t('TOTAL')}
-          secondaryText={totalUsdBalance}
-          isSelected={isTotalCardSelected}
-        />
+        {showTotalCard && (
+          <PortfolioCard
+            onPress={onTotalTap}
+            color={
+              isTotalCardSelected
+                ? sharedColors.borderColor
+                : sharedColors.inputInactive
+            }
+            primaryText={t('TOTAL')}
+            secondaryText={totalUsdBalance}
+            isSelected={isTotalCardSelected}
+          />
+        )}
         {balances.map(
           (
             {

@@ -105,7 +105,7 @@ export const PortfolioCard = ({
       disabled={disabled}
       style={[styles.topContainer, { backgroundColor: color }]}
       accessibilityLabel={primaryText}
-      onPressIn={onPress}>
+      onPress={onPress}>
       {isSelected
         ? SelectedCard({
             primaryText,
