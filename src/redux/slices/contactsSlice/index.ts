@@ -13,9 +13,7 @@ import { Contact } from 'shared/types'
 import { defaultContacts } from 'store/slices/contactsSlice/constants'
 
 const initialState: ContactsState = {
-  contacts: {
-    ...defaultContacts,
-  },
+  contacts: defaultContacts,
   selectedContact: null,
 }
 
