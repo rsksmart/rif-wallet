@@ -122,6 +122,12 @@ export const ReviewTransactionContainer = ({
 
   const totalTokenValue = Number(value) + Number(rifFee)
 
+  const convertToUSD = useCallback(
+    (tokenValue: number, round = false) =>
+      convertTokenToUSD(tokenValue, tokenQuote, round).toFixed(2),
+    [tokenQuote],
+  )
+
   const data: TransactionSummaryScreenProps = useMemo(
     () => ({
       transaction: {
@@ -131,22 +137,18 @@ export const ReviewTransactionContainer = ({
           symbol: symbol ?? TokenSymbol.RIF,
         },
         usdValue: {
-          balance: convertTokenToUSD(
-            Number(value),
-            tokenQuote,
-            true,
-          ).toString(),
+          balance: convertToUSD(Number(value), true),
           symbolType: 'usd',
           symbol: '$',
         },
         fee: {
           tokenValue: rifFee,
-          usdValue: convertTokenToUSD(Number(rifFee), tokenQuote).toString(),
+          usdValue: convertToUSD(Number(rifFee)),
         },
         time: 'approx 1 min',
         total: {
           tokenValue: totalTokenValue.toString(),
-          usdValue: convertTokenToUSD(totalTokenValue, tokenQuote).toString(),
+          usdValue: convertToUSD(totalTokenValue),
         },
       },
       contact: contacts[to.toLowerCase()] || { address: to || '' },
@@ -167,13 +169,13 @@ export const ReviewTransactionContainer = ({
       functionName,
     }),
     [
-      contacts,
-      to,
       value,
       symbol,
-      tokenQuote,
+      convertToUSD,
       rifFee,
       totalTokenValue,
+      contacts,
+      to,
       t,
       confirmTransaction,
       cancelTransaction,
