@@ -4,8 +4,6 @@ import { ScrollView, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
-import { shortAddress } from 'lib/utils'
-
 import { TokenBalance } from 'components/token'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
@@ -16,6 +14,7 @@ import { useAppSelector } from 'store/storeUtils'
 import { isMyAddress } from 'components/address/lib'
 import { DollarIcon } from 'components/icons/DollarIcon'
 import { FullScreenSpinner } from 'components/fullScreenSpinner'
+import { ContactWithAddressRequired } from 'shared/types'
 
 import {
   TransactionStatus,
@@ -43,7 +42,6 @@ export const TransactionSummaryComponent = ({
   const { bottom } = useSafeAreaInsets()
   const { t } = useTranslation()
   const { wallet } = useAppSelector(selectActiveWallet)
-
   const iconObject = transactionStatusToIconPropsMap.get(transaction.status)
   const transactionStatusText = transactionStatusDisplayText.get(
     transaction.status,
@@ -71,6 +69,15 @@ export const TransactionSummaryComponent = ({
     return t('transaction_summary_send_title')
   }, [amIReceiver, t, transaction.status])
 
+  const contactToUse: ContactWithAddressRequired = useMemo(() => {
+    if (amIReceiver) {
+      return {
+        address: transaction.from ?? '',
+      }
+    }
+    return contact
+  }, [amIReceiver, transaction, contact])
+
   return (
     <View style={[styles.screen, { paddingBottom: bottom }]}>
       {isLoaded === false && <FullScreenSpinner />}
@@ -86,7 +93,8 @@ export const TransactionSummaryComponent = ({
         <TokenBalance
           firstValue={transaction.tokenValue}
           secondValue={transaction.usdValue}
-          to={contact}
+          to={contactToUse}
+          amIReceiver={amIReceiver}
         />
         {functionName && (
           <Typography

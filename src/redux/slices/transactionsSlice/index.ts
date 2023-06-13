@@ -66,6 +66,7 @@ export const activityDeserializer: (
           Number(balanceToDisplay(totalCalculated, 8)) * prices.BTC?.price,
       },
       amIReceiver: activityTransaction.amIReceiver,
+      from: activityTransaction.from,
     }
   } else {
     const tx = activityTransaction.originTransaction
@@ -120,6 +121,7 @@ export const activityDeserializer: (
         usdValue: Number(total) * price,
       },
       price,
+      from: etx?.from,
     }
   }
 }
@@ -168,6 +170,10 @@ const transformTransaction = (
     amIReceiver: !transaction.vin.some(
       tx => 'isOwn' in tx && tx.isOwn === true,
     ),
+    from:
+      transaction.vout.find(vout => !vout.isOwn)?.addresses[0] ||
+      transaction.vout[0].addresses[0] ||
+      '', // First match that is not ours - else first match if exists - else nothing
   }
 }
 

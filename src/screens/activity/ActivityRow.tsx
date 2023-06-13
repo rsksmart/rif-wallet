@@ -79,6 +79,7 @@ export const ActivityBasicRow = ({
         total: activityDetails.total,
         time: activityDetails.timeHumanFormatted,
         amIReceiver: activityDetails.amIReceiver,
+        from: activityDetails.from,
       },
       contact: {
         address: activityDetails.to,
