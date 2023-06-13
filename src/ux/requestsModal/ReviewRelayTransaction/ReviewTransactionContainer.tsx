@@ -39,45 +39,69 @@ export const ReviewTransactionContainer = ({
   const insets = useSafeAreaInsets()
   const tokenPrices = useAppSelector(selectUsdPrices)
   // enhance the transaction to understand what it is:
-  const txRequest = useMemo(() => request.payload[0], [request])
   const { wallet } = useAppSelector(selectActiveWallet)
   const contacts = useAppSelector(getContactsAsObject)
+  const [error, setError] = useState<string | null>(null)
+  const [txCostInRif, setTxCostInRif] = useState<BigNumber>()
+  const { t } = useTranslation()
+
   // this is for typescript, and should not happen as the transaction was created by the wallet instance.
   if (!wallet) {
     throw new Error('no wallet')
   }
+
+  const txRequest = useMemo(() => request.payload[0], [request])
   const { enhancedTransactionRequest, isLoaded } = useEnhancedWithGas(
     wallet,
     txRequest,
   )
-  const tokenContract = useMemo(
-    () =>
-      getTokenAddress(
-        defaultChainType === ChainTypeEnum.MAINNET ? 'RIF' : 'tRIF',
-        defaultChainType,
-      ),
+
+  const {
+    to = '',
+    symbol = '',
+    value = '0',
+    functionName = '',
+    gasPrice,
+    gasLimit,
+  } = enhancedTransactionRequest
+
+  const feeSymbol = useMemo(
+    () => (defaultChainType === ChainTypeEnum.MAINNET ? 'RIF' : 'tRIF'),
     [],
   )
-  const tokenQuote = useMemo(() => {
-    return tokenPrices[tokenContract].price
-  }, [tokenContract, tokenPrices])
 
-  const { t } = useTranslation()
-  const [txCostInRif, setTxCostInRif] = useState<BigNumber>()
+  const feeContract = useMemo(
+    () => getTokenAddress(feeSymbol, defaultChainType),
+    [feeSymbol],
+  )
+
+  const tokenContract = useMemo(() => {
+    if (symbol) {
+      return getTokenAddress(symbol, defaultChainType)
+    }
+    return feeContract
+  }, [symbol, feeContract])
+
+  const tokenQuote = useMemo(
+    () => tokenPrices[tokenContract].price,
+    [tokenPrices, tokenContract],
+  )
+  const feeQuote = useMemo(
+    () => tokenPrices[feeContract].price,
+    [tokenPrices, feeContract],
+  )
 
   const rifFee = useMemo(
     () => (txCostInRif ? `${balanceToDisplay(txCostInRif, 18, 0)}` : '0'),
     [txCostInRif],
   )
 
-  const [error, setError] = useState<string | null>(null)
-
   useEffect(() => {
     wallet.rifRelaySdk
-      .estimateTransactionCost(txRequest, tokenContract)
+      .estimateTransactionCost(txRequest, feeContract)
       .then(setTxCostInRif)
       .catch(err => setError(errorHandler(err)))
-  }, [txRequest, wallet.rifRelaySdk, tokenContract])
+  }, [txRequest, wallet.rifRelaySdk, feeContract])
 
   const confirmTransaction = useCallback(async () => {
     if (!txCostInRif) {
@@ -85,27 +109,29 @@ export const ReviewTransactionContainer = ({
     }
 
     const confirmObject: OverriddableTransactionOptions = {
-      gasPrice: BigNumber.from(enhancedTransactionRequest.gasPrice),
-      gasLimit: BigNumber.from(enhancedTransactionRequest.gasLimit),
+      gasPrice: BigNumber.from(gasPrice),
+      gasLimit: BigNumber.from(gasLimit),
       tokenPayment: {
-        tokenContract,
+        tokenContract: feeContract,
         tokenAmount: txCostInRif,
       },
     }
 
     try {
       await request.confirm(confirmObject)
-      const { value = '0', symbol = '' } = enhancedTransactionRequest
       onConfirm(value, symbol)
     } catch (err: unknown) {
       setError(errorHandler(err))
     }
   }, [
-    onConfirm,
-    enhancedTransactionRequest,
-    request,
-    tokenContract,
     txCostInRif,
+    gasPrice,
+    gasLimit,
+    feeContract,
+    request,
+    onConfirm,
+    value,
+    symbol,
   ])
 
   const cancelTransaction = useCallback(() => {
@@ -113,23 +139,16 @@ export const ReviewTransactionContainer = ({
     onCancel()
   }, [onCancel, request])
 
-  const {
-    to = '',
-    symbol,
-    value = '0',
-    functionName = '',
-  } = enhancedTransactionRequest
+  const data: TransactionSummaryScreenProps = useMemo(() => {
+    const convertToUSD = (tokenValue: number, quote: number) =>
+      convertTokenToUSD(tokenValue, quote, true).toFixed(2)
 
-  const totalTokenValue = Number(value) + Number(rifFee)
+    const tokenUsd = convertToUSD(Number(value), tokenQuote)
+    const feeUsd = convertToUSD(Number(rifFee), feeQuote)
 
-  const convertToUSD = useCallback(
-    (tokenValue: number, round = false) =>
-      convertTokenToUSD(tokenValue, tokenQuote, round).toFixed(2),
-    [tokenQuote],
-  )
-
-  const data: TransactionSummaryScreenProps = useMemo(
-    () => ({
+    const totalTokenValue = Number(value) + Number(rifFee)
+    const totalUsd = convertToUSD(Number(tokenUsd) + Number(feeUsd), tokenQuote)
+    return {
       transaction: {
         tokenValue: {
           balance: value.toString(),
@@ -137,18 +156,19 @@ export const ReviewTransactionContainer = ({
           symbol: symbol ?? TokenSymbol.RIF,
         },
         usdValue: {
-          balance: convertToUSD(Number(value), true),
+          balance: tokenUsd,
           symbolType: 'usd',
           symbol: '$',
         },
         fee: {
           tokenValue: rifFee,
-          usdValue: convertToUSD(Number(rifFee)),
+          usdValue: feeUsd,
+          symbol: feeSymbol,
         },
         time: 'approx 1 min',
         total: {
           tokenValue: totalTokenValue.toString(),
-          usdValue: convertToUSD(totalTokenValue),
+          usdValue: totalUsd,
         },
       },
       contact: contacts[to.toLowerCase()] || { address: to || '' },
@@ -167,21 +187,21 @@ export const ReviewTransactionContainer = ({
         },
       ],
       functionName,
-    }),
-    [
-      value,
-      symbol,
-      convertToUSD,
-      rifFee,
-      totalTokenValue,
-      contacts,
-      to,
-      t,
-      confirmTransaction,
-      cancelTransaction,
-      functionName,
-    ],
-  )
+    }
+  }, [
+    value,
+    tokenQuote,
+    rifFee,
+    feeQuote,
+    symbol,
+    feeSymbol,
+    contacts,
+    to,
+    t,
+    confirmTransaction,
+    cancelTransaction,
+    functionName,
+  ])
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>

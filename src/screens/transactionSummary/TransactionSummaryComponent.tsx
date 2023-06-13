@@ -136,7 +136,7 @@ export const TransactionSummaryComponent = ({
 
             <View style={sharedStyles.row}>
               <TokenImage
-                symbol={transaction.tokenValue.symbol}
+                symbol={transaction.fee.symbol || transaction.tokenValue.symbol}
                 transparent
                 size={12}
               />

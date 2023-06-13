@@ -4,8 +4,9 @@ import {
   TransactionsServerResponse,
 } from '@rsksmart/rif-wallet-services'
 
-import { IEvent } from 'src/subscriptions/types'
+import { TokenSymbol } from 'screens/home/TokenImage'
 import { TransactionStatus } from 'screens/transactionSummary/transactionSummaryUtils'
+import { IEvent } from 'src/subscriptions/types'
 
 export interface TransactionsServerResponseWithActivityTransactions
   extends TransactionsServerResponse {
@@ -25,7 +26,7 @@ export interface IBitcoinTransaction {
   symbol: string
   blockTime: number
   status: 'success' | 'pending'
-  isBitcoin: true
+  isBitcoin: boolean
   id: string
   sortTime: number
   amIReceiver: boolean
@@ -34,6 +35,7 @@ export interface IBitcoinTransaction {
 export interface TokenFeeValueObject {
   tokenValue: string
   usdValue: string
+  symbol?: TokenSymbol | string
 }
 
 export interface ActivityRowPresentationObject {
