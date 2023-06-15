@@ -43,11 +43,10 @@ export const TransactionSummaryComponent = ({
   const { bottom } = useSafeAreaInsets()
   const { t } = useTranslation()
   const { wallet } = useAppSelector(selectActiveWallet)
+  const { status, tokenValue, fee, usdValue, time } = transaction
 
-  const iconObject = transactionStatusToIconPropsMap.get(transaction.status)
-  const transactionStatusText = transactionStatusDisplayText.get(
-    transaction.status,
-  )
+  const iconObject = transactionStatusToIconPropsMap.get(status)
+  const transactionStatusText = transactionStatusDisplayText.get(status)
 
   const amIReceiver = useMemo(
     () => transaction.amIReceiver ?? isMyAddress(wallet, contact.address),
@@ -56,49 +55,43 @@ export const TransactionSummaryComponent = ({
 
   const title = useMemo(() => {
     if (amIReceiver) {
-      if (transaction.status === TransactionStatus.SUCCESS) {
+      if (status === TransactionStatus.SUCCESS) {
         return t('transaction_summary_received_title_success')
-      } else if (transaction.status === TransactionStatus.PENDING) {
+      } else if (status === TransactionStatus.PENDING) {
         return t('transaction_summary_received_title_pending')
       }
       return t('transaction_summary_receive_title')
     }
-    if (transaction.status === TransactionStatus.SUCCESS) {
+    if (status === TransactionStatus.SUCCESS) {
       return t('transaction_summary_sent_title_success')
-    } else if (transaction.status === TransactionStatus.PENDING) {
+    } else if (status === TransactionStatus.PENDING) {
       return t('transaction_summary_sent_title_pending')
     }
     return t('transaction_summary_send_title')
-  }, [amIReceiver, t, transaction.status])
+  }, [amIReceiver, t, status])
 
   const totalToken = useMemo(() => {
     if (amIReceiver) {
-      return +transaction.tokenValue.balance
+      return Number(tokenValue.balance)
     }
-    if (transaction.tokenValue.symbol === transaction.fee.symbol) {
-      return (
-        Number(transaction.tokenValue.balance) +
-        Number(transaction.fee.tokenValue)
-      )
+    if (tokenValue.symbol === fee.symbol) {
+      return Number(tokenValue.balance) + Number(fee.tokenValue)
     }
     return null
   }, [
     amIReceiver,
-    transaction.tokenValue.symbol,
-    transaction.tokenValue.balance,
-    transaction.fee.symbol,
-    transaction.fee.tokenValue,
+    tokenValue.symbol,
+    tokenValue.balance,
+    fee.symbol,
+    fee.tokenValue,
   ])
 
   const totalUsd = useMemo(
     () =>
       amIReceiver
-        ? transaction.usdValue.balance
-        : (
-            Number(transaction.usdValue.balance) +
-            Number(transaction.fee.usdValue)
-          ).toFixed(2),
-    [amIReceiver, transaction.usdValue.balance, transaction.fee.usdValue],
+        ? usdValue.balance
+        : (Number(usdValue.balance) + Number(fee.usdValue)).toFixed(2),
+    [amIReceiver, usdValue.balance, fee.usdValue],
   )
 
   return (
@@ -115,8 +108,8 @@ export const TransactionSummaryComponent = ({
           {title}
         </Typography>
         <TokenBalance
-          firstValue={transaction.tokenValue}
-          secondValue={transaction.usdValue}
+          firstValue={tokenValue}
+          secondValue={usdValue}
           to={contact}
         />
         {functionName && (
@@ -128,17 +121,15 @@ export const TransactionSummaryComponent = ({
           </Typography>
         )}
         <View />
-        {transactionStatusText || transaction.status ? (
+        {transactionStatusText || status ? (
           <View
             style={[
               styles.summaryAlignment,
               styles.statusContainer,
-              transaction.status
-                ? { backgroundColor: sharedColors.inputInactive }
-                : null,
+              status ? { backgroundColor: sharedColors.inputInactive } : null,
             ]}>
             <Typography type={'h4'}>
-              {transaction.status ? t('transaction_summary_status') : ''}
+              {status ? t('transaction_summary_status') : ''}
             </Typography>
             <View style={sharedStyles.row}>
               <Typography type={'h4'}>
@@ -167,15 +158,14 @@ export const TransactionSummaryComponent = ({
 
             <View style={sharedStyles.row}>
               <TokenImage
-                symbol={transaction.fee.symbol || transaction.tokenValue.symbol}
+                symbol={fee.symbol || tokenValue.symbol}
                 transparent
                 size={12}
               />
               <Typography
                 type={'body2'}
                 style={[styles.summaryText, sharedStyles.textCenter]}>
-                {displayRoundBalance(Number(transaction.fee.tokenValue))}{' '}
-                {transaction.fee.symbol}
+                {displayRoundBalance(Number(fee.tokenValue))} {fee.symbol}
               </Typography>
             </View>
           </View>
@@ -188,7 +178,7 @@ export const TransactionSummaryComponent = ({
                 sharedStyles.textRight,
                 { color: sharedColors.labelLight },
               ]}>
-              {transaction.fee.usdValue}
+              {fee.usdValue}
             </Typography>
           </View>
           {FeeComponent}
@@ -198,28 +188,23 @@ export const TransactionSummaryComponent = ({
               type={'body2'}
               style={[styles.summaryText, sharedStyles.textLeft]}>
               {amIReceiver
-                ? transaction.status === TransactionStatus.SUCCESS
+                ? status === TransactionStatus.SUCCESS
                   ? t('transaction_summary_i_received_text')
                   : t('transaction_summary_i_receive_text')
-                : transaction.status === TransactionStatus.SUCCESS
+                : status === TransactionStatus.SUCCESS
                 ? t('transaction_summary_total_sent')
                 : t('transaction_summary_total_send')}
             </Typography>
 
             <View style={sharedStyles.row}>
               {totalToken && (
-                <TokenImage
-                  symbol={transaction.tokenValue.symbol}
-                  size={12}
-                  transparent
-                />
+                <TokenImage symbol={tokenValue.symbol} size={12} transparent />
               )}
               {totalToken && (
                 <Typography
                   type={'body2'}
                   style={[styles.summaryText, sharedStyles.textCenter]}>
-                  {displayRoundBalance(totalToken)}{' '}
-                  {transaction.tokenValue.symbol}
+                  {displayRoundBalance(totalToken)} {tokenValue.symbol}
                 </Typography>
               )}
             </View>
@@ -241,7 +226,7 @@ export const TransactionSummaryComponent = ({
             <Typography
               type={'body2'}
               style={[styles.summaryText, sharedStyles.textLeft]}>
-              {transaction.status === TransactionStatus.SUCCESS
+              {status === TransactionStatus.SUCCESS
                 ? t('transaction_summary_arrived_text')
                 : t('transaction_summary_arrives_in_text')}
             </Typography>
@@ -249,7 +234,7 @@ export const TransactionSummaryComponent = ({
             <Typography
               type={'body2'}
               style={[styles.summaryText, sharedStyles.textRight]}>
-              {transaction.time}
+              {time}
             </Typography>
           </View>
           {/* separator */}
