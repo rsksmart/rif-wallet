@@ -50,14 +50,14 @@ export const getTokenAddress = (symbol: string, chainType: ChainTypeEnum) => {
   const contracts =
     chainType === ChainTypeEnum.TESTNET ? testnetContracts : mainnetContracts
 
-  const results = Object.keys(contracts).filter((address: string) => {
-    return contracts[address].symbol === symbol
-  })
+  const result = Object.keys(contracts).find(
+    (address: string) => contracts[address].symbol === symbol,
+  )
 
-  if (results.length === 0) {
+  if (!result) {
     throw new Error(
       `Token with the symbol ${symbol} not found on ${chainType}. Did you forget a t?`,
     )
   }
-  return results[0].toLowerCase()
+  return result.toLowerCase()
 }

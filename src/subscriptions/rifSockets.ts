@@ -11,6 +11,7 @@ import { UsdPricesState } from 'store/slices/usdPricesSlice'
 
 import { Action, InitAction } from './types'
 import { onSocketChangeEmitted } from './onSocketChangeEmitted'
+import { addNewTransactions } from 'src/redux/slices/transactionsSlice'
 
 export const socketsEvents = new EventEmitter()
 

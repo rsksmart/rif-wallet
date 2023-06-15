@@ -91,11 +91,6 @@ export const ReviewTransactionContainer = ({
     [tokenPrices, feeContract],
   )
 
-  const rifFee = useMemo(
-    () => (txCostInRif ? `${balanceToDisplay(txCostInRif, 18, 0)}` : '0'),
-    [txCostInRif],
-  )
-
   useEffect(() => {
     wallet.rifRelaySdk
       .estimateTransactionCost(txRequest, feeContract)
@@ -143,10 +138,13 @@ export const ReviewTransactionContainer = ({
     const convertToUSD = (tokenValue: number, quote: number) =>
       convertTokenToUSD(tokenValue, quote, true).toFixed(2)
 
+    const feeValue = txCostInRif
+      ? `${balanceToDisplay(txCostInRif, 18, 0)}`
+      : '0'
     const tokenUsd = convertToUSD(Number(value), tokenQuote)
-    const feeUsd = convertToUSD(Number(rifFee), feeQuote)
+    const feeUsd = convertToUSD(Number(feeValue), feeQuote)
 
-    const totalTokenValue = Number(value) + Number(rifFee)
+    const totalTokenValue = Number(value) + Number(feeValue)
     const totalUsd = convertToUSD(Number(tokenUsd) + Number(feeUsd), tokenQuote)
     return {
       transaction: {
@@ -161,7 +159,7 @@ export const ReviewTransactionContainer = ({
           symbol: '$',
         },
         fee: {
-          tokenValue: rifFee,
+          tokenValue: feeValue,
           usdValue: feeUsd,
           symbol: feeSymbol,
         },
@@ -189,9 +187,9 @@ export const ReviewTransactionContainer = ({
       functionName,
     }
   }, [
+    txCostInRif,
     value,
     tokenQuote,
-    rifFee,
     feeQuote,
     symbol,
     feeSymbol,

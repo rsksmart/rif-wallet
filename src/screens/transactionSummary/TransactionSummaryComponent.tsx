@@ -174,18 +174,20 @@ export const TransactionSummaryComponent = ({
                 : t('transaction_summary_total_send')}
             </Typography>
 
-            <View style={sharedStyles.row}>
-              <TokenImage
-                symbol={transaction.tokenValue.symbol}
-                transparent
-                size={12}
-              />
-              <Typography
-                type={'body2'}
-                style={[styles.summaryText, sharedStyles.textCenter]}>
-                {`${transaction.total.tokenValue}`}
-              </Typography>
-            </View>
+            {transaction.total.tokenValue && (
+              <View style={sharedStyles.row}>
+                <TokenImage
+                  symbol={transaction.tokenValue.symbol}
+                  transparent
+                  size={12}
+                />
+                <Typography
+                  type={'body2'}
+                  style={[styles.summaryText, sharedStyles.textCenter]}>
+                  {`${transaction.total.tokenValue}`}
+                </Typography>
+              </View>
+            )}
           </View>
           <View style={styles.dollarAmountWrapper}>
             <DollarIcon size={14} color={sharedColors.labelLight} />
