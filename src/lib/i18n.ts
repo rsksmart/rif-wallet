@@ -214,7 +214,6 @@ const resources = {
       settings_screen_accounts: 'Accounts',
       settings_screen_wallet_backup: 'Wallet Backup',
       settings_screen_change_pin: 'Change PIN',
-      settings_screen_provide_feedback: 'Provide Feedback',
       settings_screen_deploy_wallet: 'Deploy Wallet',
       settings_screen_examples: 'Examples Screen',
       settings_screen_version: 'Version',
@@ -254,10 +253,6 @@ const resources = {
 
       contacts_delete_contact_description:
         'Do you really wish to delete your contact ',
-      feedback_form_name: 'Your name (voluntary)',
-      feedback_form_email: 'Your email',
-      feedback_form_message: 'Message',
-      feedback_form_button_send: 'Send feedback',
       wallet_backup_subtitle: 'View your phrase',
       wallet_backup_delete_button: 'Delete Wallet',
       wallet_backup_delete_confirmation_title: 'Delete Wallet?',
