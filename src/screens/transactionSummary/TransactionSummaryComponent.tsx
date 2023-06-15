@@ -71,12 +71,43 @@ export const TransactionSummaryComponent = ({
     return t('transaction_summary_send_title')
   }, [amIReceiver, t, transaction.status])
 
+  const totalToken = useMemo(() => {
+    if (amIReceiver) {
+      return transaction.tokenValue.balance
+    }
+    if (transaction.tokenValue.symbol === transaction.fee.symbol) {
+      return (
+        Number(transaction.tokenValue.balance) +
+        Number(transaction.fee.tokenValue)
+      )
+    }
+    return null
+  }, [
+    amIReceiver,
+    transaction.tokenValue.symbol,
+    transaction.tokenValue.balance,
+    transaction.fee.symbol,
+    transaction.fee.tokenValue,
+  ])
+
+  const totalUsd = useMemo(
+    () =>
+      amIReceiver
+        ? transaction.usdValue.balance
+        : (
+            Number(transaction.usdValue.balance) +
+            Number(transaction.fee.usdValue)
+          ).toFixed(2),
+    [amIReceiver, transaction.usdValue.balance, transaction.fee.usdValue],
+  )
+
   return (
     <View style={[styles.screen, { paddingBottom: bottom }]}>
       {isLoaded === false && <FullScreenSpinner />}
       <ScrollView
         style={sharedStyles.flex}
-        contentContainerStyle={styles.contentPadding}>
+        contentContainerStyle={styles.contentPadding}
+        showsVerticalScrollIndicator={false}>
         <Typography
           style={styles.title}
           type={'h4'}
@@ -143,7 +174,7 @@ export const TransactionSummaryComponent = ({
               <Typography
                 type={'body2'}
                 style={[styles.summaryText, sharedStyles.textCenter]}>
-                {transaction.fee.tokenValue}
+                {transaction.fee.tokenValue} {transaction.fee.symbol}
               </Typography>
             </View>
           </View>
@@ -174,20 +205,22 @@ export const TransactionSummaryComponent = ({
                 : t('transaction_summary_total_send')}
             </Typography>
 
-            {transaction.total.tokenValue && (
-              <View style={sharedStyles.row}>
+            <View style={sharedStyles.row}>
+              {totalToken && (
                 <TokenImage
                   symbol={transaction.tokenValue.symbol}
-                  transparent
                   size={12}
+                  transparent
                 />
+              )}
+              {totalToken && (
                 <Typography
                   type={'body2'}
                   style={[styles.summaryText, sharedStyles.textCenter]}>
-                  {`${transaction.total.tokenValue}`}
+                  {totalToken} {transaction.tokenValue.symbol}
                 </Typography>
-              </View>
-            )}
+              )}
+            </View>
           </View>
           <View style={styles.dollarAmountWrapper}>
             <DollarIcon size={14} color={sharedColors.labelLight} />
@@ -198,7 +231,7 @@ export const TransactionSummaryComponent = ({
                 sharedStyles.textRight,
                 { color: sharedColors.labelLight },
               ]}>
-              {transaction.total.usdValue}
+              {totalUsd}
             </Typography>
           </View>
           {/* arrive value */}

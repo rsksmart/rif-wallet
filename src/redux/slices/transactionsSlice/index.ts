@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { BitcoinTransactionType } from '@rsksmart/rif-wallet-bitcoin'
-import { BigNumber, constants, utils } from 'ethers'
 import { IActivityTransaction, IEvent } from '@rsksmart/rif-wallet-services'
+import { BigNumber, constants, utils } from 'ethers'
 
 import {
   balanceToDisplay,
@@ -11,26 +11,26 @@ import {
 } from 'lib/utils'
 
 import {
-  ApiTransactionWithExtras,
-  TransactionsState,
-  ActivityMixedType,
-  ActivityRowPresentationObject,
-  IBitcoinTransaction,
-  ModifyTransaction,
-} from 'store/slices/transactionsSlice/types'
+  defaultChainType,
+  getTokenAddress,
+  isDefaultChainTypeMainnet,
+} from 'core/config'
+import { TokenSymbol } from 'screens/home/TokenImage'
 import { TransactionStatus } from 'screens/transactionSummary/transactionSummaryUtils'
 import {
   filterEnhancedTransactions,
   sortEnhancedTransactions,
 } from 'src/subscriptions/utils'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
-import { UsdPricesState } from 'store/slices/usdPricesSlice'
 import {
-  defaultChainType,
-  getTokenAddress,
-  isDefaultChainTypeMainnet,
-} from 'core/config'
-import { TokenSymbol } from 'screens/home/TokenImage'
+  ActivityMixedType,
+  ActivityRowPresentationObject,
+  ApiTransactionWithExtras,
+  IBitcoinTransaction,
+  ModifyTransaction,
+  TransactionsState,
+} from 'store/slices/transactionsSlice/types'
+import { UsdPricesState } from 'store/slices/usdPricesSlice'
 import { AsyncThunkWithTypes } from 'store/store'
 
 export const activityDeserializer: (
@@ -59,7 +59,11 @@ export const activityDeserializer: (
       ),
       fee: {
         tokenValue: `${fee} satoshi`,
-        usdValue: convertBalance(BigNumber.from(fee), 8, prices.BTC?.price),
+        usdValue: convertBalance(
+          BigNumber.from(fee),
+          8,
+          prices.BTC?.price,
+        ).toFixed(2),
       },
       total: {
         tokenValue: balanceToDisplay(totalCalculated, 8),
@@ -67,7 +71,7 @@ export const activityDeserializer: (
           Number(balanceToDisplay(totalCalculated, 8)) * prices.BTC?.price,
       },
       amIReceiver: activityTransaction.amIReceiver,
-    }
+    } as ActivityRowPresentationObject
   } else {
     const tx = activityTransaction.originTransaction
     const etx = activityTransaction.enhancedTransaction
@@ -107,20 +111,7 @@ export const activityDeserializer: (
     const feeQuote = prices[feeContract.toLowerCase()]?.price || 0
     const feeUsd = convertTokenToUSD(Number(feeValue), feeQuote).toFixed(2)
 
-    // Total
-    const totalValue =
-      tokenSymbol === feeSymbol ? Number(tokenValue) + Number(feeValue) : null
-    // TODO: should sum if I am the sender
-    const totalUsd = (Number(tokenUsd) + Number(feeUsd)).toFixed(2)
-
-    const ok =
-      tx?.hash ===
-      '0x7a78d84a69d7aae91165c3c06d08e6020ac318b988972ad127ca188418fba0f6'
-    if (ok) {
-      console.log('etx', etx)
-    }
-
-    const result = {
+    return {
       id: tx.hash,
       to: etx?.to || tx.to,
       status: tx.receipt
@@ -128,23 +119,14 @@ export const activityDeserializer: (
         : TransactionStatus.PENDING,
       value: tokenValue,
       symbol: tokenSymbol,
-      price: tokenUsd,
+      price: Number(tokenUsd),
       fee: {
         tokenValue: feeValue,
         symbol: feeSymbol,
         usdValue: feeUsd,
       },
-      total: {
-        tokenValue: totalValue,
-        usdValue: totalUsd,
-      },
       timeHumanFormatted: convertUnixTimeToFromNowFormat(tx.timestamp),
-    }
-
-    if (ok) {
-      console.log('result', JSON.stringify(result, null, 2))
-    }
-    return result
+    } as ActivityRowPresentationObject
   }
 }
 

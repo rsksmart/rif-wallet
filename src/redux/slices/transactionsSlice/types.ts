@@ -39,15 +39,14 @@ export interface TokenFeeValueObject {
 }
 
 export interface ActivityRowPresentationObject {
-  symbol: string
-  to: string
-  timeHumanFormatted: string
-  value: string
-  status: TransactionStatus
   id: string
+  to: string
+  status: TransactionStatus
+  value: string
+  symbol: string
   price: number
   fee: TokenFeeValueObject
-  total: TokenFeeValueObject
+  timeHumanFormatted: string
   amIReceiver?: boolean
 }
 
