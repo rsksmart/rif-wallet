@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleProp, StyleSheet, ViewStyle } from 'react-native'
 
-import { roundBalance, shortAddress } from 'lib/utils'
+import { displayRoundBalance, roundBalance, shortAddress } from 'lib/utils'
 
 import { StatusEnum } from 'components/BasicRow'
 import { BasicRowWithContact } from 'components/BasicRow/BasicRowWithContact'
@@ -87,15 +87,6 @@ export const ActivityBasicRow = ({
     [activityDetails, usdBalance],
   )
 
-  const amount = useMemo(() => {
-    const value = +activityDetails.value
-    let rounded = roundBalance(value, 4)
-    if (!rounded) {
-      rounded = roundBalance(value, 8)
-    }
-    return rounded.toString()
-  }, [activityDetails.value])
-
   const handlePress = useCallback(() => {
     if (txSummary) {
       navigation.navigate(rootTabsRouteNames.TransactionSummary, {
@@ -112,7 +103,7 @@ export const ActivityBasicRow = ({
       style={[styles.component, style]}>
       <BasicRowWithContact
         label={label}
-        amount={amount}
+        amount={displayRoundBalance(Number(activityDetails.value))}
         symbol={activityDetails.symbol}
         status={getStatus(activityDetails.status)}
         avatar={{ name: 'A' }}

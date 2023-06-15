@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
-import { shortAddress } from 'lib/utils'
+import { displayRoundBalance } from 'lib/utils'
 
 import { TokenBalance } from 'components/token'
 import { sharedColors, sharedStyles } from 'shared/constants'
@@ -73,7 +73,7 @@ export const TransactionSummaryComponent = ({
 
   const totalToken = useMemo(() => {
     if (amIReceiver) {
-      return transaction.tokenValue.balance
+      return +transaction.tokenValue.balance
     }
     if (transaction.tokenValue.symbol === transaction.fee.symbol) {
       return (
@@ -174,7 +174,8 @@ export const TransactionSummaryComponent = ({
               <Typography
                 type={'body2'}
                 style={[styles.summaryText, sharedStyles.textCenter]}>
-                {transaction.fee.tokenValue} {transaction.fee.symbol}
+                {displayRoundBalance(Number(transaction.fee.tokenValue))}{' '}
+                {transaction.fee.symbol}
               </Typography>
             </View>
           </View>
@@ -217,7 +218,8 @@ export const TransactionSummaryComponent = ({
                 <Typography
                   type={'body2'}
                   style={[styles.summaryText, sharedStyles.textCenter]}>
-                  {totalToken} {transaction.tokenValue.symbol}
+                  {displayRoundBalance(totalToken)}{' '}
+                  {transaction.tokenValue.symbol}
                 </Typography>
               )}
             </View>
