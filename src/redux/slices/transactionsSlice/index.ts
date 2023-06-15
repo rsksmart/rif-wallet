@@ -269,7 +269,19 @@ const transactionsSlice = createSlice({
       state,
       { payload }: PayloadAction<ActivityRowPresentationObject[]>,
     ) => {
-      state.transactions.push(...payload)
+      payload.forEach(btcTx => {
+        const transactionExistsIndex = state.transactions.findIndex(
+          tx => tx.id === btcTx.id,
+        )
+        if (transactionExistsIndex === -1) {
+          // Doesn't exists
+          state.transactions.push(btcTx)
+        } else {
+          // Update tx that exists
+          state.transactions[transactionExistsIndex] = btcTx
+        }
+      })
+      return state
     },
     addNewTransaction: (
       state,
