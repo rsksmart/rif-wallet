@@ -42,9 +42,6 @@ export const SettingsScreen = ({
   const goToDeploy = () =>
     navigation.navigate(settingsStackRouteNames.RelayDeployScreen)
 
-  const goToFeedbackScreen = () =>
-    navigation.navigate(settingsStackRouteNames.FeedbackScreen)
-
   const goToExampleScreen = useCallback(() => {
     navigation.navigate(settingsStackRouteNames.ExampleScreen)
   }, [navigation])
@@ -92,15 +89,6 @@ export const SettingsScreen = ({
             </Typography>
           </AppTouchable>
         )}
-        <AppTouchable
-          width={'100%'}
-          accessibilityLabel="feedback"
-          style={styles.settingsItem}
-          onPress={goToFeedbackScreen}>
-          <Typography type={'h3'}>
-            {t('settings_screen_provide_feedback')}
-          </Typography>
-        </AppTouchable>
         {!walletIsDeployed?.isDeployed && (
           <AppTouchable
             width={'100%'}

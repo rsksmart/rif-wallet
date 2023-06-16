@@ -5,7 +5,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import {
   ChangeLanguageScreen,
-  FeedbackScreen,
   SettingsScreen,
   ShowMnemonicScreen,
 } from 'screens/index'
@@ -41,14 +40,6 @@ export const SettingsNavigator = ({
         name={settingsStackRouteNames.AccountsScreen}
         component={InjectedScreens.AccountsScreen}
         options={screenOptionsWithHeader(top, t('settings_screen_accounts'))}
-      />
-      <SettingsStack.Screen
-        name={settingsStackRouteNames.FeedbackScreen}
-        component={FeedbackScreen}
-        options={screenOptionsWithHeader(
-          top,
-          t('settings_screen_provide_feedback'),
-        )}
       />
       <SettingsStack.Screen
         name={settingsStackRouteNames.WalletBackup}
