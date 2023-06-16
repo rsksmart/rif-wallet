@@ -16,6 +16,7 @@ import { useAppSelector } from 'store/storeUtils'
 import { isMyAddress } from 'components/address/lib'
 import { DollarIcon } from 'components/icons/DollarIcon'
 import { FullScreenSpinner } from 'components/fullScreenSpinner'
+import { ContactWithAddressRequired } from 'shared/types'
 
 import {
   TransactionStatus,
@@ -85,6 +86,15 @@ export const TransactionSummaryComponent = ({
     [amIReceiver, usdValue.balance, fee.usdValue],
   )
 
+  const contactToUse: ContactWithAddressRequired = useMemo(() => {
+    if (amIReceiver) {
+      return {
+        address: transaction.from ?? '',
+      }
+    }
+    return contact
+  }, [amIReceiver, transaction, contact])
+
   return (
     <View style={[styles.screen, { paddingBottom: bottom }]}>
       {isLoaded === false && <FullScreenSpinner />}
@@ -99,9 +109,10 @@ export const TransactionSummaryComponent = ({
           {title}
         </Typography>
         <TokenBalance
-          firstValue={tokenValue}
-          secondValue={usdValue}
-          to={contact}
+          firstValue={transaction.tokenValue}
+          secondValue={transaction.usdValue}
+          to={contactToUse}
+          amIReceiver={amIReceiver}
         />
         {functionName && (
           <Typography

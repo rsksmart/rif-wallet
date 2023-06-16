@@ -33,6 +33,7 @@ interface Props {
   handleAmountChange?: (text: string) => void
   to?: ContactWithAddressRequired
   style?: StyleProp<ViewStyle>
+  amIReceiver?: boolean
 }
 
 export const TokenBalance = ({
@@ -47,6 +48,7 @@ export const TokenBalance = ({
   handleAmountChange = noop,
   to,
   style,
+  amIReceiver,
 }: Props) => {
   const { t } = useTranslation()
   const isRifToken =
@@ -108,7 +110,7 @@ export const TokenBalance = ({
         {to && (
           <View style={[styles.toAddressContainer]}>
             <Typography type="body1">
-              {t('To') + ' '}
+              {amIReceiver ? t('From') : t('To')}{' '}
               <Typography type="body1" style={{ color: sharedColors.primary }}>
                 {to.displayAddress && to.displayAddress.length < 20
                   ? to.displayAddress

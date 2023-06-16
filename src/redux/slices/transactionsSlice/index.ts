@@ -46,6 +46,7 @@ export const activityDeserializer: (
     return {
       symbol: activityTransaction.symbol,
       to: activityTransaction.to,
+      from: activityTransaction.from,
       value: activityTransaction.valueBtc,
       timeHumanFormatted: convertUnixTimeToFromNowFormat(
         activityTransaction.blockTime,
@@ -116,6 +117,7 @@ export const activityDeserializer: (
     return {
       id: tx.hash,
       to: etx?.to || tx.to,
+      from: etx?.from,
       status: tx.receipt
         ? TransactionStatus.SUCCESS
         : TransactionStatus.PENDING,
@@ -176,6 +178,10 @@ const transformTransaction = (
     amIReceiver: !transaction.vin.some(
       tx => 'isOwn' in tx && tx.isOwn === true,
     ),
+    from:
+      transaction.vout.find(vout => !vout.isOwn)?.addresses[0] ||
+      transaction.vout[0].addresses[0] ||
+      '', // First match that is not ours - else first match if exists - else nothing
   }
 }
 
@@ -277,7 +283,19 @@ const transactionsSlice = createSlice({
       state,
       { payload }: PayloadAction<ActivityRowPresentationObject[]>,
     ) => {
-      state.transactions.push(...payload)
+      payload.forEach(btcTx => {
+        const transactionExistsIndex = state.transactions.findIndex(
+          tx => tx.id === btcTx.id,
+        )
+        if (transactionExistsIndex === -1) {
+          // Doesn't exists
+          state.transactions.push(btcTx)
+        } else {
+          // Update tx that exists
+          state.transactions[transactionExistsIndex] = btcTx
+        }
+      })
+      return state
     },
     addNewTransaction: (
       state,

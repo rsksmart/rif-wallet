@@ -30,6 +30,7 @@ export interface IBitcoinTransaction {
   id: string
   sortTime: number
   amIReceiver: boolean
+  from?: string
 }
 
 export interface TokenFeeValueObject {
@@ -48,6 +49,7 @@ export interface ActivityRowPresentationObject {
   fee: TokenFeeValueObject
   timeHumanFormatted: string
   amIReceiver?: boolean
+  from?: string
 }
 
 export type ActivityRowPresentationType = ActivityRowPresentationObject & {
