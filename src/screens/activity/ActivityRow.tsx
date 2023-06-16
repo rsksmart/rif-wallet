@@ -57,8 +57,8 @@ export const ActivityBasicRow = ({
     () =>
       (amIReceiver ? t('received_from') : t('sent_to')) +
       ' ' +
-      shortAddress(activityDetails.to),
-    [activityDetails.to, amIReceiver, t],
+      shortAddress(amIReceiver ? activityDetails.from : activityDetails.to),
+    [activityDetails.from, activityDetails.to, amIReceiver, t],
   )
 
   const txSummary: TransactionSummaryScreenProps = useMemo(
@@ -79,6 +79,7 @@ export const ActivityBasicRow = ({
         total: activityDetails.total,
         time: activityDetails.timeHumanFormatted,
         amIReceiver: activityDetails.amIReceiver,
+        from: activityDetails.from,
       },
       contact: {
         address: activityDetails.to,

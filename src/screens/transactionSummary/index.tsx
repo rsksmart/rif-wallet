@@ -26,6 +26,7 @@ export interface TransactionSummaryScreenProps {
     time: string
     status?: TransactionStatus
     amIReceiver?: boolean
+    from?: string
   }
   contact: ContactWithAddressRequired
   buttons?: AppButtonProps[]
