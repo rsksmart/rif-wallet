@@ -90,9 +90,10 @@ export const activityDeserializer: (
     const tokenSymbol = etx?.symbol || rbtcSymbol
     let tokenContract = ''
     try {
-      tokenContract = etx?.symbol
-        ? getTokenAddress(tokenSymbol, defaultChainType)
-        : rbtcAddress
+      tokenContract =
+        etx?.symbol === rbtcSymbol
+          ? rbtcAddress
+          : getTokenAddress(tokenSymbol, defaultChainType)
     } catch {}
     const tokenQuote = prices[tokenContract.toLowerCase()]?.price || 0
     const tokenUsd = convertTokenToUSD(Number(tokenValue), tokenQuote).toFixed(
@@ -104,9 +105,10 @@ export const activityDeserializer: (
     const feeSymbol = etx?.feeSymbol || rbtcSymbol
     let feeContract = ''
     try {
-      feeContract = etx?.feeSymbol
-        ? getTokenAddress(feeSymbol, defaultChainType)
-        : rbtcAddress
+      feeContract =
+        etx?.feeSymbol === rbtcSymbol
+          ? rbtcAddress
+          : getTokenAddress(feeSymbol, defaultChainType)
     } catch {}
     const feeQuote = prices[feeContract.toLowerCase()]?.price || 0
     const feeUsd = convertTokenToUSD(Number(feeValue), feeQuote).toFixed(2)

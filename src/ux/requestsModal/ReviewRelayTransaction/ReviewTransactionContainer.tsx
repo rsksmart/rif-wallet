@@ -2,7 +2,7 @@ import {
   OverriddableTransactionOptions,
   SendTransactionRequest,
 } from '@rsksmart/rif-wallet-core'
-import { BigNumber, BigNumberish } from 'ethers'
+import { BigNumber, BigNumberish, constants } from 'ethers'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
@@ -21,6 +21,7 @@ import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppSelector } from 'store/storeUtils'
+import { TokenSymbol } from 'screens/home/TokenImage'
 
 import useEnhancedWithGas from '../useEnhancedWithGas'
 
@@ -64,8 +65,19 @@ export const ReviewTransactionContainer = ({
     gasLimit,
   } = enhancedTransactionRequest
 
+  const rbtcSymbol = useMemo(
+    () =>
+      defaultChainType === ChainTypeEnum.MAINNET
+        ? TokenSymbol.RBTC
+        : TokenSymbol.TRBTC,
+    [],
+  )
+
   const feeSymbol = useMemo(
-    () => (defaultChainType === ChainTypeEnum.MAINNET ? 'RIF' : 'tRIF'),
+    () =>
+      defaultChainType === ChainTypeEnum.MAINNET
+        ? TokenSymbol.RIF
+        : TokenSymbol.TRIF,
     [],
   )
 
@@ -75,11 +87,15 @@ export const ReviewTransactionContainer = ({
   )
 
   const tokenContract = useMemo(() => {
+    const rbtcAddress = constants.AddressZero
+    if (symbol === rbtcSymbol) {
+      return rbtcAddress
+    }
     if (symbol) {
       return getTokenAddress(symbol, defaultChainType)
     }
     return feeContract
-  }, [symbol, feeContract])
+  }, [symbol, rbtcSymbol, feeContract])
 
   const tokenQuote = useMemo(
     () => tokenPrices[tokenContract].price,

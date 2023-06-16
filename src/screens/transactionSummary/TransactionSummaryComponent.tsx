@@ -71,20 +71,11 @@ export const TransactionSummaryComponent = ({
   }, [amIReceiver, t, status])
 
   const totalToken = useMemo(() => {
-    if (amIReceiver) {
-      return Number(tokenValue.balance)
-    }
     if (tokenValue.symbol === fee.symbol) {
       return Number(tokenValue.balance) + Number(fee.tokenValue)
     }
-    return null
-  }, [
-    amIReceiver,
-    tokenValue.symbol,
-    tokenValue.balance,
-    fee.symbol,
-    fee.tokenValue,
-  ])
+    return Number(tokenValue.balance)
+  }, [tokenValue, fee])
 
   const totalUsd = useMemo(
     () =>
@@ -197,16 +188,14 @@ export const TransactionSummaryComponent = ({
             </Typography>
 
             <View style={sharedStyles.row}>
-              {totalToken && (
-                <TokenImage symbol={tokenValue.symbol} size={12} transparent />
-              )}
-              {totalToken && (
-                <Typography
-                  type={'body2'}
-                  style={[styles.summaryText, sharedStyles.textCenter]}>
-                  {displayRoundBalance(totalToken)} {tokenValue.symbol}
-                </Typography>
-              )}
+              <TokenImage symbol={tokenValue.symbol} size={12} transparent />
+              <Typography
+                type={'body2'}
+                style={[styles.summaryText, sharedStyles.textCenter]}>
+                {displayRoundBalance(totalToken)} {tokenValue.symbol}{' '}
+                {tokenValue.symbol !== fee.symbol &&
+                  t('transaction_summary_plus_fees')}
+              </Typography>
             </View>
           </View>
           <View style={styles.dollarAmountWrapper}>
