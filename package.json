@@ -135,8 +135,7 @@
     "wait-for-expect": "^3.0.2"
   },
   "resolutions": {
-    "@types/react": "^17",
-    "@rsksmart/rif-relay-light-sdk": "^1.0.3"
+    "@types/react": "^17"
   },
   "jest": {
     "preset": "react-native",

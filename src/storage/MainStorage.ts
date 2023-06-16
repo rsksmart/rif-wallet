@@ -7,7 +7,6 @@ export const MainStorage = new MMKVStorage()
 const keyVerificationReminder = 'KEY_VERIFICATION_REMINDER'
 const keyManagement = 'KEY_MANAGEMNT'
 const contacts = 'CONTACTS'
-const signup = 'SIGN_UP'
 const closeStart = 'CLOSE_GETTING_STARTED'
 
 //emulator keys functions
@@ -31,13 +30,6 @@ export const getContacts = () => MainStorage.get(contacts)
 export const saveContacts = (value: Record<string, Contact>) =>
   MainStorage.set(contacts, value)
 export const deleteContacts = () => MainStorage.delete(contacts)
-
-// signup function
-export const hasSignUP = () => MainStorage.has(signup)
-export const getSignUP = () => MainStorage.get(signup)
-export const saveSignUp = (value: { signup: boolean }) =>
-  MainStorage.set(signup, value)
-export const deleteSignUp = () => MainStorage.delete(signup)
 
 // close get started function
 export const hasIsGettingStartedClosed = () => MainStorage.has(closeStart)

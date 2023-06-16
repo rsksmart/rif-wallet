@@ -25,10 +25,6 @@ export const createPublicAxios = (chainId: ChainTypesByIdType) =>
     ),
   })
 
-export const authAxios = axios.create({
-  baseURL: getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL),
-})
-
 export const abiEnhancer = new AbiEnhancer()
 
 export const getRnsResolver = (chainId: ChainTypesByIdType) =>
@@ -78,6 +74,7 @@ const defaultMainnetTokens: ITokenWithoutLogo[] = Object.keys(mainnetContracts)
       symbol,
       contractAddress: address.toLowerCase(),
       balance: '0x00',
+      usdBalance: 0,
     }
   })
 const defaultTestnetTokens: ITokenWithoutLogo[] = Object.keys(testnetContracts)
@@ -92,6 +89,7 @@ const defaultTestnetTokens: ITokenWithoutLogo[] = Object.keys(testnetContracts)
       symbol,
       contractAddress: address.toLowerCase(),
       balance: '0x00',
+      usdBalance: 0,
     }
   })
 export const getDefaultTokens = (chainId: ChainTypesByIdType) =>
