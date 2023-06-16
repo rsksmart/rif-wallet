@@ -1,27 +1,26 @@
-import { BigNumber, BigNumberish } from 'ethers'
-import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   OverriddableTransactionOptions,
   SendTransactionRequest,
 } from '@rsksmart/rif-wallet-core'
+import { BigNumber, BigNumberish } from 'ethers'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, StyleSheet } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { balanceToDisplay, convertTokenToUSD } from 'lib/utils'
 
-import { selectActiveWallet } from 'store/slices/settingsSlice'
-import { useAppSelector } from 'store/storeUtils'
-import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { AppButtonBackgroundVarietyEnum } from 'components/index'
 import { defaultChainType, getTokenAddress } from 'core/config'
-import { errorHandler } from 'shared/utils'
-import { TokenSymbol } from 'screens/home/TokenImage'
-import { sharedColors } from 'shared/constants'
-import { selectUsdPrices } from 'store/slices/usdPricesSlice'
-import { getContactsAsObject } from 'store/slices/contactsSlice'
-import { TransactionSummaryComponent } from 'screens/transactionSummary/TransactionSummaryComponent'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
+import { TransactionSummaryComponent } from 'screens/transactionSummary/TransactionSummaryComponent'
+import { sharedColors } from 'shared/constants'
+import { errorHandler } from 'shared/utils'
+import { getContactsAsObject } from 'store/slices/contactsSlice'
+import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
+import { selectUsdPrices } from 'store/slices/usdPricesSlice'
+import { useAppSelector } from 'store/storeUtils'
 
 import useEnhancedWithGas from '../useEnhancedWithGas'
 
@@ -144,14 +143,12 @@ export const ReviewTransactionContainer = ({
     const tokenUsd = convertToUSD(Number(value), tokenQuote)
     const feeUsd = convertToUSD(Number(feeValue), feeQuote)
 
-    const totalTokenValue = Number(value) + Number(feeValue)
-    const totalUsd = convertToUSD(Number(tokenUsd) + Number(feeUsd), tokenQuote)
     return {
       transaction: {
         tokenValue: {
           balance: value.toString(),
           symbolType: 'icon',
-          symbol: symbol ?? TokenSymbol.RIF,
+          symbol: symbol || feeSymbol,
         },
         usdValue: {
           balance: tokenUsd,
@@ -164,10 +161,6 @@ export const ReviewTransactionContainer = ({
           symbol: feeSymbol,
         },
         time: 'approx 1 min',
-        total: {
-          tokenValue: totalTokenValue.toString(),
-          usdValue: totalUsd,
-        },
       },
       contact: contacts[to.toLowerCase()] || { address: to || '' },
       buttons: [

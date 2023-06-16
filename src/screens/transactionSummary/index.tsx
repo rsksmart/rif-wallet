@@ -22,7 +22,6 @@ export interface TransactionSummaryScreenProps {
     tokenValue: CurrencyValue
     usdValue: CurrencyValue
     fee: TokenFeeValueObject
-    total: TokenFeeValueObject
     time: string
     status?: TransactionStatus
     amIReceiver?: boolean

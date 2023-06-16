@@ -76,7 +76,6 @@ export const ActivityBasicRow = ({
         },
         status: activityDetails.status,
         fee: activityDetails.fee,
-        total: activityDetails.total,
         time: activityDetails.timeHumanFormatted,
         amIReceiver: activityDetails.amIReceiver,
       },
