@@ -97,7 +97,14 @@ export const TokenBalance = ({
             </View>
           )}
           {secondValue?.symbolType === 'usd' && (
-            <DollarIcon size={16} color={sharedColors.subTitle} />
+            <>
+              {secondValue.symbol === '<' && (
+                <Typography type={'body1'} style={styles.subTitle}>
+                  {'<'}
+                </Typography>
+              )}
+              <DollarIcon size={16} color={sharedColors.subTitle} />
+            </>
           )}
           {!isNaN(Number(secondValue?.balance)) && (
             <Typography type={'body1'} style={styles.subTitle}>
@@ -198,7 +205,6 @@ const styles = StyleSheet.create({
     height: 20,
   }),
   subTitle: castStyle.text({
-    marginLeft: 4,
     color: sharedColors.subTitle,
     opacity: 0.7,
   }),

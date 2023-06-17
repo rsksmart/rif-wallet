@@ -70,7 +70,7 @@ export const ActivityBasicRow = ({
           balance: activityDetails.value,
         },
         usdValue: {
-          symbol: usdBalance ? '$' : '< $',
+          symbol: usdBalance ? '$' : '<',
           symbolType: 'usd',
           balance: usdBalance ? usdBalance.toFixed(2) : '0.01',
         },
@@ -109,7 +109,7 @@ export const ActivityBasicRow = ({
         avatar={{ name: 'A' }}
         secondaryLabel={activityDetails.timeHumanFormatted}
         addressToSearch={activityDetails.to}
-        usdAmount={usdBalance.toFixed(2)}
+        usdAmount={usdBalance}
       />
     </AppTouchable>
   )
