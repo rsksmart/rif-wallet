@@ -34,6 +34,7 @@ import { AvatarIconBox } from 'screens/rnsManager/AvatarIconBox'
 import { AppSpinner } from 'components/index'
 import { rootTabsRouteNames } from 'src/navigation/rootNavigator'
 import { settingsStackRouteNames } from 'src/navigation/settingsNavigator/types'
+import { handleDomainTransactionStatusChange } from 'screens/rnsManager/utils'
 
 import { ScreenWithWallet } from '../types'
 import { DomainInput } from './DomainInput'
@@ -107,7 +108,17 @@ export const SearchDomainScreen = ({
   const isRequestButtonDisabled = hasErrors || !validDomain
   const isSaveButtonDisabled = isRequestButtonDisabled && !isDomainOwned
 
-  const rnsProcessor = useMemo(() => new RnsProcessor({ wallet }), [wallet])
+  const rnsProcessor = useMemo(
+    () =>
+      new RnsProcessor({
+        wallet,
+        onSetTransactionStatusChange: handleDomainTransactionStatusChange(
+          dispatch,
+          wallet,
+        ),
+      }),
+    [dispatch, wallet],
+  )
 
   const onSubmit = useCallback(
     async (values: FormValues) => {

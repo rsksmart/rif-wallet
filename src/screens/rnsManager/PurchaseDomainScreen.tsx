@@ -36,6 +36,7 @@ import {
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { ScreenWithWallet } from 'screens/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
+import { handleDomainTransactionStatusChange } from 'screens/rnsManager/utils'
 
 import { rnsManagerStyles } from './rnsManagerStyles'
 
@@ -45,6 +46,7 @@ export enum TestID {
   CancelRegistrationButton = 'PurchaseDomainScreen.CancelRegistrationButton',
   PurchaseDomainButton = 'PurchaseDomainScreen.PurchaseDomainButton',
 }
+
 export const PurchaseDomainScreen = ({
   navigation,
   wallet,
@@ -56,7 +58,17 @@ export const PurchaseDomainScreen = ({
   const duration = profile.duration || 1
   const profileStatus = useAppSelector(selectProfileStatus)
   const [error, setError] = useState('')
-  const rnsProcessor = useMemo(() => new RnsProcessor({ wallet }), [wallet])
+  const rnsProcessor = useMemo(
+    () =>
+      new RnsProcessor({
+        wallet,
+        onSetTransactionStatusChange: handleDomainTransactionStatusChange(
+          dispatch,
+          wallet,
+        ),
+      }),
+    [dispatch, wallet],
+  )
 
   const methods = useForm()
   const { t } = useTranslation()
