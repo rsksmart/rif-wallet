@@ -65,6 +65,7 @@ export enum TokenSymbol {
   TRIF = 'tRIF',
   DOC = 'DOC',
   RDOC = 'RDOC',
+  TRDOC = 'rDOC',
   RIFP = 'RIFP',
   BPRO = 'BPRO',
   RNS = 'RNS',

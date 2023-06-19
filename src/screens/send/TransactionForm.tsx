@@ -69,6 +69,8 @@ interface FormValues {
 const transactionFeeMap = new Map([
   [TokenSymbol.RIF, true],
   [TokenSymbol.TRIF, true],
+  [TokenSymbol.RDOC, true],
+  [TokenSymbol.TRDOC, true],
 ])
 
 const transactionSchema = yup.object().shape({
