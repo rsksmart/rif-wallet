@@ -152,9 +152,7 @@ export const TransactionSummaryComponent = ({
         <View style={styles.summaryView}>
           {/* fee values */}
           <View style={styles.summaryAlignment}>
-            <Typography
-              type={'body2'}
-              style={[styles.summaryText, sharedStyles.textLeft]}>
+            <Typography type={'body2'} style={[sharedStyles.textLeft]}>
               {t('transaction_summary_fees')}
             </Typography>
 
@@ -164,9 +162,7 @@ export const TransactionSummaryComponent = ({
                 transparent
                 size={12}
               />
-              <Typography
-                type={'body2'}
-                style={[styles.summaryText, sharedStyles.textCenter]}>
+              <Typography type={'body2'} style={[sharedStyles.textCenter]}>
                 {displayRoundBalance(Number(fee.tokenValue))} {fee.symbol}
               </Typography>
             </View>
@@ -176,7 +172,6 @@ export const TransactionSummaryComponent = ({
             <Typography
               type={'body2'}
               style={[
-                styles.summaryText,
                 sharedStyles.textRight,
                 { color: sharedColors.labelLight },
               ]}>
@@ -186,9 +181,7 @@ export const TransactionSummaryComponent = ({
           {FeeComponent}
           {/* Total values */}
           <View style={[styles.summaryAlignment]}>
-            <Typography
-              type={'body2'}
-              style={[styles.summaryText, sharedStyles.textLeft]}>
+            <Typography type={'body2'} style={[sharedStyles.textLeft]}>
               {amIReceiver
                 ? status === TransactionStatus.SUCCESS
                   ? t('transaction_summary_i_received_text')
@@ -200,9 +193,7 @@ export const TransactionSummaryComponent = ({
 
             <View style={sharedStyles.row}>
               <TokenImage symbol={tokenValue.symbol} size={12} transparent />
-              <Typography
-                type={'body2'}
-                style={[styles.summaryText, sharedStyles.textCenter]}>
+              <Typography type={'body2'} style={[sharedStyles.textCenter]}>
                 {displayRoundBalance(totalToken)} {tokenValue.symbol}{' '}
                 {tokenValue.symbol !== fee.symbol &&
                   t('transaction_summary_plus_fees')}
@@ -214,7 +205,6 @@ export const TransactionSummaryComponent = ({
             <Typography
               type={'body2'}
               style={[
-                styles.summaryText,
                 sharedStyles.textRight,
                 { color: sharedColors.labelLight },
               ]}>
@@ -223,17 +213,13 @@ export const TransactionSummaryComponent = ({
           </View>
           {/* arrive value */}
           <View style={[styles.summaryAlignment]}>
-            <Typography
-              type={'body2'}
-              style={[styles.summaryText, sharedStyles.textLeft]}>
+            <Typography type={'body2'} style={[sharedStyles.textLeft]}>
               {status === TransactionStatus.SUCCESS
                 ? t('transaction_summary_arrived_text')
                 : t('transaction_summary_arrives_in_text')}
             </Typography>
 
-            <Typography
-              type={'body2'}
-              style={[styles.summaryText, sharedStyles.textRight]}>
+            <Typography type={'body2'} style={[sharedStyles.textRight]}>
               {time}
             </Typography>
           </View>
@@ -243,20 +229,12 @@ export const TransactionSummaryComponent = ({
           <View style={[styles.summaryAlignment]}>
             <Typography
               type={'body2'}
-              style={[
-                styles.summaryText,
-                sharedStyles.textLeft,
-                sharedStyles.flex,
-              ]}>
+              style={[sharedStyles.textLeft, sharedStyles.flex]}>
               {t('transaction_summary_address_text')}
             </Typography>
             <Typography
               type={'h5'}
-              style={[
-                styles.summaryText,
-                sharedStyles.textRight,
-                styles.contactAddress,
-              ]}
+              style={[sharedStyles.textRight, styles.contactAddress]}
               numberOfLines={1}
               ellipsizeMode={'middle'}>
               {contact.address}
@@ -316,9 +294,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: sharedColors.white,
     paddingBottom: 16,
-  }),
-  summaryText: castStyle.text({
-    marginLeft: 2,
   }),
   separator: castStyle.view({
     marginTop: 16,
