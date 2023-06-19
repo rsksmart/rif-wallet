@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleSheet, View } from 'react-native'
@@ -108,6 +108,7 @@ export const TransactionForm = ({
 
   const [selectedFeeToken, setSelectedFeeToken] =
     useState<TokenBalanceObject>(selectedToken)
+  const scrollViewRef = useRef<ScrollView>()
 
   const tokenFeeList = useMemo(() => {
     if (selectedToken.symbol !== TokenSymbol.BTCT) {
@@ -200,7 +201,7 @@ export const TransactionForm = ({
     (address: string | undefined) => {
       if (address !== selectedTokenAddress) {
         const token = tokenList.filter(
-          value => value.contractAddress === address,
+          ({ contractAddress }) => contractAddress === address,
         )[0]
         setSelectedTokenAddress(address)
         setSelectedToken(oldToken => {
@@ -257,6 +258,7 @@ export const TransactionForm = ({
 
   const toggleShowTxFee = useCallback(() => {
     setShowTxFeeSelector(prev => !prev)
+    scrollViewRef.current?.scrollToEnd({ animated: true })
   }, [])
 
   const onChangeSelectedFee = useCallback(
@@ -273,7 +275,7 @@ export const TransactionForm = ({
 
   return (
     <>
-      <ScrollView scrollIndicatorInsets={{ right: -8 }}>
+      <ScrollView ref={scrollViewRef} scrollIndicatorInsets={{ right: -8 }}>
         <FormProvider {...methods}>
           {recipient?.name ? (
             <Input
