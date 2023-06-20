@@ -13,25 +13,42 @@ import {
 } from 'navigation/settingsNavigator/types'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { selectActiveWallet, selectPin } from 'store/slices/settingsSlice'
+import {
+  selectActiveWallet,
+  selectChainId,
+  selectPin,
+} from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
+import { chainTypesById } from 'core/chainConstants'
 
 export const SettingsScreen = ({
   navigation,
 }: SettingsScreenProps<settingsStackRouteNames.SettingsScreen>) => {
   const statePIN = useAppSelector(selectPin)
+  const chainId = useAppSelector(selectChainId)
   const { walletIsDeployed } = useAppSelector(selectActiveWallet)
 
   const smartWalletFactoryAddress = useMemo(
-    () => getWalletSetting(SETTINGS.SMART_WALLET_FACTORY_ADDRESS),
-    [],
+    () =>
+      getWalletSetting(
+        SETTINGS.SMART_WALLET_FACTORY_ADDRESS,
+        chainTypesById[chainId],
+      ),
+    [chainId],
   )
 
-  const rpcUrl = useMemo(() => getWalletSetting(SETTINGS.RPC_URL), [])
+  const rpcUrl = useMemo(
+    () => getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId]),
+    [chainId],
+  )
 
   const walletServiceUrl = useMemo(
-    () => getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL),
-    [],
+    () =>
+      getWalletSetting(
+        SETTINGS.RIF_WALLET_SERVICE_URL,
+        chainTypesById[chainId],
+      ),
+    [chainId],
   )
 
   const goToAccountsScreen = () =>

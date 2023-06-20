@@ -52,3 +52,5 @@ export const selectHideBalance = ({ settings }: RootState) =>
 export const selectPin = ({ settings }: RootState) => settings.pin
 
 export const selectBitcoin = ({ settings }: RootState) => settings.bitcoin
+
+export const selectChainId = ({ settings }: RootState) => settings.chainId

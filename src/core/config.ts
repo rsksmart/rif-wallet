@@ -3,12 +3,8 @@ import mainnetContracts from '@rsksmart/rsk-contract-metadata'
 import config from 'config.json'
 import ReactNativeConfig from 'react-native-config'
 
-import { ChainTypeEnum, chainTypesById } from 'core/chainConstants'
-import { ChainIdStore } from 'storage/ChainStorage'
+import { ChainTypeEnum } from 'core/chainConstants'
 import { SETTINGS } from 'core/types'
-
-export const isDefaultChainTypeMainnet =
-  chainTypesById[ChainIdStore.getChainId()] === ChainTypeEnum.MAINNET
 
 /**
  * RSK Mainnet: 30
@@ -16,10 +12,9 @@ export const isDefaultChainTypeMainnet =
  */
 export const getWalletSetting = (
   setting: SETTINGS,
-  chainType?: ChainTypeEnum,
+  chainType: ChainTypeEnum,
 ): string => {
-  const chainTypeToUse = chainType ?? chainTypesById[ChainIdStore.getChainId()]
-  const key = `${setting}_${chainTypeToUse}`
+  const key = `${setting}_${chainType}`
   if (key in config) {
     return config[key as keyof typeof config]
   }

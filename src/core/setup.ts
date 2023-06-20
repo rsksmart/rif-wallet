@@ -6,29 +6,20 @@ import axios from 'axios'
 import { AbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
 import mainnetContracts from '@rsksmart/rsk-contract-metadata'
 import testnetContracts from '@rsksmart/rsk-testnet-contract-metadata'
-import { RifWalletServicesSocket } from '@rsksmart/rif-wallet-services'
-import { Options, setInternetCredentials } from 'react-native-keychain'
 
-import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
-import { MMKVStorage } from 'storage/MMKVStorage'
-import { enhanceTransactionInput } from 'screens/activity/ActivityScreen'
-import { filterEnhancedTransactions } from 'src/subscriptions/utils'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { SETTINGS } from 'core/types'
+import { chainTypesById } from 'core/chainConstants'
 
-import { getWalletSetting, isDefaultChainTypeMainnet } from './config'
+import { getWalletSetting } from './config'
 
-export const networkType = getWalletSetting(
-  SETTINGS.DEFAULT_CHAIN_TYPE,
-) as ChainTypeEnum
-
-const rpcUrl = getWalletSetting(SETTINGS.RPC_URL)
-
-const jsonRpcProvider = new providers.JsonRpcProvider(rpcUrl)
-
-export const publicAxios = axios.create({
-  baseURL: getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL),
-})
+export const createPublicAxios = (chainId: keyof typeof chainTypesById) =>
+  axios.create({
+    baseURL: getWalletSetting(
+      SETTINGS.RIF_WALLET_SERVICE_URL,
+      chainTypesById[chainId],
+    ),
+  })
 
 export const authAxios = axios.create({
   baseURL: getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL),
@@ -36,37 +27,42 @@ export const authAxios = axios.create({
 
 export const abiEnhancer = new AbiEnhancer()
 
-export const rifWalletServicesSocket = new RifWalletServicesSocket<
-  Options,
-  ReturnType<typeof setInternetCredentials>
->(getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL, networkType), abiEnhancer, {
-  cache: new MMKVStorage('temp'),
-  encryptionKeyMessageToSign: getWalletSetting(SETTINGS.RIF_WALLET_KEY),
-  onEnhanceTransaction: enhanceTransactionInput,
-  onFilterOutRepeatedTransactions: filterEnhancedTransactions,
-  onBeforeInit: (encryptionKey, currentInstance) => {
-    currentInstance.cache = new MMKVStorage('txs', encryptionKey)
-  },
-})
-
-export const rnsResolver = isDefaultChainTypeMainnet
-  ? Resolver.forRskMainnet({})
-  : Resolver.forRskTestnet({})
+export const rnsResolver = Resolver.forRskTestnet({}) // @TODO use chainId
+  /*? Resolver.forRskMainnet({})
+  : Resolver.forRskTestnet({})*/
 
 export const authClient = getWalletSetting(SETTINGS.AUTH_CLIENT)
 
-export const rifRelayConfig: RifRelayConfig = {
-  smartWalletFactoryAddress: getWalletSetting(
-    SETTINGS.SMART_WALLET_FACTORY_ADDRESS,
-  ),
-  relayVerifierAddress: getWalletSetting(SETTINGS.RELAY_VERIFIER_ADDRESS),
-  deployVerifierAddress: getWalletSetting(SETTINGS.DEPLOY_VERIFIER_ADDRESS),
-  relayServer: getWalletSetting(SETTINGS.RIF_RELAY_SERVER),
-}
-
 export const createRIFWalletFactory =
-  (onRequest: OnRequest) => (wallet: Wallet) =>
-    RIFWallet.create(wallet.connect(jsonRpcProvider), onRequest, rifRelayConfig)
+  (onRequest: OnRequest, chainId: keyof typeof chainTypesById) =>
+  (wallet: Wallet) => {
+    const jsonRpcProvider = new providers.JsonRpcProvider(
+      getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId]),
+    )
+    const rifRelayConfig: RifRelayConfig = {
+      smartWalletFactoryAddress: getWalletSetting(
+        SETTINGS.SMART_WALLET_FACTORY_ADDRESS,
+        chainTypesById[chainId],
+      ),
+      relayVerifierAddress: getWalletSetting(
+        SETTINGS.RELAY_VERIFIER_ADDRESS,
+        chainTypesById[chainId],
+      ),
+      deployVerifierAddress: getWalletSetting(
+        SETTINGS.DEPLOY_VERIFIER_ADDRESS,
+        chainTypesById[chainId],
+      ),
+      relayServer: getWalletSetting(
+        SETTINGS.RIF_RELAY_SERVER,
+        chainTypesById[chainId],
+      ),
+    }
+    return RIFWallet.create(
+      wallet.connect(jsonRpcProvider),
+      onRequest,
+      rifRelayConfig,
+    )
+  }
 
 const defaultMainnetTokens: ITokenWithoutLogo[] = Object.keys(mainnetContracts)
   .filter(address => ['RDOC', 'RIF'].includes(mainnetContracts[address].symbol))
@@ -94,6 +90,6 @@ const defaultTestnetTokens: ITokenWithoutLogo[] = Object.keys(testnetContracts)
       balance: '0x00',
     }
   })
-export const defaultTokens = isDefaultChainTypeMainnet
-  ? defaultMainnetTokens
-  : defaultTestnetTokens
+export const defaultTokens = defaultTestnetTokens // @todo use chainId
+  /*? defaultMainnetTokens
+  : defaultTestnetTokens*/

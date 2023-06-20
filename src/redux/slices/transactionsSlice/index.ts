@@ -24,11 +24,7 @@ import {
 } from 'src/subscriptions/utils'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { UsdPricesState } from 'store/slices/usdPricesSlice'
-import {
-  defaultChainType,
-  getTokenAddress,
-  isDefaultChainTypeMainnet,
-} from 'core/config'
+import { getTokenAddress } from 'core/config'
 import { TokenSymbol } from 'screens/home/TokenImage'
 import { AsyncThunkWithTypes } from 'store/store'
 
@@ -74,9 +70,9 @@ export const activityDeserializer: (
     const status = tx.receipt
       ? TransactionStatus.SUCCESS
       : TransactionStatus.PENDING
-    const rbtcSymbol = isDefaultChainTypeMainnet
-      ? TokenSymbol.RBTC
-      : TokenSymbol.TRBTC
+    const rbtcSymbol = TokenSymbol.TRBTC // @TODO use chainId
+      /*? TokenSymbol.RBTC
+      : TokenSymbol.TRBTC*/
     const rbtcAddress = '0x0000000000000000000000000000000000000000'
     const value = etx?.value || balanceToDisplay(tx.value, 18)
     let tokenAddress = ''
@@ -84,7 +80,7 @@ export const activityDeserializer: (
       tokenAddress =
         etx?.symbol === rbtcSymbol
           ? rbtcAddress
-          : getTokenAddress(etx?.symbol || '', defaultChainType)
+          : getTokenAddress(etx?.symbol || '') // @todo use chainId here
     } catch {}
     const feeRbtc = BigNumber.from(tx.gasPrice).mul(
       BigNumber.from(tx.receipt?.gasUsed || 1),

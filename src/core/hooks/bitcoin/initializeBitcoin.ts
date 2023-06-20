@@ -14,7 +14,6 @@ import {
 } from 'storage/BitcoinNetworkStore'
 import { bitcoinMainnet, bitcoinTestnet } from 'shared/costants'
 import { onRequest } from 'store/slices/settingsSlice'
-import { isDefaultChainTypeMainnet } from 'core/config'
 import { AppDispatch } from 'store/index'
 import { StoredBitcoinNetworks } from 'storage/BitcoinNetworkStore'
 import { Bitcoin } from 'store/slices/settingsSlice/types'
@@ -25,9 +24,9 @@ const NETWORKS_INITIAL_STATE: Bitcoin = {
 }
 
 const onNoNetworksPresent = () => {
-  const bitcoinNetwork = isDefaultChainTypeMainnet
-    ? bitcoinMainnet
-    : bitcoinTestnet
+  const bitcoinNetwork = bitcoinTestnet // @TODO use chainId 
+    /*? bitcoinMainnet
+    : bitcoinTestnet*/
 
   BitcoinNetworkStore.addNewNetwork(bitcoinNetwork.name, bitcoinNetwork.bips)
 
