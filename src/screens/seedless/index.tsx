@@ -6,9 +6,8 @@ import * as yup from 'yup'
 
 import { AppButton, Input, Typography } from 'components/index'
 import { sharedColors, sharedStyles } from 'src/shared/constants'
-import { createWallet, unlockWithMagic } from 'src/redux/slices/settingsSlice'
+import { unlockWithMagic } from 'store/slices/magicSlice'
 import { useAppDispatch } from 'src/redux/storeUtils'
-import { magic } from 'src/core/CoreWithStore'
 
 interface FormValues {
   email: string

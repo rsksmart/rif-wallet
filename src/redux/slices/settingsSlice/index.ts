@@ -23,7 +23,6 @@ import { deletePin, resetMainStorage } from 'storage/MainStorage'
 import { deleteKeys, getKeys } from 'storage/SecureStorage'
 import { sharedColors } from 'shared/constants'
 import {
-  createMagicWallet,
   createRIFWalletFactory,
   networkType as defaultNetworkType,
 } from 'core/setup'
@@ -48,7 +47,6 @@ import {
   saveSignUp,
 } from 'storage/MainStorage'
 import { initializeBitcoin } from 'src/core/hooks/bitcoin/initializeBitcoin'
-import { magic } from 'src/core/CoreWithStore'
 
 import {
   AddNewWalletAction,
@@ -61,7 +59,6 @@ import {
   SettingsSlice,
   SetWalletIsDeployedAction,
   UnlockAppAction,
-  UnlockWithMagicAction,
 } from './types'
 
 export const createWallet = createAsyncThunk<
@@ -294,38 +291,6 @@ export const unlockApp = createAsyncThunk<
   }
 })
 
-export const unlockWithMagic = createAsyncThunk<
-  string,
-  UnlockWithMagicAction,
-  AsyncThunkWithTypes
->('settings/unlockWithMagic', async (action, thunkAPI) => {
-  try {
-    switch (action.type) {
-      case 'email':
-        const result = await magic.auth.loginWithEmailOTP({
-          email: action.email,
-        })
-        console.log('RESULT OF EMAIL OTP', result)
-
-        const magicWalletResult = await createMagicWallet(request =>
-          thunkAPI.dispatch(onRequest({ request })),
-        )
-
-        console.log('RESULT OF CREATING MAGIC WALLET', magicWalletResult)
-
-        return
-
-      default:
-        return 'fail'
-
-      // const logout = await magic.user.logout()
-      // console.log('RESULT OF LOGOUT', logout)
-    }
-  } catch (err) {
-    return thunkAPI.rejectWithValue(err)
-  }
-})
-
 export const resetApp = createAsyncThunk(
   'settings/resetApp',
   async (_, thunkAPI) => {
@@ -429,9 +394,7 @@ const settingsSlice = createSlice({
     setWallets: (state, { payload }: PayloadAction<SetKeysAction>) => {
       state.wallets = payload.wallets
       state.walletsIsDeployed = payload.walletsIsDeployed
-      state.selectedWallet = state.wallets
-        ? state.wallets[Object.keys(state.wallets)[0]].address
-        : ''
+      state.selectedWallet = state.wallets ? Object.keys(state.wallets)[0] : ''
     },
     setNewWallet: (state, { payload }: PayloadAction<SetNewWalletAction>) => {
       state.wallets = {
@@ -470,7 +433,7 @@ const settingsSlice = createSlice({
       state,
       { payload }: PayloadAction<{ address: string; isDeploying: boolean }>,
     ) => {
-      if (state.walletsIsDeployed) {
+      if (state.walletsIsDeployed && state.walletsIsDeployed[payload.address]) {
         state.walletsIsDeployed[payload.address] = {
           ...state.walletsIsDeployed?.[payload.address],
           loading: payload.isDeploying,

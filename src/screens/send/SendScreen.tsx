@@ -45,7 +45,7 @@ export const SendScreen = ({
   )
 
   useEffect(() => {
-    wallet.getChainId().then(setChainId)
+    wallet.getChainId?.().then(setChainId)
   }, [wallet])
 
   const onGoToHome = useCallback(

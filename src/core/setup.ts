@@ -66,21 +66,27 @@ export const rifRelayConfig: RifRelayConfig = {
 }
 
 export const createRIFWalletFactory =
-  (onRequest: OnRequest) => (wallet: Wallet) =>
-    RIFWallet.create(wallet.connect(jsonRpcProvider), onRequest, rifRelayConfig)
+  (onRequest: OnRequest, rpcProvider?: ethers.providers.JsonRpcProvider) =>
+  (wallet: Wallet) =>
+    RIFWallet.create(
+      wallet.connect(rpcProvider ?? jsonRpcProvider),
+      onRequest,
+      rifRelayConfig,
+    )
 
 export const createMagicWallet = async (onRequest: OnRequest) => {
   try {
     if (await magic.user.isLoggedIn()) {
       const provider = new ethers.providers.Web3Provider(magic.rpcProvider)
       console.log('PROVIDER', provider)
-      const signer = provider.getSigner()
-      const publicAddress = (
-        await magic.user.getMetadata()
-      ).publicAddress?.toLowerCase()
-      console.log('SIGNER', signer, publicAddress)
 
-      return await RIFMagicWallet.create(signer, onRequest, rifRelayConfig)
+      const singer = provider.getSigner(
+        (await magic.user.getMetadata()).publicAddress ?? '',
+      )
+
+      console.log('NETWORK', await provider.getNetwork())
+
+      return await RIFMagicWallet.create(singer, onRequest, rifRelayConfig)
     } else {
       console.log('USER IS NOT LOGGED IN')
     }

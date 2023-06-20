@@ -12,6 +12,7 @@ import { settingsSliceReducer } from './slices/settingsSlice'
 import { transactionsReducer } from './slices/transactionsSlice'
 import { usdPriceReducer } from './slices/usdPricesSlice'
 import { SettingsSlice } from './slices/settingsSlice/types'
+import { magicSliceReducer } from './slices/magicSlice'
 
 const migrations = {
   // It's on purpose due to state type from redux-persist is PersistedStated.
@@ -57,6 +58,7 @@ const reducers = combineReducers({
   profile: profileReducer,
   accounts: accountsReducer,
   contacts: contactsReducer,
+  magic: magicSliceReducer,
 })
 
 export const rootReducer = persistReducer(rootPersistConfig, reducers)

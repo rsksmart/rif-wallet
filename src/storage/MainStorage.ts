@@ -1,4 +1,7 @@
 import { Contact } from 'shared/types'
+import { Wallets, WalletsIsDeployed } from 'src/Context'
+import { SetKeysAction } from 'src/redux/slices/settingsSlice/types'
+
 import { MMKVStorage } from './MMKVStorage'
 
 export const MainStorage = new MMKVStorage()
@@ -9,6 +12,7 @@ const keyManagement = 'KEY_MANAGEMNT'
 const contacts = 'CONTACTS'
 const signup = 'SIGN_UP'
 const closeStart = 'CLOSE_GETTING_STARTED'
+const magicWallet = 'MAGIC_WALLET'
 
 //emulator keys functions
 export const getKeysFromMMKV = (): string | undefined =>
@@ -55,3 +59,19 @@ export const deleteIsGettingStartedClosed = () => MainStorage.delete(closeStart)
 
 // general function
 export const resetMainStorage = () => MainStorage.deleteAll()
+
+// magic wallet functions
+export const hasMagicWallet = () => MainStorage.has(magicWallet)
+export const getMagicWallet = (): SetKeysAction | undefined => {
+  const wallet = MainStorage.get(magicWallet)
+
+  if (wallet) {
+    return JSON.parse(wallet)
+  }
+
+  return undefined
+}
+
+export const saveMagicWallet = (walletsObject: SetKeysAction) =>
+  MainStorage.set(magicWallet, JSON.stringify(walletsObject))
+export const deleteMagicWallet = () => MainStorage.delete(magicWallet)

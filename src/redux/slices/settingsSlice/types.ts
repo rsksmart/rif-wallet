@@ -23,22 +23,6 @@ export type UnlockAppAction =
 
 //unlock with magic types
 
-type UnlockWithMagicType = 'email' | 'phone'
-
-interface UnlockWithMagicEmailAction {
-  type: 'email'
-  email: string
-}
-
-interface UnlockWithMagicPhoneAction {
-  type: 'phone'
-  phoneNumber: string
-}
-
-export type UnlockWithMagicAction =
-  | UnlockWithMagicEmailAction
-  | UnlockWithMagicPhoneAction
-
 export interface SetKeysAction {
   wallets: Wallets
   walletsIsDeployed: WalletsIsDeployed

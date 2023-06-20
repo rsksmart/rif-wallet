@@ -75,6 +75,7 @@ export const DomainInput = ({
         setDomainAvailability(DomainStatus.NONE)
         onDomainAvailable(domain, false)
       } else {
+        console.log('REACHED skRegistrar.available', rskRegistrar.available)
         const available = await rskRegistrar.available(domain)
 
         if (!available) {

@@ -5,7 +5,7 @@ import { KeyManagementSystem } from 'lib/core'
 
 import { saveKeys } from 'storage/SecureStorage'
 
-import { Wallets } from '../Context'
+import { Wallets, WalletsIsDeployed } from '../Context'
 import { MMKVStorage } from '../storage/MMKVStorage'
 
 type CreateRIFWallet = (wallet: Wallet) => Promise<RIFWallet>
@@ -61,6 +61,30 @@ export const createKMS =
       rifWalletsIsDeployedDictionary,
     }
   }
+
+export const createRifWalletDictionaries = async (rifWallet: RIFWallet) => {
+  const rifWalletIsDeployed = await rifWallet.smartWalletFactory.isDeployed()
+
+  const rifWalletsDictionary = { [rifWallet.address]: rifWallet }
+  const rifWalletsIsDeployedDictionary = {
+    [rifWallet.address]: rifWalletIsDeployed,
+  }
+
+  const walletsIsDeployed: WalletsIsDeployed = {}
+
+  for (const key in rifWalletsIsDeployedDictionary) {
+    walletsIsDeployed[key] = {
+      loading: false,
+      isDeployed: rifWalletsIsDeployedDictionary[key],
+      txHash: null,
+    }
+  }
+
+  return {
+    rifWalletsDictionary,
+    rifWalletsIsDeployedDictionary: walletsIsDeployed,
+  }
+}
 
 export const addNextWallet = async (
   kms: KeyManagementSystem,
