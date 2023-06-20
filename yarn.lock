@@ -2083,17 +2083,16 @@
   dependencies:
     "@rsksmart/rsk-utils" "^1.1.0"
 
-"@rsksmart/rif-wallet-services@^1.0.3":
-  version "1.0.3"
-  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-services/1.0.3/6eb000bfba6aec4f59c0a42d36e455152a45aa98#6eb000bfba6aec4f59c0a42d36e455152a45aa98"
-  integrity sha512-dV4znLecvh4xAQ1mC8UYHaVwmc5wKVKaI78/DrZHfT7/XSt2Iv2F4Xqx52eLan9uWSc6qbI1Pm2A5oV/c5Lnhg==
+"@rsksmart/rif-wallet-services@^1.0.4":
+  version "1.0.4"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-services/1.0.4/511c4cd4a3751e494cb4f3a6395cbc5b3c03cd56#511c4cd4a3751e494cb4f3a6395cbc5b3c03cd56"
+  integrity sha512-i5DR1wXd3YDIWG2BkvAxkVolKdyB0HoIyW4/G2R61TNVBOs1Sq5J7tyY9LV7qD3yehcu0anym25UvS9TaP6uHg==
   dependencies:
     "@ethersproject/contracts" "^5.7.0"
     "@rsksmart/rif-wallet-abi-enhancer" "*"
     "@rsksmart/rif-wallet-bitcoin" "*"
     "@rsksmart/rif-wallet-core" "*"
     axios "^0.27.2"
-    axios-auth-refresh "^3.3.4"
     events "^1.1.1"
     socket.io-client "^4.4.1"
 
@@ -3093,11 +3092,6 @@ available-typed-arrays@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/available-typed-arrays/-/available-typed-arrays-1.0.5.tgz#92f95616501069d07d10edb2fc37d3e1c65123b7"
   integrity sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==
-
-axios-auth-refresh@^3.3.4:
-  version "3.3.4"
-  resolved "https://registry.yarnpkg.com/axios-auth-refresh/-/axios-auth-refresh-3.3.4.tgz#95a2b1dc89a566b67ba525fb54de2f9dd7b65d20"
-  integrity sha512-cGq3bZu+lip5j+byaQRZaZ3wpCUxs93jGV0614VYP5k2H1vbdoaw6HGazaUJxcRsFMctR3DItCAx1Dn7KerlcA==
 
 axios@^0.27.2:
   version "0.27.2"
