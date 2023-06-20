@@ -111,7 +111,10 @@ export const TransactionForm = ({
   const scrollViewRef = useRef<ScrollView>()
 
   const tokenFeeList = useMemo(() => {
-    if (selectedToken.symbol !== TokenSymbol.BTCT) {
+    if (
+      selectedToken.symbol !== TokenSymbol.BTCT &&
+      selectedToken.symbol !== TokenSymbol.BTC
+    ) {
       return tokenList.filter(tok =>
         transactionFeeMap.get(tok.symbol as TokenSymbol),
       )
