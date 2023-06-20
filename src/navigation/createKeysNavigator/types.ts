@@ -12,6 +12,7 @@ export enum createKeysRouteNames {
   ImportMasterKey = 'ImportMasterKey',
   RevealMasterKey = 'RevealMasterKey',
   CreatePIN = 'CreatePIN',
+  SeendlessOnboarding = 'SeendlessOnboarding',
 }
 
 export type CreateKeysStackParamList = {
@@ -26,6 +27,7 @@ export type CreateKeysStackParamList = {
     isChangeRequested: true
     backScreen?: rootTabsRouteNames
   }
+  [createKeysRouteNames.SeendlessOnboarding]: undefined
 }
 
 export type CreateKeysScreenProps<T extends keyof CreateKeysStackParamList> =

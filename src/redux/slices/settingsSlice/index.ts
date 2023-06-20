@@ -23,6 +23,7 @@ import { deletePin, resetMainStorage } from 'storage/MainStorage'
 import { deleteKeys, getKeys } from 'storage/SecureStorage'
 import { sharedColors } from 'shared/constants'
 import {
+  createMagicWallet,
   createRIFWalletFactory,
   networkType as defaultNetworkType,
 } from 'core/setup'
@@ -47,6 +48,7 @@ import {
   saveSignUp,
 } from 'storage/MainStorage'
 import { initializeBitcoin } from 'src/core/hooks/bitcoin/initializeBitcoin'
+import { magic } from 'src/core/CoreWithStore'
 
 import {
   AddNewWalletAction,
@@ -59,6 +61,7 @@ import {
   SettingsSlice,
   SetWalletIsDeployedAction,
   UnlockAppAction,
+  UnlockWithMagicAction,
 } from './types'
 
 export const createWallet = createAsyncThunk<
@@ -286,6 +289,38 @@ export const unlockApp = createAsyncThunk<
     // set bitcoin in redux
     thunkAPI.dispatch(setBitcoinState(bitcoin))
     return kms
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err)
+  }
+})
+
+export const unlockWithMagic = createAsyncThunk<
+  string,
+  UnlockWithMagicAction,
+  AsyncThunkWithTypes
+>('settings/unlockWithMagic', async (action, thunkAPI) => {
+  try {
+    switch (action.type) {
+      case 'email':
+        const result = await magic.auth.loginWithEmailOTP({
+          email: action.email,
+        })
+        console.log('RESULT OF EMAIL OTP', result)
+
+        const magicWalletResult = await createMagicWallet(request =>
+          thunkAPI.dispatch(onRequest({ request })),
+        )
+
+        console.log('RESULT OF CREATING MAGIC WALLET', magicWalletResult)
+
+        return
+
+      default:
+        return 'fail'
+
+      // const logout = await magic.user.logout()
+      // console.log('RESULT OF LOGOUT', logout)
+    }
   } catch (err) {
     return thunkAPI.rejectWithValue(err)
   }

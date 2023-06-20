@@ -53,6 +53,12 @@ export const CreateKeysScreen = ({
           style={styles.importWalletButton}
           backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
         />
+        <AppButton
+          title={'Login Seendlessly'}
+          onPress={() =>
+            navigation.navigate(createKeysRouteNames.SeendlessOnboarding)
+          }
+        />
       </View>
     </View>
   )

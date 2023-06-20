@@ -1,4 +1,4 @@
-import { providers, Wallet } from 'ethers'
+import { ethers, providers, Wallet } from 'ethers'
 import Resolver from '@rsksmart/rns-resolver.js'
 import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
 import { OnRequest, RIFWallet } from '@rsksmart/rif-wallet-core'
@@ -6,15 +6,18 @@ import axios from 'axios'
 import { AbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
 import mainnetContracts from '@rsksmart/rsk-contract-metadata'
 import testnetContracts from '@rsksmart/rsk-testnet-contract-metadata'
-
-import { getWalletSetting, isDefaultChainTypeMainnet, SETTINGS } from './config'
 import { RifWalletServicesSocket } from '@rsksmart/rif-wallet-services'
+import { Options, setInternetCredentials } from 'react-native-keychain'
+
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { MMKVStorage } from 'storage/MMKVStorage'
 import { enhanceTransactionInput } from 'screens/activity/ActivityScreen'
 import { filterEnhancedTransactions } from 'src/subscriptions/utils'
-import { Options, setInternetCredentials } from 'react-native-keychain'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
+import { RIFMagicWallet } from 'src/lib/rifWallet'
+
+import { getWalletSetting, isDefaultChainTypeMainnet, SETTINGS } from './config'
+import { magic } from './CoreWithStore'
 
 export const networkType = getWalletSetting(
   SETTINGS.DEFAULT_CHAIN_TYPE,
@@ -65,6 +68,26 @@ export const rifRelayConfig: RifRelayConfig = {
 export const createRIFWalletFactory =
   (onRequest: OnRequest) => (wallet: Wallet) =>
     RIFWallet.create(wallet.connect(jsonRpcProvider), onRequest, rifRelayConfig)
+
+export const createMagicWallet = async (onRequest: OnRequest) => {
+  try {
+    if (await magic.user.isLoggedIn()) {
+      const provider = new ethers.providers.Web3Provider(magic.rpcProvider)
+      console.log('PROVIDER', provider)
+      const signer = provider.getSigner()
+      const publicAddress = (
+        await magic.user.getMetadata()
+      ).publicAddress?.toLowerCase()
+      console.log('SIGNER', signer, publicAddress)
+
+      return await RIFMagicWallet.create(signer, onRequest, rifRelayConfig)
+    } else {
+      console.log('USER IS NOT LOGGED IN')
+    }
+  } catch (err) {
+    console.log('ERROR in CREATE', err)
+  }
+}
 
 const defaultMainnetTokens: ITokenWithoutLogo[] = Object.keys(mainnetContracts)
   .filter(address => ['RDOC', 'RIF'].includes(mainnetContracts[address].symbol))

@@ -13,6 +13,7 @@ import {
 import { selectIsUnlocked } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { PinScreen } from 'screens/pinScreen'
+import { SeendlessOnboarding } from 'src/screens/seedless'
 
 import { CreateKeysStackParamList, createKeysRouteNames } from './types'
 import { screenOptionsWithHeader } from '..'
@@ -29,11 +30,17 @@ export const CreateKeysNavigation = () => {
   return (
     <Stack.Navigator initialRouteName={createKeysRouteNames.CreateKeys}>
       {!unlocked ? (
-        <Stack.Screen
-          name={createKeysRouteNames.CreateKeys}
-          component={CreateKeysScreen}
-          options={screensOptions}
-        />
+        <Stack.Group screenOptions={screensOptions}>
+          <Stack.Screen
+            name={createKeysRouteNames.CreateKeys}
+            component={CreateKeysScreen}
+          />
+          <Stack.Screen
+            name={createKeysRouteNames.SeendlessOnboarding}
+            component={SeendlessOnboarding}
+            options={screenOptionsWithHeader(top, '')}
+          />
+        </Stack.Group>
       ) : null}
       <Stack.Screen
         name={createKeysRouteNames.NewMasterKey}
