@@ -21,7 +21,7 @@ import {
   ChainTypeEnum,
   chainTypesById,
   ChainTypesByIdType,
-} from 'core/chainConstants'
+} from 'shared/constants/chainConstants'
 
 const NETWORKS_INITIAL_STATE: Bitcoin = {
   networksArr: [],

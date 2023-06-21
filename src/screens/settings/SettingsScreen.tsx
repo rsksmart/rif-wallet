@@ -19,7 +19,7 @@ import {
   selectPin,
 } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
-import { chainTypesById } from 'core/chainConstants'
+import { chainTypesById } from 'shared/constants/chainConstants'
 
 export const SettingsScreen = ({
   navigation,

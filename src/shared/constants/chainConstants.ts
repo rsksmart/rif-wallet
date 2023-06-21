@@ -10,7 +10,9 @@ export const chainTypes = {
   [ChainTypeEnum.MAINNET]: 30,
   [ChainTypeEnum.TESTNET]: 31,
 }
-
+/**
+ * Object that has the ChainTypeEnum by ID
+ */
 export const chainTypesById = {
   30: ChainTypeEnum.MAINNET,
   31: ChainTypeEnum.TESTNET,

@@ -13,7 +13,7 @@ import {
   ChainTypeEnum,
   chainTypesById,
   ChainTypesByIdType,
-} from 'core/chainConstants'
+} from 'shared/constants/chainConstants'
 
 import { getWalletSetting } from './config'
 

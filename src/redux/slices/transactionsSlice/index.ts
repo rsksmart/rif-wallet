@@ -30,7 +30,7 @@ import {
   ChainTypeEnum,
   chainTypesById,
   ChainTypesByIdType,
-} from 'core/chainConstants'
+} from 'shared/constants/chainConstants'
 import { TokenSymbol } from 'screens/home/TokenImage'
 
 export const activityDeserializer: (

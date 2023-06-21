@@ -42,7 +42,7 @@ import {
   saveSignUp,
 } from 'storage/MainStorage'
 import { initializeBitcoin } from 'src/core/hooks/bitcoin/initializeBitcoin'
-import { ChainTypesByIdType } from 'core/chainConstants'
+import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 
 import {
   AddNewWalletAction,

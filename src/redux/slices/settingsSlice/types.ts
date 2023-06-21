@@ -4,7 +4,7 @@ import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
 import { Wallets, WalletsIsDeployed } from 'src/Context'
 import { RequestWithBitcoin } from 'shared/types'
-import { ChainTypesByIdType } from 'core/chainConstants'
+import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 
 export interface CreateFirstWalletAction {
   mnemonic: string

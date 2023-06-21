@@ -14,7 +14,7 @@ import {
 } from 'store/slices/transactionsSlice'
 import { UsdPricesState, setUsdPrices } from 'store/slices/usdPricesSlice'
 import { AppDispatch } from 'store/index'
-import { ChainTypesByIdType } from 'core/chainConstants'
+import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 
 import { AbiWallet, Action } from './types'
 

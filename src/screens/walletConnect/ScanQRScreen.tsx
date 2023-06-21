@@ -12,7 +12,7 @@ import {
 } from 'navigation/rootNavigator'
 import { selectActiveWallet, selectChainId } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
-import { chainTypesById } from 'core/chainConstants'
+import { chainTypesById } from 'shared/constants/chainConstants'
 
 import { WalletConnectContext } from './WalletConnectContext'
 

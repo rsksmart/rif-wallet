@@ -3,7 +3,7 @@ import mainnetContracts from '@rsksmart/rsk-contract-metadata'
 import config from 'config.json'
 import ReactNativeConfig from 'react-native-config'
 
-import { ChainTypeEnum } from 'core/chainConstants'
+import { ChainTypeEnum } from 'shared/constants/chainConstants'
 import { SETTINGS } from 'core/types'
 
 /**

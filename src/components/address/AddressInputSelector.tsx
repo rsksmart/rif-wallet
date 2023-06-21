@@ -1,5 +1,5 @@
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
-import { ChainTypesByIdType } from 'core/chainConstants'
+import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 
 import { AddressInput, AddressInputProps } from './AddressInput'
 import { AddressBitcoinInput } from './AddressBitcoinInput'

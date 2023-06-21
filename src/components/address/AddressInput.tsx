@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { getRnsResolver } from 'core/setup'
 import { sharedColors } from 'shared/constants'
 import { ContactWithAddressRequired } from 'shared/types'
-import { ChainTypesByIdType } from 'core/chainConstants'
+import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 
 import { QRCodeScanner } from '../QRCodeScanner'
 import {

@@ -16,7 +16,10 @@ import { SETTINGS } from 'core/types'
 import { MMKVStorage } from 'storage/MMKVStorage'
 import { enhanceTransactionInput } from 'screens/activity/ActivityScreen'
 import { filterEnhancedTransactions } from 'src/subscriptions/utils'
-import { chainTypesById, ChainTypesByIdType } from 'core/chainConstants'
+import {
+  chainTypesById,
+  ChainTypesByIdType,
+} from 'shared/constants/chainConstants'
 
 import { onSocketChangeEmitted } from './onSocketChangeEmitted'
 import { Action, InitAction } from './types'
