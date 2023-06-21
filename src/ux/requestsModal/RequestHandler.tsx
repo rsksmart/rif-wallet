@@ -1,19 +1,10 @@
-import { useCallback } from 'react'
-// import { SendBitcoinRequest } from '@rsksmart/rif-wallet-bitcoin'
-// import {
-//   SignMessageRequest,
-//   SignTypedDataRequest,
-// } from '@rsksmart/rif-wallet-core'
 import { BigNumberish } from 'ethers'
+import { useCallback } from 'react'
 
 import { RequestWithBitcoin } from 'shared/types'
-// import { useFetchBitcoinNetworksAndTokens } from 'screens/send/useFetchBitcoinNetworksAndTokens'
 import { ReviewBitcoinTransactionContainer } from 'src/ux/requestsModal/ReviewBitcoinTransactionContainer'
 
 import { ReviewTransactionContainer } from './ReviewRelayTransaction/ReviewTransactionContainer'
-// import SignMessageModal from './SignMessageModal'
-// import SignTypedDataModal from './SignTypedDataModal'
-// import ConfirmBitcoinTransactionModal from './ConfirmBitcoinTransactionModal'
 
 interface Props {
   request: RequestWithBitcoin
