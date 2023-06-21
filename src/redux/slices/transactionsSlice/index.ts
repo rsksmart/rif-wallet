@@ -10,12 +10,12 @@ import {
 } from 'lib/utils'
 
 import {
-  ApiTransactionWithExtras,
-  TransactionsState,
   ActivityMixedType,
   ActivityRowPresentationObject,
+  ApiTransactionWithExtras,
   IBitcoinTransaction,
   ModifyTransaction,
+  TransactionsState,
 } from 'store/slices/transactionsSlice/types'
 import { TransactionStatus } from 'screens/transactionSummary/transactionSummaryUtils'
 import {
@@ -25,13 +25,19 @@ import {
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { UsdPricesState } from 'store/slices/usdPricesSlice'
 import { getTokenAddress } from 'core/config'
-import { TokenSymbol } from 'screens/home/TokenImage'
 import { AsyncThunkWithTypes } from 'store/store'
+import {
+  ChainTypeEnum,
+  chainTypesById,
+  ChainTypesByIdType,
+} from 'core/chainConstants'
+import { TokenSymbol } from 'screens/home/TokenImage'
 
 export const activityDeserializer: (
   activityTransaction: ActivityMixedType,
   prices: UsdPricesState,
-) => ActivityRowPresentationObject = (activityTransaction, prices) => {
+  chainId: ChainTypesByIdType,
+) => ActivityRowPresentationObject = (activityTransaction, prices, chainId) => {
   if ('isBitcoin' in activityTransaction) {
     const fee = activityTransaction.fees
     const totalCalculated = BigNumber.from(
@@ -70,9 +76,10 @@ export const activityDeserializer: (
     const status = tx.receipt
       ? TransactionStatus.SUCCESS
       : TransactionStatus.PENDING
-    const rbtcSymbol = TokenSymbol.TRBTC // @TODO use chainId
-      /*? TokenSymbol.RBTC
-      : TokenSymbol.TRBTC*/
+    const rbtcSymbol =
+      chainTypesById[chainId] === ChainTypeEnum.MAINNET
+        ? TokenSymbol.RBTC
+        : TokenSymbol.TRBTC
     const rbtcAddress = '0x0000000000000000000000000000000000000000'
     const value = etx?.value || balanceToDisplay(tx.value, 18)
     let tokenAddress = ''
@@ -80,7 +87,7 @@ export const activityDeserializer: (
       tokenAddress =
         etx?.symbol === rbtcSymbol
           ? rbtcAddress
-          : getTokenAddress(etx?.symbol || '') // @todo use chainId here
+          : getTokenAddress(etx?.symbol || '', chainTypesById[chainId])
     } catch {}
     const feeRbtc = BigNumber.from(tx.gasPrice).mul(
       BigNumber.from(tx.receipt?.gasUsed || 1),
@@ -195,7 +202,7 @@ export const fetchBitcoinTransactions = createAsyncThunk<
     const transformedBtcTransactions = bitTransactions.map(transformTransaction)
 
     const deserializedTransactions = transformedBtcTransactions.map(tx =>
-      activityDeserializer(tx, usdPrices),
+      activityDeserializer(tx, usdPrices, settings.chainId),
     )
 
     thunkAPI.dispatch(addBitcoinTransactions(deserializedTransactions))
@@ -207,7 +214,7 @@ export const addPendingTransaction = createAsyncThunk<
   ApiTransactionWithExtras,
   AsyncThunkWithTypes
 >('transactions/addPendingTransaction', async (payload, thunkAPI) => {
-  const { usdPrices } = thunkAPI.getState()
+  const { usdPrices, settings } = thunkAPI.getState()
 
   const { symbol, finalAddress, enhancedAmount, value, ...restPayload } =
     payload
@@ -227,6 +234,7 @@ export const addPendingTransaction = createAsyncThunk<
   const deserializedTransaction = activityDeserializer(
     pendingTransaction,
     usdPrices,
+    settings.chainId,
   )
 
   thunkAPI.dispatch(addPendingTransactionState(deserializedTransaction))

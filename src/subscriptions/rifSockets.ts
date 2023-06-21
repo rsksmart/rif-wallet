@@ -60,6 +60,7 @@ export const rifSockets = ({
     abiEnhancer,
     wallet,
     usdPrices,
+    chainId,
   })
   const rifWalletServicesSocket = new RifWalletServicesSocket<
     Options,
