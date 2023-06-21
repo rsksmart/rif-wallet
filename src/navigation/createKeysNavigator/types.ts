@@ -6,7 +6,7 @@ import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
 export enum createKeysRouteNames {
   CreateKeys = 'CreateKeys',
   NewMasterKey = 'NewMasterKey',
-  SecurityExplanation = 'SecurityExplanation',
+  SecurityInformation = 'SecurityInformation',
   SecureYourWallet = 'SecureYourWallet',
   ConfirmNewMasterKey = 'ConfirmNewMasterKey',
   ImportMasterKey = 'ImportMasterKey',
@@ -17,7 +17,11 @@ export enum createKeysRouteNames {
 export type CreateKeysStackParamList = {
   [createKeysRouteNames.CreateKeys]: undefined
   [createKeysRouteNames.NewMasterKey]: undefined
-  [createKeysRouteNames.SecurityExplanation]: undefined
+  [createKeysRouteNames.SecurityInformation]: {
+    moveTo:
+      | createKeysRouteNames.ImportMasterKey
+      | createKeysRouteNames.NewMasterKey
+  }
   [createKeysRouteNames.SecureYourWallet]: undefined
   [createKeysRouteNames.ConfirmNewMasterKey]: { mnemonic: string }
   [createKeysRouteNames.ImportMasterKey]: undefined

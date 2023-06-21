@@ -70,7 +70,9 @@ export const SecureYourWalletScreen = ({
       <View style={[sharedStyles.row, styles.section]}>
         <PrimaryButton
           onPress={() =>
-            navigation.navigate(createKeysRouteNames.SecurityExplanation)
+            navigation.navigate(createKeysRouteNames.SecurityInformation, {
+              moveTo: createKeysRouteNames.NewMasterKey,
+            })
           }
           accessibilityLabel="secureNow"
           title={'secure now'}
