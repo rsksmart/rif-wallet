@@ -94,6 +94,7 @@ const defaultTestnetTokens: ITokenWithoutLogo[] = Object.keys(testnetContracts)
       balance: '0x00',
     }
   })
-export const defaultTokens = defaultTestnetTokens // @todo use chainId
-/*? defaultMainnetTokens
-  : defaultTestnetTokens*/
+export const getDefaultTokens = (chainId: ChainTypesByIdType) =>
+  chainTypesById[chainId] === ChainTypeEnum.MAINNET
+    ? defaultMainnetTokens
+    : defaultTestnetTokens

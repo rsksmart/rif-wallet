@@ -8,7 +8,7 @@ import { Options, setInternetCredentials } from 'react-native-keychain'
 
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { AppDispatch } from 'store/index'
-import { abiEnhancer, defaultTokens } from 'core/setup'
+import { abiEnhancer, getDefaultTokens } from 'core/setup'
 import { addOrUpdateBalances } from 'store/slices/balancesSlice'
 import { UsdPricesState } from 'store/slices/usdPricesSlice'
 import { getWalletSetting } from 'core/config'
@@ -87,7 +87,7 @@ export const rifSockets = ({
       dispatch(resetSocketState())
     }
 
-    dispatch(addOrUpdateBalances(defaultTokens))
+    dispatch(addOrUpdateBalances(getDefaultTokens(chainId)))
 
     rifWalletServicesSocket.removeAllListeners()
 
