@@ -15,3 +15,5 @@ export const chainTypesById = {
   30: ChainTypeEnum.MAINNET,
   31: ChainTypeEnum.TESTNET,
 }
+
+export type ChainTypesByIdType = keyof typeof chainTypesById

@@ -1,11 +1,12 @@
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
+import { ChainTypesByIdType } from 'core/chainConstants'
 
 import { AddressInput, AddressInputProps } from './AddressInput'
 import { AddressBitcoinInput } from './AddressBitcoinInput'
 
 interface AddressInputSelectorProps extends AddressInputProps {
   token: TokenBalanceObject
-  chainId: number
+  chainId: ChainTypesByIdType
   onChangeAddress: (
     newValue: string,
     newDisplayValue: string,
@@ -16,11 +17,14 @@ interface AddressInputSelectorProps extends AddressInputProps {
 /**
  * Returns either AddressInput for Bitcoin or for RSK Flow based on a prop "isBitcoin" in the token
  * @param token
- * @param initialValue
- * @param onChangeText
+ * @param label
+ * @param placeholder
+ * @param value
+ * @param inputName
+ * @param onChangeAddress
+ * @param resetValue
  * @param testID
  * @param chainId
- * @param backgroundColor
  * @constructor
  */
 export const AddressInputSelector = ({

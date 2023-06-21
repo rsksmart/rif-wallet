@@ -42,7 +42,7 @@ import {
   saveSignUp,
 } from 'storage/MainStorage'
 import { initializeBitcoin } from 'src/core/hooks/bitcoin/initializeBitcoin'
-import { chainTypesById } from 'core/chainConstants'
+import { ChainTypesByIdType } from 'core/chainConstants'
 
 import {
   AddNewWalletAction,
@@ -158,6 +158,7 @@ export const createWallet = createAsyncThunk<
       mnemonic,
       thunkAPI.dispatch,
       fetcherInstance,
+      chainId,
     )
 
     // set bitcoin in redux
@@ -276,6 +277,7 @@ export const unlockApp = createAsyncThunk<
       kms.mnemonic,
       thunkAPI.dispatch,
       fetcherInstance,
+      chainId,
     )
 
     // set bitcoin in redux
@@ -371,10 +373,7 @@ const settingsSlice = createSlice({
     closeRequest: state => {
       state.requests.pop()
     },
-    setChainId: (
-      state,
-      { payload }: PayloadAction<keyof typeof chainTypesById>,
-    ) => {
+    setChainId: (state, { payload }: PayloadAction<ChainTypesByIdType>) => {
       state.chainId = payload
       state.chainType =
         payload === 31 ? ChainTypeEnum.TESTNET : ChainTypeEnum.MAINNET

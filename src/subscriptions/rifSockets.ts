@@ -16,7 +16,7 @@ import { SETTINGS } from 'core/types'
 import { MMKVStorage } from 'storage/MMKVStorage'
 import { enhanceTransactionInput } from 'screens/activity/ActivityScreen'
 import { filterEnhancedTransactions } from 'src/subscriptions/utils'
-import { chainTypesById } from 'core/chainConstants'
+import { chainTypesById, ChainTypesByIdType } from 'core/chainConstants'
 
 import { onSocketChangeEmitted } from './onSocketChangeEmitted'
 import { Action, InitAction } from './types'
@@ -37,7 +37,7 @@ interface RifSockets {
     Options,
     ReturnType<typeof setInternetCredentials>
   >
-  chainId: keyof typeof chainTypesById
+  chainId: ChainTypesByIdType
 }
 
 const onSocketInit = (

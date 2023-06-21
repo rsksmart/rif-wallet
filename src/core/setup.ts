@@ -1,19 +1,23 @@
 import { providers, Wallet } from 'ethers'
-import Resolver from '@rsksmart/rns-resolver.js'
 import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
 import { OnRequest, RIFWallet } from '@rsksmart/rif-wallet-core'
 import axios from 'axios'
 import { AbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
 import mainnetContracts from '@rsksmart/rsk-contract-metadata'
 import testnetContracts from '@rsksmart/rsk-testnet-contract-metadata'
+import Resolver from '@rsksmart/rns-resolver.js'
 
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { SETTINGS } from 'core/types'
-import { chainTypesById } from 'core/chainConstants'
+import {
+  ChainTypeEnum,
+  chainTypesById,
+  ChainTypesByIdType,
+} from 'core/chainConstants'
 
 import { getWalletSetting } from './config'
 
-export const createPublicAxios = (chainId: keyof typeof chainTypesById) =>
+export const createPublicAxios = (chainId: ChainTypesByIdType) =>
   axios.create({
     baseURL: getWalletSetting(
       SETTINGS.RIF_WALLET_SERVICE_URL,
@@ -27,15 +31,15 @@ export const authAxios = axios.create({
 
 export const abiEnhancer = new AbiEnhancer()
 
-export const rnsResolver = Resolver.forRskTestnet({}) // @TODO use chainId
-  /*? Resolver.forRskMainnet({})
-  : Resolver.forRskTestnet({})*/
+export const getRnsResolver = (chainId: ChainTypesByIdType) =>
+  chainTypesById[chainId] === ChainTypeEnum.MAINNET
+    ? Resolver.forRskMainnet({})
+    : Resolver.forRskTestnet({})
 
 export const authClient = getWalletSetting(SETTINGS.AUTH_CLIENT)
 
 export const createRIFWalletFactory =
-  (onRequest: OnRequest, chainId: keyof typeof chainTypesById) =>
-  (wallet: Wallet) => {
+  (onRequest: OnRequest, chainId: ChainTypesByIdType) => (wallet: Wallet) => {
     const jsonRpcProvider = new providers.JsonRpcProvider(
       getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId]),
     )
@@ -91,5 +95,5 @@ const defaultTestnetTokens: ITokenWithoutLogo[] = Object.keys(testnetContracts)
     }
   })
 export const defaultTokens = defaultTestnetTokens // @todo use chainId
-  /*? defaultMainnetTokens
+/*? defaultMainnetTokens
   : defaultTestnetTokens*/
