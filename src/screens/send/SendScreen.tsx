@@ -19,6 +19,7 @@ import {
 import { sharedStyles } from 'shared/constants'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
 import { FullScreenSpinner } from 'components/fullScreenSpinner'
+import { setFullscreen } from 'src/redux/slices/settingsSlice'
 
 import { ScreenWithWallet } from '../types'
 import { TransactionForm } from './TransactionForm'
