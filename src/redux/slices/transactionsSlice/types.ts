@@ -49,6 +49,7 @@ export interface ActivityRowPresentationObject {
   total: TokenFeeValueObject
   amIReceiver?: boolean
   from?: string
+  timestamp: number
 }
 
 export type ActivityRowPresentationType = ActivityRowPresentationObject & {
