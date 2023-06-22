@@ -5,6 +5,7 @@ import { ScrollView, StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import {
   convertTokenToUSD,
@@ -90,6 +91,7 @@ export const TransactionForm = ({
   totalUsdBalance,
   status,
 }: Props) => {
+  const insets = useSafeAreaInsets()
   const { recipient, asset, amount: initialAmount } = initialValues
   const { t } = useTranslation()
   const [showTxSelector, setShowTxSelector] = useState(false)
@@ -388,7 +390,7 @@ export const TransactionForm = ({
           ) : null}
         </FormProvider>
       </ScrollView>
-      <View style={styles.marginTop10}>
+      <View style={[styles.marginTop10, { paddingBottom: insets.bottom }]}>
         {status && (
           <Typography style={styles.statusText} type="h4">
             {status}

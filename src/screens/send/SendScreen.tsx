@@ -10,7 +10,8 @@ import {
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { settingsStackRouteNames } from 'navigation/settingsNavigator/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
-import { useAppSelector } from 'store/storeUtils'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { selectFullscreen, setFullscreen } from 'store/slices/settingsSlice'
 import {
   selectBalances,
   selectTotalUsdValue,
@@ -18,7 +19,6 @@ import {
 import { sharedStyles } from 'shared/constants'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
 import { FullScreenSpinner } from 'components/fullScreenSpinner'
-import { setFullscreen } from 'src/redux/slices/settingsSlice'
 
 import { ScreenWithWallet } from '../types'
 import { TransactionForm } from './TransactionForm'
@@ -31,7 +31,9 @@ export const SendScreen = ({
   walletDeployed,
   navigation,
 }: HomeStackScreenProps<homeStackRouteNames.Send> & ScreenWithWallet) => {
+  const dispatch = useAppDispatch()
   const isFocused = useIsFocused()
+  const fullscreen = useAppSelector(selectFullscreen)
   const { t } = useTranslation()
   const { loading, isDeployed } = walletDeployed
   const assets = Object.values(useAppSelector(selectBalances))
@@ -115,8 +117,10 @@ export const SendScreen = ({
   // setFullscreen to avoid scanning error
   // when you try to scan code again from main bottom nav
   useEffect(() => {
-    setFullscreen(isFocused)
-  }, [isFocused])
+    setTimeout(() => {
+      dispatch(setFullscreen(isFocused))
+    }, 100)
+  }, [dispatch, isFocused])
 
   // Status to let the user know about his current process
   let status
