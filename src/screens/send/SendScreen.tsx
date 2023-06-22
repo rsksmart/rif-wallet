@@ -33,7 +33,6 @@ export const SendScreen = ({
 }: HomeStackScreenProps<homeStackRouteNames.Send> & ScreenWithWallet) => {
   const dispatch = useAppDispatch()
   const isFocused = useIsFocused()
-  const fullscreen = useAppSelector(selectFullscreen)
   const { t } = useTranslation()
   const { loading, isDeployed } = walletDeployed
   const assets = Object.values(useAppSelector(selectBalances))

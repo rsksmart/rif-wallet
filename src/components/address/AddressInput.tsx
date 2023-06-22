@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { TextStyle } from 'react-native'
 import Clipboard from '@react-native-community/clipboard'
 import { decodeString } from '@rsksmart/rif-wallet-eip681'
@@ -170,6 +170,13 @@ export const AddressInput = ({
     },
     [t],
   )
+
+  useEffect(() => {
+    // only needs to run once
+    // when initial value is set in TransactionForm
+    handleChangeText(value.address)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [handleChangeText])
 
   const resetAddressValue = useCallback(() => {
     unselectDomain()
