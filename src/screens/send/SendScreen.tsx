@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Alert, Keyboard, KeyboardAvoidingView, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
+import { useIsFocused } from '@react-navigation/native'
 
 import {
   homeStackRouteNames,
@@ -17,6 +18,7 @@ import {
 import { sharedStyles } from 'shared/constants'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
 import { FullScreenSpinner } from 'components/fullScreenSpinner'
+import { setFullscreen } from 'src/redux/slices/settingsSlice'
 
 import { ScreenWithWallet } from '../types'
 import { TransactionForm } from './TransactionForm'
@@ -29,6 +31,7 @@ export const SendScreen = ({
   walletDeployed,
   navigation,
 }: HomeStackScreenProps<homeStackRouteNames.Send> & ScreenWithWallet) => {
+  const isFocused = useIsFocused()
   const { t } = useTranslation()
   const { loading, isDeployed } = walletDeployed
   const assets = Object.values(useAppSelector(selectBalances))
@@ -108,6 +111,12 @@ export const SendScreen = ({
       headerShown: !(currentTransaction?.status === 'USER_CONFIRM'),
     })
   }, [currentTransaction?.status, navigation])
+
+  // setFullscreen to avoid scanning error
+  // when you try to scan code again from main bottom nav
+  useEffect(() => {
+    setFullscreen(isFocused)
+  }, [isFocused])
 
   // Status to let the user know about his current process
   let status
