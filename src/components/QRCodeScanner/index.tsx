@@ -35,7 +35,7 @@ export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
   const { t } = useTranslation()
   const devices = useCameraDevices()
   const device = devices.back
-  const [barcode, setBarcode] = useState<Barcode>()
+  const [barcode, setBarcode] = useState<Barcode | null>(null)
   const dispatch = useAppDispatch()
   const isFocused = useIsFocused()
 
@@ -74,7 +74,7 @@ export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
   useEffect(() => {
     if (barcode && barcode.rawValue) {
       onCodeRead(barcode.rawValue)
-      setBarcode(undefined)
+      setBarcode(null)
     }
   }, [barcode, onCodeRead])
 

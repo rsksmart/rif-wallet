@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Alert, Keyboard, KeyboardAvoidingView, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
+import { useIsFocused } from '@react-navigation/native'
 
 import {
   homeStackRouteNames,
@@ -9,7 +10,8 @@ import {
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { settingsStackRouteNames } from 'navigation/settingsNavigator/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
-import { useAppSelector } from 'store/storeUtils'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { selectFullscreen, setFullscreen } from 'store/slices/settingsSlice'
 import {
   selectBalances,
   selectTotalUsdValue,
@@ -29,6 +31,9 @@ export const SendScreen = ({
   walletDeployed,
   navigation,
 }: HomeStackScreenProps<homeStackRouteNames.Send> & ScreenWithWallet) => {
+  const dispatch = useAppDispatch()
+  const isFocused = useIsFocused()
+  const fullscreen = useAppSelector(selectFullscreen)
   const { t } = useTranslation()
   const { loading, isDeployed } = walletDeployed
   const assets = Object.values(useAppSelector(selectBalances))
@@ -108,6 +113,14 @@ export const SendScreen = ({
       headerShown: !(currentTransaction?.status === 'USER_CONFIRM'),
     })
   }, [currentTransaction?.status, navigation])
+
+  // setFullscreen to avoid scanning error
+  // when you try to scan code again from main bottom nav
+  useEffect(() => {
+    setTimeout(() => {
+      dispatch(setFullscreen(isFocused))
+    }, 100)
+  }, [dispatch, isFocused])
 
   // Status to let the user know about his current process
   let status

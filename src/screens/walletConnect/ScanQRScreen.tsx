@@ -41,8 +41,8 @@ export const ScanQRScreen = ({
       navigation.navigate(rootTabsRouteNames.Home, {
         screen: homeStackRouteNames.Send,
         params: {
-          backAction: navigation.goBack,
           contact: { address: decodedString.address },
+          contractAddress: decodedString.network,
         },
       })
     } else if (isBitcoinAddressValid(data)) {
@@ -54,8 +54,7 @@ export const ScanQRScreen = ({
       navigation.navigate(rootTabsRouteNames.Home, {
         screen: homeStackRouteNames.Send,
         params: {
-          backAction: navigation.goBack,
-          to: data,
+          contact: { address: data },
           contractAddress: defaultToken,
         },
       })
