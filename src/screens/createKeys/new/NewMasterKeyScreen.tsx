@@ -66,7 +66,6 @@ export const NewMasterKeyScreen = ({ navigation }: Props) => {
         <AppButton
           title={t('new_master_key_button_title')}
           disabled={!isMnemonicVisible}
-          // style={styles.button}
           color={sharedColors.white}
           textColor={sharedColors.black}
           textType={'h4'}
