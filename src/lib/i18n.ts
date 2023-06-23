@@ -124,6 +124,7 @@ const resources = {
         'We strongly recommend you to write the phrase also on a piece of paper.',
       new_master_key_title: 'Save your phrase',
       new_master_key_button_title: 'Phrase secured, Continue',
+      new_master_key_secure_later_button: 'Secure later',
       change_asset: 'Change asset',
       loading_qr: 'Loading QR',
       loading_address: 'Loading Address',

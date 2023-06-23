@@ -40,7 +40,9 @@ export const CreateKeysScreen = ({
       <View style={[styles.buttonContainer]}>
         <AppButton
           onPress={() =>
-            navigation.navigate(createKeysRouteNames.SecureYourWallet)
+            navigation.navigate(createKeysRouteNames.SecurityInformation, {
+              moveTo: createKeysRouteNames.NewMasterKey,
+            })
           }
           accessibilityLabel={'newWallet'}
           title={t('initial_screen_button_create')}
