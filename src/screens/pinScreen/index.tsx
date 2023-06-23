@@ -9,6 +9,7 @@ import {
   rootTabsRouteNames,
   RootTabsScreenProps,
 } from 'navigation/rootNavigator/types'
+import { screenOptionsWithHeader } from 'navigation/index'
 import { Typography } from 'components/index'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import {
@@ -28,7 +29,6 @@ import {
   CreateKeysScreenProps,
 } from 'navigation/createKeysNavigator'
 import { useKeyboardIsVisible } from 'core/hooks/useKeyboardIsVisible'
-import { screenOptionsWithHeader } from 'src/navigation'
 
 type PIN = Array<string | null>
 const defaultPin = [null, null, null, null]
@@ -296,13 +296,23 @@ export const PinScreen = ({ navigation, route }: Props) => {
     }
   }, [dispatch, isFocused])
 
+  const resetState = useCallback(() => {
+    setTitle(initialPinTitle)
+    setSteps(initialSteps)
+    setConfirmPin(null)
+    setIsNewPinSet(false)
+  }, [initialPinTitle, initialSteps])
+
   useEffect(() => {
     let goBack: () => void = navigation.goBack
+    let shouldShowBackButton = true
 
-    if (backScreen) {
-      goBack = function () {
-        navigation.navigate(backScreen)
-      }
+    if (isNewPinSet || confirmPIN) {
+      goBack = resetState
+    } else if (backScreen) {
+      goBack = () => navigation.navigate(backScreen)
+    } else {
+      shouldShowBackButton = false
     }
 
     navigation.setOptions(
@@ -311,11 +321,20 @@ export const PinScreen = ({ navigation, route }: Props) => {
         headerTitle,
         undefined,
         steps ?? undefined,
-        false,
+        !shouldShowBackButton,
         goBack,
       ),
     )
-  }, [navigation, insets, steps, backScreen, headerTitle])
+  }, [
+    navigation,
+    insets,
+    steps,
+    backScreen,
+    headerTitle,
+    isNewPinSet,
+    confirmPIN,
+    resetState,
+  ])
 
   return (
     <View style={sharedStyles.screen}>
