@@ -25,7 +25,7 @@ import { OnSetTransactionStatusChange, TransactionInformation } from './types'
 // Update transaction based on status
 // Pending will add a pendingTransaction
 // When it's done waiting, it'll modifyTransaction to update it with the receipt
-const handleReduxTransactionStatusChange =
+export const handleReduxTransactionStatusChange =
   (dispatch: AppDispatch) =>
   (
     transactionStatusChange: Parameters<OnSetTransactionStatusChange>[0] | null,
