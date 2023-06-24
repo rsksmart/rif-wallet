@@ -21,6 +21,7 @@ export const requestUsername = createAsyncThunk(
       thunkAPI.dispatch(setDuration(duration))
       let indexStatus = rnsProcessor.getStatus(alias)
       if (!indexStatus?.commitmentRequested) {
+        thunkAPI.dispatch(setStatus(ProfileStatus.WAITING_FOR_USER_COMMIT))
         await rnsProcessor.process(alias, duration)
         thunkAPI.dispatch(setStatus(ProfileStatus.REQUESTING))
       }
@@ -42,8 +43,7 @@ export const purchaseUsername = createAsyncThunk(
     thunkAPI,
   ) => {
     try {
-      const response = await rnsProcessor.register(domain)
-      return response
+      return await rnsProcessor.register(domain)
     } catch (err) {
       return thunkAPI.rejectWithValue(err)
     }
