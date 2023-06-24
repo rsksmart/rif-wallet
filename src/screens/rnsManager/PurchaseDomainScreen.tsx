@@ -103,10 +103,18 @@ export const PurchaseDomainScreen = ({
       }
     } catch (e) {
       if (typeof e === 'string' || e instanceof Error) {
-        setError(e.toString())
+        const message = e.toString()
+        if (
+          message.includes('balance too low') ||
+          message.includes('gasLimit exceeded')
+        ) {
+          setError(t('search_domain_error_funds_low'))
+        } else {
+          setError(e.toString())
+        }
       }
     }
-  }, [alias, dispatch, rnsProcessor, navigation])
+  }, [alias, dispatch, rnsProcessor, navigation, t])
 
   const onCancelDomainTap = useCallback(async () => {
     const domain = alias.split('.')[0]

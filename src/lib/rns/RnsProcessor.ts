@@ -134,25 +134,21 @@ export class RnsProcessor {
   }
   public register = async (domain: string) => {
     try {
-      const canReveal = await this.rskRegistrar.canReveal(
-        this.index[domain].hash,
-      )
+      const { hash, duration } = this.index[domain]
+      const canReveal = await this.rskRegistrar.canReveal(hash)
       if (await canReveal()) {
-        const duration = 1
         const price = await this.rskRegistrar.price(
           domain,
           BigNumber.from(duration),
         )
-
         const durationToRegister = BigNumber.from(duration)
-        const priceToRegister = BigNumber.from(price)
 
         const tx = await this.rskRegistrar.register(
           domain,
           this.wallet.smartWallet.smartWalletAddress,
           this.index[domain].secret,
           durationToRegister,
-          priceToRegister,
+          price,
         )
         this.onSetTransactionStatusChange?.({
           ...tx,
