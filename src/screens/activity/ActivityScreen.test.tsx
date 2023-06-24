@@ -16,7 +16,7 @@ import {
   enhancedTxTestCase,
 } from 'testLib/mocks/rifTransactionsMock'
 
-import { ActivityScreen } from 'src/screens/activity/ActivityScreen'
+import { ActivityScreen } from 'screens/activity/ActivityScreen'
 import { getAddressDisplayText } from 'components/index'
 import {
   rootTabsRouteNames,
