@@ -153,7 +153,7 @@ export const ReviewTransactionContainer = ({
           usdValue: convertToUSD(totalTokenValue),
         },
       },
-      contact: contacts[to.toLowerCase()] || { address: to || '' },
+      contact: contacts[to.toLowerCase()] || { address: to },
       buttons: [
         {
           title: t('transaction_summary_title_confirm_button_title'),

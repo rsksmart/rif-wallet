@@ -15,6 +15,7 @@ import { isMyAddress } from 'src/components/address/lib'
 import { selectActiveWallet } from 'src/redux/slices/settingsSlice'
 import { useAppSelector } from 'src/redux/storeUtils'
 import { ActivityRowPresentationObject } from 'store/slices/transactionsSlice'
+import { getContactsAsObject } from 'store/slices/contactsSlice'
 
 const getStatus = (status: string) => {
   switch (status) {
@@ -42,6 +43,7 @@ export const ActivityBasicRow = ({
 }: Props) => {
   const { t } = useTranslation()
   const { wallet } = useAppSelector(selectActiveWallet)
+  const contacts = useAppSelector(getContactsAsObject)
 
   const usdBalance = useMemo(
     () => roundBalance(activityDetails.price, 2),
@@ -61,32 +63,39 @@ export const ActivityBasicRow = ({
     [activityDetails.from, activityDetails.to, amIReceiver, t],
   )
 
-  const txSummary: TransactionSummaryScreenProps = useMemo(
-    () => ({
+  const txSummary: TransactionSummaryScreenProps = useMemo(() => {
+    const {
+      symbol,
+      value,
+      status,
+      fee,
+      total,
+      timeHumanFormatted,
+      from,
+      to = '',
+    } = activityDetails
+    return {
       transaction: {
         tokenValue: {
-          symbol: activityDetails.symbol,
+          symbol,
           symbolType: 'icon',
-          balance: activityDetails.value,
+          balance: value,
         },
         usdValue: {
           symbol: usdBalance ? '$' : '< $',
           symbolType: 'usd',
           balance: usdBalance ? usdBalance.toFixed(2) : '0.01',
         },
-        status: activityDetails.status,
-        fee: activityDetails.fee,
-        total: activityDetails.total,
-        time: activityDetails.timeHumanFormatted,
-        amIReceiver: activityDetails.amIReceiver,
-        from: activityDetails.from,
+        status,
+        fee,
+        total,
+        amIReceiver,
+        from,
+        time: timeHumanFormatted,
       },
-      contact: {
-        address: activityDetails.to,
-      },
-    }),
-    [activityDetails, usdBalance],
-  )
+      contact: contacts[to.toLowerCase()] || { address: to },
+    }
+  }, [activityDetails, amIReceiver, contacts, usdBalance])
 
   const amount = useMemo(() => {
     const value = +activityDetails.value
