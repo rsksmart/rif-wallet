@@ -11,7 +11,9 @@ export const BasicRowWithContact = ({
   addressToSearch,
   ...props
 }: BasicRowWithContact) => {
-  const contact = useSelector(getContactByAddress(addressToSearch))
+  const contact = useSelector(
+    getContactByAddress(addressToSearch.toLowerCase()),
+  )
 
   return (
     <BasicRow
