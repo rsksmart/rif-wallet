@@ -1,9 +1,10 @@
-import { validateMnemonic } from './index'
 import {
   VALID_SEED_PHRASE,
   INVALID_WORD_SEED_PHRASE,
   SEED_PHRASE_TOO_SHORT,
 } from './testCase'
+
+import { validateMnemonic } from './index'
 
 describe('Validate Mnemonic', () => {
   beforeEach(async () => {})
