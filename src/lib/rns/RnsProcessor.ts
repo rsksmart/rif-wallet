@@ -73,6 +73,7 @@ export class RnsProcessor {
           commitmentConfirmed: false,
           registeringRequested: false,
           registeringConfirmed: false,
+          commitmentRequestedTimestamp: Date.now(),
         })
 
         makeCommitmentTransaction.wait().then(commitmentTransaction => {
@@ -99,10 +100,33 @@ export class RnsProcessor {
     }
     return null
   }
+  /**
+   * Should only allow to ping rsk after 3 minutes have passed
+   * @param domain
+   */
+  isDomainAllowedToPingRskRegistrarCanReveal = (domain: string) => {
+    const timeWithThreeMinutesAdded = new Date(
+      this.index[domain].commitmentRequestedTimestamp,
+    )
+    timeWithThreeMinutesAdded.setMinutes(
+      timeWithThreeMinutesAdded.getMinutes() + 3,
+    )
 
-  public canReveal = async (domain: string) => {
+    return new Date() > timeWithThreeMinutesAdded
+  }
+
+  public canReveal = async (
+    domain: string,
+    isWaitingForCommitmentTransaction = true,
+  ) => {
     try {
-      if (this.index[domain]?.commitmentConfirmed) {
+      // Fail-safe to only ping rskRegistrar after 3 minutes have passed since the transaction was created
+      // This to avoid request load
+      if (
+        this.index[domain]?.commitmentConfirmed ||
+        (!isWaitingForCommitmentTransaction &&
+          this.isDomainAllowedToPingRskRegistrarCanReveal(domain))
+      ) {
         const canReveal = await this.rskRegistrar.canReveal(
           this.index[domain].hash,
         )
@@ -200,6 +224,7 @@ interface IDomainRegistrationProcess {
   commitmentConfirmed: boolean
   registeringRequested: boolean
   registeringConfirmed: boolean
+  commitmentRequestedTimestamp: number
 }
 export enum DomainRegistrationEnum {
   COMMITMENT_REQUESTED = 'COMMITMENT_REQUESTED',

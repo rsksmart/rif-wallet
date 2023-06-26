@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 import { shortAddress } from 'lib/utils'
+import { RnsProcessor } from 'lib/rns'
 
 import {
   BarButtonGroupContainer,
@@ -32,7 +33,12 @@ import {
 } from 'shared/constants'
 import { sharedStyles } from 'shared/styles'
 import { castStyle } from 'shared/utils'
-import { setProfile, setStatus } from 'store/slices/profileSlice'
+import {
+  commitment,
+  IntervalProcessOrigin,
+  setProfile,
+  setStatus,
+} from 'store/slices/profileSlice'
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { selectRequests } from 'store/slices/settingsSlice'
@@ -124,6 +130,22 @@ export const ProfileCreateScreen = ({
   }, [navigation])
 
   useEffect(() => {
+    if (
+      wallet &&
+      profile.alias &&
+      profile.status === ProfileStatus.REQUESTING
+    ) {
+      const rns = new RnsProcessor({ wallet })
+      commitment(
+        rns,
+        profile.alias.split('.rsk')[0],
+        IntervalProcessOrigin.PROFILE_CREATE_EFFECT,
+      )
+        .then(profileStatus => dispatch(setStatus(profileStatus)))
+        .catch(error => {
+          console.log(error)
+        })
+    }
     if (requests.length === 0) {
       if (profile.status === ProfileStatus.WAITING_FOR_USER_COMMIT) {
         // User got stuck in requesting the commit - set profileStatus back to 0
