@@ -10,7 +10,7 @@ import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { useAppSelector } from 'store/storeUtils'
 import { selectChainId } from 'store/slices/settingsSlice'
-import { AppTouchable } from 'src/components'
+import { AppTouchable } from 'components/appTouchable'
 
 import { QRCodeScanner } from '../QRCodeScanner'
 import { RegularText } from '../typography'
