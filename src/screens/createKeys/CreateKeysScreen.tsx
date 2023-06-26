@@ -13,6 +13,7 @@ import {
 } from 'navigation/createKeysNavigator'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
+import { WINDOW_HEIGHT } from 'src/ux/slides/Dimensions'
 
 export const CreateKeysScreen = ({
   navigation,
@@ -33,10 +34,15 @@ export const CreateKeysScreen = ({
           {t('initial_screen_title')}
         </Typography>
       </View>
+      <Typography type={'body3'} style={styles.footerText}>
+        {t('initial_screen_welcome_footer')}
+      </Typography>
       <View style={[styles.buttonContainer]}>
         <AppButton
           onPress={() =>
-            navigation.navigate(createKeysRouteNames.SecureYourWallet)
+            navigation.navigate(createKeysRouteNames.SecurityInformation, {
+              moveTo: createKeysRouteNames.NewMasterKey,
+            })
           }
           accessibilityLabel={'newWallet'}
           title={t('initial_screen_button_create')}
@@ -46,7 +52,9 @@ export const CreateKeysScreen = ({
 
         <AppButton
           onPress={() =>
-            navigation.navigate(createKeysRouteNames.ImportMasterKey)
+            navigation.navigate(createKeysRouteNames.SecurityInformation, {
+              moveTo: createKeysRouteNames.ImportMasterKey,
+            })
           }
           accessibilityLabel={'importWallet'}
           title={t('initial_screen_button_import')}
@@ -82,6 +90,13 @@ const styles = StyleSheet.create({
     bottom: 34,
     left: 30,
     right: 30,
+  }),
+  footerText: castStyle.text({
+    position: 'absolute',
+    width: 185,
+    lineHeight: 15.6,
+    bottom: WINDOW_HEIGHT * 0.2,
+    left: 24,
   }),
   importWalletButton: castStyle.view({
     marginTop: 8,

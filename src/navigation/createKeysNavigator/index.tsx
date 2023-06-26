@@ -7,8 +7,7 @@ import {
   NewMasterKeyScreen,
   ConfirmNewMasterKeyScreen,
   ImportMasterKeyScreen,
-  SecurityExplanationScreen,
-  SecureYourWalletScreen,
+  SecurityInformation,
 } from 'screens/createKeys'
 import { selectIsUnlocked } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
@@ -41,14 +40,9 @@ export const CreateKeysNavigation = () => {
         options={screenOptionsWithHeader(top, t('confirm_key_screen_title'))}
       />
       <Stack.Screen
-        name={createKeysRouteNames.SecureYourWallet}
-        component={SecureYourWalletScreen}
-        options={screensOptions}
-      />
-      <Stack.Screen
-        name={createKeysRouteNames.SecurityExplanation}
-        component={SecurityExplanationScreen}
-        options={screensOptions}
+        name={createKeysRouteNames.SecurityInformation}
+        component={SecurityInformation}
+        options={screenOptionsWithHeader(top, '')}
       />
       <Stack.Screen
         name={createKeysRouteNames.ConfirmNewMasterKey}
