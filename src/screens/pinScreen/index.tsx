@@ -1,5 +1,12 @@
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react'
-import { View, StyleSheet, TextInput, Platform, ColorValue } from 'react-native'
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  Platform,
+  ColorValue,
+  BackHandler,
+} from 'react-native'
 import { useTranslation } from 'react-i18next'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useIsFocused } from '@react-navigation/native'
@@ -10,7 +17,11 @@ import {
   RootTabsScreenProps,
 } from 'navigation/rootNavigator/types'
 import { screenOptionsWithHeader } from 'navigation/index'
-import { Typography } from 'components/index'
+import {
+  AppButton,
+  AppButtonBackgroundVarietyEnum,
+  Typography,
+} from 'components/index'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import {
   selectPin,
@@ -18,7 +29,7 @@ import {
   setPinState,
   unlockApp,
 } from 'store/slices/settingsSlice'
-import { sharedColors, sharedStyles } from 'shared/constants'
+import { noop, sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import {
   SettingsScreenProps,
@@ -112,7 +123,7 @@ type Props =
 export const PinScreen = ({ navigation, route }: Props) => {
   const insets = useSafeAreaInsets()
   const isFocused = useIsFocused()
-  const isVisible = useKeyboardIsVisible()
+  // const isVisible = useKeyboardIsVisible()
   const { t } = useTranslation()
   // screen params
   const isChangeRequested = route.params?.isChangeRequested
@@ -136,6 +147,20 @@ export const PinScreen = ({ navigation, route }: Props) => {
   const [hasError, setHasError] = useState(false)
 
   const [title, setTitle] = useState<string>(initialPinTitle)
+
+  const focusInput = useCallback(() => {
+    if (textInputRef.current) {
+      if (textInputRef.current.isFocused()) {
+        textInputRef.current.blur()
+      }
+      textInputRef.current.focus()
+    }
+  }, [])
+
+  // disable Android back button
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', () => true)
+  }, [])
 
   const resetPin = useCallback(() => {
     setTimeout(() => setPIN(defaultPin), 100)
@@ -276,11 +301,11 @@ export const PinScreen = ({ navigation, route }: Props) => {
 
   // workaround for android devices which do not open keyboard
   // on autoFocus
-  useEffect(() => {
-    if (!isVisible) {
-      textInputRef.current?.focus()
-    }
-  }, [isVisible])
+  // useEffect(() => {
+  //   if (!isVisible) {
+  //     focusInput()
+  //   }
+  // }, [isVisible, focusInput])
 
   const errorTimeout = useCallback(() => {
     setTimeout(() => {
@@ -386,6 +411,16 @@ export const PinScreen = ({ navigation, route }: Props) => {
               />
             </View>
           )}
+          <AppButton
+            style={[
+              sharedStyles.appButtonBottom,
+              { backgroundColor: sharedColors.black },
+            ]}
+            onPress={focusInput}
+            title={t('pin_settings_open_keyboard_btn')}
+            textColor={sharedColors.white}
+            backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
+          />
         </>
       )}
     </View>
