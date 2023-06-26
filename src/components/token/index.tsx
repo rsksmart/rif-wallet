@@ -14,6 +14,7 @@ import { castStyle } from 'shared/utils'
 
 import { EyeIcon } from '../icons/EyeIcon'
 import { DollarIcon } from '../icons/DollarIcon'
+import { useMemo } from 'react'
 
 export interface CurrencyValue {
   symbol: TokenSymbol | string
@@ -54,6 +55,19 @@ export const TokenBalance = ({
   const isRifToken =
     firstValue.symbol?.toUpperCase() === 'RIF' ||
     firstValue.symbol?.toUpperCase() === 'TRIF'
+
+  const toNameOrAddress = useMemo(() => {
+    if (!to) {
+      return null
+    }
+    if (to.name) {
+      return `${to.name}.rsk`
+    }
+    if (to.displayAddress && to.displayAddress.length < 20) {
+      return to.displayAddress
+    }
+    return shortAddress(to.address)
+  }, [to])
 
   return (
     <View style={[{ backgroundColor: color }, style, styles.container]}>
@@ -112,9 +126,7 @@ export const TokenBalance = ({
             <Typography type="body1">
               {amIReceiver ? t('From') : t('To')}{' '}
               <Typography type="body1" style={{ color: sharedColors.primary }}>
-                {to.displayAddress && to.displayAddress.length < 20
-                  ? to.displayAddress
-                  : shortAddress(to.address)}
+                {toNameOrAddress}
               </Typography>
             </Typography>
           </View>
