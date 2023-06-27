@@ -35,7 +35,7 @@ export interface BasicRowProps {
   label: string
   secondaryLabel: string
   avatar: {
-    name: string
+    name?: string
     imageSource?: ImageSourcePropType
     icon?: ReactElement
   }
