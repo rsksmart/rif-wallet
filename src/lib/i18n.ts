@@ -103,7 +103,9 @@ const resources = {
       info_box_close_button: 'close',
       initial_screen_title: 'Wallet',
       initial_screen_button_create: 'Create a wallet',
-      initial_screen_button_import: 'Import existing',
+      initial_screen_button_import: 'Import existing wallet',
+      initial_screen_welcome_footer:
+        'Welcome to RIF Wallet - a smart wallet with intuitive UX. Create your profile now.',
       header_import_wallet: 'Import wallet',
       header_enter_your_phrase: 'Enter your phrase',
       header_phrase_correct: 'Phrase is correct!',
@@ -122,6 +124,7 @@ const resources = {
         'We strongly recommend you to write the phrase also on a piece of paper.',
       new_master_key_title: 'Save your phrase',
       new_master_key_button_title: 'Phrase secured, Continue',
+      new_master_key_secure_later_button: 'Secure later',
       change_asset: 'Change asset',
       loading_qr: 'Loading QR',
       loading_address: 'Loading Address',
@@ -325,6 +328,18 @@ const resources = {
       bitcoin_validation_inputs_not_enough:
         'There are not enough transaction inputs to complete this payment.',
       send_screen_sending_transaction: 'Sending transaction...',
+      security_info_header: 'Security Information',
+      security_info_user_agreement: 'User agreement',
+      security_info_disclaimer:
+        '"IOV Labs cannot be held responsible for any loss or theft of your funds.',
+      security_info_disclaimer2:
+        'It is your sole responsibility to secure and back up your wallet credentials, including private keys or recovery phrases.',
+      security_info_disclaimer3:
+        'We cannot assist with recovering or reversing any unauthorized or mistaken transactions.',
+      security_info_disclaimer4:
+        'We strongly advise exercising caution, employing the best security practices,and safeguarding your assets diligently."',
+      security_i_agree: 'I agree with the conditions. ',
+      security_info_btn: 'Continue',
     },
   },
   es: {

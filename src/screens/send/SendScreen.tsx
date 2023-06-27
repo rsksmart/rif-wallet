@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import { Alert, Keyboard, KeyboardAvoidingView, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
+import { useIsFocused } from '@react-navigation/native'
 
 import {
   homeStackRouteNames,
@@ -9,13 +10,15 @@ import {
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { settingsStackRouteNames } from 'navigation/settingsNavigator/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
-import { useAppSelector } from 'store/storeUtils'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { selectFullscreen, setFullscreen } from 'store/slices/settingsSlice'
 import {
   selectBalances,
   selectTotalUsdValue,
 } from 'store/slices/balancesSlice/selectors'
 import { sharedStyles } from 'shared/constants'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
+import { selectChainId } from 'store/slices/settingsSlice'
 import { FullScreenSpinner } from 'components/fullScreenSpinner'
 
 import { ScreenWithWallet } from '../types'
@@ -29,24 +32,22 @@ export const SendScreen = ({
   walletDeployed,
   navigation,
 }: HomeStackScreenProps<homeStackRouteNames.Send> & ScreenWithWallet) => {
+  const dispatch = useAppDispatch()
+  const isFocused = useIsFocused()
   const { t } = useTranslation()
   const { loading, isDeployed } = walletDeployed
   const assets = Object.values(useAppSelector(selectBalances))
+  const chainId = useAppSelector(selectChainId)
 
   const totalUsdBalance = useAppSelector(selectTotalUsdValue)
   const prices = useAppSelector(selectUsdPrices)
   const { backScreen, contact } = route.params
   const contractAddress = route.params?.contractAddress || assets[0]
 
-  const [chainId, setChainId] = useState<number>(31)
   // We assume only one bitcoinNetwork instance exists
   const { currentTransaction, executePayment, error } = usePaymentExecutor(
     assets.find(asset => 'bips' in asset),
   )
-
-  useEffect(() => {
-    wallet.getChainId().then(setChainId)
-  }, [wallet])
 
   const onGoToHome = useCallback(
     () =>
@@ -108,6 +109,14 @@ export const SendScreen = ({
       headerShown: !(currentTransaction?.status === 'USER_CONFIRM'),
     })
   }, [currentTransaction?.status, navigation])
+
+  // setFullscreen to avoid scanning error
+  // when you try to scan code again from main bottom nav
+  useEffect(() => {
+    setTimeout(() => {
+      dispatch(setFullscreen(isFocused))
+    }, 100)
+  }, [dispatch, isFocused])
 
   // Status to let the user know about his current process
   let status

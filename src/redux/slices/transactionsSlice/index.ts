@@ -11,18 +11,6 @@ import {
 } from 'lib/utils'
 
 import {
-  defaultChainType,
-  getTokenAddress,
-  isDefaultChainTypeMainnet,
-} from 'core/config'
-import { TokenSymbol } from 'screens/home/TokenImage'
-import { TransactionStatus } from 'screens/transactionSummary/transactionSummaryUtils'
-import {
-  filterEnhancedTransactions,
-  sortEnhancedTransactions,
-} from 'src/subscriptions/utils'
-import { resetSocketState } from 'store/shared/actions/resetSocketState'
-import {
   ActivityMixedType,
   ActivityRowPresentationObject,
   ApiTransactionWithExtras,
@@ -30,13 +18,24 @@ import {
   ModifyTransaction,
   TransactionsState,
 } from 'store/slices/transactionsSlice/types'
+import { TransactionStatus } from 'screens/transactionSummary/transactionSummaryUtils'
+import { filterEnhancedTransactions } from 'src/subscriptions/utils'
+import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { UsdPricesState } from 'store/slices/usdPricesSlice'
+import { getTokenAddress } from 'core/config'
 import { AsyncThunkWithTypes } from 'store/store'
+import {
+  ChainTypeEnum,
+  chainTypesById,
+  ChainTypesByIdType,
+} from 'shared/constants/chainConstants'
+import { TokenSymbol } from 'screens/home/TokenImage'
 
 export const activityDeserializer: (
   activityTransaction: ActivityMixedType,
   prices: UsdPricesState,
-) => ActivityRowPresentationObject = (activityTransaction, prices) => {
+  chainId: ChainTypesByIdType,
+) => ActivityRowPresentationObject = (activityTransaction, prices, chainId) => {
   if ('isBitcoin' in activityTransaction) {
     const fee = activityTransaction.fees
     const totalCalculated = BigNumber.from(
@@ -72,15 +71,17 @@ export const activityDeserializer: (
           Number(balanceToDisplay(totalCalculated, 8)) * prices.BTC?.price,
       },
       amIReceiver: activityTransaction.amIReceiver,
+      timestamp: activityTransaction.blockTime,
     } as ActivityRowPresentationObject
   } else {
     const tx = activityTransaction.originTransaction
     const etx = activityTransaction.enhancedTransaction
 
     // RBTC
-    const rbtcSymbol = isDefaultChainTypeMainnet
-      ? TokenSymbol.RBTC
-      : TokenSymbol.TRBTC
+    const rbtcSymbol =
+      chainTypesById[chainId] === ChainTypeEnum.MAINNET
+        ? TokenSymbol.RBTC
+        : TokenSymbol.TRBTC
     const rbtcAddress = constants.AddressZero
     const feeRbtc = BigNumber.from(tx.gasPrice).mul(
       BigNumber.from(tx.receipt?.gasUsed || 1),
@@ -94,7 +95,7 @@ export const activityDeserializer: (
       tokenContract =
         etx?.symbol === rbtcSymbol
           ? rbtcAddress
-          : getTokenAddress(tokenSymbol, defaultChainType)
+          : getTokenAddress(tokenSymbol, chainTypesById[chainId])
     } catch {}
     const tokenQuote = prices[tokenContract.toLowerCase()]?.price || 0
     const tokenUsd = convertTokenToUSD(Number(tokenValue), tokenQuote).toFixed(
@@ -109,7 +110,7 @@ export const activityDeserializer: (
       feeContract =
         etx?.feeSymbol === rbtcSymbol
           ? rbtcAddress
-          : getTokenAddress(feeSymbol, defaultChainType)
+          : getTokenAddress(feeSymbol, chainTypesById[chainId])
     } catch {}
     const feeQuote = prices[feeContract.toLowerCase()]?.price || 0
     const feeUsd = convertTokenToUSD(Number(feeValue), feeQuote).toFixed(2)
@@ -130,6 +131,7 @@ export const activityDeserializer: (
         usdValue: feeUsd,
       },
       timeHumanFormatted: convertUnixTimeToFromNowFormat(tx.timestamp),
+      timestamp: tx.timestamp,
     } as ActivityRowPresentationObject
   }
 }
@@ -153,13 +155,11 @@ export function combineTransactions(
       sortTime: rifTransaction.originTransaction.timestamp,
     })),
     ...btcTransactions,
-  ].sort(({ sortTime: a }, { sortTime: b }) => {
-    return b - a
-  })
+  ]
 }
 
 export const deserializeTransactions = (transactions: IActivityTransaction[]) =>
-  transactions.sort(sortEnhancedTransactions).filter(filterEnhancedTransactions)
+  transactions.filter(filterEnhancedTransactions)
 
 const transformTransaction = (
   transaction: BitcoinTransactionType,
@@ -207,7 +207,7 @@ export const fetchBitcoinTransactions = createAsyncThunk<
     const transformedBtcTransactions = bitTransactions.map(transformTransaction)
 
     const deserializedTransactions = transformedBtcTransactions.map(tx =>
-      activityDeserializer(tx, usdPrices),
+      activityDeserializer(tx, usdPrices, settings.chainId),
     )
 
     thunkAPI.dispatch(addBitcoinTransactions(deserializedTransactions))
@@ -219,7 +219,7 @@ export const addPendingTransaction = createAsyncThunk<
   ApiTransactionWithExtras,
   AsyncThunkWithTypes
 >('transactions/addPendingTransaction', async (payload, thunkAPI) => {
-  const { usdPrices } = thunkAPI.getState()
+  const { usdPrices, settings } = thunkAPI.getState()
 
   const { symbol, finalAddress, enhancedAmount, value, ...restPayload } =
     payload
@@ -239,6 +239,7 @@ export const addPendingTransaction = createAsyncThunk<
   const deserializedTransaction = activityDeserializer(
     pendingTransaction,
     usdPrices,
+    settings.chainId,
   )
 
   thunkAPI.dispatch(addPendingTransactionState(deserializedTransaction))
@@ -268,6 +269,13 @@ export const modifyTransaction = createAsyncThunk<
   }
 })
 
+interface ObjectWithTimestamp {
+  timestamp: number
+}
+
+const sortObjectsByTimestamp = <T extends ObjectWithTimestamp>(a: T, b: T) =>
+  b.timestamp - a.timestamp
+
 const transactionsSlice = createSlice({
   name: 'transactions',
   initialState,
@@ -276,7 +284,7 @@ const transactionsSlice = createSlice({
       state,
       { payload }: PayloadAction<ActivityRowPresentationObject[]>,
     ) => {
-      state.transactions = payload
+      state.transactions = payload.sort(sortObjectsByTimestamp)
       return state
     },
     addBitcoinTransactions: (
@@ -295,6 +303,7 @@ const transactionsSlice = createSlice({
           state.transactions[transactionExistsIndex] = btcTx
         }
       })
+      state.transactions = state.transactions.sort(sortObjectsByTimestamp)
       return state
     },
     addNewTransaction: (
@@ -307,6 +316,7 @@ const transactionsSlice = createSlice({
       if (transactionIndex === -1) {
         state.transactions.push(payload)
       }
+      state.transactions = state.transactions.sort(sortObjectsByTimestamp)
     },
     addNewEvent: (state, { payload }: PayloadAction<IEvent>) => {
       state.events.push(payload)

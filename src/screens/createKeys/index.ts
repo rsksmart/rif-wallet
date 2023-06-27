@@ -1,5 +1,4 @@
 export * from './new/index'
 export * from './import/index'
 export * from './CreateKeysScreen'
-export * from './SecureYourWalletScreen'
-export * from './SecurityExplanationScreen'
+export * from './SecurityInformation'

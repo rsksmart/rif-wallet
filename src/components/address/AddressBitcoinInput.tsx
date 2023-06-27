@@ -5,16 +5,18 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import { isBitcoinAddressValid } from '@rsksmart/rif-wallet-bitcoin'
 import { useTranslation } from 'react-i18next'
 
-import { rnsResolver } from 'core/setup'
+import { getRnsResolver } from 'core/setup'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
+import { useAppSelector } from 'store/storeUtils'
+import { selectChainId } from 'store/slices/settingsSlice'
+import { AppTouchable } from 'components/appTouchable'
 
 import { QRCodeScanner } from '../QRCodeScanner'
 import { RegularText } from '../typography'
 import { isDomain } from './lib'
 import { sharedAddressStyles } from './sharedAddressStyles'
 import { Input } from '../input'
-import { AppTouchable } from '../appTouchable'
 import { AddressInputProps } from './AddressInput'
 
 enum TYPES {
@@ -43,6 +45,7 @@ export const AddressBitcoinInput = ({
   resetValue,
 }: AddressBitcoinInputProps) => {
   const { t } = useTranslation()
+  const chainId = useAppSelector(selectChainId)
   const [to, setTo] = useState<TO>({
     value: initialValue,
     type: TYPES.NORMAL,
@@ -89,7 +92,7 @@ export const AddressBitcoinInput = ({
       // If domain, fetch it
       setIsValidating(true)
       if (isDomain(text)) {
-        rnsResolver
+        getRnsResolver(chainId)
           .addr(text)
           .then((address: string) => {
             setTo({
@@ -111,7 +114,7 @@ export const AddressBitcoinInput = ({
         setIsValidating(false)
       }
     },
-    [onBeforeChangeText],
+    [onBeforeChangeText, chainId],
   )
 
   const onQRRead = useCallback(

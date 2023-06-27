@@ -1,8 +1,8 @@
 import {
+  BIPWithRequest,
   BitcoinNetwork,
   BitcoinNetworkWithBIPRequest,
   createAndInitializeBipWithRequest,
-  BIPWithRequest,
   createBipFactoryType,
 } from '@rsksmart/rif-wallet-bitcoin'
 import { RifWalletServicesFetcher } from '@rsksmart/rif-wallet-services'
@@ -10,24 +10,29 @@ import Keychain from 'react-native-keychain'
 
 import {
   BitcoinNetworkStore,
+  StoredBitcoinNetworks,
   StoredBitcoinNetworkValue,
 } from 'storage/BitcoinNetworkStore'
 import { bitcoinMainnet, bitcoinTestnet } from 'shared/costants'
 import { onRequest } from 'store/slices/settingsSlice'
-import { isDefaultChainTypeMainnet } from 'core/config'
 import { AppDispatch } from 'store/index'
-import { StoredBitcoinNetworks } from 'storage/BitcoinNetworkStore'
 import { Bitcoin } from 'store/slices/settingsSlice/types'
+import {
+  ChainTypeEnum,
+  chainTypesById,
+  ChainTypesByIdType,
+} from 'shared/constants/chainConstants'
 
 const NETWORKS_INITIAL_STATE: Bitcoin = {
   networksArr: [],
   networksMap: {},
 }
 
-const onNoNetworksPresent = () => {
-  const bitcoinNetwork = isDefaultChainTypeMainnet
-    ? bitcoinMainnet
-    : bitcoinTestnet
+const onNoNetworksPresent = (chainId: ChainTypesByIdType) => {
+  const bitcoinNetwork =
+    chainTypesById[chainId] === ChainTypeEnum.MAINNET
+      ? bitcoinMainnet
+      : bitcoinTestnet
 
   BitcoinNetworkStore.addNewNetwork(bitcoinNetwork.name, bitcoinNetwork.bips)
 
@@ -39,7 +44,9 @@ const onNoNetworksPresent = () => {
  * This hook will also instantiate the bitcoin networks with a BIPWithRequest class that will handle the payments for the onRequest method
  * that is required in the wallet
  * @param mnemonic
+ * @param dispatch
  * @param fetcher
+ * @param chainId
  */
 
 export const initializeBitcoin = (
@@ -49,6 +56,7 @@ export const initializeBitcoin = (
     Keychain.Options,
     ReturnType<typeof Keychain.setInternetCredentials>
   >,
+  chainId: ChainTypesByIdType,
 ) => {
   // Return Object which contains both array and map
   const networksObj = NETWORKS_INITIAL_STATE
@@ -56,9 +64,9 @@ export const initializeBitcoin = (
   let networksMap: StoredBitcoinNetworks =
     BitcoinNetworkStore.getStoredNetworks()
 
-  // if no networks push TESTNET
+  // if no networks push new network depending on chainId
   if (Object.values(networksMap).length < 1) {
-    networksMap = onNoNetworksPresent()
+    networksMap = onNoNetworksPresent(chainId)
   }
 
   const transformNetwork = (

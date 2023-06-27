@@ -8,13 +8,21 @@ import {
   hasRnsProcessor,
   saveRnsProcessor,
 } from 'storage/RnsProcessorStore'
+import { OnSetTransactionStatusChange } from 'screens/send/types'
 
 export class RnsProcessor {
   private rskRegistrar
   private wallet
   private index: IDomainRegistrationProcessIndex = {}
+  onSetTransactionStatusChange?: OnSetTransactionStatusChange
 
-  constructor({ wallet }: { wallet: RIFWallet }) {
+  constructor({
+    wallet,
+    onSetTransactionStatusChange,
+  }: {
+    wallet: RIFWallet
+    onSetTransactionStatusChange?: OnSetTransactionStatusChange
+  }) {
     this.wallet = wallet
     this.rskRegistrar = new RSKRegistrar(
       addresses.rskOwnerAddress,
@@ -25,6 +33,7 @@ export class RnsProcessor {
     if (hasRnsProcessor()) {
       this.index = getRnsProcessor()
     }
+    this.onSetTransactionStatusChange = onSetTransactionStatusChange
   }
   private setIndex = (
     domain: string,
@@ -48,6 +57,12 @@ export class RnsProcessor {
             this.wallet.smartWallet.smartWalletAddress,
           )
 
+        this.onSetTransactionStatusChange?.({
+          ...makeCommitmentTransaction,
+          txStatus: 'PENDING',
+          value: BigNumber.from('0'),
+          finalAddress: addresses.fifsAddrRegistrarAddress,
+        })
         this.setIndex(domain, {
           domain,
           secret,
@@ -60,7 +75,11 @@ export class RnsProcessor {
           registeringConfirmed: false,
         })
 
-        makeCommitmentTransaction.wait().then(() => {
+        makeCommitmentTransaction.wait().then(commitmentTransaction => {
+          this.onSetTransactionStatusChange?.({
+            ...commitmentTransaction,
+            txStatus: 'CONFIRMED',
+          })
           this.setIndex(domain, {
             ...this.index[domain],
             commitmentConfirmed: true,
@@ -115,33 +134,38 @@ export class RnsProcessor {
   }
   public register = async (domain: string) => {
     try {
-      const canReveal = await this.rskRegistrar.canReveal(
-        this.index[domain].hash,
-      )
+      const { hash, duration } = this.index[domain]
+      const canReveal = await this.rskRegistrar.canReveal(hash)
       if (await canReveal()) {
-        const duration = 1
         const price = await this.rskRegistrar.price(
           domain,
           BigNumber.from(duration),
         )
-
         const durationToRegister = BigNumber.from(duration)
-        const priceToRegister = BigNumber.from(price)
 
         const tx = await this.rskRegistrar.register(
           domain,
           this.wallet.smartWallet.smartWalletAddress,
           this.index[domain].secret,
           durationToRegister,
-          priceToRegister,
+          price,
         )
+        this.onSetTransactionStatusChange?.({
+          ...tx,
+          txStatus: 'PENDING',
+          finalAddress: addresses.fifsAddrRegistrarAddress,
+        })
         this.setIndex(domain, {
           ...this.index[domain],
           registeringRequested: true,
           registrationHash: tx.hash,
         })
 
-        tx.wait().then(() => {
+        tx.wait().then(txReceipt => {
+          this.onSetTransactionStatusChange?.({
+            ...txReceipt,
+            txStatus: 'CONFIRMED',
+          })
           this.setIndex(domain, {
             ...this.index[domain],
             registeringConfirmed: true,

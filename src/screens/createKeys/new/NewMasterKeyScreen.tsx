@@ -1,11 +1,16 @@
 import { CompositeScreenProps } from '@react-navigation/native'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 
 import { KeyManagementSystem } from 'lib/core'
 
-import { AppButton, Typography, MnemonicComponent } from 'components/index'
+import {
+  AppButton,
+  Typography,
+  MnemonicComponent,
+  AppButtonBackgroundVarietyEnum,
+} from 'components/index'
 import { StepperComponent } from 'components/profile'
 import {
   createKeysRouteNames,
@@ -17,6 +22,9 @@ import {
 } from 'navigation/rootNavigator'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
+import { useAppDispatch } from 'store/storeUtils'
+import { createWallet } from 'store/slices/settingsSlice'
+import { saveKeyVerificationReminder } from 'storage/MainStorage'
 
 type Props = CompositeScreenProps<
   CreateKeysScreenProps<createKeysRouteNames.NewMasterKey>,
@@ -24,10 +32,20 @@ type Props = CompositeScreenProps<
 >
 
 export const NewMasterKeyScreen = ({ navigation }: Props) => {
+  const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const mnemonic = useMemo(() => KeyManagementSystem.create().mnemonic, [])
   const mnemonicArray = mnemonic ? mnemonic.split(' ') : []
   const [isMnemonicVisible, setIsMnemonicVisible] = useState(false)
+
+  const onSecureLater = useCallback(async () => {
+    saveKeyVerificationReminder(true)
+    dispatch(
+      createWallet({
+        mnemonic: KeyManagementSystem.create().mnemonic,
+      }),
+    )
+  }, [dispatch])
 
   return (
     <View style={styles.screen}>
@@ -44,19 +62,29 @@ export const NewMasterKeyScreen = ({ navigation }: Props) => {
         onToggleMnemonic={setIsMnemonicVisible}
         words={mnemonicArray}
       />
-      <AppButton
-        title={t('new_master_key_button_title')}
-        disabled={!isMnemonicVisible}
-        style={styles.button}
-        color={sharedColors.white}
-        textColor={sharedColors.black}
-        textType={'h4'}
-        onPress={() =>
-          navigation.navigate(createKeysRouteNames.ConfirmNewMasterKey, {
-            mnemonic,
-          })
-        }
-      />
+      <View style={styles.button}>
+        <AppButton
+          title={t('new_master_key_button_title')}
+          disabled={!isMnemonicVisible}
+          color={sharedColors.white}
+          textColor={sharedColors.black}
+          textType={'h4'}
+          onPress={() =>
+            navigation.navigate(createKeysRouteNames.ConfirmNewMasterKey, {
+              mnemonic,
+            })
+          }
+        />
+        <AppButton
+          style={styles.secureLaterBtn}
+          title={t('new_master_key_secure_later_button')}
+          color={sharedColors.white}
+          textColor={sharedColors.white}
+          textType={'h4'}
+          backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
+          onPress={onSecureLater}
+        />
+      </View>
     </View>
   )
 }
@@ -79,4 +107,5 @@ const styles = StyleSheet.create({
     left: 24,
     right: 24,
   }),
+  secureLaterBtn: castStyle.view({ marginTop: 8 }),
 })

@@ -1,17 +1,28 @@
 import EventEmitter from 'eventemitter3'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
-import { RifWalletServicesFetcher } from '@rsksmart/rif-wallet-services'
+import {
+  RifWalletServicesFetcher,
+  RifWalletServicesSocket,
+} from '@rsksmart/rif-wallet-services'
 import { Options, setInternetCredentials } from 'react-native-keychain'
 
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { AppDispatch } from 'store/index'
-import { rifWalletServicesSocket, abiEnhancer, defaultTokens } from 'core/setup'
+import { abiEnhancer, getDefaultTokens } from 'core/setup'
 import { addOrUpdateBalances } from 'store/slices/balancesSlice'
 import { UsdPricesState } from 'store/slices/usdPricesSlice'
+import { getWalletSetting } from 'core/config'
+import { SETTINGS } from 'core/types'
+import { MMKVStorage } from 'storage/MMKVStorage'
+import { enhanceTransactionInput } from 'screens/activity/ActivityScreen'
+import { filterEnhancedTransactions } from 'src/subscriptions/utils'
+import {
+  chainTypesById,
+  ChainTypesByIdType,
+} from 'shared/constants/chainConstants'
 
-import { Action, InitAction } from './types'
 import { onSocketChangeEmitted } from './onSocketChangeEmitted'
-import { addNewTransactions } from 'src/redux/slices/transactionsSlice'
+import { Action, InitAction } from './types'
 
 export const socketsEvents = new EventEmitter()
 
@@ -29,6 +40,7 @@ interface RifSockets {
     Options,
     ReturnType<typeof setInternetCredentials>
   >
+  chainId: ChainTypesByIdType
 }
 
 const onSocketInit = (
@@ -44,13 +56,34 @@ export const rifSockets = ({
   dispatch,
   setGlobalError,
   usdPrices,
+  chainId,
 }: RifSockets) => {
   const onChange = onSocketChangeEmitted({
     dispatch,
     abiEnhancer,
     wallet,
     usdPrices,
+    chainId,
   })
+  const rifWalletServicesSocket = new RifWalletServicesSocket<
+    Options,
+    ReturnType<typeof setInternetCredentials>
+  >(
+    getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL, chainTypesById[chainId]),
+    abiEnhancer,
+    {
+      cache: new MMKVStorage('temp'),
+      encryptionKeyMessageToSign: getWalletSetting(
+        SETTINGS.RIF_WALLET_KEY,
+        chainTypesById[chainId],
+      ),
+      onEnhanceTransaction: enhanceTransactionInput,
+      onFilterOutRepeatedTransactions: filterEnhancedTransactions,
+      onBeforeInit: (encryptionKey, currentInstance) => {
+        currentInstance.cache = new MMKVStorage('txs', encryptionKey)
+      },
+    },
+  )
 
   const connectSocket = () => {
     if (rifWalletServicesSocket.isConnected()) {
@@ -58,7 +91,7 @@ export const rifSockets = ({
       dispatch(resetSocketState())
     }
 
-    dispatch(addOrUpdateBalances(defaultTokens))
+    dispatch(addOrUpdateBalances(getDefaultTokens(chainId)))
 
     rifWalletServicesSocket.removeAllListeners()
 

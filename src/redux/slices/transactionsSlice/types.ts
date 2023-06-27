@@ -50,6 +50,7 @@ export interface ActivityRowPresentationObject {
   timeHumanFormatted: string
   amIReceiver?: boolean
   from?: string
+  timestamp: number
 }
 
 export type ActivityRowPresentationType = ActivityRowPresentationObject & {

@@ -1,8 +1,8 @@
 import { NavigatorScreenParams } from '@react-navigation/native'
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs'
 
-import { ActivityMixedType } from 'screens/activity/types'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
+import { ActivityMixedType } from 'store/slices/transactionsSlice'
 
 import { ContactStackParamsList } from '../contactsNavigator'
 import { CreateKeysStackParamList } from '../createKeysNavigator'

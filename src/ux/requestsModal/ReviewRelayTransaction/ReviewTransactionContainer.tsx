@@ -11,19 +11,20 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { balanceToDisplay, convertTokenToUSD } from 'lib/utils'
 
 import { AppButtonBackgroundVarietyEnum } from 'components/index'
-import { defaultChainType, getTokenAddress } from 'core/config'
+import { getTokenAddress } from 'core/config'
+import { TokenSymbol } from 'screens/home/TokenImage'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 import { TransactionSummaryComponent } from 'screens/transactionSummary/TransactionSummaryComponent'
 import { sharedColors } from 'shared/constants'
 import { errorHandler } from 'shared/utils'
 import { getContactsAsObject } from 'store/slices/contactsSlice'
-import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { selectActiveWallet, selectChainId } from 'store/slices/settingsSlice'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppSelector } from 'store/storeUtils'
-import { TokenSymbol } from 'screens/home/TokenImage'
 
 import useEnhancedWithGas from '../useEnhancedWithGas'
+import { chainTypesById } from 'src/shared/constants/chainConstants'
 
 interface Props {
   request: SendTransactionRequest
@@ -45,6 +46,7 @@ export const ReviewTransactionContainer = ({
   const [txCostInRif, setTxCostInRif] = useState<BigNumber>()
   const { t } = useTranslation()
 
+  const chainId = useAppSelector(selectChainId)
   // this is for typescript, and should not happen as the transaction was created by the wallet instance.
   if (!wallet) {
     throw new Error('no wallet')
@@ -65,26 +67,11 @@ export const ReviewTransactionContainer = ({
     gasLimit,
   } = enhancedTransactionRequest
 
-  const rbtcSymbol = useMemo(
-    () =>
-      defaultChainType === ChainTypeEnum.MAINNET
-        ? TokenSymbol.RBTC
-        : TokenSymbol.TRBTC,
-    [],
-  )
+  const isMainnet = chainTypesById[chainId] === ChainTypeEnum.MAINNET
 
-  const feeSymbol = useMemo(
-    () =>
-      defaultChainType === ChainTypeEnum.MAINNET
-        ? TokenSymbol.RIF
-        : TokenSymbol.TRIF,
-    [],
-  )
-
-  const feeContract = useMemo(
-    () => getTokenAddress(feeSymbol, defaultChainType),
-    [feeSymbol],
-  )
+  const rbtcSymbol = isMainnet ? TokenSymbol.RBTC : TokenSymbol.TRBTC
+  const feeSymbol = isMainnet ? TokenSymbol.RIF : TokenSymbol.TRIF
+  const feeContract = getTokenAddress(feeSymbol, chainTypesById[chainId])
 
   const tokenContract = useMemo(() => {
     const rbtcAddress = constants.AddressZero
@@ -92,19 +79,13 @@ export const ReviewTransactionContainer = ({
       return rbtcAddress
     }
     if (symbol) {
-      return getTokenAddress(symbol, defaultChainType)
+      return getTokenAddress(symbol, chainTypesById[chainId])
     }
     return feeContract
-  }, [symbol, rbtcSymbol, feeContract])
+  }, [symbol, rbtcSymbol, feeContract, chainId])
 
-  const tokenQuote = useMemo(
-    () => tokenPrices[tokenContract].price,
-    [tokenPrices, tokenContract],
-  )
-  const feeQuote = useMemo(
-    () => tokenPrices[feeContract].price,
-    [tokenPrices, feeContract],
-  )
+  const tokenQuote = tokenPrices[tokenContract].price
+  const feeQuote = tokenPrices[feeContract].price
 
   useEffect(() => {
     wallet.rifRelaySdk

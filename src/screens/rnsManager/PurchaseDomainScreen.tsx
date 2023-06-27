@@ -36,6 +36,7 @@ import {
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { ScreenWithWallet } from 'screens/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
+import { handleDomainTransactionStatusChange } from 'screens/rnsManager/utils'
 
 import { rnsManagerStyles } from './rnsManagerStyles'
 
@@ -45,6 +46,7 @@ export enum TestID {
   CancelRegistrationButton = 'PurchaseDomainScreen.CancelRegistrationButton',
   PurchaseDomainButton = 'PurchaseDomainScreen.PurchaseDomainButton',
 }
+
 export const PurchaseDomainScreen = ({
   navigation,
   wallet,
@@ -56,7 +58,17 @@ export const PurchaseDomainScreen = ({
   const duration = profile.duration || 1
   const profileStatus = useAppSelector(selectProfileStatus)
   const [error, setError] = useState('')
-  const rnsProcessor = useMemo(() => new RnsProcessor({ wallet }), [wallet])
+  const rnsProcessor = useMemo(
+    () =>
+      new RnsProcessor({
+        wallet,
+        onSetTransactionStatusChange: handleDomainTransactionStatusChange(
+          dispatch,
+          wallet,
+        ),
+      }),
+    [dispatch, wallet],
+  )
 
   const methods = useForm()
   const { t } = useTranslation()
@@ -91,10 +103,18 @@ export const PurchaseDomainScreen = ({
       }
     } catch (e) {
       if (typeof e === 'string' || e instanceof Error) {
-        setError(e.toString())
+        const message = e.toString()
+        if (
+          message.includes('balance too low') ||
+          message.includes('gasLimit exceeded')
+        ) {
+          setError(t('search_domain_error_funds_low'))
+        } else {
+          setError(e.toString())
+        }
       }
     }
-  }, [alias, dispatch, rnsProcessor, navigation])
+  }, [alias, dispatch, rnsProcessor, navigation, t])
 
   const onCancelDomainTap = useCallback(async () => {
     const domain = alias.split('.')[0]
