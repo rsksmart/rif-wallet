@@ -10,13 +10,14 @@ import { useTranslation } from 'react-i18next'
 
 import { AppButton, Typography, AppSpinner } from 'components/index'
 import {
+  selectChainId,
   setIsDeploying,
   setSmartWalletDeployTx,
   setWalletIsDeployed,
 } from 'store/slices/settingsSlice'
-import { useAppDispatch } from 'store/storeUtils'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
-import { defaultChainType, getTokenAddress } from 'core/config'
+import { getTokenAddress } from 'core/config'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import {
@@ -26,6 +27,7 @@ import {
 import { sharedHeaderLeftOptions } from 'navigation/index'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { homeStackRouteNames } from 'navigation/homeNavigator/types'
+import { chainTypesById } from 'shared/constants/chainConstants'
 
 import { ScreenWithWallet } from '../types'
 
@@ -41,7 +43,7 @@ export const RelayDeployScreen = ({
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [deployError, setDeployError] = useState<string | null>(null)
-
+  const chainId = useAppSelector(selectChainId)
   const updateErrorState = useCallback((error: string | null) => {
     setDeployError(error)
   }, [])
@@ -51,8 +53,8 @@ export const RelayDeployScreen = ({
     dispatch(setIsDeploying({ address: wallet.address, isDeploying: true }))
     const freePayment = {
       tokenContract: getTokenAddress(
-        defaultChainType === ChainTypeEnum.MAINNET ? 'RIF' : 'tRIF',
-        defaultChainType,
+        chainTypesById[chainId] === ChainTypeEnum.MAINNET ? 'RIF' : 'tRIF',
+        chainTypesById[chainId],
       ),
       tokenAmount: BigNumber.from(0),
     }
@@ -89,7 +91,7 @@ export const RelayDeployScreen = ({
           setIsDeploying({ address: wallet.address, isDeploying: false }),
         )
       })
-  }, [dispatch, updateErrorState, wallet, t])
+  }, [dispatch, updateErrorState, wallet, t, chainId])
 
   useEffect(() => {
     if (backScreen) {

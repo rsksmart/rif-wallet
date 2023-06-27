@@ -30,6 +30,7 @@ import { castStyle } from 'shared/utils'
 import { IPrice } from 'src/subscriptions/types'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
 import { ContactWithAddressRequired } from 'src/shared/types'
+import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 
 import { PortfolioComponent } from '../home/PortfolioComponent'
 import { TokenImage, TokenSymbol } from '../home/TokenImage'
@@ -44,7 +45,7 @@ interface Props {
   isWalletDeployed: boolean
   tokenList: TokenBalanceObject[]
   tokenPrices: Record<string, IPrice>
-  chainId: number
+  chainId: ChainTypesByIdType
   totalUsdBalance: string
   initialValues: {
     asset?: TokenBalanceObject

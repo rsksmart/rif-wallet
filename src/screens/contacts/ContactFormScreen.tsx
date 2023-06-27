@@ -7,8 +7,6 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { StyleSheet } from 'react-native'
 
-import { getChainIdByType } from 'lib/utils'
-
 import {
   contactsStackRouteNames,
   ContactsStackScreenProps,
@@ -23,8 +21,7 @@ import { Input } from 'components/index'
 import { Contact } from 'shared/types'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { addContact, editContact } from 'store/slices/contactsSlice'
-import { selectActiveWallet } from 'store/slices/settingsSlice'
-import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
+import { selectChainId } from 'store/slices/settingsSlice'
 import { sharedColors, sharedStyles, testIDs } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 
@@ -106,8 +103,7 @@ export const ContactFormScreen = ({
     Boolean(errors.addressIsValid) ||
     Boolean(errors.name)
 
-  const { chainType = ChainTypeEnum.TESTNET } =
-    useAppSelector(selectActiveWallet)
+  const chainId = useAppSelector(selectChainId)
 
   const handleAddressChange = useCallback(
     (address: string, displayAddress: string, isValid: boolean) => {
@@ -164,7 +160,7 @@ export const ContactFormScreen = ({
             value={addressObj}
             resetValue={() => resetField('address')}
             onChangeAddress={handleAddressChange}
-            chainId={getChainIdByType(chainType)}
+            chainId={chainId}
           />
           <Input
             label={t('contact_form_name')}

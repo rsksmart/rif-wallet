@@ -8,7 +8,6 @@ import {
   RifWalletServicesFetcher,
 } from '@rsksmart/rif-wallet-services'
 
-import { getChainIdByType } from 'lib/utils'
 import { KeyManagementSystem } from 'lib/core'
 
 import {
@@ -22,13 +21,10 @@ import { deleteContacts as deleteContactsFromRedux } from 'store/slices/contacts
 import { deletePin, resetMainStorage } from 'storage/MainStorage'
 import { deleteKeys, getKeys } from 'storage/SecureStorage'
 import { sharedColors } from 'shared/constants'
-import {
-  createRIFWalletFactory,
-  networkType as defaultNetworkType,
-} from 'core/setup'
+import { createRIFWalletFactory } from 'core/setup'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { deleteProfile } from 'store/slices/profileSlice'
-import { navigationContainerRef } from 'src/core/Core'
+import { navigationContainerRef } from 'core/Core'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { createKeysRouteNames } from 'navigation/createKeysNavigator'
 import { AsyncThunkWithTypes } from 'store/store'
@@ -38,15 +34,15 @@ import {
   SocketsEvents,
   socketsEvents,
 } from 'src/subscriptions/rifSockets'
-import { authAxios, publicAxios, authClient } from 'core/setup'
-import { defaultChainId } from 'core/config'
+import { authAxios, createPublicAxios, authClient } from 'core/setup'
 import {
   deleteSignUp,
   getSignUP,
   hasSignUP,
   saveSignUp,
 } from 'storage/MainStorage'
-import { initializeBitcoin } from 'src/core/hooks/bitcoin/initializeBitcoin'
+import { initializeBitcoin } from 'core/hooks/bitcoin/initializeBitcoin'
+import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 
 import {
   AddNewWalletAction,
@@ -67,13 +63,15 @@ export const createWallet = createAsyncThunk<
   AsyncThunkWithTypes
 >('settings/createWallet', async ({ mnemonic, networkId }, thunkAPI) => {
   try {
-    const rifWalletFactory = createRIFWalletFactory(request =>
-      thunkAPI.dispatch(onRequest({ request })),
+    const { chainId } = thunkAPI.getState().settings
+    const rifWalletFactory = createRIFWalletFactory(
+      request => thunkAPI.dispatch(onRequest({ request })),
+      chainId,
     )
     const { rifWallet, rifWalletsDictionary, rifWalletsIsDeployedDictionary } =
       await createKMS(
         rifWalletFactory,
-        networkId ? networkId : getChainIdByType(defaultNetworkType),
+        networkId ? networkId : chainId,
       )(mnemonic)
 
     const supportedBiometry = await getSupportedBiometryType()
@@ -114,15 +112,13 @@ export const createWallet = createAsyncThunk<
     const currentWallet =
       rifWalletsDictionary[Object.keys(rifWalletsDictionary)[0]]
 
-    const chainId = await currentWallet.getChainId()
-
     thunkAPI.dispatch(setChainId(chainId))
 
     const rifWalletAuth = new RifWalletServicesAuth<
       Keychain.Options,
       ReturnType<typeof Keychain.setInternetCredentials>,
       ReturnType<typeof Keychain.resetInternetCredentials>
-    >(publicAxios, currentWallet, {
+    >(createPublicAxios(chainId), currentWallet, {
       authClient,
       onGetSignUp: getSignUP,
       onHasSignUp: hasSignUP,
@@ -138,7 +134,7 @@ export const createWallet = createAsyncThunk<
       Keychain.Options,
       ReturnType<typeof Keychain.setInternetCredentials>
     >(authAxios, accessToken, refreshToken, {
-      defaultChainId,
+      defaultChainId: chainId.toString(),
       onSetInternetCredentials: Keychain.setInternetCredentials,
       resultsLimit: 10,
     })
@@ -152,6 +148,7 @@ export const createWallet = createAsyncThunk<
       dispatch: thunkAPI.dispatch,
       setGlobalError: thunkAPI.rejectWithValue,
       usdPrices,
+      chainId,
     })
 
     socketsEvents.emit(SocketsEvents.CONNECT)
@@ -161,6 +158,7 @@ export const createWallet = createAsyncThunk<
       mnemonic,
       thunkAPI.dispatch,
       fetcherInstance,
+      chainId,
     )
 
     // set bitcoin in redux
@@ -180,7 +178,7 @@ export const unlockApp = createAsyncThunk<
   try {
     const supportedBiometry = await getSupportedBiometryType()
     const serializedKeys = await getKeys()
-
+    const { chainId } = thunkAPI.getState().settings
     if (!serializedKeys) {
       return thunkAPI.rejectWithValue('No Existing Keys')
     }
@@ -203,8 +201,9 @@ export const unlockApp = createAsyncThunk<
 
     // set wallets in the store
     const existingWallets = await loadExistingWallets(
-      createRIFWalletFactory(request =>
-        thunkAPI.dispatch(onRequest({ request })),
+      createRIFWalletFactory(
+        request => thunkAPI.dispatch(onRequest({ request })),
+        chainId,
       ),
     )(serializedKeys)
 
@@ -233,16 +232,12 @@ export const unlockApp = createAsyncThunk<
     const currentWallet =
       rifWalletsDictionary[Object.keys(rifWalletsDictionary)[0]]
 
-    const chainId = await currentWallet.getChainId()
-
-    thunkAPI.dispatch(setChainId(chainId))
-
     // create fetcher
     const rifWalletAuth = new RifWalletServicesAuth<
       Keychain.Options,
       ReturnType<typeof Keychain.setInternetCredentials>,
       ReturnType<typeof Keychain.resetInternetCredentials>
-    >(publicAxios, currentWallet, {
+    >(createPublicAxios(chainId), currentWallet, {
       authClient,
       onGetSignUp: getSignUP,
       onHasSignUp: hasSignUP,
@@ -258,7 +253,7 @@ export const unlockApp = createAsyncThunk<
       Keychain.Options,
       ReturnType<typeof Keychain.setInternetCredentials>
     >(authAxios, accessToken, refreshToken, {
-      defaultChainId,
+      defaultChainId: chainId.toString(),
       onSetInternetCredentials: Keychain.setInternetCredentials,
       resultsLimit: 10,
     })
@@ -272,6 +267,7 @@ export const unlockApp = createAsyncThunk<
       dispatch: thunkAPI.dispatch,
       setGlobalError: thunkAPI.rejectWithValue,
       usdPrices,
+      chainId,
     })
 
     socketsEvents.emit(SocketsEvents.CONNECT)
@@ -281,6 +277,7 @@ export const unlockApp = createAsyncThunk<
       kms.mnemonic,
       thunkAPI.dispatch,
       fetcherInstance,
+      chainId,
     )
 
     // set bitcoin in redux
@@ -314,7 +311,7 @@ export const addNewWallet = createAsyncThunk(
   async ({ networkId }: AddNewWalletAction, thunkAPI) => {
     try {
       const keys = await getKeys()
-
+      const { chainId } = thunkAPI.getState().settings
       if (!keys) {
         return thunkAPI.rejectWithValue(
           'Can not add new wallet because no KMS created.',
@@ -323,8 +320,9 @@ export const addNewWallet = createAsyncThunk(
       const { kms } = KeyManagementSystem.fromSerialized(keys)
       const { rifWallet, isDeloyed } = await addNextWallet(
         kms,
-        createRIFWalletFactory(request =>
-          thunkAPI.dispatch(onRequest({ request })),
+        createRIFWalletFactory(
+          request => thunkAPI.dispatch(onRequest({ request })),
+          chainId,
         ),
         networkId,
       )
@@ -355,6 +353,7 @@ const initialState: SettingsSlice = {
   hideBalance: false,
   pin: null,
   bitcoin: null,
+  chainId: 31,
 }
 
 const settingsSlice = createSlice({
@@ -374,7 +373,7 @@ const settingsSlice = createSlice({
     closeRequest: state => {
       state.requests.pop()
     },
-    setChainId: (state, { payload }: PayloadAction<number>) => {
+    setChainId: (state, { payload }: PayloadAction<ChainTypesByIdType>) => {
       state.chainId = payload
       state.chainType =
         payload === 31 ? ChainTypeEnum.TESTNET : ChainTypeEnum.MAINNET

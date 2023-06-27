@@ -34,10 +34,10 @@ export const loadExistingWallets =
   }
 
 export const createKMS =
-  (createRIFWallet: CreateRIFWallet, networkId: number) =>
+  (createRIFWallet: CreateRIFWallet, chainId: number) =>
   async (mnemonic: string) => {
     const kms = KeyManagementSystem.import(mnemonic)
-    const { save, wallet } = kms.nextWallet(networkId)
+    const { save, wallet } = kms.nextWallet(chainId)
 
     const rifWallet = await createRIFWallet(wallet)
     const rifWalletIsDeployed = await rifWallet.smartWalletFactory.isDeployed()
@@ -65,9 +65,9 @@ export const createKMS =
 export const addNextWallet = async (
   kms: KeyManagementSystem,
   createRIFWallet: CreateRIFWallet,
-  networkId: number,
+  chainId: number,
 ) => {
-  const { wallet, save } = kms.nextWallet(networkId)
+  const { wallet, save } = kms.nextWallet(chainId)
 
   // save wallet in KSM
   save()

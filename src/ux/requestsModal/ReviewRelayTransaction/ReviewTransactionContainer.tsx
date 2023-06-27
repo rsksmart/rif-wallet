@@ -10,11 +10,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { balanceToDisplay, convertTokenToUSD } from 'lib/utils'
 
-import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { selectActiveWallet, selectChainId } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { AppButtonBackgroundVarietyEnum } from 'components/index'
-import { defaultChainType, getTokenAddress } from 'core/config'
+import { getTokenAddress } from 'core/config'
 import { errorHandler } from 'shared/utils'
 import { TokenSymbol } from 'screens/home/TokenImage'
 import { sharedColors } from 'shared/constants'
@@ -22,6 +22,7 @@ import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { getContactsAsObject } from 'store/slices/contactsSlice'
 import { TransactionSummaryComponent } from 'screens/transactionSummary/TransactionSummaryComponent'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
+import { chainTypesById } from 'shared/constants/chainConstants'
 
 import useEnhancedWithGas from '../useEnhancedWithGas'
 
@@ -42,6 +43,7 @@ export const ReviewTransactionContainer = ({
   const txRequest = useMemo(() => request.payload[0], [request])
   const { wallet } = useAppSelector(selectActiveWallet)
   const contacts = useAppSelector(getContactsAsObject)
+  const chainId = useAppSelector(selectChainId)
   // this is for typescript, and should not happen as the transaction was created by the wallet instance.
   if (!wallet) {
     throw new Error('no wallet')
@@ -53,10 +55,10 @@ export const ReviewTransactionContainer = ({
   const tokenContract = useMemo(
     () =>
       getTokenAddress(
-        defaultChainType === ChainTypeEnum.MAINNET ? 'RIF' : 'tRIF',
-        defaultChainType,
+        chainTypesById[chainId] === ChainTypeEnum.MAINNET ? 'RIF' : 'tRIF',
+        chainTypesById[chainId],
       ),
-    [],
+    [chainId],
   )
   const tokenQuote = useMemo(() => {
     return tokenPrices[tokenContract].price

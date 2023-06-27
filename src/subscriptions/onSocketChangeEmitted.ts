@@ -14,6 +14,7 @@ import {
 } from 'store/slices/transactionsSlice'
 import { UsdPricesState, setUsdPrices } from 'store/slices/usdPricesSlice'
 import { AppDispatch } from 'store/index'
+import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 
 import { AbiWallet, Action } from './types'
 
@@ -21,11 +22,13 @@ interface OnNewTransactionEventEmittedArgs extends AbiWallet {
   dispatch: AppDispatch
   payload: IApiTransaction
   usdPrices: UsdPricesState
+  chainId: ChainTypesByIdType
 }
 
 interface OnSocketChangeEmittedArgs extends AbiWallet {
   dispatch: AppDispatch
   usdPrices: UsdPricesState
+  chainId: ChainTypesByIdType
 }
 
 const onNewTransactionEventEmitted = async ({
@@ -34,6 +37,7 @@ const onNewTransactionEventEmitted = async ({
   dispatch,
   payload,
   usdPrices,
+  chainId,
 }: OnNewTransactionEventEmittedArgs) => {
   const payloadToUse: {
     originTransaction: IApiTransaction
@@ -57,13 +61,20 @@ const onNewTransactionEventEmitted = async ({
     const deserializedTransaction = activityDeserializer(
       payloadToUse,
       usdPrices,
+      chainId,
     )
     dispatch(addNewTransaction(deserializedTransaction))
   }
 }
 
 export const onSocketChangeEmitted =
-  ({ dispatch, abiEnhancer, wallet, usdPrices }: OnSocketChangeEmittedArgs) =>
+  ({
+    dispatch,
+    abiEnhancer,
+    wallet,
+    usdPrices,
+    chainId,
+  }: OnSocketChangeEmittedArgs) =>
   (action: Action) => {
     if (action.type === 'reset') {
       dispatch(resetSocketState())
@@ -80,6 +91,7 @@ export const onSocketChangeEmitted =
             dispatch,
             payload: payload,
             usdPrices,
+            chainId,
           })
           break
         case 'newTransactions':
@@ -92,7 +104,7 @@ export const onSocketChangeEmitted =
           )
 
           let deserializedTransactions = combinedTransactions.map(tx =>
-            activityDeserializer(tx, usdPrices),
+            activityDeserializer(tx, usdPrices, chainId),
           )
           dispatch(addNewTransactions(deserializedTransactions))
           break
@@ -109,7 +121,7 @@ export const onSocketChangeEmitted =
           )
 
           deserializedTransactions = combinedTransactions.map(tx =>
-            activityDeserializer(tx, usdPrices),
+            activityDeserializer(tx, usdPrices, chainId),
           )
           dispatch(fetchBitcoinTransactions({}))
           dispatch(addNewTransactions(deserializedTransactions))

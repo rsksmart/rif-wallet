@@ -14,7 +14,8 @@ import {
   ERC677__factory,
 } from '@rsksmart/rif-wallet-token'
 
-import { getWalletSetting, SETTINGS } from '../src/core/config'
+import { getWalletSetting } from 'core/config'
+import { SETTINGS } from 'core/types'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 
 const nodeUrl = getWalletSetting(SETTINGS.RPC_URL, ChainTypeEnum.TESTNET)

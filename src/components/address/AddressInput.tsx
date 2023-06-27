@@ -4,9 +4,10 @@ import Clipboard from '@react-native-community/clipboard'
 import { decodeString } from '@rsksmart/rif-wallet-eip681'
 import { useTranslation } from 'react-i18next'
 
-import { rnsResolver } from 'core/setup'
+import { getRnsResolver } from 'core/setup'
 import { sharedColors } from 'shared/constants'
 import { ContactWithAddressRequired } from 'shared/types'
+import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 
 import { QRCodeScanner } from '../QRCodeScanner'
 import {
@@ -25,7 +26,7 @@ export interface AddressInputProps extends Omit<InputProps, 'value'> {
     newDisplayValue: string,
     isValid: boolean,
   ) => void
-  chainId: number
+  chainId: ChainTypesByIdType
 }
 
 enum Status {
@@ -104,7 +105,7 @@ export const AddressInput = ({
             value: t('contact_form_getting_info'),
           })
 
-          rnsResolver
+          getRnsResolver(chainId)
             .addr(userInput)
             .then((resolvedAddress: string) => {
               setDomainFound(true)
