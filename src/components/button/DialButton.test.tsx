@@ -1,4 +1,5 @@
 import { render, fireEvent } from '@testing-library/react-native'
+
 import { DialButton } from './DialButton'
 
 describe('Dial Button', () => {

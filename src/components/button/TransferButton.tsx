@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { StyleSheet } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
+
 import { colors } from 'src/styles'
+
 import { MediumText } from '../typography'
 import BaseButton from './BaseButton'
 import { ButtonProps } from './types'

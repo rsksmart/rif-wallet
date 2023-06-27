@@ -1,4 +1,5 @@
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
+
 import { colors } from '../styles'
 import { RegularText } from './typography'
 

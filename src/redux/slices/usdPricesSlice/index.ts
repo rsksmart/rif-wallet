@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+
 import { UsdPricesState } from './types'
 
 const initialState: UsdPricesState = {}

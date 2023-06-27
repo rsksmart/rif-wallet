@@ -1,11 +1,9 @@
 import { Contract, ContractFactory } from 'ethers'
+import smartWalletABI from '@rsksmart/rif-relay-light-sdk/dist/SmartWallet/SmartWalletABI.json'
+import smartWalletFactoryABI from '@rsksmart/rif-relay-light-sdk/dist/SmartWalletFactory/SmartWalletFactoryABI.json'
 
 import smartWalletBytecode from './SmartWalletBytecode.json'
-import smartWalletABI from '@rsksmart/rif-relay-light-sdk/dist/SmartWallet/SmartWalletABI.json'
-
-import smartWalletFactoryABI from '@rsksmart/rif-relay-light-sdk/dist/SmartWalletFactory/SmartWalletFactoryABI.json'
 import smartWalletFactoryBytecode from './SmartWalletFactoryBytecode.json'
-
 import { rpcAccount } from './utils'
 
 export const deploySmartWalletFactory = async (): Promise<Contract> => {

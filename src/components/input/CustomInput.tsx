@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { KeyboardTypeOptions, StyleSheet, TextInput, View } from 'react-native'
+
 import { Button } from '../button'
 import { colors } from '../../styles'
 

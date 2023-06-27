@@ -1,4 +1,5 @@
 import Svg, { Path, G } from 'react-native-svg'
+
 import { SVGIconInterface } from './index'
 
 export const WalletIcon = ({ height, width, style }: SVGIconInterface) => (

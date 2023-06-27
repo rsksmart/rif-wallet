@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+
 import { castStyle } from 'shared/utils'
 
 export const sharedStyles = StyleSheet.create({

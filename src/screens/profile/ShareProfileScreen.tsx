@@ -3,9 +3,7 @@ import { StyleSheet, View, Share } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 import { sharedColors } from 'shared/constants'
-
 import { useAppSelector } from 'store/storeUtils'
-
 import { castStyle } from 'shared/utils'
 import { selectProfile } from 'store/slices/profileSlice'
 import {

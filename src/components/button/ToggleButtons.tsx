@@ -1,5 +1,6 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
+
 import { colors } from '../../styles'
 import { MediumText, RegularText } from '../typography'
 import BaseButton from './BaseButton'

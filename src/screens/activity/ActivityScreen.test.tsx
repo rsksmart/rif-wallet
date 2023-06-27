@@ -1,7 +1,6 @@
 /* eslint-disable jest/no-disabled-tests */
 import { useNavigation } from '@react-navigation/native'
 import { render, act, waitFor, fireEvent } from '@testing-library/react-native'
-
 import { RIFWalletServicesFetcherInterface } from '@rsksmart/rif-wallet-services'
 
 import { setupTest } from 'testLib/setup'
@@ -15,7 +14,6 @@ import {
   createMockAbiEnhancer,
   enhancedTxTestCase,
 } from 'testLib/mocks/rifTransactionsMock'
-
 import { ActivityScreen } from 'screens/activity/ActivityScreen'
 import { getAddressDisplayText } from 'components/index'
 import {

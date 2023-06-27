@@ -1,4 +1,5 @@
 import { Component } from 'react'
+
 import GlobalErrorHandlerView from '../GlobalErrorHandler/GlobalErrorHandlerView'
 
 interface IErrorBoundaryProps {

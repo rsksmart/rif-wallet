@@ -1,13 +1,13 @@
 import { ReactNode } from 'react'
-import { colors } from '../../styles/colors'
 import { Pagination } from 'react-native-snap-carousel'
-
 import {
   GestureResponderEvent,
   TouchableOpacity,
   View,
   StyleSheet,
 } from 'react-native'
+
+import { colors } from '../../styles/colors'
 import { Arrow } from '../icons'
 import { CheckIcon } from '../icons/CheckIcon'
 

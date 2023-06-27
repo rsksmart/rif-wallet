@@ -1,8 +1,7 @@
-import { ColorValue, StyleProp, StyleSheet, TextStyle } from 'react-native'
+import { ColorValue, StyleProp, TextStyle } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 
 import { sharedStyles } from 'src/shared/constants'
-import { castStyle } from 'src/shared/utils'
 
 interface Props {
   size: number

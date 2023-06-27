@@ -1,6 +1,7 @@
 import Clipboard from '@react-native-community/clipboard'
 import React from 'react'
 import { Share, StyleSheet, TouchableOpacity, View } from 'react-native'
+
 import { TestID } from '../screens/receive/ReceiveScreen'
 import { colors } from '../styles'
 import { CopyIcon, ShareIcon } from './icons'

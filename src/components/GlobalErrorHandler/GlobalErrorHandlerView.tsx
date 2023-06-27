@@ -1,6 +1,7 @@
 import Clipboard from '@react-native-community/clipboard'
 import React from 'react'
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+
 import { colors } from '../../styles'
 import { PrimaryButton } from '../button/PrimaryButton'
 import ContentCopyMaterialIcon from '../icons/ContentCopyMaterialIcon'

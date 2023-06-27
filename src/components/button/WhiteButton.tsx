@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native'
 
 import { colors } from 'src/styles'
+
 import { StyledButton } from './StyledButton'
 import { ButtonProps } from './types'
 

@@ -1,5 +1,6 @@
 import React from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native'
+
 import { colors } from '../../styles'
 import { MediumText } from '../typography'
 
