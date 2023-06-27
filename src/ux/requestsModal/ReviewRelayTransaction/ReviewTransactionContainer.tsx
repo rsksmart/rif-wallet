@@ -19,7 +19,7 @@ import { errorHandler } from 'shared/utils'
 import { TokenSymbol } from 'screens/home/TokenImage'
 import { sharedColors } from 'shared/constants'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
-import { getContactsAsObject } from 'store/slices/contactsSlice'
+import { getContactByAddress } from 'store/slices/contactsSlice'
 import { TransactionSummaryComponent } from 'screens/transactionSummary/TransactionSummaryComponent'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 import { chainTypesById } from 'shared/constants/chainConstants'
@@ -42,7 +42,6 @@ export const ReviewTransactionContainer = ({
   // enhance the transaction to understand what it is:
   const txRequest = useMemo(() => request.payload[0], [request])
   const { wallet } = useAppSelector(selectActiveWallet)
-  const contacts = useAppSelector(getContactsAsObject)
   const chainId = useAppSelector(selectChainId)
   // this is for typescript, and should not happen as the transaction was created by the wallet instance.
   if (!wallet) {
@@ -52,6 +51,18 @@ export const ReviewTransactionContainer = ({
     wallet,
     txRequest,
   )
+
+  const {
+    to = '',
+    symbol = '',
+    value = '0',
+    functionName = '',
+    gasLimit,
+    gasPrice,
+  } = enhancedTransactionRequest
+
+  const contact = useAppSelector(getContactByAddress(to.toLowerCase()))
+
   const tokenContract = useMemo(
     () =>
       getTokenAddress(
@@ -87,8 +98,8 @@ export const ReviewTransactionContainer = ({
     }
 
     const confirmObject: OverriddableTransactionOptions = {
-      gasPrice: BigNumber.from(enhancedTransactionRequest.gasPrice),
-      gasLimit: BigNumber.from(enhancedTransactionRequest.gasLimit),
+      gasPrice: BigNumber.from(gasPrice),
+      gasLimit: BigNumber.from(gasLimit),
       tokenPayment: {
         tokenContract,
         tokenAmount: txCostInRif,
@@ -97,30 +108,25 @@ export const ReviewTransactionContainer = ({
 
     try {
       await request.confirm(confirmObject)
-      const { value = '0', symbol = '' } = enhancedTransactionRequest
       onConfirm(value, symbol)
     } catch (err: unknown) {
       setError(errorHandler(err))
     }
   }, [
-    onConfirm,
-    enhancedTransactionRequest,
-    request,
-    tokenContract,
     txCostInRif,
+    gasPrice,
+    gasLimit,
+    tokenContract,
+    request,
+    onConfirm,
+    value,
+    symbol,
   ])
 
   const cancelTransaction = useCallback(() => {
     request.reject('Transaction rejected')
     onCancel()
   }, [onCancel, request])
-
-  const {
-    to = '',
-    symbol,
-    value = '0',
-    functionName = '',
-  } = enhancedTransactionRequest
 
   const totalTokenValue = Number(value) + Number(rifFee)
 
@@ -153,7 +159,7 @@ export const ReviewTransactionContainer = ({
           usdValue: convertToUSD(totalTokenValue),
         },
       },
-      contact: contacts[to.toLowerCase()] || { address: to },
+      contact: contact || { address: to },
       buttons: [
         {
           title: t('transaction_summary_title_confirm_button_title'),
@@ -176,7 +182,7 @@ export const ReviewTransactionContainer = ({
       convertToUSD,
       rifFee,
       totalTokenValue,
-      contacts,
+      contact,
       to,
       t,
       confirmTransaction,
