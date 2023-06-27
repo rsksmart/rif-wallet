@@ -40,7 +40,6 @@ export const ReviewTransactionContainer = ({
   const tokenPrices = useAppSelector(selectUsdPrices)
   // enhance the transaction to understand what it is:
   const { wallet } = useAppSelector(selectActiveWallet)
-  const [error, setError] = useState<string | null>(null)
   const [txCostInRif, setTxCostInRif] = useState<BigNumber>()
   const { t } = useTranslation()
 
@@ -89,7 +88,7 @@ export const ReviewTransactionContainer = ({
     wallet.rifRelaySdk
       .estimateTransactionCost(txRequest, feeContract)
       .then(setTxCostInRif)
-      .catch(err => setError(errorHandler(err)))
+      .catch(err => errorHandler(err))
   }, [txRequest, wallet.rifRelaySdk, feeContract])
 
   const confirmTransaction = useCallback(async () => {
@@ -110,7 +109,7 @@ export const ReviewTransactionContainer = ({
       await request.confirm(confirmObject)
       onConfirm()
     } catch (err: unknown) {
-      setError(errorHandler(err))
+      errorHandler(err)
     }
   }, [txCostInRif, gasPrice, gasLimit, feeContract, request, onConfirm])
 

@@ -67,21 +67,20 @@ export const handleReduxTransactionStatusChange =
           dispatch(addPendingTransaction(originTransaction))
           break
         case 'CONFIRMED':
-          const { txStatus, ...restOfTransaction } = transactionStatusChange
           const {
             blockHash,
             blockNumber,
             gasUsed,
             transactionHash,
             transactionIndex,
-          } = restOfTransaction
+          } = transactionStatusChange
           const updatedOriginTransaction: ModifyTransaction = {
             gas: gasUsed.toNumber(),
             hash: transactionHash,
             blockHash,
             blockNumber,
             transactionIndex: transactionIndex,
-            receipt: restOfTransaction,
+            receipt: transactionStatusChange,
           }
           dispatch(modifyTransaction(updatedOriginTransaction))
           break
