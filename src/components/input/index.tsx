@@ -22,9 +22,9 @@ import {
   sharedStyles,
 } from 'shared/constants'
 import { castStyle } from 'shared/utils'
+import { AppTouchable } from 'components/appTouchable'
 
 import { Typography } from '../typography'
-import { AppTouchable } from '../appTouchable'
 
 export { CustomInput } from './CustomInput'
 

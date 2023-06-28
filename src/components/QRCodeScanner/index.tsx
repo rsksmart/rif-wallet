@@ -23,8 +23,7 @@ import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { navigationContainerRef } from 'core/Core'
 import { AppSpinner } from 'components/spinner'
-
-import { AppTouchable } from '../appTouchable'
+import { AppTouchable } from 'components/appTouchable'
 
 interface QRCodeScannerProps {
   onClose: () => void

@@ -6,7 +6,7 @@ import { roundBalance, shortAddress } from 'lib/utils'
 
 import { StatusEnum } from 'components/BasicRow'
 import { BasicRowWithContact } from 'components/BasicRow/BasicRowWithContact'
-import { AppTouchable } from 'components/index'
+import { AppTouchable } from 'components/appTouchable'
 import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 import { ActivityMainScreenProps } from 'shared/types'
