@@ -15,6 +15,7 @@ import { isMyAddress } from 'components/address/lib'
 import { DollarIcon } from 'components/icons/DollarIcon'
 import { FullScreenSpinner } from 'components/fullScreenSpinner'
 import { ContactWithAddressRequired } from 'shared/types'
+import { getContactByAddress } from 'store/slices/contactsSlice'
 
 import {
   TransactionStatus,
@@ -46,7 +47,9 @@ export const TransactionSummaryComponent = ({
   const transactionStatusText = transactionStatusDisplayText.get(
     transaction.status,
   )
-
+  const fromContact = useAppSelector(
+    getContactByAddress(transaction.from ?? ''),
+  )
   const amIReceiver = useMemo(
     () => transaction.amIReceiver ?? isMyAddress(wallet, contact.address),
     [wallet, contact.address, transaction.amIReceiver],
@@ -71,12 +74,15 @@ export const TransactionSummaryComponent = ({
 
   const contactToUse: ContactWithAddressRequired = useMemo(() => {
     if (amIReceiver) {
+      if (fromContact) {
+        return fromContact
+      }
       return {
         address: transaction.from ?? '',
       }
     }
     return contact
-  }, [amIReceiver, transaction, contact])
+  }, [amIReceiver, contact, fromContact, transaction.from])
 
   return (
     <View style={[styles.screen, { paddingBottom: bottom }]}>
