@@ -9,11 +9,10 @@ import {
   RootTabsScreenProps,
   rootTabsRouteNames,
 } from 'navigation/rootNavigator'
-import { ContactWithAddressRequired } from 'shared/types'
-import { setFullscreen } from 'store/slices/settingsSlice'
-import { useAppDispatch } from 'store/storeUtils'
 import { TransactionSummaryComponent } from 'screens/transactionSummary/TransactionSummaryComponent'
+import { setFullscreen } from 'store/slices/settingsSlice'
 import { TokenFeeValueObject } from 'store/slices/transactionsSlice'
+import { useAppDispatch } from 'store/storeUtils'
 
 import { TransactionStatus } from './transactionSummaryUtils'
 
@@ -27,8 +26,8 @@ export interface TransactionSummaryScreenProps {
     status?: TransactionStatus
     amIReceiver?: boolean
     from?: string
+    to: string
   }
-  contact: ContactWithAddressRequired
   buttons?: AppButtonProps[]
   functionName?: string
   backScreen?: rootTabsRouteNames
@@ -42,8 +41,7 @@ export const TransactionSummaryScreen = ({
 }: RootTabsScreenProps<rootTabsRouteNames.TransactionSummary>) => {
   const dispatch = useAppDispatch()
   const isFocused = useIsFocused()
-  const { transaction, contact, buttons, backScreen, functionName } =
-    route.params
+  const { backScreen } = route.params
 
   const goBack = useMemo(() => {
     if (backScreen) {
@@ -76,13 +74,5 @@ export const TransactionSummaryScreen = ({
     })
   }, [goBack, navigation])
 
-  return (
-    <TransactionSummaryComponent
-      transaction={transaction}
-      contact={contact}
-      goBack={goBack}
-      buttons={buttons}
-      functionName={functionName}
-    />
-  )
+  return <TransactionSummaryComponent {...route.params} goBack={goBack} />
 }

@@ -14,7 +14,6 @@ import { useAppSelector } from 'store/storeUtils'
 import { isMyAddress } from 'components/address/lib'
 import { DollarIcon } from 'components/icons/DollarIcon'
 import { FullScreenSpinner } from 'components/fullScreenSpinner'
-import { ContactWithAddressRequired } from 'shared/types'
 import { getContactByAddress } from 'store/slices/contactsSlice'
 
 import {
@@ -33,7 +32,6 @@ type TransactionSummaryComponentProps = Omit<
 
 export const TransactionSummaryComponent = ({
   transaction,
-  contact,
   buttons,
   functionName,
   goBack,
@@ -47,13 +45,14 @@ export const TransactionSummaryComponent = ({
   const transactionStatusText = transactionStatusDisplayText.get(
     transaction.status,
   )
-  const fromContact = useAppSelector(
-    getContactByAddress(transaction.from ?? ''),
+
+  const amIReceiver =
+    transaction.amIReceiver ?? isMyAddress(wallet, transaction.to)
+  const contactAddress = amIReceiver ? transaction.from || '' : transaction.to
+  const contact = useAppSelector(
+    getContactByAddress(contactAddress.toLowerCase()),
   )
-  const amIReceiver = useMemo(
-    () => transaction.amIReceiver ?? isMyAddress(wallet, contact.address),
-    [wallet, contact.address, transaction.amIReceiver],
-  )
+  const contactToUse = contact || { address: contactAddress }
 
   const title = useMemo(() => {
     if (amIReceiver) {
@@ -72,18 +71,6 @@ export const TransactionSummaryComponent = ({
     return t('transaction_summary_send_title')
   }, [amIReceiver, t, transaction.status])
 
-  const contactToUse: ContactWithAddressRequired = useMemo(() => {
-    if (amIReceiver) {
-      if (fromContact) {
-        return fromContact
-      }
-      return {
-        address: transaction.from ?? '',
-      }
-    }
-    return contact
-  }, [amIReceiver, contact, fromContact, transaction.from])
-
   return (
     <View style={[styles.screen, { paddingBottom: bottom }]}>
       {isLoaded === false && <FullScreenSpinner />}
@@ -99,7 +86,7 @@ export const TransactionSummaryComponent = ({
         <TokenBalance
           firstValue={transaction.tokenValue}
           secondValue={transaction.usdValue}
-          to={contactToUse}
+          contact={contactToUse}
           amIReceiver={amIReceiver}
         />
         {functionName && (
@@ -251,7 +238,7 @@ export const TransactionSummaryComponent = ({
               ]}
               numberOfLines={1}
               ellipsizeMode={'middle'}>
-              {contact.address}
+              {contactToUse.address}
             </Typography>
           </View>
         </View>

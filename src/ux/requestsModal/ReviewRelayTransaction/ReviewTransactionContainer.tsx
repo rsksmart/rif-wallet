@@ -19,7 +19,6 @@ import { errorHandler } from 'shared/utils'
 import { TokenSymbol } from 'screens/home/TokenImage'
 import { sharedColors } from 'shared/constants'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
-import { getContactByAddress } from 'store/slices/contactsSlice'
 import { TransactionSummaryComponent } from 'screens/transactionSummary/TransactionSummaryComponent'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 import { chainTypesById } from 'shared/constants/chainConstants'
@@ -60,8 +59,6 @@ export const ReviewTransactionContainer = ({
     gasLimit,
     gasPrice,
   } = enhancedTransactionRequest
-
-  const contact = useAppSelector(getContactByAddress(to.toLowerCase()))
 
   const tokenContract = useMemo(
     () =>
@@ -158,8 +155,8 @@ export const ReviewTransactionContainer = ({
           tokenValue: totalTokenValue.toString(),
           usdValue: convertToUSD(totalTokenValue),
         },
+        to,
       },
-      contact: contact || { address: to },
       buttons: [
         {
           title: t('transaction_summary_title_confirm_button_title'),
@@ -182,7 +179,6 @@ export const ReviewTransactionContainer = ({
       convertToUSD,
       rifFee,
       totalTokenValue,
-      contact,
       to,
       t,
       confirmTransaction,

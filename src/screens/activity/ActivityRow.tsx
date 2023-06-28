@@ -9,7 +9,7 @@ import { BasicRowWithContact } from 'components/BasicRow/BasicRowWithContact'
 import { AppTouchable } from 'components/appTouchable'
 import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
-import { ActivityMainScreenProps, Contact } from 'shared/types'
+import { ActivityMainScreenProps } from 'shared/types'
 import { castStyle } from 'shared/utils'
 import { isMyAddress } from 'src/components/address/lib'
 import { selectActiveWallet } from 'src/redux/slices/settingsSlice'
@@ -87,6 +87,7 @@ export const ActivityBasicRow = ({
         total,
         amIReceiver,
         from,
+        to,
         time: timeHumanFormatted,
       },
       contact: contact || { address },
@@ -97,6 +98,7 @@ export const ActivityBasicRow = ({
       contact,
       fee,
       from,
+      to,
       status,
       symbol,
       timeHumanFormatted,
