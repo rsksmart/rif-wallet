@@ -32,8 +32,6 @@ export const getRnsResolver = (chainId: ChainTypesByIdType) =>
     ? Resolver.forRskMainnet({})
     : Resolver.forRskTestnet({})
 
-export const authClient = getWalletSetting(SETTINGS.AUTH_CLIENT)
-
 export const createRIFWalletFactory =
   (onRequest: OnRequest, chainId: ChainTypesByIdType) => (wallet: Wallet) => {
     const jsonRpcProvider = new providers.JsonRpcProvider(

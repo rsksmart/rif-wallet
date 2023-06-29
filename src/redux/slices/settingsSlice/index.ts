@@ -17,10 +17,11 @@ import { deleteContacts as deleteContactsFromRedux } from 'store/slices/contacts
 import { resetMainStorage } from 'storage/MainStorage'
 import { deleteKeys, getKeys } from 'storage/SecureStorage'
 import { sharedColors } from 'shared/constants'
-import { createRIFWalletFactory } from 'core/setup'
+import { createPublicAxios, createRIFWalletFactory } from 'core/setup'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { deleteProfile } from 'store/slices/profileSlice'
 import { navigationContainerRef } from 'core/Core'
+import { initializeBitcoin } from 'core/hooks/bitcoin/initializeBitcoin'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { createKeysRouteNames } from 'navigation/createKeysNavigator'
 import { AsyncThunkWithTypes } from 'store/store'
@@ -30,9 +31,7 @@ import {
   SocketsEvents,
   socketsEvents,
 } from 'src/subscriptions/rifSockets'
-import { publicAxios } from 'core/setup'
-import { defaultChainId } from 'core/config'
-import { initializeBitcoin } from 'src/core/hooks/bitcoin/initializeBitcoin'
+import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 
 import {
   AddNewWalletAction,
@@ -104,10 +103,13 @@ export const createWallet = createAsyncThunk<
 
     thunkAPI.dispatch(setChainId(chainId))
 
-    const fetcherInstance = new RifWalletServicesFetcher(publicAxios, {
-      defaultChainId,
-      resultsLimit: 10,
-    })
+    const fetcherInstance = new RifWalletServicesFetcher(
+      createPublicAxios(chainId),
+      {
+        defaultChainId: chainId.toString(),
+        resultsLimit: 10,
+      },
+    )
 
     const { usdPrices } = thunkAPI.getState()
 
@@ -213,10 +215,13 @@ export const unlockApp = createAsyncThunk<
       rifWalletsDictionary[Object.keys(rifWalletsDictionary)[0]]
 
     // create fetcher
-    const fetcherInstance = new RifWalletServicesFetcher(publicAxios, {
-      defaultChainId,
-      resultsLimit: 10,
-    })
+    const fetcherInstance = new RifWalletServicesFetcher(
+      createPublicAxios(chainId),
+      {
+        defaultChainId: chainId.toString(),
+        resultsLimit: 10,
+      },
+    )
 
     const { usdPrices } = thunkAPI.getState()
 
