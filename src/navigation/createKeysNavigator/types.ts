@@ -28,7 +28,7 @@ export type CreateKeysStackParamList = {
   [createKeysRouteNames.RevealMasterKey]: undefined
   [createKeysRouteNames.CreatePIN]: {
     isChangeRequested: true
-    backScreen?: rootTabsRouteNames
+    backScreen?: null
   }
 }
 
