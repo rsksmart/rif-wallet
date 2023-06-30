@@ -13,12 +13,12 @@ export enum profileStackRouteNames {
 
 export enum ProfileStatus {
   NONE,
+  WAITING_FOR_USER_COMMIT,
   REQUESTING,
   READY_TO_PURCHASE,
   PURCHASING,
   USER,
   REQUESTING_ERROR,
-  PURCHASING_ERROR,
 }
 
 export type ProfileStackParamsList = {

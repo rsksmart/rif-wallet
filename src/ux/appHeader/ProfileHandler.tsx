@@ -30,7 +30,9 @@ export const ProfileHandler = ({ navigation }: Props) => {
       style={styles.profileHandler}
       accessibilityLabel="profile"
       onPress={() => navigation.navigate(rootTabsRouteNames.Profile)}>
-      {profile.status === ProfileStatus.NONE && (
+      {[ProfileStatus.NONE, ProfileStatus.WAITING_FOR_USER_COMMIT].includes(
+        profile.status,
+      ) && (
         <>
           <Icon
             name="person-circle-sharp"
@@ -47,13 +49,16 @@ export const ProfileHandler = ({ navigation }: Props) => {
       )}
 
       <View style={sharedStyles.row}>
-        {profile.status !== ProfileStatus.USER &&
-          profile.status !== ProfileStatus.NONE && (
-            <StepperComponent
-              colors={[startColor, endColor]}
-              style={styles.stepper}
-            />
-          )}
+        {![
+          ProfileStatus.USER,
+          ProfileStatus.WAITING_FOR_USER_COMMIT,
+          ProfileStatus.NONE,
+        ].includes(profile.status) && (
+          <StepperComponent
+            colors={[startColor, endColor]}
+            style={styles.stepper}
+          />
+        )}
 
         {profile.status === ProfileStatus.REQUESTING && (
           <>
