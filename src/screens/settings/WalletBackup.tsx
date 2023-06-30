@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleSheet, View } from 'react-native'
+
+import { KeyManagementSystem } from 'lib/core'
 
 import { sharedColors } from 'shared/constants'
 import {
@@ -8,23 +10,20 @@ import {
   AppButtonBackgroundVarietyEnum,
   MnemonicComponent,
   Typography,
-} from 'src/components'
-import { SlidePopupConfirmationDanger } from 'src/components/slidePopup/SlidePopupConfirmationDanger'
-import { KeyManagementSystem } from 'src/lib/core'
-import { headerLeftOption } from 'src/navigation/profileNavigator'
+} from 'components/index'
+import { SlidePopupConfirmationDanger } from 'components/slidePopup/SlidePopupConfirmationDanger'
 import {
   SettingsScreenProps,
   settingsStackRouteNames,
-} from 'src/navigation/settingsNavigator/types'
-import { resetApp } from 'src/redux/slices/settingsSlice'
-import { useAppDispatch } from 'src/redux/storeUtils'
-import { castStyle } from 'src/shared/utils'
-import { saveKeyVerificationReminder } from 'src/storage/MainStorage'
-import { getKeys } from 'src/storage/SecureStorage'
+} from 'navigation/settingsNavigator/types'
+import { resetApp } from 'store/slices/settingsSlice'
+import { useAppDispatch } from 'store/storeUtils'
+import { castStyle } from 'shared/utils'
+import { getKeys } from 'storage/SecureStorage'
 
 type Props = SettingsScreenProps<settingsStackRouteNames.WalletBackup>
 
-export const WalletBackup = ({ navigation }: Props) => {
+export const WalletBackup = (_: Props) => {
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] =
     useState<boolean>(false)
   const [
@@ -37,11 +36,10 @@ export const WalletBackup = ({ navigation }: Props) => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
 
-  const deleteWallet = () => {
-    dispatch(resetApp())
-    saveKeyVerificationReminder(false)
+  const deleteWallet = useCallback(async () => {
     setIsDefinitiveDeleteConfirmationVisible(false)
-  }
+    await dispatch(resetApp())
+  }, [dispatch])
 
   useEffect(() => {
     const fn = async () => {
@@ -53,12 +51,6 @@ export const WalletBackup = ({ navigation }: Props) => {
     }
     fn()
   }, [])
-
-  useEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => headerLeftOption(navigation.goBack),
-    })
-  }, [navigation])
 
   return (
     <ScrollView style={styles.container}>

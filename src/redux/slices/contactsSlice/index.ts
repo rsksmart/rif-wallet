@@ -4,11 +4,7 @@ import {
   ContactsState,
   SaveContactPayload,
 } from 'store/slices/contactsSlice/types'
-import {
-  getContacts,
-  saveContacts,
-  deleteContacts as deleteContactsFromStorage,
-} from 'storage/MainStorage'
+import { getContacts, saveContacts } from 'storage/MainStorage'
 import { Contact } from 'shared/types'
 import { defaultContacts } from 'store/slices/contactsSlice/constants'
 
@@ -39,7 +35,6 @@ const contactsSlice = createSlice({
       return state
     },
     deleteContacts: () => {
-      deleteContactsFromStorage()
       return initialState
     },
     setSelectedContactByAddress: (
