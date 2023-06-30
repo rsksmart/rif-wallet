@@ -340,6 +340,9 @@ const resources = {
         'We strongly advise exercising caution, employing the best security practices,and safeguarding your assets diligently."',
       security_i_agree: 'I agree with the conditions. ',
       security_info_btn: 'Continue',
+      android_qr_alert_title: 'Error reading QR',
+      android_qr_alert_desc: 'The QR could not be parsed. Please try again.',
+      android_qr_loading_camera: 'Loading camera',
     },
   },
   es: {
