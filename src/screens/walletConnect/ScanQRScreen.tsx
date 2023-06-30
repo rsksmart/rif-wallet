@@ -31,12 +31,13 @@ export const ScanQRScreen = ({
     if (data.startsWith('wc:')) {
       if (!isConnecting && wallet) {
         setIsConnecting(true)
+        console.log('DATA', data)
         createSession(wallet, data)
         // wait for session request
-        navigation.reset({
-          index: 0,
-          routes: [{ name: rootTabsRouteNames.WalletConnect }],
-        })
+        // navigation.reset({
+        //   index: 0,
+        //   routes: [{ name: rootTabsRouteNames.WalletConnect }],
+        // })
       }
     } else if (decodedString.address !== undefined) {
       navigation.navigate(rootTabsRouteNames.Home, {

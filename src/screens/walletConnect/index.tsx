@@ -1,5 +1,5 @@
 import WalletConnect from '@walletconnect/client'
-import { useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image, ScrollView, StyleSheet, View } from 'react-native'
 
@@ -10,34 +10,36 @@ import {
 } from 'navigation/rootNavigator/types'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
+import { ConfirmationModal } from 'components/modal'
 
-import { DappConnectConfirmation } from './DappConnectConfirmation'
-import { DappDisconnectConfirmation } from './DappDisconnectConfirmation'
+// import { DappConnectConfirmation } from './DappConnectConfirmation'
+// import { DappDisconnectConfirmation } from './DappDisconnectConfirmation'
 import { DappItem } from './DappItem'
 import { WalletConnectContext } from './WalletConnectContext'
+import { ScreenWithWallet } from '../types'
 
-type Props = RootTabsScreenProps<rootTabsRouteNames.WalletConnect>
+type Props = RootTabsScreenProps<rootTabsRouteNames.WalletConnect> &
+  ScreenWithWallet
 
-export const WalletConnectScreen = ({ navigation, route }: Props) => {
-  const wcKey = route.params?.wcKey
+export const WalletConnectScreen = ({ navigation, route, wallet }: Props) => {
+  const pendingConnector = route.params?.pendingConnector
 
   const { t } = useTranslation()
-  const { connections } = useContext(WalletConnectContext)
+  const { connections, handleApprove, handleReject } =
+    useContext(WalletConnectContext)
   const [disconnectingWC, setDisconnectingWC] = useState<WalletConnect | null>(
     null,
   )
 
-  const openedConnections = useMemo(
-    () => Object.values(connections).filter(({ connector: c }) => c.connected),
-    [connections],
-  )
+  const onClearPendingConnector = useCallback(() => {
+    navigation.setParams({ pendingConnector: undefined })
+  }, [navigation])
 
-  const pendingConnector = wcKey ? connections[wcKey]?.connector : null
-
-  if (pendingConnector?.connected) {
-    // clear pendingConnector
-    navigation.navigate(rootTabsRouteNames.WalletConnect)
-  }
+  useEffect(() => {
+    if (pendingConnector?.connected) {
+      onClearPendingConnector()
+    }
+  }, [pendingConnector, onClearPendingConnector])
 
   return (
     <View style={styles.parent}>
@@ -51,7 +53,7 @@ export const WalletConnectScreen = ({ navigation, route }: Props) => {
         <View style={styles.innerHeader2} />
       </View>
 
-      {openedConnections.length === 0 ? (
+      {Object.values(connections).length === 0 ? (
         <>
           <Image
             source={require('src/images/empty-dapps.png')}
@@ -60,7 +62,7 @@ export const WalletConnectScreen = ({ navigation, route }: Props) => {
         </>
       ) : (
         <ScrollView style={styles.dappsList}>
-          {openedConnections.map(({ connector: c }) => (
+          {Object.values(connections).map(({ connector: c }) => (
             <DappItem
               key={c.key}
               connector={c}
@@ -71,14 +73,52 @@ export const WalletConnectScreen = ({ navigation, route }: Props) => {
         </ScrollView>
       )}
 
-      {pendingConnector && !pendingConnector.connected && (
-        <DappConnectConfirmation connector={pendingConnector} />
-      )}
+      {pendingConnector ? (
+        <ConfirmationModal
+          isVisible={!pendingConnector.connected}
+          title={t('dapps_confirmation_title')}
+          description={`${t('dapps_confirmation_description')}${
+            pendingConnector.peerMeta?.name
+              ? ` ${pendingConnector.peerMeta.name}`
+              : ''
+          }?`}
+          okText={t('dapps_confirmation_button_connect')}
+          cancelText={t('dapps_confirmation_button_cancel')}
+          onOk={async () => {
+            console.log('HANDLE APPROVE', pendingConnector)
+            await handleApprove(pendingConnector, wallet)
+          }}
+          onCancel={async () => {
+            console.log('HANDLE REJECT', pendingConnector)
+            handleReject(pendingConnector)
+          }}
+        />
+      ) : null}
 
       {disconnectingWC && (
-        <DappDisconnectConfirmation
-          dappName={disconnectingWC.peerMeta?.name}
-          onConfirm={() => disconnectingWC.killSession()}
+        <ConfirmationModal
+          isVisible={!!disconnectingWC}
+          title={t('dapps_confirm_disconnection_title')}
+          description={`${t('dapps_confirm_disconnection_description')}${
+            disconnectingWC.peerMeta?.name
+              ? ` ${disconnectingWC.peerMeta?.name}`
+              : ''
+          }?`}
+          okText={t('dapps_confirm_disconnection_confirm')}
+          cancelText={t('dapps_confirm_disconnection_cancel')}
+          onOk={async () => {
+            try {
+              console.log(
+                'DISCONNECTING WC PEER ID',
+                disconnectingWC.peerId,
+                disconnectingWC.peerMeta,
+              )
+              await disconnectingWC.killSession()
+              setDisconnectingWC(null)
+            } catch (err) {
+              console.log('FAILED TO DISCONNECT', err)
+            }
+          }}
           onCancel={() => setDisconnectingWC(null)}
         />
       )}

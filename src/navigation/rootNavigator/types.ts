@@ -1,5 +1,6 @@
 import { NavigatorScreenParams } from '@react-navigation/native'
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs'
+import WalletConnect from '@walletconnect/client'
 
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 import { ActivityMixedType } from 'store/slices/transactionsSlice'
@@ -41,7 +42,11 @@ export type RootTabsParamsList = {
   [rootTabsRouteNames.Contacts]:
     | NavigatorScreenParams<ContactStackParamsList>
     | undefined
-  [rootTabsRouteNames.WalletConnect]: undefined | { wcKey: string }
+  [rootTabsRouteNames.WalletConnect]:
+    | undefined
+    | {
+        pendingConnector: WalletConnect
+      }
   [rootTabsRouteNames.Settings]:
     | undefined
     | NavigatorScreenParams<SettingsStackParamsList>

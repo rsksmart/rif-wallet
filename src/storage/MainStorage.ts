@@ -1,4 +1,5 @@
 import { Contact } from 'shared/types'
+
 import { MMKVStorage } from './MMKVStorage'
 
 export const MainStorage = new MMKVStorage()
