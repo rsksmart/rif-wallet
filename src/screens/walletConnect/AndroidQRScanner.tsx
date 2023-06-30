@@ -36,15 +36,12 @@ export const AndroidQRScanner = ({
           onCodeRead(values[0])
         } else {
           // Bad image - try again
-          Alert.alert(
-            'Error reading QR',
-            'The QR is not valid. Please try again.',
-          )
+          Alert.alert(t('android_qr_alert_title'), t('android_qr_alert_desc'))
         }
       }
     } catch (error) {
       if (error instanceof Error) {
-        Alert.alert('Erorr reading QR', error.toString())
+        Alert.alert(t('android_qr_alert_title'), error.toString())
       }
     } finally {
       setIsProcessingImage(false)
@@ -52,7 +49,11 @@ export const AndroidQRScanner = ({
   }
 
   if (!device) {
-    return <FullScreenSpinner message={{ text: 'Loading camera...' }} />
+    return (
+      <FullScreenSpinner
+        message={{ text: `${t('android_qr_loading_camera')}...` }}
+      />
+    )
   }
   return (
     <>
