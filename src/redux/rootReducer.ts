@@ -30,7 +30,11 @@ const migrations = {
 
 const settingsPersistConfig: PersistConfig<SettingsSlice> = {
   key: 'settings',
+<<<<<<< HEAD
   whitelist: ['pin', 'chainId'],
+=======
+  whitelist: ['pin', 'isFirstLaunch'],
+>>>>>>> f2b4ebfa (fix: keychain not being reset when deleting app)
   storage: reduxStorage,
 }
 

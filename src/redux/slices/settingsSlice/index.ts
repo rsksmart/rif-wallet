@@ -18,7 +18,7 @@ import {
 } from 'core/operations'
 import { deleteDomains } from 'storage/DomainsStore'
 import { deleteContacts as deleteContactsFromRedux } from 'store/slices/contactsSlice'
-import { deletePin, resetMainStorage } from 'storage/MainStorage'
+import { resetMainStorage } from 'storage/MainStorage'
 import { deleteKeys, getKeys } from 'storage/SecureStorage'
 import { sharedColors } from 'shared/constants'
 import { createRIFWalletFactory } from 'core/setup'
@@ -176,7 +176,16 @@ export const unlockApp = createAsyncThunk<
   AsyncThunkWithTypes
 >('settings/unlockApp', async (payload, thunkAPI) => {
   try {
-    const supportedBiometry = await getSupportedBiometryType()
+    // check if it is a first launch, deleteKeys
+    const {
+      settings: { isFirstLaunch },
+    } = thunkAPI.getState()
+    if (isFirstLaunch) {
+      await deleteKeys()
+      thunkAPI.dispatch(setIsFirstLaunch(false))
+      return thunkAPI.rejectWithValue('FIRST LAUNCH, DELETE PREVIOUS KEYS')
+    }
+
     const serializedKeys = await getKeys()
     const { chainId } = thunkAPI.getState().settings
     if (!serializedKeys) {
@@ -184,6 +193,7 @@ export const unlockApp = createAsyncThunk<
     }
 
     const pinUnlocked = payload?.pinUnlocked
+    const supportedBiometry = await getSupportedBiometryType()
 
     if (Platform.OS === 'android' && !supportedBiometry && !pinUnlocked) {
       const {
@@ -297,7 +307,7 @@ export const resetApp = createAsyncThunk(
       thunkAPI.dispatch(resetSocketState())
       thunkAPI.dispatch(deleteProfile())
       thunkAPI.dispatch(setPreviouslyUnlocked(false))
-      thunkAPI.dispatch(setPinState(''))
+      thunkAPI.dispatch(setPinState(null))
       resetMainStorage()
       return 'deleted'
     } catch (err) {
@@ -338,6 +348,7 @@ export const addNewWallet = createAsyncThunk(
 )
 
 const initialState: SettingsSlice = {
+  isFirstLaunch: true,
   isSetup: false,
   topColor: sharedColors.primary,
   requests: [],
@@ -348,7 +359,7 @@ const initialState: SettingsSlice = {
   chainType: ChainTypeEnum.TESTNET,
   appIsActive: false,
   unlocked: false,
-  previouslyUnlocked: true,
+  previouslyUnlocked: false,
   fullscreen: false,
   hideBalance: false,
   pin: null,
@@ -360,7 +371,10 @@ const settingsSlice = createSlice({
   name: 'settings',
   initialState,
   reducers: {
-    setIsSetup: (state, { payload }: { payload: boolean }) => {
+    setIsFirstLaunch: (state, { payload }: PayloadAction<boolean>) => {
+      state.isFirstLaunch = payload
+    },
+    setIsSetup: (state, { payload }: PayloadAction<boolean>) => {
       state.isSetup = payload
       return state
     },
@@ -387,7 +401,7 @@ const settingsSlice = createSlice({
     setPreviouslyUnlocked: (state, { payload }: PayloadAction<boolean>) => {
       state.previouslyUnlocked = payload
     },
-    setPinState: (state, { payload }: PayloadAction<string>) => {
+    setPinState: (state, { payload }: PayloadAction<string | null>) => {
       state.pin = payload
     },
     setWallets: (state, { payload }: PayloadAction<SetKeysAction>) => {
@@ -451,7 +465,6 @@ const settingsSlice = createSlice({
     },
     resetKeysAndPin: () => {
       deleteKeys()
-      deletePin()
       deleteDomains()
       deleteCache()
       return initialState
@@ -498,6 +511,7 @@ const settingsSlice = createSlice({
 })
 
 export const {
+  setIsFirstLaunch,
   setIsSetup,
   changeTopColor,
   onRequest,
