@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { StyleProp, StyleSheet, TextInput, View, ViewStyle } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
+import { useMemo } from 'react'
 
 import { shortAddress } from 'lib/utils'
 
@@ -31,7 +32,7 @@ interface Props {
   editable?: boolean
   hideable?: boolean
   handleAmountChange?: (text: string) => void
-  to?: ContactWithAddressRequired
+  contact?: ContactWithAddressRequired
   style?: StyleProp<ViewStyle>
   amIReceiver?: boolean
 }
@@ -46,7 +47,7 @@ export const TokenBalance = ({
   hideable = false,
   onHide = noop,
   handleAmountChange = noop,
-  to,
+  contact,
   style,
   amIReceiver,
 }: Props) => {
@@ -54,6 +55,19 @@ export const TokenBalance = ({
   const isRifToken =
     firstValue.symbol?.toUpperCase() === 'RIF' ||
     firstValue.symbol?.toUpperCase() === 'TRIF'
+
+  const toNameOrAddress = useMemo(() => {
+    if (!contact) {
+      return null
+    }
+    if (contact.name) {
+      return `${contact.name}.rsk`
+    }
+    if (contact.displayAddress && contact.displayAddress.length < 20) {
+      return contact.displayAddress
+    }
+    return shortAddress(contact.address)
+  }, [contact])
 
   return (
     <View style={[{ backgroundColor: color }, style, styles.container]}>
@@ -114,30 +128,28 @@ export const TokenBalance = ({
             </Typography>
           )}
         </View>
-        {to && (
+        {contact && (
           <View style={[styles.toAddressContainer]}>
             <Typography type="body1">
               {amIReceiver ? t('From') : t('To')}{' '}
               <Typography type="body1" style={{ color: sharedColors.primary }}>
-                {to.displayAddress && to.displayAddress.length < 20
-                  ? to.displayAddress
-                  : shortAddress(to.address)}
+                {toNameOrAddress}
               </Typography>
             </Typography>
           </View>
         )}
       </View>
       <View style={styles.rightColumn}>
-        {to && to.name ? (
+        {contact && contact.name ? (
           <View style={styles.contactCard}>
-            <Avatar size={46} name={to.name} />
+            <Avatar size={46} name={contact.name} />
             <View style={styles.contactName}>
               <Typography
                 type="h4"
                 numberOfLines={1}
                 adjustsFontSizeToFit
                 minimumFontScale={0.85}>
-                {to.name}
+                {contact.name}
               </Typography>
             </View>
           </View>

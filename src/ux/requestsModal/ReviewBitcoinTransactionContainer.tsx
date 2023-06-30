@@ -102,9 +102,7 @@ export const ReviewBitcoinTransactionContainer = ({
             tokenPrices.BTC.price,
           ).toString(),
         },
-      },
-      contact: {
-        address: addressToPay,
+        to: addressToPay,
       },
       buttons: [
         {

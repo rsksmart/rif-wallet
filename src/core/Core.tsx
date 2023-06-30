@@ -25,7 +25,7 @@ import {
 } from 'store/slices/settingsSlice'
 import { InjectSelectedWallet } from 'src/Context'
 import * as Screens from 'screens/index'
-import { sharedStyles } from 'src/shared/constants'
+import { sharedStyles } from 'shared/constants'
 
 import { useStateSubscription } from './hooks/useStateSubscription'
 import { Cover } from './components/Cover'

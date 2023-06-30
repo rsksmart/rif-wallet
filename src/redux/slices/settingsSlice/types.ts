@@ -56,6 +56,7 @@ export interface Bitcoin {
 }
 
 export interface SettingsSlice {
+  isFirstLaunch: boolean
   isSetup: boolean
   requests: RequestWithBitcoin[]
   topColor: ColorValue

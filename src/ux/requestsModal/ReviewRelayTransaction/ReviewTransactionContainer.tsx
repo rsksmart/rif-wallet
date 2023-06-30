@@ -16,15 +16,14 @@ import { TokenSymbol } from 'screens/home/TokenImage'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 import { TransactionSummaryComponent } from 'screens/transactionSummary/TransactionSummaryComponent'
 import { sharedColors } from 'shared/constants'
+import { chainTypesById } from 'shared/constants/chainConstants'
 import { errorHandler } from 'shared/utils'
-import { getContactsAsObject } from 'store/slices/contactsSlice'
 import { selectActiveWallet, selectChainId } from 'store/slices/settingsSlice'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppSelector } from 'store/storeUtils'
 
 import useEnhancedWithGas from '../useEnhancedWithGas'
-import { chainTypesById } from 'src/shared/constants/chainConstants'
 
 interface Props {
   request: SendTransactionRequest
@@ -41,7 +40,6 @@ export const ReviewTransactionContainer = ({
   const tokenPrices = useAppSelector(selectUsdPrices)
   // enhance the transaction to understand what it is:
   const { wallet } = useAppSelector(selectActiveWallet)
-  const contacts = useAppSelector(getContactsAsObject)
   const [error, setError] = useState<string | null>(null)
   const [txCostInRif, setTxCostInRif] = useState<BigNumber>()
   const { t } = useTranslation()
@@ -158,8 +156,8 @@ export const ReviewTransactionContainer = ({
           symbol: feeSymbol,
         },
         time: 'approx 1 min',
+        to,
       },
-      contact: contacts[to.toLowerCase()] || { address: to || '' },
       buttons: [
         {
           title: t('transaction_summary_title_confirm_button_title'),
@@ -183,7 +181,6 @@ export const ReviewTransactionContainer = ({
     feeQuote,
     symbol,
     feeSymbol,
-    contacts,
     to,
     t,
     confirmTransaction,

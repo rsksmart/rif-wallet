@@ -21,12 +21,17 @@ export const requestUsername = createAsyncThunk(
       thunkAPI.dispatch(setDuration(duration))
       let indexStatus = rnsProcessor.getStatus(alias)
       if (!indexStatus?.commitmentRequested) {
+        thunkAPI.dispatch(setStatus(ProfileStatus.WAITING_FOR_USER_COMMIT))
         await rnsProcessor.process(alias, duration)
         thunkAPI.dispatch(setStatus(ProfileStatus.REQUESTING))
       }
       indexStatus = rnsProcessor.getStatus(alias)
       if (indexStatus.commitmentRequested) {
-        return await commitment(rnsProcessor, alias)
+        return await commitment(
+          rnsProcessor,
+          alias,
+          IntervalProcessOrigin.RNS_ORIGINAL_TRANSACTION,
+        )
       }
       return null
     } catch (err) {
@@ -42,8 +47,7 @@ export const purchaseUsername = createAsyncThunk(
     thunkAPI,
   ) => {
     try {
-      const response = await rnsProcessor.register(domain)
-      return response
+      return await rnsProcessor.register(domain)
     } catch (err) {
       return thunkAPI.rejectWithValue(err)
     }
@@ -104,18 +108,44 @@ const profileSlice = createSlice({
   },
 })
 
-const commitment = (
+export enum IntervalProcessOrigin {
+  NONE = 'NONE',
+  RNS_ORIGINAL_TRANSACTION = 'RNS_ORIGINAL_TRANSACTION',
+  PROFILE_CREATE_EFFECT = 'PROFILE_CREATE_EFFECT',
+}
+const commitmentIntervalProcess: {
+  interval?: ReturnType<typeof setInterval>
+  intervalOrigin: IntervalProcessOrigin
+} = {
+  intervalOrigin: IntervalProcessOrigin.NONE,
+}
+
+export const commitment = (
   rnsProcessor: RnsProcessor,
   alias: string,
+  intervalProcessOrigin: IntervalProcessOrigin,
 ): Promise<ProfileStatus> => {
-  return new Promise(resolve => {
-    const intervalId = setInterval(() => {
-      rnsProcessor.canReveal(alias).then(canRevealResponse => {
-        if (canRevealResponse === DomainRegistrationEnum.COMMITMENT_READY) {
-          clearInterval(intervalId)
-          resolve(ProfileStatus.READY_TO_PURCHASE)
-        }
-      })
+  return new Promise((resolve, reject) => {
+    if (commitmentIntervalProcess.interval) {
+      reject('Interval is already running.')
+    }
+    commitmentIntervalProcess.intervalOrigin = intervalProcessOrigin
+    commitmentIntervalProcess.interval = setInterval(() => {
+      rnsProcessor
+        .canReveal(
+          alias,
+          intervalProcessOrigin ===
+            IntervalProcessOrigin.RNS_ORIGINAL_TRANSACTION,
+        )
+        .then(canRevealResponse => {
+          if (canRevealResponse === DomainRegistrationEnum.COMMITMENT_READY) {
+            clearInterval(commitmentIntervalProcess.interval)
+            commitmentIntervalProcess.interval = undefined
+            commitmentIntervalProcess.intervalOrigin =
+              IntervalProcessOrigin.NONE
+            resolve(ProfileStatus.READY_TO_PURCHASE)
+          }
+        })
     }, 1000)
   })
 }

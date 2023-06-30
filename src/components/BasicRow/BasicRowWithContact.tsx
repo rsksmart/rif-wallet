@@ -1,28 +1,19 @@
-import { useSelector } from 'react-redux'
-
 import { BasicRow, BasicRowProps } from 'components/BasicRow/index'
-import { getContactByAddress } from 'store/slices/contactsSlice'
+import { Contact } from 'shared/types'
 
 export interface BasicRowWithContact extends BasicRowProps {
-  addressToSearch: string
+  contact: Contact | undefined
 }
 
 export const BasicRowWithContact = ({
-  addressToSearch,
+  contact,
   ...props
-}: BasicRowWithContact) => {
-  const contact = useSelector(
-    getContactByAddress(addressToSearch.toLowerCase()),
-  )
-
-  return (
-    <BasicRow
-      {...props}
-      avatar={{
-        name: contact?.name,
-        imageSource: contact ? undefined : require('src/images/user.png'),
-      }}
-      label={contact?.name || props.label}
-    />
-  )
-}
+}: BasicRowWithContact) => (
+  <BasicRow
+    {...props}
+    avatar={{
+      name: contact?.name,
+      imageSource: contact ? undefined : require('src/images/user.png'),
+    }}
+  />
+)

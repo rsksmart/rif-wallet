@@ -302,6 +302,7 @@ const resources = {
       pin_screen_confirm_pin_title: 'Confirm PIN',
       pin_screen_header_title: 'PIN',
       pin_screen_wrong_pin: 'Wrong PIN',
+      pin_settings_open_keyboard_btn: 'Open Keyboard',
       wallet_deploy_title: 'Deploy RIF wallet',
       wallet_deploy_desc1:
         'RIF wallet is a smart contract and because of this, it needs to be deployed in the blockchain.',
@@ -340,6 +341,9 @@ const resources = {
         'We strongly advise exercising caution, employing the best security practices,and safeguarding your assets diligently."',
       security_i_agree: 'I agree with the conditions. ',
       security_info_btn: 'Continue',
+      android_qr_alert_title: 'Error reading QR',
+      android_qr_alert_desc: 'The QR could not be parsed. Please try again.',
+      android_qr_loading_camera: 'Loading camera',
     },
   },
   es: {

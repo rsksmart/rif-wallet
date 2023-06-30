@@ -16,7 +16,7 @@ import { useAppSelector } from 'store/storeUtils'
 import { isMyAddress } from 'components/address/lib'
 import { DollarIcon } from 'components/icons/DollarIcon'
 import { FullScreenSpinner } from 'components/fullScreenSpinner'
-import { ContactWithAddressRequired } from 'shared/types'
+import { getContactByAddress } from 'store/slices/contactsSlice'
 
 import {
   TransactionStatus,
@@ -34,7 +34,6 @@ type TransactionSummaryComponentProps = Omit<
 
 export const TransactionSummaryComponent = ({
   transaction,
-  contact,
   buttons,
   functionName,
   goBack,
@@ -49,10 +48,13 @@ export const TransactionSummaryComponent = ({
   const iconObject = transactionStatusToIconPropsMap.get(status)
   const transactionStatusText = transactionStatusDisplayText.get(status)
 
-  const amIReceiver = useMemo(
-    () => transaction.amIReceiver ?? isMyAddress(wallet, contact.address),
-    [wallet, contact.address, transaction.amIReceiver],
+  const amIReceiver =
+    transaction.amIReceiver ?? isMyAddress(wallet, transaction.to)
+  const contactAddress = amIReceiver ? transaction.from || '' : transaction.to
+  const contact = useAppSelector(
+    getContactByAddress(contactAddress.toLowerCase()),
   )
+  const contactToUse = contact || { address: contactAddress }
 
   const title = useMemo(() => {
     if (amIReceiver) {
@@ -86,15 +88,6 @@ export const TransactionSummaryComponent = ({
     [amIReceiver, usdValue.balance, fee.usdValue],
   )
 
-  const contactToUse: ContactWithAddressRequired = useMemo(() => {
-    if (amIReceiver) {
-      return {
-        address: transaction.from ?? '',
-      }
-    }
-    return contact
-  }, [amIReceiver, transaction, contact])
-
   return (
     <View style={[styles.screen, { paddingBottom: bottom }]}>
       {isLoaded === false && <FullScreenSpinner />}
@@ -111,7 +104,7 @@ export const TransactionSummaryComponent = ({
         <TokenBalance
           firstValue={transaction.tokenValue}
           secondValue={transaction.usdValue}
-          to={contactToUse}
+          contact={contactToUse}
           amIReceiver={amIReceiver}
         />
         {functionName && (
@@ -237,7 +230,7 @@ export const TransactionSummaryComponent = ({
               style={[sharedStyles.textRight, styles.contactAddress]}
               numberOfLines={1}
               ellipsizeMode={'middle'}>
-              {contact.address}
+              {contactToUse.address}
             </Typography>
           </View>
         </View>

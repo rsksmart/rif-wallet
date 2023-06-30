@@ -67,6 +67,7 @@ export const SettingsScreen = ({
   const goToPinScreen = useCallback(() => {
     navigation.navigate(settingsStackRouteNames.ChangePinScreen, {
       isChangeRequested: true,
+      backScreen: settingsStackRouteNames.SettingsScreen,
     })
   }, [navigation])
 

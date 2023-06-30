@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 import { shortAddress } from 'lib/utils'
+import { RnsProcessor } from 'lib/rns'
 
 import {
   BarButtonGroupContainer,
@@ -32,9 +33,15 @@ import {
 } from 'shared/constants'
 import { sharedStyles } from 'shared/styles'
 import { castStyle } from 'shared/utils'
-import { setProfile, setStatus } from 'store/slices/profileSlice'
+import {
+  commitment,
+  IntervalProcessOrigin,
+  setProfile,
+  setStatus,
+} from 'store/slices/profileSlice'
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { selectRequests } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { AppSpinner } from 'components/index'
 import { AvatarIcon } from 'components/icons/AvatarIcon'
@@ -50,6 +57,7 @@ export const ProfileCreateScreen = ({
   const [infoBoxClosed, setInfoBoxClosed] = useState<boolean>(
     profile.infoBoxClosed ?? false,
   )
+  const requests = useAppSelector(selectRequests)
 
   const [username, setUsername] = useState<string>('')
   const methods = useForm()
@@ -120,6 +128,36 @@ export const ProfileCreateScreen = ({
         headerLeftOption(() => navigation.navigate(rootTabsRouteNames.Home)),
     })
   }, [navigation])
+
+  useEffect(() => {
+    if (
+      wallet &&
+      profile.alias &&
+      profile.status === ProfileStatus.REQUESTING
+    ) {
+      const rns = new RnsProcessor({ wallet })
+      commitment(
+        rns,
+        profile.alias.split('.rsk')[0],
+        IntervalProcessOrigin.PROFILE_CREATE_EFFECT,
+      )
+        .then(profileStatus => dispatch(setStatus(profileStatus)))
+        .catch(error => {
+          console.log(error)
+        })
+    }
+    if (requests.length === 0) {
+      if (profile.status === ProfileStatus.WAITING_FOR_USER_COMMIT) {
+        // User got stuck in requesting the commit - set profileStatus back to 0
+        dispatch(setStatus(ProfileStatus.NONE))
+      }
+      if (profile.status === ProfileStatus.PURCHASING) {
+        // User got stuck in requesting the purchase - set profileStatus back to 3
+        dispatch(setStatus(ProfileStatus.READY_TO_PURCHASE))
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <ScrollView
@@ -238,13 +276,7 @@ export const ProfileCreateScreen = ({
               profile.status === ProfileStatus.PURCHASING ? false : !!username
             }
             onPress={() => {
-              if (profile.status === ProfileStatus.PURCHASING) {
-                // For some reason the user got stuck in PURCHASING - set it back one step
-                // The PurchaseScreen will render automatically
-                dispatch(setStatus(ProfileStatus.READY_TO_PURCHASE))
-              } else {
-                navigation.navigate(profileStackRouteNames.SearchDomain)
-              }
+              navigation.navigate(profileStackRouteNames.SearchDomain)
             }}
           />
         </FormProvider>

@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { useProfileStatusColors } from 'lib/rns'
 
-import { AppTouchable } from 'components/index'
+import { AppTouchable } from 'components/appTouchable'
 import { InjectedScreens } from 'core/Core'
 import { ProfileCreateScreen, ShareProfileScreen } from 'screens/index'
 import { sharedColors, sharedStyles } from 'shared/constants'

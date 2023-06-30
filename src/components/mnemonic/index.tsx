@@ -6,8 +6,8 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
+import { AppTouchable } from 'components/appTouchable'
 
-import { AppTouchable } from '../appTouchable'
 import { AppButton, AppButtonWidthVarietyEnum } from '../button'
 import { EyeIcon } from '../icons/EyeIcon'
 import { Typography } from '../typography'
