@@ -1,6 +1,6 @@
 import 'react-native-reanimated'
-import { useCallback, useEffect, useState } from 'react'
-import { Alert, Linking, StyleSheet, View } from 'react-native'
+import { useEffect, useState } from 'react'
+import { StyleSheet, View } from 'react-native'
 import BarcodeMask from 'react-native-barcode-mask'
 import {
   Camera,
@@ -21,11 +21,11 @@ import { useAppDispatch } from 'store/storeUtils'
 import { setFullscreen } from 'store/slices/settingsSlice'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { navigationContainerRef } from 'core/Core'
 import { AppSpinner } from 'components/spinner'
 import { AppTouchable } from 'components/appTouchable'
+import { useCheckCameraPermissions } from 'components/QRCodeScanner/useCheckCameraPermissions'
 
-interface QRCodeScannerProps {
+export interface QRCodeScannerProps {
   onClose: () => void
   onCodeRead: (data: string) => void
 }
@@ -38,37 +38,13 @@ export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
   const dispatch = useAppDispatch()
   const isFocused = useIsFocused()
 
+  useCheckCameraPermissions({ t, isFocused })
   // Do not use the hook that comes with the camera as it'll not work
   const frameProcessor = useFrameProcessor(frame => {
     'worklet'
     const detectedBarcodes = scanBarcodes(frame, [BarcodeFormat.QR_CODE])
     runOnJS(setBarcode)(detectedBarcodes[0])
   }, [])
-
-  const permissionHandler = useCallback(async () => {
-    const cameraPermission = await Camera.getCameraPermissionStatus()
-    if (cameraPermission === 'not-determined') {
-      const cameraStatus = await Camera.requestCameraPermission()
-      cameraStatus === 'denied' && navigationContainerRef.goBack()
-    } else if (cameraPermission === 'denied') {
-      Alert.alert(t('camera_alert_title'), t('camera_alert_body'), [
-        {
-          text: t('camera_alert_button_open_settings'),
-          onPress: () => Linking.openSettings(),
-        },
-        {
-          text: t('camera_alert_button_cancel'),
-          onPress: () => navigationContainerRef.goBack(),
-        },
-      ])
-    }
-  }, [t])
-
-  useEffect(() => {
-    if (isFocused) {
-      permissionHandler()
-    }
-  }, [permissionHandler, isFocused])
 
   useEffect(() => {
     if (barcode && barcode.rawValue) {
