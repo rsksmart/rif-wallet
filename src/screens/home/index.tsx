@@ -84,33 +84,34 @@ export const HomeScreen = ({
     backgroundColor: selectedAddress ? selectedColor : sharedColors.borderColor,
   }
 
-  const ramp = useMemo(
-    () =>
-      new RampSdk({
-        // for testnet:
-        url: 'https://app.demo.ramp.network',
+  const rampConfig = useMemo(
+    () => ({
+      // for testnet:
+      url: 'https://app.demo.ramp.network',
 
-        // for IOV:
-        swapAsset: 'RSK_RDOC',
-        // userAddress must be lowercase or checksummed correctly:
-        userAddress: wallet
-          ? toChecksumAddress(
-              wallet.smartWalletAddress,
-              getChainIdByType(chainType),
-            )
-          : '',
+      // for IOV:
+      swapAsset: 'RSK_RDOC',
+      // userAddress must be lowercase or checksummed correctly:
+      userAddress: wallet
+        ? toChecksumAddress(
+            wallet.smartWalletAddress,
+            getChainIdByType(chainType),
+          )
+        : '',
 
-        // for the dapp:
-        hostAppName: 'RIF Wallet',
-        hostLogoUrl: 'https://rampnetwork.github.io/assets/misc/test-logo.png',
-      }),
+      // for the dapp:
+      hostAppName: 'RIF Wallet',
+      hostLogoUrl: 'https://rampnetwork.github.io/assets/misc/test-logo.png',
+    }),
     [wallet, chainType],
   )
 
+  const ramp = useMemo(() => new RampSdk(), [])
+
   const addBalance = useCallback(() => {
     ramp.on('*', console.log)
-    ramp.show()
-  }, [ramp])
+    ramp.show(rampConfig)
+  }, [ramp, rampConfig])
 
   const handleBitcoinSendReceive = useCallback(
     (
