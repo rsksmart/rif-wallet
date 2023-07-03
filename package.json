@@ -23,7 +23,7 @@
   "dependencies": {
     "@ethersproject/shims": "^5.4.0",
     "@hookform/resolvers": "^2.9.11",
-    "@ramp-network/react-native-sdk": "^0.3.1",
+    "@ramp-network/react-native-sdk": "^1.0.1",
     "@react-native-community/clipboard": "^1.5.1",
     "@react-native-community/hooks": "^2.8.1",
     "@react-navigation/bottom-tabs": "^6.5.2",
