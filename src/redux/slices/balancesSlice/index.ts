@@ -44,7 +44,7 @@ export const addOrUpdateBalances = createAsyncThunk<
     const balances: TokenBalanceObject[] = payload.map(b => {
       const { balance, usdBalance } = getBalance(
         b,
-        usdPrices[b.contractAddress].price,
+        usdPrices[b.contractAddress]?.price ?? 0,
       )
       return {
         ...b,
