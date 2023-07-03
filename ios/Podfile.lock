@@ -108,7 +108,6 @@ PODS:
   - jail-monkey (2.7.0):
     - React-Core
   - libevent (2.1.12)
-  - Microblink (5.16.0)
   - MLImage (1.0.0-beta3)
   - MLKitBarcodeScanning (2.2.0):
     - MLKitCommon (~> 8.0)
@@ -138,13 +137,10 @@ PODS:
   - nanopb/decode (2.30909.0)
   - nanopb/encode (2.30909.0)
   - OpenSSL-Universal (1.1.1100)
-  - Passbase (2.14.0):
-    - Microblink (= 5.16.0)
   - PromisesObjC (2.1.1)
   - Protobuf (3.21.12)
-  - Ramp (2.0.0):
-    - Passbase (~> 2.8)
-  - ramp-network-react-native-sdk (0.3.1):
+  - Ramp (4.0.1)
+  - ramp-network-react-native-sdk (1.0.1):
     - Ramp
     - React-Core
   - RCT-Folly (2021.07.22.00):
@@ -468,6 +464,9 @@ PODS:
     - React-Core
   - RNKeychain (8.1.1):
     - React-Core
+  - RNQrGenerator (1.3.1):
+    - React
+    - ZXingObjC
   - RNReanimated (2.12.0):
     - DoubleConversion
     - FBLazyVector
@@ -513,6 +512,9 @@ PODS:
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
+  - ZXingObjC (3.6.5):
+    - ZXingObjC/All (= 3.6.5)
+  - ZXingObjC/All (3.6.5)
 
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
@@ -546,7 +548,7 @@ DEPENDENCIES:
   - jail-monkey (from `../node_modules/jail-monkey`)
   - libevent (~> 2.1.12)
   - OpenSSL-Universal (= 1.1.1100)
-  - Ramp (from `https://github.com/RampNetwork/ramp-sdk-ios`, tag `2.0.0`)
+  - Ramp (from `https://github.com/RampNetwork/ramp-sdk-ios`, tag `4.0.1`)
   - "ramp-network-react-native-sdk (from `../node_modules/@ramp-network/react-native-sdk`)"
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
@@ -588,6 +590,7 @@ DEPENDENCIES:
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNKeychain (from `../node_modules/react-native-keychain`)
+  - RNQrGenerator (from `../node_modules/rn-qr-generator`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -628,10 +631,7 @@ SPEC REPOS:
     - Protobuf
     - SocketRocket
     - YogaKit
-  https://github.com/passbase/cocoapods-specs.git:
-    - Passbase
-  https://github.com/passbase/microblink-cocoapods-specs.git:
-    - Microblink
+    - ZXingObjC
 
 EXTERNAL SOURCES:
   boost:
@@ -652,7 +652,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/jail-monkey"
   Ramp:
     :git: https://github.com/RampNetwork/ramp-sdk-ios
-    :tag: 2.0.0
+    :tag: 4.0.1
   ramp-network-react-native-sdk:
     :path: "../node_modules/@ramp-network/react-native-sdk"
   RCT-Folly:
@@ -731,6 +731,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNKeychain:
     :path: "../node_modules/react-native-keychain"
+  RNQrGenerator:
+    :path: "../node_modules/rn-qr-generator"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -749,7 +751,7 @@ EXTERNAL SOURCES:
 CHECKOUT OPTIONS:
   Ramp:
     :git: https://github.com/RampNetwork/ramp-sdk-ios
-    :tag: 2.0.0
+    :tag: 4.0.1
 
 SPEC CHECKSUMS:
   boost: a7c83b31436843459a1961bfd74b96033dc77234
@@ -778,7 +780,6 @@ SPEC CHECKSUMS:
   hermes-engine: 2af7b7a59128f250adfd86f15aa1d5a2ecd39995
   jail-monkey: de7eab0c9cbe4e7cdd2f80d04f812337ae94b2e0
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
-  Microblink: 9443ff3c708a97673e4999389626079e10a1bbc1
   MLImage: 489dfec109f21da8621b28d476401aaf7a0d4ff4
   MLKitBarcodeScanning: d92fe1911001ec36870162c5a0eb206f612b7169
   MLKitCommon: f6da6c5659618c070b50a80db01248ebe2964175
@@ -787,11 +788,10 @@ SPEC CHECKSUMS:
   MMKVCore: ddf41b9d9262f058419f9ba7598719af56c02cd3
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
-  Passbase: 9f3526df7d2655fbe35c75dc7c132ebbb35c09dc
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
   Protobuf: 120350fc38646e2dedc26f49ecba778184ea1de2
-  Ramp: c522303707480a458eef7d05c96e8c9604be4840
-  ramp-network-react-native-sdk: 4f3f021d49252d34d9803bf1b4eebea905996c52
+  Ramp: 3f843fb75cac12ad40842afa3226bae36dc93521
+  ramp-network-react-native-sdk: dabb00cff767616c6c50c1964eea3c0fcad7bee9
   RCT-Folly: 0080d0a6ebf2577475bda044aa59e2ca1f909cda
   RCTRequired: e1866f61af7049eb3d8e08e8b133abd38bc1ca7a
   RCTTypeSafety: 27c2ac1b00609a432ced1ae701247593f07f901e
@@ -830,6 +830,7 @@ SPEC CHECKSUMS:
   RNDeviceInfo: 4701f0bf2a06b34654745053db0ce4cb0c53ada7
   RNGestureHandler: 62232ba8f562f7dea5ba1b3383494eb5bf97a4d3
   RNKeychain: ff836453cba46938e0e9e4c22e43d43fa2c90333
+  RNQrGenerator: 90461ba3ca88c1d38ef73da50fade35d9648215d
   RNReanimated: 2a91e85fcd343f8af3c58d3425b99fdd285590a5
   RNScreens: 34cc502acf1b916c582c60003dc3089fa01dc66d
   RNSVG: ecd661f380a07ba690c9c5929c475a44f432d674
@@ -839,7 +840,8 @@ SPEC CHECKSUMS:
   VisionCamera: 4cfd685b1e671fea4aa0400905ab397f0e972210
   Yoga: 99caf8d5ab45e9d637ee6e0174ec16fbbb01bcfc
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
+  ZXingObjC: fdbb269f25dd2032da343e06f10224d62f537bdb
 
-PODFILE CHECKSUM: 21bc90aed81544890fd77bb41e80e76ecfea9aba
+PODFILE CHECKSUM: 3424d9acc50d61eba1c253c91c81edcbd92dd415
 
 COCOAPODS: 1.11.3
