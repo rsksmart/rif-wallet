@@ -1,6 +1,6 @@
 {
   "name": "rif_wallet",
-  "version": "0.0.6-build.9",
+  "version": "0.0.6",
   "private": true,
   "scripts": {
     "android": "ENVFILE=.env react-native run-android",
