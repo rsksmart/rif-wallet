@@ -145,7 +145,6 @@ export const AddressInput = ({
           })
           break
         case AddressValidationMessage.INVALID_ADDRESS:
-          console.log('AddressValidationMessage.INVALID_ADDRESS')
           if (isBitcoin) {
             return
           }
