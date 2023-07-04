@@ -180,7 +180,7 @@ export const unlockApp = createAsyncThunk<
     const {
       settings: { isFirstLaunch },
     } = thunkAPI.getState()
-    if (isFirstLaunch) {
+    if (isFirstLaunch && !__DEV__) {
       await deleteKeys()
       thunkAPI.dispatch(setIsFirstLaunch(false))
       return thunkAPI.rejectWithValue('FIRST LAUNCH, DELETE PREVIOUS KEYS')
