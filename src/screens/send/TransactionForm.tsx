@@ -162,7 +162,6 @@ export const TransactionForm = ({
       if (_balanceInverted) {
         const balanceToSet = convertUSDtoToken(numberAmount, tokenQuote)
         setValue('amount', balanceToSet)
-
         setSecondBalance(prev => ({
           ...prev,
           balance: balanceToSet.toString(),
@@ -171,7 +170,7 @@ export const TransactionForm = ({
         setValue('amount', numberAmount)
         setSecondBalance(prev => ({
           ...prev,
-          balance: convertTokenToUSD(numberAmount, tokenQuote).toString(),
+          balance: convertTokenToUSD(numberAmount, tokenQuote).toFixed(2),
         }))
       }
     },
@@ -213,20 +212,11 @@ export const TransactionForm = ({
           symbolType: 'icon',
         }
 
-        setFirstBalance(prevFirstBalance => {
-          if (!balanceInverted) {
-            return tokenObject
-          } else {
-            return prevFirstBalance
-          }
-        })
-        setSecondBalance(prevSecondBalance => {
-          if (!balanceInverted) {
-            return prevSecondBalance
-          } else {
-            return tokenObject
-          }
-        })
+        if (balanceInverted) {
+          setSecondBalance(tokenObject)
+        } else {
+          setFirstBalance(tokenObject)
+        }
         setSelectedFeeToken(token)
         handleAmountChange('', balanceInverted)
         setShowTxSelector(false)
@@ -245,7 +235,7 @@ export const TransactionForm = ({
     setBalanceInverted(prevInverted => {
       setFirstBalance(prevFirstBalance => {
         setSecondBalance(prevFirstBalance)
-        handleAmountChange(prevFirstBalance.balance, !prevInverted)
+        handleAmountChange(secondBalance.balance, !prevInverted)
         return secondBalance
       })
       return !prevInverted
