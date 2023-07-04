@@ -16,8 +16,8 @@ import {
   shortAddress,
 } from 'lib/utils'
 
-import { AddressInputSelector } from 'components/address/AddressInputSelector'
 import {
+  AddressInput,
   AppButton,
   AppButtonBackgroundVarietyEnum,
   AppTouchable,
@@ -286,11 +286,11 @@ export const TransactionForm = ({
               leftIcon={<Avatar name={recipient.name} size={32} />}
             />
           ) : (
-            <AddressInputSelector
+            <AddressInput
               label={t('transaction_form_recepient_label')}
               placeholder={t('transaction_form_recepient_label')}
-              value={to}
               inputName={'to'}
+              value={to}
               onChangeAddress={handleTargetAddressChange}
               resetValue={() => {
                 resetField('to')
@@ -298,7 +298,7 @@ export const TransactionForm = ({
               }}
               testID={'To.Input'}
               chainId={chainId}
-              token={selectedToken}
+              isBitcoin={'satoshis' in selectedToken}
             />
           )}
           <TokenBalance
