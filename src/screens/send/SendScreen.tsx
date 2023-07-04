@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react'
 import { Alert, Keyboard, KeyboardAvoidingView, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { useIsFocused } from '@react-navigation/native'
+import { convertSatoshiToBtcHuman } from '@rsksmart/rif-wallet-bitcoin'
 
 import { sharedHeaderLeftOptions } from 'navigation/index'
 import {
@@ -26,6 +27,7 @@ import { FeedbackModal } from 'components/feedbackModal'
 
 import { TransactionForm } from './TransactionForm'
 import { usePaymentExecutor } from './usePaymentExecutor'
+import { TokenSymbol } from '../home/TokenImage'
 
 export const SendScreen = ({
   route,
@@ -146,6 +148,13 @@ export const SendScreen = ({
     }
   }, [navigation, currentTransaction])
 
+  const value =
+    currentTransaction && currentTransaction.value
+      ? currentTransaction.symbol === TokenSymbol.BTC
+        ? convertSatoshiToBtcHuman(currentTransaction.value)
+        : currentTransaction.value
+      : undefined
+
   return (
     <KeyboardAvoidingView
       style={sharedStyles.screen}
@@ -153,11 +162,7 @@ export const SendScreen = ({
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       {/* Render Feedback when transaction is PENDING */}
       <FeedbackModal
-        visible={Boolean(
-          currentTransaction?.status === 'PENDING' &&
-            currentTransaction.value &&
-            currentTransaction.symbol,
-        )}
+        visible={Boolean(value)}
         title={t('transaction_summary_congrats')}
         texts={[
           `${t('transaction_summary_you_sent')} ${currentTransaction?.value} ${

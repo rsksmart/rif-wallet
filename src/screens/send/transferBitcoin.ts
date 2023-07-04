@@ -49,6 +49,7 @@ export const transferBitcoin = ({
       if (txIdJson.result) {
         // success
         if (onSetCurrentTransaction) {
+          //@TODO: make the status a constant value
           onSetCurrentTransaction({
             status: 'PENDING',
             to,
