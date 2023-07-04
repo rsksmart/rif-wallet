@@ -2,11 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { getSupportedBiometryType } from 'react-native-keychain'
 import { Platform } from 'react-native'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
-import Keychain from 'react-native-keychain'
-import {
-  RifWalletServicesAuth,
-  RifWalletServicesFetcher,
-} from '@rsksmart/rif-wallet-services'
+import { RifWalletServicesFetcher } from '@rsksmart/rif-wallet-services'
 
 import { KeyManagementSystem } from 'lib/core'
 
@@ -21,10 +17,11 @@ import { deleteContacts as deleteContactsFromRedux } from 'store/slices/contacts
 import { resetMainStorage } from 'storage/MainStorage'
 import { deleteKeys, getKeys } from 'storage/SecureStorage'
 import { sharedColors } from 'shared/constants'
-import { createRIFWalletFactory } from 'core/setup'
+import { createPublicAxios, createRIFWalletFactory } from 'core/setup'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { deleteProfile } from 'store/slices/profileSlice'
 import { navigationContainerRef } from 'core/Core'
+import { initializeBitcoin } from 'core/hooks/bitcoin/initializeBitcoin'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { createKeysRouteNames } from 'navigation/createKeysNavigator'
 import { AsyncThunkWithTypes } from 'store/store'
@@ -34,14 +31,6 @@ import {
   SocketsEvents,
   socketsEvents,
 } from 'src/subscriptions/rifSockets'
-import { authAxios, createPublicAxios, authClient } from 'core/setup'
-import {
-  deleteSignUp,
-  getSignUP,
-  hasSignUP,
-  saveSignUp,
-} from 'storage/MainStorage'
-import { initializeBitcoin } from 'core/hooks/bitcoin/initializeBitcoin'
 import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 
 import {
@@ -114,30 +103,13 @@ export const createWallet = createAsyncThunk<
 
     thunkAPI.dispatch(setChainId(chainId))
 
-    const rifWalletAuth = new RifWalletServicesAuth<
-      Keychain.Options,
-      ReturnType<typeof Keychain.setInternetCredentials>,
-      ReturnType<typeof Keychain.resetInternetCredentials>
-    >(createPublicAxios(chainId), currentWallet, {
-      authClient,
-      onGetSignUp: getSignUP,
-      onHasSignUp: hasSignUP,
-      onDeleteSignUp: deleteSignUp,
-      onSaveSignUp: saveSignUp,
-      onSetInternetCredentials: Keychain.setInternetCredentials,
-      onResetInternetCredentials: Keychain.resetInternetCredentials,
-    })
-
-    const { accessToken, refreshToken } = await rifWalletAuth.login()
-
-    const fetcherInstance = new RifWalletServicesFetcher<
-      Keychain.Options,
-      ReturnType<typeof Keychain.setInternetCredentials>
-    >(authAxios, accessToken, refreshToken, {
-      defaultChainId: chainId.toString(),
-      onSetInternetCredentials: Keychain.setInternetCredentials,
-      resultsLimit: 10,
-    })
+    const fetcherInstance = new RifWalletServicesFetcher(
+      createPublicAxios(chainId),
+      {
+        defaultChainId: chainId.toString(),
+        resultsLimit: 10,
+      },
+    )
 
     const { usdPrices } = thunkAPI.getState()
 
@@ -243,30 +215,13 @@ export const unlockApp = createAsyncThunk<
       rifWalletsDictionary[Object.keys(rifWalletsDictionary)[0]]
 
     // create fetcher
-    const rifWalletAuth = new RifWalletServicesAuth<
-      Keychain.Options,
-      ReturnType<typeof Keychain.setInternetCredentials>,
-      ReturnType<typeof Keychain.resetInternetCredentials>
-    >(createPublicAxios(chainId), currentWallet, {
-      authClient,
-      onGetSignUp: getSignUP,
-      onHasSignUp: hasSignUP,
-      onDeleteSignUp: deleteSignUp,
-      onSaveSignUp: saveSignUp,
-      onSetInternetCredentials: Keychain.setInternetCredentials,
-      onResetInternetCredentials: Keychain.resetInternetCredentials,
-    })
-
-    const { accessToken, refreshToken } = await rifWalletAuth.login()
-
-    const fetcherInstance = new RifWalletServicesFetcher<
-      Keychain.Options,
-      ReturnType<typeof Keychain.setInternetCredentials>
-    >(authAxios, accessToken, refreshToken, {
-      defaultChainId: chainId.toString(),
-      onSetInternetCredentials: Keychain.setInternetCredentials,
-      resultsLimit: 10,
-    })
+    const fetcherInstance = new RifWalletServicesFetcher(
+      createPublicAxios(chainId),
+      {
+        defaultChainId: chainId.toString(),
+        resultsLimit: 10,
+      },
+    )
 
     const { usdPrices } = thunkAPI.getState()
 
