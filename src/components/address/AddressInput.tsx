@@ -46,6 +46,11 @@ const typeColorMap = new Map([
 
 const defaultStatus = { type: Status.READY, value: '' }
 
+enum CoinType {
+  RSK = 137,
+  BTC = 0,
+}
+
 export const AddressInput = ({
   isBitcoin,
   label,
@@ -111,7 +116,7 @@ export const AddressInput = ({
           })
 
           getRnsResolver(chainId)
-            .addr(userInput)
+            .addr(userInput, isBitcoin ? CoinType.BTC : CoinType.RSK)
             .then((resolvedAddress: string) => {
               setDomainFound(true)
               setStatus({
@@ -145,9 +150,6 @@ export const AddressInput = ({
           })
           break
         case AddressValidationMessage.INVALID_ADDRESS:
-          if (isBitcoin) {
-            return
-          }
           setStatus({
             type: Status.ERROR,
             value: t('contact_form_address_invalid'),
