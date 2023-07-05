@@ -20,14 +20,12 @@ export const createStore = () => ({
     return value ? value : undefined
   },
   save: (session: IWCSession) => {
-    const storedSessions = MainStorage.get(WC_KEY)
-
-    if (storedSessions && typeof storedSessions === 'object') {
-      return MainStorage.set(WC_KEY, {
-        ...storedSessions,
-        [session.key]: session,
-      })
+    let storedSessions = MainStorage.get(WC_KEY)
+    if (!storedSessions) {
+      storedSessions = {}
     }
+    storedSessions[session.key] = session
+    return MainStorage.set(WC_KEY, storedSessions)
   },
   remove: (key: string) => {
     const sessions = MainStorage.get(WC_KEY)

@@ -1,10 +1,10 @@
-import { BigNumberish } from 'ethers'
 import { useCallback } from 'react'
 
 import { RequestWithBitcoin } from 'shared/types'
 import { ReviewBitcoinTransactionContainer } from 'src/ux/requestsModal/ReviewBitcoinTransactionContainer'
 
 import { ReviewTransactionContainer } from './ReviewRelayTransaction/ReviewTransactionContainer'
+import { SignMessageRequestContainer } from './SignMessageRequestContainer'
 
 interface Props {
   request: RequestWithBitcoin
@@ -14,7 +14,7 @@ interface Props {
 export interface RequestTypeSwitchProps {
   request: RequestWithBitcoin
   onCancel: () => void
-  onConfirm: (amount: BigNumberish, tokenSymbol: string) => void
+  onConfirm: () => void
 }
 
 const RequestTypeSwitch = ({
@@ -29,6 +29,9 @@ const RequestTypeSwitch = ({
       break
     case 'SEND_BITCOIN':
       ComponentToRender = ReviewBitcoinTransactionContainer
+      break
+    case 'signMessage':
+      ComponentToRender = SignMessageRequestContainer
       break
     default:
       return null

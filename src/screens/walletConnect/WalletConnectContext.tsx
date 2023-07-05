@@ -65,11 +65,15 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
   }
 
   const subscribeToEvents = useCallback(
-    (wc: WalletConnect, adapter: WalletConnectAdapter) => {
-      unsubscribeToEvents(wc)
-
+    async (wc: WalletConnect, adapter: WalletConnectAdapter) => {
+      await unsubscribeToEvents(wc)
       wc.on('session_request', async (error, payload) => {
-        console.log('EVENT', 'session_request', error, payload)
+        console.log({
+          1: 'EVENT: 69',
+          2: 'session_request',
+          3: error,
+          4: payload,
+        })
 
         if (error) {
           throw error
@@ -80,9 +84,8 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
           { wcKey: wc.key } as never,
         )
       })
-
       wc.on('call_request', async (error, payload) => {
-        console.log('EVENT', 'call_request', error, payload)
+        console.log({ 1: 'EVENT: 82', 2: 'call_request', 3: error, 4: payload })
         if (error) {
           throw error
         }
@@ -94,19 +97,18 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
 
         adapter
           .handleCall(method, params)
-          .then(result => wc?.approveRequest({ id, result }))
+          .then(result => wc.approveRequest({ id, result }))
           .catch((errorReason: string) =>
-            wc?.rejectRequest({ id, error: { message: errorReason } }),
+            wc.rejectRequest({ id, error: { message: errorReason } }),
           )
       })
-
       wc.on('disconnect', async error => {
-        console.log('EVENT', 'disconnect', error)
+        console.log('EVENT: 100', 'disconnect', error)
         if (error) {
           throw error
         }
 
-        unsubscribeToEvents(wc)
+        await unsubscribeToEvents(wc)
         deleteWCSession(wc.uri)
         setConnections(prev => {
           const result = { ...prev }
@@ -117,32 +119,37 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
     },
     [navigation],
   )
-
   const handleApprove = async (wc: WalletConnect, wallet: RIFWallet | null) => {
-    if (wc && wallet) {
-      wc.approveSession({
-        accounts: [wallet.smartWalletAddress],
-        chainId: await wallet.getChainId(),
-      })
-
-      saveWCSession({
-        key: wc.key,
-        uri: wc.uri,
-        session: wc.session,
-        walletAddress: wallet.address,
-      })
-
-      const adapter = new WalletConnectAdapter(wallet)
-
-      subscribeToEvents(wc, adapter)
-      navigation.navigate('WalletConnect' as never)
+    try {
+      if (wc && wallet) {
+        wc.approveSession({
+          accounts: [wallet.smartWalletAddress],
+          chainId: await wallet.getChainId(),
+        })
+        saveWCSession({
+          key: wc.key,
+          uri: wc.uri,
+          session: wc.session,
+          walletAddress: wallet.address,
+        })
+        const adapter = new WalletConnectAdapter(wallet)
+        await subscribeToEvents(wc, adapter)
+        setConnections(prev => ({
+          ...prev,
+          [wc.key]: {
+            connector: wc,
+            address: wallet.address,
+          },
+        }))
+      }
+    } catch (err) {
+      console.log(143, err)
     }
   }
 
   const handleReject = (wc: WalletConnect) => {
     if (wc) {
       wc.rejectSession({ message: 'user rejected the session' })
-      navigation.navigate('WalletConnect' as never)
     }
   }
 
@@ -161,7 +168,6 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
             name: 'RIF Wallet',
           },
         })
-
         const adapter = new WalletConnectAdapter(wallet)
 
         // needs to subscribe to events before createSession
@@ -181,11 +187,9 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
     },
     [subscribeToEvents],
   )
-
   useEffect(() => {
     const reconnectWCSession = async () => {
       const storedSessions = getWCSession()
-
       if (!storedSessions) {
         return
       }
@@ -204,9 +208,11 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
         }
       }
     }
-
-    reconnectWCSession()
-  }, [wallets, createSession])
+    if (wallets) {
+      reconnectWCSession()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wallets])
 
   const initialContext: WalletConnectContextInterface = {
     connections,
