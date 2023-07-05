@@ -1,7 +1,15 @@
 import { useTranslation } from 'react-i18next'
-import { StyleProp, StyleSheet, TextInput, View, ViewStyle } from 'react-native'
+import {
+  Alert,
+  StyleProp,
+  StyleSheet,
+  TextInput,
+  View,
+  ViewStyle,
+} from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
+import Clipboard from '@react-native-community/clipboard'
 
 import { shortAddress } from 'lib/utils'
 
@@ -69,6 +77,15 @@ export const TokenBalance = ({
     return shortAddress(contact.address)
   }, [contact])
 
+  const onCopyAddress = useCallback(() => {
+    if (to) {
+      Clipboard.setString(to.address)
+      Alert.alert(t('address_copied_to_keyboard'), undefined, [
+        { text: t('ok'), onPress: noop },
+      ])
+    }
+  }, [to, t])
+
   return (
     <View style={[{ backgroundColor: color }, style, styles.container]}>
       <View style={styles.leftColumn}>
@@ -132,9 +149,16 @@ export const TokenBalance = ({
           <View style={[styles.toAddressContainer]}>
             <Typography type="body1">
               {amIReceiver ? t('From') : t('To')}{' '}
-              <Typography type="body1" style={{ color: sharedColors.primary }}>
-                {toNameOrAddress}
-              </Typography>
+              <AppTouchable
+                width={'100%'}
+                onPress={onCopyAddress}
+                style={styles.addressCopier}>
+                <Typography
+                  type="body1"
+                  style={{ color: sharedColors.primary }}>
+                  {toNameOrAddress}
+                </Typography>
+              </AppTouchable>
             </Typography>
           </View>
         )}
@@ -247,4 +271,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   }),
   textSymbol: castStyle.text({ color: sharedColors.white, paddingTop: 3 }),
+  addressCopier: castStyle.view({ paddingTop: 4 }),
 })
