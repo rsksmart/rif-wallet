@@ -1,6 +1,7 @@
 import {
   balanceToDisplay,
   balanceToUSD,
+  displayRoundBalance,
   sanitizeDecimalText,
   sanitizeMaxDecimalText,
 } from './utils'
@@ -114,6 +115,21 @@ describe('utils', () => {
     })
     it('should remove trailing decimals (max 4 decimals)', () => {
       expect(sanitizeMaxDecimalText('123.12345678', 4)).toEqual('123.1234')
+    })
+  })
+
+  describe('displayRoundBalance', () => {
+    it('should round to 4 decimals', () => {
+      expect(displayRoundBalance(0.11112222)).toEqual('0.1111')
+      expect(displayRoundBalance(0.11119999)).toEqual('0.1112')
+      expect(displayRoundBalance(0.000100001)).toEqual('0.0001')
+      expect(displayRoundBalance(0.00019999)).toEqual('0.0002')
+    })
+    it('should round to 8 decimals', () => {
+      expect(displayRoundBalance(0.000011112222)).toEqual('0.00001111')
+      expect(displayRoundBalance(0.000011119999)).toEqual('0.00001112')
+      expect(displayRoundBalance(0.000010001)).toEqual('0.00001')
+      expect(displayRoundBalance(0.000010009999)).toEqual('0.00001001')
     })
   })
 })

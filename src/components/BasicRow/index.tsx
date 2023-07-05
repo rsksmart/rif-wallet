@@ -42,7 +42,7 @@ export interface BasicRowProps {
   amount?: string
   status?: StatusTextProps['status']
   error?: string
-  usdAmount?: string
+  usdAmount?: number
   style?: StyleProp<ViewStyle>
   symbol?: string
 }
@@ -103,13 +103,13 @@ export const BasicRow = ({
         )}
       </View>
       <View style={styles.usdAmountView}>
-        {usdAmount && (
+        {usdAmount !== undefined && (
           <Typography
             type="labelLight"
             numberOfLines={1}
             ellipsizeMode="tail"
             style={styles.usdText}>
-            ${usdAmount}
+            {!usdAmount && '< '}${usdAmount ? usdAmount.toFixed(2) : '0.01'}
           </Typography>
         )}
       </View>

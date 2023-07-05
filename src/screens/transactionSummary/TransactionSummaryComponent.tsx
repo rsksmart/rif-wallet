@@ -4,6 +4,8 @@ import { ScrollView, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
+import { displayRoundBalance } from 'lib/utils'
+
 import { TokenBalance } from 'components/token'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
@@ -41,10 +43,10 @@ export const TransactionSummaryComponent = ({
   const { bottom } = useSafeAreaInsets()
   const { t } = useTranslation()
   const { wallet } = useAppSelector(selectActiveWallet)
-  const iconObject = transactionStatusToIconPropsMap.get(transaction.status)
-  const transactionStatusText = transactionStatusDisplayText.get(
-    transaction.status,
-  )
+  const { status, tokenValue, fee, usdValue, time } = transaction
+
+  const iconObject = transactionStatusToIconPropsMap.get(status)
+  const transactionStatusText = transactionStatusDisplayText.get(status)
 
   const amIReceiver =
     transaction.amIReceiver ?? isMyAddress(wallet, transaction.to)
@@ -56,27 +58,43 @@ export const TransactionSummaryComponent = ({
 
   const title = useMemo(() => {
     if (amIReceiver) {
-      if (transaction.status === TransactionStatus.SUCCESS) {
+      if (status === TransactionStatus.SUCCESS) {
         return t('transaction_summary_received_title_success')
-      } else if (transaction.status === TransactionStatus.PENDING) {
+      } else if (status === TransactionStatus.PENDING) {
         return t('transaction_summary_received_title_pending')
       }
       return t('transaction_summary_receive_title')
     }
-    if (transaction.status === TransactionStatus.SUCCESS) {
+    if (status === TransactionStatus.SUCCESS) {
       return t('transaction_summary_sent_title_success')
-    } else if (transaction.status === TransactionStatus.PENDING) {
+    } else if (status === TransactionStatus.PENDING) {
       return t('transaction_summary_sent_title_pending')
     }
     return t('transaction_summary_send_title')
-  }, [amIReceiver, t, transaction.status])
+  }, [amIReceiver, t, status])
+
+  const totalToken = useMemo(() => {
+    if (tokenValue.symbol === fee.symbol) {
+      return Number(tokenValue.balance) + Number(fee.tokenValue)
+    }
+    return Number(tokenValue.balance)
+  }, [tokenValue, fee])
+
+  const totalUsd = useMemo(
+    () =>
+      amIReceiver
+        ? usdValue.balance
+        : (Number(usdValue.balance) + Number(fee.usdValue)).toFixed(2),
+    [amIReceiver, usdValue.balance, fee.usdValue],
+  )
 
   return (
     <View style={[styles.screen, { paddingBottom: bottom }]}>
       {isLoaded === false && <FullScreenSpinner />}
       <ScrollView
         style={sharedStyles.flex}
-        contentContainerStyle={styles.contentPadding}>
+        contentContainerStyle={styles.contentPadding}
+        showsVerticalScrollIndicator={false}>
         <Typography
           style={styles.title}
           type={'h4'}
@@ -98,17 +116,15 @@ export const TransactionSummaryComponent = ({
           </Typography>
         )}
         <View />
-        {transactionStatusText || transaction.status ? (
+        {transactionStatusText || status ? (
           <View
             style={[
               styles.summaryAlignment,
               styles.statusContainer,
-              transaction.status
-                ? { backgroundColor: sharedColors.inputInactive }
-                : null,
+              status ? { backgroundColor: sharedColors.inputInactive } : null,
             ]}>
             <Typography type={'h4'}>
-              {transaction.status ? t('transaction_summary_status') : ''}
+              {status ? t('transaction_summary_status') : ''}
             </Typography>
             <View style={sharedStyles.row}>
               <Typography type={'h4'}>
@@ -129,22 +145,18 @@ export const TransactionSummaryComponent = ({
         <View style={styles.summaryView}>
           {/* fee values */}
           <View style={styles.summaryAlignment}>
-            <Typography
-              type={'body2'}
-              style={[styles.summaryText, sharedStyles.textLeft]}>
+            <Typography type={'body2'} style={[sharedStyles.textLeft]}>
               {t('transaction_summary_fees')}
             </Typography>
 
             <View style={sharedStyles.row}>
               <TokenImage
-                symbol={transaction.tokenValue.symbol}
+                symbol={fee.symbol || tokenValue.symbol}
                 transparent
                 size={12}
               />
-              <Typography
-                type={'body2'}
-                style={[styles.summaryText, sharedStyles.textCenter]}>
-                {transaction.fee.tokenValue}
+              <Typography type={'body2'} style={[sharedStyles.textCenter]}>
+                {displayRoundBalance(Number(fee.tokenValue))} {fee.symbol}
               </Typography>
             </View>
           </View>
@@ -153,38 +165,31 @@ export const TransactionSummaryComponent = ({
             <Typography
               type={'body2'}
               style={[
-                styles.summaryText,
                 sharedStyles.textRight,
                 { color: sharedColors.labelLight },
               ]}>
-              {transaction.fee.usdValue}
+              {fee.usdValue}
             </Typography>
           </View>
           {FeeComponent}
           {/* Total values */}
           <View style={[styles.summaryAlignment]}>
-            <Typography
-              type={'body2'}
-              style={[styles.summaryText, sharedStyles.textLeft]}>
+            <Typography type={'body2'} style={[sharedStyles.textLeft]}>
               {amIReceiver
-                ? transaction.status === TransactionStatus.SUCCESS
+                ? status === TransactionStatus.SUCCESS
                   ? t('transaction_summary_i_received_text')
                   : t('transaction_summary_i_receive_text')
-                : transaction.status === TransactionStatus.SUCCESS
+                : status === TransactionStatus.SUCCESS
                 ? t('transaction_summary_total_sent')
                 : t('transaction_summary_total_send')}
             </Typography>
 
             <View style={sharedStyles.row}>
-              <TokenImage
-                symbol={transaction.tokenValue.symbol}
-                transparent
-                size={12}
-              />
-              <Typography
-                type={'body2'}
-                style={[styles.summaryText, sharedStyles.textCenter]}>
-                {`${transaction.total.tokenValue}`}
+              <TokenImage symbol={tokenValue.symbol} size={12} transparent />
+              <Typography type={'body2'} style={[sharedStyles.textCenter]}>
+                {displayRoundBalance(totalToken)} {tokenValue.symbol}{' '}
+                {tokenValue.symbol !== fee.symbol &&
+                  t('transaction_summary_plus_fees')}
               </Typography>
             </View>
           </View>
@@ -193,27 +198,22 @@ export const TransactionSummaryComponent = ({
             <Typography
               type={'body2'}
               style={[
-                styles.summaryText,
                 sharedStyles.textRight,
                 { color: sharedColors.labelLight },
               ]}>
-              {transaction.total.usdValue}
+              {totalUsd}
             </Typography>
           </View>
           {/* arrive value */}
           <View style={[styles.summaryAlignment]}>
-            <Typography
-              type={'body2'}
-              style={[styles.summaryText, sharedStyles.textLeft]}>
-              {transaction.status === TransactionStatus.SUCCESS
+            <Typography type={'body2'} style={[sharedStyles.textLeft]}>
+              {status === TransactionStatus.SUCCESS
                 ? t('transaction_summary_arrived_text')
                 : t('transaction_summary_arrives_in_text')}
             </Typography>
 
-            <Typography
-              type={'body2'}
-              style={[styles.summaryText, sharedStyles.textRight]}>
-              {transaction.time}
+            <Typography type={'body2'} style={[sharedStyles.textRight]}>
+              {time}
             </Typography>
           </View>
           {/* separator */}
@@ -222,20 +222,12 @@ export const TransactionSummaryComponent = ({
           <View style={[styles.summaryAlignment]}>
             <Typography
               type={'body2'}
-              style={[
-                styles.summaryText,
-                sharedStyles.textLeft,
-                sharedStyles.flex,
-              ]}>
+              style={[sharedStyles.textLeft, sharedStyles.flex]}>
               {t('transaction_summary_address_text')}
             </Typography>
             <Typography
               type={'h5'}
-              style={[
-                styles.summaryText,
-                sharedStyles.textRight,
-                styles.contactAddress,
-              ]}
+              style={[sharedStyles.textRight, styles.contactAddress]}
               numberOfLines={1}
               ellipsizeMode={'middle'}>
               {contactToUse.address}
@@ -295,9 +287,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: sharedColors.white,
     paddingBottom: 16,
-  }),
-  summaryText: castStyle.text({
-    marginLeft: 2,
   }),
   separator: castStyle.view({
     marginTop: 16,
