@@ -10,6 +10,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import {
   convertTokenToUSD,
   convertUSDtoToken,
+  roundBalance,
   sanitizeDecimalText,
   sanitizeMaxDecimalText,
   shortAddress,
@@ -235,6 +236,11 @@ export const TransactionForm = ({
     setBalanceInverted(prevInverted => {
       setFirstBalance(prevFirstBalance => {
         setSecondBalance(prevFirstBalance)
+        // round the balance as input precision is 6 decimal places
+        secondBalance.balance = roundBalance(
+          Number(secondBalance.balance),
+          6,
+        ).toString()
         handleAmountChange(secondBalance.balance, !prevInverted)
         return secondBalance
       })
