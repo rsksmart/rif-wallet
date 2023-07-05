@@ -211,7 +211,6 @@ const styles = StyleSheet.create({
     backgroundColor: sharedColors.white,
   }),
   tokenSubIcon: castStyle.view({
-    backgroundColor: sharedColors.white,
     borderRadius: 10,
     width: 20,
     height: 20,
