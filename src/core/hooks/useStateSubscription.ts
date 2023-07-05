@@ -13,12 +13,14 @@ import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { SocketsEvents, socketsEvents } from 'src/subscriptions/rifSockets'
 
 import { useAppState } from './useAppState'
+import { useIsOffline } from './useIsOffline'
 
 const gracePeriod = 5000
 let timer: TimeoutId
 
 export const useStateSubscription = () => {
   const dispatch = useAppDispatch()
+  const isOffline = useIsOffline()
 
   const [active, setActive] = useState<boolean>(false)
 
@@ -54,7 +56,7 @@ export const useStateSubscription = () => {
       previousAppState.current === 'background' &&
       active
     ) {
-      dispatch(unlockApp())
+      dispatch(unlockApp({ isOffline }))
     }
     return () => {
       socketsEvents.emit(SocketsEvents.DISCONNECT)
@@ -66,6 +68,7 @@ export const useStateSubscription = () => {
     setUnlocked,
     previousAppState,
     previouslyUnlocked,
+    isOffline,
   ])
 
   useEffect(() => {

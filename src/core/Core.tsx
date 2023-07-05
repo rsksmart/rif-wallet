@@ -26,6 +26,7 @@ import { sharedStyles } from 'shared/constants'
 
 import { useStateSubscription } from './hooks/useStateSubscription'
 import { Cover } from './components/Cover'
+import { useIsOffline } from './hooks/useIsOffline'
 
 export const navigationContainerRef =
   createNavigationContainerRef<RootTabsParamsList>()
@@ -36,6 +37,7 @@ export const Core = () => {
   const settings = useAppSelector(selectWholeSettingsState)
   const requests = useAppSelector(selectRequests)
   const topColor = useAppSelector(selectTopColor)
+  const isOffline = useIsOffline()
 
   const { unlocked, active } = useStateSubscription()
 
@@ -48,11 +50,11 @@ export const Core = () => {
 
   const unlockAppSetMnemonic = useCallback(async () => {
     try {
-      await dispatch(unlockApp()).unwrap()
+      await dispatch(unlockApp({ isOffline })).unwrap()
     } catch (err) {
       console.log('ERR CORE', err)
     }
-  }, [dispatch])
+  }, [dispatch, isOffline])
 
   useEffect(() => {
     unlockAppSetMnemonic()

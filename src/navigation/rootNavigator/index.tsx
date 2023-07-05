@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
-import { useNetInfo } from '@react-native-community/netinfo'
 
 import { CreateKeysNavigation } from 'navigation/createKeysNavigator'
 import { ConfirmationModal } from 'components/modal'
@@ -41,10 +40,8 @@ export const RootNavigationComponent = () => {
   const [isWarningVisible, setIsWarningVisible] = useState(isDeviceRooted)
   const unlocked = useAppSelector(selectIsUnlocked)
   const fullscreen = useAppSelector(selectFullscreen)
-  const netInfo = useNetInfo()
 
   const isShown = unlocked && !fullscreen
-  const isOffline = !netInfo.isConnected || !netInfo.isInternetReachable
 
   return (
     <View style={sharedStyles.flex}>
@@ -52,13 +49,6 @@ export const RootNavigationComponent = () => {
         tabBar={props => (!isShown ? null : <AppFooterMenu {...props} />)}>
         {!unlocked ? (
           <>
-            {isOffline && (
-              <RootTabs.Screen
-                name={rootTabsRouteNames.OfflineScreen}
-                component={OfflineScreen}
-                options={screenOptionsNoHeader}
-              />
-            )}
             <RootTabs.Screen
               name={rootTabsRouteNames.CreateKeysUX}
               component={CreateKeysNavigation}
@@ -74,6 +64,11 @@ export const RootNavigationComponent = () => {
                 undefined,
                 true,
               )}
+            />
+            <RootTabs.Screen
+              name={rootTabsRouteNames.OfflineScreen}
+              component={OfflineScreen}
+              options={screenOptionsNoHeader}
             />
           </>
         ) : (

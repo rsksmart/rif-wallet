@@ -152,7 +152,7 @@ export const unlockApp = createAsyncThunk<
       return thunkAPI.rejectWithValue('No Existing Keys')
     }
 
-    const pinUnlocked = payload?.pinUnlocked
+    const { pinUnlocked, isOffline } = payload
     const supportedBiometry = await getSupportedBiometryType()
 
     if (Platform.OS === 'android' && !supportedBiometry && !pinUnlocked) {
@@ -164,7 +164,11 @@ export const unlockApp = createAsyncThunk<
       !pin && thunkAPI.dispatch(resetApp())
 
       setTimeout(() => {
-        navigationContainerRef.navigate(rootTabsRouteNames.InitialPinScreen)
+        if (isOffline) {
+          navigationContainerRef.navigate(rootTabsRouteNames.OfflineScreen)
+        } else {
+          navigationContainerRef.navigate(rootTabsRouteNames.InitialPinScreen)
+        }
       }, 100)
       return thunkAPI.rejectWithValue('Move to unlock with PIN')
     }

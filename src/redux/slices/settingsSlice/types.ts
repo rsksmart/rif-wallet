@@ -29,11 +29,10 @@ export interface AddNewWalletAction {
   networkId: number
 }
 
-export type UnlockAppAction =
-  | {
-      pinUnlocked: boolean
-    }
-  | undefined
+export type UnlockAppAction = {
+  isOffline?: boolean
+  pinUnlocked?: boolean
+}
 
 export interface SetKeysAction {
   wallet: RIFWallet
