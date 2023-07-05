@@ -1,6 +1,7 @@
 import { StyleSheet, View } from 'react-native'
 import { SignMessageRequest } from '@rsksmart/rif-wallet-core'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useTranslation } from 'react-i18next'
 
 import { castStyle } from 'shared/utils'
 import { sharedColors } from 'shared/constants'
@@ -17,12 +18,12 @@ export const SignMessageRequestContainer = ({
   onCancel,
   onConfirm,
 }: SignMessageRequestContainerProps) => {
+  const insets = useSafeAreaInsets()
+  const { t } = useTranslation()
   const {
     type,
     payload: [message],
   } = request
-  const insets = useSafeAreaInsets()
-
   const onConfirmTap = async () => {
     await request.confirm()
     onConfirm()
@@ -34,24 +35,24 @@ export const SignMessageRequestContainer = ({
   return (
     <View style={[styles.viewContainer, { paddingTop: insets.top || 40 }]}>
       <Typography type={'h2'} style={styles.typographyHeaderStyle}>
-        Request
+        {t('request_username_button')}
       </Typography>
       <Typography type={'h3'} style={styles.typographyRowStyle}>
-        Request type: {type}
+        {t('dapps_sign_message_request_type')}: {type}
       </Typography>
       <Typography type={'h3'} style={styles.typographyRowStyle}>
-        Message: {message.toString() || ''}
+        {t('Message')}: {message.toString() || ''}
       </Typography>
       <View style={styles.buttonsViewStyle}>
         <AppButton
-          title={'Confirm'}
+          title={t('transaction_summary_title_confirm_button_title')}
           onPress={onConfirmTap}
           color={sharedColors.white}
           textColor={sharedColors.black}
           style={styles.buttonsStyle}
         />
         <AppButton
-          title={'Cancel'}
+          title={t('transaction_summary_title_cancel_button_title')}
           onPress={onCancelTap}
           color={sharedColors.white}
           textColor={sharedColors.black}
