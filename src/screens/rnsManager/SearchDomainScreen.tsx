@@ -250,9 +250,11 @@ export const SearchDomainScreen = ({
             inputName={'years'}
             isReadOnly
             label={t('request_username_label')}
-            placeholder={`${years} ${t('request_username_placeholder')}${
-              years > 1 ? 's' : ''
-            }`}
+            value={`${years} ${
+              years > 1
+                ? t('request_username_years')
+                : t('request_username_year')
+            } `}
             subtitle={`${selectedDomainPrice} ${rifToken.symbol} ($ ${selectedDomainPriceInUsd})`}
             containerStyle={styles.yearsContainer}
             rightIcon={
