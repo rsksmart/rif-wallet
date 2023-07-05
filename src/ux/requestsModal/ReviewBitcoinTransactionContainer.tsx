@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react'
-import { BigNumberish } from 'ethers'
 import {
   convertSatoshiToBtcHuman,
   SendBitcoinRequest,
@@ -22,7 +21,7 @@ import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 
 interface ReviewBitcoinTransactionContainerProps {
   request: SendBitcoinRequest
-  onConfirm: (amount: BigNumberish, tokenSymbol: string) => void
+  onConfirm: () => void
   onCancel: () => void
 }
 
@@ -62,8 +61,8 @@ export const ReviewBitcoinTransactionContainer = ({
     request.confirm().catch(err => {
       request.reject(err)
     })
-    onConfirm(amountToPay, TokenSymbol.BTC)
-  }, [request, onConfirm, amountToPay])
+    onConfirm()
+  }, [request, onConfirm])
 
   const onCancelTransaction = useCallback(() => {
     request.reject('Transaction rejected')

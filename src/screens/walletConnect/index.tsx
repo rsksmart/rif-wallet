@@ -10,6 +10,7 @@ import {
 } from 'navigation/rootNavigator/types'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
+import { deleteWCSession } from 'storage/WalletConnectSessionStore'
 
 import { DappConnectConfirmation } from './DappConnectConfirmation'
 import { DappDisconnectConfirmation } from './DappDisconnectConfirmation'
@@ -18,7 +19,7 @@ import { WalletConnectContext } from './WalletConnectContext'
 
 type Props = RootTabsScreenProps<rootTabsRouteNames.WalletConnect>
 
-export const WalletConnectScreen = ({ navigation, route }: Props) => {
+export const WalletConnectScreen = ({ route }: Props) => {
   const wcKey = route.params?.wcKey
 
   const { t } = useTranslation()
@@ -34,9 +35,17 @@ export const WalletConnectScreen = ({ navigation, route }: Props) => {
 
   const pendingConnector = wcKey ? connections[wcKey]?.connector : null
 
-  if (pendingConnector?.connected) {
-    // clear pendingConnector
-    navigation.navigate(rootTabsRouteNames.WalletConnect)
+  const handleDisconnectSession = (wc: WalletConnect) => async () => {
+    try {
+      const key = wc.key
+      await wc.killSession()
+      deleteWCSession(key)
+    } catch (err) {
+      // Error disconnecting session
+      if (err instanceof Error || typeof err === 'string') {
+        console.log(53, err.toString())
+      }
+    }
   }
 
   return (
@@ -78,7 +87,7 @@ export const WalletConnectScreen = ({ navigation, route }: Props) => {
       {disconnectingWC && (
         <DappDisconnectConfirmation
           dappName={disconnectingWC.peerMeta?.name}
-          onConfirm={() => disconnectingWC.killSession()}
+          onConfirm={handleDisconnectSession(disconnectingWC)}
           onCancel={() => setDisconnectingWC(null)}
         />
       )}

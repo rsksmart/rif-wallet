@@ -1,6 +1,6 @@
 import WalletConnect from '@walletconnect/client'
 import { t } from 'i18next'
-import { useContext } from 'react'
+import { useContext, useCallback } from 'react'
 
 import { SlidePopupConfirmationInfo } from 'components/slidePopup/SlidePopupConfirmationInfo'
 import { selectActiveWallet } from 'store/slices/settingsSlice'
@@ -18,6 +18,11 @@ export const DappConnectConfirmation = ({ connector: c }: Props) => {
 
   const dappName = c.peerMeta?.name
 
+  const onConfirmTap = () => handleApprove(c, wallet)
+
+  const onCancelTap = () => handleReject(c)
+
+  const onCloseNoOp = useCallback(() => {}, [])
   return (
     <SlidePopupConfirmationInfo
       title={t('dapps_confirmation_title')}
@@ -26,8 +31,9 @@ export const DappConnectConfirmation = ({ connector: c }: Props) => {
       }?`}
       confirmText={t('dapps_confirmation_button_connect')}
       cancelText={t('dapps_confirmation_button_cancel')}
-      onConfirm={() => handleApprove(c, wallet)}
-      onCancel={() => handleReject(c)}
+      onConfirm={onConfirmTap}
+      onCancel={onCancelTap}
+      onClose={onCloseNoOp}
       height={300}
     />
   )

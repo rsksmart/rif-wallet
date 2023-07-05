@@ -2,7 +2,7 @@ import {
   OverriddableTransactionOptions,
   SendTransactionRequest,
 } from '@rsksmart/rif-wallet-core'
-import { BigNumber, BigNumberish, constants } from 'ethers'
+import { BigNumber, constants } from 'ethers'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
@@ -27,7 +27,7 @@ import useEnhancedWithGas from '../useEnhancedWithGas'
 
 interface Props {
   request: SendTransactionRequest
-  onConfirm: (amount: BigNumberish, tokenSymbol: string) => void
+  onConfirm: () => void
   onCancel: () => void
 }
 
@@ -108,7 +108,7 @@ export const ReviewTransactionContainer = ({
 
     try {
       await request.confirm(confirmObject)
-      onConfirm(value, symbol)
+      onConfirm()
     } catch (err: unknown) {
       setError(errorHandler(err))
     }
