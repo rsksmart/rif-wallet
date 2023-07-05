@@ -14,7 +14,7 @@ import { SocketsEvents, socketsEvents } from 'src/subscriptions/rifSockets'
 
 import { useAppState } from './useAppState'
 
-const gracePeriod = 3000
+const gracePeriod = 5000
 let timer: TimeoutId
 
 export const useStateSubscription = () => {
