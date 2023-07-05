@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleProp, StyleSheet, ViewStyle } from 'react-native'
 
-import { roundBalance, shortAddress } from 'lib/utils'
+import { displayRoundBalance, roundBalance, shortAddress } from 'lib/utils'
 
 import { StatusEnum } from 'components/BasicRow'
 import { BasicRowWithContact } from 'components/BasicRow/BasicRowWithContact'
@@ -14,8 +14,8 @@ import { castStyle } from 'shared/utils'
 import { isMyAddress } from 'src/components/address/lib'
 import { selectActiveWallet } from 'src/redux/slices/settingsSlice'
 import { useAppSelector } from 'src/redux/storeUtils'
+import { getContactByAddress } from 'store/slices/contactsSlice'
 import { ActivityRowPresentationObject } from 'store/slices/transactionsSlice'
-import { getContactsAsObject } from 'store/slices/contactsSlice'
 
 const getStatus = (status: string) => {
   switch (status) {
@@ -41,40 +41,35 @@ export const ActivityBasicRow = ({
   backScreen,
   style,
 }: Props) => {
+  const {
+    symbol,
+    value,
+    status,
+    fee,
+    timeHumanFormatted,
+    from = '',
+    to = '',
+    price,
+  } = activityDetails
+
   const { t } = useTranslation()
   const { wallet } = useAppSelector(selectActiveWallet)
-  const contacts = useAppSelector(getContactsAsObject)
 
-  const usdBalance = useMemo(
-    () => roundBalance(activityDetails.price, 2),
-    [activityDetails.price],
-  )
+  // Contact
+  const amIReceiver = activityDetails.amIReceiver ?? isMyAddress(wallet, to)
+  const address = amIReceiver ? from : to
+  const contact = useAppSelector(getContactByAddress(address.toLowerCase()))
 
-  const amIReceiver = useMemo(
-    () =>
-      activityDetails.amIReceiver ?? isMyAddress(wallet, activityDetails.to),
-    [wallet, activityDetails],
-  )
-  const label = useMemo(
-    () =>
-      (amIReceiver ? t('received_from') : t('sent_to')) +
-      ' ' +
-      shortAddress(amIReceiver ? activityDetails.from : activityDetails.to),
-    [activityDetails.from, activityDetails.to, amIReceiver, t],
-  )
+  // Label
+  const firstLabel = amIReceiver ? t('received_from') : t('sent_to')
+  const secondLabel = contact?.name || shortAddress(address)
+  const label = `${firstLabel} ${secondLabel}`
 
-  const txSummary: TransactionSummaryScreenProps = useMemo(() => {
-    const {
-      symbol,
-      value,
-      status,
-      fee,
-      total,
-      timeHumanFormatted,
-      from,
-      to = '',
-    } = activityDetails
-    return {
+  // USD Balance
+  const usdBalance = roundBalance(price, 2)
+
+  const txSummary: TransactionSummaryScreenProps = useMemo(
+    () => ({
       transaction: {
         tokenValue: {
           symbol,
@@ -82,29 +77,42 @@ export const ActivityBasicRow = ({
           balance: value,
         },
         usdValue: {
-          symbol: usdBalance ? '$' : '< $',
+          symbol: usdBalance ? '$' : '<',
           symbolType: 'usd',
           balance: usdBalance ? usdBalance.toFixed(2) : '0.01',
         },
         status,
         fee,
-        total,
         amIReceiver,
         from,
+        to,
         time: timeHumanFormatted,
       },
-      contact: contacts[to.toLowerCase()] || { address: to },
-    }
-  }, [activityDetails, amIReceiver, contacts, usdBalance])
+      contact: contact || { address },
+    }),
+    [
+      address,
+      amIReceiver,
+      contact,
+      fee,
+      from,
+      to,
+      status,
+      symbol,
+      timeHumanFormatted,
+      usdBalance,
+      value,
+    ],
+  )
 
   const amount = useMemo(() => {
-    const value = +activityDetails.value
-    let rounded = roundBalance(value, 4)
+    const num = Number(value)
+    let rounded = roundBalance(num, 4)
     if (!rounded) {
-      rounded = roundBalance(value, 8)
+      rounded = roundBalance(num, 8)
     }
     return rounded.toString()
-  }, [activityDetails.value])
+  }, [value])
 
   const handlePress = useCallback(() => {
     if (txSummary) {
@@ -123,12 +131,12 @@ export const ActivityBasicRow = ({
       <BasicRowWithContact
         label={label}
         amount={amount}
-        symbol={activityDetails.symbol}
-        status={getStatus(activityDetails.status)}
+        symbol={symbol}
+        status={getStatus(status)}
         avatar={{ name: 'A' }}
-        secondaryLabel={activityDetails.timeHumanFormatted}
-        addressToSearch={activityDetails.to}
-        usdAmount={usdBalance.toFixed(2)}
+        secondaryLabel={timeHumanFormatted}
+        usdAmount={usdBalance}
+        contact={contact}
       />
     </AppTouchable>
   )

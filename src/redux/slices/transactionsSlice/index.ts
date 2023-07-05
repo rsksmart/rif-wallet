@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { BitcoinTransactionType } from '@rsksmart/rif-wallet-bitcoin'
-import { BigNumber, utils } from 'ethers'
 import { IActivityTransaction, IEvent } from '@rsksmart/rif-wallet-services'
+import { BigNumber, constants, utils } from 'ethers'
 
 import {
   balanceToDisplay,
   convertBalance,
+  convertTokenToUSD,
   convertUnixTimeToFromNowFormat,
 } from 'lib/utils'
 
@@ -44,6 +45,7 @@ export const activityDeserializer: (
     return {
       symbol: activityTransaction.symbol,
       to: activityTransaction.to,
+      from: activityTransaction.from,
       value: activityTransaction.valueBtc,
       timeHumanFormatted: convertUnixTimeToFromNowFormat(
         activityTransaction.blockTime,
@@ -57,7 +59,11 @@ export const activityDeserializer: (
       ),
       fee: {
         tokenValue: `${fee} satoshi`,
-        usdValue: convertBalance(BigNumber.from(fee), 8, prices.BTC?.price),
+        usdValue: convertBalance(
+          BigNumber.from(fee),
+          8,
+          prices.BTC?.price,
+        ).toFixed(2),
       },
       total: {
         tokenValue: balanceToDisplay(totalCalculated, 8),
@@ -65,66 +71,68 @@ export const activityDeserializer: (
           Number(balanceToDisplay(totalCalculated, 8)) * prices.BTC?.price,
       },
       amIReceiver: activityTransaction.amIReceiver,
-      from: activityTransaction.from,
       timestamp: activityTransaction.blockTime,
-    }
+    } as ActivityRowPresentationObject
   } else {
     const tx = activityTransaction.originTransaction
     const etx = activityTransaction.enhancedTransaction
-    const status = tx.receipt
-      ? TransactionStatus.SUCCESS
-      : TransactionStatus.PENDING
+
+    // RBTC
     const rbtcSymbol =
       chainTypesById[chainId] === ChainTypeEnum.MAINNET
         ? TokenSymbol.RBTC
         : TokenSymbol.TRBTC
-    const rbtcAddress = '0x0000000000000000000000000000000000000000'
-    const value = etx?.value || balanceToDisplay(tx.value, 18)
-    let tokenAddress = ''
-    try {
-      tokenAddress =
-        etx?.symbol === rbtcSymbol
-          ? rbtcAddress
-          : getTokenAddress(etx?.symbol || '', chainTypesById[chainId])
-    } catch {}
+    const rbtcAddress = constants.AddressZero
     const feeRbtc = BigNumber.from(tx.gasPrice).mul(
       BigNumber.from(tx.receipt?.gasUsed || 1),
     )
-    const totalToken =
-      etx?.feeSymbol === etx?.symbol
-        ? (Number(etx?.value) || 0) + (Number(etx?.feeValue) || 0)
-        : value
-    const fee =
-      etx?.feeSymbol === etx?.symbol
-        ? etx?.feeValue
-        : `${balanceToDisplay(feeRbtc, 18)} ${rbtcSymbol}`
-    const total = etx?.feeValue
-      ? totalToken
-      : etx?.value || balanceToDisplay(tx.value, 18)
 
-    const price =
-      tokenAddress && tokenAddress.toLowerCase() in prices
-        ? Number(total) * prices[tokenAddress.toLowerCase()].price
-        : 0
+    // Token
+    const tokenValue = etx?.value || balanceToDisplay(tx.value, 18)
+    const tokenSymbol = etx?.symbol || rbtcSymbol
+    let tokenContract = ''
+    try {
+      tokenContract =
+        etx?.symbol === rbtcSymbol
+          ? rbtcAddress
+          : getTokenAddress(tokenSymbol, chainTypesById[chainId])
+    } catch {}
+    const tokenQuote = prices[tokenContract.toLowerCase()]?.price || 0
+    const tokenUsd = convertTokenToUSD(Number(tokenValue), tokenQuote).toFixed(
+      2,
+    )
+
+    // Fee
+    const feeValue = etx?.feeValue || `${balanceToDisplay(feeRbtc, 18)}`
+    const feeSymbol = etx?.feeSymbol || rbtcSymbol
+    let feeContract = ''
+    try {
+      feeContract =
+        etx?.feeSymbol === rbtcSymbol
+          ? rbtcAddress
+          : getTokenAddress(feeSymbol, chainTypesById[chainId])
+    } catch {}
+    const feeQuote = prices[feeContract.toLowerCase()]?.price || 0
+    const feeUsd = convertTokenToUSD(Number(feeValue), feeQuote).toFixed(2)
+
     return {
-      symbol: etx?.symbol,
-      to: etx?.to,
-      timeHumanFormatted: convertUnixTimeToFromNowFormat(tx.timestamp),
-      status,
       id: tx.hash,
-      value,
-      fee: {
-        tokenValue: fee,
-        usdValue: Number(fee) * price,
-      },
-      total: {
-        tokenValue: total,
-        usdValue: Number(total) * price,
-      },
-      price,
+      to: etx?.to || tx.to,
       from: etx?.from,
+      status: tx.receipt
+        ? TransactionStatus.SUCCESS
+        : TransactionStatus.PENDING,
+      value: tokenValue,
+      symbol: tokenSymbol,
+      price: Number(tokenUsd),
+      fee: {
+        tokenValue: feeValue,
+        symbol: feeSymbol,
+        usdValue: feeUsd,
+      },
+      timeHumanFormatted: convertUnixTimeToFromNowFormat(tx.timestamp),
       timestamp: tx.timestamp,
-    }
+    } as ActivityRowPresentationObject
   }
 }
 

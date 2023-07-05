@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { StyleProp, StyleSheet, TextInput, View, ViewStyle } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
+import { useMemo } from 'react'
 
 import { shortAddress } from 'lib/utils'
 
@@ -14,7 +15,6 @@ import { castStyle } from 'shared/utils'
 
 import { EyeIcon } from '../icons/EyeIcon'
 import { DollarIcon } from '../icons/DollarIcon'
-import { useMemo } from 'react'
 
 export interface CurrencyValue {
   symbol: TokenSymbol | string
@@ -32,7 +32,7 @@ interface Props {
   editable?: boolean
   hideable?: boolean
   handleAmountChange?: (text: string) => void
-  to?: ContactWithAddressRequired
+  contact?: ContactWithAddressRequired
   style?: StyleProp<ViewStyle>
   amIReceiver?: boolean
 }
@@ -47,7 +47,7 @@ export const TokenBalance = ({
   hideable = false,
   onHide = noop,
   handleAmountChange = noop,
-  to,
+  contact,
   style,
   amIReceiver,
 }: Props) => {
@@ -57,17 +57,17 @@ export const TokenBalance = ({
     firstValue.symbol?.toUpperCase() === 'TRIF'
 
   const toNameOrAddress = useMemo(() => {
-    if (!to) {
+    if (!contact) {
       return null
     }
-    if (to.name) {
-      return `${to.name}.rsk`
+    if (contact.name) {
+      return `${contact.name}.rsk`
     }
-    if (to.displayAddress && to.displayAddress.length < 20) {
-      return to.displayAddress
+    if (contact.displayAddress && contact.displayAddress.length < 20) {
+      return contact.displayAddress
     }
-    return shortAddress(to.address)
-  }, [to])
+    return shortAddress(contact.address)
+  }, [contact])
 
   return (
     <View style={[{ backgroundColor: color }, style, styles.container]}>
@@ -111,7 +111,14 @@ export const TokenBalance = ({
             </View>
           )}
           {secondValue?.symbolType === 'usd' && (
-            <DollarIcon size={16} color={sharedColors.subTitle} />
+            <>
+              {secondValue.symbol === '<' && (
+                <Typography type={'body1'} style={styles.subTitle}>
+                  {'<'}
+                </Typography>
+              )}
+              <DollarIcon size={16} color={sharedColors.subTitle} />
+            </>
           )}
           {!isNaN(Number(secondValue?.balance)) && (
             <Typography type={'body1'} style={styles.subTitle}>
@@ -121,7 +128,7 @@ export const TokenBalance = ({
             </Typography>
           )}
         </View>
-        {to && (
+        {contact && (
           <View style={[styles.toAddressContainer]}>
             <Typography type="body1">
               {amIReceiver ? t('From') : t('To')}{' '}
@@ -133,16 +140,16 @@ export const TokenBalance = ({
         )}
       </View>
       <View style={styles.rightColumn}>
-        {to && to.name ? (
+        {contact && contact.name ? (
           <View style={styles.contactCard}>
-            <Avatar size={46} name={to.name} />
+            <Avatar size={46} name={contact.name} />
             <View style={styles.contactName}>
               <Typography
                 type="h4"
                 numberOfLines={1}
                 adjustsFontSizeToFit
                 minimumFontScale={0.85}>
-                {to.name}
+                {contact.name}
               </Typography>
             </View>
           </View>
@@ -210,7 +217,6 @@ const styles = StyleSheet.create({
     height: 20,
   }),
   subTitle: castStyle.text({
-    marginLeft: 4,
     color: sharedColors.subTitle,
     opacity: 0.7,
   }),

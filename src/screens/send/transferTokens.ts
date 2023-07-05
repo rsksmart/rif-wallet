@@ -21,7 +21,7 @@ interface IRifTransfer {
   onSetTransactionStatusChange?: OnSetTransactionStatusChange
 }
 
-export const transfer = ({
+export const transfer = async ({
   to,
   amount,
   wallet,
@@ -31,12 +31,8 @@ export const transfer = ({
   onSetCurrentTransaction,
   onSetTransactionStatusChange,
 }: IRifTransfer) => {
-  if (onSetError) {
-    onSetError(null)
-  }
-  if (onSetCurrentTransaction) {
-    onSetCurrentTransaction({ status: 'USER_CONFIRM' })
-  }
+  onSetError?.(null)
+  onSetCurrentTransaction?.({ status: 'USER_CONFIRM' })
 
   // handle both ERC20 tokens and the native token (gas)
   const transferMethod =
@@ -47,66 +43,49 @@ export const transfer = ({
           chainId,
         })
 
-  transferMethod.decimals().then((decimals: number) => {
+  try {
+    const decimals = await transferMethod.decimals()
     const tokenAmount = BigNumber.from(utils.parseUnits(amount, decimals))
 
-    transferMethod
-      .transfer(to.toLowerCase(), tokenAmount)
-      .then((txPending: ContractTransaction) => {
-        const { wait: waitForTransactionToComplete, ...txPendingRest } =
-          txPending
-        if (onSetTransactionStatusChange) {
-          onSetTransactionStatusChange({
-            txStatus: 'PENDING',
-            ...txPendingRest,
-            value: tokenAmount,
-            symbol: transferMethod.symbol,
-            finalAddress: to,
-            enhancedAmount: amount,
-          })
-        }
-        const current: TransactionInformation = {
-          to,
-          value: amount,
-          symbol: transferMethod.symbol,
-          hash: txPending.hash,
-          status: 'PENDING',
-        }
-        if (onSetCurrentTransaction) {
-          onSetCurrentTransaction(current)
-        }
+    const txPending = await transferMethod.transfer(
+      to.toLowerCase(),
+      tokenAmount,
+    )
 
-        waitForTransactionToComplete()
-          .then(contractReceipt => {
-            if (onSetCurrentTransaction) {
-              onSetCurrentTransaction({ ...current, status: 'SUCCESS' })
-            }
-            if (onSetTransactionStatusChange) {
-              onSetTransactionStatusChange({
-                txStatus: 'CONFIRMED',
-                ...contractReceipt,
-              })
-            }
-          })
-          .catch(() => {
-            if (onSetCurrentTransaction) {
-              onSetCurrentTransaction({ ...current, status: 'FAILED' })
-            }
-            if (onSetTransactionStatusChange) {
-              onSetTransactionStatusChange({
-                txStatus: 'FAILED',
-                ...txPendingRest,
-              })
-            }
-          })
+    const { wait: waitForTransactionToComplete, ...txPendingRest } = txPending
+    onSetTransactionStatusChange?.({
+      txStatus: 'PENDING',
+      ...txPendingRest,
+      value: tokenAmount,
+      symbol: transferMethod.symbol,
+      finalAddress: to,
+      enhancedAmount: amount,
+    })
+    const current: TransactionInformation = {
+      to,
+      value: amount,
+      symbol: transferMethod.symbol,
+      hash: txPending.hash,
+      status: 'PENDING',
+    }
+    onSetCurrentTransaction?.(current)
+
+    try {
+      const contractReceipt = await waitForTransactionToComplete()
+      onSetCurrentTransaction?.({ ...current, status: 'SUCCESS' })
+      onSetTransactionStatusChange?.({
+        txStatus: 'CONFIRMED',
+        ...contractReceipt,
       })
-      .catch(err => {
-        if (onSetError) {
-          onSetError(err)
-        }
-        if (onSetCurrentTransaction) {
-          onSetCurrentTransaction(null)
-        }
+    } catch (err) {
+      onSetCurrentTransaction?.({ ...current, status: 'FAILED' })
+      onSetTransactionStatusChange?.({
+        txStatus: 'FAILED',
+        ...txPendingRest,
       })
-  })
+    }
+  } catch (err) {
+    onSetError?.(err as Error)
+    onSetCurrentTransaction?.(null)
+  }
 }

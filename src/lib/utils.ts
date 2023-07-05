@@ -20,6 +20,14 @@ export const roundBalance = (num: number, decimalPlaces?: number) => {
   return Math.round(num * decimals) / decimals
 }
 
+export const displayRoundBalance = (num: number): string => {
+  let rounded = roundBalance(num, 4)
+  if (!rounded) {
+    rounded = roundBalance(num, 8)
+  }
+  return rounded.toString()
+}
+
 export const getChainIdByType = (chainType: ChainTypeEnum) => {
   switch (chainType) {
     case ChainTypeEnum.MAINNET:

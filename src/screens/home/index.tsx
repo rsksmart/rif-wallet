@@ -23,7 +23,6 @@ import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import {
   changeTopColor,
   selectActiveWallet,
-  selectBitcoin,
   selectHideBalance,
   setHideBalance,
 } from 'store/slices/settingsSlice'
@@ -60,9 +59,7 @@ export const HomeScreen = ({
   const prices = useAppSelector(selectUsdPrices)
   const { wallet, chainType } = useAppSelector(selectActiveWallet)
   const hideBalance = useAppSelector(selectHideBalance)
-  const [selectedAddress, setSelectedAddress] = useState<string | undefined>(
-    undefined,
-  )
+  const [selectedAddress, setSelectedAddress] = useState<string | undefined>()
   const [selectedTokenBalance, setSelectedTokenBalance] =
     useState<CurrencyValue>({
       balance: '0.00',

@@ -56,7 +56,7 @@ const onNewTransactionEventEmitted = async ({
     if (enhancedTransaction) {
       payloadToUse.enhancedTransaction = enhancedTransaction
     }
-  } catch (err) {
+  } catch {
   } finally {
     const deserializedTransaction = activityDeserializer(
       payloadToUse,
