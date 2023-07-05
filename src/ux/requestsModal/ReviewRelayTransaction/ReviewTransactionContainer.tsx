@@ -112,16 +112,7 @@ export const ReviewTransactionContainer = ({
     } catch (err: unknown) {
       setError(errorHandler(err))
     }
-  }, [
-    txCostInRif,
-    gasPrice,
-    gasLimit,
-    feeContract,
-    request,
-    onConfirm,
-    value,
-    symbol,
-  ])
+  }, [txCostInRif, gasPrice, gasLimit, feeContract, request, onConfirm])
 
   const cancelTransaction = useCallback(() => {
     request.reject('Transaction rejected')
