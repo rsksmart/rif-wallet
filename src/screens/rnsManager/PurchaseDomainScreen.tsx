@@ -141,8 +141,10 @@ export const PurchaseDomainScreen = ({
           <Input
             inputName="duration"
             label={t('purchase_username_duration_label')}
-            placeholder={`${duration} ${t('request_username_placeholder')}${
-              duration > 1 ? 's' : ''
+            placeholder={`${duration} ${
+              duration > 1
+                ? t('request_username_years')
+                : t('request_username_year')
             }`}
             isReadOnly
           />
