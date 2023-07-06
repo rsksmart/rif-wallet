@@ -78,13 +78,13 @@ export const TokenBalance = ({
   }, [contact])
 
   const onCopyAddress = useCallback(() => {
-    if (to) {
-      Clipboard.setString(to.address)
+    if (contact) {
+      Clipboard.setString(contact.address)
       Alert.alert(t('address_copied_to_keyboard'), undefined, [
         { text: t('ok'), onPress: noop },
       ])
     }
-  }, [to, t])
+  }, [contact, t])
 
   return (
     <View style={[{ backgroundColor: color }, style, styles.container]}>
@@ -146,20 +146,22 @@ export const TokenBalance = ({
           )}
         </View>
         {contact && (
-          <View style={[styles.toAddressContainer]}>
+          <View style={styles.toAddressContainer}>
             <Typography type="body1">
-              {amIReceiver ? t('From') : t('To')}{' '}
-              <AppTouchable
-                width={'100%'}
-                onPress={onCopyAddress}
-                style={styles.addressCopier}>
-                <Typography
-                  type="body1"
-                  style={{ color: sharedColors.primary }}>
-                  {toNameOrAddress}
-                </Typography>
-              </AppTouchable>
+              {amIReceiver ? t('From') : t('To')}
             </Typography>
+            <AppTouchable
+              width={'100%'}
+              onPress={onCopyAddress}
+              style={styles.addressCopier}>
+              <Typography
+                type="body1"
+                style={{
+                  color: sharedColors.primary,
+                }}>
+                {toNameOrAddress}
+              </Typography>
+            </AppTouchable>
           </View>
         )}
       </View>
@@ -265,11 +267,18 @@ const styles = StyleSheet.create({
     padding: 0,
     paddingLeft: 6,
   }),
-  toAddressContainer: castStyle.view({ marginTop: 12 }),
+  toAddressContainer: castStyle.view({
+    flexDirection: 'row',
+    width: 150,
+    marginTop: 12,
+  }),
   contactName: castStyle.text({
     width: '90%',
     alignItems: 'center',
   }),
   textSymbol: castStyle.text({ color: sharedColors.white, paddingTop: 3 }),
-  addressCopier: castStyle.view({ paddingTop: 4 }),
+  addressCopier: castStyle.view({
+    alignItems: 'flex-start',
+    marginLeft: 4,
+  }),
 })
