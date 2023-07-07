@@ -11,7 +11,7 @@ import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { settingsStackRouteNames } from 'navigation/settingsNavigator/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { selectFullscreen, setFullscreen } from 'store/slices/settingsSlice'
+import { setFullscreen } from 'store/slices/settingsSlice'
 import {
   selectBalances,
   selectTotalUsdValue,

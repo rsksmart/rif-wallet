@@ -1,4 +1,5 @@
 import Svg, { Path, SvgProps } from 'react-native-svg'
+
 import { SVGIconInterface } from './index'
 
 export const ShareIcon = (props: SvgProps & SVGIconInterface) => {

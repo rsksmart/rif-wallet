@@ -1,4 +1,5 @@
 import { View, StyleSheet } from 'react-native'
+
 import { RegularText } from '../../components'
 import { colors } from '../../styles'
 import { ActiveButton } from '../../components/button'

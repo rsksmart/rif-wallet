@@ -1,7 +1,6 @@
 import { useKeyboard } from '@react-native-community/hooks'
 import React from 'react'
 import SwipeUpDownModal from 'react-native-swipe-modal-up-down'
-
 import {
   Dimensions,
   KeyboardAvoidingView,

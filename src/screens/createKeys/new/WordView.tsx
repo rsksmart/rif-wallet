@@ -1,7 +1,8 @@
 import React from 'react'
-
 import { View } from 'react-native'
+
 import { RegularText } from 'src/components'
+
 import { sharedMnemonicStyles } from './styles'
 
 interface WordInterface {

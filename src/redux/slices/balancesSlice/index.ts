@@ -113,13 +113,13 @@ export const balancesSlice = createSlice({
     builder.addCase(resetSocketState, () => initialState)
     builder.addCase(addOrUpdateBalances.pending, state => {
       state.loading = true
-    }),
-      builder.addCase(addOrUpdateBalances.rejected, state => {
-        state.loading = false
-      }),
-      builder.addCase(addOrUpdateBalances.fulfilled, state => {
-        state.loading = false
-      })
+    })
+    builder.addCase(addOrUpdateBalances.rejected, state => {
+      state.loading = false
+    })
+    builder.addCase(addOrUpdateBalances.fulfilled, state => {
+      state.loading = false
+    })
   },
 })
 

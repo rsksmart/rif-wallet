@@ -1,5 +1,6 @@
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { IconProps } from 'react-native-vector-icons/Icon'
+
 import { defaultIconSize, sharedColors } from 'src/shared/constants'
 
 interface Props extends Omit<IconProps, 'name'> {

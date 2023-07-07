@@ -1,4 +1,5 @@
 import { StyleSheet, TouchableHighlight, View } from 'react-native'
+
 import { BaseButtonProps } from './types'
 
 const BaseButton = ({

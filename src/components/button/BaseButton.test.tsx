@@ -1,5 +1,6 @@
 import { render, fireEvent } from '@testing-library/react-native'
 import { Text } from 'react-native'
+
 import BaseButton from './BaseButton'
 
 describe('BaseButton component', () => {

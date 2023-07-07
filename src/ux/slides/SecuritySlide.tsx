@@ -1,5 +1,7 @@
 import { Image, StyleSheet, View } from 'react-native'
+
 import { RegularText, SemiBoldText } from 'src/components'
+
 import { colors } from '../../styles/colors'
 import { grid } from '../../styles/grid'
 import { SLIDER_HEIGHT, SLIDER_WIDTH } from './Dimensions'

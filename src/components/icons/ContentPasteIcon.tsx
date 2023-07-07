@@ -1,4 +1,5 @@
 import Svg, { ClipPath, Defs, G, Path, Rect } from 'react-native-svg'
+
 import { SVGIconInterface } from './index'
 
 export const ContentPasteIcon = ({

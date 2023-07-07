@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+
 import { grid } from '../../../styles'
 import { colors } from '../../../styles/colors'
 

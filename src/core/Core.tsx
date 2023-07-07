@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import { StatusBar, View } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import {
@@ -51,7 +51,6 @@ export const Core = () => {
 
   const settings = useAppSelector(selectWholeSettingsState)
   const requests = useAppSelector(selectRequests)
-  const [mnemonic, setMnemonic] = useState<string | null>(null)
   const topColor = useAppSelector(selectTopColor)
 
   const { unlocked, active } = useStateSubscription()
@@ -65,16 +64,8 @@ export const Core = () => {
 
   const unlockAppSetMnemonic = useCallback(async () => {
     try {
-      const kms = await dispatch(unlockApp()).unwrap()
-
-      setMnemonic(kms.mnemonic)
+      await dispatch(unlockApp()).unwrap()
     } catch (err) {
-      if (typeof err === 'string') {
-        // If no wallets - reset mnemonic...
-        if (err.includes('No Existing wallets')) {
-          setMnemonic(null)
-        }
-      }
       console.log('ERRR', err)
     }
   }, [dispatch])

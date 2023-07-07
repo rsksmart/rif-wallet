@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
+
 import { RegularText } from '../typography'
 import BaseButton from './BaseButton'
 import { StyledButtonProps } from './types'

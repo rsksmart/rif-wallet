@@ -1,4 +1,5 @@
 import Svg, { Path } from 'react-native-svg'
+
 import { SVGIconInterface } from './index'
 
 export const SmileFaceIcon = ({ width, height, color }: SVGIconInterface) => (

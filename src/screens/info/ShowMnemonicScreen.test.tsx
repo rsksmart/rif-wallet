@@ -1,9 +1,10 @@
 import { Provider } from 'react-redux'
 import { render } from '@testing-library/react-native'
 
+import { store } from 'store/index'
+
 import { ShowMnemonicScreen, TestID } from './ShowMnemonicScreen'
 import { Awaited, getTextFromTextNode } from '../../../testLib/utils'
-import { store } from 'store/index'
 
 const createTestInstance = async () => {
   const testMnemonic = 'MNEMONIC'

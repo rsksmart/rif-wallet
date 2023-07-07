@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+
 import { AccountPayload, IAccount } from './types'
 
 const initialState: IAccount[] = [{ name: 'account 1' }]
