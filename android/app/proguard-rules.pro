@@ -12,3 +12,7 @@
 # Fix Android Build crash when starting
 # Ref: https://github.com/software-mansion/react-native-svg/issues/1061#issuecomment-517031073
 -keep public class com.horcrux.svg.** {*;}
+
+# keep proguard from removing reference to .env
+# https://stackoverflow.com/questions/72709283/react-native-config-not-working-in-release-builds
+-keep class com.swallet.BuildConfig { *; }
