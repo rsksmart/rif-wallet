@@ -98,7 +98,7 @@ export const TokenBalance = ({
             testID={'Amount.Input'}
             placeholder="0"
             placeholderTextColor={sharedColors.inputLabelColor}
-            style={[styles.input, [sharedStyles.flex]]}
+            style={[styles.input, sharedStyles.flex]}
             editable={editable}
             multiline={false}
             clearTextOnFocus
@@ -129,7 +129,7 @@ export const TokenBalance = ({
           )}
         </View>
         {contact && (
-          <View style={[styles.toAddressContainer]}>
+          <View style={styles.toAddressContainer}>
             <Typography type="body1">
               {amIReceiver ? t('From') : t('To')}{' '}
               <Typography type="body1" style={{ color: sharedColors.primary }}>
@@ -211,7 +211,6 @@ const styles = StyleSheet.create({
     backgroundColor: sharedColors.white,
   }),
   tokenSubIcon: castStyle.view({
-    backgroundColor: sharedColors.white,
     borderRadius: 10,
     width: 20,
     height: 20,
