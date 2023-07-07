@@ -1,7 +1,15 @@
 import { useTranslation } from 'react-i18next'
-import { StyleProp, StyleSheet, TextInput, View, ViewStyle } from 'react-native'
+import {
+  Alert,
+  StyleProp,
+  StyleSheet,
+  TextInput,
+  View,
+  ViewStyle,
+} from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
+import Clipboard from '@react-native-community/clipboard'
 
 import { shortAddress } from 'lib/utils'
 
@@ -69,6 +77,15 @@ export const TokenBalance = ({
     return shortAddress(contact.address)
   }, [contact])
 
+  const onCopyAddress = useCallback(() => {
+    if (contact) {
+      Clipboard.setString(contact.address)
+      Alert.alert(t('address_copied_to_keyboard'), undefined, [
+        { text: t('ok'), onPress: noop },
+      ])
+    }
+  }, [contact, t])
+
   return (
     <View style={[{ backgroundColor: color }, style, styles.container]}>
       <View style={styles.leftColumn}>
@@ -131,11 +148,20 @@ export const TokenBalance = ({
         {contact && (
           <View style={styles.toAddressContainer}>
             <Typography type="body1">
-              {amIReceiver ? t('From') : t('To')}{' '}
-              <Typography type="body1" style={{ color: sharedColors.primary }}>
+              {amIReceiver ? t('From') : t('To')}
+            </Typography>
+            <AppTouchable
+              width={'100%'}
+              onPress={onCopyAddress}
+              style={styles.addressCopier}>
+              <Typography
+                type="body1"
+                style={{
+                  color: sharedColors.primary,
+                }}>
                 {toNameOrAddress}
               </Typography>
-            </Typography>
+            </AppTouchable>
           </View>
         )}
       </View>
@@ -240,10 +266,18 @@ const styles = StyleSheet.create({
     padding: 0,
     paddingLeft: 6,
   }),
-  toAddressContainer: castStyle.view({ marginTop: 12 }),
+  toAddressContainer: castStyle.view({
+    flexDirection: 'row',
+    width: 150,
+    marginTop: 12,
+  }),
   contactName: castStyle.text({
     width: '90%',
     alignItems: 'center',
   }),
   textSymbol: castStyle.text({ color: sharedColors.white, paddingTop: 3 }),
+  addressCopier: castStyle.view({
+    alignItems: 'flex-start',
+    marginLeft: 4,
+  }),
 })
