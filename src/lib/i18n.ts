@@ -140,7 +140,8 @@ const resources = {
       username_registration_title: 'Username Registration',
       request_username_title: 'Request a username',
       request_username_label: 'Length of registration',
-      request_username_placeholder: 'year',
+      request_username_years: 'years',
+      request_username_year: 'year',
       request_username_popup_title: "It's a 2-step process",
       request_username_popup_description:
         'Registering a username requires you to make two transactions in RIF. First transaction is requesting the username. Second transaction is the actual purchase of the username.\nWe are working hard on improving this experience for you!',
