@@ -98,9 +98,7 @@ export const activityDeserializer: (
           : getTokenAddress(tokenSymbol, chainTypesById[chainId])
     } catch {}
     const tokenQuote = prices[tokenContract.toLowerCase()]?.price || 0
-    const tokenUsd = convertTokenToUSD(Number(tokenValue), tokenQuote).toFixed(
-      2,
-    )
+    const tokenUsd = convertTokenToUSD(Number(tokenValue), tokenQuote)
 
     // Fee
     const feeValue = etx?.feeValue || `${balanceToDisplay(feeRbtc, 18)}`

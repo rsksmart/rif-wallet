@@ -135,7 +135,7 @@ export const ActivityBasicRow = ({
         status={getStatus(status)}
         avatar={{ name: 'A' }}
         secondaryLabel={timeHumanFormatted}
-        usdAmount={usdBalance === 0 ? undefined : usdBalance}
+        usdAmount={price === 0 ? undefined : usdBalance}
         contact={contact}
       />
     </AppTouchable>
