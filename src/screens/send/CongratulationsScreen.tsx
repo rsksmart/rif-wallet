@@ -6,23 +6,27 @@ import { AppSpinner } from 'src/components'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 
-interface CongratulationsComponentProps {
+interface CongratulationsScreenProps {
   amount: string
   tokenSymbol: string
-  onCloseTap: () => void
+  onClose: () => void
 }
 
-export const CongratulationsComponent = ({
+export const CongratulationsScreen = ({
   amount,
   tokenSymbol,
-  onCloseTap,
-}: CongratulationsComponentProps) => (
+  onClose,
+}: CongratulationsScreenProps) => (
   <FeedbackModal
     visible={true}
     title={t('transaction_summary_congrats')}
-    subtitle={`${t('transaction_summary_you_sent')} ${amount} ${tokenSymbol}`}
-    footerText={t('transaction_pending')}
-    feedbackComponent={
+    content={[
+      `${t('transaction_summary_you_sent')} ${amount} ${tokenSymbol}.`,
+      t('transaction_summary_your_transaction'),
+      t('transaction_summary_check_status'),
+    ]}
+    backgroundColor={sharedColors.black}
+    FeedbackComponent={
       <View style={styles.viewSpinner}>
         <AppSpinner size={174} />
       </View>
@@ -30,7 +34,7 @@ export const CongratulationsComponent = ({
     buttons={[
       {
         title: t('close'),
-        onPress: onCloseTap,
+        onPress: onClose,
         color: sharedColors.white,
         textColor: sharedColors.black,
       },

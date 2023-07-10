@@ -18,8 +18,8 @@ import { AppButton, AppButtonProps } from '../button'
 
 interface Props extends ModalProps {
   title: string
-  feedbackComponent: ReactElement
-  subtitle?: string
+  FeedbackComponent: ReactElement
+  content?: string[]
   footerText?: string
   style?: StyleProp<ViewStyle>
   backgroundColor?: ColorValue
@@ -27,9 +27,9 @@ interface Props extends ModalProps {
 }
 
 export const FeedbackModal = ({
-  feedbackComponent,
+  FeedbackComponent,
   title,
-  subtitle,
+  content = [],
   footerText,
   visible,
   animationType,
@@ -42,20 +42,20 @@ export const FeedbackModal = ({
     <Modal animationType={animationType} visible={visible}>
       <View
         style={[
-          styles.screen,
+          styles.container,
           { paddingTop: top },
           backgroundColor ? { backgroundColor } : null,
           style,
         ]}>
-        {feedbackComponent}
+        {FeedbackComponent}
         <Typography style={styles.title} type={'h2'}>
           {title}
         </Typography>
-        {subtitle ? (
-          <Typography style={styles.subtitle} type={'h4'}>
-            {subtitle}
+        {content.map((text, i) => (
+          <Typography style={styles.subtitle} type={'h4'} key={i}>
+            {text}
           </Typography>
-        ) : null}
+        ))}
         {footerText ? (
           <Typography style={styles.footerText} type={'body3'}>
             {footerText}
@@ -74,7 +74,7 @@ export const FeedbackModal = ({
 }
 
 const styles = StyleSheet.create({
-  screen: castStyle.view({
+  container: castStyle.view({
     flex: 1,
     backgroundColor: sharedColors.primary,
     alignItems: 'center',
@@ -82,9 +82,10 @@ const styles = StyleSheet.create({
   title: castStyle.text({
     letterSpacing: -1,
     marginTop: 158,
+    marginBottom: 8,
   }),
   subtitle: castStyle.text({
-    marginTop: 9,
+    marginTop: 5,
     color: sharedColors.labelLight,
   }),
   footerText: castStyle.text({
