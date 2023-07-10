@@ -124,8 +124,11 @@ export enum TokenSymbol {
 }
 
 export const getTransparentIconSource = (
-  symbol: string,
+  symbol: string | undefined,
 ): ImageRequireSource | undefined => {
+  if (!symbol) {
+    return undefined
+  }
   switch (symbol.toUpperCase()) {
     case 'RBTC':
     case 'TRBTC':
@@ -148,8 +151,11 @@ export const getTransparentIconSource = (
 }
 
 export const getIconSource = (
-  symbol: string,
+  symbol: string | undefined,
 ): ImageRequireSource | undefined => {
+  if (!symbol) {
+    return undefined
+  }
   switch (symbol.toUpperCase()) {
     case 'RBTC':
     case 'TRBTC':
