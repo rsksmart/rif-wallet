@@ -101,7 +101,7 @@ export const activityDeserializer: (
     const tokenUsd = convertTokenToUSD(Number(tokenValue), tokenQuote)
 
     // Fee
-    const feeValue = etx?.feeValue || `${balanceToDisplay(feeRbtc, 18)}`
+    const feeValue = etx?.feeValue || balanceToDisplay(feeRbtc, 18)
     const feeSymbol = etx?.feeSymbol || rbtcSymbol
     let feeContract = ''
     try {
