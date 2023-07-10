@@ -1,29 +1,33 @@
 import { StyleSheet, View } from 'react-native'
+import { useTranslation } from 'react-i18next'
 
 import { Typography } from 'components/index'
 import { sharedColors } from 'shared/constants'
 
-export const OfflineScreen = () => (
-  <View style={styles.container}>
-    <View style={styles.card}>
-      <Typography type="h3" color={sharedColors.white} style={styles.text}>
-        Ops! You are offline.
-      </Typography>
-      <Typography
-        type="body2"
-        color={sharedColors.labelLight}
-        style={styles.text}>
-        RIF Wallet needs an internet connection to work properly.
-      </Typography>
-      <Typography
-        type="body2"
-        color={sharedColors.labelLight}
-        style={styles.text}>
-        Please check your connection and try again.
-      </Typography>
+export const OfflineScreen = () => {
+  const { t } = useTranslation()
+  return (
+    <View style={styles.container}>
+      <View style={styles.card}>
+        <Typography type="h3" color={sharedColors.white} style={styles.text}>
+          {t('offline_screen_title')}
+        </Typography>
+        <Typography
+          type="body2"
+          color={sharedColors.labelLight}
+          style={styles.text}>
+          {t('offline_screen_description_1')}
+        </Typography>
+        <Typography
+          type="body2"
+          color={sharedColors.labelLight}
+          style={styles.text}>
+          {t('offline_screen_description_2')}
+        </Typography>
+      </View>
     </View>
-  </View>
-)
+  )
+}
 
 const styles = StyleSheet.create({
   container: {

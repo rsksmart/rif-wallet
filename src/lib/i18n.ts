@@ -351,6 +351,11 @@ const resources = {
       android_qr_alert_title: 'Error reading QR',
       android_qr_alert_desc: 'The QR could not be parsed. Please try again.',
       android_qr_loading_camera: 'Loading camera',
+      offline_screen_title: 'Ops! You are offline.',
+      offline_screen_description_1:
+        'RIF Wallet needs an internet connection to work properly.',
+      offline_screen_description_2:
+        'Please check your connection and try again.',
     },
   },
   es: {
