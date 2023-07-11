@@ -19,7 +19,7 @@ import { AppButton, AppButtonProps } from '../button'
 interface Props extends ModalProps {
   title: string
   FeedbackComponent: ReactElement
-  content?: string[]
+  texts?: string[]
   footerText?: string
   style?: StyleProp<ViewStyle>
   backgroundColor?: ColorValue
@@ -30,7 +30,7 @@ interface Props extends ModalProps {
 export const FeedbackModal = ({
   FeedbackComponent,
   title,
-  content = [],
+  texts = [],
   footerText,
   visible,
   animationType,
@@ -49,13 +49,13 @@ export const FeedbackModal = ({
           backgroundColor ? { backgroundColor } : null,
           style,
         ]}>
-        {FeedbackComponent}
+        <View style={styles.feedback}>{FeedbackComponent}</View>
         {!loading && (
-          <>
+          <View style={styles.content}>
             <Typography style={styles.title} type={'h2'}>
               {title}
             </Typography>
-            {content.map((text, i) => (
+            {texts.map((text, i) => (
               <Typography style={styles.subtitle} type={'h4'} key={i}>
                 {text}
               </Typography>
@@ -65,14 +65,19 @@ export const FeedbackModal = ({
                 {footerText}
               </Typography>
             ) : null}
-            <View style={styles.buttonsContainer}>
+            <View style={styles.buttons}>
               {buttons
                 ? buttons.map((button, index) => (
-                    <AppButton key={index} {...button} style={styles.button} />
+                    <AppButton
+                      key={index}
+                      {...button}
+                      style={styles.button}
+                      textStyle={{ textAlign: 'center' }}
+                    />
                   ))
                 : null}
             </View>
-          </>
+          </View>
         )}
       </View>
     </Modal>
@@ -84,6 +89,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: sharedColors.primary,
     alignItems: 'center',
+  }),
+  feedback: castStyle.view({
+    flex: 1,
+    justifyContent: 'flex-end',
+  }),
+  content: castStyle.view({
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   }),
   title: castStyle.text({
     letterSpacing: -1,
@@ -105,11 +119,10 @@ const styles = StyleSheet.create({
     right: 22,
     backgroundColor: sharedColors.white,
   }),
-  buttonsContainer: castStyle.view({
-    position: 'absolute',
-    bottom: 30,
-    left: 20,
-    right: 20,
+  buttons: castStyle.view({
+    justifyContent: 'center',
+    minHeight: 100,
+    alignSelf: 'stretch',
   }),
   button: castStyle.view({
     marginTop: 8,

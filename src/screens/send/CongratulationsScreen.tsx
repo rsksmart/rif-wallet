@@ -1,10 +1,8 @@
 import { t } from 'i18next'
-import { StyleSheet, View } from 'react-native'
 import { useEffect, useState } from 'react'
 
 import { FeedbackModal } from 'components/feedbackModal'
 import { sharedColors } from 'shared/constants'
-import { castStyle } from 'shared/utils'
 import { AppSpinner } from 'src/components'
 import { SuccessIcon } from 'src/components/icons/SuccessIcon'
 
@@ -29,17 +27,13 @@ export const CongratulationsScreen = ({
     <FeedbackModal
       visible={true}
       title={t('transaction_summary_congrats')}
-      content={[
+      texts={[
         `${t('transaction_summary_you_sent')} ${amount} ${tokenSymbol}.`,
         t('transaction_summary_your_transaction'),
         t('transaction_summary_check_status'),
       ]}
       backgroundColor={sharedColors.black}
-      FeedbackComponent={
-        <View style={styles.feedback}>
-          {loading ? <AppSpinner size={174} /> : <SuccessIcon />}
-        </View>
-      }
+      FeedbackComponent={loading ? <AppSpinner size={174} /> : <SuccessIcon />}
       loading={loading}
       buttons={[
         {
@@ -52,10 +46,3 @@ export const CongratulationsScreen = ({
     />
   )
 }
-
-const styles = StyleSheet.create({
-  feedback: castStyle.view({
-    flexBasis: '50%',
-    justifyContent: 'flex-end',
-  }),
-})
