@@ -70,10 +70,9 @@ const contactsSlice = createSlice({
         state.recentContacts.unshift(recentContactRemoved)
         return
       }
-      const contact = Object.values(state.contacts).find(c => {
-        console.log('C ADDRESS', c.address)
-        return c.address === addressForSearch
-      })
+      const contact = Object.values(state.contacts).find(
+        c => c.address === addressForSearch,
+      )
 
       if (contact) {
         state.recentContacts.unshift(contact)
