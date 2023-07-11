@@ -10,9 +10,9 @@ import {
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { castStyle } from 'shared/utils'
-import { sharedColors } from 'shared/constants'
 import { Typography } from 'components/typography'
+import { sharedColors } from 'shared/constants'
+import { castStyle } from 'shared/utils'
 
 import { AppButton, AppButtonProps } from '../button'
 
@@ -24,6 +24,7 @@ interface Props extends ModalProps {
   style?: StyleProp<ViewStyle>
   backgroundColor?: ColorValue
   buttons?: AppButtonProps[]
+  loading?: boolean
 }
 
 export const FeedbackModal = ({
@@ -36,6 +37,7 @@ export const FeedbackModal = ({
   buttons,
   style,
   backgroundColor,
+  loading,
 }: Props) => {
   const { top } = useSafeAreaInsets()
   return (
@@ -48,26 +50,30 @@ export const FeedbackModal = ({
           style,
         ]}>
         {FeedbackComponent}
-        <Typography style={styles.title} type={'h2'}>
-          {title}
-        </Typography>
-        {content.map((text, i) => (
-          <Typography style={styles.subtitle} type={'h4'} key={i}>
-            {text}
-          </Typography>
-        ))}
-        {footerText ? (
-          <Typography style={styles.footerText} type={'body3'}>
-            {footerText}
-          </Typography>
-        ) : null}
-        <View style={styles.buttonsContainer}>
-          {buttons
-            ? buttons.map((button, index) => (
-                <AppButton key={index} {...button} style={styles.button} />
-              ))
-            : null}
-        </View>
+        {!loading && (
+          <>
+            <Typography style={styles.title} type={'h2'}>
+              {title}
+            </Typography>
+            {content.map((text, i) => (
+              <Typography style={styles.subtitle} type={'h4'} key={i}>
+                {text}
+              </Typography>
+            ))}
+            {footerText ? (
+              <Typography style={styles.footerText} type={'body3'}>
+                {footerText}
+              </Typography>
+            ) : null}
+            <View style={styles.buttonsContainer}>
+              {buttons
+                ? buttons.map((button, index) => (
+                    <AppButton key={index} {...button} style={styles.button} />
+                  ))
+                : null}
+            </View>
+          </>
+        )}
       </View>
     </Modal>
   )
@@ -108,4 +114,5 @@ const styles = StyleSheet.create({
   button: castStyle.view({
     marginTop: 8,
   }),
+  viewSpinner: castStyle.view({ flexBasis: '50%', justifyContent: 'flex-end' }),
 })
