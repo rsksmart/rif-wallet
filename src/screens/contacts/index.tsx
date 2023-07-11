@@ -10,7 +10,10 @@ import {
   RootTabsScreenProps,
 } from 'navigation/rootNavigator/types'
 import { contactsStackRouteNames } from 'navigation/contactsNavigator'
-import { getContactsAsArrayAndSelected } from 'store/slices/contactsSlice'
+import {
+  getContactsAsArrayAndSelected,
+  selectRecentContacts,
+} from 'store/slices/contactsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { changeTopColor } from 'store/slices/settingsSlice'
 import { Search } from 'components/input/search'
@@ -20,6 +23,7 @@ import { castStyle } from 'shared/utils'
 import { shortAddress } from 'src/lib/utils'
 
 import { ContactsStackScreenProps } from '../index'
+import { ContactCard } from './components/ContactCard'
 
 export type ContactsListScreenProps = CompositeScreenProps<
   ContactsStackScreenProps<contactsStackRouteNames.ContactsList>,
@@ -38,6 +42,7 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
   const { resetField, watch } = methods
   const { t } = useTranslation()
   const { contacts } = useAppSelector(getContactsAsArrayAndSelected)
+  const recentContacts = useAppSelector(selectRecentContacts)
 
   const searchContactText = watch('search')
 
@@ -69,6 +74,15 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
 
   return (
     <View style={sharedStyles.screen}>
+      {recentContacts.length > 0 && (
+        <View style={styles.recentContacts}>
+          <ScrollView horizontal>
+            {recentContacts.map((c, i) => (
+              <ContactCard style={styles.contactCard} key={i} name={c.name} />
+            ))}
+          </ScrollView>
+        </View>
+      )}
       <Typography type={'h2'} style={styles.title}>
         {t('contacts_screen_title')}
       </Typography>
@@ -138,7 +152,7 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
 }
 
 const styles = StyleSheet.create({
-  title: castStyle.text({ marginTop: 44 }),
+  title: castStyle.text({ marginTop: 18 }),
   noContactsImage: castStyle.image({
     marginTop: 102,
     alignSelf: 'center',
@@ -163,6 +177,10 @@ const styles = StyleSheet.create({
     left: 24,
     right: 24,
     backgroundColor: sharedColors.white,
+  }),
+  recentContacts: castStyle.view({ height: 100, marginTop: 12 }),
+  contactCard: castStyle.view({
+    marginLeft: 6,
   }),
 })
 

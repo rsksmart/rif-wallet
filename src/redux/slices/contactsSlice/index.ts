@@ -10,6 +10,7 @@ import { defaultContacts } from 'store/slices/contactsSlice/constants'
 
 const initialState: ContactsState = {
   contacts: defaultContacts,
+  recentContacts: [],
   selectedContact: null,
 }
 
@@ -32,6 +33,10 @@ const contactsSlice = createSlice({
     deleteContactByAddress: (state, { payload }: PayloadAction<string>) => {
       delete state.contacts[payload]
       saveContacts(state.contacts)
+      const indexOfContact = state.recentContacts.findIndex(
+        c => c.address === payload,
+      )
+      state.recentContacts.splice(indexOfContact, 1)
       return state
     },
     deleteContacts: () => {
@@ -43,6 +48,42 @@ const contactsSlice = createSlice({
     ) => {
       state.selectedContact = payload ? state.contacts[payload] : null
       return state
+    },
+    addRecentContact: (state, { payload }: PayloadAction<string>) => {
+      const addressForSearch = payload.toLowerCase()
+      console.log('addRecentContact', addressForSearch)
+      if (!state.recentContacts) {
+        state.recentContacts = []
+      }
+      const indexOfContact = state.recentContacts.findIndex(
+        c => c.address === addressForSearch,
+      )
+      if (indexOfContact === 0) {
+        return
+      }
+
+      if (indexOfContact !== -1) {
+        const recentContactRemoved = state.recentContacts.splice(
+          indexOfContact,
+          1,
+        )[0]
+        state.recentContacts.unshift(recentContactRemoved)
+        return
+      }
+      const contact = Object.values(state.contacts).find(c => {
+        console.log('C ADDRESS', c.address)
+        return c.address === addressForSearch
+      })
+
+      if (contact) {
+        state.recentContacts.unshift(contact)
+      }
+
+      console.log('CONTACT in addRecentContact', contact)
+
+      if (state.recentContacts.length > 10) {
+        state.recentContacts.pop()
+      }
     },
   },
   extraReducers: builder => {
@@ -59,6 +100,7 @@ export const {
   deleteContactByAddress,
   deleteContacts,
   editContact,
+  addRecentContact,
 } = contactsSlice.actions
 
 export const contactsReducer = contactsSlice.reducer

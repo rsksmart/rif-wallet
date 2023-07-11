@@ -21,7 +21,8 @@ import { errorHandler } from 'shared/utils'
 import { selectActiveWallet, selectChainId } from 'store/slices/settingsSlice'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
-import { useAppSelector } from 'store/storeUtils'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { addRecentContact } from 'store/slices/contactsSlice'
 
 import useEnhancedWithGas from '../useEnhancedWithGas'
 
@@ -36,6 +37,7 @@ export const ReviewTransactionContainer = ({
   onCancel,
   onConfirm,
 }: Props) => {
+  const dispatch = useAppDispatch()
   const insets = useSafeAreaInsets()
   const tokenPrices = useAppSelector(selectUsdPrices)
   // enhance the transaction to understand what it is:
@@ -92,6 +94,7 @@ export const ReviewTransactionContainer = ({
   }, [txRequest, wallet.rifRelaySdk, feeContract])
 
   const confirmTransaction = useCallback(async () => {
+    dispatch(addRecentContact(to))
     if (!txCostInRif) {
       throw new Error('token cost has not been estimated')
     }
@@ -111,7 +114,16 @@ export const ReviewTransactionContainer = ({
     } catch (err: unknown) {
       errorHandler(err)
     }
-  }, [txCostInRif, gasPrice, gasLimit, feeContract, request, onConfirm])
+  }, [
+    dispatch,
+    txCostInRif,
+    gasPrice,
+    gasLimit,
+    feeContract,
+    request,
+    onConfirm,
+    to,
+  ])
 
   const cancelTransaction = useCallback(() => {
     request.reject('Transaction rejected')
