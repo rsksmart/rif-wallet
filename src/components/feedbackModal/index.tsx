@@ -114,5 +114,4 @@ const styles = StyleSheet.create({
   button: castStyle.view({
     marginTop: 8,
   }),
-  viewSpinner: castStyle.view({ flexBasis: '50%', justifyContent: 'flex-end' }),
 })
