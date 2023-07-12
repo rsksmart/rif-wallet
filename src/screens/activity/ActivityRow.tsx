@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleProp, StyleSheet, ViewStyle } from 'react-native'
 
-import { displayRoundBalance, roundBalance, shortAddress } from 'lib/utils'
+import { roundBalance, shortAddress } from 'lib/utils'
 
 import { StatusEnum } from 'components/BasicRow'
 import { BasicRowWithContact } from 'components/BasicRow/BasicRowWithContact'
@@ -135,7 +135,7 @@ export const ActivityBasicRow = ({
         status={getStatus(status)}
         avatar={{ name: 'A' }}
         secondaryLabel={timeHumanFormatted}
-        usdAmount={usdBalance}
+        usdAmount={price === 0 ? undefined : usdBalance}
         contact={contact}
       />
     </AppTouchable>
