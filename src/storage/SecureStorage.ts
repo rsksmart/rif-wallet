@@ -31,7 +31,7 @@ export const getKeys = async () => {
         accessControl:
           !supportedBiometry || !biometry
             ? ACCESS_CONTROL.DEVICE_PASSCODE
-            : ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
+            : ACCESS_CONTROL.BIOMETRY_CURRENT_SET_OR_DEVICE_PASSCODE,
       })
       if (!keys) {
         return null
@@ -70,7 +70,7 @@ export const saveKeys = async (keysValue: string) => {
         accessControl:
           !supportedBiometry || !biometry
             ? ACCESS_CONTROL.DEVICE_PASSCODE
-            : ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
+            : ACCESS_CONTROL.BIOMETRY_CURRENT_SET_OR_DEVICE_PASSCODE,
       })
     } else {
       saveKeysInMMKV(keysValue)
