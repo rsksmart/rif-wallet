@@ -70,16 +70,7 @@ export const addOrUpdateBalances = createAsyncThunk<
       balances.push(...bitBalances)
     }
 
-    const totalUsdValue = balances
-      .reduce((previousValue, token) => {
-        previousValue += token.usdBalance
-
-        return previousValue
-      }, 0)
-      .toFixed(2)
-
     thunkAPI.dispatch(addOrUpdateBalancesState(balances))
-    thunkAPI.dispatch(setTotalUsdBalance(totalUsdValue))
   } catch (err) {
     thunkAPI.rejectWithValue(err)
   }
@@ -102,11 +93,18 @@ export const balancesSlice = createSlice({
       state,
       { payload }: PayloadAction<ITokenWithoutLogo[]>,
     ) => {
-      payload.map(token => {
+      payload.forEach(token => {
         state.tokenBalances[token.contractAddress] = {
           ...token,
         }
       })
+      state.totalUsdBalance = Object.values(state.tokenBalances)
+        .reduce((previousValue, token) => {
+          previousValue += token.usdBalance
+
+          return previousValue
+        }, 0)
+        .toFixed(2)
     },
   },
   extraReducers: builder => {

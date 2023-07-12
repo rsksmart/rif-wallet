@@ -3,13 +3,13 @@ import { TextStyle } from 'react-native'
 import Clipboard from '@react-native-community/clipboard'
 import { decodeString } from '@rsksmart/rif-wallet-eip681'
 import { useTranslation } from 'react-i18next'
+import { isBitcoinAddressValid } from '@rsksmart/rif-wallet-bitcoin'
 
 import { getRnsResolver } from 'core/setup'
 import { sharedColors } from 'shared/constants'
 import { ContactWithAddressRequired } from 'shared/types'
 import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 
-import { QRCodeScanner } from '../QRCodeScanner'
 import {
   AddressValidationMessage,
   toChecksumAddress,
@@ -20,6 +20,7 @@ import { Avatar } from '../avatar'
 import { AppButton } from '../button'
 
 export interface AddressInputProps extends Omit<InputProps, 'value'> {
+  isBitcoin: boolean
   value: ContactWithAddressRequired
   onChangeAddress: (
     newValue: string,
@@ -45,7 +46,13 @@ const typeColorMap = new Map([
 
 const defaultStatus = { type: Status.READY, value: '' }
 
+enum CoinType {
+  RSK = 137,
+  BTC = 0,
+}
+
 export const AddressInput = ({
+  isBitcoin,
   label,
   placeholder,
   value,
@@ -56,7 +63,6 @@ export const AddressInput = ({
   resetValue,
 }: AddressInputProps) => {
   const { t } = useTranslation()
-  const [showQRScanner, setShowQRScanner] = useState<boolean>(false)
   const [domainFound, setDomainFound] = useState<boolean>(false)
   // status
   const [status, setStatus] = useState<{
@@ -80,6 +86,7 @@ export const AddressInput = ({
     (inputText: string) => {
       if (inputText.length === 0) {
         resetState()
+        return
       }
 
       setStatus(defaultStatus)
@@ -87,11 +94,14 @@ export const AddressInput = ({
       const parsedString = decodeString(inputText)
       const userInput = parsedString.address ? parsedString.address : inputText
       const newValidationMessage = validateAddress(userInput, chainId)
+      const isBitcoinValid = isBitcoinAddressValid(userInput)
 
       onChangeAddress(
         userInput,
         '',
-        newValidationMessage === AddressValidationMessage.VALID,
+        !isBitcoin
+          ? newValidationMessage === AddressValidationMessage.VALID
+          : isBitcoinValid,
       )
 
       if (!inputText) {
@@ -106,7 +116,7 @@ export const AddressInput = ({
           })
 
           getRnsResolver(chainId)
-            .addr(userInput)
+            .addr(userInput, isBitcoin ? CoinType.BTC : CoinType.RSK)
             .then((resolvedAddress: string) => {
               setDomainFound(true)
               setStatus({
@@ -118,8 +128,10 @@ export const AddressInput = ({
               onChangeAddress(
                 resolvedAddress,
                 userInput,
-                validateAddress(resolvedAddress, chainId) ===
-                  AddressValidationMessage.VALID,
+                !isBitcoin
+                  ? validateAddress(resolvedAddress, chainId) ===
+                      AddressValidationMessage.VALID
+                  : isBitcoinAddressValid(resolvedAddress),
               )
             })
             .catch(_e =>
@@ -146,7 +158,7 @@ export const AddressInput = ({
           break
       }
     },
-    [chainId, onChangeAddress, resetState, t],
+    [chainId, onChangeAddress, resetState, t, isBitcoin],
   )
 
   const unselectDomain = useCallback(() => {
@@ -158,19 +170,6 @@ export const AddressInput = ({
     const copyValue = await Clipboard.getString()
     handleChangeText(copyValue)
   }, [handleChangeText])
-
-  // onBlur check the address is valid
-  const validateCurrentInput = useCallback(
-    (input: string) => {
-      if (validateAddress(input) === AddressValidationMessage.INVALID_ADDRESS) {
-        setStatus({
-          type: Status.ERROR,
-          value: t('contact_form_address_invalid'),
-        })
-      }
-    },
-    [t],
-  )
 
   useEffect(() => {
     // only needs to run once
@@ -184,15 +183,7 @@ export const AddressInput = ({
     resetValue && resetValue()
   }, [resetValue, unselectDomain])
 
-  return showQRScanner ? (
-    <QRCodeScanner
-      onClose={() => setShowQRScanner(false)}
-      onCodeRead={data => {
-        handleChangeText(data)
-        setShowQRScanner(false)
-      }}
-    />
-  ) : (
+  return (
     <>
       <Input
         testID={testID}
@@ -202,13 +193,19 @@ export const AddressInput = ({
         subtitle={!value.displayAddress ? undefined : value.address}
         inputName={inputName}
         onChangeText={handleChangeText}
-        onBlur={() => validateCurrentInput(value.address)}
         resetValue={resetAddressValue}
         autoCorrect={false}
         autoCapitalize={'none'}
         placeholder={placeholder}
         placeholderTextColor={sharedColors.inputLabelColor}
-        rightIcon={!value.address ? { name: 'copy', size: 16 } : undefined}
+        rightIcon={
+          !(value.address || value.displayAddress)
+            ? {
+                name: 'copy',
+                size: 16,
+              }
+            : undefined
+        }
         onRightIconPress={handlePasteClick}
         leftIcon={
           value.displayAddress && domainFound ? (
