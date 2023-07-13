@@ -35,27 +35,23 @@ import { AppSpinner } from 'components/index'
 import { rootTabsRouteNames } from 'src/navigation/rootNavigator'
 import { settingsStackRouteNames } from 'src/navigation/settingsNavigator/types'
 import { handleDomainTransactionStatusChange } from 'screens/rnsManager/utils'
+import { selectWalletState } from 'store/slices/settingsSlice'
 
-import { ScreenWithWallet } from '../types'
 import { DomainInput } from './DomainInput'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
 export const minDomainLength = 3
 
-type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain> &
-  ScreenWithWallet
+type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain>
 
 interface FormValues {
   domain: string
   years: number
 }
 
-export const SearchDomainScreen = ({
-  wallet,
-  navigation,
-  walletDeployed,
-}: Props) => {
-  const { isDeployed, loading } = walletDeployed
+export const SearchDomainScreen = ({ navigation }: Props) => {
+  const { wallet, walletIsDeployed } = useAppSelector(selectWalletState)
+  const { isDeployed, loading } = walletIsDeployed
   const [isDomainOwned, setIsDomainOwned] = useState<boolean>(false)
   const [validDomain, setValidDomain] = useState<boolean>(false)
   const [selectedDomainPrice, setSelectedDomainPrice] = useState<number>(2)

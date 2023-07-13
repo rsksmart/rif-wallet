@@ -10,9 +10,9 @@ import {
   rootTabsRouteNames,
 } from 'navigation/rootNavigator'
 import { TransactionSummaryComponent } from 'screens/transactionSummary/TransactionSummaryComponent'
-import { setFullscreen } from 'store/slices/settingsSlice'
+import { selectWallet, setFullscreen } from 'store/slices/settingsSlice'
 import { TokenFeeValueObject } from 'store/slices/transactionsSlice'
-import { useAppDispatch } from 'store/storeUtils'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 
 import { TransactionStatus } from './transactionSummaryUtils'
 
@@ -38,6 +38,11 @@ export const TransactionSummaryScreen = ({
   route,
   navigation,
 }: RootTabsScreenProps<rootTabsRouteNames.TransactionSummary>) => {
+  const wallet = useAppSelector(selectWallet)
+  if (!wallet) {
+    //@TODO: unify this logic across screens
+    throw new Error('NO WALLET HAS BEEN SET')
+  }
   const dispatch = useAppDispatch()
   const isFocused = useIsFocused()
   const { backScreen } = route.params
@@ -73,5 +78,11 @@ export const TransactionSummaryScreen = ({
     })
   }, [goBack, navigation])
 
-  return <TransactionSummaryComponent {...route.params} goBack={goBack} />
+  return (
+    <TransactionSummaryComponent
+      {...route.params}
+      goBack={goBack}
+      wallet={wallet}
+    />
+  )
 }

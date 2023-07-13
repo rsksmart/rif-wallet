@@ -7,8 +7,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useProfileStatusColors } from 'lib/rns'
 
 import { AppTouchable } from 'components/appTouchable'
-import { InjectedScreens } from 'core/Core'
-import { ProfileCreateScreen, ShareProfileScreen } from 'screens/index'
+import {
+  AliasBoughtScreen,
+  ProfileCreateScreen,
+  PurchaseDomainScreen,
+  SearchDomainScreen,
+  ShareProfileScreen,
+} from 'screens/index'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { selectProfileStatus } from 'store/slices/profileSlice'
 import { useAppSelector } from 'store/storeUtils'
@@ -71,7 +76,7 @@ export const ProfileNavigator = ({
       {status < ProfileStatus.READY_TO_PURCHASE && (
         <ProfileStack.Screen
           name={profileStackRouteNames.SearchDomain}
-          component={InjectedScreens.SearchDomainScreen}
+          component={SearchDomainScreen}
           options={screenOptionsWithHeader(
             top,
             t('username_registration_title'),
@@ -84,7 +89,7 @@ export const ProfileNavigator = ({
       {status >= ProfileStatus.READY_TO_PURCHASE && (
         <ProfileStack.Screen
           name={profileStackRouteNames.PurchaseDomain}
-          component={InjectedScreens.PurchaseDomainScreen}
+          component={PurchaseDomainScreen}
           options={screenOptionsWithHeader(
             top,
             t('username_registration_title'),
@@ -96,7 +101,7 @@ export const ProfileNavigator = ({
 
       <ProfileStack.Screen
         name={profileStackRouteNames.AliasBought}
-        component={InjectedScreens.AliasBoughtScreen}
+        component={AliasBoughtScreen}
         options={{ headerShown: false }}
       />
     </ProfileStack.Navigator>

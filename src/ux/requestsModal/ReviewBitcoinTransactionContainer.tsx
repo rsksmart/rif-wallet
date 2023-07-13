@@ -18,6 +18,7 @@ import { useAppSelector } from 'store/storeUtils'
 import { sharedColors } from 'shared/constants'
 import { AppButtonBackgroundVarietyEnum, Input } from 'components/index'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
+import { selectWallet } from 'store/slices/settingsSlice'
 
 interface ReviewBitcoinTransactionContainerProps {
   request: SendBitcoinRequest
@@ -30,6 +31,7 @@ export const ReviewBitcoinTransactionContainer = ({
   onConfirm,
   onCancel,
 }: ReviewBitcoinTransactionContainerProps) => {
+  const wallet = useAppSelector(selectWallet)
   const insets = useSafeAreaInsets()
   const { t } = useTranslation()
   const tokenPrices = useAppSelector(selectUsdPrices)
@@ -137,7 +139,8 @@ export const ReviewBitcoinTransactionContainer = ({
   )
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <TransactionSummaryComponent {...data} />
+      {/*Without a Wallet it's not possible to initiate a transaction */}
+      <TransactionSummaryComponent {...data} wallet={wallet!} />
     </View>
   )
 }

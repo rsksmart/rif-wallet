@@ -22,8 +22,8 @@ import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import {
   changeTopColor,
-  selectActiveWallet,
   selectHideBalance,
+  selectWalletState,
   setHideBalance,
 } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
@@ -49,6 +49,7 @@ export const HomeScreen = ({
   const { t } = useTranslation()
   const isFocused = useIsFocused()
   const dispatch = useAppDispatch()
+  const { wallet, chainType } = useAppSelector(selectWalletState)
   const tokenBalances = useAppSelector(selectBalances)
   const transactions = useAppSelector(selectTransactions)
   const balancesArray = useMemo(
@@ -57,7 +58,6 @@ export const HomeScreen = ({
   )
   const totalUsdBalance = useAppSelector(selectTotalUsdValue)
   const prices = useAppSelector(selectUsdPrices)
-  const { wallet, chainType } = useAppSelector(selectActiveWallet)
   const hideBalance = useAppSelector(selectHideBalance)
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>()
   const [selectedTokenBalance, setSelectedTokenBalance] =

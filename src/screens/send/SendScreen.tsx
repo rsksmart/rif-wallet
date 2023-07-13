@@ -11,7 +11,7 @@ import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { settingsStackRouteNames } from 'navigation/settingsNavigator/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { setFullscreen } from 'store/slices/settingsSlice'
+import { selectWalletState, setFullscreen } from 'store/slices/settingsSlice'
 import {
   selectBalances,
   selectTotalUsdValue,
@@ -21,21 +21,19 @@ import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
 import { selectChainId } from 'store/slices/settingsSlice'
 import { FullScreenSpinner } from 'components/fullScreenSpinner'
 
-import { ScreenWithWallet } from '../types'
 import { TransactionForm } from './TransactionForm'
 import { usePaymentExecutor } from './usePaymentExecutor'
 import { CongratulationsComponent } from './CongratulationsComponent'
 
 export const SendScreen = ({
   route,
-  wallet,
-  walletDeployed,
   navigation,
-}: HomeStackScreenProps<homeStackRouteNames.Send> & ScreenWithWallet) => {
+}: HomeStackScreenProps<homeStackRouteNames.Send>) => {
   const dispatch = useAppDispatch()
   const isFocused = useIsFocused()
   const { t } = useTranslation()
-  const { loading, isDeployed } = walletDeployed
+  const { wallet, walletIsDeployed } = useAppSelector(selectWalletState)
+  const { loading, isDeployed } = walletIsDeployed
   const assets = Object.values(useAppSelector(selectBalances))
   const chainId = useAppSelector(selectChainId)
 
@@ -156,7 +154,7 @@ export const SendScreen = ({
         totalUsdBalance={totalUsdBalance}
         tokenPrices={prices}
         chainId={chainId}
-        isWalletDeployed={walletDeployed.isDeployed}
+        isWalletDeployed={walletIsDeployed.isDeployed}
         initialValues={{
           recipient: contact,
           asset: assets.find(

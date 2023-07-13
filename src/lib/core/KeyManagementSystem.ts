@@ -4,28 +4,28 @@ import { getDPathByChainId } from '@rsksmart/rlogin-dpath'
 
 type Mnemonic = string
 
-interface DerivedPaths { [derivatoinPath: string]: string }
+type DerivedPath = string
 
 interface LastDerivedAccountIndex {
   [chainId: number]: number
 }
 
-type KeyManagementSystemState = {
+interface KeyManagementSystemState {
   lastDerivedAccountIndex: LastDerivedAccountIndex
-  derivedPaths: DerivedPaths
+  derivedPath: DerivedPath
 }
 
 const createInitialState = (): KeyManagementSystemState => ({
   lastDerivedAccountIndex: {},
-  derivedPaths: {}
+  derivedPath: ''
 })
 
-type KeyManagementSystemSerialization = {
+interface KeyManagementSystemSerialization  {
   mnemonic: Mnemonic
   state: KeyManagementSystemState
 }
 
-export type SaveableWallet = {
+export interface SaveableWallet  {
   derivationPath: string
   wallet: Wallet
   save(): void
@@ -36,6 +36,8 @@ interface IKeyManagementSystem {
   addWallet (derivationPath: string): SaveableWallet
   removeWallet (derivationPath: string): void
 }
+
+interface KMSReturn { kms: KeyManagementSystem, wallet: Wallet }
 
 /**
  * The Key Management System will derive accounts for a given mnemonic. It allows
@@ -86,26 +88,18 @@ export class KeyManagementSystem implements IKeyManagementSystem {
    * @param serialized the serialized string
    * @returns the KeyManagementSystem that was serialized
    */
-  static fromSerialized (serialized: string): { kms: KeyManagementSystem, wallets: Wallet[] } {
+  static fromSerialized (serialized: string): KMSReturn {
     const { mnemonic, state }: KeyManagementSystemSerialization = JSON.parse(serialized)
 
     const kms = new KeyManagementSystem(mnemonic, state)
 
     // try to create the wallet using the private key which is faster, if it fails, the fallback
     // is to use the derivedPath and mnemonic to regenerate the private key and then wallet
-    const wallets = Object.keys(state.derivedPaths)
-      .map((derivedPath: string) => {
-        try {
-          return new Wallet(state.derivedPaths[derivedPath])
-        } catch (_error) {
-          const { wallet } = kms.deriveWallet(derivedPath)
-          return wallet
-        }
-      })
+    const wallet = new Wallet(state.derivedPath)
 
     return {
       kms,
-      wallets
+      wallet
     }
   }
 
@@ -141,20 +135,14 @@ export class KeyManagementSystem implements IKeyManagementSystem {
       this.state.lastDerivedAccountIndex[chainId] = 0
     }
 
-    let derivationPath = getDPathByChainId(chainId, this.state.lastDerivedAccountIndex[chainId])
-
-    while (this.state.derivedPaths[derivationPath]) {
-      this.state.lastDerivedAccountIndex[chainId]++
-      derivationPath = getDPathByChainId(chainId, this.state.lastDerivedAccountIndex[chainId])
-    }
-
+    const derivationPath = getDPathByChainId(chainId, this.state.lastDerivedAccountIndex[chainId])
     const { wallet, privateKey } = this.deriveWallet(derivationPath)
 
     return {
       derivationPath,
       wallet,
       save: () => {
-        this.state.derivedPaths[derivationPath] = privateKey
+        this.state.derivedPath = privateKey
         this.state.lastDerivedAccountIndex[chainId] = this.state.lastDerivedAccountIndex[chainId] + 1
       }
     }
@@ -166,7 +154,7 @@ export class KeyManagementSystem implements IKeyManagementSystem {
    * @returns a savable wallet
    */
   addWallet (derivationPath: string): SaveableWallet {
-    if (this.state.derivedPaths[derivationPath]) throw new Error('Existent wallet')
+    if (this.state.derivedPath) throw new Error('Existent wallet')
 
     const { wallet, privateKey } = this.deriveWallet(derivationPath)
 
@@ -174,7 +162,7 @@ export class KeyManagementSystem implements IKeyManagementSystem {
       derivationPath,
       wallet,
       save: () => {
-        this.state.derivedPaths[derivationPath] = privateKey
+        this.state.derivedPath = privateKey
       }
     }
   }
@@ -183,9 +171,8 @@ export class KeyManagementSystem implements IKeyManagementSystem {
    * Remove a wallet from the Key Management System
    * @param derivationPath the derivation path of the wallet to be removed
    */
-  removeWallet (derivationPath: string): void {
-    if (!this.state.derivedPaths[derivationPath]) throw new Error('Inexistent wallet')
-
-    delete this.state.derivedPaths[derivationPath]
+  removeWallet (): void {
+    if (!this.state.derivedPath) throw new Error('Inexistent wallet')
+    this.state.derivedPath = ''
   }
 }

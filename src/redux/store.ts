@@ -21,6 +21,7 @@ export const createStore = (preloadedState = {}) =>
     middleware: getDefaultMiddlewares => {
       const middlewares = getDefaultMiddlewares({
         serializableCheck: false,
+        immutableCheck: false,
       })
       if (__DEV__) {
         return middlewares.concat(createDebugger())

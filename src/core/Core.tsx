@@ -23,25 +23,10 @@ import {
   selectWholeSettingsState,
   unlockApp,
 } from 'store/slices/settingsSlice'
-import { InjectSelectedWallet } from 'src/Context'
-import * as Screens from 'screens/index'
 import { sharedStyles } from 'shared/constants'
 
 import { useStateSubscription } from './hooks/useStateSubscription'
 import { Cover } from './components/Cover'
-
-export const InjectedScreens = {
-  SendScreen: InjectSelectedWallet(Screens.SendScreen),
-  ActivityScreen: InjectSelectedWallet(Screens.ActivityScreen),
-  RelayDeployScreen: InjectSelectedWallet(Screens.RelayDeployScreen),
-  WalletConnectScreen: InjectSelectedWallet(Screens.WalletConnectScreen),
-  ScanQRScreen: InjectSelectedWallet(Screens.ScanQRScreen),
-  SearchDomainScreen: InjectSelectedWallet(Screens.SearchDomainScreen),
-  AliasBoughtScreen: InjectSelectedWallet(Screens.AliasBoughtScreen),
-  HomeScreen: InjectSelectedWallet(Screens.HomeScreen),
-  AccountsScreen: InjectSelectedWallet(Screens.AccountsScreen),
-  PurchaseDomainScreen: InjectSelectedWallet(Screens.PurchaseDomainScreen),
-}
 
 export const navigationContainerRef =
   createNavigationContainerRef<RootTabsParamsList>()
@@ -66,7 +51,7 @@ export const Core = () => {
     try {
       await dispatch(unlockApp()).unwrap()
     } catch (err) {
-      console.log('ERRR', err)
+      console.log('ERR CORE', err)
     }
   }, [dispatch])
 

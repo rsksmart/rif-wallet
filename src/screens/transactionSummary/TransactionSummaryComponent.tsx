@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
 import { displayRoundBalance } from 'lib/utils'
 
@@ -11,7 +12,6 @@ import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { AppButton, Typography } from 'components/index'
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
-import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { isMyAddress } from 'components/address/lib'
 import { DollarIcon } from 'components/icons/DollarIcon'
@@ -30,9 +30,10 @@ import { TransactionSummaryScreenProps } from '.'
 type TransactionSummaryComponentProps = Omit<
   TransactionSummaryScreenProps,
   'backScreen'
-> & { goBack?: () => void }
+> & { goBack?: () => void; wallet: RIFWallet }
 
 export const TransactionSummaryComponent = ({
+  wallet,
   transaction,
   buttons,
   functionName,
@@ -42,7 +43,6 @@ export const TransactionSummaryComponent = ({
 }: TransactionSummaryComponentProps) => {
   const { bottom } = useSafeAreaInsets()
   const { t } = useTranslation()
-  const { wallet } = useAppSelector(selectActiveWallet)
   const { status, tokenValue, fee, usdValue, time } = transaction
 
   const iconObject = transactionStatusToIconPropsMap.get(status)

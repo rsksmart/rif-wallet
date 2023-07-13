@@ -127,12 +127,12 @@ export const onSocketChangeEmitted =
           dispatch(addNewTransactions(deserializedTransactions))
           dispatch(addOrUpdateBalances(payload.balances))
           break
-        case 'newTokenTransfer':
-          // This is not being used anywhere
-          dispatch(addNewEvent(payload))
-          break
-        default:
-          throw new Error(`${type} not implemented`)
+        // case 'newTokenTransfer':
+        //   // This is not being used anywhere
+        //   dispatch(addNewEvent(payload))
+        //   break
+        // default:
+        //   throw new Error(`${type} not implemented`)
       }
     }
   }

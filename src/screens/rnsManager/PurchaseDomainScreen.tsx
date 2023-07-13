@@ -34,9 +34,9 @@ import {
   deleteProfile,
 } from 'store/slices/profileSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { ScreenWithWallet } from 'screens/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { handleDomainTransactionStatusChange } from 'screens/rnsManager/utils'
+import { selectWallet } from 'store/slices/settingsSlice'
 
 import { rnsManagerStyles } from './rnsManagerStyles'
 
@@ -47,17 +47,19 @@ export enum TestID {
   PurchaseDomainButton = 'PurchaseDomainScreen.PurchaseDomainButton',
 }
 
-export const PurchaseDomainScreen = ({
-  navigation,
-  wallet,
-}: Props & ScreenWithWallet) => {
+export const PurchaseDomainScreen = ({ navigation }: Props) => {
   const dispatch = useAppDispatch()
   const rifToken = useRifToken()
+  const wallet = useAppSelector(selectWallet)
   const profile = useAppSelector(selectProfile)
   const alias = profile.alias
   const duration = profile.duration || 1
   const profileStatus = useAppSelector(selectProfileStatus)
   const [error, setError] = useState('')
+
+  if (!wallet) {
+    throw new Error('No Wallet in the state')
+  }
   const rnsProcessor = useMemo(
     () =>
       new RnsProcessor({
