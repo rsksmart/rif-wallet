@@ -45,28 +45,30 @@ export const FeedbackModal = ({
       <View
         style={[styles.container, { paddingTop: top, backgroundColor }, style]}>
         <View style={styles.feedback}>{FeedbackComponent}</View>
-        {!loading && (
-          <View style={styles.content}>
-            <Typography style={styles.title} type={'h2'}>
-              {title}
-            </Typography>
-            {texts.map((text, i) => (
-              <Typography style={styles.subtitle} type={'h4'} key={i}>
-                {text}
+        <View style={styles.content}>
+          {!loading && (
+            <>
+              <Typography style={styles.title} type={'h2'}>
+                {title}
               </Typography>
-            ))}
-            {footerText ? (
-              <Typography style={styles.footerText} type={'body3'}>
-                {footerText}
-              </Typography>
-            ) : null}
-            <View style={styles.buttons}>
-              {buttons?.map((button, i) => (
-                <AppButton key={i} style={styles.button} {...button} />
+              {texts.map((text, i) => (
+                <Typography style={styles.subtitle} type={'h4'} key={i}>
+                  {text}
+                </Typography>
               ))}
-            </View>
-          </View>
-        )}
+              {footerText ? (
+                <Typography style={styles.footerText} type={'body3'}>
+                  {footerText}
+                </Typography>
+              ) : null}
+              <View style={styles.buttons}>
+                {buttons?.map((button, i) => (
+                  <AppButton key={i} style={styles.button} {...button} />
+                ))}
+              </View>
+            </>
+          )}
+        </View>
       </View>
     </Modal>
   )
