@@ -1,5 +1,5 @@
 <p align="middle">
-  <img src="https://www.rifos.org/assets/img/logo.svg" alt="logo" height="100" >
+  <img src="https://user-images.githubusercontent.com/766679/236442723-004fc7a5-edb2-4477-86da-0b687d62702f.svg" alt="logo" height="100" >
 </p>
 <h3 align="middle"><code>RIF Wallet</code></h3>
 <p align="middle">
