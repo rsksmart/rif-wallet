@@ -2,9 +2,9 @@ import { t } from 'i18next'
 import { useEffect, useState } from 'react'
 
 import { FeedbackModal } from 'components/feedbackModal'
+import { SuccessIcon } from 'components/icons/SuccessIcon'
+import { AppSpinner } from 'components/index'
 import { sharedColors } from 'shared/constants'
-import { AppSpinner } from 'src/components'
-import { SuccessIcon } from 'src/components/icons/SuccessIcon'
 
 interface Props {
   amount: string
@@ -20,7 +20,7 @@ export const CongratulationsScreen = ({
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    setTimeout(() => setLoading(false), 500)
+    setTimeout(() => setLoading(false), 1000)
   }, [])
 
   return (
@@ -32,7 +32,6 @@ export const CongratulationsScreen = ({
         t('transaction_summary_your_transaction'),
         t('transaction_summary_check_status'),
       ]}
-      backgroundColor={sharedColors.black}
       FeedbackComponent={loading ? <AppSpinner size={174} /> : <SuccessIcon />}
       loading={loading}
       buttons={[

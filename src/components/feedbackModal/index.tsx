@@ -36,19 +36,14 @@ export const FeedbackModal = ({
   animationType,
   buttons,
   style,
-  backgroundColor,
+  backgroundColor = sharedColors.black,
   loading,
 }: Props) => {
   const { top } = useSafeAreaInsets()
   return (
     <Modal animationType={animationType} visible={visible}>
       <View
-        style={[
-          styles.container,
-          { paddingTop: top },
-          backgroundColor ? { backgroundColor } : null,
-          style,
-        ]}>
+        style={[styles.container, { paddingTop: top, backgroundColor }, style]}>
         <View style={styles.feedback}>{FeedbackComponent}</View>
         {!loading && (
           <View style={styles.content}>
@@ -66,16 +61,9 @@ export const FeedbackModal = ({
               </Typography>
             ) : null}
             <View style={styles.buttons}>
-              {buttons
-                ? buttons.map((button, index) => (
-                    <AppButton
-                      key={index}
-                      {...button}
-                      style={styles.button}
-                      textStyle={{ textAlign: 'center' }}
-                    />
-                  ))
-                : null}
+              {buttons?.map((button, i) => (
+                <AppButton key={i} style={styles.button} {...button} />
+              ))}
             </View>
           </View>
         )}
@@ -87,11 +75,11 @@ export const FeedbackModal = ({
 const styles = StyleSheet.create({
   container: castStyle.view({
     flex: 1,
-    backgroundColor: sharedColors.primary,
-    alignItems: 'center',
+    paddingHorizontal: 24,
   }),
   feedback: castStyle.view({
     flex: 1,
+    alignSelf: 'center',
     justifyContent: 'flex-end',
   }),
   content: castStyle.view({
@@ -111,13 +99,6 @@ const styles = StyleSheet.create({
   footerText: castStyle.text({
     marginTop: 30,
     color: sharedColors.labelLight,
-  }),
-  primaryButton: castStyle.view({
-    position: 'absolute',
-    bottom: 30,
-    left: 22,
-    right: 22,
-    backgroundColor: sharedColors.white,
   }),
   buttons: castStyle.view({
     justifyContent: 'center',
