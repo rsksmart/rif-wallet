@@ -16,6 +16,7 @@ import { selectWalletState } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { chainTypesById } from 'shared/constants/chainConstants'
 import { AndroidQRScanner } from 'screens/walletConnect/AndroidQRScanner'
+import { WalletConnect2Context } from 'screens/walletConnect/WalletConnect2Context'
 
 import { WalletConnectContext } from './WalletConnectContext'
 
@@ -24,6 +25,7 @@ export const ScanQRScreen = ({
 }: RootTabsScreenProps<rootTabsRouteNames.ScanQR>) => {
   const { wallet, chainId } = useAppSelector(selectWalletState)
   const { createSession } = useContext(WalletConnectContext)
+  const { onCreateNewSession } = useContext(WalletConnect2Context)
   const [isConnecting, setIsConnecting] = useState(false)
   const isFocused = useIsFocused()
   const onCodeRead = (data: string) => {
@@ -31,10 +33,19 @@ export const ScanQRScreen = ({
     const decodedString = decodeString(data)
 
     if (data.startsWith('wc:')) {
-      if (!isConnecting && wallet) {
-        setIsConnecting(true)
-        createSession(wallet, data)
-        // wait for session request
+      if (data.includes('@1')) {
+        if (!isConnecting && wallet) {
+          setIsConnecting(true)
+          createSession(wallet, data)
+          // wait for session request
+          navigation.reset({
+            index: 0,
+            routes: [{ name: rootTabsRouteNames.WalletConnect }],
+          })
+        }
+      } else if (data.includes('@2')) {
+        // WalletConnect 2.0
+        onCreateNewSession(data)
         navigation.reset({
           index: 0,
           routes: [{ name: rootTabsRouteNames.WalletConnect }],
