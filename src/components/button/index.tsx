@@ -90,7 +90,7 @@ export interface AppButtonProps extends ButtonProps {
   style?: StyleProp<ViewStyle>
   textStyle?: StyleProp<TextStyle>
   textType?: TypographyType
-  textColor?: string
+  textColor?: ColorValue
   disabled?: boolean
   disabledStyle?: StyleProp<ViewStyle>
 }
