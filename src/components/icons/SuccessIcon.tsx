@@ -1,7 +1,16 @@
 import Svg, { Path, SvgProps } from 'react-native-svg'
 
-export const SuccessIcon = (props: SvgProps) => (
-  <Svg width={205} height={205} fill="none" {...props}>
+export const SuccessIcon = ({
+  width = 205,
+  height = 205,
+  ...props
+}: SvgProps) => (
+  <Svg
+    viewBox="0 0 205 205"
+    width={width}
+    height={height}
+    fill="none"
+    {...props}>
     <Path
       stroke="#11B55C"
       strokeWidth={16}
