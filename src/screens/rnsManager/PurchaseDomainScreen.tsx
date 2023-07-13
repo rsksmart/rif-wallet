@@ -152,7 +152,9 @@ export const PurchaseDomainScreen = ({
           <Input
             inputName="price"
             label={t('purchase_username_price_label')}
-            placeholder={`${selectedDomainPrice} ${rifToken?.symbol}`}
+            placeholder={`${selectedDomainPrice} ${rifToken?.symbol} ${t(
+              'transaction_summary_plus_fees_capitalcase',
+            )}`}
             subtitle={`$ ${selectedDomainPriceInUsd}`}
             containerStyle={styles.priceContainer}
             isReadOnly

@@ -255,7 +255,11 @@ export const SearchDomainScreen = ({
                 ? t('request_username_years')
                 : t('request_username_year')
             } `}
-            subtitle={`${selectedDomainPrice} ${rifToken.symbol} ($ ${selectedDomainPriceInUsd})`}
+            subtitle={`${selectedDomainPrice} ${
+              rifToken.symbol
+            } ($ ${selectedDomainPriceInUsd}) ${t(
+              'transaction_summary_plus_fees_capitalcase',
+            )}`}
             containerStyle={styles.yearsContainer}
             rightIcon={
               <View style={styles.yearsButtons}>
