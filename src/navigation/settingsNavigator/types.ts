@@ -29,10 +29,15 @@ export type SettingsStackParamsList = {
   [settingsStackRouteNames.ExampleScreen]: undefined
   [settingsStackRouteNames.RelayDeployScreen]:
     | {
-        goBackScreen: {
-          parent: rootTabsRouteNames
-          child?: homeStackRouteNames | profileStackRouteNames
-        }
+        goBackScreen:
+          | {
+              parent: rootTabsRouteNames.Home
+              child: homeStackRouteNames.Send
+            }
+          | {
+              parent: rootTabsRouteNames.Profile
+              child: profileStackRouteNames.ProfileCreateScreen
+            }
       }
     | undefined
 }

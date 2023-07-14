@@ -105,14 +105,10 @@ export const RelayDeployScreen = ({
               ? navigation.navigate(rootTabsRouteNames.Home, {
                   screen: homeStackRouteNames.Main,
                 })
-              : navigation.navigate(
-                  parent,
-                  child
-                    ? {
-                        screen: child,
-                      }
-                    : undefined,
-                ),
+              : navigation.navigate(parent, {
+                  screen: child,
+                  params: {},
+                }),
           ),
       })
     }

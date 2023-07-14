@@ -25,7 +25,7 @@ export enum homeStackRouteNames {
 export type HomeStackParamsList = {
   [homeStackRouteNames.Main]: undefined
   [homeStackRouteNames.Send]: {
-    backScreen?: rootTabsRouteNames | contactsStackRouteNames
+    backScreen?: rootTabsRouteNames.Home | contactsStackRouteNames.ContactsList
     token?: string
     contact?: ContactWithAddressRequired
     contractAddress?: string
