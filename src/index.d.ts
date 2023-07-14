@@ -6,5 +6,4 @@ declare module '@rsksmart/rsk-utils' {
   ): boolean
   export function isAddress(address: string): boolean
 }
-declare module 'react-native-swipe-modal-up-down'
 declare module '@rsksmart/rsk-contract-metadata'
