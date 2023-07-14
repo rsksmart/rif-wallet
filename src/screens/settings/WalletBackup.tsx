@@ -11,7 +11,6 @@ import {
   MnemonicComponent,
   Typography,
 } from 'components/index'
-import { SlidePopupConfirmationDanger } from 'components/slidePopup/SlidePopupConfirmationDanger'
 import {
   SettingsScreenProps,
   settingsStackRouteNames,
@@ -20,26 +19,76 @@ import { resetApp } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
 import { castStyle } from 'shared/utils'
 import { getKeys } from 'storage/SecureStorage'
+import { ConfirmationModal, ConfirmationModalConfig } from 'components/modal'
 
 type Props = SettingsScreenProps<settingsStackRouteNames.WalletBackup>
 
 export const WalletBackup = (_: Props) => {
-  const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] =
-    useState<boolean>(false)
-  const [
-    isDefinitiveDeleteConfirmationVisible,
-    setIsDefinitiveDeleteConfirmationVisible,
-  ] = useState<boolean>(false)
-  const [mnemonic, setMnemonic] = useState<string | null>()
-  const mnemonicArray = mnemonic ? mnemonic.split(' ') : []
-
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
+  const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] =
+    useState<boolean>(false)
 
   const deleteWallet = useCallback(async () => {
-    setIsDefinitiveDeleteConfirmationVisible(false)
+    setIsDeleteConfirmationVisible(false)
     await dispatch(resetApp())
   }, [dispatch])
+
+  const createDeleteDefinitiveConfirmationConfig =
+    useCallback((): ConfirmationModalConfig => {
+      return {
+        color: sharedColors.dangerLight,
+        title: t(
+          'wallet_backup_definitive_delete_confirmation_title',
+        ) as string,
+        titleColor: sharedColors.black,
+        description: t(
+          'wallet_backup_definitive_delete_confirmation_description',
+        ),
+        descriptionColor: sharedColors.black,
+        okText: t('Delete'),
+        cancelText: t('Cancel'),
+        buttons: [
+          { color: sharedColors.black, textColor: sharedColors.white },
+          { color: sharedColors.black, textColor: sharedColors.black },
+        ],
+        onOk: deleteWallet,
+        onCancel: () => {
+          setIsDeleteConfirmationVisible(false)
+        },
+      }
+    }, [t, deleteWallet])
+
+  const createDeleteConfirmationConfig =
+    useCallback((): ConfirmationModalConfig => {
+      return {
+        color: sharedColors.dangerLight,
+        title: t('wallet_backup_delete_confirmation_title') as string,
+        titleColor: sharedColors.black,
+        description: t(
+          'wallet_backup_delete_confirmation_description',
+        ) as string,
+        descriptionColor: sharedColors.black,
+        okText: t('Delete') as string,
+        cancelText: t('Cancel') as string,
+        buttons: [
+          { color: sharedColors.black, textColor: sharedColors.white },
+          { color: sharedColors.black, textColor: sharedColors.black },
+        ],
+        onOk: () => {
+          setConfirmationModalConfig(createDeleteDefinitiveConfirmationConfig())
+        },
+        onCancel: () => {
+          setIsDeleteConfirmationVisible(false)
+          setConfirmationModalConfig(createDeleteConfirmationConfig())
+        },
+      }
+    }, [t, createDeleteDefinitiveConfirmationConfig])
+
+  const [confirmationModalConfig, setConfirmationModalConfig] =
+    useState<ConfirmationModalConfig>(createDeleteConfirmationConfig)
+  const [mnemonic, setMnemonic] = useState<string | null>()
+  const mnemonicArray = mnemonic ? mnemonic.split(' ') : []
 
   useEffect(() => {
     const fn = async () => {
@@ -67,30 +116,18 @@ export const WalletBackup = (_: Props) => {
         color={sharedColors.white}
         style={styles.deleteButton}
       />
-      <SlidePopupConfirmationDanger
+      <ConfirmationModal
         isVisible={isDeleteConfirmationVisible}
-        height={350}
-        title={t('wallet_backup_delete_confirmation_title')}
-        description={t('wallet_backup_delete_confirmation_description')}
-        confirmText={t('Delete')}
-        cancelText={t('Cancel')}
-        onConfirm={() => {
-          setIsDeleteConfirmationVisible(false)
-          setIsDefinitiveDeleteConfirmationVisible(true)
-        }}
-        onCancel={() => setIsDeleteConfirmationVisible(false)}
-      />
-      <SlidePopupConfirmationDanger
-        isVisible={isDefinitiveDeleteConfirmationVisible}
-        height={310}
-        title={t('wallet_backup_definitive_delete_confirmation_title')}
-        description={t(
-          'wallet_backup_definitive_delete_confirmation_description',
-        )}
-        confirmText={t('Delete')}
-        cancelText={t('Cancel')}
-        onConfirm={deleteWallet}
-        onCancel={() => setIsDefinitiveDeleteConfirmationVisible(false)}
+        color={confirmationModalConfig.color}
+        title={confirmationModalConfig.title}
+        titleColor={confirmationModalConfig.titleColor}
+        description={confirmationModalConfig.description}
+        descriptionColor={confirmationModalConfig.descriptionColor}
+        okText={confirmationModalConfig.okText}
+        cancelText={confirmationModalConfig.cancelText}
+        buttons={confirmationModalConfig.buttons}
+        onOk={confirmationModalConfig.onOk}
+        onCancel={confirmationModalConfig.onCancel}
       />
     </ScrollView>
   )

@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { ColorValue, StyleSheet } from 'react-native'
 
 import { castStyle } from '../utils'
 
@@ -11,7 +11,7 @@ export const testIDs = {
   saveButton: 'saveButton',
 }
 
-export const sharedColors = {
+export const sharedColors: { [key: string]: ColorValue } = {
   primary: '#4B5CF0',
   secondary: '#121212',
   success: '#79C600',

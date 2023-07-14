@@ -1,6 +1,8 @@
 import {
+  ColorValue,
   Image,
   ImageSourcePropType,
+  StyleProp,
   StyleSheet,
   View,
   ViewStyle,
@@ -20,7 +22,7 @@ interface ModalProps {
 
 interface ModalChildrenProps {
   children: React.ReactNode
-  style?: ViewStyle
+  style?: StyleProp<ViewStyle>
 }
 
 export const Modal = ({
@@ -62,39 +64,63 @@ Modal.Container = ModalContainer
 Modal.Body = ModalBody
 Modal.Footer = ModalFooter
 
+interface ConfirmationModalButtonConfig {
+  color: ColorValue
+  textColor: ColorValue
+}
+
 interface ConfirmationModalProps {
+  isVisible: boolean
   title: string
   onOk: () => void
-  imgSource?: ImageSourcePropType
   onCancel?: () => void
-  isVisible?: boolean
+  titleColor?: ColorValue
+  buttons?: [ConfirmationModalButtonConfig, ConfirmationModalButtonConfig]
+  color?: ColorValue
+  imgSource?: ImageSourcePropType
   description?: string
+  descriptionColor?: ColorValue
   okText?: string
   cancelText?: string
 }
 
+export type ConfirmationModalConfig = Omit<ConfirmationModalProps, 'isVisible'>
+
 export const ConfirmationModal = ({
   isVisible = true,
   title,
+  titleColor,
   description = '',
+  descriptionColor,
   okText = 'OK',
   cancelText,
   onOk,
   onCancel,
   imgSource,
+  color,
+  buttons,
 }: ConfirmationModalProps) => (
   <Modal isVisible={isVisible}>
-    <Modal.Container style={styles.confirmationModalContainer}>
+    <Modal.Container
+      style={[
+        styles.confirmationModalContainer,
+        color ? { backgroundColor: color } : null,
+      ]}>
       <View style={styles.footerBarIndicator} />
       <Modal.Body>
         {imgSource ? <Image source={imgSource} style={styles.image} /> : null}
-        <Typography type={'h3'} style={sharedStyles.textCenter}>
+        <Typography
+          type={'h3'}
+          style={sharedStyles.textCenter}
+          color={titleColor ? titleColor : undefined}>
           {title}
         </Typography>
         {description && (
           <Typography
-            type={'body2'}
-            color={sharedColors.labelLight}
+            type={'body3'}
+            color={
+              descriptionColor ? descriptionColor : sharedColors.labelLight
+            }
             style={styles.description}>
             {description}
           </Typography>
@@ -105,8 +131,10 @@ export const ConfirmationModal = ({
           title={okText}
           onPress={onOk}
           accessibilityLabel={'okText'}
-          color={sharedColors.white}
-          textColor={sharedColors.black}
+          color={buttons && buttons[0] ? buttons[0].color : sharedColors.white}
+          textColor={
+            buttons && buttons[0] ? buttons[0].textColor : sharedColors.black
+          }
         />
         {cancelText && (
           <AppButton
@@ -115,7 +143,12 @@ export const ConfirmationModal = ({
             onPress={onCancel}
             accessibilityLabel={'cancelText'}
             backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
-            color={sharedColors.white}
+            color={
+              buttons && buttons[1] ? buttons[1].color : sharedColors.white
+            }
+            textColor={
+              buttons && buttons[1] ? buttons[1].textColor : sharedColors.white
+            }
           />
         )}
       </Modal.Footer>
@@ -125,7 +158,6 @@ export const ConfirmationModal = ({
 
 const modalStyles = StyleSheet.create({
   container: castStyle.view({
-    backgroundColor: '#ffffff',
     borderRadius: 25,
     borderWidth: 1,
     borderColor: '#000',

@@ -14,7 +14,6 @@ import {
 
 import { AppTouchable } from 'components/appTouchable'
 import { AppButton, Input, Typography } from 'components/index'
-import { SlidePopupConfirmationInfo } from 'components/slidePopup/SlidePopupConfirmationInfo'
 import { headerLeftOption } from 'navigation/profileNavigator'
 import {
   profileStackRouteNames,
@@ -35,6 +34,7 @@ import { AppSpinner } from 'components/index'
 import { rootTabsRouteNames } from 'src/navigation/rootNavigator'
 import { settingsStackRouteNames } from 'src/navigation/settingsNavigator/types'
 import { handleDomainTransactionStatusChange } from 'screens/rnsManager/utils'
+import { ConfirmationModal } from 'src/components/modal'
 
 import { ScreenWithWallet } from '../types'
 import { DomainInput } from './DomainInput'
@@ -341,14 +341,12 @@ export const SearchDomainScreen = ({
           />
         )}
       </View>
-
-      <SlidePopupConfirmationInfo
+      <ConfirmationModal
         isVisible={isModalVisible && isDeployed}
-        height={350}
         title={t('request_username_popup_title')}
         description={t('request_username_popup_description')}
-        confirmText={t('request_username_popup_confirm')}
-        onConfirm={() => setIsModalVisible(false)}
+        okText={t('request_username_popup_confirm')}
+        onOk={() => setIsModalVisible(false)}
       />
     </ScrollView>
   )
