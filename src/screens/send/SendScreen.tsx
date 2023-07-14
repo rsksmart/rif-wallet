@@ -3,6 +3,7 @@ import { Alert, Keyboard, KeyboardAvoidingView, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { useIsFocused } from '@react-navigation/native'
 
+import { sharedHeaderLeftOptions } from 'navigation/index'
 import {
   homeStackRouteNames,
   HomeStackScreenProps,
@@ -117,6 +118,12 @@ export const SendScreen = ({
       dispatch(setFullscreen(isFocused))
     }, 100)
   }, [dispatch, isFocused])
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => sharedHeaderLeftOptions(onCancel),
+    })
+  }, [navigation, onCancel])
 
   // Status to let the user know about his current process
   let status

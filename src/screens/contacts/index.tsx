@@ -4,12 +4,15 @@ import { Image, ScrollView, StyleSheet, View } from 'react-native'
 import { CompositeScreenProps, useIsFocused } from '@react-navigation/native'
 import { FormProvider, useForm } from 'react-hook-form'
 
+import { shortAddress } from 'lib/utils'
+
 import { AppButton, AppTouchable, Typography } from 'components/index'
 import {
   rootTabsRouteNames,
   RootTabsScreenProps,
 } from 'navigation/rootNavigator/types'
 import { contactsStackRouteNames } from 'navigation/contactsNavigator'
+import { homeStackRouteNames } from 'navigation/homeNavigator/types'
 import {
   getContactsAsArrayAndSelected,
   selectRecentContacts,
@@ -19,8 +22,8 @@ import { changeTopColor } from 'store/slices/settingsSlice'
 import { Search } from 'components/input/search'
 import { BasicRow } from 'components/BasicRow'
 import { sharedColors, sharedStyles, testIDs } from 'shared/constants'
+import { Contact } from 'shared/types'
 import { castStyle } from 'shared/utils'
-import { shortAddress } from 'src/lib/utils'
 
 import { ContactsStackScreenProps } from '../index'
 import { ContactCard } from './components/ContactCard'
@@ -66,6 +69,16 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
     resetField('search')
   }, [resetField])
 
+  const onSendToRecentContact = useCallback(
+    (contact: Contact) => () => {
+      navigation.navigate(rootTabsRouteNames.Home, {
+        screen: homeStackRouteNames.Send,
+        params: { contact, backScreen: contactsStackRouteNames.ContactsList },
+      })
+    },
+    [navigation],
+  )
+
   useEffect(() => {
     if (isFocused) {
       dispatch(changeTopColor(sharedColors.black))
@@ -78,7 +91,12 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
         <View style={styles.recentContacts}>
           <ScrollView horizontal>
             {recentContacts.map((c, i) => (
-              <ContactCard style={styles.contactCard} key={i} name={c.name} />
+              <ContactCard
+                onPress={onSendToRecentContact(c)}
+                style={styles.contactCard}
+                key={i}
+                name={c.name}
+              />
             ))}
           </ScrollView>
         </View>
