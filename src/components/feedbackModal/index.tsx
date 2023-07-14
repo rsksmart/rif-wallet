@@ -20,7 +20,6 @@ interface Props extends ModalProps {
   title: string
   FeedbackComponent: ReactElement
   texts?: string[]
-  footerText?: string
   style?: StyleProp<ViewStyle>
   backgroundColor?: ColorValue
   buttons?: AppButtonProps[]
@@ -31,7 +30,6 @@ export const FeedbackModal = ({
   FeedbackComponent,
   title,
   texts = [],
-  footerText,
   visible,
   animationType,
   buttons,
@@ -56,11 +54,6 @@ export const FeedbackModal = ({
                   {text}
                 </Typography>
               ))}
-              {footerText ? (
-                <Typography style={styles.footerText} type={'body3'}>
-                  {footerText}
-                </Typography>
-              ) : null}
               <View style={styles.buttons}>
                 {buttons?.map((button, i) => (
                   <AppButton key={i} style={styles.button} {...button} />
@@ -96,10 +89,6 @@ const styles = StyleSheet.create({
   }),
   subtitle: castStyle.text({
     marginTop: 5,
-    color: sharedColors.labelLight,
-  }),
-  footerText: castStyle.text({
-    marginTop: 30,
     color: sharedColors.labelLight,
   }),
   buttons: castStyle.view({
