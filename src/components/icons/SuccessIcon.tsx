@@ -6,7 +6,7 @@ export const SuccessIcon = ({
   ...props
 }: SvgProps) => (
   <Svg
-    viewBox="0 0 205 205"
+    viewBox={`0 0 ${width} ${height}`}
     width={width}
     height={height}
     fill="none"
