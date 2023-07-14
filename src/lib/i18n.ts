@@ -202,6 +202,7 @@ const resources = {
       transaction_summary_title_cancel_button_title: 'Cancel',
       transaction_summary_function_type: 'type',
       transaction_summary_plus_fees: '+ fees',
+      transaction_summary_plus_fees_capitalcase: '+ Fees',
       profile_screen_title: 'Profile',
       profile_contact_details_subtitle: 'Contact Details',
       profile_phone_label: 'Phone Number',
