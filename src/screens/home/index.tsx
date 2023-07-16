@@ -205,7 +205,7 @@ export const HomeScreen = ({
     setShowInfoBar(false)
   }, [])
 
-  const overrideFirstValue: CurrencyValue = {
+  const defaultFirstValue: CurrencyValue = {
     balance: totalUsdBalance,
     symbol: '',
     symbolType: 'usd',
@@ -217,7 +217,7 @@ export const HomeScreen = ({
         style={styles.tokenBalance}
         firstValue={
           selectedAddress === undefined
-            ? overrideFirstValue
+            ? defaultFirstValue
             : selectedTokenBalance
         }
         secondValue={

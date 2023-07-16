@@ -197,6 +197,9 @@ const resources = {
       transaction_summary_default_button_text: 'Close',
       transaction_summary_congrats: 'Congratulations!',
       transaction_summary_you_sent: 'You have sent',
+      transaction_summary_your_transaction: 'Your transaction is on the way.',
+      transaction_summary_check_status:
+        'Check status in your transaction list.',
       transaction_summary_to: 'to',
       transaction_summary_title_confirm_button_title: 'Confirm',
       transaction_summary_title_cancel_button_title: 'Cancel',
@@ -297,7 +300,6 @@ const resources = {
         'Your profile commitment is being processed. Please wait.',
       search_domain_min_error: 'Domain should be at least 3 chars long',
       search_domain_lowercase_error: 'Only lower cases and numbers are allowed',
-      transaction_pending: 'Your transaction is being processed.',
       pin_screen_pin_setup: 'PIN setup',
       pin_screen_change_pin: 'Change PIN',
       pin_screen_default_title: 'Enter PIN',

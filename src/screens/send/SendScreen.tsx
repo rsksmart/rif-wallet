@@ -24,7 +24,7 @@ import { FullScreenSpinner } from 'components/fullScreenSpinner'
 import { ScreenWithWallet } from '../types'
 import { TransactionForm } from './TransactionForm'
 import { usePaymentExecutor } from './usePaymentExecutor'
-import { CongratulationsComponent } from './CongratulationsComponent'
+import { CongratulationsScreen } from './CongratulationsScreen'
 
 export const SendScreen = ({
   route,
@@ -136,10 +136,10 @@ export const SendScreen = ({
     currentTransaction.symbol
   ) {
     return (
-      <CongratulationsComponent
+      <CongratulationsScreen
         amount={currentTransaction.value}
         tokenSymbol={currentTransaction.symbol}
-        onCloseTap={onGoToHome}
+        onClose={onGoToHome}
       />
     )
   }
