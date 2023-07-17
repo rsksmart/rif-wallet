@@ -173,6 +173,13 @@ export const unlockApp = createAsyncThunk<
       return thunkAPI.rejectWithValue('Move to unlock with PIN')
     }
 
+    if (isOffline) {
+      setTimeout(() => {
+        navigationContainerRef.navigate(rootTabsRouteNames.OfflineScreen)
+      }, 100)
+      return thunkAPI.rejectWithValue('Move to Offline Screen')
+    }
+
     // set wallets in the store
     const existingWallet = await loadExistingWallet(
       createRIFWalletFactory(
