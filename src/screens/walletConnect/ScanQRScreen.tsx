@@ -12,7 +12,7 @@ import {
   rootTabsRouteNames,
   RootTabsScreenProps,
 } from 'navigation/rootNavigator'
-import { selectActiveWallet, selectChainId } from 'store/slices/settingsSlice'
+import { selectWalletState } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { chainTypesById } from 'shared/constants/chainConstants'
 import { AndroidQRScanner } from 'screens/walletConnect/AndroidQRScanner'
@@ -22,8 +22,7 @@ import { WalletConnectContext } from './WalletConnectContext'
 export const ScanQRScreen = ({
   navigation,
 }: RootTabsScreenProps<rootTabsRouteNames.ScanQR>) => {
-  const { wallet } = useAppSelector(selectActiveWallet)
-  const chainId = useAppSelector(selectChainId)
+  const { wallet, chainId } = useAppSelector(selectWalletState)
   const { createSession } = useContext(WalletConnectContext)
   const [isConnecting, setIsConnecting] = useState(false)
   const isFocused = useIsFocused()

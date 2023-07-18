@@ -2,8 +2,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import { useEffect } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { InjectedScreens } from 'core/Core'
-import { ReceiveScreen } from 'screens/index'
+import { HomeScreen, ReceiveScreen, SendScreen } from 'screens/index'
 
 import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
 import { HomeStackParamsList, homeStackRouteNames } from './types'
@@ -26,12 +25,12 @@ export const HomeNavigator = ({
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
       <HomeStack.Screen
         name={homeStackRouteNames.Main}
-        component={InjectedScreens.HomeScreen}
+        component={HomeScreen}
         options={screenOptionsWithAppHeader}
       />
       <HomeStack.Screen
         name={homeStackRouteNames.Send}
-        component={InjectedScreens.SendScreen}
+        component={SendScreen}
         options={screenOptionsWithHeader(top)}
       />
       <HomeStack.Screen

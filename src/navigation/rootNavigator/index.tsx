@@ -7,13 +7,17 @@ import { useTranslation } from 'react-i18next'
 
 import { CreateKeysNavigation } from 'navigation/createKeysNavigator'
 import { ConfirmationModal } from 'components/modal'
-import { InjectedScreens } from 'core/Core'
 import { useAppSelector } from 'store/storeUtils'
 import { selectFullscreen, selectIsUnlocked } from 'store/slices/settingsSlice'
 import { TransactionSummaryScreen } from 'screens/transactionSummary'
 import { AppFooterMenu } from 'src/ux/appFooter'
 import { sharedStyles } from 'shared/constants'
-import { PinScreen } from 'src/screens/pinScreen'
+import {
+  ActivityScreen,
+  ScanQRScreen,
+  WalletConnectScreen,
+  PinScreen,
+} from 'screens/index'
 
 import { RootTabsParamsList, rootTabsRouteNames } from './types'
 import { HomeNavigator } from '../homeNavigator'
@@ -69,11 +73,11 @@ export const RootNavigationComponent = () => {
               />
               <RootTabs.Screen
                 name={rootTabsRouteNames.Activity}
-                component={InjectedScreens.ActivityScreen}
+                component={ActivityScreen}
               />
               <RootTabs.Screen
                 name={rootTabsRouteNames.ScanQR}
-                component={InjectedScreens.ScanQRScreen}
+                component={ScanQRScreen}
               />
               <RootTabs.Screen
                 name={rootTabsRouteNames.Contacts}
@@ -81,7 +85,7 @@ export const RootNavigationComponent = () => {
               />
               <RootTabs.Screen
                 name={rootTabsRouteNames.WalletConnect}
-                component={InjectedScreens.WalletConnectScreen}
+                component={WalletConnectScreen}
               />
               <RootTabs.Screen
                 name={rootTabsRouteNames.Settings}

@@ -20,7 +20,7 @@ import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
 import { useAppSelector } from 'store/storeUtils'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { MixedTokenAndNetworkType } from 'screens/send/types'
-import { selectActiveWallet, selectBitcoin } from 'store/slices/settingsSlice'
+import { selectBitcoin, selectWalletState } from 'store/slices/settingsSlice'
 import {
   homeStackRouteNames,
   HomeStackScreenProps,
@@ -61,7 +61,7 @@ export const ReceiveScreen = ({
 
   const [shouldShowAssets, setShouldShowAssets] = useState(false)
 
-  const { wallet, chainType } = useAppSelector(selectActiveWallet)
+  const { wallet, chainType } = useAppSelector(selectWalletState)
   const profile = useAppSelector(selectProfile)
 
   const rskAddress = useMemo(() => {

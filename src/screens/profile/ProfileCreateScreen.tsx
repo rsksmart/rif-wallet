@@ -41,7 +41,7 @@ import {
   setStatus,
 } from 'store/slices/profileSlice'
 import { selectProfile } from 'store/slices/profileSlice/selector'
-import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { selectWalletState } from 'store/slices/settingsSlice'
 import { selectRequests } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { AppSpinner } from 'components/index'
@@ -55,6 +55,7 @@ export const ProfileCreateScreen = ({
 }: ProfileStackScreenProps<profileStackRouteNames.ProfileCreateScreen>) => {
   const dispatch = useAppDispatch()
   const profile = useAppSelector(selectProfile)
+  const { wallet, chainType } = useAppSelector(selectWalletState)
   const [infoBoxClosed, setInfoBoxClosed] = useState<boolean>(
     profile.infoBoxClosed ?? false,
   )
@@ -65,7 +66,6 @@ export const ProfileCreateScreen = ({
   const { resetField, setValue } = methods
   const { t } = useTranslation()
 
-  const { wallet, chainType } = useAppSelector(selectActiveWallet)
   const { displayAddress } = getAddressDisplayText(
     wallet?.smartWallet.smartWalletAddress ?? '',
     chainType,

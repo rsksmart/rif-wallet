@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleProp, StyleSheet, ViewStyle } from 'react-native'
+import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
 import { roundBalance, shortAddress } from 'lib/utils'
 
@@ -12,7 +13,6 @@ import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 import { ActivityMainScreenProps } from 'shared/types'
 import { castStyle } from 'shared/utils'
 import { isMyAddress } from 'src/components/address/lib'
-import { selectActiveWallet } from 'src/redux/slices/settingsSlice'
 import { useAppSelector } from 'src/redux/storeUtils'
 import { getContactByAddress } from 'store/slices/contactsSlice'
 import { ActivityRowPresentationObject } from 'store/slices/transactionsSlice'
@@ -29,6 +29,7 @@ const getStatus = (status: string) => {
 }
 
 interface Props {
+  wallet: RIFWallet
   activityDetails: ActivityRowPresentationObject
   navigation: ActivityMainScreenProps['navigation']
   backScreen?: rootTabsRouteNames
@@ -36,6 +37,7 @@ interface Props {
 }
 
 export const ActivityBasicRow = ({
+  wallet,
   navigation,
   activityDetails,
   backScreen,
@@ -53,7 +55,6 @@ export const ActivityBasicRow = ({
   } = activityDetails
 
   const { t } = useTranslation()
-  const { wallet } = useAppSelector(selectActiveWallet)
 
   // Contact
   const amIReceiver = activityDetails.amIReceiver ?? isMyAddress(wallet, to)

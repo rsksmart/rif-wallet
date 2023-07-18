@@ -1,23 +1,23 @@
 import { useMemo, useEffect } from 'react'
-import { StyleSheet, View, FlatList } from 'react-native'
+import { View } from 'react-native'
 
 import { shortAddress } from 'lib/utils'
 
 import { AccountBox } from 'components/accounts/AccountBox'
 import { useAppSelector } from 'store/storeUtils'
-import { selectBitcoin, selectWallets } from 'store/slices/settingsSlice'
+import { selectBitcoin, selectWalletState } from 'store/slices/settingsSlice'
 import { headerLeftOption } from 'navigation/profileNavigator'
 import {
   SettingsScreenProps,
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
-import { sharedColors } from 'shared/constants'
-import { castStyle } from 'shared/utils'
+import { sharedStyles } from 'shared/constants'
 
 export const AccountsScreen = ({
   navigation,
 }: SettingsScreenProps<settingsStackRouteNames.AccountsScreen>) => {
-  const wallets = useAppSelector(selectWallets)
+  const { wallet, chainType, walletIsDeployed } =
+    useAppSelector(selectWalletState)
   const bitcoinCore = useAppSelector(selectBitcoin)
   const publicKeys = useMemo(
     () =>
@@ -30,23 +30,6 @@ export const AccountsScreen = ({
         : [],
     [bitcoinCore],
   )
-  const walletsArr = useMemo(
-    () =>
-      wallets
-        ? Object.keys(wallets).map((key, id) => ({
-            ...wallets[key],
-            address: key,
-            addressShort: shortAddress(key, 8),
-            smartWalletAddress: wallets[key].smartWalletAddress,
-            smartWalletAddressShort: shortAddress(
-              wallets[key].smartWalletAddress,
-              8,
-            ),
-            id,
-          }))
-        : [],
-    [wallets],
-  )
 
   useEffect(() => {
     navigation.setOptions({
@@ -55,30 +38,14 @@ export const AccountsScreen = ({
   }, [navigation])
 
   return (
-    <FlatList
-      data={walletsArr}
-      initialNumToRender={10}
-      keyExtractor={item => item.id.toString()}
-      renderItem={({ item }) => (
-        <AccountBox {...item} publicKeys={publicKeys} />
-      )}
-      style={styles.container}
-      ItemSeparatorComponent={() => <View style={styles.walletView} />}
-      ListFooterComponentStyle={styles.viewBottomFix}
-    />
+    <View style={sharedStyles.screen}>
+      <AccountBox
+        walletIsDeployed={walletIsDeployed}
+        address={wallet.address}
+        smartWalletAddress={wallet.smartWalletAddress}
+        chainType={chainType}
+        publicKeys={publicKeys}
+      />
+    </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: castStyle.view({
-    backgroundColor: sharedColors.tokenBackground,
-    paddingHorizontal: 24,
-  }),
-  viewBottomFix: castStyle.view({
-    marginTop: 40,
-    marginBottom: 150,
-  }),
-  walletView: castStyle.view({
-    marginBottom: 40,
-  }),
-})

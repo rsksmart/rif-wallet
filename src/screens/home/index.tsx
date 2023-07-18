@@ -22,8 +22,8 @@ import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import {
   changeTopColor,
-  selectActiveWallet,
   selectHideBalance,
+  selectWalletState,
   setHideBalance,
 } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
@@ -38,6 +38,7 @@ import { selectTransactions } from 'store/slices/transactionsSlice'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { ActivityBasicRow } from 'screens/activity/ActivityRow'
+import { rootTabsRouteNames } from 'navigation/rootNavigator'
 
 import { HomeInformationBar } from './HomeInformationBar'
 import { getTokenColor } from './tokenColor'
@@ -49,6 +50,7 @@ export const HomeScreen = ({
   const { t } = useTranslation()
   const isFocused = useIsFocused()
   const dispatch = useAppDispatch()
+  const { wallet, chainType } = useAppSelector(selectWalletState)
   const tokenBalances = useAppSelector(selectBalances)
   const transactions = useAppSelector(selectTransactions)
   const balancesArray = useMemo(
@@ -57,7 +59,6 @@ export const HomeScreen = ({
   )
   const totalUsdBalance = useAppSelector(selectTotalUsdValue)
   const prices = useAppSelector(selectUsdPrices)
-  const { wallet, chainType } = useAppSelector(selectActiveWallet)
   const hideBalance = useAppSelector(selectHideBalance)
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>()
   const [selectedTokenBalance, setSelectedTokenBalance] =
@@ -122,6 +123,7 @@ export const HomeScreen = ({
           })
         case 'SEND':
           return navigation.navigate(homeStackRouteNames.Send, {
+            backScreen: rootTabsRouteNames.Home,
             token: _selected?.symbol,
             contractAddress: _selected?.contractAddress,
           })
@@ -139,7 +141,6 @@ export const HomeScreen = ({
       switch (screen) {
         case 'SEND':
           return navigation.navigate(homeStackRouteNames.Send, {
-            backAction: navigation.goBack,
             token: selected?.symbol,
             contractAddress: selected?.contractAddress,
           })

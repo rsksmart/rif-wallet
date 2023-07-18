@@ -6,7 +6,7 @@ import OIcon from 'react-native-vector-icons/Octicons'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
-import { selectActiveWallet, selectTopColor } from 'store/slices/settingsSlice'
+import { selectTopColor, selectWallet } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { sharedColors } from 'shared/constants'
 import { AppTouchable } from 'components/appTouchable'
@@ -19,7 +19,7 @@ type HeaderProps = BottomTabHeaderProps | StackHeaderProps
 export const AppHeader = ({ navigation, route }: HeaderProps) => {
   const insets = useSafeAreaInsets()
   const topColor = useAppSelector(selectTopColor)
-  const { wallet } = useAppSelector(selectActiveWallet)
+  const wallet = useAppSelector(selectWallet)
 
   const openMenu = useCallback(() => {
     if (route?.name === rootTabsRouteNames.Settings) {

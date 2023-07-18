@@ -14,13 +14,10 @@ import { castStyle } from 'shared/utils'
 import { AppSpinner } from 'components/index'
 import { sharedColors, sharedStyles } from 'shared/constants'
 
-import { ScreenWithWallet } from '../types'
-
 export const AliasBoughtScreen = ({
   navigation,
   route,
-}: ProfileStackScreenProps<profileStackRouteNames.AliasBought> &
-  ScreenWithWallet) => {
+}: ProfileStackScreenProps<profileStackRouteNames.AliasBought>) => {
   const { t } = useTranslation()
   const { alias } = route.params
 
