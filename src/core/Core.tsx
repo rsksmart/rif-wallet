@@ -13,7 +13,6 @@ import {
   RootTabsParamsList,
 } from 'navigation/rootNavigator'
 import { RequestHandler } from 'src/ux/requestsModal/RequestHandler'
-import { WalletConnectProviderElement } from 'screens/walletConnect/WalletConnectContext'
 import { LoadingScreen } from 'components/loading/LoadingScreen'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import {
