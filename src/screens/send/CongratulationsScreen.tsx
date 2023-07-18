@@ -33,7 +33,6 @@ export const CongratulationsScreen = ({
         t('transaction_summary_check_status'),
       ]}
       FeedbackComponent={loading ? <AppSpinner size={174} /> : <SuccessIcon />}
-      loading={loading}
       buttons={[
         {
           title: t('close'),

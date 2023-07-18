@@ -162,10 +162,8 @@ const styles = StyleSheet.create({
     minHeight: 52,
     borderRadius: 25,
     flexDirection: 'row',
-    paddingTop: 14,
-    paddingBottom: 14,
-    paddingLeft: 20,
-    paddingRight: 20,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
   }),
   iconContainer: castStyle.view({
     flexDirection: 'row',
