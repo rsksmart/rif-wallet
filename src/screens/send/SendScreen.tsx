@@ -136,6 +136,17 @@ export const SendScreen = ({
     status = t('send_screen_sending_transaction')
   }
 
+  useEffect(() => {
+    if (
+      currentTransaction?.status === 'SUCCESS' ||
+      currentTransaction?.status === 'FAILED'
+    ) {
+      navigation.navigate(rootTabsRouteNames.Home, {
+        screen: homeStackRouteNames.Main,
+      })
+    }
+  }, [navigation, currentTransaction])
+
   // When a transaction goes through, show congratulations component
   if (
     currentTransaction?.status === 'PENDING' &&
