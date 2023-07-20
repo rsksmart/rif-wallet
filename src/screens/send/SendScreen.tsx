@@ -17,15 +17,16 @@ import {
   selectBalances,
   selectTotalUsdValue,
 } from 'store/slices/balancesSlice/selectors'
-import { sharedStyles } from 'shared/constants'
+import { sharedColors, sharedStyles } from 'shared/constants'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
 import { selectChainId } from 'store/slices/settingsSlice'
 import { FullScreenSpinner } from 'components/fullScreenSpinner'
+import { SuccessIcon } from 'components/icons/SuccessIcon'
+import { FeedbackModal } from 'components/feedbackModal'
 
 import { ScreenWithWallet } from '../types'
 import { TransactionForm } from './TransactionForm'
 import { usePaymentExecutor } from './usePaymentExecutor'
-import { CongratulationsScreen } from './CongratulationsScreen'
 
 export const SendScreen = ({
   route,
@@ -147,26 +148,36 @@ export const SendScreen = ({
     }
   }, [navigation, currentTransaction])
 
-  // When a transaction goes through, show congratulations component
-  if (
-    currentTransaction?.status === 'PENDING' &&
-    currentTransaction.value &&
-    currentTransaction.symbol
-  ) {
-    return (
-      <CongratulationsScreen
-        amount={currentTransaction.value}
-        tokenSymbol={currentTransaction.symbol}
-        onClose={onGoToHome}
-      />
-    )
-  }
-
   return (
     <KeyboardAvoidingView
       style={sharedStyles.screen}
       keyboardVerticalOffset={100}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      {/* Render Feedback when transaction is PENDING */}
+      <FeedbackModal
+        visible={Boolean(
+          currentTransaction?.status === 'PENDING' &&
+            currentTransaction.value &&
+            currentTransaction.symbol,
+        )}
+        title={t('transaction_summary_congrats')}
+        texts={[
+          `${t('transaction_summary_you_sent')} ${currentTransaction?.value} ${
+            currentTransaction?.symbol
+          }.`,
+          t('transaction_summary_your_transaction'),
+          t('transaction_summary_check_status'),
+        ]}
+        FeedbackComponent={<SuccessIcon />}
+        buttons={[
+          {
+            title: t('send_screen_return_to_home'),
+            onPress: onGoToHome,
+            color: sharedColors.white,
+            textColor: sharedColors.black,
+          },
+        ]}
+      />
       <TransactionForm
         onConfirm={onExecuteTransfer}
         onCancel={onCancel}

@@ -85,9 +85,6 @@ const styles = StyleSheet.create({
     marginTop: 5,
     color: sharedColors.labelLight,
   }),
-  buttons: castStyle.view({
-    alignSelf: 'stretch',
-  }),
   button: castStyle.view({
     marginTop: 8,
   }),
