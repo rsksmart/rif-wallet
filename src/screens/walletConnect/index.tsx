@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Image, ScrollView, StyleSheet, View } from 'react-native'
 
 import { Typography } from 'components/index'
+import { ConfirmationModal } from 'components/modal'
 import {
   rootTabsRouteNames,
   RootTabsScreenProps,
@@ -11,8 +12,7 @@ import {
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { deleteWCSession } from 'storage/WalletConnectSessionStore'
-import { ConfirmationModal } from 'components/modal'
-import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { selectWalletState } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
 
 import { DappItem } from './DappItem'
@@ -24,7 +24,7 @@ import {
 type Props = RootTabsScreenProps<rootTabsRouteNames.WalletConnect>
 
 export const WalletConnectScreen = ({ route }: Props) => {
-  const { wallet } = useAppSelector(selectActiveWallet)
+  const { wallet } = useAppSelector(selectWalletState)
   const wcKey = route.params?.wcKey
 
   const { t } = useTranslation()
