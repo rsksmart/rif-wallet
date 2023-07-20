@@ -19,6 +19,8 @@ export interface Contact {
   isEditable?: boolean
 }
 
+export type Contacts = Record<string, Contact>
+
 export type ContactWithAddressRequired = Partial<Omit<Contact, 'address'>> & {
   address: string
 }

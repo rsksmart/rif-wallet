@@ -33,3 +33,6 @@ export const getContactByAddress = (address: string) =>
     [getContactsState],
     contactsState => contactsState.contacts[address],
   )
+
+export const selectRecentContacts = ({ contacts }: RootState) =>
+  contacts.recentContacts

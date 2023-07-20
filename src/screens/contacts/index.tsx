@@ -4,22 +4,29 @@ import { Image, ScrollView, StyleSheet, View } from 'react-native'
 import { CompositeScreenProps, useIsFocused } from '@react-navigation/native'
 import { FormProvider, useForm } from 'react-hook-form'
 
+import { shortAddress } from 'lib/utils'
+
 import { AppButton, AppTouchable, Typography } from 'components/index'
 import {
   rootTabsRouteNames,
   RootTabsScreenProps,
 } from 'navigation/rootNavigator/types'
 import { contactsStackRouteNames } from 'navigation/contactsNavigator'
-import { getContactsAsArrayAndSelected } from 'store/slices/contactsSlice'
+import { homeStackRouteNames } from 'navigation/homeNavigator/types'
+import {
+  getContactsAsArrayAndSelected,
+  selectRecentContacts,
+} from 'store/slices/contactsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { changeTopColor } from 'store/slices/settingsSlice'
 import { Search } from 'components/input/search'
 import { BasicRow } from 'components/BasicRow'
 import { sharedColors, sharedStyles, testIDs } from 'shared/constants'
+import { Contact } from 'shared/types'
 import { castStyle } from 'shared/utils'
-import { shortAddress } from 'src/lib/utils'
 
 import { ContactsStackScreenProps } from '../index'
+import { ContactCard } from './components/ContactCard'
 
 export type ContactsListScreenProps = CompositeScreenProps<
   ContactsStackScreenProps<contactsStackRouteNames.ContactsList>,
@@ -38,6 +45,7 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
   const { resetField, watch } = methods
   const { t } = useTranslation()
   const { contacts } = useAppSelector(getContactsAsArrayAndSelected)
+  const recentContacts = useAppSelector(selectRecentContacts)
 
   const searchContactText = watch('search')
 
@@ -61,6 +69,16 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
     resetField('search')
   }, [resetField])
 
+  const onSendToRecentContact = useCallback(
+    (contact: Contact) => () => {
+      navigation.navigate(rootTabsRouteNames.Home, {
+        screen: homeStackRouteNames.Send,
+        params: { contact, backScreen: contactsStackRouteNames.ContactsList },
+      })
+    },
+    [navigation],
+  )
+
   useEffect(() => {
     if (isFocused) {
       dispatch(changeTopColor(sharedColors.black))
@@ -69,6 +87,20 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
 
   return (
     <View style={sharedStyles.screen}>
+      {recentContacts.length > 0 && (
+        <View style={styles.recentContacts}>
+          <ScrollView horizontal>
+            {recentContacts.map((c, i) => (
+              <ContactCard
+                onPress={onSendToRecentContact(c)}
+                style={styles.contactCard}
+                key={i}
+                name={c.name}
+              />
+            ))}
+          </ScrollView>
+        </View>
+      )}
       <Typography type={'h2'} style={styles.title}>
         {t('contacts_screen_title')}
       </Typography>
@@ -138,7 +170,7 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
 }
 
 const styles = StyleSheet.create({
-  title: castStyle.text({ marginTop: 44 }),
+  title: castStyle.text({ marginTop: 18 }),
   noContactsImage: castStyle.image({
     marginTop: 102,
     alignSelf: 'center',
@@ -163,6 +195,10 @@ const styles = StyleSheet.create({
     left: 24,
     right: 24,
     backgroundColor: sharedColors.white,
+  }),
+  recentContacts: castStyle.view({ height: 100, marginTop: 12 }),
+  contactCard: castStyle.view({
+    marginLeft: 6,
   }),
 })
 

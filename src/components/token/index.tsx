@@ -14,12 +14,12 @@ import Clipboard from '@react-native-community/clipboard'
 import { shortAddress } from 'lib/utils'
 
 import { AppTouchable } from 'components/appTouchable'
-import { Avatar } from 'components/avatar'
 import { Typography } from 'components/index'
 import { TokenImage, TokenSymbol } from 'screens/home/TokenImage'
 import { noop, sharedColors, sharedStyles, testIDs } from 'shared/constants'
 import { ContactWithAddressRequired } from 'shared/types'
 import { castStyle } from 'shared/utils'
+import { ContactCard } from 'screens/contacts/components'
 
 import { EyeIcon } from '../icons/EyeIcon'
 import { DollarIcon } from '../icons/DollarIcon'
@@ -166,20 +166,7 @@ export const TokenBalance = ({
         )}
       </View>
       <View style={styles.rightColumn}>
-        {contact && contact.name ? (
-          <View style={styles.contactCard}>
-            <Avatar size={46} name={contact.name} />
-            <View style={styles.contactName}>
-              <Typography
-                type="h4"
-                numberOfLines={1}
-                adjustsFontSizeToFit
-                minimumFontScale={0.85}>
-                {contact.name}
-              </Typography>
-            </View>
-          </View>
-        ) : null}
+        {contact && contact.name ? <ContactCard name={contact.name} /> : null}
         {hideable && !editable && (
           <AppTouchable
             width={46}
@@ -245,15 +232,6 @@ const styles = StyleSheet.create({
     color: sharedColors.subTitle,
     opacity: 0.7,
   }),
-  contactCard: castStyle.view({
-    backgroundColor: sharedColors.inputInactive,
-    paddingVertical: 13.5,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: 100,
-    height: 100,
-  }),
   badge: castStyle.view({
     padding: 8,
     borderRadius: 25,
@@ -270,10 +248,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: 150,
     marginTop: 12,
-  }),
-  contactName: castStyle.text({
-    width: '90%',
-    alignItems: 'center',
   }),
   textSymbol: castStyle.text({ color: sharedColors.white, paddingTop: 3 }),
   addressCopier: castStyle.view({
