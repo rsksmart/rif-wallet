@@ -36,10 +36,7 @@ interface RifSockets {
   setGlobalError: (err: string) => void
   dispatch: AppDispatch
   usdPrices: UsdPricesState
-  fetcher: RifWalletServicesFetcher<
-    Options,
-    ReturnType<typeof setInternetCredentials>
-  >
+  fetcher: RifWalletServicesFetcher
   chainId: ChainTypesByIdType
 }
 
