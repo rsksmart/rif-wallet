@@ -29,7 +29,7 @@ import {
   setPinState,
   unlockApp,
 } from 'store/slices/settingsSlice'
-import { noop, sharedColors, sharedStyles } from 'shared/constants'
+import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import {
   SettingsScreenProps,
@@ -39,7 +39,6 @@ import {
   createKeysRouteNames,
   CreateKeysScreenProps,
 } from 'navigation/createKeysNavigator'
-import { useKeyboardIsVisible } from 'core/hooks/useKeyboardIsVisible'
 
 type PIN = Array<string | null>
 const defaultPin = [null, null, null, null]

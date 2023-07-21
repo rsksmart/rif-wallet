@@ -1,5 +1,5 @@
 import { convertToERC20Token, makeRBTCToken } from '@rsksmart/rif-wallet-token'
-import { BigNumber, ContractTransaction, utils } from 'ethers'
+import { BigNumber, utils } from 'ethers'
 import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
