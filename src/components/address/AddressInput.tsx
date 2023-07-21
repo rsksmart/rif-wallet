@@ -19,6 +19,11 @@ import { Input, InputProps } from '../input'
 import { Avatar } from '../avatar'
 import { AppButton } from '../button'
 
+const bitcoinValidToAddressMessage = new Map([
+  [true, AddressValidationMessage.VALID],
+  [false, AddressValidationMessage.INVALID_ADDRESS],
+])
+
 export interface AddressInputProps extends Omit<InputProps, 'value'> {
   isBitcoin: boolean
   value: ContactWithAddressRequired
@@ -93,8 +98,10 @@ export const AddressInput = ({
 
       const parsedString = decodeString(inputText)
       const userInput = parsedString.address ? parsedString.address : inputText
-      const newValidationMessage = validateAddress(userInput, chainId)
       const isBitcoinValid = isBitcoinAddressValid(userInput)
+      const newValidationMessage = !isBitcoin
+        ? validateAddress(userInput, chainId)
+        : bitcoinValidToAddressMessage.get(isBitcoinValid)
 
       onChangeAddress(
         userInput,
