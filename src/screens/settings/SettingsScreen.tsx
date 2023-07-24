@@ -14,9 +14,9 @@ import {
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import {
-  selectActiveWallet,
   selectChainId,
   selectPin,
+  selectWalletIsDeployed,
 } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { chainTypesById } from 'shared/constants/chainConstants'
@@ -26,7 +26,7 @@ export const SettingsScreen = ({
 }: SettingsScreenProps<settingsStackRouteNames.SettingsScreen>) => {
   const statePIN = useAppSelector(selectPin)
   const chainId = useAppSelector(selectChainId)
-  const { walletIsDeployed } = useAppSelector(selectActiveWallet)
+  const walletIsDeployed = useAppSelector(selectWalletIsDeployed)
 
   const smartWalletFactoryAddress = useMemo(
     () =>

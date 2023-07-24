@@ -13,7 +13,6 @@ import {
   RootTabsParamsList,
 } from 'navigation/rootNavigator'
 import { RequestHandler } from 'src/ux/requestsModal/RequestHandler'
-import { WalletConnectProviderElement } from 'screens/walletConnect/WalletConnectContext'
 import { LoadingScreen } from 'components/loading/LoadingScreen'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import {
@@ -23,25 +22,10 @@ import {
   selectWholeSettingsState,
   unlockApp,
 } from 'store/slices/settingsSlice'
-import { InjectSelectedWallet } from 'src/Context'
-import * as Screens from 'screens/index'
 import { sharedStyles } from 'shared/constants'
 
 import { useStateSubscription } from './hooks/useStateSubscription'
 import { Cover } from './components/Cover'
-
-export const InjectedScreens = {
-  SendScreen: InjectSelectedWallet(Screens.SendScreen),
-  ActivityScreen: InjectSelectedWallet(Screens.ActivityScreen),
-  RelayDeployScreen: InjectSelectedWallet(Screens.RelayDeployScreen),
-  WalletConnectScreen: InjectSelectedWallet(Screens.WalletConnectScreen),
-  ScanQRScreen: InjectSelectedWallet(Screens.ScanQRScreen),
-  SearchDomainScreen: InjectSelectedWallet(Screens.SearchDomainScreen),
-  AliasBoughtScreen: InjectSelectedWallet(Screens.AliasBoughtScreen),
-  HomeScreen: InjectSelectedWallet(Screens.HomeScreen),
-  AccountsScreen: InjectSelectedWallet(Screens.AccountsScreen),
-  PurchaseDomainScreen: InjectSelectedWallet(Screens.PurchaseDomainScreen),
-}
 
 export const navigationContainerRef =
   createNavigationContainerRef<RootTabsParamsList>()
@@ -66,7 +50,7 @@ export const Core = () => {
     try {
       await dispatch(unlockApp()).unwrap()
     } catch (err) {
-      console.log('ERRR', err)
+      console.log('ERR CORE', err)
     }
   }, [dispatch])
 
@@ -80,21 +64,19 @@ export const Core = () => {
         <StatusBar backgroundColor={topColor} />
         {!active && <Cover />}
         <NavigationContainer ref={navigationContainerRef}>
-          <WalletConnectProviderElement>
-            {settings.loading && !unlocked ? (
-              <LoadingScreen />
-            ) : (
-              <>
-                <RootNavigationComponent />
-                {requests.length !== 0 && (
-                  <RequestHandler
-                    request={requests[0]}
-                    closeRequest={() => dispatch(closeRequest())}
-                  />
-                )}
-              </>
-            )}
-          </WalletConnectProviderElement>
+          {settings.loading && !unlocked ? (
+            <LoadingScreen />
+          ) : (
+            <>
+              <RootNavigationComponent />
+              {requests.length !== 0 && (
+                <RequestHandler
+                  request={requests[0]}
+                  closeRequest={() => dispatch(closeRequest())}
+                />
+              )}
+            </>
+          )}
         </NavigationContainer>
       </View>
     </SafeAreaProvider>

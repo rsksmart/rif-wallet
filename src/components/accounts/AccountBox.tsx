@@ -17,33 +17,36 @@ import { defaultIconSize, sharedColors } from 'shared/constants'
 import { sharedStyles } from 'shared/styles'
 import { castStyle } from 'shared/utils'
 import { setAccount } from 'store/slices/accountsSlice'
+import { WalletIsDeployed } from 'store/slices/settingsSlice/types'
 import { selectAccounts } from 'store/slices/accountsSlice/selector'
 import { AccountPayload } from 'store/slices/accountsSlice/types'
-import { selectActiveWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { ChainTypeEnum } from 'shared/constants/chainConstants'
 
 import { CheckIcon } from '../icons/CheckIcon'
 
 interface AccountBoxProps {
   address: string
   smartWalletAddress: string
+  chainType: ChainTypeEnum
+  walletIsDeployed: WalletIsDeployed
   id?: number
   publicKeys: PublicKeyItemType[]
 }
 
 export const AccountBox = ({
+  walletIsDeployed,
   address,
   smartWalletAddress,
   publicKeys = [],
   id = 0,
+  chainType,
 }: AccountBoxProps) => {
   const dispatch = useAppDispatch()
   const accounts = useAppSelector(selectAccounts)
-  const { walletIsDeployed } = useAppSelector(selectActiveWallet)
   const initialAccountName = accounts[id]?.name || `account ${id + 1}`
   const [accountName, setAccountName] = useState<string>(initialAccountName)
   const [showAccountNameInput, setShowAccountInput] = useState<boolean>(false)
-  const { chainType } = useAppSelector(selectActiveWallet)
 
   const eoaAddressObject = getAddressDisplayText(address ?? '', chainType)
   const smartWalletAddressObject = getAddressDisplayText(
@@ -113,11 +116,11 @@ export const AccountBox = ({
         <Typography type={'h4'}>{t('settings_screen_status_label')}</Typography>
         <View style={styles.status}>
           <Typography type={'h4'} style={styles.statusText}>
-            {walletIsDeployed?.isDeployed
+            {walletIsDeployed.isDeployed
               ? t('settings_screen_deployed_label')
               : t('settings_screen_not_deployed_label')}
           </Typography>
-          {walletIsDeployed?.isDeployed ? (
+          {walletIsDeployed.isDeployed ? (
             <Icon
               name={'check-circle'}
               size={24 || defaultIconSize}

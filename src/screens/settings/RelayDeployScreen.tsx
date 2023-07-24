@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next'
 
 import { AppButton, Typography, AppSpinner } from 'components/index'
 import {
-  selectChainId,
+  selectWalletState,
   setIsDeploying,
   setSmartWalletDeployTx,
   setWalletIsDeployed,
@@ -29,21 +29,17 @@ import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { homeStackRouteNames } from 'navigation/homeNavigator/types'
 import { chainTypesById } from 'shared/constants/chainConstants'
 
-import { ScreenWithWallet } from '../types'
-
 export const RelayDeployScreen = ({
   route,
   navigation,
-  wallet,
-  walletDeployed,
-}: SettingsScreenProps<settingsStackRouteNames.RelayDeployScreen> &
-  ScreenWithWallet) => {
+}: SettingsScreenProps<settingsStackRouteNames.RelayDeployScreen>) => {
   const backScreen = route.params?.goBackScreen
-  const { loading, isDeployed, txHash } = walletDeployed
+  const { wallet, walletIsDeployed, chainId } =
+    useAppSelector(selectWalletState)
+  const { loading, isDeployed, txHash } = walletIsDeployed
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [deployError, setDeployError] = useState<string | null>(null)
-  const chainId = useAppSelector(selectChainId)
   const updateErrorState = useCallback((error: string | null) => {
     setDeployError(error)
   }, [])

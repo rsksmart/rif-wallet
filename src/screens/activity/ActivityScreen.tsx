@@ -17,16 +17,15 @@ import { Typography } from 'components/typography'
 import { castStyle } from 'shared/utils'
 import { ActivityMainScreenProps } from 'shared/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
-import { fetchBitcoinTransactions } from 'src/redux/slices/transactionsSlice'
+import { fetchBitcoinTransactions } from 'store/slices/transactionsSlice'
+import { selectWallet } from 'store/slices/settingsSlice'
 
 import { ActivityBasicRow } from './ActivityRow'
-import { ScreenWithWallet } from '../types'
 
-export const ActivityScreen = ({
-  navigation,
-}: ActivityMainScreenProps & ScreenWithWallet) => {
+export const ActivityScreen = ({ navigation }: ActivityMainScreenProps) => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
+  const wallet = useAppSelector(selectWallet)
   const transactions = useAppSelector(selectTransactions)
   const areTransasctionsLoading = useAppSelector(selectTransactionsLoading)
 
@@ -44,6 +43,7 @@ export const ActivityScreen = ({
         refreshing={areTransasctionsLoading}
         renderItem={({ item }) => (
           <ActivityBasicRow
+            wallet={wallet}
             activityDetails={item}
             navigation={navigation}
             backScreen={rootTabsRouteNames.Activity}

@@ -18,7 +18,7 @@ import { TransactionSummaryComponent } from 'screens/transactionSummary/Transact
 import { sharedColors } from 'shared/constants'
 import { chainTypesById } from 'shared/constants/chainConstants'
 import { errorHandler } from 'shared/utils'
-import { selectActiveWallet, selectChainId } from 'store/slices/settingsSlice'
+import { selectWalletState } from 'store/slices/settingsSlice'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
@@ -41,11 +41,10 @@ export const ReviewTransactionContainer = ({
   const insets = useSafeAreaInsets()
   const tokenPrices = useAppSelector(selectUsdPrices)
   // enhance the transaction to understand what it is:
-  const { wallet } = useAppSelector(selectActiveWallet)
+  const { wallet, chainId } = useAppSelector(selectWalletState)
   const [txCostInRif, setTxCostInRif] = useState<BigNumber>()
   const { t } = useTranslation()
 
-  const chainId = useAppSelector(selectChainId)
   // this is for typescript, and should not happen as the transaction was created by the wallet instance.
   if (!wallet) {
     throw new Error('no wallet')
@@ -195,6 +194,7 @@ export const ReviewTransactionContainer = ({
       <TransactionSummaryComponent
         {...data}
         isLoaded={isLoaded && txCostInRif !== undefined}
+        wallet={wallet}
       />
     </View>
   )

@@ -2,9 +2,22 @@ import { BitcoinNetworkWithBIPRequest } from '@rsksmart/rif-wallet-bitcoin'
 import { ColorValue } from 'react-native'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
-import { Wallets, WalletsIsDeployed } from 'src/Context'
 import { RequestWithBitcoin } from 'shared/types'
 import { ChainTypesByIdType } from 'shared/constants/chainConstants'
+
+export interface Wallets {
+  [id: string]: RIFWallet
+}
+
+export interface WalletIsDeployed {
+  loading: boolean
+  txHash: string | null
+  isDeployed: boolean
+}
+
+export interface WalletsIsDeployed {
+  [id: string]: WalletIsDeployed
+}
 
 export interface CreateFirstWalletAction {
   mnemonic: string
@@ -23,8 +36,8 @@ export type UnlockAppAction =
   | undefined
 
 export interface SetKeysAction {
-  wallets: Wallets
-  walletsIsDeployed: WalletsIsDeployed
+  wallet: RIFWallet
+  walletIsDeployed: WalletIsDeployed
 }
 
 export interface OnRequestAction {

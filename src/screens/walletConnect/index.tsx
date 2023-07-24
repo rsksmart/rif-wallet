@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Image, ScrollView, StyleSheet, View } from 'react-native'
 
 import { Typography } from 'components/index'
+import { ConfirmationModal } from 'components/modal'
 import {
   rootTabsRouteNames,
   RootTabsScreenProps,
@@ -11,17 +12,19 @@ import {
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { deleteWCSession } from 'storage/WalletConnectSessionStore'
-import { ConfirmationModal } from 'components/modal'
-import { selectActiveWallet } from 'store/slices/settingsSlice'
+import { selectWalletState } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
 
 import { DappItem } from './DappItem'
-import { WalletConnectContext } from './WalletConnectContext'
+import {
+  WalletConnectContext,
+  WalletConnectProviderElement,
+} from './WalletConnectContext'
 
 type Props = RootTabsScreenProps<rootTabsRouteNames.WalletConnect>
 
 export const WalletConnectScreen = ({ route }: Props) => {
-  const { wallet } = useAppSelector(selectActiveWallet)
+  const { wallet } = useAppSelector(selectWalletState)
   const wcKey = route.params?.wcKey
 
   const { t } = useTranslation()
@@ -53,69 +56,71 @@ export const WalletConnectScreen = ({ route }: Props) => {
   }
 
   return (
-    <View style={styles.parent}>
-      <View style={styles.header}>
-        <View style={styles.innerHeader1}>
-          <Typography type="h2">{t('dapps_title')}</Typography>
-          <Typography type="h5" style={styles.subtitle}>
-            {t('dapps_instructions')}
-          </Typography>
+    <WalletConnectProviderElement>
+      <View style={styles.parent}>
+        <View style={styles.header}>
+          <View style={styles.innerHeader1}>
+            <Typography type="h2">{t('dapps_title')}</Typography>
+            <Typography type="h5" style={styles.subtitle}>
+              {t('dapps_instructions')}
+            </Typography>
+          </View>
+          <View style={styles.innerHeader2} />
         </View>
-        <View style={styles.innerHeader2} />
-      </View>
 
-      {openedConnections.length === 0 ? (
-        <>
-          <Image
-            source={require('src/images/empty-dapps.png')}
-            style={styles.noDappsImage}
-          />
-        </>
-      ) : (
-        <ScrollView style={styles.dappsList}>
-          {openedConnections.map(({ connector: c }) => (
-            <DappItem
-              key={c.key}
-              connector={c}
-              isDisconnecting={c.key === disconnectingWC?.key}
-              onDisconnect={() => setDisconnectingWC(c)}
+        {openedConnections.length === 0 ? (
+          <>
+            <Image
+              source={require('src/images/empty-dapps.png')}
+              style={styles.noDappsImage}
             />
-          ))}
-        </ScrollView>
-      )}
+          </>
+        ) : (
+          <ScrollView style={styles.dappsList}>
+            {openedConnections.map(({ connector: c }) => (
+              <DappItem
+                key={c.key}
+                connector={c}
+                isDisconnecting={c.key === disconnectingWC?.key}
+                onDisconnect={() => setDisconnectingWC(c)}
+              />
+            ))}
+          </ScrollView>
+        )}
 
-      {pendingConnector ? (
-        <ConfirmationModal
-          isVisible={!pendingConnector.connected}
-          title={t('dapps_confirmation_title')}
-          description={`${t('dapps_confirmation_description')}${
-            pendingConnector.peerMeta?.name
-              ? ` ${pendingConnector.peerMeta?.name}`
-              : ''
-          }?`}
-          okText={t('dapps_confirmation_button_connect')}
-          cancelText={t('dapps_confirmation_button_cancel')}
-          onOk={() => handleApprove(pendingConnector, wallet)}
-          onCancel={() => handleReject(pendingConnector)}
-        />
-      ) : null}
+        {pendingConnector ? (
+          <ConfirmationModal
+            isVisible={!pendingConnector.connected}
+            title={t('dapps_confirmation_title')}
+            description={`${t('dapps_confirmation_description')}${
+              pendingConnector.peerMeta?.name
+                ? ` ${pendingConnector.peerMeta?.name}`
+                : ''
+            }?`}
+            okText={t('dapps_confirmation_button_connect')}
+            cancelText={t('dapps_confirmation_button_cancel')}
+            onOk={() => handleApprove(pendingConnector, wallet)}
+            onCancel={() => handleReject(pendingConnector)}
+          />
+        ) : null}
 
-      {disconnectingWC ? (
-        <ConfirmationModal
-          isVisible={Boolean(disconnectingWC)}
-          title={t('dapps_confirm_disconnection_title')}
-          description={`${t('dapps_confirm_disconnection_description')}${
-            disconnectingWC.peerMeta?.name
-              ? ` ${disconnectingWC.peerMeta?.name}`
-              : ''
-          }?`}
-          okText={t('dapps_confirm_disconnection_confirm')}
-          cancelText={t('dapps_confirm_disconnection_cancel')}
-          onOk={handleDisconnectSession(disconnectingWC)}
-          onCancel={() => setDisconnectingWC(null)}
-        />
-      ) : null}
-    </View>
+        {disconnectingWC ? (
+          <ConfirmationModal
+            isVisible={Boolean(disconnectingWC)}
+            title={t('dapps_confirm_disconnection_title')}
+            description={`${t('dapps_confirm_disconnection_description')}${
+              disconnectingWC.peerMeta?.name
+                ? ` ${disconnectingWC.peerMeta?.name}`
+                : ''
+            }?`}
+            okText={t('dapps_confirm_disconnection_confirm')}
+            cancelText={t('dapps_confirm_disconnection_cancel')}
+            onOk={handleDisconnectSession(disconnectingWC)}
+            onCancel={() => setDisconnectingWC(null)}
+          />
+        ) : null}
+      </View>
+    </WalletConnectProviderElement>
   )
 }
 

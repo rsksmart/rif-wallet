@@ -4,11 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import {
+  AccountsScreen,
   ChangeLanguageScreen,
+  RelayDeployScreen,
   SettingsScreen,
   ShowMnemonicScreen,
 } from 'screens/index'
-import { InjectedScreens } from 'core/Core'
 import { ExampleScreen } from 'screens/example'
 import { WalletBackup } from 'screens/settings/WalletBackup'
 import { PinScreen } from 'src/screens/pinScreen'
@@ -38,7 +39,7 @@ export const SettingsNavigator = ({
       />
       <SettingsStack.Screen
         name={settingsStackRouteNames.AccountsScreen}
-        component={InjectedScreens.AccountsScreen}
+        component={AccountsScreen}
         options={screenOptionsWithHeader(top, t('settings_screen_accounts'))}
       />
       <SettingsStack.Screen
@@ -75,7 +76,7 @@ export const SettingsNavigator = ({
 
       <SettingsStack.Screen
         name={settingsStackRouteNames.RelayDeployScreen}
-        component={InjectedScreens.RelayDeployScreen}
+        component={RelayDeployScreen}
         options={screenOptionsWithHeader(top, '')}
       />
     </SettingsStack.Navigator>

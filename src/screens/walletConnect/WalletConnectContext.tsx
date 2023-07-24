@@ -17,7 +17,7 @@ import {
   saveWCSession,
 } from 'storage/WalletConnectSessionStore'
 import { useAppSelector } from 'store/storeUtils'
-import { selectWallets } from 'store/slices/settingsSlice'
+import { selectWallet } from 'store/slices/settingsSlice'
 
 export interface WalletConnectContextInterface {
   connections: IWalletConnectConnections
@@ -50,7 +50,7 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
 
   const [connections, setConnections] = useState<IWalletConnectConnections>({})
 
-  const wallets = useAppSelector(selectWallets)
+  const wallet = useAppSelector(selectWallet)
 
   const unsubscribeToEvents = async (wc: WalletConnect) => {
     const eventsNames = [
@@ -119,7 +119,10 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
     },
     [navigation],
   )
-  const handleApprove = async (wc: WalletConnect, wallet: RIFWallet | null) => {
+  const handleApprove = async (
+    wc: WalletConnect,
+    _wallet: RIFWallet | null,
+  ) => {
     try {
       if (wc && wallet) {
         wc.approveSession({
@@ -154,7 +157,7 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
   }
 
   const createSession = useCallback(
-    (wallet: RIFWallet, uri: string, session?: IWCSession) => {
+    (_wallet: RIFWallet, uri: string, session?: IWCSession) => {
       try {
         const newConnector = new WalletConnect({
           uri,
@@ -168,7 +171,7 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
             name: 'RIF Wallet',
           },
         })
-        const adapter = new WalletConnectAdapter(wallet)
+        const adapter = new WalletConnectAdapter(_wallet)
 
         // needs to subscribe to events before createSession
         // this is because we need the 'session_request' event
@@ -178,7 +181,7 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
           ...prev,
           [newConnector.key]: {
             connector: newConnector,
-            address: wallet.address,
+            address: _wallet.address,
           },
         }))
       } catch (error) {
@@ -196,9 +199,8 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
 
       const sessions = Object.values(storedSessions)
 
-      for (const { walletAddress, uri, session } of sessions) {
+      for (const { uri, session } of sessions) {
         try {
-          const wallet = wallets ? wallets[walletAddress] : null
           if (wallet) {
             createSession(wallet, uri, session)
           }
@@ -208,11 +210,11 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
         }
       }
     }
-    if (wallets) {
+    if (wallet) {
       reconnectWCSession()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wallets])
+  }, [wallet])
 
   const initialContext: WalletConnectContextInterface = {
     connections,

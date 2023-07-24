@@ -6,8 +6,6 @@ import {
 import { IAbiEnhancer, EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
-import { AppContextType } from 'src/Context'
-
 export interface IPrice {
   price: number
   lastUpdated: string
@@ -91,9 +89,4 @@ export interface TransactionsServerResponseWithActivityTransactions
 export interface AbiWallet {
   abiEnhancer: IAbiEnhancer
   wallet: RIFWallet
-}
-
-export type AppProviderProps = {
-  children: React.ReactNode
-  value: AppContextType
 }
