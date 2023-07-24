@@ -2,11 +2,15 @@ import { Core } from '@walletconnect/core'
 import { Web3Wallet, Web3WalletTypes } from '@walletconnect/web3wallet'
 import { getSdkError } from '@walletconnect/utils'
 
+import { getEnvSetting } from 'core/config'
+import { SETTINGS } from 'core/types'
+
 export type WalletConnect2SdkErrorString = Parameters<typeof getSdkError>[0]
 
 export const createWeb3Wallet = async () => {
+  const projectId = getEnvSetting(SETTINGS.WALLETCONNECT2_PROJECT_ID) // this should change if we need to vary from testnet/mainnet by using getWalletSetting
   const core = new Core({
-    projectId: 'd9224e919473fd749ba8298879ce7569',
+    projectId,
   })
 
   return await Web3Wallet.init({
