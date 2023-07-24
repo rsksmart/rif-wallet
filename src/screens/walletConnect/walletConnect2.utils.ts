@@ -16,7 +16,7 @@ export const createWeb3Wallet = async () => {
       description: 'RIF Wallet',
       url: 'https://www.rifos.org/',
       icons: [
-        'https://raw.githubusercontent.com/rsksmart/rif-scheduler-ui/develop/src/assets/logoColor.svg',
+        'https://user-images.githubusercontent.com/766679/236442723-004fc7a5-edb2-4477-86da-0b687d62702f.svg',
       ],
     },
   })
