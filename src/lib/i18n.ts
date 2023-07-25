@@ -106,6 +106,11 @@ const resources = {
       initial_screen_button_import: 'Import existing wallet',
       initial_screen_welcome_footer:
         'Welcome to RIF Wallet - a smart wallet with intuitive UX. Create your profile now.',
+      initial_screen_button_magic_email: 'Login With Email',
+      magic_email_title: 'Hello & Welcome',
+      magic_email_placeholder: 'Email',
+      magic_button_sign_in: 'Sign In/Register',
+      magic_continue_with: 'or continue with',
       header_import_wallet: 'Import wallet',
       header_enter_your_phrase: 'Enter your phrase',
       header_phrase_correct: 'Phrase is correct!',

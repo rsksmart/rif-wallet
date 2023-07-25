@@ -12,6 +12,7 @@ import {
 import { selectIsUnlocked } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { PinScreen } from 'screens/pinScreen'
+import { LoginWithEmail } from 'screens/createKeys/magic'
 
 import { CreateKeysStackParamList, createKeysRouteNames } from './types'
 import { screenOptionsWithHeader } from '..'
@@ -27,13 +28,20 @@ export const CreateKeysNavigation = () => {
 
   return (
     <Stack.Navigator initialRouteName={createKeysRouteNames.CreateKeys}>
-      {!unlocked && (
-        <Stack.Screen
-          name={createKeysRouteNames.CreateKeys}
-          component={CreateKeysScreen}
-          options={screensOptions}
-        />
-      )}
+      {!unlocked ? (
+        <Stack.Group>
+          <Stack.Screen
+            name={createKeysRouteNames.CreateKeys}
+            component={CreateKeysScreen}
+            options={screensOptions}
+          />
+          <Stack.Screen
+            name={createKeysRouteNames.LoginWithMagicEmail}
+            component={LoginWithEmail}
+            options={screenOptionsWithHeader(top, '')}
+          />
+        </Stack.Group>
+      ) : null}
       <Stack.Screen
         name={createKeysRouteNames.NewMasterKey}
         component={NewMasterKeyScreen}

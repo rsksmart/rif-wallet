@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Image, StyleSheet, View } from 'react-native'
+import { Config } from 'react-native-config'
 
 import {
   AppButton,
@@ -15,9 +16,56 @@ import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { WINDOW_HEIGHT } from 'src/ux/slides/Dimensions'
 
-export const CreateKeysScreen = ({
-  navigation,
-}: CreateKeysScreenProps<createKeysRouteNames.CreateKeys>) => {
+type Props = CreateKeysScreenProps<createKeysRouteNames.CreateKeys>
+
+const getButtons = (
+  navigation: Props['navigation'],
+  t: ReturnType<typeof useTranslation>['t'],
+) => {
+  if (Config.MAGIC_ENABLED) {
+    return (
+      <AppButton
+        onPress={() =>
+          navigation.navigate(createKeysRouteNames.LoginWithMagicEmail)
+        }
+        accessibilityLabel={'newWallet'}
+        title={t('initial_screen_button_magic_email')}
+        color={sharedColors.white}
+        textColor={sharedColors.black}
+      />
+    )
+  }
+
+  return (
+    <>
+      <AppButton
+        onPress={() =>
+          navigation.navigate(createKeysRouteNames.SecurityInformation, {
+            moveTo: createKeysRouteNames.NewMasterKey,
+          })
+        }
+        accessibilityLabel={'newWallet'}
+        title={t('initial_screen_button_create')}
+        color={sharedColors.white}
+        textColor={sharedColors.black}
+      />
+
+      <AppButton
+        onPress={() =>
+          navigation.navigate(createKeysRouteNames.SecurityInformation, {
+            moveTo: createKeysRouteNames.ImportMasterKey,
+          })
+        }
+        accessibilityLabel={'importWallet'}
+        title={t('initial_screen_button_import')}
+        style={styles.importWalletButton}
+        backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
+      />
+    </>
+  )
+}
+
+export const CreateKeysScreen = ({ navigation }: Props) => {
   const { t } = useTranslation()
 
   return (
@@ -37,31 +85,7 @@ export const CreateKeysScreen = ({
       <Typography type={'body3'} style={styles.footerText}>
         {t('initial_screen_welcome_footer')}
       </Typography>
-      <View style={[styles.buttonContainer]}>
-        <AppButton
-          onPress={() =>
-            navigation.navigate(createKeysRouteNames.SecurityInformation, {
-              moveTo: createKeysRouteNames.NewMasterKey,
-            })
-          }
-          accessibilityLabel={'newWallet'}
-          title={t('initial_screen_button_create')}
-          color={sharedColors.white}
-          textColor={sharedColors.black}
-        />
-
-        <AppButton
-          onPress={() =>
-            navigation.navigate(createKeysRouteNames.SecurityInformation, {
-              moveTo: createKeysRouteNames.ImportMasterKey,
-            })
-          }
-          accessibilityLabel={'importWallet'}
-          title={t('initial_screen_button_import')}
-          style={styles.importWalletButton}
-          backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
-        />
-      </View>
+      <View style={[styles.buttonContainer]}>{getButtons(navigation, t)}</View>
     </View>
   )
 }

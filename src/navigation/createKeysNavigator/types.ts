@@ -12,6 +12,7 @@ export enum createKeysRouteNames {
   ImportMasterKey = 'ImportMasterKey',
   RevealMasterKey = 'RevealMasterKey',
   CreatePIN = 'CreatePIN',
+  LoginWithMagicEmail = 'LoginWithMagicEmail',
 }
 
 export type CreateKeysStackParamList = {
@@ -30,6 +31,7 @@ export type CreateKeysStackParamList = {
     isChangeRequested: true
     backScreen?: null
   }
+  [createKeysRouteNames.LoginWithMagicEmail]: undefined
 }
 
 export type CreateKeysScreenProps<T extends keyof CreateKeysStackParamList> =
