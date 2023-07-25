@@ -78,8 +78,6 @@ const contactsSlice = createSlice({
         state.recentContacts.unshift(contact)
       }
 
-      console.log('CONTACT in addRecentContact', contact)
-
       if (state.recentContacts.length > 10) {
         state.recentContacts.pop()
       }

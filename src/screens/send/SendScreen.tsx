@@ -165,7 +165,7 @@ export const SendScreen = ({
         visible={Boolean(value)}
         title={t('transaction_summary_congrats')}
         texts={[
-          `${t('transaction_summary_you_sent')} ${currentTransaction?.value} ${
+          `${t('transaction_summary_you_sent')} ${value} ${
             currentTransaction?.symbol
           }.`,
           t('transaction_summary_your_transaction'),
