@@ -52,6 +52,7 @@ export const ActivityBasicRow = ({
     from = '',
     to = '',
     price,
+    id,
   } = activityDetails
 
   const { t } = useTranslation()
@@ -88,6 +89,7 @@ export const ActivityBasicRow = ({
         from,
         to,
         time: timeHumanFormatted,
+        hashId: id,
       },
       contact: contact || { address },
     }),
@@ -103,6 +105,7 @@ export const ActivityBasicRow = ({
       timeHumanFormatted,
       usdBalance,
       value,
+      id,
     ],
   )
 
