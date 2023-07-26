@@ -259,12 +259,12 @@ export const TransactionSummaryComponent = ({
               <Typography
                 type={'body2'}
                 style={[sharedStyles.textLeft, sharedStyles.flex]}>
-                Hash
+                {t('transaction_summary_transaction_hash')}
               </Typography>
               <AppTouchable
                 width="100%"
                 onPress={openTransactionHash}
-                style={styles.hashId}>
+                style={styles.contactAddress}>
                 <Typography
                   type={'h5'}
                   style={[sharedStyles.textRight, styles.underline]}
@@ -338,10 +338,6 @@ const styles = StyleSheet.create({
     opacity: 0.4,
   }),
   contactAddress: castStyle.view({
-    flex: 3,
-    alignSelf: 'flex-end',
-  }),
-  hashId: castStyle.text({
     flex: 3,
     alignSelf: 'flex-end',
   }),
