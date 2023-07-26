@@ -27,13 +27,13 @@ export const CreateKeysNavigation = () => {
 
   return (
     <Stack.Navigator initialRouteName={createKeysRouteNames.CreateKeys}>
-      {!unlocked ? (
+      {!unlocked && (
         <Stack.Screen
           name={createKeysRouteNames.CreateKeys}
           component={CreateKeysScreen}
           options={screensOptions}
         />
-      ) : null}
+      )}
       <Stack.Screen
         name={createKeysRouteNames.NewMasterKey}
         component={NewMasterKeyScreen}

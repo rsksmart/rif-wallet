@@ -25,6 +25,7 @@ export enum rootTabsRouteNames {
   Profile = 'Profile',
   TransactionSummary = 'TransactionSummary',
   InitialPinScreen = 'InitialPinScreen',
+  OfflineScreen = 'OfflineScreen',
 }
 
 export type RootTabsParamsList = {
@@ -49,4 +50,5 @@ export type RootTabsParamsList = {
     | NavigatorScreenParams<ProfileStackParamsList>
     | undefined
   [rootTabsRouteNames.InitialPinScreen]: undefined
+  [rootTabsRouteNames.OfflineScreen]: undefined
 }

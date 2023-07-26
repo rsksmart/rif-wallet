@@ -18,6 +18,7 @@ import {
   WalletConnectScreen,
   PinScreen,
 } from 'screens/index'
+import { OfflineScreen } from 'core/components/OfflineScreen'
 
 import { RootTabsParamsList, rootTabsRouteNames } from './types'
 import { HomeNavigator } from '../homeNavigator'
@@ -39,6 +40,7 @@ export const RootNavigationComponent = () => {
   const [isWarningVisible, setIsWarningVisible] = useState(isDeviceRooted)
   const unlocked = useAppSelector(selectIsUnlocked)
   const fullscreen = useAppSelector(selectFullscreen)
+
   const isShown = unlocked && !fullscreen
 
   return (
@@ -62,6 +64,11 @@ export const RootNavigationComponent = () => {
                 undefined,
                 true,
               )}
+            />
+            <RootTabs.Screen
+              name={rootTabsRouteNames.OfflineScreen}
+              component={OfflineScreen}
+              options={screenOptionsNoHeader}
             />
           </>
         ) : (
