@@ -10,6 +10,7 @@ import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { AppDispatch } from 'store/index'
 import { abiEnhancer, getDefaultTokens } from 'core/setup'
 import { addOrUpdateBalances } from 'store/slices/balancesSlice'
+import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
 import { UsdPricesState } from 'store/slices/usdPricesSlice'
 import { getWalletSetting } from 'core/config'
 import { SETTINGS } from 'core/types'
@@ -41,6 +42,7 @@ interface RifSockets {
     ReturnType<typeof setInternetCredentials>
   >
   chainId: ChainTypesByIdType
+  balances: Record<string, TokenBalanceObject>
 }
 
 const onSocketInit = (
@@ -57,6 +59,7 @@ export const rifSockets = ({
   setGlobalError,
   usdPrices,
   chainId,
+  balances,
 }: RifSockets) => {
   const onChange = onSocketChangeEmitted({
     dispatch,
@@ -91,7 +94,12 @@ export const rifSockets = ({
       dispatch(resetSocketState())
     }
 
-    dispatch(addOrUpdateBalances(getDefaultTokens(chainId)))
+    const defaultTokens = getDefaultTokens(chainId).map(t => ({
+      ...t,
+      balance: balances[t.contractAddress]?.balance ?? t.balance,
+      usdBalance: balances[t.contractAddress]?.usdBalance ?? t.balance,
+    }))
+    dispatch(addOrUpdateBalances(defaultTokens))
 
     rifWalletServicesSocket.removeAllListeners()
 
