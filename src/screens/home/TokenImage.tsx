@@ -1,4 +1,5 @@
 import {
+  ColorValue,
   Image,
   ImageRequireSource,
   ImageStyle,
@@ -14,7 +15,7 @@ interface Props {
   symbol: string
   white?: boolean
   transparent?: boolean
-  color?: string
+  color?: ColorValue | string
   size?: number
 }
 

@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import {
   Alert,
+  ColorValue,
   StyleProp,
   StyleSheet,
   TextInput,
@@ -33,7 +34,7 @@ export interface CurrencyValue {
 interface Props {
   firstValue: CurrencyValue
   secondValue?: CurrencyValue
-  color?: string
+  color?: ColorValue | string
   hide?: boolean
   onSwap?: () => void
   onHide?: () => void
@@ -66,15 +67,12 @@ export const TokenBalance = ({
 
   const toNameOrAddress = useMemo(() => {
     if (!contact) {
-      return null
+      return {}
     }
     if (contact.name) {
-      return `${contact.name}.rsk`
+      return { name: `${contact.name}.rsk` }
     }
-    if (contact.displayAddress && contact.displayAddress.length < 20) {
-      return contact.displayAddress
-    }
-    return shortAddress(contact.address)
+    return { address: contact.address }
   }, [contact])
 
   const onCopyAddress = useCallback(() => {
@@ -154,13 +152,21 @@ export const TokenBalance = ({
               width={'100%'}
               onPress={onCopyAddress}
               style={styles.addressCopier}>
-              <Typography
-                type="body1"
-                style={{
-                  color: sharedColors.primary,
-                }}>
-                {toNameOrAddress}
-              </Typography>
+              {toNameOrAddress.name ? (
+                <Typography
+                  type="body1"
+                  style={{ color: sharedColors.primary }}>
+                  {toNameOrAddress.name}
+                </Typography>
+              ) : (
+                <Typography
+                  type="body3"
+                  numberOfLines={1}
+                  adjustsFontSizeToFit
+                  style={styles.fullAddress}>
+                  {toNameOrAddress.address}
+                </Typography>
+              )}
             </AppTouchable>
           </View>
         )}
@@ -246,12 +252,19 @@ const styles = StyleSheet.create({
   }),
   toAddressContainer: castStyle.view({
     flexDirection: 'row',
-    width: 150,
     marginTop: 12,
   }),
-  textSymbol: castStyle.text({ color: sharedColors.white, paddingTop: 3 }),
+  textSymbol: castStyle.text({
+    color: sharedColors.white,
+    paddingTop: 3,
+  }),
   addressCopier: castStyle.view({
     alignItems: 'flex-start',
     marginLeft: 4,
+  }),
+  fullAddress: castStyle.text({
+    color: sharedColors.primary,
+    marginTop: 3,
+    marginRight: 30,
   }),
 })
