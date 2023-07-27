@@ -16,6 +16,7 @@ import { PinScreen } from 'src/screens/pinScreen'
 import { rootTabsRouteNames, RootTabsScreenProps } from '../rootNavigator'
 import { SettingsStackParamsList, settingsStackRouteNames } from './types'
 import { screenOptionsWithHeader } from '..'
+import NetworkLogger from 'react-native-network-logger';
 
 const SettingsStack = createStackNavigator<SettingsStackParamsList>()
 
@@ -60,6 +61,11 @@ export const SettingsNavigator = ({
           top,
           t('settings_screen_wallet_backup'),
         )}
+      />
+      <SettingsStack.Screen
+        name={settingsStackRouteNames.NetworkLogger}
+        component={NetworkLogger}
+        options={screenOptionsWithHeader(top, 'network logger')}
       />
       <SettingsStack.Screen
         name={settingsStackRouteNames.ExampleScreen}

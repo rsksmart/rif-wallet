@@ -64,6 +64,10 @@ export const SettingsScreen = ({
     navigation.navigate(settingsStackRouteNames.ExampleScreen)
   }, [navigation])
 
+  const gotoNetworkLogger = useCallback(() => {
+    navigation.navigate(settingsStackRouteNames.NetworkLogger)
+  }, [navigation])
+
   const goToPinScreen = useCallback(() => {
     navigation.navigate(settingsStackRouteNames.ChangePinScreen, {
       isChangeRequested: true,
@@ -128,6 +132,14 @@ export const SettingsScreen = ({
             <Typography type={'h3'}>{t('settings_screen_examples')}</Typography>
           </AppTouchable>
         )}
+
+<AppTouchable
+            width={'100%'}
+            accessibilityLabel={'example'}
+            style={styles.settingsItem}
+            onPress={gotoNetworkLogger}>
+            <Typography type={'h3'}>network logger</Typography>
+          </AppTouchable>
       </View>
       <View style={styles.bottomView}>
         <AppTouchable

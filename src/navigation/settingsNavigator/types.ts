@@ -14,6 +14,7 @@ export enum settingsStackRouteNames {
   ShowMnemonicScreen = 'ShowMnemonicScreen',
   ExampleScreen = 'ExampleScreen',
   RelayDeployScreen = 'RelayDeployScreen',
+  NetworkLogger = 'NetworkLogger',
 }
 
 export type SettingsStackParamsList = {
@@ -27,6 +28,7 @@ export type SettingsStackParamsList = {
   [settingsStackRouteNames.WalletBackup]: undefined
   [settingsStackRouteNames.ShowMnemonicScreen]: undefined
   [settingsStackRouteNames.ExampleScreen]: undefined
+  [settingsStackRouteNames.NetworkLogger]: undefined
   [settingsStackRouteNames.RelayDeployScreen]:
     | {
         goBackScreen:
