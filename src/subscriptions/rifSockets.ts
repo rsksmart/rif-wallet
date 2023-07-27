@@ -94,11 +94,12 @@ export const rifSockets = ({
       dispatch(resetSocketState())
     }
 
-    const defaultTokens = getDefaultTokens(chainId).map(t => ({
-      ...t,
-      balance: balances[t.contractAddress]?.balance ?? t.balance,
-      usdBalance: balances[t.contractAddress]?.usdBalance ?? t.balance,
-    }))
+    const defaultTokens = getDefaultTokens(chainId)
+    defaultTokens.forEach(t => {
+      const tokenBalance = balances[t.contractAddress]
+      t.balance = tokenBalance?.balance ?? t.balance
+      t.usdBalance = tokenBalance?.usdBalance ?? t.usdBalance
+    })
     dispatch(addOrUpdateBalances(defaultTokens))
 
     rifWalletServicesSocket.removeAllListeners()
