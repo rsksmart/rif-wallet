@@ -3,6 +3,7 @@ import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Alert,
+  ColorValue,
   StyleProp,
   StyleSheet,
   TextInput,
@@ -33,7 +34,7 @@ export interface CurrencyValue {
 interface Props {
   firstValue: CurrencyValue
   secondValue?: CurrencyValue
-  color?: string
+  color?: ColorValue
   hide?: boolean
   error?: string
   onSwap?: () => void

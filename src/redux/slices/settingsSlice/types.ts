@@ -86,3 +86,7 @@ export interface SettingsSlice {
   pin: string | null
   bitcoin: Bitcoin | null
 }
+
+export interface LoginWithEmailAction {
+  email: string
+}

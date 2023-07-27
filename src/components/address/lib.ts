@@ -1,3 +1,4 @@
+import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import {
   isAddress,
   isValidChecksumAddress,
@@ -50,11 +51,11 @@ export const validateAddress = (address: string, chainId = 31): string => {
 }
 
 export const isMyAddress = (
-  wallet: { smartWalletAddress: string } | null,
+  wallet: RIFWallet | null,
   address: string,
 ): boolean => {
   if (wallet) {
-    const myAddress = toChecksumAddress(wallet.smartWalletAddress)
+    const myAddress = toChecksumAddress(wallet.smartWallet.address)
     return myAddress.toLowerCase() === address?.toLowerCase()
   }
 

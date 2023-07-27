@@ -3,6 +3,9 @@ import { getSupportedBiometryType } from 'react-native-keychain'
 import { Platform } from 'react-native'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { RifWalletServicesFetcher } from '@rsksmart/rif-wallet-services'
+import { ethers } from 'ethers'
+import jc from 'json-cycle'
+import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
 
 import { KeyManagementSystem } from 'lib/core'
 
@@ -19,24 +22,70 @@ import { navigationContainerRef } from 'core/Core'
 import { initializeBitcoin } from 'core/hooks/bitcoin/initializeBitcoin'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { createKeysRouteNames } from 'navigation/createKeysNavigator'
-import { AsyncThunkWithTypes } from 'store/store'
+import { AppDispatch, AsyncThunkWithTypes } from 'store/store'
 import {
   rifSockets,
   SocketsEvents,
   socketsEvents,
 } from 'src/subscriptions/rifSockets'
 import { ChainTypesByIdType } from 'shared/constants/chainConstants'
+import { magic } from 'core/CoreGlobalErrorHandler'
+import { getWalletSetting } from 'src/core/config'
+import { SETTINGS } from 'src/core/types'
 
 import {
   Bitcoin,
   ChainTypeEnum,
   CreateFirstWalletAction,
+  LoginWithEmailAction,
   OnRequestAction,
   SetKeysAction,
   SettingsSlice,
   SetWalletIsDeployedAction,
   UnlockAppAction,
 } from './types'
+import { UsdPricesState } from '../usdPricesSlice'
+
+const initializeRifSocketsSetBitcoin = (
+  chainId: ChainTypesByIdType,
+  mnemonic: string,
+  usdPrices: UsdPricesState,
+  wallet: RIFWallet,
+  dispatch: AppDispatch,
+  setGlobalError: (value: string) => void,
+) => {
+  // create fetcher
+  const fetcherInstance = new RifWalletServicesFetcher(
+    createPublicAxios(chainId),
+    {
+      defaultChainId: chainId.toString(),
+      resultsLimit: 10,
+    },
+  )
+
+  // connect to sockets
+  rifSockets({
+    wallet,
+    fetcher: fetcherInstance,
+    dispatch,
+    setGlobalError,
+    usdPrices,
+    chainId,
+  })
+
+  socketsEvents.emit(SocketsEvents.CONNECT)
+
+  // initialize bitcoin
+  const bitcoin = initializeBitcoin(
+    mnemonic,
+    dispatch,
+    fetcherInstance,
+    chainId,
+  )
+
+  // set bitcoin in redux
+  dispatch(setBitcoinState(bitcoin))
+}
 
 export const createWallet = createAsyncThunk<
   RIFWallet,
@@ -299,6 +348,103 @@ export const resetApp = createAsyncThunk(
 //   },
 // )
 
+export const loginWithEmail = createAsyncThunk<
+  void,
+  LoginWithEmailAction,
+  AsyncThunkWithTypes
+>('settings/loginWithEmail', async ({ email }, thunkAPI) => {
+  console.log('EMAIL RECEIVED', email)
+  try {
+    const result = await magic.auth.loginWithEmailOTP({ email })
+    if (!result) {
+      return thunkAPI.rejectWithValue('No HASH')
+    }
+
+    // TODO: verify key from result here
+
+    const {
+      settings: { chainId, chainType },
+      usdPrices,
+    } = thunkAPI.getState()
+
+    // const rpcUrl = getWalletSetting(SETTINGS.RPC_URL, chainType)
+
+    console.log('CHAIN ID', chainId)
+    // console.log('rpcUrl', rpcUrl)
+
+    // const m = new Magic(Config.MAGIC_KEY, {
+    //   network: {
+    //     chainId,
+    //     rpcUrl: rpcUrl,
+    //   },
+    // })
+
+    // console.log('MAGIC INSTANCE', magic)
+
+    const provider = new ethers.providers.Web3Provider(magic.rpcProvider)
+
+    // console.log('PROVIDER', provider)
+
+    const rifRelayConfig: RifRelayConfig = {
+      smartWalletFactoryAddress: getWalletSetting(
+        SETTINGS.SMART_WALLET_FACTORY_ADDRESS,
+        chainType,
+      ),
+      relayVerifierAddress: getWalletSetting(
+        SETTINGS.RELAY_VERIFIER_ADDRESS,
+        chainType,
+      ),
+      deployVerifierAddress: getWalletSetting(
+        SETTINGS.DEPLOY_VERIFIER_ADDRESS,
+        chainType,
+      ),
+      relayServer: getWalletSetting(SETTINGS.RIF_RELAY_SERVER, chainType),
+    }
+
+    // console.log('RIF RELAY CONFIG', rifRelayConfig)
+
+    const signer = provider.getSigner()
+
+    const rifWallet = await RIFWallet.create(
+      signer,
+      request => thunkAPI.dispatch(onRequest({ request })),
+      rifRelayConfig,
+    )
+
+    console.log('WALLET.ADDRESS', rifWallet.address)
+    console.log('WALLET.SMARTADDRESS', rifWallet.smartWalletAddress)
+    console.log('WALLET.SMARTWALLET', rifWallet.smartWallet.address)
+
+    // console.log('MAGIC RIF WALLET', rifWallet)
+
+    const decycledWallet: RIFWallet = jc.decycle(rifWallet)
+
+    thunkAPI.dispatch(
+      setWallet({
+        wallet: decycledWallet,
+        walletIsDeployed: {
+          isDeployed: await rifWallet.smartWalletFactory.isDeployed(),
+          loading: false,
+          txHash: '',
+        },
+      }),
+    )
+
+    thunkAPI.dispatch(setUnlocked(true))
+
+    initializeRifSocketsSetBitcoin(
+      chainId,
+      '',
+      usdPrices,
+      rifWallet,
+      thunkAPI.dispatch,
+      thunkAPI.rejectWithValue,
+    )
+  } catch (err) {
+    thunkAPI.rejectWithValue(err)
+  }
+})
+
 const initialState: SettingsSlice = {
   isFirstLaunch: true,
   isSetup: false,
@@ -361,13 +507,13 @@ const settingsSlice = createSlice({
       { payload: { wallet, walletIsDeployed } }: PayloadAction<SetKeysAction>,
     ) => {
       state.wallets = {
-        [wallet.address]: wallet,
+        [wallet.smartWallet.address]: wallet,
       }
 
       state.walletsIsDeployed = {
-        [wallet.address]: walletIsDeployed,
+        [wallet.smartWallet.address]: walletIsDeployed,
       }
-      state.selectedWallet = wallet.address
+      state.selectedWallet = wallet.smartWallet.address
     },
     setWalletIsDeployed: (
       state,
@@ -446,6 +592,15 @@ const settingsSlice = createSlice({
       state.loading = false
     })
     builder.addCase(unlockApp.fulfilled, state => {
+      state.loading = false
+    })
+    builder.addCase(loginWithEmail.pending, state => {
+      state.loading = true
+    })
+    builder.addCase(loginWithEmail.rejected, state => {
+      state.loading = false
+    })
+    builder.addCase(loginWithEmail.fulfilled, state => {
       state.loading = false
     })
     // builder.addCase(addNewWallet.pending, state => {
