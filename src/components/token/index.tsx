@@ -12,8 +12,6 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import { useCallback, useMemo } from 'react'
 import Clipboard from '@react-native-community/clipboard'
 
-import { shortAddress } from 'lib/utils'
-
 import { AppTouchable } from 'components/appTouchable'
 import { Typography } from 'components/index'
 import { TokenImage, TokenSymbol } from 'screens/home/TokenImage'
