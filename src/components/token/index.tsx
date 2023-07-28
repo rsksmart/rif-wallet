@@ -145,7 +145,7 @@ export const TokenBalance = ({
         </View>
         {contact && (
           <View style={styles.toAddressContainer}>
-            <Typography type="body1">
+            <Typography type="body2">
               {amIReceiver ? t('From') : t('To')}
             </Typography>
             <AppTouchable
