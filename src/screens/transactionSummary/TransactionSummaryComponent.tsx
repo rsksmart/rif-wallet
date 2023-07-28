@@ -238,21 +238,6 @@ export const TransactionSummaryComponent = ({
           </View>
           {/* separator */}
           <View style={styles.separator} />
-          {/* address value */}
-          <View style={[styles.summaryAlignment]}>
-            <Typography
-              type={'body2'}
-              style={[sharedStyles.textLeft, sharedStyles.flex]}>
-              {t('transaction_summary_address_text')}
-            </Typography>
-            <Typography
-              type={'h5'}
-              style={[sharedStyles.textRight, styles.contactAddress]}
-              numberOfLines={1}
-              ellipsizeMode={'middle'}>
-              {contactToUse.address}
-            </Typography>
-          </View>
           {/* transaction hash */}
           {hashId && (
             <View style={[styles.summaryAlignment]}>
@@ -264,7 +249,7 @@ export const TransactionSummaryComponent = ({
               <AppTouchable
                 width="100%"
                 onPress={openTransactionHash}
-                style={styles.contactAddress}>
+                style={styles.fullAddress}>
                 <Typography
                   type={'h5'}
                   style={[sharedStyles.textRight, styles.underline]}
@@ -337,7 +322,7 @@ const styles = StyleSheet.create({
     backgroundColor: sharedColors.white,
     opacity: 0.4,
   }),
-  contactAddress: castStyle.view({
+  fullAddress: castStyle.view({
     flex: 3,
     alignSelf: 'flex-end',
   }),

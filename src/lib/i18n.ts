@@ -42,7 +42,6 @@ const resources = {
       'Loading transactions. Please wait...':
         'Loading transactions. Please wait...',
       'Loading balances. Please wait...': 'Loading balances. Please wait...',
-      'TX Hash': 'Tx Hash',
       Gas: 'Gas',
       'Gas Price': 'Gas Price',
       Status: 'Status',
