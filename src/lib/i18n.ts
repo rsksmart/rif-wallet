@@ -298,7 +298,8 @@ const resources = {
         'There was an error with the request. Please try again later.',
       search_domain_processing_commitment:
         'Your profile commitment is being processed. Please wait.',
-      search_domain_min_error: 'Domain should be at least 5 chars long',
+      search_domain_min_error:
+        'Domains with less than 5 characters coming soon.',
       search_domain_lowercase_error: 'Only lower cases and numbers are allowed',
       pin_screen_pin_setup: 'PIN setup',
       pin_screen_change_pin: 'Change PIN',
