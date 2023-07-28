@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, StyleSheet, View } from 'react-native'
+import { Linking, ScrollView, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
@@ -10,20 +10,24 @@ import { displayRoundBalance } from 'lib/utils'
 import { TokenBalance } from 'components/token'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { AppButton, Typography } from 'components/index'
+import { AppButton, AppTouchable, Typography } from 'components/index'
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
 import { useAppSelector } from 'store/storeUtils'
 import { isMyAddress } from 'components/address/lib'
 import { DollarIcon } from 'components/icons/DollarIcon'
 import { FullScreenSpinner } from 'components/fullScreenSpinner'
 import { getContactByAddress } from 'store/slices/contactsSlice'
+import { getWalletSetting } from 'src/core/config'
+import { SETTINGS } from 'src/core/types'
+import { chainTypesById } from 'src/shared/constants/chainConstants'
+import { selectChainId } from 'src/redux/slices/settingsSlice'
 
+import { TokenImage } from '../home/TokenImage'
 import {
   TransactionStatus,
   transactionStatusDisplayText,
   transactionStatusToIconPropsMap,
 } from './transactionSummaryUtils'
-import { TokenImage } from '../home/TokenImage'
 
 import { TransactionSummaryScreenProps } from '.'
 
@@ -47,9 +51,10 @@ export const TransactionSummaryComponent = ({
   isLoaded,
   FeeComponent,
 }: TransactionSummaryComponentProps) => {
+  const chainId = useAppSelector(selectChainId)
   const { bottom } = useSafeAreaInsets()
   const { t } = useTranslation()
-  const { status, tokenValue, fee, usdValue, time } = transaction
+  const { status, tokenValue, fee, usdValue, time, hashId } = transaction
 
   const iconObject = transactionStatusToIconPropsMap.get(status)
   const transactionStatusText = transactionStatusDisplayText.get(status)
@@ -93,6 +98,15 @@ export const TransactionSummaryComponent = ({
         : (Number(usdValue.balance) + Number(fee.usdValue)).toFixed(2),
     [amIReceiver, usdValue.balance, fee.usdValue],
   )
+
+  const openTransactionHash = () => {
+    const explorerUrl = getWalletSetting(
+      SETTINGS.EXPLORER_ADDRESS_URL,
+      chainTypesById[chainId],
+    )
+
+    Linking.openURL(`${explorerUrl}/tx/${hashId}`)
+  }
 
   return (
     <View style={[styles.screen, { paddingBottom: bottom }]}>
@@ -224,21 +238,28 @@ export const TransactionSummaryComponent = ({
           </View>
           {/* separator */}
           <View style={styles.separator} />
-          {/* address value */}
-          <View style={[styles.summaryAlignment]}>
-            <Typography
-              type={'body2'}
-              style={[sharedStyles.textLeft, sharedStyles.flex]}>
-              {t('transaction_summary_address_text')}
-            </Typography>
-            <Typography
-              type={'h5'}
-              style={[sharedStyles.textRight, styles.contactAddress]}
-              numberOfLines={1}
-              ellipsizeMode={'middle'}>
-              {contactToUse.address}
-            </Typography>
-          </View>
+          {/* transaction hash */}
+          {hashId && (
+            <View style={[styles.summaryAlignment]}>
+              <Typography
+                type={'body2'}
+                style={[sharedStyles.textLeft, sharedStyles.flex]}>
+                {t('transaction_summary_transaction_hash')}
+              </Typography>
+              <AppTouchable
+                width="100%"
+                onPress={openTransactionHash}
+                style={styles.fullAddress}>
+                <Typography
+                  type={'h5'}
+                  style={[sharedStyles.textRight, styles.underline]}
+                  numberOfLines={1}
+                  ellipsizeMode={'middle'}>
+                  {hashId}
+                </Typography>
+              </AppTouchable>
+            </View>
+          )}
         </View>
       </ScrollView>
       <View style={styles.buttons}>
@@ -301,9 +322,12 @@ const styles = StyleSheet.create({
     backgroundColor: sharedColors.white,
     opacity: 0.4,
   }),
-  contactAddress: castStyle.view({
+  fullAddress: castStyle.view({
     flex: 3,
     alignSelf: 'flex-end',
+  }),
+  underline: castStyle.text({
+    textDecorationLine: 'underline',
   }),
   buttons: castStyle.view({
     justifyContent: 'space-between',

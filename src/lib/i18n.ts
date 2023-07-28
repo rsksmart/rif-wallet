@@ -42,7 +42,6 @@ const resources = {
       'Loading transactions. Please wait...':
         'Loading transactions. Please wait...',
       'Loading balances. Please wait...': 'Loading balances. Please wait...',
-      'TX Hash': 'Tx Hash',
       Gas: 'Gas',
       'Gas Price': 'Gas Price',
       Status: 'Status',
@@ -194,6 +193,7 @@ const resources = {
       transaction_summary_arrives_in_text: 'Arrives in:',
       transaction_summary_arrived_text: 'Arrived:',
       transaction_summary_address_text: 'Address',
+      transaction_summary_transaction_hash: 'TX Hash',
       transaction_summary_default_button_text: 'Close',
       transaction_summary_congrats: 'Congratulations!',
       transaction_summary_you_sent: 'You have sent',

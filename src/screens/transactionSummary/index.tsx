@@ -18,6 +18,7 @@ import { TransactionStatus } from './transactionSummaryUtils'
 
 export interface TransactionSummaryScreenProps {
   transaction: {
+    hashId?: string
     tokenValue: CurrencyValue
     usdValue: CurrencyValue
     fee: TokenFeeValueObject
