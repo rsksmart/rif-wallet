@@ -40,7 +40,7 @@ import { selectWalletState } from 'store/slices/settingsSlice'
 import { DomainInput } from './DomainInput'
 import { rnsManagerStyles } from './rnsManagerStyles'
 
-export const minDomainLength = 3
+export const minDomainLength = 5
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain>
 

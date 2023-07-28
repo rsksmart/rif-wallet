@@ -1,7 +1,7 @@
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import debounce from 'lodash.debounce'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text } from 'react-native'
 import { FieldError } from 'react-hook-form'
@@ -51,10 +51,13 @@ export const DomainInput = ({
   onResetValue,
   error,
 }: Props) => {
+  const [username, setUsername] = useState<string>('')
   const [domainAvailability, setDomainAvailability] = useState<DomainStatus>(
     DomainStatus.NONE,
   )
   const { t } = useTranslation()
+  const errorType = error?.type
+  const errorMessage = error?.message
 
   const rskRegistrar = useMemo(
     () =>
@@ -67,7 +70,7 @@ export const DomainInput = ({
     [wallet],
   )
   const searchDomain = useCallback(
-    async (domain: string, errorType?: string, errorMessage?: string) => {
+    async (domain: string) => {
       if (errorType === 'matches' && errorMessage) {
         setDomainAvailability(DomainStatus.NO_VALID)
         onDomainAvailable(domain, false)
@@ -94,28 +97,31 @@ export const DomainInput = ({
         }
       }
     },
-    [rskRegistrar, wallet, onDomainAvailable, onDomainOwned],
+    [
+      errorType,
+      errorMessage,
+      onDomainAvailable,
+      rskRegistrar,
+      wallet.smartWallet.smartWalletAddress,
+      onDomainOwned,
+    ],
   )
 
   const onChangeText = useCallback(
-    async (inputText: string, errorType?: string, errorMessage?: string) => {
+    async (inputText: string) => {
       onDomainAvailable(inputText, false)
       onDomainOwned(false)
       setDomainAvailability(DomainStatus.NONE)
       if (inputText.length >= minDomainLength) {
-        if (!inputText) {
-          return
-        } else {
-          const newValidationMessage = validateAddress(inputText + '.rsk', -1)
-          if (newValidationMessage === AddressValidationMessage.DOMAIN) {
-            try {
-              await searchDomain(inputText, errorType, errorMessage)
-            } catch (err) {
-              console.log('SEARCH DOMAIN ERR', err)
-            }
-          } else {
-            setDomainAvailability(DomainStatus.NONE)
+        const newValidationMessage = validateAddress(inputText + '.rsk', -1)
+        if (newValidationMessage === AddressValidationMessage.DOMAIN) {
+          try {
+            await searchDomain(inputText)
+          } catch (err) {
+            console.log('SEARCH DOMAIN ERR', err)
           }
+        } else {
+          setDomainAvailability(DomainStatus.NONE)
         }
       }
     },
@@ -123,32 +129,29 @@ export const DomainInput = ({
   )
 
   const handleChangeUsername = useMemo(
-    () =>
-      debounce(
-        (text: string) => onChangeText(text, error?.type, error?.message),
-        500,
-      ),
-    [onChangeText, error],
+    () => debounce(onChangeText, 500),
+    [onChangeText],
   )
 
-  const resetField = useCallback(() => {
+  const resetField = () => {
     onResetValue()
     setDomainAvailability(DomainStatus.NONE)
     onDomainAvailable('', false)
     onDomainOwned(false)
-  }, [onResetValue, onDomainAvailable, onDomainOwned])
+    setUsername('')
+  }
 
-  const labelTextMap = useMemo(
-    () =>
-      new Map([
-        [DomainStatus.AVAILABLE, t('username_available')],
-        [DomainStatus.TAKEN, t('username_unavailable')],
-        [DomainStatus.OWNED, t('username_owned')],
-        [DomainStatus.NO_VALID, t('username')],
-        [DomainStatus.NONE, t('username')],
-      ]),
-    [t],
-  )
+  useEffect(() => {
+    handleChangeUsername(username)
+  }, [error, username, handleChangeUsername])
+
+  const labelTextMap = new Map([
+    [DomainStatus.AVAILABLE, t('username_available')],
+    [DomainStatus.TAKEN, t('username_unavailable')],
+    [DomainStatus.OWNED, t('username_owned')],
+    [DomainStatus.NO_VALID, t('username')],
+    [DomainStatus.NONE, t('username')],
+  ])
 
   const labelStyle = castStyle.text({
     color: labelColorMap.get(domainAvailability),
@@ -165,7 +168,7 @@ export const DomainInput = ({
         labelStyle={labelStyle}
         placeholderStyle={styles.domainPlaceholder}
         resetValue={resetField}
-        onChangeText={handleChangeUsername}
+        onChangeText={setUsername}
         suffix={<Text style={styles.domainSuffix}>.rsk</Text>}
         autoCapitalize="none"
         autoCorrect={false}
