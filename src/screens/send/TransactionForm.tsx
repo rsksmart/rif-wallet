@@ -307,6 +307,7 @@ export const TransactionForm = ({
             firstValue={firstBalance}
             secondValue={secondBalance}
             color={sharedColors.black}
+            error={hasEnoughBalance ? t('transaction_form_error_balance') : ''}
             onSwap={onSwapBalance}
             editable
             handleAmountChange={value =>

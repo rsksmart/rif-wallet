@@ -1,3 +1,5 @@
+import Clipboard from '@react-native-community/clipboard'
+import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Alert,
@@ -8,21 +10,19 @@ import {
   ViewStyle,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { useCallback, useMemo } from 'react'
-import Clipboard from '@react-native-community/clipboard'
 
 import { shortAddress } from 'lib/utils'
 
 import { AppTouchable } from 'components/appTouchable'
 import { Typography } from 'components/index'
+import { ContactCard } from 'screens/contacts/components'
 import { TokenImage, TokenSymbol } from 'screens/home/TokenImage'
 import { noop, sharedColors, sharedStyles, testIDs } from 'shared/constants'
 import { ContactWithAddressRequired } from 'shared/types'
 import { castStyle } from 'shared/utils'
-import { ContactCard } from 'screens/contacts/components'
 
-import { EyeIcon } from '../icons/EyeIcon'
 import { DollarIcon } from '../icons/DollarIcon'
+import { EyeIcon } from '../icons/EyeIcon'
 
 export interface CurrencyValue {
   symbol: TokenSymbol | string
@@ -35,6 +35,7 @@ interface Props {
   secondValue?: CurrencyValue
   color?: string
   hide?: boolean
+  error?: string
   onSwap?: () => void
   onHide?: () => void
   editable?: boolean
@@ -51,6 +52,7 @@ export const TokenBalance = ({
   color = sharedColors.black,
   hide = false,
   editable = false,
+  error,
   onSwap,
   hideable = false,
   onHide = noop,
@@ -130,7 +132,7 @@ export const TokenBalance = ({
           {secondValue?.symbolType === 'usd' && (
             <>
               {secondValue.symbol === '<' && (
-                <Typography type={'body1'} style={styles.subTitle}>
+                <Typography type="body1" style={styles.subTitle}>
                   {'<'}
                 </Typography>
               )}
@@ -138,10 +140,15 @@ export const TokenBalance = ({
             </>
           )}
           {!isNaN(Number(secondValue?.balance)) && (
-            <Typography type={'body1'} style={styles.subTitle}>
+            <Typography type="body1" style={styles.subTitle}>
               {hide
                 ? '\u002A\u002A\u002A\u002A\u002A\u002A'
                 : secondValue?.balance}
+            </Typography>
+          )}
+          {error && (
+            <Typography type="body2" style={styles.error}>
+              {error}
             </Typography>
           )}
         </View>
@@ -231,6 +238,10 @@ const styles = StyleSheet.create({
   subTitle: castStyle.text({
     color: sharedColors.subTitle,
     opacity: 0.7,
+  }),
+  error: castStyle.text({
+    color: sharedColors.dangerLight,
+    marginLeft: 4,
   }),
   badge: castStyle.view({
     padding: 8,
