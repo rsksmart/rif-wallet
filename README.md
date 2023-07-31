@@ -56,10 +56,10 @@ To run with mainnet change the environment variable `DEFAULT_CHAIN_TYPE` to MAIN
 
 ## Build APK for Android:
 
+The build step for Android includes a clean. When prompted, say 'Yes' to anything related to Android and 'No' to iOS and system updates.
+
 ```
-cd android
-./gradlew clean
-./gradlew app:assembleRelease
+yarn android:build
 ```
 
 ## Folder Structure
