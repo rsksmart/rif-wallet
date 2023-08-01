@@ -12,6 +12,10 @@ import { castStyle } from 'shared/utils'
 import { AppButton, AppTouchable, Typography } from 'components/index'
 import { Checkbox } from 'components/checkbox'
 
+enum TestID {
+  IAgreeCheckbox = 'Checkbox.IAgreeCheckbox',
+  ContinueButton = 'Button.ContinueButton',
+}
 export const SecurityInformation = ({
   navigation,
   route: { params },
@@ -55,7 +59,10 @@ export const SecurityInformation = ({
       </View>
       <View style={[styles.checkboxBtnWrapper, { bottom: insets.bottom }]}>
         <View style={styles.agreementView}>
-          <AppTouchable width={18} onPress={onToggleCheckbox}>
+          <AppTouchable
+            width={18}
+            onPress={onToggleCheckbox}
+            accessibilityLabel={TestID.IAgreeCheckbox}>
             <Checkbox isEnabled={isCheckboxActive} size={18} />
           </AppTouchable>
           <Typography type={'body2'} style={styles.agreeText}>
@@ -69,6 +76,7 @@ export const SecurityInformation = ({
           disabled={!isCheckboxActive}
           color={sharedColors.white}
           textColor={sharedColors.black}
+          accessibilityLabel={TestID.ContinueButton}
         />
       </View>
     </View>
