@@ -139,6 +139,7 @@ export const TransactionForm = ({
   // watch change in form values
   const amount = watch('amount')
   const to = watch('to')
+  const hasEnoughBalance = Number(selectedToken.balance) < amount
 
   const [firstBalance, setFirstBalance] = useState<CurrencyValue>({
     balance: '',
@@ -306,6 +307,7 @@ export const TransactionForm = ({
             firstValue={firstBalance}
             secondValue={secondBalance}
             color={sharedColors.black}
+            error={hasEnoughBalance ? t('transaction_form_error_balance') : ''}
             onSwap={onSwapBalance}
             editable
             handleAmountChange={value =>
@@ -402,7 +404,8 @@ export const TransactionForm = ({
             !isWalletDeployed ||
             Number(selectedToken.balance) <= 0 ||
             to.address.length === 0 ||
-            amount === 0
+            amount === 0 ||
+            hasEnoughBalance
           }
           color={sharedColors.white}
           textColor={sharedColors.black}
