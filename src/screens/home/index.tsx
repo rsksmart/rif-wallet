@@ -53,10 +53,6 @@ export const HomeScreen = ({
   const { wallet, chainType } = useAppSelector(selectWalletState)
   const tokenBalances = useAppSelector(selectBalances)
   const transactions = useAppSelector(selectTransactions)
-  const balancesArray = useMemo(
-    () => Object.values(tokenBalances),
-    [tokenBalances],
-  )
   const totalUsdBalance = useAppSelector(selectTotalUsdValue)
   const prices = useAppSelector(selectUsdPrices)
   const hideBalance = useAppSelector(selectHideBalance)
@@ -74,6 +70,8 @@ export const HomeScreen = ({
       symbolType: 'usd',
     })
   const [showInfoBar, setShowInfoBar] = useState<boolean>(true)
+
+  const balancesArray = Object.values(tokenBalances)
 
   // token or undefined
   const selected = selectedAddress ? tokenBalances[selectedAddress] : undefined

@@ -98,7 +98,7 @@ export const createWallet = createAsyncThunk<
       },
     )
 
-    const { usdPrices } = thunkAPI.getState()
+    const { usdPrices, balances } = thunkAPI.getState()
 
     // connect to sockets
     rifSockets({
@@ -108,6 +108,7 @@ export const createWallet = createAsyncThunk<
       setGlobalError: thunkAPI.rejectWithValue,
       usdPrices,
       chainId,
+      balances: balances.tokenBalances,
     })
 
     socketsEvents.emit(SocketsEvents.CONNECT)
@@ -216,7 +217,7 @@ export const unlockApp = createAsyncThunk<
       },
     )
 
-    const { usdPrices } = thunkAPI.getState()
+    const { usdPrices, balances } = thunkAPI.getState()
 
     // connect to sockets
     rifSockets({
@@ -226,6 +227,7 @@ export const unlockApp = createAsyncThunk<
       setGlobalError: thunkAPI.rejectWithValue,
       usdPrices,
       chainId,
+      balances: balances.tokenBalances,
     })
 
     socketsEvents.emit(SocketsEvents.CONNECT)
