@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import Clipboard from '@react-native-community/clipboard'
 import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -149,26 +150,30 @@ export const TokenBalance = ({
           )}
         </View>
         {contact && (
-          <View style={styles.toAddressContainer}>
-            <Typography type="body2">
+          <View
+            style={{
+              marginTop: toNameOrAddress.address ? 6 : 12,
+              flexDirection: toNameOrAddress.address ? 'column' : 'row',
+            }}>
+            <Typography type="body1" style={{}}>
               {amIReceiver ? t('From') : t('To')}
             </Typography>
             <AppTouchable
-              width={'100%'}
+              width="100%"
               onPress={onCopyAddress}
               style={styles.addressCopier}>
               {toNameOrAddress.name ? (
                 <Typography
                   type="body1"
-                  style={{ color: sharedColors.primary }}>
+                  style={{ color: sharedColors.primary, marginLeft: 4 }}>
                   {toNameOrAddress.name}
                 </Typography>
               ) : (
                 <Typography
-                  type="body3"
+                  type="body2"
                   numberOfLines={1}
                   adjustsFontSizeToFit
-                  style={styles.fullAddress}>
+                  style={{ color: sharedColors.primary }}>
                   {toNameOrAddress.address}
                 </Typography>
               )}
@@ -259,21 +264,11 @@ const styles = StyleSheet.create({
     padding: 0,
     paddingLeft: 6,
   }),
-  toAddressContainer: castStyle.view({
-    flexDirection: 'row',
-    marginTop: 12,
-  }),
   textSymbol: castStyle.text({
     color: sharedColors.white,
     paddingTop: 3,
   }),
   addressCopier: castStyle.view({
     alignItems: 'flex-start',
-    marginLeft: 4,
-  }),
-  fullAddress: castStyle.text({
-    color: sharedColors.primary,
-    marginTop: 3,
-    marginRight: 30,
   }),
 })
