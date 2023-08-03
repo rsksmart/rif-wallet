@@ -84,6 +84,7 @@ interface InitialPinSettings {
 
 enum TestID {
   OpenKeyboardButton = 'Button.OpenKeyboard',
+  PINDot = 'PINDot',
 }
 
 const getInitialPinSettings = (
@@ -397,6 +398,7 @@ export const PinScreen = ({ navigation, route }: Props) => {
                     n && Number(n) >= 0 ? styles.dotActive : styles.dotInactive,
                     styles.dot,
                   ]}
+                  accessibilityLabel={`${index}.${TestID.PINDot}`}
                 />
               ))}
               <TextInput
