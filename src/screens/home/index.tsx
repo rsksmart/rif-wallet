@@ -187,7 +187,7 @@ export const HomeScreen = ({
       setSelectedTokenBalanceUsd({
         symbolType: 'usd',
         symbol,
-        balance: usdBalance.toString(),
+        balance: usdBalance.toFixed(2),
       })
     }
   }, [selectedToken])

@@ -31,7 +31,8 @@ export const getTokenAddress = (symbol: string, chainType: ChainTypeEnum) => {
     chainType === ChainTypeEnum.TESTNET ? testnetContracts : mainnetContracts
 
   const result = Object.keys(contracts).find(
-    (address: string) => contracts[address].symbol === symbol,
+    (address: string) =>
+      contracts[address].symbol.toUpperCase() === symbol.toUpperCase(),
   )
 
   if (!result) {
