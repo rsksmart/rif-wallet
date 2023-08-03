@@ -13,7 +13,6 @@ import { Google, SocialSvgProps } from 'components/icons/Google'
 import { Facebook } from 'components/icons/Facebook'
 import { Apple } from 'components/icons/Apple'
 import { loginWithEmail } from 'store/slices/settingsSlice'
-
 interface FormValues {
   email: string
 }
@@ -58,8 +57,11 @@ export const LoginWithEmail = () => {
 
   const onSubmit = useCallback(
     async ({ email }: FormValues) => {
-      console.log('VALUE', email)
-      dispatch(loginWithEmail({ email }))
+      try {
+        dispatch(loginWithEmail({ email }))
+      } catch (err) {
+        console.log('ERROR LOGGING IN WITH MAGIC', err)
+      }
     },
     [dispatch],
   )

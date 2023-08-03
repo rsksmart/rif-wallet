@@ -1672,29 +1672,29 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@magic-sdk/commons@^14.5.0":
-  version "14.5.0"
-  resolved "https://registry.yarnpkg.com/@magic-sdk/commons/-/commons-14.5.0.tgz#9822a50ed1d4592acf71c24eaf3440d412545315"
-  integrity sha512-KsHOuyfWyhn2qwcVq7ZfPGUpi+hqsLt5D9hrLiJto2SRAOTOkVQ5a0lOI6wOy/HY1VNLyC0n1CWq8zVCxav2xQ==
+"@magic-sdk/commons@^15.0.0":
+  version "15.0.0"
+  resolved "https://registry.yarnpkg.com/@magic-sdk/commons/-/commons-15.0.0.tgz#7ac0113046ce9be5d207f141000260cab08814f8"
+  integrity sha512-67GeWjWUhafQBZQuOo+cWVssa+8zlii1k/GDDIK2zVn3dqqeVi5WRq2jq3W4E5KciBgh2/0NipC+W3nGyDg5+g==
 
-"@magic-sdk/provider@^18.5.0":
-  version "18.5.0"
-  resolved "https://registry.yarnpkg.com/@magic-sdk/provider/-/provider-18.5.0.tgz#1dbb5cc70683388ce998dd8647ffcee2ac58dfdc"
-  integrity sha512-n/zmi0xY67xwOfPxhaN1O70khFp5biGo2j1zSQzMSCUJBZ4oiEs5fTgUgpoLJZhOPsMM0Hha793cFGQoJ63VZw==
+"@magic-sdk/provider@^19.0.0":
+  version "19.0.0"
+  resolved "https://registry.yarnpkg.com/@magic-sdk/provider/-/provider-19.0.0.tgz#df6a983fb0c7e9ec3f2faf5e0ed2af84f79f2ec0"
+  integrity sha512-8FEsw24el9kBzEVb1hAvO4IjZHHMkbhGvUKrh7vUWVK6Rl06gsObaWt9C+lhyqKYXPPlIUIFYpq9qbg5hXOeIw==
   dependencies:
-    "@magic-sdk/types" "^15.7.0"
+    "@magic-sdk/types" "^16.0.0"
     eventemitter3 "^4.0.4"
     web3-core "1.5.2"
 
-"@magic-sdk/react-native-bare@^19.5.0":
-  version "19.5.0"
-  resolved "https://registry.yarnpkg.com/@magic-sdk/react-native-bare/-/react-native-bare-19.5.0.tgz#c631d9c997cbb1edf08158150e63068b00fed190"
-  integrity sha512-gsi3zrZdsdot3NYBXQcVmoGA+C+SDFTbS1c1pb6l0UAQCh3J2NfXtG9iafrrzP+jvxP6lYsISE8ZhhAAZaylHQ==
+"@magic-sdk/react-native-bare@^20.0.0":
+  version "20.0.0"
+  resolved "https://registry.yarnpkg.com/@magic-sdk/react-native-bare/-/react-native-bare-20.0.0.tgz#e21526b3f83164633281247b44d37d0f06c23291"
+  integrity sha512-dby6ZG+m7km3tmYjmpjGN9vHo24pNBbM39M+W8d6Id5NI0ZGL0vHa+bnq4Smb6ufzqYOVEpqgVxRVMn3q7IwBw==
   dependencies:
     "@aveq-research/localforage-asyncstorage-driver" "^3.0.1"
-    "@magic-sdk/commons" "^14.5.0"
-    "@magic-sdk/provider" "^18.5.0"
-    "@magic-sdk/types" "^15.7.0"
+    "@magic-sdk/commons" "^15.0.0"
+    "@magic-sdk/provider" "^19.0.0"
+    "@magic-sdk/types" "^16.0.0"
     "@react-native-async-storage/async-storage" "^1.15.5"
     "@types/lodash" "^4.14.158"
     buffer "~5.6.0"
@@ -1706,10 +1706,10 @@
     tslib "^2.0.3"
     whatwg-url "~8.1.0"
 
-"@magic-sdk/types@^15.7.0":
-  version "15.7.0"
-  resolved "https://registry.yarnpkg.com/@magic-sdk/types/-/types-15.7.0.tgz#8550412edbe34d534306711417736bc106544030"
-  integrity sha512-t5i0fkyZWSsWzZlGkHJ2XenfzNFzI/AVVrx67gARz2j+ehsjQx6ey5Z+5kpERulRIgK6cyVgYczy0OfQCqNqYg==
+"@magic-sdk/types@^16.0.0":
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/@magic-sdk/types/-/types-16.0.0.tgz#5c01c210cdb86938ec974a0e2870fa90d914b43b"
+  integrity sha512-9hOK1wyvHjr2sUVH5Iv+7wjjiu3j3wFrLW1H2DGXdsHYNjz2Nzc/fstOe4q2Mo0WpEmrXREYdc+j7fIPNKl50A==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -1749,7 +1749,7 @@
   resolved "https://registry.yarnpkg.com/@ramp-network/react-native-sdk/-/react-native-sdk-1.0.2.tgz#a2d8279b924c6695819968e31a653a91b8511421"
   integrity sha512-5/opXsTRHxEsQSNa/CzVv8EJMYhmUt/4LgSjjFbs7uTQHzHyy9aEo3w+ikSW3fbYx5lTJEHaN+sCspwudmKX8g==
 
-"@react-native-async-storage/async-storage@^1.15.5":
+"@react-native-async-storage/async-storage@^1.15.5", "@react-native-async-storage/async-storage@^1.19.1":
   version "1.19.1"
   resolved "https://registry.yarnpkg.com/@react-native-async-storage/async-storage/-/async-storage-1.19.1.tgz#09d35caaa31823b40fdfeebf95decf8f992a6274"
   integrity sha512-5QXuGCtB+HL3VtKL2JN3+6t4qh8VXizK+aGDAv6Dqiq3MLrzgZHb4tjVgtEWMd8CcDtD/JqaAI1b6/EaYGtFIA==
@@ -2055,7 +2055,16 @@
     lodash "^4.17.15"
     randombytes "^2.1.0"
 
-"@rsksmart/rif-relay-light-sdk@*", "@rsksmart/rif-relay-light-sdk@^1.0.3":
+"@rsksmart/rif-relay-light-sdk@*":
+  version "1.0.4"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-relay-light-sdk/1.0.4/8f2d79a1e142c766b1454b9bd7d7f721bc8d9d41#8f2d79a1e142c766b1454b9bd7d7f721bc8d9d41"
+  integrity sha512-douGZkIkpZzJT//TkVt49qHmm4MwBKK4mortyy4Q8Z0Zn8IlnCfJZB8NeVPq7X9dQ3mmmRsyqcqGtLFODTNTQw==
+  dependencies:
+    "@ethersproject/abstract-provider" "^5.7.0"
+    axios "^1.2.3"
+    ethers "^5.7.2"
+
+"@rsksmart/rif-relay-light-sdk@^1.0.3":
   version "1.0.3"
   resolved "https://npm.pkg.github.com/download/@rsksmart/rif-relay-light-sdk/1.0.3/2dfc039b136c83259f5337886df2187e424b7e09#2dfc039b136c83259f5337886df2187e424b7e09"
   integrity sha512-qUxgnN0h1hS6k2qqtSjJMU6oZo5AiLDFDe4mw/E+nNKeWqs7bWCCHou72XBqRKrFDTG/ZuGeVZeu1s5sM7ibhg==
@@ -2129,10 +2138,21 @@
     bitcoin-address-validation "^2.2.1"
     bitcoinjs-lib "^6.0.2"
 
-"@rsksmart/rif-wallet-core@*", "@rsksmart/rif-wallet-core@^1.0.2":
+"@rsksmart/rif-wallet-core@*":
   version "1.0.2"
   resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-core/1.0.2/dc810acfc6f014cd59fdb3c4339f0d69ebf16954#dc810acfc6f014cd59fdb3c4339f0d69ebf16954"
   integrity sha512-xIsDFZmTITLLv78aLaXNa+69pZE2vW4SUEGTs0ux6iwWj9OO+N3uaUcdmG0bug1pqXaPYK04S+3+SviEl5dT4Q==
+  dependencies:
+    "@ethersproject/abstract-provider" "^5.7.0"
+    "@ethersproject/abstract-signer" "^5.7.0"
+    "@ethersproject/bignumber" "^5.7.0"
+    "@ethersproject/bytes" "^5.7.0"
+    "@rsksmart/rif-relay-light-sdk" "*"
+
+"@rsksmart/rif-wallet-core@^1.0.2":
+  version "1.0.3"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-core/1.0.3/b8d1ef131fdf422dea94c1ed9a7783ac117e7f5d#b8d1ef131fdf422dea94c1ed9a7783ac117e7f5d"
+  integrity sha512-N4odQ0+uwb+O/bIJOsTKNf1Lk1wDKbiy8Wd7Wcr2KIJr7hNbWfA6Nj42C2YYAQUjKC1p0dgRrM/o7aka0WcE+A==
   dependencies:
     "@ethersproject/abstract-provider" "^5.7.0"
     "@ethersproject/abstract-signer" "^5.7.0"
@@ -2450,9 +2470,9 @@
   integrity sha512-zmEmF5OIM3rb7SbLCFYoQhO4dGt2FRM9AMkxvA3LaADOF1n8in/zGJlWji9fmafLoNyz+FoL6FE0SLtGIArD7w==
 
 "@types/lodash@^4.14.158":
-  version "4.14.195"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.195.tgz#bafc975b252eb6cea78882ce8a7b6bf22a6de632"
-  integrity sha512-Hwx9EUgdwf2GLarOjQp5ZH8ZmblzcbTBC2wtQWNKARBSxM9ezRIAUpeDTgoQRAFB0+8CNWXVA9+MaSOzOF3nPg==
+  version "4.14.196"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.196.tgz#a7c3d6fc52d8d71328b764e28e080b4169ec7a95"
+  integrity sha512-22y3o88f4a94mKljsZcanlNWPzO0uBsBdzLAngf2tp533LzZcQzb6+eZPJ+vCTt+bqF2XnvT9gejTLsAcJAJyQ==
 
 "@types/mocha@^10.0.0":
   version "10.0.0"
@@ -3183,9 +3203,9 @@ axios@^0.27.2:
     form-data "^4.0.0"
 
 axios@^1.2.3:
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-1.3.2.tgz#7ac517f0fa3ec46e0e636223fd973713a09c72b3"
-  integrity sha512-1M3O703bYqYuPhbHeya5bnhpYVsDDRyQSabNja04mZtboLNSuZ4YrltestrLXfHgmzua4TpUqRiVKbiQuo2epw==
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.4.0.tgz#38a7bf1224cd308de271146038b551d725f0be1f"
+  integrity sha512-S4XCWMEmzvo64T9GfvQDOXgYRDJ/wsSZc7Jvdgx5u1sd0JwsuPLqb3SYmusag+edF6ziyMensPVqLTSc1PiSEA==
   dependencies:
     follow-redirects "^1.15.0"
     form-data "^4.0.0"
@@ -7043,6 +7063,11 @@ jsesc@~0.5.0:
   resolved "https://registry.yarnpkg.com/jsesc/-/jsesc-0.5.0.tgz#e7dee66e35d6fc16f710fe91d5cf69f70f08911d"
   integrity sha512-uZz5UnB7u4T9LvwmFqXii7pZSouaRPorGs5who1Ip7VO0wxanFvBL7GkM6dTHlgX+jhBApRetaWpnDabOeTcnA==
 
+json-cycle@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/json-cycle/-/json-cycle-1.5.0.tgz#b1f1d976eee16cef51d5f3d3b3caece3e90ba23a"
+  integrity sha512-GOehvd5PO2FeZ5T4c+RxobeT5a1PiGpF4u9/3+UvrMU4bhnVqzJY7hm39wg8PDCqkU91fWGH8qjWR4bn+wgq9w==
+
 json-parse-better-errors@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/json-parse-better-errors/-/json-parse-better-errors-1.0.2.tgz#bb867cfb3450e69107c131d1c514bab3dc8bcaa9"
@@ -8784,12 +8809,7 @@ react-native-crypto@^2.1.0:
     public-encrypt "^4.0.0"
     randomfill "^1.0.3"
 
-react-native-device-info@^10.3.0:
-  version "10.3.0"
-  resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-10.3.0.tgz#6bab64d84d3415dd00cc446c73ec5e2e61fddbe7"
-  integrity sha512-/ziZN1sA1REbJTv5mQZ4tXggcTvSbct+u5kCaze8BmN//lbxcTvWsU6NQd4IihLt89VkbX+14IGc9sVApSxd/w==
-
-react-native-device-info@^10.8.0:
+react-native-device-info@^10.3.0, react-native-device-info@^10.8.0:
   version "10.8.0"
   resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-10.8.0.tgz#c331c94d65542f86bac197f223ee064c7e10a9ec"
   integrity sha512-DE4/X82ZVhdcnR1Y21iTP46WSSJA/rHK3lmeqWfGGq1RKLwXTIdxmfbZZnYwryqJ+esrw2l4ND19qlgxDGby8A==

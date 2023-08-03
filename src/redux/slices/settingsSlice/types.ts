@@ -37,6 +37,8 @@ export type UnlockAppAction = {
 export interface SetKeysAction {
   wallet: RIFWallet
   walletIsDeployed: WalletIsDeployed
+  eoaAddress?: string
+  smartWalletAddress?: string
 }
 
 export interface OnRequestAction {

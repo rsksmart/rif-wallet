@@ -5,7 +5,7 @@ declare module 'react-native-config' {
     DEFAULT_CHAIN_TYPE: string
     RIF_WALLET_KEY: string
     MAGIC_KEY: string
-    MAGIC_ENABLED: boolean
+    MAGIC_ENABLED: string
   }
 
   export const Config: Env

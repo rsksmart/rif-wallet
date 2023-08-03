@@ -8,7 +8,11 @@ import { useTranslation } from 'react-i18next'
 import { CreateKeysNavigation } from 'navigation/createKeysNavigator'
 import { ConfirmationModal } from 'components/modal'
 import { useAppSelector } from 'store/storeUtils'
-import { selectFullscreen, selectIsUnlocked } from 'store/slices/settingsSlice'
+import {
+  selectFullscreen,
+  selectIsUnlocked,
+  selectSettingsIsLoading,
+} from 'store/slices/settingsSlice'
 import { TransactionSummaryScreen } from 'screens/transactionSummary'
 import { AppFooterMenu } from 'src/ux/appFooter'
 import { sharedStyles } from 'shared/constants'
@@ -19,6 +23,7 @@ import {
   PinScreen,
 } from 'screens/index'
 import { OfflineScreen } from 'core/components/OfflineScreen'
+import { LoadingScreen } from 'components/loading/LoadingScreen'
 
 import { RootTabsParamsList, rootTabsRouteNames } from './types'
 import { HomeNavigator } from '../homeNavigator'
@@ -38,6 +43,8 @@ export const RootNavigationComponent = () => {
   const { top } = useSafeAreaInsets()
   const isDeviceRooted = JailMonkey.isJailBroken()
   const [isWarningVisible, setIsWarningVisible] = useState(isDeviceRooted)
+
+  // const isLoading = useAppSelector(selectSettingsIsLoading)
   const unlocked = useAppSelector(selectIsUnlocked)
   const fullscreen = useAppSelector(selectFullscreen)
 
@@ -59,7 +66,8 @@ export const RootNavigationComponent = () => {
               component={PinScreen}
               options={screenOptionsWithHeader(
                 top,
-                t('pin_screen_header_title'),
+                '',
+                // t('pin_screen_header_title'),
                 undefined,
                 undefined,
                 true,
@@ -128,6 +136,7 @@ export const RootNavigationComponent = () => {
         okText={t('ok')}
         onOk={() => setIsWarningVisible(false)}
       />
+      {/* {isLoading && <LoadingScreen />} */}
     </View>
   )
 }

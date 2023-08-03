@@ -22,7 +22,9 @@ const getButtons = (
   navigation: Props['navigation'],
   t: ReturnType<typeof useTranslation>['t'],
 ) => {
-  if (Config.MAGIC_ENABLED) {
+  const isMagicEnabled = Config.MAGIC_ENABLED === 'true'
+
+  if (isMagicEnabled) {
     return (
       <AppButton
         onPress={() =>

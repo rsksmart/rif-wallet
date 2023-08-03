@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { StatusBar, View } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import {
@@ -13,13 +13,11 @@ import {
   RootTabsParamsList,
 } from 'navigation/rootNavigator'
 import { RequestHandler } from 'src/ux/requestsModal/RequestHandler'
-import { LoadingScreen } from 'components/loading/LoadingScreen'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import {
   closeRequest,
   selectRequests,
   selectTopColor,
-  selectWholeSettingsState,
   unlockApp,
 } from 'store/slices/settingsSlice'
 import { sharedStyles } from 'shared/constants'
@@ -32,18 +30,18 @@ export const navigationContainerRef =
   createNavigationContainerRef<RootTabsParamsList>()
 
 export const Core = () => {
+  const [i18nextInitialized, seti18nextInitialized] = useState(false)
   const dispatch = useAppDispatch()
-
-  const settings = useAppSelector(selectWholeSettingsState)
   const requests = useAppSelector(selectRequests)
   const topColor = useAppSelector(selectTopColor)
   const isOffline = useIsOffline()
 
-  const { unlocked, active } = useStateSubscription()
+  const { active } = useStateSubscription()
 
   useEffect(() => {
     const fn = async () => {
       await i18nInit()
+      seti18nextInitialized(true)
     }
     fn()
   }, [])
@@ -60,27 +58,26 @@ export const Core = () => {
     unlockAppSetMnemonic()
   }, [unlockAppSetMnemonic])
 
-  return (
-    <SafeAreaProvider>
-      <View style={sharedStyles.flex}>
-        <StatusBar backgroundColor={topColor} />
-        {!active && <Cover />}
-        <NavigationContainer ref={navigationContainerRef}>
-          {settings.loading && !unlocked ? (
-            <LoadingScreen />
-          ) : (
-            <>
-              <RootNavigationComponent />
-              {requests.length !== 0 && (
-                <RequestHandler
-                  request={requests[0]}
-                  closeRequest={() => dispatch(closeRequest())}
-                />
-              )}
-            </>
+  //TODO: show Splash Screen until translation
+  // is initialized
+
+  return !i18nextInitialized ? (
+    <View />
+  ) : (
+    <SafeAreaProvider style={sharedStyles.flex}>
+      <StatusBar backgroundColor={topColor} />
+      {!active && <Cover />}
+      <NavigationContainer ref={navigationContainerRef}>
+        <>
+          <RootNavigationComponent />
+          {requests.length !== 0 && (
+            <RequestHandler
+              request={requests[0]}
+              closeRequest={() => dispatch(closeRequest())}
+            />
           )}
-        </NavigationContainer>
-      </View>
+        </>
+      </NavigationContainer>
     </SafeAreaProvider>
   )
 }

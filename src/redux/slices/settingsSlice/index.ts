@@ -3,9 +3,10 @@ import { getSupportedBiometryType } from 'react-native-keychain'
 import { Platform } from 'react-native'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { RifWalletServicesFetcher } from '@rsksmart/rif-wallet-services'
-import { ethers } from 'ethers'
+import { providers } from 'ethers'
 import jc from 'json-cycle'
 import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
+import { toChecksumAddress } from '@rsksmart/rsk-utils'
 
 import { KeyManagementSystem } from 'lib/core'
 
@@ -28,7 +29,10 @@ import {
   SocketsEvents,
   socketsEvents,
 } from 'src/subscriptions/rifSockets'
-import { ChainTypesByIdType } from 'shared/constants/chainConstants'
+import {
+  chainTypesById,
+  ChainTypesByIdType,
+} from 'shared/constants/chainConstants'
 import { magic } from 'core/CoreGlobalErrorHandler'
 import { getWalletSetting } from 'src/core/config'
 import { SETTINGS } from 'src/core/types'
@@ -355,9 +359,15 @@ export const loginWithEmail = createAsyncThunk<
 >('settings/loginWithEmail', async ({ email }, thunkAPI) => {
   console.log('EMAIL RECEIVED', email)
   try {
-    const result = await magic.auth.loginWithEmailOTP({ email })
-    if (!result) {
-      return thunkAPI.rejectWithValue('No HASH')
+    const isLoggedIn = await magic.user.isLoggedIn()
+    if (!isLoggedIn) {
+      const result = await magic.auth.loginWithEmailOTP({
+        email,
+      })
+
+      if (!result) {
+        return thunkAPI.rejectWithValue('No HASH')
+      }
     }
 
     // TODO: verify key from result here
@@ -366,24 +376,6 @@ export const loginWithEmail = createAsyncThunk<
       settings: { chainId, chainType },
       usdPrices,
     } = thunkAPI.getState()
-
-    // const rpcUrl = getWalletSetting(SETTINGS.RPC_URL, chainType)
-
-    console.log('CHAIN ID', chainId)
-    // console.log('rpcUrl', rpcUrl)
-
-    // const m = new Magic(Config.MAGIC_KEY, {
-    //   network: {
-    //     chainId,
-    //     rpcUrl: rpcUrl,
-    //   },
-    // })
-
-    // console.log('MAGIC INSTANCE', magic)
-
-    const provider = new ethers.providers.Web3Provider(magic.rpcProvider)
-
-    // console.log('PROVIDER', provider)
 
     const rifRelayConfig: RifRelayConfig = {
       smartWalletFactoryAddress: getWalletSetting(
@@ -401,7 +393,7 @@ export const loginWithEmail = createAsyncThunk<
       relayServer: getWalletSetting(SETTINGS.RIF_RELAY_SERVER, chainType),
     }
 
-    // console.log('RIF RELAY CONFIG', rifRelayConfig)
+    const provider = new providers.Web3Provider(magic.rpcProvider)
 
     const signer = provider.getSigner()
 
@@ -411,22 +403,18 @@ export const loginWithEmail = createAsyncThunk<
       rifRelayConfig,
     )
 
-    console.log('WALLET.ADDRESS', rifWallet.address)
-    console.log('WALLET.SMARTADDRESS', rifWallet.smartWalletAddress)
-    console.log('WALLET.SMARTWALLET', rifWallet.smartWallet.address)
-
-    // console.log('MAGIC RIF WALLET', rifWallet)
-
-    const decycledWallet: RIFWallet = jc.decycle(rifWallet)
+    const isDeployed = await rifWallet.smartWalletFactory.isDeployed()
 
     thunkAPI.dispatch(
       setWallet({
-        wallet: decycledWallet,
+        wallet: jc.decycle(rifWallet),
         walletIsDeployed: {
-          isDeployed: await rifWallet.smartWalletFactory.isDeployed(),
+          isDeployed,
           loading: false,
           txHash: '',
         },
+        eoaAddress: rifWallet.address,
+        smartWalletAddress: rifWallet.smartWalletAddress,
       }),
     )
 
@@ -504,16 +492,25 @@ const settingsSlice = createSlice({
     },
     setWallet: (
       state,
-      { payload: { wallet, walletIsDeployed } }: PayloadAction<SetKeysAction>,
+      {
+        payload: { wallet, walletIsDeployed, eoaAddress, smartWalletAddress },
+      }: PayloadAction<SetKeysAction>,
     ) => {
+      const address = eoaAddress ?? wallet.address
+      const smartAddress = smartWalletAddress ?? wallet.smartWalletAddress
+
       state.wallets = {
-        [wallet.smartWallet.address]: wallet,
+        [address]: {
+          ...wallet,
+          address,
+          smartWalletAddress: smartAddress,
+        },
       }
 
       state.walletsIsDeployed = {
-        [wallet.smartWallet.address]: walletIsDeployed,
+        [address]: walletIsDeployed,
       }
-      state.selectedWallet = wallet.smartWallet.address
+      state.selectedWallet = address
     },
     setWalletIsDeployed: (
       state,
