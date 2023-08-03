@@ -139,7 +139,7 @@ PODS:
   - OpenSSL-Universal (1.1.1100)
   - PromisesObjC (2.1.1)
   - Protobuf (3.21.12)
-    - Ramp (4.0.1)
+  - Ramp (4.0.1)
   - ramp-network-react-native-sdk (1.0.2):
     - Ramp
     - React-Core
@@ -550,7 +550,7 @@ DEPENDENCIES:
   - jail-monkey (from `../node_modules/jail-monkey`)
   - libevent (~> 2.1.12)
   - OpenSSL-Universal (= 1.1.1100)
-    - Ramp (from `https://github.com/RampNetwork/ramp-sdk-ios`, tag `4.0.1`)
+  - Ramp (from `https://github.com/RampNetwork/ramp-sdk-ios`, tag `4.0.1`)
   - "ramp-network-react-native-sdk (from `../node_modules/@ramp-network/react-native-sdk`)"
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
