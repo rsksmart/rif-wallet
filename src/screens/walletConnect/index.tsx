@@ -1,5 +1,5 @@
 import WalletConnect from '@walletconnect/client'
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { ComponentType, useContext, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Alert, Image, ScrollView, StyleSheet, View } from 'react-native'
 
@@ -35,12 +35,25 @@ interface MergedWCSession {
   url?: string
 }
 
-export const WalletConnectScreen = ({ route }: Props) => {
+const withWalletConnectProviders =
+  <P extends object>(Component: ComponentType<P>) =>
+  (props: P) => {
+    const { wallet } = useAppSelector(selectWalletState)
+    return (
+      <WalletConnectProviderElement>
+        <WalletConnect2Provider wallet={wallet}>
+          <Component {...props} />
+        </WalletConnect2Provider>
+      </WalletConnectProviderElement>
+    )
+  }
+
+const WalletConnectScreen = ({ route }: Props) => {
   const { wallet } = useAppSelector(selectWalletState)
-  const wcKey = route.params?.wcKey
+  const wcKey = route.params?.data
 
   const { t } = useTranslation()
-  const { connections, handleApprove, handleReject } =
+  const { connections, handleApprove, handleReject, createSession } =
     useContext(WalletConnectContext)
   const {
     pendingSession,
@@ -50,6 +63,7 @@ export const WalletConnectScreen = ({ route }: Props) => {
     onDisconnectSession,
     onUserApprovedSession,
     onUserRejectedSession,
+    onCreateNewSession,
   } = useContext(WalletConnect2Context)
   const [disconnectingWC, setDisconnectingWC] =
     useState<MergedWCSession | null>(null)
@@ -60,6 +74,23 @@ export const WalletConnectScreen = ({ route }: Props) => {
   )
 
   const pendingConnector = wcKey ? connections[wcKey]?.connector : null
+
+  /**
+   * useEffect that watches when we pass data to the route params and connects user depending on WC version
+   */
+  useEffect(() => {
+    // When data exists - handle the case
+    if (route.params?.data) {
+      const { data } = route.params
+      if (data.includes('@1')) {
+        createSession(wallet, data)
+      } else if (data.includes('@2')) {
+        // WalletConnect 2.0
+        onCreateNewSession(data)
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [route.params?.data])
 
   const handleDisconnectSession = (mergedWc: MergedWCSession) => async () => {
     if ('topic' in mergedWc.wc) {
@@ -204,6 +235,9 @@ export const WalletConnectScreen = ({ route }: Props) => {
     </WalletConnectProviderElement>
   )
 }
+
+export const WalletConnectScreenWithProviders =
+  withWalletConnectProviders(WalletConnectScreen)
 
 const styles = StyleSheet.create({
   parent: castStyle.view({

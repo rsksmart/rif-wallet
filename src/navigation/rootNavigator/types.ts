@@ -42,7 +42,7 @@ export type RootTabsParamsList = {
   [rootTabsRouteNames.Contacts]:
     | NavigatorScreenParams<ContactStackParamsList>
     | undefined
-  [rootTabsRouteNames.WalletConnect]: undefined | { wcKey: string }
+  [rootTabsRouteNames.WalletConnect]: undefined | { data: string }
   [rootTabsRouteNames.Settings]:
     | undefined
     | NavigatorScreenParams<SettingsStackParamsList>
