@@ -1,5 +1,5 @@
 import Clipboard from '@react-native-community/clipboard'
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Alert,
@@ -65,15 +65,7 @@ export const TokenBalance = ({
     firstValue.symbol?.toUpperCase() === 'RIF' ||
     firstValue.symbol?.toUpperCase() === 'TRIF'
 
-  const toNameOrAddress = useMemo(() => {
-    if (!contact) {
-      return {}
-    }
-    if (contact.name) {
-      return { name: `${contact.name}.rsk` }
-    }
-    return { address: contact.address }
-  }, [contact])
+  const toNameOrAddress = (contact || {}) as ContactWithAddressRequired
 
   const onCopyAddress = useCallback(() => {
     if (contact) {
@@ -150,10 +142,8 @@ export const TokenBalance = ({
         </View>
         {contact && (
           <View
-            style={
-              toNameOrAddress.address ? styles.breakLine : styles.sameLine
-            }>
-            <Typography type="body1" style={{}}>
+            style={toNameOrAddress.name ? styles.sameLine : styles.breakLine}>
+            <Typography type="body1">
               {amIReceiver ? t('From') : t('To')}
             </Typography>
             <AppTouchable
