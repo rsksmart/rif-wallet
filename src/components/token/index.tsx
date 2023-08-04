@@ -247,10 +247,6 @@ const styles = StyleSheet.create({
     padding: 0,
     paddingLeft: 6,
   }),
-  textSymbol: castStyle.text({
-    color: sharedColors.white,
-    paddingTop: 3,
-  }),
   addressCopier: castStyle.view({
     alignItems: 'flex-start',
   }),
