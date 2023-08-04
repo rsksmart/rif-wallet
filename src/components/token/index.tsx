@@ -65,8 +65,6 @@ export const TokenBalance = ({
     firstValue.symbol?.toUpperCase() === 'RIF' ||
     firstValue.symbol?.toUpperCase() === 'TRIF'
 
-  const toNameOrAddress = (contact || {}) as ContactWithAddressRequired
-
   const onCopyAddress = useCallback(() => {
     if (contact) {
       Clipboard.setString(contact.address)
@@ -141,8 +139,7 @@ export const TokenBalance = ({
           )}
         </View>
         {contact && (
-          <View
-            style={toNameOrAddress.name ? styles.sameLine : styles.breakLine}>
+          <View style={contact.name ? styles.sameLine : styles.breakLine}>
             <Typography type="body1">
               {amIReceiver ? t('From') : t('To')}
             </Typography>
@@ -150,9 +147,9 @@ export const TokenBalance = ({
               width="100%"
               onPress={onCopyAddress}
               style={styles.addressCopier}>
-              {toNameOrAddress.name ? (
+              {contact.name ? (
                 <Typography type="body1" style={styles.toName}>
-                  {toNameOrAddress.name}
+                  {contact.name}
                 </Typography>
               ) : (
                 <Typography
@@ -160,7 +157,7 @@ export const TokenBalance = ({
                   numberOfLines={1}
                   adjustsFontSizeToFit
                   style={styles.toAddress}>
-                  {toNameOrAddress.address}
+                  {contact.address}
                 </Typography>
               )}
             </AppTouchable>
@@ -168,7 +165,7 @@ export const TokenBalance = ({
         )}
       </View>
       <View style={styles.rightColumn}>
-        {contact && contact.name ? <ContactCard name={contact.name} /> : null}
+        {contact?.name ? <ContactCard name={contact.name} /> : null}
         {hideable && !editable && (
           <AppTouchable
             width={46}
