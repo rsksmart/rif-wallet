@@ -28,7 +28,7 @@ export const createWeb3Wallet = async () => {
 
 export const rskWalletConnectNamespace = {
   eip155: {
-    chains: ['eip155:31'], // @TODO must be the current chainId from redux
+    chains: ['eip155:30', 'eip155:31'],
     methods: ['eth_sendTransaction', 'personal_sign'],
     events: ['chainChanged', 'accountsChanged'],
   },
@@ -45,17 +45,17 @@ export const getProposalErrorComparedWithRskNamespace = (
   if (!requiredNamespaces.eip155) {
     return 'UNSUPPORTED_NAMESPACE_KEY'
   }
-  // Check if chains includes EIP155:31 OR EIP155:32
+  // Check if chains includes EIP155:31 OR EIP155:30
   if (
-    !requiredNamespaces.eip155.chains?.includes(
-      rskWalletConnectNamespace.eip155.chains[0],
+    !requiredNamespaces.eip155.chains?.every(chain =>
+      rskWalletConnectNamespace.eip155.chains.includes(chain),
     )
   ) {
     return 'UNSUPPORTED_CHAINS'
   }
   // Check if the methods that RSK allows are present
   if (
-    !requiredNamespaces.eip155?.methods.every(
+    !requiredNamespaces.eip155.methods?.every(
       method => rskWalletConnectNamespace.eip155.methods.indexOf(method) > -1,
     )
   ) {

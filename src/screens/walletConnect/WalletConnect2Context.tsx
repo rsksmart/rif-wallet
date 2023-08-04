@@ -23,7 +23,9 @@ const onSessionApprove = async (
       namespaces: {
         eip155: {
           ...rskWalletConnectNamespace.eip155,
-          accounts: [`eip155:31:${walletAddress}`], // @TODO must be the current chainId from redux
+          accounts: rskWalletConnectNamespace.eip155.chains.map(
+            chain => `${chain}:${walletAddress}`,
+          ),
         },
       },
     })
