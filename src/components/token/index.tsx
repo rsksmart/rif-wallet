@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import Clipboard from '@react-native-community/clipboard'
 import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -151,10 +150,9 @@ export const TokenBalance = ({
         </View>
         {contact && (
           <View
-            style={{
-              marginTop: toNameOrAddress.address ? 6 : 12,
-              flexDirection: toNameOrAddress.address ? 'column' : 'row',
-            }}>
+            style={
+              toNameOrAddress.address ? styles.breakLine : styles.sameLine
+            }>
             <Typography type="body1" style={{}}>
               {amIReceiver ? t('From') : t('To')}
             </Typography>
@@ -163,9 +161,7 @@ export const TokenBalance = ({
               onPress={onCopyAddress}
               style={styles.addressCopier}>
               {toNameOrAddress.name ? (
-                <Typography
-                  type="body1"
-                  style={{ color: sharedColors.primary, marginLeft: 4 }}>
+                <Typography type="body1" style={styles.toName}>
                   {toNameOrAddress.name}
                 </Typography>
               ) : (
@@ -173,7 +169,7 @@ export const TokenBalance = ({
                   type="body2"
                   numberOfLines={1}
                   adjustsFontSizeToFit
-                  style={{ color: sharedColors.primary }}>
+                  style={styles.toAddress}>
                   {toNameOrAddress.address}
                 </Typography>
               )}
@@ -270,5 +266,20 @@ const styles = StyleSheet.create({
   }),
   addressCopier: castStyle.view({
     alignItems: 'flex-start',
+  }),
+  breakLine: castStyle.view({
+    flexDirection: 'column',
+    marginTop: 6,
+  }),
+  sameLine: castStyle.view({
+    flexDirection: 'row',
+    marginTop: 12,
+  }),
+  toName: castStyle.text({
+    color: sharedColors.primary,
+    marginLeft: 4,
+  }),
+  toAddress: castStyle.text({
+    color: sharedColors.primary,
   }),
 })
