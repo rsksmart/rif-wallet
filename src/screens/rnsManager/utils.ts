@@ -1,7 +1,7 @@
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { AbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
 
-import { AppDispatch } from 'src/redux'
+import { AppDispatch } from 'store/index'
 import { OnSetTransactionStatusChange } from 'screens/send/types'
 import { handleReduxTransactionStatusChange } from 'screens/send/usePaymentExecutor'
 
@@ -12,8 +12,9 @@ export const handleDomainTransactionStatusChange =
     if (txTransformed.txStatus === 'PENDING') {
       // initialize ABI enhancer
       const abiEnhancer = new AbiEnhancer()
+      const chainId = await wallet.getChainId()
       // decode transaction
-      const enhancedTransaction = await abiEnhancer.enhance(wallet, {
+      const enhancedTransaction = await abiEnhancer.enhance(chainId, {
         data: txTransformed.data,
       })
       if (enhancedTransaction) {

@@ -1,16 +1,22 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { renderHook, act } from '@testing-library/react-hooks'
 import { BigNumber, Wallet, providers } from 'ethers'
+import { useSelector } from 'react-redux'
 
 import useEnhancedWithGas from './useEnhancedWithGas'
+
+jest.mock('react-redux')
 
 describe('hook: useEnhancedWithGas', function (this: {
   tx: TransactionRequest
   rifWallet: Wallet
 }) {
+  const useSelectorMock = useSelector as jest.MockedFunction<typeof useSelector>
+  useSelectorMock.mockImplementation(cb => cb({ settings: { chainId: 31 } }))
   beforeEach(async () => {
     const provider = new providers.JsonRpcProvider('http://127.0.0.1:8545')
     this.rifWallet = Wallet.createRandom().connect(provider)
+    useSelectorMock.mockClear()
 
     this.tx = {
       to: '0x123',
