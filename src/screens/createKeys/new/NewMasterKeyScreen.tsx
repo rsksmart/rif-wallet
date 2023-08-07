@@ -31,6 +31,9 @@ type Props = CompositeScreenProps<
   RootTabsScreenProps<rootTabsRouteNames.CreateKeysUX>
 >
 
+enum TestID {
+  SecureLaterButton = 'SecureLater',
+}
 export const NewMasterKeyScreen = ({ navigation }: Props) => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
@@ -83,6 +86,7 @@ export const NewMasterKeyScreen = ({ navigation }: Props) => {
           textType={'h4'}
           backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
           onPress={onSecureLater}
+          accessibilityLabel={TestID.SecureLaterButton}
         />
       </View>
     </View>

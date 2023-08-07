@@ -82,6 +82,11 @@ interface InitialPinSettings {
   initialSteps: ColorValue[] | null
 }
 
+enum TestID {
+  OpenKeyboardButton = 'Button.OpenKeyboard',
+  PINDot = 'PINDot',
+}
+
 const getInitialPinSettings = (
   isChangeRequested: boolean | undefined,
   pin: string | null,
@@ -393,6 +398,7 @@ export const PinScreen = ({ navigation, route }: Props) => {
                     n && Number(n) >= 0 ? styles.dotActive : styles.dotInactive,
                     styles.dot,
                   ]}
+                  accessibilityLabel={`${index}.${TestID.PINDot}`}
                 />
               ))}
               <TextInput
@@ -419,6 +425,7 @@ export const PinScreen = ({ navigation, route }: Props) => {
             title={t('pin_settings_open_keyboard_btn')}
             textColor={sharedColors.white}
             backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
+            accessibilityLabel={TestID.OpenKeyboardButton}
           />
         </>
       )}

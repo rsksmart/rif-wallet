@@ -44,6 +44,9 @@ import { HomeInformationBar } from './HomeInformationBar'
 import { getTokenColor } from './tokenColor'
 import { PortfolioComponent } from './PortfolioComponent'
 
+enum TestID {
+  NoTransactionsTypography = 'NoTransactionsTypography',
+}
 export const HomeScreen = ({
   navigation,
 }: HomeStackScreenProps<homeStackRouteNames.Main>) => {
@@ -265,7 +268,10 @@ export const HomeScreen = ({
             <Typography style={styles.emptyTransactionsLabel} type={'h3'}>
               {t('home_screen_empty_transactions')}
             </Typography>
-            <Typography style={styles.emptyTransactionsLabel} type={'h4'}>
+            <Typography
+              style={styles.emptyTransactionsLabel}
+              type={'h4'}
+              accessibilityLabel={TestID.NoTransactionsTypography}>
               {t('home_screen_no_transactions_created')}
             </Typography>
           </>
