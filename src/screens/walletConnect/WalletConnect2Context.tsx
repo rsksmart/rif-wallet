@@ -60,6 +60,7 @@ interface ErrorForAlertUsingTranslation {
   title: string
   message: string
 }
+
 interface WalletConnect2ContextArguments {
   sessions: SessionStruct[]
   onUserApprovedSession: () => Promise<string | void>
@@ -70,6 +71,7 @@ interface WalletConnect2ContextArguments {
   error?: ErrorForAlertUsingTranslation
   setError: (error?: ErrorForAlertUsingTranslation) => void
 }
+
 export const WalletConnect2Context =
   createContext<WalletConnect2ContextArguments>({
     sessions: [],
@@ -116,6 +118,7 @@ export const WalletConnect2Provider = ({
       })
     }
   }
+
   const subscribeToEvents = (web3wallet: Web3Wallet) => {
     web3wallet.on('session_proposal', async proposal =>
       onSessionProposal(proposal, web3wallet),

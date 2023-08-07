@@ -8,9 +8,9 @@ import { castStyle } from 'shared/utils'
 
 interface Props {
   isDisconnecting: boolean
+  onDisconnect: () => void
   name?: string
   url?: string
-  onDisconnect: () => void
 }
 
 export const DappItem = ({
