@@ -5,7 +5,6 @@ import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { addOrUpdateBalances } from 'store/slices/balancesSlice'
 import {
   activityDeserializer,
-  addNewEvent,
   addNewTransaction,
   addNewTransactions,
   combineTransactions,
@@ -94,42 +93,24 @@ export const onSocketChangeEmitted =
             chainId,
           })
           break
-        case 'newTransactions':
-          let deserializedRifTransactions = deserializeTransactions(
-            payload.activityTransactions,
-          )
-          let combinedTransactions = combineTransactions(
-            deserializedRifTransactions,
-            [],
-          )
-
-          let deserializedTransactions = combinedTransactions.map(tx =>
-            activityDeserializer(tx, usdPrices, chainId),
-          )
-          dispatch(addNewTransactions(deserializedTransactions))
-          break
         case 'newBalance':
           dispatch(addOrUpdateBalances([payload]))
           break
         case 'init':
-          deserializedRifTransactions = deserializeTransactions(
+          const deserializedRifTransactions = deserializeTransactions(
             payload.transactions,
           )
-          combinedTransactions = combineTransactions(
+          const combinedTransactions = combineTransactions(
             deserializedRifTransactions,
             [],
           )
 
-          deserializedTransactions = combinedTransactions.map(tx =>
+          const deserializedTransactions = combinedTransactions.map(tx =>
             activityDeserializer(tx, usdPrices, chainId),
           )
           dispatch(fetchBitcoinTransactions({}))
           dispatch(addNewTransactions(deserializedTransactions))
           dispatch(addOrUpdateBalances(payload.balances))
-          break
-        case 'newTokenTransfer':
-          // This is not being used anywhere
-          dispatch(addNewEvent(payload))
           break
         default:
           throw new Error(`${type} not implemented`)
