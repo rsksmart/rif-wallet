@@ -139,27 +139,21 @@ export const TokenBalance = ({
           )}
         </View>
         {contact && (
-          <View style={contact.name ? styles.sameLine : styles.breakLine}>
+          <View style={styles.addressLabel}>
             <Typography type="body1">
               {amIReceiver ? t('From') : t('To')}
             </Typography>
             <AppTouchable
-              width="100%"
+              width={amIReceiver ? '88%' : '93%'}
               onPress={onCopyAddress}
               style={styles.addressCopier}>
-              {contact.name ? (
-                <Typography type="body1" style={styles.toName}>
-                  {contact.name}
-                </Typography>
-              ) : (
-                <Typography
-                  type="body2"
-                  numberOfLines={1}
-                  adjustsFontSizeToFit
-                  style={styles.toAddress}>
-                  {contact.address}
-                </Typography>
-              )}
+              <Typography
+                type={contact.name ? 'body1' : 'body2'}
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                style={styles.address}>
+                {contact.name || contact.address}
+              </Typography>
             </AppTouchable>
           </View>
         )}
@@ -250,19 +244,12 @@ const styles = StyleSheet.create({
   addressCopier: castStyle.view({
     alignItems: 'flex-start',
   }),
-  breakLine: castStyle.view({
-    flexDirection: 'column',
-    marginTop: 6,
-  }),
-  sameLine: castStyle.view({
+  addressLabel: castStyle.view({
     flexDirection: 'row',
     marginTop: 12,
   }),
-  toName: castStyle.text({
+  address: castStyle.text({
     color: sharedColors.primary,
     marginLeft: 4,
-  }),
-  toAddress: castStyle.text({
-    color: sharedColors.primary,
   }),
 })
