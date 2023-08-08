@@ -139,19 +139,21 @@ export const TokenBalance = ({
           )}
         </View>
         {contact && (
-          <View style={styles.addressLabel}>
-            <Typography type="body1">
+          <View style={styles.addressRow}>
+            <Typography type="body1" style={styles.addressLabel}>
               {amIReceiver ? t('From') : t('To')}
             </Typography>
             <AppTouchable
-              width={amIReceiver ? '88%' : '93%'}
+              width="100%"
               onPress={onCopyAddress}
               style={styles.addressCopier}>
               <Typography
-                type={contact.name ? 'body1' : 'body2'}
+                type={contact.name ? 'body1' : 'label'}
                 numberOfLines={1}
                 adjustsFontSizeToFit
-                style={styles.address}>
+                style={
+                  contact.name ? styles.nameContent : styles.addressContent
+                }>
                 {contact.name || contact.address}
               </Typography>
             </AppTouchable>
@@ -241,15 +243,23 @@ const styles = StyleSheet.create({
     padding: 0,
     paddingLeft: 6,
   }),
-  addressCopier: castStyle.view({
-    alignItems: 'flex-start',
-  }),
-  addressLabel: castStyle.view({
+  addressRow: castStyle.view({
     flexDirection: 'row',
     marginTop: 12,
+    alignItems: 'center',
   }),
-  address: castStyle.text({
+  addressLabel: castStyle.text({
+    paddingRight: 4,
+  }),
+  addressCopier: castStyle.view({
+    flex: 1,
+    alignItems: 'flex-start',
+  }),
+  nameContent: castStyle.text({
     color: sharedColors.primary,
-    marginLeft: 4,
+  }),
+  addressContent: castStyle.text({
+    color: sharedColors.primary,
+    paddingTop: 6,
   }),
 })
