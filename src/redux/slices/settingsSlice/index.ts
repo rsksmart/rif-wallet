@@ -49,11 +49,13 @@ import {
   UnlockAppAction,
 } from './types'
 import { UsdPricesState } from '../usdPricesSlice'
+import { TokenBalanceObject } from '../balancesSlice/types'
 
 const initializeRifSocketsSetBitcoin = (
   chainId: ChainTypesByIdType,
   mnemonic: string,
   usdPrices: UsdPricesState,
+  balances: Record<string, TokenBalanceObject>,
   wallet: RIFWallet,
   dispatch: AppDispatch,
   setGlobalError: (value: string) => void,
@@ -75,6 +77,7 @@ const initializeRifSocketsSetBitcoin = (
     setGlobalError,
     usdPrices,
     chainId,
+    balances,
   })
 
   socketsEvents.emit(SocketsEvents.CONNECT)
@@ -375,6 +378,7 @@ export const loginWithEmail = createAsyncThunk<
     const {
       settings: { chainId, chainType },
       usdPrices,
+      balances: { tokenBalances: balances },
     } = thunkAPI.getState()
 
     const rifRelayConfig: RifRelayConfig = {
@@ -424,6 +428,7 @@ export const loginWithEmail = createAsyncThunk<
       chainId,
       '',
       usdPrices,
+      balances,
       rifWallet,
       thunkAPI.dispatch,
       thunkAPI.rejectWithValue,
