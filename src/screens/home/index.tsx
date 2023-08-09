@@ -214,7 +214,7 @@ export const HomeScreen = ({
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} bounces={false}>
       <TokenBalance
         style={styles.tokenBalance}
         firstValue={
