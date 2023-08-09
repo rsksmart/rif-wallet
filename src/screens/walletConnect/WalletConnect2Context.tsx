@@ -243,14 +243,16 @@ export const WalletConnect2Provider = ({
     }
   }
 
+  const onContextFirstLoad = async () => {
+    const web3wallet = await createWeb3Wallet()
+    subscribeToEvents(web3wallet)
+    setSessions(Object.values(web3wallet.getActiveSessions()))
+  }
   /**
    * useEffect On first load, fetch previous saved sessions
    */
   useEffect(() => {
-    createWeb3Wallet().then(web3wallet => {
-      subscribeToEvents(web3wallet)
-      setSessions(Object.values(web3wallet.getActiveSessions()))
-    })
+    onContextFirstLoad().catch(console.log)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   return (
