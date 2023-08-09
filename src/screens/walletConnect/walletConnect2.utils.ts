@@ -7,6 +7,30 @@ import { SETTINGS } from 'core/types'
 
 export type WalletConnect2SdkErrorString = Parameters<typeof getSdkError>[0]
 
+const WalletConnect2SdkErrorEnum: { [P in WalletConnect2SdkErrorString]: P } = {
+  USER_DISCONNECTED: 'USER_DISCONNECTED',
+  UNSUPPORTED_EVENTS: 'UNSUPPORTED_EVENTS',
+  UNSUPPORTED_CHAINS: 'UNSUPPORTED_CHAINS',
+  UNSUPPORTED_NAMESPACE_KEY: 'UNSUPPORTED_NAMESPACE_KEY',
+  USER_REJECTED: 'USER_REJECTED',
+  INVALID_EVENT: 'INVALID_EVENT',
+  INVALID_EXTEND_REQUEST: 'INVALID_EXTEND_REQUEST',
+  INVALID_METHOD: 'INVALID_METHOD',
+  INVALID_SESSION_SETTLE_REQUEST: 'INVALID_SESSION_SETTLE_REQUEST',
+  INVALID_UPDATE_REQUEST: 'INVALID_UPDATE_REQUEST',
+  UNAUTHORIZED_EVENT: 'UNAUTHORIZED_EVENT',
+  UNAUTHORIZED_EXTEND_REQUEST: 'UNAUTHORIZED_EXTEND_REQUEST',
+  UNAUTHORIZED_METHOD: 'UNAUTHORIZED_METHOD',
+  UNAUTHORIZED_UPDATE_REQUEST: 'UNAUTHORIZED_UPDATE_REQUEST',
+  UNSUPPORTED_ACCOUNTS: 'UNSUPPORTED_ACCOUNTS',
+  UNSUPPORTED_METHODS: 'UNSUPPORTED_METHODS',
+  USER_REJECTED_CHAINS: 'USER_REJECTED_CHAINS',
+  USER_REJECTED_EVENTS: 'USER_REJECTED_EVENTS',
+  USER_REJECTED_METHODS: 'USER_REJECTED_METHODS',
+  WC_METHOD_UNSUPPORTED: 'WC_METHOD_UNSUPPORTED',
+  SESSION_SETTLEMENT_FAILED: 'SESSION_SETTLEMENT_FAILED',
+}
+
 export const createWeb3Wallet = async () => {
   const projectId = getEnvSetting(SETTINGS.WALLETCONNECT2_PROJECT_ID) // this should change if we need to vary from testnet/mainnet by using getWalletSetting
   const core = new Core({
@@ -43,7 +67,7 @@ export const getProposalErrorComparedWithRskNamespace = (
   } = proposal
   // Check if namespace has eip155
   if (!requiredNamespaces.eip155) {
-    return 'UNSUPPORTED_NAMESPACE_KEY'
+    return WalletConnect2SdkErrorEnum.UNSUPPORTED_NAMESPACE_KEY
   }
   // Check if chains includes EIP155:31 OR EIP155:30
   if (
@@ -51,7 +75,7 @@ export const getProposalErrorComparedWithRskNamespace = (
       rskWalletConnectNamespace.eip155.chains.includes(chain),
     )
   ) {
-    return 'UNSUPPORTED_CHAINS'
+    return WalletConnect2SdkErrorEnum.UNSUPPORTED_CHAINS
   }
   // Check if the methods that RSK allows are present
   if (
@@ -59,7 +83,7 @@ export const getProposalErrorComparedWithRskNamespace = (
       method => rskWalletConnectNamespace.eip155.methods.indexOf(method) > -1,
     )
   ) {
-    return 'UNSUPPORTED_METHODS'
+    return WalletConnect2SdkErrorEnum.UNSUPPORTED_METHODS
   }
   // Check if the events that RSK allows are present
   if (
@@ -67,6 +91,6 @@ export const getProposalErrorComparedWithRskNamespace = (
       event => rskWalletConnectNamespace.eip155.events.indexOf(event) > -1,
     )
   ) {
-    return 'UNSUPPORTED_EVENTS'
+    return WalletConnect2SdkErrorEnum.UNSUPPORTED_EVENTS
   }
 }
