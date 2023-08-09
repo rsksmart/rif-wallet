@@ -20,6 +20,7 @@ export const AppSpinner = ({
       indeterminate={true}
       color={color}
       direction={'clockwise'}
+      accessibilityLabel="AppSpinner"
       {...props}
     />
   )
