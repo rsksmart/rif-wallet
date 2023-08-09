@@ -2097,10 +2097,21 @@
     bitcoin-address-validation "^2.2.1"
     bitcoinjs-lib "^6.0.2"
 
-"@rsksmart/rif-wallet-core@*", "@rsksmart/rif-wallet-core@^1.0.2":
+"@rsksmart/rif-wallet-core@*":
   version "1.0.2"
   resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-core/1.0.2/dc810acfc6f014cd59fdb3c4339f0d69ebf16954#dc810acfc6f014cd59fdb3c4339f0d69ebf16954"
   integrity sha512-xIsDFZmTITLLv78aLaXNa+69pZE2vW4SUEGTs0ux6iwWj9OO+N3uaUcdmG0bug1pqXaPYK04S+3+SviEl5dT4Q==
+  dependencies:
+    "@ethersproject/abstract-provider" "^5.7.0"
+    "@ethersproject/abstract-signer" "^5.7.0"
+    "@ethersproject/bignumber" "^5.7.0"
+    "@ethersproject/bytes" "^5.7.0"
+    "@rsksmart/rif-relay-light-sdk" "*"
+
+"@rsksmart/rif-wallet-core@^1.0.3":
+  version "1.0.3"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-core/1.0.3/b8d1ef131fdf422dea94c1ed9a7783ac117e7f5d#b8d1ef131fdf422dea94c1ed9a7783ac117e7f5d"
+  integrity sha512-N4odQ0+uwb+O/bIJOsTKNf1Lk1wDKbiy8Wd7Wcr2KIJr7hNbWfA6Nj42C2YYAQUjKC1p0dgRrM/o7aka0WcE+A==
   dependencies:
     "@ethersproject/abstract-provider" "^5.7.0"
     "@ethersproject/abstract-signer" "^5.7.0"
