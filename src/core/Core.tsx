@@ -6,8 +6,6 @@ import {
   NavigationContainer,
 } from '@react-navigation/native'
 
-import { i18nInit } from 'lib/i18n'
-
 import {
   RootNavigationComponent,
   RootTabsParamsList,
@@ -40,13 +38,6 @@ export const Core = () => {
   const isOffline = useIsOffline()
 
   const { unlocked, active } = useStateSubscription()
-
-  useEffect(() => {
-    const fn = async () => {
-      await i18nInit()
-    }
-    fn()
-  }, [])
 
   const unlockAppSetMnemonic = useCallback(async () => {
     try {
