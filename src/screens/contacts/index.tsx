@@ -87,7 +87,7 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
 
   return (
     <View style={sharedStyles.screen}>
-      {recentContacts.length > 0 && (
+      {recentContacts && recentContacts.length > 0 && (
         <View style={styles.recentContacts}>
           <ScrollView horizontal>
             {recentContacts.map((c, i) => (
