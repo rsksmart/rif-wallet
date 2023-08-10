@@ -1,5 +1,6 @@
+import { useIsFocused } from '@react-navigation/native'
 import WalletConnect from '@walletconnect/client'
-import { useContext, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image, ScrollView, StyleSheet, View } from 'react-native'
 
@@ -12,8 +13,8 @@ import {
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { deleteWCSession } from 'storage/WalletConnectSessionStore'
-import { selectWalletState } from 'store/slices/settingsSlice'
-import { useAppSelector } from 'store/storeUtils'
+import { changeTopColor, selectWalletState } from 'store/slices/settingsSlice'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 
 import { DappItem } from './DappItem'
 import {
@@ -24,7 +25,9 @@ import {
 type Props = RootTabsScreenProps<rootTabsRouteNames.WalletConnect>
 
 export const WalletConnectScreen = ({ route }: Props) => {
+  const dispatch = useAppDispatch()
   const { wallet } = useAppSelector(selectWalletState)
+  const isFocused = useIsFocused()
   const wcKey = route.params?.wcKey
 
   const { t } = useTranslation()
@@ -34,9 +37,8 @@ export const WalletConnectScreen = ({ route }: Props) => {
     null,
   )
 
-  const openedConnections = useMemo(
-    () => Object.values(connections).filter(({ connector: c }) => c.connected),
-    [connections],
+  const openedConnections = Object.values(connections).filter(
+    ({ connector: c }) => c.connected,
   )
 
   const pendingConnector = wcKey ? connections[wcKey]?.connector : null
@@ -54,6 +56,12 @@ export const WalletConnectScreen = ({ route }: Props) => {
       }
     }
   }
+
+  useEffect(() => {
+    if (isFocused) {
+      dispatch(changeTopColor(sharedColors.secondary))
+    }
+  }, [dispatch, isFocused])
 
   return (
     <WalletConnectProviderElement>

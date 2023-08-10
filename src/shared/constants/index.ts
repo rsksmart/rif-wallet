@@ -45,7 +45,7 @@ export const tokenColors = {
 }
 export const defaultFontSize = 16
 export const defaultIconSize = 16
-export const noop = () => ({})
+export const noop = () => {}
 
 export const sharedStyles = StyleSheet.create({
   displayNone: castStyle.view({
@@ -87,7 +87,7 @@ export const sharedStyles = StyleSheet.create({
   }),
   screen: castStyle.view({
     flex: 1,
-    backgroundColor: sharedColors.black,
+    backgroundColor: sharedColors.secondary,
     paddingHorizontal: 24,
   }),
   noPadding: castStyle.view({ padding: 0 }),

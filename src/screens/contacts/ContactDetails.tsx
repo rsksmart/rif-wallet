@@ -239,7 +239,7 @@ export const ContactDetails = ({
 const styles = StyleSheet.create({
   screen: castStyle.view({
     flex: 1,
-    backgroundColor: sharedColors.black,
+    backgroundColor: sharedColors.secondary,
   }),
   scrollviewContainer: castStyle.view({
     paddingBottom: 144,

@@ -1,24 +1,25 @@
-import { useCallback } from 'react'
-import { FlatList, StyleSheet, View, RefreshControl, Image } from 'react-native'
-import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
+import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { IApiTransaction } from '@rsksmart/rif-wallet-services'
-import { useTranslation } from 'react-i18next'
 import { ethers } from 'ethers'
+import { useCallback, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import { FlatList, Image, RefreshControl, StyleSheet, View } from 'react-native'
+import { useIsFocused } from '@react-navigation/native'
 
+import { Typography } from 'components/typography'
 import { abiEnhancer } from 'core/setup'
-import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { rootTabsRouteNames } from 'navigation/rootNavigator'
+import { sharedColors } from 'shared/constants'
+import { ActivityMainScreenProps } from 'shared/types'
+import { castStyle } from 'shared/utils'
+import { changeTopColor, selectWallet } from 'store/slices/settingsSlice'
+import { fetchBitcoinTransactions } from 'store/slices/transactionsSlice'
 import {
   selectTransactions,
   selectTransactionsLoading,
 } from 'store/slices/transactionsSlice/selectors'
-import { sharedColors } from 'shared/constants'
-import { Typography } from 'components/typography'
-import { castStyle } from 'shared/utils'
-import { ActivityMainScreenProps } from 'shared/types'
-import { rootTabsRouteNames } from 'navigation/rootNavigator'
-import { fetchBitcoinTransactions } from 'store/slices/transactionsSlice'
-import { selectWallet } from 'store/slices/settingsSlice'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 
 import { ActivityBasicRow } from './ActivityRow'
 
@@ -28,10 +29,17 @@ export const ActivityScreen = ({ navigation }: ActivityMainScreenProps) => {
   const wallet = useAppSelector(selectWallet)
   const transactions = useAppSelector(selectTransactions)
   const areTransasctionsLoading = useAppSelector(selectTransactionsLoading)
+  const isFocused = useIsFocused()
 
   const onRefresh = useCallback(() => {
     dispatch(fetchBitcoinTransactions({}))
   }, [dispatch])
+
+  useEffect(() => {
+    if (isFocused) {
+      dispatch(changeTopColor(sharedColors.secondary))
+    }
+  }, [dispatch, isFocused])
 
   return (
     <View style={styles.mainContainer}>
