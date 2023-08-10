@@ -85,7 +85,7 @@ export const sharedStyles = StyleSheet.create({
   paddingHorizontal24: castStyle.view({
     paddingHorizontal: 24,
   }),
-  screen: castStyle.view({
+  container: castStyle.view({
     flex: 1,
     backgroundColor: sharedColors.secondary,
     paddingHorizontal: 24,

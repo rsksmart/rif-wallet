@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { StyleProp, StyleSheet, ViewStyle } from 'react-native'
+import { StyleProp, ViewStyle } from 'react-native'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
 import { roundBalance, shortAddress } from 'lib/utils'
@@ -11,7 +11,6 @@ import { AppTouchable } from 'components/appTouchable'
 import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 import { ActivityMainScreenProps } from 'shared/types'
-import { castStyle } from 'shared/utils'
 import { isMyAddress } from 'src/components/address/lib'
 import { useAppSelector } from 'src/redux/storeUtils'
 import { getContactByAddress } from 'store/slices/contactsSlice'
@@ -128,10 +127,7 @@ export const ActivityBasicRow = ({
   }, [navigation, txSummary, backScreen])
 
   return (
-    <AppTouchable
-      width={'100%'}
-      onPress={handlePress}
-      style={[styles.component, style]}>
+    <AppTouchable width={'100%'} onPress={handlePress} style={style}>
       <BasicRowWithContact
         label={label}
         amount={amount}
@@ -145,9 +141,3 @@ export const ActivityBasicRow = ({
     </AppTouchable>
   )
 }
-
-const styles = StyleSheet.create({
-  component: castStyle.view({
-    paddingHorizontal: 6,
-  }),
-})

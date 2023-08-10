@@ -366,7 +366,7 @@ export const PinScreen = ({ navigation, route }: Props) => {
   ])
 
   return (
-    <View style={sharedStyles.screen}>
+    <View style={sharedStyles.container}>
       {isChangeRequested && isPinEqual ? (
         <Icon
           name={'check-circle'}
@@ -419,7 +419,7 @@ export const PinScreen = ({ navigation, route }: Props) => {
           <AppButton
             style={[
               sharedStyles.appButtonBottom,
-              { backgroundColor: sharedColors.black },
+              { backgroundColor: sharedColors.secondary },
             ]}
             onPress={focusInput}
             title={t('pin_settings_open_keyboard_btn')}

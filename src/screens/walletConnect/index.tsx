@@ -10,7 +10,7 @@ import {
   rootTabsRouteNames,
   RootTabsScreenProps,
 } from 'navigation/rootNavigator/types'
-import { sharedColors } from 'shared/constants'
+import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { deleteWCSession } from 'storage/WalletConnectSessionStore'
 import { changeTopColor, selectWalletState } from 'store/slices/settingsSlice'
@@ -65,7 +65,7 @@ export const WalletConnectScreen = ({ route }: Props) => {
 
   return (
     <WalletConnectProviderElement>
-      <View style={styles.parent}>
+      <View style={sharedStyles.container}>
         <View style={styles.header}>
           <View style={styles.innerHeader1}>
             <Typography type="h2">{t('dapps_title')}</Typography>
@@ -133,14 +133,9 @@ export const WalletConnectScreen = ({ route }: Props) => {
 }
 
 const styles = StyleSheet.create({
-  parent: castStyle.view({
-    height: '100%',
-    backgroundColor: sharedColors.secondary,
-    padding: 20,
-  }),
   header: castStyle.view({
     flexDirection: 'row',
-    padding: 10,
+    marginTop: 18,
   }),
   innerHeader1: castStyle.view({
     flex: 3,

@@ -112,7 +112,7 @@ export const RelayDeployScreen = ({
 
   return (
     <ScrollView
-      style={sharedStyles.screen}
+      style={sharedStyles.container}
       contentContainerStyle={sharedStyles.flexGrow}>
       <Typography style={styles.title} type="h2" color={sharedColors.white}>
         {t('wallet_deploy_title')}

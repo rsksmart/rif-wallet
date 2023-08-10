@@ -147,7 +147,7 @@ export const ContactFormScreen = ({
 
   return (
     <KeyboardAvoidingView
-      style={sharedStyles.screen}
+      style={sharedStyles.container}
       keyboardVerticalOffset={100}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView>
