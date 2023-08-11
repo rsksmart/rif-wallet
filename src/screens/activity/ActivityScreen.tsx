@@ -40,7 +40,7 @@ export const ActivityScreen = ({ navigation }: ActivityMainScreenProps) => {
   }, [dispatch, isFocused])
 
   return (
-    <View style={sharedStyles.container}>
+    <View style={sharedStyles.screen}>
       <FlatList
         data={transactions}
         initialNumToRender={10}

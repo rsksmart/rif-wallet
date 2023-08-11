@@ -38,7 +38,7 @@ export const ExampleScreen = ({
   }, [navigation])
 
   return (
-    <View style={sharedStyles.container}>
+    <View style={sharedStyles.screen}>
       <FormProvider {...methods}>
         <ScrollView
           contentContainerStyle={styles.scrollContent}

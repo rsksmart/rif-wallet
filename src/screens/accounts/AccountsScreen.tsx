@@ -38,7 +38,7 @@ export const AccountsScreen = ({
   }, [navigation])
 
   return (
-    <View style={sharedStyles.container}>
+    <View style={sharedStyles.screen}>
       <AccountBox
         walletIsDeployed={walletIsDeployed}
         address={wallet.address}

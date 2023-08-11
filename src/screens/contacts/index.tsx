@@ -86,7 +86,7 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
   }, [dispatch, isFocused])
 
   return (
-    <View style={sharedStyles.container}>
+    <View style={sharedStyles.screen}>
       <Typography type={'h2'} style={styles.title}>
         {t('contacts_screen_title')}
       </Typography>

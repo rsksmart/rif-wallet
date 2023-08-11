@@ -178,7 +178,7 @@ export const ContactDetails = ({
             IconComponent={FontAwesome5Icon}
           />
         </BarButtonGroupContainer>
-        <View style={sharedStyles.container}>
+        <View style={sharedStyles.screen}>
           <FormProvider {...methods}>
             <Input
               containerStyle={styles.usernameInputContainer}

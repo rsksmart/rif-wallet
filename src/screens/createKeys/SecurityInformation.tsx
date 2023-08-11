@@ -34,7 +34,7 @@ export const SecurityInformation = ({
   }, [navigation, moveTo])
 
   return (
-    <View style={sharedStyles.container}>
+    <View style={sharedStyles.screen}>
       <Typography type={'h2'} style={styles.header}>
         {t('security_info_header')}
       </Typography>

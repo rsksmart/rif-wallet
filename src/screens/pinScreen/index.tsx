@@ -366,7 +366,7 @@ export const PinScreen = ({ navigation, route }: Props) => {
   ])
 
   return (
-    <View style={sharedStyles.container}>
+    <View style={sharedStyles.screen}>
       {isChangeRequested && isPinEqual ? (
         <Icon
           name={'check-circle'}

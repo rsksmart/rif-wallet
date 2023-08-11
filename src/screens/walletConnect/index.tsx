@@ -65,7 +65,7 @@ export const WalletConnectScreen = ({ route }: Props) => {
 
   return (
     <WalletConnectProviderElement>
-      <View style={sharedStyles.container}>
+      <View style={sharedStyles.screen}>
         <View style={styles.header}>
           <View style={styles.innerHeader1}>
             <Typography type="h2">{t('dapps_title')}</Typography>
