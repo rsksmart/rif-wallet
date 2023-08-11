@@ -79,7 +79,7 @@ export const ActivityScreen = ({ navigation }: ActivityMainScreenProps) => {
               <Image
                 source={require('/assets/images/no-transactions.png')}
                 resizeMode="contain"
-                style={styles.image}
+                style={styles.noTransactionImage}
               />
             )}
           </>
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   listEmptyText: castStyle.text({
     marginTop: 10,
   }),
-  image: castStyle.image({
+  noTransactionImage: castStyle.image({
     alignSelf: 'center',
     width: '80%',
     height: 500,
