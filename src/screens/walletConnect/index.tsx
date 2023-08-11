@@ -1,6 +1,6 @@
 import { useIsFocused } from '@react-navigation/native'
 import WalletConnect from '@walletconnect/client'
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image, ScrollView, StyleSheet, View } from 'react-native'
 
