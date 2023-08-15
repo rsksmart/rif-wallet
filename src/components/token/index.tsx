@@ -1,5 +1,5 @@
 import Clipboard from '@react-native-community/clipboard'
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Alert,
@@ -64,16 +64,6 @@ export const TokenBalance = ({
   const isRifToken =
     firstValue.symbol?.toUpperCase() === 'RIF' ||
     firstValue.symbol?.toUpperCase() === 'TRIF'
-
-  const toNameOrAddress = useMemo(() => {
-    if (!contact) {
-      return {}
-    }
-    if (contact.name) {
-      return { name: `${contact.name}.rsk` }
-    }
-    return { address: contact.address }
-  }, [contact])
 
   const onCopyAddress = useCallback(() => {
     if (contact) {
@@ -149,35 +139,29 @@ export const TokenBalance = ({
           )}
         </View>
         {contact && (
-          <View style={styles.toAddressContainer}>
-            <Typography type="body2">
+          <View style={styles.addressRow}>
+            <Typography type="body1" style={styles.addressLabel}>
               {amIReceiver ? t('From') : t('To')}
             </Typography>
             <AppTouchable
-              width={'100%'}
+              width="100%"
               onPress={onCopyAddress}
               style={styles.addressCopier}>
-              {toNameOrAddress.name ? (
-                <Typography
-                  type="body1"
-                  style={{ color: sharedColors.primary }}>
-                  {toNameOrAddress.name}
-                </Typography>
-              ) : (
-                <Typography
-                  type="body3"
-                  numberOfLines={1}
-                  adjustsFontSizeToFit
-                  style={styles.fullAddress}>
-                  {toNameOrAddress.address}
-                </Typography>
-              )}
+              <Typography
+                type={contact.name ? 'body1' : 'label'}
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                style={
+                  contact.name ? styles.nameContent : styles.addressContent
+                }>
+                {contact.name || contact.address}
+              </Typography>
             </AppTouchable>
           </View>
         )}
       </View>
       <View style={styles.rightColumn}>
-        {contact && contact.name ? <ContactCard name={contact.name} /> : null}
+        {contact?.name ? <ContactCard name={contact.name} /> : null}
         {hideable && !editable && (
           <AppTouchable
             width={46}
@@ -259,21 +243,23 @@ const styles = StyleSheet.create({
     padding: 0,
     paddingLeft: 6,
   }),
-  toAddressContainer: castStyle.view({
+  addressRow: castStyle.view({
     flexDirection: 'row',
     marginTop: 12,
+    alignItems: 'center',
   }),
-  textSymbol: castStyle.text({
-    color: sharedColors.white,
-    paddingTop: 3,
+  addressLabel: castStyle.text({
+    paddingRight: 4,
   }),
   addressCopier: castStyle.view({
+    flex: 1,
     alignItems: 'flex-start',
-    marginLeft: 4,
   }),
-  fullAddress: castStyle.text({
+  nameContent: castStyle.text({
     color: sharedColors.primary,
-    marginTop: 3,
-    marginRight: 30,
+  }),
+  addressContent: castStyle.text({
+    color: sharedColors.primary,
+    paddingTop: 6,
   }),
 })
