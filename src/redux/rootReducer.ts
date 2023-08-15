@@ -10,6 +10,7 @@ import { balancesReducer } from './slices/balancesSlice'
 import { profileReducer } from './slices/profileSlice'
 import { settingsSliceReducer } from './slices/settingsSlice'
 import { transactionsReducer } from './slices/transactionsSlice'
+import { currentTransactionReducer } from './slices/currentTransactionSlice'
 import { usdPriceReducer } from './slices/usdPricesSlice'
 import { SettingsSlice } from './slices/settingsSlice/types'
 
@@ -53,6 +54,7 @@ const reducers = combineReducers({
   usdPrices: usdPriceReducer,
   balances: balancesReducer,
   transactions: transactionsReducer,
+  currentTransaction: currentTransactionReducer,
   settings: persistReducer(settingsPersistConfig, settingsSliceReducer),
   profile: profileReducer,
   accounts: accountsReducer,

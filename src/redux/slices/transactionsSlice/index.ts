@@ -122,7 +122,7 @@ export const activityDeserializer: (
         : TransactionStatus.PENDING,
       value: tokenValue,
       symbol: tokenSymbol,
-      price: Number(tokenUsd),
+      price: tokenUsd,
       fee: {
         tokenValue: feeValue,
         symbol: feeSymbol,

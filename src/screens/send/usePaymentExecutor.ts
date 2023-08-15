@@ -17,10 +17,15 @@ import {
 import { fetchUtxo } from 'screens/send/bitcoinUtils'
 import { AppDispatch } from 'store/index'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
+import {
+  deleteCurrentTransaction,
+  setCurrentTransaction,
+} from 'store/slices/currentTransactionSlice'
+import { TransactionInformation } from 'store/slices/currentTransactionSlice/types'
 
 import { transferBitcoin } from './transferBitcoin'
 import { transfer } from './transferTokens'
-import { OnSetTransactionStatusChange, TransactionInformation } from './types'
+import { OnSetTransactionStatusChange } from './types'
 
 // Update transaction based on status
 // Pending will add a pendingTransaction
@@ -112,10 +117,8 @@ const checkBitcoinPaymentForErrors = (
   }
 }
 
-export const usePaymentExecutor = (
-  bitcoinNetwork: TokenBalanceObject | undefined,
-) => {
-  const [currentTransaction, setCurrentTransaction] =
+export const usePaymentExecutor = (bitcoinNetwork?: TokenBalanceObject) => {
+  const [currentUserTransaction, setCurrentUserTransaction] =
     useState<TransactionInformation | null>(null)
   const [error, setError] = useState<string | null | { message: string }>()
   const [utxos, setUtxos] = useState<UnspentTransactionType[]>([])
@@ -125,12 +128,14 @@ export const usePaymentExecutor = (
 
   const executePayment = ({
     token,
+    feeToken,
     amount,
     to,
     wallet,
     chainId,
   }: {
     token: TokenBalanceObject
+    feeToken: TokenBalanceObject
     amount: number
     to: string
     wallet: RIFWallet
@@ -144,7 +149,7 @@ export const usePaymentExecutor = (
       }
       transferBitcoin({
         btcToPay: amount,
-        onSetCurrentTransaction: setCurrentTransaction,
+        onSetCurrentTransaction: setCurrentUserTransaction,
         onSetError: setError,
         bip: token.bips[0],
         to,
@@ -154,11 +159,12 @@ export const usePaymentExecutor = (
     } else {
       transfer({
         token: token as unknown as ITokenWithBalance,
+        feeToken: feeToken as unknown as ITokenWithBalance,
         amount: amount.toString(),
         to,
         wallet,
         chainId,
-        onSetCurrentTransaction: setCurrentTransaction,
+        onSetCurrentTransaction: setCurrentUserTransaction,
         onSetError: setError,
         onSetTransactionStatusChange:
           handleReduxTransactionStatusChange(dispatch),
@@ -176,8 +182,20 @@ export const usePaymentExecutor = (
     }
   }, [bitcoinNetwork])
 
+  useEffect(() => {
+    if (
+      currentUserTransaction &&
+      currentUserTransaction.status !== 'SUCCESS' &&
+      currentUserTransaction.status !== 'FAILED'
+    ) {
+      dispatch(setCurrentTransaction(currentUserTransaction))
+    } else {
+      dispatch(deleteCurrentTransaction())
+    }
+  }, [currentUserTransaction, dispatch])
+
   return {
-    currentTransaction,
+    currentTransaction: currentUserTransaction,
     error,
     executePayment,
   }

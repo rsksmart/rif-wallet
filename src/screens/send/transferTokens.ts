@@ -3,11 +3,12 @@ import { BigNumber, utils } from 'ethers'
 import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
+import { TransactionInformation } from 'store/slices/currentTransactionSlice/types'
+
 import {
   OnSetCurrentTransactionFunction,
   OnSetErrorFunction,
   OnSetTransactionStatusChange,
-  TransactionInformation,
 } from './types'
 
 interface IRifTransfer {
@@ -16,6 +17,7 @@ interface IRifTransfer {
   to: string
   wallet: RIFWallet
   chainId: number
+  feeToken?: ITokenWithBalance
   onSetError?: OnSetErrorFunction
   onSetCurrentTransaction?: OnSetCurrentTransactionFunction
   onSetTransactionStatusChange?: OnSetTransactionStatusChange
@@ -27,12 +29,16 @@ export const transfer = async ({
   wallet,
   chainId,
   token,
+  feeToken,
   onSetError,
   onSetCurrentTransaction,
   onSetTransactionStatusChange,
 }: IRifTransfer) => {
   onSetError?.(null)
-  onSetCurrentTransaction?.({ status: 'USER_CONFIRM' })
+  onSetCurrentTransaction?.({
+    status: 'USER_CONFIRM',
+    feeSymbol: feeToken?.symbol,
+  })
 
   // handle both ERC20 tokens and the native token (gas)
   const transferMethod =
@@ -67,6 +73,7 @@ export const transfer = async ({
       symbol: transferMethod.symbol,
       hash: txPending.hash,
       status: 'PENDING',
+      feeSymbol: feeToken?.symbol,
     }
     onSetCurrentTransaction?.(current)
 

@@ -23,6 +23,7 @@ import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { addRecentContact } from 'store/slices/contactsSlice'
+import { selectCurrentTransaction } from 'store/slices/currentTransactionSlice/selector'
 
 import useEnhancedWithGas from '../useEnhancedWithGas'
 
@@ -38,6 +39,7 @@ export const ReviewTransactionContainer = ({
   onConfirm,
 }: Props) => {
   const dispatch = useAppDispatch()
+  const currentTransaction = useAppSelector(selectCurrentTransaction)
   const insets = useSafeAreaInsets()
   const tokenPrices = useAppSelector(selectUsdPrices)
   // enhance the transaction to understand what it is:
@@ -50,7 +52,7 @@ export const ReviewTransactionContainer = ({
     throw new Error('no wallet')
   }
 
-  const txRequest = useMemo(() => request.payload[0], [request])
+  const txRequest = request.payload[0]
   const { enhancedTransactionRequest, isLoaded } = useEnhancedWithGas(
     wallet,
     txRequest,
@@ -66,9 +68,9 @@ export const ReviewTransactionContainer = ({
   } = enhancedTransactionRequest
 
   const isMainnet = chainTypesById[chainId] === ChainTypeEnum.MAINNET
-
   const rbtcSymbol = isMainnet ? TokenSymbol.RBTC : TokenSymbol.TRBTC
-  const feeSymbol = isMainnet ? TokenSymbol.RIF : TokenSymbol.TRIF
+  const defaultTokenSymbol = isMainnet ? TokenSymbol.RIF : TokenSymbol.TRIF
+  const feeSymbol = currentTransaction?.feeSymbol || defaultTokenSymbol
   const feeContract = getTokenAddress(feeSymbol, chainTypesById[chainId])
 
   const tokenContract = useMemo(() => {

@@ -8,14 +8,7 @@ import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { TransactionExtras } from 'store/slices/transactionsSlice/types'
-
-export interface TransactionInformation {
-  status: 'USER_CONFIRM' | 'PENDING' | 'SUCCESS' | 'FAILED'
-  to?: string
-  value?: string
-  symbol?: string
-  hash?: string
-}
+import { TransactionInformation } from 'store/slices/currentTransactionSlice/types'
 
 export type OnSetErrorFunction = (
   error: string | null | { message: string },

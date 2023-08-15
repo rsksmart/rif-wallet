@@ -39,6 +39,7 @@ import { TokenImage, TokenSymbol } from '../home/TokenImage'
 interface Props {
   onConfirm: (
     selectedToken: TokenBalanceObject,
+    selectedFeeToken: TokenBalanceObject,
     amount: number,
     to: string,
   ) => void
@@ -195,9 +196,14 @@ export const TransactionForm = ({
 
   const handleConfirmClick = useCallback(
     (values: FormValues) => {
-      onConfirm(selectedToken, values.amount, values.to.address)
+      onConfirm(
+        selectedToken,
+        selectedFeeToken,
+        values.amount,
+        values.to.address,
+      )
     },
-    [selectedToken, onConfirm],
+    [onConfirm, selectedToken, selectedFeeToken],
   )
 
   const onChangeSelectedTokenAddress = useCallback(
