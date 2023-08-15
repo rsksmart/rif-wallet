@@ -47,14 +47,12 @@ export const fetchAddressToReturnFundsTo = ({
   onSetAddress,
   usedBitcoinAddresses,
 }: FetchAddressToReturnFundsToFunction) => {
-  if (token.bips?.[0]?.fetchExternalAvailableAddresses) {
-    token.bips[0].fetchExternalAvailableAddresses().then(addresses => {
-      for (const address of addresses) {
-        if (!usedBitcoinAddresses[address]) {
-          onSetAddress?.(address)
-          break
-        }
+  token.bips[0].fetchExternalAvailableAddresses({}).then(addresses => {
+    for (const address of addresses) {
+      if (!usedBitcoinAddresses[address]) {
+        onSetAddress?.(address)
+        break
       }
-    })
-  }
+    }
+  })
 }
