@@ -7,16 +7,23 @@ import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 import { useTranslation } from 'react-i18next'
 
-import { useAppDispatch } from 'store/storeUtils'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import {
   addPendingTransaction,
   modifyTransaction,
   ApiTransactionWithExtras,
   ModifyTransaction,
 } from 'store/slices/transactionsSlice'
-import { fetchUtxo } from 'screens/send/bitcoinUtils'
+import {
+  fetchAddressToReturnFundsTo,
+  fetchUtxo,
+} from 'screens/send/bitcoinUtils'
 import { AppDispatch } from 'store/index'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
+import {
+  addAddressToUsedBitcoinAddresses,
+  selectWholeSettingsState,
+} from 'store/slices/settingsSlice'
 
 import { transferBitcoin } from './transferBitcoin'
 import { transfer } from './transferTokens'
@@ -119,9 +126,20 @@ export const usePaymentExecutor = (
     useState<TransactionInformation | null>(null)
   const [error, setError] = useState<string | null | { message: string }>()
   const [utxos, setUtxos] = useState<UnspentTransactionType[]>([])
+  const [addressToReturnRemainingAmount, setAddressToReturnRemainingAmount] =
+    useState<string>('')
   const [bitcoinBalance, setBalanceAvailable] = useState<number>(0)
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { usedBitcoinAddresses } = useAppSelector(selectWholeSettingsState)
+
+  const onBitcoinTransactionSuccess = ({
+    addressUsed,
+  }: {
+    addressUsed: string
+  }) => {
+    dispatch(addAddressToUsedBitcoinAddresses(addressUsed))
+  }
 
   const executePayment = ({
     token,
@@ -150,6 +168,8 @@ export const usePaymentExecutor = (
         to,
         utxos,
         balance: bitcoinBalance,
+        addressToReturnRemainingAmount,
+        onBitcoinTransactionSuccess,
       })
     } else {
       transfer({
@@ -166,6 +186,7 @@ export const usePaymentExecutor = (
     }
   }
   // When bitcoin network changes - fetch utxos
+  // and also set the return address
   useEffect(() => {
     if (bitcoinNetwork && 'satoshis' in bitcoinNetwork) {
       fetchUtxo({
@@ -173,8 +194,13 @@ export const usePaymentExecutor = (
         onSetUtxos: setUtxos,
         onSetBalance: balance => setBalanceAvailable(balance.toNumber()),
       })
+      fetchAddressToReturnFundsTo({
+        token: bitcoinNetwork,
+        onSetAddress: setAddressToReturnRemainingAmount,
+        usedBitcoinAddresses,
+      })
     }
-  }, [bitcoinNetwork])
+  }, [bitcoinNetwork, usedBitcoinAddresses])
 
   return {
     currentTransaction,

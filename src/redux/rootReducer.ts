@@ -30,7 +30,7 @@ const migrations = {
 
 const settingsPersistConfig: PersistConfig<SettingsSlice> = {
   key: 'settings',
-  whitelist: ['pin', 'chainId', 'isFirstLaunch'],
+  whitelist: ['pin', 'chainId', 'isFirstLaunch', 'usedBitcoinAddresses'],
   storage: reduxStorage,
 }
 
