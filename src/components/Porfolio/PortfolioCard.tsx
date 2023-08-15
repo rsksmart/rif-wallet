@@ -82,6 +82,8 @@ const NonSelectedCard = ({
       <Typography
         type={'body1'}
         style={nonSelectedCardStyles.secondaryText}
+        numberOfLines={1}
+        adjustsFontSizeToFit
         accessibilityLabel="balance">
         {hideBalance ? '\u002A\u002A\u002A\u002A' : secondaryText}
       </Typography>
