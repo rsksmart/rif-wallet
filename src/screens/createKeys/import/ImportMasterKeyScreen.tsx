@@ -128,6 +128,7 @@ export const ImportMasterKeyScreen = (
       return (
         <View style={styles.inputMarginView}>
           <Input
+            accessibilityLabel={`word-${firstItemId}`}
             label={`Word ${firstItemId}`}
             inputName={`${firstItemId}`}
             placeholder={`Word ${firstItemId}`}
@@ -139,6 +140,7 @@ export const ImportMasterKeyScreen = (
             blurOnSubmit={false}
           />
           <Input
+            accessibilityLabel={`word-${firstItemId}`}
             label={`Word ${secondItemId}`}
             inputName={`${secondItemId}`}
             placeholder={`Word ${secondItemId}`}
@@ -150,6 +152,7 @@ export const ImportMasterKeyScreen = (
             blurOnSubmit={false}
           />
           <Input
+            accessibilityLabel={`word-${firstItemId}`}
             label={`Word ${thirdItemId}`}
             inputName={`${thirdItemId}`}
             placeholder={`Word ${thirdItemId}`}
