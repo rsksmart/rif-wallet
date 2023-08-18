@@ -15,8 +15,8 @@ import { sharedStyles } from 'shared/constants'
 import {
   ActivityScreen,
   ScanQRScreen,
-  WalletConnectScreen,
   PinScreen,
+  WalletConnectScreenWithProvider,
 } from 'screens/index'
 import { OfflineScreen } from 'core/components/OfflineScreen'
 
@@ -92,7 +92,7 @@ export const RootNavigationComponent = () => {
               />
               <RootTabs.Screen
                 name={rootTabsRouteNames.WalletConnect}
-                component={WalletConnectScreen}
+                component={WalletConnectScreenWithProvider}
               />
               <RootTabs.Screen
                 name={rootTabsRouteNames.Settings}
