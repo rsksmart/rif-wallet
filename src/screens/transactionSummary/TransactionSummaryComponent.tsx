@@ -209,6 +209,7 @@ export const TransactionSummaryComponent = ({
               <Typography type={'body2'} style={[sharedStyles.textCenter]}>
                 {displayRoundBalance(totalToken)} {tokenValue.symbol}{' '}
                 {tokenValue.symbol !== fee.symbol &&
+                  !amIReceiver &&
                   t('transaction_summary_plus_fees')}
               </Typography>
             </View>
