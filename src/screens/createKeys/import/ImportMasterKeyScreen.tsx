@@ -140,7 +140,7 @@ export const ImportMasterKeyScreen = (
             blurOnSubmit={false}
           />
           <Input
-            accessibilityLabel={`word-${firstItemId}`}
+            accessibilityLabel={`word-${secondItemId}`}
             label={`Word ${secondItemId}`}
             inputName={`${secondItemId}`}
             placeholder={`Word ${secondItemId}`}
@@ -152,7 +152,7 @@ export const ImportMasterKeyScreen = (
             blurOnSubmit={false}
           />
           <Input
-            accessibilityLabel={`word-${firstItemId}`}
+            accessibilityLabel={`word-${thirdItemId}`}
             label={`Word ${thirdItemId}`}
             inputName={`${thirdItemId}`}
             placeholder={`Word ${thirdItemId}`}
@@ -212,6 +212,7 @@ export const ImportMasterKeyScreen = (
           inactiveDotScale={0.6}
         />
         <AppButton
+          accessibilityLabel={'OK'}
           title="OK"
           color="white"
           textColor="black"
