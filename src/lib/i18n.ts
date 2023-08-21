@@ -357,6 +357,11 @@ const resources = {
         'RIF Wallet needs an internet connection to work properly.',
       offline_screen_description_2:
         'Please check your connection and try again.',
+      dapps_requirements_not_met:
+        'The Dapp you tried to connect does not meet our requirements.',
+      dapps_session_rejected: 'Session rejected',
+      dapps_error_pairing_title: 'Error when trying to connect to Dapp',
+      dapps_error_pairing_message: 'Please refresh the QR and try again.',
     },
   },
   es: {

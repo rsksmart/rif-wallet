@@ -7,6 +7,8 @@ import { ChainTypeEnum } from 'shared/constants/chainConstants'
 import { SETTINGS } from 'core/types'
 
 /**
+ * This function will get the environment settings from the config.json
+ * It requires the chainType because config.json will return a value that depends on the chainId
  * RSK Mainnet: 30
  * RSK Testnet: 31
  */
@@ -25,6 +27,11 @@ export const getWalletSetting = (
 
   return ReactNativeConfig[setting] || ''
 }
+/**
+ * This function will get the environment variable from .env
+ * @param setting
+ */
+export const getEnvSetting = (setting: SETTINGS) => ReactNativeConfig[setting]
 
 export const getTokenAddress = (symbol: string, chainType: ChainTypeEnum) => {
   const contracts =

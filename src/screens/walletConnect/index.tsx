@@ -1,7 +1,7 @@
 import WalletConnect from '@walletconnect/client'
-import { useContext, useMemo, useState } from 'react'
+import { ComponentType, useContext, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Image, ScrollView, StyleSheet, View } from 'react-native'
+import { Alert, Image, ScrollView, StyleSheet, View } from 'react-native'
 
 import { Typography } from 'components/index'
 import { ConfirmationModal } from 'components/modal'
@@ -20,19 +20,53 @@ import {
   WalletConnectContext,
   WalletConnectProviderElement,
 } from './WalletConnectContext'
+import {
+  SessionStruct,
+  WalletConnect2Context,
+  WalletConnect2Provider,
+} from './WalletConnect2Context'
 
 type Props = RootTabsScreenProps<rootTabsRouteNames.WalletConnect>
 
-export const WalletConnectScreen = ({ route }: Props) => {
+interface MergedWCSession {
+  key: string
+  wc: WalletConnect | SessionStruct
+  name?: string
+  url?: string
+}
+
+const withWalletConnectProviders =
+  <P extends object>(Component: ComponentType<P>) =>
+  (props: P) => {
+    const { wallet } = useAppSelector(selectWalletState)
+    return (
+      <WalletConnectProviderElement>
+        <WalletConnect2Provider wallet={wallet}>
+          <Component {...props} />
+        </WalletConnect2Provider>
+      </WalletConnectProviderElement>
+    )
+  }
+
+const WalletConnectScreen = ({ route }: Props) => {
   const { wallet } = useAppSelector(selectWalletState)
-  const wcKey = route.params?.wcKey
+  const wcKey = route.params?.data
 
   const { t } = useTranslation()
-  const { connections, handleApprove, handleReject } =
+  const { connections, handleApprove, handleReject, createSession } =
     useContext(WalletConnectContext)
-  const [disconnectingWC, setDisconnectingWC] = useState<WalletConnect | null>(
-    null,
-  )
+  const {
+    pendingSession,
+    error: walletConnect2Error,
+    setError: setWalletConnect2Error,
+    sessions,
+    onDisconnectSession,
+    onUserApprovedSession,
+    onUserRejectedSession,
+    onCreateNewSession,
+  } = useContext(WalletConnect2Context)
+  const [disconnectingWC, setDisconnectingWC] =
+    useState<MergedWCSession | null>(null)
 
   const openedConnections = useMemo(
     () => Object.values(connections).filter(({ connector: c }) => c.connected),
@@ -41,88 +75,169 @@ export const WalletConnectScreen = ({ route }: Props) => {
 
   const pendingConnector = wcKey ? connections[wcKey]?.connector : null
 
-  const handleDisconnectSession = (wc: WalletConnect) => async () => {
-    try {
-      const key = wc.key
-      await wc.killSession()
-      deleteWCSession(key)
-      setDisconnectingWC(null)
-    } catch (err) {
-      // Error disconnecting session
-      if (err instanceof Error || typeof err === 'string') {
-        console.log(53, err.toString())
+  /**
+   * useEffect that watches when we pass data to the route params and connects user depending on WC version
+   */
+  useEffect(() => {
+    // When data exists - handle the case
+    if (route.params?.data) {
+      const { data } = route.params
+      if (data.includes('@1')) {
+        createSession(wallet, data)
+      } else if (data.includes('@2')) {
+        // WalletConnect 2.0
+        onCreateNewSession(data)
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [route.params?.data])
+
+  const handleDisconnectSession = (mergedWc: MergedWCSession) => async () => {
+    if ('topic' in mergedWc.wc) {
+      try {
+        await onDisconnectSession(mergedWc.wc)
+        setDisconnectingWC(null)
+      } catch (err) {
+        // @TODO handle error disconnecting
+        console.log(63, 'WC2.0 error disconnect', err)
+      }
+    } else {
+      const { wc } = mergedWc
+      try {
+        const key = wc.key
+        await wc.killSession()
+        deleteWCSession(key)
+        setDisconnectingWC(null)
+      } catch (err) {
+        // Error disconnecting session
+        if (err instanceof Error || typeof err === 'string') {
+          console.log(53, err.toString())
+        }
       }
     }
   }
 
+  /**
+   * When there is an error in WC2.0 - this effect will show it to the UI
+   */
+  useEffect(() => {
+    if (walletConnect2Error) {
+      Alert.alert(t(walletConnect2Error.title), t(walletConnect2Error.message))
+      setWalletConnect2Error(undefined)
+    }
+  }, [walletConnect2Error, t, setWalletConnect2Error])
+
+  const onWCDisconnect = (wc: MergedWCSession) => () => setDisconnectingWC(wc)
+
+  const mergedWalletConnectSessions: MergedWCSession[] = useMemo(
+    () =>
+      [...openedConnections, ...sessions].map(session => {
+        if ('connector' in session) {
+          return {
+            name: session.connector.peerMeta?.name,
+            url: session.connector.peerMeta?.url,
+            key: session.connector.key,
+            wc: session.connector,
+          }
+        } else {
+          return {
+            name: session.peer.metadata.name,
+            url: session.peer.metadata.url,
+            key: session.topic,
+            wc: session,
+          }
+        }
+      }),
+    [openedConnections, sessions],
+  )
   return (
     <WalletConnectProviderElement>
-      <View style={styles.parent}>
-        <View style={styles.header}>
-          <View style={styles.innerHeader1}>
-            <Typography type="h2">{t('dapps_title')}</Typography>
-            <Typography type="h5" style={styles.subtitle}>
-              {t('dapps_instructions')}
-            </Typography>
+      <WalletConnect2Provider wallet={wallet}>
+        <View style={styles.parent}>
+          <View style={styles.header}>
+            <View style={styles.innerHeader1}>
+              <Typography type="h2">{t('dapps_title')}</Typography>
+              <Typography type="h5" style={styles.subtitle}>
+                {t('dapps_instructions')}
+              </Typography>
+            </View>
+            <View style={styles.innerHeader2} />
           </View>
-          <View style={styles.innerHeader2} />
-        </View>
 
-        {openedConnections.length === 0 ? (
-          <>
-            <Image
-              source={require('src/images/empty-dapps.png')}
-              style={styles.noDappsImage}
-            />
-          </>
-        ) : (
-          <ScrollView style={styles.dappsList}>
-            {openedConnections.map(({ connector: c }) => (
-              <DappItem
-                key={c.key}
-                connector={c}
-                isDisconnecting={c.key === disconnectingWC?.key}
-                onDisconnect={() => setDisconnectingWC(c)}
+          {mergedWalletConnectSessions.length === 0 ? (
+            <>
+              <Image
+                source={require('src/images/empty-dapps.png')}
+                style={styles.noDappsImage}
               />
-            ))}
-          </ScrollView>
-        )}
+            </>
+          ) : (
+            <ScrollView style={styles.dappsList}>
+              {mergedWalletConnectSessions.map(session => (
+                <DappItem
+                  key={session.key}
+                  name={session.name}
+                  url={session.url}
+                  isDisconnecting={session === disconnectingWC}
+                  onDisconnect={onWCDisconnect(session)}
+                />
+              ))}
+            </ScrollView>
+          )}
 
-        {pendingConnector ? (
-          <ConfirmationModal
-            isVisible={!pendingConnector.connected}
-            title={t('dapps_confirmation_title')}
-            description={`${t('dapps_confirmation_description')}${
-              pendingConnector.peerMeta?.name
-                ? ` ${pendingConnector.peerMeta?.name}`
-                : ''
-            }?`}
-            okText={t('dapps_confirmation_button_connect')}
-            cancelText={t('dapps_confirmation_button_cancel')}
-            onOk={() => handleApprove(pendingConnector, wallet)}
-            onCancel={() => handleReject(pendingConnector)}
-          />
-        ) : null}
+          {pendingConnector ? (
+            <ConfirmationModal
+              isVisible={!pendingConnector.connected}
+              title={t('dapps_confirmation_title')}
+              description={`${t('dapps_confirmation_description')}${
+                pendingConnector.peerMeta?.name
+                  ? ` ${pendingConnector.peerMeta?.name}`
+                  : ''
+              }?`}
+              okText={t('dapps_confirmation_button_connect')}
+              cancelText={t('dapps_confirmation_button_cancel')}
+              onOk={() => handleApprove(pendingConnector, wallet)}
+              onCancel={() => handleReject(pendingConnector)}
+            />
+          ) : null}
 
-        {disconnectingWC ? (
-          <ConfirmationModal
-            isVisible={Boolean(disconnectingWC)}
-            title={t('dapps_confirm_disconnection_title')}
-            description={`${t('dapps_confirm_disconnection_description')}${
-              disconnectingWC.peerMeta?.name
-                ? ` ${disconnectingWC.peerMeta?.name}`
-                : ''
-            }?`}
-            okText={t('dapps_confirm_disconnection_confirm')}
-            cancelText={t('dapps_confirm_disconnection_cancel')}
-            onOk={handleDisconnectSession(disconnectingWC)}
-            onCancel={() => setDisconnectingWC(null)}
-          />
-        ) : null}
-      </View>
+          {pendingSession ? (
+            <ConfirmationModal
+              isVisible
+              title={t('dapps_confirmation_title')}
+              description={`${t('dapps_confirmation_description')}${
+                pendingSession.proposal.params.proposer.metadata.name
+                  ? ` ${pendingSession.proposal.params.proposer.metadata.name}`
+                  : ''
+              }?`}
+              okText={t('dapps_confirmation_button_connect')}
+              cancelText={t('dapps_confirmation_button_cancel')}
+              onOk={onUserApprovedSession}
+              onCancel={onUserRejectedSession}
+            />
+          ) : null}
+
+          {disconnectingWC ? (
+            <ConfirmationModal
+              isVisible={Boolean(disconnectingWC)}
+              title={t('dapps_confirm_disconnection_title')}
+              description={`${t('dapps_confirm_disconnection_description')}${
+                disconnectingWC.name ? ` ${disconnectingWC.name}` : ''
+              }?`}
+              okText={t('dapps_confirm_disconnection_confirm')}
+              cancelText={t('dapps_confirm_disconnection_cancel')}
+              onOk={handleDisconnectSession(disconnectingWC)}
+              onCancel={() => setDisconnectingWC(null)}
+            />
+          ) : null}
+        </View>
+      </WalletConnect2Provider>
     </WalletConnectProviderElement>
   )
 }
+
+export const WalletConnectScreenWithProviders =
+  withWalletConnectProviders(WalletConnectScreen)
 
 const styles = StyleSheet.create({
   parent: castStyle.view({
