@@ -72,7 +72,8 @@ export const BasicRow = ({
         type="body2"
         style={styles.bold}
         numberOfLines={1}
-        ellipsizeMode="tail">
+        ellipsizeMode="tail"
+        adjustsFontSizeToFit>
         {label}
       </Typography>
       <Typography type="labelLight">
@@ -156,6 +157,7 @@ const styles = StyleSheet.create({
     flex: 3,
     flexDirection: 'column',
     flexGrow: 1,
+    paddingRight: 5,
   },
   thirdView: {
     flexBasis: '27%',
