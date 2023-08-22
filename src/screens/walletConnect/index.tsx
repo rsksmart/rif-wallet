@@ -96,7 +96,7 @@ export const WalletConnectScreen = ({ route }: Props) => {
 
   const wc2Sessions: WC2Session[] = useMemo(
     () =>
-      [...sessions].map(session => {
+      sessions.map(session => {
         return {
           name: session.peer.metadata.name,
           url: session.peer.metadata.url,
@@ -119,12 +119,10 @@ export const WalletConnectScreen = ({ route }: Props) => {
       </View>
 
       {wc2Sessions.length === 0 ? (
-        <>
-          <Image
-            source={require('src/images/empty-dapps.png')}
-            style={styles.noDappsImage}
-          />
-        </>
+        <Image
+          source={require('src/images/empty-dapps.png')}
+          style={styles.noDappsImage}
+        />
       ) : (
         <ScrollView style={styles.dappsList}>
           {wc2Sessions.map(session => (
