@@ -107,7 +107,7 @@ export const WalletConnectScreen = ({ route }: Props) => {
     [sessions],
   )
   return (
-    <View style={styles.parent}>
+    <View style={styles.screen}>
       <View style={styles.header}>
         <View style={styles.innerHeader1}>
           <Typography type="h2">{t('dapps_title')}</Typography>
@@ -174,7 +174,7 @@ export const WalletConnectScreenWithProvider =
   withWalletConnectProvider(WalletConnectScreen)
 
 const styles = StyleSheet.create({
-  parent: castStyle.view({
+  screen: castStyle.view({
     height: '100%',
     backgroundColor: sharedColors.secondary,
     padding: 20,
