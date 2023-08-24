@@ -18,14 +18,15 @@ import { castStyle } from 'shared/utils'
 import { ActivityMainScreenProps } from 'shared/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { fetchBitcoinTransactions } from 'store/slices/transactionsSlice'
-import { selectWallet } from 'store/slices/settingsSlice'
+import { useAppropriateWalletState } from 'core/Core'
 
 import { ActivityBasicRow } from './ActivityRow'
 
 export const ActivityScreen = ({ navigation }: ActivityMainScreenProps) => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
-  const wallet = useAppSelector(selectWallet)
+  const wallet = useAppropriateWalletState()
+
   const transactions = useAppSelector(selectTransactions)
   const areTransasctionsLoading = useAppSelector(selectTransactionsLoading)
 

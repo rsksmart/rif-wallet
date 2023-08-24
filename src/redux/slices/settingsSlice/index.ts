@@ -19,7 +19,7 @@ import { sharedColors } from 'shared/constants'
 import { createPublicAxios, createRIFWalletFactory } from 'core/setup'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { deleteProfile } from 'store/slices/profileSlice'
-import { navigationContainerRef } from 'core/Core'
+import { navigationContainerRef, setMagicContextFunction } from 'core/Core'
 import { initializeBitcoin } from 'core/hooks/bitcoin/initializeBitcoin'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { createKeysRouteNames } from 'navigation/createKeysNavigator'
@@ -79,6 +79,8 @@ const initializeRifSocketsSetBitcoin = (
     chainId,
     balances,
   })
+
+  console.log('BEFORE INIT')
 
   socketsEvents.emit(SocketsEvents.CONNECT)
 
@@ -363,6 +365,7 @@ export const loginWithEmail = createAsyncThunk<
   console.log('EMAIL RECEIVED', email)
   try {
     const isLoggedIn = await magic.user.isLoggedIn()
+
     if (!isLoggedIn) {
       const result = await magic.auth.loginWithEmailOTP({
         email,
@@ -376,7 +379,7 @@ export const loginWithEmail = createAsyncThunk<
     // TODO: verify key from result here
 
     const {
-      settings: { chainId, chainType },
+      settings: { chainId },
       usdPrices,
       balances: { tokenBalances: balances },
     } = thunkAPI.getState()
@@ -384,22 +387,24 @@ export const loginWithEmail = createAsyncThunk<
     const rifRelayConfig: RifRelayConfig = {
       smartWalletFactoryAddress: getWalletSetting(
         SETTINGS.SMART_WALLET_FACTORY_ADDRESS,
-        chainType,
+        chainTypesById[chainId],
       ),
       relayVerifierAddress: getWalletSetting(
         SETTINGS.RELAY_VERIFIER_ADDRESS,
-        chainType,
+        chainTypesById[chainId],
       ),
       deployVerifierAddress: getWalletSetting(
         SETTINGS.DEPLOY_VERIFIER_ADDRESS,
-        chainType,
+        chainTypesById[chainId],
       ),
-      relayServer: getWalletSetting(SETTINGS.RIF_RELAY_SERVER, chainType),
+      relayServer: getWalletSetting(
+        SETTINGS.RIF_RELAY_SERVER,
+        chainTypesById[chainId],
+      ),
     }
 
-    const provider = new providers.Web3Provider(magic.rpcProvider)
-
-    const signer = provider.getSigner()
+    const web3Provider = new providers.Web3Provider(magic.rpcProvider)
+    const signer = web3Provider.getSigner()
 
     const rifWallet = await RIFWallet.create(
       signer,
@@ -409,18 +414,22 @@ export const loginWithEmail = createAsyncThunk<
 
     const isDeployed = await rifWallet.smartWalletFactory.isDeployed()
 
-    thunkAPI.dispatch(
-      setWallet({
-        wallet: jc.decycle(rifWallet),
-        walletIsDeployed: {
-          isDeployed,
-          loading: false,
-          txHash: '',
-        },
-        eoaAddress: rifWallet.address,
-        smartWalletAddress: rifWallet.smartWalletAddress,
-      }),
-    )
+    if (!setMagicContextFunction) {
+      return thunkAPI.rejectWithValue(
+        'No Function for setting Context Provided!',
+      )
+    }
+
+    setMagicContextFunction({
+      wallet: rifWallet,
+      walletIsDeployed: {
+        isDeployed,
+        loading: false,
+        txHash: '',
+      },
+      chainId: 31,
+      chainType: ChainTypeEnum.TESTNET,
+    })
 
     thunkAPI.dispatch(setUnlocked(true))
 

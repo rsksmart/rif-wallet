@@ -10,9 +10,10 @@ import {
   rootTabsRouteNames,
 } from 'navigation/rootNavigator'
 import { TransactionSummaryComponent } from 'screens/transactionSummary/TransactionSummaryComponent'
-import { selectWallet, setFullscreen } from 'store/slices/settingsSlice'
+import { setFullscreen } from 'store/slices/settingsSlice'
 import { TokenFeeValueObject } from 'store/slices/transactionsSlice'
-import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { useAppDispatch } from 'store/storeUtils'
+import { useAppropriateWalletState } from 'core/Core'
 
 import { TransactionStatus } from './transactionSummaryUtils'
 
@@ -39,7 +40,7 @@ export const TransactionSummaryScreen = ({
   route,
   navigation,
 }: RootTabsScreenProps<rootTabsRouteNames.TransactionSummary>) => {
-  const wallet = useAppSelector(selectWallet)
+  const { wallet } = useAppropriateWalletState()
   const dispatch = useAppDispatch()
   const isFocused = useIsFocused()
   const { backScreen } = route.params

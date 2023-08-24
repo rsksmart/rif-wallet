@@ -18,7 +18,7 @@ import { useAppSelector } from 'store/storeUtils'
 import { sharedColors } from 'shared/constants'
 import { AppButtonBackgroundVarietyEnum, Input } from 'components/index'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
-import { selectWallet } from 'store/slices/settingsSlice'
+import { useAppropriateWalletState } from 'core/Core'
 
 interface ReviewBitcoinTransactionContainerProps {
   request: SendBitcoinRequest
@@ -31,7 +31,7 @@ export const ReviewBitcoinTransactionContainer = ({
   onConfirm,
   onCancel,
 }: ReviewBitcoinTransactionContainerProps) => {
-  const wallet = useAppSelector(selectWallet)
+  const { wallet } = useAppropriateWalletState()
   const insets = useSafeAreaInsets()
   const { t } = useTranslation()
   const tokenPrices = useAppSelector(selectUsdPrices)

@@ -13,7 +13,7 @@ import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { settingsStackRouteNames } from 'navigation/settingsNavigator/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { selectWalletState, setFullscreen } from 'store/slices/settingsSlice'
+import { setFullscreen } from 'store/slices/settingsSlice'
 import {
   selectBalances,
   selectTotalUsdValue,
@@ -24,6 +24,7 @@ import { selectChainId } from 'store/slices/settingsSlice'
 import { FullScreenSpinner } from 'components/fullScreenSpinner'
 import { SuccessIcon } from 'components/icons/SuccessIcon'
 import { FeedbackModal } from 'components/feedbackModal'
+import { useAppropriateWalletState } from 'core/Core'
 
 import { TransactionForm } from './TransactionForm'
 import { usePaymentExecutor } from './usePaymentExecutor'
@@ -36,7 +37,7 @@ export const SendScreen = ({
   const dispatch = useAppDispatch()
   const isFocused = useIsFocused()
   const { t } = useTranslation()
-  const { wallet, walletIsDeployed } = useAppSelector(selectWalletState)
+  const { wallet, walletIsDeployed } = useAppropriateWalletState()
   const { loading, isDeployed } = walletIsDeployed
   const assets = Object.values(useAppSelector(selectBalances))
   const chainId = useAppSelector(selectChainId)
@@ -46,6 +47,9 @@ export const SendScreen = ({
   const { backScreen, contact } = route.params
   const contractAddress = route.params?.contractAddress || assets[0]
 
+  // @TODO: this hooks runs too many times,
+  // recreating the transfer method together with
+  // its methods
   // We assume only one bitcoinNetwork instance exists
   const { currentTransaction, executePayment, error } = usePaymentExecutor(
     assets.find(asset => 'bips' in asset),

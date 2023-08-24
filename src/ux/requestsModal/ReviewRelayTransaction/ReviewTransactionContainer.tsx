@@ -18,11 +18,11 @@ import { TransactionSummaryComponent } from 'screens/transactionSummary/Transact
 import { sharedColors } from 'shared/constants'
 import { chainTypesById } from 'shared/constants/chainConstants'
 import { errorHandler } from 'shared/utils'
-import { selectWalletState } from 'store/slices/settingsSlice'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { addRecentContact } from 'store/slices/contactsSlice'
+import { useAppropriateWalletState } from 'core/Core'
 
 import useEnhancedWithGas from '../useEnhancedWithGas'
 
@@ -41,7 +41,8 @@ export const ReviewTransactionContainer = ({
   const insets = useSafeAreaInsets()
   const tokenPrices = useAppSelector(selectUsdPrices)
   // enhance the transaction to understand what it is:
-  const { wallet, chainId } = useAppSelector(selectWalletState)
+  const { wallet, chainId } = useAppropriateWalletState()
+
   const [txCostInRif, setTxCostInRif] = useState<BigNumber>()
   const { t } = useTranslation()
 

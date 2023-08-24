@@ -35,7 +35,7 @@ import { rootTabsRouteNames } from 'src/navigation/rootNavigator'
 import { settingsStackRouteNames } from 'src/navigation/settingsNavigator/types'
 import { handleDomainTransactionStatusChange } from 'screens/rnsManager/utils'
 import { ConfirmationModal } from 'components/modal'
-import { selectWalletState } from 'store/slices/settingsSlice'
+import { useAppropriateWalletState } from 'core/Core'
 
 import { DomainInput } from './DomainInput'
 import { rnsManagerStyles } from './rnsManagerStyles'
@@ -50,7 +50,7 @@ interface FormValues {
 }
 
 export const SearchDomainScreen = ({ navigation }: Props) => {
-  const { wallet, walletIsDeployed } = useAppSelector(selectWalletState)
+  const { wallet, walletIsDeployed } = useAppropriateWalletState()
   const { isDeployed, loading } = walletIsDeployed
   const [isDomainOwned, setIsDomainOwned] = useState<boolean>(false)
   const [validDomain, setValidDomain] = useState<boolean>(false)

@@ -16,8 +16,7 @@ import {
   IWCSession,
   saveWCSession,
 } from 'storage/WalletConnectSessionStore'
-import { useAppSelector } from 'store/storeUtils'
-import { selectWallet } from 'store/slices/settingsSlice'
+import { useAppropriateWalletState } from 'core/Core'
 
 export interface WalletConnectContextInterface {
   connections: IWalletConnectConnections
@@ -50,7 +49,7 @@ export const WalletConnectProviderElement = ({ children }: Props) => {
 
   const [connections, setConnections] = useState<IWalletConnectConnections>({})
 
-  const wallet = useAppSelector(selectWallet)
+  const { wallet } = useAppropriateWalletState()
 
   const unsubscribeToEvents = async (wc: WalletConnect) => {
     const eventsNames = [

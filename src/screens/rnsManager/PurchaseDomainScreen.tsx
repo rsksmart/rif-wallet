@@ -36,7 +36,7 @@ import {
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { handleDomainTransactionStatusChange } from 'screens/rnsManager/utils'
-import { selectWallet } from 'store/slices/settingsSlice'
+import { useAppropriateWalletState } from 'core/Core'
 
 import { rnsManagerStyles } from './rnsManagerStyles'
 
@@ -50,7 +50,7 @@ export enum TestID {
 export const PurchaseDomainScreen = ({ navigation }: Props) => {
   const dispatch = useAppDispatch()
   const rifToken = useRifToken()
-  const wallet = useAppSelector(selectWallet)
+  const { wallet } = useAppropriateWalletState()
   const profile = useAppSelector(selectProfile)
   const alias = profile.alias
   const duration = profile.duration || 1

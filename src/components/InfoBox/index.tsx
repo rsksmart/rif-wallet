@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native'
+import { ColorValue, StyleSheet, View } from 'react-native'
 import { useCallback, useState } from 'react'
 
 import { Typography } from 'components/typography'
@@ -14,8 +14,8 @@ interface InfoBoxProps {
   description?: string
   buttonText?: string
   onPress?: () => void
-  backgroundColor?: string
-  avatarBackgroundColor?: string
+  backgroundColor?: ColorValue
+  avatarBackgroundColor?: ColorValue
 }
 
 export const InfoBox = ({

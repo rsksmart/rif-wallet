@@ -41,12 +41,12 @@ import {
   setStatus,
 } from 'store/slices/profileSlice'
 import { selectProfile } from 'store/slices/profileSlice/selector'
-import { selectWalletState } from 'store/slices/settingsSlice'
 import { selectRequests } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { AppSpinner } from 'components/index'
 import { AvatarIcon } from 'components/icons/AvatarIcon'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
+import { useAppropriateWalletState } from 'core/Core'
 
 import { rnsManagerStyles } from '../rnsManager/rnsManagerStyles'
 
@@ -55,7 +55,7 @@ export const ProfileCreateScreen = ({
 }: ProfileStackScreenProps<profileStackRouteNames.ProfileCreateScreen>) => {
   const dispatch = useAppDispatch()
   const profile = useAppSelector(selectProfile)
-  const { wallet, chainType } = useAppSelector(selectWalletState)
+  const { wallet, chainType } = useAppropriateWalletState()
   const [infoBoxClosed, setInfoBoxClosed] = useState<boolean>(
     profile.infoBoxClosed ?? false,
   )

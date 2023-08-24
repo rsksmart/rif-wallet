@@ -24,8 +24,22 @@ const getButtons = (
 ) => {
   const isMagicEnabled = Config.MAGIC_ENABLED === 'true'
 
-  if (isMagicEnabled) {
-    return (
+  // if (isMagicEnabled) {
+  //   return (
+  //     <AppButton
+  //       onPress={() =>
+  //         navigation.navigate(createKeysRouteNames.LoginWithMagicEmail)
+  //       }
+  //       accessibilityLabel={'newWallet'}
+  //       title={t('initial_screen_button_magic_email')}
+  //       color={sharedColors.white}
+  //       textColor={sharedColors.black}
+  //     />
+  //   )
+  // }
+
+  return (
+    <>
       <AppButton
         onPress={() =>
           navigation.navigate(createKeysRouteNames.LoginWithMagicEmail)
@@ -35,11 +49,6 @@ const getButtons = (
         color={sharedColors.white}
         textColor={sharedColors.black}
       />
-    )
-  }
-
-  return (
-    <>
       <AppButton
         onPress={() =>
           navigation.navigate(createKeysRouteNames.SecurityInformation, {

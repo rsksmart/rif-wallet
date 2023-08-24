@@ -20,7 +20,7 @@ import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
 import { useAppSelector } from 'store/storeUtils'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { MixedTokenAndNetworkType } from 'screens/send/types'
-import { selectBitcoin, selectWalletState } from 'store/slices/settingsSlice'
+import { selectBitcoin } from 'store/slices/settingsSlice'
 import {
   homeStackRouteNames,
   HomeStackScreenProps,
@@ -30,6 +30,7 @@ import { castStyle } from 'shared/utils'
 import { selectProfile } from 'store/slices/profileSlice'
 import { getIconSource } from 'screens/home/TokenImage'
 import { ProfileStatus } from 'navigation/profileNavigator/types'
+import { useAppropriateWalletState } from 'core/Core'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
@@ -61,7 +62,7 @@ export const ReceiveScreen = ({
 
   const [shouldShowAssets, setShouldShowAssets] = useState(false)
 
-  const { wallet, chainType } = useAppSelector(selectWalletState)
+  const { wallet, chainType } = useAppropriateWalletState()
   const profile = useAppSelector(selectProfile)
 
   const rskAddress = useMemo(() => {

@@ -10,11 +10,7 @@ export const selectTopColor = ({ settings }: RootState) => settings.topColor
 export const selectChainType = ({ settings }: RootState) => settings.chainType
 
 export const selectWallet = ({ settings }: RootState) => {
-  if (!settings.wallets) {
-    throw new Error('No Wallets set!')
-  }
-
-  return settings.wallets[settings.selectedWallet]
+  return settings.wallets?.[settings.selectedWallet]
 }
 
 export const selectWalletIsDeployed = ({ settings }: RootState) => {
@@ -51,12 +47,9 @@ export const selectChainId = ({ settings }: RootState) => settings.chainId
 export const selectWalletState = ({
   settings: { wallets, walletsIsDeployed, chainId, chainType, selectedWallet },
 }: RootState) => {
-  if (!wallets || !walletsIsDeployed) {
-    throw new Error('No Wallet exist in state')
-  }
   return {
-    wallet: wallets[selectedWallet],
-    walletIsDeployed: walletsIsDeployed[selectedWallet],
+    wallet: wallets?.[selectedWallet],
+    walletIsDeployed: walletsIsDeployed?.[selectedWallet],
     chainType,
     chainId,
   }

@@ -13,6 +13,7 @@ import { Google, SocialSvgProps } from 'components/icons/Google'
 import { Facebook } from 'components/icons/Facebook'
 import { Apple } from 'components/icons/Apple'
 import { loginWithEmail } from 'store/slices/settingsSlice'
+
 interface FormValues {
   email: string
 }
