@@ -4,31 +4,35 @@ import { DomainRegistrationEnum, RnsProcessor } from 'lib/rns'
 
 import { ProfileStatus } from 'navigation/profileNavigator/types'
 
-import { ProfileStore } from './types'
+import {
+  ProfileStore,
+  PurchaseUsernameAction,
+  RequestUsernameAction,
+} from './types'
 
 export const requestUsername = createAsyncThunk(
   'profile/requestUsername',
   async (
     {
-      rnsProcessor,
+      rnsProcessor: { getStatus, process, canReveal },
       alias,
       duration,
-    }: { rnsProcessor: RnsProcessor; alias: string; duration: number },
+    }: RequestUsernameAction,
     thunkAPI,
   ) => {
     try {
       thunkAPI.dispatch(setAlias(`${alias}.rsk`))
       thunkAPI.dispatch(setDuration(duration))
-      let indexStatus = rnsProcessor.getStatus(alias)
+      let indexStatus = getStatus(alias)
       if (!indexStatus?.commitmentRequested) {
         thunkAPI.dispatch(setStatus(ProfileStatus.WAITING_FOR_USER_COMMIT))
-        await rnsProcessor.process(alias, duration)
+        await process(alias, duration)
         thunkAPI.dispatch(setStatus(ProfileStatus.REQUESTING))
       }
-      indexStatus = rnsProcessor.getStatus(alias)
+      indexStatus = getStatus(alias)
       if (indexStatus.commitmentRequested) {
         return await commitment(
-          rnsProcessor,
+          { canReveal },
           alias,
           IntervalProcessOrigin.RNS_ORIGINAL_TRANSACTION,
         )
@@ -43,11 +47,11 @@ export const requestUsername = createAsyncThunk(
 export const purchaseUsername = createAsyncThunk(
   'profile/purchaseUsername',
   async (
-    { rnsProcessor, domain }: { rnsProcessor: RnsProcessor; domain: string },
+    { rnsProcessor: { register }, domain }: PurchaseUsernameAction,
     thunkAPI,
   ) => {
     try {
-      return await rnsProcessor.register(domain)
+      return await register(domain)
     } catch (err) {
       return thunkAPI.rejectWithValue(err)
     }
@@ -121,7 +125,9 @@ const commitmentIntervalProcess: {
 }
 
 export const commitment = (
-  rnsProcessor: RnsProcessor,
+  rnsProcessor: {
+    canReveal: RnsProcessor['canReveal']
+  },
   alias: string,
   intervalProcessOrigin: IntervalProcessOrigin,
 ): Promise<ProfileStatus> => {

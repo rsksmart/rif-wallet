@@ -4,9 +4,7 @@ import { Platform } from 'react-native'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { RifWalletServicesFetcher } from '@rsksmart/rif-wallet-services'
 import { providers } from 'ethers'
-import jc from 'json-cycle'
 import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
-import { toChecksumAddress } from '@rsksmart/rsk-utils'
 
 import { KeyManagementSystem } from 'lib/core'
 
@@ -79,8 +77,6 @@ const initializeRifSocketsSetBitcoin = (
     chainId,
     balances,
   })
-
-  console.log('BEFORE INIT')
 
   socketsEvents.emit(SocketsEvents.CONNECT)
 

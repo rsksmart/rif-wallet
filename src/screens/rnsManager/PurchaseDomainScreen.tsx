@@ -92,7 +92,12 @@ export const PurchaseDomainScreen = ({ navigation }: Props) => {
     setError('')
     try {
       const response = await dispatch(
-        purchaseUsername({ rnsProcessor, domain }),
+        purchaseUsername({
+          rnsProcessor: {
+            register: rnsProcessor.register,
+          },
+          domain,
+        }),
       ).unwrap()
       if (response === DomainRegistrationEnum.REGISTERING_REQUESTED) {
         navigation.navigate(profileStackRouteNames.AliasBought, {

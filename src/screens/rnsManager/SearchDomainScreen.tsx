@@ -124,7 +124,11 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
         setCurrentStatus('loading')
         await dispatch(
           requestUsername({
-            rnsProcessor,
+            rnsProcessor: {
+              canReveal: rnsProcessor.canReveal,
+              process: rnsProcessor.process,
+              getStatus: rnsProcessor.getStatus,
+            },
             alias: values.domain,
             duration: values.years,
           }),
