@@ -279,9 +279,7 @@ export const TransactionForm = ({
               label={t('transaction_form_recepient_label')}
               value={recipient.name}
               subtitle={
-                !recipient.displayAddress
-                  ? shortAddress(recipient.address)
-                  : recipient.displayAddress
+                recipient.displayAddress || shortAddress(recipient.address)
               }
               inputName={'to'}
               leftIcon={<Avatar name={recipient.name} size={32} />}

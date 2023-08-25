@@ -31,7 +31,7 @@ import {
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { homeStackRouteNames } from 'navigation/homeNavigator/types'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { changeTopColor } from 'store/slices/settingsSlice'
+import { changeTopColor, selectChainId } from 'store/slices/settingsSlice'
 import { castStyle } from 'shared/utils'
 import {
   BarButtonGroupContainer,
@@ -39,8 +39,13 @@ import {
 } from 'components/BarButtonGroup/BarButtonGroup'
 import { ConfirmationModal } from 'components/modal'
 import { BasicRow } from 'components/BasicRow'
-import { deleteContactByAddress } from 'store/slices/contactsSlice'
+import {
+  addContact,
+  deleteContactByAddress,
+  editContact,
+} from 'store/slices/contactsSlice'
 import { selectTransactions } from 'store/slices/transactionsSlice'
+import { getRnsResolver } from 'src/core/setup'
 
 const copyButtonConfig = { name: 'copy', size: 18, color: sharedColors.white }
 
@@ -51,14 +56,14 @@ export const ContactDetails = ({
   },
 }: ContactsStackScreenProps<contactsStackRouteNames.ContactDetails>) => {
   const transactions = useAppSelector(selectTransactions)
+  const chainId = useAppSelector(selectChainId)
   const dispatch = useAppDispatch()
   const [isDeleteContactModalVisible, setIsDeleteContactModalVisible] =
     useState(false)
   const isFocused = useIsFocused()
 
-  const transactionFiltered = useMemo(
-    () => transactions.filter(tx => tx.to === contact.address),
-    [transactions, contact],
+  const transactionFiltered = transactions.filter(
+    tx => tx.to === contact.address,
   )
 
   const methods = useForm({
@@ -68,7 +73,7 @@ export const ContactDetails = ({
       shortAddress: shortAddress(contact.address, 10),
     },
   })
-  const { getValues } = methods
+  const { getValues, setValue } = methods
   const { t } = useTranslation()
 
   const onHideConfirmDeleteModal = useCallback(() => {
@@ -102,6 +107,16 @@ export const ContactDetails = ({
     })
   }, [navigation, contact])
 
+  const onCopyValue = useCallback(
+    (value: string) => () => {
+      Alert.alert(t('message_copied_to_clipboard'), undefined, [
+        { text: t('ok'), onPress: noop },
+      ])
+      Clipboard.setString(value)
+    },
+    [t],
+  )
+
   useEffect(() => {
     if (isFocused) {
       dispatch(changeTopColor(sharedColors.inputInactive))
@@ -131,15 +146,30 @@ export const ContactDetails = ({
     })
   }, [navigation, onDeleteContact])
 
-  const onCopyValue = useCallback(
-    (value: string) => () => {
-      Alert.alert(t('message_copied_to_clipboard'), undefined, [
-        { text: t('ok'), onPress: noop },
-      ])
-      Clipboard.setString(value)
-    },
-    [t],
-  )
+  useEffect(() => {
+    if (contact.displayAddress !== contact.address) {
+      getRnsResolver(chainId)
+        .addr(contact.displayAddress)
+        .then(resolvedAddress => {
+          const newAddress = resolvedAddress.toLowerCase()
+          if (newAddress !== contact.address) {
+            console.log(
+              'UPDATE CONTACT ADDRESS',
+              contact.displayAddress,
+              newAddress,
+            )
+            const newContact = {
+              ...contact,
+              address: newAddress,
+            }
+            dispatch(addContact(newContact))
+            dispatch(deleteContactByAddress(contact.address))
+            setValue('address', newAddress)
+            setValue('shortAddress', shortAddress(newAddress, 10))
+          }
+        })
+    }
+  }, [chainId, contact, dispatch, setValue])
 
   return (
     <View style={styles.screen}>
