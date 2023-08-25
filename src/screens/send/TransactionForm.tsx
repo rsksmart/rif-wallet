@@ -326,7 +326,7 @@ export const TransactionForm = ({
           <AppTouchable
             width={'100%'}
             onPress={toggleShowTx}
-            accessibilityLabel={'Change tx asset'}
+            accessibilityLabel={'ChangeTxAsset'}
             style={styles.assetToggleRow}>
             <>
               <Typography type={'h3'}>
@@ -400,6 +400,7 @@ export const TransactionForm = ({
             selectedToken.symbol
           }`}
           onPress={handleSubmit(handleConfirmClick)}
+          accessibilityLabel={'Send'}
           disabled={
             !selectedTokenAddress ||
             !isWalletDeployed ||
@@ -415,6 +416,7 @@ export const TransactionForm = ({
           style={styles.buttonCancel}
           title={t('transaction_form_button_cancel')}
           onPress={onCancel}
+          accessibilityLabel={'Cancel'}
           backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
         />
       </View>
