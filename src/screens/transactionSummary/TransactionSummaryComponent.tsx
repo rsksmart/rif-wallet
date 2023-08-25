@@ -265,22 +265,14 @@ export const TransactionSummaryComponent = ({
       </ScrollView>
       <View style={styles.buttons}>
         {buttons ? (
-          buttons.map(b => (
-            <AppButton
-              key={b.title}
-              onPress={b.onPress}
-              title={b.title}
-              color={b.color}
-              textColor={b.textColor}
-              backgroundVariety={b.backgroundVariety}
-            />
-          ))
+          buttons.map(b => <AppButton {...b} key={b.title} />)
         ) : (
           <AppButton
             onPress={goBack}
             title={t('transaction_summary_default_button_text')}
             color={sharedColors.white}
             textColor={sharedColors.black}
+            accessibilityLabel="Close"
           />
         )}
       </View>
