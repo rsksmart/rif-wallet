@@ -156,7 +156,14 @@ export const ContactDetails = ({
       />
       <ScrollView contentContainerStyle={styles.scrollviewContainer}>
         <View style={styles.contactDetailsView}>
-          <Avatar name={contact.name} size={52} />
+          <View style={styles.center}>
+            <Avatar name={contact.name} size={52} />
+            {contact.displayAddress !== contact.address && (
+              <Typography type={'h4'} color={sharedColors.white}>
+                {contact.displayAddress}
+              </Typography>
+            )}
+          </View>
           <View style={styles.nameAddressView}>
             <Typography type={'h2'} color={sharedColors.white}>
               {contact.name}
@@ -262,5 +269,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignSelf: 'center',
     bottom: 30,
+  }),
+  center: castStyle.view({
+    alignItems: 'center',
   }),
 })
