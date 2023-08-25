@@ -65,7 +65,7 @@ export const ContactDetails = ({
     defaultValues: {
       username: contact.name,
       address: contact.address,
-      shortAddress: shortAddress(contact.address),
+      shortAddress: shortAddress(contact.address, 10),
     },
   })
   const { getValues } = methods
@@ -156,20 +156,13 @@ export const ContactDetails = ({
       />
       <ScrollView contentContainerStyle={styles.scrollviewContainer}>
         <View style={styles.contactDetailsView}>
-          <View style={styles.center}>
-            <Avatar name={contact.name} size={52} />
-            {contact.displayAddress !== contact.address && (
-              <Typography type={'h4'} color={sharedColors.white}>
-                {contact.displayAddress}
-              </Typography>
-            )}
-          </View>
+          <Avatar name={contact.name} size={52} />
           <View style={styles.nameAddressView}>
             <Typography type={'h2'} color={sharedColors.white}>
               {contact.name}
             </Typography>
             <Typography type={'h4'} color={sharedColors.labelLight}>
-              {contact.address}
+              {contact.displayAddress || contact.address}
             </Typography>
           </View>
         </View>
@@ -269,8 +262,5 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignSelf: 'center',
     bottom: 30,
-  }),
-  center: castStyle.view({
-    alignItems: 'center',
   }),
 })
