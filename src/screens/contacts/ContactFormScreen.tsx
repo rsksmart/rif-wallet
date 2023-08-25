@@ -79,7 +79,7 @@ export const ContactFormScreen = ({
     defaultValues: {
       name: initialValue.name,
       address: {
-        address: initialValue.address,
+        address: initialValue.displayAddress || initialValue.address,
         displayAddress: initialValue.displayAddress,
       },
       addressIsValid: false,
