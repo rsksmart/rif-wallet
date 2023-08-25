@@ -130,7 +130,7 @@ export const TransactionForm = ({
         displayAddress: recipient?.displayAddress ?? '',
       },
       name: recipient?.name ?? null,
-      isToValid: recipient?.name ? true : false,
+      isToValid: !!recipient?.name,
     },
     resolver: yupResolver(transactionSchema),
   })
