@@ -326,6 +326,7 @@ export const TransactionForm = ({
           <AppTouchable
             width={'100%'}
             onPress={toggleShowTx}
+            accessibilityLabel={'Change tx asset'}
             style={styles.assetToggleRow}>
             <>
               <Typography type={'h3'}>
