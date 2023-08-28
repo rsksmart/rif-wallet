@@ -1,4 +1,5 @@
-import { useContext, useEffect, useMemo, useState, ComponentType } from 'react'
+import { useIsFocused } from '@react-navigation/native'
+import { ComponentType, useContext, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Alert, Image, ScrollView, StyleSheet, View } from 'react-native'
 
@@ -8,10 +9,10 @@ import {
   rootTabsRouteNames,
   RootTabsScreenProps,
 } from 'navigation/rootNavigator/types'
-import { sharedColors } from 'shared/constants'
+import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { selectWalletState } from 'store/slices/settingsSlice'
-import { useAppSelector } from 'store/storeUtils'
+import { changeTopColor, selectWalletState } from 'store/slices/settingsSlice'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 
 import { DappItem } from './DappItem'
 import {
@@ -42,6 +43,8 @@ interface WC2Session {
 
 export const WalletConnectScreen = ({ route }: Props) => {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+  const isFocused = useIsFocused()
 
   const {
     pendingSession,
@@ -106,8 +109,15 @@ export const WalletConnectScreen = ({ route }: Props) => {
       }),
     [sessions],
   )
+
+  useEffect(() => {
+    if (isFocused) {
+      dispatch(changeTopColor(sharedColors.secondary))
+    }
+  }, [dispatch, isFocused])
+
   return (
-    <View style={styles.screen}>
+    <View style={sharedStyles.screen}>
       <View style={styles.header}>
         <View style={styles.innerHeader1}>
           <Typography type="h2">{t('dapps_title')}</Typography>
@@ -174,14 +184,9 @@ export const WalletConnectScreenWithProvider =
   withWalletConnectProvider(WalletConnectScreen)
 
 const styles = StyleSheet.create({
-  screen: castStyle.view({
-    height: '100%',
-    backgroundColor: sharedColors.secondary,
-    padding: 20,
-  }),
   header: castStyle.view({
     flexDirection: 'row',
-    padding: 10,
+    marginTop: 18,
   }),
   innerHeader1: castStyle.view({
     flex: 3,

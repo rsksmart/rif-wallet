@@ -81,30 +81,29 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
 
   useEffect(() => {
     if (isFocused) {
-      dispatch(changeTopColor(sharedColors.black))
+      dispatch(changeTopColor(sharedColors.secondary))
     }
   }, [dispatch, isFocused])
 
   return (
     <View style={sharedStyles.screen}>
-      {recentContacts && recentContacts.length > 0 && (
+      <Typography type={'h2'} style={styles.title}>
+        {t('contacts_screen_title')}
+      </Typography>
+      {recentContacts?.length > 0 && (
         <View style={styles.recentContacts}>
           <ScrollView horizontal>
             {recentContacts.map((c, i) => (
               <ContactCard
-                onPress={onSendToRecentContact(c)}
-                style={styles.contactCard}
                 key={i}
                 name={c.name}
+                onPress={onSendToRecentContact(c)}
               />
             ))}
           </ScrollView>
         </View>
       )}
-      <Typography type={'h2'} style={styles.title}>
-        {t('contacts_screen_title')}
-      </Typography>
-      <View style={styles.noContactsTextView} testID={'emptyView'}>
+      <View style={styles.subtitle} testID={'emptyView'}>
         {contacts.length === 0 ? (
           <>
             <Typography type={'body3'}>{t('contacts_empty_list')}</Typography>
@@ -138,13 +137,11 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
                   onPress={() =>
                     navigation.navigate(
                       contactsStackRouteNames.ContactDetails,
-                      {
-                        contact,
-                      },
+                      { contact },
                     )
                   }>
                   <BasicRow
-                    style={{ backgroundColor: sharedColors.black }}
+                    style={{ backgroundColor: sharedColors.secondary }}
                     avatar={{ name: contact.name }}
                     label={contact.name}
                     secondaryLabel={
@@ -170,21 +167,23 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
 }
 
 const styles = StyleSheet.create({
-  title: castStyle.text({ marginTop: 18 }),
+  title: castStyle.text({
+    marginTop: 18,
+  }),
   noContactsImage: castStyle.image({
     marginTop: 102,
     alignSelf: 'center',
   }),
   searchInput: castStyle.view({
-    marginTop: 18,
-  }),
-  noContactsTextView: castStyle.view({
     marginTop: 14,
+  }),
+  subtitle: castStyle.view({
+    marginTop: 10,
     alignItems: 'flex-start',
     justifyContent: 'flex-end',
   }),
   contactsList: {
-    marginTop: 18,
+    marginTop: 14,
     padding: 10,
     shadowOpacity: 0.1,
     shadowRadius: 10,
@@ -196,9 +195,9 @@ const styles = StyleSheet.create({
     right: 24,
     backgroundColor: sharedColors.white,
   }),
-  recentContacts: castStyle.view({ height: 100, marginTop: 12 }),
-  contactCard: castStyle.view({
-    marginLeft: 6,
+  recentContacts: castStyle.view({
+    height: 100,
+    marginTop: 12,
   }),
 })
 

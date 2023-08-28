@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { getSupportedBiometryType } from 'react-native-keychain'
-import { Platform } from 'react-native'
+import { ColorValue, Platform } from 'react-native'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { RifWalletServicesFetcher } from '@rsksmart/rif-wallet-services'
 
@@ -330,7 +330,7 @@ const settingsSlice = createSlice({
       state.isSetup = payload
       return state
     },
-    changeTopColor: (state, action: PayloadAction<string>) => {
+    changeTopColor: (state, action: PayloadAction<ColorValue>) => {
       state.topColor = action.payload
     },
     onRequest: (state, { payload }: PayloadAction<OnRequestAction>) => {
