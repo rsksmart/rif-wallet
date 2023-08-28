@@ -100,7 +100,7 @@ export const rifSockets = ({
       const tokenBalance = balances[t.contractAddress]
       return {
         ...t,
-        logo: '',
+        logo: '', // remove warning
         balance: tokenBalance?.balance ?? t.balance,
         usdBalance: tokenBalance?.usdBalance ?? t.usdBalance,
       } as ITokenWithBalance

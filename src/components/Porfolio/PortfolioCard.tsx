@@ -27,8 +27,7 @@ const SelectedCard = ({
   icon?: string
   color?: string
 }) => {
-  const isRifToken =
-    icon?.toUpperCase() === 'RIF' || icon?.toUpperCase() === 'TRIF'
+  const isRifToken = ['RIF', 'TRIF'].includes(icon?.toUpperCase() || '')
   return (
     <View style={selectedCardStyles.container}>
       <View style={selectedCardStyles.primaryTextContainer}>

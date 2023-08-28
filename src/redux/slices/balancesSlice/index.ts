@@ -4,24 +4,32 @@ import {
   convertBtcToSatoshi,
 } from '@rsksmart/rif-wallet-bitcoin'
 import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
+import { BigNumber } from 'ethers'
+import { parseUnits } from 'ethers/lib/utils'
 
 import { balanceToDisplay, convertBalance } from 'lib/utils'
 
+import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import {
   BalanceState,
   ITokenWithoutLogo,
   TokenBalanceObject,
 } from 'store/slices/balancesSlice/types'
-import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { AsyncThunkWithTypes } from 'store/store'
 
 export const getBalance = (
   token: ITokenWithBalance | BitcoinNetworkWithBIPRequest,
   price: number,
 ) => {
-  let tokenBalance = token.balance.toString()
+  let tokenBalance: BigNumber
   if ('satoshis' in token) {
-    tokenBalance = convertBtcToSatoshi(tokenBalance).toString()
+    tokenBalance = convertBtcToSatoshi(token.balance.toString())
+  } else {
+    try {
+      tokenBalance = BigNumber.from(token.balance)
+    } catch {
+      tokenBalance = parseUnits(token.balance, token.decimals)
+    }
   }
 
   let balance = balanceToDisplay(tokenBalance, token.decimals, 4)
@@ -46,13 +54,13 @@ export const addOrUpdateBalances = createAsyncThunk<
   try {
     const { usdPrices, settings } = thunkAPI.getState()
     const bitcoin = settings.bitcoin
-    const balances: TokenBalanceObject[] = payload.map(b => {
+    const balances: TokenBalanceObject[] = payload.map(t => {
       const { balance, usdBalance } = getBalance(
-        b,
-        usdPrices[b.contractAddress]?.price ?? 0,
+        t,
+        usdPrices[t.contractAddress]?.price ?? 0,
       )
       return {
-        ...b,
+        ...t,
         balance,
         usdBalance,
       }
@@ -77,6 +85,7 @@ export const addOrUpdateBalances = createAsyncThunk<
 
     thunkAPI.dispatch(addOrUpdateBalancesState(balances))
   } catch (err) {
+    console.warn('Error adding or updating balances', err)
     thunkAPI.rejectWithValue(err)
   }
 })
