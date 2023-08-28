@@ -45,6 +45,7 @@ export const SignMessageRequestContainer = ({
       </Typography>
       <View style={styles.buttonsViewStyle}>
         <AppButton
+          accessibilityLabel="Confirm"
           title={t('transaction_summary_title_confirm_button_title')}
           onPress={onConfirmTap}
           color={sharedColors.white}
@@ -52,6 +53,7 @@ export const SignMessageRequestContainer = ({
           style={styles.buttonsStyle}
         />
         <AppButton
+          accessibilityLabel="Cancel"
           title={t('transaction_summary_title_cancel_button_title')}
           onPress={onCancelTap}
           color={sharedColors.white}

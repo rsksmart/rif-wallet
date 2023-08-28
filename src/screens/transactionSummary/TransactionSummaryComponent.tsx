@@ -209,6 +209,7 @@ export const TransactionSummaryComponent = ({
               <Typography type={'body2'} style={[sharedStyles.textCenter]}>
                 {displayRoundBalance(totalToken)} {tokenValue.symbol}{' '}
                 {tokenValue.symbol !== fee.symbol &&
+                  !amIReceiver &&
                   t('transaction_summary_plus_fees')}
               </Typography>
             </View>
@@ -264,22 +265,14 @@ export const TransactionSummaryComponent = ({
       </ScrollView>
       <View style={styles.buttons}>
         {buttons ? (
-          buttons.map(b => (
-            <AppButton
-              key={b.title}
-              onPress={b.onPress}
-              title={b.title}
-              color={b.color}
-              textColor={b.textColor}
-              backgroundVariety={b.backgroundVariety}
-            />
-          ))
+          buttons.map(b => <AppButton {...b} key={b.title} />)
         ) : (
           <AppButton
             onPress={goBack}
             title={t('transaction_summary_default_button_text')}
             color={sharedColors.white}
             textColor={sharedColors.black}
+            accessibilityLabel="Close"
           />
         )}
       </View>

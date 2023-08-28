@@ -34,7 +34,7 @@ export const getRnsResolver = (chainId: ChainTypesByIdType) =>
 
 export const createRIFWalletFactory =
   (onRequest: OnRequest, chainId: ChainTypesByIdType) => (wallet: Wallet) => {
-    const jsonRpcProvider = new providers.JsonRpcProvider(
+    const jsonRpcProvider = new providers.StaticJsonRpcProvider(
       getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId]),
     )
     const rifRelayConfig: RifRelayConfig = {

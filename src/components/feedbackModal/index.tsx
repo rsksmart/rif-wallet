@@ -47,7 +47,11 @@ export const FeedbackModal = ({
             {title}
           </Typography>
           {texts.map((text, i) => (
-            <Typography style={styles.subtitle} type={'h4'} key={i}>
+            <Typography
+              style={styles.subtitle}
+              type={'h4'}
+              key={i}
+              accessibilityLabel={`text-${i}`}>
               {text}
             </Typography>
           ))}

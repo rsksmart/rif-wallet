@@ -19,17 +19,22 @@ export const getBalance = (
   token: ITokenWithBalance | BitcoinNetworkWithBIPRequest,
   price: number,
 ) => {
+  let tokenBalance = token.balance.toString()
   if ('satoshis' in token) {
-    const balanceBigNumber = convertBtcToSatoshi(token.balance.toString())
-    return {
-      balance: balanceToDisplay(balanceBigNumber.toString(), 8, 4),
-      usdBalance: convertBalance(balanceBigNumber, 8, price),
-    }
-  } else {
-    return {
-      balance: balanceToDisplay(token.balance, token.decimals, 4),
-      usdBalance: convertBalance(token.balance, token.decimals, price),
-    }
+    tokenBalance = convertBtcToSatoshi(tokenBalance).toString()
+  }
+
+  let balance = balanceToDisplay(tokenBalance, token.decimals, 4)
+  if (Number(balance) === 0) {
+    balance = balanceToDisplay(tokenBalance, token.decimals, 6)
+  }
+  if (Number(balance) === 0) {
+    balance = balanceToDisplay(tokenBalance, token.decimals, 8)
+  }
+
+  return {
+    balance,
+    usdBalance: convertBalance(tokenBalance, token.decimals, price),
   }
 }
 

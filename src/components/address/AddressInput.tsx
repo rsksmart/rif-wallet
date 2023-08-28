@@ -193,7 +193,7 @@ export const AddressInput = ({
   return (
     <>
       <Input
-        testID={testID}
+        accessibilityLabel={testID}
         label={status.value ? status.value : label}
         labelStyle={labelColor}
         value={!value.displayAddress ? value.address : value.displayAddress}

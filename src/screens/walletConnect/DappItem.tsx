@@ -1,4 +1,3 @@
-import WalletConnect from '@walletconnect/client'
 import lodash from 'lodash'
 import { useTranslation } from 'react-i18next'
 import { Image, StyleSheet, View } from 'react-native'
@@ -8,14 +7,16 @@ import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 
 interface Props {
-  connector: WalletConnect
   isDisconnecting: boolean
   onDisconnect: () => void
+  name?: string
+  url?: string
 }
 
 export const DappItem = ({
-  connector: c,
   isDisconnecting,
+  name,
+  url,
   onDisconnect,
 }: Props) => {
   const { t } = useTranslation()
@@ -26,7 +27,7 @@ export const DappItem = ({
       <View style={styles.content}>
         <View style={styles.dappNameView}>
           <Typography type="body2">
-            {lodash.truncate(c.peerMeta?.name || '', {
+            {lodash.truncate(name || '', {
               length: isDisconnecting ? 18 : 20,
             })}
           </Typography>
@@ -40,7 +41,7 @@ export const DappItem = ({
           </Typography>
         </View>
         <Typography type="body3" style={styles.dappUrl}>
-          {c.peerMeta?.url}
+          {url}
         </Typography>
       </View>
       <AppTouchable

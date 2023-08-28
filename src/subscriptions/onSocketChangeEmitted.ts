@@ -47,7 +47,7 @@ const onNewTransactionEventEmitted = async ({
   }
   try {
     const enhancedTransaction = await abiEnhancer.enhance(wallet, {
-      from: wallet.smartWalletAddress,
+      from: payload.from.toLowerCase(),
       to: payload.to.toLowerCase(),
       data: payload.input,
       value: payload.value,
@@ -88,7 +88,7 @@ export const onSocketChangeEmitted =
             abiEnhancer,
             wallet,
             dispatch,
-            payload: payload,
+            payload,
             usdPrices,
             chainId,
           })
