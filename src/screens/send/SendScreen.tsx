@@ -178,6 +178,7 @@ export const SendScreen = ({
             onPress: onGoToHome,
             color: sharedColors.white,
             textColor: sharedColors.black,
+            accessibilityLabel: 'return',
           },
         ]}
       />
