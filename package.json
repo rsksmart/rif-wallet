@@ -48,7 +48,6 @@
     "@rsksmart/rsk-contract-metadata": "^1.0.17",
     "@rsksmart/rsk-testnet-contract-metadata": "^1.0.15",
     "@rsksmart/rsk-utils": "^1.1.0",
-    "@walletconnect/client": "^1.6.6",
     "@walletconnect/jsonrpc-types": "^1.0.3",
     "@walletconnect/react-native-compat": "^2.9.0",
     "@walletconnect/utils": "^2.9.0",
