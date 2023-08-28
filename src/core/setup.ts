@@ -14,6 +14,7 @@ import {
   chainTypesById,
   ChainTypesByIdType,
 } from 'shared/constants/chainConstants'
+import { USDRIF_TESTNET } from 'src/screens/home/TokenImage'
 
 import { getWalletSetting } from './config'
 
@@ -91,15 +92,7 @@ const defaultTestnetTokens: ITokenWithoutLogo[] = Object.keys(testnetContracts)
     }
   })
 export const getDefaultTokens = (chainId: ChainTypesByIdType) => {
-  const usdRifTestnet = {
-    decimals: 18,
-    name: 'RIF US Dollar',
-    symbol: 'USDRIF',
-    contractAddress: '0x8dbf326e12a9ff37ed6ddf75ada548c2640a6482',
-    balance: '0x00',
-    usdBalance: 0,
-  } as ITokenWithoutLogo
   return chainTypesById[chainId] === ChainTypeEnum.MAINNET
     ? defaultMainnetTokens
-    : [...defaultTestnetTokens, usdRifTestnet]
+    : [...defaultTestnetTokens, USDRIF_TESTNET]
 }

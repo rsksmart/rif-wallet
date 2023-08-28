@@ -10,6 +10,7 @@ import {
 
 import { FrownFaceIcon } from 'components/icons'
 import { sharedColors } from 'shared/constants'
+import { ITokenWithoutLogo } from 'src/redux/slices/balancesSlice/types'
 
 interface Props {
   symbol: string
@@ -278,3 +279,12 @@ export const getIconSource = (
       return undefined
   }
 }
+
+export const USDRIF_TESTNET = {
+  decimals: 18,
+  name: 'RIF US Dollar',
+  symbol: 'USDRIF',
+  contractAddress: '0x8dbf326e12a9ff37ed6ddf75ada548c2640a6482',
+  balance: '0x00',
+  usdBalance: 0,
+} as ITokenWithoutLogo
