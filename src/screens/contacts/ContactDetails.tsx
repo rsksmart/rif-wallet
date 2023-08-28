@@ -8,7 +8,7 @@ import {
   FlatList,
   ScrollView,
 } from 'react-native'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useIsFocused } from '@react-navigation/native'
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
@@ -39,11 +39,7 @@ import {
 } from 'components/BarButtonGroup/BarButtonGroup'
 import { ConfirmationModal } from 'components/modal'
 import { BasicRow } from 'components/BasicRow'
-import {
-  addContact,
-  deleteContactByAddress,
-  editContact,
-} from 'store/slices/contactsSlice'
+import { addContact, deleteContactByAddress } from 'store/slices/contactsSlice'
 import { selectTransactions } from 'store/slices/transactionsSlice'
 import { getRnsResolver } from 'src/core/setup'
 
