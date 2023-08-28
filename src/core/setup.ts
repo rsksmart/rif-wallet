@@ -90,7 +90,16 @@ const defaultTestnetTokens: ITokenWithoutLogo[] = Object.keys(testnetContracts)
       usdBalance: 0,
     }
   })
-export const getDefaultTokens = (chainId: ChainTypesByIdType) =>
-  chainTypesById[chainId] === ChainTypeEnum.MAINNET
+export const getDefaultTokens = (chainId: ChainTypesByIdType) => {
+  const usdRifTestnet = {
+    decimals: 18,
+    name: 'RIF US Dollar',
+    symbol: 'USDRIF',
+    contractAddress: '0x8dbf326e12a9ff37ed6ddf75ada548c2640a6482',
+    balance: '0x00',
+    usdBalance: 0,
+  } as ITokenWithoutLogo
+  return chainTypesById[chainId] === ChainTypeEnum.MAINNET
     ? defaultMainnetTokens
-    : defaultTestnetTokens
+    : [...defaultTestnetTokens, usdRifTestnet]
+}
