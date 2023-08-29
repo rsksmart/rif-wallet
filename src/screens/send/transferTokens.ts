@@ -45,8 +45,12 @@ export const transfer = async ({
 
   try {
     const decimals = await transferMethod.decimals()
-    const tokenAmount = BigNumber.from(utils.parseUnits(amount, decimals))
-
+    const tokenAmount = BigNumber.from(
+      utils.parseUnits(
+        amount.substring(0, amount.lastIndexOf('.') + 1 + decimals),
+        decimals,
+      ),
+    )
     const txPending = await transferMethod.transfer(
       to.toLowerCase(),
       tokenAmount,
