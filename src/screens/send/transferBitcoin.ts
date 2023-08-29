@@ -7,6 +7,7 @@ import {
 import { TokenSymbol } from 'screens/home/TokenImage'
 
 import { OnSetCurrentTransactionFunction, OnSetErrorFunction } from './types'
+import { TransactionStatus } from '../transactionSummary/types'
 
 interface ITransferBitcoin {
   bip: BIPWithRequest
@@ -33,7 +34,7 @@ export const transferBitcoin = ({
     onSetError(null)
   }
   if (onSetCurrentTransaction) {
-    onSetCurrentTransaction({ status: 'USER_CONFIRM' })
+    onSetCurrentTransaction({ status: TransactionStatus.USER_CONFIRM })
   }
   const satoshisToPay = convertBtcToSatoshi(btcToPay.toString()).toNumber()
 
@@ -48,36 +49,24 @@ export const transferBitcoin = ({
     .then(async txIdJson => {
       if (txIdJson.result) {
         // success
-        if (onSetCurrentTransaction) {
-          //@TODO: make the status a constant value
-          onSetCurrentTransaction({
-            status: 'PENDING',
-            to,
-            value: satoshisToPay.toString(),
-            hash: txIdJson.result,
-            symbol: TokenSymbol.BTC, // @TODO should use bitcoin symbol of current transaction
-          })
-        }
+        //@TODO: make the status a constant value
+        onSetCurrentTransaction?.({
+          status: TransactionStatus.PENDING,
+          to,
+          value: satoshisToPay.toString(),
+          hash: txIdJson.result,
+          symbol: TokenSymbol.BTC, // @TODO should use bitcoin symbol of current transaction
+        })
         // fetchUtxo() we should refresh Utxo
       } else {
         if (txIdJson.error) {
-          if (onSetCurrentTransaction) {
-            onSetCurrentTransaction({
-              status: 'FAILED',
-            })
-          }
-          if (onSetError) {
-            onSetError(txIdJson.error)
-          }
+          onSetCurrentTransaction?.({ status: TransactionStatus.FAILED })
+          onSetError?.(txIdJson.error)
         }
       }
     })
     .catch(err => {
-      if (onSetError) {
-        onSetError(err.toString())
-      }
-      if (onSetCurrentTransaction) {
-        onSetCurrentTransaction(null)
-      }
+      onSetError?.(err.toString())
+      onSetCurrentTransaction?.(null)
     })
 }

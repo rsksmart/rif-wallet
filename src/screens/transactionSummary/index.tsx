@@ -14,7 +14,7 @@ import { selectWallet, setFullscreen } from 'store/slices/settingsSlice'
 import { TokenFeeValueObject } from 'store/slices/transactionsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 
-import { TransactionStatus } from './transactionSummaryUtils'
+import { TransactionStatus } from './types'
 
 export interface TransactionSummaryScreenProps {
   transaction: {

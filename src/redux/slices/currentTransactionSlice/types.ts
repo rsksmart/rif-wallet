@@ -1,5 +1,7 @@
+import { TransactionStatus } from 'screens/transactionSummary/types'
+
 export interface TransactionInformation {
-  status: 'NONE' | 'USER_CONFIRM' | 'PENDING' | 'SUCCESS' | 'FAILED'
+  status: TransactionStatus
   to?: string
   value?: string
   symbol?: string

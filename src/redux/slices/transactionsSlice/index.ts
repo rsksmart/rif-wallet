@@ -18,7 +18,7 @@ import {
   ModifyTransaction,
   TransactionsState,
 } from 'store/slices/transactionsSlice/types'
-import { TransactionStatus } from 'screens/transactionSummary/transactionSummaryUtils'
+import { TransactionStatus } from 'screens/transactionSummary/types'
 import { filterEnhancedTransactions } from 'src/subscriptions/utils'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { UsdPricesState } from 'store/slices/usdPricesSlice'
@@ -168,7 +168,10 @@ const transformTransaction = (
     ...transaction,
     isBitcoin: true,
     symbol: '',
-    status: transaction.confirmations > 0 ? 'success' : 'pending',
+    status:
+      transaction.confirmations > 0
+        ? TransactionStatus.SUCCESS
+        : TransactionStatus.PENDING,
     to: transaction.vout[0].addresses[0],
     valueBtc: utils.formatUnits(BigNumber.from(transaction.value), 8),
     id: transaction.txid,

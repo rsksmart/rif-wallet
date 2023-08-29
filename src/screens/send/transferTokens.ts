@@ -10,6 +10,7 @@ import {
   OnSetErrorFunction,
   OnSetTransactionStatusChange,
 } from './types'
+import { TransactionStatus } from '../transactionSummary/types'
 
 interface IRifTransfer {
   token: ITokenWithBalance
@@ -36,7 +37,7 @@ export const transfer = async ({
 }: IRifTransfer) => {
   onSetError?.(null)
   onSetCurrentTransaction?.({
-    status: 'USER_CONFIRM',
+    status: TransactionStatus.USER_CONFIRM,
     feeSymbol: feeToken?.symbol,
   })
 
@@ -72,19 +73,19 @@ export const transfer = async ({
       value: amount,
       symbol: transferMethod.symbol,
       hash: txPending.hash,
-      status: 'PENDING',
+      status: TransactionStatus.PENDING,
       feeSymbol: feeToken?.symbol,
     }
     onSetCurrentTransaction?.(current)
 
     const contractReceipt = await waitForTransactionToComplete()
-    onSetCurrentTransaction?.({ ...current, status: 'SUCCESS' })
+    onSetCurrentTransaction?.({ ...current, status: TransactionStatus.SUCCESS })
     onSetTransactionStatusChange?.({
       txStatus: 'CONFIRMED',
       ...contractReceipt,
     })
 
-    onSetCurrentTransaction?.({ ...current, status: 'FAILED' })
+    onSetCurrentTransaction?.({ ...current, status: TransactionStatus.FAILED })
     onSetTransactionStatusChange?.({
       txStatus: 'FAILED',
       ...txPendingRest,
