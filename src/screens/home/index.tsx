@@ -38,7 +38,6 @@ import { selectTransactions } from 'store/slices/transactionsSlice'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { ActivityBasicRow } from 'screens/activity/ActivityRow'
-import { rootTabsRouteNames } from 'navigation/rootNavigator'
 
 import { HomeInformationBar } from './HomeInformationBar'
 import { getTokenColor } from './tokenColor'
@@ -124,7 +123,6 @@ export const HomeScreen = ({
           })
         case 'SEND':
           return navigation.navigate(homeStackRouteNames.Send, {
-            backScreen: rootTabsRouteNames.Home,
             token: _selected?.symbol,
             contractAddress: _selected?.contractAddress,
           })

@@ -85,4 +85,5 @@ export interface SettingsSlice {
   hideBalance: boolean
   pin: string | null
   bitcoin: Bitcoin | null
+  usedBitcoinAddresses: { [key: string]: string }
 }

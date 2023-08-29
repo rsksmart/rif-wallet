@@ -317,6 +317,7 @@ const initialState: SettingsSlice = {
   pin: null,
   bitcoin: null,
   chainId: 31,
+  usedBitcoinAddresses: {},
 }
 
 const settingsSlice = createSlice({
@@ -428,6 +429,12 @@ const settingsSlice = createSlice({
     setBitcoinState: (state, { payload }: PayloadAction<Bitcoin>) => {
       state.bitcoin = payload
     },
+    addAddressToUsedBitcoinAddresses: (
+      state,
+      { payload }: PayloadAction<string>,
+    ) => {
+      state.usedBitcoinAddresses[payload] = payload
+    },
   },
   extraReducers(builder) {
     builder.addCase(createWallet.pending, state => {
@@ -480,6 +487,7 @@ export const {
   setFullscreen,
   setHideBalance,
   setBitcoinState,
+  addAddressToUsedBitcoinAddresses,
 } = settingsSlice.actions
 
 export const settingsSliceReducer = settingsSlice.reducer
