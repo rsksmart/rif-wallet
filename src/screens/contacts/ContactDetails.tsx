@@ -149,11 +149,6 @@ export const ContactDetails = ({
         .then(resolvedAddress => {
           const newAddress = resolvedAddress.toLowerCase()
           if (newAddress !== contact.address) {
-            console.log(
-              'UPDATE CONTACT ADDRESS',
-              contact.displayAddress,
-              newAddress,
-            )
             const newContact = {
               ...contact,
               address: newAddress,
