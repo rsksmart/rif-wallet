@@ -2,8 +2,10 @@ import { useIsFocused } from '@react-navigation/native'
 import { ComponentType, useContext, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Alert, Image, ScrollView, StyleSheet, View } from 'react-native'
+import { FormProvider, useForm } from 'react-hook-form'
+import Clipboard from '@react-native-community/clipboard'
 
-import { Typography } from 'components/index'
+import { AppButton, Input, Typography } from 'components/index'
 import { ConfirmationModal } from 'components/modal'
 import {
   rootTabsRouteNames,
@@ -116,6 +118,25 @@ export const WalletConnectScreen = ({ route }: Props) => {
     }
   }, [dispatch, isFocused])
 
+  const methods = useForm()
+  const [wcUri, setWcUri] = useState('')
+
+  const onWcUriInputChange = (data: string) => setWcUri(data)
+
+  const handlePaste = async () => {
+    const clipboardText = await Clipboard.getString()
+    onWcConnect(clipboardText)
+  }
+
+  const onUriSubmitted = async () => {
+    onWcConnect(wcUri)
+  }
+
+  const onWcConnect = (wcUriText: string) => {
+    setWcUri('')
+    onCreateNewSession(wcUriText)
+  }
+
   return (
     <View style={sharedStyles.screen}>
       <View style={styles.header}>
@@ -176,6 +197,31 @@ export const WalletConnectScreen = ({ route }: Props) => {
           onCancel={() => setDisconnectingWC(null)}
         />
       ) : null}
+      {/* Insert WC URI Manually */}
+      <FormProvider {...methods}>
+        <Input
+          inputName="wcUri"
+          label="WC URI"
+          placeholder={t('dapps_insert_wc_uri')}
+          autoCapitalize="none"
+          autoCorrect={false}
+          rightIcon={{
+            name: 'paste',
+            size: 16,
+          }}
+          onRightIconPress={handlePaste}
+          onChangeText={onWcUriInputChange}
+          value={wcUri}
+        />
+        <AppButton
+          title={t('dapps_wc_connect')}
+          onPress={onUriSubmitted}
+          textColor={sharedColors.black}
+          color={sharedColors.white}
+          style={styles.subtitle}
+          disabled={wcUri.length === 0}
+        />
+      </FormProvider>
     </View>
   )
 }

@@ -362,6 +362,8 @@ const resources = {
       dapps_session_rejected: 'Session rejected',
       dapps_error_pairing_title: 'Error when trying to connect to Dapp',
       dapps_error_pairing_message: 'Please refresh the QR and try again.',
+      dapps_wc_connect: 'Connect',
+      dapps_insert_wc_uri: 'Insert WC URI',
     },
   },
   es: {
