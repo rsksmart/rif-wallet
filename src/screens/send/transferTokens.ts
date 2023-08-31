@@ -3,6 +3,8 @@ import { BigNumber, utils } from 'ethers'
 import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
+import { sanitizeMaxDecimalText } from 'lib/utils'
+
 import {
   OnSetCurrentTransactionFunction,
   OnSetErrorFunction,
@@ -46,10 +48,7 @@ export const transfer = async ({
   try {
     const decimals = await transferMethod.decimals()
     const tokenAmount = BigNumber.from(
-      utils.parseUnits(
-        amount.substring(0, amount.lastIndexOf('.') + 1 + decimals),
-        decimals,
-      ),
+      utils.parseUnits(sanitizeMaxDecimalText(amount, decimals), decimals),
     )
     const txPending = await transferMethod.transfer(
       to.toLowerCase(),
