@@ -28,18 +28,16 @@ export const fetchUtxo = ({
   onSetUtxos,
   onSetBalance,
 }: FetchUtxoFunction) => {
-  if (token.bips[0].fetchUtxos) {
-    token.bips[0].fetchUtxos().then((data: UnspentTransactionType[]) => {
-      const filtered = data.filter(tx => tx.confirmations > 0) // Only confirmed unspent transactions
-      if (onSetUtxos) {
-        onSetUtxos(filtered)
-      }
-      // If onSetBalance calculate it and send it in the function
-      if (onSetBalance) {
-        onSetBalance(calculateBalanceFromUtxos(filtered))
-      }
-    })
-  }
+  token.bips[0].fetchUtxos?.().then((data: UnspentTransactionType[]) => {
+    const filtered = data.filter(tx => tx.confirmations > 0) // Only confirmed unspent transactions
+    if (onSetUtxos) {
+      onSetUtxos(filtered)
+    }
+    // If onSetBalance calculate it and send it in the function
+    if (onSetBalance) {
+      onSetBalance(calculateBalanceFromUtxos(filtered))
+    }
+  })
 }
 
 export const fetchAddressToReturnFundsTo = ({
@@ -47,7 +45,7 @@ export const fetchAddressToReturnFundsTo = ({
   onSetAddress,
   usedBitcoinAddresses,
 }: FetchAddressToReturnFundsToFunction) => {
-  token.bips[0].fetchExternalAvailableAddresses({}).then(addresses => {
+  token.bips[0].fetchExternalAvailableAddresses?.({}).then(addresses => {
     for (const address of addresses) {
       if (!usedBitcoinAddresses[address]) {
         onSetAddress?.(address)
