@@ -143,7 +143,7 @@ export const ContactDetails = ({
   }, [navigation, onDeleteContact])
 
   useEffect(() => {
-    if (contact.displayAddress !== contact.address) {
+    if (contact.displayAddress && contact.displayAddress !== contact.address) {
       getRnsResolver(chainId)
         .addr(contact.displayAddress)
         .then(resolvedAddress => {
@@ -159,6 +159,7 @@ export const ContactDetails = ({
             setValue('shortAddress', shortAddress(newAddress, 10))
           }
         })
+        .catch(_ => {})
     }
   }, [chainId, contact, dispatch, setValue])
 
