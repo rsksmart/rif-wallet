@@ -306,7 +306,7 @@ export const TransactionForm = ({
             style={styles.marginTop10}
             firstValue={firstBalance}
             secondValue={secondBalance}
-            color={sharedColors.black}
+            color={sharedColors.secondary}
             error={hasEnoughBalance ? t('transaction_form_error_balance') : ''}
             onSwap={onSwapBalance}
             editable
@@ -430,7 +430,7 @@ const styles = StyleSheet.create({
   }),
   buttonCancel: castStyle.view({
     marginTop: 10,
-    backgroundColor: sharedColors.black,
+    backgroundColor: sharedColors.secondary,
   }),
   assetToggleRow: castStyle.view({
     flexDirection: 'row',

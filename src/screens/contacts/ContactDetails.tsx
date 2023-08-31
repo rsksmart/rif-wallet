@@ -122,6 +122,9 @@ export const ContactDetails = ({
           />
         </AppTouchable>
       ),
+      headerStyle: {
+        backgroundColor: sharedColors.inputActive,
+      },
       headerRightContainerStyle: {
         paddingTop: 0,
       },
@@ -166,7 +169,7 @@ export const ContactDetails = ({
             </Typography>
           </View>
         </View>
-        <BarButtonGroupContainer backgroundColor={sharedColors.secondary}>
+        <BarButtonGroupContainer backgroundColor={sharedColors.inputActive}>
           <BarButtonGroupIcon
             onPress={onSendToContact}
             iconName={'north-east'}
@@ -245,7 +248,7 @@ const styles = StyleSheet.create({
     paddingBottom: 144,
   }),
   contactDetailsView: castStyle.view({
-    backgroundColor: sharedColors.inputInactive,
+    backgroundColor: sharedColors.inputActive,
     justifyContent: 'center',
     alignItems: 'center',
     height: 167,
