@@ -11,7 +11,7 @@ export const testIDs = {
   saveButton: 'saveButton',
   nameInput: 'nameInput',
   addressInput: 'addressInput',
-  NewContact: 'NewContact',
+  newContact: 'newContact',
 }
 
 export const sharedColors: { [key: string]: ColorValue } = {

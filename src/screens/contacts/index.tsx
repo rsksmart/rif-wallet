@@ -160,7 +160,7 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
       </FormProvider>
       <AppButton
         title={t('contacts_new_contact_button_label')}
-        accessibilityLabel={testIDs.NewContact}
+        accessibilityLabel={testIDs.newContact}
         onPress={() => navigation.navigate(contactsStackRouteNames.ContactForm)}
         style={styles.newContactButton}
         textColor={sharedColors.black}
