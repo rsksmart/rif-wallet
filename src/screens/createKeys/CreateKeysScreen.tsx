@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Image, StyleSheet, View } from 'react-native'
+import { useCallback } from 'react'
 
 import {
   AppButton,
@@ -14,11 +15,19 @@ import {
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { WINDOW_HEIGHT } from 'src/ux/slides/Dimensions'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { selectIsFirstLaunch, unlockApp } from 'store/slices/settingsSlice'
 
 export const CreateKeysScreen = ({
   navigation,
 }: CreateKeysScreenProps<createKeysRouteNames.CreateKeys>) => {
+  const isFirstLaunch = useAppSelector(selectIsFirstLaunch)
+  const dispatch = useAppDispatch()
   const { t } = useTranslation()
+
+  const retryUnlock = useCallback(() => {
+    dispatch(unlockApp({}))
+  }, [dispatch])
 
   return (
     <View style={styles.screen}>
@@ -49,6 +58,18 @@ export const CreateKeysScreen = ({
           color={sharedColors.white}
           textColor={sharedColors.black}
         />
+
+        {!isFirstLaunch && (
+          <AppButton
+            onPress={retryUnlock}
+            accessibilityLabel={'retryKeys'}
+            title={t('initial_screen_button_retry_login')}
+            color={sharedColors.primary}
+            style={styles.importWalletButton}
+            textColor={sharedColors.white}
+            backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
+          />
+        )}
 
         <AppButton
           onPress={() =>
@@ -95,7 +116,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 185,
     lineHeight: 15.6,
-    bottom: WINDOW_HEIGHT * 0.2,
+    bottom: WINDOW_HEIGHT * 0.26,
     left: 24,
   }),
   importWalletButton: castStyle.view({

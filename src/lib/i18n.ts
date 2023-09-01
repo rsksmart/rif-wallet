@@ -102,6 +102,7 @@ const resources = {
         'Register your username to allow others to send you funds more easily. In case you do not have any RIF funds you can ask a friend to send you some RIF.',
       info_box_close_button: 'close',
       initial_screen_title: 'Wallet',
+      initial_screen_button_retry_login: 'Retry unlock',
       initial_screen_button_create: 'Create a wallet',
       initial_screen_button_import: 'Import existing wallet',
       initial_screen_welcome_footer:
