@@ -128,7 +128,7 @@ export const WalletConnectScreen = ({ route }: Props) => {
     onWcConnect(clipboardText)
   }
 
-  const onUriSubmitted = async () => {
+  const onUriSubmitted = () => {
     onWcConnect(wcUri)
   }
 
