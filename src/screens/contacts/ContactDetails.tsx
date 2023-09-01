@@ -8,7 +8,7 @@ import {
   FlatList,
   ScrollView,
 } from 'react-native'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useIsFocused } from '@react-navigation/native'
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
@@ -31,7 +31,7 @@ import {
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { homeStackRouteNames } from 'navigation/homeNavigator/types'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { changeTopColor } from 'store/slices/settingsSlice'
+import { changeTopColor, selectChainId } from 'store/slices/settingsSlice'
 import { castStyle } from 'shared/utils'
 import {
   BarButtonGroupContainer,
@@ -39,8 +39,9 @@ import {
 } from 'components/BarButtonGroup/BarButtonGroup'
 import { ConfirmationModal } from 'components/modal'
 import { BasicRow } from 'components/BasicRow'
-import { deleteContactByAddress } from 'store/slices/contactsSlice'
+import { addContact, deleteContactByAddress } from 'store/slices/contactsSlice'
 import { selectTransactions } from 'store/slices/transactionsSlice'
+import { getRnsResolver } from 'src/core/setup'
 
 const copyButtonConfig = { name: 'copy', size: 18, color: sharedColors.white }
 
@@ -51,24 +52,24 @@ export const ContactDetails = ({
   },
 }: ContactsStackScreenProps<contactsStackRouteNames.ContactDetails>) => {
   const transactions = useAppSelector(selectTransactions)
+  const chainId = useAppSelector(selectChainId)
   const dispatch = useAppDispatch()
   const [isDeleteContactModalVisible, setIsDeleteContactModalVisible] =
     useState(false)
   const isFocused = useIsFocused()
 
-  const transactionFiltered = useMemo(
-    () => transactions.filter(tx => tx.to === contact.address),
-    [transactions, contact],
+  const transactionFiltered = transactions.filter(
+    tx => tx.to === contact.address,
   )
 
   const methods = useForm({
     defaultValues: {
       username: contact.name,
       address: contact.address,
-      shortAddress: shortAddress(contact.address),
+      shortAddress: shortAddress(contact.address, 10),
     },
   })
-  const { getValues } = methods
+  const { getValues, setValue } = methods
   const { t } = useTranslation()
 
   const onHideConfirmDeleteModal = useCallback(() => {
@@ -102,6 +103,16 @@ export const ContactDetails = ({
     })
   }, [navigation, contact])
 
+  const onCopyValue = useCallback(
+    (value: string) => () => {
+      Alert.alert(t('message_copied_to_clipboard'), undefined, [
+        { text: t('ok'), onPress: noop },
+      ])
+      Clipboard.setString(value)
+    },
+    [t],
+  )
+
   useEffect(() => {
     if (isFocused) {
       dispatch(changeTopColor(sharedColors.inputInactive))
@@ -131,15 +142,26 @@ export const ContactDetails = ({
     })
   }, [navigation, onDeleteContact])
 
-  const onCopyValue = useCallback(
-    (value: string) => () => {
-      Alert.alert(t('message_copied_to_clipboard'), undefined, [
-        { text: t('ok'), onPress: noop },
-      ])
-      Clipboard.setString(value)
-    },
-    [t],
-  )
+  useEffect(() => {
+    if (contact.displayAddress && contact.displayAddress !== contact.address) {
+      getRnsResolver(chainId)
+        .addr(contact.displayAddress)
+        .then(resolvedAddress => {
+          const newAddress = resolvedAddress.toLowerCase()
+          if (newAddress !== contact.address) {
+            const newContact = {
+              ...contact,
+              address: newAddress,
+            }
+            dispatch(addContact(newContact))
+            dispatch(deleteContactByAddress(contact.address))
+            setValue('address', newAddress)
+            setValue('shortAddress', shortAddress(newAddress, 10))
+          }
+        })
+        .catch(_ => {})
+    }
+  }, [chainId, contact, dispatch, setValue])
 
   return (
     <View style={styles.screen}>
@@ -162,7 +184,7 @@ export const ContactDetails = ({
               {contact.name}
             </Typography>
             <Typography type={'h4'} color={sharedColors.labelLight}>
-              {contact.address}
+              {contact.displayAddress || contact.address}
             </Typography>
           </View>
         </View>

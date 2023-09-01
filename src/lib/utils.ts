@@ -3,11 +3,10 @@ import moment from 'moment'
 
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 
-export function shortAddress(address?: string, trimAmount?: number): string {
+export function shortAddress(address: string, amount = 4): string {
   if (!address) {
     return ''
   }
-  const amount = trimAmount || 4
 
   return `${address.substr(0, amount + 2)}...${address.substr(
     address.length - amount,

@@ -130,7 +130,7 @@ export const TransactionForm = ({
         displayAddress: recipient?.displayAddress ?? '',
       },
       name: recipient?.name ?? null,
-      isToValid: recipient?.name ? true : false,
+      isToValid: !!recipient?.name,
     },
     resolver: yupResolver(transactionSchema),
   })
@@ -279,9 +279,7 @@ export const TransactionForm = ({
               label={t('transaction_form_recepient_label')}
               value={recipient.name}
               subtitle={
-                !recipient.displayAddress
-                  ? shortAddress(recipient.address)
-                  : recipient.displayAddress
+                recipient.displayAddress || shortAddress(recipient.address)
               }
               inputName={'to'}
               leftIcon={<Avatar name={recipient.name} size={32} />}

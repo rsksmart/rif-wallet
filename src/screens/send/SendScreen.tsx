@@ -38,12 +38,14 @@ export const SendScreen = ({
   const { t } = useTranslation()
   const { wallet, walletIsDeployed } = useAppSelector(selectWalletState)
   const { loading, isDeployed } = walletIsDeployed
-  const assets = Object.values(useAppSelector(selectBalances))
   const chainId = useAppSelector(selectChainId)
 
   const totalUsdBalance = useAppSelector(selectTotalUsdValue)
   const prices = useAppSelector(selectUsdPrices)
   const { backScreen, contact } = route.params
+
+  const balances = Object.values(useAppSelector(selectBalances))
+  const assets = contact ? balances.filter(b => !('bips' in b)) : balances
   const contractAddress = route.params?.contractAddress || assets[0]
 
   // We assume only one bitcoinNetwork instance exists
