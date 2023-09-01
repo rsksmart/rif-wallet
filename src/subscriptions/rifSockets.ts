@@ -1,6 +1,7 @@
 import EventEmitter from 'eventemitter3'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import {
+  ITokenWithBalance,
   RifWalletServicesFetcher,
   RifWalletServicesSocket,
 } from '@rsksmart/rif-wallet-services'
@@ -95,12 +96,16 @@ export const rifSockets = ({
     }
 
     const defaultTokens = getDefaultTokens(chainId)
-    defaultTokens.forEach(t => {
+    const defaultTokensWithBalance = defaultTokens.map(t => {
       const tokenBalance = balances[t.contractAddress]
-      t.balance = tokenBalance?.balance ?? t.balance
-      t.usdBalance = tokenBalance?.usdBalance ?? t.usdBalance
+      return {
+        ...t,
+        logo: '', // remove warning
+        balance: tokenBalance?.balance ?? t.balance,
+        usdBalance: tokenBalance?.usdBalance ?? t.usdBalance,
+      } as ITokenWithBalance
     })
-    dispatch(addOrUpdateBalances(defaultTokens))
+    dispatch(addOrUpdateBalances(defaultTokensWithBalance))
 
     rifWalletServicesSocket.removeAllListeners()
 

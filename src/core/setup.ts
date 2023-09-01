@@ -14,6 +14,7 @@ import {
   chainTypesById,
   ChainTypesByIdType,
 } from 'shared/constants/chainConstants'
+import { USDRIF_TESTNET } from 'src/screens/home/TokenImage'
 
 import { getWalletSetting } from './config'
 
@@ -90,7 +91,8 @@ const defaultTestnetTokens: ITokenWithoutLogo[] = Object.keys(testnetContracts)
       usdBalance: 0,
     }
   })
-export const getDefaultTokens = (chainId: ChainTypesByIdType) =>
-  chainTypesById[chainId] === ChainTypeEnum.MAINNET
+export const getDefaultTokens = (chainId: ChainTypesByIdType) => {
+  return chainTypesById[chainId] === ChainTypeEnum.MAINNET
     ? defaultMainnetTokens
-    : defaultTestnetTokens
+    : [...defaultTestnetTokens, USDRIF_TESTNET]
+}

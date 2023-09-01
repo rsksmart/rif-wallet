@@ -10,6 +10,7 @@ import {
 
 import { FrownFaceIcon } from 'components/icons'
 import { sharedColors } from 'shared/constants'
+import { ITokenWithoutLogo } from 'src/redux/slices/balancesSlice/types'
 
 interface Props {
   symbol: string
@@ -65,6 +66,7 @@ export enum TokenSymbol {
   TRIF = 'tRIF',
   DOC = 'DOC',
   RDOC = 'RDOC',
+  USDRIF = 'USDRIF',
   RIFP = 'RIFP',
   BPRO = 'BPRO',
   RNS = 'RNS',
@@ -142,6 +144,8 @@ export const getTransparentIconSource = (
       return require('../../images/rif-white.png')
     case 'RDOC':
       return require('./../../images/rdoc-transparent.png')
+    case 'USDRIF':
+      return require('./../../images/usdrif-transparent.png')
     case 'BTCCB':
     case 'BTCT':
     case 'BTC':
@@ -168,6 +172,8 @@ export const getIconSource = (
       return require('@rsksmart/rsk-contract-metadata/images/doc.png')
     case 'RDOC':
       return require('./../../images/rdoc.png')
+    case 'USDRIF':
+      return require('./../../images/usdrif.png')
     case 'RIFP':
       return require('@rsksmart/rsk-contract-metadata/images/rifpro.png')
     case 'BPRO':
@@ -273,3 +279,12 @@ export const getIconSource = (
       return undefined
   }
 }
+
+export const USDRIF_TESTNET = {
+  decimals: 18,
+  name: 'RIF US Dollar',
+  symbol: 'USDRIF',
+  contractAddress: '0x8dbf326e12a9ff37ed6ddf75ada548c2640a6482',
+  balance: '0x00',
+  usdBalance: 0,
+} as ITokenWithoutLogo
