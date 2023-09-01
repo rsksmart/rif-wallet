@@ -118,10 +118,10 @@ export const WalletConnectScreen = ({ route }: Props) => {
     }
   }, [dispatch, isFocused])
 
-  const methods = useForm()
-  const [wcUri, setWcUri] = useState('')
-
-  const onWcUriInputChange = (data: string) => setWcUri(data)
+  const methods = useForm({ defaultValues: { wcUri: '' } })
+  const { watch, setValue } = methods
+  const wcUri = watch('wcUri')
+  const onWcUriInputChange = (data: string) => setValue('wcUri', data)
 
   const handlePaste = async () => {
     const clipboardText = await Clipboard.getString()
@@ -133,7 +133,7 @@ export const WalletConnectScreen = ({ route }: Props) => {
   }
 
   const onWcConnect = (wcUriText: string) => {
-    setWcUri('')
+    setValue('wcUri', '')
     onCreateNewSession(wcUriText)
   }
 
