@@ -156,7 +156,8 @@ export const ContactFormScreen = ({
             label={t('address_rns_placeholder')}
             placeholder={t('address_rns_placeholder')}
             inputName={'address'}
-            testID={'addressInput'}
+            testID={testIDs.addressInput}
+            accessibilityLabel={testIDs.addressInput}
             value={addressObj}
             resetValue={() => resetField('address')}
             onChangeAddress={handleAddressChange}
@@ -165,10 +166,10 @@ export const ContactFormScreen = ({
           <Input
             label={t('contact_form_name')}
             inputName={'name'}
-            testID={'nameInput'}
+            testID={testIDs.nameInput}
+            accessibilityLabel={testIDs.nameInput}
             subtitle={errors.name?.message}
             subtitleStyle={styles.fieldError}
-            accessibilityLabel={'nameInput'}
             placeholder={t('contact_form_name')}
             resetValue={() => resetField('name')}
           />

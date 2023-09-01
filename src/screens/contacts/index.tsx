@@ -128,11 +128,13 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
               resetValue={onSearchReset}
               placeholder={t('search_placeholder')}
               testID={testIDs.searchInput}
+              accessibilityLabel={testIDs.searchInput}
             />
             <ScrollView style={styles.contactsList}>
               {contactsFiltered.map((contact, index) => (
                 <AppTouchable
                   key={index + contact.name}
+                  accessibilityLabel={contact.name}
                   width={'100%'}
                   onPress={() =>
                     navigation.navigate(
@@ -158,6 +160,7 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
       </FormProvider>
       <AppButton
         title={t('contacts_new_contact_button_label')}
+        accessibilityLabel={testIDs.newContact}
         onPress={() => navigation.navigate(contactsStackRouteNames.ContactForm)}
         style={styles.newContactButton}
         textColor={sharedColors.black}

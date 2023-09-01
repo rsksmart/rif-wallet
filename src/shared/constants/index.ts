@@ -9,6 +9,9 @@ export const testIDs = {
   swap: 'swap',
   searchInput: 'searchInput',
   saveButton: 'saveButton',
+  nameInput: 'nameInput',
+  addressInput: 'addressInput',
+  newContact: 'newContact',
 }
 
 export const sharedColors: { [key: string]: ColorValue } = {
