@@ -3,10 +3,16 @@ import { useTranslation } from 'react-i18next'
 import { Image, ScrollView, StyleSheet, View } from 'react-native'
 import { CompositeScreenProps, useIsFocused } from '@react-navigation/native'
 import { FormProvider, useForm } from 'react-hook-form'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { shortAddress } from 'lib/utils'
 
-import { AppButton, AppTouchable, Typography } from 'components/index'
+import {
+  AppButton,
+  AppTouchable,
+  Typography,
+  buttonHeight,
+} from 'components/index'
 import {
   rootTabsRouteNames,
   RootTabsScreenProps,
@@ -34,6 +40,7 @@ export type ContactsListScreenProps = CompositeScreenProps<
 >
 
 export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
+  const insets = useSafeAreaInsets()
   const dispatch = useAppDispatch()
   const isFocused = useIsFocused()
   const methods = useForm({
@@ -130,7 +137,11 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
               testID={testIDs.searchInput}
               accessibilityLabel={testIDs.searchInput}
             />
-            <ScrollView style={styles.contactsList}>
+            <ScrollView
+              style={styles.contactsList}
+              contentContainerStyle={{
+                paddingBottom: insets.bottom + buttonHeight + 12,
+              }}>
               {contactsFiltered.map((contact, index) => (
                 <AppTouchable
                   key={index + contact.name}
@@ -139,7 +150,9 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
                   onPress={() =>
                     navigation.navigate(
                       contactsStackRouteNames.ContactDetails,
-                      { contact },
+                      {
+                        contact,
+                      },
                     )
                   }>
                   <BasicRow
@@ -185,12 +198,12 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'flex-end',
   }),
-  contactsList: {
+  contactsList: castStyle.view({
     marginTop: 14,
     padding: 10,
     shadowOpacity: 0.1,
     shadowRadius: 10,
-  },
+  }),
   newContactButton: castStyle.view({
     position: 'absolute',
     bottom: 30,
