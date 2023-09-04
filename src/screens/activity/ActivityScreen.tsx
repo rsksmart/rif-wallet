@@ -118,7 +118,8 @@ export const enhanceTransactionInput = async (
   wallet: RIFWallet,
 ): Promise<EnhancedResult | null> => {
   try {
-    const enhancedTx = await abiEnhancer.enhance(wallet, {
+    const chainId = await wallet.getChainId()
+    const enhancedTx = await abiEnhancer.enhance(chainId, {
       from: transaction.from.toLowerCase(),
       to: transaction.to.toLowerCase(),
       data: ethers.utils.arrayify(transaction.input),
