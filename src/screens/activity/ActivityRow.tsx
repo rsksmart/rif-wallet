@@ -28,6 +28,7 @@ const getStatus = (status: string) => {
 }
 
 interface Props {
+  index?: number
   wallet: RIFWallet
   activityDetails: ActivityRowPresentationObject
   navigation: ActivityMainScreenProps['navigation']
@@ -36,6 +37,7 @@ interface Props {
 }
 
 export const ActivityBasicRow = ({
+  index,
   wallet,
   navigation,
   activityDetails,
@@ -129,6 +131,7 @@ export const ActivityBasicRow = ({
   return (
     <AppTouchable width={'100%'} onPress={handlePress} style={style}>
       <BasicRowWithContact
+        index={index}
         label={label}
         amount={amount}
         symbol={symbol}

@@ -32,6 +32,7 @@ interface StatusTextProps {
 }
 
 export interface BasicRowProps {
+  index?: number
   label: string
   secondaryLabel: string
   avatar: {
@@ -47,6 +48,7 @@ export interface BasicRowProps {
   symbol?: string
 }
 export const BasicRow = ({
+  index,
   label,
   secondaryLabel,
   status,
@@ -71,12 +73,15 @@ export const BasicRow = ({
       <Typography
         type="body2"
         style={styles.bold}
+        accessibilityLabel={`label-${index}`}
         numberOfLines={1}
         ellipsizeMode="tail"
         adjustsFontSizeToFit>
         {label}
       </Typography>
-      <Typography type="labelLight">
+      <Typography
+        type="labelLight"
+        accessibilityLabel={`secondaryLabel-${index}`}>
         {secondaryLabel} <StatusText status={status} />
       </Typography>
       {error && (
@@ -91,6 +96,7 @@ export const BasicRow = ({
       <View style={styles.amountView}>
         {amount && (
           <Typography
+            accessibilityLabel={`amount-${index}`}
             type="body2"
             style={[
               styles.flexShrinkOne,
@@ -106,6 +112,7 @@ export const BasicRow = ({
       <View style={styles.usdAmountView}>
         {usdAmount !== undefined && (
           <Typography
+            accessibilityLabel={`usdAmount-${index}`}
             type="labelLight"
             numberOfLines={1}
             ellipsizeMode="tail"

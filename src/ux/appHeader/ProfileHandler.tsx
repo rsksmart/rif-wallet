@@ -41,7 +41,10 @@ export const ProfileHandler = ({ navigation }: Props) => {
           />
 
           <View style={styles.textAlignment}>
-            <Typography type={'h4'} style={styles.profileName}>
+            <Typography
+              type="h4"
+              style={styles.profileName}
+              accessibilityLabel="noUsername">
               {t('header_no_username')}
             </Typography>
           </View>
