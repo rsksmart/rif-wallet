@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import { resetApp } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
-import { sharedColors } from 'src/shared/constants'
+import { sharedColors } from 'shared/constants'
 
 import { ConfirmationModal, ConfirmationModalConfig } from '..'
 
