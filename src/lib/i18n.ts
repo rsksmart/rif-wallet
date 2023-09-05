@@ -103,6 +103,7 @@ const resources = {
       info_box_close_button: 'close',
       initial_screen_title: 'Wallet',
       initial_screen_button_retry_login: 'Retry unlock',
+      initial_screen_button_erase_wallet: 'Erase the Wallet',
       initial_screen_button_create: 'Create a wallet',
       initial_screen_button_import: 'Import existing wallet',
       initial_screen_welcome_footer:

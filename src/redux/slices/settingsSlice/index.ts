@@ -86,6 +86,8 @@ export const createWallet = createAsyncThunk<
     // unclock the app
     thunkAPI.dispatch(setUnlocked(true))
 
+    thunkAPI.dispatch(setKeysExist(true))
+
     // create fetcher
     //@TODO: refactor socket initialization, it repeats several times
     thunkAPI.dispatch(setChainId(chainId))
@@ -141,7 +143,7 @@ export const unlockApp = createAsyncThunk<
       settings: { isFirstLaunch },
     } = thunkAPI.getState()
     // if previously installed the app, remove stored encryted keys
-    if (isFirstLaunch && !__DEV__) {
+    if (isFirstLaunch) {
       await deleteKeys()
       thunkAPI.dispatch(setIsFirstLaunch(false))
       return thunkAPI.rejectWithValue('FIRST LAUNCH, DELETE PREVIOUS KEYS')
@@ -149,7 +151,9 @@ export const unlockApp = createAsyncThunk<
 
     const serializedKeys = await getKeys()
     const { chainId } = thunkAPI.getState().settings
+
     if (!serializedKeys) {
+      thunkAPI.dispatch(setKeysExist(false))
       return thunkAPI.rejectWithValue('No Existing Keys')
     }
 
@@ -258,6 +262,7 @@ export const resetApp = createAsyncThunk(
       thunkAPI.dispatch(deleteProfile())
       thunkAPI.dispatch(setPreviouslyUnlocked(false))
       thunkAPI.dispatch(setPinState(null))
+      thunkAPI.dispatch(setKeysExist(false))
       resetMainStorage()
       return 'deleted'
     } catch (err) {
@@ -300,6 +305,7 @@ export const resetApp = createAsyncThunk(
 // )
 
 const initialState: SettingsSlice = {
+  keysExist: false,
   isFirstLaunch: true,
   isSetup: false,
   topColor: sharedColors.primary,
@@ -324,6 +330,9 @@ const settingsSlice = createSlice({
   name: 'settings',
   initialState,
   reducers: {
+    setKeysExist: (state, { payload }: PayloadAction<boolean>) => {
+      state.keysExist = payload
+    },
     setIsFirstLaunch: (state, { payload }: PayloadAction<boolean>) => {
       state.isFirstLaunch = payload
     },
@@ -468,6 +477,7 @@ const settingsSlice = createSlice({
 })
 
 export const {
+  setKeysExist,
   setIsFirstLaunch,
   setIsSetup,
   changeTopColor,
