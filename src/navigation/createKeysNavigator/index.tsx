@@ -27,8 +27,6 @@ export const CreateKeysNavigation = () => {
   const { t } = useTranslation()
   const unlocked = useAppSelector(selectIsUnlocked)
 
-  console.log('keysExist', keysExist)
-
   return (
     <Stack.Navigator initialRouteName={createKeysRouteNames.CreateKeys}>
       {!unlocked &&
