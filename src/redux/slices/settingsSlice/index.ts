@@ -143,7 +143,7 @@ export const unlockApp = createAsyncThunk<
       settings: { isFirstLaunch },
     } = thunkAPI.getState()
     // if previously installed the app, remove stored encryted keys
-    if (isFirstLaunch) {
+    if (isFirstLaunch && !__DEV__) {
       await deleteKeys()
       thunkAPI.dispatch(setIsFirstLaunch(false))
       return thunkAPI.rejectWithValue('FIRST LAUNCH, DELETE PREVIOUS KEYS')
