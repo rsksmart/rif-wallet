@@ -45,14 +45,9 @@ const RequestTypeSwitch = ({
   )
 }
 
-export const RequestHandler = ({ request, closeRequest }: Props) => {
-  const onConfirm = useCallback(() => {
-    closeRequest()
-  }, [closeRequest])
-
-  const onCancel = useCallback(() => {
-    closeRequest()
-  }, [closeRequest])
-
-  return RequestTypeSwitch({ request, onCancel, onConfirm })
-}
+export const RequestHandler = ({ request, closeRequest }: Props) =>
+  RequestTypeSwitch({
+    request,
+    onCancel: closeRequest,
+    onConfirm: closeRequest,
+  })
