@@ -66,9 +66,14 @@ interface FormValues {
   name: string | null
 }
 
-const transactionFeeMap = new Map([
-  [TokenSymbol.RIF, true],
+const bitcoinFeeMap = new Map([
+  [TokenSymbol.BTC, true],
+  [TokenSymbol.BTCT, true],
+])
+
+const rifFeeMap = new Map([
   [TokenSymbol.TRIF, true],
+  [TokenSymbol.RIF, true],
 ])
 
 const transactionSchema = yup.object().shape({
@@ -92,11 +97,15 @@ export const TransactionForm = ({
   totalUsdBalance,
   status,
 }: Props) => {
+  const rifToken = useMemo(
+    () => tokenList.filter(tk => rifFeeMap.get(tk.symbol as TokenSymbol))[0],
+    [tokenList],
+  )
   const insets = useSafeAreaInsets()
   const { recipient, asset, amount: initialAmount } = initialValues
   const { t } = useTranslation()
   const [showTxSelector, setShowTxSelector] = useState(false)
-  const [showTxFeeSelector, setShowTxFeeSelector] = useState(false)
+  // const [showTxFeeSelector, setShowTxFeeSelector] = useState(false)
   const [selectedToken, setSelectedToken] = useState<TokenBalanceObject>(
     asset || tokenList[0],
   )
@@ -104,18 +113,16 @@ export const TransactionForm = ({
     string | undefined
   >(selectedToken.contractAddress)
 
-  const [selectedFeeToken, setSelectedFeeToken] =
-    useState<TokenBalanceObject>(selectedToken)
+  // const [selectedFeeToken, setSelectedFeeToken] =
+  //   useState<TokenBalanceObject>(selectedToken)
 
-  const tokenFeeList = useMemo(() => {
-    if (selectedToken.symbol !== TokenSymbol.BTCT) {
-      return tokenList.filter(tok =>
-        transactionFeeMap.get(tok.symbol as TokenSymbol),
-      )
+  const feeToken = useMemo((): TokenBalanceObject => {
+    if (bitcoinFeeMap.get(selectedToken.symbol as TokenSymbol)) {
+      return selectedToken
+    } else {
+      return rifToken
     }
-
-    return [selectedToken]
-  }, [tokenList, selectedToken])
+  }, [selectedToken, rifToken])
 
   const tokenQuote = selectedToken.contractAddress.startsWith('BITCOIN')
     ? tokenPrices.BTC.price
@@ -219,7 +226,8 @@ export const TransactionForm = ({
         } else {
           setFirstBalance(tokenObject)
         }
-        setSelectedFeeToken(token)
+        // setSelectedFeeToken(token)
+
         handleAmountChange('', balanceInverted)
         setShowTxSelector(false)
       }
@@ -253,21 +261,21 @@ export const TransactionForm = ({
     setShowTxSelector(prev => !prev)
   }, [])
 
-  const toggleShowTxFee = useCallback(() => {
-    setShowTxFeeSelector(prev => !prev)
-  }, [])
+  // const toggleShowTxFee = useCallback(() => {
+  //   setShowTxFeeSelector(prev => !prev)
+  // }, [])
 
-  const onChangeSelectedFee = useCallback(
-    (fee: string | undefined) => {
-      if (fee) {
-        setSelectedFeeToken(
-          tokenList.filter(value => value.contractAddress === fee)[0],
-        )
-        setShowTxFeeSelector(false)
-      }
-    },
-    [tokenList],
-  )
+  // const onChangeSelectedFee = useCallback(
+  //   (fee: string | undefined) => {
+  //     if (fee) {
+  //       setSelectedFeeToken(
+  //         tokenList.filter(value => value.contractAddress === fee)[0],
+  //       )
+  //       setShowTxFeeSelector(false)
+  //     }
+  //   },
+  //   [tokenList],
+  // )
 
   return (
     <>
@@ -351,14 +359,12 @@ export const TransactionForm = ({
             <Input
               inputName={'fee'}
               label={t('transaction_form_fee_input_label')}
-              placeholder={`${selectedFeeToken.symbol}`}
-              leftIcon={
-                <TokenImage symbol={selectedFeeToken.symbol} size={32} />
-              }
+              placeholder={`${feeToken.symbol}`}
+              leftIcon={<TokenImage symbol={feeToken.symbol} size={32} />}
               isReadOnly
             />
           ) : null}
-          {firstBalance.balance && tokenFeeList.length > 1 ? (
+          {/* {firstBalance.balance && tokenFeeList.length > 1 ? (
             <AppTouchable
               width={'100%'}
               onPress={toggleShowTxFee}
@@ -374,17 +380,17 @@ export const TransactionForm = ({
                 />
               </>
             </AppTouchable>
-          ) : null}
-          {showTxFeeSelector ? (
+          ) : null} */}
+          {/* {showTxFeeSelector ? (
             <PortfolioComponent
               style={styles.txSelector}
-              setSelectedAddress={onChangeSelectedFee}
-              selectedAddress={selectedFeeToken.contractAddress}
-              balances={tokenFeeList}
+              setSelectedAddress={noop}
+              selectedAddress={feeToken.contractAddress}
+              balances={[feeToken]}
               totalUsdBalance={totalUsdBalance}
               showTotalCard={false}
             />
-          ) : null}
+          ) : null} */}
         </FormProvider>
       </ScrollView>
       <View style={[styles.marginTop10, { paddingBottom: insets.bottom }]}>
