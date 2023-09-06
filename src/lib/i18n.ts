@@ -363,6 +363,7 @@ const resources = {
       dapps_error_pairing_title: 'Error when trying to connect to Dapp',
       dapps_error_pairing_message: 'Please refresh the QR and try again.',
       dapps_wc_connect: 'Connect',
+      dapps_wc_label: 'WC URI',
       dapps_insert_wc_uri: 'Insert WC URI',
       dapps_uri_not_valid_title: 'Invalid URI',
       dapps_uri_not_valid_message:
