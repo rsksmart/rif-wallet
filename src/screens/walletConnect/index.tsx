@@ -121,20 +121,14 @@ export const WalletConnectScreen = ({ route }: Props) => {
   const methods = useForm({ defaultValues: { wcUri: '' } })
   const { watch, setValue } = methods
   const wcUri = watch('wcUri')
-  const onWcUriInputChange = (data: string) => setValue('wcUri', data)
 
   const handlePaste = async () => {
     const clipboardText = await Clipboard.getString()
-    onWcConnect(clipboardText)
+    setValue('wcUri', clipboardText)
   }
 
   const onUriSubmitted = () => {
-    onWcConnect(wcUri)
-  }
-
-  const onWcConnect = (wcUriText: string) => {
-    setValue('wcUri', '')
-    onCreateNewSession(wcUriText)
+    onCreateNewSession(wcUri)
   }
 
   return (
@@ -201,7 +195,7 @@ export const WalletConnectScreen = ({ route }: Props) => {
       <FormProvider {...methods}>
         <Input
           inputName="wcUri"
-          label="WC URI"
+          label={t('dapps_wc_label')}
           placeholder={t('dapps_insert_wc_uri')}
           autoCapitalize="none"
           autoCorrect={false}
@@ -210,8 +204,6 @@ export const WalletConnectScreen = ({ route }: Props) => {
             size: 16,
           }}
           onRightIconPress={handlePaste}
-          onChangeText={onWcUriInputChange}
-          value={wcUri}
         />
         <AppButton
           title={t('dapps_wc_connect')}
