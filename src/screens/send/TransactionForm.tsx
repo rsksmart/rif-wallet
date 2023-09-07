@@ -81,6 +81,8 @@ const transactionSchema = yup.object().shape({
   isToValid: yup.boolean().isTrue(),
 })
 
+const maxAmount = 99999999
+
 export const TransactionForm = ({
   initialValues,
   tokenList,
@@ -161,6 +163,7 @@ export const TransactionForm = ({
         ...prev,
         balance: text,
       }))
+
       if (_balanceInverted) {
         const balanceToSet = convertUSDtoToken(numberAmount, tokenQuote)
         setValue('amount', balanceToSet)
@@ -308,9 +311,12 @@ export const TransactionForm = ({
             error={hasEnoughBalance ? t('transaction_form_error_balance') : ''}
             onSwap={onSwapBalance}
             editable
-            handleAmountChange={value =>
+            handleAmountChange={value => {
+              if (Number(value) > maxAmount) {
+                return
+              }
               handleAmountChange(value, balanceInverted)
-            }
+            }}
           />
           <Input
             containerStyle={styles.marginTop10}
