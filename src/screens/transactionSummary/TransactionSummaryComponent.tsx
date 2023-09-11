@@ -4,6 +4,7 @@ import { Linking, ScrollView, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
+import { isBitcoinAddressValid } from '@rsksmart/rif-wallet-bitcoin'
 
 import { displayRoundBalance } from 'lib/utils'
 
@@ -100,10 +101,19 @@ export const TransactionSummaryComponent = ({
   )
 
   const openTransactionHash = () => {
-    const explorerUrl = getWalletSetting(
-      SETTINGS.EXPLORER_ADDRESS_URL,
-      chainTypesById[chainId],
-    )
+    let explorerUrl = ''
+
+    if (isBitcoinAddressValid(transaction.to)) {
+      explorerUrl = getWalletSetting(
+        SETTINGS.BTC_EXPLORER_ADDRESS_URL,
+        chainTypesById[chainId],
+      )
+    } else {
+      explorerUrl = getWalletSetting(
+        SETTINGS.EXPLORER_ADDRESS_URL,
+        chainTypesById[chainId],
+      )
+    }
 
     Linking.openURL(`${explorerUrl}/tx/${hashId}`)
   }
