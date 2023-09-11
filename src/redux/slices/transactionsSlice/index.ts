@@ -1,5 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { BitcoinTransactionType } from '@rsksmart/rif-wallet-bitcoin'
+import {
+  BitcoinTransactionType,
+  convertSatoshiToBtcHuman,
+} from '@rsksmart/rif-wallet-bitcoin'
 import { IActivityTransaction, IEvent } from '@rsksmart/rif-wallet-services'
 import { BigNumber, constants, utils } from 'ethers'
 
@@ -58,7 +61,7 @@ export const activityDeserializer: (
         prices.BTC?.price,
       ),
       fee: {
-        tokenValue: `${fee} satoshi`,
+        tokenValue: convertSatoshiToBtcHuman(fee),
         usdValue: convertBalance(
           BigNumber.from(fee),
           8,
@@ -167,7 +170,7 @@ const transformTransaction = (
   return {
     ...transaction,
     isBitcoin: true,
-    symbol: '',
+    symbol: TokenSymbol.BTC,
     status: transaction.confirmations > 0 ? 'success' : 'pending',
     to: transaction.vout[0].addresses[0],
     valueBtc: utils.formatUnits(BigNumber.from(transaction.value), 8),
