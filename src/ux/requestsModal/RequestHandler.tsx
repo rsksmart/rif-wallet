@@ -1,5 +1,3 @@
-import { useCallback } from 'react'
-
 import { RequestWithBitcoin } from 'shared/types'
 import { ReviewBitcoinTransactionContainer } from 'src/ux/requestsModal/ReviewBitcoinTransactionContainer'
 
