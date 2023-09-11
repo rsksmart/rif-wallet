@@ -51,7 +51,7 @@ export const screenOptionsWithHeader = (
     ),
     headerStyle: {
       height: 64 + topInset,
-      backgroundColor: color ?? sharedColors.black,
+      backgroundColor: color ?? sharedColors.secondary,
     },
     headerShadowVisible: false,
   }
