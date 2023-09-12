@@ -5,8 +5,9 @@ import {
 import { BigNumber, constants } from 'ethers'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { StyleSheet, View } from 'react-native'
+import { Alert, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { RIF_TOKEN_ADDRESS_TESTNET } from '@rsksmart/rif-relay-light-sdk'
 
 import { balanceToDisplay, convertTokenToUSD } from 'lib/utils'
 
@@ -23,8 +24,15 @@ import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { addRecentContact } from 'store/slices/contactsSlice'
+import { selectBalances } from 'store/slices/balancesSlice'
 
 import useEnhancedWithGas from '../useEnhancedWithGas'
+
+const tokenToBoolMap = new Map([
+  [TokenSymbol.RIF, true],
+  [TokenSymbol.TRIF, true],
+  [undefined, false],
+])
 
 interface Props {
   request: SendTransactionRequest
@@ -42,6 +50,7 @@ export const ReviewTransactionContainer = ({
   const tokenPrices = useAppSelector(selectUsdPrices)
   // enhance the transaction to understand what it is:
   const { wallet, chainId } = useAppSelector(selectWalletState)
+  const balances = useAppSelector(selectBalances)
   const [txCostInRif, setTxCostInRif] = useState<BigNumber>()
   const { t } = useTranslation()
 
@@ -136,6 +145,23 @@ export const ReviewTransactionContainer = ({
     const feeValue = txCostInRif
       ? `${balanceToDisplay(txCostInRif, 18, 0)}`
       : '0'
+
+    let insufficientFunds = false
+
+    if (tokenToBoolMap.get(symbol as TokenSymbol)) {
+      insufficientFunds =
+        Number(value) + Number(feeValue) >
+        Number(balances[RIF_TOKEN_ADDRESS_TESTNET].balance)
+    } else {
+      insufficientFunds =
+        Number(feeValue) > Number(balances[RIF_TOKEN_ADDRESS_TESTNET].balance)
+    }
+
+    if (insufficientFunds) {
+      Alert.alert(t('transaction_summary_insufficient_funds'))
+    }
+
+    // get usd values
     const tokenUsd = convertToUSD(Number(value), tokenQuote)
     const feeUsd = convertToUSD(Number(feeValue), feeQuote)
 
@@ -166,6 +192,7 @@ export const ReviewTransactionContainer = ({
           color: sharedColors.white,
           textColor: sharedColors.black,
           accessibilityLabel: 'Confirm',
+          disabled: insufficientFunds,
         },
         {
           style: { marginTop: 10 },
@@ -178,6 +205,7 @@ export const ReviewTransactionContainer = ({
       functionName,
     }
   }, [
+    balances,
     txCostInRif,
     value,
     tokenQuote,
