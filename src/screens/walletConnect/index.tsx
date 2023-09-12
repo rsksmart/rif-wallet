@@ -1,7 +1,15 @@
 import { useIsFocused } from '@react-navigation/native'
 import { ComponentType, useContext, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Alert, Image, ScrollView, StyleSheet, View } from 'react-native'
+import {
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native'
 import { FormProvider, useForm } from 'react-hook-form'
 import Clipboard from '@react-native-community/clipboard'
 
@@ -132,7 +140,10 @@ export const WalletConnectScreen = ({ route }: Props) => {
   }
 
   return (
-    <View style={sharedStyles.screen}>
+    <KeyboardAvoidingView
+      style={sharedStyles.screen}
+      keyboardVerticalOffset={100}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <View style={styles.header}>
         <View style={styles.innerHeader1}>
           <Typography type="h2">{t('dapps_title')}</Typography>
@@ -214,7 +225,7 @@ export const WalletConnectScreen = ({ route }: Props) => {
           disabled={wcUri.length === 0}
         />
       </FormProvider>
-    </View>
+    </KeyboardAvoidingView>
   )
 }
 
@@ -239,7 +250,7 @@ const styles = StyleSheet.create({
     flex: 4,
     alignSelf: 'center',
     width: '80%',
-    resizeMode: 'contain',
+    resizeMode: 'center',
   }),
   dappsList: castStyle.view({
     flex: 1,
