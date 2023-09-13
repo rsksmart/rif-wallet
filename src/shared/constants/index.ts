@@ -1,4 +1,4 @@
-import { ColorValue, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
 
 import { castStyle } from '../utils'
 
@@ -14,7 +14,7 @@ export const testIDs = {
   newContact: 'newContact',
 }
 
-export const sharedColors: { [key: string]: ColorValue } = {
+export const sharedColors = {
   primary: '#4B5CF0',
   secondary: '#121212',
   success: '#79C600',
@@ -90,7 +90,7 @@ export const sharedStyles = StyleSheet.create({
   }),
   screen: castStyle.view({
     flex: 1,
-    backgroundColor: sharedColors.secondary,
+    backgroundColor: sharedColors.black,
     paddingHorizontal: 24,
   }),
   noPadding: castStyle.view({ padding: 0 }),

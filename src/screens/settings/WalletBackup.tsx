@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleSheet, View } from 'react-native'
 
@@ -15,78 +15,17 @@ import {
   SettingsScreenProps,
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
-import { resetApp } from 'store/slices/settingsSlice'
-import { useAppDispatch } from 'store/storeUtils'
 import { castStyle } from 'shared/utils'
 import { getKeys } from 'storage/SecureStorage'
-import { ConfirmationModal, ConfirmationModalConfig } from 'components/modal'
+import { DeleteWalletModal } from 'components/modal/deleteWalletModal'
 
 type Props = SettingsScreenProps<settingsStackRouteNames.WalletBackup>
 
 export const WalletBackup = (_: Props) => {
-  const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] =
     useState<boolean>(false)
 
-  const deleteWallet = useCallback(async () => {
-    setIsDeleteConfirmationVisible(false)
-    await dispatch(resetApp())
-  }, [dispatch])
-
-  const createDeleteDefinitiveConfirmationConfig =
-    useCallback((): ConfirmationModalConfig => {
-      return {
-        color: sharedColors.dangerLight,
-        title: t(
-          'wallet_backup_definitive_delete_confirmation_title',
-        ) as string,
-        titleColor: sharedColors.black,
-        description: t(
-          'wallet_backup_definitive_delete_confirmation_description',
-        ),
-        descriptionColor: sharedColors.black,
-        okText: t('Delete'),
-        cancelText: t('Cancel'),
-        buttons: [
-          { color: sharedColors.black, textColor: sharedColors.white },
-          { color: sharedColors.black, textColor: sharedColors.black },
-        ],
-        onOk: deleteWallet,
-        onCancel: () => {
-          setIsDeleteConfirmationVisible(false)
-        },
-      }
-    }, [t, deleteWallet])
-
-  const createDeleteConfirmationConfig =
-    useCallback((): ConfirmationModalConfig => {
-      return {
-        color: sharedColors.dangerLight,
-        title: t('wallet_backup_delete_confirmation_title') as string,
-        titleColor: sharedColors.black,
-        description: t(
-          'wallet_backup_delete_confirmation_description',
-        ) as string,
-        descriptionColor: sharedColors.black,
-        okText: t('Delete') as string,
-        cancelText: t('Cancel') as string,
-        buttons: [
-          { color: sharedColors.black, textColor: sharedColors.white },
-          { color: sharedColors.black, textColor: sharedColors.black },
-        ],
-        onOk: () => {
-          setConfirmationModalConfig(createDeleteDefinitiveConfirmationConfig())
-        },
-        onCancel: () => {
-          setIsDeleteConfirmationVisible(false)
-          setConfirmationModalConfig(createDeleteConfirmationConfig())
-        },
-      }
-    }, [t, createDeleteDefinitiveConfirmationConfig])
-
-  const [confirmationModalConfig, setConfirmationModalConfig] =
-    useState<ConfirmationModalConfig>(createDeleteConfirmationConfig)
   const [mnemonic, setMnemonic] = useState<string | null>()
   const mnemonicArray = mnemonic ? mnemonic.split(' ') : []
 
@@ -116,18 +55,9 @@ export const WalletBackup = (_: Props) => {
         color={sharedColors.white}
         style={styles.deleteButton}
       />
-      <ConfirmationModal
+      <DeleteWalletModal
         isVisible={isDeleteConfirmationVisible}
-        color={confirmationModalConfig.color}
-        title={confirmationModalConfig.title}
-        titleColor={confirmationModalConfig.titleColor}
-        description={confirmationModalConfig.description}
-        descriptionColor={confirmationModalConfig.descriptionColor}
-        okText={confirmationModalConfig.okText}
-        cancelText={confirmationModalConfig.cancelText}
-        buttons={confirmationModalConfig.buttons}
-        onOk={confirmationModalConfig.onOk}
-        onCancel={confirmationModalConfig.onCancel}
+        setVisible={setIsDeleteConfirmationVisible}
       />
     </ScrollView>
   )
