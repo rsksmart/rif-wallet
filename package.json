@@ -51,7 +51,7 @@
     "@walletconnect/jsonrpc-types": "^1.0.3",
     "@walletconnect/react-native-compat": "^2.9.0",
     "@walletconnect/utils": "^2.9.0",
-    "@walletconnect/web3wallet": "^1.8.6",
+    "@walletconnect/web3wallet": "^1.9.0",
     "axios": "^0.27.2",
     "buffer": "^4.9.2",
     "deprecated-react-native-prop-types": "^2.3.0",

@@ -1,5 +1,5 @@
 import { createContext, ReactElement, useEffect, useState } from 'react'
-import { getSdkError } from '@walletconnect/utils'
+import { getSdkError, parseUri } from '@walletconnect/utils'
 import Web3Wallet, { Web3WalletTypes } from '@walletconnect/web3wallet'
 import { IWeb3Wallet } from '@walletconnect/web3wallet'
 import { WalletConnectAdapter } from '@rsksmart/rif-wallet-adapters'
@@ -47,6 +47,17 @@ const onSessionReject = async (
   } catch (error) {
     return 'Error while rejecting session' // This is for the developer
   }
+}
+
+const isWcUriValid = (uri: string): boolean => {
+  const { topic, protocol, version } = parseUri(uri)
+  if (version !== 2) {
+    return false
+  }
+  if (protocol !== 'wc') {
+    return false
+  }
+  return topic.length !== 0
 }
 
 export type SessionStruct = Awaited<ReturnType<IWeb3Wallet['approveSession']>>
@@ -172,7 +183,15 @@ export const WalletConnect2Provider = ({
       const web3wallet = await createWeb3Wallet()
       subscribeToEvents(web3wallet)
       // Refer to https://docs.walletconnect.com/2.0/reactnative/web3wallet/wallet-usage#session-requests
-      await web3wallet.core.pairing.pair({ uri })
+
+      if (!isWcUriValid(uri)) {
+        setError({
+          title: 'dapps_uri_not_valid_title',
+          message: 'dapps_uri_not_valid_message',
+        })
+      } else {
+        await web3wallet.core.pairing.pair({ uri })
+      }
     } catch (e) {
       // This will handle: "Pairing already exists:"
       if (e instanceof Error || typeof e === 'string') {
@@ -200,7 +219,6 @@ export const WalletConnect2Provider = ({
           // }
         }
       }
-      console.log(e)
     }
   }
 

@@ -1,9 +1,19 @@
 import { useIsFocused } from '@react-navigation/native'
 import { ComponentType, useContext, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Alert, Image, ScrollView, StyleSheet, View } from 'react-native'
+import {
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native'
+import { FormProvider, useForm } from 'react-hook-form'
+import Clipboard from '@react-native-community/clipboard'
 
-import { Typography } from 'components/index'
+import { AppButton, Input, Typography } from 'components/index'
 import { ConfirmationModal } from 'components/modal'
 import {
   rootTabsRouteNames,
@@ -116,8 +126,24 @@ export const WalletConnectScreen = ({ route }: Props) => {
     }
   }, [dispatch, isFocused])
 
+  const methods = useForm({ defaultValues: { wcUri: '' } })
+  const { watch, setValue } = methods
+  const wcUri = watch('wcUri')
+
+  const handlePaste = async () => {
+    const clipboardText = await Clipboard.getString()
+    setValue('wcUri', clipboardText)
+  }
+
+  const onUriSubmitted = () => {
+    onCreateNewSession(wcUri)
+  }
+
   return (
-    <View style={sharedStyles.screen}>
+    <KeyboardAvoidingView
+      style={sharedStyles.screen}
+      keyboardVerticalOffset={100}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <View style={styles.header}>
         <View style={styles.innerHeader1}>
           <Typography type="h2">{t('dapps_title')}</Typography>
@@ -176,7 +202,30 @@ export const WalletConnectScreen = ({ route }: Props) => {
           onCancel={() => setDisconnectingWC(null)}
         />
       ) : null}
-    </View>
+      {/* Insert WC URI Manually */}
+      <FormProvider {...methods}>
+        <Input
+          inputName="wcUri"
+          label={t('dapps_wc_label')}
+          placeholder={t('dapps_insert_wc_uri')}
+          autoCapitalize="none"
+          autoCorrect={false}
+          rightIcon={{
+            name: 'paste',
+            size: 16,
+          }}
+          onRightIconPress={handlePaste}
+        />
+        <AppButton
+          title={t('dapps_wc_connect')}
+          onPress={onUriSubmitted}
+          textColor={sharedColors.black}
+          color={sharedColors.white}
+          style={styles.subtitle}
+          disabled={wcUri.length === 0}
+        />
+      </FormProvider>
+    </KeyboardAvoidingView>
   )
 }
 
@@ -201,7 +250,7 @@ const styles = StyleSheet.create({
     flex: 4,
     alignSelf: 'center',
     width: '80%',
-    resizeMode: 'contain',
+    resizeMode: 'center',
   }),
   dappsList: castStyle.view({
     flex: 1,
