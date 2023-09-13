@@ -153,9 +153,13 @@ export const unlockApp = createAsyncThunk<
     const { chainId } = thunkAPI.getState().settings
 
     if (!serializedKeys) {
+      // if keys do not exist, set to false
       thunkAPI.dispatch(setKeysExist(false))
       return thunkAPI.rejectWithValue('No Existing Keys')
     }
+
+    // if keys do exist, set to true
+    thunkAPI.dispatch(setKeysExist(true))
 
     const { pinUnlocked, isOffline } = payload
     const supportedBiometry = await getSupportedBiometryType()
