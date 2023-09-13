@@ -176,6 +176,11 @@ export const WalletConnect2Provider = ({
           })
         })
     })
+    web3wallet.on('session_delete', async event => {
+      setSessions(prevSessions =>
+        prevSessions.filter(prevSession => prevSession.topic !== event.topic),
+      )
+    })
   }
 
   const onCreateNewSession = async (uri: string) => {
