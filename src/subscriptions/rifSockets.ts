@@ -85,6 +85,10 @@ export const rifSockets = ({
         currentInstance.cache = new MMKVStorage('txs', encryptionKey)
       },
     },
+    {
+      cacheBlockNumberText: `blockNumber_${chainId}`,
+      cacheTxsText: `cachedTxs_${chainId}`,
+    },
   )
 
   const connectSocket = () => {

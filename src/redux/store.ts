@@ -10,13 +10,13 @@ import {
   // REGISTER,
 } from 'redux-persist'
 
-import { rootReducer } from './rootReducer'
+import { createRootReducer } from './rootReducer'
 
 // Must use redux-debugger plugin in flipper for the redux debugger to work
 
 export const createStore = (preloadedState = {}) =>
   configureStore({
-    reducer: rootReducer,
+    reducer: createRootReducer(),
     preloadedState,
     middleware: getDefaultMiddlewares => {
       const middlewares = getDefaultMiddlewares({
@@ -31,8 +31,14 @@ export const createStore = (preloadedState = {}) =>
 
 export const store = createStore()
 
-export const persistor = persistStore(store)
-
+export const createNewStore = () => {
+  const newStore = createStore()
+  const newPersistor = persistStore(newStore)
+  return {
+    store: newStore,
+    persistor: newPersistor,
+  }
+}
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}

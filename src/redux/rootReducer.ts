@@ -4,6 +4,7 @@ import { persistReducer, createMigrate, PersistConfig } from 'redux-persist'
 import { reduxStorage } from 'storage/ReduxStorage'
 import { contactsReducer } from 'store/slices/contactsSlice'
 import { ProfileStatus } from 'navigation/profileNavigator/types'
+import { getCurrentChainId } from 'storage/ChainStorage'
 
 import { accountsReducer } from './slices/accountsSlice'
 import { balancesReducer } from './slices/balancesSlice'
@@ -28,41 +29,43 @@ const migrations = {
   }),
 }
 
-const settingsPersistConfig: PersistConfig<SettingsSlice> = {
-  key: 'settings',
-  whitelist: [
-    'pin',
-    'chainId',
-    'keysExist',
-    'isFirstLaunch',
-    'usedBitcoinAddresses',
-  ],
-  storage: reduxStorage,
+export const createRootReducer = () => {
+  const settingsPersistConfig: PersistConfig<SettingsSlice> = {
+    key: 'settings',
+    whitelist: [
+      'pin',
+      'chainId',
+      'keysExist',
+      'isFirstLaunch',
+      'usedBitcoinAddresses',
+    ],
+    storage: reduxStorage(getCurrentChainId()),
+  }
+
+  const rootPersistConfig = {
+    key: 'root',
+    version: 0,
+    migrate: createMigrate(migrations),
+    whitelist: [
+      'profile',
+      'accounts',
+      'contacts',
+      'balances',
+      'usdPrices',
+      'transactions',
+    ],
+    storage: reduxStorage(getCurrentChainId()),
+  }
+
+  const reducers = combineReducers({
+    usdPrices: usdPriceReducer,
+    balances: balancesReducer,
+    transactions: transactionsReducer,
+    settings: persistReducer(settingsPersistConfig, settingsSliceReducer),
+    profile: profileReducer,
+    accounts: accountsReducer,
+    contacts: contactsReducer,
+  })
+
+  return persistReducer(rootPersistConfig, reducers)
 }
-
-const rootPersistConfig = {
-  key: 'root',
-  storage: reduxStorage,
-  version: 0,
-  migrate: createMigrate(migrations),
-  whitelist: [
-    'profile',
-    'accounts',
-    'contacts',
-    'balances',
-    'usdPrices',
-    'transactions',
-  ],
-}
-
-const reducers = combineReducers({
-  usdPrices: usdPriceReducer,
-  balances: balancesReducer,
-  transactions: transactionsReducer,
-  settings: persistReducer(settingsPersistConfig, settingsSliceReducer),
-  profile: profileReducer,
-  accounts: accountsReducer,
-  contacts: contactsReducer,
-})
-
-export const rootReducer = persistReducer(rootPersistConfig, reducers)

@@ -1,5 +1,5 @@
 import { version } from 'package.json'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useContext, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Platform, ScrollView, StyleSheet, View } from 'react-native'
 
@@ -15,17 +15,21 @@ import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import {
   selectChainId,
+  selectChainType,
   selectPin,
   selectWalletIsDeployed,
 } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
-import { chainTypesById } from 'shared/constants/chainConstants'
+import { ChainTypeEnum, chainTypesById } from 'shared/constants/chainConstants'
+import { GlobalErrorHandlerContext } from 'components/GlobalErrorHandler/GlobalErrorHandlerContext'
+import { getCurrentChainId, setCurrentChainId } from 'storage/ChainStorage'
 
 export const SettingsScreen = ({
   navigation,
 }: SettingsScreenProps<settingsStackRouteNames.SettingsScreen>) => {
   const statePIN = useAppSelector(selectPin)
   const chainId = useAppSelector(selectChainId)
+  const chainType = useAppSelector(selectChainType)
   const walletIsDeployed = useAppSelector(selectWalletIsDeployed)
 
   const smartWalletFactoryAddress = useMemo(
@@ -78,6 +82,12 @@ export const SettingsScreen = ({
   }, [navigation])
   const { t } = useTranslation()
 
+  const { handleReload } = useContext(GlobalErrorHandlerContext)
+  const onSwitchChains = () => {
+    const currentChainId = getCurrentChainId()
+    setCurrentChainId(currentChainId === 31 ? 30 : 31)
+    handleReload()
+  }
   return (
     <ScrollView style={styles.container}>
       <View style={styles.mainView}>
@@ -129,6 +139,18 @@ export const SettingsScreen = ({
           </AppTouchable>
         )}
       </View>
+      <AppTouchable
+        width={'100%'}
+        accessibilityLabel="Wallet Backup"
+        style={styles.settingsItem}
+        onPress={onSwitchChains}>
+        <Typography type={'h3'}>
+          Switch to{' '}
+          {chainType === ChainTypeEnum.MAINNET
+            ? ChainTypeEnum.TESTNET
+            : ChainTypeEnum.MAINNET}
+        </Typography>
+      </AppTouchable>
       <View style={styles.bottomView}>
         <AppTouchable
           width={'100%'}

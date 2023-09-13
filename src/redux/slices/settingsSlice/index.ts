@@ -25,7 +25,11 @@ import {
   SocketsEvents,
   socketsEvents,
 } from 'src/subscriptions/rifSockets'
-import { ChainTypesByIdType } from 'shared/constants/chainConstants'
+import {
+  chainTypesById,
+  ChainTypesByIdType,
+} from 'shared/constants/chainConstants'
+import { getCurrentChainId } from 'storage/ChainStorage'
 
 import {
   Bitcoin,
@@ -332,7 +336,11 @@ const initialState: SettingsSlice = {
 
 const settingsSlice = createSlice({
   name: 'settings',
-  initialState,
+  initialState: () => ({
+    ...initialState,
+    chainId: getCurrentChainId(),
+    chainType: chainTypesById[getCurrentChainId()],
+  }),
   reducers: {
     setKeysExist: (state, { payload }: PayloadAction<boolean>) => {
       state.keysExist = payload
