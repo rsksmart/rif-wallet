@@ -66,9 +66,35 @@ export const WalletConnectScreen = ({ route }: Props) => {
     onUserRejectedSession,
     onCreateNewSession,
   } = useContext(WalletConnect2Context)
+
   const [disconnectingWC, setDisconnectingWC] = useState<WC2Session | null>(
     null,
   )
+
+  const methods = useForm({ defaultValues: { wcUri: '' } })
+  const { watch, setValue } = methods
+  const wcUri = watch('wcUri')
+
+  const wc2Sessions: WC2Session[] = sessions.map(session => ({
+    name: session.peer.metadata.name,
+    url: session.peer.metadata.url,
+    key: session.topic,
+    wc: session,
+  }))
+
+  const handlePaste = async () => {
+    const clipboardText = await Clipboard.getString()
+    setValue('wcUri', clipboardText)
+  }
+
+  const onUriSubmitted = () => onCreateNewSession(wcUri)
+
+  const handleDisconnectSession = (mergedWc: WC2Session) => async () => {
+    await onDisconnectSession(mergedWc.wc)
+    setDisconnectingWC(null)
+  }
+
+  const onWCDisconnect = (wc: WC2Session) => () => setDisconnectingWC(wc)
 
   /**
    * useEffect that watches when we pass data to the route params and connects user depending on WC version
@@ -85,16 +111,6 @@ export const WalletConnectScreen = ({ route }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [route.params?.data])
 
-  const handleDisconnectSession = (mergedWc: WC2Session) => async () => {
-    try {
-      await onDisconnectSession(mergedWc.wc)
-      setDisconnectingWC(null)
-    } catch (err) {
-      // @TODO handle error disconnecting
-      console.log(63, 'WC2.0 error disconnect', err)
-    }
-  }
-
   /**
    * When there is an error in WC2.0 - this effect will show it to the UI
    */
@@ -105,39 +121,11 @@ export const WalletConnectScreen = ({ route }: Props) => {
     }
   }, [walletConnect2Error, t, setWalletConnect2Error])
 
-  const onWCDisconnect = (wc: WC2Session) => () => setDisconnectingWC(wc)
-
-  const wc2Sessions: WC2Session[] = useMemo(
-    () =>
-      sessions.map(session => {
-        return {
-          name: session.peer.metadata.name,
-          url: session.peer.metadata.url,
-          key: session.topic,
-          wc: session,
-        }
-      }),
-    [sessions],
-  )
-
   useEffect(() => {
     if (isFocused) {
       dispatch(changeTopColor(sharedColors.secondary))
     }
   }, [dispatch, isFocused])
-
-  const methods = useForm({ defaultValues: { wcUri: '' } })
-  const { watch, setValue } = methods
-  const wcUri = watch('wcUri')
-
-  const handlePaste = async () => {
-    const clipboardText = await Clipboard.getString()
-    setValue('wcUri', clipboardText)
-  }
-
-  const onUriSubmitted = () => {
-    onCreateNewSession(wcUri)
-  }
 
   return (
     <KeyboardAvoidingView

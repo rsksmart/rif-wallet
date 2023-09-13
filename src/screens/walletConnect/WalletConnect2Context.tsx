@@ -262,7 +262,8 @@ export const WalletConnect2Provider = ({
         prevSessions.filter(prevSession => prevSession.topic !== session.topic),
       )
     } catch (err) {
-      console.log(234, err)
+      // @TODO handle error disconnecting
+      console.log('WC2.0 error disconnect', err)
     }
   }
 
