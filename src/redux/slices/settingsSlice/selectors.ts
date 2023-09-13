@@ -1,5 +1,7 @@
 import { RootState } from 'store/store'
 
+export const selectKeysExist = ({ settings }: RootState) => settings.keysExist
+
 export const selectIsFirstLaunch = ({ settings }: RootState) =>
   settings.isFirstLaunch
 

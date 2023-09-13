@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 185,
     lineHeight: 15.6,
-    bottom: WINDOW_HEIGHT * 0.2,
+    bottom: WINDOW_HEIGHT * 0.26,
     left: 24,
   }),
   importWalletButton: castStyle.view({

@@ -39,7 +39,7 @@ export const Core = () => {
 
   const { unlocked, active } = useStateSubscription()
 
-  const unlockAppSetMnemonic = useCallback(async () => {
+  const unlockAppFn = useCallback(async () => {
     try {
       await dispatch(unlockApp({ isOffline })).unwrap()
     } catch (err) {
@@ -48,8 +48,8 @@ export const Core = () => {
   }, [dispatch, isOffline])
 
   useEffect(() => {
-    unlockAppSetMnemonic()
-  }, [unlockAppSetMnemonic])
+    unlockAppFn()
+  }, [unlockAppFn])
 
   return (
     <SafeAreaProvider>

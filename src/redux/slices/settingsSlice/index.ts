@@ -86,6 +86,8 @@ export const createWallet = createAsyncThunk<
     // unclock the app
     thunkAPI.dispatch(setUnlocked(true))
 
+    thunkAPI.dispatch(setKeysExist(true))
+
     // create fetcher
     //@TODO: refactor socket initialization, it repeats several times
     thunkAPI.dispatch(setChainId(chainId))
@@ -149,9 +151,15 @@ export const unlockApp = createAsyncThunk<
 
     const serializedKeys = await getKeys()
     const { chainId } = thunkAPI.getState().settings
+
     if (!serializedKeys) {
+      // if keys do not exist, set to false
+      thunkAPI.dispatch(setKeysExist(false))
       return thunkAPI.rejectWithValue('No Existing Keys')
     }
+
+    // if keys do exist, set to true
+    thunkAPI.dispatch(setKeysExist(true))
 
     const { pinUnlocked, isOffline } = payload
     const supportedBiometry = await getSupportedBiometryType()
@@ -258,6 +266,7 @@ export const resetApp = createAsyncThunk(
       thunkAPI.dispatch(deleteProfile())
       thunkAPI.dispatch(setPreviouslyUnlocked(false))
       thunkAPI.dispatch(setPinState(null))
+      thunkAPI.dispatch(setKeysExist(false))
       resetMainStorage()
       return 'deleted'
     } catch (err) {
@@ -300,6 +309,7 @@ export const resetApp = createAsyncThunk(
 // )
 
 const initialState: SettingsSlice = {
+  keysExist: false,
   isFirstLaunch: true,
   isSetup: false,
   topColor: sharedColors.primary,
@@ -324,6 +334,9 @@ const settingsSlice = createSlice({
   name: 'settings',
   initialState,
   reducers: {
+    setKeysExist: (state, { payload }: PayloadAction<boolean>) => {
+      state.keysExist = payload
+    },
     setIsFirstLaunch: (state, { payload }: PayloadAction<boolean>) => {
       state.isFirstLaunch = payload
     },
@@ -468,6 +481,7 @@ const settingsSlice = createSlice({
 })
 
 export const {
+  setKeysExist,
   setIsFirstLaunch,
   setIsSetup,
   changeTopColor,
