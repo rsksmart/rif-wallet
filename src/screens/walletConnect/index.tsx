@@ -1,5 +1,5 @@
 import { useIsFocused } from '@react-navigation/native'
-import { ComponentType, useContext, useEffect, useMemo, useState } from 'react'
+import { ComponentType, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Alert,

@@ -32,7 +32,6 @@ interface OnSocketChangeEmittedArgs extends AbiWallet {
 
 const onNewTransactionEventEmitted = async ({
   abiEnhancer,
-  wallet,
   dispatch,
   payload,
   usdPrices,
