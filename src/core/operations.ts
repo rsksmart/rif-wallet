@@ -4,18 +4,21 @@ import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { KeyManagementSystem } from 'lib/core'
 
 import { saveKeys } from 'storage/SecureStorage'
-
-import { MMKVStorage } from '../storage/MMKVStorage'
+import { ChainTypesByIdType } from 'shared/constants/chainConstants'
+import { MMKVStorage } from 'storage/MMKVStorage'
 
 type CreateRIFWallet = (wallet: Wallet) => Promise<RIFWallet>
 
 export const loadExistingWallet =
-  (createRIFWallet: CreateRIFWallet) => async (serializedKeys: string) => {
+  (createRIFWallet: CreateRIFWallet) =>
+  async (serializedKeys: string, chainId: ChainTypesByIdType) => {
     try {
-      const { kms, wallets } =
-        KeyManagementSystem.fromSerialized(serializedKeys)
+      const { kms, wallets } = KeyManagementSystem.fromSerialized(
+        serializedKeys,
+        chainId,
+      )
 
-      const rifWallet = await createRIFWallet(Object.values(wallets)[0])
+      const rifWallet = await createRIFWallet(wallets[0])
       const rifWalletIsDeployed =
         await rifWallet.smartWalletFactory.isDeployed()
 

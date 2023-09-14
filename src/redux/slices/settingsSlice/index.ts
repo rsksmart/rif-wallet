@@ -199,8 +199,7 @@ export const unlockApp = createAsyncThunk<
         request => thunkAPI.dispatch(onRequest({ request })),
         chainId,
       ),
-    )(serializedKeys)
-
+    )(serializedKeys, chainId)
     if (!existingWallet) {
       return thunkAPI.rejectWithValue('No Existing Wallet')
     }
