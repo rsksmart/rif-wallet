@@ -33,8 +33,8 @@ import {
 import { TransactionSummaryScreenProps } from '.'
 
 interface Props {
-  goBack?: () => void
   wallet: RIFWallet
+  goBack?: () => void
 }
 
 type TransactionSummaryComponentProps = Omit<

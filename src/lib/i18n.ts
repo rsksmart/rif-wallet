@@ -207,6 +207,7 @@ const resources = {
       transaction_summary_function_type: 'type',
       transaction_summary_plus_fees: '+ fees',
       transaction_summary_plus_fees_capitalcase: '+ Fees',
+      transaction_summary_insufficient_funds: 'Insufficient funds',
       profile_screen_title: 'Profile',
       profile_contact_details_subtitle: 'Contact Details',
       profile_phone_label: 'Phone Number',
