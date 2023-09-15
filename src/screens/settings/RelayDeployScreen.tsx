@@ -65,7 +65,10 @@ export const RelayDeployScreen = ({
           }),
         )
 
+        console.log('hello world!', result)
+
         result.wait().then((receipt: TransactionReceipt) => {
+          console.log('wait and the receipt:', receipt)
           if (receipt.status) {
             dispatch(
               setWalletIsDeployed({
@@ -74,6 +77,7 @@ export const RelayDeployScreen = ({
               }),
             )
           } else {
+            console.log('error here ;-)')
             updateErrorState(t('wallet_deploy_error'))
           }
           dispatch(
