@@ -1,5 +1,3 @@
-import { useCallback } from 'react'
-
 import { RequestWithBitcoin } from 'shared/types'
 import { ReviewBitcoinTransactionContainer } from 'src/ux/requestsModal/ReviewBitcoinTransactionContainer'
 
@@ -45,14 +43,9 @@ const RequestTypeSwitch = ({
   )
 }
 
-export const RequestHandler = ({ request, closeRequest }: Props) => {
-  const onConfirm = useCallback(() => {
-    closeRequest()
-  }, [closeRequest])
-
-  const onCancel = useCallback(() => {
-    closeRequest()
-  }, [closeRequest])
-
-  return RequestTypeSwitch({ request, onCancel, onConfirm })
-}
+export const RequestHandler = ({ request, closeRequest }: Props) =>
+  RequestTypeSwitch({
+    request,
+    onCancel: closeRequest,
+    onConfirm: closeRequest,
+  })

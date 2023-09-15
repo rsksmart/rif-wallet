@@ -3,6 +3,7 @@ import { TransactionRequest } from '@ethersproject/providers'
 import { BigNumber } from 'ethers'
 import { AbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
+import { isAddress } from '@rsksmart/rsk-utils'
 
 import { useAppSelector } from 'store/storeUtils'
 import { selectChainId } from 'store/slices/settingsSlice'
@@ -39,6 +40,10 @@ const useEnhancedWithGas = (wallet: RIFWallet, tx: TransactionRequest) => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
 
   useEffect(() => {
+    // avoid to call estimateGas if the tx.to address is not valid
+    if (tx.to && !isAddress(tx.to)) {
+      return
+    }
     const gasLimitEstimate = wallet
       .estimateGas({ to: tx.to || '0x', data: tx.data || '0x' })
       .then((estimate: BigNumber) => {
