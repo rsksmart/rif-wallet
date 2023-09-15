@@ -7,6 +7,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { isAddress } from '@rsksmart/rsk-utils'
 
 import { balanceToDisplay, convertTokenToUSD } from 'lib/utils'
 
@@ -50,7 +51,7 @@ export const ReviewTransactionContainer = ({
     throw new Error('no wallet')
   }
 
-  const txRequest = useMemo(() => request.payload[0], [request])
+  const txRequest = request.payload[0]
   const { enhancedTransactionRequest, isLoaded } = useEnhancedWithGas(
     wallet,
     txRequest,
@@ -84,6 +85,13 @@ export const ReviewTransactionContainer = ({
 
   const tokenQuote = tokenPrices[tokenContract].price
   const feeQuote = tokenPrices[feeContract].price
+
+  useEffect(() => {
+    if (txRequest.to && !isAddress(txRequest.to)) {
+      console.log('Invalid "to" address, rejecting transaction')
+      onCancel()
+    }
+  }, [onCancel, txRequest.to])
 
   useEffect(() => {
     wallet.rifRelaySdk
