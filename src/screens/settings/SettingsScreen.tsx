@@ -24,6 +24,11 @@ import { ChainTypeEnum, chainTypesById } from 'shared/constants/chainConstants'
 import { GlobalErrorHandlerContext } from 'components/GlobalErrorHandler/GlobalErrorHandlerContext'
 import { getCurrentChainId, setCurrentChainId } from 'storage/ChainStorage'
 
+const ChainTypesInversed = {
+  [ChainTypeEnum.TESTNET]: ChainTypeEnum.MAINNET,
+  [ChainTypeEnum.MAINNET]: ChainTypeEnum.TESTNET,
+}
+
 export const SettingsScreen = ({
   navigation,
 }: SettingsScreenProps<settingsStackRouteNames.SettingsScreen>) => {
@@ -145,10 +150,7 @@ export const SettingsScreen = ({
         style={styles.settingsItem}
         onPress={onSwitchChains}>
         <Typography type={'h3'}>
-          Switch to{' '}
-          {chainType === ChainTypeEnum.MAINNET
-            ? ChainTypeEnum.TESTNET
-            : ChainTypeEnum.MAINNET}
+          Switch to {ChainTypesInversed[chainType]}
         </Typography>
       </AppTouchable>
       <View style={styles.bottomView}>
