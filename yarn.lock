@@ -1713,9 +1713,9 @@
     tslib "^2.4.0"
 
 "@ramp-network/react-native-sdk@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@ramp-network/react-native-sdk/-/react-native-sdk-1.0.1.tgz#0a3047cf345514dd66995573ba805c4777b4f8ea"
-  integrity sha512-Jo4Bd+KDHgTwD5KFzxEVCkOpCB2y2WrJckLgKU91m0WM5UC9g+aGPle2/5Jddfoe3d7CapVrh15J1bsAuoadxw==
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@ramp-network/react-native-sdk/-/react-native-sdk-1.0.2.tgz#a2d8279b924c6695819968e31a653a91b8511421"
+  integrity sha512-5/opXsTRHxEsQSNa/CzVv8EJMYhmUt/4LgSjjFbs7uTQHzHyy9aEo3w+ikSW3fbYx5lTJEHaN+sCspwudmKX8g==
 
 "@react-native-async-storage/async-storage@^1.19.0":
   version "1.19.0"
@@ -8848,6 +8848,14 @@ react-native-device-info@^10.3.0:
   resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-10.3.0.tgz#6bab64d84d3415dd00cc446c73ec5e2e61fddbe7"
   integrity sha512-/ziZN1sA1REbJTv5mQZ4tXggcTvSbct+u5kCaze8BmN//lbxcTvWsU6NQd4IihLt89VkbX+14IGc9sVApSxd/w==
 
+react-native-flash-message@^0.4.2:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/react-native-flash-message/-/react-native-flash-message-0.4.2.tgz#ed8ffe60c532bc1274c3b49a60dd0bd2fca59c50"
+  integrity sha512-YvdXRW9AGMTI99S3DJZhLO0mbk/ehKv/UQf4/Df+3dtGi8DlkidRbyqCQZk1WMtZ7rN85PMTGr/xEI9CF9z0YA==
+  dependencies:
+    prop-types "^15.8.1"
+    react-native-iphone-screen-helper "^2.0.2"
+
 react-native-flipper@^0.163.0:
   version "0.163.0"
   resolved "https://registry.yarnpkg.com/react-native-flipper/-/react-native-flipper-0.163.0.tgz#3ede9fed252555d0ac3c6212e7ed6e5af3c85604"
@@ -8875,6 +8883,11 @@ react-native-gradle-plugin@^0.70.3:
   version "0.70.3"
   resolved "https://registry.yarnpkg.com/react-native-gradle-plugin/-/react-native-gradle-plugin-0.70.3.tgz#cbcf0619cbfbddaa9128701aa2d7b4145f9c4fc8"
   integrity sha512-oOanj84fJEXUg9FoEAQomA8ISG+DVIrTZ3qF7m69VQUJyOGYyDZmPqKcjvRku4KXlEH6hWO9i4ACLzNBh8gC0A==
+
+react-native-iphone-screen-helper@^2.0.2:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/react-native-iphone-screen-helper/-/react-native-iphone-screen-helper-2.0.3.tgz#6bc6d19db5e4691d6204e9e996be9214c117c846"
+  integrity sha512-gbSnV0iYWQ3hne3inYoueatSJL/Un49biIkHLGKsm7J7QjFhL+/WSPB1sZhQ87lNIANwFh33nvxcjixxR4T+NQ==
 
 react-native-jdenticon@^0.0.3:
   version "0.0.3"
