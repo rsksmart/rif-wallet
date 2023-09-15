@@ -370,6 +370,9 @@ const resources = {
       dapps_uri_not_valid_title: 'Invalid URI',
       dapps_uri_not_valid_message:
         'URI is not valid. Please try with a new URI.',
+      popup_message_rns:
+        'Register your username to allow others to send you funds without worrying about mistyping or inputting wrong address',
+      popup_link_text: 'Get username here',
     },
   },
   es: {

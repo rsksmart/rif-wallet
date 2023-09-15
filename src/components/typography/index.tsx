@@ -131,3 +131,5 @@ export const Typography = ({
     </Text>
   )
 }
+
+export { styles as typographyStyles }
