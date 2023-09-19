@@ -2032,6 +2032,15 @@
     axios "^1.2.3"
     ethers "^5.7.2"
 
+"@rsksmart/rif-relay-light-sdk@1.0.7":
+  version "1.0.7"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-relay-light-sdk/1.0.7/1f78936c803f3676bdb42e89a783dd4fbf9f7c2b#1f78936c803f3676bdb42e89a783dd4fbf9f7c2b"
+  integrity sha512-kR71eTsyUQiKCLDBbHC0RssYSrRFbd3WufeR9meKHZKZ897vvrDbEk3gsO/gZfrpfChqnw7TJc2/R2FLn83e9Q==
+  dependencies:
+    "@ethersproject/abstract-provider" "^5.7.0"
+    axios "^1.2.3"
+    ethers "^5.7.2"
+
 "@rsksmart/rif-wallet-abi-enhancer@*":
   version "1.0.0"
   resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-abi-enhancer/1.0.0/6f6838ac92fb4be65a225dca5f8c9ccfaa137a84#6f6838ac92fb4be65a225dca5f8c9ccfaa137a84"
