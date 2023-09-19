@@ -6,11 +6,11 @@ import { colors } from 'src/styles'
 
 export const rnsManagerStyles = StyleSheet.create({
   scrollContainer: castStyle.view({
-    backgroundColor: colors.background.black,
+    backgroundColor: sharedColors.black,
   }),
   container: castStyle.view({
     flex: 1,
-    backgroundColor: colors.background.black,
+    backgroundColor: sharedColors.black,
     padding: 20,
     paddingTop: 50,
   }),
@@ -25,7 +25,7 @@ export const rnsManagerStyles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 20,
     paddingHorizontal: 10,
-    backgroundColor: sharedColors.secondary,
+    backgroundColor: sharedColors.black,
   }),
   profileImageContainer: castStyle.view({
     alignItems: 'center',

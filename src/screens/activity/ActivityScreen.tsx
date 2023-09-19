@@ -35,7 +35,7 @@ export const ActivityScreen = ({ navigation }: ActivityMainScreenProps) => {
 
   useEffect(() => {
     if (isFocused) {
-      dispatch(changeTopColor(sharedColors.secondary))
+      dispatch(changeTopColor(sharedColors.black))
     }
   }, [dispatch, isFocused])
 
