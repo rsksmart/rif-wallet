@@ -80,19 +80,38 @@ export const ReviewTransactionContainer = ({
   const feeSymbol = isMainnet ? TokenSymbol.RIF : TokenSymbol.TRIF
   const feeContract = getTokenAddress(feeSymbol, chainTypesById[chainId])
 
+  const getTokenBySymbol = useCallback(
+    (symb: string) => {
+      const result = Object.values(balances).find(
+        token => token.symbol.toUpperCase() === symb.toUpperCase(),
+      )
+      if (!result) {
+        throw new Error(
+          `Token with the symbol ${symb} not found on ${chainId}.`,
+        )
+      }
+      return result
+    },
+    [balances, chainId],
+  )
+
   const tokenContract = useMemo(() => {
     const rbtcAddress = constants.AddressZero
     if (symbol === rbtcSymbol) {
       return rbtcAddress
     }
     if (symbol) {
-      return getTokenAddress(symbol, chainTypesById[chainId])
+      try {
+        return getTokenAddress(symbol, chainTypesById[chainId])
+      } catch {
+        return getTokenBySymbol(symbol).contractAddress
+      }
     }
     return feeContract
-  }, [symbol, rbtcSymbol, feeContract, chainId])
+  }, [symbol, rbtcSymbol, feeContract, chainId, getTokenBySymbol])
 
-  const tokenQuote = tokenPrices[tokenContract].price
-  const feeQuote = tokenPrices[feeContract].price
+  const tokenQuote = tokenPrices[tokenContract]?.price
+  const feeQuote = tokenPrices[feeContract]?.price
 
   useEffect(() => {
     if (txRequest.to && !isAddress(txRequest.to)) {
@@ -146,12 +165,10 @@ export const ReviewTransactionContainer = ({
   }, [onCancel, request])
 
   const data: TransactionSummaryScreenProps = useMemo(() => {
-    const convertToUSD = (tokenValue: number, quote: number) =>
+    const convertToUSD = (tokenValue: number, quote = 0) =>
       convertTokenToUSD(tokenValue, quote, true).toFixed(2)
 
-    const feeValue = txCostInRif
-      ? `${balanceToDisplay(txCostInRif, 18, 0)}`
-      : '0'
+    const feeValue = txCostInRif ? balanceToDisplay(txCostInRif, 18, 0) : '0'
 
     let insufficientFunds = false
 
