@@ -55,7 +55,6 @@ export const createRIFWalletFactory =
         SETTINGS.RIF_RELAY_SERVER,
         chainTypesById[chainId],
       ),
-      relayVersion: 2,
     }
 
     console.log('wallet (setup.ts)', { rifRelayConfig })
