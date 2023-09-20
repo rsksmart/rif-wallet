@@ -142,7 +142,7 @@
   },
   "resolutions": {
     "@types/react": "^17",
-    "@rsksmart/rif-relay-light-sdk": "1.0.6"
+    "@rsksmart/rif-relay-light-sdk": "1.0.8"
   },
   "jest": {
     "preset": "react-native",
