@@ -173,6 +173,8 @@ const resources = {
       contact_form_checksum_invalid: 'The checksum is invalid.',
       contact_form_button_save: 'Save Contact',
       contact_form_button_convert_checksum: 'Convert to correct checksum',
+      contact_form_button_add_proposed_contact: 'Add',
+      contact_form_button_add_proposed_contact_ending: 'to your Contacts',
       transaction_form_label_asset: 'asset',
       transaction_summary_screen_title: 'Transaction Summary',
       transaction_summary_send_title: 'Send',

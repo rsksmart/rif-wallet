@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { CompositeScreenProps } from '@react-navigation/native'
-import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
+import { Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as yup from 'yup'
@@ -20,10 +20,15 @@ import { AddressInput } from 'components/address'
 import { Input } from 'components/index'
 import { Contact } from 'shared/types'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { addContact, editContact } from 'store/slices/contactsSlice'
+import {
+  addContact,
+  editContact,
+  getContactsAsArray,
+} from 'store/slices/contactsSlice'
 import { selectChainId } from 'store/slices/settingsSlice'
 import { sharedColors, sharedStyles, testIDs } from 'shared/constants'
 import { castStyle } from 'shared/utils'
+import { sharedHeaderLeftOptions } from 'src/navigation'
 
 export type ContactFormScreenProps = CompositeScreenProps<
   ContactsStackScreenProps<contactsStackRouteNames.ContactForm>,
@@ -44,6 +49,7 @@ export const ContactFormScreen = ({
   navigation,
   route,
 }: ContactFormScreenProps) => {
+  const contacts = useAppSelector(getContactsAsArray)
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
 
@@ -64,6 +70,8 @@ export const ContactFormScreen = ({
       }),
     [t],
   )
+
+  const proposed = route.params?.proposed
 
   const initialValue: Partial<Contact> = useMemo(
     () =>
@@ -125,9 +133,11 @@ export const ContactFormScreen = ({
       } else {
         dispatch(addContact(contact))
       }
+
       navigation.navigate(contactsStackRouteNames.ContactsList)
+      proposed && navigation.navigate(rootTabsRouteNames.Home)
     },
-    [dispatch, initialValue, navigation],
+    [dispatch, initialValue, navigation, proposed],
   )
 
   useEffect(() => {
@@ -145,8 +155,33 @@ export const ContactFormScreen = ({
       headerLeftContainerStyle: {
         paddingTop: 0,
       },
+      headerLeft: proposed
+        ? () =>
+            sharedHeaderLeftOptions(() =>
+              navigation.navigate(rootTabsRouteNames.Home),
+            )
+        : undefined,
     })
-  }, [navigation, initialValue, t])
+  }, [navigation, initialValue, t, proposed])
+
+  // check if proposed contact exists already
+  useEffect(() => {
+    if (proposed) {
+      const contact = contacts.find(
+        c => c.displayAddress === initialValue.displayAddress,
+      )
+      contact &&
+        Alert.alert('Contact already exists!', undefined, [
+          {
+            text: 'Go Back',
+            onPress: () => {
+              navigation.navigate(contactsStackRouteNames.ContactsList)
+              proposed && navigation.navigate(rootTabsRouteNames.Home)
+            },
+          },
+        ])
+    }
+  }, [proposed, navigation, contacts, initialValue.displayAddress, resetField])
 
   return (
     <KeyboardAvoidingView
