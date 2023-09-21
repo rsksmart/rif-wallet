@@ -88,7 +88,7 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
 
   useEffect(() => {
     if (isFocused) {
-      dispatch(changeTopColor(sharedColors.secondary))
+      dispatch(changeTopColor(sharedColors.black))
     }
   }, [dispatch, isFocused])
 
@@ -156,7 +156,7 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
                     )
                   }>
                   <BasicRow
-                    style={{ backgroundColor: sharedColors.secondary }}
+                    style={{ backgroundColor: sharedColors.black }}
                     avatar={{ name: contact.name }}
                     label={contact.name}
                     secondaryLabel={

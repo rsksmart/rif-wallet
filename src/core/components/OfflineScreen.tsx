@@ -32,7 +32,7 @@ export const OfflineScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: sharedColors.secondary,
+    backgroundColor: sharedColors.black,
     justifyContent: 'center',
     alignItems: 'center',
   },

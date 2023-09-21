@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   container: castStyle.view({
     marginTop: 10,
     paddingVertical: 10,
-    backgroundColor: sharedColors.secondary,
+    backgroundColor: sharedColors.black,
     height: 'auto',
     flexDirection: 'row',
   }),

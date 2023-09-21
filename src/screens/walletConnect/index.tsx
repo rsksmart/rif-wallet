@@ -123,7 +123,7 @@ export const WalletConnectScreen = ({ route }: Props) => {
 
   useEffect(() => {
     if (isFocused) {
-      dispatch(changeTopColor(sharedColors.secondary))
+      dispatch(changeTopColor(sharedColors.black))
     }
   }, [dispatch, isFocused])
 
