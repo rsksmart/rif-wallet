@@ -57,8 +57,6 @@ export const createRIFWalletFactory =
       ),
     }
 
-    console.log('wallet (setup.ts)', { rifRelayConfig })
-
     return RIFWallet.create(
       wallet.connect(jsonRpcProvider),
       onRequest,
