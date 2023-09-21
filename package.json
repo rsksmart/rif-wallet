@@ -70,6 +70,7 @@
     "react-native": "0.70.6",
     "react-native-background-timer": "^2.4.1",
     "react-native-barcode-mask": "^1.2.4",
+    "react-native-bootsplash": "^5.0.3",
     "react-native-config": "^1.4.5",
     "react-native-crypto": "^2.1.0",
     "react-native-device-info": "^10.3.0",
