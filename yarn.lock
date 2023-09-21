@@ -2116,10 +2116,10 @@
   dependencies:
     "@rsksmart/rsk-utils" "^1.1.0"
 
-"@rsksmart/rif-wallet-services@^1.0.5":
-  version "1.0.5"
-  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-services/1.0.5/dd97e829db5229df0b7c632e9b9e37c4c0118d96#dd97e829db5229df0b7c632e9b9e37c4c0118d96"
-  integrity sha512-RjCbqU4aj3Q2Hn5XhhxBqcQnKNgJY/dgGLton4d8k5B5xPDqCxOCvH6W3zyGRQXhqQz+Ax2pPl16L8GqsZwjUA==
+"@rsksmart/rif-wallet-services@^1.0.7":
+  version "1.0.7"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-services/1.0.7/097cc0812e126bed6649c0f00ed6cec4606e1860#097cc0812e126bed6649c0f00ed6cec4606e1860"
+  integrity sha512-2d+lh66VhWXfzM6atUF1vGmo32qIQirN3COQdAsiP4Jgt9OjTtfYR9SOqUfVAxPA+qp/YwLcCk0v6D4sl/YqrA==
   dependencies:
     "@ethersproject/contracts" "^5.7.0"
     "@rsksmart/rif-wallet-abi-enhancer" "*"
