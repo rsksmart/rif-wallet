@@ -6,7 +6,7 @@ import { AppSpinner } from 'components/index'
 
 export const LoadingScreen = () => {
   return (
-    <Modal animationType="none" transparent={true} visible={true}>
+    <Modal animationType="none" transparent visible>
       <View
         style={[
           sharedStyles.flex,
@@ -21,6 +21,6 @@ export const LoadingScreen = () => {
 
 const styles = StyleSheet.create({
   activityIndicatorViewStyle: castStyle.view({
-    backgroundColor: sharedColors.secondary,
+    backgroundColor: sharedColors.black,
   }),
 })
