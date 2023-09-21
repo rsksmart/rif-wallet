@@ -121,6 +121,20 @@ export const ContactFormScreen = ({
     [setValue],
   )
 
+  // check if proposed contact exists already
+  const checkIfContactExists = useCallback(
+    (displayAddress: string, searchArray: Contact[]) => {
+      const contact = searchArray.find(c => c.displayAddress === displayAddress)
+
+      if (contact) {
+        return true
+      }
+
+      return false
+    },
+    [],
+  )
+
   const saveContact = useCallback(
     ({ name, address: { address, displayAddress } }: FormValues) => {
       const contact: Contact = {
@@ -128,23 +142,54 @@ export const ContactFormScreen = ({
         address: address.toLowerCase(),
         displayAddress,
       }
+      const contactExists = checkIfContactExists(displayAddress, contacts)
+
+      if (contactExists) {
+        Alert.alert('Contact already exists!', undefined, [
+          {
+            text: 'Go Back',
+            onPress: () => {
+              navigation.replace(contactsStackRouteNames.ContactsList)
+              proposed && navigation.navigate(rootTabsRouteNames.Home)
+            },
+          },
+          {
+            text: 'Edit existing contact',
+            onPress: () => {
+              dispatch(editContact(contact))
+              navigation.replace(contactsStackRouteNames.ContactsList)
+              proposed && navigation.navigate(rootTabsRouteNames.Home)
+            },
+          },
+        ])
+        return
+      }
+
       if (initialValue.address) {
         dispatch(editContact(contact))
       } else {
         dispatch(addContact(contact))
       }
 
-      navigation.navigate(contactsStackRouteNames.ContactsList)
+      navigation.replace(contactsStackRouteNames.ContactsList)
       proposed && navigation.navigate(rootTabsRouteNames.Home)
     },
-    [dispatch, initialValue, navigation, proposed],
+    [
+      dispatch,
+      initialValue,
+      navigation,
+      proposed,
+      contacts,
+      checkIfContactExists,
+    ],
   )
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: initialValue.address
-        ? t('contact_form_title_edit')
-        : t('contact_form_title_create'),
+      headerTitle:
+        initialValue.address && !proposed
+          ? t('contact_form_title_edit')
+          : t('contact_form_title_create'),
       headerTintColor: sharedColors.white,
       headerStyle: {
         backgroundColor: sharedColors.secondary,
@@ -164,25 +209,6 @@ export const ContactFormScreen = ({
     })
   }, [navigation, initialValue, t, proposed])
 
-  // check if proposed contact exists already
-  useEffect(() => {
-    if (proposed) {
-      const contact = contacts.find(
-        c => c.displayAddress === initialValue.displayAddress,
-      )
-      contact &&
-        Alert.alert('Contact already exists!', undefined, [
-          {
-            text: 'Go Back',
-            onPress: () => {
-              navigation.navigate(contactsStackRouteNames.ContactsList)
-              proposed && navigation.navigate(rootTabsRouteNames.Home)
-            },
-          },
-        ])
-    }
-  }, [proposed, navigation, contacts, initialValue.displayAddress, resetField])
-
   return (
     <KeyboardAvoidingView
       style={sharedStyles.screen}
@@ -200,6 +226,7 @@ export const ContactFormScreen = ({
             resetValue={() => resetField('address')}
             onChangeAddress={handleAddressChange}
             chainId={chainId}
+            isBitcoin={false}
           />
           <Input
             label={t('contact_form_name')}
