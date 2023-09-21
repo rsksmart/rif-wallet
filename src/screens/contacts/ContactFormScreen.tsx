@@ -102,8 +102,11 @@ export const ContactFormScreen = ({
     formState: { errors },
   } = methods
 
+  // form values
   const addressObj = watch('address')
   const nameValue = watch('name')
+
+  // form errors
   const hasErrors =
     addressObj.address.length === 0 ||
     nameValue.length === 0 ||
@@ -145,16 +148,16 @@ export const ContactFormScreen = ({
       const contactExists = checkIfContactExists(displayAddress, contacts)
 
       if (contactExists) {
-        Alert.alert('Contact already exists!', undefined, [
+        Alert.alert(t('contact_form_alert_title'), undefined, [
           {
-            text: 'Go Back',
+            text: t('back'),
             onPress: () => {
               navigation.replace(contactsStackRouteNames.ContactsList)
               proposed && navigation.navigate(rootTabsRouteNames.Home)
             },
           },
           {
-            text: 'Edit existing contact',
+            text: t('contact_form_edit_existing_button'),
             onPress: () => {
               dispatch(editContact(contact))
               navigation.replace(contactsStackRouteNames.ContactsList)
@@ -181,6 +184,7 @@ export const ContactFormScreen = ({
       proposed,
       contacts,
       checkIfContactExists,
+      t,
     ],
   )
 
