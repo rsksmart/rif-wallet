@@ -187,7 +187,7 @@ export const ReviewTransactionContainer = ({
     // get usd values
     const tokenUsd = convertToUSD(Number(value), tokenQuote)
     const feeUsd = convertToUSD(Number(feeValue), feeQuote)
-    const smallAmount = !Number(tokenUsd) && !!Number(value)
+    const isAmountSmall = !Number(tokenUsd) && !!Number(value)
 
     return {
       transaction: {
@@ -197,9 +197,9 @@ export const ReviewTransactionContainer = ({
           balance: value.toString(),
         },
         usdValue: {
-          symbol: smallAmount ? '<' : '$',
+          symbol: isAmountSmall ? '<' : '$',
           symbolType: 'usd',
-          balance: smallAmount ? '0.01' : tokenUsd,
+          balance: isAmountSmall ? '0.01' : tokenUsd,
         },
         fee: {
           tokenValue: feeValue,

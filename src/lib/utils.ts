@@ -20,10 +20,7 @@ export const roundBalance = (num: number, decimalPlaces?: number) => {
 }
 
 export const displayRoundBalance = (num: number): string => {
-  let rounded = roundBalance(num, 4)
-  if (!rounded) {
-    rounded = roundBalance(num, 8)
-  }
+  const rounded = roundBalance(num, 4) || roundBalance(num, 8)
   return rounded.toString()
 }
 
