@@ -34,7 +34,6 @@ export const createRootReducer = () => {
     key: 'settings',
     whitelist: [
       'pin',
-      'chainId',
       'keysExist',
       'isFirstLaunch',
       'usedBitcoinAddresses',
