@@ -32,12 +32,7 @@ const migrations = {
 export const createRootReducer = () => {
   const settingsPersistConfig: PersistConfig<SettingsSlice> = {
     key: 'settings',
-    whitelist: [
-      'pin',
-      'keysExist',
-      'isFirstLaunch',
-      'usedBitcoinAddresses',
-    ],
+    whitelist: ['pin', 'keysExist', 'isFirstLaunch', 'usedBitcoinAddresses'],
     storage: reduxStorage(getCurrentChainId()),
   }
 
