@@ -68,7 +68,7 @@ export const addOrUpdateBalances = createAsyncThunk<
     if (bitcoin) {
       // add bitcoin balance to balances state
       const bitBalances: TokenBalanceObject[] = bitcoin.networksArr.map(b => {
-        const { balance, usdBalance } = getBalance(b, usdPrices.BTC.price)
+        const { balance, usdBalance } = getBalance(b, usdPrices.BTC?.price)
         return {
           name: b.networkName,
           contractAddress: b.contractAddress,
