@@ -70,7 +70,7 @@ export const SecurityInformation = ({
               )
             }>
             <Typography type="body1" style={styles.termsAndConditionsText}>
-              Terms and conditions
+              {t('security_terms_and_conditions')}
             </Typography>
           </TouchableOpacity>
         </View>
