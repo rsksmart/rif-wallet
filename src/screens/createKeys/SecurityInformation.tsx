@@ -65,7 +65,9 @@ export const SecurityInformation = ({
           <TouchableOpacity
             accessibilityLabel="termsAndConditions"
             onPress={() =>
-              Linking.openURL(config[SETTINGS.TERMS_AND_CONDITIONS_URL])
+              Linking.openURL(config[SETTINGS.TERMS_AND_CONDITIONS_URL]).catch(
+                err => console.error("Couldn't load page", err),
+              )
             }>
             <Typography type="body1" style={styles.termsAndConditionsText}>
               Terms and conditions
