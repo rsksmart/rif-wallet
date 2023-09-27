@@ -30,6 +30,7 @@ import {
   ChainTypesByIdType,
 } from 'shared/constants/chainConstants'
 import { getCurrentChainId } from 'storage/ChainStorage'
+import { resetReduxStorage } from 'storage/ReduxStorage'
 
 import {
   Bitcoin,
@@ -271,6 +272,7 @@ export const resetApp = createAsyncThunk(
       thunkAPI.dispatch(setPinState(null))
       thunkAPI.dispatch(setKeysExist(false))
       resetMainStorage()
+      resetReduxStorage()
       return 'deleted'
     } catch (err) {
       return thunkAPI.rejectWithValue(err)
