@@ -1,9 +1,10 @@
 import { ChainTypesByIdType } from 'shared/constants/chainConstants'
+import { MMKVStorage } from 'storage/MMKVStorage'
 
-import { MainStorage } from './MainStorage'
+const ChainStorage = new MMKVStorage('chainStorage')
 
 export const getCurrentChainId: () => ChainTypesByIdType = () =>
-  MainStorage.get('chainId') || 31
+  ChainStorage.get('chainId') || 31
 
 export const setCurrentChainId = (chainId: ChainTypesByIdType) =>
-  MainStorage.set('chainId', chainId)
+  ChainStorage.set('chainId', chainId)
