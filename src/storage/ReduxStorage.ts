@@ -51,3 +51,5 @@ export const reduxStorage: (chainId: number) => Storage = (
     return Promise.resolve()
   },
 })*/
+
+export const resetReduxStorage = () => storage.deleteAll()
