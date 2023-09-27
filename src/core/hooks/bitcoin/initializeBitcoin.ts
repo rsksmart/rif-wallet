@@ -39,6 +39,11 @@ const onNoNetworksPresent = (chainId: ChainTypesByIdType) => {
   return BitcoinNetworkStore.getStoredNetworks()
 }
 
+const BITCOIN_CHAINID_MAP: Record<ChainTypesByIdType, string> = {
+  30: bitcoinMainnet.name,
+  31: bitcoinTestnet.name,
+}
+
 /**
  * Will return networks as an array, networks as a map (networksMap) and a function to refresh networks from the storage
  * This hook will also instantiate the bitcoin networks with a BIPWithRequest class that will handle the payments for the onRequest method
@@ -48,7 +53,6 @@ const onNoNetworksPresent = (chainId: ChainTypesByIdType) => {
  * @param fetcher
  * @param chainId
  */
-
 export const initializeBitcoin = (
   mnemonic: string,
   dispatch: AppDispatch,
@@ -69,6 +73,14 @@ export const initializeBitcoin = (
     networksMap = onNoNetworksPresent(chainId)
   }
 
+  // if there is a network created but does not match current chainId - create it
+  if (!networksMap[BITCOIN_CHAINID_MAP[chainId]]) {
+    networksMap = onNoNetworksPresent(chainId)
+  }
+  // Due to how the bitcoin logic is implemented... I'll transform the networksMap to only include the btc network we need
+  networksMap = {
+    [BITCOIN_CHAINID_MAP[chainId]]: networksMap[BITCOIN_CHAINID_MAP[chainId]],
+  }
   const transformNetwork = (
     network: StoredBitcoinNetworkValue,
     mnemonicText: string,

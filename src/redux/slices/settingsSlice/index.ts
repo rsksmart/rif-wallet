@@ -335,13 +335,15 @@ const initialState: SettingsSlice = {
   usedBitcoinAddresses: {},
 }
 
+const createInitialState = () => ({
+  ...initialState,
+  chainId: getCurrentChainId(),
+  chainType: chainTypesById[getCurrentChainId()],
+})
+
 const settingsSlice = createSlice({
   name: 'settings',
-  initialState: () => ({
-    ...initialState,
-    chainId: getCurrentChainId(),
-    chainType: chainTypesById[getCurrentChainId()],
-  }),
+  initialState: createInitialState,
   reducers: {
     setKeysExist: (state, { payload }: PayloadAction<boolean>) => {
       state.keysExist = payload
@@ -440,7 +442,7 @@ const settingsSlice = createSlice({
       deleteKeys()
       deleteDomains()
       deleteCache()
-      return initialState
+      return createInitialState()
     },
     setFullscreen: (state, { payload }: PayloadAction<boolean>) => {
       state.fullscreen = payload
