@@ -25,7 +25,12 @@ import {
   SocketsEvents,
   socketsEvents,
 } from 'src/subscriptions/rifSockets'
-import { ChainTypesByIdType } from 'shared/constants/chainConstants'
+import {
+  chainTypesById,
+  ChainTypesByIdType,
+} from 'shared/constants/chainConstants'
+import { getCurrentChainId } from 'storage/ChainStorage'
+import { resetReduxStorage } from 'storage/ReduxStorage'
 
 import {
   Bitcoin,
@@ -195,8 +200,7 @@ export const unlockApp = createAsyncThunk<
         request => thunkAPI.dispatch(onRequest({ request })),
         chainId,
       ),
-    )(serializedKeys)
-
+    )(serializedKeys, chainId)
     if (!existingWallet) {
       return thunkAPI.rejectWithValue('No Existing Wallet')
     }
@@ -268,6 +272,7 @@ export const resetApp = createAsyncThunk(
       thunkAPI.dispatch(setPinState(null))
       thunkAPI.dispatch(setKeysExist(false))
       resetMainStorage()
+      resetReduxStorage()
       return 'deleted'
     } catch (err) {
       return thunkAPI.rejectWithValue(err)
@@ -330,9 +335,15 @@ const initialState: SettingsSlice = {
   usedBitcoinAddresses: {},
 }
 
+const createInitialState = () => ({
+  ...initialState,
+  chainId: getCurrentChainId(),
+  chainType: chainTypesById[getCurrentChainId()],
+})
+
 const settingsSlice = createSlice({
   name: 'settings',
-  initialState,
+  initialState: createInitialState,
   reducers: {
     setKeysExist: (state, { payload }: PayloadAction<boolean>) => {
       state.keysExist = payload
@@ -431,7 +442,7 @@ const settingsSlice = createSlice({
       deleteKeys()
       deleteDomains()
       deleteCache()
-      return initialState
+      return createInitialState()
     },
     setFullscreen: (state, { payload }: PayloadAction<boolean>) => {
       state.fullscreen = payload

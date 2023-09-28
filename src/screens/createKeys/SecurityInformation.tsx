@@ -1,7 +1,9 @@
 import { useCallback, useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { Linking, StyleSheet, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import config from 'config.json'
 
 import {
   createKeysRouteNames,
@@ -11,6 +13,7 @@ import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { AppButton, AppTouchable, Typography } from 'components/index'
 import { Checkbox } from 'components/checkbox'
+import { SETTINGS } from 'src/core/types'
 
 enum TestID {
   IAgreeCheckbox = 'Checkbox.IAgreeCheckbox',
@@ -58,6 +61,19 @@ export const SecurityInformation = ({
         </Typography>
       </View>
       <View style={[styles.checkboxBtnWrapper, { bottom: insets.bottom }]}>
+        <View style={styles.termsAndConditionsView}>
+          <TouchableOpacity
+            accessibilityLabel="termsAndConditions"
+            onPress={() =>
+              Linking.openURL(config[SETTINGS.TERMS_AND_CONDITIONS_URL]).catch(
+                err => console.error("Couldn't load page", err),
+              )
+            }>
+            <Typography type="body1" style={styles.termsAndConditionsText}>
+              {t('security_terms_and_conditions')}
+            </Typography>
+          </TouchableOpacity>
+        </View>
         <View style={styles.agreementView}>
           <AppTouchable
             width={18}
@@ -84,7 +100,10 @@ export const SecurityInformation = ({
 }
 
 const styles = StyleSheet.create({
-  header: castStyle.text({ marginTop: 10, letterSpacing: -0.03 }),
+  header: castStyle.text({
+    marginTop: 10,
+    letterSpacing: -0.03,
+  }),
   checkboxBtnWrapper: castStyle.view({
     position: 'absolute',
     right: 24,
@@ -102,6 +121,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 18,
     color: sharedColors.labelLight,
+  }),
+  termsAndConditionsView: castStyle.view({
+    alignSelf: 'center',
+    marginBottom: 22,
+  }),
+  termsAndConditionsText: castStyle.text({
+    color: 'blue',
+    textDecorationLine: 'underline',
   }),
   agreementView: castStyle.view({ flexDirection: 'row', alignSelf: 'center' }),
   agreeText: castStyle.text({ marginLeft: 10 }),
