@@ -56,7 +56,6 @@ export const createRIFWalletFactory =
         chainTypesById[chainId],
       ),
     }
-
     return RIFWallet.create(
       wallet.connect(jsonRpcProvider),
       onRequest,
