@@ -2,7 +2,7 @@
   "QR_READER_BITCOIN_DEFAULT_NETWORK_MAINNET": "BITCOIN",
   "QR_READER_BITCOIN_DEFAULT_NETWORK_TESTNET": "BITCOIN_TESTNET",
   "RIF_RELAY_SERVER_MAINNET": "https://relay.rif-wallet-services.mainnet.rifcomputing.net",
-  "RIF_RELAY_SERVER_TESTNET": "https://relay.rif-wallet-services.testnet.rifcomputing.net",
+  "RIF_RELAY_SERVER_TESTNET": "https://v2.relay.rif-wallet-services.testnet.rifcomputing.net",
   "SMART_WALLET_FACTORY_ADDRESS_MAINNET": "0x9eebec6c5157bee13b451b1dfe1ee2cb40846323",
   "SMART_WALLET_FACTORY_ADDRESS_TESTNET": "0xBaDb31cAf5B95edd785446B76219b60fB1f07233",
   "RELAY_VERIFIER_ADDRESS_MAINNET": "0x5C9c7d96E6C59E55dA4dCf7F791AE58dAF8DBc86",
