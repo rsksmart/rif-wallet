@@ -122,7 +122,7 @@ export const TokenBalance = ({
                   {'<'}
                 </Typography>
               )}
-              <DollarIcon size={16} color={sharedColors.subTitle} />
+              <DollarIcon size={16} color={sharedColors.labelLight} />
             </>
           )}
           {!isNaN(Number(secondValue?.balance)) && (

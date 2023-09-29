@@ -2045,10 +2045,10 @@
     "@rsksmart/rif-wallet-token" "*"
     axios "^0.27.2"
 
-"@rsksmart/rif-wallet-abi-enhancer@^1.0.5":
-  version "1.0.5"
-  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-abi-enhancer/1.0.5/1b438b530e1a136b308352cbf80221cea6930d06#1b438b530e1a136b308352cbf80221cea6930d06"
-  integrity sha512-XbnOlNCyXA7O7tgoXF4SAg0nHMFQC7QYmtENFgFFsxcetx9kawu5DuQFHLHbvcj8+QFvWKkXQL/Dt24vf4//0A==
+"@rsksmart/rif-wallet-abi-enhancer@^1.0.7":
+  version "1.0.7"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-abi-enhancer/1.0.7/c33b6fe6903427dbadafd9dbeb1472f0e1b1ea15#c33b6fe6903427dbadafd9dbeb1472f0e1b1ea15"
+  integrity sha512-hw+ZuPlPGvOcpzwqX6dNj4qNdfefiZCSYMF2wcwFXD/IsoeE0ZYFWD7xkvgfb8nDcCRBPdlj0ALwxkoTuW7qWA==
   dependencies:
     "@ethersproject/abi" "^5.7.0"
     "@ethersproject/abstract-provider" "^5.7.0"
