@@ -6,11 +6,16 @@ import OIcon from 'react-native-vector-icons/Octicons'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
-import { selectTopColor, selectWallet } from 'store/slices/settingsSlice'
+import {
+  selectChainId,
+  selectTopColor,
+  selectWallet,
+} from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { sharedColors } from 'shared/constants'
 import { AppTouchable } from 'components/appTouchable'
 import { castStyle } from 'shared/utils'
+import { Typography } from 'src/components'
 
 import { ProfileHandler } from './ProfileHandler'
 
@@ -20,6 +25,7 @@ export const AppHeader = ({ navigation, route }: HeaderProps) => {
   const insets = useSafeAreaInsets()
   const topColor = useAppSelector(selectTopColor)
   const wallet = useAppSelector(selectWallet)
+  const chainId = useAppSelector(selectChainId)
 
   const openMenu = useCallback(() => {
     if (route?.name === rootTabsRouteNames.Settings) {
@@ -41,6 +47,11 @@ export const AppHeader = ({ navigation, route }: HeaderProps) => {
       <View style={[styles.column, styles.walletInfo]}>
         {wallet && <ProfileHandler wallet={wallet} navigation={navigation} />}
       </View>
+      {chainId === 31 && (
+        <View>
+          <Typography type="h4">TESTNET</Typography>
+        </View>
+      )}
       <View style={styles.columnMenu}>
         <AppTouchable
           width={16}
