@@ -14,8 +14,10 @@ import { Input, Typography } from 'components/index'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { colors } from 'src/styles'
+import { useAppSelector } from 'store/storeUtils'
+import { selectChainId } from 'store/slices/settingsSlice'
+import { RNS_ADDRESSES_BY_CHAIN_ID } from 'screens/rnsManager/types'
 
-import addresses from './addresses.json'
 import { minDomainLength } from './SearchDomainScreen'
 
 interface Props {
@@ -55,6 +57,7 @@ export const DomainInput = ({
   const [domainAvailability, setDomainAvailability] = useState<DomainStatus>(
     DomainStatus.NONE,
   )
+  const chainId = useAppSelector(selectChainId)
   const { t } = useTranslation()
   const errorType = error?.type
   const errorMessage = error?.message
@@ -62,12 +65,12 @@ export const DomainInput = ({
   const rskRegistrar = useMemo(
     () =>
       new RSKRegistrar(
-        addresses.rskOwnerAddress,
-        addresses.fifsAddrRegistrarAddress,
-        addresses.rifTokenAddress,
+        RNS_ADDRESSES_BY_CHAIN_ID[chainId].rskOwnerAddress,
+        RNS_ADDRESSES_BY_CHAIN_ID[chainId].fifsAddrRegistrarAddress,
+        RNS_ADDRESSES_BY_CHAIN_ID[chainId].rifTokenAddress,
         wallet,
       ),
-    [wallet],
+    [wallet, chainId],
   )
   const searchDomain = useCallback(
     async (domain: string) => {
