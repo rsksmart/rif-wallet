@@ -1,10 +1,5 @@
 import { RootState } from 'store/store'
 
-export const selectKeysExist = ({ settings }: RootState) => settings.keysExist
-
-export const selectIsFirstLaunch = ({ settings }: RootState) =>
-  settings.isFirstLaunch
-
 export const selectRequests = ({ settings }: RootState) => settings.requests
 
 export const selectTopColor = ({ settings }: RootState) => settings.topColor
