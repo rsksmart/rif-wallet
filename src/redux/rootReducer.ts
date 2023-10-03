@@ -1,5 +1,10 @@
 import { combineReducers } from '@reduxjs/toolkit'
-import { persistReducer, createMigrate, PersistConfig } from 'redux-persist'
+import {
+  persistReducer,
+  createMigrate,
+  PersistConfig,
+  getStoredState,
+} from 'redux-persist'
 
 import { reduxStorage } from 'storage/ReduxStorage'
 import { contactsReducer } from 'store/slices/contactsSlice'
@@ -33,6 +38,26 @@ const migrations = {
   }),
 }
 
+const firstPersistentDataMigration = async state => {
+  // First migration, check if state already exists
+  if (!state) {
+    // First step is to get old settings storage - usually testnet storage has all the info
+    const oldStorage = await getStoredState({
+      key: 'settings',
+      storage: reduxStorage(31),
+    })
+    // If old storage exists, we will migrate it to the current state
+    if (oldStorage) {
+      return {
+        keysExist: oldStorage.keysExist,
+        isFirstLaunch: oldStorage.isFirstLaunch,
+        pin: oldStorage.pin,
+      }
+    }
+  }
+  return state
+}
+
 export const createRootReducer = () => {
   const persistedReduxStorageAcrossChainSwitches = reduxStorage(0)
 
@@ -46,6 +71,7 @@ export const createRootReducer = () => {
     key: 'persistentData',
     whitelist: ['keysExist', 'isFirstLaunch', 'pin'],
     storage: persistedReduxStorageAcrossChainSwitches,
+    migrate: firstPersistentDataMigration,
   }
 
   const usdPricesPersistConfig: PersistConfig<UsdPricesState> = {
