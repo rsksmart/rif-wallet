@@ -176,7 +176,7 @@ export const unlockApp = createAsyncThunk<
 
     if (Platform.OS === 'android' && !supportedBiometry && !pinUnlocked) {
       const {
-        settings: { pin },
+        persistentData: { pin },
       } = thunkAPI.getState()
 
       // if there's no pin yet and biometrics removed
