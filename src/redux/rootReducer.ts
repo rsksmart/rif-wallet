@@ -38,13 +38,13 @@ export const createRootReducer = () => {
 
   const settingsPersistConfig: PersistConfig<SettingsSlice> = {
     key: 'settings',
-    whitelist: ['pin', 'usedBitcoinAddresses'],
+    whitelist: ['usedBitcoinAddresses'],
     storage: reduxStorage(getCurrentChainId()),
   }
 
   const persistentDataPersistConfig: PersistConfig<PersistentDataState> = {
     key: 'persistentData',
-    whitelist: ['keysExist', 'isFirstLaunch'],
+    whitelist: ['keysExist', 'isFirstLaunch', 'pin'],
     storage: persistedReduxStorageAcrossChainSwitches,
   }
 

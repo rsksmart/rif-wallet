@@ -34,6 +34,7 @@ import { resetReduxStorage } from 'storage/ReduxStorage'
 import {
   setIsFirstLaunch,
   setKeysExist,
+  setPinState,
 } from 'store/slices/persistentDataSlice'
 
 import {
@@ -331,7 +332,6 @@ const initialState: SettingsSlice = {
   previouslyUnlocked: false,
   fullscreen: false,
   hideBalance: false,
-  pin: null,
   bitcoin: null,
   chainId: 31,
   usedBitcoinAddresses: {},
@@ -373,9 +373,6 @@ const settingsSlice = createSlice({
     },
     setPreviouslyUnlocked: (state, { payload }: PayloadAction<boolean>) => {
       state.previouslyUnlocked = payload
-    },
-    setPinState: (state, { payload }: PayloadAction<string | null>) => {
-      state.pin = payload
     },
     setWallet: (
       state,
@@ -493,7 +490,6 @@ export const {
   onRequest,
   closeRequest,
   setWallet,
-  setPinState,
   setChainId,
   setAppIsActive,
   setUnlocked,

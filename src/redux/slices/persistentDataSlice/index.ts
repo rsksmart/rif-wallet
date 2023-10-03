@@ -6,6 +6,7 @@ import { PersistentDataState } from './types'
 const initialState: PersistentDataState = {
   keysExist: true,
   isFirstLaunch: false,
+  pin: null,
 }
 
 /**
@@ -21,10 +22,14 @@ const persistentDataSlice = createSlice({
     setIsFirstLaunch: (state, { payload }: PayloadAction<boolean>) => {
       state.isFirstLaunch = payload
     },
+    setPinState: (state, { payload }: PayloadAction<string | null>) => {
+      state.pin = payload
+    },
   },
 })
 
-export const { setKeysExist, setIsFirstLaunch } = persistentDataSlice.actions
+export const { setKeysExist, setIsFirstLaunch, setPinState } =
+  persistentDataSlice.actions
 
 export const persistentDataReducer = persistentDataSlice.reducer
 

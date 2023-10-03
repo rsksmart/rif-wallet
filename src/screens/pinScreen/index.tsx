@@ -23,12 +23,8 @@ import {
   Typography,
 } from 'components/index'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import {
-  selectPin,
-  setFullscreen,
-  setPinState,
-  unlockApp,
-} from 'store/slices/settingsSlice'
+import { setFullscreen, unlockApp } from 'store/slices/settingsSlice'
+import { selectPin, setPinState } from 'store/slices/persistentDataSlice'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import {
