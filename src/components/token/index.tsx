@@ -45,6 +45,10 @@ interface Props {
   amIReceiver?: boolean
 }
 
+enum TestID {
+  ErrorTypography = 'ErrorTypography',
+}
+
 export const TokenBalance = ({
   firstValue,
   secondValue,
@@ -133,7 +137,10 @@ export const TokenBalance = ({
             </Typography>
           )}
           {error && (
-            <Typography type="body2" style={styles.error}>
+            <Typography
+              type="body2"
+              style={styles.error}
+              accessibilityLabel={TestID.ErrorTypography}>
               {error}
             </Typography>
           )}
