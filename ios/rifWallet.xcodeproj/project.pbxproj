@@ -16,6 +16,7 @@
 		63066051E7454497968F6DE8 /* Sora-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0BF6B8C2EF5D4A14AAB2AB74 /* Sora-Medium.ttf */; };
 		7C78E83D897F45A39A9BD139 /* Sora-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EC5B831E2A3C49908B522226 /* Sora-Regular.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		A1557D202AC29AFF0079D2F4 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A1557D1F2AC29AFF0079D2F4 /* BootSplash.storyboard */; };
 		BC2F68C16B654C7EBF5C6552 /* Sora-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E151209A1B2749808290F5E0 /* Sora-ExtraLight.ttf */; };
 		C3FB687B44E9BFA156764519 /* libPods-rifWallet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CA295261C4E7C26742975C3 /* libPods-rifWallet.a */; };
 		D64B802F90C641848F6C3103 /* Sora-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 57BC3071F1A940B2ACFF9D01 /* Sora-Light.ttf */; };
@@ -43,7 +44,7 @@
 		13B07F961A680F5B00A75B9A /* rifWallet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = rifWallet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = rifWallet/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.mm; path = rifWallet/AppDelegate.mm; sourceTree = "<group>"; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = rifWallet/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = /Users/alexanderevchenko/Desktop/RN/prod/swallet/ios/rifWallet/Images.xcassets; sourceTree = "<absolute>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = rifWallet/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = rifWallet/main.m; sourceTree = "<group>"; };
 		252DE5BB86A3F2F967884A30 /* Pods-rifWallet-rifWalletTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rifWallet-rifWalletTests.release.xcconfig"; path = "Target Support Files/Pods-rifWallet-rifWalletTests/Pods-rifWallet-rifWalletTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -54,6 +55,7 @@
 		7C2FF27884044CE0987DFE88 /* Sora-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Sora-Bold.ttf"; path = "../assets/fonts/Sora-Bold.ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = rifWallet/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8AF1BF407BF94E96888272E7 /* Sora-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Sora-ExtraBold.ttf"; path = "../assets/fonts/Sora-ExtraBold.ttf"; sourceTree = "<group>"; };
+		A1557D1F2AC29AFF0079D2F4 /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = rifWallet/BootSplash.storyboard; sourceTree = "<group>"; };
 		A24BB72EFB90449A8A3BDDE2 /* Sora-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Sora-Thin.ttf"; path = "../assets/fonts/Sora-Thin.ttf"; sourceTree = "<group>"; };
 		B4187269AC48C3B4DA450F88 /* Pods-rifWallet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rifWallet.release.xcconfig"; path = "Target Support Files/Pods-rifWallet/Pods-rifWallet.release.xcconfig"; sourceTree = "<group>"; };
 		C7A565B930637F3F0A787EDD /* libPods-rifWallet-rifWalletTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-rifWallet-rifWalletTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -105,6 +107,7 @@
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
+				A1557D1F2AC29AFF0079D2F4 /* BootSplash.storyboard */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
@@ -275,6 +278,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				A1557D202AC29AFF0079D2F4 /* BootSplash.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				F6CBEFFD63754FC0B8C46E9B /* Sora-Bold.ttf in Resources */,
 				0D2C3B2EC6DE47ACB1FA6809 /* Sora-ExtraBold.ttf in Resources */,

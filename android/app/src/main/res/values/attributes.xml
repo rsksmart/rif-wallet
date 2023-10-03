@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <attr name="bootSplashPoweredBy" format="reference" />
+    <attr name="bootSplashRIFTitle" format="string" />
+</resources>
