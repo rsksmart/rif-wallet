@@ -1,61 +1,66 @@
-import { Wallet } from '@ethersproject/wallet'
-import { RIFWallet } from '@rsksmart/rif-wallet-core'
-
 import { KeyManagementSystem } from 'lib/core'
 
 import { saveKeys } from 'storage/SecureStorage'
 import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 import { MMKVStorage } from 'storage/MMKVStorage'
+import { AppDispatch } from 'src/redux'
+import { onRequest } from 'src/redux/slices/settingsSlice'
 
-type CreateRIFWallet = (wallet: Wallet) => Promise<RIFWallet>
+import { createRIFWallet } from './setup'
 
-export const loadExistingWallet =
-  (createRIFWallet: CreateRIFWallet) =>
-  async (serializedKeys: string, chainId: ChainTypesByIdType) => {
-    try {
-      const { kms, wallets } = KeyManagementSystem.fromSerialized(
-        serializedKeys,
-        chainId,
-      )
+export const loadExistingWallet = async (
+  serializedKeys: string,
+  chainId: ChainTypesByIdType,
+  dispatch: AppDispatch,
+) => {
+  try {
+    const { kms, wallets } = KeyManagementSystem.fromSerialized(
+      serializedKeys,
+      chainId,
+    )
 
-      const rifWallet = await createRIFWallet(wallets[0])
-      const rifWalletIsDeployed =
-        await rifWallet.smartWalletFactory.isDeployed()
+    const rifWallet = await createRIFWallet(chainId, wallets[0], request =>
+      dispatch(onRequest({ request })),
+    )
+    const rifWalletIsDeployed = await rifWallet.smartWalletFactory.isDeployed()
 
-      return { kms, rifWallet, rifWalletIsDeployed }
-    } catch (err) {
-      console.log('ERROR IN loadExistingWallet', err)
-    }
-    return null
+    return { kms, rifWallet, rifWalletIsDeployed }
+  } catch (err) {
+    console.log('ERROR IN loadExistingWallet', err)
   }
+  return null
+}
 
-export const createKMS =
-  (createRIFWallet: CreateRIFWallet, chainId: number) =>
-  async (mnemonic: string) => {
-    try {
-      const kms = KeyManagementSystem.import(mnemonic)
-      const { save, wallet } = kms.nextWallet(chainId)
+export const createKMS = async (
+  chainId: ChainTypesByIdType,
+  mnemonic: string,
+  dispatch: AppDispatch,
+) => {
+  try {
+    const kms = KeyManagementSystem.import(mnemonic)
+    const { save, wallet } = kms.nextWallet(chainId)
 
-      const rifWallet = await createRIFWallet(wallet)
-      const rifWalletIsDeployed =
-        await rifWallet.smartWalletFactory.isDeployed()
+    const rifWallet = await createRIFWallet(chainId, wallet, request =>
+      dispatch(onRequest({ request })),
+    )
+    const rifWalletIsDeployed = await rifWallet.smartWalletFactory.isDeployed()
 
-      save()
-      const result = await saveKeys(kms.serialize())
+    save()
+    const result = await saveKeys(kms.serialize())
 
-      if (!result) {
-        throw new Error('Could not save keys')
-      }
-
-      return {
-        rifWallet,
-        rifWalletIsDeployed,
-      }
-    } catch (err) {
-      console.log('ERROR IN createKMS', err)
+    if (!result) {
+      throw new Error('Could not save keys')
     }
-    return null
+
+    return {
+      rifWallet,
+      rifWalletIsDeployed,
+    }
+  } catch (err) {
+    console.log('ERROR IN createKMS', err)
   }
+  return null
+}
 
 // Not currently used, we'll be needed when support
 // for multiple wallets

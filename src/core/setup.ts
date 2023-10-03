@@ -14,7 +14,7 @@ import {
   chainTypesById,
   ChainTypesByIdType,
 } from 'shared/constants/chainConstants'
-import { USDRIF_TESTNET } from 'src/screens/home/TokenImage'
+import { USDRIF_TESTNET } from 'screens/home/TokenImage'
 
 import { getWalletSetting } from './config'
 
@@ -33,35 +33,40 @@ export const getRnsResolver = (chainId: ChainTypesByIdType) =>
     ? Resolver.forRskMainnet({})
     : Resolver.forRskTestnet({})
 
-export const createRIFWalletFactory =
-  (onRequest: OnRequest, chainId: ChainTypesByIdType) => (wallet: Wallet) => {
-    const jsonRpcProvider = new providers.StaticJsonRpcProvider(
-      getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId]),
-    )
-    const rifRelayConfig: RifRelayConfig = {
-      smartWalletFactoryAddress: getWalletSetting(
-        SETTINGS.SMART_WALLET_FACTORY_ADDRESS,
-        chainTypesById[chainId],
-      ),
-      relayVerifierAddress: getWalletSetting(
-        SETTINGS.RELAY_VERIFIER_ADDRESS,
-        chainTypesById[chainId],
-      ),
-      deployVerifierAddress: getWalletSetting(
-        SETTINGS.DEPLOY_VERIFIER_ADDRESS,
-        chainTypesById[chainId],
-      ),
-      relayServer: getWalletSetting(
-        SETTINGS.RIF_RELAY_SERVER,
-        chainTypesById[chainId],
-      ),
-    }
-    return RIFWallet.create(
-      wallet.connect(jsonRpcProvider),
-      onRequest,
-      rifRelayConfig,
-    )
+export const createRIFWallet = async (
+  chainId: 30 | 31,
+  wallet: Wallet,
+  onRequest: OnRequest,
+) => {
+  const jsonRpcProvider = new providers.StaticJsonRpcProvider(
+    getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId]),
+  )
+
+  const rifRelayConfig: RifRelayConfig = {
+    smartWalletFactoryAddress: getWalletSetting(
+      SETTINGS.SMART_WALLET_FACTORY_ADDRESS,
+      chainTypesById[chainId],
+    ),
+    relayVerifierAddress: getWalletSetting(
+      SETTINGS.RELAY_VERIFIER_ADDRESS,
+      chainTypesById[chainId],
+    ),
+    deployVerifierAddress: getWalletSetting(
+      SETTINGS.DEPLOY_VERIFIER_ADDRESS,
+      chainTypesById[chainId],
+    ),
+    relayServer: getWalletSetting(
+      SETTINGS.RIF_RELAY_SERVER,
+      chainTypesById[chainId],
+    ),
   }
+
+  return await RIFWallet.create(
+    wallet.connect(jsonRpcProvider),
+    onRequest,
+    rifRelayConfig,
+  )
+}
 
 const defaultMainnetTokens: ITokenWithoutLogo[] = Object.keys(mainnetContracts)
   .filter(address => ['RDOC', 'RIF'].includes(mainnetContracts[address].symbol))

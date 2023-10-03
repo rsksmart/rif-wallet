@@ -12,7 +12,7 @@ import { deleteContacts as deleteContactsFromRedux } from 'store/slices/contacts
 import { resetMainStorage } from 'storage/MainStorage'
 import { deleteKeys, getKeys } from 'storage/SecureStorage'
 import { sharedColors } from 'shared/constants'
-import { createPublicAxios, createRIFWalletFactory } from 'core/setup'
+import { createPublicAxios } from 'core/setup'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { deleteProfile } from 'store/slices/profileSlice'
 import { navigationContainerRef } from 'core/Core'
@@ -47,17 +47,10 @@ export const createWallet = createAsyncThunk<
   RIFWallet,
   CreateFirstWalletAction,
   AsyncThunkWithTypes
->('settings/createWallet', async ({ mnemonic, networkId }, thunkAPI) => {
+>('settings/createWallet', async ({ mnemonic }, thunkAPI) => {
   try {
     const { chainId } = thunkAPI.getState().settings
-    const rifWalletFactory = createRIFWalletFactory(
-      request => thunkAPI.dispatch(onRequest({ request })),
-      chainId,
-    )
-    const kms = await createKMS(
-      rifWalletFactory,
-      networkId ? networkId : chainId,
-    )(mnemonic)
+    const kms = await createKMS(chainId, mnemonic, thunkAPI.dispatch)
 
     const supportedBiometry = await getSupportedBiometryType()
 
@@ -196,11 +189,11 @@ export const unlockApp = createAsyncThunk<
 
     // set wallets in the store
     const existingWallet = await loadExistingWallet(
-      createRIFWalletFactory(
-        request => thunkAPI.dispatch(onRequest({ request })),
-        chainId,
-      ),
-    )(serializedKeys, chainId)
+      serializedKeys,
+      chainId,
+      thunkAPI.dispatch,
+    )
+
     if (!existingWallet) {
       return thunkAPI.rejectWithValue('No Existing Wallet')
     }
