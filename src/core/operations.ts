@@ -1,13 +1,61 @@
+import { Wallet, providers } from 'ethers'
+import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
+import { OnRequest, RIFWallet } from '@rsksmart/rif-wallet-core'
+
 import { KeyManagementSystem } from 'lib/core'
 
 import { saveKeys } from 'storage/SecureStorage'
-import { ChainTypesByIdType } from 'shared/constants/chainConstants'
+import {
+  ChainTypesByIdType,
+  chainTypesById,
+} from 'shared/constants/chainConstants'
 import { MMKVStorage } from 'storage/MMKVStorage'
 import { AppDispatch } from 'src/redux'
 import { onRequest } from 'src/redux/slices/settingsSlice'
 
-import { createRIFWallet } from './setup'
+import { getWalletSetting } from './config'
+import { SETTINGS } from './types'
 
+// function creates RIF Wallet instance
+// along with necessary confings
+const createRIFWallet = async (
+  chainId: 30 | 31,
+  wallet: Wallet,
+  onRequestFn: OnRequest,
+) => {
+  const jsonRpcProvider = new providers.StaticJsonRpcProvider(
+    getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId]),
+  )
+
+  const rifRelayConfig: RifRelayConfig = {
+    smartWalletFactoryAddress: getWalletSetting(
+      SETTINGS.SMART_WALLET_FACTORY_ADDRESS,
+      chainTypesById[chainId],
+    ),
+    relayVerifierAddress: getWalletSetting(
+      SETTINGS.RELAY_VERIFIER_ADDRESS,
+      chainTypesById[chainId],
+    ),
+    deployVerifierAddress: getWalletSetting(
+      SETTINGS.DEPLOY_VERIFIER_ADDRESS,
+      chainTypesById[chainId],
+    ),
+    relayServer: getWalletSetting(
+      SETTINGS.RIF_RELAY_SERVER,
+      chainTypesById[chainId],
+    ),
+  }
+
+  return await RIFWallet.create(
+    wallet.connect(jsonRpcProvider),
+    onRequestFn,
+    rifRelayConfig,
+  )
+}
+
+// gets the wallet from KeyManagementSystem
+// re-creates the RIFWallet out it
+// return kms, rifWallet and rifWalletIsDeployed bool
 export const loadExistingWallet = async (
   serializedKeys: string,
   chainId: ChainTypesByIdType,
@@ -31,6 +79,11 @@ export const loadExistingWallet = async (
   return null
 }
 
+// creates KeyManagementSystem instance using mnemonic phrase
+// using chainId gets save function and Wallet instance
+// creates RIFWallet instance out of it
+// saves the kms state in encrypted storage of the device
+// returns rifWallet and rifWalletIsDeployed bool
 export const createKMS = async (
   chainId: ChainTypesByIdType,
   mnemonic: string,
