@@ -110,7 +110,10 @@ export const Input = ({
               focused || value || isReadOnly ? styles.contentPadding : null,
             ]}>
             {label && (focused || !!value || isReadOnly) ? (
-              <Typography style={[styles.label, labelStyle]} type={'body3'}>
+              <Typography
+                style={[styles.label, labelStyle]}
+                type={'body3'}
+                accessibilityLabel="InputTypographyLabel">
                 {label}
               </Typography>
             ) : null}
