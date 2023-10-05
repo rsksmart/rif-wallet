@@ -176,7 +176,10 @@ export const ImportMasterKeyScreen = (
   return (
     <FormProvider {...form}>
       <ScrollView style={styles.parent} keyboardShouldPersistTaps={'always'}>
-        <Typography style={styles.titleText} type="h3">
+        <Typography
+          style={styles.titleText}
+          type="h3"
+          accessibilityLabel={StatusActions.ERROR}>
           {t(headerTextMap.get(status))}
         </Typography>
         <View

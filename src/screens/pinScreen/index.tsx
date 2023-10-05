@@ -378,7 +378,10 @@ export const PinScreen = ({ navigation, route }: Props) => {
       ) : (
         <>
           {hasError && errorTimeout()}
-          <Typography style={styles.title} type="h2">
+          <Typography
+            style={styles.title}
+            type="h2"
+            accessibilityLabel={'new_pin'}>
             {hasError ? t('pin_screen_wrong_pin') : title}
           </Typography>
           {hasError ? (
