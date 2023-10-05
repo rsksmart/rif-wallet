@@ -31,6 +31,11 @@ import {
 } from 'shared/constants/chainConstants'
 import { getCurrentChainId } from 'storage/ChainStorage'
 import { resetReduxStorage } from 'storage/ReduxStorage'
+import {
+  setIsFirstLaunch,
+  setKeysExist,
+  setPinState,
+} from 'store/slices/persistentDataSlice'
 
 import {
   Bitcoin,
@@ -145,7 +150,7 @@ export const unlockApp = createAsyncThunk<
   try {
     // check if it is a first launch, deleteKeys
     const {
-      settings: { isFirstLaunch },
+      persistentData: { isFirstLaunch },
     } = thunkAPI.getState()
     // if previously installed the app, remove stored encryted keys
     if (isFirstLaunch && !__DEV__) {
@@ -171,7 +176,7 @@ export const unlockApp = createAsyncThunk<
 
     if (Platform.OS === 'android' && !supportedBiometry && !pinUnlocked) {
       const {
-        settings: { pin },
+        persistentData: { pin },
       } = thunkAPI.getState()
 
       // if there's no pin yet and biometrics removed
@@ -314,8 +319,6 @@ export const resetApp = createAsyncThunk(
 // )
 
 const initialState: SettingsSlice = {
-  keysExist: false,
-  isFirstLaunch: true,
   isSetup: false,
   topColor: sharedColors.primary,
   requests: [],
@@ -329,7 +332,6 @@ const initialState: SettingsSlice = {
   previouslyUnlocked: false,
   fullscreen: false,
   hideBalance: false,
-  pin: null,
   bitcoin: null,
   chainId: 31,
   usedBitcoinAddresses: {},
@@ -345,12 +347,6 @@ const settingsSlice = createSlice({
   name: 'settings',
   initialState: createInitialState,
   reducers: {
-    setKeysExist: (state, { payload }: PayloadAction<boolean>) => {
-      state.keysExist = payload
-    },
-    setIsFirstLaunch: (state, { payload }: PayloadAction<boolean>) => {
-      state.isFirstLaunch = payload
-    },
     setIsSetup: (state, { payload }: PayloadAction<boolean>) => {
       state.isSetup = payload
       return state
@@ -377,9 +373,6 @@ const settingsSlice = createSlice({
     },
     setPreviouslyUnlocked: (state, { payload }: PayloadAction<boolean>) => {
       state.previouslyUnlocked = payload
-    },
-    setPinState: (state, { payload }: PayloadAction<string | null>) => {
-      state.pin = payload
     },
     setWallet: (
       state,
@@ -492,14 +485,11 @@ const settingsSlice = createSlice({
 })
 
 export const {
-  setKeysExist,
-  setIsFirstLaunch,
   setIsSetup,
   changeTopColor,
   onRequest,
   closeRequest,
   setWallet,
-  setPinState,
   setChainId,
   setAppIsActive,
   setUnlocked,

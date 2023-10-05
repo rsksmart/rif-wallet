@@ -16,9 +16,9 @@ import { castStyle } from 'shared/utils'
 import {
   selectChainId,
   selectChainType,
-  selectPin,
   selectWalletIsDeployed,
 } from 'store/slices/settingsSlice'
+import { selectPin } from 'store/slices/persistentDataSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { ChainTypeEnum, chainTypesById } from 'shared/constants/chainConstants'
 import { GlobalErrorHandlerContext } from 'components/GlobalErrorHandler/GlobalErrorHandlerContext'
