@@ -6,7 +6,7 @@ platform :ios, '12.4'
 inhibit_all_warnings!
 
 # Dependecies required for Ramp.network:
-source 'https://github.com/CocoaPods/Specs.git'
+# source 'https://github.com/CocoaPods/Specs.git'
 
 target 'rifWallet' do
   config = use_native_modules!
@@ -32,7 +32,7 @@ target 'rifWallet' do
 
   pod 'react-native-config', :path => '../node_modules/react-native-config'
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
-  pod 'Ramp', :git => 'https://github.com/RampNetwork/ramp-sdk-ios', :tag => '4.0.1'
+  # pod 'Ramp', :git => 'https://github.com/RampNetwork/ramp-sdk-ios', :tag => '4.0.1'
 
   target 'rifWalletTests' do
     inherit! :complete
