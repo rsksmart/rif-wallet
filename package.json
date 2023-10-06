@@ -24,7 +24,6 @@
     "@ethersproject/shims": "^5.7.0",
     "@hookform/resolvers": "^2.9.11",
     "@json-rpc-tools/utils": "^1.7.6",
-    "@ramp-network/react-native-sdk": "^1.0.1",
     "@react-native-async-storage/async-storage": "^1.19.0",
     "@react-native-community/clipboard": "^1.5.1",
     "@react-native-community/hooks": "^2.8.1",
