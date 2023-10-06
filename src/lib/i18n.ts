@@ -372,6 +372,8 @@ const resources = {
       dapps_uri_not_valid_title: 'Invalid URI',
       dapps_uri_not_valid_message:
         'URI is not valid. Please try with a new URI.',
+      ramp_error_title: 'Not Available',
+      ramp_error: 'Adding funds is not available yet.',
     },
   },
   es: {
