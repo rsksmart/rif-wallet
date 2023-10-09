@@ -48,6 +48,7 @@ import { AppSpinner } from 'components/index'
 import { AvatarIcon } from 'components/icons/AvatarIcon'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { RNS_ADDRESSES_BY_CHAIN_ID } from 'screens/rnsManager/types'
+import { chainTypesById } from 'shared/constants/chainConstants'
 
 import { rnsManagerStyles } from '../rnsManager/rnsManagerStyles'
 
@@ -56,7 +57,7 @@ export const ProfileCreateScreen = ({
 }: ProfileStackScreenProps<profileStackRouteNames.ProfileCreateScreen>) => {
   const dispatch = useAppDispatch()
   const profile = useAppSelector(selectProfile)
-  const { wallet, chainType, chainId } = useAppSelector(selectWalletState)
+  const { wallet, chainId } = useAppSelector(selectWalletState)
   const [infoBoxClosed, setInfoBoxClosed] = useState<boolean>(
     profile.infoBoxClosed ?? false,
   )
@@ -69,7 +70,7 @@ export const ProfileCreateScreen = ({
 
   const { displayAddress } = getAddressDisplayText(
     wallet?.smartWallet.smartWalletAddress ?? '',
-    chainType,
+    chainTypesById[chainId],
   )
 
   const onSetEmail = useCallback(

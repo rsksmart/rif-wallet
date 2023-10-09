@@ -23,7 +23,7 @@ export const displayRoundBalance = (num: number): string => {
   const rounded = roundBalance(num, 4) || roundBalance(num, 8)
   return rounded.toString()
 }
-
+// @TODO remove
 export const getChainIdByType = (chainType: ChainTypeEnum) => {
   switch (chainType) {
     case ChainTypeEnum.MAINNET:

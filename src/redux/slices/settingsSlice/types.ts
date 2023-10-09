@@ -76,7 +76,6 @@ export interface SettingsSlice {
   selectedWallet: string
   loading: boolean
   chainId: ChainTypesByIdType
-  chainType: ChainTypeEnum
   appIsActive: boolean
   unlocked: boolean
   previouslyUnlocked: boolean
