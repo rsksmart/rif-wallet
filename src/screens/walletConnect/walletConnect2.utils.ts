@@ -39,22 +39,23 @@ class MMKVCoreStorage implements StorageTypeFromCore {
   storage = new MMKVStorage('WC2')
 
   getEntries<T = never>(): Promise<[string, T][]> {
-    console.log('getEntries')
-    return Promise.resolve([])
+    const keys = this.storage.getAllKeys()
+    const values: [string, T][] = keys.map(key => [
+      key,
+      this.storage.get(key) as T,
+    ])
+    return Promise.resolve(values)
   }
 
   getItem<T = never>(key: string): Promise<T | undefined> {
-    console.log('getItem', key)
     return this.storage.get(key)
   }
 
   getKeys(): Promise<string[]> {
-    console.log('getKeys')
     return Promise.resolve(this.storage.getAllKeys())
   }
 
   removeItem(key: string): Promise<void> {
-    console.log('removeItem', key)
     this.storage.delete(key)
     return Promise.resolve(undefined)
   }
