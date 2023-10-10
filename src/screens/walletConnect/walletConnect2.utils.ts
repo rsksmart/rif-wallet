@@ -91,7 +91,6 @@ const WALLETCONNECT_SUPPORTED_METHODS = [
   'personal_sign',
   'eth_signTransaction',
   'eth_signTypedData',
-  'eth_signTypedData_v4',
 ]
 
 const WALLETCONNECT_BUILD_SUPPORTED_CHAINS = (chainId: ChainTypesByIdType) => [
@@ -141,7 +140,6 @@ export const rskWalletConnectNamespace = {
       'eth_signTransaction',
       'eth_sign',
       'eth_signTypedData',
-      'eth_signTypedData_v4',
     ],
     events: ['chainChanged', 'accountsChanged'],
   },
