@@ -1,7 +1,7 @@
 import { MMKV } from 'react-native-mmkv'
 import { initializeMMKVFlipper } from 'react-native-mmkv-flipper-plugin'
 
-type AcceptedValue = boolean | string | number | object
+export type AcceptedValue = boolean | string | number | object
 
 export class MMKVStorage {
   private id = 'mmkv.default'
@@ -50,5 +50,12 @@ export class MMKVStorage {
     if (this.storage) {
       this.storage.clearAll()
     }
+  }
+
+  public getAllKeys() {
+    if (this.storage) {
+      return this.storage.getAllKeys()
+    }
+    return []
   }
 }

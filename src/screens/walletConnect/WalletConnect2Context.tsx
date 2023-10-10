@@ -12,28 +12,30 @@ import { WalletConnectAdapter } from '@rsksmart/rif-wallet-adapters'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
 import {
+  buildRskAllowedNamespaces,
   createWeb3Wallet,
   getProposalErrorComparedWithRskNamespace,
-  rskWalletConnectNamespace,
   WalletConnect2SdkErrorString,
 } from 'screens/walletConnect/walletConnect2.utils'
+import { ChainTypesByIdType } from 'shared/constants/chainConstants'
+import { useAppSelector } from 'store/storeUtils'
+import { selectChainId } from 'store/slices/settingsSlice'
 
 const onSessionApprove = async (
   web3wallet: Web3Wallet,
   proposal: Web3WalletTypes.SessionProposal,
   walletAddress: string,
+  chainId: ChainTypesByIdType,
 ) => {
   try {
+    const namespaces = buildRskAllowedNamespaces({
+      proposal,
+      chainId,
+      walletAddress,
+    })
     return await web3wallet.approveSession({
       id: proposal.id,
-      namespaces: {
-        eip155: {
-          ...rskWalletConnectNamespace.eip155,
-          accounts: rskWalletConnectNamespace.eip155.chains.map(
-            chain => `${chain}:${walletAddress}`,
-          ),
-        },
-      },
+      namespaces,
     })
   } catch (error) {
     return 'Error while approving session' // This is for the developer
@@ -108,6 +110,7 @@ export const WalletConnect2Provider = ({
   children,
   wallet,
 }: WalletConnect2ProviderProps) => {
+  const chainId = useAppSelector(selectChainId)
   const [sessions, setSessions] = useState<SessionStruct[]>([])
   const [pendingSession, setPendingSession] = useState<
     PendingSession | undefined
@@ -161,7 +164,7 @@ export const WalletConnect2Provider = ({
             jsonrpc: '2.0',
           },
         }
-
+        console.log(174, method, params)
         adapter
           .handleCall(method, params)
           .then(signedMessage => {
@@ -242,6 +245,7 @@ export const WalletConnect2Provider = ({
         pendingSession.web3wallet,
         pendingSession.proposal,
         wallet.smartWalletAddress,
+        chainId,
       )
       if (typeof newSession === 'string') {
         // @TODO Error occurred - handle it
