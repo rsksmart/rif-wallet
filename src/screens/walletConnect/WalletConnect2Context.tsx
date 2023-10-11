@@ -164,7 +164,6 @@ export const WalletConnect2Provider = ({
             jsonrpc: '2.0',
           },
         }
-        console.log(174, method, params)
         adapter
           .handleCall(method, params)
           .then(signedMessage => {
