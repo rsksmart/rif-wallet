@@ -39,7 +39,7 @@
     "@rsksmart/rif-wallet-bitcoin": "^1.2.0",
     "@rsksmart/rif-wallet-core": "^1.0.2",
     "@rsksmart/rif-wallet-eip681": "1.0.1",
-    "@rsksmart/rif-wallet-services": "^1.0.7",
+    "@rsksmart/rif-wallet-services": "^1.0.8",
     "@rsksmart/rif-wallet-token": "^1.0.1",
     "@rsksmart/rlogin-dpath": "^1.0.1",
     "@rsksmart/rns-resolver.js": "^1.0.1",
