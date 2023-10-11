@@ -4,6 +4,11 @@ import { AppTouchable, Avatar, Typography } from 'components/index'
 import { castStyle } from 'shared/utils'
 import { noop, sharedColors } from 'shared/constants'
 
+enum TestID {
+  ContactCard = 'ContactCard',
+  ContactCardTypography = 'ContactCardTypography',
+}
+
 interface Props {
   name: string
   onPress?: () => void
@@ -15,7 +20,8 @@ export const ContactCard = ({ name, style, onPress }: Props) => {
     <AppTouchable
       width={100}
       style={[styles.contactCard, style]}
-      onPress={onPress || noop}>
+      onPress={onPress || noop}
+      accessibilityLabel={TestID.ContactCard}>
       <>
         <Avatar size={46} name={name} />
         <Typography
@@ -23,7 +29,8 @@ export const ContactCard = ({ name, style, onPress }: Props) => {
           type="h4"
           numberOfLines={1}
           adjustsFontSizeToFit
-          minimumFontScale={0.85}>
+          minimumFontScale={0.85}
+          accessibilityLabel={TestID.ContactCardTypography}>
           {name}
         </Typography>
       </>
