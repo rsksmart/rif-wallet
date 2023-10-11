@@ -374,6 +374,7 @@ const resources = {
         'URI is not valid. Please try with a new URI.',
       ramp_error_title: 'Not Available',
       ramp_error: 'Adding funds is not available yet.',
+      wallet_deployment_label: 'Rif Wallet Deployment',
     },
   },
   es: {
