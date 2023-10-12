@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+    <device id="retina3_5" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="Sora-Regular.ttf">
+            <string>Sora-Regular</string>
+        </array>
+    </customFonts>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="EHf-IW-A2E">
+            <objects>
+                <viewController modalTransitionStyle="crossDissolve" id="01J-lp-oVM" sceneMemberID="viewController">
+                    <view key="view" autoresizesSubviews="NO" contentMode="scaleAspectFit" id="Ze5-6b-2t3">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" preservesSuperviewLayoutMargins="YES" text="RIF Wallet" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NsR-FJ-k5U">
+                                <rect key="frame" x="85" y="590" width="245" height="58"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="58" id="k1i-Zc-AlV"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Sora-Regular" family="Sora" pointSize="36"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" image="powered" translatesAutoresizingMaskIntoConstraints="NO" id="hmT-nR-fed">
+                                <rect key="frame" x="65" y="636" width="282" height="22"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="22" id="Zb7-cP-b2T"/>
+                                </constraints>
+                            </imageView>
+                            <imageView autoresizesSubviews="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" misplaced="YES" preservesSuperviewLayoutMargins="YES" image="BootSplashLogo" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3lX-Ut-9ad">
+                                <rect key="frame" x="131" y="280" width="150" height="121"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" image="YES" notEnabled="YES"/>
+                                </accessibility>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="121" id="OkN-5d-Gkk"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="IFv-SU-jFB"/>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="IFv-SU-jFB" firstAttribute="bottom" secondItem="NsR-FJ-k5U" secondAttribute="bottom" constant="214" id="2oV-uR-FGW"/>
+                            <constraint firstItem="3lX-Ut-9ad" firstAttribute="centerX" secondItem="hmT-nR-fed" secondAttribute="centerX" id="78O-lz-EDM"/>
+                            <constraint firstItem="3lX-Ut-9ad" firstAttribute="top" secondItem="IFv-SU-jFB" secondAttribute="top" constant="270" id="9nM-jO-cYW"/>
+                            <constraint firstItem="IFv-SU-jFB" firstAttribute="bottom" secondItem="hmT-nR-fed" secondAttribute="bottom" constant="204" id="DMV-eY-QS9"/>
+                            <constraint firstItem="3lX-Ut-9ad" firstAttribute="centerX" secondItem="IFv-SU-jFB" secondAttribute="centerX" id="boe-fa-Jg9"/>
+                            <constraint firstItem="3lX-Ut-9ad" firstAttribute="centerX" secondItem="NsR-FJ-k5U" secondAttribute="centerX" id="doY-an-oUQ"/>
+                            <constraint firstItem="NsR-FJ-k5U" firstAttribute="leading" secondItem="IFv-SU-jFB" secondAttribute="leading" constant="85" id="qb0-zB-G1E"/>
+                            <constraint firstItem="NsR-FJ-k5U" firstAttribute="centerX" secondItem="IFv-SU-jFB" secondAttribute="centerX" id="veE-IT-hwv"/>
+                        </constraints>
+                        <edgeInsets key="layoutMargins" top="0.0" left="20" bottom="0.0" right="20"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1.4492753623188408" y="-0.6696428571428571"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="BootSplashLogo" width="150" height="110.5"/>
+        <image name="powered" width="282" height="30"/>
+    </resources>
+</document>
