@@ -15,3 +15,7 @@ jest.mock('redux-persist', () => ({
   ...jest.requireActual('redux-persist'),
   persistReducer: jest.fn().mockImplementation((config, reducer) => reducer),
 }))
+
+jest.mock('react-native-bootsplash', () => ({
+  hide: jest.fn(),
+}))

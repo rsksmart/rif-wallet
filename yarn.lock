@@ -8112,7 +8112,7 @@ node-gyp-build@^4.2.0:
   resolved "https://registry.yarnpkg.com/node-gyp-build/-/node-gyp-build-4.5.0.tgz#7a64eefa0b21112f89f58379da128ac177f20e40"
   integrity sha512-2iGbaQBV+ITgCz76ZEjmhUKAKVf7xfY1sRl4UiKQspfZMH2h06SyhNsnSVy50cwkFQDGLyif6m/6uFXHkOZ6rg==
 
-node-html-parser@^6.1.6:
+node-html-parser@^6.1.10:
   version "6.1.10"
   resolved "https://registry.yarnpkg.com/node-html-parser/-/node-html-parser-6.1.10.tgz#5db11eac3ccbea6fc1b04a22c8a0e3a0774cfae6"
   integrity sha512-6/uWdWxjQWQ7tMcFK2wWlrflsQUzh1HsEzlIf2j5+TtzfhT2yUvg3DwZYAmjEHeR3uX74ko7exjHW69J0tOzIg==
@@ -8961,17 +8961,17 @@ react-native-barcode-mask@^1.2.4:
   dependencies:
     prop-types "^15.6.2"
 
-react-native-bootsplash@^5.0.3:
-  version "5.0.3"
-  resolved "https://registry.yarnpkg.com/react-native-bootsplash/-/react-native-bootsplash-5.0.3.tgz#8b163d4bfd72c6fd6ff1f238fd83ea20d190b8ef"
-  integrity sha512-UyID54/nFjjuVBTCMSRQERYFRve8KGtUzO64kwG1ORuTfeH6D37DuObqaZc4Ysyq9lAJI3WaoC2XoTICDHZ+CQ==
+react-native-bootsplash@^5.0.4:
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/react-native-bootsplash/-/react-native-bootsplash-5.0.4.tgz#2c674edc0c4b74e980f503e956f53608ad3638ce"
+  integrity sha512-e2z/V2a1IajeVfro86Ylco1+T6oBJytga6/HKKcrLPcwt6FcwMep1XUN28KCOst2BD9ggNmrj/tr71tER1k5Mg==
   dependencies:
     detect-indent "^6.1.0"
     fs-extra "^11.1.1"
-    node-html-parser "^6.1.6"
+    node-html-parser "^6.1.10"
     picocolors "^1.0.0"
     prettier "^2.8.8"
-    sharp "^0.32.5"
+    sharp "^0.32.6"
     ts-dedent "^2.2.0"
     xml-formatter "^3.5.0"
 
@@ -9802,7 +9802,7 @@ shallow-clone@^3.0.0:
   dependencies:
     kind-of "^6.0.2"
 
-sharp@^0.32.5:
+sharp@^0.32.6:
   version "0.32.6"
   resolved "https://registry.yarnpkg.com/sharp/-/sharp-0.32.6.tgz#6ad30c0b7cd910df65d5f355f774aa4fce45732a"
   integrity sha512-KyLTWwgcR9Oe4d9HwCwNM2l7+J0dUQwn/yf7S0EnTtb0eVS4RxO0eUSvxPtzT4F3SY+C4K6fqdv/DO27sJ/v/w==
