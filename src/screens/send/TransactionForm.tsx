@@ -165,6 +165,9 @@ export const TransactionForm = ({
   const handleAmountChange = useCallback(
     (newAmount: string, _balanceInverted: boolean) => {
       const text = sanitizeMaxDecimalText(sanitizeDecimalText(newAmount))
+      if (Number(text) >= maxAmount) {
+        return
+      }
       const numberAmount = Number(text)
       setFirstBalance(prev => ({
         ...prev,
@@ -320,9 +323,7 @@ export const TransactionForm = ({
             onSwap={onSwapBalance}
             editable
             handleAmountChange={value => {
-              if (Number(value) <= maxAmount) {
-                handleAmountChange(value, balanceInverted)
-              }
+              handleAmountChange(value, balanceInverted)
             }}
           />
           <Input
