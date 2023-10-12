@@ -47,6 +47,7 @@ import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { AppSpinner } from 'components/index'
 import { AvatarIcon } from 'components/icons/AvatarIcon'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
+import { RNS_ADDRESSES_BY_CHAIN_ID } from 'screens/rnsManager/types'
 
 import { rnsManagerStyles } from '../rnsManager/rnsManagerStyles'
 
@@ -55,7 +56,7 @@ export const ProfileCreateScreen = ({
 }: ProfileStackScreenProps<profileStackRouteNames.ProfileCreateScreen>) => {
   const dispatch = useAppDispatch()
   const profile = useAppSelector(selectProfile)
-  const { wallet, chainType } = useAppSelector(selectWalletState)
+  const { wallet, chainType, chainId } = useAppSelector(selectWalletState)
   const [infoBoxClosed, setInfoBoxClosed] = useState<boolean>(
     profile.infoBoxClosed ?? false,
   )
@@ -136,7 +137,10 @@ export const ProfileCreateScreen = ({
       profile.alias &&
       profile.status === ProfileStatus.REQUESTING
     ) {
-      const rns = new RnsProcessor({ wallet })
+      const rns = new RnsProcessor({
+        wallet,
+        rnsAddresses: RNS_ADDRESSES_BY_CHAIN_ID[chainId],
+      })
       commitment(
         rns,
         profile.alias.split('.rsk')[0],

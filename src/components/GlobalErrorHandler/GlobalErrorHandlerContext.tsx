@@ -14,7 +14,7 @@ interface GlobalErrorHandlerProviderType {
   GlobalErrorHandlerViewComp?: FC
 }
 
-const GlobalErrorHandlerContext = createContext<GlobalErrorHandlerType>({
+export const GlobalErrorHandlerContext = createContext<GlobalErrorHandlerType>({
   setGlobalError: () => {},
   globalError: null,
   handleReload: () => {},

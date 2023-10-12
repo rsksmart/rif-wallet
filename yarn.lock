@@ -1712,11 +1712,6 @@
     tiny-glob "^0.2.9"
     tslib "^2.4.0"
 
-"@ramp-network/react-native-sdk@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@ramp-network/react-native-sdk/-/react-native-sdk-1.0.1.tgz#0a3047cf345514dd66995573ba805c4777b4f8ea"
-  integrity sha512-Jo4Bd+KDHgTwD5KFzxEVCkOpCB2y2WrJckLgKU91m0WM5UC9g+aGPle2/5Jddfoe3d7CapVrh15J1bsAuoadxw==
-
 "@react-native-async-storage/async-storage@^1.19.0":
   version "1.19.0"
   resolved "https://registry.yarnpkg.com/@react-native-async-storage/async-storage/-/async-storage-1.19.0.tgz#594aca9c20924b7955d62cf43797b4187e1e6cf8"
@@ -2023,10 +2018,10 @@
     lodash "^4.17.15"
     randombytes "^2.1.0"
 
-"@rsksmart/rif-relay-light-sdk@*", "@rsksmart/rif-relay-light-sdk@^1.0.3":
-  version "1.0.3"
-  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-relay-light-sdk/1.0.3/2dfc039b136c83259f5337886df2187e424b7e09#2dfc039b136c83259f5337886df2187e424b7e09"
-  integrity sha512-qUxgnN0h1hS6k2qqtSjJMU6oZo5AiLDFDe4mw/E+nNKeWqs7bWCCHou72XBqRKrFDTG/ZuGeVZeu1s5sM7ibhg==
+"@rsksmart/rif-relay-light-sdk@*", "@rsksmart/rif-relay-light-sdk@1.0.12", "@rsksmart/rif-relay-light-sdk@^1.0.12":
+  version "1.0.12"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-relay-light-sdk/1.0.12/a3cd378360c495f5ca7a041f43bcde534c46424b#a3cd378360c495f5ca7a041f43bcde534c46424b"
+  integrity sha512-c6jeo72y8v78aEVtBKbdgX1d1P1GMn1z5eUr4S6n57dMY0q3FcvfjPdLuXaGK7jpmaMb3HmCBRV3qb+KwG+vbg==
   dependencies:
     "@ethersproject/abstract-provider" "^5.7.0"
     axios "^1.2.3"
@@ -2045,10 +2040,10 @@
     "@rsksmart/rif-wallet-token" "*"
     axios "^0.27.2"
 
-"@rsksmart/rif-wallet-abi-enhancer@^1.0.5":
-  version "1.0.5"
-  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-abi-enhancer/1.0.5/1b438b530e1a136b308352cbf80221cea6930d06#1b438b530e1a136b308352cbf80221cea6930d06"
-  integrity sha512-XbnOlNCyXA7O7tgoXF4SAg0nHMFQC7QYmtENFgFFsxcetx9kawu5DuQFHLHbvcj8+QFvWKkXQL/Dt24vf4//0A==
+"@rsksmart/rif-wallet-abi-enhancer@^1.0.7":
+  version "1.0.7"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-abi-enhancer/1.0.7/c33b6fe6903427dbadafd9dbeb1472f0e1b1ea15#c33b6fe6903427dbadafd9dbeb1472f0e1b1ea15"
+  integrity sha512-hw+ZuPlPGvOcpzwqX6dNj4qNdfefiZCSYMF2wcwFXD/IsoeE0ZYFWD7xkvgfb8nDcCRBPdlj0ALwxkoTuW7qWA==
   dependencies:
     "@ethersproject/abi" "^5.7.0"
     "@ethersproject/abstract-provider" "^5.7.0"
@@ -2116,10 +2111,10 @@
   dependencies:
     "@rsksmart/rsk-utils" "^1.1.0"
 
-"@rsksmart/rif-wallet-services@^1.0.5":
-  version "1.0.5"
-  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-services/1.0.5/dd97e829db5229df0b7c632e9b9e37c4c0118d96#dd97e829db5229df0b7c632e9b9e37c4c0118d96"
-  integrity sha512-RjCbqU4aj3Q2Hn5XhhxBqcQnKNgJY/dgGLton4d8k5B5xPDqCxOCvH6W3zyGRQXhqQz+Ax2pPl16L8GqsZwjUA==
+"@rsksmart/rif-wallet-services@^1.0.7":
+  version "1.0.7"
+  resolved "https://npm.pkg.github.com/download/@rsksmart/rif-wallet-services/1.0.7/097cc0812e126bed6649c0f00ed6cec4606e1860#097cc0812e126bed6649c0f00ed6cec4606e1860"
+  integrity sha512-2d+lh66VhWXfzM6atUF1vGmo32qIQirN3COQdAsiP4Jgt9OjTtfYR9SOqUfVAxPA+qp/YwLcCk0v6D4sl/YqrA==
   dependencies:
     "@ethersproject/contracts" "^5.7.0"
     "@rsksmart/rif-wallet-abi-enhancer" "*"

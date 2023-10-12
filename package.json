@@ -24,7 +24,6 @@
     "@ethersproject/shims": "^5.7.0",
     "@hookform/resolvers": "^2.9.11",
     "@json-rpc-tools/utils": "^1.7.6",
-    "@ramp-network/react-native-sdk": "^1.0.1",
     "@react-native-async-storage/async-storage": "^1.19.0",
     "@react-native-community/clipboard": "^1.5.1",
     "@react-native-community/hooks": "^2.8.1",
@@ -34,13 +33,13 @@
     "@react-navigation/stack": "^6.0.9",
     "@reduxjs/toolkit": "^1.9.0",
     "@rsksmart/rif-id-mnemonic": "^0.1.1",
-    "@rsksmart/rif-relay-light-sdk": "^1.0.3",
-    "@rsksmart/rif-wallet-abi-enhancer": "^1.0.5",
+    "@rsksmart/rif-relay-light-sdk": "^1.0.12",
+    "@rsksmart/rif-wallet-abi-enhancer": "^1.0.7",
     "@rsksmart/rif-wallet-adapters": "^1.0.0",
     "@rsksmart/rif-wallet-bitcoin": "^1.2.0",
     "@rsksmart/rif-wallet-core": "^1.0.2",
     "@rsksmart/rif-wallet-eip681": "1.0.1",
-    "@rsksmart/rif-wallet-services": "^1.0.5",
+    "@rsksmart/rif-wallet-services": "^1.0.7",
     "@rsksmart/rif-wallet-token": "^1.0.1",
     "@rsksmart/rlogin-dpath": "^1.0.1",
     "@rsksmart/rns-resolver.js": "^1.0.1",
@@ -142,7 +141,8 @@
     "wait-for-expect": "^3.0.2"
   },
   "resolutions": {
-    "@types/react": "^17"
+    "@types/react": "^17",
+    "@rsksmart/rif-relay-light-sdk": "1.0.12"
   },
   "jest": {
     "preset": "react-native",

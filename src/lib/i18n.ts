@@ -352,6 +352,7 @@ const resources = {
         'We strongly advise exercising caution, employing the best security practices,and safeguarding your assets diligently."',
       security_i_agree: 'I agree with the conditions. ',
       security_info_btn: 'Continue',
+      security_terms_and_conditions: 'Terms and Conditions',
       android_qr_alert_title: 'Error reading QR',
       android_qr_alert_desc: 'The QR could not be parsed. Please try again.',
       android_qr_loading_camera: 'Loading camera',
@@ -371,6 +372,8 @@ const resources = {
       dapps_uri_not_valid_title: 'Invalid URI',
       dapps_uri_not_valid_message:
         'URI is not valid. Please try with a new URI.',
+      ramp_error_title: 'Not Available',
+      ramp_error: 'Adding funds is not available yet.',
     },
   },
   es: {

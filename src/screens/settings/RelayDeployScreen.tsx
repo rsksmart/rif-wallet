@@ -74,6 +74,7 @@ export const RelayDeployScreen = ({
               }),
             )
           } else {
+            console.log('Deploy Error,', receipt)
             updateErrorState(t('wallet_deploy_error'))
           }
           dispatch(

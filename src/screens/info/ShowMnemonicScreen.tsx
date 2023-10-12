@@ -13,6 +13,7 @@ import {
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
 import { headerLeftOption } from 'navigation/profileNavigator'
+import { getCurrentChainId } from 'src/storage/ChainStorage'
 
 export enum TestID {
   Mnemonic = 'Mnemonic.Text',
@@ -31,7 +32,10 @@ export const ShowMnemonicScreen = ({
     const fn = async () => {
       const keys = await getKeys()
       if (keys) {
-        const { kms } = KeyManagementSystem.fromSerialized(keys)
+        const { kms } = KeyManagementSystem.fromSerialized(
+          keys,
+          getCurrentChainId(),
+        )
         setMnemonic(kms.mnemonic)
       }
     }

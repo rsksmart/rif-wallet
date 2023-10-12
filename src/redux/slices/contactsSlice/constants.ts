@@ -1,29 +1,56 @@
 import { Contact } from 'shared/types'
-import addresses from 'screens/rnsManager/addresses.json'
+import { TESTNET, MAINNET } from 'screens/rnsManager/addresses.json'
 
 export const defaultContacts: Record<string, Contact> = {
-  [addresses.fifsAddrRegistrarAddress]: {
-    address: addresses.fifsAddrRegistrarAddress,
+  [TESTNET.fifsAddrRegistrarAddress]: {
+    address: TESTNET.fifsAddrRegistrarAddress,
     name: 'RNS Manager',
-    displayAddress: addresses.fifsAddrRegistrarAddress,
+    displayAddress: TESTNET.fifsAddrRegistrarAddress,
     isEditable: false,
   },
-  [addresses.rifTokenAddress]: {
-    address: addresses.rifTokenAddress,
+  [TESTNET.rifTokenAddress]: {
+    address: TESTNET.rifTokenAddress,
     name: 'RIF Token',
-    displayAddress: addresses.rifTokenAddress,
+    displayAddress: TESTNET.rifTokenAddress,
     isEditable: false,
   },
-  [addresses.rnsRegistryAddress]: {
-    address: addresses.rnsRegistryAddress,
+  [TESTNET.rnsRegistryAddress]: {
+    address: TESTNET.rnsRegistryAddress,
     name: 'RNS Registry',
-    displayAddress: addresses.rnsRegistryAddress,
+    displayAddress: TESTNET.rnsRegistryAddress,
     isEditable: false,
   },
-  [addresses.rskOwnerAddress]: {
-    address: addresses.rskOwnerAddress,
+  [TESTNET.rskOwnerAddress]: {
+    address: TESTNET.rskOwnerAddress,
     name: 'RSK Owner',
-    displayAddress: addresses.rskOwnerAddress,
+    displayAddress: TESTNET.rskOwnerAddress,
+    isEditable: false,
+  },
+}
+
+export const mainnetContacts: Record<string, Contact> = {
+  [MAINNET.fifsAddrRegistrarAddress]: {
+    address: MAINNET.fifsAddrRegistrarAddress,
+    name: 'RNS Manager',
+    displayAddress: MAINNET.fifsAddrRegistrarAddress,
+    isEditable: false,
+  },
+  [MAINNET.rifTokenAddress]: {
+    address: MAINNET.rifTokenAddress,
+    name: 'RIF Token',
+    displayAddress: MAINNET.rifTokenAddress,
+    isEditable: false,
+  },
+  [MAINNET.rnsRegistryAddress]: {
+    address: MAINNET.rnsRegistryAddress,
+    name: 'RNS Registry',
+    displayAddress: MAINNET.rnsRegistryAddress,
+    isEditable: false,
+  },
+  [MAINNET.rskOwnerAddress]: {
+    address: MAINNET.rskOwnerAddress,
+    name: 'RSK Owner',
+    displayAddress: MAINNET.rskOwnerAddress,
     isEditable: false,
   },
 }

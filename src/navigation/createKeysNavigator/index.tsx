@@ -10,7 +10,8 @@ import {
   SecurityInformation,
   RetryLogin,
 } from 'screens/createKeys'
-import { selectIsUnlocked, selectKeysExist } from 'store/slices/settingsSlice'
+import { selectIsUnlocked } from 'store/slices/settingsSlice'
+import { selectKeysExist } from 'store/slices/persistentDataSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { PinScreen } from 'screens/pinScreen'
 

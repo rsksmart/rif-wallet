@@ -87,7 +87,10 @@ export const WalletConnectScreen = ({ route }: Props) => {
     setValue('wcUri', clipboardText)
   }
 
-  const onUriSubmitted = () => onCreateNewSession(wcUri)
+  const onUriSubmitted = () => {
+    setValue('wcUri', '')
+    onCreateNewSession(wcUri)
+  }
 
   const handleDisconnectSession = (mergedWc: WC2Session) => async () => {
     await onDisconnectSession(mergedWc.wc)
@@ -123,7 +126,7 @@ export const WalletConnectScreen = ({ route }: Props) => {
 
   useEffect(() => {
     if (isFocused) {
-      dispatch(changeTopColor(sharedColors.secondary))
+      dispatch(changeTopColor(sharedColors.black))
     }
   }, [dispatch, isFocused])
 

@@ -2,32 +2,36 @@ import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { BigNumber } from 'ethers'
 
-import addresses from 'screens/rnsManager/addresses.json'
 import {
   getRnsProcessor,
   hasRnsProcessor,
   saveRnsProcessor,
 } from 'storage/RnsProcessorStore'
 import { OnSetTransactionStatusChange } from 'screens/send/types'
+import { RNS_ADDRESSES_TYPE } from 'screens/rnsManager/types'
 
 export class RnsProcessor {
   private rskRegistrar
   private wallet
   private index: IDomainRegistrationProcessIndex = {}
+  private rnsAddresses: RNS_ADDRESSES_TYPE
   onSetTransactionStatusChange?: OnSetTransactionStatusChange
 
   constructor({
     wallet,
     onSetTransactionStatusChange,
+    rnsAddresses,
   }: {
     wallet: RIFWallet
     onSetTransactionStatusChange?: OnSetTransactionStatusChange
+    rnsAddresses: RNS_ADDRESSES_TYPE
   }) {
     this.wallet = wallet
+    this.rnsAddresses = rnsAddresses
     this.rskRegistrar = new RSKRegistrar(
-      addresses.rskOwnerAddress,
-      addresses.fifsAddrRegistrarAddress,
-      addresses.rifTokenAddress,
+      this.rnsAddresses.rskOwnerAddress,
+      this.rnsAddresses.fifsAddrRegistrarAddress,
+      this.rnsAddresses.rifTokenAddress,
       wallet,
     )
     if (hasRnsProcessor()) {
@@ -61,7 +65,7 @@ export class RnsProcessor {
           ...makeCommitmentTransaction,
           txStatus: 'PENDING',
           value: BigNumber.from('0'),
-          finalAddress: addresses.fifsAddrRegistrarAddress,
+          finalAddress: this.rnsAddresses.fifsAddrRegistrarAddress,
         })
         this.setIndex(domain, {
           domain,
@@ -177,7 +181,7 @@ export class RnsProcessor {
         this.onSetTransactionStatusChange?.({
           ...tx,
           txStatus: 'PENDING',
-          finalAddress: addresses.fifsAddrRegistrarAddress,
+          finalAddress: this.rnsAddresses.fifsAddrRegistrarAddress,
         })
         this.setIndex(domain, {
           ...this.index[domain],
