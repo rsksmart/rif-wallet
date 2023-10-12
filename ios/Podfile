@@ -58,7 +58,7 @@ target 'rifWallet' do
       target.build_configurations.each do |config|
         case target.name
         when 'RCT-Folly'
-          config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '9.0'
+          config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '11.0'
         else
           config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
         end
