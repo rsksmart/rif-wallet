@@ -177,7 +177,10 @@ export const ProfileCreateScreen = ({
           <Avatar size={50} name="username" style={styles.avatarBackground} />
         )}
         <View style={styles.username}>
-          <Typography type={'h3'} color={sharedColors.white}>
+          <Typography
+            type={'h3'}
+            color={sharedColors.white}
+            accessibilityLabel={'username'}>
             {username || t('no_username')}
           </Typography>
           <Typography type={'h4'} color={sharedColors.labelLight}>

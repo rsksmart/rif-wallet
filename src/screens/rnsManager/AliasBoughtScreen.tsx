@@ -46,7 +46,9 @@ export const AliasBoughtScreen = ({
         <AppSpinner size={190} />
       </View>
       <View style={styles.textContainer}>
-        <Typography type="h3">{t('alias_bought_congratulations')}</Typography>
+        <Typography type="h3" accessibilityLabel={'congratulation'}>
+          {t('alias_bought_congratulations')}
+        </Typography>
         <Typography type="h4" style={styles.secondTypographyStyle}>
           {t('alias_bought_you_requested_domain')}
         </Typography>
@@ -59,6 +61,7 @@ export const AliasBoughtScreen = ({
         color={sharedColors.white}
         textColor={sharedColors.black}
         onPress={onCloseButtonPressed}
+        accessibilityLabel={'close'}
       />
     </ScrollView>
   )
