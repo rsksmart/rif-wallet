@@ -25,6 +25,7 @@ import { FullScreenSpinner } from 'components/fullScreenSpinner'
 import { SuccessIcon } from 'components/icons/SuccessIcon'
 import { FeedbackModal } from 'components/feedbackModal'
 import { getContactsAsArrayAndSelected } from 'store/slices/contactsSlice'
+import { selectTransactionsLoading } from 'store/slices/transactionsSlice'
 
 import { TransactionForm } from './TransactionForm'
 import { usePaymentExecutor } from './usePaymentExecutor'
@@ -41,6 +42,7 @@ export const SendScreen = ({
   const { loading, isDeployed } = walletIsDeployed
   const chainId = useAppSelector(selectChainId)
   const { contacts } = useAppSelector(getContactsAsArrayAndSelected)
+  const transactionLoading = useAppSelector(selectTransactionsLoading)
 
   const totalUsdBalance = useAppSelector(selectTotalUsdValue)
   const prices = useAppSelector(selectUsdPrices)
@@ -108,6 +110,17 @@ export const SendScreen = ({
       )
     }
   }, [loading, t, navigation])
+
+  // if there's an ongoing transaction
+  useEffect(() => {
+    if (transactionLoading && isFocused) {
+      Alert.alert(
+        t('send_alert_ongoing_transaction_title'),
+        t('send_alert_ongoing_transaction_body'),
+        [{ onPress: navigation.goBack, text: t('ok') }],
+      )
+    }
+  }, [transactionLoading, navigation, t, isFocused])
 
   // Hide header when transaction is loading
   useEffect(() => {

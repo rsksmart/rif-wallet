@@ -22,7 +22,7 @@ import {
   unlockApp,
 } from 'store/slices/settingsSlice'
 import { sharedStyles } from 'shared/constants'
-import { WalletConnect2Provider } from 'src/screens/walletConnect/WalletConnect2Context'
+import { WalletConnect2Provider } from 'screens/walletConnect/WalletConnect2Context'
 
 import { useStateSubscription } from './hooks/useStateSubscription'
 import { Cover } from './components/Cover'
