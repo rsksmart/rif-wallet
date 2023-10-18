@@ -1,6 +1,3 @@
-import { providers, Wallet } from 'ethers'
-import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
-import { OnRequest, RIFWallet } from '@rsksmart/rif-wallet-core'
 import axios from 'axios'
 import { AbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
 import mainnetContracts from '@rsksmart/rsk-contract-metadata'
