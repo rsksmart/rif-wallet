@@ -10,7 +10,7 @@ interface LastDerivedAccountIndex {
   [chainId: number]: number
 }
 
-type KeyManagementSystemState = {
+interface KeyManagementSystemState {
   lastDerivedAccountIndex: LastDerivedAccountIndex
   derivedPaths: DerivedPaths
 }
@@ -20,12 +20,12 @@ const createInitialState = (): KeyManagementSystemState => ({
   derivedPaths: {}
 })
 
-type KeyManagementSystemSerialization = {
+interface KeyManagementSystemSerialization {
   mnemonic: Mnemonic
   state: KeyManagementSystemState
 }
 
-export type SaveableWallet = {
+export interface SaveableWallet {
   derivationPath: string
   wallet: Wallet
   save(): void
