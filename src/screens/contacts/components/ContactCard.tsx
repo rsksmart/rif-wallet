@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
     backgroundColor: sharedColors.inputInactive,
     paddingVertical: 13.5,
     borderRadius: 10,
+    marginHorizontal: 5,
     alignItems: 'center',
     justifyContent: 'space-between',
     width: 100,
