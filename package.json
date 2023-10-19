@@ -45,7 +45,7 @@
     "@rsksmart/rns-resolver.js": "^1.0.1",
     "@rsksmart/rns-sdk": "^1.0.0-beta.5",
     "@rsksmart/rsk-contract-metadata": "^1.0.17",
-    "@rsksmart/rsk-testnet-contract-metadata": "^1.0.15",
+    "@rsksmart/rsk-testnet-contract-metadata": "^1.0.16",
     "@rsksmart/rsk-utils": "^1.1.0",
     "@walletconnect/jsonrpc-types": "^1.0.3",
     "@walletconnect/react-native-compat": "^2.9.0",
