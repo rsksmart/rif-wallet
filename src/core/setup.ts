@@ -11,7 +11,6 @@ import {
   chainTypesById,
   ChainTypesByIdType,
 } from 'shared/constants/chainConstants'
-import { USDRIF_TESTNET } from 'screens/home/TokenImage'
 
 import { getWalletSetting } from './config'
 
