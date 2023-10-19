@@ -7,7 +7,7 @@ import {
 import { getContacts, saveContacts } from 'storage/MainStorage'
 import { Contact } from 'shared/types'
 import { defaultContacts } from 'store/slices/contactsSlice/constants'
-import addresses from 'screens/rnsManager/addresses.json'
+import { TESTNET as addresses } from 'screens/rnsManager/addresses.json'
 
 const initialState: ContactsState = {
   contacts: defaultContacts,

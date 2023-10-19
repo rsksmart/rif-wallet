@@ -68,8 +68,6 @@ export interface Bitcoin {
 }
 
 export interface SettingsSlice {
-  keysExist: boolean
-  isFirstLaunch: boolean
   isSetup: boolean
   requests: RequestWithBitcoin[]
   topColor: ColorValue
@@ -84,7 +82,6 @@ export interface SettingsSlice {
   previouslyUnlocked: boolean
   fullscreen: boolean
   hideBalance: boolean
-  pin: string | null
   bitcoin: Bitcoin | null
   usedBitcoinAddresses: { [key: string]: string }
 }

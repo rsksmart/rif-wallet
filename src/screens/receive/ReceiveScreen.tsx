@@ -179,7 +179,7 @@ export const ReceiveScreen = ({
             value={address}
             imageSource={getIconSource(selectedAsset?.symbol || '')}
             logoBackgroundColor={sharedColors.black}
-            testID={TestID.QRCodeDisplay}
+            accessibilityLabel={TestID.QRCodeDisplay}
           />
         )}
         {isAddressLoading && (

@@ -6,6 +6,7 @@ import {
   RifWalletServicesSocket,
 } from '@rsksmart/rif-wallet-services'
 import { Options, setInternetCredentials } from 'react-native-keychain'
+import DeviceInfo from 'react-native-device-info'
 
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { AppDispatch } from 'store/index'
@@ -84,6 +85,10 @@ export const rifSockets = ({
         currentInstance.cache = new MMKVStorage('txs', encryptionKey)
       },
     },
+    {
+      cacheBlockNumberText: `blockNumber_${chainId}`,
+      cacheTxsText: `cachedTxs_${chainId}`,
+    },
   )
 
   const connectSocket = () => {
@@ -110,13 +115,15 @@ export const rifSockets = ({
       onSocketInit(payload, onChange),
     )
     rifWalletServicesSocket.on('change', onChange)
-    rifWalletServicesSocket.connect(wallet, fetcher).catch(err => {
-      if (err instanceof Error) {
-        setGlobalError(err.message)
-      } else {
-        setGlobalError('Error connecting to socket')
-      }
-    })
+    rifWalletServicesSocket
+      .connect(wallet, fetcher, { 'User-Agent': DeviceInfo.getUserAgentSync() })
+      .catch(err => {
+        if (err instanceof Error) {
+          setGlobalError(err.message)
+        } else {
+          setGlobalError('Error connecting to socket')
+        }
+      })
   }
 
   const disconnectSocket = rifWalletServicesSocket.disconnect

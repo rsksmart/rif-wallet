@@ -36,6 +36,7 @@ import { settingsStackRouteNames } from 'src/navigation/settingsNavigator/types'
 import { handleDomainTransactionStatusChange } from 'screens/rnsManager/utils'
 import { ConfirmationModal } from 'components/modal'
 import { selectWalletState } from 'store/slices/settingsSlice'
+import { RNS_ADDRESSES_BY_CHAIN_ID } from 'screens/rnsManager/types'
 
 import { DomainInput } from './DomainInput'
 import { rnsManagerStyles } from './rnsManagerStyles'
@@ -50,7 +51,8 @@ interface FormValues {
 }
 
 export const SearchDomainScreen = ({ navigation }: Props) => {
-  const { wallet, walletIsDeployed } = useAppSelector(selectWalletState)
+  const { wallet, walletIsDeployed, chainId } =
+    useAppSelector(selectWalletState)
   const { isDeployed, loading } = walletIsDeployed
   const [isDomainOwned, setIsDomainOwned] = useState<boolean>(false)
   const [validDomain, setValidDomain] = useState<boolean>(false)
@@ -112,8 +114,9 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
           dispatch,
           wallet,
         ),
+        rnsAddresses: RNS_ADDRESSES_BY_CHAIN_ID[chainId],
       }),
-    [dispatch, wallet],
+    [dispatch, wallet, chainId],
   )
 
   const onSubmit = useCallback(

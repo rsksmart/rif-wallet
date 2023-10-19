@@ -5,8 +5,9 @@ import {
 import { BigNumber, constants } from 'ethers'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { StyleSheet, View } from 'react-native'
+import { Alert, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { isAddress } from '@rsksmart/rsk-utils'
 
 import { balanceToDisplay, convertTokenToUSD } from 'lib/utils'
 
@@ -17,14 +18,21 @@ import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 import { TransactionSummaryComponent } from 'screens/transactionSummary/TransactionSummaryComponent'
 import { sharedColors } from 'shared/constants'
 import { chainTypesById } from 'shared/constants/chainConstants'
-import { errorHandler } from 'shared/utils'
+import { castStyle, errorHandler } from 'shared/utils'
 import { selectWalletState } from 'store/slices/settingsSlice'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { addRecentContact } from 'store/slices/contactsSlice'
+import { selectBalances } from 'store/slices/balancesSlice'
 
 import useEnhancedWithGas from '../useEnhancedWithGas'
+
+const tokenToBoolMap = new Map([
+  [TokenSymbol.RIF, true],
+  [TokenSymbol.TRIF, true],
+  [undefined, false],
+])
 
 interface Props {
   request: SendTransactionRequest
@@ -42,6 +50,7 @@ export const ReviewTransactionContainer = ({
   const tokenPrices = useAppSelector(selectUsdPrices)
   // enhance the transaction to understand what it is:
   const { wallet, chainId } = useAppSelector(selectWalletState)
+  const balances = useAppSelector(selectBalances)
   const [txCostInRif, setTxCostInRif] = useState<BigNumber>()
   const { t } = useTranslation()
 
@@ -50,7 +59,7 @@ export const ReviewTransactionContainer = ({
     throw new Error('no wallet')
   }
 
-  const txRequest = useMemo(() => request.payload[0], [request])
+  const txRequest = request.payload[0]
   const { enhancedTransactionRequest, isLoaded } = useEnhancedWithGas(
     wallet,
     txRequest,
@@ -71,19 +80,45 @@ export const ReviewTransactionContainer = ({
   const feeSymbol = isMainnet ? TokenSymbol.RIF : TokenSymbol.TRIF
   const feeContract = getTokenAddress(feeSymbol, chainTypesById[chainId])
 
+  const getTokenBySymbol = useCallback(
+    (symb: string) => {
+      const result = Object.values(balances).find(
+        token => token.symbol.toUpperCase() === symb.toUpperCase(),
+      )
+      if (!result) {
+        throw new Error(
+          `Token with the symbol ${symb} not found on ${chainId}.`,
+        )
+      }
+      return result
+    },
+    [balances, chainId],
+  )
+
   const tokenContract = useMemo(() => {
     const rbtcAddress = constants.AddressZero
     if (symbol === rbtcSymbol) {
       return rbtcAddress
     }
     if (symbol) {
-      return getTokenAddress(symbol, chainTypesById[chainId])
+      try {
+        return getTokenAddress(symbol, chainTypesById[chainId])
+      } catch {
+        return getTokenBySymbol(symbol).contractAddress
+      }
     }
     return feeContract
-  }, [symbol, rbtcSymbol, feeContract, chainId])
+  }, [symbol, rbtcSymbol, feeContract, chainId, getTokenBySymbol])
 
-  const tokenQuote = tokenPrices[tokenContract].price
-  const feeQuote = tokenPrices[feeContract].price
+  const tokenQuote = tokenPrices[tokenContract]?.price
+  const feeQuote = tokenPrices[feeContract]?.price
+
+  useEffect(() => {
+    if (txRequest.to && !isAddress(txRequest.to)) {
+      console.log('Invalid "to" address, rejecting transaction')
+      onCancel()
+    }
+  }, [onCancel, txRequest.to])
 
   useEffect(() => {
     wallet.rifRelaySdk
@@ -130,26 +165,41 @@ export const ReviewTransactionContainer = ({
   }, [onCancel, request])
 
   const data: TransactionSummaryScreenProps = useMemo(() => {
-    const convertToUSD = (tokenValue: number, quote: number) =>
+    const convertToUSD = (tokenValue: number, quote = 0) =>
       convertTokenToUSD(tokenValue, quote, true).toFixed(2)
 
-    const feeValue = txCostInRif
-      ? `${balanceToDisplay(txCostInRif, 18, 0)}`
-      : '0'
+    const feeValue = txCostInRif ? balanceToDisplay(txCostInRif, 18, 0) : '0'
+
+    let insufficientFunds = false
+
+    if (tokenToBoolMap.get(symbol as TokenSymbol)) {
+      insufficientFunds =
+        Number(value) + Number(feeValue) > Number(balances[feeContract].balance)
+    } else {
+      insufficientFunds =
+        Number(feeValue) > Number(balances[feeContract].balance)
+    }
+
+    if (insufficientFunds) {
+      Alert.alert(t('transaction_summary_insufficient_funds'))
+    }
+
+    // get usd values
     const tokenUsd = convertToUSD(Number(value), tokenQuote)
     const feeUsd = convertToUSD(Number(feeValue), feeQuote)
+    const isAmountSmall = !Number(tokenUsd) && !!Number(value)
 
     return {
       transaction: {
         tokenValue: {
-          balance: value.toString(),
-          symbolType: 'icon',
           symbol: symbol || feeSymbol,
+          symbolType: 'icon',
+          balance: value.toString(),
         },
         usdValue: {
-          balance: tokenUsd,
+          symbol: isAmountSmall ? '<' : '$',
           symbolType: 'usd',
-          symbol: '$',
+          balance: isAmountSmall ? '0.01' : tokenUsd,
         },
         fee: {
           tokenValue: feeValue,
@@ -166,6 +216,7 @@ export const ReviewTransactionContainer = ({
           color: sharedColors.white,
           textColor: sharedColors.black,
           accessibilityLabel: 'Confirm',
+          disabled: insufficientFunds,
         },
         {
           style: { marginTop: 10 },
@@ -178,6 +229,8 @@ export const ReviewTransactionContainer = ({
       functionName,
     }
   }, [
+    feeContract,
+    balances,
     txCostInRif,
     value,
     tokenQuote,
@@ -203,10 +256,10 @@ export const ReviewTransactionContainer = ({
 }
 
 const styles = StyleSheet.create({
-  container: {
+  container: castStyle.view({
     width: '100%',
     height: '100%',
     zIndex: 999,
     position: 'absolute',
-  },
+  }),
 })

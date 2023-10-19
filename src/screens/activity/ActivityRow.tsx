@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleProp, ViewStyle } from 'react-native'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
+import { ZERO_ADDRESS } from '@rsksmart/rif-relay-light-sdk'
 
 import { roundBalance, shortAddress } from 'lib/utils'
 
@@ -66,7 +67,13 @@ export const ActivityBasicRow = ({
   // Label
   const firstLabel = amIReceiver ? t('received_from') : t('sent_to')
   const secondLabel = contact?.name || shortAddress(address)
-  const label = `${firstLabel} ${secondLabel}`
+  let label = `${firstLabel} ${secondLabel}`
+  if (
+    to === ZERO_ADDRESS &&
+    from.toLowerCase() === wallet.smartWalletFactory.address.toLowerCase()
+  ) {
+    label = t('wallet_deployment_label')
+  }
 
   // USD Balance
   const usdBalance = roundBalance(price, 2)

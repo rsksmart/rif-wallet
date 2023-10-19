@@ -33,8 +33,8 @@ import {
 import { TransactionSummaryScreenProps } from '.'
 
 interface Props {
-  goBack?: () => void
   wallet: RIFWallet
+  goBack?: () => void
 }
 
 type TransactionSummaryComponentProps = Omit<
@@ -225,6 +225,11 @@ export const TransactionSummaryComponent = ({
             </View>
           </View>
           <View style={styles.dollarAmountWrapper}>
+            {usdValue.symbol === '<' && (
+              <Typography type="body1" color={sharedColors.labelLight}>
+                {'<'}
+              </Typography>
+            )}
             <DollarIcon size={14} color={sharedColors.labelLight} />
             <Typography
               type={'body2'}

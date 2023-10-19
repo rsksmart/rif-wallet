@@ -165,6 +165,9 @@ export const TransactionForm = ({
   const handleAmountChange = useCallback(
     (newAmount: string, _balanceInverted: boolean) => {
       const text = sanitizeMaxDecimalText(sanitizeDecimalText(newAmount))
+      if (Number(text) >= maxAmount) {
+        return
+      }
       const numberAmount = Number(text)
       setFirstBalance(prev => ({
         ...prev,
@@ -315,14 +318,11 @@ export const TransactionForm = ({
             style={styles.marginTop10}
             firstValue={firstBalance}
             secondValue={secondBalance}
-            color={sharedColors.secondary}
+            color={sharedColors.black}
             error={hasEnoughBalance ? t('transaction_form_error_balance') : ''}
             onSwap={onSwapBalance}
             editable
             handleAmountChange={value => {
-              if (Number(value) > maxAmount) {
-                return
-              }
               handleAmountChange(value, balanceInverted)
             }}
           />
@@ -440,7 +440,7 @@ const styles = StyleSheet.create({
   }),
   buttonCancel: castStyle.view({
     marginTop: 10,
-    backgroundColor: sharedColors.secondary,
+    backgroundColor: sharedColors.black,
   }),
   assetToggleRow: castStyle.view({
     flexDirection: 'row',

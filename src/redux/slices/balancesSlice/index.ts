@@ -33,9 +33,13 @@ export const getBalance = (
   }
 
   let balance = balanceToDisplay(tokenBalance, token.decimals, 4)
+
+  // if the balance's decimals places are greater than 4
   if (Number(balance) === 0) {
     balance = balanceToDisplay(tokenBalance, token.decimals, 6)
   }
+
+  // if the balance's decimals places are greater than 6
   if (Number(balance) === 0) {
     balance = balanceToDisplay(tokenBalance, token.decimals, 8)
   }
@@ -68,7 +72,7 @@ export const addOrUpdateBalances = createAsyncThunk<
     if (bitcoin) {
       // add bitcoin balance to balances state
       const bitBalances: TokenBalanceObject[] = bitcoin.networksArr.map(b => {
-        const { balance, usdBalance } = getBalance(b, usdPrices.BTC.price)
+        const { balance, usdBalance } = getBalance(b, usdPrices.BTC?.price ?? 0)
         return {
           name: b.networkName,
           contractAddress: b.contractAddress,

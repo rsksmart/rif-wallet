@@ -10,7 +10,7 @@ interface LastDerivedAccountIndex {
   [chainId: number]: number
 }
 
-type KeyManagementSystemState = {
+interface KeyManagementSystemState {
   lastDerivedAccountIndex: LastDerivedAccountIndex
   derivedPaths: DerivedPaths
 }
@@ -20,12 +20,12 @@ const createInitialState = (): KeyManagementSystemState => ({
   derivedPaths: {}
 })
 
-type KeyManagementSystemSerialization = {
+interface KeyManagementSystemSerialization {
   mnemonic: Mnemonic
   state: KeyManagementSystemState
 }
 
-export type SaveableWallet = {
+export interface SaveableWallet {
   derivationPath: string
   wallet: Wallet
   save(): void
@@ -84,16 +84,34 @@ export class KeyManagementSystem implements IKeyManagementSystem {
   /**
    * Use this method to recover a stored serialized wallet
    * @param serialized the serialized string
+   * @param chainId
    * @returns the KeyManagementSystem that was serialized
    */
-  static fromSerialized (serialized: string): { kms: KeyManagementSystem, wallets: Wallet[] } {
+  static fromSerialized (serialized: string, chainId: number): { kms: KeyManagementSystem, wallets: Wallet[] } {
     const { mnemonic, state }: KeyManagementSystemSerialization = JSON.parse(serialized)
 
     const kms = new KeyManagementSystem(mnemonic, state)
+    // If for some reason the chainId that was passed has not been generated, generate and save it
+    if (!state.lastDerivedAccountIndex[chainId]) {
+      const newChain = kms.getWalletByChainIdAccountIndex(chainId, 0)
+      newChain.save()
+    }
+    // @TODO Save this state using saveKeys() function
+    // This is for incremental rollout, we should add both chains when an user creates a wallet
 
+    // Now, get the derivation path and use that one to return the wallet
+    const derivationPath = getDPathByChainId(chainId, 0)
     // try to create the wallet using the private key which is faster, if it fails, the fallback
     // is to use the derivedPath and mnemonic to regenerate the private key and then wallet
-    const wallets = Object.keys(state.derivedPaths)
+    let wallet
+    try {
+      wallet = new Wallet(state.derivedPaths[derivationPath])
+    } catch (_error) {
+      const derivedWalletContainer = kms.deriveWallet(derivationPath)
+      wallet = derivedWalletContainer.wallet
+    }
+    // Old logic, should be analyzed to see if it can be removed or the app modified
+    /*const wallets = Object.keys(state.derivedPaths)
       .map((derivedPath: string) => {
         try {
           return new Wallet(state.derivedPaths[derivedPath])
@@ -101,11 +119,10 @@ export class KeyManagementSystem implements IKeyManagementSystem {
           const { wallet } = kms.deriveWallet(derivedPath)
           return wallet
         }
-      })
-
+      })*/
     return {
       kms,
-      wallets
+      wallets: [wallet]
     }
   }
 
@@ -156,6 +173,23 @@ export class KeyManagementSystem implements IKeyManagementSystem {
       save: () => {
         this.state.derivedPaths[derivationPath] = privateKey
         this.state.lastDerivedAccountIndex[chainId] = this.state.lastDerivedAccountIndex[chainId] + 1
+      }
+    }
+  }
+
+  /**
+   * This will get the wallet according to the chain id and accountIndex passed to the function
+   * @param chainId
+   * @param accountIndex
+   */
+  getWalletByChainIdAccountIndex(chainId: number, accountIndex: number): SaveableWallet {
+    const derivationPath = getDPathByChainId(chainId, accountIndex)
+    const { wallet, privateKey } = this.deriveWallet(derivationPath)
+    return {
+      derivationPath,
+      wallet,
+      save: () => {
+        this.state.derivedPaths[derivationPath] = privateKey
       }
     }
   }

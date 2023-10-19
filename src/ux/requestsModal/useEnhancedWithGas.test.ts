@@ -19,8 +19,8 @@ describe('hook: useEnhancedWithGas', function (this: {
     useSelectorMock.mockClear()
 
     this.tx = {
-      to: '0x123',
-      from: '0x456',
+      from: '0xa2193a393aa0c94a4d52893496f02b56c61c36a1',
+      to: '0xfbd1cb816f073c554296bfff2be2ddb66ced83fd',
       value: 0,
     }
 
@@ -36,8 +36,8 @@ describe('hook: useEnhancedWithGas', function (this: {
   })
 
   const runHook = async (tx: TransactionRequest) => {
-    const { result, waitForNextUpdate } = await renderHook(
-      async () => await useEnhancedWithGas(this.rifWallet, tx),
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useEnhancedWithGas(this.rifWallet, tx),
     )
 
     await waitForNextUpdate()
@@ -103,6 +103,17 @@ describe('hook: useEnhancedWithGas', function (this: {
         })
 
         expect(txEnhanced.enhancedTransactionRequest.gasPrice).toBe('2020')
+      })
+    })
+
+    it('should not call estimateGas if the tx.to address is not valid', async () => {
+      await act(async () => {
+        const txEnhanced = await runHook({
+          ...this.tx,
+          to: '0x',
+        })
+
+        expect(txEnhanced.enhancedTransactionRequest.gasLimit).toBe('0')
       })
     })
   })

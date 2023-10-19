@@ -1,4 +1,10 @@
-import { createContext, ReactElement, useEffect, useState } from 'react'
+import {
+  createContext,
+  ReactElement,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 import { getSdkError, parseUri } from '@walletconnect/utils'
 import Web3Wallet, { Web3WalletTypes } from '@walletconnect/web3wallet'
 import { IWeb3Wallet } from '@walletconnect/web3wallet'
@@ -95,7 +101,7 @@ export const WalletConnect2Context =
 
 interface WalletConnect2ProviderProps {
   children: ReactElement
-  wallet: RIFWallet
+  wallet: RIFWallet | null
 }
 
 export const WalletConnect2Provider = ({
@@ -130,53 +136,61 @@ export const WalletConnect2Provider = ({
     }
   }
 
-  const subscribeToEvents = (web3wallet: Web3Wallet) => {
-    web3wallet.on('session_proposal', async proposal =>
-      onSessionProposal(proposal, web3wallet),
-    )
-    web3wallet.on('session_request', async event => {
-      if (!wallet) {
-        return
-      }
-      const adapter = new WalletConnectAdapter(wallet)
-      const {
-        params: {
-          request: { method, params },
-        },
-        id,
-        topic,
-      } = event
-
-      const rpcResponse = {
-        topic,
-        response: {
+  const subscribeToEvents = useCallback(
+    (web3wallet: Web3Wallet) => {
+      web3wallet.on('session_proposal', async proposal =>
+        onSessionProposal(proposal, web3wallet),
+      )
+      web3wallet.on('session_request', async event => {
+        if (!wallet) {
+          return
+        }
+        const adapter = new WalletConnectAdapter(wallet)
+        const {
+          params: {
+            request: { method, params },
+          },
           id,
-          jsonrpc: '2.0',
-        },
-      }
+          topic,
+        } = event
 
-      adapter
-        .handleCall(method, params)
-        .then(signedMessage => {
-          web3wallet.respondSessionRequest({
-            ...rpcResponse,
-            response: {
-              ...rpcResponse.response,
-              result: signedMessage,
-            },
+        const rpcResponse = {
+          topic,
+          response: {
+            id,
+            jsonrpc: '2.0',
+          },
+        }
+
+        adapter
+          .handleCall(method, params)
+          .then(signedMessage => {
+            web3wallet.respondSessionRequest({
+              ...rpcResponse,
+              response: {
+                ...rpcResponse.response,
+                result: signedMessage,
+              },
+            })
           })
-        })
-        .catch(_ => {
-          web3wallet.respondSessionRequest({
-            ...rpcResponse,
-            response: {
-              ...rpcResponse.response,
-              error: getSdkError('USER_REJECTED'),
-            },
+          .catch(_ => {
+            web3wallet.respondSessionRequest({
+              ...rpcResponse,
+              response: {
+                ...rpcResponse.response,
+                error: getSdkError('USER_REJECTED'),
+              },
+            })
           })
-        })
-    })
-  }
+      })
+      web3wallet.on('session_delete', async event => {
+        setSessions(prevSessions =>
+          prevSessions.filter(prevSession => prevSession.topic !== event.topic),
+        )
+      })
+    },
+    [wallet],
+  )
 
   const onCreateNewSession = async (uri: string) => {
     try {
@@ -257,22 +271,25 @@ export const WalletConnect2Provider = ({
         prevSessions.filter(prevSession => prevSession.topic !== session.topic),
       )
     } catch (err) {
-      console.log(234, err)
+      // @TODO handle error disconnecting
+      console.log('WC2.0 error disconnect', err)
     }
   }
 
-  const onContextFirstLoad = async () => {
+  const onContextFirstLoad = useCallback(async () => {
     const web3wallet = await createWeb3Wallet()
     subscribeToEvents(web3wallet)
     setSessions(Object.values(web3wallet.getActiveSessions()))
-  }
+  }, [subscribeToEvents])
+
   /**
    * useEffect On first load, fetch previous saved sessions
    */
   useEffect(() => {
-    onContextFirstLoad().catch(console.log)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    if (wallet) {
+      onContextFirstLoad().catch(console.log)
+    }
+  }, [onContextFirstLoad, wallet])
   return (
     <WalletConnect2Context.Provider
       value={{

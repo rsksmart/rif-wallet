@@ -207,6 +207,7 @@ const resources = {
       transaction_summary_function_type: 'type',
       transaction_summary_plus_fees: '+ fees',
       transaction_summary_plus_fees_capitalcase: '+ Fees',
+      transaction_summary_insufficient_funds: 'Insufficient funds',
       profile_screen_title: 'Profile',
       profile_contact_details_subtitle: 'Contact Details',
       profile_phone_label: 'Phone Number',
@@ -351,6 +352,7 @@ const resources = {
         'We strongly advise exercising caution, employing the best security practices,and safeguarding your assets diligently."',
       security_i_agree: 'I agree with the conditions. ',
       security_info_btn: 'Continue',
+      security_terms_and_conditions: 'Terms and Conditions',
       android_qr_alert_title: 'Error reading QR',
       android_qr_alert_desc: 'The QR could not be parsed. Please try again.',
       android_qr_loading_camera: 'Loading camera',
@@ -373,6 +375,9 @@ const resources = {
       popup_message_rns:
         'Register your username to allow others to send you funds without worrying about mistyping or inputting wrong address',
       popup_link_text: 'Get username here',
+      ramp_error_title: 'Not Available',
+      ramp_error: 'Adding funds is not available yet.',
+      wallet_deployment_label: 'Rif Wallet Deployment',
     },
   },
   es: {

@@ -1,6 +1,3 @@
-import { providers, Wallet } from 'ethers'
-import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
-import { OnRequest, RIFWallet } from '@rsksmart/rif-wallet-core'
 import axios from 'axios'
 import { AbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
 import mainnetContracts from '@rsksmart/rsk-contract-metadata'
@@ -14,7 +11,7 @@ import {
   chainTypesById,
   ChainTypesByIdType,
 } from 'shared/constants/chainConstants'
-import { USDRIF_TESTNET } from 'src/screens/home/TokenImage'
+import { USDRIF_TESTNET } from 'screens/home/TokenImage'
 
 import { getWalletSetting } from './config'
 
@@ -32,36 +29,6 @@ export const getRnsResolver = (chainId: ChainTypesByIdType) =>
   chainTypesById[chainId] === ChainTypeEnum.MAINNET
     ? Resolver.forRskMainnet({})
     : Resolver.forRskTestnet({})
-
-export const createRIFWalletFactory =
-  (onRequest: OnRequest, chainId: ChainTypesByIdType) => (wallet: Wallet) => {
-    const jsonRpcProvider = new providers.StaticJsonRpcProvider(
-      getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId]),
-    )
-    const rifRelayConfig: RifRelayConfig = {
-      smartWalletFactoryAddress: getWalletSetting(
-        SETTINGS.SMART_WALLET_FACTORY_ADDRESS,
-        chainTypesById[chainId],
-      ),
-      relayVerifierAddress: getWalletSetting(
-        SETTINGS.RELAY_VERIFIER_ADDRESS,
-        chainTypesById[chainId],
-      ),
-      deployVerifierAddress: getWalletSetting(
-        SETTINGS.DEPLOY_VERIFIER_ADDRESS,
-        chainTypesById[chainId],
-      ),
-      relayServer: getWalletSetting(
-        SETTINGS.RIF_RELAY_SERVER,
-        chainTypesById[chainId],
-      ),
-    }
-    return RIFWallet.create(
-      wallet.connect(jsonRpcProvider),
-      onRequest,
-      rifRelayConfig,
-    )
-  }
 
 const defaultMainnetTokens: ITokenWithoutLogo[] = Object.keys(mainnetContracts)
   .filter(address => ['RDOC', 'RIF'].includes(mainnetContracts[address].symbol))
