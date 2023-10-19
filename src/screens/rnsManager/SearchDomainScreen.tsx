@@ -290,7 +290,7 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
               <View style={[sharedStyles.contentCenter]}>
                 <AppSpinner size={64} thickness={10} />
               </View>
-              <Typography type="body1">
+              <Typography type="body1" accessibilityLabel={'loading'}>
                 {t('search_domain_processing_commitment')}
               </Typography>
             </>

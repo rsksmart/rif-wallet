@@ -177,7 +177,10 @@ export const ProfileCreateScreen = ({
           <Avatar size={50} name="username" style={styles.avatarBackground} />
         )}
         <View style={styles.username}>
-          <Typography type={'h3'} color={sharedColors.white}>
+          <Typography
+            type={'h3'}
+            color={sharedColors.white}
+            accessibilityLabel={'username'}>
             {username || t('no_username')}
           </Typography>
           <Typography type={'h4'} color={sharedColors.labelLight}>
@@ -246,7 +249,7 @@ export const ProfileCreateScreen = ({
             label={t('profile_phone_label')}
             inputName="phone"
             placeholder={t('profile_phone_label')}
-            testID={'TestID.PhoneText'}
+            accessibilityLabel={'TestID.PhoneText'}
             resetValue={resetPhone}
             autoCorrect={false}
             autoCapitalize={'none'}
@@ -257,7 +260,7 @@ export const ProfileCreateScreen = ({
             label={t('profile_email_label')}
             inputName="email"
             placeholder={t('profile_email_label')}
-            testID={'TestID.EmailText'}
+            accessibilityLabel={'TestID.EmailText'}
             resetValue={resetEmail}
             autoCorrect={false}
             autoCapitalize={'none'}
@@ -275,6 +278,7 @@ export const ProfileCreateScreen = ({
           <AppButton
             style={rnsManagerStyles.button}
             title={t('profile_register_your_username_button_text')}
+            accessibilityLabel={'registerYourUserName'}
             color={sharedColors.white}
             textColor={sharedColors.black}
             disabled={

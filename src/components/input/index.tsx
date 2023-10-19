@@ -28,6 +28,10 @@ import { Typography } from '../typography'
 
 export { CustomInput } from './CustomInput'
 
+enum TestID {
+  InputLabel = 'InputLabel',
+}
+
 export interface InputProps extends TextInputProps {
   inputName: string
   label?: string
@@ -110,7 +114,10 @@ export const Input = ({
               focused || value || isReadOnly ? styles.contentPadding : null,
             ]}>
             {label && (focused || !!value || isReadOnly) ? (
-              <Typography style={[styles.label, labelStyle]} type={'body3'}>
+              <Typography
+                style={[styles.label, labelStyle]}
+                type={'body3'}
+                accessibilityLabel={TestID.InputLabel}>
                 {label}
               </Typography>
             ) : null}
