@@ -10,6 +10,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useTranslation } from 'react-i18next'
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
+import { showMessage } from 'react-native-flash-message'
 
 import { shortAddress } from 'lib/utils'
 
@@ -27,9 +28,11 @@ import {
 } from 'navigation/homeNavigator/types'
 import { getTokenColor } from 'screens/home/tokenColor'
 import { castStyle } from 'shared/utils'
-import { selectProfile } from 'store/slices/profileSlice'
+import { selectProfile, selectUsername } from 'store/slices/profileSlice'
 import { getIconSource } from 'screens/home/TokenImage'
 import { ProfileStatus } from 'navigation/profileNavigator/types'
+import { getPopupMessage } from 'src/shared/popupMessage'
+import { rootTabsRouteNames } from 'src/navigation/rootNavigator'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
@@ -40,6 +43,7 @@ export enum TestID {
 }
 
 export const ReceiveScreen = ({
+  navigation,
   route,
 }: HomeStackScreenProps<homeStackRouteNames.Receive>) => {
   const { t } = useTranslation()
@@ -47,6 +51,7 @@ export const ReceiveScreen = ({
   const bitcoinCore = useAppSelector(selectBitcoin)
 
   const tokenBalances = useAppSelector(selectBalances)
+  const username = useAppSelector(selectUsername)
 
   const { token, networkId } = route.params
   const [selectedAsset, setSelectedAsset] = useState<
@@ -117,6 +122,16 @@ export const ReceiveScreen = ({
       onGetAddress(selectedAsset)
     }
   }, [onGetAddress, selectedAsset])
+
+  useEffect(() => {
+    if (!username) {
+      showMessage(
+        getPopupMessage(t('popup_message_rns'), t('popup_link_text'), () =>
+          navigation.navigate(rootTabsRouteNames.Profile),
+        ),
+      )
+    }
+  }, [username, t, navigation])
 
   return (
     <ScrollView style={styles.parent}>
