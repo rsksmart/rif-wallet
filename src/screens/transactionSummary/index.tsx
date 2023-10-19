@@ -18,15 +18,15 @@ import { TransactionStatus } from './transactionSummaryUtils'
 
 export interface TransactionSummaryScreenProps {
   transaction: {
-    hashId?: string
+    to: string
     tokenValue: CurrencyValue
     usdValue: CurrencyValue
     fee: TokenFeeValueObject
     time: string
+    hashId?: string
     status?: TransactionStatus
     amIReceiver?: boolean
     from?: string
-    to: string
   }
   buttons?: AppButtonProps[]
   functionName?: string

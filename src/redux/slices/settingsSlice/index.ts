@@ -137,7 +137,6 @@ export const unlockApp = createAsyncThunk<
   AsyncThunkWithTypes
 >('settings/unlockApp', async (payload, thunkAPI) => {
   try {
-    // check if it is a first launch, deleteKeys
     const {
       persistentData: { isFirstLaunch },
     } = thunkAPI.getState()

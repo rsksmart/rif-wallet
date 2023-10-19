@@ -23,6 +23,7 @@ import {
 } from 'store/slices/settingsSlice'
 import { sharedStyles } from 'shared/constants'
 import { WalletConnect2Provider } from 'screens/walletConnect/WalletConnect2Context'
+import { WalletProvider } from 'shared/wallet'
 
 import { useStateSubscription } from './hooks/useStateSubscription'
 import { Cover } from './components/Cover'
@@ -69,21 +70,23 @@ export const Core = () => {
         <StatusBar backgroundColor={topColor} />
         {!active && <Cover />}
         <NavigationContainer ref={navigationContainerRef}>
-          <WalletConnect2Provider wallet={wallet}>
-            {settings.loading && !unlocked ? (
-              <LoadingScreen />
-            ) : (
-              <>
-                <RootNavigationComponent />
-                {requests.length !== 0 && (
-                  <RequestHandler
-                    request={requests[0]}
-                    closeRequest={() => dispatch(closeRequest())}
-                  />
-                )}
-              </>
-            )}
-          </WalletConnect2Provider>
+          <WalletProvider>
+            <WalletConnect2Provider wallet={wallet}>
+              {settings.loading && !unlocked ? (
+                <LoadingScreen />
+              ) : (
+                <>
+                  <RootNavigationComponent />
+                  {requests.length !== 0 && (
+                    <RequestHandler
+                      request={requests[0]}
+                      closeRequest={() => dispatch(closeRequest())}
+                    />
+                  )}
+                </>
+              )}
+            </WalletConnect2Provider>
+          </WalletProvider>
         </NavigationContainer>
       </View>
     </SafeAreaProvider>
