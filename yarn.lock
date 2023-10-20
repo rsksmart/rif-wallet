@@ -2149,10 +2149,15 @@
   resolved "https://registry.yarnpkg.com/@rsksmart/rsk-contract-metadata/-/rsk-contract-metadata-1.0.17.tgz#d7558628c983bc4e9937235388276946c6d907d0"
   integrity sha512-99eDgEQ4/FOsSg1K65/A+cJYvDYaEHXQmU/zT46BkdlH/KVwHNm12UyyZ4OJXWXJZD/qQ6iV6ltonV8QBYToiA==
 
-"@rsksmart/rsk-testnet-contract-metadata@^1.0.11", "@rsksmart/rsk-testnet-contract-metadata@^1.0.15":
+"@rsksmart/rsk-testnet-contract-metadata@^1.0.11":
   version "1.0.15"
   resolved "https://registry.yarnpkg.com/@rsksmart/rsk-testnet-contract-metadata/-/rsk-testnet-contract-metadata-1.0.15.tgz#7f66e2a9536afc50c2610cb4716522a54c66a0b0"
   integrity sha512-DWFmfKM+OcPD5VzObcaXuz1IeyKYq7DE82o2FTa+rhS9auXkWrXVUQalJFKu/LHgWmBKsqdgf1RO/l09NEwnmA==
+
+"@rsksmart/rsk-testnet-contract-metadata@^1.0.16":
+  version "1.0.16"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rsk-testnet-contract-metadata/-/rsk-testnet-contract-metadata-1.0.16.tgz#99af1740dd60fd918ceb30f6a79c534158ba9b1e"
+  integrity sha512-Xte3w3tNCgU3ghZhbO1dAbkcjf4JPiwkgQtvOQMX/Y24wAvEKm68nk/7gEUSLD1N720wDgqctVIcKdk/8luj+w==
 
 "@rsksmart/rsk-utils@^1.1.0":
   version "1.1.0"
