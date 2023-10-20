@@ -96,7 +96,8 @@ export const initializeBitcoin = (
 
       result.fetcher = rifFetcher
 
-      result.paymentFacade.onSendTransaction = rifFetcher.sendTransactionHexData
+      result.paymentFacade.onSendTransaction =
+        rifFetcher.sendTransactionHexDataPost
       return result
     }
 
