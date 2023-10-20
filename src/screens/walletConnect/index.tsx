@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
     flex: 4,
     alignSelf: 'center',
     width: '80%',
-    resizeMode: 'center',
+    resizeMode: 'contain',
   }),
   dappsList: castStyle.view({
     flex: 1,
