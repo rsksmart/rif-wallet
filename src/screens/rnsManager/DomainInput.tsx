@@ -177,7 +177,10 @@ export const DomainInput = ({
         autoCorrect={false}
       />
       {error && error.message && (
-        <Typography type="body3" style={styles.errorText}>
+        <Typography
+          type="body3"
+          style={styles.errorText}
+          accessibilityLabel="DomainInputErrorTypo">
           {error.message}
         </Typography>
       )}
