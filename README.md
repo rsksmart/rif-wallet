@@ -65,3 +65,37 @@ This is an ongoing process that will be documented when more are added. Below is
 - **src/components** - resuable components used throughout the app. These will include buttons, typography, text inputs. These are independent of the screens.
 - **src/lib** - interaction with libraries used, or new libraries being created. 
 - **src/state** - all things state. Right now, we are using useState, but this may be expanded to use Redux in the near future.
+
+## Notes on Bitcoin Addresses generation
+
+In RIF Wallet, bitcoin addresses are automatically generated. 
+The system's fetcher chooses an available index by accessing the endpoint /getNextUnusedIndex/:xpub from rif-wallet-services. 
+This endpoint returns an available index that hasn't been used previously, making it suitable for address creation. 
+Additionally, the endpoint provides multiple indexes, allowing the wallet to select from them for sending any remainder amounts. 
+Using the Bitcoin library rif-wallet-bitcoin, the wallet generates an address based on this index. 
+It also creates several additional addresses to send the remainder amount back to the owner.
+
+Object returned by the endpoint mentioned above:
+
+```javascript
+{
+  "index": 0,
+  "availableIndexes": [1, 2, 3, 4, 5]
+}
+```
+
+The address creation process is explained in the rif-wallet-libs, in the @rsksmart/rif-wallet-bitcoin package.
+
+See fetchExternalAvailableAddress and fetchExternalAvailableAddresses in BIP.ts for more reference on how it works.
+
+### Bitcoin address generation places
+
+The bitcoin addresses are generated in two parts:
+
+ReceiveScreen -> BIP.ts.fetchExternalAvailableAddress -> which fetches one address at a time and stores it in the state.
+
+DIAGRAM HERE
+
+bitcoinUtils.ts -> BIP.ts.fetchExternalAvailableAddresses ->  which is utilized in the paymentExecutor.ts 
+
+DIAGRAM HERE
