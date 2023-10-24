@@ -165,24 +165,46 @@ export const deserializeTransactions = (transactions: IActivityTransaction[]) =>
 const transformTransaction = (
   transaction: BitcoinTransactionType,
 ): IBitcoinTransaction => {
-  // TODO: bip.network was undefined, it does not exist in the type
-  // temporarily set it to empty string
+  const amIReceiver = !transaction.vin.some(tx => 'isOwn' in tx && tx.isOwn)
+
+  let value: BigNumber
+  let to = ''
+  let from = ''
+
+  value = transaction.vout.reduce((prev, cur) => {
+    if ((amIReceiver && cur.isOwn) || (!amIReceiver && !cur.isOwn)) {
+      prev = prev.add(cur.value)
+    }
+    return prev
+  }, BigNumber.from(0))
+
+  if (amIReceiver) {
+    from = transaction.vin[0].addresses[0] // first input's address
+  } else {
+    // Adjust for case where user sent funds to himself
+    if (value.isZero()) {
+      value = transaction.vout.reduce(
+        (prev, cur) => prev.add(cur.value),
+        BigNumber.from(0),
+      )
+    }
+    // Get address of the first output that isn't owned by the user or fallback to the first vout address
+    to =
+      transaction.vout.find(vout => !vout.isOwn)?.addresses[0] ||
+      transaction.vout[0].addresses[0]
+  }
+
   return {
     ...transaction,
     isBitcoin: true,
     symbol: TokenSymbol.BTC,
     status: transaction.confirmations > 0 ? 'success' : 'pending',
-    to: transaction.vout[0].addresses[0],
-    valueBtc: utils.formatUnits(BigNumber.from(transaction.value), 8),
+    to,
+    valueBtc: utils.formatUnits(value, 8),
     id: transaction.txid,
     sortTime: transaction.blockTime,
-    amIReceiver: !transaction.vin.some(
-      tx => 'isOwn' in tx && tx.isOwn === true,
-    ),
-    from:
-      transaction.vout.find(vout => !vout.isOwn)?.addresses[0] ||
-      transaction.vout[0].addresses[0] ||
-      '', // First match that is not ours - else first match if exists - else nothing
+    amIReceiver,
+    from,
   }
 }
 
