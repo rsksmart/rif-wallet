@@ -168,7 +168,7 @@ const transformTransaction = (
   const amIReceiver = !transaction.vin.some(tx => 'isOwn' in tx && tx.isOwn)
 
   let value: BigNumber
-  let to = ''
+  let to: string
   let from = ''
 
   value = transaction.vout.reduce((prev, cur) => {
@@ -180,6 +180,7 @@ const transformTransaction = (
 
   if (amIReceiver) {
     from = transaction.vin[0].addresses[0] // first input's address
+    to = transaction.vout.find(tx => tx.isOwn)?.addresses[0] || '' // first output that is owned by the user
   } else {
     // Adjust for case where user sent funds to himself
     if (value.isZero()) {
