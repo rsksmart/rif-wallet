@@ -13,6 +13,7 @@ import {
   modifyTransaction,
   ApiTransactionWithExtras,
   ModifyTransaction,
+  fetchBitcoinTransactions,
 } from 'store/slices/transactionsSlice'
 import {
   fetchAddressToReturnFundsTo,
@@ -139,6 +140,10 @@ export const usePaymentExecutor = (
     addressUsed: string
   }) => {
     dispatch(addAddressToUsedBitcoinAddresses(addressUsed))
+    // Easy fix to avoid dispatching a lot: Fetch latest 3 bitcoin transactions after 3s of the tx being completed
+    setTimeout(() => {
+      dispatch(fetchBitcoinTransactions({ pageSize: 3 }))
+    }, 3000)
   }
 
   const executePayment = ({
