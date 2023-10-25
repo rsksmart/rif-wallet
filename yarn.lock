@@ -9030,7 +9030,7 @@ react-native-codegen@^0.0.7:
     jscodeshift "^0.11.0"
     nullthrows "^1.1.1"
 
-react-native-codegen@^0.70.6:
+react-native-codegen@^0.70.7:
   version "0.70.7"
   resolved "https://registry.yarnpkg.com/react-native-codegen/-/react-native-codegen-0.70.7.tgz#8f6b47a88740ae703209d57b7605538d86dacfa6"
   integrity sha512-qXE8Jrhc9BmxDAnCmrHFDLJrzgjsE/mH57dtC4IO7K76AwagdXNCMRp5SA8XdHJzvvHWRaghpiFHEMl9TtOBcQ==
@@ -9079,10 +9079,10 @@ react-native-flipper@^0.163.0:
   resolved "https://registry.yarnpkg.com/react-native-flipper/-/react-native-flipper-0.163.0.tgz#3ede9fed252555d0ac3c6212e7ed6e5af3c85604"
   integrity sha512-RG0yMlEMe/fYqaoUkhvW2HrqBuRYtq1K3me9y52RBFwPWooZTmUlWjIWGKT9VYVS9T2GGrUV9tpBA8pY9g7CSg==
 
-react-native-gesture-handler@2.9.0:
-  version "2.9.0"
-  resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.9.0.tgz#2f63812e523c646f25b9ad660fc6f75948e51241"
-  integrity sha512-a0BcH3Qb1tgVqUutc6d3VuWQkI1AM3+fJx8dkxzZs9t06qA27QgURYFoklpabuWpsUTzuKRpxleykp25E8m7tg==
+react-native-gesture-handler@~2.10.0:
+  version "2.10.2"
+  resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.10.2.tgz#0d7d82de767a551157eaedc5f74e389c5fc357b9"
+  integrity sha512-yUwTrgLinaGRdJN3igL5/QP+09B294EKgoCH7QJ4ABKb4W2mUvSDbbuGMaYBNnwMKAD87Ns2q/qibLWy3E3LTw==
   dependencies:
     "@egjs/hammerjs" "^2.0.17"
     hoist-non-react-statics "^3.3.0"
@@ -9224,10 +9224,10 @@ react-native-vision-camera@^2.15.2:
   resolved "https://registry.yarnpkg.com/react-native-vision-camera/-/react-native-vision-camera-2.15.2.tgz#96a17c8b4e557df317734897853a861e0cfbc3ed"
   integrity sha512-pkVj0r2nbZaj3+bB9CGPNistCUyoCgS2SmawzugrZs5oMlFWlgZYuJj+6s3Q98xTGgV/8/ST0njohB6soDi0VA==
 
-react-native@0.70.13:
-  version "0.70.13"
-  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.70.13.tgz#03090b15704322563c50fc52664b5de518d37c7c"
-  integrity sha512-jFCFj7L8Y/VPu3YDGMH8Ha+2tL1Y5PXMK/sOHbEHnzx/FXS+Z5h82K+JgMqET2NoXUx5ay09l2W3kKRx2v1aYw==
+react-native@0.70.14:
+  version "0.70.14"
+  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.70.14.tgz#3dedd2ed762d47666c2fe804cff8079b286e1845"
+  integrity sha512-QeZvPJnDkF4K2QB4cX3xZM0gMVqa6r7ema7342PAAJpDvieO9JdI25dBI+hMvMO3jGRS3MUapcPqJvcxLEyNZQ==
   dependencies:
     "@jest/create-cache-key-function" "^27.0.1"
     "@react-native-community/cli" "9.3.4"
@@ -9251,7 +9251,7 @@ react-native@0.70.13:
     pretty-format "^26.5.2"
     promise "^8.3.0"
     react-devtools-core "4.24.0"
-    react-native-codegen "^0.70.6"
+    react-native-codegen "^0.70.7"
     react-native-gradle-plugin "^0.70.3"
     react-refresh "^0.4.0"
     react-shallow-renderer "^16.15.0"
