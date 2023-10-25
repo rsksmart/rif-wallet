@@ -118,13 +118,16 @@ export const ActivityBasicRow = ({
   )
 
   const amount = useMemo(() => {
+    if (symbol.startsWith('BTC')) {
+      return value
+    }
     const num = Number(value)
     let rounded = roundBalance(num, 4)
     if (!rounded) {
       rounded = roundBalance(num, 8)
     }
     return rounded.toString()
-  }, [value])
+  }, [value, symbol])
 
   const handlePress = useCallback(() => {
     if (txSummary) {
