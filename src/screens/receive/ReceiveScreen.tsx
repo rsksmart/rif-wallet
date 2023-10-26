@@ -30,7 +30,6 @@ import { castStyle } from 'shared/utils'
 import { selectProfile } from 'store/slices/profileSlice'
 import { getIconSource } from 'screens/home/TokenImage'
 import { ProfileStatus } from 'navigation/profileNavigator/types'
-import { chainTypesById } from 'shared/constants/chainConstants'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
@@ -66,11 +65,8 @@ export const ReceiveScreen = ({
   const profile = useAppSelector(selectProfile)
 
   const rskAddress = useMemo(() => {
-    if (wallet && chainTypesById[chainId]) {
-      return getAddressDisplayText(
-        wallet.smartWalletAddress,
-        chainTypesById[chainId],
-      )
+    if (wallet && chainId) {
+      return getAddressDisplayText(wallet.smartWalletAddress, chainId)
     }
     return null
   }, [wallet, chainId])

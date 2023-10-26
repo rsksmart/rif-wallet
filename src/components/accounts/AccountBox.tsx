@@ -21,10 +21,7 @@ import { WalletIsDeployed } from 'store/slices/settingsSlice/types'
 import { selectAccounts } from 'store/slices/accountsSlice/selector'
 import { AccountPayload } from 'store/slices/accountsSlice/types'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import {
-  chainTypesById,
-  ChainTypesByIdType,
-} from 'shared/constants/chainConstants'
+import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 
 import { CheckIcon } from '../icons/CheckIcon'
 
@@ -51,13 +48,10 @@ export const AccountBox = ({
   const [accountName, setAccountName] = useState<string>(initialAccountName)
   const [showAccountNameInput, setShowAccountInput] = useState<boolean>(false)
 
-  const eoaAddressObject = getAddressDisplayText(
-    address ?? '',
-    chainTypesById[chainId],
-  )
+  const eoaAddressObject = getAddressDisplayText(address ?? '', chainId)
   const smartWalletAddressObject = getAddressDisplayText(
     smartWalletAddress ?? '',
-    chainTypesById[chainId],
+    chainId,
   )
   const onEdit = () => setShowAccountInput(true)
 

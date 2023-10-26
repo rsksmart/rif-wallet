@@ -48,7 +48,6 @@ import { AppSpinner } from 'components/index'
 import { AvatarIcon } from 'components/icons/AvatarIcon'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { RNS_ADDRESSES_BY_CHAIN_ID } from 'screens/rnsManager/types'
-import { chainTypesById } from 'shared/constants/chainConstants'
 
 import { rnsManagerStyles } from '../rnsManager/rnsManagerStyles'
 
@@ -70,7 +69,7 @@ export const ProfileCreateScreen = ({
 
   const { displayAddress } = getAddressDisplayText(
     wallet?.smartWallet.smartWalletAddress ?? '',
-    chainTypesById[chainId],
+    chainId,
   )
 
   const onSetEmail = useCallback(
