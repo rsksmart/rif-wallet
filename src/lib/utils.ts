@@ -23,17 +23,7 @@ export const displayRoundBalance = (num: number): string => {
   const rounded = roundBalance(num, 4) || roundBalance(num, 8)
   return rounded.toString()
 }
-// @TODO remove
-export const getChainIdByType = (chainType: ChainTypeEnum) => {
-  switch (chainType) {
-    case ChainTypeEnum.MAINNET:
-      return 30
-    case ChainTypeEnum.TESTNET:
-      return 31
-    default:
-      return 31
-  }
-}
+
 export const formatTimestamp = (timestamp: number) => {
   const a = new Date(timestamp * 1000)
   const months = [
