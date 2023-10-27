@@ -11,7 +11,6 @@ import {
   chainTypesById,
   ChainTypesByIdType,
 } from 'shared/constants/chainConstants'
-import { USDRIF_TESTNET } from 'screens/home/TokenImage'
 
 import { getWalletSetting } from './config'
 
@@ -31,7 +30,9 @@ export const getRnsResolver = (chainId: ChainTypesByIdType) =>
     : Resolver.forRskTestnet({})
 
 const defaultMainnetTokens: ITokenWithoutLogo[] = Object.keys(mainnetContracts)
-  .filter(address => ['RDOC', 'RIF'].includes(mainnetContracts[address].symbol))
+  .filter(address =>
+    ['RDOC', 'RIF', 'USDRIF'].includes(mainnetContracts[address].symbol),
+  )
   .map(address => {
     const { decimals, name, symbol } = mainnetContracts[address]
     return {
@@ -45,7 +46,7 @@ const defaultMainnetTokens: ITokenWithoutLogo[] = Object.keys(mainnetContracts)
   })
 const defaultTestnetTokens: ITokenWithoutLogo[] = Object.keys(testnetContracts)
   .filter(address =>
-    ['RDOC', 'tRIF'].includes(testnetContracts[address].symbol),
+    ['RDOC', 'tRIF', 'USDRIF'].includes(testnetContracts[address].symbol),
   )
   .map(address => {
     const { decimals, name, symbol } = testnetContracts[address]
@@ -61,5 +62,5 @@ const defaultTestnetTokens: ITokenWithoutLogo[] = Object.keys(testnetContracts)
 export const getDefaultTokens = (chainId: ChainTypesByIdType) => {
   return chainTypesById[chainId] === ChainTypeEnum.MAINNET
     ? defaultMainnetTokens
-    : [...defaultTestnetTokens, USDRIF_TESTNET]
+    : defaultTestnetTokens
 }
