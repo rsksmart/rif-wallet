@@ -21,17 +21,17 @@ import { WalletIsDeployed } from 'store/slices/settingsSlice/types'
 import { selectAccounts } from 'store/slices/accountsSlice/selector'
 import { AccountPayload } from 'store/slices/accountsSlice/types'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { ChainTypeEnum } from 'shared/constants/chainConstants'
+import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 
 import { CheckIcon } from '../icons/CheckIcon'
 
 interface AccountBoxProps {
   address: string
   smartWalletAddress: string
-  chainType: ChainTypeEnum
+  chainId: ChainTypesByIdType
   walletIsDeployed: WalletIsDeployed
-  id?: number
   publicKeys: PublicKeyItemType[]
+  id?: number
 }
 
 export const AccountBox = ({
@@ -40,7 +40,7 @@ export const AccountBox = ({
   smartWalletAddress,
   publicKeys = [],
   id = 0,
-  chainType,
+  chainId,
 }: AccountBoxProps) => {
   const dispatch = useAppDispatch()
   const accounts = useAppSelector(selectAccounts)
@@ -48,10 +48,10 @@ export const AccountBox = ({
   const [accountName, setAccountName] = useState<string>(initialAccountName)
   const [showAccountNameInput, setShowAccountInput] = useState<boolean>(false)
 
-  const eoaAddressObject = getAddressDisplayText(address ?? '', chainType)
+  const eoaAddressObject = getAddressDisplayText(address ?? '', chainId)
   const smartWalletAddressObject = getAddressDisplayText(
     smartWalletAddress ?? '',
-    chainType,
+    chainId,
   )
   const onEdit = () => setShowAccountInput(true)
 

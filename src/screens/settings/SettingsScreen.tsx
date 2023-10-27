@@ -15,7 +15,6 @@ import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import {
   selectChainId,
-  selectChainType,
   selectWalletIsDeployed,
 } from 'store/slices/settingsSlice'
 import { selectPin } from 'store/slices/persistentDataSlice'
@@ -34,7 +33,6 @@ export const SettingsScreen = ({
 }: SettingsScreenProps<settingsStackRouteNames.SettingsScreen>) => {
   const statePIN = useAppSelector(selectPin)
   const chainId = useAppSelector(selectChainId)
-  const chainType = useAppSelector(selectChainType)
   const walletIsDeployed = useAppSelector(selectWalletIsDeployed)
 
   const smartWalletFactoryAddress = useMemo(
@@ -150,7 +148,7 @@ export const SettingsScreen = ({
         style={styles.settingsItem}
         onPress={onSwitchChains}>
         <Typography type={'h3'}>
-          Switch to {ChainTypesInversed[chainType]}
+          Switch to {ChainTypesInversed[chainTypesById[chainId]]}
         </Typography>
       </AppTouchable>
       <View style={styles.bottomView}>

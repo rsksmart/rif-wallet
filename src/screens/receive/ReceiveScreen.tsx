@@ -66,15 +66,15 @@ export const ReceiveScreen = ({
 
   const [shouldShowAssets, setShouldShowAssets] = useState(false)
 
-  const { wallet, chainType } = useAppSelector(selectWalletState)
+  const { wallet, chainId } = useAppSelector(selectWalletState)
   const profile = useAppSelector(selectProfile)
 
   const rskAddress = useMemo(() => {
-    if (wallet && chainType) {
-      return getAddressDisplayText(wallet.smartWalletAddress, chainType)
+    if (wallet && chainId) {
+      return getAddressDisplayText(wallet.smartWalletAddress, chainId)
     }
     return null
-  }, [wallet, chainType])
+  }, [wallet, chainId])
 
   const onShareUsername = useCallback(() => {
     Share.share({

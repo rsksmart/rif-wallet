@@ -4,6 +4,10 @@ import {
   toChecksumAddress,
 } from '@rsksmart/rsk-utils'
 
+import { shortAddress } from 'lib/utils'
+
+import { ChainTypesByIdType } from 'shared/constants/chainConstants'
+
 export enum AddressValidationMessage {
   INVALID_ADDRESS = 'Invalid address',
   INVALID_CHECKSUM = 'Invalid checksum',
@@ -62,6 +66,15 @@ export const isMyAddress = (
   }
 
   return false
+}
+
+export const getAddressDisplayText = (
+  inputAddress: string,
+  chainId: ChainTypesByIdType,
+) => {
+  const checksumAddress = toChecksumAddress(inputAddress, chainId)
+  const displayAddress = shortAddress(checksumAddress)
+  return { checksumAddress, displayAddress }
 }
 
 export { toChecksumAddress }

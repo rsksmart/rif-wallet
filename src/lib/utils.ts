@@ -24,16 +24,6 @@ export const displayRoundBalance = (num: number): string => {
   return rounded.toString()
 }
 
-export const getChainIdByType = (chainType: ChainTypeEnum) => {
-  switch (chainType) {
-    case ChainTypeEnum.MAINNET:
-      return 30
-    case ChainTypeEnum.TESTNET:
-      return 31
-    default:
-      return 31
-  }
-}
 export const formatTimestamp = (timestamp: number) => {
   const a = new Date(timestamp * 1000)
   const months = [

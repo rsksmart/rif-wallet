@@ -16,7 +16,7 @@ import { sharedStyles } from 'shared/constants'
 export const AccountsScreen = ({
   navigation,
 }: SettingsScreenProps<settingsStackRouteNames.AccountsScreen>) => {
-  const { wallet, chainType, walletIsDeployed } =
+  const { wallet, chainId, walletIsDeployed } =
     useAppSelector(selectWalletState)
   const bitcoinCore = useAppSelector(selectBitcoin)
   const publicKeys = useMemo(
@@ -43,7 +43,7 @@ export const AccountsScreen = ({
         walletIsDeployed={walletIsDeployed}
         address={wallet.address}
         smartWalletAddress={wallet.smartWalletAddress}
-        chainType={chainType}
+        chainId={chainId}
         publicKeys={publicKeys}
       />
     </View>

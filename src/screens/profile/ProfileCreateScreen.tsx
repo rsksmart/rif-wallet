@@ -56,7 +56,7 @@ export const ProfileCreateScreen = ({
 }: ProfileStackScreenProps<profileStackRouteNames.ProfileCreateScreen>) => {
   const dispatch = useAppDispatch()
   const profile = useAppSelector(selectProfile)
-  const { wallet, chainType, chainId } = useAppSelector(selectWalletState)
+  const { wallet, chainId } = useAppSelector(selectWalletState)
   const [infoBoxClosed, setInfoBoxClosed] = useState<boolean>(
     profile.infoBoxClosed ?? false,
   )
@@ -69,7 +69,7 @@ export const ProfileCreateScreen = ({
 
   const { displayAddress } = getAddressDisplayText(
     wallet?.smartWallet.smartWalletAddress ?? '',
-    chainType,
+    chainId,
   )
 
   const onSetEmail = useCallback(

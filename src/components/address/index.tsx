@@ -1,2 +1,2 @@
-export * from './Address'
+export * from './lib'
 export * from './AddressInput'
