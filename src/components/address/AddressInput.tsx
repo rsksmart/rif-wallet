@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { TextStyle } from 'react-native'
+import { ScrollView, StyleSheet, TextStyle } from 'react-native'
 import Clipboard from '@react-native-community/clipboard'
 import { decodeString } from '@rsksmart/rif-wallet-eip681'
 import { useTranslation } from 'react-i18next'
@@ -7,8 +7,11 @@ import { isBitcoinAddressValid } from '@rsksmart/rif-wallet-bitcoin'
 
 import { getRnsResolver } from 'core/setup'
 import { sharedColors } from 'shared/constants'
-import { ContactWithAddressRequired } from 'shared/types'
+import { Contact, ContactWithAddressRequired } from 'shared/types'
 import { ChainTypesByIdType } from 'shared/constants/chainConstants'
+import { castStyle } from 'shared/utils'
+import { ContactCard } from 'screens/contacts/components'
+import { ProposedContact } from 'screens/send/TransactionForm'
 
 import {
   AddressValidationMessage,
@@ -33,6 +36,9 @@ export interface AddressInputProps extends Omit<InputProps, 'value'> {
     isValid: boolean,
   ) => void
   chainId: ChainTypesByIdType
+  contactList?: Contact[]
+  searchContacts?: (textString: string) => void
+  onAddContact?: (contact: ProposedContact) => void
 }
 
 enum Status {
@@ -63,11 +69,14 @@ export const AddressInput = ({
   value,
   inputName,
   onChangeAddress,
+  onAddContact,
+  resetValue,
   testID,
   chainId,
-  resetValue,
+  contactList,
 }: AddressInputProps) => {
   const { t } = useTranslation()
+  const [contactsFound, setContactsFound] = useState<Contact[] | null>(null)
   const [domainFound, setDomainFound] = useState<boolean>(false)
   // status
   const [status, setStatus] = useState<{
@@ -83,9 +92,104 @@ export const AddressInput = ({
 
   const resetState = useCallback(() => {
     setDomainFound(false)
-    onChangeAddress('', '', false)
+    resetValue?.()
     setStatus(defaultStatus)
-  }, [onChangeAddress])
+    setContactsFound(null)
+  }, [resetValue])
+
+  const searchContacts = useCallback(
+    (textString: string) => {
+      const array: Contact[] = []
+
+      if (!contactList) {
+        setContactsFound(null)
+        return
+      }
+
+      for (const contact of contactList) {
+        if (
+          contact.name.toLowerCase().includes(textString.toLocaleLowerCase())
+        ) {
+          array.push(contact)
+        }
+      }
+
+      if (array.length === 0) {
+        setContactsFound(null)
+        return
+      }
+
+      setContactsFound(array)
+    },
+    [contactList],
+  )
+
+  const setStatusCallChangeAddress = useCallback(
+    (
+      userInput: string,
+      newValidationMessage: AddressValidationMessage,
+      chainID: 30 | 31,
+      isBTC: boolean,
+    ) => {
+      switch (newValidationMessage) {
+        case AddressValidationMessage.DOMAIN:
+          setStatus({
+            type: Status.INFO,
+            value: t('contact_form_getting_info'),
+          })
+
+          getRnsResolver(chainID)
+            .addr(userInput, isBTC ? CoinType.BTC : CoinType.RSK)
+            .then((resolvedAddress: string) => {
+              setDomainFound(true)
+              setStatus({
+                type: Status.SUCCESS,
+                value: t('contact_form_user_found'),
+              })
+
+              !contactsFound &&
+                onAddContact?.({
+                  address: resolvedAddress,
+                  displayAddress: userInput,
+                  isEditable: true,
+                })
+
+              // call parent with the resolved address
+              onChangeAddress(
+                resolvedAddress,
+                userInput,
+                !isBTC
+                  ? validateAddress(resolvedAddress, chainID) ===
+                      AddressValidationMessage.VALID
+                  : isBitcoinAddressValid(resolvedAddress),
+              )
+            })
+            .catch(_e =>
+              setStatus({
+                type: Status.ERROR,
+                value: `${t(
+                  'contact_form_address_not_found',
+                )} ${userInput.toLowerCase()}`,
+              }),
+            )
+          break
+        case AddressValidationMessage.INVALID_CHECKSUM:
+          setStatus({
+            type: Status.CHECKSUM,
+            value: t('contact_form_checksum_invalid'),
+          })
+          break
+        case AddressValidationMessage.INVALID_ADDRESS:
+          setStatus({
+            type: Status.ERROR,
+            value: t('contact_form_address_invalid'),
+          })
+          onChangeAddress('', userInput, false)
+          break
+      }
+    },
+    [t, contactsFound, onChangeAddress, onAddContact],
+  )
 
   const handleChangeText = useCallback(
     (inputText: string) => {
@@ -115,57 +219,25 @@ export const AddressInput = ({
         return
       }
 
-      switch (newValidationMessage) {
-        case AddressValidationMessage.DOMAIN:
-          setStatus({
-            type: Status.INFO,
-            value: t('contact_form_getting_info'),
-          })
+      // search for the contacts using user typed string
+      // present options under input
+      searchContacts?.(userInput)
 
-          getRnsResolver(chainId)
-            .addr(userInput, isBitcoin ? CoinType.BTC : CoinType.RSK)
-            .then((resolvedAddress: string) => {
-              setDomainFound(true)
-              setStatus({
-                type: Status.SUCCESS,
-                value: t('contact_form_user_found'),
-              })
-
-              // call parent with the resolved address
-              onChangeAddress(
-                resolvedAddress,
-                userInput,
-                !isBitcoin
-                  ? validateAddress(resolvedAddress, chainId) ===
-                      AddressValidationMessage.VALID
-                  : isBitcoinAddressValid(resolvedAddress),
-              )
-            })
-            .catch(_e =>
-              setStatus({
-                type: Status.ERROR,
-                value: `${t(
-                  'contact_form_address_not_found',
-                )} ${inputText.toLowerCase()}`,
-              }),
-            )
-          break
-        case AddressValidationMessage.INVALID_CHECKSUM:
-          setStatus({
-            type: Status.CHECKSUM,
-            value: t('contact_form_checksum_invalid'),
-          })
-          break
-        case AddressValidationMessage.INVALID_ADDRESS:
-          setStatus({
-            type: Status.ERROR,
-            value: t('contact_form_address_invalid'),
-          })
-          onChangeAddress('', userInput, false)
-          break
-      }
+      setStatusCallChangeAddress(
+        userInput,
+        newValidationMessage!,
+        chainId,
+        isBitcoin,
+      )
     },
-    [chainId, onChangeAddress, resetState, t, isBitcoin],
+    [
+      chainId,
+      isBitcoin,
+      onChangeAddress,
+      resetState,
+      searchContacts,
+      setStatusCallChangeAddress,
+    ],
   )
 
   const unselectDomain = useCallback(() => {
@@ -183,12 +255,26 @@ export const AddressInput = ({
     // when initial value is set in TransactionForm
     handleChangeText(value.address)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [handleChangeText])
+  }, [])
 
   const resetAddressValue = useCallback(() => {
     unselectDomain()
     resetValue && resetValue()
+    setContactsFound(null)
   }, [resetValue, unselectDomain])
+
+  const onContactPress = useCallback(
+    (contact: Contact) => {
+      setStatusCallChangeAddress(
+        contact.displayAddress,
+        AddressValidationMessage.DOMAIN,
+        chainId,
+        isBitcoin,
+      )
+      setContactsFound(null)
+    },
+    [chainId, isBitcoin, setStatusCallChangeAddress],
+  )
 
   return (
     <>
@@ -234,6 +320,26 @@ export const AddressInput = ({
           )}
         </>
       ) : null}
+      {contactsFound ? (
+        <ScrollView horizontal style={styles.contactList}>
+          {contactsFound.map(c => (
+            <ContactCard
+              key={c.name}
+              style={styles.contactCard}
+              name={c.name}
+              onPress={() => onContactPress(c)}
+            />
+          ))}
+        </ScrollView>
+      ) : null}
     </>
   )
 }
+
+const styles = StyleSheet.create({
+  contactList: castStyle.view({
+    marginTop: 6,
+    padding: 6,
+  }),
+  contactCard: castStyle.view({ marginHorizontal: 6 }),
+})

@@ -149,10 +149,9 @@ export const Input = ({
                       : null,
                     inputStyle,
                   ]}
-                  onChangeText={text => {
-                    onChange(text)
-                    onChangeText?.(text)
-                  }}
+                  onChangeText={text =>
+                    onChangeText ? onChangeText(text) : onChange(text)
+                  }
                   onBlur={onBlur}
                   onFocus={onFocus}
                   editable={!isReadOnly}

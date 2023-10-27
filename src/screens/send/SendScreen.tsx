@@ -24,6 +24,7 @@ import { selectChainId } from 'store/slices/settingsSlice'
 import { FullScreenSpinner } from 'components/fullScreenSpinner'
 import { SuccessIcon } from 'components/icons/SuccessIcon'
 import { FeedbackModal } from 'components/feedbackModal'
+import { getContactsAsArrayAndSelected } from 'store/slices/contactsSlice'
 
 import { TransactionForm } from './TransactionForm'
 import { usePaymentExecutor } from './usePaymentExecutor'
@@ -39,6 +40,7 @@ export const SendScreen = ({
   const { wallet, walletIsDeployed } = useAppSelector(selectWalletState)
   const { loading, isDeployed } = walletIsDeployed
   const chainId = useAppSelector(selectChainId)
+  const { contacts } = useAppSelector(getContactsAsArrayAndSelected)
 
   const totalUsdBalance = useAppSelector(selectTotalUsdValue)
   const prices = useAppSelector(selectUsdPrices)
@@ -185,6 +187,7 @@ export const SendScreen = ({
         ]}
       />
       <TransactionForm
+        contactList={contacts}
         onConfirm={onExecuteTransfer}
         onCancel={onCancel}
         tokenList={assets}

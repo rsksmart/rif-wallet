@@ -19,7 +19,9 @@ export enum contactsStackRouteNames {
 
 export type ContactStackParamsList = {
   [contactsStackRouteNames.ContactsList]: undefined
-  [contactsStackRouteNames.ContactForm]: { initialValue: Contact } | undefined
+  [contactsStackRouteNames.ContactForm]:
+    | { initialValue: Contact; proposed: boolean }
+    | undefined
   [contactsStackRouteNames.ContactDetails]: {
     contact: Contact
   }

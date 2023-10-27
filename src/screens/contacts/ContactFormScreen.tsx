@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { CompositeScreenProps } from '@react-navigation/native'
-import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
+import { Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as yup from 'yup'
@@ -20,10 +20,15 @@ import { AddressInput } from 'components/address'
 import { Input } from 'components/index'
 import { Contact } from 'shared/types'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { addContact, editContact } from 'store/slices/contactsSlice'
+import {
+  addContact,
+  editContact,
+  getContactsAsArray,
+} from 'store/slices/contactsSlice'
 import { selectChainId } from 'store/slices/settingsSlice'
 import { sharedColors, sharedStyles, testIDs } from 'shared/constants'
 import { castStyle } from 'shared/utils'
+import { sharedHeaderLeftOptions } from 'src/navigation'
 
 export type ContactFormScreenProps = CompositeScreenProps<
   ContactsStackScreenProps<contactsStackRouteNames.ContactForm>,
@@ -44,6 +49,7 @@ export const ContactFormScreen = ({
   navigation,
   route,
 }: ContactFormScreenProps) => {
+  const contacts = useAppSelector(getContactsAsArray)
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
 
@@ -64,6 +70,8 @@ export const ContactFormScreen = ({
       }),
     [t],
   )
+
+  const proposed = route.params?.proposed
 
   const initialValue: Partial<Contact> = useMemo(
     () =>
@@ -94,8 +102,11 @@ export const ContactFormScreen = ({
     formState: { errors },
   } = methods
 
+  // form values
   const addressObj = watch('address')
   const nameValue = watch('name')
+
+  // form errors
   const hasErrors =
     addressObj.address.length === 0 ||
     nameValue.length === 0 ||
@@ -113,6 +124,20 @@ export const ContactFormScreen = ({
     [setValue],
   )
 
+  // check if proposed contact exists already
+  const checkIfContactExists = useCallback(
+    (displayAddress: string, searchArray: Contact[]) => {
+      const contact = searchArray.find(c => c.displayAddress === displayAddress)
+
+      if (contact) {
+        return true
+      }
+
+      return false
+    },
+    [],
+  )
+
   const saveContact = useCallback(
     ({ name, address: { address, displayAddress } }: FormValues) => {
       const contact: Contact = {
@@ -120,21 +145,55 @@ export const ContactFormScreen = ({
         address: address.toLowerCase(),
         displayAddress,
       }
+      const contactExists = checkIfContactExists(displayAddress, contacts)
+
+      if (contactExists) {
+        Alert.alert(t('contact_form_alert_title'), undefined, [
+          {
+            text: t('back'),
+            onPress: () => {
+              navigation.replace(contactsStackRouteNames.ContactsList)
+              proposed && navigation.navigate(rootTabsRouteNames.Home)
+            },
+          },
+          {
+            text: t('contact_form_edit_existing_button'),
+            onPress: () => {
+              dispatch(editContact(contact))
+              navigation.replace(contactsStackRouteNames.ContactsList)
+              proposed && navigation.navigate(rootTabsRouteNames.Home)
+            },
+          },
+        ])
+        return
+      }
+
       if (initialValue.address) {
         dispatch(editContact(contact))
       } else {
         dispatch(addContact(contact))
       }
-      navigation.navigate(contactsStackRouteNames.ContactsList)
+
+      navigation.replace(contactsStackRouteNames.ContactsList)
+      proposed && navigation.navigate(rootTabsRouteNames.Home)
     },
-    [dispatch, initialValue, navigation],
+    [
+      dispatch,
+      initialValue,
+      navigation,
+      proposed,
+      contacts,
+      checkIfContactExists,
+      t,
+    ],
   )
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: initialValue.address
-        ? t('contact_form_title_edit')
-        : t('contact_form_title_create'),
+      headerTitle:
+        initialValue.address && !proposed
+          ? t('contact_form_title_edit')
+          : t('contact_form_title_create'),
       headerTintColor: sharedColors.white,
       headerStyle: {
         backgroundColor: sharedColors.black,
@@ -145,8 +204,14 @@ export const ContactFormScreen = ({
       headerLeftContainerStyle: {
         paddingTop: 0,
       },
+      headerLeft: proposed
+        ? () =>
+            sharedHeaderLeftOptions(() =>
+              navigation.navigate(rootTabsRouteNames.Home),
+            )
+        : undefined,
     })
-  }, [navigation, initialValue, t])
+  }, [navigation, initialValue, t, proposed])
 
   return (
     <KeyboardAvoidingView
@@ -165,6 +230,7 @@ export const ContactFormScreen = ({
             resetValue={() => resetField('address')}
             onChangeAddress={handleAddressChange}
             chainId={chainId}
+            isBitcoin={false}
           />
           <Input
             label={t('contact_form_name')}

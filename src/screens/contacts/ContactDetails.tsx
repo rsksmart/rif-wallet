@@ -252,6 +252,7 @@ export const ContactDetails = ({
         onPress={() =>
           navigation.navigate(contactsStackRouteNames.ContactForm, {
             initialValue: contact,
+            proposed: false,
           })
         }
         color={sharedColors.white}

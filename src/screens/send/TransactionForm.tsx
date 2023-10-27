@@ -26,15 +26,18 @@ import {
   Typography,
 } from 'components/index'
 import { CurrencyValue, TokenBalance } from 'components/token'
-import { sharedColors } from 'shared/constants'
+import { sharedColors, testIDs } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { IPrice } from 'src/subscriptions/types'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
-import { ContactWithAddressRequired } from 'src/shared/types'
+import { Contact, ContactWithAddressRequired } from 'src/shared/types'
 import { ChainTypesByIdType } from 'shared/constants/chainConstants'
+import { navigationContainerRef } from 'src/core/Core'
+import { rootTabsRouteNames } from 'src/navigation/rootNavigator'
+import { contactsStackRouteNames } from 'src/navigation/contactsNavigator'
 
-import { PortfolioComponent } from '../home/PortfolioComponent'
 import { TokenImage, TokenSymbol } from '../home/TokenImage'
+import { PortfolioComponent } from '../home/PortfolioComponent'
 
 interface Props {
   onConfirm: (
@@ -54,6 +57,7 @@ interface Props {
     recipient?: ContactWithAddressRequired
   }
   status?: string
+  contactList?: Contact[]
 }
 
 interface FormValues {
@@ -65,6 +69,8 @@ interface FormValues {
   isToValid: boolean
   name: string | null
 }
+
+export type ProposedContact = Omit<Contact, 'name'>
 
 const bitcoinFeeMap = new Map([
   [TokenSymbol.BTC, true],
@@ -98,6 +104,7 @@ export const TransactionForm = ({
   onCancel,
   totalUsdBalance,
   status,
+  contactList,
 }: Props) => {
   const rifToken = useMemo(
     () => tokenList.filter(tk => rifFeeMap.get(tk.symbol as TokenSymbol))[0],
@@ -161,6 +168,8 @@ export const TransactionForm = ({
     symbol: '',
   })
   const [balanceInverted, setBalanceInverted] = useState(false)
+  const [proposedContact, setProposedContact] =
+    useState<ProposedContact | null>(null)
 
   const handleAmountChange = useCallback(
     (newAmount: string, _balanceInverted: boolean) => {
@@ -283,6 +292,24 @@ export const TransactionForm = ({
   //   [tokenList],
   // )
 
+  const onAddContact = useCallback(() => {
+    if (proposedContact) {
+      const { address, displayAddress } = proposedContact
+      navigationContainerRef.navigate(rootTabsRouteNames.Contacts, {
+        screen: contactsStackRouteNames.ContactForm,
+        params: {
+          initialValue: {
+            name: '',
+            displayAddress,
+            address,
+          },
+          proposed: true,
+        },
+      })
+      setProposedContact(null)
+    }
+  }, [proposedContact])
+
   return (
     <>
       <ScrollView scrollIndicatorInsets={{ right: -8 }}>
@@ -308,12 +335,26 @@ export const TransactionForm = ({
               resetValue={() => {
                 resetField('to')
                 resetField('isToValid')
+                setProposedContact(null)
               }}
               testID={'To.Input'}
               chainId={chainId}
               isBitcoin={'satoshis' in selectedToken}
+              contactList={contactList}
+              onAddContact={setProposedContact}
             />
           )}
+          {proposedContact ? (
+            <AppButton
+              style={{ marginTop: 6 }}
+              testID={`${testIDs.addressInput}.Button.ProposedContact`}
+              accessibilityLabel="addProposedContact"
+              title={`${t('contact_form_button_add_proposed_contact')} ${
+                proposedContact.displayAddress
+              } ${t('contact_form_button_add_proposed_contact_ending')}`}
+              onPress={onAddContact}
+            />
+          ) : null}
           <TokenBalance
             style={styles.marginTop10}
             firstValue={firstBalance}
