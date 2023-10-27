@@ -2253,6 +2253,11 @@
   resolved "https://registry.yarnpkg.com/@rsksmart/rsk-contract-metadata/-/rsk-contract-metadata-1.0.17.tgz#d7558628c983bc4e9937235388276946c6d907d0"
   integrity sha512-99eDgEQ4/FOsSg1K65/A+cJYvDYaEHXQmU/zT46BkdlH/KVwHNm12UyyZ4OJXWXJZD/qQ6iV6ltonV8QBYToiA==
 
+"@rsksmart/rsk-contract-metadata@^1.0.19":
+  version "1.0.19"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rsk-contract-metadata/-/rsk-contract-metadata-1.0.19.tgz#0da17871dfe51ccb9214299e865c25d97e642bdd"
+  integrity sha512-d/WIV89LtTwz3E3sHz9q+NLzFAAix26gkkCzpkDYpr2mYLoqV95zw3xhxKTjAQa1JZ/g8W2JBxUJD9vVDq0yRg==
+
 "@rsksmart/rsk-testnet-contract-metadata@^1.0.11":
   version "1.0.15"
   resolved "https://registry.yarnpkg.com/@rsksmart/rsk-testnet-contract-metadata/-/rsk-testnet-contract-metadata-1.0.15.tgz#7f66e2a9536afc50c2610cb4716522a54c66a0b0"
