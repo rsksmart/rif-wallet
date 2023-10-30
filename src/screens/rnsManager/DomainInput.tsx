@@ -23,6 +23,7 @@ import { minDomainLength } from './SearchDomainScreen'
 interface Props {
   wallet: RIFWallet
   inputName: string
+  domainValue: string
   error: FieldError | undefined
   onDomainAvailable: (domain: string, valid: boolean) => void
   onDomainOwned: (owned: boolean) => void
@@ -48,12 +49,12 @@ const labelColorMap = new Map([
 export const DomainInput = ({
   wallet,
   inputName,
+  domainValue,
   onDomainAvailable,
   onDomainOwned,
   onResetValue,
   error,
 }: Props) => {
-  const [username, setUsername] = useState<string>('')
   const [domainAvailability, setDomainAvailability] = useState<DomainStatus>(
     DomainStatus.NONE,
   )
@@ -141,12 +142,13 @@ export const DomainInput = ({
     setDomainAvailability(DomainStatus.NONE)
     onDomainAvailable('', false)
     onDomainOwned(false)
-    setUsername('')
   }
 
   useEffect(() => {
-    handleChangeUsername(username)
-  }, [error, username, handleChangeUsername])
+    if (domainValue !== undefined) {
+      handleChangeUsername(domainValue)
+    }
+  }, [error, domainValue, handleChangeUsername])
 
   const labelTextMap = new Map([
     [DomainStatus.AVAILABLE, t('username_available')],
@@ -171,7 +173,6 @@ export const DomainInput = ({
         labelStyle={labelStyle}
         placeholderStyle={styles.domainPlaceholder}
         resetValue={resetField}
-        onChangeText={setUsername}
         suffix={<Text style={styles.domainSuffix}>.rsk</Text>}
         autoCapitalize="none"
         autoCorrect={false}
