@@ -10,8 +10,6 @@ import {
 
 import { FrownFaceIcon } from 'components/icons'
 import { sharedColors } from 'shared/constants'
-import { ITokenWithoutLogo } from 'src/redux/slices/balancesSlice/types'
-
 interface Props {
   symbol: string
   white?: boolean

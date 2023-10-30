@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { Alert, Keyboard, KeyboardAvoidingView, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { useIsFocused } from '@react-navigation/native'
@@ -26,7 +26,7 @@ import { SuccessIcon } from 'components/icons/SuccessIcon'
 import { FeedbackModal } from 'components/feedbackModal'
 import { getContactsAsArrayAndSelected } from 'store/slices/contactsSlice'
 import { selectTransactionsLoading } from 'store/slices/transactionsSlice'
-import { WalletContext } from 'shared/wallet'
+import { useWalletState } from 'shared/wallet'
 
 import { TransactionForm } from './TransactionForm'
 import { usePaymentExecutor } from './usePaymentExecutor'
@@ -39,8 +39,8 @@ export const SendScreen = ({
   const dispatch = useAppDispatch()
   const isFocused = useIsFocused()
   const { t } = useTranslation()
-  const { wallet, walletIsDeployed } = useContext(WalletContext)
-  const { loading, isDeployed } = walletIsDeployed!
+  const { wallet, walletIsDeployed } = useWalletState()
+  const { loading, isDeployed } = walletIsDeployed
   const chainId = useAppSelector(selectChainId)
   const { contacts } = useAppSelector(getContactsAsArrayAndSelected)
   const transactionLoading = useAppSelector(selectTransactionsLoading)

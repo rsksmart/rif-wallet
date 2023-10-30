@@ -5,6 +5,7 @@ import {
   SetStateAction,
   createContext,
   useCallback,
+  useContext,
   useEffect,
   useState,
 } from 'react'
@@ -44,7 +45,9 @@ export const WalletContext = createContext<WalletContext>({
   setWalletIsDeployed: () => ({}),
 })
 
-export const WalletProvider = ({ children }: PropsWithChildren<{}>) => {
+export const WalletProvider = ({
+  children,
+}: PropsWithChildren<Record<string, never>>) => {
   const [wallet, setWallet] = useState<Wallet | null>(null)
   const [walletIsDeployed, setWalletIsDeployed] =
     useState<WalletIsDeployed | null>(null)
@@ -77,4 +80,37 @@ export const WalletProvider = ({ children }: PropsWithChildren<{}>) => {
       {children}
     </WalletContext.Provider>
   )
+}
+
+export const useWallet = () => {
+  const { wallet } = useContext(WalletContext)
+
+  if (!wallet) {
+    throw new Error('Wallet Has Not Been Set!')
+  }
+
+  return wallet
+}
+
+export const useWalletIsDeployed = () => {
+  const { walletIsDeployed } = useContext(WalletContext)
+
+  if (!walletIsDeployed) {
+    throw new Error('Wallet Is Deployed Has Not Been Set!')
+  }
+
+  return walletIsDeployed
+}
+
+export const useWalletState = () => {
+  const { wallet, walletIsDeployed } = useContext(WalletContext)
+
+  if (!wallet || !walletIsDeployed) {
+    throw new Error('Wallet Has Not Been Set!')
+  }
+
+  return {
+    wallet,
+    walletIsDeployed,
+  }
 }

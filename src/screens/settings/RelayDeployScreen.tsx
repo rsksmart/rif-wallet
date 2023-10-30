@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { BigNumber } from 'ethers'
@@ -28,16 +28,16 @@ import { sharedHeaderLeftOptions } from 'navigation/index'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { homeStackRouteNames } from 'navigation/homeNavigator/types'
 import { chainTypesById } from 'shared/constants/chainConstants'
-import { WalletContext } from 'src/shared/wallet'
+import { useWalletState } from 'src/shared/wallet'
 
 export const RelayDeployScreen = ({
   route,
   navigation,
 }: SettingsScreenProps<settingsStackRouteNames.RelayDeployScreen>) => {
   const backScreen = route.params?.goBackScreen
-  const { wallet, walletIsDeployed } = useContext(WalletContext)
+  const { wallet, walletIsDeployed } = useWalletState()
   const chainId = useAppSelector(selectChainId)
-  const { loading, isDeployed, txHash } = walletIsDeployed!
+  const { loading, isDeployed, txHash } = walletIsDeployed
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [deployError, setDeployError] = useState<string | null>(null)
