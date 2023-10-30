@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, Share, StyleSheet, View } from 'react-native'
@@ -41,22 +41,25 @@ import {
   setStatus,
 } from 'store/slices/profileSlice'
 import { selectProfile } from 'store/slices/profileSlice/selector'
-import { selectWalletState } from 'store/slices/settingsSlice'
-import { selectRequests } from 'store/slices/settingsSlice'
+import { selectChainId, selectRequests } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { AppSpinner } from 'components/index'
 import { AvatarIcon } from 'components/icons/AvatarIcon'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { RNS_ADDRESSES_BY_CHAIN_ID } from 'screens/rnsManager/types'
+import { WalletContext } from 'shared/wallet'
 
 import { rnsManagerStyles } from '../rnsManager/rnsManagerStyles'
 
 export const ProfileCreateScreen = ({
   navigation,
 }: ProfileStackScreenProps<profileStackRouteNames.ProfileCreateScreen>) => {
+  const { wallet } = useContext(WalletContext)
+
   const dispatch = useAppDispatch()
   const profile = useAppSelector(selectProfile)
-  const { wallet, chainId } = useAppSelector(selectWalletState)
+  const chainId = useAppSelector(selectChainId)
+
   const [infoBoxClosed, setInfoBoxClosed] = useState<boolean>(
     profile.infoBoxClosed ?? false,
   )

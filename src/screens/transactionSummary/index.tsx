@@ -1,5 +1,5 @@
 import { useFocusEffect, useIsFocused } from '@react-navigation/native'
-import { ReactNode, useCallback, useEffect, useMemo } from 'react'
+import { ReactNode, useCallback, useContext, useEffect, useMemo } from 'react'
 import { BackHandler } from 'react-native'
 
 import { AppButtonProps } from 'components/button'
@@ -10,9 +10,10 @@ import {
   rootTabsRouteNames,
 } from 'navigation/rootNavigator'
 import { TransactionSummaryComponent } from 'screens/transactionSummary/TransactionSummaryComponent'
-import { selectWallet, setFullscreen } from 'store/slices/settingsSlice'
+import { setFullscreen } from 'store/slices/settingsSlice'
 import { TokenFeeValueObject } from 'store/slices/transactionsSlice'
-import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { useAppDispatch } from 'store/storeUtils'
+import { WalletContext } from 'shared/wallet'
 
 import { TransactionStatus } from './transactionSummaryUtils'
 
@@ -39,7 +40,7 @@ export const TransactionSummaryScreen = ({
   route,
   navigation,
 }: RootTabsScreenProps<rootTabsRouteNames.TransactionSummary>) => {
-  const wallet = useAppSelector(selectWallet)
+  const { wallet } = useContext(WalletContext)
   const dispatch = useAppDispatch()
   const isFocused = useIsFocused()
   const { backScreen } = route.params

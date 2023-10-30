@@ -2,7 +2,7 @@ import { EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { IApiTransaction } from '@rsksmart/rif-wallet-services'
 import { ethers } from 'ethers'
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FlatList, Image, RefreshControl, StyleSheet, View } from 'react-native'
 import { useIsFocused } from '@react-navigation/native'
@@ -13,20 +13,21 @@ import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { ActivityMainScreenProps } from 'shared/types'
 import { castStyle } from 'shared/utils'
-import { changeTopColor, selectWallet } from 'store/slices/settingsSlice'
+import { changeTopColor } from 'store/slices/settingsSlice'
 import { fetchBitcoinTransactions } from 'store/slices/transactionsSlice'
 import {
   selectTransactions,
   selectTransactionsLoading,
 } from 'store/slices/transactionsSlice/selectors'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { WalletContext } from 'shared/wallet'
 
 import { ActivityBasicRow } from './ActivityRow'
 
 export const ActivityScreen = ({ navigation }: ActivityMainScreenProps) => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
-  const wallet = useAppSelector(selectWallet)
+  const { wallet } = useContext(WalletContext)
   const transactions = useAppSelector(selectTransactions)
   const loading = useAppSelector(selectTransactionsLoading)
   const isFocused = useIsFocused()

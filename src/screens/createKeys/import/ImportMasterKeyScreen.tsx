@@ -1,4 +1,4 @@
-import { useCallback, useState, useRef } from 'react'
+import { useCallback, useState, useRef, useContext } from 'react'
 import { ScrollView, StyleSheet, TextInput, View } from 'react-native'
 import { Pagination } from 'react-native-snap-carousel'
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel'
@@ -21,6 +21,7 @@ import { WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
 import { createWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
 import { sharedColors, sharedStyles } from 'shared/constants'
+import { WalletContext } from 'shared/wallet'
 
 const slidesIndexes = [0, 1, 2, 3]
 
@@ -48,6 +49,7 @@ const headerTextMap = new Map([
 export const ImportMasterKeyScreen = (
   _: CreateKeysScreenProps<createKeysRouteNames.ImportMasterKey>,
 ) => {
+  const { setWallet, setWalletIsDeployed } = useContext(WalletContext)
   const { t } = useTranslation()
 
   const dispatch = useAppDispatch()
@@ -79,6 +81,8 @@ export const ImportMasterKeyScreen = (
       await dispatch(
         createWallet({
           mnemonic: words.current.join(' '),
+          setWallet,
+          setWalletIsDeployed,
         }),
       )
     } catch (err) {
@@ -86,7 +90,7 @@ export const ImportMasterKeyScreen = (
         throw new Error(err.toString())
       }
     }
-  }, [dispatch, status])
+  }, [dispatch, status, setWallet, setWalletIsDeployed])
 
   const handleSlideChange = useCallback((index: number) => {
     setSelectedSlide(index)

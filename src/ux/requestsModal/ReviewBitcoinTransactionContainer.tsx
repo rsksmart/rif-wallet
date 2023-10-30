@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useContext, useMemo, useState } from 'react'
 import {
   convertSatoshiToBtcHuman,
   SendBitcoinRequest,
@@ -18,7 +18,7 @@ import { useAppSelector } from 'store/storeUtils'
 import { sharedColors } from 'shared/constants'
 import { AppButtonBackgroundVarietyEnum, Input } from 'components/index'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
-import { selectWallet } from 'store/slices/settingsSlice'
+import { WalletContext } from 'shared/wallet'
 
 interface ReviewBitcoinTransactionContainerProps {
   request: SendBitcoinRequest
@@ -31,7 +31,7 @@ export const ReviewBitcoinTransactionContainer = ({
   onConfirm,
   onCancel,
 }: ReviewBitcoinTransactionContainerProps) => {
-  const wallet = useAppSelector(selectWallet)
+  const { wallet } = useContext(WalletContext)
   const insets = useSafeAreaInsets()
   const { t } = useTranslation()
   const tokenPrices = useAppSelector(selectUsdPrices)

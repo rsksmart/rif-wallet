@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { StyleSheet, View, ScrollView, Alert } from 'react-native'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import { useTranslation } from 'react-i18next'
@@ -19,7 +19,6 @@ import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import {
   changeTopColor,
   selectHideBalance,
-  selectWalletState,
   setHideBalance,
 } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
@@ -34,6 +33,7 @@ import { selectTransactions } from 'store/slices/transactionsSlice'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { ActivityBasicRow } from 'screens/activity/ActivityRow'
+import { WalletContext } from 'shared/wallet'
 
 import { HomeInformationBar } from './HomeInformationBar'
 import { getTokenColor } from './tokenColor'
@@ -45,15 +45,18 @@ enum TestID {
 export const HomeScreen = ({
   navigation,
 }: HomeStackScreenProps<homeStackRouteNames.Main>) => {
+  const { wallet } = useContext(WalletContext)
+
   const { t } = useTranslation()
   const isFocused = useIsFocused()
   const dispatch = useAppDispatch()
-  const { wallet } = useAppSelector(selectWalletState)
+
   const tokenBalances = useAppSelector(selectBalances)
   const transactions = useAppSelector(selectTransactions)
   const totalUsdBalance = useAppSelector(selectTotalUsdValue)
   const prices = useAppSelector(selectUsdPrices)
   const hideBalance = useAppSelector(selectHideBalance)
+
   const [selectedAddress, setSelectedAddress] = useState<string | undefined>()
   const [selectedTokenBalance, setSelectedTokenBalance] =
     useState<CurrencyValue>({

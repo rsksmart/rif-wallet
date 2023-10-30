@@ -4,6 +4,7 @@ import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
 import { RequestWithBitcoin } from 'shared/types'
 import { ChainTypesByIdType } from 'shared/constants/chainConstants'
+import { SetWallet, SetWalletIsDeployed } from 'shared/wallet'
 
 export interface Wallets {
   [id: string]: RIFWallet
@@ -21,6 +22,8 @@ export interface WalletsIsDeployed {
 
 export interface CreateFirstWalletAction {
   mnemonic: string
+  setWallet: SetWallet
+  setWalletIsDeployed: SetWalletIsDeployed
   networkId?: number
   onSetMnemonic?: (mnemonic: string) => void
 }
@@ -29,7 +32,9 @@ export interface AddNewWalletAction {
   networkId: number
 }
 
-export type UnlockAppAction = {
+export interface UnlockAppAction {
+  setWallet: SetWallet
+  setWalletIsDeployed: SetWalletIsDeployed
   isOffline?: boolean
   pinUnlocked?: boolean
 }

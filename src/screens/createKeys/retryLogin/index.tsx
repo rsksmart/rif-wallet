@@ -6,14 +6,16 @@ import { AppButton } from 'components/index'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { unlockApp } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
+import { WalletContext } from 'shared/wallet'
 
 export const RetryLogin = () => {
+  const { setWallet, setWalletIsDeployed } = useContext(WalletContext)
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
 
   const retryLogin = useCallback(() => {
-    dispatch(unlockApp({}))
-  }, [dispatch])
+    dispatch(unlockApp({ setWallet, setWalletIsDeployed }))
+  }, [dispatch, setWallet, setWalletIsDeployed])
 
   return (
     <View style={[sharedStyles.screen, sharedStyles.contentCenter]}>

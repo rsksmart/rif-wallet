@@ -1,5 +1,5 @@
 import { CompositeScreenProps } from '@react-navigation/native'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 
@@ -25,6 +25,7 @@ import { castStyle } from 'shared/utils'
 import { useAppDispatch } from 'store/storeUtils'
 import { createWallet } from 'store/slices/settingsSlice'
 import { saveKeyVerificationReminder } from 'storage/MainStorage'
+import { WalletContext } from 'shared/wallet'
 
 type Props = CompositeScreenProps<
   CreateKeysScreenProps<createKeysRouteNames.NewMasterKey>,
@@ -35,6 +36,7 @@ enum TestID {
   SecureLaterButton = 'SecureLater',
 }
 export const NewMasterKeyScreen = ({ navigation }: Props) => {
+  const { setWallet, setWalletIsDeployed } = useContext(WalletContext)
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const mnemonic = useMemo(() => KeyManagementSystem.create().mnemonic, [])
@@ -46,9 +48,11 @@ export const NewMasterKeyScreen = ({ navigation }: Props) => {
     dispatch(
       createWallet({
         mnemonic: KeyManagementSystem.create().mnemonic,
+        setWallet,
+        setWalletIsDeployed,
       }),
     )
-  }, [dispatch])
+  }, [dispatch, setWallet, setWalletIsDeployed])
 
   return (
     <View style={styles.screen}>

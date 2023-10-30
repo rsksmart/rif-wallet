@@ -1,4 +1,11 @@
-import { useState, useRef, useCallback, useEffect, useMemo } from 'react'
+import {
+  useState,
+  useRef,
+  useCallback,
+  useEffect,
+  useMemo,
+  useContext,
+} from 'react'
 import {
   View,
   StyleSheet,
@@ -35,6 +42,7 @@ import {
   createKeysRouteNames,
   CreateKeysScreenProps,
 } from 'navigation/createKeysNavigator'
+import { WalletContext } from 'shared/wallet'
 
 type PIN = Array<string | null>
 const defaultPin = [null, null, null, null]
@@ -121,6 +129,7 @@ type Props =
   | CreateKeysScreenProps<createKeysRouteNames.CreatePIN>
 
 export const PinScreen = ({ navigation, route }: Props) => {
+  const { setWallet, setWalletIsDeployed } = useContext(WalletContext)
   const insets = useSafeAreaInsets()
   const isFocused = useIsFocused()
   // const isVisible = useKeyboardIsVisible()
@@ -279,7 +288,7 @@ export const PinScreen = ({ navigation, route }: Props) => {
   const handleLastDigit = useCallback(() => {
     if (!isChangeRequested && isPinEqual) {
       // if pin exists unlocks the app
-      dispatch(unlockApp({ pinUnlocked: true }))
+      dispatch(unlockApp({ pinUnlocked: true, setWallet, setWalletIsDeployed }))
     } else if (isChangeRequested && isPinEqual) {
       // if pin change requested set new pin
       setTimeout(() => {
@@ -289,7 +298,16 @@ export const PinScreen = ({ navigation, route }: Props) => {
     }
 
     resetPin()
-  }, [isChangeRequested, isPinEqual, resetPin, dispatch, PIN, navigation])
+  }, [
+    isChangeRequested,
+    isPinEqual,
+    resetPin,
+    dispatch,
+    PIN,
+    navigation,
+    setWallet,
+    setWalletIsDeployed,
+  ])
 
   useEffect(() => {
     const hasLastDigit = PIN[PIN.length - 1]

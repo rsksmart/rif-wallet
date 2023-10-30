@@ -4,6 +4,7 @@ import {
   PropsWithChildren,
   SetStateAction,
   createContext,
+  useEffect,
   useState,
 } from 'react'
 
@@ -17,11 +18,16 @@ interface WalletIsDeployed {
   isDeployed: boolean
 }
 
+export type SetWallet = Dispatch<SetStateAction<Wallet | null>>
+export type SetWalletIsDeployed = Dispatch<
+  SetStateAction<WalletIsDeployed | null>
+>
+
 interface WalletContext {
   wallet: Wallet | null
   walletIsDeployed: WalletIsDeployed | null
-  setWallet: Dispatch<SetStateAction<Wallet | null>>
-  setWalletIsDeployed: Dispatch<SetStateAction<WalletIsDeployed | null>>
+  setWallet: SetWallet
+  setWalletIsDeployed: SetWalletIsDeployed
 }
 
 export const WalletContext = createContext<WalletContext>({
@@ -35,6 +41,14 @@ export const WalletProvider = ({ children }: PropsWithChildren<{}>) => {
   const [wallet, setWallet] = useState<Wallet | null>(null)
   const [walletIsDeployed, setWalletIsDeployed] =
     useState<WalletIsDeployed | null>(null)
+
+  useEffect(() => {
+    console.log('wallet updated', wallet)
+  }, [wallet])
+
+  useEffect(() => {
+    console.log('walletIsDeployed updated', walletIsDeployed)
+  }, [walletIsDeployed])
 
   return (
     <WalletContext.Provider

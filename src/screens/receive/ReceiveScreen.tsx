@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import {
   ScrollView,
   StyleSheet,
@@ -21,7 +21,7 @@ import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
 import { useAppSelector } from 'store/storeUtils'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
 import { MixedTokenAndNetworkType } from 'screens/send/types'
-import { selectBitcoin, selectWalletState } from 'store/slices/settingsSlice'
+import { selectBitcoin, selectChainId } from 'store/slices/settingsSlice'
 import {
   homeStackRouteNames,
   HomeStackScreenProps,
@@ -31,8 +31,9 @@ import { castStyle } from 'shared/utils'
 import { selectProfile, selectUsername } from 'store/slices/profileSlice'
 import { getIconSource } from 'screens/home/TokenImage'
 import { ProfileStatus } from 'navigation/profileNavigator/types'
-import { getPopupMessage } from 'src/shared/popupMessage'
-import { rootTabsRouteNames } from 'src/navigation/rootNavigator'
+import { getPopupMessage } from 'shared/popupMessage'
+import { WalletContext } from 'shared/wallet'
+import { rootTabsRouteNames } from 'navigation/rootNavigator'
 
 export enum TestID {
   QRCodeDisplay = 'Address.QRCode',
@@ -66,7 +67,8 @@ export const ReceiveScreen = ({
 
   const [shouldShowAssets, setShouldShowAssets] = useState(false)
 
-  const { wallet, chainId } = useAppSelector(selectWalletState)
+  const { wallet } = useContext(WalletContext)
+  const chainId = useAppSelector(selectChainId)
   const profile = useAppSelector(selectProfile)
 
   const rskAddress = useMemo(() => {
