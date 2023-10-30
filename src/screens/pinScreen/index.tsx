@@ -129,7 +129,7 @@ type Props =
   | CreateKeysScreenProps<createKeysRouteNames.CreatePIN>
 
 export const PinScreen = ({ navigation, route }: Props) => {
-  const { setWallet, setWalletIsDeployed } = useContext(WalletContext)
+  const { initializeWallet } = useContext(WalletContext)
   const insets = useSafeAreaInsets()
   const isFocused = useIsFocused()
   // const isVisible = useKeyboardIsVisible()
@@ -288,7 +288,7 @@ export const PinScreen = ({ navigation, route }: Props) => {
   const handleLastDigit = useCallback(() => {
     if (!isChangeRequested && isPinEqual) {
       // if pin exists unlocks the app
-      dispatch(unlockApp({ pinUnlocked: true, setWallet, setWalletIsDeployed }))
+      dispatch(unlockApp({ pinUnlocked: true, initializeWallet }))
     } else if (isChangeRequested && isPinEqual) {
       // if pin change requested set new pin
       setTimeout(() => {
@@ -305,8 +305,7 @@ export const PinScreen = ({ navigation, route }: Props) => {
     dispatch,
     PIN,
     navigation,
-    setWallet,
-    setWalletIsDeployed,
+    initializeWallet,
   ])
 
   useEffect(() => {

@@ -159,7 +159,7 @@ export const unlockApp = createAsyncThunk<
     // if keys do exist, set to true
     thunkAPI.dispatch(setKeysExist(true))
 
-    const { pinUnlocked, isOffline, setWallet, setWalletIsDeployed } = payload
+    const { pinUnlocked, isOffline, initializeWallet } = payload
     const supportedBiometry = await getSupportedBiometryType()
 
     if (Platform.OS === 'android' && !supportedBiometry && !pinUnlocked) {
@@ -201,11 +201,10 @@ export const unlockApp = createAsyncThunk<
     const { kms, rifWallet, rifWalletIsDeployed } = existingWallet
 
     // set wallet and walletIsDeployed in WalletContext
-    setWallet(rifWallet)
-    setWalletIsDeployed({
+    initializeWallet(rifWallet, {
       isDeployed: rifWalletIsDeployed,
-      txHash: null,
       loading: false,
+      txHash: null,
     })
 
     thunkAPI.dispatch(setUnlocked(true))

@@ -38,17 +38,15 @@ export const Core = () => {
   const topColor = useAppSelector(selectTopColor)
   const isOffline = useIsOffline()
   const { unlocked, active } = useStateSubscription()
-  const { wallet, setWallet, setWalletIsDeployed } = useContext(WalletContext)
+  const { wallet, initializeWallet } = useContext(WalletContext)
 
   const unlockAppFn = useCallback(async () => {
     try {
-      await dispatch(
-        unlockApp({ isOffline, setWallet, setWalletIsDeployed }),
-      ).unwrap()
+      await dispatch(unlockApp({ isOffline, initializeWallet })).unwrap()
     } catch (err) {
       console.log('ERR CORE', err)
     }
-  }, [dispatch, isOffline, setWallet, setWalletIsDeployed])
+  }, [dispatch, isOffline, initializeWallet])
 
   useEffect(() => {
     unlockAppFn()
