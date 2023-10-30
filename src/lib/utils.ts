@@ -19,7 +19,10 @@ export const roundBalance = (num: number, decimalPlaces?: number) => {
   return Math.round(num * decimals) / decimals
 }
 
-export const displayRoundBalance = (num: number): string => {
+export const displayRoundBalance = (num: number, symbol?: string): string => {
+  if (symbol?.startsWith('BTC')) {
+    return num.toString()
+  }
   const rounded = roundBalance(num, 4) || roundBalance(num, 8)
   return rounded.toString()
 }

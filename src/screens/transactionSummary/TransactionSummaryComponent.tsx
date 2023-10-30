@@ -217,7 +217,8 @@ export const TransactionSummaryComponent = ({
             <View style={sharedStyles.row}>
               <TokenImage symbol={tokenValue.symbol} size={12} transparent />
               <Typography type={'body2'} style={[sharedStyles.textCenter]}>
-                {displayRoundBalance(totalToken)} {tokenValue.symbol}{' '}
+                {displayRoundBalance(totalToken, tokenValue.symbol)}{' '}
+                {tokenValue.symbol}{' '}
                 {tokenValue.symbol !== fee.symbol &&
                   !amIReceiver &&
                   t('transaction_summary_plus_fees')}
