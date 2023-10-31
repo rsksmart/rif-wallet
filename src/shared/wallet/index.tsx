@@ -114,3 +114,35 @@ export const useWalletState = () => {
     walletIsDeployed,
   }
 }
+
+export const useSetWallet = () => {
+  const { setWallet } = useContext(WalletContext)
+
+  return {
+    setWallet,
+  }
+}
+
+export const useSetWalletIsDeployed = () => {
+  const { setWalletIsDeployed } = useContext(WalletContext)
+
+  return {
+    setWalletIsDeployed,
+  }
+}
+
+export const useWholeWalletWithSetters = () => {
+  const { wallet, walletIsDeployed, setWallet, setWalletIsDeployed } =
+    useContext(WalletContext)
+
+  if (!wallet || !walletIsDeployed) {
+    throw new Error('Wallet State has not been set')
+  }
+
+  return {
+    wallet,
+    walletIsDeployed,
+    setWallet,
+    setWalletIsDeployed,
+  }
+}

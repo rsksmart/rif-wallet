@@ -9,12 +9,7 @@ import {
 import { useTranslation } from 'react-i18next'
 
 import { AppButton, Typography, AppSpinner } from 'components/index'
-import {
-  selectChainId,
-  setIsDeploying,
-  setSmartWalletDeployTx,
-  setWalletIsDeployed,
-} from 'store/slices/settingsSlice'
+import { selectChainId, setIsDeploying } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { getTokenAddress } from 'core/config'
@@ -28,14 +23,15 @@ import { sharedHeaderLeftOptions } from 'navigation/index'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { homeStackRouteNames } from 'navigation/homeNavigator/types'
 import { chainTypesById } from 'shared/constants/chainConstants'
-import { useWalletState } from 'src/shared/wallet'
+import { useWholeWalletWithSetters } from 'shared/wallet'
 
 export const RelayDeployScreen = ({
   route,
   navigation,
 }: SettingsScreenProps<settingsStackRouteNames.RelayDeployScreen>) => {
   const backScreen = route.params?.goBackScreen
-  const { wallet, walletIsDeployed } = useWalletState()
+  const { wallet, walletIsDeployed, setWalletIsDeployed } =
+    useWholeWalletWithSetters()
   const chainId = useAppSelector(selectChainId)
   const { loading, isDeployed, txHash } = walletIsDeployed
   const { t } = useTranslation()
@@ -47,7 +43,9 @@ export const RelayDeployScreen = ({
 
   const deploy = useCallback(async () => {
     updateErrorState(null)
-    dispatch(setIsDeploying({ address: wallet.address, isDeploying: true }))
+    setWalletIsDeployed(prev => {
+      return prev && { ...prev, loading: true }
+    })
     const freePayment = {
       tokenContract: getTokenAddress(
         chainTypesById[chainId] === ChainTypeEnum.MAINNET ? 'RIF' : 'tRIF',
@@ -59,21 +57,25 @@ export const RelayDeployScreen = ({
     wallet
       .deploySmartWallet(freePayment)
       .then((result: TransactionResponse) => {
-        dispatch(
-          setSmartWalletDeployTx({
-            txHash: result.hash,
-            address: wallet.address,
-          }),
-        )
+        setWalletIsDeployed(prev => {
+          return (
+            prev && {
+              ...prev,
+              txHash: result.hash,
+            }
+          )
+        })
 
         result.wait().then((receipt: TransactionReceipt) => {
           if (receipt.status) {
-            dispatch(
-              setWalletIsDeployed({
-                address: wallet.smartWallet.address,
-                value: true,
-              }),
-            )
+            setWalletIsDeployed(prev => {
+              return (
+                prev && {
+                  ...prev,
+                  isDeployed: true,
+                }
+              )
+            })
           } else {
             console.log('Deploy Error,', receipt)
             updateErrorState(t('wallet_deploy_error'))
@@ -89,7 +91,7 @@ export const RelayDeployScreen = ({
           setIsDeploying({ address: wallet.address, isDeploying: false }),
         )
       })
-  }, [dispatch, updateErrorState, wallet, t, chainId])
+  }, [dispatch, updateErrorState, wallet, t, chainId, setWalletIsDeployed])
 
   useEffect(() => {
     if (backScreen) {
