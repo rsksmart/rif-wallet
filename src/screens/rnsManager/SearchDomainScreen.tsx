@@ -238,6 +238,7 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
               wallet={wallet}
               inputName={'domain'}
               error={errors.domain}
+              domainValue={domain}
               onDomainOwned={setIsDomainOwned}
               onDomainAvailable={handleDomainAvailable}
               onResetValue={() => {

@@ -51,7 +51,7 @@ export const ImportMasterKeyScreen = (
   const { t } = useTranslation()
 
   const dispatch = useAppDispatch()
-  const words = useRef<string[]>([...initialWords])
+  const words = useRef<string[]>(initialWords)
   const inputsRef = useRef<Record<string, TextInput>>({})
   const carouselRef = useRef<ICarouselInstance>(null)
 
@@ -60,6 +60,7 @@ export const ImportMasterKeyScreen = (
       ...words.current,
     },
   })
+  const { setValue } = form
   const [selectedSlide, setSelectedSlide] = useState<number>(0)
   const [status, setStatus] = useState<StatusActions>(StatusActions.INITIAL)
 
@@ -110,6 +111,7 @@ export const ImportMasterKeyScreen = (
 
       const onChangeText = (index: number) => (value: string) => {
         words.current[index - 1] = value.trim()
+        setValue(index.toString() as `${number}`, value.trim())
       }
 
       const onSetRef = (index: number) => (ref: TextInput) => {
@@ -170,7 +172,7 @@ export const ImportMasterKeyScreen = (
         </View>
       )
     },
-    [handleImportMnemonic, onSubmitEditing],
+    [handleImportMnemonic, onSubmitEditing, setValue],
   )
 
   return (
