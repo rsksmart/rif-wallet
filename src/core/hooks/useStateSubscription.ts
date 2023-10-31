@@ -10,7 +10,7 @@ import {
 } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { SocketsEvents, socketsEvents } from 'src/subscriptions/rifSockets'
-import { useWholeWalletWithSetters } from 'shared/wallet'
+import { useWalletStateSetters } from 'shared/wallet'
 
 import { useAppState } from './useAppState'
 import { useIsOffline } from './useIsOffline'
@@ -20,7 +20,7 @@ let timer: TimeoutId
 
 export const useStateSubscription = () => {
   const { setWallet, setWalletIsDeployed, initializeWallet } =
-    useWholeWalletWithSetters()
+    useWalletStateSetters()
 
   const dispatch = useAppDispatch()
   const isOffline = useIsOffline()

@@ -158,3 +158,14 @@ export const useWholeWalletWithSetters = () => {
     initializeWallet,
   }
 }
+
+export const useWalletStateSetters = () => {
+  const { setWallet, setWalletIsDeployed, initializeWallet } =
+    useContext(WalletContext)
+
+  return {
+    setWallet,
+    setWalletIsDeployed,
+    initializeWallet,
+  }
+}
