@@ -1,11 +1,4 @@
-import {
-  useState,
-  useRef,
-  useCallback,
-  useEffect,
-  useMemo,
-  useContext,
-} from 'react'
+import { useState, useRef, useCallback, useEffect, useMemo } from 'react'
 import {
   View,
   StyleSheet,
@@ -42,7 +35,7 @@ import {
   createKeysRouteNames,
   CreateKeysScreenProps,
 } from 'navigation/createKeysNavigator'
-import { WalletContext } from 'shared/wallet'
+import { useInitializeWallet } from 'shared/wallet'
 
 type PIN = Array<string | null>
 const defaultPin = [null, null, null, null]
@@ -129,7 +122,7 @@ type Props =
   | CreateKeysScreenProps<createKeysRouteNames.CreatePIN>
 
 export const PinScreen = ({ navigation, route }: Props) => {
-  const { initializeWallet } = useContext(WalletContext)
+  const initializeWallet = useInitializeWallet()
   const insets = useSafeAreaInsets()
   const isFocused = useIsFocused()
   // const isVisible = useKeyboardIsVisible()

@@ -1,8 +1,7 @@
-import { useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import BackgroundTimer, { TimeoutId } from 'react-native-background-timer'
 
 import {
-  removeKeysFromState,
   selectIsUnlocked,
   selectPreviouslyUnlocked,
   setPreviouslyUnlocked,
@@ -11,7 +10,7 @@ import {
 } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { SocketsEvents, socketsEvents } from 'src/subscriptions/rifSockets'
-import { WalletContext } from 'shared/wallet'
+import { useInitializeWallet } from 'shared/wallet'
 
 import { useAppState } from './useAppState'
 import { useIsOffline } from './useIsOffline'
@@ -20,7 +19,7 @@ const gracePeriod = 5000
 let timer: TimeoutId
 
 export const useStateSubscription = () => {
-  const { initializeWallet } = useContext(WalletContext)
+  const initializeWallet = useInitializeWallet()
   const dispatch = useAppDispatch()
   const isOffline = useIsOffline()
 
@@ -49,7 +48,7 @@ export const useStateSubscription = () => {
 
           setUnlocked(false)
           dispatch(setPreviouslyUnlocked(true))
-          dispatch(removeKeysFromState())
+          // dispatch(removeKeysFromState())
         }, gracePeriod)
       }
     } else if (
