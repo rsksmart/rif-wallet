@@ -74,8 +74,6 @@ export interface SettingsSlice {
   isSetup: boolean
   requests: RequestWithBitcoin[]
   topColor: ColorValue
-  wallets: Wallets | null
-  walletsIsDeployed: WalletsIsDeployed | null
   selectedWallet: string
   loading: boolean
   chainId: ChainTypesByIdType

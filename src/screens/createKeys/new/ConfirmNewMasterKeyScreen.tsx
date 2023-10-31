@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ScrollView, StyleSheet, View } from 'react-native'
 import { FormProvider, useForm } from 'react-hook-form'
 import Icon from 'react-native-vector-icons/FontAwesome5'
@@ -14,7 +14,7 @@ import { createWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { StepperComponent } from 'src/components/profile'
-import { WalletContext } from 'shared/wallet'
+import { useInitializeWallet } from 'shared/wallet'
 
 type MnemonicWordNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
 
@@ -75,7 +75,7 @@ const onRandomWordChoice = (_mnemonicWords: string[]) => {
 export const ConfirmNewMasterKeyScreen = ({
   route,
 }: CreateKeysScreenProps<createKeysRouteNames.ConfirmNewMasterKey>) => {
-  const { setWallet, setWalletIsDeployed } = useContext(WalletContext)
+  const initializeWallet = useInitializeWallet()
   const { t } = useTranslation()
   const methods = useForm<FormValues>({
     mode: 'onSubmit',
@@ -152,10 +152,10 @@ export const ConfirmNewMasterKeyScreen = ({
   useEffect(() => {
     if (hasFormSuccess) {
       setTimeout(() => {
-        dispatch(createWallet({ mnemonic, setWallet, setWalletIsDeployed }))
+        dispatch(createWallet({ mnemonic, initializeWallet }))
       }, 1000)
     }
-  }, [hasFormSuccess, dispatch, mnemonic, setWallet, setWalletIsDeployed])
+  }, [hasFormSuccess, dispatch, mnemonic, initializeWallet])
 
   return (
     <View style={styles.screen}>
