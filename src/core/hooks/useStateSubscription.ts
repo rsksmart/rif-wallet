@@ -10,7 +10,7 @@ import {
 } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { SocketsEvents, socketsEvents } from 'src/subscriptions/rifSockets'
-import { useInitializeWallet } from 'shared/wallet'
+import { useWholeWalletWithSetters } from 'shared/wallet'
 
 import { useAppState } from './useAppState'
 import { useIsOffline } from './useIsOffline'
@@ -19,7 +19,9 @@ const gracePeriod = 5000
 let timer: TimeoutId
 
 export const useStateSubscription = () => {
-  const initializeWallet = useInitializeWallet()
+  const { setWallet, setWalletIsDeployed, initializeWallet } =
+    useWholeWalletWithSetters()
+
   const dispatch = useAppDispatch()
   const isOffline = useIsOffline()
 
@@ -48,7 +50,9 @@ export const useStateSubscription = () => {
 
           setUnlocked(false)
           dispatch(setPreviouslyUnlocked(true))
-          // dispatch(removeKeysFromState())
+          //reset wallet state
+          setWallet(null)
+          setWalletIsDeployed(null)
         }, gracePeriod)
       }
     } else if (
@@ -71,6 +75,8 @@ export const useStateSubscription = () => {
     previouslyUnlocked,
     isOffline,
     initializeWallet,
+    setWallet,
+    setWalletIsDeployed,
   ])
 
   useEffect(() => {
