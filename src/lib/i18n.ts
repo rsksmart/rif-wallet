@@ -12,6 +12,7 @@ const resources = {
         'Any "rooted" app can access your private keys and steal your funds. Wipe this wallet immediately and restore it on a secure device.',
       no_selected_wallet: 'No selected wallet',
       address_copied_to_keyboard: 'Address copied to Clipboard',
+      mnemonic_copied: 'Mnemonic has been copied to Clipboard!',
       message_copied_to_clipboard: 'Copied to Clipboard',
       ok: 'OK',
       back: 'Go Back',
