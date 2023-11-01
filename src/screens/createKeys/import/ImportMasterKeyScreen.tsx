@@ -1,4 +1,4 @@
-import { useCallback, useState, useRef, useContext } from 'react'
+import { useCallback, useState, useRef } from 'react'
 import { ScrollView, StyleSheet, TextInput, View } from 'react-native'
 import { Pagination } from 'react-native-snap-carousel'
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel'
