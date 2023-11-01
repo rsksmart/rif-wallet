@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useContext } from 'react'
+import { useMemo, useEffect } from 'react'
 import { View } from 'react-native'
 
 import { shortAddress } from 'lib/utils'
@@ -12,12 +12,12 @@ import {
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
 import { sharedStyles } from 'shared/constants'
-import { WalletContext } from 'shared/wallet'
+import { useWalletState } from 'shared/wallet'
 
 export const AccountsScreen = ({
   navigation,
 }: SettingsScreenProps<settingsStackRouteNames.AccountsScreen>) => {
-  const { wallet, walletIsDeployed } = useContext(WalletContext)
+  const { wallet, walletIsDeployed } = useWalletState()
 
   const chainId = useAppSelector(selectChainId)
   const bitcoinCore = useAppSelector(selectBitcoin)

@@ -2,15 +2,11 @@ import { useCallback, useEffect, useState } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { BigNumber } from 'ethers'
-import {
-  TransactionResponse,
-  TransactionReceipt,
-} from '@ethersproject/abstract-provider'
 import { useTranslation } from 'react-i18next'
 
 import { AppButton, Typography, AppSpinner } from 'components/index'
-import { selectChainId, setIsDeploying } from 'store/slices/settingsSlice'
-import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { selectChainId } from 'store/slices/settingsSlice'
+import { useAppSelector } from 'store/storeUtils'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { getTokenAddress } from 'core/config'
 import { sharedColors, sharedStyles } from 'shared/constants'
@@ -35,63 +31,73 @@ export const RelayDeployScreen = ({
   const chainId = useAppSelector(selectChainId)
   const { loading, isDeployed, txHash } = walletIsDeployed
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const [deployError, setDeployError] = useState<string | null>(null)
   const updateErrorState = useCallback((error: string | null) => {
     setDeployError(error)
   }, [])
 
   const deploy = useCallback(async () => {
-    updateErrorState(null)
-    setWalletIsDeployed(prev => {
-      return prev && { ...prev, loading: true }
-    })
-    const freePayment = {
-      tokenContract: getTokenAddress(
-        chainTypesById[chainId] === ChainTypeEnum.MAINNET ? 'RIF' : 'tRIF',
-        chainTypesById[chainId],
-      ),
-      tokenAmount: BigNumber.from(0),
-    }
+    try {
+      updateErrorState(null)
+      setWalletIsDeployed(prev => {
+        return prev && { ...prev, loading: true }
+      })
 
-    wallet
-      .deploySmartWallet(freePayment)
-      .then((result: TransactionResponse) => {
+      const freePayment = {
+        tokenContract: getTokenAddress(
+          chainTypesById[chainId] === ChainTypeEnum.MAINNET ? 'RIF' : 'tRIF',
+          chainTypesById[chainId],
+        ),
+        tokenAmount: BigNumber.from(0),
+      }
+
+      const result = await wallet.deploySmartWallet(freePayment)
+
+      setWalletIsDeployed(prev => {
+        return (
+          prev && {
+            ...prev,
+            txHash: result.hash,
+          }
+        )
+      })
+
+      const receipt = await result.wait()
+
+      if (receipt.status) {
         setWalletIsDeployed(prev => {
           return (
             prev && {
               ...prev,
-              txHash: result.hash,
+              isDeployed: true,
             }
           )
         })
-
-        result.wait().then((receipt: TransactionReceipt) => {
-          if (receipt.status) {
-            setWalletIsDeployed(prev => {
-              return (
-                prev && {
-                  ...prev,
-                  isDeployed: true,
-                }
-              )
-            })
-          } else {
-            console.log('Deploy Error,', receipt)
-            updateErrorState(t('wallet_deploy_error'))
+      } else {
+        console.log('Deploy Error,', receipt)
+        updateErrorState(t('wallet_deploy_error'))
+      }
+      setWalletIsDeployed(prev => {
+        return (
+          prev && {
+            ...prev,
+            loading: false,
           }
-          dispatch(
-            setIsDeploying({ address: wallet.address, isDeploying: false }),
-          )
-        })
-      })
-      .catch((error: Error) => {
-        updateErrorState(error.toString())
-        dispatch(
-          setIsDeploying({ address: wallet.address, isDeploying: false }),
         )
       })
-  }, [dispatch, updateErrorState, wallet, t, chainId, setWalletIsDeployed])
+    } catch (error) {
+      console.log('DEPLOY FAILED', error)
+      updateErrorState(error.toString())
+      setWalletIsDeployed(prev => {
+        return (
+          prev && {
+            ...prev,
+            loading: false,
+          }
+        )
+      })
+    }
+  }, [updateErrorState, wallet, t, chainId, setWalletIsDeployed])
 
   useEffect(() => {
     if (backScreen) {
