@@ -67,10 +67,5 @@ export const ScanQRScreen = ({
   if (Platform.OS === 'android' && isFocused) {
     return <AndroidQRScanner onCodeRead={onCodeRead} onClose={onClose} />
   }
-  return (
-    <QRCodeScanner
-      onCodeRead={onCodeRead}
-      onClose={() => onCodeRead('0xa36b908c51c9ce54eb709120578576065d8ea1a1')}
-    />
-  )
+  return <QRCodeScanner onCodeRead={onCodeRead} onClose={onClose} />
 }
