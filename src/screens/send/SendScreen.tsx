@@ -2,7 +2,10 @@ import { useCallback, useEffect } from 'react'
 import { Alert, Keyboard, KeyboardAvoidingView, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { useIsFocused } from '@react-navigation/native'
-import { convertSatoshiToBtcHuman } from '@rsksmart/rif-wallet-bitcoin'
+import {
+  convertSatoshiToBtcHuman,
+  isBitcoinAddressValid,
+} from '@rsksmart/rif-wallet-bitcoin'
 
 import { sharedHeaderLeftOptions } from 'navigation/index'
 import {
@@ -46,13 +49,21 @@ export const SendScreen = ({
   const prices = useAppSelector(selectUsdPrices)
   const { backScreen, contact } = route.params
 
+  const isContactBitcoin = !!contact && isBitcoinAddressValid(contact.address)
+  const isAssetBitcoin = (asset: TokenBalanceObject) => 'bips' in asset
+
   const balances = Object.values(useAppSelector(selectBalances))
-  const assets = contact ? balances.filter(b => !('bips' in b)) : balances
+  const assets = contact
+    ? balances.filter(b =>
+        isContactBitcoin ? isAssetBitcoin(b) : !isAssetBitcoin(b),
+      )
+    : balances
+
   const contractAddress = route.params?.contractAddress || assets[0]
 
   // We assume only one bitcoinNetwork instance exists
   const { currentTransaction, executePayment, error } = usePaymentExecutor(
-    assets.find(asset => 'bips' in asset),
+    assets.find(isAssetBitcoin),
   )
 
   const onGoToHome = useCallback(
@@ -197,7 +208,7 @@ export const SendScreen = ({
         isWalletDeployed={walletIsDeployed.isDeployed}
         initialValues={{
           recipient: contact,
-          asset: assets.find(
+          asset: balances.find(
             asset => asset.contractAddress === contractAddress,
           ),
         }}
