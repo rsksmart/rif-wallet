@@ -36,7 +36,7 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>$PRODUCT_NAME will use the camera to operate with Wallet Connect</string>
+	<string>$PRODUCT_NAME will use your camera to scan QR codes to add dApps to your account using WalletConnect</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>$PRODUCT_NAME will use your FACE ID to retrieve and store your secret</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
