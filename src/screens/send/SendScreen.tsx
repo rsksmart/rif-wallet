@@ -98,6 +98,11 @@ export const SendScreen = ({
 
   useEffect(() => {
     if (!isDeployed && !loading) {
+      // clean up the stack and navigate to the deploy screen
+      navigation.reset({
+        index: 0,
+        routes: [{ name: homeStackRouteNames.Main }],
+      })
       navigation.navigate(rootTabsRouteNames.Settings, {
         screen: settingsStackRouteNames.RelayDeployScreen,
         params: {
@@ -130,9 +135,7 @@ export const SendScreen = ({
   // setFullscreen to avoid scanning error
   // when you try to scan code again from main bottom nav
   useEffect(() => {
-    setTimeout(() => {
-      dispatch(setFullscreen(isFocused))
-    }, 100)
+    dispatch(setFullscreen(isFocused))
   }, [dispatch, isFocused])
 
   useEffect(() => {
