@@ -343,6 +343,9 @@ const resources = {
         "You don't have transaction inputs to complete this payment.",
       bitcoin_validation_inputs_not_enough:
         'There are not enough transaction inputs to complete this payment.',
+      send_alert_ongoing_transaction_title: 'You have an ongoing transaction',
+      send_alert_ongoing_transaction_body:
+        'Please, wait for previous transaction to succeed or fail before making the next one',
       send_screen_sending_transaction: 'Sending transaction...',
       send_screen_return_to_home: 'Return to Home Screen',
       security_info_header: 'Security Information',
