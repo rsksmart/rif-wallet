@@ -1,9 +1,11 @@
 import { Core } from '@walletconnect/core'
 import { Web3Wallet, Web3WalletTypes } from '@walletconnect/web3wallet'
-import { getSdkError } from '@walletconnect/utils'
+import { getSdkError, buildApprovedNamespaces } from '@walletconnect/utils'
 
 import { getEnvSetting } from 'core/config'
 import { SETTINGS } from 'core/types'
+import { ChainTypesByIdType } from 'shared/constants/chainConstants'
+import { AcceptedValue, MMKVStorage } from 'storage/MMKVStorage'
 
 export type WalletConnect2SdkErrorString = Parameters<typeof getSdkError>[0]
 
@@ -31,10 +33,44 @@ const WalletConnect2SdkErrorEnum: { [P in WalletConnect2SdkErrorString]: P } = {
   SESSION_SETTLEMENT_FAILED: 'SESSION_SETTLEMENT_FAILED',
 }
 
+type StorageTypeFromCore = InstanceType<typeof Core>['storage']
+
+class MMKVCoreStorage implements StorageTypeFromCore {
+  storage = new MMKVStorage('WC2')
+
+  getEntries<T = never>(): Promise<[string, T][]> {
+    const keys = this.storage.getAllKeys()
+    const values: [string, T][] = keys.map(key => [
+      key,
+      this.storage.get(key) as T,
+    ])
+    return Promise.resolve(values)
+  }
+
+  getItem<T = never>(key: string): Promise<T | undefined> {
+    return this.storage.get(key)
+  }
+
+  getKeys(): Promise<string[]> {
+    return Promise.resolve(this.storage.getAllKeys())
+  }
+
+  removeItem(key: string): Promise<void> {
+    this.storage.delete(key)
+    return Promise.resolve(undefined)
+  }
+
+  setItem<T = object>(key: string, value: T): Promise<void> {
+    this.storage.set(key, value as AcceptedValue)
+    return Promise.resolve(undefined)
+  }
+}
+
 export const createWeb3Wallet = async () => {
   const projectId = getEnvSetting(SETTINGS.WALLETCONNECT2_PROJECT_ID) // this should change if we need to vary from testnet/mainnet by using getWalletSetting
   const core = new Core({
     projectId,
+    storage: new MMKVCoreStorage(),
   })
 
   return await Web3Wallet.init({
@@ -50,10 +86,61 @@ export const createWeb3Wallet = async () => {
   })
 }
 
+const WALLETCONNECT_SUPPORTED_METHODS = [
+  'eth_sendTransaction',
+  'personal_sign',
+  'eth_signTransaction',
+  'eth_signTypedData',
+]
+
+const WALLETCONNECT_BUILD_SUPPORTED_CHAINS = (chainId: ChainTypesByIdType) => [
+  `eip155:${chainId}`,
+]
+
+const WALLETCONNECT_BUILD_SUPPORTED_ACCOUNTS = ({
+  walletAddress,
+  chainId,
+}: {
+  walletAddress: string
+  chainId: ChainTypesByIdType
+}) => [`eip155:${chainId}:${walletAddress}`]
+
+const WALLETCONNECT_SUPPORTED_EVENTS = ['accountsChanged', 'chainChanged']
+
+export const buildRskAllowedNamespaces = ({
+  proposal,
+  chainId,
+  walletAddress,
+}: {
+  proposal: Web3WalletTypes.SessionProposal
+  chainId: ChainTypesByIdType
+  walletAddress: string
+}) =>
+  buildApprovedNamespaces({
+    proposal: proposal.params,
+    supportedNamespaces: {
+      eip155: {
+        chains: WALLETCONNECT_BUILD_SUPPORTED_CHAINS(chainId),
+        methods: WALLETCONNECT_SUPPORTED_METHODS,
+        events: WALLETCONNECT_SUPPORTED_EVENTS,
+        accounts: WALLETCONNECT_BUILD_SUPPORTED_ACCOUNTS({
+          walletAddress,
+          chainId,
+        }),
+      },
+    },
+  })
+
 export const rskWalletConnectNamespace = {
   eip155: {
     chains: ['eip155:31'], // @TODO implement eip155:30 here -> make this dynamic according to the current chainId in the app
-    methods: ['eth_sendTransaction', 'personal_sign'],
+    methods: [
+      'eth_sendTransaction',
+      'personal_sign',
+      'eth_signTransaction',
+      'eth_sign',
+      'eth_signTypedData',
+    ],
     events: ['chainChanged', 'accountsChanged'],
   },
 }
