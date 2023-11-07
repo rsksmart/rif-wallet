@@ -66,6 +66,7 @@ export enum TokenSymbol {
   DOC = 'DOC',
   RDOC = 'RDOC',
   TRDOC = 'rDOC',
+  USDRIF = 'USDRIF',
   RIFP = 'RIFP',
   BPRO = 'BPRO',
   RNS = 'RNS',
@@ -143,6 +144,8 @@ export const getTransparentIconSource = (
       return require('../../images/rif-white.png')
     case 'RDOC':
       return require('./../../images/rdoc-transparent.png')
+    case 'USDRIF':
+      return require('./../../images/usdrif-transparent.png')
     case 'BTCCB':
     case 'BTCT':
     case 'BTC':
@@ -169,6 +172,8 @@ export const getIconSource = (
       return require('@rsksmart/rsk-contract-metadata/images/doc.png')
     case 'RDOC':
       return require('./../../images/rdoc.png')
+    case 'USDRIF':
+      return require('./../../images/usdrif.png')
     case 'RIFP':
       return require('@rsksmart/rsk-contract-metadata/images/rifpro.png')
     case 'BPRO':

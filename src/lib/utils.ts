@@ -3,11 +3,10 @@ import moment from 'moment'
 
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 
-export function shortAddress(address?: string, trimAmount?: number): string {
+export function shortAddress(address: string, amount = 4): string {
   if (!address) {
     return ''
   }
-  const amount = trimAmount || 4
 
   return `${address.substr(0, amount + 2)}...${address.substr(
     address.length - amount,
@@ -20,24 +19,14 @@ export const roundBalance = (num: number, decimalPlaces?: number) => {
   return Math.round(num * decimals) / decimals
 }
 
-export const displayRoundBalance = (num: number): string => {
-  let rounded = roundBalance(num, 4)
-  if (!rounded) {
-    rounded = roundBalance(num, 8)
+export const displayRoundBalance = (num: number, symbol?: string): string => {
+  if (symbol?.startsWith('BTC')) {
+    return num.toString()
   }
+  const rounded = roundBalance(num, 4) || roundBalance(num, 8)
   return rounded.toString()
 }
 
-export const getChainIdByType = (chainType: ChainTypeEnum) => {
-  switch (chainType) {
-    case ChainTypeEnum.MAINNET:
-      return 30
-    case ChainTypeEnum.TESTNET:
-      return 31
-    default:
-      return 31
-  }
-}
 export const formatTimestamp = (timestamp: number) => {
   const a = new Date(timestamp * 1000)
   const months = [

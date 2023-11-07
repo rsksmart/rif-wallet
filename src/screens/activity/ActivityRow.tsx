@@ -1,7 +1,8 @@
 import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { StyleProp, StyleSheet, ViewStyle } from 'react-native'
+import { StyleProp, ViewStyle } from 'react-native'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
+import { ZERO_ADDRESS } from '@rsksmart/rif-relay-light-sdk'
 
 import { roundBalance, shortAddress } from 'lib/utils'
 
@@ -11,7 +12,6 @@ import { AppTouchable } from 'components/appTouchable'
 import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 import { ActivityMainScreenProps } from 'shared/types'
-import { castStyle } from 'shared/utils'
 import { isMyAddress } from 'src/components/address/lib'
 import { useAppSelector } from 'src/redux/storeUtils'
 import { getContactByAddress } from 'store/slices/contactsSlice'
@@ -29,6 +29,7 @@ const getStatus = (status: string) => {
 }
 
 interface Props {
+  index?: number
   wallet: RIFWallet
   activityDetails: ActivityRowPresentationObject
   navigation: ActivityMainScreenProps['navigation']
@@ -37,6 +38,7 @@ interface Props {
 }
 
 export const ActivityBasicRow = ({
+  index,
   wallet,
   navigation,
   activityDetails,
@@ -65,7 +67,13 @@ export const ActivityBasicRow = ({
   // Label
   const firstLabel = amIReceiver ? t('received_from') : t('sent_to')
   const secondLabel = contact?.name || shortAddress(address)
-  const label = `${firstLabel} ${secondLabel}`
+  let label = `${firstLabel} ${secondLabel}`
+  if (
+    to === ZERO_ADDRESS &&
+    from.toLowerCase() === wallet.smartWalletFactory.address.toLowerCase()
+  ) {
+    label = t('wallet_deployment_label')
+  }
 
   // USD Balance
   const usdBalance = roundBalance(price, 2)
@@ -110,13 +118,16 @@ export const ActivityBasicRow = ({
   )
 
   const amount = useMemo(() => {
+    if (symbol.startsWith('BTC')) {
+      return value
+    }
     const num = Number(value)
     let rounded = roundBalance(num, 4)
     if (!rounded) {
       rounded = roundBalance(num, 8)
     }
     return rounded.toString()
-  }, [value])
+  }, [value, symbol])
 
   const handlePress = useCallback(() => {
     if (txSummary) {
@@ -128,11 +139,9 @@ export const ActivityBasicRow = ({
   }, [navigation, txSummary, backScreen])
 
   return (
-    <AppTouchable
-      width={'100%'}
-      onPress={handlePress}
-      style={[styles.component, style]}>
+    <AppTouchable width={'100%'} onPress={handlePress} style={style}>
       <BasicRowWithContact
+        index={index}
         label={label}
         amount={amount}
         symbol={symbol}
@@ -145,9 +154,3 @@ export const ActivityBasicRow = ({
     </AppTouchable>
   )
 }
-
-const styles = StyleSheet.create({
-  component: castStyle.view({
-    paddingHorizontal: 6,
-  }),
-})

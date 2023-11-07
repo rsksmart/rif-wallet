@@ -1,5 +1,11 @@
-import { createContext, ReactElement, useEffect, useState } from 'react'
-import { getSdkError } from '@walletconnect/utils'
+import {
+  createContext,
+  ReactElement,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
+import { getSdkError, parseUri } from '@walletconnect/utils'
 import Web3Wallet, { Web3WalletTypes } from '@walletconnect/web3wallet'
 import { IWeb3Wallet } from '@walletconnect/web3wallet'
 import { WalletConnectAdapter } from '@rsksmart/rif-wallet-adapters'
@@ -49,6 +55,17 @@ const onSessionReject = async (
   }
 }
 
+const isWcUriValid = (uri: string): boolean => {
+  const { topic, protocol, version } = parseUri(uri)
+  if (version !== 2) {
+    return false
+  }
+  if (protocol !== 'wc') {
+    return false
+  }
+  return topic.length !== 0
+}
+
 export type SessionStruct = Awaited<ReturnType<IWeb3Wallet['approveSession']>>
 
 interface PendingSession {
@@ -84,7 +101,7 @@ export const WalletConnect2Context =
 
 interface WalletConnect2ProviderProps {
   children: ReactElement
-  wallet: RIFWallet
+  wallet: RIFWallet | null
 }
 
 export const WalletConnect2Provider = ({
@@ -119,60 +136,76 @@ export const WalletConnect2Provider = ({
     }
   }
 
-  const subscribeToEvents = (web3wallet: Web3Wallet) => {
-    web3wallet.on('session_proposal', async proposal =>
-      onSessionProposal(proposal, web3wallet),
-    )
-    web3wallet.on('session_request', async event => {
-      if (!wallet) {
-        return
-      }
-      const adapter = new WalletConnectAdapter(wallet)
-      const {
-        params: {
-          request: { method, params },
-        },
-        id,
-        topic,
-      } = event
-
-      const rpcResponse = {
-        topic,
-        response: {
+  const subscribeToEvents = useCallback(
+    (web3wallet: Web3Wallet) => {
+      web3wallet.on('session_proposal', async proposal =>
+        onSessionProposal(proposal, web3wallet),
+      )
+      web3wallet.on('session_request', async event => {
+        if (!wallet) {
+          return
+        }
+        const adapter = new WalletConnectAdapter(wallet)
+        const {
+          params: {
+            request: { method, params },
+          },
           id,
-          jsonrpc: '2.0',
-        },
-      }
+          topic,
+        } = event
 
-      adapter
-        .handleCall(method, params)
-        .then(signedMessage => {
-          web3wallet.respondSessionRequest({
-            ...rpcResponse,
-            response: {
-              ...rpcResponse.response,
-              result: signedMessage,
-            },
+        const rpcResponse = {
+          topic,
+          response: {
+            id,
+            jsonrpc: '2.0',
+          },
+        }
+
+        adapter
+          .handleCall(method, params)
+          .then(signedMessage => {
+            web3wallet.respondSessionRequest({
+              ...rpcResponse,
+              response: {
+                ...rpcResponse.response,
+                result: signedMessage,
+              },
+            })
           })
-        })
-        .catch(_ => {
-          web3wallet.respondSessionRequest({
-            ...rpcResponse,
-            response: {
-              ...rpcResponse.response,
-              error: getSdkError('USER_REJECTED'),
-            },
+          .catch(_ => {
+            web3wallet.respondSessionRequest({
+              ...rpcResponse,
+              response: {
+                ...rpcResponse.response,
+                error: getSdkError('USER_REJECTED'),
+              },
+            })
           })
-        })
-    })
-  }
+      })
+      web3wallet.on('session_delete', async event => {
+        setSessions(prevSessions =>
+          prevSessions.filter(prevSession => prevSession.topic !== event.topic),
+        )
+      })
+    },
+    [wallet],
+  )
 
   const onCreateNewSession = async (uri: string) => {
     try {
       const web3wallet = await createWeb3Wallet()
       subscribeToEvents(web3wallet)
       // Refer to https://docs.walletconnect.com/2.0/reactnative/web3wallet/wallet-usage#session-requests
-      await web3wallet.core.pairing.pair({ uri })
+
+      if (!isWcUriValid(uri)) {
+        setError({
+          title: 'dapps_uri_not_valid_title',
+          message: 'dapps_uri_not_valid_message',
+        })
+      } else {
+        await web3wallet.core.pairing.pair({ uri })
+      }
     } catch (e) {
       // This will handle: "Pairing already exists:"
       if (e instanceof Error || typeof e === 'string') {
@@ -200,7 +233,6 @@ export const WalletConnect2Provider = ({
           // }
         }
       }
-      console.log(e)
     }
   }
 
@@ -239,22 +271,25 @@ export const WalletConnect2Provider = ({
         prevSessions.filter(prevSession => prevSession.topic !== session.topic),
       )
     } catch (err) {
-      console.log(234, err)
+      // @TODO handle error disconnecting
+      console.log('WC2.0 error disconnect', err)
     }
   }
 
-  const onContextFirstLoad = async () => {
+  const onContextFirstLoad = useCallback(async () => {
     const web3wallet = await createWeb3Wallet()
     subscribeToEvents(web3wallet)
     setSessions(Object.values(web3wallet.getActiveSessions()))
-  }
+  }, [subscribeToEvents])
+
   /**
    * useEffect On first load, fetch previous saved sessions
    */
   useEffect(() => {
-    onContextFirstLoad().catch(console.log)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    if (wallet) {
+      onContextFirstLoad().catch(console.log)
+    }
+  }, [onContextFirstLoad, wallet])
   return (
     <WalletConnect2Context.Provider
       value={{

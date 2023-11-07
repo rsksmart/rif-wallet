@@ -52,7 +52,7 @@ export const createWeb3Wallet = async () => {
 
 export const rskWalletConnectNamespace = {
   eip155: {
-    chains: ['eip155:30', 'eip155:31'],
+    chains: ['eip155:31'], // @TODO implement eip155:30 here -> make this dynamic according to the current chainId in the app
     methods: ['eth_sendTransaction', 'personal_sign'],
     events: ['chainChanged', 'accountsChanged'],
   },

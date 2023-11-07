@@ -23,12 +23,8 @@ import {
   Typography,
 } from 'components/index'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import {
-  selectPin,
-  setFullscreen,
-  setPinState,
-  unlockApp,
-} from 'store/slices/settingsSlice'
+import { setFullscreen, unlockApp } from 'store/slices/settingsSlice'
+import { selectPin, setPinState } from 'store/slices/persistentDataSlice'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import {
@@ -378,7 +374,10 @@ export const PinScreen = ({ navigation, route }: Props) => {
       ) : (
         <>
           {hasError && errorTimeout()}
-          <Typography style={styles.title} type="h2">
+          <Typography
+            style={styles.title}
+            type="h2"
+            accessibilityLabel={'new_pin'}>
             {hasError ? t('pin_screen_wrong_pin') : title}
           </Typography>
           {hasError ? (

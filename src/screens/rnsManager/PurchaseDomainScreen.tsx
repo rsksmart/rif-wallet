@@ -36,7 +36,8 @@ import {
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { handleDomainTransactionStatusChange } from 'screens/rnsManager/utils'
-import { selectWallet } from 'store/slices/settingsSlice'
+import { selectChainId, selectWallet } from 'store/slices/settingsSlice'
+import { RNS_ADDRESSES_BY_CHAIN_ID } from 'screens/rnsManager/types'
 
 import { rnsManagerStyles } from './rnsManagerStyles'
 
@@ -52,6 +53,7 @@ export const PurchaseDomainScreen = ({ navigation }: Props) => {
   const rifToken = useRifToken()
   const wallet = useAppSelector(selectWallet)
   const profile = useAppSelector(selectProfile)
+  const chainId = useAppSelector(selectChainId)
   const alias = profile.alias
   const duration = profile.duration || 1
   const profileStatus = useAppSelector(selectProfileStatus)
@@ -64,8 +66,9 @@ export const PurchaseDomainScreen = ({ navigation }: Props) => {
           dispatch,
           wallet,
         ),
+        rnsAddresses: RNS_ADDRESSES_BY_CHAIN_ID[chainId],
       }),
-    [dispatch, wallet],
+    [dispatch, wallet, chainId],
   )
 
   const methods = useForm()

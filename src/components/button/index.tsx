@@ -18,6 +18,8 @@ import { castStyle } from 'shared/utils'
 
 import { AccessibilityLabelStandards } from '../shared'
 
+export const buttonHeight = 52
+
 const getBackgroundVariety = (
   backgroundVariety: AppButtonBackgroundVarietyEnum,
   color: ColorValue,
@@ -159,7 +161,7 @@ export const AppButton = ({
 
 const styles = StyleSheet.create({
   content: castStyle.view({
-    minHeight: 52,
+    minHeight: buttonHeight,
     borderRadius: 25,
     flexDirection: 'row',
     paddingVertical: 14,

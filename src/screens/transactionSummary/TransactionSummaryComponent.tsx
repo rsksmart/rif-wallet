@@ -4,6 +4,7 @@ import { Linking, ScrollView, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
+import { isBitcoinAddressValid } from '@rsksmart/rif-wallet-bitcoin'
 
 import { displayRoundBalance } from 'lib/utils'
 
@@ -32,8 +33,8 @@ import {
 import { TransactionSummaryScreenProps } from '.'
 
 interface Props {
-  goBack?: () => void
   wallet: RIFWallet
+  goBack?: () => void
 }
 
 type TransactionSummaryComponentProps = Omit<
@@ -100,10 +101,19 @@ export const TransactionSummaryComponent = ({
   )
 
   const openTransactionHash = () => {
-    const explorerUrl = getWalletSetting(
-      SETTINGS.EXPLORER_ADDRESS_URL,
-      chainTypesById[chainId],
-    )
+    let explorerUrl = ''
+
+    if (isBitcoinAddressValid(transaction.to)) {
+      explorerUrl = getWalletSetting(
+        SETTINGS.BTC_EXPLORER_ADDRESS_URL,
+        chainTypesById[chainId],
+      )
+    } else {
+      explorerUrl = getWalletSetting(
+        SETTINGS.EXPLORER_ADDRESS_URL,
+        chainTypesById[chainId],
+      )
+    }
 
     Linking.openURL(`${explorerUrl}/tx/${hashId}`)
   }
@@ -207,7 +217,8 @@ export const TransactionSummaryComponent = ({
             <View style={sharedStyles.row}>
               <TokenImage symbol={tokenValue.symbol} size={12} transparent />
               <Typography type={'body2'} style={[sharedStyles.textCenter]}>
-                {displayRoundBalance(totalToken)} {tokenValue.symbol}{' '}
+                {displayRoundBalance(totalToken, tokenValue.symbol)}{' '}
+                {tokenValue.symbol}{' '}
                 {tokenValue.symbol !== fee.symbol &&
                   !amIReceiver &&
                   t('transaction_summary_plus_fees')}
@@ -215,6 +226,11 @@ export const TransactionSummaryComponent = ({
             </View>
           </View>
           <View style={styles.dollarAmountWrapper}>
+            {usdValue.symbol === '<' && (
+              <Typography type="body1" color={sharedColors.labelLight}>
+                {'<'}
+              </Typography>
+            )}
             <DollarIcon size={14} color={sharedColors.labelLight} />
             <Typography
               type={'body2'}

@@ -9,6 +9,12 @@ interface FetchUtxoFunction {
   onSetBalance?: (balance: BigNumber) => void
 }
 
+interface FetchAddressToReturnFundsToFunction {
+  token: BitcoinTokenBalanceObject
+  usedBitcoinAddresses: { [key: string]: string }
+  onSetAddress?: (address: string) => void
+}
+
 export const calculateBalanceFromUtxos = (
   utxos: UnspentTransactionType[],
 ): BigNumber =>
@@ -34,4 +40,19 @@ export const fetchUtxo = ({
       }
     })
   }
+}
+
+export const fetchAddressToReturnFundsTo = ({
+  token,
+  onSetAddress,
+  usedBitcoinAddresses,
+}: FetchAddressToReturnFundsToFunction) => {
+  token.bips[0].fetchExternalAvailableAddresses({}).then(addresses => {
+    for (const address of addresses) {
+      if (!usedBitcoinAddresses[address]) {
+        onSetAddress?.(address)
+        break
+      }
+    }
+  })
 }

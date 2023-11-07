@@ -36,6 +36,7 @@ import { settingsStackRouteNames } from 'src/navigation/settingsNavigator/types'
 import { handleDomainTransactionStatusChange } from 'screens/rnsManager/utils'
 import { ConfirmationModal } from 'components/modal'
 import { selectWalletState } from 'store/slices/settingsSlice'
+import { RNS_ADDRESSES_BY_CHAIN_ID } from 'screens/rnsManager/types'
 
 import { DomainInput } from './DomainInput'
 import { rnsManagerStyles } from './rnsManagerStyles'
@@ -50,7 +51,8 @@ interface FormValues {
 }
 
 export const SearchDomainScreen = ({ navigation }: Props) => {
-  const { wallet, walletIsDeployed } = useAppSelector(selectWalletState)
+  const { wallet, walletIsDeployed, chainId } =
+    useAppSelector(selectWalletState)
   const { isDeployed, loading } = walletIsDeployed
   const [isDomainOwned, setIsDomainOwned] = useState<boolean>(false)
   const [validDomain, setValidDomain] = useState<boolean>(false)
@@ -112,8 +114,9 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
           dispatch,
           wallet,
         ),
+        rnsAddresses: RNS_ADDRESSES_BY_CHAIN_ID[chainId],
       }),
-    [dispatch, wallet],
+    [dispatch, wallet, chainId],
   )
 
   const onSubmit = useCallback(
@@ -235,6 +238,7 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
               wallet={wallet}
               inputName={'domain'}
               error={errors.domain}
+              domainValue={domain}
               onDomainOwned={setIsDomainOwned}
               onDomainAvailable={handleDomainAvailable}
               onResetValue={() => {
@@ -287,7 +291,7 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
               <View style={[sharedStyles.contentCenter]}>
                 <AppSpinner size={64} thickness={10} />
               </View>
-              <Typography type="body1">
+              <Typography type="body1" accessibilityLabel={'loading'}>
                 {t('search_domain_processing_commitment')}
               </Typography>
             </>

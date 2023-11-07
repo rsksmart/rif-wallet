@@ -1,7 +1,7 @@
 import Clipboard from '@react-native-community/clipboard'
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
+import { Alert, StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
 import { sharedColors, sharedStyles } from 'shared/constants'
@@ -62,6 +62,7 @@ export const MnemonicComponent = ({
     Clipboard.setString(string)
     setTitle(t('mnemonic_title_copy'))
     setBody(t('mnemonic_body_copy'))
+    Alert.alert(t('mnemonic_copied'))
   }, [words, t])
 
   const onEyeIconPress = useCallback(() => {

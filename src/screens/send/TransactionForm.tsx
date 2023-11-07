@@ -26,15 +26,18 @@ import {
   Typography,
 } from 'components/index'
 import { CurrencyValue, TokenBalance } from 'components/token'
-import { sharedColors } from 'shared/constants'
+import { sharedColors, testIDs } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { IPrice } from 'src/subscriptions/types'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
-import { ContactWithAddressRequired } from 'src/shared/types'
+import { Contact, ContactWithAddressRequired } from 'src/shared/types'
 import { ChainTypesByIdType } from 'shared/constants/chainConstants'
+import { navigationContainerRef } from 'src/core/Core'
+import { rootTabsRouteNames } from 'src/navigation/rootNavigator'
+import { contactsStackRouteNames } from 'src/navigation/contactsNavigator'
 
-import { PortfolioComponent } from '../home/PortfolioComponent'
 import { TokenImage, TokenSymbol } from '../home/TokenImage'
+import { PortfolioComponent } from '../home/PortfolioComponent'
 
 interface Props {
   onConfirm: (
@@ -55,6 +58,7 @@ interface Props {
     recipient?: ContactWithAddressRequired
   }
   status?: string
+  contactList?: Contact[]
 }
 
 interface FormValues {
@@ -67,11 +71,17 @@ interface FormValues {
   name: string | null
 }
 
-const transactionFeeMap = new Map([
-  [TokenSymbol.RIF, true],
+export type ProposedContact = Omit<Contact, 'name'>
+
+const bitcoinFeeMap = new Map([
+  [TokenSymbol.BTC, true],
+  [TokenSymbol.BTCT, true],
+])
+
+const rifFeeMap = new Map([
   [TokenSymbol.TRIF, true],
-  [TokenSymbol.RDOC, true],
-  [TokenSymbol.TRDOC, true],
+  [TokenSymbol.RIF, true],
+  [TokenSymbol.USDRIF, true],
 ])
 
 const transactionSchema = yup.object().shape({
@@ -84,6 +94,8 @@ const transactionSchema = yup.object().shape({
   isToValid: yup.boolean().isTrue(),
 })
 
+const maxAmount = 99999999
+
 export const TransactionForm = ({
   initialValues,
   tokenList,
@@ -94,6 +106,7 @@ export const TransactionForm = ({
   onCancel,
   totalUsdBalance,
   status,
+  contactList,
 }: Props) => {
   const insets = useSafeAreaInsets()
   const { recipient, asset, amount: initialAmount } = initialValues
@@ -113,15 +126,12 @@ export const TransactionForm = ({
 
   const tokenFeeList = useMemo(() => {
     if (
-      selectedToken.symbol !== TokenSymbol.BTCT &&
-      selectedToken.symbol !== TokenSymbol.BTC
+      selectedToken.symbol === TokenSymbol.BTC ||
+      selectedToken.symbol === TokenSymbol.BTCT
     ) {
-      return tokenList.filter(tok =>
-        transactionFeeMap.get(tok.symbol as TokenSymbol),
-      )
+      return [selectedToken]
     }
-
-    return [selectedToken]
+    return tokenList.filter(tk => rifFeeMap.get(tk.symbol as TokenSymbol))
   }, [tokenList, selectedToken])
 
   const tokenQuote = selectedToken.contractAddress.startsWith('BITCOIN')
@@ -137,7 +147,7 @@ export const TransactionForm = ({
         displayAddress: recipient?.displayAddress ?? '',
       },
       name: recipient?.name ?? null,
-      isToValid: recipient?.name ? true : false,
+      isToValid: !!recipient?.name,
     },
     resolver: yupResolver(transactionSchema),
   })
@@ -159,15 +169,21 @@ export const TransactionForm = ({
     symbol: '',
   })
   const [balanceInverted, setBalanceInverted] = useState(false)
+  const [proposedContact, setProposedContact] =
+    useState<ProposedContact | null>(null)
 
   const handleAmountChange = useCallback(
     (newAmount: string, _balanceInverted: boolean) => {
       const text = sanitizeMaxDecimalText(sanitizeDecimalText(newAmount))
+      if (Number(text) >= maxAmount) {
+        return
+      }
       const numberAmount = Number(text)
       setFirstBalance(prev => ({
         ...prev,
         balance: text,
       }))
+
       if (_balanceInverted) {
         const balanceToSet = convertUSDtoToken(numberAmount, tokenQuote)
         setValue('amount', balanceToSet)
@@ -231,6 +247,7 @@ export const TransactionForm = ({
         } else {
           setFirstBalance(tokenObject)
         }
+
         setSelectedFeeToken(token)
         handleAmountChange('', balanceInverted)
         setShowTxSelector(false)
@@ -282,6 +299,24 @@ export const TransactionForm = ({
     [tokenList],
   )
 
+  const onAddContact = useCallback(() => {
+    if (proposedContact) {
+      const { address, displayAddress } = proposedContact
+      navigationContainerRef.navigate(rootTabsRouteNames.Contacts, {
+        screen: contactsStackRouteNames.ContactForm,
+        params: {
+          initialValue: {
+            name: '',
+            displayAddress,
+            address,
+          },
+          proposed: true,
+        },
+      })
+      setProposedContact(null)
+    }
+  }, [proposedContact])
+
   return (
     <>
       <ScrollView ref={scrollViewRef} scrollIndicatorInsets={{ right: -8 }}>
@@ -292,9 +327,7 @@ export const TransactionForm = ({
               label={t('transaction_form_recepient_label')}
               value={recipient.name}
               subtitle={
-                !recipient.displayAddress
-                  ? shortAddress(recipient.address)
-                  : recipient.displayAddress
+                recipient.displayAddress || shortAddress(recipient.address)
               }
               inputName={'to'}
               leftIcon={<Avatar name={recipient.name} size={32} />}
@@ -309,12 +342,26 @@ export const TransactionForm = ({
               resetValue={() => {
                 resetField('to')
                 resetField('isToValid')
+                setProposedContact(null)
               }}
               testID={'To.Input'}
               chainId={chainId}
               isBitcoin={'satoshis' in selectedToken}
+              contactList={contactList}
+              onAddContact={setProposedContact}
             />
           )}
+          {proposedContact ? (
+            <AppButton
+              style={{ marginTop: 6 }}
+              testID={`${testIDs.addressInput}.Button.ProposedContact`}
+              accessibilityLabel="addProposedContact"
+              title={`${t('contact_form_button_add_proposed_contact')} ${
+                proposedContact.displayAddress
+              } ${t('contact_form_button_add_proposed_contact_ending')}`}
+              onPress={onAddContact}
+            />
+          ) : null}
           <TokenBalance
             style={styles.marginTop10}
             firstValue={firstBalance}
@@ -323,9 +370,9 @@ export const TransactionForm = ({
             error={hasEnoughBalance ? t('transaction_form_error_balance') : ''}
             onSwap={onSwapBalance}
             editable
-            handleAmountChange={value =>
+            handleAmountChange={value => {
               handleAmountChange(value, balanceInverted)
-            }
+            }}
           />
           <Input
             containerStyle={styles.marginTop10}
@@ -366,7 +413,7 @@ export const TransactionForm = ({
             <Input
               inputName={'fee'}
               label={t('transaction_form_fee_input_label')}
-              placeholder={`${selectedFeeToken.symbol}`}
+              placeholder={selectedFeeToken.symbol}
               leftIcon={
                 <TokenImage symbol={selectedFeeToken.symbol} size={32} />
               }

@@ -47,6 +47,7 @@ import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { AppSpinner } from 'components/index'
 import { AvatarIcon } from 'components/icons/AvatarIcon'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
+import { RNS_ADDRESSES_BY_CHAIN_ID } from 'screens/rnsManager/types'
 
 import { rnsManagerStyles } from '../rnsManager/rnsManagerStyles'
 
@@ -55,7 +56,7 @@ export const ProfileCreateScreen = ({
 }: ProfileStackScreenProps<profileStackRouteNames.ProfileCreateScreen>) => {
   const dispatch = useAppDispatch()
   const profile = useAppSelector(selectProfile)
-  const { wallet, chainType } = useAppSelector(selectWalletState)
+  const { wallet, chainId } = useAppSelector(selectWalletState)
   const [infoBoxClosed, setInfoBoxClosed] = useState<boolean>(
     profile.infoBoxClosed ?? false,
   )
@@ -68,7 +69,7 @@ export const ProfileCreateScreen = ({
 
   const { displayAddress } = getAddressDisplayText(
     wallet?.smartWallet.smartWalletAddress ?? '',
-    chainType,
+    chainId,
   )
 
   const onSetEmail = useCallback(
@@ -136,7 +137,10 @@ export const ProfileCreateScreen = ({
       profile.alias &&
       profile.status === ProfileStatus.REQUESTING
     ) {
-      const rns = new RnsProcessor({ wallet })
+      const rns = new RnsProcessor({
+        wallet,
+        rnsAddresses: RNS_ADDRESSES_BY_CHAIN_ID[chainId],
+      })
       commitment(
         rns,
         profile.alias.split('.rsk')[0],
@@ -173,7 +177,10 @@ export const ProfileCreateScreen = ({
           <Avatar size={50} name="username" style={styles.avatarBackground} />
         )}
         <View style={styles.username}>
-          <Typography type={'h3'} color={sharedColors.white}>
+          <Typography
+            type={'h3'}
+            color={sharedColors.white}
+            accessibilityLabel={'username'}>
             {username || t('no_username')}
           </Typography>
           <Typography type={'h4'} color={sharedColors.labelLight}>
@@ -242,7 +249,7 @@ export const ProfileCreateScreen = ({
             label={t('profile_phone_label')}
             inputName="phone"
             placeholder={t('profile_phone_label')}
-            testID={'TestID.PhoneText'}
+            accessibilityLabel={'TestID.PhoneText'}
             resetValue={resetPhone}
             autoCorrect={false}
             autoCapitalize={'none'}
@@ -253,7 +260,7 @@ export const ProfileCreateScreen = ({
             label={t('profile_email_label')}
             inputName="email"
             placeholder={t('profile_email_label')}
-            testID={'TestID.EmailText'}
+            accessibilityLabel={'TestID.EmailText'}
             resetValue={resetEmail}
             autoCorrect={false}
             autoCapitalize={'none'}
@@ -271,6 +278,7 @@ export const ProfileCreateScreen = ({
           <AppButton
             style={rnsManagerStyles.button}
             title={t('profile_register_your_username_button_text')}
+            accessibilityLabel={'registerYourUserName'}
             color={sharedColors.white}
             textColor={sharedColors.black}
             disabled={

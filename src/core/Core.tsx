@@ -1,10 +1,11 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { StatusBar, View } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import {
   createNavigationContainerRef,
   NavigationContainer,
 } from '@react-navigation/native'
+import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
 import {
   RootNavigationComponent,
@@ -21,6 +22,7 @@ import {
   unlockApp,
 } from 'store/slices/settingsSlice'
 import { sharedStyles } from 'shared/constants'
+import { WalletConnect2Provider } from 'src/screens/walletConnect/WalletConnect2Context'
 
 import { useStateSubscription } from './hooks/useStateSubscription'
 import { Cover } from './components/Cover'
@@ -31,15 +33,14 @@ export const navigationContainerRef =
 
 export const Core = () => {
   const dispatch = useAppDispatch()
-
   const settings = useAppSelector(selectWholeSettingsState)
   const requests = useAppSelector(selectRequests)
   const topColor = useAppSelector(selectTopColor)
   const isOffline = useIsOffline()
-
   const { unlocked, active } = useStateSubscription()
+  const [wallet, setWallet] = useState<RIFWallet | null>(null)
 
-  const unlockAppSetMnemonic = useCallback(async () => {
+  const unlockAppFn = useCallback(async () => {
     try {
       await dispatch(unlockApp({ isOffline })).unwrap()
     } catch (err) {
@@ -48,8 +49,19 @@ export const Core = () => {
   }, [dispatch, isOffline])
 
   useEffect(() => {
-    unlockAppSetMnemonic()
-  }, [unlockAppSetMnemonic])
+    unlockAppFn()
+  }, [unlockAppFn])
+
+  /**
+   * Obs: calling selectWalletState will throw an error since the wallet is not yet ready.
+   * So we need to retrieve the wallet from the settings state.
+   */
+  useEffect(() => {
+    const { wallets, walletsIsDeployed, selectedWallet } = settings
+    if (wallets && walletsIsDeployed) {
+      setWallet(wallets[selectedWallet])
+    }
+  }, [settings, wallet])
 
   return (
     <SafeAreaProvider>
@@ -57,19 +69,21 @@ export const Core = () => {
         <StatusBar backgroundColor={topColor} />
         {!active && <Cover />}
         <NavigationContainer ref={navigationContainerRef}>
-          {settings.loading && !unlocked ? (
-            <LoadingScreen />
-          ) : (
-            <>
-              <RootNavigationComponent />
-              {requests.length !== 0 && (
-                <RequestHandler
-                  request={requests[0]}
-                  closeRequest={() => dispatch(closeRequest())}
-                />
-              )}
-            </>
-          )}
+          <WalletConnect2Provider wallet={wallet}>
+            {settings.loading && !unlocked ? (
+              <LoadingScreen />
+            ) : (
+              <>
+                <RootNavigationComponent />
+                {requests.length !== 0 && (
+                  <RequestHandler
+                    request={requests[0]}
+                    closeRequest={() => dispatch(closeRequest())}
+                  />
+                )}
+              </>
+            )}
+          </WalletConnect2Provider>
         </NavigationContainer>
       </View>
     </SafeAreaProvider>

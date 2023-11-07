@@ -14,9 +14,11 @@ interface ITransferBitcoin {
   btcToPay: number
   to: string
   utxos: Array<UnspentTransactionType>
+  balance: number
+  addressToReturnRemainingAmount: string
+  onBitcoinTransactionSuccess?: (options: { addressUsed: string }) => void
   onSetError?: OnSetErrorFunction
   onSetCurrentTransaction?: OnSetCurrentTransactionFunction
-  balance: number
 }
 
 const MINIMUM_FEE = 141 // should be removed when estimate fee is up...
@@ -29,6 +31,8 @@ export const transferBitcoin = ({
   to,
   utxos,
   balance,
+  addressToReturnRemainingAmount,
+  onBitcoinTransactionSuccess,
 }: ITransferBitcoin) => {
   if (onSetError) {
     onSetError(null)
@@ -45,6 +49,7 @@ export const transferBitcoin = ({
       unspentTransactions: utxos,
       miningFee: Number(MINIMUM_FEE),
       balance,
+      addressToReturnRemainingAmount,
     })
     .then(async txIdJson => {
       if (txIdJson.result) {

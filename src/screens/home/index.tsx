@@ -1,13 +1,9 @@
-import RampSdk from '@ramp-network/react-native-sdk'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { StyleSheet, View, ScrollView } from 'react-native'
+import { StyleSheet, View, ScrollView, Alert } from 'react-native'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import { useTranslation } from 'react-i18next'
 import { useIsFocused } from '@react-navigation/native'
 
-import { getChainIdByType } from 'lib/utils'
-
-import { toChecksumAddress } from 'components/address/lib'
 import { Typography } from 'components/typography'
 import {
   homeStackRouteNames,
@@ -38,7 +34,6 @@ import { selectTransactions } from 'store/slices/transactionsSlice'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { ActivityBasicRow } from 'screens/activity/ActivityRow'
-import { rootTabsRouteNames } from 'navigation/rootNavigator'
 
 import { HomeInformationBar } from './HomeInformationBar'
 import { getTokenColor } from './tokenColor'
@@ -53,7 +48,7 @@ export const HomeScreen = ({
   const { t } = useTranslation()
   const isFocused = useIsFocused()
   const dispatch = useAppDispatch()
-  const { wallet, chainType } = useAppSelector(selectWalletState)
+  const { wallet } = useAppSelector(selectWalletState)
   const tokenBalances = useAppSelector(selectBalances)
   const transactions = useAppSelector(selectTransactions)
   const totalUsdBalance = useAppSelector(selectTotalUsdValue)
@@ -83,7 +78,7 @@ export const HomeScreen = ({
     backgroundColor: selectedAddress ? selectedColor : sharedColors.borderColor,
   }
 
-  const rampConfig = useMemo(
+  /*const rampConfig = useMemo(
     () => ({
       // for testnet:
       url: 'https://app.demo.ramp.network',
@@ -110,7 +105,7 @@ export const HomeScreen = ({
   const addBalance = useCallback(() => {
     ramp.on('*', console.log)
     ramp.show(rampConfig)
-  }, [ramp, rampConfig])
+  }, [ramp, rampConfig])*/
 
   const handleBitcoinSendReceive = useCallback(
     (
@@ -124,7 +119,6 @@ export const HomeScreen = ({
           })
         case 'SEND':
           return navigation.navigate(homeStackRouteNames.Send, {
-            backScreen: rootTabsRouteNames.Home,
             token: _selected?.symbol,
             contractAddress: _selected?.contractAddress,
           })
@@ -150,10 +144,15 @@ export const HomeScreen = ({
             token: selected,
           })
         case 'FAUCET':
-          return addBalance()
+          return Alert.alert(t('ramp_error_title'), t('ramp_error'), [
+            {
+              text: t('confirm_key_button'),
+            },
+          ])
+        // return addBalance()
       }
     },
-    [handleBitcoinSendReceive, navigation, selected, addBalance],
+    [handleBitcoinSendReceive, navigation, selected, t],
   )
 
   useEffect(() => {
@@ -256,8 +255,9 @@ export const HomeScreen = ({
           <ScrollView>
             {transactions.slice(0, 5).map((tx, index) => (
               <ActivityBasicRow
-                wallet={wallet}
                 key={tx.id + '   ' + index}
+                index={index}
+                wallet={wallet}
                 activityDetails={tx}
                 navigation={navigation}
               />
@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
   }),
   container: castStyle.view({
     flex: 1,
-    backgroundColor: sharedColors.secondary,
+    backgroundColor: sharedColors.black,
   }),
   text: castStyle.text({
     textAlign: 'center',

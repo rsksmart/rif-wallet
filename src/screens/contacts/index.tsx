@@ -3,10 +3,16 @@ import { useTranslation } from 'react-i18next'
 import { Image, ScrollView, StyleSheet, View } from 'react-native'
 import { CompositeScreenProps, useIsFocused } from '@react-navigation/native'
 import { FormProvider, useForm } from 'react-hook-form'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { shortAddress } from 'lib/utils'
 
-import { AppButton, AppTouchable, Typography } from 'components/index'
+import {
+  AppButton,
+  AppTouchable,
+  Typography,
+  buttonHeight,
+} from 'components/index'
 import {
   rootTabsRouteNames,
   RootTabsScreenProps,
@@ -34,6 +40,7 @@ export type ContactsListScreenProps = CompositeScreenProps<
 >
 
 export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
+  const insets = useSafeAreaInsets()
   const dispatch = useAppDispatch()
   const isFocused = useIsFocused()
   const methods = useForm({
@@ -87,24 +94,23 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
 
   return (
     <View style={sharedStyles.screen}>
-      {recentContacts && recentContacts.length > 0 && (
+      <Typography type={'h2'} style={styles.title}>
+        {t('contacts_screen_title')}
+      </Typography>
+      {recentContacts?.length > 0 && (
         <View style={styles.recentContacts}>
           <ScrollView horizontal>
             {recentContacts.map((c, i) => (
               <ContactCard
-                onPress={onSendToRecentContact(c)}
-                style={styles.contactCard}
                 key={i}
                 name={c.name}
+                onPress={onSendToRecentContact(c)}
               />
             ))}
           </ScrollView>
         </View>
       )}
-      <Typography type={'h2'} style={styles.title}>
-        {t('contacts_screen_title')}
-      </Typography>
-      <View style={styles.noContactsTextView} testID={'emptyView'}>
+      <View style={styles.subtitle} testID={'emptyView'}>
         {contacts.length === 0 ? (
           <>
             <Typography type={'body3'}>{t('contacts_empty_list')}</Typography>
@@ -129,11 +135,17 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
               resetValue={onSearchReset}
               placeholder={t('search_placeholder')}
               testID={testIDs.searchInput}
+              accessibilityLabel={testIDs.searchInput}
             />
-            <ScrollView style={styles.contactsList}>
+            <ScrollView
+              style={styles.contactsList}
+              contentContainerStyle={{
+                paddingBottom: insets.bottom + buttonHeight + 12,
+              }}>
               {contactsFiltered.map((contact, index) => (
                 <AppTouchable
                   key={index + contact.name}
+                  accessibilityLabel={contact.name}
                   width={'100%'}
                   onPress={() =>
                     navigation.navigate(
@@ -161,6 +173,7 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
       </FormProvider>
       <AppButton
         title={t('contacts_new_contact_button_label')}
+        accessibilityLabel={testIDs.newContact}
         onPress={() => navigation.navigate(contactsStackRouteNames.ContactForm)}
         style={styles.newContactButton}
         textColor={sharedColors.black}
@@ -170,25 +183,27 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
 }
 
 const styles = StyleSheet.create({
-  title: castStyle.text({ marginTop: 18 }),
+  title: castStyle.text({
+    marginTop: 18,
+  }),
   noContactsImage: castStyle.image({
     marginTop: 102,
     alignSelf: 'center',
   }),
   searchInput: castStyle.view({
-    marginTop: 18,
-  }),
-  noContactsTextView: castStyle.view({
     marginTop: 14,
+  }),
+  subtitle: castStyle.view({
+    marginTop: 10,
     alignItems: 'flex-start',
     justifyContent: 'flex-end',
   }),
-  contactsList: {
-    marginTop: 18,
+  contactsList: castStyle.view({
+    marginTop: 14,
     padding: 10,
     shadowOpacity: 0.1,
     shadowRadius: 10,
-  },
+  }),
   newContactButton: castStyle.view({
     position: 'absolute',
     bottom: 30,
@@ -196,9 +211,9 @@ const styles = StyleSheet.create({
     right: 24,
     backgroundColor: sharedColors.white,
   }),
-  recentContacts: castStyle.view({ height: 100, marginTop: 12 }),
-  contactCard: castStyle.view({
-    marginLeft: 6,
+  recentContacts: castStyle.view({
+    height: 100,
+    marginTop: 12,
   }),
 })
 

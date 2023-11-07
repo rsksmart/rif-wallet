@@ -1,18 +1,28 @@
 import { combineReducers } from '@reduxjs/toolkit'
-import { persistReducer, createMigrate, PersistConfig } from 'redux-persist'
+import {
+  createMigrate,
+  getStoredState,
+  PersistConfig,
+  persistReducer,
+} from 'redux-persist'
 
+import { ProfileStatus } from 'navigation/profileNavigator/types'
+import { getCurrentChainId } from 'storage/ChainStorage'
 import { reduxStorage } from 'storage/ReduxStorage'
 import { contactsReducer } from 'store/slices/contactsSlice'
-import { ProfileStatus } from 'navigation/profileNavigator/types'
+import {
+  persistentDataReducer,
+  PersistentDataState,
+} from 'store/slices/persistentDataSlice'
 
 import { accountsReducer } from './slices/accountsSlice'
 import { balancesReducer } from './slices/balancesSlice'
+import { currentTransactionReducer } from './slices/currentTransactionSlice'
 import { profileReducer } from './slices/profileSlice'
 import { settingsSliceReducer } from './slices/settingsSlice'
-import { transactionsReducer } from './slices/transactionsSlice'
-import { currentTransactionReducer } from './slices/currentTransactionSlice'
-import { usdPriceReducer } from './slices/usdPricesSlice'
 import { SettingsSlice } from './slices/settingsSlice/types'
+import { transactionsReducer } from './slices/transactionsSlice'
+import { usdPriceReducer, UsdPricesState } from './slices/usdPricesSlice'
 
 const migrations = {
   // It's on purpose due to state type from redux-persist is PersistedStated.
@@ -29,36 +39,76 @@ const migrations = {
   }),
 }
 
-const settingsPersistConfig: PersistConfig<SettingsSlice> = {
-  key: 'settings',
-  whitelist: ['pin', 'chainId', 'isFirstLaunch'],
-  storage: reduxStorage,
+const firstPersistentDataMigration = async state => {
+  // First migration, check if state already exists
+  if (!state) {
+    // First step is to get old settings storage - usually testnet storage has all the info
+    const oldStorage = await getStoredState({
+      key: 'settings',
+      storage: reduxStorage(31),
+    })
+    // If old storage exists, we will migrate it to the current state
+    if (oldStorage) {
+      return {
+        keysExist: oldStorage.keysExist,
+        isFirstLaunch: oldStorage.isFirstLaunch,
+        pin: oldStorage.pin,
+      }
+    }
+  }
+  return state
 }
 
-const rootPersistConfig = {
-  key: 'root',
-  storage: reduxStorage,
-  version: 0,
-  migrate: createMigrate(migrations),
-  whitelist: [
-    'profile',
-    'accounts',
-    'contacts',
-    'balances',
-    'usdPrices',
-    'transactions',
-  ],
+export const createRootReducer = () => {
+  const persistedReduxStorageAcrossChainSwitches = reduxStorage(0)
+
+  const settingsPersistConfig: PersistConfig<SettingsSlice> = {
+    key: 'settings',
+    whitelist: ['usedBitcoinAddresses'],
+    storage: reduxStorage(getCurrentChainId()),
+  }
+
+  const persistentDataPersistConfig: PersistConfig<PersistentDataState> = {
+    key: 'persistentData',
+    whitelist: ['keysExist', 'isFirstLaunch', 'pin'],
+    storage: persistedReduxStorageAcrossChainSwitches,
+    migrate: firstPersistentDataMigration,
+  }
+
+  const usdPricesPersistConfig: PersistConfig<UsdPricesState> = {
+    key: 'usdPrices',
+    storage: persistedReduxStorageAcrossChainSwitches,
+  }
+
+  const rootPersistConfig = {
+    key: 'root',
+    version: 0,
+    migrate: createMigrate(migrations),
+    whitelist: [
+      'profile',
+      'accounts',
+      'contacts',
+      'balances',
+      'usdPrices',
+      'transactions',
+    ],
+    storage: reduxStorage(getCurrentChainId()),
+  }
+
+  const reducers = combineReducers({
+    usdPrices: persistReducer(usdPricesPersistConfig, usdPriceReducer),
+    balances: balancesReducer,
+    transactions: transactionsReducer,
+    currentTransaction: currentTransactionReducer,
+    settings: persistReducer(settingsPersistConfig, settingsSliceReducer),
+    profile: profileReducer,
+    accounts: accountsReducer,
+    contacts: contactsReducer,
+    persistentData: persistReducer(
+      persistentDataPersistConfig,
+      persistentDataReducer,
+    ),
+  })
+
+  return persistReducer(rootPersistConfig, reducers)
 }
-
-const reducers = combineReducers({
-  usdPrices: usdPriceReducer,
-  balances: balancesReducer,
-  transactions: transactionsReducer,
-  currentTransaction: currentTransactionReducer,
-  settings: persistReducer(settingsPersistConfig, settingsSliceReducer),
-  profile: profileReducer,
-  accounts: accountsReducer,
-  contacts: contactsReducer,
-})
-
-export const rootReducer = persistReducer(rootPersistConfig, reducers)

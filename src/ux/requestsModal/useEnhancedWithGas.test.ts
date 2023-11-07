@@ -1,20 +1,26 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { renderHook, act } from '@testing-library/react-hooks'
 import { BigNumber, Wallet, providers } from 'ethers'
+import { useSelector } from 'react-redux'
 
 import useEnhancedWithGas from './useEnhancedWithGas'
+
+jest.mock('react-redux')
 
 describe('hook: useEnhancedWithGas', function (this: {
   tx: TransactionRequest
   rifWallet: Wallet
 }) {
+  const useSelectorMock = useSelector as jest.MockedFunction<typeof useSelector>
+  useSelectorMock.mockImplementation(cb => cb({ settings: { chainId: 31 } }))
   beforeEach(async () => {
     const provider = new providers.JsonRpcProvider('http://127.0.0.1:8545')
     this.rifWallet = Wallet.createRandom().connect(provider)
+    useSelectorMock.mockClear()
 
     this.tx = {
-      to: '0x123',
-      from: '0x456',
+      from: '0xa2193a393aa0c94a4d52893496f02b56c61c36a1',
+      to: '0xfbd1cb816f073c554296bfff2be2ddb66ced83fd',
       value: 0,
     }
 
@@ -30,8 +36,8 @@ describe('hook: useEnhancedWithGas', function (this: {
   })
 
   const runHook = async (tx: TransactionRequest) => {
-    const { result, waitForNextUpdate } = await renderHook(
-      async () => await useEnhancedWithGas(this.rifWallet, tx),
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useEnhancedWithGas(this.rifWallet, tx),
     )
 
     await waitForNextUpdate()
@@ -97,6 +103,17 @@ describe('hook: useEnhancedWithGas', function (this: {
         })
 
         expect(txEnhanced.enhancedTransactionRequest.gasPrice).toBe('2020')
+      })
+    })
+
+    it('should not call estimateGas if the tx.to address is not valid', async () => {
+      await act(async () => {
+        const txEnhanced = await runHook({
+          ...this.tx,
+          to: '0x',
+        })
+
+        expect(txEnhanced.enhancedTransactionRequest.gasLimit).toBe('0')
       })
     })
   })

@@ -24,6 +24,7 @@ import { selectChainId } from 'store/slices/settingsSlice'
 import { FullScreenSpinner } from 'components/fullScreenSpinner'
 import { SuccessIcon } from 'components/icons/SuccessIcon'
 import { FeedbackModal } from 'components/feedbackModal'
+import { getContactsAsArrayAndSelected } from 'store/slices/contactsSlice'
 
 import { TransactionForm } from './TransactionForm'
 import { usePaymentExecutor } from './usePaymentExecutor'
@@ -38,12 +39,15 @@ export const SendScreen = ({
   const { t } = useTranslation()
   const { wallet, walletIsDeployed } = useAppSelector(selectWalletState)
   const { loading, isDeployed } = walletIsDeployed
-  const assets = Object.values(useAppSelector(selectBalances))
   const chainId = useAppSelector(selectChainId)
+  const { contacts } = useAppSelector(getContactsAsArrayAndSelected)
 
   const totalUsdBalance = useAppSelector(selectTotalUsdValue)
   const prices = useAppSelector(selectUsdPrices)
   const { backScreen, contact } = route.params
+
+  const balances = Object.values(useAppSelector(selectBalances))
+  const assets = contact ? balances.filter(b => !('bips' in b)) : balances
   const contractAddress = route.params?.contractAddress || assets[0]
 
   // We assume only one bitcoinNetwork instance exists
@@ -186,6 +190,7 @@ export const SendScreen = ({
         ]}
       />
       <TransactionForm
+        contactList={contacts}
         onConfirm={onExecuteTransfer}
         onCancel={onCancel}
         tokenList={assets}

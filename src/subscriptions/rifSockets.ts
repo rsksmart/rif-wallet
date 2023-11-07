@@ -1,10 +1,12 @@
 import EventEmitter from 'eventemitter3'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import {
+  ITokenWithBalance,
   RifWalletServicesFetcher,
   RifWalletServicesSocket,
 } from '@rsksmart/rif-wallet-services'
 import { Options, setInternetCredentials } from 'react-native-keychain'
+import DeviceInfo from 'react-native-device-info'
 
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { AppDispatch } from 'store/index'
@@ -37,10 +39,7 @@ interface RifSockets {
   setGlobalError: (err: string) => void
   dispatch: AppDispatch
   usdPrices: UsdPricesState
-  fetcher: RifWalletServicesFetcher<
-    Options,
-    ReturnType<typeof setInternetCredentials>
-  >
+  fetcher: RifWalletServicesFetcher
   chainId: ChainTypesByIdType
   balances: Record<string, TokenBalanceObject>
 }
@@ -86,6 +85,10 @@ export const rifSockets = ({
         currentInstance.cache = new MMKVStorage('txs', encryptionKey)
       },
     },
+    {
+      cacheBlockNumberText: `blockNumber_${chainId}`,
+      cacheTxsText: `cachedTxs_${chainId}`,
+    },
   )
 
   const connectSocket = () => {
@@ -95,12 +98,16 @@ export const rifSockets = ({
     }
 
     const defaultTokens = getDefaultTokens(chainId)
-    defaultTokens.forEach(t => {
+    const defaultTokensWithBalance = defaultTokens.map(t => {
       const tokenBalance = balances[t.contractAddress]
-      t.balance = tokenBalance?.balance ?? t.balance
-      t.usdBalance = tokenBalance?.usdBalance ?? t.usdBalance
+      return {
+        ...t,
+        logo: '', // remove warning
+        balance: tokenBalance?.balance ?? t.balance,
+        usdBalance: tokenBalance?.usdBalance ?? t.usdBalance,
+      } as ITokenWithBalance
     })
-    dispatch(addOrUpdateBalances(defaultTokens))
+    dispatch(addOrUpdateBalances(defaultTokensWithBalance))
 
     rifWalletServicesSocket.removeAllListeners()
 
@@ -108,13 +115,15 @@ export const rifSockets = ({
       onSocketInit(payload, onChange),
     )
     rifWalletServicesSocket.on('change', onChange)
-    rifWalletServicesSocket.connect(wallet, fetcher).catch(err => {
-      if (err instanceof Error) {
-        setGlobalError(err.message)
-      } else {
-        setGlobalError('Error connecting to socket')
-      }
-    })
+    rifWalletServicesSocket
+      .connect(wallet, fetcher, { 'User-Agent': DeviceInfo.getUserAgentSync() })
+      .catch(err => {
+        if (err instanceof Error) {
+          setGlobalError(err.message)
+        } else {
+          setGlobalError('Error connecting to socket')
+        }
+      })
   }
 
   const disconnectSocket = rifWalletServicesSocket.disconnect

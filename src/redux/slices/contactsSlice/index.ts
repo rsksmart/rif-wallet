@@ -7,6 +7,7 @@ import {
 import { getContacts, saveContacts } from 'storage/MainStorage'
 import { Contact } from 'shared/types'
 import { defaultContacts } from 'store/slices/contactsSlice/constants'
+import { TESTNET as addresses } from 'screens/rnsManager/addresses.json'
 
 const initialState: ContactsState = {
   contacts: defaultContacts,
@@ -50,8 +51,15 @@ const contactsSlice = createSlice({
       return state
     },
     addRecentContact: (state, { payload }: PayloadAction<string>) => {
+      if (
+        addresses.fifsAddrRegistrarAddress.toLowerCase() ===
+        payload.toLowerCase()
+      ) {
+        return
+      }
+
       const addressForSearch = payload.toLowerCase()
-      console.log('addRecentContact', addressForSearch)
+
       if (!state.recentContacts) {
         state.recentContacts = []
       }

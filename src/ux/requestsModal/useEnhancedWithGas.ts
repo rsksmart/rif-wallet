@@ -3,6 +3,10 @@ import { TransactionRequest } from '@ethersproject/providers'
 import { BigNumber } from 'ethers'
 import { AbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
+import { isAddress } from '@rsksmart/rsk-utils'
+
+import { useAppSelector } from 'store/storeUtils'
+import { selectChainId } from 'store/slices/settingsSlice'
 
 const abiEnhancer = new AbiEnhancer()
 
@@ -27,6 +31,7 @@ export interface EnhancedTransactionRequest extends TransactionRequest {
 }
 
 const useEnhancedWithGas = (wallet: RIFWallet, tx: TransactionRequest) => {
+  const chainId = useAppSelector(selectChainId)
   const [enhancedTransactionRequest, setEnhancedTransactionRequest] =
     useState<EnhancedTransactionRequest>({
       gasPrice: '0',
@@ -35,6 +40,10 @@ const useEnhancedWithGas = (wallet: RIFWallet, tx: TransactionRequest) => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
 
   useEffect(() => {
+    // avoid to call estimateGas if the tx.to address is not valid
+    if (tx.to && !isAddress(tx.to)) {
+      return
+    }
     const gasLimitEstimate = wallet
       .estimateGas({ to: tx.to || '0x', data: tx.data || '0x' })
       .then((estimate: BigNumber) => {
@@ -56,7 +65,7 @@ const useEnhancedWithGas = (wallet: RIFWallet, tx: TransactionRequest) => {
         }
       })
 
-    const enhancer = abiEnhancer.enhance(wallet, tx)
+    const enhancer = abiEnhancer.enhance(chainId, tx)
 
     Promise.all([gasLimitEstimate, gasPriceEstimate, enhancer]).then(result => {
       const txEnhanced = convertTransactionToStrings({
@@ -68,7 +77,7 @@ const useEnhancedWithGas = (wallet: RIFWallet, tx: TransactionRequest) => {
       setEnhancedTransactionRequest(txEnhanced)
       setIsLoaded(true)
     })
-  }, [tx, wallet])
+  }, [tx, wallet, chainId])
 
   const setGasLimit = (gasLimit: string) =>
     setEnhancedTransactionRequest({ ...enhancedTransactionRequest, gasLimit })

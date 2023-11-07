@@ -1,4 +1,4 @@
-import { ColorValue, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
 
 import { castStyle } from '../utils'
 
@@ -9,9 +9,12 @@ export const testIDs = {
   swap: 'swap',
   searchInput: 'searchInput',
   saveButton: 'saveButton',
+  nameInput: 'nameInput',
+  addressInput: 'addressInput',
+  newContact: 'newContact',
 }
 
-export const sharedColors: { [key: string]: ColorValue } = {
+export const sharedColors = {
   primary: '#4B5CF0',
   secondary: '#121212',
   success: '#79C600',
@@ -45,7 +48,7 @@ export const tokenColors = {
 }
 export const defaultFontSize = 16
 export const defaultIconSize = 16
-export const noop = () => ({})
+export const noop = () => {}
 
 export const sharedStyles = StyleSheet.create({
   displayNone: castStyle.view({

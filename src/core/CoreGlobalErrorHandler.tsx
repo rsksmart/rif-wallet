@@ -1,4 +1,5 @@
 import { SafeAreaProvider } from 'react-native-safe-area-context'
+import FlashMessage from 'react-native-flash-message'
 
 import { GlobalErrorHandler } from '../components/GlobalErrorHandler'
 import ErrorBoundary from '../components/ErrorBoundary/ErrorBoundary'
@@ -12,6 +13,7 @@ export const CoreGlobalErrorHandler = ({ CoreComponent = CoreWithStore }) => {
           <CoreComponent />
         </SafeAreaProvider>
       </ErrorBoundary>
+      <FlashMessage />
     </GlobalErrorHandler>
   )
 }

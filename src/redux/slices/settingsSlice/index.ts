@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { getSupportedBiometryType } from 'react-native-keychain'
-import { Platform } from 'react-native'
+import { ColorValue, Platform } from 'react-native'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { RifWalletServicesFetcher } from '@rsksmart/rif-wallet-services'
 
@@ -12,7 +12,7 @@ import { deleteContacts as deleteContactsFromRedux } from 'store/slices/contacts
 import { resetMainStorage } from 'storage/MainStorage'
 import { deleteKeys, getKeys } from 'storage/SecureStorage'
 import { sharedColors } from 'shared/constants'
-import { createPublicAxios, createRIFWalletFactory } from 'core/setup'
+import { createPublicAxios } from 'core/setup'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { deleteProfile } from 'store/slices/profileSlice'
 import { navigationContainerRef } from 'core/Core'
@@ -26,10 +26,16 @@ import {
   socketsEvents,
 } from 'src/subscriptions/rifSockets'
 import { ChainTypesByIdType } from 'shared/constants/chainConstants'
+import { getCurrentChainId } from 'storage/ChainStorage'
+import { resetReduxStorage } from 'storage/ReduxStorage'
+import {
+  setIsFirstLaunch,
+  setKeysExist,
+  setPinState,
+} from 'store/slices/persistentDataSlice'
 
 import {
   Bitcoin,
-  ChainTypeEnum,
   CreateFirstWalletAction,
   OnRequestAction,
   SetKeysAction,
@@ -42,17 +48,10 @@ export const createWallet = createAsyncThunk<
   RIFWallet,
   CreateFirstWalletAction,
   AsyncThunkWithTypes
->('settings/createWallet', async ({ mnemonic, networkId }, thunkAPI) => {
+>('settings/createWallet', async ({ mnemonic }, thunkAPI) => {
   try {
     const { chainId } = thunkAPI.getState().settings
-    const rifWalletFactory = createRIFWalletFactory(
-      request => thunkAPI.dispatch(onRequest({ request })),
-      chainId,
-    )
-    const kms = await createKMS(
-      rifWalletFactory,
-      networkId ? networkId : chainId,
-    )(mnemonic)
+    const kms = await createKMS(chainId, mnemonic, thunkAPI.dispatch)
 
     const supportedBiometry = await getSupportedBiometryType()
 
@@ -85,6 +84,8 @@ export const createWallet = createAsyncThunk<
 
     // unclock the app
     thunkAPI.dispatch(setUnlocked(true))
+
+    thunkAPI.dispatch(setKeysExist(true))
 
     // create fetcher
     //@TODO: refactor socket initialization, it repeats several times
@@ -138,7 +139,7 @@ export const unlockApp = createAsyncThunk<
   try {
     // check if it is a first launch, deleteKeys
     const {
-      settings: { isFirstLaunch },
+      persistentData: { isFirstLaunch },
     } = thunkAPI.getState()
     // if previously installed the app, remove stored encryted keys
     if (isFirstLaunch && !__DEV__) {
@@ -149,16 +150,22 @@ export const unlockApp = createAsyncThunk<
 
     const serializedKeys = await getKeys()
     const { chainId } = thunkAPI.getState().settings
+
     if (!serializedKeys) {
+      // if keys do not exist, set to false
+      thunkAPI.dispatch(setKeysExist(false))
       return thunkAPI.rejectWithValue('No Existing Keys')
     }
+
+    // if keys do exist, set to true
+    thunkAPI.dispatch(setKeysExist(true))
 
     const { pinUnlocked, isOffline } = payload
     const supportedBiometry = await getSupportedBiometryType()
 
     if (Platform.OS === 'android' && !supportedBiometry && !pinUnlocked) {
       const {
-        settings: { pin },
+        persistentData: { pin },
       } = thunkAPI.getState()
 
       // if there's no pin yet and biometrics removed
@@ -183,11 +190,10 @@ export const unlockApp = createAsyncThunk<
 
     // set wallets in the store
     const existingWallet = await loadExistingWallet(
-      createRIFWalletFactory(
-        request => thunkAPI.dispatch(onRequest({ request })),
-        chainId,
-      ),
-    )(serializedKeys)
+      serializedKeys,
+      chainId,
+      thunkAPI.dispatch,
+    )
 
     if (!existingWallet) {
       return thunkAPI.rejectWithValue('No Existing Wallet')
@@ -258,7 +264,9 @@ export const resetApp = createAsyncThunk(
       thunkAPI.dispatch(deleteProfile())
       thunkAPI.dispatch(setPreviouslyUnlocked(false))
       thunkAPI.dispatch(setPinState(null))
+      thunkAPI.dispatch(setKeysExist(false))
       resetMainStorage()
+      resetReduxStorage()
       return 'deleted'
     } catch (err) {
       return thunkAPI.rejectWithValue(err)
@@ -300,7 +308,6 @@ export const resetApp = createAsyncThunk(
 // )
 
 const initialState: SettingsSlice = {
-  isFirstLaunch: true,
   isSetup: false,
   topColor: sharedColors.primary,
   requests: [],
@@ -308,29 +315,30 @@ const initialState: SettingsSlice = {
   walletsIsDeployed: null,
   selectedWallet: '',
   loading: false,
-  chainType: ChainTypeEnum.TESTNET,
   appIsActive: false,
   unlocked: false,
   previouslyUnlocked: false,
   fullscreen: false,
   hideBalance: false,
-  pin: null,
   bitcoin: null,
   chainId: 31,
+  usedBitcoinAddresses: {},
 }
+
+const createInitialState = () => ({
+  ...initialState,
+  chainId: getCurrentChainId(),
+})
 
 const settingsSlice = createSlice({
   name: 'settings',
-  initialState,
+  initialState: createInitialState,
   reducers: {
-    setIsFirstLaunch: (state, { payload }: PayloadAction<boolean>) => {
-      state.isFirstLaunch = payload
-    },
     setIsSetup: (state, { payload }: PayloadAction<boolean>) => {
       state.isSetup = payload
       return state
     },
-    changeTopColor: (state, action: PayloadAction<string>) => {
+    changeTopColor: (state, action: PayloadAction<ColorValue>) => {
       state.topColor = action.payload
     },
     onRequest: (state, { payload }: PayloadAction<OnRequestAction>) => {
@@ -341,8 +349,6 @@ const settingsSlice = createSlice({
     },
     setChainId: (state, { payload }: PayloadAction<ChainTypesByIdType>) => {
       state.chainId = payload
-      state.chainType =
-        payload === 31 ? ChainTypeEnum.TESTNET : ChainTypeEnum.MAINNET
     },
     setAppIsActive: (state, { payload }: PayloadAction<boolean>) => {
       state.appIsActive = payload
@@ -352,9 +358,6 @@ const settingsSlice = createSlice({
     },
     setPreviouslyUnlocked: (state, { payload }: PayloadAction<boolean>) => {
       state.previouslyUnlocked = payload
-    },
-    setPinState: (state, { payload }: PayloadAction<string | null>) => {
-      state.pin = payload
     },
     setWallet: (
       state,
@@ -417,7 +420,7 @@ const settingsSlice = createSlice({
       deleteKeys()
       deleteDomains()
       deleteCache()
-      return initialState
+      return createInitialState()
     },
     setFullscreen: (state, { payload }: PayloadAction<boolean>) => {
       state.fullscreen = payload
@@ -427,6 +430,12 @@ const settingsSlice = createSlice({
     },
     setBitcoinState: (state, { payload }: PayloadAction<Bitcoin>) => {
       state.bitcoin = payload
+    },
+    addAddressToUsedBitcoinAddresses: (
+      state,
+      { payload }: PayloadAction<string>,
+    ) => {
+      state.usedBitcoinAddresses[payload] = payload
     },
   },
   extraReducers(builder) {
@@ -461,13 +470,11 @@ const settingsSlice = createSlice({
 })
 
 export const {
-  setIsFirstLaunch,
   setIsSetup,
   changeTopColor,
   onRequest,
   closeRequest,
   setWallet,
-  setPinState,
   setChainId,
   setAppIsActive,
   setUnlocked,
@@ -480,6 +487,7 @@ export const {
   setFullscreen,
   setHideBalance,
   setBitcoinState,
+  addAddressToUsedBitcoinAddresses,
 } = settingsSlice.actions
 
 export const settingsSliceReducer = settingsSlice.reducer

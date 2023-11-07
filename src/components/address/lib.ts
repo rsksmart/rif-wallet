@@ -4,6 +4,10 @@ import {
   toChecksumAddress,
 } from '@rsksmart/rsk-utils'
 
+import { shortAddress } from 'lib/utils'
+
+import { ChainTypesByIdType } from 'shared/constants/chainConstants'
+
 export enum AddressValidationMessage {
   INVALID_ADDRESS = 'Invalid address',
   INVALID_CHECKSUM = 'Invalid checksum',
@@ -27,7 +31,10 @@ export const isDomain = (text: string): boolean => {
  * @param {number} chainId defined in erip-155
  * @returns {string} null if it's valid and an error message if it is not
  */
-export const validateAddress = (address: string, chainId = 31): string => {
+export const validateAddress = (
+  address: string,
+  chainId = 31,
+): AddressValidationMessage => {
   if (isDomain(address)) {
     return AddressValidationMessage.DOMAIN
   }
@@ -59,6 +66,15 @@ export const isMyAddress = (
   }
 
   return false
+}
+
+export const getAddressDisplayText = (
+  inputAddress: string,
+  chainId: ChainTypesByIdType,
+) => {
+  const checksumAddress = toChecksumAddress(inputAddress, chainId)
+  const displayAddress = shortAddress(checksumAddress)
+  return { checksumAddress, displayAddress }
 }
 
 export { toChecksumAddress }

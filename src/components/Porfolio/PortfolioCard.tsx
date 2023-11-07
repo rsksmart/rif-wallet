@@ -27,8 +27,7 @@ const SelectedCard = ({
   icon?: string
   color?: string
 }) => {
-  const isRifToken =
-    icon?.toUpperCase() === 'RIF' || icon?.toUpperCase() === 'TRIF'
+  const isRifToken = ['RIF', 'TRIF'].includes(icon?.toUpperCase() || '')
   return (
     <View style={selectedCardStyles.container}>
       <View style={selectedCardStyles.primaryTextContainer}>
@@ -44,7 +43,11 @@ const SelectedCard = ({
         ) : null}
         <Typography
           type={'body1'}
-          style={selectedCardStyles.primaryText}
+          style={
+            primaryText.length > 4
+              ? selectedCardStyles.primaryTextLong
+              : selectedCardStyles.primaryText
+          }
           accessibilityLabel="symbol">
           {primaryText}
         </Typography>
@@ -152,6 +155,9 @@ const selectedCardStyles = StyleSheet.create({
     color: sharedColors.white,
     fontSize: 22,
     paddingTop: 3,
+  }),
+  primaryTextLong: castStyle.text({
+    fontSize: 18,
   }),
 })
 

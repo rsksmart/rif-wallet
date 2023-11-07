@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>RIF Wallet Test</string>
+	<string>RIF Wallet</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -36,11 +36,11 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>$PRODUCT_NAME will use the camera to operate with Wallet Connect</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string>$PRODUCT_NAME will use your camera to scan QR codes to make sending quicker and to connect to accounts using WalletConnect.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>$PRODUCT_NAME will use your FACE ID to retrieve and store your secret</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string></string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Please give us access to your photo library to verify you.</string>
 	<key>UIAppFonts</key>
@@ -70,7 +70,7 @@
 		<string>Sora-Thin.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
+	<string>BootSplash</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

@@ -14,6 +14,7 @@ import {
 import { UsdPricesState, setUsdPrices } from 'store/slices/usdPricesSlice'
 import { AppDispatch } from 'store/index'
 import { ChainTypesByIdType } from 'shared/constants/chainConstants'
+import { getCurrentChainId } from 'storage/ChainStorage'
 
 import { AbiWallet, Action } from './types'
 
@@ -32,7 +33,6 @@ interface OnSocketChangeEmittedArgs extends AbiWallet {
 
 const onNewTransactionEventEmitted = async ({
   abiEnhancer,
-  wallet,
   dispatch,
   payload,
   usdPrices,
@@ -46,7 +46,7 @@ const onNewTransactionEventEmitted = async ({
     enhancedTransaction: undefined,
   }
   try {
-    const enhancedTransaction = await abiEnhancer.enhance(wallet, {
+    const enhancedTransaction = await abiEnhancer.enhance(chainId, {
       from: payload.from.toLowerCase(),
       to: payload.to.toLowerCase(),
       data: payload.input,
@@ -75,6 +75,12 @@ export const onSocketChangeEmitted =
     chainId,
   }: OnSocketChangeEmittedArgs) =>
   (action: Action) => {
+    // Temporal patch to avoid dispatching events if current chainId does not match
+    // @TODO find root cause of why the rifSockets is emitting an outdated event
+    // Suspect is the .disconnect is not playing its part
+    if (chainId !== getCurrentChainId()) {
+      return
+    }
     if (action.type === 'reset') {
       dispatch(resetSocketState())
     } else {

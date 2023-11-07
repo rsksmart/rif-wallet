@@ -1,6 +1,3 @@
-import { providers, Wallet } from 'ethers'
-import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
-import { OnRequest, RIFWallet } from '@rsksmart/rif-wallet-core'
 import axios from 'axios'
 import { AbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
 import mainnetContracts from '@rsksmart/rsk-contract-metadata'
@@ -32,38 +29,10 @@ export const getRnsResolver = (chainId: ChainTypesByIdType) =>
     ? Resolver.forRskMainnet({})
     : Resolver.forRskTestnet({})
 
-export const createRIFWalletFactory =
-  (onRequest: OnRequest, chainId: ChainTypesByIdType) => (wallet: Wallet) => {
-    const jsonRpcProvider = new providers.StaticJsonRpcProvider(
-      getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId]),
-    )
-    const rifRelayConfig: RifRelayConfig = {
-      smartWalletFactoryAddress: getWalletSetting(
-        SETTINGS.SMART_WALLET_FACTORY_ADDRESS,
-        chainTypesById[chainId],
-      ),
-      relayVerifierAddress: getWalletSetting(
-        SETTINGS.RELAY_VERIFIER_ADDRESS,
-        chainTypesById[chainId],
-      ),
-      deployVerifierAddress: getWalletSetting(
-        SETTINGS.DEPLOY_VERIFIER_ADDRESS,
-        chainTypesById[chainId],
-      ),
-      relayServer: getWalletSetting(
-        SETTINGS.RIF_RELAY_SERVER,
-        chainTypesById[chainId],
-      ),
-    }
-    return RIFWallet.create(
-      wallet.connect(jsonRpcProvider),
-      onRequest,
-      rifRelayConfig,
-    )
-  }
-
 const defaultMainnetTokens: ITokenWithoutLogo[] = Object.keys(mainnetContracts)
-  .filter(address => ['RDOC', 'RIF'].includes(mainnetContracts[address].symbol))
+  .filter(address =>
+    ['RDOC', 'RIF', 'USDRIF'].includes(mainnetContracts[address].symbol),
+  )
   .map(address => {
     const { decimals, name, symbol } = mainnetContracts[address]
     return {
@@ -77,7 +46,7 @@ const defaultMainnetTokens: ITokenWithoutLogo[] = Object.keys(mainnetContracts)
   })
 const defaultTestnetTokens: ITokenWithoutLogo[] = Object.keys(testnetContracts)
   .filter(address =>
-    ['RDOC', 'tRIF'].includes(testnetContracts[address].symbol),
+    ['RDOC', 'tRIF', 'USDRIF'].includes(testnetContracts[address].symbol),
   )
   .map(address => {
     const { decimals, name, symbol } = testnetContracts[address]
@@ -90,7 +59,8 @@ const defaultTestnetTokens: ITokenWithoutLogo[] = Object.keys(testnetContracts)
       usdBalance: 0,
     }
   })
-export const getDefaultTokens = (chainId: ChainTypesByIdType) =>
-  chainTypesById[chainId] === ChainTypeEnum.MAINNET
+export const getDefaultTokens = (chainId: ChainTypesByIdType) => {
+  return chainTypesById[chainId] === ChainTypeEnum.MAINNET
     ? defaultMainnetTokens
     : defaultTestnetTokens
+}

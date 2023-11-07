@@ -1,17 +1,28 @@
-import { useContext, useEffect, useMemo, useState, ComponentType } from 'react'
+import { useIsFocused } from '@react-navigation/native'
+import { ComponentType, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Alert, Image, ScrollView, StyleSheet, View } from 'react-native'
+import {
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native'
+import { FormProvider, useForm } from 'react-hook-form'
+import Clipboard from '@react-native-community/clipboard'
 
-import { Typography } from 'components/index'
+import { AppButton, Input, Typography } from 'components/index'
 import { ConfirmationModal } from 'components/modal'
 import {
   rootTabsRouteNames,
   RootTabsScreenProps,
 } from 'navigation/rootNavigator/types'
-import { sharedColors } from 'shared/constants'
+import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { selectWalletState } from 'store/slices/settingsSlice'
-import { useAppSelector } from 'store/storeUtils'
+import { changeTopColor, selectWalletState } from 'store/slices/settingsSlice'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 
 import { DappItem } from './DappItem'
 import {
@@ -42,6 +53,8 @@ interface WC2Session {
 
 export const WalletConnectScreen = ({ route }: Props) => {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+  const isFocused = useIsFocused()
 
   const {
     pendingSession,
@@ -53,9 +66,38 @@ export const WalletConnectScreen = ({ route }: Props) => {
     onUserRejectedSession,
     onCreateNewSession,
   } = useContext(WalletConnect2Context)
+
   const [disconnectingWC, setDisconnectingWC] = useState<WC2Session | null>(
     null,
   )
+
+  const methods = useForm({ defaultValues: { wcUri: '' } })
+  const { watch, setValue } = methods
+  const wcUri = watch('wcUri')
+
+  const wc2Sessions: WC2Session[] = sessions.map(session => ({
+    name: session.peer.metadata.name,
+    url: session.peer.metadata.url,
+    key: session.topic,
+    wc: session,
+  }))
+
+  const handlePaste = async () => {
+    const clipboardText = await Clipboard.getString()
+    setValue('wcUri', clipboardText)
+  }
+
+  const onUriSubmitted = () => {
+    setValue('wcUri', '')
+    onCreateNewSession(wcUri)
+  }
+
+  const handleDisconnectSession = (mergedWc: WC2Session) => async () => {
+    await onDisconnectSession(mergedWc.wc)
+    setDisconnectingWC(null)
+  }
+
+  const onWCDisconnect = (wc: WC2Session) => () => setDisconnectingWC(wc)
 
   /**
    * useEffect that watches when we pass data to the route params and connects user depending on WC version
@@ -72,16 +114,6 @@ export const WalletConnectScreen = ({ route }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [route.params?.data])
 
-  const handleDisconnectSession = (mergedWc: WC2Session) => async () => {
-    try {
-      await onDisconnectSession(mergedWc.wc)
-      setDisconnectingWC(null)
-    } catch (err) {
-      // @TODO handle error disconnecting
-      console.log(63, 'WC2.0 error disconnect', err)
-    }
-  }
-
   /**
    * When there is an error in WC2.0 - this effect will show it to the UI
    */
@@ -92,22 +124,17 @@ export const WalletConnectScreen = ({ route }: Props) => {
     }
   }, [walletConnect2Error, t, setWalletConnect2Error])
 
-  const onWCDisconnect = (wc: WC2Session) => () => setDisconnectingWC(wc)
+  useEffect(() => {
+    if (isFocused) {
+      dispatch(changeTopColor(sharedColors.black))
+    }
+  }, [dispatch, isFocused])
 
-  const wc2Sessions: WC2Session[] = useMemo(
-    () =>
-      sessions.map(session => {
-        return {
-          name: session.peer.metadata.name,
-          url: session.peer.metadata.url,
-          key: session.topic,
-          wc: session,
-        }
-      }),
-    [sessions],
-  )
   return (
-    <View style={styles.screen}>
+    <KeyboardAvoidingView
+      style={sharedStyles.screen}
+      keyboardVerticalOffset={100}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <View style={styles.header}>
         <View style={styles.innerHeader1}>
           <Typography type="h2">{t('dapps_title')}</Typography>
@@ -166,7 +193,30 @@ export const WalletConnectScreen = ({ route }: Props) => {
           onCancel={() => setDisconnectingWC(null)}
         />
       ) : null}
-    </View>
+      {/* Insert WC URI Manually */}
+      <FormProvider {...methods}>
+        <Input
+          inputName="wcUri"
+          label={t('dapps_wc_label')}
+          placeholder={t('dapps_insert_wc_uri')}
+          autoCapitalize="none"
+          autoCorrect={false}
+          rightIcon={{
+            name: 'paste',
+            size: 16,
+          }}
+          onRightIconPress={handlePaste}
+        />
+        <AppButton
+          title={t('dapps_wc_connect')}
+          onPress={onUriSubmitted}
+          textColor={sharedColors.black}
+          color={sharedColors.white}
+          style={styles.subtitle}
+          disabled={wcUri.length === 0}
+        />
+      </FormProvider>
+    </KeyboardAvoidingView>
   )
 }
 
@@ -174,14 +224,9 @@ export const WalletConnectScreenWithProvider =
   withWalletConnectProvider(WalletConnectScreen)
 
 const styles = StyleSheet.create({
-  screen: castStyle.view({
-    height: '100%',
-    backgroundColor: sharedColors.secondary,
-    padding: 20,
-  }),
   header: castStyle.view({
     flexDirection: 'row',
-    padding: 10,
+    marginTop: 18,
   }),
   innerHeader1: castStyle.view({
     flex: 3,

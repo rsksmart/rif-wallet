@@ -1,9 +1,10 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import JailMonkey from 'jail-monkey'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
+import BootSplash from 'react-native-bootsplash'
 
 import { CreateKeysNavigation } from 'navigation/createKeysNavigator'
 import { ConfirmationModal } from 'components/modal'
@@ -42,6 +43,10 @@ export const RootNavigationComponent = () => {
   const fullscreen = useAppSelector(selectFullscreen)
 
   const isShown = unlocked && !fullscreen
+
+  useEffect(() => {
+    BootSplash.hide()
+  }, [])
 
   return (
     <View style={sharedStyles.flex}>
