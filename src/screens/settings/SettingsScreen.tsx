@@ -13,15 +13,13 @@ import {
 } from 'navigation/settingsNavigator/types'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import {
-  selectChainId,
-  selectWalletIsDeployed,
-} from 'store/slices/settingsSlice'
+import { selectChainId } from 'store/slices/settingsSlice'
 import { selectPin } from 'store/slices/persistentDataSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { ChainTypeEnum, chainTypesById } from 'shared/constants/chainConstants'
 import { GlobalErrorHandlerContext } from 'components/GlobalErrorHandler/GlobalErrorHandlerContext'
 import { getCurrentChainId, setCurrentChainId } from 'storage/ChainStorage'
+import { WalletContext } from 'shared/wallet'
 
 const ChainTypesInversed = {
   [ChainTypeEnum.TESTNET]: ChainTypeEnum.MAINNET,
@@ -33,7 +31,7 @@ export const SettingsScreen = ({
 }: SettingsScreenProps<settingsStackRouteNames.SettingsScreen>) => {
   const statePIN = useAppSelector(selectPin)
   const chainId = useAppSelector(selectChainId)
-  const walletIsDeployed = useAppSelector(selectWalletIsDeployed)
+  const { walletIsDeployed } = useContext(WalletContext)
 
   const smartWalletFactoryAddress = useMemo(
     () =>

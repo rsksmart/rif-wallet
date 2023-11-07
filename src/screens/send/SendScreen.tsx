@@ -13,7 +13,7 @@ import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { settingsStackRouteNames } from 'navigation/settingsNavigator/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { selectWalletState, setFullscreen } from 'store/slices/settingsSlice'
+import { setFullscreen } from 'store/slices/settingsSlice'
 import {
   selectBalances,
   selectTotalUsdValue,
@@ -26,6 +26,7 @@ import { SuccessIcon } from 'components/icons/SuccessIcon'
 import { FeedbackModal } from 'components/feedbackModal'
 import { getContactsAsArrayAndSelected } from 'store/slices/contactsSlice'
 import { selectTransactionsLoading } from 'store/slices/transactionsSlice'
+import { useWalletState } from 'shared/wallet'
 
 import { TransactionForm } from './TransactionForm'
 import { usePaymentExecutor } from './usePaymentExecutor'
@@ -38,7 +39,7 @@ export const SendScreen = ({
   const dispatch = useAppDispatch()
   const isFocused = useIsFocused()
   const { t } = useTranslation()
-  const { wallet, walletIsDeployed } = useAppSelector(selectWalletState)
+  const { wallet, walletIsDeployed } = useWalletState()
   const { loading, isDeployed } = walletIsDeployed
   const chainId = useAppSelector(selectChainId)
   const { contacts } = useAppSelector(getContactsAsArrayAndSelected)

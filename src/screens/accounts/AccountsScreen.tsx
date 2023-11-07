@@ -5,19 +5,21 @@ import { shortAddress } from 'lib/utils'
 
 import { AccountBox } from 'components/accounts/AccountBox'
 import { useAppSelector } from 'store/storeUtils'
-import { selectBitcoin, selectWalletState } from 'store/slices/settingsSlice'
+import { selectBitcoin, selectChainId } from 'store/slices/settingsSlice'
 import { headerLeftOption } from 'navigation/profileNavigator'
 import {
   SettingsScreenProps,
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
 import { sharedStyles } from 'shared/constants'
+import { useWalletState } from 'shared/wallet'
 
 export const AccountsScreen = ({
   navigation,
 }: SettingsScreenProps<settingsStackRouteNames.AccountsScreen>) => {
-  const { wallet, chainId, walletIsDeployed } =
-    useAppSelector(selectWalletState)
+  const { wallet, walletIsDeployed } = useWalletState()
+
+  const chainId = useAppSelector(selectChainId)
   const bitcoinCore = useAppSelector(selectBitcoin)
   const publicKeys = useMemo(
     () =>

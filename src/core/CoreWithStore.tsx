@@ -2,6 +2,7 @@ import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 
 import { createNewStore } from 'store/store'
+import { WalletProvider } from 'shared/wallet'
 
 import { Core } from './Core'
 
@@ -11,7 +12,9 @@ export const CoreWithStore = () => {
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
-        <Core />
+        <WalletProvider>
+          <Core />
+        </WalletProvider>
       </PersistGate>
     </Provider>
   )

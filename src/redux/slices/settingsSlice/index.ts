@@ -38,9 +38,7 @@ import {
   Bitcoin,
   CreateFirstWalletAction,
   OnRequestAction,
-  SetKeysAction,
   SettingsSlice,
-  SetWalletIsDeployedAction,
   UnlockAppAction,
 } from './types'
 
@@ -48,7 +46,7 @@ export const createWallet = createAsyncThunk<
   RIFWallet,
   CreateFirstWalletAction,
   AsyncThunkWithTypes
->('settings/createWallet', async ({ mnemonic }, thunkAPI) => {
+>('settings/createWallet', async ({ mnemonic, initializeWallet }, thunkAPI) => {
   try {
     const { chainId } = thunkAPI.getState().settings
     const kms = await createKMS(chainId, mnemonic, thunkAPI.dispatch)
@@ -70,17 +68,13 @@ export const createWallet = createAsyncThunk<
     if (!kms) {
       return thunkAPI.rejectWithValue('Failed to createKMS')
     }
-    //set wallets in the store
-    thunkAPI.dispatch(
-      setWallet({
-        wallet: kms.rifWallet,
-        walletIsDeployed: {
-          loading: false,
-          isDeployed: kms.rifWalletIsDeployed,
-          txHash: null,
-        },
-      }),
-    )
+
+    // set wallet and walletIsDeployed in WalletContext
+    initializeWallet(kms.rifWallet, {
+      isDeployed: kms.rifWalletIsDeployed,
+      loading: false,
+      txHash: null,
+    })
 
     // unclock the app
     thunkAPI.dispatch(setUnlocked(true))
@@ -137,7 +131,6 @@ export const unlockApp = createAsyncThunk<
   AsyncThunkWithTypes
 >('settings/unlockApp', async (payload, thunkAPI) => {
   try {
-    // check if it is a first launch, deleteKeys
     const {
       persistentData: { isFirstLaunch },
     } = thunkAPI.getState()
@@ -160,7 +153,7 @@ export const unlockApp = createAsyncThunk<
     // if keys do exist, set to true
     thunkAPI.dispatch(setKeysExist(true))
 
-    const { pinUnlocked, isOffline } = payload
+    const { pinUnlocked, isOffline, initializeWallet } = payload
     const supportedBiometry = await getSupportedBiometryType()
 
     if (Platform.OS === 'android' && !supportedBiometry && !pinUnlocked) {
@@ -201,16 +194,12 @@ export const unlockApp = createAsyncThunk<
 
     const { kms, rifWallet, rifWalletIsDeployed } = existingWallet
 
-    thunkAPI.dispatch(
-      setWallet({
-        wallet: rifWallet,
-        walletIsDeployed: {
-          loading: false,
-          isDeployed: rifWalletIsDeployed,
-          txHash: null,
-        },
-      }),
-    )
+    // set wallet and walletIsDeployed in WalletContext
+    initializeWallet(rifWallet, {
+      isDeployed: rifWalletIsDeployed,
+      loading: false,
+      txHash: null,
+    })
 
     thunkAPI.dispatch(setUnlocked(true))
 
@@ -311,8 +300,6 @@ const initialState: SettingsSlice = {
   isSetup: false,
   topColor: sharedColors.primary,
   requests: [],
-  wallets: null,
-  walletsIsDeployed: null,
   selectedWallet: '',
   loading: false,
   appIsActive: false,
@@ -359,63 +346,11 @@ const settingsSlice = createSlice({
     setPreviouslyUnlocked: (state, { payload }: PayloadAction<boolean>) => {
       state.previouslyUnlocked = payload
     },
-    setWallet: (
-      state,
-      { payload: { wallet, walletIsDeployed } }: PayloadAction<SetKeysAction>,
-    ) => {
-      state.wallets = {
-        [wallet.address]: wallet,
-      }
-
-      state.walletsIsDeployed = {
-        [wallet.address]: walletIsDeployed,
-      }
-      state.selectedWallet = wallet.address
-    },
-    setWalletIsDeployed: (
-      state,
-      { payload }: PayloadAction<SetWalletIsDeployedAction>,
-    ) => {
-      if (state.walletsIsDeployed) {
-        state.walletsIsDeployed[payload.address] = {
-          ...state.walletsIsDeployed[payload.address],
-          loading: false,
-          isDeployed: payload.value ? payload.value : true,
-        }
-      }
-    },
-    setSmartWalletDeployTx: (
-      state,
-      { payload }: PayloadAction<{ address: string; txHash: string }>,
-    ) => {
-      if (state.walletsIsDeployed) {
-        state.walletsIsDeployed[payload.address] = {
-          ...state.walletsIsDeployed[payload.address],
-          txHash: payload.txHash,
-        }
-      }
-    },
-    setIsDeploying: (
-      state,
-      { payload }: PayloadAction<{ address: string; isDeploying: boolean }>,
-    ) => {
-      if (state.walletsIsDeployed) {
-        state.walletsIsDeployed[payload.address] = {
-          ...state.walletsIsDeployed[payload.address],
-          loading: payload.isDeploying,
-        }
-      }
-    },
     // Not currently used, we'll be needed when support
     // for multiple wallets
     // switchSelectedWallet: (state, { payload }: PayloadAction<string>) => {
     //   state.selectedWallet = payload
     // },
-    removeKeysFromState: state => {
-      state.wallets = null
-      state.walletsIsDeployed = null
-      state.selectedWallet = ''
-    },
     resetKeysAndPin: () => {
       deleteKeys()
       deleteDomains()
@@ -474,15 +409,10 @@ export const {
   changeTopColor,
   onRequest,
   closeRequest,
-  setWallet,
   setChainId,
   setAppIsActive,
   setUnlocked,
   setPreviouslyUnlocked,
-  setWalletIsDeployed,
-  setSmartWalletDeployTx,
-  setIsDeploying,
-  removeKeysFromState,
   resetKeysAndPin,
   setFullscreen,
   setHideBalance,

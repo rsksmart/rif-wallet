@@ -14,6 +14,7 @@ import { createWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { StepperComponent } from 'src/components/profile'
+import { useInitializeWallet } from 'shared/wallet'
 
 type MnemonicWordNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
 
@@ -74,6 +75,7 @@ const onRandomWordChoice = (_mnemonicWords: string[]) => {
 export const ConfirmNewMasterKeyScreen = ({
   route,
 }: CreateKeysScreenProps<createKeysRouteNames.ConfirmNewMasterKey>) => {
+  const initializeWallet = useInitializeWallet()
   const { t } = useTranslation()
   const methods = useForm<FormValues>({
     mode: 'onSubmit',
@@ -150,10 +152,10 @@ export const ConfirmNewMasterKeyScreen = ({
   useEffect(() => {
     if (hasFormSuccess) {
       setTimeout(() => {
-        dispatch(createWallet({ mnemonic }))
+        dispatch(createWallet({ mnemonic, initializeWallet }))
       }, 1000)
     }
-  }, [hasFormSuccess, dispatch, mnemonic])
+  }, [hasFormSuccess, dispatch, mnemonic, initializeWallet])
 
   return (
     <View style={styles.screen}>
