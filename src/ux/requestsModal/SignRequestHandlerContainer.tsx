@@ -1,5 +1,8 @@
 import { StyleSheet, View } from 'react-native'
-import { SignMessageRequest } from '@rsksmart/rif-wallet-core'
+import {
+  SignMessageRequest,
+  SignTypedDataRequest,
+} from '@rsksmart/rif-wallet-core'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
 
@@ -7,31 +10,34 @@ import { castStyle } from 'shared/utils'
 import { sharedColors } from 'shared/constants'
 import { AppButton, Typography } from 'src/components'
 
+import { SignMessageComponent } from './SignMessageComponent'
+import { SignTypedDataComponent } from './SignTypedDataComponent'
+
 interface SignMessageRequestContainerProps {
-  request: SignMessageRequest
+  request: SignMessageRequest | SignTypedDataRequest
   onConfirm: () => void
   onCancel: () => void
 }
 
-export const SignMessageRequestContainer = ({
+export const SignRequestHandlerContainer = ({
   request,
   onCancel,
   onConfirm,
 }: SignMessageRequestContainerProps) => {
   const insets = useSafeAreaInsets()
   const { t } = useTranslation()
-  const {
-    type,
-    payload: [message],
-  } = request
+  const { type, payload } = request
+
   const onConfirmTap = async () => {
     await request.confirm()
     onConfirm()
   }
+
   const onCancelTap = () => {
     request.reject('User rejected')
     onCancel()
   }
+
   return (
     <View style={[styles.viewContainer, { paddingTop: insets.top || 40 }]}>
       <Typography type={'h2'} style={styles.typographyHeaderStyle}>
@@ -40,9 +46,12 @@ export const SignMessageRequestContainer = ({
       <Typography type={'h3'} style={styles.typographyRowStyle}>
         {t('dapps_sign_message_request_type')}: {type}
       </Typography>
-      <Typography type={'h3'} style={styles.typographyRowStyle}>
-        {t('Message')}: {message.toString() || ''}
-      </Typography>
+
+      {type === 'signMessage' && (
+        <SignMessageComponent message={payload[0].toString()} />
+      )}
+      {type === 'signTypedData' && <SignTypedDataComponent payload={payload} />}
+
       <View style={styles.buttonsViewStyle}>
         <AppButton
           accessibilityLabel="Confirm"

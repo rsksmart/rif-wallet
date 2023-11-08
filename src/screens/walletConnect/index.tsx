@@ -21,8 +21,9 @@ import {
 } from 'navigation/rootNavigator/types'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { changeTopColor, selectWalletState } from 'store/slices/settingsSlice'
-import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import { changeTopColor } from 'store/slices/settingsSlice'
+import { useAppDispatch } from 'store/storeUtils'
+import { WalletContext } from 'shared/wallet'
 
 import { DappItem } from './DappItem'
 import {
@@ -34,7 +35,7 @@ import {
 const withWalletConnectProvider =
   <P extends object>(Component: ComponentType<P>) =>
   (props: P) => {
-    const { wallet } = useAppSelector(selectWalletState)
+    const { wallet } = useContext(WalletContext)
     return (
       <WalletConnect2Provider wallet={wallet}>
         <Component {...props} />

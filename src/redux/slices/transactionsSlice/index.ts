@@ -354,6 +354,7 @@ const transactionsSlice = createSlice({
       { payload }: PayloadAction<ActivityRowPresentationObject>,
     ) => {
       state.transactions.splice(0, 0, payload)
+      state.loading = true
       return state
     },
     modifyTransactionState: (
@@ -369,6 +370,7 @@ const transactionsSlice = createSlice({
           ...payload,
         }
       }
+      state.loading = false
       return state
     },
   },

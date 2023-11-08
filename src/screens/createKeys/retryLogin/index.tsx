@@ -6,14 +6,16 @@ import { AppButton } from 'components/index'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { unlockApp } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
+import { useInitializeWallet } from 'shared/wallet'
 
 export const RetryLogin = () => {
+  const initializeWallet = useInitializeWallet()
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
 
   const retryLogin = useCallback(() => {
-    dispatch(unlockApp({}))
-  }, [dispatch])
+    dispatch(unlockApp({ initializeWallet }))
+  }, [dispatch, initializeWallet])
 
   return (
     <View style={[sharedStyles.screen, sharedStyles.contentCenter]}>

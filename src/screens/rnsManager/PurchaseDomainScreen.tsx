@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useCallback } from 'react'
+import { useEffect, useMemo, useState, useCallback, useContext } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
@@ -36,8 +36,9 @@ import {
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { handleDomainTransactionStatusChange } from 'screens/rnsManager/utils'
-import { selectChainId, selectWallet } from 'store/slices/settingsSlice'
+import { selectChainId } from 'store/slices/settingsSlice'
 import { RNS_ADDRESSES_BY_CHAIN_ID } from 'screens/rnsManager/types'
+import { WalletContext } from 'shared/wallet'
 
 import { rnsManagerStyles } from './rnsManagerStyles'
 
@@ -51,7 +52,7 @@ export enum TestID {
 export const PurchaseDomainScreen = ({ navigation }: Props) => {
   const dispatch = useAppDispatch()
   const rifToken = useRifToken()
-  const wallet = useAppSelector(selectWallet)
+  const { wallet } = useContext(WalletContext)
   const profile = useAppSelector(selectProfile)
   const chainId = useAppSelector(selectChainId)
   const alias = profile.alias
@@ -60,6 +61,7 @@ export const PurchaseDomainScreen = ({ navigation }: Props) => {
   const [error, setError] = useState('')
   const rnsProcessor = useMemo(
     () =>
+      wallet &&
       new RnsProcessor({
         wallet,
         onSetTransactionStatusChange: handleDomainTransactionStatusChange(
@@ -93,6 +95,10 @@ export const PurchaseDomainScreen = ({ navigation }: Props) => {
   const registerDomain = useCallback(async () => {
     const domain = alias.split('.')[0]
     setError('')
+    if (!rnsProcessor) {
+      return setError('No RNS Processor set!')
+    }
+
     try {
       const response = await dispatch(
         purchaseUsername({ rnsProcessor, domain }),

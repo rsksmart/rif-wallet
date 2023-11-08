@@ -3,7 +3,7 @@ import {
   SendTransactionRequest,
 } from '@rsksmart/rif-wallet-core'
 import { BigNumber, constants } from 'ethers'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Alert, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -19,13 +19,14 @@ import { TransactionSummaryComponent } from 'screens/transactionSummary/Transact
 import { sharedColors } from 'shared/constants'
 import { chainTypesById } from 'shared/constants/chainConstants'
 import { castStyle, errorHandler } from 'shared/utils'
-import { selectWalletState } from 'store/slices/settingsSlice'
+import { selectChainId } from 'store/slices/settingsSlice'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { addRecentContact } from 'store/slices/contactsSlice'
 import { selectCurrentTransaction } from 'store/slices/currentTransactionSlice/selector'
 import { selectBalances } from 'store/slices/balancesSlice'
+import { WalletContext } from 'shared/wallet'
 
 import useEnhancedWithGas from '../useEnhancedWithGas'
 
@@ -45,7 +46,8 @@ export const ReviewTransactionContainer = ({
   const insets = useSafeAreaInsets()
   const tokenPrices = useAppSelector(selectUsdPrices)
   // enhance the transaction to understand what it is:
-  const { wallet, chainId } = useAppSelector(selectWalletState)
+  const { wallet } = useContext(WalletContext)
+  const chainId = useAppSelector(selectChainId)
   const balances = useAppSelector(selectBalances)
   const [txFeeCost, setTxFeeCost] = useState<BigNumber>()
   const { t } = useTranslation()

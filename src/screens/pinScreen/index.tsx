@@ -35,6 +35,7 @@ import {
   createKeysRouteNames,
   CreateKeysScreenProps,
 } from 'navigation/createKeysNavigator'
+import { useInitializeWallet } from 'shared/wallet'
 
 type PIN = Array<string | null>
 const defaultPin = [null, null, null, null]
@@ -121,6 +122,7 @@ type Props =
   | CreateKeysScreenProps<createKeysRouteNames.CreatePIN>
 
 export const PinScreen = ({ navigation, route }: Props) => {
+  const initializeWallet = useInitializeWallet()
   const insets = useSafeAreaInsets()
   const isFocused = useIsFocused()
   // const isVisible = useKeyboardIsVisible()
@@ -279,7 +281,7 @@ export const PinScreen = ({ navigation, route }: Props) => {
   const handleLastDigit = useCallback(() => {
     if (!isChangeRequested && isPinEqual) {
       // if pin exists unlocks the app
-      dispatch(unlockApp({ pinUnlocked: true }))
+      dispatch(unlockApp({ pinUnlocked: true, initializeWallet }))
     } else if (isChangeRequested && isPinEqual) {
       // if pin change requested set new pin
       setTimeout(() => {
@@ -289,7 +291,15 @@ export const PinScreen = ({ navigation, route }: Props) => {
     }
 
     resetPin()
-  }, [isChangeRequested, isPinEqual, resetPin, dispatch, PIN, navigation])
+  }, [
+    isChangeRequested,
+    isPinEqual,
+    resetPin,
+    dispatch,
+    PIN,
+    navigation,
+    initializeWallet,
+  ])
 
   useEffect(() => {
     const hasLastDigit = PIN[PIN.length - 1]

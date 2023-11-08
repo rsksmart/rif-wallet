@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import BackgroundTimer, { TimeoutId } from 'react-native-background-timer'
 
 import {
-  removeKeysFromState,
   selectIsUnlocked,
   selectPreviouslyUnlocked,
   setPreviouslyUnlocked,
@@ -11,6 +10,7 @@ import {
 } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { SocketsEvents, socketsEvents } from 'src/subscriptions/rifSockets'
+import { useWalletStateSetters } from 'shared/wallet'
 
 import { useAppState } from './useAppState'
 import { useIsOffline } from './useIsOffline'
@@ -19,6 +19,9 @@ const gracePeriod = 5000
 let timer: TimeoutId
 
 export const useStateSubscription = () => {
+  const { setWallet, setWalletIsDeployed, initializeWallet } =
+    useWalletStateSetters()
+
   const dispatch = useAppDispatch()
   const isOffline = useIsOffline()
 
@@ -47,7 +50,9 @@ export const useStateSubscription = () => {
 
           setUnlocked(false)
           dispatch(setPreviouslyUnlocked(true))
-          dispatch(removeKeysFromState())
+          //reset wallet state
+          setWallet(null)
+          setWalletIsDeployed(null)
         }, gracePeriod)
       }
     } else if (
@@ -56,7 +61,7 @@ export const useStateSubscription = () => {
       previousAppState.current === 'background' &&
       active
     ) {
-      dispatch(unlockApp({ isOffline }))
+      dispatch(unlockApp({ isOffline, initializeWallet }))
     }
     return () => {
       socketsEvents.emit(SocketsEvents.DISCONNECT)
@@ -69,6 +74,9 @@ export const useStateSubscription = () => {
     previousAppState,
     previouslyUnlocked,
     isOffline,
+    initializeWallet,
+    setWallet,
+    setWalletIsDeployed,
   ])
 
   useEffect(() => {

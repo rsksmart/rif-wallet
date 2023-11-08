@@ -2,7 +2,7 @@ import { RequestWithBitcoin } from 'shared/types'
 import { ReviewBitcoinTransactionContainer } from 'src/ux/requestsModal/ReviewBitcoinTransactionContainer'
 
 import { ReviewTransactionContainer } from './ReviewRelayTransaction/ReviewTransactionContainer'
-import { SignMessageRequestContainer } from './SignMessageRequestContainer'
+import { SignRequestHandlerContainer } from './SignRequestHandlerContainer'
 
 interface Props {
   request: RequestWithBitcoin
@@ -29,7 +29,8 @@ const RequestTypeSwitch = ({
       ComponentToRender = ReviewBitcoinTransactionContainer
       break
     case 'signMessage':
-      ComponentToRender = SignMessageRequestContainer
+    case 'signTypedData':
+      ComponentToRender = SignRequestHandlerContainer
       break
     default:
       return null

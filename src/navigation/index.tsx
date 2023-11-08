@@ -14,7 +14,11 @@ type HeaderProps = BottomTabNavigationOptions & StackNavigationOptions
 export const screenOptionsNoHeader: HeaderProps = { headerShown: false }
 
 export const sharedHeaderLeftOptions = (goBack?: () => void) => (
-  <AppTouchable width={20} onPress={goBack} style={sharedStyles.marginLeft24}>
+  <AppTouchable
+    width={20}
+    onPress={goBack}
+    style={sharedStyles.marginLeft24}
+    accessibilityLabel="backButton">
     <Icon name={'chevron-left'} size={20} color={sharedColors.white} />
   </AppTouchable>
 )

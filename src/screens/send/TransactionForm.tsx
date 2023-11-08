@@ -349,7 +349,7 @@ export const TransactionForm = ({
           )}
           {proposedContact ? (
             <AppButton
-              style={{ marginTop: 6 }}
+              style={styles.proposedContact}
               testID={`${testIDs.addressInput}.Button.ProposedContact`}
               accessibilityLabel="addProposedContact"
               title={`${t('contact_form_button_add_proposed_contact')} ${
@@ -498,4 +498,5 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: 'center',
   }),
+  proposedContact: castStyle.view({ marginTop: 6 }),
 })

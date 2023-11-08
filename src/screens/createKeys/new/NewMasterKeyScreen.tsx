@@ -25,6 +25,7 @@ import { castStyle } from 'shared/utils'
 import { useAppDispatch } from 'store/storeUtils'
 import { createWallet } from 'store/slices/settingsSlice'
 import { saveKeyVerificationReminder } from 'storage/MainStorage'
+import { useInitializeWallet } from 'shared/wallet'
 
 type Props = CompositeScreenProps<
   CreateKeysScreenProps<createKeysRouteNames.NewMasterKey>,
@@ -35,6 +36,7 @@ enum TestID {
   SecureLaterButton = 'SecureLater',
 }
 export const NewMasterKeyScreen = ({ navigation }: Props) => {
+  const initializeWallet = useInitializeWallet()
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const mnemonic = useMemo(() => KeyManagementSystem.create().mnemonic, [])
@@ -46,9 +48,10 @@ export const NewMasterKeyScreen = ({ navigation }: Props) => {
     dispatch(
       createWallet({
         mnemonic: KeyManagementSystem.create().mnemonic,
+        initializeWallet,
       }),
     )
-  }, [dispatch])
+  }, [dispatch, initializeWallet])
 
   return (
     <View style={styles.screen}>

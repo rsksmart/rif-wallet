@@ -21,6 +21,7 @@ import { WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
 import { createWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
 import { sharedColors, sharedStyles } from 'shared/constants'
+import { useInitializeWallet } from 'shared/wallet'
 
 const slidesIndexes = [0, 1, 2, 3]
 
@@ -48,6 +49,7 @@ const headerTextMap = new Map([
 export const ImportMasterKeyScreen = (
   _: CreateKeysScreenProps<createKeysRouteNames.ImportMasterKey>,
 ) => {
+  const initializeWallet = useInitializeWallet()
   const { t } = useTranslation()
 
   const dispatch = useAppDispatch()
@@ -79,6 +81,7 @@ export const ImportMasterKeyScreen = (
       await dispatch(
         createWallet({
           mnemonic: words.current.join(' '),
+          initializeWallet,
         }),
       )
     } catch (err) {
@@ -86,7 +89,7 @@ export const ImportMasterKeyScreen = (
         throw new Error(err.toString())
       }
     }
-  }, [dispatch, status])
+  }, [dispatch, status, initializeWallet])
 
   const handleSlideChange = useCallback((index: number) => {
     setSelectedSlide(index)
