@@ -20,6 +20,7 @@ import {
 import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 import { useAppSelector } from 'store/storeUtils'
 import { selectChainId } from 'store/slices/settingsSlice'
+import { getRifRelayConfig } from 'core/operations'
 
 const onSessionApprove = async (
   web3wallet: Web3Wallet,
@@ -117,6 +118,8 @@ export const WalletConnect2Provider = ({
   >(undefined)
   const [error, setError] = useState<WalletConnect2ContextArguments['error']>()
 
+  const rifRelayConfig = getRifRelayConfig(chainId)
+
   const onSessionProposal = async (
     proposal: Web3WalletTypes.SessionProposal,
     web3wallet: Web3Wallet,
@@ -149,6 +152,25 @@ export const WalletConnect2Provider = ({
           return
         }
         const adapter = new WalletConnectAdapter(wallet)
+        const eth_signTypedDataResolver = adapter
+          .getResolvers()
+          .find(
+            (resolver: { methodName: string }) =>
+              resolver.methodName === 'eth_signTypedData',
+          )
+        if (eth_signTypedDataResolver) {
+          eth_signTypedDataResolver.validate = ({ message }) => {
+            // if address = relay address - throw error
+            const { from, to } = message
+            if (
+              from.wallet === rifRelayConfig.relayVerifierAddress ||
+              to.wallet === rifRelayConfig.relayVerifierAddress
+            ) {
+              throw new Error('This transaction cannot be done.')
+            }
+          }
+        }
+
         const {
           params: {
             request: { method, params },
@@ -191,7 +213,7 @@ export const WalletConnect2Provider = ({
         )
       })
     },
-    [wallet],
+    [wallet, rifRelayConfig],
   )
 
   const onCreateNewSession = async (uri: string) => {
