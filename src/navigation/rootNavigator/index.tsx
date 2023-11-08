@@ -9,7 +9,11 @@ import BootSplash from 'react-native-bootsplash'
 import { CreateKeysNavigation } from 'navigation/createKeysNavigator'
 import { ConfirmationModal } from 'components/modal'
 import { useAppSelector } from 'store/storeUtils'
-import { selectFullscreen, selectIsUnlocked } from 'store/slices/settingsSlice'
+import {
+  selectFullscreen,
+  selectIsUnlocked,
+  selectSettingsIsLoading,
+} from 'store/slices/settingsSlice'
 import { TransactionSummaryScreen } from 'screens/transactionSummary'
 import { AppFooterMenu } from 'src/ux/appFooter'
 import { sharedStyles } from 'shared/constants'
@@ -20,6 +24,7 @@ import {
   WalletConnectScreenWithProvider,
 } from 'screens/index'
 import { OfflineScreen } from 'core/components/OfflineScreen'
+import { LoadingScreen } from 'components/loading/LoadingScreen'
 
 import { RootTabsParamsList, rootTabsRouteNames } from './types'
 import { HomeNavigator } from '../homeNavigator'
@@ -40,6 +45,7 @@ export const RootNavigationComponent = () => {
   const isDeviceRooted = JailMonkey.isJailBroken()
   const [isWarningVisible, setIsWarningVisible] = useState(isDeviceRooted)
   const unlocked = useAppSelector(selectIsUnlocked)
+  const settingsLoading = useAppSelector(selectSettingsIsLoading)
   const fullscreen = useAppSelector(selectFullscreen)
 
   const isShown = unlocked && !fullscreen
@@ -52,13 +58,13 @@ export const RootNavigationComponent = () => {
     <View style={sharedStyles.flex}>
       <RootTabs.Navigator
         tabBar={props => (!isShown ? null : <AppFooterMenu {...props} />)}>
-        {!unlocked ? (
+        <RootTabs.Screen
+          name={rootTabsRouteNames.CreateKeysUX}
+          component={CreateKeysNavigation}
+          options={screenOptionsNoHeader}
+        />
+        {!unlocked && (
           <>
-            <RootTabs.Screen
-              name={rootTabsRouteNames.CreateKeysUX}
-              component={CreateKeysNavigation}
-              options={screenOptionsNoHeader}
-            />
             <RootTabs.Screen
               name={rootTabsRouteNames.InitialPinScreen}
               component={PinScreen}
@@ -76,55 +82,47 @@ export const RootNavigationComponent = () => {
               options={screenOptionsNoHeader}
             />
           </>
-        ) : (
-          <RootTabs.Group>
-            <RootTabs.Group screenOptions={screenOptionsWithAppHeader}>
-              <RootTabs.Screen
-                name={rootTabsRouteNames.Home}
-                component={HomeNavigator}
-              />
-              <RootTabs.Screen
-                name={rootTabsRouteNames.Activity}
-                component={ActivityScreen}
-              />
-              <RootTabs.Screen
-                name={rootTabsRouteNames.ScanQR}
-                component={ScanQRScreen}
-              />
-              <RootTabs.Screen
-                name={rootTabsRouteNames.Contacts}
-                component={ContactsNavigation}
-              />
-              <RootTabs.Screen
-                name={rootTabsRouteNames.WalletConnect}
-                component={WalletConnectScreenWithProvider}
-              />
-              <RootTabs.Screen
-                name={rootTabsRouteNames.Settings}
-                component={SettingsNavigator}
-              />
-              <RootTabs.Screen
-                name={rootTabsRouteNames.Profile}
-                component={ProfileNavigator}
-              />
-            </RootTabs.Group>
-            <RootTabs.Group
-              screenOptions={screenOptionsWithHeader(
-                top,
-                t('transaction_summary_screen_title'),
-              )}>
-              <RootTabs.Screen
-                name={rootTabsRouteNames.TransactionSummary}
-                component={TransactionSummaryScreen}
-              />
-            </RootTabs.Group>
-            <RootTabs.Screen
-              name={rootTabsRouteNames.CreateKeysUX}
-              component={CreateKeysNavigation}
-              options={screenOptionsNoHeader}
-            />
-          </RootTabs.Group>
         )}
+        <RootTabs.Group screenOptions={screenOptionsWithAppHeader}>
+          <RootTabs.Screen
+            name={rootTabsRouteNames.Home}
+            component={HomeNavigator}
+          />
+          <RootTabs.Screen
+            name={rootTabsRouteNames.Activity}
+            component={ActivityScreen}
+          />
+          <RootTabs.Screen
+            name={rootTabsRouteNames.ScanQR}
+            component={ScanQRScreen}
+          />
+          <RootTabs.Screen
+            name={rootTabsRouteNames.Contacts}
+            component={ContactsNavigation}
+          />
+          <RootTabs.Screen
+            name={rootTabsRouteNames.WalletConnect}
+            component={WalletConnectScreenWithProvider}
+          />
+          <RootTabs.Screen
+            name={rootTabsRouteNames.Settings}
+            component={SettingsNavigator}
+          />
+          <RootTabs.Screen
+            name={rootTabsRouteNames.Profile}
+            component={ProfileNavigator}
+          />
+        </RootTabs.Group>
+        <RootTabs.Group
+          screenOptions={screenOptionsWithHeader(
+            top,
+            t('transaction_summary_screen_title'),
+          )}>
+          <RootTabs.Screen
+            name={rootTabsRouteNames.TransactionSummary}
+            component={TransactionSummaryScreen}
+          />
+        </RootTabs.Group>
       </RootTabs.Navigator>
       <ConfirmationModal
         isVisible={isWarningVisible}
@@ -133,6 +131,7 @@ export const RootNavigationComponent = () => {
         okText={t('ok')}
         onOk={() => setIsWarningVisible(false)}
       />
+      <LoadingScreen isVisible={settingsLoading} />
     </View>
   )
 }
