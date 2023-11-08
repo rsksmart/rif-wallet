@@ -28,6 +28,7 @@ export interface TransactionSummaryScreenProps {
     status?: TransactionStatus
     amIReceiver?: boolean
     from?: string
+    toName?: string
   }
   buttons?: AppButtonProps[]
   functionName?: string

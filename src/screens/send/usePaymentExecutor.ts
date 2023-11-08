@@ -28,6 +28,7 @@ import {
   addAddressToUsedBitcoinAddresses,
   selectWholeSettingsState,
 } from 'store/slices/settingsSlice'
+import { Receiver } from 'src/shared/types'
 
 import { transferBitcoin } from './transferBitcoin'
 import { transfer } from './transferTokens'
@@ -158,7 +159,7 @@ export const usePaymentExecutor = (bitcoinNetwork?: TokenBalanceObject) => {
     token: TokenBalanceObject
     feeToken: TokenBalanceObject
     amount: number
-    to: string
+    to: Receiver
     wallet: RIFWallet
     chainId: number
   }) => {

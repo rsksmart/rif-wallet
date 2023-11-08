@@ -6,6 +6,7 @@ import {
 
 import { TokenSymbol } from 'screens/home/TokenImage'
 import { TransactionStatus } from 'screens/transactionSummary/types'
+import { Receiver } from 'src/shared/types'
 import { IEvent } from 'src/subscriptions/types'
 
 export interface TransactionsServerResponseWithActivityTransactions
@@ -61,7 +62,7 @@ export type ActivityMixedType = IActivityTransaction | IBitcoinTransaction
 
 export interface TransactionInformation {
   status: TransactionStatus
-  to?: string
+  to?: Receiver
   value?: string
   symbol?: string
   hash?: string

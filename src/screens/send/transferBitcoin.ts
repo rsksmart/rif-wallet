@@ -5,6 +5,7 @@ import {
 } from '@rsksmart/rif-wallet-bitcoin'
 
 import { TokenSymbol } from 'screens/home/TokenImage'
+import { Receiver } from 'src/shared/types'
 
 import { OnSetCurrentTransactionFunction, OnSetErrorFunction } from './types'
 import { TransactionStatus } from '../transactionSummary/types'
@@ -12,7 +13,7 @@ import { TransactionStatus } from '../transactionSummary/types'
 interface ITransferBitcoin {
   bip: BIPWithRequest
   btcToPay: number
-  to: string
+  to: Receiver
   utxos: Array<UnspentTransactionType>
   balance: number
   addressToReturnRemainingAmount: string
@@ -41,7 +42,7 @@ export const transferBitcoin = ({
   bip.requestPayment
     .onRequestPayment({
       amountToPay: satoshisToPay,
-      addressToPay: to,
+      addressToPay: to.address,
       unspentTransactions: utxos,
       miningFee: Number(MINIMUM_FEE),
       balance,

@@ -30,7 +30,7 @@ import { sharedColors, testIDs } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { IPrice } from 'src/subscriptions/types'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
-import { Contact, ContactWithAddressRequired } from 'src/shared/types'
+import { Contact, ContactWithAddressRequired, Receiver } from 'src/shared/types'
 import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 import { navigationContainerRef } from 'src/core/Core'
 import { rootTabsRouteNames } from 'src/navigation/rootNavigator'
@@ -44,7 +44,7 @@ interface Props {
     selectedToken: TokenBalanceObject,
     selectedFeeToken: TokenBalanceObject,
     amount: number,
-    to: string,
+    to: Receiver,
   ) => void
   onCancel: () => void
   isWalletDeployed: boolean
@@ -206,12 +206,7 @@ export const TransactionForm = ({
 
   const handleConfirmClick = useCallback(
     (values: FormValues) => {
-      onConfirm(
-        selectedToken,
-        selectedFeeToken,
-        values.amount,
-        values.to.address,
-      )
+      onConfirm(selectedToken, selectedFeeToken, values.amount, values.to)
     },
     [onConfirm, selectedToken, selectedFeeToken],
   )

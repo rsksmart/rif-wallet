@@ -207,6 +207,7 @@ export const ReviewTransactionContainer = ({
         },
         time: 'approx 1 min',
         to,
+        toName: currentTransaction?.to?.displayAddress,
       },
       buttons: [
         {
@@ -242,6 +243,7 @@ export const ReviewTransactionContainer = ({
     cancelTransaction,
     functionName,
     tokenContract,
+    currentTransaction,
   ])
 
   return (

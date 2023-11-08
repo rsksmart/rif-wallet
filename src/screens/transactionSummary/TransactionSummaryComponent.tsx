@@ -66,7 +66,10 @@ export const TransactionSummaryComponent = ({
   const contact = useAppSelector(
     getContactByAddress(contactAddress.toLowerCase()),
   )
-  const contactToUse = contact || { address: contactAddress }
+  const contactToUse = contact || {
+    address: contactAddress,
+    name: transaction.toName,
+  }
 
   const title = useMemo(() => {
     if (amIReceiver) {

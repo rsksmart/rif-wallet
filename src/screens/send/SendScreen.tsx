@@ -30,6 +30,7 @@ import { FeedbackModal } from 'components/feedbackModal'
 import { getContactsAsArrayAndSelected } from 'store/slices/contactsSlice'
 import { selectTransactionsLoading } from 'store/slices/transactionsSlice'
 import { useWalletState } from 'shared/wallet'
+import { Receiver } from 'src/shared/types'
 
 import { TransactionForm } from './TransactionForm'
 import { usePaymentExecutor } from './usePaymentExecutor'
@@ -91,7 +92,7 @@ export const SendScreen = ({
     token: TokenBalanceObject,
     feeToken: TokenBalanceObject,
     amount: number,
-    to: string,
+    to: Receiver,
   ) => {
     Keyboard.dismiss()
     executePayment({

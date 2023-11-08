@@ -12,10 +12,13 @@ export interface ErrorWithMessage {
 
 export type RequestWithBitcoin = Request | SendBitcoinRequest
 
-export interface Contact {
-  name: string
+export interface Receiver {
   address: string
   displayAddress: string
+}
+
+export interface Contact extends Receiver {
+  name: string
   isEditable?: boolean
 }
 

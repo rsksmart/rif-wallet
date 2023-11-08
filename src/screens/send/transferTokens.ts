@@ -6,6 +6,7 @@ import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { sanitizeMaxDecimalText } from 'lib/utils'
 
 import { TransactionInformation } from 'store/slices/transactionsSlice'
+import { Receiver } from 'src/shared/types'
 
 import {
   OnSetCurrentTransactionFunction,
@@ -17,7 +18,7 @@ import { TransactionStatus } from '../transactionSummary/types'
 interface IRifTransfer {
   token: ITokenWithBalance
   amount: string
-  to: string
+  to: Receiver
   wallet: RIFWallet
   chainId: number
   feeToken?: ITokenWithBalance
@@ -41,6 +42,7 @@ export const transfer = async ({
   onSetCurrentTransaction?.({
     status: TransactionStatus.USER_CONFIRM,
     feeSymbol: feeToken?.symbol,
+    to,
   })
 
   // handle both ERC20 tokens and the native token (gas)
@@ -58,7 +60,7 @@ export const transfer = async ({
       utils.parseUnits(sanitizeMaxDecimalText(amount, decimals), decimals),
     )
     const txPending = await transferMethod.transfer(
-      to.toLowerCase(),
+      to.address.toLowerCase(),
       tokenAmount,
     )
 
@@ -68,7 +70,7 @@ export const transfer = async ({
       ...txPendingRest,
       value: tokenAmount,
       symbol: transferMethod.symbol,
-      finalAddress: to,
+      finalAddress: to.address,
       enhancedAmount: amount,
     })
     const current: TransactionInformation = {
