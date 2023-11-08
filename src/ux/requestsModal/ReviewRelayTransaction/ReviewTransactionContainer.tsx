@@ -29,12 +29,6 @@ import { selectBalances } from 'store/slices/balancesSlice'
 
 import useEnhancedWithGas from '../useEnhancedWithGas'
 
-const tokenToBoolMap = new Map([
-  [TokenSymbol.RIF, true],
-  [TokenSymbol.TRIF, true],
-  [undefined, false],
-])
-
 interface Props {
   request: SendTransactionRequest
   onConfirm: () => void
@@ -172,14 +166,14 @@ export const ReviewTransactionContainer = ({
 
     const feeValue = txCostInRif ? balanceToDisplay(txCostInRif, 18, 0) : '0'
 
-    let insufficientFunds = false
-
-    if (tokenToBoolMap.get(symbol as TokenSymbol)) {
+    let insufficientFunds: boolean
+    if (symbol === feeSymbol) {
       insufficientFunds =
         Number(value) + Number(feeValue) > Number(balances[feeContract].balance)
     } else {
       insufficientFunds =
-        Number(feeValue) > Number(balances[feeContract].balance)
+        Number(feeValue) > Number(balances[feeContract].balance) ||
+        Number(value) > Number(balances[tokenContract].balance)
     }
 
     if (insufficientFunds) {
@@ -244,6 +238,7 @@ export const ReviewTransactionContainer = ({
     confirmTransaction,
     cancelTransaction,
     functionName,
+    tokenContract,
   ])
 
   return (
