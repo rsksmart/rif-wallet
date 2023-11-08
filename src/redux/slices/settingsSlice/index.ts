@@ -42,6 +42,54 @@ import {
   UnlockAppAction,
 } from './types'
 
+const initializeApp = createAsyncThunk<
+  void,
+  { rifWallet: RIFWallet; mnemonic: string },
+  AsyncThunkWithTypes
+>('settings/initializeApp', async ({ rifWallet, mnemonic }, thunkAPI) => {
+  try {
+    const {
+      usdPrices,
+      balances,
+      settings: { chainId },
+    } = thunkAPI.getState()
+    // create fetcher
+    const fetcherInstance = new RifWalletServicesFetcher(
+      createPublicAxios(chainId),
+      {
+        defaultChainId: chainId.toString(),
+        resultsLimit: 10,
+      },
+    )
+
+    // connect to sockets
+    rifSockets({
+      wallet: rifWallet,
+      fetcher: fetcherInstance,
+      dispatch: thunkAPI.dispatch,
+      setGlobalError: thunkAPI.rejectWithValue,
+      usdPrices,
+      chainId,
+      balances: balances.tokenBalances,
+    })
+
+    socketsEvents.emit(SocketsEvents.CONNECT)
+
+    // initialize bitcoin
+    const bitcoin = initializeBitcoin(
+      mnemonic,
+      thunkAPI.dispatch,
+      fetcherInstance,
+      chainId,
+    )
+
+    // set bitcoin in redux
+    thunkAPI.dispatch(setBitcoinState(bitcoin))
+  } catch (err) {
+    thunkAPI.rejectWithValue(err)
+  }
+})
+
 export const createWallet = createAsyncThunk<
   RIFWallet,
   CreateFirstWalletAction,
@@ -81,43 +129,10 @@ export const createWallet = createAsyncThunk<
 
     thunkAPI.dispatch(setKeysExist(true))
 
-    // create fetcher
     //@TODO: refactor socket initialization, it repeats several times
     thunkAPI.dispatch(setChainId(chainId))
 
-    const fetcherInstance = new RifWalletServicesFetcher(
-      createPublicAxios(chainId),
-      {
-        defaultChainId: chainId.toString(),
-        resultsLimit: 10,
-      },
-    )
-
-    const { usdPrices, balances } = thunkAPI.getState()
-
-    // connect to sockets
-    rifSockets({
-      wallet: kms.rifWallet,
-      fetcher: fetcherInstance,
-      dispatch: thunkAPI.dispatch,
-      setGlobalError: thunkAPI.rejectWithValue,
-      usdPrices,
-      chainId,
-      balances: balances.tokenBalances,
-    })
-
-    socketsEvents.emit(SocketsEvents.CONNECT)
-
-    // initialize bitcoin
-    const bitcoin = initializeBitcoin(
-      mnemonic,
-      thunkAPI.dispatch,
-      fetcherInstance,
-      chainId,
-    )
-
-    // set bitcoin in redux
-    thunkAPI.dispatch(setBitcoinState(bitcoin))
+    thunkAPI.dispatch(initializeApp({ rifWallet: kms.rifWallet, mnemonic }))
 
     return kms.rifWallet
   } catch (err) {
@@ -133,6 +148,7 @@ export const unlockApp = createAsyncThunk<
   try {
     const {
       persistentData: { isFirstLaunch },
+      settings: { chainId },
     } = thunkAPI.getState()
     // if previously installed the app, remove stored encryted keys
     if (isFirstLaunch && !__DEV__) {
@@ -142,7 +158,6 @@ export const unlockApp = createAsyncThunk<
     }
 
     const serializedKeys = await getKeys()
-    const { chainId } = thunkAPI.getState().settings
 
     if (!serializedKeys) {
       // if keys do not exist, set to false
@@ -203,40 +218,11 @@ export const unlockApp = createAsyncThunk<
 
     thunkAPI.dispatch(setUnlocked(true))
 
-    // create fetcher
-    const fetcherInstance = new RifWalletServicesFetcher(
-      createPublicAxios(chainId),
-      {
-        defaultChainId: chainId.toString(),
-        resultsLimit: 10,
-      },
-    )
+    navigationContainerRef.navigate(rootTabsRouteNames.Home)
 
-    const { usdPrices, balances } = thunkAPI.getState()
-
-    // connect to sockets
-    rifSockets({
-      wallet: rifWallet,
-      fetcher: fetcherInstance,
-      dispatch: thunkAPI.dispatch,
-      setGlobalError: thunkAPI.rejectWithValue,
-      usdPrices,
-      chainId,
-      balances: balances.tokenBalances,
-    })
-
-    socketsEvents.emit(SocketsEvents.CONNECT)
-
-    // initialize bitcoin
-    const bitcoin = initializeBitcoin(
-      kms.mnemonic,
-      thunkAPI.dispatch,
-      fetcherInstance,
-      chainId,
-    )
-
-    // set bitcoin in redux
-    thunkAPI.dispatch(setBitcoinState(bitcoin))
+    setTimeout(() => {
+      thunkAPI.dispatch(initializeApp({ rifWallet, mnemonic: kms.mnemonic }))
+    }, 1000)
     return kms
   } catch (err) {
     return thunkAPI.rejectWithValue(err)
