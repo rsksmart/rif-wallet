@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleSheet, View } from 'react-native'
@@ -124,20 +124,6 @@ export const TransactionForm = ({
     useState<TokenBalanceObject>(selectedToken)
   const scrollViewRef = useRef<ScrollView>()
 
-  const tokenFeeList = useMemo(() => {
-    if (
-      selectedToken.symbol === TokenSymbol.BTC ||
-      selectedToken.symbol === TokenSymbol.BTCT
-    ) {
-      return [selectedToken]
-    }
-    return tokenList.filter(tk => rifFeeMap.get(tk.symbol as TokenSymbol))
-  }, [tokenList, selectedToken])
-
-  const tokenQuote = selectedToken.contractAddress.startsWith('BITCOIN')
-    ? tokenPrices.BTC.price
-    : tokenPrices[selectedToken.contractAddress]?.price
-
   const methods = useForm<FormValues>({
     mode: 'onSubmit',
     defaultValues: {
@@ -171,6 +157,14 @@ export const TransactionForm = ({
   const [balanceInverted, setBalanceInverted] = useState(false)
   const [proposedContact, setProposedContact] =
     useState<ProposedContact | null>(null)
+
+  const tokenQuote = selectedToken.contractAddress.startsWith('BITCOIN')
+    ? tokenPrices.BTC.price
+    : tokenPrices[selectedToken.contractAddress]?.price
+
+  const tokenFeeList = selectedToken.contractAddress.startsWith('BITCOIN')
+    ? [selectedToken]
+    : tokenList.filter(tk => rifFeeMap.get(tk.symbol as TokenSymbol))
 
   const handleAmountChange = useCallback(
     (newAmount: string, _balanceInverted: boolean) => {
@@ -284,7 +278,9 @@ export const TransactionForm = ({
 
   const toggleShowTxFee = useCallback(() => {
     setShowTxFeeSelector(prev => !prev)
-    scrollViewRef.current?.scrollToEnd({ animated: true })
+    setTimeout(() => {
+      scrollViewRef.current?.scrollToEnd({ animated: true })
+    }, 100)
   }, [])
 
   const onChangeSelectedFee = useCallback(
