@@ -58,13 +58,13 @@ export const RootNavigationComponent = () => {
     <View style={sharedStyles.flex}>
       <RootTabs.Navigator
         tabBar={props => (!isShown ? null : <AppFooterMenu {...props} />)}>
-        <RootTabs.Screen
-          name={rootTabsRouteNames.CreateKeysUX}
-          component={CreateKeysNavigation}
-          options={screenOptionsNoHeader}
-        />
-        {!unlocked && (
+        {!unlocked ? (
           <>
+            <RootTabs.Screen
+              name={rootTabsRouteNames.CreateKeysUX}
+              component={CreateKeysNavigation}
+              options={screenOptionsNoHeader}
+            />
             <RootTabs.Screen
               name={rootTabsRouteNames.InitialPinScreen}
               component={PinScreen}
@@ -82,47 +82,50 @@ export const RootNavigationComponent = () => {
               options={screenOptionsNoHeader}
             />
           </>
+        ) : (
+          <>
+            <RootTabs.Group screenOptions={screenOptionsWithAppHeader}>
+              <RootTabs.Screen
+                name={rootTabsRouteNames.Home}
+                component={HomeNavigator}
+              />
+              <RootTabs.Screen
+                name={rootTabsRouteNames.Activity}
+                component={ActivityScreen}
+              />
+              <RootTabs.Screen
+                name={rootTabsRouteNames.ScanQR}
+                component={ScanQRScreen}
+              />
+              <RootTabs.Screen
+                name={rootTabsRouteNames.Contacts}
+                component={ContactsNavigation}
+              />
+              <RootTabs.Screen
+                name={rootTabsRouteNames.WalletConnect}
+                component={WalletConnectScreenWithProvider}
+              />
+              <RootTabs.Screen
+                name={rootTabsRouteNames.Settings}
+                component={SettingsNavigator}
+              />
+              <RootTabs.Screen
+                name={rootTabsRouteNames.Profile}
+                component={ProfileNavigator}
+              />
+            </RootTabs.Group>
+            <RootTabs.Group
+              screenOptions={screenOptionsWithHeader(
+                top,
+                t('transaction_summary_screen_title'),
+              )}>
+              <RootTabs.Screen
+                name={rootTabsRouteNames.TransactionSummary}
+                component={TransactionSummaryScreen}
+              />
+            </RootTabs.Group>
+          </>
         )}
-        <RootTabs.Group screenOptions={screenOptionsWithAppHeader}>
-          <RootTabs.Screen
-            name={rootTabsRouteNames.Home}
-            component={HomeNavigator}
-          />
-          <RootTabs.Screen
-            name={rootTabsRouteNames.Activity}
-            component={ActivityScreen}
-          />
-          <RootTabs.Screen
-            name={rootTabsRouteNames.ScanQR}
-            component={ScanQRScreen}
-          />
-          <RootTabs.Screen
-            name={rootTabsRouteNames.Contacts}
-            component={ContactsNavigation}
-          />
-          <RootTabs.Screen
-            name={rootTabsRouteNames.WalletConnect}
-            component={WalletConnectScreenWithProvider}
-          />
-          <RootTabs.Screen
-            name={rootTabsRouteNames.Settings}
-            component={SettingsNavigator}
-          />
-          <RootTabs.Screen
-            name={rootTabsRouteNames.Profile}
-            component={ProfileNavigator}
-          />
-        </RootTabs.Group>
-        <RootTabs.Group
-          screenOptions={screenOptionsWithHeader(
-            top,
-            t('transaction_summary_screen_title'),
-          )}>
-          <RootTabs.Screen
-            name={rootTabsRouteNames.TransactionSummary}
-            component={TransactionSummaryScreen}
-          />
-        </RootTabs.Group>
       </RootTabs.Navigator>
       <ConfirmationModal
         isVisible={isWarningVisible}

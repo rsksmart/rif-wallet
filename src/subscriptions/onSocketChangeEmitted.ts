@@ -74,7 +74,7 @@ export const onSocketChangeEmitted =
     usdPrices,
     chainId,
   }: OnSocketChangeEmittedArgs) =>
-  (action: Action) => {
+  async (action: Action) => {
     // Temporal patch to avoid dispatching events if current chainId does not match
     // @TODO find root cause of why the rifSockets is emitting an outdated event
     // Suspect is the .disconnect is not playing its part
@@ -90,7 +90,7 @@ export const onSocketChangeEmitted =
           dispatch(setUsdPrices(payload))
           break
         case 'newTransaction':
-          onNewTransactionEventEmitted({
+          await onNewTransactionEventEmitted({
             abiEnhancer,
             wallet,
             dispatch,
@@ -100,7 +100,7 @@ export const onSocketChangeEmitted =
           })
           break
         case 'newBalance':
-          dispatch(addOrUpdateBalances([payload]))
+          await dispatch(addOrUpdateBalances([payload]))
           break
         case 'init':
           const deserializedRifTransactions = deserializeTransactions(
@@ -114,9 +114,9 @@ export const onSocketChangeEmitted =
           const deserializedTransactions = combinedTransactions.map(tx =>
             activityDeserializer(tx, usdPrices, chainId),
           )
-          dispatch(fetchBitcoinTransactions({}))
           dispatch(addNewTransactions(deserializedTransactions))
-          dispatch(addOrUpdateBalances(payload.balances))
+          await dispatch(fetchBitcoinTransactions({}))
+          await dispatch(addOrUpdateBalances(payload.balances))
           break
         default:
           throw new Error(`${type} not implemented`)

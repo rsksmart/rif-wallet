@@ -33,6 +33,7 @@ import {
   setKeysExist,
   setPinState,
 } from 'store/slices/persistentDataSlice'
+import { settingsStackRouteNames } from 'navigation/settingsNavigator/types'
 
 import {
   Bitcoin,
@@ -101,18 +102,6 @@ export const createWallet = createAsyncThunk<
 
     const supportedBiometry = await getSupportedBiometryType()
 
-    if (Platform.OS === 'android' && !supportedBiometry) {
-      setTimeout(() => {
-        navigationContainerRef.navigate(rootTabsRouteNames.CreateKeysUX, {
-          screen: createKeysRouteNames.CreatePIN,
-          params: {
-            isChangeRequested: true,
-            backScreen: null,
-          },
-        })
-      }, 100)
-    }
-
     if (!kms) {
       return thunkAPI.rejectWithValue('Failed to createKMS')
     }
@@ -126,6 +115,18 @@ export const createWallet = createAsyncThunk<
 
     // unclock the app
     thunkAPI.dispatch(setUnlocked(true))
+
+    if (Platform.OS === 'android' && !supportedBiometry) {
+      setTimeout(() => {
+        navigationContainerRef.navigate(rootTabsRouteNames.Settings, {
+          screen: settingsStackRouteNames.ChangePinScreen,
+          params: {
+            isChangeRequested: true,
+            backScreen: rootTabsRouteNames.Home,
+          },
+        })
+      }, 100)
+    }
 
     thunkAPI.dispatch(setKeysExist(true))
 
@@ -217,8 +218,6 @@ export const unlockApp = createAsyncThunk<
     })
 
     thunkAPI.dispatch(setUnlocked(true))
-
-    navigationContainerRef.navigate(rootTabsRouteNames.Home)
 
     setTimeout(() => {
       thunkAPI.dispatch(initializeApp({ rifWallet, mnemonic: kms.mnemonic }))
