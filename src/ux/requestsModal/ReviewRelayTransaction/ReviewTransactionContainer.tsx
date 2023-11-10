@@ -137,6 +137,7 @@ export const ReviewTransactionContainer = ({
       tokenPayment: {
         tokenContract: feeContract,
         tokenAmount: txFeeCost,
+        tokenGasIncrease: 1.1,
       },
     }
 
