@@ -34,12 +34,8 @@ export const transferBitcoin = ({
   addressToReturnRemainingAmount,
   onBitcoinTransactionSuccess,
 }: ITransferBitcoin) => {
-  if (onSetError) {
-    onSetError(null)
-  }
-  if (onSetCurrentTransaction) {
-    onSetCurrentTransaction({ status: TransactionStatus.USER_CONFIRM })
-  }
+  onSetError?.(null)
+  onSetCurrentTransaction?.({ status: TransactionStatus.USER_CONFIRM })
   const satoshisToPay = convertBtcToSatoshi(btcToPay.toString()).toNumber()
 
   bip.requestPayment
@@ -54,6 +50,9 @@ export const transferBitcoin = ({
     .then(async txIdJson => {
       if (txIdJson.result) {
         // success
+        onBitcoinTransactionSuccess?.({
+          addressUsed: addressToReturnRemainingAmount,
+        })
         //@TODO: make the status a constant value
         onSetCurrentTransaction?.({
           status: TransactionStatus.PENDING,
