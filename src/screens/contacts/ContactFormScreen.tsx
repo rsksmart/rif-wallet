@@ -126,10 +126,16 @@ export const ContactFormScreen = ({
 
   // check if proposed contact exists already
   const checkIfContactExists = useCallback(
-    (displayAddress: string, searchArray: Contact[]) => {
-      const contact = searchArray.find(c => c.displayAddress === displayAddress)
+    (address: string, name: string, searchArray: Contact[]) => {
+      const index = searchArray.findIndex(c => {
+        return (
+          c.displayAddress === address ||
+          c.address === address ||
+          c.name === name
+        )
+      })
 
-      if (contact) {
+      if (index !== -1) {
         return true
       }
 
@@ -140,29 +146,24 @@ export const ContactFormScreen = ({
 
   const saveContact = useCallback(
     ({ name, address: { address, displayAddress } }: FormValues) => {
+      const lAddress = address.toLowerCase()
+      const trimmedName = name.trim()
+
       const contact: Contact = {
-        name,
-        address: address.toLowerCase(),
+        name: trimmedName,
+        address: lAddress,
         displayAddress,
       }
-      const contactExists = checkIfContactExists(displayAddress, contacts)
+      const contactExists = checkIfContactExists(
+        displayAddress && lAddress,
+        trimmedName,
+        contacts,
+      )
 
       if (contactExists) {
         Alert.alert(t('contact_form_alert_title'), undefined, [
           {
-            text: t('back'),
-            onPress: () => {
-              navigation.replace(contactsStackRouteNames.ContactsList)
-              proposed && navigation.navigate(rootTabsRouteNames.Home)
-            },
-          },
-          {
-            text: t('contact_form_edit_existing_button'),
-            onPress: () => {
-              dispatch(editContact(contact))
-              navigation.replace(contactsStackRouteNames.ContactsList)
-              proposed && navigation.navigate(rootTabsRouteNames.Home)
-            },
+            text: t('ok'),
           },
         ])
         return
@@ -175,6 +176,7 @@ export const ContactFormScreen = ({
       }
 
       navigation.replace(contactsStackRouteNames.ContactsList)
+      // if saving was proposed from SendScreen
       proposed && navigation.navigate(rootTabsRouteNames.Home)
     },
     [
