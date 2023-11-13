@@ -16,18 +16,8 @@ import { onRequest } from 'src/redux/slices/settingsSlice'
 import { getWalletSetting } from './config'
 import { SETTINGS } from './types'
 
-// function creates RIF Wallet instance
-// along with necessary confings
-const createRIFWallet = async (
-  chainId: 30 | 31,
-  wallet: Wallet,
-  onRequestFn: OnRequest,
-) => {
-  const jsonRpcProvider = new providers.StaticJsonRpcProvider(
-    getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId]),
-  )
-
-  const rifRelayConfig: RifRelayConfig = {
+export const getRifRelayConfig = (chainId: 30 | 31): RifRelayConfig => {
+  return {
     smartWalletFactoryAddress: getWalletSetting(
       SETTINGS.SMART_WALLET_FACTORY_ADDRESS,
       chainTypesById[chainId],
@@ -45,6 +35,19 @@ const createRIFWallet = async (
       chainTypesById[chainId],
     ),
   }
+}
+// function creates RIF Wallet instance
+// along with necessary confings
+const createRIFWallet = async (
+  chainId: 30 | 31,
+  wallet: Wallet,
+  onRequestFn: OnRequest,
+) => {
+  const jsonRpcProvider = new providers.StaticJsonRpcProvider(
+    getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId]),
+  )
+
+  const rifRelayConfig: RifRelayConfig = getRifRelayConfig(chainId)
 
   return await RIFWallet.create(
     wallet.connect(jsonRpcProvider),
