@@ -131,7 +131,7 @@ export const ContactFormScreen = ({
         return (
           c.displayAddress === address ||
           c.address === address ||
-          c.name === name
+          c.name.toLowerCase() === name.toLowerCase()
         )
       })
 
