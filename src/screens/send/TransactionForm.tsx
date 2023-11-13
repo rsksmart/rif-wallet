@@ -73,11 +73,6 @@ interface FormValues {
 
 export type ProposedContact = Omit<Contact, 'name'>
 
-const bitcoinFeeMap = new Map([
-  [TokenSymbol.BTC, true],
-  [TokenSymbol.BTCT, true],
-])
-
 const rifFeeMap = new Map([
   [TokenSymbol.TRIF, true],
   [TokenSymbol.RIF, true],
