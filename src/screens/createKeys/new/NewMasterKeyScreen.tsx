@@ -60,7 +60,8 @@ export const NewMasterKeyScreen = ({ navigation }: Props) => {
         width={40}
         colors={[sharedColors.primary, sharedColors.inputInactive]}
       />
-      < Typography style={styles.titleText}
+      <Typography
+        style={styles.titleText}
         type={'h2'}
         accessibilityLabel={'saveYourPhrase'}>
         {t('new_master_key_title')}
