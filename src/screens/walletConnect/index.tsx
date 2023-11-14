@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import {
   Alert,
   Image,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -13,7 +14,7 @@ import {
 import { FormProvider, useForm } from 'react-hook-form'
 import Clipboard from '@react-native-community/clipboard'
 
-import { AppButton, Input, Typography } from 'components/index'
+import { AppButton, AppTouchable, Input, Typography } from 'components/index'
 import { ConfirmationModal } from 'components/modal'
 import {
   rootTabsRouteNames,
@@ -195,28 +196,30 @@ export const WalletConnectScreen = ({ route }: Props) => {
         />
       ) : null}
       {/* Insert WC URI Manually */}
-      <FormProvider {...methods}>
-        <Input
-          inputName="wcUri"
-          label={t('dapps_wc_label')}
-          placeholder={t('dapps_insert_wc_uri')}
-          autoCapitalize="none"
-          autoCorrect={false}
-          rightIcon={{
-            name: 'paste',
-            size: 16,
-          }}
-          onRightIconPress={handlePaste}
-        />
-        <AppButton
-          title={t('dapps_wc_connect')}
-          onPress={onUriSubmitted}
-          textColor={sharedColors.black}
-          color={sharedColors.white}
-          style={styles.subtitle}
-          disabled={wcUri.length === 0}
-        />
-      </FormProvider>
+      <AppTouchable width={'100%'} onPress={Keyboard.dismiss}>
+        <FormProvider {...methods}>
+          <Input
+            inputName="wcUri"
+            label={t('dapps_wc_label')}
+            placeholder={t('dapps_insert_wc_uri')}
+            autoCapitalize="none"
+            autoCorrect={false}
+            rightIcon={{
+              name: 'paste',
+              size: 16,
+            }}
+            onRightIconPress={handlePaste}
+          />
+          <AppButton
+            title={t('dapps_wc_connect')}
+            onPress={onUriSubmitted}
+            textColor={sharedColors.black}
+            color={sharedColors.white}
+            style={styles.subtitle}
+            disabled={wcUri.length === 0}
+          />
+        </FormProvider>
+      </AppTouchable>
     </KeyboardAvoidingView>
   )
 }
