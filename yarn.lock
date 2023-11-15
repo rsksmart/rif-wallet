@@ -2088,10 +2088,10 @@
     "@rsksmart/rif-wallet-token" "*"
     axios "^0.27.2"
 
-"@rsksmart/rif-wallet-adapters@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-adapters/-/rif-wallet-adapters-1.0.0.tgz#f9478ab649bd7c3894c8a1160d477f2048c76a9e"
-  integrity sha512-9IeiTc/prfFrmtY33u4+JfL+HUe0ZgSN2MDtHvS5it8Oil9KoIfbZpAOSoCnbjdH7vtewtL1BiPqSIejx7gqVw==
+"@rsksmart/rif-wallet-adapters@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-adapters/-/rif-wallet-adapters-1.0.1.tgz#3e102e2b3c745befdbfed4b0b9b23b854f391aba"
+  integrity sha512-XH5NGgY1smH0cbiLGmLVekJDNdvWSaE0q/TtkhiBGqykgf528YWgaOlokuQeDfMg/+L76GFILdMaLm12vlhEEw==
   dependencies:
     "@ethersproject/abstract-signer" "^5.7.0"
     "@ethersproject/bignumber" "^5.7.0"
@@ -2131,10 +2131,10 @@
   dependencies:
     "@rsksmart/rsk-utils" "^1.1.0"
 
-"@rsksmart/rif-wallet-services@^1.0.8":
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-services/-/rif-wallet-services-1.0.8.tgz#d4b9099c0c931c295dbac357d1a35f383700028f"
-  integrity sha512-sKXNT3PU6eDYKSBZxV1vLOA/N/lOYavGjw4Q12dWCjyT3xv7uQtAKIB+njYTyK0HxaKfKcR0+Agq/4KIdiAZ/w==
+"@rsksmart/rif-wallet-services@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-services/-/rif-wallet-services-1.1.0.tgz#5d981fcfc1d4015d41e1b11c293363bdd117246a"
+  integrity sha512-DHiW0j+MNrxzBKCgW6mSheiD7H38K4OIv2a0WSopXd/B4vswiOHY3zyZghmajNKqqzT87yD9AE0/+y8fHpu0RA==
   dependencies:
     "@ethersproject/contracts" "^5.7.0"
     "@rsksmart/rif-wallet-abi-enhancer" "*"
