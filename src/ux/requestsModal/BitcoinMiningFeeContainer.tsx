@@ -10,10 +10,7 @@ export const BitcoinMiningFeeContainer = () => {
   const bitcoinCore = useAppSelector(selectBitcoin)
   const [suggestedBitcoinFees, setSuggestedBitcoinFees] = useState<
     { feeName: string; feeRate: string }[]
-  >([
-    { feeName: 'low', feeRate: '10000' },
-    { feeName: 'low', feeRate: '10000' },
-  ])
+  >([])
 
   useEffect(() => {
     // Fetch the bitcoin fees
