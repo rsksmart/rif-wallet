@@ -1,8 +1,8 @@
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { ScrollView, StyleSheet, View } from 'react-native'
 import { FormProvider, useForm } from 'react-hook-form'
 
-import { Avatar } from 'components/index'
+import { AppButton, Avatar } from 'components/index'
 import { Input } from 'components/input'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { EyeIcon } from 'components/icons/EyeIcon'
@@ -12,6 +12,9 @@ import {
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
 import { headerLeftOption } from 'navigation/profileNavigator'
+import { WalletContext, useWalletState } from 'src/shared/wallet'
+
+import { domain, types, value } from './signTypedData'
 
 export const ExampleScreen = ({
   navigation,
@@ -36,6 +39,26 @@ export const ExampleScreen = ({
       },
     })
   }, [navigation])
+
+  //const { wallet } = useWalletState()
+  const { wallet } = useContext(WalletContext)
+  const signMessage = () => {
+    console.log('signing message!')
+    wallet &&
+      wallet
+        .signMessage('hello world')
+        .then((hash: string) => console.log('success', hash))
+        .catch((err: unknown) => console.log('Error: ', err))
+  }
+
+  const singTypedData = () => {
+    console.log('Sign Typed Data')
+    wallet &&
+      wallet
+        ._signTypedData(domain, types, value)
+        .then((hash: string) => console.log('success', hash))
+        .catch((err: unknown) => console.log('Error: ', err))
+  }
 
   return (
     <View style={sharedStyles.screen}>
@@ -96,6 +119,8 @@ export const ExampleScreen = ({
             subtitle={'dshduhsbdjsnjn'}
             isReadOnly
           />
+          <AppButton title="Sign Message" onPress={signMessage} />
+          <AppButton title="Sign Typed Data" onPress={singTypedData} />
         </ScrollView>
       </FormProvider>
     </View>
