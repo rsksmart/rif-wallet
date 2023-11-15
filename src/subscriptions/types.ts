@@ -85,8 +85,3 @@ export interface TransactionsServerResponseWithActivityTransactions
   extends TransactionsServerResponse {
   activityTransactions: IActivityTransaction[]
 }
-
-export interface AbiWallet {
-  abiEnhancer: IAbiEnhancer
-  wallet: RIFWallet
-}

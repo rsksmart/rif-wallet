@@ -35,12 +35,12 @@ export enum SocketsEvents {
 }
 
 interface RifSockets {
-  wallet: RIFWallet
+  address: string
+  chainId: ChainTypesByIdType
   setGlobalError: (err: string) => void
   dispatch: AppDispatch
   usdPrices: UsdPricesState
   fetcher: RifWalletServicesFetcher
-  chainId: ChainTypesByIdType
   balances: Record<string, TokenBalanceObject>
 }
 
@@ -52,25 +52,21 @@ const onSocketInit = (
 }
 
 export const rifSockets = ({
-  wallet,
+  address,
+  chainId,
   fetcher,
   dispatch,
   setGlobalError,
   usdPrices,
-  chainId,
   balances,
 }: RifSockets) => {
   const onChange = onSocketChangeEmitted({
     dispatch,
     abiEnhancer,
-    wallet,
     usdPrices,
     chainId,
   })
-  const rifWalletServicesSocket = new RifWalletServicesSocket<
-    Options,
-    ReturnType<typeof setInternetCredentials>
-  >(
+  const rifWalletServicesSocket = new RifWalletServicesSocket(
     getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL, chainTypesById[chainId]),
     abiEnhancer,
     {
@@ -79,10 +75,11 @@ export const rifSockets = ({
         SETTINGS.RIF_WALLET_KEY,
         chainTypesById[chainId],
       ),
+      // @TODO: make sure that the chainId type is more specific in lib
       onEnhanceTransaction: enhanceTransactionInput,
       onFilterOutRepeatedTransactions: filterEnhancedTransactions,
-      onBeforeInit: (encryptionKey, currentInstance) => {
-        currentInstance.cache = new MMKVStorage('txs', encryptionKey)
+      onBeforeInit: currentInstance => {
+        currentInstance.cache = new MMKVStorage('txs')
       },
     },
     {
@@ -116,7 +113,9 @@ export const rifSockets = ({
     )
     rifWalletServicesSocket.on('change', onChange)
     rifWalletServicesSocket
-      .connect(wallet, fetcher, { 'User-Agent': DeviceInfo.getUserAgentSync() })
+      .connect(address, chainId, fetcher, {
+        'User-Agent': DeviceInfo.getUserAgentSync(),
+      })
       .catch(err => {
         if (err instanceof Error) {
           setGlobalError(err.message)
