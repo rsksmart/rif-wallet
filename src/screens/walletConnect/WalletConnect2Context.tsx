@@ -4,6 +4,7 @@ import {
   useCallback,
   useEffect,
   useState,
+  useMemo,
 } from 'react'
 import { getSdkError, parseUri } from '@walletconnect/utils'
 import Web3Wallet, { Web3WalletTypes } from '@walletconnect/web3wallet'
@@ -118,7 +119,7 @@ export const WalletConnect2Provider = ({
   >(undefined)
   const [error, setError] = useState<WalletConnect2ContextArguments['error']>()
 
-  const rifRelayConfig = getRifRelayConfig(chainId)
+  const rifRelayConfig = useMemo(() => getRifRelayConfig(chainId), [chainId])
 
   const onSessionProposal = async (
     proposal: Web3WalletTypes.SessionProposal,
@@ -314,7 +315,8 @@ export const WalletConnect2Provider = ({
     if (wallet) {
       onContextFirstLoad().catch(console.log)
     }
-  }, [onContextFirstLoad, wallet])
+  }, [wallet, onContextFirstLoad])
+
   return (
     <WalletConnect2Context.Provider
       value={{
