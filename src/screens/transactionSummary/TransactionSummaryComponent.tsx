@@ -271,7 +271,8 @@ export const TransactionSummaryComponent = ({
                   type={'h5'}
                   style={[sharedStyles.textRight, styles.underline]}
                   numberOfLines={1}
-                  ellipsizeMode={'middle'}>
+                  ellipsizeMode={'middle'}
+                  accessibilityLabel="Hash">
                   {hashId}
                 </Typography>
               </AppTouchable>
