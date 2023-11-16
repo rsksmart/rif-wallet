@@ -72,6 +72,15 @@ export const HomeScreen = ({
     })
   const [showInfoBar, setShowInfoBar] = useState<boolean>(true)
 
+  const defaultFirstValue: CurrencyValue = useMemo(
+    () => ({
+      balance: totalUsdBalance,
+      symbol: '',
+      symbolType: 'usd',
+    }),
+    [totalUsdBalance],
+  )
+
   const balancesArray = Object.values(tokenBalances)
 
   // token or undefined
@@ -196,6 +205,7 @@ export const HomeScreen = ({
       })
     }
   }, [selectedToken])
+
   const closed = useMemo(() => {
     if (hasIsGettingStartedClosed()) {
       const { close } = getIsGettingStartedClosed()
@@ -208,12 +218,6 @@ export const HomeScreen = ({
     saveIsGettingStartedClosed({ close: true })
     setShowInfoBar(false)
   }, [])
-
-  const defaultFirstValue: CurrencyValue = {
-    balance: totalUsdBalance,
-    symbol: '',
-    symbolType: 'usd',
-  }
 
   return (
     <ScrollView style={styles.container} bounces={false}>

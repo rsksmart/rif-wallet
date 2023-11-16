@@ -21,7 +21,9 @@ export type SettingsStackParamsList = {
   [settingsStackRouteNames.ChangeLanguage]: undefined
   [settingsStackRouteNames.ChangePinScreen]: {
     isChangeRequested: true
-    backScreen?: settingsStackRouteNames.SettingsScreen
+    backScreen?:
+      | settingsStackRouteNames.SettingsScreen
+      | rootTabsRouteNames.Home
   }
   [settingsStackRouteNames.AccountsScreen]: undefined
   [settingsStackRouteNames.WalletBackup]: undefined

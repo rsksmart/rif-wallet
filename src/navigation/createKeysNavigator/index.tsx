@@ -13,7 +13,6 @@ import {
 import { selectIsUnlocked } from 'store/slices/settingsSlice'
 import { selectKeysExist } from 'store/slices/persistentDataSlice'
 import { useAppSelector } from 'store/storeUtils'
-import { PinScreen } from 'screens/pinScreen'
 
 import { CreateKeysStackParamList, createKeysRouteNames } from './types'
 import { screenOptionsWithHeader } from '..'
@@ -63,11 +62,6 @@ export const CreateKeysNavigation = () => {
         name={createKeysRouteNames.ImportMasterKey}
         component={ImportMasterKeyScreen}
         options={screenOptionsWithHeader(top, t('header_import_wallet'))}
-      />
-      <Stack.Screen
-        name={createKeysRouteNames.CreatePIN}
-        component={PinScreen}
-        options={screensOptions}
       />
     </Stack.Navigator>
   )
