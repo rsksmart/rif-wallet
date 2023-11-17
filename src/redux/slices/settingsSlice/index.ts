@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { getSupportedBiometryType } from 'react-native-keychain'
 import { ColorValue, Platform } from 'react-native'
+import { initializeSslPinning } from 'react-native-ssl-public-key-pinning'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { RifWalletServicesFetcher } from '@rsksmart/rif-wallet-services'
 
@@ -17,6 +18,8 @@ import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { deleteProfile } from 'store/slices/profileSlice'
 import { navigationContainerRef } from 'core/Core'
 import { initializeBitcoin } from 'core/hooks/bitcoin/initializeBitcoin'
+import { getWalletSetting } from 'core/config'
+import { SETTINGS } from 'core/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { createKeysRouteNames } from 'navigation/createKeysNavigator'
 import { AsyncThunkWithTypes } from 'store/store'
@@ -25,7 +28,10 @@ import {
   SocketsEvents,
   socketsEvents,
 } from 'src/subscriptions/rifSockets'
-import { ChainTypesByIdType } from 'shared/constants/chainConstants'
+import {
+  chainTypesById,
+  ChainTypesByIdType,
+} from 'shared/constants/chainConstants'
 import { getCurrentChainId } from 'storage/ChainStorage'
 import { resetReduxStorage } from 'storage/ReduxStorage'
 import {
@@ -41,6 +47,39 @@ import {
   SettingsSlice,
   UnlockAppAction,
 } from './types'
+
+const sslPinning = async (chainId: ChainTypesByIdType) => {
+  const rifWalletServiceDomain = getWalletSetting(
+    SETTINGS.RIF_WALLET_SERVICE_URL,
+    chainTypesById[chainId],
+  ).split('//')[1]
+
+  const rifWalletServicePk = getWalletSetting(
+    SETTINGS.RIF_WALLET_SERVICE_PUBLIC_KEY,
+    chainTypesById[chainId],
+  ).split(',')
+  console.log(rifWalletServicePk)
+  const rifRelayDomain = getWalletSetting(
+    SETTINGS.RIF_RELAY_SERVER,
+    chainTypesById[chainId],
+  ).split('//')[1]
+
+  const rifRelayPk = getWalletSetting(
+    SETTINGS.RIF_RELAY_SERVER_PK,
+    chainTypesById[chainId],
+  ).split(',')
+
+  await initializeSslPinning({
+    [rifWalletServiceDomain]: {
+      includeSubdomains: true,
+      publicKeyHashes: rifWalletServicePk,
+    },
+    [rifRelayDomain]: {
+      includeSubdomains: true,
+      publicKeyHashes: rifRelayPk,
+    },
+  })
+}
 
 export const createWallet = createAsyncThunk<
   RIFWallet,
@@ -94,6 +133,8 @@ export const createWallet = createAsyncThunk<
     )
 
     const { usdPrices, balances } = thunkAPI.getState()
+
+    await sslPinning(chainId)
 
     // connect to sockets
     rifSockets({
@@ -213,6 +254,8 @@ export const unlockApp = createAsyncThunk<
     )
 
     const { usdPrices, balances } = thunkAPI.getState()
+
+    await sslPinning(chainId)
 
     // connect to sockets
     rifSockets({
