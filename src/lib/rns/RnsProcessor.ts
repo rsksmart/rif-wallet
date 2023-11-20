@@ -1,5 +1,4 @@
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
-import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { BigNumber } from 'ethers'
 
 import {
@@ -9,24 +8,29 @@ import {
 } from 'storage/RnsProcessorStore'
 import { OnSetTransactionStatusChange } from 'screens/send/types'
 import { RNS_ADDRESSES_TYPE } from 'screens/rnsManager/types'
+import { Wallet } from 'shared/wallet'
+
+interface RNSProcessorConstructor {
+  wallet: Wallet
+  address: string
+  onSetTransactionStatusChange?: OnSetTransactionStatusChange
+  rnsAddresses: RNS_ADDRESSES_TYPE
+}
 
 export class RnsProcessor {
   private rskRegistrar
-  private wallet
+  private address
   private index: IDomainRegistrationProcessIndex = {}
   private rnsAddresses: RNS_ADDRESSES_TYPE
   onSetTransactionStatusChange?: OnSetTransactionStatusChange
 
   constructor({
     wallet,
+    address,
     onSetTransactionStatusChange,
     rnsAddresses,
-  }: {
-    wallet: RIFWallet
-    onSetTransactionStatusChange?: OnSetTransactionStatusChange
-    rnsAddresses: RNS_ADDRESSES_TYPE
-  }) {
-    this.wallet = wallet
+  }: RNSProcessorConstructor) {
+    this.address = address
     this.rnsAddresses = rnsAddresses
     this.rskRegistrar = new RSKRegistrar(
       this.rnsAddresses.rskOwnerAddress,
@@ -56,10 +60,7 @@ export class RnsProcessor {
     try {
       if (!this.index[domain]?.commitmentRequested) {
         const { makeCommitmentTransaction, secret, hash } =
-          await this.rskRegistrar.commitToRegister(
-            domain,
-            this.wallet.smartWallet.smartWalletAddress,
-          )
+          await this.rskRegistrar.commitToRegister(domain, this.address)
 
         this.onSetTransactionStatusChange?.({
           ...makeCommitmentTransaction,
@@ -173,7 +174,7 @@ export class RnsProcessor {
 
         const tx = await this.rskRegistrar.register(
           domain,
-          this.wallet.smartWallet.smartWalletAddress,
+          this.address,
           this.index[domain].secret,
           durationToRegister,
           price,

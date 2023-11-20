@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react'
 import { TransactionRequest } from '@ethersproject/providers'
 import { BigNumber } from 'ethers'
 import { AbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
-import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { isAddress } from '@rsksmart/rsk-utils'
 
-import { useAppSelector } from 'store/storeUtils'
-import { selectChainId } from 'store/slices/settingsSlice'
+import { TokenSymbol } from 'screens/home/TokenImage'
+import { Wallet } from 'shared/wallet'
+import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 
 const abiEnhancer = new AbiEnhancer()
 
@@ -25,13 +25,16 @@ const convertTransactionToStrings = (tx: TransactionRequest) => ({
 })
 
 export interface EnhancedTransactionRequest extends TransactionRequest {
-  symbol?: string
+  symbol?: TokenSymbol
   functionName?: string
   functionParameters?: string[]
 }
 
-const useEnhancedWithGas = (wallet: RIFWallet, tx: TransactionRequest) => {
-  const chainId = useAppSelector(selectChainId)
+export const useEnhancedWithGas = (
+  wallet: Wallet,
+  tx: TransactionRequest,
+  chainId: ChainTypesByIdType,
+) => {
   const [enhancedTransactionRequest, setEnhancedTransactionRequest] =
     useState<EnhancedTransactionRequest>({
       gasPrice: '0',
@@ -86,5 +89,3 @@ const useEnhancedWithGas = (wallet: RIFWallet, tx: TransactionRequest) => {
 
   return { enhancedTransactionRequest, isLoaded, setGasLimit, setGasPrice }
 }
-
-export default useEnhancedWithGas

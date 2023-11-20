@@ -1,21 +1,22 @@
 import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleProp, ViewStyle } from 'react-native'
-import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { ZERO_ADDRESS } from '@rsksmart/rif-relay-light-sdk'
 
 import { roundBalance, shortAddress } from 'lib/utils'
 
+import { isMyAddress } from 'components/address/lib'
 import { StatusEnum } from 'components/BasicRow'
 import { BasicRowWithContact } from 'components/BasicRow/BasicRowWithContact'
 import { AppTouchable } from 'components/appTouchable'
 import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 import { ActivityMainScreenProps } from 'shared/types'
-import { isMyAddress } from 'src/components/address/lib'
-import { useAppSelector } from 'src/redux/storeUtils'
+import { useAppSelector } from 'store/storeUtils'
 import { getContactByAddress } from 'store/slices/contactsSlice'
 import { ActivityRowPresentationObject } from 'store/slices/transactionsSlice'
+import { Wallet } from 'shared/wallet'
+import { useAddress } from 'shared/hooks'
 
 const getStatus = (status: string) => {
   switch (status) {
@@ -30,7 +31,7 @@ const getStatus = (status: string) => {
 
 interface Props {
   index?: number
-  wallet: RIFWallet
+  wallet: Wallet
   activityDetails: ActivityRowPresentationObject
   navigation: ActivityMainScreenProps['navigation']
   backScreen?: rootTabsRouteNames
@@ -56,11 +57,12 @@ export const ActivityBasicRow = ({
     price,
     id,
   } = activityDetails
-
+  const walletAddress = useAddress(wallet)
   const { t } = useTranslation()
 
   // Contact
-  const amIReceiver = activityDetails.amIReceiver ?? isMyAddress(wallet, to)
+  const amIReceiver =
+    activityDetails.amIReceiver ?? isMyAddress(walletAddress, to)
   const address = amIReceiver ? from : to
   const contact = useAppSelector(getContactByAddress(address.toLowerCase()))
 
@@ -70,7 +72,7 @@ export const ActivityBasicRow = ({
   let label = `${firstLabel} ${secondLabel}`
   if (
     to === ZERO_ADDRESS &&
-    from.toLowerCase() === wallet.smartWalletFactory.address.toLowerCase()
+    from.toLowerCase() === wallet?.smartWalletFactory.address.toLowerCase()
   ) {
     label = t('wallet_deployment_label')
   }

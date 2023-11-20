@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleSheet, View } from 'react-native'
 
-import { KeyManagementSystem } from 'lib/core'
-
 import { sharedColors } from 'shared/constants'
 import {
   AppButton,
@@ -18,7 +16,6 @@ import {
 import { castStyle, usePreventScreenshot } from 'shared/utils'
 import { getKeys } from 'storage/SecureStorage'
 import { DeleteWalletModal } from 'components/modal/deleteWalletModal'
-import { getCurrentChainId } from 'storage/ChainStorage'
 
 type Props = SettingsScreenProps<settingsStackRouteNames.WalletBackup>
 
@@ -35,11 +32,7 @@ export const WalletBackup = (_: Props) => {
     const fn = async () => {
       const keys = await getKeys()
       if (keys) {
-        const { kms } = KeyManagementSystem.fromSerialized(
-          keys,
-          getCurrentChainId(),
-        )
-        setMnemonic(kms.mnemonic)
+        setMnemonic(keys.mnemonic)
       }
     }
     fn()

@@ -56,10 +56,7 @@ const BITCOIN_CHAINID_MAP: Record<ChainTypesByIdType, string> = {
 export const initializeBitcoin = (
   mnemonic: string,
   dispatch: AppDispatch,
-  fetcher: RifWalletServicesFetcher<
-    Keychain.Options,
-    ReturnType<typeof Keychain.setInternetCredentials>
-  >,
+  fetcher: RifWalletServicesFetcher,
   chainId: ChainTypesByIdType,
 ) => {
   // Return Object which contains both array and map
@@ -84,10 +81,7 @@ export const initializeBitcoin = (
   const transformNetwork = (
     network: StoredBitcoinNetworkValue,
     mnemonicText: string,
-    rifFetcher: RifWalletServicesFetcher<
-      Keychain.Options,
-      ReturnType<typeof Keychain.setInternetCredentials>
-    >,
+    rifFetcher: RifWalletServicesFetcher,
   ) => {
     const createBipWithFetcher = (...args: createBipFactoryType) => {
       const result: BIPWithRequest = createAndInitializeBipWithRequest(

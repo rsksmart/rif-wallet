@@ -4,14 +4,16 @@ import { ColorValue, Platform } from 'react-native'
 import { initializeSslPinning } from 'react-native-ssl-public-key-pinning'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { RifWalletServicesFetcher } from '@rsksmart/rif-wallet-services'
+import { providers } from 'ethers'
 
 import { KeyManagementSystem } from 'lib/core'
+import { EOAWallet } from 'lib/eoaWallet'
 
-import { createKMS, deleteCache, loadExistingWallet } from 'core/operations'
+import { deleteCache } from 'core/operations'
 import { deleteDomains } from 'storage/DomainsStore'
 import { deleteContacts as deleteContactsFromRedux } from 'store/slices/contactsSlice'
 import { resetMainStorage } from 'storage/MainStorage'
-import { deleteKeys, getKeys } from 'storage/SecureStorage'
+import { deleteKeys, getKeys, saveKeys } from 'storage/SecureStorage'
 import { sharedColors } from 'shared/constants'
 import { createPublicAxios } from 'core/setup'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
@@ -39,6 +41,8 @@ import {
   setKeysExist,
   setPinState,
 } from 'store/slices/persistentDataSlice'
+import { SETTINGS } from 'core/types'
+import { getWalletSetting } from 'core/config'
 
 import {
   Bitcoin,
@@ -88,7 +92,18 @@ export const createWallet = createAsyncThunk<
 >('settings/createWallet', async ({ mnemonic, initializeWallet }, thunkAPI) => {
   try {
     const { chainId } = thunkAPI.getState().settings
-    const kms = await createKMS(chainId, mnemonic, thunkAPI.dispatch)
+
+    const url = getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId])
+
+    const jsonRpcProvider = new providers.StaticJsonRpcProvider(url)
+
+    const wallet = EOAWallet.create(
+      mnemonic,
+      chainId,
+      jsonRpcProvider,
+      request => thunkAPI.dispatch(onRequest({ request })),
+      saveKeys,
+    )
 
     const supportedBiometry = await getSupportedBiometryType()
 
@@ -104,20 +119,20 @@ export const createWallet = createAsyncThunk<
       }, 100)
     }
 
-    if (!kms) {
-      return thunkAPI.rejectWithValue('Failed to createKMS')
+    if (!wallet) {
+      return thunkAPI.rejectWithValue('Failed to a Wallet')
     }
 
     // set wallet and walletIsDeployed in WalletContext
-    initializeWallet(kms.rifWallet, {
-      isDeployed: kms.rifWalletIsDeployed,
+    initializeWallet(wallet, {
+      isDeployed: false,
       loading: false,
       txHash: null,
     })
 
     // unclock the app
     thunkAPI.dispatch(setUnlocked(true))
-
+    // set keysExist
     thunkAPI.dispatch(setKeysExist(true))
 
     // create fetcher
@@ -138,7 +153,7 @@ export const createWallet = createAsyncThunk<
 
     // connect to sockets
     rifSockets({
-      address: kms.rifWallet.smartWalletAddress,
+      address: wallet.address,
       fetcher: fetcherInstance,
       dispatch: thunkAPI.dispatch,
       setGlobalError: thunkAPI.rejectWithValue,
@@ -160,7 +175,7 @@ export const createWallet = createAsyncThunk<
     // set bitcoin in redux
     thunkAPI.dispatch(setBitcoinState(bitcoin))
 
-    return kms.rifWallet
+    return wallet
   } catch (err) {
     return thunkAPI.rejectWithValue(err)
   }
@@ -182,10 +197,10 @@ export const unlockApp = createAsyncThunk<
       return thunkAPI.rejectWithValue('FIRST LAUNCH, DELETE PREVIOUS KEYS')
     }
 
-    const serializedKeys = await getKeys()
+    const keys = await getKeys()
     const { chainId } = thunkAPI.getState().settings
 
-    if (!serializedKeys) {
+    if (!keys) {
       // if keys do not exist, set to false
       thunkAPI.dispatch(setKeysExist(false))
       return thunkAPI.rejectWithValue('No Existing Keys')
@@ -222,22 +237,26 @@ export const unlockApp = createAsyncThunk<
       return thunkAPI.rejectWithValue('Move to Offline Screen')
     }
 
-    // set wallets in the store
-    const existingWallet = await loadExistingWallet(
-      serializedKeys,
-      chainId,
-      thunkAPI.dispatch,
+    const { privateKey, mnemonic } = keys
+
+    const url = getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId])
+    const jsonRpcProvider = new providers.StaticJsonRpcProvider(url)
+
+    const existingWallet = EOAWallet.fromPrivateKey(
+      privateKey,
+      jsonRpcProvider,
+      request => thunkAPI.dispatch(onRequest({ request })),
     )
 
     if (!existingWallet) {
       return thunkAPI.rejectWithValue('No Existing Wallet')
     }
 
-    const { kms, rifWallet, rifWalletIsDeployed } = existingWallet
+    // const { kms, rifWallet, rifWalletIsDeployed } = existingWallet
 
     // set wallet and walletIsDeployed in WalletContext
-    initializeWallet(rifWallet, {
-      isDeployed: rifWalletIsDeployed,
+    initializeWallet(existingWallet, {
+      isDeployed: true,
       loading: false,
       txHash: null,
     })
@@ -259,7 +278,7 @@ export const unlockApp = createAsyncThunk<
 
     // connect to sockets
     rifSockets({
-      address: rifWallet.smartWalletAddress,
+      address: existingWallet.address,
       fetcher: fetcherInstance,
       dispatch: thunkAPI.dispatch,
       setGlobalError: thunkAPI.rejectWithValue,
@@ -272,7 +291,7 @@ export const unlockApp = createAsyncThunk<
 
     // initialize bitcoin
     const bitcoin = initializeBitcoin(
-      kms.mnemonic,
+      mnemonic ?? privateKey,
       thunkAPI.dispatch,
       fetcherInstance,
       chainId,
@@ -280,7 +299,7 @@ export const unlockApp = createAsyncThunk<
 
     // set bitcoin in redux
     thunkAPI.dispatch(setBitcoinState(bitcoin))
-    return kms
+    return keys
   } catch (err) {
     return thunkAPI.rejectWithValue(err)
   }
