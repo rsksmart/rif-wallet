@@ -43,6 +43,7 @@ import {
 } from 'store/slices/persistentDataSlice'
 import { SETTINGS } from 'core/types'
 import { getWalletSetting } from 'core/config'
+import { Wallet } from 'shared/wallet'
 
 import {
   Bitcoin,
@@ -197,7 +198,8 @@ export const unlockApp = createAsyncThunk<
       return thunkAPI.rejectWithValue('FIRST LAUNCH, DELETE PREVIOUS KEYS')
     }
 
-    const keys = await getKeys()
+    let keys = await getKeys()
+    let wallet: Wallet | null = null
     const { chainId } = thunkAPI.getState().settings
 
     if (!keys) {
@@ -237,25 +239,39 @@ export const unlockApp = createAsyncThunk<
       return thunkAPI.rejectWithValue('Move to Offline Screen')
     }
 
-    const { privateKey, mnemonic } = keys
+    if (keys.kms) {
+      const url = getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId])
+      const jsonRpcProvider = new providers.StaticJsonRpcProvider(url)
+      wallet = EOAWallet.create(
+        keys.mnemonic!,
+        chainId,
+        jsonRpcProvider,
+        request => thunkAPI.dispatch(onRequest({ request })),
+        saveKeys,
+      )
+
+      keys = await getKeys()
+    }
+
+    const { privateKey, mnemonic } = keys!
 
     const url = getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId])
     const jsonRpcProvider = new providers.StaticJsonRpcProvider(url)
 
-    const existingWallet = EOAWallet.fromPrivateKey(
-      privateKey,
-      jsonRpcProvider,
-      request => thunkAPI.dispatch(onRequest({ request })),
-    )
+    if (!keys?.kms) {
+      wallet = EOAWallet.fromPrivateKey(privateKey, jsonRpcProvider, request =>
+        thunkAPI.dispatch(onRequest({ request })),
+      )
+    }
 
-    if (!existingWallet) {
+    if (!wallet) {
       return thunkAPI.rejectWithValue('No Existing Wallet')
     }
 
     // const { kms, rifWallet, rifWalletIsDeployed } = existingWallet
 
     // set wallet and walletIsDeployed in WalletContext
-    initializeWallet(existingWallet, {
+    initializeWallet(wallet, {
       isDeployed: true,
       loading: false,
       txHash: null,
@@ -278,7 +294,7 @@ export const unlockApp = createAsyncThunk<
 
     // connect to sockets
     rifSockets({
-      address: existingWallet.address,
+      address: wallet.address,
       fetcher: fetcherInstance,
       dispatch: thunkAPI.dispatch,
       setGlobalError: thunkAPI.rejectWithValue,
