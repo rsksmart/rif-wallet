@@ -38,7 +38,8 @@ import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { handleDomainTransactionStatusChange } from 'screens/rnsManager/utils'
 import { selectChainId } from 'store/slices/settingsSlice'
 import { RNS_ADDRESSES_BY_CHAIN_ID } from 'screens/rnsManager/types'
-import { WalletContext } from 'shared/wallet'
+import { useWallet } from 'shared/wallet'
+import { useAddress } from 'shared/hooks'
 
 import { rnsManagerStyles } from './rnsManagerStyles'
 
@@ -52,7 +53,8 @@ export enum TestID {
 export const PurchaseDomainScreen = ({ navigation }: Props) => {
   const dispatch = useAppDispatch()
   const rifToken = useRifToken()
-  const { wallet } = useContext(WalletContext)
+  const wallet = useWallet()
+  const address = useAddress(wallet)
   const profile = useAppSelector(selectProfile)
   const chainId = useAppSelector(selectChainId)
   const alias = profile.alias
@@ -64,13 +66,14 @@ export const PurchaseDomainScreen = ({ navigation }: Props) => {
       wallet &&
       new RnsProcessor({
         wallet,
+        address,
         onSetTransactionStatusChange: handleDomainTransactionStatusChange(
           dispatch,
           wallet,
         ),
         rnsAddresses: RNS_ADDRESSES_BY_CHAIN_ID[chainId],
       }),
-    [dispatch, wallet, chainId],
+    [dispatch, wallet, address, chainId],
   )
 
   const methods = useForm()

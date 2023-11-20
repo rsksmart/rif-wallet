@@ -18,7 +18,6 @@ import {
 import { castStyle } from 'shared/utils'
 import { getKeys } from 'storage/SecureStorage'
 import { DeleteWalletModal } from 'components/modal/deleteWalletModal'
-import { getCurrentChainId } from 'src/storage/ChainStorage'
 
 type Props = SettingsScreenProps<settingsStackRouteNames.WalletBackup>
 
@@ -34,11 +33,7 @@ export const WalletBackup = (_: Props) => {
     const fn = async () => {
       const keys = await getKeys()
       if (keys) {
-        const { kms } = KeyManagementSystem.fromSerialized(
-          keys,
-          getCurrentChainId(),
-        )
-        setMnemonic(kms.mnemonic)
+        setMnemonic(keys.mnemonic)
       }
     }
     fn()
