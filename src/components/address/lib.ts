@@ -55,15 +55,11 @@ export const validateAddress = (
 }
 
 export const isMyAddress = (
-  wallet: { smartWalletAddress: string } | null,
-  address: string,
+  userAddress: string,
+  compareAddress: string,
 ): boolean => {
-  if (wallet) {
-    const myAddress = toChecksumAddress(wallet.smartWalletAddress)
-    return myAddress.toLowerCase() === address?.toLowerCase()
-  }
-
-  return false
+  const myAddress = toChecksumAddress(userAddress)
+  return myAddress.toLowerCase() === compareAddress.toLowerCase()
 }
 
 export const getAddressDisplayText = (

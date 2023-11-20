@@ -9,7 +9,6 @@ import { getSdkError, parseUri } from '@walletconnect/utils'
 import Web3Wallet, { Web3WalletTypes } from '@walletconnect/web3wallet'
 import { IWeb3Wallet } from '@walletconnect/web3wallet'
 import { WalletConnectAdapter } from '@rsksmart/rif-wallet-adapters'
-import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
 import {
   buildRskAllowedNamespaces,
@@ -105,7 +104,7 @@ export const WalletConnect2Context =
 
 interface WalletConnect2ProviderProps {
   children: ReactElement
-  wallet: RIFWallet | null
+  wallet: Wallet | null
 }
 
 export const WalletConnect2Provider = ({

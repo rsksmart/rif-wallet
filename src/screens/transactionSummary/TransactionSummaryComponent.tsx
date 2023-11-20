@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { Linking, ScrollView, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { isBitcoinAddressValid } from '@rsksmart/rif-wallet-bitcoin'
 
 import { displayRoundBalance } from 'lib/utils'
@@ -37,7 +36,7 @@ import {
 import { TransactionSummaryScreenProps } from '.'
 
 interface Props {
-  wallet: RIFWallet
+  address: string
   goBack?: () => void
 }
 
@@ -48,7 +47,7 @@ type TransactionSummaryComponentProps = Omit<
   Props
 
 export const TransactionSummaryComponent = ({
-  wallet,
+  address,
   transaction,
   buttons,
   functionName,
@@ -65,8 +64,9 @@ export const TransactionSummaryComponent = ({
   const iconObject = transactionStatusToIconPropsMap.get(status)
   const transactionStatusText = transactionStatusDisplayText.get(status)
 
-  const amIReceiver = transaction.amIReceiver ?? isMyAddress(wallet, to)
-  const contactAddress = amIReceiver ? from || '' : to
+  const amIReceiver =
+    transaction.amIReceiver ?? isMyAddress(address, transaction.to)
+  const contactAddress = amIReceiver ? transaction.from || '' : transaction.to
   const contact = useAppSelector(
     getContactByAddress(contactAddress.toLowerCase()),
   )

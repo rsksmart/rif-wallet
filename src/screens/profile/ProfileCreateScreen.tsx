@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, Share, StyleSheet, View } from 'react-native'
@@ -6,7 +6,6 @@ import Clipboard from '@react-native-community/clipboard'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
-import { shortAddress } from 'lib/utils'
 import { RnsProcessor } from 'lib/rns'
 
 import {
@@ -47,14 +46,16 @@ import { AppSpinner } from 'components/index'
 import { AvatarIcon } from 'components/icons/AvatarIcon'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { RNS_ADDRESSES_BY_CHAIN_ID } from 'screens/rnsManager/types'
-import { WalletContext } from 'shared/wallet'
+import { useWallet } from 'shared/wallet'
+import { useAddress } from 'shared/hooks'
 
 import { rnsManagerStyles } from '../rnsManager/rnsManagerStyles'
 
 export const ProfileCreateScreen = ({
   navigation,
 }: ProfileStackScreenProps<profileStackRouteNames.ProfileCreateScreen>) => {
-  const { wallet } = useContext(WalletContext)
+  const wallet = useWallet()
+  const address = useAddress(wallet)
 
   const dispatch = useAppDispatch()
   const profile = useAppSelector(selectProfile)
@@ -70,10 +71,7 @@ export const ProfileCreateScreen = ({
   const { resetField, setValue } = methods
   const { t } = useTranslation()
 
-  const { displayAddress } = getAddressDisplayText(
-    wallet?.smartWallet.smartWalletAddress ?? '',
-    chainId,
-  )
+  const { displayAddress } = getAddressDisplayText(address, chainId)
 
   const onSetEmail = useCallback(
     (_email: string) => {
@@ -88,6 +86,10 @@ export const ProfileCreateScreen = ({
     },
     [dispatch, profile],
   )
+
+  const onCopyAddress = useCallback(() => {
+    Clipboard.setString(address)
+  }, [address])
 
   const resetPhone = useCallback(() => {
     resetField('phone')
@@ -142,6 +144,7 @@ export const ProfileCreateScreen = ({
     ) {
       const rns = new RnsProcessor({
         wallet,
+        address,
         rnsAddresses: RNS_ADDRESSES_BY_CHAIN_ID[chainId],
       })
       commitment(
@@ -230,14 +233,10 @@ export const ProfileCreateScreen = ({
                 style={styles.copyIcon}
                 color={sharedColors.white}
                 size={defaultIconSize}
-                onPress={() =>
-                  Clipboard.setString(
-                    wallet?.smartWallet.smartWalletAddress || '',
-                  )
-                }
+                onPress={onCopyAddress}
               />
             }
-            placeholder={shortAddress(wallet?.smartWallet.smartWalletAddress)}
+            placeholder={displayAddress}
             isReadOnly
             testID={'TestID.AddressText'}
           />

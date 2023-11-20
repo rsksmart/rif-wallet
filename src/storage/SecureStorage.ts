@@ -11,11 +11,13 @@ import {
 } from 'react-native-keychain'
 import DeviceInfo from 'react-native-device-info'
 
+import { WalletState } from 'lib/eoaWallet'
+
 import { getKeysFromMMKV, saveKeysInMMKV } from './MainStorage'
 
 const keyManagement = 'KEY_MANAGEMENT'
 
-export const getKeys = async () => {
+export const getKeys = async (): Promise<WalletState | null> => {
   try {
     const isEmulator = await DeviceInfo.isEmulator()
 
@@ -36,14 +38,14 @@ export const getKeys = async () => {
       if (!keys) {
         return null
       }
-      return keys.password
+      return JSON.parse(keys.password)
     } else {
       const keys = getKeysFromMMKV()
       if (!keys) {
         return null
       }
 
-      return keys
+      return JSON.parse(keys)
     }
   } catch (err) {
     console.log('ERROR GETTING KEYS', err.message)
@@ -51,8 +53,10 @@ export const getKeys = async () => {
   }
 }
 
-export const saveKeys = async (keysValue: string) => {
+export const saveKeys = async (privateKey: string, mnemonic?: string) => {
   try {
+    const keysObject = JSON.stringify({ privateKey, mnemonic })
+
     const isEmulator = await DeviceInfo.isEmulator()
 
     if (!isEmulator) {
@@ -64,7 +68,7 @@ export const saveKeys = async (keysValue: string) => {
             })
           : Boolean(supportedBiometry)
 
-      return setGenericPassword(keyManagement, keysValue, {
+      return setGenericPassword(keyManagement, keysObject, {
         accessible: ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
         authenticationType: AUTHENTICATION_TYPE.DEVICE_PASSCODE_OR_BIOMETRICS,
         accessControl:
@@ -73,7 +77,7 @@ export const saveKeys = async (keysValue: string) => {
             : ACCESS_CONTROL.BIOMETRY_CURRENT_SET_OR_DEVICE_PASSCODE,
       })
     } else {
-      saveKeysInMMKV(keysValue)
+      saveKeysInMMKV(keysObject)
       return {
         service: 'MMKV',
         storage: 'MAIN_STORAGE',

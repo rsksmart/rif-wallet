@@ -10,9 +10,11 @@ import {
   useState,
 } from 'react'
 
+import { EOAWallet } from 'lib/eoaWallet'
+
 // preparing for having different types of Wallets
 // like EOA Wallet, MAGIC etc
-export type Wallet = RIFWallet
+export type Wallet = RIFWallet | EOAWallet
 
 interface WalletIsDeployed {
   loading: boolean
