@@ -1,11 +1,9 @@
 import EventEmitter from 'eventemitter3'
-import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import {
   ITokenWithBalance,
   RifWalletServicesFetcher,
   RifWalletServicesSocket,
 } from '@rsksmart/rif-wallet-services'
-import { Options, setInternetCredentials } from 'react-native-keychain'
 import DeviceInfo from 'react-native-device-info'
 
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
