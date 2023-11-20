@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleSheet, View } from 'react-native'
 
-import { KeyManagementSystem } from 'lib/core'
-
 import { sharedColors } from 'shared/constants'
 import {
   AppButton,
