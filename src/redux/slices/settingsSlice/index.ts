@@ -6,7 +6,6 @@ import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { RifWalletServicesFetcher } from '@rsksmart/rif-wallet-services'
 import { providers } from 'ethers'
 
-import { KeyManagementSystem } from 'lib/core'
 import { EOAWallet } from 'lib/eoaWallet'
 
 import { deleteCache } from 'core/operations'
@@ -41,8 +40,6 @@ import {
   setKeysExist,
   setPinState,
 } from 'store/slices/persistentDataSlice'
-import { SETTINGS } from 'core/types'
-import { getWalletSetting } from 'core/config'
 import { Wallet } from 'shared/wallet'
 
 import {
@@ -63,7 +60,7 @@ const sslPinning = async (chainId: ChainTypesByIdType) => {
     SETTINGS.RIF_WALLET_SERVICE_PUBLIC_KEY,
     chainTypesById[chainId],
   ).split(',')
-  console.log(rifWalletServicePk)
+  console.log('rifWalletServicePk', rifWalletServicePk)
   const rifRelayDomain = getWalletSetting(
     SETTINGS.RIF_RELAY_SERVER,
     chainTypesById[chainId],
@@ -183,7 +180,7 @@ export const createWallet = createAsyncThunk<
 })
 
 export const unlockApp = createAsyncThunk<
-  KeyManagementSystem,
+  void,
   UnlockAppAction,
   AsyncThunkWithTypes
 >('settings/unlockApp', async (payload, thunkAPI) => {
@@ -238,10 +235,12 @@ export const unlockApp = createAsyncThunk<
       }, 100)
       return thunkAPI.rejectWithValue('Move to Offline Screen')
     }
-
-    if (keys.kms) {
+    // this is for old wallet created using KMS
+    // @TODO: remove if in the future
+    if (keys.state) {
       const url = getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId])
       const jsonRpcProvider = new providers.StaticJsonRpcProvider(url)
+
       wallet = EOAWallet.create(
         keys.mnemonic!,
         chainId,
@@ -258,7 +257,8 @@ export const unlockApp = createAsyncThunk<
     const url = getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId])
     const jsonRpcProvider = new providers.StaticJsonRpcProvider(url)
 
-    if (!keys?.kms) {
+    //@TODO: remove if in the future
+    if (!keys?.state) {
       wallet = EOAWallet.fromPrivateKey(privateKey, jsonRpcProvider, request =>
         thunkAPI.dispatch(onRequest({ request })),
       )
