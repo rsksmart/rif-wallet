@@ -5,8 +5,7 @@ import {
 import { fromSeed, mnemonicToSeedSync } from '@rsksmart/rif-id-mnemonic'
 import { OnRequest, SendTransactionRequest } from '@rsksmart/rif-wallet-core'
 import { getDPathByChainId } from '@rsksmart/rlogin-dpath'
-import { TypedDataDomain, TypedDataField, Wallet, providers } from 'ethers'
-import { Bytes } from 'ethers/lib/utils'
+import { Wallet, providers } from 'ethers'
 
 type ChainID = 30 | 31
 
@@ -89,15 +88,15 @@ export class EOAWallet extends Wallet {
     })
   }
 
-  _signTypedData(
-    domain: TypedDataDomain,
-    types: Record<string, TypedDataField[]>,
-    value: Record<string, any>,
-  ): Promise<string> {
-    throw new Error('SIGNED TYPED DATA')
-  }
+  // _signTypedData(
+  //   domain: TypedDataDomain,
+  //   types: Record<string, TypedDataField[]>,
+  //   value: Record<string, any>,
+  // ): Promise<string> {
+  //   throw new Error('SIGNED TYPED DATA')
+  // }
 
-  signMessage(message: string | Bytes): Promise<string> {
-    throw new Error('MESSAGE TO BE SIGNED')
-  }
+  // signMessage(message: string | Bytes): Promise<string> {
+  //   throw new Error('MESSAGE TO BE SIGNED')
+  // }
 }

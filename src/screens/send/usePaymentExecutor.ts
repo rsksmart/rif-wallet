@@ -3,7 +3,6 @@ import {
   convertBtcToSatoshi,
   UnspentTransactionType,
 } from '@rsksmart/rif-wallet-bitcoin'
-import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 import { useTranslation } from 'react-i18next'
 
