@@ -1,4 +1,4 @@
-package com.swallet.newarchitecture.components;
+package org.iovlabs.rif_wallet.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

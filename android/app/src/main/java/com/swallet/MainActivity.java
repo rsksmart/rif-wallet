@@ -1,4 +1,4 @@
-package com.swallet;
+package org.iovlabs.rif_wallet;
 
 import android.os.Bundle;
 import com.facebook.react.ReactActivity;
