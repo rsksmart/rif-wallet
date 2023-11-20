@@ -138,7 +138,7 @@ export const createWallet = createAsyncThunk<
 
     // connect to sockets
     rifSockets({
-      wallet: kms.rifWallet,
+      address: kms.rifWallet.smartWalletAddress,
       fetcher: fetcherInstance,
       dispatch: thunkAPI.dispatch,
       setGlobalError: thunkAPI.rejectWithValue,
@@ -259,7 +259,7 @@ export const unlockApp = createAsyncThunk<
 
     // connect to sockets
     rifSockets({
-      wallet: rifWallet,
+      address: rifWallet.smartWalletAddress,
       fetcher: fetcherInstance,
       dispatch: thunkAPI.dispatch,
       setGlobalError: thunkAPI.rejectWithValue,
