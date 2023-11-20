@@ -2,7 +2,7 @@ import {
   OverriddableTransactionOptions,
   SendTransactionRequest,
 } from '@rsksmart/rif-wallet-core'
-import { BigNumber, constants } from 'ethers'
+import { BigNumber } from 'ethers'
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Alert, StyleSheet, View } from 'react-native'
