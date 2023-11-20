@@ -2,9 +2,14 @@ import testnetContracts from '@rsksmart/rsk-testnet-contract-metadata'
 import mainnetContracts from '@rsksmart/rsk-contract-metadata'
 import config from 'config.json'
 import ReactNativeConfig from 'react-native-config'
+import { constants } from 'ethers'
 
-import { ChainTypeEnum } from 'shared/constants/chainConstants'
+import {
+  ChainTypeEnum,
+  ChainTypesByIdType,
+} from 'shared/constants/chainConstants'
 import { SETTINGS } from 'core/types'
+import { TokenSymbol } from 'screens/home/TokenImage'
 
 /**
  * This function will get the environment settings from the config.json
@@ -33,9 +38,11 @@ export const getWalletSetting = (
  */
 export const getEnvSetting = (setting: SETTINGS) => ReactNativeConfig[setting]
 
-export const getTokenAddress = (symbol: string, chainType: ChainTypeEnum) => {
-  const contracts =
-    chainType === ChainTypeEnum.TESTNET ? testnetContracts : mainnetContracts
+export const getTokenAddress = (
+  symbol: TokenSymbol,
+  chainId: ChainTypesByIdType,
+) => {
+  const contracts = chainId === 31 ? testnetContracts : mainnetContracts
 
   const result = Object.keys(contracts).find(
     (address: string) =>
@@ -43,8 +50,12 @@ export const getTokenAddress = (symbol: string, chainType: ChainTypeEnum) => {
   )
 
   if (!result) {
+    if (symbol === TokenSymbol.TRBTC || symbol === TokenSymbol.RBTC) {
+      return constants.AddressZero.toLowerCase()
+    }
+
     throw new Error(
-      `Token with the symbol ${symbol} not found on ${chainType}. Did you forget a t?`,
+      `Token with the symbol ${symbol} not found on ${chainId}. Did you forget a t?`,
     )
   }
   return result.toLowerCase()

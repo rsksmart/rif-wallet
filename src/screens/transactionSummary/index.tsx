@@ -14,6 +14,7 @@ import { setFullscreen } from 'store/slices/settingsSlice'
 import { TokenFeeValueObject } from 'store/slices/transactionsSlice'
 import { useAppDispatch } from 'store/storeUtils'
 import { WalletContext } from 'shared/wallet'
+import { useAddress } from 'shared/hooks'
 
 import { TransactionStatus } from './transactionSummaryUtils'
 
@@ -41,6 +42,7 @@ export const TransactionSummaryScreen = ({
   navigation,
 }: RootTabsScreenProps<rootTabsRouteNames.TransactionSummary>) => {
   const { wallet } = useContext(WalletContext)
+  const address = useAddress(wallet)
   const dispatch = useAppDispatch()
   const isFocused = useIsFocused()
   const { backScreen } = route.params
@@ -80,7 +82,7 @@ export const TransactionSummaryScreen = ({
     <TransactionSummaryComponent
       {...route.params}
       goBack={goBack}
-      wallet={wallet}
+      address={address}
     />
   )
 }

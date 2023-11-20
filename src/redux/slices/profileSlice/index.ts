@@ -6,14 +6,16 @@ import { ProfileStatus } from 'navigation/profileNavigator/types'
 
 import { ProfileStore } from './types'
 
+interface RequestUsernamePayload {
+  rnsProcessor: RnsProcessor
+  alias: string
+  duration: number
+}
+
 export const requestUsername = createAsyncThunk(
   'profile/requestUsername',
   async (
-    {
-      rnsProcessor,
-      alias,
-      duration,
-    }: { rnsProcessor: RnsProcessor; alias: string; duration: number },
+    { rnsProcessor, alias, duration }: RequestUsernamePayload,
     thunkAPI,
   ) => {
     try {

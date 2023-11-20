@@ -1,9 +1,10 @@
 import { convertToERC20Token, makeRBTCToken } from '@rsksmart/rif-wallet-token'
 import { BigNumber, utils } from 'ethers'
 import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
-import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
 import { sanitizeMaxDecimalText } from 'lib/utils'
+
+import { Wallet } from 'shared/wallet'
 
 import {
   OnSetCurrentTransactionFunction,
@@ -12,11 +13,11 @@ import {
   TransactionInformation,
 } from './types'
 
-interface IRifTransfer {
+interface RifTransfer {
   token: ITokenWithBalance
   amount: string
   to: string
-  wallet: RIFWallet
+  wallet: Wallet
   chainId: number
   onSetError?: OnSetErrorFunction
   onSetCurrentTransaction?: OnSetCurrentTransactionFunction
@@ -32,7 +33,7 @@ export const transfer = async ({
   onSetError,
   onSetCurrentTransaction,
   onSetTransactionStatusChange,
-}: IRifTransfer) => {
+}: RifTransfer) => {
   onSetError?.(null)
   onSetCurrentTransaction?.({ status: 'USER_CONFIRM' })
 
