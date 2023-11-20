@@ -3,7 +3,7 @@ import { renderHook, act } from '@testing-library/react-hooks'
 import { BigNumber, Wallet, providers } from 'ethers'
 import { useSelector } from 'react-redux'
 
-import useEnhancedWithGas from './useEnhancedWithGas'
+import { useEnhancedWithGas } from './useEnhancedWithGas'
 
 jest.mock('react-redux')
 
@@ -37,7 +37,7 @@ describe('hook: useEnhancedWithGas', function (this: {
 
   const runHook = async (tx: TransactionRequest) => {
     const { result, waitForNextUpdate } = renderHook(() =>
-      useEnhancedWithGas(this.rifWallet, tx),
+      useEnhancedWithGas(this.rifWallet, tx, 31),
     )
 
     await waitForNextUpdate()
