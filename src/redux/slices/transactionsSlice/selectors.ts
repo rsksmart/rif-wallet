@@ -5,3 +5,6 @@ export const selectTransactions = ({ transactions }: RootState) =>
 
 export const selectTransactionsLoading = ({ transactions }: RootState) =>
   transactions.loading
+
+export const selectCurrentTransaction = ({ transactions }: RootState) =>
+  transactions.currentTransaction

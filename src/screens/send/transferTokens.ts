@@ -5,7 +5,7 @@ import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
 import { sanitizeMaxDecimalText } from 'lib/utils'
 
-import { TransactionInformation } from 'store/slices/currentTransactionSlice/types'
+import { TransactionInformation } from 'store/slices/transactionsSlice'
 
 import {
   OnSetCurrentTransactionFunction,

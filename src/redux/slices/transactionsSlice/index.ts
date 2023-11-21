@@ -19,6 +19,7 @@ import {
   ApiTransactionWithExtras,
   IBitcoinTransaction,
   ModifyTransaction,
+  TransactionInformation,
   TransactionsState,
 } from 'store/slices/transactionsSlice/types'
 import { TransactionStatus } from 'screens/transactionSummary/types'
@@ -141,6 +142,9 @@ const initialState: TransactionsState = {
   next: '',
   prev: '',
   transactions: [],
+  currentTransaction: {
+    status: TransactionStatus.NONE,
+  },
   events: [],
   loading: false,
 }
@@ -373,6 +377,19 @@ const transactionsSlice = createSlice({
       state.loading = false
       return state
     },
+    setCurrentTransaction: (
+      state,
+      { payload }: PayloadAction<TransactionInformation>,
+    ) => {
+      state.currentTransaction = payload
+      return state
+    },
+    deleteCurrentTransaction: state => {
+      state.currentTransaction = {
+        status: TransactionStatus.NONE,
+      }
+      return state
+    },
   },
   extraReducers: builder => {
     builder.addCase(resetSocketState, () => initialState)
@@ -395,7 +412,10 @@ export const {
   addNewEvent,
   modifyTransactionState,
   addPendingTransactionState,
+  setCurrentTransaction,
+  deleteCurrentTransaction,
 } = transactionsSlice.actions
+
 export const transactionsReducer = transactionsSlice.reducer
 
 export * from './selectors'

@@ -24,7 +24,7 @@ import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { addRecentContact } from 'store/slices/contactsSlice'
-import { selectCurrentTransaction } from 'store/slices/currentTransactionSlice/selector'
+import { selectCurrentTransaction } from 'store/slices/transactionsSlice'
 import { selectBalances } from 'store/slices/balancesSlice'
 import { WalletContext } from 'shared/wallet'
 

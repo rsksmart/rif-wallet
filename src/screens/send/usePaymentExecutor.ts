@@ -14,6 +14,9 @@ import {
   ApiTransactionWithExtras,
   ModifyTransaction,
   fetchBitcoinTransactions,
+  TransactionInformation,
+  setCurrentTransaction,
+  deleteCurrentTransaction,
 } from 'store/slices/transactionsSlice'
 import {
   fetchAddressToReturnFundsTo,
@@ -21,11 +24,6 @@ import {
 } from 'screens/send/bitcoinUtils'
 import { AppDispatch } from 'store/index'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
-import {
-  deleteCurrentTransaction,
-  setCurrentTransaction,
-} from 'store/slices/currentTransactionSlice'
-import { TransactionInformation } from 'store/slices/currentTransactionSlice/types'
 import {
   addAddressToUsedBitcoinAddresses,
   selectWholeSettingsState,

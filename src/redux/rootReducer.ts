@@ -17,7 +17,6 @@ import {
 
 import { accountsReducer } from './slices/accountsSlice'
 import { balancesReducer } from './slices/balancesSlice'
-import { currentTransactionReducer } from './slices/currentTransactionSlice'
 import { profileReducer } from './slices/profileSlice'
 import { settingsSliceReducer } from './slices/settingsSlice'
 import { SettingsSlice } from './slices/settingsSlice/types'
@@ -99,7 +98,6 @@ export const createRootReducer = () => {
     usdPrices: persistReducer(usdPricesPersistConfig, usdPriceReducer),
     balances: balancesReducer,
     transactions: transactionsReducer,
-    currentTransaction: currentTransactionReducer,
     settings: persistReducer(settingsPersistConfig, settingsSliceReducer),
     profile: profileReducer,
     accounts: accountsReducer,

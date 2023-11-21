@@ -59,10 +59,20 @@ export type ActivityRowPresentationType = ActivityRowPresentationObject & {
 
 export type ActivityMixedType = IActivityTransaction | IBitcoinTransaction
 
+export interface TransactionInformation {
+  status: TransactionStatus
+  to?: string
+  value?: string
+  symbol?: string
+  hash?: string
+  feeSymbol?: string
+}
+
 export interface TransactionsState {
   prev: string | null
   next: string | null
   transactions: ActivityRowPresentationObject[]
+  currentTransaction: TransactionInformation
   events: IEvent[]
   loading: boolean
 }
