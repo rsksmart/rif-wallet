@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Alert, Keyboard, KeyboardAvoidingView, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { useIsFocused } from '@react-navigation/native'
@@ -47,6 +47,7 @@ export const SendScreen = ({
   const chainId = useAppSelector(selectChainId)
   const { contacts } = useAppSelector(getContactsAsArrayAndSelected)
   const transactionLoading = useAppSelector(selectTransactionsLoading)
+  const [justSent, setJustSent] = useState(false)
 
   const totalUsdBalance = useAppSelector(selectTotalUsdValue)
   const prices = useAppSelector(selectUsdPrices)
@@ -68,6 +69,15 @@ export const SendScreen = ({
   const { currentTransaction, executePayment, error } = usePaymentExecutor(
     assets.find(isAssetBitcoin),
   )
+
+  const value =
+    currentTransaction && currentTransaction.value
+      ? currentTransaction.symbol === TokenSymbol.BTC
+        ? convertSatoshiToBtcHuman(currentTransaction.value)
+        : currentTransaction.value
+      : undefined
+
+  const showCongratsScreen = !!value
 
   const onGoToHome = useCallback(
     () =>
@@ -92,6 +102,7 @@ export const SendScreen = ({
       wallet,
       chainId,
     })
+    setJustSent(true)
   }
 
   const onCancel = useCallback(() => {
@@ -133,14 +144,14 @@ export const SendScreen = ({
 
   // if there's an ongoing transaction
   useEffect(() => {
-    if (transactionLoading && isFocused) {
+    if (transactionLoading && isFocused && !justSent) {
       Alert.alert(
         t('send_alert_ongoing_transaction_title'),
         t('send_alert_ongoing_transaction_body'),
         [{ onPress: navigation.goBack, text: t('ok') }],
       )
     }
-  }, [transactionLoading, navigation, t, isFocused])
+  }, [transactionLoading, navigation, t, isFocused, justSent])
 
   // Hide header when transaction is loading
   useEffect(() => {
@@ -183,13 +194,6 @@ export const SendScreen = ({
     }
   }, [navigation, currentTransaction])
 
-  const value =
-    currentTransaction && currentTransaction.value
-      ? currentTransaction.symbol === TokenSymbol.BTC
-        ? convertSatoshiToBtcHuman(currentTransaction.value)
-        : currentTransaction.value
-      : undefined
-
   return (
     <KeyboardAvoidingView
       style={sharedStyles.screen}
@@ -197,7 +201,7 @@ export const SendScreen = ({
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       {/* Render Feedback when transaction is PENDING */}
       <FeedbackModal
-        visible={Boolean(value)}
+        visible={showCongratsScreen}
         title={t('transaction_summary_congrats')}
         texts={[
           `${t('transaction_summary_you_sent')} ${value} ${

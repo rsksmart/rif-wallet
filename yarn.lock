@@ -2088,10 +2088,10 @@
     "@rsksmart/rif-wallet-token" "*"
     axios "^0.27.2"
 
-"@rsksmart/rif-wallet-adapters@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-adapters/-/rif-wallet-adapters-1.0.0.tgz#f9478ab649bd7c3894c8a1160d477f2048c76a9e"
-  integrity sha512-9IeiTc/prfFrmtY33u4+JfL+HUe0ZgSN2MDtHvS5it8Oil9KoIfbZpAOSoCnbjdH7vtewtL1BiPqSIejx7gqVw==
+"@rsksmart/rif-wallet-adapters@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-adapters/-/rif-wallet-adapters-1.0.1.tgz#3e102e2b3c745befdbfed4b0b9b23b854f391aba"
+  integrity sha512-XH5NGgY1smH0cbiLGmLVekJDNdvWSaE0q/TtkhiBGqykgf528YWgaOlokuQeDfMg/+L76GFILdMaLm12vlhEEw==
   dependencies:
     "@ethersproject/abstract-signer" "^5.7.0"
     "@ethersproject/bignumber" "^5.7.0"
@@ -2131,10 +2131,10 @@
   dependencies:
     "@rsksmart/rsk-utils" "^1.1.0"
 
-"@rsksmart/rif-wallet-services@^1.0.8":
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-services/-/rif-wallet-services-1.0.8.tgz#d4b9099c0c931c295dbac357d1a35f383700028f"
-  integrity sha512-sKXNT3PU6eDYKSBZxV1vLOA/N/lOYavGjw4Q12dWCjyT3xv7uQtAKIB+njYTyK0HxaKfKcR0+Agq/4KIdiAZ/w==
+"@rsksmart/rif-wallet-services@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-services/-/rif-wallet-services-1.1.0.tgz#5d981fcfc1d4015d41e1b11c293363bdd117246a"
+  integrity sha512-DHiW0j+MNrxzBKCgW6mSheiD7H38K4OIv2a0WSopXd/B4vswiOHY3zyZghmajNKqqzT87yD9AE0/+y8fHpu0RA==
   dependencies:
     "@ethersproject/contracts" "^5.7.0"
     "@rsksmart/rif-wallet-abi-enhancer" "*"
@@ -3451,10 +3451,10 @@ axios@^0.27.2:
     follow-redirects "^1.14.9"
     form-data "^4.0.0"
 
-axios@^1.2.3:
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-1.3.2.tgz#7ac517f0fa3ec46e0e636223fd973713a09c72b3"
-  integrity sha512-1M3O703bYqYuPhbHeya5bnhpYVsDDRyQSabNja04mZtboLNSuZ4YrltestrLXfHgmzua4TpUqRiVKbiQuo2epw==
+axios@^1.2.3, axios@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.0.tgz#f1e5292f26b2fd5c2e66876adc5b06cdbd7d2102"
+  integrity sha512-EZ1DYihju9pwVB+jg67ogm+Tmqc6JmhamRN6I4Zt8DfZu5lbcQGw3ozH9lFejSJgs/ibaef3A9PMXPLeefFGJg==
   dependencies:
     follow-redirects "^1.15.0"
     form-data "^4.0.0"
@@ -9429,6 +9429,11 @@ react-native-snap-carousel@^3.9.1:
   dependencies:
     prop-types "^15.6.1"
     react-addons-shallow-compare "15.6.2"
+
+react-native-ssl-public-key-pinning@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/react-native-ssl-public-key-pinning/-/react-native-ssl-public-key-pinning-1.1.3.tgz#2dda6e751f4946550f0b12fa70c748305ba571f0"
+  integrity sha512-9d1QQZEtY87wBldURCnhmnpUw4uMlvLfXhCoES3QkG+/TRdJ5vk55CVhb/FdE7v1JD5ye0m/PX09JBs/tSGWaA==
 
 react-native-svg@^12.1.1:
   version "12.4.4"

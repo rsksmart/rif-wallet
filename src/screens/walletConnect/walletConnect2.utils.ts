@@ -133,13 +133,14 @@ export const buildRskAllowedNamespaces = ({
 
 export const rskWalletConnectNamespace = {
   eip155: {
-    chains: ['eip155:31'], // @TODO implement eip155:30 here -> make this dynamic according to the current chainId in the app
+    chains: ['eip155:31', 'eip155:30'],
     methods: [
       'eth_sendTransaction',
       'personal_sign',
       'eth_signTransaction',
       'eth_sign',
       'eth_signTypedData',
+      'eth_signTypedData_v4',
     ],
     events: ['chainChanged', 'accountsChanged'],
   },
@@ -150,15 +151,18 @@ export const getProposalErrorComparedWithRskNamespace = (
   proposal: Web3WalletTypes.SessionProposal,
 ): WalletConnect2SdkErrorString | void => {
   const {
-    params: { requiredNamespaces },
+    params: { requiredNamespaces, optionalNamespaces },
   } = proposal
   // Check if namespace has eip155
-  if (!requiredNamespaces.eip155) {
+  if (!requiredNamespaces.eip155 && !optionalNamespaces.eip155) {
     return WalletConnect2SdkErrorEnum.UNSUPPORTED_NAMESPACE_KEY
   }
   // Check if chains includes EIP155:31 OR EIP155:30
   if (
-    !requiredNamespaces.eip155.chains?.every(chain =>
+    !requiredNamespaces.eip155?.chains?.every(chain =>
+      rskWalletConnectNamespace.eip155.chains.includes(chain),
+    ) &&
+    !optionalNamespaces.eip155?.chains?.every(chain =>
       rskWalletConnectNamespace.eip155.chains.includes(chain),
     )
   ) {
@@ -166,7 +170,10 @@ export const getProposalErrorComparedWithRskNamespace = (
   }
   // Check if the methods that RSK allows are present
   if (
-    !requiredNamespaces.eip155.methods?.every(
+    !requiredNamespaces.eip155?.methods?.every(
+      method => rskWalletConnectNamespace.eip155.methods.indexOf(method) > -1,
+    ) &&
+    !optionalNamespaces.eip155?.methods?.every(
       method => rskWalletConnectNamespace.eip155.methods.indexOf(method) > -1,
     )
   ) {
@@ -175,6 +182,9 @@ export const getProposalErrorComparedWithRskNamespace = (
   // Check if the events that RSK allows are present
   if (
     !requiredNamespaces.eip155?.events.every(
+      event => rskWalletConnectNamespace.eip155.events.indexOf(event) > -1,
+    ) &&
+    !optionalNamespaces.eip155?.events.every(
       event => rskWalletConnectNamespace.eip155.events.indexOf(event) > -1,
     )
   ) {

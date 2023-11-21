@@ -1,5 +1,5 @@
 import { IApiTransaction } from '@rsksmart/rif-wallet-services'
-import { EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
+import { EnhancedResult, IAbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
 
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { addOrUpdateBalances } from 'store/slices/balancesSlice'
@@ -16,19 +16,21 @@ import { AppDispatch } from 'store/index'
 import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 import { getCurrentChainId } from 'storage/ChainStorage'
 
-import { AbiWallet, Action } from './types'
+import { Action } from './types'
 
-interface OnNewTransactionEventEmittedArgs extends AbiWallet {
+interface OnNewTransactionEventEmittedArgs {
   dispatch: AppDispatch
   payload: IApiTransaction
   usdPrices: UsdPricesState
   chainId: ChainTypesByIdType
+  abiEnhancer: IAbiEnhancer
 }
 
-interface OnSocketChangeEmittedArgs extends AbiWallet {
+interface OnSocketChangeEmittedArgs {
   dispatch: AppDispatch
   usdPrices: UsdPricesState
   chainId: ChainTypesByIdType
+  abiEnhancer: IAbiEnhancer
 }
 
 const onNewTransactionEventEmitted = async ({
@@ -67,13 +69,7 @@ const onNewTransactionEventEmitted = async ({
 }
 
 export const onSocketChangeEmitted =
-  ({
-    dispatch,
-    abiEnhancer,
-    wallet,
-    usdPrices,
-    chainId,
-  }: OnSocketChangeEmittedArgs) =>
+  ({ dispatch, abiEnhancer, usdPrices, chainId }: OnSocketChangeEmittedArgs) =>
   (action: Action) => {
     // Temporal patch to avoid dispatching events if current chainId does not match
     // @TODO find root cause of why the rifSockets is emitting an outdated event
@@ -92,7 +88,6 @@ export const onSocketChangeEmitted =
         case 'newTransaction':
           onNewTransactionEventEmitted({
             abiEnhancer,
-            wallet,
             dispatch,
             payload,
             usdPrices,

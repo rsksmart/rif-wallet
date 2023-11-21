@@ -1,5 +1,4 @@
 import { EnhancedResult } from '@rsksmart/rif-wallet-abi-enhancer'
-import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { IApiTransaction } from '@rsksmart/rif-wallet-services'
 import { ethers } from 'ethers'
 import { useContext, useEffect } from 'react'
@@ -21,6 +20,7 @@ import {
 } from 'store/slices/transactionsSlice/selectors'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { WalletContext } from 'shared/wallet'
+import { ChainTypesByIdType } from 'src/shared/constants/chainConstants'
 
 import { ActivityBasicRow } from './ActivityRow'
 
@@ -116,10 +116,9 @@ const styles = StyleSheet.create({
 
 export const enhanceTransactionInput = async (
   transaction: IApiTransaction,
-  wallet: RIFWallet,
+  chainId: ChainTypesByIdType,
 ): Promise<EnhancedResult | null> => {
   try {
-    const chainId = await wallet.getChainId()
     const enhancedTx = await abiEnhancer.enhance(chainId, {
       from: transaction.from.toLowerCase(),
       to: transaction.to.toLowerCase(),
