@@ -6,20 +6,29 @@ import {
 } from 'store/slices/contactsSlice/types'
 import { getContacts, saveContacts } from 'storage/MainStorage'
 import { Contact } from 'shared/types'
-import { defaultContacts } from 'store/slices/contactsSlice/constants'
+import {
+  testnetContacts,
+  mainnetContacts,
+} from 'store/slices/contactsSlice/constants'
 import { TESTNET as addresses } from 'screens/rnsManager/addresses.json'
+import { getCurrentChainId } from 'src/storage/ChainStorage'
 
 const initialState: ContactsState = {
-  contacts: defaultContacts,
+  contacts: testnetContacts,
   recentContacts: [],
   selectedContact: null,
 }
+
+const createInitialState = () => ({
+  ...initialState,
+  contacts: getCurrentChainId() === 31 ? testnetContacts : mainnetContacts,
+})
 
 export const fetchContactsFromStorage = createAction('fetchContactsFromStorage')
 
 const contactsSlice = createSlice({
   name: 'contacts',
-  initialState,
+  initialState: createInitialState,
   reducers: {
     addContact: (state, { payload }: PayloadAction<SaveContactPayload>) => {
       state.contacts[payload.address] = { ...payload, isEditable: true }
@@ -40,9 +49,7 @@ const contactsSlice = createSlice({
       state.recentContacts.splice(indexOfContact, 1)
       return state
     },
-    deleteContacts: () => {
-      return initialState
-    },
+    deleteContacts: () => initialState,
     setSelectedContactByAddress: (
       state,
       { payload }: PayloadAction<string | null>,
