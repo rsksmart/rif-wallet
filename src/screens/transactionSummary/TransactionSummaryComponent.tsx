@@ -28,7 +28,7 @@ import {
   TransactionStatus,
   transactionStatusDisplayText,
   transactionStatusToIconPropsMap,
-} from './transactionSummaryUtils'
+} from './types'
 
 import { TransactionSummaryScreenProps } from '.'
 

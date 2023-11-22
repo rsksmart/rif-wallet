@@ -5,12 +5,14 @@ import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
 import { sanitizeMaxDecimalText } from 'lib/utils'
 
+import { TransactionInformation } from 'store/slices/transactionsSlice'
+
 import {
   OnSetCurrentTransactionFunction,
   OnSetErrorFunction,
   OnSetTransactionStatusChange,
-  TransactionInformation,
 } from './types'
+import { TransactionStatus } from '../transactionSummary/types'
 
 interface IRifTransfer {
   token: ITokenWithBalance
@@ -18,6 +20,7 @@ interface IRifTransfer {
   to: string
   wallet: RIFWallet
   chainId: number
+  feeToken?: ITokenWithBalance
   onSetError?: OnSetErrorFunction
   onSetCurrentTransaction?: OnSetCurrentTransactionFunction
   onSetTransactionStatusChange?: OnSetTransactionStatusChange
@@ -29,12 +32,16 @@ export const transfer = async ({
   wallet,
   chainId,
   token,
+  feeToken,
   onSetError,
   onSetCurrentTransaction,
   onSetTransactionStatusChange,
 }: IRifTransfer) => {
   onSetError?.(null)
-  onSetCurrentTransaction?.({ status: 'USER_CONFIRM' })
+  onSetCurrentTransaction?.({
+    status: TransactionStatus.USER_CONFIRM,
+    feeSymbol: feeToken?.symbol,
+  })
 
   // handle both ERC20 tokens and the native token (gas)
   const transferMethod =
@@ -69,18 +76,19 @@ export const transfer = async ({
       value: amount,
       symbol: transferMethod.symbol,
       hash: txPending.hash,
-      status: 'PENDING',
+      status: TransactionStatus.PENDING,
+      feeSymbol: feeToken?.symbol,
     }
     onSetCurrentTransaction?.(current)
 
     const contractReceipt = await waitForTransactionToComplete()
-    onSetCurrentTransaction?.({ ...current, status: 'SUCCESS' })
+    onSetCurrentTransaction?.({ ...current, status: TransactionStatus.SUCCESS })
     onSetTransactionStatusChange?.({
       txStatus: 'CONFIRMED',
       ...contractReceipt,
     })
 
-    onSetCurrentTransaction?.({ ...current, status: 'FAILED' })
+    onSetCurrentTransaction?.({ ...current, status: TransactionStatus.FAILED })
     onSetTransactionStatusChange?.({
       txStatus: 'FAILED',
       ...txPendingRest,

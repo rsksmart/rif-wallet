@@ -10,6 +10,7 @@ import {
 
 import { FrownFaceIcon } from 'components/icons'
 import { sharedColors } from 'shared/constants'
+
 interface Props {
   symbol: string
   white?: boolean
@@ -64,6 +65,7 @@ export enum TokenSymbol {
   TRIF = 'tRIF',
   DOC = 'DOC',
   RDOC = 'RDOC',
+  TRDOC = 'rDOC',
   USDRIF = 'USDRIF',
   RIFP = 'RIFP',
   BPRO = 'BPRO',

@@ -1,15 +1,15 @@
 import { combineReducers } from '@reduxjs/toolkit'
 import {
-  persistReducer,
   createMigrate,
-  PersistConfig,
   getStoredState,
+  PersistConfig,
+  persistReducer,
 } from 'redux-persist'
 
-import { reduxStorage } from 'storage/ReduxStorage'
-import { contactsReducer } from 'store/slices/contactsSlice'
 import { ProfileStatus } from 'navigation/profileNavigator/types'
 import { getCurrentChainId } from 'storage/ChainStorage'
+import { reduxStorage } from 'storage/ReduxStorage'
+import { contactsReducer } from 'store/slices/contactsSlice'
 import {
   persistentDataReducer,
   PersistentDataState,
@@ -19,9 +19,9 @@ import { accountsReducer } from './slices/accountsSlice'
 import { balancesReducer } from './slices/balancesSlice'
 import { profileReducer } from './slices/profileSlice'
 import { settingsSliceReducer } from './slices/settingsSlice'
+import { SettingsSlice } from './slices/settingsSlice/types'
 import { transactionsReducer } from './slices/transactionsSlice'
 import { usdPriceReducer, UsdPricesState } from './slices/usdPricesSlice'
-import { SettingsSlice } from './slices/settingsSlice/types'
 
 const migrations = {
   // It's on purpose due to state type from redux-persist is PersistedStated.

@@ -15,7 +15,7 @@ import { TokenFeeValueObject } from 'store/slices/transactionsSlice'
 import { useAppDispatch } from 'store/storeUtils'
 import { WalletContext } from 'shared/wallet'
 
-import { TransactionStatus } from './transactionSummaryUtils'
+import { TransactionStatus } from './types'
 
 export interface TransactionSummaryScreenProps {
   transaction: {

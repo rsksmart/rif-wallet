@@ -5,7 +5,7 @@ import {
 } from '@rsksmart/rif-wallet-services'
 
 import { TokenSymbol } from 'screens/home/TokenImage'
-import { TransactionStatus } from 'screens/transactionSummary/transactionSummaryUtils'
+import { TransactionStatus } from 'screens/transactionSummary/types'
 import { IEvent } from 'src/subscriptions/types'
 
 export interface TransactionsServerResponseWithActivityTransactions
@@ -25,7 +25,7 @@ export interface IBitcoinTransaction {
   to: string
   symbol: string
   blockTime: number
-  status: 'success' | 'pending'
+  status: TransactionStatus
   isBitcoin: boolean
   id: string
   sortTime: number
@@ -59,10 +59,20 @@ export type ActivityRowPresentationType = ActivityRowPresentationObject & {
 
 export type ActivityMixedType = IActivityTransaction | IBitcoinTransaction
 
+export interface TransactionInformation {
+  status: TransactionStatus
+  to?: string
+  value?: string
+  symbol?: string
+  hash?: string
+  feeSymbol?: string
+}
+
 export interface TransactionsState {
   prev: string | null
   next: string | null
   transactions: ActivityRowPresentationObject[]
+  currentTransaction: TransactionInformation
   events: IEvent[]
   loading: boolean
 }

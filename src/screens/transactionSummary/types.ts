@@ -1,8 +1,11 @@
 import { sharedColors } from 'shared/constants'
 
 export enum TransactionStatus {
-  SUCCESS = 'success',
-  PENDING = 'pending',
+  NONE = 'NONE',
+  USER_CONFIRM = 'USER_CONFIRM',
+  PENDING = 'PENDING',
+  SUCCESS = 'SUCCESS',
+  FAILED = 'FAILED',
 }
 
 export const transactionStatusToIconPropsMap = new Map([

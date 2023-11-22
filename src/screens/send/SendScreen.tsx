@@ -87,20 +87,23 @@ export const SendScreen = ({
     [navigation],
   )
 
-  const onExecuteTransfer = useCallback(
-    (token: TokenBalanceObject, amount: number, to: string) => {
-      Keyboard.dismiss()
-      executePayment({
-        token,
-        amount,
-        to,
-        wallet,
-        chainId,
-      })
-      setJustSent(true)
-    },
-    [chainId, executePayment, wallet],
-  )
+  const onExecuteTransfer = (
+    token: TokenBalanceObject,
+    feeToken: TokenBalanceObject,
+    amount: number,
+    to: string,
+  ) => {
+    Keyboard.dismiss()
+    executePayment({
+      token,
+      feeToken,
+      amount,
+      to,
+      wallet,
+      chainId,
+    })
+    setJustSent(true)
+  }
 
   const onCancel = useCallback(() => {
     if (backScreen) {

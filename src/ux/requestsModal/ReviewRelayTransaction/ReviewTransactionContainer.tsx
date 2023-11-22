@@ -24,16 +24,11 @@ import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { addRecentContact } from 'store/slices/contactsSlice'
+import { selectCurrentTransaction } from 'store/slices/transactionsSlice'
 import { selectBalances } from 'store/slices/balancesSlice'
 import { WalletContext } from 'shared/wallet'
 
 import useEnhancedWithGas from '../useEnhancedWithGas'
-
-const tokenToBoolMap = new Map([
-  [TokenSymbol.RIF, true],
-  [TokenSymbol.TRIF, true],
-  [undefined, false],
-])
 
 interface Props {
   request: SendTransactionRequest
@@ -47,13 +42,14 @@ export const ReviewTransactionContainer = ({
   onConfirm,
 }: Props) => {
   const dispatch = useAppDispatch()
+  const currentTransaction = useAppSelector(selectCurrentTransaction)
   const insets = useSafeAreaInsets()
   const tokenPrices = useAppSelector(selectUsdPrices)
   // enhance the transaction to understand what it is:
   const { wallet } = useContext(WalletContext)
   const chainId = useAppSelector(selectChainId)
   const balances = useAppSelector(selectBalances)
-  const [txCostInRif, setTxCostInRif] = useState<BigNumber>()
+  const [txFeeCost, setTxFeeCost] = useState<BigNumber>()
   const { t } = useTranslation()
 
   // this is for typescript, and should not happen as the transaction was created by the wallet instance.
@@ -77,9 +73,9 @@ export const ReviewTransactionContainer = ({
   } = enhancedTransactionRequest
 
   const isMainnet = chainTypesById[chainId] === ChainTypeEnum.MAINNET
-
   const rbtcSymbol = isMainnet ? TokenSymbol.RBTC : TokenSymbol.TRBTC
-  const feeSymbol = isMainnet ? TokenSymbol.RIF : TokenSymbol.TRIF
+  const defaultTokenSymbol = isMainnet ? TokenSymbol.RIF : TokenSymbol.TRIF
+  const feeSymbol = currentTransaction?.feeSymbol || defaultTokenSymbol
   const feeContract = getTokenAddress(feeSymbol, chainTypesById[chainId])
 
   const getTokenBySymbol = useCallback(
@@ -125,14 +121,14 @@ export const ReviewTransactionContainer = ({
   useEffect(() => {
     wallet.rifRelaySdk
       .estimateTransactionCost(txRequest, feeContract)
-      .then(setTxCostInRif)
+      .then(setTxFeeCost)
       .catch(err => errorHandler(err))
   }, [txRequest, wallet.rifRelaySdk, feeContract])
 
   const confirmTransaction = useCallback(async () => {
     dispatch(addRecentContact(to))
-    if (!txCostInRif) {
-      throw new Error('token cost has not been estimated')
+    if (!txFeeCost) {
+      throw new Error('tx fee cost has not been estimated')
     }
 
     const confirmObject: OverriddableTransactionOptions = {
@@ -140,7 +136,8 @@ export const ReviewTransactionContainer = ({
       gasLimit: BigNumber.from(gasLimit),
       tokenPayment: {
         tokenContract: feeContract,
-        tokenAmount: txCostInRif,
+        tokenAmount: txFeeCost,
+        tokenGasIncrease: 1.1,
       },
     }
 
@@ -152,7 +149,7 @@ export const ReviewTransactionContainer = ({
     }
   }, [
     dispatch,
-    txCostInRif,
+    txFeeCost,
     gasPrice,
     gasLimit,
     feeContract,
@@ -170,16 +167,16 @@ export const ReviewTransactionContainer = ({
     const convertToUSD = (tokenValue: number, quote = 0) =>
       convertTokenToUSD(tokenValue, quote, true).toFixed(2)
 
-    const feeValue = txCostInRif ? balanceToDisplay(txCostInRif, 18, 0) : '0'
+    const feeValue = txFeeCost ? balanceToDisplay(txFeeCost, 18, 0) : '0'
 
-    let insufficientFunds = false
-
-    if (tokenToBoolMap.get(symbol as TokenSymbol)) {
+    let insufficientFunds: boolean
+    if (symbol === feeSymbol) {
       insufficientFunds =
         Number(value) + Number(feeValue) > Number(balances[feeContract].balance)
     } else {
       insufficientFunds =
-        Number(feeValue) > Number(balances[feeContract].balance)
+        Number(feeValue) > Number(balances[feeContract].balance) ||
+        Number(value) > Number(balances[tokenContract].balance)
     }
 
     if (insufficientFunds) {
@@ -233,7 +230,7 @@ export const ReviewTransactionContainer = ({
   }, [
     feeContract,
     balances,
-    txCostInRif,
+    txFeeCost,
     value,
     tokenQuote,
     feeQuote,
@@ -244,13 +241,14 @@ export const ReviewTransactionContainer = ({
     confirmTransaction,
     cancelTransaction,
     functionName,
+    tokenContract,
   ])
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <TransactionSummaryComponent
         {...data}
-        isLoaded={isLoaded && txCostInRif !== undefined}
+        isLoaded={isLoaded && txFeeCost !== undefined}
         wallet={wallet}
       />
     </View>

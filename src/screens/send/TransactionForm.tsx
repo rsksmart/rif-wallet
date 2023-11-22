@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleSheet, View } from 'react-native'
@@ -42,6 +42,7 @@ import { PortfolioComponent } from '../home/PortfolioComponent'
 interface Props {
   onConfirm: (
     selectedToken: TokenBalanceObject,
+    selectedFeeToken: TokenBalanceObject,
     amount: number,
     to: string,
   ) => void
@@ -80,6 +81,7 @@ const bitcoinFeeMap = new Map([
 const rifFeeMap = new Map([
   [TokenSymbol.TRIF, true],
   [TokenSymbol.RIF, true],
+  [TokenSymbol.USDRIF, true],
 ])
 
 const transactionSchema = yup.object().shape({
@@ -106,15 +108,11 @@ export const TransactionForm = ({
   status,
   contactList,
 }: Props) => {
-  const rifToken = useMemo(
-    () => tokenList.filter(tk => rifFeeMap.get(tk.symbol as TokenSymbol))[0],
-    [tokenList],
-  )
   const insets = useSafeAreaInsets()
   const { recipient, asset, amount: initialAmount } = initialValues
   const { t } = useTranslation()
   const [showTxSelector, setShowTxSelector] = useState(false)
-  // const [showTxFeeSelector, setShowTxFeeSelector] = useState(false)
+  const [showTxFeeSelector, setShowTxFeeSelector] = useState(false)
   const [selectedToken, setSelectedToken] = useState<TokenBalanceObject>(
     asset || tokenList[0],
   )
@@ -122,20 +120,9 @@ export const TransactionForm = ({
     string | undefined
   >(selectedToken.contractAddress)
 
-  // const [selectedFeeToken, setSelectedFeeToken] =
-  //   useState<TokenBalanceObject>(selectedToken)
-
-  const feeToken = useMemo((): TokenBalanceObject => {
-    if (bitcoinFeeMap.get(selectedToken.symbol as TokenSymbol)) {
-      return selectedToken
-    } else {
-      return rifToken
-    }
-  }, [selectedToken, rifToken])
-
-  const tokenQuote = selectedToken.contractAddress.startsWith('BITCOIN')
-    ? tokenPrices.BTC.price
-    : tokenPrices[selectedToken.contractAddress]?.price
+  const [selectedFeeToken, setSelectedFeeToken] =
+    useState<TokenBalanceObject>(selectedToken)
+  const scrollViewRef = useRef<ScrollView>()
 
   const methods = useForm<FormValues>({
     mode: 'onSubmit',
@@ -170,6 +157,14 @@ export const TransactionForm = ({
   const [balanceInverted, setBalanceInverted] = useState(false)
   const [proposedContact, setProposedContact] =
     useState<ProposedContact | null>(null)
+
+  const tokenQuote = selectedToken.contractAddress.startsWith('BITCOIN')
+    ? tokenPrices.BTC.price
+    : tokenPrices[selectedToken.contractAddress]?.price
+
+  const tokenFeeList = selectedToken.contractAddress.startsWith('BITCOIN')
+    ? [selectedToken]
+    : tokenList.filter(tk => rifFeeMap.get(tk.symbol as TokenSymbol))
 
   const handleAmountChange = useCallback(
     (newAmount: string, _balanceInverted: boolean) => {
@@ -211,16 +206,21 @@ export const TransactionForm = ({
 
   const handleConfirmClick = useCallback(
     (values: FormValues) => {
-      onConfirm(selectedToken, values.amount, values.to.address)
+      onConfirm(
+        selectedToken,
+        selectedFeeToken,
+        values.amount,
+        values.to.address,
+      )
     },
-    [selectedToken, onConfirm],
+    [onConfirm, selectedToken, selectedFeeToken],
   )
 
   const onChangeSelectedTokenAddress = useCallback(
     (address: string | undefined) => {
       if (address !== selectedTokenAddress) {
         const token = tokenList.filter(
-          value => value.contractAddress === address,
+          ({ contractAddress }) => contractAddress === address,
         )[0]
         setSelectedTokenAddress(address)
         setSelectedToken(oldToken => {
@@ -241,8 +241,8 @@ export const TransactionForm = ({
         } else {
           setFirstBalance(tokenObject)
         }
-        // setSelectedFeeToken(token)
 
+        setSelectedFeeToken(token)
         handleAmountChange('', balanceInverted)
         setShowTxSelector(false)
       }
@@ -276,21 +276,24 @@ export const TransactionForm = ({
     setShowTxSelector(prev => !prev)
   }, [])
 
-  // const toggleShowTxFee = useCallback(() => {
-  //   setShowTxFeeSelector(prev => !prev)
-  // }, [])
+  const toggleShowTxFee = useCallback(() => {
+    setShowTxFeeSelector(prev => !prev)
+    setTimeout(() => {
+      scrollViewRef.current?.scrollToEnd({ animated: true })
+    }, 100)
+  }, [])
 
-  // const onChangeSelectedFee = useCallback(
-  //   (fee: string | undefined) => {
-  //     if (fee) {
-  //       setSelectedFeeToken(
-  //         tokenList.filter(value => value.contractAddress === fee)[0],
-  //       )
-  //       setShowTxFeeSelector(false)
-  //     }
-  //   },
-  //   [tokenList],
-  // )
+  const onChangeSelectedFee = useCallback(
+    (fee: string | undefined) => {
+      if (fee) {
+        setSelectedFeeToken(
+          tokenList.filter(value => value.contractAddress === fee)[0],
+        )
+        setShowTxFeeSelector(false)
+      }
+    },
+    [tokenList],
+  )
 
   const onAddContact = useCallback(() => {
     if (proposedContact) {
@@ -312,7 +315,7 @@ export const TransactionForm = ({
 
   return (
     <>
-      <ScrollView scrollIndicatorInsets={{ right: -8 }}>
+      <ScrollView ref={scrollViewRef} scrollIndicatorInsets={{ right: -8 }}>
         <FormProvider {...methods}>
           {recipient?.name ? (
             <Input
@@ -406,12 +409,14 @@ export const TransactionForm = ({
             <Input
               inputName={'fee'}
               label={t('transaction_form_fee_input_label')}
-              placeholder={`${feeToken.symbol}`}
-              leftIcon={<TokenImage symbol={feeToken.symbol} size={32} />}
+              placeholder={selectedFeeToken.symbol}
+              leftIcon={
+                <TokenImage symbol={selectedFeeToken.symbol} size={32} />
+              }
               isReadOnly
             />
           ) : null}
-          {/* {firstBalance.balance && tokenFeeList.length > 1 ? (
+          {firstBalance.balance && tokenFeeList.length > 1 ? (
             <AppTouchable
               width={'100%'}
               onPress={toggleShowTxFee}
@@ -427,17 +432,17 @@ export const TransactionForm = ({
                 />
               </>
             </AppTouchable>
-          ) : null} */}
-          {/* {showTxFeeSelector ? (
+          ) : null}
+          {showTxFeeSelector ? (
             <PortfolioComponent
               style={styles.txSelector}
-              setSelectedAddress={noop}
-              selectedAddress={feeToken.contractAddress}
-              balances={[feeToken]}
+              setSelectedAddress={onChangeSelectedFee}
+              selectedAddress={selectedFeeToken.contractAddress}
+              balances={tokenFeeList}
               totalUsdBalance={totalUsdBalance}
               showTotalCard={false}
             />
-          ) : null} */}
+          ) : null}
         </FormProvider>
       </ScrollView>
       <View style={[styles.marginTop10, { paddingBottom: insets.bottom }]}>

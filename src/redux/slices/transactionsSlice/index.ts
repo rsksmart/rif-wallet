@@ -19,9 +19,10 @@ import {
   ApiTransactionWithExtras,
   IBitcoinTransaction,
   ModifyTransaction,
+  TransactionInformation,
   TransactionsState,
 } from 'store/slices/transactionsSlice/types'
-import { TransactionStatus } from 'screens/transactionSummary/transactionSummaryUtils'
+import { TransactionStatus } from 'screens/transactionSummary/types'
 import { filterEnhancedTransactions } from 'src/subscriptions/utils'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { UsdPricesState } from 'store/slices/usdPricesSlice'
@@ -125,7 +126,7 @@ export const activityDeserializer: (
         : TransactionStatus.PENDING,
       value: tokenValue,
       symbol: tokenSymbol,
-      price: Number(tokenUsd),
+      price: tokenUsd,
       fee: {
         tokenValue: feeValue,
         symbol: feeSymbol,
@@ -141,6 +142,9 @@ const initialState: TransactionsState = {
   next: '',
   prev: '',
   transactions: [],
+  currentTransaction: {
+    status: TransactionStatus.NONE,
+  },
   events: [],
   loading: false,
 }
@@ -199,7 +203,10 @@ const transformTransaction = (
     ...transaction,
     isBitcoin: true,
     symbol: TokenSymbol.BTC,
-    status: transaction.confirmations > 0 ? 'success' : 'pending',
+    status:
+      transaction.confirmations > 0
+        ? TransactionStatus.SUCCESS
+        : TransactionStatus.PENDING,
     to,
     valueBtc: utils.formatUnits(value, 8),
     id: transaction.txid,
@@ -370,6 +377,19 @@ const transactionsSlice = createSlice({
       state.loading = false
       return state
     },
+    setCurrentTransaction: (
+      state,
+      { payload }: PayloadAction<TransactionInformation>,
+    ) => {
+      state.currentTransaction = payload
+      return state
+    },
+    deleteCurrentTransaction: state => {
+      state.currentTransaction = {
+        status: TransactionStatus.NONE,
+      }
+      return state
+    },
   },
   extraReducers: builder => {
     builder.addCase(resetSocketState, () => initialState)
@@ -392,7 +412,10 @@ export const {
   addNewEvent,
   modifyTransactionState,
   addPendingTransactionState,
+  setCurrentTransaction,
+  deleteCurrentTransaction,
 } = transactionsSlice.actions
+
 export const transactionsReducer = transactionsSlice.reducer
 
 export * from './selectors'
