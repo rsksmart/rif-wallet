@@ -12,6 +12,7 @@ import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 import { castStyle } from 'shared/utils'
 import { ContactCard } from 'screens/contacts/components'
 import { ProposedContact } from 'screens/send/TransactionForm'
+import { checkIfContactExists } from 'screens/contacts/ContactFormScreen'
 
 import {
   AddressValidationMessage,
@@ -107,9 +108,7 @@ export const AddressInput = ({
       }
 
       for (const contact of contactList) {
-        if (
-          contact.name.toLowerCase().includes(textString.toLocaleLowerCase())
-        ) {
+        if (contact.name.toLowerCase().includes(textString.toLowerCase())) {
           array.push(contact)
         }
       }
@@ -147,12 +146,18 @@ export const AddressInput = ({
                 value: t('contact_form_user_found'),
               })
 
-              !contactsFound &&
-                onAddContact?.({
-                  address: resolvedAddress,
-                  displayAddress: userInput,
-                  isEditable: true,
-                })
+              !contactsFound ||
+                (contactList &&
+                  !checkIfContactExists(
+                    resolvedAddress,
+                    userInput,
+                    contactList,
+                  ) &&
+                  onAddContact?.({
+                    address: resolvedAddress,
+                    displayAddress: userInput,
+                    isEditable: true,
+                  }))
 
               // call parent with the resolved address
               onChangeAddress(
