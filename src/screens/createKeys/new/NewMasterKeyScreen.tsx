@@ -2,8 +2,7 @@ import { CompositeScreenProps } from '@react-navigation/native'
 import { useCallback, useMemo, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
-
-import { KeyManagementSystem } from 'lib/core'
+import { generateMnemonic } from '@rsksmart/rif-id-mnemonic'
 
 import {
   AppButton,
@@ -35,24 +34,24 @@ type Props = CompositeScreenProps<
 enum TestID {
   SecureLaterButton = 'SecureLater',
 }
+
 export const NewMasterKeyScreen = ({ navigation }: Props) => {
   const initializeWallet = useInitializeWallet()
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
   usePreventScreenshot(t)
-  const mnemonic = useMemo(() => KeyManagementSystem.create().mnemonic, [])
-  const mnemonicArray = mnemonic ? mnemonic.split(' ') : []
+  const mnemonic = useMemo(() => generateMnemonic(12), [])
   const [isMnemonicVisible, setIsMnemonicVisible] = useState(false)
 
   const onSecureLater = useCallback(async () => {
     saveKeyVerificationReminder(true)
     dispatch(
       createWallet({
-        mnemonic: KeyManagementSystem.create().mnemonic,
+        mnemonic,
         initializeWallet,
       }),
     )
-  }, [dispatch, initializeWallet])
+  }, [dispatch, initializeWallet, mnemonic])
 
   return (
     <View style={styles.screen}>
@@ -70,7 +69,7 @@ export const NewMasterKeyScreen = ({ navigation }: Props) => {
       <MnemonicComponent
         style={styles.mnemonicComponent}
         onToggleMnemonic={setIsMnemonicVisible}
-        words={mnemonicArray}
+        words={mnemonic.split(' ')}
       />
       <View style={styles.button}>
         <AppButton
