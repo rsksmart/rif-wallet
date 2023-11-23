@@ -4,9 +4,13 @@ import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { AppSpinner } from 'components/index'
 
-export const LoadingScreen = () => {
+interface Props {
+  isVisible: boolean
+}
+
+export const LoadingScreen = ({ isVisible }: Props) => {
   return (
-    <Modal animationType="none" transparent visible>
+    <Modal animationType="none" transparent visible={isVisible}>
       <View
         style={[
           sharedStyles.flex,
