@@ -26,6 +26,7 @@ export enum rootTabsRouteNames {
   TransactionSummary = 'TransactionSummary',
   InitialPinScreen = 'InitialPinScreen',
   OfflineScreen = 'OfflineScreen',
+  ConfirmNewMasterKey = 'ConfirmNewMasterKey',
 }
 
 export type RootTabsParamsList = {
@@ -49,6 +50,8 @@ export type RootTabsParamsList = {
   [rootTabsRouteNames.Profile]:
     | NavigatorScreenParams<ProfileStackParamsList>
     | undefined
-  [rootTabsRouteNames.InitialPinScreen]: undefined
   [rootTabsRouteNames.OfflineScreen]: undefined
+  [rootTabsRouteNames.ConfirmNewMasterKey]: {
+    mnemonic: string
+  }
 }

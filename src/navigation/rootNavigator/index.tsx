@@ -9,17 +9,22 @@ import BootSplash from 'react-native-bootsplash'
 import { CreateKeysNavigation } from 'navigation/createKeysNavigator'
 import { ConfirmationModal } from 'components/modal'
 import { useAppSelector } from 'store/storeUtils'
-import { selectFullscreen, selectIsUnlocked } from 'store/slices/settingsSlice'
+import {
+  selectFullscreen,
+  selectIsUnlocked,
+  selectSettingsIsLoading,
+} from 'store/slices/settingsSlice'
 import { TransactionSummaryScreen } from 'screens/transactionSummary'
 import { AppFooterMenu } from 'src/ux/appFooter'
 import { sharedStyles } from 'shared/constants'
 import {
   ActivityScreen,
   ScanQRScreen,
-  PinScreen,
   WalletConnectScreenWithProvider,
 } from 'screens/index'
 import { OfflineScreen } from 'core/components/OfflineScreen'
+import { LoadingScreen } from 'components/loading/LoadingScreen'
+import { ConfirmNewMasterKeyScreen } from 'screens/createKeys'
 
 import { RootTabsParamsList, rootTabsRouteNames } from './types'
 import { HomeNavigator } from '../homeNavigator'
@@ -41,6 +46,7 @@ export const RootNavigationComponent = () => {
   const [isWarningVisible, setIsWarningVisible] = useState(isDeviceRooted)
   const unlocked = useAppSelector(selectIsUnlocked)
   const fullscreen = useAppSelector(selectFullscreen)
+  const settingsLoading = useAppSelector(selectSettingsIsLoading)
 
   const isShown = unlocked && !fullscreen
 
@@ -53,31 +59,13 @@ export const RootNavigationComponent = () => {
       <RootTabs.Navigator
         tabBar={props => (!isShown ? null : <AppFooterMenu {...props} />)}>
         {!unlocked ? (
-          <>
-            <RootTabs.Screen
-              name={rootTabsRouteNames.CreateKeysUX}
-              component={CreateKeysNavigation}
-              options={screenOptionsNoHeader}
-            />
-            <RootTabs.Screen
-              name={rootTabsRouteNames.InitialPinScreen}
-              component={PinScreen}
-              options={screenOptionsWithHeader(
-                top,
-                t('pin_screen_header_title'),
-                undefined,
-                undefined,
-                true,
-              )}
-            />
-            <RootTabs.Screen
-              name={rootTabsRouteNames.OfflineScreen}
-              component={OfflineScreen}
-              options={screenOptionsNoHeader}
-            />
-          </>
+          <RootTabs.Screen
+            name={rootTabsRouteNames.CreateKeysUX}
+            component={CreateKeysNavigation}
+            options={screenOptionsNoHeader}
+          />
         ) : (
-          <RootTabs.Group>
+          <>
             <RootTabs.Group screenOptions={screenOptionsWithAppHeader}>
               <RootTabs.Screen
                 name={rootTabsRouteNames.Home}
@@ -107,6 +95,14 @@ export const RootNavigationComponent = () => {
                 name={rootTabsRouteNames.Profile}
                 component={ProfileNavigator}
               />
+              <RootTabs.Screen
+                name={rootTabsRouteNames.ConfirmNewMasterKey}
+                component={ConfirmNewMasterKeyScreen}
+                options={screenOptionsWithHeader(
+                  top,
+                  t('confirm_key_screen_title'),
+                )}
+              />
             </RootTabs.Group>
             <RootTabs.Group
               screenOptions={screenOptionsWithHeader(
@@ -118,13 +114,13 @@ export const RootNavigationComponent = () => {
                 component={TransactionSummaryScreen}
               />
             </RootTabs.Group>
-            <RootTabs.Screen
-              name={rootTabsRouteNames.CreateKeysUX}
-              component={CreateKeysNavigation}
-              options={screenOptionsNoHeader}
-            />
-          </RootTabs.Group>
+          </>
         )}
+        <RootTabs.Screen
+          name={rootTabsRouteNames.OfflineScreen}
+          component={OfflineScreen}
+          options={screenOptionsNoHeader}
+        />
       </RootTabs.Navigator>
       <ConfirmationModal
         isVisible={isWarningVisible}
@@ -133,6 +129,7 @@ export const RootNavigationComponent = () => {
         okText={t('ok')}
         onOk={() => setIsWarningVisible(false)}
       />
+      <LoadingScreen isVisible={settingsLoading} />
     </View>
   )
 }

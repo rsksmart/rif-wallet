@@ -107,7 +107,7 @@ export const createWallet = createAsyncThunk<
     if (Platform.OS === 'android' && !supportedBiometry) {
       setTimeout(() => {
         navigationContainerRef.navigate(rootTabsRouteNames.CreateKeysUX, {
-          screen: createKeysRouteNames.CreatePIN,
+          screen: createKeysRouteNames.PinScreen,
           params: {
             isChangeRequested: true,
             backScreen: null,
@@ -128,7 +128,9 @@ export const createWallet = createAsyncThunk<
     })
 
     // unclock the app
-    thunkAPI.dispatch(setUnlocked(true))
+    !(Platform.OS === 'android') &&
+      supportedBiometry &&
+      thunkAPI.dispatch(setUnlocked(true))
     // set keysExist
     thunkAPI.dispatch(setKeysExist(true))
 
@@ -186,6 +188,7 @@ export const unlockApp = createAsyncThunk<
   try {
     const {
       persistentData: { isFirstLaunch },
+      settings: { chainId },
     } = thunkAPI.getState()
     // if previously installed the app, remove stored encryted keys
     if (isFirstLaunch && !__DEV__) {
@@ -196,7 +199,6 @@ export const unlockApp = createAsyncThunk<
 
     let keys = await getKeys()
     let wallet: Wallet | null = null
-    const { chainId } = thunkAPI.getState().settings
 
     if (!keys) {
       // if keys do not exist, set to false
@@ -222,9 +224,15 @@ export const unlockApp = createAsyncThunk<
         if (isOffline) {
           navigationContainerRef.navigate(rootTabsRouteNames.OfflineScreen)
         } else {
-          navigationContainerRef.navigate(rootTabsRouteNames.InitialPinScreen)
+          navigationContainerRef.navigate(rootTabsRouteNames.CreateKeysUX, {
+            screen: createKeysRouteNames.PinScreen,
+            params: {
+              isChangeRequested: false,
+            },
+          })
         }
       }, 100)
+
       return thunkAPI.rejectWithValue('Move to unlock with PIN')
     }
 
