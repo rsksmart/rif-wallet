@@ -92,7 +92,6 @@ export const createWallet = createAsyncThunk<
     const { chainId } = thunkAPI.getState().settings
 
     const url = getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId])
-
     const jsonRpcProvider = new providers.StaticJsonRpcProvider(url)
 
     const wallet = EOAWallet.create(
@@ -118,7 +117,7 @@ export const createWallet = createAsyncThunk<
     }
 
     if (!wallet) {
-      return thunkAPI.rejectWithValue('Failed to a Wallet')
+      return thunkAPI.rejectWithValue('Failed to create a Wallet')
     }
 
     // set wallet and walletIsDeployed in WalletContext
