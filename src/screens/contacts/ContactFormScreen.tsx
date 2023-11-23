@@ -95,7 +95,6 @@ export const ContactFormScreen = ({
     resolver: yupResolver(schema),
   })
   const {
-    resetField,
     handleSubmit,
     setValue,
     watch,
@@ -229,7 +228,9 @@ export const ContactFormScreen = ({
             testID={testIDs.addressInput}
             accessibilityLabel={testIDs.addressInput}
             value={addressObj}
-            resetValue={() => resetField('address')}
+            resetValue={() =>
+              setValue('address', { address: '', displayAddress: '' })
+            }
             onChangeAddress={handleAddressChange}
             chainId={chainId}
             isBitcoin={false}
@@ -242,7 +243,7 @@ export const ContactFormScreen = ({
             subtitle={errors.name?.message}
             subtitleStyle={styles.fieldError}
             placeholder={t('contact_form_name')}
-            resetValue={() => resetField('name')}
+            resetValue={() => setValue('name', '')}
           />
         </FormProvider>
       </ScrollView>
