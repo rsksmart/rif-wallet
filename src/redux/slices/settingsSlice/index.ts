@@ -128,9 +128,9 @@ export const createWallet = createAsyncThunk<
     })
 
     // unclock the app
-    !(Platform.OS === 'android') &&
-      supportedBiometry &&
+    if (supportedBiometry || (Platform.OS === 'ios' && __DEV__)) {
       thunkAPI.dispatch(setUnlocked(true))
+    }
     // set keysExist
     thunkAPI.dispatch(setKeysExist(true))
 
@@ -426,6 +426,7 @@ const settingsSlice = createSlice({
       state.appIsActive = payload
     },
     setUnlocked: (state, { payload }: PayloadAction<boolean>) => {
+      console.log('SETTING UNCLOKED TO TRUE')
       state.unlocked = payload
     },
     setPreviouslyUnlocked: (state, { payload }: PayloadAction<boolean>) => {
