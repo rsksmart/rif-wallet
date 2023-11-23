@@ -11,7 +11,7 @@ export enum createKeysRouteNames {
   ConfirmNewMasterKey = 'ConfirmNewMasterKey',
   ImportMasterKey = 'ImportMasterKey',
   RevealMasterKey = 'RevealMasterKey',
-  CreatePIN = 'CreatePIN',
+  PinScreen = 'PinScreen',
   RetryLogin = 'RetryLogin',
 }
 
@@ -27,8 +27,8 @@ export type CreateKeysStackParamList = {
   [createKeysRouteNames.ConfirmNewMasterKey]: { mnemonic: string }
   [createKeysRouteNames.ImportMasterKey]: undefined
   [createKeysRouteNames.RevealMasterKey]: undefined
-  [createKeysRouteNames.CreatePIN]: {
-    isChangeRequested: true
+  [createKeysRouteNames.PinScreen]: {
+    isChangeRequested: boolean
     backScreen?: null
   }
   [createKeysRouteNames.RetryLogin]: undefined
