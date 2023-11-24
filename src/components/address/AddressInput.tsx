@@ -39,7 +39,7 @@ export interface AddressInputProps extends Omit<InputProps, 'value'> {
   chainId: ChainTypesByIdType
   contactList?: Contact[]
   searchContacts?: (textString: string) => void
-  onAddContact?: (contact: ProposedContact) => void
+  onSetProposedContact?: (contact: ProposedContact) => void
 }
 
 enum Status {
@@ -70,7 +70,7 @@ export const AddressInput = ({
   value,
   inputName,
   onChangeAddress,
-  onAddContact,
+  onSetProposedContact,
   resetValue,
   testID,
   chainId,
@@ -146,18 +146,20 @@ export const AddressInput = ({
                 value: t('contact_form_user_found'),
               })
 
-              !contactsFound ||
-                (contactList &&
-                  !checkIfContactExists(
-                    resolvedAddress,
-                    userInput,
-                    contactList,
-                  ) &&
-                  onAddContact?.({
+              if (contactList) {
+                const contactExists = checkIfContactExists(
+                  resolvedAddress,
+                  userInput,
+                  contactList,
+                )
+
+                !contactExists &&
+                  onSetProposedContact?.({
                     address: resolvedAddress,
                     displayAddress: userInput,
                     isEditable: true,
-                  }))
+                  })
+              }
 
               // call parent with the resolved address
               onChangeAddress(
@@ -193,7 +195,7 @@ export const AddressInput = ({
           break
       }
     },
-    [t, contactsFound, onChangeAddress, onAddContact],
+    [t, onChangeAddress, onSetProposedContact, contactList],
   )
 
   const handleChangeText = useCallback(

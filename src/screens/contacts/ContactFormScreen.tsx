@@ -52,8 +52,8 @@ export const checkIfContactExists = (
 ) => {
   const index = searchArray.findIndex(c => {
     return (
-      c.displayAddress === address ||
-      c.address === address ||
+      c.displayAddress === address.toLowerCase() ||
+      c.address === address.toLowerCase() ||
       c.name.toLowerCase() === name.toLowerCase()
     )
   })
