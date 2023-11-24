@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { StyleSheet, View, ScrollView, Alert } from 'react-native'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import { useTranslation } from 'react-i18next'
@@ -33,7 +33,7 @@ import { selectTransactions } from 'store/slices/transactionsSlice'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { ActivityBasicRow } from 'screens/activity/ActivityRow'
-import { WalletContext } from 'shared/wallet'
+import { useWallet } from 'shared/wallet'
 
 import { HomeInformationBar } from './HomeInformationBar'
 import { getTokenColor } from './tokenColor'
@@ -45,7 +45,7 @@ enum TestID {
 export const HomeScreen = ({
   navigation,
 }: HomeStackScreenProps<homeStackRouteNames.Main>) => {
-  const { wallet } = useContext(WalletContext)
+  const wallet = useWallet()
 
   const { t } = useTranslation()
   const isFocused = useIsFocused()
