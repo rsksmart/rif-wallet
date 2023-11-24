@@ -72,7 +72,7 @@ export const ActivityBasicRow = ({
   let label = `${firstLabel} ${secondLabel}`
   if (
     to === ZERO_ADDRESS &&
-    from.toLowerCase() === wallet?.smartWalletFactory.address.toLowerCase()
+    from.toLowerCase() === wallet?.smartWalletFactory?.address.toLowerCase()
   ) {
     label = t('wallet_deployment_label')
   }
