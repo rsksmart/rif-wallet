@@ -30,9 +30,11 @@ export interface NewBalanceAction {
   payload: ITokenWithBalance
 }
 
+export type Price = Record<string, { price: number; lastUpdated: string }>
+
 export interface NewPriceAction {
   type: 'newPrice'
-  payload: Record<string, { price: number; lastUpdated: string }>
+  payload: Price
 }
 
 export interface NewTransactionAction {
@@ -47,9 +49,9 @@ export interface NewTokenTransferAction {
 export interface InitAction {
   type: 'init'
   payload: {
-    transactions: TransactionsServerResponse
-    tokens: ITokenWithBalance[]
-    prices: Record<string, IPrice>
+    transactions: IActivityTransaction[]
+    balances: ITokenWithBalance[]
+    prices: Price
   }
 }
 
