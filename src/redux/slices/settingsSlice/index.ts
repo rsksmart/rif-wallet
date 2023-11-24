@@ -122,7 +122,7 @@ export const createWallet = createAsyncThunk<
 
     // set wallet and walletIsDeployed in WalletContext
     initializeWallet(wallet, {
-      isDeployed: false,
+      isDeployed: true,
       loading: false,
       txHash: null,
     })
