@@ -54,16 +54,6 @@ export const MnemonicComponent = ({
 }: Props) => {
   const [isMnemonicVisible, setIsMnemonicVisible] = useState(false)
   const { t } = useTranslation()
-  const [title, setTitle] = useState(t('mnemonic_title'))
-  const [body, setBody] = useState(t('mnemonic_body'))
-
-  const onCopy = useCallback(async () => {
-    const string = words.join(' ')
-    Clipboard.setString(string)
-    setTitle(t('mnemonic_title_copy'))
-    setBody(t('mnemonic_body_copy'))
-    Alert.alert(t('mnemonic_copied'))
-  }, [words, t])
 
   const onEyeIconPress = useCallback(() => {
     setIsMnemonicVisible(prev => {
@@ -75,7 +65,10 @@ export const MnemonicComponent = ({
   return (
     <View style={[styles.mainContainer, style]}>
       {!isMnemonicVisible && showAdvice ? (
-        <MnemonicAdviceComponent titleText={title} bodyText={body} />
+        <MnemonicAdviceComponent
+          titleText={t('mnemonic_title')}
+          bodyText={t('mnemonic_body')}
+        />
       ) : (
         <View
           style={styles.pillContainer}
@@ -116,12 +109,6 @@ export const MnemonicComponent = ({
           onPress={onEyeIconPress}
           accessibilityLabel="toggleVisibleButton">
           <EyeIcon isHidden={!isMnemonicVisible} size={iconSize} />
-        </AppTouchable>
-        <AppTouchable
-          width={iconSize}
-          onPress={onCopy}
-          accessibilityLabel="copyButton">
-          <Icon name={'copy'} size={iconSize} color={sharedColors.white} />
         </AppTouchable>
       </View>
     </View>
