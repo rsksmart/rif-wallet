@@ -1,9 +1,0 @@
-{
-  "name": "rif-wallet-recovery",
-  "version": "1.0.0",
-  "main": "main.js",
-  "license": "MIT",
-  "dependencies": {
-    "ethers": "^5.7.2"
-  }
-}
