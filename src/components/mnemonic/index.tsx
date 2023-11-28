@@ -1,8 +1,6 @@
-import Clipboard from '@react-native-community/clipboard'
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Alert, StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
-import Icon from 'react-native-vector-icons/FontAwesome5'
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
