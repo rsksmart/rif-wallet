@@ -11,6 +11,10 @@
   </a>
 </p>
 
+The RIF Wallet is an account abstraction wallet built on the Rootstock network with integration to Bitcoin. Very simplistically, in an Externally Owned Account (EOA) wallet, which is what most wallets are, a user's mnemonic generates a key pair which along with a deviation path derives an address. With Account Abstraction, we take this one step further and have that account/address deploy a smart contract. The address of the smart contract becomes their account and holds their assets (tokens/NFTs/etc).
+
+The main use case of the RIF Wallet using account abstraction is to pay the gas fees with an ERC20 token using [RIF Relay](https://dev.rootstock.io/rif/relay/). However, additional use cases can be adapted such as social recovery. 
+
 ## Install and setup
 
 - [Setup your enviornment using the official instructions](https://reactnative.dev/docs/environment-setup)
@@ -29,7 +33,7 @@ When you encounter errors running the app, please run `yarn clean:ios` or `yarn 
 
 ## Run with local services
 
-See [`@rsksmart/rif-wallet-services`](https://github.com/rsksmart/rif-wallet-services) to run RIF Wallet Services. You can then use
+The RIF Wallet App uses a [backend server](https://github.com/rsksmart/rif-wallet-services) to connect to the Rootstock indexer and to collect USD prices. You can run this server yourself locally and connect to it durning development. However, this is not necessary as we have an instance that you can connect to and use.
 
 ```
 yarn ios:local
@@ -44,13 +48,13 @@ ENVFILE=.env.custom react-native run-ios
 
 You do not need to run the server to run the RIF Wallet app.
 
-## MAINNET
+## Mainnet
 
-To run with mainnet change the environment variable `DEFAULT_CHAIN_TYPE` to MAINNET [here](https://github.com/rsksmart/swallet/blob/3335ab050b0cb04b901cae42e30745dd2c6ad3f6/.env#L10)
+The app runs in both Rootstock mainnet and testnet with the default chain set to Testnet. You can configure this by changig the environment variable `DEFAULT_CHAIN_TYPE` to MAINNET [in the .env file](https://github.com/rsksmart/rif-wallet/blob/develop/.env).
 
 ## Build:
 
-## Build APK for Android:
+### Build APK for Android:
 
 The build step for Android includes a clean. When prompted, say 'Yes' to anything related to Android and 'No' to iOS and system updates.
 
@@ -58,13 +62,25 @@ The build step for Android includes a clean. When prompted, say 'Yes' to anythin
 yarn android:build
 ```
 
-## Folder Structure
+### Build for iOS:
 
-This is an ongoing process that will be documented when more are added. Below is a list of the current directories and what is expected inside.
+Open the project up in xCode and select the signing profiles that you wish to use. You may need to signup with appstoreconnect and setup the provisioning profile and certificates. [See Apple's documentation for more information](https://developer.apple.com/help/account/). Once the app and profiles are loaded in xCode, create an "archive" of the project by navigating to [Product/Archive]. After it has completed, you can distribute it locally or to the AppStore using the "Organizer" window.
 
-- **src/components** - resuable components used throughout the app. These will include buttons, typography, text inputs. These are independent of the screens.
-- **src/lib** - interaction with libraries used, or new libraries being created. 
-- **src/state** - all things state. Right now, we are using useState, but this may be expanded to use Redux in the near future.
+## Interacting with the Smart Wallet
+
+At a high level, the RIF Wallet uses the RIF Relay Server to send transactions on behalf of the user. The user creates a transaction in the app, signs it, and then passes it to the RIF Relay Server to get a cost estimation. That estimation is returned to the user, and the user signs an updated transaction with that cost and passes it to the Relay Server.
+
+The server takes the fee as payment for the transaction and broadcasts the transaction to the network paying the gas fee. 
+
+In the case that the RIF Wallet or the RIF Relay Server no longer exists, the users still have full access to their private key and funds. In the smart wallet contract there is a method called `directExecute` which allows a user to send transactions directly to the smart contract. In this scenario, the Externally Owned Account (EOA) can execute transactions directly on the smart contract while paying for the gas in rBTC. 
+
+In the unlikely case that the App and Relay Server are no longer around, a user, or developer could get access to their funds like this:
+
+```
+
+```
+
+Please note that you will need to move each token individually from the smart wallet to a secondary address.
 
 ## Notes on Bitcoin Addresses generation
 
