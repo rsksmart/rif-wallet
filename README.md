@@ -72,7 +72,7 @@ At a high level, the RIF Wallet uses the RIF Relay Server to send transactions o
 
 The server takes the fee as payment for the transaction and broadcasts the transaction to the network paying the gas fee. 
 
-In the case that the RIF Wallet or the RIF Relay Server no longer exists, the users still have full access to their private key and funds. In the smart wallet contract there is a method called `directExecute` which allows a user to send transactions directly to the smart contract. In this scenario, the Externally Owned Account (EOA) can execute transactions directly on the smart contract while paying for the gas in rBTC. 
+In the case that the the RIF Relay Server no longer exists or is not providing the service correctly, the users still have full access to their private key and funds. In the smart wallet contract there is a method called `directExecute` which allows a user to send transactions directly to the smart contract. In this scenario, the Externally Owned Account (EOA) can execute transactions directly on the smart contract while paying for the gas in rBTC. 
 
 [We have created a sample script](https://github.com/rsksmart/rif-wallet/tree/develop/docs/recovery) that shows the basic interaction with the smart contract to allow users to use the wallet without the Relay Server.
 
