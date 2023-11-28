@@ -45,6 +45,26 @@ interface FormValues {
   addressIsValid: boolean
 }
 
+export const checkIfContactExists = (
+  address: string,
+  name: string,
+  searchArray: Contact[],
+) => {
+  const index = searchArray.findIndex(c => {
+    return (
+      c.displayAddress === address.toLowerCase() ||
+      c.address === address.toLowerCase() ||
+      c.name.toLowerCase() === name.toLowerCase()
+    )
+  })
+
+  if (index !== -1) {
+    return true
+  }
+
+  return false
+}
+
 export const ContactFormScreen = ({
   navigation,
   route,
@@ -123,26 +143,6 @@ export const ContactFormScreen = ({
     [setValue],
   )
 
-  // check if proposed contact exists already
-  const checkIfContactExists = useCallback(
-    (address: string, name: string, searchArray: Contact[]) => {
-      const index = searchArray.findIndex(c => {
-        return (
-          c.displayAddress === address ||
-          c.address === address ||
-          c.name.toLowerCase() === name.toLowerCase()
-        )
-      })
-
-      if (index !== -1) {
-        return true
-      }
-
-      return false
-    },
-    [],
-  )
-
   const saveContact = useCallback(
     ({ name, address: { address, displayAddress } }: FormValues) => {
       const lAddress = address.toLowerCase()
@@ -178,15 +178,7 @@ export const ContactFormScreen = ({
       // if saving was proposed from SendScreen
       proposed && navigation.navigate(rootTabsRouteNames.Home)
     },
-    [
-      dispatch,
-      initialValue,
-      navigation,
-      proposed,
-      contacts,
-      checkIfContactExists,
-      t,
-    ],
+    [dispatch, initialValue, navigation, proposed, contacts, t],
   )
 
   useEffect(() => {

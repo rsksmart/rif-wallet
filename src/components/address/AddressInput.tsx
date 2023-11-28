@@ -17,6 +17,7 @@ import {
 import { castStyle } from 'shared/utils'
 import { ContactCard } from 'screens/contacts/components'
 import { ProposedContact } from 'screens/send/TransactionForm'
+import { checkIfContactExists } from 'screens/contacts/ContactFormScreen'
 
 import {
   AddressValidationMessage,
@@ -38,7 +39,7 @@ export interface AddressInputProps extends Omit<InputProps, 'value'> {
   chainId: ChainTypesByIdType
   contactList?: Contact[]
   searchContacts?: (textString: string) => void
-  onAddContact?: (contact: ProposedContact) => void
+  onSetProposedContact?: (contact: ProposedContact) => void
 }
 
 enum Status {
@@ -69,7 +70,7 @@ export const AddressInput = ({
   value,
   inputName,
   onChangeAddress,
-  onAddContact,
+  onSetProposedContact,
   resetValue,
   testID,
   chainId,
@@ -107,9 +108,7 @@ export const AddressInput = ({
       }
 
       for (const contact of contactList) {
-        if (
-          contact.name.toLowerCase().includes(textString.toLocaleLowerCase())
-        ) {
+        if (contact.name.toLowerCase().includes(textString.toLowerCase())) {
           array.push(contact)
         }
       }
@@ -147,12 +146,20 @@ export const AddressInput = ({
                 value: t('contact_form_user_found'),
               })
 
-              !contactsFound &&
-                onAddContact?.({
-                  address: resolvedAddress,
-                  displayAddress: userInput,
-                  isEditable: true,
-                })
+              if (contactList) {
+                const contactExists = checkIfContactExists(
+                  resolvedAddress,
+                  userInput,
+                  contactList,
+                )
+
+                !contactExists &&
+                  onSetProposedContact?.({
+                    address: resolvedAddress,
+                    displayAddress: userInput,
+                    isEditable: true,
+                  })
+              }
 
               // call parent with the resolved address
               onChangeAddress(
@@ -195,7 +202,7 @@ export const AddressInput = ({
           break
       }
     },
-    [t, contactsFound, onChangeAddress, onAddContact],
+    [t, onChangeAddress, onSetProposedContact, contactList],
   )
 
   const handleChangeText = useCallback(

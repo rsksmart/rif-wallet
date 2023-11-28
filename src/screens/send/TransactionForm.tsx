@@ -341,7 +341,7 @@ export const TransactionForm = ({
               chainId={chainId}
               isBitcoin={'satoshis' in selectedToken}
               contactList={contactList}
-              onAddContact={setProposedContact}
+              onSetProposedContact={setProposedContact}
             />
           )}
           {proposedContact ? (
