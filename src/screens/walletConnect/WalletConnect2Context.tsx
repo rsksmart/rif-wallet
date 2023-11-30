@@ -4,7 +4,6 @@ import {
   useCallback,
   useEffect,
   useState,
-  useMemo,
 } from 'react'
 import { getSdkError, parseUri } from '@walletconnect/utils'
 import Web3Wallet, { Web3WalletTypes } from '@walletconnect/web3wallet'
@@ -21,7 +20,6 @@ import {
 import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 import { useAppSelector } from 'store/storeUtils'
 import { selectChainId } from 'store/slices/settingsSlice'
-import { getRifRelayConfig } from 'core/operations'
 
 const onSessionApprove = async (
   web3wallet: Web3Wallet,
@@ -118,7 +116,6 @@ export const WalletConnect2Provider = ({
     PendingSession | undefined
   >(undefined)
   const [error, setError] = useState<WalletConnect2ContextArguments['error']>()
-  const rifRelayConfig = useMemo(() => getRifRelayConfig(chainId), [chainId])
 
   const onSessionProposal = async (
     proposal: Web3WalletTypes.SessionProposal,
@@ -162,7 +159,12 @@ export const WalletConnect2Provider = ({
           eth_signTypedDataResolver.validate = ({ domain }) => {
             // if address = relay address - throw error
             const { verifyingContract } = domain
-            if (verifyingContract === rifRelayConfig.relayVerifierAddress) {
+            if (
+              [
+                wallet.smartWalletAddress.toLowerCase(),
+                wallet.rifRelaySdk.smartWalletFactory.address.toLowerCase(),
+              ].includes(verifyingContract.toLowerCase())
+            ) {
               throw new Error(
                 'Error: Unauthorized Contract Address - Signing not permitted. This address is exclusive to the relay contract.',
               )
@@ -212,7 +214,7 @@ export const WalletConnect2Provider = ({
         )
       })
     },
-    [wallet, rifRelayConfig],
+    [wallet],
   )
 
   const onCreateNewSession = async (uri: string) => {
