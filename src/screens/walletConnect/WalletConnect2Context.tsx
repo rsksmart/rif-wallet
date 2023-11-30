@@ -118,7 +118,6 @@ export const WalletConnect2Provider = ({
     PendingSession | undefined
   >(undefined)
   const [error, setError] = useState<WalletConnect2ContextArguments['error']>()
-
   const rifRelayConfig = useMemo(() => getRifRelayConfig(chainId), [chainId])
 
   const onSessionProposal = async (
@@ -160,14 +159,13 @@ export const WalletConnect2Provider = ({
               resolver.methodName === 'eth_signTypedData',
           )
         if (eth_signTypedDataResolver) {
-          eth_signTypedDataResolver.validate = ({ message }) => {
+          eth_signTypedDataResolver.validate = ({ domain }) => {
             // if address = relay address - throw error
-            const { from, to } = message
-            if (
-              from.wallet === rifRelayConfig.relayVerifierAddress ||
-              to.wallet === rifRelayConfig.relayVerifierAddress
-            ) {
-              throw new Error('This transaction cannot be done.')
+            const { verifyingContract } = domain
+            if (verifyingContract === rifRelayConfig.relayVerifierAddress) {
+              throw new Error(
+                'Error: Unauthorized Contract Address - Signing not permitted. This address is exclusive to the relay contract.',
+              )
             }
           }
         }
