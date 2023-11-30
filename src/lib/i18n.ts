@@ -386,6 +386,9 @@ const resources = {
       ramp_error_title: 'Not Available',
       ramp_error: 'Adding funds is not available yet.',
       wallet_deployment_label: 'Rif Wallet Deployment',
+      wallet_backup_title: 'Warning!',
+      wallet_backup_message:
+        'We have disabled the ability to take a picture of the mnemonic because it is important that you keep it private. Please write it down instead',
     },
   },
   es: {
