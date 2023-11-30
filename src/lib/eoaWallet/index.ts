@@ -3,9 +3,20 @@ import {
   TransactionResponse,
 } from '@ethersproject/abstract-provider'
 import { fromSeed, mnemonicToSeedSync } from '@rsksmart/rif-id-mnemonic'
-import { OnRequest, SendTransactionRequest } from '@rsksmart/rif-wallet-core'
+import {
+  OnRequest,
+  SendTransactionRequest,
+  SignMessageRequest,
+  SignTypedDataRequest,
+} from '@rsksmart/rif-wallet-core'
 import { getDPathByChainId } from '@rsksmart/rlogin-dpath'
-import { Wallet, providers } from 'ethers'
+import {
+  Bytes,
+  TypedDataDomain,
+  TypedDataField,
+  Wallet,
+  providers,
+} from 'ethers'
 
 type ChainID = 30 | 31
 
@@ -88,15 +99,57 @@ export class EOAWallet extends Wallet {
     })
   }
 
-  // _signTypedData(
-  //   domain: TypedDataDomain,
-  //   types: Record<string, TypedDataField[]>,
-  //   value: Record<string, any>,
-  // ): Promise<string> {
-  //   throw new Error('SIGNED TYPED DATA')
-  // }
+  _signTypedData(
+    domain: TypedDataDomain,
+    types: Record<string, TypedDataField[]>,
+    value: Record<string, any>,
+  ): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const nextRequest = Object.freeze<SignTypedDataRequest>({
+        type: 'signTypedData',
+        payload: [domain, types, value],
+        returnType: '',
+        confirm: async () => {
+          try {
+            const string = await super._signTypedData(domain, types, value)
+            console.log('STRING', string)
+            resolve(string)
+          } catch (err) {
+            console.log('ERRORRED IN confirm', err)
+          }
+        },
+        reject: (reason?: any) => {
+          reject(new Error(reason))
+        },
+      })
 
-  // signMessage(message: string | Bytes): Promise<string> {
-  //   throw new Error('MESSAGE TO BE SIGNED')
-  // }
+      // emits onRequest with reference to the signTypedDataRequest
+      this.onRequest(nextRequest)
+    })
+  }
+
+  signMessage(message: string | Bytes): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const nextRequest = Object.freeze<SignMessageRequest>({
+        type: 'signMessage',
+        payload: [message],
+        returnType: '',
+        confirm: async () => {
+          try {
+            const string = await super.signMessage(message)
+            console.log('STRING', string)
+            resolve(string)
+          } catch (err) {
+            console.log('ERRORRED IN confirm', err)
+          }
+        },
+        reject: (reason?: any) => {
+          reject(new Error(reason))
+        },
+      })
+
+      // emits onRequest with reference to the signTypedDataRequest
+      this.onRequest(nextRequest)
+    })
+  }
 }
