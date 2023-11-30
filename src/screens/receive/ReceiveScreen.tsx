@@ -102,7 +102,7 @@ export const ReceiveScreen = ({
         setIsAddressLoading(true)
         if ('bips' in asset) {
           asset.bips[0]
-            .fetchExternalAvailableAddress()
+            .fetchExternalAvailableAddress({})
             .then(addressReturned => setAddress(addressReturned))
             .finally(() => setIsAddressLoading(false))
         } else {
