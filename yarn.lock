@@ -2101,10 +2101,22 @@
     "@ethersproject/units" "^5.7.0"
     "@rsksmart/rif-wallet-core" "*"
 
-"@rsksmart/rif-wallet-bitcoin@*", "@rsksmart/rif-wallet-bitcoin@^1.2.0":
+"@rsksmart/rif-wallet-bitcoin@*":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-bitcoin/-/rif-wallet-bitcoin-1.2.0.tgz#ba0521c2447f580c10568e9b588f4b0840ebb13d"
   integrity sha512-XoVzSmlpRMKHwXIfLXOo5hGSU31U3DtY91YA1dZ3dcg5wOaknZ/J51/NYXE7hHrAfnqt1kiYBvgdjy2rCQqTmQ==
+  dependencies:
+    "@ethersproject/bignumber" "^5.7.0"
+    "@ethersproject/units" "^5.7.0"
+    "@rsksmart/rif-id-mnemonic" "^0.1.1"
+    bip32 "^2.0.6"
+    bitcoin-address-validation "^2.2.1"
+    bitcoinjs-lib "^6.0.2"
+
+"@rsksmart/rif-wallet-bitcoin@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-bitcoin/-/rif-wallet-bitcoin-1.2.2.tgz#d4e6f989cb501535ffe9651efe48bcf16eb962e2"
+  integrity sha512-nHpycJr0m2bfMFkvSPThexUT8um44aMkzX1z9S8j/TqEe/uovUPguceq0d8YkEagcYq6Ha1U70pvXMwSFA87YQ==
   dependencies:
     "@ethersproject/bignumber" "^5.7.0"
     "@ethersproject/units" "^5.7.0"

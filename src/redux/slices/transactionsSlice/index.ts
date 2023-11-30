@@ -199,7 +199,7 @@ const transformTransaction = (
     ...transaction,
     isBitcoin: true,
     symbol: TokenSymbol.BTC,
-    status: transaction.confirmations > 0 ? 'success' : 'pending',
+    status: transaction.confirmations > 5 ? 'success' : 'pending',
     to,
     valueBtc: utils.formatUnits(value, 8),
     id: transaction.txid,
