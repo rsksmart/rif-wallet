@@ -215,7 +215,7 @@ export const AddressInput = ({
           break
       }
     },
-    [t, onChangeAddress, onSetProposedContact, contactList],
+    [t, onChangeAddress, onSetProposedContact, contactList, onSetLoadingRNS],
   )
 
   const handleChangeText = useCallback(
