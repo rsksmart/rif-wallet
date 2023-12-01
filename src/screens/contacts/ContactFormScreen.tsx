@@ -148,6 +148,17 @@ export const ContactFormScreen = ({
       const lAddress = address.toLowerCase()
       const trimmedName = name.trim()
 
+      let contactsToEvaluate: Contact[] = contacts
+
+      // if in edit mode remove the desired contact from exist evaluation
+      if (initialValue.address) {
+        contactsToEvaluate = contactsToEvaluate.filter(
+          c =>
+            c.displayAddress !==
+            (initialValue.displayAddress || initialValue.address),
+        )
+      }
+
       const contact: Contact = {
         name: trimmedName,
         address: lAddress,
@@ -156,7 +167,7 @@ export const ContactFormScreen = ({
       const contactExists = checkIfContactExists(
         displayAddress && lAddress,
         trimmedName,
-        contacts,
+        contactsToEvaluate,
       )
 
       if (contactExists) {
