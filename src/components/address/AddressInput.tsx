@@ -38,6 +38,7 @@ export interface AddressInputProps extends Omit<InputProps, 'value'> {
   ) => void
   chainId: ChainTypesByIdType
   contactList?: Contact[]
+  onSetLoadingRNS?: (isLoading: boolean) => void
   searchContacts?: (textString: string) => void
   onSetProposedContact?: (contact: ProposedContact) => void
 }
@@ -48,6 +49,11 @@ enum Status {
   SUCCESS = 'SUCCESS',
   ERROR = 'ERROR',
   CHECKSUM = 'CHECKSUM',
+}
+
+interface StatusObject {
+  type: Status
+  value?: string
 }
 
 const typeColorMap = new Map([
@@ -71,6 +77,7 @@ export const AddressInput = ({
   inputName,
   onChangeAddress,
   onSetProposedContact,
+  onSetLoadingRNS,
   resetValue,
   testID,
   chainId,
@@ -80,10 +87,7 @@ export const AddressInput = ({
   const [contactsFound, setContactsFound] = useState<Contact[] | null>(null)
   const [domainFound, setDomainFound] = useState<boolean>(false)
   // status
-  const [status, setStatus] = useState<{
-    type: Status
-    value?: string
-  }>({ type: Status.READY })
+  const [status, setStatus] = useState<StatusObject>({ type: Status.READY })
 
   const labelColor = useMemo<TextStyle>(() => {
     return typeColorMap.get(status.type)
@@ -137,6 +141,9 @@ export const AddressInput = ({
             value: t('contact_form_getting_info'),
           })
 
+          // send loading state to parent
+          onSetLoadingRNS?.(true)
+
           getRnsResolver(chainID)
             .addr(userInput, isBTC ? CoinType.BTC : CoinType.RSK)
             .then((resolvedAddress: string) => {
@@ -145,6 +152,9 @@ export const AddressInput = ({
                 type: Status.SUCCESS,
                 value: t('contact_form_user_found'),
               })
+
+              // send loading state to parent
+              onSetLoadingRNS?.(false)
 
               if (contactList) {
                 const contactExists = checkIfContactExists(
@@ -171,14 +181,17 @@ export const AddressInput = ({
                   : isBitcoinAddressValid(resolvedAddress),
               )
             })
-            .catch(_e =>
+            .catch(_e => {
               setStatus({
                 type: Status.ERROR,
                 value: `${t(
                   'contact_form_address_not_found',
                 )} ${userInput.toLowerCase()}`,
-              }),
-            )
+              })
+
+              // send loading state to parent
+              onSetLoadingRNS?.(false)
+            })
           break
         case AddressValidationMessage.INVALID_CHECKSUM:
           setStatus({
