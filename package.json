@@ -34,7 +34,7 @@
     "@reduxjs/toolkit": "^1.9.0",
     "@rsksmart/rif-id-mnemonic": "^0.1.1",
     "@rsksmart/rif-relay-light-sdk": "^1.0.12",
-    "@rsksmart/rif-wallet-abi-enhancer": "^1.0.8",
+    "@rsksmart/rif-wallet-abi-enhancer": "^1.0.9",
     "@rsksmart/rif-wallet-adapters": "^1.0.1",
     "@rsksmart/rif-wallet-bitcoin": "^1.2.2",
     "@rsksmart/rif-wallet-core": "^1.0.2",
