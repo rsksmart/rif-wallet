@@ -40,7 +40,7 @@
     "@rsksmart/rif-wallet-core": "^1.0.2",
     "@rsksmart/rif-wallet-eip681": "1.0.1",
     "@rsksmart/rif-wallet-services": "^1.1.0",
-    "@rsksmart/rif-wallet-token": "^1.0.1",
+    "@rsksmart/rif-wallet-token": "^1.0.2",
     "@rsksmart/rlogin-dpath": "^1.0.1",
     "@rsksmart/rns-resolver.js": "^1.0.1",
     "@rsksmart/rns-sdk": "^1.0.0-beta.5",
