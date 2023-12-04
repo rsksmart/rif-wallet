@@ -11,13 +11,11 @@ import {
   RootTabsParamsList,
 } from 'navigation/rootNavigator'
 import { RequestHandler } from 'src/ux/requestsModal/RequestHandler'
-import { LoadingScreen } from 'components/loading/LoadingScreen'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import {
   closeRequest,
   selectRequests,
   selectTopColor,
-  selectWholeSettingsState,
   unlockApp,
 } from 'store/slices/settingsSlice'
 import { sharedStyles } from 'shared/constants'
@@ -33,11 +31,10 @@ export const navigationContainerRef =
 
 export const Core = () => {
   const dispatch = useAppDispatch()
-  const settings = useAppSelector(selectWholeSettingsState)
   const requests = useAppSelector(selectRequests)
   const topColor = useAppSelector(selectTopColor)
   const isOffline = useIsOffline()
-  const { unlocked, active } = useStateSubscription()
+  const { active } = useStateSubscription()
   const { wallet, initializeWallet } = useContext(WalletContext)
 
   const unlockAppFn = useCallback(async () => {
@@ -59,19 +56,15 @@ export const Core = () => {
         {!active && <Cover />}
         <NavigationContainer ref={navigationContainerRef}>
           <WalletConnect2Provider wallet={wallet}>
-            {settings.loading && !unlocked ? (
-              <LoadingScreen />
-            ) : (
-              <>
-                <RootNavigationComponent />
-                {requests.length !== 0 && (
-                  <RequestHandler
-                    request={requests[0]}
-                    closeRequest={() => dispatch(closeRequest())}
-                  />
-                )}
-              </>
-            )}
+            <>
+              <RootNavigationComponent />
+              {requests.length !== 0 && (
+                <RequestHandler
+                  request={requests[0]}
+                  closeRequest={() => dispatch(closeRequest())}
+                />
+              )}
+            </>
           </WalletConnect2Provider>
         </NavigationContainer>
       </View>
