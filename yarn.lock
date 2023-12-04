@@ -2072,26 +2072,10 @@
     axios "^1.2.3"
     ethers "^5.7.2"
 
-"@rsksmart/rif-wallet-abi-enhancer@*":
+"@rsksmart/rif-wallet-abi-enhancer@*", "@rsksmart/rif-wallet-abi-enhancer@^1.0.8":
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-abi-enhancer/-/rif-wallet-abi-enhancer-1.0.8.tgz#91b237c9b72730a6b13cab7038e34a3281ffba32"
   integrity sha512-eo45Sj6njOq0Uclfcx12sSmid5uttVPyC9/OqF5Ke5c64R53Od3szqDcFQIQyXtE1sm/R4xO8uWI8zYByy+UAw==
-  dependencies:
-    "@ethersproject/abi" "^5.7.0"
-    "@ethersproject/abstract-provider" "^5.7.0"
-    "@ethersproject/abstract-signer" "^5.7.0"
-    "@ethersproject/bignumber" "^5.7.0"
-    "@ethersproject/bytes" "^5.7.0"
-    "@ethersproject/contracts" "^5.7.0"
-    "@ethersproject/providers" "^5.7.0"
-    "@rsksmart/rif-relay-light-sdk" "*"
-    "@rsksmart/rif-wallet-token" "*"
-    axios "^0.27.2"
-
-"@rsksmart/rif-wallet-abi-enhancer@^1.0.9":
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-abi-enhancer/-/rif-wallet-abi-enhancer-1.0.9.tgz#85e17426b976c61d2b2355930a51a9382e75cb26"
-  integrity sha512-aE60VRKM+qXVT/TYz8hdGEpKpbIhPoDMFhyutEJShRFjl3NkeXqDgk83ojRb8t61ebto5tpLLQm4Icgiee0Ebg==
   dependencies:
     "@ethersproject/abi" "^5.7.0"
     "@ethersproject/abstract-provider" "^5.7.0"
