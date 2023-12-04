@@ -2156,10 +2156,24 @@
     events "^1.1.1"
     socket.io-client "^4.4.1"
 
-"@rsksmart/rif-wallet-token@*", "@rsksmart/rif-wallet-token@^1.0.1":
+"@rsksmart/rif-wallet-token@*":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-token/-/rif-wallet-token-1.0.1.tgz#8b087f80a59297565e52132e3688e580fce3b44f"
   integrity sha512-1kXsUJZBwnMUhVUmME817XV4DGTY+v2oxKRhMuXzw6zYMeDWbABDrjpuwekfHeWr69kawxi5OYsUZmGt1RdAmQ==
+  dependencies:
+    "@ethersproject/abi" "^5.7.0"
+    "@ethersproject/abstract-signer" "^5.7.0"
+    "@ethersproject/bignumber" "^5.7.0"
+    "@ethersproject/constants" "^5.7.0"
+    "@ethersproject/contracts" "^5.7.0"
+    "@ethersproject/providers" "^5.7.2"
+    "@rsksmart/rsk-contract-metadata" "^1.0.17"
+    "@rsksmart/rsk-testnet-contract-metadata" "^1.0.11"
+
+"@rsksmart/rif-wallet-token@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-token/-/rif-wallet-token-1.0.2.tgz#b192829647ac10d468e6cc1289c1e3f163a42a99"
+  integrity sha512-OIc99FNZA9/a47qNDlXcO7pQsIAUMDuQStr9nRNcD4uH9iqcNPGtGjUiFvKbqNWmjUUAXSIzsBpPgFz1C+HSeg==
   dependencies:
     "@ethersproject/abi" "^5.7.0"
     "@ethersproject/abstract-signer" "^5.7.0"

@@ -40,10 +40,7 @@ export const transfer = async ({
   const transferMethod =
     token.symbol === 'RBTC'
       ? makeRBTCToken(wallet, chainId)
-      : convertToERC20Token(token, {
-          signer: wallet,
-          chainId,
-        })
+      : convertToERC20Token(token, wallet)
 
   try {
     const decimals = await transferMethod.decimals()
