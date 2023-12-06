@@ -9464,6 +9464,11 @@ react-native-screens@^3.18.2:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
 
+react-native-screenshot-prevent@^1.1.9:
+  version "1.1.9"
+  resolved "https://registry.yarnpkg.com/react-native-screenshot-prevent/-/react-native-screenshot-prevent-1.1.9.tgz#937f41cd685c12c1e0ef20c8020a93600790cc92"
+  integrity sha512-VGhW3MkuHw3fK9nJD4ijC8truQXv0pSDj9x+mmoA5xTNIeuSoFSfFhXZG+WFcFknK54iIniFLMoGToKuKXkB3g==
+
 react-native-snap-carousel@^3.9.1:
   version "3.9.1"
   resolved "https://registry.yarnpkg.com/react-native-snap-carousel/-/react-native-snap-carousel-3.9.1.tgz#6fd9bd8839546c2c6043a41d2035afbc6fe0443e"

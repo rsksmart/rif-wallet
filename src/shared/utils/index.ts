@@ -1,5 +1,19 @@
-import { createRef } from 'react'
-import { ImageStyle, TextInput, TextStyle, ViewStyle } from 'react-native'
+import { createRef, useEffect } from 'react'
+import {
+  Alert,
+  ImageStyle,
+  TextInput,
+  TextStyle,
+  ViewStyle,
+} from 'react-native'
+import {
+  addListener,
+  enabled,
+  enableSecureView,
+  disableSecureView,
+} from 'react-native-screenshot-prevent'
+import { useTranslation } from 'react-i18next'
+import { useIsFocused } from '@react-navigation/native'
 
 import { ErrorWithMessage } from '../types'
 
@@ -34,4 +48,38 @@ export const getRandomNumber = (max: number, min: number) => {
   min = Math.ceil(min)
   max = Math.floor(max)
   return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+export const usePreventScreenshot = (
+  t: ReturnType<typeof useTranslation>['t'],
+) => {
+  const isFocused = useIsFocused()
+
+  useEffect(() => {
+    const subs = addListener(() => {
+      Alert.alert(t('wallet_backup_title'), t('wallet_backup_message'), [
+        { text: t('ok') },
+      ])
+    })
+
+    console.log('CREATE SUBS', subs)
+
+    return () => {
+      subs.remove()
+    }
+  }, [t])
+
+  useEffect(() => {
+    if (isFocused) {
+      console.log('ENABLE')
+      enabled(true)
+      enableSecureView()
+      return
+    }
+
+    console.log('DISABLE')
+
+    enabled(false)
+    disableSecureView()
+  }, [isFocused])
 }
