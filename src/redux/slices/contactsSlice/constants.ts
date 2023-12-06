@@ -2,6 +2,12 @@ import { Contact } from 'shared/types'
 import { TESTNET, MAINNET } from 'screens/rnsManager/addresses.json'
 
 export const defaultContacts: Record<string, Contact> = {
+  [TESTNET.rBTCFaucet]: {
+    address: TESTNET.rBTCFaucet,
+    name: 'rBTC Faucet',
+    displayAddress: TESTNET.rBTCFaucet,
+    isEditable: false,
+  },
   [TESTNET.fifsAddrRegistrarAddress]: {
     address: TESTNET.fifsAddrRegistrarAddress,
     name: 'RNS Manager',
