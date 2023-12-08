@@ -7,6 +7,7 @@ import {
 import { TokenSymbol } from 'screens/home/TokenImage'
 import { TransactionStatus } from 'screens/transactionSummary/transactionSummaryUtils'
 import { IEvent } from 'src/subscriptions/types'
+import { TransactionResponseWithoutWait } from 'screens/send/types'
 
 export interface TransactionsServerResponseWithActivityTransactions
   extends TransactionsServerResponse {
@@ -51,6 +52,7 @@ export interface ActivityRowPresentationObject {
   amIReceiver?: boolean
   from?: string
   timestamp: number
+  original?: object
 }
 
 export type ActivityRowPresentationType = ActivityRowPresentationObject & {
@@ -71,6 +73,7 @@ export interface TransactionExtras {
   symbol?: string
   finalAddress?: string
   enhancedAmount?: string
+  original?: TransactionResponseWithoutWait
 }
 
 export type ApiTransactionWithExtras = IApiTransaction & TransactionExtras

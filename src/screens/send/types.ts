@@ -15,6 +15,7 @@ export interface TransactionInformation {
   value?: string
   symbol?: string
   hash?: string
+  original?: object
 }
 
 export type OnSetErrorFunction = (
@@ -25,7 +26,8 @@ export type OnSetCurrentTransactionFunction = (
   object: TransactionInformation | null,
 ) => void
 
-type TransactionResponseWithoutWait = Omit<TransactionResponse, 'wait'>
+export type TransactionResponseWithoutWait = Omit<TransactionResponse, 'wait'>
+
 export type OnSetTransactionStatusChange = (
   transaction: TransferTransactionStatus,
 ) => void
@@ -63,6 +65,7 @@ type TransferTransactionStatusPending = {
 
 type TransferTransactionStatusConfirmed = {
   txStatus: 'CONFIRMED'
+  original?: object
 } & ContractReceipt
 
 type TransferTransactionStatusFailed = {

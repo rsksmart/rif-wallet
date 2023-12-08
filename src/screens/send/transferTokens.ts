@@ -60,6 +60,7 @@ export const transfer = async ({
       symbol: transferMethod.symbol,
       finalAddress: to,
       enhancedAmount: amount,
+      original: txPendingRest,
     })
     const current: TransactionInformation = {
       to,
@@ -67,6 +68,7 @@ export const transfer = async ({
       symbol: transferMethod.symbol,
       hash: txPending.hash,
       status: 'PENDING',
+      original: txPendingRest,
     }
     onSetCurrentTransaction?.(current)
 
@@ -74,6 +76,7 @@ export const transfer = async ({
     onSetCurrentTransaction?.({ ...current, status: 'SUCCESS' })
     onSetTransactionStatusChange?.({
       txStatus: 'CONFIRMED',
+      original: contractReceipt,
       ...contractReceipt,
     })
 
