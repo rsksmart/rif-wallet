@@ -18,7 +18,7 @@ import {
   providers,
 } from 'ethers'
 
-type ChainID = 30 | 31
+export type ChainID = 30 | 31
 
 export interface WalletState {
   privateKey: string
@@ -26,9 +26,13 @@ export interface WalletState {
 }
 
 export class EOAWallet extends Wallet {
-  private onRequest: OnRequest
+  protected onRequest: OnRequest
 
-  private constructor(
+  get isDeployed(): Promise<boolean> {
+    return Promise.resolve(true)
+  }
+
+  protected constructor(
     privateKey: string,
     jsonRpcProvider: providers.JsonRpcProvider,
     onRequest: OnRequest,
@@ -52,14 +56,6 @@ export class EOAWallet extends Wallet {
     cache?.(privateKey, mnemonic)
 
     return new EOAWallet(privateKey, jsonRpcProvider, onRequest)
-  }
-
-  get isRelayWallet() {
-    return false
-  }
-
-  get isSeedless() {
-    return false
   }
 
   public static fromPrivateKey(
