@@ -153,7 +153,6 @@ export class RelayWallet extends EOAWallet {
   }
 
   override estimateGas(transaction: TransactionRequest): Promise<BigNumber> {
-    console.log('RELAY ESTIMATE GAS')
     return resolveProperties(this.checkTransaction(transaction)).then(
       (tx: TransactionRequest) =>
         this.rifRelaySdk.smartWallet.estimateDirectExecute(
