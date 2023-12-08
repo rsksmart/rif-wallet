@@ -7,6 +7,7 @@ import {
 } from '@rsksmart/rif-wallet-bitcoin'
 import { RifWalletServicesFetcher } from '@rsksmart/rif-wallet-services'
 import Keychain from 'react-native-keychain'
+import { Mnemonic } from 'ethers/lib/utils'
 
 import {
   BitcoinNetworkStore,
@@ -54,7 +55,7 @@ const BITCOIN_CHAINID_MAP: Record<ChainTypesByIdType, string> = {
  * @param chainId
  */
 export const initializeBitcoin = (
-  mnemonic: string,
+  mnemonic: Mnemonic,
   dispatch: AppDispatch,
   fetcher: RifWalletServicesFetcher,
   chainId: ChainTypesByIdType,
