@@ -63,7 +63,6 @@ const sslPinning = async (chainId: ChainTypesByIdType) => {
     SETTINGS.RIF_WALLET_SERVICE_PUBLIC_KEY,
     chainTypesById[chainId],
   ).split(',')
-  console.log('rifWalletServicePk', rifWalletServicePk)
   const rifRelayDomain = getWalletSetting(
     SETTINGS.RIF_RELAY_SERVER,
     chainTypesById[chainId],
@@ -407,7 +406,6 @@ const settingsSlice = createSlice({
       state.appIsActive = payload
     },
     setUnlocked: (state, { payload }: PayloadAction<boolean>) => {
-      console.log('SETTING UNCLOKED TO TRUE')
       state.unlocked = payload
     },
     setPreviouslyUnlocked: (state, { payload }: PayloadAction<boolean>) => {

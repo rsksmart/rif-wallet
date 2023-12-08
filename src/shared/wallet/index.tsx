@@ -54,14 +54,6 @@ export const WalletProvider = ({
   const [walletIsDeployed, setWalletIsDeployed] =
     useState<WalletIsDeployed | null>(null)
 
-  useEffect(() => {
-    console.log('wallet updated', wallet)
-  }, [wallet])
-
-  useEffect(() => {
-    console.log('walletIsDeployed updated', walletIsDeployed)
-  }, [walletIsDeployed])
-
   const initializeWallet = useCallback(
     (walletArg: Wallet, walletIsDeployedArg: WalletIsDeployed) => {
       setWallet(walletArg)
