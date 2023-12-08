@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { getSupportedBiometryType } from 'react-native-keychain'
 import { ColorValue, Platform } from 'react-native'
 import { initializeSslPinning } from 'react-native-ssl-public-key-pinning'
-import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { RifWalletServicesFetcher } from '@rsksmart/rif-wallet-services'
 import { providers } from 'ethers'
 
@@ -88,6 +87,7 @@ const sslPinning = async (chainId: ChainTypesByIdType) => {
 }
 
 const initializeApp = async (
+  mnemonic: string,
   wallet: Wallet,
   chainId: ChainID,
   usdPrices: UsdPricesState,
@@ -120,7 +120,7 @@ const initializeApp = async (
 
   // initialize bitcoin
   const bitcoin = initializeBitcoin(
-    wallet.mnemonic,
+    mnemonic,
     dispatch,
     fetcherInstance,
     chainId,
@@ -131,7 +131,7 @@ const initializeApp = async (
 }
 
 export const createWallet = createAsyncThunk<
-  RIFWallet,
+  Wallet,
   CreateFirstWalletAction,
   AsyncThunkWithTypes
 >('settings/createWallet', async ({ mnemonic, initializeWallet }, thunkAPI) => {
@@ -189,6 +189,7 @@ export const createWallet = createAsyncThunk<
     const { usdPrices, balances } = thunkAPI.getState()
 
     await initializeApp(
+      mnemonic,
       wallet,
       chainId,
       usdPrices,
@@ -220,8 +221,7 @@ export const unlockApp = createAsyncThunk<
       return thunkAPI.rejectWithValue('FIRST LAUNCH, DELETE PREVIOUS KEYS')
     }
 
-    let keys = await getKeys()
-    let wallet: Wallet | null = null
+    const keys = await getKeys()
 
     if (!keys) {
       // if keys do not exist, set to false
@@ -265,38 +265,16 @@ export const unlockApp = createAsyncThunk<
       }, 100)
       return thunkAPI.rejectWithValue('Move to Offline Screen')
     }
-    // this is for old wallet created using KMS
-    // @TODO: remove if in the future
-    if (keys.state) {
-      const url = getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId])
-      const jsonRpcProvider = new providers.StaticJsonRpcProvider(url)
-
-      wallet = await RelayWallet.create(
-        keys.mnemonic!,
-        chainId,
-        jsonRpcProvider,
-        request => thunkAPI.dispatch(onRequest({ request })),
-        getRifRelayConfig(chainId),
-        saveKeys,
-      )
-
-      keys = await getKeys()
-    }
-
-    const { privateKey, mnemonic } = keys!
 
     const url = getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId])
     const jsonRpcProvider = new providers.StaticJsonRpcProvider(url)
 
-    //@TODO: remove if in the future
-    if (!keys?.state) {
-      wallet = await RelayWallet.fromPrivateKey(
-        privateKey,
-        jsonRpcProvider,
-        request => thunkAPI.dispatch(onRequest({ request })),
-        getRifRelayConfig(chainId),
-      )
-    }
+    const wallet = await RelayWallet.fromPrivateKey(
+      keys.privateKey,
+      jsonRpcProvider,
+      request => thunkAPI.dispatch(onRequest({ request })),
+      getRifRelayConfig(chainId),
+    )
 
     if (!wallet) {
       return thunkAPI.rejectWithValue('No Existing Wallet')
@@ -316,6 +294,7 @@ export const unlockApp = createAsyncThunk<
     const { usdPrices, balances } = thunkAPI.getState()
 
     await initializeApp(
+      keys.mnemonic ?? keys.privateKey,
       wallet,
       chainId,
       usdPrices,
