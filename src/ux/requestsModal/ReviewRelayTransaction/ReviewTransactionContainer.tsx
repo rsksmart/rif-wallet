@@ -10,6 +10,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { isAddress } from '@rsksmart/rsk-utils'
 
 import { balanceToDisplay, convertTokenToUSD } from 'lib/utils'
+import { RelayWallet } from 'lib/relayWallet'
 
 import { AppButtonBackgroundVarietyEnum } from 'components/index'
 import { getTokenAddress } from 'core/config'
@@ -92,7 +93,7 @@ export const ReviewTransactionContainer = ({
   } = enhancedTransactionRequest
 
   const isMainnet = chainTypesById[chainId] === ChainTypeEnum.MAINNET
-  const feeSymbol = getFeeSymbol(isMainnet, wallet.isRelayWallet)
+  const feeSymbol = getFeeSymbol(isMainnet, wallet instanceof RelayWallet)
   const feeContract = getTokenAddress(feeSymbol, chainId)
 
   const getTokenBySymbol = useCallback(
@@ -182,7 +183,10 @@ export const ReviewTransactionContainer = ({
 
     let insufficientFunds = false
 
-    if (tokenToBoolMap.get(symbol as TokenSymbol) && wallet.isRelayWallet) {
+    if (
+      tokenToBoolMap.get(symbol as TokenSymbol) &&
+      wallet instanceof RelayWallet
+    ) {
       insufficientFunds =
         Number(value) + Number(feeValue) > Number(balances[feeContract].balance)
     } else {
@@ -252,7 +256,7 @@ export const ReviewTransactionContainer = ({
     confirmTransaction,
     cancelTransaction,
     functionName,
-    wallet.isRelayWallet,
+    wallet,
   ])
 
   return (
