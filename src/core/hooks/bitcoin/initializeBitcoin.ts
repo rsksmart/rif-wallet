@@ -55,7 +55,7 @@ const BITCOIN_CHAINID_MAP: Record<ChainTypesByIdType, string> = {
  * @param chainId
  */
 export const initializeBitcoin = (
-  mnemonic: Mnemonic,
+  mnemonic: string,
   dispatch: AppDispatch,
   fetcher: RifWalletServicesFetcher,
   chainId: ChainTypesByIdType,
