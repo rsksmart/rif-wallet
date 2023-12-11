@@ -7,7 +7,7 @@ import {
   RelayPayment,
   RifRelayConfig,
 } from '@rsksmart/rif-relay-light-sdk'
-import { BigNumber, providers } from 'ethers'
+import { BigNumber, Wallet, providers } from 'ethers'
 import { OnRequest, SendTransactionRequest } from '@rsksmart/rif-wallet-core'
 import { BlockchainAuthenticatorConfig } from '@json-rpc-tools/utils'
 import { defineReadOnly, resolveProperties } from 'ethers/lib/utils'
@@ -57,6 +57,7 @@ export class RelayWallet extends EOAWallet {
     config: RifRelayConfig,
     cache?: (privateKey: string, mnemonic?: string) => void,
   ) {
+    console.log('CREATE')
     const wallet = super.create(
       mnemonic,
       chainId,
@@ -64,6 +65,9 @@ export class RelayWallet extends EOAWallet {
       onRequest,
       cache,
     )
+
+    // bypass the EOAWallet's _signTypedData since the consent is already given
+    wallet._signTypedData = Wallet.prototype._signTypedData
 
     const rifRelaySdk = await RIFRelaySDK.create(wallet, config)
 
@@ -99,20 +103,6 @@ export class RelayWallet extends EOAWallet {
         payload: [transactionRequest],
         returnType: {},
         confirm: async overriddenOptions => {
-          // console.log('overriddenOptions', overriddenOptions)
-          // if (
-          //   !transactionRequest.data &&
-          //   !!transactionRequest.value &&
-          //   !!transactionRequest.to &&
-          //   !overriddenOptions?.tokenPayment
-          // ) {
-          //   resolve(
-          //     await super.sendTransaction({
-          //       to: transactionRequest.to.toLowerCase(),
-          //       value: transactionRequest.value,
-          //     }),
-          //   )
-          // }
           // check if paying with tokens:
           if (overriddenOptions && overriddenOptions.tokenPayment) {
             console.log('sendRelayTransaction', transactionRequest)
@@ -174,6 +164,10 @@ export class RelayWallet extends EOAWallet {
       jsonRpcProvider,
       onRequest,
     )
+
+    // bypass the EOAWallet's _signTypedData since the consent is already given
+    wallet._signTypedData = Wallet.prototype._signTypedData
+
     const sdk = await RIFRelaySDK.create(wallet, config)
     return new RelayWallet(privateKey, jsonRpcProvider, sdk, onRequest)
   }
