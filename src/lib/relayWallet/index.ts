@@ -57,7 +57,6 @@ export class RelayWallet extends EOAWallet {
     config: RifRelayConfig,
     cache?: (privateKey: string, mnemonic?: string) => void,
   ) {
-    console.log('CREATE')
     const wallet = super.create(
       mnemonic,
       chainId,
