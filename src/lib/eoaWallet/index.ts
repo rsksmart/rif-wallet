@@ -79,10 +79,9 @@ export class EOAWallet extends Wallet {
         confirm: async () => {
           try {
             const obj = await super.sendTransaction(transactionRequest)
-            console.log('OBJECT', obj)
             resolve(obj)
           } catch (err) {
-            console.log('ERRORRED IN confirm', err)
+            reject(err)
           }
         },
         reject: (reason?: any) => {
@@ -108,10 +107,9 @@ export class EOAWallet extends Wallet {
         confirm: async () => {
           try {
             const string = await super._signTypedData(domain, types, value)
-            console.log('STRING', string)
             resolve(string)
           } catch (err) {
-            console.log('ERRORRED IN confirm', err)
+            reject(err)
           }
         },
         reject: (reason?: any) => {
@@ -133,10 +131,9 @@ export class EOAWallet extends Wallet {
         confirm: async () => {
           try {
             const string = await super.signMessage(message)
-            console.log('STRING', string)
             resolve(string)
           } catch (err) {
-            console.log('ERRORRED IN confirm', err)
+            reject(err)
           }
         },
         reject: (reason?: any) => {
