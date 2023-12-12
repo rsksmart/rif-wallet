@@ -385,8 +385,6 @@ const resources = {
       popup_message_rns:
         'Register your username to allow others to send you funds without worrying about mistyping or inputting wrong address',
       popup_link_text: 'Get username here',
-      ramp_error_title: 'Not Available',
-      ramp_error: 'Adding funds is not available yet.',
       wallet_deployment_label: 'Rif Wallet Deployment',
       wallet_backup_title: 'Warning!',
       wallet_backup_message:

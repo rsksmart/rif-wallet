@@ -146,16 +146,11 @@ export const HomeScreen = ({
           return navigation.navigate(homeStackRouteNames.Receive, {
             token: selected,
           })
-        case 'FAUCET':
-          return Alert.alert(t('ramp_error_title'), t('ramp_error'), [
-            {
-              text: t('confirm_key_button'),
-            },
-          ])
-        // return addBalance()
+        // case 'FAUCET':
+        //   return addBalance()
       }
     },
-    [handleBitcoinSendReceive, navigation, selected, t],
+    [handleBitcoinSendReceive, navigation, selected],
   )
 
   useEffect(() => {
