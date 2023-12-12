@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { StyleSheet, View, ScrollView, Alert } from 'react-native'
+import { StyleSheet, View, ScrollView } from 'react-native'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import { useTranslation } from 'react-i18next'
 import { useIsFocused } from '@react-navigation/native'
