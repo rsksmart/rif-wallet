@@ -160,7 +160,7 @@ export const TransactionForm = ({
     [selectedToken],
   )
 
-  const balanceIfAssetIsBtc = useMemo(
+  const currentBalance = useMemo(
     () =>
       isBitcoinToken
         ? convertSatoshiToBtcHuman(bitcoinBalance)
@@ -172,7 +172,7 @@ export const TransactionForm = ({
   const amount = watch('amount')
   const to = watch('to')
 
-  const hasEnoughBalance = Number(balanceIfAssetIsBtc) < amount
+  const hasEnoughBalance = Number(currentBalance) < amount
 
   const [firstBalance, setFirstBalance] = useState<CurrencyValue>({
     balance: '',
@@ -408,7 +408,7 @@ export const TransactionForm = ({
             label={`${selectedToken.symbol} ${t(
               'transaction_form_balance_label',
             )}`}
-            placeholder={`${balanceIfAssetIsBtc} ${selectedToken.symbol}`}
+            placeholder={`${currentBalance} ${selectedToken.symbol}`}
             isReadOnly
             rightIcon={AlertIconIfBalanceBtc}
           />
