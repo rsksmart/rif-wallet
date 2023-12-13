@@ -72,6 +72,8 @@ export const TransactionSummaryComponent = ({
   )
   const contactToUse = contact || { address: contactAddress }
 
+  const isFeeSmall = Number(fee.usdValue) < 0.01
+
   const title = useMemo(() => {
     if (amIReceiver) {
       if (status === TransactionStatus.SUCCESS) {
@@ -183,7 +185,7 @@ export const TransactionSummaryComponent = ({
                     size={12}
                   />
                   <Typography type={'body2'} style={[sharedStyles.textCenter]}>
-                    {displayRoundBalance(Number(fee.tokenValue))} {fee.symbol}
+                    {getFormattedTokenValue(fee.tokenValue)} {fee.symbol}
                   </Typography>
                 </View>
               </View>

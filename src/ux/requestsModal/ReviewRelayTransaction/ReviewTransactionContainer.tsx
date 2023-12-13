@@ -197,7 +197,6 @@ export const ReviewTransactionContainer = ({
     // get usd values
     const tokenUsd = convertTokenToUSD(Number(value), tokenQuote)
     const feeUsd = convertTokenToUSD(Number(feeValue), feeQuote)
-
     const isAmountSmall = !Number(tokenUsd) && !!Number(value)
 
     return {
