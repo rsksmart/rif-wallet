@@ -9,7 +9,7 @@ import { displayRoundBalance } from 'lib/utils'
 
 import { TokenBalance } from 'components/token'
 import { sharedColors, sharedStyles } from 'shared/constants'
-import { castStyle } from 'shared/utils'
+import { castStyle, getFormattedTokenValue } from 'shared/utils'
 import { AppButton, AppTouchable, Typography } from 'components/index'
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
 import { useAppSelector } from 'store/storeUtils'
@@ -67,6 +67,8 @@ export const TransactionSummaryComponent = ({
     getContactByAddress(contactAddress.toLowerCase()),
   )
   const contactToUse = contact || { address: contactAddress }
+
+  const isFeeSmall = Number(fee.usdValue) < 0.01
 
   const title = useMemo(() => {
     if (amIReceiver) {
@@ -188,7 +190,7 @@ export const TransactionSummaryComponent = ({
                     size={12}
                   />
                   <Typography type={'body2'} style={[sharedStyles.textCenter]}>
-                    {displayRoundBalance(Number(fee.tokenValue))} {fee.symbol}
+                    {getFormattedTokenValue(fee.tokenValue)} {fee.symbol}
                   </Typography>
                 </View>
               </View>
