@@ -33,11 +33,11 @@
     "@react-navigation/stack": "^6.0.9",
     "@reduxjs/toolkit": "^1.9.0",
     "@rsksmart/rif-id-mnemonic": "^0.1.1",
-    "@rsksmart/rif-relay-light-sdk": "^1.0.12",
-    "@rsksmart/rif-wallet-abi-enhancer": "^1.0.9",
-    "@rsksmart/rif-wallet-adapters": "^1.0.1",
-    "@rsksmart/rif-wallet-bitcoin": "^1.2.2",
-    "@rsksmart/rif-wallet-core": "^1.0.2",
+    "@rsksmart/rif-relay-light-sdk": "^1.0.16",
+    "@rsksmart/rif-wallet-abi-enhancer": "^1.0.10",
+    "@rsksmart/rif-wallet-adapters": "^1.0.2",
+    "@rsksmart/rif-wallet-bitcoin": "^1.2.3",
+    "@rsksmart/rif-wallet-core": "^1.0.3",
     "@rsksmart/rif-wallet-eip681": "1.0.1",
     "@rsksmart/rif-wallet-services": "^1.1.0",
     "@rsksmart/rif-wallet-token": "^1.0.2",
@@ -145,7 +145,7 @@
   },
   "resolutions": {
     "@types/react": "^17",
-    "@rsksmart/rif-relay-light-sdk": "1.0.12",
+    "@rsksmart/rif-relay-light-sdk": "1.0.16",
     "@babel/core": "^7.20.15"
   },
   "jest": {
