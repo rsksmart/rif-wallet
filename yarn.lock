@@ -9354,6 +9354,13 @@ react-native-device-info@^10.3.0:
   resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-10.3.0.tgz#6bab64d84d3415dd00cc446c73ec5e2e61fddbe7"
   integrity sha512-/ziZN1sA1REbJTv5mQZ4tXggcTvSbct+u5kCaze8BmN//lbxcTvWsU6NQd4IihLt89VkbX+14IGc9sVApSxd/w==
 
+react-native-dots-pagination@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/react-native-dots-pagination/-/react-native-dots-pagination-0.3.1.tgz#686894e439ad82a756eb405269f8984041636998"
+  integrity sha512-Z9+z6lSruQ84aNMOHsQ/wkh/K+A5IWciNuz5St+yQUp4eEyvCkA8nPkNAl+MEV4GVdO7rrh276M8in1ePJr17g==
+  dependencies:
+    prop-types "^15.7.2"
+
 react-native-flash-message@^0.4.2:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/react-native-flash-message/-/react-native-flash-message-0.4.2.tgz#ed8ffe60c532bc1274c3b49a60dd0bd2fca59c50"

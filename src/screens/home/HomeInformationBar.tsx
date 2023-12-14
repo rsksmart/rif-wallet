@@ -68,13 +68,7 @@ export const HomeInformationBar = ({
           selectedSlide === lastIndex ? styles.space : styles.triangle,
         ]}
       />
-      <View
-        style={[
-          styles.carouselContainer,
-          {
-            backgroundColor: color,
-          },
-        ]}>
+      <View style={[styles.carouselContainer, { backgroundColor: color }]}>
         <Carousel
           ref={carousel}
           onSnapToItem={index => setSelectedSlide(index)}
@@ -87,17 +81,15 @@ export const HomeInformationBar = ({
         />
         <View style={styles.options}>
           <View style={styles.dotContainer}>
-            {slidesIndexes.map((_, i) => {
-              return (
-                <View
-                  key={i}
-                  style={[
-                    styles.dot,
-                    selectedSlide >= i ? null : styles.dotInactive,
-                  ]}
-                />
-              )
-            })}
+            {slidesIndexes.map((_, i) => (
+              <View
+                key={i}
+                style={[
+                  styles.dot,
+                  selectedSlide >= i ? null : styles.dotInactive,
+                ]}
+              />
+            ))}
           </View>
           <AppTouchable
             onPress={selectedSlide === lastIndex ? onClose : onNextItem}
@@ -152,9 +144,5 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 20,
     borderRadius: 10,
-  }),
-  pagination: castStyle.view({
-    paddingVertical: 5,
-    paddingHorizontal: 0,
   }),
 })
