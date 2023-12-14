@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel'
 import Icon from 'react-native-vector-icons/Ionicons'
+import Dots from 'react-native-dots-pagination'
 
 import { noop, sharedColors } from 'shared/constants'
 import { Typography } from 'components/typography'
@@ -80,17 +81,17 @@ export const HomeInformationBar = ({
           scrollAnimationDuration={250}
         />
         <View style={styles.options}>
-          <View style={styles.dotContainer}>
-            {slidesIndexes.map((_, i) => (
-              <View
-                key={i}
-                style={[
-                  styles.dot,
-                  selectedSlide >= i ? null : styles.dotInactive,
-                ]}
-              />
-            ))}
-          </View>
+          <Dots
+            length={3}
+            active={selectedSlide}
+            activeColor={sharedColors.white}
+            activeDotWidth={8}
+            activeDotHeight={8}
+            passiveColor={sharedColors.primaryDark}
+            passiveDotHeight={8}
+            passiveDotWidth={8}
+            paddingHorizontal={0}
+          />
           <AppTouchable
             onPress={selectedSlide === lastIndex ? onClose : onNextItem}
             width={36}>
@@ -105,6 +106,9 @@ export const HomeInformationBar = ({
 }
 
 const styles = StyleSheet.create({
+  container: castStyle.view({
+    margin: 24,
+  }),
   triangle: castStyle.view({
     width: 0,
     height: 0,
@@ -119,23 +123,6 @@ const styles = StyleSheet.create({
   options: castStyle.view({
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingTop: 20,
-  }),
-  dotContainer: castStyle.view({
-    flexDirection: 'row',
-  }),
-  dot: castStyle.view({
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginRight: 4,
-    backgroundColor: sharedColors.white,
-  }),
-  dotInactive: castStyle.view({
-    opacity: 0.3,
-  }),
-  container: castStyle.view({
-    margin: 24,
   }),
   space: castStyle.view({
     marginTop: 10,
