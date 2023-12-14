@@ -14,7 +14,15 @@ import {
 } from 'react-native-screenshot-prevent'
 import { useTranslation } from 'react-i18next'
 import { useIsFocused } from '@react-navigation/native'
+import Config from 'react-native-config'
+import { providers } from 'ethers'
+import { OnRequest } from '@rsksmart/rif-wallet-core'
+import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
 
+import { ChainID, EOAWallet } from 'src/lib/eoaWallet'
+import { RelayWallet } from 'src/lib/relayWallet'
+
+import { Wallet } from '../wallet'
 import { ErrorWithMessage } from '../types'
 
 export const errorHandler = (error: unknown) => {
@@ -115,4 +123,63 @@ export const getFormattedTokenValue = (tokenValue: string) => {
   const ending = restDecimals[moreThanZeroIndex + 2] ? '...' : ''
 
   return '0.' + decimalsStr.slice(0, 7).concat(...lastAfterZero) + ending
+}
+
+export const createAppWallet = async (
+  mnemonic: string,
+  chainId: ChainID,
+  jsonRpcProvider: providers.StaticJsonRpcProvider,
+  onRequest: OnRequest,
+  config: RifRelayConfig,
+  cache?: (privateKey: string, mnemonic?: string) => void,
+) => {
+  const useRelay = Config.USE_RELAY === 'true'
+  console.log('USE RELAY createAppWallet', useRelay)
+  let wallet: Wallet
+
+  if (useRelay) {
+    wallet = await RelayWallet.create(
+      mnemonic,
+      chainId,
+      jsonRpcProvider,
+      onRequest,
+      config,
+      cache,
+    )
+  } else {
+    wallet = EOAWallet.create(
+      mnemonic,
+      chainId,
+      jsonRpcProvider,
+      onRequest,
+      cache,
+    )
+  }
+
+  return wallet
+}
+
+export const loadAppWallet = async (
+  privateKey: string,
+  jsonRpcProvider: providers.StaticJsonRpcProvider,
+  onRequest: OnRequest,
+  config: RifRelayConfig,
+) => {
+  const useRelay = Config.USE_RELAY === 'true'
+  console.log('USE RELAY loadAppWallet', useRelay)
+
+  let wallet: Wallet
+
+  if (useRelay) {
+    wallet = await RelayWallet.fromPrivateKey(
+      privateKey,
+      jsonRpcProvider,
+      onRequest,
+      config,
+    )
+  } else {
+    wallet = EOAWallet.fromPrivateKey(privateKey, jsonRpcProvider, onRequest)
+  }
+
+  return wallet
 }
