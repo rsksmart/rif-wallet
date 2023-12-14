@@ -19,8 +19,8 @@ import { providers } from 'ethers'
 import { OnRequest } from '@rsksmart/rif-wallet-core'
 import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
 
-import { ChainID, EOAWallet } from 'src/lib/eoaWallet'
-import { RelayWallet } from 'src/lib/relayWallet'
+import { ChainID, EOAWallet } from 'lib/eoaWallet'
+import { RelayWallet } from 'lib/relayWallet'
 
 import { Wallet } from '../wallet'
 import { ErrorWithMessage } from '../types'
