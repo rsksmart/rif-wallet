@@ -32,6 +32,12 @@ export const testnetContacts: Record<string, Contact> = {
     displayAddress: TESTNET.rskOwnerAddress,
     isEditable: false,
   },
+  [TESTNET.rifWalletDeployment]: {
+    address: TESTNET.rifWalletDeployment,
+    name: 'RIF Wallet Deployment',
+    displayAddress: TESTNET.rifWalletDeployment,
+    isEditable: false,
+  },
 }
 
 export const mainnetContacts: Record<string, Contact> = {
@@ -57,6 +63,12 @@ export const mainnetContacts: Record<string, Contact> = {
     address: MAINNET.rskOwnerAddress,
     name: 'RSK Owner',
     displayAddress: MAINNET.rskOwnerAddress,
+    isEditable: false,
+  },
+  [MAINNET.rifWalletDeployment]: {
+    address: MAINNET.rifWalletDeployment,
+    name: 'RIF Wallet Deployment',
+    displayAddress: MAINNET.rifWalletDeployment,
     isEditable: false,
   },
 }
