@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { StyleSheet, View, ScrollView, Alert } from 'react-native'
+import { StyleSheet, View, ScrollView } from 'react-native'
 import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import { useTranslation } from 'react-i18next'
 import { useIsFocused } from '@react-navigation/native'
@@ -146,16 +146,11 @@ export const HomeScreen = ({
           return navigation.navigate(homeStackRouteNames.Receive, {
             token: selected,
           })
-        case 'FAUCET':
-          return Alert.alert(t('ramp_error_title'), t('ramp_error'), [
-            {
-              text: t('confirm_key_button'),
-            },
-          ])
-        // return addBalance()
+        // case 'FAUCET':
+        //   return addBalance()
       }
     },
-    [handleBitcoinSendReceive, navigation, selected, t],
+    [handleBitcoinSendReceive, navigation, selected],
   )
 
   useEffect(() => {

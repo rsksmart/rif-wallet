@@ -1,4 +1,3 @@
-import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 import {
@@ -30,11 +29,6 @@ export const HomeBarButtonGroup = ({
           onPress('SEND')
         }
       }}
-    />
-    <BarButtonGroupIcon
-      iconName="plus"
-      IconComponent={MaterialCommunityIcon}
-      onPress={() => onPress('FAUCET')}
     />
   </BarButtonGroupContainer>
 )

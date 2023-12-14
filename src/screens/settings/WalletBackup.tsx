@@ -15,15 +15,16 @@ import {
   SettingsScreenProps,
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
-import { castStyle } from 'shared/utils'
+import { castStyle, usePreventScreenshot } from 'shared/utils'
 import { getKeys } from 'storage/SecureStorage'
 import { DeleteWalletModal } from 'components/modal/deleteWalletModal'
-import { getCurrentChainId } from 'src/storage/ChainStorage'
+import { getCurrentChainId } from 'storage/ChainStorage'
 
 type Props = SettingsScreenProps<settingsStackRouteNames.WalletBackup>
 
 export const WalletBackup = (_: Props) => {
   const { t } = useTranslation()
+  usePreventScreenshot(t)
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] =
     useState<boolean>(false)
 

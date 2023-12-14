@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { CompositeScreenProps } from '@react-navigation/native'
 import { Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -72,6 +72,7 @@ export const ContactFormScreen = ({
   const contacts = useAppSelector(getContactsAsArray)
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const [rnsLoading, setRnsLoading] = useState(false)
 
   const schema = useMemo(
     () =>
@@ -148,6 +149,17 @@ export const ContactFormScreen = ({
       const lAddress = address.toLowerCase()
       const trimmedName = name.trim()
 
+      let contactsToEvaluate: Contact[] = contacts
+
+      // if in edit mode remove the desired contact from exist evaluation
+      if (initialValue.address) {
+        contactsToEvaluate = contactsToEvaluate.filter(
+          c =>
+            c.displayAddress !==
+            (initialValue.displayAddress || initialValue.address),
+        )
+      }
+
       const contact: Contact = {
         name: trimmedName,
         address: lAddress,
@@ -156,7 +168,7 @@ export const ContactFormScreen = ({
       const contactExists = checkIfContactExists(
         displayAddress && lAddress,
         trimmedName,
-        contacts,
+        contactsToEvaluate,
       )
 
       if (contactExists) {
@@ -226,6 +238,7 @@ export const ContactFormScreen = ({
             onChangeAddress={handleAddressChange}
             chainId={chainId}
             isBitcoin={false}
+            onSetLoadingRNS={setRnsLoading}
           />
           <Input
             label={t('contact_form_name')}
@@ -246,7 +259,7 @@ export const ContactFormScreen = ({
         onPress={handleSubmit(saveContact)}
         style={sharedStyles.appButtonBottom}
         textColor={sharedColors.inputInactive}
-        disabled={hasErrors}
+        disabled={hasErrors || rnsLoading}
       />
     </KeyboardAvoidingView>
   )

@@ -2072,10 +2072,26 @@
     axios "^1.2.3"
     ethers "^5.7.2"
 
-"@rsksmart/rif-wallet-abi-enhancer@*", "@rsksmart/rif-wallet-abi-enhancer@^1.0.8":
+"@rsksmart/rif-wallet-abi-enhancer@*":
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-abi-enhancer/-/rif-wallet-abi-enhancer-1.0.8.tgz#91b237c9b72730a6b13cab7038e34a3281ffba32"
   integrity sha512-eo45Sj6njOq0Uclfcx12sSmid5uttVPyC9/OqF5Ke5c64R53Od3szqDcFQIQyXtE1sm/R4xO8uWI8zYByy+UAw==
+  dependencies:
+    "@ethersproject/abi" "^5.7.0"
+    "@ethersproject/abstract-provider" "^5.7.0"
+    "@ethersproject/abstract-signer" "^5.7.0"
+    "@ethersproject/bignumber" "^5.7.0"
+    "@ethersproject/bytes" "^5.7.0"
+    "@ethersproject/contracts" "^5.7.0"
+    "@ethersproject/providers" "^5.7.0"
+    "@rsksmart/rif-relay-light-sdk" "*"
+    "@rsksmart/rif-wallet-token" "*"
+    axios "^0.27.2"
+
+"@rsksmart/rif-wallet-abi-enhancer@^1.0.9":
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-abi-enhancer/-/rif-wallet-abi-enhancer-1.0.9.tgz#85e17426b976c61d2b2355930a51a9382e75cb26"
+  integrity sha512-aE60VRKM+qXVT/TYz8hdGEpKpbIhPoDMFhyutEJShRFjl3NkeXqDgk83ojRb8t61ebto5tpLLQm4Icgiee0Ebg==
   dependencies:
     "@ethersproject/abi" "^5.7.0"
     "@ethersproject/abstract-provider" "^5.7.0"
@@ -2156,10 +2172,24 @@
     events "^1.1.1"
     socket.io-client "^4.4.1"
 
-"@rsksmart/rif-wallet-token@*", "@rsksmart/rif-wallet-token@^1.0.1":
+"@rsksmart/rif-wallet-token@*":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-token/-/rif-wallet-token-1.0.1.tgz#8b087f80a59297565e52132e3688e580fce3b44f"
   integrity sha512-1kXsUJZBwnMUhVUmME817XV4DGTY+v2oxKRhMuXzw6zYMeDWbABDrjpuwekfHeWr69kawxi5OYsUZmGt1RdAmQ==
+  dependencies:
+    "@ethersproject/abi" "^5.7.0"
+    "@ethersproject/abstract-signer" "^5.7.0"
+    "@ethersproject/bignumber" "^5.7.0"
+    "@ethersproject/constants" "^5.7.0"
+    "@ethersproject/contracts" "^5.7.0"
+    "@ethersproject/providers" "^5.7.2"
+    "@rsksmart/rsk-contract-metadata" "^1.0.17"
+    "@rsksmart/rsk-testnet-contract-metadata" "^1.0.11"
+
+"@rsksmart/rif-wallet-token@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-token/-/rif-wallet-token-1.0.2.tgz#b192829647ac10d468e6cc1289c1e3f163a42a99"
+  integrity sha512-OIc99FNZA9/a47qNDlXcO7pQsIAUMDuQStr9nRNcD4uH9iqcNPGtGjUiFvKbqNWmjUUAXSIzsBpPgFz1C+HSeg==
   dependencies:
     "@ethersproject/abi" "^5.7.0"
     "@ethersproject/abstract-signer" "^5.7.0"
@@ -3463,10 +3493,19 @@ axios@^0.27.2:
     follow-redirects "^1.14.9"
     form-data "^4.0.0"
 
-axios@^1.2.3, axios@^1.6.0:
+axios@^1.2.3:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.0.tgz#f1e5292f26b2fd5c2e66876adc5b06cdbd7d2102"
   integrity sha512-EZ1DYihju9pwVB+jg67ogm+Tmqc6JmhamRN6I4Zt8DfZu5lbcQGw3ozH9lFejSJgs/ibaef3A9PMXPLeefFGJg==
+  dependencies:
+    follow-redirects "^1.15.0"
+    form-data "^4.0.0"
+    proxy-from-env "^1.1.0"
+
+axios@^1.6.2:
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.2.tgz#de67d42c755b571d3e698df1b6504cde9b0ee9f2"
+  integrity sha512-7i24Ri4pmDRfJTR7LDBhsOTtcm+9kjX5WiY1X3wIisx6G9So3pfMkEiU7emUBe46oceVImccTEM3k6C5dbVW8A==
   dependencies:
     follow-redirects "^1.15.0"
     form-data "^4.0.0"
@@ -9433,6 +9472,11 @@ react-native-screens@^3.18.2:
   dependencies:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
+
+react-native-screenshot-prevent@^1.1.9:
+  version "1.1.9"
+  resolved "https://registry.yarnpkg.com/react-native-screenshot-prevent/-/react-native-screenshot-prevent-1.1.9.tgz#937f41cd685c12c1e0ef20c8020a93600790cc92"
+  integrity sha512-VGhW3MkuHw3fK9nJD4ijC8truQXv0pSDj9x+mmoA5xTNIeuSoFSfFhXZG+WFcFknK54iIniFLMoGToKuKXkB3g==
 
 react-native-snap-carousel@^3.9.1:
   version "3.9.1"
