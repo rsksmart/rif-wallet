@@ -1,7 +1,7 @@
 import { Contact } from 'shared/types'
 import { TESTNET, MAINNET } from 'screens/rnsManager/addresses.json'
 
-export const defaultContacts: Record<string, Contact> = {
+export const testnetContacts: Record<string, Contact> = {
   [TESTNET.rBTCFaucet]: {
     address: TESTNET.rBTCFaucet,
     name: 'rBTC Faucet',
