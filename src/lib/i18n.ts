@@ -180,6 +180,9 @@ const resources = {
       contact_form_alert_title: 'Contact already exists!',
       contact_form_edit_existing_button: 'Edit existing contact',
       transaction_form_label_asset: 'asset',
+      transaction_form_bitcoin_alert_utxo_title: 'Bitcoin Unspend Transaction',
+      transaction_form_bitcoin_alert_utxo_desc:
+        'Your Bitcoin balance is the total of all your Unspent Transaction Outputs (UTXOs). Note that you have a limited number of UTXOs available, which collectively make up your displayed balance.',
       transaction_summary_screen_title: 'Transaction Summary',
       transaction_summary_send_title: 'Send',
       transaction_summary_sent_title_success: 'Sent',
