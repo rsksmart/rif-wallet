@@ -2169,16 +2169,16 @@
   dependencies:
     "@rsksmart/rsk-utils" "^1.1.0"
 
-"@rsksmart/rif-wallet-services@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-services/-/rif-wallet-services-1.1.0.tgz#5d981fcfc1d4015d41e1b11c293363bdd117246a"
-  integrity sha512-DHiW0j+MNrxzBKCgW6mSheiD7H38K4OIv2a0WSopXd/B4vswiOHY3zyZghmajNKqqzT87yD9AE0/+y8fHpu0RA==
+"@rsksmart/rif-wallet-services@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-services/-/rif-wallet-services-1.1.2.tgz#872bdf05d5019631117148e703fc0a9ba8c7537c"
+  integrity sha512-raiJoVJIJ892J6Qt72PlW7u7xg5eT7kUwTISiBMZQ/7ojAEyqMGFxKvuqytaWoq9XulmIFbAeSCFpLyWVoBfGw==
   dependencies:
     "@ethersproject/contracts" "^5.7.0"
     "@rsksmart/rif-wallet-abi-enhancer" "*"
     "@rsksmart/rif-wallet-bitcoin" "*"
     "@rsksmart/rif-wallet-core" "*"
-    axios "^0.27.2"
+    axios "^1.6.0"
     events "^1.1.1"
     socket.io-client "^4.4.1"
 
@@ -3512,7 +3512,7 @@ axios@^1.2.3:
     form-data "^4.0.0"
     proxy-from-env "^1.1.0"
 
-axios@^1.6.2:
+axios@^1.6.0, axios@^1.6.2:
   version "1.6.2"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.2.tgz#de67d42c755b571d3e698df1b6504cde9b0ee9f2"
   integrity sha512-7i24Ri4pmDRfJTR7LDBhsOTtcm+9kjX5WiY1X3wIisx6G9So3pfMkEiU7emUBe46oceVImccTEM3k6C5dbVW8A==
