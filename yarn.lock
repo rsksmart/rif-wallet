@@ -2063,10 +2063,10 @@
     lodash "^4.17.15"
     randombytes "^2.1.0"
 
-"@rsksmart/rif-relay-light-sdk@*", "@rsksmart/rif-relay-light-sdk@1.0.12", "@rsksmart/rif-relay-light-sdk@^1.0.12":
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/@rsksmart/rif-relay-light-sdk/-/rif-relay-light-sdk-1.0.12.tgz#0123e465953fe76ca80db1ddbc0359f1edbb5f2d"
-  integrity sha512-J7K7Ae7CWahZVpglR4w9+SlVpJ+K8RL8UufyqkzW0v7Z1kXUjJ6k9cQy67zgQuePBdDJSwCDcanHgKy4dZgOeQ==
+"@rsksmart/rif-relay-light-sdk@*", "@rsksmart/rif-relay-light-sdk@1.0.16", "@rsksmart/rif-relay-light-sdk@^1.0.16":
+  version "1.0.16"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rif-relay-light-sdk/-/rif-relay-light-sdk-1.0.16.tgz#fc1b8e721ce0369446d7c69c99c4e2626b3d14e5"
+  integrity sha512-WQ6Z77JUrAIcLHqq/yCSbRDJoWdlwQx1debYCqydvvZm7tMUKgrVsOcYDdzfEIbPPMyX4392+jHB3VIRaMfXCA==
   dependencies:
     "@ethersproject/abstract-provider" "^5.7.0"
     axios "^1.2.3"
@@ -2088,10 +2088,10 @@
     "@rsksmart/rif-wallet-token" "*"
     axios "^0.27.2"
 
-"@rsksmart/rif-wallet-abi-enhancer@^1.0.9":
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-abi-enhancer/-/rif-wallet-abi-enhancer-1.0.9.tgz#85e17426b976c61d2b2355930a51a9382e75cb26"
-  integrity sha512-aE60VRKM+qXVT/TYz8hdGEpKpbIhPoDMFhyutEJShRFjl3NkeXqDgk83ojRb8t61ebto5tpLLQm4Icgiee0Ebg==
+"@rsksmart/rif-wallet-abi-enhancer@^1.0.10":
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-abi-enhancer/-/rif-wallet-abi-enhancer-1.0.10.tgz#7f3e27ad6f8be0daba4d64a99c27a1d0db57b1dc"
+  integrity sha512-5bPK5pn/HLF3YP+zv/eDsXND7zv0wq2EOTj8tCl9HXxcMTVOeumW+6vtHwPs8PMB5zArlCGk5I/Iu0z5hChbwg==
   dependencies:
     "@ethersproject/abi" "^5.7.0"
     "@ethersproject/abstract-provider" "^5.7.0"
@@ -2102,12 +2102,11 @@
     "@ethersproject/providers" "^5.7.0"
     "@rsksmart/rif-relay-light-sdk" "*"
     "@rsksmart/rif-wallet-token" "*"
-    axios "^0.27.2"
 
-"@rsksmart/rif-wallet-adapters@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-adapters/-/rif-wallet-adapters-1.0.1.tgz#3e102e2b3c745befdbfed4b0b9b23b854f391aba"
-  integrity sha512-XH5NGgY1smH0cbiLGmLVekJDNdvWSaE0q/TtkhiBGqykgf528YWgaOlokuQeDfMg/+L76GFILdMaLm12vlhEEw==
+"@rsksmart/rif-wallet-adapters@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-adapters/-/rif-wallet-adapters-1.0.2.tgz#f989826dc3b99f52da233e23de7d9fbce5ecc006"
+  integrity sha512-4j+zZJFzbvALXZeYDooOst2fVx4SUrVoKCYQcB3QE00y69M9bSRLeXslpmAKaufaDb3yn4lmwnseh+l6dOHxVg==
   dependencies:
     "@ethersproject/abstract-signer" "^5.7.0"
     "@ethersproject/bignumber" "^5.7.0"
@@ -2129,10 +2128,10 @@
     bitcoin-address-validation "^2.2.1"
     bitcoinjs-lib "^6.0.2"
 
-"@rsksmart/rif-wallet-bitcoin@^1.2.2":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-bitcoin/-/rif-wallet-bitcoin-1.2.2.tgz#d4e6f989cb501535ffe9651efe48bcf16eb962e2"
-  integrity sha512-nHpycJr0m2bfMFkvSPThexUT8um44aMkzX1z9S8j/TqEe/uovUPguceq0d8YkEagcYq6Ha1U70pvXMwSFA87YQ==
+"@rsksmart/rif-wallet-bitcoin@^1.2.3":
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-bitcoin/-/rif-wallet-bitcoin-1.2.3.tgz#428f3f30291edd0a79b477dc0dbddacb9bc6e6e2"
+  integrity sha512-FAnLn4T4lRHXQck7nGESzXaaTRnZVeU2mCCmOV8b+WyeCXBAo+DD7jePAFlDTOaMrbCwHesKDfWS/Kg02daakQ==
   dependencies:
     "@ethersproject/bignumber" "^5.7.0"
     "@ethersproject/units" "^5.7.0"
@@ -2141,10 +2140,21 @@
     bitcoin-address-validation "^2.2.1"
     bitcoinjs-lib "^6.0.2"
 
-"@rsksmart/rif-wallet-core@*", "@rsksmart/rif-wallet-core@^1.0.2":
+"@rsksmart/rif-wallet-core@*":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-core/-/rif-wallet-core-1.0.3.tgz#42eff7fff5772ba6186f84284e5fbf75716ee40a"
   integrity sha512-OL8zvNJf8jGKcoWqA7fcC89lohaeXT8h4lD06pIGUYzmCxWSk8DGjUyjEWSy36JhCob0ccwGL/57ke2LrIiXBg==
+  dependencies:
+    "@ethersproject/abstract-provider" "^5.7.0"
+    "@ethersproject/abstract-signer" "^5.7.0"
+    "@ethersproject/bignumber" "^5.7.0"
+    "@ethersproject/bytes" "^5.7.0"
+    "@rsksmart/rif-relay-light-sdk" "*"
+
+"@rsksmart/rif-wallet-core@^1.0.3":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-core/-/rif-wallet-core-1.0.4.tgz#6962d50059573233e26533a53784023a64c6004e"
+  integrity sha512-5aaVtgk2rFk/HAHsrtcDrohJGySxl5AZ7puurLlT3w+zM/28ShMI8I2QMZE7aviCd8+7IqD3xT5rmgVo8UxOYg==
   dependencies:
     "@ethersproject/abstract-provider" "^5.7.0"
     "@ethersproject/abstract-signer" "^5.7.0"
@@ -2159,16 +2169,16 @@
   dependencies:
     "@rsksmart/rsk-utils" "^1.1.0"
 
-"@rsksmart/rif-wallet-services@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-services/-/rif-wallet-services-1.1.0.tgz#5d981fcfc1d4015d41e1b11c293363bdd117246a"
-  integrity sha512-DHiW0j+MNrxzBKCgW6mSheiD7H38K4OIv2a0WSopXd/B4vswiOHY3zyZghmajNKqqzT87yD9AE0/+y8fHpu0RA==
+"@rsksmart/rif-wallet-services@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-services/-/rif-wallet-services-1.1.2.tgz#872bdf05d5019631117148e703fc0a9ba8c7537c"
+  integrity sha512-raiJoVJIJ892J6Qt72PlW7u7xg5eT7kUwTISiBMZQ/7ojAEyqMGFxKvuqytaWoq9XulmIFbAeSCFpLyWVoBfGw==
   dependencies:
     "@ethersproject/contracts" "^5.7.0"
     "@rsksmart/rif-wallet-abi-enhancer" "*"
     "@rsksmart/rif-wallet-bitcoin" "*"
     "@rsksmart/rif-wallet-core" "*"
-    axios "^0.27.2"
+    axios "^1.6.0"
     events "^1.1.1"
     socket.io-client "^4.4.1"
 
@@ -3502,7 +3512,7 @@ axios@^1.2.3:
     form-data "^4.0.0"
     proxy-from-env "^1.1.0"
 
-axios@^1.6.2:
+axios@^1.6.0, axios@^1.6.2:
   version "1.6.2"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.2.tgz#de67d42c755b571d3e698df1b6504cde9b0ee9f2"
   integrity sha512-7i24Ri4pmDRfJTR7LDBhsOTtcm+9kjX5WiY1X3wIisx6G9So3pfMkEiU7emUBe46oceVImccTEM3k6C5dbVW8A==
