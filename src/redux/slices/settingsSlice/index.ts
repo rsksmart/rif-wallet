@@ -5,8 +5,6 @@ import { initializeSslPinning } from 'react-native-ssl-public-key-pinning'
 import { RifWalletServicesFetcher } from '@rsksmart/rif-wallet-services'
 import { providers } from 'ethers'
 
-import { RelayWallet } from 'lib/relayWallet'
-
 import { deleteCache, getRifRelayConfig } from 'core/operations'
 import { deleteDomains } from 'storage/DomainsStore'
 import { deleteContacts as deleteContactsFromRedux } from 'store/slices/contactsSlice'
@@ -42,6 +40,7 @@ import {
 import { Wallet } from 'shared/wallet'
 import { addressToUse } from 'shared/hooks'
 import { ChainID } from 'src/lib/eoaWallet'
+import { createAppWallet, loadAppWallet } from 'src/shared/utils'
 
 import {
   Bitcoin,
@@ -140,7 +139,7 @@ export const createWallet = createAsyncThunk<
     const url = getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId])
     const jsonRpcProvider = new providers.StaticJsonRpcProvider(url)
 
-    const wallet = await RelayWallet.create(
+    const wallet = await createAppWallet(
       mnemonic,
       chainId,
       jsonRpcProvider,
@@ -268,7 +267,7 @@ export const unlockApp = createAsyncThunk<
     const url = getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId])
     const jsonRpcProvider = new providers.StaticJsonRpcProvider(url)
 
-    const wallet = await RelayWallet.fromPrivateKey(
+    const wallet = await loadAppWallet(
       keys.privateKey,
       jsonRpcProvider,
       request => thunkAPI.dispatch(onRequest({ request })),
