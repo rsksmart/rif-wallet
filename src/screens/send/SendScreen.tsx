@@ -138,17 +138,6 @@ export const SendScreen = ({
     }
   }, [loading, t, navigation])
 
-  // if there's an ongoing transaction
-  useEffect(() => {
-    if (transactionLoading && isFocused && !justSent) {
-      Alert.alert(
-        t('send_alert_ongoing_transaction_title'),
-        t('send_alert_ongoing_transaction_body'),
-        [{ onPress: navigation.goBack, text: t('ok') }],
-      )
-    }
-  }, [transactionLoading, navigation, t, isFocused, justSent])
-
   // Hide header when transaction is loading
   useEffect(() => {
     navigation.setOptions({

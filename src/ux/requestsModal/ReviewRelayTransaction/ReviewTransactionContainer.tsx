@@ -25,6 +25,7 @@ import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { addRecentContact } from 'store/slices/contactsSlice'
 import { selectBalances } from 'store/slices/balancesSlice'
+import { selectRecentRskTransactions } from 'store/slices/transactionsSlice'
 import { WalletContext } from 'shared/wallet'
 
 import useEnhancedWithGas from '../useEnhancedWithGas'
@@ -53,6 +54,7 @@ export const ReviewTransactionContainer = ({
   const { wallet } = useContext(WalletContext)
   const chainId = useAppSelector(selectChainId)
   const balances = useAppSelector(selectBalances)
+  const pendingTransactions = useAppSelector(selectRecentRskTransactions)
   const [txCostInRif, setTxCostInRif] = useState<BigNumber>()
   const { t } = useTranslation()
 
@@ -124,14 +126,25 @@ export const ReviewTransactionContainer = ({
 
   useEffect(() => {
     wallet.rifRelaySdk
-      .estimateTransactionCost(txRequest, feeContract)
+      .estimateTransactionCost(
+        txRequest,
+        feeContract,
+        pendingTransactions.length,
+      )
       .then(setTxCostInRif)
       .catch(err => {
         console.log('Server Error', err)
         request.reject('There is an error connecting to the RIF Relay Server.')
         onCancel()
       })
-  }, [txRequest, wallet.rifRelaySdk, feeContract, request, onCancel])
+  }, [
+    txRequest,
+    wallet.rifRelaySdk,
+    feeContract,
+    request,
+    onCancel,
+    pendingTransactions.length,
+  ])
 
   const confirmTransaction = useCallback(async () => {
     dispatch(addRecentContact(to))
@@ -146,6 +159,7 @@ export const ReviewTransactionContainer = ({
         tokenContract: feeContract,
         tokenAmount: txCostInRif,
       },
+      pendingTxsCount: pendingTransactions.length,
     }
 
     try {
@@ -163,6 +177,7 @@ export const ReviewTransactionContainer = ({
     request,
     onConfirm,
     to,
+    pendingTransactions,
   ])
 
   const cancelTransaction = useCallback(() => {
