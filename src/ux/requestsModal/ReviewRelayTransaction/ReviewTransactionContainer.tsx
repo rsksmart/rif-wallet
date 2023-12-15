@@ -132,10 +132,10 @@ export const ReviewTransactionContainer = ({
 
   useEffect(() => {
     wallet
-      .estimateGas(txRequest)
+      .estimateGas(txRequest, feeContract)
       .then(setTxCost)
       .catch(err => errorHandler(err))
-  }, [txRequest, wallet])
+  }, [txRequest, wallet, feeContract])
 
   const confirmTransaction = useCallback(async () => {
     dispatch(addRecentContact(to))

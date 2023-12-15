@@ -141,8 +141,12 @@ export class RelayWallet extends EOAWallet {
     })
   }
 
-  override estimateGas(transaction: TransactionRequest): Promise<BigNumber> {
-    return resolveProperties(this.checkTransaction(transaction)).then(
+  override estimateGas(txRequest: TransactionRequest, tokenContract?: string) {
+    if (tokenContract) {
+      return this.rifRelaySdk.estimateTransactionCost(txRequest, tokenContract)
+    }
+
+    return resolveProperties(this.checkTransaction(txRequest)).then(
       (tx: TransactionRequest) =>
         this.rifRelaySdk.smartWallet.estimateDirectExecute(
           tx.to || AddressZero,
