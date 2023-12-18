@@ -21,6 +21,7 @@ import {
 } from 'screens/send/bitcoinUtils'
 import { AppDispatch } from 'store/index'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
+import { TransactionStatus } from 'screens/transactionSummary/transactionSummaryUtils'
 import {
   addAddressToUsedBitcoinAddresses,
   selectWholeSettingsState,
@@ -89,8 +90,16 @@ export const handleReduxTransactionStatusChange =
             blockNumber,
             transactionIndex: transactionIndex,
             receipt: transactionStatusChange,
+            status: TransactionStatus.SUCCESS,
           }
           dispatch(modifyTransaction(updatedOriginTransaction))
+          break
+        case 'FAILED':
+          const updatedTransaction = {
+            status: TransactionStatus.FAILED,
+            hash: transactionStatusChange.hash,
+          }
+          dispatch(modifyTransaction(updatedTransaction))
           break
       }
     }

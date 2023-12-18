@@ -265,6 +265,7 @@ const resources = {
       transaction_form_error_balance: 'Insufficient balance',
       transaction_confirmed_status: 'confirmed',
       transaction_pending_status: 'pending',
+      transaction_failed_status: 'failed',
       transaction_summary_sent_title: 'Sent',
       activity_list_empty: 'Your list of transactions is currently empty.',
       contacts_username_input_label: 'username',

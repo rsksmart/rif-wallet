@@ -72,22 +72,25 @@ export const transfer = async ({
     }
     onSetCurrentTransaction?.(current)
 
-    const contractReceipt = await waitForTransactionToComplete()
-    onSetCurrentTransaction?.({ ...current, status: 'SUCCESS' })
-    onSetTransactionStatusChange?.({
-      txStatus: 'CONFIRMED',
-      original: {
-        ...txPendingRest,
-        hash: contractReceipt.transactionHash,
-      },
-      ...contractReceipt,
-    })
-
-    onSetCurrentTransaction?.({ ...current, status: 'FAILED' })
-    onSetTransactionStatusChange?.({
-      txStatus: 'FAILED',
-      ...txPendingRest,
-    })
+    waitForTransactionToComplete()
+      .then(contractReceipt => {
+        onSetCurrentTransaction?.({ ...current, status: 'SUCCESS' })
+        onSetTransactionStatusChange?.({
+          txStatus: 'CONFIRMED',
+          original: {
+            ...txPendingRest,
+            hash: contractReceipt.transactionHash,
+          },
+          ...contractReceipt,
+        })
+      })
+      .catch(() => {
+        onSetCurrentTransaction?.({ ...current, status: 'FAILED' })
+        onSetTransactionStatusChange?.({
+          txStatus: 'FAILED',
+          ...txPendingRest,
+        })
+      })
   } catch (err) {
     onSetError?.(err as Error)
     onSetCurrentTransaction?.(null)

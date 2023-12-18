@@ -284,7 +284,7 @@ export const modifyTransaction = createAsyncThunk<
     if (transaction) {
       const modifiedTransaction: ActivityRowPresentationObject = {
         ...transaction,
-        status: TransactionStatus.SUCCESS,
+        status: payload.status,
       }
 
       thunkAPI.dispatch(modifyTransactionState(modifiedTransaction))
