@@ -76,7 +76,10 @@ export const transfer = async ({
     onSetCurrentTransaction?.({ ...current, status: 'SUCCESS' })
     onSetTransactionStatusChange?.({
       txStatus: 'CONFIRMED',
-      original: contractReceipt,
+      original: {
+        ...txPendingRest,
+        hash: contractReceipt.transactionHash,
+      },
       ...contractReceipt,
     })
 

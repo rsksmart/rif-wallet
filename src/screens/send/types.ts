@@ -9,13 +9,15 @@ import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { TransactionExtras } from 'store/slices/transactionsSlice/types'
 
+export type TransactionResponseWithoutWait = Omit<TransactionResponse, 'wait'>
+
 export interface TransactionInformation {
   status: 'USER_CONFIRM' | 'PENDING' | 'SUCCESS' | 'FAILED'
   to?: string
   value?: string
   symbol?: string
   hash?: string
-  original?: object
+  original?: TransactionResponseWithoutWait
 }
 
 export type OnSetErrorFunction = (
@@ -25,8 +27,6 @@ export type OnSetErrorFunction = (
 export type OnSetCurrentTransactionFunction = (
   object: TransactionInformation | null,
 ) => void
-
-export type TransactionResponseWithoutWait = Omit<TransactionResponse, 'wait'>
 
 export type OnSetTransactionStatusChange = (
   transaction: TransferTransactionStatus,
@@ -65,7 +65,7 @@ type TransferTransactionStatusPending = {
 
 type TransferTransactionStatusConfirmed = {
   txStatus: 'CONFIRMED'
-  original?: object
+  original?: TransactionResponseWithoutWait
 } & ContractReceipt
 
 type TransferTransactionStatusFailed = {

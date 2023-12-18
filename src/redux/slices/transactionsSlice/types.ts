@@ -52,7 +52,7 @@ export interface ActivityRowPresentationObject {
   amIReceiver?: boolean
   from?: string
   timestamp: number
-  original?: object
+  original?: IApiTransaction
 }
 
 export type ActivityRowPresentationType = ActivityRowPresentationObject & {
