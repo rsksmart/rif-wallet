@@ -133,6 +133,7 @@ export const activityDeserializer: (
       },
       timeHumanFormatted: convertUnixTimeToFromNowFormat(tx.timestamp),
       timestamp: tx.timestamp,
+      original: activityTransaction.originTransaction,
     } as ActivityRowPresentationObject
   }
 }
