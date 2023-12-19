@@ -20,6 +20,8 @@ import { AppButtonBackgroundVarietyEnum, Input } from 'components/index'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 import { WalletContext } from 'shared/wallet'
 
+import { BitcoinMiningFeeContainer } from './BitcoinMiningFeeContainer'
+
 interface ReviewBitcoinTransactionContainerProps {
   request: SendBitcoinRequest
   onConfirm: () => void
@@ -180,6 +182,7 @@ const MiningFeeInput = ({
         inputName="miningFee"
         onChangeText={handleFeeChange}
       />
+      <BitcoinMiningFeeContainer />
     </FormProvider>
   )
 }
