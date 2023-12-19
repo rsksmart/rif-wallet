@@ -1,11 +1,12 @@
 import { useCallback, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, StyleSheet, View } from 'react-native'
+import { Alert, ScrollView, StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { convertSatoshiToBtcHuman } from '@rsksmart/rif-wallet-bitcoin'
 
 import {
   convertTokenToUSD,
@@ -26,7 +27,7 @@ import {
   Typography,
 } from 'components/index'
 import { CurrencyValue, TokenBalance } from 'components/token'
-import { sharedColors, testIDs } from 'shared/constants'
+import { defaultIconSize, sharedColors, testIDs } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { IPrice } from 'src/subscriptions/types'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
@@ -56,6 +57,7 @@ interface Props {
     amount?: number
     recipient?: ContactWithAddressRequired
   }
+  bitcoinBalance: number
   status?: string
   contactList?: Contact[]
 }
@@ -103,6 +105,7 @@ export const TransactionForm = ({
   onConfirm,
   onCancel,
   totalUsdBalance,
+  bitcoinBalance = 0,
   status,
   contactList,
 }: Props) => {
@@ -152,10 +155,24 @@ export const TransactionForm = ({
   })
   const { setValue, handleSubmit, resetField, watch } = methods
 
+  const isBitcoinToken = useMemo(
+    () => 'satoshis' in selectedToken,
+    [selectedToken],
+  )
+
+  const currentBalance = useMemo(
+    () =>
+      isBitcoinToken
+        ? convertSatoshiToBtcHuman(bitcoinBalance)
+        : selectedToken.balance,
+    [isBitcoinToken, bitcoinBalance, selectedToken.balance],
+  )
+
   // watch change in form values
   const amount = watch('amount')
   const to = watch('to')
-  const hasEnoughBalance = Number(selectedToken.balance) < amount
+
+  const hasEnoughBalance = Number(currentBalance) < amount
 
   const [firstBalance, setFirstBalance] = useState<CurrencyValue>({
     balance: '',
@@ -310,6 +327,24 @@ export const TransactionForm = ({
     }
   }, [proposedContact])
 
+  const AlertIconIfBalanceBtc = useMemo(() => {
+    if (isBitcoinToken) {
+      return (
+        <Icon
+          name={'info-circle'}
+          size={defaultIconSize}
+          onPress={() =>
+            Alert.alert(
+              t('transaction_form_bitcoin_alert_utxo_title'),
+              t('transaction_form_bitcoin_alert_utxo_desc'),
+            )
+          }
+        />
+      )
+    }
+    return undefined
+  }, [isBitcoinToken, t])
+
   return (
     <>
       <ScrollView scrollIndicatorInsets={{ right: -8 }}>
@@ -339,9 +374,9 @@ export const TransactionForm = ({
               }}
               testID={'To.Input'}
               chainId={chainId}
-              isBitcoin={'satoshis' in selectedToken}
+              isBitcoin={isBitcoinToken}
               contactList={contactList}
-              onAddContact={setProposedContact}
+              onSetProposedContact={setProposedContact}
             />
           )}
           {proposedContact ? (
@@ -373,8 +408,9 @@ export const TransactionForm = ({
             label={`${selectedToken.symbol} ${t(
               'transaction_form_balance_label',
             )}`}
-            placeholder={`${selectedToken.balance} ${selectedToken.symbol}`}
+            placeholder={`${currentBalance} ${selectedToken.symbol}`}
             isReadOnly
+            rightIcon={AlertIconIfBalanceBtc}
           />
           <AppTouchable
             width={'100%'}

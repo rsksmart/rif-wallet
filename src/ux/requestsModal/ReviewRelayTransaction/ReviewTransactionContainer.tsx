@@ -126,8 +126,12 @@ export const ReviewTransactionContainer = ({
     wallet.rifRelaySdk
       .estimateTransactionCost(txRequest, feeContract)
       .then(setTxCostInRif)
-      .catch(err => errorHandler(err))
-  }, [txRequest, wallet.rifRelaySdk, feeContract])
+      .catch(err => {
+        console.log('Server Error', err)
+        request.reject('There is an error connecting to the RIF Relay Server.')
+        onCancel()
+      })
+  }, [txRequest, wallet.rifRelaySdk, feeContract, request, onCancel])
 
   const confirmTransaction = useCallback(async () => {
     dispatch(addRecentContact(to))

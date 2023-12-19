@@ -211,5 +211,6 @@ export const usePaymentExecutor = (
     currentTransaction,
     error,
     executePayment,
+    bitcoinBalance,
   }
 }

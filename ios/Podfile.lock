@@ -500,6 +500,8 @@ PODS:
   - RNScreens (3.18.2):
     - React-Core
     - React-RCTImage
+  - RNScreenshotPrevent (1.1.9):
+    - React
   - RNSVG (12.4.4):
     - React-Core
   - RNVectorIcons (9.2.0):
@@ -599,6 +601,7 @@ DEPENDENCIES:
   - RNQrGenerator (from `../node_modules/rn-qr-generator`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNScreenshotPrevent (from `../node_modules/react-native-screenshot-prevent`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - vision-camera-code-scanner (from `../node_modules/vision-camera-code-scanner`)
@@ -746,6 +749,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNScreenshotPrevent:
+    :path: "../node_modules/react-native-screenshot-prevent"
   RNSVG:
     :path: "../node_modules/react-native-svg"
   RNVectorIcons:
@@ -838,6 +843,7 @@ SPEC CHECKSUMS:
   RNQrGenerator: 90461ba3ca88c1d38ef73da50fade35d9648215d
   RNReanimated: bec7736122a268883bdede07f1bf9cf4b40158db
   RNScreens: 34cc502acf1b916c582c60003dc3089fa01dc66d
+  RNScreenshotPrevent: cdfbe213203774c7486c6a2f198af8a4ebe10c47
   RNSVG: ecd661f380a07ba690c9c5929c475a44f432d674
   RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17

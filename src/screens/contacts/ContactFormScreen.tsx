@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { CompositeScreenProps } from '@react-navigation/native'
 import { Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -45,6 +45,26 @@ interface FormValues {
   addressIsValid: boolean
 }
 
+export const checkIfContactExists = (
+  address: string,
+  name: string,
+  searchArray: Contact[],
+) => {
+  const index = searchArray.findIndex(c => {
+    return (
+      c.displayAddress === address.toLowerCase() ||
+      c.address === address.toLowerCase() ||
+      c.name.toLowerCase() === name.toLowerCase()
+    )
+  })
+
+  if (index !== -1) {
+    return true
+  }
+
+  return false
+}
+
 export const ContactFormScreen = ({
   navigation,
   route,
@@ -52,6 +72,7 @@ export const ContactFormScreen = ({
   const contacts = useAppSelector(getContactsAsArray)
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const [rnsLoading, setRnsLoading] = useState(false)
 
   const schema = useMemo(
     () =>
@@ -95,7 +116,6 @@ export const ContactFormScreen = ({
     resolver: yupResolver(schema),
   })
   const {
-    resetField,
     handleSubmit,
     setValue,
     watch,
@@ -124,30 +144,21 @@ export const ContactFormScreen = ({
     [setValue],
   )
 
-  // check if proposed contact exists already
-  const checkIfContactExists = useCallback(
-    (address: string, name: string, searchArray: Contact[]) => {
-      const index = searchArray.findIndex(c => {
-        return (
-          c.displayAddress === address ||
-          c.address === address ||
-          c.name.toLowerCase() === name.toLowerCase()
-        )
-      })
-
-      if (index !== -1) {
-        return true
-      }
-
-      return false
-    },
-    [],
-  )
-
   const saveContact = useCallback(
     ({ name, address: { address, displayAddress } }: FormValues) => {
       const lAddress = address.toLowerCase()
       const trimmedName = name.trim()
+
+      let contactsToEvaluate: Contact[] = contacts
+
+      // if in edit mode remove the desired contact from exist evaluation
+      if (initialValue.address) {
+        contactsToEvaluate = contactsToEvaluate.filter(
+          c =>
+            c.displayAddress !==
+            (initialValue.displayAddress || initialValue.address),
+        )
+      }
 
       const contact: Contact = {
         name: trimmedName,
@@ -157,7 +168,7 @@ export const ContactFormScreen = ({
       const contactExists = checkIfContactExists(
         displayAddress && lAddress,
         trimmedName,
-        contacts,
+        contactsToEvaluate,
       )
 
       if (contactExists) {
@@ -179,15 +190,7 @@ export const ContactFormScreen = ({
       // if saving was proposed from SendScreen
       proposed && navigation.navigate(rootTabsRouteNames.Home)
     },
-    [
-      dispatch,
-      initialValue,
-      navigation,
-      proposed,
-      contacts,
-      checkIfContactExists,
-      t,
-    ],
+    [dispatch, initialValue, navigation, proposed, contacts, t],
   )
 
   useEffect(() => {
@@ -229,10 +232,13 @@ export const ContactFormScreen = ({
             testID={testIDs.addressInput}
             accessibilityLabel={testIDs.addressInput}
             value={addressObj}
-            resetValue={() => resetField('address')}
+            resetValue={() =>
+              setValue('address', { address: '', displayAddress: '' })
+            }
             onChangeAddress={handleAddressChange}
             chainId={chainId}
             isBitcoin={false}
+            onSetLoadingRNS={setRnsLoading}
           />
           <Input
             label={t('contact_form_name')}
@@ -242,7 +248,7 @@ export const ContactFormScreen = ({
             subtitle={errors.name?.message}
             subtitleStyle={styles.fieldError}
             placeholder={t('contact_form_name')}
-            resetValue={() => resetField('name')}
+            resetValue={() => setValue('name', '')}
           />
         </FormProvider>
       </ScrollView>
@@ -253,7 +259,7 @@ export const ContactFormScreen = ({
         onPress={handleSubmit(saveContact)}
         style={sharedStyles.appButtonBottom}
         textColor={sharedColors.inputInactive}
-        disabled={hasErrors}
+        disabled={hasErrors || rnsLoading}
       />
     </KeyboardAvoidingView>
   )

@@ -21,7 +21,7 @@ import {
   RootTabsScreenProps,
 } from 'navigation/rootNavigator'
 import { sharedColors, sharedStyles } from 'shared/constants'
-import { castStyle } from 'shared/utils'
+import { castStyle, usePreventScreenshot } from 'shared/utils'
 import { useAppDispatch } from 'store/storeUtils'
 import { createWallet } from 'store/slices/settingsSlice'
 import { saveKeyVerificationReminder } from 'storage/MainStorage'
@@ -39,6 +39,7 @@ export const NewMasterKeyScreen = ({ navigation }: Props) => {
   const initializeWallet = useInitializeWallet()
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
+  usePreventScreenshot(t)
   const mnemonic = useMemo(() => KeyManagementSystem.create().mnemonic, [])
   const mnemonicArray = mnemonic ? mnemonic.split(' ') : []
   const [isMnemonicVisible, setIsMnemonicVisible] = useState(false)

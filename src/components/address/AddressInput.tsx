@@ -4,14 +4,20 @@ import Clipboard from '@react-native-community/clipboard'
 import { decodeString } from '@rsksmart/rif-wallet-eip681'
 import { useTranslation } from 'react-i18next'
 import { isBitcoinAddressValid } from '@rsksmart/rif-wallet-bitcoin'
+import { Network } from 'bitcoin-address-validation'
 
 import { getRnsResolver } from 'core/setup'
 import { sharedColors } from 'shared/constants'
 import { Contact, ContactWithAddressRequired } from 'shared/types'
-import { ChainTypesByIdType } from 'shared/constants/chainConstants'
+import {
+  ChainTypeEnum,
+  ChainTypesByIdType,
+  chainTypesById,
+} from 'shared/constants/chainConstants'
 import { castStyle } from 'shared/utils'
 import { ContactCard } from 'screens/contacts/components'
 import { ProposedContact } from 'screens/send/TransactionForm'
+import { checkIfContactExists } from 'screens/contacts/ContactFormScreen'
 
 import {
   AddressValidationMessage,
@@ -21,11 +27,6 @@ import {
 import { Input, InputProps } from '../input'
 import { Avatar } from '../avatar'
 import { AppButton } from '../button'
-
-const bitcoinValidToAddressMessage = new Map([
-  [true, AddressValidationMessage.VALID],
-  [false, AddressValidationMessage.INVALID_ADDRESS],
-])
 
 export interface AddressInputProps extends Omit<InputProps, 'value'> {
   isBitcoin: boolean
@@ -37,8 +38,9 @@ export interface AddressInputProps extends Omit<InputProps, 'value'> {
   ) => void
   chainId: ChainTypesByIdType
   contactList?: Contact[]
+  onSetLoadingRNS?: (isLoading: boolean) => void
   searchContacts?: (textString: string) => void
-  onAddContact?: (contact: ProposedContact) => void
+  onSetProposedContact?: (contact: ProposedContact) => void
 }
 
 enum Status {
@@ -47,6 +49,11 @@ enum Status {
   SUCCESS = 'SUCCESS',
   ERROR = 'ERROR',
   CHECKSUM = 'CHECKSUM',
+}
+
+interface StatusObject {
+  type: Status
+  value?: string
 }
 
 const typeColorMap = new Map([
@@ -69,7 +76,8 @@ export const AddressInput = ({
   value,
   inputName,
   onChangeAddress,
-  onAddContact,
+  onSetProposedContact,
+  onSetLoadingRNS,
   resetValue,
   testID,
   chainId,
@@ -79,10 +87,7 @@ export const AddressInput = ({
   const [contactsFound, setContactsFound] = useState<Contact[] | null>(null)
   const [domainFound, setDomainFound] = useState<boolean>(false)
   // status
-  const [status, setStatus] = useState<{
-    type: Status
-    value?: string
-  }>({ type: Status.READY })
+  const [status, setStatus] = useState<StatusObject>({ type: Status.READY })
 
   const labelColor = useMemo<TextStyle>(() => {
     return typeColorMap.get(status.type)
@@ -107,9 +112,7 @@ export const AddressInput = ({
       }
 
       for (const contact of contactList) {
-        if (
-          contact.name.toLowerCase().includes(textString.toLocaleLowerCase())
-        ) {
+        if (contact.name.toLowerCase().includes(textString.toLowerCase())) {
           array.push(contact)
         }
       }
@@ -138,6 +141,9 @@ export const AddressInput = ({
             value: t('contact_form_getting_info'),
           })
 
+          // send loading state to parent
+          onSetLoadingRNS?.(true)
+
           getRnsResolver(chainID)
             .addr(userInput, isBTC ? CoinType.BTC : CoinType.RSK)
             .then((resolvedAddress: string) => {
@@ -147,12 +153,23 @@ export const AddressInput = ({
                 value: t('contact_form_user_found'),
               })
 
-              !contactsFound &&
-                onAddContact?.({
-                  address: resolvedAddress,
-                  displayAddress: userInput,
-                  isEditable: true,
-                })
+              // send loading state to parent
+              onSetLoadingRNS?.(false)
+
+              if (contactList) {
+                const contactExists = checkIfContactExists(
+                  resolvedAddress,
+                  userInput,
+                  contactList,
+                )
+
+                !contactExists &&
+                  onSetProposedContact?.({
+                    address: resolvedAddress,
+                    displayAddress: userInput,
+                    isEditable: true,
+                  })
+              }
 
               // call parent with the resolved address
               onChangeAddress(
@@ -164,14 +181,17 @@ export const AddressInput = ({
                   : isBitcoinAddressValid(resolvedAddress),
               )
             })
-            .catch(_e =>
+            .catch(_e => {
               setStatus({
                 type: Status.ERROR,
                 value: `${t(
                   'contact_form_address_not_found',
                 )} ${userInput.toLowerCase()}`,
-              }),
-            )
+              })
+
+              // send loading state to parent
+              onSetLoadingRNS?.(false)
+            })
           break
         case AddressValidationMessage.INVALID_CHECKSUM:
           setStatus({
@@ -186,9 +206,16 @@ export const AddressInput = ({
           })
           onChangeAddress('', userInput, false)
           break
+        case AddressValidationMessage.WRONG_NETWORK:
+          setStatus({
+            type: Status.ERROR,
+            value: t('contact_form_network_wrong'),
+          })
+          onChangeAddress('', userInput, false)
+          break
       }
     },
-    [t, contactsFound, onChangeAddress, onAddContact],
+    [t, onChangeAddress, onSetProposedContact, contactList, onSetLoadingRNS],
   )
 
   const handleChangeText = useCallback(
@@ -203,16 +230,29 @@ export const AddressInput = ({
       const parsedString = decodeString(inputText)
       const userInput = parsedString.address ? parsedString.address : inputText
       const isBitcoinValid = isBitcoinAddressValid(userInput)
-      const newValidationMessage = !isBitcoin
-        ? validateAddress(userInput, chainId)
-        : bitcoinValidToAddressMessage.get(isBitcoinValid)
+
+      let validationMessage: AddressValidationMessage
+      if (isBitcoin) {
+        if (isBitcoinValid) {
+          const isMainnet = chainTypesById[chainId] === ChainTypeEnum.MAINNET
+          const network = isMainnet ? Network.mainnet : Network.testnet
+          const isNetworkValid = isBitcoinAddressValid(userInput, network)
+          validationMessage = isNetworkValid
+            ? AddressValidationMessage.VALID
+            : AddressValidationMessage.WRONG_NETWORK
+        } else {
+          validationMessage = AddressValidationMessage.INVALID_ADDRESS
+        }
+      } else {
+        validationMessage = validateAddress(userInput, chainId)
+      }
 
       onChangeAddress(
         userInput,
         '',
-        !isBitcoin
-          ? newValidationMessage === AddressValidationMessage.VALID
-          : isBitcoinValid,
+        isBitcoin
+          ? isBitcoinValid
+          : validationMessage === AddressValidationMessage.VALID,
       )
 
       if (!inputText) {
@@ -225,7 +265,7 @@ export const AddressInput = ({
 
       setStatusCallChangeAddress(
         userInput,
-        newValidationMessage!,
+        validationMessage,
         chainId,
         isBitcoin,
       )
@@ -280,7 +320,7 @@ export const AddressInput = ({
     <>
       <Input
         accessibilityLabel={testID}
-        label={status.value ? status.value : label}
+        label={status.value || label}
         labelStyle={labelColor}
         value={!value.displayAddress ? value.address : value.displayAddress}
         subtitle={!value.displayAddress ? undefined : value.address}

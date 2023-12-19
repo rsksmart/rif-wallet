@@ -1,6 +1,6 @@
 import { useCallback, useState, useRef } from 'react'
 import { ScrollView, StyleSheet, TextInput, View } from 'react-native'
-import { Pagination } from 'react-native-snap-carousel'
+import Dots from 'react-native-dots-pagination'
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel'
 import { useTranslation } from 'react-i18next'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -211,14 +211,18 @@ export const ImportMasterKeyScreen = (
             <StatusIcon status={status} />
           </View>
         </View>
-        <Pagination
-          dotsLength={4}
-          activeDotIndex={selectedSlide}
-          dotStyle={styles.dotStyleView}
-          inactiveDotStyle={{}}
-          inactiveDotOpacity={0.4}
-          inactiveDotScale={0.6}
+        <Dots
+          length={4}
+          active={selectedSlide}
+          activeColor={sharedColors.white}
+          activeDotWidth={8}
+          activeDotHeight={8}
+          passiveColor={sharedColors.inputActive}
+          passiveDotHeight={6}
+          passiveDotWidth={6}
+          marginHorizontal={6}
         />
+
         <AppButton
           accessibilityLabel={'OK'}
           title="OK"
@@ -275,12 +279,6 @@ const styles = StyleSheet.create({
   wordsContainer: castStyle.view({
     marginTop: 20,
   }),
-  headerStyle: castStyle.view({
-    width: '100%',
-    marginTop: 22,
-    marginBottom: 40,
-    alignItems: 'center',
-  }),
   flexCenter: castStyle.view({
     alignItems: 'center',
   }),
@@ -293,19 +291,11 @@ const styles = StyleSheet.create({
   inputMarginView: castStyle.view({
     marginLeft: '4%',
   }),
-  dotStyleView: castStyle.view({
-    width: 6,
-    height: 6,
-    borderRadius: 5,
-    backgroundColor: 'rgba(255, 255, 255, 0.92)',
+  iconBorderFixView: castStyle.view({
+    overflow: 'hidden',
+    borderRadius: 50,
   }),
-  iconBorderFixView: castStyle.view({ overflow: 'hidden', borderRadius: 50 }),
-  backIconStyleView: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-  },
-  appButtonStyleView: {
-    marginTop: 20,
-  },
+  appButtonStyleView: castStyle.view({
+    marginTop: 30,
+  }),
 })

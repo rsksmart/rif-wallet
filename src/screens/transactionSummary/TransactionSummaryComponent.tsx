@@ -55,14 +55,14 @@ export const TransactionSummaryComponent = ({
   const chainId = useAppSelector(selectChainId)
   const { bottom } = useSafeAreaInsets()
   const { t } = useTranslation()
-  const { status, tokenValue, fee, usdValue, time, hashId } = transaction
+  const { status, tokenValue, fee, usdValue, time, hashId, to, from } =
+    transaction
 
   const iconObject = transactionStatusToIconPropsMap.get(status)
   const transactionStatusText = transactionStatusDisplayText.get(status)
 
-  const amIReceiver =
-    transaction.amIReceiver ?? isMyAddress(wallet, transaction.to)
-  const contactAddress = amIReceiver ? transaction.from || '' : transaction.to
+  const amIReceiver = transaction.amIReceiver ?? isMyAddress(wallet, to)
+  const contactAddress = amIReceiver ? from || '' : to
   const contact = useAppSelector(
     getContactByAddress(contactAddress.toLowerCase()),
   )
@@ -103,7 +103,7 @@ export const TransactionSummaryComponent = ({
   const openTransactionHash = () => {
     let explorerUrl = ''
 
-    if (isBitcoinAddressValid(transaction.to)) {
+    if (isBitcoinAddressValid(to)) {
       explorerUrl = getWalletSetting(
         SETTINGS.BTC_EXPLORER_ADDRESS_URL,
         chainTypesById[chainId],
@@ -132,8 +132,8 @@ export const TransactionSummaryComponent = ({
           {title}
         </Typography>
         <TokenBalance
-          firstValue={transaction.tokenValue}
-          secondValue={transaction.usdValue}
+          firstValue={tokenValue}
+          secondValue={usdValue}
           contact={contactToUse}
           amIReceiver={amIReceiver}
         />
@@ -255,6 +255,23 @@ export const TransactionSummaryComponent = ({
           </View>
           {/* separator */}
           <View style={styles.separator} />
+          {/* address value */}
+          {contactToUse?.name && (
+            <View style={[styles.summaryAlignment]}>
+              <Typography
+                type={'body2'}
+                style={[sharedStyles.textLeft, sharedStyles.flex]}>
+                {t('transaction_summary_address_text')}
+              </Typography>
+              <Typography
+                type={'h5'}
+                style={[sharedStyles.textRight, styles.fullAddress]}
+                numberOfLines={1}
+                ellipsizeMode={'middle'}>
+                {contactToUse.address}
+              </Typography>
+            </View>
+          )}
           {/* transaction hash */}
           {hashId && (
             <View style={[styles.summaryAlignment]}>

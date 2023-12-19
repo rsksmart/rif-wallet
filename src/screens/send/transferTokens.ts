@@ -40,10 +40,7 @@ export const transfer = async ({
   const transferMethod =
     token.symbol === 'RBTC'
       ? makeRBTCToken(wallet, chainId)
-      : convertToERC20Token(token, {
-          signer: wallet,
-          chainId,
-        })
+      : convertToERC20Token(token, wallet)
 
   try {
     const decimals = await transferMethod.decimals()
@@ -63,6 +60,7 @@ export const transfer = async ({
       symbol: transferMethod.symbol,
       finalAddress: to,
       enhancedAmount: amount,
+      original: txPendingRest,
     })
     const current: TransactionInformation = {
       to,
@@ -70,6 +68,7 @@ export const transfer = async ({
       symbol: transferMethod.symbol,
       hash: txPending.hash,
       status: 'PENDING',
+      original: txPendingRest,
     }
     onSetCurrentTransaction?.(current)
 
@@ -77,6 +76,10 @@ export const transfer = async ({
     onSetCurrentTransaction?.({ ...current, status: 'SUCCESS' })
     onSetTransactionStatusChange?.({
       txStatus: 'CONFIRMED',
+      original: {
+        ...txPendingRest,
+        hash: contractReceipt.transactionHash,
+      },
       ...contractReceipt,
     })
 

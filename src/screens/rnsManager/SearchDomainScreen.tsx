@@ -283,7 +283,10 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
             }
           />
           {error !== '' && (
-            <Typography type="body1" style={styles.errorTypography}>
+            <Typography
+              type="body1"
+              style={styles.errorTypography}
+              accessibilityLabel="rejectedTransaction">
               {error}
             </Typography>
           )}

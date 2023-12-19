@@ -11,6 +11,7 @@ import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 export enum AddressValidationMessage {
   INVALID_ADDRESS = 'Invalid address',
   INVALID_CHECKSUM = 'Invalid checksum',
+  WRONG_NETWORK = 'Wrong network',
   DOMAIN = 'Domain Found',
   NO_ADDRESS_DOMAIN = 'Domain without address',
   VALID = '',

@@ -189,6 +189,5 @@ export { TransferButton } from './TransferButton'
 export { WhiteTransparentButton } from './WhiteButton'
 
 // Button-like things
-export { PaginationNavigator } from './PaginationNavigator'
 export { ToggleButtons } from './ToggleButtons'
 export { TokenButton } from './TokenButton'

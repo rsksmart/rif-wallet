@@ -66,9 +66,8 @@ export const SendScreen = ({
   const contractAddress = route.params?.contractAddress || assets[0]
 
   // We assume only one bitcoinNetwork instance exists
-  const { currentTransaction, executePayment, error } = usePaymentExecutor(
-    assets.find(isAssetBitcoin),
-  )
+  const { currentTransaction, executePayment, error, bitcoinBalance } =
+    usePaymentExecutor(assets.find(isAssetBitcoin))
 
   const value =
     currentTransaction && currentTransaction.value
@@ -234,6 +233,7 @@ export const SendScreen = ({
           ),
         }}
         status={status}
+        bitcoinBalance={bitcoinBalance}
       />
       {currentTransaction?.status === 'USER_CONFIRM' && (
         <FullScreenSpinner message={{ text: status }} />

@@ -3,12 +3,15 @@
     "rskOwnerAddress": "0xca0a477e19bac7e0e172ccfd2e3c28a7200bdb71",
     "fifsAddrRegistrarAddress": "0x90734bd6bf96250a7b262e2bc34284b0d47c1e8d",
     "rifTokenAddress": "0x19f64674d8a5b4e652319f5e239efd3bc969a1fe",
-    "rnsRegistryAddress": "0x7d284aaac6e925aad802a53c0c69efe3764597b8"
+    "rnsRegistryAddress": "0x7d284aaac6e925aad802a53c0c69efe3764597b8",
+    "rifWalletDeployment": "0x0000000000000000000000000000000000000000",
+    "rBTCFaucet": "0x88250f772101179a4ecfaa4b92a983676a3ce445"
   },
   "MAINNET": {
     "rskOwnerAddress": "0x45d3e4fb311982a06ba52359d44cb4f5980e0ef1",
     "fifsAddrRegistrarAddress": "0xd9c79ced86ecf49f5e4a973594634c83197c35ab",
     "rifTokenAddress": "0x2acc95758f8b5f583470ba265eb685a8f45fc9d5",
-    "rnsRegistryAddress": "0xcb868aeabd31e2b66f74e9a55cf064abb31a4ad5"
+    "rnsRegistryAddress": "0xcb868aeabd31e2b66f74e9a55cf064abb31a4ad5",
+    "rifWalletDeployment": "0x0000000000000000000000000000000000000000"
   }
 }

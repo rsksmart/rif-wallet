@@ -19,3 +19,10 @@ jest.mock('redux-persist', () => ({
 jest.mock('react-native-bootsplash', () => ({
   hide: jest.fn(),
 }))
+
+jest.mock('react-native-screenshot-prevent', () => ({
+  addListener: jest.fn(),
+  enabled: jest.fn(),
+  enableSecureView: jest.fn(),
+  disableSecureView: jest.fn(),
+}))
