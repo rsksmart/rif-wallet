@@ -26,6 +26,7 @@ import {
   addPendingTransaction,
   ApiTransactionWithExtras,
 } from 'store/slices/transactionsSlice'
+import { createPendingTxFromWcResponse } from 'src/lib/utils'
 
 const onSessionApprove = async (
   web3wallet: Web3Wallet,
@@ -198,24 +199,16 @@ export const WalletConnect2Provider = ({
           .handleCall(method, params)
           .then(async signedMessage => {
             if (method === 'eth_sendTransaction') {
-              try {
-                const abiEnhancer = new AbiEnhancer()
-                const enhancedTx = await abiEnhancer.enhance(chainId, {
-                  data: signedMessage.data,
-                })
-                const pendingTx: ApiTransactionWithExtras = {
-                  ...signedMessage,
+              const pendingTx = await createPendingTxFromWcResponse(
+                signedMessage,
+                {
                   chainId,
                   from: wallet.smartWalletAddress,
                   to: params[0].to,
-                  finalAddress: params[0].to,
-                  symbol: enhancedTx?.symbol,
-                  enhancedAmount: enhancedTx?.value?.toString(),
-                  timestamp: moment().unix(),
-                }
+                },
+              )
+              if (pendingTx) {
                 dispatch(addPendingTransaction(pendingTx))
-              } catch (_) {
-                console.warn('Error adding pending transaction')
               }
             }
             web3wallet.respondSessionRequest({
