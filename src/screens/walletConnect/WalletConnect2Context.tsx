@@ -10,8 +10,6 @@ import Web3Wallet, { Web3WalletTypes } from '@walletconnect/web3wallet'
 import { IWeb3Wallet } from '@walletconnect/web3wallet'
 import { WalletConnectAdapter } from '@rsksmart/rif-wallet-adapters'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
-import { AbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
-import moment from 'moment'
 
 import {
   buildRskAllowedNamespaces,
@@ -22,10 +20,7 @@ import {
 import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { selectChainId } from 'store/slices/settingsSlice'
-import {
-  addPendingTransaction,
-  ApiTransactionWithExtras,
-} from 'store/slices/transactionsSlice'
+import { addPendingTransaction } from 'store/slices/transactionsSlice'
 import { createPendingTxFromWcResponse } from 'src/lib/utils'
 
 const onSessionApprove = async (
