@@ -180,22 +180,29 @@ export const removeLeadingZeros = (value: string) => {
 }
 
 /**
- * Creates a pending tx object from a wallet connect response
- * @param wcResponse wallet connect response
- * @param params additional required params to create a pending tx
- * @returns pending tx object
+ * Creates a pending tx object from a transaction response
+ * @param txResponse transaction response
+ * @param params additional required params to create a pending transaction
+ * @returns pending transaction object
  */
-export const createPendingTxFromWcResponse = async (
-  wcResponse: TransactionResponse,
+export const createPendingTxFromTxResponse = async (
+  txResponse: TransactionResponse,
   { chainId, from, to }: { chainId: number; from: string; to: string },
 ) => {
   try {
     const abiEnhancer = new AbiEnhancer()
     const enhancedTx = await abiEnhancer.enhance(chainId, {
-      data: wcResponse.data,
+      data: txResponse.data,
     })
     return {
-      ...(wcResponse as any),
+      transactionIndex: 0,
+      gas: 0,
+      gasPrice: '',
+      input: '',
+      txType: '',
+      txId: '',
+      ...txResponse,
+      value: txResponse.value.toString(),
       chainId,
       from,
       to,

@@ -21,7 +21,7 @@ import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { selectChainId } from 'store/slices/settingsSlice'
 import { addPendingTransaction } from 'store/slices/transactionsSlice'
-import { createPendingTxFromWcResponse } from 'src/lib/utils'
+import { createPendingTxFromTxResponse } from 'src/lib/utils'
 
 const onSessionApprove = async (
   web3wallet: Web3Wallet,
@@ -194,7 +194,7 @@ export const WalletConnect2Provider = ({
           .handleCall(method, params)
           .then(async signedMessage => {
             if (method === 'eth_sendTransaction') {
-              const pendingTx = await createPendingTxFromWcResponse(
+              const pendingTx = await createPendingTxFromTxResponse(
                 signedMessage,
                 {
                   chainId,
