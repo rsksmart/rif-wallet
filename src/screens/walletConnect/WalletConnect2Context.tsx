@@ -10,6 +10,8 @@ import Web3Wallet, { Web3WalletTypes } from '@walletconnect/web3wallet'
 import { IWeb3Wallet } from '@walletconnect/web3wallet'
 import { WalletConnectAdapter } from '@rsksmart/rif-wallet-adapters'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
+import { AbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
+import moment from 'moment'
 
 import {
   buildRskAllowedNamespaces,
@@ -18,8 +20,12 @@ import {
   WalletConnect2SdkErrorString,
 } from 'screens/walletConnect/walletConnect2.utils'
 import { ChainTypesByIdType } from 'shared/constants/chainConstants'
-import { useAppSelector } from 'store/storeUtils'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { selectChainId } from 'store/slices/settingsSlice'
+import {
+  addPendingTransaction,
+  ApiTransactionWithExtras,
+} from 'store/slices/transactionsSlice'
 
 const onSessionApprove = async (
   web3wallet: Web3Wallet,
@@ -116,6 +122,7 @@ export const WalletConnect2Provider = ({
     PendingSession | undefined
   >(undefined)
   const [error, setError] = useState<WalletConnect2ContextArguments['error']>()
+  const dispatch = useAppDispatch()
 
   const onSessionProposal = async (
     proposal: Web3WalletTypes.SessionProposal,
@@ -189,7 +196,28 @@ export const WalletConnect2Provider = ({
         }
         adapter
           .handleCall(method, params)
-          .then(signedMessage => {
+          .then(async signedMessage => {
+            if (method === 'eth_sendTransaction') {
+              try {
+                const abiEnhancer = new AbiEnhancer()
+                const enhancedTx = await abiEnhancer.enhance(chainId, {
+                  data: signedMessage.data,
+                })
+                const pendingTx: ApiTransactionWithExtras = {
+                  ...signedMessage,
+                  chainId,
+                  from: wallet.smartWalletAddress,
+                  to: params[0].to,
+                  finalAddress: params[0].to,
+                  symbol: enhancedTx?.symbol,
+                  enhancedAmount: enhancedTx?.value?.toString(),
+                  timestamp: moment().unix(),
+                }
+                dispatch(addPendingTransaction(pendingTx))
+              } catch (_) {
+                console.warn('Error adding pending transaction')
+              }
+            }
             web3wallet.respondSessionRequest({
               ...rpcResponse,
               response: {
@@ -214,7 +242,7 @@ export const WalletConnect2Provider = ({
         )
       })
     },
-    [wallet],
+    [chainId, dispatch, wallet],
   )
 
   const onCreateNewSession = async (uri: string) => {
