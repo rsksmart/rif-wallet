@@ -1,7 +1,6 @@
 import EventEmitter from 'eventemitter3'
 import {
   ITokenWithBalance,
-  RifWalletServicesFetcher,
   RifWalletServicesSocket,
 } from '@rsksmart/rif-wallet-services'
 import DeviceInfo from 'react-native-device-info'
@@ -14,13 +13,11 @@ import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
 import { UsdPricesState } from 'store/slices/usdPricesSlice'
 import { getWalletSetting } from 'core/config'
 import { SETTINGS } from 'core/types'
-import { MMKVStorage } from 'storage/MMKVStorage'
-import { enhanceTransactionInput } from 'screens/activity/ActivityScreen'
-import { filterEnhancedTransactions } from 'src/subscriptions/utils'
 import {
   chainTypesById,
   ChainTypesByIdType,
 } from 'shared/constants/chainConstants'
+import { MMKVStorage } from 'storage/MMKVStorage'
 
 import { onSocketChangeEmitted } from './onSocketChangeEmitted'
 import { Action, InitAction } from './types'
@@ -38,7 +35,6 @@ interface RifSockets {
   setGlobalError: (err: string) => void
   dispatch: AppDispatch
   usdPrices: UsdPricesState
-  fetcher: RifWalletServicesFetcher
   balances: Record<string, TokenBalanceObject>
 }
 
@@ -49,10 +45,11 @@ const onSocketInit = (
   cb({ type: 'init', payload })
 }
 
+const cache = new MMKVStorage('txs')
+
 export const rifSockets = ({
   address,
   chainId,
-  fetcher,
   dispatch,
   setGlobalError,
   usdPrices,
@@ -63,27 +60,10 @@ export const rifSockets = ({
     abiEnhancer,
     usdPrices,
     chainId,
+    cache,
   })
   const rifWalletServicesSocket = new RifWalletServicesSocket(
     getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL, chainTypesById[chainId]),
-    abiEnhancer,
-    {
-      cache: new MMKVStorage('temp'),
-      encryptionKeyMessageToSign: getWalletSetting(
-        SETTINGS.RIF_WALLET_KEY,
-        chainTypesById[chainId],
-      ),
-      // @TODO: make sure that the chainId type is more specific in lib
-      onEnhanceTransaction: enhanceTransactionInput,
-      onFilterOutRepeatedTransactions: filterEnhancedTransactions,
-      onBeforeInit: currentInstance => {
-        currentInstance.cache = new MMKVStorage('txs')
-      },
-    },
-    {
-      cacheBlockNumberText: `blockNumber_${chainId}`,
-      cacheTxsText: `cachedTxs_${chainId}`,
-    },
   )
 
   const connectSocket = () => {
@@ -106,21 +86,27 @@ export const rifSockets = ({
 
     rifWalletServicesSocket.removeAllListeners()
 
-    rifWalletServicesSocket.on('init', payload =>
+    rifWalletServicesSocket.on('init', async payload =>
       onSocketInit(payload, onChange),
     )
     rifWalletServicesSocket.on('change', onChange)
-    rifWalletServicesSocket
-      .connect(address, chainId, fetcher, {
-        'User-Agent': DeviceInfo.getUserAgentSync(),
-      })
-      .catch(err => {
-        if (err instanceof Error) {
-          setGlobalError(err.message)
-        } else {
-          setGlobalError('Error connecting to socket')
-        }
-      })
+    try {
+      const blockNumber = cache.get('blockNumber') || '0'
+      rifWalletServicesSocket.connect(
+        address,
+        chainId,
+        {
+          'User-Agent': DeviceInfo.getUserAgentSync(),
+        },
+        blockNumber,
+      )
+    } catch (err) {
+      if (err instanceof Error) {
+        setGlobalError(err.message)
+      } else {
+        setGlobalError('Error connecting to socket')
+      }
+    }
   }
 
   const disconnectSocket = rifWalletServicesSocket.disconnect
