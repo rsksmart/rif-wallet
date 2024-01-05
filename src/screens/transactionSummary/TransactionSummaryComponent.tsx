@@ -174,33 +174,38 @@ export const TransactionSummaryComponent = ({
         ) : null}
         <View style={styles.summaryView}>
           {/* fee values */}
-          <View style={styles.summaryAlignment}>
-            <Typography type={'body2'} style={[sharedStyles.textLeft]}>
-              {t('transaction_summary_fees')}
-            </Typography>
+          {status !== TransactionStatus.PENDING && (
+            <>
+              <View style={styles.summaryAlignment}>
+                <Typography type={'body2'} style={[sharedStyles.textLeft]}>
+                  {t('transaction_summary_fees')}
+                </Typography>
 
-            <View style={sharedStyles.row}>
-              <TokenImage
-                symbol={fee.symbol || tokenValue.symbol}
-                transparent
-                size={12}
-              />
-              <Typography type={'body2'} style={[sharedStyles.textCenter]}>
-                {displayRoundBalance(Number(fee.tokenValue))} {fee.symbol}
-              </Typography>
-            </View>
-          </View>
-          <View style={styles.dollarAmountWrapper}>
-            <DollarIcon size={14} color={sharedColors.labelLight} />
-            <Typography
-              type={'body2'}
-              style={[
-                sharedStyles.textRight,
-                { color: sharedColors.labelLight },
-              ]}>
-              {fee.usdValue}
-            </Typography>
-          </View>
+                <View style={sharedStyles.row}>
+                  <TokenImage
+                    symbol={fee.symbol || tokenValue.symbol}
+                    transparent
+                    size={12}
+                  />
+                  <Typography type={'body2'} style={[sharedStyles.textCenter]}>
+                    {displayRoundBalance(Number(fee.tokenValue))} {fee.symbol}
+                  </Typography>
+                </View>
+              </View>
+
+              <View style={styles.dollarAmountWrapper}>
+                <DollarIcon size={14} color={sharedColors.labelLight} />
+                <Typography
+                  type={'body2'}
+                  style={[
+                    sharedStyles.textRight,
+                    { color: sharedColors.labelLight },
+                  ]}>
+                  {fee.usdValue}
+                </Typography>
+              </View>
+            </>
+          )}
           {FeeComponent}
           {/* Total values */}
           <View style={[styles.summaryAlignment]}>
@@ -331,7 +336,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 18,
   }),
-  summaryView: castStyle.view({ marginTop: 100 }),
+  summaryView: castStyle.view({
+    marginTop: 100,
+  }),
   summaryAlignment: castStyle.view({
     marginTop: 20,
     flexDirection: 'row',
