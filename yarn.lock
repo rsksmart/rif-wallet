@@ -2103,10 +2103,10 @@
     "@rsksmart/rif-relay-light-sdk" "*"
     "@rsksmart/rif-wallet-token" "*"
 
-"@rsksmart/rif-wallet-adapters@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-adapters/-/rif-wallet-adapters-1.0.2.tgz#f989826dc3b99f52da233e23de7d9fbce5ecc006"
-  integrity sha512-4j+zZJFzbvALXZeYDooOst2fVx4SUrVoKCYQcB3QE00y69M9bSRLeXslpmAKaufaDb3yn4lmwnseh+l6dOHxVg==
+"@rsksmart/rif-wallet-adapters@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-adapters/-/rif-wallet-adapters-1.0.4.tgz#2a5c3da8813db9374c22745b05c2359c65ff3a58"
+  integrity sha512-ej/WJbvLZ0oHWXclAfO2Vt3PR26dpSFnEkOW6pb5D3LSH4KN6JgBqNG/YUuGKBueYdDHWzg+dlLqQHUu0HzWkA==
   dependencies:
     "@ethersproject/abstract-signer" "^5.7.0"
     "@ethersproject/bignumber" "^5.7.0"

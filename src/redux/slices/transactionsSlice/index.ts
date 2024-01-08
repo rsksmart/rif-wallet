@@ -340,6 +340,11 @@ const transactionsSlice = createSlice({
       )
       if (transactionIndex === -1) {
         state.transactions.push(payload)
+      } else if (
+        state.transactions[transactionIndex].status ===
+        TransactionStatus.PENDING
+      ) {
+        state.transactions[transactionIndex] = payload
       }
       state.transactions = state.transactions.sort(sortObjectsByTimestamp)
     },

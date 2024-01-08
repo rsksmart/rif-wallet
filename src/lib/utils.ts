@@ -1,5 +1,9 @@
+import { TransactionResponse } from '@ethersproject/abstract-provider'
+import { AbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
 import { BigNumber, BigNumberish, FixedNumber } from 'ethers'
 import moment from 'moment'
+
+import { ApiTransactionWithExtras } from 'src/redux/slices/transactionsSlice'
 
 export function shortAddress(address: string, amount = 4): string {
   if (!address) {
@@ -173,4 +177,42 @@ export const convertUnixTimeToFromNowFormat = (unixTime: number): string =>
 
 export const removeLeadingZeros = (value: string) => {
   return value.replace(/^0+/, '')
+}
+
+/**
+ * Creates a pending tx object from a transaction response
+ * @param txResponse transaction response
+ * @param params additional required params to create a pending transaction
+ * @returns pending transaction object
+ */
+export const createPendingTxFromTxResponse = async (
+  txResponse: TransactionResponse,
+  { chainId, from, to }: { chainId: number; from: string; to: string },
+) => {
+  try {
+    const abiEnhancer = new AbiEnhancer()
+    const enhancedTx = await abiEnhancer.enhance(chainId, {
+      data: txResponse.data,
+    })
+    return {
+      transactionIndex: 0,
+      gas: 0,
+      gasPrice: '',
+      input: '',
+      txId: '',
+      txType: 'contract call',
+      ...txResponse,
+      value: txResponse.value.toString(),
+      chainId,
+      from,
+      to,
+      finalAddress: to,
+      symbol: enhancedTx?.symbol,
+      enhancedAmount: enhancedTx?.value?.toString(),
+      timestamp: moment().unix(),
+    } as ApiTransactionWithExtras
+  } catch (_) {
+    console.warn('Error adding pending transaction')
+    return null
+  }
 }

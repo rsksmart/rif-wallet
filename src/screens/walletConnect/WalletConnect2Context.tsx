@@ -18,8 +18,10 @@ import {
   WalletConnect2SdkErrorString,
 } from 'screens/walletConnect/walletConnect2.utils'
 import { ChainTypesByIdType } from 'shared/constants/chainConstants'
-import { useAppSelector } from 'store/storeUtils'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { selectChainId } from 'store/slices/settingsSlice'
+import { addPendingTransaction } from 'store/slices/transactionsSlice'
+import { createPendingTxFromTxResponse } from 'src/lib/utils'
 
 const onSessionApprove = async (
   web3wallet: Web3Wallet,
@@ -116,6 +118,7 @@ export const WalletConnect2Provider = ({
     PendingSession | undefined
   >(undefined)
   const [error, setError] = useState<WalletConnect2ContextArguments['error']>()
+  const dispatch = useAppDispatch()
 
   const onSessionProposal = async (
     proposal: Web3WalletTypes.SessionProposal,
@@ -189,7 +192,20 @@ export const WalletConnect2Provider = ({
         }
         adapter
           .handleCall(method, params)
-          .then(signedMessage => {
+          .then(async signedMessage => {
+            if (method === 'eth_sendTransaction') {
+              const pendingTx = await createPendingTxFromTxResponse(
+                signedMessage,
+                {
+                  chainId,
+                  from: wallet.smartWalletAddress,
+                  to: params[0].to,
+                },
+              )
+              if (pendingTx) {
+                dispatch(addPendingTransaction(pendingTx))
+              }
+            }
             web3wallet.respondSessionRequest({
               ...rpcResponse,
               response: {
@@ -214,7 +230,7 @@ export const WalletConnect2Provider = ({
         )
       })
     },
-    [wallet],
+    [chainId, dispatch, wallet],
   )
 
   const onCreateNewSession = async (uri: string) => {
