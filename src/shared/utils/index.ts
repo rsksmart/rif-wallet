@@ -16,10 +16,9 @@ import { useTranslation } from 'react-i18next'
 import { useIsFocused } from '@react-navigation/native'
 import Config from 'react-native-config'
 import { providers } from 'ethers'
-import { OnRequest } from '@rsksmart/rif-wallet-core'
 import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
 
-import { ChainID, EOAWallet } from 'lib/eoaWallet'
+import { ChainID, EOAWallet, OnRequest, WalletState } from 'lib/eoaWallet'
 import { RelayWallet } from 'lib/relayWallet'
 
 import { Wallet } from '../wallet'
@@ -164,7 +163,8 @@ export const createAppWallet = async (
 }
 
 export const loadAppWallet = async (
-  privateKey: string,
+  keys: WalletState,
+  chainId: ChainID,
   jsonRpcProvider: providers.StaticJsonRpcProvider,
   onRequest: OnRequest,
   config: RifRelayConfig,
@@ -175,14 +175,20 @@ export const loadAppWallet = async (
   let wallet: Wallet
 
   if (useRelay) {
-    wallet = await RelayWallet.fromPrivateKey(
-      privateKey,
+    wallet = await RelayWallet.fromWalletState(
+      keys,
+      chainId,
       jsonRpcProvider,
       onRequest,
       config,
     )
   } else {
-    wallet = EOAWallet.fromPrivateKey(privateKey, jsonRpcProvider, onRequest)
+    wallet = EOAWallet.fromWalletState(
+      keys,
+      chainId,
+      jsonRpcProvider,
+      onRequest,
+    )
   }
 
   return wallet

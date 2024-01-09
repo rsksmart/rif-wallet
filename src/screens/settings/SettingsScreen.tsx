@@ -146,7 +146,9 @@ export const SettingsScreen = ({
         style={styles.settingsItem}
         onPress={onSwitchChains}>
         <Typography type={'h3'}>
-          Switch to {ChainTypesInversed[chainTypesById[chainId]]}
+          {`${t('settings_screen_switch_to')} ${
+            ChainTypesInversed[chainTypesById[chainId]]
+          }`}
         </Typography>
       </AppTouchable>
       <View style={styles.bottomView}>
