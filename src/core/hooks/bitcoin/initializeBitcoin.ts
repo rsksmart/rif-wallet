@@ -7,6 +7,7 @@ import {
 } from '@rsksmart/rif-wallet-bitcoin'
 import { RifWalletServicesFetcher } from '@rsksmart/rif-wallet-services'
 import Keychain from 'react-native-keychain'
+import { Mnemonic } from 'ethers/lib/utils'
 
 import {
   BitcoinNetworkStore,

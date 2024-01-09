@@ -2063,10 +2063,19 @@
     lodash "^4.17.15"
     randombytes "^2.1.0"
 
-"@rsksmart/rif-relay-light-sdk@*", "@rsksmart/rif-relay-light-sdk@1.0.12", "@rsksmart/rif-relay-light-sdk@^1.0.12":
+"@rsksmart/rif-relay-light-sdk@*", "@rsksmart/rif-relay-light-sdk@1.0.12":
   version "1.0.12"
   resolved "https://registry.yarnpkg.com/@rsksmart/rif-relay-light-sdk/-/rif-relay-light-sdk-1.0.12.tgz#0123e465953fe76ca80db1ddbc0359f1edbb5f2d"
   integrity sha512-J7K7Ae7CWahZVpglR4w9+SlVpJ+K8RL8UufyqkzW0v7Z1kXUjJ6k9cQy67zgQuePBdDJSwCDcanHgKy4dZgOeQ==
+  dependencies:
+    "@ethersproject/abstract-provider" "^5.7.0"
+    axios "^1.2.3"
+    ethers "^5.7.2"
+
+"@rsksmart/rif-relay-light-sdk@1.1.0-beta.1":
+  version "1.1.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rif-relay-light-sdk/-/rif-relay-light-sdk-1.1.0-beta.1.tgz#71e35c0b2412285a9dd3435712a2baa868eda44a"
+  integrity sha512-dsdl7nwLcwmn3sx2BSG3C3UtfKKIkPtZdZ0pO1V6dDflW7J6LGu95IPOUy7qoZABEUyrmzvFFtBDyqOFkA6PQQ==
   dependencies:
     "@ethersproject/abstract-provider" "^5.7.0"
     axios "^1.2.3"

@@ -88,15 +88,14 @@ export const getFormattedTokenValue = (tokenValue: string) => {
   if (!tokenValue.includes('.')) {
     return tokenValue
   }
-
-  const decimalsStr = tokenValue.split('.')[1]
-  const decimals = decimalsStr.length
+  const tokenValueArr = tokenValue.split('.')
+  const decimals = tokenValueArr[1].length
 
   if (decimals < 8) {
     return tokenValue
   }
 
-  const restDecimals = decimalsStr.split('').slice(7, decimals)
+  const restDecimals = tokenValueArr[1].split('').slice(7, decimals)
 
   let moreThanZeroIndex = 0
 
@@ -114,5 +113,10 @@ export const getFormattedTokenValue = (tokenValue: string) => {
   )
   const ending = restDecimals[moreThanZeroIndex + 2] ? '...' : ''
 
-  return '0.' + decimalsStr.slice(0, 7).concat(...lastAfterZero) + ending
+  return (
+    tokenValueArr[0] +
+    '.' +
+    tokenValueArr[1].slice(0, 7).concat(...lastAfterZero) +
+    ending
+  )
 }
