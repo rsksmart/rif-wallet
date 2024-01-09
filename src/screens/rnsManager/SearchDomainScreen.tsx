@@ -248,40 +248,43 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
               }}
             />
           </View>
-          <Input
-            inputName={'years'}
-            isReadOnly
-            label={t('request_username_label')}
-            value={`${years} ${
-              years > 1
-                ? t('request_username_years')
-                : t('request_username_year')
-            } `}
-            subtitle={`${selectedDomainPrice} ${
-              rifToken.symbol
-            } ($ ${selectedDomainPriceInUsd}) ${t(
-              'transaction_summary_plus_fees_capitalcase',
-            )}`}
-            containerStyle={styles.yearsContainer}
-            rightIcon={
-              <View style={styles.yearsButtons}>
-                {years > 1 && (
+          {!isDomainOwned && (
+            <Input
+              inputName={'years'}
+              isReadOnly
+              label={t('request_username_label')}
+              value={`${years} ${
+                years > 1
+                  ? t('request_username_years')
+                  : t('request_username_year')
+              } `}
+              subtitle={`${selectedDomainPrice} ${
+                rifToken.symbol
+              } ($ ${selectedDomainPriceInUsd}) ${t(
+                'transaction_summary_plus_fees_capitalcase',
+              )}`}
+              containerStyle={styles.yearsContainer}
+              rightIcon={
+                <View style={styles.yearsButtons}>
+                  {years > 1 && (
+                    <AppTouchable
+                      width={40}
+                      accessibilityLabel="decrease"
+                      onPress={() => handleYearsChange(years - 1)}>
+                      <Icon name="minus" size={16} color={colors.white} />
+                    </AppTouchable>
+                  )}
                   <AppTouchable
                     width={40}
-                    accessibilityLabel="decrease"
-                    onPress={() => handleYearsChange(years - 1)}>
-                    <Icon name="minus" size={16} color={colors.white} />
+                    accessibilityLabel="increase"
+                    onPress={() => handleYearsChange(years + 1)}>
+                    <Icon name="plus" size={16} color={colors.white} />
                   </AppTouchable>
-                )}
-                <AppTouchable
-                  width={40}
-                  accessibilityLabel="increase"
-                  onPress={() => handleYearsChange(years + 1)}>
-                  <Icon name="plus" size={16} color={colors.white} />
-                </AppTouchable>
-              </View>
-            }
-          />
+                </View>
+              }
+            />
+          )}
+
           {error !== '' && (
             <Typography
               type="body1"
