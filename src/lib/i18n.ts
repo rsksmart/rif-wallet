@@ -234,6 +234,7 @@ const resources = {
       settings_screen_title: 'Settings',
       settings_screen_account: 'Account',
       settings_screen_accounts: 'Accounts',
+      settings_screen_switch_to: 'Switch to',
       settings_screen_wallet_backup: 'Wallet Backup',
       settings_screen_change_pin: 'Change PIN',
       settings_screen_deploy_wallet: 'Deploy Wallet',

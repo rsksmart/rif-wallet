@@ -296,7 +296,8 @@ export const unlockApp = createAsyncThunk<
     const jsonRpcProvider = new providers.StaticJsonRpcProvider(url)
 
     const wallet = await loadAppWallet(
-      keys.privateKey,
+      keys,
+      chainId,
       jsonRpcProvider,
       request => thunkAPI.dispatch(onRequest({ request })),
       getRifRelayConfig(chainId),

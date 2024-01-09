@@ -7,12 +7,17 @@ import {
   RelayPayment,
   RifRelayConfig,
 } from '@rsksmart/rif-relay-light-sdk'
-import { BigNumber, Wallet, providers } from 'ethers'
-import { OnRequest, SendTransactionRequest } from '@rsksmart/rif-wallet-core'
+import { Wallet, providers } from 'ethers'
 import { BlockchainAuthenticatorConfig } from '@json-rpc-tools/utils'
 import { defineReadOnly, resolveProperties } from 'ethers/lib/utils'
 
-import { ChainID, EOAWallet } from '../eoaWallet'
+import {
+  ChainID,
+  EOAWallet,
+  OnRequest,
+  SendTransactionRequest,
+  WalletState,
+} from '../eoaWallet'
 
 export const AddressZero = '0x0000000000000000000000000000000000000000'
 export const HashZero =
@@ -39,11 +44,12 @@ export class RelayWallet extends EOAWallet {
 
   protected constructor(
     privateKey: string,
+    chainId: ChainID,
     jsonRpcProvider: providers.JsonRpcProvider,
     sdk: RIFRelaySDK,
     onRequest: OnRequest,
   ) {
-    super(privateKey, jsonRpcProvider, onRequest)
+    super(privateKey, chainId, jsonRpcProvider, onRequest)
     this.rifRelaySdk = sdk
 
     defineReadOnly(this, 'provider', this.provider)
@@ -72,6 +78,7 @@ export class RelayWallet extends EOAWallet {
 
     return new RelayWallet(
       wallet.privateKey,
+      chainId,
       jsonRpcProvider,
       rifRelaySdk,
       onRequest,
@@ -99,8 +106,7 @@ export class RelayWallet extends EOAWallet {
     return new Promise((resolve, reject) => {
       const nextRequest = Object.freeze<SendTransactionRequest>({
         type: 'sendTransaction',
-        payload: [transactionRequest],
-        returnType: {},
+        payload: transactionRequest,
         confirm: async overriddenOptions => {
           // check if paying with tokens:
           if (overriddenOptions && overriddenOptions.tokenPayment) {
@@ -156,14 +162,16 @@ export class RelayWallet extends EOAWallet {
     )
   }
 
-  public static override async fromPrivateKey(
-    privateKey: string,
+  public static override async fromWalletState(
+    keys: WalletState,
+    chainId: ChainID,
     jsonRpcProvider: providers.StaticJsonRpcProvider,
     onRequest: OnRequest,
     config: RifRelayConfig,
   ) {
-    const wallet = EOAWallet.fromPrivateKey(
-      privateKey,
+    const wallet = EOAWallet.fromWalletState(
+      keys,
+      chainId,
       jsonRpcProvider,
       onRequest,
     )
@@ -172,6 +180,12 @@ export class RelayWallet extends EOAWallet {
     wallet._signTypedData = Wallet.prototype._signTypedData
 
     const sdk = await RIFRelaySDK.create(wallet, config)
-    return new RelayWallet(privateKey, jsonRpcProvider, sdk, onRequest)
+    return new RelayWallet(
+      wallet.privateKey,
+      chainId,
+      jsonRpcProvider,
+      sdk,
+      onRequest,
+    )
   }
 }
