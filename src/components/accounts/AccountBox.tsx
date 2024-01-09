@@ -30,7 +30,7 @@ import { CheckIcon } from '../icons/CheckIcon'
 
 interface AccountBoxProps {
   address: string
-  smartWalletAddress: string
+  smartWalletAddress: string | null
   chainId: ChainTypesByIdType
   walletIsDeployed: WalletIsDeployed
   publicKeys: PublicKeyItemType[]
@@ -54,10 +54,8 @@ export const AccountBox = ({
     useState<boolean>(false)
 
   const eoaAddressObject = getAddressDisplayText(address ?? '', chainId)
-  const smartWalletAddressObject = getAddressDisplayText(
-    smartWalletAddress ?? '',
-    chainId,
-  )
+  const smartWalletAddressObject =
+    smartWalletAddress && getAddressDisplayText(smartWalletAddress, chainId)
   const onEdit = () => setShowAccountInput(true)
 
   const onChangeAccountName = (text: string) => {
@@ -93,7 +91,7 @@ export const AccountBox = ({
             </Typography>
             <AppTouchable width={110} onPress={onEdit}>
               <Typography type={'h4'} style={styles.accountEditButton}>
-                {t('settings_screen_edit_name_label')}
+                {t('accounts_screen_edit_name_label')}
               </Typography>
             </AppTouchable>
           </View>
@@ -118,12 +116,12 @@ export const AccountBox = ({
         )}
       </View>
       <View style={styles.statusContainer}>
-        <Typography type={'h4'}>{t('settings_screen_status_label')}</Typography>
+        <Typography type={'h4'}>{t('accounts_screen_status_label')}</Typography>
         <View style={styles.status}>
           <Typography type={'h4'} style={styles.statusText}>
             {walletIsDeployed.isDeployed
-              ? t('settings_screen_deployed_label')
-              : t('settings_screen_not_deployed_label')}
+              ? t('accounts_screen_deployed_label')
+              : t('accounts_screen_not_deployed_label')}
           </Typography>
           {walletIsDeployed.isDeployed ? (
             <Icon
@@ -142,8 +140,12 @@ export const AccountBox = ({
       </View>
       <Input
         style={sharedStyles.marginTop20}
-        label={t('settings_screen_eoa_account_label')}
-        inputName="EOA Address"
+        label={
+          smartWalletAddressObject
+            ? t('accounts_screen_eoa_account_label')
+            : t('accounts_screen_address_label')
+        }
+        inputName={'EOA Address'}
         rightIcon={
           <Icon
             name={'copy'}
@@ -159,37 +161,39 @@ export const AccountBox = ({
         isReadOnly
         testID={'TestID.eoaAddress'}
       />
-      <Input
-        style={sharedStyles.marginTop20}
-        label={t('settings_screen_smart_wallet_address_label')}
-        inputName="Smart Wallet Address"
-        rightIcon={
-          <Icon
-            name={'copy'}
-            style={styles.copyIcon}
-            color={sharedColors.white}
-            size={defaultIconSize}
-            onPress={() =>
-              Clipboard.setString(
-                smartWalletAddressObject.checksumAddress || '',
-              )
-            }
-          />
-        }
-        placeholder={smartWalletAddressObject.displayAddress}
-        isReadOnly
-        testID={'TestID.smartWalletAddress'}
-      />
+      {smartWalletAddressObject && (
+        <Input
+          style={sharedStyles.marginTop20}
+          label={t('accounts_screen_smart_wallet_address_label')}
+          inputName="Smart Wallet Address"
+          rightIcon={
+            <Icon
+              name={'copy'}
+              style={styles.copyIcon}
+              color={sharedColors.white}
+              size={defaultIconSize}
+              onPress={() =>
+                Clipboard.setString(
+                  smartWalletAddressObject.checksumAddress || '',
+                )
+              }
+            />
+          }
+          placeholder={smartWalletAddressObject.displayAddress}
+          isReadOnly
+          testID={'TestID.smartWalletAddress'}
+        />
+      )}
 
       {publicKeys.map(publicKey => (
         <Input
           key={publicKey.publicKey}
           style={sharedStyles.marginTop20}
           label={`${publicKey.networkName} ${t(
-            'settings_screen_public_key_label',
+            'accounts_screen_public_key_label',
           )}`}
           inputName={`${publicKey.networkName} ${t(
-            'settings_screen_public_key_label',
+            'accounts_screen_public_key_label',
           )}`}
           rightIcon={
             <Icon

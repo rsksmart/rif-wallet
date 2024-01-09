@@ -2,6 +2,7 @@ import { useMemo, useEffect } from 'react'
 import { View } from 'react-native'
 
 import { shortAddress } from 'lib/utils'
+import { RelayWallet } from 'lib/relayWallet'
 
 import { AccountBox } from 'components/accounts/AccountBox'
 import { useAppSelector } from 'store/storeUtils'
@@ -44,7 +45,9 @@ export const AccountsScreen = ({
       <AccountBox
         walletIsDeployed={walletIsDeployed}
         address={wallet.address}
-        smartWalletAddress={wallet.smartWalletAddress}
+        smartWalletAddress={
+          wallet instanceof RelayWallet ? wallet.smartWalletAddress : null
+        }
         chainId={chainId}
         publicKeys={publicKeys}
       />
