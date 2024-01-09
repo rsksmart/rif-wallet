@@ -4,10 +4,10 @@ import { ColorValue, Platform } from 'react-native'
 import { initializeSslPinning } from 'react-native-ssl-public-key-pinning'
 import { RifWalletServicesFetcher } from '@rsksmart/rif-wallet-services'
 import { providers } from 'ethers'
+import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
 
-import { RelayWallet } from 'lib/relayWallet'
+import { ChainID, WalletState } from 'lib/eoaWallet'
 
-import { deleteCache, getRifRelayConfig } from 'core/operations'
 import { deleteDomains } from 'storage/DomainsStore'
 import { deleteContacts as deleteContactsFromRedux } from 'store/slices/contactsSlice'
 import { resetMainStorage } from 'storage/MainStorage'
@@ -41,7 +41,8 @@ import {
 } from 'store/slices/persistentDataSlice'
 import { Wallet } from 'shared/wallet'
 import { addressToUse } from 'shared/hooks'
-import { ChainID } from 'src/lib/eoaWallet'
+import { createAppWallet, loadAppWallet } from 'src/shared/utils'
+import { MMKVStorage } from 'storage/MMKVStorage'
 
 import {
   Bitcoin,
@@ -52,6 +53,32 @@ import {
 } from './types'
 import { UsdPricesState } from '../usdPricesSlice'
 import { BalanceState } from '../balancesSlice/types'
+
+export const deleteCache = () => {
+  const cache = new MMKVStorage('txs')
+  cache.deleteAll()
+}
+
+export const getRifRelayConfig = (chainId: 30 | 31): RifRelayConfig => {
+  return {
+    smartWalletFactoryAddress: getWalletSetting(
+      SETTINGS.SMART_WALLET_FACTORY_ADDRESS,
+      chainTypesById[chainId],
+    ),
+    relayVerifierAddress: getWalletSetting(
+      SETTINGS.RELAY_VERIFIER_ADDRESS,
+      chainTypesById[chainId],
+    ),
+    deployVerifierAddress: getWalletSetting(
+      SETTINGS.DEPLOY_VERIFIER_ADDRESS,
+      chainTypesById[chainId],
+    ),
+    relayServer: getWalletSetting(
+      SETTINGS.RIF_RELAY_SERVER,
+      chainTypesById[chainId],
+    ),
+  }
+}
 
 const sslPinning = async (chainId: ChainTypesByIdType) => {
   const rifWalletServiceDomain = getWalletSetting(
@@ -140,7 +167,7 @@ export const createWallet = createAsyncThunk<
     const url = getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId])
     const jsonRpcProvider = new providers.StaticJsonRpcProvider(url)
 
-    const wallet = await RelayWallet.create(
+    const wallet = await createAppWallet(
       mnemonic,
       chainId,
       jsonRpcProvider,
@@ -204,7 +231,7 @@ export const createWallet = createAsyncThunk<
 })
 
 export const unlockApp = createAsyncThunk<
-  void,
+  WalletState,
   UnlockAppAction,
   AsyncThunkWithTypes
 >('settings/unlockApp', async (payload, thunkAPI) => {
@@ -268,7 +295,7 @@ export const unlockApp = createAsyncThunk<
     const url = getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId])
     const jsonRpcProvider = new providers.StaticJsonRpcProvider(url)
 
-    const wallet = await RelayWallet.fromPrivateKey(
+    const wallet = await loadAppWallet(
       keys.privateKey,
       jsonRpcProvider,
       request => thunkAPI.dispatch(onRequest({ request })),
@@ -278,8 +305,6 @@ export const unlockApp = createAsyncThunk<
     if (!wallet) {
       return thunkAPI.rejectWithValue('No Existing Wallet')
     }
-
-    // const { kms, rifWallet, rifWalletIsDeployed } = existingWallet
 
     // set wallet and walletIsDeployed in WalletContext
     initializeWallet(wallet, {
@@ -327,39 +352,6 @@ export const resetApp = createAsyncThunk(
     }
   },
 )
-
-// Not currently used, we'll be needed when support
-// for multiple wallets
-// export const addNewWallet = createAsyncThunk(
-//   'settings/addNewWallet',
-//   async ({ networkId }: AddNewWalletAction, thunkAPI) => {
-//     try {
-//       const keys = await getKeys()
-//       const { chainId } = thunkAPI.getState().settings
-//       if (!keys) {
-//         return thunkAPI.rejectWithValue(
-//           'Can not add new wallet because no KMS created.',
-//         )
-//       }
-//       const { kms } = KeyManagementSystem.fromSerialized(keys)
-//       const { rifWallet, isDeloyed } = await addNextWallet(
-//         kms,
-//         createRIFWalletFactory(
-//           request => thunkAPI.dispatch(onRequest({ request })),
-//           chainId,
-//         ),
-//         networkId,
-//       )
-//       thunkAPI.dispatch(setNewWallet({ rifWallet, isDeployed: isDeloyed }))
-//       return {
-//         rifWallet,
-//         isDeloyed,
-//       }
-//     } catch (err) {
-//       return thunkAPI.rejectWithValue(err)
-//     }
-//   },
-// )
 
 const initialState: SettingsSlice = {
   isSetup: false,
@@ -411,11 +403,6 @@ const settingsSlice = createSlice({
     setPreviouslyUnlocked: (state, { payload }: PayloadAction<boolean>) => {
       state.previouslyUnlocked = payload
     },
-    // Not currently used, we'll be needed when support
-    // for multiple wallets
-    // switchSelectedWallet: (state, { payload }: PayloadAction<string>) => {
-    //   state.selectedWallet = payload
-    // },
     resetKeysAndPin: () => {
       deleteKeys()
       deleteDomains()
@@ -457,15 +444,6 @@ const settingsSlice = createSlice({
     builder.addCase(unlockApp.fulfilled, state => {
       state.loading = false
     })
-    // builder.addCase(addNewWallet.pending, state => {
-    //   state.loading = true
-    // })
-    // builder.addCase(addNewWallet.rejected, state => {
-    //   state.loading = false
-    // })
-    // builder.addCase(addNewWallet.fulfilled, state => {
-    //   state.loading = false
-    // })
   },
 })
 
