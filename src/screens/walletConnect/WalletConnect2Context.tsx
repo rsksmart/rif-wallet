@@ -123,11 +123,11 @@ export const WalletConnect2Provider = ({
 
   const onSessionProposal = async (
     proposal: Web3WalletTypes.SessionProposal,
-    _web3wallet: Web3Wallet,
+    usersWallet: Web3Wallet,
   ) => {
     const hasErrors = getProposalErrorComparedWithRskNamespace(proposal)
     if (hasErrors) {
-      await onSessionReject(_web3wallet, proposal, hasErrors)
+      await onSessionReject(usersWallet, proposal, hasErrors)
       setError({
         title: 'dapps_session_rejected',
         message: 'dapps_requirements_not_met',
@@ -137,18 +137,18 @@ export const WalletConnect2Provider = ({
       // So that when the user confirms/rejects the session (done in WalletConnectScreen)
       // then it'll use this session accordingly
       setPendingSession({
-        web3wallet: _web3wallet,
+        web3wallet: usersWallet,
         proposal,
       })
     }
   }
 
   const subscribeToEvents = useCallback(
-    (_web3wallet: Web3Wallet) => {
-      _web3wallet.on('session_proposal', async proposal =>
-        onSessionProposal(proposal, _web3wallet),
+    (usersWallet: Web3Wallet) => {
+      usersWallet.on('session_proposal', async proposal =>
+        onSessionProposal(proposal, usersWallet),
       )
-      _web3wallet.on('session_request', async event => {
+      usersWallet.on('session_request', async event => {
         if (!wallet) {
           return
         }
@@ -207,7 +207,7 @@ export const WalletConnect2Provider = ({
                 dispatch(addPendingTransaction(pendingTx))
               }
             }
-            _web3wallet.respondSessionRequest({
+            usersWallet.respondSessionRequest({
               ...rpcResponse,
               response: {
                 ...rpcResponse.response,
@@ -216,7 +216,7 @@ export const WalletConnect2Provider = ({
             })
           })
           .catch(_ => {
-            _web3wallet.respondSessionRequest({
+            usersWallet.respondSessionRequest({
               ...rpcResponse,
               response: {
                 ...rpcResponse.response,
@@ -225,7 +225,7 @@ export const WalletConnect2Provider = ({
             })
           })
       })
-      _web3wallet.on('session_delete', async event => {
+      usersWallet.on('session_delete', async event => {
         setSessions(prevSessions =>
           prevSessions.filter(prevSession => prevSession.topic !== event.topic),
         )
@@ -331,10 +331,10 @@ export const WalletConnect2Provider = ({
 
   const onContextFirstLoad = useCallback(async () => {
     console.log('onContextFirstLoad')
-    const _web3wallet = await createWeb3Wallet()
-    setWeb3Wallet(_web3wallet)
-    subscribeToEvents(_web3wallet)
-    setSessions(Object.values(_web3wallet.getActiveSessions()))
+    const newWeb3Wallet = await createWeb3Wallet()
+    setWeb3Wallet(newWeb3Wallet)
+    subscribeToEvents(newWeb3Wallet)
+    setSessions(Object.values(newWeb3Wallet.getActiveSessions()))
   }, [subscribeToEvents])
 
   /**
