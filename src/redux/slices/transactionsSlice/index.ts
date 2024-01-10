@@ -86,9 +86,7 @@ export const activityDeserializer: (
         ? TokenSymbol.RBTC
         : TokenSymbol.TRBTC
     const rbtcAddress = constants.AddressZero
-    const feeRbtc = BigNumber.from(tx.gasPrice).mul(
-      BigNumber.from(tx.receipt?.gasUsed || 1),
-    )
+    const feeRbtc = BigNumber.from(tx.receipt?.gasUsed || 0)
 
     // Token
     const tokenValue = etx?.value || balanceToDisplay(tx.value, 18)
@@ -98,7 +96,7 @@ export const activityDeserializer: (
       tokenContract =
         etx?.symbol === rbtcSymbol
           ? rbtcAddress
-          : getTokenAddress(tokenSymbol, chainTypesById[chainId])
+          : getTokenAddress(tokenSymbol as TokenSymbol, chainId)
     } catch {}
     const tokenQuote = prices[tokenContract.toLowerCase()]?.price || 0
     const tokenUsd = convertTokenToUSD(Number(tokenValue), tokenQuote)
@@ -111,7 +109,7 @@ export const activityDeserializer: (
       feeContract =
         etx?.feeSymbol === rbtcSymbol
           ? rbtcAddress
-          : getTokenAddress(feeSymbol, chainTypesById[chainId])
+          : getTokenAddress(feeSymbol as TokenSymbol, chainId)
     } catch {}
     const feeQuote = prices[feeContract.toLowerCase()]?.price || 0
     const feeUsd = convertTokenToUSD(Number(feeValue), feeQuote).toFixed(2)
