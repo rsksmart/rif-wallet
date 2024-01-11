@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ScrollView, StyleSheet, TextStyle } from 'react-native'
 import Clipboard from '@react-native-community/clipboard'
 import { decodeString } from '@rsksmart/rif-wallet-eip681'
@@ -18,6 +18,7 @@ import { castStyle } from 'shared/utils'
 import { ContactCard } from 'screens/contacts/components'
 import { ProposedContact } from 'screens/send/TransactionForm'
 import { checkIfContactExists } from 'screens/contacts/ContactFormScreen'
+import { WalletContext } from 'src/shared/wallet'
 
 import {
   AddressValidationMessage,
@@ -88,6 +89,7 @@ export const AddressInput = ({
   const [domainFound, setDomainFound] = useState<boolean>(false)
   // status
   const [status, setStatus] = useState<StatusObject>({ type: Status.READY })
+  const { wallet } = useContext(WalletContext)
 
   const labelColor = useMemo<TextStyle>(() => {
     return typeColorMap.get(status.type)
@@ -144,54 +146,56 @@ export const AddressInput = ({
           // send loading state to parent
           onSetLoadingRNS?.(true)
 
-          getRnsResolver(chainID)
-            .addr(userInput, isBTC ? CoinType.BTC : CoinType.RSK)
-            .then((resolvedAddress: string) => {
-              setDomainFound(true)
-              setStatus({
-                type: Status.SUCCESS,
-                value: t('contact_form_user_found'),
-              })
+          if (wallet) {
+            getRnsResolver(chainID, wallet)
+              .addr(userInput) //, isBTC ? CoinType.BTC : CoinType.RSK)
+              .then((resolvedAddress: string) => {
+                setDomainFound(true)
+                setStatus({
+                  type: Status.SUCCESS,
+                  value: t('contact_form_user_found'),
+                })
 
-              // send loading state to parent
-              onSetLoadingRNS?.(false)
+                // send loading state to parent
+                onSetLoadingRNS?.(false)
 
-              if (contactList) {
-                const contactExists = checkIfContactExists(
+                if (contactList) {
+                  const contactExists = checkIfContactExists(
+                    resolvedAddress,
+                    userInput,
+                    contactList,
+                  )
+
+                  !contactExists &&
+                    onSetProposedContact?.({
+                      address: resolvedAddress,
+                      displayAddress: userInput,
+                      isEditable: true,
+                    })
+                }
+
+                // call parent with the resolved address
+                onChangeAddress(
                   resolvedAddress,
                   userInput,
-                  contactList,
+                  !isBTC
+                    ? validateAddress(resolvedAddress, chainID) ===
+                        AddressValidationMessage.VALID
+                    : isBitcoinAddressValid(resolvedAddress),
                 )
-
-                !contactExists &&
-                  onSetProposedContact?.({
-                    address: resolvedAddress,
-                    displayAddress: userInput,
-                    isEditable: true,
-                  })
-              }
-
-              // call parent with the resolved address
-              onChangeAddress(
-                resolvedAddress,
-                userInput,
-                !isBTC
-                  ? validateAddress(resolvedAddress, chainID) ===
-                      AddressValidationMessage.VALID
-                  : isBitcoinAddressValid(resolvedAddress),
-              )
-            })
-            .catch(_e => {
-              setStatus({
-                type: Status.ERROR,
-                value: `${t(
-                  'contact_form_address_not_found',
-                )} ${userInput.toLowerCase()}`,
               })
+              .catch(_e => {
+                setStatus({
+                  type: Status.ERROR,
+                  value: `${t(
+                    'contact_form_address_not_found',
+                  )} ${userInput.toLowerCase()}`,
+                })
 
-              // send loading state to parent
-              onSetLoadingRNS?.(false)
-            })
+                // send loading state to parent
+                onSetLoadingRNS?.(false)
+              })
+          }
           break
         case AddressValidationMessage.INVALID_CHECKSUM:
           setStatus({
@@ -215,7 +219,14 @@ export const AddressInput = ({
           break
       }
     },
-    [t, onChangeAddress, onSetProposedContact, contactList, onSetLoadingRNS],
+    [
+      t,
+      onSetLoadingRNS,
+      wallet,
+      onChangeAddress,
+      contactList,
+      onSetProposedContact,
+    ],
   )
 
   const handleChangeText = useCallback(
