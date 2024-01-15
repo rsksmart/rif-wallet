@@ -65,11 +65,6 @@ const typeColorMap = new Map([
 
 const defaultStatus = { type: Status.READY, value: '' }
 
-enum CoinType {
-  RSK = 137,
-  BTC = 0,
-}
-
 export const AddressInput = ({
   isBitcoin,
   label,
@@ -148,7 +143,7 @@ export const AddressInput = ({
 
           if (wallet) {
             getRnsResolver(chainID, wallet)
-              .addr(userInput) //, isBTC ? CoinType.BTC : CoinType.RSK)
+              .addr(userInput)
               .then((resolvedAddress: string) => {
                 setDomainFound(true)
                 setStatus({
