@@ -34,6 +34,12 @@ import {
 } from 'shared/constants/chainConstants'
 import { TokenSymbol } from 'screens/home/TokenImage'
 
+const rbtcMap = new Map([
+  [TokenSymbol.TRBTC, true],
+  [TokenSymbol.RBTC, true],
+  [undefined, false],
+])
+
 export const activityDeserializer: (
   activityTransaction: ActivityMixedType,
   prices: UsdPricesState,
@@ -104,6 +110,9 @@ export const activityDeserializer: (
     // Fee
     const feeValue = etx?.feeValue || balanceToDisplay(feeRbtc, 18)
     const feeSymbol = etx?.feeSymbol || rbtcSymbol
+    const feeTokenValue = rbtcMap.get(feeSymbol as TokenSymbol)
+      ? feeRbtc.toString()
+      : feeValue
     let feeContract = ''
     try {
       feeContract =
@@ -125,7 +134,7 @@ export const activityDeserializer: (
       symbol: tokenSymbol,
       price: Number(tokenUsd),
       fee: {
-        tokenValue: feeValue,
+        tokenValue: feeTokenValue,
         symbol: feeSymbol,
         usdValue: feeUsd,
       },
