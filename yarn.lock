@@ -2080,10 +2080,10 @@
     "@rsksmart/rif-wallet-token" "*"
     axios "^0.27.2"
 
-"@rsksmart/rif-wallet-abi-enhancer@^1.0.10":
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-abi-enhancer/-/rif-wallet-abi-enhancer-1.0.10.tgz#7f3e27ad6f8be0daba4d64a99c27a1d0db57b1dc"
-  integrity sha512-5bPK5pn/HLF3YP+zv/eDsXND7zv0wq2EOTj8tCl9HXxcMTVOeumW+6vtHwPs8PMB5zArlCGk5I/Iu0z5hChbwg==
+"@rsksmart/rif-wallet-abi-enhancer@^1.0.9":
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-abi-enhancer/-/rif-wallet-abi-enhancer-1.0.11.tgz#19a5209c42d3f3359919f346e9c9433dc77cecbf"
+  integrity sha512-kbGT200zt+tFAi4HUCwv57Ctbd19+rp8boNE38XTLWwQnp/QWE+EgBKT+Pclzh0cAaSm2ggIdUGvjF/UZ5ZoJw==
   dependencies:
     "@ethersproject/abi" "^5.7.0"
     "@ethersproject/abstract-provider" "^5.7.0"
@@ -2095,7 +2095,7 @@
     "@rsksmart/rif-relay-light-sdk" "*"
     "@rsksmart/rif-wallet-token" "*"
 
-"@rsksmart/rif-wallet-adapters@^1.0.4":
+"@rsksmart/rif-wallet-adapters@^1.0.1":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-adapters/-/rif-wallet-adapters-1.0.4.tgz#2a5c3da8813db9374c22745b05c2359c65ff3a58"
   integrity sha512-ej/WJbvLZ0oHWXclAfO2Vt3PR26dpSFnEkOW6pb5D3LSH4KN6JgBqNG/YUuGKBueYdDHWzg+dlLqQHUu0HzWkA==
@@ -2120,7 +2120,7 @@
     bitcoin-address-validation "^2.2.1"
     bitcoinjs-lib "^6.0.2"
 
-"@rsksmart/rif-wallet-bitcoin@^1.2.3":
+"@rsksmart/rif-wallet-bitcoin@^1.2.2":
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-bitcoin/-/rif-wallet-bitcoin-1.2.3.tgz#428f3f30291edd0a79b477dc0dbddacb9bc6e6e2"
   integrity sha512-FAnLn4T4lRHXQck7nGESzXaaTRnZVeU2mCCmOV8b+WyeCXBAo+DD7jePAFlDTOaMrbCwHesKDfWS/Kg02daakQ==
@@ -2143,10 +2143,17 @@
     "@ethersproject/bytes" "^5.7.0"
     "@rsksmart/rif-relay-light-sdk" "*"
 
+<<<<<<< HEAD
 "@rsksmart/rif-wallet-core@^1.0.5":
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-core/-/rif-wallet-core-1.0.5.tgz#aa5adf52e5bd34e3ea0cd7433f057c1191bb1842"
   integrity sha512-84fY8w/lgVi2GGMb5+GDAHuE4WCoaUi6N8kn8ROpClkOjFdA/RWMNJKrVdx0auGjfPUOI58Vp0bAl/g75xCeig==
+=======
+"@rsksmart/rif-wallet-core@^1.0.2":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-core/-/rif-wallet-core-1.0.6.tgz#f29edcd57c227a25f92c233f3e4f76fee754bcc9"
+  integrity sha512-OR2fCTBVzcTsSJOo1WLnK4Xp6cab1XaJt2s9u5TPFSbnjsbTVSyqHcKP1PJawNP8YWF/xi9rBcurqEQfki0N2Q==
+>>>>>>> b4e01bd5 (fix: request.payload incorrectly assumed as an array)
   dependencies:
     "@ethersproject/abstract-provider" "^5.7.0"
     "@ethersproject/abstract-signer" "^5.7.0"
