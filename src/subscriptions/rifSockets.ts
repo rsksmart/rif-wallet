@@ -13,10 +13,7 @@ import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
 import { UsdPricesState } from 'store/slices/usdPricesSlice'
 import { getWalletSetting } from 'core/config'
 import { SETTINGS } from 'core/types'
-import {
-  chainTypesById,
-  ChainTypesByIdType,
-} from 'shared/constants/chainConstants'
+import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 import { MMKVStorage } from 'storage/MMKVStorage'
 
 import { onSocketChangeEmitted } from './onSocketChangeEmitted'
@@ -63,7 +60,7 @@ export const rifSockets = ({
     cache,
   })
   const rifWalletServicesSocket = new RifWalletServicesSocket(
-    getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL, chainTypesById[chainId]),
+    getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL, chainId),
   )
 
   const connectSocket = () => {

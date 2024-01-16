@@ -5,11 +5,12 @@ import ReactNativeConfig from 'react-native-config'
 import { constants } from 'ethers'
 
 import {
-  ChainTypeEnum,
   ChainTypesByIdType,
+  chainTypesById,
 } from 'shared/constants/chainConstants'
 import { SETTINGS } from 'core/types'
 import { TokenSymbol } from 'screens/home/TokenImage'
+import { ChainID } from 'src/lib/eoaWallet'
 
 /**
  * This function will get the environment settings from the config.json
@@ -19,9 +20,9 @@ import { TokenSymbol } from 'screens/home/TokenImage'
  */
 export const getWalletSetting = (
   setting: SETTINGS,
-  chainType: ChainTypeEnum,
+  chaindId: ChainID,
 ): string => {
-  const key = `${setting}_${chainType}`
+  const key = `${setting}_${chainTypesById[chaindId]}`
   if (key in config) {
     return config[key as keyof typeof config]
   }

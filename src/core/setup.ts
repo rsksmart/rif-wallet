@@ -18,10 +18,7 @@ import { getWalletSetting } from './config'
 
 export const createPublicAxios = (chainId: ChainTypesByIdType) =>
   axios.create({
-    baseURL: getWalletSetting(
-      SETTINGS.RIF_WALLET_SERVICE_URL,
-      chainTypesById[chainId],
-    ),
+    baseURL: getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL, chainId),
   })
 
 export const abiEnhancer = new AbiEnhancer()
