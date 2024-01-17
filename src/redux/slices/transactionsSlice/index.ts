@@ -33,6 +33,7 @@ import {
   ChainTypesByIdType,
 } from 'shared/constants/chainConstants'
 import { TokenSymbol } from 'screens/home/TokenImage'
+import { formatLongAssNumbers } from 'shared/utils'
 
 const rbtcMap = new Map([
   [TokenSymbol.TRBTC, true],
@@ -134,7 +135,7 @@ export const activityDeserializer: (
       symbol: tokenSymbol,
       price: Number(tokenUsd),
       fee: {
-        tokenValue: feeTokenValue,
+        tokenValue: formatLongAssNumbers(feeTokenValue.toString()),
         symbol: feeSymbol,
         usdValue: feeUsd,
       },
