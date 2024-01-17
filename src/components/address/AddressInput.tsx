@@ -144,7 +144,8 @@ export const AddressInput = ({
           if (wallet) {
             getRnsResolver(chainID, wallet)
               .addr(userInput)
-              .then((resolvedAddress: string) => {
+              .then((addr: string) => {
+                const resolvedAddress = toChecksumAddress(addr, chainID)
                 setDomainFound(true)
                 setStatus({
                   type: Status.SUCCESS,

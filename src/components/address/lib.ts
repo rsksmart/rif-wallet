@@ -40,13 +40,10 @@ export const validateAddress = (
     return AddressValidationMessage.DOMAIN
   }
 
-  if (!address) {
+  if (!address || !isAddress(address)) {
     return AddressValidationMessage.INVALID_ADDRESS
   }
 
-  if (!isAddress(address)) {
-    return AddressValidationMessage.INVALID_ADDRESS
-  }
   if (
     !isValidChecksumAddress(address, chainId) &&
     address !== address.toLowerCase()
