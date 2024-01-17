@@ -15,6 +15,8 @@ import { UsdPricesState, setUsdPrices } from 'store/slices/usdPricesSlice'
 import { AppDispatch } from 'store/index'
 import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 import { getCurrentChainId } from 'storage/ChainStorage'
+import { enhanceTransactionInput } from 'src/screens/activity/ActivityScreen'
+import { MMKVStorage } from 'storage/MMKVStorage'
 
 import { Action } from './types'
 
@@ -31,6 +33,7 @@ interface OnSocketChangeEmittedArgs {
   usdPrices: UsdPricesState
   chainId: ChainTypesByIdType
   abiEnhancer: IAbiEnhancer
+  cache: MMKVStorage
 }
 
 const onNewTransactionEventEmitted = async ({
@@ -69,8 +72,14 @@ const onNewTransactionEventEmitted = async ({
 }
 
 export const onSocketChangeEmitted =
-  ({ dispatch, abiEnhancer, usdPrices, chainId }: OnSocketChangeEmittedArgs) =>
-  (action: Action) => {
+  ({
+    dispatch,
+    abiEnhancer,
+    usdPrices,
+    chainId,
+    cache,
+  }: OnSocketChangeEmittedArgs) =>
+  async (action: Action) => {
     // Temporal patch to avoid dispatching events if current chainId does not match
     // @TODO find root cause of why the rifSockets is emitting an outdated event
     // Suspect is the .disconnect is not playing its part
@@ -98,20 +107,57 @@ export const onSocketChangeEmitted =
           dispatch(addOrUpdateBalances([payload]))
           break
         case 'init':
+          const cacheBlockNumberText = `blockNumber_${chainId}`
+          const cacheTxsText = `cachedTxs_${chainId}`
+          const { tokens, prices, transactions } = payload
+          const cachedTxs = cache.get(cacheTxsText) || []
+          const blockNumber = cache.get(cacheBlockNumberText) || '0'
+          let lastBlockNumber = blockNumber
+          const enhancedTransactions = await Promise.all(
+            transactions.data.map(async tx => {
+              if (parseInt(blockNumber, 10) < tx.blockNumber) {
+                lastBlockNumber = tx.blockNumber
+              }
+              if (cache.has(tx.hash)) {
+                return {
+                  originTransaction: tx,
+                  enhancedTransaction: cache.get(tx.hash),
+                }
+              }
+              const enhancedTransaction = await enhanceTransactionInput(
+                tx,
+                chainId,
+              )
+              if (enhancedTransaction) {
+                cache.set(tx.hash, enhancedTransaction)
+                return {
+                  originTransaction: tx,
+                  enhancedTransaction: enhancedTransaction,
+                }
+              }
+              return {
+                originTransaction: tx,
+                enhancedTransaction: undefined,
+              }
+            }),
+          )
           const deserializedRifTransactions = deserializeTransactions(
-            payload.transactions,
+            cachedTxs.concat(enhancedTransactions),
           )
           const combinedTransactions = combineTransactions(
             deserializedRifTransactions,
             [],
           )
+          cache.set(cacheBlockNumberText, lastBlockNumber.toString())
+          cache.set(cacheTxsText, deserializedRifTransactions)
 
           const deserializedTransactions = combinedTransactions.map(tx =>
-            activityDeserializer(tx, usdPrices, chainId),
+            activityDeserializer(tx, prices, chainId),
           )
           dispatch(fetchBitcoinTransactions({}))
           dispatch(addNewTransactions(deserializedTransactions))
-          dispatch(addOrUpdateBalances(payload.balances))
+          dispatch(addOrUpdateBalances(tokens))
+          dispatch(setUsdPrices(prices))
           break
         default:
           throw new Error(`${type} not implemented`)

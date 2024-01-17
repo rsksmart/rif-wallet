@@ -47,8 +47,9 @@ export interface NewTokenTransferAction {
 export interface InitAction {
   type: 'init'
   payload: {
-    transactions: IActivityTransaction[]
-    balances: ITokenWithBalance[]
+    transactions: TransactionsServerResponse
+    tokens: ITokenWithBalance[]
+    prices: Record<string, IPrice>
   }
 }
 
@@ -78,6 +79,7 @@ export type ActivityScreenProps = {
 export interface TransactionsServerResponse {
   next: string | null | undefined
   prev: string | null | undefined
+  data: IApiTransaction[]
 }
 
 export interface TransactionsServerResponseWithActivityTransactions
