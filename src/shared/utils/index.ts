@@ -24,6 +24,28 @@ import { RelayWallet } from 'lib/relayWallet'
 import { Wallet } from '../wallet'
 import { ErrorWithMessage } from '../types'
 
+export const formatLongAssNumbers = (longAssNumber: string | number) => {
+  if (isNaN(Number(longAssNumber))) {
+    return longAssNumber
+  }
+
+  if (!(typeof longAssNumber === 'string')) {
+    longAssNumber = longAssNumber.toString()
+  }
+
+  if (longAssNumber.length <= 3) {
+    return longAssNumber
+  }
+
+  const longAssNumberArr = longAssNumber.split('')
+
+  for (let i = longAssNumber.length - 3; i > 0; i -= 3) {
+    longAssNumberArr.splice(i, 0, ',')
+  }
+
+  return longAssNumberArr.join('')
+}
+
 export const errorHandler = (error: unknown) => {
   if (typeof error === 'object' && Object.hasOwn(error as object, 'message')) {
     const err = error as ErrorWithMessage
