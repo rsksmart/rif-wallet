@@ -1,4 +1,4 @@
-package com.swallet.newarchitecture;
+package org.iovlabs.rif_wallet.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.swallet.BuildConfig;
-import com.swallet.newarchitecture.components.MainComponentsRegistry;
-import com.swallet.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import org.iovlabs.rif_wallet.BuildConfig;
+import org.iovlabs.rif_wallet.newarchitecture.components.MainComponentsRegistry;
+import org.iovlabs.rif_wallet.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 
