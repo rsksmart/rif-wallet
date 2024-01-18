@@ -194,11 +194,11 @@ export const ContactFormScreen = ({
   )
 
   useEffect(() => {
+    const editMode = !!initialValue.address && !proposed
     navigation.setOptions({
-      headerTitle:
-        initialValue.address && !proposed
-          ? t('contact_form_title_edit')
-          : t('contact_form_title_create'),
+      headerTitle: editMode
+        ? t('contact_form_title_edit')
+        : t('contact_form_title_create'),
       headerTintColor: sharedColors.white,
       headerStyle: {
         backgroundColor: sharedColors.black,
@@ -209,11 +209,13 @@ export const ContactFormScreen = ({
       headerLeftContainerStyle: {
         paddingTop: 0,
       },
+      headerLeftLabelVisible: editMode,
       headerLeft: proposed
         ? () =>
-            sharedHeaderLeftOptions(() =>
-              navigation.navigate(rootTabsRouteNames.Home),
-            )
+            sharedHeaderLeftOptions(() => {
+              navigation.replace(contactsStackRouteNames.ContactsList)
+              navigation.navigate(rootTabsRouteNames.Home)
+            })
         : undefined,
     })
   }, [navigation, initialValue, t, proposed])
