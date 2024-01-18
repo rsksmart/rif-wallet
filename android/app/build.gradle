@@ -213,11 +213,21 @@ android {
     signingConfigs {
         release {
             Properties properties = new Properties()
-            properties.load(project.rootProject.file('local.properties').newDataInputStream())
-            storeFile file(properties.getProperty('storeFile'))
-            keyAlias properties.getProperty('keyAlias')
-            storePassword properties.getProperty('storePassword')
-            keyPassword properties.getProperty('keyPassword')
+            def localPropertiesFile = project.rootProject.file('local.properties')
+
+            if (localPropertiesFile.exists()) {
+                properties.load(localPropertiesFile.newDataInputStream())
+                storeFile file(properties.getProperty('storeFile'))
+                keyAlias properties.getProperty('keyAlias')
+                storePassword properties.getProperty('storePassword')
+                keyPassword properties.getProperty('keyPassword')
+            } else {
+                // file did not exist:
+                storeFile file('debug.keystore')
+                storePassword 'android'
+                keyAlias 'androiddebugkey'
+                keyPassword 'android'
+            }
         }
         debug {
             storeFile file('debug.keystore')
