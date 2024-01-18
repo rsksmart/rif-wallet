@@ -138,14 +138,17 @@ export const SendScreen = ({
 
   // if there's an ongoing transaction
   useEffect(() => {
-    if (pendingTransactions.length > 0) {
+    if (
+      pendingTransactions.length > 0 &&
+      currentTransaction?.status === undefined
+    ) {
       Alert.alert(
         t('send_alert_ongoing_transaction_title'),
         t('send_alert_ongoing_transaction_body'),
         [{ onPress: navigation.goBack, text: t('ok') }],
       )
     }
-  }, [navigation.goBack, pendingTransactions, t])
+  }, [navigation.goBack, pendingTransactions, t, currentTransaction])
 
   // Hide header when transaction is loading
   useEffect(() => {
