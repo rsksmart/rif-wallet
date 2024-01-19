@@ -21,12 +21,32 @@ import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
 import { ChainID, EOAWallet, OnRequest, WalletState } from 'lib/eoaWallet'
 import { RelayWallet } from 'lib/relayWallet'
 
+import { TokenSymbol } from 'screens/home/TokenImage'
+
 import { Wallet } from '../wallet'
 import { ErrorWithMessage } from '../types'
 
+export const rbtcMap = new Map([
+  [TokenSymbol.TRBTC, true],
+  [TokenSymbol.RBTC, true],
+  [undefined, false],
+])
+
+export const formatSmallNumbers = (smallNumber: string | number) => {
+  if (isNaN(Number(smallNumber))) {
+    return smallNumber
+  }
+
+  if (Number(smallNumber) >= 0.0000001) {
+    return smallNumber.toString()
+  }
+
+  return '< 0.0000001'
+}
+
 export const formatLongAssNumbers = (longAssNumber: string | number) => {
   if (isNaN(Number(longAssNumber))) {
-    return longAssNumber
+    return longAssNumber.toString()
   }
 
   if (!(typeof longAssNumber === 'string')) {
