@@ -78,4 +78,5 @@ export interface TransactionExtras {
 
 export type ApiTransactionWithExtras = IApiTransaction & TransactionExtras
 export type ModifyTransaction = Partial<IApiTransaction> &
-  Pick<IApiTransaction, 'hash'>
+  Pick<IApiTransaction, 'hash'> &
+  Pick<ActivityRowPresentationObject, 'status'>

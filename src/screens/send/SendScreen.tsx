@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import { Alert, Keyboard, KeyboardAvoidingView, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { useIsFocused } from '@react-navigation/native'
@@ -28,7 +28,7 @@ import { FullScreenSpinner } from 'components/fullScreenSpinner'
 import { SuccessIcon } from 'components/icons/SuccessIcon'
 import { FeedbackModal } from 'components/feedbackModal'
 import { getContactsAsArrayAndSelected } from 'store/slices/contactsSlice'
-import { selectTransactionsLoading } from 'store/slices/transactionsSlice'
+import { selectRecentRskTransactions } from 'store/slices/transactionsSlice'
 import { useWalletState } from 'shared/wallet'
 
 import { TransactionForm } from './TransactionForm'
@@ -46,11 +46,10 @@ export const SendScreen = ({
   const { loading, isDeployed } = walletIsDeployed
   const chainId = useAppSelector(selectChainId)
   const { contacts } = useAppSelector(getContactsAsArrayAndSelected)
-  const transactionLoading = useAppSelector(selectTransactionsLoading)
-  const [justSent, setJustSent] = useState(false)
 
   const totalUsdBalance = useAppSelector(selectTotalUsdValue)
   const prices = useAppSelector(selectUsdPrices)
+  const pendingTransactions = useAppSelector(selectRecentRskTransactions)
   const { backScreen, contact } = route.params
 
   const isContactBitcoin = !!contact && isBitcoinAddressValid(contact.address)
@@ -96,7 +95,6 @@ export const SendScreen = ({
         wallet,
         chainId,
       })
-      setJustSent(true)
     },
     [chainId, executePayment, wallet],
   )
@@ -140,14 +138,17 @@ export const SendScreen = ({
 
   // if there's an ongoing transaction
   useEffect(() => {
-    if (transactionLoading && isFocused && !justSent) {
+    if (
+      pendingTransactions.length > 0 &&
+      currentTransaction?.status === undefined
+    ) {
       Alert.alert(
         t('send_alert_ongoing_transaction_title'),
         t('send_alert_ongoing_transaction_body'),
         [{ onPress: navigation.goBack, text: t('ok') }],
       )
     }
-  }, [transactionLoading, navigation, t, isFocused, justSent])
+  }, [navigation.goBack, pendingTransactions, t, currentTransaction])
 
   // Hide header when transaction is loading
   useEffect(() => {
