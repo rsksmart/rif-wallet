@@ -8,12 +8,6 @@ import { testnetCase } from './testCase'
 
 const testId = 'Input.Address'
 
-jest.mock('@rsksmart/rns-resolver.js', () => ({
-  forRskTestnet: () => ({
-    addr: jest.fn(() => Promise.resolve('0x000_MOCK_DOMAIN_ADDRESS')),
-  }),
-}))
-
 const WrappedAddressInput = ({
   handleChange,
 }: {

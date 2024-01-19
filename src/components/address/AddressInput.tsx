@@ -30,7 +30,7 @@ import { Avatar } from '../avatar'
 import { AppButton } from '../button'
 
 export interface AddressInputProps extends Omit<InputProps, 'value'> {
-  isBitcoin: boolean
+  isBitcoin?: boolean
   value: ContactWithAddressRequired
   onChangeAddress: (
     newValue: string,
@@ -66,7 +66,7 @@ const typeColorMap = new Map([
 const defaultStatus = { type: Status.READY, value: '' }
 
 export const AddressInput = ({
-  isBitcoin,
+  isBitcoin = false,
   label,
   placeholder,
   value,
