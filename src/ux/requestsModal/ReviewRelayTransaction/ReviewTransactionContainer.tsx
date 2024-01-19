@@ -17,7 +17,13 @@ import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 import { TransactionSummaryComponent } from 'screens/transactionSummary/TransactionSummaryComponent'
 import { sharedColors } from 'shared/constants'
 import { chainTypesById } from 'shared/constants/chainConstants'
-import { castStyle, errorHandler } from 'shared/utils'
+import {
+  castStyle,
+  errorHandler,
+  formatLongAssNumbers,
+  formatSmallNumbers,
+  rbtcMap,
+} from 'shared/utils'
 import { selectChainId } from 'store/slices/settingsSlice'
 import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
@@ -178,7 +184,10 @@ export const ReviewTransactionContainer = ({
 
   const data: TransactionSummaryScreenProps = useMemo(() => {
     const feeValue = txCost ? balanceToDisplay(txCost, 18) : '0'
-
+    const rbtcFeeValue =
+      txCost && rbtcMap.get(feeSymbol)
+        ? formatLongAssNumbers(txCost.toString())
+        : undefined
     let insufficientFunds = false
 
     if (
@@ -201,6 +210,11 @@ export const ReviewTransactionContainer = ({
     const feeUsd = convertTokenToUSD(Number(feeValue), feeQuote)
     const isAmountSmall = !Number(tokenUsd) && !!Number(value)
 
+    const totalToken =
+      symbol === feeSymbol ? Number(value) + Number(feeValue) : Number(value)
+
+    const totalUsd = (Number(tokenUsd) + Number(feeUsd)).toFixed(2)
+
     return {
       transaction: {
         tokenValue: {
@@ -214,10 +228,12 @@ export const ReviewTransactionContainer = ({
           balance: isAmountSmall ? '0.01' : tokenUsd,
         },
         fee: {
-          tokenValue: feeValue,
-          usdValue: feeUsd,
+          tokenValue: rbtcFeeValue ?? feeValue,
+          usdValue: formatSmallNumbers(feeUsd),
           symbol: feeSymbol,
         },
+        totalToken,
+        totalUsd,
         time: 'approx 1 min',
         to,
       },

@@ -25,6 +25,8 @@ export interface TransactionSummaryScreenProps {
     usdValue: CurrencyValue
     fee: TokenFeeValueObject
     time: string
+    totalToken: number
+    totalUsd: number
     hashId?: string
     status?: TransactionStatus
     amIReceiver?: boolean

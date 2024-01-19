@@ -54,21 +54,28 @@ export const TransactionSummaryComponent = ({
   const chainId = useAppSelector(selectChainId)
   const { bottom } = useSafeAreaInsets()
   const { t } = useTranslation()
-  const { status, tokenValue, fee, usdValue, time, hashId, to, from } =
-    transaction
+  const {
+    status,
+    tokenValue,
+    fee,
+    usdValue,
+    time,
+    hashId,
+    to,
+    from,
+    totalToken,
+    totalUsd,
+  } = transaction
 
   const iconObject = transactionStatusToIconPropsMap.get(status)
   const transactionStatusText = transactionStatusDisplayText.get(status)
 
-  const amIReceiver =
-    transaction.amIReceiver ?? isMyAddress(address, transaction.to)
-  const contactAddress = amIReceiver ? transaction.from || '' : transaction.to
+  const amIReceiver = transaction.amIReceiver ?? isMyAddress(address, to)
+  const contactAddress = amIReceiver ? from || '' : to
   const contact = useAppSelector(
     getContactByAddress(contactAddress.toLowerCase()),
   )
   const contactToUse = contact || { address: contactAddress }
-
-  const isFeeSmall = Number(fee.usdValue) < 0.01
 
   const title = useMemo(() => {
     if (amIReceiver) {
@@ -86,21 +93,6 @@ export const TransactionSummaryComponent = ({
     }
     return t('transaction_summary_send_title')
   }, [amIReceiver, t, status])
-
-  const totalToken = useMemo(() => {
-    if (tokenValue.symbol === fee.symbol) {
-      return Number(tokenValue.balance) + Number(fee.tokenValue)
-    }
-    return Number(tokenValue.balance)
-  }, [tokenValue, fee])
-
-  const totalUsd = useMemo(
-    () =>
-      amIReceiver
-        ? usdValue.balance
-        : (Number(usdValue.balance) + Number(fee.usdValue)).toFixed(2),
-    [amIReceiver, usdValue.balance, fee.usdValue],
-  )
 
   const openTransactionHash = () => {
     let explorerUrl = ''

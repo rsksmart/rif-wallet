@@ -33,13 +33,7 @@ import {
   ChainTypesByIdType,
 } from 'shared/constants/chainConstants'
 import { TokenSymbol } from 'screens/home/TokenImage'
-import { formatLongAssNumbers } from 'shared/utils'
-
-const rbtcMap = new Map([
-  [TokenSymbol.TRBTC, true],
-  [TokenSymbol.RBTC, true],
-  [undefined, false],
-])
+import { formatLongAssNumbers, rbtcMap } from 'shared/utils'
 
 export const activityDeserializer: (
   activityTransaction: ActivityMixedType,
