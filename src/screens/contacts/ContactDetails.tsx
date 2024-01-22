@@ -8,7 +8,7 @@ import {
   FlatList,
   ScrollView,
 } from 'react-native'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useIsFocused } from '@react-navigation/native'
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
@@ -42,6 +42,7 @@ import { BasicRow } from 'components/BasicRow'
 import { addContact, deleteContactByAddress } from 'store/slices/contactsSlice'
 import { selectTransactions } from 'store/slices/transactionsSlice'
 import { getRnsResolver } from 'src/core/setup'
+import { WalletContext } from 'src/shared/wallet'
 
 const copyButtonConfig = { name: 'copy', size: 18, color: sharedColors.white }
 
@@ -57,6 +58,7 @@ export const ContactDetails = ({
   const [isDeleteContactModalVisible, setIsDeleteContactModalVisible] =
     useState(false)
   const isFocused = useIsFocused()
+  const { wallet } = useContext(WalletContext)
 
   const transactionFiltered = transactions.filter(
     tx => tx.to === contact.address,
@@ -146,8 +148,12 @@ export const ContactDetails = ({
   }, [navigation, onDeleteContact])
 
   useEffect(() => {
-    if (contact.displayAddress && contact.displayAddress !== contact.address) {
-      getRnsResolver(chainId)
+    if (
+      wallet &&
+      contact.displayAddress &&
+      contact.displayAddress !== contact.address
+    ) {
+      getRnsResolver(chainId, wallet)
         .addr(contact.displayAddress)
         .then(resolvedAddress => {
           const newAddress = resolvedAddress.toLowerCase()
@@ -164,7 +170,7 @@ export const ContactDetails = ({
         })
         .catch(_ => {})
     }
-  }, [chainId, contact, dispatch, setValue])
+  }, [wallet, chainId, contact, dispatch, setValue])
 
   return (
     <View style={styles.screen}>

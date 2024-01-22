@@ -42,7 +42,6 @@
     "@rsksmart/rif-wallet-services": "^1.2.2",
     "@rsksmart/rif-wallet-token": "^1.0.2",
     "@rsksmart/rlogin-dpath": "^1.0.1",
-    "@rsksmart/rns-resolver.js": "^1.0.1",
     "@rsksmart/rns-sdk": "^1.0.0-beta.5",
     "@rsksmart/rsk-contract-metadata": "^1.0.19",
     "@rsksmart/rsk-testnet-contract-metadata": "^1.0.16",
