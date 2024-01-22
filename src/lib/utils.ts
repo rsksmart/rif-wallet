@@ -1,8 +1,8 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider'
-import { AbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
 import { BigNumber, BigNumberish, FixedNumber } from 'ethers'
 import moment from 'moment'
 
+import { abiEnhancer } from 'core/setup'
 import { ApiTransactionWithExtras } from 'src/redux/slices/transactionsSlice'
 
 export function shortAddress(address: string, amount = 4): string {
@@ -190,7 +190,6 @@ export const createPendingTxFromTxResponse = async (
   { chainId, from, to }: { chainId: number; from: string; to: string },
 ) => {
   try {
-    const abiEnhancer = new AbiEnhancer()
     const enhancedTx = await abiEnhancer.enhance(chainId, {
       data: txResponse.data,
     })

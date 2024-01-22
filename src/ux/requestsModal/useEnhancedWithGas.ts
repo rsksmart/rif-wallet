@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react'
 import { TransactionRequest } from '@ethersproject/providers'
 import { BigNumber } from 'ethers'
-import { AbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
 import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { isAddress } from '@rsksmart/rsk-utils'
 
 import { useAppSelector } from 'store/storeUtils'
 import { selectChainId } from 'store/slices/settingsSlice'
-
-const abiEnhancer = new AbiEnhancer()
+import { abiEnhancer } from 'core/setup'
 
 const convertValueToString = (value?: object | boolean | string) =>
   value ? value.toString() : ''
