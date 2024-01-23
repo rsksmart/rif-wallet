@@ -22,6 +22,8 @@ import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { selectChainId } from 'store/slices/settingsSlice'
 import { addPendingTransaction } from 'store/slices/transactionsSlice'
 import { createPendingTxFromTxResponse } from 'src/lib/utils'
+import { Wallet } from 'shared/wallet'
+import { addressToUse } from 'shared/hooks'
 
 const onSessionApprove = async (
   web3wallet: Web3Wallet,
@@ -112,6 +114,7 @@ export const WalletConnect2Provider = ({
   children,
   wallet,
 }: WalletConnect2ProviderProps) => {
+  const [address, setAddress] = useState<string | null>(null)
   const dispatch = useAppDispatch()
   const chainId = useAppSelector(selectChainId)
   const [sessions, setSessions] = useState<SessionStruct[]>([])
@@ -165,8 +168,8 @@ export const WalletConnect2Provider = ({
             const { verifyingContract } = domain
             if (
               [
-                wallet.smartWalletAddress.toLowerCase(),
-                wallet.rifRelaySdk.smartWalletFactory.address.toLowerCase(),
+                address?.toLowerCase(),
+                wallet?.rifRelaySdk?.smartWalletFactory.address.toLowerCase(),
               ].includes(verifyingContract.toLowerCase())
             ) {
               throw new Error(
@@ -191,39 +194,44 @@ export const WalletConnect2Provider = ({
             jsonrpc: '2.0',
           },
         }
-        adapter
-          .handleCall(method, params)
-          .then(async signedMessage => {
-            if (method === 'eth_sendTransaction') {
-              const pendingTx = await createPendingTxFromTxResponse(
-                signedMessage,
-                {
-                  chainId,
-                  from: wallet.smartWalletAddress,
-                  to: params[0].to,
-                },
-              )
-              if (pendingTx) {
-                dispatch(addPendingTransaction(pendingTx))
+
+        if (address) {
+          adapter
+            .handleCall(method, params)
+            .then(async signedMessage => {
+              if (method === 'eth_sendTransaction') {
+                const pendingTx = await createPendingTxFromTxResponse(
+                  signedMessage,
+                  {
+                    chainId,
+                    from: address,
+                    to: params[0].to,
+                  },
+                )
+                if (pendingTx) {
+                  dispatch(addPendingTransaction(pendingTx))
+                }
               }
-            }
-            usersWallet.respondSessionRequest({
-              ...rpcResponse,
-              response: {
-                ...rpcResponse.response,
-                result: signedMessage,
-              },
+              usersWallet.respondSessionRequest({
+                ...rpcResponse,
+                response: {
+                  ...rpcResponse.response,
+                  result: signedMessage,
+                },
+              })
             })
-          })
-          .catch(_ => {
-            usersWallet.respondSessionRequest({
-              ...rpcResponse,
-              response: {
-                ...rpcResponse.response,
-                error: getSdkError('USER_REJECTED'),
-              },
+            .catch(err => {
+              console.log('RPC RESPONSE CATCH', err)
+
+              usersWallet.respondSessionRequest({
+                ...rpcResponse,
+                response: {
+                  ...rpcResponse.response,
+                  error: getSdkError('USER_REJECTED'),
+                },
+              })
             })
-          })
+        }
       })
       usersWallet.on('session_delete', async event => {
         setSessions(prevSessions =>
@@ -231,7 +239,7 @@ export const WalletConnect2Provider = ({
         )
       })
     },
-    [chainId, dispatch, wallet],
+    [chainId, dispatch, address, wallet],
   )
 
   const onCreateNewSession = useCallback(
@@ -283,25 +291,32 @@ export const WalletConnect2Provider = ({
   )
 
   const onUserApprovedSession = async () => {
-    if (pendingSession && wallet) {
-      const newSession = await onSessionApprove(
-        pendingSession.web3wallet,
-        pendingSession.proposal,
-        wallet.smartWalletAddress,
-        chainId,
-      )
-      if (typeof newSession === 'string') {
-        // @TODO Error occurred - handle it
-        console.log(116, newSession)
-      } else {
-        setSessions(prevState => [...prevState, newSession])
+    try {
+      if (pendingSession && address) {
+        const newSession = await onSessionApprove(
+          pendingSession.web3wallet,
+          pendingSession.proposal,
+          address,
+          chainId,
+        )
+        if (typeof newSession === 'string') {
+          // @TODO Error occurred - handle it
+          console.log(116, newSession)
+        } else {
+          setSessions(prevState => [...prevState, newSession])
+        }
+        setPendingSession(undefined)
       }
-      setPendingSession(undefined)
+    } catch (err) {
+      console.log('onUserApprovedSession ERROR', err)
     }
   }
 
   const onUserRejectedSession = async () => {
+    console.log('REJECT SESSION 1')
     if (pendingSession) {
+      console.log('REJECT SESSION 2')
+
       await onSessionReject(pendingSession.web3wallet, pendingSession.proposal)
       setPendingSession(undefined)
     }
@@ -351,6 +366,7 @@ export const WalletConnect2Provider = ({
    */
   useEffect(() => {
     if (wallet) {
+      setAddress(addressToUse(wallet))
       onContextFirstLoad().catch(console.log)
     }
   }, [wallet, onContextFirstLoad])

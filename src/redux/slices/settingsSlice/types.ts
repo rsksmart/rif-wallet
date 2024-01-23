@@ -39,6 +39,11 @@ export interface UnlockAppAction {
   pinUnlocked?: boolean
 }
 
+export interface EmailLogin {
+  email: string
+  initializeWallet: InitializeWallet
+}
+
 export interface SetKeysAction {
   wallet: Wallet
   walletIsDeployed: WalletIsDeployed

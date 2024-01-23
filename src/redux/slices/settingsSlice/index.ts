@@ -37,12 +37,18 @@ import {
 } from 'store/slices/persistentDataSlice'
 import { Wallet } from 'shared/wallet'
 import { addressToUse } from 'shared/hooks'
-import { createAppWallet, loadAppWallet } from 'src/shared/utils'
+import {
+  createAppWallet,
+  createMagicWalletWithEmail,
+  loadAppWallet,
+} from 'src/shared/utils'
 import { MMKVStorage } from 'storage/MMKVStorage'
+import { magic } from 'core/CoreGlobalErrorHandler'
 
 import {
   Bitcoin,
   CreateFirstWalletAction,
+  EmailLogin,
   OnRequestAction,
   SettingsSlice,
   UnlockAppAction,
@@ -55,7 +61,7 @@ export const deleteCache = () => {
   cache.deleteAll()
 }
 
-export const getRifRelayConfig = (chainId: 30 | 31): RifRelayConfig => {
+export const getRifRelayConfig = (chainId: ChainID): RifRelayConfig => {
   return {
     smartWalletFactoryAddress: getWalletSetting(
       SETTINGS.SMART_WALLET_FACTORY_ADDRESS,
@@ -136,16 +142,18 @@ const initializeApp = async (
 
   socketsEvents.emit(SocketsEvents.CONNECT)
 
-  // initialize bitcoin
-  const bitcoin = initializeBitcoin(
-    mnemonic,
-    dispatch,
-    fetcherInstance,
-    chainId,
-  )
+  if (mnemonic) {
+    // initialize bitcoin
+    const bitcoin = initializeBitcoin(
+      mnemonic,
+      dispatch,
+      fetcherInstance,
+      chainId,
+    )
 
-  // set bitcoin in redux
-  dispatch(setBitcoinState(bitcoin))
+    // set bitcoin in redux
+    dispatch(setBitcoinState(bitcoin))
+  }
 }
 
 export const createWallet = createAsyncThunk<
@@ -326,6 +334,55 @@ export const unlockApp = createAsyncThunk<
   }
 })
 
+export const loginWithEmail = createAsyncThunk<
+  Wallet,
+  EmailLogin,
+  AsyncThunkWithTypes
+>('settings/seedlessLogin', async (payload, thunkAPI) => {
+  try {
+    const {
+      settings: { chainId },
+      usdPrices,
+      balances,
+    } = thunkAPI.getState()
+    const { email, initializeWallet } = payload
+
+    const wallet = await createMagicWalletWithEmail(email, magic, request =>
+      thunkAPI.dispatch(onRequest({ request })),
+    )
+
+    //@TODO: when MagicRelay is added
+    // this ts error will be fixed
+    const result = await wallet?.loginWithEmail(email)
+
+    if (!result) {
+      return thunkAPI.rejectWithValue('No DID Token was created!')
+    }
+
+    initializeWallet(wallet!, {
+      isDeployed: true,
+      txHash: null,
+      loading: false,
+    })
+
+    thunkAPI.dispatch(setUnlocked(true))
+
+    await initializeApp(
+      '',
+      wallet!,
+      chainId,
+      usdPrices,
+      balances,
+      thunkAPI.dispatch,
+      thunkAPI.rejectWithValue,
+    )
+
+    // return wallet
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err)
+  }
+})
+
 export const resetApp = createAsyncThunk(
   'settings/resetApp',
   async (_, thunkAPI) => {
@@ -435,6 +492,15 @@ const settingsSlice = createSlice({
       state.loading = false
     })
     builder.addCase(unlockApp.fulfilled, state => {
+      state.loading = false
+    })
+    builder.addCase(loginWithEmail.pending, state => {
+      state.loading = true
+    })
+    builder.addCase(loginWithEmail.rejected, state => {
+      state.loading = false
+    })
+    builder.addCase(loginWithEmail.fulfilled, state => {
       state.loading = false
     })
   },
