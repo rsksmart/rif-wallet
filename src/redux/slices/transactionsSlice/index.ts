@@ -33,7 +33,7 @@ import {
   ChainTypesByIdType,
 } from 'shared/constants/chainConstants'
 import { TokenSymbol } from 'screens/home/TokenImage'
-import { formatLongAssNumbers, rbtcMap } from 'shared/utils'
+import { formatLongNumbers, rbtcMap } from 'shared/utils'
 
 export const activityDeserializer: (
   activityTransaction: ActivityMixedType,
@@ -129,7 +129,7 @@ export const activityDeserializer: (
       symbol: tokenSymbol,
       price: Number(tokenUsd),
       fee: {
-        tokenValue: formatLongAssNumbers(feeTokenValue.toString()),
+        tokenValue: formatLongNumbers(feeTokenValue.toString()),
         symbol: feeSymbol,
         usdValue: feeUsd,
       },

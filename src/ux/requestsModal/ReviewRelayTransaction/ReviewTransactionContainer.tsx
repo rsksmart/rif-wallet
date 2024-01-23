@@ -20,7 +20,7 @@ import { chainTypesById } from 'shared/constants/chainConstants'
 import {
   castStyle,
   errorHandler,
-  formatLongAssNumbers,
+  formatLongNumbers,
   formatSmallNumbers,
   rbtcMap,
 } from 'shared/utils'
@@ -186,7 +186,7 @@ export const ReviewTransactionContainer = ({
     const feeValue = txCost ? balanceToDisplay(txCost, 18) : '0'
     const rbtcFeeValue =
       txCost && rbtcMap.get(feeSymbol)
-        ? formatLongAssNumbers(txCost.toString())
+        ? formatLongNumbers(txCost.toString())
         : undefined
     let insufficientFunds = false
 

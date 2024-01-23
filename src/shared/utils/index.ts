@@ -44,26 +44,26 @@ export const formatSmallNumbers = (smallNumber: string | number) => {
   return '< 0.0000001'
 }
 
-export const formatLongAssNumbers = (longAssNumber: string | number) => {
-  if (isNaN(Number(longAssNumber))) {
-    return longAssNumber.toString()
+export const formatLongNumbers = (longNumber: string | number) => {
+  if (isNaN(Number(longNumber))) {
+    return longNumber.toString()
   }
 
-  if (!(typeof longAssNumber === 'string')) {
-    longAssNumber = longAssNumber.toString()
+  if (!(typeof longNumber === 'string')) {
+    longNumber = longNumber.toString()
   }
 
-  if (longAssNumber.length <= 3) {
-    return longAssNumber
+  if (longNumber.length <= 3) {
+    return longNumber
   }
 
-  const longAssNumberArr = longAssNumber.split('')
+  const longNumberArr = longNumber.split('')
 
-  for (let i = longAssNumber.length - 3; i > 0; i -= 3) {
-    longAssNumberArr.splice(i, 0, ',')
+  for (let i = longNumber.length - 3; i > 0; i -= 3) {
+    longNumberArr.splice(i, 0, ',')
   }
 
-  return longAssNumberArr.join('')
+  return longNumberArr.join('')
 }
 
 export const errorHandler = (error: unknown) => {
