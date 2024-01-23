@@ -13,8 +13,8 @@
   "BTC_EXPLORER_ADDRESS_URL_TESTNET": "https://live.blockcypher.com/btc-testnet",
   "RPC_URL_MAINNET": "https://public-node.rsk.co",
   "RPC_URL_TESTNET": "https://public-node.testnet.rsk.co",
-  "EXPLORER_ADDRESS_URL_MAINNET": "https://explorer.rsk.co",
-  "EXPLORER_ADDRESS_URL_TESTNET": "https://explorer.testnet.rsk.co",
+  "EXPLORER_ADDRESS_URL_MAINNET": "https://explorer.rsk.co/tx",
+  "EXPLORER_ADDRESS_URL_TESTNET": "https://explorer.testnet.rsk.co/tx",
   "TERMS_AND_CONDITIONS_URL": "https://drive.google.com/file/d/1-jKY7K_93g9c7kNJ__cDYkGYp03PrOO8/view",
   "RIF_RELAY_SERVER_PK_MAINNET":"iKarJSqoE7VDPkM1lz0CSjM4dNIxXUR34tglN4DGxOo=,vcR14dZ41hJceNSxRzTnwzty0xQTDSKXus6ShuPmsNU=,I/R6+lVqe6ZsNSFNEOBlQtASW7OwxGcDmEKR242H028=",
   "RIF_RELAY_SERVER_PK_TESTNET":"2itPjqc76+Ggb+I0AfLs9OR7w5fwg8Hzm5QLx0jeJgg=,qSX0n5VYQLdyDZgRN5LbiFvydQHOh/dxJjVrNvzlTuc="
