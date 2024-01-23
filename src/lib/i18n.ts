@@ -249,6 +249,12 @@ const resources = {
       settings_screen_smart_wallet_factory: 'Smart Wallet Factory',
       settings_screen_rpc_url: 'RPC URL',
       settings_screen_backend_url: 'Backend URL',
+      settings_screen_seedless_warning_title:
+        'You will need to enter your credentials again',
+      settings_screen_seedless_warning_description:
+        'When switching chain ID we need to recreate Magic Instance to be make sure the network is correctly setup',
+      settings_screen_seedless_warning_confirm_text: "Let's Switch",
+      settings_screen_seedless_warning_cancel_text: 'Cancel',
       accounts_screen_status_label: 'Status',
       accounts_screen_deployed_label: 'Deployed',
       accounts_screen_not_deployed_label: 'Not Deployed',

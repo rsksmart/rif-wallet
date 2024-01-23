@@ -1,5 +1,6 @@
 import { BitcoinNetworkWithBIPRequest } from '@rsksmart/rif-wallet-bitcoin'
 import { ColorValue } from 'react-native'
+import { Magic } from '@magic-sdk/react-native-bare'
 
 import { ChainID } from 'lib/eoaWallet'
 
@@ -42,6 +43,7 @@ export interface UnlockAppAction {
 export interface EmailLogin {
   email: string
   initializeWallet: InitializeWallet
+  magic: Magic
 }
 
 export interface SetKeysAction {

@@ -43,7 +43,6 @@ import {
   loadAppWallet,
 } from 'src/shared/utils'
 import { MMKVStorage } from 'storage/MMKVStorage'
-import { magic } from 'core/CoreGlobalErrorHandler'
 
 import {
   Bitcoin,
@@ -345,7 +344,7 @@ export const loginWithEmail = createAsyncThunk<
       usdPrices,
       balances,
     } = thunkAPI.getState()
-    const { email, initializeWallet } = payload
+    const { email, initializeWallet, magic } = payload
 
     const wallet = await createMagicWalletWithEmail(email, magic, request =>
       thunkAPI.dispatch(onRequest({ request })),
@@ -494,15 +493,15 @@ const settingsSlice = createSlice({
     builder.addCase(unlockApp.fulfilled, state => {
       state.loading = false
     })
-    builder.addCase(loginWithEmail.pending, state => {
-      state.loading = true
-    })
-    builder.addCase(loginWithEmail.rejected, state => {
-      state.loading = false
-    })
-    builder.addCase(loginWithEmail.fulfilled, state => {
-      state.loading = false
-    })
+    // builder.addCase(loginWithEmail.pending, state => {
+    //   state.loading = true
+    // })
+    // builder.addCase(loginWithEmail.rejected, state => {
+    //   state.loading = false
+    // })
+    // builder.addCase(loginWithEmail.fulfilled, state => {
+    //   state.loading = false
+    // })
   },
 })
 
