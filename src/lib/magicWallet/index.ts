@@ -49,6 +49,7 @@ export class MagicWallet extends Signer implements TypedDataSigner {
     onRequest: OnRequest,
   ) {
     //@TODO: figure out why 3rd switching of chains does not work
+    //@TODO: address is the same for both 30 | 31 why?
     const provider = await magicInstance.wallet.getProvider()
     const signer = new providers.Web3Provider(provider).getSigner()
 
