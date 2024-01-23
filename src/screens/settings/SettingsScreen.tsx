@@ -13,7 +13,7 @@ import {
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
 import { sharedColors, sharedStyles } from 'shared/constants'
-import { castStyle } from 'shared/utils'
+import { castStyle, isSeedlessWallet } from 'shared/utils'
 import { selectChainId } from 'store/slices/settingsSlice'
 import { selectPin } from 'store/slices/persistentDataSlice'
 import { useAppSelector } from 'store/storeUtils'
@@ -92,15 +92,17 @@ export const SettingsScreen = ({
           onPress={goToAccountsScreen}>
           <Typography type={'h3'}>{t('settings_screen_account')}</Typography>
         </AppTouchable>
-        <AppTouchable
-          width={'100%'}
-          accessibilityLabel="Wallet Backup"
-          style={styles.settingsItem}
-          onPress={goToWalletBackup}>
-          <Typography type={'h3'}>
-            {t('settings_screen_wallet_backup')}
-          </Typography>
-        </AppTouchable>
+        {!isSeedlessWallet && (
+          <AppTouchable
+            width={'100%'}
+            accessibilityLabel="Wallet Backup"
+            style={styles.settingsItem}
+            onPress={goToWalletBackup}>
+            <Typography type={'h3'}>
+              {t('settings_screen_wallet_backup')}
+            </Typography>
+          </AppTouchable>
+        )}
         {Platform.OS === 'android' && statePIN && (
           <AppTouchable
             width={'100%'}

@@ -1,5 +1,6 @@
-import { useMemo, useEffect } from 'react'
-import { View } from 'react-native'
+import { useMemo, useEffect, useState } from 'react'
+import { StyleSheet, View } from 'react-native'
+import { useTranslation } from 'react-i18next'
 
 import { shortAddress } from 'lib/utils'
 import { RelayWallet } from 'lib/relayWallet'
@@ -12,12 +13,18 @@ import {
   SettingsScreenProps,
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
-import { sharedStyles } from 'shared/constants'
+import { sharedColors, sharedStyles } from 'shared/constants'
 import { useWalletState } from 'shared/wallet'
+import { castStyle } from 'shared/utils'
+import { AppButton, AppButtonBackgroundVarietyEnum } from 'components/index'
+import { DeleteWalletModal } from 'components/modal/deleteWalletModal'
 
 export const AccountsScreen = ({
   navigation,
 }: SettingsScreenProps<settingsStackRouteNames.AccountsScreen>) => {
+  const { t } = useTranslation()
+  const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] =
+    useState<boolean>(false)
   const { wallet, walletIsDeployed } = useWalletState()
 
   const chainId = useAppSelector(selectChainId)
@@ -51,6 +58,23 @@ export const AccountsScreen = ({
         chainId={chainId}
         publicKeys={publicKeys}
       />
+      <AppButton
+        title={t('wallet_backup_delete_button')}
+        onPress={() => setIsDeleteConfirmationVisible(true)}
+        backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
+        color={sharedColors.white}
+        style={styles.deleteButton}
+      />
+      <DeleteWalletModal
+        isVisible={isDeleteConfirmationVisible}
+        setVisible={setIsDeleteConfirmationVisible}
+      />
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  deleteButton: castStyle.view({
+    marginTop: 24,
+  }),
+})

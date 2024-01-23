@@ -107,6 +107,11 @@ const resources = {
       initial_screen_button_retry_login: 'Retry unlock',
       initial_screen_button_create: 'Create a wallet',
       initial_screen_button_import: 'Import existing wallet',
+      initial_screen_button_login_with_email: 'Login with email',
+      magic_email_title: 'Hello & Welcome',
+      magic_email_placeholder: 'Email',
+      magic_button_sign_in: 'Sign In/Register',
+      magic_continue_with: 'or continue with',
       initial_screen_welcome_footer:
         'Welcome to RIF Wallet - a smart wallet with intuitive UX. Create your profile now.',
       header_import_wallet: 'Import wallet',

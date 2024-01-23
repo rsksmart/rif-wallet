@@ -17,7 +17,7 @@ import {
 export class MagicWallet extends Signer implements TypedDataSigner {
   private magic: Magic
   protected onRequest: OnRequest
-  protected signer: providers.JsonRpcSigner
+  public signer: providers.JsonRpcSigner
   public address: string
 
   constructor(
@@ -29,7 +29,6 @@ export class MagicWallet extends Signer implements TypedDataSigner {
     super()
     this.magic = magic
     this.signer = signer
-    console.log('ON REQJEST', onRequest)
     this.onRequest = onRequest
     this.address = address
 
@@ -38,6 +37,10 @@ export class MagicWallet extends Signer implements TypedDataSigner {
 
   async getAddress() {
     return this.signer.getAddress()
+  }
+
+  get isDeployed(): Promise<boolean> {
+    return Promise.resolve(true)
   }
 
   public static async create(
@@ -97,6 +100,7 @@ export class MagicWallet extends Signer implements TypedDataSigner {
     types: Record<string, TypedDataField[]>,
     value: Record<string, any>,
   ): Promise<string> {
+    console.log('SIGNED TYPED DATA', domain, types, value)
     return new Promise((resolve, reject) => {
       const nextRequest = Object.freeze<SignTypedDataRequest>({
         type: 'signTypedData',

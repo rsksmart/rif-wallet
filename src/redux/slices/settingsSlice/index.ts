@@ -28,10 +28,7 @@ import {
   SocketsEvents,
   socketsEvents,
 } from 'src/subscriptions/rifSockets'
-import {
-  chainTypesById,
-  ChainTypesByIdType,
-} from 'shared/constants/chainConstants'
+import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 import { getCurrentChainId } from 'storage/ChainStorage'
 import { resetReduxStorage } from 'storage/ReduxStorage'
 import {
@@ -41,12 +38,18 @@ import {
 } from 'store/slices/persistentDataSlice'
 import { Wallet } from 'shared/wallet'
 import { addressToUse } from 'shared/hooks'
-import { createAppWallet, loadAppWallet } from 'src/shared/utils'
+import {
+  createAppWallet,
+  createMagicWalletWithEmail,
+  loadAppWallet,
+} from 'src/shared/utils'
 import { MMKVStorage } from 'storage/MMKVStorage'
+import { magic } from 'core/CoreGlobalErrorHandler'
 
 import {
   Bitcoin,
   CreateFirstWalletAction,
+  EmailLogin,
   OnRequestAction,
   SettingsSlice,
   UnlockAppAction,
@@ -59,45 +62,42 @@ export const deleteCache = () => {
   cache.deleteAll()
 }
 
-export const getRifRelayConfig = (chainId: 30 | 31): RifRelayConfig => {
+export const getRifRelayConfig = (chainId: ChainID): RifRelayConfig => {
   return {
     smartWalletFactoryAddress: getWalletSetting(
       SETTINGS.SMART_WALLET_FACTORY_ADDRESS,
-      chainTypesById[chainId],
+      chainId,
     ),
     relayVerifierAddress: getWalletSetting(
       SETTINGS.RELAY_VERIFIER_ADDRESS,
-      chainTypesById[chainId],
+      chainId,
     ),
     deployVerifierAddress: getWalletSetting(
       SETTINGS.DEPLOY_VERIFIER_ADDRESS,
-      chainTypesById[chainId],
+      chainId,
     ),
-    relayServer: getWalletSetting(
-      SETTINGS.RIF_RELAY_SERVER,
-      chainTypesById[chainId],
-    ),
+    relayServer: getWalletSetting(SETTINGS.RIF_RELAY_SERVER, chainId),
   }
 }
 
 const sslPinning = async (chainId: ChainTypesByIdType) => {
   const rifWalletServiceDomain = getWalletSetting(
     SETTINGS.RIF_WALLET_SERVICE_URL,
-    chainTypesById[chainId],
+    chainId,
   ).split('//')[1]
 
   const rifWalletServicePk = getWalletSetting(
     SETTINGS.RIF_WALLET_SERVICE_PUBLIC_KEY,
-    chainTypesById[chainId],
+    chainId,
   ).split(',')
   const rifRelayDomain = getWalletSetting(
     SETTINGS.RIF_RELAY_SERVER,
-    chainTypesById[chainId],
+    chainId,
   ).split('//')[1]
 
   const rifRelayPk = getWalletSetting(
     SETTINGS.RIF_RELAY_SERVER_PK,
-    chainTypesById[chainId],
+    chainId,
   ).split(',')
 
   await initializeSslPinning({
@@ -144,16 +144,18 @@ const initializeApp = async (
 
   socketsEvents.emit(SocketsEvents.CONNECT)
 
-  // initialize bitcoin
-  const bitcoin = initializeBitcoin(
-    mnemonic,
-    dispatch,
-    fetcherInstance,
-    chainId,
-  )
+  if (mnemonic) {
+    // initialize bitcoin
+    const bitcoin = initializeBitcoin(
+      mnemonic,
+      dispatch,
+      fetcherInstance,
+      chainId,
+    )
 
-  // set bitcoin in redux
-  dispatch(setBitcoinState(bitcoin))
+    // set bitcoin in redux
+    dispatch(setBitcoinState(bitcoin))
+  }
 }
 
 export const createWallet = createAsyncThunk<
@@ -164,7 +166,7 @@ export const createWallet = createAsyncThunk<
   try {
     const { chainId } = thunkAPI.getState().settings
 
-    const url = getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId])
+    const url = getWalletSetting(SETTINGS.RPC_URL, chainId)
     const jsonRpcProvider = new providers.StaticJsonRpcProvider(url)
 
     const wallet = await createAppWallet(
@@ -292,7 +294,7 @@ export const unlockApp = createAsyncThunk<
       return thunkAPI.rejectWithValue('Move to Offline Screen')
     }
 
-    const url = getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId])
+    const url = getWalletSetting(SETTINGS.RPC_URL, chainId)
     const jsonRpcProvider = new providers.StaticJsonRpcProvider(url)
 
     const wallet = await loadAppWallet(
@@ -329,6 +331,55 @@ export const unlockApp = createAsyncThunk<
     )
 
     return keys
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err)
+  }
+})
+
+export const loginWithEmail = createAsyncThunk<
+  Wallet,
+  EmailLogin,
+  AsyncThunkWithTypes
+>('settings/seedlessLogin', async (payload, thunkAPI) => {
+  try {
+    const {
+      settings: { chainId },
+      usdPrices,
+      balances,
+    } = thunkAPI.getState()
+    const { email, initializeWallet } = payload
+
+    const wallet = await createMagicWalletWithEmail(email, magic, request =>
+      thunkAPI.dispatch(onRequest({ request })),
+    )
+
+    //@TODO: when MagicRelay is added
+    // this ts error will be fixed
+    const result = await wallet?.loginWithEmail(email)
+
+    if (!result) {
+      return thunkAPI.rejectWithValue('No DID Token was created!')
+    }
+
+    initializeWallet(wallet!, {
+      isDeployed: true,
+      txHash: null,
+      loading: false,
+    })
+
+    thunkAPI.dispatch(setUnlocked(true))
+
+    await initializeApp(
+      '',
+      wallet!,
+      chainId,
+      usdPrices,
+      balances,
+      thunkAPI.dispatch,
+      thunkAPI.rejectWithValue,
+    )
+
+    // return wallet
   } catch (err) {
     return thunkAPI.rejectWithValue(err)
   }
@@ -443,6 +494,15 @@ const settingsSlice = createSlice({
       state.loading = false
     })
     builder.addCase(unlockApp.fulfilled, state => {
+      state.loading = false
+    })
+    builder.addCase(loginWithEmail.pending, state => {
+      state.loading = true
+    })
+    builder.addCase(loginWithEmail.rejected, state => {
+      state.loading = false
+    })
+    builder.addCase(loginWithEmail.fulfilled, state => {
       state.loading = false
     })
   },
