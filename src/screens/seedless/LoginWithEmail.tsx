@@ -15,6 +15,7 @@ import { Apple } from 'components/icons/Apple'
 import { loginWithEmail } from 'store/slices/settingsSlice'
 import { useInitializeWallet } from 'src/shared/wallet'
 import { ConfirmationModal } from 'src/components/modal'
+import { useGlobalMagicInstance } from 'components/GlobalErrorHandler/GlobalErrorHandlerContext'
 
 interface FormValues {
   email: string
@@ -43,6 +44,7 @@ const schema = yup.object<FormValues>({
 })
 
 export const LoginWithEmail = () => {
+  const magic = useGlobalMagicInstance()
   const [showWarning, setShowWarning] = useState(true)
   const initializeWallet = useInitializeWallet()
   const { t } = useTranslation()
@@ -63,12 +65,12 @@ export const LoginWithEmail = () => {
   const onSubmit = useCallback(
     async ({ email }: FormValues) => {
       try {
-        dispatch(loginWithEmail({ email, initializeWallet }))
+        dispatch(loginWithEmail({ email, initializeWallet, magic }))
       } catch (err) {
         console.log('ERROR LOGGING IN WITH MAGIC', err)
       }
     },
-    [dispatch, initializeWallet],
+    [dispatch, initializeWallet, magic],
   )
 
   useEffect(() => {

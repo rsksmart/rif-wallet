@@ -48,6 +48,7 @@ export class MagicWallet extends Signer implements TypedDataSigner {
     magicInstance: Magic,
     onRequest: OnRequest,
   ) {
+    //@TODO: figure out why 3rd switching of chains does not work
     const provider = await magicInstance.wallet.getProvider()
     const signer = new providers.Web3Provider(provider).getSigner()
 
