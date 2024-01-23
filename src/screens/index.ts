@@ -1,7 +1,6 @@
 export { SendScreen } from './send/SendScreen'
 export { ReceiveScreen } from './receive/ReceiveScreen'
 export { ActivityScreen } from './activity/ActivityScreen'
-export { ShowMnemonicScreen } from './info/ShowMnemonicScreen'
 export { RelayDeployScreen } from './settings/RelayDeployScreen'
 export {
   WalletConnectScreen,

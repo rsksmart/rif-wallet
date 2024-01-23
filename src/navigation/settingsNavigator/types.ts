@@ -11,7 +11,6 @@ export enum settingsStackRouteNames {
   ChangePinScreen = 'ChangePinScreen',
   AccountsScreen = 'AccountsScreen',
   WalletBackup = 'WalletBackup',
-  ShowMnemonicScreen = 'ShowMnemonicScreen',
   ExampleScreen = 'ExampleScreen',
   RelayDeployScreen = 'RelayDeployScreen',
 }
@@ -25,7 +24,6 @@ export type SettingsStackParamsList = {
   }
   [settingsStackRouteNames.AccountsScreen]: undefined
   [settingsStackRouteNames.WalletBackup]: undefined
-  [settingsStackRouteNames.ShowMnemonicScreen]: undefined
   [settingsStackRouteNames.ExampleScreen]: undefined
   [settingsStackRouteNames.RelayDeployScreen]:
     | {
