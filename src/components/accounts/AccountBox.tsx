@@ -7,6 +7,8 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/FontAwesome'
 
 import {
+  AppButton,
+  AppButtonBackgroundVarietyEnum,
   AppTouchable,
   Input,
   Typography,
@@ -22,6 +24,7 @@ import { selectAccounts } from 'store/slices/accountsSlice/selector'
 import { AccountPayload } from 'store/slices/accountsSlice/types'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { ChainTypesByIdType } from 'shared/constants/chainConstants'
+import { DeleteWalletModal } from 'components/modal/deleteWalletModal'
 
 import { CheckIcon } from '../icons/CheckIcon'
 
@@ -47,6 +50,8 @@ export const AccountBox = ({
   const initialAccountName = accounts[id]?.name || `account ${id + 1}`
   const [accountName, setAccountName] = useState<string>(initialAccountName)
   const [showAccountNameInput, setShowAccountInput] = useState<boolean>(false)
+  const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] =
+    useState<boolean>(false)
 
   const eoaAddressObject = getAddressDisplayText(address ?? '', chainId)
   const smartWalletAddressObject = getAddressDisplayText(
@@ -200,6 +205,18 @@ export const AccountBox = ({
           testID={'TestID.publicKey'}
         />
       ))}
+
+      <AppButton
+        title={t('wallet_backup_delete_button')}
+        onPress={() => setIsDeleteConfirmationVisible(true)}
+        backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
+        color={sharedColors.white}
+        style={styles.deleteButton}
+      />
+      <DeleteWalletModal
+        isVisible={isDeleteConfirmationVisible}
+        setVisible={setIsDeleteConfirmationVisible}
+      />
     </FormProvider>
   )
 }
@@ -248,5 +265,8 @@ const styles = StyleSheet.create({
   }),
   copyIcon: castStyle.image({
     padding: defaultIconSize,
+  }),
+  deleteButton: castStyle.view({
+    marginTop: 24,
   }),
 })
