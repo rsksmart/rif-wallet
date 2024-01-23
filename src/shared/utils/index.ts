@@ -21,16 +21,8 @@ import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
 import { ChainID, EOAWallet, OnRequest, WalletState } from 'lib/eoaWallet'
 import { RelayWallet } from 'lib/relayWallet'
 
-import { TokenSymbol } from 'screens/home/TokenImage'
-
 import { Wallet } from '../wallet'
 import { ErrorWithMessage } from '../types'
-
-export const rbtcMap = new Map([
-  [TokenSymbol.TRBTC, true],
-  [TokenSymbol.RBTC, true],
-  [undefined, false],
-])
 
 export const formatSmallNumbers = (smallNumber: string | number) => {
   if (isNaN(Number(smallNumber))) {
@@ -43,6 +35,18 @@ export const formatSmallNumbers = (smallNumber: string | number) => {
 
   return '< 0.0000001'
 }
+
+// this needs to be here because of the failing tests
+enum TokenSymbol {
+  TRBTC = 'TRBTC',
+  RBTC = 'RBTC',
+}
+
+export const rbtcMap = new Map([
+  [TokenSymbol.TRBTC, true],
+  [TokenSymbol.RBTC, true],
+  [undefined, false],
+])
 
 export const formatLongNumbers = (longNumber: string | number) => {
   if (isNaN(Number(longNumber))) {
