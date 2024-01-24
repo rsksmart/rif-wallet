@@ -2047,7 +2047,7 @@
     randombytes "^2.1.0"
 
 "@rsksmart/rif-relay-light-sdk@*", "@rsksmart/rif-relay-light-sdk@^1.0.17":
-  version "1.0.17"
+  version "1.0.12"
   resolved "https://registry.yarnpkg.com/@rsksmart/rif-relay-light-sdk/-/rif-relay-light-sdk-1.0.12.tgz#0123e465953fe76ca80db1ddbc0359f1edbb5f2d"
   integrity sha512-J7K7Ae7CWahZVpglR4w9+SlVpJ+K8RL8UufyqkzW0v7Z1kXUjJ6k9cQy67zgQuePBdDJSwCDcanHgKy4dZgOeQ==
   dependencies:
@@ -9282,10 +9282,10 @@ react-native-mmkv-flipper-plugin@^1.0.0:
   resolved "https://registry.yarnpkg.com/react-native-mmkv-flipper-plugin/-/react-native-mmkv-flipper-plugin-1.0.0.tgz#f87f747d8cea51d2b12a1e711287feff5f212788"
   integrity sha512-e3owMIBzXez45Wz8Ac84Vf1FmfwMXFVUpf/gCDWDLq19w7iCipVezQjlZo8ISVza8aQf1G4ggaK/r+qqtGmRlg==
 
-react-native-mmkv@2.4.3:
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/react-native-mmkv/-/react-native-mmkv-2.4.3.tgz#6bb4c2d5e328513da11faab1371d056a189adbd0"
-  integrity sha512-0hYNOTbsjJ5j5cpX+qjwReGIxuYE9MWRsyPQ72fTOvzmEjYXCF4Wr2VQoqx8R6W1/Uinekvln7dGvJ4RExmHhQ==
+react-native-mmkv@2.5.1:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/react-native-mmkv/-/react-native-mmkv-2.5.1.tgz#29fc462077fab16a5e1b79570fbf8acaac9d87b4"
+  integrity sha512-5eQu25z3H6zf6w0NkJoTuFEFrbOu6luZxZ6+rK1W+XwY/rjPSFZFQPVtMaz3im90RbILFXXM/KrFGZrpaJJRoQ==
 
 react-native-modal@^13.0.1:
   version "13.0.1"
