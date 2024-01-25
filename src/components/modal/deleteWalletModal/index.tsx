@@ -1,24 +1,22 @@
 import { Dispatch, SetStateAction, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { resetApp } from 'store/slices/settingsSlice'
-import { useAppDispatch } from 'store/storeUtils'
 import { sharedColors } from 'shared/constants'
 
 import { ConfirmationModal, ConfirmationModalConfig } from '..'
 
 interface Props {
   isVisible: boolean
+  eraseWallet: () => void
   setVisible: Dispatch<SetStateAction<boolean>>
 }
 
-export const DeleteWalletModal = ({ isVisible, setVisible }: Props) => {
-  const dispatch = useAppDispatch()
+export const DeleteWalletModal = ({
+  isVisible,
+  eraseWallet,
+  setVisible,
+}: Props) => {
   const { t } = useTranslation()
-
-  const eraseWallet = useCallback(() => {
-    dispatch(resetApp())
-  }, [dispatch])
 
   const createDeleteDefinitiveConfirmationConfig = useCallback(
     (

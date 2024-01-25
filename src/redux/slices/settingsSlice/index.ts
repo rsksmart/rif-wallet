@@ -7,6 +7,7 @@ import { providers } from 'ethers'
 import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
 
 import { ChainID, WalletState } from 'lib/eoaWallet'
+import { MagicWallet } from 'lib/magicWallet'
 
 import { deleteDomains } from 'storage/DomainsStore'
 import { deleteContacts as deleteContactsFromRedux } from 'store/slices/contactsSlice'
@@ -37,18 +38,14 @@ import {
 } from 'store/slices/persistentDataSlice'
 import { Wallet } from 'shared/wallet'
 import { addressToUse } from 'shared/hooks'
-import {
-  createAppWallet,
-  createMagicWalletWithEmail,
-  loadAppWallet,
-} from 'src/shared/utils'
+import { createAppWallet, loadAppWallet } from 'shared/utils'
 import { MMKVStorage } from 'storage/MMKVStorage'
 
 import {
   Bitcoin,
   CreateFirstWalletAction,
-  EmailLogin,
   OnRequestAction,
+  ResetAppPayload,
   SettingsSlice,
   UnlockAppAction,
 } from './types'
@@ -110,7 +107,7 @@ const sslPinning = async (chainId: ChainID) => {
   })
 }
 
-const initializeApp = async (
+export const initializeApp = async (
   mnemonic: string,
   wallet: Wallet,
   chainId: ChainID,
@@ -333,74 +330,32 @@ export const unlockApp = createAsyncThunk<
   }
 })
 
-export const loginWithEmail = createAsyncThunk<
-  Wallet,
-  EmailLogin,
+export const resetApp = createAsyncThunk<
+  string,
+  ResetAppPayload,
   AsyncThunkWithTypes
->('settings/seedlessLogin', async (payload, thunkAPI) => {
+>('settings/resetApp', async (payload, thunkAPI) => {
   try {
-    const {
-      settings: { chainId },
-      usdPrices,
-      balances,
-    } = thunkAPI.getState()
-    const { email, initializeWallet, magic } = payload
+    thunkAPI.dispatch(deleteContactsFromRedux())
+    thunkAPI.dispatch(resetKeysAndPin())
+    thunkAPI.dispatch(resetSocketState())
+    thunkAPI.dispatch(deleteProfile())
+    thunkAPI.dispatch(setPreviouslyUnlocked(false))
+    thunkAPI.dispatch(setPinState(null))
+    thunkAPI.dispatch(setKeysExist(false))
+    resetMainStorage()
+    resetReduxStorage()
 
-    const wallet = await createMagicWalletWithEmail(email, magic, request =>
-      thunkAPI.dispatch(onRequest({ request })),
-    )
-
-    //@TODO: when MagicRelay is added
-    // this ts error will be fixed
-    const result = await wallet?.loginWithEmail(email)
-
-    if (!result) {
-      return thunkAPI.rejectWithValue('No DID Token was created!')
+    console.log('BEFORE LOGOUT')
+    if (payload && payload.wallet instanceof MagicWallet) {
+      await payload.wallet.logout()
     }
 
-    initializeWallet(wallet!, {
-      isDeployed: true,
-      txHash: null,
-      loading: false,
-    })
-
-    thunkAPI.dispatch(setUnlocked(true))
-
-    await initializeApp(
-      '',
-      wallet!,
-      chainId,
-      usdPrices,
-      balances,
-      thunkAPI.dispatch,
-      thunkAPI.rejectWithValue,
-    )
-
-    // return wallet
+    return 'deleted'
   } catch (err) {
     return thunkAPI.rejectWithValue(err)
   }
 })
-
-export const resetApp = createAsyncThunk(
-  'settings/resetApp',
-  async (_, thunkAPI) => {
-    try {
-      thunkAPI.dispatch(deleteContactsFromRedux())
-      thunkAPI.dispatch(resetKeysAndPin())
-      thunkAPI.dispatch(resetSocketState())
-      thunkAPI.dispatch(deleteProfile())
-      thunkAPI.dispatch(setPreviouslyUnlocked(false))
-      thunkAPI.dispatch(setPinState(null))
-      thunkAPI.dispatch(setKeysExist(false))
-      resetMainStorage()
-      resetReduxStorage()
-      return 'deleted'
-    } catch (err) {
-      return thunkAPI.rejectWithValue(err)
-    }
-  },
-)
 
 const initialState: SettingsSlice = {
   isSetup: false,
@@ -414,18 +369,13 @@ const initialState: SettingsSlice = {
   fullscreen: false,
   hideBalance: false,
   bitcoin: null,
-  chainId: 31,
+  chainId: getCurrentChainId(),
   usedBitcoinAddresses: {},
 }
 
-const createInitialState = () => ({
-  ...initialState,
-  chainId: getCurrentChainId(),
-})
-
 const settingsSlice = createSlice({
   name: 'settings',
-  initialState: createInitialState,
+  initialState,
   reducers: {
     setIsSetup: (state, { payload }: PayloadAction<boolean>) => {
       state.isSetup = payload
@@ -456,7 +406,7 @@ const settingsSlice = createSlice({
       deleteKeys()
       deleteDomains()
       deleteCache()
-      return createInitialState()
+      return initialState
     },
     setFullscreen: (state, { payload }: PayloadAction<boolean>) => {
       state.fullscreen = payload
@@ -493,15 +443,6 @@ const settingsSlice = createSlice({
     builder.addCase(unlockApp.fulfilled, state => {
       state.loading = false
     })
-    // builder.addCase(loginWithEmail.pending, state => {
-    //   state.loading = true
-    // })
-    // builder.addCase(loginWithEmail.rejected, state => {
-    //   state.loading = false
-    // })
-    // builder.addCase(loginWithEmail.fulfilled, state => {
-    //   state.loading = false
-    // })
   },
 })
 
